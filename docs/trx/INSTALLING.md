@@ -1048,10 +1048,13 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── jungle.lua
 │   │   │   ├── mines.lua
 │   │   │   ├── nevada.lua
+│   │   │   ├── office.lua
 │   │   │   ├── rapids.lua
 │   │   │   ├── shore.lua
 │   │   │   ├── temple.lua
+│   │   │   ├── tonyboss.lua
 │   │   │   ├── tower.lua
+│   │   │   ├── triboss.lua
 │   │   │   └── zoo.lua
 │   │   ├── catalog_item_actions.csv
 │   │   ├── catalog_lara_anims.csv
@@ -2276,10 +2279,13 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── jungle.lua
     │   │   │   │   ├── mines.lua
     │   │   │   │   ├── nevada.lua
+    │   │   │   │   ├── office.lua
     │   │   │   │   ├── rapids.lua
     │   │   │   │   ├── shore.lua
     │   │   │   │   ├── temple.lua
+    │   │   │   │   ├── tonyboss.lua
     │   │   │   │   ├── tower.lua
+    │   │   │   │   ├── triboss.lua
     │   │   │   │   └── zoo.lua
     │   │   │   ├── catalog_item_actions.csv
     │   │   │   ├── catalog_lara_anims.csv

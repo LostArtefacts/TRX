@@ -152,6 +152,7 @@
         // 4. Caves of Kaliya
         {
             "path": "tonyboss.tr2",
+            "script": "tonyboss.lua",
             "music_track": 30,
             "lara_outfit": "tr3_classic",
             "sequence": [
@@ -243,6 +244,7 @@
         // 8. Temple of Puna
         {
             "path": "triboss.tr2",
+            "script": "triboss.lua",
             "music_track": 30,
             "lara_outfit": "tr3_south_pacific",
             "sequence": [
@@ -337,6 +339,7 @@
         // 12. City
         {
             "path": "office.tr2",
+            "script": "office.lua",
             "music_track": 78,
             "lara_outfit": "tr3_catsuit",
             "weather_type": "rain",
