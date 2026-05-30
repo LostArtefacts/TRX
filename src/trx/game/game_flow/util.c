@@ -4,7 +4,6 @@
 #include <trx/game/items.h>
 #include <trx/game/objects.h>
 #include <trx/game/savegame.h>
-#include <trx/game/shell.h>
 
 static void M_DisableObject(const OBJECT_ID object_id)
 {
@@ -59,9 +58,4 @@ void GF_DisableObjectsIfNeeded(void)
 int32_t GF_BadGetLevelNum(void)
 {
     return GF_GetCurrentLevel()->num;
-}
-
-bool GF_BadIsMod(const char *const mod)
-{
-    return Shell_IsCurrentMod(mod);
 }
