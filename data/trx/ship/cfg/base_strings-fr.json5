@@ -53,6 +53,10 @@
             "ambiguous_input_3": "Entrée ambiguë : %s, %s, ...",
             "bilinear_filter_off": "\\{review}Filtre bilinéaire : désactivé",
             "bilinear_filter_on": "\\{review}Filtre bilinéaire : activé",
+            "burn_fail_already_off": "\\{review}Lara n'est pas actuellement en feu",
+            "burn_fail_already_on": "\\{review}Lara est déjà en feu",
+            "burn_off": "\\{review}Lara a été éteinte - ouf !",
+            "burn_on": "\\{review}Lara est maintenant en feu - aïe !",
             "command_bad_invocation": "Invocation invalide : %s",
             "command_bool": "activé, désactivé",
             "command_decimal": "[décimal]",
@@ -287,6 +291,9 @@
         "cmd": {
             "braid": {
                 "help": "Active la tresse de Lara.",
+            },
+            "burn": {
+                "help": "\\{review}Active ou désactive Lara en feu.",
             },
             "cheats": {
                 "help": "Active ou désactive les codes de triche.",

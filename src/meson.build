@@ -182,6 +182,7 @@ common_sources = [
   'trx/game/clock/turbo.c',
   'trx/game/collision/common.c',
   'trx/game/collision/los.c',
+  'trx/game/console/cmd/burn.c',
   'trx/game/console/cmd/clear.c',
   'trx/game/console/cmd/config.c',
   'trx/game/console/cmd/debug.c',
