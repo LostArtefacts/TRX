@@ -23,6 +23,11 @@ order: 3
    Lua or regular pickup triggers instead; refer to the OG TR3 level scripts for
    reference.
 
+4. **Update side flame emitters**:
+   `O_FLAME_EMITTER_SIDE` instances will no longer have a hard-coded 4 second
+   interval in level sequence 7; all instances will default to 2 seconds. Refer
+   to the Madubu Gorge Lua script to alter the interval.
+
 ### Version 1.6 to 1.7
 
 1. **Update Lua item maximum HP access**:

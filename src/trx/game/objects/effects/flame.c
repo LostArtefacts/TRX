@@ -282,13 +282,7 @@ static void M_TR3_ControlSide(
             effect->flag1 -= 2;
         } else {
             effect->flag1 = 128;
-
-            // TODO: do not hardcode this
-            if (GF_BadGetLevelNum() == 7) {
-                effect->flag2 = 120;
-            } else {
-                effect->flag2 = 60;
-            }
+            effect->flag2 = effect->speed;
         }
     }
 }
