@@ -15,8 +15,9 @@ bool UI_EnemyHealthBar(void)
         return false;
     }
     const bool is_ally = Creature_IsAlly(target);
+    const LARA_INFO *const lara = Lara_GetLaraInfo();
 
-    bool show = g_Config.ui.show_bars;
+    bool show = g_Config.ui.show_bars && lara->gun_status == LGS_READY;
     switch (g_Config.ui.enemy_health_bar.show_mode) {
     case BAR_SHOW_MODE_NEVER:
         show &= false;
