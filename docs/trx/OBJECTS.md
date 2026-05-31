@@ -481,6 +481,9 @@ This page lists documented moveable object properties.
 ### `288` O_RAPTOR
 - `max_hit_points = 90` — Maximum hit points.
 
+### `318` O_STROBE_LIGHT
+- `requires_alarm_active = false` — Require an alert event before the light activates.
+
 ### `333` O_FLAME_EMITTER_SIDE
 - `interval = 2` — Interval between flame bursts, in seconds.
 

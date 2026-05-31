@@ -2,7 +2,6 @@
 #include <trx/core/json/util/write_io.h>
 #include <trx/core/math.h>
 #include <trx/game/collision/los.h>
-#include <trx/game/game_flow.h>
 #include <trx/game/objects.h>
 #include <trx/game/output.h>
 #include <trx/game/sound.h>
@@ -11,6 +10,7 @@
 typedef struct {
     int32_t life;
     bool alarm_active;
+    bool requires_alarm_active;
 } M_PRIV;
 
 static void M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
@@ -25,6 +25,17 @@ static void M_SavePriv(const ITEM *const item, JSON_WRITE_IO *const io)
     const M_PRIV *const p = item->priv;
     JSONW_WRITE(io, "life", p->life);
     JSONW_WRITE(io, "alarm_active", p->alarm_active);
+}
+
+static void M_Initialise(const int16_t item_num)
+{
+    ITEM *const item = Item_Get(item_num);
+    M_PRIV *const p = item->priv;
+    OBJECT_PROPERTY_VALUE requires_alarm_active = {};
+    if (ObjectProperty_GetItemValue(
+            item, "requires_alarm_active", &requires_alarm_active)) {
+        p->requires_alarm_active = requires_alarm_active.as_bool;
+    }
 }
 
 void M_TriggerAlertLight(
@@ -56,7 +67,7 @@ static void M_Control(const int16_t item_num)
         return;
     }
 
-    if (GF_BadGetLevelNum() == 15 && !p->alarm_active) {
+    if (p->requires_alarm_active && !p->alarm_active) {
         return;
     }
 
@@ -105,9 +116,15 @@ static void M_Setup(OBJECT *const obj)
     obj->priv_size = sizeof(M_PRIV);
     obj->priv_load_func = M_LoadPriv;
     obj->priv_save_func = M_SavePriv;
+    obj->initialise_func = M_Initialise;
     obj->control_func = M_Control;
     obj->event_func = M_HandleEvent;
     obj->save_flags = true;
+    OBJECT_PROPERTIES(
+        obj,
+        OBJECT_PROPERTY_BOOL(
+            "requires_alarm_active", false,
+            "Require an alert event before the light activates."));
 }
 
 REGISTER_OBJECT(O_STROBE_LIGHT, M_Setup)
