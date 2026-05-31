@@ -12,9 +12,11 @@
 - fixed Lara wading in shallower water compared to OG (#5574, regression from 1.3)
 
 **TR3**:
+- added the ability to define the flame interval of `O_FLAME_EMITTER_SIDE` objects
 - removed the hard-coded end-level behaviour when picking up artefacts in specific levels and moved to Lua instead
 - removed hard-coded collision differences for `O_ORCA` in `Sleeping with the Fishes` by using `O_DOLPHIN` instead
 - removed hard-coded level sequence checks to keep Lara burning when she enters a lava swamp room
+- removed the hard-coded longer interval on `O_FLAME_EMITTER_SIDE` in level sequence 7 and moved to Lua instead
 
 
 

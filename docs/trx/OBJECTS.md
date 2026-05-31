@@ -481,6 +481,9 @@ This page lists documented moveable object properties.
 ### `288` O_RAPTOR
 - `max_hit_points = 90` — Maximum hit points.
 
+### `333` O_FLAME_EMITTER_SIDE
+- `interval = 2` — Interval between flame bursts, in seconds.
+
 ### `338` O_PIRAHNAS
 - `range = ((XYZ_32) { 1, 1, 1 })` — Swim range, in quarter tiles.
 

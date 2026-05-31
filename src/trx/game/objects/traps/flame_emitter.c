@@ -1,12 +1,15 @@
 #include <trx/config.h>
 #include <trx/core/json/util/read_io.h>
 #include <trx/core/json/util/write_io.h>
+#include <trx/game/const.h>
 #include <trx/game/effects.h>
 #include <trx/game/objects.h>
 #include <trx/game/objects/effects/flame.h>
 #include <trx/game/random.h>
 #include <trx/game/sound.h>
 #include <trx/version.h>
+
+#define M_DEFAULT_SIDE_INTERVAL 2.0
 
 typedef struct {
     int16_t effect_num;
@@ -65,6 +68,17 @@ static void M_Initialise(const int16_t item_num)
     p->effect_num = NO_EFFECT;
 }
 
+static int32_t M_GetSideDuration(const ITEM *const item)
+{
+    OBJECT_PROPERTY_VALUE value = {};
+    if (!ObjectProperty_GetItemValue(item, "interval", &value)
+        || value.type != OBJECT_PROPERTY_TYPE_DOUBLE
+        || value.as_double <= 0.0) {
+        return M_DEFAULT_SIDE_INTERVAL * LOGIC_FPS;
+    }
+    return value.as_double * LOGIC_FPS;
+}
+
 static void M_ControlCommon(
     const int16_t item_num, const FLAME_INIT_FUNC init_func)
 {
@@ -74,6 +88,9 @@ static void M_ControlCommon(
         M_KillIfAlive(item);
     } else if (p->effect_num == NO_EFFECT) {
         p->effect_num = M_Spawn(item, init_func);
+    } else if (item->object_id == O_FLAME_EMITTER_SIDE) {
+        EFFECT *const effect = Effect_Get(p->effect_num);
+        effect->speed = M_GetSideDuration(item);
     }
 }
 
@@ -108,6 +125,7 @@ static void M_InitSide(EFFECT *const effect, const ITEM *const item)
     effect->frame_num = FLAME_SIDE;
     effect->flag1 = 0;
     effect->flag2 = 0;
+    effect->speed = M_GetSideDuration(item);
 }
 
 static void M_Control(const int16_t item_num)
@@ -161,6 +179,11 @@ static void M_SetupJet(OBJECT *const obj)
 static void M_SetupSide(OBJECT *const obj)
 {
     M_SetupCommon(obj, M_ControlSide);
+    OBJECT_PROPERTIES(
+        obj,
+        OBJECT_PROPERTY_DOUBLE(
+            "interval", M_DEFAULT_SIDE_INTERVAL,
+            "Interval between flame bursts, in seconds."));
 }
 
 REGISTER_OBJECT(O_FLAME_EMITTER, M_Setup)
