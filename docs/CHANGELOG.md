@@ -2,6 +2,7 @@
 - added French translation (thanks to Wronschien)
 - added an option for Lara to pick items up more quickly, similar to TR4+ (#1365)
 - added `O_DOLPHIN`, which behaves in the same way as `O_ORCA` but has collision underwater
+- added a new console command - `/burn` - to toggle whether or not Lara is on fire
 - removed hard-coded fish and piranha setup and moved to Lua instead
 - removed the limit of at most 8 fish/piranha shoals per level
 - removed hard-coded small Cobra radius setup and moved to Lua instead

@@ -53,6 +53,10 @@
             "ambiguous_input_3": "Cur-a-steach neo-shoilleir: %s, %s, ...",
             "bilinear_filter_off": "Criathradh teacsdaire: dheth",
             "bilinear_filter_on": "Criathradh teacsdaire: air",
+            "burn_fail_already_off": "Chan eil Lara na teine an-dràsta",
+            "burn_fail_already_on": "Tha Lara mu thràth na teine",
+            "burn_off": "Chaidh Lara air a chur às - phiù!",
+            "burn_on": "Tha Lara a-nis na teine - o mo chreach!",
             "command_bad_invocation": "Iarrtas mì-dhligheach: %s",
             "command_bool": "air, dheth",
             "command_decimal": "[deicheach]",
@@ -287,6 +291,9 @@
         "cmd": {
             "braid": {
                 "help": "Tionndaidheas feaman-fuilt Lara.",
+            },
+            "burn": {
+                "help": "Tionndaidheas mar a bheil Lara na teine.",
             },
             "cheats": {
                 "help": "Tionndaidheas cleasan a' gheama.",

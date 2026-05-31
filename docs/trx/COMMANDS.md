@@ -46,6 +46,11 @@ whichever key you have bound, and not include it as part of the command itself.
 - `/heal`  
   Tough day, Lara? Heals our girl back to full health.
 
+- `/burn`
+- `/burn on`
+- `/burn off`
+  Displays a remarkable disregard for basic fire safety. Toggles whether or not Lara is on fire.
+
 - `/give {item_name}`  
   `/give {num} {item_name}`  
   `/give all`  
