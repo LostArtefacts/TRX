@@ -16,7 +16,7 @@
             "object_name_fmt": "\\{color 5}%s",
         },
         "misc": {
-            "empty_slot_fmt": "- EMPLACEMENT VIDE -",
+            "empty_slot_fmt": "- Emplacement vide -",
         },
         "overlay": {
             "item_count_fmt_pc": "%s",
@@ -33,7 +33,7 @@
     },
     "objects": {
         "large_medipack": {
-            "name": "Grand medipack",
+            "name": "Grande trousse de soins",
         },
         "quest_1": {
             "description": "",
@@ -52,7 +52,7 @@
             "name": "Dague d'Ora",
         },
         "small_medipack": {
-            "name": "Petit medipack",
+            "name": "Petite trousse de soins",
         }
     },
     "cutscenes": [
@@ -168,10 +168,10 @@
             "title": "Les quais de la Tamise",
             "objects": {
                 "key_1": {
-                    "name": "Flue Room Key",
+                    "name": "Clé de la salle du conduit",
                 },
                 "key_2": {
-                    "name": "Cathedral Key",
+                    "name": "Clé de la cathédrale",
                 }
             }
         },
