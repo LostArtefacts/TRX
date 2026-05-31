@@ -129,6 +129,17 @@ static void M_TR3_ControlBig(
     Sparks_TriggerStaticFlame(effect->pos, (Random_GetControl() & 0xF) + 96);
 }
 
+static bool M_IsLavaSwamp(const XYZ_32 pos, int16_t room_num)
+{
+    if (!Room_Get(room_num)->flags.swamp) {
+        return false;
+    }
+
+    const SECTOR *const sector =
+        Room_GetSector((XYZ_32) { pos.x, MAX_HEIGHT, pos.z }, &room_num);
+    return sector->is_death_sector;
+}
+
 static void M_TR3_ControlSmall(
     EFFECT *const effect, const int32_t time4, const int32_t rnd)
 {
@@ -197,9 +208,7 @@ static void M_TR3_ControlSmall(
 
     const int32_t wh = Room_GetWaterHeight(effect->pos, effect->room_num);
     if (wh == NO_HEIGHT || effect->pos.y <= wh
-        || (Room_Get(effect->room_num)->flags.swamp
-            && (GF_BadGetLevelNum() == 4 || GF_BadGetLevelNum() == 18
-                || GF_BadGetLevelNum() == 19))) {
+        || M_IsLavaSwamp(effect->pos, effect->room_num)) {
         Sound_Effect(SFX_LOOP_FOR_SMALL_FIRES, &effect->pos, SPM_NORMAL);
         Lara_TakeDamage(M_ON_FIRE_DAMAGE, true);
     } else {

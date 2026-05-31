@@ -13,6 +13,7 @@
 **TR3**:
 - removed the hard-coded end-level behaviour when picking up artefacts in specific levels and moved to Lua instead
 - removed hard-coded collision differences for `O_ORCA` in `Sleeping with the Fishes` by using `O_DOLPHIN` instead
+- removed hard-coded level sequence checks to keep Lara burning when she enters a lava swamp room
 
 
 
