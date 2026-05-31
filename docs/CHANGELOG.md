@@ -7,6 +7,7 @@
 - removed the limit of at most 8 fish/piranha shoals per level
 - removed hard-coded small Cobra radius setup and moved to Lua instead
 - fixed a crash with old custom levels that have sectors pointing to invalid floor data (#5568)
+- fixed the enemy health bar disappearing later than Lara's own bar when holstering weapons (regression from Tomb1Main 0.2)
 
 **TR2**:
 - fixed Lara wading in shallower water compared to OG (#5574, regression from 1.3)
