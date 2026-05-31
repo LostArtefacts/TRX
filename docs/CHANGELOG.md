@@ -23,6 +23,7 @@
 - removed hard-coded collision differences for `O_ORCA` in `Sleeping with the Fishes` by using `O_DOLPHIN` instead
 - removed hard-coded level sequence checks to keep Lara burning when she enters a lava swamp room
 - removed the hard-coded longer interval on `O_FLAME_EMITTER_SIDE` in level sequence 7 and moved to Lua instead
+- removed the hard-coded strobe light alarm behaviour in Area 51 and moved it to Lua instead
 - fixed texture bleeding and missized textures on piranhas and tropical fish
 
 
