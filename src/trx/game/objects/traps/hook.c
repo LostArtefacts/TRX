@@ -2,10 +2,21 @@
 #include <trx/game/lara.h>
 #include <trx/game/lara/common.h>
 #include <trx/game/objects/common.h>
+#include <trx/game/objects/property.h>
 #include <trx/game/objects/traps/common.h>
 #include <trx/game/spawn.h>
 
-#define M_DAMAGE 50
+#define M_DEFAULT_DAMAGE 50
+
+static int32_t M_GetDamage(const ITEM *const item)
+{
+    OBJECT_PROPERTY_VALUE damage = {};
+    if (ObjectProperty_GetItemValue(item, "damage", &damage)) {
+        return damage.as_int;
+    }
+
+    return M_DEFAULT_DAMAGE;
+}
 
 static void M_Control(const int16_t item_num)
 {
@@ -22,7 +33,7 @@ static void M_Control(const int16_t item_num)
     item->enable_interpolation = true;
     if (item->touch_bits != 0) {
         const ITEM *const lara_item = Lara_GetItem();
-        Lara_TakeDamage(M_DAMAGE, true);
+        Lara_TakeDamage(M_GetDamage(item), true);
         Spawn_BloodBath(
             lara_item->pos.x, lara_item->pos.y - WALL_L / 2, lara_item->pos.z,
             lara_item->speed, lara_item->rot.y, lara_item->room_num, 3);
@@ -45,6 +56,11 @@ static void M_Setup(OBJECT *const obj)
     obj->handle_save_func = M_HandleSave;
     obj->save_flags = true;
     obj->save_anim = true;
+    OBJECT_PROPERTIES(
+        obj,
+        OBJECT_PROPERTY_INT(
+            "damage", M_DEFAULT_DAMAGE,
+            "Damage dealt while Lara is touching the hook."));
 }
 
 REGISTER_OBJECT(O_HOOK, M_Setup)

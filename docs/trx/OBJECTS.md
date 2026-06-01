@@ -247,6 +247,9 @@ This page lists documented moveable object properties.
 ### `76` O_PROPELLER_1
 - `damage = 200` — Damage dealt while Lara is touching the propeller.
 
+### `78` O_HOOK
+- `damage = 50` — Damage dealt while Lara is touching the hook.
+
 ### `79` O_FALLING_CEILING_1
 - `damage = 300` — Damage dealt while Lara is touching the falling ceiling.
 
@@ -477,6 +480,9 @@ This page lists documented moveable object properties.
 ### `90` O_POISON_DART
 - `damage = 25` — Damage dealt on hit.
 - `poison = true` — Apply poison buildup in addition to hit damage.
+
+### `106` O_HOOK
+- `damage = 50` — Damage dealt while Lara is touching the hook.
 
 ### `107` O_FALLING_CEILING_1
 - `damage = 300` — Damage dealt while Lara is touching the falling ceiling.
