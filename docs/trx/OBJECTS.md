@@ -96,6 +96,10 @@ This page lists documented moveable object properties.
 ### `34` O_TORSO
 - `max_hit_points = 500` — Maximum hit points.
 
+### `39` O_DART
+- `damage = 50` — Damage dealt on hit.
+- `poison = false` — Apply poison buildup in addition to hit damage.
+
 ### `43` O_DAMOCLES_SWORD
 - `damage = 100` — Damage dealt when Lara is struck by the falling Damocles sword.
 
@@ -229,6 +233,10 @@ This page lists documented moveable object properties.
 
 ### `54` O_MONK_2
 - `max_hit_points = 30` — Maximum hit points.
+
+### `61` O_DISC
+- `damage = 50` — Damage dealt on hit.
+- `poison = false` — Apply poison buildup in addition to hit damage.
 
 ### `76` O_PROPELLER_1
 - `damage = 200` — Damage dealt while Lara is touching the propeller.
@@ -456,6 +464,10 @@ This page lists documented moveable object properties.
 
 ### `82` O_AI_X3
 - `max_hit_points = 0` — Maximum hit points.
+
+### `90` O_POISON_DART
+- `damage = 25` — Damage dealt on hit.
+- `poison = true` — Apply poison buildup in addition to hit damage.
 
 ### `111` O_BLADE
 - `damage = 100` — Damage dealt while Lara is touching the blade trap.
