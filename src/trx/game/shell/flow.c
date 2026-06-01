@@ -23,6 +23,7 @@
 #include <trx/game/items/walkable.h>
 #include <trx/game/lara/pose.h>
 #include <trx/game/lara/skin.h>
+#include <trx/game/level.h>
 #include <trx/game/lua.h>
 #include <trx/game/music.h>
 #include <trx/game/objects.h>
@@ -473,7 +474,11 @@ int32_t Shell_Main(const SHELL_ARGS *const args)
         }
     }
 
+    if (Game_GetCurrentLevel() != nullptr) {
+        Level_Unload();
+    }
     Game_SetCurrentLevel(nullptr);
+    GF_SetCurrentLevel(nullptr);
 
     if (m_PendingMod != nullptr) {
         if (TestReplay_IsOpened()) {
