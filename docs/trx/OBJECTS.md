@@ -103,6 +103,9 @@ This page lists documented moveable object properties.
 ### `43` O_DAMOCLES_SWORD
 - `damage = 100` — Damage dealt when Lara is struck by the falling Damocles sword.
 
+### `46` O_LIGHTNING_EMITTER
+- `damage = 400` — Damage dealt when Lara is struck by the lightning emitter.
+
 ### `53` O_FALLING_CEILING_1
 - `damage = 300` — Damage dealt while Lara is touching the falling ceiling.
 

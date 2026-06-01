@@ -16,6 +16,7 @@
     - `O_HOOK`
     - `O_ICICLE`
     - `O_KILLER_STATUE`
+    - `O_LIGHTNING_EMITTER`
     - `O_PROPELLER_1`
     - `O_PROPELLER_2`
     - `O_PROPELLER_3`
