@@ -230,6 +230,9 @@ This page lists documented moveable object properties.
 ### `76` O_PROPELLER_1
 - `damage = 200` — Damage dealt while Lara is touching the propeller.
 
+### `81` O_BLADE
+- `damage = 100` — Damage dealt while Lara is touching the blade trap.
+
 ### `94` O_PROPELLER_2
 - `damage = 200` — Damage dealt while Lara is touching the propeller.
 
@@ -450,6 +453,9 @@ This page lists documented moveable object properties.
 
 ### `82` O_AI_X3
 - `max_hit_points = 0` — Maximum hit points.
+
+### `111` O_BLADE
+- `damage = 100` — Damage dealt while Lara is touching the blade trap.
 
 ### `119` O_PROPELLER_2
 - `damage = 200` — Damage dealt while Lara is touching the propeller.
