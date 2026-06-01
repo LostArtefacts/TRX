@@ -1,12 +1,23 @@
 #include <trx/config.h>
 #include <trx/game/lara.h>
+#include <trx/game/objects/property.h>
 #include <trx/game/random.h>
 #include <trx/game/sound.h>
 #include <trx/game/spawn.h>
 #include <trx/version.h>
 
 #define M_FALL_SPEED_LIMIT (g_TRVersion == 1 ? 0 : GRAVITY)
-#define M_DAMAGE 15
+#define M_DEFAULT_DAMAGE 15
+
+static int32_t M_GetDamage(const ITEM *const item)
+{
+    OBJECT_PROPERTY_VALUE damage = {};
+    if (ObjectProperty_GetItemValue(item, "damage", &damage)) {
+        return damage.as_int;
+    }
+
+    return M_DEFAULT_DAMAGE;
+}
 
 static void M_Collision(
     const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
@@ -34,7 +45,7 @@ static void M_Collision(
         return;
     }
 
-    Lara_TakeDamage(M_DAMAGE, false);
+    Lara_TakeDamage(M_GetDamage(item), false);
     for (int32_t i = 0; i < blood_spawn_count; i++) {
         const XYZ_32 pos = {
             .x = lara_item->pos.x + (Random_GetControl() - 0x4000) / 256,
@@ -68,8 +79,15 @@ static void M_Setup(OBJECT *const obj)
 {
     obj->collision_func = M_Collision;
     obj->control_func = M_Control;
+
     obj->save_anim = true;
     obj->save_flags = true;
+
+    OBJECT_PROPERTIES(
+        obj,
+        OBJECT_PROPERTY_INT(
+            "damage", M_DEFAULT_DAMAGE,
+            "Damage dealt when Lara hits the spikes without dying instantly."));
 }
 
 REGISTER_OBJECT(O_SPIKES, M_Setup)
