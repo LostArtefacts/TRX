@@ -1,10 +1,11 @@
 #include <trx/game/lara.h>
 #include <trx/game/objects/common.h>
+#include <trx/game/objects/property.h>
 #include <trx/game/objects/traps/common.h>
 #include <trx/game/rooms.h>
 #include <trx/game/sound.h>
 
-#define M_DAMAGE 200
+#define M_DEFAULT_DAMAGE 200
 
 typedef enum {
     // clang-format off
@@ -19,6 +20,16 @@ static void M_Reset(ITEM *const item)
 {
     item->mesh_bits = 0xFFFFFFFF;
     Trap_Reset(item);
+}
+
+static int32_t M_GetDamage(const ITEM *const item)
+{
+    OBJECT_PROPERTY_VALUE damage = {};
+    if (ObjectProperty_GetItemValue(item, "damage", &damage)) {
+        return damage.as_int;
+    }
+
+    return M_DEFAULT_DAMAGE;
 }
 
 static void M_Control(const int16_t item_num)
@@ -36,7 +47,7 @@ static void M_Control(const int16_t item_num)
             item->fall_speed = 50;
         }
         if (item->touch_bits != 0) {
-            Lara_TakeDamage(M_DAMAGE, true);
+            Lara_TakeDamage(M_GetDamage(item), true);
         }
         break;
 
@@ -76,6 +87,11 @@ static void M_Setup(OBJECT *const obj)
     obj->save_position = true;
     obj->save_flags = true;
     obj->save_anim = true;
+    OBJECT_PROPERTIES(
+        obj,
+        OBJECT_PROPERTY_INT(
+            "damage", M_DEFAULT_DAMAGE,
+            "Damage dealt when Lara is struck by the falling icicle."));
 }
 
 REGISTER_OBJECT(O_ICICLE, M_Setup)

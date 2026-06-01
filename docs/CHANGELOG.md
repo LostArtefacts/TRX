@@ -14,6 +14,7 @@
     - `O_FALLING_CEILING_1`
     - `O_FALLING_CEILING_2`
     - `O_HOOK`
+    - `O_ICICLE`
     - `O_PROPELLER_1`
     - `O_PROPELLER_2`
     - `O_PROPELLER_3`
