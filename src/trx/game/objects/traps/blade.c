@@ -1,41 +1,40 @@
 #include <trx/game/lara.h>
 #include <trx/game/objects/common.h>
+#include <trx/game/objects/property.h>
 #include <trx/game/spawn.h>
 
 // clang-format off
-#define BLADE_CUT_DAMAGE 100
-#define BLADE_TOUCH_BITS 0b00000010 // = 2
+#define M_DEFAULT_DAMAGE 100
+#define M_TOUCH_BITS 0b00000010 // = 2
 // clang-format on
 
 typedef enum {
-    // clang-format off
-    BLADE_STATE_EMPTY = 0,
-    BLADE_STATE_STOP  = 1,
-    BLADE_STATE_CUT   = 2,
-    // clang-format on
-} BLADE_STATE;
+    M_STATE_EMPTY,
+    M_STATE_STOP,
+    M_STATE_CUT,
+} M_STATE;
 
 typedef enum {
     // clang-format off
-    BLADE_ANIM_RETURN   = 0,
-    BLADE_ANIM_FINISHED = 1,
-    BLADE_ANIM_SET      = 2,
-    BLADE_ANIM_CUT      = 3,
+    M_ANIM_RETURN   = 0,
+    M_ANIM_FINISHED = 1,
+    M_ANIM_SET      = 2,
+    M_ANIM_CUT      = 3,
     // clang-format on
-} BLADE_ANIM;
+} M_ANIM;
 
 static void M_Initialise(const int16_t item_num)
 {
     const OBJECT *const obj = Object_Get(O_BLADE);
     ITEM *const item = Item_Get(item_num);
-    Item_SwitchToAnim(item, BLADE_ANIM_SET, 0);
-    item->current_anim_state = BLADE_STATE_STOP;
+    Item_SwitchToAnim(item, M_ANIM_SET, 0);
+    item->current_anim_state = M_STATE_STOP;
 }
 
 static void M_Stop(ITEM *const item)
 {
     const int16_t anim_idx = Item_GetRelativeAnim(item);
-    if (anim_idx == BLADE_ANIM_CUT) {
+    if (anim_idx == M_ANIM_CUT) {
         const ANIM *const anim = Item_GetAnim(item);
         if (!Item_IsTriggerActive(item) && anim->jump_anim_num == item->anim_num
             && Item_TestFrameEqual(item, -1)) {
@@ -45,7 +44,17 @@ static void M_Stop(ITEM *const item)
         }
     }
 
-    item->goal_anim_state = BLADE_STATE_STOP;
+    item->goal_anim_state = M_STATE_STOP;
+}
+
+static int32_t M_GetDamage(const ITEM *const item)
+{
+    OBJECT_PROPERTY_VALUE damage = {};
+    if (ObjectProperty_GetItemValue(item, "damage", &damage)) {
+        return damage.as_int;
+    }
+
+    return M_DEFAULT_DAMAGE;
 }
 
 static void M_Control(const int16_t item_num)
@@ -53,15 +62,15 @@ static void M_Control(const int16_t item_num)
     ITEM *const item = Item_Get(item_num);
 
     if (Item_IsTriggerActive(item)
-        && item->current_anim_state == BLADE_STATE_STOP) {
-        item->goal_anim_state = BLADE_STATE_CUT;
+        && item->current_anim_state == M_STATE_STOP) {
+        item->goal_anim_state = M_STATE_CUT;
     } else {
         M_Stop(item);
     }
 
-    if ((item->touch_bits & BLADE_TOUCH_BITS) != 0
-        && item->current_anim_state == BLADE_STATE_CUT) {
-        Lara_TakeDamage(BLADE_CUT_DAMAGE, true);
+    if ((item->touch_bits & M_TOUCH_BITS) != 0
+        && item->current_anim_state == M_STATE_CUT) {
+        Lara_TakeDamage(M_GetDamage(item), true);
 
         const ITEM *const lara_item = Lara_GetItem();
         Spawn_BloodBath(
@@ -79,6 +88,11 @@ static void M_Setup(OBJECT *const obj)
     obj->collision_func = Object_Collision_Trap;
     obj->save_flags = true;
     obj->save_anim = true;
+    OBJECT_PROPERTIES(
+        obj,
+        OBJECT_PROPERTY_INT(
+            "damage", M_DEFAULT_DAMAGE,
+            "Damage dealt while Lara is touching the blade trap."));
 }
 
 REGISTER_OBJECT(O_BLADE, M_Setup)

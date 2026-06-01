@@ -6,7 +6,11 @@
 - removed hard-coded fish and piranha setup and moved to Lua instead
 - removed the limit of at most 8 fish/piranha shoals per level
 - removed hard-coded small Cobra radius setup and moved to Lua instead
-- removed the hard-coded propeller damage and moved it to Lua instead
+- removed the hard-coded damage and moved it to Lua instead for the following objects:
+    - `O_BLADE`
+    - `O_PROPELLER_1`
+    - `O_PROPELLER_2`
+    - `O_PROPELLER_3`
 - removed the limitation of only having two fish sprite types in any level
 - fixed a crash with old custom levels that have sectors pointing to invalid floor data (#5568)
 - fixed the enemy health bar disappearing later than Lara's own bar when holstering weapons (regression from Tomb1Main 0.2)
