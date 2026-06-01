@@ -35,6 +35,10 @@
     - `O_SPINNING_BLADE`
     - `O_SWINGING_AXE`
     - `O_TEETH_TRAP`
+- removed the hard-coded movement speed and moved it to Lua instead for the following objects:
+    - `O_CEILING_SPIKES`
+    - `O_LAVA_WEDGE`
+    - `O_SPIKE_WALL`
 - removed the limitation of only having two fish sprite types in any level
 - removed the limit of at most 8 fish/piranha shoals per level
 - fixed a crash with old custom levels that have sectors pointing to invalid floor data (#5568)
@@ -65,7 +69,9 @@
 - changed animated spikes sound effects in specific levels to use animation commands instead
 - changed animated spikes to work outside levels 5 and 7
 - changed `O_AI_PATROL_1` behavior in High Security Compound and Area 51 to be configurable; refer to migration docs
+- removed the hard-coded Aldwych drill speed override and moved it to Lua instead
 - fixed texture bleeding and missized textures on piranhas, tropical fish and bats
+- fixed the drill in the Shakespeare Cliff not rotating
 
 
 

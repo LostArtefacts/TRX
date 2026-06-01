@@ -300,6 +300,7 @@
         // 10. Aldwych
         {
             "path": "sewer.tr2",
+            "script": "aldwych.lua",
             "music_track": 74,
             "water_particles": true,
             "lara_outfit": "tr3_catsuit",
