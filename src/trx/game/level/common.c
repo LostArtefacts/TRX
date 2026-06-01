@@ -70,6 +70,7 @@ bool Level_Initialise(
             resume->stats.timer = 0;
             resume->stats.secret_flags = 0;
             resume->stats.secret_count = 0;
+            resume->stats.crystal_count = 0;
             resume->stats.pickup_count = 0;
             resume->stats.kill_count = 0;
             resume->stats.ammo_hits = 0;
