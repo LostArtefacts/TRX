@@ -8,12 +8,12 @@
 #include <trx/game/objects.h>
 #include <trx/game/output.h>
 #include <trx/game/output/sources/poly_fx.h>
-#include <trx/game/output/textures.h>
 #include <trx/game/random.h>
 #include <trx/game/sound.h>
 
 #define M_MAX_BATS 32
-#define M_BAT_SPRITE_OFFSET 12
+#define M_BODY_SPRITE_OFFSET 0
+#define M_WING_SPRITE_OFFSET 1
 
 typedef struct {
     XYZ_32 pos;
@@ -34,11 +34,16 @@ typedef struct {
 
     struct {
         bool prepared;
-        int32_t sprite_idx;
+        bool valid;
         OUTPUT_UVW tri_uvw[3][3];
         OUTPUT_TEXTURE_SIZE tri_tex_size[3][3];
     } draw;
 } M_PRIV;
+
+typedef struct {
+    uint8_t uv[3];
+    int32_t offset;
+} M_SPRITE;
 
 static const XYZ_16 m_BatMesh[5] = {
     { -192, 0, -48 },  { -192, 0, 48 },  { 96, 0, 0 },
@@ -52,10 +57,19 @@ static const uint8_t m_BatTriangles[3][3] = {
 };
 
 // TR3 UV mapping differs per triangle in the original bat GT3 setup.
-static const uint8_t m_BatTriangleSpriteCorners[3][3] = {
-    { 0, 2, 3 },
-    { 1, 0, 2 },
-    { 0, 1, 2 },
+static const M_SPRITE m_BatSprites[3] = {
+    {
+        .uv = { 0, 2, 3 },
+        .offset = M_BODY_SPRITE_OFFSET,
+    },
+    {
+        .uv = { 1, 0, 2 },
+        .offset = M_WING_SPRITE_OFFSET,
+    },
+    {
+        .uv = { 0, 1, 2 },
+        .offset = M_WING_SPRITE_OFFSET,
+    },
 };
 
 static int32_t M_GetWingYOffset(const int32_t corner, const uint8_t wing_y_off)
@@ -125,7 +139,7 @@ static void M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
     }
 
     p->draw.prepared = false;
-    p->draw.sprite_idx = -1;
+    p->draw.valid = false;
 }
 
 static void M_SavePriv(const ITEM *const item, JSON_WRITE_IO *const io)
@@ -160,31 +174,31 @@ static void M_PrepareDrawData(M_PRIV *const p)
         return;
     }
 
-    p->draw.sprite_idx = -1;
+    p->draw.prepared = true;
+    p->draw.valid = false;
 
-    const OBJECT *const explosion = Object_Get(O_EXPLOSION_1);
-    if (explosion == nullptr || !explosion->loaded) {
+    const OBJECT *const sprite_obj = Object_Get(O_BAT_GFX);
+    if (sprite_obj == nullptr || !sprite_obj->loaded
+        || sprite_obj->mesh_count == 0) {
         return;
     }
 
-    const int32_t sprite_idx = explosion->mesh_idx + M_BAT_SPRITE_OFFSET;
-    if (sprite_idx < 0 || sprite_idx >= Output_GetSpriteTextureCount()) {
-        return;
-    }
+    for (size_t i = 0; i < ARRAY_SIZE(m_BatSprites); i++) {
+        const M_SPRITE sprite = m_BatSprites[i];
+        if (sprite.offset < 0 || sprite.offset >= ABS(sprite_obj->mesh_count)) {
+            return;
+        }
 
-    p->draw.sprite_idx = sprite_idx;
-
-    for (size_t i = 0; i < ARRAY_SIZE(m_BatTriangleSpriteCorners); i++) {
-        for (size_t j = 0; j < ARRAY_SIZE(m_BatTriangleSpriteCorners[0]); j++) {
+        for (size_t j = 0; j < ARRAY_SIZE(sprite.uv); j++) {
             const int32_t uvw_idx = Output_Textures_GetSpriteUVWIndex(
-                sprite_idx, m_BatTriangleSpriteCorners[i][j]);
+                sprite_obj->mesh_idx + sprite.offset, sprite.uv[j]);
             p->draw.tri_uvw[i][j] = Output_Textures_GetUVW(uvw_idx);
             p->draw.tri_tex_size[i][j] =
                 Output_Textures_GetAtlasSize(uvw_idx / 4);
         }
     }
 
-    p->draw.prepared = true;
+    p->draw.valid = true;
 }
 
 static bool M_Draw(const ITEM *const item)
@@ -198,8 +212,7 @@ static bool M_Draw(const ITEM *const item)
         M_PrepareDrawData(p);
     }
 
-    if (p->draw.sprite_idx < 0
-        || p->draw.sprite_idx >= Output_GetSpriteTextureCount()) {
+    if (!p->draw.valid) {
         return false;
     }
 

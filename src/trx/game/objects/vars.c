@@ -600,6 +600,7 @@ const OBJECT_ID g_GameSpriteObjects[] = {
     O_FX_RESERVED,
     O_PIRAHNA_GFX,
     O_TROPICAL_FISH_GFX,
+    O_BAT_GFX,
 
     O_ALPHABET,
     O_ALPHABET_SMALL,
