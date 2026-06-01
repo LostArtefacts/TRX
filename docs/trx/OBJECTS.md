@@ -109,6 +109,9 @@ This page lists documented moveable object properties.
 - `damage = 50` — Damage dealt on hit.
 - `poison = false` — Apply poison buildup in addition to hit damage.
 
+### `42` O_TEETH_TRAP
+- `damage = 400` — Damage dealt while Lara is caught in the teeth trap.
+
 ### `43` O_DAMOCLES_SWORD
 - `damage = 100` — Damage dealt when Lara is struck by the falling Damocles sword.
 
@@ -264,6 +267,9 @@ This page lists documented moveable object properties.
 ### `61` O_DISC
 - `damage = 50` — Damage dealt on hit.
 - `poison = false` — Apply poison buildup in addition to hit damage.
+
+### `64` O_TEETH_TRAP
+- `damage = 400` — Damage dealt while Lara is caught in the teeth trap.
 
 ### `76` O_PROPELLER_1
 - `damage = 200` — Damage dealt while Lara is touching the propeller.
@@ -539,6 +545,9 @@ This page lists documented moveable object properties.
 ### `90` O_POISON_DART
 - `damage = 25` — Damage dealt on hit.
 - `poison = true` — Apply poison buildup in addition to hit damage.
+
+### `94` O_TEETH_TRAP
+- `damage = 400` — Damage dealt while Lara is caught in the teeth trap.
 
 ### `106` O_HOOK
 - `damage = 50` — Damage dealt while Lara is touching the hook.
