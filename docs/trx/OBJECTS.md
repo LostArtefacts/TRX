@@ -96,6 +96,9 @@ This page lists documented moveable object properties.
 ### `34` O_TORSO
 - `max_hit_points = 500` — Maximum hit points.
 
+### `36` O_SWINGING_AXE
+- `damage = 100` — Damage dealt while Lara is touching the swinging axe.
+
 ### `39` O_DART
 - `damage = 50` — Damage dealt on hit.
 - `poison = false` — Apply poison buildup in addition to hit damage.
@@ -243,6 +246,9 @@ This page lists documented moveable object properties.
 ### `54` O_MONK_2
 - `max_hit_points = 30` — Maximum hit points.
 
+### `58` O_PENDULUM_1
+- `damage = 50` — Damage dealt while Lara is touching the pendulum.
+
 ### `61` O_DISC
 - `damage = 50` — Damage dealt on hit.
 - `poison = false` — Apply poison buildup in addition to hit damage.
@@ -270,6 +276,9 @@ This page lists documented moveable object properties.
 
 ### `95` O_PROPELLER_3
 - `damage = 200` — Damage dealt while Lara is touching the propeller.
+
+### `96` O_PENDULUM_2
+- `damage = 50` — Damage dealt while Lara is touching the pendulum.
 
 ### `123` O_PLAYER_1
 - `max_hit_points = 1` — Maximum hit points.
@@ -486,6 +495,9 @@ This page lists documented moveable object properties.
 ### `82` O_AI_X3
 - `max_hit_points = 0` — Maximum hit points.
 
+### `86` O_PENDULUM_1
+- `damage = 50` — Damage dealt while Lara is touching the pendulum.
+
 ### `90` O_POISON_DART
 - `damage = 25` — Damage dealt on hit.
 - `poison = true` — Apply poison buildup in addition to hit damage.
@@ -507,6 +519,9 @@ This page lists documented moveable object properties.
 
 ### `120` O_PROPELLER_3
 - `damage = 200` — Damage dealt while Lara is touching the propeller.
+
+### `121` O_PENDULUM_2
+- `damage = 50` — Damage dealt while Lara is touching the pendulum.
 
 ### `148` O_PLAYER_1
 - `max_hit_points = 1` — Maximum hit points.
