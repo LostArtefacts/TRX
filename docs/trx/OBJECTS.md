@@ -274,6 +274,9 @@ This page lists documented moveable object properties.
 ### `79` O_FALLING_CEILING_1
 - `damage = 300` — Damage dealt while Lara is touching the falling ceiling.
 
+### `80` O_SPINNING_BLADE
+- `damage = 100` — Damage dealt while Lara is touching the spinning blade.
+
 ### `81` O_BLADE
 - `damage = 100` — Damage dealt while Lara is touching the blade trap.
 
@@ -542,6 +545,9 @@ This page lists documented moveable object properties.
 
 ### `107` O_FALLING_CEILING_1
 - `damage = 300` — Damage dealt while Lara is touching the falling ceiling.
+
+### `108` O_SPINNING_BLADE
+- `damage = 100` — Damage dealt while Lara is touching the spinning blade.
 
 ### `111` O_BLADE
 - `damage = 100` — Damage dealt while Lara is touching the blade trap.
