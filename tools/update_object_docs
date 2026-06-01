@@ -28,6 +28,31 @@ def strip_comments(source: str) -> str:
     return re.sub(r"/\*.*?\*/", "", source, flags=re.DOTALL)
 
 
+def parse_c_string(expr: str) -> str:
+    expr = expr.strip()
+    string_pattern = re.compile(r'"(?:\\.|[^"\\])*"')
+
+    parts: list[str] = []
+    pos = 0
+    while pos < len(expr):
+        while pos < len(expr) and expr[pos].isspace():
+            pos += 1
+        if pos >= len(expr):
+            break
+
+        match = string_pattern.match(expr, pos)
+        if match is None:
+            raise ValueError(f"unsupported C string expression: {expr!r}")
+
+        parts.append(ast.literal_eval(match.group(0)))
+        pos = match.end()
+
+    if not parts:
+        raise ValueError(f"expected C string literal: {expr!r}")
+
+    return "".join(parts)
+
+
 def read_local_constants(source: str) -> dict[str, str]:
     constants: dict[str, str] = {
         "NO_ITEM": "-1",
@@ -172,9 +197,9 @@ def iter_object_property_declarations(source: str) -> list[PropertyInfo]:
             name, value, description = parts
             declarations.append(
                 {
-                    "name": ast.literal_eval(name),
+                    "name": parse_c_string(name),
                     "value": " ".join(value.split()),
-                    "description": ast.literal_eval(description),
+                    "description": parse_c_string(description),
                 }
             )
         pos = idx

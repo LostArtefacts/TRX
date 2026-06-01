@@ -3,6 +3,7 @@
 #include <trx/game/game_buf.h>
 #include <trx/game/lara.h>
 #include <trx/game/objects.h>
+#include <trx/game/objects/property.h>
 #include <trx/game/objects/traps/common.h>
 #include <trx/game/random.h>
 #include <trx/game/rooms.h>
@@ -10,7 +11,7 @@
 #include <trx/game/spawn.h>
 #include <trx/version.h>
 
-#define M_DAMAGE_AIR 100
+#define M_DEFAULT_AIR_DAMAGE 100
 #define M_SHAKE_RANGE (WALL_L * 10) // = 10240
 #define M_CLEARANCE_UNIT (STEP_L * 3) // = 768
 
@@ -40,6 +41,16 @@ static void M_Roll(ITEM *const item)
             g_Camera.bounce = 40 * (dist - M_SHAKE_RANGE) / M_SHAKE_RANGE;
         }
     }
+}
+
+static int32_t M_GetAirDamage(const ITEM *const item)
+{
+    OBJECT_PROPERTY_VALUE damage = {};
+    if (ObjectProperty_GetItemValue(item, "air_damage", &damage)) {
+        return damage.as_int;
+    }
+
+    return M_DEFAULT_AIR_DAMAGE;
 }
 
 static bool M_TestStop(const ITEM *const item)
@@ -194,7 +205,7 @@ static void M_Collision(
         if (coll->enable_baddie_push) {
             Lara_Col_ItemPush(item, coll, coll->enable_hit, true);
         }
-        Lara_TakeDamage(M_DAMAGE_AIR, false);
+        Lara_TakeDamage(M_GetAirDamage(item), false);
 
         // TODO: handle overflows
         const int32_t dx = lara_item->pos.x - item->pos.x;
@@ -250,6 +261,12 @@ static void M_Setup(OBJECT *const obj)
     obj->save_flags = true;
     obj->save_anim = true;
     obj->load_floor = true;
+    OBJECT_PROPERTIES(
+        obj,
+        OBJECT_PROPERTY_INT(
+            "air_damage", M_DEFAULT_AIR_DAMAGE,
+            "Damage dealt when Lara is clipped by a moving boulder without "
+            "being crushed."));
 }
 
 REGISTER_OBJECT(O_ROLLING_BALL_1, M_Setup)

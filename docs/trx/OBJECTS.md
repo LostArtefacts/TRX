@@ -99,6 +99,9 @@ This page lists documented moveable object properties.
 ### `36` O_SWINGING_AXE
 - `damage = 100` — Damage dealt while Lara is touching the swinging axe.
 
+### `38` O_ROLLING_BALL_1
+- `air_damage = 100` — Damage dealt when Lara is clipped by a moving boulder without being crushed.
+
 ### `39` O_DART
 - `damage = 50` — Damage dealt on hit.
 - `poison = false` — Apply poison buildup in addition to hit damage.
@@ -249,6 +252,9 @@ This page lists documented moveable object properties.
 ### `58` O_PENDULUM_1
 - `damage = 50` — Damage dealt while Lara is touching the pendulum.
 
+### `60` O_ROLLING_BALL_1
+- `air_damage = 100` — Damage dealt when Lara is clipped by a moving boulder without being crushed.
+
 ### `61` O_DISC
 - `damage = 50` — Damage dealt on hit.
 - `poison = false` — Apply poison buildup in addition to hit damage.
@@ -268,6 +274,9 @@ This page lists documented moveable object properties.
 ### `82` O_KILLER_STATUE
 - `damage = 20` — Damage dealt while Lara is struck by the killer statue.
 
+### `83` O_ROLLING_BALL_2
+- `air_damage = 100` — Damage dealt when Lara is clipped by a moving boulder without being crushed.
+
 ### `84` O_ICICLE
 - `damage = 200` — Damage dealt when Lara is struck by the falling icicle.
 
@@ -279,6 +288,9 @@ This page lists documented moveable object properties.
 
 ### `96` O_PENDULUM_2
 - `damage = 50` — Damage dealt while Lara is touching the pendulum.
+
+### `101` O_ROLLING_BALL_3
+- `air_damage = 100` — Damage dealt when Lara is clipped by a moving boulder without being crushed.
 
 ### `123` O_PLAYER_1
 - `max_hit_points = 1` — Maximum hit points.
@@ -498,6 +510,12 @@ This page lists documented moveable object properties.
 ### `86` O_PENDULUM_1
 - `damage = 50` — Damage dealt while Lara is touching the pendulum.
 
+### `88` O_ROLLING_BALL_1
+- `air_damage = 100` — Damage dealt when Lara is clipped by a moving boulder without being crushed.
+
+### `89` O_ROLLING_BALL_4
+- `air_damage = 100` — Damage dealt when Lara is clipped by a moving boulder without being crushed.
+
 ### `90` O_POISON_DART
 - `damage = 25` — Damage dealt on hit.
 - `poison = true` — Apply poison buildup in addition to hit damage.
@@ -511,6 +529,9 @@ This page lists documented moveable object properties.
 ### `111` O_BLADE
 - `damage = 100` — Damage dealt while Lara is touching the blade trap.
 
+### `112` O_ROLLING_BALL_2
+- `air_damage = 100` — Damage dealt when Lara is clipped by a moving boulder without being crushed.
+
 ### `113` O_ICICLE
 - `damage = 200` — Damage dealt when Lara is struck by the falling icicle.
 
@@ -522,6 +543,9 @@ This page lists documented moveable object properties.
 
 ### `121` O_PENDULUM_2
 - `damage = 50` — Damage dealt while Lara is touching the pendulum.
+
+### `126` O_ROLLING_BALL_3
+- `air_damage = 100` — Damage dealt when Lara is clipped by a moving boulder without being crushed.
 
 ### `148` O_PLAYER_1
 - `max_hit_points = 1` — Maximum hit points.
