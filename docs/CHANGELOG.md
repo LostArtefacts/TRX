@@ -9,6 +9,7 @@
 - removed hard-coded small Cobra radius setup and moved to Lua instead
 - removed the hard-coded damage and moved it to Lua instead for the following objects:
     - `O_BLADE`
+    - `O_CEILING_SPIKES`
     - `O_DAMOCLES_SWORD`
     - `O_DART`
     - `O_FALLING_CEILING_1`
