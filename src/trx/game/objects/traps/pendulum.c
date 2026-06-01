@@ -4,6 +4,7 @@
 #include <trx/game/effects.h>
 #include <trx/game/lara.h>
 #include <trx/game/objects/common.h>
+#include <trx/game/objects/property.h>
 #include <trx/game/objects/traps/common.h>
 #include <trx/game/output.h>
 #include <trx/game/random.h>
@@ -14,10 +15,10 @@
 #include <trx/version.h>
 
 // clang-format off
-#define M_AXE_DAMAGE      100
-#define M_PENDULUM_DAMAGE 50
-#define M_MAX_FIRE_DIST   (WALL_L * 16) // = 16384
-#define M_FIRE_FALLOFF    11
+#define M_DEFAULT_AXE_DAMAGE      100
+#define M_DEFAULT_PENDULUM_DAMAGE 50
+#define M_MAX_FIRE_DIST           (WALL_L * 16) // = 16384
+#define M_FIRE_FALLOFF            11
 // clang-format on
 
 typedef struct {
@@ -174,9 +175,15 @@ static void M_KillFireEffect(ITEM *const item)
     }
 }
 
-static inline int16_t M_GetDamage(const OBJECT_ID obj_id)
+static int32_t M_GetDamage(const ITEM *const item)
 {
-    return obj_id == O_SWINGING_AXE ? M_AXE_DAMAGE : M_PENDULUM_DAMAGE;
+    OBJECT_PROPERTY_VALUE damage = {};
+    if (ObjectProperty_GetItemValue(item, "damage", &damage)) {
+        return damage.as_int;
+    }
+
+    return item->object_id == O_SWINGING_AXE ? M_DEFAULT_AXE_DAMAGE
+                                             : M_DEFAULT_PENDULUM_DAMAGE;
 }
 
 static void M_Control(const int16_t item_num)
@@ -217,8 +224,7 @@ static void M_Control(const int16_t item_num)
     }
 
     if (working && item->touch_bits != 0) {
-        const int16_t damage = M_GetDamage(item->object_id);
-        Lara_TakeDamage(damage, true);
+        Lara_TakeDamage(M_GetDamage(item), true);
 
         if (p->on_fire) {
             Lara_CatchFire();
@@ -275,12 +281,22 @@ static void M_SetupAxe(OBJECT *const obj)
 {
     M_SetupCommon(obj);
     obj->collision_func = Object_Collision_Trap;
+    OBJECT_PROPERTIES(
+        obj,
+        OBJECT_PROPERTY_INT(
+            "damage", M_DEFAULT_AXE_DAMAGE,
+            "Damage dealt while Lara is touching the swinging axe."));
 }
 
 static void M_SetupPendulum(OBJECT *const obj)
 {
     M_SetupCommon(obj);
     obj->collision_func = Object_Collision;
+    OBJECT_PROPERTIES(
+        obj,
+        OBJECT_PROPERTY_INT(
+            "damage", M_DEFAULT_PENDULUM_DAMAGE,
+            "Damage dealt while Lara is touching the pendulum."));
 }
 
 REGISTER_OBJECT(O_SWINGING_AXE, M_SetupAxe)

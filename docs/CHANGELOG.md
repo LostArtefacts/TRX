@@ -17,9 +17,12 @@
     - `O_ICICLE`
     - `O_KILLER_STATUE`
     - `O_LIGHTNING_EMITTER`
+    - `O_PENDULUM_1`
+    - `O_PENDULUM_2`
     - `O_PROPELLER_1`
     - `O_PROPELLER_2`
     - `O_PROPELLER_3`
+    - `O_SWINGING_AXE`
 - removed the limitation of only having two fish sprite types in any level
 - fixed a crash with old custom levels that have sectors pointing to invalid floor data (#5568)
 - fixed the enemy health bar disappearing later than Lara's own bar when holstering weapons (regression from Tomb1Main 0.2)
