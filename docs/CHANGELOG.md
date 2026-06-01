@@ -38,6 +38,7 @@
 - removed the limitation of only having two fish sprite types in any level
 - fixed a crash with old custom levels that have sectors pointing to invalid floor data (#5568)
 - fixed the enemy health bar disappearing later than Lara's own bar when holstering weapons (regression from Tomb1Main 0.2)
+- fixed a very rare crash when loading saves from console during a pause or photo mode
 
 **TR1**:
 - added support for fish and piranhas without sacrificing explosion sprites (refer to notes in migration guide) (#4358)
