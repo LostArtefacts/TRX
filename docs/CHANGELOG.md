@@ -8,6 +8,7 @@
 - removed hard-coded small Cobra radius setup and moved to Lua instead
 - removed the hard-coded damage and moved it to Lua instead for the following objects:
     - `O_BLADE`
+    - `O_DAMOCLES_SWORD`
     - `O_PROPELLER_1`
     - `O_PROPELLER_2`
     - `O_PROPELLER_3`

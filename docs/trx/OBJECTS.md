@@ -96,6 +96,9 @@ This page lists documented moveable object properties.
 ### `34` O_TORSO
 - `max_hit_points = 500` — Maximum hit points.
 
+### `43` O_DAMOCLES_SWORD
+- `damage = 100` — Damage dealt when Lara is struck by the falling Damocles sword.
+
 ### `77` O_PLAYER_1
 - `max_hit_points = 1` — Maximum hit points.
 
