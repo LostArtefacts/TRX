@@ -32,6 +32,7 @@
     - `O_SENTRY_GUN`
     - `O_SPIKE_WALL`
     - `O_SPIKES`
+    - `O_SPINNING_BLADE`
     - `O_SWINGING_AXE`
 - removed the limitation of only having two fish sprite types in any level
 - fixed a crash with old custom levels that have sectors pointing to invalid floor data (#5568)
