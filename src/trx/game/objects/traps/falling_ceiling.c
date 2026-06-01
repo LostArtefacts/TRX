@@ -1,8 +1,19 @@
 #include <trx/game/lara.h>
+#include <trx/game/objects/property.h>
 #include <trx/game/objects/traps/common.h>
 #include <trx/game/rooms.h>
 
-#define M_DAMAGE 300
+#define M_DEFAULT_DAMAGE 300
+
+static int32_t M_GetDamage(const ITEM *const item)
+{
+    OBJECT_PROPERTY_VALUE damage = {};
+    if (ObjectProperty_GetItemValue(item, "damage", &damage)) {
+        return damage.as_int;
+    }
+
+    return M_DEFAULT_DAMAGE;
+}
 
 static void M_Control(const int16_t item_num)
 {
@@ -13,7 +24,7 @@ static void M_Control(const int16_t item_num)
         item->gravity = true;
     } else if (
         item->current_anim_state == TRAP_ACTIVATE && item->touch_bits != 0) {
-        Lara_TakeDamage(M_DAMAGE, true);
+        Lara_TakeDamage(M_GetDamage(item), true);
     }
 
     Item_Animate(item);
@@ -47,6 +58,11 @@ static void M_Setup(OBJECT *const obj)
     obj->save_position = true;
     obj->save_anim = true;
     obj->save_flags = true;
+    OBJECT_PROPERTIES(
+        obj,
+        OBJECT_PROPERTY_INT(
+            "damage", M_DEFAULT_DAMAGE,
+            "Damage dealt while Lara is touching the falling ceiling."));
 }
 
 REGISTER_OBJECT(O_FALLING_CEILING_1, M_Setup)
