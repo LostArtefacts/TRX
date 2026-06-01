@@ -3,10 +3,13 @@
 #include <trx/game/creature.h>
 #include <trx/game/matrix.h>
 #include <trx/game/objects.h>
+#include <trx/game/objects/property.h>
 #include <trx/game/output.h>
 #include <trx/game/pathing.h>
 #include <trx/game/random.h>
 #include <trx/game/sound.h>
+
+#define M_DEFAULT_DAMAGE 10
 
 typedef enum {
     M_STATE_FIRE,
@@ -24,6 +27,16 @@ typedef struct {
     bool is_alerted;
     bool has_fired;
 } M_PRIV;
+
+static int32_t M_GetDamage(const ITEM *const item)
+{
+    OBJECT_PROPERTY_VALUE damage = {};
+    if (ObjectProperty_GetItemValue(item, "damage", &damage)) {
+        return damage.as_int;
+    }
+
+    return M_DEFAULT_DAMAGE;
+}
 
 static void M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
 {
@@ -151,10 +164,12 @@ static void M_Control(const int16_t item_num)
 
             if (p->active_muzzle == M_MUZZLE_RIGHT) {
                 Creature_Shoot(
-                    item, &info, &m_FireLeft, creature->joint_rotation[0], 10);
+                    item, &info, &m_FireLeft, creature->joint_rotation[0],
+                    M_GetDamage(item));
             } else {
                 Creature_Shoot(
-                    item, &info, &m_FireRight, creature->joint_rotation[0], 10);
+                    item, &info, &m_FireRight, creature->joint_rotation[0],
+                    M_GetDamage(item));
             }
 
             p->muzzle_flash_timer = 10;
@@ -234,7 +249,11 @@ static void M_Setup(OBJECT *const obj)
     Object_GetBone(obj, 0)->rot.y = true;
     Object_GetBone(obj, 1)->rot.x = true;
     OBJECT_PROPERTIES(
-        obj, OBJECT_PROPERTY_INT("max_hit_points", 100, "Maximum hit points."));
+        obj,
+        OBJECT_PROPERTY_INT(
+            "damage", M_DEFAULT_DAMAGE,
+            "Damage dealt when the sentry gun hits Lara."),
+        OBJECT_PROPERTY_INT("max_hit_points", 100, "Maximum hit points."));
 }
 
 REGISTER_OBJECT(O_SENTRY_GUN, M_Setup)
