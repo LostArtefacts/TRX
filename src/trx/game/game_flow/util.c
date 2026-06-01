@@ -54,8 +54,3 @@ void GF_DisableObjectsIfNeeded(void)
         }
     }
 }
-
-int32_t GF_BadGetLevelNum(void)
-{
-    return GF_GetCurrentLevel()->num;
-}
