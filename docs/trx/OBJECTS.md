@@ -586,6 +586,9 @@ This page lists documented moveable object properties.
 ### `288` O_RAPTOR
 - `max_hit_points = 90` — Maximum hit points.
 
+### `291` O_ROTATING_LASER
+- `damage = 25` — Damage dealt while Lara is touching the rotating laser.
+
 ### `318` O_STROBE_LIGHT
 - `requires_alarm_active = false` — Require an alert event before the light activates.
 
