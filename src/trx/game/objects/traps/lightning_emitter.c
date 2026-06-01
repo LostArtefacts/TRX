@@ -2,12 +2,13 @@
 #include <trx/game/game.h>
 #include <trx/game/lara.h>
 #include <trx/game/matrix.h>
+#include <trx/game/objects/property.h>
 #include <trx/game/output.h>
 #include <trx/game/random.h>
 #include <trx/game/sound.h>
 #include <trx/game/viewport.h>
 
-#define M_DAMAGE 400
+#define M_DEFAULT_DAMAGE 400
 #define M_STEPS 8
 #define M_RND 64
 #define M_SHOOTS 2
@@ -24,6 +25,16 @@ typedef struct {
     XYZ_32 wibble[M_STEPS];
     XYZ_32 shoot[M_SHOOTS][M_STEPS];
 } M_PRIV;
+
+static int32_t M_GetDamage(const ITEM *const item)
+{
+    OBJECT_PROPERTY_VALUE damage = {};
+    if (ObjectProperty_GetItemValue(item, "damage", &damage)) {
+        return damage.as_int;
+    }
+
+    return M_DEFAULT_DAMAGE;
+}
 
 static void M_Initialise(const int16_t item_num)
 {
@@ -90,7 +101,7 @@ static void M_Control(const int16_t item_num)
             p->target.y = lara_item->pos.y;
             p->target.z = lara_item->pos.z;
 
-            Lara_TakeDamage(M_DAMAGE, true);
+            Lara_TakeDamage(M_GetDamage(item), true);
 
             p->zapped = true;
         } else if (p->no_target) {
@@ -288,6 +299,11 @@ static void M_Setup(OBJECT *const obj)
     obj->collision_func = M_Collision;
     obj->priv_size = sizeof(M_PRIV);
     obj->save_flags = true;
+    OBJECT_PROPERTIES(
+        obj,
+        OBJECT_PROPERTY_INT(
+            "damage", M_DEFAULT_DAMAGE,
+            "Damage dealt when Lara is struck by the lightning emitter."));
 }
 
 REGISTER_OBJECT(O_LIGHTNING_EMITTER, M_Setup)
