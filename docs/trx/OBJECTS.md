@@ -451,6 +451,7 @@ This page lists documented moveable object properties.
 - `max_hit_points = 45` — Maximum hit points.
 
 ### `64` O_SENTRY_GUN
+- `damage = 10` — Damage dealt when the sentry gun hits Lara.
 - `max_hit_points = 100` — Maximum hit points.
 
 ### `65` O_CIVILIAN
