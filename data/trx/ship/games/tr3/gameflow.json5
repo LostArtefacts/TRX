@@ -246,6 +246,7 @@
                 "madubu_textures.bin",
                 "common_pickup_meshes.bin",
                 "fish_sprites.bin",
+                "bat_sprites.bin",
                 "madubu_spike_sfx.bin",
             ],
         },
@@ -317,6 +318,7 @@
                 "aldwych_textures.bin",
                 "menu_artefacts.bin",
                 "aldwych_animating_bounds.bin",
+                "bat_sprites.bin",
             ],
         },
 
@@ -588,6 +590,7 @@
                 "stpaul_textures.bin",
                 "menu_artefacts.bin",
                 "common_pickup_meshes.bin",
+                "bat_sprites.bin",
             ],
             "unobtainable_pickups": 9,
         },

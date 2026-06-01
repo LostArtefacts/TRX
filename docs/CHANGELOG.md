@@ -41,16 +41,19 @@
 
 **TR1**:
 - added support for fish and piranhas without sacrificing explosion sprites (refer to notes in migration guide) (#4358)
+- added support for bat emitters without sacrificing explosion sprites (refer to notes in migration guide)
 - added the abilty to use animated spikes
 
 **TR2**:
 - added support for fish and piranhas without sacrificing explosion sprites (refer to notes in migration guide) (#4358)
+- added support for bat emitters without sacrificing explosion sprites (refer to notes in migration guide)
 - added the abilty to use animated spikes
 - fixed Lara wading in shallower water compared to OG (#5574, regression from 1.3)
 
 **TR3**:
 - added the ability to define the flame interval of `O_FLAME_EMITTER_SIDE` objects
 - added an option to fix animated spikes resetting when loading a save (Gameplay → Fixes → Fix animated spikes)
+- changed piranhas, tropical fish and bat emitters to use dedicated sprite objects; refer to migration guide
 - removed the hard-coded end-level behaviour when picking up artefacts in specific levels and moved to Lua instead
 - removed hard-coded collision differences for `O_ORCA` in `Sleeping with the Fishes` by using `O_DOLPHIN` instead
 - removed hard-coded level sequence checks to keep Lara burning when she enters a lava swamp room
@@ -59,7 +62,7 @@
 - removed hard-coded level sequence specific sound effects for animated spikes and moved to animation commands instead
 - removed the hard-coded constraint of only being able to use animated spikes in levels 5 and 7
 - removed the hard-coded `O_AI_PATROL_1` behaviour in High Security Compound and Area 51; refer to migration docs
-- fixed texture bleeding and missized textures on piranhas and tropical fish
+- fixed texture bleeding and missized textures on piranhas, tropical fish and bats
 
 
 

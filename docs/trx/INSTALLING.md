@@ -934,6 +934,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── area51_patrol.bin
 │   │   │   ├── area51_sky.bin
 │   │   │   ├── area51_textures.bin
+│   │   │   ├── bat_sprites.bin
 │   │   │   ├── cavern_door131_frames.bin
 │   │   │   ├── cavern_pickup_meshes.bin
 │   │   │   ├── cavern_sky.bin
@@ -2172,6 +2173,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── area51_patrol.bin
     │   │   │   │   ├── area51_sky.bin
     │   │   │   │   ├── area51_textures.bin
+    │   │   │   │   ├── bat_sprites.bin
     │   │   │   │   ├── cavern_door131_frames.bin
     │   │   │   │   ├── cavern_pickup_meshes.bin
     │   │   │   │   ├── cavern_sky.bin
