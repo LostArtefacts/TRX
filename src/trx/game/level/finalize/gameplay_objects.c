@@ -1,4 +1,3 @@
-#include <trx/game/game_flow/util.h>
 #include <trx/game/items.h>
 #include <trx/game/items/walkable.h>
 #include <trx/game/lara.h>
@@ -40,16 +39,13 @@ static void M_AssignAIBits(void)
             ITEM *const ai_item = Item_Get(ai_item_num);
             const int16_t next_num = ai_item->next_item;
             const uint8_t ai_bit = M_GetAIBit(ai_item->object_id);
-            if (ai_bit != 0 && ai_item->pos.x == item->pos.x
+            if (ai_bit != 0 && (item->ai_bits & ai_bit) == 0
+                && ai_item->pos.x == item->pos.x
                 && ai_item->pos.z == item->pos.z) {
                 item->ai_bits |= ai_bit;
                 item->ai_tag = ai_item->rot.y;
-                if (!(ai_item->object_id == O_AI_PATROL_1
-                      && (GF_BadGetLevelNum() == 15
-                          || GF_BadGetLevelNum() == 14))) {
-                    Item_Kill(ai_item_num);
-                    ai_item->room_num = NO_ROOM;
-                }
+                Item_Kill(ai_item_num);
+                ai_item->room_num = NO_ROOM;
             }
             ai_item_num = next_num;
         }

@@ -422,6 +422,7 @@
                 "compound_animating_bounds.bin",
                 "compound_textures.bin",
                 "common_pickup_meshes.bin",
+                "compound_patrol.bin",
             ],
             "unobtainable_kills": 9,
             "unobtainable_ally_kills": 8,
@@ -449,6 +450,7 @@
                 "area51_textures.bin",
                 "area51_animating_bounds.bin",
                 "common_pickup_meshes.bin",
+                "area51_patrol.bin",
             ],
         },
 

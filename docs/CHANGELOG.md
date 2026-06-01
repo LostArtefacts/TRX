@@ -30,6 +30,7 @@
 - removed the hard-coded strobe light alarm behaviour in Area 51 and moved it to Lua instead
 - removed hard-coded level sequence specific sound effects for animated spikes and moved to animation commands instead
 - removed the hard-coded constraint of only being able to use animated spikes in levels 5 and 7
+- removed the hard-coded `O_AI_PATROL_1` behaviour in High Security Compound and Area 51; refer to migration docs
 - fixed texture bleeding and missized textures on piranhas and tropical fish
 
 
