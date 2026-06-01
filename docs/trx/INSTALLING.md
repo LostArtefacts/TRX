@@ -1046,6 +1046,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── tower.tr2
 │   │   │   └── triboss.tr2
 │   │   ├── scripts
+│   │   │   ├── aldwych.lua
 │   │   │   ├── area51.lua
 │   │   │   ├── compound.lua
 │   │   │   ├── crash.lua
@@ -2285,6 +2286,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── tower.tr2
     │   │   │   │   └── triboss.tr2
     │   │   │   ├── scripts
+    │   │   │   │   ├── aldwych.lua
     │   │   │   │   ├── area51.lua
     │   │   │   │   ├── compound.lua
     │   │   │   │   ├── crash.lua

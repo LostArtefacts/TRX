@@ -139,6 +139,9 @@ This page lists documented moveable object properties.
 ### `145` O_SCION_ITEM_3
 - `max_hit_points = 5` — Maximum hit points.
 
+### `180` O_LAVA_WEDGE
+- `speed = 25` — Offset applied each frame while the lava wedge advances.
+
 ### `191` O_WINSTON
 - `max_hit_points = 1` — Maximum hit points.
 
@@ -306,9 +309,11 @@ This page lists documented moveable object properties.
 - `damage = 200` — Damage dealt when Lara is struck by the falling icicle.
 
 ### `85` O_SPIKE_WALL
+- `speed = 16` — Offset applied each frame while the spike wall advances.
 - `damage = 20` — Damage dealt while Lara is touching the spike wall.
 
 ### `87` O_CEILING_SPIKES
+- `speed = 5` — Offset applied each frame while the ceiling spikes descend.
 - `damage = 20` — Damage dealt while Lara is touching the ceiling spikes.
 
 ### `94` O_PROPELLER_2
@@ -590,9 +595,11 @@ This page lists documented moveable object properties.
 - `damage = 200` — Damage dealt when Lara is struck by the falling icicle.
 
 ### `114` O_SPIKE_WALL
+- `speed = 16` — Offset applied each frame while the spike wall advances.
 - `damage = 20` — Damage dealt while Lara is touching the spike wall.
 
 ### `116` O_CEILING_SPIKES
+- `speed = 5` — Offset applied each frame while the ceiling spikes descend.
 - `damage = 20` — Damage dealt while Lara is touching the ceiling spikes.
 
 ### `119` O_PROPELLER_2
