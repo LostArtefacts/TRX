@@ -99,6 +99,9 @@ This page lists documented moveable object properties.
 ### `36` O_SWINGING_AXE
 - `damage = 100` — Damage dealt while Lara is touching the swinging axe.
 
+### `37` O_SPIKES
+- `damage = 15` — Damage dealt when Lara hits the spikes without dying instantly.
+
 ### `38` O_ROLLING_BALL_1
 - `air_damage = 100` — Damage dealt when Lara is clipped by a moving boulder without being crushed.
 
@@ -251,6 +254,9 @@ This page lists documented moveable object properties.
 
 ### `58` O_PENDULUM_1
 - `damage = 50` — Damage dealt while Lara is touching the pendulum.
+
+### `59` O_SPIKES
+- `damage = 15` — Damage dealt when Lara hits the spikes without dying instantly.
 
 ### `60` O_ROLLING_BALL_1
 - `air_damage = 100` — Damage dealt when Lara is clipped by a moving boulder without being crushed.
@@ -517,6 +523,9 @@ This page lists documented moveable object properties.
 
 ### `86` O_PENDULUM_1
 - `damage = 50` — Damage dealt while Lara is touching the pendulum.
+
+### `87` O_SPIKES
+- `damage = 15` — Damage dealt when Lara hits the spikes without dying instantly.
 
 ### `88` O_ROLLING_BALL_1
 - `air_damage = 100` — Damage dealt when Lara is clipped by a moving boulder without being crushed.
