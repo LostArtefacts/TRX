@@ -1092,6 +1092,10 @@
             "title": "Correggi IA degli alligatori",
             "description": "Risolve il problema degli alligatori che non infliggono danni se Lara rimane ferma nell'acqua.",
         },
+        "gameplay.fix_animated_spikes": {
+            "title": "\\{review}Correggi spuntoni animati",
+            "description": "\\{review}Corregge il ripristino degli spuntoni animati attivati durante il caricamento di un salvataggio.",
+        },
         "gameplay.fix_bear_ai": {
             "title": "Correggi IA degli orsi",
             "description": "Risolve il problema per cui gli attacchi con la zampa degli orsi non colpiscono Lara.",

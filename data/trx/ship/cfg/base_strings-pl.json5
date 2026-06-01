@@ -1092,6 +1092,10 @@
             "title": "Napraw AI aligatorów",
             "description": "Naprawia błąd w którym aligatory nie zadają obrażeń, jeśli Lara pozostaje nieruchomo w wodzie.",
         },
+        "gameplay.fix_animated_spikes": {
+            "title": "\\{review}Napraw animowane kolce",
+            "description": "\\{review}Naprawia problem z resetowaniem aktywowanych animowanych kolców po wczytaniu zapisu gry.",
+        },
         "gameplay.fix_bear_ai": {
             "title": "Napraw AI niedźwiedzi",
             "description": "Naprawia atak niedźwiedzia, aby nie chybiał Lary.",

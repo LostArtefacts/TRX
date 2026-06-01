@@ -1092,6 +1092,10 @@
             "title": "Càraich AI ailigeutair",
             "description": "Càradh far nach dèan ailigeutairean milleadh ma dh'fhanas Lara fhathast anns an uisge.",
         },
+        "gameplay.fix_animated_spikes": {
+            "title": "Càraich spìcean beòthaichte",
+            "description": "Càraichidh seo spìcean beòthaichte a tha air a chur an gnìomh a' tilleadh gu staid thùsail nuair a thèid geama sàbhailte a luchdadh.",
+        },
         "gameplay.fix_bear_ai": {
             "title": "Càraich AI mathain",
             "description": "Càraichidh seo ionnsaigh a' mhathain gus nach caill e Lara.",

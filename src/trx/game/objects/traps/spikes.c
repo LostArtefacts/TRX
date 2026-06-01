@@ -68,6 +68,8 @@ static void M_Setup(OBJECT *const obj)
 {
     obj->collision_func = M_Collision;
     obj->control_func = M_Control;
+    obj->save_anim = true;
+    obj->save_flags = true;
 }
 
 REGISTER_OBJECT(O_SPIKES, M_Setup)
