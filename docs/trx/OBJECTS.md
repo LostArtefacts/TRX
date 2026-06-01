@@ -227,6 +227,15 @@ This page lists documented moveable object properties.
 ### `54` O_MONK_2
 - `max_hit_points = 30` — Maximum hit points.
 
+### `76` O_PROPELLER_1
+- `damage = 200` — Damage dealt while Lara is touching the propeller.
+
+### `94` O_PROPELLER_2
+- `damage = 200` — Damage dealt while Lara is touching the propeller.
+
+### `95` O_PROPELLER_3
+- `damage = 200` — Damage dealt while Lara is touching the propeller.
+
 ### `123` O_PLAYER_1
 - `max_hit_points = 1` — Maximum hit points.
 
@@ -441,6 +450,12 @@ This page lists documented moveable object properties.
 
 ### `82` O_AI_X3
 - `max_hit_points = 0` — Maximum hit points.
+
+### `119` O_PROPELLER_2
+- `damage = 200` — Damage dealt while Lara is touching the propeller.
+
+### `120` O_PROPELLER_3
+- `damage = 200` — Damage dealt while Lara is touching the propeller.
 
 ### `148` O_PLAYER_1
 - `max_hit_points = 1` — Maximum hit points.
