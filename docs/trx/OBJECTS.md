@@ -460,6 +460,7 @@ This page lists documented moveable object properties.
 - `max_hit_points = 1` — Maximum hit points.
 
 ### `67` O_SECURITY_LASER_DEADLY
+- `damage = 10` — Damage dealt when Lara crosses the security laser.
 - `max_hit_points = 1` — Maximum hit points.
 
 ### `68` O_SECURITY_LASER_KILLER

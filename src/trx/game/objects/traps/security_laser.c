@@ -2,16 +2,27 @@
 #include <trx/game/lara.h>
 #include <trx/game/los.h>
 #include <trx/game/objects.h>
+#include <trx/game/objects/property.h>
 #include <trx/game/output/sources/poly_fx.h>
 #include <trx/game/pathing.h>
 #include <trx/game/random.h>
 #include <trx/game/rooms.h>
 #include <trx/game/spawn.h>
 
-#define M_DAMAGE 10
+#define M_DEFAULT_DAMAGE 10
 
 static uint8_t m_LaserShades[32] = {};
 static const int16_t m_DefaultBeamCount = 1;
+
+static int32_t M_GetDamage(const ITEM *const item)
+{
+    OBJECT_PROPERTY_VALUE damage = {};
+    if (ObjectProperty_GetItemValue(item, "damage", &damage)) {
+        return damage.as_int;
+    }
+
+    return M_DEFAULT_DAMAGE;
+}
 
 static bool M_IsTargetable(const ITEM *const item)
 {
@@ -215,7 +226,7 @@ static void M_DamageLara(const ITEM *const item, const int32_t beam_y)
     if (item->object_id == O_SECURITY_LASER_KILLER) {
         Lara_TakeDamage(lara_item->hit_points, false);
     } else {
-        Lara_TakeDamage(M_DAMAGE, false);
+        Lara_TakeDamage(M_GetDamage(item), false);
     }
 
     Spawn_BloodBath(
@@ -308,7 +319,7 @@ static bool M_DrawLaser(const ITEM *const item)
     return true;
 }
 
-static void M_Setup(OBJECT *const obj)
+static void M_SetupCommon(OBJECT *const obj)
 {
     obj->initialise_func = M_Initialise;
     obj->control_func = M_Control;
@@ -318,12 +329,38 @@ static void M_Setup(OBJECT *const obj)
 
     obj->save_hitpoints = true;
     obj->save_flags = true;
+}
+
+static void M_SetupAlarm(OBJECT *const obj)
+{
+    M_SetupCommon(obj);
     OBJECT_PROPERTIES(
         obj,
         OBJECT_PROPERTY_INT(
             "max_hit_points", m_DefaultBeamCount, "Maximum hit points."));
 }
 
-REGISTER_OBJECT(O_SECURITY_LASER_ALARM, M_Setup)
-REGISTER_OBJECT(O_SECURITY_LASER_DEADLY, M_Setup)
-REGISTER_OBJECT(O_SECURITY_LASER_KILLER, M_Setup)
+static void M_SetupDeadly(OBJECT *const obj)
+{
+    M_SetupCommon(obj);
+    OBJECT_PROPERTIES(
+        obj,
+        OBJECT_PROPERTY_INT(
+            "damage", M_DEFAULT_DAMAGE,
+            "Damage dealt when Lara crosses the security laser."),
+        OBJECT_PROPERTY_INT(
+            "max_hit_points", m_DefaultBeamCount, "Maximum hit points."));
+}
+
+static void M_SetupKiller(OBJECT *const obj)
+{
+    M_SetupCommon(obj);
+    OBJECT_PROPERTIES(
+        obj,
+        OBJECT_PROPERTY_INT(
+            "max_hit_points", m_DefaultBeamCount, "Maximum hit points."));
+}
+
+REGISTER_OBJECT(O_SECURITY_LASER_ALARM, M_SetupAlarm)
+REGISTER_OBJECT(O_SECURITY_LASER_DEADLY, M_SetupDeadly)
+REGISTER_OBJECT(O_SECURITY_LASER_KILLER, M_SetupKiller)
