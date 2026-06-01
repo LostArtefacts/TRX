@@ -54,6 +54,7 @@
 - removed the hard-coded Aldwych drill speed override and moved it to Lua instead
 - fixed texture bleeding and missized textures on piranhas, tropical fish and bats
 - fixed the drill in the Shakespeare Cliff not rotating
+- fixed seeing the fish in Coastal Village spawn due to delayed triggers, most noticeable when fades are disabled
 
 
 

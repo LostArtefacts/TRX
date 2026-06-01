@@ -197,6 +197,7 @@
                 "common_pickup_meshes.bin",
                 "fish_sprites.bin",
                 "coastal_spike_sfx.bin",
+                "coastal_fd.bin",
             ],
             "unobtainable_pickups": 1,
         },
