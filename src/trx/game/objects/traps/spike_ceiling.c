@@ -2,12 +2,13 @@
 #include <trx/core/json/util/write_io.h>
 #include <trx/game/lara.h>
 #include <trx/game/objects/common.h>
+#include <trx/game/objects/property.h>
 #include <trx/game/objects/traps/common.h>
 #include <trx/game/rooms.h>
 #include <trx/game/sound.h>
 #include <trx/game/spawn.h>
 
-#define M_DAMAGE 20
+#define M_DEFAULT_DAMAGE 20
 #define M_SPEED 1
 #define M_STEP_SLOW 5
 #define M_STEP_FAST 10
@@ -82,9 +83,19 @@ static void M_Move(const int16_t item_num)
     }
 }
 
+static int32_t M_GetDamage(const ITEM *const item)
+{
+    OBJECT_PROPERTY_VALUE damage = {};
+    if (ObjectProperty_GetItemValue(item, "damage", &damage)) {
+        return damage.as_int;
+    }
+
+    return M_DEFAULT_DAMAGE;
+}
+
 static void M_HitLara(ITEM *const item)
 {
-    Lara_TakeDamage(M_DAMAGE, true);
+    Lara_TakeDamage(M_GetDamage(item), true);
 
     const ITEM *const lara_item = Lara_GetItem();
     Spawn_BloodBath(
@@ -128,6 +139,11 @@ static void M_Setup(OBJECT *const obj)
     obj->priv_save_func = M_SavePriv;
     obj->save_position = true;
     obj->save_flags = true;
+    OBJECT_PROPERTIES(
+        obj,
+        OBJECT_PROPERTY_INT(
+            "damage", M_DEFAULT_DAMAGE,
+            "Damage dealt while Lara is touching the ceiling spikes."));
 }
 
 REGISTER_OBJECT(O_CEILING_SPIKES, M_Setup)
