@@ -309,6 +309,7 @@ typedef struct {
         bool fix_bear_ai;
         bool fix_monkey_pickup_priority;
         bool fix_pipeman_aim;
+        bool fix_animated_spikes;
 
         PROJECTILE_AREA_DAMAGE projectile_area_damage;
     } gameplay;

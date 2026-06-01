@@ -770,5 +770,6 @@
         "fix_speeches_killing_music",
         "enable_footprints",
         "fix_pipeman_aim",
+        "fix_animated_spikes",
     ],
 }

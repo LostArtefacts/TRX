@@ -1092,6 +1092,10 @@
             "title": "Fix: Alligator-AI",
             "description": "Fixt, dass die Alligatoren keinen Schaden machen, wenn Lara sich im Wasser befindet und sich nicht bewegt.",
         },
+        "gameplay.fix_animated_spikes": {
+            "title": "\\{review}Animierte Stacheln korrigieren",
+            "description": "\\{review}Behebt ein Problem, bei dem aktivierte animierte Stacheln nach dem Laden eines Spielstands zurückgesetzt werden.",
+        },
         "gameplay.fix_bear_ai": {
             "title": "Fix: Bären-AI",
             "description": "Fixt, dass die aufrecht stehend ausgeführten Prankenhiebe von Bären Lara nicht mehr verfehlen.",

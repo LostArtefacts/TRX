@@ -1092,6 +1092,10 @@
             "title": "Corriger l'IA des aligators",
             "description": "Corrige le fait que les alligators n'infligent aucun dégât si Lara reste immobile dans l'eau.",
         },
+        "gameplay.fix_animated_spikes": {
+            "title": "\\{review}Corriger les pics animés",
+            "description": "\\{review}Corrige un problème où les pics animés activés se réinitialisent lors du chargement d'une sauvegarde.",
+        },
         "gameplay.fix_bear_ai": {
             "title": "Corriger l'IA des ours",
             "description": "Corrige l'attaque par coup de patte des ours pour qu'ils ne ratent pas Lara.",

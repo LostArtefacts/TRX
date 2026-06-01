@@ -233,5 +233,6 @@
         "fix_monkey_pickup_priority",
         "fix_pipeman_aim",
         "enable_cinematics",
+        "fix_animated_spikes",
     ],
 }

@@ -299,6 +299,18 @@ static int16_t M_ResolveItem(JSON_READ_IO *const io, const int16_t read_index)
     return item_num;
 }
 
+static bool M_ShouldReadAnim(const OBJECT *const obj, const OBJECT_ID obj_id)
+{
+    return obj->save_anim
+        && (obj_id != O_SPIKES || g_Config.gameplay.fix_animated_spikes);
+}
+
+static bool M_ShouldReadFlags(const OBJECT *const obj, const OBJECT_ID obj_id)
+{
+    return obj->save_flags
+        && (obj_id != O_SPIKES || g_Config.gameplay.fix_animated_spikes);
+}
+
 static bool M_ReadItem(JSON_READ_IO *const io, const int16_t read_index)
 {
     const int16_t item_num = M_ResolveItem(io, read_index);
@@ -340,7 +352,7 @@ static bool M_ReadItem(JSON_READ_IO *const io, const int16_t read_index)
         }
     }
 
-    if (obj->save_anim) {
+    if (M_ShouldReadAnim(obj, object_id)) {
         // TRX >= 1.1 animated puzzle holes became animated
         M_SHOULD(JSON_READ(io, "current_anim", &item->current_anim_state));
         M_SHOULD(JSON_READ(io, "goal_anim", &item->goal_anim_state));
@@ -375,7 +387,7 @@ static bool M_ReadItem(JSON_READ_IO *const io, const int16_t read_index)
     }
     M_MUST(ObjectProperty_ReadItemOverrides(io, item));
 
-    if (obj->save_flags) {
+    if (M_ShouldReadFlags(obj, object_id)) {
         if (!JSON_ReadIO_HasKey(io, "flags")) {
             // TRX 1.1 save-crystal entries were serialized as bare items
             // without save-state fields. Treat them as default-state crystals
@@ -384,22 +396,23 @@ static bool M_ReadItem(JSON_READ_IO *const io, const int16_t read_index)
                 goto skip_flags;
             }
         }
-        M_MUST(JSON_READ(io, "flags", &item->flags));
-        M_MUST(JSON_READ(io, "timer", &item->timer));
+        // TRX 1.8 introduced fixing animated spikes on load
+        M_SHOULD(JSON_READ(io, "flags", &item->flags));
+        M_SHOULD(JSON_READ(io, "timer", &item->timer));
         ITEM_STATUS saved_status = item->status;
-        M_MUST(JSON_READ(io, "status", &saved_status));
+        M_SHOULD(JSON_READ(io, "status", &saved_status));
 
         if ((item->flags & IF_KILLED) != 0) {
             Item_Kill(item_num);
             item->status = saved_status;
         } else {
-            bool is_active;
-            M_MUST(JSON_READ(io, "active", &is_active));
+            bool is_active = false;
+            M_SHOULD(JSON_READ(io, "active", &is_active));
             if (is_active && !item->active) {
                 Item_AddActive(item_num);
             }
             item->status = saved_status;
-            M_MUST(JSON_READ(io, "gravity", &item->gravity));
+            M_SHOULD(JSON_READ(io, "gravity", &item->gravity));
             // Introduced in TRX 1.2
             M_OPTIONAL(JSON_READ(io, "collidable", &item->collidable));
         }
