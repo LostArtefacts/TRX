@@ -931,6 +931,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── antarc_sky.bin
 │   │   │   ├── antarc_textures.bin
 │   │   │   ├── area51_animating_bounds.bin
+│   │   │   ├── area51_patrol.bin
 │   │   │   ├── area51_sky.bin
 │   │   │   ├── area51_textures.bin
 │   │   │   ├── cavern_door131_frames.bin
@@ -949,6 +950,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── common_pickup_meshes.bin
 │   │   │   ├── compound_animating_bounds.bin
 │   │   │   ├── compound_cine.bin
+│   │   │   ├── compound_patrol.bin
 │   │   │   ├── compound_textures.bin
 │   │   │   ├── crash_animating_bounds.bin
 │   │   │   ├── crash_pickup_meshes.bin
@@ -1056,6 +1058,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── rapids.lua
 │   │   │   ├── shore.lua
 │   │   │   ├── temple.lua
+│   │   │   ├── thames.lua
 │   │   │   ├── tonyboss.lua
 │   │   │   ├── tower.lua
 │   │   │   ├── triboss.lua
@@ -2166,6 +2169,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── antarc_sky.bin
     │   │   │   │   ├── antarc_textures.bin
     │   │   │   │   ├── area51_animating_bounds.bin
+    │   │   │   │   ├── area51_patrol.bin
     │   │   │   │   ├── area51_sky.bin
     │   │   │   │   ├── area51_textures.bin
     │   │   │   │   ├── cavern_door131_frames.bin
@@ -2184,6 +2188,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── common_pickup_meshes.bin
     │   │   │   │   ├── compound_animating_bounds.bin
     │   │   │   │   ├── compound_cine.bin
+    │   │   │   │   ├── compound_patrol.bin
     │   │   │   │   ├── compound_textures.bin
     │   │   │   │   ├── crash_animating_bounds.bin
     │   │   │   │   ├── crash_pickup_meshes.bin
@@ -2291,6 +2296,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── rapids.lua
     │   │   │   │   ├── shore.lua
     │   │   │   │   ├── temple.lua
+    │   │   │   │   ├── thames.lua
     │   │   │   │   ├── tonyboss.lua
     │   │   │   │   ├── tower.lua
     │   │   │   │   ├── triboss.lua
