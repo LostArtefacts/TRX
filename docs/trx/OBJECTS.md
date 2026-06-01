@@ -256,6 +256,9 @@ This page lists documented moveable object properties.
 ### `81` O_BLADE
 - `damage = 100` — Damage dealt while Lara is touching the blade trap.
 
+### `82` O_KILLER_STATUE
+- `damage = 20` — Damage dealt while Lara is struck by the killer statue.
+
 ### `84` O_ICICLE
 - `damage = 200` — Damage dealt when Lara is struck by the falling icicle.
 
