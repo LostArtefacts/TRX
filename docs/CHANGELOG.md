@@ -3,12 +3,14 @@
 - added an option for Lara to pick items up more quickly, similar to TR4+ (#1365)
 - added `O_DOLPHIN`, which behaves in the same way as `O_ORCA` but has collision underwater
 - added a new console command - `/burn` - to toggle whether or not Lara is on fire
+- added poison Lua property to `O_DART` and `O_DISC`, so that they can poison Lara just like `O_POISON_DART`
 - removed hard-coded fish and piranha setup and moved to Lua instead
 - removed the limit of at most 8 fish/piranha shoals per level
 - removed hard-coded small Cobra radius setup and moved to Lua instead
 - removed the hard-coded damage and moved it to Lua instead for the following objects:
     - `O_BLADE`
     - `O_DAMOCLES_SWORD`
+    - `O_DART`
     - `O_PROPELLER_1`
     - `O_PROPELLER_2`
     - `O_PROPELLER_3`

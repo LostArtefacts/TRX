@@ -1,6 +1,7 @@
 #include <trx/game/effects.h>
 #include <trx/game/lara.h>
 #include <trx/game/objects/common.h>
+#include <trx/game/objects/property.h>
 #include <trx/game/output/sources/poly_fx.h>
 #include <trx/game/random.h>
 #include <trx/game/rooms.h>
@@ -9,8 +10,8 @@
 #include <trx/game/spawn.h>
 #include <trx/version.h>
 
-#define M_DART_DAMAGE 50
-#define M_POISON_DART_DAMAGE 25
+#define M_DEFAULT_DAMAGE 50
+#define M_DEFAULT_POISON_DAMAGE 25
 #define M_POISON_AMOUNT 160
 #define M_PITCH (DEG_45 / 2)
 
@@ -18,11 +19,30 @@ typedef struct {
     bool pending_kill;
 } M_PRIV;
 
+static bool M_IsPoison(const ITEM *const item)
+{
+    OBJECT_PROPERTY_VALUE poison = {};
+    if (ObjectProperty_GetItemValue(item, "poison", &poison)) {
+        return poison.as_bool;
+    }
+
+    return item->object_id == O_POISON_DART;
+}
+
+static int32_t M_GetDamage(const ITEM *const item)
+{
+    OBJECT_PROPERTY_VALUE damage = {};
+    if (ObjectProperty_GetItemValue(item, "damage", &damage)) {
+        return damage.as_int;
+    }
+
+    return M_IsPoison(item) ? M_DEFAULT_POISON_DAMAGE : M_DEFAULT_DAMAGE;
+}
+
 static void M_DamageLara(const ITEM *const item)
 {
-    const bool is_poison = item->object_id == O_POISON_DART;
-    const int32_t damage = is_poison ? M_POISON_DART_DAMAGE : M_DART_DAMAGE;
-    Lara_TakeDamage(damage, true);
+    const bool is_poison = M_IsPoison(item);
+    Lara_TakeDamage(M_GetDamage(item), true);
     if (is_poison) {
         LARA_INFO *const lara = Lara_GetLaraInfo();
         lara->poison_timer += M_POISON_AMOUNT;
@@ -143,6 +163,12 @@ static void M_Setup(OBJECT *const obj)
     obj->collision_func = Object_Collision;
     obj->shadow_size = UNIT_SHADOW / 2;
     obj->save_flags = true;
+    OBJECT_PROPERTIES(
+        obj,
+        OBJECT_PROPERTY_INT("damage", M_DEFAULT_DAMAGE, "Damage dealt on hit."),
+        OBJECT_PROPERTY_BOOL(
+            "poison", false,
+            "Apply poison buildup in addition to hit damage."));
 }
 
 static void M_SetupPoisonDart(OBJECT *const obj)
@@ -153,6 +179,12 @@ static void M_SetupPoisonDart(OBJECT *const obj)
     obj->priv_size = sizeof(M_PRIV);
     obj->shadow_size = UNIT_SHADOW / 2;
     obj->save_flags = true;
+    OBJECT_PROPERTIES(
+        obj,
+        OBJECT_PROPERTY_INT(
+            "damage", M_DEFAULT_POISON_DAMAGE, "Damage dealt on hit."),
+        OBJECT_PROPERTY_BOOL(
+            "poison", true, "Apply poison buildup in addition to hit damage."));
 }
 
 REGISTER_OBJECT(O_DART, M_Setup)
