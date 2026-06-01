@@ -22,6 +22,7 @@
 - removed the limit of at most 8 fish/piranha shoals per level
 - fixed being able to start the Quad Bike track timer without Lara getting onto the quad bike first (regression from 1.1)
 - fixed missed Assault Course targets not penalizing player's time if Lara crosses the finish line before they collapse (regression from 1.2)
+- fixed fish sometimes disappearing when crossing room boundaries (OG bug)
 - fixed a crash with old custom levels that have sectors pointing to invalid floor data (#5568)
 - fixed the enemy health bar disappearing later than Lara's own bar when holstering weapons (regression from Tomb1Main 0.2)
 - fixed crystal totals being shown incorrectly after loading a save (#5589, regression from 1.5)

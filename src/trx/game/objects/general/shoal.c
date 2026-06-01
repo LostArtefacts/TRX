@@ -49,6 +49,7 @@ typedef struct {
     int32_t piranha_hit_wait;
     int16_t carcass_item_num;
     int32_t sprite_offset;
+    GAME_VECTOR anchor;
 } M_PRIV;
 
 static uint16_t M_GetFishAngle12(
@@ -145,7 +146,7 @@ static void M_SetupFish(M_PRIV *const p, const ITEM *const item)
 static void M_FindCarcass(const ITEM *const shoal_item)
 {
     M_PRIV *const p = shoal_item->priv;
-    p->carcass_item_num = Item_FindTypeInRoom(shoal_item->room_num, O_CARCASS);
+    p->carcass_item_num = Item_FindTypeInRoom(p->anchor.room_num, O_CARCASS);
 }
 
 static bool M_IsTargetable(const ITEM *const item)
@@ -195,7 +196,7 @@ static void M_Control(const int16_t item_num)
         if (p->carcass_item_num != NO_ITEM) {
             piranha_attack = 2;
         } else {
-            piranha_attack = lara_item->room_num == item->room_num;
+            piranha_attack = lara_item->room_num == p->anchor.room_num;
         }
     }
 
@@ -211,7 +212,7 @@ static void M_Control(const int16_t item_num)
             enemy = Item_Get(p->carcass_item_num);
         }
         leader_fish->angle = M_GetFishAngle12(
-            item->pos.x + leader_fish->pos.x, item->pos.z + leader_fish->pos.z,
+            p->anchor.x + leader_fish->pos.x, p->anchor.z + leader_fish->pos.z,
             enemy->pos.x, enemy->pos.z);
         leader->angle = leader_fish->angle;
         leader->speed = (Random_GetControl() & 0x3F) - 64;
@@ -347,9 +348,9 @@ static void M_Control(const int16_t item_num)
 
         if (item->object_id == O_PIRAHNAS) {
             const XYZ_32 fish_pos = {
-                .x = item->pos.x + fish->pos.x,
-                .y = item->pos.y + fish->pos.y,
-                .z = item->pos.z + fish->pos.z,
+                .x = p->anchor.x + fish->pos.x,
+                .y = p->anchor.y + fish->pos.y,
+                .z = p->anchor.z + fish->pos.z,
             };
             if (M_FishNearItem(&fish_pos, 256, enemy)) {
                 if (p->piranha_hit_wait == 0) {
@@ -431,10 +432,21 @@ static void M_Control(const int16_t item_num)
             }
         } else if (ABS(fish->pos.y - fish->dest_y) < 16 && enemy != nullptr) {
             fish->dest_y =
-                (enemy->pos.y - item->pos.y + (Random_GetControl() & 0xFF));
+                (enemy->pos.y - p->anchor.y + (Random_GetControl() & 0xFF));
         }
 
         fish->pos.y += (fish->dest_y - fish->pos.y) >> 4;
+    }
+
+    item->pos = (XYZ_32) {
+        .x = p->anchor.x + leader_fish->pos.x,
+        .y = p->anchor.y + leader_fish->pos.y,
+        .z = p->anchor.z + leader_fish->pos.z,
+    };
+    int16_t room_num = item->room_num;
+    Room_GetSector(item->pos, &room_num);
+    if (room_num != item->room_num) {
+        Item_UpdateRoom(item_num, room_num);
     }
 }
 
@@ -460,7 +472,7 @@ static bool M_Draw(const ITEM *const item)
         return false;
     }
 
-    const XYZ_32 base_pos = item->interp.result.pos;
+    const XYZ_32 base_pos = p->anchor.pos;
     const double ratio = Interpolation_GetWorldRate();
     const bool do_interp =
         Interpolation_IsActive() && ratio > 0.0 && ratio < 1.0;
@@ -594,6 +606,8 @@ static void M_Initialise(const int16_t item_num)
     p->leader.on = false;
     p->piranha_hit_wait = 0;
     p->carcass_item_num = NO_ITEM;
+    p->anchor.pos = item->pos;
+    p->anchor.room_num = item->room_num;
 
     OBJECT_PROPERTY_VALUE range_val = {};
     if (ObjectProperty_GetItemValue(item, "range", &range_val)) {
