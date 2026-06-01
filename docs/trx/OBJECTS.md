@@ -103,6 +103,12 @@ This page lists documented moveable object properties.
 ### `43` O_DAMOCLES_SWORD
 - `damage = 100` — Damage dealt when Lara is struck by the falling Damocles sword.
 
+### `53` O_FALLING_CEILING_1
+- `damage = 300` — Damage dealt while Lara is touching the falling ceiling.
+
+### `54` O_FALLING_CEILING_2
+- `damage = 300` — Damage dealt while Lara is touching the falling ceiling.
+
 ### `77` O_PLAYER_1
 - `max_hit_points = 1` — Maximum hit points.
 
@@ -240,6 +246,9 @@ This page lists documented moveable object properties.
 
 ### `76` O_PROPELLER_1
 - `damage = 200` — Damage dealt while Lara is touching the propeller.
+
+### `79` O_FALLING_CEILING_1
+- `damage = 300` — Damage dealt while Lara is touching the falling ceiling.
 
 ### `81` O_BLADE
 - `damage = 100` — Damage dealt while Lara is touching the blade trap.
@@ -468,6 +477,9 @@ This page lists documented moveable object properties.
 ### `90` O_POISON_DART
 - `damage = 25` — Damage dealt on hit.
 - `poison = true` — Apply poison buildup in addition to hit damage.
+
+### `107` O_FALLING_CEILING_1
+- `damage = 300` — Damage dealt while Lara is touching the falling ceiling.
 
 ### `111` O_BLADE
 - `damage = 100` — Damage dealt while Lara is touching the blade trap.

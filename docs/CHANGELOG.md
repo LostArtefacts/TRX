@@ -11,6 +11,8 @@
     - `O_BLADE`
     - `O_DAMOCLES_SWORD`
     - `O_DART`
+    - `O_FALLING_CEILING_1`
+    - `O_FALLING_CEILING_2`
     - `O_PROPELLER_1`
     - `O_PROPELLER_2`
     - `O_PROPELLER_3`
