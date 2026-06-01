@@ -280,6 +280,9 @@ This page lists documented moveable object properties.
 ### `84` O_ICICLE
 - `damage = 200` — Damage dealt when Lara is struck by the falling icicle.
 
+### `85` O_SPIKE_WALL
+- `damage = 20` — Damage dealt while Lara is touching the spike wall.
+
 ### `87` O_CEILING_SPIKES
 - `damage = 20` — Damage dealt while Lara is touching the ceiling spikes.
 
@@ -539,6 +542,9 @@ This page lists documented moveable object properties.
 
 ### `113` O_ICICLE
 - `damage = 200` — Damage dealt when Lara is struck by the falling icicle.
+
+### `114` O_SPIKE_WALL
+- `damage = 20` — Damage dealt while Lara is touching the spike wall.
 
 ### `116` O_CEILING_SPIKES
 - `damage = 20` — Damage dealt while Lara is touching the ceiling spikes.
