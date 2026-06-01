@@ -272,6 +272,7 @@
         // 9. Thames Wharf
         {
             "path": "roofs.tr2",
+            "script": "thames.lua",
             "music_track": 73,
             "lara_outfit": "tr3_catsuit",
             "weather_type": "rain",
