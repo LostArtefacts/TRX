@@ -1,5 +1,6 @@
 #include <trx/core/utils.h>
 #include <trx/game/lara.h>
+#include <trx/game/objects/property.h>
 #include <trx/game/objects/traps/common.h>
 #include <trx/game/random.h>
 #include <trx/game/rooms.h>
@@ -7,7 +8,17 @@
 #include <trx/game/spawn.h>
 
 #define M_ACTIVATE_DIST ((WALL_L * 3) / 2)
-#define M_DAMAGE 100
+#define M_DEFAULT_DAMAGE 100
+
+static int32_t M_GetDamage(const ITEM *const item)
+{
+    OBJECT_PROPERTY_VALUE damage = {};
+    if (ObjectProperty_GetItemValue(item, "damage", &damage)) {
+        return damage.as_int;
+    }
+
+    return M_DEFAULT_DAMAGE;
+}
 
 static void M_Reset(ITEM *const item)
 {
@@ -86,7 +97,7 @@ static void M_Collision(
         Lara_Col_ItemPush(item, coll, false, true);
     }
     if (item->gravity) {
-        Lara_TakeDamage(M_DAMAGE, false);
+        Lara_TakeDamage(M_GetDamage(item), false);
         int32_t x = lara_item->pos.x + (Random_GetControl() - 0x4000) / 256;
         int32_t z = lara_item->pos.z + (Random_GetControl() - 0x4000) / 256;
         int32_t y = lara_item->pos.y - Random_GetControl() / 44;
@@ -104,6 +115,11 @@ static void M_Setup(OBJECT *const obj)
     obj->save_position = true;
     obj->save_anim = true;
     obj->save_flags = true;
+    OBJECT_PROPERTIES(
+        obj,
+        OBJECT_PROPERTY_INT(
+            "damage", M_DEFAULT_DAMAGE,
+            "Damage dealt when Lara is struck by the falling Damocles sword."));
 }
 
 REGISTER_OBJECT(O_DAMOCLES_SWORD, M_Setup)
