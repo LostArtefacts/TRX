@@ -25,6 +25,7 @@
     - `O_BEAR`
     - `O_BIG_EEL`
     - `O_BIG_SPIDER`
+    - `O_BIRD_GUARDIAN`
     - `O_CROW`
     - `O_EAGLE`
     - `O_VULTURE`
