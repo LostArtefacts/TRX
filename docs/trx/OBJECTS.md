@@ -251,6 +251,7 @@ This page lists documented moveable object properties.
 
 ### `37` O_BIG_SPIDER
 - `max_hit_points = 40` — Maximum hit points.
+- `damage = 100` — Damage dealt by the big spider bite.
 
 ### `38` O_CROW
 - `max_hit_points = 15` — Maximum hit points.
