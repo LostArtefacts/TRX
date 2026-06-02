@@ -4,31 +4,30 @@
 #include <trx/game/lara.h>
 #include <trx/game/lara/common.h>
 #include <trx/game/objects/common.h>
+#include <trx/game/objects/property.h>
 #include <trx/game/spawn.h>
 
 // clang-format off
-#define BIG_EEL_HITPOINTS  20
-#define BIG_EEL_TOUCH_BITS 0b00000001'10000000 // = 0x180
-#define BIG_EEL_DAMAGE     500
-#define BIG_EEL_ANGLE      (DEG_1 * 10) // = 1820
-#define BIG_EEL_RANGE      (WALL_L * 6) // = 6144
-#define BIG_EEL_MOVE       (WALL_L / 10) // = 102
-#define BIG_EEL_LENGTH     (WALL_L * 5 / 2) // = 2560
-#define BIG_EEL_SLIDE      (BIG_EEL_RANGE - BIG_EEL_LENGTH) // = 3584
+#define M_HIT_POINTS 20
+#define M_DAMAGE     500
+#define M_TOUCH_BITS 0b00000001'10000000 // = 0x180
+#define M_ANGLE      (DEG_1 * 10) // = 1820
+#define M_RANGE      (WALL_L * 6) // = 6144
+#define M_MOVE       (WALL_L / 10) // = 102
+#define M_LENGTH     (WALL_L * 5 / 2) // = 2560
+#define M_SLIDE      (M_RANGE - M_LENGTH) // = 3584
 // clang-format on
 
 typedef enum {
-    // clang-format off
-    BIG_EEL_STATE_EMPTY  = 0,
-    BIG_EEL_STATE_ATTACK = 1,
-    BIG_EEL_STATE_STOP   = 2,
-    BIG_EEL_STATE_DEATH  = 3,
-    // clang-format on
-} BIG_EEL_STATE;
+    M_STATE_EMPTY,
+    M_STATE_ATTACK,
+    M_STATE_STOP,
+    M_STATE_DEATH,
+} M_STATE;
 
 typedef enum {
-    BIG_EEL_ANIM_DEATH = 2,
-} BIG_EEL_ANIM;
+    M_ANIM_DEATH = 2,
+} M_ANIM;
 
 typedef struct {
     int32_t pos;
@@ -38,6 +37,16 @@ static const BITE m_BigEelBite = {
     .pos = { .x = 7, .y = 157, .z = 333 },
     .mesh_num = 7,
 };
+
+static int32_t M_GetDamage(const ITEM *const item)
+{
+    OBJECT_PROPERTY_VALUE damage = {};
+    if (ObjectProperty_GetItemValue(item, "damage", &damage)) {
+        return damage.as_int;
+    }
+
+    return M_DAMAGE;
+}
 
 static bool M_IsTargetable(const ITEM *const item)
 {
@@ -55,12 +64,12 @@ static void M_Control(const int16_t item_num)
     item->pos.x -= ((pos * Math_Sin(item->rot.y)) >> W2V_SHIFT);
 
     if (item->hit_points <= 0) {
-        if (pos < BIG_EEL_SLIDE) {
-            pos += BIG_EEL_MOVE;
+        if (pos < M_SLIDE) {
+            pos += M_MOVE;
         }
-        if (item->current_anim_state != BIG_EEL_STATE_DEATH) {
-            Item_SwitchToAnim(item, BIG_EEL_ANIM_DEATH, 0);
-            item->current_anim_state = BIG_EEL_STATE_DEATH;
+        if (item->current_anim_state != M_STATE_DEATH) {
+            Item_SwitchToAnim(item, M_ANIM_DEATH, 0);
+            item->current_anim_state = M_STATE_DEATH;
         }
     } else {
         const int32_t dx = lara_item->pos.x - item->pos.x;
@@ -69,24 +78,24 @@ static void M_Control(const int16_t item_num)
         const int32_t distance = Math_Sqrt(SQUARE(dx) + SQUARE(dz));
 
         switch (item->current_anim_state) {
-        case BIG_EEL_STATE_STOP:
+        case M_STATE_STOP:
             if (pos > 0) {
-                pos -= BIG_EEL_MOVE;
+                pos -= M_MOVE;
             }
-            if (distance <= BIG_EEL_RANGE && ABS(angle) < BIG_EEL_ANGLE) {
-                item->goal_anim_state = BIG_EEL_STATE_ATTACK;
+            if (distance <= M_RANGE && ABS(angle) < M_ANGLE) {
+                item->goal_anim_state = M_STATE_ATTACK;
             }
             break;
 
-        case BIG_EEL_STATE_ATTACK:
-            if (pos < distance - BIG_EEL_LENGTH) {
-                pos += BIG_EEL_MOVE;
+        case M_STATE_ATTACK:
+            if (pos < distance - M_LENGTH) {
+                pos += M_MOVE;
             }
-            if (item->required_anim_state == BIG_EEL_STATE_EMPTY
-                && (item->touch_bits & BIG_EEL_TOUCH_BITS) != 0) {
-                Lara_TakeDamage(BIG_EEL_DAMAGE, true);
+            if (item->required_anim_state == M_STATE_EMPTY
+                && (item->touch_bits & M_TOUCH_BITS) != 0) {
+                Lara_TakeDamage(M_GetDamage(item), true);
                 Creature_Effect(item, &m_BigEelBite, Spawn_Blood);
-                item->required_anim_state = BIG_EEL_STATE_STOP;
+                item->required_anim_state = M_STATE_STOP;
             }
             break;
         }
@@ -113,10 +122,13 @@ static void M_Setup(OBJECT *const obj)
     obj->save_hitpoints = true;
     obj->save_flags = true;
     obj->save_anim = true;
+
     OBJECT_PROPERTIES(
         obj,
         OBJECT_PROPERTY_INT(
-            "max_hit_points", BIG_EEL_HITPOINTS, "Maximum hit points."));
+            "max_hit_points", M_HIT_POINTS, "Maximum hit points."),
+        OBJECT_PROPERTY_INT(
+            "damage", M_DAMAGE, "Damage dealt by the big eel bite."));
 }
 
 REGISTER_OBJECT(O_BIG_EEL, M_Setup)

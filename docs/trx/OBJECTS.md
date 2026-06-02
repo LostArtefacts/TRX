@@ -219,6 +219,7 @@ This page lists documented moveable object properties.
 
 ### `27` O_BIG_EEL
 - `max_hit_points = 20` — Maximum hit points.
+- `damage = 500` — Damage dealt by the big eel bite.
 
 ### `28` O_BARRACUDA
 - `max_hit_points = 12` — Maximum hit points.
