@@ -1,26 +1,41 @@
 #include <trx/core/utils.h>
 #include <trx/game/creature.h>
 #include <trx/game/lara.h>
+#include <trx/game/objects/property.h>
 #include <trx/game/pathing.h>
 #include <trx/game/rooms.h>
 #include <trx/game/spawn.h>
 
-#define BAT_ATTACK_DAMAGE 2
-#define BAT_TURN (20 * DEG_1) // = 3640
-#define BAT_HITPOINTS 1
-#define BAT_RADIUS (WALL_L / 10) // = 102
-#define BAT_SMARTNESS 0x400
+// clang-format off
+#define M_HIT_POINTS 1
+#define M_DAMAGE     2
+#define M_RADIUS     (WALL_L / 10) // = 102
+#define M_TURN       (20 * DEG_1) // = 3640
+// clang-format on
 
 typedef enum {
-    BAT_STATE_EMPTY = 0,
-    BAT_STATE_STOP = 1,
-    BAT_STATE_FLY = 2,
-    BAT_STATE_ATTACK = 3,
-    BAT_STATE_FALL = 4,
-    BAT_STATE_DEATH = 5,
-} BAT_STATE;
+    M_STATE_EMPTY,
+    M_STATE_STOP,
+    M_STATE_FLY,
+    M_STATE_ATTACK,
+    M_STATE_FALL,
+    M_STATE_DEATH,
+} M_STATE;
 
-static BITE m_BatBite = { .pos = { 0, 16, 45 }, .mesh_num = 4 };
+static BITE m_BatBite = {
+    .pos = { 0, 16, 45 },
+    .mesh_num = 4,
+};
+
+static int32_t M_GetAttackDamage(const ITEM *const item)
+{
+    OBJECT_PROPERTY_VALUE damage = {};
+    if (ObjectProperty_GetItemValue(item, "damage", &damage)) {
+        return damage.as_int;
+    }
+
+    return M_DAMAGE;
+}
 
 static void M_FixEmbeddedPosition(int16_t item_num)
 {
@@ -65,12 +80,12 @@ static void M_Control(const int16_t item_num)
     if (item->hit_points <= 0) {
         if (item->pos.y < item->floor) {
             item->gravity = true;
-            item->goal_anim_state = BAT_STATE_FALL;
+            item->goal_anim_state = M_STATE_FALL;
             item->speed = 0;
         } else {
             item->gravity = false;
             item->fall_speed = 0;
-            item->goal_anim_state = BAT_STATE_DEATH;
+            item->goal_anim_state = M_STATE_DEATH;
             item->pos.y = item->floor;
         }
         Creature_Animate(item_num, 0, 0);
@@ -79,27 +94,27 @@ static void M_Control(const int16_t item_num)
         AI_INFO info;
         Creature_AIInfo(item, &info);
         Creature_Mood(item, &info, false);
-        angle = Creature_Turn(item, BAT_TURN);
+        angle = Creature_Turn(item, M_TURN);
 
         switch (item->current_anim_state) {
-        case BAT_STATE_STOP:
-            item->goal_anim_state = BAT_STATE_FLY;
+        case M_STATE_STOP:
+            item->goal_anim_state = M_STATE_FLY;
             break;
 
-        case BAT_STATE_FLY:
+        case M_STATE_FLY:
             if (item->touch_bits) {
-                item->goal_anim_state = BAT_STATE_ATTACK;
+                item->goal_anim_state = M_STATE_ATTACK;
                 Creature_Animate(item_num, angle, 0);
                 return;
             }
             break;
 
-        case BAT_STATE_ATTACK:
+        case M_STATE_ATTACK:
             if (item->touch_bits) {
                 Creature_Effect(item, &m_BatBite, Spawn_Blood);
-                Lara_TakeDamage(BAT_ATTACK_DAMAGE, true);
+                Lara_TakeDamage(M_GetAttackDamage(item), true);
             } else {
-                item->goal_anim_state = BAT_STATE_FLY;
+                item->goal_anim_state = M_STATE_FLY;
                 bat->mood = MOOD_BORED;
             }
             break;
@@ -129,8 +144,8 @@ static void M_Setup(OBJECT *const obj)
     obj->collision_func = Creature_Collision;
     obj->shadow_size = UNIT_SHADOW / 2;
 
-    obj->radius = BAT_RADIUS;
-    obj->smartness = BAT_SMARTNESS;
+    obj->radius = M_RADIUS;
+    obj->smartness = 0x400;
     obj->lot_setup = LOT_Setup(LOT_SETUP_FLYER);
     obj->intelligent = true;
     obj->save_position = true;
@@ -140,7 +155,9 @@ static void M_Setup(OBJECT *const obj)
     OBJECT_PROPERTIES(
         obj,
         OBJECT_PROPERTY_INT(
-            "max_hit_points", BAT_HITPOINTS, "Maximum hit points."));
+            "max_hit_points", M_HIT_POINTS, "Maximum hit points."),
+        OBJECT_PROPERTY_INT(
+            "damage", M_DAMAGE, "Damage dealt by the bat attack."));
 }
 
 REGISTER_OBJECT(O_BAT, M_Setup)
