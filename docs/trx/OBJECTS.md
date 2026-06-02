@@ -102,6 +102,7 @@ This page lists documented moveable object properties.
 
 ### `32` O_BALDY
 - `max_hit_points = 200` — Maximum hit points.
+- `damage = 150` — Damage dealt by Baldy's shot.
 
 ### `33` O_NATLA
 - `max_hit_points = 400` — Maximum hit points.

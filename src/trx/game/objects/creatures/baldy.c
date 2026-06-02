@@ -3,36 +3,51 @@
 #include <trx/game/creature.h>
 #include <trx/game/music.h>
 #include <trx/game/objects.h>
+#include <trx/game/objects/property.h>
 #include <trx/game/pathing.h>
 #include <trx/game/spawn.h>
 
-#define BALDY_SHOT_DAMAGE 150
-#define BALDY_WALK_TURN (DEG_1 * 3) // = 546
-#define BALDY_RUN_TURN (DEG_1 * 6) // = 1092
-#define BALDY_WALK_RANGE SQUARE(WALL_L * 4) // = 16777216
-#define BALDY_DIE_ANIM 14
-#define BALDY_HITPOINTS 200
-#define BALDY_RADIUS (WALL_L / 10) // = 102
-#define BALDY_SMARTNESS 0x7FFF
+// clang-format off
+#define M_HIT_POINTS 200
+#define M_DAMAGE     150
+#define M_RADIUS     (WALL_L / 10) // = 102
+#define M_WALK_TURN  (DEG_1 * 3) // = 546
+#define M_RUN_TURN   (DEG_1 * 6) // = 1092
+#define M_WALK_RANGE SQUARE(WALL_L * 4) // = 16777216
+// clang-format on
 
 typedef enum {
-    BALDY_STATE_EMPTY = 0,
-    BALDY_STATE_STOP = 1,
-    BALDY_STATE_WALK = 2,
-    BALDY_STATE_RUN = 3,
-    BALDY_STATE_AIM = 4,
-    BALDY_STATE_DEATH = 5,
-    BALDY_STATE_SHOOT = 6,
-} BALDY_STATE;
+    M_STATE_EMPTY,
+    M_STATE_STOP,
+    M_STATE_WALK,
+    M_STATE_RUN,
+    M_STATE_AIM,
+    M_STATE_DEATH,
+    M_STATE_SHOOT,
+} M_STATE;
+
+typedef enum {
+    M_ANIM_DEATH = 14,
+} M_ANIM;
 
 static const CREATURE_GUN m_BaldyGun = {
     .muzzle = { .pos = { -20, 440, 20 }, .mesh_num = 9 },
 };
 
+static int32_t M_GetShotDamage(const ITEM *const item)
+{
+    OBJECT_PROPERTY_VALUE damage = {};
+    if (ObjectProperty_GetItemValue(item, "damage", &damage)) {
+        return damage.as_int;
+    }
+
+    return M_DAMAGE;
+}
+
 static void M_Initialise(const int16_t item_num)
 {
     Creature_Initialise(item_num);
-    Item_Get(item_num)->current_anim_state = BALDY_STATE_RUN;
+    Item_Get(item_num)->current_anim_state = M_STATE_RUN;
 }
 
 static void M_HandleSave(ITEM *const item, const SAVEGAME_STAGE stage)
@@ -60,9 +75,9 @@ static void M_Control(const int16_t item_num)
     int16_t tilt = 0;
 
     if (item->hit_points <= 0) {
-        if (item->current_anim_state != BALDY_STATE_DEATH) {
-            item->current_anim_state = BALDY_STATE_DEATH;
-            Item_SwitchToAnim(item, BALDY_DIE_ANIM, 0);
+        if (item->current_anim_state != M_STATE_DEATH) {
+            item->current_anim_state = M_STATE_DEATH;
+            Item_SwitchToAnim(item, M_ANIM_DEATH, 0);
         }
     } else {
         AI_INFO info;
@@ -77,66 +92,66 @@ static void M_Control(const int16_t item_num)
         angle = Creature_Turn(item, baldy->maximum_turn);
 
         switch (item->current_anim_state) {
-        case BALDY_STATE_STOP:
+        case M_STATE_STOP:
             if (item->required_anim_state) {
                 item->goal_anim_state = item->required_anim_state;
             } else if (Creature_CanTargetEnemy(item, &info)) {
-                item->goal_anim_state = BALDY_STATE_AIM;
+                item->goal_anim_state = M_STATE_AIM;
             } else if (baldy->mood == MOOD_BORED) {
-                item->goal_anim_state = BALDY_STATE_WALK;
+                item->goal_anim_state = M_STATE_WALK;
             } else {
-                item->goal_anim_state = BALDY_STATE_RUN;
+                item->goal_anim_state = M_STATE_RUN;
             }
             break;
 
-        case BALDY_STATE_WALK:
-            baldy->maximum_turn = BALDY_WALK_TURN;
+        case M_STATE_WALK:
+            baldy->maximum_turn = M_WALK_TURN;
             if (baldy->mood == MOOD_ESCAPE || !info.ahead) {
-                item->required_anim_state = BALDY_STATE_RUN;
-                item->goal_anim_state = BALDY_STATE_STOP;
+                item->required_anim_state = M_STATE_RUN;
+                item->goal_anim_state = M_STATE_STOP;
             } else if (Creature_CanTargetEnemy(item, &info)) {
-                item->required_anim_state = BALDY_STATE_AIM;
-                item->goal_anim_state = BALDY_STATE_STOP;
-            } else if (info.distance > BALDY_WALK_RANGE) {
-                item->required_anim_state = BALDY_STATE_RUN;
-                item->goal_anim_state = BALDY_STATE_STOP;
+                item->required_anim_state = M_STATE_AIM;
+                item->goal_anim_state = M_STATE_STOP;
+            } else if (info.distance > M_WALK_RANGE) {
+                item->required_anim_state = M_STATE_RUN;
+                item->goal_anim_state = M_STATE_STOP;
             }
             break;
 
-        case BALDY_STATE_RUN:
-            baldy->maximum_turn = BALDY_RUN_TURN;
+        case M_STATE_RUN:
+            baldy->maximum_turn = M_RUN_TURN;
             tilt = angle / 2;
             if (baldy->mood != MOOD_ESCAPE || info.ahead) {
                 if (Creature_CanTargetEnemy(item, &info)) {
-                    item->required_anim_state = BALDY_STATE_AIM;
-                    item->goal_anim_state = BALDY_STATE_STOP;
-                } else if (info.ahead && info.distance < BALDY_WALK_RANGE) {
-                    item->required_anim_state = BALDY_STATE_WALK;
-                    item->goal_anim_state = BALDY_STATE_STOP;
+                    item->required_anim_state = M_STATE_AIM;
+                    item->goal_anim_state = M_STATE_STOP;
+                } else if (info.ahead && info.distance < M_WALK_RANGE) {
+                    item->required_anim_state = M_STATE_WALK;
+                    item->goal_anim_state = M_STATE_STOP;
                 }
             }
             break;
 
-        case BALDY_STATE_AIM:
+        case M_STATE_AIM:
             baldy->flags = 0;
             if (item->required_anim_state) {
-                item->goal_anim_state = BALDY_STATE_STOP;
+                item->goal_anim_state = M_STATE_STOP;
             } else if (Creature_CanTargetEnemy(item, &info)) {
-                item->goal_anim_state = BALDY_STATE_SHOOT;
+                item->goal_anim_state = M_STATE_SHOOT;
             } else {
-                item->goal_anim_state = BALDY_STATE_STOP;
+                item->goal_anim_state = M_STATE_STOP;
             }
             break;
 
-        case BALDY_STATE_SHOOT:
+        case M_STATE_SHOOT:
             if (!baldy->flags) {
                 info.distance /= 2;
                 Creature_Shoot(
-                    item, &info, &m_BaldyGun, head, BALDY_SHOT_DAMAGE);
+                    item, &info, &m_BaldyGun, head, M_GetShotDamage(item));
                 baldy->flags = 1;
             }
             if (baldy->mood == MOOD_ESCAPE) {
-                item->required_anim_state = BALDY_STATE_RUN;
+                item->required_anim_state = M_STATE_RUN;
             }
             break;
         }
@@ -158,8 +173,8 @@ static void M_Setup(OBJECT *const obj)
     obj->collision_func = Creature_Collision;
     obj->shadow_size = UNIT_SHADOW / 2;
 
-    obj->radius = BALDY_RADIUS;
-    obj->smartness = BALDY_SMARTNESS;
+    obj->radius = M_RADIUS;
+    obj->smartness = 0x7FFF;
     obj->intelligent = true;
     obj->save_position = true;
     obj->save_hitpoints = true;
@@ -170,7 +185,9 @@ static void M_Setup(OBJECT *const obj)
     OBJECT_PROPERTIES(
         obj,
         OBJECT_PROPERTY_INT(
-            "max_hit_points", BALDY_HITPOINTS, "Maximum hit points."));
+            "max_hit_points", M_HIT_POINTS, "Maximum hit points."),
+        OBJECT_PROPERTY_INT(
+            "damage", M_DAMAGE, "Damage dealt by Baldy's shot."));
 }
 
 REGISTER_OBJECT(O_BALDY, M_Setup)
