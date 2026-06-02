@@ -18,6 +18,7 @@
     - `O_ATLANTEAN_SHOOTER`
     - `O_ATLANTEAN_GROUND`
     - `O_BALDY`
+    - `O_BANDIT_1`
 - changed the hard-coded traps damage to be configurable via Lua. Objects affected:
     - `O_BLADE`
     - `O_CEILING_SPIKES`
