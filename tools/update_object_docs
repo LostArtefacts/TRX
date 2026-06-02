@@ -262,12 +262,79 @@ def find_function_body(source: str, func_name: str) -> str | None:
     return source[body_start : idx - 1]
 
 
+def read_function_bodies(source: str) -> dict[str, str]:
+    bodies: dict[str, str] = {}
+    pattern = re.compile(
+        r"\b([A-Za-z_]\w*)\s*\([^;{}]*\)\s*\{",
+        re.MULTILINE,
+    )
+    for match in pattern.finditer(source):
+        func_name = match.group(1)
+        body_start = match.end()
+        depth = 1
+        in_string = False
+        escaped = False
+        idx = body_start
+        while idx < len(source) and depth != 0:
+            char = source[idx]
+            if in_string:
+                if escaped:
+                    escaped = False
+                elif char == "\\":
+                    escaped = True
+                elif char == '"':
+                    in_string = False
+            elif char == '"':
+                in_string = True
+            elif char == "{":
+                depth += 1
+            elif char == "}":
+                depth -= 1
+            idx += 1
+        bodies[func_name] = source[body_start : idx - 1]
+    return bodies
+
+
+def collect_object_property_declarations(
+    func_name: str, function_bodies: dict[str, str], visited: set[str] | None = None
+) -> list[PropertyInfo]:
+    if visited is None:
+        visited = set()
+    if func_name in visited:
+        return []
+    body = function_bodies.get(func_name)
+    if body is None:
+        return []
+
+    visited.add(func_name)
+    declarations: list[PropertyInfo] = []
+    for props_args in iter_macro_calls(body, "OBJECT_PROPERTIES"):
+        props_parts = split_args(props_args)
+        if len(props_parts) < 2:
+            continue
+        decl_text = "{" + ", ".join(props_parts[1:]) + "}"
+        declarations.extend(iter_object_property_declarations(decl_text))
+
+    call_pattern = re.compile(r"\b([A-Za-z_]\w*)\s*\(")
+    for match in call_pattern.finditer(body):
+        callee = match.group(1)
+        if callee in function_bodies:
+            declarations.extend(
+                collect_object_property_declarations(
+                    callee, function_bodies, visited
+                )
+            )
+
+    return declarations
+
+
 def read_registered_properties() -> dict[str, PropertyMap]:
     result: dict[str, PropertyMap] = {}
     global_constants = read_global_constants()
     for path in read_source_files():
         source = strip_comments(path.read_text())
         constants = global_constants | read_local_constants(source)
+        function_bodies = read_function_bodies(source)
         registrations: list[tuple[str, list[PropertyInfo]]] = []
 
         # map func_name -> [object_id, ...] from REGISTER_OBJECT(id, func) calls
@@ -280,17 +347,11 @@ def read_registered_properties() -> dict[str, PropertyMap]:
             func_to_objects.setdefault(func_name, []).append(object_id)
 
         for func_name, object_ids in func_to_objects.items():
-            body = find_function_body(source, func_name)
-            if body is None:
+            if func_name not in function_bodies:
                 continue
-            declarations: list[PropertyInfo] = []
-            for props_args in iter_macro_calls(body, "OBJECT_PROPERTIES"):
-                props_parts = split_args(props_args)
-                if len(props_parts) < 2:
-                    continue
-                # args: obj, prop1, prop2, ... — join everything after obj
-                decl_text = "{" + ", ".join(props_parts[1:]) + "}"
-                declarations.extend(iter_object_property_declarations(decl_text))
+            declarations = collect_object_property_declarations(
+                func_name, function_bodies
+            )
             for object_id in object_ids:
                 registrations.append((object_id, declarations))
 

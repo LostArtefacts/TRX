@@ -14,6 +14,9 @@
 - changed hard-coded small Cobra radius setup to be configurable via Lua
 - changed the hard-coded creature damage to be configurable via Lua. Objects affected:
     - `O_APE`
+    - `O_ATLANTEAN_WINGED`
+    - `O_ATLANTEAN_SHOOTER`
+    - `O_ATLANTEAN_GROUND`
 - changed the hard-coded traps damage to be configurable via Lua. Objects affected:
     - `O_BLADE`
     - `O_CEILING_SPIKES`
