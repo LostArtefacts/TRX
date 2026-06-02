@@ -271,9 +271,11 @@ This page lists documented moveable object properties.
 
 ### `49` O_BANDIT_2
 - `max_hit_points = 50` — Maximum hit points.
+- `damage = 50` — Damage dealt by the bandit's shot.
 
 ### `50` O_BANDIT_2B
 - `max_hit_points = 50` — Maximum hit points.
+- `damage = 50` — Damage dealt by the bandit's shot.
 
 ### `51` O_SKIDOO_ARMED
 - `max_hit_points = 100` — Maximum hit points.
