@@ -271,6 +271,7 @@ This page lists documented moveable object properties.
 
 ### `46` O_BIRD_GUARDIAN
 - `max_hit_points = 200` — Maximum hit points.
+- `damage = 200` — Damage dealt by the bird guardian punch.
 
 ### `47` O_EAGLE
 - `max_hit_points = 20` — Maximum hit points.
