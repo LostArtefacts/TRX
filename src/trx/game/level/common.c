@@ -7,6 +7,7 @@
 #include <trx/game/game.h>
 #include <trx/game/game_strings/table.h>
 #include <trx/game/gym.h>
+#include <trx/game/items.h>
 #include <trx/game/lara.h>
 #include <trx/game/level.h>
 #include <trx/game/lua.h>
@@ -33,6 +34,9 @@ void Level_Unload(void)
     Gym_TrackManager_Reset(GYM_TRACK_QUAD);
     Creature_Reset();
     Anim_Reset();
+    for (int32_t i = 0; i < Item_GetTotalCount(); i++) {
+        ObjectProperty_ResetItem(Item_Get(i));
+    }
     Object_Reset();
     Camera_Reset();
     Walkable_Reset();
@@ -70,6 +74,7 @@ bool Level_Initialise(
             resume->stats.timer = 0;
             resume->stats.secret_flags = 0;
             resume->stats.secret_count = 0;
+            resume->stats.crystal_count = 0;
             resume->stats.pickup_count = 0;
             resume->stats.kill_count = 0;
             resume->stats.ammo_hits = 0;

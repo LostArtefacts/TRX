@@ -7,6 +7,7 @@
 #include <trx/game/lara.h>
 #include <trx/game/music.h>
 #include <trx/game/objects.h>
+#include <trx/game/objects/vehicles/common.h>
 #include <trx/game/output.h>
 #include <trx/game/rooms.h>
 #include <trx/game/sound.h>
@@ -267,7 +268,7 @@ static void M_Collision(
     p->flags.stopped = false;
     p->flags.suppress_anim = false;
 
-    Music_Play(MX_MINE_CART_THEME, MPM_ONCE);
+    Vehicle_PlayTrackPool(item, "track", MPM_ONCE);
 }
 
 static void M_CheckStrikeSwitch(ITEM *const item)
@@ -867,6 +868,18 @@ static void M_Setup(OBJECT *const obj)
     obj->save_anim = true;
     obj->save_flags = true;
     obj->save_position = true;
+
+    OBJECT_PROPERTIES(
+        obj,
+        OBJECT_PROPERTY_INT(
+            "track_1", Music_ToGameID(MX_MINE_CART_THEME),
+            "Random music track pool, slot 1. -1 = disabled."),
+        OBJECT_PROPERTY_INT(
+            "track_2", -1, "Random music track pool, slot 2. -1 = disabled."),
+        OBJECT_PROPERTY_INT(
+            "track_3", -1, "Random music track pool, slot 3. -1 = disabled."),
+        OBJECT_PROPERTY_INT(
+            "track_4", -1, "Random music track pool, slot 4. -1 = disabled."));
 }
 
 bool MineCart_Control(void)

@@ -1,3 +1,5 @@
+#include <trx/game/objects/vehicles/common.h>
+
 #include <trx/config.h>
 #include <trx/core/utils.h>
 #include <trx/game/camera.h>
@@ -6,12 +8,16 @@
 #include <trx/game/game.h>
 #include <trx/game/game_flow.h>
 #include <trx/game/game_strings/table.h>
+#include <trx/game/items/enum.h>
 #include <trx/game/lara.h>
 #include <trx/game/level.h>
 #include <trx/game/music.h>
 #include <trx/game/objects/vars.h>
 #include <trx/game/output.h>
+#include <trx/game/random.h>
 #include <trx/game/viewport.h>
+
+#include <stdio.h>
 
 typedef enum {
     LA_VEHICLE_HIT_LEFT = 11,
@@ -19,6 +25,31 @@ typedef enum {
     LA_VEHICLE_HIT_FRONT = 13,
     LA_VEHICLE_HIT_BACK = 14,
 } LARA_ANIM_VEHICLE;
+
+static int32_t M_LoadTrackPool(
+    const ITEM *const item, const char *const key_prefix,
+    MUSIC_ID *const out_tracks, const int32_t max_tracks)
+{
+    if (item == nullptr || key_prefix == nullptr || out_tracks == nullptr
+        || max_tracks <= 0) {
+        return 0;
+    }
+
+    int32_t track_count = 0;
+    for (int32_t i = 0; i < VEHICLE_TRACK_POOL_SIZE && track_count < max_tracks;
+         i++) {
+        char key[32];
+        snprintf(key, sizeof(key), "%s_%d", key_prefix, i + 1);
+
+        OBJECT_PROPERTY_VALUE value = {};
+        if (ObjectProperty_GetItemValue(item, key, &value)
+            && value.as_int >= 0) {
+            out_tracks[track_count++] = value.as_int;
+        }
+    }
+
+    return track_count;
+}
 
 int32_t Vehicle_DoShift(
     ITEM *const vehicle, const XYZ_32 *const pos, const XYZ_32 *const old)
@@ -133,4 +164,38 @@ int32_t Vehicle_GetCollisionAnim(const ITEM *const vehicle, XYZ_32 *const moved)
     }
 
     return 0;
+}
+
+void Vehicle_PlayTrackPool(
+    const ITEM *const item, const char *const key_prefix,
+    const MUSIC_PLAY_MODE mode)
+{
+    MUSIC_ID tracks[VEHICLE_TRACK_POOL_SIZE];
+    const int32_t track_count =
+        M_LoadTrackPool(item, key_prefix, tracks, ARRAY_SIZE(tracks));
+    if (track_count <= 0) {
+        return;
+    }
+    Music_Play_Direct(tracks[Random_GetControl() % track_count], mode);
+}
+
+void Vehicle_PlayOneShotTrackPool(
+    const ITEM *const item, const char *const key_prefix)
+{
+    MUSIC_ID tracks[VEHICLE_TRACK_POOL_SIZE];
+    const int32_t track_count =
+        M_LoadTrackPool(item, key_prefix, tracks, ARRAY_SIZE(tracks));
+    if (track_count <= 0) {
+        return;
+    }
+
+    for (int32_t i = 0; i < track_count; i++) {
+        if ((Music_GetTrackFlags(tracks[i]) & IF_ONE_SHOT) != 0) {
+            return;
+        }
+    }
+
+    const MUSIC_ID track = tracks[Random_GetControl() % track_count];
+    Music_Play_Direct(track, MPM_ONCE);
+    Music_SetTrackFlags(track, Music_GetTrackFlags(track) | IF_ONE_SHOT);
 }

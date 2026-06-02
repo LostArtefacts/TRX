@@ -12,6 +12,7 @@
 #include <trx/game/lara.h>
 #include <trx/game/music.h>
 #include <trx/game/objects.h>
+#include <trx/game/objects/vehicles/common.h>
 #include <trx/game/random.h>
 #include <trx/game/rooms.h>
 #include <trx/game/sound.h>
@@ -94,8 +95,6 @@ typedef struct {
 
 typedef struct {
     M_QUAD_BIKE_INFO quad;
-    MUSIC_ID music_tracks[4];
-    int32_t music_track_count;
     int16_t *extra_rotation;
     int32_t extra_rotation_count;
     int32_t rear_rot_x_idx[2];
@@ -211,15 +210,6 @@ static void M_Initialise(const int16_t item_num)
     M_PRIV *const p = item->priv;
 
     p->quad.momentum_angle = item->rot.y;
-    p->music_track_count = 0;
-    const char *const keys[4] = { "track_1", "track_2", "track_3", "track_4" };
-    for (int32_t i = 0; i < 4; i++) {
-        OBJECT_PROPERTY_VALUE val = {};
-        ObjectProperty_GetItemValue(item, keys[i], &val);
-        if (val.as_int >= 0) {
-            p->music_tracks[p->music_track_count++] = val.as_int;
-        }
-    }
 
     const OBJECT *const obj = Object_Get(item->object_id);
     M_CalcExtraRotationLayout(obj, p);
@@ -336,10 +326,8 @@ static void M_Collision(
     {
         const bool is_ambient =
             Music_GetCurrentPlayingTrack() == Music_GetCurrentLoopedTrack();
-        if (is_ambient && p->music_track_count > 0) {
-            Music_Play_Direct(
-                p->music_tracks[Random_GetControl() % p->music_track_count],
-                MPM_ONCE);
+        if (is_ambient) {
+            Vehicle_PlayTrackPool(item, "track", MPM_ONCE);
         }
     }
 

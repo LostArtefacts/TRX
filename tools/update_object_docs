@@ -14,9 +14,24 @@ OUTPUT = ROOT / "docs/trx/OBJECTS.md"
 HEADER_SOURCE = ROOT / "src/trx/game"
 
 GAMES = [
-    ("Tomb Raider 1", 1, ROOT / "data/trx/ship/games/tr1/catalog_objects.csv"),
-    ("Tomb Raider 2", 2, ROOT / "data/trx/ship/games/tr2/catalog_objects.csv"),
-    ("Tomb Raider 3", 3, ROOT / "data/trx/ship/games/tr3/catalog_objects.csv"),
+    (
+        "Tomb Raider 1",
+        1,
+        ROOT / "data/trx/ship/games/tr1/catalog_objects.csv",
+        ROOT / "data/trx/ship/games/tr1/catalog_music.csv",
+    ),
+    (
+        "Tomb Raider 2",
+        2,
+        ROOT / "data/trx/ship/games/tr2/catalog_objects.csv",
+        ROOT / "data/trx/ship/games/tr2/catalog_music.csv",
+    ),
+    (
+        "Tomb Raider 3",
+        3,
+        ROOT / "data/trx/ship/games/tr3/catalog_objects.csv",
+        ROOT / "data/trx/ship/games/tr3/catalog_music.csv",
+    ),
 ]
 
 PropertyInfo = dict[str, str]
@@ -298,6 +313,17 @@ def read_catalog(path: Path) -> list[tuple[str, str]]:
     return rows
 
 
+def read_music_catalog(path: Path) -> dict[str, str]:
+    rows: dict[str, str] = {}
+    with path.open(newline="") as fh:
+        for row in csv.reader(fh, skipinitialspace=True):
+            if len(row) < 2:
+                continue
+            game_id, music_id = row[:2]
+            rows[music_id.strip()] = game_id.strip()
+    return rows
+
+
 def resolve_identifiers(expr: str, constants: dict[str, str], game_version: int) -> str:
     expr = expr.replace("g_TRVersion", str(game_version))
     for _ in range(16):
@@ -326,8 +352,41 @@ def convert_ternary(expr: str) -> str:
         )
 
 
+class MusicToGameIDTransformer(ast.NodeTransformer):
+    def __init__(self, music_catalog: dict[str, str]) -> None:
+        self.music_catalog = music_catalog
+
+    @staticmethod
+    def get_music_symbol(node: ast.AST) -> str | None:
+        if not isinstance(node, ast.Call):
+            return None
+        if not isinstance(node.func, ast.Name) or node.func.id != "Music_ToGameID":
+            return None
+        if len(node.args) != 1 or node.keywords:
+            return None
+        arg = node.args[0]
+        if not isinstance(arg, ast.Name):
+            return None
+        return arg.id
+
+    def visit_Call(self, node: ast.Call) -> ast.AST:
+        self.generic_visit(node)
+
+        music_symbol = self.get_music_symbol(node)
+        if music_symbol is None:
+            return node
+
+        mapped_id = self.music_catalog.get(music_symbol)
+        if mapped_id is None:
+            return node
+        return ast.copy_location(ast.Constant(value=int(mapped_id)), node)
+
+
 def evaluate_expression(
-    expr: str, constants: dict[str, str], game_version: int
+    expr: str,
+    constants: dict[str, str],
+    game_version: int,
+    music_catalog: dict[str, str],
 ) -> str:
     expr = convert_ternary(resolve_identifiers(expr, constants, game_version))
     try:
@@ -335,30 +394,24 @@ def evaluate_expression(
     except SyntaxError:
         return expr
 
+    tree = MusicToGameIDTransformer(music_catalog).visit(tree)
+    ast.fix_missing_locations(tree)
+
     allowed_nodes = (
         ast.Expression,
         ast.Constant,
+        ast.Call,
+        ast.Name,
+        ast.Load,
         ast.UnaryOp,
         ast.BinOp,
         ast.BoolOp,
         ast.Compare,
         ast.IfExp,
-        ast.USub,
-        ast.UAdd,
-        ast.Add,
-        ast.Sub,
-        ast.Mult,
-        ast.Div,
-        ast.FloorDiv,
-        ast.Mod,
-        ast.Eq,
-        ast.NotEq,
-        ast.Lt,
-        ast.LtE,
-        ast.Gt,
-        ast.GtE,
-        ast.And,
-        ast.Or,
+        ast.unaryop,
+        ast.operator,
+        ast.boolop,
+        ast.cmpop,
     )
     if not all(isinstance(node, allowed_nodes) for node in ast.walk(tree)):
         return expr
@@ -372,8 +425,20 @@ def evaluate_expression(
     return str(value)
 
 
+def extract_music_symbol(expr: str) -> str | None:
+    try:
+        tree = ast.parse(expr, mode="eval")
+    except SyntaxError:
+        return None
+
+    return MusicToGameIDTransformer.get_music_symbol(tree.body)
+
+
 def format_value(
-    object_properties: PropertyMap, name: str, game_version: int
+    object_properties: PropertyMap,
+    name: str,
+    game_version: int,
+    music_catalog: dict[str, str],
 ) -> str | None:
     if name not in object_properties:
         return None
@@ -384,17 +449,22 @@ def format_value(
     if not isinstance(info, dict):
         return None
     expr = info["value"]
-    value = evaluate_expression(expr, constants, game_version)
+    value = evaluate_expression(expr, constants, game_version, music_catalog)
     return value
 
 
 def format_property(
-    object_properties: PropertyMap, name: str, game_version: int
+    object_properties: PropertyMap,
+    name: str,
+    game_version: int,
+    music_catalog: dict[str, str],
 ) -> str | None:
-    value = format_value(object_properties, name, game_version)
+    value = format_value(object_properties, name, game_version, music_catalog)
     info = object_properties[name]
     if value is None or not isinstance(info, dict):
         return None
+    if (music_symbol := extract_music_symbol(info["value"])) is not None:
+        value = f"{value} ({music_symbol})"
     return f"- `{name} = {value}` — {info['description']}"
 
 
@@ -412,7 +482,8 @@ def main() -> None:
         "This page lists documented moveable object properties.",
     ]
 
-    for game_name, game_version, catalog_path in GAMES:
+    for game_name, game_version, catalog_path, music_catalog_path in GAMES:
+        music_catalog = read_music_catalog(music_catalog_path)
         lines.extend(["", f"## {game_name}"])
         for game_id, object_id in read_catalog(catalog_path):
             object_properties = registered_properties.get(object_id)
@@ -426,7 +497,11 @@ def main() -> None:
             property_lines = [
                 line
                 for name in property_names
-                if (line := format_property(object_properties, name, game_version))
+                if (
+                    line := format_property(
+                        object_properties, name, game_version, music_catalog
+                    )
+                )
                 is not None
             ]
             if not property_lines:

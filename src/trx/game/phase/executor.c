@@ -225,7 +225,7 @@ GF_COMMAND PhaseExecutor_Run(PHASE *const phase)
     PHASE *const prev_phase =
         m_PhaseStackSize > 0 ? m_PhaseStack[m_PhaseStackSize - 1] : nullptr;
     if (prev_phase != nullptr && prev_phase->suspend != nullptr) {
-        prev_phase->suspend(phase);
+        prev_phase->suspend(prev_phase);
     }
     m_PhaseStack[m_PhaseStackSize++] = phase;
 
@@ -317,7 +317,7 @@ finish:
 
     if (prev_phase != nullptr && prev_phase->resume != nullptr) {
         Clock_SyncTick();
-        prev_phase->resume(phase);
+        prev_phase->resume(prev_phase);
     }
     m_PhaseStackSize--;
 

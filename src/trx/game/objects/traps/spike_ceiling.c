@@ -1,5 +1,3 @@
-#include <trx/core/json/util/read_io.h>
-#include <trx/core/json/util/write_io.h>
 #include <trx/game/lara.h>
 #include <trx/game/objects/common.h>
 #include <trx/game/objects/property.h>
@@ -9,27 +7,21 @@
 #include <trx/game/spawn.h>
 
 #define M_DEFAULT_DAMAGE 20
-#define M_SPEED 1
-#define M_STEP_SLOW 5
-#define M_STEP_FAST 10
+#define M_BLOOD_SPEED 1
+#define M_DEFAULT_SPEED 5
 
 typedef struct {
-    int32_t step;
-    bool animate;
+    int32_t speed;
 } M_PRIV;
 
-static void M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
+static int32_t M_GetSpeed(const ITEM *const item)
 {
-    M_PRIV *const p = item->priv;
-    JSON_SHOULD(JSON_READ(io, "step", &p->step));
-    JSON_SHOULD(JSON_READ(io, "animate", &p->animate));
-}
+    OBJECT_PROPERTY_VALUE speed = {};
+    if (ObjectProperty_GetItemValue(item, "speed", &speed)) {
+        return speed.as_int;
+    }
 
-static void M_SavePriv(const ITEM *const item, JSON_WRITE_IO *const io)
-{
-    const M_PRIV *const p = item->priv;
-    JSONW_WRITE(io, "step", p->step);
-    JSONW_WRITE(io, "animate", p->animate);
+    return M_DEFAULT_SPEED;
 }
 
 static bool M_Trigger(ITEM *const item, const TRIGGER *const trigger)
@@ -44,13 +36,6 @@ static bool M_Trigger(ITEM *const item, const TRIGGER *const trigger)
     }
 
     item->timer = 0;
-    if (trigger->timer == 1) {
-        p->step = M_STEP_FAST;
-        p->animate = true;
-    } else {
-        p->step = M_STEP_SLOW;
-        p->animate = false;
-    }
     return true;
 }
 
@@ -59,19 +44,15 @@ static void M_Initialise(const int16_t item_num)
     Trap_Initialise(item_num);
     ITEM *const item = Item_Get(item_num);
     M_PRIV *const p = item->priv;
-    if (p != nullptr) {
-        p->step = M_STEP_SLOW;
-        p->animate = false;
-    }
+    p->speed = M_GetSpeed(item);
 }
 
 static void M_Move(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
     const M_PRIV *const p = item->priv;
-    const int32_t step = (p != nullptr && p->step > 0) ? p->step : M_STEP_SLOW;
     int16_t room_num = item->room_num;
-    const XYZ_32 pos = { item->pos.x, item->pos.y + step, item->pos.z };
+    const XYZ_32 pos = { item->pos.x, item->pos.y + p->speed, item->pos.z };
     const SECTOR *const sector = Room_GetSector(pos, &room_num);
     if (Room_GetHeight(sector, pos) < pos.y + WALL_L) {
         item->status = IS_DEACTIVATED;
@@ -99,8 +80,8 @@ static void M_HitLara(ITEM *const item)
 
     const ITEM *const lara_item = Lara_GetItem();
     Spawn_BloodBath(
-        lara_item->pos.x, item->pos.y + LARA_HEIGHT, lara_item->pos.z, M_SPEED,
-        item->rot.y, lara_item->room_num, 3);
+        lara_item->pos.x, item->pos.y + LARA_HEIGHT, lara_item->pos.z,
+        M_BLOOD_SPEED, item->rot.y, lara_item->room_num, 3);
     item->touch_bits = 0;
 
     Sound_Effect(SFX_LARA_FLESH_WOUND, &item->pos, SPM_NORMAL);
@@ -121,10 +102,7 @@ static void M_Control(const int16_t item_num)
     }
 
     if (Item_IsTriggerActive(item) && item->status != IS_DEACTIVATED) {
-        const M_PRIV *const p = item->priv;
-        if (p != nullptr && p->animate) {
-            Item_Animate(item);
-        }
+        Item_Animate(item);
     }
 }
 
@@ -134,13 +112,14 @@ static void M_Setup(OBJECT *const obj)
     obj->control_func = M_Control;
     obj->collision_func = Object_Collision_Trap;
     obj->priv_size = sizeof(M_PRIV);
-    obj->trigger_func = M_Trigger;
-    obj->priv_load_func = M_LoadPriv;
-    obj->priv_save_func = M_SavePriv;
     obj->save_position = true;
     obj->save_flags = true;
+    obj->trigger_func = M_Trigger;
     OBJECT_PROPERTIES(
         obj,
+        OBJECT_PROPERTY_INT(
+            "speed", M_DEFAULT_SPEED,
+            "Offset applied each frame while the ceiling spikes descend."),
         OBJECT_PROPERTY_INT(
             "damage", M_DEFAULT_DAMAGE,
             "Damage dealt while Lara is touching the ceiling spikes."));

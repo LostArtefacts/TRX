@@ -10,7 +10,6 @@
 #include <trx/game/input.h>
 #include <trx/game/lara.h>
 #include <trx/game/matrix.h>
-#include <trx/game/music.h>
 #include <trx/game/objects/common.h>
 #include <trx/game/objects/vehicles/common.h>
 #include <trx/game/objects/vehicles/skidoo_armed.h>
@@ -636,13 +635,8 @@ void Skidoo_Animation(
         break;
 
     case M_STATE_STILL: {
-        const int32_t music_track = Music_ToGameID(
-            M_IsArmed(skidoo_data) ? MX_BATTLE_THEME : MX_SKIDOO_THEME);
-        const uint16_t music_flags = Music_GetTrackFlags(music_track);
-        if (!(music_flags & IF_ONE_SHOT)) {
-            Music_Play_Direct(music_track, MPM_ONCE);
-            Music_SetTrackFlags(music_track, music_flags | IF_ONE_SHOT);
-        }
+        Vehicle_PlayOneShotTrackPool(
+            skidoo, M_IsArmed(skidoo_data) ? "battle_track" : "track");
 
         if (dead) {
             lara_item->goal_anim_state = M_STATE_DEATH;

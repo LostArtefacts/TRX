@@ -345,6 +345,7 @@ static void M_SetupShooter(OBJECT *const obj)
         return;
     }
     *obj = *Object_Get(O_ATLANTEAN_WINGED);
+    obj->properties = (OBJECT_PROPERTY_SET) {};
     obj->setup_func = M_SetupShooter;
     obj->initialise_func = M_InitialiseGround;
     obj->smartness = M_SHOOTER_SMARTNESS;
@@ -361,6 +362,7 @@ static void M_SetupGround(OBJECT *const obj)
         return;
     }
     *obj = *Object_Get(O_ATLANTEAN_WINGED);
+    obj->properties = (OBJECT_PROPERTY_SET) {};
     obj->setup_func = M_SetupGround;
     obj->initialise_func = M_InitialiseGround;
     obj->lot_setup = LOT_Setup(LOT_SETUP_DEFAULT);

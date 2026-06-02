@@ -2,10 +2,33 @@
 #include <trx/game/camera.h>
 #include <trx/game/lara.h>
 #include <trx/game/objects.h>
+#include <trx/game/objects/property.h>
 #include <trx/game/objects/traps/common.h>
 #include <trx/game/rooms.h>
 
-#define M_SPEED 25
+#define M_DEFAULT_SPEED 25
+
+typedef struct {
+    int32_t speed;
+} M_PRIV;
+
+static int32_t M_GetSpeed(const ITEM *const item)
+{
+    OBJECT_PROPERTY_VALUE speed = {};
+    if (ObjectProperty_GetItemValue(item, "speed", &speed)) {
+        return speed.as_int;
+    }
+
+    return M_DEFAULT_SPEED;
+}
+
+static void M_Initialise(const int16_t item_num)
+{
+    Trap_Initialise(item_num);
+    ITEM *const item = Item_Get(item_num);
+    M_PRIV *const p = item->priv;
+    p->speed = M_GetSpeed(item);
+}
 
 static void M_Control(const int16_t item_num)
 {
@@ -21,23 +44,24 @@ static void M_Control(const int16_t item_num)
     Item_UpdateRoom(item_num, room_num);
 
     if (item->status != IS_DEACTIVATED) {
+        const M_PRIV *const p = item->priv;
         XYZ_32 pos = item->pos;
 
         switch (item->rot.y) {
         case 0:
-            item->pos.z += M_SPEED;
+            item->pos.z += p->speed;
             pos.z += 2 * WALL_L;
             break;
         case -DEG_180:
-            item->pos.z -= M_SPEED;
+            item->pos.z -= p->speed;
             pos.z -= 2 * WALL_L;
             break;
         case DEG_90:
-            item->pos.x += M_SPEED;
+            item->pos.x += p->speed;
             pos.x += 2 * WALL_L;
             break;
         default:
-            item->pos.x -= M_SPEED;
+            item->pos.x -= p->speed;
             pos.x -= 2 * WALL_L;
             break;
         }
@@ -72,12 +96,18 @@ static void M_Control(const int16_t item_num)
 
 static void M_Setup(OBJECT *const obj)
 {
-    obj->initialise_func = Trap_Initialise;
+    obj->initialise_func = M_Initialise;
     obj->control_func = M_Control;
     obj->collision_func = Object_Collision;
+    obj->priv_size = sizeof(M_PRIV);
     obj->save_position = true;
     obj->save_anim = true;
     obj->save_flags = true;
+    OBJECT_PROPERTIES(
+        obj,
+        OBJECT_PROPERTY_INT(
+            "speed", M_DEFAULT_SPEED,
+            "Offset applied each frame while the lava wedge advances."));
 }
 
 REGISTER_OBJECT(O_LAVA_WEDGE, M_Setup)
