@@ -10,13 +10,15 @@
 #include <trx/game/savegame.h>
 #include <trx/game/stats.h>
 
-#define MUMMY_HITPOINTS 18
+// clang-format off
+#define M_HIT_POINTS 18
+// clang-format on
 
 typedef enum {
-    MUMMY_STATE_EMPTY = 0,
-    MUMMY_STATE_STOP = 1,
-    MUMMY_STATE_DEATH = 2,
-} MUMMY_STATE;
+    M_STATE_EMPTY,
+    M_STATE_STOP,
+    M_STATE_DEATH,
+} M_STATE;
 
 static bool M_CanDropItems(const ITEM *const item)
 {
@@ -42,7 +44,7 @@ static void M_Control(const int16_t item_num)
         item->status = IS_ACTIVE;
     }
 
-    if (item->current_anim_state == MUMMY_STATE_STOP) {
+    if (item->current_anim_state == M_STATE_STOP) {
         const ITEM *const lara_item = Lara_GetItem();
         head =
             Math_Atan(
@@ -51,7 +53,7 @@ static void M_Control(const int16_t item_num)
         CLAMP(head, -FRONT_ARC, FRONT_ARC);
 
         if (item->hit_points <= 0 || item->touch_bits) {
-            item->goal_anim_state = MUMMY_STATE_DEATH;
+            item->goal_anim_state = M_STATE_DEATH;
         }
     }
 
@@ -88,7 +90,7 @@ static void M_Setup(OBJECT *const obj)
     OBJECT_PROPERTIES(
         obj,
         OBJECT_PROPERTY_INT(
-            "max_hit_points", MUMMY_HITPOINTS, "Maximum hit points."));
+            "max_hit_points", M_HIT_POINTS, "Maximum hit points."));
 }
 
 REGISTER_OBJECT(O_MUMMY, M_Setup)

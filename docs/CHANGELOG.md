@@ -13,11 +13,11 @@
 - changed hard-coded fish and piranha setup to be configurable via Lua
 - changed hard-coded small Cobra radius setup to be configurable via Lua
 - changed the hard-coded creature damage to be configurable via Lua. Objects affected:
-    - `O_APE`
     - `O_ALLIGATOR`
-    - `O_ATLANTEAN_WINGED`
-    - `O_ATLANTEAN_SHOOTER`
+    - `O_APE`
     - `O_ATLANTEAN_GROUND`
+    - `O_ATLANTEAN_SHOOTER`
+    - `O_ATLANTEAN_WINGED`
     - `O_BALDY`
     - `O_BANDIT_1`
     - `O_BANDIT_2`
@@ -35,27 +35,29 @@
     - `O_COWBOY`
     - `O_CROCODILE`
     - `O_CROW`
-    - `O_CULT_1`
     - `O_CULT_1A`
     - `O_CULT_1B`
+    - `O_CULT_1`
     - `O_CULT_3`
     - `O_DOG`
     - `O_DRAGON_FRONT`
     - `O_EAGLE`
     - `O_EEL`
+    - `O_HUSKIE`
     - `O_HYBRID_MUTANT`
     - `O_JELLY`
     - `O_LARSON`
-    - `O_LION`
     - `O_LIONESS`
+    - `O_LION`
     - `O_LIZARD`
+    - `O_MONKEY`
     - `O_MONK_1`
     - `O_MONK_2`
     - `O_MONK_3`
-    - `O_MONKEY`
     - `O_MOUSE`
     - `O_MP_1`
     - `O_MP_2`
+    - `O_PATROL_DOG`
     - `O_PUMA`
     - `O_STHPAC_MERCENARY`
     - `O_VULTURE`
