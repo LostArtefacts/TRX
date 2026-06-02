@@ -2,16 +2,17 @@
 #include <trx/game/creature.h>
 #include <trx/game/lara.h>
 #include <trx/game/objects/common.h>
+#include <trx/game/objects/property.h>
 #include <trx/game/random.h>
 #include <trx/game/spawn.h>
 
 // clang-format off
-#define M_HITPOINTS     4
+#define M_HIT_POINTS    4
+#define M_BITE_DAMAGE   20
 #define M_TOUCH_BITS    0b01111111 // = 0x7F
 #define M_RADIUS        (WALL_L / 10) // = 102
 #define M_RUN_TURN      (DEG_1 * 6) // = 1092
 #define M_ATTACK_RANGE  SQUARE(WALL_L / 3) // = 116281
-#define M_BITE_DAMAGE   20
 #define M_WAIT_1_CHANCE 0x500 // = 1280
 #define M_WAIT_2_CHANCE (M_WAIT_1_CHANCE + 0x500) // = 2560
 // clang-format on
@@ -34,6 +35,16 @@ static const BITE m_MouseBite = {
     .pos = { .x = 0, .y = 0, .z = 57 },
     .mesh_num = 2,
 };
+
+static int32_t M_GetDamage(const ITEM *const item)
+{
+    OBJECT_PROPERTY_VALUE damage = {};
+    if (ObjectProperty_GetItemValue(item, "damage", &damage)) {
+        return damage.as_int;
+    }
+
+    return M_BITE_DAMAGE;
+}
 
 static void M_Control(const int16_t item_num)
 {
@@ -113,7 +124,7 @@ static void M_Control(const int16_t item_num)
         case M_STATE_ATTACK:
             if (item->required_anim_state == M_STATE_NULL
                 && (item->touch_bits & M_TOUCH_BITS) != 0) {
-                Lara_TakeDamage(M_BITE_DAMAGE, true);
+                Lara_TakeDamage(M_GetDamage(item), true);
                 Creature_Effect(item, &m_MouseBite, Spawn_Blood);
                 item->required_anim_state = M_STATE_STOP;
             }
@@ -151,7 +162,9 @@ static void M_Setup(OBJECT *const obj)
     OBJECT_PROPERTIES(
         obj,
         OBJECT_PROPERTY_INT(
-            "max_hit_points", M_HITPOINTS, "Maximum hit points."));
+            "max_hit_points", M_HIT_POINTS, "Maximum hit points."),
+        OBJECT_PROPERTY_INT(
+            "damage", M_BITE_DAMAGE, "Damage dealt by the bite attack."));
 }
 
 REGISTER_OBJECT(O_MOUSE, M_Setup)
