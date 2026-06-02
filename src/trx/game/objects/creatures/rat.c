@@ -2,55 +2,66 @@
 #include <trx/game/creature.h>
 #include <trx/game/items/carrier.h>
 #include <trx/game/lara.h>
+#include <trx/game/objects/property.h>
 #include <trx/game/pathing.h>
 #include <trx/game/random.h>
 #include <trx/game/spawn.h>
 
-#define RAT_BITE_DAMAGE 20
-#define RAT_CHARGE_DAMAGE 20
-#define RAT_TOUCH 0x300018F
-#define RAT_DIE_ANIM 8
-#define RAT_RUN_TURN (DEG_1 * 6) // = 1092
-#define RAT_BITE_RANGE SQUARE(341) // = 116281
-#define RAT_CHARGE_RANGE SQUARE(WALL_L * 3 / 2) // = 2359296
-#define RAT_POSE_CHANCE 256
-#define RAT_HITPOINTS 5
-#define RAT_RADIUS (WALL_L / 5) // = 204
-#define RAT_SMARTNESS 0x2000
+#define M_RAT_BITE_DAMAGE 20
+#define M_RAT_CHARGE_DAMAGE 20
+#define M_RAT_TOUCH 0x300018F
+#define M_RAT_DIE_ANIM 8
+#define M_RAT_RUN_TURN (DEG_1 * 6) // = 1092
+#define M_RAT_BITE_RANGE SQUARE(341) // = 116281
+#define M_RAT_CHARGE_RANGE SQUARE(WALL_L * 3 / 2) // = 2359296
+#define M_RAT_POSE_CHANCE 256
+#define M_RAT_HITPOINTS 5
+#define M_RAT_RADIUS (WALL_L / 5) // = 204
+#define M_RAT_SMARTNESS 0x2000
 
-#define VOLE_DIE_ANIM 2
-#define VOLE_SWIM_TURN (DEG_1 * 3) // = 546
-#define VOLE_ATTACK_RANGE SQUARE(300) // = 90000
-
-typedef enum {
-    RAT_STATE_EMPTY = 0,
-    RAT_STATE_STOP = 1,
-    RAT_STATE_ATTACK_2 = 2,
-    RAT_STATE_RUN = 3,
-    RAT_STATE_ATTACK_1 = 4,
-    RAT_STATE_DEATH = 5,
-    RAT_STATE_POSE = 6,
-} RAT_STATE;
+#define M_VOLE_DIE_ANIM 2
+#define M_VOLE_SWIM_TURN (DEG_1 * 3) // = 546
 
 typedef enum {
-    VOLE_STATE_EMPTY = 0,
-    VOLE_STATE_SWIM = 1,
-    VOLE_STATE_ATTACK = 2,
-    VOLE_STATE_DEATH = 3,
-} VOLE_STATE;
+    M_RAT_STATE_EMPTY = 0,
+    M_RAT_STATE_STOP = 1,
+    M_RAT_STATE_ATTACK_2 = 2,
+    M_RAT_STATE_RUN = 3,
+    M_RAT_STATE_ATTACK_1 = 4,
+    M_RAT_STATE_DEATH = 5,
+    M_RAT_STATE_POSE = 6,
+} M_RAT_STATE;
+
+typedef enum {
+    M_VOLE_STATE_EMPTY = 0,
+    M_VOLE_STATE_SWIM = 1,
+    M_VOLE_STATE_ATTACK = 2,
+    M_VOLE_STATE_DEATH = 3,
+} M_VOLE_STATE;
 
 static BITE m_RatBite = { .pos = { 0, -11, 108 }, .mesh_num = 3 };
 
 static const HYBRID_INFO m_RatInfo = {
     .land.id = O_RAT,
-    .land.active_anim = RAT_STATE_EMPTY,
-    .land.death_anim = RAT_DIE_ANIM,
-    .land.death_state = RAT_STATE_DEATH,
+    .land.active_anim = M_RAT_STATE_EMPTY,
+    .land.death_anim = M_RAT_DIE_ANIM,
+    .land.death_state = M_RAT_STATE_DEATH,
     .water.id = O_VOLE,
-    .water.active_anim = VOLE_STATE_EMPTY,
-    .water.death_anim = VOLE_DIE_ANIM,
-    .water.death_state = VOLE_STATE_DEATH,
+    .water.active_anim = M_VOLE_STATE_EMPTY,
+    .water.death_anim = M_VOLE_DIE_ANIM,
+    .water.death_state = M_VOLE_STATE_DEATH,
 };
+
+static int32_t M_GetDamage(
+    const ITEM *const item, const char *const key, const int32_t default_value)
+{
+    OBJECT_PROPERTY_VALUE damage = {};
+    if (ObjectProperty_GetItemValue(item, key, &damage)) {
+        return damage.as_int;
+    }
+
+    return default_value;
+}
 
 static void M_HandleSave(ITEM *const item, const SAVEGAME_STAGE stage)
 {
@@ -71,9 +82,9 @@ static void M_ControlRat(const int16_t item_num)
     int16_t angle = 0;
 
     if (item->hit_points <= 0) {
-        if (item->current_anim_state != RAT_STATE_DEATH) {
-            item->current_anim_state = RAT_STATE_DEATH;
-            Item_SwitchToAnim(item, RAT_DIE_ANIM, 0);
+        if (item->current_anim_state != M_RAT_STATE_DEATH) {
+            item->current_anim_state = M_RAT_STATE_DEATH;
+            Item_SwitchToAnim(item, M_RAT_DIE_ANIM, 0);
         }
     } else {
         AI_INFO info;
@@ -85,52 +96,55 @@ static void M_ControlRat(const int16_t item_num)
 
         Creature_Mood(item, &info, false);
 
-        angle = Creature_Turn(item, RAT_RUN_TURN);
+        angle = Creature_Turn(item, M_RAT_RUN_TURN);
 
         switch (item->current_anim_state) {
-        case RAT_STATE_STOP:
+        case M_RAT_STATE_STOP:
             if (item->required_anim_state) {
                 item->goal_anim_state = item->required_anim_state;
-            } else if (info.bite && info.distance < RAT_BITE_RANGE) {
-                item->goal_anim_state = RAT_STATE_ATTACK_1;
+            } else if (info.bite && info.distance < M_RAT_BITE_RANGE) {
+                item->goal_anim_state = M_RAT_STATE_ATTACK_1;
             } else {
-                item->goal_anim_state = RAT_STATE_RUN;
+                item->goal_anim_state = M_RAT_STATE_RUN;
             }
             break;
 
-        case RAT_STATE_RUN:
-            if (info.ahead && (item->touch_bits & RAT_TOUCH)) {
-                item->goal_anim_state = RAT_STATE_STOP;
-            } else if (info.bite && info.distance < RAT_CHARGE_RANGE) {
-                item->goal_anim_state = RAT_STATE_ATTACK_2;
-            } else if (info.ahead && Random_GetControl() < RAT_POSE_CHANCE) {
-                item->required_anim_state = RAT_STATE_POSE;
-                item->goal_anim_state = RAT_STATE_STOP;
+        case M_RAT_STATE_RUN:
+            if (info.ahead && (item->touch_bits & M_RAT_TOUCH)) {
+                item->goal_anim_state = M_RAT_STATE_STOP;
+            } else if (info.bite && info.distance < M_RAT_CHARGE_RANGE) {
+                item->goal_anim_state = M_RAT_STATE_ATTACK_2;
+            } else if (info.ahead && Random_GetControl() < M_RAT_POSE_CHANCE) {
+                item->required_anim_state = M_RAT_STATE_POSE;
+                item->goal_anim_state = M_RAT_STATE_STOP;
             }
             break;
 
-        case RAT_STATE_ATTACK_1:
-            if (item->required_anim_state == RAT_STATE_EMPTY && info.ahead
-                && (item->touch_bits & RAT_TOUCH)) {
+        case M_RAT_STATE_ATTACK_1:
+            if (item->required_anim_state == M_RAT_STATE_EMPTY && info.ahead
+                && (item->touch_bits & M_RAT_TOUCH)) {
                 Creature_Effect(item, &m_RatBite, Spawn_Blood);
-                Lara_TakeDamage(RAT_BITE_DAMAGE, true);
-                item->required_anim_state = RAT_STATE_STOP;
+                Lara_TakeDamage(
+                    M_GetDamage(item, "bite_damage", M_RAT_BITE_DAMAGE), true);
+                item->required_anim_state = M_RAT_STATE_STOP;
             }
             break;
 
-        case RAT_STATE_ATTACK_2:
-            if (item->required_anim_state == RAT_STATE_EMPTY && info.ahead
-                && (item->touch_bits & RAT_TOUCH)) {
+        case M_RAT_STATE_ATTACK_2:
+            if (item->required_anim_state == M_RAT_STATE_EMPTY && info.ahead
+                && (item->touch_bits & M_RAT_TOUCH)) {
                 Creature_Effect(item, &m_RatBite, Spawn_Blood);
-                Lara_TakeDamage(RAT_CHARGE_DAMAGE, true);
-                item->required_anim_state = RAT_STATE_RUN;
+                Lara_TakeDamage(
+                    M_GetDamage(item, "charge_damage", M_RAT_CHARGE_DAMAGE),
+                    true);
+                item->required_anim_state = M_RAT_STATE_RUN;
             }
             break;
 
-        case RAT_STATE_POSE:
+        case M_RAT_STATE_POSE:
             if (rat->mood != MOOD_BORED
-                || Random_GetControl() < RAT_POSE_CHANCE) {
-                item->goal_anim_state = RAT_STATE_STOP;
+                || Random_GetControl() < M_RAT_POSE_CHANCE) {
+                item->goal_anim_state = M_RAT_STATE_STOP;
             }
             break;
         }
@@ -154,9 +168,9 @@ static void M_ControlVole(const int16_t item_num)
     int16_t angle = 0;
 
     if (item->hit_points <= 0) {
-        if (item->current_anim_state != VOLE_STATE_DEATH) {
-            item->current_anim_state = VOLE_STATE_DEATH;
-            Item_SwitchToAnim(item, VOLE_DIE_ANIM, 0);
+        if (item->current_anim_state != M_VOLE_STATE_DEATH) {
+            item->current_anim_state = M_VOLE_STATE_DEATH;
+            Item_SwitchToAnim(item, M_VOLE_DIE_ANIM, 0);
             Carrier_TestItemDrops(item_num);
         }
 
@@ -175,23 +189,24 @@ static void M_ControlVole(const int16_t item_num)
 
         Creature_Mood(item, &info, true);
 
-        angle = Creature_Turn(item, VOLE_SWIM_TURN);
+        angle = Creature_Turn(item, M_VOLE_SWIM_TURN);
 
         switch (item->current_anim_state) {
-        case VOLE_STATE_SWIM:
-            if (info.ahead && (item->touch_bits & RAT_TOUCH)) {
-                item->goal_anim_state = VOLE_STATE_ATTACK;
+        case M_VOLE_STATE_SWIM:
+            if (info.ahead && (item->touch_bits & M_RAT_TOUCH)) {
+                item->goal_anim_state = M_VOLE_STATE_ATTACK;
             }
             break;
 
-        case VOLE_STATE_ATTACK:
-            if (item->required_anim_state == VOLE_STATE_EMPTY && info.ahead
-                && (item->touch_bits & RAT_TOUCH)) {
+        case M_VOLE_STATE_ATTACK:
+            if (item->required_anim_state == M_VOLE_STATE_EMPTY && info.ahead
+                && (item->touch_bits & M_RAT_TOUCH)) {
                 Creature_Effect(item, &m_RatBite, Spawn_Blood);
-                Lara_TakeDamage(RAT_BITE_DAMAGE, true);
-                item->required_anim_state = VOLE_STATE_SWIM;
+                Lara_TakeDamage(
+                    M_GetDamage(item, "bite_damage", M_RAT_BITE_DAMAGE), true);
+                item->required_anim_state = M_VOLE_STATE_SWIM;
             }
-            item->goal_anim_state = VOLE_STATE_EMPTY;
+            item->goal_anim_state = M_VOLE_STATE_EMPTY;
             break;
         }
 
@@ -224,15 +239,26 @@ static void M_SetupBase(OBJECT *const obj)
     obj->shadow_size = UNIT_SHADOW / 2;
 
     obj->pivot_length = 200;
-    obj->radius = RAT_RADIUS;
-    obj->smartness = RAT_SMARTNESS;
+    obj->radius = M_RAT_RADIUS;
+    obj->smartness = M_RAT_SMARTNESS;
     obj->intelligent = true;
     obj->save_position = true;
     obj->save_hitpoints = true;
     obj->save_anim = true;
     obj->save_flags = true;
     obj->handle_save_func = M_HandleSave;
+
     Object_GetBone(obj, 1)->rot.y = true;
+    OBJECT_PROPERTIES(
+        obj,
+        OBJECT_PROPERTY_INT(
+            "max_hit_points", M_RAT_HITPOINTS, "Maximum hit points."),
+        OBJECT_PROPERTY_INT(
+            "bite_damage", M_RAT_BITE_DAMAGE,
+            "Damage dealt by the bite attack."),
+        OBJECT_PROPERTY_INT(
+            "charge_damage", M_RAT_CHARGE_DAMAGE,
+            "Damage dealt by the charge attack."));
 }
 
 static void M_SetupRat(OBJECT *const obj)
@@ -242,10 +268,6 @@ static void M_SetupRat(OBJECT *const obj)
     }
     M_SetupBase(obj);
     obj->control_func = M_ControlRat;
-    OBJECT_PROPERTIES(
-        obj,
-        OBJECT_PROPERTY_INT(
-            "max_hit_points", RAT_HITPOINTS, "Maximum hit points."));
 }
 
 static void M_SetupVole(OBJECT *const obj)
@@ -255,10 +277,6 @@ static void M_SetupVole(OBJECT *const obj)
     }
     M_SetupBase(obj);
     obj->control_func = M_ControlVole;
-    OBJECT_PROPERTIES(
-        obj,
-        OBJECT_PROPERTY_INT(
-            "max_hit_points", RAT_HITPOINTS, "Maximum hit points."));
 }
 
 REGISTER_OBJECT(O_RAT, M_SetupRat)
