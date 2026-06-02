@@ -44,6 +44,7 @@
     - `O_EAGLE`
     - `O_EEL`
     - `O_HYBRID_MUTANT`
+    - `O_JELLY`
     - `O_VULTURE`
 - changed the hard-coded traps damage to be configurable via Lua. Objects affected:
     - `O_BLADE`
