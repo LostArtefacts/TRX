@@ -41,6 +41,7 @@ This page lists documented moveable object properties.
 
 ### `15` O_APE
 - `max_hit_points = 22` — Maximum hit points.
+- `damage = 200` — Damage dealt by the ape bite.
 
 ### `16` O_RAT
 - `max_hit_points = 5` — Maximum hit points.
