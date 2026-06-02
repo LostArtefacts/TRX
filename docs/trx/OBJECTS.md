@@ -225,6 +225,7 @@ This page lists documented moveable object properties.
 
 ### `21` O_MOUSE
 - `max_hit_points = 4` — Maximum hit points.
+- `damage = 20` — Damage dealt by the bite attack.
 
 ### `22` O_DRAGON_FRONT
 - `max_hit_points = 300` — Maximum hit points.
@@ -483,6 +484,7 @@ This page lists documented moveable object properties.
 
 ### `23` O_MOUSE
 - `max_hit_points = 4` — Maximum hit points.
+- `damage = 20` — Damage dealt by the bite attack.
 
 ### `26` O_DIVER
 - `max_hit_points = 20` — Maximum hit points.
