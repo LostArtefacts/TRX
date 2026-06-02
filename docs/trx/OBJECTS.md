@@ -110,6 +110,7 @@ This page lists documented moveable object properties.
 
 ### `28` O_PIERRE
 - `max_hit_points = 70` — Maximum hit points.
+- `damage = 50` — Damage dealt by shots.
 
 ### `30` O_SKATEKID
 - `max_hit_points = 125` — Maximum hit points.
