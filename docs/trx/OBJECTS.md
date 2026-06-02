@@ -481,6 +481,8 @@ This page lists documented moveable object properties.
 
 ### `22` O_PATROL_DOG
 - `max_hit_points = 16` — Maximum hit points.
+- `lunge_damage = 50` — Damage dealt by the lunge attack.
+- `bite_damage = 12` — Damage dealt by the bite attack.
 
 ### `23` O_MOUSE
 - `max_hit_points = 4` — Maximum hit points.
@@ -531,6 +533,8 @@ This page lists documented moveable object properties.
 
 ### `41` O_HUSKIE
 - `max_hit_points = 16` — Maximum hit points.
+- `lunge_damage = 50` — Damage dealt by the lunge attack.
+- `bite_damage = 12` — Damage dealt by the bite attack.
 
 ### `42` O_CRAWLER_MUTANT
 - `max_hit_points = 50` — Maximum hit points.
