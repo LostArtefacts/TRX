@@ -5,9 +5,6 @@
 #include <lauxlib.h>
 #include <string.h>
 
-/* =========================
-   Timer validation
-   ========================= */
 
 static void M_CheckTimerAvailable(
     lua_State *const L,
@@ -23,9 +20,6 @@ static void M_CheckTimerAvailable(
     }
 }
 
-/* =========================
-   Track resolver
-   ========================= */
 
 static GYM_TRACK_TYPE M_GetTrack(lua_State *L)
 {
@@ -48,10 +42,6 @@ static const char *M_GetTrackName(lua_State *L)
 
     return "Course";
 }
-
-/* =========================
-   Lua bindings
-   ========================= */
 
 static int M_L_AssaultStart(lua_State *L)
 {
@@ -86,9 +76,6 @@ static int M_L_AssaultReset(lua_State *L)
     return 0;
 }
 
-/* =========================
-   Lua module init
-   ========================= */
 
 void LUA_CreateAssault(lua_State *const L)
 {
