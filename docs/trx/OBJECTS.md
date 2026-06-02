@@ -513,6 +513,7 @@ This page lists documented moveable object properties.
 
 ### `37` O_STHPAC_MERCENARY
 - `max_hit_points = 30` — Maximum hit points.
+- `damage = 28` — Damage dealt by the mercenary's shot.
 
 ### `39` O_RX_WORKER_1
 - `max_hit_points = 34` — Maximum hit points.

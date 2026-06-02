@@ -1,11 +1,12 @@
 #include <trx/game/creature.h>
 #include <trx/game/lara.h>
+#include <trx/game/objects/property.h>
 #include <trx/game/pathing.h>
 #include <trx/game/random.h>
 #include <trx/game/sound.h>
 
 // clang-format off
-#define M_HITPOINTS   30
+#define M_HIT_POINTS  30
 #define M_DAMAGE      28
 #define M_RADIUS      (WALL_L / 10) // = 102
 #define M_WALK_TURN   (DEG_1 * 5) // = 910
@@ -45,6 +46,16 @@ static const CREATURE_GUN m_MercenaryGun = {
     .tr3_flash_shade = 600,
     .tr3_flash_rot_x = -DEG_90,
 };
+
+static int32_t M_GetDamage(const ITEM *const item)
+{
+    OBJECT_PROPERTY_VALUE damage = {};
+    if (ObjectProperty_GetItemValue(item, "damage", &damage)) {
+        return damage.as_int;
+    }
+
+    return M_DAMAGE;
+}
 
 static void M_Initialise(const int16_t item_num)
 {
@@ -287,7 +298,8 @@ static void M_Control(const int16_t item_num)
         if (creature->flags != 0) {
             creature->flags--;
         } else if (creature->enemy != nullptr) {
-            Creature_Shoot(item, &info, &m_MercenaryGun, torso_y, M_DAMAGE);
+            Creature_Shoot(
+                item, &info, &m_MercenaryGun, torso_y, M_GetDamage(item));
             creature->flags = 5;
         }
         break;
@@ -354,7 +366,9 @@ static void M_Setup(OBJECT *const obj)
     OBJECT_PROPERTIES(
         obj,
         OBJECT_PROPERTY_INT(
-            "max_hit_points", M_HITPOINTS, "Maximum hit points."));
+            "max_hit_points", M_HIT_POINTS, "Maximum hit points."),
+        OBJECT_PROPERTY_INT(
+            "damage", M_DAMAGE, "Damage dealt by the mercenary's shot."));
 }
 
 REGISTER_OBJECT(O_STHPAC_MERCENARY, M_Setup)

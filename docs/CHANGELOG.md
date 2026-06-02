@@ -50,6 +50,7 @@
     - `O_LIONESS`
     - `O_LIZARD`
     - `O_PUMA`
+    - `O_STHPAC_MERCENARY`
     - `O_VULTURE`
 - changed the hard-coded traps damage to be configurable via Lua. Objects affected:
     - `O_BLADE`
