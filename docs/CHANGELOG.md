@@ -27,6 +27,7 @@
     - `O_BIG_SPIDER`
     - `O_BIRD_GUARDIAN`
     - `O_CENTAUR`
+    - `O_CIVILIAN`
     - `O_CROW`
     - `O_EAGLE`
     - `O_VULTURE`
