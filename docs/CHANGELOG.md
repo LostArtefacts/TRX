@@ -54,6 +54,7 @@
     - `O_MONK_3`
     - `O_MONKEY`
     - `O_MOUSE`
+    - `O_MP_1`
     - `O_PUMA`
     - `O_STHPAC_MERCENARY`
     - `O_VULTURE`
