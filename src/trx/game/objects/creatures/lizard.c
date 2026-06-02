@@ -3,12 +3,14 @@
 #include <trx/game/lara.h>
 #include <trx/game/objects.h>
 #include <trx/game/objects/creatures/tribe_boss.h>
+#include <trx/game/objects/property.h>
 #include <trx/game/pathing.h>
 #include <trx/game/random.h>
 #include <trx/game/sparks.h>
 #include <trx/game/spawn.h>
 
 // clang-format off
+#define M_HIT_POINTS       36
 #define M_SWIPE_DAMAGE     120
 #define M_BITE_DAMAGE      100
 #define M_RUN_TURN         (DEG_1 * 4) // = 728
@@ -65,6 +67,17 @@ static BITE m_GasHit = {
     .pos = { .x = 0, .y = -64, .z = 56 },
     .mesh_num = 9,
 };
+
+static int32_t M_GetDamage(
+    const ITEM *const item, const char *const key, const int32_t default_value)
+{
+    OBJECT_PROPERTY_VALUE damage = {};
+    if (ObjectProperty_GetItemValue(item, key, &damage)) {
+        return damage.as_int;
+    }
+
+    return default_value;
+}
 
 static void M_TriggerGas(
     const XYZ_32 pos, const XYZ_32 vel, const int32_t effect_num)
@@ -330,7 +343,8 @@ static void M_Control(const int16_t item_num)
                 neck = info.angle;
             }
             if (creature->flags != 2 && item->touch_bits & M_BITE_TOUCH_BITS) {
-                Lara_TakeDamage(M_BITE_DAMAGE, true);
+                Lara_TakeDamage(
+                    M_GetDamage(item, "bite_damage", M_BITE_DAMAGE), true);
                 Creature_Effect(item, &m_BiteHit, Spawn_Blood);
                 creature->flags = 2;
             }
@@ -403,7 +417,8 @@ static void M_Control(const int16_t item_num)
             }
 
             if (!creature->flags && item->touch_bits & M_SWIPE_TOUCH_BITS) {
-                Lara_TakeDamage(M_SWIPE_DAMAGE, true);
+                Lara_TakeDamage(
+                    M_GetDamage(item, "swipe_damage", M_SWIPE_DAMAGE), true);
                 Creature_Effect(item, &m_SwipeHit, Spawn_Blood);
                 creature->flags = 1;
             }
@@ -532,7 +547,14 @@ static void M_Setup(OBJECT *const obj)
     Object_GetBone(obj, 1)->rot.z = true;
     Object_GetBone(obj, 9)->rot.z = true;
     OBJECT_PROPERTIES(
-        obj, OBJECT_PROPERTY_INT("max_hit_points", 36, "Maximum hit points."));
+        obj,
+        OBJECT_PROPERTY_INT(
+            "max_hit_points", M_HIT_POINTS, "Maximum hit points."),
+        OBJECT_PROPERTY_INT(
+            "bite_damage", M_BITE_DAMAGE, "Damage dealt by the lizard bite."),
+        OBJECT_PROPERTY_INT(
+            "swipe_damage", M_SWIPE_DAMAGE,
+            "Damage dealt by the lizard swipe attack."));
 }
 
 REGISTER_OBJECT(O_LIZARD, M_Setup)
