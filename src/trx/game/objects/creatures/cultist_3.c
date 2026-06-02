@@ -2,41 +2,40 @@
 #include <trx/game/creature.h>
 #include <trx/game/lara.h>
 #include <trx/game/objects.h>
-#include <trx/game/objects/creatures/cultist_common.h>
+#include <trx/game/objects/property.h>
 #include <trx/game/spawn.h>
 
 // clang-format off
-#define CULTIST_3_HITPOINTS   150
-#define CULTIST_3_SHOT_DAMAGE 50
-#define CULTIST_3_WALK_TURN   (DEG_1 * 3) // = 546
-#define CULTIST_3_RUN_TURN    (DEG_1 * 3) // = 546
-#define CULTIST_3_STOP_RANGE  SQUARE(WALL_L * 3) // = 9437184
-#define CULTIST_3_RUN_RANGE   SQUARE(WALL_L * 5) // = 26214400
+#define M_HIT_POINTS 150
+#define M_DAMAGE     50
+#define M_RADIUS     (WALL_L / 10) // = 102
+#define M_WALK_TURN  (DEG_1 * 3) // = 546
+#define M_RUN_TURN   (DEG_1 * 3) // = 546
+#define M_STOP_RANGE SQUARE(WALL_L * 3) // = 9437184
+#define M_RUN_RANGE  SQUARE(WALL_L * 5) // = 26214400
 // clang-format on
 
 typedef enum {
-    // clang-format off
-    CULTIST_3_STATE_EMPTY   = 0,
-    CULTIST_3_STATE_STOP    = 1,
-    CULTIST_3_STATE_WAIT    = 2,
-    CULTIST_3_STATE_WALK    = 3,
-    CULTIST_3_STATE_RUN     = 4,
-    CULTIST_3_STATE_AIM_L   = 5,
-    CULTIST_3_STATE_AIM_R   = 6,
-    CULTIST_3_STATE_SHOOT_L = 7,
-    CULTIST_3_STATE_SHOOT_R = 8,
-    CULTIST_3_STATE_AIM_2   = 9,
-    CULTIST_3_STATE_SHOOT_2 = 10,
-    CULTIST_3_STATE_DEATH   = 11,
-    // clang-format on
-} CULTIST_3_STATE;
+    M_STATE_EMPTY,
+    M_STATE_STOP,
+    M_STATE_WAIT,
+    M_STATE_WALK,
+    M_STATE_RUN,
+    M_STATE_AIM_L,
+    M_STATE_AIM_R,
+    M_STATE_SHOOT_L,
+    M_STATE_SHOOT_R,
+    M_STATE_AIM_2,
+    M_STATE_SHOOT_2,
+    M_STATE_DEATH,
+} M_STATE;
 
 typedef enum {
     // clang-format off
-    CULTIST_3_ANIM_WAIT  = 3,
-    CULTIST_3_ANIM_DEATH = 32,
+    M_ANIM_WAIT  = 3,
+    M_ANIM_DEATH = 32,
     // clang-format on
-} CULTIST_3_ANIM;
+} M_ANIM;
 
 static const CREATURE_GUN m_Cultist3LeftGun = {
     .muzzle = { .pos = { .x = -2, .y = 275, .z = 23 }, .mesh_num = 6 },
@@ -46,13 +45,23 @@ static const CREATURE_GUN m_Cultist3RightGun = {
     .muzzle = { .pos = { .x = 2, .y = 275, .z = 23 }, .mesh_num = 10 },
 };
 
+static int32_t M_GetShootDamage(const ITEM *const item)
+{
+    OBJECT_PROPERTY_VALUE damage = {};
+    if (ObjectProperty_GetItemValue(item, "damage", &damage)) {
+        return damage.as_int;
+    }
+
+    return M_DAMAGE;
+}
+
 static void M_Initialise(const int16_t item_num)
 {
     Creature_Initialise(item_num);
     ITEM *const item = Item_Get(item_num);
-    Item_SwitchToAnim(item, CULTIST_3_ANIM_WAIT, 0);
-    item->goal_anim_state = CULTIST_3_STATE_WAIT;
-    item->current_anim_state = CULTIST_3_STATE_WAIT;
+    Item_SwitchToAnim(item, M_ANIM_WAIT, 0);
+    item->goal_anim_state = M_STATE_WAIT;
+    item->current_anim_state = M_STATE_WAIT;
 }
 
 static void M_Control(const int16_t item_num)
@@ -72,9 +81,9 @@ static void M_Control(const int16_t item_num)
     int16_t right = 0;
 
     if (item->hit_points <= 0) {
-        if (item->current_anim_state != CULTIST_3_STATE_DEATH) {
-            Item_SwitchToAnim(item, CULTIST_3_ANIM_DEATH, 0);
-            item->current_anim_state = CULTIST_3_STATE_DEATH;
+        if (item->current_anim_state != M_STATE_DEATH) {
+            Item_SwitchToAnim(item, M_ANIM_DEATH, 0);
+            item->current_anim_state = M_STATE_DEATH;
         }
     } else {
         AI_INFO info;
@@ -85,124 +94,124 @@ static void M_Control(const int16_t item_num)
 
         const ITEM *const lara_item = Lara_GetItem();
         switch (item->current_anim_state) {
-        case CULTIST_3_STATE_STOP:
-        case CULTIST_3_STATE_WAIT:
+        case M_STATE_STOP:
+        case M_STATE_WAIT:
             if (info.ahead) {
                 head = info.angle;
             }
             if (creature->mood == MOOD_BORED && lara_item->hit_points <= 0) {
-                item->goal_anim_state = CULTIST_3_STATE_WAIT;
+                item->goal_anim_state = M_STATE_WAIT;
             } else if (Creature_CanTargetEnemy(item, &info)) {
-                if (info.distance > CULTIST_3_STOP_RANGE) {
-                    item->goal_anim_state = CULTIST_3_STATE_WALK;
+                if (info.distance > M_STOP_RANGE) {
+                    item->goal_anim_state = M_STATE_WALK;
                 } else {
-                    item->goal_anim_state = CULTIST_3_STATE_AIM_2;
+                    item->goal_anim_state = M_STATE_AIM_2;
                 }
             } else if (creature->mood == MOOD_ESCAPE) {
-                item->goal_anim_state = CULTIST_3_STATE_RUN;
+                item->goal_anim_state = M_STATE_RUN;
             } else if (creature->mood == MOOD_ATTACK) {
-                if (info.distance > CULTIST_3_RUN_RANGE || !info.ahead) {
-                    item->goal_anim_state = CULTIST_3_STATE_RUN;
+                if (info.distance > M_RUN_RANGE || !info.ahead) {
+                    item->goal_anim_state = M_STATE_RUN;
                 } else {
-                    item->goal_anim_state = CULTIST_3_STATE_WALK;
+                    item->goal_anim_state = M_STATE_WALK;
                 }
             } else if (creature->mood == MOOD_STALK || !info.ahead) {
-                item->goal_anim_state = CULTIST_3_STATE_WALK;
+                item->goal_anim_state = M_STATE_WALK;
             }
             break;
 
-        case CULTIST_3_STATE_WALK:
-            creature->maximum_turn = CULTIST_3_WALK_TURN;
+        case M_STATE_WALK:
+            creature->maximum_turn = M_WALK_TURN;
             if (info.ahead) {
                 head = info.angle;
             }
             if (Creature_CanTargetEnemy(item, &info)) {
-                if (info.distance < CULTIST_3_STOP_RANGE
+                if (info.distance < M_STOP_RANGE
                     || info.zone_num != info.enemy_zone_num) {
-                    item->goal_anim_state = CULTIST_3_STATE_STOP;
+                    item->goal_anim_state = M_STATE_STOP;
                 } else if (info.angle < 0) {
-                    item->goal_anim_state = CULTIST_3_STATE_AIM_L;
+                    item->goal_anim_state = M_STATE_AIM_L;
                 } else {
-                    item->goal_anim_state = CULTIST_3_STATE_AIM_R;
+                    item->goal_anim_state = M_STATE_AIM_R;
                 }
             } else if (creature->mood == MOOD_ESCAPE) {
-                item->goal_anim_state = CULTIST_3_STATE_RUN;
+                item->goal_anim_state = M_STATE_RUN;
             } else if (
                 creature->mood == MOOD_STALK || creature->mood == MOOD_ATTACK) {
-                if (info.distance > CULTIST_3_RUN_RANGE || !info.ahead) {
-                    item->goal_anim_state = CULTIST_3_STATE_RUN;
+                if (info.distance > M_RUN_RANGE || !info.ahead) {
+                    item->goal_anim_state = M_STATE_RUN;
                 }
             } else if (lara_item->hit_points <= 0) {
-                item->goal_anim_state = CULTIST_3_STATE_WAIT;
+                item->goal_anim_state = M_STATE_WAIT;
             } else if (info.ahead) {
-                item->goal_anim_state = CULTIST_3_STATE_STOP;
+                item->goal_anim_state = M_STATE_STOP;
             }
             break;
 
-        case CULTIST_3_STATE_RUN:
-            creature->maximum_turn = CULTIST_3_RUN_TURN;
+        case M_STATE_RUN:
+            creature->maximum_turn = M_RUN_TURN;
             tilt = angle / 4;
             if (info.ahead) {
                 head = info.angle;
             }
             if (Creature_CanTargetEnemy(item, &info)) {
                 if (info.zone_num != info.enemy_zone_num) {
-                    item->goal_anim_state = CULTIST_3_STATE_STOP;
+                    item->goal_anim_state = M_STATE_STOP;
                 } else if (info.angle < 0) {
-                    item->goal_anim_state = CULTIST_3_STATE_AIM_L;
+                    item->goal_anim_state = M_STATE_AIM_L;
                 } else {
-                    item->goal_anim_state = CULTIST_3_STATE_AIM_R;
+                    item->goal_anim_state = M_STATE_AIM_R;
                 }
             } else if (creature->mood == MOOD_BORED) {
                 if (lara_item->hit_points <= 0) {
-                    item->goal_anim_state = CULTIST_3_STATE_WAIT;
+                    item->goal_anim_state = M_STATE_WAIT;
                 } else {
-                    item->goal_anim_state = CULTIST_3_STATE_STOP;
+                    item->goal_anim_state = M_STATE_STOP;
                 }
-            } else if (info.ahead && info.distance < CULTIST_3_RUN_RANGE) {
-                item->goal_anim_state = CULTIST_3_STATE_WALK;
+            } else if (info.ahead && info.distance < M_RUN_RANGE) {
+                item->goal_anim_state = M_STATE_WALK;
             }
             break;
 
-        case CULTIST_3_STATE_AIM_L:
+        case M_STATE_AIM_L:
             creature->flags = 0;
             if (info.ahead) {
                 head = info.angle;
                 left = info.angle;
             }
             if (Creature_CanTargetEnemy(item, &info)) {
-                item->goal_anim_state = CULTIST_3_STATE_SHOOT_L;
+                item->goal_anim_state = M_STATE_SHOOT_L;
             } else {
-                item->goal_anim_state = CULTIST_3_STATE_WALK;
+                item->goal_anim_state = M_STATE_WALK;
             }
             break;
 
-        case CULTIST_3_STATE_AIM_R:
+        case M_STATE_AIM_R:
             creature->flags = 0;
             if (info.ahead) {
                 head = info.angle;
                 right = info.angle;
             }
             if (Creature_CanTargetEnemy(item, &info)) {
-                item->goal_anim_state = CULTIST_3_STATE_SHOOT_R;
+                item->goal_anim_state = M_STATE_SHOOT_R;
             } else {
-                item->goal_anim_state = CULTIST_3_STATE_WALK;
+                item->goal_anim_state = M_STATE_WALK;
             }
             break;
 
-        case CULTIST_3_STATE_AIM_2:
+        case M_STATE_AIM_2:
             creature->flags = 0;
             if (info.ahead) {
                 body = info.angle;
             }
             if (Creature_CanTargetEnemy(item, &info)) {
-                item->goal_anim_state = CULTIST_3_STATE_SHOOT_2;
+                item->goal_anim_state = M_STATE_SHOOT_2;
             } else {
-                item->goal_anim_state = CULTIST_3_STATE_STOP;
+                item->goal_anim_state = M_STATE_STOP;
             }
             break;
 
-        case CULTIST_3_STATE_SHOOT_L:
+        case M_STATE_SHOOT_L:
             if (info.ahead) {
                 head = info.angle;
                 left = info.angle;
@@ -210,12 +219,12 @@ static void M_Control(const int16_t item_num)
             if (creature->flags == 0) {
                 Creature_Shoot(
                     item, &info, &m_Cultist3LeftGun, head,
-                    CULTIST_3_SHOT_DAMAGE);
+                    M_GetShootDamage(item));
                 creature->flags = 1;
             }
             break;
 
-        case CULTIST_3_STATE_SHOOT_R:
+        case M_STATE_SHOOT_R:
             if (info.ahead) {
                 head = info.angle;
                 right = info.angle;
@@ -223,20 +232,21 @@ static void M_Control(const int16_t item_num)
             if (creature->flags == 0) {
                 Creature_Shoot(
                     item, &info, &m_Cultist3RightGun, head,
-                    CULTIST_3_SHOT_DAMAGE);
+                    M_GetShootDamage(item));
                 creature->flags = 1;
             }
             break;
 
-        case CULTIST_3_STATE_SHOOT_2:
+        case M_STATE_SHOOT_2:
             if (info.ahead) {
                 body = info.angle;
             }
             if (creature->flags == 0) {
                 Creature_Shoot(
-                    item, &info, &m_Cultist3LeftGun, 0, CULTIST_3_SHOT_DAMAGE);
+                    item, &info, &m_Cultist3LeftGun, 0, M_GetShootDamage(item));
                 Creature_Shoot(
-                    item, &info, &m_Cultist3RightGun, 0, CULTIST_3_SHOT_DAMAGE);
+                    item, &info, &m_Cultist3RightGun, 0,
+                    M_GetShootDamage(item));
                 creature->flags = 1;
             }
             break;
@@ -279,7 +289,7 @@ static void M_Setup(OBJECT *const obj)
     obj->control_func = M_Control;
     obj->collision_func = Creature_Collision;
 
-    obj->radius = CULTIST_RADIUS;
+    obj->radius = M_RADIUS;
     obj->shadow_size = UNIT_SHADOW / 2;
     obj->pivot_length = 0;
 
@@ -291,7 +301,9 @@ static void M_Setup(OBJECT *const obj)
     OBJECT_PROPERTIES(
         obj,
         OBJECT_PROPERTY_INT(
-            "max_hit_points", CULTIST_3_HITPOINTS, "Maximum hit points."));
+            "max_hit_points", M_HIT_POINTS, "Maximum hit points."),
+        OBJECT_PROPERTY_INT(
+            "damage", M_DAMAGE, "Damage dealt by the cultist's shot."));
 }
 
 REGISTER_OBJECT(O_CULT_3, M_Setup)
