@@ -107,6 +107,7 @@ This page lists documented moveable object properties.
 
 ### `31` O_COWBOY
 - `max_hit_points = 150` — Maximum hit points.
+- `damage = 70` — Damage dealt by the cowboy's shot.
 
 ### `32` O_BALDY
 - `max_hit_points = 200` — Maximum hit points.
