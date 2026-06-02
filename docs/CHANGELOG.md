@@ -29,6 +29,7 @@
     - `O_CENTAUR`
     - `O_CIVILIAN`
     - `O_CLAW_MUTANT`
+    - `O_COBRA`
     - `O_CROW`
     - `O_EAGLE`
     - `O_VULTURE`
