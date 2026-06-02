@@ -83,6 +83,8 @@ This page lists documented moveable object properties.
 
 ### `23` O_CENTAUR
 - `max_hit_points = 120` — Maximum hit points.
+- `rear_damage = 200` — Damage dealt by the centaur rear attack.
+- `part_damage = 100` — Damage dealt by the centaur death explosion.
 
 ### `24` O_MUMMY
 - `max_hit_points = 18` — Maximum hit points.
