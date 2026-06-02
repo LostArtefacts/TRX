@@ -1,32 +1,33 @@
 #include <trx/core/utils.h>
 #include <trx/game/creature.h>
 #include <trx/game/lara.h>
+#include <trx/game/objects/property.h>
 #include <trx/game/pathing.h>
 #include <trx/game/spawn.h>
 
 // clang-format off
+#define M_EAGLE_HITPOINTS   20
+#define M_CROW_HITPOINTS    (g_TRVersion == 3 ? 8 : 15)
+#define M_VULTURE_HITPOINTS 18
 #define M_DAMAGE            20
 #define M_RADIUS            (WALL_L / 5) // = 204
 #define M_ATTACK_RANGE      SQUARE(WALL_L / 2) // = 262144
 #define M_TURN              (DEG_1 * 3) // = 546
 #define M_START_ANIM        5
 #define M_DIE_ANIM          8
-#define M_EAGLE_HITPOINTS   20
-#define M_CROW_HITPOINTS    (g_TRVersion == 3 ? 8 : 15)
 #define M_CROW_START_ANIM   14
 #define M_CROW_DIE_ANIM     1
-#define M_VULTURE_HITPOINTS 18
 // clang-format on
 
 typedef enum {
-    M_STATE_EMPTY = 0,
-    M_STATE_FLY = 1,
-    M_STATE_STOP = 2,
-    M_STATE_GLIDE = 3,
-    M_STATE_FALL = 4,
-    M_STATE_DEATH = 5,
-    M_STATE_ATTACK = 6,
-    M_STATE_EAT = 7,
+    M_STATE_EMPTY,
+    M_STATE_FLY,
+    M_STATE_STOP,
+    M_STATE_GLIDE,
+    M_STATE_FALL,
+    M_STATE_DEATH,
+    M_STATE_ATTACK,
+    M_STATE_EAT,
 } M_STATE;
 
 static const BITE m_BirdBite = {
@@ -37,6 +38,16 @@ static const BITE m_CrowBite = {
     .pos = { .x = 2, .y = 10, .z = 60 },
     .mesh_num = 14,
 };
+
+static int32_t M_GetDamage(const ITEM *const item)
+{
+    OBJECT_PROPERTY_VALUE damage = {};
+    if (ObjectProperty_GetItemValue(item, "damage", &damage)) {
+        return damage.as_int;
+    }
+
+    return M_DAMAGE;
+}
 
 static void M_Initialise(const int16_t item_num)
 {
@@ -131,7 +142,7 @@ static void M_Control(const int16_t item_num)
 
     case M_STATE_ATTACK:
         if (bird->flags == 0 && item->touch_bits != 0) {
-            Lara_TakeDamage(M_DAMAGE, true);
+            Lara_TakeDamage(M_GetDamage(item), true);
             if (item->object_id == O_CROW) {
                 Creature_Effect(item, &m_CrowBite, Spawn_Blood);
             } else {
@@ -165,6 +176,10 @@ static bool M_SetupCommon(OBJECT *const obj)
     obj->save_hitpoints = true;
     obj->save_flags = true;
     obj->save_anim = true;
+    OBJECT_PROPERTIES(
+        obj,
+        OBJECT_PROPERTY_INT(
+            "damage", M_DAMAGE, "Damage dealt by the bird attack."));
 
     return true;
 }
