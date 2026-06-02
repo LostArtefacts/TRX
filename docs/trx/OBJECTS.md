@@ -221,6 +221,8 @@ This page lists documented moveable object properties.
 
 ### `22` O_DRAGON_FRONT
 - `max_hit_points = 300` — Maximum hit points.
+- `touch_damage = 10` — Damage dealt while Lara is touching the dragon.
+- `swipe_damage = 250` — Damage dealt by the dragon swipe attack.
 
 ### `25` O_SHARK
 - `max_hit_points = 30` — Maximum hit points.
