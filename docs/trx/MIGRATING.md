@@ -9,7 +9,13 @@ order: 3
 
 ### Version 1.7 to 1.8
 
-1. **Update fish/piranha setup**:
+1. **Update Assault Course Lua stats access**:
+   The separate `trx.assault_stats` module has been merged into
+   `trx.assault.stats`.
+   - Before: `trx.assault_stats.add_record(30.0)`
+   - After: `trx.assault.stats.add_record(30.0)`
+
+2. **Update fish/piranha setup**:
    Fish and piranha objects no longer require a timer field to be set in
    triggers, and instead their swim range needs to be defined in Lua. Refer to
    the OG TR3 level scripts for reference.
@@ -18,37 +24,37 @@ order: 3
    `O_TROPICAL_FISH_GFX` in your level WAD. The TRX assets WAD for TR3 contains
    the default setup.
 
-2. **Update bat emitter sprites**:
+3. **Update bat emitter sprites**:
    The `O_EXPLOSION_1` sprite sequence is no longer used for bat emitters. Use
    `bat_sprites.bin` for TR3 levels, or define `O_BAT_GFX` in your level WAD.
    The TRX assets WAD for TR3 contains the default setup.
 
-3. **Update Cobra setup**:
+4. **Update Cobra setup**:
    Cobras in level sequence 9 and above are no longer hard-coded to have a small
    attack, forget and alert radius. Use Lua to specify this setup if required.
 
-4. **Update quest item end-level handling**:
+5. **Update quest item end-level handling**:
    TR3's quest items will no longer end the level by default when picked up. Use
    Lua or regular pickup triggers instead; refer to the OG TR3 level scripts for
    reference.
 
-5. **Update side flame emitters**:
+6. **Update side flame emitters**:
    `O_FLAME_EMITTER_SIDE` instances will no longer have a hard-coded 4 second
    interval in level sequence 7; all instances will default to 2 seconds. Refer
    to the Madubu Gorge Lua script to alter the interval.
 
-6. **Update spikes sound effects**:
+7. **Update spikes sound effects**:
    Animated spikes in TR3 are no longer hard-coded to play specific sound
    effects in levels 5 and 7 only. Regular animation commands can be used
    instead to play in any level.
 
-7. **Update AI Patrol 1**:
+8. **Update AI Patrol 1**:
    Levels with sequence 14 and 15 are no longer hard-coded to retain
    `O_AI_PATROL_1` items where an enemy should have the AI bits set but also use
    the item as a pathing target. Instead, place two `O_AI_PATROL_1` items in the
    same position to retain behaviour.
 
-8. **Vehicles and heavy triggers**:
+9. **Vehicles and heavy triggers**:
    All vehicle types except for the mounted gun can now activate heavy triggers.
    This is configurable per object and item in Lua, and the setting is enabled
    by default. Disable the option in cases where this may interfere with

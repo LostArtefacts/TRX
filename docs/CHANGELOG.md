@@ -3,10 +3,12 @@
 - added an option for Lara to pick items up more quickly, similar to TR4+ (#1365)
 - added `O_DOLPHIN`, which behaves in the same way as `O_ORCA` but has collision underwater
 - added a new console command - `/burn` - to toggle whether or not Lara is on fire
+- added `trx.assault` Lua functions to control the Assault Course and Quad Bike timers
 - added poison Lua property to `O_DART` and `O_DISC`, so that they can poison Lara just like `O_POISON_DART`
 - added the ability for skidoos and quad bikes that are inside or on top of lifts to move when the lift itself moves (#4353)
 - added the ability for skidoos, quad bikes and kayaks to activate heavy triggers (#4354)
 - changed vehicles to allow defining in Lua whether or not they can activate heavy triggers; refer to migration notes
+- changed Assault Course Lua record access from `trx.assault_stats` to `trx.assault.stats`
 - changed hard-coded music tracks from Snowmobiles, mine carts, and RIBs to be configurable via Lua
 - changed hard-coded fish and piranha setup to be configurable via Lua
 - changed hard-coded small Cobra radius setup to be configurable via Lua
