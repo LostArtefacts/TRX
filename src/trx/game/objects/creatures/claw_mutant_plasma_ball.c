@@ -1,13 +1,13 @@
 #include <trx/debug.h>
 #include <trx/game/effects.h>
 #include <trx/game/lara.h>
+#include <trx/game/objects.h>
 #include <trx/game/objects/creatures/claw_mutant_internal.h>
+#include <trx/game/objects/property.h>
 #include <trx/game/output.h>
 #include <trx/game/random.h>
 #include <trx/game/rooms.h>
 #include <trx/game/sparks.h>
-
-#define M_DAMAGE 200
 
 typedef enum {
     M_TYPE_ATTACHED,
@@ -18,7 +18,19 @@ static const BITE m_Bite = {
     .pos = { .x = -32, .y = -16, .z = -192 },
     .mesh_num = 13,
 };
+
 static const uint8_t m_Falloffs[2] = { 13, 7 };
+
+static int32_t M_GetDamage(void)
+{
+    OBJECT_PROPERTY_VALUE damage = {};
+    const OBJECT *const obj = Object_Get(O_CLAW_MUTANT);
+    if (ObjectProperty_GetObjectValue(obj, "plasma_ball_damage", &damage)) {
+        return damage.as_int;
+    }
+
+    return CLAW_MUTANT_PLASMA_BALL_DAMAGE;
+}
 
 static void M_TriggerPlasmaBallFlame(
     const int16_t effect_num, const M_TYPE type, const XYZ_32 vel)
@@ -157,7 +169,7 @@ static void M_Control(const int16_t effect_num)
                 nullptr, &effect->pos, effect->room_num);
         }
 
-        Lara_TakeDamage(M_DAMAGE, true);
+        Lara_TakeDamage(M_GetDamage(), true);
         Effect_Kill(effect_num);
         return;
     }

@@ -507,6 +507,8 @@ This page lists documented moveable object properties.
 
 ### `45` O_CLAW_MUTANT
 - `max_hit_points = 130` — Maximum hit points.
+- `damage = 100` — Damage dealt by the claw mutant melee attack.
+- `plasma_ball_damage = 200` — Damage dealt by the claw mutant plasma ball.
 
 ### `46` O_HYBRID_MUTANT
 - `max_hit_points = 90` — Maximum hit points.
