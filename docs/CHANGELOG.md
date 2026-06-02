@@ -49,6 +49,9 @@
     - `O_LION`
     - `O_LIONESS`
     - `O_LIZARD`
+    - `O_MONK_1`
+    - `O_MONK_2`
+    - `O_MONK_3`
     - `O_PUMA`
     - `O_STHPAC_MERCENARY`
     - `O_VULTURE`

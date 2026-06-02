@@ -319,9 +319,13 @@ This page lists documented moveable object properties.
 
 ### `53` O_MONK_1
 - `max_hit_points = 30` — Maximum hit points.
+- `damage = 150` — Damage dealt by melee attacks.
+- `enemy_damage = 5` — Damage dealt by melee attacks against non-player targets.
 
 ### `54` O_MONK_2
 - `max_hit_points = 30` — Maximum hit points.
+- `damage = 150` — Damage dealt by melee attacks.
+- `enemy_damage = 5` — Damage dealt by melee attacks against non-player targets.
 
 ### `58` O_PENDULUM_1
 - `damage = 50` — Damage dealt while Lara is touching the pendulum.
@@ -434,6 +438,8 @@ This page lists documented moveable object properties.
 
 ### `267` O_MONK_3
 - `max_hit_points = 30` — Maximum hit points.
+- `damage = 150` — Damage dealt by melee attacks.
+- `enemy_damage = 5` — Damage dealt by melee attacks against non-player targets.
 
 ## Tomb Raider 3
 
