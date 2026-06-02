@@ -3,35 +3,51 @@
 #include <trx/game/effects.h>
 #include <trx/game/music.h>
 #include <trx/game/objects.h>
+#include <trx/game/objects/property.h>
 #include <trx/game/pathing.h>
 #include <trx/game/savegame.h>
 #include <trx/game/spawn.h>
 
-#define COWBOY_SHOT_DAMAGE 70
-#define COWBOY_WALK_TURN (DEG_1 * 3) // = 546
-#define COWBOY_RUN_TURN (DEG_1 * 6) // = 1092
-#define COWBOY_WALK_RANGE SQUARE(WALL_L * 3) // = 9437184
-#define COWBOY_DIE_ANIM 7
-#define COWBOY_HITPOINTS 150
-#define COWBOY_RADIUS (WALL_L / 10) // = 102
-#define COWBOY_SMARTNESS 0x7FFF
+// clang-format off
+#define M_HIT_POINTS 150
+#define M_DAMAGE     70
+#define M_RADIUS     (WALL_L / 10) // = 102
+#define M_WALK_TURN  (DEG_1 * 3) // = 546
+#define M_RUN_TURN   (DEG_1 * 6) // = 1092
+#define M_WALK_RANGE SQUARE(WALL_L * 3) // = 9437184
+// clang-format on
 
 typedef enum {
-    COWBOY_STATE_EMPTY = 0,
-    COWBOY_STATE_STOP = 1,
-    COWBOY_STATE_WALK = 2,
-    COWBOY_STATE_RUN = 3,
-    COWBOY_STATE_AIM = 4,
-    COWBOY_STATE_DEATH = 5,
-    COWBOY_STATE_SHOOT = 6,
-} COWBOY_STATE;
+    M_STATE_EMPTY,
+    M_STATE_STOP,
+    M_STATE_WALK,
+    M_STATE_RUN,
+    M_STATE_AIM,
+    M_STATE_DEATH,
+    M_STATE_SHOOT,
+} M_STATE;
+
+typedef enum {
+    M_ANIM_DEATH = 7,
+} M_ANIM;
 
 static const CREATURE_GUN m_CowboyGun1 = {
-    .muzzle = { .pos = { 1, 200, 41 }, .mesh_num = 5 },
+    .muzzle = { .pos = { 1, 200, 41 }, .mesh_num = 5, },
 };
+
 static const CREATURE_GUN m_CowboyGun2 = {
-    .muzzle = { .pos = { -2, 200, 40 }, .mesh_num = 8 },
+    .muzzle = { .pos = { -2, 200, 40 }, .mesh_num = 8, },
 };
+
+static int32_t M_GetShotDamage(const ITEM *const item)
+{
+    OBJECT_PROPERTY_VALUE damage = {};
+    if (ObjectProperty_GetItemValue(item, "damage", &damage)) {
+        return damage.as_int;
+    }
+
+    return M_DAMAGE;
+}
 
 static void M_HandleSave(ITEM *const item, const SAVEGAME_STAGE stage)
 {
@@ -58,9 +74,9 @@ static void M_Control(const int16_t item_num)
     int16_t tilt = 0;
 
     if (item->hit_points <= 0) {
-        if (item->current_anim_state != COWBOY_STATE_DEATH) {
-            item->current_anim_state = COWBOY_STATE_DEATH;
-            Item_SwitchToAnim(item, COWBOY_DIE_ANIM, 0);
+        if (item->current_anim_state != M_STATE_DEATH) {
+            item->current_anim_state = M_STATE_DEATH;
+            Item_SwitchToAnim(item, M_ANIM_DEATH, 0);
         }
     } else {
         AI_INFO info;
@@ -75,65 +91,66 @@ static void M_Control(const int16_t item_num)
         angle = Creature_Turn(item, cowboy->maximum_turn);
 
         switch (item->current_anim_state) {
-        case COWBOY_STATE_STOP:
+        case M_STATE_STOP:
             if (item->required_anim_state) {
                 item->goal_anim_state = item->required_anim_state;
             } else if (Creature_CanTargetEnemy(item, &info)) {
-                item->goal_anim_state = COWBOY_STATE_AIM;
+                item->goal_anim_state = M_STATE_AIM;
             } else if (cowboy->mood == MOOD_BORED) {
-                item->goal_anim_state = COWBOY_STATE_WALK;
+                item->goal_anim_state = M_STATE_WALK;
             } else {
-                item->goal_anim_state = COWBOY_STATE_RUN;
+                item->goal_anim_state = M_STATE_RUN;
             }
             break;
 
-        case COWBOY_STATE_WALK:
-            cowboy->maximum_turn = COWBOY_WALK_TURN;
+        case M_STATE_WALK:
+            cowboy->maximum_turn = M_WALK_TURN;
             if (cowboy->mood == MOOD_ESCAPE || !info.ahead) {
-                item->required_anim_state = COWBOY_STATE_RUN;
-                item->goal_anim_state = COWBOY_STATE_STOP;
+                item->required_anim_state = M_STATE_RUN;
+                item->goal_anim_state = M_STATE_STOP;
             } else if (Creature_CanTargetEnemy(item, &info)) {
-                item->required_anim_state = COWBOY_STATE_AIM;
-                item->goal_anim_state = COWBOY_STATE_STOP;
-            } else if (info.distance > COWBOY_WALK_RANGE) {
-                item->required_anim_state = COWBOY_STATE_RUN;
-                item->goal_anim_state = COWBOY_STATE_STOP;
+                item->required_anim_state = M_STATE_AIM;
+                item->goal_anim_state = M_STATE_STOP;
+            } else if (info.distance > M_WALK_RANGE) {
+                item->required_anim_state = M_STATE_RUN;
+                item->goal_anim_state = M_STATE_STOP;
             }
             break;
 
-        case COWBOY_STATE_RUN:
-            cowboy->maximum_turn = COWBOY_RUN_TURN;
+        case M_STATE_RUN:
+            cowboy->maximum_turn = M_RUN_TURN;
             tilt = angle / 2;
             if (cowboy->mood != MOOD_ESCAPE || info.ahead) {
                 if (Creature_CanTargetEnemy(item, &info)) {
-                    item->required_anim_state = COWBOY_STATE_AIM;
-                    item->goal_anim_state = COWBOY_STATE_STOP;
-                } else if (info.ahead && info.distance < COWBOY_WALK_RANGE) {
-                    item->required_anim_state = COWBOY_STATE_WALK;
-                    item->goal_anim_state = COWBOY_STATE_STOP;
+                    item->required_anim_state = M_STATE_AIM;
+                    item->goal_anim_state = M_STATE_STOP;
+                } else if (info.ahead && info.distance < M_WALK_RANGE) {
+                    item->required_anim_state = M_STATE_WALK;
+                    item->goal_anim_state = M_STATE_STOP;
                 }
             }
             break;
 
-        case COWBOY_STATE_AIM:
+        case M_STATE_AIM:
             cowboy->flags = 0;
             if (item->required_anim_state) {
-                item->goal_anim_state = COWBOY_STATE_STOP;
+                item->goal_anim_state = M_STATE_STOP;
             } else if (Creature_CanTargetEnemy(item, &info)) {
-                item->goal_anim_state = COWBOY_STATE_SHOOT;
+                item->goal_anim_state = M_STATE_SHOOT;
             } else {
-                item->goal_anim_state = COWBOY_STATE_STOP;
+                item->goal_anim_state = M_STATE_STOP;
             }
             break;
 
-        case COWBOY_STATE_SHOOT:
+        case M_STATE_SHOOT:
             if (!cowboy->flags) {
                 Creature_Shoot(
-                    item, &info, &m_CowboyGun1, head, COWBOY_SHOT_DAMAGE);
+                    item, &info, &m_CowboyGun1, head, M_GetShotDamage(item));
             } else if (cowboy->flags == 6) {
                 if (Creature_CanTargetEnemy(item, &info)) {
                     Creature_Shoot(
-                        item, &info, &m_CowboyGun2, head, COWBOY_SHOT_DAMAGE);
+                        item, &info, &m_CowboyGun2, head,
+                        M_GetShotDamage(item));
                 } else {
                     int16_t effect_num = Creature_Effect(
                         item, &m_CowboyGun2.muzzle, Spawn_GunShot);
@@ -145,7 +162,7 @@ static void M_Control(const int16_t item_num)
             cowboy->flags++;
 
             if (cowboy->mood == MOOD_ESCAPE) {
-                item->required_anim_state = COWBOY_STATE_RUN;
+                item->required_anim_state = M_STATE_RUN;
             }
             break;
         }
@@ -167,8 +184,8 @@ static void M_Setup(OBJECT *const obj)
     obj->collision_func = Creature_Collision;
     obj->shadow_size = UNIT_SHADOW / 2;
 
-    obj->radius = COWBOY_RADIUS;
-    obj->smartness = COWBOY_SMARTNESS;
+    obj->radius = M_RADIUS;
+    obj->smartness = 0x7FFF;
     obj->intelligent = true;
     obj->save_position = true;
     obj->save_hitpoints = true;
@@ -179,7 +196,9 @@ static void M_Setup(OBJECT *const obj)
     OBJECT_PROPERTIES(
         obj,
         OBJECT_PROPERTY_INT(
-            "max_hit_points", COWBOY_HITPOINTS, "Maximum hit points."));
+            "max_hit_points", M_HIT_POINTS, "Maximum hit points."),
+        OBJECT_PROPERTY_INT(
+            "damage", M_DAMAGE, "Damage dealt by the cowboy's shot."));
 }
 
 REGISTER_OBJECT(O_COWBOY, M_Setup)
