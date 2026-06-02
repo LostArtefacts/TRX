@@ -67,6 +67,9 @@ This page lists documented moveable object properties.
 
 ### `19` O_RAPTOR
 - `max_hit_points = 20` — Maximum hit points.
+- `lunge_damage = 100` — Damage dealt by the lunge attack.
+- `charge_damage = 100` — Damage dealt by the charge attack.
+- `bite_damage = 100` — Damage dealt by the bite attack.
 
 ### `20` O_ATLANTEAN_WINGED
 - `max_hit_points = 50` — Maximum hit points.
@@ -762,6 +765,9 @@ This page lists documented moveable object properties.
 
 ### `288` O_RAPTOR
 - `max_hit_points = 90` — Maximum hit points.
+- `lunge_damage = 100` — Damage dealt by the lunge attack.
+- `charge_damage = 100` — Damage dealt by the charge attack.
+- `bite_damage = 100` — Damage dealt by the bite attack.
 
 ### `291` O_ROTATING_LASER
 - `damage = 25` — Damage dealt while Lara is touching the rotating laser.
