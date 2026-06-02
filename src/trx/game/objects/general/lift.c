@@ -274,6 +274,28 @@ static void M_Initialise(const int16_t item_num)
     Vector_Free(positions);
 }
 
+static void M_ShiftStackableItems(
+    const ITEM *const lift_item, const bool reposition)
+{
+    M_PRIV *const p = lift_item->priv;
+    for (int32_t i = 0; i < M_LIFT_NUM_FLOOR_SECTORS; i++) {
+        MovableBlock_ShiftStackY(
+            p->linked[i].pos.y, p->linked[i].pos, lift_item->pos.y,
+            lift_item->room_num, reposition);
+        if (reposition) {
+            p->linked[i].pos.y = lift_item->pos.y;
+        }
+    }
+    for (int32_t i = M_LIFT_NUM_FLOOR_SECTORS; i < M_LIFT_NUM_SECTORS; i++) {
+        MovableBlock_ShiftStackY(
+            p->linked[i].pos.y, p->linked[i].pos,
+            lift_item->pos.y - LIFT_HEIGHT, lift_item->room_num, reposition);
+        if (reposition) {
+            p->linked[i].pos.y = lift_item->pos.y - LIFT_HEIGHT;
+        }
+    }
+}
+
 static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
@@ -286,38 +308,14 @@ static void M_Control(const int16_t item_num)
         item->goal_anim_state = LIFT_STATE_DOOR_OPEN;
         p->wait_time = 0;
         if (p->is_moving) {
-            for (int32_t i = 0; i < M_LIFT_NUM_FLOOR_SECTORS; i++) {
-                MovableBlock_ShiftStackY(
-                    p->linked[i].pos.y, p->linked[i].pos, item->pos.y,
-                    item->room_num, true);
-                // Don't reposition because item->pos links to a single sector.
-                p->linked[i].pos.y = item->pos.y;
-            }
-            for (int32_t i = M_LIFT_NUM_FLOOR_SECTORS; i < M_LIFT_NUM_SECTORS;
-                 i++) {
-                MovableBlock_ShiftStackY(
-                    p->linked[i].pos.y, p->linked[i].pos,
-                    item->pos.y - LIFT_HEIGHT, item->room_num, true);
-                // Don't reposition because item->pos links to a single sector.
-                p->linked[i].pos.y = item->pos.y - LIFT_HEIGHT;
-            }
+            M_ShiftStackableItems(item, true);
         }
         p->is_moving = false;
     } else if (p->wait_time < LIFT_WAIT_TIME) {
         item->goal_anim_state = LIFT_STATE_DOOR_OPEN;
         p->wait_time++;
         // Prevent Lara from interacting with blocks about to move.
-        for (int32_t i = 0; i < M_LIFT_NUM_FLOOR_SECTORS; i++) {
-            MovableBlock_ShiftStackY(
-                p->linked[i].pos.y, p->linked[i].pos, item->pos.y,
-                item->room_num, false);
-        }
-        for (int32_t i = M_LIFT_NUM_FLOOR_SECTORS; i < M_LIFT_NUM_SECTORS;
-             i++) {
-            MovableBlock_ShiftStackY(
-                p->linked[i].pos.y, p->linked[i].pos, item->pos.y - LIFT_HEIGHT,
-                item->room_num, false);
-        }
+        M_ShiftStackableItems(item, false);
     } else {
         item->goal_anim_state = LIFT_STATE_DOOR_CLOSED;
         p->is_moving = true;
@@ -326,19 +324,9 @@ static void M_Control(const int16_t item_num)
             ? (delta < LIFT_SHIFT ? delta : LIFT_SHIFT)
             : (delta > -LIFT_SHIFT ? delta : -LIFT_SHIFT);
         item->pos.y += step;
-        // Raise/lower possible movable blocks on top.
-        for (int32_t i = 0; i < M_LIFT_NUM_FLOOR_SECTORS; i++) {
-            MovableBlock_ShiftStackY(
-                p->linked[i].pos.y, p->linked[i].pos, item->pos.y,
-                item->room_num, false);
-        }
-        // Double check linked positions on save vs load.
-        for (int32_t i = M_LIFT_NUM_FLOOR_SECTORS; i < M_LIFT_NUM_SECTORS;
-             i++) {
-            MovableBlock_ShiftStackY(
-                p->linked[i].pos.y, p->linked[i].pos, item->pos.y - LIFT_HEIGHT,
-                item->room_num, false);
-        }
+        // Raise/lower possible movable blocks on top and check positions on
+        // save vs load.
+        M_ShiftStackableItems(item, false);
     }
 
     Item_Animate(item);
