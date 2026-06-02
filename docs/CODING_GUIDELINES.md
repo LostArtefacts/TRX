@@ -22,7 +22,7 @@ pre-commit install
 To install required external dependencies on Ubuntu:
 
 ```console
-apt-get install -y clang-format-18
+apt-get install -y clang-format-22
 ```
 
 After this, each commit should trigger a hook to automatically format changes.
