@@ -480,6 +480,7 @@ This page lists documented moveable object properties.
 
 ### `34` O_COMPY
 - `max_hit_points = 10` — Maximum hit points.
+- `damage = 90` — Damage dealt by the compy attack.
 
 ### `35` O_LIZARD
 - `max_hit_points = 36` — Maximum hit points.
