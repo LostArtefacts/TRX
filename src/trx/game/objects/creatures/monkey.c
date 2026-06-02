@@ -7,12 +7,14 @@
 #include <trx/game/lara.h>
 #include <trx/game/objects/common.h>
 #include <trx/game/objects/draw.h>
+#include <trx/game/objects/property.h>
 #include <trx/game/pathing.h>
 #include <trx/game/random.h>
 #include <trx/game/shell.h>
 #include <trx/game/spawn.h>
 
 // clang-format off
+#define M_HIT_POINTS    8
 #define M_DAMAGE_NORMAL 40
 #define M_DAMAGE_JUMP   50
 #define M_WALK_TURN     (7 * DEG_1)
@@ -64,6 +66,17 @@ typedef enum {
     M_ANIM_DOWN_3 = 21,
     M_ANIM_DOWN_4 = 20,
 } M_ANIM;
+
+static int32_t M_GetDamage(
+    const ITEM *const item, const char *const key, const int32_t default_value)
+{
+    OBJECT_PROPERTY_VALUE damage = {};
+    if (ObjectProperty_GetItemValue(item, key, &damage)) {
+        return damage.as_int;
+    }
+
+    return default_value;
+}
 
 static void M_Bite(ITEM *const item, ITEM *const enemy, const int32_t dmg)
 {
@@ -452,7 +465,9 @@ static void M_Control(const int16_t item_num)
             } else {
                 item->rot.y += M_WALK_TURN;
             }
-            M_Bite(item, creature->enemy, M_DAMAGE_NORMAL);
+            M_Bite(
+                item, creature->enemy,
+                M_GetDamage(item, "damage", M_DAMAGE_NORMAL));
             break;
 
 #pragma GCC diagnostic push
@@ -469,7 +484,9 @@ static void M_Control(const int16_t item_num)
             } else {
                 item->rot.y += M_WALK_TURN;
             }
-            M_Bite(item, creature->enemy, M_DAMAGE_NORMAL);
+            M_Bite(
+                item, creature->enemy,
+                M_GetDamage(item, "damage", M_DAMAGE_NORMAL));
 
             // OG mistake
             // break;
@@ -486,7 +503,9 @@ static void M_Control(const int16_t item_num)
             } else {
                 item->rot.y += M_WALK_TURN;
             }
-            M_Bite(item, creature->enemy, M_DAMAGE_JUMP);
+            M_Bite(
+                item, creature->enemy,
+                M_GetDamage(item, "jump_damage", M_DAMAGE_JUMP));
             break;
 #pragma GCC diagnostic pop
         }
@@ -581,7 +600,14 @@ static void M_Setup(OBJECT *const obj)
     Object_GetBone(obj, 7)->rot.x = true;
     Object_GetBone(obj, 7)->rot.y = true;
     OBJECT_PROPERTIES(
-        obj, OBJECT_PROPERTY_INT("max_hit_points", 8, "Maximum hit points."));
+        obj,
+        OBJECT_PROPERTY_INT(
+            "max_hit_points", M_HIT_POINTS, "Maximum hit points."),
+        OBJECT_PROPERTY_INT(
+            "damage", M_DAMAGE_NORMAL, "Damage dealt by bite attacks."),
+        OBJECT_PROPERTY_INT(
+            "jump_damage", M_DAMAGE_JUMP,
+            "Damage dealt by the jumping bite attack."));
 }
 
 REGISTER_OBJECT(O_MONKEY, M_Setup)

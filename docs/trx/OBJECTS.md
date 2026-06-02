@@ -615,6 +615,8 @@ This page lists documented moveable object properties.
 
 ### `71` O_MONKEY
 - `max_hit_points = 8` — Maximum hit points.
+- `damage = 40` — Damage dealt by bite attacks.
+- `jump_damage = 50` — Damage dealt by the jumping bite attack.
 
 ### `73` O_TONY
 - `max_hit_points = 100` — Maximum hit points.
