@@ -259,6 +259,7 @@ This page lists documented moveable object properties.
 
 ### `35` O_JELLY
 - `max_hit_points = 10` — Maximum hit points.
+- `damage = 5` — Damage dealt by the jelly sting.
 
 ### `36` O_SPIDER
 - `max_hit_points = 5` — Maximum hit points.
