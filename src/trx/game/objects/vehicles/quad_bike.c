@@ -1422,6 +1422,8 @@ bool QuadBike_Control(void)
 
     const LARA_INFO *const lara = Lara_GetLaraInfo();
     if (!(quad->flags & 0x80)) {
+        Room_GetSector(
+            (XYZ_32) { item->pos.x, item->pos.y - 16, item->pos.z }, &room_num);
         if (room_num != item->room_num) {
             Item_UpdateRoom(Lara_Vehicle_GetIndex(), room_num);
             Item_UpdateRoom(lara->item_num, room_num);
@@ -1502,6 +1504,7 @@ static void M_Setup(OBJECT *const obj)
     obj->priv_save_func = M_SavePriv;
     obj->collision_func = M_Collision;
     obj->draw_func = Object_DrawAnimatingItem;
+    obj->event_func = Vehicle_HandleEvent;
     obj->save_position = true;
     obj->save_flags = true;
     obj->save_anim = true;

@@ -298,6 +298,47 @@ static void M_ShiftStackableItems(
     }
 }
 
+static bool M_IsItemInStack(
+    const ITEM *const lift_item, const ITEM *const target_item)
+{
+    int16_t room_num = target_item->room_num;
+    const SECTOR *sector = Room_GetSector(target_item->pos, &room_num);
+    sector = Room_GetPitSector(sector, target_item->pos.x, target_item->pos.z);
+
+    for (WALKABLE *w = sector->walkable; w != nullptr; w = w->next) {
+        if (lift_item == Item_Get(w->item_num)) {
+            return true;
+        }
+    }
+    return false;
+}
+
+static void M_ShiftTravellingItems(
+    const ITEM *const lift_item, const int32_t delta)
+{
+    // TODO: rather than passing delta to listeners, refactor Room_GetHeight to
+    // be more aware of what's calling it, so that such checks in M_FloorCeiling
+    // that expect Lara only can become more generic.
+    for (int32_t i = 0; i < Item_GetLevelCount(); i++) {
+        ITEM *const item = Item_Get(i);
+        if (item == lift_item) {
+            continue;
+        }
+
+        const OBJECT *const obj = Object_Get(item->object_id);
+        if (obj->event_func == nullptr) {
+            continue;
+        }
+
+        if (!M_IsItemInStack(lift_item, item)) {
+            continue;
+        }
+
+        obj->event_func(
+            item, OBJECT_EVENT_FLOOR_MOVED, (void *)(intptr_t)delta);
+    }
+}
+
 static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
@@ -329,6 +370,7 @@ static void M_Control(const int16_t item_num)
         // Raise/lower possible movable blocks on top and check positions on
         // save vs load.
         M_ShiftStackableItems(item, false);
+        M_ShiftTravellingItems(item, step);
     }
 
     Item_Animate(item);

@@ -860,6 +860,9 @@ bool Skidoo_Control(void)
     skidoo->rot.x += (x_rot - skidoo->rot.x) >> 1;
     skidoo->rot.z += (z_rot - skidoo->rot.z) >> 1;
 
+    Room_GetSector(
+        (XYZ_32) { skidoo->pos.x, skidoo->pos.y - 16, skidoo->pos.z },
+        &room_num);
     if (skidoo->flags & IF_ONE_SHOT) {
         Room_TestTriggers(lara_item);
         Item_UpdateRoom(Item_GetIndex(skidoo), room_num);
