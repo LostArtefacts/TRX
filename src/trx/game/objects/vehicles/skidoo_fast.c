@@ -2,6 +2,7 @@
 #include <trx/core/json/util/write_io.h>
 #include <trx/game/music.h>
 #include <trx/game/objects.h>
+#include <trx/game/objects/vehicles/common.h>
 #include <trx/game/objects/vehicles/skidoo_common.h>
 
 static void M_PrivLoad(ITEM *const item, JSON_READ_IO *const io)
@@ -33,6 +34,7 @@ static void M_Setup(OBJECT *const obj)
     obj->initialise_func = Skidoo_Initialise;
     obj->draw_func = Skidoo_Draw;
     obj->collision_func = Skidoo_Collision;
+    obj->event_func = Vehicle_HandleEvent;
     obj->priv_size = sizeof(SKIDOO_INFO);
     obj->priv_load_func = M_PrivLoad;
     obj->priv_save_func = M_PrivSave;

@@ -54,6 +54,7 @@ typedef struct JSON_WRITE_IO JSON_WRITE_IO;
 typedef enum {
     OBJECT_EVENT_ALERT,
     OBJECT_EVENT_BURNT,
+    OBJECT_EVENT_FLOOR_MOVED,
 } OBJECT_EVENT;
 
 typedef struct OBJECT {

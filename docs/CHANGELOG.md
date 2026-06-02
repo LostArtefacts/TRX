@@ -4,6 +4,7 @@
 - added `O_DOLPHIN`, which behaves in the same way as `O_ORCA` but has collision underwater
 - added a new console command - `/burn` - to toggle whether or not Lara is on fire
 - added poison Lua property to `O_DART` and `O_DISC`, so that they can poison Lara just like `O_POISON_DART`
+- added the ability for skidoos and quad bikes that are inside or on top of lifts to move when the lift itself moves (#4353)
 - changed hard-coded music tracks from Snowmobiles, mine carts, and RIBs to be configurable via Lua
 - changed hard-coded fish and piranha setup to be configurable via Lua
 - changed hard-coded small Cobra radius setup to be configurable via Lua

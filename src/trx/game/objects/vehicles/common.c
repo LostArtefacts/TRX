@@ -199,3 +199,21 @@ void Vehicle_PlayOneShotTrackPool(
     Music_Play_Direct(track, MPM_ONCE);
     Music_SetTrackFlags(track, Music_GetTrackFlags(track) | IF_ONE_SHOT);
 }
+
+void Vehicle_HandleEvent(
+    ITEM *const item, const OBJECT_EVENT event, const void *const data)
+{
+    if (event != OBJECT_EVENT_FLOOR_MOVED) {
+        return;
+    }
+
+    const int32_t shift = (int32_t)(intptr_t)data;
+    item->pos.y += shift;
+    item->floor += shift;
+
+    int16_t room_num = item->room_num;
+    Room_GetSector(item->pos, &room_num);
+    if (room_num != item->room_num) {
+        Item_UpdateRoom(Item_GetIndex(item), room_num);
+    }
+}

@@ -339,7 +339,8 @@ static void M_InterpolateItems(const double ratio)
     for (int32_t i = 0; i < Item_GetTotalCount(); i++) {
         ITEM *const item = Item_Get(i);
         if (((item->flags & IF_KILLED) || item->status == IS_INACTIVE)
-            && i != lara_vehicle_num) {
+            && i != lara_vehicle_num
+            && XYZ_32_AreEquivalent(item->pos, item->interp.prev.pos)) {
             M_CommitItem(item);
         } else {
             M_InterpolateItem(item, ratio);
