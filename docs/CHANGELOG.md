@@ -30,6 +30,7 @@
     - `O_CIVILIAN`
     - `O_CLAW_MUTANT`
     - `O_COBRA`
+    - `O_COMPY`
     - `O_CROW`
     - `O_EAGLE`
     - `O_VULTURE`

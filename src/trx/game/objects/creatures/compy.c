@@ -4,12 +4,16 @@
 #include <trx/game/creature.h>
 #include <trx/game/lara.h>
 #include <trx/game/objects.h>
+#include <trx/game/objects/property.h>
 #include <trx/game/pathing.h>
 #include <trx/game/random.h>
 #include <trx/game/rooms.h>
 #include <trx/game/spawn.h>
 
 // clang-format off
+#define M_HIT_POINTS    10
+#define M_DAMAGE        90
+#define M_RADIUS        (WALL_L / 10) // = 102
 #define M_RUN_TURN      (10 * DEG_1)
 #define M_STOP_TURN     (3 * DEG_1)
 
@@ -51,6 +55,16 @@ static BITE m_Bite = {
     .pos = { .x = 0, .y = 0, .z = 0 },
     .mesh_num = 2,
 };
+
+static int32_t M_GetDamage(const ITEM *const item)
+{
+    OBJECT_PROPERTY_VALUE damage = {};
+    if (ObjectProperty_GetItemValue(item, "damage", &damage)) {
+        return damage.as_int;
+    }
+
+    return M_DAMAGE;
+}
 
 static bool M_FindCarcass(ITEM *const item)
 {
@@ -241,7 +255,7 @@ static void M_Control(const int16_t item_num)
         if (!(creature->flags & M_HIT_FLAG)) {
             if ((item->touch_bits & M_TOUCH_BITS) && p->shared->attack_lara) {
                 creature->flags |= M_HIT_FLAG;
-                Lara_TakeDamage(90, true);
+                Lara_TakeDamage(M_GetDamage(item), true);
                 Creature_Effect(item, &m_Bite, Spawn_Blood);
             } else if (
                 info.distance < M_HIT_RANGE && info.ahead
@@ -274,9 +288,8 @@ static void M_Setup(OBJECT *const obj)
     obj->priv_load_func = M_LoadPriv;
     obj->priv_save_func = M_SavePriv;
 
-    obj->radius = 102;
+    obj->radius = M_RADIUS;
     obj->shadow_size = 85;
-
     obj->pivot_length = 50;
 
     // obj->non_lot = true; // TODO(TR3)
@@ -289,7 +302,11 @@ static void M_Setup(OBJECT *const obj)
     Object_GetBone(obj, 1)->rot.y = true;
     Object_GetBone(obj, 2)->rot.y = true;
     OBJECT_PROPERTIES(
-        obj, OBJECT_PROPERTY_INT("max_hit_points", 10, "Maximum hit points."));
+        obj,
+        OBJECT_PROPERTY_INT(
+            "max_hit_points", M_HIT_POINTS, "Maximum hit points."),
+        OBJECT_PROPERTY_INT(
+            "damage", M_DAMAGE, "Damage dealt by the compy attack."));
 }
 
 REGISTER_OBJECT(O_COMPY, M_Setup)
