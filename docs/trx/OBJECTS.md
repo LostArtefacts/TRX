@@ -194,6 +194,8 @@ This page lists documented moveable object properties.
 
 ### `15` O_DOG
 - `max_hit_points = 10` — Maximum hit points.
+- `bite_damage = 100` — Damage dealt by the dog bite.
+- `lunge_damage = 100` — Damage dealt by the dog's lunge attack.
 
 ### `16` O_CULT_1
 - `max_hit_points = 25` — Maximum hit points.
