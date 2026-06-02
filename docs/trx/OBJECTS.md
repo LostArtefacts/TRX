@@ -255,6 +255,7 @@ This page lists documented moveable object properties.
 
 ### `38` O_CROW
 - `max_hit_points = 15` — Maximum hit points.
+- `damage = 20` — Damage dealt by the bird attack.
 
 ### `39` O_TIGER
 - `max_hit_points = 20` — Maximum hit points.
@@ -273,6 +274,7 @@ This page lists documented moveable object properties.
 
 ### `47` O_EAGLE
 - `max_hit_points = 20` — Maximum hit points.
+- `damage = 20` — Damage dealt by the bird attack.
 
 ### `48` O_BANDIT_1
 - `max_hit_points = 45` — Maximum hit points.
@@ -458,12 +460,14 @@ This page lists documented moveable object properties.
 
 ### `27` O_CROW
 - `max_hit_points = 8` — Maximum hit points.
+- `damage = 20` — Damage dealt by the bird attack.
 
 ### `28` O_TIGER
 - `max_hit_points = 24` — Maximum hit points.
 
 ### `29` O_VULTURE
 - `max_hit_points = 18` — Maximum hit points.
+- `damage = 20` — Damage dealt by the bird attack.
 
 ### `30` O_ASSAULT_TARGET
 - `max_hit_points = 8` — Maximum hit points.

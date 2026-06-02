@@ -25,6 +25,9 @@
     - `O_BEAR`
     - `O_BIG_EEL`
     - `O_BIG_SPIDER`
+    - `O_CROW`
+    - `O_EAGLE`
+    - `O_VULTURE`
 - changed the hard-coded traps damage to be configurable via Lua. Objects affected:
     - `O_BLADE`
     - `O_CEILING_SPIKES`
