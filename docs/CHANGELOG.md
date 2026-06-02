@@ -42,6 +42,7 @@
     - `O_DOG`
     - `O_DRAGON_FRONT`
     - `O_EAGLE`
+    - `O_EEL`
     - `O_VULTURE`
 - changed the hard-coded traps damage to be configurable via Lua. Objects affected:
     - `O_BLADE`
