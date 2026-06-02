@@ -2,48 +2,57 @@
 #include <trx/debug.h>
 #include <trx/game/creature.h>
 #include <trx/game/objects/common.h>
-#include <trx/game/objects/creatures/bandit_common.h>
+#include <trx/game/objects/property.h>
 #include <trx/game/random.h>
 #include <trx/game/rooms.h>
 #include <trx/game/spawn.h>
 
 // clang-format off
-#define BANDIT_1_HITPOINTS      45
-#define BANDIT_1_SHOOT_DAMAGE   8
-#define BANDIT_1_WALK_TURN      (DEG_1 * 4) // = 728
-#define BANDIT_1_RUN_TURN       (DEG_1 * 6) // = 1092
-#define BANDIT_1_WALK_RANGE     SQUARE(WALL_L * 2) // = 4194304
-#define BANDIT_1_SHOOT_1_CHANCE 0x2000
-#define BANDIT_1_SHOOT_2_CHANCE 0x4000
+#define M_HIT_POINTS     45
+#define M_DAMAGE         8
+#define M_RADIUS         (WALL_L / 10) // = 102
+#define M_WALK_TURN      (DEG_1 * 4) // = 728
+#define M_RUN_TURN       (DEG_1 * 6) // = 1092
+#define M_WALK_RANGE     SQUARE(WALL_L * 2) // = 4194304
+#define M_SHOOT_1_CHANCE 0x2000
+#define M_SHOOT_2_CHANCE 0x4000
 // clang-format on
 
 typedef enum {
-    // clang-format off
-    BANDIT_1_STATE_EMPTY    = 0,
-    BANDIT_1_STATE_WAIT     = 1,
-    BANDIT_1_STATE_WALK     = 2,
-    BANDIT_1_STATE_RUN      = 3,
-    BANDIT_1_STATE_AIM_1    = 4,
-    BANDIT_1_STATE_SHOOT_1  = 5,
-    BANDIT_1_STATE_AIM_2    = 6,
-    BANDIT_1_STATE_SHOOT_2  = 7,
-    BANDIT_1_STATE_SHOOT_3A = 8,
-    BANDIT_1_STATE_SHOOT_3B = 9,
-    BANDIT_1_STATE_SHOOT_4A = 10,
-    BANDIT_1_STATE_AIM_3    = 11,
-    BANDIT_1_STATE_AIM_4    = 12,
-    BANDIT_1_STATE_DEATH    = 13,
-    BANDIT_1_STATE_SHOOT_4B = 14,
-    // clang-format on
-} BANDIT_1_STATE;
+    M_STATE_EMPTY,
+    M_STATE_WAIT,
+    M_STATE_WALK,
+    M_STATE_RUN,
+    M_STATE_AIM_1,
+    M_STATE_SHOOT_1,
+    M_STATE_AIM_2,
+    M_STATE_SHOOT_2,
+    M_STATE_SHOOT_3A,
+    M_STATE_SHOOT_3B,
+    M_STATE_SHOOT_4A,
+    M_STATE_AIM_3,
+    M_STATE_AIM_4,
+    M_STATE_DEATH,
+    M_STATE_SHOOT_4B,
+} M_STATE;
 
 typedef enum {
-    BANDIT_1_ANIM_DEATH = 14,
-} BANDIT_1_ANIM;
+    M_ANIM_DEATH = 14,
+} M_ANIM;
 
 static const CREATURE_GUN m_Bandit1Gun = {
     .muzzle = { .pos = { .x = -2, .y = 150, .z = 19 }, .mesh_num = 17 },
 };
+
+static int32_t M_GetShootDamage(const ITEM *const item)
+{
+    OBJECT_PROPERTY_VALUE damage = {};
+    if (ObjectProperty_GetItemValue(item, "damage", &damage)) {
+        return damage.as_int;
+    }
+
+    return M_DAMAGE;
+}
 
 static void M_Control(const int16_t item_num)
 {
@@ -61,9 +70,9 @@ static void M_Control(const int16_t item_num)
 
     if (item->hit_points <= 0) {
         item->hit_points = 0;
-        if (item->current_anim_state != BANDIT_1_STATE_DEATH) {
-            Item_SwitchToAnim(item, BANDIT_1_ANIM_DEATH, 0);
-            item->current_anim_state = BANDIT_1_STATE_DEATH;
+        if (item->current_anim_state != M_STATE_DEATH) {
+            Item_SwitchToAnim(item, M_ANIM_DEATH, 0);
+            item->current_anim_state = M_STATE_DEATH;
         }
     } else {
         AI_INFO info;
@@ -73,100 +82,100 @@ static void M_Control(const int16_t item_num)
         angle = Creature_Turn(item, creature->maximum_turn);
 
         switch (item->current_anim_state) {
-        case BANDIT_1_STATE_WAIT:
+        case M_STATE_WAIT:
             if (info.ahead) {
                 neck = info.angle;
             }
             creature->maximum_turn = 0;
             if (creature->mood == MOOD_ESCAPE) {
-                item->goal_anim_state = BANDIT_1_STATE_RUN;
+                item->goal_anim_state = M_STATE_RUN;
             } else if (Creature_CanTargetEnemy(item, &info)) {
-                if (info.distance > BANDIT_1_WALK_RANGE) {
-                    item->goal_anim_state = BANDIT_1_STATE_WALK;
+                if (info.distance > M_WALK_RANGE) {
+                    item->goal_anim_state = M_STATE_WALK;
                 } else {
                     const int32_t random = Random_GetControl();
-                    if (random < BANDIT_1_SHOOT_1_CHANCE) {
-                        item->goal_anim_state = BANDIT_1_STATE_SHOOT_1;
-                    } else if (random < BANDIT_1_SHOOT_2_CHANCE) {
-                        item->goal_anim_state = BANDIT_1_STATE_SHOOT_2;
+                    if (random < M_SHOOT_1_CHANCE) {
+                        item->goal_anim_state = M_STATE_SHOOT_1;
+                    } else if (random < M_SHOOT_2_CHANCE) {
+                        item->goal_anim_state = M_STATE_SHOOT_2;
                     } else {
-                        item->goal_anim_state = BANDIT_1_STATE_AIM_3;
+                        item->goal_anim_state = M_STATE_AIM_3;
                     }
                 }
             } else if (creature->mood == MOOD_BORED) {
                 if (info.ahead) {
-                    item->goal_anim_state = BANDIT_1_STATE_WAIT;
+                    item->goal_anim_state = M_STATE_WAIT;
                 } else {
-                    item->goal_anim_state = BANDIT_1_STATE_WALK;
+                    item->goal_anim_state = M_STATE_WALK;
                 }
             } else {
-                item->goal_anim_state = BANDIT_1_STATE_RUN;
+                item->goal_anim_state = M_STATE_RUN;
             }
             break;
 
-        case BANDIT_1_STATE_WALK:
+        case M_STATE_WALK:
             if (info.ahead) {
                 neck = info.angle;
             }
-            creature->maximum_turn = BANDIT_1_WALK_TURN;
+            creature->maximum_turn = M_WALK_TURN;
             if (creature->mood == MOOD_ESCAPE) {
-                item->goal_anim_state = BANDIT_1_STATE_RUN;
+                item->goal_anim_state = M_STATE_RUN;
             } else if (Creature_CanTargetEnemy(item, &info)) {
-                if (info.distance > BANDIT_1_WALK_RANGE
+                if (info.distance > M_WALK_RANGE
                     && info.zone_num == info.enemy_zone_num) {
-                    item->goal_anim_state = BANDIT_1_STATE_AIM_4;
+                    item->goal_anim_state = M_STATE_AIM_4;
                 } else {
-                    item->goal_anim_state = BANDIT_1_STATE_WAIT;
+                    item->goal_anim_state = M_STATE_WAIT;
                 }
             } else if (creature->mood == MOOD_BORED) {
                 if (info.ahead) {
-                    item->goal_anim_state = BANDIT_1_STATE_WALK;
+                    item->goal_anim_state = M_STATE_WALK;
                 } else {
-                    item->goal_anim_state = BANDIT_1_STATE_WAIT;
+                    item->goal_anim_state = M_STATE_WAIT;
                 }
             } else {
-                item->goal_anim_state = BANDIT_1_STATE_RUN;
+                item->goal_anim_state = M_STATE_RUN;
             }
             break;
 
-        case BANDIT_1_STATE_RUN:
+        case M_STATE_RUN:
             if (info.ahead) {
                 neck = info.angle;
             }
             tilt = angle / 2;
-            creature->maximum_turn = BANDIT_1_RUN_TURN;
+            creature->maximum_turn = M_RUN_TURN;
             if (creature->mood == MOOD_ESCAPE) {
             } else if (Creature_CanTargetEnemy(item, &info)) {
-                item->goal_anim_state = BANDIT_1_STATE_WAIT;
+                item->goal_anim_state = M_STATE_WAIT;
             } else if (creature->mood == MOOD_BORED) {
-                item->goal_anim_state = BANDIT_1_STATE_WALK;
+                item->goal_anim_state = M_STATE_WALK;
             }
             break;
 
-        case BANDIT_1_STATE_SHOOT_1:
-        case BANDIT_1_STATE_SHOOT_2:
-        case BANDIT_1_STATE_SHOOT_3A:
-        case BANDIT_1_STATE_SHOOT_3B:
+        case M_STATE_SHOOT_1:
+        case M_STATE_SHOOT_2:
+        case M_STATE_SHOOT_3A:
+        case M_STATE_SHOOT_3B:
             if (info.ahead) {
                 head = info.angle;
             }
             if (!Creature_Shoot(
-                    item, &info, &m_Bandit1Gun, head, BANDIT_1_SHOOT_DAMAGE)) {
-                item->goal_anim_state = BANDIT_1_STATE_WAIT;
+                    item, &info, &m_Bandit1Gun, head, M_GetShootDamage(item))) {
+                item->goal_anim_state = M_STATE_WAIT;
             }
             break;
 
-        case BANDIT_1_STATE_SHOOT_4A:
-        case BANDIT_1_STATE_SHOOT_4B:
+        case M_STATE_SHOOT_4A:
+        case M_STATE_SHOOT_4B:
             if (info.ahead) {
                 head = info.angle;
             }
             if (!Creature_Shoot(
-                    item, &info, &m_Bandit1Gun, head, BANDIT_1_SHOOT_DAMAGE)) {
-                item->goal_anim_state = BANDIT_1_STATE_WALK;
+                    item, &info, &m_Bandit1Gun, head, M_GetShootDamage(item))) {
+                item->goal_anim_state = M_STATE_WALK;
             }
-            if (info.distance < BANDIT_1_WALK_RANGE) {
-                item->goal_anim_state = BANDIT_1_STATE_WALK;
+            if (info.distance < M_WALK_RANGE) {
+                item->goal_anim_state = M_STATE_WALK;
             }
             break;
 
@@ -190,7 +199,7 @@ static void M_Setup(OBJECT *const obj)
     obj->control_func = M_Control;
     obj->collision_func = Creature_Collision;
 
-    obj->radius = BANDIT_RADIUS;
+    obj->radius = M_RADIUS;
     obj->shadow_size = UNIT_SHADOW / 2;
     obj->pivot_length = 0;
 
@@ -205,7 +214,9 @@ static void M_Setup(OBJECT *const obj)
     OBJECT_PROPERTIES(
         obj,
         OBJECT_PROPERTY_INT(
-            "max_hit_points", BANDIT_1_HITPOINTS, "Maximum hit points."));
+            "max_hit_points", M_HIT_POINTS, "Maximum hit points."),
+        OBJECT_PROPERTY_INT(
+            "damage", M_DAMAGE, "Damage dealt by the bandit's shot."));
 }
 
 REGISTER_OBJECT(O_BANDIT_1, M_Setup)
