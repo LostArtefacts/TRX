@@ -23,6 +23,7 @@ This page lists documented moveable object properties.
 
 ### `9` O_BAT
 - `max_hit_points = 1` — Maximum hit points.
+- `damage = 2` — Damage dealt by the bat attack.
 
 ### `10` O_CROCODILE
 - `max_hit_points = 20` — Maximum hit points.
