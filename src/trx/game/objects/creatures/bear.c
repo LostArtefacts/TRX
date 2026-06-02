@@ -3,47 +3,59 @@
 #include <trx/game/const.h>
 #include <trx/game/creature.h>
 #include <trx/game/lara/common.h>
+#include <trx/game/objects/property.h>
 #include <trx/game/random.h>
 #include <trx/game/spawn.h>
 #include <trx/version.h>
 
 // clang-format off
-#define BEAR_CHARGE_DAMAGE 3
-#define BEAR_SLAM_DAMAGE   200
-#define BEAR_ATTACK_DAMAGE 200
-#define BEAR_PAT_DAMAGE    400
-#define BEAR_TOUCH         0x2406C
-#define BEAR_ROAR_CHANCE   80
-#define BEAR_REAR_CHANCE   768
-#define BEAR_DROP_CHANCE   1536
-#define BEAR_REAR_RANGE    SQUARE(WALL_L * 2) // = 4194304
-#define BEAR_ATTACK_RANGE  SQUARE(WALL_L) // = 1048576
-#define BEAR_PAT_RANGE     SQUARE(600) // = 360000
-#define BEAR_FIX_PAT_RANGE SQUARE(300) // = 90000
-#define BEAR_RUN_TURN      (5 * DEG_1) // = 910
-#define BEAR_WALK_TURN     (2 * DEG_1) // = 364
-#define BEAR_EAT_RANGE     SQUARE(WALL_L * 3 / 4) // = 589824
-#define BEAR_HITPOINTS     (g_TRVersion == 1 ? 20 : 30)
-#define BEAR_RADIUS        (WALL_L / 3) // = 341
-#define BEAR_SMARTNESS     0x4000
+#define M_HIT_POINTS    (g_TRVersion == 1 ? 20 : 30)
+#define M_CHARGE_DAMAGE 3
+#define M_SLAM_DAMAGE   200
+#define M_ATTACK_DAMAGE 200
+#define M_PAT_DAMAGE    400
+#define M_TOUCH         0x2406C
+#define M_ROAR_CHANCE   80
+#define M_REAR_CHANCE   768
+#define M_DROP_CHANCE   1536
+#define M_RADIUS        (WALL_L / 3) // = 341
+#define M_REAR_RANGE    SQUARE(WALL_L * 2) // = 4194304
+#define M_ATTACK_RANGE  SQUARE(WALL_L) // = 1048576
+#define M_PAT_RANGE     SQUARE(600) // = 360000
+#define M_FIX_PAT_RANGE SQUARE(300) // = 90000
+#define M_RUN_TURN      (5 * DEG_1) // = 910
+#define M_WALK_TURN     (2 * DEG_1) // = 364
+#define M_EAT_RANGE     SQUARE(WALL_L * 3 / 4) // = 589824
 // clang-format on
 
 typedef enum {
-    // clang-format off
-    BEAR_STATE_STROLL   = 0,
-    BEAR_STATE_STOP     = 1,
-    BEAR_STATE_WALK     = 2,
-    BEAR_STATE_RUN      = 3,
-    BEAR_STATE_REAR     = 4,
-    BEAR_STATE_ROAR     = 5,
-    BEAR_STATE_ATTACK_1 = 6,
-    BEAR_STATE_ATTACK_2 = 7,
-    BEAR_STATE_EAT      = 8,
-    BEAR_STATE_DEATH    = 9,
-    // clang-format on
-} BEAR_STATE;
+    M_STATE_STROLL,
+    M_STATE_STOP,
+    M_STATE_WALK,
+    M_STATE_RUN,
+    M_STATE_REAR,
+    M_STATE_ROAR,
+    M_STATE_ATTACK_1,
+    M_STATE_ATTACK_2,
+    M_STATE_EAT,
+    M_STATE_DEATH,
+} M_STATE;
 
-static BITE m_BearHeadBite = { .pos = { 0, 96, 335 }, .mesh_num = 14 };
+static BITE m_BearHeadBite = {
+    .pos = { 0, 96, 335 },
+    .mesh_num = 14,
+};
+
+static int32_t M_GetDamage(
+    const ITEM *const item, const char *const key, const int32_t default_value)
+{
+    OBJECT_PROPERTY_VALUE damage = {};
+    if (ObjectProperty_GetItemValue(item, key, &damage)) {
+        return damage.as_int;
+    }
+
+    return default_value;
+}
 
 static void M_Control(const int16_t item_num)
 {
@@ -63,29 +75,30 @@ static void M_Control(const int16_t item_num)
         angle = Creature_Turn(item, DEG_1);
 
         switch (item->current_anim_state) {
-        case BEAR_STATE_WALK:
-            item->goal_anim_state = BEAR_STATE_REAR;
+        case M_STATE_WALK:
+            item->goal_anim_state = M_STATE_REAR;
             break;
 
-        case BEAR_STATE_RUN:
-        case BEAR_STATE_STROLL:
-            item->goal_anim_state = BEAR_STATE_STOP;
+        case M_STATE_RUN:
+        case M_STATE_STROLL:
+            item->goal_anim_state = M_STATE_STOP;
             break;
 
-        case BEAR_STATE_REAR:
+        case M_STATE_REAR:
             bear->flags = 1;
-            item->goal_anim_state = BEAR_STATE_DEATH;
+            item->goal_anim_state = M_STATE_DEATH;
             break;
 
-        case BEAR_STATE_STOP:
+        case M_STATE_STOP:
             bear->flags = 0;
-            item->goal_anim_state = BEAR_STATE_DEATH;
+            item->goal_anim_state = M_STATE_DEATH;
             break;
 
-        case BEAR_STATE_DEATH:
+        case M_STATE_DEATH:
             if (bear != nullptr && bear->flags != 0
-                && (item->touch_bits & BEAR_TOUCH) != 0) {
-                Lara_TakeDamage(BEAR_SLAM_DAMAGE, true);
+                && (item->touch_bits & M_TOUCH) != 0) {
+                Lara_TakeDamage(
+                    M_GetDamage(item, "slam_damage", M_SLAM_DAMAGE), true);
                 bear->flags = 0;
             }
             break;
@@ -108,108 +121,111 @@ static void M_Control(const int16_t item_num)
         }
 
         switch ((int16_t)item->current_anim_state) {
-        case BEAR_STATE_STOP:
+        case M_STATE_STOP:
             if (dead_enemy) {
-                if (info.bite && info.distance < BEAR_EAT_RANGE) {
-                    item->goal_anim_state = BEAR_STATE_EAT;
+                if (info.bite && info.distance < M_EAT_RANGE) {
+                    item->goal_anim_state = M_STATE_EAT;
                 } else {
-                    item->goal_anim_state = BEAR_STATE_STROLL;
+                    item->goal_anim_state = M_STATE_STROLL;
                 }
             } else if (item->required_anim_state) {
                 item->goal_anim_state = item->required_anim_state;
             } else if (bear->mood == MOOD_BORED) {
-                item->goal_anim_state = BEAR_STATE_STROLL;
+                item->goal_anim_state = M_STATE_STROLL;
             } else {
-                item->goal_anim_state = BEAR_STATE_RUN;
+                item->goal_anim_state = M_STATE_RUN;
             }
             break;
 
-        case BEAR_STATE_STROLL:
-            bear->maximum_turn = BEAR_WALK_TURN;
-            if (dead_enemy && (item->touch_bits & BEAR_TOUCH) && info.ahead) {
-                item->goal_anim_state = BEAR_STATE_STOP;
+        case M_STATE_STROLL:
+            bear->maximum_turn = M_WALK_TURN;
+            if (dead_enemy && (item->touch_bits & M_TOUCH) && info.ahead) {
+                item->goal_anim_state = M_STATE_STOP;
             } else if (bear->mood != MOOD_BORED) {
-                item->goal_anim_state = BEAR_STATE_STOP;
+                item->goal_anim_state = M_STATE_STOP;
                 if (bear->mood == MOOD_ESCAPE) {
-                    item->required_anim_state = BEAR_STATE_STROLL;
+                    item->required_anim_state = M_STATE_STROLL;
                 }
-            } else if (Random_GetControl() < BEAR_ROAR_CHANCE) {
-                item->required_anim_state = BEAR_STATE_ROAR;
-                item->goal_anim_state = BEAR_STATE_STOP;
+            } else if (Random_GetControl() < M_ROAR_CHANCE) {
+                item->required_anim_state = M_STATE_ROAR;
+                item->goal_anim_state = M_STATE_STOP;
             }
             break;
 
-        case BEAR_STATE_RUN:
-            bear->maximum_turn = BEAR_RUN_TURN;
-            if (item->touch_bits & BEAR_TOUCH) {
-                Lara_TakeDamage(BEAR_CHARGE_DAMAGE, true);
+        case M_STATE_RUN:
+            bear->maximum_turn = M_RUN_TURN;
+            if (item->touch_bits & M_TOUCH) {
+                Lara_TakeDamage(
+                    M_GetDamage(item, "charge_damage", M_CHARGE_DAMAGE), true);
             }
             if (bear->mood == MOOD_BORED || dead_enemy) {
-                item->goal_anim_state = BEAR_STATE_STOP;
+                item->goal_anim_state = M_STATE_STOP;
             } else if (info.ahead && !item->required_anim_state) {
-                if (!bear->flags && info.distance < BEAR_REAR_RANGE
-                    && Random_GetControl() < BEAR_REAR_CHANCE) {
-                    item->required_anim_state = BEAR_STATE_REAR;
-                    item->goal_anim_state = BEAR_STATE_STOP;
-                } else if (info.distance < BEAR_ATTACK_RANGE) {
-                    item->goal_anim_state = BEAR_STATE_ATTACK_1;
+                if (!bear->flags && info.distance < M_REAR_RANGE
+                    && Random_GetControl() < M_REAR_CHANCE) {
+                    item->required_anim_state = M_STATE_REAR;
+                    item->goal_anim_state = M_STATE_STOP;
+                } else if (info.distance < M_ATTACK_RANGE) {
+                    item->goal_anim_state = M_STATE_ATTACK_1;
                 }
             }
             break;
 
-        case BEAR_STATE_REAR:
+        case M_STATE_REAR:
             if (bear->flags) {
-                item->required_anim_state = BEAR_STATE_STROLL;
-                item->goal_anim_state = BEAR_STATE_STOP;
+                item->required_anim_state = M_STATE_STROLL;
+                item->goal_anim_state = M_STATE_STOP;
             } else if (item->required_anim_state) {
                 item->goal_anim_state = item->required_anim_state;
             } else if (bear->mood == MOOD_BORED || bear->mood == MOOD_ESCAPE) {
-                item->goal_anim_state = BEAR_STATE_STOP;
+                item->goal_anim_state = M_STATE_STOP;
             } else if (
                 info.bite
                 && info.distance
-                    < (g_Config.gameplay.fix_bear_ai ? BEAR_FIX_PAT_RANGE
-                                                     : BEAR_PAT_RANGE)) {
-                item->goal_anim_state = BEAR_STATE_ATTACK_2;
+                    < (g_Config.gameplay.fix_bear_ai ? M_FIX_PAT_RANGE
+                                                     : M_PAT_RANGE)) {
+                item->goal_anim_state = M_STATE_ATTACK_2;
             } else {
-                item->goal_anim_state = BEAR_STATE_WALK;
+                item->goal_anim_state = M_STATE_WALK;
             }
             break;
 
-        case BEAR_STATE_WALK:
+        case M_STATE_WALK:
             if (bear->flags) {
-                item->required_anim_state = BEAR_STATE_STROLL;
-                item->goal_anim_state = BEAR_STATE_REAR;
-            } else if (info.ahead && (item->touch_bits & BEAR_TOUCH)) {
-                item->goal_anim_state = BEAR_STATE_REAR;
+                item->required_anim_state = M_STATE_STROLL;
+                item->goal_anim_state = M_STATE_REAR;
+            } else if (info.ahead && (item->touch_bits & M_TOUCH)) {
+                item->goal_anim_state = M_STATE_REAR;
             } else if (bear->mood == MOOD_ESCAPE) {
-                item->goal_anim_state = BEAR_STATE_REAR;
-                item->required_anim_state = BEAR_STATE_STROLL;
+                item->goal_anim_state = M_STATE_REAR;
+                item->required_anim_state = M_STATE_STROLL;
             } else if (
                 bear->mood == MOOD_BORED
-                || Random_GetControl() < BEAR_ROAR_CHANCE) {
-                item->required_anim_state = BEAR_STATE_ROAR;
-                item->goal_anim_state = BEAR_STATE_REAR;
+                || Random_GetControl() < M_ROAR_CHANCE) {
+                item->required_anim_state = M_STATE_ROAR;
+                item->goal_anim_state = M_STATE_REAR;
             } else if (
-                info.distance > BEAR_REAR_RANGE
-                || Random_GetControl() < BEAR_DROP_CHANCE) {
-                item->required_anim_state = BEAR_STATE_STOP;
-                item->goal_anim_state = BEAR_STATE_REAR;
+                info.distance > M_REAR_RANGE
+                || Random_GetControl() < M_DROP_CHANCE) {
+                item->required_anim_state = M_STATE_STOP;
+                item->goal_anim_state = M_STATE_REAR;
             }
             break;
 
-        case BEAR_STATE_ATTACK_1:
-            if (!item->required_anim_state && (item->touch_bits & BEAR_TOUCH)) {
+        case M_STATE_ATTACK_1:
+            if (!item->required_anim_state && (item->touch_bits & M_TOUCH)) {
                 Creature_Effect(item, &m_BearHeadBite, Spawn_Blood);
-                Lara_TakeDamage(BEAR_ATTACK_DAMAGE, true);
-                item->required_anim_state = BEAR_STATE_STOP;
+                Lara_TakeDamage(
+                    M_GetDamage(item, "attack_damage", M_ATTACK_DAMAGE), true);
+                item->required_anim_state = M_STATE_STOP;
             }
             break;
 
-        case BEAR_STATE_ATTACK_2:
-            if (!item->required_anim_state && (item->touch_bits & BEAR_TOUCH)) {
-                Lara_TakeDamage(BEAR_PAT_DAMAGE, true);
-                item->required_anim_state = BEAR_STATE_REAR;
+        case M_STATE_ATTACK_2:
+            if (!item->required_anim_state && (item->touch_bits & M_TOUCH)) {
+                Lara_TakeDamage(
+                    M_GetDamage(item, "pat_damage", M_PAT_DAMAGE), true);
+                item->required_anim_state = M_STATE_REAR;
             }
             break;
         }
@@ -229,8 +245,8 @@ static void M_Setup(OBJECT *const obj)
     obj->collision_func = Creature_Collision;
     obj->shadow_size = UNIT_SHADOW / 2;
 
-    obj->radius = BEAR_RADIUS;
-    obj->smartness = BEAR_SMARTNESS;
+    obj->radius = M_RADIUS;
+    obj->smartness = 0x4000;
     obj->intelligent = true;
     obj->save_position = true;
     obj->save_hitpoints = true;
@@ -241,7 +257,18 @@ static void M_Setup(OBJECT *const obj)
     OBJECT_PROPERTIES(
         obj,
         OBJECT_PROPERTY_INT(
-            "max_hit_points", BEAR_HITPOINTS, "Maximum hit points."));
+            "max_hit_points", M_HIT_POINTS, "Maximum hit points."),
+        OBJECT_PROPERTY_INT(
+            "charge_damage", M_CHARGE_DAMAGE,
+            "Damage dealt while the bear charges into Lara."),
+        OBJECT_PROPERTY_INT(
+            "slam_damage", M_SLAM_DAMAGE,
+            "Damage dealt if the falling bear slams into Lara."),
+        OBJECT_PROPERTY_INT(
+            "attack_damage", M_ATTACK_DAMAGE,
+            "Damage dealt by the bear bite attack."),
+        OBJECT_PROPERTY_INT(
+            "pat_damage", M_PAT_DAMAGE, "Damage dealt by the bear paw swipe."));
 }
 
 REGISTER_OBJECT(O_BEAR, M_Setup)

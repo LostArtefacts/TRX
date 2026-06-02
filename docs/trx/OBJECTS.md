@@ -20,6 +20,10 @@ This page lists documented moveable object properties.
 
 ### `8` O_BEAR
 - `max_hit_points = 20` — Maximum hit points.
+- `charge_damage = 3` — Damage dealt while the bear charges into Lara.
+- `slam_damage = 200` — Damage dealt if the falling bear slams into Lara.
+- `attack_damage = 200` — Damage dealt by the bear bite attack.
+- `pat_damage = 400` — Damage dealt by the bear paw swipe.
 
 ### `9` O_BAT
 - `max_hit_points = 1` — Maximum hit points.
@@ -393,6 +397,10 @@ This page lists documented moveable object properties.
 
 ### `265` O_BEAR
 - `max_hit_points = 30` — Maximum hit points.
+- `charge_damage = 3` — Damage dealt while the bear charges into Lara.
+- `slam_damage = 200` — Damage dealt if the falling bear slams into Lara.
+- `attack_damage = 200` — Damage dealt by the bear bite attack.
+- `pat_damage = 400` — Damage dealt by the bear paw swipe.
 
 ### `266` O_WOLF
 - `max_hit_points = 10` — Maximum hit points.
