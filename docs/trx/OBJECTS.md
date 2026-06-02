@@ -571,6 +571,7 @@ This page lists documented moveable object properties.
 
 ### `69` O_COBRA
 - `max_hit_points = 8` — Maximum hit points.
+- `damage = 80` — Damage dealt by the cobra bite.
 - `alert_radius = 1.5` — Alert radius, in sectors.
 - `attack_radius = 1` — Attack radius, in sectors.
 - `forget_radius = 3` — Forget radius, in sectors.

@@ -2,16 +2,18 @@
 #include <trx/game/creature.h>
 #include <trx/game/lara.h>
 #include <trx/game/objects.h>
+#include <trx/game/objects/property.h>
 #include <trx/game/spawn.h>
 
 // clang-format off
-#define M_DEFAULT_ALERT   1.5
-#define M_DEFAULT_ATTACK  1
-#define M_DEFAULT_FORGET  3
+#define M_HIT_POINTS      8
+#define M_DAMAGE          80
+#define M_ALERT_RANGE     1.5
+#define M_ATTACK_RANGE    1
+#define M_FORGET_RANGE    3
+#define M_RADIUS          (WALL_L / 10) // = 102
 #define M_SETUP_RADIUS(r) (SQUARE(WALL_L * r))
 // clang-format on
-
-static BITE m_CobraBite = { .pos = { 0, 0, 0 }, .mesh_num = 13 };
 
 typedef enum {
     M_STATE_WAKING_UP,
@@ -34,6 +36,11 @@ typedef struct {
     } radius;
 } M_PRIV;
 
+static BITE m_CobraBite = {
+    .pos = { 0, 0, 0 },
+    .mesh_num = 13,
+};
+
 static void M_Initialise(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
@@ -43,9 +50,9 @@ static void M_Initialise(const int16_t item_num)
     item->goal_anim_state = M_STATE_SLEEP;
 
     M_PRIV *const p = item->priv;
-    p->radius.alert = M_SETUP_RADIUS(M_DEFAULT_ALERT);
-    p->radius.attack = M_SETUP_RADIUS(M_DEFAULT_ATTACK);
-    p->radius.forget = M_SETUP_RADIUS(M_DEFAULT_FORGET);
+    p->radius.alert = M_SETUP_RADIUS(M_ALERT_RANGE);
+    p->radius.attack = M_SETUP_RADIUS(M_ATTACK_RANGE);
+    p->radius.forget = M_SETUP_RADIUS(M_FORGET_RANGE);
 
     OBJECT_PROPERTY_VALUE radius_val = {};
     if (ObjectProperty_GetItemValue(item, "alert_radius", &radius_val)) {
@@ -73,6 +80,16 @@ static bool M_CanTakeDamage(const ITEM *const item)
 static bool M_CanBeProjectileTarget(const ITEM *const item)
 {
     return item->hit_points > 0 && item->collidable;
+}
+
+static int32_t M_GetDamage(const ITEM *const item)
+{
+    OBJECT_PROPERTY_VALUE damage = {};
+    if (ObjectProperty_GetItemValue(item, "damage", &damage)) {
+        return damage.as_int;
+    }
+
+    return M_DAMAGE;
 }
 
 static void M_Control(const int16_t item_num)
@@ -136,7 +153,7 @@ static void M_Control(const int16_t item_num)
     case M_STATE_BITE:
         if (creature->flags != 1 && (item->touch_bits & 0x2000) != 0) {
             creature->flags = 1;
-            Lara_TakeDamage(80, true);
+            Lara_TakeDamage(M_GetDamage(item), true);
             lara->poison_timer = 256;
             Creature_Effect(item, &m_CobraBite, Spawn_Blood);
         }
@@ -169,7 +186,7 @@ static void M_Setup(OBJECT *const obj)
 
     obj->priv_size = sizeof(M_PRIV);
     obj->shadow_size = UNIT_SHADOW / 2;
-    obj->radius = 102;
+    obj->radius = M_RADIUS;
 
     // obj->non_lot = true; // TODO(TR3)
     obj->intelligent = true;
@@ -181,19 +198,17 @@ static void M_Setup(OBJECT *const obj)
     Object_GetBone(obj, 0)->rot.y = true;
     Object_GetBone(obj, 6)->rot.y = true;
     OBJECT_PROPERTIES(
-        obj, OBJECT_PROPERTY_INT("max_hit_points", 8, "Maximum hit points."));
-    OBJECT_PROPERTIES(
         obj,
+        OBJECT_PROPERTY_INT(
+            "max_hit_points", M_HIT_POINTS, "Maximum hit points."),
+        OBJECT_PROPERTY_INT(
+            "damage", M_DAMAGE, "Damage dealt by the cobra bite."),
         OBJECT_PROPERTY_DOUBLE(
-            "alert_radius", M_DEFAULT_ALERT, "Alert radius, in sectors."));
-    OBJECT_PROPERTIES(
-        obj,
+            "alert_radius", M_ALERT_RANGE, "Alert radius, in sectors."),
         OBJECT_PROPERTY_DOUBLE(
-            "attack_radius", M_DEFAULT_ATTACK, "Attack radius, in sectors."));
-    OBJECT_PROPERTIES(
-        obj,
+            "attack_radius", M_ATTACK_RANGE, "Attack radius, in sectors."),
         OBJECT_PROPERTY_DOUBLE(
-            "forget_radius", M_DEFAULT_FORGET, "Forget radius, in sectors."));
+            "forget_radius", M_FORGET_RANGE, "Forget radius, in sectors."));
 }
 
 REGISTER_OBJECT(O_COBRA, M_Setup)
