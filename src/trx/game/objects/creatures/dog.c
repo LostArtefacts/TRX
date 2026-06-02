@@ -2,11 +2,12 @@
 #include <trx/game/creature.h>
 #include <trx/game/lara.h>
 #include <trx/game/objects/common.h>
+#include <trx/game/objects/property.h>
 #include <trx/game/random.h>
 #include <trx/game/spawn.h>
 
 // clang-format off
-#define M_HITPOINTS       10
+#define M_HIT_POINTS      10
 #define M_TOUCH_BITS      0b00000001'00111111'01110000'00000000
 #define M_RADIUS          (WALL_L / 3) // = 341
 #define M_WALK_TURN       (3 * DEG_1) // = 546
@@ -48,6 +49,17 @@ static const BITE m_DogBite = {
     .pos = { .x = 0, .y = 30, .z = 141 },
     .mesh_num = 20,
 };
+
+static int32_t M_GetDamage(
+    const ITEM *const item, const char *const key, const int32_t default_value)
+{
+    OBJECT_PROPERTY_VALUE damage = {};
+    if (ObjectProperty_GetItemValue(item, key, &damage)) {
+        return damage.as_int;
+    }
+
+    return default_value;
+}
 
 static void M_Control(const int16_t item_num)
 {
@@ -149,7 +161,8 @@ static void M_Control(const int16_t item_num)
             if (creature->flags != 1 && info.ahead
                 && (item->touch_bits & M_TOUCH_BITS) != 0) {
                 Creature_Effect(item, &m_DogBite, Spawn_Blood);
-                Lara_TakeDamage(M_BITE_DAMAGE, true);
+                Lara_TakeDamage(
+                    M_GetDamage(item, "bite_damage", M_BITE_DAMAGE), true);
                 creature->flags = 1;
             }
             if (info.distance > M_ATTACK_1_RANGE
@@ -164,7 +177,8 @@ static void M_Control(const int16_t item_num)
             if (creature->flags != 2
                 && (item->touch_bits & M_TOUCH_BITS) != 0) {
                 Creature_Effect(item, &m_DogBite, Spawn_Blood);
-                Lara_TakeDamage(M_LUNGE_DAMAGE, true);
+                Lara_TakeDamage(
+                    M_GetDamage(item, "lunge_damage", M_LUNGE_DAMAGE), true);
                 creature->flags = 2;
             }
             if (info.distance < M_ATTACK_1_RANGE) {
@@ -179,7 +193,8 @@ static void M_Control(const int16_t item_num)
             if (creature->flags != 3
                 && (item->touch_bits & M_TOUCH_BITS) != 0) {
                 Creature_Effect(item, &m_DogBite, Spawn_Blood);
-                Lara_TakeDamage(M_LUNGE_DAMAGE, true);
+                Lara_TakeDamage(
+                    M_GetDamage(item, "lunge_damage", M_LUNGE_DAMAGE), true);
                 creature->flags = 3;
             }
             if (info.distance < M_ATTACK_1_RANGE) {
@@ -223,7 +238,12 @@ static void M_Setup(OBJECT *const obj)
     OBJECT_PROPERTIES(
         obj,
         OBJECT_PROPERTY_INT(
-            "max_hit_points", M_HITPOINTS, "Maximum hit points."));
+            "max_hit_points", M_HIT_POINTS, "Maximum hit points."),
+        OBJECT_PROPERTY_INT(
+            "bite_damage", M_BITE_DAMAGE, "Damage dealt by the dog bite."),
+        OBJECT_PROPERTY_INT(
+            "lunge_damage", M_LUNGE_DAMAGE,
+            "Damage dealt by the dog's lunge attack."));
 }
 
 REGISTER_OBJECT(O_DOG, M_Setup)
