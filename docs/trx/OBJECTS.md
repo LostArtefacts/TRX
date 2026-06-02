@@ -162,6 +162,10 @@ This page lists documented moveable object properties.
 - `battle_track_2 = -1` — Random battle music track pool, slot 2. -1 = disabled.
 - `battle_track_3 = -1` — Random battle music track pool, slot 3. -1 = disabled.
 - `battle_track_4 = -1` — Random battle music track pool, slot 4. -1 = disabled.
+- `is_heavy = true` — Whether or not this vehicle can activate heavy triggers.
+
+### `14` O_BOAT
+- `is_heavy = true` — Whether or not this vehicle can activate heavy triggers.
 
 ### `15` O_DOG
 - `max_hit_points = 10` — Maximum hit points.
@@ -381,23 +385,31 @@ This page lists documented moveable object properties.
 ### `0` O_LARA
 - `max_hit_points = 1000` — Maximum hit points.
 
+### `14` O_KAYAK
+- `is_heavy = true` — Whether or not this vehicle can activate heavy triggers.
+
 ### `15` O_RIB
 - `track_1 = 12 (MX_RIB_THEME)` — Random music track pool, slot 1. -1 = disabled.
 - `track_2 = -1` — Random music track pool, slot 2. -1 = disabled.
 - `track_3 = -1` — Random music track pool, slot 3. -1 = disabled.
 - `track_4 = -1` — Random music track pool, slot 4. -1 = disabled.
+- `is_heavy = true` — Whether or not this vehicle can activate heavy triggers.
 
 ### `16` O_QUAD_BIKE
 - `track_1 = -1` — Random music track pool, slot 1. -1 = disabled.
 - `track_2 = -1` — Random music track pool, slot 2. -1 = disabled.
 - `track_3 = -1` — Random music track pool, slot 3. -1 = disabled.
 - `track_4 = -1` — Random music track pool, slot 4. -1 = disabled.
+- `is_heavy = true` — Whether or not this vehicle can activate heavy triggers.
 
 ### `17` O_MINE_CART
 - `track_1 = 12 (MX_MINE_CART_THEME)` — Random music track pool, slot 1. -1 = disabled.
 - `track_2 = -1` — Random music track pool, slot 2. -1 = disabled.
 - `track_3 = -1` — Random music track pool, slot 3. -1 = disabled.
 - `track_4 = -1` — Random music track pool, slot 4. -1 = disabled.
+
+### `19` O_UPV
+- `is_heavy = true` — Whether or not this vehicle can activate heavy triggers.
 
 ### `20` O_TRIBE_AXEMAN
 - `max_hit_points = 28` — Maximum hit points.

@@ -42,11 +42,18 @@ order: 3
    effects in levels 5 and 7 only. Regular animation commands can be used
    instead to play in any level.
 
-7. **Update AI Patrol 1**
+7. **Update AI Patrol 1**:
    Levels with sequence 14 and 15 are no longer hard-coded to retain
    `O_AI_PATROL_1` items where an enemy should have the AI bits set but also use
    the item as a pathing target. Instead, place two `O_AI_PATROL_1` items in the
    same position to retain behaviour.
+
+8. **Vehicles and heavy triggers**:
+   All vehicle types except for the mounted gun can now activate heavy triggers.
+   This is configurable per object and item in Lua, and the setting is enabled
+   by default. Disable the option in cases where this may interfere with
+   triggers intended for other heavy activators e.g. pushblocks. This is not
+   configurable for the mine cart, which still relies on Lara striking switches.
 
 ### Version 1.6 to 1.7
 

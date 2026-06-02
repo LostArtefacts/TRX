@@ -8,6 +8,7 @@
 #include <trx/game/input.h>
 #include <trx/game/lara.h>
 #include <trx/game/los.h>
+#include <trx/game/objects/vehicles/common.h>
 #include <trx/game/output.h>
 #include <trx/game/random.h>
 #include <trx/game/sound.h>
@@ -940,8 +941,7 @@ bool UPV_Control(void)
         }
     }
 
-    Room_TestTriggers(lara_item);
-    Room_TestTriggers(item);
+    Vehicle_TestTriggers(lara_item, item);
 
     if (Lara_Vehicle_GetItem() == nullptr) {
         if (!p->flags.dead) {
@@ -1009,6 +1009,12 @@ static void M_Setup(OBJECT *const obj)
     obj->save_position = true;
     obj->save_flags = true;
     obj->save_anim = true;
+
+    OBJECT_PROPERTIES(
+        obj,
+        OBJECT_PROPERTY_BOOL(
+            "is_heavy", true,
+            "Whether or not this vehicle can activate heavy triggers."));
 }
 
 REGISTER_OBJECT(O_UPV, M_Setup)

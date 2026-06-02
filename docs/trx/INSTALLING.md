@@ -1048,6 +1048,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── scripts
 │   │   │   ├── aldwych.lua
 │   │   │   ├── area51.lua
+│   │   │   ├── chunnel.lua
 │   │   │   ├── compound.lua
 │   │   │   ├── crash.lua
 │   │   │   ├── cut8.lua
@@ -2288,6 +2289,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   ├── scripts
     │   │   │   │   ├── aldwych.lua
     │   │   │   │   ├── area51.lua
+    │   │   │   │   ├── chunnel.lua
     │   │   │   │   ├── compound.lua
     │   │   │   │   ├── crash.lua
     │   │   │   │   ├── cut8.lua
