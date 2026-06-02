@@ -64,7 +64,9 @@
     - `O_PUNK_1`
     - `O_PUNK_2`
     - `O_RAPTOR`
+    - `O_RAT`
     - `O_STHPAC_MERCENARY`
+    - `O_VOLE`
     - `O_VULTURE`
 - changed the hard-coded traps damage to be configurable via Lua. Objects affected:
     - `O_BLADE`

@@ -58,9 +58,13 @@ This page lists documented moveable object properties.
 
 ### `16` O_RAT
 - `max_hit_points = 5` — Maximum hit points.
+- `bite_damage = 20` — Damage dealt by the bite attack.
+- `charge_damage = 20` — Damage dealt by the charge attack.
 
 ### `17` O_VOLE
 - `max_hit_points = 5` — Maximum hit points.
+- `bite_damage = 20` — Damage dealt by the bite attack.
+- `charge_damage = 20` — Damage dealt by the charge attack.
 
 ### `18` O_TREX
 - `max_hit_points = 100` — Maximum hit points.
