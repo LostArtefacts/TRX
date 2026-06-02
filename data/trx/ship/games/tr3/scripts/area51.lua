@@ -1,5 +1,5 @@
 trx.events.before_item_setup(function(level)
-  local props = trx.objects[trx.catalog.objects.strobe_light].properties
+  local props = trx.objects.strobe_light.properties
   props.requires_alarm_active = true
 end)
 
