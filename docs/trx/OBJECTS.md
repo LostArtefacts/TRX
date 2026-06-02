@@ -591,6 +591,9 @@ This page lists documented moveable object properties.
 
 ### `62` O_PRISONER
 - `max_hit_points = 20` — Maximum hit points.
+- `punch_1_damage = 40` — Damage dealt by punch 1.
+- `punch_2_damage = 40` — Damage dealt by punch 2.
+- `punch_3_damage = 50` — Damage dealt by punch 3.
 
 ### `63` O_SWAT_3
 - `max_hit_points = 45` — Maximum hit points.

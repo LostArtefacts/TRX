@@ -59,6 +59,7 @@
     - `O_MP_2`
     - `O_PATROL_DOG`
     - `O_PIERRE`
+    - `O_PRISONER`
     - `O_PUMA`
     - `O_STHPAC_MERCENARY`
     - `O_VULTURE`

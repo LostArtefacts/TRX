@@ -2,15 +2,16 @@
 #include <trx/game/creature.h>
 #include <trx/game/lara.h>
 #include <trx/game/objects.h>
+#include <trx/game/objects/property.h>
 #include <trx/game/pathing.h>
 #include <trx/game/random.h>
 #include <trx/game/sound.h>
 #include <trx/game/spawn.h>
 
 // clang-format off
-#define M_RADIUS         (WALL_L / 10)          // = 102
 #define M_HIT_POINTS     20
 #define M_PUNCH_1_DAMAGE 40
+#define M_PUNCH_2_DAMAGE 40
 #define M_PUNCH_3_DAMAGE 50
 #define M_TOUCH_BITS     0b00100100'00000000
 #define M_RUN_DIST       SQUARE(WALL_L * 2)     // = 4194304
@@ -56,6 +57,17 @@ static const BITE m_Bite = {
     .pos = { 10, 10, 11 },
     .mesh_num = 13,
 };
+
+static int32_t M_GetDamage(
+    const ITEM *const item, const char *const key, const int32_t default_value)
+{
+    OBJECT_PROPERTY_VALUE damage = {};
+    if (ObjectProperty_GetItemValue(item, key, &damage)) {
+        return damage.as_int;
+    }
+
+    return default_value;
+}
 
 static void M_Initialise(const int16_t item_num)
 {
@@ -372,7 +384,9 @@ static void M_Control(const int16_t item_num)
         if (enemy == lara_item) {
             if (creature->flags == 0
                 && (item->touch_bits & M_TOUCH_BITS) != 0) {
-                Lara_TakeDamage(M_PUNCH_1_DAMAGE, true);
+                Lara_TakeDamage(
+                    M_GetDamage(item, "punch_1_damage", M_PUNCH_1_DAMAGE),
+                    true);
                 Creature_Effect(item, &m_Bite, Spawn_Blood);
                 Sound_Effect(SFX_LARA_THUD, &item->pos, SPM_NORMAL);
                 creature->flags = 1;
@@ -381,7 +395,10 @@ static void M_Control(const int16_t item_num)
             if (ABS(enemy->pos.x - item->pos.x) < STEP_L
                 && ABS(enemy->pos.y - item->pos.y) <= STEP_L
                 && ABS(enemy->pos.z - item->pos.z) < STEP_L) {
-                Item_TakeDamage(enemy, M_PUNCH_1_DAMAGE / 2, IDF_NONE, item);
+                Item_TakeDamage(
+                    enemy,
+                    M_GetDamage(item, "punch_1_damage", M_PUNCH_1_DAMAGE) / 2,
+                    IDF_NONE, item);
                 Sound_Effect(SFX_LARA_THUD, &item->pos, SPM_NORMAL);
                 creature->flags = 1;
                 Creature_Effect(item, &m_Bite, Spawn_Blood);
@@ -399,7 +416,9 @@ static void M_Control(const int16_t item_num)
         if (enemy == lara_item) {
             if (creature->flags == 0
                 && (item->touch_bits & M_TOUCH_BITS) != 0) {
-                Lara_TakeDamage(M_PUNCH_1_DAMAGE, true);
+                Lara_TakeDamage(
+                    M_GetDamage(item, "punch_2_damage", M_PUNCH_2_DAMAGE),
+                    true);
                 Creature_Effect(item, &m_Bite, Spawn_Blood);
                 Sound_Effect(SFX_LARA_THUD, &item->pos, SPM_NORMAL);
                 creature->flags = 1;
@@ -408,7 +427,10 @@ static void M_Control(const int16_t item_num)
             if (ABS(enemy->pos.x - item->pos.x) < STEP_L
                 && ABS(enemy->pos.y - item->pos.y) <= STEP_L
                 && ABS(enemy->pos.z - item->pos.z) < STEP_L) {
-                Item_TakeDamage(enemy, M_PUNCH_1_DAMAGE / 2, IDF_NONE, item);
+                Item_TakeDamage(
+                    enemy,
+                    M_GetDamage(item, "punch_2_damage", M_PUNCH_2_DAMAGE) / 2,
+                    IDF_NONE, item);
                 creature->flags = 1;
                 Creature_Effect(item, &m_Bite, Spawn_Blood);
                 Sound_Effect(SFX_LARA_THUD, &item->pos, SPM_NORMAL);
@@ -431,7 +453,9 @@ static void M_Control(const int16_t item_num)
         if (enemy == lara_item) {
             if (creature->flags != 2
                 && (item->touch_bits & M_TOUCH_BITS) != 0) {
-                Lara_TakeDamage(M_PUNCH_3_DAMAGE, true);
+                Lara_TakeDamage(
+                    M_GetDamage(item, "punch_3_damage", M_PUNCH_3_DAMAGE),
+                    true);
                 Creature_Effect(item, &m_Bite, Spawn_Blood);
                 Sound_Effect(SFX_LARA_THUD, &item->pos, SPM_NORMAL);
                 creature->flags = 2;
@@ -440,7 +464,10 @@ static void M_Control(const int16_t item_num)
             if (ABS(enemy->pos.x - item->pos.x) < STEP_L
                 && ABS(enemy->pos.y - item->pos.y) <= STEP_L
                 && ABS(enemy->pos.z - item->pos.z) < STEP_L) {
-                Item_TakeDamage(enemy, M_PUNCH_3_DAMAGE / 2, IDF_NONE, item);
+                Item_TakeDamage(
+                    enemy,
+                    M_GetDamage(item, "punch_3_damage", M_PUNCH_3_DAMAGE) / 2,
+                    IDF_NONE, item);
                 Sound_Effect(SFX_LARA_THUD, &item->pos, SPM_NORMAL);
                 creature->flags = 2;
                 Creature_Effect(item, &m_Bite, Spawn_Blood);
@@ -474,7 +501,7 @@ static void M_Setup(OBJECT *const obj)
     obj->control_func = M_Control;
 
     obj->shadow_size = UNIT_SHADOW / 2;
-    obj->radius = M_RADIUS;
+    obj->radius = WALL_L / 10;
 
     obj->lot_setup = LOT_Setup(LOT_SETUP_CLIMBER);
 
@@ -490,7 +517,13 @@ static void M_Setup(OBJECT *const obj)
     OBJECT_PROPERTIES(
         obj,
         OBJECT_PROPERTY_INT(
-            "max_hit_points", M_HIT_POINTS, "Maximum hit points."));
+            "max_hit_points", M_HIT_POINTS, "Maximum hit points."),
+        OBJECT_PROPERTY_INT(
+            "punch_1_damage", M_PUNCH_1_DAMAGE, "Damage dealt by punch 1."),
+        OBJECT_PROPERTY_INT(
+            "punch_2_damage", M_PUNCH_2_DAMAGE, "Damage dealt by punch 2."),
+        OBJECT_PROPERTY_INT(
+            "punch_3_damage", M_PUNCH_3_DAMAGE, "Damage dealt by punch 3."));
 }
 
 REGISTER_OBJECT(O_PRISONER, M_Setup)
