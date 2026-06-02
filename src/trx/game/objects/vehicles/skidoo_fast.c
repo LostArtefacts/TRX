@@ -1,5 +1,6 @@
 #include <trx/core/json/util/read_io.h>
 #include <trx/core/json/util/write_io.h>
+#include <trx/game/music.h>
 #include <trx/game/objects.h>
 #include <trx/game/objects/vehicles/skidoo_common.h>
 
@@ -38,6 +39,30 @@ static void M_Setup(OBJECT *const obj)
     obj->save_position = true;
     obj->save_flags = true;
     obj->save_anim = true;
+
+    OBJECT_PROPERTIES(
+        obj,
+        OBJECT_PROPERTY_INT(
+            "track_1", Music_ToGameID(MX_SKIDOO_THEME),
+            "Random music track pool, slot 1. -1 = disabled."),
+        OBJECT_PROPERTY_INT(
+            "track_2", -1, "Random music track pool, slot 2. -1 = disabled."),
+        OBJECT_PROPERTY_INT(
+            "track_3", -1, "Random music track pool, slot 3. -1 = disabled."),
+        OBJECT_PROPERTY_INT(
+            "track_4", -1, "Random music track pool, slot 4. -1 = disabled."),
+        OBJECT_PROPERTY_INT(
+            "battle_track_1", Music_ToGameID(MX_BATTLE_THEME),
+            "Random battle music track pool, slot 1. -1 = disabled."),
+        OBJECT_PROPERTY_INT(
+            "battle_track_2", -1,
+            "Random battle music track pool, slot 2. -1 = disabled."),
+        OBJECT_PROPERTY_INT(
+            "battle_track_3", -1,
+            "Random battle music track pool, slot 3. -1 = disabled."),
+        OBJECT_PROPERTY_INT(
+            "battle_track_4", -1,
+            "Random battle music track pool, slot 4. -1 = disabled."));
 }
 
 REGISTER_OBJECT(O_SKIDOO_FAST, M_Setup)

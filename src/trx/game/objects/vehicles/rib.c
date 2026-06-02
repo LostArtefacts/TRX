@@ -264,7 +264,7 @@ static void M_Collision(
         item->status = IS_ACTIVE;
     }
 
-    Music_Play(MX_RIB_THEME, MPM_ONCE);
+    Vehicle_PlayTrackPool(item, "track", MPM_ONCE);
 }
 
 static bool M_UserControl(ITEM *const item)
@@ -1061,6 +1061,18 @@ static void M_Setup(OBJECT *const obj)
     obj->save_anim = true;
 
     Object_GetBone(obj, 1)->rot.z = true;
+
+    OBJECT_PROPERTIES(
+        obj,
+        OBJECT_PROPERTY_INT(
+            "track_1", Music_ToGameID(MX_RIB_THEME),
+            "Random music track pool, slot 1. -1 = disabled."),
+        OBJECT_PROPERTY_INT(
+            "track_2", -1, "Random music track pool, slot 2. -1 = disabled."),
+        OBJECT_PROPERTY_INT(
+            "track_3", -1, "Random music track pool, slot 3. -1 = disabled."),
+        OBJECT_PROPERTY_INT(
+            "track_4", -1, "Random music track pool, slot 4. -1 = disabled."));
 }
 
 REGISTER_OBJECT(O_RIB, M_Setup)

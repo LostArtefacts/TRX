@@ -150,6 +150,16 @@ This page lists documented moveable object properties.
 ### `0` O_LARA
 - `max_hit_points = 1000` — Maximum hit points.
 
+### `13` O_SKIDOO_FAST
+- `track_1 = 48 (MX_SKIDOO_THEME)` — Random music track pool, slot 1. -1 = disabled.
+- `track_2 = -1` — Random music track pool, slot 2. -1 = disabled.
+- `track_3 = -1` — Random music track pool, slot 3. -1 = disabled.
+- `track_4 = -1` — Random music track pool, slot 4. -1 = disabled.
+- `battle_track_1 = 49 (MX_BATTLE_THEME)` — Random battle music track pool, slot 1. -1 = disabled.
+- `battle_track_2 = -1` — Random battle music track pool, slot 2. -1 = disabled.
+- `battle_track_3 = -1` — Random battle music track pool, slot 3. -1 = disabled.
+- `battle_track_4 = -1` — Random battle music track pool, slot 4. -1 = disabled.
+
 ### `15` O_DOG
 - `max_hit_points = 10` — Maximum hit points.
 
@@ -366,8 +376,20 @@ This page lists documented moveable object properties.
 ### `0` O_LARA
 - `max_hit_points = 1000` — Maximum hit points.
 
+### `15` O_RIB
+- `track_1 = 12 (MX_RIB_THEME)` — Random music track pool, slot 1. -1 = disabled.
+- `track_2 = -1` — Random music track pool, slot 2. -1 = disabled.
+- `track_3 = -1` — Random music track pool, slot 3. -1 = disabled.
+- `track_4 = -1` — Random music track pool, slot 4. -1 = disabled.
+
 ### `16` O_QUAD_BIKE
 - `track_1 = -1` — Random music track pool, slot 1. -1 = disabled.
+- `track_2 = -1` — Random music track pool, slot 2. -1 = disabled.
+- `track_3 = -1` — Random music track pool, slot 3. -1 = disabled.
+- `track_4 = -1` — Random music track pool, slot 4. -1 = disabled.
+
+### `17` O_MINE_CART
+- `track_1 = 12 (MX_MINE_CART_THEME)` — Random music track pool, slot 1. -1 = disabled.
 - `track_2 = -1` — Random music track pool, slot 2. -1 = disabled.
 - `track_3 = -1` — Random music track pool, slot 3. -1 = disabled.
 - `track_4 = -1` — Random music track pool, slot 4. -1 = disabled.

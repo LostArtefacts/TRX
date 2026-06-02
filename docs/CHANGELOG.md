@@ -4,10 +4,10 @@
 - added `O_DOLPHIN`, which behaves in the same way as `O_ORCA` but has collision underwater
 - added a new console command - `/burn` - to toggle whether or not Lara is on fire
 - added poison Lua property to `O_DART` and `O_DISC`, so that they can poison Lara just like `O_POISON_DART`
-- removed hard-coded fish and piranha setup and moved to Lua instead
-- removed the limit of at most 8 fish/piranha shoals per level
-- removed hard-coded small Cobra radius setup and moved to Lua instead
-- removed the hard-coded damage and moved it to Lua instead for the following objects:
+- changed hard-coded music tracks from Snowmobiles, mine carts, and RIBs to be configurable via Lua
+- changed hard-coded fish and piranha setup to be configurable via Lua
+- changed hard-coded small Cobra radius setup to be configurable via Lua
+- changed the hard-coded traps damage to be configurable via Lua. Objects affected:
     - `O_BLADE`
     - `O_CEILING_SPIKES`
     - `O_DAMOCLES_SWORD`
@@ -36,6 +36,7 @@
     - `O_SWINGING_AXE`
     - `O_TEETH_TRAP`
 - removed the limitation of only having two fish sprite types in any level
+- removed the limit of at most 8 fish/piranha shoals per level
 - fixed a crash with old custom levels that have sectors pointing to invalid floor data (#5568)
 - fixed the enemy health bar disappearing later than Lara's own bar when holstering weapons (regression from Tomb1Main 0.2)
 - fixed crystal totals being shown incorrectly after loading a save (#5589, regression from 1.5)
@@ -56,14 +57,14 @@
 - added the ability to define the flame interval of `O_FLAME_EMITTER_SIDE` objects
 - added an option to fix animated spikes resetting when loading a save (Gameplay → Fixes → Fix animated spikes)
 - changed piranhas, tropical fish and bat emitters to use dedicated sprite objects; refer to migration guide
-- removed the hard-coded end-level behaviour when picking up artefacts in specific levels and moved to Lua instead
-- removed hard-coded collision differences for `O_ORCA` in `Sleeping with the Fishes` by using `O_DOLPHIN` instead
-- removed hard-coded level sequence checks to keep Lara burning when she enters a lava swamp room
-- removed the hard-coded longer interval on `O_FLAME_EMITTER_SIDE` in level sequence 7 and moved to Lua instead
-- removed the hard-coded strobe light alarm behaviour in Area 51 and moved it to Lua instead
-- removed hard-coded level sequence specific sound effects for animated spikes and moved to animation commands instead
-- removed the hard-coded constraint of only being able to use animated spikes in levels 5 and 7
-- removed the hard-coded `O_AI_PATROL_1` behaviour in High Security Compound and Area 51; refer to migration docs
+- changed artefact pickup end-level behavior in specific levels to be configurable via Lua
+- changed `O_ORCA` special collision in `Sleeping with the Fishes` by introducing a `O_DOLPHIN` instead
+- changed lava swamp burning behavior to no longer reference specific levels
+- changed the longer `O_FLAME_EMITTER_SIDE` interval in level 7 to be configurable via Lua
+- changed the strobe light alarm behavior in level 15 to be configurable via Lua
+- changed animated spikes sound effects in specific levels to use animation commands instead
+- changed animated spikes to work outside levels 5 and 7
+- changed `O_AI_PATROL_1` behavior in High Security Compound and Area 51 to be configurable; refer to migration docs
 - fixed texture bleeding and missized textures on piranhas, tropical fish and bats
 
 
