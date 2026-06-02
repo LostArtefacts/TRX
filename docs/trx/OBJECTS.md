@@ -568,9 +568,13 @@ This page lists documented moveable object properties.
 
 ### `53` O_PUNK_1
 - `max_hit_points = 20` — Maximum hit points.
+- `hit_damage = 80` — Damage dealt by punches 1 and 2.
+- `swipe_damage = 100` — Damage dealt by punch 3.
 
 ### `54` O_PUNK_2
 - `max_hit_points = 20` — Maximum hit points.
+- `hit_damage = 80` — Damage dealt by punches 1 and 2.
+- `swipe_damage = 100` — Damage dealt by punch 3.
 
 ### `56` O_SECURITY_GUARD
 - `max_hit_points = 28` — Maximum hit points.
