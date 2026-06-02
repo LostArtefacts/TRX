@@ -57,12 +57,24 @@ This page lists documented moveable object properties.
 
 ### `20` O_ATLANTEAN_WINGED
 - `max_hit_points = 50` — Maximum hit points.
+- `charge_damage = 100` — Damage dealt by the atlantean's charge attack.
+- `lunge_damage = 150` — Damage dealt by the atlantean's lunge attack.
+- `punch_damage = 200` — Damage dealt by the atlantean's punch attack.
+- `part_damage = 100` — Damage dealt by the atlantean's exploding body parts.
 
 ### `21` O_ATLANTEAN_SHOOTER
 - `max_hit_points = 50` — Maximum hit points.
+- `charge_damage = 100` — Damage dealt by the atlantean's charge attack.
+- `lunge_damage = 150` — Damage dealt by the atlantean's lunge attack.
+- `punch_damage = 200` — Damage dealt by the atlantean's punch attack.
+- `part_damage = 100` — Damage dealt by the atlantean's exploding body parts.
 
 ### `22` O_ATLANTEAN_GROUND
 - `max_hit_points = 50` — Maximum hit points.
+- `charge_damage = 100` — Damage dealt by the atlantean's charge attack.
+- `lunge_damage = 150` — Damage dealt by the atlantean's lunge attack.
+- `punch_damage = 200` — Damage dealt by the atlantean's punch attack.
+- `part_damage = 100` — Damage dealt by the atlantean's exploding body parts.
 
 ### `23` O_CENTAUR
 - `max_hit_points = 120` — Maximum hit points.

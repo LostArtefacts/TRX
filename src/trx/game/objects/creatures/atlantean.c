@@ -3,12 +3,15 @@
 #include <trx/game/creature.h>
 #include <trx/game/items/carrier.h>
 #include <trx/game/lara.h>
+#include <trx/game/objects/property.h>
 #include <trx/game/pathing.h>
 #include <trx/game/random.h>
 #include <trx/game/sound.h>
 #include <trx/game/spawn.h>
 
 // clang-format off
+#define M_HIT_POINTS        50
+#define M_RADIUS            (WALL_L / 3)            // = 341
 #define M_CHARGE_DAMAGE     100
 #define M_LUNGE_DAMAGE      150
 #define M_PUNCH_DAMAGE      200
@@ -23,8 +26,6 @@
 #define M_ATTACK_3_RANGE    SQUARE(300)             // = 90000
 #define M_ATTACK_RANGE      SQUARE(WALL_L * 15 / 4) // = 14745600
 #define M_TOUCH_BITS        0b00000110'01111000     // = 0x678
-#define M_HITPOINTS         50
-#define M_RADIUS            (WALL_L / 3)            // = 341
 #define M_DEFAULT_SMARTNESS 0x7FFF
 #define M_SHOOTER_SMARTNESS 0x2000
 // clang-format on
@@ -60,6 +61,17 @@ static const BITE m_Bite = { .pos = { -27, 98, 0 }, .mesh_num = 10 };
 static const BITE m_Rocket = { .pos = { 51, 213, 0 }, .mesh_num = 14 };
 static const BITE m_Shard = { .pos = { -35, 269, 0 }, .mesh_num = 9 };
 
+static int32_t M_GetDamage(
+    const ITEM *const item, const char *const key, const int32_t default_value)
+{
+    OBJECT_PROPERTY_VALUE damage = {};
+    if (ObjectProperty_GetItemValue(item, key, &damage)) {
+        return damage.as_int;
+    }
+
+    return default_value;
+}
+
 static void M_InitialiseGround(const int16_t item_num)
 {
     Creature_Initialise(item_num);
@@ -79,7 +91,10 @@ static void M_Control(const int16_t item_num)
 
     if (item->hit_points <= 0) {
         Item_Explode(
-            item_num, -1, m_EnableExplosions ? M_PART_DAMAGE : -M_PART_DAMAGE);
+            item_num, -1,
+            m_EnableExplosions
+                ? M_GetDamage(item, "part_damage", M_PART_DAMAGE)
+                : -M_GetDamage(item, "part_damage", M_PART_DAMAGE));
         Sound_Effect(SFX_ATLANTEAN_DEATH, &item->pos, SPM_NORMAL);
         LOT_DisableBaddieAI(item_num);
         Item_Kill(item_num);
@@ -237,7 +252,8 @@ static void M_Control(const int16_t item_num)
         if (item->required_anim_state == M_STATE_EMPTY
             && (item->touch_bits & M_TOUCH_BITS) != 0) {
             Creature_Effect(item, &m_Bite, Spawn_Blood);
-            Lara_TakeDamage(M_LUNGE_DAMAGE, true);
+            Lara_TakeDamage(
+                M_GetDamage(item, "lunge_damage", M_LUNGE_DAMAGE), true);
             item->required_anim_state = M_STATE_STOP;
         }
         break;
@@ -246,7 +262,8 @@ static void M_Control(const int16_t item_num)
         if (item->required_anim_state == M_STATE_EMPTY
             && (item->touch_bits & M_TOUCH_BITS) != 0) {
             Creature_Effect(item, &m_Bite, Spawn_Blood);
-            Lara_TakeDamage(M_CHARGE_DAMAGE, true);
+            Lara_TakeDamage(
+                M_GetDamage(item, "charge_damage", M_CHARGE_DAMAGE), true);
             item->required_anim_state = M_STATE_RUN;
         }
         break;
@@ -255,7 +272,8 @@ static void M_Control(const int16_t item_num)
         if (item->required_anim_state == M_STATE_EMPTY
             && (item->touch_bits & M_TOUCH_BITS) != 0) {
             Creature_Effect(item, &m_Bite, Spawn_Blood);
-            Lara_TakeDamage(M_PUNCH_DAMAGE, true);
+            Lara_TakeDamage(
+                M_GetDamage(item, "punch_damage", M_PUNCH_DAMAGE), true);
             item->required_anim_state = M_STATE_STOP;
         }
         break;
@@ -312,6 +330,26 @@ static void M_Control(const int16_t item_num)
     Creature_Animate(item_num, angle, 0);
 }
 
+static void M_SetupProperties(OBJECT *const obj)
+{
+    OBJECT_PROPERTIES(
+        obj,
+        OBJECT_PROPERTY_INT(
+            "max_hit_points", M_HIT_POINTS, "Maximum hit points."),
+        OBJECT_PROPERTY_INT(
+            "charge_damage", M_CHARGE_DAMAGE,
+            "Damage dealt by the atlantean's charge attack."),
+        OBJECT_PROPERTY_INT(
+            "lunge_damage", M_LUNGE_DAMAGE,
+            "Damage dealt by the atlantean's lunge attack."),
+        OBJECT_PROPERTY_INT(
+            "punch_damage", M_PUNCH_DAMAGE,
+            "Damage dealt by the atlantean's punch attack."),
+        OBJECT_PROPERTY_INT(
+            "part_damage", M_PART_DAMAGE,
+            "Damage dealt by the atlantean's exploding body parts."));
+}
+
 static void M_SetupWinged(OBJECT *const obj)
 {
     if (!obj->loaded) {
@@ -333,10 +371,7 @@ static void M_SetupWinged(OBJECT *const obj)
     obj->save_flags = true;
     Object_GetBone(obj, 0)->rot.y = true;
     Object_GetBone(obj, 2)->rot.y = true;
-    OBJECT_PROPERTIES(
-        obj,
-        OBJECT_PROPERTY_INT(
-            "max_hit_points", M_HITPOINTS, "Maximum hit points."));
+    M_SetupProperties(obj);
 }
 
 static void M_SetupShooter(OBJECT *const obj)
@@ -350,10 +385,7 @@ static void M_SetupShooter(OBJECT *const obj)
     obj->initialise_func = M_InitialiseGround;
     obj->smartness = M_SHOOTER_SMARTNESS;
     obj->lot_setup = LOT_Setup(LOT_SETUP_DEFAULT);
-    OBJECT_PROPERTIES(
-        obj,
-        OBJECT_PROPERTY_INT(
-            "max_hit_points", M_HITPOINTS, "Maximum hit points."));
+    M_SetupProperties(obj);
 }
 
 static void M_SetupGround(OBJECT *const obj)
@@ -366,10 +398,7 @@ static void M_SetupGround(OBJECT *const obj)
     obj->setup_func = M_SetupGround;
     obj->initialise_func = M_InitialiseGround;
     obj->lot_setup = LOT_Setup(LOT_SETUP_DEFAULT);
-    OBJECT_PROPERTIES(
-        obj,
-        OBJECT_PROPERTY_INT(
-            "max_hit_points", M_HITPOINTS, "Maximum hit points."));
+    M_SetupProperties(obj);
 }
 
 void Atlantean_ToggleExplosions(bool enable)
