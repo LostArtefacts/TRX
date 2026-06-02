@@ -28,6 +28,7 @@
     - `O_BIRD_GUARDIAN`
     - `O_CENTAUR`
     - `O_CIVILIAN`
+    - `O_CLAW_MUTANT`
     - `O_CROW`
     - `O_EAGLE`
     - `O_VULTURE`
