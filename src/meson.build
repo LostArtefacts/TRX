@@ -24,6 +24,7 @@ python3 = find_program('python3', required: true)
 trx_lua_embed = custom_target(
   'trx_lua_embed',
   input: [
+    '../data/scripting/assault.lua',
     '../data/scripting/assault_stats.lua',
     '../data/scripting/camera.lua',
     '../data/scripting/catalog.lua',
@@ -371,6 +372,7 @@ common_sources = [
   'trx/game/level/sections/rooms.c',
   'trx/game/level/sections/textures.c',
   'trx/game/level/settings.c',
+  'trx/game/lua/assault.c',
   'trx/game/lua/assault_stats.c',
   'trx/game/lua/camera.c',
   'trx/game/lua/catalog.c',

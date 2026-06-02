@@ -43,3 +43,6 @@ Release/
 **/subprojects/dwarfstack-*/
 
 tools/installer/TRX_Installer/Resources/release.zip
+
+# JetBrains CLion IDE garbage
+.idea/
