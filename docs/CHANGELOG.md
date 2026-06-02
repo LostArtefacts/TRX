@@ -23,6 +23,7 @@
     - `O_BARRACUDA`
     - `O_BAT`
     - `O_BEAR`
+    - `O_BIG_EEL`
 - changed the hard-coded traps damage to be configurable via Lua. Objects affected:
     - `O_BLADE`
     - `O_CEILING_SPIKES`
