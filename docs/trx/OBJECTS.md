@@ -31,9 +31,11 @@ This page lists documented moveable object properties.
 
 ### `10` O_CROCODILE
 - `max_hit_points = 20` — Maximum hit points.
+- `damage = 100` — Damage dealt by the crocodile bite.
 
 ### `11` O_ALLIGATOR
 - `max_hit_points = 20` — Maximum hit points.
+- `damage = 100` — Damage dealt by the alligator bite.
 
 ### `12` O_LION
 - `max_hit_points = 30` — Maximum hit points.
@@ -478,6 +480,7 @@ This page lists documented moveable object properties.
 
 ### `32` O_ALLIGATOR
 - `max_hit_points = 42` — Maximum hit points.
+- `damage = 100` — Damage dealt by the alligator bite.
 
 ### `34` O_COMPY
 - `max_hit_points = 10` — Maximum hit points.
