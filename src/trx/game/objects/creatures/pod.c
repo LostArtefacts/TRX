@@ -5,12 +5,12 @@
 #include <trx/game/objects/common.h>
 #include <trx/game/pathing.h>
 
-#define POD_EXPLODE_DIST (WALL_L * 4) // = 4096
+#define M_EXPLODE_DIST (WALL_L * 4) // = 4096
 
 typedef enum {
-    POD_STATE_SET = 0,
-    POD_STATE_EXPLODE = 1,
-} POD_STATE;
+    M_STATE_SET = 0,
+    M_STATE_EXPLODE = 1,
+} M_STATE;
 
 typedef struct {
     int16_t bug_item_num;
@@ -62,7 +62,7 @@ static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
 
-    if (item->goal_anim_state != POD_STATE_EXPLODE) {
+    if (item->goal_anim_state != M_STATE_EXPLODE) {
         int32_t explode = 0;
 
         if (item->flags & IF_ONE_SHOT) {
@@ -74,14 +74,14 @@ static void M_Control(const int16_t item_num)
             int32_t x = lara_item->pos.x - item->pos.x;
             int32_t y = lara_item->pos.y - item->pos.y;
             int32_t z = lara_item->pos.z - item->pos.z;
-            if (ABS(x) < POD_EXPLODE_DIST && ABS(y) < POD_EXPLODE_DIST
-                && ABS(z) < POD_EXPLODE_DIST) {
+            if (ABS(x) < M_EXPLODE_DIST && ABS(y) < M_EXPLODE_DIST
+                && ABS(z) < M_EXPLODE_DIST) {
                 explode = 1;
             }
         }
 
         if (explode) {
-            item->goal_anim_state = POD_STATE_EXPLODE;
+            item->goal_anim_state = M_STATE_EXPLODE;
             item->mesh_bits = 0xFFFFFF;
             item->collidable = false;
             Item_Explode(item_num, 0xFFFE00, 0);
