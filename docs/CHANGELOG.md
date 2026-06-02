@@ -12,6 +12,8 @@
 - changed hard-coded music tracks from Snowmobiles, mine carts, and RIBs to be configurable via Lua
 - changed hard-coded fish and piranha setup to be configurable via Lua
 - changed hard-coded small Cobra radius setup to be configurable via Lua
+- changed the hard-coded creature damage to be configurable via Lua. Objects affected:
+    - `O_APE`
 - changed the hard-coded traps damage to be configurable via Lua. Objects affected:
     - `O_BLADE`
     - `O_CEILING_SPIKES`

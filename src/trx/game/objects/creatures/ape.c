@@ -1,46 +1,61 @@
 #include <trx/core/utils.h>
 #include <trx/game/creature.h>
 #include <trx/game/lara.h>
+#include <trx/game/objects/property.h>
 #include <trx/game/pathing.h>
 #include <trx/game/random.h>
 #include <trx/game/spawn.h>
 
-#define APE_ATTACK_DAMAGE 200
-#define APE_TOUCH 0xFF00
-#define APE_DIE_ANIM 7
-#define APE_RUN_TURN (DEG_1 * 5) // = 910
-#define APE_DISPLAY_ANGLE (DEG_1 * 45) // = 8190
-#define APE_ATTACK_RANGE SQUARE(430) // = 184900
-#define APE_PANIC_RANGE SQUARE(WALL_L * 2) // = 4194304
-#define APE_JUMP_CHANCE 160
-#define APE_WARN1_CHANCE (APE_JUMP_CHANCE + 160) // = 320
-#define APE_WARN2_CHANCE (APE_WARN1_CHANCE + 160) // = 480
-#define APE_RUN_LEFT_CHANCE (APE_WARN2_CHANCE + 272) // = 752
-#define APE_ATTACK_FLAG 1
-#define APE_VAULT_ANIM 19
-#define APE_TURN_L_FLAG 2
-#define APE_TURN_R_FLAG 4
-#define APE_SHIFT 75
-#define APE_HITPOINTS 22
-#define APE_RADIUS (WALL_L / 3) // = 341
-#define APE_SMARTNESS 0x7FFF
+// clang-format off
+#define M_HIT_POINTS      22
+#define M_DAMAGE          200
+#define M_TOUCH           0xFF00
+#define M_RADIUS          (WALL_L / 3) // = 341
+#define M_RUN_TURN        (DEG_1 * 5) // = 910
+#define M_DISPLAY_ANGLE   (DEG_1 * 45) // = 8190
+#define M_ATTACK_RANGE    SQUARE(430) // = 184900
+#define M_PANIC_RANGE     SQUARE(WALL_L * 2) // = 4194304
+#define M_JUMP_CHANCE     160
+#define M_WARN1_CHANCE    (M_JUMP_CHANCE + 160) // = 320
+#define M_WARN2_CHANCE    (M_WARN1_CHANCE + 160) // = 480
+#define M_RUN_LEFT_CHANCE (M_WARN2_CHANCE + 272) // = 752
+#define M_ATTACK_FLAG     1
+#define M_TURN_L_FLAG     2
+#define M_TURN_R_FLAG     4
+#define M_SHIFT           75
+// clang-format on
 
 typedef enum {
-    APE_STATE_EMPTY = 0,
-    APE_STATE_STOP = 1,
-    APE_STATE_WALK = 2,
-    APE_STATE_RUN = 3,
-    APE_STATE_ATTACK = 4,
-    APE_STATE_DEATH = 5,
-    APE_STATE_WARNING_1 = 6,
-    APE_STATE_WARNING_2 = 7,
-    APE_STATE_RUN_LEFT = 8,
-    APE_STATE_RUN_RIGHT = 9,
-    APE_STATE_JUMP = 10,
-    APE_STATE_VAULT = 11,
-} APE_STATE;
+    M_STATE_EMPTY,
+    M_STATE_STOP,
+    M_STATE_WALK,
+    M_STATE_RUN,
+    M_STATE_ATTACK,
+    M_STATE_DEATH,
+    M_STATE_WARNING_1,
+    M_STATE_WARNING_2,
+    M_STATE_RUN_LEFT,
+    M_STATE_RUN_RIGHT,
+    M_STATE_JUMP,
+    M_STATE_VAULT,
+} M_STATE;
+
+typedef enum {
+    M_ANIM_DEATH = 7,
+    M_ANIM_VAULT = 19,
+} M_ANIM;
 
 static BITE m_ApeBite = { .pos = { 0, -19, 75 }, .mesh_num = 15 };
+
+static int32_t M_GetAttackDamage(const ITEM *const item)
+{
+    OBJECT_PROPERTY_VALUE damage = {};
+    if (ObjectProperty_GetItemValue(item, "damage", &damage)) {
+        return damage.as_int;
+    }
+
+    return M_DAMAGE;
+}
 
 static bool M_Vault(int16_t item_num, int16_t angle)
 {
@@ -51,12 +66,12 @@ static bool M_Vault(int16_t item_num, int16_t angle)
     int32_t z = item->pos.z >> WALL_SHIFT;
     int16_t room_num = item->room_num;
 
-    if (ape->flags & APE_TURN_L_FLAG) {
+    if (ape->flags & M_TURN_L_FLAG) {
         item->rot.y -= DEG_90;
-        ape->flags &= ~APE_TURN_L_FLAG;
-    } else if (ape->flags & APE_TURN_R_FLAG) {
+        ape->flags &= ~M_TURN_L_FLAG;
+    } else if (ape->flags & M_TURN_R_FLAG) {
         item->rot.y += DEG_90;
-        ape->flags &= ~APE_TURN_R_FLAG;
+        ape->flags &= ~M_TURN_R_FLAG;
     }
 
     Creature_Animate(item_num, angle, 0);
@@ -75,18 +90,18 @@ static bool M_Vault(int16_t item_num, int16_t angle)
 
         if (x >= x_floor) {
             item->rot.y = -DEG_90;
-            item->pos.x = (x << WALL_SHIFT) + APE_SHIFT;
+            item->pos.x = (x << WALL_SHIFT) + M_SHIFT;
         } else {
             item->rot.y = DEG_90;
-            item->pos.x = (x_floor << WALL_SHIFT) - APE_SHIFT;
+            item->pos.x = (x_floor << WALL_SHIFT) - M_SHIFT;
         }
     } else if (x == x_floor) {
         if (z < z_floor) {
             item->rot.y = 0;
-            item->pos.z = (z_floor << WALL_SHIFT) - APE_SHIFT;
+            item->pos.z = (z_floor << WALL_SHIFT) - M_SHIFT;
         } else {
             item->rot.y = -DEG_180;
-            item->pos.z = (z << WALL_SHIFT) + APE_SHIFT;
+            item->pos.z = (z << WALL_SHIFT) + M_SHIFT;
         }
     }
 
@@ -110,10 +125,10 @@ static void M_Control(const int16_t item_num)
     int16_t angle = 0;
 
     if (item->hit_points <= 0) {
-        if (item->current_anim_state != APE_STATE_DEATH) {
-            item->current_anim_state = APE_STATE_DEATH;
+        if (item->current_anim_state != M_STATE_DEATH) {
+            item->current_anim_state = M_STATE_DEATH;
             Item_SwitchToAnim(
-                item, APE_DIE_ANIM + (int16_t)(Random_GetControl() / 0x4000),
+                item, M_ANIM_DEATH + (int16_t)(Random_GetControl() / 0x4000),
                 0);
         }
     } else {
@@ -128,90 +143,90 @@ static void M_Control(const int16_t item_num)
 
         angle = Creature_Turn(item, ape->maximum_turn);
 
-        if (item->hit_status || info.distance < APE_PANIC_RANGE) {
-            ape->flags |= APE_ATTACK_FLAG;
+        if (item->hit_status || info.distance < M_PANIC_RANGE) {
+            ape->flags |= M_ATTACK_FLAG;
         }
 
         switch (item->current_anim_state) {
-        case APE_STATE_STOP:
-            if (ape->flags & APE_TURN_L_FLAG) {
+        case M_STATE_STOP:
+            if (ape->flags & M_TURN_L_FLAG) {
                 item->rot.y -= DEG_90;
-                ape->flags &= ~APE_TURN_L_FLAG;
-            } else if (ape->flags & APE_TURN_R_FLAG) {
+                ape->flags &= ~M_TURN_L_FLAG;
+            } else if (ape->flags & M_TURN_R_FLAG) {
                 item->rot.y += DEG_90;
-                ape->flags &= ~APE_TURN_R_FLAG;
+                ape->flags &= ~M_TURN_R_FLAG;
             }
 
             if (item->required_anim_state) {
                 item->goal_anim_state = item->required_anim_state;
-            } else if (info.bite && info.distance < APE_ATTACK_RANGE) {
-                item->goal_anim_state = APE_STATE_ATTACK;
+            } else if (info.bite && info.distance < M_ATTACK_RANGE) {
+                item->goal_anim_state = M_STATE_ATTACK;
             } else if (
-                !(ape->flags & APE_ATTACK_FLAG)
+                !(ape->flags & M_ATTACK_FLAG)
                 && info.zone_num == info.enemy_zone_num && info.ahead) {
                 int16_t random = Random_GetControl() >> 5;
-                if (random < APE_JUMP_CHANCE) {
-                    item->goal_anim_state = APE_STATE_JUMP;
-                } else if (random < APE_WARN1_CHANCE) {
-                    item->goal_anim_state = APE_STATE_WARNING_1;
-                } else if (random < APE_WARN2_CHANCE) {
-                    item->goal_anim_state = APE_STATE_WARNING_2;
-                } else if (random < APE_RUN_LEFT_CHANCE) {
-                    item->goal_anim_state = APE_STATE_RUN_LEFT;
+                if (random < M_JUMP_CHANCE) {
+                    item->goal_anim_state = M_STATE_JUMP;
+                } else if (random < M_WARN1_CHANCE) {
+                    item->goal_anim_state = M_STATE_WARNING_1;
+                } else if (random < M_WARN2_CHANCE) {
+                    item->goal_anim_state = M_STATE_WARNING_2;
+                } else if (random < M_RUN_LEFT_CHANCE) {
+                    item->goal_anim_state = M_STATE_RUN_LEFT;
                     ape->maximum_turn = 0;
                 } else {
-                    item->goal_anim_state = APE_STATE_RUN_RIGHT;
+                    item->goal_anim_state = M_STATE_RUN_RIGHT;
                     ape->maximum_turn = 0;
                 }
             } else {
-                item->goal_anim_state = APE_STATE_RUN;
+                item->goal_anim_state = M_STATE_RUN;
             }
             break;
 
-        case APE_STATE_RUN:
-            ape->maximum_turn = APE_RUN_TURN;
-            if (!ape->flags && info.angle > -APE_DISPLAY_ANGLE
-                && info.angle < APE_DISPLAY_ANGLE) {
-                item->goal_anim_state = APE_STATE_STOP;
-            } else if (info.ahead && (item->touch_bits & APE_TOUCH)) {
-                item->required_anim_state = APE_STATE_ATTACK;
-                item->goal_anim_state = APE_STATE_STOP;
+        case M_STATE_RUN:
+            ape->maximum_turn = M_RUN_TURN;
+            if (!ape->flags && info.angle > -M_DISPLAY_ANGLE
+                && info.angle < M_DISPLAY_ANGLE) {
+                item->goal_anim_state = M_STATE_STOP;
+            } else if (info.ahead && (item->touch_bits & M_TOUCH)) {
+                item->required_anim_state = M_STATE_ATTACK;
+                item->goal_anim_state = M_STATE_STOP;
             } else if (ape->mood != MOOD_ESCAPE) {
                 int16_t random = Random_GetControl();
-                if (random < APE_JUMP_CHANCE) {
-                    item->required_anim_state = APE_STATE_JUMP;
-                    item->goal_anim_state = APE_STATE_STOP;
-                } else if (random < APE_WARN1_CHANCE) {
-                    item->required_anim_state = APE_STATE_WARNING_1;
-                    item->goal_anim_state = APE_STATE_STOP;
-                } else if (random < APE_WARN2_CHANCE) {
-                    item->required_anim_state = APE_STATE_WARNING_2;
-                    item->goal_anim_state = APE_STATE_STOP;
+                if (random < M_JUMP_CHANCE) {
+                    item->required_anim_state = M_STATE_JUMP;
+                    item->goal_anim_state = M_STATE_STOP;
+                } else if (random < M_WARN1_CHANCE) {
+                    item->required_anim_state = M_STATE_WARNING_1;
+                    item->goal_anim_state = M_STATE_STOP;
+                } else if (random < M_WARN2_CHANCE) {
+                    item->required_anim_state = M_STATE_WARNING_2;
+                    item->goal_anim_state = M_STATE_STOP;
                 }
             }
             break;
 
-        case APE_STATE_RUN_LEFT:
-            if (!(ape->flags & APE_TURN_R_FLAG)) {
+        case M_STATE_RUN_LEFT:
+            if (!(ape->flags & M_TURN_R_FLAG)) {
                 item->rot.y -= DEG_90;
-                ape->flags |= APE_TURN_R_FLAG;
+                ape->flags |= M_TURN_R_FLAG;
             }
-            item->goal_anim_state = APE_STATE_STOP;
+            item->goal_anim_state = M_STATE_STOP;
             break;
 
-        case APE_STATE_RUN_RIGHT:
-            if (!(ape->flags & APE_TURN_L_FLAG)) {
+        case M_STATE_RUN_RIGHT:
+            if (!(ape->flags & M_TURN_L_FLAG)) {
                 item->rot.y += DEG_90;
-                ape->flags |= APE_TURN_L_FLAG;
+                ape->flags |= M_TURN_L_FLAG;
             }
-            item->goal_anim_state = APE_STATE_STOP;
+            item->goal_anim_state = M_STATE_STOP;
             break;
 
-        case APE_STATE_ATTACK:
-            if (!item->required_anim_state && (item->touch_bits & APE_TOUCH)) {
+        case M_STATE_ATTACK:
+            if (!item->required_anim_state && (item->touch_bits & M_TOUCH)) {
                 Creature_Effect(item, &m_ApeBite, Spawn_Blood);
-                Lara_TakeDamage(APE_ATTACK_DAMAGE, true);
-                item->required_anim_state = APE_STATE_STOP;
+                Lara_TakeDamage(M_GetAttackDamage(item), true);
+                item->required_anim_state = M_STATE_STOP;
             }
             break;
         }
@@ -219,12 +234,12 @@ static void M_Control(const int16_t item_num)
 
     Creature_Head(item, head);
 
-    if (item->current_anim_state == APE_STATE_VAULT) {
+    if (item->current_anim_state == M_STATE_VAULT) {
         Creature_Animate(item_num, angle, 0);
     } else if (M_Vault(item_num, angle)) {
         ape->maximum_turn = 0;
-        item->current_anim_state = APE_STATE_VAULT;
-        Item_SwitchToAnim(item, APE_VAULT_ANIM, 0);
+        item->current_anim_state = M_STATE_VAULT;
+        Item_SwitchToAnim(item, M_ANIM_VAULT, 0);
     }
 }
 
@@ -239,8 +254,8 @@ static void M_Setup(OBJECT *const obj)
     obj->shadow_size = UNIT_SHADOW / 2;
 
     obj->pivot_length = 250;
-    obj->radius = APE_RADIUS;
-    obj->smartness = APE_SMARTNESS;
+    obj->radius = M_RADIUS;
+    obj->smartness = 0x7FFF;
     obj->lot_setup = LOT_Setup(LOT_SETUP_JUMPER);
     obj->intelligent = true;
     obj->save_position = true;
@@ -252,7 +267,9 @@ static void M_Setup(OBJECT *const obj)
     OBJECT_PROPERTIES(
         obj,
         OBJECT_PROPERTY_INT(
-            "max_hit_points", APE_HITPOINTS, "Maximum hit points."));
+            "max_hit_points", M_HIT_POINTS, "Maximum hit points."),
+        OBJECT_PROPERTY_INT(
+            "damage", M_DAMAGE, "Damage dealt by the ape bite."));
 }
 
 REGISTER_OBJECT(O_APE, M_Setup)
