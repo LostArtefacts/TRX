@@ -582,6 +582,7 @@ This page lists documented moveable object properties.
 
 ### `61` O_MP_2
 - `max_hit_points = 28` — Maximum hit points.
+- `damage = 32` — Damage dealt by gun shots.
 
 ### `62` O_PRISONER
 - `max_hit_points = 20` — Maximum hit points.
