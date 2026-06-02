@@ -8,27 +8,29 @@
 #include <trx/game/objects.h>
 #include <trx/game/objects/traps/movable_block.h>
 
-#define LIFT_WAIT_TIME (3 * LOGIC_FPS) // = 90
-#define LIFT_SHIFT 16
-#define LIFT_HEIGHT (STEP_L * 5) // = 1280
-#define LIFT_TRAVEL_DIST (STEP_L * 22)
-#define M_LIFT_NUM_FLOOR_SECTORS 4
-#define M_LIFT_NUM_SECTORS 8
+// clang-format off
+#define M_WAIT_TIME         (3 * LOGIC_FPS) // = 90
+#define M_SHIFT             16
+#define M_HEIGHT            (STEP_L * 5) // = 1280
+#define M_TRAVEL_DIST       (STEP_L * 22)
+#define M_NUM_FLOOR_SECTORS 4
+#define M_NUM_SECTORS       (M_NUM_FLOOR_SECTORS * 2)
+// clang-format on
 
 typedef enum {
-    LIFT_STATE_DOOR_CLOSED = 0,
-    LIFT_STATE_DOOR_OPEN = 1,
-} LIFT_STATE;
+    M_STATE_DOOR_CLOSED,
+    M_STATE_DOOR_OPEN,
+} M_STATE;
 
 typedef enum {
-    LIFT_ANIM_CLOSED = 0,
-} LIFT_ANIM;
+    M_ANIM_CLOSED = 0,
+} M_ANIM;
 
 typedef struct {
     int32_t start_height;
     int32_t wait_time;
     bool is_moving;
-    GAME_VECTOR linked[M_LIFT_NUM_SECTORS];
+    GAME_VECTOR linked[M_NUM_SECTORS];
 } M_PRIV;
 
 static void M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
@@ -37,7 +39,7 @@ static void M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
     JSON_SHOULD(JSON_READ(io, "start_height", &p->start_height));
     JSON_SHOULD(JSON_READ(io, "wait_time", &p->wait_time));
     JSON_SHOULD(JSON_READ(io, "is_moving", &p->is_moving));
-    for (int32_t i = 0; i < M_LIFT_NUM_SECTORS; i++) {
+    for (int32_t i = 0; i < M_NUM_SECTORS; i++) {
         const char *const key = String_FormatStatic("linked_%d", i);
         if (JSON_SHOULD(JSON_PUSH(io, key))) {
             JSON_SHOULD(JSON_READ(io, "x", &p->linked[i].pos.x));
@@ -54,7 +56,7 @@ static void M_SavePriv(const ITEM *const item, JSON_WRITE_IO *const io)
     JSONW_WRITE(io, "start_height", p->start_height);
     JSONW_WRITE(io, "wait_time", p->wait_time);
     JSONW_WRITE(io, "is_moving", p->is_moving);
-    for (int32_t i = 0; i < M_LIFT_NUM_SECTORS; i++) {
+    for (int32_t i = 0; i < M_NUM_SECTORS; i++) {
         const char *const key = String_FormatStatic("linked_%d", i);
         JSONW_PUSH_OBJECT(io);
         JSONW_WRITE(io, "x", p->linked[i].pos.x);
@@ -119,8 +121,8 @@ static void M_FloorCeiling(
 
     const int32_t lift_bottom = item->pos.y + STEP_L;
     const int32_t lift_floor = item->pos.y;
-    const int32_t lift_ceiling = item->pos.y - LIFT_HEIGHT + STEP_L;
-    const int32_t lift_top = item->pos.y - LIFT_HEIGHT;
+    const int32_t lift_ceiling = item->pos.y - M_HEIGHT + STEP_L;
+    const int32_t lift_top = item->pos.y - M_HEIGHT;
 
     const bool lara_inside_lift = (lara_item->pos.y < lift_bottom) &&
                                   (lara_item->pos.y > lift_ceiling);
@@ -130,7 +132,7 @@ static void M_FloorCeiling(
     *out_ceiling = -0x7FFF;
 
     if (lara_in_shaft) {
-        if (item->current_anim_state == LIFT_STATE_DOOR_CLOSED
+        if (item->current_anim_state == M_STATE_DOOR_CLOSED
             && lara_inside_lift) {
             if (point_in_shaft) {
                 *out_floor = lift_floor;
@@ -154,7 +156,7 @@ static void M_FloorCeiling(
             *out_floor = lift_top;
         } else if (y >= lift_bottom) {
             *out_ceiling = lift_bottom;
-        } else if (item->current_anim_state == LIFT_STATE_DOOR_OPEN) {
+        } else if (item->current_anim_state == M_STATE_DOOR_OPEN) {
             *out_floor = lift_floor;
             *out_ceiling = lift_ceiling;
         } else {
@@ -245,7 +247,7 @@ static void M_GetSectorPositions(
 
             const XYZ_32 pos = {
                 .x = sx * WALL_L + WALL_L / 2,
-                .y = item->pos.y - LIFT_HEIGHT,
+                .y = item->pos.y - M_HEIGHT,
                 .z = sz * WALL_L + WALL_L / 2,
             };
             Vector_Add(sector_pos, &pos);
@@ -278,7 +280,7 @@ static void M_ShiftStackableItems(
     const ITEM *const lift_item, const bool reposition)
 {
     M_PRIV *const p = lift_item->priv;
-    for (int32_t i = 0; i < M_LIFT_NUM_FLOOR_SECTORS; i++) {
+    for (int32_t i = 0; i < M_NUM_FLOOR_SECTORS; i++) {
         MovableBlock_ShiftStackY(
             p->linked[i].pos.y, p->linked[i].pos, lift_item->pos.y,
             lift_item->room_num, reposition);
@@ -286,12 +288,12 @@ static void M_ShiftStackableItems(
             p->linked[i].pos.y = lift_item->pos.y;
         }
     }
-    for (int32_t i = M_LIFT_NUM_FLOOR_SECTORS; i < M_LIFT_NUM_SECTORS; i++) {
+    for (int32_t i = M_NUM_FLOOR_SECTORS; i < M_NUM_SECTORS; i++) {
         MovableBlock_ShiftStackY(
-            p->linked[i].pos.y, p->linked[i].pos,
-            lift_item->pos.y - LIFT_HEIGHT, lift_item->room_num, reposition);
+            p->linked[i].pos.y, p->linked[i].pos, lift_item->pos.y - M_HEIGHT,
+            lift_item->room_num, reposition);
         if (reposition) {
-            p->linked[i].pos.y = lift_item->pos.y - LIFT_HEIGHT;
+            p->linked[i].pos.y = lift_item->pos.y - M_HEIGHT;
         }
     }
 }
@@ -301,28 +303,28 @@ static void M_Control(const int16_t item_num)
     ITEM *const item = Item_Get(item_num);
     M_PRIV *const p = item->priv;
     const int32_t bottom = p->start_height;
-    const int32_t top = bottom + LIFT_TRAVEL_DIST;
+    const int32_t top = bottom + M_TRAVEL_DIST;
     const int32_t target = Item_IsTriggerActive(item) ? top : bottom;
 
     if (item->pos.y == target) {
-        item->goal_anim_state = LIFT_STATE_DOOR_OPEN;
+        item->goal_anim_state = M_STATE_DOOR_OPEN;
         p->wait_time = 0;
         if (p->is_moving) {
             M_ShiftStackableItems(item, true);
         }
         p->is_moving = false;
-    } else if (p->wait_time < LIFT_WAIT_TIME) {
-        item->goal_anim_state = LIFT_STATE_DOOR_OPEN;
+    } else if (p->wait_time < M_WAIT_TIME) {
+        item->goal_anim_state = M_STATE_DOOR_OPEN;
         p->wait_time++;
         // Prevent Lara from interacting with blocks about to move.
         M_ShiftStackableItems(item, false);
     } else {
-        item->goal_anim_state = LIFT_STATE_DOOR_CLOSED;
+        item->goal_anim_state = M_STATE_DOOR_CLOSED;
         p->is_moving = true;
         const int32_t delta = target - item->pos.y;
         const int32_t step = (delta > 0)
-            ? (delta < LIFT_SHIFT ? delta : LIFT_SHIFT)
-            : (delta > -LIFT_SHIFT ? delta : -LIFT_SHIFT);
+            ? (delta < M_SHIFT ? delta : M_SHIFT)
+            : (delta > -M_SHIFT ? delta : -M_SHIFT);
         item->pos.y += step;
         // Raise/lower possible movable blocks on top and check positions on
         // save vs load.
