@@ -505,6 +505,8 @@ This page lists documented moveable object properties.
 
 ### `35` O_LIZARD
 - `max_hit_points = 36` — Maximum hit points.
+- `bite_damage = 100` — Damage dealt by the lizard bite.
+- `swipe_damage = 120` — Damage dealt by the lizard swipe attack.
 
 ### `36` O_TRIBE_BOSS
 - `max_hit_points = 200` — Maximum hit points.
