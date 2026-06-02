@@ -39,12 +39,18 @@ This page lists documented moveable object properties.
 
 ### `12` O_LION
 - `max_hit_points = 30` — Maximum hit points.
+- `pounce_damage = 150` — Damage dealt by the pounce attack.
+- `bite_damage = 250` — Damage dealt by the bite attack.
 
 ### `13` O_LIONESS
 - `max_hit_points = 25` — Maximum hit points.
+- `pounce_damage = 150` — Damage dealt by the pounce attack.
+- `bite_damage = 250` — Damage dealt by the bite attack.
 
 ### `14` O_PUMA
 - `max_hit_points = 45` — Maximum hit points.
+- `pounce_damage = 150` — Damage dealt by the pounce attack.
+- `bite_damage = 250` — Damage dealt by the bite attack.
 
 ### `15` O_APE
 - `max_hit_points = 22` — Maximum hit points.
