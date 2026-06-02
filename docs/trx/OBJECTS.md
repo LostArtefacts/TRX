@@ -100,6 +100,7 @@ This page lists documented moveable object properties.
 
 ### `27` O_LARSON
 - `max_hit_points = 50` — Maximum hit points.
+- `damage = 50` — Damage dealt by Larson's shot.
 
 ### `28` O_PIERRE
 - `max_hit_points = 70` — Maximum hit points.
