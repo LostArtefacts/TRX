@@ -884,8 +884,7 @@ static void M_Control(const int16_t item_num)
 
     ITEM *const lara_item = Lara_GetItem();
     if (Lara_Vehicle_GetIndex() == item_num) {
-        Room_TestTriggers(lara_item);
-        Room_TestTriggers(item);
+        Vehicle_TestTriggers(lara_item, item);
     }
 
     int32_t water_height = Room_GetWaterHeight(item->pos, room_num);
@@ -1072,7 +1071,10 @@ static void M_Setup(OBJECT *const obj)
         OBJECT_PROPERTY_INT(
             "track_3", -1, "Random music track pool, slot 3. -1 = disabled."),
         OBJECT_PROPERTY_INT(
-            "track_4", -1, "Random music track pool, slot 4. -1 = disabled."));
+            "track_4", -1, "Random music track pool, slot 4. -1 = disabled."),
+        OBJECT_PROPERTY_BOOL(
+            "is_heavy", true,
+            "Whether or not this vehicle can activate heavy triggers."));
 }
 
 REGISTER_OBJECT(O_RIB, M_Setup)

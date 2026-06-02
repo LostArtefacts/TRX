@@ -1327,7 +1327,7 @@ bool QuadBike_Control(void)
     int16_t room_num = item->room_num;
     SECTOR *const sector = Room_GetSector(item->pos, &room_num);
     const int32_t height = Room_GetHeight(sector, item->pos);
-    Room_TestTriggers(lara_item);
+    Vehicle_TestTriggers(lara_item, item);
 
     if (lara_item->hit_points <= 0) {
         killed = true;
@@ -1520,7 +1520,10 @@ static void M_Setup(OBJECT *const obj)
         OBJECT_PROPERTY_INT(
             "track_3", -1, "Random music track pool, slot 3. -1 = disabled."),
         OBJECT_PROPERTY_INT(
-            "track_4", -1, "Random music track pool, slot 4. -1 = disabled."));
+            "track_4", -1, "Random music track pool, slot 4. -1 = disabled."),
+        OBJECT_PROPERTY_BOOL(
+            "is_heavy", true,
+            "Whether or not this vehicle can activate heavy triggers."));
 }
 
 REGISTER_OBJECT(O_QUAD_BIKE, M_Setup)

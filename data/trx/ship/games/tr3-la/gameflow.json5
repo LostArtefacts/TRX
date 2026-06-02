@@ -97,6 +97,7 @@
         // 3. Shakespeare Cliff
         {
             "path": "chunnel.tr2",
+            "script": "chunnel.lua",
             "music_track": 74,
             "lara_outfit": "tr3_nevada",
             "sequence": [

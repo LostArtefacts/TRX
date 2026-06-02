@@ -750,14 +750,9 @@ static void M_Control(const int16_t item_num)
         Item_UpdateRoom(item_num, room_num);
 
         boat_item->rot.z += p->tilt_angle;
-        lara_item->pos.x = boat_item->pos.x;
-        lara_item->pos.y = boat_item->pos.y;
-        lara_item->pos.z = boat_item->pos.z;
-        lara_item->rot.x = boat_item->rot.x;
-        lara_item->rot.y = boat_item->rot.y;
-        lara_item->rot.z = boat_item->rot.z;
-        Room_TestTriggers(lara_item);
-        Room_TestTriggers(boat_item);
+        lara_item->pos = boat_item->pos;
+        lara_item->rot = boat_item->rot;
+        Vehicle_TestTriggers(lara_item, boat_item);
 
         sector = Room_GetSector(
             (XYZ_32) {
@@ -858,6 +853,12 @@ static void M_Setup(OBJECT *const obj)
     obj->save_position = true;
     obj->save_flags = true;
     obj->save_anim = true;
+
+    OBJECT_PROPERTIES(
+        obj,
+        OBJECT_PROPERTY_BOOL(
+            "is_heavy", true,
+            "Whether or not this vehicle can activate heavy triggers."));
 }
 
 REGISTER_OBJECT(O_BOAT, M_Setup)

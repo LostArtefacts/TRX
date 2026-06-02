@@ -14,6 +14,7 @@
 #include <trx/game/lara/skin/common.h>
 #include <trx/game/matrix.h>
 #include <trx/game/objects.h>
+#include <trx/game/objects/vehicles/common.h>
 #include <trx/game/output.h>
 #include <trx/game/random.h>
 #include <trx/game/rooms.h>
@@ -1159,6 +1160,12 @@ static void M_Setup(OBJECT *const obj)
     obj->save_position = true;
     obj->save_flags = true;
     obj->save_anim = true;
+
+    OBJECT_PROPERTIES(
+        obj,
+        OBJECT_PROPERTY_BOOL(
+            "is_heavy", true,
+            "Whether or not this vehicle can activate heavy triggers."));
 }
 
 bool Kayak_Control(void)
@@ -1222,8 +1229,7 @@ bool Kayak_Control(void)
         Lara_Vehicle_SyncItemAnim();
         Item_UpdateRoom(Lara_Vehicle_GetIndex(), room_num);
         Item_UpdateRoom(lara_info->item_num, room_num);
-        Room_TestTriggers(lara_item);
-        Room_TestTriggers(item);
+        Vehicle_TestTriggers(lara_item, item);
         g_Camera.target_elevation = -5460;
         g_Camera.target_distance = 2048;
     }

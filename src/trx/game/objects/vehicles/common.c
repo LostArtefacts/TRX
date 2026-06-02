@@ -200,6 +200,17 @@ void Vehicle_PlayOneShotTrackPool(
     Music_SetTrackFlags(track, Music_GetTrackFlags(track) | IF_ONE_SHOT);
 }
 
+void Vehicle_TestTriggers(
+    const ITEM *const lara_item, const ITEM *const vehicle_item)
+{
+    Room_TestTriggers(lara_item);
+    OBJECT_PROPERTY_VALUE value = {};
+    if (ObjectProperty_GetItemValue(vehicle_item, "is_heavy", &value)
+        && value.as_bool) {
+        Room_TestTriggers(vehicle_item);
+    }
+}
+
 void Vehicle_HandleEvent(
     ITEM *const item, const OBJECT_EVENT event, const void *const data)
 {

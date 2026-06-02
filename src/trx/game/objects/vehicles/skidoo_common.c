@@ -864,7 +864,7 @@ bool Skidoo_Control(void)
         (XYZ_32) { skidoo->pos.x, skidoo->pos.y - 16, skidoo->pos.z },
         &room_num);
     if (skidoo->flags & IF_ONE_SHOT) {
-        Room_TestTriggers(lara_item);
+        Vehicle_TestTriggers(lara_item, skidoo);
         Item_UpdateRoom(Item_GetIndex(skidoo), room_num);
         if (skidoo->pos.y == skidoo->floor) {
             Skidoo_Explode(skidoo);
@@ -892,7 +892,7 @@ bool Skidoo_Control(void)
             lara_item->rot.z = 0;
         }
     }
-    Room_TestTriggers(lara_item);
+    Vehicle_TestTriggers(lara_item, skidoo);
 
     Item_Animate(lara_item);
     if (!dead && drive >= 0 && M_IsArmed(skidoo_data)) {

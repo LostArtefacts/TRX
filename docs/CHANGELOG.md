@@ -5,6 +5,8 @@
 - added a new console command - `/burn` - to toggle whether or not Lara is on fire
 - added poison Lua property to `O_DART` and `O_DISC`, so that they can poison Lara just like `O_POISON_DART`
 - added the ability for skidoos and quad bikes that are inside or on top of lifts to move when the lift itself moves (#4353)
+- added the ability for skidoos, quad bikes and kayaks to activate heavy triggers (#4354)
+- changed vehicles to allow defining in Lua whether or not they can activate heavy triggers; refer to migration notes
 - changed hard-coded music tracks from Snowmobiles, mine carts, and RIBs to be configurable via Lua
 - changed hard-coded fish and piranha setup to be configurable via Lua
 - changed hard-coded small Cobra radius setup to be configurable via Lua
