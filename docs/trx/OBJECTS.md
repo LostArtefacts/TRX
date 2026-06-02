@@ -212,6 +212,7 @@ This page lists documented moveable object properties.
 
 ### `20` O_CULT_3
 - `max_hit_points = 150` — Maximum hit points.
+- `damage = 50` — Damage dealt by the cultist's shot.
 
 ### `21` O_MOUSE
 - `max_hit_points = 4` — Maximum hit points.
