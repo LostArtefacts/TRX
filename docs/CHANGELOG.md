@@ -35,6 +35,9 @@
     - `O_COWBOY`
     - `O_CROCODILE`
     - `O_CROW`
+    - `O_CULT_1`
+    - `O_CULT_1A`
+    - `O_CULT_1B`
     - `O_EAGLE`
     - `O_VULTURE`
 - changed the hard-coded traps damage to be configurable via Lua. Objects affected:
