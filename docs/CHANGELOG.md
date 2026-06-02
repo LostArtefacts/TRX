@@ -4,6 +4,7 @@
 - added `O_DOLPHIN`, which behaves in the same way as `O_ORCA` but has collision underwater
 - added a new console command - `/burn` - to toggle whether or not Lara is on fire
 - added poison Lua property to `O_DART` and `O_DISC`, so that they can poison Lara just like `O_POISON_DART`
+- added `trx.assault` `trx.assault.quad` lua functions for start, stop and reset the Assault Course and Quadbike Course timer
 - removed hard-coded fish and piranha setup and moved to Lua instead
 - removed the limit of at most 8 fish/piranha shoals per level
 - removed hard-coded small Cobra radius setup and moved to Lua instead
