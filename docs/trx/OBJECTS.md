@@ -526,6 +526,9 @@ This page lists documented moveable object properties.
 
 ### `46` O_HYBRID_MUTANT
 - `max_hit_points = 90` — Maximum hit points.
+- `jump_damage = 20` — Damage dealt by the hybrid mutant jump attack.
+- `slash_damage = 100` — Damage dealt by the hybrid mutant slash attack.
+- `kick_damage = 80` — Damage dealt by the hybrid mutant kick attack.
 
 ### `49` O_WILLARD
 - `max_hit_points = 200` — Maximum hit points.

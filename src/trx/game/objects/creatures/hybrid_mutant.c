@@ -1,6 +1,7 @@
 #include <trx/game/creature.h>
 #include <trx/game/lara.h>
 #include <trx/game/objects.h>
+#include <trx/game/objects/property.h>
 #include <trx/game/spawn.h>
 
 // clang-format off
@@ -47,6 +48,17 @@ static const BITE m_BiteRight = {
     .pos = { 19, -13, 3 },
     .mesh_num = 14,
 };
+
+static int32_t M_GetDamage(
+    const ITEM *const item, const char *const key, const int32_t default_value)
+{
+    OBJECT_PROPERTY_VALUE damage = {};
+    if (ObjectProperty_GetItemValue(item, key, &damage)) {
+        return damage.as_int;
+    }
+
+    return default_value;
+}
 
 static void M_Control(const int16_t item_num)
 {
@@ -199,7 +211,8 @@ static void M_Control(const int16_t item_num)
         creature->maximum_turn = 0;
 
         if ((item->touch_bits & M_TOUCH_BITS_LEFT) != 0) {
-            Lara_TakeDamage(M_JUMP_DAMAGE, true);
+            Lara_TakeDamage(
+                M_GetDamage(item, "jump_damage", M_JUMP_DAMAGE), true);
             Creature_Effect(item, &m_BiteLeft, Spawn_Blood);
         }
         break;
@@ -215,7 +228,8 @@ static void M_Control(const int16_t item_num)
 
         if (creature->flags == 0
             && (item->touch_bits & M_TOUCH_BITS_LEFT) != 0) {
-            Lara_TakeDamage(M_SLASH_DAMAGE, true);
+            Lara_TakeDamage(
+                M_GetDamage(item, "slash_damage", M_SLASH_DAMAGE), true);
             Creature_Effect(item, &m_BiteLeft, Spawn_Blood);
             creature->flags = 1;
         }
@@ -238,7 +252,8 @@ static void M_Control(const int16_t item_num)
 
         if (creature->flags == 0
             && (item->touch_bits & M_TOUCH_BITS_RIGHT) != 0) {
-            Lara_TakeDamage(M_KICK_DAMAGE, true);
+            Lara_TakeDamage(
+                M_GetDamage(item, "kick_damage", M_KICK_DAMAGE), true);
             Creature_Effect(item, &m_BiteRight, Spawn_Blood);
             creature->flags = 1;
         }
@@ -285,7 +300,16 @@ static void M_Setup(OBJECT *const obj)
     OBJECT_PROPERTIES(
         obj,
         OBJECT_PROPERTY_INT(
-            "max_hit_points", M_HIT_POINTS, "Maximum hit points."));
+            "max_hit_points", M_HIT_POINTS, "Maximum hit points."),
+        OBJECT_PROPERTY_INT(
+            "jump_damage", M_JUMP_DAMAGE,
+            "Damage dealt by the hybrid mutant jump attack."),
+        OBJECT_PROPERTY_INT(
+            "slash_damage", M_SLASH_DAMAGE,
+            "Damage dealt by the hybrid mutant slash attack."),
+        OBJECT_PROPERTY_INT(
+            "kick_damage", M_KICK_DAMAGE,
+            "Damage dealt by the hybrid mutant kick attack."));
 }
 
 REGISTER_OBJECT(O_HYBRID_MUTANT, M_Setup)
