@@ -553,6 +553,9 @@ This page lists documented moveable object properties.
 
 ### `65` O_CIVILIAN
 - `max_hit_points = 15` — Maximum hit points.
+- `punch_1_damage = 40` — Damage dealt by the civilian's first punch attack.
+- `punch_2_damage = 40` — Damage dealt by the civilian's second punch attack.
+- `punch_3_damage = 50` — Damage dealt by the civilian's third punch attack.
 
 ### `66` O_SECURITY_LASER_ALARM
 - `max_hit_points = 1` — Maximum hit points.
