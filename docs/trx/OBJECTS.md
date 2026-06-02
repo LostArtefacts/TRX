@@ -87,6 +87,7 @@ This page lists documented moveable object properties.
 
 ### `26` O_FISH
 - `max_hit_points = 12` — Maximum hit points.
+- `damage = 100` — Damage dealt by the barracuda bite.
 
 ### `27` O_LARSON
 - `max_hit_points = 50` — Maximum hit points.
@@ -216,6 +217,7 @@ This page lists documented moveable object properties.
 
 ### `28` O_BARRACUDA
 - `max_hit_points = 12` — Maximum hit points.
+- `damage = 100` — Damage dealt by the barracuda bite.
 
 ### `29` O_DIVER
 - `max_hit_points = 20` — Maximum hit points.
