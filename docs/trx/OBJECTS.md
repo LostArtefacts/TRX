@@ -575,6 +575,10 @@ This page lists documented moveable object properties.
 
 ### `60` O_MP_1
 - `max_hit_points = 25` — Maximum hit points.
+- `punch_1_damage = 80` — Damage dealt by punch 1.
+- `punch_2_damage = 80` — Damage dealt by punch 2.
+- `punch_3_damage = 100` — Damage dealt by punch 3.
+- `kick_damage = 150` — Damage dealt by the kick attack.
 
 ### `61` O_MP_2
 - `max_hit_points = 28` — Maximum hit points.
