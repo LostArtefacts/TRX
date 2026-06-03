@@ -5,10 +5,22 @@
 #include <trx/game/effects.h>
 #include <trx/game/lara.h>
 #include <trx/game/objects/common.h>
+#include <trx/game/objects/property.h>
 #include <trx/game/output.h>
 #include <trx/game/random.h>
 #include <trx/game/sparks.h>
 #include <trx/game/spawn.h>
+
+static int32_t M_GetDamage(void)
+{
+    OBJECT_PROPERTY_VALUE damage = {};
+    const OBJECT *const obj = Object_Get(O_TONY);
+    if (ObjectProperty_GetObjectValue(obj, "fire_ball_damage", &damage)) {
+        return damage.as_int;
+    }
+
+    return TONY_FIRE_BALL_DAMAGE;
+}
 
 static void M_TriggerFireBallFlame(
     const int16_t effect_num, const int32_t type, const int32_t xv,
@@ -277,7 +289,7 @@ static void M_Control(const int16_t effect_num)
     LARA_INFO *const lara = Lara_GetLaraInfo();
     if (!lara->burn && Lara_IsNearItem(&effect->pos, 200)) {
         Effect_Kill(effect_num);
-        Lara_TakeDamage(200, true);
+        Lara_TakeDamage(M_GetDamage(), true);
         Lara_CatchFire();
         return;
     }

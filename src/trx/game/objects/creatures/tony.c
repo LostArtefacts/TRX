@@ -17,10 +17,17 @@
 #include <trx/game/sparks.h>
 #include <trx/game/spawn.h>
 
+// clang-format off
+#define M_HIT_POINTS 100
+#define M_RADIUS     (WALL_L / 10) // = 102
+// clang-format on
+
 typedef enum {
-    M_PHASE_DORMANT = 0,
+    // clang-format off
+    M_PHASE_DORMANT  = 0,
     M_PHASE_AWAKENED = 1,
-    M_PHASE_PHASE2 = 2,
+    M_PHASE_PHASE2   = 2,
+    // clang-format on
 } M_PHASE;
 
 typedef enum {
@@ -618,9 +625,8 @@ static void M_Setup(OBJECT *const obj)
     obj->can_be_exploded_func = M_CanBeExploded;
 
     obj->shadow_size = 0;
-
     obj->pivot_length = 50;
-    obj->radius = 102;
+    obj->radius = M_RADIUS;
 
     obj->intelligent = true;
     obj->save_position = true;
@@ -632,7 +638,12 @@ static void M_Setup(OBJECT *const obj)
     Object_GetBone(obj, 6)->rot.y = true;
     Object_GetBone(obj, 13)->rot.y = true;
     OBJECT_PROPERTIES(
-        obj, OBJECT_PROPERTY_INT("max_hit_points", 100, "Maximum hit points."));
+        obj,
+        OBJECT_PROPERTY_INT(
+            "max_hit_points", M_HIT_POINTS, "Maximum hit points."),
+        OBJECT_PROPERTY_INT(
+            "fire_ball_damage", TONY_FIRE_BALL_DAMAGE,
+            "Damage dealt by direct fire ball hits."));
 }
 
 REGISTER_OBJECT(O_TONY, M_Setup)
