@@ -577,9 +577,13 @@ This page lists documented moveable object properties.
 
 ### `51` O_SWAT_1
 - `max_hit_points = 45` — Maximum hit points.
+- `damage = 28` — Damage dealt by shots.
+- `final_shot_damage = 84` — Damage dealt by the death-state final shot.
 
 ### `52` O_SWAT_2
 - `max_hit_points = 45` — Maximum hit points.
+- `damage = 28` — Damage dealt by shots.
+- `final_shot_damage = 84` — Damage dealt by the death-state final shot.
 
 ### `53` O_PUNK_1
 - `max_hit_points = 20` — Maximum hit points.
@@ -624,6 +628,8 @@ This page lists documented moveable object properties.
 
 ### `63` O_SWAT_3
 - `max_hit_points = 45` — Maximum hit points.
+- `damage = 28` — Damage dealt by shots.
+- `final_shot_damage = 84` — Damage dealt by the death-state final shot.
 
 ### `64` O_SENTRY_GUN
 - `damage = 10` — Damage dealt when the sentry gun hits Lara.
