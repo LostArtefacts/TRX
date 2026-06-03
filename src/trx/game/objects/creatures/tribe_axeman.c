@@ -4,20 +4,28 @@
 #include <trx/game/items.h>
 #include <trx/game/lara.h>
 #include <trx/game/objects.h>
+#include <trx/game/objects/property.h>
 #include <trx/game/random.h>
 #include <trx/game/sound.h>
 #include <trx/game/spawn.h>
 
 // clang-format off
-#define M_WALK_TURN    (9 * DEG_1)
-#define M_RUN_TURN     (6 * DEG_1)
-#define M_OTHER_TURN   (4 * DEG_1)
-#define M_CLOSE_RANGE  SQUARE(WALL_L * 2 / 3)
-#define M_LONG_RANGE   SQUARE(WALL_L)
-#define M_WALK_RANGE   SQUARE(WALL_L * 2)
-#define M_ESCAPE_RANGE SQUARE(WALL_L * 3)
-#define M_HIT_RANGE    (STEP_L * 2)
-#define M_TOUCH_BITS   (1 << 13) // = 0x2000
+#define M_HIT_POINTS      28
+#define M_ATTACK_2_DAMAGE 8
+#define M_ATTACK_3_DAMAGE 32
+#define M_ATTACK_4_DAMAGE 8
+#define M_ATTACK_5_DAMAGE 8
+#define M_ATTACK_6_DAMAGE 32
+#define M_RADIUS          (WALL_L / 10) // = 102
+#define M_WALK_TURN       (9 * DEG_1)
+#define M_RUN_TURN        (6 * DEG_1)
+#define M_OTHER_TURN      (4 * DEG_1)
+#define M_CLOSE_RANGE     SQUARE(WALL_L * 2 / 3)
+#define M_LONG_RANGE      SQUARE(WALL_L)
+#define M_WALK_RANGE      SQUARE(WALL_L * 2)
+#define M_ESCAPE_RANGE    SQUARE(WALL_L * 3)
+#define M_HIT_RANGE       (STEP_L * 2)
+#define M_TOUCH_BITS      (1 << 13) // = 0x2000
 // clang-format on
 
 typedef struct {
@@ -48,7 +56,6 @@ typedef enum {
 typedef struct {
     uint8_t start_frame;
     uint8_t end_frame;
-    uint8_t damage;
 } M_HIT_FRAME;
 
 static BITE m_AxeHit = {
@@ -62,15 +69,49 @@ static M_HIT_FRAME m_HitFrames[13] = {
     {},
     {},
     {},
-    { .start_frame = 2, .end_frame = 12, .damage = 8 },
-    { .start_frame = 8, .end_frame = 9, .damage = 32 },
-    { .start_frame = 19, .end_frame = 28, .damage = 8 },
+    { .start_frame = 2, .end_frame = 12 },
+    { .start_frame = 8, .end_frame = 9 },
+    { .start_frame = 19, .end_frame = 28 },
     {},
     {},
-    { .start_frame = 7, .end_frame = 14, .damage = 8 },
+    { .start_frame = 7, .end_frame = 14 },
     {},
-    { .start_frame = 15, .end_frame = 19, .damage = 32 }
+    { .start_frame = 15, .end_frame = 19 },
 };
+
+static int32_t M_GetDamage(
+    const ITEM *const item, const char *const key, const int32_t default_value)
+{
+    OBJECT_PROPERTY_VALUE damage = {};
+    if (ObjectProperty_GetItemValue(item, key, &damage)) {
+        return damage.as_int;
+    }
+
+    return default_value;
+}
+
+static int32_t M_GetAttackDamage(const ITEM *const item)
+{
+    switch (item->current_anim_state) {
+    case M_STATE_ATTACK_2:
+        return M_GetDamage(item, "attack_2_damage", M_ATTACK_2_DAMAGE);
+
+    case M_STATE_ATTACK_3:
+        return M_GetDamage(item, "attack_3_damage", M_ATTACK_3_DAMAGE);
+
+    case M_STATE_ATTACK_4:
+        return M_GetDamage(item, "attack_4_damage", M_ATTACK_4_DAMAGE);
+
+    case M_STATE_ATTACK_5:
+        return M_GetDamage(item, "attack_5_damage", M_ATTACK_5_DAMAGE);
+
+    case M_STATE_ATTACK_6:
+        return M_GetDamage(item, "attack_6_damage", M_ATTACK_6_DAMAGE);
+
+    default:
+        return 0;
+    }
+}
 
 static void M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
 {
@@ -230,14 +271,15 @@ static void M_Control(const int16_t item_num)
             const M_HIT_FRAME *const hit_frame =
                 &m_HitFrames[item->current_anim_state];
             ITEM *const enemy = creature->enemy;
+            const int32_t attack_damage = M_GetAttackDamage(item);
 
             if (enemy == lara_item) {
                 if (item->touch_bits & M_TOUCH_BITS
                     && creature->flags >= hit_frame->start_frame
                     && creature->flags <= hit_frame->end_frame) {
-                    Lara_TakeDamage(hit_frame->damage, true);
+                    Lara_TakeDamage(attack_damage, true);
 
-                    for (int32_t i = 0; i < hit_frame->damage; i += 8) {
+                    for (int32_t i = 0; i < attack_damage; i += 8) {
                         Creature_Effect(item, &m_AxeHit, Spawn_Blood);
                     }
 
@@ -247,7 +289,9 @@ static void M_Control(const int16_t item_num)
                 if (Item_IsNearby(enemy, item, M_HIT_RANGE)) {
                     if (creature->flags >= hit_frame->start_frame
                         && creature->flags <= hit_frame->end_frame) {
-                        Item_TakeDamage(enemy, 2, IDF_NONE, item);
+                        Item_TakeDamage(
+                            enemy, M_GetDamage(item, "enemy_damage", 2),
+                            IDF_NONE, item);
                         Creature_Effect(item, &m_AxeHit, Spawn_Blood);
                         Sound_Effect(SFX_LARA_THUD, &item->pos, SPM_NORMAL);
                     }
@@ -314,7 +358,7 @@ static void M_Setup(OBJECT *const obj)
 
     obj->shadow_size = UNIT_SHADOW / 2;
 
-    obj->radius = 102;
+    obj->radius = M_RADIUS;
     obj->pivot_length = 0;
 
     obj->intelligent = true;
@@ -326,7 +370,21 @@ static void M_Setup(OBJECT *const obj)
     Object_GetBone(obj, 13)->rot.y = true;
     Object_GetBone(obj, 6)->rot.y = true;
     OBJECT_PROPERTIES(
-        obj, OBJECT_PROPERTY_INT("max_hit_points", 28, "Maximum hit points."));
+        obj,
+        OBJECT_PROPERTY_INT(
+            "max_hit_points", M_HIT_POINTS, "Maximum hit points."),
+        OBJECT_PROPERTY_INT(
+            "attack_2_damage", M_ATTACK_2_DAMAGE, "Damage dealt by attack 2."),
+        OBJECT_PROPERTY_INT(
+            "attack_3_damage", M_ATTACK_3_DAMAGE, "Damage dealt by attack 3."),
+        OBJECT_PROPERTY_INT(
+            "attack_4_damage", M_ATTACK_4_DAMAGE, "Damage dealt by attack 4."),
+        OBJECT_PROPERTY_INT(
+            "attack_5_damage", M_ATTACK_5_DAMAGE, "Damage dealt by attack 5."),
+        OBJECT_PROPERTY_INT(
+            "attack_6_damage", M_ATTACK_6_DAMAGE, "Damage dealt by attack 6."),
+        OBJECT_PROPERTY_INT(
+            "enemy_damage", 2, "Damage dealt to non-player targets."));
 }
 
 REGISTER_OBJECT(O_TRIBE_AXEMAN, M_Setup)
