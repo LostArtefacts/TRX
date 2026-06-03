@@ -242,6 +242,7 @@ This page lists documented moveable object properties.
 
 ### `25` O_SHARK
 - `max_hit_points = 30` — Maximum hit points.
+- `damage = 400` — Damage dealt by bite attacks.
 
 ### `26` O_EEL
 - `max_hit_points = 5` — Maximum hit points.

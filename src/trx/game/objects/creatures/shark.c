@@ -3,46 +3,55 @@
 #include <trx/game/items/carrier.h>
 #include <trx/game/lara.h>
 #include <trx/game/objects.h>
+#include <trx/game/objects/property.h>
 #include <trx/game/pathing.h>
 #include <trx/game/random.h>
 #include <trx/game/spawn.h>
 
 // clang-format off
-#define SHARK_HITPOINTS       30
-#define SHARK_TOUCH_BITS      0b00110100'00000000 // = 0x3400
-#define SHARK_RADIUS          (WALL_L / 3) // = 341
-#define SHARK_BITE_DAMAGE     400
-#define SHARK_SWIM_2_RANGE    SQUARE(WALL_L * 3) // = 9437184
-#define SHARK_ATTACK_1_RANGE  SQUARE(WALL_L * 3 / 4) // = 589824
-#define SHARK_ATTACK_2_RANGE  SQUARE(WALL_L * 4 / 3) // = 1863225
-#define SHARK_SWIM_1_TURN     (DEG_1 / 2) // = 91
-#define SHARK_SWIM_2_TURN     (DEG_1 * 2) // = 364
-#define SHARK_ATTACK_1_CHANCE 0x800
+#define M_HIT_POINTS      30
+#define M_DAMAGE          400
+#define M_TOUCH_BITS      0b00110100'00000000 // = 0x3400
+#define M_RADIUS          (WALL_L / 3) // = 341
+#define M_SWIM_2_RANGE    SQUARE(WALL_L * 3) // = 9437184
+#define M_ATTACK_1_RANGE  SQUARE(WALL_L * 3 / 4) // = 589824
+#define M_ATTACK_2_RANGE  SQUARE(WALL_L * 4 / 3) // = 1863225
+#define M_SWIM_1_TURN     (DEG_1 / 2) // = 91
+#define M_SWIM_2_TURN     (DEG_1 * 2) // = 364
+#define M_ATTACK_1_CHANCE 0x800
 // clang-format on
 
 typedef enum {
-    // clang-format off
-    SHARK_STATE_STOP     = 0,
-    SHARK_STATE_SWIM_1   = 1,
-    SHARK_STATE_SWIM_2   = 2,
-    SHARK_STATE_ATTACK_1 = 3,
-    SHARK_STATE_ATTACK_2 = 4,
-    SHARK_STATE_DEATH    = 5,
-    SHARK_STATE_KILL     = 6,
-    // clang-format on
-} SHARK_STATE;
+    M_STATE_STOP,
+    M_STATE_SWIM_1,
+    M_STATE_SWIM_2,
+    M_STATE_ATTACK_1,
+    M_STATE_ATTACK_2,
+    M_STATE_DEATH,
+    M_STATE_KILL,
+} M_STATE;
 
 typedef enum {
     // clang-format off
-    SHARK_ANIM_DEATH = 4,
-    SHARK_ANIM_KILL  = 19,
+    M_ANIM_DEATH = 4,
+    M_ANIM_KILL  = 19,
     // clang-format on
-} SHARK_ANIM;
+} M_ANIM;
 
 static const BITE m_SharkBite = {
     .pos = { .x = 17, .y = -22, .z = 344 },
     .mesh_num = 12,
 };
+
+static int32_t M_GetDamage(const ITEM *const item)
+{
+    OBJECT_PROPERTY_VALUE damage = {};
+    if (ObjectProperty_GetItemValue(item, "damage", &damage)) {
+        return damage.as_int;
+    }
+
+    return M_DAMAGE;
+}
 
 static void M_Control(const int16_t item_num)
 {
@@ -57,9 +66,9 @@ static void M_Control(const int16_t item_num)
     const bool lara_was_alive = lara_item->hit_points > 0;
 
     if (item->hit_points <= 0) {
-        if (item->current_anim_state != SHARK_STATE_DEATH) {
-            Item_SwitchToAnim(item, SHARK_ANIM_DEATH, 0);
-            item->current_anim_state = SHARK_STATE_DEATH;
+        if (item->current_anim_state != M_STATE_DEATH) {
+            Item_SwitchToAnim(item, M_ANIM_DEATH, 0);
+            item->current_anim_state = M_STATE_DEATH;
             Carrier_TestItemDrops(item_num);
         }
         Creature_Float(item_num);
@@ -72,55 +81,55 @@ static void M_Control(const int16_t item_num)
         int16_t angle = Creature_Turn(item, creature->maximum_turn);
 
         switch (item->current_anim_state) {
-        case SHARK_STATE_STOP:
+        case M_STATE_STOP:
             creature->flags = 0;
             creature->maximum_turn = 0;
-            if (info.ahead && info.distance < SHARK_ATTACK_1_RANGE
+            if (info.ahead && info.distance < M_ATTACK_1_RANGE
                 && info.zone_num == info.enemy_zone_num) {
-                item->goal_anim_state = SHARK_STATE_ATTACK_1;
+                item->goal_anim_state = M_STATE_ATTACK_1;
             } else {
-                item->goal_anim_state = SHARK_STATE_SWIM_1;
+                item->goal_anim_state = M_STATE_SWIM_1;
             }
             break;
 
-        case SHARK_STATE_SWIM_1:
-            creature->maximum_turn = SHARK_SWIM_1_TURN;
+        case M_STATE_SWIM_1:
+            creature->maximum_turn = M_SWIM_1_TURN;
             if (creature->mood == MOOD_BORED) {
-            } else if (info.ahead && info.distance < SHARK_ATTACK_1_RANGE) {
-                item->goal_anim_state = SHARK_STATE_STOP;
+            } else if (info.ahead && info.distance < M_ATTACK_1_RANGE) {
+                item->goal_anim_state = M_STATE_STOP;
             } else if (
-                creature->mood == MOOD_ESCAPE
-                || info.distance > SHARK_SWIM_2_RANGE || !info.ahead) {
-                item->goal_anim_state = SHARK_STATE_SWIM_2;
+                creature->mood == MOOD_ESCAPE || info.distance > M_SWIM_2_RANGE
+                || !info.ahead) {
+                item->goal_anim_state = M_STATE_SWIM_2;
             }
             break;
 
-        case SHARK_STATE_SWIM_2:
+        case M_STATE_SWIM_2:
             creature->flags = 0;
-            creature->maximum_turn = SHARK_SWIM_2_TURN;
+            creature->maximum_turn = M_SWIM_2_TURN;
             if (creature->mood == MOOD_BORED) {
-                item->goal_anim_state = SHARK_STATE_SWIM_1;
+                item->goal_anim_state = M_STATE_SWIM_1;
             } else if (creature->mood == MOOD_ESCAPE) {
             } else if (
-                info.ahead && info.distance < SHARK_ATTACK_2_RANGE
+                info.ahead && info.distance < M_ATTACK_2_RANGE
                 && info.zone_num == info.enemy_zone_num) {
-                if (Random_GetControl() < SHARK_ATTACK_1_CHANCE) {
-                    item->goal_anim_state = SHARK_STATE_STOP;
-                } else if (info.distance < SHARK_ATTACK_1_RANGE) {
-                    item->goal_anim_state = SHARK_STATE_ATTACK_2;
+                if (Random_GetControl() < M_ATTACK_1_CHANCE) {
+                    item->goal_anim_state = M_STATE_STOP;
+                } else if (info.distance < M_ATTACK_1_RANGE) {
+                    item->goal_anim_state = M_STATE_ATTACK_2;
                 }
             }
             break;
 
-        case SHARK_STATE_ATTACK_1:
-        case SHARK_STATE_ATTACK_2:
+        case M_STATE_ATTACK_1:
+        case M_STATE_ATTACK_2:
             if (info.ahead) {
                 head = info.angle;
             }
 
             if (creature->flags == 0
-                && (item->touch_bits & SHARK_TOUCH_BITS) != 0) {
-                Lara_TakeDamage(SHARK_BITE_DAMAGE, true);
+                && (item->touch_bits & M_TOUCH_BITS) != 0) {
+                Lara_TakeDamage(M_GetDamage(item), true);
                 Creature_Effect(item, &m_SharkBite, Spawn_Blood);
                 creature->flags = 1;
             }
@@ -132,13 +141,13 @@ static void M_Control(const int16_t item_num)
 
         if (lara_was_alive && lara_item->hit_points <= 0) {
             Creature_SpecialKill(
-                item, SHARK_ANIM_KILL, SHARK_STATE_KILL, LS_EXTRA_SHARK_KILL);
-        } else if (item->current_anim_state == SHARK_STATE_KILL) {
+                item, M_ANIM_KILL, M_STATE_KILL, LS_EXTRA_SHARK_KILL);
+        } else if (item->current_anim_state == M_STATE_KILL) {
             Item_Animate(item);
         } else {
             Creature_Head(item, head);
             Creature_Animate(item_num, angle, 0);
-            Creature_Underwater(item, SHARK_RADIUS);
+            Creature_Underwater(item, M_RADIUS);
         }
     }
 }
@@ -153,7 +162,7 @@ static void M_Setup(OBJECT *const obj)
     obj->draw_func = Object_DrawUnclippedItem;
     obj->collision_func = Creature_Collision;
 
-    obj->radius = SHARK_RADIUS;
+    obj->radius = M_RADIUS;
     obj->shadow_size = UNIT_SHADOW / 2;
     obj->pivot_length = 200;
     obj->lot_setup = LOT_Setup(LOT_SETUP_FLYER);
@@ -169,7 +178,9 @@ static void M_Setup(OBJECT *const obj)
     OBJECT_PROPERTIES(
         obj,
         OBJECT_PROPERTY_INT(
-            "max_hit_points", SHARK_HITPOINTS, "Maximum hit points."));
+            "max_hit_points", M_HIT_POINTS, "Maximum hit points."),
+        OBJECT_PROPERTY_INT(
+            "damage", M_DAMAGE, "Damage dealt by bite attacks."));
 }
 
 REGISTER_OBJECT(O_SHARK, M_Setup)
