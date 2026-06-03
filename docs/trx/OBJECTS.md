@@ -316,6 +316,10 @@ This page lists documented moveable object properties.
 
 ### `41` O_XIAN_SPEARMAN
 - `max_hit_points = 100` — Maximum hit points.
+- `hit_1_damage = 75` — Damage dealt by attack 1.
+- `hit_2_damage = 75` — Damage dealt by attacks 2 to 4.
+- `hit_5_damage = 75` — Damage dealt by attack 5.
+- `hit_6_damage = 120` — Damage dealt by attack 6.
 
 ### `43` O_XIAN_KNIGHT
 - `max_hit_points = 80` — Maximum hit points.
