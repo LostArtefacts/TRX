@@ -55,12 +55,10 @@ static int32_t M_CountAssaultTargets(void)
             continue;
         }
 
-        if ((item->flags & IF_KILLED) == 0
-            && item->timer > GYM_ASSAULT_TARGET_TIME) {
+        if ((item->flags & IF_KILLED) == 0 && item->hit_points > 0) {
             remaining++;
         }
     }
-    LOG_INFO("remaining=%d", remaining);
     return remaining;
 }
 
