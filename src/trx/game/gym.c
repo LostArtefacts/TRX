@@ -344,6 +344,10 @@ void Gym_TrackManager_Reset(const GYM_TRACK_TYPE track)
 
 void Gym_TrackManager_Start(const GYM_TRACK_TYPE track)
 {
+    if (track == GYM_TRACK_QUAD && !M_IsOnQuadBike()) {
+        return;
+    }
+
     M_PRIV *const p = &m_Priv;
     p->active_track_type = track;
 
@@ -369,10 +373,6 @@ void Gym_TrackManager_Start(const GYM_TRACK_TYPE track)
     }
 
     case GYM_TRACK_QUAD: {
-        if (!M_IsOnQuadBike()) {
-            return;
-        }
-
         p->assault_course.timer_active = false;
         p->assault_course.timer_display = false;
         p->assault_course.penalty_frames = 0;

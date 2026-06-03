@@ -20,6 +20,7 @@
     - `O_SPIKE_WALL`
 - removed the limitation of only having two fish sprite types in any level
 - removed the limit of at most 8 fish/piranha shoals per level
+- fixed being able to start the Quad Bike track timer without Lara getting onto the quad bike first (regression from 1.1)
 - fixed missed Assault Course targets not penalizing player's time if Lara crosses the finish line before they collapse (regression from 1.2)
 - fixed a crash with old custom levels that have sectors pointing to invalid floor data (#5568)
 - fixed the enemy health bar disappearing later than Lara's own bar when holstering weapons (regression from Tomb1Main 0.2)
