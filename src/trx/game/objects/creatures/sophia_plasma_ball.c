@@ -4,11 +4,23 @@
 #include <trx/game/effects.h>
 #include <trx/game/lara.h>
 #include <trx/game/objects.h>
+#include <trx/game/objects/property.h>
 #include <trx/game/output.h>
 #include <trx/game/random.h>
 #include <trx/game/sparks.h>
 
 static const uint8_t m_Falloffs[2] = { 13, 7 };
+
+static int32_t M_GetDamage(void)
+{
+    OBJECT_PROPERTY_VALUE damage = {};
+    const OBJECT *const obj = Object_Get(O_SOPHIA);
+    if (ObjectProperty_GetObjectValue(obj, "plasma_ball_damage", &damage)) {
+        return damage.as_int;
+    }
+
+    return SOPHIA_PLASMA_BALL_DAMAGE;
+}
 
 static void M_TriggerPlasmaBallFlame(const int16_t effect_num, const XYZ_32 vel)
 {
@@ -113,7 +125,7 @@ static void M_Control(const int16_t effect_num)
     }
 
     if (effect->flag2 == 0 && Lara_IsNearItem(&effect->pos, 200)) {
-        Lara_TakeDamage(25, true);
+        Lara_TakeDamage(M_GetDamage(), true);
         Effect_Kill(effect_num);
         return;
     }

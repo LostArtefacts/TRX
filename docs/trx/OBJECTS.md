@@ -597,6 +597,12 @@ This page lists documented moveable object properties.
 
 ### `57` O_SOPHIA
 - `max_hit_points = 300` — Maximum hit points.
+- `knockback_damage = 200` — Damage dealt by the knockback shockwave.
+- `laser_bolt_damage = 30` — Damage dealt by regular laser bolt direct hits.
+- `big_laser_bolt_damage = 542` — Damage dealt by the big laser bolt direct hit.
+- `laser_bolt_splash_damage = 16` — Maximum splash damage dealt by regular laser bolts.
+- `big_laser_bolt_splash_damage = 64` — Maximum splash damage dealt by the big laser bolt.
+- `plasma_ball_damage = 25` — Damage dealt by plasma ball direct hits.
 
 ### `60` O_MP_1
 - `max_hit_points = 25` — Maximum hit points.
