@@ -294,6 +294,7 @@ This page lists documented moveable object properties.
 
 ### `39` O_TIGER
 - `max_hit_points = 20` — Maximum hit points.
+- `damage = 100` — Damage dealt by bite attacks.
 
 ### `41` O_XIAN_SPEARMAN
 - `max_hit_points = 100` — Maximum hit points.
@@ -511,6 +512,7 @@ This page lists documented moveable object properties.
 
 ### `28` O_TIGER
 - `max_hit_points = 24` — Maximum hit points.
+- `damage = 90` — Damage dealt by bite attacks.
 
 ### `29` O_VULTURE
 - `max_hit_points = 18` — Maximum hit points.
