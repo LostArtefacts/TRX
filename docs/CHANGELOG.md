@@ -70,6 +70,7 @@
     - `O_SECURITY_GUARD`
     - `O_SHARK`
     - `O_SHIVA`
+    - `O_SKATE_KID`
     - `O_STHPAC_MERCENARY`
     - `O_VOLE`
     - `O_VULTURE`

@@ -121,6 +121,8 @@ This page lists documented moveable object properties.
 
 ### `30` O_SKATEKID
 - `max_hit_points = 125` — Maximum hit points.
+- `stop_shot_damage = 50` — Damage dealt by shots while stopped.
+- `skate_shot_damage = 40` — Damage dealt by shots while skating.
 
 ### `31` O_COWBOY
 - `max_hit_points = 150` — Maximum hit points.
