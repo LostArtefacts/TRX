@@ -65,6 +65,7 @@
     - `O_PUNK_2`
     - `O_RAPTOR`
     - `O_RAT`
+    - `O_RX_WORKER_1`
     - `O_STHPAC_MERCENARY`
     - `O_VOLE`
     - `O_VULTURE`
