@@ -327,6 +327,9 @@ This page lists documented moveable object properties.
 
 ### `45` O_YETI
 - `max_hit_points = 30` — Maximum hit points.
+- `punch_damage = 100` — Damage dealt by attack 1.
+- `thump_damage = 150` — Damage dealt by attack 2.
+- `charge_damage = 200` — Damage dealt by attack 3.
 
 ### `46` O_BIRD_GUARDIAN
 - `max_hit_points = 200` — Maximum hit points.

@@ -2,12 +2,16 @@
 #include <trx/game/creature.h>
 #include <trx/game/lara.h>
 #include <trx/game/objects.h>
+#include <trx/game/objects/property.h>
 #include <trx/game/pathing.h>
 #include <trx/game/random.h>
 #include <trx/game/spawn.h>
 
 // clang-format off
-#define M_HITPOINTS        30
+#define M_HIT_POINTS       30
+#define M_PUNCH_DAMAGE     100
+#define M_THUMP_DAMAGE     150
+#define M_CHARGE_DAMAGE    200
 #define M_TOUCH_BITS_R     0b00000111'00000000 // = 0x0700
 #define M_TOUCH_BITS_L     0b00111000'00000000 // = 0x3800
 #define M_TOUCH_BITS_LR    (M_TOUCH_BITS_R | M_TOUCH_BITS_L) // = 0x3F00
@@ -19,9 +23,6 @@
 #define M_ATTACK_2_RANGE   SQUARE(WALL_L * 2 / 3) // = 465124
 #define M_ATTACK_3_RANGE   SQUARE(WALL_L * 2) // = 4194304
 #define M_RUN_RANGE        SQUARE(WALL_L * 2) // = 4194304
-#define M_PUNCH_DAMAGE     100
-#define M_THUMP_DAMAGE     150
-#define M_CHARGE_DAMAGE    200
 #define M_ATTACK_1_CHANCE  0x4000
 #define M_WAIT_1_CHANCE    0x100
 #define M_WAIT_2_CHANCE    (M_WAIT_1_CHANCE + 0x100) // = 512
@@ -67,6 +68,17 @@ static const BITE m_YetiBiteR = {
     .pos = { .x = 12, .y = 101, .z = 19 },
     .mesh_num = 10,
 };
+
+static int32_t M_GetDamage(
+    const ITEM *const item, const char *const key, const int32_t default_value)
+{
+    OBJECT_PROPERTY_VALUE damage = {};
+    if (ObjectProperty_GetItemValue(item, key, &damage)) {
+        return damage.as_int;
+    }
+
+    return default_value;
+}
 
 static void M_Control(const int16_t item_num)
 {
@@ -209,7 +221,8 @@ static void M_Control(const int16_t item_num)
             if (creature->flags == 0
                 && (item->touch_bits & M_TOUCH_BITS_R) != 0) {
                 Creature_Effect(item, &m_YetiBiteR, Spawn_Blood);
-                Lara_TakeDamage(M_PUNCH_DAMAGE, true);
+                Lara_TakeDamage(
+                    M_GetDamage(item, "punch_damage", M_PUNCH_DAMAGE), true);
                 creature->flags = 1;
                 break;
             }
@@ -228,7 +241,8 @@ static void M_Control(const int16_t item_num)
                 if ((item->touch_bits & M_TOUCH_BITS_R) != 0) {
                     Creature_Effect(item, &m_YetiBiteR, Spawn_Blood);
                 }
-                Lara_TakeDamage(M_THUMP_DAMAGE, true);
+                Lara_TakeDamage(
+                    M_GetDamage(item, "thump_damage", M_THUMP_DAMAGE), true);
                 creature->flags = 1;
             }
             break;
@@ -245,7 +259,8 @@ static void M_Control(const int16_t item_num)
                 if ((item->touch_bits & M_TOUCH_BITS_R) != 0) {
                     Creature_Effect(item, &m_YetiBiteR, Spawn_Blood);
                 }
-                Lara_TakeDamage(M_CHARGE_DAMAGE, true);
+                Lara_TakeDamage(
+                    M_GetDamage(item, "charge_damage", M_CHARGE_DAMAGE), true);
                 creature->flags = 1;
             }
             break;
@@ -321,7 +336,13 @@ static void M_Setup(OBJECT *const obj)
     OBJECT_PROPERTIES(
         obj,
         OBJECT_PROPERTY_INT(
-            "max_hit_points", M_HITPOINTS, "Maximum hit points."));
+            "max_hit_points", M_HIT_POINTS, "Maximum hit points."),
+        OBJECT_PROPERTY_INT(
+            "punch_damage", M_PUNCH_DAMAGE, "Damage dealt by attack 1."),
+        OBJECT_PROPERTY_INT(
+            "thump_damage", M_THUMP_DAMAGE, "Damage dealt by attack 2."),
+        OBJECT_PROPERTY_INT(
+            "charge_damage", M_CHARGE_DAMAGE, "Damage dealt by attack 3."));
 }
 
 REGISTER_OBJECT(O_YETI, M_Setup)

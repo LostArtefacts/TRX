@@ -97,6 +97,7 @@
     - `O_WORKER_5`
     - `O_XIAN_KNIGHT`
     - `O_XIAN_SPEARMAN`
+    - `O_YETI`
 - changed the hard-coded traps damage to be configurable via Lua. Objects affected:
     - `O_BLADE`
     - `O_CEILING_SPIKES`
