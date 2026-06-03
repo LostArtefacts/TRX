@@ -7,44 +7,53 @@
 #include <trx/game/lara.h>
 #include <trx/game/objects/common.h>
 #include <trx/game/objects/creatures/xian_common.h>
+#include <trx/game/objects/property.h>
 #include <trx/game/pathing.h>
 #include <trx/game/random.h>
 #include <trx/game/sound.h>
 #include <trx/game/spawn.h>
 
 // clang-format off
-#define XIAN_KNIGHT_HITPOINTS      80
-#define XIAN_KNIGHT_TOUCH_BITS     0b11000000'00000000 // = 0xC000
-#define XIAN_KNIGHT_RADIUS         (WALL_L / 5) // = 204
-#define XIAN_KNIGHT_HACK_DAMAGE    300
-#define XIAN_KNIGHT_WALK_TURN      (DEG_1 * 5) // = 910
-#define XIAN_KNIGHT_FLY_TURN       (DEG_1 * 4) // = 728
-#define XIAN_KNIGHT_ATTACK_1_RANGE SQUARE(WALL_L) // = 1048576
-#define XIAN_KNIGHT_ATTACK_3_RANGE SQUARE(WALL_L * 2) // = 4194304
+#define M_HIT_POINTS     80
+#define M_HACK_DAMAGE    300
+#define M_TOUCH_BITS     0b11000000'00000000 // = 0xC000
+#define M_RADIUS         (WALL_L / 5) // = 204
+#define M_WALK_TURN      (DEG_1 * 5) // = 910
+#define M_FLY_TURN       (DEG_1 * 4) // = 728
+#define M_ATTACK_1_RANGE SQUARE(WALL_L) // = 1048576
+#define M_ATTACK_3_RANGE SQUARE(WALL_L * 2) // = 4194304
 // clang-format on
 
 typedef enum {
-    // clang-format off
-    XIAN_KNIGHT_STATE_EMPTY   = 0,
-    XIAN_KNIGHT_STATE_STOP    = 1,
-    XIAN_KNIGHT_STATE_WALK    = 2,
-    XIAN_KNIGHT_STATE_AIM_1   = 3,
-    XIAN_KNIGHT_STATE_SLASH_1 = 4,
-    XIAN_KNIGHT_STATE_AIM_2   = 5,
-    XIAN_KNIGHT_STATE_SLASH_2 = 6,
-    XIAN_KNIGHT_STATE_WAIT    = 7,
-    XIAN_KNIGHT_STATE_FLY     = 8,
-    XIAN_KNIGHT_STATE_START   = 9,
-    XIAN_KNIGHT_STATE_AIM_3   = 10,
-    XIAN_KNIGHT_STATE_SLASH_3 = 11,
-    XIAN_KNIGHT_STATE_DEATH   = 12,
-    // clang-format on
-} XIAN_KNIGHT_STATE;
+    M_STATE_EMPTY,
+    M_STATE_STOP,
+    M_STATE_WALK,
+    M_STATE_AIM_1,
+    M_STATE_SLASH_1,
+    M_STATE_AIM_2,
+    M_STATE_SLASH_2,
+    M_STATE_WAIT,
+    M_STATE_FLY,
+    M_STATE_START,
+    M_STATE_AIM_3,
+    M_STATE_SLASH_3,
+    M_STATE_DEATH,
+} M_STATE;
 
 static const BITE m_XianKnightSword = {
     .pos = { .x = 0, .y = 37, .z = 550 },
     .mesh_num = 15,
 };
+
+static int32_t M_GetDamage(const ITEM *const item)
+{
+    OBJECT_PROPERTY_VALUE damage = {};
+    if (ObjectProperty_GetItemValue(item, "damage", &damage)) {
+        return damage.as_int;
+    }
+
+    return M_HACK_DAMAGE;
+}
 
 static void M_Initialise(const int16_t item_num)
 {
@@ -83,7 +92,7 @@ static void M_Control(const int16_t item_num)
     int16_t angle = 0;
 
     if (item->hit_points <= 0) {
-        item->current_anim_state = XIAN_KNIGHT_STATE_DEATH;
+        item->current_anim_state = M_STATE_DEATH;
         item->mesh_bits >>= 1;
         item->enable_interpolation = false;
         if (item->mesh_bits == 0) {
@@ -106,7 +115,7 @@ static void M_Control(const int16_t item_num)
     creature->lot.setup.fly = 0;
     AI_INFO info;
     Creature_AIInfo(item, &info);
-    if (item->current_anim_state == XIAN_KNIGHT_STATE_FLY
+    if (item->current_anim_state == M_STATE_FLY
         && info.zone_num != info.enemy_zone_num) {
         creature->lot.setup.step = WALL_L * 20;
         creature->lot.setup.drop = -WALL_L * 20;
@@ -116,13 +125,13 @@ static void M_Control(const int16_t item_num)
     Creature_Mood(item, &info, true);
 
     angle = Creature_Turn(item, creature->maximum_turn);
-    if (item->current_anim_state != XIAN_KNIGHT_STATE_START) {
+    if (item->current_anim_state != M_STATE_START) {
         item->mesh_bits = -1;
     }
 
     const ITEM *const lara_item = Lara_GetItem();
     switch (item->current_anim_state) {
-    case XIAN_KNIGHT_STATE_START:
+    case M_STATE_START:
         if (creature->flags == 0) {
             item->mesh_bits = (item->mesh_bits << 1) | 1;
             creature->flags = 3;
@@ -131,96 +140,95 @@ static void M_Control(const int16_t item_num)
         }
         break;
 
-    case XIAN_KNIGHT_STATE_STOP:
+    case M_STATE_STOP:
         creature->maximum_turn = 0;
         if (info.ahead) {
             neck = info.angle;
         }
         if (lara_item->hit_points <= 0) {
-            item->goal_anim_state = XIAN_KNIGHT_STATE_WAIT;
-        } else if (info.bite && info.distance < XIAN_KNIGHT_ATTACK_1_RANGE) {
+            item->goal_anim_state = M_STATE_WAIT;
+        } else if (info.bite && info.distance < M_ATTACK_1_RANGE) {
             if (Random_GetControl() < 0x4000) {
-                item->goal_anim_state = XIAN_KNIGHT_STATE_AIM_1;
+                item->goal_anim_state = M_STATE_AIM_1;
             } else {
-                item->goal_anim_state = XIAN_KNIGHT_STATE_AIM_2;
+                item->goal_anim_state = M_STATE_AIM_2;
             }
         } else if (info.zone_num != info.enemy_zone_num) {
-            item->goal_anim_state = XIAN_KNIGHT_STATE_FLY;
+            item->goal_anim_state = M_STATE_FLY;
         } else {
-            item->goal_anim_state = XIAN_KNIGHT_STATE_WALK;
+            item->goal_anim_state = M_STATE_WALK;
         }
         break;
 
-    case XIAN_KNIGHT_STATE_WALK:
-        creature->maximum_turn = XIAN_KNIGHT_WALK_TURN;
+    case M_STATE_WALK:
+        creature->maximum_turn = M_WALK_TURN;
         if (info.ahead) {
             neck = info.angle;
         }
         if (lara_item->hit_points <= 0) {
-            item->goal_anim_state = XIAN_KNIGHT_STATE_STOP;
-        } else if (info.bite && info.distance < XIAN_KNIGHT_ATTACK_3_RANGE) {
-            item->goal_anim_state = XIAN_KNIGHT_STATE_AIM_3;
+            item->goal_anim_state = M_STATE_STOP;
+        } else if (info.bite && info.distance < M_ATTACK_3_RANGE) {
+            item->goal_anim_state = M_STATE_AIM_3;
         } else if (info.zone_num != info.enemy_zone_num) {
-            item->goal_anim_state = XIAN_KNIGHT_STATE_STOP;
+            item->goal_anim_state = M_STATE_STOP;
         }
         break;
 
-    case XIAN_KNIGHT_STATE_FLY:
-        creature->maximum_turn = XIAN_KNIGHT_FLY_TURN;
+    case M_STATE_FLY:
+        creature->maximum_turn = M_FLY_TURN;
         if (info.ahead) {
             neck = info.angle;
         }
         M_SparkleTrail(item);
         if (creature->lot.setup.fly == 0) {
-            item->goal_anim_state = XIAN_KNIGHT_STATE_STOP;
+            item->goal_anim_state = M_STATE_STOP;
         }
         break;
 
-    case XIAN_KNIGHT_STATE_AIM_1:
+    case M_STATE_AIM_1:
         creature->flags = 0;
         if (info.ahead) {
             head = info.angle;
         }
-        if (info.bite && info.distance < XIAN_KNIGHT_ATTACK_1_RANGE) {
-            item->goal_anim_state = XIAN_KNIGHT_STATE_SLASH_1;
+        if (info.bite && info.distance < M_ATTACK_1_RANGE) {
+            item->goal_anim_state = M_STATE_SLASH_1;
         } else {
-            item->goal_anim_state = XIAN_KNIGHT_STATE_STOP;
+            item->goal_anim_state = M_STATE_STOP;
         }
         break;
 
-    case XIAN_KNIGHT_STATE_AIM_2:
+    case M_STATE_AIM_2:
         creature->flags = 0;
         if (info.ahead) {
             head = info.angle;
         }
-        if (info.bite && info.distance < XIAN_KNIGHT_ATTACK_1_RANGE) {
-            item->goal_anim_state = XIAN_KNIGHT_STATE_SLASH_2;
+        if (info.bite && info.distance < M_ATTACK_1_RANGE) {
+            item->goal_anim_state = M_STATE_SLASH_2;
         } else {
-            item->goal_anim_state = XIAN_KNIGHT_STATE_STOP;
+            item->goal_anim_state = M_STATE_STOP;
         }
         break;
 
-    case XIAN_KNIGHT_STATE_AIM_3:
+    case M_STATE_AIM_3:
         creature->flags = 0;
         if (info.ahead) {
             head = info.angle;
         }
-        if (info.bite && info.distance < XIAN_KNIGHT_ATTACK_3_RANGE) {
-            item->goal_anim_state = XIAN_KNIGHT_STATE_SLASH_3;
+        if (info.bite && info.distance < M_ATTACK_3_RANGE) {
+            item->goal_anim_state = M_STATE_SLASH_3;
         } else {
-            item->goal_anim_state = XIAN_KNIGHT_STATE_WALK;
+            item->goal_anim_state = M_STATE_WALK;
         }
         break;
 
-    case XIAN_KNIGHT_STATE_SLASH_1:
-    case XIAN_KNIGHT_STATE_SLASH_2:
-    case XIAN_KNIGHT_STATE_SLASH_3:
+    case M_STATE_SLASH_1:
+    case M_STATE_SLASH_2:
+    case M_STATE_SLASH_3:
         if (info.ahead) {
             head = info.angle;
         }
-        if (creature->flags == 0
-            && (item->touch_bits & XIAN_KNIGHT_TOUCH_BITS) != 0) {
-            Lara_TakeDamage(XIAN_KNIGHT_HACK_DAMAGE, true);
+        if (creature->flags == 0 && (item->touch_bits & M_TOUCH_BITS) != 0) {
+            Lara_TakeDamage(M_GetDamage(item), true);
             Creature_Effect(item, &m_XianKnightSword, Spawn_Blood);
             creature->flags = 1;
         }
@@ -251,7 +259,7 @@ static void M_Setup(OBJECT *const obj)
     obj->control_func = M_Control;
     obj->collision_func = Creature_Collision;
 
-    obj->radius = XIAN_KNIGHT_RADIUS;
+    obj->radius = M_RADIUS;
     obj->shadow_size = UNIT_SHADOW / 2;
     obj->pivot_length = 0;
 
@@ -266,7 +274,9 @@ static void M_Setup(OBJECT *const obj)
     OBJECT_PROPERTIES(
         obj,
         OBJECT_PROPERTY_INT(
-            "max_hit_points", XIAN_KNIGHT_HITPOINTS, "Maximum hit points."));
+            "max_hit_points", M_HIT_POINTS, "Maximum hit points."),
+        OBJECT_PROPERTY_INT(
+            "damage", M_HACK_DAMAGE, "Damage dealt by sword slashes."));
 }
 
 REGISTER_OBJECT(O_XIAN_KNIGHT, M_Setup)

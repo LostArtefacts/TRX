@@ -319,6 +319,7 @@ This page lists documented moveable object properties.
 
 ### `43` O_XIAN_KNIGHT
 - `max_hit_points = 80` — Maximum hit points.
+- `damage = 300` — Damage dealt by sword slashes.
 
 ### `45` O_YETI
 - `max_hit_points = 30` — Maximum hit points.
