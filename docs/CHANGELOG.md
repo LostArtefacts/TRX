@@ -81,6 +81,7 @@
     - `O_TIGER`
     - `O_TONY`
     - `O_TORSO`
+    - `O_TREX`
     - `O_VOLE`
     - `O_VULTURE`
 - changed the hard-coded traps damage to be configurable via Lua. Objects affected:
