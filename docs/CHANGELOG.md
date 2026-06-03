@@ -68,6 +68,7 @@
     - `O_RX_WORKER_1`
     - `O_RX_WORKER_2`
     - `O_SECURITY_GUARD`
+    - `O_SHARK`
     - `O_STHPAC_MERCENARY`
     - `O_VOLE`
     - `O_VULTURE`
