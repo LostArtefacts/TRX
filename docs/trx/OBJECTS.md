@@ -580,6 +580,7 @@ This page lists documented moveable object properties.
 
 ### `44` O_WASP_MUTANT
 - `max_hit_points = 24` — Maximum hit points.
+- `damage = 50` — Damage dealt by the sting attack.
 
 ### `45` O_CLAW_MUTANT
 - `max_hit_points = 130` — Maximum hit points.
