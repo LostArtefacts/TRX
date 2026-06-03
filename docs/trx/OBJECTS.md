@@ -511,6 +511,8 @@ This page lists documented moveable object properties.
 
 ### `21` O_TRIBE_PIPEMAN
 - `max_hit_points = 28` — Maximum hit points.
+- `damage = 100` — Damage dealt by melee attacks.
+- `enemy_damage = 5` — Damage dealt to non-player targets.
 
 ### `22` O_PATROL_DOG
 - `max_hit_points = 16` — Maximum hit points.
