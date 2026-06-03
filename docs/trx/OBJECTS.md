@@ -502,6 +502,12 @@ This page lists documented moveable object properties.
 
 ### `20` O_TRIBE_AXEMAN
 - `max_hit_points = 28` — Maximum hit points.
+- `attack_2_damage = 8` — Damage dealt by attack 2.
+- `attack_3_damage = 32` — Damage dealt by attack 3.
+- `attack_4_damage = 8` — Damage dealt by attack 4.
+- `attack_5_damage = 8` — Damage dealt by attack 5.
+- `attack_6_damage = 32` — Damage dealt by attack 6.
+- `enemy_damage = 2` — Damage dealt to non-player targets.
 
 ### `21` O_TRIBE_PIPEMAN
 - `max_hit_points = 28` — Maximum hit points.
