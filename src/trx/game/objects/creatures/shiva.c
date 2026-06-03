@@ -5,6 +5,7 @@
 #include <trx/game/lara.h>
 #include <trx/game/objects/common.h>
 #include <trx/game/objects/draw.h>
+#include <trx/game/objects/property.h>
 #include <trx/game/pathing.h>
 #include <trx/game/random.h>
 #include <trx/game/rooms.h>
@@ -14,13 +15,14 @@
 #include <trx/game/spawn.h>
 
 // clang-format off
-#define M_WALK_TURN (4 * DEG_1)
-#define M_PINCER_RANGE SQUARE(WALL_L * 5 / 4)
-#define M_CHOPPER_RANGE SQUARE(WALL_L * 4 / 3)
+#define M_HIT_POINTS     100
+#define M_PINCER_DAMAGE  150
+#define M_CHOPPER_DAMAGE 180
+#define M_RADIUS         (WALL_L / 3) // = 341
+#define M_WALK_TURN      (4 * DEG_1)
+#define M_PINCER_RANGE   SQUARE(WALL_L * 5 / 4)
+#define M_CHOPPER_RANGE  SQUARE(WALL_L * 4 / 3)
 // clang-format on
-
-static BITE m_RightBlade = { .pos = { 0, 0, 920 }, .mesh_num = 22 };
-static BITE m_LeftBlade = { .pos = { 0, 0, 920 }, .mesh_num = 13 };
 
 typedef enum {
     M_STATE_WAIT,
@@ -44,6 +46,26 @@ typedef enum {
 typedef struct {
     int32_t effect_mesh;
 } M_PRIV;
+
+static BITE m_RightBlade = {
+    .pos = { 0, 0, 920 },
+    .mesh_num = 22,
+};
+static BITE m_LeftBlade = {
+    .pos = { 0, 0, 920 },
+    .mesh_num = 13,
+};
+
+static int32_t M_GetDamage(
+    const ITEM *const item, const char *const key, const int32_t default_value)
+{
+    OBJECT_PROPERTY_VALUE damage = {};
+    if (ObjectProperty_GetItemValue(item, key, &damage)) {
+        return damage.as_int;
+    }
+
+    return default_value;
+}
 
 static bool M_ShouldSpawnBlood(const ITEM *const item)
 {
@@ -400,7 +422,9 @@ static void M_Control(const int16_t item_num)
                 head_y = info.angle;
             }
             creature->maximum_turn = M_WALK_TURN;
-            M_Damage(item, creature, 150);
+            M_Damage(
+                item, creature,
+                M_GetDamage(item, "pincer_damage", M_PINCER_DAMAGE));
             break;
 
         case M_STATE_KILL: {
@@ -423,7 +447,9 @@ static void M_Control(const int16_t item_num)
                 torso_x = info.x_angle;
             }
             creature->maximum_turn = M_WALK_TURN;
-            M_Damage(item, creature, 180);
+            M_Damage(
+                item, creature,
+                M_GetDamage(item, "chopper_damage", M_CHOPPER_DAMAGE));
             break;
 
         case M_STATE_WALK_BACK:
@@ -494,8 +520,7 @@ static void M_Setup(OBJECT *const obj)
     obj->priv_save_func = M_SavePriv;
 
     obj->shadow_size = UNIT_SHADOW / 2;
-
-    obj->radius = 341;
+    obj->radius = M_RADIUS;
     obj->pivot_length = 0;
 
     obj->intelligent = true;
@@ -509,7 +534,15 @@ static void M_Setup(OBJECT *const obj)
     Object_GetBone(obj, 25)->rot.x = true;
     Object_GetBone(obj, 25)->rot.y = true;
     OBJECT_PROPERTIES(
-        obj, OBJECT_PROPERTY_INT("max_hit_points", 100, "Maximum hit points."));
+        obj,
+        OBJECT_PROPERTY_INT(
+            "max_hit_points", M_HIT_POINTS, "Maximum hit points."),
+        OBJECT_PROPERTY_INT(
+            "pincer_damage", M_PINCER_DAMAGE,
+            "Damage dealt by the pincer attack."),
+        OBJECT_PROPERTY_INT(
+            "chopper_damage", M_CHOPPER_DAMAGE,
+            "Damage dealt by the chopper attack."));
 }
 
 REGISTER_OBJECT(O_SHIVA, M_Setup)

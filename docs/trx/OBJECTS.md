@@ -643,6 +643,8 @@ This page lists documented moveable object properties.
 
 ### `70` O_SHIVA
 - `max_hit_points = 100` — Maximum hit points.
+- `pincer_damage = 150` — Damage dealt by the pincer attack.
+- `chopper_damage = 180` — Damage dealt by the chopper attack.
 
 ### `71` O_MONKEY
 - `max_hit_points = 8` — Maximum hit points.
