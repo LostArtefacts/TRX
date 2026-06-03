@@ -595,6 +595,10 @@ This page lists documented moveable object properties.
 
 ### `49` O_WILLARD
 - `max_hit_points = 200` — Maximum hit points.
+- `touch_damage = 10` — Damage dealt by body contact.
+- `bite_damage = 220` — Damage dealt by bite attacks.
+- `lunge_damage = 440` — Damage dealt by the lunge attack.
+- `plasma_ball_damage = 10000` — Damage dealt by direct plasma ball hits.
 
 ### `50` O_RX_WORKER_3
 - `max_hit_points = 36` — Maximum hit points.
