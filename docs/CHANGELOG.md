@@ -90,6 +90,7 @@
     - `O_VULTURE`
     - `O_WASP_MUTANT`
     - `O_WILLARD`
+    - `O_WORKER_1`
 - changed the hard-coded traps damage to be configurable via Lua. Objects affected:
     - `O_BLADE`
     - `O_CEILING_SPIKES`
