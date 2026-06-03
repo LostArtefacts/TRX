@@ -282,9 +282,13 @@ This page lists documented moveable object properties.
 
 ### `32` O_WORKER_3
 - `max_hit_points = 27` — Maximum hit points.
+- `hit_damage = 80` — Damage dealt by punch attacks.
+- `swipe_damage = 100` — Damage dealt by the swipe attack.
 
 ### `33` O_WORKER_4
 - `max_hit_points = 27` — Maximum hit points.
+- `hit_damage = 80` — Damage dealt by punch attacks.
+- `swipe_damage = 100` — Damage dealt by the swipe attack.
 
 ### `34` O_WORKER_5
 - `max_hit_points = 20` — Maximum hit points.

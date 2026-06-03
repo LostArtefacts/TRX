@@ -92,6 +92,8 @@
     - `O_WILLARD`
     - `O_WORKER_1`
     - `O_WORKER_2`
+    - `O_WORKER_3`
+    - `O_WORKER_4`
     - `O_WORKER_5`
 - changed the hard-coded traps damage to be configurable via Lua. Objects affected:
     - `O_BLADE`
