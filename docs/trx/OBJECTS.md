@@ -539,6 +539,7 @@ This page lists documented moveable object properties.
 
 ### `40` O_RX_WORKER_2
 - `max_hit_points = 30` — Maximum hit points.
+- `damage = 28` — Damage dealt by shots.
 
 ### `41` O_HUSKIE
 - `max_hit_points = 16` — Maximum hit points.
