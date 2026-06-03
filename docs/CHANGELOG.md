@@ -71,6 +71,7 @@
     - `O_SHARK`
     - `O_SHIVA`
     - `O_SKATE_KID`
+    - `O_SKIDOO_DRIVER`
     - `O_STHPAC_MERCENARY`
     - `O_VOLE`
     - `O_VULTURE`
