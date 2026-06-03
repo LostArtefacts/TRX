@@ -5,6 +5,7 @@
 - added a new console command - `/burn` - to toggle whether or not Lara is on fire
 - added `trx.assault` Lua functions to control the Assault Course and Quad Bike timers
 - added poison Lua property to `O_DART` and `O_DISC`, so that they can poison Lara just like `O_POISON_DART`
+- added Lara's TR2 alpha bomber jacket outfit (#5594)
 - added the ability for skidoos and quad bikes that are inside or on top of lifts to move when the lift itself moves (#4353)
 - added the ability for skidoos, quad bikes and kayaks to activate heavy triggers (#4354)
 - changed vehicles to allow defining in Lua whether or not they can activate heavy triggers; refer to migration notes
@@ -20,6 +21,7 @@
     - `O_SPIKE_WALL`
 - removed the limitation of only having two fish sprite types in any level
 - removed the limit of at most 8 fish/piranha shoals per level
+- fixed missing and incorrect textures on Lara's TR2 bomber jacket outfit
 - fixed being able to start the Quad Bike track timer without Lara getting onto the quad bike first (regression from 1.1)
 - fixed missed Assault Course targets not penalizing player's time if Lara crosses the finish line before they collapse (regression from 1.2)
 - fixed fish sometimes disappearing when crossing room boundaries (OG bug)

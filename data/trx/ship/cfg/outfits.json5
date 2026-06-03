@@ -279,6 +279,30 @@
             },
         },
 
+        // Bomber Jacket Alpha
+        "tr2_bomber_jacket_alpha": {
+            "name_gs": "dynamic/enums/lara_outfit/tr2_bomber_jacket_alpha",
+            "mesh_object": "O_LARA_SKIN_SWAP_26",
+            "gun_map": 2,
+            "combat_face_offset": 2,
+            "braid": {
+                "mesh_offset": 22,
+                "gold_offset": 28,
+                "hair_pos": {
+                    "x": 0,
+                    "y": -23,
+                    "z": -55,
+                },
+            },
+            "no_holster_offsets": {
+                "thigh_r": 7,
+                "thigh_l": 8,
+            },
+            "extra_outfits": {
+                "LS_EXTRA_MIDAS_KILL": "tr23_golden_lara",
+            },
+        },
+
         // Robe
         "tr2_robe": {
             "name_gs": "dynamic/enums/lara_outfit/tr2_robe",
