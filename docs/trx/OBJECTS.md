@@ -17,6 +17,8 @@ This page lists documented moveable object properties.
 
 ### `7` O_WOLF
 - `max_hit_points = 6` — Maximum hit points.
+- `pounce_damage = 50` — Damage dealt by the pounce attack.
+- `bite_damage = 100` — Damage dealt by the bite attack.
 
 ### `8` O_BEAR
 - `max_hit_points = 20` — Maximum hit points.
@@ -463,6 +465,8 @@ This page lists documented moveable object properties.
 
 ### `266` O_WOLF
 - `max_hit_points = 10` — Maximum hit points.
+- `pounce_damage = 50` — Damage dealt by the pounce attack.
+- `bite_damage = 100` — Damage dealt by the bite attack.
 
 ### `267` O_MONK_3
 - `max_hit_points = 30` — Maximum hit points.

@@ -12,11 +12,9 @@
 // clang-format on
 
 typedef enum {
-    // clang-format off
-    WINSTON_STATE_EMPTY = 0,
-    WINSTON_STATE_STOP  = 1,
-    WINSTON_STATE_WALK  = 2,
-    // clang-format on
+    M_STATE_EMPTY,
+    M_STATE_STOP,
+    M_STATE_WALK,
 } M_STATE;
 
 static bool M_IsAlive(const ITEM *const item)
@@ -62,15 +60,15 @@ static void M_Control(const int16_t item_num)
 
     const int16_t angle = Creature_Turn(item, creature->maximum_turn);
 
-    if (item->current_anim_state == WINSTON_STATE_STOP) {
-        if (item->goal_anim_state != WINSTON_STATE_WALK
+    if (item->current_anim_state == M_STATE_STOP) {
+        if (item->goal_anim_state != M_STATE_WALK
             && (info.distance > M_STOP_RANGE || !info.ahead)) {
-            item->goal_anim_state = WINSTON_STATE_WALK;
+            item->goal_anim_state = M_STATE_WALK;
             Sound_Effect(SFX_WINSTON_GRUNT_2, &item->pos, SPM_NORMAL);
         }
     } else if (info.distance < M_STOP_RANGE) {
         if (info.ahead) {
-            item->goal_anim_state = WINSTON_STATE_STOP;
+            item->goal_anim_state = M_STATE_STOP;
             if ((creature->flags & 1) != 0) {
                 creature->flags--;
             }
