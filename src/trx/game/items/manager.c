@@ -75,9 +75,21 @@ void Item_InitialiseItems(const int32_t num_items)
     m_Items[MAX_ITEMS - 1].next_item = NO_ITEM;
 }
 
+void Item_Reset(void)
+{
+    for (int32_t i = 0; i < Item_GetTotalCount(); i++) {
+        ObjectProperty_ResetItem(Item_Get(i));
+    }
+    m_LevelItemCount = 0;
+    m_MaxUsedItemCount = 0;
+    m_Items = nullptr;
+    m_NextItemActive = NO_ITEM;
+    m_NextItemFree = NO_ITEM;
+}
+
 ITEM *Item_Get(const int16_t item_num)
 {
-    if (item_num == NO_ITEM) {
+    if (item_num == NO_ITEM || m_Items == nullptr) {
         return nullptr;
     }
     return &m_Items[item_num];
