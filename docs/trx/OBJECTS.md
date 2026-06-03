@@ -554,6 +554,7 @@ This page lists documented moveable object properties.
 
 ### `36` O_TRIBE_BOSS
 - `max_hit_points = 200` — Maximum hit points.
+- `head_beam_damage = 10000` — Damage dealt by the head electric beam.
 
 ### `37` O_STHPAC_MERCENARY
 - `max_hit_points = 30` — Maximum hit points.
