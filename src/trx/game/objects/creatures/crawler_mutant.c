@@ -10,8 +10,8 @@
 #include <trx/game/sparks.h>
 
 // clang-format off
-#define M_RADIUS          (WALL_L / 5)       // = 204
 #define M_HIT_POINTS      50
+#define M_RADIUS          (WALL_L / 5)       // = 204
 #define M_MAX_POISON      256
 #define M_MAX_BURN_TIME   80
 #define M_START_BURN_MESH 9

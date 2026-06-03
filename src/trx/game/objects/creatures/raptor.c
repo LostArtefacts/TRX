@@ -1,24 +1,25 @@
 #include <trx/core/utils.h>
 #include <trx/game/creature.h>
 #include <trx/game/lara.h>
+#include <trx/game/objects/property.h>
 #include <trx/game/pathing.h>
 #include <trx/game/random.h>
 #include <trx/game/spawn.h>
 #include <trx/version.h>
 
 // clang-format off
-#define M_ATTACK_RANGE   SQUARE(WALL_L * 3 / 2) // = 2359296
+#define M_HIT_POINTS      (g_TRVersion == 3 ? 90 : 20)
 #define M_BITE_DAMAGE    100
 #define M_CHARGE_DAMAGE  100
-#define M_CLOSE_RANGE    SQUARE(g_TRVersion < 3 ? 680 : 585) // = 462400 / 342225
 #define M_LUNGE_DAMAGE   100
+#define M_RADIUS         (WALL_L / 3) // = 341
+#define M_ATTACK_RANGE   SQUARE(WALL_L * 3 / 2) // = 2359296
+#define M_CLOSE_RANGE    SQUARE(g_TRVersion < 3 ? 680 : 585) // = 462400 / 342225
 #define M_LUNGE_RANGE    SQUARE(WALL_L * 3 / 2) // = 2359296
 #define M_ROAR_CHANCE    (g_TRVersion < 3 ? 256 : 128)
 #define M_RUN_TURN       (4 * DEG_1) // = 728
 #define M_TOUCH          0xFF7C00
 #define M_WALK_TURN      (g_TRVersion < 3 ? (1 * DEG_1) : (2 * DEG_1)) // = 182 / 364
-#define M_HITPOINTS      (g_TRVersion == 3 ? 90 : 20)
-#define M_RADIUS         (WALL_L / 3) // = 341
 #define M_PIVOT_LENGTH   (g_TRVersion == 3 ? 600 : 400)
 #define M_SMARTNESS      0x4000
 #define M_INFIGHT_CHANCE 0x400
@@ -45,6 +46,17 @@ static BITE m_RaptorBite = {
     .pos = { 0, 66, 318 },
     .mesh_num = 22,
 };
+
+static int32_t M_GetDamage(
+    const ITEM *const item, const char *const key, const int32_t default_value)
+{
+    OBJECT_PROPERTY_VALUE damage = {};
+    if (ObjectProperty_GetItemValue(item, key, &damage)) {
+        return damage.as_int;
+    }
+
+    return default_value;
+}
 
 static void M_CalculateTarget(const ITEM *const item)
 {
@@ -95,15 +107,15 @@ static void M_Attack(ITEM *const item, const AI_INFO *const info)
     int16_t next_state = M_STATE_EMPTY;
     switch (item->current_anim_state) {
     case M_STATE_ATTACK_1:
-        damage = M_LUNGE_DAMAGE;
+        damage = M_GetDamage(item, "lunge_damage", M_LUNGE_DAMAGE);
         next_state = M_STATE_STOP;
         break;
     case M_STATE_ATTACK_2:
-        damage = M_CHARGE_DAMAGE;
+        damage = M_GetDamage(item, "charge_damage", M_CHARGE_DAMAGE);
         next_state = M_STATE_RUN;
         break;
     case M_STATE_ATTACK_3:
-        damage = M_BITE_DAMAGE;
+        damage = M_GetDamage(item, "bite_damage", M_BITE_DAMAGE);
         next_state = M_STATE_STOP;
         break;
     default:
@@ -332,7 +344,15 @@ static void M_Setup(OBJECT *const obj)
     OBJECT_PROPERTIES(
         obj,
         OBJECT_PROPERTY_INT(
-            "max_hit_points", M_HITPOINTS, "Maximum hit points."));
+            "max_hit_points", M_HIT_POINTS, "Maximum hit points."),
+        OBJECT_PROPERTY_INT(
+            "lunge_damage", M_LUNGE_DAMAGE,
+            "Damage dealt by the lunge attack."),
+        OBJECT_PROPERTY_INT(
+            "charge_damage", M_CHARGE_DAMAGE,
+            "Damage dealt by the charge attack."),
+        OBJECT_PROPERTY_INT(
+            "bite_damage", M_BITE_DAMAGE, "Damage dealt by the bite attack."));
 }
 
 REGISTER_OBJECT(O_RAPTOR, M_Setup)

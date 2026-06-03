@@ -4,14 +4,19 @@
 #include <trx/game/creature.h>
 #include <trx/game/lara.h>
 #include <trx/game/objects/general/flare_item.h>
+#include <trx/game/objects/property.h>
 #include <trx/game/pathing.h>
 #include <trx/game/random.h>
 #include <trx/game/rooms.h>
 #include <trx/game/spawn.h>
 
 // clang-format off
+#define M_HIT_POINTS        800
+#define M_TOUCH_DAMAGE      1
+#define M_TRAMPLE_DAMAGE    10
+#define M_BITE_DAMAGE       10000
+#define M_RAPTOR_DAMAGE     (M_TRAMPLE_DAMAGE * 5) // = 50
 #define M_PIVOT_LENGTH      1800
-#define M_HITPOINTS         800
 #define M_TOUCH_BITS        0b00110000'00000000
 #define M_RADIUS            (WALL_L / 3) // = 341
 #define M_RUN_TURN          (DEG_1 * 4) // = 728
@@ -21,10 +26,6 @@
 #define M_ATTACK_RANGE      SQUARE(WALL_L * 4) // = 16777216
 #define M_HIT_RADIUS        SQUARE(M_RADIUS * 2) // = 465124
 #define M_BITE_RANGE        SQUARE(1500) // = 2250000
-#define M_TOUCH_DAMAGE      1
-#define M_TRAMPLE_DAMAGE    10
-#define M_BITE_DAMAGE       10000
-#define M_RAPTOR_DAMAGE     (M_TRAMPLE_DAMAGE * 5) // = 50
 #define M_ROAR_CHANCE       256
 #define M_SMARTNESS         0x7FFF
 #define M_ATTACK_FRAME      20
@@ -65,6 +66,17 @@ static BITE m_Bite = {
     .mesh_num = 13,
 };
 
+static int32_t M_GetDamage(
+    const ITEM *const item, const char *const key, const int32_t default_value)
+{
+    OBJECT_PROPERTY_VALUE damage = {};
+    if (ObjectProperty_GetItemValue(item, key, &damage)) {
+        return damage.as_int;
+    }
+
+    return default_value;
+}
+
 static void M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
 {
     M_PRIV *const p = item->priv;
@@ -81,7 +93,7 @@ static void M_SavePriv(const ITEM *const item, JSON_WRITE_IO *const io)
 
 static void M_KillLara(ITEM *const item)
 {
-    Lara_TakeDamage(M_BITE_DAMAGE, true);
+    Lara_TakeDamage(M_GetDamage(item, "bite_damage", M_BITE_DAMAGE), true);
     Creature_SpecialKill(item, M_ANIM_KILL, M_STATE_KILL, LS_EXTRA_TREX_KILL);
     Lara_Skin_SwapAllExtra(LS_EXTRA_TREX_KILL);
 }
@@ -171,7 +183,9 @@ static void M_Attack(ITEM *const item, ITEM *const target)
         M_KillLara(item);
     } else if (target->object_id == O_RAPTOR) {
         Creature_Effect(item, &m_Bite, Spawn_Blood);
-        Item_TakeDamage(target, M_RAPTOR_DAMAGE, IDF_NONE, item);
+        Item_TakeDamage(
+            target, M_GetDamage(item, "raptor_damage", M_RAPTOR_DAMAGE),
+            IDF_NONE, item);
     } else if (target->object_id == O_FLARE_ITEM) {
         target->hit_points = M_FLARE_SEEN;
     }
@@ -216,9 +230,11 @@ static void M_Control(const int16_t item_num)
 
     if (item->touch_bits != 0) {
         if (item->current_anim_state == M_STATE_RUN) {
-            Lara_TakeDamage(M_TRAMPLE_DAMAGE, false);
+            Lara_TakeDamage(
+                M_GetDamage(item, "trample_damage", M_TRAMPLE_DAMAGE), false);
         } else {
-            Lara_TakeDamage(M_TOUCH_DAMAGE, false);
+            Lara_TakeDamage(
+                M_GetDamage(item, "touch_damage", M_TOUCH_DAMAGE), false);
         }
     }
 
@@ -399,7 +415,17 @@ static void M_Setup(OBJECT *const obj)
     OBJECT_PROPERTIES(
         obj,
         OBJECT_PROPERTY_INT(
-            "max_hit_points", M_HITPOINTS, "Maximum hit points."));
+            "max_hit_points", M_HIT_POINTS, "Maximum hit points."),
+        OBJECT_PROPERTY_INT(
+            "touch_damage", M_TOUCH_DAMAGE, "Damage dealt by body contact."),
+        OBJECT_PROPERTY_INT(
+            "trample_damage", M_TRAMPLE_DAMAGE,
+            "Damage dealt while trampling."),
+        OBJECT_PROPERTY_INT(
+            "bite_damage", M_BITE_DAMAGE, "Damage dealt by the bite attack."),
+        OBJECT_PROPERTY_INT(
+            "raptor_damage", M_RAPTOR_DAMAGE,
+            "Damage dealt to raptors by the bite attack."));
 }
 
 REGISTER_OBJECT(O_TREX_ALPHA, M_Setup)

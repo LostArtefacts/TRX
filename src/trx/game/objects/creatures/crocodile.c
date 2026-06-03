@@ -3,15 +3,16 @@
 #include <trx/game/creature.h>
 #include <trx/game/items/carrier.h>
 #include <trx/game/lara.h>
+#include <trx/game/objects/property.h>
 #include <trx/game/pathing.h>
 #include <trx/game/rooms.h>
 #include <trx/game/spawn.h>
 #include <trx/version.h>
 
 // clang-format off
+#define M_HIT_POINTS               (g_TRVersion < 3 ? 20 : 42)
 #define M_SHADOW_SIZE              (UNIT_SHADOW / (g_TRVersion < 3 ? 3 : 2))
 #define M_PIVOT_LENGTH             (g_TRVersion < 3 ? 600 : 200)
-#define M_HITPOINTS                (g_TRVersion < 3 ? 20 : 42)
 
 #define M_CROCODILE_BITE_DAMAGE    100
 #define M_CROCODILE_BITE_RANGE     SQUARE(435) // = 189225
@@ -20,14 +21,14 @@
 #define M_CROCODILE_FASTTURN_TURN  (6 * DEG_1) // = 1092
 #define M_CROCODILE_TOUCH          0x3FC
 #define M_CROCODILE_TURN           (3 * DEG_1) // = 546
-#define M_CROCODILE_HITPOINTS      M_HITPOINTS
+#define M_CROCODILE_HITPOINTS      M_HIT_POINTS
 #define M_CROCODILE_RADIUS         (WALL_L / 3) // = 341
 #define M_CROCODILE_SMARTNESS      0x2000
 
 #define M_ALLIGATOR_BITE_DAMAGE    100
 #define M_ALLIGATOR_FLOAT_SPEED    (WALL_L / 32) // = 32
 #define M_ALLIGATOR_TURN           (3 * DEG_1) // = 546
-#define M_ALLIGATOR_HITPOINTS      M_HITPOINTS
+#define M_ALLIGATOR_HITPOINTS      M_HIT_POINTS
 #define M_ALLIGATOR_RADIUS         (WALL_L / 3) // = 341
 #define M_ALLIGATOR_SMARTNESS      0x400
 #define M_ALLIGATOR_BITE_FRAME     42
@@ -59,7 +60,10 @@ typedef enum {
     M_ALLIGATOR_STATE_DEATH = 3,
 } M_ALLIGATOR_STATE;
 
-static BITE m_CrocodileBite = { .pos = { 5, -21, 467 }, .mesh_num = 9 };
+static BITE m_CrocodileBite = {
+    .pos = { 5, -21, 467 },
+    .mesh_num = 9,
+};
 
 static const HYBRID_INFO m_CrocodileInfo = {
     .land.id = O_CROCODILE,
@@ -71,6 +75,16 @@ static const HYBRID_INFO m_CrocodileInfo = {
     .water.death_anim = M_ALLIGATOR_DIE_ANIM,
     .water.death_state = M_ALLIGATOR_STATE_DEATH,
 };
+
+static int32_t M_GetDamage(const ITEM *const item, const int32_t default_value)
+{
+    OBJECT_PROPERTY_VALUE damage = {};
+    if (ObjectProperty_GetItemValue(item, "damage", &damage)) {
+        return damage.as_int;
+    }
+
+    return default_value;
+}
 
 static void M_UpdateCreatureLOT(const ITEM *const item)
 {
@@ -180,7 +194,8 @@ static void M_ControlCrocodile(const int16_t item_num)
         case M_CROCODILE_STATE_ATTACK_1:
             if (item->required_anim_state == M_CROCODILE_STATE_EMPTY) {
                 Creature_Effect(item, &m_CrocodileBite, Spawn_Blood);
-                Lara_TakeDamage(M_CROCODILE_BITE_DAMAGE, true);
+                Lara_TakeDamage(
+                    M_GetDamage(item, M_CROCODILE_BITE_DAMAGE), true);
                 item->required_anim_state = M_CROCODILE_STATE_STOP;
             }
             break;
@@ -271,7 +286,8 @@ static void M_ControlAlligator(const int16_t item_num)
         if (info.bite && item->touch_bits) {
             if (item->required_anim_state == M_ALLIGATOR_STATE_EMPTY) {
                 Creature_Effect(item, &m_CrocodileBite, Spawn_Blood);
-                Lara_TakeDamage(M_ALLIGATOR_BITE_DAMAGE, true);
+                Lara_TakeDamage(
+                    M_GetDamage(item, M_ALLIGATOR_BITE_DAMAGE), true);
                 item->required_anim_state = M_ALLIGATOR_STATE_SWIM;
             }
             if (g_Config.gameplay.fix_alligator_ai) {
@@ -326,7 +342,10 @@ static void M_SetupCrocodile(OBJECT *const obj)
     OBJECT_PROPERTIES(
         obj,
         OBJECT_PROPERTY_INT(
-            "max_hit_points", M_CROCODILE_HITPOINTS, "Maximum hit points."));
+            "max_hit_points", M_CROCODILE_HITPOINTS, "Maximum hit points."),
+        OBJECT_PROPERTY_INT(
+            "damage", M_CROCODILE_BITE_DAMAGE,
+            "Damage dealt by the crocodile bite."));
 }
 
 static void M_SetupAlligator(OBJECT *const obj)
@@ -343,7 +362,10 @@ static void M_SetupAlligator(OBJECT *const obj)
     OBJECT_PROPERTIES(
         obj,
         OBJECT_PROPERTY_INT(
-            "max_hit_points", M_ALLIGATOR_HITPOINTS, "Maximum hit points."));
+            "max_hit_points", M_ALLIGATOR_HITPOINTS, "Maximum hit points."),
+        OBJECT_PROPERTY_INT(
+            "damage", M_ALLIGATOR_BITE_DAMAGE,
+            "Damage dealt by the alligator bite."));
 }
 
 REGISTER_OBJECT(O_ALLIGATOR, M_SetupAlligator)

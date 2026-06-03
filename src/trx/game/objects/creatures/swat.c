@@ -2,21 +2,23 @@
 #include <trx/game/fx/laser.h>
 #include <trx/game/lara.h>
 #include <trx/game/objects.h>
+#include <trx/game/objects/property.h>
 #include <trx/game/pathing.h>
 #include <trx/game/random.h>
 #include <trx/game/sound.h>
 #include <trx/game/spawn.h>
 
 // clang-format off
-#define M_RADIUS       (WALL_L / 10)      // = 102
-#define M_HIT_POINTS   45
-#define M_DAMAGE       28
-#define M_ALERT_DIST   SQUARE(WALL_L)     // = 1048576
-#define M_ALERT_HEIGHT (WALL_L * 2)       // = 2048
-#define M_RUN_DIST     SQUARE(WALL_L * 2) // = 4194304
-#define M_SHOOT_DIST   SQUARE(WALL_L * 3) // = 9437184
-#define M_WALK_TURN    (DEG_1 * 6)        // = 1092
-#define M_RUN_TURN     (DEG_1 * 9)        // = 1638
+#define M_RADIUS            (WALL_L / 10)      // = 102
+#define M_HIT_POINTS        45
+#define M_DAMAGE            28
+#define M_FINAL_SHOT_DAMAGE (M_DAMAGE * 3)
+#define M_ALERT_DIST        SQUARE(WALL_L)     // = 1048576
+#define M_ALERT_HEIGHT      (WALL_L * 2)       // = 2048
+#define M_RUN_DIST          SQUARE(WALL_L * 2) // = 4194304
+#define M_SHOOT_DIST        SQUARE(WALL_L * 3) // = 9437184
+#define M_WALK_TURN         (DEG_1 * 6)        // = 1092
+#define M_RUN_TURN          (DEG_1 * 9)        // = 1638
 // clang-format on
 
 typedef enum {
@@ -59,6 +61,17 @@ static const CREATURE_GUN m_SwatGun = {
     },
 };
 
+static int32_t M_GetDamage(
+    const ITEM *const item, const char *const key, const int32_t default_value)
+{
+    OBJECT_PROPERTY_VALUE damage = {};
+    if (ObjectProperty_GetItemValue(item, key, &damage)) {
+        return damage.as_int;
+    }
+
+    return default_value;
+}
+
 static void M_Initialise(const int16_t item_num)
 {
     Creature_Initialise(item_num);
@@ -92,7 +105,9 @@ static void M_FireFinalShot(
 
     *head = info.angle;
     *torso_y = info.angle;
-    Creature_Shoot(item, &info, &m_SwatGun, info.angle, M_DAMAGE * 3);
+    Creature_Shoot(
+        item, &info, &m_SwatGun, info.angle,
+        M_GetDamage(item, "final_shot_damage", M_FINAL_SHOT_DAMAGE));
     const SAMPLE_TRX_ID fire_sfx = item->object_id == O_SWAT_3
         ? SFX_AMERICAN_SWAT_FIRE
         : SFX_LONDON_SWAT_FIRE;
@@ -330,7 +345,9 @@ static void M_Control(const int16_t item_num)
         }
 
         if (creature->flags == 0) {
-            Creature_Shoot(item, &info, &m_SwatGun, torso_y, M_DAMAGE);
+            Creature_Shoot(
+                item, &info, &m_SwatGun, torso_y,
+                M_GetDamage(item, "damage", M_DAMAGE));
             creature->flags = 5;
         } else {
             creature->flags--;
@@ -376,7 +393,11 @@ static void M_Setup(OBJECT *const obj)
     OBJECT_PROPERTIES(
         obj,
         OBJECT_PROPERTY_INT(
-            "max_hit_points", M_HIT_POINTS, "Maximum hit points."));
+            "max_hit_points", M_HIT_POINTS, "Maximum hit points."),
+        OBJECT_PROPERTY_INT("damage", M_DAMAGE, "Damage dealt by shots."),
+        OBJECT_PROPERTY_INT(
+            "final_shot_damage", M_FINAL_SHOT_DAMAGE,
+            "Damage dealt by the death-state final shot."));
 }
 
 REGISTER_OBJECT(O_SWAT_1, M_Setup)

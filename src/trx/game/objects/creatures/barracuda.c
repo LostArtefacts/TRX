@@ -3,40 +3,49 @@
 #include <trx/game/items/carrier.h>
 #include <trx/game/lara.h>
 #include <trx/game/objects/common.h>
+#include <trx/game/objects/property.h>
 #include <trx/game/pathing.h>
 #include <trx/game/spawn.h>
 
 // clang-format off
-#define BARRACUDA_HITPOINTS   12
-#define BARRACUDA_TOUCH_BITS  0b11100000 // = 0xE0
-#define BARRACUDA_RADIUS      (WALL_L / 5) // = 204
-#define BARRACUDA_BITE_DAMAGE 100
-#define BARA_SWIM_1_TURN      (DEG_1 * 2) // = 364
-#define BARA_SWIM_2_TURN      (DEG_1 * 4) // = 728
-#define BARA_ATTACK_1_RANGE   SQUARE(WALL_L * 2 / 3) // = 465124
-#define BARA_ATTACK_2_RANGE   SQUARE(WALL_L / 3) // = 116281
+#define M_HIT_POINTS     12
+#define M_DAMAGE         100
+#define M_TOUCH_BITS     0b11100000 // = 0xE0
+#define M_RADIUS         (WALL_L / 5) // = 204
+#define M_SWIM_1_TURN    (DEG_1 * 2) // = 364
+#define M_SWIM_2_TURN    (DEG_1 * 4) // = 728
+#define M_ATTACK_1_RANGE SQUARE(WALL_L * 2 / 3) // = 465124
+#define M_ATTACK_2_RANGE SQUARE(WALL_L / 3) // = 116281
 // clang-format on
 
 typedef enum {
-    // clang-format off
-    BARRACUDA_STATE_EMPTY    = 0,
-    BARRACUDA_STATE_STOP     = 1,
-    BARRACUDA_STATE_SWIM_1   = 2,
-    BARRACUDA_STATE_SWIM_2   = 3,
-    BARRACUDA_STATE_ATTACK_1 = 4,
-    BARRACUDA_STATE_ATTACK_2 = 5,
-    BARRACUDA_STATE_DEATH    = 6,
-    // clang-format on
-} BARRACUDA_STATE;
+    M_STATE_EMPTY,
+    M_STATE_STOP,
+    M_STATE_SWIM_1,
+    M_STATE_SWIM_2,
+    M_STATE_ATTACK_1,
+    M_STATE_ATTACK_2,
+    M_STATE_DEATH,
+} M_STATE;
 
 typedef enum {
-    BARRACUDA_ANIM_DEATH = 6,
-} BARRACUDA_ANIM;
+    M_ANIM_DEATH = 6,
+} M_ANIM;
 
 static const BITE m_BarracudaBite = {
     .pos = { .x = 2, .y = -60, .z = 121 },
     .mesh_num = 7,
 };
+
+static int32_t M_GetBiteDamage(const ITEM *const item)
+{
+    OBJECT_PROPERTY_VALUE damage = {};
+    if (ObjectProperty_GetItemValue(item, "damage", &damage)) {
+        return damage.as_int;
+    }
+
+    return M_DAMAGE;
+}
 
 static void M_Control(const int16_t item_num)
 {
@@ -56,52 +65,51 @@ static void M_Control(const int16_t item_num)
         int16_t angle = Creature_Turn(item, creature->maximum_turn);
 
         switch (item->current_anim_state) {
-        case BARRACUDA_STATE_STOP:
+        case M_STATE_STOP:
             creature->flags = 0;
             if (creature->mood == MOOD_BORED) {
-                item->goal_anim_state = BARRACUDA_STATE_SWIM_1;
-            } else if (info.ahead && info.distance < BARA_ATTACK_1_RANGE) {
-                item->goal_anim_state = BARRACUDA_STATE_ATTACK_1;
+                item->goal_anim_state = M_STATE_SWIM_1;
+            } else if (info.ahead && info.distance < M_ATTACK_1_RANGE) {
+                item->goal_anim_state = M_STATE_ATTACK_1;
             } else if (creature->mood == MOOD_STALK) {
-                item->goal_anim_state = BARRACUDA_STATE_SWIM_1;
+                item->goal_anim_state = M_STATE_SWIM_1;
             } else {
-                item->goal_anim_state = BARRACUDA_STATE_SWIM_2;
+                item->goal_anim_state = M_STATE_SWIM_2;
             }
             break;
 
-        case BARRACUDA_STATE_SWIM_1:
-            creature->maximum_turn = BARA_SWIM_1_TURN;
+        case M_STATE_SWIM_1:
+            creature->maximum_turn = M_SWIM_1_TURN;
             if (creature->mood == MOOD_BORED) {
-            } else if (
-                info.ahead && (item->touch_bits & BARRACUDA_TOUCH_BITS) != 0) {
-                item->goal_anim_state = BARRACUDA_STATE_STOP;
+            } else if (info.ahead && (item->touch_bits & M_TOUCH_BITS) != 0) {
+                item->goal_anim_state = M_STATE_STOP;
             } else if (creature->mood != MOOD_STALK) {
-                item->goal_anim_state = BARRACUDA_STATE_SWIM_2;
+                item->goal_anim_state = M_STATE_SWIM_2;
             }
             break;
 
-        case BARRACUDA_STATE_SWIM_2:
-            creature->maximum_turn = BARA_SWIM_2_TURN;
+        case M_STATE_SWIM_2:
+            creature->maximum_turn = M_SWIM_2_TURN;
             creature->flags = 0;
             if (creature->mood == MOOD_BORED) {
-                item->goal_anim_state = BARRACUDA_STATE_SWIM_1;
-            } else if (info.ahead && info.distance < BARA_ATTACK_2_RANGE) {
-                item->goal_anim_state = BARRACUDA_STATE_ATTACK_2;
-            } else if (info.ahead && info.distance < BARA_ATTACK_1_RANGE) {
-                item->goal_anim_state = BARRACUDA_STATE_STOP;
+                item->goal_anim_state = M_STATE_SWIM_1;
+            } else if (info.ahead && info.distance < M_ATTACK_2_RANGE) {
+                item->goal_anim_state = M_STATE_ATTACK_2;
+            } else if (info.ahead && info.distance < M_ATTACK_1_RANGE) {
+                item->goal_anim_state = M_STATE_STOP;
             } else if (creature->mood == MOOD_STALK) {
-                item->goal_anim_state = BARRACUDA_STATE_SWIM_1;
+                item->goal_anim_state = M_STATE_SWIM_1;
             }
             break;
 
-        case BARRACUDA_STATE_ATTACK_1:
-        case BARRACUDA_STATE_ATTACK_2:
+        case M_STATE_ATTACK_1:
+        case M_STATE_ATTACK_2:
             if (info.ahead) {
                 head = info.angle;
             }
             if (creature->flags == 0
-                && (item->touch_bits & BARRACUDA_TOUCH_BITS) != 0) {
-                Lara_TakeDamage(BARRACUDA_BITE_DAMAGE, true);
+                && (item->touch_bits & M_TOUCH_BITS) != 0) {
+                Lara_TakeDamage(M_GetBiteDamage(item), true);
                 Creature_Effect(item, &m_BarracudaBite, Spawn_Blood);
                 creature->flags = 1;
             }
@@ -115,9 +123,9 @@ static void M_Control(const int16_t item_num)
         Creature_Animate(item_num, angle, 0);
         Creature_Underwater(item, STEP_L);
     } else {
-        if (item->current_anim_state != BARRACUDA_ANIM_DEATH) {
-            Item_SwitchToAnim(item, BARRACUDA_ANIM_DEATH, 0);
-            item->current_anim_state = BARRACUDA_STATE_DEATH;
+        if (item->current_anim_state != M_ANIM_DEATH) {
+            Item_SwitchToAnim(item, M_ANIM_DEATH, 0);
+            item->current_anim_state = M_STATE_DEATH;
             Carrier_TestItemDrops(item_num);
         }
         Creature_Float(item_num);
@@ -133,7 +141,7 @@ static void M_Setup(OBJECT *const obj)
     obj->control_func = M_Control;
     obj->collision_func = Creature_Collision;
 
-    obj->radius = BARRACUDA_RADIUS;
+    obj->radius = M_RADIUS;
     obj->shadow_size = UNIT_SHADOW / 2;
     obj->pivot_length = 200;
     obj->lot_setup = LOT_Setup(LOT_SETUP_FLYER);
@@ -148,7 +156,9 @@ static void M_Setup(OBJECT *const obj)
     OBJECT_PROPERTIES(
         obj,
         OBJECT_PROPERTY_INT(
-            "max_hit_points", BARRACUDA_HITPOINTS, "Maximum hit points."));
+            "max_hit_points", M_HIT_POINTS, "Maximum hit points."),
+        OBJECT_PROPERTY_INT(
+            "damage", M_DAMAGE, "Damage dealt by the barracuda bite."));
 }
 
 REGISTER_OBJECT(O_BARRACUDA, M_Setup)

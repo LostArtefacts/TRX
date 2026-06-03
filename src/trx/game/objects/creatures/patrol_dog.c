@@ -2,10 +2,12 @@
 #include <trx/game/creature.h>
 #include <trx/game/lara.h>
 #include <trx/game/objects/common.h>
+#include <trx/game/objects/property.h>
 #include <trx/game/random.h>
 #include <trx/game/spawn.h>
 
 // clang-format off
+#define M_HIT_POINTS           16
 #define M_LUNGE_RANGE          SQUARE(WALL_L)
 #define M_LUNGE_TOUCH_BITS     0x6648
 #define M_LUNGE_DAMAGE         50
@@ -60,6 +62,17 @@ static M_ANIM m_DeathAnims[4] = {
     M_ANIM_DEATH_3,
     M_ANIM_DEATH_1,
 };
+
+static int32_t M_GetDamage(
+    const ITEM *const item, const char *const key, const int32_t default_value)
+{
+    OBJECT_PROPERTY_VALUE damage = {};
+    if (ObjectProperty_GetItemValue(item, key, &damage)) {
+        return damage.as_int;
+    }
+
+    return default_value;
+}
 
 static void M_Initialise(const int16_t item_num)
 {
@@ -259,7 +272,8 @@ static void M_Control(const int16_t item_num)
             if (info.bite && item->touch_bits & M_LUNGE_TOUCH_BITS && frame >= 4
                 && frame <= 14) {
                 Creature_Effect(item, &m_DogBite, Spawn_Blood);
-                Lara_TakeDamage(M_LUNGE_DAMAGE, true);
+                Lara_TakeDamage(
+                    M_GetDamage(item, "lunge_damage", M_LUNGE_DAMAGE), true);
             }
             item->goal_anim_state = M_STATE_RUN;
             break;
@@ -274,7 +288,8 @@ static void M_Control(const int16_t item_num)
                 && ((frame >= 9 && frame <= 12)
                     || (frame >= 22 && frame <= 25))) {
                 Creature_Effect(item, &m_DogBite, Spawn_Blood);
-                Lara_TakeDamage(M_BITE_DAMAGE, true);
+                Lara_TakeDamage(
+                    M_GetDamage(item, "bite_damage", M_BITE_DAMAGE), true);
             }
             break;
         }
@@ -297,7 +312,6 @@ static void M_Setup(OBJECT *const obj)
     obj->collision_func = Creature_Collision;
 
     obj->shadow_size = 128;
-
     obj->pivot_length = 300;
     obj->radius = 341;
 
@@ -310,7 +324,14 @@ static void M_Setup(OBJECT *const obj)
     Object_GetBone(obj, 2)->rot.y = true;
     Object_GetBone(obj, 2)->rot.x = true;
     OBJECT_PROPERTIES(
-        obj, OBJECT_PROPERTY_INT("max_hit_points", 16, "Maximum hit points."));
+        obj,
+        OBJECT_PROPERTY_INT(
+            "max_hit_points", M_HIT_POINTS, "Maximum hit points."),
+        OBJECT_PROPERTY_INT(
+            "lunge_damage", M_LUNGE_DAMAGE,
+            "Damage dealt by the lunge attack."),
+        OBJECT_PROPERTY_INT(
+            "bite_damage", M_BITE_DAMAGE, "Damage dealt by the bite attack."));
 }
 
 REGISTER_OBJECT(O_PATROL_DOG, M_Setup)

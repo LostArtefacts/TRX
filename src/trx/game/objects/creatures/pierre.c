@@ -5,41 +5,55 @@
 #include <trx/game/creature.h>
 #include <trx/game/music.h>
 #include <trx/game/objects.h>
+#include <trx/game/objects/property.h>
 #include <trx/game/pathing.h>
 #include <trx/game/random.h>
 #include <trx/game/rooms.h>
 
-#define PIERRE_POSE_CHANCE 0x60 // = 96
-#define PIERRE_SHOT_DAMAGE 50
-#define PIERRE_WALK_TURN (DEG_1 * 3) // = 546
-#define PIERRE_RUN_TURN (DEG_1 * 6) // = 1092
-#define PIERRE_WALK_RANGE SQUARE(WALL_L * 3) // = 9437184
-#define PIERRE_DIE_ANIM 12
-#define PIERRE_WIMP_CHANCE 0x2000
-#define PIERRE_RUN_HITPOINTS 40
-#define PIERRE_DISAPPEAR 10
-#define PIERRE_HITPOINTS 70
-#define PIERRE_RADIUS (WALL_L / 10) // = 102
-#define PIERRE_SMARTNESS 0x7FFF
+// clang-format off
+#define M_HIT_POINTS    70
+#define M_POSE_CHANCE   0x60 // = 96
+#define M_SHOT_DAMAGE   50
+#define M_WALK_TURN     (DEG_1 * 3) // = 546
+#define M_RUN_TURN      (DEG_1 * 6) // = 1092
+#define M_WALK_RANGE    SQUARE(WALL_L * 3) // = 9437184
+#define M_WIMP_CHANCE   0x2000
+#define M_RUN_HITPOINTS 40
+#define M_DISAPPEAR     10
+// clang-format on
 
 typedef enum {
-    PIERRE_STATE_EMPTY = 0,
-    PIERRE_STATE_STOP = 1,
-    PIERRE_STATE_WALK = 2,
-    PIERRE_STATE_RUN = 3,
-    PIERRE_STATE_AIM = 4,
-    PIERRE_STATE_DEATH = 5,
-    PIERRE_STATE_POSE = 6,
-    PIERRE_STATE_SHOOT = 7,
-} PIERRE_STATE;
+    M_STATE_EMPTY,
+    M_STATE_STOP,
+    M_STATE_WALK,
+    M_STATE_RUN,
+    M_STATE_AIM,
+    M_STATE_DEATH,
+    M_STATE_POSE,
+    M_STATE_SHOOT,
+} M_STATE;
+
+typedef enum {
+    M_ANIM_DEATH = 12,
+} M_ANIM;
 
 static const CREATURE_GUN m_PierreGun1 = {
-    .muzzle = { .pos = { 60, 200, 0 }, .mesh_num = 11 },
+    .muzzle = { .pos = { 60, 200, 0 }, .mesh_num = 11, },
 };
 static const CREATURE_GUN m_PierreGun2 = {
-    .muzzle = { .pos = { -57, 200, 0 }, .mesh_num = 14 },
+    .muzzle = { .pos = { -57, 200, 0 }, .mesh_num = 14, },
 };
 static int16_t m_PierreItemNum = NO_ITEM;
+
+static int32_t M_GetShotDamage(const ITEM *const item)
+{
+    OBJECT_PROPERTY_VALUE damage = {};
+    if (ObjectProperty_GetItemValue(item, "damage", &damage)) {
+        return damage.as_int;
+    }
+
+    return M_SHOT_DAMAGE;
+}
 
 static bool M_CanDropItems(const ITEM *const item)
 {
@@ -97,16 +111,15 @@ static void M_Control(const int16_t item_num)
     int16_t angle = 0;
     int16_t tilt = 0;
 
-    if (item->hit_points <= PIERRE_RUN_HITPOINTS
-        && !(item->flags & IF_ONE_SHOT)) {
-        item->hit_points = PIERRE_RUN_HITPOINTS;
+    if (item->hit_points <= M_RUN_HITPOINTS && !(item->flags & IF_ONE_SHOT)) {
+        item->hit_points = M_RUN_HITPOINTS;
         pierre->flags++;
     }
 
     if (item->hit_points <= 0) {
-        if (item->current_anim_state != PIERRE_STATE_DEATH) {
-            item->current_anim_state = PIERRE_STATE_DEATH;
-            Item_SwitchToAnim(item, PIERRE_DIE_ANIM, 0);
+        if (item->current_anim_state != M_STATE_DEATH) {
+            item->current_anim_state = M_STATE_DEATH;
+            Item_SwitchToAnim(item, M_ANIM_DEATH, 0);
         }
     } else {
         AI_INFO info;
@@ -125,84 +138,86 @@ static void M_Control(const int16_t item_num)
         angle = Creature_Turn(item, pierre->maximum_turn);
 
         switch (item->current_anim_state) {
-        case PIERRE_STATE_STOP:
+        case M_STATE_STOP:
             if (item->required_anim_state) {
                 item->goal_anim_state = item->required_anim_state;
             } else if (pierre->mood == MOOD_BORED) {
-                item->goal_anim_state = Random_GetControl() < PIERRE_POSE_CHANCE
-                    ? PIERRE_STATE_POSE
-                    : PIERRE_STATE_WALK;
+                item->goal_anim_state = Random_GetControl() < M_POSE_CHANCE
+                    ? M_STATE_POSE
+                    : M_STATE_WALK;
             } else if (pierre->mood == MOOD_ESCAPE) {
-                item->goal_anim_state = PIERRE_STATE_RUN;
+                item->goal_anim_state = M_STATE_RUN;
             } else {
-                item->goal_anim_state = PIERRE_STATE_WALK;
+                item->goal_anim_state = M_STATE_WALK;
             }
             break;
 
-        case PIERRE_STATE_POSE:
+        case M_STATE_POSE:
             if (pierre->mood != MOOD_BORED) {
-                item->goal_anim_state = PIERRE_STATE_STOP;
-            } else if (Random_GetControl() < PIERRE_POSE_CHANCE) {
-                item->required_anim_state = PIERRE_STATE_WALK;
-                item->goal_anim_state = PIERRE_STATE_STOP;
+                item->goal_anim_state = M_STATE_STOP;
+            } else if (Random_GetControl() < M_POSE_CHANCE) {
+                item->required_anim_state = M_STATE_WALK;
+                item->goal_anim_state = M_STATE_STOP;
             }
             break;
 
-        case PIERRE_STATE_WALK:
-            pierre->maximum_turn = PIERRE_WALK_TURN;
+        case M_STATE_WALK:
+            pierre->maximum_turn = M_WALK_TURN;
             if (pierre->mood == MOOD_BORED
-                && Random_GetControl() < PIERRE_POSE_CHANCE) {
-                item->required_anim_state = PIERRE_STATE_POSE;
-                item->goal_anim_state = PIERRE_STATE_STOP;
+                && Random_GetControl() < M_POSE_CHANCE) {
+                item->required_anim_state = M_STATE_POSE;
+                item->goal_anim_state = M_STATE_STOP;
             } else if (pierre->mood == MOOD_ESCAPE) {
-                item->required_anim_state = PIERRE_STATE_RUN;
-                item->goal_anim_state = PIERRE_STATE_STOP;
+                item->required_anim_state = M_STATE_RUN;
+                item->goal_anim_state = M_STATE_STOP;
             } else if (Creature_CanTargetEnemy(item, &info)) {
-                item->required_anim_state = PIERRE_STATE_AIM;
-                item->goal_anim_state = PIERRE_STATE_STOP;
-            } else if (!info.ahead || info.distance > PIERRE_WALK_RANGE) {
-                item->required_anim_state = PIERRE_STATE_RUN;
-                item->goal_anim_state = PIERRE_STATE_STOP;
+                item->required_anim_state = M_STATE_AIM;
+                item->goal_anim_state = M_STATE_STOP;
+            } else if (!info.ahead || info.distance > M_WALK_RANGE) {
+                item->required_anim_state = M_STATE_RUN;
+                item->goal_anim_state = M_STATE_STOP;
             }
             break;
 
-        case PIERRE_STATE_RUN:
-            pierre->maximum_turn = PIERRE_RUN_TURN;
+        case M_STATE_RUN:
+            pierre->maximum_turn = M_RUN_TURN;
             tilt = angle / 2;
             if (pierre->mood == MOOD_BORED
-                && Random_GetControl() < PIERRE_POSE_CHANCE) {
-                item->required_anim_state = PIERRE_STATE_POSE;
-                item->goal_anim_state = PIERRE_STATE_STOP;
+                && Random_GetControl() < M_POSE_CHANCE) {
+                item->required_anim_state = M_STATE_POSE;
+                item->goal_anim_state = M_STATE_STOP;
             } else if (Creature_CanTargetEnemy(item, &info)) {
-                item->required_anim_state = PIERRE_STATE_AIM;
-                item->goal_anim_state = PIERRE_STATE_STOP;
-            } else if (info.ahead && info.distance < PIERRE_WALK_RANGE) {
-                item->required_anim_state = PIERRE_STATE_WALK;
-                item->goal_anim_state = PIERRE_STATE_STOP;
+                item->required_anim_state = M_STATE_AIM;
+                item->goal_anim_state = M_STATE_STOP;
+            } else if (info.ahead && info.distance < M_WALK_RANGE) {
+                item->required_anim_state = M_STATE_WALK;
+                item->goal_anim_state = M_STATE_STOP;
             }
             break;
 
-        case PIERRE_STATE_AIM:
+        case M_STATE_AIM:
             if (item->required_anim_state) {
                 item->goal_anim_state = item->required_anim_state;
             } else if (Creature_CanTargetEnemy(item, &info)) {
-                item->goal_anim_state = PIERRE_STATE_SHOOT;
+                item->goal_anim_state = M_STATE_SHOOT;
             } else {
-                item->goal_anim_state = PIERRE_STATE_STOP;
+                item->goal_anim_state = M_STATE_STOP;
             }
             break;
 
-        case PIERRE_STATE_SHOOT:
+        case M_STATE_SHOOT:
             if (!item->required_anim_state) {
                 Creature_Shoot(
-                    item, &info, &m_PierreGun1, head, PIERRE_SHOT_DAMAGE / 2);
+                    item, &info, &m_PierreGun1, head,
+                    M_GetShotDamage(item) / 2);
                 Creature_Shoot(
-                    item, &info, &m_PierreGun2, head, PIERRE_SHOT_DAMAGE / 2);
-                item->required_anim_state = PIERRE_STATE_AIM;
+                    item, &info, &m_PierreGun2, head,
+                    M_GetShotDamage(item) / 2);
+                item->required_anim_state = M_STATE_AIM;
             }
             if (pierre->mood == MOOD_ESCAPE
-                && Random_GetControl() > PIERRE_WIMP_CHANCE) {
-                item->required_anim_state = PIERRE_STATE_STOP;
+                && Random_GetControl() > M_WIMP_CHANCE) {
+                item->required_anim_state = M_STATE_STOP;
             }
             break;
         }
@@ -226,7 +241,7 @@ static void M_Control(const int16_t item_num)
 
         if (LOS_Check(&start, &target, true)) {
             pierre->flags = 1;
-        } else if (pierre->flags > PIERRE_DISAPPEAR) {
+        } else if (pierre->flags > M_DISAPPEAR) {
             item->hit_points = 0;
             LOT_DisableBaddieAI(item_num);
             Item_Kill(item_num);
@@ -257,8 +272,8 @@ static void M_Setup(OBJECT *const obj)
 
     obj->shadow_size = UNIT_SHADOW / 2;
 
-    obj->radius = PIERRE_RADIUS;
-    obj->smartness = PIERRE_SMARTNESS;
+    obj->radius = WALL_L / 10;
+    obj->smartness = 0x7FFF;
 
     obj->intelligent = true;
     obj->save_position = true;
@@ -272,7 +287,8 @@ static void M_Setup(OBJECT *const obj)
     OBJECT_PROPERTIES(
         obj,
         OBJECT_PROPERTY_INT(
-            "max_hit_points", PIERRE_HITPOINTS, "Maximum hit points."));
+            "max_hit_points", M_HIT_POINTS, "Maximum hit points."),
+        OBJECT_PROPERTY_INT("damage", M_SHOT_DAMAGE, "Damage dealt by shots."));
 }
 
 REGISTER_OBJECT(O_PIERRE, M_Setup)

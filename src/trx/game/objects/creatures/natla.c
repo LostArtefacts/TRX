@@ -9,31 +9,34 @@
 #include <trx/game/sound.h>
 #include <trx/game/spawn.h>
 
-#define NATLA_FLY_MODE 0x8000
-#define NATLA_TIMER 0x7FFF
-#define NATLA_FIRE_ARC (DEG_1 * 30) // = 5460
-#define NATLA_FLY_TURN (DEG_1 * 5) // = 910
-#define NATLA_RUN_TURN (DEG_1 * 6) // = 1092
-#define NATLA_LAND_CHANCE 256
-#define NATLA_DIE_TIME (LOGIC_FPS * 16) // = 480
-#define NATLA_HITPOINTS 400
-#define NATLA_RADIUS (WALL_L / 5) // = 204
-#define NATLA_SMARTNESS 0x7FFF
+// clang-format off
+#define M_HIT_POINTS  400
+#define M_FLY_MODE    0x8000
+#define M_TIMER       0x7FFF
+#define M_FIRE_ARC    (DEG_1 * 30) // = 5460
+#define M_FLY_TURN    (DEG_1 * 5) // = 910
+#define M_RUN_TURN    (DEG_1 * 6) // = 1092
+#define M_LAND_CHANCE 256
+#define M_DIE_TIME    (LOGIC_FPS * 16) // = 480
+// clang-format on
 
 typedef enum {
-    NATLA_STATE_EMPTY = 0,
-    NATLA_STATE_STOP = 1,
-    NATLA_STATE_FLY = 2,
-    NATLA_STATE_RUN = 3,
-    NATLA_STATE_AIM = 4,
-    NATLA_STATE_SEMIDEATH = 5,
-    NATLA_STATE_SHOOT = 6,
-    NATLA_STATE_FALL = 7,
-    NATLA_STATE_STAND = 8,
-    NATLA_STATE_DEATH = 9,
-} NATLA_STATE;
+    M_STATE_EMPTY,
+    M_STATE_STOP,
+    M_STATE_FLY,
+    M_STATE_RUN,
+    M_STATE_AIM,
+    M_STATE_SEMIDEATH,
+    M_STATE_SHOOT,
+    M_STATE_FALL,
+    M_STATE_STAND,
+    M_STATE_DEATH,
+} M_STATE;
 
-static BITE m_NatlaGun = { .pos = { 5, 220, 7 }, .mesh_num = 4 };
+static BITE m_NatlaGun = {
+    .pos = { 5, 220, 7 },
+    .mesh_num = 4,
+};
 
 static int32_t M_GetStage2HitPoints(const ITEM *const item)
 {
@@ -44,7 +47,7 @@ static bool M_GunHit(
     ITEM *const item, const GAME_VECTOR *const start,
     const GAME_VECTOR *const hit_pos, int32_t *const damage)
 {
-    if (item->current_anim_state == NATLA_STATE_SEMIDEATH) {
+    if (item->current_anim_state == M_STATE_SEMIDEATH) {
         if (damage != nullptr) {
             *damage = 0;
         }
@@ -56,7 +59,7 @@ static bool M_GunHit(
 static bool M_IsTargetable(const ITEM *const item)
 {
     return item->hit_points > 0 && item->status == IS_ACTIVE
-        && item->current_anim_state != NATLA_STATE_SEMIDEATH;
+        && item->current_anim_state != M_STATE_SEMIDEATH;
 }
 
 static void M_Control(const int16_t item_num)
@@ -71,12 +74,12 @@ static void M_Control(const int16_t item_num)
     int16_t angle = 0;
     int16_t tilt = 0;
     int16_t gun = natla->head_rotation * 7 / 8;
-    int16_t timer = natla->flags & NATLA_TIMER;
+    int16_t timer = natla->flags & M_TIMER;
     int16_t facing = (int16_t)(intptr_t)item->priv;
 
     if (item->hit_points <= 0
-        && item->current_anim_state != NATLA_STATE_SEMIDEATH) {
-        item->goal_anim_state = NATLA_STATE_DEATH;
+        && item->current_anim_state != M_STATE_SEMIDEATH) {
+        item->goal_anim_state = M_STATE_DEATH;
     } else if (item->hit_points <= M_GetStage2HitPoints(item)) {
         natla->lot.setup.step = STEP_L;
         natla->lot.setup.drop = -STEP_L;
@@ -85,16 +88,15 @@ static void M_Control(const int16_t item_num)
         AI_INFO info;
         Creature_AIInfo(item, &info);
 
-        if (info.ahead && item->current_anim_state != NATLA_STATE_SEMIDEATH) {
+        if (info.ahead && item->current_anim_state != M_STATE_SEMIDEATH) {
             head = info.angle;
         }
 
         Creature_Mood(item, &info, true);
 
-        angle = Creature_Turn(item, NATLA_RUN_TURN);
+        angle = Creature_Turn(item, M_RUN_TURN);
 
-        int8_t shoot = info.angle > -NATLA_FIRE_ARC
-            && info.angle < NATLA_FIRE_ARC
+        int8_t shoot = info.angle > -M_FIRE_ARC && info.angle < M_FIRE_ARC
             && Creature_CanTargetEnemy(item, &info);
 
         if (facing) {
@@ -103,21 +105,21 @@ static void M_Control(const int16_t item_num)
         }
 
         switch (item->current_anim_state) {
-        case NATLA_STATE_FALL:
+        case M_STATE_FALL:
             if (item->pos.y < item->floor) {
                 item->gravity = true;
                 item->speed = 0;
             } else {
                 item->gravity = false;
-                item->goal_anim_state = NATLA_STATE_SEMIDEATH;
+                item->goal_anim_state = M_STATE_SEMIDEATH;
                 item->pos.y = item->floor;
                 timer = 0;
             }
             break;
 
-        case NATLA_STATE_STAND:
+        case M_STATE_STAND:
             if (!shoot) {
-                item->goal_anim_state = NATLA_STATE_RUN;
+                item->goal_anim_state = M_STATE_RUN;
             }
             if (timer >= 20) {
                 int16_t effect_num =
@@ -132,7 +134,7 @@ static void M_Control(const int16_t item_num)
             }
             break;
 
-        case NATLA_STATE_RUN:
+        case M_STATE_RUN:
             tilt = angle;
             if (timer >= 20) {
                 int16_t effect_num =
@@ -146,13 +148,13 @@ static void M_Control(const int16_t item_num)
                 timer = 0;
             }
             if (shoot) {
-                item->goal_anim_state = NATLA_STATE_STAND;
+                item->goal_anim_state = M_STATE_STAND;
             }
             break;
 
-        case NATLA_STATE_SEMIDEATH:
-            if (timer == NATLA_DIE_TIME) {
-                item->goal_anim_state = NATLA_STATE_STAND;
+        case M_STATE_SEMIDEATH:
+            if (timer == M_DIE_TIME) {
+                item->goal_anim_state = M_STATE_STAND;
                 natla->flags = 0;
                 timer = 0;
                 item->hit_points = M_GetStage2HitPoints(item);
@@ -170,15 +172,15 @@ static void M_Control(const int16_t item_num)
             }
             break;
 
-        case NATLA_STATE_FLY:
-            item->goal_anim_state = NATLA_STATE_FALL;
+        case M_STATE_FLY:
+            item->goal_anim_state = M_STATE_FALL;
             timer = 0;
             break;
 
-        case NATLA_STATE_STOP:
-        case NATLA_STATE_AIM:
-        case NATLA_STATE_SHOOT:
-            item->goal_anim_state = NATLA_STATE_SEMIDEATH;
+        case M_STATE_STOP:
+        case M_STATE_AIM:
+        case M_STATE_SHOOT:
+            item->goal_anim_state = M_STATE_SEMIDEATH;
             item->flags = 0;
             timer = 0;
             break;
@@ -191,15 +193,14 @@ static void M_Control(const int16_t item_num)
         AI_INFO info;
         Creature_AIInfo(item, &info);
 
-        int8_t shoot = info.angle > -NATLA_FIRE_ARC
-            && info.angle < NATLA_FIRE_ARC
+        int8_t shoot = info.angle > -M_FIRE_ARC && info.angle < M_FIRE_ARC
             && Creature_CanTargetEnemy(item, &info);
-        if (item->current_anim_state == NATLA_STATE_FLY
-            && (natla->flags & NATLA_FLY_MODE)) {
-            if (shoot && Random_GetControl() < NATLA_LAND_CHANCE) {
-                natla->flags &= ~NATLA_FLY_MODE;
+        if (item->current_anim_state == M_STATE_FLY
+            && (natla->flags & M_FLY_MODE)) {
+            if (shoot && Random_GetControl() < M_LAND_CHANCE) {
+                natla->flags &= ~M_FLY_MODE;
             }
-            if (!(natla->flags & NATLA_FLY_MODE)) {
+            if (!(natla->flags & M_FLY_MODE)) {
                 Creature_Mood(item, &info, true);
             }
             natla->lot.setup.step = WALL_L * 20;
@@ -207,26 +208,26 @@ static void M_Control(const int16_t item_num)
             natla->lot.setup.fly = STEP_L / 8;
             Creature_AIInfo(item, &info);
         } else if (!shoot) {
-            natla->flags |= NATLA_FLY_MODE;
+            natla->flags |= M_FLY_MODE;
         }
 
         if (info.ahead) {
             head = info.angle;
         }
 
-        if (item->current_anim_state != NATLA_STATE_FLY
-            || (natla->flags & NATLA_FLY_MODE)) {
+        if (item->current_anim_state != M_STATE_FLY
+            || (natla->flags & M_FLY_MODE)) {
             Creature_Mood(item, &info, false);
         }
 
         item->rot.y -= facing;
-        angle = Creature_Turn(item, NATLA_FLY_TURN);
+        angle = Creature_Turn(item, M_FLY_TURN);
 
-        if (item->current_anim_state == NATLA_STATE_FLY) {
-            if (info.angle > NATLA_FLY_TURN) {
-                facing += NATLA_FLY_TURN;
-            } else if (info.angle < -NATLA_FLY_TURN) {
-                facing -= NATLA_FLY_TURN;
+        if (item->current_anim_state == M_STATE_FLY) {
+            if (info.angle > M_FLY_TURN) {
+                facing += M_FLY_TURN;
+            } else if (info.angle < -M_FLY_TURN) {
+                facing -= M_FLY_TURN;
             } else {
                 facing += info.angle;
             }
@@ -237,19 +238,18 @@ static void M_Control(const int16_t item_num)
         }
 
         switch (item->current_anim_state) {
-        case NATLA_STATE_STOP:
+        case M_STATE_STOP:
             timer = 0;
-            if (natla->flags & NATLA_FLY_MODE) {
-                item->goal_anim_state = NATLA_STATE_FLY;
+            if (natla->flags & M_FLY_MODE) {
+                item->goal_anim_state = M_STATE_FLY;
             } else {
-                item->goal_anim_state = NATLA_STATE_AIM;
+                item->goal_anim_state = M_STATE_AIM;
             }
             break;
 
-        case NATLA_STATE_FLY:
-            if (!(natla->flags & NATLA_FLY_MODE)
-                && item->pos.y == item->floor) {
-                item->goal_anim_state = NATLA_STATE_STOP;
+        case M_STATE_FLY:
+            if (!(natla->flags & M_FLY_MODE) && item->pos.y == item->floor) {
+                item->goal_anim_state = M_STATE_STOP;
             }
             if (timer >= 30) {
                 int16_t effect_num =
@@ -264,17 +264,17 @@ static void M_Control(const int16_t item_num)
             }
             break;
 
-        case NATLA_STATE_AIM:
+        case M_STATE_AIM:
             if (item->required_anim_state) {
                 item->goal_anim_state = item->required_anim_state;
             } else if (shoot) {
-                item->goal_anim_state = NATLA_STATE_SHOOT;
+                item->goal_anim_state = M_STATE_SHOOT;
             } else {
-                item->goal_anim_state = NATLA_STATE_STOP;
+                item->goal_anim_state = M_STATE_STOP;
             }
             break;
 
-        case NATLA_STATE_SHOOT:
+        case M_STATE_SHOOT:
             if (!item->required_anim_state) {
                 int16_t effect_num =
                     Creature_Effect(item, &m_NatlaGun, Spawn_AtlanteanBomb);
@@ -294,7 +294,7 @@ static void M_Control(const int16_t item_num)
                     EFFECT *effect = Effect_Get(effect_num);
                     effect->rot.y += (Random_GetControl() - 0x4000) / 4;
                 }
-                item->required_anim_state = NATLA_STATE_STOP;
+                item->required_anim_state = M_STATE_STOP;
             }
             break;
         }
@@ -308,8 +308,8 @@ static void M_Control(const int16_t item_num)
     }
 
     timer++;
-    natla->flags &= ~NATLA_TIMER;
-    natla->flags |= timer & NATLA_TIMER;
+    natla->flags &= ~M_TIMER;
+    natla->flags |= timer & M_TIMER;
 
     item->rot.y -= facing;
     Creature_Animate(item_num, angle, 0);
@@ -331,8 +331,8 @@ static void M_Setup(OBJECT *const obj)
 
     obj->shadow_size = UNIT_SHADOW / 2;
 
-    obj->radius = NATLA_RADIUS;
-    obj->smartness = NATLA_SMARTNESS;
+    obj->radius = WALL_L / 5;
+    obj->smartness = 0x7FFF;
 
     obj->intelligent = true;
     obj->save_position = true;
@@ -345,7 +345,7 @@ static void M_Setup(OBJECT *const obj)
     OBJECT_PROPERTIES(
         obj,
         OBJECT_PROPERTY_INT(
-            "max_hit_points", NATLA_HITPOINTS, "Maximum hit points."));
+            "max_hit_points", M_HIT_POINTS, "Maximum hit points."));
 }
 
 REGISTER_OBJECT(O_NATLA, M_Setup)

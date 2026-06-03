@@ -12,6 +12,7 @@
 #include <trx/game/lara/electric.h>
 #include <trx/game/los.h>
 #include <trx/game/objects.h>
+#include <trx/game/objects/property.h>
 #include <trx/game/output.h>
 #include <trx/game/output/sources/poly_fx.h>
 #include <trx/game/pathing.h>
@@ -21,13 +22,18 @@
 #include <trx/game/sparks.h>
 #include <trx/game/spawn.h>
 
+// clang-format off
+#define M_HIT_POINTS       200
+#define M_HEAD_BEAM_DAMAGE 10000
 #define M_MAX_HEAD_ATTACKS 4
+#define M_RADIUS           (WALL_L / 10) // = 102
+// clang-format on
 
 typedef enum {
-    M_STATE_WAIT = 0,
-    M_STATE_ATTACK_HEAD = 1,
-    M_STATE_ATTACK_HAND = 2,
-    M_STATE_DEATH = 3,
+    M_STATE_WAIT,
+    M_STATE_ATTACK_HEAD,
+    M_STATE_ATTACK_HAND,
+    M_STATE_DEATH,
 } M_STATE;
 
 typedef enum {
@@ -100,6 +106,17 @@ static int32_t m_DeathDist[5] = {};
 static int32_t m_DeathHeights[5] = {};
 
 static M_SHARED_PRIV m_SharedPriv = {};
+
+static int32_t M_GetDamage(
+    const ITEM *const item, const char *const key, const int32_t default_value)
+{
+    OBJECT_PROPERTY_VALUE damage = {};
+    if (ObjectProperty_GetItemValue(item, key, &damage)) {
+        return damage.as_int;
+    }
+
+    return default_value;
+}
 
 static int16_t M_FindLizard(const int16_t room_num)
 {
@@ -534,8 +551,12 @@ static void M_TriggerElectricBeam(
         if (lara_info->electric == 0 && !copy && p->attack_type == M_ATTACK_HEAD
             && M_LaraOnLOS(src, &target)
             && !g_Config.debug.enable_invulnerability) {
-            lara_item->hit_points = 0;
-            lara_info->electric = 1;
+            Lara_TakeDamage(
+                M_GetDamage(item, "head_beam_damage", M_HEAD_BEAM_DAMAGE),
+                true);
+            if (lara_item->hit_points <= 0) {
+                lara_info->electric = 1;
+            }
         }
 
         M_TriggerElectricSparks(item, target.pos, false);
@@ -1433,9 +1454,8 @@ static void M_Setup(OBJECT *const obj)
     obj->can_be_exploded_func = M_CanBeExploded;
 
     obj->shadow_size = 0;
-
     obj->pivot_length = 50;
-    obj->radius = 102;
+    obj->radius = M_RADIUS;
 
     obj->intelligent = true;
     obj->save_position = true;
@@ -1447,7 +1467,12 @@ static void M_Setup(OBJECT *const obj)
     Object_GetBone(obj, 7)->rot.y = true;
     Object_GetBone(obj, 7)->rot.x = true;
     OBJECT_PROPERTIES(
-        obj, OBJECT_PROPERTY_INT("max_hit_points", 200, "Maximum hit points."));
+        obj,
+        OBJECT_PROPERTY_INT(
+            "max_hit_points", M_HIT_POINTS, "Maximum hit points."),
+        OBJECT_PROPERTY_INT(
+            "head_beam_damage", M_HEAD_BEAM_DAMAGE,
+            "Damage dealt by the head electric beam."));
 }
 
 bool TribeBoss_IsLizardActive(void)

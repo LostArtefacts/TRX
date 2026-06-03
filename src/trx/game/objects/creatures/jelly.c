@@ -1,23 +1,32 @@
 #include <trx/game/creature.h>
 #include <trx/game/lara.h>
 #include <trx/game/objects/common.h>
+#include <trx/game/objects/property.h>
 #include <trx/game/pathing.h>
 #include <trx/game/spawn.h>
 
 // clang-format off
-#define JELLY_HITPOINTS    10
-#define JELLY_RADIUS       (WALL_L / 10) // = 102
-#define JELLY_STING_DAMAGE 5
-#define JELLY_TURN         (DEG_1 * 90) // = 16380
+#define M_HIT_POINTS 10
+#define M_DAMAGE     5
+#define M_RADIUS     (WALL_L / 10) // = 102
+#define M_TURN       (DEG_1 * 90) // = 16380
 // clang-format on
 
 typedef enum {
-    // clang-format off
-    JELLY_STATE_EMPTY = 0,
-    JELLY_STATE_MOVE  = 1,
-    JELLY_STATE_STOP  = 2,
-    // clang-format on
-} JELLY_STATE;
+    M_STATE_EMPTY,
+    M_STATE_MOVE,
+    M_STATE_STOP,
+} M_STATE;
+
+static int32_t M_GetDamage(const ITEM *const item)
+{
+    OBJECT_PROPERTY_VALUE damage = {};
+    if (ObjectProperty_GetItemValue(item, "damage", &damage)) {
+        return damage.as_int;
+    }
+
+    return M_DAMAGE;
+}
 
 static void M_Control(const int16_t item_num)
 {
@@ -39,24 +48,24 @@ static void M_Control(const int16_t item_num)
         Creature_AIInfo(item, &info);
         Creature_Mood(item, &info, false);
 
-        int16_t angle = Creature_Turn(item, JELLY_TURN);
+        int16_t angle = Creature_Turn(item, M_TURN);
 
         switch (item->current_anim_state) {
-        case JELLY_STATE_STOP:
+        case M_STATE_STOP:
             if (creature->mood != MOOD_BORED) {
-                item->goal_anim_state = JELLY_STATE_MOVE;
+                item->goal_anim_state = M_STATE_MOVE;
             }
             break;
 
-        case JELLY_STATE_MOVE:
+        case M_STATE_MOVE:
             if (creature->mood == MOOD_BORED || item->touch_bits != 0) {
-                item->goal_anim_state = JELLY_STATE_STOP;
+                item->goal_anim_state = M_STATE_STOP;
             }
             break;
         }
 
         if (item->touch_bits != 0) {
-            Lara_TakeDamage(JELLY_STING_DAMAGE, true);
+            Lara_TakeDamage(M_GetDamage(item), true);
         }
 
         Creature_Head(item, 0);
@@ -74,7 +83,7 @@ static void M_Setup(OBJECT *const obj)
     obj->control_func = M_Control;
     obj->collision_func = Creature_Collision;
 
-    obj->radius = JELLY_RADIUS;
+    obj->radius = M_RADIUS;
     obj->shadow_size = UNIT_SHADOW / 2;
     obj->lot_setup = LOT_Setup(LOT_SETUP_FLYER);
 
@@ -86,7 +95,9 @@ static void M_Setup(OBJECT *const obj)
     OBJECT_PROPERTIES(
         obj,
         OBJECT_PROPERTY_INT(
-            "max_hit_points", JELLY_HITPOINTS, "Maximum hit points."));
+            "max_hit_points", M_HIT_POINTS, "Maximum hit points."),
+        OBJECT_PROPERTY_INT(
+            "damage", M_DAMAGE, "Damage dealt by the jelly sting."));
 }
 
 REGISTER_OBJECT(O_JELLY, M_Setup)

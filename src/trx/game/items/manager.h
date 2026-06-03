@@ -3,6 +3,7 @@
 #include <trx/game/anims.h>
 #include <trx/game/items/types.h>
 
+void Item_Reset(void);
 void Item_InitialiseItems(int32_t num_items);
 ITEM *Item_Get(int16_t num);
 int16_t Item_GetIndex(const ITEM *item);

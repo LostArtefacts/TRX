@@ -12,34 +12,8 @@
 - changed hard-coded music tracks from Snowmobiles, mine carts, and RIBs to be configurable via Lua
 - changed hard-coded fish and piranha setup to be configurable via Lua
 - changed hard-coded small Cobra radius setup to be configurable via Lua
-- changed the hard-coded traps damage to be configurable via Lua. Objects affected:
-    - `O_BLADE`
-    - `O_CEILING_SPIKES`
-    - `O_DAMOCLES_SWORD`
-    - `O_DART`
-    - `O_FALLING_CEILING_1`
-    - `O_FALLING_CEILING_2`
-    - `O_HOOK`
-    - `O_ICICLE`
-    - `O_KILLER_STATUE`
-    - `O_LIGHTNING_EMITTER`
-    - `O_PENDULUM_1`
-    - `O_PENDULUM_2`
-    - `O_PROPELLER_1`
-    - `O_PROPELLER_2`
-    - `O_PROPELLER_3`
-    - `O_ROLLING_BALL_1`
-    - `O_ROLLING_BALL_2`
-    - `O_ROLLING_BALL_3`
-    - `O_ROLLING_BALL_4`
-    - `O_ROTATING_LASER`
-    - `O_SECURITY_LASER_DEADLY`
-    - `O_SENTRY_GUN`
-    - `O_SPIKE_WALL`
-    - `O_SPIKES`
-    - `O_SPINNING_BLADE`
-    - `O_SWINGING_AXE`
-    - `O_TEETH_TRAP`
+- changed the hard-coded creature melee and hitscanner damage values to be configurable via Lua. Exemption: visible projectiles.
+- changed the hard-coded traps damage to be configurable via Lua. Exemption: one-shot traps such as crushing boulders.
 - removed the hard-coded movement speed and moved it to Lua instead for the following objects:
     - `O_CEILING_SPIKES`
     - `O_LAVA_WEDGE`
@@ -47,6 +21,7 @@
 - removed the limitation of only having two fish sprite types in any level
 - removed the limit of at most 8 fish/piranha shoals per level
 - fixed being able to start the Quad Bike track timer without Lara getting onto the quad bike first (regression from 1.1)
+- fixed missed Assault Course targets not penalizing player's time if Lara crosses the finish line before they collapse (regression from 1.2)
 - fixed a crash with old custom levels that have sectors pointing to invalid floor data (#5568)
 - fixed the enemy health bar disappearing later than Lara's own bar when holstering weapons (regression from Tomb1Main 0.2)
 - fixed crystal totals being shown incorrectly after loading a save (#5589, regression from 1.5)

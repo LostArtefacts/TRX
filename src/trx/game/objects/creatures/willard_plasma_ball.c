@@ -5,12 +5,24 @@
 #include <trx/game/effects.h>
 #include <trx/game/lara.h>
 #include <trx/game/objects.h>
+#include <trx/game/objects/property.h>
 #include <trx/game/output.h>
 #include <trx/game/random.h>
 #include <trx/game/rooms.h>
 #include <trx/game/sparks.h>
 
 static const uint8_t m_Falloffs[5] = { 13, 7, 7, 7, 7 };
+
+static int32_t M_GetDamage(void)
+{
+    OBJECT_PROPERTY_VALUE damage = {};
+    const OBJECT *const obj = Object_Get(O_WILLARD);
+    if (ObjectProperty_GetObjectValue(obj, "plasma_ball_damage", &damage)) {
+        return damage.as_int;
+    }
+
+    return WILLARD_PLASMA_BALL_DAMAGE;
+}
 
 static void M_TriggerPlasmaBallFlame(
     const int16_t effect_num, const int32_t type, const XYZ_32 vel)
@@ -168,7 +180,7 @@ static void M_Control(const int16_t effect_num)
         }
 
         Lara_CatchFireEx(FLAME_GREEN);
-        Lara_TakeDamage(lara_item->hit_points, false);
+        Lara_TakeDamage(M_GetDamage(), false);
         Effect_Kill(effect_num);
         return;
     }

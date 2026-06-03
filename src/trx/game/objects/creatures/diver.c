@@ -8,10 +8,10 @@
 #include <trx/game/spawn.h>
 
 // clang-format off
-#define M_SWIM_TURN (3 * DEG_1)  // = 546
-#define M_FRONT_ARC DEG_45
-#define M_HITPOINTS 20
-#define M_RADIUS    (WALL_L / 3) // = 341
+#define M_HIT_POINTS 20
+#define M_RADIUS     (WALL_L / 3) // = 341
+#define M_SWIM_TURN  (3 * DEG_1)  // = 546
+#define M_FRONT_ARC  DEG_45
 // clang-format on
 
 typedef enum {
@@ -26,7 +26,7 @@ typedef enum {
     M_STATE_NULL_2,
     M_STATE_DEATH,
     // clang-format on
-} DIVER_STATE;
+} M_STATE;
 
 typedef enum {
     M_ANIM_DEATH = 16,
@@ -259,7 +259,7 @@ static void M_Setup(OBJECT *const obj)
     OBJECT_PROPERTIES(
         obj,
         OBJECT_PROPERTY_INT(
-            "max_hit_points", M_HITPOINTS, "Maximum hit points."));
+            "max_hit_points", M_HIT_POINTS, "Maximum hit points."));
 }
 
 REGISTER_OBJECT(O_DIVER, M_Setup)

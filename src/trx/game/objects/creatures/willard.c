@@ -10,6 +10,7 @@
 #include <trx/game/items.h>
 #include <trx/game/lara.h>
 #include <trx/game/objects.h>
+#include <trx/game/objects/property.h>
 #include <trx/game/output.h>
 #include <trx/game/output/sources/poly_fx.h>
 #include <trx/game/pathing/lot.h>
@@ -21,15 +22,17 @@
 #include <trx/game/stats.h>
 
 // clang-format off
+#define M_HIT_POINTS        200
 #define M_TURN              (5 * DEG_1)
 #define M_ATTACK_TURN       (2 * DEG_1)
 #define M_TOUCH_BITS        0x900000
 #define M_BITE_DAMAGE       220
+#define M_LUNGE_DAMAGE      (M_BITE_DAMAGE * 2)
 #define M_TOUCH_DAMAGE      10
 #define M_ATTACK_RANGE      SQUARE(WALL_L * 3 / 2)
 #define M_LUNGE_RANGE       SQUARE(WALL_L * 2)
 #define M_FIRE_RANGE        SQUARE(WALL_L * 4)
-#define M_HP_AFTER_KO       200
+#define M_HP_AFTER_KO       M_HIT_POINTS
 #define M_KO_TIME           280
 #define M_WALK_ATTACK_FRAME 30
 #define M_TURN_180_FRAME    51
@@ -100,6 +103,17 @@ static const int32_t m_DHeights1[5] = { -7680, -4224, -768, 2688, 6144 };
 static const int32_t m_DHeights2[5] = { -1536, -1152, -768, -384, 0 };
 static int32_t m_DeathDist[5] = {};
 static int32_t m_DeathHeights[5] = {};
+
+static int32_t M_GetDamage(
+    const ITEM *const item, const char *const key, const int32_t default_value)
+{
+    OBJECT_PROPERTY_VALUE damage = {};
+    if (ObjectProperty_GetItemValue(item, key, &damage)) {
+        return damage.as_int;
+    }
+
+    return default_value;
+}
 
 static void M_ResetPriv(M_PRIV *const p)
 {
@@ -643,7 +657,8 @@ static void M_Control(const int16_t item_num)
         Creature_AIInfo(item, &info);
 
         if (item->touch_bits) {
-            Lara_TakeDamage(M_TOUCH_DAMAGE, false);
+            Lara_TakeDamage(
+                M_GetDamage(item, "touch_damage", M_TOUCH_DAMAGE), false);
         }
 
         const int32_t index = p->lara_ai_path - p->closest_ai_path;
@@ -703,7 +718,8 @@ static void M_Control(const int16_t item_num)
             creature->maximum_turn = M_ATTACK_TURN;
 
             if (!creature->flags && item->touch_bits & M_TOUCH_BITS) {
-                Lara_TakeDamage(2 * M_BITE_DAMAGE, true);
+                Lara_TakeDamage(
+                    M_GetDamage(item, "lunge_damage", M_LUNGE_DAMAGE), true);
                 Creature_Effect(item, &m_BiteLeft, Spawn_Blood);
                 Creature_Effect(item, &m_BiteRight, Spawn_Blood);
                 creature->flags = 1;
@@ -730,7 +746,8 @@ static void M_Control(const int16_t item_num)
         case M_STATE_WALK_ATTACK_1:
         case M_STATE_WALK_ATTACK_2:
             if (!creature->flags && (item->touch_bits & M_TOUCH_BITS) != 0) {
-                Lara_TakeDamage(M_BITE_DAMAGE, true);
+                Lara_TakeDamage(
+                    M_GetDamage(item, "bite_damage", M_BITE_DAMAGE), true);
                 Creature_Effect(item, &m_BiteLeft, Spawn_Blood);
                 Creature_Effect(item, &m_BiteRight, Spawn_Blood);
                 creature->flags = 1;
@@ -949,7 +966,19 @@ static void M_Setup(OBJECT *const obj)
     obj->save_flags = true;
     obj->save_anim = true;
     OBJECT_PROPERTIES(
-        obj, OBJECT_PROPERTY_INT("max_hit_points", 200, "Maximum hit points."));
+        obj,
+        OBJECT_PROPERTY_INT(
+            "max_hit_points", M_HIT_POINTS, "Maximum hit points."),
+        OBJECT_PROPERTY_INT(
+            "touch_damage", M_TOUCH_DAMAGE, "Damage dealt by body contact."),
+        OBJECT_PROPERTY_INT(
+            "bite_damage", M_BITE_DAMAGE, "Damage dealt by bite attacks."),
+        OBJECT_PROPERTY_INT(
+            "lunge_damage", M_LUNGE_DAMAGE,
+            "Damage dealt by the lunge attack."),
+        OBJECT_PROPERTY_INT(
+            "plasma_ball_damage", WILLARD_PLASMA_BALL_DAMAGE,
+            "Damage dealt by direct plasma ball hits."));
 }
 
 REGISTER_OBJECT(O_WILLARD, M_Setup)

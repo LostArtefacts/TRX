@@ -3,12 +3,14 @@
 #include <trx/game/camera.h>
 #include <trx/game/creature.h>
 #include <trx/game/lara.h>
+#include <trx/game/objects/property.h>
 #include <trx/game/random.h>
 #include <trx/game/sound.h>
 #include <trx/game/sparks.h>
 #include <trx/game/spawn.h>
 
 // clang-format off
+#define M_HIT_POINTS        28
 #define M_BIFF_DAMAGE       100
 #define M_BIFF_ENEMY_DAMAGE 5
 #define M_WALK_TURN         (9 * DEG_1) // = 1638
@@ -50,6 +52,17 @@ static BITE m_ShootHit = {
     .pos = { .x = 8, .y = 40, .z = -248 },
     .mesh_num = 13,
 };
+
+static int32_t M_GetDamage(
+    const ITEM *const item, const char *const key, const int32_t default_value)
+{
+    OBJECT_PROPERTY_VALUE damage = {};
+    if (ObjectProperty_GetItemValue(item, key, &damage)) {
+        return damage.as_int;
+    }
+
+    return default_value;
+}
 
 static void M_SpawnDart(ITEM *const item)
 {
@@ -281,14 +294,18 @@ static void M_Control(const int16_t item_num)
             if (enemy == lara_item) {
                 if (!(creature->flags & 0xF000)
                     && item->touch_bits & M_TOUCH_BITS) {
-                    Lara_TakeDamage(M_BIFF_DAMAGE, true);
+                    Lara_TakeDamage(
+                        M_GetDamage(item, "damage", M_BIFF_DAMAGE), true);
                     creature->flags |= 0x1000;
                     Sound_Effect(SFX_LARA_THUD, &item->pos, SPM_NORMAL);
                     Creature_Effect(item, &m_BiffHit, Spawn_Blood);
                 }
             } else if (!(creature->flags & 0xF000) && enemy != nullptr) {
                 if (Item_IsNearby(enemy, item, M_HIT_RANGE)) {
-                    Item_TakeDamage(enemy, M_BIFF_ENEMY_DAMAGE, IDF_NONE, item);
+                    Item_TakeDamage(
+                        enemy,
+                        M_GetDamage(item, "enemy_damage", M_BIFF_ENEMY_DAMAGE),
+                        IDF_NONE, item);
                     creature->flags |= 0x1000;
                     Sound_Effect(SFX_LARA_THUD, &item->pos, SPM_NORMAL);
                 }
@@ -372,7 +389,14 @@ static void M_Setup(OBJECT *const obj)
     Object_GetBone(obj, 13)->rot.y = true;
     Object_GetBone(obj, 13)->rot.x = true;
     OBJECT_PROPERTIES(
-        obj, OBJECT_PROPERTY_INT("max_hit_points", 28, "Maximum hit points."));
+        obj,
+        OBJECT_PROPERTY_INT(
+            "max_hit_points", M_HIT_POINTS, "Maximum hit points."),
+        OBJECT_PROPERTY_INT(
+            "damage", M_BIFF_DAMAGE, "Damage dealt by melee attacks."),
+        OBJECT_PROPERTY_INT(
+            "enemy_damage", M_BIFF_ENEMY_DAMAGE,
+            "Damage dealt to non-player targets."));
 }
 
 REGISTER_OBJECT(O_TRIBE_PIPEMAN, M_Setup)

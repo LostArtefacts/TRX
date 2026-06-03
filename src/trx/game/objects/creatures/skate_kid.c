@@ -4,32 +4,38 @@
 #include <trx/game/creature.h>
 #include <trx/game/music.h>
 #include <trx/game/objects/common.h>
+#include <trx/game/objects/property.h>
 #include <trx/game/pathing.h>
 #include <trx/game/random.h>
 
-#define SKATE_KID_STOP_SHOT_DAMAGE 50
-#define SKATE_KID_SKATE_SHOT_DAMAGE 40
-#define SKATE_KID_STOP_RANGE SQUARE(WALL_L * 4) // = 16777216
-#define SKATE_KID_DONT_STOP_RANGE SQUARE(WALL_L * 5 / 2) // = 6553600
-#define SKATE_KID_TOO_CLOSE SQUARE(WALL_L) // = 1048576
-#define SKATE_KID_SKATE_TURN (DEG_1 * 4) // = 728
-#define SKATE_KID_PUSH_CHANCE 0x200
-#define SKATE_KID_SKATE_CHANCE 0x400
-#define SKATE_KID_DIE_ANIM 13
-#define SKATE_KID_HITPOINTS 125
-#define SKATE_KID_RADIUS (WALL_L / 5) // = 204
-#define SKATE_KID_SMARTNESS 0x7FFF
-#define SKATE_KID_SPEECH_HITPOINTS 120
-#define SKATE_KID_SPEECH_STARTED 1
+// clang-format off
+#define M_HIT_POINTS        125
+#define M_STOP_SHOT_DAMAGE  50
+#define M_SKATE_SHOT_DAMAGE 40
+#define M_RADIUS            (WALL_L / 5) // = 204
+#define M_STOP_RANGE        SQUARE(WALL_L * 4) // = 16777216
+#define M_DONT_STOP_RANGE   SQUARE(WALL_L * 5 / 2) // = 6553600
+#define M_TOO_CLOSE         SQUARE(WALL_L) // = 1048576
+#define M_SKATE_TURN        (DEG_1 * 4) // = 728
+#define M_PUSH_CHANCE       0x200
+#define M_SKATE_CHANCE      0x400
+#define M_SMARTNESS         0x7FFF
+#define M_SPEECH_HITPOINTS  120
+#define M_SPEECH_STARTED    1
+// clang-format on
 
 typedef enum {
-    SKATE_KID_STATE_STOP = 0,
-    SKATE_KID_STATE_SHOOT_1 = 1,
-    SKATE_KID_STATE_SKATE = 2,
-    SKATE_KID_STATE_PUSH = 3,
-    SKATE_KID_STATE_SHOOT_2 = 4,
-    SKATE_KID_STATE_DEATH = 5,
-} SKATE_KID_STATE;
+    M_STATE_STOP,
+    M_STATE_SHOOT_1,
+    M_STATE_SKATE,
+    M_STATE_PUSH,
+    M_STATE_SHOOT_2,
+    M_STATE_DEATH,
+} M_STATE;
+
+typedef enum {
+    M_ANIM_DEATH = 13,
+} M_ANIM;
 
 typedef struct {
     int16_t skateboard_item_num;
@@ -42,6 +48,17 @@ static const CREATURE_GUN m_KidGun2 = {
     .muzzle = { .pos = { 0, 150, 37 }, .mesh_num = 4 },
 };
 
+static int32_t M_GetDamage(
+    const ITEM *const item, const char *const key, const int32_t default_value)
+{
+    OBJECT_PROPERTY_VALUE damage = {};
+    if (ObjectProperty_GetItemValue(item, key, &damage)) {
+        return damage.as_int;
+    }
+
+    return default_value;
+}
+
 static void M_Initialise(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
@@ -49,7 +66,7 @@ static void M_Initialise(const int16_t item_num)
     p->skateboard_item_num = NO_ITEM;
 
     Creature_Initialise(item_num);
-    item->current_anim_state = SKATE_KID_STATE_SKATE;
+    item->current_anim_state = M_STATE_SKATE;
 
     if (!Object_Get(O_SKATEBOARD)->loaded) {
         return;
@@ -87,9 +104,9 @@ static void M_Control(const int16_t item_num)
     int16_t angle = 0;
 
     if (item->hit_points <= 0) {
-        if (item->current_anim_state != SKATE_KID_STATE_DEATH) {
-            item->current_anim_state = SKATE_KID_STATE_DEATH;
-            Item_SwitchToAnim(item, SKATE_KID_DIE_ANIM, 0);
+        if (item->current_anim_state != M_STATE_DEATH) {
+            item->current_anim_state = M_STATE_DEATH;
+            Item_SwitchToAnim(item, M_ANIM_DEATH, 0);
         }
     } else {
         AI_INFO info;
@@ -101,70 +118,66 @@ static void M_Control(const int16_t item_num)
 
         Creature_Mood(item, &info, false);
 
-        angle = Creature_Turn(item, SKATE_KID_SKATE_TURN);
+        angle = Creature_Turn(item, M_SKATE_TURN);
 
-        if (item->hit_points < SKATE_KID_SPEECH_HITPOINTS
-            && !(item->flags & SKATE_KID_SPEECH_STARTED)) {
+        if (item->hit_points < M_SPEECH_HITPOINTS
+            && !(item->flags & M_SPEECH_STARTED)) {
             const MUSIC_PLAY_MODE mode =
                 g_Config.audio.fix_speeches_killing_music ? MPM_OVERLAY
                                                           : MPM_NO_REPEAT;
             Music_Play(MX_SKATEKID_SPEECH, mode);
-            item->flags |= SKATE_KID_SPEECH_STARTED;
+            item->flags |= M_SPEECH_STARTED;
         }
 
         switch (item->current_anim_state) {
-        case SKATE_KID_STATE_STOP:
+        case M_STATE_STOP:
             kid->flags = 0;
             if (item->required_anim_state) {
                 item->goal_anim_state = item->required_anim_state;
             } else if (Creature_CanTargetEnemy(item, &info)) {
-                item->goal_anim_state = SKATE_KID_STATE_SHOOT_1;
+                item->goal_anim_state = M_STATE_SHOOT_1;
             } else {
-                item->goal_anim_state = SKATE_KID_STATE_SKATE;
+                item->goal_anim_state = M_STATE_SKATE;
             }
             break;
 
-        case SKATE_KID_STATE_SKATE:
+        case M_STATE_SKATE:
             kid->flags = 0;
-            if (Random_GetControl() < SKATE_KID_PUSH_CHANCE) {
-                item->goal_anim_state = SKATE_KID_STATE_PUSH;
+            if (Random_GetControl() < M_PUSH_CHANCE) {
+                item->goal_anim_state = M_STATE_PUSH;
             } else if (Creature_CanTargetEnemy(item, &info)) {
-                if (info.distance > SKATE_KID_DONT_STOP_RANGE
-                    && info.distance < SKATE_KID_STOP_RANGE
+                if (info.distance > M_DONT_STOP_RANGE
+                    && info.distance < M_STOP_RANGE
                     && kid->mood != MOOD_ESCAPE) {
-                    item->goal_anim_state = SKATE_KID_STATE_STOP;
+                    item->goal_anim_state = M_STATE_STOP;
                 } else {
-                    item->goal_anim_state = SKATE_KID_STATE_SHOOT_2;
+                    item->goal_anim_state = M_STATE_SHOOT_2;
                 }
             }
             break;
 
-        case SKATE_KID_STATE_PUSH:
-            if (Random_GetControl() < SKATE_KID_SKATE_CHANCE) {
-                item->goal_anim_state = SKATE_KID_STATE_SKATE;
+        case M_STATE_PUSH:
+            if (Random_GetControl() < M_SKATE_CHANCE) {
+                item->goal_anim_state = M_STATE_SKATE;
             }
             break;
 
-        case SKATE_KID_STATE_SHOOT_1:
-        case SKATE_KID_STATE_SHOOT_2:
+        case M_STATE_SHOOT_1:
+        case M_STATE_SHOOT_2:
             if (!kid->flags && Creature_CanTargetEnemy(item, &info)) {
-                Creature_Shoot(
-                    item, &info, &m_KidGun1, head,
-                    item->current_anim_state == SKATE_KID_STATE_SHOOT_1
-                        ? SKATE_KID_STOP_SHOT_DAMAGE
-                        : SKATE_KID_SKATE_SHOT_DAMAGE);
+                const int32_t damage =
+                    item->current_anim_state == M_STATE_SHOOT_1
+                    ? M_GetDamage(item, "stop_shot_damage", M_STOP_SHOT_DAMAGE)
+                    : M_GetDamage(
+                          item, "skate_shot_damage", M_SKATE_SHOT_DAMAGE);
+                Creature_Shoot(item, &info, &m_KidGun1, head, damage);
 
-                Creature_Shoot(
-                    item, &info, &m_KidGun2, head,
-                    item->current_anim_state == SKATE_KID_STATE_SHOOT_1
-                        ? SKATE_KID_STOP_SHOT_DAMAGE
-                        : SKATE_KID_SKATE_SHOT_DAMAGE);
+                Creature_Shoot(item, &info, &m_KidGun2, head, damage);
 
                 kid->flags = 1;
             }
-            if (kid->mood == MOOD_ESCAPE
-                || info.distance < SKATE_KID_TOO_CLOSE) {
-                item->required_anim_state = SKATE_KID_STATE_SKATE;
+            if (kid->mood == MOOD_ESCAPE || info.distance < M_TOO_CLOSE) {
+                item->required_anim_state = M_STATE_SKATE;
             }
             break;
         }
@@ -198,8 +211,8 @@ static void M_Setup(OBJECT *const obj)
     obj->priv_size = sizeof(M_PRIV);
     obj->shadow_size = UNIT_SHADOW / 2;
 
-    obj->radius = SKATE_KID_RADIUS;
-    obj->smartness = SKATE_KID_SMARTNESS;
+    obj->radius = M_RADIUS;
+    obj->smartness = M_SMARTNESS;
     obj->intelligent = true;
     obj->save_position = true;
     obj->save_hitpoints = true;
@@ -216,7 +229,13 @@ static void M_Setup(OBJECT *const obj)
     OBJECT_PROPERTIES(
         obj,
         OBJECT_PROPERTY_INT(
-            "max_hit_points", SKATE_KID_HITPOINTS, "Maximum hit points."));
+            "max_hit_points", M_HIT_POINTS, "Maximum hit points."),
+        OBJECT_PROPERTY_INT(
+            "stop_shot_damage", M_STOP_SHOT_DAMAGE,
+            "Damage dealt by shots while stopped."),
+        OBJECT_PROPERTY_INT(
+            "skate_shot_damage", M_SKATE_SHOT_DAMAGE,
+            "Damage dealt by shots while skating."));
 }
 
 static void M_SetupSkateboard(OBJECT *const obj)

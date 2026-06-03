@@ -4,6 +4,7 @@
 #include <trx/game/lara.h>
 #include <trx/game/objects.h>
 #include <trx/game/objects/creatures/claw_mutant_internal.h>
+#include <trx/game/objects/property.h>
 #include <trx/game/output.h>
 #include <trx/game/random.h>
 #include <trx/game/sound.h>
@@ -11,10 +12,10 @@
 #include <trx/game/spawn.h>
 
 // clang-format off
-#define M_RADIUS        STEP_L
 #define M_HIT_POINTS    130
 #define M_DAMAGE        100
 #define M_TOUCH_BITS    0b00000000'10010000
+#define M_RADIUS        STEP_L
 #define M_ALERT_DIST    SQUARE(WALL_L)         // = 1048576
 #define M_ATTACK_DIST_1 SQUARE(WALL_L)         // = 1048576
 #define M_ATTACK_DIST_2 SQUARE(WALL_L * 2)     // = 4194304
@@ -59,6 +60,16 @@ static const BITE m_PlasmaEmitter = {
     .pos = { .x = -32, .y = -16, .z = -192 },
     .mesh_num = 13,
 };
+
+static int32_t M_GetDamage(const ITEM *const item)
+{
+    OBJECT_PROPERTY_VALUE damage = {};
+    if (ObjectProperty_GetItemValue(item, "damage", &damage)) {
+        return damage.as_int;
+    }
+
+    return M_DAMAGE;
+}
 
 static void M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
 {
@@ -331,7 +342,7 @@ static void M_Control(const int16_t item_num)
         }
 
         if (creature->flags == 0 && (item->touch_bits & M_TOUCH_BITS) != 0) {
-            Lara_TakeDamage(100, true);
+            Lara_TakeDamage(M_GetDamage(item), true);
             Creature_Effect(item, &m_ClawLeft, Spawn_Blood);
             Creature_Effect(item, &m_ClawRight, Spawn_Blood);
             creature->flags = 1;
@@ -404,7 +415,13 @@ static void M_Setup(OBJECT *const obj)
     OBJECT_PROPERTIES(
         obj,
         OBJECT_PROPERTY_INT(
-            "max_hit_points", M_HIT_POINTS, "Maximum hit points."));
+            "max_hit_points", M_HIT_POINTS, "Maximum hit points."),
+        OBJECT_PROPERTY_INT(
+            "damage", M_DAMAGE,
+            "Damage dealt by the claw mutant melee attack."),
+        OBJECT_PROPERTY_INT(
+            "plasma_ball_damage", CLAW_MUTANT_PLASMA_BALL_DAMAGE,
+            "Damage dealt by the claw mutant plasma ball."));
 }
 
 REGISTER_OBJECT(O_CLAW_MUTANT, M_Setup)
