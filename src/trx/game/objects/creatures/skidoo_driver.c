@@ -5,36 +5,48 @@
 #include <trx/game/creature.h>
 #include <trx/game/items/carrier.h>
 #include <trx/game/lara.h>
+#include <trx/game/objects/property.h>
 #include <trx/game/objects/vehicles/skidoo_common.h>
 #include <trx/game/pathing.h>
 #include <trx/game/sound.h>
 
-#define SKIDOO_DRIVER_MIN_TURN (SKIDOO_MAX_TURN / 3) // = 364
-#define SKIDOO_DRIVER_TARGET_ANGLE (DEG_1 * 15) // = 2730
-#define SKIDOO_DRIVER_WAIT_RANGE SQUARE(WALL_L * 4) // = 0x1000000
-#define SKIDOO_DRIVER_SHOT_DAMAGE 10
-#define SKIDOO_DRIVER_LARA_DAMAGE 50
+// clang-format off
+#define M_MIN_TURN     (SKIDOO_MAX_TURN / 3) // = 364
+#define M_TARGET_ANGLE (DEG_1 * 15) // = 2730
+#define M_WAIT_RANGE   SQUARE(WALL_L * 4) // = 0x1000000
+#define M_SHOT_DAMAGE  10
+#define M_LARA_DAMAGE  50
+// clang-format on
 
 typedef enum {
-    // clang-format off
-    SKIDOO_DRIVER_STATE_EMPTY       = 0,
-    SKIDOO_DRIVER_STATE_WAIT        = 1,
-    SKIDOO_DRIVER_STATE_MOVING      = 2,
-    SKIDOO_DRIVER_STATE_START_LEFT  = 3,
-    SKIDOO_DRIVER_STATE_START_RIGHT = 4,
-    SKIDOO_DRIVER_STATE_LEFT        = 5,
-    SKIDOO_DRIVER_STATE_RIGHT       = 6,
-    SKIDOO_DRIVER_STATE_DEATH       = 7,
-    // clang-format on
-} SKIDOO_DRIVER_STATE;
+    M_STATE_EMPTY,
+    M_STATE_WAIT,
+    M_STATE_MOVING,
+    M_STATE_START_LEFT,
+    M_STATE_START_RIGHT,
+    M_STATE_LEFT,
+    M_STATE_RIGHT,
+    M_STATE_DEATH,
+} M_STATE;
 
 typedef enum {
-    SKIDOO_DRIVER_ANIM_DEATH = 10,
-} SKIDOO_DRIVER_ANIM;
+    M_ANIM_DEATH = 10,
+} M_ANIM;
 
 typedef struct {
     int16_t skidoo_item_num;
 } M_PRIV;
+
+static int32_t M_GetDamage(
+    const ITEM *const item, const char *const key, const int32_t default_value)
+{
+    OBJECT_PROPERTY_VALUE damage = {};
+    if (ObjectProperty_GetItemValue(item, key, &damage)) {
+        return damage.as_int;
+    }
+
+    return default_value;
+}
 
 static void M_KillDriver(ITEM *const driver_item)
 {
@@ -63,7 +75,7 @@ static void M_MakeMountable(ITEM *const skidoo_item)
 
 static void M_ControlDead(ITEM *const driver_item, ITEM *const skidoo_item)
 {
-    if (driver_item->current_anim_state == SKIDOO_DRIVER_STATE_DEATH) {
+    if (driver_item->current_anim_state == M_STATE_DEATH) {
         Item_Animate(driver_item);
     } else {
         driver_item->pos.x = skidoo_item->pos.x;
@@ -71,8 +83,8 @@ static void M_ControlDead(ITEM *const driver_item, ITEM *const skidoo_item)
         driver_item->pos.z = skidoo_item->pos.z;
         driver_item->rot.y = skidoo_item->rot.y;
         driver_item->room_num = skidoo_item->room_num;
-        Item_SwitchToAnim(driver_item, SKIDOO_DRIVER_ANIM_DEATH, 0);
-        driver_item->current_anim_state = SKIDOO_DRIVER_STATE_DEATH;
+        Item_SwitchToAnim(driver_item, M_ANIM_DEATH, 0);
+        driver_item->current_anim_state = M_STATE_DEATH;
         Carrier_TestItemDrops(Item_GetIndex(skidoo_item));
 
         LARA_INFO *const lara = Lara_GetLaraInfo();
@@ -82,12 +94,12 @@ static void M_ControlDead(ITEM *const driver_item, ITEM *const skidoo_item)
     }
 
     switch (skidoo_item->current_anim_state) {
-    case SKIDOO_DRIVER_STATE_MOVING:
-    case SKIDOO_DRIVER_STATE_WAIT:
-        skidoo_item->goal_anim_state = SKIDOO_DRIVER_STATE_WAIT;
+    case M_STATE_MOVING:
+    case M_STATE_WAIT:
+        skidoo_item->goal_anim_state = M_STATE_WAIT;
         break;
     default:
-        skidoo_item->goal_anim_state = SKIDOO_DRIVER_STATE_MOVING;
+        skidoo_item->goal_anim_state = M_STATE_MOVING;
         break;
     }
 }
@@ -103,55 +115,53 @@ static int16_t M_ControlAlive(ITEM *const driver_item, ITEM *const skidoo_item)
     int16_t angle = Creature_Turn(skidoo_item, SKIDOO_MAX_TURN / 2);
 
     switch (skidoo_item->current_anim_state) {
-    case SKIDOO_DRIVER_STATE_WAIT:
+    case M_STATE_WAIT:
         if (driver_data->mood != MOOD_BORED
-            && (ABS(info.angle) >= SKIDOO_DRIVER_TARGET_ANGLE
-                || info.distance >= SKIDOO_DRIVER_WAIT_RANGE)) {
-            skidoo_item->goal_anim_state = SKIDOO_DRIVER_STATE_MOVING;
+            && (ABS(info.angle) >= M_TARGET_ANGLE
+                || info.distance >= M_WAIT_RANGE)) {
+            skidoo_item->goal_anim_state = M_STATE_MOVING;
         }
         break;
 
-    case SKIDOO_DRIVER_STATE_MOVING:
+    case M_STATE_MOVING:
         if (driver_data->mood == MOOD_BORED) {
-            skidoo_item->goal_anim_state = SKIDOO_DRIVER_STATE_WAIT;
+            skidoo_item->goal_anim_state = M_STATE_WAIT;
         } else if (
-            ABS(info.angle) < SKIDOO_DRIVER_TARGET_ANGLE
-            && info.distance < SKIDOO_DRIVER_WAIT_RANGE) {
-            skidoo_item->goal_anim_state = SKIDOO_DRIVER_STATE_WAIT;
-        } else if (angle < -SKIDOO_DRIVER_MIN_TURN) {
-            skidoo_item->goal_anim_state = SKIDOO_DRIVER_STATE_START_LEFT;
-        } else if (angle > SKIDOO_DRIVER_MIN_TURN) {
-            skidoo_item->goal_anim_state = SKIDOO_DRIVER_STATE_START_RIGHT;
+            ABS(info.angle) < M_TARGET_ANGLE && info.distance < M_WAIT_RANGE) {
+            skidoo_item->goal_anim_state = M_STATE_WAIT;
+        } else if (angle < -M_MIN_TURN) {
+            skidoo_item->goal_anim_state = M_STATE_START_LEFT;
+        } else if (angle > M_MIN_TURN) {
+            skidoo_item->goal_anim_state = M_STATE_START_RIGHT;
         }
         break;
 
-    case SKIDOO_DRIVER_STATE_START_LEFT:
-    case SKIDOO_DRIVER_STATE_LEFT:
-        if (angle >= -SKIDOO_DRIVER_MIN_TURN) {
-            skidoo_item->goal_anim_state = SKIDOO_DRIVER_STATE_MOVING;
+    case M_STATE_START_LEFT:
+    case M_STATE_LEFT:
+        if (angle >= -M_MIN_TURN) {
+            skidoo_item->goal_anim_state = M_STATE_MOVING;
         } else {
-            skidoo_item->goal_anim_state = SKIDOO_DRIVER_STATE_LEFT;
+            skidoo_item->goal_anim_state = M_STATE_LEFT;
         }
         break;
 
-    case SKIDOO_DRIVER_STATE_START_RIGHT:
-    case SKIDOO_DRIVER_STATE_RIGHT:
-        if (angle >= -SKIDOO_DRIVER_MIN_TURN) {
-            skidoo_item->goal_anim_state = SKIDOO_DRIVER_STATE_MOVING;
+    case M_STATE_START_RIGHT:
+    case M_STATE_RIGHT:
+        if (angle >= -M_MIN_TURN) {
+            skidoo_item->goal_anim_state = M_STATE_MOVING;
         } else {
-            skidoo_item->goal_anim_state = SKIDOO_DRIVER_STATE_LEFT;
+            skidoo_item->goal_anim_state = M_STATE_LEFT;
         }
         break;
     }
 
-    if (driver_item->current_anim_state != SKIDOO_DRIVER_STATE_DEATH) {
+    if (driver_item->current_anim_state != M_STATE_DEATH) {
         const ITEM *const lara_item = Lara_GetItem();
-        if (driver_data->flags == 0
-            && ABS(info.angle) < SKIDOO_DRIVER_TARGET_ANGLE
+        if (driver_data->flags == 0 && ABS(info.angle) < M_TARGET_ANGLE
             && lara_item->hit_points > 0) {
             const int32_t damage = Lara_Vehicle_IsMounted()
-                ? SKIDOO_DRIVER_SHOT_DAMAGE
-                : SKIDOO_DRIVER_LARA_DAMAGE;
+                ? M_GetDamage(driver_item, "mounted_shot_damage", M_SHOT_DAMAGE)
+                : M_GetDamage(driver_item, "shot_damage", M_LARA_DAMAGE);
 
             const bool left_targetable = Creature_Shoot(
                 skidoo_item, &info,
@@ -236,7 +246,7 @@ static void M_Control(const int16_t driver_item_num)
         angle = M_ControlAlive(driver_item, skidoo_item);
     }
 
-    if (skidoo_item->current_anim_state == SKIDOO_DRIVER_STATE_WAIT) {
+    if (skidoo_item->current_anim_state == M_STATE_WAIT) {
         driver_data->head_rotation = 0;
         Sound_Effect(SFX_SKIDOO_IDLE, &skidoo_item->pos, SPM_NORMAL);
     } else {
@@ -253,7 +263,7 @@ static void M_Control(const int16_t driver_item_num)
 
     Creature_Animate(skidoo_item_num, angle, 0);
 
-    if (driver_item->current_anim_state == SKIDOO_DRIVER_STATE_DEATH) {
+    if (driver_item->current_anim_state == M_STATE_DEATH) {
         if (driver_item->status == IS_DEACTIVATED && skidoo_item->speed == 0
             && skidoo_item->fall_speed == 0) {
             M_KillDriver(driver_item);
@@ -293,7 +303,13 @@ static void M_Setup(OBJECT *const obj)
     obj->save_flags = true;
     obj->save_anim = true;
     OBJECT_PROPERTIES(
-        obj, OBJECT_PROPERTY_INT("max_hit_points", 1, "Maximum hit points."));
+        obj, OBJECT_PROPERTY_INT("max_hit_points", 1, "Maximum hit points."),
+        OBJECT_PROPERTY_INT(
+            "shot_damage", M_LARA_DAMAGE,
+            "Damage dealt by shots when Lara is not mounted."),
+        OBJECT_PROPERTY_INT(
+            "mounted_shot_damage", M_SHOT_DAMAGE,
+            "Damage dealt by shots when Lara is mounted."));
 }
 
 int16_t SkidooDriver_GetSkidooItemNum(const ITEM *const driver_item)

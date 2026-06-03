@@ -328,6 +328,8 @@ This page lists documented moveable object properties.
 
 ### `52` O_SKIDOO_DRIVER
 - `max_hit_points = 1` — Maximum hit points.
+- `shot_damage = 50` — Damage dealt by shots when Lara is not mounted.
+- `mounted_shot_damage = 10` — Damage dealt by shots when Lara is mounted.
 
 ### `53` O_MONK_1
 - `max_hit_points = 30` — Maximum hit points.
