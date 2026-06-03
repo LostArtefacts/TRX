@@ -3,6 +3,7 @@
 #include <trx/game/creature.h>
 #include <trx/game/lara.h>
 #include <trx/game/objects.h>
+#include <trx/game/objects/property.h>
 #include <trx/game/output.h>
 #include <trx/game/pathing.h>
 #include <trx/game/random.h>
@@ -46,6 +47,16 @@ static const BITE m_Sting = {
     .pos = {},
     .mesh_num = 12,
 };
+
+static int32_t M_GetDamage(const ITEM *const item)
+{
+    OBJECT_PROPERTY_VALUE damage = {};
+    if (ObjectProperty_GetItemValue(item, "damage", &damage)) {
+        return damage.as_int;
+    }
+
+    return M_DAMAGE;
+}
 
 static void M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
 {
@@ -235,7 +246,7 @@ static void M_Control(const int16_t item_num)
         }
 
         if (creature->flags == 0 && (item->touch_bits & M_TOUCH_BITS) != 0) {
-            Lara_TakeDamage(M_DAMAGE, true);
+            Lara_TakeDamage(M_GetDamage(item), true);
             Creature_Effect(item, &m_Sting, Spawn_Blood);
             creature->flags = 1;
         }
@@ -296,7 +307,9 @@ static void M_Setup(OBJECT *const obj)
     OBJECT_PROPERTIES(
         obj,
         OBJECT_PROPERTY_INT(
-            "max_hit_points", M_HIT_POINTS, "Maximum hit points."));
+            "max_hit_points", M_HIT_POINTS, "Maximum hit points."),
+        OBJECT_PROPERTY_INT(
+            "damage", M_DAMAGE, "Damage dealt by the sting attack."));
 }
 
 REGISTER_OBJECT(O_WASP_MUTANT, M_Setup)
