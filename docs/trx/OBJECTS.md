@@ -137,6 +137,9 @@ This page lists documented moveable object properties.
 
 ### `34` O_TORSO
 - `max_hit_points = 500` — Maximum hit points.
+- `touch_damage = 5` — Damage dealt by body contact.
+- `attack_damage = 500` — Damage dealt by swipe attacks.
+- `part_damage = 250` — Damage dealt by the death explosion.
 
 ### `36` O_SWINGING_AXE
 - `damage = 100` — Damage dealt while Lara is touching the swinging axe.
