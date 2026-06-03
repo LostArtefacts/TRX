@@ -278,6 +278,7 @@ This page lists documented moveable object properties.
 
 ### `31` O_WORKER_2
 - `max_hit_points = 20` — Maximum hit points.
+- `damage = 30` — Damage dealt by gun shots.
 
 ### `32` O_WORKER_3
 - `max_hit_points = 27` — Maximum hit points.
@@ -287,6 +288,7 @@ This page lists documented moveable object properties.
 
 ### `34` O_WORKER_5
 - `max_hit_points = 20` — Maximum hit points.
+- `damage = 30` — Damage dealt by gun shots.
 
 ### `35` O_JELLY
 - `max_hit_points = 10` — Maximum hit points.
