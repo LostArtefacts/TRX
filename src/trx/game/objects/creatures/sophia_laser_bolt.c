@@ -5,6 +5,7 @@
 #include <trx/game/lara.h>
 #include <trx/game/matrix.h>
 #include <trx/game/objects.h>
+#include <trx/game/objects/property.h>
 #include <trx/game/output.h>
 #include <trx/game/output/sources/poly_fx.h>
 #include <trx/game/random.h>
@@ -19,6 +20,17 @@ typedef struct {
     bool summon_bolt;
     int16_t summon_lifetime;
 } M_PRIV;
+
+static int32_t M_GetDamage(const char *const key, const int32_t default_value)
+{
+    OBJECT_PROPERTY_VALUE damage = {};
+    const OBJECT *const obj = Object_Get(O_SOPHIA);
+    if (ObjectProperty_GetObjectValue(obj, key, &damage)) {
+        return damage.as_int;
+    }
+
+    return default_value;
+}
 
 static void M_Control(const int16_t item_num)
 {
@@ -74,7 +86,14 @@ static void M_Control(const int16_t item_num)
             }
 
             if (hit) {
-                Lara_TakeDamage(30 + ((p->light_falloff >= 0) << 9), true);
+                Lara_TakeDamage(
+                    p->light_falloff >= 0
+                        ? M_GetDamage(
+                              "big_laser_bolt_damage",
+                              SOPHIA_BIG_LASER_BOLT_DAMAGE)
+                        : M_GetDamage(
+                              "laser_bolt_damage", SOPHIA_LASER_BOLT_DAMAGE),
+                    true);
             } else {
                 const ITEM *const lara_item = Lara_GetItem();
                 const XYZ_32 delta = {
@@ -84,9 +103,15 @@ static void M_Control(const int16_t item_num)
                 };
                 const int32_t dist = XYZ_32_GetLength(delta);
                 if (dist < WALL_L) {
+                    const int32_t max_damage = p->light_falloff >= 0
+                        ? M_GetDamage(
+                              "big_laser_bolt_splash_damage",
+                              SOPHIA_BIG_LASER_BOLT_SPLASH_DAMAGE)
+                        : M_GetDamage(
+                              "laser_bolt_splash_damage",
+                              SOPHIA_LASER_BOLT_SPLASH_DAMAGE);
                     Lara_TakeDamage(
-                        (WALL_L - dist) >> (6 - 2 * (p->light_falloff >= 0)),
-                        true);
+                        max_damage * (WALL_L - dist) / WALL_L, true);
                 }
             }
 

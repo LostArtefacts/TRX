@@ -11,6 +11,7 @@
 #include <trx/game/lara.h>
 #include <trx/game/lara/electric.h>
 #include <trx/game/objects.h>
+#include <trx/game/objects/property.h>
 #include <trx/game/output.h>
 #include <trx/game/output/sources/poly_fx.h>
 #include <trx/game/pathing.h>
@@ -20,12 +21,14 @@
 #include <trx/game/stats.h>
 
 // clang-format off
+#define M_HIT_POINTS     300
 #define M_SMALL_FLASH    10
 
 #define M_RIGHT_PRONG    0
 #define M_CENTER_PRONG   1
 #define M_LEFT_PRONG     2
 
+#define M_RADIUS         (WALL_L / 10) // = 102
 #define M_VAULT_SHIFT    96
 #define M_AWARE_DISTANCE SQUARE(WALL_L)
 #define M_WALK_TURN      (4 * DEG_1)
@@ -97,6 +100,18 @@ static const int32_t m_DHeights1[5] = { -7680, -4224, -768, 2688, 6144 };
 static const int32_t m_DHeights2[5] = { -1536, -1152, -768, -384, 0 };
 static int32_t m_DeathDist[5] = {};
 static int32_t m_DeathHeights[5] = {};
+
+static int32_t M_GetObjectDamage(
+    const char *const key, const int32_t default_value)
+{
+    OBJECT_PROPERTY_VALUE damage = {};
+    const OBJECT *const obj = Object_Get(O_SOPHIA);
+    if (ObjectProperty_GetObjectValue(obj, key, &damage)) {
+        return damage.as_int;
+    }
+
+    return default_value;
+}
 
 static void M_ExplodeLondonBoss(const ITEM *const item)
 {
@@ -193,7 +208,8 @@ static bool M_KnockBackCollision(const FX_RING *const ring)
         return false;
     }
 
-    Lara_TakeDamage(200, true);
+    Lara_TakeDamage(
+        M_GetObjectDamage("knockback_damage", SOPHIA_KNOCKBACK_DAMAGE), true);
 
     const int16_t angle = Math_Atan(delta.z, delta.x);
     const int16_t dy = lara_item->rot.y - angle;
@@ -905,10 +921,10 @@ static void M_Setup(OBJECT *const obj)
 
     obj->lot_setup = LOT_Setup(LOT_SETUP_CLIMBER);
     obj->lot_setup.drop = -STEP_L * 3;
-    obj->shadow_size = 0;
 
+    obj->shadow_size = 0;
     obj->pivot_length = 50;
-    obj->radius = 102;
+    obj->radius = M_RADIUS;
 
     obj->intelligent = true;
     obj->save_position = true;
@@ -920,7 +936,27 @@ static void M_Setup(OBJECT *const obj)
     Object_GetBone(obj, 6)->rot.y = true;
     Object_GetBone(obj, 13)->rot.y = true;
     OBJECT_PROPERTIES(
-        obj, OBJECT_PROPERTY_INT("max_hit_points", 300, "Maximum hit points."));
+        obj,
+        OBJECT_PROPERTY_INT(
+            "max_hit_points", M_HIT_POINTS, "Maximum hit points."),
+        OBJECT_PROPERTY_INT(
+            "knockback_damage", SOPHIA_KNOCKBACK_DAMAGE,
+            "Damage dealt by the knockback shockwave."),
+        OBJECT_PROPERTY_INT(
+            "laser_bolt_damage", SOPHIA_LASER_BOLT_DAMAGE,
+            "Damage dealt by regular laser bolt direct hits."),
+        OBJECT_PROPERTY_INT(
+            "big_laser_bolt_damage", SOPHIA_BIG_LASER_BOLT_DAMAGE,
+            "Damage dealt by the big laser bolt direct hit."),
+        OBJECT_PROPERTY_INT(
+            "laser_bolt_splash_damage", SOPHIA_LASER_BOLT_SPLASH_DAMAGE,
+            "Maximum splash damage dealt by regular laser bolts."),
+        OBJECT_PROPERTY_INT(
+            "big_laser_bolt_splash_damage", SOPHIA_BIG_LASER_BOLT_SPLASH_DAMAGE,
+            "Maximum splash damage dealt by the big laser bolt."),
+        OBJECT_PROPERTY_INT(
+            "plasma_ball_damage", SOPHIA_PLASMA_BALL_DAMAGE,
+            "Damage dealt by plasma ball direct hits."));
 }
 
 REGISTER_OBJECT(O_SOPHIA, M_Setup)
