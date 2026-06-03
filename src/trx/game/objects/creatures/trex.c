@@ -4,13 +4,17 @@
 #include <trx/game/creature.h>
 #include <trx/game/lara.h>
 #include <trx/game/objects/common.h>
+#include <trx/game/objects/property.h>
 #include <trx/game/pathing.h>
 #include <trx/game/random.h>
 
 // clang-format off
+#define M_HIT_POINTS     100
+#define M_TOUCH_DAMAGE   1
+#define M_TRAMPLE_DAMAGE 10
+#define M_BITE_DAMAGE    10000
 #define M_SHADOW_SIZE    (UNIT_SHADOW / (g_TRVersion == 1 ? 4 : 2))
 #define M_PIVOT_LENGTH   (g_TRVersion == 1 ? 2000 : 1800)
-#define M_HITPOINTS      100
 #define M_TOUCH_BITS     0b00110000'00000000
 #define M_RADIUS         (WALL_L / 3) // = 341
 #define M_RUN_TURN       (DEG_1 * 4) // = 728
@@ -19,9 +23,6 @@
 #define M_RUN_RANGE      SQUARE(WALL_L * 5) // = 26214400
 #define M_ATTACK_RANGE   SQUARE(WALL_L * 4) // = 16777216
 #define M_BITE_RANGE     SQUARE(1500) // = 2250000
-#define M_TOUCH_DAMAGE   1
-#define M_TRAMPLE_DAMAGE 10
-#define M_BITE_DAMAGE    10000
 #define M_ROAR_CHANCE    512
 #define M_SMARTNESS      0x7FFF
 // clang-format on
@@ -42,9 +43,20 @@ typedef enum {
     M_STATE_KILL,
 } M_STATE;
 
+static int32_t M_GetDamage(
+    const ITEM *const item, const char *const key, const int32_t default_value)
+{
+    OBJECT_PROPERTY_VALUE damage = {};
+    if (ObjectProperty_GetItemValue(item, key, &damage)) {
+        return damage.as_int;
+    }
+
+    return default_value;
+}
+
 static void M_KillLara(ITEM *const item)
 {
-    Lara_TakeDamage(M_BITE_DAMAGE, true);
+    Lara_TakeDamage(M_GetDamage(item, "bite_damage", M_BITE_DAMAGE), true);
     Creature_SpecialKill(item, M_ANIM_KILL, M_STATE_KILL, LS_EXTRA_TREX_KILL);
     Lara_Skin_SwapAllExtra(LS_EXTRA_TREX_KILL);
 }
@@ -89,9 +101,11 @@ static void M_Control(const int16_t item_num)
 
     if (item->touch_bits != 0) {
         if (item->current_anim_state == M_STATE_RUN) {
-            Lara_TakeDamage(M_TRAMPLE_DAMAGE, false);
+            Lara_TakeDamage(
+                M_GetDamage(item, "trample_damage", M_TRAMPLE_DAMAGE), false);
         } else {
-            Lara_TakeDamage(M_TOUCH_DAMAGE, false);
+            Lara_TakeDamage(
+                M_GetDamage(item, "touch_damage", M_TOUCH_DAMAGE), false);
         }
     }
 
@@ -191,7 +205,14 @@ static void M_Setup(OBJECT *const obj)
     OBJECT_PROPERTIES(
         obj,
         OBJECT_PROPERTY_INT(
-            "max_hit_points", M_HITPOINTS, "Maximum hit points."));
+            "max_hit_points", M_HIT_POINTS, "Maximum hit points."),
+        OBJECT_PROPERTY_INT(
+            "touch_damage", M_TOUCH_DAMAGE, "Damage dealt by body contact."),
+        OBJECT_PROPERTY_INT(
+            "trample_damage", M_TRAMPLE_DAMAGE,
+            "Damage dealt while trampling."),
+        OBJECT_PROPERTY_INT(
+            "bite_damage", M_BITE_DAMAGE, "Damage dealt by the bite attack."));
 }
 
 REGISTER_OBJECT(O_TREX, M_Setup)

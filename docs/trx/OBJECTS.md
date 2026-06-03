@@ -68,6 +68,9 @@ This page lists documented moveable object properties.
 
 ### `18` O_TREX
 - `max_hit_points = 100` — Maximum hit points.
+- `touch_damage = 1` — Damage dealt by body contact.
+- `trample_damage = 10` — Damage dealt while trampling.
+- `bite_damage = 10000` — Damage dealt by the bite attack.
 
 ### `19` O_RAPTOR
 - `max_hit_points = 20` — Maximum hit points.
@@ -106,6 +109,9 @@ This page lists documented moveable object properties.
 
 ### `25` O_DINO_WARRIOR
 - `max_hit_points = 100` — Maximum hit points.
+- `touch_damage = 1` — Damage dealt by body contact.
+- `trample_damage = 10` — Damage dealt while trampling.
+- `bite_damage = 10000` — Damage dealt by the bite attack.
 
 ### `26` O_FISH
 - `max_hit_points = 12` — Maximum hit points.
@@ -441,6 +447,9 @@ This page lists documented moveable object properties.
 
 ### `214` O_TREX
 - `max_hit_points = 100` — Maximum hit points.
+- `touch_damage = 1` — Damage dealt by body contact.
+- `trample_damage = 10` — Damage dealt while trampling.
+- `bite_damage = 10000` — Damage dealt by the bite attack.
 
 ### `260` O_WINSTON
 - `max_hit_points = 1` — Maximum hit points.
