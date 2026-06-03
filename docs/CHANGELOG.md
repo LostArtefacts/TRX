@@ -78,6 +78,7 @@
     - `O_SWAT_1`
     - `O_SWAT_2`
     - `O_SWAT_3`
+    - `O_TIGER`
     - `O_VOLE`
     - `O_VULTURE`
 - changed the hard-coded traps damage to be configurable via Lua. Objects affected:
