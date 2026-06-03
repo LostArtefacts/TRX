@@ -474,7 +474,7 @@ int32_t Shell_Main(const SHELL_ARGS *const args)
         }
     }
 
-    if (Game_GetCurrentLevel() != nullptr) {
+    if (GF_GetCurrentLevel() != nullptr) {
         Level_Unload();
     }
     Game_SetCurrentLevel(nullptr);
