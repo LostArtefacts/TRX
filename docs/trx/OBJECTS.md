@@ -805,6 +805,10 @@ This page lists documented moveable object properties.
 
 ### `287` O_TREX_ALPHA
 - `max_hit_points = 800` — Maximum hit points.
+- `touch_damage = 1` — Damage dealt by body contact.
+- `trample_damage = 10` — Damage dealt while trampling.
+- `bite_damage = 10000` — Damage dealt by the bite attack.
+- `raptor_damage = 50` — Damage dealt to raptors by the bite attack.
 
 ### `288` O_RAPTOR
 - `max_hit_points = 90` — Maximum hit points.
