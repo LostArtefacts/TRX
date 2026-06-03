@@ -11,27 +11,26 @@
 #include <trx/game/spawn.h>
 
 // clang-format off
+#define M_HIT_POINTS 20
 #define M_RADIUS     (WALL_L / 10) // = 102
 #define M_STOP_RANGE SQUARE(WALL_L * 3 / 2) // = 2359296
 // clang-format on
 
 typedef enum {
-    // clang-format off
-    M_STATE_EMPTY     = 0,
-    M_STATE_STOP      = 1,
-    M_STATE_WALK      = 2,
-    M_STATE_DEF_1     = 3,
-    M_STATE_DEF_2     = 4,
-    M_STATE_DEF_3     = 5,
-    M_STATE_HIT_1     = 6,
-    M_STATE_HIT_2     = 7,
-    M_STATE_HIT_3     = 8,
-    M_STATE_HIT_DOWN  = 9,
-    M_STATE_FALL_DOWN = 10,
-    M_STATE_GET_UP    = 11,
-    M_STATE_BRUSH_OFF = 12,
-    M_STATE_ON_FLOOR  = 13,
-    // clang-format on
+    M_STATE_EMPTY,
+    M_STATE_STOP,
+    M_STATE_WALK,
+    M_STATE_DEF_1,
+    M_STATE_DEF_2,
+    M_STATE_DEF_3,
+    M_STATE_HIT_1,
+    M_STATE_HIT_2,
+    M_STATE_HIT_3,
+    M_STATE_HIT_DOWN,
+    M_STATE_FALL_DOWN,
+    M_STATE_GET_UP,
+    M_STATE_BRUSH_OFF,
+    M_STATE_ON_FLOOR,
 } M_STATE;
 
 typedef struct {
@@ -265,7 +264,9 @@ static void M_Setup(OBJECT *const obj)
     obj->save_flags = true;
     obj->save_anim = true;
     OBJECT_PROPERTIES(
-        obj, OBJECT_PROPERTY_INT("max_hit_points", 20, "Maximum hit points."));
+        obj,
+        OBJECT_PROPERTY_INT(
+            "max_hit_points", M_HIT_POINTS, "Maximum hit points."));
 }
 
 REGISTER_OBJECT(O_WINSTON_ARMY, M_Setup)
