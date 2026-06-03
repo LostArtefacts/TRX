@@ -1,6 +1,7 @@
 #include <trx/game/creature.h>
 #include <trx/game/lara.h>
 #include <trx/game/objects.h>
+#include <trx/game/objects/property.h>
 #include <trx/game/random.h>
 #include <trx/game/sound.h>
 
@@ -46,6 +47,16 @@ static const CREATURE_GUN m_Gun = {
     .tr3_flash_shade = 600,
     .tr3_flash_rot_x = -DEG_90,
 };
+
+static int32_t M_GetDamage(const ITEM *const item)
+{
+    OBJECT_PROPERTY_VALUE damage = {};
+    if (ObjectProperty_GetItemValue(item, "damage", &damage)) {
+        return damage.as_int;
+    }
+
+    return M_DAMAGE;
+}
 
 static void M_Initialise(const int16_t item_num)
 {
@@ -283,7 +294,7 @@ static void M_Control(const int16_t item_num)
         if (creature->flags != 0) {
             creature->flags--;
         } else {
-            Creature_Shoot(item, &info, &m_Gun, torso_y, M_DAMAGE);
+            Creature_Shoot(item, &info, &m_Gun, torso_y, M_GetDamage(item));
             creature->flags = 5;
         }
         break;
@@ -355,7 +366,8 @@ static void M_Setup(OBJECT *const obj)
     OBJECT_PROPERTIES(
         obj,
         OBJECT_PROPERTY_INT(
-            "max_hit_points", M_HIT_POINTS, "Maximum hit points."));
+            "max_hit_points", M_HIT_POINTS, "Maximum hit points."),
+        OBJECT_PROPERTY_INT("damage", M_DAMAGE, "Damage dealt by shots."));
 }
 
 REGISTER_OBJECT(O_RX_WORKER_2, M_Setup)
