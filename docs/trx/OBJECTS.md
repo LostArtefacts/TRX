@@ -587,6 +587,8 @@ This page lists documented moveable object properties.
 
 ### `56` O_SECURITY_GUARD
 - `max_hit_points = 28` — Maximum hit points.
+- `damage = 32` — Damage dealt by shots.
+- `final_shot_damage = 64` — Damage dealt by the death-state final shot.
 
 ### `57` O_SOPHIA
 - `max_hit_points = 300` — Maximum hit points.
