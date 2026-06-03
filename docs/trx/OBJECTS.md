@@ -672,6 +672,7 @@ This page lists documented moveable object properties.
 
 ### `73` O_TONY
 - `max_hit_points = 100` — Maximum hit points.
+- `fire_ball_damage = 200` — Damage dealt by direct fire ball hits.
 
 ### `74` O_AI_GUARD
 - `max_hit_points = 0` — Maximum hit points.
