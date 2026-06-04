@@ -901,6 +901,10 @@
             "title": "Co-chomhairle leasachaidh",
             "description": "Cuiridh seo an consol leasachaidh an comas.",
         },
+        "gameplay.enable_continuous_pushblocks": {
+            "title": "Blocaichean putaidh leantainneach",
+            "description": "Leigidh seo le Lara leantainn air adhart a' putadh no a' tarraing bhlocaichean fhad 's a tha an gnìomh air a chumail sìos, coltach ri TR4+. Ma tha e à comas, stadaidh Lara às dèidh gach beòthalachd putaidh/tharraing.",
+        },
         "gameplay.enable_controlled_drops": {
             "title": "Tuit fo smachd",
             "description": "Leigidh seo le Lara tionndadh san adhar agus grèim a ghabhail air an oir a dh'fhàg i, fhad 's a tha am putan gnìomh air a chumail sios tron tuiteam.",

@@ -901,6 +901,10 @@
             "title": "Konsole",
             "description": "Aktiviert die Entwickler-Konsole.",
         },
+        "gameplay.enable_continuous_pushblocks": {
+            "title": "\\{review}Kontinuierliche Schiebeblöcke",
+            "description": "\\{review}Ermöglicht es Lara, Blöcke weiter zu schieben oder zu ziehen, solange die Aktionstaste gedrückt gehalten wird, ähnlich wie in TR4+. Wenn deaktiviert, stoppt Lara nach jeder Schiebe-/Ziehanimation.",
+        },
         "gameplay.enable_controlled_drops": {
             "title": "\\{review}Kontrollierter Fall",
             "description": "\\{review}Ermöglicht Lara, sich in der Luft zu drehen und den Vorsprung zu greifen, den sie gerade verlassen hat, wenn die Aktionstaste beim Fallen gehalten wird.",

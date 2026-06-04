@@ -15,7 +15,10 @@
 #include <trx/game/sound.h>
 #include <trx/game/spawn.h>
 
+// clang-format off
 #define M_LARA_READY_FRAME 19
+#define M_GRID_SNAP        (WALL_L / 2) // = 512
+// clang-format on
 
 typedef enum {
     // clang-format off
@@ -34,6 +37,7 @@ typedef struct {
     int16_t interaction_rot;
     GAME_VECTOR initial;
     GAME_VECTOR linked;
+    XZ_32 move_origin;
 } M_PRIV;
 
 static const OBJECT_BOUNDS m_MovableBlock_Bounds = {
@@ -173,6 +177,12 @@ static void M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
     JSON_SHOULD(JSON_READ(io, "counter_rot_2", &p->extra_rotations[2]));
     JSON_SHOULD(JSON_READ(io, "original_rot", &p->original_rot));
     JSON_SHOULD(JSON_READ(io, "interaction_rot", &p->interaction_rot));
+
+    if (JSON_SHOULD(JSON_PUSH(io, "move_origin"))) {
+        JSON_SHOULD(JSON_READ(io, "x", &p->move_origin.x));
+        JSON_SHOULD(JSON_READ(io, "z", &p->move_origin.z));
+        JSON_SHOULD(JSON_POP(io));
+    }
 }
 
 static void M_SavePriv(const ITEM *const item, JSON_WRITE_IO *const io)
@@ -193,6 +203,11 @@ static void M_SavePriv(const ITEM *const item, JSON_WRITE_IO *const io)
     JSONW_WRITE(io, "counter_rot_2", p->extra_rotations[2]);
     JSONW_WRITE(io, "original_rot", p->original_rot);
     JSONW_WRITE(io, "interaction_rot", p->interaction_rot);
+
+    JSONW_PUSH_OBJECT(io);
+    JSONW_WRITE(io, "x", p->move_origin.x);
+    JSONW_WRITE(io, "z", p->move_origin.z);
+    JSONW_POP_AND_SET(io, "move_origin");
 }
 
 static bool M_TestCurrentSector(
@@ -200,6 +215,10 @@ static bool M_TestCurrentSector(
 {
     int16_t room_num = item->room_num;
     const SECTOR *const sector = Room_GetSector(item->pos, &room_num);
+
+    if (M_IsPushPull(item)) {
+        return true;
+    }
 
     // Check if there is a hard wall above.
     if (Room_GetHeight(sector, item->pos) == NO_HEIGHT) {
@@ -647,7 +666,7 @@ static void M_Collision(
             lara->gun_status = LGS_HANDS_BUSY;
         }
     } else if (Item_TestAnimEqual(lara_item, LA(LA_PUSHABLE_GRAB))) {
-        if (!Item_TestFrameEqual(lara_item, M_LF_READY)) {
+        if (!Item_TestFrameEqual(lara_item, M_LARA_READY_FRAME)) {
             return;
         }
 
@@ -661,15 +680,25 @@ static void M_Collision(
                 return;
             }
             p->interaction_rot = lara_item->rot.y;
-            item->goal_anim_state = M_STATE_PUSH;
-            lara_item->goal_anim_state = LS(LS_PUSH_BLOCK);
+            if (g_Config.gameplay.enable_continuous_pushblocks) {
+                item->current_anim_state = M_STATE_PUSH;
+                lara_item->goal_anim_state = LS(LS_FAST_PUSH_BLOCK);
+            } else {
+                item->goal_anim_state = M_STATE_PUSH;
+                lara_item->goal_anim_state = LS(LS_PUSH_BLOCK);
+            }
         } else if (g_Input.back) {
             if (!M_TestPull(item, WALL_L, quadrant)) {
                 return;
             }
             p->interaction_rot = lara_item->rot.y + DEG_180;
-            item->goal_anim_state = M_STATE_PULL;
-            lara_item->goal_anim_state = LS(LS_PULL_BLOCK);
+            if (g_Config.gameplay.enable_continuous_pushblocks) {
+                item->current_anim_state = M_STATE_PULL;
+                lara_item->goal_anim_state = LS(LS_FAST_PULL_BLOCK);
+            } else {
+                item->goal_anim_state = M_STATE_PULL;
+                lara_item->goal_anim_state = LS(LS_PULL_BLOCK);
+            }
         } else {
             return;
         }
@@ -679,9 +708,18 @@ static void M_Collision(
         Item_AddActive(item_num);
         M_UpdateStoppers(item, true);
         MovableBlock_UpdateBox(item, false);
-        Item_Animate(item);
-        Lara_Animate(lara_item);
         M_SetPushPull(item, true);
+
+        lara->interact_target.item_num = item_num;
+        if (g_Config.gameplay.enable_continuous_pushblocks) {
+            XYZ_32 lara_pos = {};
+            Collide_GetJointAbsPosition(lara_item, &lara_pos, LM_HAND_L);
+            p->move_origin.x = lara_pos.x;
+            p->move_origin.z = lara_pos.z;
+        } else {
+            Item_Animate(item);
+            Lara_Animate(lara_item);
+        }
     }
 }
 
@@ -701,6 +739,104 @@ static void M_ResetPosition(ITEM *const item)
     Item_RemoveActive(item_num);
     item->timer = -1;
     item->status = IS_INACTIVE;
+}
+
+static void M_SnapToLara(
+    ITEM *const item, const XYZ_32 lara_pos, const DIRECTION dir,
+    const bool pulling)
+{
+    int32_t *coord;
+    int32_t offset;
+    bool passed_target;
+    const M_PRIV *const p = item->priv;
+    const GAME_VECTOR origin = M_GetLinked(item);
+
+    switch (dir) {
+    case DIR_NORTH:
+        coord = &item->pos.z;
+        offset = lara_pos.z + origin.z - p->move_origin.z;
+        passed_target = pulling ? *coord > offset : *coord < offset;
+        break;
+
+    case DIR_EAST:
+        coord = &item->pos.x;
+        offset = lara_pos.x + origin.x - p->move_origin.x;
+        passed_target = pulling ? *coord > offset : *coord < offset;
+        break;
+
+    case DIR_SOUTH:
+        coord = &item->pos.z;
+        offset = lara_pos.z + origin.z - p->move_origin.z;
+        passed_target = pulling ? *coord < offset : *coord > offset;
+        break;
+
+    case DIR_WEST:
+        coord = &item->pos.x;
+        offset = lara_pos.x + origin.x - p->move_origin.x;
+        passed_target = pulling ? *coord < offset : *coord > offset;
+        break;
+
+    default:
+        return;
+    }
+
+    if (ABS(*coord - offset) < M_GRID_SNAP && passed_target) {
+        *coord = offset;
+    }
+}
+
+static void M_AnimatePushPull(ITEM *const item)
+{
+    ITEM *const lara_item = Lara_GetItem();
+    const LARA_TRX_ANIMATION lara_anim = LA_U(Item_GetRelativeAnim(lara_item));
+
+    switch (lara_anim) {
+    case LA_FAST_PUSHABLE_PULL:
+    case LA_FAST_PUSHABLE_PUSH:
+        XYZ_32 lara_pos = {};
+        Collide_GetJointAbsPosition(lara_item, &lara_pos, LM_HAND_L);
+        const DIRECTION dir = Math_GetDirection(lara_item->rot.y);
+        const bool pulling = lara_anim == LA_FAST_PUSHABLE_PULL;
+
+        M_SnapToLara(item, lara_pos, dir, pulling);
+
+        lara_item->goal_anim_state = lara_item->current_anim_state;
+        if (Item_TestFrameEqual(lara_item, -2)) {
+            const bool can_continue = pulling ? M_TestPull(item, WALL_L, dir)
+                                              : M_TestPush(item, WALL_L, dir);
+            if (!g_Input.action
+                || !g_Config.gameplay.enable_continuous_pushblocks
+                || !can_continue) {
+                lara_item->goal_anim_state = LS(LS_STOP);
+            } else {
+                // Clear the stopper from the previous sector and set it on the
+                // next one Lara is moving towards.
+                M_UpdateStoppers(item, true);
+                M_UpdateStoppers(item, false);
+            }
+        }
+
+        break;
+
+    case LA_FAST_PUSHABLE_PULL_STOP:
+    case LA_FAST_PUSHABLE_PUSH_STOP:
+        if (Item_TestFrameEqual(lara_item, 0)) {
+            item->pos.x = (item->pos.x & -M_GRID_SNAP) | M_GRID_SNAP;
+            item->pos.z = (item->pos.z & -M_GRID_SNAP) | M_GRID_SNAP;
+        } else if (Item_TestFrameEqual(lara_item, -1)) {
+            item->current_anim_state = M_STATE_STILL;
+            item->status = IS_DEACTIVATED;
+        }
+        break;
+
+    case LA_PUSHABLE_PUSH:
+    case LA_PUSHABLE_PULL:
+        Item_Animate(item);
+        break;
+
+    default:
+        break;
+    }
 }
 
 static void M_Control(const int16_t item_num)
@@ -728,7 +864,12 @@ static void M_Control(const int16_t item_num)
         return;
     }
 
-    Item_Animate(item);
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    if (M_IsPushPull(item) && lara->interact_target.item_num == item_num) {
+        M_AnimatePushPull(item);
+    } else {
+        Item_Animate(item);
+    }
 
     // Check if the block is floating, on a walkable, or on the pit floor.
     // ROUND_TO_HALF_CLICK because block can fall through floor to undefined
@@ -820,6 +961,10 @@ static void M_Control(const int16_t item_num)
         M_UpdateStoppers(item, false);
         MovableBlock_UpdateBox(item, true);
         Room_TestTriggers(item);
+
+        if (lara->interact_target.item_num == item_num) {
+            lara->interact_target.item_num = NO_ITEM;
+        }
     }
 }
 

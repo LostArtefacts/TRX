@@ -122,6 +122,36 @@ static void M_ResetGunStatus(void)
     lara_info->right_arm.frame_base = anim->frame_ptr;
 }
 
+static bool M_CanEnterFlyMode(void)
+{
+    const LARA_INFO *const lara_info = Lara_GetLaraInfo();
+    if (lara_info->water_status == LWS_CHEAT) {
+        return false;
+    }
+
+    const ITEM *const lara_item = Lara_GetItem();
+    if (lara_item == nullptr) {
+        return false;
+    }
+
+    if ((lara_item->flags & IF_ONE_SHOT) != 0) {
+        // The explosion cheat has been used, so Lara's death is permanent.
+        return false;
+    }
+
+    switch (LA_U(Item_GetRelativeAnim(lara_item))) {
+    case LA_FAST_PUSHABLE_PULL:
+    case LA_FAST_PUSHABLE_PUSH:
+    case LA_FAST_PUSHABLE_PULL_STOP:
+    case LA_FAST_PUSHABLE_PUSH_STOP:
+        // Continuous block-pushing is tied to Lara's animation, so prevent
+        // abandoning blocks mid-sector.
+        return false;
+    default:
+        return true;
+    }
+}
+
 bool Lara_Cheat_GiveAllKeys(void)
 {
     if (Lara_GetItem() == nullptr) {
@@ -264,16 +294,12 @@ bool Lara_Cheat_OpenNearestDoor(void)
 
 bool Lara_Cheat_EnterFlyMode(void)
 {
-    ITEM *const lara_item = Lara_GetItem();
-    LARA_INFO *const lara_info = Lara_GetLaraInfo();
-    if (lara_item == nullptr) {
+    if (!M_CanEnterFlyMode()) {
         return false;
     }
 
-    if ((lara_item->flags & IF_ONE_SHOT) != 0) {
-        // The explosion cheat has been used, so Lara's death is permanent.
-        return false;
-    }
+    ITEM *const lara_item = Lara_GetItem();
+    LARA_INFO *const lara_info = Lara_GetLaraInfo();
 
     Viewport_AlterFOV(-1, FOV_MODE_GAME);
 

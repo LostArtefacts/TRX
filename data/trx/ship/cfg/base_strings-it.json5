@@ -901,6 +901,10 @@
             "title": "Console",
             "description": "Abilita la console per sviluppatori.",
         },
+        "gameplay.enable_continuous_pushblocks": {
+            "title": "\\{review}Blocchi spingibili continui",
+            "description": "\\{review}Consente a Lara di continuare a spingere o tirare i blocchi finché il tasto azione è tenuto premuto, come in TR4+. Se disattivato, Lara si fermerà dopo ogni animazione di spinta/tirata.",
+        },
         "gameplay.enable_controlled_drops": {
             "title": "Cadute controllate",
             "description": "Permette a Lara di girare a mezz'aria e afferrare la sporgenza della superficie da cui è appena scivolata, se durante la caduta viene premuto il tasto Azione.",
