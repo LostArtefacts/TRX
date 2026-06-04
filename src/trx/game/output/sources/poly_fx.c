@@ -718,23 +718,6 @@ void OutputSource_PolyFX_StageSpark(const SPARK *const spark)
         const int32_t scalar = spark->scalar;
         sw = (int32_t)(((((int64_t)sw * g_PhdPersp) << scalar) / vpos_z));
         sh = (int32_t)(((((int64_t)sh * g_PhdPersp) << scalar) / vpos_z));
-
-        if (use_sprite) {
-            const int32_t max_w = render_width << scalar;
-            const int32_t max_h = render_height << scalar;
-            int32_t min_wh = 4;
-            if ((spark->flags & SPARK_F_ATTACHED_NODE) != 0U
-                && spark->node_num == 0U) {
-                min_wh = 2;
-            }
-            CLAMP(sw, min_wh, max_w);
-            CLAMP(sh, min_wh, max_h);
-        } else {
-            const int32_t max_w = render_width << 2;
-            const int32_t max_h = render_height << 2;
-            CLAMP(sw, 1, max_w);
-            CLAMP(sh, 1, max_h);
-        }
     }
 
     const float w = ((sw / 2.0f) * (float)vpos_z) / (float)g_PhdPersp;
