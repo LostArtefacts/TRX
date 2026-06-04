@@ -1048,6 +1048,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   └── triboss.tr2
 │   │   ├── scripts
 │   │   │   ├── aldwych.lua
+│   │   │   ├── antarc.lua
 │   │   │   ├── area51.lua
 │   │   │   ├── chunnel.lua
 │   │   │   ├── compound.lua
@@ -2290,6 +2291,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   └── triboss.tr2
     │   │   │   ├── scripts
     │   │   │   │   ├── aldwych.lua
+    │   │   │   │   ├── antarc.lua
     │   │   │   │   ├── area51.lua
     │   │   │   │   ├── chunnel.lua
     │   │   │   │   ├── compound.lua
