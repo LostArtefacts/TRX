@@ -68,8 +68,7 @@ static void M_Cheat(void)
         Lara_Cheat_GiveAllItems();
     }
 
-    const LARA_INFO *const lara_info = Lara_GetLaraInfo();
-    if (lara_info->water_status != LWS_CHEAT && g_InputDB.fly_cheat) {
+    if (g_InputDB.fly_cheat) {
         Lara_Cheat_EnterFlyMode();
     }
 }

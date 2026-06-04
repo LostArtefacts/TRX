@@ -901,6 +901,10 @@
             "title": "Konsola",
             "description": "Włącza konsolę umożliwiającą wpisywanie różnych komend.",
         },
+        "gameplay.enable_continuous_pushblocks": {
+            "title": "\\{review}Ciągłe przesuwanie bloków",
+            "description": "\\{review}Pozwala Larze na dalsze pchanie lub ciągnięcie bloków tak długo, jak przycisk akcji jest przytrzymany, podobnie jak w TR4+. Jeśli wyłączone, Lara zatrzyma się po każdej animacji pchania/ciągnięcia.",
+        },
         "gameplay.enable_controlled_drops": {
             "title": "Bezpieczne krawędzie",
             "description": "Pozwala Larze obrócić się w powietrzu i złapać krawędź z której gracz właśnie się ześliznął, jeśli trzymay jest przycisk akcji.",
