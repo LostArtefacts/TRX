@@ -61,6 +61,7 @@
 - fixed handheld flare sparks appearing inside the flare instead of above the tip
 - fixed TR3:LA referring to a non-existing FMV in the startup logs
 - fixed texture bleeding and missized textures on piranhas, tropical fish and bats
+- fixed bats disappearing after flying out of the room where they spawned
 - fixed the drill in the Shakespeare Cliff not rotating
 - fixed seeing the fish in Coastal Village spawn due to delayed triggers, most noticeable when fades are disabled
 - fixed dropped pickups not keeping their original facing (regression from 1.2)
