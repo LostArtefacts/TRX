@@ -360,6 +360,17 @@ static void M_Control(const int16_t item_num)
         p->bats_triggered = true;
     } else {
         M_Update(p);
+
+        if (p->bats_alive) {
+            item->pos = p->bats[0].pos;
+            int16_t room_num = item->room_num;
+            Room_GetSector(item->pos, &room_num);
+            if (room_num != item->room_num) {
+                // Keep the emitter in the same room as the swarm leader so the
+                // bats continue to be drawn after crossing room boundaries.
+                Item_UpdateRoom(item_num, room_num);
+            }
+        }
     }
 
     if (!p->bats_alive) {
