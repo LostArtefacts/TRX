@@ -56,6 +56,7 @@
 - changed animated spikes to work outside levels 5 and 7
 - changed `O_AI_PATROL_1` behavior in High Security Compound and Area 51 to be configurable; refer to migration docs
 - removed the hard-coded Aldwych drill speed override and moved it to Lua instead
+- fixed handheld flare sparks appearing inside the flare instead of above the tip
 - fixed texture bleeding and missized textures on piranhas, tropical fish and bats
 - fixed the drill in the Shakespeare Cliff not rotating
 - fixed seeing the fish in Coastal Village spawn due to delayed triggers, most noticeable when fades are disabled
