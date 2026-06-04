@@ -15,13 +15,15 @@
 #include <trx/game/sound.h>
 #include <trx/game/spawn.h>
 
-#define LF_PPREADY 19
+#define M_LARA_READY_FRAME 19
 
 typedef enum {
-    MOVABLE_BLOCK_STATE_STILL = 1,
-    MOVABLE_BLOCK_STATE_PUSH = 2,
-    MOVABLE_BLOCK_STATE_PULL = 3,
-} MOVABLE_BLOCK_STATE;
+    // clang-format off
+    M_STATE_STILL = 1,
+    M_STATE_PUSH  = 2,
+    M_STATE_PULL  = 3,
+    // clang-format on
+} M_STATE;
 
 typedef struct {
     uint16_t gravity_frames;
@@ -419,7 +421,7 @@ static bool M_TestEmbedCollision(const ITEM *const item, const ITEM *const lara)
     return M_IsItemOnTop(item, lara->pos.x, lara->pos.z)
         && lara->pos.y <= item->pos.y && lara->pos.y > item->pos.y - WALL_L
         && !item->gravity && !lara->gravity
-        && item->current_anim_state == MOVABLE_BLOCK_STATE_STILL
+        && item->current_anim_state == M_STATE_STILL
         && lara->current_anim_state != LS(LS_PULL_BLOCK)
         && lara->current_anim_state != LS(LS_PUSH_BLOCK);
 }
@@ -537,7 +539,7 @@ static void M_HandleSave(ITEM *const item, const SAVEGAME_STAGE stage)
         }
         if (item->status == IS_ACTIVE && !item->gravity
             && !M_IsForcedMoving(item)
-            && item->current_anim_state == MOVABLE_BLOCK_STATE_STILL) {
+            && item->current_anim_state == M_STATE_STILL) {
             Item_RemoveActive(Item_GetIndex(item));
             item->status = IS_INACTIVE;
         }
@@ -567,7 +569,7 @@ static void M_Collision(
         lara_item->pos.y = item->pos.y - WALL_L;
     }
 
-    if (item->current_anim_state == MOVABLE_BLOCK_STATE_STILL) {
+    if (item->current_anim_state == M_STATE_STILL) {
         M_SetPushPull(item, false);
     }
 
@@ -645,7 +647,7 @@ static void M_Collision(
             lara->gun_status = LGS_HANDS_BUSY;
         }
     } else if (Item_TestAnimEqual(lara_item, LA(LA_PUSHABLE_GRAB))) {
-        if (!Item_TestFrameEqual(lara_item, LF_PPREADY)) {
+        if (!Item_TestFrameEqual(lara_item, M_LF_READY)) {
             return;
         }
 
@@ -659,14 +661,14 @@ static void M_Collision(
                 return;
             }
             p->interaction_rot = lara_item->rot.y;
-            item->goal_anim_state = MOVABLE_BLOCK_STATE_PUSH;
+            item->goal_anim_state = M_STATE_PUSH;
             lara_item->goal_anim_state = LS(LS_PUSH_BLOCK);
         } else if (g_Input.back) {
             if (!M_TestPull(item, WALL_L, quadrant)) {
                 return;
             }
             p->interaction_rot = lara_item->rot.y + DEG_180;
-            item->goal_anim_state = MOVABLE_BLOCK_STATE_PULL;
+            item->goal_anim_state = M_STATE_PULL;
             lara_item->goal_anim_state = LS(LS_PULL_BLOCK);
         } else {
             return;
