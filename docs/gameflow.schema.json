@@ -234,9 +234,6 @@
           "type": "boolean",
           "description": "TR3 only. Enables PSX-style underwater water particles in this level."
         },
-        "cold_water": {
-          "type": "boolean"
-        },
         "death_tile": {
           "type": "string",
           "description": "Defines death-tile behavior (for TR3 only).",

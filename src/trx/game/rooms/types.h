@@ -179,6 +179,8 @@ typedef struct {
         bool inside;
         bool dynamic_lit;
         bool swamp;
+        bool damaging;
+        bool cold;
     } flags;
 
     ROOM_DRAWSET drawn_items;

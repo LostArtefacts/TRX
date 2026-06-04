@@ -8,6 +8,7 @@
 - added Lara's TR2 alpha bomber jacket outfit (#5594)
 - added the ability for skidoos and quad bikes that are inside or on top of lifts to move when the lift itself moves (#4353)
 - added the ability for skidoos, quad bikes and kayaks to activate heavy triggers (#4354)
+- added the ability to configure exposure zones and visible breath separately per room
 - changed vehicles to allow defining in Lua whether or not they can activate heavy triggers; refer to migration notes
 - changed Assault Course Lua record access from `trx.assault_stats` to `trx.assault.stats`
 - changed hard-coded music tracks from Snowmobiles, mine carts, and RIBs to be configurable via Lua

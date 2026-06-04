@@ -49,20 +49,6 @@ float Level_GetFogEnd(void)
     return g_Config.visuals.fog_end;
 }
 
-bool Level_HasColdWater(void)
-{
-    const GF_LEVEL *const level = GF_GetCurrentLevel();
-    if (level != nullptr && level->settings.cold_water.is_present) {
-        return level->settings.cold_water.value;
-    }
-
-    if (g_GameFlow.settings.cold_water.is_present) {
-        return g_GameFlow.settings.cold_water.value;
-    }
-
-    return false;
-}
-
 GF_DEATH_TILE Level_GetDeathTile(void)
 {
     const GF_LEVEL *const level = GF_GetCurrentLevel();

@@ -228,12 +228,6 @@ static bool M_LoadSettings(
         JSON_MUST(JSON_POP(io));
     }
 
-    if (JSON_OPTIONAL(JSON_PUSH(io, "cold_water"))) {
-        JSON_MUST(JSON_READ_CURRENT(io, &settings->cold_water.value));
-        settings->cold_water.is_present = true;
-        JSON_MUST(JSON_POP(io));
-    }
-
     if (JSON_OPTIONAL(JSON_PUSH(io, "death_tile"))) {
         const char *tmp_s = nullptr;
         JSON_MUST(JSON_READ_CURRENT(io, &tmp_s));

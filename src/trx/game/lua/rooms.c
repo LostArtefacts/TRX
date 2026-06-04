@@ -55,6 +55,22 @@ static int M_L_RoomGetWind(lua_State *const L)
     return 1;
 }
 
+// trxc.rooms.get_damaging(index) → bool or nil
+static int M_L_RoomGetDamaging(lua_State *const L)
+{
+    M_ROOM_GETTER(L);
+    lua_pushboolean(L, room->flags.damaging);
+    return 1;
+}
+
+// trxc.rooms.get_cold(index) → bool or nil
+static int M_L_RoomGetCold(lua_State *const L)
+{
+    M_ROOM_GETTER(L);
+    lua_pushboolean(L, room->flags.cold);
+    return 1;
+}
+
 // trxc.rooms.get_flip_status(index) → integer
 static int M_L_RoomGetFlipStatus(lua_State *const L)
 {
@@ -88,6 +104,22 @@ static int M_L_RoomSetWind(lua_State *const L)
 {
     M_ROOM_SETTER(L);
     room->flags.wind = lua_toboolean(L, 2);
+    return 1;
+}
+
+// trxc.rooms.set_damaging(index, bool)
+static int M_L_RoomSetDamaging(lua_State *const L)
+{
+    M_ROOM_SETTER(L);
+    room->flags.damaging = lua_toboolean(L, 2);
+    return 1;
+}
+
+// trxc.rooms.set_cold(index, bool)
+static int M_L_RoomSetCold(lua_State *const L)
+{
+    M_ROOM_SETTER(L);
+    room->flags.cold = lua_toboolean(L, 2);
     return 1;
 }
 
@@ -164,10 +196,18 @@ void LUA_CreateRooms(lua_State *const L)
     lua_setfield(L, -2, "get_underwater");
     lua_pushcfunction(L, M_L_RoomGetWind);
     lua_setfield(L, -2, "get_wind");
+    lua_pushcfunction(L, M_L_RoomGetDamaging);
+    lua_setfield(L, -2, "get_damaging");
+    lua_pushcfunction(L, M_L_RoomGetCold);
+    lua_setfield(L, -2, "get_cold");
     lua_pushcfunction(L, M_L_RoomSetUnderwater);
     lua_setfield(L, -2, "set_underwater");
     lua_pushcfunction(L, M_L_RoomSetWind);
     lua_setfield(L, -2, "set_wind");
+    lua_pushcfunction(L, M_L_RoomSetDamaging);
+    lua_setfield(L, -2, "set_damaging");
+    lua_pushcfunction(L, M_L_RoomSetCold);
+    lua_setfield(L, -2, "set_cold");
     lua_pushcfunction(L, M_L_RoomGetBounds);
     lua_setfield(L, -2, "get_bounds");
     lua_pushcfunction(L, M_L_RoomGetFlipStatus);
