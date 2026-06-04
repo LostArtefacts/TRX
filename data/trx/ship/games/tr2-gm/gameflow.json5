@@ -17,6 +17,7 @@
         "music_track": 60,
         "sequence": [
             {"type": "display_picture", "path": "legal_eu_gm.webp", "legal": true},
+            {"type": "play_fmv", "fmv_id": 0},
             {"type": "exit_to_title"},
         ],
         "inherit_injections": false,
@@ -207,6 +208,7 @@
     ],
 
     "fmvs": [
+        {"path": "LOGO.AVI", "legal": true},
     ],
 
     "hidden_config": [

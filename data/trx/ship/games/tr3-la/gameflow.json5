@@ -18,7 +18,6 @@
         "sequence": [
             {"type": "display_picture", "path": "legal_eu_la.webp", "legal": true},
             {"type": "play_fmv", "fmv_id": 0},
-            {"type": "play_fmv", "fmv_id": 1},
             {"type": "exit_to_title"},
         ],
         "injections": [

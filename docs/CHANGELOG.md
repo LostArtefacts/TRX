@@ -40,6 +40,7 @@
 - added support for fish and piranhas without sacrificing explosion sprites (refer to notes in migration guide) (#4358)
 - added support for bat emitters without sacrificing explosion sprites (refer to notes in migration guide)
 - added the abilty to use animated spikes
+- fixed TR2:GM missing opening Eidos Interactive / Core Design FMV (#5609)
 - fixed Lara wading in shallower water compared to OG (#5574, regression from 1.3)
 
 **TR3**:
@@ -57,6 +58,7 @@
 - changed `O_AI_PATROL_1` behavior in High Security Compound and Area 51 to be configurable; refer to migration docs
 - removed the hard-coded Aldwych drill speed override and moved it to Lua instead
 - fixed handheld flare sparks appearing inside the flare instead of above the tip
+- fixed TR3:LA referring to a non-existing FMV in the startup logs
 - fixed texture bleeding and missized textures on piranhas, tropical fish and bats
 - fixed the drill in the Shakespeare Cliff not rotating
 - fixed seeing the fish in Coastal Village spawn due to delayed triggers, most noticeable when fades are disabled
