@@ -403,7 +403,9 @@ void Carrier_TestItemDrops(const int16_t item_num)
             Item_UpdateRoom(item->spawn_num, carrier->room_num);
             ITEM *const pickup = Item_Get(item->spawn_num);
             pickup->pos = carrier->pos;
-            pickup->rot = carrier->rot;
+            if (g_TRVersion != 3) {
+                pickup->rot = carrier->rot;
+            }
             M_Drop(pickup);
         }
 
