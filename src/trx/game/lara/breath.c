@@ -3,7 +3,6 @@
 #include <trx/core/utils.h>
 #include <trx/game/collision.h>
 #include <trx/game/lara.h>
-#include <trx/game/level/settings.h>
 #include <trx/game/output/state.h>
 #include <trx/game/random.h>
 #include <trx/game/rooms.h>
@@ -20,7 +19,7 @@ static bool M_CanBreatheVisible(const ITEM *const lara_item)
         return false;
     }
 
-    if (!Level_HasColdWater()) {
+    if (!Room_Get(lara_item->room_num)->flags.cold) {
         return false;
     }
 

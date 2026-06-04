@@ -61,6 +61,15 @@ order: 3
    triggers intended for other heavy activators e.g. pushblocks. This is not
    configurable for the mine cart, which still relies on Lara striking switches.
 
+10. **Replace `cold_water` with room flags**:
+   The `cold_water` game-flow property has been removed. Use room flags instead:
+   - `damaging` controls Lara's exposure meter.
+   - `cold` controls Lara's visible breath.
+
+   You can set these flags from Lua:
+   - `trx.rooms[room_num].damaging = true`
+   - `trx.rooms[room_num].cold = true`
+
 ### Version 1.6 to 1.7
 
 1. **Update Lua item maximum HP access**:

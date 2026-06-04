@@ -7,6 +7,8 @@ local getters = {
   end,
   underwater = raw.get_underwater,
   wind = raw.get_wind,
+  damaging = raw.get_damaging,
+  cold = raw.get_cold,
   flip_status = raw.get_flip_status,
   flipped_room = function(self, key)
     local flipped_room = raw.get_flipped_room(self)
@@ -32,6 +34,8 @@ local getters = {
 local setters = {
   underwater = raw.set_underwater,
   wind = raw.set_wind,
+  damaging = raw.set_damaging,
+  cold = raw.set_cold,
 }
 
 local Room = {}

@@ -25,6 +25,8 @@ Module for inspecting all rooms in the current level.
     - **`num`**: 1-based room number.
     - **`underwater`**: Whether the room is underwater or not.
     - **`wind`**: Whether the room has breeze enabled or not. (Requires the player to have breeze enabled in the game settings).
+    - **`damaging`**: Whether the room uses Lara's exposure meter.
+    - **`cold`**: Whether Lara's breath is visible in the room.
     - **`bounds`**: a table with world-coordinate bounds of the room. The table contains:
       - **`min_x`**: minimum x coordinate.
       - **`min_y`**: minimum y coordinate.
@@ -39,6 +41,8 @@ Module for inspecting all rooms in the current level.
     Writable properties:
     - `underwater`
     - `wind`
+    - `damaging`
+    - `cold`
 
 ### Functions
 

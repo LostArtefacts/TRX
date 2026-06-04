@@ -25,7 +25,6 @@ Following are each of the properties available within a level.
     "water_particles": true,
     "death_tile": "rapids",
     "water_color": [0.7, 0.5, 0.85],
-    "cold_water": true,
     "fog_transparency": false,
     "fog_color": [0, 0, 0],
     "fog_start": 34.0,
@@ -157,17 +156,6 @@ Following are each of the properties available within a level.
       TR3 only. Controls the per-level death tile behavior.
       Valid values: <code>lava</code>, <code>rapids</code>, <code>electric</code>.
       Omit for lava.
-    </td>
-  </tr>
-  <tr valign="top">
-    <td>
-      <a name="cold-water"></a>
-      <code>cold_water</code>
-    </td>
-    <td>Boolean</td>
-    <td colspan="2">
-      Can be customized per level. See <a href="../GLOBAL_PROPERTIES.md#cold-water">the global property</a>
-      for details.
     </td>
   </tr>
   <tr valign="top">

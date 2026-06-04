@@ -10,7 +10,6 @@
 #include <trx/game/lara.h>
 #include <trx/game/lara/breath.h>
 #include <trx/game/lara/electric.h>
-#include <trx/game/level/settings.h>
 #include <trx/game/music.h>
 #include <trx/game/output.h>
 #include <trx/game/pathing.h>
@@ -835,7 +834,8 @@ static void M_HandleSurface(COLL_INFO *const coll)
 
 static void M_HandleExposure(void)
 {
-    if (!Level_HasColdWater()) {
+    const ITEM *const lara_item = Lara_GetItem();
+    if (!Room_Get(lara_item->room_num)->flags.damaging) {
         return;
     }
 

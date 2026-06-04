@@ -18,9 +18,8 @@ Module for interacting with the Lara's object.
     or [lua]`nil` if no target is locked.
 
 - [lua]`trx.lara.exposure_bar`  
-    Reads/writes exposure timer (cold water bar). The maximum value is 600.
-    If the cold bar setting is disabled on the game flow level, the health must
-    be managed manually from LUA.
+    Reads/writes Lara's exposure timer. The maximum value is 600.
+    The current level must use damaging rooms flag for this property to work.
 
 - [lua]`trx.lara.air_bar`  
     Reads/writes Lara's air timer. The maximum value is 1800.  

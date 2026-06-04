@@ -461,9 +461,9 @@
         // 16. Antarctica
         {
             "path": "antarc.tr2",
+            "script": "antarc.lua",
             "music_track": 28,
             "lara_outfit": "tr3_antarctica",
-            "cold_water": true,
             "weather_type": "snow",
             "sequence": [
                 {"type": "play_fmv", "fmv_id": 3},
@@ -491,7 +491,6 @@
             "script": "mines.lua",
             "music_track": 30,
             "lara_outfit": "tr3_antarctica",
-            "cold_water": true,
             "sequence": [
                 {"type": "loading_screen", "path": "antarc.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "remove_scions"},

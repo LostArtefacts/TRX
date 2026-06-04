@@ -250,6 +250,8 @@ static void M_RoomProperties(
     room->flags.wind        = (flags & 0x20) != 0;
     room->flags.inside      = (flags & 0x40) != 0;
     room->flags.swamp       = (flags & 0x80) != 0;
+    room->flags.damaging    = (flags & 0x100) != 0;
+    room->flags.cold        = (flags & 0x200) != 0;
     // clang-format on
     if (injection->version >= INJ_VERSION_8) {
         room->reverb_info = VFile_ReadU8(injection->fp);

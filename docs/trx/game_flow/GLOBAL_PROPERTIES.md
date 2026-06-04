@@ -76,16 +76,6 @@ remains distinct for each game.
   </tr>
   <tr valign="top">
     <td>
-      <a name="cold-water"></a>
-      <code>cold_water</code>
-    </td>
-    <td>Boolean</td>
-    <td>
-      Enables an exposure meter for Lara when she is in cold water.
-    </td>
-  </tr>
-  <tr valign="top">
-    <td>
       <a name="convert-dropped-guns"></a>
       <code>convert_dropped_guns</code>
     </td>
