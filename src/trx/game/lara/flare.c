@@ -87,7 +87,7 @@ static void M_InitialiseState(void)
     lara_info->target = nullptr;
 }
 
-static void M_DoIgniteEffects(const XYZ_32 flare_pos, int16_t room_num)
+static void M_Ignite(const XYZ_32 flare_pos, int16_t room_num)
 {
     m_IgnitePos = flare_pos;
     Room_GetSector(m_IgnitePos, &room_num);
@@ -95,6 +95,29 @@ static void M_DoIgniteEffects(const XYZ_32 flare_pos, int16_t room_num)
     const SOUND_PLAY_MODE mode =
         room->flags.underwater ? SPM_UNDERWATER : SPM_NORMAL;
     Sound_Effect(SFX_LARA_FLARE_IGNITE, &m_IgnitePos, mode);
+}
+
+static void M_DoIgniteEffects(void)
+{
+    // XXX(Dash):
+    // The OG has origin.z = 32.
+    // Tweaked to keep the flame from clipping inside the flare.
+    XYZ_32 origin = { 8, 36, 52 };
+    Lara_GetMeshPos(LM_HAND_L, &origin);
+
+    XYZ_32 limit = { 8, 36, WALL_L + (Random_GetDraw() & 0xFF) };
+    Lara_GetMeshPos(LM_HAND_L, &limit);
+
+    const XYZ_32 vel = {
+        .x = limit.x - origin.x,
+        .y = limit.y - origin.y,
+        .z = limit.z - origin.z,
+    };
+
+    for (int32_t i = 0; i < (Random_GetDraw() & 3) + 4; i++) {
+        const bool smoke = (i >> 2) != 0;
+        Sparks_TriggerFlareSparks(origin, vel, smoke);
+    }
 }
 
 static bool M_CanThrowFlare(void)
@@ -139,7 +162,7 @@ static void M_ControlInHand(void)
 
     const ITEM *const lara_item = Lara_GetItem();
     if (flare_age == 0) {
-        M_DoIgniteEffects(vec, lara_item->room_num);
+        M_Ignite(vec, lara_item->room_num);
     }
 
     lara_info->left_arm.flash_gun = Flare_GenerateLight(vec, flare_age);
@@ -162,21 +185,7 @@ static void M_ControlInHand(void)
         return;
     }
 
-    XYZ_32 vec_2 = {
-        .x = 8,
-        .y = 36,
-        .z = WALL_L + (Random_GetDraw() & 0xFF),
-    };
-    Lara_GetJointAbsPosition(&vec_2, LM_HAND_L);
-    const XYZ_32 vel = {
-        .x = vec_2.x - vec.x,
-        .y = vec_2.y - vec.y,
-        .z = vec_2.z - vec.z,
-    };
-    for (int32_t i = 0; i < (Random_GetDraw() & 3) + 4; i++) {
-        const bool smoke = (i >> 2) != 0;
-        Sparks_TriggerFlareSparks(vec, vel, smoke);
-    }
+    M_DoIgniteEffects();
 }
 
 static void M_SetArm(const int32_t flare_frame)
