@@ -137,6 +137,7 @@
                 "undersea_fd.bin",
                 "undersea_textures.bin",
                 "undersea_objects.bin",
+                "luds_diver_animation.bin",
             ],
         },
 

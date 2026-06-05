@@ -63,6 +63,7 @@
 - fixed texture bleeding and missized textures on piranhas, tropical fish and bats
 - fixed bats disappearing after flying out of the room where they spawned
 - fixed the drill in the Shakespeare Cliff not rotating
+- fixed the animating diver in Sleeping with the Fishes remaining visible in a default pose after diving into the water
 - fixed seeing the fish in Coastal Village spawn due to delayed triggers, most noticeable when fades are disabled
 - fixed dropped pickups not keeping their original facing (regression from 1.2)
 
