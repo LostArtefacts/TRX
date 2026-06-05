@@ -7,6 +7,7 @@
 #include <trx/game/items.h>
 #include <trx/game/lara.h>
 #include <trx/game/objects.h>
+#include <trx/game/output.h>
 #include <trx/game/output/sources/poly_fx.h>
 #include <trx/game/random.h>
 #include <trx/game/rooms.h>
@@ -476,6 +477,8 @@ static bool M_Draw(const ITEM *const item)
     const double ratio = Interpolation_GetWorldRate();
     const bool do_interp =
         Interpolation_IsActive() && ratio > 0.0 && ratio < 1.0;
+    Output_CalculateLight(item->interp.result.pos, item->room_num);
+    const OUTPUT_LIGHT_INFO light_info = Output_GetLightInfo();
 
     M_FISH *fish = &p->fish[1];
 
@@ -577,8 +580,8 @@ static bool M_Draw(const ITEM *const item)
 
         CLAMP(sprite_offset, 0, ABS(sprite_obj->mesh_count) - 1);
         const int32_t sprite_idx = sprite_obj->mesh_idx + sprite_offset;
-        OutputSource_PolyFX_StageSpriteTriWorld(
-            sprite_idx, tri_world, tri_color, DRAW_BLEND);
+        OutputSource_PolyFX_StageSpriteTriWorldLight(
+            sprite_idx, tri_world, tri_color, light_info, DRAW_BLEND);
     }
 
     if (Interpolation_IsActive() && ratio >= 1.0) {
