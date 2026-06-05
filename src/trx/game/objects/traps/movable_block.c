@@ -968,8 +968,8 @@ static void M_Control(const int16_t item_num)
     }
 }
 
-static int16_t M_GetFloorHeight(
-    const ITEM *const item, const XYZ_32 pos, const int16_t height)
+static int32_t M_GetFloorHeight(
+    const ITEM *const item, const XYZ_32 pos, const int32_t height)
 {
     if (item->status == IS_INVISIBLE || item->gravity) {
         return height;
@@ -1017,8 +1017,8 @@ static int16_t M_GetFloorHeight(
     return item->pos.y - WALL_L;
 }
 
-static int16_t M_GetCeilingHeight(
-    const ITEM *const item, const XYZ_32 pos, const int16_t height)
+static int32_t M_GetCeilingHeight(
+    const ITEM *const item, const XYZ_32 pos, const int32_t height)
 {
     if (item->status == IS_INVISIBLE || item->gravity) {
         return height;

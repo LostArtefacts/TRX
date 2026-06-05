@@ -16,10 +16,10 @@ typedef enum {
     DRAWBRIDGE_ANIM_CLOSED = 3,
 } DRAWBRIDGE_ANIM;
 
-static bool M_IsItemOnTop(const ITEM *item, int32_t x, int32_t z)
+static bool M_IsItemOnTop(const ITEM *const item, int32_t x, int32_t z)
 {
-    int32_t ix = item->pos.x >> WALL_SHIFT;
-    int32_t iz = item->pos.z >> WALL_SHIFT;
+    const int32_t ix = item->pos.x >> WALL_SHIFT;
+    const int32_t iz = item->pos.z >> WALL_SHIFT;
     x >>= WALL_SHIFT;
     z >>= WALL_SHIFT;
 
@@ -39,8 +39,8 @@ static bool M_IsItemOnTop(const ITEM *item, int32_t x, int32_t z)
     return false;
 }
 
-static int16_t M_GetFloorHeight(
-    const ITEM *item, const XYZ_32 pos, const int16_t height)
+static int32_t M_GetFloorHeight(
+    const ITEM *item, const XYZ_32 pos, const int32_t height)
 {
     if (item->current_anim_state != DRAWBRIDGE_STATE_OPEN) {
         return height;
@@ -55,8 +55,8 @@ static int16_t M_GetFloorHeight(
     return item->pos.y;
 }
 
-static int16_t M_GetCeilingHeight(
-    const ITEM *item, const XYZ_32 pos, const int16_t height)
+static int32_t M_GetCeilingHeight(
+    const ITEM *item, const XYZ_32 pos, const int32_t height)
 {
     if (item->current_anim_state != DRAWBRIDGE_STATE_OPEN) {
         return height;
@@ -71,7 +71,7 @@ static int16_t M_GetCeilingHeight(
     return item->pos.y + STEP_L;
 }
 
-static BOUNDS_16 M_RotateBounds(const BOUNDS_16 bounds, int16_t rot_y)
+static BOUNDS_16 M_RotateBounds(const BOUNDS_16 bounds, const int16_t rot_y)
 {
     BOUNDS_16 rot_bounds = {};
 
@@ -102,7 +102,8 @@ static BOUNDS_16 M_RotateBounds(const BOUNDS_16 bounds, int16_t rot_y)
     return rot_bounds;
 }
 
-static void M_GetSectorPositions(const ITEM *const item, VECTOR *sector_pos)
+static void M_GetSectorPositions(
+    const ITEM *const item, VECTOR *const sector_pos)
 {
     const OBJECT *const obj = Object_Get(item->object_id);
     const ANIM_FRAME *const frame =

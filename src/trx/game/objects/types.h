@@ -74,9 +74,9 @@ typedef struct OBJECT {
     bool (*effect_draw_func)(const EFFECT *item);
 
     void (*collision_func)(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
-    int16_t (*floor_height_func)(const ITEM *item, XYZ_32 pos, int16_t height);
-    int16_t (*ceiling_height_func)(
-        const ITEM *item, XYZ_32 pos, int16_t height);
+    int32_t (*floor_height_func)(const ITEM *item, XYZ_32 pos, int32_t height);
+    int32_t (*ceiling_height_func)(
+        const ITEM *item, XYZ_32 pos, int32_t height);
     void (*activate_func)(ITEM *item);
     void (*event_func)(ITEM *item, OBJECT_EVENT event, const void *data);
     bool (*trigger_func)(ITEM *item, const TRIGGER *trigger);
