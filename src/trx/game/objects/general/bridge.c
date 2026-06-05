@@ -2,19 +2,17 @@
 #include <trx/game/objects.h>
 #include <trx/game/rooms.h>
 
-static bool M_IsSameSector(
-    const int32_t x, const int32_t z, const ITEM *const item)
+static bool M_IsSameSector(const XYZ_32 pos, const ITEM *const item)
 {
-    const int32_t sector_x = x / WALL_L;
-    const int32_t sector_z = z / WALL_L;
+    const int32_t sector_x = pos.x / WALL_L;
+    const int32_t sector_z = pos.z / WALL_L;
     const int32_t item_sector_x = item->pos.x / WALL_L;
     const int32_t item_sector_z = item->pos.z / WALL_L;
 
     return sector_x == item_sector_x && sector_z == item_sector_z;
 }
 
-static int32_t M_GetOffset(
-    const ITEM *const item, const int32_t x, const int32_t y, const int32_t z)
+static int32_t M_GetOffset(const ITEM *const item, const XYZ_32 pos)
 {
     // Set the offset to the max value of 1023 if Lara is outside of the
     // bridge x/z position depending on its angle. This makes sure
@@ -23,31 +21,31 @@ static int32_t M_GetOffset(
     int32_t offset = 0;
     if (item->rot.y == 0) {
         if (g_Config.gameplay.fix_bridge_collision
-            && x <= item->pos.x - WALL_L / 2) {
+            && pos.x <= item->pos.x - WALL_L / 2) {
             offset = WALL_L - 1;
         } else {
-            offset = (WALL_L - x) & (WALL_L - 1);
+            offset = (WALL_L - pos.x) & (WALL_L - 1);
         }
     } else if (item->rot.y == -DEG_180) {
         if (g_Config.gameplay.fix_bridge_collision
-            && x >= item->pos.x + WALL_L / 2) {
+            && pos.x >= item->pos.x + WALL_L / 2) {
             offset = 0;
         } else {
-            offset = x & (WALL_L - 1);
+            offset = pos.x & (WALL_L - 1);
         }
     } else if (item->rot.y == DEG_90) {
         if (g_Config.gameplay.fix_bridge_collision
-            && z >= item->pos.z + WALL_L / 2) {
+            && pos.z >= item->pos.z + WALL_L / 2) {
             offset = WALL_L - 1;
         } else {
-            offset = z & (WALL_L - 1);
+            offset = pos.z & (WALL_L - 1);
         }
     } else {
         if (g_Config.gameplay.fix_bridge_collision
-            && z <= item->pos.z - WALL_L / 2) {
+            && pos.z <= item->pos.z - WALL_L / 2) {
             offset = 0;
         } else {
-            offset = (WALL_L - z) & (WALL_L - 1);
+            offset = (WALL_L - pos.z) & (WALL_L - 1);
         }
         // Fixes an edge case of an invisible wall on the tilt2 bridge floor.
         // The offset would get set to 0 on a specific z pos at the bottom of a
@@ -56,8 +54,8 @@ static int32_t M_GetOffset(
         // step. This fix sets the offset to the max value (1023) when Lara's at
         // the bottom of the slope.
         if (g_Config.gameplay.fix_bridge_collision && offset == 0
-            && y < item->pos.y) {
-            offset = (WALL_L - 1 - z) & (WALL_L - 1);
+            && pos.y < item->pos.y) {
+            offset = (WALL_L - 1 - pos.z) & (WALL_L - 1);
         }
     }
     return offset;
@@ -94,29 +92,27 @@ static void M_AddWalkable(const int16_t item_num)
     Walkable_Add(item_num, item->pos);
 }
 
-static int32_t M_GetOffsetHeight(
-    const ITEM *const item, const int32_t x, const int32_t y, const int32_t z)
+static int32_t M_GetOffsetHeight(const ITEM *const item, const XYZ_32 pos)
 {
     switch (item->object_id) {
     case O_BRIDGE_TILT_1:
-        return item->pos.y + M_GetOffset(item, x, y, z) / 4;
+        return item->pos.y + M_GetOffset(item, pos) / 4;
     case O_BRIDGE_TILT_2:
-        return item->pos.y + M_GetOffset(item, x, y, z) / 2;
+        return item->pos.y + M_GetOffset(item, pos) / 2;
     default:
         return item->pos.y;
     }
 }
 
 static int16_t M_GetFloorHeight(
-    const ITEM *const item, const int32_t x, const int32_t y, const int32_t z,
-    const int16_t height)
+    const ITEM *const item, const XYZ_32 pos, const int16_t height)
 {
-    if (g_Config.gameplay.fix_bridge_collision && !M_IsSameSector(x, z, item)) {
+    if (g_Config.gameplay.fix_bridge_collision && !M_IsSameSector(pos, item)) {
         return height;
     }
 
-    const int32_t offset_height = M_GetOffsetHeight(item, x, y, z);
-    if (y > offset_height) {
+    const int32_t offset_height = M_GetOffsetHeight(item, pos);
+    if (pos.y > offset_height) {
         return height;
     }
 
@@ -128,15 +124,14 @@ static int16_t M_GetFloorHeight(
 }
 
 static int16_t M_GetCeilingHeight(
-    const ITEM *const item, const int32_t x, const int32_t y, const int32_t z,
-    const int16_t height)
+    const ITEM *const item, const XYZ_32 pos, const int16_t height)
 {
-    if (g_Config.gameplay.fix_bridge_collision && !M_IsSameSector(x, z, item)) {
+    if (g_Config.gameplay.fix_bridge_collision && !M_IsSameSector(pos, item)) {
         return height;
     }
 
-    const int32_t offset_height = M_GetOffsetHeight(item, x, y, z);
-    if (y <= offset_height) {
+    const int32_t offset_height = M_GetOffsetHeight(item, pos);
+    if (pos.y <= offset_height) {
         return height;
     }
 

@@ -67,8 +67,8 @@ static void M_SavePriv(const ITEM *const item, JSON_WRITE_IO *const io)
 }
 
 static void M_FloorCeiling(
-    const ITEM *const item, const int32_t x, const int32_t y, const int32_t z,
-    int32_t *const out_floor, int32_t *const out_ceiling)
+    const ITEM *const item, const XYZ_32 pos, int32_t *const out_floor,
+    int32_t *const out_ceiling)
 {
     const XZ_32 lift_tile = {
         .x = item->pos.x >> WALL_SHIFT,
@@ -82,8 +82,8 @@ static void M_FloorCeiling(
     };
 
     const XZ_32 test_tile = {
-        .x = x >> WALL_SHIFT,
-        .z = z >> WALL_SHIFT,
+        .x = pos.x >> WALL_SHIFT,
+        .z = pos.z >> WALL_SHIFT,
     };
 
     const DIRECTION direction = Math_GetDirection(item->rot.y);
@@ -152,9 +152,9 @@ static void M_FloorCeiling(
             }
         }
     } else if (point_in_shaft) {
-        if (y <= lift_top) {
+        if (pos.y <= lift_top) {
             *out_floor = lift_top;
-        } else if (y >= lift_bottom) {
+        } else if (pos.y >= lift_bottom) {
             *out_ceiling = lift_bottom;
         } else if (item->current_anim_state == M_STATE_DOOR_OPEN) {
             *out_floor = lift_floor;
@@ -167,12 +167,11 @@ static void M_FloorCeiling(
 }
 
 static int16_t M_GetFloorHeight(
-    const ITEM *const item, const int32_t x, const int32_t y, const int32_t z,
-    const int16_t height)
+    const ITEM *const item, const XYZ_32 pos, const int16_t height)
 {
     int32_t new_floor;
     int32_t new_ceiling;
-    M_FloorCeiling(item, x, y, z, &new_floor, &new_ceiling);
+    M_FloorCeiling(item, pos, &new_floor, &new_ceiling);
     if (new_floor >= height) {
         return height;
     }
@@ -180,12 +179,11 @@ static int16_t M_GetFloorHeight(
 }
 
 static int16_t M_GetCeilingHeight(
-    const ITEM *const item, const int32_t x, const int32_t y, const int32_t z,
-    const int16_t height)
+    const ITEM *const item, const XYZ_32 pos, const int16_t height)
 {
     int32_t new_floor;
     int32_t new_ceiling;
-    M_FloorCeiling(item, x, y, z, &new_floor, &new_ceiling);
+    M_FloorCeiling(item, pos, &new_floor, &new_ceiling);
     if (new_ceiling <= height) {
         return height;
     }
