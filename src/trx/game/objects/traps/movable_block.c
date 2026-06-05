@@ -969,8 +969,7 @@ static void M_Control(const int16_t item_num)
 }
 
 static int16_t M_GetFloorHeight(
-    const ITEM *const item, const int32_t x, const int32_t y, const int32_t z,
-    const int16_t height)
+    const ITEM *const item, const XYZ_32 pos, const int16_t height)
 {
     if (item->status == IS_INVISIBLE || item->gravity) {
         return height;
@@ -981,7 +980,7 @@ static int16_t M_GetFloorHeight(
         return height;
     }
 
-    if (!M_IsItemOnTop(item, x, z)) {
+    if (!M_IsItemOnTop(item, pos.x, pos.z)) {
         return height;
     }
 
@@ -990,7 +989,7 @@ static int16_t M_GetFloorHeight(
     }
 
     // If partially embedded from below e.g. jumping up into an overhead block.
-    if (y <= item->pos.y && y > item->pos.y - WALL_L
+    if (pos.y <= item->pos.y && pos.y > item->pos.y - WALL_L
         && M_IsAgainstCeiling(item)) {
         const SECTOR *const sector = Room_GetWorldSector(
             Room_Get(item->room_num), item->pos.x, item->pos.z);
@@ -1006,7 +1005,7 @@ static int16_t M_GetFloorHeight(
     }
 
     // If under the bottom of the block.
-    if (y > item->pos.y) {
+    if (pos.y > item->pos.y) {
         return height;
     }
 
@@ -1019,8 +1018,7 @@ static int16_t M_GetFloorHeight(
 }
 
 static int16_t M_GetCeilingHeight(
-    const ITEM *const item, const int32_t x, const int32_t y, const int32_t z,
-    const int16_t height)
+    const ITEM *const item, const XYZ_32 pos, const int16_t height)
 {
     if (item->status == IS_INVISIBLE || item->gravity) {
         return height;
@@ -1032,7 +1030,7 @@ static int16_t M_GetCeilingHeight(
     }
 
     // Only care if we are inside the block footprint.
-    if (!M_IsItemOnTop(item, x, z)) {
+    if (!M_IsItemOnTop(item, pos.x, pos.z)) {
         return height;
     }
 
@@ -1040,7 +1038,8 @@ static int16_t M_GetCeilingHeight(
         return NO_HEIGHT;
     }
 
-    if (y <= item->pos.y && y > item->pos.y - WALL_L && !item->gravity) {
+    if (pos.y <= item->pos.y && pos.y > item->pos.y - WALL_L
+        && !item->gravity) {
         if (M_IsAgainstCeiling(item)) {
             // If clamped betwee floor and ceiling return same sentinel value as
             // M_GetFloorHeight.
@@ -1050,7 +1049,7 @@ static int16_t M_GetCeilingHeight(
     }
 
     // If above the top of the block.
-    if (y <= item->pos.y - WALL_L) {
+    if (pos.y <= item->pos.y - WALL_L) {
         return height;
     }
 

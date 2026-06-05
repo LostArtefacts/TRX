@@ -89,7 +89,7 @@ static bool M_IsItemOnTop(
 }
 
 static int16_t M_GetFloorHeight(
-    const ITEM *const item, int32_t x, int32_t y, int32_t z, int16_t height)
+    const ITEM *const item, const XYZ_32 pos, const int16_t height)
 {
     if (item->status == IS_INVISIBLE) {
         return height;
@@ -99,12 +99,12 @@ static int16_t M_GetFloorHeight(
         return height;
     }
 
-    if (!M_IsItemOnTop(item, x, z)) {
+    if (!M_IsItemOnTop(item, pos.x, pos.z)) {
         return height;
     }
 
     // If under the bottom of the block.
-    if (y > item->pos.y) {
+    if (pos.y > item->pos.y) {
         return height;
     }
 
@@ -117,7 +117,7 @@ static int16_t M_GetFloorHeight(
 }
 
 static int16_t M_GetCeilingHeight(
-    const ITEM *item, int32_t x, int32_t y, int32_t z, int16_t height)
+    const ITEM *item, const XYZ_32 pos, const int16_t height)
 {
     if (item->status == IS_INVISIBLE) {
         return height;
@@ -128,12 +128,12 @@ static int16_t M_GetCeilingHeight(
     }
 
     // Only care if we are inside the block footprint.
-    if (!M_IsItemOnTop(item, x, z)) {
+    if (!M_IsItemOnTop(item, pos.x, pos.z)) {
         return height;
     }
 
     // If above the top of the block.
-    if (y <= item->pos.y - WALL_L * 2) {
+    if (pos.y <= item->pos.y - WALL_L * 2) {
         return height;
     }
 

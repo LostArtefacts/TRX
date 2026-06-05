@@ -45,11 +45,10 @@ static void M_DropStack(const ITEM *const item)
 }
 
 static int16_t M_GetFloorHeight(
-    const ITEM *const item, const int32_t x, const int32_t y, const int32_t z,
-    const int16_t height)
+    const ITEM *const item, const XYZ_32 pos, const int16_t height)
 {
     const int32_t origin = M_GetOrigin(item);
-    if (y <= item->pos.y + origin
+    if (pos.y <= item->pos.y + origin
         && (item->current_anim_state == TRAP_SET
             || item->current_anim_state == TRAP_ACTIVATE)) {
         return item->pos.y + origin;
@@ -58,11 +57,10 @@ static int16_t M_GetFloorHeight(
 }
 
 static int16_t M_GetCeilingHeight(
-    const ITEM *const item, const int32_t x, const int32_t y, const int32_t z,
-    const int16_t height)
+    const ITEM *const item, const XYZ_32 pos, const int16_t height)
 {
     const int32_t origin = M_GetOrigin(item);
-    if (y > item->pos.y + origin
+    if (pos.y > item->pos.y + origin
         && (item->current_anim_state == TRAP_SET
             || item->current_anim_state == TRAP_ACTIVATE)) {
         return item->pos.y + origin + STEP_L;

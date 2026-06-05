@@ -40,14 +40,13 @@ static bool M_IsItemOnTop(const ITEM *item, int32_t x, int32_t z)
 }
 
 static int16_t M_GetFloorHeight(
-    const ITEM *item, const int32_t x, const int32_t y, const int32_t z,
-    const int16_t height)
+    const ITEM *item, const XYZ_32 pos, const int16_t height)
 {
     if (item->current_anim_state != DRAWBRIDGE_STATE_OPEN) {
         return height;
-    } else if (!M_IsItemOnTop(item, x, z)) {
+    } else if (!M_IsItemOnTop(item, pos.x, pos.z)) {
         return height;
-    } else if (y > item->pos.y) {
+    } else if (pos.y > item->pos.y) {
         return height;
     } else if (
         g_Config.gameplay.fix_bridge_collision && item->pos.y >= height) {
@@ -57,14 +56,13 @@ static int16_t M_GetFloorHeight(
 }
 
 static int16_t M_GetCeilingHeight(
-    const ITEM *item, const int32_t x, const int32_t y, const int32_t z,
-    const int16_t height)
+    const ITEM *item, const XYZ_32 pos, const int16_t height)
 {
     if (item->current_anim_state != DRAWBRIDGE_STATE_OPEN) {
         return height;
-    } else if (!M_IsItemOnTop(item, x, z)) {
+    } else if (!M_IsItemOnTop(item, pos.x, pos.z)) {
         return height;
-    } else if (y <= item->pos.y) {
+    } else if (pos.y <= item->pos.y) {
         return height;
     } else if (
         g_Config.gameplay.fix_bridge_collision && item->pos.y <= height) {

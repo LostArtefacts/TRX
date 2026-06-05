@@ -422,7 +422,7 @@ int32_t Room_GetHeightEx(
     // up to match the current height, so preventing testing below previous
     // walkables.
     int32_t base_height = height;
-    int32_t test_y = pos.y;
+    XYZ_32 test_pos = pos;
     for (const WALKABLE *w = pit_sector->walkable; w != nullptr; w = w->next) {
         if (w->item_num == ignore_item_num) {
             continue;
@@ -432,8 +432,8 @@ int32_t Room_GetHeightEx(
         if (obj->floor_height_func == nullptr) {
             continue;
         }
-        height = obj->floor_height_func(item, pos.x, test_y, pos.z, height);
-        test_y = MIN(pos.y, height);
+        height = obj->floor_height_func(item, test_pos, height);
+        test_pos.y = MIN(pos.y, height);
     }
 
     if (base_height != height) {
@@ -462,8 +462,7 @@ int32_t Room_GetCeilingEx(
         const ITEM *const item = Item_Get(w->item_num);
         const OBJECT *const obj = Object_Get(item->object_id);
         if (obj->ceiling_height_func != nullptr) {
-            height =
-                obj->ceiling_height_func(item, pos.x, pos.y, pos.z, height);
+            height = obj->ceiling_height_func(item, pos, height);
         }
     }
 
@@ -626,7 +625,7 @@ bool Room_IsOnWalkable(
         const OBJECT *const obj = Object_Get(item->object_id);
         if (obj->floor_height_func != nullptr) {
             const int32_t test_height =
-                obj->floor_height_func(item, pos.x, pos.y, pos.z, height);
+                obj->floor_height_func(item, pos, height);
             // If the floor height changed, try to climb the walkable stack.
             if (test_height != height) {
                 // Check if height changed aka actually on a walkable.

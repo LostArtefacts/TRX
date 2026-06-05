@@ -59,14 +59,13 @@ static bool M_IsItemOnTop(
 }
 
 static int16_t M_GetFloorHeight(
-    const ITEM *const item, const int32_t x, const int32_t y, const int32_t z,
-    const int16_t height)
+    const ITEM *const item, const XYZ_32 pos, const int16_t height)
 {
-    if (!M_IsItemOnTop(item, x, z)) {
+    if (!M_IsItemOnTop(item, pos.x, pos.z)) {
         return height;
     } else if (item->current_anim_state != TRAPDOOR_STATE_CLOSED) {
         return height;
-    } else if (y > item->pos.y || item->pos.y > height) {
+    } else if (pos.y > item->pos.y || item->pos.y > height) {
         return height;
     } else {
         return item->pos.y;
@@ -74,14 +73,13 @@ static int16_t M_GetFloorHeight(
 }
 
 static int16_t M_GetCeilingHeight(
-    const ITEM *const item, const int32_t x, const int32_t y, const int32_t z,
-    const int16_t height)
+    const ITEM *const item, const XYZ_32 pos, const int16_t height)
 {
-    if (!M_IsItemOnTop(item, x, z)) {
+    if (!M_IsItemOnTop(item, pos.x, pos.z)) {
         return height;
     } else if (item->current_anim_state != TRAPDOOR_STATE_CLOSED) {
         return height;
-    } else if (y <= item->pos.y || item->pos.y <= height) {
+    } else if (pos.y <= item->pos.y || item->pos.y <= height) {
         return height;
     } else {
         return item->pos.y + STEP_L;
