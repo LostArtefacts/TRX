@@ -468,7 +468,9 @@ static void M_Control(const int16_t item_num)
             lara_info.angle = Math_Atan(z, x) - item->rot.y;
             lara_info.distance = SQUARE(x) + SQUARE(z);
 
-            if (ABS(x) <= ABS(z)) {
+            x = ABS(x);
+            z = ABS(z);
+            if (x <= z) {
                 z = z + (x >> 1);
             } else {
                 z = x + (z >> 1);
