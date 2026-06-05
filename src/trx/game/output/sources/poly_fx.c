@@ -34,14 +34,17 @@ typedef struct {
 typedef struct {
     int32_t sprite_idx;
     bool use_custom_uv;
+    bool use_own_light;
     uint8_t corner_count;
     float z_depth_adjust;
+    float shade;
     XYZ_32 world_pos[4];
     OUTPUT_UVW uvw[4];
     OUTPUT_TEXTURE_SIZE texture_size[4];
     float disp[4][2];
     RGBA_8888 color[4];
     uint16_t flags;
+    OUTPUT_LIGHT_INFO light_info;
 } M_PRIM;
 
 typedef struct {
@@ -266,11 +269,55 @@ static void M_EmitPrimVertices(M_PRIV *const p, const M_PRIM *const prim)
                 .trapezoid_ratio = { 1.0f, 1.0f },
                 .flags = flags,
                 .color = prim->color[corner],
-                .shade = (float)SHADE_NEUTRAL,
+                .shade = prim->shade,
             };
             Vector_Add(p->vertices, &v);
         }
     }
+}
+
+static void M_UploadPrimLight(const M_PRIM *const prim)
+{
+    if (prim->use_own_light) {
+        Output_Uniforms_UploadOwnLight(Output_GetUniforms(), &prim->light_info);
+    }
+}
+
+static bool M_HasMatchingLightState(
+    const M_PRIM *const prim_1, const M_PRIM *const prim_2)
+{
+    if (prim_1->use_own_light != prim_2->use_own_light) {
+        return false;
+    }
+    if (!prim_1->use_own_light) {
+        return true;
+    }
+
+    return memcmp(
+               &prim_1->light_info, &prim_2->light_info,
+               sizeof(prim_1->light_info))
+        == 0;
+}
+
+static void M_DrawVertices(M_PRIV *const p, const M_PRIM *const prim)
+{
+    M_UploadPrimLight(prim);
+
+    glBindVertexArray(p->vao);
+    glBindBuffer(GL_ARRAY_BUFFER, p->vbo);
+
+    TRX_GL_TRACK_DATA(
+        glBufferData, GL_ARRAY_BUFFER, p->vertices->count * sizeof(M_VERTEX),
+        Vector_GetData(p->vertices), GL_DYNAMIC_DRAW);
+
+    // PolyFX primitives are staged with Output_GetTint() already applied at
+    // stage time, because different rooms can have different water state.
+    Output_MeshShader_UploadTint(p->shader, COLOR_RGB_F_WHITE);
+    Output_MeshShader_UploadWaterEffect(p->shader, 0);
+    Output_MeshShader_UploadWibbleEffect(p->shader, false);
+    Output_MeshShader_UploadModelMatrix(p->shader, &g_IDMatrix);
+    glDrawArrays(GL_TRIANGLES, 0, p->vertices->count);
+    TRX_GL_CheckError();
 }
 
 static void M_RenderBegin(const SCENE_SOURCE *const source)
@@ -299,26 +346,26 @@ static void M_RenderPass(const SCENE_SOURCE *const source, SCENE_PASS pass)
     }
 
     M_SortPrims(p, pass);
+    const M_PRIM *batch_prim = nullptr;
     for (int32_t i = 0; i < p->sorted->count; i++) {
         const M_PRIM_SORT *const sort = Vector_Get(p->sorted, i);
+        if (batch_prim != nullptr
+            && !M_HasMatchingLightState(batch_prim, sort->prim)) {
+            M_DrawVertices(p, batch_prim);
+            Vector_Clear(p->vertices);
+            batch_prim = nullptr;
+        }
+
+        if (batch_prim == nullptr) {
+            batch_prim = sort->prim;
+        }
+
         M_EmitPrimVertices(p, sort->prim);
     }
 
-    glBindVertexArray(p->vao);
-    glBindBuffer(GL_ARRAY_BUFFER, p->vbo);
-
-    TRX_GL_TRACK_DATA(
-        glBufferData, GL_ARRAY_BUFFER, p->vertices->count * sizeof(M_VERTEX),
-        Vector_GetData(p->vertices), GL_DYNAMIC_DRAW);
-
-    // PolyFX primitives are staged with Output_GetTint() already applied at
-    // stage time, because different rooms can have different water state.
-    Output_MeshShader_UploadTint(p->shader, COLOR_RGB_F_WHITE);
-    Output_MeshShader_UploadWaterEffect(p->shader, 0);
-    Output_MeshShader_UploadWibbleEffect(p->shader, false);
-    Output_MeshShader_UploadModelMatrix(p->shader, &g_IDMatrix);
-    glDrawArrays(GL_TRIANGLES, 0, p->vertices->count);
-    TRX_GL_CheckError();
+    if (batch_prim != nullptr) {
+        M_DrawVertices(p, batch_prim);
+    }
 }
 
 static bool M_IsDirty(const SCENE_SOURCE *const source, const SCENE_PASS pass)
@@ -429,13 +476,16 @@ static void M_StagePrim(
     const int32_t sprite_idx, const uint8_t corner_count,
     const XYZ_32 *const world_pos, const float (*disp)[2],
     const RGBA_8888 *const color, const uint16_t flags,
-    const float z_depth_adjust, VECTOR *const target)
+    const float z_depth_adjust, const float shade,
+    const OUTPUT_LIGHT_INFO *const light_info, VECTOR *const target)
 {
     M_PRIM prim;
     prim.sprite_idx = sprite_idx;
     prim.use_custom_uv = false;
+    prim.use_own_light = light_info != nullptr;
     prim.corner_count = corner_count;
     prim.z_depth_adjust = z_depth_adjust;
+    prim.shade = shade;
     memset(prim.world_pos, 0, sizeof(prim.world_pos));
     memcpy(prim.world_pos, world_pos, sizeof(prim.world_pos[0]) * corner_count);
     memset(prim.uvw, 0, sizeof(prim.uvw));
@@ -450,6 +500,11 @@ static void M_StagePrim(
     memcpy(prim.color, color, sizeof(prim.color[0]) * corner_count);
     M_ApplyTintToColors(prim.color, corner_count);
     prim.flags = flags;
+    if (light_info != nullptr) {
+        prim.light_info = *light_info;
+    } else {
+        prim.light_info = (OUTPUT_LIGHT_INFO) {};
+    }
     Vector_Add(target, &prim);
 }
 
@@ -482,7 +537,8 @@ void OutputSource_PolyFX_StageSpriteQuadWorldDepth(
     VECTOR *const target = M_GetScheduledVectorForDrawType(p, draw_type);
     M_StagePrim(
         sprite_idx, 4, &world_pos[0], nullptr, &color[0],
-        VERT_NO_LIGHTING | VERT_NO_WIBBLE, z_depth_adjust, target);
+        VERT_NO_LIGHTING | VERT_NO_WIBBLE, z_depth_adjust, (float)SHADE_NEUTRAL,
+        nullptr, target);
 }
 
 void OutputSource_PolyFX_StageSpriteTriWorld(
@@ -502,7 +558,20 @@ void OutputSource_PolyFX_StageSpriteTriWorldDepth(
     VECTOR *const target = M_GetScheduledVectorForDrawType(p, draw_type);
     M_StagePrim(
         sprite_idx, 3, &world_pos[0], nullptr, &color[0],
-        VERT_NO_LIGHTING | VERT_NO_WIBBLE, z_depth_adjust, target);
+        VERT_NO_LIGHTING | VERT_NO_WIBBLE, z_depth_adjust, (float)SHADE_NEUTRAL,
+        nullptr, target);
+}
+
+void OutputSource_PolyFX_StageSpriteTriWorldLight(
+    const int32_t sprite_idx, const XYZ_32 world_pos[3],
+    const RGBA_8888 color[3], const OUTPUT_LIGHT_INFO light_info,
+    const DRAW_TYPE draw_type)
+{
+    M_PRIV *const p = &m_Priv;
+    VECTOR *const target = M_GetScheduledVectorForDrawType(p, draw_type);
+    M_StagePrim(
+        sprite_idx, 3, &world_pos[0], nullptr, &color[0],
+        VERT_USE_OWN_LIGHT | VERT_NO_WIBBLE, 0.0f, 0.0f, &light_info, target);
 }
 
 void OutputSource_PolyFX_StageQuadExt(
@@ -512,7 +581,8 @@ void OutputSource_PolyFX_StageQuadExt(
     M_PRIV *const p = &m_Priv;
     VECTOR *const target = M_GetScheduledVectorForDrawType(p, draw_type);
     M_StagePrim(
-        sprite_idx, 4, &world_pos[0], disp, &color[0], flags, 0.0f, target);
+        sprite_idx, 4, &world_pos[0], disp, &color[0], flags, 0.0f,
+        (float)SHADE_NEUTRAL, nullptr, target);
 }
 
 void OutputSource_PolyFX_StageQuadExtUV(
@@ -526,8 +596,10 @@ void OutputSource_PolyFX_StageQuadExtUV(
     M_PRIM prim;
     prim.sprite_idx = -1;
     prim.use_custom_uv = true;
+    prim.use_own_light = false;
     prim.corner_count = 4;
     prim.z_depth_adjust = 0.0f;
+    prim.shade = (float)SHADE_NEUTRAL;
     memcpy(prim.world_pos, world_pos, sizeof(prim.world_pos));
     memcpy(prim.uvw, uvw, sizeof(prim.uvw));
     memcpy(prim.texture_size, texture_size, sizeof(prim.texture_size));
@@ -539,6 +611,7 @@ void OutputSource_PolyFX_StageQuadExtUV(
     memcpy(prim.color, color, sizeof(prim.color));
     M_ApplyTintToColors(prim.color, 4);
     prim.flags = flags;
+    prim.light_info = (OUTPUT_LIGHT_INFO) {};
     Vector_Add(target, &prim);
 }
 
@@ -553,8 +626,10 @@ void OutputSource_PolyFX_StageTriExtUV(
     M_PRIM prim;
     prim.sprite_idx = -1;
     prim.use_custom_uv = true;
+    prim.use_own_light = false;
     prim.corner_count = 3;
     prim.z_depth_adjust = 0.0f;
+    prim.shade = (float)SHADE_NEUTRAL;
     memset(prim.world_pos, 0, sizeof(prim.world_pos));
     memcpy(prim.world_pos, world_pos, sizeof(world_pos[0]) * 3);
     memset(prim.uvw, 0, sizeof(prim.uvw));
@@ -571,6 +646,7 @@ void OutputSource_PolyFX_StageTriExtUV(
     memcpy(prim.color, color, sizeof(color[0]) * 3);
     M_ApplyTintToColors(prim.color, 3);
     prim.flags = flags;
+    prim.light_info = (OUTPUT_LIGHT_INFO) {};
     Vector_Add(target, &prim);
 }
 
@@ -766,5 +842,5 @@ void OutputSource_PolyFX_StageSpark(const SPARK *const spark)
     const RGBA_8888 world_color[4] = { color, color, color, color };
     M_StagePrim(
         sprite_idx, 4, &world_pos[0], disp, &world_color[0], flags, 0.0f,
-        target);
+        (float)SHADE_NEUTRAL, nullptr, target);
 }
