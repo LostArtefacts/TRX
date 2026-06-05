@@ -272,7 +272,7 @@ static void M_TriggerSummonSmoke(const XYZ_32 pos)
     }
 
     spark->scalar = 3;
-    spark->sprite_idx = (uint8_t)Object_Get(O_EXPLOSION_1)->mesh_idx;
+    spark->sprite_idx = (uint8_t)Object_Get(O_SPARKS_GFX)->mesh_idx;
     spark->gravity = -8 - (Random_GetControl() & 7);
     spark->max_y_vel = -4 - (Random_GetControl() & 7);
     spark->dst_size.width = (Random_GetControl() & 0x1F) + 128;
@@ -964,7 +964,7 @@ static void M_DrawShield(const ITEM *const item)
 {
     const M_PRIV *const p = item->priv;
     const int32_t time4 = Output_GetTimeInGame() * 4;
-    const int32_t sprite_base = Object_Get(O_EXPLOSION_1)->mesh_idx;
+    const int32_t sprite_base = Object_Get(O_SPARKS_GFX)->mesh_idx;
 
     for (int32_t band = 0; band < 4; band++) {
         const int32_t sprite_idx =

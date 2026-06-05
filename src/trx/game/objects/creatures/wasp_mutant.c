@@ -108,7 +108,7 @@ static void M_TriggerParticles(const ITEM *const item)
     spark->effect_num = Item_GetIndex(item);
     spark->node_num = 1;
     spark->scalar = 3;
-    spark->sprite_idx = Object_Get(O_EXPLOSION_1)->mesh_idx;
+    spark->sprite_idx = Object_Get(O_SPARKS_GFX)->mesh_idx;
     spark->size.width = (Random_GetControl() & 3) + 3;
     spark->src_size.width = spark->size.width;
     spark->dst_size.width = spark->size.width >> 1;

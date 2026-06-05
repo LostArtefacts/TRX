@@ -112,7 +112,7 @@ static void M_TriggerGas(
     spark->max_y_vel = 0;
     spark->effect_num = effect_num;
     spark->gravity = 0;
-    spark->sprite_idx = Object_Get(O_EXPLOSION_1)->mesh_idx;
+    spark->sprite_idx = Object_Get(O_SPARKS_GFX)->mesh_idx;
 
     const int32_t size = (Random_GetControl() & 0x1F) + 48;
     if (vel.x != 0 || vel.y != 0 || vel.z != 0) {

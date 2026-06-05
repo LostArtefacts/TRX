@@ -700,7 +700,7 @@ static void M_TriggerMist(
         spark->flags = SPARK_F_ALT_SPRITE | SPARK_F_SPRITE | SPARK_F_SCALE;
     }
 
-    spark->sprite_idx = Object_Get(O_EXPLOSION_1)->mesh_idx;
+    spark->sprite_idx = Object_Get(O_SPARKS_GFX)->mesh_idx;
 
     if (snow != 0) {
         spark->friction = 0;

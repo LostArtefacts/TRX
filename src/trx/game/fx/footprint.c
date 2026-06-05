@@ -152,7 +152,7 @@ void FX_Footprint_Draw(void)
         return;
     }
     const M_PRIV *const p = &m_Priv;
-    const OBJECT *const obj = Object_Get(O_EXPLOSION_1);
+    const OBJECT *const obj = Object_Get(O_SPARKS_GFX);
     if (obj == nullptr || !obj->loaded) {
         return;
     }

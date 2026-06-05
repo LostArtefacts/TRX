@@ -74,7 +74,7 @@ static void M_TriggerPlasmaBallFlame(const int16_t effect_num, const XYZ_32 vel)
     }
 
     spark->effect_num = effect_num;
-    spark->sprite_idx = Object_Get(O_EXPLOSION_1)->mesh_idx;
+    spark->sprite_idx = Object_Get(O_SPARKS_GFX)->mesh_idx;
     spark->scalar = 1;
     spark->max_y_vel = 0;
     spark->gravity = 0;

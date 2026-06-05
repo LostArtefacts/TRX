@@ -500,7 +500,7 @@ static void M_TriggerExhaustSmoke(
     }
 
     spark->scalar = 2;
-    spark->sprite_idx = Object_Get(O_EXPLOSION_1)->mesh_idx;
+    spark->sprite_idx = Object_Get(O_SPARKS_GFX)->mesh_idx;
     spark->gravity = -4 - (Random_GetControl() & 3);
     spark->max_y_vel = -8 - (Random_GetControl() & 7);
     spark->dst_size.width = (Random_GetControl() & 7) + (speed >> 7) + 32;

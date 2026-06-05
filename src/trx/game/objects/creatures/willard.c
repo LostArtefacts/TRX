@@ -319,7 +319,7 @@ static void M_TriggerPlasma(
     spark->node_num = (uint8_t)node;
     spark->max_y_vel = (Random_GetControl() & 7) + 16;
     spark->item_num = item_num;
-    spark->sprite_idx = (uint8_t)Object_Get(O_EXPLOSION_1)->mesh_idx;
+    spark->sprite_idx = (uint8_t)Object_Get(O_SPARKS_GFX)->mesh_idx;
     spark->scalar = 1;
     size += Random_GetControl() & 0xF;
     spark->size.width = (uint8_t)size;
@@ -841,7 +841,7 @@ static void M_DrawShield(const ITEM *const item)
 {
     const M_PRIV *const p = item->priv;
     const int32_t time4 = Output_GetTimeInGame() * 4;
-    const int32_t sprite_base = Object_Get(O_EXPLOSION_1)->mesh_idx;
+    const int32_t sprite_base = Object_Get(O_SPARKS_GFX)->mesh_idx;
 
     for (int32_t band = 0; band < 4; band++) {
         const int32_t sprite_idx =
