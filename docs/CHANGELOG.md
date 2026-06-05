@@ -68,6 +68,7 @@
 - fixed seeing the fish in Coastal Village spawn due to delayed triggers, most noticeable when fades are disabled
 - fixed dropped pickups not keeping their original facing (regression from 1.2)
 - fixed Sophia not aiming at Lara properly in Reunion (regression from 1.4)
+- fixed Lara becoming immune to Puna's attacks after getting zapped once with the fly cheat (regression from 1.3)
 
 
 

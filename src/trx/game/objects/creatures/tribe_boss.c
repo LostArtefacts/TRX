@@ -550,7 +550,8 @@ static void M_TriggerElectricBeam(
         ITEM *const lara_item = Lara_GetItem();
         if (lara_info->electric == 0 && !copy && p->attack_type == M_ATTACK_HEAD
             && M_LaraOnLOS(src, &target)
-            && !g_Config.debug.enable_invulnerability) {
+            && !g_Config.debug.enable_invulnerability
+            && lara_info->water_status != LWS_CHEAT) {
             Lara_TakeDamage(
                 M_GetDamage(item, "head_beam_damage", M_HEAD_BEAM_DAMAGE),
                 true);
