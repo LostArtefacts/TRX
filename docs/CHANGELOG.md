@@ -50,6 +50,7 @@
 - added the ability to define the flame interval of `O_FLAME_EMITTER_SIDE` objects
 - added an option to fix animated spikes resetting when loading a save (Gameplay → Fixes → Fix animated spikes)
 - changed spark effects to no longer cap their screen size, so they scale more naturally when zooming in photo mode
+- changed spark effects to use `O_SPARKS_GFX` rather than `O_EXPLOSION_1`
 - changed piranhas, tropical fish and bat emitters to use dedicated sprite objects; refer to migration guide
 - changed artefact pickup end-level behavior in specific levels to be configurable via Lua
 - changed `O_ORCA` special collision in `Sleeping with the Fishes` by introducing a `O_DOLPHIN` instead

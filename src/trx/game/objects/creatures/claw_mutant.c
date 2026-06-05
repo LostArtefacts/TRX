@@ -137,7 +137,7 @@ static void M_TriggerPlasmaCharge(const int16_t item_num)
     spark->node_num = 6;
     spark->max_y_vel = (Random_GetControl() & 7) + 16;
     spark->effect_num = item_num;
-    spark->sprite_idx = Object_Get(O_EXPLOSION_1)->mesh_idx;
+    spark->sprite_idx = Object_Get(O_SPARKS_GFX)->mesh_idx;
     spark->scalar = 1;
     spark->size.width = (Random_GetControl() & 0x1F) + 64;
     spark->src_size.width = spark->size.width;

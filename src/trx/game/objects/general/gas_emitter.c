@@ -58,7 +58,7 @@ static void M_Control(const int16_t item_num)
     }
 
     spark->scalar = 3;
-    spark->sprite_idx = Object_Get(O_EXPLOSION_1)->mesh_idx;
+    spark->sprite_idx = Object_Get(O_SPARKS_GFX)->mesh_idx;
     spark->max_y_vel = 0;
     spark->gravity = 0;
 

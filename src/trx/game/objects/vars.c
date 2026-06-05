@@ -596,6 +596,7 @@ const OBJECT_ID g_GameSpriteObjects[] = {
     O_HOT_LIQUID,
     O_SHADOW,
 
+    O_SPARKS_GFX,
     O_GLOW_RESERVED,
     O_FX_RESERVED,
     O_PIRAHNA_GFX,

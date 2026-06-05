@@ -156,7 +156,7 @@ void FX_WaterParticles_Draw(void)
         return;
     }
 
-    const OBJECT *const obj = Object_Get(O_EXPLOSION_1);
+    const OBJECT *const obj = Object_Get(O_SPARKS_GFX);
     if (obj == nullptr || !obj->loaded) {
         return;
     }

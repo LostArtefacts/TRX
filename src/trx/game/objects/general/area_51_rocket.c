@@ -123,7 +123,7 @@ static void M_TriggerBlastFire(
         spark->rot_add = (Random_GetControl() & 0xF) + 16;
     }
 
-    spark->sprite_idx = Object_Get(O_EXPLOSION_1)->mesh_idx;
+    spark->sprite_idx = Object_Get(O_SPARKS_GFX)->mesh_idx;
     spark->scalar = 4;
     spark->max_y_vel = 0;
     spark->gravity = 0;
@@ -200,7 +200,7 @@ static void M_TriggerRocketSmoke(
         spark->flags = SPARK_F_ALT_SPRITE | SPARK_F_SPRITE | SPARK_F_SCALE;
     }
 
-    spark->sprite_idx = Object_Get(O_EXPLOSION_1)->mesh_idx;
+    spark->sprite_idx = Object_Get(O_SPARKS_GFX)->mesh_idx;
     spark->scalar = 3;
     spark->max_y_vel = 0;
     spark->gravity = 0;

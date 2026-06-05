@@ -113,7 +113,7 @@ static void M_TriggerFlame(
 
     spark->gravity = -8 - (Random_GetControl() & 0xF);
     spark->max_y_vel = -8 - (Random_GetControl() & 7);
-    spark->sprite_idx = Object_Get(O_EXPLOSION_1)->mesh_idx;
+    spark->sprite_idx = Object_Get(O_SPARKS_GFX)->mesh_idx;
     spark->scalar = 3;
     spark->dst_size.width = (speed >> 4) + (Random_GetControl() & 0xF);
     spark->size.width = spark->dst_size.width >> 2;

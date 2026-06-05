@@ -143,7 +143,7 @@ static void M_TriggerFlame(int16_t item_num, int32_t node)
     spark->max_y_vel = -16 - (Random_GetControl() & 7);
     spark->item_num = item_num;
     spark->node_num = node;
-    spark->sprite_idx = Object_Get(O_EXPLOSION_1)->mesh_idx;
+    spark->sprite_idx = Object_Get(O_SPARKS_GFX)->mesh_idx;
     spark->scalar = 1;
     spark->size.width = (Random_GetControl() & 0x1F) + 64;
     spark->src_size.width = spark->size.width;
@@ -508,7 +508,7 @@ static void M_DrawShield(const ITEM *const item)
 {
     const M_PRIV *const p = item->priv;
     const int32_t time4 = Output_GetTimeInGame() * 4;
-    const int32_t sprite_base = Object_Get(O_EXPLOSION_1)->mesh_idx;
+    const int32_t sprite_base = Object_Get(O_SPARKS_GFX)->mesh_idx;
 
     for (int32_t band = 0; band < 4; band++) {
         const int32_t sprite_idx =

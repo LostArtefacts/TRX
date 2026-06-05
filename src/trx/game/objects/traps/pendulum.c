@@ -116,7 +116,7 @@ static void M_TriggerFireSparks(const ITEM *const item)
     spark->item_num = Item_GetIndex(item);
     spark->gravity = -16 - (Random_GetControl() & 0x1F);
     spark->max_y_vel = -16 - (Random_GetControl() & 7);
-    spark->sprite_idx = Object_Get(O_EXPLOSION_1)->mesh_idx;
+    spark->sprite_idx = Object_Get(O_SPARKS_GFX)->mesh_idx;
     spark->scalar = 3;
     spark->size.width = (Random_GetControl() & 7) + 32;
     spark->src_size.width = spark->size.width;

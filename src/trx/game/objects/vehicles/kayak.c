@@ -1070,7 +1070,7 @@ static void M_TriggerRapidsMist(const XYZ_32 pos)
     }
 
     spark->scalar = 4;
-    spark->sprite_idx = (uint8_t)Object_Get(O_EXPLOSION_1)->mesh_idx;
+    spark->sprite_idx = (uint8_t)Object_Get(O_SPARKS_GFX)->mesh_idx;
     spark->gravity = 0;
     spark->max_y_vel = 0;
     spark->dst_size.width = (Random_GetControl() & 7) + 16;

@@ -75,7 +75,7 @@ static void M_TriggerFireBallFlame(
     }
 
     spark->effect_num = effect_num;
-    spark->sprite_idx = Object_Get(O_EXPLOSION_1)->mesh_idx;
+    spark->sprite_idx = Object_Get(O_SPARKS_GFX)->mesh_idx;
     spark->scalar = 1;
     spark->size.width = (Random_GetControl() & 0x1F) + 64;
     spark->src_size.width = spark->size.width;

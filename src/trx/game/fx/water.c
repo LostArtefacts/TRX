@@ -532,12 +532,12 @@ static void M_DrawRipple(
 
 void FX_Water_Draw(void)
 {
-    const OBJECT *const explosion = Object_Get(O_EXPLOSION_1);
-    if (!explosion->loaded) {
+    const OBJECT *const obj = Object_Get(O_SPARKS_GFX);
+    if (!obj->loaded) {
         return;
     }
 
-    const int32_t base_sprite_idx = explosion->mesh_idx;
+    const int32_t base_sprite_idx = obj->mesh_idx;
 
     for (int32_t i = 0; i < (int32_t)ARRAY_SIZE(m_Splashes); i++) {
         const FX_WATER_SPLASH *const splash = &m_Splashes[i];

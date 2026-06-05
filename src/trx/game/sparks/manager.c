@@ -339,9 +339,9 @@ void Sparks_Control(void)
         }
 
         if ((spark->flags & SPARK_F_ALT_SPRITE) != 0U) {
-            const OBJECT *const explosion = Object_Get(O_EXPLOSION_1);
-            if (explosion->loaded) {
-                const int32_t base = explosion->mesh_idx;
+            const OBJECT *const obj = Object_Get(O_SPARKS_GFX);
+            if (obj->loaded) {
+                const int32_t base = obj->mesh_idx;
                 if (spark->color.r < 16 && spark->color.g < 16
                     && spark->color.b < 16) {
                     spark->sprite_idx = base + 3;
