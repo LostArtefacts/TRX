@@ -138,6 +138,7 @@
                 "undersea_textures.bin",
                 "undersea_objects.bin",
                 "luds_diver_animation.bin",
+                "water_sfx.bin",
             ],
         },
 

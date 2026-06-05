@@ -979,6 +979,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── globe_model.bin
 │   │   │   ├── gym_sky.bin
 │   │   │   ├── gym_textures.bin
+│   │   │   ├── hiss_sfx.bin
 │   │   │   ├── india_sky.bin
 │   │   │   ├── lara_animations.bin
 │   │   │   ├── lara_extra.bin
@@ -1018,6 +1019,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── undersea_pickup_meshes.bin
 │   │   │   ├── undersea_textures.bin
 │   │   │   ├── undersea_train.bin
+│   │   │   ├── water_sfx.bin
 │   │   │   ├── willsden_heli.bin
 │   │   │   ├── willsden_textures.bin
 │   │   │   ├── winston_model.bin
@@ -2222,6 +2224,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── globe_model.bin
     │   │   │   │   ├── gym_sky.bin
     │   │   │   │   ├── gym_textures.bin
+    │   │   │   │   ├── hiss_sfx.bin
     │   │   │   │   ├── india_sky.bin
     │   │   │   │   ├── lara_animations.bin
     │   │   │   │   ├── lara_extra.bin
@@ -2261,6 +2264,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── undersea_pickup_meshes.bin
     │   │   │   │   ├── undersea_textures.bin
     │   │   │   │   ├── undersea_train.bin
+    │   │   │   │   ├── water_sfx.bin
     │   │   │   │   ├── willsden_heli.bin
     │   │   │   │   ├── willsden_textures.bin
     │   │   │   │   ├── winston_model.bin
