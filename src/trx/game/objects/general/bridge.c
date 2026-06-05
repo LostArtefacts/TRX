@@ -1,10 +1,8 @@
-#include <trx/game/objects/general/bridge_common.h>
-
 #include <trx/config.h>
-#include <trx/core/utils.h>
+#include <trx/game/objects.h>
 #include <trx/game/rooms.h>
 
-bool Bridge_IsSameSector(
+static bool M_IsSameSector(
     const int32_t x, const int32_t z, const ITEM *const item)
 {
     const int32_t sector_x = x / WALL_L;
@@ -15,8 +13,8 @@ bool Bridge_IsSameSector(
     return sector_x == item_sector_x && sector_z == item_sector_z;
 }
 
-int32_t Bridge_GetOffset(
-    const ITEM *const item, int32_t x, int32_t y, int32_t z)
+static int32_t M_GetOffset(
+    const ITEM *const item, const int32_t x, const int32_t y, const int32_t z)
 {
     // Set the offset to the max value of 1023 if Lara is outside of the
     // bridge x/z position depending on its angle. This makes sure
@@ -65,7 +63,7 @@ int32_t Bridge_GetOffset(
     return offset;
 }
 
-void Bridge_FixEmbeddedPosition(int16_t item_num)
+static void M_FixEmbeddedPosition(const int16_t item_num)
 {
     // Some bridges at floor level are embedded into the floor.
     // This checks if bridges are below a room's floor level
@@ -90,8 +88,79 @@ void Bridge_FixEmbeddedPosition(int16_t item_num)
     item->pos.y = floor_height - bridge_height;
 }
 
-void Bridge_AddWalkable(const int16_t item_num)
+static void M_AddWalkable(const int16_t item_num)
 {
     const ITEM *const item = Item_Get(item_num);
     Walkable_Add(item_num, item->pos);
 }
+
+static int32_t M_GetOffsetHeight(
+    const ITEM *const item, const int32_t x, const int32_t y, const int32_t z)
+{
+    switch (item->object_id) {
+    case O_BRIDGE_TILT_1:
+        return item->pos.y + M_GetOffset(item, x, y, z) / 4;
+    case O_BRIDGE_TILT_2:
+        return item->pos.y + M_GetOffset(item, x, y, z) / 2;
+    default:
+        return item->pos.y;
+    }
+}
+
+static int16_t M_GetFloorHeight(
+    const ITEM *const item, const int32_t x, const int32_t y, const int32_t z,
+    const int16_t height)
+{
+    if (g_Config.gameplay.fix_bridge_collision && !M_IsSameSector(x, z, item)) {
+        return height;
+    }
+
+    const int32_t offset_height = M_GetOffsetHeight(item, x, y, z);
+    if (y > offset_height) {
+        return height;
+    }
+
+    if (g_Config.gameplay.fix_bridge_collision && item->pos.y >= height) {
+        return height;
+    }
+
+    return offset_height;
+}
+
+static int16_t M_GetCeilingHeight(
+    const ITEM *const item, const int32_t x, const int32_t y, const int32_t z,
+    const int16_t height)
+{
+    if (g_Config.gameplay.fix_bridge_collision && !M_IsSameSector(x, z, item)) {
+        return height;
+    }
+
+    const int32_t offset_height = M_GetOffsetHeight(item, x, y, z);
+    if (y <= offset_height) {
+        return height;
+    }
+
+    if (g_Config.gameplay.fix_bridge_collision && item->pos.y <= height) {
+        return height;
+    }
+
+    return offset_height + STEP_L;
+}
+
+static void M_Initialise(const int16_t item_num)
+{
+    M_FixEmbeddedPosition(item_num);
+    Walkable_AllocateNodes(Item_Get(item_num), 1);
+}
+
+static void M_Setup(OBJECT *const obj)
+{
+    obj->initialise_func = M_Initialise;
+    obj->floor_height_func = M_GetFloorHeight;
+    obj->ceiling_height_func = M_GetCeilingHeight;
+    obj->add_walkable_func = M_AddWalkable;
+}
+
+REGISTER_OBJECT(O_BRIDGE_FLAT, M_Setup)
+REGISTER_OBJECT(O_BRIDGE_TILT_1, M_Setup)
+REGISTER_OBJECT(O_BRIDGE_TILT_2, M_Setup)
