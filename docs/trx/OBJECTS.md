@@ -860,10 +860,12 @@ This page lists documented moveable object properties.
 
 ### `338` O_PIRAHNAS
 - `range = ((XYZ_32) { 1, 1, 1 })` — Swim range, in quarter tiles.
+- `use_room_lighting = False` — Whether the shoal uses the surrounding room lighting.
 
 ### `339` O_TROPICAL_FISH
-- `range = ((XYZ_32) { 1, 1, 1 })` — Swim range, in quarter tiles.
 - `sprite_offset = 0` — Texture offset in `O_TROPICAL_FISH_GFX`.
+- `range = ((XYZ_32) { 1, 1, 1 })` — Swim range, in quarter tiles.
+- `use_room_lighting = False` — Whether the shoal uses the surrounding room lighting.
 
 ### `360` O_WINSTON
 - `max_hit_points = 1` — Maximum hit points.

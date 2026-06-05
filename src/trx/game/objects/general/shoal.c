@@ -12,8 +12,7 @@
 #include <trx/game/random.h>
 #include <trx/game/rooms.h>
 #include <trx/game/spawn.h>
-
-#include <stdint.h>
+#include <trx/version.h>
 
 #define M_FISH_PER_SHOAL 24
 #define M_DEFAULT_RANGE (XYZ_32) { 1, 1, 1 }
@@ -47,6 +46,7 @@ typedef struct {
 typedef struct {
     M_FISH fish[M_FISH_PER_SHOAL + 1];
     M_LEADER leader;
+    bool use_room_lighting;
     int32_t piranha_hit_wait;
     int16_t carcass_item_num;
     int32_t sprite_offset;
@@ -477,8 +477,11 @@ static bool M_Draw(const ITEM *const item)
     const double ratio = Interpolation_GetWorldRate();
     const bool do_interp =
         Interpolation_IsActive() && ratio > 0.0 && ratio < 1.0;
-    Output_CalculateLight(item->interp.result.pos, item->room_num);
-    const OUTPUT_LIGHT_INFO light_info = Output_GetLightInfo();
+    OUTPUT_LIGHT_INFO light_info = {};
+    if (p->use_room_lighting) {
+        Output_CalculateLight(item->interp.result.pos, item->room_num);
+        light_info = Output_GetLightInfo();
+    }
 
     M_FISH *fish = &p->fish[1];
 
@@ -580,8 +583,13 @@ static bool M_Draw(const ITEM *const item)
 
         CLAMP(sprite_offset, 0, ABS(sprite_obj->mesh_count) - 1);
         const int32_t sprite_idx = sprite_obj->mesh_idx + sprite_offset;
-        OutputSource_PolyFX_StageSpriteTriWorldLight(
-            sprite_idx, tri_world, tri_color, light_info, DRAW_BLEND);
+        if (p->use_room_lighting) {
+            OutputSource_PolyFX_StageSpriteTriWorldLight(
+                sprite_idx, tri_world, tri_color, light_info, DRAW_BLEND);
+        } else {
+            OutputSource_PolyFX_StageSpriteTriWorld(
+                sprite_idx, tri_world, tri_color, DRAW_BLEND);
+        }
     }
 
     if (Interpolation_IsActive() && ratio >= 1.0) {
@@ -627,6 +635,12 @@ static void M_Initialise(const int16_t item_num)
     if (ObjectProperty_GetItemValue(item, "sprite_offset", &sprite_val)) {
         p->sprite_offset = sprite_val.as_int;
     }
+
+    OBJECT_PROPERTY_VALUE use_room_lighting_val = {};
+    if (ObjectProperty_GetItemValue(
+            item, "use_room_lighting", &use_room_lighting_val)) {
+        p->use_room_lighting = use_room_lighting_val.as_bool;
+    }
 }
 
 static void M_SetupCommon(OBJECT *const obj)
@@ -640,15 +654,19 @@ static void M_SetupCommon(OBJECT *const obj)
     obj->save_position = true;
     obj->save_hitpoints = true;
     obj->save_flags = true;
+
+    OBJECT_PROPERTIES(
+        obj,
+        OBJECT_PROPERTY_XYZ(
+            "range", M_DEFAULT_RANGE, "Swim range, in quarter tiles."),
+        OBJECT_PROPERTY_BOOL(
+            "use_room_lighting", (g_TRVersion < 3),
+            "Whether the shoal uses the surrounding room lighting."));
 }
 
 static void M_SetupTropicalFish(OBJECT *const obj)
 {
     M_SetupCommon(obj);
-    OBJECT_PROPERTIES(
-        obj,
-        OBJECT_PROPERTY_XYZ(
-            "range", M_DEFAULT_RANGE, "Swim range, in quarter tiles."));
     OBJECT_PROPERTIES(
         obj,
         OBJECT_PROPERTY_INT(
@@ -658,10 +676,6 @@ static void M_SetupTropicalFish(OBJECT *const obj)
 static void M_SetupPiranhas(OBJECT *const obj)
 {
     M_SetupCommon(obj);
-    OBJECT_PROPERTIES(
-        obj,
-        OBJECT_PROPERTY_XYZ(
-            "range", M_DEFAULT_RANGE, "Swim range, in quarter tiles."));
 }
 
 void Shoal_TriggerDeactivate(const ITEM *const item)
