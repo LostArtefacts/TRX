@@ -44,8 +44,8 @@ static void M_DropStack(const ITEM *const item)
     MovableBlock_DropStack(drop_pos, item->room_num);
 }
 
-static int16_t M_GetFloorHeight(
-    const ITEM *const item, const XYZ_32 pos, const int16_t height)
+static int32_t M_GetFloorHeight(
+    const ITEM *const item, const XYZ_32 pos, const int32_t height)
 {
     const int32_t origin = M_GetOrigin(item);
     if (pos.y <= item->pos.y + origin
@@ -56,8 +56,8 @@ static int16_t M_GetFloorHeight(
     return height;
 }
 
-static int16_t M_GetCeilingHeight(
-    const ITEM *const item, const XYZ_32 pos, const int16_t height)
+static int32_t M_GetCeilingHeight(
+    const ITEM *const item, const XYZ_32 pos, const int32_t height)
 {
     const int32_t origin = M_GetOrigin(item);
     if (pos.y > item->pos.y + origin

@@ -166,8 +166,8 @@ static void M_FloorCeiling(
     }
 }
 
-static int16_t M_GetFloorHeight(
-    const ITEM *const item, const XYZ_32 pos, const int16_t height)
+static int32_t M_GetFloorHeight(
+    const ITEM *const item, const XYZ_32 pos, const int32_t height)
 {
     int32_t new_floor;
     int32_t new_ceiling;
@@ -178,8 +178,8 @@ static int16_t M_GetFloorHeight(
     return new_floor;
 }
 
-static int16_t M_GetCeilingHeight(
-    const ITEM *const item, const XYZ_32 pos, const int16_t height)
+static int32_t M_GetCeilingHeight(
+    const ITEM *const item, const XYZ_32 pos, const int32_t height)
 {
     int32_t new_floor;
     int32_t new_ceiling;

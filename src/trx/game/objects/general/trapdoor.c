@@ -58,8 +58,8 @@ static bool M_IsItemOnTop(
     return false;
 }
 
-static int16_t M_GetFloorHeight(
-    const ITEM *const item, const XYZ_32 pos, const int16_t height)
+static int32_t M_GetFloorHeight(
+    const ITEM *const item, const XYZ_32 pos, const int32_t height)
 {
     if (!M_IsItemOnTop(item, pos.x, pos.z)) {
         return height;
@@ -72,8 +72,8 @@ static int16_t M_GetFloorHeight(
     }
 }
 
-static int16_t M_GetCeilingHeight(
-    const ITEM *const item, const XYZ_32 pos, const int16_t height)
+static int32_t M_GetCeilingHeight(
+    const ITEM *const item, const XYZ_32 pos, const int32_t height)
 {
     if (!M_IsItemOnTop(item, pos.x, pos.z)) {
         return height;
@@ -86,7 +86,7 @@ static int16_t M_GetCeilingHeight(
     }
 }
 
-static BOUNDS_16 M_RotateBounds(const BOUNDS_16 bounds, int16_t rot_y)
+static BOUNDS_16 M_RotateBounds(const BOUNDS_16 bounds, const int16_t rot_y)
 {
     BOUNDS_16 rot_bounds = {};
 

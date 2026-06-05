@@ -88,8 +88,8 @@ static bool M_IsItemOnTop(
         && (dz >= -WALL_L / 2 && dz < WALL_L / 2);
 }
 
-static int16_t M_GetFloorHeight(
-    const ITEM *const item, const XYZ_32 pos, const int16_t height)
+static int32_t M_GetFloorHeight(
+    const ITEM *const item, const XYZ_32 pos, const int32_t height)
 {
     if (item->status == IS_INVISIBLE) {
         return height;
@@ -116,8 +116,8 @@ static int16_t M_GetFloorHeight(
     return item->pos.y - WALL_L * 2;
 }
 
-static int16_t M_GetCeilingHeight(
-    const ITEM *item, const XYZ_32 pos, const int16_t height)
+static int32_t M_GetCeilingHeight(
+    const ITEM *item, const XYZ_32 pos, const int32_t height)
 {
     if (item->status == IS_INVISIBLE) {
         return height;
