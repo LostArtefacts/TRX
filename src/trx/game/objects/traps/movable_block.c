@@ -804,7 +804,7 @@ static void M_AnimatePushPull(ITEM *const item)
         if (Item_TestFrameEqual(lara_item, -2)) {
             const bool can_continue = pulling ? M_TestPull(item, WALL_L, dir)
                                               : M_TestPush(item, WALL_L, dir);
-            if (!g_Input.action
+            if (lara_item->hit_points <= 0 || !g_Input.action
                 || !g_Config.gameplay.enable_continuous_pushblocks
                 || !can_continue) {
                 lara_item->goal_anim_state = LS(LS_STOP);
