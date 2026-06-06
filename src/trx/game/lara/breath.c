@@ -7,15 +7,10 @@
 #include <trx/game/random.h>
 #include <trx/game/rooms.h>
 #include <trx/game/sparks.h>
-#include <trx/version.h>
 
 static bool M_CanBreatheVisible(const ITEM *const lara_item)
 {
     if (lara_item == nullptr) {
-        return false;
-    }
-
-    if (g_TRVersion != 3) {
         return false;
     }
 

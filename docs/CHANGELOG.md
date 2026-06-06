@@ -38,11 +38,13 @@
 - added support for fish and piranhas without sacrificing explosion sprites (refer to notes in migration guide) (#4358)
 - added support for bat emitters without sacrificing explosion sprites (refer to notes in migration guide)
 - added the abilty to use animated spikes
+- added support for Lara's breath to show in cold rooms (requires `O_SPARKS_GFX`)
 
 **TR2**:
 - added support for fish and piranhas without sacrificing explosion sprites (refer to notes in migration guide) (#4358)
 - added support for bat emitters without sacrificing explosion sprites (refer to notes in migration guide)
 - added the abilty to use animated spikes
+- added support for Lara's breath to show in cold rooms (requires `O_SPARKS_GFX`)
 - fixed TR2:GM missing opening Eidos Interactive / Core Design FMV (#5609)
 - fixed Lara wading in shallower water compared to OG (#5574, regression from 1.3)
 
