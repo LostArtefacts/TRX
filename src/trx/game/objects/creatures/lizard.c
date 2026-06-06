@@ -82,8 +82,11 @@ static int32_t M_GetDamage(
 static void M_TriggerGas(
     const XYZ_32 pos, const XYZ_32 vel, const int32_t effect_num)
 {
-    SPARK *const spark = Sparks_GetFreeSpark();
-    spark->on = true;
+    SPARK *const spark = Sparks_InitialiseSpriteSpark(SPARK_TYPE_EXPLOSION);
+    if (spark == nullptr) {
+        return;
+    }
+
     spark->src_color.r = 0;
     spark->src_color.g = (Random_GetControl() & 0x3F) + 128;
     spark->src_color.b = 32;
@@ -139,7 +142,6 @@ static void M_TriggerGas(
     spark->max_y_vel = 0;
     spark->effect_num = (uint8_t)effect_num;
     spark->gravity = 0;
-    spark->sprite_idx = Object_Get(O_SPARKS_GFX)->mesh_idx;
 
     const int32_t size = (Random_GetControl() & 0x1F) + 48;
     if (vel.x != 0 || vel.y != 0 || vel.z != 0) {

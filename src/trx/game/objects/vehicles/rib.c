@@ -653,8 +653,11 @@ static void M_TriggerMist(
     const XYZ_32 pos, const int32_t speed, const int16_t angle,
     const int32_t snow)
 {
-    SPARK *const spark = Sparks_GetFreeSpark();
-    spark->on = true;
+    SPARK *const spark = Sparks_InitialiseSpriteSpark(SPARK_TYPE_EXPLOSION);
+    if (spark == nullptr) {
+        return;
+    }
+
     spark->src_color.r = 0;
     spark->src_color.g = 0;
     spark->src_color.b = 0;
@@ -699,8 +702,6 @@ static void M_TriggerMist(
     } else {
         spark->flags = SPARK_F_ALT_SPRITE | SPARK_F_SPRITE | SPARK_F_SCALE;
     }
-
-    spark->sprite_idx = Object_Get(O_SPARKS_GFX)->mesh_idx;
 
     if (snow != 0) {
         spark->friction = 0;

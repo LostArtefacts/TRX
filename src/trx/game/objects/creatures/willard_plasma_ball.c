@@ -37,8 +37,11 @@ static void M_TriggerPlasmaBallFlame(
         return;
     }
 
-    SPARK *const spark = Sparks_GetFreeSpark();
-    spark->on = true;
+    SPARK *const spark = Sparks_InitialiseSpriteSpark(SPARK_TYPE_EXPLOSION);
+    if (spark == nullptr) {
+        return;
+    }
+
     spark->src_color.r = 48;
     spark->src_color.g = 255;
     spark->src_color.b = (Random_GetControl() & 0x1F) + 48;
@@ -76,7 +79,6 @@ static void M_TriggerPlasmaBallFlame(
     }
 
     spark->effect_num = effect_num;
-    spark->sprite_idx = (uint8_t)Object_Get(O_SPARKS_GFX)->mesh_idx;
     spark->max_y_vel = 0;
     spark->gravity = 0;
 

@@ -95,8 +95,11 @@ static void M_TriggerPlasmaCharge(const int16_t item_num)
         return;
     }
 
-    SPARK *const spark = Sparks_GetFreeSpark();
-    spark->on = true;
+    SPARK *const spark = Sparks_InitialiseSpriteSpark(SPARK_TYPE_EXPLOSION);
+    if (spark == nullptr) {
+        return;
+    }
+
     spark->src_color.r = 48;
     spark->src_color.g = (Random_GetControl() & 0x1F) + 48;
     spark->src_color.b = 255;
@@ -137,7 +140,6 @@ static void M_TriggerPlasmaCharge(const int16_t item_num)
     spark->node_num = 6;
     spark->max_y_vel = (Random_GetControl() & 7) + 16;
     spark->effect_num = item_num;
-    spark->sprite_idx = Object_Get(O_SPARKS_GFX)->mesh_idx;
     spark->scalar = 1;
     spark->size.width = (Random_GetControl() & 0x1F) + 64;
     spark->src_size.width = spark->size.width;

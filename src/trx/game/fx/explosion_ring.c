@@ -72,8 +72,13 @@ static void M_BuildRingCircle(
 static void M_DrawTexturedRing(const FX_RING *const ring)
 {
     const int32_t time4 = Output_GetTimeInGame() * 4;
-    const int32_t sprite_base = Object_Get(O_SPARKS_GFX)->mesh_idx;
-    const int32_t sprite_idx = sprite_base + 4 + ((time4 >> 4) & 3);
+    const int32_t offset = (time4 >> 4) & 3;
+    const int32_t sprite_idx =
+        Sparks_GetSpriteIndex(SPARK_TYPE_SMALL_SPLASH + offset);
+    if (sprite_idx == NO_ITEM) {
+        return;
+    }
+
     const int32_t rot_z = ring->rot.z << 4;
     const int32_t rot_x = ring->rot.x << 4;
 

@@ -13,6 +13,8 @@ XYZ_32 Sparks_GetWorldPos(const SPARK *spark);
 
 SPARK *Sparks_GetFreeSpark(void);
 SPARK *Sparks_GetSpark(int32_t idx);
+SPARK *Sparks_InitialiseSpriteSpark(SPARK_SPRITE_TYPE type);
+int32_t Sparks_GetSpriteIndex(SPARK_SPRITE_TYPE offset);
 void Sparks_Sync(SPARK *spark);
 void Sparks_FinishSetup(SPARK *spark);
 

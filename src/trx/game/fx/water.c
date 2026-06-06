@@ -409,9 +409,15 @@ static RGBA_8888 M_Gray(int32_t c)
     return (RGBA_8888) { c, c, c, 255 };
 }
 
-static void M_DrawSplash(
-    const int32_t base_sprite_idx, const FX_WATER_SPLASH *s)
+static void M_DrawSplash(const FX_WATER_SPLASH *s)
 {
+    const int32_t big_splash_idx = Sparks_GetSpriteIndex(SPARK_TYPE_BIG_SPLASH);
+    const int32_t small_splash_idx =
+        Sparks_GetSpriteIndex(SPARK_TYPE_SMALL_SPLASH);
+    if (big_splash_idx == NO_ITEM || small_splash_idx == NO_ITEM) {
+        return;
+    }
+
     const double ratio = Interpolation_GetWorldRate();
     const bool do_interp =
         Interpolation_IsActive() && ratio > 0.0 && ratio < 1.0;
@@ -432,10 +438,10 @@ static void M_DrawSplash(
     }
 
     for (int32_t ring = 0; ring < 3; ring++) {
-        int32_t sprite_idx = base_sprite_idx + 8;
+        int32_t sprite_idx = big_splash_idx;
         if (ring == 2 || (ring == 0 && (s->flags & 4U) != 0U)
             || (ring == 1 && (s->flags & 8U) != 0U)) {
-            sprite_idx = base_sprite_idx + 4 + ((m_Wibble >> 4) & 3);
+            sprite_idx = small_splash_idx + ((m_Wibble >> 4) & 3);
         }
 
         const int32_t life = do_interp
@@ -471,8 +477,7 @@ static void M_DrawSplash(
     }
 }
 
-static void M_DrawRipple(
-    const int32_t base_sprite_idx, const FX_WATER_RIPPLE *r)
+static void M_DrawRipple(const FX_WATER_RIPPLE *r)
 {
     const double ratio = Interpolation_GetWorldRate();
     const bool do_interp =
@@ -484,12 +489,12 @@ static void M_DrawRipple(
     const int32_t life = do_interp ? (int32_t)LERP(r->prev_life, r->life, ratio)
                                    : (int32_t)r->life;
     const int32_t n = size << 2;
-    int32_t sprite_idx = base_sprite_idx + 9;
+    int32_t sprite_idx = Sparks_GetSpriteIndex(SPARK_TYPE_RIPPLE);
     RGBA_8888 color;
 
     if ((r->flags & 0x10U) != 0U) {
         if ((r->flags & 0x20U) != 0U) {
-            sprite_idx = base_sprite_idx;
+            sprite_idx = Sparks_GetSpriteIndex(SPARK_TYPE_EXPLOSION);
             if (!M_GetUnderwaterBloodColor(&color, life)) {
                 return;
             }
@@ -504,6 +509,10 @@ static void M_DrawRipple(
         c1 <<= 3;
         CLAMPG(c1, 255);
         color = M_Gray(c1);
+    }
+
+    if (sprite_idx == NO_ITEM) {
+        return;
     }
 
     // double-sided
@@ -532,19 +541,12 @@ static void M_DrawRipple(
 
 void FX_Water_Draw(void)
 {
-    const OBJECT *const obj = Object_Get(O_SPARKS_GFX);
-    if (!obj->loaded) {
-        return;
-    }
-
-    const int32_t base_sprite_idx = obj->mesh_idx;
-
     for (int32_t i = 0; i < (int32_t)ARRAY_SIZE(m_Splashes); i++) {
         const FX_WATER_SPLASH *const splash = &m_Splashes[i];
         if ((splash->flags & 1U) == 0U) {
             continue;
         }
-        M_DrawSplash(base_sprite_idx, splash);
+        M_DrawSplash(splash);
     }
 
     for (int32_t i = 0; i < (int32_t)ARRAY_SIZE(m_Ripples); i++) {
@@ -552,7 +554,7 @@ void FX_Water_Draw(void)
         if ((ripple->flags & 1U) == 0U) {
             continue;
         }
-        M_DrawRipple(base_sprite_idx, ripple);
+        M_DrawRipple(ripple);
     }
 }
 

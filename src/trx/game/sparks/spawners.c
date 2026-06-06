@@ -84,8 +84,8 @@ void Sparks_TriggerBubble(
 void Sparks_TriggerWaterfallMist(
     const int32_t x, const int32_t y, const int32_t z, const int32_t angle)
 {
-    const OBJECT *const obj = Object_Get(O_SPARKS_GFX);
-    if (obj == nullptr || !obj->loaded) {
+    const int32_t sprite_idx = Sparks_GetSpriteIndex(SPARK_TYPE_EXPLOSION);
+    if (sprite_idx == NO_ITEM) {
         return;
     }
 
@@ -108,7 +108,7 @@ void Sparks_TriggerWaterfallMist(
             .extras = 0,
             .life = (uint8_t)((Random_GetControl() & 3) + 6),
             .dynamic = -1,
-            .sprite_idx = obj->mesh_idx,
+            .sprite_idx = sprite_idx,
             .pos = {
                 .x = x + (Random_GetControl() % 16) - 8 + c * offset,
                 .y = y + (Random_GetControl() % 16) - 8,
@@ -151,8 +151,8 @@ void Sparks_TriggerWaterfallMist(
 void Sparks_TriggerBreath(
     const XYZ_32 pos, const XYZ_32 vel, const int16_t room_num)
 {
-    const OBJECT *const object = Object_Get(O_SPARKS_GFX);
-    if (object == nullptr || !object->loaded) {
+    const int32_t sprite_idx = Sparks_GetSpriteIndex(SPARK_TYPE_EXPLOSION);
+    if (sprite_idx == NO_ITEM) {
         return;
     }
 
@@ -171,7 +171,7 @@ void Sparks_TriggerBreath(
         .extras = 0,
         .life = (uint8_t)((Random_GetControl() & 3) + 37),
         .dynamic = -1,
-        .sprite_idx = object->mesh_idx,
+        .sprite_idx = sprite_idx,
         .pos = {
             .x = pos.x + jitter_x,
             .y = pos.y + jitter_y,
@@ -213,8 +213,10 @@ void Sparks_TriggerFireFlame(
         return;
     }
 
-    SPARK *const spark = Sparks_GetFreeSpark();
-    spark->on = true;
+    SPARK *const spark = Sparks_InitialiseSpriteSpark(SPARK_TYPE_EXPLOSION);
+    if (spark == nullptr) {
+        return;
+    }
 
     if (type == 2) {
         spark->src_color.r = (Random_GetControl() & 0x1F) + 48;
@@ -331,7 +333,6 @@ void Sparks_TriggerFireFlame(
     }
 
     spark->scalar = 2;
-    spark->sprite_idx = Object_Get(O_SPARKS_GFX)->mesh_idx;
 
     uint8_t size;
     if (type == 0) {
@@ -372,8 +373,11 @@ void Sparks_TriggerFireSmoke(
         return;
     }
 
-    SPARK *const spark = Sparks_GetFreeSpark();
-    spark->on = true;
+    SPARK *const spark = Sparks_InitialiseSpriteSpark(SPARK_TYPE_EXPLOSION);
+    if (spark == nullptr) {
+        return;
+    }
+
     spark->src_color.r = 0;
     spark->src_color.g = 0;
     spark->src_color.b = 0;
@@ -426,7 +430,6 @@ void Sparks_TriggerFireSmoke(
     }
 
     spark->scalar = 3;
-    spark->sprite_idx = Object_Get(O_SPARKS_GFX)->mesh_idx;
     spark->gravity = -16 - (Random_GetControl() & 0xF);
     spark->max_y_vel = -8 - (Random_GetControl() & 7);
     spark->dst_size.width = (Random_GetControl() & 0x3F) + 64;
@@ -448,8 +451,11 @@ void Sparks_TriggerStaticFlame(const XYZ_32 pos, const int32_t size)
         return;
     }
 
-    SPARK *const spark = Sparks_GetFreeSpark();
-    spark->on = true;
+    SPARK *const spark = Sparks_InitialiseSpriteSpark(SPARK_TYPE_EXPLOSION);
+    if (spark == nullptr) {
+        return;
+    }
+
     spark->src_color.r = (Random_GetControl() & 0x3F) - 64;
     spark->src_color.g = (Random_GetControl() & 0x3F) + 128;
     spark->src_color.b = 64;
@@ -473,7 +479,6 @@ void Sparks_TriggerStaticFlame(const XYZ_32 pos, const int32_t size)
     spark->vel.y = 0;
     spark->vel.x = 0;
     spark->flags = SPARK_F_ALT_SPRITE | SPARK_F_SPRITE | SPARK_F_SCALE;
-    spark->sprite_idx = Object_Get(O_SPARKS_GFX)->mesh_idx;
     spark->scalar = 2;
     spark->dst_size.width = size;
     spark->dst_size.height = size;
@@ -496,8 +501,11 @@ void Sparks_TriggerSideFlame(
         return;
     }
 
-    SPARK *const spark = Sparks_GetFreeSpark();
-    spark->on = true;
+    SPARK *const spark = Sparks_InitialiseSpriteSpark(SPARK_TYPE_EXPLOSION);
+    if (spark == nullptr) {
+        return;
+    }
+
     spark->src_color.r = (Random_GetControl() & 0x1F) + 48;
     spark->src_color.g = spark->src_color.r;
     spark->src_color.b = (Random_GetControl() & 0x3F) - 64;
@@ -532,7 +540,6 @@ void Sparks_TriggerSideFlame(
     spark->flags = SPARK_F_ALT_SPRITE | SPARK_F_SPRITE | SPARK_F_SCALE;
     spark->gravity = -8 - (Random_GetControl() & 0xF);
     spark->max_y_vel = -8 - (Random_GetControl() & 7);
-    spark->sprite_idx = Object_Get(O_SPARKS_GFX)->mesh_idx;
     spark->scalar = 3;
 
     int32_t size = (Random_GetControl() & 0x1F) + 128;
@@ -703,8 +710,8 @@ void Sparks_TriggerExplosionSparks(
         return;
     }
 
-    const OBJECT *const obj = Object_Get(O_SPARKS_GFX);
-    if (obj == nullptr || !obj->loaded) {
+    const int32_t sprite_idx = Sparks_GetSpriteIndex(SPARK_TYPE_EXPLOSION);
+    if (sprite_idx == NO_ITEM) {
         return;
     }
 
@@ -724,7 +731,7 @@ void Sparks_TriggerExplosionSparks(
                << 3)),
         .life = 0,
         .dynamic = (int8_t)dynamic,
-        .sprite_idx = obj->mesh_idx,
+        .sprite_idx = sprite_idx,
         .pos = pos,
         .vel = {
             .x = (Random_GetControl() & 0xFFF) - 2048,
@@ -817,8 +824,8 @@ void Sparks_TriggerExplosionBubble(const XYZ_32 pos, const int16_t room_num)
         return;
     }
 
-    const OBJECT *const obj = Object_Get(O_SPARKS_GFX);
-    if (obj == nullptr || !obj->loaded) {
+    const int32_t sprite_idx = Sparks_GetSpriteIndex(SPARK_TYPE_EXPLOSION);
+    if (sprite_idx == NO_ITEM) {
         return;
     }
 
@@ -834,7 +841,7 @@ void Sparks_TriggerExplosionBubble(const XYZ_32 pos, const int16_t room_num)
         .draw_type = DRAW_BLEND_ADD,
         .extras = 0,
         .dynamic = -1,
-        .sprite_idx = obj->mesh_idx,
+        .sprite_idx = sprite_idx,
         .pos = pos,
         .vel = { .x = 0, .y = 0, .z = 0 },
         .gravity = 0,
@@ -874,8 +881,11 @@ void Sparks_TriggerExplosionSmoke(
         return;
     }
 
-    SPARK *const spark = Sparks_GetFreeSpark();
-    spark->on = true;
+    SPARK *const spark = Sparks_InitialiseSpriteSpark(SPARK_TYPE_EXPLOSION);
+    if (spark == nullptr) {
+        return;
+    }
+
     spark->src_color.r = 144;
     spark->src_color.g = 144;
     spark->src_color.b = 144;
@@ -906,7 +916,6 @@ void Sparks_TriggerExplosionSmoke(
         SPARK_F_ALT_SPRITE | SPARK_F_ROTATE | SPARK_F_SPRITE | SPARK_F_SCALE;
     spark->rot_angle = Random_GetControl() & 0xFFF;
     spark->rot_add = (Random_GetControl() & 0xF) + 16;
-    spark->sprite_idx = Object_Get(O_SPARKS_GFX)->mesh_idx;
     spark->scalar = 1;
     spark->gravity = -3 - (Random_GetControl() & 3);
     spark->max_y_vel = -4 - (Random_GetControl() & 3);
@@ -931,8 +940,10 @@ void Sparks_TriggerExplosionSmokeEnd(
         return;
     }
 
-    SPARK *const spark = Sparks_GetFreeSpark();
-    spark->on = true;
+    SPARK *const spark = Sparks_InitialiseSpriteSpark(SPARK_TYPE_EXPLOSION);
+    if (spark == nullptr) {
+        return;
+    }
 
     if (uw) {
         spark->src_color.r = 0;
@@ -983,7 +994,6 @@ void Sparks_TriggerExplosionSmokeEnd(
         spark->rot_add = (int8_t)((Random_GetControl() & 0xF) + 16);
     }
 
-    spark->sprite_idx = Object_Get(O_SPARKS_GFX)->mesh_idx;
     spark->scalar = 3;
 
     if (uw) {
@@ -1015,8 +1025,11 @@ void Sparks_TriggerDartSmoke(const XYZ_32 pos, const XZ_32 vel, const bool hit)
         return;
     }
 
-    SPARK *const spark = Sparks_GetFreeSpark();
-    spark->on = true;
+    SPARK *const spark = Sparks_InitialiseSpriteSpark(SPARK_TYPE_EXPLOSION);
+    if (spark == nullptr) {
+        return;
+    }
+
     spark->src_color.r = 16;
     spark->src_color.g = 8;
     spark->src_color.b = 4;
@@ -1070,7 +1083,6 @@ void Sparks_TriggerDartSmoke(const XYZ_32 pos, const XZ_32 vel, const bool hit)
         spark->flags = SPARK_F_ALT_SPRITE | SPARK_F_SPRITE | SPARK_F_SCALE;
     }
 
-    spark->sprite_idx = Object_Get(O_SPARKS_GFX)->mesh_idx;
     spark->scalar = 1;
     int32_t rnd = (Random_GetControl() & 0x3F) + 72;
     if (hit) {
@@ -1220,8 +1232,12 @@ void Sparks_TriggerFlareSparks(
         return;
     }
 
-    SPARK *const smoke_spark = Sparks_GetFreeSpark();
-    smoke_spark->on = true;
+    SPARK *const smoke_spark =
+        Sparks_InitialiseSpriteSpark(SPARK_TYPE_EXPLOSION);
+    if (smoke_spark == nullptr) {
+        return;
+    }
+
     smoke_spark->src_color.r = spark->dst_color.r >> 1;
     smoke_spark->src_color.g = spark->dst_color.g >> 1;
     smoke_spark->src_color.b = spark->dst_color.b >> 1;
@@ -1258,7 +1274,6 @@ void Sparks_TriggerFlareSparks(
             SPARK_F_ALT_SPRITE | SPARK_F_SPRITE | SPARK_F_SCALE;
     }
 
-    smoke_spark->sprite_idx = Object_Get(O_SPARKS_GFX)->mesh_idx;
     smoke_spark->scalar = 2;
     smoke_spark->gravity = -8 - (Random_GetDraw() & 3);
     smoke_spark->max_y_vel = -4 - (Random_GetDraw() & 3);
@@ -1359,8 +1374,11 @@ void Sparks_TriggerGunSmokeDirected(
     const GAME_VECTOR pos, const XYZ_32 vel, const bool initial,
     const LARA_GUN_TYPE weapon, const int32_t shade)
 {
-    SPARK *const spark = Sparks_GetFreeSpark();
-    spark->on = true;
+    SPARK *const spark = Sparks_InitialiseSpriteSpark(SPARK_TYPE_EXPLOSION);
+    if (spark == nullptr) {
+        return;
+    }
+
     spark->src_color.r = 0;
     spark->src_color.g = 0;
     spark->src_color.b = 0;
@@ -1421,7 +1439,6 @@ void Sparks_TriggerGunSmokeDirected(
         spark->flags = SPARK_F_ALT_SPRITE | SPARK_F_SPRITE | SPARK_F_SCALE;
     }
 
-    spark->sprite_idx = Object_Get(O_SPARKS_GFX)->mesh_idx;
     spark->scalar = 3;
     spark->gravity = -2 - (Random_GetControl() & 1);
     spark->max_y_vel = -2 - (Random_GetControl() & 1);
@@ -1491,8 +1508,10 @@ void Sparks_TriggerShotgunSparks(const XYZ_32 pos, const XYZ_32 vel)
 void Sparks_TriggerRocketSmoke(
     const XYZ_32 pos, const int32_t c, const int16_t room_num)
 {
-    SPARK *const spark = Sparks_GetFreeSpark();
-    spark->on = true;
+    SPARK *const spark = Sparks_InitialiseSpriteSpark(SPARK_TYPE_EXPLOSION);
+    if (spark == nullptr) {
+        return;
+    }
 
     spark->src_color.r = 0;
     spark->src_color.g = 0;
@@ -1530,7 +1549,6 @@ void Sparks_TriggerRocketSmoke(
     }
 
     spark->scalar = 3;
-    spark->sprite_idx = Object_Get(O_SPARKS_GFX)->mesh_idx;
     spark->gravity = -4 - (Random_GetControl() & 3);
     spark->max_y_vel = -4 - (Random_GetControl() & 3);
     const uint8_t size = (Random_GetControl() & 7) + 32;
@@ -1547,8 +1565,11 @@ void Sparks_TriggerRocketFlame(
     const XYZ_32 pos, const XYZ_32 vel, const int16_t item_num,
     const int16_t room_num)
 {
-    SPARK *const spark = Sparks_GetFreeSpark();
-    spark->on = true;
+    SPARK *const spark = Sparks_InitialiseSpriteSpark(SPARK_TYPE_EXPLOSION);
+    if (spark == nullptr) {
+        return;
+    }
+
     spark->src_color.r = (Random_GetControl() & 0x1F) + 48;
     spark->src_color.g = spark->src_color.r;
     spark->src_color.b = (Random_GetControl() & 0x3F) + 192;
@@ -1589,7 +1610,6 @@ void Sparks_TriggerRocketFlame(
     spark->gravity = 0;
     spark->max_y_vel = 0;
     spark->scalar = 2;
-    spark->sprite_idx = Object_Get(O_SPARKS_GFX)->mesh_idx;
     spark->size.width = (Random_GetControl() & 7) + 32;
     spark->src_size.width = spark->size.width;
     spark->dst_size.width = 2;
@@ -1609,8 +1629,11 @@ void Sparks_TriggerFlamethrowerHitFlame(const XYZ_32 pos)
         return;
     }
 
-    SPARK *const spark = Sparks_GetFreeSpark();
-    spark->on = true;
+    SPARK *const spark = Sparks_InitialiseSpriteSpark(SPARK_TYPE_EXPLOSION);
+    if (spark == nullptr) {
+        return;
+    }
+
     spark->src_color.r = 255;
     spark->src_color.g = (Random_GetControl() & 0x1F) + 48;
     spark->src_color.b = 48;
@@ -1651,7 +1674,6 @@ void Sparks_TriggerFlamethrowerHitFlame(const XYZ_32 pos)
         spark->max_y_vel = -16 - (Random_GetControl() & 7);
     }
 
-    spark->sprite_idx = Object_Get(O_SPARKS_GFX)->mesh_idx;
     spark->scalar = 2;
     spark->size.width = (Random_GetControl() & 0x1F) + 128;
     spark->src_size.width = spark->size.width;
@@ -1672,8 +1694,10 @@ void Sparks_TriggerFlamethrowerSmoke(const XYZ_32 pos, const bool uw)
         return;
     }
 
-    SPARK *const spark = Sparks_GetFreeSpark();
-    spark->on = true;
+    SPARK *const spark = Sparks_InitialiseSpriteSpark(SPARK_TYPE_EXPLOSION);
+    if (spark == nullptr) {
+        return;
+    }
 
     if (uw) {
         spark->src_color.r = 0;
@@ -1729,7 +1753,6 @@ void Sparks_TriggerFlamethrowerSmoke(const XYZ_32 pos, const bool uw)
         spark->rot_add = (Random_GetControl() & 0xF) + 16;
     }
 
-    spark->sprite_idx = Object_Get(O_SPARKS_GFX)->mesh_idx;
     spark->scalar = 3;
 
     if (uw) {

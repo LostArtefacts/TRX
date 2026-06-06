@@ -439,8 +439,11 @@ static int32_t M_TestHeight(
 static void M_TriggerExhaustSmoke(
     XYZ_32 pos, int16_t angle, int32_t speed, const bool moving)
 {
-    SPARK *const spark = Sparks_GetFreeSpark();
-    spark->on = true;
+    SPARK *const spark = Sparks_InitialiseSpriteSpark(SPARK_TYPE_EXPLOSION);
+    if (spark == nullptr) {
+        return;
+    }
+
     spark->src_color.r = 0;
     spark->src_color.g = 0;
     spark->src_color.b = 0;
@@ -500,7 +503,6 @@ static void M_TriggerExhaustSmoke(
     }
 
     spark->scalar = 2;
-    spark->sprite_idx = Object_Get(O_SPARKS_GFX)->mesh_idx;
     spark->gravity = -4 - (Random_GetControl() & 3);
     spark->max_y_vel = -8 - (Random_GetControl() & 7);
     spark->dst_size.width = (Random_GetControl() & 7) + (speed >> 7) + 32;
