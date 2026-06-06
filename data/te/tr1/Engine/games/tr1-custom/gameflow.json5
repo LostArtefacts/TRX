@@ -54,5 +54,11 @@
     "demos": [],
     "cutscenes": [],
     "fmvs": [],
-    "hidden_config": [],
+    "hidden_config": [
+        "fix_animated_sprites",
+        "fix_item_rots",
+        "fix_floor_data_issues",
+        "fix_texture_issues",
+        "restore_ps1_enemies",
+    ],
 }
