@@ -220,5 +220,6 @@
         "fix_pipeman_aim",
         "enable_cinematics",
         "fix_animated_spikes",
+        "fix_animated_sprites",
     ],
 }
