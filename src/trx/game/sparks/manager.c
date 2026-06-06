@@ -131,6 +131,31 @@ SPARK *Sparks_GetSpark(const int32_t idx)
     return &m_Sparks[idx];
 }
 
+SPARK *Sparks_InitialiseSpriteSpark(const SPARK_SPRITE_TYPE type)
+{
+    const int32_t sprite_idx = Sparks_GetSpriteIndex(type);
+    if (sprite_idx == NO_ITEM) {
+        return nullptr;
+    }
+
+    SPARK *const spark = Sparks_GetFreeSpark();
+    spark->on = true;
+    spark->sprite_idx = sprite_idx;
+    return spark;
+}
+
+int32_t Sparks_GetSpriteIndex(const SPARK_SPRITE_TYPE type)
+{
+    OBJECT *const obj = Object_Get(O_SPARKS_GFX);
+    if (obj == nullptr || !obj->loaded) {
+        return NO_ITEM;
+    }
+    if (type < 0 || type >= ABS(obj->mesh_count)) {
+        return NO_ITEM;
+    }
+    return obj->mesh_idx + type;
+}
+
 void Sparks_Sync(SPARK *const spark)
 {
     if (spark == nullptr) {
@@ -339,9 +364,8 @@ void Sparks_Control(void)
         }
 
         if ((spark->flags & SPARK_F_ALT_SPRITE) != 0U) {
-            const OBJECT *const obj = Object_Get(O_SPARKS_GFX);
-            if (obj->loaded) {
-                const int32_t base = obj->mesh_idx;
+            const int32_t base = Sparks_GetSpriteIndex(SPARK_TYPE_EXPLOSION);
+            if (base != NO_ITEM) {
                 if (spark->color.r < 16 && spark->color.g < 16
                     && spark->color.b < 16) {
                     spark->sprite_idx = base + 3;

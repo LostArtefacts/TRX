@@ -17,3 +17,15 @@ enum {
     SPARK_F_GREEN         = 0x2000,
     // clang-format on
 };
+
+typedef enum {
+    // clang-format off
+    SPARK_TYPE_EXPLOSION    = 0,
+    SPARK_TYPE_SMALL_SPLASH = 4,
+    SPARK_TYPE_BIG_SPLASH   = 8,
+    SPARK_TYPE_RIPPLE       = 9,
+    SPARK_TYPE_FOOTPRINT    = 17,
+    SPARK_TYPE_PARTICLE     = SPARK_TYPE_FOOTPRINT,
+    SPARK_TYPE_SHIELD       = 18,
+    // clang-format on
+} SPARK_SPRITE_TYPE;

@@ -138,8 +138,11 @@ static void M_TriggerFireSparks(const ITEM *const item)
         return;
     }
 
-    SPARK *const spark = Sparks_GetFreeSpark();
-    spark->on = true;
+    SPARK *const spark = Sparks_InitialiseSpriteSpark(SPARK_TYPE_EXPLOSION);
+    if (spark == nullptr) {
+        return;
+    }
+
     spark->src_color.r = 255;
     spark->src_color.g = (Random_GetControl() & 0x1F) + 48;
     spark->src_color.b = 48;
@@ -183,7 +186,6 @@ static void M_TriggerFireSparks(const ITEM *const item)
 
     spark->node_num = 2;
     spark->item_num = Item_GetIndex(item);
-    spark->sprite_idx = Object_Get(O_SPARKS_GFX)->mesh_idx;
     spark->scalar = 1;
     uint8_t size = (Random_GetControl() & 0x1F) + 64;
     spark->src_size.width = size;

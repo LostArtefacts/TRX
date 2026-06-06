@@ -277,8 +277,11 @@ static void M_TriggerPlasma(
         return;
     }
 
-    SPARK *const spark = Sparks_GetFreeSpark();
-    spark->on = true;
+    SPARK *const spark = Sparks_InitialiseSpriteSpark(SPARK_TYPE_EXPLOSION);
+    if (spark == nullptr) {
+        return;
+    }
+
     spark->src_color.r = 48;
     spark->src_color.g = 255;
     spark->src_color.b = (Random_GetControl() & 0x1F) + 48;
@@ -319,7 +322,6 @@ static void M_TriggerPlasma(
     spark->node_num = (uint8_t)node;
     spark->max_y_vel = (Random_GetControl() & 7) + 16;
     spark->item_num = item_num;
-    spark->sprite_idx = (uint8_t)Object_Get(O_SPARKS_GFX)->mesh_idx;
     spark->scalar = 1;
     size += Random_GetControl() & 0xF;
     spark->size.width = (uint8_t)size;
@@ -839,13 +841,16 @@ static bool M_CanBeExploded(const ITEM *const item)
 
 static void M_DrawShield(const ITEM *const item)
 {
+    const int32_t sprite_base = Sparks_GetSpriteIndex(SPARK_TYPE_SHIELD);
+    if (sprite_base == NO_ITEM) {
+        return;
+    }
+
     const M_PRIV *const p = item->priv;
     const int32_t time4 = Output_GetTimeInGame() * 4;
-    const int32_t sprite_base = Object_Get(O_SPARKS_GFX)->mesh_idx;
 
     for (int32_t band = 0; band < 4; band++) {
-        const int32_t sprite_idx =
-            sprite_base + 18 + ((band + (time4 >> 3)) & 7);
+        const int32_t sprite_idx = sprite_base + ((band + (time4 >> 3)) & 7);
 
         for (int32_t j = 0; j < 8; j++) {
             const int32_t j2 = (j == 7) ? 0 : (j + 1);

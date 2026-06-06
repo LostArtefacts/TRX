@@ -9,7 +9,6 @@
 #include <trx/game/objects.h>
 #include <trx/game/output/sources/poly_fx.h>
 #include <trx/game/output/state.h>
-#include <trx/game/output/textures.h>
 #include <trx/game/output/vars.h>
 #include <trx/game/random.h>
 #include <trx/game/rooms.h>
@@ -156,13 +155,8 @@ void FX_WaterParticles_Draw(void)
         return;
     }
 
-    const OBJECT *const obj = Object_Get(O_SPARKS_GFX);
-    if (obj == nullptr || !obj->loaded) {
-        return;
-    }
-
-    const int32_t sprite_idx = obj->mesh_idx + 17;
-    if (sprite_idx < 0 || sprite_idx >= Output_GetSpriteTextureCount()) {
+    const int32_t sprite_idx = Sparks_GetSpriteIndex(SPARK_TYPE_PARTICLE);
+    if (sprite_idx == NO_ITEM) {
         return;
     }
 

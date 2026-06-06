@@ -104,8 +104,10 @@ static void M_TriggerSmoke(const XYZ_32 pos, const bool uw)
         return;
     }
 
-    SPARK *const spark = Sparks_GetFreeSpark();
-    spark->on = true;
+    SPARK *const spark = Sparks_InitialiseSpriteSpark(SPARK_TYPE_EXPLOSION);
+    if (spark == nullptr) {
+        return;
+    }
 
     if (uw) {
         spark->src_color.r = 0;
@@ -162,7 +164,6 @@ static void M_TriggerSmoke(const XYZ_32 pos, const bool uw)
     }
 
     spark->scalar = 3;
-    spark->sprite_idx = Object_Get(O_SPARKS_GFX)->mesh_idx;
 
     if (uw) {
         spark->max_y_vel = 0;

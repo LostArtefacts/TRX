@@ -1031,8 +1031,11 @@ static void M_DoWake(
 
 static void M_TriggerRapidsMist(const XYZ_32 pos)
 {
-    SPARK *const spark = Sparks_GetFreeSpark();
-    spark->on = true;
+    SPARK *const spark = Sparks_InitialiseSpriteSpark(SPARK_TYPE_EXPLOSION);
+    if (spark == nullptr) {
+        return;
+    }
+
     spark->src_color.r = 128;
     spark->src_color.g = 128;
     spark->src_color.b = 128;
@@ -1070,7 +1073,6 @@ static void M_TriggerRapidsMist(const XYZ_32 pos)
     }
 
     spark->scalar = 4;
-    spark->sprite_idx = (uint8_t)Object_Get(O_SPARKS_GFX)->mesh_idx;
     spark->gravity = 0;
     spark->max_y_vel = 0;
     spark->dst_size.width = (Random_GetControl() & 7) + 16;

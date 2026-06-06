@@ -72,7 +72,12 @@ static int32_t M_GetFloorY(const ITEM *const item)
 static void M_TriggerBlastFire(
     const XYZ_32 pos, const bool smoke, const int32_t end)
 {
-    SPARK *const spark = end < 0 ? Sparks_GetFreeSpark() : Sparks_GetSpark(end);
+    SPARK *const spark = end < 0
+        ? Sparks_InitialiseSpriteSpark(SPARK_TYPE_EXPLOSION)
+        : Sparks_GetSpark(end);
+    if (spark == nullptr) {
+        return;
+    }
     spark->on = true;
 
     if (smoke) {
@@ -123,7 +128,6 @@ static void M_TriggerBlastFire(
         spark->rot_add = (Random_GetControl() & 0xF) + 16;
     }
 
-    spark->sprite_idx = Object_Get(O_SPARKS_GFX)->mesh_idx;
     spark->scalar = 4;
     spark->max_y_vel = 0;
     spark->gravity = 0;
@@ -152,8 +156,10 @@ static void M_TriggerBlastFire(
 static void M_TriggerRocketSmoke(
     const XYZ_32 pos, const int32_t yv, const bool fire)
 {
-    SPARK *const spark = Sparks_GetFreeSpark();
-    spark->on = true;
+    SPARK *const spark = Sparks_InitialiseSpriteSpark(SPARK_TYPE_EXPLOSION);
+    if (spark == nullptr) {
+        return;
+    }
 
     if (fire) {
         spark->src_color.r = (Random_GetControl() & 0x1F) + 48;
@@ -200,7 +206,6 @@ static void M_TriggerRocketSmoke(
         spark->flags = SPARK_F_ALT_SPRITE | SPARK_F_SPRITE | SPARK_F_SCALE;
     }
 
-    spark->sprite_idx = Object_Get(O_SPARKS_GFX)->mesh_idx;
     spark->scalar = 3;
     spark->max_y_vel = 0;
     spark->gravity = 0;

@@ -79,8 +79,11 @@ static void M_TriggerParticles(const ITEM *const item)
         return;
     }
 
-    SPARK *const spark = Sparks_GetFreeSpark();
-    spark->on = true;
+    SPARK *const spark = Sparks_InitialiseSpriteSpark(SPARK_TYPE_EXPLOSION);
+    if (spark == nullptr) {
+        return;
+    }
+
     spark->src_color.g = (Random_GetControl() & 0x3F) + 32;
     spark->src_color.b = spark->src_color.g >> 1;
     spark->src_color.r = spark->src_color.g >> 2;
@@ -108,7 +111,6 @@ static void M_TriggerParticles(const ITEM *const item)
     spark->effect_num = Item_GetIndex(item);
     spark->node_num = 1;
     spark->scalar = 3;
-    spark->sprite_idx = Object_Get(O_SPARKS_GFX)->mesh_idx;
     spark->size.width = (Random_GetControl() & 3) + 3;
     spark->src_size.width = spark->size.width;
     spark->dst_size.width = spark->size.width >> 1;

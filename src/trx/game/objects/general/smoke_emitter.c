@@ -27,8 +27,11 @@ static void M_Control(const int16_t item_num)
         return;
     }
 
-    SPARK *const spark = Sparks_GetFreeSpark();
-    spark->on = true;
+    SPARK *const spark = Sparks_InitialiseSpriteSpark(SPARK_TYPE_EXPLOSION);
+    if (spark == nullptr) {
+        return;
+    }
+
     spark->src_color.r = 0;
     spark->src_color.g = 0;
     spark->src_color.b = 0;
@@ -73,7 +76,6 @@ static void M_Control(const int16_t item_num)
     }
 
     spark->scalar = 3;
-    spark->sprite_idx = Object_Get(O_SPARKS_GFX)->mesh_idx;
     spark->gravity = -8 - (Random_GetControl() & 7);
     spark->max_y_vel = -4 - (Random_GetControl() & 7);
     spark->dst_size.width = (Random_GetControl() & 0x1F) + 128;
