@@ -834,16 +834,15 @@ static void M_HandleSurface(COLL_INFO *const coll)
 static void M_HandleExposure(void)
 {
     const ITEM *const lara_item = Lara_GetItem();
-    if (!Room_Get(lara_item->room_num)->flags.damaging) {
+    LARA_INFO *const lara_info = Lara_GetLaraInfo();
+    if (lara_info->water_status == LWS_ABOVE_WATER
+        || !Room_Get(lara_item->room_num)->flags.damaging) {
+        lara_info->exposure_timer++;
+        CLAMPG(lara_info->exposure_timer, LARA_MAX_EXPOSURE);
         return;
     }
 
-    LARA_INFO *const lara_info = Lara_GetLaraInfo();
     switch (lara_info->water_status) {
-    case LWS_ABOVE_WATER:
-        lara_info->exposure_timer++;
-        CLAMPG(lara_info->exposure_timer, LARA_MAX_EXPOSURE);
-        break;
     case LWS_WADE:
         lara_info->exposure_timer--;
         break;
@@ -853,6 +852,8 @@ static void M_HandleExposure(void)
         break;
     case LWS_CHEAT:
         lara_info->exposure_timer = LARA_MAX_EXPOSURE;
+        break;
+    default:
         break;
     }
 
