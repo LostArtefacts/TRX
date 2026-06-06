@@ -835,26 +835,25 @@ static void M_HandleExposure(void)
 {
     const ITEM *const lara_item = Lara_GetItem();
     LARA_INFO *const lara_info = Lara_GetLaraInfo();
-    if (lara_info->water_status == LWS_ABOVE_WATER
-        || !Room_Get(lara_item->room_num)->flags.damaging) {
+
+    if (lara_info->water_status == LWS_CHEAT) {
+        lara_info->exposure_timer = LARA_MAX_EXPOSURE;
+    } else if (Room_Get(lara_item->room_num)->flags.damaging) {
+        switch (lara_info->water_status) {
+        case LWS_ABOVE_WATER:
+        case LWS_WADE:
+            lara_info->exposure_timer--;
+            break;
+        case LWS_UNDERWATER:
+        case LWS_SURFACE:
+            lara_info->exposure_timer -= 2;
+            break;
+        default:
+            break;
+        }
+    } else {
         lara_info->exposure_timer++;
         CLAMPG(lara_info->exposure_timer, LARA_MAX_EXPOSURE);
-        return;
-    }
-
-    switch (lara_info->water_status) {
-    case LWS_WADE:
-        lara_info->exposure_timer--;
-        break;
-    case LWS_UNDERWATER:
-    case LWS_SURFACE:
-        lara_info->exposure_timer -= 2;
-        break;
-    case LWS_CHEAT:
-        lara_info->exposure_timer = LARA_MAX_EXPOSURE;
-        break;
-    default:
-        break;
     }
 
     if (lara_info->exposure_timer < 0) {
