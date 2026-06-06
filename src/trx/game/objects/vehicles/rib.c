@@ -960,12 +960,21 @@ static void M_Control(const int16_t item_num)
 
         if (room_num != item->room_num) {
             Item_UpdateRoom(item_num, room_num);
-            Item_UpdateRoom(Item_GetIndex(lara_item), room_num);
         }
 
         item->rot.z += p->tilt_angle;
         lara_item->pos = item->pos;
         lara_item->rot = item->rot;
+
+        sector = Room_GetSector(
+            (XYZ_32) {
+                lara_item->pos.x,
+                lara_item->pos.y + M_SHIFT_Y,
+                lara_item->pos.z,
+            },
+            &room_num);
+        Item_UpdateRoom(Item_GetIndex(lara_item), room_num);
+
         Item_Animate(lara_item);
 
         if (lara_item->hit_points > 0) {
