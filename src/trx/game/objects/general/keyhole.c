@@ -3,6 +3,7 @@
 #include <trx/game/inventory.h>
 #include <trx/game/lara.h>
 #include <trx/game/sound.h>
+#include <trx/version.h>
 
 #define M_LF_USE_KEYHOLE 104
 
@@ -54,6 +55,22 @@ static void M_MarkDone(ITEM *const receptacle_item)
     receptacle_item->status = IS_ACTIVE;
 }
 
+static bool M_LaraHasValidState(const ITEM *const lara_item)
+{
+    // TODO: unify with pickups, puzzle slots and switches
+    const LARA_TRX_ANIMATION anim = LA_U(Item_GetRelativeAnim(lara_item));
+    const LARA_TRX_STATE state = LS_U(lara_item->current_anim_state);
+    if (g_TRVersion < 3) {
+        if (anim == LA_SPRINT_SLIDE_STAND_RIGHT
+            || anim == LA_SPRINT_SLIDE_STAND_LEFT) {
+            return false;
+        }
+        return state == LS_STOP;
+    }
+
+    return state == LS_STOP && anim == LA_STAND_IDLE;
+}
+
 static void M_Collision(
     const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
 {
@@ -61,7 +78,7 @@ static void M_Collision(
     const OBJECT *const obj = Object_Get(item->object_id);
     const LARA_INFO *const lara = Lara_GetLaraInfo();
 
-    if (lara_item->current_anim_state != LS(LS_STOP)) {
+    if (!M_LaraHasValidState(lara_item)) {
         if (lara_item->current_anim_state == LS(LS_USE_KEY)
             && Lara_TestPosition(item, obj->bounds_func())
             && Item_TestFrameEqual(lara_item, M_LF_USE_KEYHOLE)) {
