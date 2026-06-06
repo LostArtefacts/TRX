@@ -249,6 +249,22 @@ static void M_CollisionControlled(
     }
 }
 
+static bool M_LaraHasValidState(const ITEM *const lara_item)
+{
+    // TODO: unify with pickups, keyholes and puzzle slots
+    const LARA_TRX_ANIMATION anim = LA_U(Item_GetRelativeAnim(lara_item));
+    const LARA_TRX_STATE state = LS_U(lara_item->current_anim_state);
+    if (g_TRVersion < 3) {
+        if (anim == LA_SPRINT_SLIDE_STAND_RIGHT
+            || anim == LA_SPRINT_SLIDE_STAND_LEFT) {
+            return false;
+        }
+        return state == LS_STOP;
+    }
+
+    return state == LS_STOP && anim == LA_STAND_IDLE;
+}
+
 static void M_Collision(
     const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
 {
@@ -267,7 +283,7 @@ static void M_Collision(
 
     if (!g_Input.action || item->status != IS_INACTIVE
         || lara->gun_status != LGS_ARMLESS || lara_item->gravity
-        || lara_item->current_anim_state != LS(LS_STOP)
+        || !M_LaraHasValidState(lara_item)
         || !Lara_TestPosition(item, obj->bounds_func())) {
         return;
     }

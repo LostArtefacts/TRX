@@ -5,6 +5,7 @@
 #include <trx/game/lara.h>
 #include <trx/game/objects/vars.h>
 #include <trx/game/sound.h>
+#include <trx/version.h>
 
 #define M_LF_USE_PUZZLE 80
 
@@ -96,6 +97,22 @@ static void M_Control(const int16_t item_num)
     }
 }
 
+static bool M_LaraHasValidState(const ITEM *const lara_item)
+{
+    // TODO: unify with pickups, keyholes and switches
+    const LARA_TRX_ANIMATION anim = LA_U(Item_GetRelativeAnim(lara_item));
+    const LARA_TRX_STATE state = LS_U(lara_item->current_anim_state);
+    if (g_TRVersion < 3) {
+        if (anim == LA_SPRINT_SLIDE_STAND_RIGHT
+            || anim == LA_SPRINT_SLIDE_STAND_LEFT) {
+            return false;
+        }
+        return state == LS_STOP;
+    }
+
+    return state == LS_STOP && anim == LA_STAND_IDLE;
+}
+
 static void M_Collision(
     const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
 {
@@ -103,7 +120,7 @@ static void M_Collision(
     const OBJECT *const obj = Object_Get(item->object_id);
     const LARA_INFO *const lara = Lara_GetLaraInfo();
 
-    if (lara_item->current_anim_state != LS(LS_STOP)) {
+    if (!M_LaraHasValidState(lara_item)) {
         if (lara_item->current_anim_state == LS(LS_USE_PUZZLE)
             && Lara_TestPosition(item, obj->bounds_func())
             && Item_TestFrameEqual(lara_item, M_LF_USE_PUZZLE)) {
@@ -140,7 +157,7 @@ static void M_CollisionDone(
     const LARA_INFO *const lara = Lara_GetLaraInfo();
 
     if (!g_Input.action || lara->gun_status != LGS_ARMLESS || lara_item->gravity
-        || lara_item->current_anim_state != LS(LS_STOP)
+        || !M_LaraHasValidState(lara_item)
         || !Lara_TestPosition(item, obj->bounds_func())) {
         return;
     }

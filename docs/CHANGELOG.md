@@ -32,6 +32,7 @@
 - fixed the enemy health bar disappearing later than Lara's own bar when holstering weapons (regression from Tomb1Main 0.2)
 - fixed crystal totals being shown incorrectly after loading a save (#5589, regression from 1.5)
 - fixed a very rare crash when loading saves from console during a pause or photo mode
+- fixed Lara embedding into walls during the sprint-slide animation if she tried to interact with a keyhole or puzzle slot at the same time (regression from TR1X 4.14, TR2X 1.4)
 
 **TR1**:
 - added support for fish and piranhas without sacrificing explosion sprites (refer to notes in migration guide) (#4358)
@@ -70,6 +71,7 @@
 - fixed dropped pickups not keeping their original facing (regression from 1.2)
 - fixed Sophia not aiming at Lara properly in Reunion (regression from 1.4)
 - fixed Lara becoming immune to Puna's attacks after getting zapped once with the fly cheat (regression from 1.3)
+- fixed Lara snapping to keyholes, puzzle slots and switches instead of waiting to be at a complete stand-still first (regression from 1.1)
 
 
 
