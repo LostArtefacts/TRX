@@ -74,6 +74,11 @@ order: 3
    - `trx.rooms[room_num].damaging = true`
    - `trx.rooms[room_num].cold = true`
 
+12. **Replace disposable animating objects**:
+   `O_DISPOSABLE_ANIMATING_1…10` have been removed. Use
+   `O_ANIMATING_EXT_1…10` instead, and set the `kill_on_trigger` item property
+   to `true` when you want the old disposable behavior.
+
 ### Version 1.6 to 1.7
 
 1. **Update Lua item maximum HP access**:

@@ -872,3 +872,6 @@ This page lists documented moveable object properties.
 
 ### `361` O_WINSTON_ARMY
 - `max_hit_points = 20` — Maximum hit points.
+
+### `370` O_ANIMATING_EXT_1
+- `kill_on_trigger = false` — Kill the item immediately while its trigger is inactive.

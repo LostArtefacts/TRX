@@ -1979,36 +1979,6 @@
         "disc_emitter": {
             "name": "Scheiben-Erzeuger",
         },
-        "disposable_animating_1": {
-            "name": "\\{review}Einweg-Animierobjekt 1",
-        },
-        "disposable_animating_10": {
-            "name": "\\{review}Einweg-Animierobjekt 10",
-        },
-        "disposable_animating_2": {
-            "name": "\\{review}Einweg-Animierobjekt 2",
-        },
-        "disposable_animating_3": {
-            "name": "\\{review}Einweg-Animierobjekt 3",
-        },
-        "disposable_animating_4": {
-            "name": "\\{review}Einweg-Animierobjekt 4",
-        },
-        "disposable_animating_5": {
-            "name": "\\{review}Einweg-Animierobjekt 5",
-        },
-        "disposable_animating_6": {
-            "name": "\\{review}Einweg-Animierobjekt 6",
-        },
-        "disposable_animating_7": {
-            "name": "\\{review}Einweg-Animierobjekt 7",
-        },
-        "disposable_animating_8": {
-            "name": "\\{review}Einweg-Animierobjekt 8",
-        },
-        "disposable_animating_9": {
-            "name": "\\{review}Einweg-Animierobjekt 9",
-        },
         "diver": {
             "name": "Taucher",
         },

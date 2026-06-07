@@ -8,6 +8,16 @@ typedef enum {
     // clang-format on
 } M_STATE;
 
+static bool M_KillOnTrigger(const ITEM *const item)
+{
+    OBJECT_PROPERTY_VALUE value = {};
+    if (!ObjectProperty_GetItemValue(item, "kill_on_trigger", &value)) {
+        return false;
+    }
+
+    return value.as_bool;
+}
+
 static void M_Collision(
     const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
 {
@@ -23,7 +33,12 @@ static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
 
-    if (Item_IsTriggerActive(item) && !(item->flags & IF_ONE_SHOT)) {
+    if (M_KillOnTrigger(item) && !Item_IsTriggerActive(item)) {
+        Item_Kill(item_num);
+        return;
+    }
+
+    if (Item_IsTriggerActive(item) && (item->flags & IF_ONE_SHOT) == 0) {
         item->goal_anim_state = M_STATE_ON;
     } else if (item->goal_anim_state != M_STATE_OFF) {
         item->goal_anim_state = M_STATE_OFF;
@@ -49,8 +64,14 @@ static void M_Setup(OBJECT *const obj)
 {
     obj->control_func = M_Control;
     obj->collision_func = M_Collision;
+    obj->save_position = true;
     obj->save_flags = true;
     obj->save_anim = true;
+    OBJECT_PROPERTIES(
+        obj,
+        OBJECT_PROPERTY_BOOL(
+            "kill_on_trigger", false,
+            "Kill the item immediately while its trigger is inactive."));
 }
 
 REGISTER_OBJECT(O_ANIMATING_EXT_1, M_Setup)

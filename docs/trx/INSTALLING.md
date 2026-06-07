@@ -1067,6 +1067,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── shore.lua
 │   │   │   ├── temple.lua
 │   │   │   ├── thames.lua
+│   │   │   ├── tinnos.lua
 │   │   │   ├── tonyboss.lua
 │   │   │   ├── tower.lua
 │   │   │   ├── triboss.lua
@@ -2313,6 +2314,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── shore.lua
     │   │   │   │   ├── temple.lua
     │   │   │   │   ├── thames.lua
+    │   │   │   │   ├── tinnos.lua
     │   │   │   │   ├── tonyboss.lua
     │   │   │   │   ├── tower.lua
     │   │   │   │   ├── triboss.lua
