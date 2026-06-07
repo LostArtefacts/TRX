@@ -331,11 +331,7 @@ static void M_DoControlled(const int16_t item_num, ITEM *const lara_item)
     item->rot.z = 0;
 
     LARA_INFO *const lara = Lara_GetLaraInfo();
-    if ((g_Input.action && lara->gun_status == LGS_ARMLESS
-         && !lara_item->gravity && lara_item->current_anim_state == LS(LS_STOP)
-         && !lara->interact_target.is_moving)
-        || (lara->interact_target.is_moving
-            && lara->interact_target.item_num == item_num)) {
+    if (Lara_Interact_CanControl(LARA_INTERACT_PICKUP, item_num)) {
         const OBJECT *const obj = Object_Get(item->object_id);
         if (Lara_TestPosition(item, obj->bounds_func())) {
             const XYZ_32 pos = {
