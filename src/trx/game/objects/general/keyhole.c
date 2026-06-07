@@ -102,9 +102,7 @@ static void M_CollisionControlled(
                 lara_item->current_anim_state = LS(LS_USE_KEY);
                 Lara_Interact_FinishControl(LARA_INTERACT_RECEPTACLE);
             }
-        } else if (
-            lara->interact_target.is_moving
-            && lara->interact_target.item_num == item_num) {
+        } else if (Lara_Interact_HasActiveTarget(item_num)) {
             lara->interact_target.is_moving = false;
             lara->gun_status = LGS_ARMLESS;
         }
@@ -141,8 +139,7 @@ static void M_Collision(
         return;
     }
 
-    if (lara->interact_target.is_moving
-        && lara->interact_target.item_num == item_num) {
+    if (Lara_Interact_HasActiveTarget(item_num)) {
         M_Use(lara_item, item);
     }
 

@@ -84,8 +84,7 @@ static void M_Collision(
     ITEM *const item = Item_Get(item_num);
     const OBJECT *const obj = Object_Get(item->object_id);
 
-    if (lara->interact_target.is_moving
-        && lara->interact_target.item_num == item_num) {
+    if (Lara_Interact_HasActiveTarget(item_num)) {
         M_Use(lara_item, item);
         return;
     }
