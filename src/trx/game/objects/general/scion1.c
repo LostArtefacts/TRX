@@ -57,7 +57,7 @@ static void M_Collision(
     }
 
     if (g_Input.action && lara->gun_status == LGS_ARMLESS && !lara_item->gravity
-        && lara_item->current_anim_state == LS(LS_STOP)) {
+        && Lara_Interact_CanBegin(LARA_INTERACT_RECEPTACLE)) {
         lara->interact_target.item_num = item_num;
         Lara_AlignPosition(item, &m_Scion1_Position);
         Lara_SwitchToExtraState(LS_EXTRA_SCION_PICKUP_1);
