@@ -64,6 +64,8 @@ static void M_Initialise(const int16_t item_num)
         wasp_item->pos = item->pos;
         wasp_item->rot = item->rot;
         wasp_item->status = IS_INVISIBLE;
+        wasp_item->shade.value_1 = -1;
+        wasp_item->shade.value_2 = -1;
         Item_Initialise(wasp_item_num);
     }
 }
