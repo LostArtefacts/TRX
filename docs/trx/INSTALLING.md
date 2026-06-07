@@ -1014,6 +1014,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── tinnos_flames.bin
 │   │   │   ├── tinnos_textures.bin
 │   │   │   ├── undersea_animating_bounds.bin
+│   │   │   ├── undersea_animating_ext.bin
 │   │   │   ├── undersea_fd.bin
 │   │   │   ├── undersea_objects.bin
 │   │   │   ├── undersea_pickup_meshes.bin
@@ -2259,6 +2260,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── tinnos_flames.bin
     │   │   │   │   ├── tinnos_textures.bin
     │   │   │   │   ├── undersea_animating_bounds.bin
+    │   │   │   │   ├── undersea_animating_ext.bin
     │   │   │   │   ├── undersea_fd.bin
     │   │   │   │   ├── undersea_objects.bin
     │   │   │   │   ├── undersea_pickup_meshes.bin
