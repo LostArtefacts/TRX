@@ -345,12 +345,7 @@ static void M_DoControlled(const int16_t item_num, ITEM *const lara_item)
                                                           : LA_PICKUP;
                 Item_SwitchToAnim(lara_item, LA(pickup_anim), 0);
                 lara_item->current_anim_state = LS(LS_PICKUP);
-                lara->head_rot.y = 0;
-                lara->head_rot.x = 0;
-                lara->torso_rot.y = 0;
-                lara->torso_rot.x = 0;
-                lara->interact_target.is_moving = false;
-                lara->gun_status = LGS_HANDS_BUSY;
+                Lara_Interact_FinishControl(LARA_INTERACT_PICKUP);
             }
             lara->interact_target.item_num = item_num;
         } else if (

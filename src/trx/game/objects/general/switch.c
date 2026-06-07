@@ -219,13 +219,7 @@ static void M_CollisionControlled(
                 } else {
                     M_TurnSwitchOff(item, lara_item);
                 }
-                lara->head_rot.x = 0;
-                lara->head_rot.y = 0;
-                lara->torso_rot.x = 0;
-                lara->torso_rot.y = 0;
-                lara->interact_target.is_moving = false;
-                lara->interact_target.item_num = NO_ITEM;
-                lara->gun_status = LGS_HANDS_BUSY;
+                Lara_Interact_FinishControl(LARA_INTERACT_SWITCH);
                 Item_AddActive(item_num);
                 item->status = IS_ACTIVE;
                 Item_Animate(item);

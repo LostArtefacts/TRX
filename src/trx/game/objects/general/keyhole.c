@@ -100,12 +100,7 @@ static void M_CollisionControlled(
             if (Lara_MovePosition(item, &m_ControlledPosition)) {
                 Item_SwitchToAnim(lara_item, LA(LA_USE_KEY), 0);
                 lara_item->current_anim_state = LS(LS_USE_KEY);
-                lara->head_rot.y = 0;
-                lara->head_rot.x = 0;
-                lara->torso_rot.y = 0;
-                lara->torso_rot.x = 0;
-                lara->interact_target.is_moving = false;
-                lara->gun_status = LGS_HANDS_BUSY;
+                Lara_Interact_FinishControl(LARA_INTERACT_RECEPTACLE);
             }
         } else if (
             lara->interact_target.is_moving
