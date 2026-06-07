@@ -150,7 +150,7 @@ int32_t Sparks_GetSpriteIndex(const SPARK_SPRITE_TYPE type)
     if (obj == nullptr || !obj->loaded) {
         return NO_ITEM;
     }
-    if (type < 0 || type >= ABS(obj->mesh_count)) {
+    if (type < 0 || (int32_t)type >= ABS(obj->mesh_count)) {
         return NO_ITEM;
     }
     return obj->mesh_idx + type;
