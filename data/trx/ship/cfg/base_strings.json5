@@ -1700,6 +1700,36 @@
         "animating_9": {
             "name": "Animating Object 9",
         },
+        "animating_ext_1": {
+            "name": "Extended Animating Object 1",
+        },
+        "animating_ext_10": {
+            "name": "Extended Animating Object 10",
+        },
+        "animating_ext_2": {
+            "name": "Extended Animating Object 2",
+        },
+        "animating_ext_3": {
+            "name": "Extended Animating Object 3",
+        },
+        "animating_ext_4": {
+            "name": "Extended Animating Object 4",
+        },
+        "animating_ext_5": {
+            "name": "Extended Animating Object 5",
+        },
+        "animating_ext_6": {
+            "name": "Extended Animating Object 6",
+        },
+        "animating_ext_7": {
+            "name": "Extended Animating Object 7",
+        },
+        "animating_ext_8": {
+            "name": "Extended Animating Object 8",
+        },
+        "animating_ext_9": {
+            "name": "Extended Animating Object 9",
+        },
         "ape": {
             "name": "Ape",
         },

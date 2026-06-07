@@ -1700,6 +1700,36 @@
         "animating_9": {
             "name": "\\{review}Animation de l'objet 9",
         },
+        "animating_ext_1": {
+            "name": "\\{review}Objet animé étendu 1",
+        },
+        "animating_ext_10": {
+            "name": "\\{review}Objet animé étendu 10",
+        },
+        "animating_ext_2": {
+            "name": "\\{review}Objet animé étendu 2",
+        },
+        "animating_ext_3": {
+            "name": "\\{review}Objet animé étendu 3",
+        },
+        "animating_ext_4": {
+            "name": "\\{review}Objet animé étendu 4",
+        },
+        "animating_ext_5": {
+            "name": "\\{review}Objet animé étendu 5",
+        },
+        "animating_ext_6": {
+            "name": "\\{review}Objet animé étendu 6",
+        },
+        "animating_ext_7": {
+            "name": "\\{review}Objet animé étendu 7",
+        },
+        "animating_ext_8": {
+            "name": "\\{review}Objet animé étendu 8",
+        },
+        "animating_ext_9": {
+            "name": "\\{review}Objet animé étendu 9",
+        },
         "ape": {
             "name": "Singe",
         },
