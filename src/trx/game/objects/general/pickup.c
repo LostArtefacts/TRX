@@ -348,9 +348,7 @@ static void M_DoControlled(const int16_t item_num, ITEM *const lara_item)
                 Lara_Interact_FinishControl(LARA_INTERACT_PICKUP);
             }
             lara->interact_target.item_num = item_num;
-        } else if (
-            lara->interact_target.is_moving
-            && lara->interact_target.item_num == item_num) {
+        } else if (Lara_Interact_HasActiveTarget(item_num)) {
             lara->interact_target.is_moving = false;
             lara->interact_target.item_num = NO_ITEM;
             lara->gun_status = LGS_ARMLESS;

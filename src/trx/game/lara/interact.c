@@ -5,6 +5,13 @@
 #include <trx/game/lara.h>
 #include <trx/version.h>
 
+bool Lara_Interact_HasActiveTarget(const int16_t item_num)
+{
+    const LARA_INFO *const lara = Lara_GetLaraInfo();
+    return lara->interact_target.is_moving
+        && lara->interact_target.item_num == item_num;
+}
+
 bool Lara_Interact_CanBegin(const LARA_INTERACT_MODE mode)
 {
     const ITEM *const lara_item = Lara_GetItem();
@@ -36,12 +43,11 @@ bool Lara_Interact_CanBegin(const LARA_INTERACT_MODE mode)
 bool Lara_Interact_CanControl(
     const LARA_INTERACT_MODE mode, const int16_t item_num)
 {
-    const LARA_INFO *const lara = Lara_GetLaraInfo();
-    if (lara->interact_target.is_moving
-        && lara->interact_target.item_num == item_num) {
+    if (Lara_Interact_HasActiveTarget(item_num)) {
         return true;
     }
 
+    const LARA_INFO *const lara = Lara_GetLaraInfo();
     if (!g_Input.action || lara->gun_status != LGS_ARMLESS) {
         return false;
     }

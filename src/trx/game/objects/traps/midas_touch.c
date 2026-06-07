@@ -82,8 +82,7 @@ static void M_Collision(
     }
 
     LARA_INFO *const lara = Lara_GetLaraInfo();
-    if (lara->interact_target.is_moving
-        && lara->interact_target.item_num == item_num) {
+    if (Lara_Interact_HasActiveTarget(item_num)) {
         Lara_SwitchToExtraState(LS_EXTRA_USE_MIDAS);
         lara->interact_target.is_moving = false;
     }
