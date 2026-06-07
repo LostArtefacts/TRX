@@ -1,3 +1,4 @@
+#include <trx/config.h>
 #include <trx/game/game_flow.h>
 #include <trx/game/input.h>
 #include <trx/game/inventory.h>
@@ -9,13 +10,19 @@
 
 #define M_LF_USE_PUZZLE 80
 
-static XYZ_32 m_PuzzleHolePosition = {
+static XYZ_32 m_DefaultPosition = {
     .x = 0,
     .y = 0,
     .z = WALL_L / 2 - LARA_RADIUS - 85,
 };
 
-static const OBJECT_BOUNDS m_PuzzleHoleBounds = {
+static XYZ_32 m_ControlledPosition = {
+    .x = 0,
+    .y = 0,
+    .z = WALL_L / 2 - LARA_RADIUS * 2,
+};
+
+static const OBJECT_BOUNDS m_DefaultBounds = {
     .shift = {
         .min = { .x = -200, .y = 0, .z = WALL_L / 2 - 200, },
         .max = { .x = +200, .y = 0, .z = WALL_L / 2, },
@@ -26,9 +33,21 @@ static const OBJECT_BOUNDS m_PuzzleHoleBounds = {
     },
 };
 
+static const OBJECT_BOUNDS m_ControlledBounds = {
+    .shift = {
+        .min = { .x = -STEP_L, .y = +0, .z = +0, },
+        .max = { .x = +STEP_L, .y = +0, .z = +412, },
+    },
+    .rot = {
+        .min = { .x = -10 * DEG_1, .y = -30 * DEG_1, .z = -10 * DEG_1, },
+        .max = { .x = +10 * DEG_1, .y = +30 * DEG_1, .z = +10 * DEG_1, },
+    },
+};
+
 static const OBJECT_BOUNDS *M_Bounds(void)
 {
-    return &m_PuzzleHoleBounds;
+    return g_Config.gameplay.enable_walk_to_items ? &m_ControlledBounds
+                                                  : &m_DefaultBounds;
 }
 
 static bool M_IsUsable(const int16_t item_num)
@@ -40,7 +59,7 @@ static bool M_IsUsable(const int16_t item_num)
 static void M_Use(ITEM *const lara_item, ITEM *const receptacle_item)
 {
     LARA_INFO *const lara = Lara_GetLaraInfo();
-    Lara_AlignPosition(receptacle_item, &m_PuzzleHolePosition);
+    Lara_AlignPosition(receptacle_item, &m_DefaultPosition);
     Lara_AnimateUntil(lara_item, LS(LS_USE_PUZZLE));
     lara_item->goal_anim_state = LS(LS_STOP);
     lara->gun_status = LGS_HANDS_BUSY;
@@ -113,9 +132,68 @@ static bool M_LaraHasValidState(const ITEM *const lara_item)
     return state == LS_STOP && anim == LA_STAND_IDLE;
 }
 
+static void M_CollisionControlled(
+    const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
+{
+    ITEM *const item = Item_Get(item_num);
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+
+    if ((g_Input.action && lara->gun_status == LGS_ARMLESS
+         && !lara_item->gravity && lara_item->current_anim_state == LS(LS_STOP))
+        || (lara->interact_target.is_moving
+            && lara->interact_target.item_num == item_num)) {
+        const OBJECT *const obj = Object_Get(item->object_id);
+        if (Lara_TestPosition(item, obj->bounds_func())) {
+            if (g_Input.action && !lara->interact_target.is_moving
+                && !GF_ShowInventoryKeys(item->object_id)) {
+                Lara_RefuseInteraction();
+                return;
+            }
+
+            if (lara->interact_target.item_num != item_num) {
+                lara->interact_target.is_moving = false;
+                return;
+            }
+
+            if (lara->interact_target.move_count == 0) {
+                lara->interact_target.is_moving = false;
+            }
+
+            if (Lara_MovePosition(item, &m_ControlledPosition)) {
+                Item_SwitchToAnim(lara_item, LA(LA_USE_PUZZLE), 0);
+                lara_item->current_anim_state = LS(LS_USE_PUZZLE);
+                lara->head_rot.y = 0;
+                lara->head_rot.x = 0;
+                lara->torso_rot.y = 0;
+                lara->torso_rot.x = 0;
+                lara->interact_target.is_moving = false;
+                lara->gun_status = LGS_HANDS_BUSY;
+            }
+        } else if (
+            lara->interact_target.is_moving
+            && lara->interact_target.item_num == item_num) {
+            lara->interact_target.is_moving = false;
+            lara->gun_status = LGS_ARMLESS;
+        }
+    } else if (
+        lara->interact_target.item_num == item_num
+        && lara_item->current_anim_state == LS(LS_USE_PUZZLE)
+        && Item_TestFrameEqual(lara_item, M_LF_USE_PUZZLE)) {
+        M_ConsumeKeyItem(item);
+        M_MarkDone(item);
+    } else {
+        Object_Collision(item_num, lara_item, coll);
+    }
+}
+
 static void M_Collision(
     const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
 {
+    if (g_Config.gameplay.enable_walk_to_items) {
+        M_CollisionControlled(item_num, lara_item, coll);
+        return;
+    }
+
     ITEM *const item = Item_Get(item_num);
     const OBJECT *const obj = Object_Get(item->object_id);
     const LARA_INFO *const lara = Lara_GetLaraInfo();
@@ -155,6 +233,10 @@ static void M_CollisionDone(
     ITEM *const item = Item_Get(item_num);
     const OBJECT *const obj = Object_Get(item->object_id);
     const LARA_INFO *const lara = Lara_GetLaraInfo();
+
+    if (g_Config.gameplay.enable_walk_to_items) {
+        Object_Collision(item_num, lara_item, coll);
+    }
 
     if (!g_Input.action || lara->gun_status != LGS_ARMLESS || lara_item->gravity
         || !M_LaraHasValidState(lara_item)
