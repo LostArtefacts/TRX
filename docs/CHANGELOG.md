@@ -29,6 +29,7 @@
 - fixed being able to start the Quad Bike track timer without Lara getting onto the quad bike first (regression from 1.1)
 - fixed missed Assault Course targets not penalizing player's time if Lara crosses the finish line before they collapse (regression from 1.2)
 - fixed fish sometimes disappearing when crossing room boundaries (OG bug)
+- fixed fish shoals not picking up the underwater tint correctly
 - fixed Lara's underwater hue being retained when re-entering a RIB and the responsive mesh tint is disabled
 - fixed a crash with old custom levels that have sectors pointing to invalid floor data (#5568)
 - fixed the enemy health bar disappearing later than Lara's own bar when holstering weapons (regression from Tomb1Main 0.2)
