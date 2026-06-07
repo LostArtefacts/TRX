@@ -389,29 +389,6 @@ cleanup:
     item->rot = old_rot;
 }
 
-static inline bool M_HasValidPickupState(const ITEM *const lara_item)
-{
-    // TODO: unify under a pickup style config option, but retain sprint slide
-    // test in TR1/2 mode. Snap-pickups in crawl state do not make sense, so
-    // these always use TR3-style.
-    const LARA_TRX_ANIMATION anim = LA_U(Item_GetRelativeAnim(lara_item));
-    const LARA_TRX_STATE state = LS_U(lara_item->current_anim_state);
-    if (g_TRVersion < 3) {
-        if (anim == LA_SPRINT_SLIDE_STAND_RIGHT
-            || anim == LA_SPRINT_SLIDE_STAND_LEFT) {
-            return false;
-        }
-        if (state == LS_STOP) {
-            return true;
-        }
-    }
-
-    return (state == LS_STOP && anim == LA_STAND_IDLE)
-        || (state == LS_CROUCH_IDLE && anim == LA_CROUCH_IDLE)
-        || (state == LS_CRAWL_IDLE && anim == LA_CRAWL_IDLE
-            && g_Config.gameplay.enable_responsive_crawl);
-}
-
 static void M_DoAboveWater(const int16_t item_num, ITEM *const lara_item)
 {
     ITEM *const item = Item_Get(item_num);
@@ -466,7 +443,7 @@ static void M_DoAboveWater(const int16_t item_num, ITEM *const lara_item)
     if (g_Input.action && !lara_item->gravity
         && (lara->gun_status == LGS_ARMLESS || anim == LA_CRAWL_IDLE)
         && (lara->gun_type != LGT_FLARE || !is_flare_item)
-        && M_HasValidPickupState(lara_item)) {
+        && Lara_Interact_CanBegin(LARA_INTERACT_PICKUP)) {
         if (is_flare_item) {
             Lara_AnimateUntil(lara_item, LS(LS_FLARE_PICKUP));
         } else {

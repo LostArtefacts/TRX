@@ -10,6 +10,7 @@
 #include <trx/game/lara/enum.h>
 #include <trx/game/lara/flare.h>
 #include <trx/game/lara/hair.h>
+#include <trx/game/lara/interact.h>
 #include <trx/game/lara/look.h>
 #include <trx/game/lara/mesh.h>
 #include <trx/game/lara/misc.h>
