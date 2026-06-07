@@ -311,12 +311,13 @@ static void M_GetAllAtLaraPos(const ITEM *const item)
     int16_t pickup_num = Room_Get(item->room_num)->item_num;
     while (pickup_num != NO_ITEM) {
         ITEM *const check_item = Item_Get(pickup_num);
+        const int16_t next_item_num = check_item->next_item;
         if (check_item->pos.x == item->pos.x && check_item->pos.z == item->pos.z
             && Object_Get(check_item->object_id)->collision_func
                 == Pickup_Collision) {
             M_DoPickup(pickup_num);
         }
-        pickup_num = check_item->next_item;
+        pickup_num = next_item_num;
     }
 }
 
