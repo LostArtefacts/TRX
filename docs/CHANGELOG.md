@@ -13,6 +13,7 @@
 - added the ability to configure exposure zones (including above water) and visible breath separately per room
 - added the ability for fish shoals to be affected by surrounding lighting and fog via a `use_room_lighting` property (#5618)
 - added animated interaction support to keyholes and puzzle slots (#4471)
+- added an option to control snap interactions for targets such as pickups and switches (Gameplay → Controls → Snap interactions)
 - changed vehicles to allow defining in Lua whether or not they can activate heavy triggers; refer to migration notes
 - changed Assault Course Lua record access from `trx.assault_stats` to `trx.assault.stats`
 - changed hard-coded music tracks from Snowmobiles, mine carts, and RIBs to be configurable via Lua

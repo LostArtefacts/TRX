@@ -1033,6 +1033,10 @@
             "title": "Ath-bheòthachadh bhalla rèidh",
             "description": "Cuidichidh Lara le tilleadh nas luaithe às dèidh buille ri balla ma thèid stiùireadh is 'air adhart' a chumail.",
         },
+        "gameplay.enable_snap_interactions": {
+            "title": "Eadar-obrachaidhean snap",
+            "description": "Leigidh seo le Lara greim a ghabhail sa bhad air targaidean eadar-obrachaidh, leithid nithean ri thogail agus suidsichean. Ma tha seo à comas, feumaidh Lara stad gu tur mus urrainn dhi eadar-obrachadh.",
+        },
         "gameplay.enable_soft_statics": {
             "title": "Bualadh mogal bog",
             "description": "Leigidh le Lara gluasad gu rèidh air aghaidh mogalan statach – coltach ri TR4+ – seach stad chruaidh a dhèanamh.",

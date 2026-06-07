@@ -1033,6 +1033,10 @@
             "title": "Deflessione rapida da muro",
             "description": "Permette a Lara di riprendersi più velocemente dopo aver urtato un muro e un tasto direzionale viene premuto insieme con il tasto Corri.",
         },
+        "gameplay.enable_snap_interactions": {
+            "title": "\\{review}Interazioni rapide",
+            "description": "\\{review}Consente a Lara di agganciarsi immediatamente ai bersagli di interazione, come oggetti da raccogliere e interruttori. Se disattivato, Lara dovrà prima essere completamente ferma prima di poter interagire.",
+        },
         "gameplay.enable_soft_statics": {
             "title": "Collisione delicata con mesh",
             "description": "Permette a Lara di muoversi dolcemente contro le maglie poligonali statiche – simile a TR4+ – anziché fermarsi bruscamente.",

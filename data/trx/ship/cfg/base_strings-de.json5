@@ -1033,6 +1033,10 @@
             "title": "Sanftes Wand-Abprallen",
             "description": "Erlaubt Lara, sich schneller zu fangen, nachdem sie gegen eine Wand gestoßen ist und eine der Richtungstasten zusammen mit der Vorwärtstaste gedrückt gehalten wird..",
         },
+        "gameplay.enable_snap_interactions": {
+            "title": "\\{review}Schnapp-Interaktionen",
+            "description": "\\{review}Ermöglicht es Lara, sofort zu Interaktionszielen wie Gegenständen zum Aufheben oder Schaltern zu springen. Wenn deaktiviert, muss Lara zunächst vollständig stillstehen, bevor sie interagieren kann.",
+        },
         "gameplay.enable_soft_statics": {
             "title": "\\{review}Weiche Netz-Kollision",
             "description": "\\{review}Ermöglicht es Lara, sich sanft gegen statische Meshes zu bewegen – ähnlich wie in TR4+ – anstatt abrupt anzuhalten.",

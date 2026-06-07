@@ -1033,6 +1033,10 @@
             "title": "Smooth wall deflection",
             "description": "Allows Lara to recover more quickly after hitting a wall and a direction key is held together with forward.",
         },
+        "gameplay.enable_snap_interactions": {
+            "title": "Snap interactions",
+            "description": "Allows Lara to snap immediately to interaction targets, such as pickups and switches. If disabled, Lara will need to first be at a standstill before interacting.",
+        },
         "gameplay.enable_soft_statics": {
             "title": "Soft static collision",
             "description": "Allows Lara to move smoothly against static meshes - similar to TR4+ - rather than coming to a hard stop.",

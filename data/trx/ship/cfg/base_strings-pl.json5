@@ -1033,6 +1033,10 @@
             "title": "Gładkie odbicia od ściany",
             "description": "Pozwala Larze szybciej się odbić po uderzeniu w ścianę, gdy jednocześnie trzymany jest klawisz kierunku oraz do przodu.",
         },
+        "gameplay.enable_snap_interactions": {
+            "title": "\\{review}Przyciąganie do interakcji",
+            "description": "\\{review}Pozwala Larze natychmiast ustawiać się przy obiektach interaktywnych, takich jak przedmioty do podniesienia i przełączniki. Jeśli opcja jest wyłączona, Lara będzie musiała najpierw całkowicie się zatrzymać, zanim będzie mogła wejść w interakcję.",
+        },
         "gameplay.enable_soft_statics": {
             "title": "Miękka kolizja ze statycznymi obiektami",
             "description": "Pozwala Larze płynnie przesuwać się wzdłuż statycznych obiektów, jak w TR4+, zamiast nagle się zatrzymywać.",
