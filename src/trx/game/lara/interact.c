@@ -3,7 +3,6 @@
 #include <trx/config.h>
 #include <trx/game/input.h>
 #include <trx/game/lara.h>
-#include <trx/version.h>
 
 bool Lara_Interact_HasActiveTarget(const int16_t item_num)
 {
@@ -17,7 +16,7 @@ bool Lara_Interact_CanBegin(const LARA_INTERACT_MODE mode)
     const ITEM *const lara_item = Lara_GetItem();
     const LARA_TRX_ANIMATION anim = LA_U(Item_GetRelativeAnim(lara_item));
     const LARA_TRX_STATE state = LS_U(lara_item->current_anim_state);
-    if (g_TRVersion < 3) {
+    if (g_Config.gameplay.enable_snap_interactions) {
         if (anim == LA_SPRINT_SLIDE_STAND_RIGHT
             || anim == LA_SPRINT_SLIDE_STAND_LEFT) {
             return false;
@@ -58,6 +57,11 @@ bool Lara_Interact_CanControl(
     }
 
     if (lara_item->current_anim_state != LS(LS_STOP)) {
+        return false;
+    }
+
+    if (!g_Config.gameplay.enable_snap_interactions
+        && Item_GetRelativeAnim(lara_item) != LA(LA_STAND_IDLE)) {
         return false;
     }
 

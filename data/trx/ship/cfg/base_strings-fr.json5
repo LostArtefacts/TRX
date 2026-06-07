@@ -1033,6 +1033,10 @@
             "title": "\\{review}Déviation murale fluide",
             "description": "\\{review}Permet à Lara de se remettre plus rapidement après avoir heurté un mur et qu'une touche de direction est maintenue avec l'avant.",
         },
+        "gameplay.enable_snap_interactions": {
+            "title": "\\{review}Interactions instantanées",
+            "description": "\\{review}Permet à Lara de se placer immédiatement sur les cibles d'interaction, comme les objets à ramasser et les interrupteurs. Si cette option est désactivée, Lara devra d'abord être complètement immobile avant de pouvoir interagir.",
+        },
         "gameplay.enable_soft_statics": {
             "title": "\\{review}Collision de maillage souple",
             "description": "\\{review}Permet à Lara de se déplacer en douceur contre les maillages statiques – comme dans TR4+ – plutôt que de s'arrêter brutalement.",

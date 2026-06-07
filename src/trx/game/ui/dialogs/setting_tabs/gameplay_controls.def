@@ -1,5 +1,6 @@
 X_UI_CFG(input.enable_responsive_passport)
 X_UI_CFG(gameplay.enable_walk_to_items)
+X_UI_CFG(gameplay.enable_snap_interactions)
 X_UI_CFG(gameplay.enable_fast_pickups)
 X_UI_CFG(gameplay.enable_continuous_pushblocks)
 X_UI_CFG(input.enable_tr3_sidesteps)
