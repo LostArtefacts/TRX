@@ -513,6 +513,7 @@
         // 18. Lost City of Tinnos
         {
             "path": "city.tr2",
+            "script": "tinnos.lua",
             "music_track": 26,
             "lara_outfit": "tr3_antarctica",
             "sequence": [

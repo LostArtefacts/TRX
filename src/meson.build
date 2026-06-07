@@ -528,7 +528,6 @@ common_sources = [
   'trx/game/objects/general/cutscene_player.c',
   'trx/game/objects/general/detonator_box.c',
   'trx/game/objects/general/ding_dong.c',
-  'trx/game/objects/general/disposable_animating.c',
   'trx/game/objects/general/door.c',
   'trx/game/objects/general/drawbridge.c',
   'trx/game/objects/general/dummy.c',

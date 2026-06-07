@@ -3,6 +3,7 @@
 - added an option for Lara to pick items up more quickly, similar to TR4+ (Gameplay → Controls → Fast pickups) (#1365)
 - added an option to allow Lara to push/pull movable blocks continuously across tiles without stopping each time, similar to TR4+ (Gameplay → Controls → Continuous pushblocks) (#1354)
 - added `O_DOLPHIN`, which behaves in the same way as `O_ORCA` but has collision underwater
+- added `O_ANIMATING_EXT_1…10`
 - added a new console command - `/burn` - to toggle whether or not Lara is on fire
 - added `trx.assault` Lua functions to control the Assault Course and Quad Bike timers
 - added poison Lua property to `O_DART` and `O_DISC`, so that they can poison Lara just like `O_POISON_DART`
@@ -25,6 +26,7 @@
     - `O_SPIKE_WALL`
 - removed the limitation of only having two fish sprite types in any level
 - removed the limit of at most 8 fish/piranha shoals per level
+- removed `O_DISPOSABLE_ANIMATING_1…10` objects (use `O_ANIMATING_EXT_*` with `kill_on_trigger` property set to true instead)
 - fixed missing and incorrect textures on Lara's TR2 bomber jacket outfit
 - fixed being able to start the Quad Bike track timer without Lara getting onto the quad bike first (regression from 1.1)
 - fixed missed Assault Course targets not penalizing player's time if Lara crosses the finish line before they collapse (regression from 1.2)
