@@ -1700,6 +1700,36 @@
         "animating_9": {
             "name": "\\{review}Objekt 9 wird animiert",
         },
+        "animating_ext_1": {
+            "name": "\\{review}Erweitertes animiertes Objekt 1",
+        },
+        "animating_ext_10": {
+            "name": "\\{review}Erweitertes animiertes Objekt 10",
+        },
+        "animating_ext_2": {
+            "name": "\\{review}Erweitertes animiertes Objekt 2",
+        },
+        "animating_ext_3": {
+            "name": "\\{review}Erweitertes animiertes Objekt 3",
+        },
+        "animating_ext_4": {
+            "name": "\\{review}Erweitertes animiertes Objekt 4",
+        },
+        "animating_ext_5": {
+            "name": "\\{review}Erweitertes animiertes Objekt 5",
+        },
+        "animating_ext_6": {
+            "name": "\\{review}Erweitertes animiertes Objekt 6",
+        },
+        "animating_ext_7": {
+            "name": "\\{review}Erweitertes animiertes Objekt 7",
+        },
+        "animating_ext_8": {
+            "name": "\\{review}Erweitertes animiertes Objekt 8",
+        },
+        "animating_ext_9": {
+            "name": "\\{review}Erweitertes animiertes Objekt 9",
+        },
         "ape": {
             "name": "Affe",
         },

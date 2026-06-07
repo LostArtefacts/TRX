@@ -506,6 +506,7 @@ common_sources = [
   'trx/game/objects/general/ai_node.c',
   'trx/game/objects/general/alarm_sound.c',
   'trx/game/objects/general/animating.c',
+  'trx/game/objects/general/animating_ext.c',
   'trx/game/objects/general/area_51_rocket.c',
   'trx/game/objects/general/assault_target.c',
   'trx/game/objects/general/bat_emitter.c',

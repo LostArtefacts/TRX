@@ -1700,6 +1700,36 @@
         "animating_9": {
             "name": "Oggetto Animato 9",
         },
+        "animating_ext_1": {
+            "name": "\\{review}Oggetto Animato Esteso 1",
+        },
+        "animating_ext_10": {
+            "name": "\\{review}Oggetto Animato Esteso 10",
+        },
+        "animating_ext_2": {
+            "name": "\\{review}Oggetto Animato Esteso 2",
+        },
+        "animating_ext_3": {
+            "name": "\\{review}Oggetto Animato Esteso 3",
+        },
+        "animating_ext_4": {
+            "name": "\\{review}Oggetto Animato Esteso 4",
+        },
+        "animating_ext_5": {
+            "name": "\\{review}Oggetto Animato Esteso 5",
+        },
+        "animating_ext_6": {
+            "name": "\\{review}Oggetto Animato Esteso 6",
+        },
+        "animating_ext_7": {
+            "name": "\\{review}Oggetto Animato Esteso 7",
+        },
+        "animating_ext_8": {
+            "name": "\\{review}Oggetto Animato Esteso 8",
+        },
+        "animating_ext_9": {
+            "name": "\\{review}Oggetto Animato Esteso 9",
+        },
         "ape": {
             "name": "Scimmia",
         },
