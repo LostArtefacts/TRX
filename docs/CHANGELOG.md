@@ -83,6 +83,7 @@
 - fixed Sophia not aiming at Lara properly in Reunion (regression from 1.4)
 - fixed Lara becoming immune to Puna's attacks after getting zapped once with the fly cheat (regression from 1.3)
 - fixed Lara snapping to keyholes, puzzle slots and switches instead of waiting to be at a complete stand-still first (regression from 1.1)
+- fixed wasps that spawn from emitters having incorrect shading, especially noticeable when they are killed (regression from 1.6)
 
 
 
