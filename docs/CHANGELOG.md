@@ -73,6 +73,7 @@
 - fixed bats disappearing after flying out of the room where they spawned
 - fixed the drill in the Shakespeare Cliff not rotating
 - fixed the animating diver in Sleeping with the Fishes remaining visible in a default pose after diving into the water
+- fixed the animating diver in Sleeping with the Fishes disappearing before jumping into the water
 - fixed seeing the fish in Coastal Village spawn due to delayed triggers, most noticeable when fades are disabled
 - fixed hissing SFX in RX-Tech Mines and water SFX in Sleeping with the Fishes not looping properly
 - fixed dropped pickups not keeping their original facing (regression from 1.2)
