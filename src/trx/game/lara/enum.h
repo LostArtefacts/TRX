@@ -127,3 +127,9 @@ typedef enum {
     LF_G_RECOIL_END   = 32,
 } LARA_GUN_ANIMATION_FRAME;
 // clang-format on
+
+typedef enum {
+    LARA_INTERACT_PICKUP,
+    LARA_INTERACT_RECEPTACLE,
+    LARA_INTERACT_SWITCH,
+} LARA_INTERACT_MODE;
