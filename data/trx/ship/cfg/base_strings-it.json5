@@ -2361,6 +2361,7 @@
             "name": "Cascata di Lava",
         },
         "lead_bar": {
+            "description": "",
             "name": "Barra di Piombo",
         },
         "lift": {

@@ -2360,6 +2360,7 @@
             "name": "Lava Wedge",
         },
         "lead_bar": {
+            "description": "",
             "name": "Lead Bar",
         },
         "lift": {
