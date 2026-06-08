@@ -35,6 +35,7 @@
 - fixed fish shoals not picking up the underwater tint correctly
 - fixed Lara's underwater hue being retained when re-entering a RIB and the responsive mesh tint is disabled
 - fixed a crash with old custom levels that have sectors pointing to invalid floor data (#5568)
+- fixed `O_SCION_ITEM_3` items exploding at inconsistent times if multiple are used in the same level
 - fixed the enemy health bar disappearing later than Lara's own bar when holstering weapons (regression from Tomb1Main 0.2)
 - fixed crystal totals being shown incorrectly after loading a save (#5589, regression from 1.5)
 - fixed a very rare crash when loading saves from console during a pause or photo mode

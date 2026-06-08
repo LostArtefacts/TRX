@@ -9,6 +9,10 @@
 #include <trx/game/rooms.h>
 #include <trx/game/sound.h>
 
+typedef struct {
+    int32_t counter;
+} M_PRIV;
+
 static bool M_ShouldSpawnBlood(const ITEM *const item)
 {
     return !g_Config.visuals.fix_texture_issues;
@@ -21,7 +25,6 @@ static bool M_CanTakeDamage(const ITEM *const item)
 
 static void M_Control(const int16_t item_num)
 {
-    static int32_t counter = 0;
     ITEM *const item = Item_Get(item_num);
 
     if (Item_IsTriggerActive(item)) {
@@ -31,20 +34,21 @@ static void M_Control(const int16_t item_num)
         item->status = IS_ACTIVE;
     }
 
+    M_PRIV *const p = item->priv;
     if (item->hit_points > 0) {
-        counter = 0;
+        p->counter = 0;
         Item_Animate(item);
         return;
     }
 
-    if (counter == 0) {
+    if (p->counter == 0) {
         item->status = IS_INVISIBLE;
         item->hit_points = 0;
         Room_TestTriggers(item);
         Item_RemoveDrawn(item_num);
     }
 
-    if (counter % 10 == 0) {
+    if (p->counter % 10 == 0) {
         int16_t effect_num = Effect_Create(item->room_num);
         if (effect_num != NO_EFFECT) {
             EFFECT *effect = Effect_Get(effect_num);
@@ -61,8 +65,8 @@ static void M_Control(const int16_t item_num)
         }
     }
 
-    counter++;
-    if (counter >= LOGIC_FPS * 3) {
+    p->counter++;
+    if (p->counter >= LOGIC_FPS * 3) {
         Item_Kill(item_num);
     }
 }
@@ -73,6 +77,7 @@ static void M_Setup(OBJECT *const obj)
     obj->can_take_damage_func = M_CanTakeDamage;
     obj->should_spawn_blood_func = M_ShouldSpawnBlood;
 
+    obj->priv_size = sizeof(M_PRIV);
     obj->save_flags = true;
     obj->save_hitpoints = true;
     OBJECT_PROPERTIES(
