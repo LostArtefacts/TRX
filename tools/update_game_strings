@@ -411,13 +411,13 @@ def get_used_preset_strings(
             yield 0, name_gs
 
 
-def get_objects_map(paths: list[Path]) -> dict[str, list[str]]:
+def get_objects_map(paths: list[Path]) -> dict[str, dict[str, str | list[str]]]:
     """
     Parse object-name definitions from names.def-like files.
     Supports:
       X_OBJ_NAME_DEFINE(..., "key", X_OBJ_NAMES("Name1", "Name2", ...))
     """
-    result: dict[str, list[str]] = {}
+    result: dict[str, dict[str, str | list[str]]] = {}
     for path in paths:
         for line in path.read_text().splitlines():
             text = line.strip()
@@ -529,17 +529,29 @@ class BaseResolver:
     def fill_object_names(self) -> None:
         base_objs = self.base_file.data.get("objects", {})
         trans_objs = self.trans_file.data.setdefault("objects", {})
-        missing_objs = {}
+        missing_objs: dict[str, str] = {}
         for key, obj in base_objs.items():
+            if not isinstance(obj, dict):
+                continue
             base_name = obj.get("name")
             if isinstance(base_name, list) and base_name:
                 base_name = base_name[0]  # Only take the first
-            if key in trans_objs and not clean(trans_objs[key].get("name")):
-                missing_objs[key] = clean(base_name)
+            trans_obj = trans_objs.get(key)
+            if not isinstance(trans_obj, dict):
+                continue
+            if not clean(trans_obj.get("name")):
+                missing_objs[f"{key}/name"] = clean(base_name)
+            if "description" in obj:
+                base_description = clean(obj.get("description"))
+                if base_description == "":
+                    trans_obj["description"] = ""
+                elif not clean(trans_obj.get("description")):
+                    missing_objs[f"{key}/description"] = base_description
         for chunk in chunks(list(missing_objs.items()), n=50):
             filled = dict(self.fill_chunk(chunk))
-            for k, v in filled.items():
-                trans_objs.setdefault(k, {})["name"] = v
+            for packed_key, value in filled.items():
+                obj_key, field = packed_key.rsplit("/", 1)
+                trans_objs.setdefault(obj_key, {})[field] = value
         if not self.trans_file.data["objects"]:
             del self.trans_file.data["objects"]
 
@@ -708,7 +720,12 @@ def sync_base_strings(ctx: RunContext) -> None:
                         root_set(file.data, key, REVIEW_MARKER)
 
     old = ctx.base.main.data.get("objects", {})
-    new = ctx.object_names_dict
+    new = {}
+    for key, value in ctx.object_names_dict.items():
+        old_value = old.get(key, {})
+        if not isinstance(old_value, dict):
+            old_value = {}
+        new[key] = {**old_value, **value}
     changed = [
         k for k, v in new.items() if json.dumps(old.get(k)) != json.dumps(v)
     ]
@@ -716,17 +733,30 @@ def sync_base_strings(ctx: RunContext) -> None:
     for key in changed:
         for file in ctx.base.translations.values():
             if not file.extends:
-                file.data.setdefault("objects", {})[key] = {"name": REVIEW_MARKER}
+                trans_obj = file.data.setdefault("objects", {}).setdefault(key, {})
+                trans_obj["name"] = REVIEW_MARKER
+                base_obj = new.get(key, {})
+                if isinstance(base_obj, dict) and "description" in base_obj:
+                    if base_obj["description"] == "":
+                        trans_obj["description"] = ""
+                    else:
+                        trans_obj["description"] = REVIEW_MARKER
         for gs in ctx.mods.values():
             if gs.main.data.get("objects", {}).get(key):
-                gs.main.data.setdefault("objects", {})[key] = {
-                    "name": REVIEW_MARKER
-                }
+                mod_obj = gs.main.data.setdefault("objects", {}).setdefault(key, {})
+                mod_obj["name"] = REVIEW_MARKER
                 for file in gs.translations.values():
                     if not file.extends:
-                        file.data.setdefault("objects", {})[key] = {
-                            "name": REVIEW_MARKER
-                        }
+                        trans_obj = file.data.setdefault("objects", {}).setdefault(
+                            key, {}
+                        )
+                        trans_obj["name"] = REVIEW_MARKER
+                        base_obj = new.get(key, {})
+                        if isinstance(base_obj, dict) and "description" in base_obj:
+                            if base_obj["description"] == "":
+                                trans_obj["description"] = ""
+                            else:
+                                trans_obj["description"] = REVIEW_MARKER
 
 
 @step

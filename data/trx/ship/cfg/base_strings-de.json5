@@ -2342,6 +2342,7 @@
             "name": "Lava-Keil",
         },
         "lead_bar": {
+            "description": "",
             "name": "Bleibarren",
         },
         "lift": {

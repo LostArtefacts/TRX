@@ -45,6 +45,7 @@
 - added support for bat emitters without sacrificing explosion sprites (refer to notes in migration guide)
 - added the abilty to use animated spikes
 - added support for Lara's breath to show in cold rooms (requires `O_SPARKS_GFX`)
+- fixed Lead Bars not being examinable after picking them up (regression from TR1X 4.6)
 
 **TR2**:
 - added support for fish and piranhas without sacrificing explosion sprites (refer to notes in migration guide) (#4358)
