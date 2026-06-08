@@ -20,6 +20,7 @@
 
 // clang-format off
 #define M_RADIUS            500
+#define M_STATIC_RADIUS     100
 #define M_SIDE              260
 #define M_FRONT             550
 #define M_SNOW              500
@@ -167,6 +168,11 @@ void Skidoo_Initialise(const int16_t item_num)
     skidoo_data->momentum_angle = item->rot.y;
     skidoo_data->track_mesh = 0;
     skidoo_data->pitch = 0;
+
+    OBJECT_PROPERTY_VALUE value = {};
+    if (ObjectProperty_GetItemValue(item, "test_static_collision", &value)) {
+        skidoo_data->test_static_collision = value.as_bool;
+    }
 }
 
 int32_t Skidoo_CheckGetOn(const int16_t item_num, COLL_INFO *const coll)
@@ -273,7 +279,20 @@ int32_t Skidoo_TestHeight(
     out_pos->z = item->pos.z + ((z_off * cy - x_off * sy) >> W2V_SHIFT);
     int16_t room_num = item->room_num;
     const SECTOR *const sector = Room_GetSector(*out_pos, &room_num);
-    return Room_GetHeight(sector, *out_pos);
+
+    const SKIDOO_INFO *const p = item->priv;
+    const int32_t height = Room_GetHeight(sector, *out_pos);
+    if (height == NO_HEIGHT || !p->test_static_collision) {
+        return height;
+    }
+
+    COLL_INFO coll = {};
+    coll.radius = M_STATIC_RADIUS;
+    if (Collide_CollideStaticObjects(
+            &coll, *out_pos, item->room_num, LARA_HEIGHT)) {
+        return NO_HEIGHT;
+    }
+    return height;
 }
 
 void Skidoo_DoSnowEffect(const ITEM *const skidoo)
@@ -880,9 +899,7 @@ bool Skidoo_Control(void)
         lara_item->rot.x = 0;
         lara_item->rot.z = 0;
     } else {
-        lara_item->pos.x = skidoo->pos.x;
-        lara_item->pos.y = skidoo->pos.y;
-        lara_item->pos.z = skidoo->pos.z;
+        lara_item->pos = skidoo->pos;
         lara_item->rot.y = skidoo->rot.y;
         if (drive >= 0) {
             lara_item->rot.x = skidoo->rot.x;

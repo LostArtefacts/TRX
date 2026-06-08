@@ -67,7 +67,10 @@ static void M_Setup(OBJECT *const obj)
             "Random battle music track pool, slot 4. -1 = disabled."),
         OBJECT_PROPERTY_BOOL(
             "is_heavy", true,
-            "Whether or not this vehicle can activate heavy triggers."));
+            "Whether or not this vehicle can activate heavy triggers."),
+        OBJECT_PROPERTY_BOOL(
+            "test_static_collision", false,
+            "Whether or not this vehicle can collide with static meshes."));
 }
 
 REGISTER_OBJECT(O_SKIDOO_FAST, M_Setup)

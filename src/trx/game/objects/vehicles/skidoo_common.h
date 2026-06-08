@@ -21,6 +21,7 @@ typedef struct {
     int16_t momentum_angle;
     int16_t extra_rotation;
     int32_t pitch;
+    bool test_static_collision;
 } SKIDOO_INFO;
 
 extern const BITE g_Skidoo_LeftGun;

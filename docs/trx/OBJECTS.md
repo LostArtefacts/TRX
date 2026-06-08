@@ -216,6 +216,7 @@ This page lists documented moveable object properties.
 - `battle_track_3 = -1` — Random battle music track pool, slot 3. -1 = disabled.
 - `battle_track_4 = -1` — Random battle music track pool, slot 4. -1 = disabled.
 - `is_heavy = true` — Whether or not this vehicle can activate heavy triggers.
+- `test_static_collision = false` — Whether or not this vehicle can collide with static meshes.
 
 ### `14` O_BOAT
 - `is_heavy = true` — Whether or not this vehicle can activate heavy triggers.
@@ -509,6 +510,7 @@ This page lists documented moveable object properties.
 - `track_3 = -1` — Random music track pool, slot 3. -1 = disabled.
 - `track_4 = -1` — Random music track pool, slot 4. -1 = disabled.
 - `is_heavy = true` — Whether or not this vehicle can activate heavy triggers.
+- `test_static_collision = false` — Whether or not this vehicle can collide with static meshes.
 
 ### `17` O_MINE_CART
 - `track_1 = 12 (MX_MINE_CART_THEME)` — Random music track pool, slot 1. -1 = disabled.
