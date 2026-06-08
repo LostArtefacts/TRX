@@ -733,7 +733,6 @@ bool Collide_TestBoundsCollide(
 
 void Collide_DoProperDetection(ITEM *const item, const XYZ_32 old_pos)
 {
-
     int16_t room_num = item->room_num;
     const SECTOR *sector = Room_GetSector(old_pos, &room_num);
     const int32_t old_height = Room_GetHeight(sector, old_pos);

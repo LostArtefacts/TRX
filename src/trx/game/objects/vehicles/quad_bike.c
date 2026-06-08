@@ -20,6 +20,8 @@
 #include <trx/game/spawn.h>
 #include <trx/version.h>
 
+#define M_STATIC_RADIUS 100
+
 static const BITE m_QuadBites[6] = {
     { .pos = { .x = -56, .y = -32, .z = -380 }, .mesh_num = 0 },
     { .pos = { .x = 56, .y = -32, .z = -380 }, .mesh_num = 0 },
@@ -99,6 +101,7 @@ typedef struct {
     int32_t extra_rotation_count;
     int32_t rear_rot_x_idx[2];
     int32_t front_rot_x_idx[2];
+    bool test_static_collision;
 } M_PRIV;
 
 static void M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
@@ -221,6 +224,11 @@ static void M_Initialise(const int16_t item_num)
     }
 
     item->extra_rotations = p->extra_rotation;
+
+    OBJECT_PROPERTY_VALUE value = {};
+    if (ObjectProperty_GetItemValue(item, "test_static_collision", &value)) {
+        p->test_static_collision = value.as_bool;
+    }
 }
 
 static int32_t M_GetOnQuadBike(
@@ -433,7 +441,19 @@ static int32_t M_TestHeight(
         return NO_HEIGHT;
     }
 
-    return Room_GetHeight(sector, *pos);
+    const M_PRIV *const p = item->priv;
+    const int32_t height = Room_GetHeight(sector, *pos);
+    if (height == NO_HEIGHT || !p->test_static_collision) {
+        return height;
+    }
+
+    COLL_INFO coll = {};
+    coll.radius = M_STATIC_RADIUS;
+    if (Collide_CollideStaticObjects(
+            &coll, *pos, item->room_num, LARA_HEIGHT)) {
+        return NO_HEIGHT;
+    }
+    return height;
 }
 
 static void M_TriggerExhaustSmoke(
@@ -1525,7 +1545,10 @@ static void M_Setup(OBJECT *const obj)
             "track_4", -1, "Random music track pool, slot 4. -1 = disabled."),
         OBJECT_PROPERTY_BOOL(
             "is_heavy", true,
-            "Whether or not this vehicle can activate heavy triggers."));
+            "Whether or not this vehicle can activate heavy triggers."),
+        OBJECT_PROPERTY_BOOL(
+            "test_static_collision", false,
+            "Whether or not this vehicle can collide with static meshes."));
 }
 
 REGISTER_OBJECT(O_QUAD_BIKE, M_Setup)
