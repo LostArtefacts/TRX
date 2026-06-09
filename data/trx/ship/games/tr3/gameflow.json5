@@ -295,6 +295,7 @@
                 "thames_textures.bin",
                 "thames_animating_bounds.bin",
                 "common_pickup_meshes.bin",
+                "thames_fd.bin",
             ],
         },
 
@@ -346,6 +347,7 @@
                 "menu_artefacts.bin",
                 "luds_animating_bounds.bin",
                 "common_pickup_meshes.bin",
+                "luds_fd.bin",
             ],
             "unobtainable_pickups": 2,
         },
