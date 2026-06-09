@@ -15,7 +15,7 @@
 - added animated interaction support to keyholes and puzzle slots (#4471)
 - added an option to control snap interactions for targets such as pickups and switches (Gameplay → Controls → Snap interactions)
 - changed vehicles to allow defining in Lua whether or not they can activate heavy triggers; refer to migration notes
-- change the Skidoo and Quad Bike to allow defining in Lua whether or not they should collide with static meshes (#4285)
+- changed the Skidoo and Quad Bike to allow defining in Lua whether or not they should collide with static meshes (#4285)
 - changed Assault Course Lua record access from `trx.assault_stats` to `trx.assault.stats`
 - changed hard-coded music tracks from Snowmobiles, mine carts, and RIBs to be configurable via Lua
 - changed hard-coded fish and piranha setup to be configurable via Lua
@@ -76,6 +76,7 @@
 - fixed handheld flare sparks appearing inside the flare instead of above the tip
 - fixed TR3:LA referring to a non-existing FMV in the startup logs
 - fixed texture bleeding and missized textures on piranhas, tropical fish and bats
+- fixed Security Guards 81 and 212 in Thames Wharf and 17 in Lud's Gate not following their patrol paths correctly (OG bug)
 - fixed bats disappearing after flying out of the room where they spawned
 - fixed the drill in the Shakespeare Cliff not rotating
 - fixed the animating diver in Sleeping with the Fishes remaining visible in a default pose after diving into the water
