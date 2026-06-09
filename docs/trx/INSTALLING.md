@@ -989,6 +989,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── london_sky.bin
 │   │   │   ├── luds_animating_bounds.bin
 │   │   │   ├── luds_diver_animation.bin
+│   │   │   ├── luds_fd.bin
 │   │   │   ├── luds_textures.bin
 │   │   │   ├── madubu_spike_sfx.bin
 │   │   │   ├── madubu_textures.bin
@@ -1008,6 +1009,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── stpaul_animating_bounds.bin
 │   │   │   ├── stpaul_textures.bin
 │   │   │   ├── thames_animating_bounds.bin
+│   │   │   ├── thames_fd.bin
 │   │   │   ├── thames_textures.bin
 │   │   │   ├── tinnos_cameras.bin
 │   │   │   ├── tinnos_fd.bin
@@ -2236,6 +2238,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── london_sky.bin
     │   │   │   │   ├── luds_animating_bounds.bin
     │   │   │   │   ├── luds_diver_animation.bin
+    │   │   │   │   ├── luds_fd.bin
     │   │   │   │   ├── luds_textures.bin
     │   │   │   │   ├── madubu_spike_sfx.bin
     │   │   │   │   ├── madubu_textures.bin
@@ -2255,6 +2258,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── stpaul_animating_bounds.bin
     │   │   │   │   ├── stpaul_textures.bin
     │   │   │   │   ├── thames_animating_bounds.bin
+    │   │   │   │   ├── thames_fd.bin
     │   │   │   │   ├── thames_textures.bin
     │   │   │   │   ├── tinnos_cameras.bin
     │   │   │   │   ├── tinnos_fd.bin
