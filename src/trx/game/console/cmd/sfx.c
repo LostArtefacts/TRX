@@ -5,56 +5,16 @@
 #include <trx/game/game_strings/entries.h>
 #include <trx/game/sound.h>
 
-#include <stdio.h>
-#include <string.h>
-
-static char *M_CreateRangeString(void)
+static bool M_IsAvailableSample(const int32_t value, void *)
 {
-    size_t buffer_size = 64;
-    char *result = Memory_Alloc(buffer_size);
-
-    int32_t prev = -1;
-    int32_t start = -1;
-    const SAMPLE_ID max_id = Sound_GetMaxDirectSampleID();
-    for (SAMPLE_ID i = 0; i <= max_id; i++) {
-        const bool valid = Sound_IsAvailable_Direct(i);
-
-        if (valid && start == -1) {
-            start = i;
-        }
-        if (!valid && start != -1) {
-            char temp[32];
-            if (start == prev) {
-                sprintf(temp, "%d, ", prev);
-            } else {
-                sprintf(temp, "%d-%d, ", start, prev);
-            }
-
-            const int32_t len = strlen(temp);
-            if (strlen(result) + len >= buffer_size) {
-                buffer_size *= 2;
-                result = Memory_Realloc(result, buffer_size);
-            }
-
-            strcat(result, temp);
-            start = -1;
-        }
-
-        if (valid) {
-            prev = i;
-        }
-    }
-
-    // Remove the trailing comma and space
-    result[strlen(result) - 2] = '\0';
-
-    return result;
+    return Sound_IsAvailable_Direct(value);
 }
 
 static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *const ctx)
 {
     if (String_IsEmpty(ctx->args)) {
-        char *ranges = M_CreateRangeString();
+        char *ranges = String_FormatRanges(
+            0, Sound_GetMaxDirectSampleID(), M_IsAvailableSample, nullptr);
         Console_Log(GS("general/osd/sound_available_samples"), ranges);
         Memory_FreePointer(&ranges);
         return CR_SUCCESS;

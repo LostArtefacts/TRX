@@ -374,7 +374,12 @@
                 "help": "Passa alla mod specificata e riavvia il gioco.",
             },
             "music": {
-                "help": "Riproduce la traccia musicale con l'ID specificato.",
+                "available_tracks": "\\{review}Tracce musicali disponibili: %s",
+                "current": "\\{review}Traccia corrente: %d",
+                "current_none": "\\{review}Traccia corrente: nessuna",
+                "deferred_ambient": "\\{review}Ambient differito: %d",
+                "help": "\\{review}Mostra lo stato attuale della musica, ferma tutta la musica o riproduce una traccia musicale con l'id fornito.",
+                "overlay": "\\{review}Traccia(e) sovrapposta(e): %s",
             },
             "play_cutscene": {
                 "help": "Riproduce la scena di intermezzo con il numero specificato.",

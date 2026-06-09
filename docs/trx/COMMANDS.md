@@ -179,8 +179,10 @@ whichever key you have bound, and not include it as part of the command itself.
   `/drain {room_num}`  
   Floods or drains rooms at will. Act like you're Poseidon with a plumbing license, for when drowning is preferable to puzzles!
 
+- `/music`  
+- `/music stop`  
 - `/music {track_id}`  
-  Plays a music track by its ID. Perfect for setting the mood at will.
+  Shows the currently playing track, stops all music with `stop`, or plays a music track by its ID. Perfect for setting the mood at will.
 
 - `/sfx`  
   `/sfx {sound}`  

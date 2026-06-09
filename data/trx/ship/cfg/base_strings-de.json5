@@ -374,7 +374,12 @@
                 "help": "\\{review}Wechselt zum angegebenen Mod und startet das Spiel neu.",
             },
             "music": {
-                "help": "Spielt Musik-Titel mit dazugehöriger ID ab.",
+                "available_tracks": "\\{review}Verfügbare Musikstücke: %s",
+                "current": "\\{review}Aktueller Titel: %d",
+                "current_none": "\\{review}Aktueller Titel: keiner",
+                "deferred_ambient": "\\{review}Verzögerte Umgebungsgeräusche: %d",
+                "help": "\\{review}Zeigt den aktuellen Musikstatus an, stoppt alle Musik oder spielt einen Musiktrack mit der angegebenen ID ab.",
+                "overlay": "\\{review}Overlay-Titel: %s",
             },
             "play_cutscene": {
                 "help": "Spielt Zwischensequenz mit dazugehöriger Nummer ab.",

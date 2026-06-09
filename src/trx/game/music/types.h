@@ -5,6 +5,9 @@
 typedef struct MUSIC_BACKEND {
     bool (*init)(struct MUSIC_BACKEND *backend);
     const char *(*describe)(const struct MUSIC_BACKEND *backend);
+    bool (*is_track_available)(
+        const struct MUSIC_BACKEND *backend, int32_t track_id);
+    int32_t (*get_track_limit)(const struct MUSIC_BACKEND *backend);
     int32_t (*play)(const struct MUSIC_BACKEND *backend, int32_t track_id);
     void (*shutdown)(struct MUSIC_BACKEND *backend);
     void *data;

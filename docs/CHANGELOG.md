@@ -14,6 +14,8 @@
 - added the ability for fish shoals to be affected by surrounding lighting and fog via a `use_room_lighting` property (#5618)
 - added animated interaction support to keyholes and puzzle slots (#4471)
 - added an option to control snap interactions for targets such as pickups and switches (Gameplay → Controls → Snap interactions)
+- changed `/music` to show the current track, deferred ambient, and any active overlay tracks when used without arguments
+- changed `/music` to accept `stop` and list playable track ranges for invalid track IDs
 - changed vehicles to allow defining in Lua whether or not they can activate heavy triggers; refer to migration notes
 - change the Skidoo and Quad Bike to allow defining in Lua whether or not they should collide with static meshes (#4285)
 - changed Assault Course Lua record access from `trx.assault_stats` to `trx.assault.stats`
