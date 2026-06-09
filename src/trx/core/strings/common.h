@@ -25,6 +25,11 @@ char *String_ToUpperPattern(const char *text);
 
 VECTOR *String_Paginate(const char *text, int32_t max_lines);
 
+typedef bool STRING_RANGE_FUNC(int32_t value, void *user_data);
+char *String_FormatRanges(
+    int32_t min_value, int32_t max_value, STRING_RANGE_FUNC predicate,
+    void *user_data);
+
 // ============================================================================
 
 char *String_Format(const char *fmt, ...);

@@ -135,6 +135,26 @@ static const char *M_Describe(const MUSIC_BACKEND *const backend)
     return data->description;
 }
 
+static bool M_IsTrackAvailable(
+    const MUSIC_BACKEND *const backend, const int32_t track_id)
+{
+    ASSERT(backend != nullptr);
+    const M_BACKEND_DATA *const data = backend->data;
+    ASSERT(data != nullptr);
+
+    const int32_t track_idx = track_id - 1;
+    return track_idx >= 0 && track_idx < data->num_tracks
+        && data->tracks[track_idx].active;
+}
+
+static int32_t M_GetTrackLimit(const MUSIC_BACKEND *const backend)
+{
+    ASSERT(backend != nullptr);
+    const M_BACKEND_DATA *const data = backend->data;
+    ASSERT(data != nullptr);
+    return data->num_tracks + 1;
+}
+
 static int32_t M_Play(
     const MUSIC_BACKEND *const backend, const int32_t track_id)
 {
@@ -198,6 +218,8 @@ MUSIC_BACKEND *Music_Backend_CDAudio_Factory(
     backend->data = data;
     backend->init = M_Init;
     backend->describe = M_Describe;
+    backend->is_track_available = M_IsTrackAvailable;
+    backend->get_track_limit = M_GetTrackLimit;
     backend->play = M_Play;
     backend->shutdown = M_Shutdown;
     return backend;

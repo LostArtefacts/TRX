@@ -374,7 +374,12 @@
                 "help": "Przełącza do określonej gry.",
             },
             "music": {
-                "help": "Odtwarza utwór muzyczny o podanym identyfikatorze.",
+                "available_tracks": "\\{review}Dostępne utwory muzyczne: %s",
+                "current": "\\{review}Aktualny utwór: %d",
+                "current_none": "\\{review}Aktualny utwór: brak",
+                "deferred_ambient": "\\{review}Odkładany ambient: %d",
+                "help": "\\{review}Pokazuje aktualny stan muzyki, zatrzymuje całą muzykę lub odtwarza utwór muzyczny o podanym identyfikatorze.",
+                "overlay": "\\{review}Nakładka utworu(ów): %s",
             },
             "play_cutscene": {
                 "help": "Wczytuje przerywnik o podanym numerze.",

@@ -374,7 +374,12 @@
                 "help": "Ath-thòisich an geama le mod sònraichte.",
             },
             "music": {
-                "help": "Cluich slighe-ciùil leis an ID ainmichte.",
+                "available_tracks": "\\{review}Tracannan-ciùil rim faighinn: %s",
+                "current": "\\{review}Trac gnàthach: %d",
+                "current_none": "\\{review}Trac gnàthach: gun fheum",
+                "deferred_ambient": "\\{review}Àrainneachd air a chur dheth: %d",
+                "help": "\\{review}Seall an stàit ciùil làithreach, stad air a h-uile ciùil, no cluich trac-ciùil leis an ID a chaidh a thoirt seachad.",
+                "overlay": "\\{review}Trac(annan) os cionn: %s",
             },
             "play_cutscene": {
                 "help": "Cluich sealladh-film leis an àireamh ainmichte.",

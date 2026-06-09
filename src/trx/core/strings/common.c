@@ -257,6 +257,45 @@ VECTOR *String_Paginate(const char *const text, const int32_t max_lines)
     return pages;
 }
 
+char *String_FormatRanges(
+    const int32_t min_value, const int32_t max_value,
+    STRING_RANGE_FUNC *const predicate, void *const user_data)
+{
+    if (predicate == nullptr || min_value > max_value) {
+        return Memory_DupStr("");
+    }
+
+    char *result = nullptr;
+    for (int32_t i = min_value; i <= max_value; i++) {
+        if (!predicate(i, user_data)) {
+            continue;
+        }
+
+        const int32_t start = i;
+        int32_t end = i;
+        while (end < max_value && predicate(end + 1, user_data)) {
+            end++;
+        }
+        i = end;
+
+        char *segment = start == end ? String_Format("%d", start)
+                                     : String_Format("%d-%d", start, end);
+        if (result == nullptr) {
+            result = segment;
+        } else {
+            char *const joined = String_Format("%s, %s", result, segment);
+            Memory_FreePointer(&result);
+            Memory_FreePointer(&segment);
+            result = joined;
+        }
+    }
+
+    if (result == nullptr) {
+        return Memory_DupStr("");
+    }
+    return result;
+}
+
 char *String_Format(const char *const fmt, ...)
 {
     va_list args;

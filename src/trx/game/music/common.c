@@ -416,6 +416,24 @@ bool Music_Play(const MUSIC_TRX_ID track, const MUSIC_PLAY_MODE mode)
     return Music_Play_Direct(Music_ToGameID(track), mode);
 }
 
+bool Music_IsTrackAvailable_Direct(const MUSIC_ID track)
+{
+    if (!m_Initialised || m_Backend == nullptr
+        || m_Backend->is_track_available == nullptr) {
+        return false;
+    }
+    return m_Backend->is_track_available(m_Backend, track);
+}
+
+int32_t Music_GetTrackLimit(void)
+{
+    if (!m_Initialised || m_Backend == nullptr
+        || m_Backend->get_track_limit == nullptr) {
+        return 0;
+    }
+    return m_Backend->get_track_limit(m_Backend);
+}
+
 void Music_Stop(void)
 {
     m_TrackCurrent = MX_INACTIVE;

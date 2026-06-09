@@ -39,6 +39,13 @@ void Music_StopTrack_Direct(MUSIC_ID track);
 // music track slot depending on the game.
 bool Music_Play(MUSIC_TRX_ID track, MUSIC_PLAY_MODE mode);
 
+// Returns true when the active backend can play the given direct track ID.
+bool Music_IsTrackAvailable_Direct(MUSIC_ID track);
+
+// Returns one past the largest direct track ID worth probing on the active
+// backend, or 0 if no backend is available.
+int32_t Music_GetTrackLimit(void);
+
 // Stops all music streams, including looped, active, and overlay tracks.
 void Music_Stop(void);
 

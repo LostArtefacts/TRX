@@ -374,7 +374,12 @@
                 "help": "\\{review}Bascule vers le mod spécifié et redémarre le jeu.",
             },
             "music": {
-                "help": "Lance la piste musicale pour l'identifiant donné.",
+                "available_tracks": "\\{review}Pistes musicales disponibles : %s",
+                "current": "\\{review}Piste actuelle : %d",
+                "current_none": "\\{review}Piste actuelle : aucune",
+                "deferred_ambient": "\\{review}Ambiance différée : %d",
+                "help": "\\{review}Affiche l'état actuel de la musique, arrête toute la musique ou joue une piste musicale avec l'identifiant donné.",
+                "overlay": "\\{review}Piste(s) superposée(s) : %s",
             },
             "play_cutscene": {
                 "help": "Lance la cinématique correspondant au numéro donné.",

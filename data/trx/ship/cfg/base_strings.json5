@@ -374,7 +374,12 @@
                 "help": "Switches to the specified mod and restarts the game.",
             },
             "music": {
-                "help": "Plays a music track with the given id.",
+                "available_tracks": "Available music tracks: %s",
+                "current": "Current track: %d",
+                "current_none": "Current track: none",
+                "deferred_ambient": "Deferred ambient: %d",
+                "help": "Shows the current music state, stops all music, or plays a music track with the given id.",
+                "overlay": "Overlay track(s): %s",
             },
             "play_cutscene": {
                 "help": "Plays a cutscene with the given number.",
