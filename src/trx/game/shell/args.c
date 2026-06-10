@@ -98,10 +98,10 @@ SHELL_ARGS *Shell_ParseArgs(VECTOR *const args)
     SHELL_ARGS *const result = Memory_Alloc(sizeof(SHELL_ARGS));
     bool wants_gold = false;
     bool explicit_engine_version = false;
-    result->save_to_load = -1;
-    result->level_to_select = -1;
+    result->startup.save_to_load = -1;
+    result->startup.level_to_select = -1;
     result->original_args = args;
-    result->engine_version = 0;
+    result->startup.engine_version = 0;
 
     // First pass: set the engine version.
     for (int32_t i = 0; args != nullptr && i < args->count; i++) {
@@ -109,16 +109,16 @@ SHELL_ARGS *Shell_ParseArgs(VECTOR *const args)
         const char *const next_arg =
             i + 1 < args->count ? *(char **)Vector_Get(args, i + 1) : nullptr;
         if (!strcmp(arg, "-e") || !strcmp(arg, "--engine")) {
-            String_ParseInteger(next_arg, &result->engine_version);
-            CLAMP(result->engine_version, 1, 3);
+            String_ParseInteger(next_arg, &result->startup.engine_version);
+            CLAMP(result->startup.engine_version, 1, 3);
             explicit_engine_version = true;
             i++;
         }
     }
-    if (result->engine_version <= 0 && g_TRVersion > 0) {
+    if (result->startup.engine_version <= 0 && g_TRVersion > 0) {
         // Hydrate recordings using old-style directory tree to use
         // runtime engine version if they miss it.
-        result->engine_version = g_TRVersion;
+        result->startup.engine_version = g_TRVersion;
     }
 
     // Second pass: remaining options.
@@ -142,12 +142,12 @@ SHELL_ARGS *Shell_ParseArgs(VECTOR *const args)
         }
 
         if (!strcmp(arg, "--demo-pc") || !strcmp(arg, "-demo_pc")) {
-            result->mod = Shell_GetModByName("tr1-demo-pc");
+            result->startup.mod = Shell_GetModByName("tr1-demo-pc");
         }
         if (!strcmp(arg, "--mod") && next_arg != nullptr) {
             const SHELL_MOD *const mod = Shell_GetModByName(next_arg);
             if (mod != nullptr) {
-                result->mod = mod;
+                result->startup.mod = mod;
             }
             i++;
         }
@@ -156,10 +156,11 @@ SHELL_ARGS *Shell_ParseArgs(VECTOR *const args)
             && next_arg != nullptr) {
             int32_t lvnum = -1;
             if (String_ParseInteger(next_arg, &lvnum)) {
-                result->level_to_select = lvnum;
-                if (result->mod == nullptr && result->engine_version > 0) {
-                    result->mod = Shell_GetModByType(
-                        MOD_BASE_GAME, result->engine_version);
+                result->startup.level_to_select = lvnum;
+                if (result->startup.mod == nullptr
+                    && result->startup.engine_version > 0) {
+                    result->startup.mod = Shell_GetModByType(
+                        MOD_BASE_GAME, result->startup.engine_version);
                 }
             } else {
                 char **const level_arg = Vector_Get(args, i + 1);
@@ -168,10 +169,10 @@ SHELL_ARGS *Shell_ParseArgs(VECTOR *const args)
                 const char *const resolved_level_path =
                     TRXPath_PeekResolveUserPath(
                         TRX_DYNAMIC_PATH_LEVEL_FILE, next_arg);
-                result->level_to_play = resolved_level_path != nullptr
+                result->startup.level_to_play = resolved_level_path != nullptr
                     ? Memory_DupStr(resolved_level_path)
                     : nullptr;
-                if (result->level_to_play == nullptr) {
+                if (result->startup.level_to_play == nullptr) {
                     Shell_ExitSystemFmt(
                         "Cannot find level file '%s'. Relative paths are "
                         "resolved from the current working directory, then "
@@ -179,33 +180,34 @@ SHELL_ARGS *Shell_ParseArgs(VECTOR *const args)
                         next_arg);
                 }
                 Memory_Free(*level_arg);
-                *level_arg = (char *)result->level_to_play;
+                *level_arg = (char *)result->startup.level_to_play;
 
-                if (result->engine_version == 0) {
-                    result->engine_version = M_GuessEngineVersionFromLevelPath(
-                        result->level_to_play);
+                if (result->startup.engine_version == 0) {
+                    result->startup.engine_version =
+                        M_GuessEngineVersionFromLevelPath(
+                            result->startup.level_to_play);
                 }
-                if (result->engine_version == 0) {
+                if (result->startup.engine_version == 0) {
                     Shell_ExitSystem(
                         "Cannot determine engine version for --level. "
                         "Please provide --engine.");
                 }
-                result->mod = Shell_GetModByType(
-                    MOD_DIRECT_LEVEL, result->engine_version);
-                if (result->mod == nullptr) {
+                result->startup.mod = Shell_GetModByType(
+                    MOD_DIRECT_LEVEL, result->startup.engine_version);
+                if (result->startup.mod == nullptr) {
                     Shell_ExitSystemFmt(
                         "Engine %d does not support --level with a file path "
                         "because no direct-level mod is available for that "
                         "engine.",
-                        result->engine_version);
+                        result->startup.engine_version);
                 }
             }
             i++;
         }
         if ((!strcmp(arg, "-s") || !strcmp(arg, "--save"))
             && next_arg != nullptr) {
-            if (String_ParseInteger(next_arg, &result->save_to_load)) {
-                result->save_to_load--;
+            if (String_ParseInteger(next_arg, &result->startup.save_to_load)) {
+                result->startup.save_to_load--;
             }
             i++;
         }
@@ -236,21 +238,24 @@ SHELL_ARGS *Shell_ParseArgs(VECTOR *const args)
         }
     }
 
-    if (result->mod == nullptr) {
-        result->mod = Shell_SelectStartupMod(result->engine_version);
+    if (result->startup.mod == nullptr) {
+        result->startup.mod =
+            Shell_SelectStartupMod(result->startup.engine_version);
     }
-    if (!explicit_engine_version && result->mod != nullptr) {
-        result->engine_version = result->mod->engine_version;
+    if (!explicit_engine_version && result->startup.mod != nullptr) {
+        result->startup.engine_version = result->startup.mod->engine_version;
     }
     if (wants_gold) {
-        const int32_t engine_version = result->engine_version != 0
-            ? result->engine_version
-            : (result->mod != nullptr ? result->mod->engine_version : 0);
+        const int32_t engine_version = result->startup.engine_version != 0
+            ? result->startup.engine_version
+            : (result->startup.mod != nullptr
+                   ? result->startup.mod->engine_version
+                   : 0);
         const SHELL_MOD *const gold_mod =
             Shell_GetModByType(MOD_EXPANSION_PACK, engine_version);
         if (gold_mod != nullptr) {
-            result->mod = gold_mod;
-            result->engine_version = gold_mod->engine_version;
+            result->startup.mod = gold_mod;
+            result->startup.engine_version = gold_mod->engine_version;
         }
     }
 

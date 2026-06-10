@@ -111,20 +111,20 @@ GF_COMMAND GF_DoFrontendSequence(void)
 {
     const SHELL_ARGS *const args = Shell_GetArgs();
     if (args != nullptr) {
-        if (args->save_to_load >= 0) {
+        if (args->startup.save_to_load >= 0) {
             return (GF_COMMAND) {
                 .action = GF_START_SAVED_GAME,
                 .param = Savegame_SlotToParam(
-                    Savegame_NormalSlot(args->save_to_load)),
+                    Savegame_NormalSlot(args->startup.save_to_load)),
             };
         }
 
-        if (args->level_to_select >= 0) {
-            const GF_LEVEL *const level =
-                GF_GetLevelByOrdinalNumber(GFLT_MAIN, args->level_to_select);
+        if (args->startup.level_to_select >= 0) {
+            const GF_LEVEL *const level = GF_GetLevelByOrdinalNumber(
+                GFLT_MAIN, args->startup.level_to_select);
             if (level == nullptr) {
                 Shell_ExitSystemFmt(
-                    "Invalid level number: %d", args->level_to_select);
+                    "Invalid level number: %d", args->startup.level_to_select);
             }
             return (GF_COMMAND) {
                 .action = GF_SELECT_GAME,
@@ -132,7 +132,7 @@ GF_COMMAND GF_DoFrontendSequence(void)
             };
         }
 
-        if (args->level_to_play != nullptr) {
+        if (args->startup.level_to_play != nullptr) {
             return (GF_COMMAND) {
                 .action = GF_START_GAME,
                 .param = 0,

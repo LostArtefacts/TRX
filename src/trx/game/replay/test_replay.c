@@ -24,10 +24,23 @@
 #include <string.h>
 
 #define M_DEBUG 0
+typedef struct {
+    bool seen;
+    STARTUP_SETTINGS settings;
+} M_STARTUP_SNAPSHOT;
 
 typedef struct {
     SHELL_ARGS *args;
+    M_STARTUP_SNAPSHOT startup;
+    bool used_deprecated_args;
 } M_PARSE_CTX;
+
+static inline M_PARSE_CTX M_ParseCtxInit(void)
+{
+    return (M_PARSE_CTX) {
+        .startup.settings = { .level_to_select = -1, .save_to_load = -1 },
+    };
+}
 
 typedef struct {
     bool collecting;
@@ -88,6 +101,7 @@ static bool M_ParseExpectEvent(const char *event_str);
 // Header parsers
 static bool M_ParseSeedControl(const char *line, M_PARSE_CTX *ctx);
 static bool M_ParseSeedDraw(const char *line, M_PARSE_CTX *ctx);
+static bool M_ParseStartup(const char *line, M_PARSE_CTX *ctx);
 static bool M_ParseBindKeyboard(const char *line, M_PARSE_CTX *ctx);
 static bool M_ParseBindController(const char *line, M_PARSE_CTX *ctx);
 static bool M_ParseArgs(const char *line, M_PARSE_CTX *ctx);
@@ -95,9 +109,9 @@ static bool M_ParseConfig(const char *line, M_PARSE_CTX *ctx);
 static bool M_ParseTestCaseHeader(const char *line, M_PARSE_CTX *ctx);
 
 static const M_HEADER_HANDLER m_HeaderHandlers[] = {
-    M_ParseSeedControl,    M_ParseSeedDraw, M_ParseBindKeyboard,
-    M_ParseBindController, M_ParseArgs,     M_ParseConfig,
-    M_ParseTestCaseHeader, nullptr,
+    M_ParseSeedControl,  M_ParseSeedDraw,       M_ParseStartup,
+    M_ParseBindKeyboard, M_ParseBindController, M_ParseArgs,
+    M_ParseConfig,       M_ParseTestCaseHeader, nullptr,
 };
 
 static const M_EVENT_HANDLER m_EventHandlers[] = {
@@ -223,6 +237,42 @@ static bool M_ParseQuotedPayload(
     *out_start = start + 1;
     *out_len = (size_t)(end - (start + 1));
     return true;
+}
+
+static void M_FreeStartupSnapshot(M_STARTUP_SNAPSHOT *const startup)
+{
+    Memory_FreePointer(&startup->settings.level_to_play);
+}
+
+static void M_ResetParseArgs(M_PARSE_CTX *const ctx)
+{
+    if (ctx->args == nullptr) {
+        return;
+    }
+    Shell_FreeArgs(ctx->args);
+    ctx->args = nullptr;
+}
+
+static SHELL_ARGS *M_BuildArgsFromStartupSnapshot(M_PARSE_CTX *const ctx)
+{
+    if (!ctx->startup.seen) {
+        return nullptr;
+    }
+
+    SHELL_ARGS *const args = Memory_Alloc(sizeof(SHELL_ARGS));
+    args->startup = ctx->startup.settings;
+    ctx->startup.settings.level_to_play = nullptr;
+
+    if (args->startup.mod == nullptr) {
+        if (args->startup.level_to_play != nullptr) {
+            args->startup.mod = Shell_GetModByType(
+                MOD_DIRECT_LEVEL, args->startup.engine_version);
+        } else if (args->startup.engine_version > 0) {
+            args->startup.mod =
+                Shell_GetModByType(MOD_BASE_GAME, args->startup.engine_version);
+        }
+    }
+    return args;
 }
 
 static const char *M_SkipWhitespaceConst(const char *const s)
@@ -719,16 +769,56 @@ static bool M_ParseBindController(
     return false;
 }
 
+static bool M_ParseStartup(const char *const line, M_PARSE_CTX *const ctx)
+{
+    if (strncmp(line, "startup ", 8) != 0) {
+        return false;
+    }
+
+    int32_t int_val = 0;
+    const char *str = nullptr;
+    size_t str_len = 0;
+
+    if (sscanf(line, "startup engine %d", &int_val) == 1) {
+        ctx->startup.settings.engine_version = int_val;
+    } else if (M_ParseQuotedPayload(line, "startup mod", &str, &str_len)) {
+        const char *const mod_name =
+            String_FormatStatic("%.*s", (int)str_len, str);
+        ctx->startup.settings.mod = Shell_GetModByName(mod_name);
+        if (ctx->startup.settings.mod == nullptr) {
+            Shell_ExitSystemFmt(
+                "Replay references unavailable mod '%s'", mod_name);
+        }
+        if (ctx->startup.settings.engine_version <= 0) {
+            ctx->startup.settings.engine_version =
+                ctx->startup.settings.mod->engine_version;
+        }
+    } else if (sscanf(line, "startup level-num %d", &int_val) == 1) {
+        ctx->startup.settings.level_to_select = int_val;
+    } else if (
+        M_ParseQuotedPayload(line, "startup level-path", &str, &str_len)) {
+        Memory_FreePointer(&ctx->startup.settings.level_to_play);
+        ctx->startup.settings.level_to_play =
+            Memory_DupStr(String_FormatStatic("%.*s", (int)str_len, str));
+    } else if (sscanf(line, "startup save %d", &int_val) == 1) {
+        ctx->startup.settings.save_to_load = int_val - 1;
+    } else {
+        return false;
+    }
+
+    ctx->startup.seen = true;
+    return true;
+}
+
 static bool M_ParseArgs(const char *const line, M_PARSE_CTX *const ctx)
 {
     if (strncmp(line, "args", 4) != 0) {
         return false;
     }
 
-    if (ctx->args != nullptr) {
-        Shell_FreeArgs(ctx->args);
-        ctx->args = nullptr;
-    }
+    ctx->used_deprecated_args = true;
+    M_ResetParseArgs(ctx);
+
     // Build an owned argv vector for Shell_ParseArgs adoption.
     VECTOR *raw_args = Vector_Create(sizeof(const char *));
     const char *p = line + 4;
@@ -951,25 +1041,38 @@ SHELL_ARGS *TestReplay_Open(const char *path)
         idx++;
     }
 
-    M_PARSE_CTX ctx = {};
+    M_PARSE_CTX ctx = M_ParseCtxInit();
     for (int32_t i = 0; i < p->headers->count; i++) {
         const char *const ln = *(const char **)Vector_Get(p->headers, i);
-        M_ParseArgs(ln, &ctx);
+        for (int32_t j = 0; m_HeaderHandlers[j]; j++) {
+            if (m_HeaderHandlers[j](ln, &ctx)) {
+                break;
+            }
+        }
     }
     Vector_Free(lines);
     LOG_INFO("Loaded %zu frames for playback", p->frames->count);
-    if (ctx.args == nullptr) {
+    if (ctx.startup.seen) {
+        M_ResetParseArgs(&ctx);
+        ctx.args = M_BuildArgsFromStartupSnapshot(&ctx);
+    } else if (ctx.args == nullptr) {
         ctx.args = Shell_ParseArgs(nullptr);
+    }
+    if (ctx.used_deprecated_args && !ctx.startup.seen) {
+        LOG_WARNING(
+            "Replay uses deprecated 'args' startup header; please re-record "
+            "it");
     }
     if (ctx.args != nullptr && ctx.args->quiet) {
         p->replay_quiet = true;
     }
+    M_FreeStartupSnapshot(&ctx.startup);
     return ctx.args;
 }
 
 void TestReplay_Start(void)
 {
-    M_PARSE_CTX ctx = {};
+    M_PARSE_CTX ctx = M_ParseCtxInit();
     M_PRIV *const p = &m_Priv;
     for (int32_t i = 0; i < p->headers->count; i++) {
         const char *const ln = *(const char **)Vector_Get(p->headers, i);
@@ -986,6 +1089,7 @@ void TestReplay_Start(void)
     }
     g_SavedConfig = g_Config;
     Shell_FreeArgs(ctx.args);
+    M_FreeStartupSnapshot(&ctx.startup);
 }
 
 void TestReplay_Close(void)

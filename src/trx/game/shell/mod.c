@@ -277,10 +277,12 @@ void Shell_ValidateMods(void)
         }
 
         const SHELL_ARGS args = {
-            .engine_version = mod->engine_version,
-            .mod = mod,
-            .level_to_select = -1,
-            .save_to_load = -1,
+            .startup = {
+                .engine_version = mod->engine_version,
+                .mod = mod,
+                .level_to_select = -1,
+                .save_to_load = -1,
+            },
         };
         g_TRVersion = mod->engine_version;
         TRXPath_Init(&args);
@@ -392,11 +394,12 @@ bool Shell_IsCurrentMod(const char *const name)
     }
 
     const SHELL_ARGS *const args = Shell_GetArgs();
-    if (args == nullptr || args->mod == nullptr || args->mod->name == nullptr) {
+    if (args == nullptr || args->startup.mod == nullptr
+        || args->startup.mod->name == nullptr) {
         return false;
     }
 
-    return strcmp(args->mod->name, name) == 0;
+    return strcmp(args->startup.mod->name, name) == 0;
 }
 
 const char *Shell_GetCommonStringsPath(void)

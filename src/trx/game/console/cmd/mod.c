@@ -9,7 +9,7 @@ static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *const ctx)
 {
     if (String_IsEmpty(ctx->args)) {
         const SHELL_ARGS *const args = Shell_GetArgs();
-        Console_Log("Currently loaded mod: %s", args->mod->name);
+        Console_Log("Currently loaded mod: %s", args->startup.mod->name);
         return CR_SUCCESS;
     }
 
