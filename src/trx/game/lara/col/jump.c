@@ -240,7 +240,10 @@ static bool M_TestHangJumpUp(ITEM *const item, COLL_INFO *const coll)
     if (edge_catch == EDGE_CATCH_POS) {
         item->pos.y += coll->side_front.floor - bounds->min.y;
     } else {
-        item->pos.y = edge - bounds->min.y + (g_TRVersion >= 3 ? 4 : 0);
+        item->pos.y = edge - bounds->min.y;
+        // XXX: prevent interpolation in 60fps shifting Lara below the edge
+        // catch position then making her drift back up to it.
+        item->interp.prev.pos.y = item->pos.y - item->fall_speed;
     }
     item->pos.x += coll->shift.x;
     item->pos.z += coll->shift.z;

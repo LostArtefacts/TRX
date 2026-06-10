@@ -60,6 +60,7 @@
 - added support for Lara's breath to show in cold rooms (requires `O_SPARKS_GFX`)
 - fixed TR2:GM missing opening Eidos Interactive / Core Design FMV (#5609)
 - fixed Lara wading in shallower water compared to OG (#5574, regression from 1.3)
+- fixed Lara shifting too far down in 60fps after grabbing a ladder (regression from TR2X 0.10)
 
 **TR3**:
 - added the ability to define the flame interval of `O_FLAME_EMITTER_SIDE` objects
@@ -92,6 +93,7 @@
 - fixed Lara becoming immune to Puna's attacks after getting zapped once with the fly cheat (regression from 1.3)
 - fixed Lara snapping to keyholes, puzzle slots and switches instead of waiting to be at a complete stand-still first (regression from 1.1)
 - fixed wasps that spawn from emitters having incorrect shading, especially noticeable when they are killed (regression from 1.6)
+- fixed Lara shifting too far down in 60fps after grabbing a ladder (regression from 1.1)
 
 
 
