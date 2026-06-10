@@ -237,7 +237,7 @@ static void M_PrepareSystem(void)
     if (test_replay_path != nullptr) {
         // Allow inferring engine version from outer args for replays lacking
         // embedded info (created with the old directory layout).
-        g_TRVersion = s->args->engine_version;
+        g_TRVersion = s->args->startup.engine_version;
         SHELL_ARGS *const tmp_args = TestReplay_Open(test_replay_path);
         if (tmp_args != nullptr) {
             tmp_args->headless = s->args->headless;
@@ -249,14 +249,18 @@ static void M_PrepareSystem(void)
         Shell_ExitSystem("--headless can only be used with --test-replay");
     }
 
-    g_TRVersion = s->args->engine_version;
+    g_TRVersion = s->args->startup.engine_version;
     LOG_INFO("Engine version: %d", g_TRVersion);
-    LOG_INFO("Mod: %s", s->args->mod != nullptr ? s->args->mod->name : nullptr);
-    if (s->args->engine_version <= 0 || s->args->mod == nullptr) {
+    LOG_INFO(
+        "Mod: %s",
+        s->args->startup.mod != nullptr ? s->args->startup.mod->name : nullptr);
+    if (s->args->startup.engine_version <= 0
+        || s->args->startup.mod == nullptr) {
         Shell_ExitSystem("No playable mods available.");
     }
-    if (s->args->mod->mod_type != MOD_DIRECT_LEVEL) {
-        ShellState_RememberLastPlayedMod(s->args->mod->name);
+    if (s->args->startup.mod->mod_type != MOD_DIRECT_LEVEL
+        && test_replay_path == nullptr) {
+        ShellState_RememberLastPlayedMod(s->args->startup.mod->name);
     }
 
     Config_ApplyDefaultSettings();
@@ -290,7 +294,8 @@ static void M_PrepareSystem(void)
         if (engine_config_path == nullptr) {
             Shell_ExitSystem("Failed to resolve engine config path");
         }
-        Config_Read(engine_config_path, Shell_GetGameFlowPath(s->args->mod));
+        Config_Read(
+            engine_config_path, Shell_GetGameFlowPath(s->args->startup.mod));
         Memory_FreePointer(&engine_config_path);
 
         if (s->args->test_record_path != nullptr) {
@@ -337,7 +342,7 @@ int32_t Shell_Main(const SHELL_ARGS *const args)
 
     M_InitModules();
     M_PrepareSystem();
-    if (s->args->mod == nullptr) {
+    if (s->args->startup.mod == nullptr) {
         Shell_ExitSystem("No --mod specified.");
         return 1;
     }
@@ -350,7 +355,7 @@ int32_t Shell_Main(const SHELL_ARGS *const args)
     }
 
     GF_Init();
-    GF_LoadFromFile(Shell_GetGameFlowPath(s->args->mod));
+    GF_LoadFromFile(Shell_GetGameFlowPath(s->args->startup.mod));
 
     GameStringManager_ClearSourceFiles();
     const char *const common_strings_path = Shell_GetCommonStringsPath();
@@ -358,19 +363,22 @@ int32_t Shell_Main(const SHELL_ARGS *const args)
         Shell_ExitSystem("Missing common strings file");
     }
     GameStringManager_AddSourceFile(common_strings_path, false);
-    if (s->args->mod->base_mod != nullptr) {
+    if (s->args->startup.mod->base_mod != nullptr) {
         const char *const base_strings_path =
-            Shell_GetBaseGameStringsPath(s->args->mod);
+            Shell_GetBaseGameStringsPath(s->args->startup.mod);
         if (base_strings_path == nullptr) {
             Shell_ExitSystemFmt(
-                "Missing base mod strings file for '%s'", s->args->mod->name);
+                "Missing base mod strings file for '%s'",
+                s->args->startup.mod->name);
         }
         GameStringManager_AddSourceFile(base_strings_path, false);
     }
-    const char *const mod_strings_path = Shell_GetGameStringsPath(s->args->mod);
+    const char *const mod_strings_path =
+        Shell_GetGameStringsPath(s->args->startup.mod);
     if (mod_strings_path == nullptr) {
         Shell_ExitSystemFmt(
-            "Missing strings file for selected mod '%s'", s->args->mod->name);
+            "Missing strings file for selected mod '%s'",
+            s->args->startup.mod->name);
     }
     GameStringManager_AddSourceFile(mod_strings_path, true);
     GameStringManager_DiscoverLanguages();
@@ -453,7 +461,7 @@ int32_t Shell_Main(const SHELL_ARGS *const args)
             break;
 
         case GF_EXIT_TO_TITLE:
-            if (s->args->level_to_play != nullptr) {
+            if (s->args->startup.level_to_play != nullptr) {
                 gf_cmd = (GF_COMMAND) { .action = GF_EXIT_GAME };
             } else if (g_GameFlow.title_level == nullptr) {
                 Shell_ExitSystem("Missing title level");

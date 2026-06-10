@@ -511,8 +511,8 @@ static const char *M_GetCurrentModID(void)
     if (m_Context.mod_chain_count > 0) {
         return m_Context.mod_chain[0];
     }
-    if (m_Context.args != nullptr && m_Context.args->mod != nullptr) {
-        return m_Context.args->mod->name;
+    if (m_Context.args != nullptr && m_Context.args->startup.mod != nullptr) {
+        return m_Context.args->startup.mod->name;
     }
     return nullptr;
 }
@@ -536,16 +536,17 @@ static const char *M_GetBaseModID(void)
     if (m_Context.mod_chain_count > 1) {
         return m_Context.mod_chain[1];
     }
-    if (m_Context.args != nullptr && m_Context.args->mod != nullptr) {
-        return m_Context.args->mod->base_mod;
+    if (m_Context.args != nullptr && m_Context.args->startup.mod != nullptr) {
+        return m_Context.args->startup.mod->base_mod;
     }
     return nullptr;
 }
 
 static const char *M_GetDirectLevelArg(void)
 {
-    return m_Context.args != nullptr && m_Context.args->level_to_play != nullptr
-        ? m_Context.args->level_to_play
+    return m_Context.args != nullptr
+            && m_Context.args->startup.level_to_play != nullptr
+        ? m_Context.args->startup.level_to_play
         : "";
 }
 
@@ -721,11 +722,11 @@ char *TRXPath_ExpandVars(const char *const in)
 static void M_BuildModChain(const SHELL_ARGS *const args)
 {
     m_Context.mod_chain_count = 0;
-    if (args == nullptr || args->mod == nullptr) {
+    if (args == nullptr || args->startup.mod == nullptr) {
         return;
     }
 
-    const SHELL_MOD *mod = args->mod;
+    const SHELL_MOD *mod = args->startup.mod;
     while (mod != nullptr && m_Context.mod_chain_count < M_MAX_MOD_CHAIN) {
         for (int32_t i = 0; i < m_Context.mod_chain_count; i++) {
             if (strcmp(m_Context.mod_chain[i], mod->name) == 0) {

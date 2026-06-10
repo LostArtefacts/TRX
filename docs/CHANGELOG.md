@@ -43,6 +43,8 @@
 - fixed crystal totals being shown incorrectly after loading a save (#5589, regression from 1.5)
 - fixed a very rare crash when loading saves from console during a pause or photo mode
 - fixed Lara embedding into walls during the sprint-slide animation if she tried to interact with a keyhole or puzzle slot at the same time (regression from TR1X 4.14, TR2X 1.4)
+- fixed recording replays from different mods on the same engine as last played loading the wrong mood
+- fixed recording replays switching the last played mod
 
 **TR1**:
 - added support for fish and piranhas without sacrificing explosion sprites (refer to notes in migration guide) (#4358)

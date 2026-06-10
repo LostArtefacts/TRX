@@ -38,8 +38,9 @@ static const char *M_GetSaveWriteDir(void)
 {
     const char *const saves_dir = TRXPath_Get(TRX_PATH_SAVES_DIR);
     const SHELL_ARGS *const args = Shell_GetArgs();
-    if (args != nullptr && args->mod != nullptr && args->mod->name != nullptr) {
-        return String_FormatStatic("%s/%s", saves_dir, args->mod->name);
+    if (args != nullptr && args->startup.mod != nullptr
+        && args->startup.mod->name != nullptr) {
+        return String_FormatStatic("%s/%s", saves_dir, args->startup.mod->name);
     }
     return saves_dir;
 }

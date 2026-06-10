@@ -33,10 +33,11 @@ int main(int argc, char *argv[])
 
     LOG_INFO("Starting %s", g_TRXVersion);
     Shell_ValidateMods();
-    if (args->mod == nullptr || !args->mod->is_valid) {
-        args->mod = Shell_SelectStartupMod(args->engine_version);
-        if (args->mod != nullptr && args->engine_version == 0) {
-            args->engine_version = args->mod->engine_version;
+    if (args->startup.mod == nullptr || !args->startup.mod->is_valid) {
+        args->startup.mod =
+            Shell_SelectStartupMod(args->startup.engine_version);
+        if (args->startup.mod != nullptr && args->startup.engine_version == 0) {
+            args->startup.engine_version = args->startup.mod->engine_version;
         }
     }
 
@@ -58,10 +59,12 @@ int main(int argc, char *argv[])
                 LOG_INFO("Switching mod to: %s", mod->name);
                 SHELL_ARGS *const next_args = Memory_Alloc(sizeof(SHELL_ARGS));
                 *next_args = (SHELL_ARGS) {
-                    .engine_version = mod->engine_version,
-                    .mod = mod,
-                    .level_to_select = -1,
-                    .save_to_load = -1,
+                    .startup = {
+                        .engine_version = mod->engine_version,
+                        .mod = mod,
+                        .level_to_select = -1,
+                        .save_to_load = -1,
+                    },
                     .headless = Shell_GetPrevHeadless(),
                     .quiet = Shell_GetPrevQuiet(),
                 };

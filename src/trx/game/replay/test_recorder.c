@@ -13,6 +13,7 @@
 #include <trx/game/input/common.h>
 #include <trx/game/lara.h>
 #include <trx/game/random.h>
+#include <trx/game/shell/common.h>
 
 #include <stdlib.h>
 #include <string.h>
@@ -154,6 +155,33 @@ static void M_DumpHeader(MYFILE *const fp)
     File_WriteString(fp, "seed_draw %d\n", Random_GetDrawSeed());
 }
 
+static void M_DumpStartup(MYFILE *const fp)
+{
+    const SHELL_ARGS *const args = Shell_GetArgs();
+    if (args == nullptr) {
+        return;
+    }
+
+    if (args->startup.mod != nullptr && args->startup.mod->name != nullptr) {
+        File_WriteString(fp, "startup mod \"%s\"\n", args->startup.mod->name);
+    } else if (args->startup.engine_version > 0) {
+        File_WriteString(
+            fp, "startup engine %d\n", args->startup.engine_version);
+    }
+    if (args->startup.level_to_select >= 0) {
+        File_WriteString(
+            fp, "startup level-num %d\n", args->startup.level_to_select);
+    }
+    if (args->startup.level_to_play != nullptr) {
+        File_WriteString(
+            fp, "startup level-path \"%s\"\n", args->startup.level_to_play);
+    }
+    if (args->startup.save_to_load >= 0) {
+        File_WriteString(
+            fp, "startup save %d\n", args->startup.save_to_load + 1);
+    }
+}
+
 static void M_DumpArguments(MYFILE *const fp, VECTOR *const original_args)
 {
     // Record original arguments passed to the game
@@ -279,6 +307,7 @@ void TestRecorder_Open(const char *path, VECTOR *const original_args)
     }
 
     M_DumpHeader(p->file);
+    M_DumpStartup(p->file);
     M_DumpArguments(p->file, original_args);
     M_DumpConfig(p->file);
     M_DumpBindings(p->file);

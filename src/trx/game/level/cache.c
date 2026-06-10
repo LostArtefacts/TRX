@@ -183,12 +183,13 @@ const char *LevelCache_GetLevelKey(const GF_LEVEL *const level)
 static const char *M_GetPath(const char *const filename)
 {
     const SHELL_ARGS *const args = Shell_GetArgs();
-    if (args == nullptr || args->mod == nullptr || args->mod->name == nullptr) {
+    if (args == nullptr || args->startup.mod == nullptr
+        || args->startup.mod->name == nullptr) {
         return nullptr;
     }
 
     return String_FormatStatic(
-        "%s/%s/%s", Shell_GetCacheDir(), args->mod->name, filename);
+        "%s/%s/%s", Shell_GetCacheDir(), args->startup.mod->name, filename);
 }
 
 MYFILE *LevelCache_OpenBinaryRead(
