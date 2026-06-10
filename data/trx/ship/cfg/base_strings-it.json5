@@ -43,7 +43,7 @@
             "direction_keys_keyboard": "Frecce",
             "empty_slot_fmt": "- SLOT VUOTO -",
             "exit": "Esci",
-            "hold_fmt": "Premere %s",
+            "hold_fmt": "Tieni premuto %s",
             "off": "Spento",
             "on": "Acceso",
             "pagination_nav": "%d / %d",
@@ -53,10 +53,10 @@
             "ambiguous_input_3": "Immissione ambigua: %s, %s, ...",
             "bilinear_filter_off": "Filtro bilineare: disattivato",
             "bilinear_filter_on": "Filtro bilineare: attivato",
-            "burn_fail_already_off": "\\{review}Lara non è attualmente in fiamme",
-            "burn_fail_already_on": "\\{review}Lara è già in fiamme",
-            "burn_off": "\\{review}Lara è stata spenta - meno male!",
-            "burn_on": "\\{review}Lara è ora in fiamme - ahi!",
+            "burn_fail_already_off": "Lara non va attualmente a fuoco",
+            "burn_fail_already_on": "Lara va già a fuoco",
+            "burn_off": "Lara non va più a fuoco - meno male!",
+            "burn_on": "Lara va ora a fuoco - ahi!",
             "command_bad_invocation": "Invocazione non valida: %s",
             "command_bool": "acceso, spento",
             "command_decimal": "[decimale]",
@@ -293,7 +293,7 @@
                 "help": "Attiva o disattiva la treccia di Lara.",
             },
             "burn": {
-                "help": "\\{review}Attiva o disattiva Lara in fiamme.",
+                "help": "Attiva o disattiva il fuoco su Lara.",
             },
             "cheats": {
                 "help": "Attiva o disattiva i trucchi di gioco.",
@@ -374,12 +374,12 @@
                 "help": "Passa alla mod specificata e riavvia il gioco.",
             },
             "music": {
-                "available_tracks": "\\{review}Tracce musicali disponibili: %s",
-                "current": "\\{review}Traccia corrente: %d",
-                "current_none": "\\{review}Traccia corrente: nessuna",
-                "deferred_ambient": "\\{review}Ambient differito: %d",
-                "help": "\\{review}Mostra lo stato attuale della musica, ferma tutta la musica o riproduce una traccia musicale con l'id fornito.",
-                "overlay": "\\{review}Traccia(e) sovrapposta(e): %s",
+                "available_tracks": "Tracce musicali disponibili: %s",
+                "current": "Traccia corrente: %d",
+                "current_none": "Traccia corrente: nessuna",
+                "deferred_ambient": "Traccia ambientale differita: %d",
+                "help": "Mostra lo stato attuale della traccia musicale, ferma la musica o riproduce una traccia in base all'ID fornito.",
+                "overlay": "Traccia(e) sovrapposta(e): %s",
             },
             "play_cutscene": {
                 "help": "Riproduce la scena di intermezzo con il numero specificato.",
@@ -499,8 +499,8 @@
                 "tr1_mauled": "Lara ferita TR1",
                 "tr1_ngage": "TR1 N-Gage",
                 "tr23_golden_lara": "Lara Dorata TR2/3",
-                "tr2_bomber_jacket": "\\{review}Giubbotto pesante 1",
-                "tr2_bomber_jacket_alpha": "\\{review}Giubbotto pesante 2",
+                "tr2_bomber_jacket": "Giubbotto da aviatore 1",
+                "tr2_bomber_jacket_alpha": "Giubbotto da aviatore 2",
                 "tr2_classic": "Classico TR2",
                 "tr2_diving_suit": "Muta subacquea 1",
                 "tr2_diving_suit_alpha": "Muta subacquea 2",
@@ -863,8 +863,8 @@
             "description": "Rimuove tutte le collisioni con il T-Rex dopo la sua dipartita. Utile quando il corpo del T-Rex blocca il passaggio.",
         },
         "gameplay.enable_ally_kill_count": {
-            "title": "\\{review}Conta le uccisioni degli alleati",
-            "description": "\\{review}Conta le uccisioni nemiche effettuate dagli alleati di Lara nel totale delle uccisioni.",
+            "title": "Conta uccisioni alleati",
+            "description": "Il conteggio totale delle uccisioni dei nemici include anche quelle effettuate dagli alleati di Lara.",
         },
         "gameplay.enable_ally_targeting": {
             "title": "Consenti fuoco amico",
@@ -907,8 +907,8 @@
             "description": "Abilita la console per sviluppatori.",
         },
         "gameplay.enable_continuous_pushblocks": {
-            "title": "\\{review}Blocchi spingibili continui",
-            "description": "\\{review}Consente a Lara di continuare a spingere o tirare i blocchi finché il tasto azione è tenuto premuto, come in TR4+. Se disattivato, Lara si fermerà dopo ogni animazione di spinta/tirata.",
+            "title": "Blocchi mobili continui",
+            "description": "Consente a Lara di spingere o tirare i blocchi finché si tiene premuto il tasto Azione, in modo simile a TR4+. Se disabilitato, Lara si fermerà dopo ogni animazione di spinta/tirata.",
         },
         "gameplay.enable_controlled_drops": {
             "title": "Cadute controllate",
@@ -951,12 +951,12 @@
             "description": "Migliora il sistema di salvataggio in modo che gli effetti grafici, la foschia delle cascate, gli emettitori di fiamme e altro vengano salvati invece di scomparire dopo il caricamento della partita.",
         },
         "gameplay.enable_environment_kill_count": {
-            "title": "\\{review}Conta le uccisioni ambientali",
-            "description": "\\{review}Conta i nemici eliminati dall'ambiente, come laser di sicurezza o annegamento, nel totale delle uccisioni.",
+            "title": "Conta uccisioni da ambiente",
+            "description": "Il conteggio totale delle uccisioni include anche quelle causate dall'ambiente circostante, come laser di sicurezza o annegamenti.",
         },
         "gameplay.enable_fast_pickups": {
-            "title": "\\{review}Raccolta rapida",
-            "description": "\\{review}Permette a Lara di raccogliere gli oggetti più rapidamente, in modo simile a TR4+.",
+            "title": "Raccolta oggetti rapida",
+            "description": "Permette a Lara di raccogliere gli oggetti più rapidamente, in modo simile a TR4+.",
         },
         "gameplay.enable_fmv": {
             "title": "FMV",
@@ -1039,8 +1039,8 @@
             "description": "Permette a Lara di riprendersi più velocemente dopo aver urtato un muro e un tasto direzionale viene premuto insieme con il tasto Corri.",
         },
         "gameplay.enable_snap_interactions": {
-            "title": "\\{review}Interazioni rapide",
-            "description": "\\{review}Consente a Lara di agganciarsi immediatamente ai bersagli di interazione, come oggetti da raccogliere e interruttori. Se disattivato, Lara dovrà prima essere completamente ferma prima di poter interagire.",
+            "title": "Interazioni rapide",
+            "description": "Consente a Lara di dirigersi immediatamente verso gli oggetti di interazione, come consumabili o interruttori. Se disabilitata, Lara dovrà rimanere ferma prima di poter interagire.",
         },
         "gameplay.enable_soft_statics": {
             "title": "Collisione delicata con mesh",
@@ -1107,8 +1107,8 @@
             "description": "Risolve il problema degli alligatori che non infliggono danni se Lara rimane ferma nell'acqua.",
         },
         "gameplay.fix_animated_spikes": {
-            "title": "\\{review}Correggi spuntoni animati",
-            "description": "\\{review}Corregge il ripristino degli spuntoni animati attivati durante il caricamento di un salvataggio.",
+            "title": "Correggi spuntoni animati",
+            "description": "Risolve il problema per cui gli spuntoni animati si reimpostano al caricamento di un salvataggio.",
         },
         "gameplay.fix_bear_ai": {
             "title": "Correggi IA degli orsi",
@@ -1710,34 +1710,34 @@
             "name": "Oggetto Animato 9",
         },
         "animating_ext_1": {
-            "name": "\\{review}Oggetto Animato Esteso 1",
+            "name": "Oggetto Animato Esteso 1",
         },
         "animating_ext_10": {
-            "name": "\\{review}Oggetto Animato Esteso 10",
+            "name": "Oggetto Animato Esteso 10",
         },
         "animating_ext_2": {
-            "name": "\\{review}Oggetto Animato Esteso 2",
+            "name": "Oggetto Animato Esteso 2",
         },
         "animating_ext_3": {
-            "name": "\\{review}Oggetto Animato Esteso 3",
+            "name": "Oggetto Animato Esteso 3",
         },
         "animating_ext_4": {
-            "name": "\\{review}Oggetto Animato Esteso 4",
+            "name": "Oggetto Animato Esteso 4",
         },
         "animating_ext_5": {
-            "name": "\\{review}Oggetto Animato Esteso 5",
+            "name": "Oggetto Animato Esteso 5",
         },
         "animating_ext_6": {
-            "name": "\\{review}Oggetto Animato Esteso 6",
+            "name": "Oggetto Animato Esteso 6",
         },
         "animating_ext_7": {
-            "name": "\\{review}Oggetto Animato Esteso 7",
+            "name": "Oggetto Animato Esteso 7",
         },
         "animating_ext_8": {
-            "name": "\\{review}Oggetto Animato Esteso 8",
+            "name": "Oggetto Animato Esteso 8",
         },
         "animating_ext_9": {
-            "name": "\\{review}Oggetto Animato Esteso 9",
+            "name": "Oggetto Animato Esteso 9",
         },
         "ape": {
             "name": "Scimmia",
@@ -1998,7 +1998,7 @@
             ]
         },
         "dolphin": {
-            "name": "\\{review}Delfino",
+            "name": "Delfino",
         },
         "door_1": {
             "name": "Porta 1",
