@@ -51,6 +51,7 @@
 - added support for bat emitters without sacrificing explosion sprites (refer to notes in migration guide)
 - added the abilty to use animated spikes
 - added support for Lara's breath to show in cold rooms (requires `O_SPARKS_GFX`)
+- fixed bad visibility bounds on palm trees throughout the Egypt levels, causing them to be clipped out of view too eagerly (#5648)
 - fixed Lead Bars not being examinable after picking them up (regression from TR1X 4.6)
 
 **TR2**:
