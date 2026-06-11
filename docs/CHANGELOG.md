@@ -24,6 +24,7 @@
 - changed hard-coded small Cobra radius setup to be configurable via Lua
 - changed the hard-coded creature melee and hitscanner damage values to be configurable via Lua. Exemption: visible projectiles.
 - changed the hard-coded traps damage to be configurable via Lua. Exemption: one-shot traps such as crushing boulders.
+- improved injected gun/ammo model consistency between each game
 - removed the hard-coded movement speed and moved it to Lua instead for the following objects:
     - `O_CEILING_SPIKES`
     - `O_LAVA_WEDGE`
