@@ -92,6 +92,7 @@
 - fixed the animating diver in Sleeping with the Fishes disappearing before jumping into the water
 - fixed seeing the fish in Coastal Village spawn due to delayed triggers, most noticeable when fades are disabled
 - fixed hissing SFX in RX-Tech Mines and water SFX in Sleeping with the Fishes not looping properly
+- fixed visible gaps in Nevada room 31 where the waterfalls meet the ceiling below the water line
 - fixed dropped pickups not keeping their original facing (regression from 1.2)
 - fixed Sophia not aiming at Lara properly in Reunion (regression from 1.4)
 - fixed Lara becoming immune to Puna's attacks after getting zapped once with the fly cheat (regression from 1.3)
