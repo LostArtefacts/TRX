@@ -322,11 +322,7 @@ static bool M_ReadItem(JSON_READ_IO *const io, const int16_t read_index)
     ITEM *const item = Item_Get(item_num);
 
     OBJECT_ID object_id = NO_OBJECT;
-    // Not all TR3 objects are implemented as of >= TRX 1.1
-    if (!M_SHOULD(M_ReadObjectID(io, "object_id", &object_id))) {
-        item->object_id = O_DUMMY;
-        return true;
-    }
+    M_MUST(M_ReadObjectID(io, "object_id", &object_id));
 
     const OBJECT *const obj = Object_Get(object_id);
     item->object_id = object_id;

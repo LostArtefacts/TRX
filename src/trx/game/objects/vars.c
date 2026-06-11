@@ -449,7 +449,6 @@ const OBJECT_ID g_NullObjects[] = {
     O_TEXT_BOX,
     O_TWINKLE,
     O_WATER_SPRITE,
-    O_DUMMY,
     NO_OBJECT,
     // clang-format on
 };

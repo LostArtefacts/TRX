@@ -528,7 +528,6 @@ common_sources = [
   'trx/game/objects/general/ding_dong.c',
   'trx/game/objects/general/door.c',
   'trx/game/objects/general/drawbridge.c',
-  'trx/game/objects/general/dummy.c',
   'trx/game/objects/general/earthquake.c',
   'trx/game/objects/general/final_cutscene.c',
   'trx/game/objects/general/flare_item.c',
