@@ -398,6 +398,7 @@
                 "nevada_sky.bin",
                 "nevada_door132_frames.bin",
                 "common_pickup_meshes.bin",
+                "nevada_textures.bin",
             ],
             "unobtainable_pickups": 1,
         },

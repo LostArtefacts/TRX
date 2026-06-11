@@ -147,9 +147,13 @@ static void M_SetVertexFlags(const INJECTION *const injection)
     ROOM_VERTEX *const vertex = &room->mesh.vertices[target_vertex];
     if (g_TRVersion == 1) {
         vertex->flags.disable_wibble = (flags & 0x2000u) != 0u;
-    } else {
+    } else if (g_TRVersion == 2) {
         vertex->flags.disable_wibble = (flags & 0x8000u) != 0u;
         vertex->light_table_value = flags & 0xFF;
+    } else {
+        vertex->flags.disable_wibble = (flags & 0x8000u) != 0u;
+        vertex->flags.move = (flags & 0x2000u) != 0u;
+        vertex->flags.glow = (flags & 0x4000u) != 0u;
     }
 }
 

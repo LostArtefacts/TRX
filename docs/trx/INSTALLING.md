@@ -998,6 +998,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── misc_sprites.bin
 │   │   │   ├── nevada_door132_frames.bin
 │   │   │   ├── nevada_sky.bin
+│   │   │   ├── nevada_textures.bin
 │   │   │   ├── pda_model.bin
 │   │   │   ├── pickup_aid.bin
 │   │   │   ├── puna_pickup_meshes.bin
@@ -2247,6 +2248,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── misc_sprites.bin
     │   │   │   │   ├── nevada_door132_frames.bin
     │   │   │   │   ├── nevada_sky.bin
+    │   │   │   │   ├── nevada_textures.bin
     │   │   │   │   ├── pda_model.bin
     │   │   │   │   ├── pickup_aid.bin
     │   │   │   │   ├── puna_pickup_meshes.bin
