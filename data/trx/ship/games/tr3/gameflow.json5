@@ -75,8 +75,8 @@
                 "pickup_aid.bin",
                 "gym_sky.bin",
                 "gym_textures.bin",
-                "common_pickup_meshes.bin",
                 "lara_gym_guns.bin",
+                "common_pickup_meshes.bin",
                 "fish_sprites.bin",
             ],
         },
@@ -270,6 +270,7 @@
                 "puna_pickup_meshes.bin",
                 "globe_model.bin",
                 "puna_textures.bin",
+                "common_pickup_meshes.bin",
             ],
         },
 
@@ -571,6 +572,7 @@
                 "flamethrower_sfx.bin",
                 "menu_artefacts.bin",
                 "cavern_textures.bin",
+                "common_pickup_meshes.bin",
             ],
         },
 
