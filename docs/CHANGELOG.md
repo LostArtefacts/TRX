@@ -79,6 +79,7 @@
 - changed animated spikes sound effects in specific levels to use animation commands instead
 - changed animated spikes to work outside levels 5 and 7
 - changed `O_AI_PATROL_1` behavior in High Security Compound and Area 51 to be configurable; refer to migration docs
+- improved the scaling of the grenades item inside the inventory
 - removed the hard-coded Aldwych drill speed override and moved it to Lua instead
 - removed the option to fix animated sprites, which has no relevance in TR3/TR3LA
 - fixed handheld flare sparks appearing inside the flare instead of above the tip
