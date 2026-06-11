@@ -191,15 +191,8 @@ void Level_Section_ReadItems(LEVEL_CONTEXT *const ctx, VFILE *const file)
         const int16_t obj_id = VFile_ReadS16(file);
         item->object_id = Object_FromGameID(obj_id);
         if (item->object_id == NO_OBJECT) {
-            if (loader->game_version == 3) {
-                // TODO: remove this check after we implement the items
-                LOG_ERROR("Unsupported object #%d", obj_id);
-                item->object_id = O_DUMMY;
-            } else {
-                Shell_ExitSystemFmt(
-                    "Bad object number (%d) on item %d", obj_id, i);
-                goto finish;
-            }
+            Shell_ExitSystemFmt("Bad object number (%d) on item %d", obj_id, i);
+            goto finish;
         }
 
         item->room_num = VFile_ReadS16(file);
