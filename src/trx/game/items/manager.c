@@ -10,6 +10,7 @@
 #include <trx/game/objects.h>
 #include <trx/game/objects/general/shoal.h>
 #include <trx/game/output/const.h>
+#include <trx/game/pathing.h>
 #include <trx/game/rooms.h>
 #include <trx/game/sparks.h>
 #include <trx/version.h>
@@ -355,6 +356,12 @@ void Item_KillAllActive(void)
 
             if (Object_IsType(item->object_id, g_ShoalObjects)) {
                 Shoal_TriggerDeactivate(item);
+            } else {
+                const OBJECT *const obj = Object_Get(item->object_id);
+                if (obj->intelligent) {
+                    LOT_DisableBaddieAI(item_num);
+                    item->hit_points = 0;
+                }
             }
         }
         item_num = next_item_num;
