@@ -1100,7 +1100,7 @@
         },
         "gameplay.enable_walk_to_items": {
             "title": "Animowane interakcje",
-            "description": "Sprawia, że Lara chodzi do przedmiotów i przełączników, gdy są w pobliżu, zamiast się do nich natychmiastowo przesuwać.",
+            "description": "\\{review}Sprawia, że Lara podchodzi do przedmiotów do podniesienia, przełączników, dziurek od klucza i gniazd zagadek, gdy znajduje się w pobliżu, zamiast teleportować się do nich.",
         },
         "gameplay.fix_alligator_ai": {
             "title": "Napraw AI aligatorów",

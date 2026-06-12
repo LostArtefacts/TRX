@@ -1100,7 +1100,7 @@
         },
         "gameplay.enable_walk_to_items": {
             "title": "Eadar-obrachadh beòthail",
-            "description": "Nì Lara coiseachd gu togailtean is suidsichean nuair a tha i faisg orra, an àite leum dìreach thuca.",
+            "description": "Nì Lara coiseachd gu togailtean, suidsichean toll-iuchrach agus slotan tòimhseachain nuair a tha i faisg orra, an àite leum dìreach thuca.",
         },
         "gameplay.fix_alligator_ai": {
             "title": "Càraich AI ailigeutair",

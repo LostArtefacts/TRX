@@ -1100,7 +1100,7 @@
         },
         "gameplay.enable_walk_to_items": {
             "title": "Animierte Interaktionen",
-            "description": " Lässt Lara zu Pickups und Schaltern hingehen, anstatt sie zu ihnen zu teleportieren.",
+            "description": "\\{review}Lässt Lara zu aufhebbaren Gegenständen, Schaltern, Schlüssellöchern und Puzzle-Einsätzen gehen, wenn sie sich in der Nähe befindet, anstatt sich dorthin zu teleportieren.",
         },
         "gameplay.fix_alligator_ai": {
             "title": "Fix: Alligator-AI",
