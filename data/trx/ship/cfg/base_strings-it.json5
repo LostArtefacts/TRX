@@ -1100,7 +1100,7 @@
         },
         "gameplay.enable_walk_to_items": {
             "title": "Interazioni animate",
-            "description": "Fa in modo che Lara si avvicini agli oggetti, alle leve e agli interruttori quando questi sono nelle vicinanze, invece di teletrasportarsi su di loro.",
+            "description": "\\{review}Fa sì che Lara cammini verso oggetti da raccogliere, interruttori, serrature e alloggiamenti per enigmi quando si trovano nelle vicinanze, invece di teletrasportarsi direttamente su di essi.",
         },
         "gameplay.fix_alligator_ai": {
             "title": "Correggi IA degli alligatori",

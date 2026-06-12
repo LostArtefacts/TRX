@@ -1100,7 +1100,7 @@
         },
         "gameplay.enable_walk_to_items": {
             "title": "Animated interactions",
-            "description": "Makes Lara walk to pickups and switches when nearby instead of teleporting to them.",
+            "description": "Makes Lara walk to pickups, switches, keyholes and puzzle slots when nearby instead of teleporting to them.",
         },
         "gameplay.fix_alligator_ai": {
             "title": "Fix alligator AI",

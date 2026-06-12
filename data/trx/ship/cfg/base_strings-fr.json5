@@ -1100,7 +1100,7 @@
         },
         "gameplay.enable_walk_to_items": {
             "title": "Animées les placements",
-            "description": "Fait marcher Lara vers les objets et interrupteurs à proximité, au lieu de se téléporter vers eux.",
+            "description": "\\{review}Fait marcher Lara vers les objets à ramasser, les interrupteurs, les serrures et les emplacements de puzzle lorsqu'ils sont à proximité, au lieu de s'y téléporter.",
         },
         "gameplay.fix_alligator_ai": {
             "title": "Corriger l'IA des aligators",

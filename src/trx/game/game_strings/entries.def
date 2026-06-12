@@ -498,7 +498,7 @@ GS_DEFINE(settings/gameplay.enable_tr2_swim_cancel/description, "Allows Lara to 
 GS_DEFINE(settings/gameplay.enable_tr2_swimming/description, "Gives Lara's underwater turn rate an acceleration curve for smoother movement, as per TR2+ originally. Disabling this option will give Lara a snappier turn rate, per original TR1.")
 GS_DEFINE(settings/gameplay.enable_uw_roll/description, "Allows Lara to roll while underwater.")
 GS_DEFINE(settings/gameplay.enable_wading/description, "Allows Lara to wade through shallow water, rather than becoming stuck on the water surface.")
-GS_DEFINE(settings/gameplay.enable_walk_to_items/description, "Makes Lara walk to pickups and switches when nearby instead of teleporting to them.")
+GS_DEFINE(settings/gameplay.enable_walk_to_items/description, "Makes Lara walk to pickups, switches, keyholes and puzzle slots when nearby instead of teleporting to them.")
 GS_DEFINE(settings/gameplay.fix_alligator_ai/description, "Fixes alligators dealing no damage if Lara remains still in the water.")
 GS_DEFINE(settings/gameplay.fix_animated_spikes/description, "Fixes activated animated spikes resetting when loading a save.")
 GS_DEFINE(settings/gameplay.fix_bear_ai/description, "Fixes the bear pat attack so it does not miss Lara.")
