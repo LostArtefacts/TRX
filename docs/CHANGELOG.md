@@ -64,6 +64,7 @@
 - fixed TR2:GM missing opening Eidos Interactive / Core Design FMV (#5609)
 - fixed Lara wading in shallower water compared to OG (#5574, regression from 1.3)
 - fixed Lara shifting too far down in 60fps after grabbing a ladder (regression from TR2X 0.10)
+- fixed the lighting on the submarine at the start of 40 Fathoms not flickering as it falls (regression from 1.2)
 
 **TR3**:
 - added the ability to define the flame interval of `O_FLAME_EMITTER_SIDE` objects

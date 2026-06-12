@@ -187,7 +187,7 @@ bool Object_DrawAnimatingItemWithSwap(
         return false;
     }
 
-    Output_CalculateObjectLighting(item, bounds);
+    Output_CalculateObjectLighting(item, &frames[0]->bounds);
 
     const int16_t *extra_rotation = item->extra_rotations;
 
