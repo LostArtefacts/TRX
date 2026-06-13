@@ -952,10 +952,13 @@ GS_DEFINE(general/config_presets/no_changes,                "No changes to apply
 GS_DEFINE(general/config_presets/title_fmt,                 "Apply preset %s?")
 GS_DEFINE(general/config_presets/empty,                     "No presets found.")
 
+GS_DEFINE(dynamic/config_presets/tr1_moveset,                "TR1 Moveset")
 GS_DEFINE(dynamic/config_presets/tr1_ps1,                    "TR1 PS1")
 GS_DEFINE(dynamic/config_presets/tr1_pc,                     "TR1 PC")
+GS_DEFINE(dynamic/config_presets/tr2_moveset,                "TR2 Moveset")
 GS_DEFINE(dynamic/config_presets/tr2_ps1,                    "TR2 PS1")
 GS_DEFINE(dynamic/config_presets/tr2_pc,                     "TR2 PC")
+GS_DEFINE(dynamic/config_presets/tr3_moveset,                "TR3 Moveset")
 GS_DEFINE(dynamic/config_presets/tr3_ps1,                    "TR3 PS1")
 GS_DEFINE(dynamic/config_presets/tr3_pc,                     "TR3 PC")
 

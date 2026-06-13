@@ -471,10 +471,13 @@
     },
     "dynamic": {
         "config_presets": {
+            "tr1_moveset": "\\{review}Set di mosse TR1",
             "tr1_pc": "TR1 PC",
             "tr1_ps1": "TR1 PS1",
+            "tr2_moveset": "\\{review}Set di mosse TR2",
             "tr2_pc": "TR2 PC",
             "tr2_ps1": "TR2 PS1",
+            "tr3_moveset": "\\{review}Set di mosse TR3",
             "tr3_pc": "TR3 PC",
             "tr3_ps1": "TR3 PS1",
         },
