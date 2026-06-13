@@ -1,4 +1,7 @@
-## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.7.1...develop) - ××××-××-××
+## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.8...develop) - ××××-××-××
+
+## [1.8](https://github.com/LostArtefacts/TRX/compare/trx-1.7.1...trx-1.8) - 2026-06-13
+Showcase: https://youtu.be/dwb3eT2zRHU
 - added French translation (thanks to Wronschien)
 - added an option for Lara to pick items up more quickly, similar to TR4+ (Gameplay → Controls → Fast pickups) (#1365)
 - added an option to allow Lara to push/pull movable blocks continuously across tiles without stopping each time, similar to TR4+ (Gameplay → Controls → Continuous pushblocks) (#1354)
