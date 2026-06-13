@@ -38,10 +38,13 @@ If you install everything correctly, your game directory should look more or les
 <pre><code>.
 ├── cfg
 │   ├── presets
+│   │   ├── tr1-moveset.json5
 │   │   ├── tr1-pc.json5
 │   │   ├── tr1-ps1.json5
+│   │   ├── tr2-moveset.json5
 │   │   ├── tr2-pc.json5
 │   │   ├── tr2-ps1.json5
+│   │   ├── tr3-moveset.json5
 │   │   ├── tr3-pc.json5
 │   │   └── tr3-ps1.json5
 │   ├── shaders
@@ -1288,10 +1291,13 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     ├── Resources
     │   ├── cfg
     │   │   ├── presets
+    │   │   │   ├── tr1-moveset.json5
     │   │   │   ├── tr1-pc.json5
     │   │   │   ├── tr1-ps1.json5
+    │   │   │   ├── tr2-moveset.json5
     │   │   │   ├── tr2-pc.json5
     │   │   │   ├── tr2-ps1.json5
+    │   │   │   ├── tr3-moveset.json5
     │   │   │   ├── tr3-pc.json5
     │   │   │   └── tr3-ps1.json5
     │   │   ├── shaders

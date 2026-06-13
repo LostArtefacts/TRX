@@ -471,10 +471,13 @@
     },
     "dynamic": {
         "config_presets": {
+            "tr1_moveset": "TR1 Moveset",
             "tr1_pc": "TR1 PC",
             "tr1_ps1": "TR1 PS1",
+            "tr2_moveset": "TR2 Moveset",
             "tr2_pc": "TR2 PC",
             "tr2_ps1": "TR2 PS1",
+            "tr3_moveset": "TR3 Moveset",
             "tr3_pc": "TR3 PC",
             "tr3_ps1": "TR3 PS1",
         },
