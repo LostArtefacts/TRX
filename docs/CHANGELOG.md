@@ -1,6 +1,11 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.8...develop) - ××××-××-××
 - added config presets to allow restoring Lara's original moveset with respect to each game
 
+**TR1**:
+- fixed Lara taking exposure damage in certain rooms with injected skybox/wind properties (#5664, regression from 1.8)
+
+
+
 ## [1.8](https://github.com/LostArtefacts/TRX/compare/trx-1.7.1...trx-1.8) - 2026-06-13
 Showcase: https://youtu.be/dwb3eT2zRHU
 - added French translation (thanks to Wronschien)
