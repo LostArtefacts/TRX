@@ -245,13 +245,13 @@ static void M_RoomProperties(
     ROOM *const room = Room_Get(room_num);
     // clang-format off
     room->flags.underwater  = (flags & 0x01) != 0;
+    room->flags.damaging    = (flags & 0x02) != 0;
+    room->flags.cold        = (flags & 0x04) != 0;
     room->flags.outside     = (flags & 0x08) != 0;
     room->flags.dynamic_lit = (flags & 0x10) != 0;
     room->flags.wind        = (flags & 0x20) != 0;
     room->flags.inside      = (flags & 0x40) != 0;
     room->flags.swamp       = (flags & 0x80) != 0;
-    room->flags.damaging    = (flags & 0x100) != 0;
-    room->flags.cold        = (flags & 0x200) != 0;
     // clang-format on
     if (injection->version >= INJ_VERSION_8) {
         room->reverb_info = VFile_ReadU8(injection->fp);

@@ -2,6 +2,11 @@
 - added config presets to allow restoring Lara's original moveset with respect to each game
 - fixed a potential crash when resurrecting Lara with the fly cheat with an expired flare in her hand (regression from 1.1)
 
+**TR1**:
+- fixed Lara taking exposure damage in certain rooms with injected skybox/wind properties (#5664, regression from 1.8)
+
+
+
 ## [1.8](https://github.com/LostArtefacts/TRX/compare/trx-1.7.1...trx-1.8) - 2026-06-13
 Showcase: https://youtu.be/dwb3eT2zRHU
 - added French translation (thanks to Wronschien)
