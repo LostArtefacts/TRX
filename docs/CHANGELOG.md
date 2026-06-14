@@ -4,6 +4,7 @@
 
 **TR1**:
 - fixed Lara taking exposure damage in certain rooms with injected skybox/wind properties (#5664, regression from 1.8)
+- fixed Lara's braid in some rooms in Lost Valley and Colosseum not being affected by the breeze (regression from 1.4)
 
 
 
