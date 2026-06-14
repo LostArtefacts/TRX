@@ -69,8 +69,7 @@ static bool M_CanCrouchRoll(const ITEM *const item, const LARA_INFO *const lara)
         return false;
     }
 
-    if (lara->gun_type == LGT_FLARE
-        && (lara->flare.age <= 0 || lara->flare.age >= Flare_GetMaxAge())) {
+    if (Lara_Flare_HasExpired()) {
         return false;
     }
 

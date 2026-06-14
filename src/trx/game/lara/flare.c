@@ -459,6 +459,13 @@ finish:
     }
 }
 
+bool Lara_Flare_HasExpired(void)
+{
+    const LARA_INFO *const lara = Lara_GetLaraInfo();
+    return lara->gun_type == LGT_FLARE
+        && (lara->flare.age <= 0 || lara->flare.age >= Flare_GetMaxAge());
+}
+
 bool Lara_Flare_IsMeshActive(void)
 {
     const LARA_SKIN_EQUIPMENT *const equipment =
