@@ -29,7 +29,7 @@ static void M_DrawHideDialogFooter(void *const user_data)
 {
     UI_BeginAnchor(0.5f, 0.5f);
     UI_LabelFmt(
-        "\\{input look} %s",
+        "\\{input menu_show_info} %s",
         user_data != nullptr ? (const char *)user_data : "");
     UI_EndAnchor();
 }
@@ -129,7 +129,7 @@ void Option_Examine_Control(INVENTORY_ITEM *const inv_item, const bool is_busy)
         UI_TextDialog_Control(p->ui.state);
     }
 
-    if (g_InputDB.look) {
+    if (g_InputDB.menu_show_info) {
         if (show_dialog) {
             p->is_dialog_hidden = true;
             return;

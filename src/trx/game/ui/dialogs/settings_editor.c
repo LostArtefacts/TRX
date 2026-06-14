@@ -484,7 +484,8 @@ int32_t UI_SettingsEditor_GetItemCount(const UI_SETTINGS_EDITOR_STATE *const s)
 void UI_SettingsEditor_RequestChange(
     const UI_SETTINGS_OPTION *const option, const int32_t dir)
 {
-    int32_t delta = g_Input.slow ? option->delta_slow : option->delta_fast;
+    int32_t delta =
+        g_Input.menu_fine_adjust ? option->delta_slow : option->delta_fast;
     if (delta == 0) {
         delta = 1;
     }
@@ -578,7 +579,7 @@ bool UI_SettingsEditor_Control(
     }
     if (s->description.show) {
         UI_TextDialog_Control(s->description.state);
-        if (g_InputDB.menu_back || g_InputDB.look) {
+        if (g_InputDB.menu_back || g_InputDB.menu_show_info) {
             UI_TextDialog_Free(s->description.state);
             s->description.state = nullptr;
             s->description.show = false;
@@ -618,7 +619,7 @@ bool UI_SettingsEditor_Control(
             return true;
         }
     }
-    if (g_InputDB.look && sel_row >= 0) {
+    if (g_InputDB.menu_show_info && sel_row >= 0) {
         const UI_SETTINGS_OPTION *const option = M_GetOptionByRow(s, sel_row);
         const char *const title = M_GetOptionTitle(option);
         const char *const text = M_GetOptionDescription(option);
@@ -828,10 +829,12 @@ void UI_SettingsEditor_DrawFooter(
     UI_BeginHide(!can_examine && !can_edit_value);
     if (can_edit_value) {
         UI_LabelFmt(
-            "\\{input action} %s", GS("general/settings/common/edit_value"));
+            "\\{input menu_confirm} %s",
+            GS("general/settings/common/edit_value"));
     } else {
         UI_LabelFmt(
-            "\\{input look} %s", GS("general/settings/common/toggle_help"));
+            "\\{input menu_show_info} %s",
+            GS("general/settings/common/toggle_help"));
     }
     UI_EndHide();
     UI_BeginHide(!can_restore_default);

@@ -400,7 +400,9 @@ GF_COMMAND Cutscene_Control(void)
         }
     } else if (g_InputDB.menu_right || g_InputDB.menu_left) {
         const int32_t dir = g_InputDB.menu_right ? 1 : -1;
-        const int32_t speed = g_Input.draw ? 15 : (g_Input.slow ? 1 : 5);
+        const int32_t speed = g_Input.menu_coarse_adjust
+            ? 15
+            : (g_Input.menu_fine_adjust ? 1 : 5);
         M_Skip(dir * LOGIC_FPS * speed);
     }
 
