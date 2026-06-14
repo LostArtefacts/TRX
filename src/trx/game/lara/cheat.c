@@ -306,6 +306,11 @@ bool Lara_Cheat_EnterFlyMode(void)
     if (lara_info->extra_anim || lara_item->hit_points < 0) {
         M_ResetGunStatus();
         M_ClearHandWeaponMeshes();
+        if (Lara_Flare_HasExpired()) {
+            Lara_Flare_Dispose(false);
+            lara_info->gun_type = LGT_UNARMED;
+            lara_info->request_gun_type = LGT_UNARMED;
+        }
     } else if (Gun_IsRifleType(lara_info->gun_type)) {
         while (lara_info->gun_item_num != NO_ITEM) {
             Gun_Rifle_Undraw(lara_info->gun_type);
