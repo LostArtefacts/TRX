@@ -34,10 +34,11 @@ typedef enum {
 } INJECTION_FILE_TYPE;
 
 typedef enum {
-    ITT_ITEM_META  = 0,
-    ITT_ROOM_COUNT = 1,
-    ITT_ROOM_META  = 2,
-    ITT_NUMBER_OF  = 3,
+    ITT_ITEM_META      = 0,
+    ITT_ROOM_COUNT     = 1,
+    ITT_ROOM_META      = 2,
+    ITT_TEXTURE_SAMPLE = 3,
+    ITT_NUMBER_OF      = 4,
 } INJECTION_TEST_TYPE;
 
 typedef enum {
