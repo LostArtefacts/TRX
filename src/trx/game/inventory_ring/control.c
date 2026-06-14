@@ -551,7 +551,7 @@ static GF_COMMAND M_Control(INV_RING *const ring)
             g_InputDB = (INPUT_STATE) {};
         }
 
-        const bool examine = g_InputDB.look && InvRing_CanExamine();
+        const bool examine = g_InputDB.menu_show_info && InvRing_CanExamine();
         if (g_InputDB.menu_confirm || examine) {
             if ((ring->mode == INV_SAVE_MODE
                  || ring->mode == INV_SAVE_CRYSTAL_MODE

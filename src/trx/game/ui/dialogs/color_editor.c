@@ -239,7 +239,7 @@ void UI_ColorEditorDialog_Control(UI_COLOR_EDITOR_DIALOG_STATE *const s)
         UI_ColorEditorDialog_Close(s);
         return;
     }
-    if (g_InputDB.menu_back || g_InputDB.look) {
+    if (g_InputDB.menu_back || g_InputDB.menu_show_info) {
         UI_ColorEditorDialog_Close(s);
         return;
     }
@@ -256,7 +256,8 @@ void UI_ColorEditorDialog_Control(UI_COLOR_EDITOR_DIALOG_STATE *const s)
         }
         s->component_idx = (M_COLOR_ROW)next_idx;
     } else if (g_InputDB.menu_left || g_InputDB.menu_right) {
-        int32_t delta = g_Input.slow ? option->delta_slow : option->delta_fast;
+        int32_t delta =
+            g_Input.menu_fine_adjust ? option->delta_slow : option->delta_fast;
         if (delta == 0) {
             delta = 1;
         }

@@ -3,6 +3,7 @@
 - improved texture injections for OG levels to avoid overwriting texture pages in files that don't match the injection source (#5669)
 - fixed a potential crash when resurrecting Lara with the fly cheat with an expired flare in her hand (regression from 1.1)
 - fixed a crash in the New Game dialog if the gameflow has a reference to an FMV which itself is not defined in the gameflow (regression from 1.0)
+- fixed menu functions (show info, value adjustment, cutscene seek) being affected by gameplay control rebinds (#5666)
 
 **TR1**:
 - fixed Lara taking exposure damage in certain rooms with injected skybox/wind properties (#5664, regression from 1.8)

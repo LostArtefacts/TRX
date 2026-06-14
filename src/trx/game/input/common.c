@@ -57,6 +57,9 @@ static bool m_IsRoleHardcoded[INPUT_ROLE_NUMBER_OF] = {
     [INPUT_ROLE_MENU_DOWN]                = true,
     [INPUT_ROLE_MENU_TAB_LEFT]            = true,
     [INPUT_ROLE_MENU_TAB_RIGHT]           = true,
+    [INPUT_ROLE_MENU_SHOW_INFO]           = true,
+    [INPUT_ROLE_MENU_FINE_ADJUST]         = true,
+    [INPUT_ROLE_MENU_COARSE_ADJUST]       = true,
     // clang-format on
 };
 

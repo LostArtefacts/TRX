@@ -48,10 +48,12 @@ static OBJECT_ID m_RequestedObjectID = NO_OBJECT;
 static void M_DrawExamineHint(void *const user_data)
 {
     UI_BeginStack(UI_STACK_HORIZONTAL);
-    UI_ButtonLabel(INPUT_ROLE_LOOK, GS("general/actions/examine_item"));
+    UI_LabelFmt(
+        "\\{input menu_show_info} %s", GS("general/actions/examine_item"));
     if (m_ShowUseItemButton) {
         UI_Spacer(60.0f, 0.0f);
-        UI_ButtonLabel(INPUT_ROLE_ACTION, GS("general/actions/use_item"));
+        UI_LabelFmt(
+            "\\{input menu_confirm} %s", GS("general/actions/use_item"));
     }
     UI_EndStack();
 }
