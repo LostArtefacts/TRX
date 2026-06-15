@@ -2,7 +2,6 @@
 
 #include <trx/game/input/common.h>
 
-#include <stdbool.h>
 #include <stdint.h>
 
 // Generic view of a backend-specific binding for combo operations.
