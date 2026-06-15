@@ -3,6 +3,7 @@
 #include <trx/debug.h>
 #include <trx/game/camera.h>
 #include <trx/game/effects.h>
+#include <trx/game/fx/footprint.h>
 #include <trx/game/fx/ring.h>
 #include <trx/game/fx/weather.h>
 #include <trx/game/game.h>
@@ -613,6 +614,44 @@ static bool M_ReadFXRings(
     M_FINISH();
 }
 
+static bool M_ReadFXFootprint(JSON_READ_IO *const io, FX_FOOTPRINT *const print)
+{
+    ASSERT(print != nullptr);
+
+    M_MUST(JSON_READ(io, "pos", &print->pos));
+    M_MUST(JSON_READ(io, "room_num", &print->room_num));
+    M_MUST(JSON_READ(io, "y_rot", &print->y_rot));
+    M_MUST(JSON_READ(io, "life", &print->life));
+    M_FINISH();
+}
+
+static bool M_ReadFXFootprints(JSON_READ_IO *const io)
+{
+    if (!M_OPTIONAL(JSON_PUSH(io, "footprints"))) {
+        return true;
+    }
+
+    if (M_OPTIONAL(JSON_PUSH(io, "prints"))) {
+        const int32_t print_count = JSON_ARRAY_LEN(io);
+        for (int32_t i = 0; i < print_count; i++) {
+            M_MUST(JSON_PUSH_INDEX(io, i));
+            FX_FOOTPRINT *const print = FX_Footprint_GetPrint(i);
+            if (print != nullptr) {
+                M_MUST(M_ReadFXFootprint(io, print));
+            } else {
+                LOG_WARNING(
+                    "Malformed save: too many footprints. Extra footprints "
+                    "will be ignored.");
+            }
+            M_MUST(JSON_POP(io));
+        }
+        M_MUST(JSON_POP(io));
+    }
+
+    M_MUST(JSON_POP(io));
+    M_FINISH();
+}
+
 static bool M_ShouldLoadMusicTimestamp(
     const MUSIC_ID track_id, const MUSIC_PLAY_MODE mode,
     const MUSIC_ID ambient_track)
@@ -951,20 +990,18 @@ bool SG_File_LoadEffects(JSON_READ_IO *const io)
 bool SG_File_LoadFX(JSON_READ_IO *const io)
 {
     FX_Ring_Reset();
+    FX_Footprint_Reset();
 
     if (!M_OPTIONAL(JSON_PUSH(io, "vfx"))) {
         return true;
     }
-    if (!M_OPTIONAL(JSON_PUSH(io, "rings"))) {
+    if (M_OPTIONAL(JSON_PUSH(io, "rings"))) {
+        M_MUST(M_ReadFXRings(io, FX_RING_TYPE_BLAST, "blast"));
+        M_MUST(M_ReadFXRings(io, FX_RING_TYPE_KNOCKBACK, "knockback"));
+        M_MUST(M_ReadFXRings(io, FX_RING_TYPE_SUMMON, "summon"));
         M_MUST(JSON_POP(io));
-        return true;
     }
-
-    M_MUST(M_ReadFXRings(io, FX_RING_TYPE_BLAST, "blast"));
-    M_MUST(M_ReadFXRings(io, FX_RING_TYPE_KNOCKBACK, "knockback"));
-    M_MUST(M_ReadFXRings(io, FX_RING_TYPE_SUMMON, "summon"));
-
-    M_MUST(JSON_POP(io));
+    M_MUST(M_ReadFXFootprints(io));
     M_MUST(JSON_POP(io));
     M_FINISH();
 }

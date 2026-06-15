@@ -1,4 +1,5 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.8.1...develop) - ××××-××-××
+- added footprints to savegames
 
 ## [1.8.1](https://github.com/LostArtefacts/TRX/compare/trx-1.8...trx-1.8.1) - 2026-06-15
 - added config presets to allow restoring Lara's original moveset with respect to each game
