@@ -36,10 +36,8 @@ static void M_DrawHideDialogFooter(void *const user_data)
 
 static void M_DrawRotateHint(void *const user_data)
 {
-    UI_ButtonLabelEx(
-        g_Config.input.backend == INPUT_BACKEND_KEYBOARD
-            ? GS("general/misc/direction_keys_keyboard")
-            : GS("general/misc/direction_keys_controller"),
+    UI_LabelFmt(
+        "\\{input forward}\\{input back}\\{input left}\\{input right} %s",
         GS("general/actions/rotate"));
 }
 

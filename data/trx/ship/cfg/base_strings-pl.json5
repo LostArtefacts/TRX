@@ -39,8 +39,6 @@
         },
         "misc": {
             "demo_mode": "Tryb demo",
-            "direction_keys_controller": "D-Pad",
-            "direction_keys_keyboard": "Strzałki",
             "empty_slot_fmt": "- PUSTY SLOT -",
             "exit": "Wyjście",
             "hold_fmt": "%s",

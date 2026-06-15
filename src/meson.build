@@ -747,7 +747,6 @@ common_sources = [
   'trx/game/ui/elements/bar_lara_exposure.c',
   'trx/game/ui/elements/bar_lara_hp.c',
   'trx/game/ui/elements/bar_lara_sprint.c',
-  'trx/game/ui/elements/button_label.c',
   'trx/game/ui/elements/color_swatch.c',
   'trx/game/ui/elements/flash.c',
   'trx/game/ui/elements/fps_counter.c',

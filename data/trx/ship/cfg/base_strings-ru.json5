@@ -39,8 +39,6 @@
         },
         "misc": {
             "demo_mode": "Демо режим",
-            "direction_keys_controller": "Крестовина",
-            "direction_keys_keyboard": "Стрелки",
             "empty_slot_fmt": "- ПУСТОЙ СЛОТ %d -",
             "exit": "Выход",
             "hold_fmt": "удерж. %s",
