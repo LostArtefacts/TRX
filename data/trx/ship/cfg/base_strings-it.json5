@@ -39,8 +39,6 @@
         },
         "misc": {
             "demo_mode": "Modalità Demo",
-            "direction_keys_controller": "Croce direzionale",
-            "direction_keys_keyboard": "Frecce",
             "empty_slot_fmt": "- SLOT VUOTO -",
             "exit": "Esci",
             "hold_fmt": "Tieni premuto %s",

@@ -39,8 +39,6 @@
         },
         "misc": {
             "demo_mode": "Demo Mode",
-            "direction_keys_controller": "D-Pad",
-            "direction_keys_keyboard": "Arrows",
             "empty_slot_fmt": "- EMPTY SLOT -",
             "exit": "Exit",
             "hold_fmt": "Hold %s",

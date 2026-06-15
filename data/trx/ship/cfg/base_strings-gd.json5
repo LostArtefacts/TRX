@@ -39,8 +39,6 @@
         },
         "misc": {
             "demo_mode": "Modh Taisbeanaidh",
-            "direction_keys_controller": "D-pad",
-            "direction_keys_keyboard": "Saigheadan",
             "empty_slot_fmt": "- SLOT FALAMH -",
             "exit": "Dùin",
             "hold_fmt": "Cùm %s",

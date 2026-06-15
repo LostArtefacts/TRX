@@ -39,8 +39,6 @@
         },
         "misc": {
             "demo_mode": "Demo Modus",
-            "direction_keys_controller": "Steuerkreuz",
-            "direction_keys_keyboard": "Pfeile",
             "empty_slot_fmt": "- LEERER SLOT -",
             "exit": "Beenden",
             "hold_fmt": "Gedrückt halten %s",
