@@ -1,4 +1,4 @@
-#include <trx/game/fx/explosion_ring.h>
+#include <trx/game/fx/ring.h>
 
 #include <trx/core/math/func.h>
 #include <trx/core/utils.h>
@@ -59,7 +59,7 @@ static void M_BuildRingCircle(
 {
     int32_t angle = angle_base;
     for (int32_t i = 0; i < 8; i++) {
-        FX_EXPLOSION_VERT *const vtx = &ring->verts[band * 8 + i];
+        FX_RING_VERT *const vtx = &ring->verts[band * 8 + i];
         vtx->pos.x = (radius * Math_Sin(angle << 4)) >> W2V_SHIFT;
         vtx->pos.z = (radius * Math_Cos(angle << 4)) >> W2V_SHIFT;
         if (clear_inner && band != 0) {
@@ -84,10 +84,10 @@ static void M_DrawTexturedRing(const FX_RING *const ring)
 
     for (int32_t j = 0; j < 8; j++) {
         const int32_t j2 = (j == 7) ? 0 : (j + 1);
-        const FX_EXPLOSION_VERT *const o0 = &ring->verts[j];
-        const FX_EXPLOSION_VERT *const o1 = &ring->verts[j2];
-        const FX_EXPLOSION_VERT *const i0 = &ring->verts[8 + j];
-        const FX_EXPLOSION_VERT *const i1 = &ring->verts[8 + j2];
+        const FX_RING_VERT *const o0 = &ring->verts[j];
+        const FX_RING_VERT *const o1 = &ring->verts[j2];
+        const FX_RING_VERT *const i0 = &ring->verts[8 + j];
+        const FX_RING_VERT *const i1 = &ring->verts[8 + j2];
 
         if ((o0->color.r | o0->color.g | o0->color.b | o1->color.r | o1->color.g
              | o1->color.b | i0->color.r | i0->color.g | i0->color.b
@@ -130,10 +130,10 @@ static void M_DrawFlatRing(const FX_RING *const ring)
 
     for (int32_t j = 0; j < 8; j++) {
         const int32_t j2 = (j == 7) ? 0 : (j + 1);
-        const FX_EXPLOSION_VERT *const o0 = &ring->verts[j];
-        const FX_EXPLOSION_VERT *const o1 = &ring->verts[j2];
-        const FX_EXPLOSION_VERT *const i0 = &ring->verts[8 + j];
-        const FX_EXPLOSION_VERT *const i1 = &ring->verts[8 + j2];
+        const FX_RING_VERT *const o0 = &ring->verts[j];
+        const FX_RING_VERT *const o1 = &ring->verts[j2];
+        const FX_RING_VERT *const i0 = &ring->verts[8 + j];
+        const FX_RING_VERT *const i1 = &ring->verts[8 + j2];
 
         if ((o0->color.r | o0->color.g | o0->color.b | o1->color.r | o1->color.g
              | o1->color.b | i0->color.r | i0->color.g | i0->color.b
@@ -269,7 +269,7 @@ static void M_DrawExplosionRings(const int32_t angle_base)
         for (int32_t band = 0; band < 2; band++) {
             M_BuildRingCircle(&draw_ring, rad, band, false, angle_base);
             for (int32_t k = 0; k < 8; k++) {
-                FX_EXPLOSION_VERT *const vtx = &draw_ring.verts[band * 8 + k];
+                FX_RING_VERT *const vtx = &draw_ring.verts[band * 8 + k];
 
                 int32_t r = 0;
                 int32_t g = 0;
@@ -328,7 +328,7 @@ static void M_DrawSummonRings(const int32_t angle_base)
             M_BuildRingCircle(&draw_ring, rad, band, true, angle_base);
             if (band == 0) {
                 for (int32_t k = 0; k < 8; k++) {
-                    FX_EXPLOSION_VERT *const vtx = &draw_ring.verts[k];
+                    FX_RING_VERT *const vtx = &draw_ring.verts[k];
                     const int32_t g = (Random_GetDraw() & 0x1F) + 224;
                     const int32_t b = (g >> 2) + (Random_GetDraw() & 0x3F);
                     const int32_t r = Random_GetDraw() & 0x3F;
@@ -364,7 +364,7 @@ static void M_DrawKnockBackRings(const int32_t angle_base)
         for (int32_t band = 0; band < 2; band++) {
             M_BuildRingCircle(&draw_ring, rad, band, false, angle_base);
             for (int32_t k = 0; k < 8; k++) {
-                FX_EXPLOSION_VERT *const vtx = &draw_ring.verts[band * 8 + k];
+                FX_RING_VERT *const vtx = &draw_ring.verts[band * 8 + k];
                 const int32_t g = (Random_GetDraw() & 0x1F) + 224;
                 const int32_t b = (g >> 2) + (Random_GetDraw() & 0x3F);
                 const int32_t r = Random_GetDraw() & 0x3F;

@@ -8,7 +8,7 @@
 typedef struct {
     XZ_16 pos;
     RGB_888 color;
-} FX_EXPLOSION_VERT;
+} FX_RING_VERT;
 
 typedef struct {
     int16_t on;
@@ -20,7 +20,7 @@ typedef struct {
     XZ_16 prev_rot;
     XYZ_32 pos;
     XYZ_32 prev_pos;
-    FX_EXPLOSION_VERT verts[16];
+    FX_RING_VERT verts[16];
 } FX_RING;
 
 typedef enum {

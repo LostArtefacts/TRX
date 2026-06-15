@@ -3,7 +3,7 @@
 #include <trx/debug.h>
 #include <trx/game/camera.h>
 #include <trx/game/effects.h>
-#include <trx/game/fx/explosion_ring.h>
+#include <trx/game/fx/ring.h>
 #include <trx/game/fx/weather.h>
 #include <trx/game/game.h>
 #include <trx/game/inventory.h>
