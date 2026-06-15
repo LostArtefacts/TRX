@@ -3,6 +3,7 @@
 #include <trx/debug.h>
 #include <trx/game/camera.h>
 #include <trx/game/effects.h>
+#include <trx/game/fx/footprint.h>
 #include <trx/game/fx/ring.h>
 #include <trx/game/fx/weather.h>
 #include <trx/game/game.h>
@@ -311,6 +312,31 @@ static void M_WriteFXRings(
     JSONW_POP_AND_SET_NZ(io, key);
 }
 
+static void M_WriteFXFootprints(JSON_WRITE_IO *const io)
+{
+    if (!FX_Footprint_HasActivePrints()) {
+        return;
+    }
+
+    JSONW_PUSH_OBJECT(io);
+    JSONW_PUSH_ARRAY(io);
+    for (int32_t i = 0;; i++) {
+        const FX_FOOTPRINT *const print = FX_Footprint_GetPrint(i);
+        if (print == nullptr) {
+            break;
+        }
+
+        JSONW_PUSH_OBJECT(io);
+        M_WriteXYZ32(io, "pos", print->pos);
+        JSONW_WRITE(io, "room_num", print->room_num);
+        JSONW_WRITE(io, "y_rot", print->y_rot);
+        JSONW_WRITE(io, "life", print->life);
+        JSONW_POP_AND_APPEND(io);
+    }
+    JSONW_POP_AND_SET(io, "prints");
+    JSONW_POP_AND_SET_NZ(io, "footprints");
+}
+
 void SG_File_DumpFlares(JSON_WRITE_IO *const io)
 {
     JSONW_PUSH_ARRAY(io);
@@ -372,6 +398,7 @@ void SG_File_DumpFX(JSON_WRITE_IO *const io)
     M_WriteFXRings(io, FX_RING_TYPE_KNOCKBACK, "knockback");
     M_WriteFXRings(io, FX_RING_TYPE_SUMMON, "summon");
     JSONW_POP_AND_SET_NZ(io, "rings");
+    M_WriteFXFootprints(io);
     JSONW_POP_AND_SET_NZ(io, "vfx");
 }
 

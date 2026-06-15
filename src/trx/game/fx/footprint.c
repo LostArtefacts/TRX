@@ -19,16 +19,7 @@
 #define M_FOOTPRINT_Z_DEPTH_ADJUST -0.5f
 
 typedef struct {
-    int32_t x;
-    int32_t y;
-    int32_t z;
-    int16_t room_num;
-    int16_t y_rot;
-    int16_t active;
-} M_FOOTPRINT;
-
-typedef struct {
-    M_FOOTPRINT prints[M_MAX_FOOTPRINTS];
+    FX_FOOTPRINT prints[M_MAX_FOOTPRINTS];
     int32_t next_idx;
 } M_PRIV;
 
@@ -87,33 +78,34 @@ void FX_Footprint_Add(const ITEM *const lara_item, const bool is_left_foot)
         return;
     }
 
-    M_FOOTPRINT *const print = &m_Priv.prints[m_Priv.next_idx];
-    print->x = pos.x;
-    print->y = y;
-    print->z = pos.z;
+    FX_FOOTPRINT *const print = &m_Priv.prints[m_Priv.next_idx];
+    print->pos.x = pos.x;
+    print->pos.y = y;
+    print->pos.z = pos.z;
     print->room_num = room_num;
     print->y_rot = lara_item->rot.y;
-    print->active = M_FOOTPRINT_LIFETIME;
+    print->life = M_FOOTPRINT_LIFETIME;
     p->next_idx = (p->next_idx + 1) % M_MAX_FOOTPRINTS;
 }
 
 static void M_GetWorldPoint(
-    const M_FOOTPRINT *const print, const XYZ_32 local, XYZ_32 *const out_world)
+    const FX_FOOTPRINT *const print, const XYZ_32 local,
+    XYZ_32 *const out_world)
 {
     const int32_t s = Math_Sin(print->y_rot);
     const int32_t c = Math_Cos(print->y_rot);
     const int32_t dx = TRIGMULT2(local.x, c) + TRIGMULT2(local.z, s);
     const int32_t dz = TRIGMULT2(local.z, c) - TRIGMULT2(local.x, s);
-    out_world->x = print->x + dx;
-    out_world->y = print->y + local.y;
-    out_world->z = print->z + dz;
+    out_world->x = print->pos.x + dx;
+    out_world->y = print->pos.y + local.y;
+    out_world->z = print->pos.z + dz;
 }
 
 static int32_t M_GetVertexYOffset(
-    const M_FOOTPRINT *const print, const XYZ_32 world_pos)
+    const FX_FOOTPRINT *const print, const XYZ_32 world_pos)
 {
     int16_t room_num = print->room_num;
-    const XYZ_32 pos = { world_pos.x, print->y, world_pos.z };
+    const XYZ_32 pos = { world_pos.x, print->pos.y, world_pos.z };
     const SECTOR *const sector = Room_GetSector(pos, &room_num);
     if (sector == nullptr) {
         return 0;
@@ -124,7 +116,7 @@ static int32_t M_GetVertexYOffset(
         return 0;
     }
 
-    int32_t dy = height - print->y;
+    int32_t dy = height - print->pos.y;
     if (ABS(dy) > 128) {
         dy = 0;
     }
@@ -138,9 +130,9 @@ void FX_Footprint_Control(void)
     }
     M_PRIV *const p = &m_Priv;
     for (int32_t i = 0; i < M_MAX_FOOTPRINTS; i++) {
-        M_FOOTPRINT *const print = &p->prints[i];
-        if (print->active != 0) {
-            print->active--;
+        FX_FOOTPRINT *const print = &p->prints[i];
+        if (print->life != 0) {
+            print->life--;
         }
     }
 }
@@ -164,8 +156,8 @@ void FX_Footprint_Draw(void)
     };
 
     for (int32_t i = 0; i < M_MAX_FOOTPRINTS; i++) {
-        const M_FOOTPRINT *const print = &p->prints[i];
-        if (print->active == 0) {
+        const FX_FOOTPRINT *const print = &p->prints[i];
+        if (print->life == 0) {
             continue;
         }
 
@@ -175,7 +167,7 @@ void FX_Footprint_Draw(void)
             world[j].y += M_GetVertexYOffset(print, world[j]);
         }
 
-        int32_t c = print->active < 29 ? (print->active << 2) : 112;
+        int32_t c = print->life < 29 ? (print->life << 2) : 112;
         CLAMP(c, 0, 255);
 
         const RGBA_8888 color = { c, c, c, 255 };
@@ -187,4 +179,22 @@ void FX_Footprint_Draw(void)
                 DRAW_BLEND_SUB);
         }
     }
+}
+
+bool FX_Footprint_HasActivePrints(void)
+{
+    for (int32_t i = 0; i < M_MAX_FOOTPRINTS; i++) {
+        if (m_Priv.prints[i].life != 0) {
+            return true;
+        }
+    }
+    return false;
+}
+
+FX_FOOTPRINT *FX_Footprint_GetPrint(const int32_t idx)
+{
+    if (idx < 0 || idx >= M_MAX_FOOTPRINTS) {
+        return nullptr;
+    }
+    return &m_Priv.prints[idx];
 }
