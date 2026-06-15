@@ -7,6 +7,7 @@
 #include <trx/core/log.h>
 #include <trx/core/memory.h>
 #include <trx/core/strings.h>
+#include <trx/core/utils.h>
 #include <trx/core/vector.h>
 #include <trx/debug.h>
 #include <trx/game/console/history.h>
@@ -27,6 +28,41 @@ static bool M_ProcessOptionValue(
 static bool M_SetOptionValue(const CONFIG_OPTION *option, const void *value);
 static bool M_PushOptionOverride(
     const CONFIG_OPTION *option, const void *value);
+
+static void M_NormalizeGymTrackStats(GYM_TRACK_STATS *const stats)
+{
+    GYM_TRACK_ENTRY sorted_entries[MAX_ASSAULT_TIMES] = {};
+    int32_t count = 0;
+    uint32_t max_attempt_num = 0;
+
+    for (int32_t i = 0; i < MAX_ASSAULT_TIMES; i++) {
+        const GYM_TRACK_ENTRY entry = stats->entries[i];
+        if (entry.time == 0) {
+            continue;
+        }
+
+        if (entry.attempt_num > max_attempt_num) {
+            max_attempt_num = entry.attempt_num;
+        }
+
+        int32_t insert_idx = count;
+        while (insert_idx > 0
+               && sorted_entries[insert_idx - 1].time > entry.time) {
+            sorted_entries[insert_idx] = sorted_entries[insert_idx - 1];
+            insert_idx--;
+        }
+        sorted_entries[insert_idx] = entry;
+        count++;
+    }
+
+    for (int32_t i = 0; i < MAX_ASSAULT_TIMES; i++) {
+        stats->entries[i] = sorted_entries[i];
+    }
+
+    if (stats->total_attempts < max_attempt_num) {
+        stats->total_attempts = max_attempt_num;
+    }
+}
 
 static bool M_ReadFromJSON(
     const char *const default_path, const char *const enforced_path,
@@ -358,6 +394,7 @@ bool ConfigFile_LoadGymTrackStats(
     }
     stats->total_attempts =
         JSON_ObjectGetInt(stats_obj, "total_attempts", stats->total_attempts);
+    M_NormalizeGymTrackStats(stats);
     return true;
 }
 
