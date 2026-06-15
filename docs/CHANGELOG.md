@@ -1,4 +1,6 @@
-## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.8...develop) - ××××-××-××
+## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.8.1...develop) - ××××-××-××
+
+## [1.8.1](https://github.com/LostArtefacts/TRX/compare/trx-1.8...trx-1.8.1) - 2026-06-15
 - added config presets to allow restoring Lara's original moveset with respect to each game
 - improved texture injections for OG levels to avoid overwriting texture pages in files that don't match the injection source (#5669)
 - fixed a potential crash when resurrecting Lara with the fly cheat with an expired flare in her hand (regression from 1.1)
