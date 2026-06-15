@@ -4,7 +4,7 @@
 #include <trx/core/json/util/write_io.h>
 #include <trx/core/utils.h>
 #include <trx/game/creature.h>
-#include <trx/game/fx/explosion_ring.h>
+#include <trx/game/fx/ring.h>
 #include <trx/game/items/carrier.h>
 #include <trx/game/lara.h>
 #include <trx/game/objects/common.h>
