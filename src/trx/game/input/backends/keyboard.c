@@ -511,6 +511,9 @@ static bool M_CustomUpdate(INPUT_STATE *const result, const INPUT_LAYOUT layout)
 {
     // we only do this for keyboard input
     result->menu_confirm |= result->action;
+    result->menu_show_info |= result->look;
+    result->menu_fine_adjust |= result->slow;
+    result->menu_coarse_adjust |= result->draw;
     result->toggle_fullscreen =
         KEY_DOWN(SDL_SCANCODE_RETURN) && KEY_DOWN(SDL_SCANCODE_LALT);
     result->menu_skip = result->menu_confirm || result->menu_back;
@@ -530,7 +533,24 @@ static bool M_IsRoleConflicted(const INPUT_LAYOUT layout, const INPUT_ROLE role)
 static const char *M_GetName(
     const INPUT_LAYOUT layout, const INPUT_ROLE role, const int32_t slot)
 {
-    const KEYBOARD_BINDING *bind = M_GetBinding(layout, role, slot);
+    INPUT_ROLE actual_role = role;
+    switch (role) {
+    case INPUT_ROLE_MENU_SHOW_INFO:
+        actual_role = INPUT_ROLE_LOOK;
+        break;
+    case INPUT_ROLE_MENU_FINE_ADJUST:
+        actual_role = INPUT_ROLE_SLOW;
+        break;
+    case INPUT_ROLE_MENU_COARSE_ADJUST:
+        actual_role = INPUT_ROLE_DRAW_WEAPON;
+        break;
+    case INPUT_ROLE_NUMBER_OF:
+        break;
+    default:
+        break;
+    }
+
+    const KEYBOARD_BINDING *bind = M_GetBinding(layout, actual_role, slot);
     if (bind->key_count == 0) {
         return nullptr;
     }
