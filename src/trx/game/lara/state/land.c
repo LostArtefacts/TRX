@@ -320,6 +320,10 @@ static void M_Stop(ITEM *const item, COLL_INFO *const coll)
     lara->sprinting = false;
 
     if (item->hit_points <= 0) {
+        if (Item_TestAnimEqual(item, LA(LA_FLARE_THROW))) {
+            Item_SwitchToAnim(item, LA(LA_STAND_DEATH), 0);
+            item->current_anim_state = LS(LS_DEATH);
+        }
         item->goal_anim_state = LS(LS_DEATH);
         return;
     }
