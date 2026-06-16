@@ -220,11 +220,21 @@ def iter_object_property_declarations(source: str) -> list[PropertyInfo]:
         pos = idx
 
 
-def read_source_files() -> list[Path]:
+def read_source_files() -> list[tuple[Path, str]]:
+    def _category(path: Path) -> str:
+        rel = path.relative_to(OBJECT_SOURCE)
+        top = rel.parts[0] if len(rel.parts) > 1 else ""
+        if top == "creatures":
+            return "enemy"
+        if top == "traps":
+            return "trap"
+        return "general"
+
     return [
-        OBJECT_SETUP_SOURCE,
+        (OBJECT_SETUP_SOURCE, "general"),
         *(
-            path for path in OBJECT_SOURCE.rglob("*.c")
+            (path, _category(path))
+            for path in OBJECT_SOURCE.rglob("*.c")
             if path != OBJECT_SETUP_SOURCE
         ),
     ]
@@ -328,10 +338,11 @@ def collect_object_property_declarations(
     return declarations
 
 
-def read_registered_properties() -> dict[str, PropertyMap]:
+def read_registered_properties() -> tuple[dict[str, PropertyMap], dict[str, str]]:
     result: dict[str, PropertyMap] = {}
+    object_categories: dict[str, str] = {}
     global_constants = read_global_constants()
-    for path in read_source_files():
+    for path, category in read_source_files():
         source = strip_comments(path.read_text())
         constants = global_constants | read_local_constants(source)
         function_bodies = read_function_bodies(source)
@@ -354,13 +365,14 @@ def read_registered_properties() -> dict[str, PropertyMap]:
             )
             for object_id in object_ids:
                 registrations.append((object_id, declarations))
+                object_categories.setdefault(object_id, category)
 
         for object_id, declarations in registrations:
             for declaration in declarations:
                 name = declaration["name"]
                 result.setdefault(object_id, {})[name] = declaration
                 result[object_id][f"__constants__:{name}"] = constants
-    return result
+    return result, object_categories
 
 
 def read_catalog(path: Path) -> list[tuple[str, str]]:
@@ -438,9 +450,8 @@ class MusicToGameIDTransformer(ast.NodeTransformer):
             return node
 
         mapped_id = self.music_catalog.get(music_symbol)
-        if mapped_id is None:
-            return node
-        return ast.copy_location(ast.Constant(value=int(mapped_id)), node)
+        value = int(mapped_id) if mapped_id is not None else -1
+        return ast.copy_location(ast.Constant(value=value), node)
 
 
 def evaluate_expression(
@@ -514,23 +525,109 @@ def format_value(
     return value
 
 
-def format_property(
-    object_properties: PropertyMap,
-    name: str,
-    game_version: int,
-    music_catalog: dict[str, str],
-) -> str | None:
-    value = format_value(object_properties, name, game_version, music_catalog)
-    info = object_properties[name]
-    if value is None or not isinstance(info, dict):
-        return None
-    if (music_symbol := extract_music_symbol(info["value"])) is not None:
-        value = f"{value} ({music_symbol})"
-    return f"- `{name} = {value}` — {info['description']}"
+GameCol = tuple[str, int, str | None, dict[str, str]]
+
+
+def _colspan_cells(values: list[str]) -> list[tuple[str, int]]:
+    result: list[tuple[str, int]] = []
+    i = 0
+    while i < len(values):
+        v = values[i]
+        span = 1
+        while i + span < len(values) and values[i + span] == v:
+            span += 1
+        result.append((v, span))
+        i += span
+    return result
+
+
+def format_object_table(
+    props: PropertyMap,
+    game_cols: list[GameCol],
+) -> list[str]:
+    prop_names = [n for n in props if not n.startswith("__constants__:")]
+    if not prop_names:
+        return []
+
+    th_games = "".join(
+        f'<th align="center">{short_name} ({game_id})</th>'
+        if game_id
+        else f'<th align="center">{short_name}</th>'
+        for short_name, _, game_id, _ in game_cols
+    )
+    rows = [
+        '<table width="100%">',
+        f"<thead><tr><th>Property</th>{th_games}<th>Description</th></tr></thead>",
+        "<tbody>",
+    ]
+
+    for name in prop_names:
+        info = props.get(name)
+        if not isinstance(info, dict):
+            continue
+        description = info["description"]
+        values: list[str] = []
+        for _, game_version, _, music_catalog in game_cols:
+            val = format_value(props, name, game_version, music_catalog)
+            if val is None:
+                values.append("-")
+                continue
+            if (sym := extract_music_symbol(info["value"])) is not None:
+                val = f"{val} ({sym})"
+            values.append(val)
+        td_vals = "".join(
+            f'<td colspan="{span}" align="center">{v}</td>'
+            if span > 1
+            else f'<td align="center">{v}</td>'
+            for v, span in _colspan_cells(values)
+        )
+        rows.append(
+            f"<tr><td><code>{name}</code></td>{td_vals}<td>{description}</td></tr>"
+        )
+
+    rows += ["</tbody>", "</table>"]
+    return rows
+
+
+CATEGORY_ORDER = ["enemy", "trap", "general"]
+CATEGORY_LABELS = {"enemy": "Enemies", "trap": "Traps", "general": "General"}
 
 
 def main() -> None:
-    registered_properties = read_registered_properties()
+    registered_properties, object_categories = read_registered_properties()
+
+    music_catalogs = {
+        game_name: read_music_catalog(music_catalog_path)
+        for game_name, _, _, music_catalog_path in GAMES
+    }
+    game_object_ids: dict[str, dict[str, str]] = {
+        game_name: {
+            object_id: game_id
+            for game_id, object_id in read_catalog(catalog_path)
+        }
+        for game_name, _, catalog_path, _ in GAMES
+    }
+
+    by_category: dict[str, list[str]] = {c: [] for c in CATEGORY_ORDER}
+    seen: set[str] = set()
+    for game_name, _, catalog_path, _ in GAMES:
+        for _, object_id in read_catalog(catalog_path):
+            if object_id in seen or object_id not in registered_properties:
+                continue
+            seen.add(object_id)
+            cat = object_categories.get(object_id, "general")
+            by_category.setdefault(cat, by_category["general"]).append(object_id)
+    for object_id in registered_properties:
+        if object_id in seen:
+            continue
+        seen.add(object_id)
+        cat = object_categories.get(object_id, "general")
+        by_category.setdefault(cat, by_category["general"]).append(object_id)
+
+    short_names = [
+        f"TR{game_version}"
+        for _, game_version, _, _ in GAMES
+    ]
 
     lines = [
         "---",
@@ -543,31 +640,26 @@ def main() -> None:
         "This page lists documented moveable object properties.",
     ]
 
-    for game_name, game_version, catalog_path, music_catalog_path in GAMES:
-        music_catalog = read_music_catalog(music_catalog_path)
-        lines.extend(["", f"## {game_name}"])
-        for game_id, object_id in read_catalog(catalog_path):
-            object_properties = registered_properties.get(object_id)
-            if object_properties is None:
-                continue
-            property_names = [
-                name
-                for name in object_properties.keys()
-                if not name.startswith("__constants__:")
-            ]
-            property_lines = [
-                line
-                for name in property_names
-                if (
-                    line := format_property(
-                        object_properties, name, game_version, music_catalog
-                    )
+    for cat in CATEGORY_ORDER:
+        objects = by_category[cat]
+        if not objects:
+            continue
+        lines.extend(["", f"## {CATEGORY_LABELS[cat]}"])
+        for object_id in objects:
+            props = registered_properties[object_id]
+            game_cols: list[GameCol] = [
+                (
+                    short_names[i],
+                    game_version,
+                    game_object_ids[game_name].get(object_id),
+                    music_catalogs[game_name],
                 )
-                is not None
+                for i, (game_name, game_version, _, _) in enumerate(GAMES)
             ]
-            if not property_lines:
+            table_rows = format_object_table(props, game_cols)
+            if not table_rows:
                 continue
-            lines.extend(["", f"### `{game_id}` {object_id}", *property_lines])
+            lines.extend(["", f"#### {object_id}", *table_rows])
 
     OUTPUT.write_text("\n".join(lines) + "\n")
 

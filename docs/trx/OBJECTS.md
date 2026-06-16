@@ -7,873 +7,1720 @@ order: 14
 
 This page lists documented moveable object properties.
 
-## Tomb Raider 1
-
-### `0` O_LARA
-- `max_hit_points = 1000` — Maximum hit points.
-
-### `6` O_BACON_LARA
-- `max_hit_points = 1000` — Maximum hit points.
-
-### `7` O_WOLF
-- `max_hit_points = 6` — Maximum hit points.
-- `pounce_damage = 50` — Damage dealt by the pounce attack.
-- `bite_damage = 100` — Damage dealt by the bite attack.
-
-### `8` O_BEAR
-- `max_hit_points = 20` — Maximum hit points.
-- `charge_damage = 3` — Damage dealt while the bear charges into Lara.
-- `slam_damage = 200` — Damage dealt if the falling bear slams into Lara.
-- `attack_damage = 200` — Damage dealt by the bear bite attack.
-- `pat_damage = 400` — Damage dealt by the bear paw swipe.
-
-### `9` O_BAT
-- `max_hit_points = 1` — Maximum hit points.
-- `damage = 2` — Damage dealt by the bat attack.
-
-### `10` O_CROCODILE
-- `max_hit_points = 20` — Maximum hit points.
-- `damage = 100` — Damage dealt by the crocodile bite.
-
-### `11` O_ALLIGATOR
-- `max_hit_points = 20` — Maximum hit points.
-- `damage = 100` — Damage dealt by the alligator bite.
-
-### `12` O_LION
-- `max_hit_points = 30` — Maximum hit points.
-- `pounce_damage = 150` — Damage dealt by the pounce attack.
-- `bite_damage = 250` — Damage dealt by the bite attack.
-
-### `13` O_LIONESS
-- `max_hit_points = 25` — Maximum hit points.
-- `pounce_damage = 150` — Damage dealt by the pounce attack.
-- `bite_damage = 250` — Damage dealt by the bite attack.
-
-### `14` O_PUMA
-- `max_hit_points = 45` — Maximum hit points.
-- `pounce_damage = 150` — Damage dealt by the pounce attack.
-- `bite_damage = 250` — Damage dealt by the bite attack.
-
-### `15` O_APE
-- `max_hit_points = 22` — Maximum hit points.
-- `damage = 200` — Damage dealt by the ape bite.
-
-### `16` O_RAT
-- `max_hit_points = 5` — Maximum hit points.
-- `bite_damage = 20` — Damage dealt by the bite attack.
-- `charge_damage = 20` — Damage dealt by the charge attack.
-
-### `17` O_VOLE
-- `max_hit_points = 5` — Maximum hit points.
-- `bite_damage = 20` — Damage dealt by the bite attack.
-- `charge_damage = 20` — Damage dealt by the charge attack.
-
-### `18` O_TREX
-- `max_hit_points = 100` — Maximum hit points.
-- `touch_damage = 1` — Damage dealt by body contact.
-- `trample_damage = 10` — Damage dealt while trampling.
-- `bite_damage = 10000` — Damage dealt by the bite attack.
-
-### `19` O_RAPTOR
-- `max_hit_points = 20` — Maximum hit points.
-- `lunge_damage = 100` — Damage dealt by the lunge attack.
-- `charge_damage = 100` — Damage dealt by the charge attack.
-- `bite_damage = 100` — Damage dealt by the bite attack.
-
-### `20` O_ATLANTEAN_WINGED
-- `max_hit_points = 50` — Maximum hit points.
-- `charge_damage = 100` — Damage dealt by the atlantean's charge attack.
-- `lunge_damage = 150` — Damage dealt by the atlantean's lunge attack.
-- `punch_damage = 200` — Damage dealt by the atlantean's punch attack.
-- `part_damage = 100` — Damage dealt by the atlantean's exploding body parts.
-
-### `21` O_ATLANTEAN_SHOOTER
-- `max_hit_points = 50` — Maximum hit points.
-- `charge_damage = 100` — Damage dealt by the atlantean's charge attack.
-- `lunge_damage = 150` — Damage dealt by the atlantean's lunge attack.
-- `punch_damage = 200` — Damage dealt by the atlantean's punch attack.
-- `part_damage = 100` — Damage dealt by the atlantean's exploding body parts.
-
-### `22` O_ATLANTEAN_GROUND
-- `max_hit_points = 50` — Maximum hit points.
-- `charge_damage = 100` — Damage dealt by the atlantean's charge attack.
-- `lunge_damage = 150` — Damage dealt by the atlantean's lunge attack.
-- `punch_damage = 200` — Damage dealt by the atlantean's punch attack.
-- `part_damage = 100` — Damage dealt by the atlantean's exploding body parts.
-
-### `23` O_CENTAUR
-- `max_hit_points = 120` — Maximum hit points.
-- `rear_damage = 200` — Damage dealt by the centaur rear attack.
-- `part_damage = 100` — Damage dealt by the centaur death explosion.
-
-### `24` O_MUMMY
-- `max_hit_points = 18` — Maximum hit points.
-
-### `25` O_DINO_WARRIOR
-- `max_hit_points = 100` — Maximum hit points.
-- `touch_damage = 1` — Damage dealt by body contact.
-- `trample_damage = 10` — Damage dealt while trampling.
-- `bite_damage = 10000` — Damage dealt by the bite attack.
-
-### `26` O_FISH
-- `max_hit_points = 12` — Maximum hit points.
-- `damage = 100` — Damage dealt by the barracuda bite.
-
-### `27` O_LARSON
-- `max_hit_points = 50` — Maximum hit points.
-- `damage = 50` — Damage dealt by Larson's shot.
-
-### `28` O_PIERRE
-- `max_hit_points = 70` — Maximum hit points.
-- `damage = 50` — Damage dealt by shots.
-
-### `30` O_SKATEKID
-- `max_hit_points = 125` — Maximum hit points.
-- `stop_shot_damage = 50` — Damage dealt by shots while stopped.
-- `skate_shot_damage = 40` — Damage dealt by shots while skating.
-
-### `31` O_COWBOY
-- `max_hit_points = 150` — Maximum hit points.
-- `damage = 70` — Damage dealt by the cowboy's shot.
-
-### `32` O_BALDY
-- `max_hit_points = 200` — Maximum hit points.
-- `damage = 150` — Damage dealt by Baldy's shot.
-
-### `33` O_NATLA
-- `max_hit_points = 400` — Maximum hit points.
-
-### `34` O_TORSO
-- `max_hit_points = 500` — Maximum hit points.
-- `touch_damage = 5` — Damage dealt by body contact.
-- `attack_damage = 500` — Damage dealt by swipe attacks.
-- `part_damage = 250` — Damage dealt by the death explosion.
-
-### `36` O_SWINGING_AXE
-- `damage = 100` — Damage dealt while Lara is touching the swinging axe.
-
-### `37` O_SPIKES
-- `damage = 15` — Damage dealt when Lara hits the spikes without dying instantly.
-
-### `38` O_ROLLING_BALL_1
-- `air_damage = 100` — Damage dealt when Lara is clipped by a moving boulder without being crushed.
-
-### `39` O_DART
-- `damage = 50` — Damage dealt on hit.
-- `poison = false` — Apply poison buildup in addition to hit damage.
-
-### `42` O_TEETH_TRAP
-- `damage = 400` — Damage dealt while Lara is caught in the teeth trap.
-
-### `43` O_DAMOCLES_SWORD
-- `damage = 100` — Damage dealt when Lara is struck by the falling Damocles sword.
-
-### `46` O_LIGHTNING_EMITTER
-- `damage = 400` — Damage dealt when Lara is struck by the lightning emitter.
-
-### `53` O_FALLING_CEILING_1
-- `damage = 300` — Damage dealt while Lara is touching the falling ceiling.
-
-### `54` O_FALLING_CEILING_2
-- `damage = 300` — Damage dealt while Lara is touching the falling ceiling.
-
-### `77` O_PLAYER_1
-- `max_hit_points = 1` — Maximum hit points.
-
-### `78` O_PLAYER_2
-- `max_hit_points = 1` — Maximum hit points.
-
-### `79` O_PLAYER_3
-- `max_hit_points = 1` — Maximum hit points.
-
-### `80` O_PLAYER_4
-- `max_hit_points = 1` — Maximum hit points.
-
-### `145` O_SCION_ITEM_3
-- `max_hit_points = 5` — Maximum hit points.
-
-### `180` O_LAVA_WEDGE
-- `speed = 25` — Offset applied each frame while the lava wedge advances.
-
-### `191` O_WINSTON
-- `max_hit_points = 1` — Maximum hit points.
-
-### `193` O_FLARE_ITEM
-- `burn_time = 60` — How long the flare burns for, in seconds.
-
-## Tomb Raider 2
-
-### `0` O_LARA
-- `max_hit_points = 1000` — Maximum hit points.
-
-### `13` O_SKIDOO_FAST
-- `track_1 = 48 (MX_SKIDOO_THEME)` — Random music track pool, slot 1. -1 = disabled.
-- `track_2 = -1` — Random music track pool, slot 2. -1 = disabled.
-- `track_3 = -1` — Random music track pool, slot 3. -1 = disabled.
-- `track_4 = -1` — Random music track pool, slot 4. -1 = disabled.
-- `battle_track_1 = 49 (MX_BATTLE_THEME)` — Random battle music track pool, slot 1. -1 = disabled.
-- `battle_track_2 = -1` — Random battle music track pool, slot 2. -1 = disabled.
-- `battle_track_3 = -1` — Random battle music track pool, slot 3. -1 = disabled.
-- `battle_track_4 = -1` — Random battle music track pool, slot 4. -1 = disabled.
-- `is_heavy = true` — Whether or not this vehicle can activate heavy triggers.
-- `test_static_collision = false` — Whether or not this vehicle can collide with static meshes.
-
-### `14` O_BOAT
-- `is_heavy = true` — Whether or not this vehicle can activate heavy triggers.
-
-### `15` O_DOG
-- `max_hit_points = 10` — Maximum hit points.
-- `bite_damage = 100` — Damage dealt by the dog bite.
-- `lunge_damage = 100` — Damage dealt by the dog's lunge attack.
-
-### `16` O_CULT_1
-- `max_hit_points = 25` — Maximum hit points.
-- `damage = 50` — Damage dealt by the cultist's shot.
-
-### `17` O_CULT_1A
-- `max_hit_points = 25` — Maximum hit points.
-- `damage = 50` — Damage dealt by the cultist's shot.
-
-### `18` O_CULT_1B
-- `max_hit_points = 25` — Maximum hit points.
-- `damage = 50` — Damage dealt by the cultist's shot.
-
-### `19` O_CULT_2
-- `max_hit_points = 60` — Maximum hit points.
-
-### `20` O_CULT_3
-- `max_hit_points = 150` — Maximum hit points.
-- `damage = 50` — Damage dealt by the cultist's shot.
-
-### `21` O_MOUSE
-- `max_hit_points = 4` — Maximum hit points.
-- `damage = 20` — Damage dealt by the bite attack.
-
-### `22` O_DRAGON_FRONT
-- `max_hit_points = 300` — Maximum hit points.
-- `touch_damage = 10` — Damage dealt while Lara is touching the dragon.
-- `swipe_damage = 250` — Damage dealt by the dragon swipe attack.
-
-### `25` O_SHARK
-- `max_hit_points = 30` — Maximum hit points.
-- `damage = 400` — Damage dealt by bite attacks.
-
-### `26` O_EEL
-- `max_hit_points = 5` — Maximum hit points.
-- `damage = 50` — Damage dealt by the eel bite.
-
-### `27` O_BIG_EEL
-- `max_hit_points = 20` — Maximum hit points.
-- `damage = 500` — Damage dealt by the big eel bite.
-
-### `28` O_BARRACUDA
-- `max_hit_points = 12` — Maximum hit points.
-- `damage = 100` — Damage dealt by the barracuda bite.
-
-### `29` O_DIVER
-- `max_hit_points = 20` — Maximum hit points.
-
-### `30` O_WORKER_1
-- `max_hit_points = 25` — Maximum hit points.
-- `damage = 150` — Damage dealt by gun shots.
-
-### `31` O_WORKER_2
-- `max_hit_points = 20` — Maximum hit points.
-- `damage = 30` — Damage dealt by gun shots.
-
-### `32` O_WORKER_3
-- `max_hit_points = 27` — Maximum hit points.
-- `hit_damage = 80` — Damage dealt by punch attacks.
-- `swipe_damage = 100` — Damage dealt by the swipe attack.
-
-### `33` O_WORKER_4
-- `max_hit_points = 27` — Maximum hit points.
-- `hit_damage = 80` — Damage dealt by punch attacks.
-- `swipe_damage = 100` — Damage dealt by the swipe attack.
-
-### `34` O_WORKER_5
-- `max_hit_points = 20` — Maximum hit points.
-- `damage = 30` — Damage dealt by gun shots.
-
-### `35` O_JELLY
-- `max_hit_points = 10` — Maximum hit points.
-- `damage = 5` — Damage dealt by the jelly sting.
-
-### `36` O_SPIDER
-- `max_hit_points = 5` — Maximum hit points.
-- `damage = 25` — Damage dealt by bite attacks.
-
-### `37` O_BIG_SPIDER
-- `max_hit_points = 40` — Maximum hit points.
-- `damage = 100` — Damage dealt by the big spider bite.
-
-### `38` O_CROW
-- `max_hit_points = 15` — Maximum hit points.
-- `damage = 20` — Damage dealt by the bird attack.
-
-### `39` O_TIGER
-- `max_hit_points = 20` — Maximum hit points.
-- `damage = 100` — Damage dealt by bite attacks.
-
-### `41` O_XIAN_SPEARMAN
-- `max_hit_points = 100` — Maximum hit points.
-- `hit_1_damage = 75` — Damage dealt by attack 1.
-- `hit_2_damage = 75` — Damage dealt by attacks 2 to 4.
-- `hit_5_damage = 75` — Damage dealt by attack 5.
-- `hit_6_damage = 120` — Damage dealt by attack 6.
-
-### `43` O_XIAN_KNIGHT
-- `max_hit_points = 80` — Maximum hit points.
-- `damage = 300` — Damage dealt by sword slashes.
-
-### `45` O_YETI
-- `max_hit_points = 30` — Maximum hit points.
-- `punch_damage = 100` — Damage dealt by attack 1.
-- `thump_damage = 150` — Damage dealt by attack 2.
-- `charge_damage = 200` — Damage dealt by attack 3.
-
-### `46` O_BIRD_GUARDIAN
-- `max_hit_points = 200` — Maximum hit points.
-- `damage = 200` — Damage dealt by the bird guardian punch.
-
-### `47` O_EAGLE
-- `max_hit_points = 20` — Maximum hit points.
-- `damage = 20` — Damage dealt by the bird attack.
-
-### `48` O_BANDIT_1
-- `max_hit_points = 45` — Maximum hit points.
-- `damage = 8` — Damage dealt by the bandit's shot.
-
-### `49` O_BANDIT_2
-- `max_hit_points = 50` — Maximum hit points.
-- `damage = 50` — Damage dealt by the bandit's shot.
-
-### `50` O_BANDIT_2B
-- `max_hit_points = 50` — Maximum hit points.
-- `damage = 50` — Damage dealt by the bandit's shot.
-
-### `51` O_SKIDOO_ARMED
-- `max_hit_points = 100` — Maximum hit points.
-
-### `52` O_SKIDOO_DRIVER
-- `max_hit_points = 1` — Maximum hit points.
-- `shot_damage = 50` — Damage dealt by shots when Lara is not mounted.
-- `mounted_shot_damage = 10` — Damage dealt by shots when Lara is mounted.
-
-### `53` O_MONK_1
-- `max_hit_points = 30` — Maximum hit points.
-- `damage = 150` — Damage dealt by melee attacks.
-- `enemy_damage = 5` — Damage dealt by melee attacks against non-player targets.
-
-### `54` O_MONK_2
-- `max_hit_points = 30` — Maximum hit points.
-- `damage = 150` — Damage dealt by melee attacks.
-- `enemy_damage = 5` — Damage dealt by melee attacks against non-player targets.
-
-### `58` O_PENDULUM_1
-- `damage = 50` — Damage dealt while Lara is touching the pendulum.
-
-### `59` O_SPIKES
-- `damage = 15` — Damage dealt when Lara hits the spikes without dying instantly.
-
-### `60` O_ROLLING_BALL_1
-- `air_damage = 100` — Damage dealt when Lara is clipped by a moving boulder without being crushed.
-
-### `61` O_DISC
-- `damage = 50` — Damage dealt on hit.
-- `poison = false` — Apply poison buildup in addition to hit damage.
-
-### `64` O_TEETH_TRAP
-- `damage = 400` — Damage dealt while Lara is caught in the teeth trap.
-
-### `76` O_PROPELLER_1
-- `damage = 200` — Damage dealt while Lara is touching the propeller.
-
-### `78` O_HOOK
-- `damage = 50` — Damage dealt while Lara is touching the hook.
-
-### `79` O_FALLING_CEILING_1
-- `damage = 300` — Damage dealt while Lara is touching the falling ceiling.
-
-### `80` O_SPINNING_BLADE
-- `damage = 100` — Damage dealt while Lara is touching the spinning blade.
-
-### `81` O_BLADE
-- `damage = 100` — Damage dealt while Lara is touching the blade trap.
-
-### `82` O_KILLER_STATUE
-- `damage = 20` — Damage dealt while Lara is struck by the killer statue.
-
-### `83` O_ROLLING_BALL_2
-- `air_damage = 100` — Damage dealt when Lara is clipped by a moving boulder without being crushed.
-
-### `84` O_ICICLE
-- `damage = 200` — Damage dealt when Lara is struck by the falling icicle.
-
-### `85` O_SPIKE_WALL
-- `speed = 16` — Offset applied each frame while the spike wall advances.
-- `damage = 20` — Damage dealt while Lara is touching the spike wall.
-
-### `87` O_CEILING_SPIKES
-- `speed = 5` — Offset applied each frame while the ceiling spikes descend.
-- `damage = 20` — Damage dealt while Lara is touching the ceiling spikes.
-
-### `94` O_PROPELLER_2
-- `damage = 200` — Damage dealt while Lara is touching the propeller.
-
-### `95` O_PROPELLER_3
-- `damage = 200` — Damage dealt while Lara is touching the propeller.
-
-### `96` O_PENDULUM_2
-- `damage = 50` — Damage dealt while Lara is touching the pendulum.
-
-### `101` O_ROLLING_BALL_3
-- `air_damage = 100` — Damage dealt when Lara is clipped by a moving boulder without being crushed.
-
-### `123` O_PLAYER_1
-- `max_hit_points = 1` — Maximum hit points.
-
-### `124` O_PLAYER_2
-- `max_hit_points = 1` — Maximum hit points.
-
-### `125` O_PLAYER_3
-- `max_hit_points = 1` — Maximum hit points.
-
-### `126` O_PLAYER_4
-- `max_hit_points = 1` — Maximum hit points.
-
-### `127` O_PLAYER_5
-- `max_hit_points = 1` — Maximum hit points.
-
-### `128` O_PLAYER_6
-- `max_hit_points = 1` — Maximum hit points.
-
-### `129` O_PLAYER_7
-- `max_hit_points = 1` — Maximum hit points.
-
-### `130` O_PLAYER_8
-- `max_hit_points = 1` — Maximum hit points.
-
-### `131` O_PLAYER_9
-- `max_hit_points = 1` — Maximum hit points.
-
-### `132` O_PLAYER_10
-- `max_hit_points = 1` — Maximum hit points.
-
-### `152` O_FLARE_ITEM
-- `burn_time = 60` — How long the flare burns for, in seconds.
-
-### `214` O_TREX
-- `max_hit_points = 100` — Maximum hit points.
-- `touch_damage = 1` — Damage dealt by body contact.
-- `trample_damage = 10` — Damage dealt while trampling.
-- `bite_damage = 10000` — Damage dealt by the bite attack.
-
-### `260` O_WINSTON
-- `max_hit_points = 1` — Maximum hit points.
-
-### `265` O_BEAR
-- `max_hit_points = 30` — Maximum hit points.
-- `charge_damage = 3` — Damage dealt while the bear charges into Lara.
-- `slam_damage = 200` — Damage dealt if the falling bear slams into Lara.
-- `attack_damage = 200` — Damage dealt by the bear bite attack.
-- `pat_damage = 400` — Damage dealt by the bear paw swipe.
-
-### `266` O_WOLF
-- `max_hit_points = 10` — Maximum hit points.
-- `pounce_damage = 50` — Damage dealt by the pounce attack.
-- `bite_damage = 100` — Damage dealt by the bite attack.
-
-### `267` O_MONK_3
-- `max_hit_points = 30` — Maximum hit points.
-- `damage = 150` — Damage dealt by melee attacks.
-- `enemy_damage = 5` — Damage dealt by melee attacks against non-player targets.
-
-## Tomb Raider 3
-
-### `0` O_LARA
-- `max_hit_points = 1000` — Maximum hit points.
-
-### `14` O_KAYAK
-- `is_heavy = true` — Whether or not this vehicle can activate heavy triggers.
-
-### `15` O_RIB
-- `track_1 = 12 (MX_RIB_THEME)` — Random music track pool, slot 1. -1 = disabled.
-- `track_2 = -1` — Random music track pool, slot 2. -1 = disabled.
-- `track_3 = -1` — Random music track pool, slot 3. -1 = disabled.
-- `track_4 = -1` — Random music track pool, slot 4. -1 = disabled.
-- `is_heavy = true` — Whether or not this vehicle can activate heavy triggers.
-
-### `16` O_QUAD_BIKE
-- `track_1 = -1` — Random music track pool, slot 1. -1 = disabled.
-- `track_2 = -1` — Random music track pool, slot 2. -1 = disabled.
-- `track_3 = -1` — Random music track pool, slot 3. -1 = disabled.
-- `track_4 = -1` — Random music track pool, slot 4. -1 = disabled.
-- `is_heavy = true` — Whether or not this vehicle can activate heavy triggers.
-- `test_static_collision = false` — Whether or not this vehicle can collide with static meshes.
-
-### `17` O_MINE_CART
-- `track_1 = 12 (MX_MINE_CART_THEME)` — Random music track pool, slot 1. -1 = disabled.
-- `track_2 = -1` — Random music track pool, slot 2. -1 = disabled.
-- `track_3 = -1` — Random music track pool, slot 3. -1 = disabled.
-- `track_4 = -1` — Random music track pool, slot 4. -1 = disabled.
-
-### `19` O_UPV
-- `is_heavy = true` — Whether or not this vehicle can activate heavy triggers.
-
-### `20` O_TRIBE_AXEMAN
-- `max_hit_points = 28` — Maximum hit points.
-- `attack_2_damage = 8` — Damage dealt by attack 2.
-- `attack_3_damage = 32` — Damage dealt by attack 3.
-- `attack_4_damage = 8` — Damage dealt by attack 4.
-- `attack_5_damage = 8` — Damage dealt by attack 5.
-- `attack_6_damage = 32` — Damage dealt by attack 6.
-- `enemy_damage = 2` — Damage dealt to non-player targets.
-
-### `21` O_TRIBE_PIPEMAN
-- `max_hit_points = 28` — Maximum hit points.
-- `damage = 100` — Damage dealt by melee attacks.
-- `enemy_damage = 5` — Damage dealt to non-player targets.
-
-### `22` O_PATROL_DOG
-- `max_hit_points = 16` — Maximum hit points.
-- `lunge_damage = 50` — Damage dealt by the lunge attack.
-- `bite_damage = 12` — Damage dealt by the bite attack.
-
-### `23` O_MOUSE
-- `max_hit_points = 4` — Maximum hit points.
-- `damage = 20` — Damage dealt by the bite attack.
-
-### `26` O_DIVER
-- `max_hit_points = 20` — Maximum hit points.
-
-### `27` O_CROW
-- `max_hit_points = 8` — Maximum hit points.
-- `damage = 20` — Damage dealt by the bird attack.
-
-### `28` O_TIGER
-- `max_hit_points = 24` — Maximum hit points.
-- `damage = 90` — Damage dealt by bite attacks.
-
-### `29` O_VULTURE
-- `max_hit_points = 18` — Maximum hit points.
-- `damage = 20` — Damage dealt by the bird attack.
-
-### `30` O_ASSAULT_TARGET
-- `max_hit_points = 8` — Maximum hit points.
-
-### `32` O_ALLIGATOR
-- `max_hit_points = 42` — Maximum hit points.
-- `damage = 100` — Damage dealt by the alligator bite.
-
-### `34` O_COMPY
-- `max_hit_points = 10` — Maximum hit points.
-- `damage = 90` — Damage dealt by the compy attack.
-
-### `35` O_LIZARD
-- `max_hit_points = 36` — Maximum hit points.
-- `bite_damage = 100` — Damage dealt by the lizard bite.
-- `swipe_damage = 120` — Damage dealt by the lizard swipe attack.
-
-### `36` O_TRIBE_BOSS
-- `max_hit_points = 200` — Maximum hit points.
-- `head_beam_damage = 10000` — Damage dealt by the head electric beam.
-
-### `37` O_STHPAC_MERCENARY
-- `max_hit_points = 30` — Maximum hit points.
-- `damage = 28` — Damage dealt by the mercenary's shot.
-
-### `39` O_RX_WORKER_1
-- `max_hit_points = 34` — Maximum hit points.
-- `damage = 35` — Damage dealt by shots.
-
-### `40` O_RX_WORKER_2
-- `max_hit_points = 30` — Maximum hit points.
-- `damage = 28` — Damage dealt by shots.
-
-### `41` O_HUSKIE
-- `max_hit_points = 16` — Maximum hit points.
-- `lunge_damage = 50` — Damage dealt by the lunge attack.
-- `bite_damage = 12` — Damage dealt by the bite attack.
-
-### `42` O_CRAWLER_MUTANT
-- `max_hit_points = 50` — Maximum hit points.
-
-### `44` O_WASP_MUTANT
-- `max_hit_points = 24` — Maximum hit points.
-- `damage = 50` — Damage dealt by the sting attack.
-
-### `45` O_CLAW_MUTANT
-- `max_hit_points = 130` — Maximum hit points.
-- `damage = 100` — Damage dealt by the claw mutant melee attack.
-- `plasma_ball_damage = 200` — Damage dealt by the claw mutant plasma ball.
-
-### `46` O_HYBRID_MUTANT
-- `max_hit_points = 90` — Maximum hit points.
-- `jump_damage = 20` — Damage dealt by the hybrid mutant jump attack.
-- `slash_damage = 100` — Damage dealt by the hybrid mutant slash attack.
-- `kick_damage = 80` — Damage dealt by the hybrid mutant kick attack.
-
-### `49` O_WILLARD
-- `max_hit_points = 200` — Maximum hit points.
-- `touch_damage = 10` — Damage dealt by body contact.
-- `bite_damage = 220` — Damage dealt by bite attacks.
-- `lunge_damage = 440` — Damage dealt by the lunge attack.
-- `plasma_ball_damage = 10000` — Damage dealt by direct plasma ball hits.
-
-### `50` O_RX_WORKER_3
-- `max_hit_points = 36` — Maximum hit points.
-
-### `51` O_SWAT_1
-- `max_hit_points = 45` — Maximum hit points.
-- `damage = 28` — Damage dealt by shots.
-- `final_shot_damage = 84` — Damage dealt by the death-state final shot.
-
-### `52` O_SWAT_2
-- `max_hit_points = 45` — Maximum hit points.
-- `damage = 28` — Damage dealt by shots.
-- `final_shot_damage = 84` — Damage dealt by the death-state final shot.
-
-### `53` O_PUNK_1
-- `max_hit_points = 20` — Maximum hit points.
-- `hit_damage = 80` — Damage dealt by punches 1 and 2.
-- `swipe_damage = 100` — Damage dealt by punch 3.
-
-### `54` O_PUNK_2
-- `max_hit_points = 20` — Maximum hit points.
-- `hit_damage = 80` — Damage dealt by punches 1 and 2.
-- `swipe_damage = 100` — Damage dealt by punch 3.
-
-### `56` O_SECURITY_GUARD
-- `max_hit_points = 28` — Maximum hit points.
-- `damage = 32` — Damage dealt by shots.
-- `final_shot_damage = 64` — Damage dealt by the death-state final shot.
-
-### `57` O_SOPHIA
-- `max_hit_points = 300` — Maximum hit points.
-- `knockback_damage = 200` — Damage dealt by the knockback shockwave.
-- `laser_bolt_damage = 30` — Damage dealt by regular laser bolt direct hits.
-- `big_laser_bolt_damage = 542` — Damage dealt by the big laser bolt direct hit.
-- `laser_bolt_splash_damage = 16` — Maximum splash damage dealt by regular laser bolts.
-- `big_laser_bolt_splash_damage = 64` — Maximum splash damage dealt by the big laser bolt.
-- `plasma_ball_damage = 25` — Damage dealt by plasma ball direct hits.
-
-### `60` O_MP_1
-- `max_hit_points = 25` — Maximum hit points.
-- `punch_1_damage = 80` — Damage dealt by punch 1.
-- `punch_2_damage = 80` — Damage dealt by punch 2.
-- `punch_3_damage = 100` — Damage dealt by punch 3.
-- `kick_damage = 150` — Damage dealt by the kick attack.
-
-### `61` O_MP_2
-- `max_hit_points = 28` — Maximum hit points.
-- `damage = 32` — Damage dealt by gun shots.
-
-### `62` O_PRISONER
-- `max_hit_points = 20` — Maximum hit points.
-- `punch_1_damage = 40` — Damage dealt by punch 1.
-- `punch_2_damage = 40` — Damage dealt by punch 2.
-- `punch_3_damage = 50` — Damage dealt by punch 3.
-
-### `63` O_SWAT_3
-- `max_hit_points = 45` — Maximum hit points.
-- `damage = 28` — Damage dealt by shots.
-- `final_shot_damage = 84` — Damage dealt by the death-state final shot.
-
-### `64` O_SENTRY_GUN
-- `damage = 10` — Damage dealt when the sentry gun hits Lara.
-- `max_hit_points = 100` — Maximum hit points.
-
-### `65` O_CIVILIAN
-- `max_hit_points = 15` — Maximum hit points.
-- `punch_1_damage = 40` — Damage dealt by the civilian's first punch attack.
-- `punch_2_damage = 40` — Damage dealt by the civilian's second punch attack.
-- `punch_3_damage = 50` — Damage dealt by the civilian's third punch attack.
-
-### `66` O_SECURITY_LASER_ALARM
-- `max_hit_points = 1` — Maximum hit points.
-
-### `67` O_SECURITY_LASER_DEADLY
-- `damage = 10` — Damage dealt when Lara crosses the security laser.
-- `max_hit_points = 1` — Maximum hit points.
-
-### `68` O_SECURITY_LASER_KILLER
-- `max_hit_points = 1` — Maximum hit points.
-
-### `69` O_COBRA
-- `max_hit_points = 8` — Maximum hit points.
-- `damage = 80` — Damage dealt by the cobra bite.
-- `alert_radius = 1.5` — Alert radius, in sectors.
-- `attack_radius = 1` — Attack radius, in sectors.
-- `forget_radius = 3` — Forget radius, in sectors.
-
-### `70` O_SHIVA
-- `max_hit_points = 100` — Maximum hit points.
-- `pincer_damage = 150` — Damage dealt by the pincer attack.
-- `chopper_damage = 180` — Damage dealt by the chopper attack.
-
-### `71` O_MONKEY
-- `max_hit_points = 8` — Maximum hit points.
-- `damage = 40` — Damage dealt by bite attacks.
-- `jump_damage = 50` — Damage dealt by the jumping bite attack.
-
-### `73` O_TONY
-- `max_hit_points = 100` — Maximum hit points.
-- `fire_ball_damage = 200` — Damage dealt by direct fire ball hits.
-
-### `74` O_AI_GUARD
-- `max_hit_points = 0` — Maximum hit points.
-
-### `75` O_AI_AMBUSH
-- `max_hit_points = 0` — Maximum hit points.
-
-### `76` O_AI_PATROL_1
-- `max_hit_points = 0` — Maximum hit points.
-
-### `77` O_AI_MODIFY
-- `max_hit_points = 0` — Maximum hit points.
-
-### `78` O_AI_FOLLOW
-- `max_hit_points = 0` — Maximum hit points.
-
-### `79` O_AI_PATROL_2
-- `max_hit_points = 0` — Maximum hit points.
-
-### `80` O_AI_X1
-- `max_hit_points = 0` — Maximum hit points.
-
-### `81` O_AI_X2
-- `max_hit_points = 0` — Maximum hit points.
-
-### `82` O_AI_X3
-- `max_hit_points = 0` — Maximum hit points.
-
-### `86` O_PENDULUM_1
-- `damage = 50` — Damage dealt while Lara is touching the pendulum.
-
-### `87` O_SPIKES
-- `damage = 15` — Damage dealt when Lara hits the spikes without dying instantly.
-
-### `88` O_ROLLING_BALL_1
-- `air_damage = 100` — Damage dealt when Lara is clipped by a moving boulder without being crushed.
-
-### `89` O_ROLLING_BALL_4
-- `air_damage = 100` — Damage dealt when Lara is clipped by a moving boulder without being crushed.
-
-### `90` O_POISON_DART
-- `damage = 25` — Damage dealt on hit.
-- `poison = true` — Apply poison buildup in addition to hit damage.
-
-### `94` O_TEETH_TRAP
-- `damage = 400` — Damage dealt while Lara is caught in the teeth trap.
-
-### `106` O_HOOK
-- `damage = 50` — Damage dealt while Lara is touching the hook.
-
-### `107` O_FALLING_CEILING_1
-- `damage = 300` — Damage dealt while Lara is touching the falling ceiling.
-
-### `108` O_SPINNING_BLADE
-- `damage = 100` — Damage dealt while Lara is touching the spinning blade.
-
-### `111` O_BLADE
-- `damage = 100` — Damage dealt while Lara is touching the blade trap.
-
-### `112` O_ROLLING_BALL_2
-- `air_damage = 100` — Damage dealt when Lara is clipped by a moving boulder without being crushed.
-
-### `113` O_ICICLE
-- `damage = 200` — Damage dealt when Lara is struck by the falling icicle.
-
-### `114` O_SPIKE_WALL
-- `speed = 16` — Offset applied each frame while the spike wall advances.
-- `damage = 20` — Damage dealt while Lara is touching the spike wall.
-
-### `116` O_CEILING_SPIKES
-- `speed = 5` — Offset applied each frame while the ceiling spikes descend.
-- `damage = 20` — Damage dealt while Lara is touching the ceiling spikes.
-
-### `119` O_PROPELLER_2
-- `damage = 200` — Damage dealt while Lara is touching the propeller.
-
-### `120` O_PROPELLER_3
-- `damage = 200` — Damage dealt while Lara is touching the propeller.
-
-### `121` O_PENDULUM_2
-- `damage = 50` — Damage dealt while Lara is touching the pendulum.
-
-### `126` O_ROLLING_BALL_3
-- `air_damage = 100` — Damage dealt when Lara is clipped by a moving boulder without being crushed.
-
-### `148` O_PLAYER_1
-- `max_hit_points = 1` — Maximum hit points.
-
-### `149` O_PLAYER_2
-- `max_hit_points = 1` — Maximum hit points.
-
-### `150` O_PLAYER_3
-- `max_hit_points = 1` — Maximum hit points.
-
-### `151` O_PLAYER_4
-- `max_hit_points = 1` — Maximum hit points.
-
-### `152` O_PLAYER_5
-- `max_hit_points = 1` — Maximum hit points.
-
-### `153` O_PLAYER_6
-- `max_hit_points = 1` — Maximum hit points.
-
-### `154` O_PLAYER_7
-- `max_hit_points = 1` — Maximum hit points.
-
-### `155` O_PLAYER_8
-- `max_hit_points = 1` — Maximum hit points.
-
-### `156` O_PLAYER_9
-- `max_hit_points = 1` — Maximum hit points.
-
-### `157` O_PLAYER_10
-- `max_hit_points = 1` — Maximum hit points.
-
-### `179` O_FLARE_ITEM
-- `burn_time = 30` — How long the flare burns for, in seconds.
-
-### `287` O_TREX_ALPHA
-- `max_hit_points = 800` — Maximum hit points.
-- `touch_damage = 1` — Damage dealt by body contact.
-- `trample_damage = 10` — Damage dealt while trampling.
-- `bite_damage = 10000` — Damage dealt by the bite attack.
-- `raptor_damage = 50` — Damage dealt to raptors by the bite attack.
-
-### `288` O_RAPTOR
-- `max_hit_points = 90` — Maximum hit points.
-- `lunge_damage = 100` — Damage dealt by the lunge attack.
-- `charge_damage = 100` — Damage dealt by the charge attack.
-- `bite_damage = 100` — Damage dealt by the bite attack.
-
-### `291` O_ROTATING_LASER
-- `damage = 25` — Damage dealt while Lara is touching the rotating laser.
-
-### `318` O_STROBE_LIGHT
-- `requires_alarm_active = false` — Require an alert event before the light activates.
-
-### `333` O_FLAME_EMITTER_SIDE
-- `interval = 2` — Interval between flame bursts, in seconds.
-
-### `338` O_PIRAHNAS
-- `range = ((XYZ_32) { 1, 1, 1 })` — Swim range, in quarter tiles.
-- `use_room_lighting = False` — Whether the shoal uses the surrounding room lighting.
-
-### `339` O_TROPICAL_FISH
-- `sprite_offset = 0` — Texture offset in `O_TROPICAL_FISH_GFX`.
-- `range = ((XYZ_32) { 1, 1, 1 })` — Swim range, in quarter tiles.
-- `use_room_lighting = False` — Whether the shoal uses the surrounding room lighting.
-
-### `360` O_WINSTON
-- `max_hit_points = 1` — Maximum hit points.
-
-### `361` O_WINSTON_ARMY
-- `max_hit_points = 20` — Maximum hit points.
-
-### `370` O_ANIMATING_EXT_1
-- `kill_on_trigger = false` — Kill the item immediately while its trigger is inactive.
+## Enemies
+
+#### O_BACON_LARA
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1 (6)</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td colspan="3" align="center">1000</td><td>Maximum hit points.</td></tr>
+</tbody>
+</table>
+
+#### O_WOLF
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1 (7)</th><th align="center">TR2 (266)</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td align="center">6</td><td colspan="2" align="center">10</td><td>Maximum hit points.</td></tr>
+<tr><td><code>pounce_damage</code></td><td colspan="3" align="center">50</td><td>Damage dealt by the pounce attack.</td></tr>
+<tr><td><code>bite_damage</code></td><td colspan="3" align="center">100</td><td>Damage dealt by the bite attack.</td></tr>
+</tbody>
+</table>
+
+#### O_BEAR
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1 (8)</th><th align="center">TR2 (265)</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td align="center">20</td><td colspan="2" align="center">30</td><td>Maximum hit points.</td></tr>
+<tr><td><code>charge_damage</code></td><td colspan="3" align="center">3</td><td>Damage dealt while the bear charges into Lara.</td></tr>
+<tr><td><code>slam_damage</code></td><td colspan="3" align="center">200</td><td>Damage dealt if the falling bear slams into Lara.</td></tr>
+<tr><td><code>attack_damage</code></td><td colspan="3" align="center">200</td><td>Damage dealt by the bear bite attack.</td></tr>
+<tr><td><code>pat_damage</code></td><td colspan="3" align="center">400</td><td>Damage dealt by the bear paw swipe.</td></tr>
+</tbody>
+</table>
+
+#### O_BAT
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1 (9)</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td colspan="3" align="center">1</td><td>Maximum hit points.</td></tr>
+<tr><td><code>damage</code></td><td colspan="3" align="center">2</td><td>Damage dealt by the bat attack.</td></tr>
+</tbody>
+</table>
+
+#### O_CROCODILE
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1 (10)</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td colspan="2" align="center">20</td><td align="center">42</td><td>Maximum hit points.</td></tr>
+<tr><td><code>damage</code></td><td colspan="3" align="center">100</td><td>Damage dealt by the crocodile bite.</td></tr>
+</tbody>
+</table>
+
+#### O_ALLIGATOR
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1 (11)</th><th align="center">TR2</th><th align="center">TR3 (32)</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td colspan="2" align="center">20</td><td align="center">42</td><td>Maximum hit points.</td></tr>
+<tr><td><code>damage</code></td><td colspan="3" align="center">100</td><td>Damage dealt by the alligator bite.</td></tr>
+</tbody>
+</table>
+
+#### O_LION
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1 (12)</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td colspan="3" align="center">30</td><td>Maximum hit points.</td></tr>
+<tr><td><code>pounce_damage</code></td><td colspan="3" align="center">150</td><td>Damage dealt by the pounce attack.</td></tr>
+<tr><td><code>bite_damage</code></td><td colspan="3" align="center">250</td><td>Damage dealt by the bite attack.</td></tr>
+</tbody>
+</table>
+
+#### O_LIONESS
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1 (13)</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td colspan="3" align="center">25</td><td>Maximum hit points.</td></tr>
+<tr><td><code>pounce_damage</code></td><td colspan="3" align="center">150</td><td>Damage dealt by the pounce attack.</td></tr>
+<tr><td><code>bite_damage</code></td><td colspan="3" align="center">250</td><td>Damage dealt by the bite attack.</td></tr>
+</tbody>
+</table>
+
+#### O_PUMA
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1 (14)</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td colspan="3" align="center">45</td><td>Maximum hit points.</td></tr>
+<tr><td><code>pounce_damage</code></td><td colspan="3" align="center">150</td><td>Damage dealt by the pounce attack.</td></tr>
+<tr><td><code>bite_damage</code></td><td colspan="3" align="center">250</td><td>Damage dealt by the bite attack.</td></tr>
+</tbody>
+</table>
+
+#### O_APE
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1 (15)</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td colspan="3" align="center">22</td><td>Maximum hit points.</td></tr>
+<tr><td><code>damage</code></td><td colspan="3" align="center">200</td><td>Damage dealt by the ape bite.</td></tr>
+</tbody>
+</table>
+
+#### O_RAT
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1 (16)</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td colspan="3" align="center">5</td><td>Maximum hit points.</td></tr>
+<tr><td><code>bite_damage</code></td><td colspan="3" align="center">20</td><td>Damage dealt by the bite attack.</td></tr>
+<tr><td><code>charge_damage</code></td><td colspan="3" align="center">20</td><td>Damage dealt by the charge attack.</td></tr>
+</tbody>
+</table>
+
+#### O_VOLE
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1 (17)</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td colspan="3" align="center">5</td><td>Maximum hit points.</td></tr>
+<tr><td><code>bite_damage</code></td><td colspan="3" align="center">20</td><td>Damage dealt by the bite attack.</td></tr>
+<tr><td><code>charge_damage</code></td><td colspan="3" align="center">20</td><td>Damage dealt by the charge attack.</td></tr>
+</tbody>
+</table>
+
+#### O_TREX
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1 (18)</th><th align="center">TR2 (214)</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td colspan="3" align="center">100</td><td>Maximum hit points.</td></tr>
+<tr><td><code>touch_damage</code></td><td colspan="3" align="center">1</td><td>Damage dealt by body contact.</td></tr>
+<tr><td><code>trample_damage</code></td><td colspan="3" align="center">10</td><td>Damage dealt while trampling.</td></tr>
+<tr><td><code>bite_damage</code></td><td colspan="3" align="center">10000</td><td>Damage dealt by the bite attack.</td></tr>
+</tbody>
+</table>
+
+#### O_RAPTOR
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1 (19)</th><th align="center">TR2</th><th align="center">TR3 (288)</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td colspan="2" align="center">20</td><td align="center">90</td><td>Maximum hit points.</td></tr>
+<tr><td><code>lunge_damage</code></td><td colspan="3" align="center">100</td><td>Damage dealt by the lunge attack.</td></tr>
+<tr><td><code>charge_damage</code></td><td colspan="3" align="center">100</td><td>Damage dealt by the charge attack.</td></tr>
+<tr><td><code>bite_damage</code></td><td colspan="3" align="center">100</td><td>Damage dealt by the bite attack.</td></tr>
+</tbody>
+</table>
+
+#### O_ATLANTEAN_WINGED
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1 (20)</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td colspan="3" align="center">50</td><td>Maximum hit points.</td></tr>
+<tr><td><code>charge_damage</code></td><td colspan="3" align="center">100</td><td>Damage dealt by the atlantean's charge attack.</td></tr>
+<tr><td><code>lunge_damage</code></td><td colspan="3" align="center">150</td><td>Damage dealt by the atlantean's lunge attack.</td></tr>
+<tr><td><code>punch_damage</code></td><td colspan="3" align="center">200</td><td>Damage dealt by the atlantean's punch attack.</td></tr>
+<tr><td><code>part_damage</code></td><td colspan="3" align="center">100</td><td>Damage dealt by the atlantean's exploding body parts.</td></tr>
+</tbody>
+</table>
+
+#### O_ATLANTEAN_SHOOTER
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1 (21)</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td colspan="3" align="center">50</td><td>Maximum hit points.</td></tr>
+<tr><td><code>charge_damage</code></td><td colspan="3" align="center">100</td><td>Damage dealt by the atlantean's charge attack.</td></tr>
+<tr><td><code>lunge_damage</code></td><td colspan="3" align="center">150</td><td>Damage dealt by the atlantean's lunge attack.</td></tr>
+<tr><td><code>punch_damage</code></td><td colspan="3" align="center">200</td><td>Damage dealt by the atlantean's punch attack.</td></tr>
+<tr><td><code>part_damage</code></td><td colspan="3" align="center">100</td><td>Damage dealt by the atlantean's exploding body parts.</td></tr>
+</tbody>
+</table>
+
+#### O_ATLANTEAN_GROUND
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1 (22)</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td colspan="3" align="center">50</td><td>Maximum hit points.</td></tr>
+<tr><td><code>charge_damage</code></td><td colspan="3" align="center">100</td><td>Damage dealt by the atlantean's charge attack.</td></tr>
+<tr><td><code>lunge_damage</code></td><td colspan="3" align="center">150</td><td>Damage dealt by the atlantean's lunge attack.</td></tr>
+<tr><td><code>punch_damage</code></td><td colspan="3" align="center">200</td><td>Damage dealt by the atlantean's punch attack.</td></tr>
+<tr><td><code>part_damage</code></td><td colspan="3" align="center">100</td><td>Damage dealt by the atlantean's exploding body parts.</td></tr>
+</tbody>
+</table>
+
+#### O_CENTAUR
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1 (23)</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td colspan="3" align="center">120</td><td>Maximum hit points.</td></tr>
+<tr><td><code>rear_damage</code></td><td colspan="3" align="center">200</td><td>Damage dealt by the centaur rear attack.</td></tr>
+<tr><td><code>part_damage</code></td><td colspan="3" align="center">100</td><td>Damage dealt by the centaur death explosion.</td></tr>
+</tbody>
+</table>
+
+#### O_MUMMY
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1 (24)</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td colspan="3" align="center">18</td><td>Maximum hit points.</td></tr>
+</tbody>
+</table>
+
+#### O_DINO_WARRIOR
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1 (25)</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td colspan="3" align="center">100</td><td>Maximum hit points.</td></tr>
+<tr><td><code>touch_damage</code></td><td colspan="3" align="center">1</td><td>Damage dealt by body contact.</td></tr>
+<tr><td><code>trample_damage</code></td><td colspan="3" align="center">10</td><td>Damage dealt while trampling.</td></tr>
+<tr><td><code>bite_damage</code></td><td colspan="3" align="center">10000</td><td>Damage dealt by the bite attack.</td></tr>
+</tbody>
+</table>
+
+#### O_FISH
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1 (26)</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td colspan="3" align="center">12</td><td>Maximum hit points.</td></tr>
+<tr><td><code>damage</code></td><td colspan="3" align="center">100</td><td>Damage dealt by the barracuda bite.</td></tr>
+</tbody>
+</table>
+
+#### O_LARSON
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1 (27)</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td colspan="3" align="center">50</td><td>Maximum hit points.</td></tr>
+<tr><td><code>damage</code></td><td colspan="3" align="center">50</td><td>Damage dealt by Larson's shot.</td></tr>
+</tbody>
+</table>
+
+#### O_PIERRE
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1 (28)</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td colspan="3" align="center">70</td><td>Maximum hit points.</td></tr>
+<tr><td><code>damage</code></td><td colspan="3" align="center">50</td><td>Damage dealt by shots.</td></tr>
+</tbody>
+</table>
+
+#### O_SKATEKID
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1 (30)</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td colspan="3" align="center">125</td><td>Maximum hit points.</td></tr>
+<tr><td><code>stop_shot_damage</code></td><td colspan="3" align="center">50</td><td>Damage dealt by shots while stopped.</td></tr>
+<tr><td><code>skate_shot_damage</code></td><td colspan="3" align="center">40</td><td>Damage dealt by shots while skating.</td></tr>
+</tbody>
+</table>
+
+#### O_COWBOY
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1 (31)</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td colspan="3" align="center">150</td><td>Maximum hit points.</td></tr>
+<tr><td><code>damage</code></td><td colspan="3" align="center">70</td><td>Damage dealt by the cowboy's shot.</td></tr>
+</tbody>
+</table>
+
+#### O_BALDY
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1 (32)</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td colspan="3" align="center">200</td><td>Maximum hit points.</td></tr>
+<tr><td><code>damage</code></td><td colspan="3" align="center">150</td><td>Damage dealt by Baldy's shot.</td></tr>
+</tbody>
+</table>
+
+#### O_NATLA
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1 (33)</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td colspan="3" align="center">400</td><td>Maximum hit points.</td></tr>
+</tbody>
+</table>
+
+#### O_TORSO
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1 (34)</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td colspan="3" align="center">500</td><td>Maximum hit points.</td></tr>
+<tr><td><code>touch_damage</code></td><td colspan="3" align="center">5</td><td>Damage dealt by body contact.</td></tr>
+<tr><td><code>attack_damage</code></td><td colspan="3" align="center">500</td><td>Damage dealt by swipe attacks.</td></tr>
+<tr><td><code>part_damage</code></td><td colspan="3" align="center">250</td><td>Damage dealt by the death explosion.</td></tr>
+</tbody>
+</table>
+
+#### O_WINSTON
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1 (191)</th><th align="center">TR2 (260)</th><th align="center">TR3 (360)</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td colspan="3" align="center">1</td><td>Maximum hit points.</td></tr>
+</tbody>
+</table>
+
+#### O_DOG
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (15)</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td colspan="3" align="center">10</td><td>Maximum hit points.</td></tr>
+<tr><td><code>bite_damage</code></td><td colspan="3" align="center">100</td><td>Damage dealt by the dog bite.</td></tr>
+<tr><td><code>lunge_damage</code></td><td colspan="3" align="center">100</td><td>Damage dealt by the dog's lunge attack.</td></tr>
+</tbody>
+</table>
+
+#### O_CULT_1
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (16)</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td colspan="3" align="center">25</td><td>Maximum hit points.</td></tr>
+<tr><td><code>damage</code></td><td colspan="3" align="center">50</td><td>Damage dealt by the cultist's shot.</td></tr>
+</tbody>
+</table>
+
+#### O_CULT_1A
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (17)</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td colspan="3" align="center">25</td><td>Maximum hit points.</td></tr>
+<tr><td><code>damage</code></td><td colspan="3" align="center">50</td><td>Damage dealt by the cultist's shot.</td></tr>
+</tbody>
+</table>
+
+#### O_CULT_1B
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (18)</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td colspan="3" align="center">25</td><td>Maximum hit points.</td></tr>
+<tr><td><code>damage</code></td><td colspan="3" align="center">50</td><td>Damage dealt by the cultist's shot.</td></tr>
+</tbody>
+</table>
+
+#### O_CULT_2
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (19)</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td colspan="3" align="center">60</td><td>Maximum hit points.</td></tr>
+</tbody>
+</table>
+
+#### O_CULT_3
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (20)</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td colspan="3" align="center">150</td><td>Maximum hit points.</td></tr>
+<tr><td><code>damage</code></td><td colspan="3" align="center">50</td><td>Damage dealt by the cultist's shot.</td></tr>
+</tbody>
+</table>
+
+#### O_MOUSE
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (21)</th><th align="center">TR3 (23)</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td colspan="3" align="center">4</td><td>Maximum hit points.</td></tr>
+<tr><td><code>damage</code></td><td colspan="3" align="center">20</td><td>Damage dealt by the bite attack.</td></tr>
+</tbody>
+</table>
+
+#### O_DRAGON_FRONT
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (22)</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td colspan="3" align="center">300</td><td>Maximum hit points.</td></tr>
+<tr><td><code>touch_damage</code></td><td colspan="3" align="center">10</td><td>Damage dealt while Lara is touching the dragon.</td></tr>
+<tr><td><code>swipe_damage</code></td><td colspan="3" align="center">250</td><td>Damage dealt by the dragon swipe attack.</td></tr>
+</tbody>
+</table>
+
+#### O_SHARK
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (25)</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td colspan="3" align="center">30</td><td>Maximum hit points.</td></tr>
+<tr><td><code>damage</code></td><td colspan="3" align="center">400</td><td>Damage dealt by bite attacks.</td></tr>
+</tbody>
+</table>
+
+#### O_EEL
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (26)</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td colspan="3" align="center">5</td><td>Maximum hit points.</td></tr>
+<tr><td><code>damage</code></td><td colspan="3" align="center">50</td><td>Damage dealt by the eel bite.</td></tr>
+</tbody>
+</table>
+
+#### O_BIG_EEL
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (27)</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td colspan="3" align="center">20</td><td>Maximum hit points.</td></tr>
+<tr><td><code>damage</code></td><td colspan="3" align="center">500</td><td>Damage dealt by the big eel bite.</td></tr>
+</tbody>
+</table>
+
+#### O_BARRACUDA
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (28)</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td colspan="3" align="center">12</td><td>Maximum hit points.</td></tr>
+<tr><td><code>damage</code></td><td colspan="3" align="center">100</td><td>Damage dealt by the barracuda bite.</td></tr>
+</tbody>
+</table>
+
+#### O_DIVER
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (29)</th><th align="center">TR3 (26)</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td colspan="3" align="center">20</td><td>Maximum hit points.</td></tr>
+</tbody>
+</table>
+
+#### O_WORKER_1
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (30)</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td colspan="3" align="center">25</td><td>Maximum hit points.</td></tr>
+<tr><td><code>damage</code></td><td colspan="3" align="center">150</td><td>Damage dealt by gun shots.</td></tr>
+</tbody>
+</table>
+
+#### O_WORKER_2
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (31)</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td colspan="3" align="center">20</td><td>Maximum hit points.</td></tr>
+<tr><td><code>damage</code></td><td colspan="3" align="center">30</td><td>Damage dealt by gun shots.</td></tr>
+</tbody>
+</table>
+
+#### O_WORKER_3
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (32)</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td colspan="3" align="center">27</td><td>Maximum hit points.</td></tr>
+<tr><td><code>hit_damage</code></td><td colspan="3" align="center">80</td><td>Damage dealt by punch attacks.</td></tr>
+<tr><td><code>swipe_damage</code></td><td colspan="3" align="center">100</td><td>Damage dealt by the swipe attack.</td></tr>
+</tbody>
+</table>
+
+#### O_WORKER_4
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (33)</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td colspan="3" align="center">27</td><td>Maximum hit points.</td></tr>
+<tr><td><code>hit_damage</code></td><td colspan="3" align="center">80</td><td>Damage dealt by punch attacks.</td></tr>
+<tr><td><code>swipe_damage</code></td><td colspan="3" align="center">100</td><td>Damage dealt by the swipe attack.</td></tr>
+</tbody>
+</table>
+
+#### O_WORKER_5
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (34)</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td colspan="3" align="center">20</td><td>Maximum hit points.</td></tr>
+<tr><td><code>damage</code></td><td colspan="3" align="center">30</td><td>Damage dealt by gun shots.</td></tr>
+</tbody>
+</table>
+
+#### O_JELLY
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (35)</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td colspan="3" align="center">10</td><td>Maximum hit points.</td></tr>
+<tr><td><code>damage</code></td><td colspan="3" align="center">5</td><td>Damage dealt by the jelly sting.</td></tr>
+</tbody>
+</table>
+
+#### O_SPIDER
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (36)</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td colspan="3" align="center">5</td><td>Maximum hit points.</td></tr>
+<tr><td><code>damage</code></td><td colspan="3" align="center">25</td><td>Damage dealt by bite attacks.</td></tr>
+</tbody>
+</table>
+
+#### O_BIG_SPIDER
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (37)</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td colspan="3" align="center">40</td><td>Maximum hit points.</td></tr>
+<tr><td><code>damage</code></td><td colspan="3" align="center">100</td><td>Damage dealt by the big spider bite.</td></tr>
+</tbody>
+</table>
+
+#### O_CROW
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (38)</th><th align="center">TR3 (27)</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td colspan="2" align="center">15</td><td align="center">8</td><td>Maximum hit points.</td></tr>
+<tr><td><code>damage</code></td><td colspan="3" align="center">20</td><td>Damage dealt by the bird attack.</td></tr>
+</tbody>
+</table>
+
+#### O_TIGER
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (39)</th><th align="center">TR3 (28)</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td colspan="2" align="center">20</td><td align="center">24</td><td>Maximum hit points.</td></tr>
+<tr><td><code>damage</code></td><td colspan="2" align="center">100</td><td align="center">90</td><td>Damage dealt by bite attacks.</td></tr>
+</tbody>
+</table>
+
+#### O_XIAN_SPEARMAN
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (41)</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td colspan="3" align="center">100</td><td>Maximum hit points.</td></tr>
+<tr><td><code>hit_1_damage</code></td><td colspan="3" align="center">75</td><td>Damage dealt by attack 1.</td></tr>
+<tr><td><code>hit_2_damage</code></td><td colspan="3" align="center">75</td><td>Damage dealt by attacks 2 to 4.</td></tr>
+<tr><td><code>hit_5_damage</code></td><td colspan="3" align="center">75</td><td>Damage dealt by attack 5.</td></tr>
+<tr><td><code>hit_6_damage</code></td><td colspan="3" align="center">120</td><td>Damage dealt by attack 6.</td></tr>
+</tbody>
+</table>
+
+#### O_XIAN_KNIGHT
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (43)</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td colspan="3" align="center">80</td><td>Maximum hit points.</td></tr>
+<tr><td><code>damage</code></td><td colspan="3" align="center">300</td><td>Damage dealt by sword slashes.</td></tr>
+</tbody>
+</table>
+
+#### O_YETI
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (45)</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td colspan="3" align="center">30</td><td>Maximum hit points.</td></tr>
+<tr><td><code>punch_damage</code></td><td colspan="3" align="center">100</td><td>Damage dealt by attack 1.</td></tr>
+<tr><td><code>thump_damage</code></td><td colspan="3" align="center">150</td><td>Damage dealt by attack 2.</td></tr>
+<tr><td><code>charge_damage</code></td><td colspan="3" align="center">200</td><td>Damage dealt by attack 3.</td></tr>
+</tbody>
+</table>
+
+#### O_BIRD_GUARDIAN
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (46)</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td colspan="3" align="center">200</td><td>Maximum hit points.</td></tr>
+<tr><td><code>damage</code></td><td colspan="3" align="center">200</td><td>Damage dealt by the bird guardian punch.</td></tr>
+</tbody>
+</table>
+
+#### O_EAGLE
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (47)</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td colspan="3" align="center">20</td><td>Maximum hit points.</td></tr>
+<tr><td><code>damage</code></td><td colspan="3" align="center">20</td><td>Damage dealt by the bird attack.</td></tr>
+</tbody>
+</table>
+
+#### O_BANDIT_1
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (48)</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td colspan="3" align="center">45</td><td>Maximum hit points.</td></tr>
+<tr><td><code>damage</code></td><td colspan="3" align="center">8</td><td>Damage dealt by the bandit's shot.</td></tr>
+</tbody>
+</table>
+
+#### O_BANDIT_2
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (49)</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td colspan="3" align="center">50</td><td>Maximum hit points.</td></tr>
+<tr><td><code>damage</code></td><td colspan="3" align="center">50</td><td>Damage dealt by the bandit's shot.</td></tr>
+</tbody>
+</table>
+
+#### O_BANDIT_2B
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (50)</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td colspan="3" align="center">50</td><td>Maximum hit points.</td></tr>
+<tr><td><code>damage</code></td><td colspan="3" align="center">50</td><td>Damage dealt by the bandit's shot.</td></tr>
+</tbody>
+</table>
+
+#### O_SKIDOO_DRIVER
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (52)</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td colspan="3" align="center">1</td><td>Maximum hit points.</td></tr>
+<tr><td><code>shot_damage</code></td><td colspan="3" align="center">50</td><td>Damage dealt by shots when Lara is not mounted.</td></tr>
+<tr><td><code>mounted_shot_damage</code></td><td colspan="3" align="center">10</td><td>Damage dealt by shots when Lara is mounted.</td></tr>
+</tbody>
+</table>
+
+#### O_MONK_1
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (53)</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td colspan="3" align="center">30</td><td>Maximum hit points.</td></tr>
+<tr><td><code>damage</code></td><td colspan="3" align="center">150</td><td>Damage dealt by melee attacks.</td></tr>
+<tr><td><code>enemy_damage</code></td><td colspan="3" align="center">5</td><td>Damage dealt by melee attacks against non-player targets.</td></tr>
+</tbody>
+</table>
+
+#### O_MONK_2
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (54)</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td colspan="3" align="center">30</td><td>Maximum hit points.</td></tr>
+<tr><td><code>damage</code></td><td colspan="3" align="center">150</td><td>Damage dealt by melee attacks.</td></tr>
+<tr><td><code>enemy_damage</code></td><td colspan="3" align="center">5</td><td>Damage dealt by melee attacks against non-player targets.</td></tr>
+</tbody>
+</table>
+
+#### O_MONK_3
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (267)</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td colspan="3" align="center">30</td><td>Maximum hit points.</td></tr>
+<tr><td><code>damage</code></td><td colspan="3" align="center">150</td><td>Damage dealt by melee attacks.</td></tr>
+<tr><td><code>enemy_damage</code></td><td colspan="3" align="center">5</td><td>Damage dealt by melee attacks against non-player targets.</td></tr>
+</tbody>
+</table>
+
+#### O_TRIBE_AXEMAN
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (20)</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td colspan="3" align="center">28</td><td>Maximum hit points.</td></tr>
+<tr><td><code>attack_2_damage</code></td><td colspan="3" align="center">8</td><td>Damage dealt by attack 2.</td></tr>
+<tr><td><code>attack_3_damage</code></td><td colspan="3" align="center">32</td><td>Damage dealt by attack 3.</td></tr>
+<tr><td><code>attack_4_damage</code></td><td colspan="3" align="center">8</td><td>Damage dealt by attack 4.</td></tr>
+<tr><td><code>attack_5_damage</code></td><td colspan="3" align="center">8</td><td>Damage dealt by attack 5.</td></tr>
+<tr><td><code>attack_6_damage</code></td><td colspan="3" align="center">32</td><td>Damage dealt by attack 6.</td></tr>
+<tr><td><code>enemy_damage</code></td><td colspan="3" align="center">2</td><td>Damage dealt to non-player targets.</td></tr>
+</tbody>
+</table>
+
+#### O_TRIBE_PIPEMAN
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (21)</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td colspan="3" align="center">28</td><td>Maximum hit points.</td></tr>
+<tr><td><code>damage</code></td><td colspan="3" align="center">100</td><td>Damage dealt by melee attacks.</td></tr>
+<tr><td><code>enemy_damage</code></td><td colspan="3" align="center">5</td><td>Damage dealt to non-player targets.</td></tr>
+</tbody>
+</table>
+
+#### O_PATROL_DOG
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (22)</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td colspan="3" align="center">16</td><td>Maximum hit points.</td></tr>
+<tr><td><code>lunge_damage</code></td><td colspan="3" align="center">50</td><td>Damage dealt by the lunge attack.</td></tr>
+<tr><td><code>bite_damage</code></td><td colspan="3" align="center">12</td><td>Damage dealt by the bite attack.</td></tr>
+</tbody>
+</table>
+
+#### O_VULTURE
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (29)</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td colspan="3" align="center">18</td><td>Maximum hit points.</td></tr>
+<tr><td><code>damage</code></td><td colspan="3" align="center">20</td><td>Damage dealt by the bird attack.</td></tr>
+</tbody>
+</table>
+
+#### O_COMPY
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (34)</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td colspan="3" align="center">10</td><td>Maximum hit points.</td></tr>
+<tr><td><code>damage</code></td><td colspan="3" align="center">90</td><td>Damage dealt by the compy attack.</td></tr>
+</tbody>
+</table>
+
+#### O_LIZARD
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (35)</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td colspan="3" align="center">36</td><td>Maximum hit points.</td></tr>
+<tr><td><code>bite_damage</code></td><td colspan="3" align="center">100</td><td>Damage dealt by the lizard bite.</td></tr>
+<tr><td><code>swipe_damage</code></td><td colspan="3" align="center">120</td><td>Damage dealt by the lizard swipe attack.</td></tr>
+</tbody>
+</table>
+
+#### O_TRIBE_BOSS
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (36)</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td colspan="3" align="center">200</td><td>Maximum hit points.</td></tr>
+<tr><td><code>head_beam_damage</code></td><td colspan="3" align="center">10000</td><td>Damage dealt by the head electric beam.</td></tr>
+</tbody>
+</table>
+
+#### O_STHPAC_MERCENARY
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (37)</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td colspan="3" align="center">30</td><td>Maximum hit points.</td></tr>
+<tr><td><code>damage</code></td><td colspan="3" align="center">28</td><td>Damage dealt by the mercenary's shot.</td></tr>
+</tbody>
+</table>
+
+#### O_RX_WORKER_1
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (39)</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td colspan="3" align="center">34</td><td>Maximum hit points.</td></tr>
+<tr><td><code>damage</code></td><td colspan="3" align="center">35</td><td>Damage dealt by shots.</td></tr>
+</tbody>
+</table>
+
+#### O_RX_WORKER_2
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (40)</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td colspan="3" align="center">30</td><td>Maximum hit points.</td></tr>
+<tr><td><code>damage</code></td><td colspan="3" align="center">28</td><td>Damage dealt by shots.</td></tr>
+</tbody>
+</table>
+
+#### O_HUSKIE
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (41)</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td colspan="3" align="center">16</td><td>Maximum hit points.</td></tr>
+<tr><td><code>lunge_damage</code></td><td colspan="3" align="center">50</td><td>Damage dealt by the lunge attack.</td></tr>
+<tr><td><code>bite_damage</code></td><td colspan="3" align="center">12</td><td>Damage dealt by the bite attack.</td></tr>
+</tbody>
+</table>
+
+#### O_CRAWLER_MUTANT
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (42)</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td colspan="3" align="center">50</td><td>Maximum hit points.</td></tr>
+</tbody>
+</table>
+
+#### O_WASP_MUTANT
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (44)</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td colspan="3" align="center">24</td><td>Maximum hit points.</td></tr>
+<tr><td><code>damage</code></td><td colspan="3" align="center">50</td><td>Damage dealt by the sting attack.</td></tr>
+</tbody>
+</table>
+
+#### O_CLAW_MUTANT
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (45)</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td colspan="3" align="center">130</td><td>Maximum hit points.</td></tr>
+<tr><td><code>damage</code></td><td colspan="3" align="center">100</td><td>Damage dealt by the claw mutant melee attack.</td></tr>
+<tr><td><code>plasma_ball_damage</code></td><td colspan="3" align="center">200</td><td>Damage dealt by the claw mutant plasma ball.</td></tr>
+</tbody>
+</table>
+
+#### O_HYBRID_MUTANT
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (46)</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td colspan="3" align="center">90</td><td>Maximum hit points.</td></tr>
+<tr><td><code>jump_damage</code></td><td colspan="3" align="center">20</td><td>Damage dealt by the hybrid mutant jump attack.</td></tr>
+<tr><td><code>slash_damage</code></td><td colspan="3" align="center">100</td><td>Damage dealt by the hybrid mutant slash attack.</td></tr>
+<tr><td><code>kick_damage</code></td><td colspan="3" align="center">80</td><td>Damage dealt by the hybrid mutant kick attack.</td></tr>
+</tbody>
+</table>
+
+#### O_WILLARD
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (49)</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td colspan="3" align="center">200</td><td>Maximum hit points.</td></tr>
+<tr><td><code>touch_damage</code></td><td colspan="3" align="center">10</td><td>Damage dealt by body contact.</td></tr>
+<tr><td><code>bite_damage</code></td><td colspan="3" align="center">220</td><td>Damage dealt by bite attacks.</td></tr>
+<tr><td><code>lunge_damage</code></td><td colspan="3" align="center">440</td><td>Damage dealt by the lunge attack.</td></tr>
+<tr><td><code>plasma_ball_damage</code></td><td colspan="3" align="center">10000</td><td>Damage dealt by direct plasma ball hits.</td></tr>
+</tbody>
+</table>
+
+#### O_RX_WORKER_3
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (50)</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td colspan="3" align="center">36</td><td>Maximum hit points.</td></tr>
+</tbody>
+</table>
+
+#### O_SWAT_1
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (51)</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td colspan="3" align="center">45</td><td>Maximum hit points.</td></tr>
+<tr><td><code>damage</code></td><td colspan="3" align="center">28</td><td>Damage dealt by shots.</td></tr>
+<tr><td><code>final_shot_damage</code></td><td colspan="3" align="center">84</td><td>Damage dealt by the death-state final shot.</td></tr>
+</tbody>
+</table>
+
+#### O_SWAT_2
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (52)</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td colspan="3" align="center">45</td><td>Maximum hit points.</td></tr>
+<tr><td><code>damage</code></td><td colspan="3" align="center">28</td><td>Damage dealt by shots.</td></tr>
+<tr><td><code>final_shot_damage</code></td><td colspan="3" align="center">84</td><td>Damage dealt by the death-state final shot.</td></tr>
+</tbody>
+</table>
+
+#### O_PUNK_1
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (53)</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td colspan="3" align="center">20</td><td>Maximum hit points.</td></tr>
+<tr><td><code>hit_damage</code></td><td colspan="3" align="center">80</td><td>Damage dealt by punches 1 and 2.</td></tr>
+<tr><td><code>swipe_damage</code></td><td colspan="3" align="center">100</td><td>Damage dealt by punch 3.</td></tr>
+</tbody>
+</table>
+
+#### O_PUNK_2
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (54)</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td colspan="3" align="center">20</td><td>Maximum hit points.</td></tr>
+<tr><td><code>hit_damage</code></td><td colspan="3" align="center">80</td><td>Damage dealt by punches 1 and 2.</td></tr>
+<tr><td><code>swipe_damage</code></td><td colspan="3" align="center">100</td><td>Damage dealt by punch 3.</td></tr>
+</tbody>
+</table>
+
+#### O_SECURITY_GUARD
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (56)</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td colspan="3" align="center">28</td><td>Maximum hit points.</td></tr>
+<tr><td><code>damage</code></td><td colspan="3" align="center">32</td><td>Damage dealt by shots.</td></tr>
+<tr><td><code>final_shot_damage</code></td><td colspan="3" align="center">64</td><td>Damage dealt by the death-state final shot.</td></tr>
+</tbody>
+</table>
+
+#### O_SOPHIA
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (57)</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td colspan="3" align="center">300</td><td>Maximum hit points.</td></tr>
+<tr><td><code>knockback_damage</code></td><td colspan="3" align="center">200</td><td>Damage dealt by the knockback shockwave.</td></tr>
+<tr><td><code>laser_bolt_damage</code></td><td colspan="3" align="center">30</td><td>Damage dealt by regular laser bolt direct hits.</td></tr>
+<tr><td><code>big_laser_bolt_damage</code></td><td colspan="3" align="center">542</td><td>Damage dealt by the big laser bolt direct hit.</td></tr>
+<tr><td><code>laser_bolt_splash_damage</code></td><td colspan="3" align="center">16</td><td>Maximum splash damage dealt by regular laser bolts.</td></tr>
+<tr><td><code>big_laser_bolt_splash_damage</code></td><td colspan="3" align="center">64</td><td>Maximum splash damage dealt by the big laser bolt.</td></tr>
+<tr><td><code>plasma_ball_damage</code></td><td colspan="3" align="center">25</td><td>Damage dealt by plasma ball direct hits.</td></tr>
+</tbody>
+</table>
+
+#### O_MP_1
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (60)</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td colspan="3" align="center">25</td><td>Maximum hit points.</td></tr>
+<tr><td><code>punch_1_damage</code></td><td colspan="3" align="center">80</td><td>Damage dealt by punch 1.</td></tr>
+<tr><td><code>punch_2_damage</code></td><td colspan="3" align="center">80</td><td>Damage dealt by punch 2.</td></tr>
+<tr><td><code>punch_3_damage</code></td><td colspan="3" align="center">100</td><td>Damage dealt by punch 3.</td></tr>
+<tr><td><code>kick_damage</code></td><td colspan="3" align="center">150</td><td>Damage dealt by the kick attack.</td></tr>
+</tbody>
+</table>
+
+#### O_MP_2
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (61)</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td colspan="3" align="center">28</td><td>Maximum hit points.</td></tr>
+<tr><td><code>damage</code></td><td colspan="3" align="center">32</td><td>Damage dealt by gun shots.</td></tr>
+</tbody>
+</table>
+
+#### O_PRISONER
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (62)</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td colspan="3" align="center">20</td><td>Maximum hit points.</td></tr>
+<tr><td><code>punch_1_damage</code></td><td colspan="3" align="center">40</td><td>Damage dealt by punch 1.</td></tr>
+<tr><td><code>punch_2_damage</code></td><td colspan="3" align="center">40</td><td>Damage dealt by punch 2.</td></tr>
+<tr><td><code>punch_3_damage</code></td><td colspan="3" align="center">50</td><td>Damage dealt by punch 3.</td></tr>
+</tbody>
+</table>
+
+#### O_SWAT_3
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (63)</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td colspan="3" align="center">45</td><td>Maximum hit points.</td></tr>
+<tr><td><code>damage</code></td><td colspan="3" align="center">28</td><td>Damage dealt by shots.</td></tr>
+<tr><td><code>final_shot_damage</code></td><td colspan="3" align="center">84</td><td>Damage dealt by the death-state final shot.</td></tr>
+</tbody>
+</table>
+
+#### O_CIVILIAN
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (65)</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td colspan="3" align="center">15</td><td>Maximum hit points.</td></tr>
+<tr><td><code>punch_1_damage</code></td><td colspan="3" align="center">40</td><td>Damage dealt by the civilian's first punch attack.</td></tr>
+<tr><td><code>punch_2_damage</code></td><td colspan="3" align="center">40</td><td>Damage dealt by the civilian's second punch attack.</td></tr>
+<tr><td><code>punch_3_damage</code></td><td colspan="3" align="center">50</td><td>Damage dealt by the civilian's third punch attack.</td></tr>
+</tbody>
+</table>
+
+#### O_COBRA
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (69)</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td colspan="3" align="center">8</td><td>Maximum hit points.</td></tr>
+<tr><td><code>damage</code></td><td colspan="3" align="center">80</td><td>Damage dealt by the cobra bite.</td></tr>
+<tr><td><code>alert_radius</code></td><td colspan="3" align="center">1.5</td><td>Alert radius, in sectors.</td></tr>
+<tr><td><code>attack_radius</code></td><td colspan="3" align="center">1</td><td>Attack radius, in sectors.</td></tr>
+<tr><td><code>forget_radius</code></td><td colspan="3" align="center">3</td><td>Forget radius, in sectors.</td></tr>
+</tbody>
+</table>
+
+#### O_SHIVA
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (70)</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td colspan="3" align="center">100</td><td>Maximum hit points.</td></tr>
+<tr><td><code>pincer_damage</code></td><td colspan="3" align="center">150</td><td>Damage dealt by the pincer attack.</td></tr>
+<tr><td><code>chopper_damage</code></td><td colspan="3" align="center">180</td><td>Damage dealt by the chopper attack.</td></tr>
+</tbody>
+</table>
+
+#### O_MONKEY
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (71)</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td colspan="3" align="center">8</td><td>Maximum hit points.</td></tr>
+<tr><td><code>damage</code></td><td colspan="3" align="center">40</td><td>Damage dealt by bite attacks.</td></tr>
+<tr><td><code>jump_damage</code></td><td colspan="3" align="center">50</td><td>Damage dealt by the jumping bite attack.</td></tr>
+</tbody>
+</table>
+
+#### O_TONY
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (73)</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td colspan="3" align="center">100</td><td>Maximum hit points.</td></tr>
+<tr><td><code>fire_ball_damage</code></td><td colspan="3" align="center">200</td><td>Damage dealt by direct fire ball hits.</td></tr>
+</tbody>
+</table>
+
+#### O_TREX_ALPHA
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (287)</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td colspan="3" align="center">800</td><td>Maximum hit points.</td></tr>
+<tr><td><code>touch_damage</code></td><td colspan="3" align="center">1</td><td>Damage dealt by body contact.</td></tr>
+<tr><td><code>trample_damage</code></td><td colspan="3" align="center">10</td><td>Damage dealt while trampling.</td></tr>
+<tr><td><code>bite_damage</code></td><td colspan="3" align="center">10000</td><td>Damage dealt by the bite attack.</td></tr>
+<tr><td><code>raptor_damage</code></td><td colspan="3" align="center">50</td><td>Damage dealt to raptors by the bite attack.</td></tr>
+</tbody>
+</table>
+
+#### O_WINSTON_ARMY
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (361)</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td colspan="3" align="center">20</td><td>Maximum hit points.</td></tr>
+</tbody>
+</table>
+
+## Traps
+
+#### O_SWINGING_AXE
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1 (36)</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>damage</code></td><td colspan="3" align="center">100</td><td>Damage dealt while Lara is touching the swinging axe.</td></tr>
+</tbody>
+</table>
+
+#### O_SPIKES
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1 (37)</th><th align="center">TR2 (59)</th><th align="center">TR3 (87)</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>damage</code></td><td colspan="3" align="center">15</td><td>Damage dealt when Lara hits the spikes without dying instantly.</td></tr>
+</tbody>
+</table>
+
+#### O_ROLLING_BALL_1
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1 (38)</th><th align="center">TR2 (60)</th><th align="center">TR3 (88)</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>air_damage</code></td><td colspan="3" align="center">100</td><td>Damage dealt when Lara is clipped by a moving boulder without being crushed.</td></tr>
+</tbody>
+</table>
+
+#### O_DART
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1 (39)</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>damage</code></td><td colspan="3" align="center">50</td><td>Damage dealt on hit.</td></tr>
+<tr><td><code>poison</code></td><td colspan="3" align="center">false</td><td>Apply poison buildup in addition to hit damage.</td></tr>
+</tbody>
+</table>
+
+#### O_TEETH_TRAP
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1 (42)</th><th align="center">TR2 (64)</th><th align="center">TR3 (94)</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>damage</code></td><td colspan="3" align="center">400</td><td>Damage dealt while Lara is caught in the teeth trap.</td></tr>
+</tbody>
+</table>
+
+#### O_DAMOCLES_SWORD
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1 (43)</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>damage</code></td><td colspan="3" align="center">100</td><td>Damage dealt when Lara is struck by the falling Damocles sword.</td></tr>
+</tbody>
+</table>
+
+#### O_LIGHTNING_EMITTER
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1 (46)</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>damage</code></td><td colspan="3" align="center">400</td><td>Damage dealt when Lara is struck by the lightning emitter.</td></tr>
+</tbody>
+</table>
+
+#### O_FALLING_CEILING_1
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1 (53)</th><th align="center">TR2 (79)</th><th align="center">TR3 (107)</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>damage</code></td><td colspan="3" align="center">300</td><td>Damage dealt while Lara is touching the falling ceiling.</td></tr>
+</tbody>
+</table>
+
+#### O_FALLING_CEILING_2
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1 (54)</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>damage</code></td><td colspan="3" align="center">300</td><td>Damage dealt while Lara is touching the falling ceiling.</td></tr>
+</tbody>
+</table>
+
+#### O_LAVA_WEDGE
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1 (180)</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>speed</code></td><td colspan="3" align="center">25</td><td>Offset applied each frame while the lava wedge advances.</td></tr>
+</tbody>
+</table>
+
+#### O_PENDULUM_1
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (58)</th><th align="center">TR3 (86)</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>damage</code></td><td colspan="3" align="center">50</td><td>Damage dealt while Lara is touching the pendulum.</td></tr>
+</tbody>
+</table>
+
+#### O_DISC
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (61)</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>damage</code></td><td colspan="3" align="center">50</td><td>Damage dealt on hit.</td></tr>
+<tr><td><code>poison</code></td><td colspan="3" align="center">false</td><td>Apply poison buildup in addition to hit damage.</td></tr>
+</tbody>
+</table>
+
+#### O_PROPELLER_1
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (76)</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>damage</code></td><td colspan="3" align="center">200</td><td>Damage dealt while Lara is touching the propeller.</td></tr>
+</tbody>
+</table>
+
+#### O_HOOK
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (78)</th><th align="center">TR3 (106)</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>damage</code></td><td colspan="3" align="center">50</td><td>Damage dealt while Lara is touching the hook.</td></tr>
+</tbody>
+</table>
+
+#### O_SPINNING_BLADE
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (80)</th><th align="center">TR3 (108)</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>damage</code></td><td colspan="3" align="center">100</td><td>Damage dealt while Lara is touching the spinning blade.</td></tr>
+</tbody>
+</table>
+
+#### O_BLADE
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (81)</th><th align="center">TR3 (111)</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>damage</code></td><td colspan="3" align="center">100</td><td>Damage dealt while Lara is touching the blade trap.</td></tr>
+</tbody>
+</table>
+
+#### O_KILLER_STATUE
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (82)</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>damage</code></td><td colspan="3" align="center">20</td><td>Damage dealt while Lara is struck by the killer statue.</td></tr>
+</tbody>
+</table>
+
+#### O_ROLLING_BALL_2
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (83)</th><th align="center">TR3 (112)</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>air_damage</code></td><td colspan="3" align="center">100</td><td>Damage dealt when Lara is clipped by a moving boulder without being crushed.</td></tr>
+</tbody>
+</table>
+
+#### O_ICICLE
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (84)</th><th align="center">TR3 (113)</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>damage</code></td><td colspan="3" align="center">200</td><td>Damage dealt when Lara is struck by the falling icicle.</td></tr>
+</tbody>
+</table>
+
+#### O_SPIKE_WALL
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (85)</th><th align="center">TR3 (114)</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>speed</code></td><td colspan="3" align="center">16</td><td>Offset applied each frame while the spike wall advances.</td></tr>
+<tr><td><code>damage</code></td><td colspan="3" align="center">20</td><td>Damage dealt while Lara is touching the spike wall.</td></tr>
+</tbody>
+</table>
+
+#### O_CEILING_SPIKES
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (87)</th><th align="center">TR3 (116)</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>speed</code></td><td colspan="3" align="center">5</td><td>Offset applied each frame while the ceiling spikes descend.</td></tr>
+<tr><td><code>damage</code></td><td colspan="3" align="center">20</td><td>Damage dealt while Lara is touching the ceiling spikes.</td></tr>
+</tbody>
+</table>
+
+#### O_PROPELLER_2
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (94)</th><th align="center">TR3 (119)</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>damage</code></td><td colspan="3" align="center">200</td><td>Damage dealt while Lara is touching the propeller.</td></tr>
+</tbody>
+</table>
+
+#### O_PROPELLER_3
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (95)</th><th align="center">TR3 (120)</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>damage</code></td><td colspan="3" align="center">200</td><td>Damage dealt while Lara is touching the propeller.</td></tr>
+</tbody>
+</table>
+
+#### O_PENDULUM_2
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (96)</th><th align="center">TR3 (121)</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>damage</code></td><td colspan="3" align="center">50</td><td>Damage dealt while Lara is touching the pendulum.</td></tr>
+</tbody>
+</table>
+
+#### O_ROLLING_BALL_3
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (101)</th><th align="center">TR3 (126)</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>air_damage</code></td><td colspan="3" align="center">100</td><td>Damage dealt when Lara is clipped by a moving boulder without being crushed.</td></tr>
+</tbody>
+</table>
+
+#### O_SENTRY_GUN
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (64)</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>damage</code></td><td colspan="3" align="center">10</td><td>Damage dealt when the sentry gun hits Lara.</td></tr>
+<tr><td><code>max_hit_points</code></td><td colspan="3" align="center">100</td><td>Maximum hit points.</td></tr>
+</tbody>
+</table>
+
+#### O_SECURITY_LASER_ALARM
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (66)</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td colspan="3" align="center">1</td><td>Maximum hit points.</td></tr>
+</tbody>
+</table>
+
+#### O_SECURITY_LASER_DEADLY
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (67)</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>damage</code></td><td colspan="3" align="center">10</td><td>Damage dealt when Lara crosses the security laser.</td></tr>
+<tr><td><code>max_hit_points</code></td><td colspan="3" align="center">1</td><td>Maximum hit points.</td></tr>
+</tbody>
+</table>
+
+#### O_SECURITY_LASER_KILLER
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (68)</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td colspan="3" align="center">1</td><td>Maximum hit points.</td></tr>
+</tbody>
+</table>
+
+#### O_ROLLING_BALL_4
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (89)</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>air_damage</code></td><td colspan="3" align="center">100</td><td>Damage dealt when Lara is clipped by a moving boulder without being crushed.</td></tr>
+</tbody>
+</table>
+
+#### O_POISON_DART
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (90)</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>damage</code></td><td colspan="3" align="center">25</td><td>Damage dealt on hit.</td></tr>
+<tr><td><code>poison</code></td><td colspan="3" align="center">true</td><td>Apply poison buildup in addition to hit damage.</td></tr>
+</tbody>
+</table>
+
+#### O_ROTATING_LASER
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (291)</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>damage</code></td><td colspan="3" align="center">25</td><td>Damage dealt while Lara is touching the rotating laser.</td></tr>
+</tbody>
+</table>
+
+#### O_FLAME_EMITTER_SIDE
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (333)</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>interval</code></td><td colspan="3" align="center">2</td><td>Interval between flame bursts, in seconds.</td></tr>
+</tbody>
+</table>
+
+#### O_GENERIC_TRAP_1
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>touch_mask</code></td><td colspan="3" align="center">-1</td><td>A bitmask of damaging mesh numbers. The default value indicates all meshes are damaging.</td></tr>
+<tr><td><code>damage</code></td><td colspan="3" align="center">50</td><td>Damage dealt when Lara touches the trap.</td></tr>
+<tr><td><code>blood_intensity</code></td><td colspan="3" align="center">3</td><td>The intensity of blood to spawn when Lara is damaged (0 - 10).</td></tr>
+<tr><td><code>push_lara</code></td><td colspan="3" align="center">true</td><td>Whether or not Lara should be pushed when colliding with the trap.</td></tr>
+</tbody>
+</table>
+
+#### O_GENERIC_TRAP_2
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>touch_mask</code></td><td colspan="3" align="center">-1</td><td>A bitmask of damaging mesh numbers. The default value indicates all meshes are damaging.</td></tr>
+<tr><td><code>damage</code></td><td colspan="3" align="center">50</td><td>Damage dealt when Lara touches the trap.</td></tr>
+<tr><td><code>blood_intensity</code></td><td colspan="3" align="center">3</td><td>The intensity of blood to spawn when Lara is damaged (0 - 10).</td></tr>
+<tr><td><code>push_lara</code></td><td colspan="3" align="center">true</td><td>Whether or not Lara should be pushed when colliding with the trap.</td></tr>
+</tbody>
+</table>
+
+#### O_GENERIC_TRAP_3
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>touch_mask</code></td><td colspan="3" align="center">-1</td><td>A bitmask of damaging mesh numbers. The default value indicates all meshes are damaging.</td></tr>
+<tr><td><code>damage</code></td><td colspan="3" align="center">50</td><td>Damage dealt when Lara touches the trap.</td></tr>
+<tr><td><code>blood_intensity</code></td><td colspan="3" align="center">3</td><td>The intensity of blood to spawn when Lara is damaged (0 - 10).</td></tr>
+<tr><td><code>push_lara</code></td><td colspan="3" align="center">true</td><td>Whether or not Lara should be pushed when colliding with the trap.</td></tr>
+</tbody>
+</table>
+
+#### O_GENERIC_TRAP_4
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>touch_mask</code></td><td colspan="3" align="center">-1</td><td>A bitmask of damaging mesh numbers. The default value indicates all meshes are damaging.</td></tr>
+<tr><td><code>damage</code></td><td colspan="3" align="center">50</td><td>Damage dealt when Lara touches the trap.</td></tr>
+<tr><td><code>blood_intensity</code></td><td colspan="3" align="center">3</td><td>The intensity of blood to spawn when Lara is damaged (0 - 10).</td></tr>
+<tr><td><code>push_lara</code></td><td colspan="3" align="center">true</td><td>Whether or not Lara should be pushed when colliding with the trap.</td></tr>
+</tbody>
+</table>
+
+#### O_GENERIC_TRAP_5
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>touch_mask</code></td><td colspan="3" align="center">-1</td><td>A bitmask of damaging mesh numbers. The default value indicates all meshes are damaging.</td></tr>
+<tr><td><code>damage</code></td><td colspan="3" align="center">50</td><td>Damage dealt when Lara touches the trap.</td></tr>
+<tr><td><code>blood_intensity</code></td><td colspan="3" align="center">3</td><td>The intensity of blood to spawn when Lara is damaged (0 - 10).</td></tr>
+<tr><td><code>push_lara</code></td><td colspan="3" align="center">true</td><td>Whether or not Lara should be pushed when colliding with the trap.</td></tr>
+</tbody>
+</table>
+
+#### O_GENERIC_TRAP_6
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>touch_mask</code></td><td colspan="3" align="center">-1</td><td>A bitmask of damaging mesh numbers. The default value indicates all meshes are damaging.</td></tr>
+<tr><td><code>damage</code></td><td colspan="3" align="center">50</td><td>Damage dealt when Lara touches the trap.</td></tr>
+<tr><td><code>blood_intensity</code></td><td colspan="3" align="center">3</td><td>The intensity of blood to spawn when Lara is damaged (0 - 10).</td></tr>
+<tr><td><code>push_lara</code></td><td colspan="3" align="center">true</td><td>Whether or not Lara should be pushed when colliding with the trap.</td></tr>
+</tbody>
+</table>
+
+#### O_GENERIC_TRAP_7
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>touch_mask</code></td><td colspan="3" align="center">-1</td><td>A bitmask of damaging mesh numbers. The default value indicates all meshes are damaging.</td></tr>
+<tr><td><code>damage</code></td><td colspan="3" align="center">50</td><td>Damage dealt when Lara touches the trap.</td></tr>
+<tr><td><code>blood_intensity</code></td><td colspan="3" align="center">3</td><td>The intensity of blood to spawn when Lara is damaged (0 - 10).</td></tr>
+<tr><td><code>push_lara</code></td><td colspan="3" align="center">true</td><td>Whether or not Lara should be pushed when colliding with the trap.</td></tr>
+</tbody>
+</table>
+
+#### O_GENERIC_TRAP_8
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>touch_mask</code></td><td colspan="3" align="center">-1</td><td>A bitmask of damaging mesh numbers. The default value indicates all meshes are damaging.</td></tr>
+<tr><td><code>damage</code></td><td colspan="3" align="center">50</td><td>Damage dealt when Lara touches the trap.</td></tr>
+<tr><td><code>blood_intensity</code></td><td colspan="3" align="center">3</td><td>The intensity of blood to spawn when Lara is damaged (0 - 10).</td></tr>
+<tr><td><code>push_lara</code></td><td colspan="3" align="center">true</td><td>Whether or not Lara should be pushed when colliding with the trap.</td></tr>
+</tbody>
+</table>
+
+#### O_GENERIC_TRAP_9
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>touch_mask</code></td><td colspan="3" align="center">-1</td><td>A bitmask of damaging mesh numbers. The default value indicates all meshes are damaging.</td></tr>
+<tr><td><code>damage</code></td><td colspan="3" align="center">50</td><td>Damage dealt when Lara touches the trap.</td></tr>
+<tr><td><code>blood_intensity</code></td><td colspan="3" align="center">3</td><td>The intensity of blood to spawn when Lara is damaged (0 - 10).</td></tr>
+<tr><td><code>push_lara</code></td><td colspan="3" align="center">true</td><td>Whether or not Lara should be pushed when colliding with the trap.</td></tr>
+</tbody>
+</table>
+
+#### O_GENERIC_TRAP_10
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>touch_mask</code></td><td colspan="3" align="center">-1</td><td>A bitmask of damaging mesh numbers. The default value indicates all meshes are damaging.</td></tr>
+<tr><td><code>damage</code></td><td colspan="3" align="center">50</td><td>Damage dealt when Lara touches the trap.</td></tr>
+<tr><td><code>blood_intensity</code></td><td colspan="3" align="center">3</td><td>The intensity of blood to spawn when Lara is damaged (0 - 10).</td></tr>
+<tr><td><code>push_lara</code></td><td colspan="3" align="center">true</td><td>Whether or not Lara should be pushed when colliding with the trap.</td></tr>
+</tbody>
+</table>
+
+## General
+
+#### O_LARA
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1 (0)</th><th align="center">TR2 (0)</th><th align="center">TR3 (0)</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td colspan="3" align="center">1000</td><td>Maximum hit points.</td></tr>
+</tbody>
+</table>
+
+#### O_PLAYER_1
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1 (77)</th><th align="center">TR2 (123)</th><th align="center">TR3 (148)</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td colspan="3" align="center">1</td><td>Maximum hit points.</td></tr>
+</tbody>
+</table>
+
+#### O_PLAYER_2
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1 (78)</th><th align="center">TR2 (124)</th><th align="center">TR3 (149)</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td colspan="3" align="center">1</td><td>Maximum hit points.</td></tr>
+</tbody>
+</table>
+
+#### O_PLAYER_3
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1 (79)</th><th align="center">TR2 (125)</th><th align="center">TR3 (150)</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td colspan="3" align="center">1</td><td>Maximum hit points.</td></tr>
+</tbody>
+</table>
+
+#### O_PLAYER_4
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1 (80)</th><th align="center">TR2 (126)</th><th align="center">TR3 (151)</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td colspan="3" align="center">1</td><td>Maximum hit points.</td></tr>
+</tbody>
+</table>
+
+#### O_SCION_ITEM_3
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1 (145)</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td colspan="3" align="center">5</td><td>Maximum hit points.</td></tr>
+</tbody>
+</table>
+
+#### O_FLARE_ITEM
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1 (193)</th><th align="center">TR2 (152)</th><th align="center">TR3 (179)</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>burn_time</code></td><td colspan="2" align="center">60</td><td align="center">30</td><td>How long the flare burns for, in seconds.</td></tr>
+</tbody>
+</table>
+
+#### O_SKIDOO_FAST
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (13)</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>track_1</code></td><td align="center">-1 (MX_SKIDOO_THEME)</td><td align="center">48 (MX_SKIDOO_THEME)</td><td align="center">-1 (MX_SKIDOO_THEME)</td><td>Random music track pool, slot 1. -1 = disabled.</td></tr>
+<tr><td><code>track_2</code></td><td colspan="3" align="center">-1</td><td>Random music track pool, slot 2. -1 = disabled.</td></tr>
+<tr><td><code>track_3</code></td><td colspan="3" align="center">-1</td><td>Random music track pool, slot 3. -1 = disabled.</td></tr>
+<tr><td><code>track_4</code></td><td colspan="3" align="center">-1</td><td>Random music track pool, slot 4. -1 = disabled.</td></tr>
+<tr><td><code>battle_track_1</code></td><td align="center">-1 (MX_BATTLE_THEME)</td><td align="center">49 (MX_BATTLE_THEME)</td><td align="center">-1 (MX_BATTLE_THEME)</td><td>Random battle music track pool, slot 1. -1 = disabled.</td></tr>
+<tr><td><code>battle_track_2</code></td><td colspan="3" align="center">-1</td><td>Random battle music track pool, slot 2. -1 = disabled.</td></tr>
+<tr><td><code>battle_track_3</code></td><td colspan="3" align="center">-1</td><td>Random battle music track pool, slot 3. -1 = disabled.</td></tr>
+<tr><td><code>battle_track_4</code></td><td colspan="3" align="center">-1</td><td>Random battle music track pool, slot 4. -1 = disabled.</td></tr>
+<tr><td><code>is_heavy</code></td><td colspan="3" align="center">true</td><td>Whether or not this vehicle can activate heavy triggers.</td></tr>
+<tr><td><code>test_static_collision</code></td><td colspan="3" align="center">false</td><td>Whether or not this vehicle can collide with static meshes.</td></tr>
+</tbody>
+</table>
+
+#### O_BOAT
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (14)</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>is_heavy</code></td><td colspan="3" align="center">true</td><td>Whether or not this vehicle can activate heavy triggers.</td></tr>
+</tbody>
+</table>
+
+#### O_SKIDOO_ARMED
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (51)</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td colspan="3" align="center">100</td><td>Maximum hit points.</td></tr>
+</tbody>
+</table>
+
+#### O_PLAYER_5
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (127)</th><th align="center">TR3 (152)</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td colspan="3" align="center">1</td><td>Maximum hit points.</td></tr>
+</tbody>
+</table>
+
+#### O_PLAYER_6
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (128)</th><th align="center">TR3 (153)</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td colspan="3" align="center">1</td><td>Maximum hit points.</td></tr>
+</tbody>
+</table>
+
+#### O_PLAYER_7
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (129)</th><th align="center">TR3 (154)</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td colspan="3" align="center">1</td><td>Maximum hit points.</td></tr>
+</tbody>
+</table>
+
+#### O_PLAYER_8
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (130)</th><th align="center">TR3 (155)</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td colspan="3" align="center">1</td><td>Maximum hit points.</td></tr>
+</tbody>
+</table>
+
+#### O_PLAYER_9
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (131)</th><th align="center">TR3 (156)</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td colspan="3" align="center">1</td><td>Maximum hit points.</td></tr>
+</tbody>
+</table>
+
+#### O_PLAYER_10
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (132)</th><th align="center">TR3 (157)</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td colspan="3" align="center">1</td><td>Maximum hit points.</td></tr>
+</tbody>
+</table>
+
+#### O_KAYAK
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (14)</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>is_heavy</code></td><td colspan="3" align="center">true</td><td>Whether or not this vehicle can activate heavy triggers.</td></tr>
+</tbody>
+</table>
+
+#### O_RIB
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (15)</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>track_1</code></td><td colspan="2" align="center">-1 (MX_RIB_THEME)</td><td align="center">12 (MX_RIB_THEME)</td><td>Random music track pool, slot 1. -1 = disabled.</td></tr>
+<tr><td><code>track_2</code></td><td colspan="3" align="center">-1</td><td>Random music track pool, slot 2. -1 = disabled.</td></tr>
+<tr><td><code>track_3</code></td><td colspan="3" align="center">-1</td><td>Random music track pool, slot 3. -1 = disabled.</td></tr>
+<tr><td><code>track_4</code></td><td colspan="3" align="center">-1</td><td>Random music track pool, slot 4. -1 = disabled.</td></tr>
+<tr><td><code>is_heavy</code></td><td colspan="3" align="center">true</td><td>Whether or not this vehicle can activate heavy triggers.</td></tr>
+</tbody>
+</table>
+
+#### O_QUAD_BIKE
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (16)</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>track_1</code></td><td colspan="3" align="center">-1</td><td>Random music track pool, slot 1. -1 = disabled.</td></tr>
+<tr><td><code>track_2</code></td><td colspan="3" align="center">-1</td><td>Random music track pool, slot 2. -1 = disabled.</td></tr>
+<tr><td><code>track_3</code></td><td colspan="3" align="center">-1</td><td>Random music track pool, slot 3. -1 = disabled.</td></tr>
+<tr><td><code>track_4</code></td><td colspan="3" align="center">-1</td><td>Random music track pool, slot 4. -1 = disabled.</td></tr>
+<tr><td><code>is_heavy</code></td><td colspan="3" align="center">true</td><td>Whether or not this vehicle can activate heavy triggers.</td></tr>
+<tr><td><code>test_static_collision</code></td><td colspan="3" align="center">false</td><td>Whether or not this vehicle can collide with static meshes.</td></tr>
+</tbody>
+</table>
+
+#### O_MINE_CART
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (17)</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>track_1</code></td><td colspan="2" align="center">-1 (MX_MINE_CART_THEME)</td><td align="center">12 (MX_MINE_CART_THEME)</td><td>Random music track pool, slot 1. -1 = disabled.</td></tr>
+<tr><td><code>track_2</code></td><td colspan="3" align="center">-1</td><td>Random music track pool, slot 2. -1 = disabled.</td></tr>
+<tr><td><code>track_3</code></td><td colspan="3" align="center">-1</td><td>Random music track pool, slot 3. -1 = disabled.</td></tr>
+<tr><td><code>track_4</code></td><td colspan="3" align="center">-1</td><td>Random music track pool, slot 4. -1 = disabled.</td></tr>
+</tbody>
+</table>
+
+#### O_UPV
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (19)</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>is_heavy</code></td><td colspan="3" align="center">true</td><td>Whether or not this vehicle can activate heavy triggers.</td></tr>
+</tbody>
+</table>
+
+#### O_ASSAULT_TARGET
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (30)</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td colspan="3" align="center">8</td><td>Maximum hit points.</td></tr>
+</tbody>
+</table>
+
+#### O_AI_GUARD
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (74)</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td colspan="3" align="center">0</td><td>Maximum hit points.</td></tr>
+</tbody>
+</table>
+
+#### O_AI_AMBUSH
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (75)</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td colspan="3" align="center">0</td><td>Maximum hit points.</td></tr>
+</tbody>
+</table>
+
+#### O_AI_PATROL_1
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (76)</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td colspan="3" align="center">0</td><td>Maximum hit points.</td></tr>
+</tbody>
+</table>
+
+#### O_AI_MODIFY
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (77)</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td colspan="3" align="center">0</td><td>Maximum hit points.</td></tr>
+</tbody>
+</table>
+
+#### O_AI_FOLLOW
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (78)</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td colspan="3" align="center">0</td><td>Maximum hit points.</td></tr>
+</tbody>
+</table>
+
+#### O_AI_PATROL_2
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (79)</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td colspan="3" align="center">0</td><td>Maximum hit points.</td></tr>
+</tbody>
+</table>
+
+#### O_AI_X1
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (80)</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td colspan="3" align="center">0</td><td>Maximum hit points.</td></tr>
+</tbody>
+</table>
+
+#### O_AI_X2
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (81)</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td colspan="3" align="center">0</td><td>Maximum hit points.</td></tr>
+</tbody>
+</table>
+
+#### O_AI_X3
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (82)</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td colspan="3" align="center">0</td><td>Maximum hit points.</td></tr>
+</tbody>
+</table>
+
+#### O_STROBE_LIGHT
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (318)</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>requires_alarm_active</code></td><td colspan="3" align="center">false</td><td>Require an alert event before the light activates.</td></tr>
+</tbody>
+</table>
+
+#### O_PIRAHNAS
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (338)</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>range</code></td><td colspan="3" align="center">((XYZ_32) { 1, 1, 1 })</td><td>Swim range, in quarter tiles.</td></tr>
+<tr><td><code>use_room_lighting</code></td><td colspan="2" align="center">True</td><td align="center">False</td><td>Whether the shoal uses the surrounding room lighting.</td></tr>
+</tbody>
+</table>
+
+#### O_TROPICAL_FISH
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (339)</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>sprite_offset</code></td><td colspan="3" align="center">0</td><td>Texture offset in `O_TROPICAL_FISH_GFX`.</td></tr>
+<tr><td><code>range</code></td><td colspan="3" align="center">((XYZ_32) { 1, 1, 1 })</td><td>Swim range, in quarter tiles.</td></tr>
+<tr><td><code>use_room_lighting</code></td><td colspan="2" align="center">True</td><td align="center">False</td><td>Whether the shoal uses the surrounding room lighting.</td></tr>
+</tbody>
+</table>
+
+#### O_ANIMATING_EXT_1
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (370)</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>kill_on_trigger</code></td><td colspan="3" align="center">false</td><td>Kill the item immediately while its trigger is inactive.</td></tr>
+</tbody>
+</table>
+
+#### O_ANIMATING_EXT_2
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>kill_on_trigger</code></td><td colspan="3" align="center">false</td><td>Kill the item immediately while its trigger is inactive.</td></tr>
+</tbody>
+</table>
+
+#### O_ANIMATING_EXT_3
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>kill_on_trigger</code></td><td colspan="3" align="center">false</td><td>Kill the item immediately while its trigger is inactive.</td></tr>
+</tbody>
+</table>
+
+#### O_ANIMATING_EXT_4
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>kill_on_trigger</code></td><td colspan="3" align="center">false</td><td>Kill the item immediately while its trigger is inactive.</td></tr>
+</tbody>
+</table>
+
+#### O_ANIMATING_EXT_5
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>kill_on_trigger</code></td><td colspan="3" align="center">false</td><td>Kill the item immediately while its trigger is inactive.</td></tr>
+</tbody>
+</table>
+
+#### O_ANIMATING_EXT_6
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>kill_on_trigger</code></td><td colspan="3" align="center">false</td><td>Kill the item immediately while its trigger is inactive.</td></tr>
+</tbody>
+</table>
+
+#### O_ANIMATING_EXT_7
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>kill_on_trigger</code></td><td colspan="3" align="center">false</td><td>Kill the item immediately while its trigger is inactive.</td></tr>
+</tbody>
+</table>
+
+#### O_ANIMATING_EXT_8
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>kill_on_trigger</code></td><td colspan="3" align="center">false</td><td>Kill the item immediately while its trigger is inactive.</td></tr>
+</tbody>
+</table>
+
+#### O_ANIMATING_EXT_9
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>kill_on_trigger</code></td><td colspan="3" align="center">false</td><td>Kill the item immediately while its trigger is inactive.</td></tr>
+</tbody>
+</table>
+
+#### O_ANIMATING_EXT_10
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>kill_on_trigger</code></td><td colspan="3" align="center">false</td><td>Kill the item immediately while its trigger is inactive.</td></tr>
+</tbody>
+</table>
