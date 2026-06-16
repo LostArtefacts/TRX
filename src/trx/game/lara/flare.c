@@ -13,6 +13,8 @@
 #include <trx/game/sparks.h>
 #include <trx/version.h>
 
+#define M_NO_AGE (-1)
+
 typedef enum {
     // clang-format off
     LA_FLARES_HOLD   = 0,
@@ -259,6 +261,13 @@ static void M_UndrawMeshes(void)
 void Lara_Flare_Control(void)
 {
     LARA_INFO *const lara_info = Lara_GetLaraInfo();
+    const ITEM *const lara_item = Lara_GetItem();
+    if (lara_item->hit_points <= 0 && lara_info->flare.age == M_NO_AGE) {
+        lara_info->flare.control = false;
+        lara_info->gun_status = LGS_ARMLESS;
+        return;
+    }
+
     if (lara_info->gun_status == LGS_ARMLESS) {
         M_ControlArmless();
     } else if (lara_info->gun_status == LGS_HANDS_BUSY) {
@@ -282,6 +291,10 @@ void Lara_Flare_Draw(void)
 
     int32_t frame_num = lara_info->left_arm.frame_num + 1;
     lara_info->flare.control = true;
+
+    if (frame_num < LF_FL_IGNITE) {
+        lara_info->flare.age = M_NO_AGE;
+    }
 
     if (frame_num < LF_FL_DRAW || frame_num > LF_FL_2_HOLD - 1) {
         frame_num = LF_FL_DRAW;
@@ -362,6 +375,7 @@ void Lara_Flare_Undraw(void)
         frame_num_1++;
         if (frame_num_1 == LF_FL_THROW_RELEASE) {
             Lara_Flare_Dispose(true);
+            lara_info->flare.age = M_NO_AGE;
         } else if (frame_num_1 == LF_FL_DRAW) {
             frame_num_1 = 0;
             lara_info->gun_type = lara_info->last_gun_type;

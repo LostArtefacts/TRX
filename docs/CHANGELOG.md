@@ -2,6 +2,7 @@
 - added footprints to savegames
 - added `O_GENERIC_TRAP_1…10` for custom levels, with properties to set damage, blood intensity and collision details; animations are fully offloaded to data
 - fixed Lara getting stuck in the flare throwing animation if she is killed in this state
+- fixed ghost flare lighting/effects spawning if Lara is killed while drawing or undrawing a flare
 
 ## [1.8.1](https://github.com/LostArtefacts/TRX/compare/trx-1.8...trx-1.8.1) - 2026-06-15
 - added config presets to allow restoring Lara's original moveset with respect to each game
