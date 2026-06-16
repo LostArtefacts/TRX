@@ -29,6 +29,8 @@
 #define M_LF_PICKUP_CROUCH_2     22
 #define M_LF_PICKUP_CROUCH_FLARE 22
 #define M_LF_PICKUP_CRAWL        20
+#define M_LF_PICKUP_PLINTH_LOW   29
+#define M_LF_PICKUP_PLINTH_HIGH  45
 #define M_AID_DIST_MIN           (STEP_L * 5)      // 1280
 #define M_AID_DIST_MAX           (WALL_L * 8)      // 8192
 #define M_AID_WAIT_MIN           (LOGIC_FPS * 2.5) // 75
@@ -69,12 +71,32 @@ static const OBJECT_BOUNDS m_PickUpBoundsUW = {
     },
 };
 
+static const OBJECT_BOUNDS m_PlinthBounds = {
+    .shift = {
+        .min = { .x = -256, .y = -640, .z = -511, },
+        .max = { .x = +256, .y = +640, .z = 320, },
+    },
+    .rot = {
+        .min = { .x = -10 * DEG_1, .y = -30 * DEG_1, .z = 0, },
+        .max = { .x = +10 * DEG_1, .y = +30 * DEG_1, .z = 0, },
+    },
+};
+
 static const XYZ_32 m_PickupPosition = { .x = 0, .y = 0, .z = -100 };
 static const XYZ_32 m_PickupPositionUW = { .x = 0, .y = -200, .z = -350 };
+static const XYZ_32 m_PickupPositionPlinth = { .x = 0, .y = 0, .z = -380 };
+
+typedef enum {
+    M_MODE_NORMAL,
+    M_MODE_PLINTH_LOW,
+    M_MODE_PLINTH_HIGH,
+    M_MODE_NUMBER_OF,
+} M_MODE;
 
 typedef struct {
     int32_t aid_timer;
     uint32_t secret_mask;
+    M_MODE pickup_mode;
 } M_PRIV;
 
 uint32_t Pickup_GetSecretMask(const ITEM *const item)
@@ -97,6 +119,13 @@ static void M_Initialise(int16_t item_num)
 
     if (item->status != IS_INVISIBLE) {
         Item_AddActive(item_num);
+    }
+
+    p->pickup_mode = M_MODE_NORMAL;
+    OBJECT_PROPERTY_VALUE value = {};
+    if (ObjectProperty_GetItemValue(item, "pickup_mode", &value)
+        && value.as_int >= 0 && value.as_int < M_MODE_NUMBER_OF) {
+        p->pickup_mode = value.as_int;
     }
 }
 
@@ -268,6 +297,10 @@ static bool M_IsPickupEraseFrame(const ITEM *const lara_item)
         return frame == M_LF_PICKUP_CROUCH_FLARE;
     case LA_UNDERWATER_FLARE_PICKUP:
         return frame == M_LF_PICKUP_FLARE_UW;
+    case LA_PLINTH_LOW_PICKUP:
+        return frame == M_LF_PICKUP_PLINTH_LOW;
+    case LA_PLINTH_HIGH_PICKUP:
+        return frame == M_LF_PICKUP_PLINTH_HIGH;
     default:
         return false;
     }
@@ -321,6 +354,83 @@ static void M_GetAllAtLaraPos(const ITEM *const item)
     }
 }
 
+static void M_BeginPickupAnimation(const ITEM *const item, const bool is_ducked)
+{
+    LARA_TRX_STATE goal_state;
+    if (is_ducked) {
+        goal_state = LS_PICKUP;
+    } else {
+        const M_PRIV *const p = item->priv;
+        switch (p->pickup_mode) {
+        case M_MODE_PLINTH_LOW:
+            goal_state = LS_PLINTH_LOW_PICKUP;
+            break;
+        case M_MODE_PLINTH_HIGH:
+            goal_state = LS_PLINTH_HIGH_PICKUP;
+            break;
+        default:
+            goal_state = g_Config.gameplay.enable_fast_pickups ? LS_FAST_PICKUP
+                                                               : LS_PICKUP;
+            break;
+        }
+    }
+
+    ITEM *const lara_item = Lara_GetItem();
+    if (!is_ducked) {
+        Item_SwitchToAnim(lara_item, LA(LA_STAND_STILL), 0);
+    }
+
+    lara_item->goal_anim_state = LS(goal_state);
+    do {
+        Lara_Animate(lara_item);
+    } while (lara_item->current_anim_state != LS(LS_PICKUP));
+}
+
+static bool M_TestLaraPosition(const ITEM *const item)
+{
+    OBJECT_BOUNDS test_bounds = *Object_Get(item->object_id)->bounds_func();
+    if (item->object_id == O_FLARE_ITEM) {
+        goto finish;
+    }
+
+    const M_PRIV *const p = item->priv;
+    if (p->pickup_mode == M_MODE_NORMAL) {
+        goto finish;
+    }
+
+    const ITEM *const lara_item = Lara_GetItem();
+    const int32_t delta = lara_item->pos.y - item->pos.y;
+    const int32_t offset =
+        STEP_L * (p->pickup_mode == M_MODE_PLINTH_LOW ? 2 : 3);
+    if (ABS(ABS(delta) - offset) > STEP_L / 2) {
+        return false;
+    }
+
+    test_bounds = m_PlinthBounds;
+    test_bounds.shift.max.y = delta + 100;
+
+finish:
+    return Lara_TestPosition(item, &test_bounds);
+}
+
+static XYZ_32 M_GetAlignmentPosition(const ITEM *const item)
+{
+    const M_PRIV *const p = item->priv;
+    XYZ_32 pos;
+    switch (p->pickup_mode) {
+    case M_MODE_PLINTH_LOW:
+    case M_MODE_PLINTH_HIGH:
+        pos = m_PickupPositionPlinth;
+        break;
+    default:
+        pos = m_PickupPosition;
+        break;
+    }
+
+    pos.y = Lara_GetItem()->pos.y - item->pos.y;
+    return pos;
+}
+
 static void M_DoControlled(const int16_t item_num, ITEM *const lara_item)
 {
     ITEM *const item = Item_Get(item_num);
@@ -332,19 +442,10 @@ static void M_DoControlled(const int16_t item_num, ITEM *const lara_item)
 
     LARA_INFO *const lara = Lara_GetLaraInfo();
     if (Lara_Interact_CanControl(LARA_INTERACT_PICKUP, item_num)) {
-        const OBJECT *const obj = Object_Get(item->object_id);
-        if (Lara_TestPosition(item, obj->bounds_func())) {
-            const XYZ_32 pos = {
-                .x = m_PickupPosition.x,
-                .y = lara_item->pos.y - item->pos.y,
-                .z = m_PickupPosition.z,
-            };
+        if (M_TestLaraPosition(item)) {
+            const XYZ_32 pos = M_GetAlignmentPosition(item);
             if (Lara_MovePosition(item, &pos)) {
-                const LARA_TRX_ANIMATION pickup_anim =
-                    g_Config.gameplay.enable_fast_pickups ? LA_FAST_PICKUP
-                                                          : LA_PICKUP;
-                Item_SwitchToAnim(lara_item, LA(pickup_anim), 0);
-                lara_item->current_anim_state = LS(LS_PICKUP);
+                M_BeginPickupAnimation(item, false);
                 Lara_Interact_FinishControl(LARA_INTERACT_PICKUP);
             }
             lara->interact_target.item_num = item_num;
@@ -398,11 +499,10 @@ static void M_DoAboveWater(const int16_t item_num, ITEM *const lara_item)
         return;
     }
 
-    const OBJECT *const obj = Object_Get(item->object_id);
     const XYZ_16 old_rot = item->rot;
     item->rot = lara_item->rot;
 
-    if (!Lara_TestPosition(item, obj->bounds_func())) {
+    if (!M_TestLaraPosition(item)) {
         goto cleanup;
     }
 
@@ -436,15 +536,9 @@ static void M_DoAboveWater(const int16_t item_num, ITEM *const lara_item)
         if (is_flare_item) {
             Lara_AnimateUntil(lara_item, LS(LS_FLARE_PICKUP));
         } else {
-            Lara_AlignPosition(item, &m_PickupPosition);
-            const LARA_TRX_STATE goal_state =
-                g_Config.gameplay.enable_fast_pickups && !is_ducked
-                ? LS_FAST_PICKUP
-                : LS_PICKUP;
-            lara_item->goal_anim_state = LS(goal_state);
-            do {
-                Lara_Animate(lara_item);
-            } while (lara_item->current_anim_state != LS(LS_PICKUP));
+            const XYZ_32 pos = M_GetAlignmentPosition(item);
+            Lara_AlignPosition(item, &pos);
+            M_BeginPickupAnimation(item, is_ducked);
         }
         if (is_ducked) {
             lara_item->goal_anim_state =
@@ -532,6 +626,13 @@ static void M_Setup(OBJECT *const obj)
     obj->priv_size = sizeof(M_PRIV);
     obj->save_position = true;
     obj->save_flags = true;
+
+    OBJECT_PROPERTIES(
+        obj,
+        OBJECT_PROPERTY_INT(
+            "pickup_mode", 0,
+            "Pickup animation mode - 0: normal; 1: low pedestal; 2: high "
+            "pedestal."));
 }
 
 const OBJECT_BOUNDS *Pickup_Bounds(void)
