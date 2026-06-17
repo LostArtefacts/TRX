@@ -240,8 +240,8 @@ static void M_ControlArmless(void)
         lara_info->flare.control = false;
     }
 
-    M_ControlInHand();
     M_SetArm(lara_info->left_arm.frame_num);
+    M_ControlInHand();
 }
 
 static void M_ControlBusyHands(void)
