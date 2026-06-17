@@ -199,6 +199,8 @@ static void M_DebugPosTopLeft(void)
     if (g_Config.debug.enable_debug_anim) {
         UI_Label(GS("general/overlay/debug_animation"));
         UI_Label(GS("general/overlay/debug_animation_state"));
+        UI_Label(GS("general/overlay/debug_animation_arm_l"));
+        UI_Label(GS("general/overlay/debug_animation_arm_r"));
     }
     if (g_Config.debug.enable_debug_camera) {
         UI_Label(GS("general/overlay/debug_camera_pos"));
@@ -226,6 +228,12 @@ static void M_DebugPosTopLeft(void)
         UI_Label(String_FormatStatic(
             "\\{small}%d, %d (%d)", lara->current_anim_state,
             lara->goal_anim_state, Object_ToGameID(obj_id)));
+        UI_Label(String_FormatStatic(
+            "\\{small}%d, %d (%d)", lara_info->left_arm.anim_num,
+            lara_info->left_arm.frame_num, lara_info->flare.control));
+        UI_Label(String_FormatStatic(
+            "\\{small}%d, %d", lara_info->right_arm.anim_num,
+            lara_info->right_arm.frame_num));
     }
     if (g_Config.debug.enable_debug_camera) {
         UI_Label(String_FormatStatic(
