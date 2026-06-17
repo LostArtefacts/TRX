@@ -136,6 +136,8 @@
         },
         "overlay": {
             "debug_animation": "Animacja: ",
+            "debug_animation_arm_l": "\\{review}Ramię L",
+            "debug_animation_arm_r": "\\{review}Ramię P",
             "debug_animation_state": "Stan: ",
             "debug_camera_pos": "Pozycja kamery: ",
             "debug_camera_target": "Cel kamery: ",

@@ -136,6 +136,8 @@
         },
         "overlay": {
             "debug_animation": "Animazione: ",
+            "debug_animation_arm_l": "\\{review}Braccio S",
+            "debug_animation_arm_r": "\\{review}Braccio D",
             "debug_animation_state": "Stato: ",
             "debug_camera_pos": "Origine telecamera: ",
             "debug_camera_target": "Obiettivo telecamera: ",

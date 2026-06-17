@@ -2,6 +2,7 @@
 - added footprints to savegames
 - added `O_GENERIC_TRAP_1…10` for custom levels, with properties to set damage, blood intensity and collision details; animations are fully offloaded to data
 - added support for custom levels to use plinth/pedestal pickups by defining the `pickup_mode` property of collectable items; refer to object documentation (#5007)
+- added animation details to the UI debug overlay for Lara's arms, visible when `enable_debug_anim` is on
 - fixed Lara getting stuck in the flare throwing animation if she is killed in this state
 - fixed ghost flare lighting/effects spawning if Lara is killed while drawing or undrawing a flare
 

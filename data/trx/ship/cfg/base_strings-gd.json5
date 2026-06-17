@@ -136,6 +136,8 @@
         },
         "overlay": {
             "debug_animation": "Beothachadh: ",
+            "debug_animation_arm_l": "Gàirdean C",
+            "debug_animation_arm_r": "Gàirdean D",
             "debug_animation_state": "Stàit: ",
             "debug_camera_pos": "Tùs a' chamara: ",
             "debug_camera_target": "Targaid a' chamara: ",

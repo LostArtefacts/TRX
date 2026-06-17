@@ -136,6 +136,8 @@
         },
         "overlay": {
             "debug_animation": "Анимация: ",
+            "debug_animation_arm_l": "\\{review}Рука Л",
+            "debug_animation_arm_r": "\\{review}Рука П",
             "debug_animation_state": "\\{review}Состояние: ",
             "debug_camera_pos": "\\{review}Положение камеры: ",
             "debug_camera_target": "\\{review}Цель камеры: ",
