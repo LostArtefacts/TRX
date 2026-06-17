@@ -441,14 +441,16 @@ bool Room_TestSectorTrigger(const ITEM *const item, const SECTOR *const sector)
             const bool switch_result =
                 Switch_Trigger(trigger->item_index, trigger->timer);
             ITEM *const switch_item = Item_Get(trigger->item_index);
-            if (g_TRVersion >= 3 && trigger->one_shot) {
+            const bool intelligent =
+                Object_Get(switch_item->object_id)->intelligent;
+            if (!intelligent && g_TRVersion >= 3 && trigger->one_shot) {
                 switch_item->flags |= IF_ONE_SHOT_SWITCH;
             }
             if (!switch_result) {
                 return false;
             }
-            status.switch_off =
-                switch_item->current_anim_state == SWITCH_STATE_OFF;
+            status.switch_off = !intelligent
+                && switch_item->current_anim_state == SWITCH_STATE_OFF;
             break;
         }
 
