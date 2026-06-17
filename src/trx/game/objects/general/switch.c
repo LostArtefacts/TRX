@@ -379,6 +379,21 @@ bool Switch_Trigger(const int16_t item_num, const int16_t timer)
         return true;
     }
 
+    if (Object_Get(item->object_id)->intelligent) {
+        // Custom levels often use switch triggers under enemies for events on
+        // death; the following addition is a safer approach for such, rather
+        // than altering item status and timer as though they were regular
+        // switch objects.
+        if (item->status != IS_DEACTIVATED && (item->flags & IF_KILLED) == 0) {
+            return false;
+        }
+        if ((item->flags & IF_ONE_SHOT_SWITCH) != 0) {
+            return false;
+        }
+        item->flags |= IF_ONE_SHOT_SWITCH;
+        return true;
+    }
+
     if (item->status != IS_DEACTIVATED) {
         return false;
     }
