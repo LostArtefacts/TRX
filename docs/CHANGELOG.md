@@ -7,6 +7,7 @@
 - fixed Lara getting stuck in the flare throwing animation if she is killed in this state
 - fixed ghost flare lighting/effects spawning if Lara is killed while drawing or undrawing a flare
 - fixed a crash if loading a save that was made on the final frame of Lara's flare control transition animation (#5683)
+- removed the hard-coded spawn distance between Puna and his Lizards (#5686)
 
 ## [1.8.1](https://github.com/LostArtefacts/TRX/compare/trx-1.8...trx-1.8.1) - 2026-06-15
 - added config presets to allow restoring Lara's original moveset with respect to each game
