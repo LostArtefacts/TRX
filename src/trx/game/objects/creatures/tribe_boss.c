@@ -335,9 +335,9 @@ static bool M_TriggerLizard(M_PRIV *const p)
     item->creature_data = nullptr;
     item->mesh_bits = -1;
     item->hit_points = item->max_hit_points;
-    item->active = 0;
+    item->active = false;
     item->status = IS_ACTIVE;
-    item->collidable = 1;
+    item->collidable = true;
     item->flags &= ~(IF_KILLED | IF_ONE_SHOT);
     item->include_in_kill_stats = false;
 
@@ -1099,12 +1099,19 @@ static void M_Initialise(const int16_t item_num)
         p->lizard_room_num = Item_Get(p->lizard_item_num)->room_num;
     }
 
+    XZ_32 delta = { .x = 3, .z = 5 };
+    if (p->lizard_item_num != NO_ITEM) {
+        const ITEM *const lizard = Item_Get(p->lizard_item_num);
+        delta.x = ABS(item->pos.x - lizard->pos.x) / WALL_L;
+        delta.z = ABS(item->pos.z - lizard->pos.z) / WALL_L;
+    }
+
     for (int32_t i = 0; i < 2; i++) {
         const int32_t sign = i == 0 ? -1 : 1;
-        int32_t y_rot = item->rot.y + DEG_180; // after turning
+        const int32_t y_rot = item->rot.y + DEG_180; // after turning
         XYZ_32 pos = item->pos;
-        pos = XYZ_32_OffsetYaw(pos, y_rot, WALL_L * 3);
-        pos = XYZ_32_OffsetYaw(pos, y_rot + DEG_270 * sign, WALL_L * 5);
+        pos = XYZ_32_OffsetYaw(pos, y_rot, WALL_L * delta.x);
+        pos = XYZ_32_OffsetYaw(pos, y_rot + DEG_270 * sign, WALL_L * delta.z);
 
         int16_t room_num = item->room_num;
         const SECTOR *const sector = Room_GetSector(pos, &room_num);
