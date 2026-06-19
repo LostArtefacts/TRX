@@ -12,6 +12,9 @@
 **TR2**:
 - fixed Lara not greeting the player at the start of the assault course (regression from 1.8)
 
+**TR3**:
+- fixed missing portals in Aldwych room 87, which could lead to Lara becoming softlocked
+
 
 
 ## [1.8.1](https://github.com/LostArtefacts/TRX/compare/trx-1.8...trx-1.8.1) - 2026-06-15
