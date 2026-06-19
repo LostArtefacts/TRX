@@ -145,8 +145,8 @@ Following are each of the properties available within a level.
     <td><code>water_particles</code></td>
     <td>Boolean</td>
     <td colspan="2">
-      TR3 only. Enables PSX-style underwater water particles for this level.
-      These follow the weather effects toggle.
+      Enables PSX-style underwater water particles for this level. These follow
+      the weather effects toggle. Requires `O_SPARKS_GFX`.
     </td>
   </tr>
   <tr valign="top">
