@@ -232,7 +232,7 @@
         },
         "water_particles": {
           "type": "boolean",
-          "description": "TR3 only. Enables PSX-style underwater water particles in this level."
+          "description": "Enables PSX-style underwater water particles in this level."
         },
         "death_tile": {
           "type": "string",
