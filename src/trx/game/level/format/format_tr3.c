@@ -147,6 +147,13 @@ static bool M_Load(const LEVEL_FORMAT_LOADER *const loader, VFILE *const file)
     return true;
 }
 
+static const LEVEL_FORMAT_LOADER m_LevelLoaderTR3X = {
+    .game_version = 3,
+    .layout = LEVEL_FORMAT_LAYOUT_TR3X,
+    .probe = M_Probe,
+    .load = M_Load,
+};
+
 static const LEVEL_FORMAT_LOADER m_LevelLoaderTR3 = {
     .game_version = 3,
     .layout = LEVEL_FORMAT_LAYOUT_TR3,
@@ -154,4 +161,5 @@ static const LEVEL_FORMAT_LOADER m_LevelLoaderTR3 = {
     .probe = M_Probe,
 };
 
-REGISTER_LEVEL_FORMAT_LOADER(300, m_LevelLoaderTR3)
+REGISTER_LEVEL_FORMAT_LOADER(300, m_LevelLoaderTR3X)
+REGISTER_LEVEL_FORMAT_LOADER(310, m_LevelLoaderTR3)
