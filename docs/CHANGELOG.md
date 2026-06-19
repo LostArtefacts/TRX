@@ -35,6 +35,7 @@
 - fixed geometry issues in rooms 60 and 115 in Furnace of the Gods, which could cause the TR3 camera to become stuck and allow Lara to fly into the ceiling
 
 **TR3**:
+- added support for embedded injections in level files
 - fixed missing portals in Aldwych room 87, which could lead to Lara becoming softlocked
 - fixed the ticket booth SFX playing in Aldwych when Lara treads in shallow water
 - fixed the underwater swimming SFX playing when Lara turns to the right in shallow water
