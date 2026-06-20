@@ -7,13 +7,24 @@
 - fixed Lara getting stuck in the flare throwing animation if she is killed in this state
 - fixed ghost flare lighting/effects spawning if Lara is killed while drawing or undrawing a flare
 - fixed a crash if loading a save that was made on the final frame of Lara's flare control transition animation (#5683)
+- fixed inconsistent tread SFX when Lara turns to the right in shallow water as compared with turning left
+- fixed a missing footstep sound when Lara finishes a handstand and when she climbs onto a ledge from a ladder (#5070)
+- fixed missing SFX when Lara transitions from hanging to crouching (#5070)
 - removed the hard-coded spawn distance between Puna and his Lizards (#5686)
+
+**TR1**:
+- fixed missing hand grab SFX when Lara is climbing a ladder (#4266)
 
 **TR2**:
 - fixed Lara not greeting the player at the start of the assault course (regression from 1.8)
+- fixed missing hand grab SFX when Lara is climbing a ladder (#4266)
 
 **TR3**:
 - fixed missing portals in Aldwych room 87, which could lead to Lara becoming softlocked
+- fixed the ticket booth SFX playing in Aldwych when Lara treads in shallow water
+- fixed the underwater swimming SFX playing when Lara turns to the right in shallow water
+- fixed missing knees shuffle SFX when Lara climbs onto a ledge (#5070)
+- fixed missing SFX when Lara is shimmying (#4996)
 
 
 
