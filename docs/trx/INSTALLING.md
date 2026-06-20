@@ -1006,6 +1006,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── nevada_textures.bin
 │   │   │   ├── pda_model.bin
 │   │   │   ├── pickup_aid.bin
+│   │   │   ├── pipeman_sfx.bin
 │   │   │   ├── puna_pickup_meshes.bin
 │   │   │   ├── puna_textures.bin
 │   │   │   ├── rapids_sky.bin
@@ -2261,6 +2262,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── nevada_textures.bin
     │   │   │   │   ├── pda_model.bin
     │   │   │   │   ├── pickup_aid.bin
+    │   │   │   │   ├── pipeman_sfx.bin
     │   │   │   │   ├── puna_pickup_meshes.bin
     │   │   │   │   ├── puna_textures.bin
     │   │   │   │   ├── rapids_sky.bin
