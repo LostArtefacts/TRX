@@ -457,6 +457,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── barkhang_itemrots.bin
 │   │   │   ├── barkhang_music_tracks.bin
 │   │   │   ├── barkhang_pickup_meshes.bin
+│   │   │   ├── barkhang_sfx.bin
 │   │   │   ├── barkhang_textures.bin
 │   │   │   ├── bartoli_crystals.bin
 │   │   │   ├── bartoli_music_tracks.bin
@@ -1710,6 +1711,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── barkhang_itemrots.bin
     │   │   │   │   ├── barkhang_music_tracks.bin
     │   │   │   │   ├── barkhang_pickup_meshes.bin
+    │   │   │   │   ├── barkhang_sfx.bin
     │   │   │   │   ├── barkhang_textures.bin
     │   │   │   │   ├── bartoli_crystals.bin
     │   │   │   │   ├── bartoli_music_tracks.bin

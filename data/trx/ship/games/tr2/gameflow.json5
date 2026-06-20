@@ -419,6 +419,7 @@
                 "barkhang_textures.bin",
                 "lara_guns.bin",
                 "barkhang_crystals.bin",
+                "barkhang_sfx.bin",
             ],
             "unobtainable_pickups": 2,
             "unobtainable_kills": 1,
