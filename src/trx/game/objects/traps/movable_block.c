@@ -831,6 +831,8 @@ static void M_AnimatePushPull(ITEM *const item)
 
     case LA_PUSHABLE_PUSH:
     case LA_PUSHABLE_PULL:
+    case LA_PUSHABLE_PUSH_STOP:
+    case LA_PUSHABLE_PULL_STOP:
         Item_Animate(item);
         break;
 

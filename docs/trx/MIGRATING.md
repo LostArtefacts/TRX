@@ -7,6 +7,14 @@ order: 3
 
 ## TRX
 
+### Version 1.8 to 1.9
+
+1. **Update Lara pushblock animations**
+   Lara's pushblock animations (non-continuous) are now split to line up with
+   the length of the animations of the blocks themselves. Ensure to update
+   `catalog_lara_anims.csv` and either `lara_animations.bin` or the Lara object
+   in your level WADs.
+
 ### Version 1.7 to 1.8
 
 1. **Update Assault Course Lua stats access**:

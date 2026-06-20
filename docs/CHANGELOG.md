@@ -10,6 +10,8 @@
 - fixed inconsistent tread SFX when Lara turns to the right in shallow water as compared with turning left
 - fixed a missing footstep sound when Lara finishes a handstand and when she climbs onto a ledge from a ladder (#5070)
 - fixed missing SFX when Lara transitions from hanging to crouching (#5070)
+- fixed Lara's shadow appearing at the top of a pushblock after having pulled it until she returns to a standstill (#1576)
+- fixed Lara being killed by pushblocks if she pulls one onto a trapdoor that is set to be triggered by that pushblock
 - removed the hard-coded spawn distance between Puna and his Lizards (#5686)
 
 **TR1**:
