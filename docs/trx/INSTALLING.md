@@ -464,6 +464,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── bartoli_secret_fd.bin
 │   │   │   ├── bartoli_textures.bin
 │   │   │   ├── boat_bits.bin
+│   │   │   ├── boat_sfx.bin
 │   │   │   ├── breakable_tile_sfx.bin
 │   │   │   ├── catacombs_crystals.bin
 │   │   │   ├── catacombs_fd.bin
@@ -1718,6 +1719,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── bartoli_secret_fd.bin
     │   │   │   │   ├── bartoli_textures.bin
     │   │   │   │   ├── boat_bits.bin
+    │   │   │   │   ├── boat_sfx.bin
     │   │   │   │   ├── breakable_tile_sfx.bin
     │   │   │   │   ├── catacombs_crystals.bin
     │   │   │   │   ├── catacombs_fd.bin

@@ -22,6 +22,7 @@
 - fixed Lara not greeting the player at the start of the assault course (regression from 1.8)
 - fixed missing hand grab SFX when Lara is climbing a ladder (#4266)
 - fixed missing and mistimed closing SFX on doors type 1 and 2 in Barkhang Monastery (#4417, #4418)
+- fixed missing SFX when jumping into the boat in Bartoli's Hideout (#4434)
 
 **TR3**:
 - fixed missing portals in Aldwych room 87, which could lead to Lara becoming softlocked
