@@ -56,6 +56,21 @@ static LARA_GUN_TYPE M_DetermineBackGun(void)
     return LGT_UNARMED;
 }
 
+static void M_EnsureDefaultDualPistolMesh(const LARA_GUN_TYPE holster_gun)
+{
+    if (g_Weapons[holster_gun].type != WEAPON_TYPE_SINGLE_PISTOL) {
+        return;
+    }
+
+    for (LARA_GUN_TYPE gun = 0; gun < NUM_WEAPONS; gun++) {
+        if (g_Weapons[gun].type == WEAPON_TYPE_DUAL_PISTOLS
+            && Inv_RequestItem(Gun_GetGunObject(gun)) > 0) {
+            Lara_Skin_SetGunEquipment(LM_THIGH_L, gun);
+            break;
+        }
+    }
+}
+
 static void M_InitialiseCutsceneLevel(void)
 {
     Lara_Skin_SetGunEquipment(LM_THIGH_L, LGT_PISTOLS);
@@ -70,6 +85,7 @@ static void M_InitialiseNormalLevel(const GF_LEVEL *const level)
     if (holster_gun != LGT_UNARMED && holster_gun != LGT_FLARE) {
         Gun_SetLaraHolsterLMesh(holster_gun);
         Gun_SetLaraHolsterRMesh(holster_gun);
+        M_EnsureDefaultDualPistolMesh(holster_gun);
     }
 
     const LARA_GUN_TYPE back_gun = M_DetermineBackGun();
