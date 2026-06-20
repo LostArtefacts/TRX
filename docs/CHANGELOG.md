@@ -30,6 +30,7 @@
 - fixed the underwater swimming SFX playing when Lara turns to the right in shallow water
 - fixed missing knees shuffle SFX when Lara climbs onto a ledge (#5070)
 - fixed missing SFX when Lara is shimmying (#4996)
+- fixed missing SFX in the Pipeman's death animation (#5036)
 
 
 

@@ -198,6 +198,7 @@
                 "fish_sprites.bin",
                 "coastal_spike_sfx.bin",
                 "coastal_fd.bin",
+                "pipeman_sfx.bin",
             ],
             "unobtainable_pickups": 1,
         },
@@ -271,6 +272,7 @@
                 "globe_model.bin",
                 "puna_textures.bin",
                 "common_pickup_meshes.bin",
+                "pipeman_sfx.bin",
             ],
         },
 
