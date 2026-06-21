@@ -15,6 +15,11 @@ order: 3
    `catalog_lara_anims.csv` and either `lara_animations.bin` or the Lara object
    in your level WADs.
 
+2. **Update Lara's outfit definitions and samples**
+   The `footstep_sample_id` SFX reference was removed from Lara's outfit
+   definitions and replaced with an `is_barefoot` flag. Update `outfits.json5`
+   and `catalog_samples.csv` accordingly - refer to OG shipped assets.
+
 ### Version 1.7 to 1.8
 
 1. **Update Assault Course Lua stats access**:
