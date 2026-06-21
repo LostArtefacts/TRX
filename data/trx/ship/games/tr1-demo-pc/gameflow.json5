@@ -27,6 +27,7 @@
         "winston_model.bin",
         "misc_sprites.bin",
         "lara_outfits.bin",
+        "shimmy_sfx.bin",
     ],
 
     "enable_tr2_item_drops": false,

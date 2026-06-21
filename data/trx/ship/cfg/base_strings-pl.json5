@@ -763,7 +763,7 @@
         },
         "audio.enable_ps1_sfx": {
             "title": "Efekty dźwiękowe z PS1",
-            "description": "Zamienia określone efekty dźwiękowe na odpowiedniki z PS1.\n\n- Pociski z Uzi (tylko TR1)\n- Odgłosy poruszania się boso (tylko TR2)",
+            "description": "\\{review}Zamienia określone efekty dźwiękowe na odpowiedniki z PS1.\n\n- Pociski z Uzi (tylko TR1)\n- Przemieszczanie się w zwisie (tylko TR1)\n- Odgłosy poruszania się boso (tylko TR2)",
         },
         "audio.enable_underwater_anim_sfx": {
             "title": "Efekty dźwiękowe pod wodą",

@@ -25,6 +25,7 @@
         "lara_extra.bin",
         "misc_sprites.bin",
         "lara_outfits.bin",
+        "shimmy_sfx.bin",
     ],
 
     "enable_tr2_item_drops": false,
@@ -80,6 +81,7 @@
                 "misc_sprites.bin",
                 "lara_feet_sfx.bin",
                 "lara_outfits.bin",
+                "shimmy_sfx.bin",
             ],
         },
 

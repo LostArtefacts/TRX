@@ -763,7 +763,7 @@
         },
         "audio.enable_ps1_sfx": {
             "title": "Effetti sonori PS1",
-            "description": "Sostituisce alcuni effetti sonori con quelli della versione PS1.\n\n- Suono dello sparo delle Uzi (solo TR1)\n- Suono dei passi a piedi nudi di Lara (solo TR2)",
+            "description": "\\{review}Sostituisce alcuni effetti sonori con quelli della versione PS1.\n\n- Suono dello sparo delle Uzi (solo TR1)\n- Spostamento laterale in sospensione (solo TR1)\n- Suono dei passi a piedi nudi di Lara (solo TR2)",
         },
         "audio.enable_underwater_anim_sfx": {
             "title": "Effetti sonori sott'acqua",

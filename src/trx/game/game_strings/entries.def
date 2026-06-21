@@ -412,7 +412,7 @@ GS_DEFINE(settings/audio.enable_lara_mic/description, "Set the microphone to be 
 GS_DEFINE(settings/audio.enable_music_in_inventory/description, "Lets game sounds, ambient and music continue playing in the inventory screen.")
 GS_DEFINE(settings/audio.enable_music_in_menu/description, "Plays music in the main menu.")
 GS_DEFINE(settings/audio.enable_pitched_sounds/description, "Allows sound effects to be randomly, slightly pitched to vary the game sounds.")
-GS_DEFINE(settings/audio.enable_ps1_sfx/description, "Enables specific sound effect replacements using PS1 equivalents.\n\n- Uzi fire (TR1 only)\n- Lara barefoot sounds (TR2 only)")
+GS_DEFINE(settings/audio.enable_ps1_sfx/description, "Enables specific sound effect replacements using PS1 equivalents.\n\n- Uzi fire (TR1 only)\n- Shimmying (TR1 only)\n- Lara barefoot sounds (TR2 only)")
 GS_DEFINE(settings/audio.enable_underwater_anim_sfx/description, "Allows control over playing specific animation sound effects - for objects such as doors and trapdoors - when the camera is underwater.")
 GS_DEFINE(settings/audio.fix_chainblock_secret_sound/description, "Prevents the secret sound from incorrectly playing when using the golden key in Tomb of Tihocan.")
 GS_DEFINE(settings/audio.fix_secrets_killing_music/description, "Fixes the sound of collecting a secret stopping the active music track.")

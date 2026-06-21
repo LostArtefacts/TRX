@@ -763,7 +763,7 @@
         },
         "audio.enable_ps1_sfx": {
             "title": "PS1 SFX replacements",
-            "description": "Enables specific sound effect replacements using PS1 equivalents.\n\n- Uzi fire (TR1 only)\n- Lara barefoot sounds (TR2 only)",
+            "description": "Enables specific sound effect replacements using PS1 equivalents.\n\n- Uzi fire (TR1 only)\n- Shimmying (TR1 only)\n- Lara barefoot sounds (TR2 only)",
         },
         "audio.enable_underwater_anim_sfx": {
             "title": "Underwater animation SFX",
