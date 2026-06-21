@@ -5,7 +5,7 @@
             "name_gs": "dynamic/enums/lara_outfit/tr1_gym",
             "mesh_object": "O_LARA_SKIN_SWAP_1",
             "gun_map": 0,
-            "footstep_sample_id": "SFX_LARA_BAREFOOT",
+            "is_barefoot": true,
             "combat_face_offset": 1,
             "braid": {
                 "mode": "BRAID_MODE_TR1_HEAD_ONLY",
@@ -147,7 +147,7 @@
             "name_gs": "dynamic/enums/lara_outfit/tr1_bacon_lara",
             "mesh_object": "O_LARA_SKIN_SWAP_6",
             "gun_map": 0,
-            "footstep_sample_id": "SFX_LARA_BAREFOOT",
+            "is_barefoot": true,
             "combat_face_offset": -1,
             "supports_sunglasses": false,
             "extra_outfits": {
@@ -218,7 +218,7 @@
             "name_gs": "dynamic/enums/lara_outfit/tr2_diving_suit",
             "mesh_object": "O_LARA_SKIN_SWAP_10",
             "gun_map": 2,
-            "footstep_sample_id": "SFX_LARA_BAREFOOT",
+            "is_barefoot": true,
             "combat_face_offset": 2,
             "braid": {
                 "mesh_offset": 22,
@@ -239,7 +239,7 @@
             "name_gs": "dynamic/enums/lara_outfit/tr2_diving_suit_alpha",
             "mesh_object": "O_LARA_SKIN_SWAP_23",
             "gun_map": 2,
-            "footstep_sample_id": "SFX_LARA_BAREFOOT",
+            "is_barefoot": true,
             "combat_face_offset": 2,
             "braid": {
                 "mesh_offset": 22,
@@ -308,7 +308,7 @@
             "name_gs": "dynamic/enums/lara_outfit/tr2_robe",
             "mesh_object": "O_LARA_SKIN_SWAP_12",
             "gun_map": 2,
-            "footstep_sample_id": "SFX_LARA_BAREFOOT",
+            "is_barefoot": true,
             "combat_face_offset": 2,
             "braid": {
                 "mesh_offset": 22,

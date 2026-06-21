@@ -212,25 +212,6 @@ static bool M_LoadGunMap(JSON_READ_IO *const io, LARA_SKIN_OUTFIT *const outfit)
     JSON_FINISH();
 }
 
-static bool M_LoadSFX(JSON_READ_IO *const io, LARA_SKIN_OUTFIT *const outfit)
-{
-    const char *feet_sample_name = nullptr;
-    if (JSON_OPTIONAL(JSON_READ(io, "footstep_sample_id", &feet_sample_name))) {
-        CATALOG_ID feet_sample_id;
-        if (!Catalog_NameToEnum(
-                CATALOG_SAMPLES, feet_sample_name, &feet_sample_id)) {
-            JSON_ReadIO_SetError(
-                io, "unknown sample id '%s'", feet_sample_name);
-            JSON_FAIL();
-        }
-        outfit->footstep_sample_id = feet_sample_id;
-    } else {
-        outfit->footstep_sample_id = SFX_TRX_INVALID;
-    }
-
-    JSON_FINISH();
-}
-
 static bool M_LoadNoHolsters(
     JSON_READ_IO *const io, LARA_SKIN_OUTFIT *const outfit)
 {
@@ -304,10 +285,10 @@ static bool M_LoadOutfit(JSON_READ_IO *const io, LARA_SKIN_OUTFIT *const outfit)
     JSON_READ_D(io, "is_selectable", &outfit->is_selectable, true);
     JSON_READ_D(io, "combat_face_offset", &outfit->combat_face_offset, -1);
     JSON_READ_D(io, "supports_sunglasses", &outfit->supports_sunglasses, true);
+    JSON_READ_D(io, "is_barefoot", &outfit->is_barefoot, false);
 
     JSON_MUST(M_LoadBraid(io, outfit));
     JSON_MUST(M_LoadGunMap(io, outfit));
-    JSON_MUST(M_LoadSFX(io, outfit));
     JSON_MUST(M_LoadNoHolsters(io, outfit));
     JSON_MUST(M_LoadExtras(io, outfit));
 

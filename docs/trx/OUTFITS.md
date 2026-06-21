@@ -94,6 +94,7 @@ behave. The structure of this file is described below.
   "name_gs": "dynamic/enums/lara_outfit/tr1_classic",
   "mesh_object": "O_LARA_SKIN_SWAP_2",
   "is_reflective": false,
+  "is_barefoot": false,
   "gun_map": 0,
   "combat_face_offset": 1,
   "supports_sunglasses": true,
@@ -144,6 +145,31 @@ behave. The structure of this file is described below.
     <td><code>is_reflective</code></td>
     <td>Boolean</td>
     <td colspan="2">Indicates whether or not the outfit is reflective.</td>
+  </tr>
+  <tr valign="top">
+    <td rowspan="5"><code>is_barefoot</code></td>
+    <td rowspan="5">Boolean</td>
+    <td colspan="2">
+      Indicates whether or not Lara is barefoot and is used to play different
+      SFX for her footsteps. The following samples need to be defined in
+      <code>catalog_samples.csv</code>.
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><code>SFX_LARA_FOOTSTEP</code></td>
+    <td>Regular step sound when walking, running etc.</td>
+  </tr>
+  <tr valign="top">
+    <td><code>SFX_LARA_BAREFOOT</code></td>
+    <td>Barefoot step sound when walking, running etc.</td>
+  </tr>
+  <tr valign="top">
+    <td><code>SFX_LARA_LAND</code></td>
+    <td>Regular sound when landing e.g. after a jump.</td>
+  </tr>
+  <tr valign="top">
+    <td><code>SFX_LARA_BAREFOOT_LAND</code></td>
+    <td>Barefoot sound when landing e.g. after a jump.</td>
   </tr>
   <tr valign="top">
     <td><code>gun_map</code></td>

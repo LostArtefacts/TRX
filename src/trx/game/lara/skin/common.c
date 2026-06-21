@@ -621,10 +621,17 @@ SAMPLE_ID Lara_Skin_GetAnimSFX(const SAMPLE_ID sample_id)
     }
 
     const LARA_SKIN_OUTFIT *const outfit = M_GetCurrentOutfit();
-    if (outfit->footstep_sample_id == SFX_TRX_INVALID
-        || Sound_FromGameID(sample_id) != SFX_LARA_FOOTSTEP) {
+    if (!outfit->is_barefoot) {
         return sample_id;
     }
 
-    return Sound_ToGameID(outfit->footstep_sample_id);
+    const SAMPLE_TRX_ID trx_id = Sound_FromGameID(sample_id);
+    switch (trx_id) {
+    case SFX_LARA_FOOTSTEP:
+        return Sound_ToGameID(SFX_LARA_BAREFOOT);
+    case SFX_LARA_LAND:
+        return Sound_ToGameID(SFX_LARA_BAREFOOT_LAND);
+    default:
+        return sample_id;
+    }
 }

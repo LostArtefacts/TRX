@@ -35,7 +35,7 @@ typedef struct {
     bool is_selectable;
     bool is_reflective;
     bool supports_sunglasses;
-    SAMPLE_TRX_ID footstep_sample_id;
+    bool is_barefoot;
     int32_t combat_face_offset;
     MESH_PAIR no_holster_offsets;
     int32_t extra_outfits[LS_EXTRA_NUMBER_OF];
