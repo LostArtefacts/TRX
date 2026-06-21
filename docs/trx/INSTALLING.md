@@ -203,6 +203,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── sanctuary_scion.bin
 │   │   │   ├── sanctuary_textures.bin
 │   │   │   ├── scion_collision.bin
+│   │   │   ├── shimmy_sfx.bin
 │   │   │   ├── skate_kid_sfx.bin
 │   │   │   ├── sprite_alignment.bin
 │   │   │   ├── stronghold_crystals.bin
@@ -1459,6 +1460,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── sanctuary_scion.bin
     │   │   │   │   ├── sanctuary_textures.bin
     │   │   │   │   ├── scion_collision.bin
+    │   │   │   │   ├── shimmy_sfx.bin
     │   │   │   │   ├── skate_kid_sfx.bin
     │   │   │   │   ├── sprite_alignment.bin
     │   │   │   │   ├── stronghold_crystals.bin

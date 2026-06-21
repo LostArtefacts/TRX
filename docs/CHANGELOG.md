@@ -17,6 +17,7 @@
 - removed the hard-coded spawn distance between Puna and his Lizards (#5686)
 
 **TR1**:
+- added Lara's PS1 shimmying sound effects (Sound → Misc → PS1 SFX replacements) (#943)
 - fixed missing hand grab SFX when Lara is climbing a ladder (#4266)
 
 **TR2**:

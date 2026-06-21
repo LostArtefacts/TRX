@@ -763,7 +763,7 @@
         },
         "audio.enable_ps1_sfx": {
             "title": "Cleachd fuaimean a' PhS1",
-            "description": "Cleachd fuaimean sònraichte bhon PhS1 an àite an fheaghainn PhC.\n\n - Fuaim Uzi (TR1 a-mhàin)\n- Fuaim casrùisgte Lara (TR2 a-mhàin)",
+            "description": "Cleachd fuaimean sònraichte bhon PhS1 an àite an fheaghainn PhC.\n\n - Fuaim Uzi (TR1 a-mhàin)\n- Gluasad crochte (TR1 a-mhàin)\n- Fuaim casrùisgte Lara (TR2 a-mhàin)",
         },
         "audio.enable_underwater_anim_sfx": {
             "title": "SFX beòthalachd fon uisge",

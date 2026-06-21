@@ -25,6 +25,7 @@
         "misc_sprites.bin",
         "lara_outfits.bin",
         "crystal.bin",
+        "shimmy_sfx.bin",
     ],
 
     "enable_tr2_item_drops": false,
