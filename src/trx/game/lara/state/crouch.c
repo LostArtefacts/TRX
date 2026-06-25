@@ -157,6 +157,7 @@ static void M_CrouchIdle(ITEM *const item, COLL_INFO *const coll)
     } else if (crouch_active && M_CanJumpDown(item, lara)) {
         Lara_AnimateUntil(item, LS(LS_CRAWL_IDLE));
         item->goal_anim_state = LS(LS_CRAWL_JUMP_DOWN);
+        lara->crouching = false;
     }
 }
 
@@ -241,6 +242,7 @@ static void M_CrawlIdle(ITEM *const item, COLL_INFO *const coll)
         item->goal_anim_state = LS(LS_CROUCH_ROLL);
     } else if (M_CanJumpDown(item, lara)) {
         item->goal_anim_state = LS(LS_CRAWL_JUMP_DOWN);
+        lara->crouching = false;
     }
 
     g_Camera.target_elevation = M_CAM_CRAWL_ELEVATION;
