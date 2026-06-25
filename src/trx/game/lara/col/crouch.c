@@ -311,6 +311,7 @@ static void M_CrawlIdle(ITEM *const item, COLL_INFO *const coll)
                 item->rot = old_rot;
             } else {
                 item->goal_anim_state = LS(LS_CRAWL_TO_CLIMB);
+                lara->crouching = false;
             }
         }
     } else if (g_Input.left) {
