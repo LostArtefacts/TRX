@@ -663,6 +663,11 @@ static void M_Death(ITEM *const item, COLL_INFO *const coll)
     item->pos.y += coll->side_mid.floor;
     item->hit_points = -1;
     lara->air = -1;
+
+    if (Item_TestAnimEqual(item, LA(LA_SPIKE_DEATH))
+        && Item_TestFrameEqual(item, 1)) {
+        item->fall_speed = 0;
+    }
 }
 
 static void M_Splat(ITEM *const item, COLL_INFO *const coll)
