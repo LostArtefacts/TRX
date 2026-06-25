@@ -14,6 +14,7 @@
 - fixed missing SFX when Lara transitions from hanging to crouching (#5070)
 - fixed Lara's shadow appearing at the top of a pushblock after having pulled it until she returns to a standstill (#1576)
 - fixed Lara being killed by pushblocks if she pulls one onto a trapdoor that is set to be triggered by that pushblock
+- fixed Lara becoming clamped and softlocked if a lift descends on top of her
 - fixed Lara moving through the floor of a lift if she picks up a flare while it's moving
 - fixed Lara moving through the floor of a lift if she performs a neutral twist while it's moving (regression from TR1X 4.14/TR2X 1.4)
 - fixed Lara persisting to crouch after landing when either crawling backwards or jumping out of a crawlspace and the crouch toggle option is enabled (#5703, regression from 1.3)

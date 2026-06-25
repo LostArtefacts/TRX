@@ -1,3 +1,4 @@
+#include <trx/config.h>
 #include <trx/core/json/util/read_io.h>
 #include <trx/core/json/util/write_io.h>
 #include <trx/core/log.h>
@@ -7,6 +8,8 @@
 #include <trx/game/lara.h>
 #include <trx/game/objects.h>
 #include <trx/game/objects/traps/movable_block.h>
+#include <trx/game/random.h>
+#include <trx/game/spawn.h>
 
 // clang-format off
 #define M_WAIT_TIME         (3 * LOGIC_FPS) // = 90
@@ -262,6 +265,64 @@ static void M_Initialise(const int16_t item_num)
     Vector_Free(positions);
 }
 
+static void M_KillLara(ITEM *const lara)
+{
+    if (lara->hit_points <= 0) {
+        return;
+    }
+
+    lara->hit_points = -1;
+    lara->pos.y = lara->floor;
+    lara->speed = 0;
+    lara->fall_speed = 0;
+    lara->gravity = false;
+    lara->rot.x = 0;
+    lara->rot.z = 0;
+    lara->current_anim_state = LS(LS_SPECIAL);
+    lara->goal_anim_state = LS(LS_SPECIAL);
+    Item_SwitchToAnim(lara, LA(LA_BOULDER_DEATH), 0);
+
+    for (int32_t i = 0; i < 15; i++) {
+        const int32_t x = lara->pos.x + (Random_GetControl() - 0x4000) / 256;
+        const int32_t z = lara->pos.z + (Random_GetControl() - 0x4000) / 256;
+        const int32_t y = lara->pos.y - Random_GetControl() / 64;
+        const int32_t d = lara->rot.y + (Random_GetControl() - 0x4000) / 8;
+        Spawn_Blood(x, y, z, M_SHIFT * 2, d, lara->room_num);
+    }
+}
+
+static void M_Collision(
+    const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
+{
+    const ITEM *const item = Item_Get(item_num);
+    const M_PRIV *const p = item->priv;
+    if (!p->is_moving) {
+        return;
+    }
+
+    if (lara_item->pos.y < item->pos.y + STEP_L) {
+        return;
+    }
+
+    const XZ_32 lift_tile = M_GetTile(item->pos);
+    const XZ_32 lara_tile = M_GetTile(lara_item->pos);
+    const XZ_32 offset = M_GetShaftOffset(item->rot.y);
+    if (!M_IsTileInShaft(lara_tile, lift_tile, offset)) {
+        return;
+    }
+
+    if (!Lara_TestBoundsCollide(item, 0)) {
+        return;
+    }
+
+    if (g_Config.debug.enable_invulnerability) {
+        lara_item->pos.y = item->pos.y;
+        Lara_UpdateRoomToHeight(0);
+    } else {
+        M_KillLara(lara_item);
+    }
+}
+
 static void M_ShiftStackableItems(
     const ITEM *const lift_item, const bool reposition)
 {
@@ -382,6 +443,7 @@ static void M_AddWalkable(const int16_t item_num)
 static void M_Setup(OBJECT *const obj)
 {
     obj->initialise_func = M_Initialise;
+    obj->collision_func = M_Collision;
     obj->control_func = M_Control;
     obj->floor_height_func = M_GetFloorHeight;
     obj->ceiling_height_func = M_GetCeilingHeight;
