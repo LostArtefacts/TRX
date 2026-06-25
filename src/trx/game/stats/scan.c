@@ -137,8 +137,9 @@ static void M_CheckTriggers(
                 if (Object_Get(O_DRAGON_BACK)->loaded
                     && Object_Get(O_DRAGON_FRONT)->loaded) {
                     M_IncludeKillableItem(stats, item_num);
-                    if (Object_Get(O_PUZZLE_OPTION_2)->loaded
-                        || Object_Get(O_PUZZLE_ITEM_2)->loaded) {
+                    if (item->object_id == O_BARTOLI
+                        && (Object_Get(O_PUZZLE_OPTION_2)->loaded
+                            || Object_Get(O_PUZZLE_ITEM_2)->loaded)) {
                         LOG_TRACE("+1 pickup from dragon");
                         stats->max_pickup_count++;
                     }
