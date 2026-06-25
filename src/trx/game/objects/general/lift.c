@@ -66,67 +66,55 @@ static void M_SavePriv(const ITEM *const item, JSON_WRITE_IO *const io)
     }
 }
 
+static XZ_32 M_GetTile(const XYZ_32 pos)
+{
+    return (XZ_32) {
+        .x = pos.x >> WALL_SHIFT,
+        .z = pos.z >> WALL_SHIFT,
+    };
+}
+
+static XZ_32 M_GetShaftOffset(const int16_t angle)
+{
+    const DIRECTION direction = Math_GetDirection(angle);
+    switch (direction) {
+        // clang-format off
+    case DIR_NORTH: return (XZ_32) { -1, +1 };
+    case DIR_EAST:  return (XZ_32) { +1, +1 };
+    case DIR_SOUTH: return (XZ_32) { +1, -1 };
+    case DIR_WEST:  return (XZ_32) { -1, -1 };
+    default:        return (XZ_32) { +0, +0 };
+        // clang-format on
+    }
+}
+
+static bool M_IsTileInShaft(
+    const XZ_32 tile, const XZ_32 shaft_tile, const XZ_32 offset)
+{
+    return (tile.x == shaft_tile.x || tile.x + offset.x == shaft_tile.x)
+        && (tile.z == shaft_tile.z || tile.z + offset.z == shaft_tile.z);
+}
+
 static void M_FloorCeiling(
     const ITEM *const item, const XYZ_32 pos, int32_t *const out_floor,
     int32_t *const out_ceiling)
 {
-    const XZ_32 lift_tile = {
-        .x = item->pos.x >> WALL_SHIFT,
-        .z = item->pos.z >> WALL_SHIFT,
-    };
-
     ITEM *const lara_item = Lara_GetItem();
-    const XZ_32 lara_tile = {
-        .x = lara_item->pos.x >> WALL_SHIFT,
-        .z = lara_item->pos.z >> WALL_SHIFT,
-    };
+    const XZ_32 lift_tile = M_GetTile(item->pos);
+    const XZ_32 lara_tile = M_GetTile(lara_item->pos);
+    const XZ_32 test_tile = M_GetTile(pos);
+    const XZ_32 offset = M_GetShaftOffset(item->rot.y);
 
-    const XZ_32 test_tile = {
-        .x = pos.x >> WALL_SHIFT,
-        .z = pos.z >> WALL_SHIFT,
-    };
-
-    const DIRECTION direction = Math_GetDirection(item->rot.y);
-    int32_t dx = 0;
-    int32_t dz = 0;
-    switch (direction) {
-    case DIR_NORTH:
-        dx = -1;
-        dz = 1;
-        break;
-    case DIR_EAST:
-        dx = 1;
-        dz = 1;
-        break;
-    case DIR_SOUTH:
-        dx = 1;
-        dz = -1;
-        break;
-    case DIR_WEST:
-        dx = -1;
-        dz = -1;
-        break;
-    default:
-        break;
-    }
-
-    // clang-format off
-    const bool point_in_shaft =
-        (test_tile.x == lift_tile.x || test_tile.x + dx == lift_tile.x) &&
-        (test_tile.z == lift_tile.z || test_tile.z + dz == lift_tile.z);
-
-    const bool lara_in_shaft =
-        (lara_tile.x == lift_tile.x || lara_tile.x + dx == lift_tile.x) &&
-        (lara_tile.z == lift_tile.z || lara_tile.z + dz == lift_tile.z);
+    const bool point_in_shaft = M_IsTileInShaft(test_tile, lift_tile, offset);
+    const bool lara_in_shaft = M_IsTileInShaft(lara_tile, lift_tile, offset);
 
     const int32_t lift_bottom = item->pos.y + STEP_L;
     const int32_t lift_floor = item->pos.y;
     const int32_t lift_ceiling = item->pos.y - M_HEIGHT + STEP_L;
     const int32_t lift_top = item->pos.y - M_HEIGHT;
 
-    const bool lara_inside_lift = (lara_item->pos.y < lift_bottom) &&
-                                  (lara_item->pos.y > lift_ceiling);
-    // clang-format on
+    const bool lara_inside_lift =
+        (lara_item->pos.y < lift_bottom) && (lara_item->pos.y > lift_ceiling);
 
     *out_floor = 0x7FFF;
     *out_ceiling = -0x7FFF;
