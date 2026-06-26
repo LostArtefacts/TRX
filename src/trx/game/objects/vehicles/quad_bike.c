@@ -256,7 +256,7 @@ static int32_t M_GetOnQuadBike(
     SECTOR *const sector = Room_GetSector(item->pos, &room_num);
 
     const int32_t h = Room_GetHeight(sector, item->pos);
-    if (h < -32000) {
+    if (h < -MAX_HEIGHT) {
         return 0;
     }
 

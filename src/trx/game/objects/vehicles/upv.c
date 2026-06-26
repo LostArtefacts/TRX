@@ -144,7 +144,7 @@ static bool M_CanGetOn(const ITEM *const item)
     int16_t room_num = item->room_num;
     const SECTOR *const sector = Room_GetSector(item->pos, &room_num);
     const int32_t h = Room_GetHeight(sector, item->pos);
-    if (h < -32000) {
+    if (h < -MAX_HEIGHT) {
         return false;
     }
 

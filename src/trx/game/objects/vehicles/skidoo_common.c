@@ -206,7 +206,7 @@ int32_t Skidoo_CheckGetOn(const int16_t item_num, COLL_INFO *const coll)
     int16_t room_num = item->room_num;
     const SECTOR *const sector = Room_GetSector(item->pos, &room_num);
     const int32_t height = Room_GetHeight(sector, item->pos);
-    if (height < -32000) {
+    if (height < -MAX_HEIGHT) {
         return M_GET_ON_NONE;
     }
 
