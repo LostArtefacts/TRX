@@ -373,7 +373,7 @@ bool Lara_Cheat_ExitFlyMode(void)
     }
 
     const ROOM *const room = Room_Get(lara_item->room_num);
-    const int16_t water_height =
+    const int32_t water_height =
         Room_GetWaterHeight(lara_item->pos, lara_item->room_num);
 
     if (room->flags.underwater
@@ -444,7 +444,7 @@ bool Lara_Cheat_Teleport(XYZ_32 pos, int16_t room_num)
     if (lara_info->extra_anim) {
         const ROOM *const room = Room_Get(lara_item->room_num);
         const bool room_submerged = room->flags.underwater;
-        const int16_t water_height =
+        const int32_t water_height =
             Room_GetWaterHeight(lara_item->pos, lara_item->room_num);
 
         if (room_submerged || (water_height != NO_HEIGHT && water_height > 0)) {

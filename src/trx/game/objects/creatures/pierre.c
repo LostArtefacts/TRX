@@ -249,7 +249,7 @@ static void M_Control(const int16_t item_num)
         }
     }
 
-    int16_t wh = Room_GetWaterHeight(item->pos, item->room_num);
+    const int32_t wh = Room_GetWaterHeight(item->pos, item->room_num);
     if (wh != NO_HEIGHT) {
         item->hit_points = 0;
         LOT_DisableBaddieAI(item_num);
