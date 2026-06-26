@@ -327,6 +327,8 @@ static void M_NeutralJumpRoll(ITEM *const item, COLL_INFO *const coll)
         item->current_anim_state = LS(LS_STOP);
         item->speed = 0;
         item->pos = coll->old_pos;
+    } else if (coll->side_mid.floor <= STEPUP_HEIGHT) {
+        item->pos.y += coll->side_mid.floor;
     }
 }
 
