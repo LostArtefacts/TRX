@@ -467,7 +467,7 @@ static bool M_ConvertSample(const int32_t sample_id)
         (uint8_t **)&sample->sample_data, nullptr, &num_samples);
 
     char buffer[80];
-    sprintf(buffer, "sample %d decoded", sample_id);
+    snprintf(buffer, sizeof(buffer), "sample %d decoded", sample_id);
     Benchmark_End(&benchmark, buffer);
 
     sample->channels = 1;
