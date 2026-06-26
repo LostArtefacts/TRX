@@ -171,7 +171,7 @@ static int32_t M_GetInKayak(const int16_t item_num, const COLL_INFO *const coll)
     int16_t room_num = item->room_num;
     const SECTOR *const floor = Room_GetSector(item->pos, &room_num);
     const int32_t h = Room_GetHeight(floor, item->pos);
-    if (h <= -32000) {
+    if (h <= -MAX_HEIGHT) {
         return 0;
     }
 
