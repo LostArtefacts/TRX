@@ -12,7 +12,7 @@
 #define M_NEG_TILT(T, H) ((T * (H & M_WALL_MASK)) >> 2)
 #define M_POS_TILT(T, H) ((T * ((M_WALL_MASK - H) & M_WALL_MASK)) >> 2)
 
-static int16_t m_AbyssMinHeight = 0;
+static int32_t m_AbyssMinHeight = 0;
 static int32_t m_AbyssMaxHeight = 0;
 static HEIGHT_TYPE m_HeightType = HT_WALL;
 
@@ -350,7 +350,7 @@ SECTOR *Room_GetSkySector(
     return (SECTOR *)sector;
 }
 
-void Room_SetAbyssHeight(const int16_t height)
+void Room_SetAbyssHeight(const int32_t height)
 {
     // Once Lara reaches the min abyss height, she will be killed; she will
     // continue to fall however, so the max height is needed until the inventory

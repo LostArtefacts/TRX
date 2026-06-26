@@ -11,7 +11,7 @@ SECTOR *Room_GetUnitSector(
 SECTOR *Room_GetPitSector(const SECTOR *sector, int32_t x, int32_t z);
 SECTOR *Room_GetSkySector(const SECTOR *sector, int32_t x, int32_t z);
 
-void Room_SetAbyssHeight(int16_t height);
+void Room_SetAbyssHeight(int32_t height);
 bool Room_IsAbyssHeight(int32_t height);
 
 HEIGHT_TYPE Room_GetHeightType(void);
