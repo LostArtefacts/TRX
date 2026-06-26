@@ -30,8 +30,8 @@
 #define LARA_DEFLECT_ANGLE (5 * DEG_1) // = 910
 #define LARA_HANG_ANGLE (35 * DEG_1) // = 6370
 
-#define NO_BAD_POS (-NO_HEIGHT) // = 32512
-#define NO_BAD_NEG (NO_HEIGHT) // = -32512
+#define NO_BAD_POS (-NO_HEIGHT) // = 3251200
+#define NO_BAD_NEG (NO_HEIGHT) // = -3251200
 #define STEPUP_HEIGHT ((STEP_L * 3) / 2) // = 384
 #define SLOPE_DIF 60
 

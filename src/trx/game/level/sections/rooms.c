@@ -18,6 +18,7 @@
 
 #define M_NO_ROOM_LEGACY 255
 #define M_NO_BOX_TR3_LEGACY 0x7FF
+#define M_NO_HEIGHT_LEGACY (-32512)
 
 static void M_ReadPosition(XYZ_32 *const pos, VFILE *const file)
 {
@@ -304,6 +305,13 @@ void Level_Section_ReadRooms(LEVEL_CONTEXT *const ctx, VFILE *const file)
             }
             if (sector->portal_room.sky == M_NO_ROOM_LEGACY) {
                 sector->portal_room.sky = NO_ROOM;
+            }
+            if (sector->ceiling.height == M_NO_HEIGHT_LEGACY
+                && sector->floor.height == M_NO_HEIGHT_LEGACY) {
+                sector->ceiling.height = NO_HEIGHT;
+            }
+            if (sector->floor.height == M_NO_HEIGHT_LEGACY) {
+                sector->floor.height = NO_HEIGHT;
             }
         }
 

@@ -31,6 +31,7 @@
 - fixed missing hand grab SFX when Lara is climbing a ladder (#4266)
 - fixed missing and mistimed closing SFX on doors type 1 and 2 in Barkhang Monastery (#4417, #4418)
 - fixed missing SFX when jumping into the boat in Bartoli's Hideout (#4434)
+- fixed geometry issues in rooms 60 and 115 in Furnace of the Gods, which could cause the TR3 camera to become stuck and allow Lara to fly into the ceiling
 
 **TR3**:
 - fixed missing portals in Aldwych room 87, which could lead to Lara becoming softlocked
@@ -39,6 +40,7 @@
 - fixed missing knees shuffle SFX when Lara climbs onto a ledge (#5070)
 - fixed missing SFX when Lara is shimmying (#4996)
 - fixed missing SFX in the Pipeman's death animation (#5036)
+- fixed geometry issues in room 53 in Madubu Gorge, which could cause the TR3 camera to become stuck and allow Lara to fly into the ceiling
 
 
 
