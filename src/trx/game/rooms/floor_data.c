@@ -159,6 +159,16 @@ static bool M_TestLava(const ITEM *const item)
     return sector->is_death_sector;
 }
 
+static int32_t M_DecodeSplit(int32_t height)
+{
+    // Triangles can be 15 clicks high at most; bit 0x10 is used to wrap to
+    // negative via manual sign extension. OG used 0xFFF0 for 16-bit.
+    if ((height & 0x10) != 0) {
+        height |= 0xFFFFFFF0;
+    }
+    return height << 8;
+}
+
 void Room_ParseFloorData(
     const int16_t *floor_data, const int32_t floor_data_size)
 {
@@ -309,16 +319,10 @@ void Room_ReadTriangulation(
     }
 
     surface->is_split = true;
-    surface->split.h1 = (func_data & 0x03E0) >> 5;
-    surface->split.h2 = (func_data & 0x7C00) >> 10;
-    if ((surface->split.h1 & 0x10) != 0) {
-        surface->split.h1 |= 0xFFF0;
-    }
-    if ((surface->split.h2 & 0x10) != 0) {
-        surface->split.h2 |= 0xFFF0;
-    }
-    surface->split.h1 <<= 8;
-    surface->split.h2 <<= 8;
+    const int32_t split_1 = (func_data & 0x03E0) >> 5;
+    const int32_t split_2 = (func_data & 0x7C00) >> 10;
+    surface->split.h1 = M_DecodeSplit(split_1);
+    surface->split.h2 = M_DecodeSplit(split_2);
 
     for (int32_t i = 0; i < 4; i++) {
         surface->split.tilts[i] = (tilt_data >> (i * 4)) & 0xF;
