@@ -320,6 +320,14 @@ static void M_Pickup(ITEM *const item, COLL_INFO *const coll)
     }
 }
 
+static void M_FlarePickup(ITEM *const item, COLL_INFO *const coll)
+{
+    M_Default(item, coll);
+    if (coll->side_mid.floor <= STEPUP_HEIGHT) {
+        item->pos.y += coll->side_mid.floor;
+    }
+}
+
 static void M_PullUp(ITEM *const item, COLL_INFO *const coll)
 {
     M_Default(item, coll);
@@ -958,7 +966,7 @@ REGISTER_LARA_COL(LS_GYMNAST,      M_Default)
 REGISTER_LARA_COL(LS_WATER_OUT,    M_Default)
 REGISTER_LARA_COL(LS_PULL_UP,      M_PullUp)
 REGISTER_LARA_COL(LS_CONTROLLED,   M_Default)
-REGISTER_LARA_COL(LS_FLARE_PICKUP, M_Default)
+REGISTER_LARA_COL(LS_FLARE_PICKUP, M_FlarePickup)
 REGISTER_LARA_COL(LS_WALK,         M_Walk)
 REGISTER_LARA_COL(LS_WALK_BACK,    M_WalkBack)
 REGISTER_LARA_COL(LS_STEP_RIGHT,   M_SideStep)
