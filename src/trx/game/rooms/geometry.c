@@ -113,17 +113,17 @@ static inline XZ_16 M_GetSplitTilt(
     return tilt;
 }
 
-static int16_t M_GetSplitSurfaceHeight(
+static int32_t M_GetSplitSurfaceHeight(
     const SURFACE surface, const int32_t x, const int32_t z)
 {
     const bool is_ceiling = surface.type == SURFACE_CEILING;
     if (Camera_IsChunky()) {
-        const int16_t ch1 = surface.height + surface.split.h2;
-        const int16_t ch2 = surface.height + surface.split.h1;
+        const int32_t ch1 = surface.height + surface.split.h2;
+        const int32_t ch2 = surface.height + surface.split.h1;
         return is_ceiling ? MAX(ch1, ch2) : MIN(ch1, ch2);
     }
 
-    int16_t height = surface.height;
+    int32_t height = surface.height;
     if (!is_ceiling) {
         m_HeightType = HT_SPLIT_TRI;
     }
