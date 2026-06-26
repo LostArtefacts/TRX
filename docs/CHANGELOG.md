@@ -17,6 +17,7 @@
 - fixed Lara becoming clamped and softlocked if a lift descends on top of her
 - fixed Lara moving through the floor of a lift if she picks up a flare while it's moving
 - fixed Lara moving through the floor of a lift if she performs a neutral twist while it's moving (regression from TR1X 4.14/TR2X 1.4)
+- fixed Lara not travelling at the same rate as a moving lift if she hits wall while inside or on top of it (regression from TR1X 4.12/TR2X 1.2)
 - fixed Lara persisting to crouch after landing when either crawling backwards or jumping out of a crawlspace and the crouch toggle option is enabled (#5703, regression from 1.3)
 - fixed an extra pickup being included in the total statistics if a dragon is used in custom levels independently of Bartoli (regression from 1.3)
 - fixed persistent splashing effects if Lara falls onto spikes in one-click high water (regression from 1.0)

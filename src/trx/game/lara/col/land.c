@@ -682,8 +682,7 @@ static void M_Splat(ITEM *const item, COLL_INFO *const coll)
 {
     M_Default(item, coll);
     Lara_Col_Shift(coll);
-    if (!g_Config.gameplay.fix_step_glitch && coll->side_mid.floor > -STEP_L
-        && coll->side_mid.floor < STEP_L) {
+    if (coll->side_mid.floor > -STEP_L && coll->side_mid.floor < STEP_L) {
         item->pos.y += coll->side_mid.floor;
     }
 }
