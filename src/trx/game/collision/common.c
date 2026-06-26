@@ -82,7 +82,7 @@ static void M_FillSide(
             && (!retest_front
                 || (side->floor < coll->side_mid.floor
                     && height < side->floor))) {
-            side->floor = -32767;
+            side->floor = UNDEFINED_HEIGHT;
         } else if (
             coll->slopes_are_pits
             && (side->type == HT_BIG_SLOPE || side->type == HT_DIAGONAL)
