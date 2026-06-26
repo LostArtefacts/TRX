@@ -6,6 +6,6 @@
 #define NO_ROOM (-1)
 
 #define MAX_SLOPE 2
-#define NO_HEIGHT (-32512)
-#define UNDEFINED_HEIGHT (NO_HEIGHT - (STEP_L - 1)) // = -32767
-#define MAX_HEIGHT 32000
+#define NO_HEIGHT (-3251200)
+#define UNDEFINED_HEIGHT (NO_HEIGHT - (STEP_L - 1)) // = -3251455
+#define MAX_HEIGHT 3200000
