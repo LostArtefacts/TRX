@@ -119,8 +119,8 @@ static void M_FloorCeiling(
     const bool lara_inside_lift =
         (lara_item->pos.y < lift_bottom) && (lara_item->pos.y > lift_ceiling);
 
-    *out_floor = 0x7FFF;
-    *out_ceiling = -0x7FFF;
+    *out_floor = -UNDEFINED_HEIGHT;
+    *out_ceiling = UNDEFINED_HEIGHT;
 
     if (lara_in_shaft) {
         if (item->current_anim_state == M_STATE_DOOR_CLOSED
@@ -130,7 +130,7 @@ static void M_FloorCeiling(
                 *out_ceiling = lift_ceiling;
             } else {
                 *out_floor = NO_HEIGHT;
-                *out_ceiling = 0x7FFF;
+                *out_ceiling = -UNDEFINED_HEIGHT;
             }
         } else if (point_in_shaft) {
             if (lara_item->pos.y < lift_ceiling) {
@@ -152,7 +152,7 @@ static void M_FloorCeiling(
             *out_ceiling = lift_ceiling;
         } else {
             *out_floor = NO_HEIGHT;
-            *out_ceiling = 0x7FFF;
+            *out_ceiling = -UNDEFINED_HEIGHT;
         }
     }
 }
