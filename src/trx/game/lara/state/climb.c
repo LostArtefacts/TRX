@@ -25,6 +25,10 @@ static void M_Hang(ITEM *const item, COLL_INFO *const coll)
         return;
     }
 
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    lara->torso_rot.x = 0;
+    lara->torso_rot.y = 0;
+
     if (g_Config.gameplay.look_mode != LOOK_MODE_RESTRICTED && g_Input.look) {
         Lara_Look_UpDown();
     }
