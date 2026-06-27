@@ -118,4 +118,9 @@ static __attribute__((constructor)) void M_Init(void)
     ENUM_MAP(
         PROJECTILE_AREA_DAMAGE, PROJECTILE_AREA_DAMAGE_MULTI_SWEEP,
         "multi-sweep");
+
+    ENUM_MAP(GAME_MODES_POLICY, GAME_MODES_POLICY_NEVER, "never");
+    ENUM_MAP(GAME_MODES_POLICY, GAME_MODES_POLICY_ALWAYS, "always");
+    ENUM_MAP(
+        GAME_MODES_POLICY, GAME_MODES_POLICY_ON_COMPLETION, "on-completion");
 }

@@ -5,6 +5,7 @@
 #include <trx/core/vector.h>
 #include <trx/game/game_flow.h>
 #include <trx/game/game_strings/entries.h>
+#include <trx/game/option/passport.h>
 #include <trx/game/savegame.h>
 #include <trx/game/shell/mod.h>
 #include <trx/game/ui.h>
@@ -119,8 +120,7 @@ static bool M_OptionVisible(
     if (option->choice == UI_NEW_GAME_CHOICE_SWITCH_MOD) {
         return features->switch_mod;
     }
-    return g_Config.gameplay.enable_game_modes
-        || g_Config.profile.new_game_plus_unlock
+    return Option_Passport_AreGameModesAvailable()
         || option->choice == UI_NEW_GAME_CHOICE_NG;
 }
 

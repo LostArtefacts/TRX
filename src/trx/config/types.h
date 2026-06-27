@@ -212,7 +212,7 @@ typedef struct {
 
         bool enable_cheats;
         bool enable_console;
-        bool enable_game_modes;
+        GAME_MODES_POLICY game_modes_policy;
         bool enable_play_previous_levels;
         bool enable_fmv;
         bool enable_legal;

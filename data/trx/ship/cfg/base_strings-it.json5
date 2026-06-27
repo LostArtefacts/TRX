@@ -592,6 +592,11 @@
             "CREATURE_DROWN_POLICY_NEVER": "Mai",
             "CREATURE_DROWN_POLICY_SUBMERGED": "Sommerso",
         },
+        "GAME_MODES_POLICY": {
+            "GAME_MODES_POLICY_ALWAYS": "\\{review}Sempre",
+            "GAME_MODES_POLICY_NEVER": "\\{review}Mai",
+            "GAME_MODES_POLICY_ON_COMPLETION": "\\{review}Al completamento",
+        },
         "INPUT_BACKEND": {
             "INPUT_BACKEND_CONTROLLER": "Controller",
             "INPUT_BACKEND_KEYBOARD": "Tastiera",
@@ -965,10 +970,6 @@
             "title": "FMV",
             "description": "Abilita la riproduzione dei filmati.",
         },
-        "gameplay.enable_game_modes": {
-            "title": "Selezione modalità di gioco",
-            "description": "\\{review}Consente di selezionare le modalità di gioco aggiuntive dal menu passaporto.\n\n- Nuova Partita+: sblocca tutte le armi con munizioni infinite; i nemici hanno punti vita doppi.\n- NP giapponese: le armi causano il doppio dei danni; le scatole di razzi contengono 8 razzi di segnalazione anziché 6.\n- NP giapponese+: combinazione di Nuova Partita+ e NP giapponese.\n\nSe questa opzione è disattivata ma il gioco è già stato completato, la selezione della modalità sarà comunque disponibile.",
-        },
         "gameplay.enable_idle_pose_camera": {
             "title": "Telecamera posa inattiva",
             "description": "Regola la telecamera in modo che sia rivolta verso Lara mentre viene riprodotta la sua animazione di posa inattiva. Premi Guarda per reimpostare la telecamera.",
@@ -1184,6 +1185,10 @@
         "gameplay.fix_water_exit": {
             "title": "Correggi uscita dall'acqua",
             "description": "Risolve il problema che permette a Lara di passare direttamente da una stanza con acqua ad una senza acqua adiacente o sottostante. Inoltre, questo impedirà a Lara di uscire dall'acqua su pendii non calpestabili.",
+        },
+        "gameplay.game_modes_policy": {
+            "title": "Selezione modalità di gioco",
+            "description": "\\{review}Consente di selezionare le modalità di gioco aggiuntive dal menu passaporto.\n\n- Nuova Partita+: sblocca tutte le armi con munizioni infinite; i nemici hanno punti vita doppi.\n- NP giapponese: le armi causano il doppio dei danni; le scatole di razzi contengono 8 razzi di segnalazione anziché 6.\n- NP giapponese+: combinazione di Nuova Partita+ e NP giapponese.\n\nOpzioni disponibili:\n\n- Sempre: la finestra di selezione delle modalità di gioco sarà sempre disponibile.\n- Mai: la finestra di selezione delle modalità di gioco non sarà mai disponibile.\n- Al completamento: la finestra di selezione delle modalità di gioco sarà disponibile solo dopo aver completato il gioco.",
         },
         "gameplay.harpoon_recoil": {
             "title": "Ricarica fucile subacqueo",

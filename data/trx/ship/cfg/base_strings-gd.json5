@@ -592,6 +592,11 @@
             "CREATURE_DROWN_POLICY_NEVER": "A-riamh",
             "CREATURE_DROWN_POLICY_SUBMERGED": "Fo uisge",
         },
+        "GAME_MODES_POLICY": {
+            "GAME_MODES_POLICY_ALWAYS": "An-còmhnaidh",
+            "GAME_MODES_POLICY_NEVER": "A-riamh",
+            "GAME_MODES_POLICY_ON_COMPLETION": "Air chrìoch",
+        },
         "INPUT_BACKEND": {
             "INPUT_BACKEND_CONTROLLER": "Smachdair",
             "INPUT_BACKEND_KEYBOARD": "Meur-chlàr",
@@ -965,10 +970,6 @@
             "title": "Bhideothan",
             "description": "Cuiridh seo cluich bhideothan an comas.",
         },
-        "gameplay.enable_game_modes": {
-            "title": "Taghadh modh geama",
-            "description": "Leigeas le roghainnean Geama Ùr+ a bhith rim faotainn sa phasport aig toiseach a' gheama.\n\n- Geama Ùr+: fuasgladh nan armachd air fad le peilearan gun chrìoch; bidh HP dùbailte aig na nàimhdean.\n- GÙ Iapanach: bidh na h-armachd ag adhbhrachadh milleadh dùbailte, agus bheir togail lòchrain 8 seach 6.\n- GÙ+ Iapanach: measgachadh de GÙ+ is GÙ Iapanach.\n\nMa tha an roghainn seo à comas ach chaidh an geama a chrìochnachadh mu thràth, bidh taghadh a' mhodh fhathast ri fhaighinn.",
-        },
         "gameplay.enable_idle_pose_camera": {
             "title": "Camara seasaimh",
             "description": "Gluaisidh an camara gus aghaidh a thoirt air Lara rè a beòthalachd seasaimh. Put seall gus an camara a ath-shuidheachadh.",
@@ -1184,6 +1185,10 @@
         "gameplay.fix_water_exit": {
             "title": "Càraich fàgail à seòmar uisge",
             "description": "Cuiridh seo casg air Lara a bhith comasach air a dhol gu seòmraichean tioram fodha neo ri taobh an seomair làithreach. Cuiridh seo cuideachd casg oirre a sreap air sleamhnagan nach gabh seasamh orra.",
+        },
+        "gameplay.game_modes_policy": {
+            "title": "Taghadh modh geama",
+            "description": "Leigeas le roghainnean Geama Ùr+ a bhith rim faotainn sa phasport aig toiseach a' gheama.\n\n- Geama Ùr+: fuasgladh nan armachd air fad le peilearan gun chrìoch; bidh HP dùbailte aig na nàimhdean.\n- GÙ Iapanach: bidh na h-armachd ag adhbhrachadh milleadh dùbailte, agus bheir togail lòchrain 8 seach 6.\n- GÙ+ Iapanach: measgachadh de GÙ+ is GÙ Iapanach.\n\nRoghainnean rim faighinn:\n\n- An-còmhnaidh: bidh uinneag taghadh nam modhan-geama ri fhaighinn an-còmhnaidh.\n- A-riamh: cha bhi uinneag taghadh nam modhan-geama ri fhaighinn idir.\n- Air chrìoch: cha bhi uinneag taghadh nam modhan-geama ri fhaighinn gus am bi an geama air a chrìochnachadh.",
         },
         "gameplay.harpoon_recoil": {
             "title": "Ath-luchdadh harpùn",
