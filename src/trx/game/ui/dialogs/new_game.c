@@ -120,6 +120,7 @@ static bool M_OptionVisible(
         return features->switch_mod;
     }
     return g_Config.gameplay.enable_game_modes
+        || g_Config.profile.new_game_plus_unlock
         || option->choice == UI_NEW_GAME_CHOICE_NG;
 }
 
