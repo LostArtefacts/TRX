@@ -21,6 +21,7 @@
 - fixed Lara persisting to crouch after landing when either crawling backwards or jumping out of a crawlspace and the crouch toggle option is enabled (#5703, regression from 1.3)
 - fixed an extra pickup being included in the total statistics if a dragon is used in custom levels independently of Bartoli (regression from 1.3)
 - fixed persistent splashing effects if Lara falls onto spikes in one-click high water (regression from 1.0)
+- fixed game mode options not displaying after having beaten the game, if the option itself is switched off (regression from 1.0)
 - removed the hard-coded spawn distance between Puna and his Lizards (#5686)
 
 **TR1**:

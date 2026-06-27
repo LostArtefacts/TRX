@@ -967,7 +967,7 @@
         },
         "gameplay.enable_game_modes": {
             "title": "Autres modes de jeu",
-            "description": "\\{review}Permet de sélectionner de nouveaux modes de jeu dans le menu nouvelle partie du passeport au menu principal.\n- Nouvelle partie+ : Déverrouille toutes les armes avec munitions infinies ; les ennemis ont le double de points de vie.\n- Version Japonaise : Les armes font le double de dégâts.\n- Version Japonaise+ : Combine le mode Version Japonaise et le mode Nouvelle partie+.",
+            "description": "\\{review}Permet de sélectionner de nouveaux modes de jeu dans le menu nouvelle partie du passeport au menu principal.\n- Nouvelle partie+ : Déverrouille toutes les armes avec munitions infinies ; les ennemis ont le double de points de vie.\n- Version Japonaise : Les armes font le double de dégâts.\n- Version Japonaise+ : Combine le mode Version Japonaise et le mode Nouvelle partie+.\n\nSi cette option est désactivée mais que le jeu a déjà été terminé, la sélection du mode restera tout de même disponible.",
         },
         "gameplay.enable_idle_pose_camera": {
             "title": "\\{review}Caméra pose",

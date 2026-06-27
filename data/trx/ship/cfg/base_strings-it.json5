@@ -967,7 +967,7 @@
         },
         "gameplay.enable_game_modes": {
             "title": "Selezione modalità di gioco",
-            "description": "Consente di selezionare le modalità di gioco aggiuntive dal menu passaporto.\n\n- Nuova Partita+: sblocca tutte le armi con munizioni infinite; i nemici hanno punti vita doppi.\n- NP giapponese: le armi causano il doppio dei danni; le scatole di razzi contengono 8 razzi di segnalazione anziché 6.\n- NP giapponese+: combinazione di Nuova Partita+ e NP giapponese.",
+            "description": "\\{review}Consente di selezionare le modalità di gioco aggiuntive dal menu passaporto.\n\n- Nuova Partita+: sblocca tutte le armi con munizioni infinite; i nemici hanno punti vita doppi.\n- NP giapponese: le armi causano il doppio dei danni; le scatole di razzi contengono 8 razzi di segnalazione anziché 6.\n- NP giapponese+: combinazione di Nuova Partita+ e NP giapponese.\n\nSe questa opzione è disattivata ma il gioco è già stato completato, la selezione della modalità sarà comunque disponibile.",
         },
         "gameplay.enable_idle_pose_camera": {
             "title": "Telecamera posa inattiva",
