@@ -592,6 +592,11 @@
             "CREATURE_DROWN_POLICY_NEVER": "Never",
             "CREATURE_DROWN_POLICY_SUBMERGED": "Submerged",
         },
+        "GAME_MODES_POLICY": {
+            "GAME_MODES_POLICY_ALWAYS": "Always",
+            "GAME_MODES_POLICY_NEVER": "Never",
+            "GAME_MODES_POLICY_ON_COMPLETION": "On completion",
+        },
         "INPUT_BACKEND": {
             "INPUT_BACKEND_CONTROLLER": "Controller",
             "INPUT_BACKEND_KEYBOARD": "Keyboard",
@@ -965,10 +970,6 @@
             "title": "FMVs",
             "description": "Enables FMVs playing.",
         },
-        "gameplay.enable_game_modes": {
-            "title": "Game mode selection",
-            "description": "Allows new game plus options to be selected from the new game passport menu.\n\n- New Game+: unlocks all weapons with infinite ammo; enemies have double the HP.\n- Japanese NG: weapons do double damage and flare pickups contain 8 rather than 6.\n- Japanese NG+: combination of New Game+ and Japanese NG.\n\nIf this option is disabled but the game has been beaten, the mode selection will still be available.",
-        },
         "gameplay.enable_idle_pose_camera": {
             "title": "Idle pose camera",
             "description": "Adjusts the camera to face Lara during her idle pose animation. Pressing look will reset the camera.",
@@ -1184,6 +1185,10 @@
         "gameplay.fix_water_exit": {
             "title": "Fix water exit",
             "description": "Fixes Lara being able to go directly from a water room to an adjacent dry room, or to a dry room below. Additionally, this will prevent Lara from being able to climb out of water onto non-standable slopes.",
+        },
+        "gameplay.game_modes_policy": {
+            "title": "Game mode selection",
+            "description": "Allows new game plus options to be selected from the new game passport menu.\n\n- New Game+: unlocks all weapons with infinite ammo; enemies have double the HP.\n- Japanese NG: weapons do double damage and flare pickups contain 8 rather than 6.\n- Japanese NG+: combination of New Game+ and Japanese NG.\n\nAvailable options:\n\n- Always: the game modes dialog will always be available.\n- Never: the game modes dialog will never be available.\n- On completion: the game modes dialog will only be available after the game has been beaten.",
         },
         "gameplay.harpoon_recoil": {
             "title": "Harpoon recoil",

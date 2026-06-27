@@ -521,8 +521,7 @@ static bool M_HandleNewGame(INVENTORY_ITEM *const inv_item)
     M_NAV_FRAME *const frame = page->nav.current;
 
     // If no options – start the game already
-    if (!g_Config.gameplay.enable_game_modes
-        && !g_Config.profile.new_game_plus_unlock
+    if (!Option_Passport_AreGameModesAvailable()
         && !g_Config.gameplay.enable_play_previous_levels
         && !UI_NewGame_HasModChoices()) {
         // But only if in title mode
@@ -552,11 +551,12 @@ static bool M_HandleNewGame(INVENTORY_ITEM *const inv_item)
             return true;
 
         case UI_NEW_GAME_CHOICE_NG:
-            // Handle the scenario where enable_game_modes is off, and
+            // Handle the scenario where game_modes_policy is disabled, and
             // enable_play_previous_levels is on. In this scenario the dialog
             // adds a "New Game" row just to let the player start the game. It
             // shouldn't touch the NG+ flag.
-            if (g_Config.gameplay.enable_game_modes) {
+            if (g_Config.gameplay.game_modes_policy
+                == GAME_MODES_POLICY_ALWAYS) {
                 Game_SetBonusFlag(GBF_NONE);
             }
             M_Confirm(PASSPORT_ACTION_NEW_GAME, GF_GetFirstLevel()->num);
@@ -605,9 +605,7 @@ static bool M_HandlePlayAnyLevel(INVENTORY_ITEM *const inv_item)
     } else if (choice == UI_REQUESTER_CANCEL) {
         M_NavigateOut(inv_item);
         return true;
-    } else if (
-        g_Config.gameplay.enable_game_modes
-        || g_Config.profile.new_game_plus_unlock) {
+    } else if (Option_Passport_AreGameModesAvailable()) {
         M_NavigateInto(M_ROLE_PLAY_ANY_LEVEL_SELECT_MODE, choice);
         return true;
     } else {
@@ -1001,4 +999,17 @@ void Option_Passport_Close(void)
     M_RemoveAllText();
     M_FreeAllDialogs();
     m_Priv.active_page = PAGE_UNDETERMINED;
+}
+
+bool Option_Passport_AreGameModesAvailable(void)
+{
+    switch (g_Config.gameplay.game_modes_policy) {
+    case GAME_MODES_POLICY_NEVER:
+        return false;
+    case GAME_MODES_POLICY_ON_COMPLETION:
+        return g_Config.profile.new_game_plus_unlock;
+    case GAME_MODES_POLICY_ALWAYS:
+    default:
+        return true;
+    }
 }

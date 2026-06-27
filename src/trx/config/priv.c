@@ -514,6 +514,15 @@ static void M_LoadLegacyOptions(JSON_OBJECT *const parent_obj)
     }
     M_MigrateLegacyStatsOptions(parent_obj);
 
+    // TRX ..1.9: game modes changed to policy.
+    if (JSON_ObjectGetValue(parent_obj, "game_modes_policy") == nullptr) {
+        const JSON_VALUE *const value =
+            JSON_ObjectGetValue(parent_obj, "enable_game_modes");
+        g_Config.gameplay.game_modes_policy = JSON_ValueIsTrue(value)
+            ? GAME_MODES_POLICY_ALWAYS
+            : GAME_MODES_POLICY_NEVER;
+    }
+
     if (g_Config.config_version >= 0
         && g_Config.config_version < M_CONFIG_VERSION_CURRENT) {
         g_Config.config_version = M_CONFIG_VERSION_CURRENT;

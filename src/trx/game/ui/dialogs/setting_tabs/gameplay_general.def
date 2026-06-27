@@ -6,7 +6,7 @@ X_UI_CFG(gameplay.enable_cinematics)
 X_UI_CFG(gameplay.enable_cutscenes)
 X_UI_CFG_ENUM(gameplay.loading_screens,       .misc = UI_Settings_LoadingScreensModeEnumEntries)
 
-X_UI_CFG(gameplay.enable_game_modes)
+X_UI_CFG_ENUM(gameplay.game_modes_policy, .misc = UI_Settings_GameModesPolicyEnumEntries)
 X_UI_CFG(gameplay.enable_play_previous_levels)
 X_UI_CFG(gameplay.enable_save_crystals)
 

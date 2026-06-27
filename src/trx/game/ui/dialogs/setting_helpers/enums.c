@@ -174,3 +174,10 @@ const UI_SETTINGS_ENUM_ENTRY UI_Settings_SunglassesModeEnumEntries[] = {
     { SUNGLASSES_MODE_TRANSPARENT },
     { -1 },
 };
+
+const UI_SETTINGS_ENUM_ENTRY UI_Settings_GameModesPolicyEnumEntries[] = {
+    { GAME_MODES_POLICY_NEVER },
+    { GAME_MODES_POLICY_ALWAYS },
+    { GAME_MODES_POLICY_ON_COMPLETION },
+    { -1 },
+};

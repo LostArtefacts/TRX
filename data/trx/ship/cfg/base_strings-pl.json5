@@ -592,6 +592,11 @@
             "CREATURE_DROWN_POLICY_NEVER": "Wyłączone",
             "CREATURE_DROWN_POLICY_SUBMERGED": "Zanurzone",
         },
+        "GAME_MODES_POLICY": {
+            "GAME_MODES_POLICY_ALWAYS": "\\{review}Zawsze",
+            "GAME_MODES_POLICY_NEVER": "\\{review}Nigdy",
+            "GAME_MODES_POLICY_ON_COMPLETION": "\\{review}Po ukończeniu",
+        },
         "INPUT_BACKEND": {
             "INPUT_BACKEND_CONTROLLER": "Kontroler",
             "INPUT_BACKEND_KEYBOARD": "Klawiatura",
@@ -965,10 +970,6 @@
             "title": "Filmy",
             "description": "Włącza odtwarzanie filmów.",
         },
-        "gameplay.enable_game_modes": {
-            "title": "Wybór trybu gry",
-            "description": "\\{review}Pozwala na wybór opcji trybu przy rozpoczynaniu nowej gry.\n\n- Nowa Gra+: odblokowuje wszystkie bronie z nieskończoną amunicją; przeciwnicy mają podwójne zdrowie.\n- Japońska NG: bronie zadają podwójne obrażenia; znajdźki z flarami zawierają 8 flar zamiast 6.\n- Japońska NG+: połączenie Nowej Gry+ i Japońskiej NG.\n\nJeśli ta opcja jest wyłączona, ale gra została ukończona, wybór trybu będzie nadal dostępny.",
-        },
         "gameplay.enable_idle_pose_camera": {
             "title": "Kamera bezczynności",
             "description": "Dostosowuje kamerę tak, aby była skierowana na Larę podczas animacji bezczynności. Przycisk patrzenia resetuje kamerę.",
@@ -1184,6 +1185,10 @@
         "gameplay.fix_water_exit": {
             "title": "Napraw wyjście z wody",
             "description": "Naprawia problem, w którym Lara może przejść bezpośrednio z zatopionego pomieszczenia do sąsiadującego suchego pomieszczenia. Dodatkowo, opcja zapobiega Larze wchodzeniu z wody na nachylone powierzchnie, na których nie można stać.",
+        },
+        "gameplay.game_modes_policy": {
+            "title": "Wybór trybu gry",
+            "description": "\\{review}Pozwala na wybór opcji trybu przy rozpoczynaniu nowej gry.\n\n- Nowa Gra+: odblokowuje wszystkie bronie z nieskończoną amunicją; przeciwnicy mają podwójne zdrowie.\n- Japońska NG: bronie zadają podwójne obrażenia; znajdźki z flarami zawierają 8 flar zamiast 6.\n- Japońska NG+: połączenie Nowej Gry+ i Japońskiej NG.\n\nDostępne opcje:\n\n- Zawsze: okno wyboru trybów gry będzie zawsze dostępne.\n- Nigdy: okno wyboru trybów gry nigdy nie będzie dostępne.\n- Po ukończeniu: okno wyboru trybów gry będzie dostępne dopiero po ukończeniu gry.",
         },
         "gameplay.harpoon_recoil": {
             "title": "Odrzut harpuna",

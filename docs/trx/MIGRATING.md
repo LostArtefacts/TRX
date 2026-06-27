@@ -20,6 +20,11 @@ order: 3
    definitions and replaced with an `is_barefoot` flag. Update `outfits.json5`
    and `catalog_samples.csv` accordingly - refer to OG shipped assets.
 
+3. **Update game mode selection config option**
+   `enable_game_modes` (boolean) was changed to `game_modes_policy`, with the
+   options being `never`, `always` and `on-completion`. Update the gameflow if
+   this setting is enforced.
+
 ### Version 1.7 to 1.8
 
 1. **Update Assault Course Lua stats access**:

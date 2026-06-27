@@ -592,6 +592,11 @@
             "CREATURE_DROWN_POLICY_NEVER": "\\{review}Nie",
             "CREATURE_DROWN_POLICY_SUBMERGED": "\\{review}Untergetaucht",
         },
+        "GAME_MODES_POLICY": {
+            "GAME_MODES_POLICY_ALWAYS": "\\{review}Immer",
+            "GAME_MODES_POLICY_NEVER": "\\{review}Nie",
+            "GAME_MODES_POLICY_ON_COMPLETION": "\\{review}Nach Abschluss",
+        },
         "INPUT_BACKEND": {
             "INPUT_BACKEND_CONTROLLER": "\\{review}Controller",
             "INPUT_BACKEND_KEYBOARD": "\\{review}Tastatur",
@@ -965,10 +970,6 @@
             "title": "FMVs",
             "description": "Aktiviert das Abspielen von FMVs.",
         },
-        "gameplay.enable_game_modes": {
-            "title": "Spielmodi-Auswahl",
-            "description": "\\{review}Erlaubt die Auswahl der 'Neues Spiel Plus'-Optionen im 'Neues Spiel' Ausweis-Menü.\n\n- Neues Spiel+: schaltet alle Waffen mit unendlich Munition frei; Feinde haben verdoppelte Lebenserenergie.\n- Japanisch NS: Waffen verursachen doppelten Schaden und Fackel-Pickups enhalten 8 statt 6 Fackeln.\n- Japanisch NS+: eine Kombination aus Neus Spiel+ und Japanisch NS.\n\nWenn diese Option deaktiviert ist, aber das Spiel bereits abgeschlossen wurde, bleibt die Modusauswahl dennoch verfügbar.",
-        },
         "gameplay.enable_idle_pose_camera": {
             "title": "\\{review}Leerlauf-Kamera",
             "description": "\\{review}Passt die Kamera an, sodass sie während der Posenanimation auf Lara gerichtet ist. Durch Drücken von Schauen wird die Kamera zurückgesetzt.",
@@ -1184,6 +1185,10 @@
         "gameplay.fix_water_exit": {
             "title": "Wasser Ausstieg",
             "description": "Fixt dass Lara direkt in einen angrenzenden, trockenen Raum oder in einen trockenen Raum unterhalb gelangen kann. Zusätzlich verhindert es, dass Lara aus dem Wasser heraus auf nicht begehbare Schrägen klettern kann.",
+        },
+        "gameplay.game_modes_policy": {
+            "title": "Spielmodi-Auswahl",
+            "description": "\\{review}Erlaubt die Auswahl der 'Neues Spiel Plus'-Optionen im 'Neues Spiel' Ausweis-Menü.\n\n- Neues Spiel+: schaltet alle Waffen mit unendlich Munition frei; Feinde haben verdoppelte Lebenserenergie.\n- Japanisch NS: Waffen verursachen doppelten Schaden und Fackel-Pickups enhalten 8 statt 6 Fackeln.\n- Japanisch NS+: eine Kombination aus Neus Spiel+ und Japanisch NS.\n\nVerfügbare Optionen:\n\n- Immer: Der Dialog zur Auswahl der Spielmodi ist immer verfügbar.\n- Nie: Der Dialog zur Auswahl der Spielmodi ist nie verfügbar.\n- Nach Abschluss: Der Dialog zur Auswahl der Spielmodi ist erst verfügbar, nachdem das Spiel abgeschlossen wurde.",
         },
         "gameplay.harpoon_recoil": {
             "title": "Harpunenrückstoß",
