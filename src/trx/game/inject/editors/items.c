@@ -1,4 +1,5 @@
 #include <trx/core/log.h>
+#include <trx/core/memory.h>
 #include <trx/game/camera.h>
 #include <trx/game/inject.h>
 #include <trx/game/items.h>
@@ -49,6 +50,42 @@ static void M_ItemFlagEdits(
     }
 }
 
+static void M_ItemNameEdits(
+    const INJECTION_CONTEXT *const ctx, const INJECTION *const injection,
+    const int32_t data_count)
+{
+    for (int32_t i = 0; i < data_count; i++) {
+        const int16_t item_num = VFile_ReadS16(injection->fp);
+        const int32_t name_length = VFile_ReadS32(injection->fp);
+        if (name_length <= 0) {
+            continue;
+        }
+
+        if (name_length > 4096) {
+            LOG_WARNING("Item name too long %d", name_length);
+            VFile_Skip(injection->fp, name_length);
+            continue;
+        }
+
+        if (item_num < 0 || item_num >= Item_GetTotalCount()) {
+            LOG_WARNING("Item number %d is out of level item range", item_num);
+            continue;
+        }
+
+        char *name = Memory_Alloc((size_t)(name_length + 1));
+        VFile_Read(injection->fp, name, name_length);
+        name[name_length] = '\0';
+
+        if (!Item_SetName(item_num, name)) {
+            LOG_WARNING(
+                "Failed to set name on item %d: '%s' is already in use",
+                item_num, name);
+        }
+
+        Memory_FreePointer(&name);
+    }
+}
+
 static void M_CameraEdits(
     const INJECTION_CONTEXT *const ctx, const INJECTION *const injection,
     const int32_t data_count)
@@ -81,4 +118,5 @@ static void M_CameraEdits(
 
 REGISTER_INJECT_EDITOR(IDT_ITEM_POS_EDITS, M_ItemPosEdits)
 REGISTER_INJECT_EDITOR(IDT_ITEM_FLAG_EDITS, M_ItemFlagEdits)
+REGISTER_INJECT_EDITOR(IDT_ITEM_NAME_EDITS, M_ItemNameEdits)
 REGISTER_INJECT_EDITOR(IDT_CAMERA_EDITS, M_CameraEdits)
