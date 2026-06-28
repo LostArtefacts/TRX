@@ -15,6 +15,7 @@
 - fixed a missing footstep sound when Lara finishes a handstand and when she climbs onto a ledge from a ladder (#5070)
 - fixed missing SFX when Lara transitions from hanging to crouching (#5070)
 - fixed Lara's torso remaining rotated if she grabs a ledge while looking
+- fixed Lara having guns in her hands in custom levels that begin with a cinematic scene if she finished the previous level with guns equipped
 - fixed Lara's shadow appearing at the top of a pushblock after having pulled it until she returns to a standstill (#1576)
 - fixed Lara being killed by pushblocks if she pulls one onto a trapdoor that is set to be triggered by that pushblock
 - fixed Lara becoming clamped and softlocked if a lift descends on top of her
