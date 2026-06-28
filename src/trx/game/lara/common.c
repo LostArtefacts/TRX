@@ -288,7 +288,8 @@ void Lara_InitialiseInventory(const GF_LEVEL *const level)
         lara_info->back_gun_type = resume->back_gun_type;
     }
 
-    if (!g_Config.gameplay.remember_gun_status) {
+    if (!g_Config.gameplay.remember_gun_status
+        || m_StartAnimState != LS_EXTRA_BREATH) {
         lara_info->gun_status = LGS_ARMLESS;
         lara_info->gun_type = lara_info->last_gun_type;
     }
