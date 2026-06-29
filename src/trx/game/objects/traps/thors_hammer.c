@@ -2,6 +2,7 @@
 #include <trx/debug.h>
 #include <trx/game/lara.h>
 #include <trx/game/objects.h>
+#include <trx/game/pathing.h>
 #include <trx/game/rooms.h>
 
 #define M_HEAD_DIST (WALL_L * 3) // = 3072
@@ -33,6 +34,7 @@ static void M_InitialiseHandle(const int16_t item_num)
     head_item->shade.value_1 = hand_item->shade.value_1;
     Item_Initialise(head_item_num);
     p->head_item_num = head_item_num;
+    Walkable_AllocateNodes(hand_item, 1);
 }
 
 static bool M_ShouldKillLara(const ITEM *const item)
@@ -65,6 +67,20 @@ static void M_KillLara(const ITEM *const item)
     lara_item->current_anim_state = LS(LS_SPECIAL);
     lara_item->goal_anim_state = LS(LS_SPECIAL);
     Item_SwitchToAnim(lara_item, LA(LA_BOULDER_DEATH), 0);
+}
+
+static void M_UpdateBox(const ITEM *const item, const bool blocked)
+{
+    int16_t room_num = item->room_num;
+    const XYZ_32 head_pos =
+        XYZ_32_OffsetYaw(item->pos, item->rot.y, M_HEAD_DIST);
+    const SECTOR *const sector = Room_GetSector(head_pos, &room_num);
+    if (sector->floor.height == item->pos.y && sector->box != NO_BOX) {
+        BOX_INFO *const box = Box_GetBox(sector->box);
+        if (box != nullptr && (box->overlap_index & BOX_BLOCKABLE) != 0) {
+            TOGGLE_BIT(box->overlap_index, BOX_BLOCKED, blocked);
+        }
+    }
 }
 
 static void M_ControlHandle(const int16_t item_num)
@@ -100,14 +116,7 @@ static void M_ControlHandle(const int16_t item_num)
 
     case M_STATE_DONE: {
         Room_TestTriggers(item);
-
-        const XYZ_32 old_pos = item->pos;
-        item->pos = XYZ_32_OffsetYaw(item->pos, item->rot.y, M_HEAD_DIST);
-        if (lara_item->hit_points >= 0) {
-            Room_AlterFloorHeight(item, -M_HEAD_HEIGHT);
-        }
-        item->pos = old_pos;
-
+        M_UpdateBox(item, true);
         Item_RemoveActive(item_num);
         item->status = IS_DEACTIVATED;
         break;
@@ -148,12 +157,59 @@ static void M_CollisionHead(
     }
 }
 
+static void M_AddWalkable(const int16_t item_num)
+{
+    ITEM *const item = Item_Get(item_num);
+    const XYZ_32 head_pos =
+        XYZ_32_OffsetYaw(item->pos, item->rot.y, M_HEAD_DIST);
+    Walkable_Add(item_num, head_pos);
+}
+
+static int32_t M_GetFloorHeight(
+    const ITEM *const item, const XYZ_32 pos, const int32_t height)
+{
+    if (item->current_anim_state != M_STATE_DONE) {
+        return height;
+    }
+
+    if (Lara_GetItem()->hit_points <= 0) {
+        return height;
+    }
+
+    if (pos.y > item->pos.y) {
+        return height;
+    }
+
+    return MIN(item->pos.y - M_HEAD_HEIGHT, height);
+}
+
+static int32_t M_GetCeilingHeight(
+    const ITEM *const item, const XYZ_32 pos, const int32_t height)
+{
+    if (item->current_anim_state != M_STATE_DONE) {
+        return height;
+    }
+
+    if (Lara_GetItem()->hit_points <= 0) {
+        return height;
+    }
+
+    if (pos.y <= item->pos.y || item->pos.y <= height) {
+        return height;
+    }
+
+    return item->pos.y + STEP_L;
+}
+
 static void M_SetupHandle(OBJECT *const obj)
 {
     obj->initialise_func = M_InitialiseHandle;
     obj->control_func = M_ControlHandle;
     obj->draw_func = Object_DrawUnclippedItem;
     obj->collision_func = M_CollisionHandle;
+    obj->add_walkable_func = M_AddWalkable;
+    obj->floor_height_func = M_GetFloorHeight;
+    obj->ceiling_height_func = M_GetCeilingHeight;
     obj->priv_size = sizeof(M_PRIV);
     obj->save_flags = true;
     obj->save_anim = true;
