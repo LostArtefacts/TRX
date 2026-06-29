@@ -27,7 +27,6 @@ int32_t Room_GetFloorHeightForSector(
 
 int32_t Room_GetWaterHeight(XYZ_32 pos, int16_t room_num);
 int32_t Room_GetWaterHeightEx(XYZ_32 pos, int16_t room_num, bool fix_tilts);
-void Room_AlterFloorHeight(const ITEM *item, int32_t height);
 
 int32_t Room_FindGridShift(int32_t src, int32_t dst);
 
