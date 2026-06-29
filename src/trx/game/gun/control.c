@@ -300,6 +300,14 @@ static void M_UpdateGunState(void)
     }
 }
 
+static void M_RequestCombatCamera(void)
+{
+    if (g_Camera.type != CAM_CINEMATIC && g_Camera.type != CAM_LOOK
+        && !Camera_IsLocked(g_Camera.num)) {
+        g_Camera.type = CAM_COMBAT;
+    }
+}
+
 void Gun_Control(void)
 {
     LARA_INFO *const lara = Lara_GetLaraInfo();
@@ -340,9 +348,7 @@ void Gun_Control(void)
         case LGT_AUTOS:
         case LGT_DESERT_EAGLE:
         case LGT_UZIS:
-            if (g_Camera.type != CAM_CINEMATIC && g_Camera.type != CAM_LOOK) {
-                g_Camera.type = CAM_COMBAT;
-            }
+            M_RequestCombatCamera();
             Gun_Pistols_Draw(lara->gun_type);
             break;
 
@@ -352,9 +358,7 @@ void Gun_Control(void)
         case LGT_GRENADE:
         case LGT_ROCKET:
         case LGT_HARPOON:
-            if (g_Camera.type != CAM_CINEMATIC && g_Camera.type != CAM_LOOK) {
-                g_Camera.type = CAM_COMBAT;
-            }
+            M_RequestCombatCamera();
             Gun_Rifle_Draw(lara->gun_type);
             break;
 
@@ -401,10 +405,7 @@ void Gun_Control(void)
     case LGS_READY:
         const bool is_firing = lara->pistol_ammo.ammo != 0 && g_Input.action;
         Lara_Skin_SetCombatFace(is_firing);
-
-        if (g_Camera.type != CAM_CINEMATIC && g_Camera.type != CAM_LOOK) {
-            g_Camera.type = CAM_COMBAT;
-        }
+        M_RequestCombatCamera();
 
         if (g_Input.action) {
             AMMO_INFO *const ammo = Gun_GetAmmoInfo(lara->gun_type);
