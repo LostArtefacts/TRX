@@ -35,6 +35,36 @@ static void M_InitialiseHandle(const int16_t item_num)
     p->head_item_num = head_item_num;
 }
 
+static bool M_ShouldKillLara(const ITEM *const item)
+{
+    const ITEM *const lara_item = Lara_GetItem();
+    if (lara_item->hit_points < 0 || g_Config.debug.enable_invulnerability) {
+        return false;
+    }
+
+    const XYZ_32 pos = XYZ_32_OffsetYaw(item->pos, item->rot.y, M_HEAD_DIST);
+    if (lara_item->pos.x <= pos.x - M_DEATH_RADIUS
+        || lara_item->pos.x >= pos.x + M_DEATH_RADIUS
+        || lara_item->pos.z <= pos.z - M_DEATH_RADIUS
+        || lara_item->pos.z >= pos.z + M_DEATH_RADIUS) {
+        return false;
+    }
+
+    return true;
+}
+
+static void M_KillLara(const ITEM *const item)
+{
+    ITEM *const lara_item = Lara_GetItem();
+    lara_item->hit_points = -1;
+    lara_item->pos.y = item->floor;
+    lara_item->gravity = false;
+    lara_item->enable_shadow = false;
+    lara_item->current_anim_state = LS(LS_SPECIAL);
+    lara_item->goal_anim_state = LS(LS_SPECIAL);
+    Item_SwitchToAnim(lara_item, LA(LA_BOULDER_DEATH), 0);
+}
+
 static void M_ControlHandle(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
@@ -60,72 +90,21 @@ static void M_ControlHandle(const int16_t item_num)
 
     case M_STATE_ACTIVE: {
         const int32_t frame_num = Item_GetRelativeFrame(item);
-        if (frame_num > 30) {
-            int32_t x = item->pos.x;
-            int32_t z = item->pos.z;
-
-            switch (item->rot.y) {
-            case 0:
-                z += M_HEAD_DIST;
-                break;
-            case DEG_90:
-                x += M_HEAD_DIST;
-                break;
-            case -DEG_90:
-                x -= M_HEAD_DIST;
-                break;
-            case -DEG_180:
-                z -= M_HEAD_DIST;
-                break;
-            }
-
-            if (lara_item->hit_points >= 0
-                && !g_Config.debug.enable_invulnerability
-                && lara_item->pos.x > x - M_DEATH_RADIUS
-                && lara_item->pos.x < x + M_DEATH_RADIUS
-                && lara_item->pos.z > z - M_DEATH_RADIUS
-                && lara_item->pos.z < z + M_DEATH_RADIUS) {
-                lara_item->hit_points = -1;
-                lara_item->pos.y = item->pos.y;
-                lara_item->gravity = false;
-                lara_item->current_anim_state = LS(LS_SPECIAL);
-                lara_item->goal_anim_state = LS(LS_SPECIAL);
-                Item_SwitchToAnim(lara_item, LA(LA_BOULDER_DEATH), 0);
-            }
+        if (frame_num > 30 && M_ShouldKillLara(item)) {
+            M_KillLara(item);
         }
         break;
     }
 
     case M_STATE_DONE: {
-        int32_t x = item->pos.x;
-        int32_t z = item->pos.z;
-        int32_t old_x = x;
-        int32_t old_z = z;
-
         Room_TestTriggers(item);
 
-        switch (item->rot.y) {
-        case 0:
-            z += M_HEAD_DIST;
-            break;
-        case DEG_90:
-            x += M_HEAD_DIST;
-            break;
-        case -DEG_90:
-            x -= M_HEAD_DIST;
-            break;
-        case -DEG_180:
-            z -= M_HEAD_DIST;
-            break;
-        }
-
-        item->pos.x = x;
-        item->pos.z = z;
+        const XYZ_32 old_pos = item->pos;
+        item->pos = XYZ_32_OffsetYaw(item->pos, item->rot.y, M_HEAD_DIST);
         if (lara_item->hit_points >= 0) {
             Room_AlterFloorHeight(item, -M_HEAD_HEIGHT);
         }
-        item->pos.x = old_x;
-        item->pos.z = old_z;
+        item->pos = old_pos;
 
         Item_RemoveActive(item_num);
         item->status = IS_DEACTIVATED;
