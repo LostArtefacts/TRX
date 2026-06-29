@@ -4,12 +4,16 @@
 #include <trx/game/objects.h>
 #include <trx/game/rooms.h>
 
+#define M_HEAD_DIST (WALL_L * 3) // = 3072
+#define M_HEAD_HEIGHT (WALL_L * 2) // = 2048
+#define M_DEATH_RADIUS (WALL_L / 2 + 8) // = 520
+
 typedef enum {
-    THOR_HAMMER_STATE_SET = 0,
-    THOR_HAMMER_STATE_TEASE = 1,
-    THOR_HAMMER_STATE_ACTIVE = 2,
-    THOR_HAMMER_STATE_DONE = 3,
-} THOR_HAMMER_STATE;
+    M_STATE_SET,
+    M_STATE_TEASE,
+    M_STATE_ACTIVE,
+    M_STATE_DONE,
+} M_STATE;
 
 typedef struct {
     int16_t head_item_num;
@@ -37,24 +41,24 @@ static void M_ControlHandle(const int16_t item_num)
     ITEM *const lara_item = Lara_GetItem();
 
     switch (item->current_anim_state) {
-    case THOR_HAMMER_STATE_SET:
+    case M_STATE_SET:
         if (Item_IsTriggerActive(item)) {
-            item->goal_anim_state = THOR_HAMMER_STATE_TEASE;
+            item->goal_anim_state = M_STATE_TEASE;
         } else {
             Item_RemoveActive(item_num);
             item->status = IS_INACTIVE;
         }
         break;
 
-    case THOR_HAMMER_STATE_TEASE:
+    case M_STATE_TEASE:
         if (Item_IsTriggerActive(item)) {
-            item->goal_anim_state = THOR_HAMMER_STATE_ACTIVE;
+            item->goal_anim_state = M_STATE_ACTIVE;
         } else {
-            item->goal_anim_state = THOR_HAMMER_STATE_SET;
+            item->goal_anim_state = M_STATE_SET;
         }
         break;
 
-    case THOR_HAMMER_STATE_ACTIVE: {
+    case M_STATE_ACTIVE: {
         const int32_t frame_num = Item_GetRelativeFrame(item);
         if (frame_num > 30) {
             int32_t x = item->pos.x;
@@ -62,23 +66,25 @@ static void M_ControlHandle(const int16_t item_num)
 
             switch (item->rot.y) {
             case 0:
-                z += WALL_L * 3;
+                z += M_HEAD_DIST;
                 break;
             case DEG_90:
-                x += WALL_L * 3;
+                x += M_HEAD_DIST;
                 break;
             case -DEG_90:
-                x -= WALL_L * 3;
+                x -= M_HEAD_DIST;
                 break;
             case -DEG_180:
-                z -= WALL_L * 3;
+                z -= M_HEAD_DIST;
                 break;
             }
 
             if (lara_item->hit_points >= 0
                 && !g_Config.debug.enable_invulnerability
-                && lara_item->pos.x > x - 520 && lara_item->pos.x < x + 520
-                && lara_item->pos.z > z - 520 && lara_item->pos.z < z + 520) {
+                && lara_item->pos.x > x - M_DEATH_RADIUS
+                && lara_item->pos.x < x + M_DEATH_RADIUS
+                && lara_item->pos.z > z - M_DEATH_RADIUS
+                && lara_item->pos.z < z + M_DEATH_RADIUS) {
                 lara_item->hit_points = -1;
                 lara_item->pos.y = item->pos.y;
                 lara_item->gravity = false;
@@ -90,7 +96,7 @@ static void M_ControlHandle(const int16_t item_num)
         break;
     }
 
-    case THOR_HAMMER_STATE_DONE: {
+    case M_STATE_DONE: {
         int32_t x = item->pos.x;
         int32_t z = item->pos.z;
         int32_t old_x = x;
@@ -100,23 +106,23 @@ static void M_ControlHandle(const int16_t item_num)
 
         switch (item->rot.y) {
         case 0:
-            z += WALL_L * 3;
+            z += M_HEAD_DIST;
             break;
         case DEG_90:
-            x += WALL_L * 3;
+            x += M_HEAD_DIST;
             break;
         case -DEG_90:
-            x -= WALL_L * 3;
+            x -= M_HEAD_DIST;
             break;
         case -DEG_180:
-            z -= WALL_L * 3;
+            z -= M_HEAD_DIST;
             break;
         }
 
         item->pos.x = x;
         item->pos.z = z;
         if (lara_item->hit_points >= 0) {
-            Room_AlterFloorHeight(item, -WALL_L * 2);
+            Room_AlterFloorHeight(item, -M_HEAD_HEIGHT);
         }
         item->pos.x = old_x;
         item->pos.z = old_z;
@@ -156,7 +162,7 @@ static void M_CollisionHead(
         return;
     }
     if (coll->enable_baddie_push
-        && item->current_anim_state != THOR_HAMMER_STATE_ACTIVE) {
+        && item->current_anim_state != M_STATE_ACTIVE) {
         Lara_Col_ItemPush(item, coll, false, true);
     }
 }
