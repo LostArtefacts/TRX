@@ -50,7 +50,9 @@ static bool M_ShouldKillLara(const ITEM *const item)
         return false;
     }
 
-    return true;
+    const BOUNDS_16 *const bounds = Item_GetBoundsAccurate(lara_item);
+    const int32_t lara_height = ABS(bounds->max.y - bounds->min.y);
+    return lara_item->pos.y - lara_height <= item->pos.y;
 }
 
 static void M_KillLara(const ITEM *const item)
