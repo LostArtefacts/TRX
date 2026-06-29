@@ -111,7 +111,7 @@ static void M_Setup(OBJECT *const obj)
         OBJECT_PROPERTY_INT(
             "flip_slot", M_DEFAULT_FLIP_SLOT,
             "The flip map slot to alter once liquid has finished pouring. -1 = "
-            "no flipmap is performed."));
+            "no flipmap is performed. Value range: minimum -1; maximum 10."));
 }
 
 REGISTER_OBJECT(O_BIG_BOWL, M_Setup)

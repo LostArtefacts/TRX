@@ -143,7 +143,8 @@ static void M_Setup(OBJECT *const obj)
             "Damage dealt when Lara touches the trap."),
         OBJECT_PROPERTY_INT(
             "blood_intensity", M_DEFAULT_BLOOD,
-            "The intensity of blood to spawn when Lara is damaged (0 - 10)."),
+            "The intensity of blood to spawn when Lara is damaged. Value "
+            "range: minimum 0; maximum 10."),
         OBJECT_PROPERTY_BOOL(
             "push_lara", true,
             "Whether or not Lara should be pushed when colliding with the "

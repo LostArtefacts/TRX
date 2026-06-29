@@ -1,0 +1,297 @@
+<?xml version='1.0' encoding='utf-8'?>
+<propertyCatalog>
+    <moveable id="0">
+        <property category="TRX" defaultValue="1000" description="Maximum hit points." displayName="Max Hit Points" internalName="max_hit_points" minValue="0" type="Int" />
+    </moveable>
+    <moveable id="14,19">
+        <property category="TRX" defaultValue="true" description="Whether or not this vehicle can activate heavy triggers." displayName="Is Heavy" internalName="is_heavy" type="Bool" />
+    </moveable>
+    <moveable id="15">
+        <property category="TRX" defaultValue="12" description="Random music track pool, slot 1. -1 = disabled." displayName="Track 1" internalName="track_1" minValue="0" type="Int" />
+        <property category="TRX" defaultValue="-1" description="Random music track pool, slot 2. -1 = disabled." displayName="Track 2" internalName="track_2" minValue="-1" type="Int" />
+        <property category="TRX" defaultValue="-1" description="Random music track pool, slot 3. -1 = disabled." displayName="Track 3" internalName="track_3" minValue="-1" type="Int" />
+        <property category="TRX" defaultValue="-1" description="Random music track pool, slot 4. -1 = disabled." displayName="Track 4" internalName="track_4" minValue="-1" type="Int" />
+        <property category="TRX" defaultValue="true" description="Whether or not this vehicle can activate heavy triggers." displayName="Is Heavy" internalName="is_heavy" type="Bool" />
+    </moveable>
+    <moveable id="16">
+        <property category="TRX" defaultValue="-1" description="Random music track pool, slot 1. -1 = disabled." displayName="Track 1" internalName="track_1" minValue="-1" type="Int" />
+        <property category="TRX" defaultValue="-1" description="Random music track pool, slot 2. -1 = disabled." displayName="Track 2" internalName="track_2" minValue="-1" type="Int" />
+        <property category="TRX" defaultValue="-1" description="Random music track pool, slot 3. -1 = disabled." displayName="Track 3" internalName="track_3" minValue="-1" type="Int" />
+        <property category="TRX" defaultValue="-1" description="Random music track pool, slot 4. -1 = disabled." displayName="Track 4" internalName="track_4" minValue="-1" type="Int" />
+        <property category="TRX" defaultValue="true" description="Whether or not this vehicle can activate heavy triggers." displayName="Is Heavy" internalName="is_heavy" type="Bool" />
+        <property category="TRX" defaultValue="false" description="Whether or not this vehicle can collide with static meshes." displayName="Test Static Collision" internalName="test_static_collision" type="Bool" />
+    </moveable>
+    <moveable id="17">
+        <property category="TRX" defaultValue="12" description="Random music track pool, slot 1. -1 = disabled." displayName="Track 1" internalName="track_1" minValue="0" type="Int" />
+        <property category="TRX" defaultValue="-1" description="Random music track pool, slot 2. -1 = disabled." displayName="Track 2" internalName="track_2" minValue="-1" type="Int" />
+        <property category="TRX" defaultValue="-1" description="Random music track pool, slot 3. -1 = disabled." displayName="Track 3" internalName="track_3" minValue="-1" type="Int" />
+        <property category="TRX" defaultValue="-1" description="Random music track pool, slot 4. -1 = disabled." displayName="Track 4" internalName="track_4" minValue="-1" type="Int" />
+    </moveable>
+    <moveable id="20">
+        <property category="TRX" defaultValue="28" description="Maximum hit points." displayName="Max Hit Points" internalName="max_hit_points" minValue="0" type="Int" />
+        <property category="TRX" defaultValue="8" description="Damage dealt by attack 2." displayName="Attack 2 Damage" internalName="attack_2_damage" minValue="0" type="Int" />
+        <property category="TRX" defaultValue="32" description="Damage dealt by attack 3." displayName="Attack 3 Damage" internalName="attack_3_damage" minValue="0" type="Int" />
+        <property category="TRX" defaultValue="8" description="Damage dealt by attack 4." displayName="Attack 4 Damage" internalName="attack_4_damage" minValue="0" type="Int" />
+        <property category="TRX" defaultValue="8" description="Damage dealt by attack 5." displayName="Attack 5 Damage" internalName="attack_5_damage" minValue="0" type="Int" />
+        <property category="TRX" defaultValue="32" description="Damage dealt by attack 6." displayName="Attack 6 Damage" internalName="attack_6_damage" minValue="0" type="Int" />
+        <property category="TRX" defaultValue="2" description="Damage dealt to non-player targets." displayName="Enemy Damage" internalName="enemy_damage" minValue="0" type="Int" />
+    </moveable>
+    <moveable id="21">
+        <property category="TRX" defaultValue="28" description="Maximum hit points." displayName="Max Hit Points" internalName="max_hit_points" minValue="0" type="Int" />
+        <property category="TRX" defaultValue="100" description="Damage dealt by melee attacks." displayName="Damage" internalName="damage" minValue="0" type="Int" />
+        <property category="TRX" defaultValue="5" description="Damage dealt to non-player targets." displayName="Enemy Damage" internalName="enemy_damage" minValue="0" type="Int" />
+    </moveable>
+    <moveable id="22,41">
+        <property category="TRX" defaultValue="16" description="Maximum hit points." displayName="Max Hit Points" internalName="max_hit_points" minValue="0" type="Int" />
+        <property category="TRX" defaultValue="50" description="Damage dealt by the lunge attack." displayName="Lunge Damage" internalName="lunge_damage" minValue="0" type="Int" />
+        <property category="TRX" defaultValue="12" description="Damage dealt by the bite attack." displayName="Bite Damage" internalName="bite_damage" minValue="0" type="Int" />
+    </moveable>
+    <moveable id="23">
+        <property category="TRX" defaultValue="4" description="Maximum hit points." displayName="Max Hit Points" internalName="max_hit_points" minValue="0" type="Int" />
+        <property category="TRX" defaultValue="20" description="Damage dealt by the bite attack." displayName="Damage" internalName="damage" minValue="0" type="Int" />
+    </moveable>
+    <moveable id="26,361">
+        <property category="TRX" defaultValue="20" description="Maximum hit points." displayName="Max Hit Points" internalName="max_hit_points" minValue="0" type="Int" />
+    </moveable>
+    <moveable id="27">
+        <property category="TRX" defaultValue="8" description="Maximum hit points." displayName="Max Hit Points" internalName="max_hit_points" minValue="0" type="Int" />
+        <property category="TRX" defaultValue="20" description="Damage dealt by the bird attack." displayName="Damage" internalName="damage" minValue="0" type="Int" />
+    </moveable>
+    <moveable id="28">
+        <property category="TRX" defaultValue="24" description="Maximum hit points." displayName="Max Hit Points" internalName="max_hit_points" minValue="0" type="Int" />
+        <property category="TRX" defaultValue="90" description="Damage dealt by bite attacks." displayName="Damage" internalName="damage" minValue="0" type="Int" />
+    </moveable>
+    <moveable id="29">
+        <property category="TRX" defaultValue="18" description="Maximum hit points." displayName="Max Hit Points" internalName="max_hit_points" minValue="0" type="Int" />
+        <property category="TRX" defaultValue="20" description="Damage dealt by the bird attack." displayName="Damage" internalName="damage" minValue="0" type="Int" />
+    </moveable>
+    <moveable id="30">
+        <property category="TRX" defaultValue="8" description="Maximum hit points." displayName="Max Hit Points" internalName="max_hit_points" minValue="0" type="Int" />
+    </moveable>
+    <moveable id="32">
+        <property category="TRX" defaultValue="42" description="Maximum hit points." displayName="Max Hit Points" internalName="max_hit_points" minValue="0" type="Int" />
+        <property category="TRX" defaultValue="100" description="Damage dealt by the alligator bite." displayName="Damage" internalName="damage" minValue="0" type="Int" />
+    </moveable>
+    <moveable id="34">
+        <property category="TRX" defaultValue="10" description="Maximum hit points." displayName="Max Hit Points" internalName="max_hit_points" minValue="0" type="Int" />
+        <property category="TRX" defaultValue="90" description="Damage dealt by the compy attack." displayName="Damage" internalName="damage" minValue="0" type="Int" />
+    </moveable>
+    <moveable id="35">
+        <property category="TRX" defaultValue="36" description="Maximum hit points." displayName="Max Hit Points" internalName="max_hit_points" minValue="0" type="Int" />
+        <property category="TRX" defaultValue="100" description="Damage dealt by the lizard bite." displayName="Bite Damage" internalName="bite_damage" minValue="0" type="Int" />
+        <property category="TRX" defaultValue="120" description="Damage dealt by the lizard swipe attack." displayName="Swipe Damage" internalName="swipe_damage" minValue="0" type="Int" />
+    </moveable>
+    <moveable id="36">
+        <property category="TRX" defaultValue="200" description="Maximum hit points." displayName="Max Hit Points" internalName="max_hit_points" minValue="0" type="Int" />
+        <property category="TRX" defaultValue="10000" description="Damage dealt by the head electric beam." displayName="Head Beam Damage" internalName="head_beam_damage" minValue="0" type="Int" />
+    </moveable>
+    <moveable id="37">
+        <property category="TRX" defaultValue="30" description="Maximum hit points." displayName="Max Hit Points" internalName="max_hit_points" minValue="0" type="Int" />
+        <property category="TRX" defaultValue="28" description="Damage dealt by the mercenary's shot." displayName="Damage" internalName="damage" minValue="0" type="Int" />
+    </moveable>
+    <moveable id="39">
+        <property category="TRX" defaultValue="34" description="Maximum hit points." displayName="Max Hit Points" internalName="max_hit_points" minValue="0" type="Int" />
+        <property category="TRX" defaultValue="35" description="Damage dealt by shots." displayName="Damage" internalName="damage" minValue="0" type="Int" />
+    </moveable>
+    <moveable id="40">
+        <property category="TRX" defaultValue="30" description="Maximum hit points." displayName="Max Hit Points" internalName="max_hit_points" minValue="0" type="Int" />
+        <property category="TRX" defaultValue="28" description="Damage dealt by shots." displayName="Damage" internalName="damage" minValue="0" type="Int" />
+    </moveable>
+    <moveable id="42">
+        <property category="TRX" defaultValue="50" description="Maximum hit points." displayName="Max Hit Points" internalName="max_hit_points" minValue="0" type="Int" />
+    </moveable>
+    <moveable id="44">
+        <property category="TRX" defaultValue="24" description="Maximum hit points." displayName="Max Hit Points" internalName="max_hit_points" minValue="0" type="Int" />
+        <property category="TRX" defaultValue="50" description="Damage dealt by the sting attack." displayName="Damage" internalName="damage" minValue="0" type="Int" />
+    </moveable>
+    <moveable id="45">
+        <property category="TRX" defaultValue="130" description="Maximum hit points." displayName="Max Hit Points" internalName="max_hit_points" minValue="0" type="Int" />
+        <property category="TRX" defaultValue="100" description="Damage dealt by the claw mutant melee attack." displayName="Damage" internalName="damage" minValue="0" type="Int" />
+        <property category="TRX" defaultValue="200" description="Damage dealt by the claw mutant plasma ball." displayName="Plasma Ball Damage" internalName="plasma_ball_damage" minValue="0" type="Int" />
+    </moveable>
+    <moveable id="46">
+        <property category="TRX" defaultValue="90" description="Maximum hit points." displayName="Max Hit Points" internalName="max_hit_points" minValue="0" type="Int" />
+        <property category="TRX" defaultValue="20" description="Damage dealt by the hybrid mutant jump attack." displayName="Jump Damage" internalName="jump_damage" minValue="0" type="Int" />
+        <property category="TRX" defaultValue="100" description="Damage dealt by the hybrid mutant slash attack." displayName="Slash Damage" internalName="slash_damage" minValue="0" type="Int" />
+        <property category="TRX" defaultValue="80" description="Damage dealt by the hybrid mutant kick attack." displayName="Kick Damage" internalName="kick_damage" minValue="0" type="Int" />
+    </moveable>
+    <moveable id="49">
+        <property category="TRX" defaultValue="200" description="Maximum hit points." displayName="Max Hit Points" internalName="max_hit_points" minValue="0" type="Int" />
+        <property category="TRX" defaultValue="10" description="Damage dealt by body contact." displayName="Touch Damage" internalName="touch_damage" minValue="0" type="Int" />
+        <property category="TRX" defaultValue="220" description="Damage dealt by bite attacks." displayName="Bite Damage" internalName="bite_damage" minValue="0" type="Int" />
+        <property category="TRX" defaultValue="440" description="Damage dealt by the lunge attack." displayName="Lunge Damage" internalName="lunge_damage" minValue="0" type="Int" />
+        <property category="TRX" defaultValue="10000" description="Damage dealt by direct plasma ball hits." displayName="Plasma Ball Damage" internalName="plasma_ball_damage" minValue="0" type="Int" />
+    </moveable>
+    <moveable id="50">
+        <property category="TRX" defaultValue="36" description="Maximum hit points." displayName="Max Hit Points" internalName="max_hit_points" minValue="0" type="Int" />
+    </moveable>
+    <moveable id="51,52,63">
+        <property category="TRX" defaultValue="45" description="Maximum hit points." displayName="Max Hit Points" internalName="max_hit_points" minValue="0" type="Int" />
+        <property category="TRX" defaultValue="28" description="Damage dealt by shots." displayName="Damage" internalName="damage" minValue="0" type="Int" />
+        <property category="TRX" defaultValue="84" description="Damage dealt by the death-state final shot." displayName="Final Shot Damage" internalName="final_shot_damage" minValue="0" type="Int" />
+    </moveable>
+    <moveable id="53,54">
+        <property category="TRX" defaultValue="20" description="Maximum hit points." displayName="Max Hit Points" internalName="max_hit_points" minValue="0" type="Int" />
+        <property category="TRX" defaultValue="80" description="Damage dealt by punches 1 and 2." displayName="Hit Damage" internalName="hit_damage" minValue="0" type="Int" />
+        <property category="TRX" defaultValue="100" description="Damage dealt by punch 3." displayName="Swipe Damage" internalName="swipe_damage" minValue="0" type="Int" />
+    </moveable>
+    <moveable id="56">
+        <property category="TRX" defaultValue="28" description="Maximum hit points." displayName="Max Hit Points" internalName="max_hit_points" minValue="0" type="Int" />
+        <property category="TRX" defaultValue="32" description="Damage dealt by shots." displayName="Damage" internalName="damage" minValue="0" type="Int" />
+        <property category="TRX" defaultValue="64" description="Damage dealt by the death-state final shot." displayName="Final Shot Damage" internalName="final_shot_damage" minValue="0" type="Int" />
+    </moveable>
+    <moveable id="57">
+        <property category="TRX" defaultValue="300" description="Maximum hit points." displayName="Max Hit Points" internalName="max_hit_points" minValue="0" type="Int" />
+        <property category="TRX" defaultValue="200" description="Damage dealt by the knockback shockwave." displayName="Knockback Damage" internalName="knockback_damage" minValue="0" type="Int" />
+        <property category="TRX" defaultValue="30" description="Damage dealt by regular laser bolt direct hits." displayName="Laser Bolt Damage" internalName="laser_bolt_damage" minValue="0" type="Int" />
+        <property category="TRX" defaultValue="542" description="Damage dealt by the big laser bolt direct hit." displayName="Big Laser Bolt Damage" internalName="big_laser_bolt_damage" minValue="0" type="Int" />
+        <property category="TRX" defaultValue="16" description="Maximum splash damage dealt by regular laser bolts." displayName="Laser Bolt Splash Damage" internalName="laser_bolt_splash_damage" minValue="0" type="Int" />
+        <property category="TRX" defaultValue="64" description="Maximum splash damage dealt by the big laser bolt." displayName="Big Laser Bolt Splash Damage" internalName="big_laser_bolt_splash_damage" minValue="0" type="Int" />
+        <property category="TRX" defaultValue="25" description="Damage dealt by plasma ball direct hits." displayName="Plasma Ball Damage" internalName="plasma_ball_damage" minValue="0" type="Int" />
+    </moveable>
+    <moveable id="60">
+        <property category="TRX" defaultValue="25" description="Maximum hit points." displayName="Max Hit Points" internalName="max_hit_points" minValue="0" type="Int" />
+        <property category="TRX" defaultValue="80" description="Damage dealt by punch 1." displayName="Punch 1 Damage" internalName="punch_1_damage" minValue="0" type="Int" />
+        <property category="TRX" defaultValue="80" description="Damage dealt by punch 2." displayName="Punch 2 Damage" internalName="punch_2_damage" minValue="0" type="Int" />
+        <property category="TRX" defaultValue="100" description="Damage dealt by punch 3." displayName="Punch 3 Damage" internalName="punch_3_damage" minValue="0" type="Int" />
+        <property category="TRX" defaultValue="150" description="Damage dealt by the kick attack." displayName="Kick Damage" internalName="kick_damage" minValue="0" type="Int" />
+    </moveable>
+    <moveable id="61">
+        <property category="TRX" defaultValue="28" description="Maximum hit points." displayName="Max Hit Points" internalName="max_hit_points" minValue="0" type="Int" />
+        <property category="TRX" defaultValue="32" description="Damage dealt by gun shots." displayName="Damage" internalName="damage" minValue="0" type="Int" />
+    </moveable>
+    <moveable id="62">
+        <property category="TRX" defaultValue="20" description="Maximum hit points." displayName="Max Hit Points" internalName="max_hit_points" minValue="0" type="Int" />
+        <property category="TRX" defaultValue="40" description="Damage dealt by punch 1." displayName="Punch 1 Damage" internalName="punch_1_damage" minValue="0" type="Int" />
+        <property category="TRX" defaultValue="40" description="Damage dealt by punch 2." displayName="Punch 2 Damage" internalName="punch_2_damage" minValue="0" type="Int" />
+        <property category="TRX" defaultValue="50" description="Damage dealt by punch 3." displayName="Punch 3 Damage" internalName="punch_3_damage" minValue="0" type="Int" />
+    </moveable>
+    <moveable id="64">
+        <property category="TRX" defaultValue="10" description="Damage dealt when the sentry gun hits Lara." displayName="Damage" internalName="damage" minValue="0" type="Int" />
+        <property category="TRX" defaultValue="100" description="Maximum hit points." displayName="Max Hit Points" internalName="max_hit_points" minValue="0" type="Int" />
+    </moveable>
+    <moveable id="65">
+        <property category="TRX" defaultValue="15" description="Maximum hit points." displayName="Max Hit Points" internalName="max_hit_points" minValue="0" type="Int" />
+        <property category="TRX" defaultValue="40" description="Damage dealt by the civilian's first punch attack." displayName="Punch 1 Damage" internalName="punch_1_damage" minValue="0" type="Int" />
+        <property category="TRX" defaultValue="40" description="Damage dealt by the civilian's second punch attack." displayName="Punch 2 Damage" internalName="punch_2_damage" minValue="0" type="Int" />
+        <property category="TRX" defaultValue="50" description="Damage dealt by the civilian's third punch attack." displayName="Punch 3 Damage" internalName="punch_3_damage" minValue="0" type="Int" />
+    </moveable>
+    <moveable id="66,68,148-157,360">
+        <property category="TRX" defaultValue="1" description="Maximum hit points." displayName="Max Hit Points" internalName="max_hit_points" minValue="0" type="Int" />
+    </moveable>
+    <moveable id="67">
+        <property category="TRX" defaultValue="10" description="Damage dealt when Lara crosses the security laser." displayName="Damage" internalName="damage" minValue="0" type="Int" />
+        <property category="TRX" defaultValue="1" description="Maximum hit points." displayName="Max Hit Points" internalName="max_hit_points" minValue="0" type="Int" />
+    </moveable>
+    <moveable id="69">
+        <property category="TRX" defaultValue="8" description="Maximum hit points." displayName="Max Hit Points" internalName="max_hit_points" minValue="0" type="Int" />
+        <property category="TRX" defaultValue="80" description="Damage dealt by the cobra bite." displayName="Damage" internalName="damage" minValue="0" type="Int" />
+        <property category="TRX" defaultValue="1.5" description="Alert radius, in sectors." displayName="Alert Radius" internalName="alert_radius" minValue="0" type="Float" />
+        <property category="TRX" defaultValue="1" description="Attack radius, in sectors." displayName="Attack Radius" internalName="attack_radius" minValue="0" type="Float" />
+        <property category="TRX" defaultValue="3" description="Forget radius, in sectors." displayName="Forget Radius" internalName="forget_radius" minValue="0" type="Float" />
+    </moveable>
+    <moveable id="70">
+        <property category="TRX" defaultValue="100" description="Maximum hit points." displayName="Max Hit Points" internalName="max_hit_points" minValue="0" type="Int" />
+        <property category="TRX" defaultValue="150" description="Damage dealt by the pincer attack." displayName="Pincer Damage" internalName="pincer_damage" minValue="0" type="Int" />
+        <property category="TRX" defaultValue="180" description="Damage dealt by the chopper attack." displayName="Chopper Damage" internalName="chopper_damage" minValue="0" type="Int" />
+    </moveable>
+    <moveable id="71">
+        <property category="TRX" defaultValue="8" description="Maximum hit points." displayName="Max Hit Points" internalName="max_hit_points" minValue="0" type="Int" />
+        <property category="TRX" defaultValue="40" description="Damage dealt by bite attacks." displayName="Damage" internalName="damage" minValue="0" type="Int" />
+        <property category="TRX" defaultValue="50" description="Damage dealt by the jumping bite attack." displayName="Jump Damage" internalName="jump_damage" minValue="0" type="Int" />
+    </moveable>
+    <moveable id="73">
+        <property category="TRX" defaultValue="100" description="Maximum hit points." displayName="Max Hit Points" internalName="max_hit_points" minValue="0" type="Int" />
+        <property category="TRX" defaultValue="200" description="Damage dealt by direct fire ball hits." displayName="Fire Ball Damage" internalName="fire_ball_damage" minValue="0" type="Int" />
+    </moveable>
+    <moveable id="74-82">
+        <property category="TRX" defaultValue="0" description="Maximum hit points." displayName="Max Hit Points" internalName="max_hit_points" minValue="0" type="Int" />
+    </moveable>
+    <moveable id="86,121">
+        <property category="TRX" defaultValue="50" description="Damage dealt while Lara is touching the pendulum." displayName="Damage" internalName="damage" minValue="0" type="Int" />
+    </moveable>
+    <moveable id="87">
+        <property category="TRX" defaultValue="15" description="Damage dealt when Lara hits the spikes without dying instantly." displayName="Damage" internalName="damage" minValue="0" type="Int" />
+    </moveable>
+    <moveable id="88,89,112,126">
+        <property category="TRX" defaultValue="100" description="Damage dealt when Lara is clipped by a moving boulder without being crushed." displayName="Air Damage" internalName="air_damage" minValue="0" type="Int" />
+    </moveable>
+    <moveable id="90">
+        <property category="TRX" defaultValue="25" description="Damage dealt on hit." displayName="Damage" internalName="damage" minValue="0" type="Int" />
+        <property category="TRX" defaultValue="true" description="Apply poison buildup in addition to hit damage." displayName="Poison" internalName="poison" type="Bool" />
+    </moveable>
+    <moveable id="94">
+        <property category="TRX" defaultValue="400" description="Damage dealt while Lara is caught in the teeth trap." displayName="Damage" internalName="damage" minValue="0" type="Int" />
+    </moveable>
+    <moveable id="95">
+        <property category="TRX" defaultValue="3" description="The time to wait before the lift begins moving, in seconds." displayName="Wait Time" internalName="wait_time" minValue="1" type="Int" />
+        <property category="TRX" defaultValue="22" description="The vertical distance the lift will travel, in clicks." displayName="Travel Distance" internalName="travel_distance" minValue="1" type="Int" />
+        <property category="TRX" defaultValue="16" description="The speed at which the lift moves, in world units." displayName="Speed" internalName="speed" maxValue="64" minValue="1" type="Int" />
+    </moveable>
+    <moveable id="106">
+        <property category="TRX" defaultValue="50" description="Damage dealt while Lara is touching the hook." displayName="Damage" internalName="damage" minValue="0" type="Int" />
+    </moveable>
+    <moveable id="107">
+        <property category="TRX" defaultValue="300" description="Damage dealt while Lara is touching the falling ceiling." displayName="Damage" internalName="damage" minValue="0" type="Int" />
+    </moveable>
+    <moveable id="108">
+        <property category="TRX" defaultValue="100" description="Damage dealt while Lara is touching the spinning blade." displayName="Damage" internalName="damage" minValue="0" type="Int" />
+    </moveable>
+    <moveable id="111">
+        <property category="TRX" defaultValue="100" description="Damage dealt while Lara is touching the blade trap." displayName="Damage" internalName="damage" minValue="0" type="Int" />
+    </moveable>
+    <moveable id="113">
+        <property category="TRX" defaultValue="200" description="Damage dealt when Lara is struck by the falling icicle." displayName="Damage" internalName="damage" minValue="0" type="Int" />
+    </moveable>
+    <moveable id="114">
+        <property category="TRX" defaultValue="16" description="Offset applied each frame while the spike wall advances." displayName="Speed" internalName="speed" minValue="0" type="Int" />
+        <property category="TRX" defaultValue="20" description="Damage dealt while Lara is touching the spike wall." displayName="Damage" internalName="damage" minValue="0" type="Int" />
+    </moveable>
+    <moveable id="116">
+        <property category="TRX" defaultValue="5" description="Offset applied each frame while the ceiling spikes descend." displayName="Speed" internalName="speed" minValue="0" type="Int" />
+        <property category="TRX" defaultValue="20" description="Damage dealt while Lara is touching the ceiling spikes." displayName="Damage" internalName="damage" minValue="0" type="Int" />
+    </moveable>
+    <moveable id="119,120">
+        <property category="TRX" defaultValue="200" description="Damage dealt while Lara is touching the propeller." displayName="Damage" internalName="damage" minValue="0" type="Int" />
+    </moveable>
+    <moveable id="160-178,205-208,221-227,236,237,240-243,381,382,386,387,391,392">
+        <property category="TRX" defaultValue="Normal" description="Pickup animation mode." displayName="Pickup Mode" entries="Normal, Low Pedestal, High Pedestal" internalName="pickup_mode" type="Enum" />
+    </moveable>
+    <moveable id="179">
+        <property category="TRX" defaultValue="30" description="How long the flare burns for, in seconds." displayName="Burn Time" internalName="burn_time" minValue="0" type="Float" />
+    </moveable>
+    <moveable id="287">
+        <property category="TRX" defaultValue="800" description="Maximum hit points." displayName="Max Hit Points" internalName="max_hit_points" minValue="0" type="Int" />
+        <property category="TRX" defaultValue="1" description="Damage dealt by body contact." displayName="Touch Damage" internalName="touch_damage" minValue="0" type="Int" />
+        <property category="TRX" defaultValue="10" description="Damage dealt while trampling." displayName="Trample Damage" internalName="trample_damage" minValue="0" type="Int" />
+        <property category="TRX" defaultValue="10000" description="Damage dealt by the bite attack." displayName="Bite Damage" internalName="bite_damage" minValue="0" type="Int" />
+        <property category="TRX" defaultValue="50" description="Damage dealt to raptors by the bite attack." displayName="Raptor Damage" internalName="raptor_damage" minValue="0" type="Int" />
+    </moveable>
+    <moveable id="288">
+        <property category="TRX" defaultValue="90" description="Maximum hit points." displayName="Max Hit Points" internalName="max_hit_points" minValue="0" type="Int" />
+        <property category="TRX" defaultValue="100" description="Damage dealt by the lunge attack." displayName="Lunge Damage" internalName="lunge_damage" minValue="0" type="Int" />
+        <property category="TRX" defaultValue="100" description="Damage dealt by the charge attack." displayName="Charge Damage" internalName="charge_damage" minValue="0" type="Int" />
+        <property category="TRX" defaultValue="100" description="Damage dealt by the bite attack." displayName="Bite Damage" internalName="bite_damage" minValue="0" type="Int" />
+    </moveable>
+    <moveable id="291">
+        <property category="TRX" defaultValue="25" description="Damage dealt while Lara is touching the rotating laser." displayName="Damage" internalName="damage" minValue="0" type="Int" />
+    </moveable>
+    <moveable id="318">
+        <property category="TRX" defaultValue="false" description="Require an alert event before the light activates." displayName="Requires Alarm Active" internalName="requires_alarm_active" type="Bool" />
+    </moveable>
+    <moveable id="333">
+        <property category="TRX" defaultValue="2" description="Interval between flame bursts, in seconds." displayName="Interval" internalName="interval" minValue="0" type="Float" />
+    </moveable>
+    <moveable id="338">
+        <property category="TRX" defaultValue="TEN.Vec3(1, 1, 1)" description="Swim range, in quarter tiles." displayName="Range" internalName="range" type="Vec3" />
+        <property category="TRX" defaultValue="False" description="Whether the shoal uses the surrounding room lighting." displayName="Use Room Lighting" internalName="use_room_lighting" type="Bool" />
+    </moveable>
+    <moveable id="339">
+        <property category="TRX" defaultValue="0" description="Texture offset in `O_TROPICAL_FISH_GFX`." displayName="Sprite Offset" internalName="sprite_offset" minValue="0" type="Int" />
+        <property category="TRX" defaultValue="TEN.Vec3(1, 1, 1)" description="Swim range, in quarter tiles." displayName="Range" internalName="range" type="Vec3" />
+        <property category="TRX" defaultValue="False" description="Whether the shoal uses the surrounding room lighting." displayName="Use Room Lighting" internalName="use_room_lighting" type="Bool" />
+    </moveable>
+    <moveable id="370">
+        <property category="TRX" defaultValue="false" description="Kill the item immediately while its trigger is inactive." displayName="Kill On Trigger" internalName="kill_on_trigger" type="Bool" />
+    </moveable>
+</propertyCatalog>

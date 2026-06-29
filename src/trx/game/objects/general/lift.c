@@ -482,13 +482,16 @@ static void M_Setup(OBJECT *const obj)
         obj,
         OBJECT_PROPERTY_INT(
             "wait_time", M_DEFAULT_WAIT_TIME,
-            "The time to wait before the lift begins moving, in seconds."),
+            "The time to wait before the lift begins moving, in seconds. Value "
+            "range: minimum 1."),
         OBJECT_PROPERTY_INT(
             "travel_distance", M_DEFAULT_TRAVEL_DIST,
-            "The vertical distance the lift will travel, in clicks."),
+            "The vertical distance the lift will travel, in clicks. Value "
+            "range: minimum 1."),
         OBJECT_PROPERTY_INT(
             "speed", M_DEFAULT_SPEED,
-            "The speed at which the lift moves, in world units; maximum: 64."));
+            "The speed at which the lift moves, in world units. Value range: "
+            "minimum 1; maximum 64."));
 }
 
 REGISTER_OBJECT(O_LIFT, M_Setup)
