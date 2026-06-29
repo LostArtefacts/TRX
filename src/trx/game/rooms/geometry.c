@@ -5,7 +5,6 @@
 #include <trx/debug.h>
 #include <trx/game/camera.h>
 #include <trx/game/objects.h>
-#include <trx/game/pathing.h>
 #include <trx/game/rooms.h>
 
 #define M_WALL_MASK (WALL_L - 1)
@@ -538,57 +537,6 @@ int32_t Room_GetWaterHeightEx(
             sector = Room_GetWorldSector(room, x, z);
         }
         return NO_HEIGHT;
-    }
-}
-
-void Room_AlterFloorHeight(const ITEM *const item, const int32_t height)
-{
-    if (height == 0) {
-        return;
-    }
-
-    int16_t portal_room;
-    SECTOR *sector;
-    const ROOM *room = Room_Get(item->room_num);
-
-    do {
-        int32_t z_sector = (item->pos.z - room->pos.z) >> WALL_SHIFT;
-        int32_t x_sector = (item->pos.x - room->pos.x) >> WALL_SHIFT;
-
-        if (z_sector <= 0) {
-            z_sector = 0;
-            CLAMP(x_sector, 1, room->size.x - 2);
-        } else if (z_sector >= room->size.z - 1) {
-            z_sector = room->size.z - 1;
-            CLAMP(x_sector, 1, room->size.x - 2);
-        } else {
-            CLAMP(x_sector, 0, room->size.x - 1);
-        }
-
-        sector = Room_GetUnitSector(room, x_sector, z_sector);
-        portal_room = sector->portal_room.wall;
-        if (portal_room != NO_ROOM) {
-            room = Room_Get(portal_room);
-        }
-    } while (portal_room != NO_ROOM);
-
-    const SECTOR *const sky_sector =
-        Room_GetSkySector(sector, item->pos.x, item->pos.z);
-    sector = Room_GetPitSector(sector, item->pos.x, item->pos.z);
-
-    if (sector->floor.height != NO_HEIGHT) {
-        sector->floor.height += ROUND_TO_CLICK(height);
-        if (sector->floor.height == sky_sector->ceiling.height) {
-            sector->floor.height = NO_HEIGHT;
-        }
-    } else {
-        sector->floor.height =
-            sky_sector->ceiling.height + ROUND_TO_CLICK(height);
-    }
-
-    BOX_INFO *const box = Box_GetBox(sector->box);
-    if (box != nullptr && (box->overlap_index & BOX_BLOCKABLE) != 0) {
-        TOGGLE_BIT(box->overlap_index, BOX_BLOCKED, height < 0);
     }
 }
 
