@@ -1748,6 +1748,7 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>wait_time</code></td><td colspan="3" align="center">3</td><td>The time to wait before the lift begins moving, in seconds.</td></tr>
 <tr><td><code>travel_distance</code></td><td colspan="3" align="center">22</td><td>The vertical distance the lift will travel, in clicks.</td></tr>
+<tr><td><code>speed</code></td><td colspan="3" align="center">16</td><td>The speed at which the lift moves, in world units; maximum: 64.</td></tr>
 </tbody>
 </table>
 

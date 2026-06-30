@@ -14,7 +14,8 @@
 // clang-format off
 #define M_DEFAULT_WAIT_TIME   3
 #define M_DEFAULT_TRAVEL_DIST 22
-#define M_SHIFT               16
+#define M_DEFAULT_SPEED       16
+#define M_MAXIMUM_SPEED       64
 #define M_HEIGHT              (STEP_L * 5) // = 1280
 #define M_NUM_FLOOR_SECTORS   4
 #define M_NUM_SECTORS         (M_NUM_FLOOR_SECTORS * 2)
@@ -34,6 +35,7 @@ typedef struct {
     int32_t wait_time;
     int32_t max_wait_time;
     int32_t travel_distance;
+    int32_t speed;
     bool is_moving;
     GAME_VECTOR linked[M_NUM_SECTORS];
 } M_PRIV;
@@ -254,6 +256,7 @@ static void M_Initialise(const int16_t item_num)
     p->wait_time = 0;
     p->max_wait_time = M_DEFAULT_WAIT_TIME;
     p->travel_distance = M_DEFAULT_TRAVEL_DIST;
+    p->speed = M_DEFAULT_SPEED;
     p->is_moving = false;
 
     OBJECT_PROPERTY_VALUE value = {};
@@ -265,8 +268,13 @@ static void M_Initialise(const int16_t item_num)
         && value.as_int > 0) {
         p->travel_distance = value.as_int;
     }
+    if (ObjectProperty_GetItemValue(item, "speed", &value)
+        && value.as_int > 0) {
+        p->speed = value.as_int;
+    }
     p->max_wait_time *= LOGIC_FPS;
     p->travel_distance *= STEP_L;
+    CLAMPG(p->speed, M_MAXIMUM_SPEED);
 
     VECTOR *const positions = Vector_Create(sizeof(XYZ_32));
     M_GetSectorPositions(item, positions);
@@ -303,7 +311,7 @@ static void M_KillLara(ITEM *const lara)
         const int32_t z = lara->pos.z + (Random_GetControl() - 0x4000) / 256;
         const int32_t y = lara->pos.y - Random_GetControl() / 64;
         const int32_t d = lara->rot.y + (Random_GetControl() - 0x4000) / 8;
-        Spawn_Blood(x, y, z, M_SHIFT * 2, d, lara->room_num);
+        Spawn_Blood(x, y, z, M_DEFAULT_SPEED * 2, d, lara->room_num);
     }
 }
 
@@ -427,8 +435,8 @@ static void M_Control(const int16_t item_num)
         p->is_moving = true;
         const int32_t delta = target - item->pos.y;
         const int32_t step = (delta > 0)
-            ? (delta < M_SHIFT ? delta : M_SHIFT)
-            : (delta > -M_SHIFT ? delta : -M_SHIFT);
+            ? (delta < p->speed ? delta : p->speed)
+            : (delta > -p->speed ? delta : -p->speed);
         item->pos.y += step;
         // Raise/lower possible movable blocks on top and check positions on
         // save vs load.
@@ -477,7 +485,10 @@ static void M_Setup(OBJECT *const obj)
             "The time to wait before the lift begins moving, in seconds."),
         OBJECT_PROPERTY_INT(
             "travel_distance", M_DEFAULT_TRAVEL_DIST,
-            "The vertical distance the lift will travel, in clicks."));
+            "The vertical distance the lift will travel, in clicks."),
+        OBJECT_PROPERTY_INT(
+            "speed", M_DEFAULT_SPEED,
+            "The speed at which the lift moves, in world units; maximum: 64."));
 }
 
 REGISTER_OBJECT(O_LIFT, M_Setup)
