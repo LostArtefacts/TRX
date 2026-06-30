@@ -44,6 +44,15 @@ static int32_t M_GetVisibleRows(void)
     }
 }
 
+static float M_GetVisibleContentHeight(void)
+{
+    const int32_t visible_rows = M_GetVisibleRows();
+    if (visible_rows <= 0) {
+        return 0.0f;
+    }
+    return visible_rows * UI_TEXT_HEIGHT;
+}
+
 static UI_SETTINGS_TAB *M_GetActiveTab(UI_SETTINGS_DIALOG_STATE *const s)
 {
     if (s->tab_switch == nullptr || s->tabs == nullptr || s->tab_count <= 0) {
@@ -80,23 +89,14 @@ static UI_SCROLLABLE *M_GetTabScrollable(UI_SETTINGS_TAB *const tab)
 
 static void M_RecomputeSizes(UI_SETTINGS_DIALOG_STATE *const s)
 {
-    int32_t max_item_count = 0;
-    for (int32_t i = 0; i < s->tab_count; i++) {
-        UI_SETTINGS_TAB *const tab = &s->tabs[i];
-        if (tab->ops != nullptr && tab->ops->get_item_count != nullptr) {
-            max_item_count =
-                MAX(max_item_count, tab->ops->get_item_count(tab->user_data));
-        }
-    }
-
-    const int32_t visible_rows = MIN(max_item_count, M_GetVisibleRows());
+    const float visible_content_height = M_GetVisibleContentHeight();
     float max_content_width = 0.0f;
     float max_content_height = -1.0f;
 
     for (int32_t i = 0; i < s->tab_count; i++) {
         UI_SETTINGS_TAB *const tab = &s->tabs[i];
         if (tab->ops != nullptr && tab->ops->recompute != nullptr) {
-            tab->ops->recompute(tab->user_data, visible_rows);
+            tab->ops->recompute(tab->user_data, visible_content_height);
         }
         if (tab->ops != nullptr && tab->ops->get_content_width != nullptr) {
             max_content_width = MAX(
@@ -104,20 +104,18 @@ static void M_RecomputeSizes(UI_SETTINGS_DIALOG_STATE *const s)
         }
         if (tab->ops != nullptr) {
             const UI_SCROLLABLE *const tab_scroll = M_GetTabScrollable(tab);
-            const int32_t tab_visible_rows =
-                tab_scroll != nullptr ? tab_scroll->vis_items : visible_rows;
             float tab_content_height = -1.0f;
             if (tab->ops->get_content_height != nullptr) {
                 tab_content_height =
                     tab->ops->get_content_height(tab->user_data);
-            } else if (tab_visible_rows > 0) {
-                tab_content_height = tab_visible_rows * UI_TEXT_HEIGHT;
+            } else if (tab_scroll != nullptr && tab_scroll->vis_items > 0) {
+                tab_content_height = tab_scroll->vis_items * UI_TEXT_HEIGHT;
             }
             max_content_height = MAX(max_content_height, tab_content_height);
         }
     }
 
-    s->visible_rows = visible_rows;
+    s->visible_rows = M_GetVisibleRows();
     s->max_content_width = max_content_width / g_Config.ui.text_scale;
     s->max_content_height = max_content_height;
 }

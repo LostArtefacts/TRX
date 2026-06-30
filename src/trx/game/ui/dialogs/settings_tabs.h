@@ -23,7 +23,7 @@ typedef void (*UI_SETTINGS_TAB_FREE_FUNC)(void *user_data);
 typedef void (*UI_SETTINGS_TAB_DRAW_OVERLAY_FUNC)(void *user_data);
 typedef UI_SCROLLABLE *(*UI_SETTINGS_TAB_GET_SCROLLABLE_FUNC)(void *user_data);
 typedef void (*UI_SETTINGS_TAB_RECOMPUTE_FUNC)(
-    void *user_data, int32_t visible_rows);
+    void *user_data, float max_content_height);
 typedef float (*UI_SETTINGS_TAB_GET_CONTENT_WIDTH_FUNC)(void *user_data);
 typedef float (*UI_SETTINGS_TAB_GET_CONTENT_HEIGHT_FUNC)(void *user_data);
 typedef int32_t (*UI_SETTINGS_TAB_GET_ITEM_COUNT_FUNC)(void *user_data);

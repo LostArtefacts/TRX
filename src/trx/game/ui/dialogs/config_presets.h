@@ -13,7 +13,7 @@ UI_CONFIG_PRESETS_STATE *UI_ConfigPresets_Init(void);
 void UI_ConfigPresets_Free(UI_CONFIG_PRESETS_STATE *s);
 int32_t UI_ConfigPresets_GetItemCount(UI_CONFIG_PRESETS_STATE *s);
 void UI_ConfigPresets_RecomputeSizes(
-    UI_CONFIG_PRESETS_STATE *s, int32_t visible_rows);
+    UI_CONFIG_PRESETS_STATE *s, float max_content_height);
 float UI_ConfigPresets_GetContentWidth(UI_CONFIG_PRESETS_STATE *s);
 float UI_ConfigPresets_GetContentHeight(UI_CONFIG_PRESETS_STATE *s);
 

@@ -15,6 +15,7 @@
 - added a `flip_slot` property to the `O_PORTACABIN` object to define the flip map slot index to alter once the cabin has landed
 - changed `Game mode selection` to allow hiding the dialog even after having completed the game (Gameplay → General → Game mode selection)
 - improved handling of dead enemies used as switch triggers in custom levels by not altering their activation status and by adding detection for having been exploded (#5682)
+- fixed the Gameplay settings dialog layout so settings lists and presets use the available space more consistently
 - fixed Lara having an empty left holster if the option to remember guns between levels is used and she finished with the Desert Eagle (#5697)
 - fixed Lara getting stuck in the flare throwing animation if she is killed in this state
 - fixed ghost flare lighting/effects spawning if Lara is killed while drawing or undrawing a flare
