@@ -3,12 +3,16 @@
 #include <trx/game/random.h>
 #include <trx/game/rooms.h>
 
+// clang-format off
+#define M_POUR_TIME         7
+#define M_FLIP_TIME         (M_POUR_TIME - 2) // = 5
+#define M_DEFAULT_FLIP_SLOT 4
+// clang-format on
+
 typedef enum {
-    // clang-format off
-    BIG_BOWL_STATE_TIP  = 0,
-    BIG_BOWL_STATE_POUR = 1,
-    // clang-format on
-} BIG_BOWL_STATE;
+    M_STATE_TIP,
+    M_STATE_POUR,
+} M_STATE;
 
 static void M_CreateHotLiquid(const ITEM *const bowl_item)
 {
@@ -31,19 +35,21 @@ static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
 
-    if (item->current_anim_state == BIG_BOWL_STATE_POUR) {
+    if (item->current_anim_state == M_STATE_POUR) {
         M_CreateHotLiquid(item);
         item->timer++;
-        if (item->timer == 5 * LOGIC_FPS && !Room_GetFlipStatus()) {
+        if (item->timer == M_FLIP_TIME * LOGIC_FPS && !Room_GetFlipStatus()) {
             // TODO: poorly hardcoded flimap number
-            Room_SetFlipSlotFlags(4, IF_CODE_BITS | IF_ONE_SHOT);
+            Room_SetFlipSlotFlags(
+                M_DEFAULT_FLIP_SLOT, IF_CODE_BITS | IF_ONE_SHOT);
             Room_FlipMap();
         }
     }
 
     Item_Animate(item);
 
-    if (item->status == IS_DEACTIVATED && item->timer >= LOGIC_FPS * 7) {
+    if (item->status == IS_DEACTIVATED
+        && item->timer >= LOGIC_FPS * M_POUR_TIME) {
         Item_RemoveActive(item_num);
     }
 }
