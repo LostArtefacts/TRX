@@ -12,6 +12,7 @@
 - added properties to the `O_BIG_BOWL` object:
   - `pour_time`, which defines how long to pour liquid from the bowl
   - `flip_slot`, which defines the flip map slot index to alter once liquid has finished pouring
+- added a `flip_slot` property to the `O_PORTACABIN` object to define the flip map slot index to alter once the cabin has landed
 - changed `Game mode selection` to allow hiding the dialog even after having completed the game (Gameplay → General → Game mode selection)
 - improved handling of dead enemies used as switch triggers in custom levels by not altering their activation status and by adding detection for having been exploded (#5682)
 - fixed Lara having an empty left holster if the option to remember guns between levels is used and she finished with the Desert Eagle (#5697)
