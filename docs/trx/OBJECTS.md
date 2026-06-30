@@ -1581,6 +1581,14 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
+#### O_PORTACABIN
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1 (162)</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>flip_slot</code></td><td colspan="3" align="center">3</td><td>The flip map slot to alter once the cabin has landed. -1 = no flipmap is performed.</td></tr>
+</tbody>
+</table>
+
 #### O_FLAREBOX_ITEM
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (187)</th><th align="center">TR2 (151)</th><th align="center">TR3 (178)</th><th>Description</th></tr></thead>
