@@ -1,13 +1,15 @@
 #include <trx/game/objects.h>
 #include <trx/game/rooms.h>
 
+#define M_DEFAULT_FLIP_SLOT 3
+
 typedef enum {
-    CABIN_STATE_START = 0,
-    CABIN_STATE_DROP_1 = 1,
-    CABIN_STATE_DROP_2 = 2,
-    CABIN_STATE_DROP_3 = 3,
-    CABIN_STATE_FINISH = 4,
-} CABIN_STATE;
+    M_STATE_START,
+    M_STATE_DROP_1,
+    M_STATE_DROP_2,
+    M_STATE_DROP_3,
+    M_STATE_FINISH,
+} M_STATE;
 
 static void M_Control(const int16_t item_num)
 {
@@ -15,21 +17,21 @@ static void M_Control(const int16_t item_num)
 
     if ((item->flags & IF_CODE_BITS) == IF_CODE_BITS) {
         switch (item->current_anim_state) {
-        case CABIN_STATE_START:
-            item->goal_anim_state = CABIN_STATE_DROP_1;
+        case M_STATE_START:
+            item->goal_anim_state = M_STATE_DROP_1;
             break;
-        case CABIN_STATE_DROP_1:
-            item->goal_anim_state = CABIN_STATE_DROP_2;
+        case M_STATE_DROP_1:
+            item->goal_anim_state = M_STATE_DROP_2;
             break;
-        case CABIN_STATE_DROP_2:
-            item->goal_anim_state = CABIN_STATE_DROP_3;
+        case M_STATE_DROP_2:
+            item->goal_anim_state = M_STATE_DROP_3;
             break;
         }
         item->flags = 0;
     }
 
-    if (item->current_anim_state == CABIN_STATE_FINISH) {
-        Room_SetFlipSlotFlags(3, IF_CODE_BITS);
+    if (item->current_anim_state == M_STATE_FINISH) {
+        Room_SetFlipSlotFlags(M_DEFAULT_FLIP_SLOT, IF_CODE_BITS);
         Room_FlipMap();
         Item_Kill(item_num);
     }
