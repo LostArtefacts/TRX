@@ -4,8 +4,9 @@
 #include <trx/game/rooms.h>
 
 // clang-format off
-#define M_POUR_TIME         7
-#define M_FLIP_TIME         (M_POUR_TIME - 2) // = 5
+#define M_DEFAULT_POUR_TIME 7
+#define M_FLIP_TIME_OFFSET  2
+#define M_MIN_POUR_TIME     (M_FLIP_TIME_OFFSET + 1) // = 3
 #define M_DEFAULT_FLIP_SLOT 4
 // clang-format on
 
@@ -13,6 +14,29 @@ typedef enum {
     M_STATE_TIP,
     M_STATE_POUR,
 } M_STATE;
+
+typedef struct {
+    int32_t pour_time;
+    int32_t flip_time;
+} M_PRIV;
+
+static void M_Initialise(const int16_t item_num)
+{
+    ITEM *const item = Item_Get(item_num);
+    M_PRIV *const p = item->priv;
+    p->pour_time = M_DEFAULT_POUR_TIME;
+
+    OBJECT_PROPERTY_VALUE value = {};
+    if (ObjectProperty_GetItemValue(item, "pour_time", &value)
+        && value.as_int > 0) {
+        p->pour_time = value.as_int;
+    }
+
+    CLAMPL(p->pour_time, M_MIN_POUR_TIME);
+    p->flip_time = p->pour_time - M_FLIP_TIME_OFFSET;
+    p->pour_time *= LOGIC_FPS;
+    p->flip_time *= LOGIC_FPS;
+}
 
 static void M_CreateHotLiquid(const ITEM *const bowl_item)
 {
@@ -34,11 +58,12 @@ static void M_CreateHotLiquid(const ITEM *const bowl_item)
 static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
+    const M_PRIV *const p = item->priv;
 
     if (item->current_anim_state == M_STATE_POUR) {
         M_CreateHotLiquid(item);
         item->timer++;
-        if (item->timer == M_FLIP_TIME * LOGIC_FPS && !Room_GetFlipStatus()) {
+        if (item->timer == p->flip_time && !Room_GetFlipStatus()) {
             // TODO: poorly hardcoded flimap number
             Room_SetFlipSlotFlags(
                 M_DEFAULT_FLIP_SLOT, IF_CODE_BITS | IF_ONE_SHOT);
@@ -48,17 +73,24 @@ static void M_Control(const int16_t item_num)
 
     Item_Animate(item);
 
-    if (item->status == IS_DEACTIVATED
-        && item->timer >= LOGIC_FPS * M_POUR_TIME) {
+    if (item->status == IS_DEACTIVATED && item->timer >= p->pour_time) {
         Item_RemoveActive(item_num);
     }
 }
 
 static void M_Setup(OBJECT *const obj)
 {
+    obj->initialise_func = M_Initialise;
     obj->control_func = M_Control;
     obj->save_flags = true;
     obj->save_anim = true;
+    obj->priv_size = sizeof(M_PRIV);
+    OBJECT_PROPERTIES(
+        obj,
+        OBJECT_PROPERTY_INT(
+            "pour_time", M_DEFAULT_POUR_TIME,
+            "The amount of time hot liquid is poured from the bowl, in "
+            "seconds."));
 }
 
 REGISTER_OBJECT(O_BIG_BOWL, M_Setup)

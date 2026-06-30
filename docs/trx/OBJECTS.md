@@ -1752,6 +1752,14 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
+#### O_BIG_BOWL
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (71)</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>pour_time</code></td><td colspan="3" align="center">7</td><td>The amount of time hot liquid is poured from the bowl, in seconds.</td></tr>
+</tbody>
+</table>
+
 #### O_PLAYER_5
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (127)</th><th align="center">TR3 (152)</th><th>Description</th></tr></thead>
