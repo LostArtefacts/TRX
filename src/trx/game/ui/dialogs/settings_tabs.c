@@ -38,14 +38,20 @@ static UI_SCROLLABLE *M_EditorGetScrollable(void *const user_data)
     return UI_SettingsEditor_GetScrollable(user_data);
 }
 
-static void M_EditorRecompute(void *const user_data, const int32_t visible_rows)
+static void M_EditorRecompute(
+    void *const user_data, const float max_content_height)
 {
-    UI_SettingsEditor_RecomputeSizes(user_data, visible_rows);
+    UI_SettingsEditor_RecomputeSizes(user_data, max_content_height);
 }
 
 static float M_EditorGetContentWidth(void *const user_data)
 {
     return UI_SettingsEditor_GetContentWidth(user_data);
+}
+
+static float M_EditorGetContentHeight(void *const user_data)
+{
+    return UI_SettingsEditor_GetContentHeight(user_data);
 }
 
 static int32_t M_EditorGetItemCount(void *const user_data)
@@ -62,7 +68,7 @@ static const UI_SETTINGS_TAB_OPS m_EditorOps = {
     .get_scrollable = M_EditorGetScrollable,
     .recompute = M_EditorRecompute,
     .get_content_width = M_EditorGetContentWidth,
-    .get_content_height = nullptr,
+    .get_content_height = M_EditorGetContentHeight,
     .get_item_count = M_EditorGetItemCount,
 };
 
@@ -107,9 +113,9 @@ static UI_SCROLLABLE *M_PresetsGetScrollable(void *const user_data)
 }
 
 static void M_PresetsRecompute(
-    void *const user_data, const int32_t visible_rows)
+    void *const user_data, const float max_content_height)
 {
-    UI_ConfigPresets_RecomputeSizes(user_data, visible_rows);
+    UI_ConfigPresets_RecomputeSizes(user_data, max_content_height);
 }
 
 static float M_PresetsGetContentWidth(void *const user_data)

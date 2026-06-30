@@ -23,7 +23,6 @@
 
 #include <string.h>
 
-#define M_VISIBLE_ROWS 8
 #define M_CONFIRM_VISIBLE_ROWS 10
 #define M_CONFIRM_DIALOG_W 72.0f
 #define M_LIST_ROW_SPACING 5.0f
@@ -142,7 +141,7 @@ UI_CONFIG_PRESETS_STATE *UI_ConfigPresets_Init(void)
     };
 
     const int32_t count = Config_Presets_GetCount();
-    UI_Requester_Init(&s->req, M_VISIBLE_ROWS, count, true);
+    UI_Requester_Init(&s->req, count > 0 ? 1 : 0, count, true);
     UI_Requester_SelectRow(&s->req, -1);
     return s;
 }
@@ -159,13 +158,16 @@ int32_t UI_ConfigPresets_GetItemCount(UI_CONFIG_PRESETS_STATE *const s)
 }
 
 void UI_ConfigPresets_RecomputeSizes(
-    UI_CONFIG_PRESETS_STATE *const s, const int32_t visible_rows)
+    UI_CONFIG_PRESETS_STATE *const s, const float max_content_height)
 {
-    int32_t clamped_rows = visible_rows;
-    if (clamped_rows < 0) {
-        clamped_rows = 0;
-    } else if (clamped_rows > M_VISIBLE_ROWS) {
-        clamped_rows = M_VISIBLE_ROWS;
+    int32_t clamped_rows = 0;
+    const int32_t count = Config_Presets_GetCount();
+    if (max_content_height > 0.0f) {
+        clamped_rows = (max_content_height + M_LIST_ROW_SPACING)
+            / (UI_TEXT_HEIGHT + M_LIST_ROW_SPACING);
+    }
+    if (clamped_rows > count) {
+        clamped_rows = count;
     }
     UI_Requester_SetVisibleRows(&s->req, clamped_rows);
 }

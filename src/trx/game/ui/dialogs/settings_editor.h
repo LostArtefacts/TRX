@@ -9,7 +9,7 @@ UI_SETTINGS_EDITOR_STATE *UI_SettingsEditor_Init(
 void UI_SettingsEditor_Free(UI_SETTINGS_EDITOR_STATE *s);
 
 void UI_SettingsEditor_RecomputeSizes(
-    UI_SETTINGS_EDITOR_STATE *s, int32_t visible_rows);
+    UI_SETTINGS_EDITOR_STATE *s, float max_content_height);
 UI_SCROLLABLE *UI_SettingsEditor_GetScrollable(UI_SETTINGS_EDITOR_STATE *s);
 
 bool UI_SettingsEditor_Control(
@@ -23,6 +23,7 @@ void UI_SettingsEditor_DrawFooter(
     UI_SETTINGS_EDITOR_STATE *s, UI_SETTINGS_PHASE dialog_phase);
 
 float UI_SettingsEditor_GetContentWidth(const UI_SETTINGS_EDITOR_STATE *s);
+float UI_SettingsEditor_GetContentHeight(const UI_SETTINGS_EDITOR_STATE *s);
 int32_t UI_SettingsEditor_GetItemCount(const UI_SETTINGS_EDITOR_STATE *s);
 void UI_SettingsEditor_RequestChange(
     const UI_SETTINGS_OPTION *option, int32_t dir);

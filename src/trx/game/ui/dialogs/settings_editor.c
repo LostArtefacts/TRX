@@ -476,6 +476,21 @@ float UI_SettingsEditor_GetContentWidth(const UI_SETTINGS_EDITOR_STATE *const s)
         + M_GetMaxValueWidth(s);
 }
 
+float UI_SettingsEditor_GetContentHeight(
+    const UI_SETTINGS_EDITOR_STATE *const s)
+{
+    if (s == nullptr) {
+        return -1.0f;
+    }
+
+    const int32_t rows = s->scroll.vis_items;
+    if (rows <= 0) {
+        return -1.0f;
+    }
+
+    return rows * UI_TEXT_HEIGHT;
+}
+
 int32_t UI_SettingsEditor_GetItemCount(const UI_SETTINGS_EDITOR_STATE *const s)
 {
     return M_GetRowCount(s);
@@ -557,10 +572,16 @@ void UI_SettingsEditor_RequestChange(
 }
 
 void UI_SettingsEditor_RecomputeSizes(
-    UI_SETTINGS_EDITOR_STATE *const s, const int32_t visible_rows)
+    UI_SETTINGS_EDITOR_STATE *const s, const float max_content_height)
 {
+    int32_t visible_rows = 0;
+    const int32_t row_count = M_GetRowCount(s);
+    if (max_content_height > 0.0f) {
+        visible_rows = max_content_height / UI_TEXT_HEIGHT;
+    }
+    CLAMP(visible_rows, 0, row_count);
     s->visible_rows = visible_rows;
-    UI_Scrollable_SetMaxItems(&s->scroll, M_GetRowCount(s));
+    UI_Scrollable_SetMaxItems(&s->scroll, row_count);
     UI_Scrollable_SetVisibleItems(&s->scroll, visible_rows);
 }
 
