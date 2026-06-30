@@ -18,6 +18,7 @@ typedef enum {
 typedef struct {
     int32_t pour_time;
     int32_t flip_time;
+    int32_t flip_slot;
 } M_PRIV;
 
 static void M_Initialise(const int16_t item_num)
@@ -25,14 +26,20 @@ static void M_Initialise(const int16_t item_num)
     ITEM *const item = Item_Get(item_num);
     M_PRIV *const p = item->priv;
     p->pour_time = M_DEFAULT_POUR_TIME;
+    p->flip_slot = M_DEFAULT_FLIP_SLOT;
 
     OBJECT_PROPERTY_VALUE value = {};
     if (ObjectProperty_GetItemValue(item, "pour_time", &value)
         && value.as_int > 0) {
         p->pour_time = value.as_int;
     }
+    if (ObjectProperty_GetItemValue(item, "flip_slot", &value)
+        && value.as_int < MAX_FLIP_MAPS) {
+        p->flip_slot = value.as_int;
+    }
 
     CLAMPL(p->pour_time, M_MIN_POUR_TIME);
+    CLAMPL(p->flip_slot, -1);
     p->flip_time = p->pour_time - M_FLIP_TIME_OFFSET;
     p->pour_time *= LOGIC_FPS;
     p->flip_time *= LOGIC_FPS;
@@ -55,6 +62,19 @@ static void M_CreateHotLiquid(const ITEM *const bowl_item)
     }
 }
 
+static bool M_ShouldFlipMap(const ITEM *const item)
+{
+    const M_PRIV *const p = item->priv;
+    return p->flip_slot >= 0 && item->timer == p->flip_time
+        && !Room_GetFlipStatus();
+}
+
+static void M_FlipMap(const M_PRIV *const p)
+{
+    Room_SetFlipSlotFlags(p->flip_slot, IF_CODE_BITS | IF_ONE_SHOT);
+    Room_FlipMap();
+}
+
 static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
@@ -63,11 +83,8 @@ static void M_Control(const int16_t item_num)
     if (item->current_anim_state == M_STATE_POUR) {
         M_CreateHotLiquid(item);
         item->timer++;
-        if (item->timer == p->flip_time && !Room_GetFlipStatus()) {
-            // TODO: poorly hardcoded flimap number
-            Room_SetFlipSlotFlags(
-                M_DEFAULT_FLIP_SLOT, IF_CODE_BITS | IF_ONE_SHOT);
-            Room_FlipMap();
+        if (M_ShouldFlipMap(item)) {
+            M_FlipMap(p);
         }
     }
 
@@ -90,7 +107,11 @@ static void M_Setup(OBJECT *const obj)
         OBJECT_PROPERTY_INT(
             "pour_time", M_DEFAULT_POUR_TIME,
             "The amount of time hot liquid is poured from the bowl, in "
-            "seconds."));
+            "seconds."),
+        OBJECT_PROPERTY_INT(
+            "flip_slot", M_DEFAULT_FLIP_SLOT,
+            "The flip map slot to alter once liquid has finished pouring. -1 = "
+            "no flipmap is performed."));
 }
 
 REGISTER_OBJECT(O_BIG_BOWL, M_Setup)
