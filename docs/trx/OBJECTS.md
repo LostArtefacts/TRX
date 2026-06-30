@@ -1757,6 +1757,7 @@ This page lists documented moveable object properties.
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (71)</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
 <tr><td><code>pour_time</code></td><td colspan="3" align="center">7</td><td>The amount of time hot liquid is poured from the bowl, in seconds.</td></tr>
+<tr><td><code>flip_slot</code></td><td colspan="3" align="center">4</td><td>The flip map slot to alter once liquid has finished pouring. -1 = no flipmap is performed.</td></tr>
 </tbody>
 </table>
 
