@@ -12,12 +12,12 @@
 #include <trx/game/spawn.h>
 
 // clang-format off
-#define M_DEFAULT_WAIT_TIME 3
-#define M_SHIFT             16
-#define M_HEIGHT            (STEP_L * 5) // = 1280
-#define M_TRAVEL_DIST       (STEP_L * 22)
-#define M_NUM_FLOOR_SECTORS 4
-#define M_NUM_SECTORS       (M_NUM_FLOOR_SECTORS * 2)
+#define M_DEFAULT_WAIT_TIME   3
+#define M_DEFAULT_TRAVEL_DIST 22
+#define M_SHIFT               16
+#define M_HEIGHT              (STEP_L * 5) // = 1280
+#define M_NUM_FLOOR_SECTORS   4
+#define M_NUM_SECTORS         (M_NUM_FLOOR_SECTORS * 2)
 // clang-format on
 
 typedef enum {
@@ -33,6 +33,7 @@ typedef struct {
     int32_t start_height;
     int32_t wait_time;
     int32_t max_wait_time;
+    int32_t travel_distance;
     bool is_moving;
     GAME_VECTOR linked[M_NUM_SECTORS];
 } M_PRIV;
@@ -252,6 +253,7 @@ static void M_Initialise(const int16_t item_num)
     p->start_height = item->pos.y;
     p->wait_time = 0;
     p->max_wait_time = M_DEFAULT_WAIT_TIME;
+    p->travel_distance = M_DEFAULT_TRAVEL_DIST;
     p->is_moving = false;
 
     OBJECT_PROPERTY_VALUE value = {};
@@ -259,7 +261,12 @@ static void M_Initialise(const int16_t item_num)
         && value.as_int > 0) {
         p->max_wait_time = value.as_int;
     }
+    if (ObjectProperty_GetItemValue(item, "travel_distance", &value)
+        && value.as_int > 0) {
+        p->travel_distance = value.as_int;
+    }
     p->max_wait_time *= LOGIC_FPS;
+    p->travel_distance *= STEP_L;
 
     VECTOR *const positions = Vector_Create(sizeof(XYZ_32));
     M_GetSectorPositions(item, positions);
@@ -400,7 +407,7 @@ static void M_Control(const int16_t item_num)
     ITEM *const item = Item_Get(item_num);
     M_PRIV *const p = item->priv;
     const int32_t bottom = p->start_height;
-    const int32_t top = bottom + M_TRAVEL_DIST;
+    const int32_t top = bottom + p->travel_distance;
     const int32_t target = Item_IsTriggerActive(item) ? top : bottom;
 
     if (item->pos.y == target) {
@@ -467,7 +474,10 @@ static void M_Setup(OBJECT *const obj)
         obj,
         OBJECT_PROPERTY_INT(
             "wait_time", M_DEFAULT_WAIT_TIME,
-            "The time to wait before the lift begins moving, in seconds."));
+            "The time to wait before the lift begins moving, in seconds."),
+        OBJECT_PROPERTY_INT(
+            "travel_distance", M_DEFAULT_TRAVEL_DIST,
+            "The vertical distance the lift will travel, in clicks."));
 }
 
 REGISTER_OBJECT(O_LIFT, M_Setup)
