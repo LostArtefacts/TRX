@@ -12,7 +12,7 @@
 #include <trx/game/spawn.h>
 
 // clang-format off
-#define M_WAIT_TIME         (3 * LOGIC_FPS) // = 90
+#define M_DEFAULT_WAIT_TIME 3
 #define M_SHIFT             16
 #define M_HEIGHT            (STEP_L * 5) // = 1280
 #define M_TRAVEL_DIST       (STEP_L * 22)
@@ -32,6 +32,7 @@ typedef enum {
 typedef struct {
     int32_t start_height;
     int32_t wait_time;
+    int32_t max_wait_time;
     bool is_moving;
     GAME_VECTOR linked[M_NUM_SECTORS];
 } M_PRIV;
@@ -250,7 +251,15 @@ static void M_Initialise(const int16_t item_num)
     M_PRIV *const p = item->priv;
     p->start_height = item->pos.y;
     p->wait_time = 0;
+    p->max_wait_time = M_DEFAULT_WAIT_TIME;
     p->is_moving = false;
+
+    OBJECT_PROPERTY_VALUE value = {};
+    if (ObjectProperty_GetItemValue(item, "wait_time", &value)
+        && value.as_int > 0) {
+        p->max_wait_time = value.as_int;
+    }
+    p->max_wait_time *= LOGIC_FPS;
 
     VECTOR *const positions = Vector_Create(sizeof(XYZ_32));
     M_GetSectorPositions(item, positions);
@@ -401,7 +410,7 @@ static void M_Control(const int16_t item_num)
             M_ShiftStackableItems(item, true);
         }
         p->is_moving = false;
-    } else if (p->wait_time < M_WAIT_TIME) {
+    } else if (p->wait_time < p->max_wait_time) {
         item->goal_anim_state = M_STATE_DOOR_OPEN;
         p->wait_time++;
         // Prevent Lara from interacting with blocks about to move.
@@ -454,6 +463,11 @@ static void M_Setup(OBJECT *const obj)
     obj->save_position = true;
     obj->save_flags = true;
     obj->save_anim = true;
+    OBJECT_PROPERTIES(
+        obj,
+        OBJECT_PROPERTY_INT(
+            "wait_time", M_DEFAULT_WAIT_TIME,
+            "The time to wait before the lift begins moving, in seconds."));
 }
 
 REGISTER_OBJECT(O_LIFT, M_Setup)
