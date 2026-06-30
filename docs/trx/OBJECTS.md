@@ -1742,6 +1742,14 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
+#### O_LIFT
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (65)</th><th align="center">TR3 (95)</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>wait_time</code></td><td colspan="3" align="center">3</td><td>The time to wait before the lift begins moving, in seconds.</td></tr>
+</tbody>
+</table>
+
 #### O_PLAYER_5
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (127)</th><th align="center">TR3 (152)</th><th>Description</th></tr></thead>
