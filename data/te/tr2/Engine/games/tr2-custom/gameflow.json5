@@ -4,6 +4,7 @@
 
     "engine": 2,
     "name": "Tomb Raider II Custom Level",
+    "sfx_path": "main.sfx",
 
     "main_menu_picture": "title.webp",
     "savegame_file_fmt": "save_tr2_%02d.dat",
