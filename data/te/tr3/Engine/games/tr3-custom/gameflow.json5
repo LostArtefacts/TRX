@@ -4,7 +4,7 @@
 
     "engine": 3,
     "name": "Tomb Raider III Custom Level",
-
+    "sfx_path": "main.sfx",
     "main_menu_picture": "title.webp",
     "savegame_file_fmt": "save_tr3_%02d.dat",
 
