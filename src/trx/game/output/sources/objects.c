@@ -38,6 +38,9 @@ static SCENE_PASS M_GetScenePass(const FACE *const face, const uint16_t flags)
     if ((flags & VERT_FLAT_SHADED) != 0) {
         return SCENE_PASS_OPAQUE;
     }
+    if ((face->effects & 0x1u) != 0u) {
+        return SCENE_PASS_BLEND_ADD;
+    }
     return Output_Textures_GetObjectTextureScenePass(face->texture_idx);
 }
 

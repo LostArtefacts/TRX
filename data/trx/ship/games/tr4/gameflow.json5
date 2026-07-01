@@ -1,0 +1,23 @@
+{
+    "engine": 4,
+    "name": "TR4",
+
+    "main_menu_picture": "title_eu.webp",
+    "savegame_file_fmt": "save_tr4_%02d.dat",
+
+    "enable_tr2_item_drops": true,
+    "convert_dropped_guns": true,
+
+    "sfx_path": "main.sfx",
+    "injections": [
+        "font.bin",
+        "lara_outfits.bin",
+        "lara_animations.bin",
+    ],
+
+    "levels": [
+        {
+            "type": "dummy",
+        },
+    ],
+}

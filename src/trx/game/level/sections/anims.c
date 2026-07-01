@@ -3,8 +3,11 @@
 #include <trx/core/memory.h>
 #include <trx/game/anims.h>
 #include <trx/game/inject.h>
+#include <trx/game/level/format/format.h>
 #include <trx/game/level/sections/append.h>
 #include <trx/game/level/sections/read.h>
+
+#define M_LAYOUT_TR4 LEVEL_FORMAT_LAYOUT_TR4
 
 static void M_ReadPosition(XYZ_32 *const pos, VFILE *const file)
 {
@@ -28,6 +31,7 @@ void Level_Section_ReadAnims(LEVEL_CONTEXT *const ctx, VFILE *const file)
 void Level_Section_AppendAnims(
     const int32_t base_idx, const int32_t num_anims, VFILE *const file)
 {
+    const LEVEL_FORMAT_LOADER *const loader = Level_Context_Get()->loader;
     for (int32_t i = 0; i < num_anims; i++) {
         ANIM *const anim = Anim_GetAnim(base_idx + i);
         anim->frame_ofs = VFile_ReadU32(file);
@@ -37,6 +41,13 @@ void Level_Section_AppendAnims(
         anim->current_anim_state = VFile_ReadS16(file);
         anim->velocity = VFile_ReadS32(file);
         anim->acceleration = VFile_ReadS32(file);
+        if (loader->layout == M_LAYOUT_TR4) {
+            anim->lateral_velocity = VFile_ReadS32(file);
+            anim->lateral_acceleration = VFile_ReadS32(file);
+        } else {
+            anim->lateral_velocity = 0;
+            anim->lateral_acceleration = 0;
+        }
         anim->frame_base = VFile_ReadS16(file);
         anim->frame_end = VFile_ReadS16(file);
         anim->jump_anim_num = VFile_ReadS16(file);

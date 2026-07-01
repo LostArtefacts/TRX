@@ -67,7 +67,52 @@ static void M_ReadFace(
     const uint16_t texture_idx = VFile_ReadU16(file);
     face->texture_idx = texture_idx & 0x7FFF;
     face->double_sided = (texture_idx & 0x8000) != 0;
+    face->effects = 0;
     face->enable_reflections = false;
+}
+
+static void M_ReadRoomLightTR4(LIGHT *const light, VFILE *const file)
+{
+    light->layout = LIGHT_LAYOUT_TR4;
+    M_ReadPosition(&light->pos, file);
+    light->color.r = VFile_ReadU8(file);
+    light->color.g = VFile_ReadU8(file);
+    light->color.b = VFile_ReadU8(file);
+    light->type = (LIGHT_TYPE)VFile_ReadU8(file);
+    light->u.tr4.intensity = VFile_ReadU16(file);
+    VFile_Read(file, &light->u.tr4.inner_radius, sizeof(float));
+    VFile_Read(file, &light->u.tr4.outer_radius, sizeof(float));
+    VFile_Read(file, &light->u.tr4.length, sizeof(float));
+    VFile_Read(file, &light->u.tr4.cutoff, sizeof(float));
+    VFile_Read(file, &light->u.tr4.dir.x, sizeof(float));
+    VFile_Read(file, &light->u.tr4.dir.y, sizeof(float));
+    VFile_Read(file, &light->u.tr4.dir.z, sizeof(float));
+}
+
+static RGBA_8888 M_RemapTR4RoomVertexColor(const RGBA_8888 color)
+{
+    RGBA_8888 result = color;
+
+    if (color.r <= 128) {
+        result.r = color.r * 2;
+    } else {
+        result.r = 255;
+    }
+
+    if (color.g <= 128) {
+        result.g = color.g * 2;
+    } else {
+        result.g = 255;
+    }
+
+    if (color.b <= 128) {
+        result.b = color.b * 2;
+    } else {
+        result.b = 255;
+    }
+
+    result.a = 255;
+    return result;
 }
 
 static void M_ReadRoomMesh(
@@ -102,13 +147,19 @@ static void M_ReadRoomMesh(
                 vertex->flags.glow = false;
                 VFile_Skip(file, 2);
                 vertex->color = COLOR_RGBA_8888_WHITE;
-            } else if (loader->game_version == 3) {
-                VFile_Skip(file, 2); // lighting - unused in TR3
+            } else if (loader->game_version == 3 || loader->game_version == 4) {
+                VFile_Skip(file, 2); // lighting - unused
                 const uint16_t flags = VFile_ReadU16(file);
                 vertex->flags.disable_wibble = (flags & 0x8000u) != 0u;
                 vertex->flags.move = (flags & 0x2000u) != 0u;
                 vertex->flags.glow = (flags & 0x4000u) != 0u;
                 vertex->color = Color_ARGB1555ToRGBA8888(VFile_ReadU16(file));
+                if (loader->game_version == 4) {
+                    // TODO: TR4 applies additional room-lighting logic after
+                    // this diffuse remap. To be ported as part of the lighting
+                    // implementation.
+                    vertex->color = M_RemapTR4RoomVertexColor(vertex->color);
+                }
                 vertex->color.a = 255;
                 vertex->light_base = 0;
             }
@@ -150,7 +201,7 @@ static void M_ReadRoomMesh(
         }
     }
 
-    {
+    if (loader->layout != LEVEL_FORMAT_LAYOUT_TR4) {
         room->mesh.sprites.count = VFile_ReadS16(file);
         const int32_t alloc_count =
             room->mesh.sprites.count + inj_data.num_static_2ds;
@@ -161,6 +212,9 @@ static void M_ReadRoomMesh(
             sprite->vertex = VFile_ReadU16(file);
             sprite->texture = VFile_ReadU16(file);
         }
+    } else {
+        room->mesh.sprites.count = VFile_ReadS16(file);
+        room->mesh.sprites.data = nullptr;
     }
 
     const size_t total_read =
@@ -292,7 +346,7 @@ void Level_Section_ReadRooms(LEVEL_CONTEXT *const ctx, VFILE *const file)
         for (int32_t j = 0; j < sector_count; j++) {
             SECTOR *const sector = &room->sectors[j];
             sector->idx = VFile_ReadU16(file);
-            if (loader->game_version == 3) {
+            if (loader->game_version >= 3) {
                 uint16_t misc_info = VFile_ReadU16(file);
                 sector->fx = (uint8_t)(misc_info & 0x0F);
                 sector->box = (int16_t)((misc_info & 0x7FF0) >> 4);
@@ -324,14 +378,23 @@ void Level_Section_ReadRooms(LEVEL_CONTEXT *const ctx, VFILE *const file)
             }
         }
 
-        room->ambient = VFile_ReadS16(file);
-        if (loader->game_version == 1) {
+        if (loader->game_version == 4) {
+            const uint32_t room_color = VFile_ReadU32(file);
+            const uint8_t room_r = (room_color >> 16) & 0xFF;
+            const uint8_t room_g = (room_color >> 8) & 0xFF;
+            const uint8_t room_b = room_color & 0xFF;
+            room->ambient = (int16_t)((room_r + room_g + room_b) / 3);
             room->light_mode = RLM_NORMAL;
-        } else if (loader->game_version == 2) {
-            VFile_Skip(file, sizeof(int16_t)); // Unused second ambient
-            room->light_mode = VFile_ReadS16(file);
         } else {
-            room->light_mode = VFile_ReadS16(file);
+            room->ambient = VFile_ReadS16(file);
+            if (loader->game_version == 1) {
+                room->light_mode = RLM_NORMAL;
+            } else if (loader->game_version == 2) {
+                VFile_Skip(file, sizeof(int16_t)); // Unused second ambient
+                room->light_mode = VFile_ReadS16(file);
+            } else {
+                room->light_mode = VFile_ReadS16(file);
+            }
         }
 
         room->num_lights = VFile_ReadS16(file);
@@ -340,7 +403,9 @@ void Level_Section_ReadRooms(LEVEL_CONTEXT *const ctx, VFILE *const file)
             : GameBuf_Alloc(sizeof(LIGHT) * room->num_lights, GBUF_ROOM_LIGHTS);
         for (int32_t j = 0; j < room->num_lights; j++) {
             LIGHT *const light = &room->lights[j];
-            if (loader->game_version == 3) {
+            if (loader->game_version == 4) {
+                M_ReadRoomLightTR4(light, file);
+            } else if (loader->game_version == 3) {
                 M_InitialiseLegacyLight(light);
                 // TR3 room lights use the LIGHT_INFO struct layout:
                 // pos (s32*3) + rgb (u8*3) + type (u8) + union (8 bytes).
@@ -395,8 +460,15 @@ void Level_Section_ReadRooms(LEVEL_CONTEXT *const ctx, VFILE *const file)
             STATIC_MESH *const mesh = &room->static_meshes[j];
             M_ReadPosition(&mesh->pos, file);
             mesh->rot.y = VFile_ReadS16(file);
-            M_ReadShade(loader, &mesh->shade, file);
-            mesh->static_num = VFile_ReadS16(file);
+            if (loader->game_version == 4) {
+                mesh->shade.value_1 = VFile_ReadU16(file);
+                mesh->shade.value_2 = mesh->shade.value_1;
+                VFile_Skip(file, sizeof(uint16_t)); // unused
+                mesh->static_num = VFile_ReadU16(file);
+            } else {
+                M_ReadShade(loader, &mesh->shade, file);
+                mesh->static_num = VFile_ReadS16(file);
+            }
             mesh->draw_num = -1;
         }
 
@@ -420,10 +492,17 @@ void Level_Section_ReadRooms(LEVEL_CONTEXT *const ctx, VFILE *const file)
         room->item_num = NO_ITEM;
         room->effect_num = NO_EFFECT;
 
-        if (loader->game_version == 3) {
+        if (loader->game_version == 4) {
             room->water_scheme = VFile_ReadU8(file);
             room->reverb_info = VFile_ReadU8(file);
+            room->alternate_group = VFile_ReadU8(file);
+        } else if (loader->game_version == 3) {
+            room->water_scheme = VFile_ReadU8(file);
+            room->reverb_info = VFile_ReadU8(file);
+            room->alternate_group = 0;
             VFile_Skip(file, 1);
+        } else {
+            room->alternate_group = 0;
         }
     }
 

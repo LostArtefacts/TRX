@@ -5,6 +5,25 @@
 typedef struct LEVEL_FORMAT_LOADER LEVEL_FORMAT_LOADER;
 
 typedef struct {
+    int16_t object_id;
+    int16_t room_num;
+    XYZ_32 pos;
+    int16_t y_rot;
+    uint16_t flags;
+    int16_t ocb;
+} LEVEL_TR4_ITEM_INFO;
+
+typedef struct {
+    int16_t object_id;
+    int16_t room_num;
+    XYZ_32 pos;
+    int16_t y_rot;
+    uint16_t flags;
+    int16_t ocb;
+    int16_t box_num;
+} LEVEL_TR4_AI_ITEM_INFO;
+
+typedef struct {
     struct {
         int32_t anim_count;
         int32_t change_count;
@@ -38,6 +57,13 @@ typedef struct {
         int32_t data_size;
         char *data;
     } samples;
+
+    struct {
+        int32_t item_count;
+        LEVEL_TR4_ITEM_INFO *items;
+        int32_t ai_item_count;
+        LEVEL_TR4_AI_ITEM_INFO *ai_items;
+    } tr4;
 
     int32_t mesh_ptr_count;
 } LEVEL_CONTEXT_INFO;

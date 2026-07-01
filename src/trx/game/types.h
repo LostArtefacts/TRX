@@ -43,6 +43,7 @@ typedef struct {
     // that cannot be really shared between vertices
     TEXTURE_ZW_F texture_zw[4];
 
+    uint16_t effects;
     bool double_sided;
     bool enable_reflections;
 } FACE;

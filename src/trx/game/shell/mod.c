@@ -38,6 +38,9 @@ static const M_KNOWN_MOD m_KnownModSeeds[] = {
       .mod_type = MOD_EXPANSION_PACK },
     { .meta = { .name = "tr3-level", .engine = 3, .extends = "tr3" },
       .mod_type = MOD_DIRECT_LEVEL },
+    { .meta = { .name = "tr4", .engine = 4 }, .mod_type = MOD_BASE_GAME },
+    { .meta = { .name = "tr4-level", .engine = 4, .extends = "tr4" },
+      .mod_type = MOD_DIRECT_LEVEL },
 };
 
 static VECTOR *m_Mods = nullptr;

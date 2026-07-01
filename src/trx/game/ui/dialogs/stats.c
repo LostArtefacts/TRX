@@ -95,6 +95,14 @@ static const M_LOOK m_Looks[TR_VERSION_COUNT] = {
         .row_spacing = 25.0f,
         .use_full_hours = true,
     },
+    [3] = {
+        .window_margin = 40.0f,
+        .window_y = 1.0f,
+        .title_spacing = 3.0f,
+        .min_width = 290.0f,
+        .row_spacing = 25.0f,
+        .use_full_hours = true,
+    },
 };
 
 static const char *M_FormatRecordTime(const int32_t total_frames)

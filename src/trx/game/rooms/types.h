@@ -216,4 +216,5 @@ typedef struct {
     ROOM_DRAWSET drawn_items;
     uint8_t water_scheme;
     uint8_t reverb_info;
+    uint8_t alternate_group;
 } ROOM;

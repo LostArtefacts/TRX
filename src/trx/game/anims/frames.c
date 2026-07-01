@@ -4,17 +4,18 @@
 #include <trx/debug.h>
 #include <trx/game/anims.h>
 #include <trx/game/game_buf.h>
+#include <trx/game/level/format/format.h>
 #include <trx/game/objects/common.h>
 #include <trx/version.h>
 
 #include <math.h>
 
 typedef enum {
-    RPM_ALL = 0,
-    RPM_X = 1,
-    RPM_Y = 2,
-    RPM_Z = 3,
-} ROT_PACK_MODE;
+    ROTATE_ALL = 0,
+    ROTATE_X = 1,
+    ROTATE_Y = 2,
+    ROTATE_Z = 3,
+} M_ROT_PACK_MODE;
 
 static ANIM_FRAME *m_Frames = nullptr;
 
@@ -23,7 +24,7 @@ static int32_t M_GetAnimFrameCount(
     const int32_t frame_data_length)
 {
     const ANIM *const anim = Anim_GetAnim(anim_idx);
-    if (loader->game_version == 1) {
+    if (loader->game_version == 1 || loader->game_version >= 4) {
         return (int32_t)ceil(
             ((anim->frame_end - anim->frame_base) / (float)anim->interpolation)
             + 1);
@@ -78,28 +79,31 @@ static void M_ParseMeshRotation(
     const int16_t **data)
 {
     const int16_t *data_ptr = *data;
+
+    rot->x = 0;
+    rot->y = 0;
+    rot->z = 0;
+
     if (loader->game_version == 1) {
         const int16_t rot_val_1 = *data_ptr++;
         const int16_t rot_val_2 = *data_ptr++;
         M_ExtractRotation(rot, rot_val_2, rot_val_1);
     } else {
-        rot->x = 0;
-        rot->y = 0;
-        rot->z = 0;
-
         const int16_t rot_val_1 = *data_ptr++;
-        const ROT_PACK_MODE mode = (ROT_PACK_MODE)((rot_val_1 & 0xC000) >> 14);
+        const M_ROT_PACK_MODE mode = (rot_val_1 >> 14) & 3;
+        const int32_t mask = loader->game_version < 4 ? 0x3FF : 0x0FFF;
+        const int32_t shift = loader->game_version < 4 ? 6 : 4;
         switch (mode) {
-        case RPM_X:
-            rot->x = (rot_val_1 & 0x3FF) << 6;
+        case ROTATE_X:
+            rot->x = (rot_val_1 & mask) << shift;
             break;
-        case RPM_Y:
-            rot->y = (rot_val_1 & 0x3FF) << 6;
+        case ROTATE_Y:
+            rot->y = (rot_val_1 & mask) << shift;
             break;
-        case RPM_Z:
-            rot->z = (rot_val_1 & 0x3FF) << 6;
+        case ROTATE_Z:
+            rot->z = (rot_val_1 & mask) << shift;
             break;
-        default:
+        case ROTATE_ALL:
             const int16_t rot_val_2 = *data_ptr++;
             M_ExtractRotation(rot, rot_val_1, rot_val_2);
             break;

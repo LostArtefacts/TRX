@@ -33,6 +33,7 @@ class ProjectPaths(BasePaths):
 TR1Paths = ProjectPaths(folder_name="tr1")
 TR2Paths = ProjectPaths(folder_name="tr2")
 TR3Paths = ProjectPaths(folder_name="tr3")
+TR4Paths = ProjectPaths(folder_name="tr4")
 
 CommonPaths = BasePaths()
 CommonPaths.data_dir = DATA_DIR / "common"
@@ -41,4 +42,4 @@ CommonPaths.src_dir = SHARED_SRC_DIR
 CommonPaths.changelog_path = DOCS_DIR / "CHANGELOG.md"
 CommonPaths.docs_dir = DOCS_DIR
 
-PROJECT_PATHS = {1: TR1Paths, 2: TR2Paths, 3: TR3Paths}
+PROJECT_PATHS = {1: TR1Paths, 2: TR2Paths, 3: TR3Paths, 4: TR4Paths}
