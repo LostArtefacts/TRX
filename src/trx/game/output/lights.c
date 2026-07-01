@@ -50,6 +50,69 @@ typedef struct {
 
 static M_TR3_ITEM_LIGHT m_TR3ItemLights[MAX_ITEMS] = {};
 
+static const LIGHT_LEGACY_DATA *M_GetLegacyLight(const LIGHT *const light)
+{
+    return &light->u.legacy;
+}
+
+static int32_t M_GetLegacyLightIntensity(const LIGHT *const light)
+{
+    return M_GetLegacyLight(light)->shade.value_1;
+}
+
+static int32_t M_GetLegacyLightFalloff1(const LIGHT *const light)
+{
+    return M_GetLegacyLight(light)->falloff.value_1;
+}
+
+static int32_t M_GetLegacyLightFalloff2(const LIGHT *const light)
+{
+    return M_GetLegacyLight(light)->falloff.value_2;
+}
+
+static XYZ_16 M_GetLegacyLightDir(const LIGHT *const light)
+{
+    return M_GetLegacyLight(light)->dir;
+}
+
+static bool M_IsSunLight(const LIGHT *const light)
+{
+    return light->type == LIGHT_TYPE_SUN;
+}
+
+static int32_t M_GetLightIntensity(const LIGHT *const light)
+{
+    if (light->layout == LIGHT_LAYOUT_TR4) {
+        return light->u.tr4.intensity;
+    }
+    return M_GetLegacyLightIntensity(light);
+}
+
+static int32_t M_GetLightOuterRadius(const LIGHT *const light)
+{
+    if (light->layout == LIGHT_LAYOUT_TR4) {
+        return (int32_t)light->u.tr4.outer_radius;
+    }
+    return M_GetLegacyLightFalloff1(light);
+}
+
+static XYZ_32 M_GetLightDirWorld(const LIGHT *const light)
+{
+    if (light->layout == LIGHT_LAYOUT_TR4) {
+        return (XYZ_32) {
+            .x = (int32_t)(light->u.tr4.dir.x * (1 << W2V_SHIFT)),
+            .y = (int32_t)(light->u.tr4.dir.y * (1 << W2V_SHIFT)),
+            .z = (int32_t)(light->u.tr4.dir.z * (1 << W2V_SHIFT)),
+        };
+    }
+    const XYZ_16 dir = M_GetLegacyLightDir(light);
+    return (XYZ_32) {
+        .x = dir.x,
+        .y = dir.y,
+        .z = dir.z,
+    };
+}
+
 static RGB_F M_TR3_RGB15ToRGBF(const int16_t rgb15)
 {
     const int32_t r8 = (rgb15 & 0x1F) << 3;
@@ -145,18 +208,24 @@ static void M_CalculateBrightestLight(
         const int32_t light_shade = Output_GetRoomLightShade(room->light_mode);
         for (int32_t i = 0; i < room->num_lights; i++) {
             const LIGHT *const light = &room->lights[i];
+            if (light->layout != LIGHT_LAYOUT_LEGACY) {
+                continue;
+            }
             const int32_t dx = pos.x - light->pos.x;
             const int32_t dy = pos.y - light->pos.y;
             const int32_t dz = pos.z - light->pos.z;
 
-            const int32_t falloff_1 = SQUARE(light->falloff.value_1) >> 12;
-            const int32_t falloff_2 = SQUARE(light->falloff.value_2) >> 12;
+            const int32_t falloff_1 =
+                SQUARE(M_GetLegacyLightFalloff1(light)) >> 12;
+            const int32_t falloff_2 =
+                SQUARE(M_GetLegacyLightFalloff2(light)) >> 12;
             const int32_t dist = (SQUARE(dx) + SQUARE(dy) + SQUARE(dz)) >> 12;
 
-            const int32_t shade_1 =
-                falloff_1 * light->shade.value_1 / MAX(1, falloff_1 + dist);
-            const int32_t shade_2 =
-                falloff_2 * light->shade.value_2 / MAX(1, falloff_2 + dist);
+            const int32_t shade_1 = falloff_1 * M_GetLegacyLightIntensity(light)
+                / MAX(1, falloff_1 + dist);
+            const int32_t shade_2 = falloff_2
+                * M_GetLegacyLight(light)->shade.value_2
+                / MAX(1, falloff_2 + dist);
             const int32_t shade = shade_1
                 + (shade_2 - shade_1) * light_shade / (M_LIGHT_CYCLE - 1);
 
@@ -171,13 +240,16 @@ static void M_CalculateBrightestLight(
     const int32_t ambient = g_TRVersion == 1 ? (SHADE_MAX - room->ambient) : 0;
     for (int32_t i = 0; i < room->num_lights; i++) {
         const LIGHT *const light = &room->lights[i];
+        if (light->layout != LIGHT_LAYOUT_LEGACY) {
+            continue;
+        }
         const int32_t dx = pos.x - light->pos.x;
         const int32_t dy = pos.y - light->pos.y;
         const int32_t dz = pos.z - light->pos.z;
-        const int32_t falloff = SQUARE(light->falloff.value_1) >> 12;
+        const int32_t falloff = SQUARE(M_GetLegacyLightFalloff1(light)) >> 12;
         const int32_t dist = (SQUARE(dx) + SQUARE(dy) + SQUARE(dz)) >> 12;
-        const int32_t shade =
-            ambient + (falloff * light->shade.value_1 / (falloff + dist));
+        const int32_t shade = ambient
+            + (falloff * M_GetLegacyLightIntensity(light) / (falloff + dist));
         if (shade > brightest_light->shade) {
             brightest_light->shade = shade;
             brightest_light->pos = light->pos;
@@ -194,7 +266,7 @@ static int32_t M_CalculateDynamicLight(
         const int32_t dx = pos.x - light->pos.x;
         const int32_t dy = pos.y - light->pos.y;
         const int32_t dz = pos.z - light->pos.z;
-        const int32_t radius = 1 << light->falloff.value_1;
+        const int32_t radius = 1 << M_GetLegacyLightFalloff1(light);
         if (dx < -radius || dx > radius || dy < -radius || dy > radius
             || dz < -radius || dz > radius) {
             continue;
@@ -205,8 +277,10 @@ static int32_t M_CalculateDynamicLight(
             continue;
         }
 
-        const int32_t shade = (1 << light->shade.value_1)
-            - (dist >> (2 * light->falloff.value_1 - light->shade.value_1));
+        const int32_t shade = (1 << M_GetLegacyLightIntensity(light))
+            - (dist
+               >> (2 * M_GetLegacyLightFalloff1(light)
+                   - M_GetLegacyLightIntensity(light)));
         if (shade > brightest_light->shade) {
             brightest_light->shade = shade;
             brightest_light->pos = light->pos;
@@ -231,14 +305,13 @@ static void M_TR3_CalculateLightSmoothed(
 
     for (int32_t i = 0; i < room->num_lights; i++) {
         const LIGHT *const light = &room->lights[i];
-
-        if (light->type != 0u) {
+        if (M_IsSunLight(light)) {
             has_sun = true;
             sun_light = light;
             continue;
         }
 
-        const int32_t falloff = light->falloff.value_1;
+        const int32_t falloff = M_GetLightOuterRadius(light);
         if (falloff <= 0) {
             continue;
         }
@@ -253,7 +326,7 @@ static void M_TR3_CalculateLightSmoothed(
             continue;
         }
 
-        const int32_t intensity = light->shade.value_1;
+        const int32_t intensity = M_GetLightIntensity(light);
         int32_t shade = intensity - (intensity * (int32_t)distance) / falloff;
         CLAMPL(shade, 0);
         ambience += shade >> 7;
@@ -275,7 +348,7 @@ static void M_TR3_CalculateLightSmoothed(
 
     for (int32_t i = 0; i < m_DynamicLights->count; i++) {
         const LIGHT *const light = Vector_Get(m_DynamicLights, i);
-        const int32_t falloff_half = light->falloff.value_1 >> 1;
+        const int32_t falloff_half = M_GetLegacyLightFalloff1(light) >> 1;
         if (falloff_half <= 0) {
             continue;
         }
@@ -344,11 +417,7 @@ static void M_TR3_CalculateLightSmoothed(
 
     if (has_sun && sun_light != nullptr) {
         want_sun = true;
-        sun_dir_world_target = (XYZ_32) {
-            .x = sun_light->dir.x,
-            .y = sun_light->dir.y,
-            .z = sun_light->dir.z,
-        };
+        sun_dir_world_target = M_GetLightDirWorld(sun_light);
         sun_target = sun_light->color;
     } else if (enable_smoothing && il->flags.has_sun) {
         want_sun = true;
@@ -571,7 +640,7 @@ void Output_CalculateStaticMeshLight(
 
         for (int32_t i = 0; i < m_DynamicLights->count; i++) {
             const LIGHT *const light = Vector_Get(m_DynamicLights, i);
-            const int32_t falloff_half = light->falloff.value_1 >> 1;
+            const int32_t falloff_half = M_GetLegacyLightFalloff1(light) >> 1;
             if (falloff_half <= 0) {
                 continue;
             }
@@ -617,7 +686,7 @@ void Output_CalculateStaticMeshLight(
         const int32_t dx = pos.x - light->pos.x;
         const int32_t dy = pos.y - light->pos.y;
         const int32_t dz = pos.z - light->pos.z;
-        const int32_t radius = 1 << light->falloff.value_1;
+        const int32_t radius = 1 << M_GetLegacyLightFalloff1(light);
         if (dx < -radius || dx > radius || dy < -radius || dy > radius
             || dz < -radius || dz > radius) {
             continue;
@@ -628,8 +697,10 @@ void Output_CalculateStaticMeshLight(
             continue;
         }
 
-        adder -= (1 << light->shade.value_1)
-            - (dist >> (2 * light->falloff.value_1 - light->shade.value_1));
+        adder -= (1 << M_GetLegacyLightIntensity(light))
+            - (dist
+               >> (2 * M_GetLegacyLightFalloff1(light)
+                   - M_GetLegacyLightIntensity(light)));
         if (adder < 0) {
             break;
         }
@@ -738,21 +809,27 @@ void Output_AddDynamicLight(
 
         const LIGHT light = {
             .pos = pos,
-            .shade = {},
-            .falloff.value_1 = falloff_param << M_TR3_DYNAMIC_FALLOFF_SHIFT,
             .color = (RGB_888) { c, c, c },
-            .type = 0,
-            .dir = {},
+            .layout = LIGHT_LAYOUT_LEGACY,
+            .type = LIGHT_TYPE_POINT,
+            .u.legacy =
+                {
+                    .falloff.value_1 =
+                        falloff_param << M_TR3_DYNAMIC_FALLOFF_SHIFT,
+                },
         };
         Vector_Add(m_DynamicLights, &light);
     } else {
         const LIGHT light = {
             .pos = pos,
-            .shade.value_1 = intensity,
-            .falloff.value_1 = falloff,
             .color = COLOR_RGB_888_WHITE,
-            .type = 0,
-            .dir = {},
+            .layout = LIGHT_LAYOUT_LEGACY,
+            .type = LIGHT_TYPE_POINT,
+            .u.legacy =
+                {
+                    .shade.value_1 = intensity,
+                    .falloff.value_1 = falloff,
+                },
         };
         Vector_Add(m_DynamicLights, &light);
     }
@@ -766,11 +843,13 @@ void Output_AddDynamicLightRGB(
 
     const LIGHT light = {
         .pos = pos,
-        .shade = {},
-        .falloff.value_1 = safe_falloff << M_TR3_DYNAMIC_FALLOFF_SHIFT,
         .color = color,
-        .type = g_TRVersion < 3 ? 1 : 0,
-        .dir = {},
+        .layout = LIGHT_LAYOUT_LEGACY,
+        .type = LIGHT_TYPE_POINT,
+        .u.legacy =
+            {
+                .falloff.value_1 = safe_falloff << M_TR3_DYNAMIC_FALLOFF_SHIFT,
+            },
     };
     Vector_Add(m_DynamicLights, &light);
 }

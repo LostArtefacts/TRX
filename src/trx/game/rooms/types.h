@@ -97,12 +97,42 @@ typedef struct {
 } SECTOR;
 
 typedef struct {
-    XYZ_32 pos;
     SHADE shade;
     FALLOFF falloff;
+    XYZ_16 dir;
+} LIGHT_LEGACY_DATA;
+
+typedef struct {
+    int32_t intensity;
+    float inner_radius;
+    float outer_radius;
+    float length;
+    float cutoff;
+    XYZ_F dir;
+} LIGHT_TR4_DATA;
+
+typedef enum {
+    LIGHT_LAYOUT_LEGACY,
+    LIGHT_LAYOUT_TR4,
+} LIGHT_LAYOUT;
+
+typedef enum {
+    LIGHT_TYPE_SUN = 0,
+    LIGHT_TYPE_POINT = 1,
+    LIGHT_TYPE_SPOT = 2,
+    LIGHT_TYPE_SHADOW = 3,
+    LIGHT_TYPE_FOG_BULB = 4,
+} LIGHT_TYPE;
+
+typedef struct {
+    XYZ_32 pos;
     RGB_888 color;
-    uint8_t type; // TR3: 0 = point, != 0 = sun
-    XYZ_16 dir; // TR3: sun direction (type != 0)
+    LIGHT_LAYOUT layout;
+    LIGHT_TYPE type;
+    union {
+        LIGHT_LEGACY_DATA legacy;
+        LIGHT_TR4_DATA tr4;
+    } u;
 } LIGHT;
 
 typedef struct {

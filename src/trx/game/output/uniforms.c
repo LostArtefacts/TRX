@@ -101,8 +101,13 @@ static void M_FillLight(
     dst_light->color[1] = src_light->color.g / 255.0f;
     dst_light->color[2] = src_light->color.b / 255.0f;
     dst_light->color[3] = 0.0f;
-    dst_light->shade = src_light->shade.value_1;
-    dst_light->falloff = src_light->falloff.value_1;
+    if (src_light->layout == LIGHT_LAYOUT_TR4) {
+        dst_light->shade = src_light->u.tr4.intensity;
+        dst_light->falloff = src_light->u.tr4.outer_radius;
+    } else {
+        dst_light->shade = src_light->u.legacy.shade.value_1;
+        dst_light->falloff = src_light->u.legacy.falloff.value_1;
+    }
     dst_light->kind = src_light->type;
 }
 
