@@ -3,6 +3,7 @@
 #include <trx/core/log.h>
 #include <trx/core/memory.h>
 #include <trx/core/thread_pool.h>
+#include <trx/debug.h>
 #include <trx/game/game_buf.h>
 #include <trx/game/inject.h>
 #include <trx/game/level/format/format.h>
@@ -172,26 +173,35 @@ void Level_Section_ReadObjectTextures(
     LOG_INFO("object textures: %d", num_textures);
     Output_InitialiseObjectTextures(
         num_textures + Inject_GetDataCount(IDT_OBJECT_TEXTURES));
-    Level_Section_AppendObjectTextures(
-        0, 0, num_textures, file, ctx->loader->game_version >= 3);
+    Level_Section_AppendObjectTextures(0, 0, num_textures, file);
     Benchmark_End(&benchmark, nullptr);
 }
 
 void Level_Section_AppendObjectTextures(
     const int32_t base_idx, const int16_t base_page_idx,
-    const int32_t num_textures, VFILE *const file,
-    const bool use_tr3_adjustment)
+    const int32_t num_textures, VFILE *const file)
 {
+    const LEVEL_FORMAT_LOADER *const loader = Level_Context_Get()->loader;
     for (int32_t i = 0; i < num_textures; i++) {
         OBJECT_TEXTURE *const texture = Output_GetObjectTexture(base_idx + i);
-        texture->uv_count = 4; // Default to 4 vertices
         texture->draw_type = VFile_ReadU16(file);
-        texture->tex_page = VFile_ReadU16(file) + base_page_idx;
+        const uint16_t tex_page = VFile_ReadU16(file);
+        if (loader->game_version == 4) {
+            const uint16_t tex_flags = VFile_ReadU16(file);
+            texture->uv_count = ((tex_page | tex_flags) & 0x8000) != 0 ? 3 : 4;
+            texture->tex_page = (tex_page & 0x7FFF) + base_page_idx;
+        } else {
+            texture->uv_count = 4; // Default to 4 vertices
+            texture->tex_page = tex_page + base_page_idx;
+        }
         for (int32_t j = 0; j < 4; j++) {
             texture->uv[j].u = VFile_ReadU16(file);
             texture->uv[j].v = VFile_ReadU16(file);
         }
-        if (use_tr3_adjustment) {
+        if (loader->game_version == 4) {
+            VFile_Skip(file, sizeof(uint32_t) * 4); // x/y offset and dimensions
+        }
+        if (loader->game_version == 3) {
             M_DecodeTR3ObjectTextureUVs(texture);
         }
     }
@@ -216,6 +226,9 @@ void Level_Section_AppendSpriteTextures(
     const int32_t base_idx, const int16_t base_page_idx,
     const int32_t num_textures, VFILE *const file)
 {
+    ASSERT(base_idx >= 0);
+    ASSERT(num_textures >= 0);
+    ASSERT(base_idx + num_textures <= Output_GetSpriteTextureCount());
     for (int32_t i = 0; i < num_textures; i++) {
         SPRITE_TEXTURE *const sprite = Output_GetSpriteTexture(base_idx + i);
         sprite->tex_page = VFile_ReadU16(file) + base_page_idx;

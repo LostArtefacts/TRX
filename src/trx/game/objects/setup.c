@@ -70,6 +70,10 @@ void Object_SetupAllObjects(void)
         if (obj->setup_func != nullptr) {
             obj->setup_func(obj);
         }
+
+        // TODO: this is poor design
+        OBJECT_PROPERTIES(
+            obj, OBJECT_PROPERTY_INT("ocb", 0, "Object configuration value."));
     }
 
     Lara_Hair_Initialise();

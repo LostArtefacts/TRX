@@ -34,7 +34,7 @@ static void M_ShowHelp(void)
     puts("");
     puts("-h/--help: show this help.");
     puts("   --mod <MOD_ID>: launch a specific game or mod directly.");
-    puts("-e/--engine <1|2|3>: pick a game engine explicitly.");
+    puts("-e/--engine <1|2|3|4>: pick a game engine explicitly.");
     puts("-l/--level <PATH|NUM>: launch a level file or level number.");
     puts("-s/--save <NUM>: launch from a specific save slot (starts at 1).");
     puts("   --test-record <PATH>: record gameplay events to file.");
@@ -110,7 +110,7 @@ SHELL_ARGS *Shell_ParseArgs(VECTOR *const args)
             i + 1 < args->count ? *(char **)Vector_Get(args, i + 1) : nullptr;
         if (!strcmp(arg, "-e") || !strcmp(arg, "--engine")) {
             String_ParseInteger(next_arg, &result->startup.engine_version);
-            CLAMP(result->startup.engine_version, 1, 3);
+            CLAMP(result->startup.engine_version, 1, TR_VERSION_COUNT);
             explicit_engine_version = true;
             i++;
         }

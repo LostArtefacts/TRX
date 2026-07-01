@@ -5,7 +5,7 @@
 void Level_Finalize_LoadAnimCommands(LEVEL_CONTEXT *const ctx)
 {
     LEVEL_CONTEXT_INFO *const info = &ctx->info;
-    Anim_LoadCommands(info->anims.commands);
+    Anim_LoadCommands(info->anims.commands, info->anims.command_count);
     Memory_FreePointer(&info->anims.commands);
 }
 

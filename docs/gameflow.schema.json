@@ -25,8 +25,8 @@
     },
     "engine": {
       "type": "integer",
-      "enum": [1, 2, 3],
-      "description": "Engine version this mod runs on (1 = TR1, 2 = TR2, 3 = TR3)."
+      "enum": [1, 2, 3, 4],
+      "description": "Engine version this mod runs on (1 = TR1, 2 = TR2, 3 = TR3, 4 = TR4)."
     },
     "extends": {
       "type": "string",

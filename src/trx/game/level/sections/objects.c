@@ -49,8 +49,9 @@ void Level_Section_ReadObjects(LEVEL_CONTEXT *const ctx, VFILE *const file)
         const int32_t game_obj_id = VFile_ReadS32(file);
         OBJECT *obj = Object_GetByGameID(game_obj_id);
         if (obj == nullptr) {
-            if (loader->game_version == 3) {
-                // TODO: remove this check after we implement the items
+            if (loader->game_version == 3 || loader->game_version == 4) {
+                // Direct-level support can encounter slots that do not have a
+                // stable TRX catalog entry yet.
                 obj = &fallback_obj;
             } else {
                 Shell_ExitSystemFmt("Invalid object ID: %d", game_obj_id);

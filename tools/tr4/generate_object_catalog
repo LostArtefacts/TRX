@@ -1,0 +1,242 @@
+#!/usr/bin/env python3
+
+from __future__ import annotations
+
+from pathlib import Path
+import re
+
+
+ROOT = Path(__file__).resolve().parents[2]
+TR4_OBJECTS_H = ROOT / "src" / "tomb4" / "TOMB4" / "game" / "objects.h"
+TRX_OBJECTS_DEF = ROOT / "src" / "trx" / "game" / "catalog" / "objects.def"
+OUTPUT_PATH = ROOT / "data" / "trx" / "ship" / "games" / "tr4" / "catalog_objects.csv"
+
+FORCED_ROWS: dict[int, str] = {
+    465: "O_LARA_SKIN_SWAP_1",
+    466: "O_LARA_SKIN_SWAP_2",
+    467: "O_LARA_SKIN_SWAP_3",
+    468: "O_LARA_SKIN_SWAP_4",
+    469: "O_LARA_SKIN_SWAP_5",
+    470: "O_LARA_SKIN_SWAP_6",
+    471: "O_LARA_SKIN_SWAP_7",
+    472: "O_LARA_SKIN_SWAP_8",
+    473: "O_LARA_SKIN_SWAP_9",
+    474: "O_LARA_SKIN_SWAP_10",
+    475: "O_LARA_SKIN_SWAP_11",
+    476: "O_LARA_SKIN_SWAP_12",
+    477: "O_LARA_SKIN_SWAP_13",
+    478: "O_LARA_SKIN_SWAP_14",
+    479: "O_LARA_SKIN_SWAP_15",
+    480: "O_LARA_SKIN_SWAP_16",
+    481: "O_LARA_SKIN_SWAP_17",
+    482: "O_LARA_SKIN_SWAP_18",
+    483: "O_LARA_SKIN_SWAP_19",
+    484: "O_LARA_SKIN_SWAP_20",
+    485: "O_LARA_SKIN_SWAP_21",
+    486: "O_LARA_SKIN_SWAP_22",
+    487: "O_LARA_SKIN_SWAP_23",
+    488: "O_LARA_SKIN_SWAP_24",
+    489: "O_LARA_SKIN_SWAP_25",
+    490: "O_LARA_SKIN_SWAP_26",
+    491: "O_LARA_SKIN_SWAP_27",
+    492: "O_LARA_SKIN_SWAP_28",
+    493: "O_LARA_SKIN_SWAP_29",
+    494: "O_LARA_SKIN_SWAP_30",
+    495: "O_LARA_SKIN_SWAP_31",
+    496: "O_LARA_SKIN_SWAP_32",
+    497: "O_LARA_SKIN_SWAP_EXTRA",
+    498: "O_LARA_SKIN_SWAP_GUNS",
+    499: "O_LARA_SKIN_SWAP_LEGS",
+    500: "O_ALPHABET",
+    501: "O_ALPHABET_SMALL",
+}
+
+ALIAS_MAP: dict[str, str] = {
+    "PISTOLS_ANIM": "O_LARA_PISTOLS",
+    "UZI_ANIM": "O_LARA_UZIS",
+    "SHOTGUN_ANIM": "O_LARA_SHOTGUN",
+    "GRENADE_GUN_ANIM": "O_LARA_GRENADE_GUN",
+    "FLARE_ANIM": "O_LARA_FLARE",
+    "HAIR": "O_LARA_HAIR",
+    "DARTS": "O_DART",
+    "FALLING_CEILING": "O_FALLING_CEILING_1",
+    "FALLING_BLOCK": "O_FALLING_BLOCK_1",
+    "FALLING_BLOCK2": "O_FALLING_BLOCK_2",
+    "TRAPDOOR1": "O_TRAPDOOR_TYPE_1",
+    "TRAPDOOR2": "O_TRAPDOOR_TYPE_2",
+    "TRAPDOOR3": "O_TRAPDOOR_TYPE_3",
+    "ROLLINGBALL": "O_ROLLING_BALL_1",
+    "SPIKEY_FLOOR": "O_SPIKES",
+    "TEETH_SPIKES": "O_TEETH_TRAP",
+    "SLICER_DICER": "O_SPINNING_BLADE",
+    "COG": "O_COG_1",
+    "PUSHABLE_OBJECT1": "O_MOVABLE_BLOCK_1",
+    "PUSHABLE_OBJECT2": "O_MOVABLE_BLOCK_2",
+    "PUSHABLE_OBJECT3": "O_MOVABLE_BLOCK_3",
+    "PUSHABLE_OBJECT4": "O_MOVABLE_BLOCK_4",
+    "BRIDGE_TILT1": "O_BRIDGE_TILT_1",
+    "BRIDGE_TILT2": "O_BRIDGE_TILT_2",
+    "PUZZLE_ITEM1": "O_PUZZLE_ITEM_1",
+    "PUZZLE_ITEM2": "O_PUZZLE_ITEM_2",
+    "PUZZLE_ITEM3": "O_PUZZLE_ITEM_3",
+    "PUZZLE_ITEM4": "O_PUZZLE_ITEM_4",
+    "KEY_ITEM1": "O_KEY_ITEM_1",
+    "KEY_ITEM2": "O_KEY_ITEM_2",
+    "KEY_ITEM3": "O_KEY_ITEM_3",
+    "KEY_ITEM4": "O_KEY_ITEM_4",
+    "PICKUP_ITEM1": "O_PICKUP_ITEM_1",
+    "PICKUP_ITEM2": "O_PICKUP_ITEM_2",
+    "QUEST_ITEM1": "O_QUEST_ITEM_1",
+    "QUEST_ITEM2": "O_QUEST_ITEM_2",
+    "QUEST_ITEM3": "O_QUEST_ITEM_3",
+    "QUEST_ITEM4": "O_QUEST_ITEM_4",
+    "PUZZLE_HOLE1": "O_PUZZLE_HOLE_1",
+    "PUZZLE_HOLE2": "O_PUZZLE_HOLE_2",
+    "PUZZLE_HOLE3": "O_PUZZLE_HOLE_3",
+    "PUZZLE_HOLE4": "O_PUZZLE_HOLE_4",
+    "PUZZLE_DONE1": "O_PUZZLE_DONE_1",
+    "PUZZLE_DONE2": "O_PUZZLE_DONE_2",
+    "PUZZLE_DONE3": "O_PUZZLE_DONE_3",
+    "PUZZLE_DONE4": "O_PUZZLE_DONE_4",
+    "KEY_HOLE1": "O_KEY_HOLE_1",
+    "KEY_HOLE2": "O_KEY_HOLE_2",
+    "KEY_HOLE3": "O_KEY_HOLE_3",
+    "KEY_HOLE4": "O_KEY_HOLE_4",
+    "SWITCH_TYPE1": "O_SWITCH_TYPE_NORMAL",
+    "SWITCH_TYPE2": "O_SWITCH_TYPE_SMALL",
+    "SWITCH_TYPE3": "O_SWITCH_TYPE_BUTTON",
+    "SWITCH_TYPE4": "O_SWITCH_TYPE_WHEEL",
+    "UNDERWATER_SWITCH1": "O_SWITCH_TYPE_UW",
+    "DOOR_TYPE1": "O_DOOR_TYPE_1",
+    "DOOR_TYPE2": "O_DOOR_TYPE_2",
+    "DOOR_TYPE3": "O_DOOR_TYPE_3",
+    "DOOR_TYPE4": "O_DOOR_TYPE_4",
+    "DOOR_TYPE5": "O_DOOR_TYPE_5",
+    "DOOR_TYPE6": "O_DOOR_TYPE_6",
+    "DOOR_TYPE7": "O_DOOR_TYPE_7",
+    "DOOR_TYPE8": "O_DOOR_TYPE_8",
+    "PISTOLS_ITEM": "O_PISTOL_ITEM",
+    "PISTOLS_AMMO_ITEM": "O_PISTOL_AMMO_ITEM",
+    "SHOTGUN_AMMO1_ITEM": "O_SHOTGUN_AMMO_ITEM",
+    "BIGMEDI_ITEM": "O_LARGE_MEDIPACK_ITEM",
+    "SMALLMEDI_ITEM": "O_SMALL_MEDIPACK_ITEM",
+    "FLAME_EMITTER2": "O_FLAME_EMITTER_BIG",
+    "FLAME_EMITTER3": "O_FLAME_EMITTER_SMALL",
+    "BUBBLES": "O_BUBBLE_EMITTER",
+    "GUNSHELL": "O_GUN_SHELL",
+    "SHOTGUNSHELL": "O_SHOTGUN_SHELL",
+    "AI_PATROL1": "O_AI_PATROL_1",
+    "AI_PATROL2": "O_AI_PATROL_2",
+    "KILL_ALL_TRIGGERS": "O_KILL_ALL_TRIGGERED",
+    "TRIGGER_TRIGGERER": "O_TRIGGER_GATE",
+    "SMASH_OBJECT1": "O_SMASH_OBJECT_1",
+    "SMASH_OBJECT2": "O_SMASH_OBJECT_2",
+    "SMASH_OBJECT3": "O_SMASH_OBJECT_3",
+    "SMASH_OBJECT4": "O_SMASH_OBJECT_4",
+    "MESHSWAP1": "O_MESH_SWAP_1",
+    "MESHSWAP2": "O_MESH_SWAP_2",
+    "MESHSWAP3": "O_MESH_SWAP_3",
+    "DEATH_SLIDE": "O_ZIPLINE_HANDLE",
+    "WATERFALL1": "O_WATERFALL",
+    "ANIMATING1": "O_ANIMATING_1",
+    "ANIMATING2": "O_ANIMATING_2",
+    "ANIMATING3": "O_ANIMATING_3",
+    "ANIMATING4": "O_ANIMATING_4",
+    "ANIMATING5": "O_ANIMATING_5",
+    "ANIMATING6": "O_ANIMATING_6",
+    "ANIMATING7": "O_ANIMATING_7",
+    "ANIMATING8": "O_ANIMATING_8",
+    "ANIMATING9": "O_ANIMATING_9",
+    "ANIMATING10": "O_ANIMATING_10",
+    "ANIMATING11": "O_ANIMATING_EXT_1",
+    "ANIMATING12": "O_ANIMATING_EXT_2",
+    "ANIMATING13": "O_ANIMATING_EXT_3",
+    "ANIMATING14": "O_ANIMATING_EXT_4",
+    "ANIMATING15": "O_ANIMATING_EXT_5",
+    "ANIMATING16": "O_ANIMATING_EXT_6",
+    "HORIZON": "O_SKYBOX",
+    "DEFAULT_SPRITES": "O_SPARKS_GFX",
+}
+
+
+def parse_trx_symbols() -> set[str]:
+    text = TRX_OBJECTS_DEF.read_text()
+    return set(re.findall(r"X_CATALOG_ID\((O_[A-Z0-9_]+)\)", text))
+
+
+def parse_tr4_object_names() -> list[str]:
+    text = TR4_OBJECTS_H.read_text()
+    match = re.search(
+        r"enum object_types\s*\{(?P<body>.*?)\bNUMBER_OBJECTS\b",
+        text,
+        re.DOTALL,
+    )
+    if match is None:
+        raise ValueError("Failed to locate enum object_types in TOMB4 objects.h")
+
+    body = re.sub(r"//.*", "", match.group("body"))
+    body = re.sub(r"/\*.*?\*/", "", body, flags=re.DOTALL)
+    return [name.strip() for name in body.replace("\n", " ").split(",") if name.strip()]
+
+
+def resolve_symbol(name: str, trx_symbols: set[str]) -> str | None:
+    exact_symbol = f"O_{name}"
+    if exact_symbol in trx_symbols:
+        return exact_symbol
+
+    alias_symbol = ALIAS_MAP.get(name)
+    if alias_symbol is not None and alias_symbol not in trx_symbols:
+        raise ValueError(f"Alias target {alias_symbol} for {name} is not a TRX catalog symbol")
+    return alias_symbol
+
+
+def build_catalog_rows() -> tuple[list[tuple[int, str]], list[tuple[int, str]]]:
+    trx_symbols = parse_trx_symbols()
+    names = parse_tr4_object_names()
+
+    rows: list[tuple[int, str]] = sorted(FORCED_ROWS.items())
+    skipped: list[tuple[int, str]] = []
+    used_symbols: set[str] = set(FORCED_ROWS.values())
+    forced_ids = set(FORCED_ROWS)
+
+    for game_id, name in enumerate(names):
+        if game_id in forced_ids:
+            skipped.append((game_id, name))
+            continue
+        symbol = resolve_symbol(name, trx_symbols)
+        if symbol is None:
+            skipped.append((game_id, name))
+            continue
+        if symbol in used_symbols:
+            raise ValueError(f"Duplicate TRX symbol mapping detected for {name}: {symbol}")
+        used_symbols.add(symbol)
+        rows.append((game_id, symbol))
+
+    return rows, skipped
+
+
+def write_catalog() -> None:
+    rows, skipped = build_catalog_rows()
+    row_map = {game_id: symbol for game_id, symbol in rows}
+
+    rows = sorted(row_map.items())
+
+    lines = [
+        "# Generated by tools/tr4/generate_object_catalog",
+        f"# Mapped {len(rows)} of {len(rows) + len(skipped)} TOMB4 object slots.",
+        "# Unmapped slots are intentionally omitted until TRX has a stable object equivalent.",
+    ]
+    lines.extend(f"{game_id}, {symbol}" for game_id, symbol in rows)
+    lines.append("")
+    lines.append("# Unmapped TOMB4 slots:")
+    lines.extend(f"# {game_id}: {name}" for game_id, name in skipped)
+    OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
+    OUTPUT_PATH.write_text("\n".join(lines) + "\n")
+
+
+def main() -> None:
+    write_catalog()
+
+
+if __name__ == "__main__":
+    main()

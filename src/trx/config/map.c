@@ -106,6 +106,11 @@ static const CONFIG_OPTION *m_ConfigOptionMap[TR_VERSION_COUNT] = {
 #include <trx/config/map_tr3.def>
             {}, // sentinel
         },
+    [3] =
+        (CONFIG_OPTION[]) {
+#include <trx/config/map_tr4.def>
+            {}, // sentinel
+        },
 };
 
 #undef X_CFG_BOOL
@@ -123,7 +128,7 @@ static const CONFIG_OPTION *m_ConfigOptionMap[TR_VERSION_COUNT] = {
 
 const CONFIG_OPTION *Config_GetOptionMap(void)
 {
-    if (g_TRVersion < 1 || g_TRVersion > 3) {
+    if (g_TRVersion < 1 || g_TRVersion > TR_VERSION_COUNT) {
         return nullptr;
     }
     return m_ConfigOptionMap[g_TRVersion - 1];

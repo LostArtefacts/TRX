@@ -19,7 +19,8 @@ static void M_ReadVertex(XYZ_16 *const vertex, VFILE *const file)
 }
 
 static void M_ReadFace(
-    FACE *const face, const size_t vertex_count, VFILE *const file)
+    const LEVEL_FORMAT_LOADER *const loader, FACE *const face,
+    const size_t vertex_count, VFILE *const file)
 {
     face->vertex_count = vertex_count;
     for (size_t i = 0; i < vertex_count; i++) {
@@ -30,14 +31,23 @@ static void M_ReadFace(
     const uint16_t texture_idx = VFile_ReadU16(file);
     face->texture_idx = texture_idx & 0x7FFF;
     face->double_sided = (texture_idx & 0x8000) != 0;
+    face->effects = 0;
     face->enable_reflections = false;
+    if (loader->game_version == 4) {
+        face->effects = VFile_ReadU16(file);
+    }
 }
 
 static void M_ReadObjectMesh(OBJECT_MESH *const mesh, VFILE *const file)
 {
+    const LEVEL_FORMAT_LOADER *const loader = Level_Context_Get()->loader;
     M_ReadVertex(&mesh->center, file);
-    mesh->radius = VFile_ReadS16(file);
-    VFile_Skip(file, sizeof(int16_t));
+    if (loader->game_version == 4) {
+        mesh->radius = VFile_ReadS32(file);
+    } else {
+        mesh->radius = VFile_ReadS16(file);
+        VFile_Skip(file, sizeof(int16_t));
+    }
 
     mesh->enable_reflections = false;
     mesh->enable_caustics = false;
@@ -70,14 +80,21 @@ static void M_ReadObjectMesh(OBJECT_MESH *const mesh, VFILE *const file)
     }
 
     {
+        const int32_t quad_face_size = loader->game_version == 4 ? 12 : 10;
+        const int32_t tri_face_size = loader->game_version == 4 ? 10 : 8;
         mesh->tex_face4s.count = VFile_ReadS16(file);
         size_t pos = VFile_GetPos(file);
-        VFile_Skip(file, 10 * mesh->tex_face4s.count);
+        VFile_Skip(file, quad_face_size * mesh->tex_face4s.count);
         mesh->tex_face3s.count = VFile_ReadS16(file);
-        VFile_Skip(file, 8 * mesh->tex_face3s.count);
-        mesh->flat_face4s.count = VFile_ReadS16(file);
-        VFile_Skip(file, 10 * mesh->flat_face4s.count);
-        mesh->flat_face3s.count = VFile_ReadS16(file);
+        VFile_Skip(file, tri_face_size * mesh->tex_face3s.count);
+        if (loader->game_version == 4) {
+            mesh->flat_face4s.count = 0;
+            mesh->flat_face3s.count = 0;
+        } else {
+            mesh->flat_face4s.count = VFile_ReadS16(file);
+            VFile_Skip(file, quad_face_size * mesh->flat_face4s.count);
+            mesh->flat_face3s.count = VFile_ReadS16(file);
+        }
         VFile_SetPos(file, pos);
 
         mesh->tex_faces.count = mesh->tex_face4s.count + mesh->tex_face3s.count;
@@ -91,28 +108,32 @@ static void M_ReadObjectMesh(OBJECT_MESH *const mesh, VFILE *const file)
         mesh->tex_faces.data = face_ptr;
         mesh->tex_face4s.data = face_ptr;
         for (int32_t i = 0; i < mesh->tex_face4s.count; i++) {
-            M_ReadFace(face_ptr++, 4, file);
+            M_ReadFace(loader, face_ptr++, 4, file);
         }
         VFile_Skip(file, 2);
 
         mesh->tex_face3s.data = face_ptr;
         for (int32_t i = 0; i < mesh->tex_face3s.count; i++) {
-            M_ReadFace(face_ptr++, 3, file);
+            M_ReadFace(loader, face_ptr++, 3, file);
         }
-        VFile_Skip(file, 2);
+        if (loader->layout != LEVEL_FORMAT_LAYOUT_TR4) {
+            VFile_Skip(file, 2);
 
-        mesh->flat_faces.data = face_ptr;
-        mesh->flat_face4s.data = face_ptr;
-        for (int32_t i = 0; i < mesh->flat_face4s.count; i++) {
-            M_ReadFace(face_ptr++, 4, file);
-        }
-        VFile_Skip(file, 2);
+            mesh->flat_faces.data = face_ptr;
+            mesh->flat_face4s.data = face_ptr;
+            for (int32_t i = 0; i < mesh->flat_face4s.count; i++) {
+                M_ReadFace(loader, face_ptr++, 4, file);
+            }
+            VFile_Skip(file, 2);
 
-        mesh->flat_face3s.data = face_ptr;
-        for (int32_t i = 0; i < mesh->flat_face3s.count; i++) {
-            M_ReadFace(face_ptr++, 3, file);
+            mesh->flat_face3s.data = face_ptr;
+            for (int32_t i = 0; i < mesh->flat_face3s.count; i++) {
+                M_ReadFace(loader, face_ptr++, 3, file);
+            }
+            VFile_Skip(file, 2);
+        } else if (VFile_GetPos(file) % 4 != 0) {
+            VFile_Skip(file, 2);
         }
-        VFile_Skip(file, 2);
     }
 }
 

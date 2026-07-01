@@ -362,6 +362,7 @@ common_sources = [
   'trx/game/level/format/format_tr1.c',
   'trx/game/level/format/format_tr2.c',
   'trx/game/level/format/format_tr3.c',
+  'trx/game/level/format/format_tr4.c',
   'trx/game/level/format/pipeline.c',
   'trx/game/level/pipeline.c',
   'trx/game/level/sections/anims.c',

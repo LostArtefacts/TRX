@@ -54,6 +54,8 @@ typedef struct {
     int16_t current_anim_state;
     int32_t velocity;
     int32_t acceleration;
+    int32_t lateral_velocity;
+    int32_t lateral_acceleration;
     int16_t frame_base;
     int16_t frame_end;
     int16_t jump_anim_num;

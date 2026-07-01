@@ -1,7 +1,9 @@
 #include <trx/game/items.h>
 #include <trx/game/items/walkable.h>
 #include <trx/game/lara.h>
+#include <trx/game/level/context.h>
 #include <trx/game/level/finalize.h>
+#include <trx/game/level/format/format.h>
 #include <trx/game/lua.h>
 #include <trx/game/objects.h>
 #include <trx/game/objects/property.h>
@@ -23,7 +25,7 @@ static uint8_t M_GetAIBit(const OBJECT_ID object_id)
     }
 }
 
-static void M_AssignAIBits(void)
+static void M_AssignTR123AIBits(const LEVEL_CONTEXT *const ctx)
 {
     const int32_t item_count = Item_GetLevelCount();
     for (int32_t i = 0; i < item_count; i++) {
@@ -52,6 +54,70 @@ static void M_AssignAIBits(void)
     }
 }
 
+static void M_AssignTR4AIBits(const LEVEL_CONTEXT *const ctx)
+{
+    const LEVEL_CONTEXT_INFO *const info = &ctx->info;
+    const int32_t item_count = Item_GetLevelCount();
+    for (int32_t i = 0; i < item_count; i++) {
+        ITEM *const item = Item_Get(i);
+        const OBJECT *const obj = Object_Get(item->object_id);
+        if (!obj->intelligent || item->room_num == NO_ROOM) {
+            continue;
+        }
+
+        for (int32_t j = 0; j < info->tr4.ai_item_count; j++) {
+            const LEVEL_TR4_AI_ITEM_INFO *const ai_item =
+                &info->tr4.ai_items[j];
+            const OBJECT_ID ai_object_id =
+                Object_FromGameID(ai_item->object_id);
+            const uint8_t ai_bit = M_GetAIBit(ai_object_id);
+            if (ai_bit == 0 || (item->ai_bits & ai_bit) != 0
+                || ai_item->room_num != item->room_num
+                || ai_item->pos.x != item->pos.x
+                || ai_item->pos.z != item->pos.z) {
+                continue;
+            }
+
+            item->ai_bits |= ai_bit;
+            item->ai_tag = ai_item->y_rot;
+        }
+    }
+}
+
+static void M_AssignAIBits(const LEVEL_CONTEXT *const ctx)
+{
+    if (ctx->loader->game_version == 4) {
+        M_AssignTR4AIBits(ctx);
+    } else {
+        M_AssignTR123AIBits(ctx);
+    }
+}
+
+static void M_PrepareTR4Items(LEVEL_CONTEXT *const ctx)
+{
+    if (ctx->loader->layout != LEVEL_FORMAT_LAYOUT_TR4) {
+        return;
+    }
+
+    LEVEL_CONTEXT_INFO *const info = &ctx->info;
+    for (int32_t i = 0; i < info->tr4.item_count && i < Item_GetLevelCount();
+         i++) {
+        ITEM *const item = Item_Get(i);
+        const LEVEL_TR4_ITEM_INFO *const tr4_item = &info->tr4.items[i];
+        if (item->object_id == NO_OBJECT) {
+            item->object_id = O_CAMERA_TARGET;
+            item->room_num = NO_ROOM;
+        }
+
+        ObjectProperty_SetItemValueRaw(
+            item, "ocb",
+            (OBJECT_PROPERTY_VALUE) {
+                .type = OBJECT_PROPERTY_TYPE_INT,
+                .as_int = tr4_item->ocb,
+            });
+    }
+}
+
 void Level_Finalize_LoadObjectsAndItems(LEVEL_CONTEXT *const ctx)
 {
     // Object and item setup/initialisation must take place after injections
@@ -64,17 +130,22 @@ void Level_Finalize_LoadObjectsAndItems(LEVEL_CONTEXT *const ctx)
         ObjectProperty_ResetItem(Item_Get(i));
     }
 
+    M_PrepareTR4Items(ctx);
+
     Lua_FireEventInt32(LUA_EVENT_BEFORE_ITEM_SETUP, GF_GetCurrentLevel()->num);
 
     const int32_t item_count = Item_GetLevelCount();
     for (int32_t i = 0; i < item_count; i++) {
+        if (Item_Get(i)->room_num == NO_ROOM) {
+            continue;
+        }
         Item_Initialise(i);
     }
 
     // Must take place after item initialization.
     Level_Finalize_LoadWalkables(ctx);
 
-    M_AssignAIBits();
+    M_AssignAIBits(ctx);
     Lara_State_Initialise();
 }
 
