@@ -33,6 +33,7 @@ typedef enum {
     OUTPUT_MESH_ATTR_FLAGS           = 5,
     OUTPUT_MESH_ATTR_COLOR           = 6,
     OUTPUT_MESH_ATTR_SHADE           = 7,
+    OUTPUT_MESH_ATTR_REFLECTIVITY    = 8,
     // clang-format on
 } OUTPUT_MESH_ATTRIBUTE;
 
@@ -40,7 +41,7 @@ typedef struct OUTPUT_MESH_SHADER OUTPUT_MESH_SHADER;
 
 OUTPUT_MESH_SHADER *Output_MeshShader_Create(void);
 void Output_MeshShader_Free(OUTPUT_MESH_SHADER *shader);
-void Output_MeshShader_Bind(const OUTPUT_MESH_SHADER *shader);
+void Output_MeshShader_Bind(OUTPUT_MESH_SHADER *shader);
 
 // TODO: these could could use UBOs
 void Output_MeshShader_UploadModelMatrix(

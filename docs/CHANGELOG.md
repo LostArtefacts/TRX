@@ -2,6 +2,9 @@
 - added a new Lua module, `trx.math`
 - fixed TR1 and TR2 skyboxes being 2× too bright (regression from 1.9)
 
+**TR4**
+- added reflections
+
 
 
 ## [1.9.1](https://github.com/LostArtefacts/TRX/compare/trx-1.9...trx-1.9.1) - 2026-07-12

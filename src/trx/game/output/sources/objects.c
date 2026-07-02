@@ -85,6 +85,23 @@ static SCENE_PASS M_GetScenePass(
     return Output_Textures_GetObjectTextureScenePass(face->texture_idx);
 }
 
+static float M_GetReflectivity(const FACE *const face)
+{
+    if ((face->effects & 0x2u) == 0u) {
+        return 1.0f;
+    }
+
+    // The OG scales the reflection pass's vertex color by the face's 5-bit
+    // reflectivity: (value << 3), applied as (color * m) >> 8.
+    return ((face->effects >> 2) & 0x1Fu) * (8.0f / 256.0f);
+}
+
+static bool M_IsReflectiveFace(
+    const OBJECT_MESH *const obj_mesh, const FACE *const face)
+{
+    return obj_mesh->enable_reflections || face->enable_reflections;
+}
+
 static void M_AddObjectFace(
     MESH_BUILDER *const builder, const OBJECT_MESH *const obj_mesh,
     const FACE *const face, uint16_t flags, const int32_t mesh_idx)
@@ -106,6 +123,10 @@ static void M_AddObjectFace(
         Output_Textures_GetObjectTextureScenePass(face->texture_idx)
         == SCENE_PASS_OPAQUE) {
         flags |= VERT_NO_ALPHA_DISCARD;
+    }
+
+    if (M_IsReflectiveFace(obj_mesh, face)) {
+        flags |= VERT_REFLECTIVE;
     }
 
     if (obj_mesh->num_lights <= 0) {
@@ -166,6 +187,7 @@ static void M_AddObjectFace(
             .normal = { .x = normal.x, .y = normal.y, .z = normal.z },
             .flags = flags,
             .uvw_idx = uvw_idx,
+            .reflectivity = M_GetReflectivity(face),
             .shade = shade,
             .color = color,
             .trapezoid_ratio = {
@@ -236,15 +258,30 @@ static void M_FreeMeshes(M_PRIV *const p)
 static void M_UpdateFlags(const OBJECT_MESH *const mesh, M_MESH *const batch)
 {
     uint16_t mask = VERT_REFLECTIVE | VERT_NO_LIGHTING;
-    uint16_t flags = 0;
-    if (mesh->enable_reflections) {
-        flags |= VERT_REFLECTIVE;
-    }
     OUTPUT_MESH_VERTEX *const vertices =
         Vector_GetData(batch->mesh_batch->vertices);
-    for (int32_t i = 0; i < batch->mesh_batch->vertices->count; i++) {
-        vertices[i].flags &= ~mask;
-        vertices[i].flags |= flags;
+    int32_t vertex_idx = 0;
+
+    for (int32_t i = 0; i < mesh->tex_faces.count; i++) {
+        const FACE *const face = &mesh->tex_faces.data[i];
+        for (int32_t j = 0; j < face->vertex_count; j++) {
+            vertices[vertex_idx + j].flags &= ~mask;
+            if (M_IsReflectiveFace(mesh, face)) {
+                vertices[vertex_idx + j].flags |= VERT_REFLECTIVE;
+            }
+        }
+        vertex_idx += face->vertex_count;
+    }
+
+    for (int32_t i = 0; i < mesh->flat_faces.count; i++) {
+        const FACE *const face = &mesh->flat_faces.data[i];
+        for (int32_t j = 0; j < face->vertex_count; j++) {
+            vertices[vertex_idx + j].flags &= ~mask;
+            if (M_IsReflectiveFace(mesh, face)) {
+                vertices[vertex_idx + j].flags |= VERT_REFLECTIVE;
+            }
+        }
+        vertex_idx += face->vertex_count;
     }
 }
 

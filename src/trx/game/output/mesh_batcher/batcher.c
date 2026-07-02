@@ -25,6 +25,7 @@ typedef struct {
     OUTPUT_UVW uvw;
     OUTPUT_TEXTURE_SIZE texture_size;
     float trapezoid_ratio[2];
+    float reflectivity;
 } M_MESH_TEXTURE;
 
 typedef struct M_MESH_BUF_BINDING {
@@ -120,6 +121,7 @@ static void M_FillGeometry(
 static void M_FillTexture(
     M_MESH_TEXTURE *const tex, const OUTPUT_MESH_VERTEX *const vertex)
 {
+    tex->reflectivity = vertex->reflectivity;
     if (vertex->uvw_idx < 0) {
         return;
     }
@@ -532,6 +534,7 @@ MESH_BATCHER *MeshBatcher_Create(void)
     glEnableVertexAttribArray(OUTPUT_MESH_ATTR_UVW);
     glEnableVertexAttribArray(OUTPUT_MESH_ATTR_TEXTURE_SIZE);
     glEnableVertexAttribArray(OUTPUT_MESH_ATTR_TRAPEZOID_RATIO);
+    glEnableVertexAttribArray(OUTPUT_MESH_ATTR_REFLECTIVITY);
     glVertexAttribPointer(
         OUTPUT_MESH_ATTR_UVW, 3, GL_FLOAT, GL_FALSE, sizeof(M_MESH_TEXTURE),
         (void *)(intptr_t)offsetof(M_MESH_TEXTURE, uvw));
@@ -543,6 +546,10 @@ MESH_BATCHER *MeshBatcher_Create(void)
         OUTPUT_MESH_ATTR_TRAPEZOID_RATIO, 2, GL_FLOAT, GL_FALSE,
         sizeof(M_MESH_TEXTURE),
         (void *)(intptr_t)offsetof(M_MESH_TEXTURE, trapezoid_ratio));
+    glVertexAttribPointer(
+        OUTPUT_MESH_ATTR_REFLECTIVITY, 1, GL_FLOAT, GL_FALSE,
+        sizeof(M_MESH_TEXTURE),
+        (void *)(intptr_t)offsetof(M_MESH_TEXTURE, reflectivity));
 
     glBindBuffer(GL_ARRAY_BUFFER, batcher->vbo.shade);
     glEnableVertexAttribArray(OUTPUT_MESH_ATTR_SHADE);

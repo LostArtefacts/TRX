@@ -409,6 +409,7 @@ void OutputSource_PolyFX_Init(void)
     glEnableVertexAttribArray(OUTPUT_MESH_ATTR_FLAGS);
     glEnableVertexAttribArray(OUTPUT_MESH_ATTR_COLOR);
     glEnableVertexAttribArray(OUTPUT_MESH_ATTR_SHADE);
+    glDisableVertexAttribArray(OUTPUT_MESH_ATTR_REFLECTIVITY);
 
     glVertexAttribPointer(
         OUTPUT_MESH_ATTR_POS, 4, GL_FLOAT, GL_FALSE, sizeof(M_VERTEX),
@@ -435,6 +436,7 @@ void OutputSource_PolyFX_Init(void)
     glVertexAttribPointer(
         OUTPUT_MESH_ATTR_SHADE, 1, GL_FLOAT, GL_FALSE, sizeof(M_VERTEX),
         (void *)(intptr_t)offsetof(M_VERTEX, shade));
+    glVertexAttrib1f(OUTPUT_MESH_ATTR_REFLECTIVITY, 1.0f);
 }
 
 void OutputSource_PolyFX_Shutdown(void)
