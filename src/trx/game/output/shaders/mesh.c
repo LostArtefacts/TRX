@@ -4,6 +4,7 @@
 #include <trx/core/utils.h>
 #include <trx/game/output/lights/priv.h>
 #include <trx/game/output/state.h>
+#include <trx/game/output/textures.h>
 #include <trx/game/output/utils.h>
 #include <trx/gl/utils.h>
 #include <trx/version.h>
@@ -28,6 +29,7 @@ struct OUTPUT_MESH_SHADER {
     bool is_wibble_effect[M_VARIANT_COUNT];
     bool is_alpha_discard_enabled[M_VARIANT_COUNT];
     RGB_F tint[M_VARIANT_COUNT];
+    OUTPUT_ATLAS_RECT env_map_rect[M_VARIANT_COUNT];
 };
 
 static int32_t M_GetVariantIndex(void)
@@ -53,23 +55,54 @@ OUTPUT_MESH_SHADER *Output_MeshShader_Create(void)
         shader->is_wibble_effect[i] = false;
         shader->is_alpha_discard_enabled[i] = false;
         shader->tint[i] = (RGB_F) { 0.0f, 0.0f, 0.0f };
+        shader->env_map_rect[i] = (OUTPUT_ATLAS_RECT) { .layer = -1 };
 
         shader->base[i] = Output_Shader_Create(m_VariantPaths[i]);
         Output_Shader_Bind(shader->base[i]);
         TRX_GL_TRACK_UNIFORM(
             glUniform1i,
             Output_Shader_LookupUniform(shader->base[i], "uTexAtlas"), 0);
-        TRX_GL_TRACK_UNIFORM(
-            glUniform1i,
-            Output_Shader_LookupUniform(shader->base[i], "uTexEnvMap"), 1);
+        // TR4 reflections sample the atlas, so only the TR1-3 variants declare
+        // the framebuffer-capture env map.
+        GLint loc = -1;
+        if (Output_Shader_TryLookupUniform(
+                shader->base[i], "uTexEnvMap", &loc)) {
+            TRX_GL_TRACK_UNIFORM(glUniform1i, loc, 1);
+        }
     }
     return shader;
 }
 
-void Output_MeshShader_Bind(const OUTPUT_MESH_SHADER *const shader)
+// TR4 samples the env map out of the atlas, so the variant needs to know which
+// patch of it to use. The rect only changes on level load; the TR1-3 variants
+// don't declare the uniforms at all.
+static void M_UploadEnvMapRect(
+    OUTPUT_MESH_SHADER *const shader, const int32_t variant_idx)
+{
+    const OUTPUT_ATLAS_RECT rect = Output_Textures_GetEnvMapRect();
+    if (memcmp(&shader->env_map_rect[variant_idx], &rect, sizeof(rect)) == 0) {
+        return;
+    }
+    shader->env_map_rect[variant_idx] = rect;
+
+    OUTPUT_SHADER *const base = M_GetVariantBase(shader, variant_idx);
+    GLint loc = -1;
+    if (Output_Shader_TryLookupUniform(base, "uEnvMapUV0", &loc)) {
+        TRX_GL_TRACK_UNIFORM(glUniform2f, loc, rect.uv0[0], rect.uv0[1]);
+    }
+    if (Output_Shader_TryLookupUniform(base, "uEnvMapUV1", &loc)) {
+        TRX_GL_TRACK_UNIFORM(glUniform2f, loc, rect.uv1[0], rect.uv1[1]);
+    }
+    if (Output_Shader_TryLookupUniform(base, "uEnvMapLayer", &loc)) {
+        TRX_GL_TRACK_UNIFORM(glUniform1i, loc, rect.layer);
+    }
+}
+
+void Output_MeshShader_Bind(OUTPUT_MESH_SHADER *const shader)
 {
     const int32_t variant_idx = M_GetVariantIndex();
     Output_Shader_Bind(M_GetVariantBase(shader, variant_idx));
+    M_UploadEnvMapRect(shader, variant_idx);
 }
 
 void Output_MeshShader_Free(OUTPUT_MESH_SHADER *const shader)

@@ -153,6 +153,7 @@ void OutputSource_Lightnings_Init(void)
     glDisableVertexAttribArray(OUTPUT_MESH_ATTR_TRAPEZOID_RATIO);
     glDisableVertexAttribArray(OUTPUT_MESH_ATTR_FLAGS);
     glEnableVertexAttribArray(OUTPUT_MESH_ATTR_COLOR);
+    glDisableVertexAttribArray(OUTPUT_MESH_ATTR_REFLECTIVITY);
     glVertexAttribPointer(
         OUTPUT_MESH_ATTR_POS, 4, GL_FLOAT, GL_FALSE, sizeof(M_VERTEX),
         (void *)(intptr_t)offsetof(M_VERTEX, pos));
@@ -163,6 +164,7 @@ void OutputSource_Lightnings_Init(void)
         OUTPUT_MESH_ATTR_COLOR, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(M_VERTEX),
         (void *)(intptr_t)offsetof(M_VERTEX, color));
     glDisableVertexAttribArray(OUTPUT_MESH_ATTR_SHADE);
+    glVertexAttrib1f(OUTPUT_MESH_ATTR_REFLECTIVITY, 1.0f);
 }
 
 void OutputSource_Lightnings_Shutdown(void)

@@ -52,6 +52,7 @@ static void M_AddSpriteMesh(
                 | extra_flags,
             .color = { 255, 255, 255, 255 },
             .uvw_idx = Output_Textures_GetSpriteUVWIndex(texture_idx, j),
+            .reflectivity = 1.0f,
             .shade = 0,
             .trapezoid_ratio = { 1.0f, 1.0f },
         };

@@ -16,6 +16,7 @@ layout(location = 4) in vec2 inTrapezoidRatios;
 layout(location = 5) in uint inFlags;
 layout(location = 6) in vec4 inColor;
 layout(location = 7) in float inShade;
+layout(location = 8) in float inReflectivity;
 
 out vec4 gEyePos;
 out vec3 gNormal;
@@ -27,6 +28,7 @@ out vec2 gTrapezoidRatios;
 out float gShade;
 out vec4 gColor;
 out vec3 gAdd;
+flat out float gReflectivity;
 
 vec3 gammaCurve(vec3 rgb, float gamma_exp)
 {
@@ -68,7 +70,15 @@ void main(void) {
         gEyePos = uMatView * worldPos;
     }
 
+#if TR_VERSION >= 4
+    // The OG maps the env map from the view-space normal (it transforms the
+    // mesh normals by the view matrix). Its mesh normals are unit vectors,
+    // whereas ours arrive as raw int16s, so normalize to land in the same
+    // [-1, 1] range the env map window is addressed with.
+    gNormal = normalize(mat3(uMatView * uMatModel) * inNormal.xyz);
+#else
     gNormal = inNormal.xyz;
+#endif
     gl_Position = uMatProj * gEyePos;
     gl_Position.z += inPosition.w;
 
@@ -85,6 +95,7 @@ void main(void) {
     if ((inFlags & VERT_UV_ROTATE) != 0u) {
         gTexUV.y += uUVRotateOffset;
     }
+    gReflectivity = inReflectivity;
     if (uTrapezoidFilterEnabled != 0) {
         gTexUV *= inTrapezoidRatios;
     }
@@ -199,6 +210,14 @@ uniform sampler2D uTexEnvMap;
 uniform vec3 uTint;
 uniform bool uDiscardAlpha;
 
+#if TR_VERSION >= 4
+// TR4 reflections sample the env map out of the atlas, from the sprite the OG
+// uses for it. uEnvMapLayer is < 0 when the level has no such sprite.
+uniform vec2 uEnvMapUV0;
+uniform vec2 uEnvMapUV1;
+uniform int uEnvMapLayer;
+#endif
+
 in vec4 gEyePos;
 in vec3 gNormal;
 flat in uint gFlags;
@@ -209,6 +228,7 @@ in float gShade;
 in vec4 gColor;
 in vec3 gAdd;
 in vec2 gTrapezoidRatios;
+flat in float gReflectivity;
 out vec4 outColor;
 
 vec4 applyFog(vec4 color, float dist)
@@ -318,9 +338,26 @@ void main(void) {
 
     // Reflections
     if ((gFlags & VERT_REFLECTIVE) != 0u && uReflectionsEnabled != 0) {
-        vec2 env_uv = (normalize(gNormal) * 0.5 + 0.5).xy;
+#if TR_VERSION >= 4
+        // The normal maps across the env map window. No y-flip here: view
+        // space is Y-down (the GL/D3D flip lives in the projection) and the
+        // atlas is stored top row first, so this already matches the OG.
+        //
+        // The OG draws the reflection as a second, purely additive pass over
+        // the face (drawtype 2 = ONE/ONE), textured with the env map and
+        // modulated by the lit vertex color scaled by the face's reflectivity.
+        if (uEnvMapLayer >= 0) {
+            vec2 env_uv = mix(uEnvMapUV0, uEnvMapUV1, gNormal.xy * 0.5 + 0.5);
+            vec3 env_color = texture(uTexAtlas, vec3(env_uv, uEnvMapLayer)).rgb;
+            texColor.rgb += env_color * gColor.rgb * gReflectivity * texColor.a;
+        }
+#else
+        // The env map is a capture of the framebuffer, whose origin is at the
+        // bottom left, hence the flip.
+        vec2 env_uv = normalize(gNormal).xy * 0.5 + 0.5;
         env_uv.y = 1.0 - env_uv.y;
         texColor *= texture(uTexEnvMap, env_uv) * 2;
+#endif
     }
 
     // Fog

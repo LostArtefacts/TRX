@@ -20,6 +20,13 @@ typedef struct {
 } OUTPUT_UVW;
 #pragma pack(pop)
 
+// An axis-aligned patch of the atlas, as UV corners plus the atlas layer.
+typedef struct {
+    float uv0[2];
+    float uv1[2];
+    int32_t layer;
+} OUTPUT_ATLAS_RECT;
+
 void Output_Textures_Init(void);
 void Output_Textures_Shutdown(void);
 void Output_Textures_ObserveLevelLoad(void);
@@ -28,6 +35,11 @@ void Output_Textures_CycleAnimations(void);
 void Output_Textures_ApplyRenderSettings(void);
 GLuint Output_Textures_GetAtlasTexture(void);
 GLuint Output_Textures_GetEnvMapTexture(void);
+
+// TR4 reflections sample the env map straight out of the atlas, from the
+// sprite the OG uses for it (spriteinfo[objects[DEFAULT_SPRITES].mesh_index +
+// 11]). Returns layer < 0 when the level has no such sprite.
+OUTPUT_ATLAS_RECT Output_Textures_GetEnvMapRect(void);
 
 int32_t Output_Textures_GetObjectUVWIndex(
     int32_t texture_idx, int32_t face_idx);

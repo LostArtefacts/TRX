@@ -150,6 +150,7 @@ static void M_AddRoomFace(
             .normal = normal,
             .flags = flags,
             .uvw_idx = Output_Textures_GetObjectUVWIndex(face->texture_idx, i),
+            .reflectivity = 1.0f,
             .shade = room_vert->light_base,
             .light_table_idx = room_vert->light_table_value,
             .color = room_vert->color,

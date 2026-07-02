@@ -13,6 +13,8 @@ typedef struct {
     OUTPUT_TEXTURE_SIZE texture_size;
     // attribute 4
     float trapezoid_ratio[2];
+    // attribute 8
+    float reflectivity;
 } OUTPUT_MESH_TEXTURE;
 
 typedef struct {
@@ -21,6 +23,7 @@ typedef struct {
     uint16_t flags;
     int32_t uvw_idx;
     float trapezoid_ratio[2];
+    float reflectivity;
     int16_t shade;
     RGBA_8888 color;
     uint8_t light_table_idx;

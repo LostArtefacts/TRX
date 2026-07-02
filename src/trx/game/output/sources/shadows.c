@@ -24,6 +24,7 @@ static OUTPUT_MESH *M_GenerateShadow(
         .flags = VERT_FLAT_SHADED | VERT_NO_LIGHTING | VERT_NO_WIBBLE,
         .uvw_idx = -1,
         .trapezoid_ratio = { 1.0f, 1.0f },
+        .reflectivity = 1.0f,
         .shade = SHADE_NEUTRAL,
         .color = color,
     };

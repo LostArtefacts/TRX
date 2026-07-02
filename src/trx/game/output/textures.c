@@ -12,6 +12,7 @@
 #include <trx/game/objects/common.h>
 #include <trx/game/output.h>
 #include <trx/game/output/vertex_range.h>
+#include <trx/game/sparks/enum.h>
 #include <trx/gl/utils.h>
 #include <trx/version.h>
 
@@ -710,6 +711,36 @@ GLuint Output_Textures_GetAtlasTexture(void)
 GLuint Output_Textures_GetEnvMapTexture(void)
 {
     return m_Priv.tex_env_map;
+}
+
+OUTPUT_ATLAS_RECT Output_Textures_GetEnvMapRect(void)
+{
+    // The OG reflects off spriteinfo[objects[DEFAULT_SPRITES].mesh_index + 11],
+    // spreading the normal over a fixed 64x64 window anchored at that sprite -
+    // which is just its own image, since the OG sprite is 64x64. TRX packs the
+    // TR3 and TR4 sparks into one sequence, so OG TR4's sprite 11 lives at
+    // SPARK_TYPE_LENS_FLARE_1; the OG's index and its hardcoded window size
+    // both stop applying, and the sprite's own rect is what we map across.
+    const OBJECT *const obj = Object_Get(O_SPARKS_GFX);
+    if (!obj->loaded || SPARK_TYPE_LENS_FLARE_1 >= ABS(obj->mesh_count)) {
+        return (OUTPUT_ATLAS_RECT) { .layer = -1 };
+    }
+
+    const int32_t sprite_idx = obj->mesh_idx + SPARK_TYPE_LENS_FLARE_1;
+    if (sprite_idx < 0 || sprite_idx >= Output_GetSpriteTextureCount()) {
+        return (OUTPUT_ATLAS_RECT) { .layer = -1 };
+    }
+
+    const SPRITE_TEXTURE *const sprite = Output_GetSpriteTexture(sprite_idx);
+    const float adj = 0.1f / 256.0f;
+    const float u0 = (sprite->offset & 0xFF) / 256.0f + adj;
+    const float v0 = (sprite->offset >> 8) / 256.0f + adj;
+    return (OUTPUT_ATLAS_RECT) {
+        .uv0 = { u0, v0 },
+        .uv1 = { u0 + sprite->width / 65536.0f - 2 * adj,
+                 v0 + sprite->height / 65536.0f - 2 * adj },
+        .layer = sprite->tex_page,
+    };
 }
 
 int32_t Output_Textures_GetObjectUVWIndex(int32_t texture_idx, int32_t corner)
