@@ -1,8 +1,8 @@
 #include <trx/core/benchmark.h>
-#include <trx/core/log.h>
 #include <trx/core/memory.h>
 #include <trx/core/utils.h>
 #include <trx/core/virtual_file.h>
+#include <trx/debug.h>
 #include <trx/game/const.h>
 #include <trx/game/game_buf.h>
 #include <trx/game/inject.h>
@@ -19,17 +19,7 @@
 #include <zlib.h>
 
 #define M_VERSION_TR45 0x00345254u
-#define M_TR4_SOUND_MAP_SIZE 370
 #define M_TR4_SPOTCAM_SIZE 40
-
-typedef struct {
-    int16_t number;
-    uint8_t volume;
-    uint8_t radius;
-    uint8_t randomness;
-    int8_t pitch;
-    uint16_t flags;
-} M_TR4_SAMPLE_INFO;
 
 typedef struct {
     uint16_t room_pages;
@@ -270,13 +260,35 @@ static void M_ReadAIItemsTR4(LEVEL_CONTEXT *const ctx, VFILE *const file)
     }
 }
 
-static void M_SkipTR4CinematicAndAudio(VFILE *const file)
+static void M_ReadSampleData(LEVEL_CONTEXT *const ctx, VFILE *const file)
 {
-    VFile_Skip(file, sizeof(int16_t)); // cinematic info
-    VFile_Skip(file, sizeof(int16_t) * M_TR4_SOUND_MAP_SIZE);
-    const int32_t num_sample_infos = VFile_ReadS32(file);
-    VFile_Skip(file, num_sample_infos * sizeof(M_TR4_SAMPLE_INFO));
-    VFile_ReadS32(file); // sample count in the external audio stream
+    LEVEL_CONTEXT_INFO *const info = &ctx->info;
+    const int32_t num_samples = VFile_ReadS32(file);
+    ASSERT(info->samples.offset_count == num_samples);
+
+    const size_t start_pos = VFile_GetPos(file);
+    int32_t data_size = 0;
+    for (int32_t i = 0; i < num_samples; i++) {
+        VFile_Skip(file, sizeof(int32_t)); // unused inflated size
+        const int32_t sample_size = VFile_ReadS32(file);
+        info->samples.offsets[i] = data_size;
+        data_size += sample_size;
+        VFile_Skip(file, sample_size);
+    }
+
+    LOG_INFO("%d sample data size", data_size);
+    info->samples.data_size = data_size;
+    info->samples.data = GameBuf_Alloc(
+        data_size + Inject_GetDataCount(IDT_SAMPLE_DATA), GBUF_SAMPLES);
+
+    VFile_SetPos(file, start_pos);
+    char *data = info->samples.data;
+    for (int32_t i = 0; i < num_samples; i++) {
+        VFile_Skip(file, sizeof(int32_t));
+        const int32_t sample_size = VFile_ReadS32(file);
+        VFile_Read(file, data, sizeof(char) * sample_size);
+        data += sample_size;
+    }
 }
 
 static bool M_Load(const LEVEL_FORMAT_LOADER *const loader, VFILE *const file)
@@ -313,10 +325,13 @@ static bool M_Load(const LEVEL_FORMAT_LOADER *const loader, VFILE *const file)
     M_ReadObjectTexturesTR4(ctx, level_data);
     M_ReadItemsTR4(ctx, level_data);
     M_ReadAIItemsTR4(ctx, level_data);
-    M_SkipTR4CinematicAndAudio(level_data);
+    Level_Section_ReadDemoData(ctx, level_data);
+    Level_Section_ReadSamples(ctx, level_data);
     VFile_Skip(level_data, 6); // trailing zero padding
 
     VFile_Close(level_data);
+
+    M_ReadSampleData(ctx, file);
     return true;
 }
 

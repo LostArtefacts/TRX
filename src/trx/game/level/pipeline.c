@@ -170,7 +170,7 @@ static void M_CompleteSetup(
     Level_Finalize_LoadTexturePages(ctx);
     Level_Finalize_LoadPalettes(ctx);
 
-    if (loader->game_version == 1) {
+    if (loader->game_version == 1 || loader->game_version >= 4) {
         M_InitialiseSamplesFromLevelInfo(ctx);
     } else {
         M_InitialiseSamplesFromFile(ctx, level->settings.sfx_path);
