@@ -122,6 +122,22 @@
       "type": "number",
       "description": "The distance (in tiles) at which objects and the world are clipped away."
     },
+    "fog_color": {
+      "description": "Fog color (R, G, B) or `#RRGGBB`. 1.0 or `FF` means pass-through, 0.0 or `00` means completely black color.",
+      "oneOf": [
+        {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "minItems": 3,
+          "maxItems": 3
+        },
+        {
+          "type": "string"
+        }
+      ]
+    },
     "water_color": {
       "description": "Water color (R, G, B) or `#RRGGBB`. 1.0 or `FF` means pass-through, 0.0 or `00` means completely black color.",
       "oneOf": [
@@ -271,6 +287,21 @@
           },
           "minItems": 3,
           "maxItems": 3
+        },
+        "fog_color": {
+          "oneOf": [
+            {
+              "type": "array",
+              "items": {
+                "type": "number"
+              },
+              "minItems": 3,
+              "maxItems": 3
+            },
+            {
+              "type": "string"
+            }
+          ]
         },
         "fog_start": {
           "type": "number"
