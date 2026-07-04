@@ -81,7 +81,11 @@ internal class InstallerService
                     && !name.EndsWith("-level", StringComparison.OrdinalIgnoreCase))
                 {
                     progress.AppendLog($"Removing {name}");
-                    await Task.Run(() => Directory.Delete(dir, recursive: true));
+                    await InstallFileHelper.DeleteDirectory(dir, recursive: true);
+                    if (Directory.Exists(dir))
+                    {
+                        progress.AppendLog($"Failed to completely remove {name}");
+                    }
                 }
             }
         }

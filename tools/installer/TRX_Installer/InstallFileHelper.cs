@@ -53,4 +53,35 @@ internal static class InstallFileHelper
             progress.SetInnerProgress(copied, Math.Max(1, files.Length));
         }
     }
+
+    public static async Task DeleteDirectory(string path, bool recursive)
+    {
+        foreach (var file in Directory.EnumerateFiles(path))
+        {
+            try
+            {
+                File.SetAttributes(file, FileAttributes.Normal);
+            }
+            catch { }
+            try
+            {
+                File.Delete(file);
+            }
+            catch { }
+        }
+
+        if (recursive)
+        {
+            foreach (var subDir in Directory.EnumerateDirectories(path))
+            {
+                await DeleteDirectory(subDir, true);
+            }
+        }
+
+        try
+        {
+            Directory.Delete(path, false);
+        }
+        catch { }
+    }
 }
