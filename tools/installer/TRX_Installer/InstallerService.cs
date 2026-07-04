@@ -175,7 +175,7 @@ internal class InstallerService
             unitIndex++;
         }
 
-        return $"{size:0.#} {units[unitIndex]}";
+        return $"{size:0.0} {units[unitIndex]}";
     }
 
     private static async Task ExtractEmbeddedReleaseAsync(string targetDirectory, IInstallerProgress progress)
