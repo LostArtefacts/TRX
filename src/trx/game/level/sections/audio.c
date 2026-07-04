@@ -16,6 +16,7 @@ static size_t M_GetSampleCount(const LEVEL_FORMAT_LOADER *const loader)
         return 256;
     case 2:
     case 3:
+    case 4:
         return 370;
     default:
         ASSERT_FAIL();

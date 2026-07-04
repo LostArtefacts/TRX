@@ -53,7 +53,7 @@ typedef struct {
         int32_t offset_count;
         int32_t *offsets;
 
-        // TR1-specific
+        // TR1/4-specific
         int32_t data_size;
         char *data;
     } samples;
