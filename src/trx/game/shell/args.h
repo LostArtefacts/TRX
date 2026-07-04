@@ -6,8 +6,11 @@
 typedef struct {
     int32_t engine_version;
     const SHELL_MOD *mod;
-    int32_t level_to_select;
-    const char *level_to_play;
+    struct {
+        int32_t num;
+        const char *query;
+        const char *path;
+    } level_request;
     int32_t save_to_load;
 } STARTUP_SETTINGS;
 

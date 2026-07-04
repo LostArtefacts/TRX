@@ -119,12 +119,13 @@ GF_COMMAND GF_DoFrontendSequence(void)
             };
         }
 
-        if (args->startup.level_to_select >= 0) {
+        if (args->startup.level_request.num >= 0) {
             const GF_LEVEL *const level = GF_GetLevelByOrdinalNumber(
-                GFLT_MAIN, args->startup.level_to_select);
+                GFLT_MAIN, args->startup.level_request.num);
             if (level == nullptr) {
                 Shell_ExitSystemFmt(
-                    "Invalid level number: %d", args->startup.level_to_select);
+                    "Invalid level number: %d",
+                    args->startup.level_request.num);
             }
             return (GF_COMMAND) {
                 .action = GF_SELECT_GAME,
@@ -132,7 +133,22 @@ GF_COMMAND GF_DoFrontendSequence(void)
             };
         }
 
-        if (args->startup.level_to_play != nullptr) {
+        if (args->startup.level_request.query != nullptr) {
+            const GF_LEVEL *const level =
+                GF_FindPlayableLevelByQuery(args->startup.level_request.query);
+            if (level == nullptr) {
+                Shell_ExitSystemFmt(
+                    "Cannot find level file '%s', and no game-flow level "
+                    "title matched it.",
+                    args->startup.level_request.query);
+            }
+            return (GF_COMMAND) {
+                .action = GF_SELECT_GAME,
+                .param = level->num,
+            };
+        }
+
+        if (args->startup.level_request.path != nullptr) {
             return (GF_COMMAND) {
                 .action = GF_START_GAME,
                 .param = 0,

@@ -38,7 +38,10 @@ typedef struct {
 static inline M_PARSE_CTX M_ParseCtxInit(void)
 {
     return (M_PARSE_CTX) {
-        .startup.settings = { .level_to_select = -1, .save_to_load = -1 },
+        .startup.settings = {
+            .level_request = { .num = -1 },
+            .save_to_load = -1,
+        },
     };
 }
 
@@ -241,7 +244,8 @@ static bool M_ParseQuotedPayload(
 
 static void M_FreeStartupSnapshot(M_STARTUP_SNAPSHOT *const startup)
 {
-    Memory_FreePointer(&startup->settings.level_to_play);
+    Memory_FreePointer(&startup->settings.level_request.path);
+    Memory_FreePointer(&startup->settings.level_request.query);
 }
 
 static void M_ResetParseArgs(M_PARSE_CTX *const ctx)
@@ -261,12 +265,16 @@ static SHELL_ARGS *M_BuildArgsFromStartupSnapshot(M_PARSE_CTX *const ctx)
 
     SHELL_ARGS *const args = Memory_Alloc(sizeof(SHELL_ARGS));
     args->startup = ctx->startup.settings;
-    ctx->startup.settings.level_to_play = nullptr;
+    ctx->startup.settings.level_request.path = nullptr;
+    ctx->startup.settings.level_request.query = nullptr;
 
     if (args->startup.mod == nullptr) {
-        if (args->startup.level_to_play != nullptr) {
+        if (args->startup.level_request.path != nullptr) {
             args->startup.mod = Shell_GetModByType(
                 MOD_DIRECT_LEVEL, args->startup.engine_version);
+        } else if (args->startup.level_request.query != nullptr) {
+            args->startup.mod =
+                Shell_GetModByType(MOD_BASE_GAME, args->startup.engine_version);
         } else if (args->startup.engine_version > 0) {
             args->startup.mod =
                 Shell_GetModByType(MOD_BASE_GAME, args->startup.engine_version);
@@ -794,11 +802,16 @@ static bool M_ParseStartup(const char *const line, M_PARSE_CTX *const ctx)
                 ctx->startup.settings.mod->engine_version;
         }
     } else if (sscanf(line, "startup level-num %d", &int_val) == 1) {
-        ctx->startup.settings.level_to_select = int_val;
+        ctx->startup.settings.level_request.num = int_val;
+    } else if (
+        M_ParseQuotedPayload(line, "startup level-query", &str, &str_len)) {
+        Memory_FreePointer(&ctx->startup.settings.level_request.query);
+        ctx->startup.settings.level_request.query =
+            Memory_DupStr(String_FormatStatic("%.*s", (int)str_len, str));
     } else if (
         M_ParseQuotedPayload(line, "startup level-path", &str, &str_len)) {
-        Memory_FreePointer(&ctx->startup.settings.level_to_play);
-        ctx->startup.settings.level_to_play =
+        Memory_FreePointer(&ctx->startup.settings.level_request.path);
+        ctx->startup.settings.level_request.path =
             Memory_DupStr(String_FormatStatic("%.*s", (int)str_len, str));
     } else if (sscanf(line, "startup save %d", &int_val) == 1) {
         ctx->startup.settings.save_to_load = int_val - 1;

@@ -168,13 +168,19 @@ static void M_DumpStartup(MYFILE *const fp)
         File_WriteString(
             fp, "startup engine %d\n", args->startup.engine_version);
     }
-    if (args->startup.level_to_select >= 0) {
+    if (args->startup.level_request.num >= 0) {
         File_WriteString(
-            fp, "startup level-num %d\n", args->startup.level_to_select);
+            fp, "startup level-num %d\n", args->startup.level_request.num);
     }
-    if (args->startup.level_to_play != nullptr) {
+    if (args->startup.level_request.query != nullptr) {
         File_WriteString(
-            fp, "startup level-path \"%s\"\n", args->startup.level_to_play);
+            fp, "startup level-query \"%s\"\n",
+            args->startup.level_request.query);
+    }
+    if (args->startup.level_request.path != nullptr) {
+        File_WriteString(
+            fp, "startup level-path \"%s\"\n",
+            args->startup.level_request.path);
     }
     if (args->startup.save_to_load >= 0) {
         File_WriteString(

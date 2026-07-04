@@ -461,7 +461,7 @@ int32_t Shell_Main(const SHELL_ARGS *const args)
             break;
 
         case GF_EXIT_TO_TITLE:
-            if (s->args->startup.level_to_play != nullptr) {
+            if (s->args->startup.level_request.path != nullptr) {
                 gf_cmd = (GF_COMMAND) { .action = GF_EXIT_GAME };
             } else if (g_GameFlow.title_level == nullptr) {
                 Shell_ExitSystem("Missing title level");

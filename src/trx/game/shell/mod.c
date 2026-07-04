@@ -280,12 +280,12 @@ void Shell_ValidateMods(void)
         }
 
         const SHELL_ARGS args = {
-            .startup = {
-                .engine_version = mod->engine_version,
-                .mod = mod,
-                .level_to_select = -1,
-                .save_to_load = -1,
-            },
+                .startup = {
+                    .engine_version = mod->engine_version,
+                    .mod = mod,
+                    .level_request = { .num = -1 },
+                    .save_to_load = -1,
+                },
         };
         g_TRVersion = mod->engine_version;
         TRXPath_Init(&args);

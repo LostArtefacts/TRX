@@ -31,6 +31,7 @@ int32_t GF_GetLevelOrdinalNumber(
 // GF_GetLevelOrdinalNumber().
 GF_LEVEL *GF_GetLevelByOrdinalNumber(
     GF_LEVEL_TABLE_TYPE level_table_type, int32_t level_num);
+const GF_LEVEL *GF_FindPlayableLevelByQuery(const char *query);
 
 void GF_SetCurrentLevel(const GF_LEVEL *level);
 void GF_SetLevelTitle(GF_LEVEL *level, const char *title);
