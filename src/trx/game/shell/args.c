@@ -99,7 +99,7 @@ SHELL_ARGS *Shell_ParseArgs(VECTOR *const args)
     bool wants_gold = false;
     bool explicit_engine_version = false;
     result->startup.save_to_load = -1;
-    result->startup.level_to_select = -1;
+    result->startup.level_request.num = -1;
     result->original_args = args;
     result->startup.engine_version = 0;
 
@@ -156,7 +156,7 @@ SHELL_ARGS *Shell_ParseArgs(VECTOR *const args)
             && next_arg != nullptr) {
             int32_t lvnum = -1;
             if (String_ParseInteger(next_arg, &lvnum)) {
-                result->startup.level_to_select = lvnum;
+                result->startup.level_request.num = lvnum;
                 if (result->startup.mod == nullptr
                     && result->startup.engine_version > 0) {
                     result->startup.mod = Shell_GetModByType(
@@ -169,37 +169,35 @@ SHELL_ARGS *Shell_ParseArgs(VECTOR *const args)
                 const char *const resolved_level_path =
                     TRXPath_PeekResolveUserPath(
                         TRX_DYNAMIC_PATH_LEVEL_FILE, next_arg);
-                result->startup.level_to_play = resolved_level_path != nullptr
+                result->startup.level_request.path =
+                    resolved_level_path != nullptr
                     ? Memory_DupStr(resolved_level_path)
                     : nullptr;
-                if (result->startup.level_to_play == nullptr) {
-                    Shell_ExitSystemFmt(
-                        "Cannot find level file '%s'. Relative paths are "
-                        "resolved from the current working directory, then "
-                        "from the game directory.",
-                        next_arg);
-                }
-                Memory_Free(*level_arg);
-                *level_arg = (char *)result->startup.level_to_play;
+                if (result->startup.level_request.path != nullptr) {
+                    Memory_Free(*level_arg);
+                    *level_arg = (char *)result->startup.level_request.path;
 
-                if (result->startup.engine_version == 0) {
-                    result->startup.engine_version =
-                        M_GuessEngineVersionFromLevelPath(
-                            result->startup.level_to_play);
-                }
-                if (result->startup.engine_version == 0) {
-                    Shell_ExitSystem(
-                        "Cannot determine engine version for --level. "
-                        "Please provide --engine.");
-                }
-                result->startup.mod = Shell_GetModByType(
-                    MOD_DIRECT_LEVEL, result->startup.engine_version);
-                if (result->startup.mod == nullptr) {
-                    Shell_ExitSystemFmt(
-                        "Engine %d does not support --level with a file path "
-                        "because no direct-level mod is available for that "
-                        "engine.",
-                        result->startup.engine_version);
+                    if (result->startup.engine_version == 0) {
+                        result->startup.engine_version =
+                            M_GuessEngineVersionFromLevelPath(
+                                result->startup.level_request.path);
+                    }
+                    if (result->startup.engine_version == 0) {
+                        Shell_ExitSystem(
+                            "Cannot determine engine version for --level. "
+                            "Please provide --engine.");
+                    }
+                    result->startup.mod = Shell_GetModByType(
+                        MOD_DIRECT_LEVEL, result->startup.engine_version);
+                    if (result->startup.mod == nullptr) {
+                        Shell_ExitSystemFmt(
+                            "Engine %d does not support --level with a file "
+                            "path because no direct-level mod is available "
+                            "for that engine.",
+                            result->startup.engine_version);
+                    }
+                } else {
+                    result->startup.level_request.query = next_arg;
                 }
             }
             i++;
@@ -268,6 +266,10 @@ void Shell_FreeArgs(SHELL_ARGS *const args)
         return;
     }
 
+    if (args->original_args == nullptr) {
+        Memory_FreePointer(&args->startup.level_request.path);
+        Memory_FreePointer(&args->startup.level_request.query);
+    }
     M_FreeArgVector(args->original_args);
     args->original_args = nullptr;
     Memory_Free(args);

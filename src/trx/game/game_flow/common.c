@@ -1,6 +1,8 @@
 #include <trx/game/game_flow/common.h>
 
 #include <trx/core/memory.h>
+#include <trx/core/strings.h>
+#include <trx/core/vector.h>
 #include <trx/debug.h>
 #include <trx/game/game_flow/vars.h>
 
@@ -187,6 +189,48 @@ GF_LEVEL *GF_GetLevelByOrdinalNumber(
         }
     }
     return nullptr;
+}
+
+const GF_LEVEL *GF_FindPlayableLevelByQuery(const char *const query)
+{
+    VECTOR *source = Vector_Create(sizeof(STRING_FUZZY_SOURCE));
+    const GF_LEVEL_TABLE *const level_table = GF_GetLevelTable(GFLT_MAIN);
+    for (int32_t i = 0; i < level_table->count; i++) {
+        const GF_LEVEL *const level = &level_table->levels[i];
+        if (M_SkipLevel(level) || level->type == GFL_GYM) {
+            continue;
+        }
+
+        const STRING_FUZZY_SOURCE source_item = {
+            .key = level->title,
+            .value = (void *)level,
+            .weight = 1,
+        };
+        if (source_item.key != nullptr) {
+            Vector_Add(source, &source_item);
+        }
+    }
+
+    const GF_LEVEL *const gym_level = GF_GetGymLevel();
+    if (gym_level != nullptr) {
+        const STRING_FUZZY_SOURCE source_item = {
+            .key = "gym",
+            .value = (void *)gym_level,
+            .weight = 1,
+        };
+        Vector_Add(source, &source_item);
+    }
+
+    const GF_LEVEL *result = nullptr;
+    VECTOR *matches = String_FuzzyMatch(query, source);
+    if (matches->count >= 1) {
+        const STRING_FUZZY_MATCH *const match = Vector_Get(matches, 0);
+        result = (const GF_LEVEL *)match->value;
+    }
+
+    Vector_Free(matches);
+    Vector_Free(source);
+    return result;
 }
 
 const GF_LEVEL *GF_GetCurrentLevel(void)

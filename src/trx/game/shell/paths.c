@@ -545,8 +545,8 @@ static const char *M_GetBaseModID(void)
 static const char *M_GetDirectLevelArg(void)
 {
     return m_Context.args != nullptr
-            && m_Context.args->startup.level_to_play != nullptr
-        ? m_Context.args->startup.level_to_play
+            && m_Context.args->startup.level_request.path != nullptr
+        ? m_Context.args->startup.level_request.path
         : "";
 }
 

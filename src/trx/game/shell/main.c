@@ -62,7 +62,7 @@ int main(int argc, char *argv[])
                     .startup = {
                         .engine_version = mod->engine_version,
                         .mod = mod,
-                        .level_to_select = -1,
+                        .level_request = { .num = -1 },
                         .save_to_load = -1,
                     },
                     .headless = Shell_GetPrevHeadless(),
