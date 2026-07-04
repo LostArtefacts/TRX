@@ -74,7 +74,8 @@ typedef bool (*M_RESOLVE_ATTEMPT_CALLBACK)(
     const char *attempt_path, void *user_data);
 
 static const char *m_FMVExtensions[] = {
-    ".mp4", ".mkv", ".mpeg", ".avi", ".webm", ".ogv", ".rpl", ".fmv", nullptr,
+    ".mp4", ".mkv", ".mpeg", ".avi", ".webm",
+    ".ogv", ".rpl", ".fmv",  ".bik", nullptr,
 };
 
 static const char *m_ImageExtensions[] = {
