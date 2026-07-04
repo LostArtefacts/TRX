@@ -28,6 +28,7 @@
 - fixed Lara's shadow appearing at the top of a pushblock after having pulled it until she returns to a standstill (#1576)
 - fixed Lara being killed by pushblocks if she pulls one onto a trapdoor that is set to be triggered by that pushblock
 - fixed Lara being killed by Thor's Hammer in custom levels even when the hammer does not touch her head
+- fixed Lara incorrectly landing when falling into a void set up with `disable_floor`
 - fixed an invisible block appearing below Thor's Hammer in custom levels when it is not used at floor level
 - fixed Lara becoming clamped and softlocked if a lift descends on top of her
 - fixed Lara moving through the floor of a lift if she picks up a flare while it's moving

@@ -16,6 +16,12 @@
 #define M_LADDER_CLEARANCE (-STEPUP_HEIGHT) // = -384
 // clang-format on
 
+static bool M_IsAbyssLanding(
+    const ITEM *const item, const COLL_INFO *const coll)
+{
+    return Room_IsAbyssHeight(item->pos.y + coll->side_mid.floor);
+}
+
 EDGE_CATCH Lara_Col_TestEdgeCatch(
     const ITEM *const item, const COLL_INFO *const coll, int32_t *const edge)
 {
@@ -367,7 +373,8 @@ static void M_UpJump(ITEM *const item, COLL_INFO *const coll)
         }
     }
 
-    if (item->fall_speed <= 0 || coll->side_mid.floor > 0) {
+    if (item->fall_speed <= 0 || coll->side_mid.floor > 0
+        || M_IsAbyssLanding(item, coll)) {
         return;
     }
 
@@ -406,7 +413,8 @@ static void M_ForwardJump(ITEM *const item, COLL_INFO *const coll)
         lara->move_angle = item->rot.y;
     }
 
-    if (coll->side_mid.floor > 0 || item->fall_speed <= 0) {
+    if (coll->side_mid.floor > 0 || item->fall_speed <= 0
+        || M_IsAbyssLanding(item, coll)) {
         return;
     }
 
@@ -461,7 +469,8 @@ static void M_SideBackJump(ITEM *const item, COLL_INFO *const coll)
 
     Lara_Col_GetInfo(item, coll);
     Lara_Col_DeflectEdgeJump(item, coll);
-    if (item->fall_speed <= 0 || coll->side_mid.floor > 0) {
+    if (item->fall_speed <= 0 || coll->side_mid.floor > 0
+        || M_IsAbyssLanding(item, coll)) {
         return;
     }
 
@@ -491,7 +500,8 @@ static void M_FallBack(ITEM *const item, COLL_INFO *const coll)
     Lara_Col_GetInfo(item, coll);
     Lara_Col_DeflectEdgeJump(item, coll);
 
-    if (coll->side_mid.floor > 0 || item->fall_speed <= 0) {
+    if (coll->side_mid.floor > 0 || item->fall_speed <= 0
+        || M_IsAbyssLanding(item, coll)) {
         return;
     }
 
@@ -526,7 +536,8 @@ static void M_Reach(ITEM *const item, COLL_INFO *const coll)
     }
 
     M_SlideEdgeJump(item, coll);
-    if (item->fall_speed <= 0 || coll->side_mid.floor > 0) {
+    if (item->fall_speed <= 0 || coll->side_mid.floor > 0
+        || M_IsAbyssLanding(item, coll)) {
         return;
     }
 
@@ -556,7 +567,8 @@ static void M_SwanDive(ITEM *const item, COLL_INFO *const coll)
 
     Lara_Col_GetInfo(item, coll);
     Lara_Col_DeflectEdgeJump(item, coll);
-    if (coll->side_mid.floor > 0 || item->fall_speed <= 0) {
+    if (coll->side_mid.floor > 0 || item->fall_speed <= 0
+        || M_IsAbyssLanding(item, coll)) {
         return;
     }
 
@@ -577,7 +589,8 @@ static void M_FastDive(ITEM *const item, COLL_INFO *const coll)
     Lara_Col_GetInfo(item, coll);
     Lara_Col_DeflectEdgeJump(item, coll);
 
-    if (coll->side_mid.floor > 0 || item->fall_speed <= 0) {
+    if (coll->side_mid.floor > 0 || item->fall_speed <= 0
+        || M_IsAbyssLanding(item, coll)) {
         return;
     }
 
@@ -600,7 +613,7 @@ static void M_FastFall(ITEM *const item, COLL_INFO *const coll)
 
     Lara_Col_GetInfo(item, coll);
     M_SlideEdgeJump(item, coll);
-    if (coll->side_mid.floor > 0) {
+    if (coll->side_mid.floor > 0 || M_IsAbyssLanding(item, coll)) {
         return;
     }
 
@@ -639,7 +652,9 @@ void Lara_Col_DeflectEdgeJump(ITEM *const item, COLL_INFO *const coll)
             item->goal_anim_state = LS(LS_FAST_FALL);
             item->current_anim_state = LS(LS_FAST_FALL);
             Item_SwitchToAnim(item, LA(LA_SMASH_JUMP), M_LF_FAST_FALL);
-        } else if (coll->side_mid.floor <= (STEP_L / 2)) {
+        } else if (
+            coll->side_mid.floor <= (STEP_L / 2)
+            && !M_IsAbyssLanding(item, coll)) {
             item->goal_anim_state = LS(LS_LAND);
             item->current_anim_state = LS(LS_LAND);
             Item_SwitchToAnim(item, LA(LA_JUMP_UP_LAND), 0);

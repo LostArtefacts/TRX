@@ -397,7 +397,7 @@ M_GF_HANDLER(M_HandleDisableFloor)
     GF_COMMAND gf_cmd = { .action = GF_NOOP };
     if (seq_ctx != GFSC_STORY) {
         const GF_SEQUENCE_EVENT *const event = &sequence->events[event_idx];
-        Room_SetAbyssHeight((int16_t)(intptr_t)event->data);
+        Room_SetAbyssHeight((int32_t)(intptr_t)event->data);
     }
     return gf_cmd;
 }
