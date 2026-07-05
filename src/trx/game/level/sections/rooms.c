@@ -481,7 +481,8 @@ void Level_Section_ReadRooms(LEVEL_CONTEXT *const ctx, VFILE *const file)
         room->flags.dynamic_lit = (flags & 0x10) != 0;
         room->flags.wind        = (flags & 0x20) != 0;
         room->flags.inside      = (flags & 0x40) != 0;
-        room->flags.swamp       = (flags & 0x80) != 0;
+        room->flags.swamp       = (flags & 0x80) != 0 && g_TRVersion < 4;
+        // TODO: 0x80 marks no_lens_flare in TR4+
         // clang-format on
 
         OUTPUT_ROOM_BIND *const bind = Output_Bind_GetRoom(room);
