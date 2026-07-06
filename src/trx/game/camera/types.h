@@ -78,3 +78,33 @@ typedef struct {
         int16_t target_angle;
     } position;
 } CINE_DATA;
+
+typedef struct {
+    uint8_t sequence;
+    uint8_t index;
+    XYZ_32 pos;
+    XYZ_32 target;
+    int32_t room_num;
+    int16_t fov;
+    int16_t roll;
+    int16_t timer;
+    int16_t speed;
+    struct {
+        bool snap_from_game;
+        bool target_item;
+        bool loop;
+        bool track_path;
+        bool focus_lara;
+        bool target_lara;
+        bool snap_to_game;
+        bool jump_to_camera;
+        bool hold;
+        bool no_break;
+        bool lara_control_off;
+        bool lara_control_on;
+        bool fade_in_screen;
+        bool fade_out_screen;
+        bool test_triggers;
+        bool one_shot;
+    } flags;
+} FLYBY_CAMERA;

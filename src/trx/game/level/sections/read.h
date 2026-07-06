@@ -25,6 +25,7 @@ void Level_Section_ReadAnimatedTextureRanges(LEVEL_CONTEXT *ctx, VFILE *file);
 void Level_Section_ReadLightMap(LEVEL_CONTEXT *ctx, VFILE *file);
 void Level_Section_ReadCinematicFrames(LEVEL_CONTEXT *ctx, VFILE *file);
 void Level_Section_ReadCamerasAndSinks(LEVEL_CONTEXT *ctx, VFILE *file);
+void Level_Section_ReadFlybyCameras(LEVEL_CONTEXT *ctx, VFILE *file);
 void Level_Section_ReadItems(LEVEL_CONTEXT *ctx, VFILE *file);
 void Level_Section_ReadDemoData(LEVEL_CONTEXT *ctx, VFILE *file);
 void Level_Section_ReadSoundSources(LEVEL_CONTEXT *ctx, VFILE *file);

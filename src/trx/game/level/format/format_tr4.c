@@ -19,7 +19,6 @@
 #include <zlib.h>
 
 #define M_VERSION_TR45 0x00345254u
-#define M_TR4_SPOTCAM_SIZE 40
 
 typedef struct {
     uint16_t room_pages;
@@ -202,16 +201,6 @@ static void M_ReadSpriteTexturesTR4(LEVEL_CONTEXT *const ctx, VFILE *const file)
     Level_Section_AppendSpriteTextures(0, 0, num_textures, file);
 }
 
-static void M_ReadCamerasTR4(LEVEL_CONTEXT *const ctx, VFILE *const file)
-{
-    Level_Section_ReadCamerasAndSinks(ctx, file);
-    const int16_t num_spotcams = VFile_ReadS16(file);
-    VFile_Skip(file, sizeof(int16_t)); // reserved padding
-    if (num_spotcams > 0) {
-        VFile_Skip(file, num_spotcams * M_TR4_SPOTCAM_SIZE);
-    }
-}
-
 static void M_ReadItemsTR4(LEVEL_CONTEXT *const ctx, VFILE *const file)
 {
     BENCHMARK benchmark = Benchmark_Start();
@@ -336,7 +325,8 @@ static bool M_Load(const LEVEL_FORMAT_LOADER *const loader, VFILE *const file)
     Level_Section_ReadStaticObjects(ctx, level_data);
     M_ReadSpriteTexturesTR4(ctx, level_data);
     Level_Section_ReadSpriteSequences(ctx, level_data);
-    M_ReadCamerasTR4(ctx, level_data);
+    Level_Section_ReadCamerasAndSinks(ctx, level_data);
+    Level_Section_ReadFlybyCameras(ctx, level_data);
     Level_Section_ReadSoundSources(ctx, level_data);
     Level_Section_ReadPathingData(ctx, level_data);
     M_ReadAnimatedTextureRangesTR4(ctx, level_data);
