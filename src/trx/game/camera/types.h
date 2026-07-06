@@ -108,3 +108,9 @@ typedef struct {
         bool one_shot;
     } flags;
 } FLYBY_CAMERA;
+
+typedef struct {
+    int32_t camera_idx;
+    int32_t num_cameras;
+    bool one_shot;
+} FLYBY_SEQUENCE;

@@ -3,12 +3,26 @@
 #include <trx/game/camera.h>
 #include <trx/game/game_buf.h>
 
+#include <stdlib.h>
+
 #define M_LOCKED_CAMERA 1
 
 static int32_t m_FixedObjectCount = 0;
 static OBJECT_VECTOR *m_FixedObjects = nullptr;
 static int32_t m_FlybyCount = 0;
 static FLYBY_CAMERA *m_Flybys = nullptr;
+static int32_t m_SequenceCount = 0;
+static FLYBY_SEQUENCE *m_Sequences = nullptr;
+
+static int32_t M_CompareFlybys(const void *const a, const void *const b)
+{
+    const FLYBY_CAMERA *const camera_a = (FLYBY_CAMERA *)a;
+    const FLYBY_CAMERA *const camera_b = (FLYBY_CAMERA *)b;
+    if (camera_a->sequence == camera_b->sequence) {
+        return camera_a->index - camera_b->index;
+    }
+    return camera_a->sequence - camera_b->sequence;
+}
 
 void Camera_InitialiseFixedObjects(const int32_t num_objects)
 {
@@ -76,4 +90,47 @@ FLYBY_CAMERA *Camera_GetFlybyCamera(const int32_t camera_idx)
         return nullptr;
     }
     return &m_Flybys[camera_idx];
+}
+
+void Camera_SetupSequences(void)
+{
+    m_Sequences = nullptr;
+    m_SequenceCount = 0;
+    if (m_FlybyCount == 0) {
+        return;
+    }
+
+    qsort(m_Flybys, m_FlybyCount, sizeof(FLYBY_CAMERA), M_CompareFlybys);
+
+    const FLYBY_CAMERA *const last_camera = &m_Flybys[m_FlybyCount - 1];
+    m_SequenceCount = last_camera->sequence + 1;
+    m_Sequences =
+        GameBuf_Alloc(m_SequenceCount * sizeof(FLYBY_SEQUENCE), GBUF_CAMERAS);
+
+    for (int32_t i = 0; i < m_SequenceCount; i++) {
+        m_Sequences[i].camera_idx = NO_CAMERA;
+    }
+
+    for (int32_t i = 0; i < m_FlybyCount; i++) {
+        const FLYBY_CAMERA *const camera = &m_Flybys[i];
+        FLYBY_SEQUENCE *const sequence = &m_Sequences[camera->sequence];
+        sequence->num_cameras++;
+        sequence->one_shot = camera->flags.one_shot;
+        if (sequence->camera_idx == NO_CAMERA) {
+            sequence->camera_idx = i;
+        }
+    }
+}
+
+int32_t Camera_GetSequenceCount(void)
+{
+    return m_SequenceCount;
+}
+
+FLYBY_SEQUENCE *Camera_GetSequence(const int32_t sequence_idx)
+{
+    if (sequence_idx < 0 || sequence_idx >= m_SequenceCount) {
+        return nullptr;
+    }
+    return &m_Sequences[sequence_idx];
 }

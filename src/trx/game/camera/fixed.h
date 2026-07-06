@@ -12,3 +12,7 @@ bool Camera_IsLocked(int32_t camera_num);
 void Camera_InitialiseFlybys(int32_t num_cameras);
 int32_t Camera_GetFlybyCount(void);
 FLYBY_CAMERA *Camera_GetFlybyCamera(int32_t camera_idx);
+
+void Camera_SetupSequences(void);
+int32_t Camera_GetSequenceCount(void);
+FLYBY_SEQUENCE *Camera_GetSequence(int32_t sequence_idx);
