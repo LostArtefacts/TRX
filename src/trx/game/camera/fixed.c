@@ -1,12 +1,14 @@
 #include <trx/game/camera/fixed.h>
 
-#include <trx/game/camera/const.h>
+#include <trx/game/camera.h>
 #include <trx/game/game_buf.h>
 
 #define M_LOCKED_CAMERA 1
 
 static int32_t m_FixedObjectCount = 0;
 static OBJECT_VECTOR *m_FixedObjects = nullptr;
+static int32_t m_FlybyCount = 0;
+static FLYBY_CAMERA *m_Flybys = nullptr;
 
 void Camera_InitialiseFixedObjects(const int32_t num_objects)
 {
@@ -49,4 +51,29 @@ bool Camera_IsLocked(const int32_t camera_num)
 
     const OBJECT_VECTOR *const fixed_camera = Camera_GetFixedObject(camera_num);
     return (fixed_camera->flags & M_LOCKED_CAMERA) != 0;
+}
+
+void Camera_InitialiseFlybys(const int32_t num_cameras)
+{
+    if (num_cameras <= 0) {
+        m_FlybyCount = 0;
+        m_Flybys = nullptr;
+        return;
+    }
+
+    m_FlybyCount = num_cameras;
+    m_Flybys = GameBuf_Alloc(m_FlybyCount * sizeof(FLYBY_CAMERA), GBUF_CAMERAS);
+}
+
+int32_t Camera_GetFlybyCount(void)
+{
+    return m_FlybyCount;
+}
+
+FLYBY_CAMERA *Camera_GetFlybyCamera(const int32_t camera_idx)
+{
+    if (camera_idx < 0 || camera_idx >= m_FlybyCount) {
+        return nullptr;
+    }
+    return &m_Flybys[camera_idx];
 }
