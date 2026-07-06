@@ -14,6 +14,7 @@
 #include <trx/game/inventory_ring/types.h>
 #include <trx/game/lara/skin/storage.h>
 #include <trx/game/objects/names.h>
+#include <trx/game/output/sky.h>
 #include <trx/game/shell.h>
 #include <trx/version.h>
 
@@ -50,11 +51,13 @@ static M_DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(M_HandlePictureEvent);
 static M_DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(M_HandleTotalStatsEvent);
 static M_DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(M_HandleAddItemEvent);
 static M_DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(M_HandleGlobeSelectEvent);
+static M_DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(M_HandleSetupHorizonEvent);
 
 static M_SEQUENCE_EVENT_HANDLER m_SequenceEventHandlers[] = {
     // clang-format off
     // Events without arguments
     { GFS_ENABLE_SUNSET,     nullptr, nullptr },
+    { GFS_ENABLE_LIGHTNING,  nullptr, nullptr },
     { GFS_REMOVE_WEAPONS,    nullptr, nullptr },
     { GFS_REMOVE_SCIONS,     nullptr, nullptr },
     { GFS_REMOVE_AMMO,       nullptr, nullptr },
@@ -80,6 +83,7 @@ static M_SEQUENCE_EVENT_HANDLER m_SequenceEventHandlers[] = {
     { GFS_TOTAL_STATS,       M_HandleTotalStatsEvent, nullptr },
     { GFS_ADD_ITEM,          M_HandleAddItemEvent, nullptr },
     { GFS_ADD_SECRET_REWARD, M_HandleAddItemEvent, nullptr },
+    { GFS_SETUP_HORIZON,     M_HandleSetupHorizonEvent, nullptr },
 
     // Sentinel to mark the end of the table
     { (GF_SEQUENCE_EVENT_TYPE)-1, nullptr, nullptr },
@@ -506,6 +510,29 @@ static M_DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(M_HandleAddItemEvent)
         event->data = event_data;
     }
     return sizeof(GF_ADD_ITEM_DATA);
+fail:
+    return -1;
+}
+
+static M_DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(M_HandleSetupHorizonEvent)
+{
+    JSON_READ_IO *const io = ctx->io;
+    RGB_888 color = {};
+    JSON_MUST(JSON_READ(io, "color", &color));
+    if (event != nullptr) {
+        GF_SETUP_HORIZON_DATA *const event_data = extra_data;
+        event_data->color = color;
+        JSON_READ_D(io, "layer", &event_data->layer, 0);
+        if (event_data->layer < 0
+            || event_data->layer >= OUTPUT_SKY_LAYER_COUNT) {
+            JSON_ReadIO_SetError(io, "'layer' must be 0 or 1");
+            JSON_FAIL();
+        }
+        JSON_READ_D(io, "speed", &event_data->speed, 0);
+        JSON_READ_D(io, "color_add", &event_data->color_add, false);
+        event->data = event_data;
+    }
+    return sizeof(GF_SETUP_HORIZON_DATA);
 fail:
     return -1;
 }

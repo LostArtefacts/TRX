@@ -7,6 +7,7 @@
 #include <trx/game/output/lights.h>
 #include <trx/game/output/overlay.h>
 #include <trx/game/output/scene_compositor.h>
+#include <trx/game/output/sky.h>
 #include <trx/game/output/state.h>
 #include <trx/game/output/textures.h>
 #include <trx/game/output/types.h>

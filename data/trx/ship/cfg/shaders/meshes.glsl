@@ -26,6 +26,7 @@ flat out vec4 gAtlasSize;
 out vec2 gTrapezoidRatios;
 out float gShade;
 out vec4 gColor;
+out vec3 gAdd;
 
 vec3 gammaCurve(vec3 rgb, float gamma_exp)
 {
@@ -110,13 +111,26 @@ void main(void) {
     }
 
     // Combine lighting in linear-ish space first: (base + add) * mul
-    vec3 lit = clamp(lightIn + lr.add, 0.0, 1.0);
+    vec3 lit;
+    gAdd = vec3(0.0);
+    if ((gFlags & VERT_OVERBRIGHT) != 0u && uLightingEnabled != 0) {
+        // OG "128 = neutral" lighting: inColor is a raw prelit color where
+        // 128/255 means full brightness. Doubling it saturates the diffuse
+        // part; the excess becomes an additive term applied after texturing
+        // (tomb4's CalcColorSplit: diffuse = min(2c, 255), add = (c-128)/2).
+        vec3 L = lightIn * (255.0 / 128.0) + lr.add;
+        gAdd = max(L - vec3(1.0), vec3(0.0)) * (64.0 / 255.0);
+        lit = clamp(L, 0.0, 1.0);
+    } else {
+        lit = clamp(lightIn + lr.add, 0.0, 1.0);
+    }
     lit *= lr.mul;
     lit = gammaCurve(lit, gamma_exp);
 
     // Apply flat shading AFTER modulation
     gColor = vec4(lit * modulate, inColor.a);
 #else
+    gAdd = vec3(0.0);
     float shade_mul = 1.0;
     if ((gFlags & VERT_NO_LIGHTING) == 0u) {
         shade_mul = (2.0 - (max(gShade, uMinShade) / SHADE_NEUTRAL));
@@ -153,6 +167,7 @@ in vec2 gTexUV;
 flat in vec4 gAtlasSize;
 in float gShade;
 in vec4 gColor;
+in vec3 gAdd;
 in vec2 gTrapezoidRatios;
 out vec4 outColor;
 
@@ -177,6 +192,9 @@ void main(void) {
     } else {
         texColor.rgb *= texColor.a;
     }
+
+    // Overbright lighting excess, added after texturing (OG specular).
+    texColor.rgb += gAdd;
 
     // Alpha discard - chroma keying || transparent pixels in the opaque pass
     if (texColor.a <= 0.0

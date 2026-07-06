@@ -231,6 +231,7 @@ GF_COMMAND Game_Control(const bool demo_mode)
     Sound_UpdateEffects();
     Overlay_Animate(1);
     Output_AnimateTextures(1);
+    Output_Sky_Update();
     return (GF_COMMAND) { .action = GF_NOOP };
 }
 

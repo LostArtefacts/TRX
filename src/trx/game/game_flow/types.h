@@ -52,6 +52,13 @@ typedef struct {
     int32_t quantity;
 } GF_ADD_ITEM_DATA;
 
+typedef struct {
+    int32_t layer;
+    RGB_888 color;
+    int32_t speed;
+    bool color_add;
+} GF_SETUP_HORIZON_DATA;
+
 // ----------------------------------------------------------------------------
 // Game flow level structures
 // ----------------------------------------------------------------------------

@@ -20,6 +20,7 @@
 #define VERT_USE_OWN_LIGHT     0x0200u
 #define VERT_MOVE              0x0400u
 #define VERT_GLOW              0x0800u
+#define VERT_OVERBRIGHT        0x1000u
 
 #define LIGHTING_CONTRAST_LOW    0
 #define LIGHTING_CONTRAST_MEDIUM 1

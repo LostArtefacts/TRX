@@ -3,6 +3,7 @@
 #include <trx/config.h>
 #include <trx/core/memory.h>
 #include <trx/core/utils.h>
+#include <trx/core/vector.h>
 #include <trx/debug.h>
 #include <trx/game/objects/common.h>
 #include <trx/game/output.h>
@@ -21,32 +22,67 @@ typedef struct {
     M_MESH *meshes;
 } M_PRIV;
 
-static M_PRIV m_Priv = {};
+typedef struct {
+    int32_t mesh_idx;
+    const OUTPUT_OBJECT_MESH_POLICY *policy;
+} M_POLICY_ENTRY;
 
-static bool M_IsMeshSkybox(const int32_t mesh_idx)
+static M_PRIV m_Priv = {};
+static VECTOR *m_MeshPolicies = nullptr;
+
+// Returns the policy of the idx-th registration for the given mesh, or
+// nullptr once idx runs past them; registration order is preserved.
+static const OUTPUT_OBJECT_MESH_POLICY *M_GetMeshPolicy(
+    const int32_t mesh_idx, const int32_t idx)
 {
-    const OBJECT *const object = Object_Get(O_SKYBOX);
-    if (!object->loaded) {
-        return false;
+    if (m_MeshPolicies == nullptr) {
+        return nullptr;
     }
-    return mesh_idx >= object->mesh_idx
-        && mesh_idx < object->mesh_idx + object->mesh_count;
+    int32_t left = idx;
+    for (int32_t i = 0; i < m_MeshPolicies->count; i++) {
+        const M_POLICY_ENTRY *const entry = Vector_Get(m_MeshPolicies, i);
+        if (entry->mesh_idx == mesh_idx && left-- == 0) {
+            return entry->policy;
+        }
+    }
+    return nullptr;
 }
 
-static SCENE_PASS M_GetScenePass(const FACE *const face, const uint16_t flags)
+static uint16_t M_GetPolicyVertexFlags(const int32_t mesh_idx)
+{
+    uint16_t flags = 0;
+    const OUTPUT_OBJECT_MESH_POLICY *policy;
+    for (int32_t i = 0; (policy = M_GetMeshPolicy(mesh_idx, i)) != nullptr;
+         i++) {
+        flags |= policy->vertex_flags;
+    }
+    return flags;
+}
+
+static SCENE_PASS M_GetScenePass(
+    const FACE *const face, const uint16_t flags, const int32_t mesh_idx)
 {
     if ((flags & VERT_FLAT_SHADED) != 0) {
         return SCENE_PASS_OPAQUE;
     }
     if ((face->effects & 0x1u) != 0u) {
-        return SCENE_PASS_BLEND_ADD;
+        SCENE_PASS pass = SCENE_PASS_BLEND_ADD;
+        const OUTPUT_OBJECT_MESH_POLICY *policy;
+        for (int32_t i = 0; (policy = M_GetMeshPolicy(mesh_idx, i)) != nullptr;
+             i++) {
+            if (policy->get_face_pass != nullptr
+                && policy->get_face_pass(face, &pass)) {
+                break;
+            }
+        }
+        return pass;
     }
     return Output_Textures_GetObjectTextureScenePass(face->texture_idx);
 }
 
 static void M_AddObjectFace(
     MESH_BUILDER *const builder, const OBJECT_MESH *const obj_mesh,
-    const FACE *const face, uint16_t flags)
+    const FACE *const face, uint16_t flags, const int32_t mesh_idx)
 {
     RGBA_8888 color = COLOR_RGBA_8888_WHITE;
     OUTPUT_MESH_VERTEX vertices[4];
@@ -73,11 +109,33 @@ static void M_AddObjectFace(
         flags |= VERT_USE_OBJECT_LIGHT;
     }
 
+    const bool may_recolor = (flags & VERT_FLAT_SHADED) == 0;
+
     for (int32_t i = 0; i < face->vertex_count; i++) {
-        const int32_t shade = obj_mesh->num_lights <= 0
+        if (may_recolor) {
+            const OUTPUT_OBJECT_MESH_POLICY *policy;
+            for (int32_t j = 0;
+                 (policy = M_GetMeshPolicy(mesh_idx, j)) != nullptr; j++) {
+                if (policy->get_vertex_color != nullptr
+                    && policy->get_vertex_color(face, i, &color)) {
+                    break;
+                }
+            }
+        }
+        int32_t shade = obj_mesh->num_lights <= 0
                 && face->vertices[i] < -obj_mesh->num_lights
             ? obj_mesh->lighting.lights[face->vertices[i]]
             : SHADE_NEUTRAL;
+        {
+            const OUTPUT_OBJECT_MESH_POLICY *policy;
+            for (int32_t j = 0;
+                 (policy = M_GetMeshPolicy(mesh_idx, j)) != nullptr; j++) {
+                if (policy->get_vertex_shade != nullptr
+                    && policy->get_vertex_shade(face, i, &shade)) {
+                    break;
+                }
+            }
+        }
         const XYZ_16 normal = face->vertices[i] < obj_mesh->num_lights
             ? obj_mesh->lighting.normals[face->vertices[i]]
             : (XYZ_16) { 1, 0, 0 };
@@ -102,7 +160,7 @@ static void M_AddObjectFace(
 
     MeshBuilder_AddVertices(builder, vertices, face->vertex_count);
     MeshBuilder_AddFan(
-        builder, M_GetScenePass(face, flags), face->double_sided);
+        builder, M_GetScenePass(face, flags, mesh_idx), face->double_sided);
 }
 
 static void M_PrepareMeshes(M_PRIV *const p)
@@ -120,17 +178,15 @@ static void M_PrepareMeshes(M_PRIV *const p)
             flags |= VERT_REFLECTIVE;
         }
 
-        if (M_IsMeshSkybox(i)) {
-            flags |= VERT_USE_OWN_LIGHT;
-        }
+        flags |= M_GetPolicyVertexFlags(i);
         for (int32_t j = 0; j < obj_mesh->tex_faces.count; j++) {
             M_AddObjectFace(
-                builder, obj_mesh, &obj_mesh->tex_faces.data[j], flags);
+                builder, obj_mesh, &obj_mesh->tex_faces.data[j], flags, i);
         }
         for (int32_t j = 0; j < obj_mesh->flat_faces.count; j++) {
             M_AddObjectFace(
                 builder, obj_mesh, &obj_mesh->flat_faces.data[j],
-                flags | VERT_FLAT_SHADED);
+                flags | VERT_FLAT_SHADED, i);
         }
 
         MeshBuilder_AdjustDepth(builder, obj_mesh->depth_adjustment);
@@ -181,11 +237,12 @@ static void M_Stage(const OBJECT_MESH *const mesh)
     }
 
     OUTPUT_LIGHT_INFO light_info = Output_GetLightInfo();
-    if (g_TRVersion >= 3 && M_IsMeshSkybox(Object_GetMeshIndex(mesh))) {
-        light_info.tr3_ambient = (RGB_F) { 0.5f, 0.5f, 0.5f };
-        for (int32_t i = 0; i < 3; i++) {
-            light_info.tr3_light_color[i] = (RGB_F) { 0.0f, 0.0f, 0.0f };
-            light_info.tr3_light_dir_view[i] = (XYZ_32) { 0, 0, 0 };
+    const OUTPUT_OBJECT_MESH_POLICY *policy;
+    for (int32_t i = 0;
+         (policy = M_GetMeshPolicy(Object_GetMeshIndex(mesh), i)) != nullptr;
+         i++) {
+        if (policy->adjust_light_info != nullptr) {
+            policy->adjust_light_info(&light_info);
         }
     }
 
@@ -211,11 +268,42 @@ void OutputSource_Objects_Init(MESH_BATCHER *const batcher)
     p->batcher = batcher;
 }
 
+void OutputSource_Objects_AddMeshPolicy(
+    const int32_t mesh_idx, const OUTPUT_OBJECT_MESH_POLICY *const policy)
+{
+    if (m_MeshPolicies == nullptr) {
+        m_MeshPolicies = Vector_Create(sizeof(M_POLICY_ENTRY));
+    }
+    const M_POLICY_ENTRY entry = {
+        .mesh_idx = mesh_idx,
+        .policy = policy,
+    };
+    Vector_Add(m_MeshPolicies, &entry);
+}
+
+void OutputSource_Objects_RemoveMeshPolicy(
+    const OUTPUT_OBJECT_MESH_POLICY *const policy)
+{
+    if (m_MeshPolicies == nullptr) {
+        return;
+    }
+    for (int32_t i = m_MeshPolicies->count - 1; i >= 0; i--) {
+        const M_POLICY_ENTRY *const entry = Vector_Get(m_MeshPolicies, i);
+        if (entry->policy == policy) {
+            Vector_RemoveAt(m_MeshPolicies, i);
+        }
+    }
+}
+
 void OutputSource_Objects_Shutdown(void)
 {
     M_PRIV *const p = &m_Priv;
     M_FreeMeshes(p);
     Memory_ArenaFree(&p->alloc);
+    if (m_MeshPolicies != nullptr) {
+        Vector_Free(m_MeshPolicies);
+        m_MeshPolicies = nullptr;
+    }
 }
 
 void OutputSource_Objects_ObserveLevelLoad(void)
@@ -240,6 +328,16 @@ void OutputSource_Objects_ObserveObjectMeshSwap(
     }
 
     SWAP(p->meshes[mesh_idx_1], p->meshes[mesh_idx_2]);
+    if (m_MeshPolicies != nullptr) {
+        for (int32_t i = 0; i < m_MeshPolicies->count; i++) {
+            M_POLICY_ENTRY *const entry = Vector_Get(m_MeshPolicies, i);
+            if (entry->mesh_idx == mesh_idx_1) {
+                entry->mesh_idx = mesh_idx_2;
+            } else if (entry->mesh_idx == mesh_idx_2) {
+                entry->mesh_idx = mesh_idx_1;
+            }
+        }
+    }
     OutputSource_Objects_ObserveObjectMeshUpdate(mesh_idx_1);
     OutputSource_Objects_ObserveObjectMeshUpdate(mesh_idx_2);
 }

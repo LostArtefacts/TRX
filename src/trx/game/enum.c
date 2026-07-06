@@ -77,6 +77,8 @@ static __attribute__((constructor)) void M_Init(void)
     ENUM_MAP(GF_SEQUENCE_EVENT_TYPE, GFS_SETUP_BACON_LARA, "setup_bacon_lara");
     ENUM_MAP(GF_SEQUENCE_EVENT_TYPE, GFS_REMOVE_SCIONS, "remove_scions");
     ENUM_MAP(GF_SEQUENCE_EVENT_TYPE, GFS_ENABLE_SUNSET, "enable_sunset");
+    ENUM_MAP(GF_SEQUENCE_EVENT_TYPE, GFS_SETUP_HORIZON, "setup_horizon");
+    ENUM_MAP(GF_SEQUENCE_EVENT_TYPE, GFS_ENABLE_LIGHTNING, "enable_lightning");
     ENUM_MAP(GF_SEQUENCE_EVENT_TYPE, GFS_SET_START_ANIM, "set_lara_start_anim");
     ENUM_MAP(
         GF_SEQUENCE_EVENT_TYPE, GFS_ADD_SECRET_REWARD, "add_secret_reward");
