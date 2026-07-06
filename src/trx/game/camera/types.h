@@ -114,3 +114,14 @@ typedef struct {
     int32_t num_cameras;
     bool one_shot;
 } FLYBY_SEQUENCE;
+
+typedef struct {
+    struct {
+        int32_t x[18];
+        int32_t y[18];
+        int32_t z[18];
+    } pos, target;
+    int32_t roll[18];
+    int32_t speed[18];
+    int32_t fov[18];
+} SPLINE_DATA;
