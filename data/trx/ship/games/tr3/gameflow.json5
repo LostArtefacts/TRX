@@ -818,5 +818,6 @@
         "change_pierre_spawn",
         "fix_speeches_killing_music",
         "fix_animated_sprites",
+        "enable_cinematic_skips",
     ],
 }

@@ -218,6 +218,7 @@ typedef struct {
         bool enable_legal;
         bool enable_credits;
         bool enable_cinematics;
+        bool enable_cinematic_skips;
         bool enable_cutscenes;
         bool enable_demo;
         LOADING_SCREENS_MODE loading_screens;

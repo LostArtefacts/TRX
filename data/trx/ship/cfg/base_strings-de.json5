@@ -902,6 +902,10 @@
             "title": "Cheats",
             "description": "Aktiviert verschiedene Cheats:\n\n- L: Beende das Level sofort.\n- I: eine Erhöhung der Anzahl der Munition und Medipacks; und alle plotrelevanten Items des aktuellen Levels.\n- O: Aktiviere Flug-Cheat (in der Luft schwimmen).\n  - GEHEN-Taste: beende Flug-Modus.\n  - WAFFE ZIEHEN-Taste: öffne die nächstgelegene Tür (funktioniert an ein paar Stellen nicht).",
         },
+        "gameplay.enable_cinematic_skips": {
+            "title": "\\{review}Überspringen von Zwischensequenzen",
+            "description": "\\{review}Ermöglicht das Überspringen von Kameraflügen mit der Zurück-/Menü-Eingabe.",
+        },
         "gameplay.enable_cinematics": {
             "title": "\\{review}Skriptsequenzen",
             "description": "\\{review}Aktiviert Skriptsequenzen zu Beginn bestimmter Level, sofern vorhanden.",

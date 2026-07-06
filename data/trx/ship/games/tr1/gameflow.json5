@@ -592,6 +592,7 @@
         "fix_monkey_pickup_priority",
         "fix_pipeman_aim",
         "enable_cinematics",
+        "enable_cinematic_skips",
         "enable_body_bags",
         "fix_animated_spikes",
     ],

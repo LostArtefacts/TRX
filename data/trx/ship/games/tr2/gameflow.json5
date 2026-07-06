@@ -773,5 +773,6 @@
         "enable_footprints",
         "fix_pipeman_aim",
         "fix_animated_spikes",
+        "enable_cinematic_skips",
     ],
 }

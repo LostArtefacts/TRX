@@ -902,6 +902,10 @@
             "title": "Cheaty",
             "description": "Włącza różne cheaty:\n\n- L: natychmiast kończy poziom.\n- I: daje Larze wszystkie bronie; zwiększa ilość amunicji i apteczek; daje wszystkie przedmioty z bieżącego poziomu.\n- O: włącza latanie.\n  - Klawisz chodzenia: wyjście z trybu latani.\n  - Klawisz broni: otwiera najbliższe drzwi.",
         },
+        "gameplay.enable_cinematic_skips": {
+            "title": "\\{review}Pomijanie scenek",
+            "description": "\\{review}Umożliwia pomijanie sekwencji przelotów kamery za pomocą przycisku Wstecz/Menu.",
+        },
         "gameplay.enable_cinematics": {
             "title": "Animacje startowe",
             "description": "Włącza specjalne animacje na początku niektórych poziomów.",
