@@ -100,7 +100,8 @@ static const int16_t *M_ReadTrigger(
         int16_t command;
         do {
             command = *data++;
-            if (M_TRIG_CMD_TYPE(command) == TO_CAMERA) {
+            const TRIGGER_OBJECT type = M_TRIG_CMD_TYPE(command);
+            if (type == TO_CAMERA || type == TO_FLYBY) {
                 command = *data++;
             }
         } while (!M_IS_DONE(command));
@@ -126,6 +127,13 @@ static const int16_t *M_ReadTrigger(
             cam_data->timer = M_TRIG_TIMER(command);
             cam_data->glide = M_TRIG_CAM_GLIDE(command);
             cam_data->one_shot = M_TRIG_ONE_SHOT(command);
+        } else if (cmd->type == TO_FLYBY) {
+            TRIGGER_FLYBY_DATA *const flyby_data =
+                GameBuf_Alloc(sizeof(TRIGGER_FLYBY_DATA), GBUF_FLOOR_DATA);
+            cmd->parameter = (void *)flyby_data;
+            flyby_data->sequence_num = M_TRIG_CMD_ARG(command);
+            command = *data++;
+            flyby_data->one_shot = M_TRIG_ONE_SHOT(command);
         } else {
             cmd->parameter = (void *)(intptr_t)M_TRIG_CMD_ARG(command);
         }

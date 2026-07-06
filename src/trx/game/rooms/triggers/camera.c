@@ -1,5 +1,6 @@
 #include <trx/config.h>
 #include <trx/game/camera.h>
+#include <trx/game/flyby_mode.h>
 #include <trx/game/items.h>
 #include <trx/game/lara.h>
 #include <trx/game/rooms.h>
@@ -76,6 +77,21 @@ static void M_HandleSink(
     }
 }
 
+static void M_HandleFlyby(
+    const TRIGGER *const trigger, const TRIGGER_CMD *const cmd,
+    TRIGGER_STATUS *const status)
+{
+    if (Room_IsAntiTrigger(trigger->type)) {
+        FlybyMode_Deactivate();
+        return;
+    }
+
+    const TRIGGER_FLYBY_DATA *const flyby_data =
+        (TRIGGER_FLYBY_DATA *)cmd->parameter;
+    FlybyMode_Activate(flyby_data->sequence_num, flyby_data->one_shot);
+}
+
 REGISTER_TRIGGER_HANDLER(TO_CAMERA, M_HandleCamera)
 REGISTER_TRIGGER_HANDLER(TO_TARGET, M_HandleTarget)
 REGISTER_TRIGGER_HANDLER(TO_SINK, M_HandleSink)
+REGISTER_TRIGGER_HANDLER(TO_FLYBY, M_HandleFlyby)
