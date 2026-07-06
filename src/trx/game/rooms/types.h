@@ -22,6 +22,11 @@ typedef struct {
 } TRIGGER_CAMERA_DATA;
 
 typedef struct {
+    int16_t sequence_num;
+    bool one_shot;
+} TRIGGER_FLYBY_DATA;
+
+typedef struct {
     bool enabled;
     TRIGGER_TYPE type;
     int8_t timer;
