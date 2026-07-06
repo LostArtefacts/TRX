@@ -21,6 +21,9 @@ typedef struct {
 void Output_Sky_Reset(void);
 void Output_Sky_SetLayer(int32_t layer_idx, RGB_888 color, int16_t speed);
 void Output_Sky_SetColorAdd(bool enabled);
+// TR4 desert levels: blend the skybox mesh's bottom edge into the fog color
+// (OG's hardcoded specular gradient on the horizon mesh's first 16 quads).
+void Output_Sky_SetFogGradient(bool enabled);
 void Output_Sky_SetLightningEnabled(bool enabled);
 // Atlas page holding the level's sky image; -1 if none is loaded.
 void Output_Sky_SetTexturePage(int32_t page_idx);

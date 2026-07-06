@@ -829,6 +829,10 @@
         },
         "color_add": {
           "type": "boolean"
+        },
+        "fog_gradient": {
+          "type": "boolean",
+          "description": "Blends the skybox mesh's bottom edge into the level fog color, like OG's desert (jeep/train) levels."
         }
       },
       "required": [

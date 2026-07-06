@@ -108,8 +108,13 @@
             "path": "jeepchas.tr4",
             "music_track": 110,
             "lara_outfit": "tr3_classic",
+            // OG hardcodes desert fog for this level: FogTableColor[19],
+            // starting at 12 tiles and fully saturated at 16.
+            "fog_start": 12.0,
+            "fog_end": 24.0,
+            "fog_color": "#E29776",
             "sequence":[
-                {"type": "setup_horizon", "layer": 0, "color": "#C080C0", "speed": 8},
+                {"type": "setup_horizon", "layer": 0, "color": "#C080C0", "speed": 8, "fog_gradient": true},
                 // {"type": "setup_inv_item", "obj_id": "puzzle_1", "offset_y": 8, "scale": 1024, "rot_x": 12288, "rot_y": 8192, "rot_z": 16384, "flags": 2},
                 // {"type": "loading_camera", "source_x": 85312, "source_y": -2666, "source_Z": 39478, "target_x": 83984, "target_y": -2559, "target_z": 39490, "room": 2},
                 {"type": "loop_game"},
@@ -122,8 +127,13 @@
             "path": "jeepchs2.tr4",
             "music_track": 98,
             "lara_outfit": "tr3_classic",
+            // OG hardcodes desert fog for this level: FogTableColor[19],
+            // starting at 12 tiles and fully saturated at 16.
+            "fog_start": 12.0,
+            "fog_end": 24.0,
+            "fog_color": "#E29776",
             "sequence":[
-                {"type": "setup_horizon", "layer": 0, "color": "#FF8070", "speed": 8},
+                {"type": "setup_horizon", "layer": 0, "color": "#FF8070", "speed": 8, "fog_gradient": true},
                 // {"type": "setup_inv_item", "obj_id": "puzzle_1", "offset_y": 8, "scale": 1024, "rot_x": 12288, "rot_y": 8192, "rot_z": 16384, "flags": 2},
                 // {"type": "loading_camera", "source_x": 13452, "source_y": -876, "source_Z": 71964, "target_x": 11442, "target_y": -1612, "target_z": 73162, "room": 0},
                 // {"type": "reset_hub", "level_idx": 7},
@@ -249,9 +259,11 @@
             "music_track": 106,
             "lara_outfit": "tr3_classic",
             // "train": true,
+            "fog_start": 12.0,
+            "fog_end": 24.0,
             "fog_color": "#D2B063",
             "sequence":[
-                {"type": "setup_horizon", "layer": 0, "color": "#C0A0C0", "speed": -16},
+                {"type": "setup_horizon", "layer": 0, "color": "#C0A0C0", "speed": -16, "fog_gradient": true},
                 // {"type": "setup_lens_flare", "x": 882, "y":-6250, "z": 2299, "color": "#FFFFFF"},
                 // {"type": "setup_uv_rotate", "speed": 11},
                 // {"type": "loading_camera", "source_x": 20275, "source_y": -1026, "source_Z": 52658, "target_x": 18424, "target_y": -2381, "target_z": 52700, "room": 1},

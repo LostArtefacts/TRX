@@ -18,6 +18,7 @@ static OUTPUT_SKY_LAYER m_Layers[OUTPUT_SKY_LAYER_COUNT] = {};
 static int32_t m_LayerPos[OUTPUT_SKY_LAYER_COUNT] = {};
 static int32_t m_LayerPosPrev[OUTPUT_SKY_LAYER_COUNT] = {};
 static bool m_ColorAdd = false;
+static bool m_FogGradient = false;
 static int32_t m_TexturePage = -1;
 
 static bool m_LightningEnabled = false;
@@ -88,7 +89,11 @@ void Output_Sky_Reset(void)
         m_LayerPosPrev[i] = 0;
     }
     m_ColorAdd = false;
+    m_FogGradient = false;
     m_TexturePage = -1;
+
+    OutputSource_Sky_InvalidateFogGradient();
+
     m_LightningEnabled = false;
     m_LightningCount = 0;
     m_LightningRand = 0;
@@ -120,6 +125,11 @@ void Output_Sky_SetLayer(
 void Output_Sky_SetColorAdd(const bool enabled)
 {
     m_ColorAdd = enabled;
+}
+
+void Output_Sky_SetFogGradient(const bool enabled)
+{
+    m_FogGradient = enabled;
 }
 
 void Output_Sky_SetLightningEnabled(const bool enabled)
@@ -326,7 +336,12 @@ bool Output_Sky_Draw(void)
     Matrix_TranslateAbs32(g_ViewPos);
     Matrix_Rot16(skybox->frame_base->mesh_rots[0]);
     Output_CalculateStaticLight(Output_GetSkyShade());
-    Output_DrawSkybox(Object_GetMesh(skybox->mesh_idx));
+    const OBJECT_MESH *const mesh = Object_GetMesh(skybox->mesh_idx);
+    if (g_TRVersion == 4 && m_FogGradient) {
+        OutputSource_Sky_StageFogGradient(
+            g_WMatrixPtr, mesh, Output_GetFogColor());
+    }
+    Output_DrawSkybox(mesh);
     Matrix_Pop();
     return true;
 }

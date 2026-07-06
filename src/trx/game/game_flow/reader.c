@@ -530,6 +530,7 @@ static M_DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(M_HandleSetupHorizonEvent)
         }
         JSON_READ_D(io, "speed", &event_data->speed, 0);
         JSON_READ_D(io, "color_add", &event_data->color_add, false);
+        JSON_READ_D(io, "fog_gradient", &event_data->fog_gradient, false);
         event->data = event_data;
     }
     return sizeof(GF_SETUP_HORIZON_DATA);

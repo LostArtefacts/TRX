@@ -1,5 +1,6 @@
 #include <trx/game/output/sources/sky.h>
 
+#include <trx/core/utils.h>
 #include <trx/game/output.h>
 #include <trx/game/output/scene_compositor.h>
 #include <trx/game/output/utils.h>
@@ -13,11 +14,20 @@
 #define M_LAYER_HALF_Z 4864
 #define M_QUAD_OFFSET_X (-11264)
 #define M_MAX_LAYERS 2
+#define M_GRADIENT_MAX_QUADS 16
+// Pull the overlay slightly towards the camera so it doesn't z-fight the
+// coplanar skybox faces it covers.
+#define M_GRADIENT_DEPTH_ADJUSTMENT (-0.005f)
 
 typedef struct {
     XYZW_F pos;
     XYZ_F uvw;
 } M_VERTEX;
+
+typedef struct {
+    XYZW_F pos;
+    RGBA_F color;
+} M_GRADIENT_VERTEX;
 
 typedef struct {
     MATRIX wmatrix;
@@ -33,6 +43,13 @@ typedef struct {
     int32_t texture_page;
     GLuint vao;
     GLuint vbo;
+    MATRIX gradient_wmatrix;
+    int32_t gradient_vertex_count;
+    bool gradient_staged;
+    const OBJECT_MESH *gradient_mesh;
+    RGBA_F gradient_color;
+    GLuint gradient_vao;
+    GLuint gradient_vbo;
 } M_PRIV;
 
 static M_PRIV m_Priv;
@@ -80,12 +97,41 @@ static void M_RenderBegin(const SCENE_SOURCE *const source)
 {
     M_PRIV *const p = &m_Priv;
     p->layer_count = 0;
+    p->gradient_staged = false;
+}
+
+// Flat fog-colored quads alpha-blended over the horizon mesh bottom edge
+// (see OutputSource_Sky_StageFogGradient).
+static void M_RenderFogGradient(M_PRIV *const p)
+{
+    glBindVertexArray(p->gradient_vao);
+    glVertexAttrib4f(OUTPUT_MESH_ATTR_NORMAL, 0.0f, 0.0f, 0.0f, 0.0f);
+    glVertexAttrib4f(OUTPUT_MESH_ATTR_TEXTURE_SIZE, 0.0f, 0.0f, 1.0f, 1.0f);
+    glVertexAttrib2f(OUTPUT_MESH_ATTR_TRAPEZOID_RATIO, 1.0f, 1.0f);
+    glVertexAttrib1f(OUTPUT_MESH_ATTR_SHADE, SHADE_NEUTRAL);
+    glVertexAttribI1ui(
+        OUTPUT_MESH_ATTR_FLAGS,
+        VERT_FLAT_SHADED | VERT_NO_LIGHTING | VERT_NO_WIBBLE
+            | VERT_NO_ALPHA_DISCARD);
+    Output_MeshShader_UploadTint(p->shader, (RGB_F) { 1.0f, 1.0f, 1.0f });
+    Output_MeshShader_UploadModelMatrix(p->shader, &p->gradient_wmatrix);
+    // Like OG, the skybox is drawn without backface culling.
+    glDisable(GL_CULL_FACE);
+    glDrawArrays(GL_TRIANGLES, 0, p->gradient_vertex_count);
+    glEnable(GL_CULL_FACE);
+    TRX_GL_CheckError();
 }
 
 static void M_RenderPass(
     const SCENE_SOURCE *const source, const SCENE_PASS pass)
 {
     M_PRIV *const p = &m_Priv;
+    if (pass == SCENE_PASS_TRANSPARENT) {
+        if (p->gradient_staged) {
+            M_RenderFogGradient(p);
+        }
+        return;
+    }
     if (pass != SCENE_PASS_BACKGROUND) {
         return;
     }
@@ -147,7 +193,8 @@ static void M_RenderPass(
 static bool M_IsDirty(const SCENE_SOURCE *const source, const SCENE_PASS pass)
 {
     const M_PRIV *const p = &m_Priv;
-    return pass == SCENE_PASS_BACKGROUND && p->layer_count > 0;
+    return (pass == SCENE_PASS_BACKGROUND && p->layer_count > 0)
+        || (pass == SCENE_PASS_TRANSPARENT && p->gradient_staged);
 }
 
 void OutputSource_Sky_Init(void)
@@ -180,6 +227,26 @@ void OutputSource_Sky_Init(void)
     glVertexAttribPointer(
         OUTPUT_MESH_ATTR_UVW, 3, GL_FLOAT, GL_FALSE, sizeof(M_VERTEX),
         (void *)(intptr_t)offsetof(M_VERTEX, uvw));
+
+    glGenVertexArrays(1, &p->gradient_vao);
+    glBindVertexArray(p->gradient_vao);
+    glGenBuffers(1, &p->gradient_vbo);
+    glBindBuffer(GL_ARRAY_BUFFER, p->gradient_vbo);
+    glEnableVertexAttribArray(OUTPUT_MESH_ATTR_POS);
+    glEnableVertexAttribArray(OUTPUT_MESH_ATTR_COLOR);
+    glDisableVertexAttribArray(OUTPUT_MESH_ATTR_NORMAL);
+    glDisableVertexAttribArray(OUTPUT_MESH_ATTR_UVW);
+    glDisableVertexAttribArray(OUTPUT_MESH_ATTR_TEXTURE_SIZE);
+    glDisableVertexAttribArray(OUTPUT_MESH_ATTR_TRAPEZOID_RATIO);
+    glDisableVertexAttribArray(OUTPUT_MESH_ATTR_FLAGS);
+    glDisableVertexAttribArray(OUTPUT_MESH_ATTR_SHADE);
+    glVertexAttribPointer(
+        OUTPUT_MESH_ATTR_POS, 4, GL_FLOAT, GL_FALSE, sizeof(M_GRADIENT_VERTEX),
+        (void *)(intptr_t)offsetof(M_GRADIENT_VERTEX, pos));
+    glVertexAttribPointer(
+        OUTPUT_MESH_ATTR_COLOR, 4, GL_FLOAT, GL_FALSE,
+        sizeof(M_GRADIENT_VERTEX),
+        (void *)(intptr_t)offsetof(M_GRADIENT_VERTEX, color));
 }
 
 void OutputSource_Sky_Shutdown(void)
@@ -192,6 +259,14 @@ void OutputSource_Sky_Shutdown(void)
     if (p->vbo != 0) {
         glDeleteBuffers(1, &p->vbo);
         p->vbo = 0;
+    }
+    if (p->gradient_vao != 0) {
+        glDeleteVertexArrays(1, &p->gradient_vao);
+        p->gradient_vao = 0;
+    }
+    if (p->gradient_vbo != 0) {
+        glDeleteBuffers(1, &p->gradient_vbo);
+        p->gradient_vbo = 0;
     }
 }
 
@@ -207,4 +282,75 @@ void OutputSource_Sky_StageLayer(
         .color = color,
         .additive = additive,
     };
+}
+
+// The gradient geometry only depends on the mesh and the fog color, both
+// fixed for the level's duration - rebuild the buffer only when they change.
+static void M_UploadFogGradient(
+    M_PRIV *const p, const OBJECT_MESH *const mesh, const RGBA_F color)
+{
+    M_GRADIENT_VERTEX vertices[M_GRADIENT_MAX_QUADS * OUTPUT_QUAD_VERTICES];
+    const int32_t quad_count =
+        MIN(mesh->tex_face4s.count, M_GRADIENT_MAX_QUADS);
+    int32_t v = 0;
+    for (int32_t i = 0; i < quad_count; i++) {
+        const FACE *const face = &mesh->tex_face4s.data[i];
+        for (int32_t j = 0; j < OUTPUT_QUAD_VERTICES; j++) {
+            const int32_t k = OUTPUT_QUAD_TO_FAN(j);
+            const XYZ_16 pos = mesh->vertices[face->vertices[k]];
+            // OG paints half fog on each quad's first two vertices and full
+            // fog on the last two (the mesh's bottom edge). OG's values
+            // *replace* the mesh's distance fog, but this overlay composites
+            // on top of it - the shader fog stays active on the skybox mesh
+            // and already contributes about that much at the top edge - so
+            // start from zero to avoid a visible half-fogged seam.
+            const float fog = k < 2 ? 0.0f : 1.0f;
+            vertices[v++] = (M_GRADIENT_VERTEX) {
+                .pos = {
+                    .x = pos.x,
+                    .y = pos.y,
+                    .z = pos.z,
+                    .w = M_GRADIENT_DEPTH_ADJUSTMENT,
+                },
+                .color = {
+                    .r = color.r,
+                    .g = color.g,
+                    .b = color.b,
+                    .a = color.a * fog,
+                },
+            };
+        }
+    }
+    glBindBuffer(GL_ARRAY_BUFFER, p->gradient_vbo);
+    TRX_GL_TRACK_DATA(
+        glBufferData, GL_ARRAY_BUFFER, v * sizeof(M_GRADIENT_VERTEX), vertices,
+        GL_STATIC_DRAW);
+    p->gradient_mesh = mesh;
+    p->gradient_color = color;
+    p->gradient_vertex_count = v;
+}
+
+void OutputSource_Sky_InvalidateFogGradient(void)
+{
+    M_PRIV *const p = &m_Priv;
+    p->gradient_mesh = nullptr;
+    p->gradient_vertex_count = 0;
+    p->gradient_staged = false;
+}
+
+void OutputSource_Sky_StageFogGradient(
+    const MATRIX *const wmatrix, const OBJECT_MESH *const mesh,
+    const RGBA_F color)
+{
+    M_PRIV *const p = &m_Priv;
+    if (mesh != p->gradient_mesh || color.r != p->gradient_color.r
+        || color.g != p->gradient_color.g || color.b != p->gradient_color.b
+        || color.a != p->gradient_color.a) {
+        M_UploadFogGradient(p, mesh, color);
+    }
+    if (p->gradient_vertex_count == 0) {
+        return;
+    }
+    p->gradient_wmatrix = *wmatrix;
+    p->gradient_staged = true;
 }
