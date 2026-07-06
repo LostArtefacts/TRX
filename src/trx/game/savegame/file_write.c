@@ -447,6 +447,14 @@ void SG_File_DumpCameras(JSON_WRITE_IO *const io)
         JSONW_POP_AND_APPEND(io);
     }
     JSONW_POP_AND_SET(io, "cameras");
+
+    JSONW_PUSH_ARRAY(io);
+    for (int32_t i = 0; i < Camera_GetSequenceCount(); i++) {
+        const FLYBY_SEQUENCE *const sequence = Camera_GetSequence(i);
+        JSONW_PUSH_VALUE(io, sequence->one_shot);
+        JSONW_POP_AND_APPEND(io);
+    }
+    JSONW_POP_AND_SET(io, "flyby_sequences");
 }
 
 void SG_File_DumpMusic(JSON_WRITE_IO *const io)

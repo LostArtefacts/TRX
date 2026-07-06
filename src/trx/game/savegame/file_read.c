@@ -918,19 +918,38 @@ bool SG_File_LoadFlipmaps(JSON_READ_IO *const io)
 
 bool SG_File_LoadCameras(JSON_READ_IO *const io)
 {
-    M_MUST(JSON_PUSH(io, "cameras"));
-    const size_t count = JSON_ARRAY_LEN(io);
-    if (count != (size_t)Camera_GetFixedObjectCount()) {
-        JSON_ReadIO_SetError(
-            io, "expected %d cameras, got %d", Camera_GetFixedObjectCount(),
-            count);
-        M_FAIL();
+    {
+        M_MUST(JSON_PUSH(io, "cameras"));
+        const size_t count = JSON_ARRAY_LEN(io);
+        if (count != (size_t)Camera_GetFixedObjectCount()) {
+            JSON_ReadIO_SetError(
+                io, "expected %d cameras, got %d", Camera_GetFixedObjectCount(),
+                count);
+            M_FAIL();
+        }
+        for (size_t i = 0; i < count; i++) {
+            OBJECT_VECTOR *const object = Camera_GetFixedObject(i);
+            M_MUST(JSON_READ_A(io, i, &object->flags));
+        }
+        M_MUST(JSON_POP(io));
     }
-    for (size_t i = 0; i < count; i++) {
-        OBJECT_VECTOR *const object = Camera_GetFixedObject(i);
-        M_MUST(JSON_READ_A(io, i, &object->flags));
+
+    if (M_SHOULD(JSON_PUSH(io, "flyby_sequences"))) {
+        const size_t count = JSON_ARRAY_LEN(io);
+        const int32_t expected_count = Camera_GetSequenceCount();
+        if (count != (size_t)expected_count) {
+            JSON_ReadIO_SetError(
+                io, "expected %d flyby sequences, got %d", expected_count,
+                count);
+            M_FAIL();
+        }
+        for (size_t i = 0; i < count; i++) {
+            FLYBY_SEQUENCE *const sequence = Camera_GetSequence(i);
+            M_MUST(JSON_READ_A(io, i, &sequence->one_shot));
+        }
+        M_MUST(JSON_POP(io));
     }
-    M_MUST(JSON_POP(io));
+
     M_FINISH();
 }
 
