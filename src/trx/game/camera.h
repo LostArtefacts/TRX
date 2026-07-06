@@ -7,5 +7,6 @@
 #include <trx/game/camera/environment.h>
 #include <trx/game/camera/fixed.h>
 #include <trx/game/camera/photo_mode.h>
+#include <trx/game/camera/spline.h>
 #include <trx/game/camera/types.h>
 #include <trx/game/camera/vars.h>
