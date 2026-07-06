@@ -161,7 +161,11 @@ static void M_ReadAnimatedTextureRangesTR4(
             file, range->textures, sizeof(int16_t) * range->num_textures);
     }
     VFile_SetPos(file, end_position);
-    VFile_Skip(file, sizeof(uint8_t)); // UV rotation range count
+    // The first N ranges scroll their V linearly (UV rotate) instead of
+    // frame-swapping.
+    const uint8_t num_uv_rotate_ranges = VFile_ReadU8(file);
+    LOG_INFO("uv rotate ranges: %d", num_uv_rotate_ranges);
+    Output_SetUVRotateRangeCount(MIN(num_uv_rotate_ranges, num_ranges));
 }
 
 static void M_ReadObjectTexturesTR4(LEVEL_CONTEXT *const ctx, VFILE *const file)

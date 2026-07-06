@@ -37,6 +37,7 @@ int32_t Output_Textures_GetSpriteUVWIndex(
 OUTPUT_UVW Output_Textures_GetUVW(int32_t uvw_idx);
 OUTPUT_TEXTURE_SIZE Output_Textures_GetAtlasSize(int32_t uvw_idx);
 bool Output_Textures_IsObjectTextureAnimated(int32_t texture_idx);
+bool Output_Textures_IsUVWUVRotated(int32_t uvw_pack_idx);
 SCENE_PASS Output_Textures_GetObjectTextureScenePass(int32_t texture_idx);
 bool Output_Textures_IsSpriteTextureAnimated(int32_t sprite_idx);
 uint16_t Output_Textures_GetSpriteTextureFlags(int32_t sprite_idx);
@@ -50,6 +51,7 @@ void Output_InitialisePalettes(
 void Output_InitialiseObjectTextures(int32_t num_textures);
 void Output_InitialiseSpriteTextures(int32_t num_textures);
 void Output_InitialiseAnimatedTextures(int32_t num_ranges);
+void Output_SetUVRotateRangeCount(int32_t num_ranges);
 
 int32_t Output_GetTexturePageCount(void);
 uint8_t *Output_GetTexturePage8(int32_t page_idx);

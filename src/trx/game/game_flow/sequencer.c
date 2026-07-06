@@ -45,7 +45,7 @@ static GF_COMMAND M_RunEvent(
 // is loaded and skipped in the main sequence loop.
 static bool M_IsPreLoadEvent(const GF_SEQUENCE_EVENT_TYPE type)
 {
-    return type == GFS_SETUP_HORIZON;
+    return type == GFS_SETUP_HORIZON || type == GFS_SETUP_UV_ROTATE;
 }
 
 static void M_PreSequenceHook(
@@ -54,6 +54,7 @@ static void M_PreSequenceHook(
     Room_SetAbyssHeight(0);
     Output_SetSunsetEnabled(false);
     Output_Sky_Reset();
+    Output_SetUVRotateSpeed(0);
     Lara_SetControllable(false);
     Lara_SetStartAnimState(LS_EXTRA_BREATH);
     if (seq_ctx == GFSC_SAVED) {

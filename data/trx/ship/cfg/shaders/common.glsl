@@ -21,6 +21,7 @@
 #define VERT_MOVE              0x0400u
 #define VERT_GLOW              0x0800u
 #define VERT_OVERBRIGHT        0x1000u
+#define VERT_UV_ROTATE         0x2000u
 
 #define LIGHTING_CONTRAST_LOW    0
 #define LIGHTING_CONTRAST_MEDIUM 1
@@ -45,6 +46,7 @@ layout(std140) uniform Globals {
     int uReflectionsEnabled; // bool
     int uTexturesEnabled; // bool
     int uTRVersion;
+    float uUVRotateOffset;
 };
 
 layout(std140) uniform Matrices {

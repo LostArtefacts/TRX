@@ -42,6 +42,7 @@ static struct {
         bool *animated;
         bool *animated_objects;
         bool *animated_sprites;
+        bool *uv_rotated;
         bool *has_transparency_objects;
 
         uint16_t *flags;
@@ -73,6 +74,15 @@ static int32_t m_SpriteTextureCount = 0;
 static OBJECT_TEXTURE *m_ObjectTextures = nullptr;
 static SPRITE_TEXTURE *m_SpriteTextures = nullptr;
 static ANIMATED_TEXTURE_RANGE *m_AnimTextureRanges = nullptr;
+
+// TR4 UV rotate: the first N animated texture ranges scroll their V linearly
+// instead of frame-swapping (see docs on the TR4 UVRotate gameflow command).
+static int32_t m_UVRotateRangeCount = 0;
+
+static bool M_IsUVRotateEnabled(void)
+{
+    return m_UVRotateRangeCount > 0 && Output_GetUVRotateSpeed() != 0;
+}
 
 #define M_TRANSPARENCY_CACHE_VERSION 1
 static uint64_t M_ComputeTransparencyChecksum(void)
@@ -160,19 +170,32 @@ static float M_NormalizeObjectUV(const uint16_t uv)
 
 static void M_PrepareObjectAnimationRanges(void)
 {
+    // With UV rotate active, the first N ranges scroll in the shader and must
+    // stay out of the frame-swap cycling.
+    const int32_t skip_ranges =
+        M_IsUVRotateEnabled() ? m_UVRotateRangeCount : 0;
+
     size_t required_size = 0;
+    int32_t range_idx = 0;
     for (const ANIMATED_TEXTURE_RANGE *src_range =
              Output_GetAnimatedTextureRange(0);
-         src_range != nullptr; src_range = src_range->next_range) {
+         src_range != nullptr; src_range = src_range->next_range, range_idx++) {
+        if (range_idx < skip_ranges) {
+            continue;
+        }
         required_size += src_range->num_textures;
     }
 
     Vector_Clear(m_AnimationRanges.objects);
     Vector_EnsureCapacity(m_AnimationRanges.objects, required_size);
 
+    range_idx = 0;
     for (const ANIMATED_TEXTURE_RANGE *src_range =
              Output_GetAnimatedTextureRange(0);
-         src_range != nullptr; src_range = src_range->next_range) {
+         src_range != nullptr; src_range = src_range->next_range, range_idx++) {
+        if (range_idx < skip_ranges) {
+            continue;
+        }
         for (int32_t i = 0; i < src_range->num_textures; i++) {
             Vector_Add(
                 m_AnimationRanges.objects,
@@ -213,6 +236,26 @@ static void M_PrepareSpriteAnimationRanges(void)
             });
     }
     Output_GlueVertexRanges(m_AnimationRanges.sprites);
+}
+
+static void M_PrepareUVRotateFlags(void)
+{
+    for (int32_t i = 0; i < m_Priv.uvws.count; i++) {
+        m_Priv.uvws.uv_rotated[i] = false;
+    }
+    if (!M_IsUVRotateEnabled()) {
+        return;
+    }
+
+    int32_t range_idx = 0;
+    for (const ANIMATED_TEXTURE_RANGE *range =
+             Output_GetAnimatedTextureRange(0);
+         range != nullptr && range_idx < m_UVRotateRangeCount;
+         range = range->next_range, range_idx++) {
+        for (int32_t i = 0; i < range->num_textures; i++) {
+            m_Priv.uvws.uv_rotated[range->textures[i]] = true;
+        }
+    }
 }
 
 static void M_PrepareAnimationRanges(void)
@@ -267,6 +310,10 @@ static void M_FillAtlasObjectSize(const int32_t i)
     size->y0 = M_NormalizeObjectUV(size->y0);
     size->x1 = M_NormalizeObjectUV(size->x1);
     size->y1 = M_NormalizeObjectUV(size->y1);
+    if (m_Priv.uvws.uv_rotated != nullptr && m_Priv.uvws.uv_rotated[i]) {
+        // Let the scrolled window sample the full 64/256-tall strip.
+        size->y1 = size->y0 + 64.0f / 256.0f;
+    }
 }
 
 static void M_FillAtlasSpriteSize(const int32_t i)
@@ -292,6 +339,24 @@ static void M_FillObjectUVW(const int32_t i)
         corners[j].u = M_NormalizeObjectUV(texture->uv[j].u);
         corners[j].v = M_NormalizeObjectUV(texture->uv[j].v);
         corners[j].w = texture->tex_page;
+    }
+
+    if (m_Priv.uvws.uv_rotated != nullptr && m_Priv.uvws.uv_rotated[i]) {
+        // UV rotate textures are a 32/256-tall window over a 64/256-tall
+        // tileable strip; pin the window height like tomb4 does
+        // (v_top = v1, v_bottom = v1 + 0.125) so the scroll offset slides
+        // the window over the strip's bottom half.
+        float v_min = corners[0].v;
+        float v_max = corners[0].v;
+        for (int32_t j = 1; j < 4; j++) {
+            v_min = MIN(v_min, corners[j].v);
+            v_max = MAX(v_max, corners[j].v);
+        }
+        const float v_mid = (v_min + v_max) * 0.5f;
+        for (int32_t j = 0; j < 4; j++) {
+            corners[j].v =
+                corners[j].v > v_mid ? v_min + 32.0f / 256.0f : v_min;
+        }
     }
 }
 
@@ -361,11 +426,15 @@ static void M_PrepareUVWs(void)
     m_Priv.uvws.animated_objects = m_Priv.uvws.animated;
     m_Priv.uvws.animated_sprites =
         m_Priv.uvws.animated + m_Priv.uvws.count_objects;
+    m_Priv.uvws.uv_rotated = Memory_Alloc(m_Priv.uvws.count * sizeof(bool));
     m_Priv.uvws.flags = Memory_Alloc(m_Priv.uvws.count * sizeof(uint16_t));
     m_Priv.uvws.flags_objects = m_Priv.uvws.flags;
     m_Priv.uvws.flags_sprites = m_Priv.uvws.flags + m_Priv.uvws.count_objects;
     m_Priv.uvws.has_transparency_objects =
         Memory_Alloc(m_Priv.uvws.count_objects * sizeof(bool));
+    // The UV rotate flags halve the affected textures' V span, so they must
+    // be known before the UVWs are filled.
+    M_PrepareUVRotateFlags();
     M_FillObjectUVWs();
     M_FillSpriteUVWs();
 }
@@ -539,6 +608,7 @@ static void M_FreeLevelData(void)
     }
     Memory_FreePointer(&m_Priv.uvws.data);
     Memory_FreePointer(&m_Priv.uvws.animated);
+    Memory_FreePointer(&m_Priv.uvws.uv_rotated);
     Memory_FreePointer(&m_Priv.uvws.flags);
     Memory_FreePointer(&m_Priv.uvws.has_transparency_objects);
     Memory_FreePointer(&m_Priv.atlas_sizes.data);
@@ -669,6 +739,12 @@ bool Output_Textures_IsObjectTextureAnimated(const int32_t texture_idx)
     return m_Priv.uvws.animated_objects[texture_idx];
 }
 
+bool Output_Textures_IsUVWUVRotated(const int32_t uvw_pack_idx)
+{
+    ASSERT(uvw_pack_idx >= 0 && uvw_pack_idx < m_Priv.uvws.count);
+    return m_Priv.uvws.uv_rotated[uvw_pack_idx];
+}
+
 bool Output_Textures_IsSpriteTextureAnimated(const int32_t texture_idx)
 {
     return m_Priv.uvws.animated_sprites[texture_idx];
@@ -777,11 +853,17 @@ void Output_InitialiseSpriteTextures(const int32_t num_textures)
 
 void Output_InitialiseAnimatedTextures(const int32_t num_ranges)
 {
+    m_UVRotateRangeCount = 0;
     m_AnimTextureRanges = num_ranges == 0
         ? nullptr
         : GameBuf_Alloc(
               sizeof(ANIMATED_TEXTURE_RANGE) * num_ranges,
               GBUF_ANIMATED_TEXTURE_RANGES);
+}
+
+void Output_SetUVRotateRangeCount(const int32_t num_ranges)
+{
+    m_UVRotateRangeCount = num_ranges;
 }
 
 int32_t Output_GetTexturePageCount(void)
@@ -916,8 +998,14 @@ int16_t Output_FindColor8(const RGB_888 color)
 
 void Output_CycleAnimatedTextures(void)
 {
+    const int32_t skip_ranges =
+        M_IsUVRotateEnabled() ? m_UVRotateRangeCount : 0;
+    int32_t range_idx = 0;
     const ANIMATED_TEXTURE_RANGE *range = m_AnimTextureRanges;
-    for (; range != nullptr; range = range->next_range) {
+    for (; range != nullptr; range = range->next_range, range_idx++) {
+        if (range_idx < skip_ranges) {
+            continue;
+        }
         int32_t i = 0;
         const OBJECT_TEXTURE temp = m_ObjectTextures[range->textures[i]];
         for (; i < range->num_textures - 1; i++) {

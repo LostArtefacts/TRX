@@ -4,6 +4,7 @@
 #include <trx/core/utils.h>
 #include <trx/debug.h>
 #include <trx/game/const.h>
+#include <trx/game/interpolation.h>
 #include <trx/game/output/common.h>
 #include <trx/game/output/lights.h>
 #include <trx/game/output/scene_compositor.h>
@@ -20,6 +21,13 @@ static float m_Time = 0.0f;
 static float m_TimeInGame = 0.0f;
 static bool m_ControlFrame = false;
 static int32_t m_AnimatedTexturesOffset = 0;
+
+// TR4 UV rotate scroll position, in 1/256ths of a texture page, wrapping
+// every 32 (the tileable strip height). Advanced on the logic tick;
+// prev/cur are kept so rendering can interpolate between ticks.
+static int32_t m_UVRotatePos = 0;
+static int32_t m_UVRotatePosPrev = 0;
+static int32_t m_UVRotateSpeed = 0;
 
 static int32_t m_FogStart = 0;
 static int32_t m_FogEnd = 0;
@@ -416,7 +424,44 @@ void Output_AnimateTextures(int32_t num_frames)
         SceneCompositor_AnimateTextures();
     }
 
+    m_UVRotatePosPrev = m_UVRotatePos;
+    if (m_UVRotateSpeed != 0) {
+        m_UVRotatePos = (m_UVRotatePos - m_UVRotateSpeed * num_frames) & 0x1F;
+    }
+
     Output_AnimateLights(num_frames);
+}
+
+void Output_SetUVRotateSpeed(const int32_t speed)
+{
+    m_UVRotateSpeed = speed;
+}
+
+int32_t Output_GetUVRotateSpeed(void)
+{
+    return m_UVRotateSpeed;
+}
+
+float Output_GetUVRotateOffset(void)
+{
+    // The general uniforms are uploaded at scene begin, before
+    // Interpolation_Interpolate() refreshes the world rate for the frame, so
+    // read the raw rate (set right before each draw) instead.
+    const double rate =
+        Interpolation_IsActive() ? Interpolation_GetRate() : 1.0;
+    int32_t delta = m_UVRotatePos - m_UVRotatePosPrev;
+    if (delta > 16) {
+        delta -= 32;
+    } else if (delta < -16) {
+        delta += 32;
+    }
+    float pos = m_UVRotatePosPrev + delta * rate;
+    if (pos < 0.0f) {
+        pos += 32.0f;
+    } else if (pos >= 32.0f) {
+        pos -= 32.0f;
+    }
+    return pos / 256.0f;
 }
 
 void Output_EnableScissor(

@@ -110,6 +110,10 @@ static void M_FillGeometry(
     geom->normal.w = vertex->light_table_idx;
     geom->color = vertex->color;
     geom->flags = vertex->flags;
+    if ((vertex->flags & VERT_FLAT_SHADED) == 0 && vertex->uvw_idx >= 0
+        && Output_Textures_IsUVWUVRotated(vertex->uvw_idx / 4)) {
+        geom->flags |= VERT_UV_ROTATE;
+    }
 }
 
 static void M_FillTexture(

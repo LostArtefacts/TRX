@@ -70,3 +70,10 @@ void Output_SetupBelowWater(bool underwater);
 void Output_SetupAboveWater(bool underwater);
 
 void Output_AnimateTextures(int32_t num_frames);
+
+// TR4 UV rotate: scroll speed for the UV-rotating animated texture ranges.
+// Sign controls direction; 0 disables (the ranges frame-swap instead).
+// Must be set before the level data loads to take effect.
+void Output_SetUVRotateSpeed(int32_t speed);
+int32_t Output_GetUVRotateSpeed(void);
+float Output_GetUVRotateOffset(void);
