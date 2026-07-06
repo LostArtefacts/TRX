@@ -40,11 +40,20 @@ static GF_COMMAND M_RunEvent(
     return gf_cmd;
 }
 
+// Events whose effects the level loader bakes into static data (e.g. the
+// skybox mesh bakes the horizon setup) are dispatched before the level file
+// is loaded and skipped in the main sequence loop.
+static bool M_IsPreLoadEvent(const GF_SEQUENCE_EVENT_TYPE type)
+{
+    return type == GFS_SETUP_HORIZON;
+}
+
 static void M_PreSequenceHook(
     const GF_SEQUENCE_CONTEXT seq_ctx, void *const seq_ctx_arg)
 {
     Room_SetAbyssHeight(0);
     Output_SetSunsetEnabled(false);
+    Output_Sky_Reset();
     Lara_SetControllable(false);
     Lara_SetStartAnimState(LS_EXTRA_BREATH);
     if (seq_ctx == GFSC_SAVED) {
@@ -266,6 +275,12 @@ GF_COMMAND GF_InterpretSequence(
     Lua_SetScriptContext(LUA_CONTEXT_GLOBAL);
 
     // load the level
+    const GF_SEQUENCE *const sequence = &level->sequence;
+    for (int32_t i = 0; i < sequence->length; i++) {
+        if (M_IsPreLoadEvent(sequence->events[i].type)) {
+            M_RunEvent(level, sequence, i, seq_ctx, seq_ctx_arg);
+        }
+    }
     if (seq_ctx != GFSC_STORY || level->type == GFL_CUTSCENE) {
         if (!Level_Initialise(level, seq_ctx)) {
             Game_SetCurrentLevel(nullptr);
@@ -278,9 +293,11 @@ GF_COMMAND GF_InterpretSequence(
         }
     }
 
-    const GF_SEQUENCE *const sequence = &level->sequence;
     for (int32_t i = 0; i < sequence->length; i++) {
         const GF_SEQUENCE_EVENT *const event = &sequence->events[i];
+        if (M_IsPreLoadEvent(event->type)) {
+            continue;
+        }
         gf_cmd = M_RunEvent(level, sequence, i, seq_ctx, seq_ctx_arg);
         if (gf_cmd.action != GF_NOOP) {
             return gf_cmd;

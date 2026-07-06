@@ -6,6 +6,7 @@
 #include <trx/game/output/lights.h>
 #include <trx/game/output/mesh_batcher/batcher.h>
 #include <trx/game/output/scene_compositor.h>
+#include <trx/game/output/sky.h>
 #include <trx/game/output/sources/lightnings.h>
 #include <trx/game/output/sources/misc.h>
 #include <trx/game/output/sources/objects.h>
@@ -14,6 +15,7 @@
 #include <trx/game/output/sources/rooms.h>
 #include <trx/game/output/sources/rooms_debug.h>
 #include <trx/game/output/sources/shadows.h>
+#include <trx/game/output/sources/sky.h>
 #include <trx/game/output/sources/sprites.h>
 #include <trx/game/output/sources/ui.h>
 #include <trx/game/output/state.h>
@@ -36,6 +38,7 @@ void Output_Init(void)
     m_ShaderWorld = Output_MeshShader_Create();
     m_ShaderUI = Output_UIShader_Create();
     m_Batcher = MeshBatcher_Create();
+    OutputSource_Sky_Init();
     SceneCompositor_AddSource(MeshBatcher_AsSource(m_Batcher));
     OutputSource_Rooms_Init(m_Batcher);
     OutputSource_RoomsDebug_Init();
@@ -61,6 +64,7 @@ void Output_Shutdown(void)
     OutputSource_Objects_Shutdown();
     OutputSource_Sprites_Shutdown();
     OutputSource_Lightnings_Shutdown();
+    OutputSource_Sky_Shutdown();
     OutputSource_PolyFX_Shutdown();
     OutputSource_Shadows_Shutdown();
     OutputSource_Misc_Shutdown();
@@ -171,6 +175,7 @@ void Output_DispatchLevelLoad(void)
 {
     Output_Textures_ObserveLevelLoad();
     Output_Lights_ObserveLevelLoad();
+    Output_Sky_ObserveLevelLoad();
 
     OutputSource_Objects_ObserveLevelLoad();
     OutputSource_Rooms_ObserveLevelLoad();
@@ -184,6 +189,7 @@ void Output_DispatchLevelLoad(void)
 
 void Output_DispatchLevelUnload(void)
 {
+    Output_Sky_ObserveLevelUnload();
     OutputSource_Objects_ObserveLevelUnload();
     OutputSource_Rooms_ObserveLevelUnload();
     OutputSource_RoomsDebug_ObserveLevelUnload();

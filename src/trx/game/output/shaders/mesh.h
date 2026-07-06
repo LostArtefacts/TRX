@@ -17,6 +17,7 @@
 #define VERT_USE_OWN_LIGHT     0b0010'0000'0000 // = 0x0200
 #define VERT_MOVE              0b0100'0000'0000 // = 0x0400
 #define VERT_GLOW              0b1000'0000'0000 // = 0x0800
+#define VERT_OVERBRIGHT      0b1'0000'0000'0000 // = 0x1000
 // clang-format on
 
 // GL attribute mapping in the shader

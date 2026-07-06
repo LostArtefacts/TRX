@@ -48,6 +48,8 @@
     X(GFS_GLOBE_SELECT,      M_HandleGlobeSelect)                              \
     X(GFS_SET_START_ANIM,    M_HandleSetStartAnim)                             \
     X(GFS_ENABLE_SUNSET,     M_HandleEnableSunset)                             \
+    X(GFS_SETUP_HORIZON,     M_HandleSetupHorizon)                             \
+    X(GFS_ENABLE_LIGHTNING,  M_HandleEnableLightning)                          \
     X(GFS_SETUP_BACON_LARA,  M_HandleSetupBaconLara)                           \
     X(GFS_DISABLE_FLOOR,     M_HandleDisableFloor)
 // clang-format on
@@ -376,6 +378,25 @@ M_GF_HANDLER(M_HandleEnableSunset)
         Output_SetSunsetEnabled(true);
     }
     return gf_cmd;
+}
+
+M_GF_HANDLER(M_HandleSetupHorizon)
+{
+    if (seq_ctx != GFSC_STORY) {
+        const GF_SEQUENCE_EVENT *const event = &sequence->events[event_idx];
+        const GF_SETUP_HORIZON_DATA *const data = event->data;
+        Output_Sky_SetLayer(data->layer, data->color, data->speed);
+        Output_Sky_SetColorAdd(data->color_add);
+    }
+    return (GF_COMMAND) { .action = GF_NOOP };
+}
+
+M_GF_HANDLER(M_HandleEnableLightning)
+{
+    if (seq_ctx != GFSC_STORY) {
+        Output_Sky_SetLightningEnabled(true);
+    }
+    return (GF_COMMAND) { .action = GF_NOOP };
 }
 
 M_GF_HANDLER(M_HandleSetupBaconLara)

@@ -471,6 +471,12 @@
           "$ref": "#/definitions/seq_enable_sunset"
         },
         {
+          "$ref": "#/definitions/seq_setup_horizon"
+        },
+        {
+          "$ref": "#/definitions/seq_enable_lightning"
+        },
+        {
           "$ref": "#/definitions/seq_set_lara_start_anim"
         },
         {
@@ -782,6 +788,61 @@
       "properties": {
         "type": {
           "const": "enable_sunset"
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "seq_setup_horizon": {
+      "type": "object",
+      "description": "Configures a TR4 flat sky layer drawn behind the skybox mesh. Layer 0 scrolls opaquely; layer 1 is drawn additively over it. `color_add` switches the skybox mesh itself to additive blending. TR4 only.",
+      "properties": {
+        "type": {
+          "const": "setup_horizon"
+        },
+        "layer": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "color": {
+          "description": "Layer color (R, G, B) or `#RRGGBB`.",
+          "oneOf": [
+            {
+              "type": "array",
+              "items": {
+                "type": "number"
+              },
+              "minItems": 3,
+              "maxItems": 3
+            },
+            {
+              "type": "string"
+            }
+          ]
+        },
+        "speed": {
+          "type": "integer",
+          "description": "Signed per-frame scroll speed."
+        },
+        "color_add": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "type",
+        "color"
+      ],
+      "additionalProperties": false
+    },
+    "seq_enable_lightning": {
+      "type": "object",
+      "description": "Enables the sky lightning flash and thunder rumble on the TR4 flat sky layers.",
+      "properties": {
+        "type": {
+          "const": "enable_lightning"
         }
       },
       "required": [

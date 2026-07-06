@@ -10,7 +10,6 @@
 #include <trx/game/output/bind.h>
 #include <trx/game/rooms.h>
 #include <trx/game/sparks.h>
-#include <trx/version.h>
 
 #include <string.h>
 
@@ -312,16 +311,7 @@ static void M_DrawSkybox(void)
     g_PhdRight = m_OutsideRight;
     g_PhdBottom = m_OutsideBottom;
 
-    const OBJECT *const skybox = Object_Get(O_SKYBOX);
-    if (skybox->loaded) {
-        Output_SetupAboveWater(g_Camera.underwater);
-        Matrix_PushUnit();
-        Matrix_TranslateAbs32(g_ViewPos);
-        Matrix_Rot16(skybox->frame_base->mesh_rots[0]);
-        Output_CalculateStaticLight(Output_GetSkyShade());
-        Output_DrawSkybox(Object_GetMesh(skybox->mesh_idx));
-        Matrix_Pop();
-    } else {
+    if (!Output_Sky_Draw()) {
         m_Outside = -1;
     }
 }
@@ -515,6 +505,11 @@ void Room_DrawAllRooms(const int16_t current_room, const int16_t target_room)
     Output_SetupAboveWater(false);
     FX_Draw();
     Sparks_Draw();
+}
+
+bool Room_IsSkyVisible(void)
+{
+    return m_Outside != 0;
 }
 
 void Room_AddDrawnItem(const int16_t room_num, const int16_t item_num)

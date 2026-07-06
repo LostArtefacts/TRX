@@ -87,8 +87,9 @@ static bool M_ReadImages(LEVEL_CONTEXT *const ctx, VFILE *const file)
 
     LEVEL_CONTEXT_INFO *const info = &ctx->info;
     info->textures.page_count = page_count;
+    // One extra page for the sky image from the "sky/font" chunk.
     const int32_t alloc_page_count =
-        page_count + Inject_GetDataCount(IDT_TEXTURE_PAGES);
+        page_count + 1 + Inject_GetDataCount(IDT_TEXTURE_PAGES);
     info->textures.pages_8 =
         Memory_Alloc(sizeof(uint8_t) * alloc_page_count * TEXTURE_PAGE_SIZE);
     info->textures.pages_32 =
@@ -119,6 +120,19 @@ static bool M_ReadImages(LEVEL_CONTEXT *const ctx, VFILE *const file)
         Shell_ExitSystem("Failed to read TR4 sky/font images");
         return false;
     }
+    // The chunk holds two raw 256x256 BGRA images: the font, then the sky.
+    // The sky becomes an extra texture page for the flat sky layers.
+    VFile_Skip(sky_font, sizeof(RGBA_8888) * TEXTURE_PAGE_SIZE);
+    const int32_t sky_page = info->textures.page_count;
+    RGBA_8888 *const sky_pixels =
+        &info->textures.pages_32[sky_page * TEXTURE_PAGE_SIZE];
+    VFile_Read(sky_font, sky_pixels, sizeof(RGBA_8888) * TEXTURE_PAGE_SIZE);
+    for (int32_t i = 0; i < TEXTURE_PAGE_SIZE; i++) {
+        SWAP(sky_pixels[i].r, sky_pixels[i].b);
+        sky_pixels[i].a = 255;
+    }
+    info->textures.page_count++;
+    Output_Sky_SetTexturePage(sky_page);
     VFile_Close(sky_font);
 
     M_InitialiseDummyPalette(ctx);

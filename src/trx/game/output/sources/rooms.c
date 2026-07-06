@@ -49,6 +49,11 @@ static void M_AddRoomFace(
             flags |= VERT_NO_ALPHA_DISCARD;
         }
         flags |= VERT_USE_DYNAMIC_LIGHT;
+        if (g_TRVersion == 4) {
+            // TR4 room colors are stored in the OG 128-neutral scale; the
+            // shader doubles them and splits off the overbright excess.
+            flags |= VERT_OVERBRIGHT;
+        }
 
         const XYZ_16 *const pos = &room_vert->pos;
         vertices[i] = (OUTPUT_MESH_VERTEX) {

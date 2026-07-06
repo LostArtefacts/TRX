@@ -89,30 +89,18 @@ static void M_ReadRoomLightTR4(LIGHT *const light, VFILE *const file)
     VFile_Read(file, &light->u.tr4.dir.z, sizeof(float));
 }
 
-static RGBA_8888 M_RemapTR4RoomVertexColor(const RGBA_8888 color)
+// TR4 room vertex colors stay in the OG "128 = neutral" scale (5-bit
+// channels expanded with << 3 like tomb4's ProcessRoomData); the shader's
+// VERT_OVERBRIGHT path doubles them and turns the excess into an additive
+// overbright term.
+static RGBA_8888 M_ExpandTR4RoomVertexColor(const uint16_t color)
 {
-    RGBA_8888 result = color;
-
-    if (color.r <= 128) {
-        result.r = color.r * 2;
-    } else {
-        result.r = 255;
-    }
-
-    if (color.g <= 128) {
-        result.g = color.g * 2;
-    } else {
-        result.g = 255;
-    }
-
-    if (color.b <= 128) {
-        result.b = color.b * 2;
-    } else {
-        result.b = 255;
-    }
-
-    result.a = 255;
-    return result;
+    return (RGBA_8888) {
+        .r = ((color >> 10) & 0x1F) << 3,
+        .g = ((color >> 5) & 0x1F) << 3,
+        .b = (color & 0x1F) << 3,
+        .a = 255,
+    };
 }
 
 static void M_ReadRoomMesh(
@@ -153,13 +141,10 @@ static void M_ReadRoomMesh(
                 vertex->flags.disable_wibble = (flags & 0x8000u) != 0u;
                 vertex->flags.move = (flags & 0x2000u) != 0u;
                 vertex->flags.glow = (flags & 0x4000u) != 0u;
-                vertex->color = Color_ARGB1555ToRGBA8888(VFile_ReadU16(file));
-                if (loader->game_version == 4) {
-                    // TODO: TR4 applies additional room-lighting logic after
-                    // this diffuse remap. To be ported as part of the lighting
-                    // implementation.
-                    vertex->color = M_RemapTR4RoomVertexColor(vertex->color);
-                }
+                const uint16_t raw_color = VFile_ReadU16(file);
+                vertex->color = loader->game_version == 4
+                    ? M_ExpandTR4RoomVertexColor(raw_color)
+                    : Color_ARGB1555ToRGBA8888(raw_color);
                 vertex->color.a = 255;
                 vertex->light_base = 0;
             }
