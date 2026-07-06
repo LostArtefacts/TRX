@@ -4,6 +4,7 @@
 #include <trx/core/log.h>
 #include <trx/core/memory.h>
 #include <trx/core/virtual_file.h>
+#include <trx/game/camera.h>
 #include <trx/game/inject.h>
 #include <trx/game/items/carrier.h>
 #include <trx/game/level.h>
@@ -169,6 +170,7 @@ static void M_CompleteSetup(
     Level_Finalize_LoadTextures(ctx);
     Level_Finalize_LoadTexturePages(ctx);
     Level_Finalize_LoadPalettes(ctx);
+    Camera_SetupSequences();
 
     if (loader->game_version == 1 || loader->game_version >= 4) {
         M_InitialiseSamplesFromLevelInfo(ctx);
