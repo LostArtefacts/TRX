@@ -49,6 +49,11 @@ const CAMERA_LOOK_SETTINGS *Camera_GetLookSettings(const bool on_surface)
     return M_GetStrategy()->get_look_settings_func(on_surface);
 }
 
+int32_t Camera_GetChaseSpeed(void)
+{
+    return M_GetStrategy()->get_chase_speed_func();
+}
+
 void Camera_RegisterStrategy(
     const CAMERA_MODE mode, const CAMERA_STRATEGY strategy)
 {
@@ -101,6 +106,7 @@ void Camera_Reset(void)
 {
     g_Camera.mic_pos.room_num = NO_ROOM;
     g_Camera.pos.room_num = NO_ROOM;
+    Camera_FlybyMode_Deactivate();
 }
 
 void Camera_ApplyBounce(void)
@@ -127,7 +133,7 @@ void Camera_ApplyBounce(void)
 
 void Camera_ClampInterpResult(void)
 {
-    if (g_Camera.type == CAM_PHOTO_MODE) {
+    if (g_Camera.type == CAM_PHOTO_MODE || g_Camera.type == CAM_FLYBY_MODE) {
         Room_GetSector(
             (XYZ_32) {
                 g_Camera.interp.result.pos.x,
@@ -152,6 +158,12 @@ void Camera_Update(void)
 
     if (g_Camera.type == CAM_CINEMATIC) {
         Camera_LoadCutsceneFrame();
+        Camera_EnsureEnvironment();
+        return;
+    }
+
+    if (g_Camera.type == CAM_FLYBY_MODE) {
+        Camera_FlybyMode_Update();
         Camera_EnsureEnvironment();
         return;
     }
