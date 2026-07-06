@@ -173,6 +173,7 @@ common_sources = [
   'trx/game/camera/common.c',
   'trx/game/camera/environment.c',
   'trx/game/camera/fixed.c',
+  'trx/game/camera/flyby_mode.c',
   'trx/game/camera/los_camera.c',
   'trx/game/camera/photo_mode.c',
   'trx/game/camera/spline.c',

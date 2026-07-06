@@ -70,6 +70,7 @@
 **TR4**:
 - added very rudimentary support for TR4 levels
 - changed Angkor Wat's UV Rotate value from 8 to 4
+- fixed tracking path flyby camera sequences not starting from the nearest position to Lara
 
 
 

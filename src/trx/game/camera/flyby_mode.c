@@ -1,0 +1,450 @@
+#include <trx/game/camera/flyby_mode.h>
+
+#include <trx/game/camera.h>
+#include <trx/game/lara.h>
+#include <trx/game/rooms.h>
+#include <trx/game/viewport.h>
+
+#define M_NO_SEQUENCE (-1)
+
+static int32_t m_CurrentSequence = M_NO_SEQUENCE;
+static ITEM m_TriggerItem = {
+    .object_id = O_CAMERA_TARGET,
+};
+
+static struct {
+    struct {
+        GAME_VECTOR camera_pos;
+        GAME_VECTOR camera_target;
+        int16_t fov;
+        FOV_MODE fov_mode;
+    } initial;
+    struct {
+        int32_t camera_idx;
+        int32_t spline_pos;
+    } current;
+    struct {
+        bool spline_from_game;
+        bool spline_to_game;
+        bool test_triggers;
+        bool pending_trigger_check;
+        bool skip_requested;
+        bool look_requested;
+        bool look_cancelled;
+    } flags;
+    SPLINE_DATA data;
+    int16_t timer;
+} m_State = {};
+
+static int32_t M_GetLastCamera(const FLYBY_SEQUENCE *const sequence)
+{
+    return sequence->camera_idx + sequence->num_cameras - 1;
+}
+
+static void M_PrepareSequence(const int32_t sequence_idx)
+{
+    g_Camera.type = CAM_FLYBY_MODE;
+    m_CurrentSequence = sequence_idx;
+    m_State.initial.camera_pos = g_Camera.pos;
+    m_State.initial.camera_target = g_Camera.target;
+    m_State.initial.fov = Viewport_GetEffectiveFOV();
+    m_State.initial.fov_mode = Viewport_GetFOVMode();
+    m_State.flags.spline_from_game = false;
+    m_State.flags.spline_to_game = false;
+    m_State.flags.test_triggers = false;
+    m_State.flags.pending_trigger_check = false;
+    m_State.timer = 0;
+
+    const FLYBY_SEQUENCE *const sequence =
+        Camera_GetSequence(m_CurrentSequence);
+    const FLYBY_CAMERA *const camera =
+        Camera_GetFlybyCamera(sequence->camera_idx);
+    const int32_t last_camera_idx = M_GetLastCamera(sequence);
+
+    m_State.current.camera_idx = sequence->camera_idx;
+    m_State.current.spline_pos = 0;
+    if (camera->flags.lara_control_off) {
+        Lara_SetControllable(false);
+    }
+
+    if (camera->flags.track_path) {
+        int32_t slot = 0;
+        int32_t camera_idx = sequence->camera_idx;
+        Spline_SetupData(&m_State.data, slot, camera_idx);
+        slot++;
+
+        for (int32_t i = 0; i < sequence->num_cameras; i++) {
+            Spline_SetupData(&m_State.data, slot, camera_idx);
+            slot++;
+            camera_idx++;
+        }
+
+        Spline_SetupData(&m_State.data, slot, last_camera_idx);
+        const ITEM *const lara_item = Lara_GetItem();
+        m_State.current.spline_pos = Spline_GetNearestPosition(
+            lara_item->pos, &m_State.data, sequence->num_cameras + 2);
+    } else if (camera->flags.snap_from_game) {
+        int32_t slot = 0;
+        int32_t camera_idx = sequence->camera_idx;
+        Spline_SetupData(&m_State.data, slot, camera_idx);
+        slot++;
+
+        while (slot < 4) {
+            if (camera_idx > last_camera_idx) {
+                camera_idx = sequence->camera_idx;
+            }
+
+            Spline_SetupData(&m_State.data, slot, camera_idx);
+            slot++;
+            camera_idx++;
+        }
+
+        m_State.current.camera_idx++;
+        if (m_State.current.camera_idx > last_camera_idx) {
+            m_State.current.camera_idx = sequence->camera_idx;
+        }
+
+        if (camera->flags.test_triggers) {
+            m_State.flags.test_triggers = true;
+        }
+    } else {
+        m_State.flags.spline_from_game = true;
+
+        m_State.data.pos.x[0] = m_State.initial.camera_pos.x;
+        m_State.data.pos.y[0] = m_State.initial.camera_pos.y;
+        m_State.data.pos.z[0] = m_State.initial.camera_pos.z;
+        m_State.data.target.x[0] = m_State.initial.camera_target.x;
+        m_State.data.target.y[0] = m_State.initial.camera_target.y;
+        m_State.data.target.z[0] = m_State.initial.camera_target.z;
+        m_State.data.roll[0] = 0;
+        m_State.data.fov[0] = m_State.initial.fov;
+        m_State.data.speed[0] = camera->speed; // missing in OG
+        m_State.data.pos.x[1] = m_State.data.pos.x[0];
+        m_State.data.pos.y[1] = m_State.data.pos.y[0];
+        m_State.data.pos.z[1] = m_State.data.pos.z[0];
+        m_State.data.target.x[1] = m_State.data.target.x[0];
+        m_State.data.target.y[1] = m_State.data.target.y[0];
+        m_State.data.target.z[1] = m_State.data.target.z[0];
+        m_State.data.roll[1] = m_State.data.roll[0];
+        m_State.data.fov[1] = m_State.data.fov[0];
+        m_State.data.speed[1] = m_State.data.speed[0];
+
+        int32_t camera_idx = sequence->camera_idx;
+        Spline_SetupData(&m_State.data, 2, camera_idx);
+        camera_idx++;
+        if (camera_idx > last_camera_idx) {
+            camera_idx = sequence->camera_idx;
+        }
+        Spline_SetupData(&m_State.data, 3, camera_idx);
+    }
+}
+
+static void M_PrepareSplineToGame(void)
+{
+    m_State.flags.spline_to_game = true;
+    m_State.current.camera_idx--;
+    Spline_SetupData(&m_State.data, 0, m_State.current.camera_idx - 1);
+    Spline_SetupData(&m_State.data, 1, m_State.current.camera_idx);
+
+    CAMERA_INFO cam_info = g_Camera;
+    g_Camera.type = CAM_CHASE;
+    g_Camera.speed = 1;
+    Camera_Update();
+
+    m_State.initial.camera_pos = g_Camera.pos;
+    m_State.initial.camera_target = g_Camera.target;
+    m_State.data.pos.x[2] = g_Camera.pos.x;
+    m_State.data.pos.y[2] = g_Camera.pos.y;
+    m_State.data.pos.z[2] = g_Camera.pos.z;
+    m_State.data.target.x[2] = g_Camera.target.x;
+    m_State.data.target.y[2] = g_Camera.target.y;
+    m_State.data.target.z[2] = g_Camera.target.z;
+    m_State.data.fov[2] = Viewport_GetEffectiveFOV();
+    m_State.data.roll[2] = 0;
+    m_State.data.speed[2] = m_State.data.speed[1];
+    m_State.data.pos.x[3] = g_Camera.pos.x;
+    m_State.data.pos.y[3] = g_Camera.pos.y;
+    m_State.data.pos.z[3] = g_Camera.pos.z;
+    m_State.data.target.x[3] = g_Camera.target.x;
+    m_State.data.target.y[3] = g_Camera.target.y;
+    m_State.data.target.z[3] = g_Camera.target.z;
+    m_State.data.speed[3] = m_State.data.speed[1] >> 1;
+    m_State.data.fov[3] = m_State.data.fov[2];
+
+    g_Camera = cam_info;
+}
+
+static void M_TestTriggers(void)
+{
+    if (!m_State.flags.test_triggers) {
+        return;
+    }
+
+    // TODO: if current level == 0 (title?), test non-heavy too
+    m_TriggerItem.pos = g_Camera.pos.pos;
+    m_TriggerItem.room_num = g_Camera.pos.room_num;
+    Room_TestTriggers(&m_TriggerItem);
+    m_State.flags.test_triggers = false;
+}
+
+static void M_HandleSkip(const bool is_track_path)
+{
+    if (m_State.flags.skip_requested && !is_track_path) {
+        m_State.current.spline_pos = SPLINE_ONE;
+    }
+    m_State.flags.skip_requested = false;
+}
+
+static void M_HandleLook(const bool no_break)
+{
+    // TODO: && game_mode != 1
+    if (m_State.flags.look_requested && !m_State.flags.look_cancelled
+        && !no_break) {
+        Camera_FlybyMode_Deactivate();
+    }
+    m_State.flags.look_requested = false;
+    m_State.flags.look_cancelled = false;
+}
+
+bool Camera_FlybyMode_Activate(const int32_t sequence_idx, const bool one_shot)
+{
+    FLYBY_SEQUENCE *const sequence = Camera_GetSequence(sequence_idx);
+    if (sequence == nullptr) {
+        return false;
+    }
+
+    if (sequence_idx == m_CurrentSequence) {
+        m_State.flags.pending_trigger_check = false;
+        m_State.flags.look_cancelled = true;
+        return false;
+    } else if (m_CurrentSequence != M_NO_SEQUENCE) {
+        return false;
+    }
+
+    if (sequence->camera_idx == NO_CAMERA) {
+        return false;
+    }
+
+    if (sequence->one_shot) {
+        return false;
+    }
+
+    if (one_shot) {
+        sequence->one_shot = true;
+    }
+
+    M_PrepareSequence(sequence_idx);
+    return true;
+}
+
+bool Camera_FlybyMode_IsActive(void)
+{
+    return m_CurrentSequence != M_NO_SEQUENCE;
+}
+
+void Camera_FlybyMode_Deactivate(void)
+{
+    m_CurrentSequence = M_NO_SEQUENCE;
+    Lara_SetControllable(true);
+
+    g_Camera.type = CAM_CHASE;
+    g_Camera.roll = 0;
+    Viewport_AlterFOV(m_State.initial.fov, m_State.initial.fov_mode);
+    if (!m_State.flags.spline_to_game) {
+        g_Camera.speed = 1;
+        g_Camera.pos = m_State.initial.camera_pos;
+        g_Camera.target = m_State.initial.camera_target;
+        g_Camera.interp.prev.pos = g_Camera.pos.pos;
+        g_Camera.interp.prev.target = g_Camera.target.pos;
+    }
+    // TODO: undo fade clip
+}
+
+void Camera_FlybyMode_RequestSkip(void)
+{
+    m_State.flags.skip_requested = true;
+}
+
+void Camera_FlybyMode_RequestLook(void)
+{
+    m_State.flags.look_requested = true;
+}
+
+void Camera_FlybyMode_Update(void)
+{
+    if (m_State.flags.pending_trigger_check) {
+        // Lara's no longer on a trigger for a track_path
+        g_Camera.speed = Camera_GetChaseSpeed();
+        m_State.flags.spline_to_game = true;
+        Camera_FlybyMode_Deactivate();
+        return;
+    }
+
+    const FLYBY_SEQUENCE *const sequence =
+        Camera_GetSequence(m_CurrentSequence);
+    const FLYBY_CAMERA *const first_camera =
+        Camera_GetFlybyCamera(sequence->camera_idx);
+    const FLYBY_CAMERA *const current_camera =
+        Camera_GetFlybyCamera(m_State.current.camera_idx);
+    const int32_t spline_count =
+        first_camera->flags.track_path ? sequence->num_cameras + 2 : 4;
+    const ITEM *const lara_item = Lara_GetItem();
+
+    const XYZ_32 pos = {
+        .x = Spline_Calculate(
+            m_State.current.spline_pos, m_State.data.pos.x, spline_count),
+        .y = Spline_Calculate(
+            m_State.current.spline_pos, m_State.data.pos.y, spline_count),
+        .z = Spline_Calculate(
+            m_State.current.spline_pos, m_State.data.pos.z, spline_count),
+    };
+    const XYZ_32 target = {
+        .x = Spline_Calculate(
+            m_State.current.spline_pos, m_State.data.target.x, spline_count),
+        .y = Spline_Calculate(
+            m_State.current.spline_pos, m_State.data.target.y, spline_count),
+        .z = Spline_Calculate(
+            m_State.current.spline_pos, m_State.data.target.z, spline_count),
+    };
+
+    const int32_t speed = Spline_Calculate(
+        m_State.current.spline_pos, m_State.data.speed, spline_count);
+    const int32_t roll = Spline_Calculate(
+        m_State.current.spline_pos, m_State.data.roll, spline_count);
+    const int32_t fov = Spline_Calculate(
+        m_State.current.spline_pos, m_State.data.fov, spline_count);
+
+    // TODO: handle fade_in_screen and fade_out_screen
+
+    if (first_camera->flags.track_path) {
+        const int32_t cp = Spline_GetNearestPosition(
+            lara_item->pos, &m_State.data, spline_count);
+        m_State.current.spline_pos += (cp - m_State.current.spline_pos) >> 5;
+        if (first_camera->flags.snap_to_game
+            && ABS(cp - m_State.current.spline_pos) > 0x8000) {
+            m_State.current.spline_pos = cp;
+        }
+    } else if (m_State.timer == 0) {
+        m_State.current.spline_pos += speed;
+    }
+
+    M_HandleSkip(first_camera->flags.track_path);
+    M_HandleLook(first_camera->flags.no_break);
+    if (!Camera_FlybyMode_IsActive()) {
+        return;
+    }
+
+    g_Camera.pos.pos = pos;
+    if (first_camera->flags.target_lara || first_camera->flags.track_path) {
+        g_Camera.target.pos = lara_item->pos;
+    } else {
+        g_Camera.target.pos = target;
+    }
+
+    if (current_camera->flags.target_item) {
+        const ITEM *const item = Item_Get(current_camera->timer);
+        if (item != nullptr) {
+            g_Camera.target.pos = item->pos;
+        }
+    }
+
+    g_Camera.pos.room_num = current_camera->room_num;
+    Room_GetSector(g_Camera.pos.pos, &g_Camera.pos.room_num);
+    g_Camera.target.room_num = g_Camera.pos.room_num;
+    Room_GetSector(g_Camera.target.pos, &g_Camera.target.room_num);
+    g_Camera.roll = roll;
+    Viewport_AlterFOV(fov, FOV_MODE_GAME);
+
+    M_TestTriggers();
+
+    if (first_camera->flags.track_path) {
+        // Switch off control until the next control run tests if Lara is still
+        // on a valid trigger.
+        m_State.flags.pending_trigger_check = true;
+        return;
+    }
+
+    if (m_State.current.spline_pos <= SPLINE_ONE - speed) {
+        return;
+    }
+
+    if (current_camera->flags.test_triggers) {
+        m_State.flags.test_triggers = true;
+    }
+
+    if (current_camera->flags.hold) {
+        if (m_State.timer != 0) {
+            m_State.timer--;
+        } else {
+            m_State.timer = current_camera->timer >> 4;
+        }
+    }
+
+    if (m_State.timer == 0) {
+        m_State.current.spline_pos = 0;
+
+        int32_t next_camera = 0;
+        if (m_State.current.camera_idx == sequence->camera_idx) {
+            next_camera = M_GetLastCamera(sequence);
+        } else {
+            next_camera = m_State.current.camera_idx - 1;
+        }
+
+        int32_t slot = 1;
+        if (m_State.flags.spline_from_game) {
+            m_State.flags.spline_from_game = false;
+            next_camera = sequence->camera_idx - 1;
+        } else {
+            if (current_camera->flags.lara_control_on) {
+                Lara_SetControllable(true);
+            }
+            if (current_camera->flags.lara_control_off) {
+                Lara_SetControllable(false);
+                // TODO: fade clip
+            }
+
+            slot = 0;
+            if (current_camera->flags.jump_to_camera) {
+                next_camera =
+                    sequence->camera_idx + (current_camera->timer & 0xF);
+                m_State.current.camera_idx = next_camera;
+                Spline_SetupData(&m_State.data, slot, next_camera);
+                slot = 1;
+            }
+
+            Spline_SetupData(&m_State.data, slot, next_camera);
+            slot++;
+        }
+
+        next_camera++;
+
+        while (slot < 4) {
+            if (first_camera->flags.loop) {
+                if (next_camera > M_GetLastCamera(sequence)) {
+                    next_camera = sequence->camera_idx;
+                }
+            } else if (next_camera > M_GetLastCamera(sequence)) {
+                next_camera = M_GetLastCamera(sequence);
+            }
+
+            Spline_SetupData(&m_State.data, slot, next_camera);
+            next_camera++;
+            slot++;
+        }
+
+        m_State.current.camera_idx++;
+
+        if (m_State.current.camera_idx > M_GetLastCamera(sequence)) {
+            if (current_camera->flags.loop) {
+                m_State.current.camera_idx = sequence->camera_idx;
+            } else if (
+                first_camera->flags.snap_to_game
+                || m_State.flags.spline_to_game) {
+                M_TestTriggers();
+                Camera_FlybyMode_Deactivate();
+            } else {
+                M_PrepareSplineToGame();
+            }
+        }
+    }
+}
