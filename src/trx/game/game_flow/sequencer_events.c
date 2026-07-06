@@ -387,6 +387,7 @@ M_GF_HANDLER(M_HandleSetupHorizon)
         const GF_SETUP_HORIZON_DATA *const data = event->data;
         Output_Sky_SetLayer(data->layer, data->color, data->speed);
         Output_Sky_SetColorAdd(data->color_add);
+        Output_Sky_SetFogGradient(data->fog_gradient);
     }
     return (GF_COMMAND) { .action = GF_NOOP };
 }

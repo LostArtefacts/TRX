@@ -57,6 +57,7 @@ typedef struct {
     RGB_888 color;
     int32_t speed;
     bool color_add;
+    bool fog_gradient;
 } GF_SETUP_HORIZON_DATA;
 
 // ----------------------------------------------------------------------------
