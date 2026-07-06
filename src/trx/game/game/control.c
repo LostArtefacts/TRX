@@ -5,6 +5,7 @@
 #include <trx/game/creature.h>
 #include <trx/game/demo.h>
 #include <trx/game/effects.h>
+#include <trx/game/flyby_mode.h>
 #include <trx/game/fx.h>
 #include <trx/game/game.h>
 #include <trx/game/game_strings/entries.h>
@@ -117,6 +118,7 @@ GF_COMMAND Game_Control(const bool demo_mode)
             return (GF_COMMAND) { .action = GF_EXIT_TO_TITLE };
         }
     }
+    FlybyMode_PreControl();
     Game_ProcessInput();
 
     if ((g_InputDB.quick_save || g_InputDB.quick_load) && !demo_mode
@@ -226,6 +228,7 @@ GF_COMMAND Game_Control(const bool demo_mode)
     FX_Control();
     Lara_Hair_Control(false);
 
+    FlybyMode_PostControl();
     Camera_Update();
     ItemAction_RunActive();
     Sound_UpdateEffects();

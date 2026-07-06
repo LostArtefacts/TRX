@@ -238,6 +238,7 @@ common_sources = [
   'trx/game/enum.c',
   'trx/game/events.c',
   'trx/game/fader.c',
+  'trx/game/flyby_mode.c',
   'trx/game/fmv.c',
   'trx/game/fx/common.c',
   'trx/game/fx/footprint.c',
