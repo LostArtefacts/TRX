@@ -474,6 +474,9 @@
           "$ref": "#/definitions/seq_setup_horizon"
         },
         {
+          "$ref": "#/definitions/seq_setup_uv_rotate"
+        },
+        {
           "$ref": "#/definitions/seq_enable_lightning"
         },
         {
@@ -838,6 +841,23 @@
       "required": [
         "type",
         "color"
+      ],
+      "additionalProperties": false
+    },
+    "seq_setup_uv_rotate": {
+      "type": "object",
+      "description": "Sets the scroll speed of the level's UV-rotating animated textures (waterfalls etc.). The sign controls the scroll direction; when the event is absent or the speed is 0, the affected textures frame-swap like regular animated textures. Equivalent to the OG TR4 script's `UVrotate` command. TR4 only.",
+      "properties": {
+        "type": {
+          "const": "setup_uv_rotate"
+        },
+        "speed": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "type",
+        "speed"
       ],
       "additionalProperties": false
     },

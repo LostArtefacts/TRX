@@ -82,6 +82,9 @@ void main(void) {
     gTexLayer = (uTexturesEnabled != 0) && (gFlags & VERT_FLAT_SHADED) == 0u ? int(inUVW.z) : -1;
     gTrapezoidRatios = inTrapezoidRatios;
     gTexUV = inUVW.xy;
+    if ((inFlags & VERT_UV_ROTATE) != 0u) {
+        gTexUV.y += uUVRotateOffset;
+    }
     if (uTrapezoidFilterEnabled != 0) {
         gTexUV *= inTrapezoidRatios;
     }

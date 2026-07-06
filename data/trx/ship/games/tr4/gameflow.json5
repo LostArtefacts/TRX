@@ -40,7 +40,7 @@
                 {"type": "play_fmv", "fmv_id": 12},
                 // {"type": "setup_inv_item", "obj_id": "puzzle_1", "offset_y": 1, "scale": 384, "rot_x": 0, "rot_y": 36864, "rot_z": 0, "flags": 2},
                 {"type": "setup_horizon", "layer": 0, "color": "#A0A0C0", "speed": 7}, // second layer also supported, seemingly unused?
-                // {"type": "setup_uv_rotate", "speed": 8},
+                {"type": "setup_uv_rotate", "speed": 8},
                 // {"type": "loading_camera", "source_x": 7835, "source_y": -569, "source_Z": 88960, "target_x": 5000, "target_y": -323, "target_z": 88346, "room": 20},
                 {"type": "play_cutscene", "cutscene_id": 6}, // cutseq.pak, not level files
                 {"type": "loop_game"},
@@ -265,7 +265,7 @@
             "sequence":[
                 {"type": "setup_horizon", "layer": 0, "color": "#C0A0C0", "speed": -16, "fog_gradient": true},
                 // {"type": "setup_lens_flare", "x": 882, "y":-6250, "z": 2299, "color": "#FFFFFF"},
-                // {"type": "setup_uv_rotate", "speed": 11},
+                {"type": "setup_uv_rotate", "speed": 11},
                 // {"type": "loading_camera", "source_x": 20275, "source_y": -1026, "source_Z": 52658, "target_x": 18424, "target_y": -2381, "target_z": 52700, "room": 1},
                 // {"type": "reset_hub", "level_idx": 14},
                 {"type": "loop_game"},
@@ -424,7 +424,7 @@
             "music_track": 108,
             "lara_outfit": "tr3_classic",
             "sequence":[
-                // {"type": "setup_uv_rotate", "speed": 254},
+                {"type": "setup_uv_rotate", "speed": -2},
                 // {"type": "setup_inv_item", "obj_id": "puzzle_1", "offset_y": 20, "scale": 1024, "rot_x": 0, "rot_y": 0, "rot_z": 0, "flags": 2},
                 // {"type": "setup_inv_item", "obj_id": "puzzle_2", "offset_y": 6, "scale": 1024, "rot_x": 49152, "rot_y": 0, "rot_z": 0, "flags": 2},
                 // {"type": "setup_inv_item", "obj_id": "puzzle_3", "offset_y": 0, "scale": 1280, "rot_x": 0, "rot_y": 0, "rot_z": 0, "flags": 10},
@@ -783,7 +783,7 @@
             "lara_outfit": "tr3_classic",
             // "pulse": true,
             "sequence":[
-                // {"type": "setup_uv_rotate", "speed": 5},
+                {"type": "setup_uv_rotate", "speed": 5},
                 {"type": "setup_horizon", "layer": 0, "color": "#401008", "speed": 16},
                 {"type": "enable_lightning"},
                 // {"type": "setup_inv_item", "obj_id": "key_11", "offset_y": 5, "scale": 1200, "rot_x": 49152, "rot_y": 0, "rot_z": 0, "flags": 2},
@@ -805,7 +805,7 @@
             "music_track": 97,
             "lara_outfit": "tr3_classic",
             "sequence":[
-                // {"type": "setup_uv_rotate", "speed": 5},
+                {"type": "setup_uv_rotate", "speed": 5},
                 // {"type": "setup_inv_item", "obj_id": "key_11", "offset_y": 5, "scale": 1200, "rot_x": 49152, "rot_y": 0, "rot_z": 0, "flags": 2},
                 // {"type": "setup_inv_item", "obj_id": "key_12", "offset_y": 4, "scale": 768, "rot_x": 49152, "rot_y": 0, "rot_z": 0, "flags": 2},
                 // {"type": "setup_inv_item", "obj_id": "puzzle_5", "offset_y": 23, "scale": 1200, "rot_x": 0, "rot_y": 16384, "rot_z": 0, "flags": 2},
@@ -822,7 +822,7 @@
             "music_track": 108,
             "lara_outfit": "tr3_classic",
             "sequence":[
-                // {"type": "setup_uv_rotate", "speed": 5},
+                {"type": "setup_uv_rotate", "speed": 5},
                 // {"type": "setup_inv_item", "obj_id": "key_11", "offset_y": 5, "scale": 1200, "rot_x": 49152, "rot_y": 0, "rot_z": 0, "flags": 2},
                 // {"type": "setup_inv_item", "obj_id": "key_12", "offset_y": 4, "scale": 768, "rot_x": 49152, "rot_y": 0, "rot_z": 0, "flags": 2},
                 // {"type": "loading_camera", "source_x": 22641, "source_y": 26432, "source_Z": 11943, "target_x": 21631, "target_y": 26906, "target_z": 12690, "room": 63},

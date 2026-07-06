@@ -35,7 +35,8 @@
     X_DECLARE_MEMBER(int, trapezoid_filter_enabled)                            \
     X_DECLARE_MEMBER(int, reflections_enabled)                                 \
     X_DECLARE_MEMBER(int, textures_enabled)                                    \
-    X_DECLARE_MEMBER(int, tr_version)
+    X_DECLARE_MEMBER(int, tr_version)                                          \
+    X_DECLARE_MEMBER(float, uv_rotate_offset)
 
 #pragma pack(push, 4)
 typedef struct {
@@ -159,6 +160,7 @@ void Output_Uniforms_UploadGeneral(const OUTPUT_UNIFORMS *const uniforms)
         .desaturation = Output_GetDesaturation(),
         .sunset_duration = Output_GetSunsetDuration(),
         .tr_version = g_TRVersion,
+        .uv_rotate_offset = Output_GetUVRotateOffset(),
         .viewport_size = {
             (float)Viewport_GetWidth(VIEWPORT_GAME),
             (float)Viewport_GetHeight(VIEWPORT_GAME),
