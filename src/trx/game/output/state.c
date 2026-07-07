@@ -4,6 +4,7 @@
 #include <trx/core/utils.h>
 #include <trx/debug.h>
 #include <trx/game/const.h>
+#include <trx/game/game/state.h>
 #include <trx/game/interpolation.h>
 #include <trx/game/output/common.h>
 #include <trx/game/output/lights.h>
@@ -446,9 +447,12 @@ float Output_GetUVRotateOffset(void)
 {
     // The general uniforms are uploaded at scene begin, before
     // Interpolation_Interpolate() refreshes the world rate for the frame, so
-    // read the raw rate (set right before each draw) instead.
-    const double rate =
-        Interpolation_IsActive() ? Interpolation_GetRate() : 1.0;
+    // read the raw rate (set right before each draw) instead. Frozen
+    // gameplay (pause, inventory) must not replay a stale delta against this
+    // still-live rate, so gate it on Game_IsPlaying() same as the world rate.
+    const double rate = Interpolation_IsActive() && Game_IsPlaying()
+        ? Interpolation_GetRate()
+        : 1.0;
     int32_t delta = m_UVRotatePos - m_UVRotatePosPrev;
     if (delta > 16) {
         delta -= 32;

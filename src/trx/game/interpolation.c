@@ -5,6 +5,7 @@
 #include <trx/debug.h>
 #include <trx/game/camera.h>
 #include <trx/game/effects.h>
+#include <trx/game/game/state.h>
 #include <trx/game/lara.h>
 #include <trx/game/rooms.h>
 #include <trx/game/shell.h>
@@ -418,7 +419,7 @@ bool Interpolation_IsActive(void)
 
 double Interpolation_GetWorldRate(void)
 {
-    if (!Interpolation_IsActive()) {
+    if (!Interpolation_IsActive() || !Game_IsPlaying()) {
         return 1.0;
     }
     return m_WorldRate;
