@@ -2,12 +2,15 @@
 
 #include <trx/config.h>
 #include <trx/game/camera.h>
+#include <trx/game/game.h>
 #include <trx/game/input.h>
 #include <trx/game/lara.h>
 #include <trx/game/lara/poison.h>
 #include <trx/game/matrix.h>
+#include <trx/game/output.h>
 #include <trx/game/random.h>
 #include <trx/game/rooms.h>
+#include <trx/game/viewport.h>
 
 #define M_CHASE_ELEVATION (WALL_L * 3 / 2) // = 1536
 
@@ -74,6 +77,10 @@ void Camera_SetChunky(const bool is_chunky)
 void Camera_Initialise(void)
 {
     m_IsInitialised = false;
+    Camera_Binoculars_Reset();
+    g_Camera.fov = Viewport_GetEffectiveFOV();
+    g_Camera.interp.prev.fov = g_Camera.fov;
+    g_Camera.interp.result.fov = g_Camera.fov;
     Matrix_ResetStack();
     g_Camera.last = NO_CAMERA;
     g_Camera.underwater = false;
@@ -134,7 +141,8 @@ void Camera_ApplyBounce(void)
 
 void Camera_ClampInterpResult(void)
 {
-    if (g_Camera.type == CAM_PHOTO_MODE || g_Camera.type == CAM_FLYBY_MODE) {
+    if (g_Camera.type == CAM_PHOTO_MODE || g_Camera.type == CAM_FLYBY_MODE
+        || g_Camera.type == CAM_BINOCULARS) {
         Room_GetSector(
             (XYZ_32) {
                 g_Camera.interp.result.pos.x,
@@ -165,6 +173,12 @@ void Camera_Update(void)
 
     if (g_Camera.type == CAM_FLYBY_MODE) {
         Camera_FlybyMode_Update();
+        Camera_EnsureEnvironment();
+        return;
+    }
+
+    if (g_Camera.type == CAM_BINOCULARS) {
+        Camera_Binoculars_Update();
         Camera_EnsureEnvironment();
         return;
     }
@@ -249,8 +263,20 @@ void Camera_MoveManual(void)
     }
 }
 
+int16_t Camera_GetInterpolatedFOV(void)
+{
+    if (Game_IsPlaying() && g_Camera.interp.result.fov != 0) {
+        return g_Camera.interp.result.fov;
+    }
+    return Viewport_GetEffectiveFOV();
+}
+
 void Camera_Apply(void)
 {
+    // Re-derive the perspective constants from the freshly interpolated FOV,
+    // so that the room portal culling that follows and the projection matrix
+    // uploaded later in the frame agree on the same value.
+    Output_ApplyFOV();
     Matrix_LookAt(
         g_Camera.interp.result.pos.x,
         g_Camera.interp.result.pos.y + g_Camera.interp.result.shift,

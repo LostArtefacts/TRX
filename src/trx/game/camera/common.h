@@ -14,6 +14,7 @@ void Camera_Reset(void);
 void Camera_ApplyBounce(void);
 void Camera_ClampInterpResult(void);
 const CAMERA_LOOK_SETTINGS *Camera_GetLookSettings(bool on_surface);
+int16_t Camera_GetInterpolatedFOV(void);
 int32_t Camera_GetChaseSpeed(void);
 
 bool Camera_LOSCheck(GAME_VECTOR *start, GAME_VECTOR *target, int32_t shift);

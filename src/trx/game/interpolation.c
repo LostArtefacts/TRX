@@ -9,10 +9,12 @@
 #include <trx/game/lara.h>
 #include <trx/game/rooms.h>
 #include <trx/game/shell.h>
+#include <trx/game/viewport.h>
 
 #include <stdint.h>
 
 #define CAM_MAX_DELTA (STEP_L * 3 / 2)
+#define FOV_MAX_DELTA (DEG_1 * 5)
 
 #define REMEMBER(target, member) (target)->interp.prev.member = (target)->member
 
@@ -45,6 +47,7 @@
     }
 
 static bool m_IsEnabled = true;
+static CAMERA_TYPE m_PrevCameraType = CAM_CHASE;
 static double m_Rate = 0.0;
 static double m_WorldRate = 0.0;
 static double m_CameraRate = 0.0;
@@ -148,6 +151,8 @@ static XYZ_32 M_GetEffectMaxDelta(const EFFECT *const effect)
 
 static void M_RememberCamera(void)
 {
+    m_PrevCameraType = g_Camera.type;
+    REMEMBER(&g_Camera, fov);
     REMEMBER(&g_Camera, shift);
     REMEMBER(&g_Camera, pos.x);
     REMEMBER(&g_Camera, pos.y);
@@ -159,6 +164,7 @@ static void M_RememberCamera(void)
 
 static void M_CommitCamera(void)
 {
+    COMMIT(&g_Camera, fov);
     COMMIT(&g_Camera, shift);
     COMMIT(&g_Camera, pos.x);
     COMMIT(&g_Camera, pos.y);
@@ -473,13 +479,22 @@ void Interpolation_Interpolate(void)
     m_CameraRate = m_Rate;
 
     if (g_Camera.pos.room_num != NO_ROOM) {
-        if (DIFF(&g_Camera, shift) >= 128
-            || DIFF(&g_Camera, pos.x) >= CAM_MAX_DELTA
-            || DIFF(&g_Camera, pos.y) >= CAM_MAX_DELTA
-            || DIFF(&g_Camera, pos.z) >= CAM_MAX_DELTA
-            || DIFF(&g_Camera, target.x) >= CAM_MAX_DELTA
-            || DIFF(&g_Camera, target.y) >= CAM_MAX_DELTA
-            || DIFF(&g_Camera, target.z) >= CAM_MAX_DELTA) {
+        // While the binocular camera stays active, the target orbits Lara at a
+        // large radius, so per-tick deltas routinely exceed CAM_MAX_DELTA even
+        // though the motion is a smooth rotation — keep interpolating.
+        const bool sustained_binoculars = g_Camera.type == CAM_BINOCULARS
+            && m_PrevCameraType == CAM_BINOCULARS;
+        g_Camera.fov = Viewport_GetEffectiveFOV();
+        INTERPOLATE(&g_Camera, fov, m_CameraRate, FOV_MAX_DELTA);
+
+        if (!sustained_binoculars
+            && (DIFF(&g_Camera, shift) >= 128
+                || DIFF(&g_Camera, pos.x) >= CAM_MAX_DELTA
+                || DIFF(&g_Camera, pos.y) >= CAM_MAX_DELTA
+                || DIFF(&g_Camera, pos.z) >= CAM_MAX_DELTA
+                || DIFF(&g_Camera, target.x) >= CAM_MAX_DELTA
+                || DIFF(&g_Camera, target.y) >= CAM_MAX_DELTA
+                || DIFF(&g_Camera, target.z) >= CAM_MAX_DELTA)) {
             M_CommitCamera();
         } else {
             M_InterpolateCamera(m_CameraRate);

@@ -104,6 +104,7 @@ GF_COMMAND Game_Control(const bool demo_mode)
     Input_Update();
     Shell_ProcessInput();
     if (g_InputDB.toggle_photo_mode) {
+        Camera_Binoculars_Exit();
         return GF_EnterPhotoMode();
     } else if (g_InputDB.pause && lara->death_timer == 0) {
         return GF_PauseGame();
@@ -120,6 +121,7 @@ GF_COMMAND Game_Control(const bool demo_mode)
     }
     FlybyMode_PreControl();
     Game_ProcessInput();
+    Camera_Binoculars_Control();
 
     if ((g_InputDB.quick_save || g_InputDB.quick_load) && !demo_mode
         && !g_Config.flow.load_save_disabled) {

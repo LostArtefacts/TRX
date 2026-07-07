@@ -3,6 +3,7 @@
 #include <trx/config.h>
 #include <trx/core/utils.h>
 #include <trx/debug.h>
+#include <trx/game/camera/common.h>
 #include <trx/game/const.h>
 #include <trx/game/game/state.h>
 #include <trx/game/interpolation.h>
@@ -210,7 +211,7 @@ void Output_GetPerspProjectionMatrix(GLfloat output[][4])
     const float near = Output_GetNearZ() / (float)(1 << W2V_SHIFT);
     const float far = Output_GetFarZ() / (float)(1 << W2V_SHIFT);
     const float aspect = (float)(right - left) / (float)(bottom - top);
-    const float fov = Viewport_GetEffectiveFOV() * M_PI / (float)DEG_180;
+    const float fov = Camera_GetInterpolatedFOV() * M_PI / (float)DEG_180;
 
     float f_x, f_y;
     switch (Viewport_GetFOVMode()) {

@@ -45,6 +45,7 @@ void OutputSource_UI_Init(void);
 void OutputSource_UI_Shutdown(void);
 
 void OutputSource_UI_StagePickup(OUTPUT_UI_PICKUP pickup);
+void OutputSource_UI_StageBinocularMask(void);
 void OutputSource_UI_StageSprite(OUTPUT_UI_SPRITE sprite);
 void OutputSource_UI_StageQuad(OUTPUT_UI_QUAD quad);
 void OutputSource_UI_StageCircle(OUTPUT_UI_CIRCLE circle);

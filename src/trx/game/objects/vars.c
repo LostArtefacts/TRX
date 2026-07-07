@@ -320,6 +320,7 @@ const OBJECT_ID g_NullObjects[] = {
     O_ALPHABET,
     O_ALPHABET_SMALL,
     O_ASSAULT_DIGITS,
+    O_BINOCULAR_GFX,
     O_BLOOD,
     O_BLOOD_PINK,
     O_BODY_PART,
