@@ -2,6 +2,7 @@
 
 #include <trx/config.h>
 #include <trx/debug.h>
+#include <trx/game/camera.h>
 #include <trx/game/catalog/manager.h>
 #include <trx/game/creature.h>
 #include <trx/game/game.h>
@@ -428,6 +429,11 @@ void Lara_UseItem(const OBJECT_ID obj_id)
     case O_FLAREBOX_ITEM:
     case O_FLAREBOX_OPTION:
         lara_info->request_gun_type = LGT_FLARE;
+        break;
+
+    case O_BINOCULARS_ITEM:
+    case O_BINOCULARS_OPTION:
+        Camera_Binoculars_Request();
         break;
 
     case O_SMALL_MEDIPACK_ITEM:

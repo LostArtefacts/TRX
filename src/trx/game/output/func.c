@@ -5,6 +5,7 @@
 #include <trx/core/math.h>
 #include <trx/core/utils.h>
 #include <trx/debug.h>
+#include <trx/game/camera/common.h>
 #include <trx/game/matrix.h>
 #include <trx/game/output/const.h>
 #include <trx/game/output/state.h>
@@ -110,7 +111,7 @@ void Output_MakeScreenshot(const char *const path)
 
 void Output_ApplyFOV(void)
 {
-    int32_t fov = Viewport_GetEffectiveFOV();
+    int32_t fov = Camera_GetInterpolatedFOV();
     const int32_t sw = Viewport_GetWidth(VIEWPORT_GAME);
     const int32_t sh = Viewport_GetHeight(VIEWPORT_GAME);
     const float aspect = sw / (float)sh;

@@ -2,6 +2,7 @@
 
 #include <trx/config.h>
 #include <trx/game/level.h>
+#include <trx/game/output/binocular_mask.h>
 #include <trx/game/output/func.h>
 #include <trx/game/output/lights.h>
 #include <trx/game/output/mesh_batcher/batcher.h>
@@ -176,6 +177,7 @@ void Output_DispatchLevelLoad(void)
     Output_Textures_ObserveLevelLoad();
     Output_Lights_ObserveLevelLoad();
     Output_Sky_ObserveLevelLoad();
+    Output_BinocularMask_ObserveLevelLoad();
 
     OutputSource_Objects_ObserveLevelLoad();
     OutputSource_Rooms_ObserveLevelLoad();
@@ -190,6 +192,7 @@ void Output_DispatchLevelLoad(void)
 void Output_DispatchLevelUnload(void)
 {
     Output_Sky_ObserveLevelUnload();
+    Output_BinocularMask_ObserveLevelUnload();
     OutputSource_Objects_ObserveLevelUnload();
     OutputSource_Rooms_ObserveLevelUnload();
     OutputSource_RoomsDebug_ObserveLevelUnload();

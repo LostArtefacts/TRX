@@ -39,6 +39,7 @@ typedef struct {
     const SCENE_SOURCE *objects_source;
     VECTOR *scheduled_pickups;
     VECTOR *vertices;
+    bool binocular_mask;
     GLuint vao;
     GLuint vbo;
 } M_PRIV;
@@ -255,6 +256,53 @@ static void M_Draw3DPickups(const M_PRIV *const p)
     SceneCompositor_SetSamplerFilter(g_Config.rendering.ui_filter);
 }
 
+static void M_DrawBinocularMask(const M_PRIV *const p)
+{
+    const OBJECT *const obj = Object_Get(O_BINOCULAR_GFX);
+    if (!obj->loaded) {
+        return;
+    }
+
+    Output_MeshShader_Bind(Output_GetMeshShader());
+    if (p->objects_source->render_begin != nullptr) {
+        p->objects_source->render_begin(p->objects_source);
+    }
+
+    const VIEWPORT_RECT viewport = Viewport_GetRect(VIEWPORT_UI);
+    const XYZ_32 origin = {
+        .x = viewport.x + viewport.w / 2,
+        .y = viewport.y + viewport.h / 2,
+        .z = (Output_GetNearZ_UI() + Output_GetFarZ_UI()) / 2,
+    };
+
+    // Lighting routines need a W2V matrix to work; set up something for it.
+    Matrix_LookAt(
+        origin.x, origin.y, origin.z - WALL_L, origin.x, origin.y, origin.z, 0);
+
+    Matrix_PushUnit();
+    Matrix_TranslateSet32(origin);
+    // The original game maps the mesh to a 512x240 screen through a x*32/96,
+    // y*30/224 pre-scale (see tomb4's InitBinoculars); combined, that
+    // stretches the raw mesh over the whole viewport. Flatten the depth.
+    Matrix_ScaleX((1 << W2V_SHIFT) * viewport.w / 1536);
+    Matrix_ScaleY((1 << W2V_SHIFT) * viewport.h / 1792);
+    Matrix_ScaleZ((1 << W2V_SHIFT) / 64);
+
+    Object_DrawMesh(obj->mesh_idx, CLIP_FULLY_VISIBLE, false);
+    Matrix_Pop();
+
+    p->objects_source->render_pass(p->objects_source, SCENE_PASS_OPAQUE);
+    p->objects_source->render_pass(p->objects_source, SCENE_PASS_TRANSPARENT);
+    glBlendFunc(GL_ONE, GL_ONE);
+    p->objects_source->render_pass(p->objects_source, SCENE_PASS_BLEND_ADD);
+    glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+    if (p->objects_source->render_end != nullptr) {
+        p->objects_source->render_end(p->objects_source);
+    }
+
+    Output_UIShader_Bind(Output_GetUIShader());
+}
+
 static void M_DrawVertices(const M_PRIV *const p)
 {
     glBindVertexArray(p->vao);
@@ -270,6 +318,7 @@ static void M_RenderBegin(const SCENE_SOURCE *const source)
     M_PRIV *const p = &m_Priv;
     Vector_Clear(p->scheduled_pickups);
     Vector_Clear(p->vertices);
+    p->binocular_mask = false;
 }
 
 static void M_RenderPass(
@@ -280,11 +329,16 @@ static void M_RenderPass(
         return;
     }
 
-    if (p->scheduled_pickups->count == 0 && p->vertices->count == 0) {
+    if (p->scheduled_pickups->count == 0 && p->vertices->count == 0
+        && !p->binocular_mask) {
         return;
     }
 
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    if (p->binocular_mask) {
+        M_DrawBinocularMask(p);
+    }
+
     if (p->vertices->count > 0) {
         M_DrawVertices(p);
     }
@@ -301,7 +355,8 @@ static bool M_IsDirty(const SCENE_SOURCE *const source, const SCENE_PASS pass)
 {
     const M_PRIV *const p = &m_Priv;
     return pass == SCENE_PASS_UI
-        && (p->scheduled_pickups->count > 0 || p->vertices->count > 0);
+        && (p->scheduled_pickups->count > 0 || p->vertices->count > 0
+            || p->binocular_mask);
 }
 
 void OutputSource_UI_Init(void)
@@ -368,6 +423,12 @@ void OutputSource_UI_StagePickup(const OUTPUT_UI_PICKUP pickup)
 {
     M_PRIV *const p = &m_Priv;
     Vector_Add(p->scheduled_pickups, &pickup);
+}
+
+void OutputSource_UI_StageBinocularMask(void)
+{
+    M_PRIV *const p = &m_Priv;
+    p->binocular_mask = true;
 }
 
 void OutputSource_UI_StageSprite(const OUTPUT_UI_SPRITE sprite)

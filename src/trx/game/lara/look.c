@@ -151,6 +151,11 @@ void Lara_Look_UpDown(void)
 
 void Lara_Look_Update(void)
 {
+    if (g_Camera.type == CAM_BINOCULARS) {
+        // Head rotation is driven by Camera_Binoculars_Control().
+        return;
+    }
+
     if (g_Input.look && g_Config.gameplay.look_mode == LOOK_MODE_RESTRICTED
         && !M_IsLaraIdle()) {
         if (g_Camera.type == CAM_LOOK) {

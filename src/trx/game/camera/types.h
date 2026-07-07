@@ -25,6 +25,7 @@ typedef struct {
     GAME_VECTOR pos;
     GAME_VECTOR target;
     CAMERA_TYPE type;
+    int16_t fov;
 
     int32_t shift;
     CAMERA_FLAGS flags;
@@ -56,6 +57,7 @@ typedef struct {
             XYZ_32 target;
             XYZ_32 pos;
             int32_t shift;
+            int16_t fov;
         } result, prev;
         int16_t room_num;
     } interp;

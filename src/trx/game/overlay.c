@@ -2,6 +2,7 @@
 
 #include <trx/config.h>
 #include <trx/core/strings.h>
+#include <trx/game/camera.h>
 #include <trx/game/const.h>
 #include <trx/game/game.h>
 #include <trx/game/game_flow.h>
@@ -500,6 +501,10 @@ void Overlay_DrawGameInfo(void)
 {
     if (!Game_IsPlaying()) {
         return;
+    }
+
+    if (Camera_Binoculars_IsActive()) {
+        OutputSource_UI_StageBinocularMask();
     }
 
     if (g_Config.ui.show_pickups_overlay && m_PickupsActive) {

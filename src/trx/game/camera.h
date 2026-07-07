@@ -1,5 +1,6 @@
 #pragma once
 
+#include <trx/game/camera/binoculars.h>
 #include <trx/game/camera/cinematic.h>
 #include <trx/game/camera/common.h>
 #include <trx/game/camera/const.h>
