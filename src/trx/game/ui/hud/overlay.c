@@ -9,6 +9,7 @@
 #include <trx/game/game_strings/entries.h>
 #include <trx/game/lara.h>
 #include <trx/game/objects/names.h>
+#include <trx/game/photo_mode.h>
 #include <trx/game/ui.h>
 #include <trx/game/ui/scaler.h>
 #include <trx/version.h>
@@ -181,6 +182,10 @@ static void M_Arrow(
 
 static void M_DebugPosTopLeft(void)
 {
+    if (!Game_IsPlaying() && !PhotoMode_IsActive()) {
+        return;
+    }
+
     const ITEM *const lara = Lara_GetItem();
     const LARA_INFO *const lara_info = Lara_GetLaraInfo();
     if (lara == nullptr) {
@@ -251,6 +256,10 @@ static void M_DebugPosTopLeft(void)
 
 static void M_DebugPosTopRight(void)
 {
+    if (!Game_IsPlaying() && !PhotoMode_IsActive()) {
+        return;
+    }
+
     const ITEM *const lara = Lara_GetItem();
     if (lara == nullptr) {
         return;
