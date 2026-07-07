@@ -86,17 +86,10 @@ static const XYZ_32 m_PickupPosition = { .x = 0, .y = 0, .z = -100 };
 static const XYZ_32 m_PickupPositionUW = { .x = 0, .y = -200, .z = -350 };
 static const XYZ_32 m_PickupPositionPlinth = { .x = 0, .y = 0, .z = -380 };
 
-typedef enum {
-    M_MODE_NORMAL,
-    M_MODE_PLINTH_LOW,
-    M_MODE_PLINTH_HIGH,
-    M_MODE_NUMBER_OF,
-} M_MODE;
-
 typedef struct {
     int32_t aid_timer;
     uint32_t secret_mask;
-    M_MODE pickup_mode;
+    PICKUP_MODE pickup_mode;
 } M_PRIV;
 
 uint32_t Pickup_GetSecretMask(const ITEM *const item)
@@ -121,10 +114,10 @@ static void M_Initialise(int16_t item_num)
         Item_AddActive(item_num);
     }
 
-    p->pickup_mode = M_MODE_NORMAL;
+    p->pickup_mode = PICKUP_MODE_NORMAL;
     OBJECT_PROPERTY_VALUE value = {};
     if (ObjectProperty_GetItemValue(item, "pickup_mode", &value)
-        && value.as_int >= 0 && value.as_int < M_MODE_NUMBER_OF) {
+        && value.as_int >= 0 && value.as_int < PICKUP_MODE_NUMBER_OF) {
         p->pickup_mode = value.as_int;
     }
 }
@@ -362,10 +355,10 @@ static void M_BeginPickupAnimation(const ITEM *const item, const bool is_ducked)
     } else {
         const M_PRIV *const p = item->priv;
         switch (p->pickup_mode) {
-        case M_MODE_PLINTH_LOW:
+        case PICKUP_MODE_PLINTH_LOW:
             goal_state = LS_PLINTH_LOW_PICKUP;
             break;
-        case M_MODE_PLINTH_HIGH:
+        case PICKUP_MODE_PLINTH_HIGH:
             goal_state = LS_PLINTH_HIGH_PICKUP;
             break;
         default:
@@ -436,14 +429,14 @@ static bool M_TestLaraPosition(const ITEM *const item)
     }
 
     const M_PRIV *const p = item->priv;
-    if (p->pickup_mode == M_MODE_NORMAL) {
+    if (p->pickup_mode == PICKUP_MODE_NORMAL) {
         goto finish;
     }
 
     const ITEM *const lara_item = Lara_GetItem();
     const int32_t delta = lara_item->pos.y - item->pos.y;
     const int32_t offset =
-        STEP_L * (p->pickup_mode == M_MODE_PLINTH_LOW ? 2 : 3);
+        STEP_L * (p->pickup_mode == PICKUP_MODE_PLINTH_LOW ? 2 : 3);
     if (ABS(ABS(delta) - offset) > STEP_L / 2) {
         return false;
     }
@@ -466,8 +459,8 @@ static XYZ_32 M_GetAlignmentPosition(const ITEM *const item)
     const M_PRIV *const p = item->priv;
     XYZ_32 pos;
     switch (p->pickup_mode) {
-    case M_MODE_PLINTH_LOW:
-    case M_MODE_PLINTH_HIGH:
+    case PICKUP_MODE_PLINTH_LOW:
+    case PICKUP_MODE_PLINTH_HIGH:
         pos = m_PickupPositionPlinth;
         const BOUNDS_16 *const plinth_bounds = M_FindPlinthBounds(item);
         if (plinth_bounds != nullptr) {
