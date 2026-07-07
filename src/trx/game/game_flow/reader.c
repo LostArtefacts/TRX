@@ -52,6 +52,7 @@ static M_DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(M_HandleTotalStatsEvent);
 static M_DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(M_HandleAddItemEvent);
 static M_DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(M_HandleGlobeSelectEvent);
 static M_DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(M_HandleSetupHorizonEvent);
+static M_DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(M_HandleSetupLensFlareEvent);
 
 static M_SEQUENCE_EVENT_HANDLER m_SequenceEventHandlers[] = {
     // clang-format off
@@ -86,6 +87,7 @@ static M_SEQUENCE_EVENT_HANDLER m_SequenceEventHandlers[] = {
     { GFS_ADD_ITEM,          M_HandleAddItemEvent, nullptr },
     { GFS_ADD_SECRET_REWARD, M_HandleAddItemEvent, nullptr },
     { GFS_SETUP_HORIZON,     M_HandleSetupHorizonEvent, nullptr },
+    { GFS_SETUP_LENS_FLARE,  M_HandleSetupLensFlareEvent, nullptr },
 
     // Sentinel to mark the end of the table
     { (GF_SEQUENCE_EVENT_TYPE)-1, nullptr, nullptr },
@@ -542,6 +544,26 @@ static M_DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(M_HandleSetupHorizonEvent)
         event->data = event_data;
     }
     return sizeof(GF_SETUP_HORIZON_DATA);
+fail:
+    return -1;
+}
+
+static M_DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(M_HandleSetupLensFlareEvent)
+{
+    JSON_READ_IO *const io = ctx->io;
+    XYZ_32 pos = {};
+    RGB_888 color = {};
+    JSON_MUST(JSON_READ(io, "x", &pos.x));
+    JSON_MUST(JSON_READ(io, "y", &pos.y));
+    JSON_MUST(JSON_READ(io, "z", &pos.z));
+    JSON_MUST(JSON_READ(io, "color", &color));
+    if (event != nullptr) {
+        GF_SETUP_LENS_FLARE_DATA *const event_data = extra_data;
+        event_data->pos = pos;
+        event_data->color = color;
+        event->data = event_data;
+    }
+    return sizeof(GF_SETUP_LENS_FLARE_DATA);
 fail:
     return -1;
 }

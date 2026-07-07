@@ -86,7 +86,7 @@ static void M_Spawn(M_WATER_PARTICLE *const particle)
     particle->pos.y += (Random_GetDraw() & M_SPAWN_Y_MASK) + M_BASE_Y_OFF;
 
     int16_t room_num = NO_ROOM;
-    Room_GetOutsideStatus(particle->pos, &room_num);
+    Room_GetOutsideStatus(particle->pos, &room_num, nullptr);
     if (room_num == NO_ROOM || !Room_Get(room_num)->flags.underwater) {
         particle->pos.x = 0;
         return;

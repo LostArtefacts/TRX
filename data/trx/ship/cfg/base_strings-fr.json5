@@ -2561,6 +2561,9 @@
             "description": "",
             "name": "Lingot de plomb",
         },
+        "lens_flare": {
+            "name": "\\{review}Éblouissement de l'objectif",
+        },
         "lift": {
             "name": "\\{review}Ascenseur",
         },

@@ -2580,6 +2580,9 @@
             "description": "",
             "name": "Barra di Piombo",
         },
+        "lens_flare": {
+            "name": "\\{review}Bagliore dell'obiettivo",
+        },
         "lift": {
             "name": "Ascensore",
         },

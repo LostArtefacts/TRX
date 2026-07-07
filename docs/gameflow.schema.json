@@ -484,6 +484,9 @@
           "$ref": "#/definitions/seq_setup_uv_rotate"
         },
         {
+          "$ref": "#/definitions/seq_setup_lens_flare"
+        },
+        {
           "$ref": "#/definitions/seq_enable_lightning"
         },
         {
@@ -878,6 +881,49 @@
       "required": [
         "type",
         "speed"
+      ],
+      "additionalProperties": false
+    },
+    "seq_setup_lens_flare": {
+      "type": "object",
+      "description": "Enables the TR4 sun lens flare: a halo of additive ghost sprites along the line from the sun through the screen center, plus a full-screen flash when looking straight at it. The coordinates describe a far-away direction point in the OG script's 256-unit steps; equivalent to the OG TR4 script's `LensFlare` command. TR4 only.",
+      "properties": {
+        "type": {
+          "const": "setup_lens_flare"
+        },
+        "x": {
+          "type": "integer"
+        },
+        "y": {
+          "type": "integer",
+          "description": "Negative values point above the horizon."
+        },
+        "z": {
+          "type": "integer"
+        },
+        "color": {
+          "description": "Flare color (R, G, B) or `#RRGGBB`.",
+          "oneOf": [
+            {
+              "type": "array",
+              "items": {
+                "type": "number"
+              },
+              "minItems": 3,
+              "maxItems": 3
+            },
+            {
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "required": [
+        "type",
+        "x",
+        "y",
+        "z",
+        "color"
       ],
       "additionalProperties": false
     },

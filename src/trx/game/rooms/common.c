@@ -294,10 +294,15 @@ void Room_BuildOutsideTable(void)
     Memory_FreePointer(&full_table);
 }
 
-int32_t Room_GetOutsideStatus(const XYZ_32 pos, int16_t *const out_room_num)
+int32_t Room_GetOutsideStatus(
+    const XYZ_32 pos, int16_t *const out_room_num,
+    int16_t *const out_bbox_room_num)
 {
     if (out_room_num != nullptr) {
         *out_room_num = NO_ROOM;
+    }
+    if (out_bbox_room_num != nullptr) {
+        *out_bbox_room_num = NO_ROOM;
     }
 
     if (m_OutsideRoomTable == nullptr || m_OutsideRoomOffsets == nullptr) {
@@ -360,6 +365,12 @@ int32_t Room_GetOutsideStatus(const XYZ_32 pos, int16_t *const out_room_num)
         if (pos.x <= room->pos.x + WALL_L
             || pos.x >= room->pos.x + (room->size.x << WALL_SHIFT) - WALL_L) {
             continue;
+        }
+
+        // Like the OG's IsRoomOutsideNo, the first bounding-box match is
+        // reported even when the point fails the height or flag checks below.
+        if (out_bbox_room_num != nullptr) {
+            *out_bbox_room_num = candidate_room_num;
         }
 
         int16_t rn = candidate_room_num;

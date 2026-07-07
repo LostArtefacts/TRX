@@ -60,6 +60,11 @@ typedef struct {
     bool fog_gradient;
 } GF_SETUP_HORIZON_DATA;
 
+typedef struct {
+    XYZ_32 pos;
+    RGB_888 color;
+} GF_SETUP_LENS_FLARE_DATA;
+
 // ----------------------------------------------------------------------------
 // Game flow level structures
 // ----------------------------------------------------------------------------

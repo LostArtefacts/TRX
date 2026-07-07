@@ -103,7 +103,7 @@ static bool M_SpawnParticle(XYZ_32 *const pos)
     pos->y -= (Random_GetDraw() & M_RAIN_Y_RND_MASK);
 
     int16_t room_num = NO_ROOM;
-    if (Room_GetOutsideStatus(*pos, &room_num) != 1) {
+    if (Room_GetOutsideStatus(*pos, &room_num, nullptr) != 1) {
         pos->x = 0;
         return false;
     }
@@ -147,7 +147,8 @@ static void M_UpdateRain(void)
         drop->prev_yv = drop->yv;
 
         int16_t room_num = NO_ROOM;
-        const int32_t outside = Room_GetOutsideStatus(drop->pos, &room_num);
+        const int32_t outside =
+            Room_GetOutsideStatus(drop->pos, &room_num, nullptr);
         if (outside == -2
             || (room_num != NO_ROOM && Room_Get(room_num)->flags.underwater)
             || drop->life > 240
@@ -269,7 +270,7 @@ static void M_UpdateSnow(void)
             snow->pos.y += (snow->yv & 0xF8) >> 2;
             snow->pos.z += snow->zv;
 
-            outside = Room_GetOutsideStatus(snow->pos, &room_num);
+            outside = Room_GetOutsideStatus(snow->pos, &room_num, nullptr);
             if (outside == -3) {
                 snow->pos.x = 0;
                 continue;
