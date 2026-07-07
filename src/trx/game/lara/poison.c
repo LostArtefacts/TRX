@@ -1,5 +1,6 @@
 #include <trx/game/lara/poison.h>
 
+#include <trx/config.h>
 #include <trx/core/math.h>
 #include <trx/core/utils.h>
 #include <trx/game/camera.h>
@@ -97,7 +98,8 @@ void Lara_Poison_Cure(void)
 
 bool Lara_Poison_GetViewScale(XYZ_32 *const scale)
 {
-    if (g_TRVersion != 4 || g_Camera.type == CAM_PHOTO_MODE) {
+    if (g_TRVersion != 4 || g_Camera.type == CAM_PHOTO_MODE
+        || !g_Config.visuals.enable_poison_vision) {
         return false;
     }
     const LARA_INFO *const lara_info = Lara_GetLaraInfo();

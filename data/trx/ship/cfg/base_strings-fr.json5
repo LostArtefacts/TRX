@@ -1596,6 +1596,10 @@
             "title": "Éclairage des armes",
             "description": "\\{review}Permet de générer un éclairage dynamique pour les coups de feu et les explosions.",
         },
+        "visuals.enable_poison_vision": {
+            "title": "\\{review}Vision empoisonnée",
+            "description": "\\{review}Déforme la vue lorsque Lara est empoisonnée. Désactivez si vous êtes sujet au mal des transports.",
+        },
         "visuals.enable_ps1_crystals": {
             "title": "Teinte des cristaux PS1",
             "description": "Les cristaux de sauvegarde seront colorés avec une teinte violette, plus similaires à ceux de la PS1.",

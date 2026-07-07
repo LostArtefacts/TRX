@@ -13,6 +13,7 @@ X_UI_CFG(visuals.fov,                  .min_value = 30, .max_value = 150, .delta
 X_UI_CFG(visuals.enable_reflections)
 X_UI_CFG(visuals.enable_skybox)
 X_UI_CFG(visuals.enable_weather)
+X_UI_CFG(visuals.enable_poison_vision)
 X_UI_CFG(visuals.enable_footprints)
 X_UI_CFG(visuals.enable_responsive_mesh_tint)
 X_UI_CFG_ENUM(visuals.blood_effects,   .misc = UI_Settings_BloodEffectsEnumEntries)

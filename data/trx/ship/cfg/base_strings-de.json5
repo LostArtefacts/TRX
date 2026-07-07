@@ -1596,6 +1596,10 @@
             "title": "Dynamisches Licht für Waffen",
             "description": "Aktiviert die verwendung von dynamischer Beleuchtung für Schüsse und Explosionen.",
         },
+        "visuals.enable_poison_vision": {
+            "title": "\\{review}Giftvision",
+            "description": "\\{review}Verzerrt die Sicht, während Lara vergiftet ist. Deaktivieren, wenn Sie zu Reisekrankheit neigen.",
+        },
         "visuals.enable_ps1_crystals": {
             "title": "PS1-Kristall-Farbton",
             "description": "Der Speicherkristall bekommt einen lila Farbton, ähnlich wie bei der PS1-Variante.",

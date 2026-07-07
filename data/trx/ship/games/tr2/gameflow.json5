@@ -753,6 +753,7 @@
     ],
 
     "hidden_config": [
+        "enable_poison_vision",
         "enable_item_examining", // TR2 has no special item descriptions
         "disable_trex_collision", // TR2 always disables corpse collision
         "fix_alligator_ai", // TR2 has no alligators

@@ -576,6 +576,7 @@
     ],
 
     "hidden_config": [
+        "enable_poison_vision",
         "enable_item_examining", // TR1 has no special item descriptions
         "healthbar_poison_color",
         "healthbar_poison_color_ps1",

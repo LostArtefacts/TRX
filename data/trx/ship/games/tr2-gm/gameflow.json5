@@ -212,6 +212,7 @@
     ],
 
     "hidden_config": [
+        "enable_poison_vision",
         "enable_cutscenes",       // TR2G has no cutscenes
         "enable_demo",            // TR2G has no demos
         "enable_item_examining",  // TR2G has no special item descriptions
