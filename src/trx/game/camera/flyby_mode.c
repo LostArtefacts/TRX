@@ -43,7 +43,6 @@ static int32_t M_GetLastCamera(const FLYBY_SEQUENCE *const sequence)
 
 static void M_PrepareSequence(const int32_t sequence_idx)
 {
-    g_Camera.type = CAM_FLYBY_MODE;
     m_CurrentSequence = sequence_idx;
     m_State.initial.camera_pos = g_Camera.pos;
     m_State.initial.camera_target = g_Camera.target;
@@ -60,6 +59,9 @@ static void M_PrepareSequence(const int32_t sequence_idx)
     const FLYBY_CAMERA *const camera =
         Camera_GetFlybyCamera(sequence->camera_idx);
     const int32_t last_camera_idx = M_GetLastCamera(sequence);
+
+    g_Camera.type = CAM_FLYBY_MODE;
+    g_Camera.pos.room_num = camera->room_num;
 
     m_State.current.camera_idx = sequence->camera_idx;
     m_State.current.spline_pos = 0;
@@ -172,6 +174,42 @@ static void M_PrepareSplineToGame(void)
     m_State.data.fov[3] = m_State.data.fov[2];
 
     g_Camera = cam_info;
+}
+
+static bool M_TryResolveRoom(
+    const XYZ_32 pos, int16_t start_room, int16_t *const out_room)
+{
+    Room_GetSector(pos, &start_room);
+    if (!Room_PointInside(Room_Get(start_room), pos)) {
+        return false;
+    }
+
+    *out_room = start_room;
+    return true;
+}
+
+static int16_t M_GetBestRoomNum(
+    const XYZ_32 current_pos, const FLYBY_CAMERA *const camera)
+{
+    // Handle cases where the current spline position wants to use the next
+    // node's room number, but normal x/z/y traversal (Room_GetSector) is
+    // not possible. Try y/x/z, then fallback to the previous camera room.
+    int16_t room_num;
+    if (M_TryResolveRoom(current_pos, camera->room_num, &room_num)) {
+        return room_num;
+    }
+
+    const XYZ_32 y_first_pos = {
+        .x = camera->pos.x,
+        .y = current_pos.y,
+        .z = camera->pos.z,
+    };
+    if (M_TryResolveRoom(y_first_pos, camera->room_num, &room_num)
+        && M_TryResolveRoom(current_pos, room_num, &room_num)) {
+        return room_num;
+    }
+
+    return g_Camera.pos.room_num;
 }
 
 static void M_TestTriggers(void)
@@ -348,8 +386,8 @@ void Camera_FlybyMode_Update(void)
         }
     }
 
-    g_Camera.pos.room_num = current_camera->room_num;
-    Room_GetSector(g_Camera.pos.pos, &g_Camera.pos.room_num);
+    const int16_t room_num = M_GetBestRoomNum(pos, current_camera);
+    g_Camera.pos.room_num = room_num;
     g_Camera.target.room_num = g_Camera.pos.room_num;
     Room_GetSector(g_Camera.target.pos, &g_Camera.target.room_num);
     g_Camera.roll = roll;
