@@ -4,6 +4,7 @@
 #include <trx/game/console/registry.h>
 #include <trx/game/const.h>
 #include <trx/game/creature.h>
+#include <trx/game/flyby_mode.h>
 #include <trx/game/game.h>
 #include <trx/game/game_strings/entries.h>
 #include <trx/game/items.h>
@@ -421,17 +422,8 @@ static bool M_TryParseKeywordNumber(
     return true;
 }
 
-static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *const ctx)
+static COMMAND_RESULT M_TryTeleport(const COMMAND_CONTEXT *const ctx)
 {
-    if (!Game_IsPlayable()) {
-        return CR_UNAVAILABLE;
-    }
-
-    const ITEM *const lara_item = Lara_GetItem();
-    if (!lara_item->hit_points) {
-        return CR_UNAVAILABLE;
-    }
-
     float x, y, z;
     if (sscanf(ctx->args, "precise %f %f %f", &x, &y, &z) == 3) {
         return M_TeleportToXYZ(x, y, z, true);
@@ -465,6 +457,25 @@ static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *const ctx)
     }
 
     return M_TeleportToObject(ctx->args);
+}
+
+static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *const ctx)
+{
+    const bool flyby_active = FlybyMode_IsActive();
+    if (!flyby_active && !Game_IsPlayable()) {
+        return CR_UNAVAILABLE;
+    }
+
+    const ITEM *const lara_item = Lara_GetItem();
+    if (lara_item->hit_points <= 0) {
+        return CR_UNAVAILABLE;
+    }
+
+    const COMMAND_RESULT result = M_TryTeleport(ctx);
+    if (result == CR_SUCCESS && flyby_active) {
+        FlybyMode_Cancel();
+    }
+    return result;
 }
 
 REGISTER_CONSOLE_COMMAND("tp", M_Entrypoint, GS_ID("console/cmd/tp/help"))
