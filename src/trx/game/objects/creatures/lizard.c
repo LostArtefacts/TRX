@@ -298,7 +298,7 @@ static void M_Control(const int16_t item_num)
             } else if (
                 Creature_CanTargetEnemy(item, &info) && info.bite
                 && info.distance < M_ATTACK_0_RANGE
-                && (lara_info->poison_timer < 256
+                && (lara_info->poison.value < 256
                     || M_IsEnemyBoxSearchable(creature->enemy))) {
                 item->goal_anim_state = M_STATE_AIM_0;
             } else {
@@ -332,7 +332,7 @@ static void M_Control(const int16_t item_num)
             } else if (
                 Creature_CanTargetEnemy(item, &info)
                 && info.distance < M_ATTACK_0_RANGE
-                && (lara_info->poison_timer < 256
+                && (lara_info->poison.value < 256
                     || M_IsEnemyBoxSearchable(creature->enemy))) {
                 item->goal_anim_state = M_STATE_STOP;
             } else if (info.distance > M_WALK_RANGE) {
@@ -405,7 +405,7 @@ static void M_Control(const int16_t item_num)
             }
 
             if (info.bite && info.distance < M_ATTACK_0_RANGE
-                && (lara_info->poison_timer < 256
+                && (lara_info->poison.value < 256
                     || M_IsEnemyBoxSearchable(creature->enemy))) {
                 item->goal_anim_state = M_STATE_PUNCH_B;
             } else {
@@ -480,7 +480,7 @@ static void M_Control(const int16_t item_num)
                 } else if (
                     Creature_CanTargetEnemy(item, &info)
                     && info.distance < M_ATTACK_0_RANGE
-                    && (lara_info->poison_timer < 256
+                    && (lara_info->poison.value < 256
                         || M_IsEnemyBoxSearchable(creature->enemy))) {
                     item->goal_anim_state = M_STATE_STOP;
                 } else if (info.ahead && info.distance < M_WALK_RANGE) {

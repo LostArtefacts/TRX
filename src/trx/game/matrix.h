@@ -28,6 +28,7 @@ void Matrix_GenerateW2V(const XYZ_32 *pos, const XYZ_16 *rot);
 void Matrix_LookAt(
     int32_t xsrc, int32_t ysrc, int32_t zsrc, int32_t xtar, int32_t ytar,
     int32_t ztar, int16_t roll);
+void Matrix_ScaleW2V(XYZ_32 scale);
 
 bool Matrix_Push(void);
 bool Matrix_PushUnit(void);

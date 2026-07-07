@@ -46,6 +46,11 @@ whichever key you have bound, and not include it as part of the command itself.
 - `/heal`  
   Tough day, Lara? Heals our girl back to full health.
 
+- `/poison`  
+  `/poison {num}`  
+  `/poison {num} -t`  
+  Displays or sets Lara's poison level. Snake bites on demand! In TR4, use `-t` to set the target level instead, letting the venom creep in gradually – and fester if left untreated.
+
 - `/burn`
 - `/burn on`
 - `/burn off`

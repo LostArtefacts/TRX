@@ -538,7 +538,8 @@ void SG_File_DumpLara(JSON_WRITE_IO *const io)
     JSONW_WRITE(io, "air", lara->air);
     JSONW_WRITE(io, "sprint_timer", lara->sprint_timer);
     JSONW_WRITE(io, "exposure_timer", lara->exposure_timer);
-    JSONW_WRITE(io, "poison_timer", lara->poison_timer);
+    JSONW_WRITE(io, "poison_timer", lara->poison.value);
+    JSONW_WRITE(io, "poison_target", lara->poison.target);
     JSONW_WRITE(io, "dive_count", lara->dive_timer);
     JSONW_WRITE(io, "death_count", lara->death_timer);
 

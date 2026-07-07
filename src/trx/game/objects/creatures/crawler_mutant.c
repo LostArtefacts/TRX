@@ -340,7 +340,7 @@ static void M_ControlCrawler(const int16_t item_num)
 
     const bool violent = info.zone_num == info.enemy_zone_num;
     Creature_UpdateMood(item, &info, violent);
-    if (creature->enemy == lara_item && lara->poison_timer >= M_MAX_POISON) {
+    if (creature->enemy == lara_item && lara->poison.value >= M_MAX_POISON) {
         creature->mood = MOOD_ESCAPE;
     }
     Creature_ApplyMood(item, &info, violent);

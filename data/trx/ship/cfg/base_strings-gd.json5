@@ -69,6 +69,9 @@
             "config_option_unknown_option": "Roghainn neo-aithnichte: %s",
             "current_health_get": "Slàinte làithreach Lara: %d",
             "current_health_set": "Slàinte Lara air a shuidheachadh gu %d",
+            "current_poison_get": "\\{review}Fuil làrach làithreach Lara: %d (targaid: %d)",
+            "current_poison_set": "\\{review}Fuil Lara air a shuidheachadh gu %d",
+            "current_poison_target_set": "\\{review}Targaid fuil Lara air a shuidheachadh gu %d",
             "door_close": "Dùin Sesame!",
             "door_open": "Fosgail Sesame!",
             "door_open_fail": "Chan eil doras sam bith faisg air Lara",
@@ -397,6 +400,9 @@
                 "invalid_track": "Slighe-ciùil mì-dhligheach",
                 "stopped": "Sguir an ceòl",
                 "track": "A' cluich ciùil %d",
+            },
+            "poison": {
+                "help": "\\{review}A’ suidheachadh ìre fuil Lara chun luach sònraichte. Cleachd -t gus an ìre targaid a shuidheachadh an àite sin (TR4 a-mhàin).",
             },
             "pos": {
                 "help": "Seall suidheachadh Lara.",

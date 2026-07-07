@@ -37,19 +37,19 @@ bool UI_LaraHealthBar(const bool blink_state, const bool force)
 
     const bool is_blinking = g_Config.ui.enable_bar_flashing
         && (health <= LARA_MAX_HITPOINTS * UI_BAR_BLINK_THRESHOLD
-            || lara->poison_timer != 0);
+            || lara->poison.value != 0);
     const bool is_recently_hurt = m_HitTimer > 0;
     const bool show = force
         || (g_Config.ui.show_bars
             && (is_recently_hurt || health <= 0 || lara->gun_status == LGS_READY
-                || lara->poison_timer != 0 || is_blinking));
+                || lara->poison.value != 0 || is_blinking));
     if (!show) {
         return false;
     }
 
     UI_Bar((UI_BAR_SETTINGS) {
         .type =
-            lara->poison_timer != 0 ? UI_BAR_LARA_HP_POISON : UI_BAR_LARA_HP,
+            lara->poison.value != 0 ? UI_BAR_LARA_HP_POISON : UI_BAR_LARA_HP,
         .w = UI_BAR_WIDTH,
         .h = UI_BAR_HEIGHT,
         .value = is_blinking && blink_state ? 0 : health,

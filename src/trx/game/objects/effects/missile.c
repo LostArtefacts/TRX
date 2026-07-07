@@ -143,7 +143,7 @@ static void M_ControlPoison(const int16_t effect_num)
 
     if (Lara_IsNearItem(&effect->pos, 350)) {
         LARA_INFO *const lara_info = Lara_GetLaraInfo();
-        lara_info->poison_timer += 4;
+        lara_info->poison.value += 4;
     }
 
     if (effect->counter == 0) {

@@ -3,6 +3,7 @@
 #include <trx/core/json/util/write_io.h>
 #include <trx/game/input.h>
 #include <trx/game/lara.h>
+#include <trx/game/lara/poison.h>
 #include <trx/game/objects/common.h>
 #include <trx/game/objects/general/pickup.h>
 #include <trx/game/output.h>
@@ -163,8 +164,7 @@ static void M_ControlHeal(const int16_t item_num)
     if (dx < STEP_L && dy < WALL_L && dz < STEP_L) {
         M_CountCrystal(p);
 
-        LARA_INFO *const lara = Lara_GetLaraInfo();
-        lara->poison_timer = 0;
+        Lara_Poison_Cure();
         lara_item->hit_points += LARA_MAX_HITPOINTS / 2;
         CLAMPG(lara_item->hit_points, LARA_MAX_HITPOINTS);
 

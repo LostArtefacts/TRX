@@ -69,6 +69,9 @@
             "config_option_unknown_option": "Nieznana opcja: %s",
             "current_health_get": "Aktualne zdrowie Lary: %d",
             "current_health_set": "Zdrowie Lary ustawione na %d",
+            "current_poison_get": "\\{review}Aktualna trucizna Lary: %d (cel: %d)",
+            "current_poison_set": "\\{review}Trucizna Lary ustawiona na %d",
+            "current_poison_target_set": "\\{review}Cel trucizny Lary ustawiony na %d",
             "door_close": "Sezamie, zamknij się!",
             "door_open": "Sezamie, otwórz się!",
             "door_open_fail": "Brak drzwi w pobliżu Lary",
@@ -397,6 +400,9 @@
                 "invalid_track": "Nieprawidłowa ścieżka muzyczka",
                 "stopped": "Muzyka zatrzymana",
                 "track": "Odtwarzanie utworu muzycznego %d",
+            },
+            "poison": {
+                "help": "\\{review}Ustawia poziom trucizny Lary na określoną wartość. Użyj -t, aby ustawić poziom celu zamiast tego (tylko TR4).",
             },
             "pos": {
                 "help": "Pokazuje pozycję Lary.",
