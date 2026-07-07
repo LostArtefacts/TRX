@@ -87,6 +87,8 @@ static void M_PushWeapons(lua_State *const L)
     X_LUA_WEAPON(LGT_DESERT_EAGLE);
     X_LUA_WEAPON(LGT_MP5);
     X_LUA_WEAPON(LGT_ROCKET);
+    X_LUA_WEAPON(LGT_CROSSBOW);
+    X_LUA_WEAPON(LGT_REVOLVER);
 #undef X_LUA_WEAPON
 
     lua_setfield(L, -2, "weapons");

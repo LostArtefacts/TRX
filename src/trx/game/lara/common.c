@@ -272,6 +272,28 @@ void Lara_InitialiseInventory(const GF_LEVEL *const level)
         }
         lara_info->harpoon_ammo.ammo = resume->harpoon_ammo;
 
+        if (resume->flags.has_crossbow) {
+            Inv_AddItem(O_CROSSBOW_ITEM);
+            Item_GlobalReplace(O_CROSSBOW_ITEM, O_CROSSBOW_AMMO_1_ITEM);
+        } else {
+            Inv_AddItemNTimes(
+                O_CROSSBOW_AMMO_1_ITEM,
+                resume->crossbow_ammo
+                    / Gun_GetAmmoPickupQuantity(LGT_CROSSBOW));
+        }
+        lara_info->crossbow_ammo.ammo = resume->crossbow_ammo;
+
+        if (resume->flags.has_revolver) {
+            Inv_AddItem(O_REVOLVER_ITEM);
+            Item_GlobalReplace(O_REVOLVER_ITEM, O_REVOLVER_AMMO_ITEM);
+        } else {
+            Inv_AddItemNTimes(
+                O_REVOLVER_AMMO_ITEM,
+                resume->revolver_ammo
+                    / Gun_GetAmmoPickupQuantity(LGT_REVOLVER));
+        }
+        lara_info->revolver_ammo.ammo = resume->revolver_ammo;
+
         Inv_AddItemNTimes(O_SMALL_MEDIPACK_ITEM, resume->small_medipacks);
         Inv_AddItemNTimes(O_LARGE_MEDIPACK_ITEM, resume->large_medipacks);
         Inv_AddItemNTimes(O_FLARE_ITEM, resume->flares);
@@ -280,6 +302,8 @@ void Lara_InitialiseInventory(const GF_LEVEL *const level)
         Inv_AddItemNTimes(O_QUEST_ITEM_2, resume->num_quest_item_2);
         Inv_AddItemNTimes(O_QUEST_ITEM_3, resume->num_quest_item_3);
         Inv_AddItemNTimes(O_QUEST_ITEM_4, resume->num_quest_item_4);
+        Inv_AddItemNTimes(O_QUEST_ITEM_5, resume->num_quest_item_5);
+        Inv_AddItemNTimes(O_QUEST_ITEM_6, resume->num_quest_item_6);
 
         if (g_Config.gameplay.remember_gun_status) {
             lara_info->gun_status = resume->gun_status;
@@ -390,6 +414,16 @@ void Lara_UseItem(const OBJECT_ID obj_id)
         request_gun_type = LGT_ROCKET;
         break;
 
+    case O_CROSSBOW_ITEM:
+    case O_CROSSBOW_OPTION:
+        request_gun_type = LGT_CROSSBOW;
+        break;
+
+    case O_REVOLVER_ITEM:
+    case O_REVOLVER_OPTION:
+        request_gun_type = LGT_REVOLVER;
+        break;
+
     case O_FLAREBOX_ITEM:
     case O_FLAREBOX_OPTION:
         lara_info->request_gun_type = LGT_FLARE;
@@ -438,6 +472,38 @@ void Lara_UseItem(const OBJECT_ID obj_id)
     case O_PUZZLE_OPTION_3:
     case O_PUZZLE_ITEM_4:
     case O_PUZZLE_OPTION_4:
+    case O_KEY_ITEM_5:
+    case O_KEY_OPTION_5:
+    case O_KEY_ITEM_6:
+    case O_KEY_OPTION_6:
+    case O_KEY_ITEM_7:
+    case O_KEY_OPTION_7:
+    case O_KEY_ITEM_8:
+    case O_KEY_OPTION_8:
+    case O_KEY_ITEM_9:
+    case O_KEY_OPTION_9:
+    case O_KEY_ITEM_10:
+    case O_KEY_OPTION_10:
+    case O_KEY_ITEM_11:
+    case O_KEY_OPTION_11:
+    case O_KEY_ITEM_12:
+    case O_KEY_OPTION_12:
+    case O_PUZZLE_ITEM_5:
+    case O_PUZZLE_OPTION_5:
+    case O_PUZZLE_ITEM_6:
+    case O_PUZZLE_OPTION_6:
+    case O_PUZZLE_ITEM_7:
+    case O_PUZZLE_OPTION_7:
+    case O_PUZZLE_ITEM_8:
+    case O_PUZZLE_OPTION_8:
+    case O_PUZZLE_ITEM_9:
+    case O_PUZZLE_OPTION_9:
+    case O_PUZZLE_ITEM_10:
+    case O_PUZZLE_OPTION_10:
+    case O_PUZZLE_ITEM_11:
+    case O_PUZZLE_OPTION_11:
+    case O_PUZZLE_ITEM_12:
+    case O_PUZZLE_OPTION_12:
     case O_LEADBAR_ITEM:
     case O_LEADBAR_OPTION:
     case O_SCION_ITEM_1:

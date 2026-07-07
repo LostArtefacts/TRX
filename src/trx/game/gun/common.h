@@ -22,5 +22,6 @@ int32_t Gun_GetAmmoInventoryQuantity(LARA_GUN_TYPE gun_type);
 int32_t Gun_GetAmmoClipCount(LARA_GUN_TYPE gun_type);
 AMMO_INFO *Gun_GetAmmoInfo(LARA_GUN_TYPE gun_type);
 bool Gun_IsRifleType(LARA_GUN_TYPE gun_type);
+bool Gun_IsSinglePistolType(LARA_GUN_TYPE gun_type);
 
 void Gun_AddDynamicLight(void);

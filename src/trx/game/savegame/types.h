@@ -29,7 +29,11 @@ typedef struct {
     uint16_t grenade_ammo;
     uint16_t rocket_ammo;
     uint16_t harpoon_ammo;
+    uint16_t crossbow_ammo;
+    uint16_t revolver_ammo;
     uint16_t flares;
+    uint8_t num_quest_item_5;
+    uint8_t num_quest_item_6;
 
     struct {
         bool available;
@@ -45,6 +49,8 @@ typedef struct {
         bool has_grenade;
         bool has_rocket;
         bool has_harpoon;
+        bool has_crossbow;
+        bool has_revolver;
     } flags;
 
     bool level_completed;

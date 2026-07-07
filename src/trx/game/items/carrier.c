@@ -31,6 +31,8 @@ static bool M_ShouldCenterDrop(const OBJECT_ID obj_id)
     case O_QUEST_ITEM_2:
     case O_QUEST_ITEM_3:
     case O_QUEST_ITEM_4:
+    case O_QUEST_ITEM_5:
+    case O_QUEST_ITEM_6:
         return false;
 
     default:

@@ -1851,6 +1851,9 @@
         "big_spider": {
             "name": "Ragno Gigante",
         },
+        "binoculars": {
+            "name": "\\{review}Binocolo",
+        },
         "bird_guardian": {
             "name": "Uccello Guardiano",
         },
@@ -1956,8 +1959,20 @@
         "crocodile": {
             "name": "Coccodrillo",
         },
+        "crossbow": {
+            "name": "\\{review}Balestra",
+        },
+        "crossbow_ammo": {
+            "name": "\\{review}Dardi per Balestra",
+        },
+        "crossbow_bolt": {
+            "name": "\\{review}Dardo per Balestra",
+        },
         "crow": {
             "name": "Corvo",
+        },
+        "crowbar": {
+            "name": "\\{review}Piede di Porco",
         },
         "cult_1": {
             "name": "Scagnozzo Mascherato 1",
@@ -2096,6 +2111,15 @@
         },
         "ember_emitter": {
             "name": "Emettitore di Brace",
+        },
+        "examine_1": {
+            "name": "\\{review}Esamina Oggetto 1",
+        },
+        "examine_2": {
+            "name": "\\{review}Esamina Oggetto 2",
+        },
+        "examine_3": {
+            "name": "\\{review}Esamina Oggetto 3",
         },
         "explosion_1": {
             "name": "Esplosione 1",
@@ -2279,17 +2303,98 @@
         "key_1": {
             "name": "Chiave 1",
         },
+        "key_10": {
+            "name": "\\{review}Chiave 10",
+        },
+        "key_11": {
+            "name": "\\{review}Chiave 11",
+        },
+        "key_12": {
+            "name": "\\{review}Chiave 12",
+        },
+        "key_1_combo_1": {
+            "name": "\\{review}Chiave 1 (Combo 1)",
+        },
+        "key_1_combo_2": {
+            "name": "\\{review}Chiave 1 (Combo 2)",
+        },
         "key_2": {
             "name": "Chiave 2",
+        },
+        "key_2_combo_1": {
+            "name": "\\{review}Chiave 2 (Combo 1)",
+        },
+        "key_2_combo_2": {
+            "name": "\\{review}Chiave 2 (Combo 2)",
         },
         "key_3": {
             "name": "Chiave 3",
         },
+        "key_3_combo_1": {
+            "name": "\\{review}Chiave 3 (Combo 1)",
+        },
+        "key_3_combo_2": {
+            "name": "\\{review}Chiave 3 (Combo 2)",
+        },
         "key_4": {
             "name": "Chiave 4",
         },
+        "key_4_combo_1": {
+            "name": "\\{review}Chiave 4 (Combo 1)",
+        },
+        "key_4_combo_2": {
+            "name": "\\{review}Chiave 4 (Combo 2)",
+        },
+        "key_5": {
+            "name": "\\{review}Chiave 5",
+        },
+        "key_5_combo_1": {
+            "name": "\\{review}Chiave 5 (Combo 1)",
+        },
+        "key_5_combo_2": {
+            "name": "\\{review}Chiave 5 (Combo 2)",
+        },
+        "key_6": {
+            "name": "\\{review}Chiave 6",
+        },
+        "key_6_combo_1": {
+            "name": "\\{review}Chiave 6 (Combo 1)",
+        },
+        "key_6_combo_2": {
+            "name": "\\{review}Chiave 6 (Combo 2)",
+        },
+        "key_7": {
+            "name": "\\{review}Chiave 7",
+        },
+        "key_7_combo_1": {
+            "name": "\\{review}Chiave 7 (Combo 1)",
+        },
+        "key_7_combo_2": {
+            "name": "\\{review}Chiave 7 (Combo 2)",
+        },
+        "key_8": {
+            "name": "\\{review}Chiave 8",
+        },
+        "key_8_combo_1": {
+            "name": "\\{review}Chiave 8 (Combo 1)",
+        },
+        "key_8_combo_2": {
+            "name": "\\{review}Chiave 8 (Combo 2)",
+        },
+        "key_9": {
+            "name": "\\{review}Chiave 9",
+        },
         "key_hole_1": {
             "name": "Serratura 1",
+        },
+        "key_hole_10": {
+            "name": "\\{review}Serratura 10",
+        },
+        "key_hole_11": {
+            "name": "\\{review}Serratura 11",
+        },
+        "key_hole_12": {
+            "name": "\\{review}Serratura 12",
         },
         "key_hole_2": {
             "name": "Serratura 2",
@@ -2299,6 +2404,21 @@
         },
         "key_hole_4": {
             "name": "Serratura 4",
+        },
+        "key_hole_5": {
+            "name": "\\{review}Serratura 5",
+        },
+        "key_hole_6": {
+            "name": "\\{review}Serratura 6",
+        },
+        "key_hole_7": {
+            "name": "\\{review}Serratura 7",
+        },
+        "key_hole_8": {
+            "name": "\\{review}Serratura 8",
+        },
+        "key_hole_9": {
+            "name": "\\{review}Serratura 9",
         },
         "kill_all_triggered": {
             "name": "Eliminazione totale attivata",
@@ -2383,6 +2503,9 @@
         },
         "larson": {
             "name": "Larson",
+        },
+        "lasersight": {
+            "name": "\\{review}Mirino Laser",
         },
         "lava_wedge": {
             "name": "Cascata di Lava",
@@ -2564,8 +2687,38 @@
         "pickup_1": {
             "name": "Oggetto Recuperabile 1",
         },
+        "pickup_1_combo_1": {
+            "name": "\\{review}Oggetto da Raccogliere 1 (Combo 1)",
+        },
+        "pickup_1_combo_2": {
+            "name": "\\{review}Oggetto da Raccogliere 1 (Combo 2)",
+        },
         "pickup_2": {
             "name": "Oggetto Recuperabile 2",
+        },
+        "pickup_2_combo_1": {
+            "name": "\\{review}Oggetto da Raccogliere 2 (Combo 1)",
+        },
+        "pickup_2_combo_2": {
+            "name": "\\{review}Oggetto da Raccogliere 2 (Combo 2)",
+        },
+        "pickup_3": {
+            "name": "\\{review}Oggetto da Raccogliere 3",
+        },
+        "pickup_3_combo_1": {
+            "name": "\\{review}Oggetto da Raccogliere 3 (Combo 1)",
+        },
+        "pickup_3_combo_2": {
+            "name": "\\{review}Oggetto da Raccogliere 3 (Combo 2)",
+        },
+        "pickup_4": {
+            "name": "\\{review}Oggetto da Raccogliere 4",
+        },
+        "pickup_4_combo_1": {
+            "name": "\\{review}Oggetto da Raccogliere 4 (Combo 1)",
+        },
+        "pickup_4_combo_2": {
+            "name": "\\{review}Oggetto da Raccogliere 4 (Combo 2)",
         },
         "pickup_aid": {
             "name": "Segnalazione Oggetti",
@@ -2654,17 +2807,98 @@
         "puzzle_1": {
             "name": "Oggetto Enigma 1",
         },
+        "puzzle_10": {
+            "name": "\\{review}Oggetto Enigma 10",
+        },
+        "puzzle_11": {
+            "name": "\\{review}Oggetto Enigma 11",
+        },
+        "puzzle_12": {
+            "name": "\\{review}Oggetto Enigma 12",
+        },
+        "puzzle_1_combo_1": {
+            "name": "\\{review}Oggetto Enigma 1 (Combo 1)",
+        },
+        "puzzle_1_combo_2": {
+            "name": "\\{review}Oggetto Enigma 1 (Combo 2)",
+        },
         "puzzle_2": {
             "name": "Oggetto Enigma 2",
+        },
+        "puzzle_2_combo_1": {
+            "name": "\\{review}Oggetto Enigma 2 (Combo 1)",
+        },
+        "puzzle_2_combo_2": {
+            "name": "\\{review}Oggetto Enigma 2 (Combo 2)",
         },
         "puzzle_3": {
             "name": "Oggetto Enigma 3",
         },
+        "puzzle_3_combo_1": {
+            "name": "\\{review}Oggetto Enigma 3 (Combo 1)",
+        },
+        "puzzle_3_combo_2": {
+            "name": "\\{review}Oggetto Enigma 3 (Combo 2)",
+        },
         "puzzle_4": {
             "name": "Oggetto Enigma 4",
         },
+        "puzzle_4_combo_1": {
+            "name": "\\{review}Oggetto Enigma 4 (Combo 1)",
+        },
+        "puzzle_4_combo_2": {
+            "name": "\\{review}Oggetto Enigma 4 (Combo 2)",
+        },
+        "puzzle_5": {
+            "name": "\\{review}Oggetto Enigma 5",
+        },
+        "puzzle_5_combo_1": {
+            "name": "\\{review}Oggetto Enigma 5 (Combo 1)",
+        },
+        "puzzle_5_combo_2": {
+            "name": "\\{review}Oggetto Enigma 5 (Combo 2)",
+        },
+        "puzzle_6": {
+            "name": "\\{review}Oggetto Enigma 6",
+        },
+        "puzzle_6_combo_1": {
+            "name": "\\{review}Oggetto Enigma 6 (Combo 1)",
+        },
+        "puzzle_6_combo_2": {
+            "name": "\\{review}Oggetto Enigma 6 (Combo 2)",
+        },
+        "puzzle_7": {
+            "name": "\\{review}Oggetto Enigma 7",
+        },
+        "puzzle_7_combo_1": {
+            "name": "\\{review}Oggetto Enigma 7 (Combo 1)",
+        },
+        "puzzle_7_combo_2": {
+            "name": "\\{review}Oggetto Enigma 7 (Combo 2)",
+        },
+        "puzzle_8": {
+            "name": "\\{review}Oggetto Enigma 8",
+        },
+        "puzzle_8_combo_1": {
+            "name": "\\{review}Oggetto Enigma 8 (Combo 1)",
+        },
+        "puzzle_8_combo_2": {
+            "name": "\\{review}Oggetto Enigma 8 (Combo 2)",
+        },
+        "puzzle_9": {
+            "name": "\\{review}Oggetto Enigma 9",
+        },
         "puzzle_done_1": {
             "name": "Serratura Enigma 1 (Usato)",
+        },
+        "puzzle_done_10": {
+            "name": "\\{review}Foro Enigma 10 (Completato)",
+        },
+        "puzzle_done_11": {
+            "name": "\\{review}Foro Enigma 11 (Completato)",
+        },
+        "puzzle_done_12": {
+            "name": "\\{review}Foro Enigma 12 (Completato)",
         },
         "puzzle_done_2": {
             "name": "Serratura Enigma 2 (Usato)",
@@ -2675,8 +2909,32 @@
         "puzzle_done_4": {
             "name": "Serratura Enigma 4 (Usato)",
         },
+        "puzzle_done_5": {
+            "name": "\\{review}Foro Enigma 5 (Completato)",
+        },
+        "puzzle_done_6": {
+            "name": "\\{review}Foro Enigma 6 (Completato)",
+        },
+        "puzzle_done_7": {
+            "name": "\\{review}Foro Enigma 7 (Completato)",
+        },
+        "puzzle_done_8": {
+            "name": "\\{review}Foro Enigma 8 (Completato)",
+        },
+        "puzzle_done_9": {
+            "name": "\\{review}Foro Enigma 9 (Completato)",
+        },
         "puzzle_hole_1": {
             "name": "Serratura Enigma 1 (Vuoto)",
+        },
+        "puzzle_hole_10": {
+            "name": "\\{review}Foro Enigma 10 (Vuoto)",
+        },
+        "puzzle_hole_11": {
+            "name": "\\{review}Foro Enigma 11 (Vuoto)",
+        },
+        "puzzle_hole_12": {
+            "name": "\\{review}Foro Enigma 12 (Vuoto)",
         },
         "puzzle_hole_2": {
             "name": "Serratura Enigma 2 (Vuoto)",
@@ -2686,6 +2944,21 @@
         },
         "puzzle_hole_4": {
             "name": "Serratura Enigma 4 (Vuoto)",
+        },
+        "puzzle_hole_5": {
+            "name": "\\{review}Foro Enigma 5 (Vuoto)",
+        },
+        "puzzle_hole_6": {
+            "name": "\\{review}Foro Enigma 6 (Vuoto)",
+        },
+        "puzzle_hole_7": {
+            "name": "\\{review}Foro Enigma 7 (Vuoto)",
+        },
+        "puzzle_hole_8": {
+            "name": "\\{review}Foro Enigma 8 (Vuoto)",
+        },
+        "puzzle_hole_9": {
+            "name": "\\{review}Foro Enigma 9 (Vuoto)",
         },
         "quad_bike": {
             "name": "Quad",
@@ -2702,6 +2975,12 @@
         "quest_4": {
             "name": "Oggetto Missione 4",
         },
+        "quest_5": {
+            "name": "\\{review}Oggetto Missione 5",
+        },
+        "quest_6": {
+            "name": "\\{review}Oggetto Missione 6",
+        },
         "raptor": {
             "name": "Velociraptor",
         },
@@ -2716,6 +2995,12 @@
         },
         "red_light": {
             "name": "Luce Rossa",
+        },
+        "revolver": {
+            "name": "\\{review}Revolver",
+        },
+        "revolver_ammo": {
+            "name": "\\{review}Munizioni per Revolver",
         },
         "rib": {
             "name": "Gommone a Motore",
@@ -3052,6 +3337,12 @@
         },
         "waterfall": {
             "name": "Foschia Cascata",
+        },
+        "waterskin_1": {
+            "name": "\\{review}Otre Piccolo",
+        },
+        "waterskin_2": {
+            "name": "\\{review}Otre Grande",
         },
         "white_light": {
             "name": "Luce Bianca",

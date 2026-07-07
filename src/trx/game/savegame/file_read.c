@@ -201,6 +201,8 @@ static bool M_ReadLara(JSON_READ_IO *const io)
     M_SHOULD(M_ReadAmmo(io, "desert_eagle", &lara->desert_eagle_ammo));
     M_SHOULD(M_ReadAmmo(io, "mp5", &lara->mp5_ammo));
     M_SHOULD(M_ReadAmmo(io, "rocket", &lara->rocket_ammo));
+    M_SHOULD(M_ReadAmmo(io, "crossbow", &lara->crossbow_ammo));
+    M_SHOULD(M_ReadAmmo(io, "revolver", &lara->revolver_ammo));
 
     if (M_OPTIONAL(JSON_PUSH(io, "weapon"))) {
         lara->gun_item_num = Item_Create();
@@ -247,6 +249,14 @@ static bool M_IsValidItemObject(
         case O_PUZZLE_DONE_2: return initial_obj_id == O_PUZZLE_HOLE_2;
         case O_PUZZLE_DONE_3: return initial_obj_id == O_PUZZLE_HOLE_3;
         case O_PUZZLE_DONE_4: return initial_obj_id == O_PUZZLE_HOLE_4;
+        case O_PUZZLE_DONE_5: return initial_obj_id == O_PUZZLE_HOLE_5;
+        case O_PUZZLE_DONE_6: return initial_obj_id == O_PUZZLE_HOLE_6;
+        case O_PUZZLE_DONE_7: return initial_obj_id == O_PUZZLE_HOLE_7;
+        case O_PUZZLE_DONE_8: return initial_obj_id == O_PUZZLE_HOLE_8;
+        case O_PUZZLE_DONE_9: return initial_obj_id == O_PUZZLE_HOLE_9;
+        case O_PUZZLE_DONE_10: return initial_obj_id == O_PUZZLE_HOLE_10;
+        case O_PUZZLE_DONE_11: return initial_obj_id == O_PUZZLE_HOLE_11;
+        case O_PUZZLE_DONE_12: return initial_obj_id == O_PUZZLE_HOLE_12;
         // pickups
         case O_PISTOL_AMMO_ITEM: return initial_obj_id == O_PISTOL_ITEM;
         case O_SHOTGUN_AMMO_ITEM: return initial_obj_id == O_SHOTGUN_ITEM;
@@ -259,6 +269,11 @@ static bool M_IsValidItemObject(
         case O_MP5_AMMO_ITEM: return initial_obj_id == O_MP5_ITEM;
         case O_GRENADE_AMMO_ITEM: return initial_obj_id == O_GRENADE_GUN_ITEM;
         case O_ROCKET_AMMO_ITEM: return initial_obj_id == O_ROCKET_GUN_ITEM;
+        case O_CROSSBOW_AMMO_1_ITEM: return initial_obj_id == O_CROSSBOW_ITEM;
+        case O_CROSSBOW_AMMO_2_ITEM: return initial_obj_id == O_CROSSBOW_ITEM;
+        case O_CROSSBOW_AMMO_3_ITEM: return initial_obj_id == O_CROSSBOW_ITEM;
+        case O_REVOLVER_AMMO_ITEM: return initial_obj_id == O_REVOLVER_ITEM;
+        case O_SHOTGUN_AMMO_2_ITEM: return initial_obj_id == O_SHOTGUN_ITEM;
         // dual-state animals
         case O_ALLIGATOR: return initial_obj_id == O_CROCODILE;
         case O_CROCODILE: return initial_obj_id == O_ALLIGATOR;
@@ -805,6 +820,8 @@ static bool M_ReadResumeInfo(JSON_READ_IO *const io, RESUME_INFO *const resume)
     M_SHOULD(JSON_READ(io, "num_quest_item_2", &resume->num_quest_item_2));
     M_SHOULD(JSON_READ(io, "num_quest_item_3", &resume->num_quest_item_3));
     M_SHOULD(JSON_READ(io, "num_quest_item_4", &resume->num_quest_item_4));
+    M_SHOULD(JSON_READ(io, "num_quest_item_5", &resume->num_quest_item_5));
+    M_SHOULD(JSON_READ(io, "num_quest_item_6", &resume->num_quest_item_6));
 
     M_MUST(JSON_READ(io, "available", &resume->flags.available));
 
@@ -832,6 +849,10 @@ static bool M_ReadResumeInfo(JSON_READ_IO *const io, RESUME_INFO *const resume)
     M_SHOULD(JSON_READ(io, "mp5_ammo", &resume->mp5_ammo));
     M_SHOULD(JSON_READ(io, "has_rocket", &resume->flags.has_rocket));
     M_SHOULD(JSON_READ(io, "rocket_ammo", &resume->rocket_ammo));
+    M_SHOULD(JSON_READ(io, "has_crossbow", &resume->flags.has_crossbow));
+    M_SHOULD(JSON_READ(io, "crossbow_ammo", &resume->crossbow_ammo));
+    M_SHOULD(JSON_READ(io, "has_revolver", &resume->flags.has_revolver));
+    M_SHOULD(JSON_READ(io, "revolver_ammo", &resume->revolver_ammo));
 
     M_MUST(JSON_READ(io, "timer", &resume->stats.timer));
     M_MUST(JSON_READ(io, "ammo_hits", &resume->stats.ammo_hits));
@@ -857,14 +878,90 @@ bool SG_File_LoadInventory(JSON_READ_IO *const io)
         OBJECT_ID object_id;
         const char *const key;
     } objects[] = {
-        { O_PICKUP_ITEM_1, "pickup1" }, { O_PICKUP_ITEM_2, "pickup2" },
-        { O_QUEST_ITEM_1, "quest1" },   { O_QUEST_ITEM_2, "quest2" },
-        { O_QUEST_ITEM_3, "quest3" },   { O_QUEST_ITEM_4, "quest4" },
-        { O_PUZZLE_ITEM_1, "puzzle1" }, { O_PUZZLE_ITEM_2, "puzzle2" },
-        { O_PUZZLE_ITEM_3, "puzzle3" }, { O_PUZZLE_ITEM_4, "puzzle4" },
-        { O_KEY_ITEM_1, "key1" },       { O_KEY_ITEM_2, "key2" },
-        { O_KEY_ITEM_3, "key3" },       { O_KEY_ITEM_4, "key4" },
-        { O_LEADBAR_ITEM, "leadbar" },  { NO_OBJECT, nullptr },
+        { O_PICKUP_ITEM_1, "pickup1" },
+        { O_PICKUP_ITEM_2, "pickup2" },
+        { O_QUEST_ITEM_1, "quest1" },
+        { O_QUEST_ITEM_2, "quest2" },
+        { O_QUEST_ITEM_3, "quest3" },
+        { O_QUEST_ITEM_4, "quest4" },
+        { O_PUZZLE_ITEM_1, "puzzle1" },
+        { O_PUZZLE_ITEM_2, "puzzle2" },
+        { O_PUZZLE_ITEM_3, "puzzle3" },
+        { O_PUZZLE_ITEM_4, "puzzle4" },
+        { O_KEY_ITEM_1, "key1" },
+        { O_KEY_ITEM_2, "key2" },
+        { O_KEY_ITEM_3, "key3" },
+        { O_KEY_ITEM_4, "key4" },
+        { O_LEADBAR_ITEM, "leadbar" },
+        { O_PICKUP_ITEM_3, "pickup3" },
+        { O_PICKUP_ITEM_4, "pickup4" },
+        { O_QUEST_ITEM_5, "quest5" },
+        { O_QUEST_ITEM_6, "quest6" },
+        { O_PUZZLE_ITEM_5, "puzzle5" },
+        { O_PUZZLE_ITEM_6, "puzzle6" },
+        { O_PUZZLE_ITEM_7, "puzzle7" },
+        { O_PUZZLE_ITEM_8, "puzzle8" },
+        { O_PUZZLE_ITEM_9, "puzzle9" },
+        { O_PUZZLE_ITEM_10, "puzzle10" },
+        { O_PUZZLE_ITEM_11, "puzzle11" },
+        { O_PUZZLE_ITEM_12, "puzzle12" },
+        { O_KEY_ITEM_5, "key5" },
+        { O_KEY_ITEM_6, "key6" },
+        { O_KEY_ITEM_7, "key7" },
+        { O_KEY_ITEM_8, "key8" },
+        { O_KEY_ITEM_9, "key9" },
+        { O_KEY_ITEM_10, "key10" },
+        { O_KEY_ITEM_11, "key11" },
+        { O_KEY_ITEM_12, "key12" },
+        { O_PUZZLE_ITEM_1_COMBO_1, "puzzle1_combo1" },
+        { O_PUZZLE_ITEM_1_COMBO_2, "puzzle1_combo2" },
+        { O_PUZZLE_ITEM_2_COMBO_1, "puzzle2_combo1" },
+        { O_PUZZLE_ITEM_2_COMBO_2, "puzzle2_combo2" },
+        { O_PUZZLE_ITEM_3_COMBO_1, "puzzle3_combo1" },
+        { O_PUZZLE_ITEM_3_COMBO_2, "puzzle3_combo2" },
+        { O_PUZZLE_ITEM_4_COMBO_1, "puzzle4_combo1" },
+        { O_PUZZLE_ITEM_4_COMBO_2, "puzzle4_combo2" },
+        { O_PUZZLE_ITEM_5_COMBO_1, "puzzle5_combo1" },
+        { O_PUZZLE_ITEM_5_COMBO_2, "puzzle5_combo2" },
+        { O_PUZZLE_ITEM_6_COMBO_1, "puzzle6_combo1" },
+        { O_PUZZLE_ITEM_6_COMBO_2, "puzzle6_combo2" },
+        { O_PUZZLE_ITEM_7_COMBO_1, "puzzle7_combo1" },
+        { O_PUZZLE_ITEM_7_COMBO_2, "puzzle7_combo2" },
+        { O_PUZZLE_ITEM_8_COMBO_1, "puzzle8_combo1" },
+        { O_PUZZLE_ITEM_8_COMBO_2, "puzzle8_combo2" },
+        { O_KEY_ITEM_1_COMBO_1, "key1_combo1" },
+        { O_KEY_ITEM_1_COMBO_2, "key1_combo2" },
+        { O_KEY_ITEM_2_COMBO_1, "key2_combo1" },
+        { O_KEY_ITEM_2_COMBO_2, "key2_combo2" },
+        { O_KEY_ITEM_3_COMBO_1, "key3_combo1" },
+        { O_KEY_ITEM_3_COMBO_2, "key3_combo2" },
+        { O_KEY_ITEM_4_COMBO_1, "key4_combo1" },
+        { O_KEY_ITEM_4_COMBO_2, "key4_combo2" },
+        { O_KEY_ITEM_5_COMBO_1, "key5_combo1" },
+        { O_KEY_ITEM_5_COMBO_2, "key5_combo2" },
+        { O_KEY_ITEM_6_COMBO_1, "key6_combo1" },
+        { O_KEY_ITEM_6_COMBO_2, "key6_combo2" },
+        { O_KEY_ITEM_7_COMBO_1, "key7_combo1" },
+        { O_KEY_ITEM_7_COMBO_2, "key7_combo2" },
+        { O_KEY_ITEM_8_COMBO_1, "key8_combo1" },
+        { O_KEY_ITEM_8_COMBO_2, "key8_combo2" },
+        { O_PICKUP_ITEM_1_COMBO_1, "pickup1_combo1" },
+        { O_PICKUP_ITEM_1_COMBO_2, "pickup1_combo2" },
+        { O_PICKUP_ITEM_2_COMBO_1, "pickup2_combo1" },
+        { O_PICKUP_ITEM_2_COMBO_2, "pickup2_combo2" },
+        { O_PICKUP_ITEM_3_COMBO_1, "pickup3_combo1" },
+        { O_PICKUP_ITEM_3_COMBO_2, "pickup3_combo2" },
+        { O_PICKUP_ITEM_4_COMBO_1, "pickup4_combo1" },
+        { O_PICKUP_ITEM_4_COMBO_2, "pickup4_combo2" },
+        { O_LASERSIGHT_ITEM, "lasersight" },
+        { O_BINOCULARS_ITEM, "binoculars" },
+        { O_CROWBAR_ITEM, "crowbar" },
+        { O_EXAMINE_ITEM_1, "examine1" },
+        { O_EXAMINE_ITEM_2, "examine2" },
+        { O_EXAMINE_ITEM_3, "examine3" },
+        { O_WATERSKIN_1_EMPTY, "waterskin1" },
+        { O_WATERSKIN_2_EMPTY, "waterskin2" },
+        { NO_OBJECT, nullptr },
     };
 
     Lara_InitialiseInventory(current_level);

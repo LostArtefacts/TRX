@@ -347,6 +347,7 @@ void Gun_Control(void)
         case LGT_MAGNUMS:
         case LGT_AUTOS:
         case LGT_DESERT_EAGLE:
+        case LGT_REVOLVER:
         case LGT_UZIS:
             M_RequestCombatCamera();
             Gun_Pistols_Draw(lara->gun_type);
@@ -358,6 +359,7 @@ void Gun_Control(void)
         case LGT_GRENADE:
         case LGT_ROCKET:
         case LGT_HARPOON:
+        case LGT_CROSSBOW:
             M_RequestCombatCamera();
             Gun_Rifle_Draw(lara->gun_type);
             break;
@@ -380,6 +382,7 @@ void Gun_Control(void)
         case LGT_MAGNUMS:
         case LGT_AUTOS:
         case LGT_DESERT_EAGLE:
+        case LGT_REVOLVER:
         case LGT_UZIS:
             Gun_Pistols_Undraw(lara->gun_type);
             break;
@@ -390,6 +393,7 @@ void Gun_Control(void)
         case LGT_GRENADE:
         case LGT_ROCKET:
         case LGT_HARPOON:
+        case LGT_CROSSBOW:
             Gun_Rifle_Undraw(lara->gun_type);
             break;
 
@@ -427,6 +431,7 @@ void Gun_Control(void)
         case LGT_MAGNUMS:
         case LGT_AUTOS:
         case LGT_DESERT_EAGLE:
+        case LGT_REVOLVER:
         case LGT_UZIS:
             Gun_Pistols_Control(lara->gun_type);
             break;
@@ -437,6 +442,7 @@ void Gun_Control(void)
         case LGT_GRENADE:
         case LGT_ROCKET:
         case LGT_HARPOON:
+        case LGT_CROSSBOW:
             Gun_Rifle_Control(lara->gun_type);
             break;
 

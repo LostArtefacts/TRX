@@ -1851,6 +1851,9 @@
         "big_spider": {
             "name": "Damhan-allaidh Fuamhaireil",
         },
+        "binoculars": {
+            "name": "\\{review}Binoculars",
+        },
         "bird_guardian": {
             "name": "Eun-uilebheisteach",
         },
@@ -1959,8 +1962,20 @@
                 "Crogall",
             ]
         },
+        "crossbow": {
+            "name": "\\{review}Cros-bhogha",
+        },
+        "crossbow_ammo": {
+            "name": "\\{review}Boltaichean Cros-bhogha",
+        },
+        "crossbow_bolt": {
+            "name": "\\{review}Bolt Cros-bhogha",
+        },
         "crow": {
             "name": "Feannag",
+        },
+        "crowbar": {
+            "name": "\\{review}Bàr-craobh",
         },
         "cult_1": {
             "name": "Ruspal le Masg 1",
@@ -2099,6 +2114,15 @@
         },
         "ember_emitter": {
             "name": "Sgaoiladair Èibhleag",
+        },
+        "examine_1": {
+            "name": "\\{review}Sgrùdadh Nì 1",
+        },
+        "examine_2": {
+            "name": "\\{review}Sgrùdadh Nì 2",
+        },
+        "examine_3": {
+            "name": "\\{review}Sgrùdadh Nì 3",
         },
         "explosion_1": {
             "name": "Spreadhadh 1",
@@ -2266,17 +2290,98 @@
         "key_1": {
             "name": "Iuchair 1",
         },
+        "key_10": {
+            "name": "\\{review}Iuchair 10",
+        },
+        "key_11": {
+            "name": "\\{review}Iuchair 11",
+        },
+        "key_12": {
+            "name": "\\{review}Iuchair 12",
+        },
+        "key_1_combo_1": {
+            "name": "\\{review}Iuchair 1 (Measg 1)",
+        },
+        "key_1_combo_2": {
+            "name": "\\{review}Iuchair 1 (Measg 2)",
+        },
         "key_2": {
             "name": "Iuchair 2",
+        },
+        "key_2_combo_1": {
+            "name": "\\{review}Iuchair 2 (Measg 1)",
+        },
+        "key_2_combo_2": {
+            "name": "\\{review}Iuchair 2 (Measg 2)",
         },
         "key_3": {
             "name": "Iuchair 3",
         },
+        "key_3_combo_1": {
+            "name": "\\{review}Iuchair 3 (Measg 1)",
+        },
+        "key_3_combo_2": {
+            "name": "\\{review}Iuchair 3 (Measg 2)",
+        },
         "key_4": {
             "name": "Iuchair 4",
         },
+        "key_4_combo_1": {
+            "name": "\\{review}Iuchair 4 (Measg 1)",
+        },
+        "key_4_combo_2": {
+            "name": "\\{review}Iuchair 4 (Measg 2)",
+        },
+        "key_5": {
+            "name": "\\{review}Iuchair 5",
+        },
+        "key_5_combo_1": {
+            "name": "\\{review}Iuchair 5 (Measg 1)",
+        },
+        "key_5_combo_2": {
+            "name": "\\{review}Iuchair 5 (Measg 2)",
+        },
+        "key_6": {
+            "name": "\\{review}Iuchair 6",
+        },
+        "key_6_combo_1": {
+            "name": "\\{review}Iuchair 6 (Measg 1)",
+        },
+        "key_6_combo_2": {
+            "name": "\\{review}Iuchair 6 (Measg 2)",
+        },
+        "key_7": {
+            "name": "\\{review}Iuchair 7",
+        },
+        "key_7_combo_1": {
+            "name": "\\{review}Iuchair 7 (Measg 1)",
+        },
+        "key_7_combo_2": {
+            "name": "\\{review}Iuchair 7 (Measg 2)",
+        },
+        "key_8": {
+            "name": "\\{review}Iuchair 8",
+        },
+        "key_8_combo_1": {
+            "name": "\\{review}Iuchair 8 (Measg 1)",
+        },
+        "key_8_combo_2": {
+            "name": "\\{review}Iuchair 8 (Combo 2)",
+        },
+        "key_9": {
+            "name": "\\{review}Iuchair 9",
+        },
         "key_hole_1": {
             "name": "Toll Iuchrach 1",
+        },
+        "key_hole_10": {
+            "name": "\\{review}Toll-Iuchair 10",
+        },
+        "key_hole_11": {
+            "name": "\\{review}Toll-Iuchair 11",
+        },
+        "key_hole_12": {
+            "name": "\\{review}Toll-Iuchair 12",
         },
         "key_hole_2": {
             "name": "Toll Iuchrach 2",
@@ -2286,6 +2391,21 @@
         },
         "key_hole_4": {
             "name": "Toll Iuchrach 4",
+        },
+        "key_hole_5": {
+            "name": "\\{review}Toll-Iuchair 5",
+        },
+        "key_hole_6": {
+            "name": "\\{review}Toll-Iuchair 6",
+        },
+        "key_hole_7": {
+            "name": "\\{review}Toll-Iuchair 7",
+        },
+        "key_hole_8": {
+            "name": "\\{review}Toll-Iuchair 8",
+        },
+        "key_hole_9": {
+            "name": "\\{review}Toll-Iuchair 9",
         },
         "kill_all_triggered": {
             "name": "Cur às do gach rud",
@@ -2367,6 +2487,9 @@
         },
         "larson": {
             "name": "Larson",
+        },
+        "lasersight": {
+            "name": "\\{review}Sgàil Laser",
         },
         "lava_wedge": {
             "name": "Cliathaich Teine-teinteach",
@@ -2537,8 +2660,38 @@
         "pickup_1": {
             "name": "Nì Togail 1",
         },
+        "pickup_1_combo_1": {
+            "name": "\\{review}Nìochd Pickup 1 (Combo 1)",
+        },
+        "pickup_1_combo_2": {
+            "name": "\\{review}Nìochd Pickup 1 (Combo 2)",
+        },
         "pickup_2": {
             "name": "Nì Togail 2",
+        },
+        "pickup_2_combo_1": {
+            "name": "\\{review}Nìochd Pickup 2 (Combo 1)",
+        },
+        "pickup_2_combo_2": {
+            "name": "\\{review}Nìochd Pickup 2 (Combo 2)",
+        },
+        "pickup_3": {
+            "name": "\\{review}Nì Gabhail 3",
+        },
+        "pickup_3_combo_1": {
+            "name": "\\{review}Nìochd Pickup 3 (Combo 1)",
+        },
+        "pickup_3_combo_2": {
+            "name": "\\{review}Nìochd Pickup 3 (Combo 2)",
+        },
+        "pickup_4": {
+            "name": "\\{review}Nì Gabhail 4",
+        },
+        "pickup_4_combo_1": {
+            "name": "\\{review}Nìochd Pickup 4 (Combo 1)",
+        },
+        "pickup_4_combo_2": {
+            "name": "\\{review}Nìochd Pickup 4 (Combo 2)",
         },
         "pickup_aid": {
             "name": "Cobhair Togail",
@@ -2627,17 +2780,98 @@
         "puzzle_1": {
             "name": "Nì Tòimhseachain 1",
         },
+        "puzzle_10": {
+            "name": "\\{review}Nìomhaire Fuasgladh 10",
+        },
+        "puzzle_11": {
+            "name": "\\{review}Nìomhaire Fuasgladh 11",
+        },
+        "puzzle_12": {
+            "name": "\\{review}Nìomhaire Fuasgladh 12",
+        },
+        "puzzle_1_combo_1": {
+            "name": "\\{review}Nìomhaire Fuasgladh 1 (Measg 1)",
+        },
+        "puzzle_1_combo_2": {
+            "name": "\\{review}Nìomhaire Fuasgladh 1 (Measg 2)",
+        },
         "puzzle_2": {
             "name": "Nì Tòimhseachain 2",
+        },
+        "puzzle_2_combo_1": {
+            "name": "\\{review}Nìomhaire Fuasgladh 2 (Measg 1)",
+        },
+        "puzzle_2_combo_2": {
+            "name": "\\{review}Nìomhaire Fuasgladh 2 (Measg 2)",
         },
         "puzzle_3": {
             "name": "Nì Tòimhseachain 3",
         },
+        "puzzle_3_combo_1": {
+            "name": "\\{review}Nìomhaire Fuasgladh 3 (Measg 1)",
+        },
+        "puzzle_3_combo_2": {
+            "name": "\\{review}Nìomhaire Fuasgladh 3 (Measg 2)",
+        },
         "puzzle_4": {
             "name": "Nì Tòimhseachain 4",
         },
+        "puzzle_4_combo_1": {
+            "name": "\\{review}Nìomhaire Fuasgladh 4 (Measg 1)",
+        },
+        "puzzle_4_combo_2": {
+            "name": "\\{review}Nìomhaire Fuasgladh 4 (Measg 2)",
+        },
+        "puzzle_5": {
+            "name": "\\{review}Nìomhaire Fuasgladh 5",
+        },
+        "puzzle_5_combo_1": {
+            "name": "\\{review}Nìomhaire Fuasgladh 5 (Measg 1)",
+        },
+        "puzzle_5_combo_2": {
+            "name": "\\{review}Nìomhaire Fuasgladh 5 (Measg 2)",
+        },
+        "puzzle_6": {
+            "name": "\\{review}Nìomhaire Fuasgladh 6",
+        },
+        "puzzle_6_combo_1": {
+            "name": "\\{review}Nìomhaire Fuasgladh 6 (Measg 1)",
+        },
+        "puzzle_6_combo_2": {
+            "name": "\\{review}Nìomhaire Fuasgladh 6 (Measg 2)",
+        },
+        "puzzle_7": {
+            "name": "\\{review}Nìomhaire Fuasgladh 7",
+        },
+        "puzzle_7_combo_1": {
+            "name": "\\{review}Nìomhaire Fuasgladh 7 (Measg 1)",
+        },
+        "puzzle_7_combo_2": {
+            "name": "\\{review}Nìomhaire Fuasgladh 7 (Measg 2)",
+        },
+        "puzzle_8": {
+            "name": "\\{review}Nìomhaire Fuasgladh 8",
+        },
+        "puzzle_8_combo_1": {
+            "name": "\\{review}Nìomhaire Fuasgladh 8 (Measg 1)",
+        },
+        "puzzle_8_combo_2": {
+            "name": "\\{review}Nìochd Puzzle 8 (Combo 2)",
+        },
+        "puzzle_9": {
+            "name": "\\{review}Nìomhaire Fuasgladh 9",
+        },
         "puzzle_done_1": {
             "name": "Toll Tòimhseachain 1 (Deiseil)",
+        },
+        "puzzle_done_10": {
+            "name": "\\{review}Toll Puzzle 10 (Deiseil)",
+        },
+        "puzzle_done_11": {
+            "name": "\\{review}Toll Puzzle 11 (Deiseil)",
+        },
+        "puzzle_done_12": {
+            "name": "\\{review}Toll Puzzle 12 (Deiseil)",
         },
         "puzzle_done_2": {
             "name": "Toll Tòimhseachain 2 (Deiseil)",
@@ -2648,8 +2882,32 @@
         "puzzle_done_4": {
             "name": "Toll Tòimhseachain 4 (Deiseil)",
         },
+        "puzzle_done_5": {
+            "name": "\\{review}Toll Puzzle 5 (Deiseil)",
+        },
+        "puzzle_done_6": {
+            "name": "\\{review}Toll Puzzle 6 (Deiseil)",
+        },
+        "puzzle_done_7": {
+            "name": "\\{review}Toll Puzzle 7 (Deiseil)",
+        },
+        "puzzle_done_8": {
+            "name": "\\{review}Toll Puzzle 8 (Deiseil)",
+        },
+        "puzzle_done_9": {
+            "name": "\\{review}Toll Puzzle 9 (Deiseil)",
+        },
         "puzzle_hole_1": {
             "name": "Toll Tòimhseachain 1 (Falamh)",
+        },
+        "puzzle_hole_10": {
+            "name": "\\{review}Toll Puzzle 10 (Falamh)",
+        },
+        "puzzle_hole_11": {
+            "name": "\\{review}Toll Puzzle 11 (Falamh)",
+        },
+        "puzzle_hole_12": {
+            "name": "\\{review}Toll Puzzle 12 (Falamh)",
         },
         "puzzle_hole_2": {
             "name": "Toll Tòimhseachain 2 (Falamh)",
@@ -2659,6 +2917,21 @@
         },
         "puzzle_hole_4": {
             "name": "Toll Tòimhseachain 4 (Falamh)",
+        },
+        "puzzle_hole_5": {
+            "name": "\\{review}Toll Puzzle 5 (Falamh)",
+        },
+        "puzzle_hole_6": {
+            "name": "\\{review}Toll Puzzle 6 (Falamh)",
+        },
+        "puzzle_hole_7": {
+            "name": "\\{review}Toll Puzzle 7 (Falamh)",
+        },
+        "puzzle_hole_8": {
+            "name": "\\{review}Toll Puzzle 8 (Falamh)",
+        },
+        "puzzle_hole_9": {
+            "name": "\\{review}Toll Puzzle 9 (Falamh)",
         },
         "quad_bike": {
             "name": "Quad-baidhsagal",
@@ -2674,6 +2947,12 @@
         },
         "quest_4": {
             "name": "Nì Tòir 4",
+        },
+        "quest_5": {
+            "name": "\\{review}Nì Iomairt 5",
+        },
+        "quest_6": {
+            "name": "\\{review}Nì Iomairt 6",
         },
         "raptor": {
             "name": [
@@ -2692,6 +2971,12 @@
         },
         "red_light": {
             "name": "Solas Dearg",
+        },
+        "revolver": {
+            "name": "\\{review}Revolver",
+        },
+        "revolver_ammo": {
+            "name": "\\{review}Ammo Revolver",
         },
         "rib": {
             "name": "RIB",
@@ -3023,6 +3308,12 @@
         },
         "waterfall": {
             "name": "Ceò Eas",
+        },
+        "waterskin_1": {
+            "name": "\\{review}Botal Uisge Beag",
+        },
+        "waterskin_2": {
+            "name": "\\{review}Botal Uisge Mòr",
         },
         "white_light": {
             "name": "Solas Geal",

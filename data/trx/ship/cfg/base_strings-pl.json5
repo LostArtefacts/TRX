@@ -1854,6 +1854,9 @@
         "big_spider": {
             "name": "Gigantyczny pająk",
         },
+        "binoculars": {
+            "name": "\\{review}Lornetka",
+        },
         "bird_guardian": {
             "name": "Ptak-potwór",
         },
@@ -1959,8 +1962,20 @@
         "crocodile": {
             "name": "Krokodyl",
         },
+        "crossbow": {
+            "name": "\\{review}Kusza",
+        },
+        "crossbow_ammo": {
+            "name": "\\{review}Bełty do kuszy",
+        },
+        "crossbow_bolt": {
+            "name": "\\{review}Bełt do kuszy",
+        },
         "crow": {
             "name": "Kruk",
+        },
+        "crowbar": {
+            "name": "\\{review}Łom",
         },
         "cult_1": {
             "name": "Zamaskowany zbir 1",
@@ -2102,6 +2117,15 @@
         },
         "ember_emitter": {
             "name": "Emiter żaru",
+        },
+        "examine_1": {
+            "name": "\\{review}Przedmiot do zbadania 1",
+        },
+        "examine_2": {
+            "name": "\\{review}Przedmiot do zbadania 2",
+        },
+        "examine_3": {
+            "name": "\\{review}Przedmiot do zbadania 3",
         },
         "explosion_1": {
             "name": "Eksplozja 1",
@@ -2262,17 +2286,98 @@
         "key_1": {
             "name": "Klucz 1",
         },
+        "key_10": {
+            "name": "\\{review}Klucz 10",
+        },
+        "key_11": {
+            "name": "\\{review}Klucz 11",
+        },
+        "key_12": {
+            "name": "\\{review}Klucz 12",
+        },
+        "key_1_combo_1": {
+            "name": "\\{review}Klucz 1 (Kombinacja 1)",
+        },
+        "key_1_combo_2": {
+            "name": "\\{review}Klucz 1 (Kombinacja 2)",
+        },
         "key_2": {
             "name": "Klucz 2",
+        },
+        "key_2_combo_1": {
+            "name": "\\{review}Klucz 2 (Kombinacja 1)",
+        },
+        "key_2_combo_2": {
+            "name": "\\{review}Klucz 2 (Kombinacja 2)",
         },
         "key_3": {
             "name": "Klucz 3",
         },
+        "key_3_combo_1": {
+            "name": "\\{review}Klucz 3 (Kombinacja 1)",
+        },
+        "key_3_combo_2": {
+            "name": "\\{review}Klucz 3 (Kombinacja 2)",
+        },
         "key_4": {
             "name": "Klucz 4",
         },
+        "key_4_combo_1": {
+            "name": "\\{review}Klucz 4 (Kombinacja 1)",
+        },
+        "key_4_combo_2": {
+            "name": "\\{review}Klucz 4 (Kombinacja 2)",
+        },
+        "key_5": {
+            "name": "\\{review}Klucz 5",
+        },
+        "key_5_combo_1": {
+            "name": "\\{review}Klucz 5 (Kombinacja 1)",
+        },
+        "key_5_combo_2": {
+            "name": "\\{review}Klucz 5 (Kombinacja 2)",
+        },
+        "key_6": {
+            "name": "\\{review}Klucz 6",
+        },
+        "key_6_combo_1": {
+            "name": "\\{review}Klucz 6 (Kombinacja 1)",
+        },
+        "key_6_combo_2": {
+            "name": "\\{review}Klucz 6 (Kombinacja 2)",
+        },
+        "key_7": {
+            "name": "\\{review}Klucz 7",
+        },
+        "key_7_combo_1": {
+            "name": "\\{review}Klucz 7 (Kombinacja 1)",
+        },
+        "key_7_combo_2": {
+            "name": "\\{review}Klucz 7 (Kombinacja 2)",
+        },
+        "key_8": {
+            "name": "\\{review}Klucz 8",
+        },
+        "key_8_combo_1": {
+            "name": "\\{review}Klucz 8 (Kombinacja 1)",
+        },
+        "key_8_combo_2": {
+            "name": "\\{review}Klucz 8 (Kombinacja 2)",
+        },
+        "key_9": {
+            "name": "\\{review}Klucz 9",
+        },
         "key_hole_1": {
             "name": "Zamek 1",
+        },
+        "key_hole_10": {
+            "name": "\\{review}Szczelina na klucz 10",
+        },
+        "key_hole_11": {
+            "name": "\\{review}Szczelina na klucz 11",
+        },
+        "key_hole_12": {
+            "name": "\\{review}Szczelina na klucz 12",
         },
         "key_hole_2": {
             "name": "Zamek 2",
@@ -2282,6 +2387,21 @@
         },
         "key_hole_4": {
             "name": "Zamek 4",
+        },
+        "key_hole_5": {
+            "name": "\\{review}Szczelina na klucz 5",
+        },
+        "key_hole_6": {
+            "name": "\\{review}Szczelina na klucz 6",
+        },
+        "key_hole_7": {
+            "name": "\\{review}Szczelina na klucz 7",
+        },
+        "key_hole_8": {
+            "name": "\\{review}Szczelina na klucz 8",
+        },
+        "key_hole_9": {
+            "name": "\\{review}Szczelina na klucz 9",
         },
         "kill_all_triggered": {
             "name": "Eliminacja wszystkich wyzwolonych obiektów",
@@ -2363,6 +2483,9 @@
         },
         "larson": {
             "name": "Larson",
+        },
+        "lasersight": {
+            "name": "\\{review}Celownik laserowy",
         },
         "lava_wedge": {
             "name": "Lawa",
@@ -2524,8 +2647,38 @@
         "pickup_1": {
             "name": "Znajdźka 1",
         },
+        "pickup_1_combo_1": {
+            "name": "\\{review}Przedmiot do podniesienia 1 (Kombinacja 1)",
+        },
+        "pickup_1_combo_2": {
+            "name": "\\{review}Przedmiot do podniesienia 1 (Kombinacja 2)",
+        },
         "pickup_2": {
             "name": "Znajdźka 2",
+        },
+        "pickup_2_combo_1": {
+            "name": "\\{review}Przedmiot do podniesienia 2 (Kombinacja 1)",
+        },
+        "pickup_2_combo_2": {
+            "name": "\\{review}Przedmiot do podniesienia 2 (Kombinacja 2)",
+        },
+        "pickup_3": {
+            "name": "\\{review}Przedmiot do podniesienia 3",
+        },
+        "pickup_3_combo_1": {
+            "name": "\\{review}Przedmiot do podniesienia 3 (Kombinacja 1)",
+        },
+        "pickup_3_combo_2": {
+            "name": "\\{review}Przedmiot do podniesienia 3 (Kombinacja 2)",
+        },
+        "pickup_4": {
+            "name": "\\{review}Przedmiot do podniesienia 4",
+        },
+        "pickup_4_combo_1": {
+            "name": "\\{review}Przedmiot do podniesienia 4 (Kombinacja 1)",
+        },
+        "pickup_4_combo_2": {
+            "name": "\\{review}Przedmiot do podniesienia 4 (Kombinacja 2)",
         },
         "pickup_aid": {
             "name": "Pomoc do znajdziek",
@@ -2614,17 +2767,98 @@
         "puzzle_1": {
             "name": "Przedmiot 1",
         },
+        "puzzle_10": {
+            "name": "\\{review}Przedmiot zagadki 10",
+        },
+        "puzzle_11": {
+            "name": "\\{review}Przedmiot zagadki 11",
+        },
+        "puzzle_12": {
+            "name": "\\{review}Przedmiot zagadki 12",
+        },
+        "puzzle_1_combo_1": {
+            "name": "\\{review}Przedmiot zagadki 1 (Kombinacja 1)",
+        },
+        "puzzle_1_combo_2": {
+            "name": "\\{review}Przedmiot zagadki 1 (Kombinacja 2)",
+        },
         "puzzle_2": {
             "name": "Przedmiot 2",
+        },
+        "puzzle_2_combo_1": {
+            "name": "\\{review}Przedmiot zagadki 2 (Kombinacja 1)",
+        },
+        "puzzle_2_combo_2": {
+            "name": "\\{review}Przedmiot zagadki 2 (Kombinacja 2)",
         },
         "puzzle_3": {
             "name": "Przedmiot 3",
         },
+        "puzzle_3_combo_1": {
+            "name": "\\{review}Przedmiot zagadki 3 (Kombinacja 1)",
+        },
+        "puzzle_3_combo_2": {
+            "name": "\\{review}Przedmiot zagadki 3 (Kombinacja 2)",
+        },
         "puzzle_4": {
             "name": "Przedmiot 4",
         },
+        "puzzle_4_combo_1": {
+            "name": "\\{review}Przedmiot zagadki 4 (Kombinacja 1)",
+        },
+        "puzzle_4_combo_2": {
+            "name": "\\{review}Przedmiot zagadki 4 (Kombinacja 2)",
+        },
+        "puzzle_5": {
+            "name": "\\{review}Przedmiot zagadki 5",
+        },
+        "puzzle_5_combo_1": {
+            "name": "\\{review}Przedmiot zagadki 5 (Kombinacja 1)",
+        },
+        "puzzle_5_combo_2": {
+            "name": "\\{review}Przedmiot zagadki 5 (Kombinacja 2)",
+        },
+        "puzzle_6": {
+            "name": "\\{review}Przedmiot zagadki 6",
+        },
+        "puzzle_6_combo_1": {
+            "name": "\\{review}Przedmiot zagadki 6 (Kombinacja 1)",
+        },
+        "puzzle_6_combo_2": {
+            "name": "\\{review}Przedmiot zagadki 6 (Kombinacja 2)",
+        },
+        "puzzle_7": {
+            "name": "\\{review}Przedmiot zagadki 7",
+        },
+        "puzzle_7_combo_1": {
+            "name": "\\{review}Przedmiot zagadki 7 (Kombinacja 1)",
+        },
+        "puzzle_7_combo_2": {
+            "name": "\\{review}Przedmiot zagadki 7 (Kombinacja 2)",
+        },
+        "puzzle_8": {
+            "name": "\\{review}Przedmiot zagadki 8",
+        },
+        "puzzle_8_combo_1": {
+            "name": "\\{review}Przedmiot zagadki 8 (Kombinacja 1)",
+        },
+        "puzzle_8_combo_2": {
+            "name": "\\{review}Przedmiot zagadki 8 (Kombinacja 2)",
+        },
+        "puzzle_9": {
+            "name": "\\{review}Przedmiot zagadki 9",
+        },
         "puzzle_done_1": {
             "name": "Miejsce na przedmiot 1 (ukończone)",
+        },
+        "puzzle_done_10": {
+            "name": "\\{review}Otwór zagadki 10 (Wykonany)",
+        },
+        "puzzle_done_11": {
+            "name": "\\{review}Otwór zagadki 11 (Wykonany)",
+        },
+        "puzzle_done_12": {
+            "name": "\\{review}Otwór zagadki 12 (Wykonany)",
         },
         "puzzle_done_2": {
             "name": "Miejsce na przedmiot 2 (ukończone)",
@@ -2635,8 +2869,32 @@
         "puzzle_done_4": {
             "name": "Miejsce na przedmiot 4 (ukończone)",
         },
+        "puzzle_done_5": {
+            "name": "\\{review}Otwór zagadki 5 (Wykonany)",
+        },
+        "puzzle_done_6": {
+            "name": "\\{review}Otwór zagadki 6 (Wykonany)",
+        },
+        "puzzle_done_7": {
+            "name": "\\{review}Otwór zagadki 7 (Wykonany)",
+        },
+        "puzzle_done_8": {
+            "name": "\\{review}Otwór zagadki 8 (Wykonany)",
+        },
+        "puzzle_done_9": {
+            "name": "\\{review}Otwór zagadki 9 (Wykonany)",
+        },
         "puzzle_hole_1": {
             "name": "Miejsce na przedmiot 1 (puste)",
+        },
+        "puzzle_hole_10": {
+            "name": "\\{review}Otwór zagadki 10 (Pusty)",
+        },
+        "puzzle_hole_11": {
+            "name": "\\{review}Otwór zagadki 11 (Pusty)",
+        },
+        "puzzle_hole_12": {
+            "name": "\\{review}Otwór zagadki 12 (Pusty)",
         },
         "puzzle_hole_2": {
             "name": "Miejsce na przedmiot 2 (puste)",
@@ -2646,6 +2904,21 @@
         },
         "puzzle_hole_4": {
             "name": "Miejsce na przedmiot 4 (puste)",
+        },
+        "puzzle_hole_5": {
+            "name": "\\{review}Otwór zagadki 5 (Pusty)",
+        },
+        "puzzle_hole_6": {
+            "name": "\\{review}Otwór zagadki 6 (Pusty)",
+        },
+        "puzzle_hole_7": {
+            "name": "\\{review}Otwór zagadki 7 (Pusty)",
+        },
+        "puzzle_hole_8": {
+            "name": "\\{review}Otwór zagadki 8 (Pusty)",
+        },
+        "puzzle_hole_9": {
+            "name": "\\{review}Otwór zagadki 9 (Pusty)",
         },
         "quad_bike": {
             "name": "Czterokołowiec",
@@ -2661,6 +2934,12 @@
         },
         "quest_4": {
             "name": "Przedmiot misji 4",
+        },
+        "quest_5": {
+            "name": "\\{review}Przedmiot zadania 5",
+        },
+        "quest_6": {
+            "name": "\\{review}Przedmiot zadania 6",
         },
         "raptor": {
             "name": [
@@ -2679,6 +2958,12 @@
         },
         "red_light": {
             "name": "Czerwone światło",
+        },
+        "revolver": {
+            "name": "\\{review}Rewolwer",
+        },
+        "revolver_ammo": {
+            "name": "\\{review}Amunicja do rewolweru",
         },
         "rib": {
             "name": "RIB",
@@ -2996,6 +3281,12 @@
         },
         "waterfall": {
             "name": "Mgiełka wodospadu",
+        },
+        "waterskin_1": {
+            "name": "\\{review}Mała bukłak",
+        },
+        "waterskin_2": {
+            "name": "\\{review}Duża bukłak",
         },
         "white_light": {
             "name": "Białe światło",
