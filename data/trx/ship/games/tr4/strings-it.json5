@@ -1,0 +1,967 @@
+{
+    // For usage, refer to the documentation here:
+    // https://lostartefacts.dev/trx/docs/stable/game_strings
+    "objects": {
+        "flare": {
+            "name": "Razzi di Segnalazione",
+        },
+        "grenade_launcher": {
+            "name": "Lanciagranate",
+        }
+    },
+    "cutscenes": [],
+    "levels": [
+        {
+            "title": "Angkor Wat",
+            "legend": "Cambogia, 1984",
+            "objects": {
+                "puzzle_1": {
+                    "name": "Teschio Dorato",
+                }
+            }
+        },
+        {
+            "title": "Corsa verso l'Iride",
+            "objects": {
+                "puzzle_1": {
+                    "name": "Teschio Dorato",
+                }
+            }
+        },
+        {
+            "title": "Tomba di Seth",
+            "legend": "Egitto, presente",
+            "objects": {
+                "puzzle_1": {
+                    "name": "Occhio di Horus",
+                },
+                "puzzle_2": {
+                    "name": "Sabbie Perpetue",
+                },
+                "puzzle_1_combo_1": {
+                    "name": "Pezzo d'Occhio",
+                },
+                "puzzle_1_combo_2": {
+                    "name": "Pezzo d'Occhio",
+                }
+            }
+        },
+        {
+            "title": "Camere Sepolcrali",
+            "objects": {
+                "puzzle_1": {
+                    "name": "Mano di Orione",
+                },
+                "puzzle_2": {
+                    "name": "Mano di Sirio",
+                },
+                "puzzle_3": {
+                    "name": "Talismano dello Scarabeo",
+                },
+                "puzzle_4": {
+                    "name": "Serpente Dorato",
+                }
+            }
+        },
+        {
+            "title": "Valle dei Re",
+            "objects": {
+                "puzzle_1": {
+                    "name": "Chiave di Accensione",
+                }
+            }
+        },
+        {
+            "title": "KV5",
+            "objects": {
+                "puzzle_1": {
+                    "name": "Chiave di Accensione",
+                }
+            }
+        },
+        {
+            "title": "Tempio di Karnak",
+            "objects": {
+                "key_2": {
+                    "name": "Chiave dell'Ipostilo",
+                },
+                "puzzle_1": {
+                    "name": "Talismano del Sole",
+                },
+                "puzzle_2": {
+                    "name": "Vaso Canopo n. 1",
+                },
+                "puzzle_3": {
+                    "name": "Vaso Canopo n. 2",
+                },
+                "puzzle_1_combo_1": {
+                    "name": "Disco del Sole",
+                },
+                "puzzle_1_combo_2": {
+                    "name": "Dea del Sole",
+                }
+            }
+        },
+        {
+            "title": "Grande Sala Ipostila",
+            "objects": {
+                "key_2": {
+                    "name": "Chiave dell'Ipostilo",
+                },
+                "key_3": {
+                    "name": "Chiave del Tempio",
+                },
+                "puzzle_1": {
+                    "name": "Talismano del Sole",
+                },
+                "puzzle_2": {
+                    "name": "Vaso Canopo n. 1",
+                },
+                "puzzle_3": {
+                    "name": "Vaso Canopo n. 2",
+                },
+                "puzzle_1_combo_1": {
+                    "name": "Disco del Sole",
+                },
+                "puzzle_1_combo_2": {
+                    "name": "Dea del Sole",
+                }
+            }
+        },
+        {
+            "title": "Lago Sacro",
+            "objects": {
+                "key_2": {
+                    "name": "Chiave dell'Ipostilo",
+                },
+                "key_3": {
+                    "name": "Chiave del Tempio",
+                },
+                "puzzle_1": {
+                    "name": "Talismano del Sole",
+                },
+                "puzzle_2": {
+                    "name": "Vaso Canopo n. 1",
+                },
+                "puzzle_3": {
+                    "name": "Vaso Canopo n. 2",
+                },
+                "puzzle_1_combo_1": {
+                    "name": "Disco del Sole",
+                },
+                "puzzle_1_combo_2": {
+                    "name": "Dea del Sole",
+                }
+            }
+        },
+        {
+            "title": "Lago 2",
+        },
+        {
+            "title": "Tomba di Semerkhet",
+            "objects": {
+                "puzzle_4": {
+                    "name": "Cartiglio di Ba",
+                },
+                "puzzle_5": {
+                    "name": "Cartiglio di Ra",
+                },
+                "puzzle_4_combo_1": {
+                    "name": "Pezzo di Cartiglio n. 1",
+                },
+                "puzzle_4_combo_2": {
+                    "name": "Pezzo di Cartiglio n. 2",
+                },
+                "examine_2": {
+                    "name": "Regole del Senet",
+                    "description": "\\{color grey}Per vincere la partita, togli tutti i tuoi pezzi dalla scacchiera, facendoli arrivare sul riquadro ankh finale. Al tuo turno, fai girare i bastoncini. Il tuo lancio corrisponde al numero di facce bianche visibili.\n\nSe non vedi alcuna faccia bianca, il tuo lancio è un sei. In questo caso, o se finisci su una casella ankh, ottieni un turno extra. Se ti sposti su un pezzo avversario, quest'ultimo verrà riposto nella sua posizione iniziale.",
+                }
+            }
+        },
+        {
+            "title": "Guardiano di Semerkhet",
+            "objects": {
+                "puzzle_6": {
+                    "name": "Ureo Dorato",
+                },
+                "puzzle_7": {
+                    "name": "Chiave del Guardiano",
+                }
+            }
+        },
+        {
+            "title": "Ferrovia nel Deserto",
+        },
+        {
+            "title": "Alessandria",
+            "objects": {
+                "key_1": {
+                    "name": "Gettone",
+                },
+                "key_10": {
+                    "name": "Chiave del Cancello",
+                },
+                "puzzle_1": {
+                    "name": "Tridente",
+                },
+                "puzzle_2": {
+                    "name": "Pergamena con Spartito",
+                },
+                "puzzle_3": {
+                    "name": "Stella Dorata",
+                },
+                "puzzle_4": {
+                    "name": "Asta con Gancio",
+                },
+                "puzzle_5": {
+                    "name": "Guardiano del Portale",
+                },
+                "puzzle_6": {
+                    "name": "Gemma del Cavaliere",
+                },
+                "puzzle_10": {
+                    "name": "Nodo di Faro",
+                },
+                "puzzle_11": {
+                    "name": "Pilastro di Faro",
+                },
+                "puzzle_12": {
+                    "name": "Scarabeo Nero",
+                },
+                "puzzle_4_combo_1": {
+                    "name": "Gancio",
+                },
+                "puzzle_4_combo_2": {
+                    "name": "Manico Rotto",
+                },
+                "puzzle_5_combo_1": {
+                    "name": "Manico Ornato",
+                },
+                "puzzle_5_combo_2": {
+                    "name": "Effigie di Hathor",
+                },
+                "pickup_1": {
+                    "name": "Scarabeo Rotto",
+                },
+                "pickup_2": {
+                    "name": "Occhiali Rotti",
+                }
+            }
+        },
+        {
+            "title": "Rovine Costiere",
+            "objects": {
+                "key_1": {
+                    "name": "Gettone",
+                },
+                "key_10": {
+                    "name": "Chiave del Cancello",
+                },
+                "puzzle_1": {
+                    "name": "Tridente",
+                },
+                "puzzle_2": {
+                    "name": "Pergamena con Spartito",
+                },
+                "puzzle_3": {
+                    "name": "Stella Dorata",
+                },
+                "puzzle_4": {
+                    "name": "Asta con Gancio",
+                },
+                "puzzle_5": {
+                    "name": "Guardiano del Portale",
+                },
+                "puzzle_6": {
+                    "name": "Gemma del Cavaliere",
+                },
+                "puzzle_10": {
+                    "name": "Nodo di Faro",
+                },
+                "puzzle_11": {
+                    "name": "Pilastro di Faro",
+                },
+                "puzzle_12": {
+                    "name": "Scarabeo Nero",
+                },
+                "puzzle_4_combo_1": {
+                    "name": "Gancio",
+                },
+                "puzzle_4_combo_2": {
+                    "name": "Manico Rotto",
+                },
+                "puzzle_5_combo_1": {
+                    "name": "Manico Ornato",
+                },
+                "puzzle_5_combo_2": {
+                    "name": "Effigie di Hathor",
+                },
+                "pickup_1": {
+                    "name": "Scarabeo Rotto",
+                },
+                "pickup_2": {
+                    "name": "Occhiali Rotti",
+                }
+            }
+        },
+        {
+            "title": "Faro, Tempio di Iside",
+            "objects": {
+                "key_1": {
+                    "name": "Gettone",
+                },
+                "key_10": {
+                    "name": "Chiave del Cancello",
+                },
+                "puzzle_1": {
+                    "name": "Tridente",
+                },
+                "puzzle_2": {
+                    "name": "Pergamena con Spartito",
+                },
+                "puzzle_3": {
+                    "name": "Stella Dorata",
+                },
+                "puzzle_4": {
+                    "name": "Asta con Gancio",
+                },
+                "puzzle_5": {
+                    "name": "Guardiano del Portale",
+                },
+                "puzzle_10": {
+                    "name": "Nodo di Faro",
+                },
+                "puzzle_11": {
+                    "name": "Pilastro di Faro",
+                },
+                "puzzle_12": {
+                    "name": "Scarabeo Nero",
+                },
+                "puzzle_4_combo_1": {
+                    "name": "Gancio",
+                },
+                "puzzle_4_combo_2": {
+                    "name": "Manico Rotto",
+                },
+                "puzzle_5_combo_1": {
+                    "name": "Manico Ornato",
+                },
+                "puzzle_5_combo_2": {
+                    "name": "Effigie di Hathor",
+                },
+                "pickup_1": {
+                    "name": "Scarabeo Rotto",
+                },
+                "pickup_2": {
+                    "name": "Occhiali Rotti",
+                }
+            }
+        },
+        {
+            "title": "Palazzo di Cleopatra",
+            "objects": {
+                "puzzle_5": {
+                    "name": "Guardiano del Portale",
+                },
+                "puzzle_10": {
+                    "name": "Nodo di Faro",
+                },
+                "puzzle_12": {
+                    "name": "Scarabeo Nero",
+                },
+                "puzzle_5_combo_1": {
+                    "name": "Manico Ornato",
+                },
+                "puzzle_5_combo_2": {
+                    "name": "Effigie di Hathor",
+                },
+                "pickup_1": {
+                    "name": "Scarabeo Rotto",
+                },
+                "pickup_2": {
+                    "name": "Occhiali Rotti",
+                }
+            }
+        },
+        {
+            "title": "Catacombe",
+            "objects": {
+                "key_1": {
+                    "name": "Gettone",
+                },
+                "key_10": {
+                    "name": "Chiave del Cancello",
+                },
+                "puzzle_1": {
+                    "name": "Tridente",
+                },
+                "puzzle_2": {
+                    "name": "Pergamena con Spartito",
+                },
+                "puzzle_3": {
+                    "name": "Stella Dorata",
+                },
+                "puzzle_5": {
+                    "name": "Guardiano del Portale",
+                },
+                "puzzle_6": {
+                    "name": "Gemma del Cavaliere",
+                },
+                "puzzle_10": {
+                    "name": "Nodo di Faro",
+                },
+                "puzzle_11": {
+                    "name": "Pilastro di Faro",
+                },
+                "puzzle_12": {
+                    "name": "Scarabeo Nero",
+                },
+                "puzzle_5_combo_1": {
+                    "name": "Manico Ornato",
+                },
+                "puzzle_5_combo_2": {
+                    "name": "Effigie di Hathor",
+                },
+                "pickup_1": {
+                    "name": "Scarabeo Rotto",
+                },
+                "pickup_2": {
+                    "name": "Occhiali Rotti",
+                }
+            }
+        },
+        {
+            "title": "Tempio di Poseidone",
+            "objects": {
+                "puzzle_1": {
+                    "name": "Tridente",
+                },
+                "puzzle_2": {
+                    "name": "Pergamena con Spartito",
+                },
+                "puzzle_3": {
+                    "name": "Stella Dorata",
+                },
+                "puzzle_5": {
+                    "name": "Guardiano del Portale",
+                },
+                "puzzle_6": {
+                    "name": "Gemma del Cavaliere",
+                },
+                "puzzle_10": {
+                    "name": "Nodo di Faro",
+                },
+                "puzzle_11": {
+                    "name": "Pilastro di Faro",
+                },
+                "puzzle_12": {
+                    "name": "Scarabeo Nero",
+                },
+                "puzzle_5_combo_1": {
+                    "name": "Manico Ornato",
+                },
+                "puzzle_5_combo_2": {
+                    "name": "Effigie di Hathor",
+                },
+                "pickup_1": {
+                    "name": "Scarabeo Rotto",
+                },
+                "pickup_2": {
+                    "name": "Occhiali Rotti",
+                }
+            }
+        },
+        {
+            "title": "Biblioteca Perduta",
+            "objects": {
+                "puzzle_2": {
+                    "name": "Pergamena con Spartito",
+                },
+                "puzzle_3": {
+                    "name": "Stella Dorata",
+                },
+                "puzzle_5": {
+                    "name": "Guardiano del Portale",
+                },
+                "puzzle_6": {
+                    "name": "Gemma del Cavaliere",
+                },
+                "puzzle_10": {
+                    "name": "Nodo di Faro",
+                },
+                "puzzle_11": {
+                    "name": "Pilastro di Faro",
+                },
+                "puzzle_12": {
+                    "name": "Scarabeo Nero",
+                },
+                "puzzle_5_combo_1": {
+                    "name": "Manico Ornato",
+                },
+                "puzzle_5_combo_2": {
+                    "name": "Effigie di Hathor",
+                },
+                "pickup_1": {
+                    "name": "Scarabeo Rotto",
+                },
+                "pickup_2": {
+                    "name": "Occhiali Rotti",
+                },
+                "examine_3": {
+                    "name": "Pergamena del Cerchio di Fuoco",
+                    "description": "\\{color yellow}Perché i serpenti possano vivere, prima tutti devono essere placati. Provocali uno alla volta e il cerchio sarà completo.",
+                }
+            }
+        },
+        {
+            "title": "Sala di Demetrio",
+            "objects": {
+                "puzzle_5": {
+                    "name": "Guardiano del Portale",
+                },
+                "puzzle_10": {
+                    "name": "Nodo di Faro",
+                },
+                "puzzle_11": {
+                    "name": "Pilastro di Faro",
+                },
+                "puzzle_12": {
+                    "name": "Scarabeo Nero",
+                },
+                "puzzle_5_combo_1": {
+                    "name": "Manico Ornato",
+                },
+                "puzzle_5_combo_2": {
+                    "name": "Effigie di Hathor",
+                },
+                "pickup_1": {
+                    "name": "Scarabeo Rotto",
+                },
+                "pickup_2": {
+                    "name": "Occhiali Rotti",
+                }
+            }
+        },
+        {
+            "title": "Città dei Morti",
+            "objects": {
+                "puzzle_1": {
+                    "name": "Dosatore di Protossido di Azoto",
+                },
+                "puzzle_2": {
+                    "name": "Cric",
+                },
+                "puzzle_4": {
+                    "name": "Chiave del tetto",
+                },
+                "puzzle_5": {
+                    "name": "Codice del Detonatore",
+                },
+                "puzzle_8": {
+                    "name": "Detonatore di Mine",
+                },
+                "puzzle_1_combo_1": {
+                    "name": "Tubo con Valvola",
+                },
+                "puzzle_1_combo_2": {
+                    "name": "Bomboletta di Protossido di Azoto",
+                },
+                "puzzle_2_combo_1": {
+                    "name": "Corpo del Cric",
+                },
+                "puzzle_2_combo_2": {
+                    "name": "Manico",
+                },
+                "puzzle_8_combo_1": {
+                    "name": "Corpo del Detonatore di Mine",
+                },
+                "puzzle_8_combo_2": {
+                    "name": "Dati Posizione delle Mine",
+                }
+            }
+        },
+        {
+            "title": "Trincee",
+            "objects": {
+                "puzzle_1": {
+                    "name": "Dosatore di Protossido di Azoto",
+                },
+                "puzzle_2": {
+                    "name": "Cric",
+                },
+                "puzzle_4": {
+                    "name": "Chiave del Tetto",
+                },
+                "puzzle_5": {
+                    "name": "Codice del Detonatore",
+                },
+                "puzzle_8": {
+                    "name": "Detonatore di Mine",
+                },
+                "puzzle_1_combo_1": {
+                    "name": "Tubo con Valvola",
+                },
+                "puzzle_1_combo_2": {
+                    "name": "Bomboletta di Protossido di Azoto",
+                },
+                "puzzle_2_combo_1": {
+                    "name": "Corpo del Cric",
+                },
+                "puzzle_2_combo_2": {
+                    "name": "Manico",
+                },
+                "puzzle_8_combo_1": {
+                    "name": "Corpo del Detonatore di Mine",
+                },
+                "puzzle_8_combo_2": {
+                    "name": "Dati Posizione delle Mine",
+                }
+            }
+        },
+        {
+            "title": "Moschea di Tulun",
+            "objects": {
+                "puzzle_1": {
+                    "name": "Dosatore di Protossido di Azoto",
+                },
+                "puzzle_2": {
+                    "name": "Cric",
+                },
+                "puzzle_4": {
+                    "name": "Chiave del Tetto",
+                },
+                "puzzle_5": {
+                    "name": "Codice del Detonatore",
+                },
+                "puzzle_8": {
+                    "name": "Detonatore di Mine",
+                },
+                "puzzle_1_combo_1": {
+                    "name": "Tubo con Valvola",
+                },
+                "puzzle_1_combo_2": {
+                    "name": "Bomboletta di Protossido di Azoto",
+                },
+                "puzzle_2_combo_1": {
+                    "name": "Corpo del Cric",
+                },
+                "puzzle_2_combo_2": {
+                    "name": "Manico",
+                },
+                "puzzle_8_combo_1": {
+                    "name": "Corpo del Detonatore di Mine",
+                },
+                "puzzle_8_combo_2": {
+                    "name": "Dati Posizione delle Mine",
+                }
+            }
+        },
+        {
+            "title": "Bazar",
+            "objects": {
+                "puzzle_1": {
+                    "name": "Dosatore di Protossido di Azoto",
+                },
+                "puzzle_2": {
+                    "name": "Cric",
+                },
+                "puzzle_4": {
+                    "name": "Chiave del Tetto",
+                },
+                "puzzle_5": {
+                    "name": "Codice del Detonatore",
+                },
+                "puzzle_8": {
+                    "name": "Detonatore di Mine",
+                },
+                "puzzle_1_combo_1": {
+                    "name": "Tubo con Valvola",
+                },
+                "puzzle_1_combo_2": {
+                    "name": "Bomboletta di Protossido di Azoto",
+                },
+                "puzzle_2_combo_1": {
+                    "name": "Corpo del Cric",
+                },
+                "puzzle_2_combo_2": {
+                    "name": "Manico",
+                },
+                "puzzle_8_combo_1": {
+                    "name": "Corpo del Detonatore di Mine",
+                },
+                "puzzle_8_combo_2": {
+                    "name": "Dati Posizione delle Mine",
+                }
+            }
+        },
+        {
+            "title": "Ingresso alla Cittadella",
+            "objects": {
+                "puzzle_1": {
+                    "name": "Dosatore di Protossido di Azoto",
+                },
+                "puzzle_2": {
+                    "name": "Cric",
+                },
+                "puzzle_4": {
+                    "name": "Chiave del Tetto",
+                },
+                "puzzle_5": {
+                    "name": "Codice del Detonatore",
+                },
+                "puzzle_8": {
+                    "name": "Detonatore di Mine",
+                },
+                "puzzle_1_combo_1": {
+                    "name": "Tubo con Valvola",
+                },
+                "puzzle_1_combo_2": {
+                    "name": "Bomboletta di Protossido di Azoto",
+                },
+                "puzzle_2_combo_1": {
+                    "name": "Corpo del Cric",
+                },
+                "puzzle_2_combo_2": {
+                    "name": "Manico",
+                },
+                "puzzle_8_combo_1": {
+                    "name": "Corpo del Detonatore di Mine",
+                },
+                "puzzle_8_combo_2": {
+                    "name": "Dati Posizione delle Mine",
+                }
+            }
+        },
+        {
+            "title": "Cittadella",
+        },
+        {
+            "title": "Complesso della Sfinge",
+            "objects": {
+                "key_1": {
+                    "name": "Chiave d'Argento",
+                },
+                "key_11": {
+                    "name": "Chiave dell'Armeria",
+                },
+                "key_12": {
+                    "name": "Chiavi delle Guardie",
+                },
+                "puzzle_1": {
+                    "name": "Pala",
+                },
+                "puzzle_5": {
+                    "name": "Sacra Scrittura",
+                },
+                "puzzle_6": {
+                    "name": "Chiave del Raggio Ovest",
+                },
+                "puzzle_1_combo_1": {
+                    "name": "Lama di metallo",
+                },
+                "puzzle_1_combo_2": {
+                    "name": "Manico di legno",
+                }
+            }
+        },
+        {
+            "title": "Il Tempio della Valle",
+        },
+        {
+            "title": "Sotterranei della Sfinge",
+            "objects": {
+                "key_11": {
+                    "name": "Chiave dell'Armeria",
+                },
+                "key_12": {
+                    "name": "Chiavi delle Guardie",
+                },
+                "puzzle_1": {
+                    "name": "Pietra di Maat",
+                },
+                "puzzle_2": {
+                    "name": "Pietra di Khepri",
+                },
+                "puzzle_3": {
+                    "name": "Pietra di Atum",
+                },
+                "puzzle_4": {
+                    "name": "Pietra di Ra",
+                },
+                "puzzle_5": {
+                    "name": "Sacra Scrittura",
+                },
+                "puzzle_6": {
+                    "name": "Chiave del Raggio Ovest",
+                },
+                "examine_1": {
+                    "name": "Pezzo di carta",
+                    "description": "",
+                }
+            }
+        },
+        {
+            "title": "Piramide di Micerino",
+            "objects": {
+                "key_11": {
+                    "name": "Chiave dell'Armeria",
+                },
+                "key_12": {
+                    "name": "Chiavi delle Guardie",
+                },
+                "puzzle_5": {
+                    "name": "Sacra Scrittura",
+                },
+                "puzzle_6": {
+                    "name": "Chiave del Raggio Ovest",
+                }
+            }
+        },
+        {
+            "title": "Dentro la Piramide di Micerino",
+            "objects": {
+                "key_11": {
+                    "name": "Chiave dell'Armeria",
+                },
+                "key_12": {
+                    "name": "Chiavi delle Guardie",
+                },
+                "puzzle_5": {
+                    "name": "Sacra Scrittura",
+                },
+                "puzzle_6": {
+                    "name": "Chiave del Raggio Ovest",
+                }
+            }
+        },
+        {
+            "title": "Mastabe",
+            "objects": {
+                "key_11": {
+                    "name": "Chiave dell'Armeria",
+                },
+                "key_12": {
+                    "name": "Chiavi delle Guardie",
+                },
+                "puzzle_5": {
+                    "name": "Sacra Scrittura",
+                },
+                "puzzle_6": {
+                    "name": "Chiave del Raggio Ovest",
+                },
+                "puzzle_7": {
+                    "name": "Chiave del Raggio Nord",
+                },
+                "puzzle_8": {
+                    "name": "Chiave del Raggio Sud",
+                },
+                "pickup_1": {
+                    "name": "Sacco di Sabbia",
+                },
+                "pickup_2": {
+                    "name": "Tanica",
+                }
+            }
+        },
+        {
+            "title": "La Grande Piramide",
+            "objects": {
+                "key_11": {
+                    "name": "Chiave dell'Armeria",
+                },
+                "key_12": {
+                    "name": "Chiavi delle Guardie",
+                },
+                "puzzle_5": {
+                    "name": "Sacra Scrittura",
+                },
+                "puzzle_6": {
+                    "name": "Chiave del Raggio Ovest",
+                },
+                "puzzle_7": {
+                    "name": "Chiave del Raggio Nord",
+                },
+                "puzzle_8": {
+                    "name": "Chiave del Raggio Sud",
+                }
+            }
+        },
+        {
+            "title": "Piramidi delle Regine di Cheope",
+            "objects": {
+                "key_11": {
+                    "name": "Chiave dell'Armeria",
+                },
+                "key_12": {
+                    "name": "Chiavi delle Guardie",
+                },
+                "puzzle_5": {
+                    "name": "Sacra Scrittura",
+                },
+                "puzzle_6": {
+                    "name": "Chiave del Raggio Ovest",
+                },
+                "puzzle_7": {
+                    "name": "Chiave del Raggio Nord",
+                },
+                "puzzle_8": {
+                    "name": "Chiave del Raggio Sud",
+                },
+                "puzzle_9": {
+                    "name": "Chiave del Raggio Est",
+                }
+            }
+        },
+        {
+            "title": "Dentro la Grande Piramide",
+            "objects": {
+                "key_11": {
+                    "name": "Chiave dell'Armeria",
+                },
+                "key_12": {
+                    "name": "Chiavi delle Guardie",
+                },
+                "puzzle_5": {
+                    "name": "Sacra Scrittura",
+                },
+                "puzzle_6": {
+                    "name": "Chiave del Raggio Ovest",
+                },
+                "puzzle_7": {
+                    "name": "Chiave del Raggio Nord",
+                },
+                "puzzle_8": {
+                    "name": "Chiave del Raggio Sud",
+                },
+                "puzzle_9": {
+                    "name": "Chiave del Raggio Est",
+                }
+            }
+        },
+        {
+            "title": "Tempio di Horus",
+            "objects": {
+                "key_11": {
+                    "name": "Chiave dell'Armeria",
+                },
+                "key_12": {
+                    "name": "Chiavi delle Guardie",
+                },
+                "puzzle_5": {
+                    "name": "Sacra Scrittura",
+                }
+            }
+        },
+        {
+            "title": "Tempio di Horus",
+            "objects": {
+                "key_11": {
+                    "name": "Chiave dell'Armeria",
+                },
+                "key_12": {
+                    "name": "Chiavi delle Guardie",
+                }
+            }
+        }
+    ]
+}
