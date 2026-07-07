@@ -583,6 +583,18 @@ void OutputSource_PolyFX_StageQuadExt(
         (float)SHADE_NEUTRAL, nullptr, target);
 }
 
+void OutputSource_PolyFX_StageQuadExtDepth(
+    const int32_t sprite_idx, const XYZ_32 world_pos[4], const float disp[4][2],
+    const RGBA_8888 color[4], const uint16_t flags, const float z_depth_adjust,
+    const DRAW_TYPE draw_type)
+{
+    M_PRIV *const p = &m_Priv;
+    VECTOR *const target = M_GetScheduledVectorForDrawType(p, draw_type);
+    M_StagePrim(
+        sprite_idx, 4, &world_pos[0], disp, &color[0], flags, z_depth_adjust,
+        (float)SHADE_NEUTRAL, nullptr, target);
+}
+
 void OutputSource_PolyFX_StageQuadExtUV(
     const XYZ_32 world_pos[4], const OUTPUT_UVW uvw[4],
     const OUTPUT_TEXTURE_SIZE texture_size[4], const float disp[4][2],

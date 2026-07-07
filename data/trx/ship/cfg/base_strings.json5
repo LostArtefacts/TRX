@@ -2579,6 +2579,9 @@
             "description": "",
             "name": "Lead Bar",
         },
+        "lens_flare": {
+            "name": "Lens Flare",
+        },
         "lift": {
             "name": "Lift",
         },

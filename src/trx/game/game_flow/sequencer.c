@@ -54,6 +54,7 @@ static void M_PreSequenceHook(
     Room_SetAbyssHeight(0);
     Output_SetSunsetEnabled(false);
     Output_Sky_Reset();
+    Output_LensFlares_Reset();
     Output_SetUVRotateSpeed(0);
     Lara_SetControllable(false);
     Lara_SetStartAnimState(LS_EXTRA_BREATH);

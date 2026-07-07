@@ -507,6 +507,7 @@ void Room_DrawAllRooms(const int16_t current_room, const int16_t target_room)
     FX_Draw();
     Sparks_Draw();
     Rope_DrawAll();
+    Output_LensFlares_Draw();
 }
 
 bool Room_IsSkyVisible(void)

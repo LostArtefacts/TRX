@@ -217,6 +217,7 @@ typedef struct {
         bool swamp;
         bool damaging;
         bool cold;
+        bool no_lens_flare;
     } flags;
 
     ROOM_DRAWSET drawn_items;

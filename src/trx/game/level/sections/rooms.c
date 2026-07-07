@@ -465,13 +465,13 @@ void Level_Section_ReadRooms(LEVEL_CONTEXT *const ctx, VFILE *const file)
 
         const uint16_t flags = VFile_ReadU16(file);
         // clang-format off
-        room->flags.underwater  = (flags & 0x01) != 0;
-        room->flags.outside     = (flags & 0x08) != 0;
-        room->flags.dynamic_lit = (flags & 0x10) != 0;
-        room->flags.wind        = (flags & 0x20) != 0;
-        room->flags.inside      = (flags & 0x40) != 0;
-        room->flags.swamp       = (flags & 0x80) != 0 && g_TRVersion < 4;
-        // TODO: 0x80 marks no_lens_flare in TR4+
+        room->flags.underwater    = (flags & 0x01) != 0;
+        room->flags.outside       = (flags & 0x08) != 0;
+        room->flags.dynamic_lit   = (flags & 0x10) != 0;
+        room->flags.wind          = (flags & 0x20) != 0;
+        room->flags.inside        = (flags & 0x40) != 0;
+        room->flags.swamp         = (flags & 0x80) != 0 && g_TRVersion < 4;
+        room->flags.no_lens_flare = (flags & 0x80) != 0 && g_TRVersion >= 4;
         // clang-format on
 
         OUTPUT_ROOM_BIND *const bind = Output_Bind_GetRoom(room);

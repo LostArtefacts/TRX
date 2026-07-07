@@ -539,6 +539,7 @@ X_OBJ_NAME_DEFINE(O_HARPOON_BOLT,            "harpoon_bolt",            X_OBJ_NA
 X_OBJ_NAME_DEFINE(O_HOT_LIQUID,              "hot_liquid",              X_OBJ_NAMES("Extra Fire"))
 X_OBJ_NAME_DEFINE(O_INV_BACKGROUND,          "inv_background",          X_OBJ_NAMES("Menu Background"))
 X_OBJ_NAME_DEFINE(O_LARA_ALARM,              "lara_alarm",              X_OBJ_NAMES("Alarm Bell"))
+X_OBJ_NAME_DEFINE(O_LENS_FLARE,              "lens_flare",              X_OBJ_NAMES("Lens Flare"))
 X_OBJ_NAME_DEFINE(O_M16_FLASH,               "m16_flash",               X_OBJ_NAMES("M16 Flash"))
 X_OBJ_NAME_DEFINE(O_MESH_SWAP_1,             "mesh_swap_1",             X_OBJ_NAMES("Mesh Swap 1"))
 X_OBJ_NAME_DEFINE(O_MESH_SWAP_2,             "mesh_swap_2",             X_OBJ_NAMES("Mesh Swap 2"))

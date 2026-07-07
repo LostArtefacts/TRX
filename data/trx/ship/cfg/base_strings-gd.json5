@@ -2564,6 +2564,9 @@
             "description": "",
             "name": "Bàr Luaidhe",
         },
+        "lens_flare": {
+            "name": "\\{review}Soillseachadh Lens",
+        },
         "lift": {
             "name": "Lioft",
         },

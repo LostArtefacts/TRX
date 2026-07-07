@@ -2561,6 +2561,9 @@
             "description": "",
             "name": "Bleibarren",
         },
+        "lens_flare": {
+            "name": "\\{review}Linsenreflex",
+        },
         "lift": {
             "name": "Aufzug",
         },

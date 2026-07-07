@@ -28,7 +28,8 @@ int32_t Room_GetFlippedBaseRoom(int32_t room_num);
 BOUNDS_32 Room_GetWorldBounds(void);
 
 void Room_BuildOutsideTable(void);
-int32_t Room_GetOutsideStatus(XYZ_32 pos, int16_t *out_room_num);
+int32_t Room_GetOutsideStatus(
+    XYZ_32 pos, int16_t *out_room_num, int16_t *out_bbox_room_num);
 
 bool Room_PointInside(const ROOM *room, XYZ_32 point);
 bool Room_CheckOverlap(int16_t room_num_0, int16_t room_num_1);

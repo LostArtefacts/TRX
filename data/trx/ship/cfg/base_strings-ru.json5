@@ -2560,6 +2560,9 @@
             "description": "",
             "name": "Свинцовый слиток",
         },
+        "lens_flare": {
+            "name": "\\{review}Блики объектива",
+        },
         "lift": {
             "name": "\\{review}Лифт",
         },
