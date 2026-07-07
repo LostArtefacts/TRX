@@ -65,6 +65,10 @@ typedef struct {
         LEVEL_TR4_AI_ITEM_INFO *ai_items;
     } tr4;
 
+    struct {
+        int32_t flyby_count;
+    } cameras;
+
     int32_t mesh_ptr_count;
 } LEVEL_CONTEXT_INFO;
 

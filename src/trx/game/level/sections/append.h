@@ -22,3 +22,5 @@ void Level_Section_AppendObjectTextures(
     int32_t base_idx, int16_t base_page_idx, int32_t num_textures, VFILE *file);
 void Level_Section_AppendSpriteTextures(
     int32_t base_idx, int16_t base_page_idx, int32_t num_textures, VFILE *file);
+void Level_Section_AppendFlybyCameras(
+    int32_t base_idx, int32_t num_cameras, VFILE *file);

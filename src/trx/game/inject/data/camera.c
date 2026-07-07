@@ -21,6 +21,15 @@ static void M_HandleCineFrames(
     }
 }
 
+static void M_HandleFlybyCameras(
+    const INJECTION *const injection, const int32_t data_count)
+{
+    LEVEL_CONTEXT_INFO *const level_info = Level_Context_GetInfo();
+    Level_Section_AppendFlybyCameras(
+        level_info->cameras.flyby_count, data_count, injection->fp);
+    level_info->cameras.flyby_count += data_count;
+}
+
 static void M_HandleCameraData(
     const INJECTION_CONTEXT *const ctx, const INJECTION_CHUNK chunk)
 {
@@ -38,6 +47,9 @@ static void M_HandleCameraData(
         switch (data_type) {
         case IDT_CINEMATIC_FRAMES:
             M_HandleCineFrames(chunk.injection, data_count);
+            break;
+        case IDT_FLYBY_CAMERAS:
+            M_HandleFlybyCameras(chunk.injection, data_count);
             break;
         default:
             LOG_WARNING("Unknown data type: %d", data_type);
