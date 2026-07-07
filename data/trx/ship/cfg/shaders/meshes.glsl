@@ -221,15 +221,6 @@ void main(void) {
     texColor.rgb *= uBrightnessMultiplier;
     texColor.rgb *= uTint;
 
-    // Optional desaturation (0 = original, 1 = monochrome).
-    if (uDesaturation > 0.0) {
-        const vec3 luma = vec3(0.2126, 0.7152, 0.0722);
-        float y = dot(texColor.rgb, luma) * 0.5;
-        texColor.rgb = mix(texColor.rgb, vec3(y), clamp(uDesaturation, 0.0, 1.0));
-    }
-
-    texColor *= uGlobalTint;
-
     outColor = texColor;
 }
 

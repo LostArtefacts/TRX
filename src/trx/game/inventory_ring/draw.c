@@ -307,62 +307,10 @@ void InvRing_Draw(INV_RING *const ring)
             ? Fader_GetCurrentValue(&ring->back_fader)
             : ring->back_fader.args.target;
 
-        switch (ring->background_style) {
-        case BK_NONE:
-            if (ring->mode != INV_GLOBE_SELECT_MODE) {
-                Output_Overlay_DrawGame();
-            }
-            break;
-
-        case BK_TRANSPARENT_MEDIUM:
-            Output_Overlay_DrawGame();
-            Output_Overlay_DrawBlackRectangle(opacity * 0.5f, false);
-            break;
-
-        case BK_TRANSPARENT_DARK:
-            Output_Overlay_DrawGame();
-            Output_Overlay_DrawBlackRectangle(opacity * 0.8f, false);
-            break;
-
-        case BK_BLACK:
-            Output_Overlay_DrawGame();
-            Output_Overlay_DrawBlackRectangle(opacity * 1.0f, false);
-            break;
-
-        case BK_MONOCHROME:
-            Output_Overlay_DrawGameMono(opacity);
-            break;
-
-        case BK_MONOCHROME_COOL:
-            Output_Overlay_DrawGameMonoCool(opacity);
-            break;
-
-        case BK_MONOCHROME_WARM:
-            Output_Overlay_DrawGameMonoWarm(opacity);
-            break;
-
-        case BK_PATTERN_STATIC:
-        case BK_PATTERN_WAVE:
-            if (opacity < 1.0f) {
-                Output_Overlay_DrawGame();
-            }
-            Output_Overlay_DrawPatternOpacity(
-                ring->background_style == BK_PATTERN_WAVE, opacity);
-            break;
-
-        case BK_IMAGE:
-            if (ring->background_path != nullptr
-                && Output_Overlay_LoadImage(ring->background_path)) {
-                Output_Overlay_DrawImageBilinear(ring->background_path);
-                Output_Overlay_DrawBlackRectangle(1.0f - opacity, false);
-            } else {
-                Output_Overlay_DrawBlackRectangle(1.0f, false);
-            }
-            break;
-
-        default:
-            Output_Overlay_DrawGame();
-            break;
+        if (ring->background_style != BK_NONE
+            || ring->mode != INV_GLOBE_SELECT_MODE) {
+            Output_Overlay_DrawBackground(
+                ring->background_style, opacity, ring->background_path);
         }
     }
     Output_Flush();

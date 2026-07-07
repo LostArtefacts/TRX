@@ -39,7 +39,3 @@ void Output_Uniforms_UploadOwnLight(
 
 void Output_Uniforms_UploadFogDistance(
     const OUTPUT_UNIFORMS *uniforms, float start, float end);
-void Output_Uniforms_UploadDesaturation(
-    const OUTPUT_UNIFORMS *uniforms, float desaturation);
-void Output_Uniforms_UploadGlobalTint(
-    const OUTPUT_UNIFORMS *uniforms, RGB_F tint);

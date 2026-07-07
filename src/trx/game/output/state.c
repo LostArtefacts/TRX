@@ -50,12 +50,9 @@ static bool m_IsWibbleEffect = false;
 static bool m_IsWaterEffect = false;
 static bool m_IsShadeEffect = false;
 static bool m_IsSkyboxEnabled = false;
-static float m_Desaturation = 0.0f;
 
 static int32_t m_TintOverrideDepth = 0;
 static RGB_F m_TintOverrideStack[8] = {};
-
-static RGB_F m_GlobalTint = { 1.0f, 1.0f, 1.0f };
 
 float Output_GetTime(void)
 {
@@ -161,24 +158,6 @@ bool Output_GetWibbleEffect(void)
     return m_IsWibbleEffect;
 }
 
-float Output_GetDesaturation(void)
-{
-    return m_Desaturation;
-}
-
-void Output_SetDesaturation(const float desaturation)
-{
-    if (m_Desaturation == desaturation) {
-        return;
-    }
-    m_Desaturation = desaturation;
-
-    const OUTPUT_UNIFORMS *const uniforms = Output_GetUniforms();
-    if (uniforms != nullptr) {
-        Output_Uniforms_UploadDesaturation(uniforms, m_Desaturation);
-    }
-}
-
 void Output_SetFogColor(const RGBA_8888 color)
 {
     m_FogColor.r = color.r / 255.0f;
@@ -197,20 +176,6 @@ void Output_SetWaterColor(const RGB_888 color)
     m_WaterColor.r = color.r / 255.0f;
     m_WaterColor.g = color.g / 255.0f;
     m_WaterColor.b = color.b / 255.0f;
-}
-
-RGB_F Output_GetGlobalTint(void)
-{
-    return m_GlobalTint;
-}
-
-void Output_SetGlobalTint(const RGB_F tint)
-{
-    m_GlobalTint = tint;
-    const OUTPUT_UNIFORMS *const uniforms = Output_GetUniforms();
-    if (uniforms != nullptr) {
-        Output_Uniforms_UploadGlobalTint(uniforms, m_GlobalTint);
-    }
 }
 
 RGB_F Output_GetTint(void)

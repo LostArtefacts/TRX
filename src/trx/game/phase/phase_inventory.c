@@ -35,6 +35,11 @@ static PHASE_CONTROL M_Start(PHASE *const phase)
             .gf_cmd = { .action = GF_NOOP },
         };
     }
+    if (p->mode != INV_TITLE_MODE) {
+        // Title mode draws its own background image, not a game snapshot;
+        // the title level's room data isn't set up for a live scene render.
+        Output_Overlay_CaptureGameSnapshot();
+    }
     return (PHASE_CONTROL) { .action = PHASE_ACTION_CONTINUE };
 }
 
