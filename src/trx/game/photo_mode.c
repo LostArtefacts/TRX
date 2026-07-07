@@ -35,6 +35,7 @@ typedef struct {
 } M_PRIV;
 
 static M_PRIV m_Priv = {};
+static bool m_Active = false;
 
 static void M_ApplyInterpolation(void)
 {
@@ -258,6 +259,7 @@ void PhotoMode_Start(void)
     Camera_PhotoMode_Enter();
     Music_Pause();
     Sound_PauseAll();
+    m_Active = true;
 }
 
 void PhotoMode_End(void)
@@ -269,6 +271,12 @@ void PhotoMode_End(void)
     g_Config.ui.enable_fps_counter = p->show_fps_counter;
     Music_Unpause();
     Sound_UnpauseAll();
+    m_Active = false;
+}
+
+bool PhotoMode_IsActive(void)
+{
+    return m_Active;
 }
 
 PHASE_CONTROL PhotoMode_Control(void)

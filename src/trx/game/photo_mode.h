@@ -10,6 +10,7 @@ typedef enum {
 
 void PhotoMode_Start(void);
 void PhotoMode_End(void);
+bool PhotoMode_IsActive(void);
 
 PHOTO_MODE PhotoMode_GetCurrentMode(void);
 PHASE_CONTROL PhotoMode_Control(void);
