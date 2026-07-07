@@ -69,6 +69,9 @@
             "config_option_unknown_option": "Option inconnue : %s",
             "current_health_get": "Santé actuelle de Lara : %d",
             "current_health_set": "Santé de Lara réglée sur %d",
+            "current_poison_get": "\\{review}Poison actuel de Lara : %d (cible : %d)",
+            "current_poison_set": "\\{review}Poison de Lara réglé à %d",
+            "current_poison_target_set": "\\{review}Cible du poison de Lara réglée à %d",
             "door_close": "Sésame, ferme-la !",
             "door_open": "Sésame, ouvre-toi !",
             "door_open_fail": "Aucune porte à proximité de Lara",
@@ -397,6 +400,9 @@
                 "invalid_track": "Piste musicale invalide",
                 "stopped": "\\{review}Musique arrêtée",
                 "track": "Lecture de la piste musicale %d",
+            },
+            "poison": {
+                "help": "\\{review}Définit le niveau de poison de Lara à la valeur spécifiée. Utilisez -t pour définir le niveau cible à la place (TR4 uniquement).",
             },
             "pos": {
                 "help": "Montre la position de Lara.",

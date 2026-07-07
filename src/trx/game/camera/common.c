@@ -4,6 +4,7 @@
 #include <trx/game/camera.h>
 #include <trx/game/input.h>
 #include <trx/game/lara.h>
+#include <trx/game/lara/poison.h>
 #include <trx/game/matrix.h>
 #include <trx/game/random.h>
 #include <trx/game/rooms.h>
@@ -244,4 +245,9 @@ void Camera_Apply(void)
         g_Camera.interp.result.pos.z, g_Camera.interp.result.target.x,
         g_Camera.interp.result.target.y, g_Camera.interp.result.target.z,
         g_Camera.roll);
+
+    XYZ_32 poison_scale;
+    if (Lara_Poison_GetViewScale(&poison_scale)) {
+        Matrix_ScaleW2V(poison_scale);
+    }
 }

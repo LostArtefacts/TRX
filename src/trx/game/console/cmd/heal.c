@@ -6,6 +6,7 @@
 #include <trx/game/lara/common.h>
 #include <trx/game/lara/const.h>
 #include <trx/game/lara/misc.h>
+#include <trx/game/lara/poison.h>
 
 static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *const ctx)
 {
@@ -18,7 +19,6 @@ static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *const ctx)
     }
 
     ITEM *const lara_item = Lara_GetItem();
-    LARA_INFO *const lara = Lara_GetLaraInfo();
 
     if (lara_item->hit_points == LARA_MAX_HITPOINTS) {
         Console_LogWarning(GS("general/osd/heal_already_full_hp"));
@@ -27,7 +27,7 @@ static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *const ctx)
     }
 
     lara_item->hit_points = LARA_MAX_HITPOINTS;
-    lara->poison_timer = 0;
+    Lara_Poison_Cure();
     Lara_Extinguish();
     return CR_SUCCESS;
 }

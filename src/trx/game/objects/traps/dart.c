@@ -45,7 +45,7 @@ static void M_DamageLara(const ITEM *const item)
     Lara_TakeDamage(M_GetDamage(item), true);
     if (is_poison) {
         LARA_INFO *const lara = Lara_GetLaraInfo();
-        lara->poison_timer += M_POISON_AMOUNT;
+        lara->poison.value += M_POISON_AMOUNT;
     }
 
     const ITEM *const lara_item = Lara_GetItem();

@@ -465,6 +465,28 @@ void Matrix_GenerateW2V(const XYZ_32 *pos, const XYZ_16 *rot)
     g_WMatrixPtr[0] = g_IDMatrix;
 }
 
+void Matrix_ScaleW2V(const XYZ_32 scale)
+{
+    // scale the columns (world axes), matching the original engine's
+    // ScaleCurrentMatrix, then rebuild the translation through the scaled
+    // rotation so the warp stays centered on the camera
+    g_ViewMatrix._00 = (g_ViewMatrix._00 * scale.x) >> W2V_SHIFT;
+    g_ViewMatrix._10 = (g_ViewMatrix._10 * scale.x) >> W2V_SHIFT;
+    g_ViewMatrix._20 = (g_ViewMatrix._20 * scale.x) >> W2V_SHIFT;
+    g_ViewMatrix._01 = (g_ViewMatrix._01 * scale.y) >> W2V_SHIFT;
+    g_ViewMatrix._11 = (g_ViewMatrix._11 * scale.y) >> W2V_SHIFT;
+    g_ViewMatrix._21 = (g_ViewMatrix._21 * scale.y) >> W2V_SHIFT;
+    g_ViewMatrix._02 = (g_ViewMatrix._02 * scale.z) >> W2V_SHIFT;
+    g_ViewMatrix._12 = (g_ViewMatrix._12 * scale.z) >> W2V_SHIFT;
+    g_ViewMatrix._22 = (g_ViewMatrix._22 * scale.z) >> W2V_SHIFT;
+    g_ViewMatrix._03 = 0;
+    g_ViewMatrix._13 = 0;
+    g_ViewMatrix._23 = 0;
+    M_TranslateRel(
+        &g_ViewMatrix, (XYZ_32) { -g_ViewPos.x, -g_ViewPos.y, -g_ViewPos.z });
+    m_MatrixStack[0] = g_ViewMatrix;
+}
+
 bool Matrix_Push(void)
 {
     if (g_MatrixPtr + 1 - m_MatrixStack >= MAX_MATRICES) {

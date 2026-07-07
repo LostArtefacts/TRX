@@ -151,7 +151,7 @@ static void M_Control(const int16_t item_num)
         Creature_AIInfo(item, &info);
         Creature_UpdateMood(item, &info, info.zone_num == info.enemy_zone_num);
 
-        if (item->hit_status && lara->poison_timer >= 256
+        if (item->hit_status && lara->poison.value >= 256
             && creature->mood == MOOD_BORED) {
             creature->mood = MOOD_ESCAPE;
         }

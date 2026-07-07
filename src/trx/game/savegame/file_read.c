@@ -104,7 +104,8 @@ static bool M_ReadLara(JSON_READ_IO *const io)
     M_MUST(JSON_READ(io, "air", &lara->air));
     M_MUST(JSON_READ(io, "sprint_timer", &lara->sprint_timer));
     M_MUST(JSON_READ(io, "exposure_timer", &lara->exposure_timer));
-    M_SHOULD(JSON_READ(io, "poison_timer", &lara->poison_timer));
+    M_SHOULD(JSON_READ(io, "poison_timer", &lara->poison.value));
+    M_SHOULD(JSON_READ(io, "poison_target", &lara->poison.target));
     M_MUST(JSON_READ(io, "dive_count", &lara->dive_timer));
     M_MUST(JSON_READ(io, "death_count", &lara->death_timer));
     M_MUST(JSON_READ(io, "current_active", &lara->current.active));

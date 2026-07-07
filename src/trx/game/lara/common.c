@@ -9,6 +9,7 @@
 #include <trx/game/inventory.h>
 #include <trx/game/lara.h>
 #include <trx/game/lara/draw.h>
+#include <trx/game/lara/poison.h>
 #include <trx/game/lara/pose.h>
 #include <trx/game/matrix.h>
 #include <trx/game/output.h>
@@ -135,7 +136,8 @@ void Lara_Initialise(const GF_LEVEL *const level)
     lara_info->interact_target.is_moving = false;
     lara_info->interact_target.item_num = NO_ITEM;
     lara_info->interact_target.move_count = 0;
-    lara_info->poison_timer = 0;
+    lara_info->poison.value = 0;
+    lara_info->poison.target = 0;
     lara_info->tr3_smoke_count_l = 0;
     lara_info->tr3_smoke_count_r = 0;
     lara_info->mesh_pos_matrices_valid = false;
@@ -397,8 +399,8 @@ void Lara_UseItem(const OBJECT_ID obj_id)
     case O_SMALL_MEDIPACK_OPTION:
         if ((lara_item->hit_points > 0
              && lara_item->hit_points < LARA_MAX_HITPOINTS)
-            || lara_info->poison_timer != 0) {
-            lara_info->poison_timer = 0;
+            || lara_info->poison.value != 0 || lara_info->poison.target != 0) {
+            Lara_Poison_Cure();
             lara_item->hit_points += LARA_MAX_HITPOINTS / 2;
             CLAMPG(lara_item->hit_points, LARA_MAX_HITPOINTS);
             Inv_RemoveItem(O_SMALL_MEDIPACK_ITEM);
@@ -411,8 +413,8 @@ void Lara_UseItem(const OBJECT_ID obj_id)
     case O_LARGE_MEDIPACK_OPTION:
         if ((lara_item->hit_points > 0
              && lara_item->hit_points < LARA_MAX_HITPOINTS)
-            || lara_info->poison_timer != 0) {
-            lara_info->poison_timer = 0;
+            || lara_info->poison.value != 0 || lara_info->poison.target != 0) {
+            Lara_Poison_Cure();
             lara_item->hit_points = LARA_MAX_HITPOINTS;
             Inv_RemoveItem(O_LARGE_MEDIPACK_ITEM);
             Sound_Effect(SFX_MENU_MEDI, nullptr, SPM_ALWAYS);

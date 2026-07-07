@@ -69,6 +69,9 @@
             "config_option_unknown_option": "Unknown option: %s",
             "current_health_get": "Current Lara's health: %d",
             "current_health_set": "Lara's health set to %d",
+            "current_poison_get": "Current Lara's poison: %d (target: %d)",
+            "current_poison_set": "Lara's poison set to %d",
+            "current_poison_target_set": "Lara's poison target set to %d",
             "door_close": "Close Sesame!",
             "door_open": "Open Sesame!",
             "door_open_fail": "No doors in Lara's proximity",
@@ -397,6 +400,9 @@
                 "invalid_track": "Invalid music track",
                 "stopped": "Music stopped",
                 "track": "Playing music track %d",
+            },
+            "poison": {
+                "help": "Sets Lara's poison level to the specified value. Use -t to set the target level instead (TR4 only).",
             },
             "pos": {
                 "help": "Shows Lara's position.",

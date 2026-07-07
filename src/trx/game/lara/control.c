@@ -10,6 +10,7 @@
 #include <trx/game/lara.h>
 #include <trx/game/lara/breath.h>
 #include <trx/game/lara/electric.h>
+#include <trx/game/lara/poison.h>
 #include <trx/game/music.h>
 #include <trx/game/output.h>
 #include <trx/game/pathing.h>
@@ -919,7 +920,7 @@ static void M_HandleEnvironment(void)
 
     case LWS_CHEAT:
         item->hit_points = LARA_MAX_HITPOINTS;
-        lara_info->poison_timer = 0;
+        Lara_Poison_Reset();
         lara_info->death_timer = 0;
         M_HandleUnderwater(&coll);
         if (g_InputDB.slow && !g_Input.look && !g_Input.fly_cheat) {
@@ -986,10 +987,7 @@ void Lara_Control(void)
     LARA_INFO *const lara_info = Lara_GetLaraInfo();
 
     const int32_t time4 = (int32_t)Output_GetTimeInGame() * 4;
-    if (lara_info->poison_timer >= 16 && (time4 & 0xFF) == 0) {
-        CLAMPG(lara_info->poison_timer, 256);
-        Lara_TakeDamage(lara_info->poison_timer >> 4, false);
-    }
+    Lara_Poison_Tick();
     if (lara_info->electric != 0) {
         if (lara_info->electric < 16) {
             lara_info->electric++;
@@ -1005,7 +1003,7 @@ void Lara_Control(void)
 
     if (item->hit_points > 0 && g_Config.debug.enable_invulnerability) {
         item->hit_points = LARA_MAX_HITPOINTS;
-        lara_info->poison_timer = 0;
+        Lara_Poison_Reset();
     }
 
     M_Cheat();

@@ -69,6 +69,9 @@
             "config_option_unknown_option": "Unbekannte Option: %s",
             "current_health_get": "Laras aktuelle Lebensenergie: %d",
             "current_health_set": "Laras Lebensenergie eingestellt auf %d",
+            "current_poison_get": "\\{review}Aktuelles Gift von Lara: %d (Ziel: %d)",
+            "current_poison_set": "\\{review}Laras Gift auf %d gesetzt",
+            "current_poison_target_set": "\\{review}Laras Giftziel auf %d gesetzt",
             "door_close": "Sesam, schließe dich!",
             "door_open": "Sesam, öffne dich!",
             "door_open_fail": "Keine Türen in Laras Nähe",
@@ -397,6 +400,9 @@
                 "invalid_track": "Unzulässiger Musik Titel",
                 "stopped": "\\{review}Musik gestoppt",
                 "track": "Spiele Musiktitel %d",
+            },
+            "poison": {
+                "help": "\\{review}Setzt Laras Giftlevel auf den angegebenen Wert. Verwenden Sie -t, um stattdessen das Ziellevel festzulegen (nur TR4).",
             },
             "pos": {
                 "help": "Zeigt Laras Position an.",

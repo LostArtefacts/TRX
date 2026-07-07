@@ -50,7 +50,10 @@ typedef struct {
     int16_t death_timer;
     int16_t sprint_timer;
     int16_t exposure_timer;
-    int16_t poison_timer;
+    struct {
+        int16_t value;
+        int16_t target;
+    } poison;
     int32_t idle_timer;
     struct {
         int32_t active;
