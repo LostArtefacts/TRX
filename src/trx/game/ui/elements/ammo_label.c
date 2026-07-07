@@ -70,6 +70,12 @@ bool UI_AmmoLabel(void)
         case LGT_HARPOON:
             ammo = lara->harpoon_ammo.ammo;
             break;
+        case LGT_CROSSBOW:
+            ammo = lara->crossbow_ammo.ammo;
+            break;
+        case LGT_REVOLVER:
+            ammo = lara->revolver_ammo.ammo;
+            break;
         default:
             return false;
         }

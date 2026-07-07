@@ -7,6 +7,7 @@
 #include <trx/game/lua.h>
 #include <trx/game/objects.h>
 #include <trx/game/objects/property.h>
+#include <trx/game/objects/vars.h>
 #include <trx/game/rooms.h>
 #include <trx/version.h>
 
@@ -93,11 +94,35 @@ static void M_AssignAIBits(const LEVEL_CONTEXT *const ctx)
     }
 }
 
+static void M_CloneTR4InvOptionObjects(void)
+{
+    // TR4 level files have no separate inventory display slots, so let each
+    // unloaded *_OPTION object borrow the model of its pickup counterpart.
+    for (const GAME_OBJECT_PAIR *pair = g_ItemToInvObjectMap;
+         pair->key_id != NO_OBJECT; pair++) {
+        OBJECT *const option_obj = Object_Get(pair->value_id);
+        const OBJECT *const item_obj = Object_Get(pair->key_id);
+        if (option_obj->loaded || !item_obj->loaded) {
+            continue;
+        }
+        option_obj->mesh_count = item_obj->mesh_count;
+        option_obj->mesh_idx = item_obj->mesh_idx;
+        option_obj->bone_idx = item_obj->bone_idx;
+        option_obj->frame_ofs = item_obj->frame_ofs;
+        option_obj->frame_base = item_obj->frame_base;
+        option_obj->anim_idx = item_obj->anim_idx;
+        option_obj->anim_count = item_obj->anim_count;
+        option_obj->loaded = true;
+    }
+}
+
 static void M_PrepareTR4Items(LEVEL_CONTEXT *const ctx)
 {
     if (ctx->loader->layout != LEVEL_FORMAT_LAYOUT_TR4) {
         return;
     }
+
+    M_CloneTR4InvOptionObjects();
 
     LEVEL_CONTEXT_INFO *const info = &ctx->info;
     for (int32_t i = 0; i < info->tr4.item_count && i < Item_GetLevelCount();

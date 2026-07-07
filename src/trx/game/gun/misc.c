@@ -280,6 +280,7 @@ void Gun_InitialiseNewWeapon(void)
         case LGT_MAGNUMS:
         case LGT_AUTOS:
         case LGT_DESERT_EAGLE:
+        case LGT_REVOLVER:
         case LGT_UZIS:
             Gun_Pistols_DrawMeshes(lara->gun_type);
             break;
@@ -290,6 +291,7 @@ void Gun_InitialiseNewWeapon(void)
         case LGT_GRENADE:
         case LGT_ROCKET:
         case LGT_HARPOON:
+        case LGT_CROSSBOW:
             Gun_Rifle_DrawMeshes(lara->gun_type);
             break;
 
@@ -396,6 +398,8 @@ void Gun_UpdateLaraMeshes(const OBJECT_ID obj_id)
         back_gun_type = LGT_GRENADE;
     } else if (!lara_has_rifle && obj_id == O_ROCKET_GUN_ITEM) {
         back_gun_type = LGT_ROCKET;
+    } else if (!lara_has_rifle && obj_id == O_CROSSBOW_ITEM) {
+        back_gun_type = LGT_CROSSBOW;
     } else if (!lara_has_pistols && obj_id == O_PISTOL_ITEM) {
         holsters_gun_type = LGT_PISTOLS;
     } else if (!lara_has_pistols && obj_id == O_MAGNUM_ITEM) {
@@ -406,6 +410,8 @@ void Gun_UpdateLaraMeshes(const OBJECT_ID obj_id)
         holsters_gun_type = LGT_DESERT_EAGLE;
     } else if (!lara_has_pistols && obj_id == O_UZI_ITEM) {
         holsters_gun_type = LGT_UZIS;
+    } else if (!lara_has_pistols && obj_id == O_REVOLVER_ITEM) {
+        holsters_gun_type = LGT_REVOLVER;
     }
 
     if (back_gun_type != LGT_UNARMED) {

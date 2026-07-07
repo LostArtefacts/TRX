@@ -1851,6 +1851,9 @@
         "big_spider": {
             "name": "Riesen-Spider",
         },
+        "binoculars": {
+            "name": "\\{review}Fernglas",
+        },
         "bird_guardian": {
             "name": "Vogel-Monster",
         },
@@ -1956,8 +1959,20 @@
         "crocodile": {
             "name": "Krokodil",
         },
+        "crossbow": {
+            "name": "\\{review}Armbrust",
+        },
+        "crossbow_ammo": {
+            "name": "\\{review}Armbrustbolzen",
+        },
+        "crossbow_bolt": {
+            "name": "\\{review}Armbrustbolzen",
+        },
         "crow": {
             "name": "Krähe",
+        },
+        "crowbar": {
+            "name": "\\{review}Brechstange",
         },
         "cult_1": {
             "name": "Maskierter Schläger 1",
@@ -2096,6 +2111,15 @@
         },
         "ember_emitter": {
             "name": "Gluterzeuger",
+        },
+        "examine_1": {
+            "name": "\\{review}Gegenstand 1 untersuchen",
+        },
+        "examine_2": {
+            "name": "\\{review}Gegenstand 2 untersuchen",
+        },
+        "examine_3": {
+            "name": "\\{review}Gegenstand 3 untersuchen",
         },
         "explosion_1": {
             "name": "Explosion 1",
@@ -2263,17 +2287,98 @@
         "key_1": {
             "name": "Key 1",
         },
+        "key_10": {
+            "name": "\\{review}Schlüssel 10",
+        },
+        "key_11": {
+            "name": "\\{review}Schlüssel 11",
+        },
+        "key_12": {
+            "name": "\\{review}Schlüssel 12",
+        },
+        "key_1_combo_1": {
+            "name": "\\{review}Schlüssel 1 (Kombination 1)",
+        },
+        "key_1_combo_2": {
+            "name": "\\{review}Schlüssel 1 (Kombination 2)",
+        },
         "key_2": {
             "name": "Key 2",
+        },
+        "key_2_combo_1": {
+            "name": "\\{review}Schlüssel 2 (Kombination 1)",
+        },
+        "key_2_combo_2": {
+            "name": "\\{review}Schlüssel 2 (Kombination 2)",
         },
         "key_3": {
             "name": "Key 3",
         },
+        "key_3_combo_1": {
+            "name": "\\{review}Schlüssel 3 (Kombination 1)",
+        },
+        "key_3_combo_2": {
+            "name": "\\{review}Schlüssel 3 (Kombination 2)",
+        },
         "key_4": {
             "name": "Key 4",
         },
+        "key_4_combo_1": {
+            "name": "\\{review}Schlüssel 4 (Kombination 1)",
+        },
+        "key_4_combo_2": {
+            "name": "\\{review}Schlüssel 4 (Kombination 2)",
+        },
+        "key_5": {
+            "name": "\\{review}Schlüssel 5",
+        },
+        "key_5_combo_1": {
+            "name": "\\{review}Schlüssel 5 (Kombination 1)",
+        },
+        "key_5_combo_2": {
+            "name": "\\{review}Schlüssel 5 (Kombination 2)",
+        },
+        "key_6": {
+            "name": "\\{review}Schlüssel 6",
+        },
+        "key_6_combo_1": {
+            "name": "\\{review}Schlüssel 6 (Kombination 1)",
+        },
+        "key_6_combo_2": {
+            "name": "\\{review}Schlüssel 6 (Kombination 2)",
+        },
+        "key_7": {
+            "name": "\\{review}Schlüssel 7",
+        },
+        "key_7_combo_1": {
+            "name": "\\{review}Schlüssel 7 (Kombination 1)",
+        },
+        "key_7_combo_2": {
+            "name": "\\{review}Schlüssel 7 (Kombination 2)",
+        },
+        "key_8": {
+            "name": "\\{review}Schlüssel 8",
+        },
+        "key_8_combo_1": {
+            "name": "\\{review}Schlüssel 8 (Kombination 1)",
+        },
+        "key_8_combo_2": {
+            "name": "\\{review}Schlüssel 8 (Kombination 2)",
+        },
+        "key_9": {
+            "name": "\\{review}Schlüssel 9",
+        },
         "key_hole_1": {
             "name": "Keyhole 1",
+        },
+        "key_hole_10": {
+            "name": "\\{review}Schlüsselloch 10",
+        },
+        "key_hole_11": {
+            "name": "\\{review}Schlüsselloch 11",
+        },
+        "key_hole_12": {
+            "name": "\\{review}Schlüsselloch 12",
         },
         "key_hole_2": {
             "name": "Keyhole 2",
@@ -2283,6 +2388,21 @@
         },
         "key_hole_4": {
             "name": "Keyhole 4",
+        },
+        "key_hole_5": {
+            "name": "\\{review}Schlüsselloch 5",
+        },
+        "key_hole_6": {
+            "name": "\\{review}Schlüsselloch 6",
+        },
+        "key_hole_7": {
+            "name": "\\{review}Schlüsselloch 7",
+        },
+        "key_hole_8": {
+            "name": "\\{review}Schlüsselloch 8",
+        },
+        "key_hole_9": {
+            "name": "\\{review}Schlüsselloch 9",
         },
         "kill_all_triggered": {
             "name": "\\{review}Alle töten (ausgelöst)",
@@ -2364,6 +2484,9 @@
         },
         "larson": {
             "name": "Larson",
+        },
+        "lasersight": {
+            "name": "\\{review}Laserzielvorrichtung",
         },
         "lava_wedge": {
             "name": "Lava-Keil",
@@ -2534,8 +2657,38 @@
         "pickup_1": {
             "name": "Pickup Item 1",
         },
+        "pickup_1_combo_1": {
+            "name": "\\{review}Aufnahmegegenstand 1 (Kombination 1)",
+        },
+        "pickup_1_combo_2": {
+            "name": "\\{review}Aufnahmegegenstand 1 (Kombination 2)",
+        },
         "pickup_2": {
             "name": "Pickup Item 2",
+        },
+        "pickup_2_combo_1": {
+            "name": "\\{review}Aufnahmegegenstand 2 (Kombination 1)",
+        },
+        "pickup_2_combo_2": {
+            "name": "\\{review}Aufnahmegegenstand 2 (Kombination 2)",
+        },
+        "pickup_3": {
+            "name": "\\{review}Aufnahmegegenstand 3",
+        },
+        "pickup_3_combo_1": {
+            "name": "\\{review}Aufnahmegegenstand 3 (Kombination 1)",
+        },
+        "pickup_3_combo_2": {
+            "name": "\\{review}Aufnahmegegenstand 3 (Kombination 2)",
+        },
+        "pickup_4": {
+            "name": "\\{review}Aufnahmegegenstand 4",
+        },
+        "pickup_4_combo_1": {
+            "name": "\\{review}Aufnahmegegenstand 4 (Kombination 1)",
+        },
+        "pickup_4_combo_2": {
+            "name": "\\{review}Aufnahmegegenstand 4 (Kombination 2)",
         },
         "pickup_aid": {
             "name": "Pickup-Hilfe",
@@ -2624,17 +2777,98 @@
         "puzzle_1": {
             "name": "Puzzle Item 1",
         },
+        "puzzle_10": {
+            "name": "\\{review}Rätselgegenstand 10",
+        },
+        "puzzle_11": {
+            "name": "\\{review}Rätselgegenstand 11",
+        },
+        "puzzle_12": {
+            "name": "\\{review}Rätselgegenstand 12",
+        },
+        "puzzle_1_combo_1": {
+            "name": "\\{review}Rätselgegenstand 1 (Kombination 1)",
+        },
+        "puzzle_1_combo_2": {
+            "name": "\\{review}Rätselgegenstand 1 (Kombination 2)",
+        },
         "puzzle_2": {
             "name": "Puzzle Item 2",
+        },
+        "puzzle_2_combo_1": {
+            "name": "\\{review}Rätselgegenstand 2 (Kombination 1)",
+        },
+        "puzzle_2_combo_2": {
+            "name": "\\{review}Rätselgegenstand 2 (Kombination 2)",
         },
         "puzzle_3": {
             "name": "Puzzle Item 3",
         },
+        "puzzle_3_combo_1": {
+            "name": "\\{review}Rätselgegenstand 3 (Kombination 1)",
+        },
+        "puzzle_3_combo_2": {
+            "name": "\\{review}Rätselgegenstand 3 (Kombination 2)",
+        },
         "puzzle_4": {
             "name": "Puzzle Item 4",
         },
+        "puzzle_4_combo_1": {
+            "name": "\\{review}Rätselgegenstand 4 (Kombination 1)",
+        },
+        "puzzle_4_combo_2": {
+            "name": "\\{review}Rätselgegenstand 4 (Kombination 2)",
+        },
+        "puzzle_5": {
+            "name": "\\{review}Rätselgegenstand 5",
+        },
+        "puzzle_5_combo_1": {
+            "name": "\\{review}Rätselgegenstand 5 (Kombination 1)",
+        },
+        "puzzle_5_combo_2": {
+            "name": "\\{review}Rätselgegenstand 5 (Kombination 2)",
+        },
+        "puzzle_6": {
+            "name": "\\{review}Rätselgegenstand 6",
+        },
+        "puzzle_6_combo_1": {
+            "name": "\\{review}Rätselgegenstand 6 (Kombination 1)",
+        },
+        "puzzle_6_combo_2": {
+            "name": "\\{review}Rätselgegenstand 6 (Kombination 2)",
+        },
+        "puzzle_7": {
+            "name": "\\{review}Rätselgegenstand 7",
+        },
+        "puzzle_7_combo_1": {
+            "name": "\\{review}Rätselgegenstand 7 (Kombination 1)",
+        },
+        "puzzle_7_combo_2": {
+            "name": "\\{review}Rätselgegenstand 7 (Kombination 2)",
+        },
+        "puzzle_8": {
+            "name": "\\{review}Rätselgegenstand 8",
+        },
+        "puzzle_8_combo_1": {
+            "name": "\\{review}Rätselgegenstand 8 (Kombination 1)",
+        },
+        "puzzle_8_combo_2": {
+            "name": "\\{review}Rätselgegenstand 8 (Kombination 2)",
+        },
+        "puzzle_9": {
+            "name": "\\{review}Rätselgegenstand 9",
+        },
         "puzzle_done_1": {
             "name": "Puzzle Hole 1 (Done)",
+        },
+        "puzzle_done_10": {
+            "name": "\\{review}Rätselloch 10 (Erledigt)",
+        },
+        "puzzle_done_11": {
+            "name": "\\{review}Rätselloch 11 (Erledigt)",
+        },
+        "puzzle_done_12": {
+            "name": "\\{review}Rätselloch 12 (Erledigt)",
         },
         "puzzle_done_2": {
             "name": "Puzzle Hole 2 (Done)",
@@ -2645,8 +2879,32 @@
         "puzzle_done_4": {
             "name": "Puzzle Hole 4 (Done)",
         },
+        "puzzle_done_5": {
+            "name": "\\{review}Rätselloch 5 (Erledigt)",
+        },
+        "puzzle_done_6": {
+            "name": "\\{review}Rätselloch 6 (Erledigt)",
+        },
+        "puzzle_done_7": {
+            "name": "\\{review}Rätselloch 7 (Erledigt)",
+        },
+        "puzzle_done_8": {
+            "name": "\\{review}Rätselloch 8 (Erledigt)",
+        },
+        "puzzle_done_9": {
+            "name": "\\{review}Rätselloch 9 (Erledigt)",
+        },
         "puzzle_hole_1": {
             "name": "Puzzle Hole 1 (Empty)",
+        },
+        "puzzle_hole_10": {
+            "name": "\\{review}Rätselloch 10 (Leer)",
+        },
+        "puzzle_hole_11": {
+            "name": "\\{review}Rätselloch 11 (Leer)",
+        },
+        "puzzle_hole_12": {
+            "name": "\\{review}Rätselloch 12 (Leer)",
         },
         "puzzle_hole_2": {
             "name": "Puzzle Hole 2 (Empty)",
@@ -2656,6 +2914,21 @@
         },
         "puzzle_hole_4": {
             "name": "Puzzle Hole 4 (Empty)",
+        },
+        "puzzle_hole_5": {
+            "name": "\\{review}Rätselloch 5 (Leer)",
+        },
+        "puzzle_hole_6": {
+            "name": "\\{review}Rätselloch 6 (Leer)",
+        },
+        "puzzle_hole_7": {
+            "name": "\\{review}Rätselloch 7 (Leer)",
+        },
+        "puzzle_hole_8": {
+            "name": "\\{review}Rätselloch 8 (Leer)",
+        },
+        "puzzle_hole_9": {
+            "name": "\\{review}Rätselloch 9 (Leer)",
         },
         "quad_bike": {
             "name": "\\{review}Quad",
@@ -2672,6 +2945,12 @@
         "quest_4": {
             "name": "\\{review}Quest-Gegenstand 4",
         },
+        "quest_5": {
+            "name": "\\{review}Questgegenstand 5",
+        },
+        "quest_6": {
+            "name": "\\{review}Questgegenstand 6",
+        },
         "raptor": {
             "name": "Raptor",
         },
@@ -2686,6 +2965,12 @@
         },
         "red_light": {
             "name": "\\{review}Rotes Licht",
+        },
+        "revolver": {
+            "name": "\\{review}Revolver",
+        },
+        "revolver_ammo": {
+            "name": "\\{review}Revolvermunition",
         },
         "rib": {
             "name": "\\{review}RIB",
@@ -3012,6 +3297,12 @@
         },
         "waterfall": {
             "name": "Wasserfall Nebel",
+        },
+        "waterskin_1": {
+            "name": "\\{review}Kleine Wasserflasche",
+        },
+        "waterskin_2": {
+            "name": "\\{review}Große Wasserflasche",
         },
         "white_light": {
             "name": "\\{review}Weißes Licht",

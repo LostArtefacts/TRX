@@ -46,6 +46,8 @@ static bool M_ResumeInfo_HasWeapon(
     case LGT_MP5:          return resume->flags.has_mp5;
     case LGT_GRENADE:      return resume->flags.has_grenade;
     case LGT_ROCKET:       return resume->flags.has_rocket;
+    case LGT_CROSSBOW:     return resume->flags.has_crossbow;
+    case LGT_REVOLVER:     return resume->flags.has_revolver;
     default: return false;
         // clang-format on
     }
@@ -68,6 +70,8 @@ static void M_ResumeInfo_SetWeapon(
     case LGT_MP5:          resume->flags.has_mp5 = has_weapon; break;
     case LGT_GRENADE:      resume->flags.has_grenade = has_weapon; break;
     case LGT_ROCKET:       resume->flags.has_rocket = has_weapon; break;
+    case LGT_CROSSBOW:     resume->flags.has_crossbow = has_weapon; break;
+    case LGT_REVOLVER:     resume->flags.has_revolver = has_weapon; break;
     default: break;
         // clang-format on
     }
@@ -89,6 +93,8 @@ static void M_ResumeInfo_AddAmmo(
     case LGT_MP5:          resume->mp5_ammo += ammo_qty; break;
     case LGT_GRENADE:      resume->grenade_ammo += ammo_qty; break;
     case LGT_ROCKET:       resume->rocket_ammo += ammo_qty; break;
+    case LGT_CROSSBOW:     resume->crossbow_ammo += ammo_qty; break;
+    case LGT_REVOLVER:     resume->revolver_ammo += ammo_qty; break;
     default: break;
         // clang-format on
     }
@@ -334,6 +340,8 @@ void GF_InventoryModifier_ApplyToResumeInfo(const GF_LEVEL *const level)
         resume->grenade_ammo = 0;
         resume->rocket_ammo = 0;
         resume->harpoon_ammo = 0;
+        resume->crossbow_ammo = 0;
+        resume->revolver_ammo = 0;
     }
 
     if (m_RemoveScions) {
@@ -367,6 +375,8 @@ void GF_InventoryModifier_ApplyToResumeInfo(const GF_LEVEL *const level)
     M_ModifyResumeInfo_GunOrAmmo(resume, LGT_MP5);
     M_ModifyResumeInfo_GunOrAmmo(resume, LGT_GRENADE);
     M_ModifyResumeInfo_GunOrAmmo(resume, LGT_ROCKET);
+    M_ModifyResumeInfo_GunOrAmmo(resume, LGT_CROSSBOW);
+    M_ModifyResumeInfo_GunOrAmmo(resume, LGT_REVOLVER);
 
     M_ModifyResumeInfo_Item(resume, O_SMALL_MEDIPACK_ITEM);
     M_ModifyResumeInfo_Item(resume, O_LARGE_MEDIPACK_ITEM);
@@ -400,6 +410,8 @@ void GF_InventoryModifier_Apply(
         M_ModifyInventory_GunOrAmmo(type, LGT_MP5);
         M_ModifyInventory_GunOrAmmo(type, LGT_GRENADE);
         M_ModifyInventory_GunOrAmmo(type, LGT_ROCKET);
+        M_ModifyInventory_GunOrAmmo(type, LGT_CROSSBOW);
+        M_ModifyInventory_GunOrAmmo(type, LGT_REVOLVER);
     }
 
     M_ModifyInventory_Item(type, O_PICKUP_ITEM_1);
@@ -419,6 +431,82 @@ void GF_InventoryModifier_Apply(
     M_ModifyInventory_Item(type, O_QUEST_ITEM_2);
     M_ModifyInventory_Item(type, O_QUEST_ITEM_3);
     M_ModifyInventory_Item(type, O_QUEST_ITEM_4);
+    M_ModifyInventory_Item(type, O_PICKUP_ITEM_3);
+    M_ModifyInventory_Item(type, O_PICKUP_ITEM_4);
+    M_ModifyInventory_Item(type, O_PUZZLE_ITEM_5);
+    M_ModifyInventory_Item(type, O_PUZZLE_ITEM_6);
+    M_ModifyInventory_Item(type, O_PUZZLE_ITEM_7);
+    M_ModifyInventory_Item(type, O_PUZZLE_ITEM_8);
+    M_ModifyInventory_Item(type, O_PUZZLE_ITEM_9);
+    M_ModifyInventory_Item(type, O_PUZZLE_ITEM_10);
+    M_ModifyInventory_Item(type, O_PUZZLE_ITEM_11);
+    M_ModifyInventory_Item(type, O_PUZZLE_ITEM_12);
+    M_ModifyInventory_Item(type, O_KEY_ITEM_5);
+    M_ModifyInventory_Item(type, O_KEY_ITEM_6);
+    M_ModifyInventory_Item(type, O_KEY_ITEM_7);
+    M_ModifyInventory_Item(type, O_KEY_ITEM_8);
+    M_ModifyInventory_Item(type, O_KEY_ITEM_9);
+    M_ModifyInventory_Item(type, O_KEY_ITEM_10);
+    M_ModifyInventory_Item(type, O_KEY_ITEM_11);
+    M_ModifyInventory_Item(type, O_KEY_ITEM_12);
+    M_ModifyInventory_Item(type, O_QUEST_ITEM_5);
+    M_ModifyInventory_Item(type, O_QUEST_ITEM_6);
+    M_ModifyInventory_Item(type, O_PUZZLE_ITEM_1_COMBO_1);
+    M_ModifyInventory_Item(type, O_PUZZLE_ITEM_1_COMBO_2);
+    M_ModifyInventory_Item(type, O_PUZZLE_ITEM_2_COMBO_1);
+    M_ModifyInventory_Item(type, O_PUZZLE_ITEM_2_COMBO_2);
+    M_ModifyInventory_Item(type, O_PUZZLE_ITEM_3_COMBO_1);
+    M_ModifyInventory_Item(type, O_PUZZLE_ITEM_3_COMBO_2);
+    M_ModifyInventory_Item(type, O_PUZZLE_ITEM_4_COMBO_1);
+    M_ModifyInventory_Item(type, O_PUZZLE_ITEM_4_COMBO_2);
+    M_ModifyInventory_Item(type, O_PUZZLE_ITEM_5_COMBO_1);
+    M_ModifyInventory_Item(type, O_PUZZLE_ITEM_5_COMBO_2);
+    M_ModifyInventory_Item(type, O_PUZZLE_ITEM_6_COMBO_1);
+    M_ModifyInventory_Item(type, O_PUZZLE_ITEM_6_COMBO_2);
+    M_ModifyInventory_Item(type, O_PUZZLE_ITEM_7_COMBO_1);
+    M_ModifyInventory_Item(type, O_PUZZLE_ITEM_7_COMBO_2);
+    M_ModifyInventory_Item(type, O_PUZZLE_ITEM_8_COMBO_1);
+    M_ModifyInventory_Item(type, O_PUZZLE_ITEM_8_COMBO_2);
+    M_ModifyInventory_Item(type, O_KEY_ITEM_1_COMBO_1);
+    M_ModifyInventory_Item(type, O_KEY_ITEM_1_COMBO_2);
+    M_ModifyInventory_Item(type, O_KEY_ITEM_2_COMBO_1);
+    M_ModifyInventory_Item(type, O_KEY_ITEM_2_COMBO_2);
+    M_ModifyInventory_Item(type, O_KEY_ITEM_3_COMBO_1);
+    M_ModifyInventory_Item(type, O_KEY_ITEM_3_COMBO_2);
+    M_ModifyInventory_Item(type, O_KEY_ITEM_4_COMBO_1);
+    M_ModifyInventory_Item(type, O_KEY_ITEM_4_COMBO_2);
+    M_ModifyInventory_Item(type, O_KEY_ITEM_5_COMBO_1);
+    M_ModifyInventory_Item(type, O_KEY_ITEM_5_COMBO_2);
+    M_ModifyInventory_Item(type, O_KEY_ITEM_6_COMBO_1);
+    M_ModifyInventory_Item(type, O_KEY_ITEM_6_COMBO_2);
+    M_ModifyInventory_Item(type, O_KEY_ITEM_7_COMBO_1);
+    M_ModifyInventory_Item(type, O_KEY_ITEM_7_COMBO_2);
+    M_ModifyInventory_Item(type, O_KEY_ITEM_8_COMBO_1);
+    M_ModifyInventory_Item(type, O_KEY_ITEM_8_COMBO_2);
+    M_ModifyInventory_Item(type, O_PICKUP_ITEM_1_COMBO_1);
+    M_ModifyInventory_Item(type, O_PICKUP_ITEM_1_COMBO_2);
+    M_ModifyInventory_Item(type, O_PICKUP_ITEM_2_COMBO_1);
+    M_ModifyInventory_Item(type, O_PICKUP_ITEM_2_COMBO_2);
+    M_ModifyInventory_Item(type, O_PICKUP_ITEM_3_COMBO_1);
+    M_ModifyInventory_Item(type, O_PICKUP_ITEM_3_COMBO_2);
+    M_ModifyInventory_Item(type, O_PICKUP_ITEM_4_COMBO_1);
+    M_ModifyInventory_Item(type, O_PICKUP_ITEM_4_COMBO_2);
+    M_ModifyInventory_Item(type, O_LASERSIGHT_ITEM);
+    M_ModifyInventory_Item(type, O_BINOCULARS_ITEM);
+    M_ModifyInventory_Item(type, O_CROWBAR_ITEM);
+    M_ModifyInventory_Item(type, O_EXAMINE_ITEM_1);
+    M_ModifyInventory_Item(type, O_EXAMINE_ITEM_2);
+    M_ModifyInventory_Item(type, O_EXAMINE_ITEM_3);
+    M_ModifyInventory_Item(type, O_WATERSKIN_1_EMPTY);
+    M_ModifyInventory_Item(type, O_WATERSKIN_1_1);
+    M_ModifyInventory_Item(type, O_WATERSKIN_1_2);
+    M_ModifyInventory_Item(type, O_WATERSKIN_1_3);
+    M_ModifyInventory_Item(type, O_WATERSKIN_2_EMPTY);
+    M_ModifyInventory_Item(type, O_WATERSKIN_2_1);
+    M_ModifyInventory_Item(type, O_WATERSKIN_2_2);
+    M_ModifyInventory_Item(type, O_WATERSKIN_2_3);
+    M_ModifyInventory_Item(type, O_WATERSKIN_2_4);
+    M_ModifyInventory_Item(type, O_WATERSKIN_2_5);
 
     if (type == GF_INV_SECRET) {
         M_ModifyInventory_Item(type, O_SMALL_MEDIPACK_ITEM);

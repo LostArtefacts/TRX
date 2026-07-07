@@ -33,6 +33,8 @@ static INVENTORY_ITEM *M_GetGunInvItem(const LARA_GUN_TYPE gun_type)
     case LGT_MP5:          return InvRing_GetByObjectID(O_MP5_OPTION);
     case LGT_GRENADE:      return InvRing_GetByObjectID(O_GRENADE_GUN_OPTION);
     case LGT_ROCKET:       return InvRing_GetByObjectID(O_ROCKET_GUN_OPTION);
+    case LGT_CROSSBOW:     return InvRing_GetByObjectID(O_CROSSBOW_OPTION);
+    case LGT_REVOLVER:     return InvRing_GetByObjectID(O_REVOLVER_OPTION);
     default:               return nullptr;
     }
     // clang-format on
@@ -53,6 +55,8 @@ static INVENTORY_ITEM *M_GetAmmoInvItem(const LARA_GUN_TYPE gun_type)
     case LGT_MP5:          return InvRing_GetByObjectID(O_MP5_AMMO_OPTION);
     case LGT_GRENADE:      return InvRing_GetByObjectID(O_GRENADE_AMMO_OPTION);
     case LGT_ROCKET:       return InvRing_GetByObjectID(O_ROCKET_AMMO_OPTION);
+    case LGT_CROSSBOW:     return InvRing_GetByObjectID(O_CROSSBOW_AMMO_OPTION);
+    case LGT_REVOLVER:     return InvRing_GetByObjectID(O_REVOLVER_AMMO_OPTION);
     default:               return nullptr;
     }
     // clang-format on

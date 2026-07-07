@@ -1,7 +1,7 @@
 #include <trx/game/lara/draw.h>
 
 #include <trx/config.h>
-#include <trx/game/gun/misc.h>
+#include <trx/game/gun.h>
 #include <trx/game/items/utils.h>
 #include <trx/game/lara.h>
 #include <trx/game/lara/electric.h>
@@ -278,11 +278,12 @@ static bool M_Draw_I(
     case LGT_MAGNUMS:
     case LGT_AUTOS:
     case LGT_DESERT_EAGLE:
+    case LGT_REVOLVER:
     case LGT_UZIS: {
         Matrix_Push_I();
         Matrix_TranslateRel32_I(bone[LM_UARM_R - 1].pos);
         Matrix_InterpolateArm();
-        if (gun_type == LGT_DESERT_EAGLE) {
+        if (Gun_IsSinglePistolType(gun_type)) {
             Matrix_Rot16(lara->interp.result.torso_rot);
         } else {
             Matrix_Rot16(lara->right_arm.interp.result.rot);
@@ -309,7 +310,7 @@ static bool M_Draw_I(
         Matrix_Push_I();
         Matrix_TranslateRel32_I(bone[LM_UARM_L - 1].pos);
         Matrix_InterpolateArm();
-        if (gun_type == LGT_DESERT_EAGLE) {
+        if (Gun_IsSinglePistolType(gun_type)) {
             Matrix_Rot16(lara->interp.result.torso_rot);
         } else {
             Matrix_Rot16(lara->left_arm.interp.result.rot);
@@ -345,7 +346,8 @@ static bool M_Draw_I(
     case LGT_MP5:
     case LGT_GRENADE:
     case LGT_ROCKET:
-    case LGT_HARPOON: {
+    case LGT_HARPOON:
+    case LGT_CROSSBOW: {
         Matrix_Push_I();
         Matrix_TranslateRel32_I(bone[LM_UARM_R - 1].pos);
         mesh_rots_1 =
@@ -568,6 +570,7 @@ bool Lara_Draw(const ITEM *const item)
     case LGT_MAGNUMS:
     case LGT_AUTOS:
     case LGT_DESERT_EAGLE:
+    case LGT_REVOLVER:
     case LGT_UZIS: {
         Matrix_Push();
         Matrix_TranslateRel32(bone[LM_UARM_R - 1].pos);
@@ -590,7 +593,7 @@ bool Lara_Draw(const ITEM *const item)
         g_WMatrixPtr->_21 = item_wmatrix._21;
         g_WMatrixPtr->_22 = item_wmatrix._22;
 
-        if (gun_type == LGT_DESERT_EAGLE) {
+        if (Gun_IsSinglePistolType(gun_type)) {
             Matrix_Rot16(lara->interp.result.torso_rot);
         } else {
             Matrix_Rot16(lara->right_arm.interp.result.rot);
@@ -636,7 +639,7 @@ bool Lara_Draw(const ITEM *const item)
         g_WMatrixPtr->_21 = item_wmatrix._21;
         g_WMatrixPtr->_22 = item_wmatrix._22;
 
-        if (gun_type == LGT_DESERT_EAGLE) {
+        if (Gun_IsSinglePistolType(gun_type)) {
             Matrix_Rot16(lara->interp.result.torso_rot);
         } else {
             Matrix_Rot16(lara->left_arm.interp.result.rot);
@@ -674,7 +677,8 @@ bool Lara_Draw(const ITEM *const item)
     case LGT_MP5:
     case LGT_GRENADE:
     case LGT_ROCKET:
-    case LGT_HARPOON: {
+    case LGT_HARPOON:
+    case LGT_CROSSBOW: {
         Matrix_Push();
         Matrix_TranslateRel32(bone[LM_UARM_R - 1].pos);
         if (pose == nullptr) {

@@ -67,6 +67,12 @@ static void M_GiveItems(void)
     if (Lara_Cheat_GiveGun(LGT_MP5, false)) {
         lara_info->mp5_ammo.ammo = 5000;
     }
+    if (Lara_Cheat_GiveGun(LGT_CROSSBOW, false)) {
+        lara_info->crossbow_ammo.ammo = 5000;
+    }
+    if (Lara_Cheat_GiveGun(LGT_REVOLVER, false)) {
+        lara_info->revolver_ammo.ammo = 500;
+    }
     Inv_AddItemNTimes(O_SMALL_MEDIPACK_ITEM, 50);
     Inv_AddItemNTimes(O_LARGE_MEDIPACK_ITEM, 50);
     if (g_Weapons[LGT_FLARE].is_available) {

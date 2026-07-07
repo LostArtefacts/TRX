@@ -1851,6 +1851,9 @@
         "big_spider": {
             "name": "Giant Spider",
         },
+        "binoculars": {
+            "name": "Binoculars",
+        },
         "bird_guardian": {
             "name": "Bird Monster",
         },
@@ -1956,8 +1959,20 @@
         "crocodile": {
             "name": "Crocodile",
         },
+        "crossbow": {
+            "name": "Crossbow",
+        },
+        "crossbow_ammo": {
+            "name": "Crossbow Bolts",
+        },
+        "crossbow_bolt": {
+            "name": "Crossbow Bolt",
+        },
         "crow": {
             "name": "Crow",
+        },
+        "crowbar": {
+            "name": "Crowbar",
         },
         "cult_1": {
             "name": "Masked Goon 1",
@@ -2096,6 +2111,15 @@
         },
         "ember_emitter": {
             "name": "Ember Emitter",
+        },
+        "examine_1": {
+            "name": "Examine Item 1",
+        },
+        "examine_2": {
+            "name": "Examine Item 2",
+        },
+        "examine_3": {
+            "name": "Examine Item 3",
         },
         "explosion_1": {
             "name": "Explosion 1",
@@ -2278,17 +2302,98 @@
         "key_1": {
             "name": "Key 1",
         },
+        "key_10": {
+            "name": "Key 10",
+        },
+        "key_11": {
+            "name": "Key 11",
+        },
+        "key_12": {
+            "name": "Key 12",
+        },
+        "key_1_combo_1": {
+            "name": "Key 1 (Combo 1)",
+        },
+        "key_1_combo_2": {
+            "name": "Key 1 (Combo 2)",
+        },
         "key_2": {
             "name": "Key 2",
+        },
+        "key_2_combo_1": {
+            "name": "Key 2 (Combo 1)",
+        },
+        "key_2_combo_2": {
+            "name": "Key 2 (Combo 2)",
         },
         "key_3": {
             "name": "Key 3",
         },
+        "key_3_combo_1": {
+            "name": "Key 3 (Combo 1)",
+        },
+        "key_3_combo_2": {
+            "name": "Key 3 (Combo 2)",
+        },
         "key_4": {
             "name": "Key 4",
         },
+        "key_4_combo_1": {
+            "name": "Key 4 (Combo 1)",
+        },
+        "key_4_combo_2": {
+            "name": "Key 4 (Combo 2)",
+        },
+        "key_5": {
+            "name": "Key 5",
+        },
+        "key_5_combo_1": {
+            "name": "Key 5 (Combo 1)",
+        },
+        "key_5_combo_2": {
+            "name": "Key 5 (Combo 2)",
+        },
+        "key_6": {
+            "name": "Key 6",
+        },
+        "key_6_combo_1": {
+            "name": "Key 6 (Combo 1)",
+        },
+        "key_6_combo_2": {
+            "name": "Key 6 (Combo 2)",
+        },
+        "key_7": {
+            "name": "Key 7",
+        },
+        "key_7_combo_1": {
+            "name": "Key 7 (Combo 1)",
+        },
+        "key_7_combo_2": {
+            "name": "Key 7 (Combo 2)",
+        },
+        "key_8": {
+            "name": "Key 8",
+        },
+        "key_8_combo_1": {
+            "name": "Key 8 (Combo 1)",
+        },
+        "key_8_combo_2": {
+            "name": "Key 8 (Combo 2)",
+        },
+        "key_9": {
+            "name": "Key 9",
+        },
         "key_hole_1": {
             "name": "Keyhole 1",
+        },
+        "key_hole_10": {
+            "name": "Keyhole 10",
+        },
+        "key_hole_11": {
+            "name": "Keyhole 11",
+        },
+        "key_hole_12": {
+            "name": "Keyhole 12",
         },
         "key_hole_2": {
             "name": "Keyhole 2",
@@ -2298,6 +2403,21 @@
         },
         "key_hole_4": {
             "name": "Keyhole 4",
+        },
+        "key_hole_5": {
+            "name": "Keyhole 5",
+        },
+        "key_hole_6": {
+            "name": "Keyhole 6",
+        },
+        "key_hole_7": {
+            "name": "Keyhole 7",
+        },
+        "key_hole_8": {
+            "name": "Keyhole 8",
+        },
+        "key_hole_9": {
+            "name": "Keyhole 9",
         },
         "kill_all_triggered": {
             "name": "Kill All Triggered",
@@ -2382,6 +2502,9 @@
         },
         "larson": {
             "name": "Larson",
+        },
+        "lasersight": {
+            "name": "Laser Sight",
         },
         "lava_wedge": {
             "name": "Lava Wedge",
@@ -2563,8 +2686,38 @@
         "pickup_1": {
             "name": "Pickup Item 1",
         },
+        "pickup_1_combo_1": {
+            "name": "Pickup Item 1 (Combo 1)",
+        },
+        "pickup_1_combo_2": {
+            "name": "Pickup Item 1 (Combo 2)",
+        },
         "pickup_2": {
             "name": "Pickup Item 2",
+        },
+        "pickup_2_combo_1": {
+            "name": "Pickup Item 2 (Combo 1)",
+        },
+        "pickup_2_combo_2": {
+            "name": "Pickup Item 2 (Combo 2)",
+        },
+        "pickup_3": {
+            "name": "Pickup Item 3",
+        },
+        "pickup_3_combo_1": {
+            "name": "Pickup Item 3 (Combo 1)",
+        },
+        "pickup_3_combo_2": {
+            "name": "Pickup Item 3 (Combo 2)",
+        },
+        "pickup_4": {
+            "name": "Pickup Item 4",
+        },
+        "pickup_4_combo_1": {
+            "name": "Pickup Item 4 (Combo 1)",
+        },
+        "pickup_4_combo_2": {
+            "name": "Pickup Item 4 (Combo 2)",
         },
         "pickup_aid": {
             "name": "Pickup Aid",
@@ -2653,17 +2806,98 @@
         "puzzle_1": {
             "name": "Puzzle Item 1",
         },
+        "puzzle_10": {
+            "name": "Puzzle Item 10",
+        },
+        "puzzle_11": {
+            "name": "Puzzle Item 11",
+        },
+        "puzzle_12": {
+            "name": "Puzzle Item 12",
+        },
+        "puzzle_1_combo_1": {
+            "name": "Puzzle Item 1 (Combo 1)",
+        },
+        "puzzle_1_combo_2": {
+            "name": "Puzzle Item 1 (Combo 2)",
+        },
         "puzzle_2": {
             "name": "Puzzle Item 2",
+        },
+        "puzzle_2_combo_1": {
+            "name": "Puzzle Item 2 (Combo 1)",
+        },
+        "puzzle_2_combo_2": {
+            "name": "Puzzle Item 2 (Combo 2)",
         },
         "puzzle_3": {
             "name": "Puzzle Item 3",
         },
+        "puzzle_3_combo_1": {
+            "name": "Puzzle Item 3 (Combo 1)",
+        },
+        "puzzle_3_combo_2": {
+            "name": "Puzzle Item 3 (Combo 2)",
+        },
         "puzzle_4": {
             "name": "Puzzle Item 4",
         },
+        "puzzle_4_combo_1": {
+            "name": "Puzzle Item 4 (Combo 1)",
+        },
+        "puzzle_4_combo_2": {
+            "name": "Puzzle Item 4 (Combo 2)",
+        },
+        "puzzle_5": {
+            "name": "Puzzle Item 5",
+        },
+        "puzzle_5_combo_1": {
+            "name": "Puzzle Item 5 (Combo 1)",
+        },
+        "puzzle_5_combo_2": {
+            "name": "Puzzle Item 5 (Combo 2)",
+        },
+        "puzzle_6": {
+            "name": "Puzzle Item 6",
+        },
+        "puzzle_6_combo_1": {
+            "name": "Puzzle Item 6 (Combo 1)",
+        },
+        "puzzle_6_combo_2": {
+            "name": "Puzzle Item 6 (Combo 2)",
+        },
+        "puzzle_7": {
+            "name": "Puzzle Item 7",
+        },
+        "puzzle_7_combo_1": {
+            "name": "Puzzle Item 7 (Combo 1)",
+        },
+        "puzzle_7_combo_2": {
+            "name": "Puzzle Item 7 (Combo 2)",
+        },
+        "puzzle_8": {
+            "name": "Puzzle Item 8",
+        },
+        "puzzle_8_combo_1": {
+            "name": "Puzzle Item 8 (Combo 1)",
+        },
+        "puzzle_8_combo_2": {
+            "name": "Puzzle Item 8 (Combo 2)",
+        },
+        "puzzle_9": {
+            "name": "Puzzle Item 9",
+        },
         "puzzle_done_1": {
             "name": "Puzzle Hole 1 (Done)",
+        },
+        "puzzle_done_10": {
+            "name": "Puzzle Hole 10 (Done)",
+        },
+        "puzzle_done_11": {
+            "name": "Puzzle Hole 11 (Done)",
+        },
+        "puzzle_done_12": {
+            "name": "Puzzle Hole 12 (Done)",
         },
         "puzzle_done_2": {
             "name": "Puzzle Hole 2 (Done)",
@@ -2674,8 +2908,32 @@
         "puzzle_done_4": {
             "name": "Puzzle Hole 4 (Done)",
         },
+        "puzzle_done_5": {
+            "name": "Puzzle Hole 5 (Done)",
+        },
+        "puzzle_done_6": {
+            "name": "Puzzle Hole 6 (Done)",
+        },
+        "puzzle_done_7": {
+            "name": "Puzzle Hole 7 (Done)",
+        },
+        "puzzle_done_8": {
+            "name": "Puzzle Hole 8 (Done)",
+        },
+        "puzzle_done_9": {
+            "name": "Puzzle Hole 9 (Done)",
+        },
         "puzzle_hole_1": {
             "name": "Puzzle Hole 1 (Empty)",
+        },
+        "puzzle_hole_10": {
+            "name": "Puzzle Hole 10 (Empty)",
+        },
+        "puzzle_hole_11": {
+            "name": "Puzzle Hole 11 (Empty)",
+        },
+        "puzzle_hole_12": {
+            "name": "Puzzle Hole 12 (Empty)",
         },
         "puzzle_hole_2": {
             "name": "Puzzle Hole 2 (Empty)",
@@ -2685,6 +2943,21 @@
         },
         "puzzle_hole_4": {
             "name": "Puzzle Hole 4 (Empty)",
+        },
+        "puzzle_hole_5": {
+            "name": "Puzzle Hole 5 (Empty)",
+        },
+        "puzzle_hole_6": {
+            "name": "Puzzle Hole 6 (Empty)",
+        },
+        "puzzle_hole_7": {
+            "name": "Puzzle Hole 7 (Empty)",
+        },
+        "puzzle_hole_8": {
+            "name": "Puzzle Hole 8 (Empty)",
+        },
+        "puzzle_hole_9": {
+            "name": "Puzzle Hole 9 (Empty)",
         },
         "quad_bike": {
             "name": "Quad Bike",
@@ -2701,6 +2974,12 @@
         "quest_4": {
             "name": "Quest Item 4",
         },
+        "quest_5": {
+            "name": "Quest Item 5",
+        },
+        "quest_6": {
+            "name": "Quest Item 6",
+        },
         "raptor": {
             "name": "Raptor",
         },
@@ -2715,6 +2994,12 @@
         },
         "red_light": {
             "name": "Red Light",
+        },
+        "revolver": {
+            "name": "Revolver",
+        },
+        "revolver_ammo": {
+            "name": "Revolver Ammo",
         },
         "rib": {
             "name": [
@@ -3075,6 +3360,12 @@
         },
         "waterfall": {
             "name": "Waterfall Mist",
+        },
+        "waterskin_1": {
+            "name": "Small Waterskin",
+        },
+        "waterskin_2": {
+            "name": "Large Waterskin",
         },
         "white_light": {
             "name": "White Light",

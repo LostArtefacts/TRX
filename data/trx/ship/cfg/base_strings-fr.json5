@@ -1851,6 +1851,9 @@
         "big_spider": {
             "name": "\\{review}Géante araignée",
         },
+        "binoculars": {
+            "name": "\\{review}Jumelles",
+        },
         "bird_guardian": {
             "name": "\\{review}Monstre oiseau",
         },
@@ -1956,8 +1959,20 @@
         "crocodile": {
             "name": "Crocodile",
         },
+        "crossbow": {
+            "name": "\\{review}Arbalète",
+        },
+        "crossbow_ammo": {
+            "name": "\\{review}Flèches d'arbalète",
+        },
+        "crossbow_bolt": {
+            "name": "\\{review}Flèche d'arbalète",
+        },
         "crow": {
             "name": "\\{review}Corbeau",
+        },
+        "crowbar": {
+            "name": "\\{review}Pied-de-biche",
         },
         "cult_1": {
             "name": "\\{review}Goon masqué 1",
@@ -2096,6 +2111,15 @@
         },
         "ember_emitter": {
             "name": "\\{review}Émetteur de braise",
+        },
+        "examine_1": {
+            "name": "\\{review}Examiner l'objet 1",
+        },
+        "examine_2": {
+            "name": "\\{review}Examiner l'objet 2",
+        },
+        "examine_3": {
+            "name": "\\{review}Examiner l'objet 3",
         },
         "explosion_1": {
             "name": "\\{review}Explosion 1",
@@ -2263,17 +2287,98 @@
         "key_1": {
             "name": "\\{review}Clé 1",
         },
+        "key_10": {
+            "name": "\\{review}Clé 10",
+        },
+        "key_11": {
+            "name": "\\{review}Clé 11",
+        },
+        "key_12": {
+            "name": "\\{review}Clé 12",
+        },
+        "key_1_combo_1": {
+            "name": "\\{review}Clé 1 (Combo 1)",
+        },
+        "key_1_combo_2": {
+            "name": "\\{review}Clé 1 (Combo 2)",
+        },
         "key_2": {
             "name": "\\{review}Clé 2",
+        },
+        "key_2_combo_1": {
+            "name": "\\{review}Clé 2 (Combo 1)",
+        },
+        "key_2_combo_2": {
+            "name": "\\{review}Clé 2 (Combo 2)",
         },
         "key_3": {
             "name": "\\{review}Clé 3",
         },
+        "key_3_combo_1": {
+            "name": "\\{review}Clé 3 (Combo 1)",
+        },
+        "key_3_combo_2": {
+            "name": "\\{review}Clé 3 (Combo 2)",
+        },
         "key_4": {
             "name": "\\{review}Clé 4",
         },
+        "key_4_combo_1": {
+            "name": "\\{review}Clé 4 (Combo 1)",
+        },
+        "key_4_combo_2": {
+            "name": "\\{review}Clé 4 (Combo 2)",
+        },
+        "key_5": {
+            "name": "\\{review}Clé 5",
+        },
+        "key_5_combo_1": {
+            "name": "\\{review}Clé 5 (Combo 1)",
+        },
+        "key_5_combo_2": {
+            "name": "\\{review}Clé 5 (Combo 2)",
+        },
+        "key_6": {
+            "name": "\\{review}Clé 6",
+        },
+        "key_6_combo_1": {
+            "name": "\\{review}Clé 6 (Combo 1)",
+        },
+        "key_6_combo_2": {
+            "name": "\\{review}Clé 6 (Combo 2)",
+        },
+        "key_7": {
+            "name": "\\{review}Clé 7",
+        },
+        "key_7_combo_1": {
+            "name": "\\{review}Clé 7 (Combo 1)",
+        },
+        "key_7_combo_2": {
+            "name": "\\{review}Clé 7 (Combo 2)",
+        },
+        "key_8": {
+            "name": "\\{review}Clé 8",
+        },
+        "key_8_combo_1": {
+            "name": "\\{review}Clé 8 (Combo 1)",
+        },
+        "key_8_combo_2": {
+            "name": "\\{review}Clé 8 (Combo 2)",
+        },
+        "key_9": {
+            "name": "\\{review}Clé 9",
+        },
         "key_hole_1": {
             "name": "\\{review}Trou de clé 1",
+        },
+        "key_hole_10": {
+            "name": "\\{review}Serrure 10",
+        },
+        "key_hole_11": {
+            "name": "\\{review}Serrure 11",
+        },
+        "key_hole_12": {
+            "name": "\\{review}Serrure 12",
         },
         "key_hole_2": {
             "name": "\\{review}Trou de clé 2",
@@ -2283,6 +2388,21 @@
         },
         "key_hole_4": {
             "name": "\\{review}Trou de clé 4",
+        },
+        "key_hole_5": {
+            "name": "\\{review}Serrure 5",
+        },
+        "key_hole_6": {
+            "name": "\\{review}Serrure 6",
+        },
+        "key_hole_7": {
+            "name": "\\{review}Serrure 7",
+        },
+        "key_hole_8": {
+            "name": "\\{review}Serrure 8",
+        },
+        "key_hole_9": {
+            "name": "\\{review}Serrure 9",
         },
         "kill_all_triggered": {
             "name": "\\{review}Élimination totale déclenchée",
@@ -2364,6 +2484,9 @@
         },
         "larson": {
             "name": "Larson",
+        },
+        "lasersight": {
+            "name": "\\{review}Visée laser",
         },
         "lava_wedge": {
             "name": "Coulée de lave",
@@ -2531,8 +2654,38 @@
         "pickup_1": {
             "name": "\\{review}Objet à ramasser 1",
         },
+        "pickup_1_combo_1": {
+            "name": "\\{review}Objet à ramasser 1 (Combo 1)",
+        },
+        "pickup_1_combo_2": {
+            "name": "\\{review}Objet à ramasser 1 (Combo 2)",
+        },
         "pickup_2": {
             "name": "\\{review}Objet à ramasser 2",
+        },
+        "pickup_2_combo_1": {
+            "name": "\\{review}Objet à ramasser 2 (Combo 1)",
+        },
+        "pickup_2_combo_2": {
+            "name": "\\{review}Objet à ramasser 2 (Combo 2)",
+        },
+        "pickup_3": {
+            "name": "\\{review}Objet à ramasser 3",
+        },
+        "pickup_3_combo_1": {
+            "name": "\\{review}Objet à ramasser 3 (Combo 1)",
+        },
+        "pickup_3_combo_2": {
+            "name": "\\{review}Objet à ramasser 3 (Combo 2)",
+        },
+        "pickup_4": {
+            "name": "\\{review}Objet à ramasser 4",
+        },
+        "pickup_4_combo_1": {
+            "name": "\\{review}Objet à ramasser 4 (Combo 1)",
+        },
+        "pickup_4_combo_2": {
+            "name": "\\{review}Objet à ramasser 4 (Combo 2)",
         },
         "pickup_aid": {
             "name": "Indice au ramassage",
@@ -2621,17 +2774,98 @@
         "puzzle_1": {
             "name": "\\{review}Objet de puzzle 1",
         },
+        "puzzle_10": {
+            "name": "\\{review}Objet d'énigme 10",
+        },
+        "puzzle_11": {
+            "name": "\\{review}Objet d'énigme 11",
+        },
+        "puzzle_12": {
+            "name": "\\{review}Objet d'énigme 12",
+        },
+        "puzzle_1_combo_1": {
+            "name": "\\{review}Objet d'énigme 1 (Combo 1)",
+        },
+        "puzzle_1_combo_2": {
+            "name": "\\{review}Objet d'énigme 1 (Combo 2)",
+        },
         "puzzle_2": {
             "name": "\\{review}Objet de puzzle 2",
+        },
+        "puzzle_2_combo_1": {
+            "name": "\\{review}Objet d'énigme 2 (Combo 1)",
+        },
+        "puzzle_2_combo_2": {
+            "name": "\\{review}Objet d'énigme 2 (Combo 2)",
         },
         "puzzle_3": {
             "name": "\\{review}Objet de puzzle 3",
         },
+        "puzzle_3_combo_1": {
+            "name": "\\{review}Objet d'énigme 3 (Combo 1)",
+        },
+        "puzzle_3_combo_2": {
+            "name": "\\{review}Objet d'énigme 3 (Combo 2)",
+        },
         "puzzle_4": {
             "name": "\\{review}Objet de puzzle 4",
         },
+        "puzzle_4_combo_1": {
+            "name": "\\{review}Objet d'énigme 4 (Combo 1)",
+        },
+        "puzzle_4_combo_2": {
+            "name": "\\{review}Objet d'énigme 4 (Combo 2)",
+        },
+        "puzzle_5": {
+            "name": "\\{review}Objet d'énigme 5",
+        },
+        "puzzle_5_combo_1": {
+            "name": "\\{review}Objet d'énigme 5 (Combo 1)",
+        },
+        "puzzle_5_combo_2": {
+            "name": "\\{review}Objet d'énigme 5 (Combo 2)",
+        },
+        "puzzle_6": {
+            "name": "\\{review}Objet d'énigme 6",
+        },
+        "puzzle_6_combo_1": {
+            "name": "\\{review}Objet d'énigme 6 (Combo 1)",
+        },
+        "puzzle_6_combo_2": {
+            "name": "\\{review}Objet d'énigme 6 (Combo 2)",
+        },
+        "puzzle_7": {
+            "name": "\\{review}Objet d'énigme 7",
+        },
+        "puzzle_7_combo_1": {
+            "name": "\\{review}Objet d'énigme 7 (Combo 1)",
+        },
+        "puzzle_7_combo_2": {
+            "name": "\\{review}Objet d'énigme 7 (Combo 2)",
+        },
+        "puzzle_8": {
+            "name": "\\{review}Objet d'énigme 8",
+        },
+        "puzzle_8_combo_1": {
+            "name": "\\{review}Objet d'énigme 8 (Combo 1)",
+        },
+        "puzzle_8_combo_2": {
+            "name": "\\{review}Objet d'énigme 8 (Combo 2)",
+        },
+        "puzzle_9": {
+            "name": "\\{review}Objet d'énigme 9",
+        },
         "puzzle_done_1": {
             "name": "\\{review}Trou de puzzle 1 (Fait)",
+        },
+        "puzzle_done_10": {
+            "name": "\\{review}Trou d'énigme 10 (Terminé)",
+        },
+        "puzzle_done_11": {
+            "name": "\\{review}Trou d'énigme 11 (Terminé)",
+        },
+        "puzzle_done_12": {
+            "name": "\\{review}Trou d'énigme 12 (Terminé)",
         },
         "puzzle_done_2": {
             "name": "\\{review}Trou de puzzle 2 (Fait)",
@@ -2642,8 +2876,32 @@
         "puzzle_done_4": {
             "name": "\\{review}Trou de puzzle 4 (Fait)",
         },
+        "puzzle_done_5": {
+            "name": "\\{review}Trou d'énigme 5 (Terminé)",
+        },
+        "puzzle_done_6": {
+            "name": "\\{review}Trou d'énigme 6 (Terminé)",
+        },
+        "puzzle_done_7": {
+            "name": "\\{review}Trou d'énigme 7 (Terminé)",
+        },
+        "puzzle_done_8": {
+            "name": "\\{review}Trou d'énigme 8 (Terminé)",
+        },
+        "puzzle_done_9": {
+            "name": "\\{review}Trou d'énigme 9 (Terminé)",
+        },
         "puzzle_hole_1": {
             "name": "\\{review}Trou de puzzle 1 (Vide)",
+        },
+        "puzzle_hole_10": {
+            "name": "\\{review}Trou d'énigme 10 (Vide)",
+        },
+        "puzzle_hole_11": {
+            "name": "\\{review}Trou d'énigme 11 (Vide)",
+        },
+        "puzzle_hole_12": {
+            "name": "\\{review}Trou d'énigme 12 (Vide)",
         },
         "puzzle_hole_2": {
             "name": "\\{review}Trou de puzzle 2 (Vide)",
@@ -2653,6 +2911,21 @@
         },
         "puzzle_hole_4": {
             "name": "\\{review}Trou de puzzle 4 (Vide)",
+        },
+        "puzzle_hole_5": {
+            "name": "\\{review}Trou d'énigme 5 (Vide)",
+        },
+        "puzzle_hole_6": {
+            "name": "\\{review}Trou d'énigme 6 (Vide)",
+        },
+        "puzzle_hole_7": {
+            "name": "\\{review}Trou d'énigme 7 (Vide)",
+        },
+        "puzzle_hole_8": {
+            "name": "\\{review}Trou d'énigme 8 (Vide)",
+        },
+        "puzzle_hole_9": {
+            "name": "\\{review}Trou d'énigme 9 (Vide)",
         },
         "quad_bike": {
             "name": "\\{review}Quad",
@@ -2669,6 +2942,12 @@
         "quest_4": {
             "name": "\\{review}Objet de quête 4",
         },
+        "quest_5": {
+            "name": "\\{review}Objet de quête 5",
+        },
+        "quest_6": {
+            "name": "\\{review}Objet de quête 6",
+        },
         "raptor": {
             "name": "Raptor",
         },
@@ -2680,6 +2959,12 @@
         },
         "red_light": {
             "name": "\\{review}Lumière Rouge",
+        },
+        "revolver": {
+            "name": "\\{review}Revolver",
+        },
+        "revolver_ammo": {
+            "name": "\\{review}Munitions de revolver",
         },
         "rib": {
             "name": "\\{review}RIB",
@@ -2999,6 +3284,12 @@
         },
         "waterfall": {
             "name": "\\{review}Brume de cascade",
+        },
+        "waterskin_1": {
+            "name": "\\{review}Petite gourde",
+        },
+        "waterskin_2": {
+            "name": "\\{review}Grande gourde",
         },
         "white_light": {
             "name": "\\{review}Lumière Blanche",

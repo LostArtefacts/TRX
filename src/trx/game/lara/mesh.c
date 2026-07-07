@@ -28,6 +28,8 @@ static LARA_GUN_TYPE M_DetermineHolsterGun(void)
             return LGT_DESERT_EAGLE;
         } else if (Inv_RequestItem(O_UZI_ITEM)) {
             return LGT_UZIS;
+        } else if (Inv_RequestItem(O_REVOLVER_ITEM)) {
+            return LGT_REVOLVER;
         }
     }
     return lara_info->holsters_gun_type;
@@ -52,6 +54,8 @@ static LARA_GUN_TYPE M_DetermineBackGun(void)
         return LGT_ROCKET;
     } else if (Inv_RequestItem(O_HARPOON_ITEM)) {
         return LGT_HARPOON;
+    } else if (Inv_RequestItem(O_CROSSBOW_ITEM)) {
+        return LGT_CROSSBOW;
     }
     return LGT_UNARMED;
 }
