@@ -97,6 +97,7 @@ typedef struct {
         BLOOD_EFFECTS blood_effects;
         bool enable_skybox;
         bool enable_weather;
+        bool enable_poison_vision;
         bool enable_footprints;
         bool enable_ps1_crystals;
 

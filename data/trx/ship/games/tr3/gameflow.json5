@@ -804,6 +804,7 @@
     ],
 
     "hidden_config": [
+        "enable_poison_vision",
         "enable_3d_pickups", // TR3 has no sprite pickups
         "enable_item_examining",
         "disable_trex_collision",

@@ -64,6 +64,7 @@
     ],
 
     "hidden_config": [
+        "enable_poison_vision",
         "enable_item_examining",
         "healthbar_poison_color",
         "healthbar_poison_color_ps1",

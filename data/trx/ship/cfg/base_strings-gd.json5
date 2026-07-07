@@ -1592,6 +1592,10 @@
             "title": "Solais armachd",
             "description": "Cuiridh seo solais beòthail ri losgadh agus spreadhadh.",
         },
+        "visuals.enable_poison_vision": {
+            "title": "\\{review}Sealladh puinnseanta",
+            "description": "\\{review}Buaileas am faicsinneachd fhad ‘s a tha Lara puinnseanta. Cuir dheth ma tha thu buailteach do tinneas gluasad.",
+        },
         "visuals.enable_ps1_crystals": {
             "title": "Dath criostail PS1",
             "description": "Bidh na criostalan sàbhalaidh purpaidh mar a tha iad anns a' PhS1.",

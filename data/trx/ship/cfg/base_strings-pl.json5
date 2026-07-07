@@ -1592,6 +1592,10 @@
             "title": "Efekty świetlne broni",
             "description": "Włącza dynamiczne oświetlenie przy strzelaniu z broni i eksplozjach.",
         },
+        "visuals.enable_poison_vision": {
+            "title": "\\{review}Zatrute widzenie",
+            "description": "\\{review}Zniekształca widok, gdy Lara jest zatruta. Wyłącz, jeśli masz skłonność do choroby lokomocyjnej.",
+        },
         "visuals.enable_ps1_crystals": {
             "title": "Fioletowe kryształy",
             "description": "Kryształy zapisu będą rysowane z fioletowym odcieniem, bardziej podobnym do odcienia z PS1.",

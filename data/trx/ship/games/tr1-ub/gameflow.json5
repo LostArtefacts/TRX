@@ -166,6 +166,7 @@
     ],
 
     "hidden_config": [
+        "enable_poison_vision",
         "enable_cutscenes",       // UB has no cutscenes
         "enable_demo",            // UB has no demos
         "enable_item_examining",  // UB has no special item descriptions

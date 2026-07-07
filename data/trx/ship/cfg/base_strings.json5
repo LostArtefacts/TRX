@@ -1592,6 +1592,10 @@
             "title": "Gun lighting",
             "description": "Enables dynamic lighting to be generated for gunshots and explosions.",
         },
+        "visuals.enable_poison_vision": {
+            "title": "Poison vision",
+            "description": "Warps the view while Lara is poisoned. Disable if prone to motion sickness.",
+        },
         "visuals.enable_ps1_crystals": {
             "title": "PS1 crystal tint",
             "description": "Save crystals will be drawn with a purple tint, more similar to the PS1 type.",

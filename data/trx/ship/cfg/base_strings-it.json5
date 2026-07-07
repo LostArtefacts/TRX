@@ -1592,6 +1592,10 @@
             "title": "Illuminazione spari",
             "description": "Abilita l'illuminazione dinamica per spari ed esplosioni.",
         },
+        "visuals.enable_poison_vision": {
+            "title": "\\{review}Visione avvelenata",
+            "description": "\\{review}Deforma la visuale mentre Lara è avvelenata. Disattiva se soggetto a cinetosi.",
+        },
         "visuals.enable_ps1_crystals": {
             "title": "Tinta cristalli PS1",
             "description": "I cristalli di salvataggio saranno di color viola, più simili a quelli della versione PS1.",
