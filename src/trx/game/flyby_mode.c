@@ -34,15 +34,34 @@ void FlybyMode_Deactivate(void)
     Camera_FlybyMode_Deactivate();
 }
 
+bool FlybyMode_IsActive(void)
+{
+    return Camera_FlybyMode_IsActive();
+}
+
+bool FlybyMode_Cancel(void)
+{
+    return Camera_Flybymode_Cancel();
+}
+
 void FlybyMode_PreControl(void)
 {
-    if (!Camera_FlybyMode_IsActive()) {
+    if (!FlybyMode_IsActive()) {
         return;
     }
 
-    if (g_InputDB.menu_back && g_Config.gameplay.enable_cinematic_skips) {
-        Camera_FlybyMode_RequestSkip();
+    if (g_InputDB.fly_cheat && g_Config.gameplay.enable_cheats) {
+        FlybyMode_Cancel();
+        return;
     }
+
+    if (g_InputDB.option && g_Config.gameplay.enable_cinematic_skips) {
+        if (FlybyMode_Cancel()) {
+            g_InputDB.option = false;
+        }
+        return;
+    }
+
     if (g_Input.look) {
         Camera_FlybyMode_RequestLook();
     }
@@ -60,7 +79,7 @@ void FlybyMode_PreControl(void)
 
 void FlybyMode_PostControl(void)
 {
-    if (Camera_FlybyMode_IsActive()) {
+    if (FlybyMode_IsActive()) {
         g_Camera.type = CAM_FLYBY_MODE;
         M_RestoreLaraInfo();
     }
