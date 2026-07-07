@@ -68,6 +68,7 @@
         // 3. The Tomb of Seth
         {
             "path": "settomb1.tr4",
+            "script": "settomb1.lua",
             "music_track": 107,
             "lara_outfit": "tr3_classic",
             "sequence":[
@@ -85,6 +86,7 @@
         // 4. Burial Chambers
         {
             "path": "settomb2.tr4",
+            "script": "settomb2.lua",
             "music_track": 107,
             "lara_outfit": "tr3_classic",
             "sequence":[
@@ -147,6 +149,7 @@
         // 7. Temple of Karnak
         {
             "path": "karnak1.tr4",
+            "script": "karnak1.lua",
             "music_track": 110,
             "lara_outfit": "tr3_classic",
             "sequence":[
@@ -187,6 +190,7 @@
         // 9. Sacred Lake
         {
             "path": "lake.tr4",
+            "script": "lake.lua",
             "music_track": 110,
             "lara_outfit": "tr3_classic",
             "sequence":[
@@ -220,6 +224,7 @@
         // 11. Tomb of Semerkhet
         {
             "path": "semer.tr4",
+            "script": "semer.lua",
             "music_track": 107,
             "lara_outfit": "tr3_classic",
             "sequence":[
@@ -240,6 +245,7 @@
         // 12. Guardian of Semerkhet
         {
             "path": "semer2.tr4",
+            "script": "semer2.lua",
             "music_track": 107,
             "lara_outfit": "tr3_classic",
             "sequence":[
@@ -276,6 +282,7 @@
         // 14. Alexandria
         {
             "path": "alexhub.tr4",
+            "script": "alexhub.lua",
             "music_track": 110,
             "lara_outfit": "tr3_classic",
             "sequence":[
@@ -346,6 +353,7 @@
         // 16. Pharos, Temple of Isis
         {
             "path": "palaces.tr4",
+            "script": "palaces.lua",
             "music_track": 107,
             "lara_outfit": "tr3_classic",
             "sequence":[
@@ -395,6 +403,7 @@
         // 18. Catacombs
         {
             "path": "csplit1.tr4",
+            "script": "csplit1.lua",
             "music_track": 108,
             "lara_outfit": "tr3_classic",
             "sequence":[
@@ -446,6 +455,7 @@
         // 20. The Lost Library
         {
             "path": "library.tr4",
+            "script": "library.lua",
             "music_track": 108,
             "lara_outfit": "tr3_classic",
             "sequence":[
@@ -471,6 +481,7 @@
         // 21. Hall of Demetrius
         {
             "path": "libend.tr4",
+            "script": "libend.lua",
             "music_track": 109,
             "lara_outfit": "tr3_classic",
             "sequence":[
@@ -563,6 +574,7 @@
         // 25. Street Bazaar
         {
             "path": "lowstrt.tr4",
+            "script": "lowstrt.lua",
             "music_track": 102,
             "lara_outfit": "tr3_classic",
             "sequence":[
