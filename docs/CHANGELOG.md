@@ -67,6 +67,10 @@
 - fixed missing SFX in the Pipeman's death animation (#5036)
 - fixed geometry issues in room 53 in Madubu Gorge, which could cause the TR3 camera to become stuck and allow Lara to fly into the ceiling
 
+**TR4**:
+- added very rudimentary support for TR4 levels
+- changed Angkor Wat's UV Rotate value from 8 to 4
+
 
 
 ## [1.8.1](https://github.com/LostArtefacts/TRX/compare/trx-1.8...trx-1.8.1) - 2026-06-15
