@@ -386,6 +386,48 @@ static void M_BeginPickupAnimation(const ITEM *const item, const bool is_ducked)
     } while (lara_item->current_anim_state != LS(LS_PICKUP));
 }
 
+static const BOUNDS_16 *M_FindPlinthBounds(const ITEM *const item)
+{
+    const ROOM *const room = Room_Get(item->room_num);
+    const BOUNDS_16 *const item_bounds = Item_GetBoundsAccurate(item);
+    for (int32_t i = 0; i < room->num_static_meshes; i++) {
+        const STATIC_MESH *const mesh = &room->static_meshes[i];
+        const STATIC_OBJECT_3D *const obj =
+            Object_Get3DStatic(mesh->static_num);
+        if (!obj->visible || mesh->pos.x != item->pos.x
+            || mesh->pos.z != item->pos.z) {
+            continue;
+        }
+
+        const BOUNDS_16 *const obj_bounds = &obj->collision_bounds;
+        if (item_bounds->min.x <= obj_bounds->max.x
+            && item_bounds->max.x >= obj_bounds->min.x
+            && item_bounds->min.z <= obj_bounds->max.z
+            && item_bounds->max.z >= obj_bounds->min.z
+            && (obj_bounds->min.x != 0 || obj_bounds->max.x != 0)) {
+            return obj_bounds;
+        }
+    }
+
+    int16_t item_num = room->item_num;
+    while (item_num != NO_ITEM) {
+        const ITEM *const plinth_item = Item_Get(item_num);
+        item_num = plinth_item->next_item;
+        const OBJECT *const obj = Object_Get(plinth_item->object_id);
+        if (obj->collision_func == Pickup_Collision) {
+            continue;
+        }
+
+        if (item->pos.x == plinth_item->pos.x
+            && item->pos.y <= plinth_item->pos.y
+            && item->pos.z == plinth_item->pos.z) {
+            return Item_GetBoundsAccurate(plinth_item);
+        }
+    }
+
+    return nullptr;
+}
+
 static bool M_TestLaraPosition(const ITEM *const item)
 {
     OBJECT_BOUNDS test_bounds = *Object_Get(item->object_id)->bounds_func();
@@ -408,6 +450,12 @@ static bool M_TestLaraPosition(const ITEM *const item)
 
     test_bounds = m_PlinthBounds;
     test_bounds.shift.max.y = delta + 100;
+    const BOUNDS_16 *const plinth_bounds = M_FindPlinthBounds(item);
+    if (plinth_bounds != nullptr) {
+        test_bounds.shift.min.x = plinth_bounds->min.x;
+        test_bounds.shift.max.x = plinth_bounds->max.x;
+        test_bounds.shift.max.z = plinth_bounds->max.z;
+    }
 
 finish:
     return Lara_TestPosition(item, &test_bounds);
@@ -421,6 +469,10 @@ static XYZ_32 M_GetAlignmentPosition(const ITEM *const item)
     case M_MODE_PLINTH_LOW:
     case M_MODE_PLINTH_HIGH:
         pos = m_PickupPositionPlinth;
+        const BOUNDS_16 *const plinth_bounds = M_FindPlinthBounds(item);
+        if (plinth_bounds != nullptr) {
+            pos.z = -200 - plinth_bounds->max.z;
+        }
         break;
     default:
         pos = m_PickupPosition;
