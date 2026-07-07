@@ -2040,6 +2040,686 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
+#### O_SHOTGUN_AMMO_2_ITEM
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal.</td></tr>
+</tbody>
+</table>
+
+#### O_GRENADE_AMMO_2_ITEM
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal.</td></tr>
+</tbody>
+</table>
+
+#### O_GRENADE_AMMO_3_ITEM
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal.</td></tr>
+</tbody>
+</table>
+
+#### O_CROSSBOW_ITEM
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal.</td></tr>
+</tbody>
+</table>
+
+#### O_CROSSBOW_AMMO_1_ITEM
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal.</td></tr>
+</tbody>
+</table>
+
+#### O_CROSSBOW_AMMO_2_ITEM
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal.</td></tr>
+</tbody>
+</table>
+
+#### O_CROSSBOW_AMMO_3_ITEM
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal.</td></tr>
+</tbody>
+</table>
+
+#### O_REVOLVER_ITEM
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal.</td></tr>
+</tbody>
+</table>
+
+#### O_REVOLVER_AMMO_ITEM
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal.</td></tr>
+</tbody>
+</table>
+
+#### O_LASERSIGHT_ITEM
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal.</td></tr>
+</tbody>
+</table>
+
+#### O_BINOCULARS_ITEM
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal.</td></tr>
+</tbody>
+</table>
+
+#### O_CROWBAR_ITEM
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal.</td></tr>
+</tbody>
+</table>
+
+#### O_WATERSKIN_1_EMPTY
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal.</td></tr>
+</tbody>
+</table>
+
+#### O_WATERSKIN_1_1
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal.</td></tr>
+</tbody>
+</table>
+
+#### O_WATERSKIN_1_2
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal.</td></tr>
+</tbody>
+</table>
+
+#### O_WATERSKIN_1_3
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal.</td></tr>
+</tbody>
+</table>
+
+#### O_WATERSKIN_2_EMPTY
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal.</td></tr>
+</tbody>
+</table>
+
+#### O_WATERSKIN_2_1
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal.</td></tr>
+</tbody>
+</table>
+
+#### O_WATERSKIN_2_2
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal.</td></tr>
+</tbody>
+</table>
+
+#### O_WATERSKIN_2_3
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal.</td></tr>
+</tbody>
+</table>
+
+#### O_WATERSKIN_2_4
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal.</td></tr>
+</tbody>
+</table>
+
+#### O_WATERSKIN_2_5
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal.</td></tr>
+</tbody>
+</table>
+
+#### O_KEY_ITEM_5
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal.</td></tr>
+</tbody>
+</table>
+
+#### O_KEY_ITEM_6
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal.</td></tr>
+</tbody>
+</table>
+
+#### O_KEY_ITEM_7
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal.</td></tr>
+</tbody>
+</table>
+
+#### O_KEY_ITEM_8
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal.</td></tr>
+</tbody>
+</table>
+
+#### O_KEY_ITEM_9
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal.</td></tr>
+</tbody>
+</table>
+
+#### O_KEY_ITEM_10
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal.</td></tr>
+</tbody>
+</table>
+
+#### O_KEY_ITEM_11
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal.</td></tr>
+</tbody>
+</table>
+
+#### O_KEY_ITEM_12
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal.</td></tr>
+</tbody>
+</table>
+
+#### O_PUZZLE_ITEM_5
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal.</td></tr>
+</tbody>
+</table>
+
+#### O_PUZZLE_ITEM_6
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal.</td></tr>
+</tbody>
+</table>
+
+#### O_PUZZLE_ITEM_7
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal.</td></tr>
+</tbody>
+</table>
+
+#### O_PUZZLE_ITEM_8
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal.</td></tr>
+</tbody>
+</table>
+
+#### O_PUZZLE_ITEM_9
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal.</td></tr>
+</tbody>
+</table>
+
+#### O_PUZZLE_ITEM_10
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal.</td></tr>
+</tbody>
+</table>
+
+#### O_PUZZLE_ITEM_11
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal.</td></tr>
+</tbody>
+</table>
+
+#### O_PUZZLE_ITEM_12
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal.</td></tr>
+</tbody>
+</table>
+
+#### O_PICKUP_ITEM_3
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal.</td></tr>
+</tbody>
+</table>
+
+#### O_PICKUP_ITEM_4
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal.</td></tr>
+</tbody>
+</table>
+
+#### O_QUEST_ITEM_5
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal.</td></tr>
+</tbody>
+</table>
+
+#### O_QUEST_ITEM_6
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal.</td></tr>
+</tbody>
+</table>
+
+#### O_KEY_ITEM_1_COMBO_1
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal.</td></tr>
+</tbody>
+</table>
+
+#### O_KEY_ITEM_1_COMBO_2
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal.</td></tr>
+</tbody>
+</table>
+
+#### O_KEY_ITEM_2_COMBO_1
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal.</td></tr>
+</tbody>
+</table>
+
+#### O_KEY_ITEM_2_COMBO_2
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal.</td></tr>
+</tbody>
+</table>
+
+#### O_KEY_ITEM_3_COMBO_1
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal.</td></tr>
+</tbody>
+</table>
+
+#### O_KEY_ITEM_3_COMBO_2
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal.</td></tr>
+</tbody>
+</table>
+
+#### O_KEY_ITEM_4_COMBO_1
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal.</td></tr>
+</tbody>
+</table>
+
+#### O_KEY_ITEM_4_COMBO_2
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal.</td></tr>
+</tbody>
+</table>
+
+#### O_KEY_ITEM_5_COMBO_1
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal.</td></tr>
+</tbody>
+</table>
+
+#### O_KEY_ITEM_5_COMBO_2
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal.</td></tr>
+</tbody>
+</table>
+
+#### O_KEY_ITEM_6_COMBO_1
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal.</td></tr>
+</tbody>
+</table>
+
+#### O_KEY_ITEM_6_COMBO_2
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal.</td></tr>
+</tbody>
+</table>
+
+#### O_KEY_ITEM_7_COMBO_1
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal.</td></tr>
+</tbody>
+</table>
+
+#### O_KEY_ITEM_7_COMBO_2
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal.</td></tr>
+</tbody>
+</table>
+
+#### O_KEY_ITEM_8_COMBO_1
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal.</td></tr>
+</tbody>
+</table>
+
+#### O_KEY_ITEM_8_COMBO_2
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal.</td></tr>
+</tbody>
+</table>
+
+#### O_PUZZLE_ITEM_1_COMBO_1
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal.</td></tr>
+</tbody>
+</table>
+
+#### O_PUZZLE_ITEM_1_COMBO_2
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal.</td></tr>
+</tbody>
+</table>
+
+#### O_PUZZLE_ITEM_2_COMBO_1
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal.</td></tr>
+</tbody>
+</table>
+
+#### O_PUZZLE_ITEM_2_COMBO_2
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal.</td></tr>
+</tbody>
+</table>
+
+#### O_PUZZLE_ITEM_3_COMBO_1
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal.</td></tr>
+</tbody>
+</table>
+
+#### O_PUZZLE_ITEM_3_COMBO_2
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal.</td></tr>
+</tbody>
+</table>
+
+#### O_PUZZLE_ITEM_4_COMBO_1
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal.</td></tr>
+</tbody>
+</table>
+
+#### O_PUZZLE_ITEM_4_COMBO_2
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal.</td></tr>
+</tbody>
+</table>
+
+#### O_PUZZLE_ITEM_5_COMBO_1
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal.</td></tr>
+</tbody>
+</table>
+
+#### O_PUZZLE_ITEM_5_COMBO_2
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal.</td></tr>
+</tbody>
+</table>
+
+#### O_PUZZLE_ITEM_6_COMBO_1
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal.</td></tr>
+</tbody>
+</table>
+
+#### O_PUZZLE_ITEM_6_COMBO_2
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal.</td></tr>
+</tbody>
+</table>
+
+#### O_PUZZLE_ITEM_7_COMBO_1
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal.</td></tr>
+</tbody>
+</table>
+
+#### O_PUZZLE_ITEM_7_COMBO_2
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal.</td></tr>
+</tbody>
+</table>
+
+#### O_PUZZLE_ITEM_8_COMBO_1
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal.</td></tr>
+</tbody>
+</table>
+
+#### O_PUZZLE_ITEM_8_COMBO_2
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal.</td></tr>
+</tbody>
+</table>
+
+#### O_PICKUP_ITEM_1_COMBO_1
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal.</td></tr>
+</tbody>
+</table>
+
+#### O_PICKUP_ITEM_1_COMBO_2
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal.</td></tr>
+</tbody>
+</table>
+
+#### O_PICKUP_ITEM_2_COMBO_1
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal.</td></tr>
+</tbody>
+</table>
+
+#### O_PICKUP_ITEM_2_COMBO_2
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal.</td></tr>
+</tbody>
+</table>
+
+#### O_PICKUP_ITEM_3_COMBO_1
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal.</td></tr>
+</tbody>
+</table>
+
+#### O_PICKUP_ITEM_3_COMBO_2
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal.</td></tr>
+</tbody>
+</table>
+
+#### O_PICKUP_ITEM_4_COMBO_1
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal.</td></tr>
+</tbody>
+</table>
+
+#### O_PICKUP_ITEM_4_COMBO_2
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal.</td></tr>
+</tbody>
+</table>
+
+#### O_EXAMINE_ITEM_1
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal.</td></tr>
+</tbody>
+</table>
+
+#### O_EXAMINE_ITEM_2
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal.</td></tr>
+</tbody>
+</table>
+
+#### O_EXAMINE_ITEM_3
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal.</td></tr>
+</tbody>
+</table>
+
 #### O_ANIMATING_EXT_2
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
