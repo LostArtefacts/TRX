@@ -1,7 +1,14 @@
 {
     // For usage, refer to the documentation here:
     // https://lostartefacts.dev/trx/docs/stable/game_strings
-    "objects": {},
+    "objects": {
+        "flare": {
+            "name": "Razzi di Segnalazione",
+        },
+        "grenade_launcher": {
+            "name": "Lanciagranate",
+        }
+    },
     "cutscenes": [],
     "levels": [
         {
