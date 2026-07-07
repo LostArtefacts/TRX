@@ -2425,6 +2425,9 @@
         "lara_boat": {
             "name": "Beòthalachd Bàta",
         },
+        "lara_crossbow": {
+            "name": "\\{review}Beothachadh Cros-bhogha",
+        },
         "lara_desert_eagle": {
             "name": "Beòthalachd an Desert Eagle",
         },
@@ -2466,6 +2469,9 @@
         },
         "lara_quad_bike": {
             "name": "Beòthalachd Quad-baidhsagal",
+        },
+        "lara_revolver": {
+            "name": "\\{review}Beothachadh Revolver",
         },
         "lara_rib": {
             "name": "Beòthalachd RIB",

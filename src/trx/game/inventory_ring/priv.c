@@ -10,6 +10,7 @@
 #include <trx/game/inventory_ring/vars.h>
 #include <trx/game/matrix.h>
 #include <trx/game/music.h>
+#include <trx/game/objects.h>
 #include <trx/game/objects/names.h>
 #include <trx/game/output/state.h>
 #include <trx/game/overlay.h>
@@ -616,73 +617,12 @@ void InvRing_ShowExamine(const OBJECT_ID object_id, const bool show)
     m_ShowExamine = show;
     m_ShowUseItemButton = show;
     if (show) {
-        switch (object_id) {
-        case O_QUEST_ITEM_1:
-        case O_QUEST_ITEM_2:
-        case O_QUEST_ITEM_3:
-        case O_QUEST_ITEM_4:
-        case O_QUEST_OPTION_1:
-        case O_QUEST_OPTION_2:
-        case O_QUEST_OPTION_3:
-        case O_QUEST_OPTION_4:
-        case O_PICKUP_OPTION_1:
-        case O_PICKUP_OPTION_2:
-        case O_QUEST_OPTION_5:
-        case O_QUEST_OPTION_6:
-        case O_PICKUP_OPTION_3:
-        case O_PICKUP_OPTION_4:
-        case O_PUZZLE_OPTION_1_COMBO_1:
-        case O_PUZZLE_OPTION_1_COMBO_2:
-        case O_PUZZLE_OPTION_2_COMBO_1:
-        case O_PUZZLE_OPTION_2_COMBO_2:
-        case O_PUZZLE_OPTION_3_COMBO_1:
-        case O_PUZZLE_OPTION_3_COMBO_2:
-        case O_PUZZLE_OPTION_4_COMBO_1:
-        case O_PUZZLE_OPTION_4_COMBO_2:
-        case O_PUZZLE_OPTION_5_COMBO_1:
-        case O_PUZZLE_OPTION_5_COMBO_2:
-        case O_PUZZLE_OPTION_6_COMBO_1:
-        case O_PUZZLE_OPTION_6_COMBO_2:
-        case O_PUZZLE_OPTION_7_COMBO_1:
-        case O_PUZZLE_OPTION_7_COMBO_2:
-        case O_PUZZLE_OPTION_8_COMBO_1:
-        case O_PUZZLE_OPTION_8_COMBO_2:
-        case O_KEY_OPTION_1_COMBO_1:
-        case O_KEY_OPTION_1_COMBO_2:
-        case O_KEY_OPTION_2_COMBO_1:
-        case O_KEY_OPTION_2_COMBO_2:
-        case O_KEY_OPTION_3_COMBO_1:
-        case O_KEY_OPTION_3_COMBO_2:
-        case O_KEY_OPTION_4_COMBO_1:
-        case O_KEY_OPTION_4_COMBO_2:
-        case O_KEY_OPTION_5_COMBO_1:
-        case O_KEY_OPTION_5_COMBO_2:
-        case O_KEY_OPTION_6_COMBO_1:
-        case O_KEY_OPTION_6_COMBO_2:
-        case O_KEY_OPTION_7_COMBO_1:
-        case O_KEY_OPTION_7_COMBO_2:
-        case O_KEY_OPTION_8_COMBO_1:
-        case O_KEY_OPTION_8_COMBO_2:
-        case O_PICKUP_OPTION_1_COMBO_1:
-        case O_PICKUP_OPTION_1_COMBO_2:
-        case O_PICKUP_OPTION_2_COMBO_1:
-        case O_PICKUP_OPTION_2_COMBO_2:
-        case O_PICKUP_OPTION_3_COMBO_1:
-        case O_PICKUP_OPTION_3_COMBO_2:
-        case O_PICKUP_OPTION_4_COMBO_1:
-        case O_PICKUP_OPTION_4_COMBO_2:
-        case O_LASERSIGHT_OPTION:
-        case O_BINOCULARS_OPTION:
-        case O_CROWBAR_OPTION:
-        case O_EXAMINE_OPTION_1:
-        case O_EXAMINE_OPTION_2:
-        case O_EXAMINE_OPTION_3:
-        case O_WATERSKIN_1_OPTION:
-        case O_WATERSKIN_2_OPTION:
+        const OBJECT_ID option_id = Inv_GetItemOption(object_id);
+        if (Object_IsType(option_id, g_GenericInvOptions)
+            && Object_GetCognate(option_id, g_KeyItemToReceptacleMap)
+                == NO_OBJECT) {
+            // Items that cannot be used anywhere offer no Use action.
             m_ShowUseItemButton = false;
-            break;
-        default:
-            break;
         }
         InvRing_SetButtonHintDrawer(M_DrawExamineHint, nullptr);
     } else if (m_ButtonHintDrawFunc == M_DrawExamineHint) {

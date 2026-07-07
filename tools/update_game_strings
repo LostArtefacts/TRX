@@ -11,6 +11,7 @@ from enum import Enum, auto
 from pathlib import Path
 from typing import Any
 
+from shared.cdefs import expand_def_file
 from shared.files import find_versioned_files
 from shared.json_utils import load_json5_from_string, write_json_to_string
 from shared.paths import DATA_DIR, REPO_DIR, CommonPaths
@@ -41,9 +42,7 @@ RE_ENUM_MAP_SELF_DEFINE = re.compile(
 RE_INPUT_ROLE_USAGE = re.compile(
     r"X_INPUT_ROLE\(\s*(INPUT_ROLE_[A-Z0-9_]+)\s*,"
 )
-RE_OBJ_NAME_DEFINE = re.compile(
-    r'^X_OBJ_NAME_DEFINE\(\s*\w+\s*,\s*"([^"]+)"\s*,\s*X_OBJ_NAMES\(\s*(.+?)\s*\)\s*\)$'
-)
+RE_OBJ_NAME_DEFINE = re.compile(r'@NAME\("([^"]+)"((?:,\s*"[^"]*")+)\)')
 ROOT_SECTIONS = ("general", "console", "enums", "dynamic", "settings")
 TOP_LEVEL_SECTION_ORDER = (
     "extends",
@@ -416,17 +415,27 @@ def get_objects_map(paths: list[Path]) -> dict[str, dict[str, str | list[str]]]:
     Parse object-name definitions from names.def-like files.
     Supports:
       X_OBJ_NAME_DEFINE(..., "key", X_OBJ_NAMES("Name1", "Name2", ...))
+    The files may include other .def files (pickups.def), so they are expanded
+    with the real C preprocessor first.
     """
     result: dict[str, dict[str, str | list[str]]] = {}
     for path in paths:
-        for line in path.read_text().splitlines():
-            text = line.strip()
-            if match := RE_OBJ_NAME_DEFINE.match(text):
-                key = match.group(1)
-                names_list = uniq(re.findall(r'"([^"]+)"', match.group(2)))
-                result.setdefault(key, {})["name"] = (
-                    names_list[0] if len(names_list) == 1 else names_list
-                )
+        if path.suffix != ".def" or "X_OBJ_NAME_DEFINE(" not in path.read_text():
+            continue
+        text = expand_def_file(
+            path,
+            {
+                "X_OBJ_NAME_DEFINE(id, key, names)": "@NAME(key, names)",
+                "X_OBJ_NAMES(...)": "__VA_ARGS__",
+                "X_OBJ_ALIAS_DEFINE(a, b)": "",
+            },
+        )
+        for match in RE_OBJ_NAME_DEFINE.finditer(text):
+            key = match.group(1)
+            names_list = uniq(re.findall(r'"([^"]+)"', match.group(2)))
+            result.setdefault(key, {})["name"] = (
+                names_list[0] if len(names_list) == 1 else names_list
+            )
     return result
 
 

@@ -10,6 +10,8 @@
 // everything finishes loading, e.g. items, creatures, triggers etc., and is
 // what actually sets Lara's health, creatures status, triggers, inventory etc.
 
+extern const SAVEGAME_INVENTORY_ENTRY g_Savegame_InventoryItems[];
+
 void Savegame_Init(void);
 void Savegame_Shutdown(void);
 bool Savegame_IsInitialised(void);

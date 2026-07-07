@@ -19,21 +19,12 @@
 
 static void M_GiveAllKeysImpl(void)
 {
-    Inv_AddItem(O_PUZZLE_ITEM_1);
-    Inv_AddItem(O_PUZZLE_ITEM_2);
-    Inv_AddItem(O_PUZZLE_ITEM_3);
-    Inv_AddItem(O_PUZZLE_ITEM_4);
-    Inv_AddItem(O_KEY_ITEM_1);
-    Inv_AddItem(O_KEY_ITEM_2);
-    Inv_AddItem(O_KEY_ITEM_3);
-    Inv_AddItem(O_KEY_ITEM_4);
-    Inv_AddItem(O_QUEST_ITEM_1);
-    Inv_AddItem(O_QUEST_ITEM_2);
-    Inv_AddItem(O_QUEST_ITEM_3);
-    Inv_AddItem(O_QUEST_ITEM_4);
-    Inv_AddItem(O_PICKUP_ITEM_1);
-    Inv_AddItem(O_PICKUP_ITEM_2);
-    Inv_AddItem(O_LEADBAR_ITEM);
+    // Inv_AddItem ignores objects the current level does not have.
+#define X_PICKUP_NUMBERED(item, option) Inv_AddItem(item);
+#define X_PICKUP_MISC(item, option) Inv_AddItem(item);
+#include <trx/game/objects/pickups.def>
+#undef X_PICKUP_MISC
+#undef X_PICKUP_NUMBERED
 }
 
 static void M_GiveAllGunsImpl(const bool ignore_exclusions)

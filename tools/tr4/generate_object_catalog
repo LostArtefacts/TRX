@@ -2,8 +2,13 @@
 
 from __future__ import annotations
 
+import sys
 from pathlib import Path
 import re
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
+from shared.cdefs import expand_def_file
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -269,8 +274,10 @@ ALIAS_MAP: dict[str, str] = {
 
 
 def parse_trx_symbols() -> set[str]:
-    text = TRX_OBJECTS_DEF.read_text()
-    return set(re.findall(r"X_CATALOG_ID\((O_[A-Z0-9_]+)\)", text))
+    # objects.def includes pickups.def, so expand it with the real
+    # C preprocessor instead of scraping the file.
+    text = expand_def_file(TRX_OBJECTS_DEF, {"X_CATALOG_ID(x)": "SYMBOL(x)"})
+    return set(re.findall(r"SYMBOL\((O_[A-Z0-9_]+)\)", text))
 
 
 def parse_tr4_object_names() -> list[str]:
