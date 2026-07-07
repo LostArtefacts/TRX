@@ -63,6 +63,7 @@ static void M_PauseGame(M_PRIV *const p)
     p->action = GF_NOOP;
     Music_Pause();
     Sound_PauseAll();
+    Output_Overlay_CaptureGameSnapshot();
     M_FadeIn(p);
 }
 
@@ -179,53 +180,8 @@ static void M_Draw(PHASE *const phase)
     const float progress = g_Config.ui.pause_fade_effects
         ? Fader_GetCurrentValue(&p->fader)
         : p->fader.args.target;
-    switch (g_Config.ui.pause_background_style) {
-    case BK_NONE:
-        Output_Overlay_DrawGame();
-        break;
-
-    case BK_TRANSPARENT_MEDIUM:
-        Output_Overlay_DrawGame();
-        Output_Overlay_DrawBlackRectangle(progress * 0.5f, false);
-        break;
-
-    case BK_TRANSPARENT_DARK:
-        Output_Overlay_DrawGame();
-        Output_Overlay_DrawBlackRectangle(progress * 0.8f, false);
-        break;
-
-    case BK_BLACK:
-        Output_Overlay_DrawGame();
-        Output_Overlay_DrawBlackRectangle(progress, false);
-        break;
-
-    case BK_MONOCHROME:
-        Output_Overlay_DrawGameMono(progress);
-        break;
-
-    case BK_MONOCHROME_COOL:
-        Output_Overlay_DrawGameMonoCool(progress);
-        break;
-
-    case BK_MONOCHROME_WARM:
-        Output_Overlay_DrawGameMonoWarm(progress);
-        break;
-
-    case BK_PATTERN_STATIC:
-    case BK_PATTERN_WAVE:
-        if (progress < 1.0f) {
-            Output_Overlay_DrawGame();
-        }
-        Output_Overlay_DrawPatternOpacity(
-            g_Config.ui.pause_background_style == BK_PATTERN_WAVE, progress);
-        break;
-
-    case BK_IMAGE:
-    default:
-        Output_Overlay_DrawGame();
-        Output_Overlay_DrawBlackRectangle(progress * 0.8f, false);
-        break;
-    }
+    Output_Overlay_DrawBackground(
+        g_Config.ui.pause_background_style, progress, nullptr);
 
     if (p->state == STATE_ASK) {
         UI_Pause(&p->ui.state);

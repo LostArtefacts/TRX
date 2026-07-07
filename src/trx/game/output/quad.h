@@ -1,5 +1,6 @@
 #pragma once
 
+#include <trx/core/colors.h>
 #include <trx/gl/enum.h>
 
 #include <GL/glew.h>
@@ -78,6 +79,11 @@ void Output_Quad_SetOpacity(OUTPUT_QUAD *renderer, float opacity);
 void Output_Quad_SetBrightnessScale(
     OUTPUT_QUAD *renderer, float brightness_scale);
 void Output_Quad_SetFilter(OUTPUT_QUAD *renderer, TEXTURE_FILTER filter_mode);
+
+// Set desaturation intensity (0 = original, 1 = monochrome).
+void Output_Quad_SetDesaturation(OUTPUT_QUAD *renderer, float desaturation);
+// Set output color tint multiplier (COLOR_RGB_F_WHITE = no tint).
+void Output_Quad_SetGlobalTint(OUTPUT_QUAD *renderer, RGB_F tint);
 
 // Configure fitting mode and source aspect ratio handling.
 void Output_Quad_SetFit(

@@ -18,6 +18,8 @@ uniform float uOpacity;
 uniform float uBrightnessScale;
 uniform int uFitMode;      // 0=stretch,1=letterbox,2=crop,3=smart
 uniform float uSrcAspect;  // src_w/src_h
+uniform float uDesaturation; // 0 = original, 1 = monochrome
+uniform vec3 uGlobalTint;    // (1,1,1) = no tint
 
 #ifdef VERTEX
 
@@ -142,9 +144,11 @@ void main(void) {
     }
 
     if (uDesaturation > 0.0) {
-        float luma = dot(outColor.rgb, vec3(0.299, 0.587, 0.114));
-        outColor.rgb = mix(outColor.rgb, vec3(luma), clamp(uDesaturation, 0.0, 1.0));
+        const vec3 luma = vec3(0.2126, 0.7152, 0.0722);
+        float y = dot(outColor.rgb, luma) * 0.5;
+        outColor.rgb = mix(outColor.rgb, vec3(y), clamp(uDesaturation, 0.0, 1.0));
     }
+    outColor.rgb *= uGlobalTint;
 
     outColor.rgb *= uUIBrightnessMultiplier * uBrightnessScale;
 

@@ -113,7 +113,7 @@ static void M_RenderFogGradient(M_PRIV *const p)
         OUTPUT_MESH_ATTR_FLAGS,
         VERT_FLAT_SHADED | VERT_NO_LIGHTING | VERT_NO_WIBBLE
             | VERT_NO_ALPHA_DISCARD);
-    Output_MeshShader_UploadTint(p->shader, (RGB_F) { 1.0f, 1.0f, 1.0f });
+    Output_MeshShader_UploadTint(p->shader, COLOR_RGB_F_WHITE);
     Output_MeshShader_UploadModelMatrix(p->shader, &p->gradient_wmatrix);
     // Like OG, the skybox is drawn without backface culling.
     glDisable(GL_CULL_FACE);
@@ -163,7 +163,7 @@ static void M_RenderPass(
         flags |= VERT_FLAT_SHADED;
     }
     glVertexAttribI1ui(OUTPUT_MESH_ATTR_FLAGS, flags);
-    Output_MeshShader_UploadTint(p->shader, (RGB_F) { 1.0f, 1.0f, 1.0f });
+    Output_MeshShader_UploadTint(p->shader, COLOR_RGB_F_WHITE);
 
     for (int32_t i = 0; i < p->layer_count; i++) {
         const M_LAYER *const layer = &p->layers[i];

@@ -197,3 +197,9 @@ void TRX_GL_Renderer_BindUiFbo(void)
     M_CONTEXT *const p = (M_CONTEXT *)g_TRX_GL_Renderer.priv;
     TRX_GL_FBO_Bind(&p->ui_fbo);
 }
+
+GLuint TRX_GL_Renderer_GetGeometryFboId(void)
+{
+    const M_CONTEXT *const p = (const M_CONTEXT *)g_TRX_GL_Renderer.priv;
+    return p->geometry_fbo.fbo;
+}

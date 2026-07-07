@@ -252,8 +252,8 @@ static void M_AdjustLightInfo(OUTPUT_LIGHT_INFO *const info)
     if (g_TRVersion < 3) {
         return;
     }
-    info->tr3_ambient = g_TRVersion == 4 ? (RGB_F) { 1.0f, 1.0f, 1.0f }
-                                         : (RGB_F) { 0.5f, 0.5f, 0.5f };
+    info->tr3_ambient =
+        g_TRVersion == 4 ? COLOR_RGB_F_WHITE : (RGB_F) { 0.5f, 0.5f, 0.5f };
     for (int32_t i = 0; i < 3; i++) {
         info->tr3_light_color[i] = (RGB_F) { 0.0f, 0.0f, 0.0f };
         info->tr3_light_dir_view[i] = (XYZ_32) { 0, 0, 0 };

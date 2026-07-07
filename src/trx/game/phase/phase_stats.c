@@ -74,6 +74,8 @@ static PHASE_CONTROL M_Start(PHASE *const phase)
         }
     }
 
+    Output_Overlay_CaptureGameSnapshot();
+
     switch (p->args.background_type) {
     case BK_IMAGE:
         if (p->args.background_path == nullptr) {
@@ -101,6 +103,9 @@ static PHASE_CONTROL M_Start(PHASE *const phase)
     } else {
         if (p->args.background_type == BK_PATTERN_STATIC
             || p->args.background_type == BK_PATTERN_WAVE) {
+            // Patterns are displayed at full opacity immediately rather
+            // than fading in.
+            Fader_InitTo(&p->back_fader, 1.0f, 1.0f, 0.0f);
             p->state = STATE_DISPLAY;
         } else {
             p->state = STATE_FADE_IN;
@@ -194,54 +199,8 @@ static void M_Draw(PHASE *const phase)
     const float progress = M_EnableFade(p)
         ? Fader_GetCurrentValue(&p->back_fader)
         : p->back_fader.args.target;
-    switch (p->args.background_type) {
-    case BK_NONE:
-        Output_Overlay_DrawGame();
-        break;
-
-    case BK_TRANSPARENT_MEDIUM:
-        Output_Overlay_DrawGame();
-        Output_Overlay_DrawBlackRectangle(progress * 0.5f, false);
-        break;
-
-    case BK_TRANSPARENT_DARK:
-        Output_Overlay_DrawGame();
-        Output_Overlay_DrawBlackRectangle(progress * 0.8f, false);
-        break;
-
-    case BK_BLACK:
-        Output_Overlay_DrawGame();
-        Output_Overlay_DrawBlackRectangle(progress, false);
-        break;
-
-    case BK_MONOCHROME:
-        Output_Overlay_DrawGameMono(progress);
-        break;
-
-    case BK_MONOCHROME_COOL:
-        Output_Overlay_DrawGameMonoCool(progress);
-        break;
-
-    case BK_MONOCHROME_WARM:
-        Output_Overlay_DrawGameMonoWarm(progress);
-        break;
-
-    case BK_IMAGE:
-        if (p->args.background_path != nullptr) {
-            Output_Overlay_DrawImageBilinear(p->args.background_path);
-        }
-        Output_Overlay_DrawBlackRectangle(progress, false);
-        break;
-
-    case BK_PATTERN_STATIC:
-    case BK_PATTERN_WAVE:
-        Output_Overlay_DrawPattern(p->args.background_type == BK_PATTERN_WAVE);
-        Output_Overlay_DrawBlackRectangle(progress, false);
-        break;
-
-    default:
-        break;
-    }
+    Output_Overlay_DrawBackground(
+        p->args.background_type, progress, p->args.background_path);
 
     if (p->ui_active) {
         UI_StatsDialog(p->ui_state);

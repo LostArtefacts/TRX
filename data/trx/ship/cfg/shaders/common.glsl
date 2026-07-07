@@ -28,7 +28,6 @@
 #define LIGHTING_CONTRAST_HIGH   2
 
 layout(std140) uniform Globals {
-    vec4 uGlobalTint;
     vec4 uFogColor;
     vec2 uFogDistance; // x = fog start, y = fog end
     vec2 uViewportSize;
@@ -37,7 +36,6 @@ layout(std140) uniform Globals {
     float uBrightnessMultiplier;
     float uUIBrightnessMultiplier;
     float uGamma;
-    float uDesaturation;
     float uSunsetDuration;
     float uMinShade;
     int uBillboardLockMode;

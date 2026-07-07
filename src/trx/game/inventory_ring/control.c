@@ -900,7 +900,12 @@ INV_RING *InvRing_Open(const INVENTORY_MODE mode)
     ring->background_style = mode == INV_TITLE_MODE
         ? BK_IMAGE
         : g_Config.ui.inventory_background_style;
-    ring->background_path = ring->background_style == BK_IMAGE
+    // main_menu_background_path is the title screen's background image;
+    // there is no separate configurable image for in-game inventory modes,
+    // so BK_IMAGE outside of INV_TITLE_MODE falls back to no image rather
+    // than incorrectly showing the title screen background mid-game.
+    ring->background_path =
+        mode == INV_TITLE_MODE && ring->background_style == BK_IMAGE
         ? g_GameFlow.main_menu_background_path
         : nullptr;
 

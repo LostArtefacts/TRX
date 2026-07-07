@@ -18,7 +18,6 @@
 #include <string.h>
 
 #define M_GLOBAL_MEMBERS                                                       \
-    X_DECLARE_MEMBER(float, global_tint, [4])                                  \
     X_DECLARE_MEMBER(float, fog_color, [4])                                    \
     X_DECLARE_MEMBER(float, fog_distance, [2])                                 \
     X_DECLARE_MEMBER(float, viewport_size, [2])                                \
@@ -27,7 +26,6 @@
     X_DECLARE_MEMBER(float, brightness_multiplier)                             \
     X_DECLARE_MEMBER(float, ui_brightness_multiplier)                          \
     X_DECLARE_MEMBER(float, gamma)                                             \
-    X_DECLARE_MEMBER(float, desaturation)                                      \
     X_DECLARE_MEMBER(float, sunset_duration)                                   \
     X_DECLARE_MEMBER(float, min_shade)                                         \
     X_DECLARE_MEMBER(int, billboard_lock_mode)                                 \
@@ -157,7 +155,6 @@ void Output_Uniforms_UploadGeneral(const OUTPUT_UNIFORMS *const uniforms)
         .brightness_multiplier = g_Config.visuals.game_brightness,
         .ui_brightness_multiplier = g_Config.visuals.ui_brightness,
         .gamma = g_Config.visuals.gamma,
-        .desaturation = Output_GetDesaturation(),
         .sunset_duration = Output_GetSunsetDuration(),
         .tr_version = g_TRVersion,
         .uv_rotate_offset = Output_GetUVRotateOffset(),
@@ -178,12 +175,6 @@ void Output_Uniforms_UploadGeneral(const OUTPUT_UNIFORMS *const uniforms)
             Output_GetFogColor().b,
             Output_GetFogColor().a,
         },
-        .global_tint = {
-            Output_GetGlobalTint().r,
-            Output_GetGlobalTint().g,
-            Output_GetGlobalTint().b,
-            1.0f,
-        },
     };
 
     glBindBuffer(GL_UNIFORM_BUFFER, uniforms->general);
@@ -201,28 +192,6 @@ void Output_Uniforms_UploadFogDistance(
         glBufferSubData, GL_UNIFORM_BUFFER,
         offsetof(M_UNIFORM_GENERAL, fog_distance), sizeof(fog_distance),
         &fog_distance);
-}
-
-void Output_Uniforms_UploadDesaturation(
-    const OUTPUT_UNIFORMS *const uniforms, const float desaturation)
-{
-    ASSERT(uniforms != nullptr);
-    float clamped = desaturation;
-    CLAMP(clamped, 0.0f, 1.0f);
-    glBindBuffer(GL_UNIFORM_BUFFER, uniforms->general);
-    TRX_GL_TRACK_SUBDATA(
-        glBufferSubData, GL_UNIFORM_BUFFER,
-        offsetof(M_UNIFORM_GENERAL, desaturation), sizeof(clamped), &clamped);
-}
-
-void Output_Uniforms_UploadGlobalTint(
-    const OUTPUT_UNIFORMS *const uniforms, const RGB_F tint)
-{
-    ASSERT(uniforms != nullptr);
-    glBindBuffer(GL_UNIFORM_BUFFER, uniforms->general);
-    TRX_GL_TRACK_SUBDATA(
-        glBufferSubData, GL_UNIFORM_BUFFER,
-        offsetof(M_UNIFORM_GENERAL, global_tint), sizeof(tint), &tint);
 }
 
 void Output_Uniforms_UploadGameBrightnessMultiplier(

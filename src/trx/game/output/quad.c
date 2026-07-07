@@ -17,6 +17,8 @@ typedef enum {
     M_UNIFORM_BRIGHTNESS_SCALE,
     M_UNIFORM_FIT_MODE,
     M_UNIFORM_SRC_ASPECT,
+    M_UNIFORM_DESATURATION,
+    M_UNIFORM_GLOBAL_TINT,
     M_UNIFORM_NUMBER_OF,
 } M_UNIFORM;
 
@@ -55,6 +57,9 @@ struct OUTPUT_QUAD {
 
     OUTPUT_QUAD_FIT_MODE fit_mode;
     float src_aspect;
+
+    float desaturation;
+    RGB_F global_tint;
 
     bool use_external_texture;
     GLuint external_texture_id;
@@ -154,6 +159,9 @@ OUTPUT_QUAD *Output_Quad_Create(void)
     r->fit_mode = OUTPUT_QUAD_FIT_STRETCH;
     r->src_aspect = 1.0f;
 
+    r->desaturation = 0.0f;
+    r->global_tint = COLOR_RGB_F_WHITE;
+
     r->vertices = nullptr;
     r->vertex_count = 6;
     r->use_external_texture = false;
@@ -196,6 +204,10 @@ OUTPUT_QUAD *Output_Quad_Create(void)
         Output_Shader_LookupUniform(r->shader, "uFitMode");
     r->loc[M_UNIFORM_SRC_ASPECT] =
         Output_Shader_LookupUniform(r->shader, "uSrcAspect");
+    r->loc[M_UNIFORM_DESATURATION] =
+        Output_Shader_LookupUniform(r->shader, "uDesaturation");
+    r->loc[M_UNIFORM_GLOBAL_TINT] =
+        Output_Shader_LookupUniform(r->shader, "uGlobalTint");
 
     M_BindProgram(r);
     glUniform1i(r->loc[M_UNIFORM_TEXTURE_MAIN], 0);
@@ -205,6 +217,10 @@ OUTPUT_QUAD *Output_Quad_Create(void)
     glUniform1f(r->loc[M_UNIFORM_BRIGHTNESS_SCALE], r->brightness_scale);
     glUniform1i(r->loc[M_UNIFORM_FIT_MODE], (int32_t)r->fit_mode);
     glUniform1f(r->loc[M_UNIFORM_SRC_ASPECT], r->src_aspect);
+    glUniform1f(r->loc[M_UNIFORM_DESATURATION], r->desaturation);
+    glUniform3f(
+        r->loc[M_UNIFORM_GLOBAL_TINT], r->global_tint.r, r->global_tint.g,
+        r->global_tint.b);
     TRX_GL_CheckError();
 
     return r;
@@ -396,6 +412,31 @@ void Output_Quad_SetFilter(
 {
     ASSERT(r != nullptr);
     r->filter_mode = filter_mode;
+}
+
+void Output_Quad_SetDesaturation(OUTPUT_QUAD *const r, const float desaturation)
+{
+    ASSERT(r != nullptr);
+
+    if (r->desaturation != desaturation) {
+        M_BindProgram(r);
+        glUniform1f(r->loc[M_UNIFORM_DESATURATION], desaturation);
+        TRX_GL_CheckError();
+        r->desaturation = desaturation;
+    }
+}
+
+void Output_Quad_SetGlobalTint(OUTPUT_QUAD *const r, const RGB_F tint)
+{
+    ASSERT(r != nullptr);
+
+    if (r->global_tint.r != tint.r || r->global_tint.g != tint.g
+        || r->global_tint.b != tint.b) {
+        M_BindProgram(r);
+        glUniform3f(r->loc[M_UNIFORM_GLOBAL_TINT], tint.r, tint.g, tint.b);
+        TRX_GL_CheckError();
+        r->global_tint = tint;
+    }
 }
 
 void Output_Quad_SetFit(
