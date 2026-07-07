@@ -15,6 +15,7 @@
   - `pour_time`, which defines how long to pour liquid from the bowl
   - `flip_slot`, which defines the flip map slot index to alter once liquid has finished pouring
 - added a `flip_slot` property to the `O_PORTACABIN` object to define the flip map slot index to alter once the cabin has landed
+- added support for flyby camera sequences
 - changed `Game mode selection` to allow hiding the dialog even after having completed the game (Gameplay → General → Game mode selection)
 - improved handling of dead enemies used as switch triggers in custom levels by not altering their activation status and by adding detection for having been exploded (#5682)
 - fixed the Gameplay settings dialog layout so settings lists and presets use the available space more consistently

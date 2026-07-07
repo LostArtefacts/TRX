@@ -127,6 +127,7 @@ static bool M_Load(const LEVEL_FORMAT_LOADER *const loader, VFILE *const file)
     Level_Section_ReadSpriteTextures(ctx, file);
     Level_Section_ReadSpriteSequences(ctx, file);
     Level_Section_ReadCamerasAndSinks(ctx, file);
+    Level_Section_ReadFlybyCameras(ctx, file);
     Level_Section_ReadSoundSources(ctx, file);
     Level_Section_ReadPathingData(ctx, file);
 
