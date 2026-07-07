@@ -40,7 +40,7 @@
                 {"type": "play_fmv", "fmv_id": 12},
                 // {"type": "setup_inv_item", "obj_id": "puzzle_1", "offset_y": 1, "scale": 384, "rot_x": 0, "rot_y": 36864, "rot_z": 0, "flags": 2},
                 {"type": "setup_horizon", "layer": 0, "color": "#A0A0C0", "speed": 7}, // second layer also supported, seemingly unused?
-                {"type": "setup_uv_rotate", "speed": 8},
+                {"type": "setup_uv_rotate", "speed": 4},
                 // {"type": "loading_camera", "source_x": 7835, "source_y": -569, "source_Z": 88960, "target_x": 5000, "target_y": -323, "target_z": 88346, "room": 20},
                 {"type": "play_cutscene", "cutscene_id": 6}, // cutseq.pak, not level files
                 {"type": "loop_game"},
