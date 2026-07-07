@@ -139,96 +139,13 @@ static void M_RingNotActive(
         }
         break;
 
-    case O_PUZZLE_OPTION_1:
-    case O_PUZZLE_OPTION_2:
-    case O_PUZZLE_OPTION_3:
-    case O_PUZZLE_OPTION_4:
-    case O_KEY_OPTION_1:
-    case O_KEY_OPTION_2:
-    case O_KEY_OPTION_3:
-    case O_KEY_OPTION_4:
-    case O_QUEST_OPTION_1:
-    case O_QUEST_OPTION_2:
-    case O_QUEST_OPTION_3:
-    case O_QUEST_OPTION_4:
-    case O_PICKUP_OPTION_1:
-    case O_PICKUP_OPTION_2:
-    case O_PUZZLE_OPTION_5:
-    case O_PUZZLE_OPTION_6:
-    case O_PUZZLE_OPTION_7:
-    case O_PUZZLE_OPTION_8:
-    case O_PUZZLE_OPTION_9:
-    case O_PUZZLE_OPTION_10:
-    case O_PUZZLE_OPTION_11:
-    case O_PUZZLE_OPTION_12:
-    case O_KEY_OPTION_5:
-    case O_KEY_OPTION_6:
-    case O_KEY_OPTION_7:
-    case O_KEY_OPTION_8:
-    case O_KEY_OPTION_9:
-    case O_KEY_OPTION_10:
-    case O_KEY_OPTION_11:
-    case O_KEY_OPTION_12:
-    case O_QUEST_OPTION_5:
-    case O_QUEST_OPTION_6:
-    case O_PICKUP_OPTION_3:
-    case O_PICKUP_OPTION_4:
-    case O_PUZZLE_OPTION_1_COMBO_1:
-    case O_PUZZLE_OPTION_1_COMBO_2:
-    case O_PUZZLE_OPTION_2_COMBO_1:
-    case O_PUZZLE_OPTION_2_COMBO_2:
-    case O_PUZZLE_OPTION_3_COMBO_1:
-    case O_PUZZLE_OPTION_3_COMBO_2:
-    case O_PUZZLE_OPTION_4_COMBO_1:
-    case O_PUZZLE_OPTION_4_COMBO_2:
-    case O_PUZZLE_OPTION_5_COMBO_1:
-    case O_PUZZLE_OPTION_5_COMBO_2:
-    case O_PUZZLE_OPTION_6_COMBO_1:
-    case O_PUZZLE_OPTION_6_COMBO_2:
-    case O_PUZZLE_OPTION_7_COMBO_1:
-    case O_PUZZLE_OPTION_7_COMBO_2:
-    case O_PUZZLE_OPTION_8_COMBO_1:
-    case O_PUZZLE_OPTION_8_COMBO_2:
-    case O_KEY_OPTION_1_COMBO_1:
-    case O_KEY_OPTION_1_COMBO_2:
-    case O_KEY_OPTION_2_COMBO_1:
-    case O_KEY_OPTION_2_COMBO_2:
-    case O_KEY_OPTION_3_COMBO_1:
-    case O_KEY_OPTION_3_COMBO_2:
-    case O_KEY_OPTION_4_COMBO_1:
-    case O_KEY_OPTION_4_COMBO_2:
-    case O_KEY_OPTION_5_COMBO_1:
-    case O_KEY_OPTION_5_COMBO_2:
-    case O_KEY_OPTION_6_COMBO_1:
-    case O_KEY_OPTION_6_COMBO_2:
-    case O_KEY_OPTION_7_COMBO_1:
-    case O_KEY_OPTION_7_COMBO_2:
-    case O_KEY_OPTION_8_COMBO_1:
-    case O_KEY_OPTION_8_COMBO_2:
-    case O_PICKUP_OPTION_1_COMBO_1:
-    case O_PICKUP_OPTION_1_COMBO_2:
-    case O_PICKUP_OPTION_2_COMBO_1:
-    case O_PICKUP_OPTION_2_COMBO_2:
-    case O_PICKUP_OPTION_3_COMBO_1:
-    case O_PICKUP_OPTION_3_COMBO_2:
-    case O_PICKUP_OPTION_4_COMBO_1:
-    case O_PICKUP_OPTION_4_COMBO_2:
-    case O_LASERSIGHT_OPTION:
-    case O_BINOCULARS_OPTION:
-    case O_CROWBAR_OPTION:
-    case O_EXAMINE_OPTION_1:
-    case O_EXAMINE_OPTION_2:
-    case O_EXAMINE_OPTION_3:
-    case O_WATERSKIN_1_OPTION:
-    case O_WATERSKIN_2_OPTION:
-    case O_LEADBAR_OPTION:
-    case O_SCION_OPTION:
-        if (qty > 1) {
-            InvRing_ShowItemQuantity("%d", qty);
-        }
-        break;
-
     default:
+        if (inv_item->object_id == O_SCION_OPTION
+            || Object_IsType(inv_item->object_id, g_GenericInvOptions)) {
+            if (qty > 1) {
+                InvRing_ShowItemQuantity("%d", qty);
+            }
+        }
         break;
     }
 
@@ -380,52 +297,11 @@ static GF_COMMAND M_Finish(INV_RING *const ring, const bool apply_changes)
         }
         break;
 
-    case O_PISTOL_OPTION:
-    case O_SHOTGUN_OPTION:
-    case O_MAGNUM_OPTION:
-    case O_AUTOS_OPTION:
-    case O_DESERT_EAGLE_OPTION:
-    case O_UZI_OPTION:
-    case O_HARPOON_OPTION:
-    case O_M16_OPTION:
-    case O_MP5_OPTION:
-    case O_GRENADE_GUN_OPTION:
-    case O_ROCKET_GUN_OPTION:
-    case O_SMALL_MEDIPACK_OPTION:
-    case O_LARGE_MEDIPACK_OPTION:
-    case O_FLAREBOX_OPTION:
-    case O_KEY_OPTION_1:
-    case O_KEY_OPTION_2:
-    case O_KEY_OPTION_3:
-    case O_KEY_OPTION_4:
-    case O_PUZZLE_OPTION_1:
-    case O_PUZZLE_OPTION_2:
-    case O_PUZZLE_OPTION_3:
-    case O_PUZZLE_OPTION_4:
-    case O_KEY_OPTION_5:
-    case O_KEY_OPTION_6:
-    case O_KEY_OPTION_7:
-    case O_KEY_OPTION_8:
-    case O_KEY_OPTION_9:
-    case O_KEY_OPTION_10:
-    case O_KEY_OPTION_11:
-    case O_KEY_OPTION_12:
-    case O_PUZZLE_OPTION_5:
-    case O_PUZZLE_OPTION_6:
-    case O_PUZZLE_OPTION_7:
-    case O_PUZZLE_OPTION_8:
-    case O_PUZZLE_OPTION_9:
-    case O_PUZZLE_OPTION_10:
-    case O_PUZZLE_OPTION_11:
-    case O_PUZZLE_OPTION_12:
-    case O_LEADBAR_OPTION:
-    case O_SCION_OPTION:
+    default:
+        // Anything else is handled (or ignored) by Lara_UseItem itself.
         if (apply_changes) {
             Lara_UseItem(m_InvChosen);
         }
-        break;
-
-    default:
         break;
     }
 

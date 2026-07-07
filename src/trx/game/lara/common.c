@@ -12,6 +12,7 @@
 #include <trx/game/lara/poison.h>
 #include <trx/game/lara/pose.h>
 #include <trx/game/matrix.h>
+#include <trx/game/objects.h>
 #include <trx/game/output.h>
 #include <trx/game/pathing.h>
 #include <trx/game/rooms.h>
@@ -456,62 +457,15 @@ void Lara_UseItem(const OBJECT_ID obj_id)
         }
         break;
 
-    case O_KEY_ITEM_1:
-    case O_KEY_OPTION_1:
-    case O_KEY_ITEM_2:
-    case O_KEY_OPTION_2:
-    case O_KEY_ITEM_3:
-    case O_KEY_OPTION_3:
-    case O_KEY_ITEM_4:
-    case O_KEY_OPTION_4:
-    case O_PUZZLE_ITEM_1:
-    case O_PUZZLE_OPTION_1:
-    case O_PUZZLE_ITEM_2:
-    case O_PUZZLE_OPTION_2:
-    case O_PUZZLE_ITEM_3:
-    case O_PUZZLE_OPTION_3:
-    case O_PUZZLE_ITEM_4:
-    case O_PUZZLE_OPTION_4:
-    case O_KEY_ITEM_5:
-    case O_KEY_OPTION_5:
-    case O_KEY_ITEM_6:
-    case O_KEY_OPTION_6:
-    case O_KEY_ITEM_7:
-    case O_KEY_OPTION_7:
-    case O_KEY_ITEM_8:
-    case O_KEY_OPTION_8:
-    case O_KEY_ITEM_9:
-    case O_KEY_OPTION_9:
-    case O_KEY_ITEM_10:
-    case O_KEY_OPTION_10:
-    case O_KEY_ITEM_11:
-    case O_KEY_OPTION_11:
-    case O_KEY_ITEM_12:
-    case O_KEY_OPTION_12:
-    case O_PUZZLE_ITEM_5:
-    case O_PUZZLE_OPTION_5:
-    case O_PUZZLE_ITEM_6:
-    case O_PUZZLE_OPTION_6:
-    case O_PUZZLE_ITEM_7:
-    case O_PUZZLE_OPTION_7:
-    case O_PUZZLE_ITEM_8:
-    case O_PUZZLE_OPTION_8:
-    case O_PUZZLE_ITEM_9:
-    case O_PUZZLE_OPTION_9:
-    case O_PUZZLE_ITEM_10:
-    case O_PUZZLE_OPTION_10:
-    case O_PUZZLE_ITEM_11:
-    case O_PUZZLE_OPTION_11:
-    case O_PUZZLE_ITEM_12:
-    case O_PUZZLE_OPTION_12:
-    case O_LEADBAR_ITEM:
-    case O_LEADBAR_OPTION:
-    case O_SCION_ITEM_1:
-    case O_SCION_ITEM_2:
-    case O_SCION_ITEM_3:
-    case O_SCION_ITEM_4:
-    case O_SCION_OPTION: {
-        const int16_t receptacle_item_num = Object_FindReceptacle(obj_id);
+    default: {
+        const OBJECT_ID option_id = Inv_GetItemOption(obj_id);
+        if (option_id != O_SCION_OPTION
+            && Object_GetCognate(option_id, g_KeyItemToReceptacleMap)
+                == NO_OBJECT) {
+            break;
+        }
+
+        const int16_t receptacle_item_num = Object_FindReceptacle(option_id);
         if (receptacle_item_num == NO_ITEM
             || lara_info->interact_target.item_num != NO_ITEM) {
             Sound_Effect(SFX_LARA_NO, nullptr, SPM_NORMAL);
@@ -523,9 +477,6 @@ void Lara_UseItem(const OBJECT_ID obj_id)
         lara_info->interact_target.move_count = 0;
         break;
     }
-
-    default:
-        break;
     }
 
     if (request_gun_type != LGT_UNARMED) {

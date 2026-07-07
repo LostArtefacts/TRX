@@ -2438,6 +2438,9 @@
         "lara_boat": {
             "name": "Animazione Barca",
         },
+        "lara_crossbow": {
+            "name": "\\{review}Animazione Balestra",
+        },
         "lara_desert_eagle": {
             "name": "Animazione Desert Eagle",
         },
@@ -2479,6 +2482,9 @@
         },
         "lara_quad_bike": {
             "name": "Animazione Quad",
+        },
+        "lara_revolver": {
+            "name": "\\{review}Animazione Revolver",
         },
         "lara_rib": {
             "name": "Animazione Gommone a Motore",

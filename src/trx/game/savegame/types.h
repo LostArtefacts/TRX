@@ -2,8 +2,14 @@
 
 #include <trx/core/filesystem.h>
 #include <trx/game/lara/enum.h>
+#include <trx/game/objects/ids.h>
 #include <trx/game/savegame/enum.h>
 #include <trx/game/stats/types.h>
+
+typedef struct {
+    OBJECT_ID object_id;
+    const char *key;
+} SAVEGAME_INVENTORY_ENTRY;
 
 typedef struct {
     uint8_t small_medipacks;
