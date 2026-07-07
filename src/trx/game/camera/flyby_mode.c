@@ -390,6 +390,7 @@ void Camera_FlybyMode_Update(void)
     g_Camera.pos.room_num = room_num;
     g_Camera.target.room_num = g_Camera.pos.room_num;
     Room_GetSector(g_Camera.target.pos, &g_Camera.target.room_num);
+    g_Camera.shift = 0;
     g_Camera.roll = roll;
     Viewport_AlterFOV(fov, FOV_MODE_GAME);
 
