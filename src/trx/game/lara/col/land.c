@@ -323,7 +323,8 @@ static void M_Pickup(ITEM *const item, COLL_INFO *const coll)
 static void M_FlarePickup(ITEM *const item, COLL_INFO *const coll)
 {
     M_Default(item, coll);
-    if (coll->side_mid.floor <= STEPUP_HEIGHT) {
+    if (coll->side_mid.floor <= STEPUP_HEIGHT
+        && Item_TestAnimEqual(item, LA(LA_FLARE_PICKUP))) {
         item->pos.y += coll->side_mid.floor;
     }
 }
