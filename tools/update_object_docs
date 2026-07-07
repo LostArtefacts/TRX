@@ -4,6 +4,7 @@ from __future__ import annotations
 import ast
 import csv
 import re
+import sys
 import xml.etree.ElementTree as ET
 from dataclasses import dataclass
 from pathlib import Path
@@ -15,6 +16,67 @@ OBJECT_SETUP_SOURCE = ROOT / "src/trx/game/objects/setup.c"
 MD_OUTPUT = ROOT / "docs/trx/OBJECTS.md"
 XML_OUTPUT = ROOT / "data/te"
 HEADER_SOURCE = ROOT / "src/trx/game"
+PICKUPS_DEF = ROOT / "src/trx/game/objects/pickups.def"
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+
+from shared.cdefs import expand_def_file  # noqa: E402
+
+PICKUPS_DEF_INCLUDE_RE = re.compile(
+    r"[ \t]*#include\s*<trx/game/objects/pickups\.def>[ \t]*\n"
+)
+DEFINE_RE = re.compile(
+    r"[ \t]*#define\s+(?P<name>\w+)\((?P<params>[^)]*)\)"
+    r"(?P<body>(?:.*\\\n)*.*)\n"
+)
+UNDEF_RE = re.compile(r"[ \t]*#undef\s+(?P<name>\w+)[ \t]*\n")
+
+
+def expand_pickup_includes(source: str) -> str:
+    """Expand `#define X_...; #include pickups.def; #undef X_...` blocks.
+
+    pickups.def is an X-macro file: consumers #define the family macros
+    they care about, #include the file to expand them, then #undef them
+    again. Regex scanning can't see through the #include, so run the real
+    C preprocessor over pickups.def with the consumer's macro bodies and
+    splice the expansion back into the source in place of the block.
+    """
+    while (include_match := PICKUPS_DEF_INCLUDE_RE.search(source)) is not None:
+        # Walk backward over contiguous #define lines immediately preceding
+        # the #include (allowing blank lines between them).
+        defines: list[re.Match[str]] = []
+        block_start = include_match.start()
+        pos = block_start
+        while True:
+            line_start = source.rfind("\n", 0, pos - 1) + 1 if pos > 0 else 0
+            line = source[line_start:pos]
+            if line.strip() == "":
+                pos = line_start
+                continue
+            if (define_match := DEFINE_RE.match(source, line_start)) is not None:
+                defines.append(define_match)
+                block_start = line_start
+                pos = line_start
+                continue
+            break
+        defines.reverse()
+
+        macro_defs: dict[str, str] = {}
+        for define_match in defines:
+            signature = (
+                f"{define_match.group('name')}({define_match.group('params')})"
+            )
+            body = define_match.group("body").replace("\\\n", "\n").strip()
+            macro_defs[signature] = body
+
+        pos = include_match.end()
+        while (undef_match := UNDEF_RE.match(source, pos)) is not None:
+            pos = undef_match.end()
+
+        expansion = expand_def_file(PICKUPS_DEF, macro_defs) if macro_defs else ""
+        source = source[:block_start] + expansion + source[pos:]
+    return source
+
 
 RANGE_RE = re.compile(r"Value range:\s*(.*?)(?=\.\s|$)", re.IGNORECASE)
 MIN_RE = re.compile(r"\bminimum\s+(-?\d+(?:\.\d+)?)", re.IGNORECASE)
@@ -222,6 +284,7 @@ class RegisteredPropertyCatalog:
         global_constants = read_global_constants()
         for path, category in read_source_files():
             source = strip_comments(path.read_text())
+            source = expand_pickup_includes(source)
             constants = global_constants | read_local_constants(source)
             function_bodies = read_function_bodies(source)
             registrations: list[tuple[str, list[PropertyInfo]]] = []

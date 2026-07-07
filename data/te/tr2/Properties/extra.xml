@@ -44,6 +44,10 @@
         <property category="TRX" defaultValue="1" description="Maximum hit points." displayName="Max Hit Points" internalName="max_hit_points" minValue="0" type="Int" />
         <property category="TRX" defaultValue="2" description="Damage dealt by the bat attack." displayName="Damage" internalName="damage" minValue="0" type="Int" />
     </moveable>
+    <!--placeholder for O_BINOCULARS_ITEM..O_WATERSKIN_2_EMPTY-->
+    <moveable id="-1">
+        <property category="TRX" defaultValue="Normal" description="Pickup animation mode." displayName="Pickup Mode" entries="Normal, Low Pedestal, High Pedestal" internalName="pickup_mode" type="Enum" />
+    </moveable>
     <!--placeholder for O_CENTAUR-->
     <moveable id="-1">
         <property category="TRX" defaultValue="120" description="Maximum hit points." displayName="Max Hit Points" internalName="max_hit_points" minValue="0" type="Int" />
@@ -105,10 +109,6 @@
         <property category="TRX" defaultValue="1" description="Damage dealt by body contact." displayName="Touch Damage" internalName="touch_damage" minValue="0" type="Int" />
         <property category="TRX" defaultValue="10" description="Damage dealt while trampling." displayName="Trample Damage" internalName="trample_damage" minValue="0" type="Int" />
         <property category="TRX" defaultValue="10000" description="Damage dealt by the bite attack." displayName="Bite Damage" internalName="bite_damage" minValue="0" type="Int" />
-    </moveable>
-    <!--placeholder for O_EXPLOSIVE_ITEM..O_SCION_ITEM_2-->
-    <moveable id="-1">
-        <property category="TRX" defaultValue="Normal" description="Pickup animation mode." displayName="Pickup Mode" entries="Normal, Low Pedestal, High Pedestal" internalName="pickup_mode" type="Enum" />
     </moveable>
     <!--placeholder for O_FALLING_CEILING_2-->
     <moveable id="-1">
