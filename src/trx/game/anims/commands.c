@@ -62,7 +62,7 @@ static bool M_ParseCommand(
         const int16_t effect_data = *data_ptr++;
         cmd_data->effect_num = effect_data & 0x3FFF;
         cmd_data->fx_type = 0;
-        if (command->type == AC_EFFECT && g_TRVersion == 3) {
+        if (command->type == AC_EFFECT && g_TRVersion >= 3) {
             cmd_data->fx_type = effect_data & 0xC000;
             cmd_data->environment = ACE_ALL;
         } else {

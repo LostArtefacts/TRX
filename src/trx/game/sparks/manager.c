@@ -242,7 +242,7 @@ static void M_UpdateWind(void)
         return;
     }
 
-    if (g_TRVersion != 3) {
+    if (g_TRVersion < 3) {
         const ITEM *const lara_item = Lara_GetItem();
         if (lara_item == nullptr) {
             m_HairWindZ = 0;

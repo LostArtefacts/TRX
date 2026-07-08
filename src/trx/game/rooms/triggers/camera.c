@@ -63,7 +63,7 @@ static void M_HandleSink(
     TRIGGER_STATUS *const status)
 {
     LARA_INFO *const lara = Lara_GetLaraInfo();
-    if (g_TRVersion == 3) {
+    if (g_TRVersion >= 3) {
         lara->current.active = 1 + (int16_t)(intptr_t)cmd->parameter;
     } else {
         const OBJECT_VECTOR *const sink =
