@@ -766,6 +766,8 @@ class MarkdownExporter:
                 object_id, "general"
             )
             by_category.setdefault(cat, []).append(object_id)
+        for object_ids in by_category.values():
+            object_ids.sort(key=natural_sort_key)
         return by_category
 
     def _format_object_table(
