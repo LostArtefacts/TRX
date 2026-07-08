@@ -18,6 +18,7 @@ typedef struct {
     UI_STATS_DIALOG_MODE mode;
     UI_STATS_DIALOG_STYLE style;
     int32_t level_num;
+    int32_t display_level_num;
 } UI_STATS_DIALOG_ARGS;
 
 typedef struct UI_STATS_DIALOG_STATE UI_STATS_DIALOG_STATE;

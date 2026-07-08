@@ -6,6 +6,7 @@
 #include <trx/game/gym.h>
 #include <trx/game/input.h>
 #include <trx/game/lara.h>
+#include <trx/game/savegame.h>
 #include <trx/game/sound.h>
 #include <trx/game/ui.h>
 
@@ -34,6 +35,7 @@ static void M_Init(M_PRIV *const p, INVENTORY_ITEM *const inv_item)
             ? UI_STATS_DIALOG_STYLE_BARE
             : UI_STATS_DIALOG_STYLE_BORDERED,
         .level_num = Game_GetCurrentLevel()->num,
+        .display_level_num = Savegame_GetCompletedLevelCount() + 1,
     });
 }
 

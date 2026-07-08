@@ -283,9 +283,7 @@ static void M_RowFromRole(
         M_Row(
             s, GS("general/stats/level"),
             String_FormatStatic(
-                GS("general/stats/detail_fmt"),
-                GF_GetLevelOrdinalNumber(
-                    GFLT_MAIN, GF_GetLevel(GFLT_MAIN, s->args.level_num)),
+                GS("general/stats/detail_fmt"), s->args.display_level_num,
                 GF_GetLevelCount(GFLT_MAIN)));
         break;
 

@@ -8,6 +8,7 @@
 #include <trx/game/game_flow.h>
 #include <trx/game/input.h>
 #include <trx/game/output.h>
+#include <trx/game/savegame.h>
 #include <trx/game/shell.h>
 #include <trx/game/ui.h>
 
@@ -64,6 +65,7 @@ static PHASE_CONTROL M_Start(PHASE *const phase)
                                             : UI_STATS_DIALOG_STYLE_BORDERED,
             .level_num = p->args.level_num != -1 ? p->args.level_num
                                                  : Game_GetCurrentLevel()->num,
+            .display_level_num = Savegame_GetCompletedLevelCount() + 1,
         });
         if (p->args.show_final_stats
             && !UI_StatsDialog_HasVisibleRows(p->ui_state)) {

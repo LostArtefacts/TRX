@@ -901,6 +901,20 @@ void Savegame_ApplyLogicToCurrentInfo(const GF_LEVEL *const level)
     M_DetermineLegacyGunTypes(resume);
 }
 
+int32_t Savegame_GetCompletedLevelCount(void)
+{
+    int32_t count = 0;
+    const GF_LEVEL_TABLE *const level_table = GF_GetLevelTable(GFLT_MAIN);
+    for (int32_t i = 0; i < level_table->count; i++) {
+        const GF_LEVEL *const level = &level_table->levels[i];
+        const RESUME_INFO *const current = Savegame_GetCurrentInfo(level);
+        if (current != nullptr && current->level_completed) {
+            count++;
+        }
+    }
+    return count;
+}
+
 void Savegame_ProcessItemsBeforeSave(void)
 {
     for (int32_t i = 0; i < Item_GetLevelCount(); i++) {
