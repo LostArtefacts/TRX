@@ -31,6 +31,16 @@ RGBA_8888 Level_GetFogColor(void)
     return (RGBA_8888) { .r = color.r, .g = color.g, .b = color.b, .a = alpha };
 }
 
+bool Level_AreFogBulbsEnabled(void)
+{
+    // The OG disables volumetric fog bulbs on some levels (GF_TRAIN).
+    const GF_LEVEL *const level = GF_GetCurrentLevel();
+    if (level != nullptr && level->settings.fog_bulbs.is_present) {
+        return level->settings.fog_bulbs.value;
+    }
+    return true;
+}
+
 float Level_GetFogStart(void)
 {
     const GF_LEVEL *const level = GF_GetCurrentLevel();

@@ -13,6 +13,7 @@
 #include <trx/game/camera/vars.h>
 #include <trx/game/const.h>
 #include <trx/game/items/manager.h>
+#include <trx/game/level/settings.h>
 #include <trx/game/objects/common.h>
 #include <trx/game/objects/vars.h>
 #include <trx/game/output.h>
@@ -205,7 +206,13 @@ static void M_BakeRoomLights(void)
                     continue;
                 }
                 M_FOG_BULB *const bulb = &m_FogBulbs[m_NumFogBulbs++];
+                // The OG PC renderer reads the red channel as the density
+                // and discards the bulb color (blending toward the script
+                // fog color instead); the data carries a real per-bulb RGB
+                // which the PSX renderer used — keep it (e.g. the cyan
+                // waterfall mist in Angkor Wat).
                 bulb->density = light->color.r;
+                bulb->color = light->color;
                 bulb->world_pos = (XYZ_F) {
                     (float)light->pos.x,
                     (float)light->pos.y,
@@ -979,8 +986,9 @@ static void M_PrepareScene(void)
 {
     OUTPUT_UNIFORM_FOG_BULBS fog = {};
 
-    // the OG skips all fog bulbs while the inventory is up.
-    if (!m_InventoryMode) {
+    // the OG skips all fog bulbs while the inventory is up, and some levels
+    // disable them entirely (GF_TRAIN).
+    if (!m_InventoryMode && Level_AreFogBulbsEnabled()) {
         for (int32_t i = 0; i < M_MAX_FX_FOG_BULBS; i++) {
             M_FOG_BULB *const bulb = &m_FXFogBulbs[i];
             if (!bulb->active || bulb->sqrad <= 0.0f) {

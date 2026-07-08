@@ -270,6 +270,7 @@
             "fog_start": 12.0,
             "fog_end": 24.0,
             "fog_color": "#D2B063",
+            "fog_bulbs": false, // OG disables volumetric bulbs on GF_TRAIN
             "sequence":[
                 {"type": "setup_horizon", "layer": 0, "color": "#C0A0C0", "speed": -16, "fog_gradient": true},
                 // {"type": "setup_lens_flare", "x": 882, "y":-6250, "z": 2299, "color": "#FFFFFF"},
