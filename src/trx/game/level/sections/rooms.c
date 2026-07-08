@@ -79,7 +79,8 @@ static void M_ReadRoomLightTR4(LIGHT *const light, VFILE *const file)
     light->color.g = VFile_ReadU8(file);
     light->color.b = VFile_ReadU8(file);
     light->type = (LIGHT_TYPE)VFile_ReadU8(file);
-    light->u.tr4.intensity = VFile_ReadU16(file);
+    // Signed on disk; the OG engine scales by |intensity| / 8191.
+    light->u.tr4.intensity = (int16_t)VFile_ReadU16(file);
     VFile_Read(file, &light->u.tr4.inner_radius, sizeof(float));
     VFile_Read(file, &light->u.tr4.outer_radius, sizeof(float));
     VFile_Read(file, &light->u.tr4.length, sizeof(float));
@@ -369,9 +370,12 @@ void Level_Section_ReadRooms(LEVEL_CONTEXT *const ctx, VFILE *const file)
             const uint8_t room_g = (room_color >> 8) & 0xFF;
             const uint8_t room_b = room_color & 0xFF;
             room->ambient = (int16_t)((room_r + room_g + room_b) / 3);
+            room->ambient_rgb = (RGB_888) { room_r, room_g, room_b };
             room->light_mode = RLM_NORMAL;
         } else {
             room->ambient = VFile_ReadS16(file);
+            const uint8_t gray = (uint8_t)(room->ambient >> 5); // 0x1FFF scale
+            room->ambient_rgb = (RGB_888) { gray, gray, gray };
             if (loader->game_version == 1) {
                 room->light_mode = RLM_NORMAL;
             } else if (loader->game_version == 2) {
