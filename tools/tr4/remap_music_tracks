@@ -1,0 +1,295 @@
+#!/usr/bin/env python3
+
+from __future__ import annotations
+
+import argparse
+import os
+import shutil
+import sys
+from dataclasses import dataclass
+from pathlib import Path
+
+
+TRACK_FILE_NAMES: tuple[str, ...] = (
+    "044_attack_part_i.wav",
+    "008_voncroy9a.wav",
+    "100_attack_part_ii.wav",
+    "010_voncroy10.wav",
+    "015_voncroy14.wav",
+    "073_secret.wav",
+    "109_lyre_01.wav",
+    "042_action_part_iv.wav",
+    "043_action_part_v.wav",
+    "030_voncroy30.wav",
+    "012_voncroy11b.wav",
+    "011_voncroy11a.wav",
+    "063_misc_inc_01.wav",
+    "014_voncroy13b.wav",
+    "111_charmer.wav",
+    "025_voncroy24b.wav",
+    "023_voncroy23.wav",
+    "006_voncroy7.wav",
+    "024_voncroy24a.wav",
+    "110_lyre_02.wav",
+    "020_voncroy19.wav",
+    "034_voncroy34.wav",
+    "054_general_part_ii.wav",
+    "036_voncroy36.wav",
+    "004_voncroy5.wav",
+    "035_voncroy35.wav",
+    "027_voncroy27.wav",
+    "053_general_part_i.wav",
+    "022_voncroy22b.wav",
+    "028_voncroy28_l11.wav",
+    "003_voncroy4.wav",
+    "001_voncroy2.wav",
+    "041_action_part_iii.wav",
+    "057_general_part_v.wav",
+    "018_voncroy17.wav",
+    "064_misc_inc_02.wav",
+    "033_voncroy33.wav",
+    "031_voncroy31_l12.wav",
+    "032_voncroy32_l13.wav",
+    "016_voncroy15.wav",
+    "065_misc_inc_03.wav",
+    "040_action_part_ii.wav",
+    "112_gods_part_iv.wav",
+    "029_voncroy29.wav",
+    "007_voncroy8.wav",
+    "013_voncroy12_13a_lara4.wav",
+    "009_voncroy9b_lara3.wav",
+    "081_dig.wav",
+    "085_intro.wav",
+    "071_ominous_part_i.wav",
+    "095_phildoor.wav",
+    "061_in_the_pyramid_part_i.wav",
+    "050_underwater_find_part_i.wav",
+    "058_gods_part_i.wav",
+    "005_voncroy6_lara2.wav",
+    "045_authentic_tr.wav",
+    "060_gods_part_iii.wav",
+    "055_general_part_iii.wav",
+    "059_gods_part_ii.wav",
+    "068_mystery_part_ii.wav",
+    "076_captain2.wav",
+    "019_lara6_voncroy18.wav",
+    "002_voncroy3.wav",
+    "066_misc_inc_04.wav",
+    "067_mystery_part_i.wav",
+    "038_a_short_01.wav",
+    "088_key.wav",
+    "017_voncroy16_lara5.wav",
+    "026_vc25_l9_vc26_l10.wav",
+    "056_general_part_iv.wav",
+    "021_vc20_l7_vc21_l8_vc22a.wav",
+    "096_sarcoph.wav",
+    "087_jeepb.wav",
+    "091_minilib1.wav",
+    "086_jeepa.wav",
+    "051_egyptian_mood_part_i.wav",
+    "078_croywon.wav",
+    "092_minilib2.wav",
+    "083_horus.wav",
+    "049_close_to_the_end_part_ii.wav",
+    "037_vc37_l15_vc38.wav",
+    "097_scorpion.wav",
+    "089_larawon.wav",
+    "094_minilib4.wav",
+    "098_throne.wav",
+    "048_close_to_the_end.wav",
+    "070_mystery_part_iv.wav",
+    "093_minilib3.wav",
+    "072_puzzle_part_i.wav",
+    "074_backpack.wav",
+    "069_mystery_part_iii.wav",
+    "052_egyptian_mood_part_ii.wav",
+    "084_inscrip.wav",
+    "099_whouse.wav",
+    "047_boss_02.wav",
+    "080_crypt2.wav",
+    "090_libend.wav",
+    "046_boss_01.wav",
+    "062_jeep_thrills_max.wav",
+    "079_crypt1.wav",
+    "082_finale.wav",
+    "075_captain1.wav",
+    "105_a5_battle.wav",
+    "077_crocgod.wav",
+    "039_tr4_title_q10.wav",
+    "108_a8_coastal.wav",
+    "107_a7_train+.wav",
+    "101_a1_in_dark.wav",
+    "102_a2_in_drips.wav",
+    "104_a4_weird1.wav",
+    "106_a6_out_day.wav",
+    "103_a3_out_night.wav",
+)
+
+
+@dataclass(frozen=True)
+class RemapAction:
+    source: Path
+    target: Path
+
+
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(
+        description=(
+            "Copy or move TR4 OG audio files to TRX loose-track names. "
+            "For example, 039_tr4_title_q10.wav becomes track104.wav."
+        )
+    )
+    parser.add_argument(
+        "source_dir",
+        type=Path,
+        help="Directory to scan recursively for original TR4 audio files.",
+    )
+    parser.add_argument(
+        "-o",
+        "--output-dir",
+        type=Path,
+        help=(
+            "Directory to write remapped files into. Defaults to a sibling "
+            "music directory when source-dir is audio, otherwise source-dir."
+        ),
+    )
+    action_group = parser.add_mutually_exclusive_group()
+    action_group.add_argument(
+        "--move",
+        action="store_true",
+        help="Move files instead of copying them.",
+    )
+    action_group.add_argument(
+        "--symlink",
+        action="store_true",
+        help="Create relative symlinks instead of copying files.",
+    )
+    parser.add_argument(
+        "--overwrite",
+        action="store_true",
+        help="Replace existing target files.",
+    )
+    parser.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="Print planned actions without changing files.",
+    )
+    return parser.parse_args()
+
+
+def build_track_map() -> dict[str, str]:
+    return {
+        file_name.casefold(): f"track{track_id:02d}{Path(file_name).suffix}"
+        for track_id, file_name in enumerate(TRACK_FILE_NAMES)
+    }
+
+
+def collect_actions(source_dir: Path, output_dir: Path) -> list[RemapAction]:
+    track_map = build_track_map()
+    actions: list[RemapAction] = []
+
+    for source in source_dir.rglob("*"):
+        if not source.is_file():
+            continue
+
+        target_name = track_map.get(source.name.casefold())
+        if target_name is None:
+            continue
+
+        actions.append(
+            RemapAction(
+                source=source,
+                target=output_dir / target_name,
+            )
+        )
+
+    return actions
+
+
+def validate_actions(actions: list[RemapAction], overwrite: bool) -> bool:
+    ok = True
+    seen_targets: dict[Path, Path] = {}
+
+    for action in actions:
+        existing_source = seen_targets.get(action.target)
+        if existing_source is not None:
+            print(
+                f"error: both {existing_source} and {action.source} map to "
+                f"{action.target}",
+                file=sys.stderr,
+            )
+            ok = False
+        else:
+            seen_targets[action.target] = action.source
+
+        if action.target.exists() and not overwrite:
+            print(
+                f"error: target already exists: {action.target} "
+                "(use --overwrite to replace it)",
+                file=sys.stderr,
+            )
+            ok = False
+
+    return ok
+
+
+def apply_actions(
+    actions: list[RemapAction], *, mode: str, overwrite: bool, dry_run: bool
+) -> None:
+    for action in actions:
+        print(f"{mode}: {action.source} -> {action.target}")
+        if dry_run:
+            continue
+
+        action.target.parent.mkdir(parents=True, exist_ok=True)
+        if action.target.exists() or action.target.is_symlink():
+            if overwrite:
+                action.target.unlink()
+            else:
+                raise FileExistsError(action.target)
+
+        if mode == "move":
+            shutil.move(str(action.source), str(action.target))
+        elif mode == "symlink":
+            target = os.path.relpath(action.source, action.target.parent)
+            action.target.symlink_to(target)
+        else:
+            shutil.copy2(action.source, action.target)
+
+
+def get_default_output_dir(source_dir: Path) -> Path:
+    if source_dir.name.casefold() == "audio":
+        return source_dir.parent / "music"
+    return source_dir
+
+
+def main() -> int:
+    args = parse_args()
+    source_dir = args.source_dir.resolve()
+    output_dir = (
+        args.output_dir.resolve()
+        if args.output_dir is not None
+        else get_default_output_dir(source_dir)
+    )
+
+    if not source_dir.is_dir():
+        print(f"error: source directory does not exist: {source_dir}", file=sys.stderr)
+        return 1
+
+    actions = collect_actions(source_dir, output_dir)
+    if len(actions) == 0:
+        print("No TR4 music tracks found.")
+        return 0
+
+    if not validate_actions(actions, args.overwrite):
+        return 1
+
+    mode = "move" if args.move else "symlink" if args.symlink else "copy"
+    apply_actions(
+        actions, mode=mode, overwrite=args.overwrite, dry_run=args.dry_run)
+    print(f"Remapped {len(actions)} track(s).")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
