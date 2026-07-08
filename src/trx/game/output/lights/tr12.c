@@ -234,7 +234,7 @@ static void M_UploadCPULight(
     cache->last_own_tr3_ambient = info->tr3_ambient;
     cache->mode = LS_MODE_FULL;
 
-    OUTPUT_UNIFORM_LS ls = {};
+    OUTPUT_UNIFORM_LS_TR12 ls = {};
     ls.adder = info->ls_adder;
     ls.divider = info->ls_divider / (float)(1 << (W2V_SHIFT));
     ls.vector_view[0] = info->ls_vector_view.x;
@@ -244,8 +244,7 @@ static void M_UploadCPULight(
 
     glBindBuffer(GL_UNIFORM_BUFFER, uniforms->ls);
     TRX_GL_TRACK_SUBDATA(
-        glBufferSubData, GL_UNIFORM_BUFFER, 0,
-        offsetof(OUTPUT_UNIFORM_LS, tr3_ambient), &ls);
+        glBufferSubData, GL_UNIFORM_BUFFER, 0, sizeof(ls), &ls);
     TRX_GL_CheckError();
 }
 
@@ -260,8 +259,9 @@ static void M_UploadOwnLight(
     const float light_adder = info->ls_adder;
     glBindBuffer(GL_UNIFORM_BUFFER, uniforms->ls);
     TRX_GL_TRACK_SUBDATA(
-        glBufferSubData, GL_UNIFORM_BUFFER, offsetof(OUTPUT_UNIFORM_LS, adder),
-        sizeof(light_adder), &light_adder);
+        glBufferSubData, GL_UNIFORM_BUFFER,
+        offsetof(OUTPUT_UNIFORM_LS_TR12, adder), sizeof(light_adder),
+        &light_adder);
     cache->last_own_adder = info->ls_adder;
     cache->mode = LS_MODE_OWN;
 }

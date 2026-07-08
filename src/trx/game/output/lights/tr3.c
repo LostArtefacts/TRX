@@ -480,13 +480,11 @@ static void M_UploadCPULight(
     cache->last_own_tr3_ambient = info->tr3_ambient;
     cache->mode = LS_MODE_FULL;
 
-    OUTPUT_UNIFORM_LS ls = {};
-    ls.adder = info->ls_adder;
-    ls.divider = info->ls_divider / (float)(1 << (W2V_SHIFT));
-    ls.tr3_ambient[0] = info->tr3_ambient.r;
-    ls.tr3_ambient[1] = info->tr3_ambient.g;
-    ls.tr3_ambient[2] = info->tr3_ambient.b;
-    ls.tr3_ambient[3] = 0.0f;
+    OUTPUT_UNIFORM_LS_TR3 ls = {};
+    ls.ambient[0] = info->tr3_ambient.r;
+    ls.ambient[1] = info->tr3_ambient.g;
+    ls.ambient[2] = info->tr3_ambient.b;
+    ls.ambient[3] = 0.0f;
     for (int32_t i = 0; i < 3; i++) {
         float x = (float)info->tr3_light_dir_view[i].x;
         float y = (float)info->tr3_light_dir_view[i].y;
@@ -498,14 +496,14 @@ static void M_UploadCPULight(
             y *= inv_len;
             z *= inv_len;
         }
-        ls.tr3_light_dir_view[i][0] = x;
-        ls.tr3_light_dir_view[i][1] = y;
-        ls.tr3_light_dir_view[i][2] = z;
-        ls.tr3_light_dir_view[i][3] = 0.0f;
-        ls.tr3_light_color[i][0] = info->tr3_light_color[i].r;
-        ls.tr3_light_color[i][1] = info->tr3_light_color[i].g;
-        ls.tr3_light_color[i][2] = info->tr3_light_color[i].b;
-        ls.tr3_light_color[i][3] = 0.0f;
+        ls.dir_view[i][0] = x;
+        ls.dir_view[i][1] = y;
+        ls.dir_view[i][2] = z;
+        ls.dir_view[i][3] = 0.0f;
+        ls.color[i][0] = info->tr3_light_color[i].r;
+        ls.color[i][1] = info->tr3_light_color[i].g;
+        ls.color[i][2] = info->tr3_light_color[i].b;
+        ls.color[i][3] = 0.0f;
     }
 
     glBindBuffer(GL_UNIFORM_BUFFER, uniforms->ls);
@@ -534,7 +532,7 @@ static void M_UploadOwnLight(
     glBindBuffer(GL_UNIFORM_BUFFER, uniforms->ls);
     TRX_GL_TRACK_SUBDATA(
         glBufferSubData, GL_UNIFORM_BUFFER,
-        offsetof(OUTPUT_UNIFORM_LS, tr3_ambient), sizeof(ambient), ambient);
+        offsetof(OUTPUT_UNIFORM_LS_TR3, ambient), sizeof(ambient), ambient);
     cache->last_own_tr3_ambient = info->tr3_ambient;
     cache->mode = LS_MODE_OWN;
 }

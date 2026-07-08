@@ -2,6 +2,7 @@
 
 #include <trx/core/memory.h>
 #include <trx/core/utils.h>
+#include <trx/game/output/lights/priv.h>
 #include <trx/game/output/state.h>
 #include <trx/game/output/utils.h>
 #include <trx/gl/utils.h>
@@ -9,68 +10,59 @@
 
 #include <string.h>
 
-struct OUTPUT_MESH_SHADER {
-    OUTPUT_SHADER *base_tr12;
-    OUTPUT_SHADER *base_tr3;
+#define M_VARIANT_COUNT 3
 
-    MATRIX model_matrix[2];
-    bool has_model_matrix[2];
-    int32_t water_effect[2];
-    float water_effect_params[2][3];
-    bool is_wibble_effect[2];
-    bool is_alpha_discard_enabled[2];
-    RGB_F tint[2];
+static const char *const m_VariantPaths[M_VARIANT_COUNT] = {
+    "meshes_tr12.glsl",
+    "meshes_tr3.glsl",
+    "meshes_tr4.glsl",
+};
+
+struct OUTPUT_MESH_SHADER {
+    OUTPUT_SHADER *base[M_VARIANT_COUNT];
+
+    MATRIX model_matrix[M_VARIANT_COUNT];
+    bool has_model_matrix[M_VARIANT_COUNT];
+    int32_t water_effect[M_VARIANT_COUNT];
+    float water_effect_params[M_VARIANT_COUNT][3];
+    bool is_wibble_effect[M_VARIANT_COUNT];
+    bool is_alpha_discard_enabled[M_VARIANT_COUNT];
+    RGB_F tint[M_VARIANT_COUNT];
 };
 
 static int32_t M_GetVariantIndex(void)
 {
-    return g_TRVersion >= 3 ? 1 : 0;
+    return Output_Lights_GetModel()->shader_variant;
 }
 
 static OUTPUT_SHADER *M_GetVariantBase(
     const OUTPUT_MESH_SHADER *const shader, const int32_t variant_idx)
 {
-    return variant_idx != 0 ? shader->base_tr3 : shader->base_tr12;
+    return shader->base[variant_idx];
 }
 
 OUTPUT_MESH_SHADER *Output_MeshShader_Create(void)
 {
     OUTPUT_MESH_SHADER *const shader = Memory_Alloc(sizeof(*shader));
-    shader->has_model_matrix[0] = false;
-    shader->has_model_matrix[1] = false;
-    shader->water_effect[0] = -1;
-    shader->water_effect[1] = -1;
-    shader->water_effect_params[0][0] = 0.0f;
-    shader->water_effect_params[0][1] = 0.0f;
-    shader->water_effect_params[0][2] = 0.0f;
-    shader->water_effect_params[1][0] = 0.0f;
-    shader->water_effect_params[1][1] = 0.0f;
-    shader->water_effect_params[1][2] = 0.0f;
-    shader->is_wibble_effect[0] = false;
-    shader->is_wibble_effect[1] = false;
-    shader->is_alpha_discard_enabled[0] = false;
-    shader->is_alpha_discard_enabled[1] = false;
-    shader->tint[0] = (RGB_F) { 0.0f, 0.0f, 0.0f };
-    shader->tint[1] = (RGB_F) { 0.0f, 0.0f, 0.0f };
+    for (int32_t i = 0; i < M_VARIANT_COUNT; i++) {
+        shader->has_model_matrix[i] = false;
+        shader->water_effect[i] = -1;
+        shader->water_effect_params[i][0] = 0.0f;
+        shader->water_effect_params[i][1] = 0.0f;
+        shader->water_effect_params[i][2] = 0.0f;
+        shader->is_wibble_effect[i] = false;
+        shader->is_alpha_discard_enabled[i] = false;
+        shader->tint[i] = (RGB_F) { 0.0f, 0.0f, 0.0f };
 
-    shader->base_tr12 = Output_Shader_Create("meshes_tr12.glsl");
-    shader->base_tr3 = Output_Shader_Create("meshes_tr3.glsl");
-
-    Output_Shader_Bind(shader->base_tr12);
-    TRX_GL_TRACK_UNIFORM(
-        glUniform1i,
-        Output_Shader_LookupUniform(shader->base_tr12, "uTexAtlas"), 0);
-    TRX_GL_TRACK_UNIFORM(
-        glUniform1i,
-        Output_Shader_LookupUniform(shader->base_tr12, "uTexEnvMap"), 1);
-
-    Output_Shader_Bind(shader->base_tr3);
-    TRX_GL_TRACK_UNIFORM(
-        glUniform1i, Output_Shader_LookupUniform(shader->base_tr3, "uTexAtlas"),
-        0);
-    TRX_GL_TRACK_UNIFORM(
-        glUniform1i,
-        Output_Shader_LookupUniform(shader->base_tr3, "uTexEnvMap"), 1);
+        shader->base[i] = Output_Shader_Create(m_VariantPaths[i]);
+        Output_Shader_Bind(shader->base[i]);
+        TRX_GL_TRACK_UNIFORM(
+            glUniform1i,
+            Output_Shader_LookupUniform(shader->base[i], "uTexAtlas"), 0);
+        TRX_GL_TRACK_UNIFORM(
+            glUniform1i,
+            Output_Shader_LookupUniform(shader->base[i], "uTexEnvMap"), 1);
+    }
     return shader;
 }
 
@@ -82,8 +74,9 @@ void Output_MeshShader_Bind(const OUTPUT_MESH_SHADER *const shader)
 
 void Output_MeshShader_Free(OUTPUT_MESH_SHADER *const shader)
 {
-    Output_Shader_Free(shader->base_tr12);
-    Output_Shader_Free(shader->base_tr3);
+    for (int32_t i = 0; i < M_VARIANT_COUNT; i++) {
+        Output_Shader_Free(shader->base[i]);
+    }
     Memory_Free(shader);
 }
 

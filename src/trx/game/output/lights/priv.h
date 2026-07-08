@@ -47,17 +47,21 @@ extern const LIGHTING_MODEL g_LightingModelTR3;
 
 const LIGHTING_MODEL *Output_Lights_GetModel(void);
 
-// The LightSource UBO layout (binding point 3).
+// Per-family LightSource UBO layouts (binding point 3). The GL buffer is
+// shared and sized to the largest layout; each family uploads only its own.
 #pragma pack(push, 4)
 typedef struct {
     float adder;
     float divider;
     float _pad0[2];
     float vector_view[4];
-    float tr3_ambient[4];
-    float tr3_light_dir_view[3][4];
-    float tr3_light_color[3][4];
-} OUTPUT_UNIFORM_LS;
+} OUTPUT_UNIFORM_LS_TR12;
+
+typedef struct {
+    float ambient[4];
+    float dir_view[3][4];
+    float color[3][4];
+} OUTPUT_UNIFORM_LS_TR3;
 #pragma pack(pop)
 
 typedef enum {

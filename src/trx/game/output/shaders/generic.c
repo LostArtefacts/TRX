@@ -26,7 +26,7 @@ struct OUTPUT_SHADER {
 };
 
 static const char *const m_UniformBlocks[] = {
-    "Globals", "Matrices", "Lights", "LightSource", nullptr,
+    "Globals", "Matrices", "Lights", "LightSource", "FogBulbs", nullptr,
 };
 
 static void M_DebugUBO(const GLuint program_id, const GLuint block_idx)
@@ -142,6 +142,7 @@ void Output_Shader_Bind(const OUTPUT_SHADER *const shader)
     glBindBufferBase(GL_UNIFORM_BUFFER, 1, uniforms->matrices);
     glBindBufferBase(GL_UNIFORM_BUFFER, 2, uniforms->lights);
     glBindBufferBase(GL_UNIFORM_BUFFER, 3, uniforms->ls);
+    glBindBufferBase(GL_UNIFORM_BUFFER, 4, uniforms->fog_bulbs);
     TRX_GL_CheckError();
 }
 

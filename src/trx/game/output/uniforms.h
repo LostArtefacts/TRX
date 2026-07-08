@@ -16,10 +16,13 @@ typedef struct {
 } OUTPUT_LIGHT_INFO;
 
 typedef struct {
+    // Contiguous: created/destroyed with a single glGenBuffers/glDeleteBuffers
+    // call starting at `general`.
     GLuint general;
     GLuint matrices;
     GLuint lights;
     GLuint ls;
+    GLuint fog_bulbs;
     void *priv;
 } OUTPUT_UNIFORMS;
 
