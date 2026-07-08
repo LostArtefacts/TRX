@@ -25,6 +25,12 @@ order: 3
    options being `never`, `always` and `on-completion`. Update the gameflow if
    this setting is enforced.
 
+4. **Update O_SPARKS_GFX sprites**
+   The `O_SPARKS_GFX` sprites from TR3 were combined with TR4. Download the TR3X
+   assets file from https://lostartefacts.dev/pub/tr3-assets.zip, or use the
+   shipped `sparks_gfx.bin` injection.
+
+
 ### Version 1.7 to 1.8
 
 1. **Update Assault Course Lua stats access**:

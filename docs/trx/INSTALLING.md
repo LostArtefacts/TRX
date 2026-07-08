@@ -53,8 +53,13 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── common.glsl
 │   │   ├── fbo.glsl
 │   │   ├── lights.glsl
+│   │   ├── lights_common.glsl
+│   │   ├── lights_tr3.glsl
+│   │   ├── lights_tr4.glsl
+│   │   ├── lights_tr12.glsl
 │   │   ├── meshes.glsl
 │   │   ├── meshes_tr3.glsl
+│   │   ├── meshes_tr4.glsl
 │   │   ├── meshes_tr12.glsl
 │   │   └── ui.glsl
 │   ├── base_strings-de.json5
@@ -1014,6 +1019,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── reunion_flames.bin
 │   │   │   ├── scotland_sky.bin
 │   │   │   ├── scotland_textures.bin
+│   │   │   ├── sparks_gfx.bin
 │   │   │   ├── stpaul_animating_bounds.bin
 │   │   │   ├── stpaul_textures.bin
 │   │   │   ├── thames_animating_bounds.bin
@@ -1183,12 +1189,58 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── strings-it.json5
 │   │   ├── strings-pl.json5
 │   │   └── strings.json5
-│   └── tr3-level
+│   ├── tr3-level
+│   │   ├── gameflow.json5
+│   │   ├── strings-fr.json5
+│   │   ├── strings-gd.json5
+│   │   ├── strings-it.json5
+│   │   ├── strings-pl.json5
+│   │   └── strings.json5
+│   ├── tr4
+│   │   ├── injections
+│   │   │   ├── font.bin
+│   │   │   ├── lara_animations.bin
+│   │   │   ├── lara_outfits.bin
+│   │   │   └── sparks_gfx.bin
+│   │   ├── scripts
+│   │   │   ├── alexhub2.lua
+│   │   │   ├── alexhub.lua
+│   │   │   ├── ang_race.lua
+│   │   │   ├── angkor1.lua
+│   │   │   ├── csplit1.lua
+│   │   │   ├── highstrt.lua
+│   │   │   ├── joby2.lua
+│   │   │   ├── joby4a.lua
+│   │   │   ├── joby4b.lua
+│   │   │   ├── joby4c.lua
+│   │   │   ├── joby5a.lua
+│   │   │   ├── joby5b.lua
+│   │   │   ├── karnak1.lua
+│   │   │   ├── lake.lua
+│   │   │   ├── libend.lua
+│   │   │   ├── library.lua
+│   │   │   ├── lowstrt.lua
+│   │   │   ├── nutrench.lua
+│   │   │   ├── palaces2.lua
+│   │   │   ├── palaces.lua
+│   │   │   ├── semer2.lua
+│   │   │   ├── semer.lua
+│   │   │   ├── settomb1.lua
+│   │   │   └── settomb2.lua
+│   │   ├── catalog_item_actions.csv
+│   │   ├── catalog_lara_anims.csv
+│   │   ├── catalog_lara_states.csv
+│   │   ├── catalog_music.csv
+│   │   ├── catalog_objects.csv
+│   │   ├── catalog_samples.csv
+│   │   ├── gameflow.json5
+│   │   ├── inv_ring.json5
+│   │   ├── strings-it.json5
+│   │   ├── strings.json5
+│   │   └── weapons.json5
+│   └── tr4-level
 │       ├── gameflow.json5
-│       ├── strings-fr.json5
-│       ├── strings-gd.json5
 │       ├── strings-it.json5
-│       ├── strings-pl.json5
 │       └── strings.json5
 └── TRX.exe</code></pre>
 </details>
@@ -1310,8 +1362,13 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   ├── common.glsl
     │   │   │   ├── fbo.glsl
     │   │   │   ├── lights.glsl
+    │   │   │   ├── lights_common.glsl
+    │   │   │   ├── lights_tr3.glsl
+    │   │   │   ├── lights_tr4.glsl
+    │   │   │   ├── lights_tr12.glsl
     │   │   │   ├── meshes.glsl
     │   │   │   ├── meshes_tr3.glsl
+    │   │   │   ├── meshes_tr4.glsl
     │   │   │   ├── meshes_tr12.glsl
     │   │   │   └── ui.glsl
     │   │   ├── base_strings-de.json5
@@ -2271,6 +2328,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── reunion_flames.bin
     │   │   │   │   ├── scotland_sky.bin
     │   │   │   │   ├── scotland_textures.bin
+    │   │   │   │   ├── sparks_gfx.bin
     │   │   │   │   ├── stpaul_animating_bounds.bin
     │   │   │   │   ├── stpaul_textures.bin
     │   │   │   │   ├── thames_animating_bounds.bin
@@ -2440,12 +2498,58 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   ├── strings-it.json5
     │   │   │   ├── strings-pl.json5
     │   │   │   └── strings.json5
-    │   │   └── tr3-level
+    │   │   ├── tr3-level
+    │   │   │   ├── gameflow.json5
+    │   │   │   ├── strings-fr.json5
+    │   │   │   ├── strings-gd.json5
+    │   │   │   ├── strings-it.json5
+    │   │   │   ├── strings-pl.json5
+    │   │   │   └── strings.json5
+    │   │   ├── tr4
+    │   │   │   ├── injections
+    │   │   │   │   ├── font.bin
+    │   │   │   │   ├── lara_animations.bin
+    │   │   │   │   ├── lara_outfits.bin
+    │   │   │   │   └── sparks_gfx.bin
+    │   │   │   ├── scripts
+    │   │   │   │   ├── alexhub2.lua
+    │   │   │   │   ├── alexhub.lua
+    │   │   │   │   ├── ang_race.lua
+    │   │   │   │   ├── angkor1.lua
+    │   │   │   │   ├── csplit1.lua
+    │   │   │   │   ├── highstrt.lua
+    │   │   │   │   ├── joby2.lua
+    │   │   │   │   ├── joby4a.lua
+    │   │   │   │   ├── joby4b.lua
+    │   │   │   │   ├── joby4c.lua
+    │   │   │   │   ├── joby5a.lua
+    │   │   │   │   ├── joby5b.lua
+    │   │   │   │   ├── karnak1.lua
+    │   │   │   │   ├── lake.lua
+    │   │   │   │   ├── libend.lua
+    │   │   │   │   ├── library.lua
+    │   │   │   │   ├── lowstrt.lua
+    │   │   │   │   ├── nutrench.lua
+    │   │   │   │   ├── palaces2.lua
+    │   │   │   │   ├── palaces.lua
+    │   │   │   │   ├── semer2.lua
+    │   │   │   │   ├── semer.lua
+    │   │   │   │   ├── settomb1.lua
+    │   │   │   │   └── settomb2.lua
+    │   │   │   ├── catalog_item_actions.csv
+    │   │   │   ├── catalog_lara_anims.csv
+    │   │   │   ├── catalog_lara_states.csv
+    │   │   │   ├── catalog_music.csv
+    │   │   │   ├── catalog_objects.csv
+    │   │   │   ├── catalog_samples.csv
+    │   │   │   ├── gameflow.json5
+    │   │   │   ├── inv_ring.json5
+    │   │   │   ├── strings-it.json5
+    │   │   │   ├── strings.json5
+    │   │   │   └── weapons.json5
+    │   │   └── tr4-level
     │   │       ├── gameflow.json5
-    │   │       ├── strings-fr.json5
-    │   │       ├── strings-gd.json5
     │   │       ├── strings-it.json5
-    │   │       ├── strings-pl.json5
     │   │       └── strings.json5
     │   └── icon.icns
     ├── _CodeSignature

@@ -40,6 +40,7 @@
         "lara_outfits.bin",
         "pickup_aid.bin",
         "winston_model.bin",
+        "sparks_gfx.bin",
     ],
 
     "levels": [
