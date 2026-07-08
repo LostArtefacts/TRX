@@ -622,7 +622,7 @@ void Lara_Animate(ITEM *const item)
                 break;
             }
 
-            if (g_TRVersion == 3) {
+            if (g_TRVersion >= 3) {
                 ItemAction_RunDirectWithFX(
                     data->effect_num, item, data->fx_type);
                 break;

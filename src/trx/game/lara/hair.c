@@ -310,7 +310,7 @@ void Lara_Hair_Control(const bool in_cutscene)
         s->pos.y += m_HairVelocity[i].y * 3 / 4;
         s->pos.z += m_HairVelocity[i].z * 3 / 4;
 
-        if (g_TRVersion == 3) {
+        if (g_TRVersion >= 3) {
             if (lara_info->water_status == LWS_ABOVE_WATER
                 && Room_Get(room_num)->flags.wind) {
                 s->pos.x += smoke_wind.x;

@@ -153,7 +153,7 @@ static void M_WaterCurrent_TR12(COLL_INFO *const coll)
     coll->old_pos = lara_item->pos;
 }
 
-static void M_WaterCurrent_TR3(COLL_INFO *const coll)
+static void M_WaterCurrent_TR34(COLL_INFO *const coll)
 {
     ITEM *const lara_item = Lara_GetItem();
     LARA_INFO *const lara = Lara_GetLaraInfo();
@@ -245,7 +245,8 @@ static void M_WaterCurrent_TR3(COLL_INFO *const coll)
         break;
     }
 
-    if (coll->side_mid.floor < 0) {
+    if (coll->side_mid.floor < 0
+        && (g_TRVersion == 3 || coll->side_mid.floor != NO_HEIGHT)) {
         lara_item->pos.y += coll->side_mid.floor;
     }
 
@@ -258,7 +259,7 @@ static void M_WaterCurrent(COLL_INFO *const coll)
     if (g_TRVersion < 3) {
         M_WaterCurrent_TR12(coll);
     } else {
-        M_WaterCurrent_TR3(coll);
+        M_WaterCurrent_TR34(coll);
     }
 }
 
@@ -370,7 +371,7 @@ static void M_UpdateEnvironment(void)
         water_height == NO_HEIGHT ? NO_HEIGHT : item->pos.y - water_height;
     lara_info->water_surface_dist = -water_height_diff;
 
-    if (g_TRVersion == 3) {
+    if (g_TRVersion >= 3) {
         FX_Water_WadeSplash(item, water_height, water_depth);
     } else if (
         g_Config.gameplay.enable_wading

@@ -54,7 +54,7 @@ XYZ_32 Spawn_GetRayPos(
 
 void Spawn_Splash(const ITEM *const item)
 {
-    if (g_TRVersion == 3) {
+    if (g_TRVersion >= 3) {
         FX_Water_Splash(item);
         return;
     }
