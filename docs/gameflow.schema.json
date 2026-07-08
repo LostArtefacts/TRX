@@ -309,6 +309,10 @@
         "fog_end": {
           "type": "number"
         },
+        "fog_bulbs": {
+          "description": "Whether to render the level's volumetric fog bulbs (TR4). The OG engine disables them on some levels, e.g. the Desert Railroad.",
+          "type": "boolean"
+        },
         "unobtainable_pickups": {
           "type": "integer"
         },

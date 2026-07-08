@@ -96,6 +96,10 @@ typedef struct {
     } fog_color;
     struct {
         bool is_present;
+        bool value;
+    } fog_bulbs;
+    struct {
+        bool is_present;
         RGB_888 value;
     } water_color;
     char *sfx_path;

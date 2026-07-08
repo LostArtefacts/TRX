@@ -227,6 +227,12 @@ static bool M_LoadSettings(
         JSON_MUST(JSON_POP(io));
     }
 
+    if (JSON_OPTIONAL(JSON_PUSH(io, "fog_bulbs"))) {
+        JSON_MUST(JSON_READ_CURRENT(io, &settings->fog_bulbs.value));
+        settings->fog_bulbs.is_present = true;
+        JSON_MUST(JSON_POP(io));
+    }
+
     if (JSON_OPTIONAL(JSON_PUSH(io, "water_color"))) {
         JSON_MUST(JSON_READ_CURRENT(io, &settings->water_color.value));
         settings->water_color.is_present = true;

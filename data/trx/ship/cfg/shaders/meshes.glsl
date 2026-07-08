@@ -232,12 +232,17 @@ vec4 applyFogBulbs(vec4 color)
 {
     vec3 fxAdd = vec3(0.0);
     float fogAmount = 0.0;
+    vec3 fogColor = vec3(0.0);
     for (int i = 0; i < uNumFogBulbs; i++) {
         vec3 p = gEyePos.xyz;
-        // Fragments beyond the bulb are projected back onto the view ray at
-        // the bulb's distance, so the fog reads as a volume.
-        if (uFogBulbs[i].pos.z < p.z) {
-            p *= uFogBulbs[i].pos.w / p.z;
+        // Fragments beyond the bulb are pulled back onto the eye-sphere at
+        // the bulb's distance, so the fog reads as a volume. The OG projects
+        // onto the plane z == dist instead, which is discontinuous across
+        // z == pos.z for off-center bulbs - harmless when interpolated from
+        // vertices, but a hard seam across nearby geometry per-fragment.
+        float fragDist = length(p);
+        if (fragDist > uFogBulbs[i].pos.w) {
+            p *= uFogBulbs[i].pos.w / fragDist;
         }
         vec3 dP = p - uFogBulbs[i].pos.xyz;
         vec3 dV = uFogBulbs[i].edge.xyz - uFogBulbs[i].pos.xyz;
@@ -262,10 +267,13 @@ vec4 applyFogBulbs(vec4 color)
             fxAdd += (density - val) * uFogBulbs[i].color.rgb * (1.0 / 256.0);
         } else {
             fogAmount += (density - val) * (1.0 / 255.0);
+            // Level bulbs blend toward the OG hardware fog color.
+            fogColor = uFogBulbs[i].color.rgb;
         }
     }
     color.rgb = clamp(color.rgb + fxAdd, 0.0, 1.0);
-    return mix(color, uFogColor, clamp(fogAmount, 0.0, 1.0));
+    color.rgb = mix(color.rgb, fogColor, clamp(fogAmount, 0.0, 1.0));
+    return color;
 }
 #endif
 
