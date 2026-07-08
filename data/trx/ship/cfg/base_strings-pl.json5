@@ -932,6 +932,10 @@
             "title": "Bezpieczne krawędzie",
             "description": "Pozwala Larze obrócić się w powietrzu i złapać krawędź z której gracz właśnie się ześliznął, jeśli trzymay jest przycisk akcji.",
         },
+        "gameplay.enable_corner_shimmying": {
+            "title": "\\{review}Przechodzenie za rogi",
+            "description": "\\{review}Pozwala Larze przechodzić za rogi, gdy wisi na krawędzi lub wspina się po ścianie (styl TR4).",
+        },
         "gameplay.enable_crawl_jump": {
             "title": "Skok z wąskich przestrzeni",
             "description": "Umożliwia Larze wyskoczenie przy krawędziach w wąskich przestrzeniach, kiedy porusza się na czworaka.",

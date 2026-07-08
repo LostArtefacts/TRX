@@ -932,6 +932,10 @@
             "title": "\\{review}Chutes contrôlées",
             "description": "\\{review}Permet à Lara de se retourner en l'air et d’attraper la corniche qu'elle vient de quitter, si la touche d'action est maintenue pendant la chute.",
         },
+        "gameplay.enable_corner_shimmying": {
+            "title": "\\{review}Déplacement dans les angles",
+            "description": "\\{review}Permet à Lara de contourner les angles lorsqu'elle est suspendue à un rebord ou qu'elle escalade un mur (style TR4).",
+        },
         "gameplay.enable_crawl_jump": {
             "title": "\\{review}Saut en sortie de conduit",
             "description": "\\{review}Permet à Lara de sauter hors des passages étroits.",

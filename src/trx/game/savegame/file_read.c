@@ -150,6 +150,8 @@ static bool M_ReadLara(JSON_READ_IO *const io)
     M_MUST(JSON_READ(io, "calc_fall_speed", &lara->calc_fall_speed));
     M_MUST(JSON_READ(io, "water_status", &lara->water_status));
     M_MUST(JSON_READ(io, "climb_status", &lara->climb_status));
+    M_SHOULD(JSON_READ(io, "corner_pos_x", &lara->corner_pos.x));
+    M_SHOULD(JSON_READ(io, "corner_pos_z", &lara->corner_pos.z));
     M_SHOULD(JSON_READ(io, "is_crouched", &lara->is_crouched));
     M_SHOULD(JSON_READ(io, "keep_crouched", &lara->keep_crouched));
     M_SHOULD(JSON_READ(io, "sprinting", &lara->sprinting));

@@ -932,6 +932,10 @@
             "title": "Cadute controllate",
             "description": "Permette a Lara di girare a mezz'aria e afferrare la sporgenza della superficie da cui è appena scivolata, se durante la caduta viene premuto il tasto Azione.",
         },
+        "gameplay.enable_corner_shimmying": {
+            "title": "\\{review}Spostamento sugli angoli",
+            "description": "\\{review}Permette a Lara di attraversare gli angoli mentre è appesa a una sporgenza o si arrampica su una parete (stile TR4).",
+        },
         "gameplay.enable_crawl_jump": {
             "title": "Salto uscita cunicolo",
             "description": "Permette a Lara di saltare fuori dagli spazi angusti.",

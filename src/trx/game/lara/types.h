@@ -90,6 +90,7 @@ typedef struct {
     bool burn;
     int16_t electric;
     bool climb_status;
+    XZ_32 corner_pos;
     bool is_crouched;
     bool keep_crouched;
     bool killed_loyal_item;
