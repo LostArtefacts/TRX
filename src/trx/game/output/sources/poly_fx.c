@@ -8,6 +8,7 @@
 #include <trx/game/interpolation.h>
 #include <trx/game/items.h>
 #include <trx/game/output.h>
+#include <trx/game/output/lights/priv.h>
 #include <trx/game/output/scene_compositor.h>
 #include <trx/game/output/shaders/mesh.h>
 #include <trx/game/output/textures.h>
@@ -264,7 +265,7 @@ static void M_EmitPrimVertices(M_PRIV *const p, const M_PRIM *const prim)
 static void M_UploadPrimLight(const M_PRIM *const prim)
 {
     if (prim->use_own_light) {
-        Output_Uniforms_UploadOwnLight(Output_GetUniforms(), &prim->light_info);
+        Output_Lights_UploadOwnLight(&prim->light_info);
     }
 }
 

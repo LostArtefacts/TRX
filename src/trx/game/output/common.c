@@ -5,6 +5,7 @@
 #include <trx/game/output/binocular_mask.h>
 #include <trx/game/output/func.h>
 #include <trx/game/output/lights.h>
+#include <trx/game/output/lights/priv.h>
 #include <trx/game/output/mesh_batcher/batcher.h>
 #include <trx/game/output/scene_compositor.h>
 #include <trx/game/output/sky.h>
@@ -120,6 +121,7 @@ void Output_BeginScene(void)
     TRX_GL_Track_Reset();
     TRX_GL_Context_SetWireframeMode(g_Config.rendering.enable_wireframe);
     SceneCompositor_BeginScene();
+    Output_Lights_BeginScene();
 }
 
 void Output_EndScene(void)
