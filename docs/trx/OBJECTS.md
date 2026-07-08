@@ -2032,11 +2032,139 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
+#### O_ANIMATING_1
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (349)</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>collidable</code></td><td colspan="3" align="center">true</td><td>Whether or not Lara can collide with the animating.</td></tr>
+</tbody>
+</table>
+
+#### O_ANIMATING_2
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (350)</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>collidable</code></td><td colspan="3" align="center">true</td><td>Whether or not Lara can collide with the animating.</td></tr>
+</tbody>
+</table>
+
+#### O_ANIMATING_3
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (351)</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>collidable</code></td><td colspan="3" align="center">true</td><td>Whether or not Lara can collide with the animating.</td></tr>
+</tbody>
+</table>
+
+#### O_ANIMATING_4
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (352)</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>collidable</code></td><td colspan="3" align="center">true</td><td>Whether or not Lara can collide with the animating.</td></tr>
+</tbody>
+</table>
+
+#### O_ANIMATING_5
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (353)</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>collidable</code></td><td colspan="3" align="center">true</td><td>Whether or not Lara can collide with the animating.</td></tr>
+</tbody>
+</table>
+
+#### O_ANIMATING_6
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (354)</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>collidable</code></td><td colspan="3" align="center">true</td><td>Whether or not Lara can collide with the animating.</td></tr>
+</tbody>
+</table>
+
 #### O_ANIMATING_EXT_1
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (370)</th><th>Description</th></tr></thead>
 <tbody>
 <tr><td><code>kill_on_trigger</code></td><td colspan="3" align="center">false</td><td>Kill the item immediately while its trigger is inactive.</td></tr>
+</tbody>
+</table>
+
+#### O_ANIMATING_7
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>collidable</code></td><td colspan="3" align="center">true</td><td>Whether or not Lara can collide with the animating.</td></tr>
+</tbody>
+</table>
+
+#### O_ANIMATING_8
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>collidable</code></td><td colspan="3" align="center">true</td><td>Whether or not Lara can collide with the animating.</td></tr>
+</tbody>
+</table>
+
+#### O_ANIMATING_9
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>collidable</code></td><td colspan="3" align="center">true</td><td>Whether or not Lara can collide with the animating.</td></tr>
+</tbody>
+</table>
+
+#### O_ANIMATING_10
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>collidable</code></td><td colspan="3" align="center">true</td><td>Whether or not Lara can collide with the animating.</td></tr>
+</tbody>
+</table>
+
+#### O_ANIMATING_11
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>collidable</code></td><td colspan="3" align="center">true</td><td>Whether or not Lara can collide with the animating.</td></tr>
+</tbody>
+</table>
+
+#### O_ANIMATING_12
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>collidable</code></td><td colspan="3" align="center">true</td><td>Whether or not Lara can collide with the animating.</td></tr>
+</tbody>
+</table>
+
+#### O_ANIMATING_13
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>collidable</code></td><td colspan="3" align="center">true</td><td>Whether or not Lara can collide with the animating.</td></tr>
+</tbody>
+</table>
+
+#### O_ANIMATING_14
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>collidable</code></td><td colspan="3" align="center">true</td><td>Whether or not Lara can collide with the animating.</td></tr>
+</tbody>
+</table>
+
+#### O_ANIMATING_15
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>collidable</code></td><td colspan="3" align="center">true</td><td>Whether or not Lara can collide with the animating.</td></tr>
+</tbody>
+</table>
+
+#### O_ANIMATING_16
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>collidable</code></td><td colspan="3" align="center">true</td><td>Whether or not Lara can collide with the animating.</td></tr>
 </tbody>
 </table>
 

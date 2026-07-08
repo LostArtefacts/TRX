@@ -1,5 +1,9 @@
 <?xml version='1.0' encoding='utf-8'?>
 <propertyCatalog>
+    <!--placeholder for O_ANIMATING_7..O_ANIMATING_16-->
+    <moveable id="-1">
+        <property category="TRX" defaultValue="true" description="Whether or not Lara can collide with the animating." displayName="Collidable" internalName="collidable" type="Bool" />
+    </moveable>
     <!--placeholder for O_ANIMATING_EXT_2..O_ANIMATING_EXT_10-->
     <moveable id="-1">
         <property category="TRX" defaultValue="false" description="Kill the item immediately while its trigger is inactive." displayName="Kill On Trigger" internalName="kill_on_trigger" type="Bool" />
