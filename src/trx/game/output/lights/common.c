@@ -43,7 +43,7 @@ OUTPUT_LS_CACHE *Output_Lights_GetLSCache(void)
 
 size_t Output_Lights_GetLSBufferSize(void)
 {
-    return sizeof(OUTPUT_UNIFORM_LS);
+    return MAX(sizeof(OUTPUT_UNIFORM_LS_TR12), sizeof(OUTPUT_UNIFORM_LS_TR3));
 }
 
 void Output_Lights_ResetUploadCache(void)

@@ -246,7 +246,7 @@ OUTPUT_UNIFORMS *Output_Uniforms_Create(void)
 {
     OUTPUT_UNIFORMS *const uniforms =
         Memory_Alloc(sizeof(OUTPUT_UNIFORMS) + sizeof(M_PRIV));
-    glGenBuffers(4, &uniforms->general);
+    glGenBuffers(5, &uniforms->general);
     glBindBuffer(GL_UNIFORM_BUFFER, uniforms->general);
     glBufferData(
         GL_UNIFORM_BUFFER, sizeof(M_UNIFORM_GENERAL), nullptr, GL_DYNAMIC_DRAW);
@@ -268,6 +268,11 @@ OUTPUT_UNIFORMS *Output_Uniforms_Create(void)
         GL_UNIFORM_BUFFER, Output_Lights_GetLSBufferSize(), nullptr,
         GL_DYNAMIC_DRAW);
     glBindBufferBase(GL_UNIFORM_BUFFER, 3, uniforms->ls);
+
+    // Sized properly by the TR4 lighting model once it uploads fog bulbs.
+    glBindBuffer(GL_UNIFORM_BUFFER, uniforms->fog_bulbs);
+    glBufferData(GL_UNIFORM_BUFFER, 16, nullptr, GL_DYNAMIC_DRAW);
+    glBindBufferBase(GL_UNIFORM_BUFFER, 4, uniforms->fog_bulbs);
     TRX_GL_CheckError();
 
     Output_Lights_ResetUploadCache();
@@ -281,11 +286,12 @@ void Output_Uniforms_Free(OUTPUT_UNIFORMS *const uniforms)
         return;
     }
     if (uniforms->general != 0) {
-        glDeleteBuffers(4, &uniforms->general);
+        glDeleteBuffers(5, &uniforms->general);
         uniforms->general = 0;
         uniforms->matrices = 0;
         uniforms->lights = 0;
         uniforms->ls = 0;
+        uniforms->fog_bulbs = 0;
     }
     Memory_Free(uniforms);
 }
