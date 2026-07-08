@@ -280,8 +280,13 @@ vec4 applyFogBulbs(vec4 color)
             fogColor = uFogBulbs[i].color.rgb;
         }
     }
-    color.rgb = clamp(color.rgb + fxAdd, 0.0, 1.0);
-    color.rgb = mix(color.rgb, fogColor, clamp(fogAmount, 0.0, 1.0));
+    // The framebuffer blend is premultiplied alpha, so scale the bulb
+    // contributions by the coverage. Translucent fragments - e.g. bilinear
+    // filtered chroma-key edges on the horizon mesh - would otherwise
+    // receive full-strength fog and ring against the bulb-less sky layers
+    // behind them.
+    color.rgb = clamp(color.rgb + fxAdd * color.a, 0.0, 1.0);
+    color.rgb = mix(color.rgb, fogColor * color.a, clamp(fogAmount, 0.0, 1.0));
     return color;
 }
 #endif
