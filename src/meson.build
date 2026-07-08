@@ -651,6 +651,7 @@ common_sources = [
   'trx/game/output/lights/common.c',
   'trx/game/output/lights/tr12.c',
   'trx/game/output/lights/tr3.c',
+  'trx/game/output/lights/tr4.c',
   'trx/game/output/mesh_batcher/batcher.c',
   'trx/game/output/mesh_batcher/mesh.c',
   'trx/game/output/mesh_batcher/mesh_builder.c',

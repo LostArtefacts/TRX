@@ -439,7 +439,7 @@ static void M_CalculateStaticMeshLight(
         Output_Lights_ShadeFromMul((ambient.r + ambient.g + ambient.b) / 3.0f));
 }
 
-static void M_AddDynamicLight(
+void Output_Lights_TR3_AddDynamicLight(
     const XYZ_32 pos, const int32_t intensity, const int32_t falloff)
 {
     int32_t safe_intensity = intensity;
@@ -561,7 +561,7 @@ const LIGHTING_MODEL g_LightingModelTR3 = {
     .calculate_static_light_rgb15 = M_CalculateStaticLightRGB15,
     .calculate_static_light_rgb_f = M_CalculateStaticLightRGB_F,
     .calculate_static_mesh_light = M_CalculateStaticMeshLight,
-    .add_dynamic_light = M_AddDynamicLight,
+    .add_dynamic_light = Output_Lights_TR3_AddDynamicLight,
     .upload_cpu_light = M_UploadCPULight,
     .upload_own_light = M_UploadOwnLight,
     .shader_variant = 1,

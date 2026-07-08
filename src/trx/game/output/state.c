@@ -336,6 +336,7 @@ OUTPUT_LIGHT_INFO Output_GetLightInfo(void)
         .ls_divider = m_LsDivider,
         .ls_vector_view = m_LsVectorView,
         .tr3_ambient = m_TR3Ambient,
+        .tr4.handle = -1,
     };
     for (int32_t i = 0; i < 3; i++) {
         info.tr3_light_color[i] = m_TR3LightColor[i];

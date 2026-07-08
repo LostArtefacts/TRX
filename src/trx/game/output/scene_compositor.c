@@ -4,6 +4,7 @@
 #include <trx/core/vector.h>
 #include <trx/debug.h>
 #include <trx/game/output.h>
+#include <trx/game/output/lights/priv.h>
 #include <trx/game/output/shaders/mesh.h>
 #include <trx/game/output/shaders/ui.h>
 #include <trx/game/output/textures.h>
@@ -51,6 +52,7 @@ static void M_SetupScene(const M_PRIV *const p)
 {
     Output_MeshShader_Bind(Output_GetMeshShader());
     Output_Uniforms_UploadViewMatrix(Output_GetUniforms(), &g_ViewMatrix);
+    Output_Lights_PrepareScene();
     glEnable(GL_BLEND);
     glBlendFunc(
         GL_ONE,

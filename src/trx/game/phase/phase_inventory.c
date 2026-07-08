@@ -35,6 +35,7 @@ static PHASE_CONTROL M_Start(PHASE *const phase)
             .gf_cmd = { .action = GF_NOOP },
         };
     }
+    Output_SetInventoryLightingMode(true);
     if (p->mode != INV_TITLE_MODE) {
         // Title mode draws its own background image, not a game snapshot;
         // the title level's room data isn't set up for a live scene render.
@@ -82,6 +83,7 @@ static bool M_RequestFadeToBlack(PHASE *const phase, FADER_ARGS *const out_args)
 static void M_End(PHASE *const phase)
 {
     M_PRIV *const p = phase->priv;
+    Output_SetInventoryLightingMode(false);
     if (p->mode == INV_TITLE_MODE) {
         Music_Stop();
     }
