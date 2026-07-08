@@ -586,16 +586,6 @@ void Rope_AlignLara(ITEM *const item)
     item->rot.z = angles[2];
 }
 
-static int32_t M_GetSpriteIndex(void)
-{
-    const OBJECT *const obj = Object_Get(O_SPARKS_GFX);
-    if (obj == nullptr || !obj->loaded
-        || M_SPRITE_IDX >= ABS(obj->mesh_count)) {
-        return NO_ITEM;
-    }
-    return obj->mesh_idx + M_SPRITE_IDX;
-}
-
 static void M_DrawRope(const ROPE *const rope, const int32_t sprite_idx)
 {
     const double rate =
@@ -687,7 +677,7 @@ static void M_DrawRope(const ROPE *const rope, const int32_t sprite_idx)
 // one that owns the rope item.
 void Rope_DrawAll(void)
 {
-    const int32_t sprite_idx = M_GetSpriteIndex();
+    const int32_t sprite_idx = Sparks_GetSpriteIndex(SPARK_TYPE_ROPE);
     if (sprite_idx == NO_ITEM) {
         return;
     }
