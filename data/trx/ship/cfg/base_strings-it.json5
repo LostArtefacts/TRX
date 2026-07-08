@@ -1945,6 +1945,9 @@
         "claw_mutant": {
             "name": "Mutante con Artigli",
         },
+        "climbing_pole": {
+            "name": "\\{review}Asta per arrampicata",
+        },
         "clock_chimes": {
             "name": "Orologio Covo di Bartoli",
         },

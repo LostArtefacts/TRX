@@ -1945,6 +1945,9 @@
         "claw_mutant": {
             "name": "\\{review}Mutant Griffu",
         },
+        "climbing_pole": {
+            "name": "\\{review}Poteau d'escalade",
+        },
         "clock_chimes": {
             "name": "\\{review}Horloge de la cachette de Bartoli",
         },

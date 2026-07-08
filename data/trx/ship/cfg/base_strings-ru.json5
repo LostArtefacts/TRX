@@ -1945,6 +1945,9 @@
         "claw_mutant": {
             "name": "\\{review}Когтистый Мутант",
         },
+        "climbing_pole": {
+            "name": "\\{review}Столб для лазания",
+        },
         "clock_chimes": {
             "name": "\\{review}Часы убежища Бартоли",
         },
