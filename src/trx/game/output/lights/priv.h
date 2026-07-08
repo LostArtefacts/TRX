@@ -7,6 +7,21 @@
 #define OUTPUT_LIGHT_CYCLE 32
 #define OUTPUT_DYNAMIC_FALLOFF_SHIFT 8
 
+// How a dynamic light's shade/falloff fields are encoded. Uploaded to the
+// shader as the light's `kind`, where the TR1/2 family picks the lighting
+// formula based on it (TR3+ treats every dynamic light as RGB).
+typedef enum {
+    // shade/falloff are log2 exponents (Output_AddDynamicLight)
+    OUTPUT_DYNAMIC_LIGHT_LUM = 0,
+    // colored; falloff is a radius << OUTPUT_DYNAMIC_FALLOFF_SHIFT
+    OUTPUT_DYNAMIC_LIGHT_RGB = 1,
+} OUTPUT_DYNAMIC_LIGHT_KIND;
+
+typedef struct {
+    LIGHT light;
+    OUTPUT_DYNAMIC_LIGHT_KIND kind;
+} OUTPUT_DYNAMIC_LIGHT;
+
 // Per-lighting-family strategy. Three families exist: TR1/2 (scalar shade),
 // TR3 (3 directional lights + ambient) and TR4 (full colored light lists).
 // TR1-vs-TR2 deltas stay as small branches inside the TR1/2 implementation.

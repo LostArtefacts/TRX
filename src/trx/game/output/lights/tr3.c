@@ -157,7 +157,8 @@ static void M_CalculateLightSmoothed(
 
     VECTOR *const dynamic_lights = Output_GetDynamicLights();
     for (int32_t i = 0; i < dynamic_lights->count; i++) {
-        const LIGHT *const light = Vector_Get(dynamic_lights, i);
+        const OUTPUT_DYNAMIC_LIGHT *const entry = Vector_Get(dynamic_lights, i);
+        const LIGHT *const light = &entry->light;
         const int32_t falloff_half =
             Output_Lights_GetLegacyData(light)->falloff.value_1 >> 1;
         if (falloff_half <= 0) {
@@ -402,7 +403,8 @@ static void M_CalculateStaticMeshLight(
 
     VECTOR *const dynamic_lights = Output_GetDynamicLights();
     for (int32_t i = 0; i < dynamic_lights->count; i++) {
-        const LIGHT *const light = Vector_Get(dynamic_lights, i);
+        const OUTPUT_DYNAMIC_LIGHT *const entry = Vector_Get(dynamic_lights, i);
+        const LIGHT *const light = &entry->light;
         const int32_t falloff_half =
             Output_Lights_GetLegacyData(light)->falloff.value_1 >> 1;
         if (falloff_half <= 0) {
@@ -453,16 +455,19 @@ static void M_AddDynamicLight(
     int32_t falloff_param = radius >> 7;
     CLAMP(falloff_param, 1, 255);
 
-    const LIGHT light = {
-        .pos = pos,
-        .color = (RGB_888) { c, c, c },
-        .layout = LIGHT_LAYOUT_LEGACY,
-        .type = LIGHT_TYPE_POINT,
-        .u.legacy =
-            {
-                .falloff.value_1 = falloff_param
-                    << OUTPUT_DYNAMIC_FALLOFF_SHIFT,
-            },
+    const OUTPUT_DYNAMIC_LIGHT light = {
+        .light = {
+            .pos = pos,
+            .color = (RGB_888) { c, c, c },
+            .layout = LIGHT_LAYOUT_LEGACY,
+            .type = LIGHT_TYPE_POINT,
+            .u.legacy =
+                {
+                    .falloff.value_1 = falloff_param
+                        << OUTPUT_DYNAMIC_FALLOFF_SHIFT,
+                },
+        },
+        .kind = OUTPUT_DYNAMIC_LIGHT_RGB,
     };
     Vector_Add(Output_GetDynamicLights(), &light);
 }

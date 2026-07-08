@@ -80,7 +80,8 @@ static int32_t M_CalculateDynamicLight(
     int32_t adder = 0;
     VECTOR *const dynamic_lights = Output_GetDynamicLights();
     for (int32_t i = 0; i < dynamic_lights->count; i++) {
-        const LIGHT *const light = Vector_Get(dynamic_lights, i);
+        const OUTPUT_DYNAMIC_LIGHT *const entry = Vector_Get(dynamic_lights, i);
+        const LIGHT *const light = &entry->light;
         const LIGHT_LEGACY_DATA *const data =
             Output_Lights_GetLegacyData(light);
         const int32_t dx = pos.x - light->pos.x;
@@ -177,7 +178,8 @@ static void M_CalculateStaticMeshLight(
 
     VECTOR *const dynamic_lights = Output_GetDynamicLights();
     for (int32_t i = 0; i < dynamic_lights->count; i++) {
-        const LIGHT *const light = Vector_Get(dynamic_lights, i);
+        const OUTPUT_DYNAMIC_LIGHT *const entry = Vector_Get(dynamic_lights, i);
+        const LIGHT *const light = &entry->light;
         const LIGHT_LEGACY_DATA *const data =
             Output_Lights_GetLegacyData(light);
         const int32_t dx = pos.x - light->pos.x;
@@ -207,16 +209,19 @@ static void M_CalculateStaticMeshLight(
 static void M_AddDynamicLight(
     const XYZ_32 pos, const int32_t intensity, const int32_t falloff)
 {
-    const LIGHT light = {
-        .pos = pos,
-        .color = COLOR_RGB_888_WHITE,
-        .layout = LIGHT_LAYOUT_LEGACY,
-        .type = LIGHT_TYPE_POINT,
-        .u.legacy =
-            {
-                .shade.value_1 = intensity,
-                .falloff.value_1 = falloff,
-            },
+    const OUTPUT_DYNAMIC_LIGHT light = {
+        .light = {
+            .pos = pos,
+            .color = COLOR_RGB_888_WHITE,
+            .layout = LIGHT_LAYOUT_LEGACY,
+            .type = LIGHT_TYPE_POINT,
+            .u.legacy =
+                {
+                    .shade.value_1 = intensity,
+                    .falloff.value_1 = falloff,
+                },
+        },
+        .kind = OUTPUT_DYNAMIC_LIGHT_LUM,
     };
     Vector_Add(Output_GetDynamicLights(), &light);
 }
