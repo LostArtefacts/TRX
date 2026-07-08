@@ -123,6 +123,11 @@ void main(void) {
 
     vec3 L = lightIn * (255.0 / 128.0) + lr.add;
     gAdd = max(L - vec3(1.0), vec3(0.0)) * (64.0 / 255.0);
+    if ((gFlags & VERT_ADDITIVE) != 0u) {
+        // The OG draws additive polys with specular disabled
+        // (HWR_DrawSortList drawtype 2), so no overbright excess.
+        gAdd = vec3(0.0);
+    }
     vec3 lit = clamp(L, 0.0, 1.0);
     lit = gammaCurve(lit, gamma_exp);
     gColor = vec4(lit * modulate, inColor.a);
@@ -313,7 +318,11 @@ void main(void) {
     if ((gFlags & VERT_NO_LIGHTING) == 0u && uLightingEnabled != 0) {
         texColor = applyFog(texColor, length(gEyePos.xyz));
 #if TR_VERSION >= 4
-        texColor = applyFogBulbs(texColor);
+        // The OG skips fog bulbs on additive polys (AddTriClippedSorted
+        // excludes drawtypes 2 and 5 from OmniFog).
+        if ((gFlags & VERT_ADDITIVE) == 0u) {
+            texColor = applyFogBulbs(texColor);
+        }
 #endif
     }
 

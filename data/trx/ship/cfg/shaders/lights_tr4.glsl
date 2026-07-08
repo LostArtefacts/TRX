@@ -113,17 +113,14 @@ LightingResult light(
             lightDynamicStaticTR4(pos) * getDynamicLightContrastMul();
     }
 
-    // Water movement/shimmer, in the 128-neutral scale (the OG adds
-    // (shimmer + abs) << 3 onto the raw room channels).
-    float add = 0.0;
-    if ((flags & VERT_MOVE) != 0u) {
-        add += effectChoppy(pos.xyz) / 128.0;
+    // Water shimmer, in the 128-neutral scale: the OG adds
+    // (shimmer + abs) << 3 onto the raw room channels of both water (0x2000)
+    // and shore (0x4000) vertices. Choppy is a position offset only in TR4,
+    // never a color term.
+    if ((flags & (VERT_MOVE | VERT_GLOW)) != 0u) {
+        float add = effectShimmer(pos.xyz) / 128.0 + effectAbs() / 128.0;
+        result.add += vec3(add);
     }
-    if ((flags & VERT_GLOW) != 0u) {
-        add += effectShimmer(pos.xyz) / 128.0;
-        add += effectAbs() / 128.0;
-    }
-    result.add += vec3(add);
 
     return result;
 }
