@@ -574,6 +574,7 @@
         "EXTRA_MESH_DRINK_CAN": 38,
         "EXTRA_MESH_GLASSES_OPAQUE": 39,
         "EXTRA_MESH_GLASSES_TRANSPARENT": 40,
+        "EXTRA_MESH_CROWBAR": 41,
     },
 
     "gun_maps": [

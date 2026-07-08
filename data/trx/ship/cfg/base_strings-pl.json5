@@ -1940,6 +1940,12 @@
         "ceiling_spikes": {
             "name": "Sufit z kolcami",
         },
+        "ceiling_trapdoor_1": {
+            "name": "\\{review}Klapa sufitowa 1",
+        },
+        "ceiling_trapdoor_2": {
+            "name": "\\{review}Klapa sufitowa 2",
+        },
         "centaur": {
             "name": "Centaur",
         },
@@ -1966,6 +1972,9 @@
         },
         "cog_3": {
             "name": "Zębatka 3",
+        },
+        "cog_switch": {
+            "name": "\\{review}Przełącznik zębaty",
         },
         "combat_end": {
             "name": "Koniec walki",
@@ -2005,6 +2014,9 @@
         },
         "crowbar": {
             "name": "\\{review}Łom",
+        },
+        "crowbar_anim": {
+            "name": "\\{review}Animacja łomu",
         },
         "cult_1": {
             "name": "Zamaskowany zbir 1",
@@ -2095,6 +2107,9 @@
         },
         "door_8": {
             "name": "Drzwi 8",
+        },
+        "double_doors": {
+            "name": "\\{review}Podwójne drzwi",
         },
         "dragon_back": {
             "name": "Tył smoka",
@@ -2221,6 +2236,12 @@
         },
         "flickering_light": {
             "name": "Migoczące światło",
+        },
+        "floor_trapdoor_1": {
+            "name": "\\{review}Klapa podłogowa 1",
+        },
+        "floor_trapdoor_2": {
+            "name": "\\{review}Klapa podłogowa 2",
         },
         "fuse_box": {
             "name": "Skrzynka bezpieczników",
@@ -2431,6 +2452,12 @@
         },
         "key_hole_9": {
             "name": "\\{review}Szczelina na klucz 9",
+        },
+        "kick_door_1": {
+            "name": "\\{review}Drzwi do kopnięcia 1",
+        },
+        "kick_door_2": {
+            "name": "\\{review}Drzwi do kopnięcia 2",
         },
         "kill_all_triggered": {
             "name": "Eliminacja wszystkich wyzwolonych obiektów",
@@ -2798,6 +2825,12 @@
         },
         "punk_2": {
             "name": "Punk 2",
+        },
+        "pushpull_door_1": {
+            "name": "\\{review}Drzwi pchane/ciągnięte 1",
+        },
+        "pushpull_door_2": {
+            "name": "\\{review}Drzwi pchane/ciągnięte 2",
         },
         "puzzle_1": {
             "name": "Przedmiot 1",
@@ -3289,6 +3322,9 @@
         },
         "twinkle": {
             "name": "Iskierki",
+        },
+        "underwater_door": {
+            "name": "\\{review}Drzwi podwodne",
         },
         "upv": {
             "name": "Miniłódź podwodna",

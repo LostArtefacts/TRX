@@ -81,6 +81,7 @@
 - added the ability to skip flyby sequences (Gameplay → General → Cinematic skips)
 - added the ability to pause during flyby sequences
 - changed Angkor Wat's UV Rotate value from 8 to 4
+- changed Crowbar doors to prompt the inventory ring instead of silently triggering
 - fixed tracking path flyby camera sequences not starting from the nearest position to Lara
 
 

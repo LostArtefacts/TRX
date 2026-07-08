@@ -1937,6 +1937,12 @@
         "ceiling_spikes": {
             "name": "\\{review}Острый потолок",
         },
+        "ceiling_trapdoor_1": {
+            "name": "\\{review}Потолочный люк 1",
+        },
+        "ceiling_trapdoor_2": {
+            "name": "\\{review}Потолочный люк 2",
+        },
         "centaur": {
             "name": "Кентавр",
         },
@@ -1963,6 +1969,9 @@
         },
         "cog_3": {
             "name": "Шестерёнка 3",
+        },
+        "cog_switch": {
+            "name": "\\{review}Шестерённый рычаг",
         },
         "combat_end": {
             "name": "\\{review}Конец боя",
@@ -2002,6 +2011,9 @@
         },
         "crowbar": {
             "name": "\\{review}Лом",
+        },
+        "crowbar_anim": {
+            "name": "\\{review}Анимация ломика",
         },
         "cult_1": {
             "name": "\\{review}Бандит в маске 1",
@@ -2089,6 +2101,9 @@
         },
         "door_8": {
             "name": "Дверь 8",
+        },
+        "double_doors": {
+            "name": "\\{review}Двойные двери",
         },
         "dragon_back": {
             "name": "\\{review}Дракон сзади",
@@ -2224,6 +2239,12 @@
         },
         "flickering_light": {
             "name": "\\{review}Мерцающий Свет",
+        },
+        "floor_trapdoor_1": {
+            "name": "\\{review}Напольный люк 1",
+        },
+        "floor_trapdoor_2": {
+            "name": "\\{review}Напольный люк 2",
         },
         "fuse_box": {
             "name": "\\{review}Коробка предохранителей",
@@ -2431,6 +2452,12 @@
         },
         "key_hole_9": {
             "name": "\\{review}Замочная скважина 9",
+        },
+        "kick_door_1": {
+            "name": "\\{review}Выбиваемая дверь 1",
+        },
+        "kick_door_2": {
+            "name": "\\{review}Выбиваемая дверь 2",
         },
         "kill_all_triggered": {
             "name": "\\{review}Полное уничтожение (активировано)",
@@ -2812,6 +2839,12 @@
         },
         "punk_2": {
             "name": "\\{review}Панк 2",
+        },
+        "pushpull_door_1": {
+            "name": "\\{review}Дверь тяни-толкай 1",
+        },
+        "pushpull_door_2": {
+            "name": "\\{review}Дверь тяни-толкай 2",
         },
         "puzzle_1": {
             "name": "Элемент головоломки 1",
@@ -3312,6 +3345,9 @@
         },
         "twinkle": {
             "name": "Искры",
+        },
+        "underwater_door": {
+            "name": "\\{review}Подводная дверь",
         },
         "upv": {
             "name": "\\{review}Минисуб",
