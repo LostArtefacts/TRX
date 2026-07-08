@@ -41,7 +41,8 @@ bool Lara_Col_Fallen(ITEM *item, const COLL_INFO *coll);
 void Lara_Col_DeflectEdgeJump(ITEM *item, COLL_INFO *coll);
 LANDED_STATE Lara_Col_LandedBad(ITEM *item);
 void Lara_Col_MonkeySwingSnap(ITEM *item);
-void Lara_Col_HangTest(ITEM *item, COLL_INFO *coll);
+bool Lara_Col_HangTest(ITEM *item, COLL_INFO *coll);
+bool Lara_Col_IsCornerShimmyActive(void);
 void Lara_Col_ItemPush(
     const ITEM *item, COLL_INFO *coll, bool hit_on, bool big_push);
 void Lara_Col_Static3DPush(const STATIC_MESH *mesh, COLL_INFO *coll);

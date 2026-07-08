@@ -932,6 +932,10 @@
             "title": "\\{review}Kontrollierter Fall",
             "description": "\\{review}Ermöglicht Lara, sich in der Luft zu drehen und den Vorsprung zu greifen, den sie gerade verlassen hat, wenn die Aktionstaste beim Fallen gehalten wird.",
         },
+        "gameplay.enable_corner_shimmying": {
+            "title": "\\{review}Hangeln um Ecken",
+            "description": "\\{review}Erlaubt Lara, sich beim Hangeln an Kanten oder beim Klettern an Wänden um Ecken herum zu bewegen (wie in TR4).",
+        },
         "gameplay.enable_crawl_jump": {
             "title": "\\{review}Crawl-Absprung",
             "description": "\\{review}Ermöglicht es Lara, aus Kriechgängen herauszuspringen.",

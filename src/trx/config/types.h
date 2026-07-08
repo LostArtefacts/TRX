@@ -244,6 +244,7 @@ typedef struct {
         bool enable_neutral_twists;
         bool enable_controlled_drops;
         bool enable_ledge_jumps;
+        bool enable_corner_shimmying;
         bool enable_crawling;
         bool enable_responsive_crawl;
         bool enable_crawl_jump;

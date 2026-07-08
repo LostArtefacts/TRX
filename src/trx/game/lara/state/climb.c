@@ -1,6 +1,7 @@
 #include <trx/config.h>
 #include <trx/game/camera.h>
 #include <trx/game/input.h>
+#include <trx/game/interpolation.h>
 #include <trx/game/lara.h>
 #include <trx/game/lara/util.h>
 #include <trx/version.h>
@@ -16,6 +17,8 @@
 #define M_CAM_CLIMBING_ELEVATION     (30 * DEG_1)               // = 5460
 #define M_CAM_CLIMB_END_ELEVATION    (-45 * DEG_1)              // = -8190
 #define M_CAM_CLIMB_DOWN_ELEVATION   M_CAM_CLIMB_END_ELEVATION  // = -8190
+#define M_CAM_CORNER_ELEVATION       (-6144)                    // = -33.75 deg
+#define M_LF_HANG                    21
 // clang-format on
 
 static void M_Hang(ITEM *const item, COLL_INFO *const coll)
@@ -37,11 +40,101 @@ static void M_Hang(ITEM *const item, COLL_INFO *const coll)
     coll->enable_baddie_push = 0;
     g_Camera.target_angle = M_CAM_HANG_ANGLE;
     g_Camera.target_elevation = M_CAM_HANG_ELEVATION;
+    if (Lara_Col_IsCornerShimmyActive()) {
+        // The collision routine decides between shimmying and corner
+        // traversal (TR4 behavior).
+        return;
+    }
     if (g_Input.left || g_Input.step_left) {
         item->goal_anim_state = LS(LS_SHIMMY_LEFT);
     } else if (g_Input.right || g_Input.step_right) {
         item->goal_anim_state = LS(LS_SHIMMY_RIGHT);
     }
+}
+
+static void M_SetCornerAnim(
+    ITEM *const item, COLL_INFO *const coll, const int16_t rot,
+    const LARA_TRX_ANIMATION hang_end_anim,
+    const LARA_TRX_ANIMATION ladder_end_anim)
+{
+    coll->enable_hit = 0;
+    coll->enable_baddie_push = 0;
+
+    if (item->hit_points <= 0) {
+        item->goal_anim_state = LS(LS_JUMP_FORWARD);
+        item->current_anim_state = LS(LS_JUMP_FORWARD);
+        Item_SwitchToAnim(item, LA(LA_FALL_START), 0);
+        item->pos.y += STEP_L;
+        item->gravity = true;
+        item->speed = 2;
+        item->fall_speed = 1;
+        LARA_INFO *const lara = Lara_GetLaraInfo();
+        lara->gun_status = LGS_ARMLESS;
+        item->rot.y += rot / 2;
+        return;
+    }
+
+    // Once the turn animation has advanced to its ending, teleport Lara
+    // to the position computed by the corner test and snap her back to
+    // the idle hold on the other face.
+    const bool on_ladder = Item_TestAnimEqual(item, LA(ladder_end_anim));
+    if (!on_ladder && !Item_TestAnimEqual(item, LA(hang_end_anim))) {
+        return;
+    }
+
+    if (on_ladder) {
+        Item_SwitchToAnim(item, LA(LA_LADDER_IDLE), 0);
+        item->goal_anim_state = LS(LS_CLIMB_STANCE);
+        item->current_anim_state = LS(LS_CLIMB_STANCE);
+    } else {
+        Item_SwitchToAnim(item, LA(LA_REACH_TO_HANG), M_LF_HANG);
+        item->goal_anim_state = LS(LS_HANG);
+        item->current_anim_state = LS(LS_HANG);
+    }
+
+    const LARA_INFO *const lara = Lara_GetLaraInfo();
+    coll->old_pos.x = lara->corner_pos.x;
+    coll->old_pos.z = lara->corner_pos.z;
+    item->pos.x = lara->corner_pos.x;
+    item->pos.z = lara->corner_pos.z;
+    item->rot.y += rot;
+    Interpolation_CommitLara();
+}
+
+static void M_ShimmyCornerOuterLeft(ITEM *const item, COLL_INFO *const coll)
+{
+    g_Camera.target_angle = DEG_90;
+    g_Camera.target_elevation = M_CAM_CORNER_ELEVATION;
+    M_SetCornerAnim(
+        item, coll, DEG_90, LA_HANG_CORNER_LEFT_OUTER_END,
+        LA_LADDER_CORNER_LEFT_OUTER_END);
+}
+
+static void M_ShimmyCornerOuterRight(ITEM *const item, COLL_INFO *const coll)
+{
+    g_Camera.target_angle = -DEG_90;
+    g_Camera.target_elevation = M_CAM_CORNER_ELEVATION;
+    M_SetCornerAnim(
+        item, coll, -DEG_90, LA_HANG_CORNER_RIGHT_OUTER_END,
+        LA_LADDER_CORNER_RIGHT_OUTER_END);
+}
+
+static void M_ShimmyCornerInnerLeft(ITEM *const item, COLL_INFO *const coll)
+{
+    g_Camera.target_angle = -DEG_90;
+    g_Camera.target_elevation = M_CAM_CORNER_ELEVATION;
+    M_SetCornerAnim(
+        item, coll, -DEG_90, LA_HANG_CORNER_LEFT_INNER_END,
+        LA_LADDER_CORNER_LEFT_INNER_END);
+}
+
+static void M_ShimmyCornerInnerRight(ITEM *const item, COLL_INFO *const coll)
+{
+    g_Camera.target_angle = DEG_90;
+    g_Camera.target_elevation = M_CAM_CORNER_ELEVATION;
+    M_SetCornerAnim(
+        item, coll, DEG_90, LA_HANG_CORNER_RIGHT_INNER_END,
+        LA_LADDER_CORNER_RIGHT_INNER_END);
 }
 
 static void M_Shimmy(ITEM *const item, COLL_INFO *const coll)
@@ -61,6 +154,7 @@ static void M_Shimmy(ITEM *const item, COLL_INFO *const coll)
 
 static void M_StanceLadder(ITEM *const item, COLL_INFO *const coll)
 {
+    LARA_INFO *const lara = Lara_GetLaraInfo();
     coll->enable_hit = 0;
     coll->enable_baddie_push = 0;
     g_Camera.target_elevation = M_CAM_CLIMB_STANCE_ELEVATION;
@@ -71,11 +165,12 @@ static void M_StanceLadder(ITEM *const item, COLL_INFO *const coll)
 
     if (g_Input.left || g_Input.step_left) {
         item->goal_anim_state = LS(LS_CLIMB_LEFT);
+        lara->move_angle = item->rot.y - DEG_90;
     } else if (g_Input.right || g_Input.step_right) {
         item->goal_anim_state = LS(LS_CLIMB_RIGHT);
+        lara->move_angle = item->rot.y + DEG_90;
     } else if (g_Input.jump) {
         item->goal_anim_state = LS(LS_JUMP_BACK);
-        LARA_INFO *const lara = Lara_GetLaraInfo();
         lara->gun_status = LGS_ARMLESS;
         lara->move_angle = item->rot.y + DEG_180;
     }
@@ -121,13 +216,17 @@ static void M_UpDownLadder(ITEM *const item, COLL_INFO *const coll)
 }
 
 // clang-format off
-REGISTER_LARA_STATE(LS_HANG,         M_Hang)
-REGISTER_LARA_STATE(LS_SHIMMY_LEFT,  M_Shimmy)
-REGISTER_LARA_STATE(LS_SHIMMY_RIGHT, M_Shimmy)
-REGISTER_LARA_STATE(LS_CLIMB_STANCE, M_StanceLadder)
-REGISTER_LARA_STATE(LS_CLIMB_LEFT,   M_SideLadder)
-REGISTER_LARA_STATE(LS_CLIMB_RIGHT,  M_SideLadder)
-REGISTER_LARA_STATE(LS_CLIMBING,     M_UpDownLadder)
-REGISTER_LARA_STATE(LS_CLIMB_DOWN,   M_UpDownLadder)
-REGISTER_LARA_STATE(LS_CLIMB_END,    M_UpDownLadder)
+REGISTER_LARA_STATE(LS_HANG,               M_Hang)
+REGISTER_LARA_STATE(LS_SHIMMY_LEFT,        M_Shimmy)
+REGISTER_LARA_STATE(LS_SHIMMY_RIGHT,       M_Shimmy)
+REGISTER_LARA_STATE(LS_SHIMMY_OUTER_LEFT,  M_ShimmyCornerOuterLeft)
+REGISTER_LARA_STATE(LS_SHIMMY_OUTER_RIGHT, M_ShimmyCornerOuterRight)
+REGISTER_LARA_STATE(LS_SHIMMY_INNER_LEFT,  M_ShimmyCornerInnerLeft)
+REGISTER_LARA_STATE(LS_SHIMMY_INNER_RIGHT, M_ShimmyCornerInnerRight)
+REGISTER_LARA_STATE(LS_CLIMB_STANCE,       M_StanceLadder)
+REGISTER_LARA_STATE(LS_CLIMB_LEFT,         M_SideLadder)
+REGISTER_LARA_STATE(LS_CLIMB_RIGHT,        M_SideLadder)
+REGISTER_LARA_STATE(LS_CLIMBING,           M_UpDownLadder)
+REGISTER_LARA_STATE(LS_CLIMB_DOWN,         M_UpDownLadder)
+REGISTER_LARA_STATE(LS_CLIMB_END,          M_UpDownLadder)
 // clang-format on

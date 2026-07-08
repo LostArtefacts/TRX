@@ -8,7 +8,7 @@
 // clang-format off
 #define M_CLIMB_SHIFT            70
 #define M_CLIMB_HANG             900
-#define M_CLIMB_WIDTH_LEFT       80
+#define M_CLIMB_WIDTH_LEFT       (g_TRVersion >= 4 ? 120 : 80)
 #define M_CLIMB_WIDTH_RIGHT      120
 #define M_CLIMB_HEIGHT           (WALL_L / 2) // = 512
 #define M_LF_HANG                21
@@ -20,6 +20,10 @@
 #define M_LEDGE_JUMP_HEIGHT_UP   (LARA_HEIGHT + (STEP_L * 3) / 8) // = 858
 #define M_LEDGE_JUMP_HEIGHT_BACK (LARA_HEIGHT - (STEP_L * 5) / 4) // = 442
 #define M_HANG_SHIFT             (g_TRVersion >= 3 ? 4 : 2)
+#define M_CLIMB_WIDTH_CORNER     120
+#define M_CORNER_SIDE_SHIFT      16
+#define M_CORNER_FRONT_DIST      (LARA_RADIUS + M_CORNER_SIDE_SHIFT) // = 116
+#define M_CORNER_MAX_DROP        (STEP_L * 3)                        // = 768
 // clang-format on
 
 typedef enum {
@@ -202,7 +206,9 @@ static bool M_TestHangStop(
         || *height_diff > SLOPE_DIF;
 }
 
-void Lara_Col_HangTest(ITEM *const item, COLL_INFO *const coll)
+// Returns true when the tested hang position is invalid and Lara was
+// snapped back to where she was.
+bool Lara_Col_HangTest(ITEM *const item, COLL_INFO *const coll)
 {
     coll->bad_pos = NO_BAD_POS;
     coll->bad_neg = NO_BAD_NEG;
@@ -260,7 +266,7 @@ void Lara_Col_HangTest(ITEM *const item, COLL_INFO *const coll)
             item->speed = 2;
             item->fall_speed = 1;
             lara->gun_status = LGS_ARMLESS;
-            return;
+            return false;
         }
 
         if (!Lara_Col_TestLadderHang(item, coll)) {
@@ -273,7 +279,7 @@ void Lara_Col_HangTest(ITEM *const item, COLL_INFO *const coll)
                 item->current_anim_state = LS(LS_HANG);
                 Item_SwitchToAnim(item, LA(LA_REACH_TO_HANG), M_LF_HANG);
             }
-            return;
+            return true;
         }
 
         if (Item_TestAnimEqual(item, LA(LA_REACH_TO_HANG))
@@ -281,7 +287,7 @@ void Lara_Col_HangTest(ITEM *const item, COLL_INFO *const coll)
             && Lara_Col_TestClimbStance(item, coll)) {
             item->goal_anim_state = LS(LS_CLIMB_STANCE);
         }
-        return;
+        return false;
     }
 
     if (!g_Input.action || item->hit_points <= 0
@@ -301,7 +307,7 @@ void Lara_Col_HangTest(ITEM *const item, COLL_INFO *const coll)
         item->speed = 2;
         item->fall_speed = 1;
         lara->gun_status = LGS_ARMLESS;
-        return;
+        return false;
     }
 
     int32_t height_diff = 0;
@@ -313,7 +319,7 @@ void Lara_Col_HangTest(ITEM *const item, COLL_INFO *const coll)
             item->current_anim_state = LS(LS_HANG);
             Item_SwitchToAnim(item, LA(LA_REACH_TO_HANG), M_LF_HANG);
         }
-        return;
+        return true;
     }
 
     switch (dir) {
@@ -334,6 +340,390 @@ void Lara_Col_HangTest(ITEM *const item, COLL_INFO *const coll)
     if (g_TRVersion >= 2 || (height_diff >= -STEP_L && height_diff <= STEP_L)) {
         item->pos.y += height_diff;
     }
+    return false;
+}
+
+bool Lara_Col_IsCornerShimmyActive(void)
+{
+    return g_Config.gameplay.enable_corner_shimmying
+        && LS(LS_SHIMMY_OUTER_LEFT) != LS_INVALID;
+}
+
+static bool M_CanHangSideways(
+    ITEM *const item, COLL_INFO *const coll, const int16_t angle)
+{
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    const XYZ_32 old_pos = item->pos;
+    lara->move_angle = item->rot.y + angle;
+
+    int32_t x = item->pos.x;
+    int32_t z = item->pos.z;
+    switch (Math_GetDirection(lara->move_angle)) {
+    case DIR_NORTH:
+        z += M_CORNER_SIDE_SHIFT;
+        break;
+    case DIR_EAST:
+        x += M_CORNER_SIDE_SHIFT;
+        break;
+    case DIR_SOUTH:
+        z -= M_CORNER_SIDE_SHIFT;
+        break;
+    case DIR_WEST:
+        x -= M_CORNER_SIDE_SHIFT;
+        break;
+    default:
+        break;
+    }
+
+    item->pos.x = x;
+    item->pos.z = z;
+    coll->old_pos.y = item->pos.y;
+    const bool blocked = Lara_Col_HangTest(item, coll);
+    item->pos.x = old_pos.x;
+    item->pos.z = old_pos.z;
+    lara->move_angle = item->rot.y + angle;
+    return !blocked;
+}
+
+static bool M_IsValidHangPos(ITEM *const item, COLL_INFO *const coll)
+{
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    if (Lara_FloorFront(item, lara->move_angle, LARA_RADIUS) < 200) {
+        return false;
+    }
+
+    switch (Math_GetDirection(item->rot.y)) {
+    case DIR_NORTH:
+        item->pos.z += M_HANG_SHIFT;
+        break;
+    case DIR_EAST:
+        item->pos.x += M_HANG_SHIFT;
+        break;
+    case DIR_SOUTH:
+        item->pos.z -= M_HANG_SHIFT;
+        break;
+    case DIR_WEST:
+        item->pos.x -= M_HANG_SHIFT;
+        break;
+    default:
+        break;
+    }
+
+    coll->bad_pos = NO_BAD_POS;
+    coll->bad_neg = -STEP_L * 2;
+    coll->bad_ceiling = 0;
+    lara->move_angle = item->rot.y;
+    Lara_Col_GetInfo(item, coll);
+
+    return coll->side_mid.ceiling < 0 && coll->coll_type == COLL_FRONT
+        && !coll->hit_static
+        && ABS(coll->side_front.floor - coll->side_right2.floor) < SLOPE_DIF;
+}
+
+static LADDER_DIRECTION M_GetClimbFlags(
+    const int32_t x, const int32_t z, const int16_t room_num)
+{
+    // The climb trigger lives in the floordata of the column's floor sector,
+    // so it must be resolved at floor level (as Room_TestTriggers does), not
+    // at Lara's airborne Y, which in vertically stacked rooms resolves to a
+    // sector without the trigger.
+    int16_t probe_room = room_num;
+    const SECTOR *const sector =
+        Room_GetSector((XYZ_32) { x, MAX_HEIGHT, z }, &probe_room);
+    return sector->ladder;
+}
+
+// The corner destination position formulas below mirror Lara's position
+// within her sector onto the perpendicular face she would hold after the
+// turn. They come from the TR4 engine, which only spells out the
+// right-hand variants; the left-hand variants are the same formulas with
+// the direction rotated by a quadrant, which is what M_GetCornerDirection
+// computes.
+static DIRECTION M_GetCornerDirection(const DIRECTION dir, const bool right)
+{
+    return right ? dir : (DIRECTION)((dir + 3) % 4);
+}
+
+static XZ_32 M_GetInnerCornerPos(const XYZ_32 pos, const DIRECTION dir)
+{
+    switch (dir) {
+    case DIR_NORTH:
+    case DIR_SOUTH:
+        return (XZ_32) {
+            .x = (pos.x & ~(WALL_L - 1)) | (pos.z & (WALL_L - 1)),
+            .z = (pos.z & ~(WALL_L - 1)) | (pos.x & (WALL_L - 1)),
+        };
+
+    default:
+        return (XZ_32) {
+            .x = (pos.x & ~(WALL_L - 1)) - (pos.z & (WALL_L - 1)) + WALL_L,
+            .z = (pos.z & ~(WALL_L - 1)) - (pos.x & (WALL_L - 1)) + WALL_L,
+        };
+    }
+}
+
+static XZ_32 M_GetOuterCornerPos(const XYZ_32 pos, const DIRECTION dir)
+{
+    switch (dir) {
+    case DIR_NORTH:
+        return (XZ_32) {
+            .x = ((pos.x + WALL_L) & ~(WALL_L - 1)) - (pos.z & (WALL_L - 1))
+                + WALL_L,
+            .z = ((pos.z + WALL_L) & ~(WALL_L - 1)) - (pos.x & (WALL_L - 1))
+                + WALL_L,
+        };
+
+    case DIR_SOUTH:
+        return (XZ_32) {
+            .x = (pos.x & ~(WALL_L - 1)) - (pos.z & (WALL_L - 1)),
+            .z = (pos.z & ~(WALL_L - 1)) - (pos.x & (WALL_L - 1)),
+        };
+
+    case DIR_WEST:
+        return (XZ_32) {
+            .x = ((pos.x & ~(WALL_L - 1)) | (pos.z & (WALL_L - 1))) - WALL_L,
+            .z = ((pos.z + WALL_L) & ~(WALL_L - 1)) | (pos.x & (WALL_L - 1)),
+        };
+
+    default:
+        return (XZ_32) {
+            .x = ((pos.x + WALL_L) & ~(WALL_L - 1)) | (pos.z & (WALL_L - 1)),
+            .z = ((pos.z & ~(WALL_L - 1)) | (pos.x & (WALL_L - 1))) - WALL_L,
+        };
+    }
+}
+
+// Returns +1 when Lara can traverse an outer corner in the given
+// direction, -1 for an inner corner, and 0 when no turn is possible.
+// On success, lara->corner_pos holds the destination.
+static int32_t M_TestHangCorner(
+    ITEM *const item, COLL_INFO *const coll, const bool right)
+{
+    if (!Item_TestAnimEqual(item, LA(LA_REACH_TO_HANG)) || coll->hit_static) {
+        return 0;
+    }
+
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    const XYZ_32 old_pos = item->pos;
+    const int16_t old_rot = item->rot.y;
+    const int32_t front = coll->side_front.floor;
+    const DIRECTION dir = Math_GetDirection(old_rot);
+    const DIRECTION corner_dir = M_GetCornerDirection(dir, right);
+    const int16_t turn = right ? DEG_90 : -DEG_90;
+
+    XZ_32 corner = M_GetInnerCornerPos(old_pos, corner_dir);
+    item->pos.x = corner.x;
+    item->pos.z = corner.z;
+    item->rot.y += turn;
+    lara->corner_pos = corner;
+    int32_t result = M_IsValidHangPos(item, coll) ? -1 : 0;
+
+    if (result != 0) {
+        if (lara->climb_status) {
+            const LADDER_DIRECTION flag = 1 << ((dir + (right ? 1 : 3)) % 4);
+            if (!(M_GetClimbFlags(corner.x, corner.z, item->room_num) & flag)) {
+                result = 0;
+            }
+        } else if (ABS(front - coll->side_front.floor) > SLOPE_DIF) {
+            result = 0;
+        }
+    }
+
+    if (result == 0) {
+        item->pos = old_pos;
+        item->rot.y = old_rot;
+        lara->move_angle = old_rot;
+
+        if (Lara_FloorFront(item, old_rot + turn, M_CORNER_FRONT_DIST) < 0) {
+            return 0;
+        }
+
+        corner = M_GetOuterCornerPos(old_pos, corner_dir);
+        item->pos.x = corner.x;
+        item->pos.z = corner.z;
+        item->rot.y -= turn;
+        lara->corner_pos = corner;
+        result = M_IsValidHangPos(item, coll) ? 1 : 0;
+
+        if (result != 0) {
+            item->pos = old_pos;
+            item->rot.y = old_rot;
+            lara->move_angle = old_rot;
+
+            if (lara->climb_status) {
+                const LADDER_DIRECTION flag = 1
+                    << ((dir + (right ? 3 : 1)) % 4);
+                if (!(M_GetClimbFlags(corner.x, corner.z, item->room_num)
+                      & flag)) {
+                    const int32_t new_front =
+                        Lara_FloorFront(item, item->rot.y, M_CORNER_FRONT_DIST);
+                    if (ABS(coll->side_front.floor - new_front) > SLOPE_DIF
+                        || new_front < -M_CORNER_MAX_DROP) {
+                        result = 0;
+                    }
+                }
+            } else if (ABS(front - coll->side_front.floor) <= SLOPE_DIF) {
+                // Only allow the outer turn when Lara hangs on the half
+                // of the sector that actually meets the corner.
+                const int32_t side_pos =
+                    (dir == DIR_NORTH || dir == DIR_SOUTH ? old_pos.x
+                                                          : old_pos.z)
+                    & (WALL_L - 1);
+                const bool towards_min = right
+                    ? (dir == DIR_NORTH || dir == DIR_WEST)
+                    : (dir == DIR_EAST || dir == DIR_SOUTH);
+                if (towards_min ? side_pos < WALL_L / 2
+                                : side_pos > WALL_L / 2) {
+                    result = 0;
+                }
+            } else {
+                result = 0;
+            }
+
+            return result;
+        }
+    }
+
+    item->pos = old_pos;
+    item->rot.y = old_rot;
+    lara->move_angle = old_rot;
+    return result;
+}
+
+// Ladder variant of M_TestHangCorner; same return convention.
+static int32_t M_TestLadderCorner(
+    ITEM *const item, COLL_INFO *const coll, const bool right)
+{
+    if (!Item_TestAnimEqual(
+            item, LA(right ? LA_LADDER_RIGHT : LA_LADDER_LEFT))) {
+        return 0;
+    }
+
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    const XYZ_32 old_pos = item->pos;
+    const int16_t old_rot = item->rot.y;
+    const DIRECTION dir = Math_GetDirection(old_rot);
+    const DIRECTION corner_dir = M_GetCornerDirection(dir, right);
+    const int16_t turn = right ? DEG_90 : -DEG_90;
+    const int32_t side = right ? coll->radius + M_CLIMB_WIDTH_CORNER
+                               : -(coll->radius + M_CLIMB_WIDTH_CORNER);
+    int32_t result = 0;
+    int32_t shift;
+
+    XZ_32 corner = M_GetInnerCornerPos(old_pos, corner_dir);
+    LADDER_DIRECTION flag = 1 << ((dir + (right ? 1 : 3)) % 4);
+    if (M_GetClimbFlags(corner.x, corner.z, item->room_num) & flag) {
+        item->pos.x = corner.x;
+        item->pos.z = corner.z;
+        item->rot.y += turn;
+        lara->corner_pos = corner;
+        lara->move_angle = item->rot.y;
+        if (M_TestClimbPos(
+                item, coll->radius, side, -M_CLIMB_HEIGHT, M_CLIMB_HEIGHT,
+                &shift)
+            != CLIMB_RESULT_NONE) {
+            result = -1;
+        }
+    }
+
+    if (result == 0) {
+        item->pos = old_pos;
+        item->rot.y = old_rot;
+        lara->move_angle = old_rot;
+
+        corner = M_GetOuterCornerPos(old_pos, corner_dir);
+        flag = 1 << ((dir + (right ? 3 : 1)) % 4);
+        if (M_GetClimbFlags(corner.x, corner.z, item->room_num) & flag) {
+            item->pos.x = corner.x;
+            item->pos.z = corner.z;
+            item->rot.y -= turn;
+            lara->corner_pos = corner;
+            lara->move_angle = item->rot.y;
+            if (M_TestClimbPos(
+                    item, coll->radius, side, -M_CLIMB_HEIGHT, M_CLIMB_HEIGHT,
+                    &shift)
+                != CLIMB_RESULT_NONE) {
+                result = 1;
+            }
+        }
+    }
+
+    item->pos = old_pos;
+    item->rot.y = old_rot;
+    lara->move_angle = old_rot;
+    return result;
+}
+
+static bool M_TryCornerShimmy(ITEM *const item, COLL_INFO *const coll)
+{
+    if (!Lara_Col_IsCornerShimmyActive() || !g_Input.action
+        || item->hit_points <= 0
+        || !Item_TestAnimEqual(item, LA(LA_REACH_TO_HANG))
+        || !Item_TestFrameEqual(item, M_LF_HANG)) {
+        return false;
+    }
+
+    const bool left = g_Input.left || g_Input.step_left;
+    const bool right = g_Input.right || g_Input.step_right;
+    if (!left && !right) {
+        return false;
+    }
+
+    if (M_CanHangSideways(item, coll, left ? -DEG_90 : DEG_90)) {
+        item->goal_anim_state = LS(left ? LS_SHIMMY_LEFT : LS_SHIMMY_RIGHT);
+        return true;
+    }
+
+    const int32_t result = M_TestHangCorner(item, coll, !left);
+    if (result > 0) {
+        item->goal_anim_state =
+            LS(left ? LS_SHIMMY_OUTER_LEFT : LS_SHIMMY_OUTER_RIGHT);
+        return true;
+    }
+    if (result < 0) {
+        item->goal_anim_state =
+            LS(left ? LS_SHIMMY_INNER_LEFT : LS_SHIMMY_INNER_RIGHT);
+        return true;
+    }
+    return false;
+}
+
+static bool M_TryLadderCorner(ITEM *const item, COLL_INFO *const coll)
+{
+    if (!Lara_Col_IsCornerShimmyActive()) {
+        return false;
+    }
+
+    const bool left = g_Input.left || g_Input.step_left;
+    const bool right = g_Input.right || g_Input.step_right;
+    if (!left && !right) {
+        return false;
+    }
+
+    const int32_t result = M_TestLadderCorner(item, coll, !left);
+    if (result > 0) {
+        Item_SwitchToAnim(
+            item,
+            LA(left ? LA_LADDER_CORNER_LEFT_OUTER_START
+                    : LA_LADDER_CORNER_RIGHT_OUTER_START),
+            0);
+        item->current_anim_state =
+            LS(left ? LS_SHIMMY_OUTER_LEFT : LS_SHIMMY_OUTER_RIGHT);
+        item->goal_anim_state = item->current_anim_state;
+        return true;
+    }
+    if (result < 0) {
+        Item_SwitchToAnim(
+            item,
+            LA(left ? LA_LADDER_CORNER_LEFT_INNER_START
+                    : LA_LADDER_CORNER_RIGHT_INNER_START),
+            0);
+        item->current_anim_state =
+            LS(left ? LS_SHIMMY_INNER_LEFT : LS_SHIMMY_INNER_RIGHT);
+        item->goal_anim_state = item->current_anim_state;
+        return true;
+    }
+    return false;
 }
 
 static bool M_TestLadderRelease(ITEM *const item)
@@ -501,6 +891,10 @@ static bool M_TestLedgeJump(const ITEM *const item, const COLL_INFO *const coll)
 
 static void M_Hang(ITEM *const item, COLL_INFO *const coll)
 {
+    if (M_TryCornerShimmy(item, coll)) {
+        return;
+    }
+
     Lara_Col_HangTest(item, coll);
     if (item->goal_anim_state != LS(LS_HANG)) {
         return;
@@ -717,6 +1111,9 @@ static void M_SideLadder(ITEM *const item, COLL_INFO *const coll)
     item->goal_anim_state = LS(LS_CLIMB_STANCE);
     item->current_anim_state = LS(LS_CLIMB_STANCE);
     if (coll->old_anim_state == LS(LS_CLIMB_STANCE)) {
+        if (M_TryLadderCorner(item, coll)) {
+            return;
+        }
         item->frame_num = coll->old_frame_num;
         item->anim_num = coll->old_anim_num;
         Lara_Animate(item);
@@ -953,13 +1350,29 @@ bool Lara_Col_TestClimbStance(ITEM *const item, const COLL_INFO *const coll)
     return true;
 }
 
+static void M_ShimmyCorner(ITEM *const item, COLL_INFO *const coll)
+{
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    lara->move_angle = item->rot.y;
+    coll->bad_pos = STEPUP_HEIGHT;
+    coll->bad_neg = -STEPUP_HEIGHT;
+    coll->bad_ceiling = 0;
+    coll->slopes_are_walls = 1;
+    coll->slopes_are_pits = 1;
+    Lara_Col_GetInfo(item, coll);
+}
+
 // clang-format off
-REGISTER_LARA_COL(LS_HANG,         M_Hang)
-REGISTER_LARA_COL(LS_SHIMMY_LEFT,  M_Shimmy)
-REGISTER_LARA_COL(LS_SHIMMY_RIGHT, M_Shimmy)
-REGISTER_LARA_COL(LS_CLIMB_STANCE, M_StanceLadder)
-REGISTER_LARA_COL(LS_CLIMB_LEFT,   M_SideLadder)
-REGISTER_LARA_COL(LS_CLIMB_RIGHT,  M_SideLadder)
-REGISTER_LARA_COL(LS_CLIMBING,     M_UpLadder)
-REGISTER_LARA_COL(LS_CLIMB_DOWN,   M_DownLadder)
+REGISTER_LARA_COL(LS_HANG,               M_Hang)
+REGISTER_LARA_COL(LS_SHIMMY_LEFT,        M_Shimmy)
+REGISTER_LARA_COL(LS_SHIMMY_RIGHT,       M_Shimmy)
+REGISTER_LARA_COL(LS_SHIMMY_OUTER_LEFT,  M_ShimmyCorner)
+REGISTER_LARA_COL(LS_SHIMMY_OUTER_RIGHT, M_ShimmyCorner)
+REGISTER_LARA_COL(LS_SHIMMY_INNER_LEFT,  M_ShimmyCorner)
+REGISTER_LARA_COL(LS_SHIMMY_INNER_RIGHT, M_ShimmyCorner)
+REGISTER_LARA_COL(LS_CLIMB_STANCE,       M_StanceLadder)
+REGISTER_LARA_COL(LS_CLIMB_LEFT,         M_SideLadder)
+REGISTER_LARA_COL(LS_CLIMB_RIGHT,        M_SideLadder)
+REGISTER_LARA_COL(LS_CLIMBING,           M_UpLadder)
+REGISTER_LARA_COL(LS_CLIMB_DOWN,         M_DownLadder)
 // clang-format on

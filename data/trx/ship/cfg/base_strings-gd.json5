@@ -932,6 +932,10 @@
             "title": "Tuit fo smachd",
             "description": "Leigidh seo le Lara tionndadh san adhar agus grèim a ghabhail air an oir a dh'fhàg i, fhad 's a tha am putan gnìomh air a chumail sios tron tuiteam.",
         },
+        "gameplay.enable_corner_shimmying": {
+            "title": "\\{review}Siubhal timcheall oiseanan",
+            "description": "\\{review}Leigidh seo le Lara gluasad timcheall oiseanan nuair a tha i an crochadh ri oir no a' sreap balla (stoidhle TR4).",
+        },
         "gameplay.enable_crawl_jump": {
             "title": "Leum às snàg",
             "description": "Leigidh le Lara leum a-mach à àiteachan snàgaidh.",
