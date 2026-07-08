@@ -61,6 +61,7 @@ void Savegame_CarryCurrentInfoToNextLevel(
     const GF_LEVEL *src_level, const GF_LEVEL *dst_level);
 void Savegame_PersistGameToCurrentInfo(const GF_LEVEL *level);
 void Savegame_ApplyLogicToCurrentInfo(const GF_LEVEL *level);
+int32_t Savegame_GetCompletedLevelCount(void);
 
 int32_t Savegame_GetSlotCount(SAVEGAME_SLOT_POOL pool);
 SAVEGAME_SLOT_REF Savegame_GetNextQuickSlot(void);

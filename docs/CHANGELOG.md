@@ -70,6 +70,7 @@
 - fixed missing SFX when Lara is shimmying (#4996)
 - fixed missing SFX in the Pipeman's death animation (#5036)
 - fixed geometry issues in room 53 in Madubu Gorge, which could cause the TR3 camera to become stuck and allow Lara to fly into the ceiling
+- fixed the stats level counter not taking into account level progression and using the level's default number instead (#5757, regression from 1.2)
 
 **TR4**:
 - added very rudimentary support for TR4 levels
