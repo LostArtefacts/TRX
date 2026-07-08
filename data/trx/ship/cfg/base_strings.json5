@@ -1945,6 +1945,9 @@
         "claw_mutant": {
             "name": "Claw Mutant",
         },
+        "climbing_pole": {
+            "name": "Climbing Pole",
+        },
         "clock_chimes": {
             "name": "Bartoli Hideout clock",
         },

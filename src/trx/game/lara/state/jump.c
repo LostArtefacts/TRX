@@ -205,6 +205,11 @@ static void M_FastFall(ITEM *const item, COLL_INFO *const coll)
     if (scream && !g_Config.debug.enable_invulnerability) {
         Sound_Effect(SFX_LARA_FALL, &item->pos, SPM_NORMAL);
     }
+
+    if (Item_TestAnimEqual(item, LA(LA_POLE_FALL))
+        && Item_TestFrameEqual(item, -2)) {
+        Lara_GetLaraInfo()->gun_status = LGS_ARMLESS;
+    }
 }
 
 static void M_Zipline(ITEM *const item, COLL_INFO *const coll)

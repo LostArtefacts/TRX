@@ -1948,6 +1948,9 @@
         "claw_mutant": {
             "name": "Szponiasty mutant",
         },
+        "climbing_pole": {
+            "name": "\\{review}Drążek wspinaczkowy",
+        },
         "clock_chimes": {
             "name": "Zegar kryjówki Bartoliego",
         },

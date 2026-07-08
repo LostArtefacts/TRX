@@ -1945,6 +1945,9 @@
         "claw_mutant": {
             "name": "Mùtant Spòganach",
         },
+        "climbing_pole": {
+            "name": "\\{review}Sgàilean a’ Chladach",
+        },
         "clock_chimes": {
             "name": "Gleoc Bartoli",
         },
