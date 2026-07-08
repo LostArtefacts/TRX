@@ -1584,6 +1584,10 @@
             "title": "Lasadh teine",
             "description": "Cuiridh seo comas air solas fiùghantach a bhith air a chruthachadh ri taobh lasraichean gnìomhach.",
         },
+        "visuals.enable_fog_bulbs": {
+            "title": "\\{review}Builgeanan ceò",
+            "description": "\\{review}Cuiridh seo comas air èifeachdan ceò a chaidh an suidheachadh anns na h-ìrean.",
+        },
         "visuals.enable_footprints": {
             "title": "Clachan-coise",
             "description": "Leigeas le clachan-coise Lara a nochdadh air uachdaran sònraichte ann an ìrean taicichte.",

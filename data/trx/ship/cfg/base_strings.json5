@@ -1584,6 +1584,10 @@
             "title": "Fire lighting",
             "description": "Enables dynamic lighting to be generated beside active flames.",
         },
+        "visuals.enable_fog_bulbs": {
+            "title": "Fog bulbs",
+            "description": "Enables the volumetric fog effects placed in the levels.",
+        },
         "visuals.enable_footprints": {
             "title": "Footprints",
             "description": "Enables rendering of Lara's footprints on certain surfaces in supported levels.",

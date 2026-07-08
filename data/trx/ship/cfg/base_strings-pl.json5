@@ -1584,6 +1584,10 @@
             "title": "Światło dookoła ogni",
             "description": "Włącza generowanie dynamicznego oświetlenia obok aktywnych płomieni.",
         },
+        "visuals.enable_fog_bulbs": {
+            "title": "\\{review}Kule mgły",
+            "description": "\\{review}Włącza wolumetryczne efekty mgły rozmieszczone w poziomach.",
+        },
         "visuals.enable_footprints": {
             "title": "Ślady stóp",
             "description": "Włącza wyświetlanie śladów stóp Lary na niektórych powierzchniach w obsługiwanych poziomach.",
