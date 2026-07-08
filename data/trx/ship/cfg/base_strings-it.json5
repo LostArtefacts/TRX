@@ -1937,6 +1937,12 @@
         "ceiling_spikes": {
             "name": "Soffitto con Spuntoni",
         },
+        "ceiling_trapdoor_1": {
+            "name": "\\{review}Botola a soffitto 1",
+        },
+        "ceiling_trapdoor_2": {
+            "name": "\\{review}Botola a soffitto 2",
+        },
         "centaur": {
             "name": "Centauro",
         },
@@ -1963,6 +1969,9 @@
         },
         "cog_3": {
             "name": "Ingranaggio 3",
+        },
+        "cog_switch": {
+            "name": "\\{review}Interruttore a ingranaggio",
         },
         "combat_end": {
             "name": "Fine Combattimento",
@@ -2002,6 +2011,9 @@
         },
         "crowbar": {
             "name": "\\{review}Piede di Porco",
+        },
+        "crowbar_anim": {
+            "name": "\\{review}Animazione del piede di porco",
         },
         "cult_1": {
             "name": "Scagnozzo Mascherato 1",
@@ -2089,6 +2101,9 @@
         },
         "door_8": {
             "name": "Porta 8",
+        },
+        "double_doors": {
+            "name": "\\{review}Porta doppia",
         },
         "dragon_back": {
             "name": "Retro Drago",
@@ -2237,6 +2252,12 @@
         },
         "flickering_light": {
             "name": "Luce Tremolante",
+        },
+        "floor_trapdoor_1": {
+            "name": "\\{review}Botola a pavimento 1",
+        },
+        "floor_trapdoor_2": {
+            "name": "\\{review}Botola a pavimento 2",
         },
         "fuse_box": {
             "name": "Scatola Fusibili",
@@ -2448,6 +2469,12 @@
         },
         "key_hole_9": {
             "name": "\\{review}Serratura 9",
+        },
+        "kick_door_1": {
+            "name": "\\{review}Porta da sfondare 1",
+        },
+        "kick_door_2": {
+            "name": "\\{review}Porta da sfondare 2",
         },
         "kill_all_triggered": {
             "name": "Eliminazione totale attivata",
@@ -2838,6 +2865,12 @@
         },
         "punk_2": {
             "name": "Punk 2",
+        },
+        "pushpull_door_1": {
+            "name": "\\{review}Porta a spinta/trazione 1",
+        },
+        "pushpull_door_2": {
+            "name": "\\{review}Porta a spinta/trazione 2",
         },
         "puzzle_1": {
             "name": "Oggetto Enigma 1",
@@ -3345,6 +3378,9 @@
         },
         "twinkle": {
             "name": "Scintille",
+        },
+        "underwater_door": {
+            "name": "\\{review}Porta subacquea",
         },
         "upv": {
             "name": "Mini Sottomarino",

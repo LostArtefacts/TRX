@@ -1,5 +1,9 @@
 #include <trx/game/objects/general/door.h>
 
+#include <trx/game/game_flow/common.h>
+#include <trx/game/game_flow/sequencer.h>
+#include <trx/game/inventory.h>
+#include <trx/game/inventory_ring/control.h>
 #include <trx/game/lara.h>
 #include <trx/game/objects/common.h>
 #include <trx/game/pathing.h>
@@ -16,7 +20,38 @@ typedef struct {
     M_DOOR_POS d1flip;
     M_DOOR_POS d2;
     M_DOOR_POS d2flip;
+    bool crowbar;
+    bool lift;
+    int32_t lift_count;
+    int32_t lift_base_y;
 } M_PRIV;
+
+static const OBJECT_BOUNDS m_CrowbarDoorBounds = {
+    .shift = {
+        .min = { .x = -WALL_L / 2, .y = -WALL_L, .z = +0, },
+        .max = { .x = +WALL_L / 2, .y = +0, .z = +WALL_L / 2, },
+    },
+    .rot = {
+        .min = { .x = -80 * DEG_1, .y = -80 * DEG_1, .z = -80 * DEG_1, },
+        .max = { .x = +80 * DEG_1, .y = +80 * DEG_1, .z = +80 * DEG_1, },
+    },
+};
+
+static const XYZ_32 m_CrowbarDoorPosition = { .x = -412, .y = 0, .z = 140 };
+
+static bool M_ShowCrowbarInventory(void)
+{
+    if (Inv_RequestItem(O_CROWBAR_ITEM) == 0) {
+        return false;
+    }
+
+    InvRing_SetRequestedObjectID(O_CROWBAR_OPTION);
+    const GF_COMMAND gf_cmd = GF_ShowInventory(INV_KEYS_MODE);
+    if (gf_cmd.action != GF_NOOP) {
+        GF_OverrideCommand(gf_cmd);
+    }
+    return true;
+}
 
 static const SECTOR m_BlockedSector = {
     .idx = 0,
@@ -130,10 +165,22 @@ static void M_InitialisePortal(
     door_pos->old_sector = *door_pos->sector;
 }
 
-static void M_Initialise(const int16_t item_num)
+void Door_Initialise(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
     M_PRIV *const p = item->priv;
+
+    p->crowbar = false;
+    p->lift = false;
+    OBJECT_PROPERTY_VALUE value = {};
+    if (ObjectProperty_GetItemValue(item, "crowbar", &value)) {
+        p->crowbar = value.as_bool;
+    }
+    if (ObjectProperty_GetItemValue(item, "lift", &value)) {
+        p->lift = value.as_bool;
+    }
+    p->lift_count = 0;
+    p->lift_base_y = item->pos.y;
 
     int32_t dx = 0;
     int32_t dz = 0;
@@ -184,10 +231,45 @@ static void M_Initialise(const int16_t item_num)
     }
 }
 
+static void M_ControlLift(ITEM *const item)
+{
+    M_PRIV *const p = item->priv;
+
+    if (p->lift_count > 0) {
+        p->lift_count--;
+        item->pos.y -= 12;
+
+        const int32_t min_y =
+            Item_GetBoundsAccurate(item)->min.y + p->lift_base_y - STEP_L;
+        if (item->pos.y < min_y) {
+            item->pos.y = min_y;
+            p->lift_count = 0;
+        }
+
+        Door_OpenPortals(item);
+    } else if (item->pos.y < p->lift_base_y) {
+        item->pos.y += 4;
+        if (item->pos.y >= p->lift_base_y) {
+            item->pos.y = p->lift_base_y;
+            Door_ShutPortals(item);
+        }
+    }
+
+    M_Check(&p->d1);
+    M_Check(&p->d2);
+    M_Check(&p->d1flip);
+    M_Check(&p->d2flip);
+}
+
 static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
     M_PRIV *const p = item->priv;
+
+    if (p->lift) {
+        M_ControlLift(item);
+        return;
+    }
 
     if (Item_IsTriggerActive(item)) {
         if (item->current_anim_state == DOOR_STATE_CLOSED) {
@@ -216,15 +298,130 @@ static void M_Control(const int16_t item_num)
     Item_Animate(item);
 }
 
+static void M_CrowbarCollision(
+    const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
+{
+    ITEM *const item = Item_Get(item_num);
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+
+    if (Lara_Interact_CanControl(LARA_INTERACT_DOOR, item_num)) {
+        item->rot.y += DEG_180;
+
+        if (Lara_TestPosition(item, &m_CrowbarDoorBounds)) {
+            if (!lara->interact_target.is_moving) {
+                // Undo the temporary flip before the inventory phase runs.
+                // The inventory is a blocking nested loop that renders the
+                // paused scene, so a flipped door would appear on the wrong
+                // side of the wall while the player selects the crowbar.
+                item->rot.y += DEG_180;
+                if (!M_ShowCrowbarInventory()) {
+                    Lara_RefuseInteraction();
+                }
+                return;
+            }
+
+            if (lara_item->current_anim_state == LS(LS_STOP)) {
+                lara->interact_target.is_moving = false;
+            }
+
+            if (Lara_MovePosition(item, &m_CrowbarDoorPosition)) {
+                Item_SwitchToAnim(lara_item, LA(LA_PRY_DOOR), 0);
+                lara_item->current_anim_state = LS(LS_CONTROLLED);
+                Item_AddActive(item_num);
+                item->flags |= IF_CODE_BITS;
+                item->status = IS_ACTIVE;
+                item->goal_anim_state = DOOR_STATE_OPEN;
+                lara->interact_target.is_moving = false;
+                lara->gun_status = LGS_HANDS_BUSY;
+            } else {
+                lara->interact_target.item_num = item_num;
+                lara->interact_target.is_moving = true;
+            }
+        } else if (Lara_Interact_HasActiveTarget(item_num)) {
+            lara->interact_target.is_moving = false;
+            lara->gun_status = LGS_ARMLESS;
+        }
+
+        item->rot.y += DEG_180;
+    }
+}
+
+static void M_Collision(
+    const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
+{
+    const ITEM *const item = Item_Get(item_num);
+    const M_PRIV *const p = item->priv;
+    if (p->crowbar && item->status != IS_ACTIVE) {
+        M_CrowbarCollision(item_num, lara_item, coll);
+    }
+    Door_Collision(item_num, lara_item, coll);
+}
+
 static void M_Setup(OBJECT *const obj)
 {
-    obj->initialise_func = M_Initialise;
+    obj->initialise_func = Door_Initialise;
     obj->control_func = M_Control;
     obj->draw_func = Object_DrawUnclippedItem;
-    obj->collision_func = Door_Collision;
+    obj->collision_func = M_Collision;
     obj->priv_size = sizeof(M_PRIV);
     obj->save_flags = true;
     obj->save_anim = true;
+    obj->save_position = true;
+    OBJECT_PROPERTIES(
+        obj,
+        OBJECT_PROPERTY_BOOL(
+            "crowbar", false,
+            "Whether the door must be pried open with the crowbar."),
+        OBJECT_PROPERTY_BOOL(
+            "lift", false,
+            "Whether the door rises vertically while activated instead of "
+            "playing its open animation."));
+}
+
+void Door_OpenPortals(ITEM *const item)
+{
+    M_PRIV *const p = item->priv;
+    M_Open(&p->d1);
+    M_Open(&p->d2);
+    M_Open(&p->d1flip);
+    M_Open(&p->d2flip);
+}
+
+void Door_ShutPortals(ITEM *const item)
+{
+    M_PRIV *const p = item->priv;
+    M_Shut(&p->d1);
+    M_Shut(&p->d2);
+    M_Shut(&p->d1flip);
+    M_Shut(&p->d2flip);
+}
+
+size_t Door_GetPrivSize(void)
+{
+    return sizeof(M_PRIV);
+}
+
+void Door_LiftActivate(ITEM *const item, const int32_t count)
+{
+    M_PRIV *const p = item->priv;
+    p->lift_count = count;
+}
+
+int16_t Door_FindNearbyCrowbarDoor(void)
+{
+    for (int16_t item_num = 0; item_num < Item_GetLevelCount(); item_num++) {
+        const ITEM *const item = Item_Get(item_num);
+        if (item->object_id < O_DOOR_TYPE_1 || item->object_id > O_DOOR_TYPE_8
+            || item->status == IS_ACTIVE) {
+            continue;
+        }
+
+        const M_PRIV *const p = item->priv;
+        if (p->crowbar && Lara_IsNearItem(&item->pos, WALL_L)) {
+            return item_num;
+        }
+    }
+    return NO_ITEM;
 }
 
 void Door_Collision(

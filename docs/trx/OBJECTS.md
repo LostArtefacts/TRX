@@ -1678,6 +1678,22 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
+#### O_CEILING_TRAPDOOR_1
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>auto_open</code></td><td colspan="3" align="center">true</td><td>Whether the trapdoor opens automatically when triggered.</td></tr>
+</tbody>
+</table>
+
+#### O_CEILING_TRAPDOOR_2
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>auto_open</code></td><td colspan="3" align="center">true</td><td>Whether the trapdoor opens automatically when triggered.</td></tr>
+</tbody>
+</table>
+
 #### O_CROSSBOW_AMMO_1_ITEM
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
@@ -1734,6 +1750,78 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
+#### O_DOOR_TYPE_1
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1 (57)</th><th align="center">TR2 (106)</th><th align="center">TR3 (131)</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>crowbar</code></td><td colspan="3" align="center">false</td><td>Whether the door must be pried open with the crowbar.</td></tr>
+<tr><td><code>lift</code></td><td colspan="3" align="center">false</td><td>Whether the door rises vertically while activated instead of playing its open animation.</td></tr>
+</tbody>
+</table>
+
+#### O_DOOR_TYPE_2
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1 (58)</th><th align="center">TR2 (107)</th><th align="center">TR3 (132)</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>crowbar</code></td><td colspan="3" align="center">false</td><td>Whether the door must be pried open with the crowbar.</td></tr>
+<tr><td><code>lift</code></td><td colspan="3" align="center">false</td><td>Whether the door rises vertically while activated instead of playing its open animation.</td></tr>
+</tbody>
+</table>
+
+#### O_DOOR_TYPE_3
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1 (59)</th><th align="center">TR2 (108)</th><th align="center">TR3 (133)</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>crowbar</code></td><td colspan="3" align="center">false</td><td>Whether the door must be pried open with the crowbar.</td></tr>
+<tr><td><code>lift</code></td><td colspan="3" align="center">false</td><td>Whether the door rises vertically while activated instead of playing its open animation.</td></tr>
+</tbody>
+</table>
+
+#### O_DOOR_TYPE_4
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1 (60)</th><th align="center">TR2 (109)</th><th align="center">TR3 (134)</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>crowbar</code></td><td colspan="3" align="center">false</td><td>Whether the door must be pried open with the crowbar.</td></tr>
+<tr><td><code>lift</code></td><td colspan="3" align="center">false</td><td>Whether the door rises vertically while activated instead of playing its open animation.</td></tr>
+</tbody>
+</table>
+
+#### O_DOOR_TYPE_5
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1 (61)</th><th align="center">TR2 (110)</th><th align="center">TR3 (135)</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>crowbar</code></td><td colspan="3" align="center">false</td><td>Whether the door must be pried open with the crowbar.</td></tr>
+<tr><td><code>lift</code></td><td colspan="3" align="center">false</td><td>Whether the door rises vertically while activated instead of playing its open animation.</td></tr>
+</tbody>
+</table>
+
+#### O_DOOR_TYPE_6
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1 (62)</th><th align="center">TR2 (111)</th><th align="center">TR3 (136)</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>crowbar</code></td><td colspan="3" align="center">false</td><td>Whether the door must be pried open with the crowbar.</td></tr>
+<tr><td><code>lift</code></td><td colspan="3" align="center">false</td><td>Whether the door rises vertically while activated instead of playing its open animation.</td></tr>
+</tbody>
+</table>
+
+#### O_DOOR_TYPE_7
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1 (63)</th><th align="center">TR2 (112)</th><th align="center">TR3 (137)</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>crowbar</code></td><td colspan="3" align="center">false</td><td>Whether the door must be pried open with the crowbar.</td></tr>
+<tr><td><code>lift</code></td><td colspan="3" align="center">false</td><td>Whether the door rises vertically while activated instead of playing its open animation.</td></tr>
+</tbody>
+</table>
+
+#### O_DOOR_TYPE_8
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1 (64)</th><th align="center">TR2 (113)</th><th align="center">TR3 (138)</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>crowbar</code></td><td colspan="3" align="center">false</td><td>Whether the door must be pried open with the crowbar.</td></tr>
+<tr><td><code>lift</code></td><td colspan="3" align="center">false</td><td>Whether the door rises vertically while activated instead of playing its open animation.</td></tr>
+</tbody>
+</table>
+
 #### O_EXAMINE_ITEM_1
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
@@ -1779,6 +1867,22 @@ This page lists documented moveable object properties.
 <thead><tr><th>Property</th><th align="center">TR1 (193)</th><th align="center">TR2 (152)</th><th align="center">TR3 (179)</th><th>Description</th></tr></thead>
 <tbody>
 <tr><td><code>burn_time</code></td><td colspan="2" align="center">60</td><td align="center">30</td><td>How long the flare burns for, in seconds.</td></tr>
+</tbody>
+</table>
+
+#### O_FLOOR_TRAPDOOR_1
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>auto_open</code></td><td colspan="3" align="center">true</td><td>Whether the trapdoor opens automatically when triggered.</td></tr>
+</tbody>
+</table>
+
+#### O_FLOOR_TRAPDOOR_2
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>auto_open</code></td><td colspan="3" align="center">true</td><td>Whether the trapdoor opens automatically when triggered.</td></tr>
 </tbody>
 </table>
 
@@ -2803,6 +2907,30 @@ This page lists documented moveable object properties.
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (318)</th><th>Description</th></tr></thead>
 <tbody>
 <tr><td><code>requires_alarm_active</code></td><td colspan="3" align="center">false</td><td>Require an alert event before the light activates.</td></tr>
+</tbody>
+</table>
+
+#### O_TRAPDOOR_TYPE_1
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1 (65)</th><th align="center">TR2 (114)</th><th align="center">TR3 (139)</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>auto_open</code></td><td colspan="3" align="center">true</td><td>Whether the trapdoor opens automatically when triggered.</td></tr>
+</tbody>
+</table>
+
+#### O_TRAPDOOR_TYPE_2
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1 (66)</th><th align="center">TR2 (115)</th><th align="center">TR3 (140)</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>auto_open</code></td><td colspan="3" align="center">true</td><td>Whether the trapdoor opens automatically when triggered.</td></tr>
+</tbody>
+</table>
+
+#### O_TRAPDOOR_TYPE_3
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1 (67)</th><th align="center">TR2 (116)</th><th align="center">TR3 (141)</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>auto_open</code></td><td colspan="3" align="center">true</td><td>Whether the trapdoor opens automatically when triggered.</td></tr>
 </tbody>
 </table>
 

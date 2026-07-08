@@ -265,6 +265,7 @@
         // 13. Desert Railroad
         {
             "path": "train.tr4",
+            "script": "train.lua",
             "music_track": 106,
             "lara_outfit": "tr3_classic",
             // "train": true,
@@ -508,6 +509,7 @@
         // 22. City of the Dead
         {
             "path": "bikebit.tr4",
+            "script": "bikebit.lua",
             "music_track": 102,
             "lara_outfit": "tr3_classic",
             "sequence":[
@@ -557,6 +559,7 @@
         // 24. Chambers of Tulun
         {
             "path": "cortyard.tr4",
+            "script": "cortyard.lua",
             "music_track": 102,
             "lara_outfit": "tr3_classic",
             "sequence":[

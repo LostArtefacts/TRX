@@ -195,6 +195,13 @@
         <property category="TRX" defaultValue="5" description="Offset applied each frame while the ceiling spikes descend." displayName="Speed" internalName="speed" minValue="0" type="Int" />
         <property category="TRX" defaultValue="20" description="Damage dealt while Lara is touching the ceiling spikes." displayName="Damage" internalName="damage" minValue="0" type="Int" />
     </moveable>
+    <moveable id="106-113">
+        <property category="TRX" defaultValue="false" description="Whether the door must be pried open with the crowbar." displayName="Crowbar" internalName="crowbar" type="Bool" />
+        <property category="TRX" defaultValue="false" description="Whether the door rises vertically while activated instead of playing its open animation." displayName="Lift" internalName="lift" type="Bool" />
+    </moveable>
+    <moveable id="114-116">
+        <property category="TRX" defaultValue="true" description="Whether the trapdoor opens automatically when triggered." displayName="Auto Open" internalName="auto_open" type="Bool" />
+    </moveable>
     <moveable id="123-132,260">
         <property category="TRX" defaultValue="1" description="Maximum hit points." displayName="Max Hit Points" internalName="max_hit_points" minValue="0" type="Int" />
     </moveable>

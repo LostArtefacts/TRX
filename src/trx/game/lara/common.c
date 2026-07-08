@@ -14,6 +14,7 @@
 #include <trx/game/lara/pose.h>
 #include <trx/game/matrix.h>
 #include <trx/game/objects.h>
+#include <trx/game/objects/general/door.h>
 #include <trx/game/output.h>
 #include <trx/game/pathing.h>
 #include <trx/game/rooms.h>
@@ -464,6 +465,20 @@ void Lara_UseItem(const OBJECT_ID obj_id)
             Stats_AddMedipacksUsed(1);
         }
         break;
+
+    case O_CROWBAR_ITEM:
+    case O_CROWBAR_OPTION: {
+        const int16_t door_item_num = Door_FindNearbyCrowbarDoor();
+        if (door_item_num == NO_ITEM || lara_info->interact_target.is_moving) {
+            Sound_Effect(SFX_LARA_NO, nullptr, SPM_NORMAL);
+            return;
+        }
+
+        lara_info->interact_target.item_num = door_item_num;
+        lara_info->interact_target.is_moving = true;
+        lara_info->interact_target.move_count = 0;
+        break;
+    }
 
     default: {
         const OBJECT_ID option_id = Inv_GetItemOption(obj_id);

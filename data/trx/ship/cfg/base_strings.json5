@@ -1937,6 +1937,12 @@
         "ceiling_spikes": {
             "name": "Spiky Ceiling",
         },
+        "ceiling_trapdoor_1": {
+            "name": "Ceiling Trapdoor 1",
+        },
+        "ceiling_trapdoor_2": {
+            "name": "Ceiling Trapdoor 2",
+        },
         "centaur": {
             "name": "Centaur",
         },
@@ -1963,6 +1969,9 @@
         },
         "cog_3": {
             "name": "Cog 3",
+        },
+        "cog_switch": {
+            "name": "Cog Switch",
         },
         "combat_end": {
             "name": "Combat End",
@@ -2002,6 +2011,9 @@
         },
         "crowbar": {
             "name": "Crowbar",
+        },
+        "crowbar_anim": {
+            "name": "Crowbar Animation",
         },
         "cult_1": {
             "name": "Masked Goon 1",
@@ -2089,6 +2101,9 @@
         },
         "door_8": {
             "name": "Door 8",
+        },
+        "double_doors": {
+            "name": "Double Doors",
         },
         "dragon_back": {
             "name": "Dragon Back",
@@ -2236,6 +2251,12 @@
         },
         "flickering_light": {
             "name": "Flickering Light",
+        },
+        "floor_trapdoor_1": {
+            "name": "Floor Trapdoor 1",
+        },
+        "floor_trapdoor_2": {
+            "name": "Floor Trapdoor 2",
         },
         "fuse_box": {
             "name": "Fuse Box",
@@ -2447,6 +2468,12 @@
         },
         "key_hole_9": {
             "name": "Keyhole 9",
+        },
+        "kick_door_1": {
+            "name": "Kick Door 1",
+        },
+        "kick_door_2": {
+            "name": "Kick Door 2",
         },
         "kill_all_triggered": {
             "name": "Kill All Triggered",
@@ -2837,6 +2864,12 @@
         },
         "punk_2": {
             "name": "Punk 2",
+        },
+        "pushpull_door_1": {
+            "name": "Push/Pull Door 1",
+        },
+        "pushpull_door_2": {
+            "name": "Push/Pull Door 2",
         },
         "puzzle_1": {
             "name": "Puzzle Item 1",
@@ -3365,6 +3398,9 @@
         },
         "twinkle": {
             "name": "Sparkles",
+        },
+        "underwater_door": {
+            "name": "Underwater Door",
         },
         "upv": {
             "name": [

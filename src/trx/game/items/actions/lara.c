@@ -1,6 +1,7 @@
 #include <trx/game/camera.h>
 #include <trx/game/gun/smoke.h>
 #include <trx/game/lara.h>
+#include <trx/game/lara/skin/common.h>
 #include <trx/game/random.h>
 #include <trx/game/rooms.h>
 #include <trx/game/sound.h>
@@ -107,6 +108,23 @@ static void M_Bubbles(ITEM *const item)
     }
 }
 
+static void M_SwapCrowbar(ITEM *const item)
+{
+    // The crowbar is modelled as a skin extra-mesh equipment on the right
+    // hand so that its presence is serialised with the rest of Lara's
+    // equipment; a plain mesh swap would be lost across a save/reload and
+    // the toggle would then desync, leaving her holding the crowbar forever.
+    const LARA_SKIN_EQUIPMENT *const equipment =
+        Lara_Skin_GetEquipment(LM_HAND_R);
+    const bool has_crowbar = equipment->type == EQUIPMENT_TYPE_EXTRA
+        && equipment->data == EXTRA_MESH_CROWBAR;
+    if (has_crowbar) {
+        Lara_Skin_ClearEquipment(LM_HAND_R);
+    } else {
+        Lara_Skin_SetExtraEquipment(LM_HAND_R, EXTRA_MESH_CROWBAR);
+    }
+}
+
 REGISTER_ITEM_ACTION(ITEM_ACTION_LARA_NORMAL, M_Normal)
 REGISTER_ITEM_ACTION(ITEM_ACTION_LARA_HANDS_FREE, M_HandsFree)
 REGISTER_ITEM_ACTION(ITEM_ACTION_LARA_DRAW_RIGHT_GUN, M_ToggleRightGun)
@@ -114,4 +132,5 @@ REGISTER_ITEM_ACTION(ITEM_ACTION_LARA_DRAW_LEFT_GUN, M_ToggleLeftGun)
 REGISTER_ITEM_ACTION(ITEM_ACTION_LARA_SHOOT_RIGHT_GUN, M_ShootRightGun)
 REGISTER_ITEM_ACTION(ITEM_ACTION_LARA_SHOOT_LEFT_GUN, M_ShootLeftGun)
 REGISTER_ITEM_ACTION(ITEM_ACTION_RESET_HAIR, M_ResetHair)
+REGISTER_ITEM_ACTION(ITEM_ACTION_SWAP_CROWBAR, M_SwapCrowbar)
 REGISTER_ITEM_ACTION(ITEM_ACTION_BUBBLES, M_Bubbles)

@@ -1937,6 +1937,12 @@
         "ceiling_spikes": {
             "name": "\\{review}Plafond Épineux",
         },
+        "ceiling_trapdoor_1": {
+            "name": "\\{review}Trappe de plafond 1",
+        },
+        "ceiling_trapdoor_2": {
+            "name": "\\{review}Trappe de plafond 2",
+        },
         "centaur": {
             "name": "Centaure",
         },
@@ -1963,6 +1969,9 @@
         },
         "cog_3": {
             "name": "Roue dentée 3",
+        },
+        "cog_switch": {
+            "name": "\\{review}Interrupteur à engrenage",
         },
         "combat_end": {
             "name": "\\{review}Fin de combat",
@@ -2002,6 +2011,9 @@
         },
         "crowbar": {
             "name": "\\{review}Pied-de-biche",
+        },
+        "crowbar_anim": {
+            "name": "\\{review}Animation de pied-de-biche",
         },
         "cult_1": {
             "name": "\\{review}Goon masqué 1",
@@ -2089,6 +2101,9 @@
         },
         "door_8": {
             "name": "Porte 8",
+        },
+        "double_doors": {
+            "name": "\\{review}Double porte",
         },
         "dragon_back": {
             "name": "\\{review}Dragon arrière",
@@ -2225,6 +2240,12 @@
         },
         "flickering_light": {
             "name": "\\{review}Lumière Vacillante",
+        },
+        "floor_trapdoor_1": {
+            "name": "\\{review}Trappe de sol 1",
+        },
+        "floor_trapdoor_2": {
+            "name": "\\{review}Trappe de sol 2",
         },
         "fuse_box": {
             "name": "\\{review}Boîte à fusibles",
@@ -2432,6 +2453,12 @@
         },
         "key_hole_9": {
             "name": "\\{review}Serrure 9",
+        },
+        "kick_door_1": {
+            "name": "\\{review}Porte à enfoncer 1",
+        },
+        "kick_door_2": {
+            "name": "\\{review}Porte à enfoncer 2",
         },
         "kill_all_triggered": {
             "name": "\\{review}Élimination totale déclenchée",
@@ -2805,6 +2832,12 @@
         },
         "punk_2": {
             "name": "\\{review}Punk 2",
+        },
+        "pushpull_door_1": {
+            "name": "\\{review}Porte à pousser/tirer 1",
+        },
+        "pushpull_door_2": {
+            "name": "\\{review}Porte à pousser/tirer 2",
         },
         "puzzle_1": {
             "name": "\\{review}Objet de puzzle 1",
@@ -3295,6 +3328,9 @@
         },
         "twinkle": {
             "name": "\\{review}Paillettes",
+        },
+        "underwater_door": {
+            "name": "\\{review}Porte sous-marine",
         },
         "upv": {
             "name": "\\{review}Mini-sous-marin",

@@ -137,6 +137,13 @@
     <moveable id="53,54">
         <property category="TRX" defaultValue="300" description="Damage dealt while Lara is touching the falling ceiling." displayName="Damage" internalName="damage" minValue="0" type="Int" />
     </moveable>
+    <moveable id="57-64">
+        <property category="TRX" defaultValue="false" description="Whether the door must be pried open with the crowbar." displayName="Crowbar" internalName="crowbar" type="Bool" />
+        <property category="TRX" defaultValue="false" description="Whether the door rises vertically while activated instead of playing its open animation." displayName="Lift" internalName="lift" type="Bool" />
+    </moveable>
+    <moveable id="65-67">
+        <property category="TRX" defaultValue="true" description="Whether the trapdoor opens automatically when triggered." displayName="Auto Open" internalName="auto_open" type="Bool" />
+    </moveable>
     <moveable id="77-80,191">
         <property category="TRX" defaultValue="1" description="Maximum hit points." displayName="Max Hit Points" internalName="max_hit_points" minValue="0" type="Int" />
     </moveable>

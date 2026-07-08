@@ -69,8 +69,9 @@ bool Lara_Interact_CanControl(
     case LARA_INTERACT_PICKUP:
         return !lara->interact_target.is_moving;
     case LARA_INTERACT_SWITCH:
-        const ITEM *const item = Item_Get(item_num);
-        return item->status == IS_INACTIVE;
+        return Item_Get(item_num)->status == IS_INACTIVE;
+    case LARA_INTERACT_DOOR:
+        return Item_Get(item_num)->status != IS_ACTIVE;
     default:
         return true;
     }
