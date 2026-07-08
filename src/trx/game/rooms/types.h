@@ -200,6 +200,7 @@ typedef struct {
         int16_t x;
     } size;
     int16_t ambient;
+    RGB_888 ambient_rgb; // TR4 room ambient; grayscale of `ambient` otherwise
     ROOM_LIGHT_MODE light_mode;
     int16_t num_lights;
     int16_t num_static_meshes;
