@@ -199,6 +199,27 @@ static void M_ReadSpriteTexturesTR4(LEVEL_CONTEXT *const ctx, VFILE *const file)
     Output_InitialiseSpriteTextures(
         num_textures + Inject_GetDataCount(IDT_SPRITE_TEXTURES));
     Level_Section_AppendSpriteTextures(0, 0, num_textures, file);
+
+    // TR4 stores the authoritative atlas rect in the corner fields (in
+    // pixels); the offset/width/height fields hold stale pre-repack values.
+    // Normalize to the TR1-3 convention the rest of the engine consumes.
+    // Injected sprites are appended later and are already authored this way.
+    for (int32_t i = 0; i < num_textures; i++) {
+        SPRITE_TEXTURE *const sprite = Output_GetSpriteTexture(i);
+        const int32_t x = sprite->x0;
+        const int32_t y = sprite->y0;
+        const int32_t w = sprite->x1 - sprite->x0;
+        const int32_t h = sprite->y1 - sprite->y0;
+        sprite->offset = x | (y << 8);
+        sprite->width = w * 256 - 1;
+        sprite->height = h * 256 - 1;
+        // The corner fields double as billboard extents downstream; TR4
+        // files don't author those, so use a centered box.
+        sprite->x0 = -w / 2;
+        sprite->y0 = -h / 2;
+        sprite->x1 = w / 2;
+        sprite->y1 = h / 2;
+    }
 }
 
 static void M_ReadItemsTR4(LEVEL_CONTEXT *const ctx, VFILE *const file)

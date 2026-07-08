@@ -101,6 +101,26 @@ typedef struct {
         XYZ_32 initial_pos;
     } interact_target;
 
+    // TR4: swinging rope state.
+    struct {
+        int16_t index;
+        int16_t segment;
+        int16_t direction;
+        int16_t last_x_rot;
+        int16_t arc_front;
+        int16_t arc_back;
+        int16_t max_x_forward;
+        int16_t max_x_backward;
+        int32_t d_frame;
+        int32_t frame;
+        uint16_t frame_rate;
+        uint16_t y_rot;
+        int32_t offset;
+        int32_t down_vel;
+        int8_t flag;
+        int32_t count;
+    } rope;
+
     LARA_GUN_TYPE holsters_gun_type;
     LARA_GUN_TYPE back_gun_type;
     int16_t gun_item_num;

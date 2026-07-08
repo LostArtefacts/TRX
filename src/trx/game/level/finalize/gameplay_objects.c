@@ -9,6 +9,7 @@
 #include <trx/game/objects/property.h>
 #include <trx/game/objects/vars.h>
 #include <trx/game/rooms.h>
+#include <trx/game/rope.h>
 #include <trx/version.h>
 
 static uint8_t M_GetAIBit(const OBJECT_ID object_id)
@@ -150,6 +151,8 @@ void Level_Finalize_LoadObjectsAndItems(LEVEL_CONTEXT *const ctx)
     // initialisations may increment the total item count.
     Object_SetupAllObjects();
     Walkable_ResetLevel();
+    // Must precede Item_Initialise() below, which creates the ropes.
+    Rope_Reset();
 
     for (int32_t i = 0; i < Item_GetLevelCount(); i++) {
         ObjectProperty_ResetItem(Item_Get(i));

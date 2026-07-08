@@ -3036,6 +3036,9 @@
                 "\\{review}Boule Roulante 4",
             ]
         },
+        "rope": {
+            "name": "\\{review}Corde",
+        },
         "rotating_laser": {
             "name": "\\{review}Laser rotatif",
         },

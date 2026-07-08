@@ -5,6 +5,7 @@
 #include <trx/game/rooms.h>
 #include <trx/game/rooms/enum.h>
 #include <trx/game/rooms/utils.h>
+#include <trx/game/rope.h>
 #include <trx/game/sound.h>
 #include <trx/version.h>
 
@@ -523,8 +524,10 @@ static void M_FallBack(ITEM *const item, COLL_INFO *const coll)
 
 static void M_Reach(ITEM *const item, COLL_INFO *const coll)
 {
-    item->gravity = true;
     LARA_INFO *const lara = Lara_GetLaraInfo();
+    if (lara->rope.index == NO_ROPE) {
+        item->gravity = true;
+    }
     lara->move_angle = item->rot.y;
     coll->bad_pos = NO_BAD_POS;
     coll->bad_neg = 0;

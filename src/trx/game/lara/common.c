@@ -17,6 +17,7 @@
 #include <trx/game/output.h>
 #include <trx/game/pathing.h>
 #include <trx/game/rooms.h>
+#include <trx/game/rope.h>
 #include <trx/game/savegame.h>
 #include <trx/game/sound.h>
 #include <trx/game/stats.h>
@@ -138,6 +139,7 @@ void Lara_Initialise(const GF_LEVEL *const level)
     lara_info->interact_target.is_moving = false;
     lara_info->interact_target.item_num = NO_ITEM;
     lara_info->interact_target.move_count = 0;
+    lara_info->rope.index = NO_ROPE;
     lara_info->poison.value = 0;
     lara_info->poison.target = 0;
     lara_info->tr3_smoke_count_l = 0;
@@ -674,6 +676,10 @@ void Lara_Animate(ITEM *const item)
 
         item->fall_speed += item->fall_speed < FAST_FALL_SPEED ? GRAVITY : 1;
         item->pos.y += item->fall_speed;
+    }
+
+    if (lara->rope.index != NO_ROPE) {
+        Rope_AlignLara(item);
     }
 
     item->pos.x += (item->speed * Math_Sin(lara->move_angle)) >> W2V_SHIFT;

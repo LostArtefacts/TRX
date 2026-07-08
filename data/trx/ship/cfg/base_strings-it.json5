@@ -3072,6 +3072,9 @@
                 "Masso Rotolante 4",
             ]
         },
+        "rope": {
+            "name": "\\{review}Corda",
+        },
         "rotating_laser": {
             "name": "Laser rotante",
         },

@@ -21,6 +21,7 @@
 #include <trx/game/pathing.h>
 #include <trx/game/random.h>
 #include <trx/game/rooms.h>
+#include <trx/game/rope.h>
 #include <trx/game/savegame.h>
 #include <trx/game/stats.h>
 #include <trx/version.h>
@@ -64,6 +65,60 @@ static bool M_ReadAmmo(
     ASSERT(ammo != nullptr);
     M_MUST(JSON_PUSH(io, key));
     M_MUST(JSON_READ(io, "ammo", &ammo->ammo));
+    M_MUST(JSON_POP(io));
+    M_FINISH();
+}
+
+static bool M_ReadXYZ32Array(
+    JSON_READ_IO *const io, const char *const key, XYZ_32 *const target,
+    const int32_t count)
+{
+    M_MUST(JSON_PUSH(io, key));
+    if (JSON_ARRAY_LEN(io) != count) {
+        JSON_ReadIO_SetError(
+            io, "expected %d values in '%s', got %d", count, key,
+            JSON_ARRAY_LEN(io));
+        M_FAIL();
+    }
+
+    for (int32_t i = 0; i < count; i++) {
+        M_MUST(JSON_READ_A(io, i, &target[i]));
+    }
+    M_MUST(JSON_POP(io));
+    M_FINISH();
+}
+
+static bool M_ReadRopeState(JSON_READ_IO *const io)
+{
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    ROPE *const rope =
+        lara->rope.index != NO_ROPE ? Rope_Get(lara->rope.index) : nullptr;
+    if (rope == nullptr) {
+        JSON_ReadIO_SetError(io, "invalid rope index %d", lara->rope.index);
+        M_FAIL();
+    }
+
+    M_MUST(JSON_PUSH(io, "rope_state"));
+    M_MUST(M_ReadXYZ32Array(io, "segments", rope->segments, ROPE_SEGMENTS));
+    M_MUST(M_ReadXYZ32Array(io, "velocities", rope->velocities, ROPE_SEGMENTS));
+    M_MUST(M_ReadXYZ32Array(
+        io, "normalised_segments", rope->normalised_segments, ROPE_SEGMENTS));
+    M_MUST(M_ReadXYZ32Array(
+        io, "mesh_segments", rope->mesh_segments, ROPE_SEGMENTS));
+    M_MUST(M_ReadXYZ32Array(
+        io, "prev_mesh_segments", rope->prev_mesh_segments, ROPE_SEGMENTS));
+    M_MUST(JSON_READ(io, "pos", &rope->pos));
+    M_MUST(JSON_READ(io, "segment_length", &rope->segment_length));
+    M_MUST(JSON_READ(io, "active", &rope->active));
+
+    ROPE_PENDULUM *const pendulum = Rope_GetPendulum();
+    M_MUST(JSON_PUSH(io, "pendulum"));
+    M_MUST(JSON_READ(io, "pos", &pendulum->pos));
+    M_MUST(JSON_READ(io, "vel", &pendulum->vel));
+    M_MUST(JSON_READ(io, "node", &pendulum->node));
+    M_MUST(JSON_POP(io));
+    pendulum->rope = rope;
+
     M_MUST(JSON_POP(io));
     M_FINISH();
 }
@@ -227,6 +282,31 @@ static bool M_ReadLara(JSON_READ_IO *const io)
     M_MUST(JSON_READ(io, "move_count", &lara->interact_target.move_count));
     M_MUST(JSON_READ(io, "is_moving", &lara->interact_target.is_moving));
     M_MUST(JSON_POP(io));
+
+    // Introduced with the TR4 rope; missing in older saves.
+    lara->rope.index = NO_ROPE;
+    if (M_OPTIONAL(JSON_PUSH(io, "rope"))) {
+        M_MUST(JSON_READ(io, "index", &lara->rope.index));
+        M_MUST(JSON_READ(io, "segment", &lara->rope.segment));
+        M_MUST(JSON_READ(io, "direction", &lara->rope.direction));
+        M_MUST(JSON_READ(io, "last_x_rot", &lara->rope.last_x_rot));
+        M_MUST(JSON_READ(io, "arc_front", &lara->rope.arc_front));
+        M_MUST(JSON_READ(io, "arc_back", &lara->rope.arc_back));
+        M_MUST(JSON_READ(io, "max_x_forward", &lara->rope.max_x_forward));
+        M_MUST(JSON_READ(io, "max_x_backward", &lara->rope.max_x_backward));
+        M_MUST(JSON_READ(io, "d_frame", &lara->rope.d_frame));
+        M_MUST(JSON_READ(io, "frame", &lara->rope.frame));
+        M_MUST(JSON_READ(io, "frame_rate", &lara->rope.frame_rate));
+        M_MUST(JSON_READ(io, "y_rot", &lara->rope.y_rot));
+        M_MUST(JSON_READ(io, "offset", &lara->rope.offset));
+        M_MUST(JSON_READ(io, "down_vel", &lara->rope.down_vel));
+        M_MUST(JSON_READ(io, "flag", &lara->rope.flag));
+        M_MUST(JSON_READ(io, "count", &lara->rope.count));
+        M_MUST(JSON_POP(io));
+    }
+    if (JSON_ReadIO_HasKey(io, "rope_state")) {
+        M_MUST(M_ReadRopeState(io));
+    }
 
     M_FINISH();
 }

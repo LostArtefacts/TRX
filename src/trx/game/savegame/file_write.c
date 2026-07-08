@@ -17,6 +17,7 @@
 #include <trx/game/output.h>
 #include <trx/game/random.h>
 #include <trx/game/rooms.h>
+#include <trx/game/rope.h>
 #include <trx/game/savegame.h>
 #include <trx/game/savegame/file.h>
 #include <trx/version.h>
@@ -44,6 +45,50 @@ static void M_WriteXYZ16(
     JSONW_WRITE(io, "y", source.y);
     JSONW_WRITE(io, "z", source.z);
     JSONW_POP_AND_SET(io, key);
+}
+
+static void M_WriteXYZ32Array(
+    JSON_WRITE_IO *const io, const char *const key, const XYZ_32 *const source,
+    const int32_t count)
+{
+    JSONW_PUSH_ARRAY(io);
+    for (int32_t i = 0; i < count; i++) {
+        JSONW_PUSH_VALUE(io, source[i]);
+        JSONW_POP_AND_APPEND(io);
+    }
+    JSONW_POP_AND_SET(io, key);
+}
+
+static void M_WriteRopeState(JSON_WRITE_IO *const io)
+{
+    const LARA_INFO *const lara = Lara_GetLaraInfo();
+    const ROPE *const rope =
+        lara->rope.index != NO_ROPE ? Rope_Get(lara->rope.index) : nullptr;
+    if (rope == nullptr) {
+        return;
+    }
+
+    const ROPE_PENDULUM *const pendulum = Rope_GetPendulum();
+
+    JSONW_PUSH_OBJECT(io);
+    M_WriteXYZ32Array(io, "segments", rope->segments, ROPE_SEGMENTS);
+    M_WriteXYZ32Array(io, "velocities", rope->velocities, ROPE_SEGMENTS);
+    M_WriteXYZ32Array(
+        io, "normalised_segments", rope->normalised_segments, ROPE_SEGMENTS);
+    M_WriteXYZ32Array(io, "mesh_segments", rope->mesh_segments, ROPE_SEGMENTS);
+    M_WriteXYZ32Array(
+        io, "prev_mesh_segments", rope->prev_mesh_segments, ROPE_SEGMENTS);
+    JSONW_WRITE(io, "pos", rope->pos);
+    JSONW_WRITE(io, "segment_length", rope->segment_length);
+    JSONW_WRITE(io, "active", rope->active);
+
+    JSONW_PUSH_OBJECT(io);
+    JSONW_WRITE(io, "pos", pendulum->pos);
+    JSONW_WRITE(io, "vel", pendulum->vel);
+    JSONW_WRITE(io, "node", pendulum->node);
+    JSONW_POP_AND_SET(io, "pendulum");
+
+    JSONW_POP_AND_SET(io, "rope_state");
 }
 
 static void M_GetFXOrder(M_FX_ORDER *const order)
@@ -609,6 +654,26 @@ void SG_File_DumpLara(JSON_WRITE_IO *const io)
     JSONW_WRITE(io, "move_count", lara->interact_target.move_count);
     JSONW_WRITE(io, "is_moving", lara->interact_target.is_moving);
     JSONW_POP_AND_SET(io, "interact_target");
+
+    JSONW_PUSH_OBJECT(io);
+    JSONW_WRITE(io, "index", lara->rope.index);
+    JSONW_WRITE(io, "segment", lara->rope.segment);
+    JSONW_WRITE(io, "direction", lara->rope.direction);
+    JSONW_WRITE(io, "last_x_rot", lara->rope.last_x_rot);
+    JSONW_WRITE(io, "arc_front", lara->rope.arc_front);
+    JSONW_WRITE(io, "arc_back", lara->rope.arc_back);
+    JSONW_WRITE(io, "max_x_forward", lara->rope.max_x_forward);
+    JSONW_WRITE(io, "max_x_backward", lara->rope.max_x_backward);
+    JSONW_WRITE(io, "d_frame", lara->rope.d_frame);
+    JSONW_WRITE(io, "frame", lara->rope.frame);
+    JSONW_WRITE(io, "frame_rate", lara->rope.frame_rate);
+    JSONW_WRITE(io, "y_rot", lara->rope.y_rot);
+    JSONW_WRITE(io, "offset", lara->rope.offset);
+    JSONW_WRITE(io, "down_vel", lara->rope.down_vel);
+    JSONW_WRITE(io, "flag", lara->rope.flag);
+    JSONW_WRITE(io, "count", lara->rope.count);
+    JSONW_POP_AND_SET(io, "rope");
+    M_WriteRopeState(io);
 
     JSONW_POP_AND_SET(io, "lara");
 }
