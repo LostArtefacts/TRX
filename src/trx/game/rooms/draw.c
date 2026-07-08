@@ -9,6 +9,7 @@
 #include <trx/game/output.h>
 #include <trx/game/output/bind.h>
 #include <trx/game/rooms.h>
+#include <trx/game/rope.h>
 #include <trx/game/sparks.h>
 
 #include <string.h>
@@ -505,6 +506,7 @@ void Room_DrawAllRooms(const int16_t current_room, const int16_t target_room)
     Output_SetupAboveWater(false);
     FX_Draw();
     Sparks_Draw();
+    Rope_DrawAll();
 }
 
 bool Room_IsSkyVisible(void)

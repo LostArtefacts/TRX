@@ -434,6 +434,7 @@ X_OBJ_NAME_DEFINE(O_TRAPDOOR_TYPE_2,       "trapdoor_2",            X_OBJ_NAMES(
 X_OBJ_NAME_DEFINE(O_TRAPDOOR_TYPE_3,       "trapdoor_3",            X_OBJ_NAMES("Trapdoor 3"))
 X_OBJ_NAME_DEFINE(O_ZIPLINE_HANDLE,        "zipline_handle",        X_OBJ_NAMES("Zipline Handle"))
 X_OBJ_NAME_DEFINE(O_CLIMBING_POLE,         "climbing_pole",         X_OBJ_NAMES("Climbing Pole"))
+X_OBJ_NAME_DEFINE(O_ROPE,                  "rope",                  X_OBJ_NAMES("Rope"))
 X_OBJ_NAME_DEFINE(O_ELECTRICAL_LIGHT,      "electrical_light",      X_OBJ_NAMES("Electrical Light"))
 X_OBJ_NAME_DEFINE(O_RED_LIGHT,             "red_light",             X_OBJ_NAMES("Red Light"))
 X_OBJ_NAME_DEFINE(O_GREEN_LIGHT,           "green_light",           X_OBJ_NAMES("Green Light"))

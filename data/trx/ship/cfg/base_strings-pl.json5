@@ -3023,6 +3023,9 @@
         "rolling_ball_4": {
             "name": "Głaz 4",
         },
+        "rope": {
+            "name": "\\{review}Lina",
+        },
         "rotating_laser": {
             "name": "Obracające się lasery",
         },

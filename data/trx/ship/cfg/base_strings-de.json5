@@ -3042,6 +3042,9 @@
                 "Rolling Ball 4",
             ]
         },
+        "rope": {
+            "name": "\\{review}Seil",
+        },
         "rotating_laser": {
             "name": "\\{review}Rotierender Laser",
         },
