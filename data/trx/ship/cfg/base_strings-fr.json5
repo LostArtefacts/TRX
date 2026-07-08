@@ -1584,6 +1584,10 @@
             "title": "\\{review}Allumage de feu",
             "description": "\\{review}Active l'éclairage dynamique généré à proximité des flammes actives.",
         },
+        "visuals.enable_fog_bulbs": {
+            "title": "\\{review}Bulles de brouillard",
+            "description": "\\{review}Active les effets de brouillard volumétrique placés dans les niveaux.",
+        },
         "visuals.enable_footprints": {
             "title": "\\{review}Empreintes de pas",
             "description": "\\{review}Permet l'affichage des empreintes de Lara sur certaines surfaces dans les niveaux pris en charge.",

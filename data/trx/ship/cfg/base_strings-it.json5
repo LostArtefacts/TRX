@@ -1584,6 +1584,10 @@
             "title": "Illuminazione fuoco",
             "description": "Abilita l'illuminazione dinamica accanto alle sorgenti di fuoco attive.",
         },
+        "visuals.enable_fog_bulbs": {
+            "title": "\\{review}Bolle di nebbia",
+            "description": "\\{review}Abilita gli effetti di nebbia volumetrica presenti nei livelli.",
+        },
         "visuals.enable_footprints": {
             "title": "Impronte",
             "description": "Abilita, nei livelli supportati, la visualizzazione delle impronte di Lara su alcune superfici.",

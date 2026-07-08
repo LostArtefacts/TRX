@@ -2,6 +2,7 @@ X_UI_CFG(visuals.fog_start,            .min_value = 1, .max_value = 100, .delta_
 X_UI_CFG(visuals.fog_end,              .min_value = 1, .max_value = 100, .delta_slow = 1, .delta_fast = 10)
 X_UI_CFG(visuals.fog_transparency)
 X_UI_CFG_RGB888(visuals.fog_color,     .custom_handler = { .format_value = UI_Settings_ColorEditor_FormatValue, .can_change_value = UI_Settings_ColorEditor_CanChangeValue, .is_available = UI_Settings_FogColor_IsAvailable })
+X_UI_CFG(visuals.enable_fog_bulbs,     .custom_handler = { .is_visible = UI_Settings_FogBulbs_IsVisible })
 
 X_UI_CFG_RGB888(visuals.water_color,   .custom_handler = { .format_value = UI_Settings_ColorEditor_FormatValue, .can_change_value = UI_Settings_ColorEditor_CanChangeValue })
 

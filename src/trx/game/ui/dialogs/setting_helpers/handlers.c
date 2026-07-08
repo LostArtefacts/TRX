@@ -43,6 +43,12 @@ bool UI_Settings_FogColor_IsAvailable(const UI_SETTINGS_OPTION *const option)
     return !g_Config.visuals.fog_transparency;
 }
 
+bool UI_Settings_FogBulbs_IsVisible(const UI_SETTINGS_OPTION *const option)
+{
+    // Fog bulbs are a TR4 feature; older games have no such config option.
+    return g_TRVersion == 4;
+}
+
 bool UI_Settings_EnableBreeze_IsAvailable(
     const UI_SETTINGS_OPTION *const option)
 {

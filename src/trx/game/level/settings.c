@@ -33,6 +33,9 @@ RGBA_8888 Level_GetFogColor(void)
 
 bool Level_AreFogBulbsEnabled(void)
 {
+    if (!g_Config.visuals.enable_fog_bulbs) {
+        return false;
+    }
     // The OG disables volumetric fog bulbs on some levels (GF_TRAIN).
     const GF_LEVEL *const level = GF_GetCurrentLevel();
     if (level != nullptr && level->settings.fog_bulbs.is_present) {

@@ -1584,6 +1584,10 @@
             "title": "Feuer-Beleuchtung",
             "description": "Ermöglicht die generierung von dynamischen Lichteffekten neben aktiven Flammen.",
         },
+        "visuals.enable_fog_bulbs": {
+            "title": "\\{review}Nebelblasen",
+            "description": "\\{review}Aktiviert die in den Levels platzierten volumetrischen Nebeleffekte.",
+        },
         "visuals.enable_footprints": {
             "title": "\\{review}Fußspuren",
             "description": "\\{review}Ermöglicht das Anzeigen von Laras Fußspuren auf bestimmten Oberflächen in unterstützten Levels.",
