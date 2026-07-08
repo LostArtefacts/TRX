@@ -143,8 +143,12 @@ void MeshBuilder_AddFace(
 
     const size_t vtx_count = builder->pending_vertex_count;
     const size_t start = builder->mesh->vertices->count - vtx_count;
-    const OUTPUT_MESH_VERTEX *const vbuf =
-        Vector_GetData(builder->mesh->vertices);
+    OUTPUT_MESH_VERTEX *const vbuf = Vector_GetData(builder->mesh->vertices);
+    if (pass == SCENE_PASS_BLEND_ADD) {
+        for (size_t i = 0; i < vtx_count; i++) {
+            vbuf[start + i].flags |= VERT_ADDITIVE;
+        }
+    }
     XYZ_F centroid = { 0.0f, 0.0f, 0.0f };
     for (size_t i = 0; i < vtx_count; i++) {
         centroid.x += vbuf[start + i].pos.x;
