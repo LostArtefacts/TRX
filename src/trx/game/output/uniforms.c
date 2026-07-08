@@ -270,9 +270,10 @@ OUTPUT_UNIFORMS *Output_Uniforms_Create(void)
         GL_DYNAMIC_DRAW);
     glBindBufferBase(GL_UNIFORM_BUFFER, 3, uniforms->ls);
 
-    // Sized properly by the TR4 lighting model once it uploads fog bulbs.
     glBindBuffer(GL_UNIFORM_BUFFER, uniforms->fog_bulbs);
-    glBufferData(GL_UNIFORM_BUFFER, 16, nullptr, GL_DYNAMIC_DRAW);
+    glBufferData(
+        GL_UNIFORM_BUFFER, sizeof(OUTPUT_UNIFORM_FOG_BULBS), nullptr,
+        GL_DYNAMIC_DRAW);
     glBindBufferBase(GL_UNIFORM_BUFFER, 4, uniforms->fog_bulbs);
     TRX_GL_CheckError();
 

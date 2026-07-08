@@ -98,7 +98,35 @@ void main(void) {
 
     float gamma_exp = 1.0 / ((uGamma / 10.0) * 4.0);
 
-#if TR_VERSION >= 3
+#if TR_VERSION >= 4
+    // The OG engine lights everything in the "128 = neutral" scale: the lit value is
+    // doubled and the excess above 1.0 becomes an additive overbright term
+    // applied after texturing (CalcColorSplit).
+    vec3 lightIn;
+    vec3 modulate;
+    if ((gFlags & VERT_FLAT_SHADED) != 0u) {
+        lightIn = vec3(128.0 / 255.0); // neutral: no lighting, no overbright
+        modulate = inColor.rgb;
+    } else if (uLightingEnabled == 0) {
+        lightIn = vec3(128.0 / 255.0);
+        modulate = vec3(1);
+    } else {
+        if ((gFlags & VERT_USE_OBJECT_LIGHT) != 0u) {
+            lightIn = lightObjectsTR4(inNormal.xyz);
+        } else if ((gFlags & VERT_USE_OWN_LIGHT) != 0u) {
+            lightIn = lightOwnTR4(inShade);
+        } else {
+            lightIn = inColor.rgb;
+        }
+        modulate = vec3(1);
+    }
+
+    vec3 L = lightIn * (255.0 / 128.0) + lr.add;
+    gAdd = max(L - vec3(1.0), vec3(0.0)) * (64.0 / 255.0);
+    vec3 lit = clamp(L, 0.0, 1.0);
+    lit = gammaCurve(lit, gamma_exp);
+    gColor = vec4(lit * modulate, inColor.a);
+#elif TR_VERSION >= 3
     vec3 lightIn;
     vec3 modulate;
     if ((gFlags & VERT_FLAT_SHADED) == 0u) {
@@ -181,6 +209,66 @@ vec4 applyFog(vec4 color, float dist)
     return mix(color, uFogColor, fogFactor);
 }
 
+#if TR_VERSION >= 4
+// Volumetric fog bulbs (port of the OG OmniEffect/OmniFog,
+// polyinsert.cpp:530-688), evaluated per fragment in view space. Level
+// bulbs push the fragment toward the fog color; FX bulbs (e.g. underwater
+// flares) add colored light.
+#define MAX_FOG_BULBS 10
+
+struct FogBulb {
+    vec4 pos;    // view space center; w = distance to camera
+    vec4 edge;   // view space sphere edge point toward camera; w = sqrad
+    vec4 color;  // rgb 0..1; w = density (0..255)
+    vec4 params; // x = 1 / sqrad, y = 1 for FX bulbs
+};
+
+layout(std140) uniform FogBulbs {
+    int uNumFogBulbs;
+    FogBulb uFogBulbs[MAX_FOG_BULBS];
+};
+
+vec4 applyFogBulbs(vec4 color)
+{
+    vec3 fxAdd = vec3(0.0);
+    float fogAmount = 0.0;
+    for (int i = 0; i < uNumFogBulbs; i++) {
+        vec3 p = gEyePos.xyz;
+        // Fragments beyond the bulb are projected back onto the view ray at
+        // the bulb's distance, so the fog reads as a volume.
+        if (uFogBulbs[i].pos.z < p.z) {
+            p *= uFogBulbs[i].pos.w / p.z;
+        }
+        vec3 dP = p - uFogBulbs[i].pos.xyz;
+        vec3 dV = uFogBulbs[i].edge.xyz - uFogBulbs[i].pos.xyz;
+        float dv2 = dot(dV, dV);
+        if (dv2 <= 0.0) {
+            continue;
+        }
+        float t = dot(dP, dV) / dv2;
+        if (t < -1.0) {
+            continue;
+        }
+        if (t > 0.0) {
+            dP -= t * dV;
+        }
+        float d2 = dot(dP, dP);
+        if (d2 <= 0.0 || d2 >= uFogBulbs[i].edge.w) {
+            continue;
+        }
+        float density = uFogBulbs[i].color.w;
+        float val = d2 * uFogBulbs[i].params.x * density;
+        if (uFogBulbs[i].params.y != 0.0) {
+            fxAdd += (density - val) * uFogBulbs[i].color.rgb * (1.0 / 256.0);
+        } else {
+            fogAmount += (density - val) * (1.0 / 255.0);
+        }
+    }
+    color.rgb = clamp(color.rgb + fxAdd, 0.0, 1.0);
+    return mix(color, uFogColor, clamp(fogAmount, 0.0, 1.0));
+}
+#endif
+
 void main(void) {
     vec4 texColor = gColor;
 
@@ -216,6 +304,9 @@ void main(void) {
     // Fog
     if ((gFlags & VERT_NO_LIGHTING) == 0u && uLightingEnabled != 0) {
         texColor = applyFog(texColor, length(gEyePos.xyz));
+#if TR_VERSION >= 4
+        texColor = applyFogBulbs(texColor);
+#endif
     }
 
     texColor.rgb *= uBrightnessMultiplier;

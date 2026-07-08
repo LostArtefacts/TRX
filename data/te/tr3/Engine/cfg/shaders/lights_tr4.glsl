@@ -1,0 +1,1 @@
+../../../../../trx/ship/cfg/shaders/lights_tr4.glsl

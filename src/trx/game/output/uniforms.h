@@ -13,6 +13,10 @@ typedef struct {
     RGB_F tr3_ambient;
     RGB_F tr3_light_color[3];
     XYZ_32 tr3_light_dir_view[3];
+    struct {
+        // Index into the TR4 per-scene staged light pool; -1 = none.
+        int32_t handle;
+    } tr4;
 } OUTPUT_LIGHT_INFO;
 
 typedef struct {

@@ -27,8 +27,7 @@ static OUTPUT_LS_CACHE m_LSCache = {};
 static const LIGHTING_MODEL *const m_Models[] = {
     &g_LightingModelTR12,
     &g_LightingModelTR3,
-    // TODO: dedicated TR4 model; rides the TR3 path for now.
-    &g_LightingModelTR3,
+    &g_LightingModelTR4,
 };
 
 const LIGHTING_MODEL *Output_Lights_GetModel(void)
@@ -43,7 +42,9 @@ OUTPUT_LS_CACHE *Output_Lights_GetLSCache(void)
 
 size_t Output_Lights_GetLSBufferSize(void)
 {
-    return MAX(sizeof(OUTPUT_UNIFORM_LS_TR12), sizeof(OUTPUT_UNIFORM_LS_TR3));
+    return MAX(
+        MAX(sizeof(OUTPUT_UNIFORM_LS_TR12), sizeof(OUTPUT_UNIFORM_LS_TR3)),
+        sizeof(OUTPUT_UNIFORM_LS_TR4));
 }
 
 void Output_Lights_ResetUploadCache(void)
@@ -249,6 +250,14 @@ void Output_Lights_BeginScene(void)
     const LIGHTING_MODEL *const model = Output_Lights_GetModel();
     if (model->begin_scene != nullptr) {
         model->begin_scene();
+    }
+}
+
+void Output_Lights_PrepareScene(void)
+{
+    const LIGHTING_MODEL *const model = Output_Lights_GetModel();
+    if (model->prepare_scene != nullptr) {
+        model->prepare_scene();
     }
 }
 

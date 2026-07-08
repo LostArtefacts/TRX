@@ -43,6 +43,9 @@ typedef struct {
         XYZ_32 pos, int32_t falloff, RGB_888 color); // nullable
 
     void (*begin_scene)(void); // nullable
+    // Called at render time once the scene's view matrix is final;
+    // TR4 stages and uploads the fog bulbs here.
+    void (*prepare_scene)(void); // nullable
     void (*animate)(int32_t num_frames); // nullable
     // Lets the model refine the light snapshot per staged mesh instance
     // (TR4 resolves its light list relative to each mesh's world position).
@@ -59,8 +62,13 @@ typedef struct {
 
 extern const LIGHTING_MODEL g_LightingModelTR12;
 extern const LIGHTING_MODEL g_LightingModelTR3;
+extern const LIGHTING_MODEL g_LightingModelTR4;
 
 const LIGHTING_MODEL *Output_Lights_GetModel(void);
+
+// TR3's dynamic light encoding, reused by the TR4 model.
+void Output_Lights_TR3_AddDynamicLight(
+    XYZ_32 pos, int32_t intensity, int32_t falloff);
 
 // Per-family LightSource UBO layouts (binding point 3). The GL buffer is
 // shared and sized to the largest layout; each family uploads only its own.
@@ -77,6 +85,33 @@ typedef struct {
     float dir_view[3][4];
     float color[3][4];
 } OUTPUT_UNIFORM_LS_TR3;
+
+// 21 current + 21 previous room lights plus dynamics, truncated beyond.
+#define OUTPUT_TR4_MAX_STAGED_LIGHTS 48
+
+typedef struct {
+    float ambient[4]; // 0..1 scale where 128/255 is the OG neutral
+    int32_t num_lights;
+    int32_t _pad[3];
+    struct {
+        float vec[4]; // view space, attenuation-scaled
+        float color[4]; // rgb 0..1; w = radial attenuation
+    } lights[OUTPUT_TR4_MAX_STAGED_LIGHTS];
+} OUTPUT_UNIFORM_LS_TR4;
+
+// 5 level bulbs + 5 FX bulbs (TR4 only; binding point 4).
+#define OUTPUT_MAX_FOG_BULBS 10
+
+typedef struct {
+    int32_t count;
+    int32_t _pad[3];
+    struct {
+        float pos[4]; // view space center; w = distance to camera
+        float edge[4]; // view space sphere edge toward camera; w = sqrad
+        float color[4]; // rgb 0..1; w = density (0..255)
+        float params[4]; // x = 1 / sqrad, y = 1 for FX bulbs
+    } bulbs[OUTPUT_MAX_FOG_BULBS];
+} OUTPUT_UNIFORM_FOG_BULBS;
 #pragma pack(pop)
 
 typedef enum {
@@ -113,4 +148,5 @@ void Output_Lights_UploadOwnLight(const OUTPUT_LIGHT_INFO *info);
 void Output_Lights_FillInstanceLight(
     OUTPUT_LIGHT_INFO *info, const MATRIX *wmatrix);
 void Output_Lights_BeginScene(void);
+void Output_Lights_PrepareScene(void);
 void Output_Lights_ResetUploadCache(void);
