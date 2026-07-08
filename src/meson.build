@@ -144,6 +144,7 @@ common_sources = [
   'trx/core/bson/parse.c',
   'trx/core/bson/write.c',
   'trx/core/colors.c',
+  'trx/core/csv.c',
   'trx/core/enum_map.c',
   'trx/core/event_manager.c',
   'trx/core/filesystem.c',

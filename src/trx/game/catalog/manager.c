@@ -1,5 +1,6 @@
 #include <trx/game/catalog/manager.h>
 
+#include <trx/core/csv.h>
 #include <trx/core/filesystem.h>
 #include <trx/core/log.h>
 #include <trx/core/memory.h>
@@ -10,7 +11,7 @@
 #include <trx/game/objects/ids.h>
 #include <trx/game/sound/ids.h>
 
-#include <ctype.h>
+#include <stdlib.h>
 #include <string.h>
 #include <uthash.h>
 
@@ -92,58 +93,6 @@ static void M_ClearNameMap(M_NAME_ENTRY **const map)
     }
 }
 
-// Trim leading/trailing whitespace in-place
-static char *M_StrTrim(char *s)
-{
-    while (*s && isspace(*s)) {
-        s++;
-    }
-    if (*s == '\0') {
-        return s;
-    }
-    char *end = s + strlen(s) - 1;
-    while (end > s && isspace(*end)) {
-        *end-- = '\0';
-    }
-    return s;
-}
-
-// Parse one CSV field into out buffer; advance *p past field
-static void M_ParseCSVField(
-    const char **const p, char *const out, const size_t out_sz)
-{
-    const char *src = *p;
-    char *dst = out;
-    const char *const end = out + out_sz - 1;
-    if (*src == '"') {
-        src++;
-        while (*src && (*src != '"' || (src[1] == '"'))) {
-            if (*src == '"' && src[1] == '"') {
-                src++;
-            }
-            if (dst < end) {
-                *dst++ = *src;
-            }
-            src++;
-        }
-        if (*src == '"') {
-            src++;
-        }
-    } else {
-        while (*src && *src != ',') {
-            if (dst < end) {
-                *dst++ = *src;
-            }
-            src++;
-        }
-    }
-    *dst = '\0';
-    if (*src == ',') {
-        src++;
-    }
-    *p = src;
-}
-
 // Build initial maps on first load
 static void M_Initialize(void)
 {
@@ -199,10 +148,10 @@ bool Catalog_Load(
         const char *p = line;
         char id_buf[32];
         char name_buf[64];
-        M_ParseCSVField(&p, id_buf, sizeof(id_buf));
-        M_ParseCSVField(&p, name_buf, sizeof(name_buf));
-        char *const id_str = M_StrTrim(id_buf);
-        char *const name_str = M_StrTrim(name_buf);
+        CSV_ParseField(&p, id_buf, sizeof(id_buf));
+        CSV_ParseField(&p, name_buf, sizeof(name_buf));
+        char *const id_str = CSV_Trim(id_buf);
+        char *const name_str = CSV_Trim(name_buf);
         const int32_t game_id = (int32_t)strtol(id_str, nullptr, 10);
 
         CATALOG_ID id;

@@ -46,10 +46,13 @@ static MUSIC_BACKEND *M_FindBackend(void)
     VECTOR *all_backends = Vector_Create(sizeof(MUSIC_BACKEND *));
     const char *const music_dir =
         TRXPath_PeekResolve(TRX_DYNAMIC_PATH_MUSIC_DIR, nullptr);
-    if (music_dir != nullptr) {
+    const char *const music_catalog_path = TRXPath_PeekResolve(
+        TRX_DYNAMIC_PATH_CATALOG, "catalog_music_files.csv");
+    if (music_dir != nullptr || music_catalog_path != nullptr) {
         Vector_Add(
             all_backends,
-            &(MUSIC_BACKEND *) { Music_Backend_Files_Factory(music_dir) });
+            &(MUSIC_BACKEND *) {
+                Music_Backend_Files_Factory(music_dir, music_catalog_path) });
     }
 
     if (g_TRVersion >= 2) {
