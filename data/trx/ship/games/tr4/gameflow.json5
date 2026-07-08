@@ -34,6 +34,7 @@
         // 1. Angkor Wat
         {
             "path": "angkor1.tr4",
+            "script": "angkor1.lua",
             "music_track": 110,
             "lara_outfit": "tr3_classic",
             "sequence":[
@@ -51,6 +52,7 @@
         // 2. Race for the Iris
         {
             "path": "ang_race.tr4",
+            "script": "ang_race.lua",
             "music_track": 110,
             "lara_outfit": "tr3_classic",
             // "timer": true,
@@ -321,6 +323,7 @@
         // 15. Coastal Ruins
         {
             "path": "alexhub2.tr4",
+            "script": "alexhub2.lua",
             "music_track": 105,
             "lara_outfit": "tr3_classic",
             "sequence":[
@@ -382,6 +385,7 @@
         // 17. Cleopatra's Palaces
         {
             "path": "palaces2.tr4",
+            "script": "palaces2.lua",
             "music_track": 107,
             "lara_outfit": "tr3_classic",
             "sequence":[
@@ -526,6 +530,7 @@
         // 23. Trenches
         {
             "path": "nutrench.tr4",
+            "script": "nutrench.lua",
             "music_track": 102,
             "lara_outfit": "tr3_classic",
             "sequence":[
@@ -600,6 +605,7 @@
         // 26. Citadel Gate
         {
             "path": "highstrt.tr4",
+            "script": "highstrt.lua",
             "music_track": 102,
             "lara_outfit": "tr3_classic",
             "sequence":[
@@ -671,6 +677,7 @@
         // 30. Underneath the Sphinx
         {
             "path": "joby2.tr4",
+            "script": "joby2.lua",
             "music_track": 107,
             "lara_outfit": "tr3_classic",
             "sequence":[
@@ -728,6 +735,7 @@
         // 33. The Mastabas
         {
             "path": "joby4a.tr4",
+            "script": "joby4a.lua",
             "music_track": 111,
             "lara_outfit": "tr3_classic",
             "sequence":[
@@ -750,6 +758,7 @@
         // 34. The Great Pyramid
         {
             "path": "joby4b.tr4",
+            "script": "joby4b.lua",
             "music_track": 107,
             "lara_outfit": "tr3_classic",
             "sequence":[
@@ -770,6 +779,7 @@
         // 35. Khufu's Queens Pyramids
         {
             "path": "joby4c.tr4",
+            "script": "joby4c.lua",
             "music_track": 111,
             "lara_outfit": "tr3_classic",
             "sequence":[
@@ -791,6 +801,7 @@
         // 36. Inside the Great Pyramid
         {
             "path": "joby5a.tr4",
+            "script": "joby5a.lua",
             "music_track": 107,
             "lara_outfit": "tr3_classic",
             // "pulse": true,
@@ -814,6 +825,7 @@
         // 37. Temple of Horus
         {
             "path": "joby5b.tr4",
+            "script": "joby5b.lua",
             "music_track": 97,
             "lara_outfit": "tr3_classic",
             "sequence":[
