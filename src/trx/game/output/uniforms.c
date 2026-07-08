@@ -72,8 +72,9 @@ typedef struct {
 } M_PRIV;
 
 static void M_FillLight(
-    M_UNIFORM_LIGHT *const dst_light, const LIGHT *const src_light)
+    M_UNIFORM_LIGHT *const dst_light, const OUTPUT_DYNAMIC_LIGHT *const entry)
 {
+    const LIGHT *const src_light = &entry->light;
     dst_light->pos[0] = src_light->pos.x;
     dst_light->pos[1] = src_light->pos.y;
     dst_light->pos[2] = src_light->pos.z;
@@ -89,7 +90,7 @@ static void M_FillLight(
         dst_light->shade = src_light->u.legacy.shade.value_1;
         dst_light->falloff = src_light->u.legacy.falloff.value_1;
     }
-    dst_light->kind = src_light->type;
+    dst_light->kind = entry->kind;
 }
 
 static int16_t M_GetMinShade(void)

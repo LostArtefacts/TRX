@@ -193,7 +193,7 @@ void Output_CalculateObjectLightingAt(
 void Output_Lights_Init(void)
 {
     if (m_DynamicLights == nullptr) {
-        m_DynamicLights = Vector_Create(sizeof(LIGHT));
+        m_DynamicLights = Vector_Create(sizeof(OUTPUT_DYNAMIC_LIGHT));
     }
 
     for (int32_t i = 0; i < OUTPUT_LIGHT_CYCLE; i++) {
@@ -299,16 +299,19 @@ void Output_AddDynamicLightRGB(
     int32_t safe_falloff = falloff;
     CLAMP(safe_falloff, 0, 255);
 
-    const LIGHT light = {
-        .pos = pos,
-        .color = color,
-        .layout = LIGHT_LAYOUT_LEGACY,
-        .type = LIGHT_TYPE_POINT,
-        .u.legacy =
-            {
-                .falloff.value_1 = safe_falloff
-                    << OUTPUT_DYNAMIC_FALLOFF_SHIFT,
-            },
+    const OUTPUT_DYNAMIC_LIGHT light = {
+        .light = {
+            .pos = pos,
+            .color = color,
+            .layout = LIGHT_LAYOUT_LEGACY,
+            .type = LIGHT_TYPE_POINT,
+            .u.legacy =
+                {
+                    .falloff.value_1 = safe_falloff
+                        << OUTPUT_DYNAMIC_FALLOFF_SHIFT,
+                },
+        },
+        .kind = OUTPUT_DYNAMIC_LIGHT_RGB,
     };
     Vector_Add(m_DynamicLights, &light);
 }
