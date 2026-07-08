@@ -35,12 +35,14 @@ static PHASE_CONTROL M_Start(PHASE *const phase)
             .gf_cmd = { .action = GF_NOOP },
         };
     }
-    Output_SetInventoryLightingMode(true);
     if (p->mode != INV_TITLE_MODE) {
         // Title mode draws its own background image, not a game snapshot;
         // the title level's room data isn't set up for a live scene render.
+        // The snapshot re-renders the scene, so it must happen before the
+        // inventory lighting mode kicks in.
         Output_Overlay_CaptureGameSnapshot();
     }
+    Output_SetInventoryLightingMode(true);
     return (PHASE_CONTROL) { .action = PHASE_ACTION_CONTINUE };
 }
 

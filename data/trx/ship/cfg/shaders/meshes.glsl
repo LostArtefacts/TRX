@@ -113,12 +113,16 @@ void main(void) {
     } else {
         if ((gFlags & VERT_USE_OBJECT_LIGHT) != 0u) {
             lightIn = lightObjectsTR4(inNormal.xyz);
+            // White for regular meshes; mesh policies may recolor vertices
+            // (e.g. the skybox fog gradient faces are painted black).
+            modulate = inColor.rgb;
         } else if ((gFlags & VERT_USE_OWN_LIGHT) != 0u) {
             lightIn = lightOwnTR4(inShade);
+            modulate = inColor.rgb;
         } else {
             lightIn = inColor.rgb;
+            modulate = vec3(1);
         }
-        modulate = vec3(1);
     }
 
     vec3 L = lightIn * (255.0 / 128.0) + lr.add;

@@ -986,9 +986,9 @@ static void M_PrepareScene(void)
 {
     OUTPUT_UNIFORM_FOG_BULBS fog = {};
 
-    // the OG skips all fog bulbs while the inventory is up, and some levels
-    // disable them entirely (GF_TRAIN).
-    if (!m_InventoryMode && Level_AreFogBulbsEnabled()) {
+    // Some levels disable fog bulbs entirely (the OG GF_TRAIN). The OG also
+    // skips them while the inventory is up, which we deliberately don't.
+    if (Level_AreFogBulbsEnabled()) {
         for (int32_t i = 0; i < M_MAX_FX_FOG_BULBS; i++) {
             M_FOG_BULB *const bulb = &m_FXFogBulbs[i];
             if (!bulb->active || bulb->sqrad <= 0.0f) {
