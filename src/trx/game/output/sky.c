@@ -252,11 +252,19 @@ static void M_AdjustLightInfo(OUTPUT_LIGHT_INFO *const info)
     if (g_TRVersion < 3) {
         return;
     }
-    // The TR4 own-light path reads this as uTR4Ambient in the OG 128-neutral
-    // scale, where 128/255 doubles to full brightness with no overbright.
-    info->tr3_ambient = g_TRVersion == 4
-        ? (RGB_F) { 128.0f / 255.0f, 128.0f / 255.0f, 128.0f / 255.0f }
-        : (RGB_F) { 0.5f, 0.5f, 0.5f };
+    if (g_TRVersion == 4) {
+        // Neutral full brightness (the OG flat ambient of 128), expressed in
+        // the convention of whichever path the mesh data selects: meshes
+        // with normals are object-lit and read the ambient as a 128-neutral
+        // color (1.0 here, scaled by 128/255 on upload); prelit meshes are
+        // own-lit and read it as a multiplier over the vertex prelight.
+        const OBJECT *const skybox = Object_Get(O_SKYBOX);
+        const OBJECT_MESH *const mesh = Object_GetMesh(skybox->mesh_idx);
+        const float ambient = mesh->num_lights > 0 ? 1.0f : 128.0f / 255.0f;
+        info->tr3_ambient = (RGB_F) { ambient, ambient, ambient };
+    } else {
+        info->tr3_ambient = (RGB_F) { 0.5f, 0.5f, 0.5f };
+    }
     for (int32_t i = 0; i < 3; i++) {
         info->tr3_light_color[i] = (RGB_F) { 0.0f, 0.0f, 0.0f };
         info->tr3_light_dir_view[i] = (XYZ_32) { 0, 0, 0 };
