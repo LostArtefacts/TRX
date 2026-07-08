@@ -7,6 +7,7 @@
 #include <trx/debug.h>
 #include <trx/game/objects/common.h>
 #include <trx/game/output.h>
+#include <trx/game/output/lights/priv.h>
 #include <trx/game/output/mesh_batcher/mesh_builder.h>
 #include <trx/game/output/state.h>
 #include <trx/version.h>
@@ -245,6 +246,7 @@ static void M_Stage(const OBJECT_MESH *const mesh)
             policy->adjust_light_info(&light_info);
         }
     }
+    Output_Lights_FillInstanceLight(&light_info, g_WMatrixPtr);
 
     const MESH_INSTANCE inst = {
         .mesh = batch->mesh_batch,

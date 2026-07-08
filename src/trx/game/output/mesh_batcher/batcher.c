@@ -3,6 +3,7 @@
 #include <trx/core/memory.h>
 #include <trx/debug.h>
 #include <trx/game/output.h>
+#include <trx/game/output/lights/priv.h>
 #include <trx/game/output/shaders/mesh.h>
 #include <trx/game/output/uniforms.h>
 #include <trx/game/output/utils.h>
@@ -252,9 +253,9 @@ static void M_DrawOpaqueInstance(
 
     M_SyncRoom(batcher, bind, inst->room);
     if (bind->needs_object_light) {
-        Output_Uniforms_UploadCPULight(Output_GetUniforms(), &inst->light_info);
+        Output_Lights_UploadCPULight(&inst->light_info);
     } else if (bind->needs_own_light) {
-        Output_Uniforms_UploadOwnLight(Output_GetUniforms(), &inst->light_info);
+        Output_Lights_UploadOwnLight(&inst->light_info);
     }
     Output_MeshShader_UploadModelMatrix(batcher->shader, &inst->wmatrix);
     Output_MeshShader_UploadTint(batcher->shader, inst->tint);
@@ -291,9 +292,9 @@ static void M_DrawBlendAddInstance(
 
     M_SyncRoom(batcher, bind, inst->room);
     if (bind->needs_object_light) {
-        Output_Uniforms_UploadCPULight(Output_GetUniforms(), &inst->light_info);
+        Output_Lights_UploadCPULight(&inst->light_info);
     } else if (bind->needs_own_light) {
-        Output_Uniforms_UploadOwnLight(Output_GetUniforms(), &inst->light_info);
+        Output_Lights_UploadOwnLight(&inst->light_info);
     }
     Output_MeshShader_UploadModelMatrix(batcher->shader, &inst->wmatrix);
     Output_MeshShader_UploadTint(batcher->shader, inst->tint);
@@ -389,11 +390,9 @@ static void M_TransparentPass(MESH_BATCHER *const batcher)
                 M_GetBinding(batcher, inst->mesh);
             ASSERT(bind != nullptr);
             if (bind->needs_object_light) {
-                Output_Uniforms_UploadCPULight(
-                    Output_GetUniforms(), &inst->light_info);
+                Output_Lights_UploadCPULight(&inst->light_info);
             } else if (bind->needs_own_light) {
-                Output_Uniforms_UploadOwnLight(
-                    Output_GetUniforms(), &inst->light_info);
+                Output_Lights_UploadOwnLight(&inst->light_info);
             }
             Output_MeshShader_UploadModelMatrix(
                 batcher->shader, &inst->wmatrix);

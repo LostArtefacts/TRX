@@ -32,10 +32,6 @@ void Output_Uniforms_UploadViewMatrix(
     const OUTPUT_UNIFORMS *uniforms, const MATRIX *matrix);
 void Output_Uniforms_UploadRoomLights(
     const OUTPUT_UNIFORMS *uniforms, const ROOM *room);
-void Output_Uniforms_UploadCPULight(
-    const OUTPUT_UNIFORMS *uniforms, const OUTPUT_LIGHT_INFO *info);
-void Output_Uniforms_UploadOwnLight(
-    const OUTPUT_UNIFORMS *uniforms, const OUTPUT_LIGHT_INFO *info);
 
 void Output_Uniforms_UploadFogDistance(
     const OUTPUT_UNIFORMS *uniforms, float start, float end);
