@@ -12,12 +12,12 @@ typedef struct {
     int16_t face_index;
     int32_t target_count;
     int16_t *targets;
-} FACE_EDIT;
+} M_FACE_TEXTURE_EDIT;
 
 typedef struct {
     int16_t index;
     XYZ_16 shift;
-} VERTEX_EDIT;
+} M_VERTEX_EDIT;
 
 typedef struct {
     INJECTION_OBJECT_INFO obj_info;
@@ -26,9 +26,9 @@ typedef struct {
     int32_t radius_shift;
     int32_t face_edit_count;
     int32_t vertex_edit_count;
-    FACE_EDIT *face_edits;
-    VERTEX_EDIT *vertex_edits;
-} MESH_EDIT;
+    M_FACE_TEXTURE_EDIT *texture_edits;
+    M_VERTEX_EDIT *vertex_edits;
+} M_MESH_EDIT;
 
 static BOUNDS_16 M_ReadBounds16(VFILE *const file)
 {
@@ -42,7 +42,7 @@ static BOUNDS_16 M_ReadBounds16(VFILE *const file)
     return bounds;
 }
 
-static uint16_t *M_GetMeshTexture(const FACE_EDIT *const edit)
+static uint16_t *M_GetMeshTexture(const M_FACE_TEXTURE_EDIT *const edit)
 {
     const OBJECT *const obj = Object_Get(edit->obj_info.id);
     if (!obj->loaded) {
@@ -84,8 +84,8 @@ static uint16_t *M_GetMeshTexture(const FACE_EDIT *const edit)
 }
 
 static void M_ApplyFaceEdit(
-    const FACE_EDIT *const edit, FACE *const faces, const int32_t face_count,
-    const uint16_t texture)
+    const M_FACE_TEXTURE_EDIT *const edit, FACE *const faces,
+    const int32_t face_count, const uint16_t texture)
 {
     for (int32_t i = 0; i < edit->target_count; i++) {
         ASSERT(edit->targets[i] >= 0);
@@ -95,7 +95,7 @@ static void M_ApplyFaceEdit(
     }
 }
 
-static void M_ApplyMeshEdit(const MESH_EDIT *const edit)
+static void M_ApplyMeshEdit(const M_MESH_EDIT *const edit)
 {
     OBJECT_MESH *mesh;
     if (edit->obj_info.type == OBJ_TYPE_OBJECT) {
@@ -126,7 +126,7 @@ static void M_ApplyMeshEdit(const MESH_EDIT *const edit)
     mesh->radius += edit->radius_shift;
 
     for (int32_t i = 0; i < edit->vertex_edit_count; i++) {
-        const VERTEX_EDIT *const vertex_edit = &edit->vertex_edits[i];
+        const M_VERTEX_EDIT *const vertex_edit = &edit->vertex_edits[i];
         if (vertex_edit->index < 0
             || vertex_edit->index >= mesh->num_vertices) {
             const int32_t object_id = edit->obj_info.type == OBJ_TYPE_OBJECT
@@ -150,7 +150,7 @@ static void M_ApplyMeshEdit(const MESH_EDIT *const edit)
     // or palette reference with the one selected from each edit's
     // instructions.
     for (int32_t i = 0; i < edit->face_edit_count; i++) {
-        const FACE_EDIT *const face_edit = &edit->face_edits[i];
+        const M_FACE_TEXTURE_EDIT *const face_edit = &edit->texture_edits[i];
         uint16_t texture;
         if (face_edit->source_identifier < 0) {
             texture = Inject_GetPaletteIndex(-face_edit->source_identifier);
@@ -192,7 +192,7 @@ static void M_MeshEdits(
     const int32_t data_count)
 {
     for (int32_t i = 0; i < data_count; i++) {
-        MESH_EDIT edit = {
+        M_MESH_EDIT edit = {
             .obj_info = Inject_ReadObjectPtr(injection),
             .mesh_idx = VFile_ReadS16(injection->fp),
             .centre_shift.x = VFile_ReadS16(injection->fp),
@@ -202,10 +202,10 @@ static void M_MeshEdits(
         };
 
         edit.face_edit_count = VFile_ReadS32(injection->fp);
-        edit.face_edits =
-            Memory_Alloc(sizeof(FACE_EDIT) * edit.face_edit_count);
+        edit.texture_edits =
+            Memory_Alloc(sizeof(M_FACE_TEXTURE_EDIT) * edit.face_edit_count);
         for (int32_t j = 0; j < edit.face_edit_count; j++) {
-            FACE_EDIT *const face_edit = &edit.face_edits[j];
+            M_FACE_TEXTURE_EDIT *const face_edit = &edit.texture_edits[j];
             face_edit->obj_info = Inject_ReadObjectPtr(injection);
             face_edit->source_identifier = VFile_ReadS16(injection->fp);
             face_edit->face_type = VFile_ReadS32(injection->fp);
@@ -221,9 +221,9 @@ static void M_MeshEdits(
 
         edit.vertex_edit_count = VFile_ReadS32(injection->fp);
         edit.vertex_edits =
-            Memory_Alloc(sizeof(VERTEX_EDIT) * edit.vertex_edit_count);
+            Memory_Alloc(sizeof(M_VERTEX_EDIT) * edit.vertex_edit_count);
         for (int32_t j = 0; j < edit.vertex_edit_count; j++) {
-            VERTEX_EDIT *vertex_edit = &edit.vertex_edits[j];
+            M_VERTEX_EDIT *vertex_edit = &edit.vertex_edits[j];
             vertex_edit->index = VFile_ReadS16(injection->fp);
             vertex_edit->shift.x = VFile_ReadS16(injection->fp);
             vertex_edit->shift.y = VFile_ReadS16(injection->fp);
@@ -235,11 +235,11 @@ static void M_MeshEdits(
         }
 
         for (int32_t j = 0; j < edit.face_edit_count; j++) {
-            FACE_EDIT *face_edit = &edit.face_edits[j];
+            M_FACE_TEXTURE_EDIT *face_edit = &edit.texture_edits[j];
             Memory_FreePointer(&face_edit->targets);
         }
 
-        Memory_FreePointer(&edit.face_edits);
+        Memory_FreePointer(&edit.texture_edits);
         Memory_FreePointer(&edit.vertex_edits);
     }
 }
