@@ -53,7 +53,7 @@ void Input_Update(void)
         g_Input.right = 0;
     }
 
-    if (!g_Config.gameplay.enable_crawling) {
+    if (!g_Config.gameplay.enable_crawling && g_Camera.type != CAM_BINOCULARS) {
         g_Input.crouch = 0;
     }
 

@@ -8,7 +8,6 @@
 #include <trx/game/output.h>
 #include <trx/game/rooms.h>
 #include <trx/game/viewport.h>
-#include <trx/version.h>
 
 #define M_MIN_RANGE 128
 #define M_MAX_RANGE 1536
@@ -39,8 +38,7 @@ static bool M_CanEnter(void)
 {
     const ITEM *const lara_item = Lara_GetItem();
     const LARA_INFO *const lara_info = Lara_GetLaraInfo();
-    return g_TRVersion == 4 && lara_item->hit_points > 0
-        && lara_info->gun_status == LGS_ARMLESS
+    return lara_item->hit_points > 0 && lara_info->gun_status == LGS_ARMLESS
         && lara_info->water_status == LWS_ABOVE_WATER
         && Lara_Vehicle_GetItem() == nullptr
         && lara_item->current_anim_state == LS(LS_STOP)

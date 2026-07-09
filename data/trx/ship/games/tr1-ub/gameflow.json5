@@ -27,6 +27,7 @@
         "crystal.bin",
         "shimmy_sfx.bin",
         "inv_background.bin",
+        "binoculars.bin",
     ],
 
     "enable_tr2_item_drops": false,

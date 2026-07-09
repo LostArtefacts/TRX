@@ -113,6 +113,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── atlantis_fd.bin
 │   │   │   ├── atlantis_itemrots.bin
 │   │   │   ├── atlantis_textures.bin
+│   │   │   ├── binoculars.bin
 │   │   │   ├── braid.bin
 │   │   │   ├── bubbles.bin
 │   │   │   ├── cat_cameras.bin
@@ -470,6 +471,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── bartoli_music_tracks.bin
 │   │   │   ├── bartoli_secret_fd.bin
 │   │   │   ├── bartoli_textures.bin
+│   │   │   ├── binoculars.bin
 │   │   │   ├── boat_bits.bin
 │   │   │   ├── boat_sfx.bin
 │   │   │   ├── breakable_tile_sfx.bin
@@ -947,6 +949,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── area51_sky.bin
 │   │   │   ├── area51_textures.bin
 │   │   │   ├── bat_sprites.bin
+│   │   │   ├── binoculars.bin
 │   │   │   ├── cavern_door131_frames.bin
 │   │   │   ├── cavern_pickup_meshes.bin
 │   │   │   ├── cavern_sky.bin
@@ -1209,6 +1212,8 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── alexhub.lua
 │   │   │   ├── ang_race.lua
 │   │   │   ├── angkor1.lua
+│   │   │   ├── bikebit.lua
+│   │   │   ├── cortyard.lua
 │   │   │   ├── csplit1.lua
 │   │   │   ├── highstrt.lua
 │   │   │   ├── joby2.lua
@@ -1228,7 +1233,8 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── semer2.lua
 │   │   │   ├── semer.lua
 │   │   │   ├── settomb1.lua
-│   │   │   └── settomb2.lua
+│   │   │   ├── settomb2.lua
+│   │   │   └── train.lua
 │   │   ├── catalog_item_actions.csv
 │   │   ├── catalog_lara_anims.csv
 │   │   ├── catalog_lara_states.csv
@@ -1425,6 +1431,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── atlantis_fd.bin
     │   │   │   │   ├── atlantis_itemrots.bin
     │   │   │   │   ├── atlantis_textures.bin
+    │   │   │   │   ├── binoculars.bin
     │   │   │   │   ├── braid.bin
     │   │   │   │   ├── bubbles.bin
     │   │   │   │   ├── cat_cameras.bin
@@ -1782,6 +1789,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── bartoli_music_tracks.bin
     │   │   │   │   ├── bartoli_secret_fd.bin
     │   │   │   │   ├── bartoli_textures.bin
+    │   │   │   │   ├── binoculars.bin
     │   │   │   │   ├── boat_bits.bin
     │   │   │   │   ├── boat_sfx.bin
     │   │   │   │   ├── breakable_tile_sfx.bin
@@ -2259,6 +2267,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── area51_sky.bin
     │   │   │   │   ├── area51_textures.bin
     │   │   │   │   ├── bat_sprites.bin
+    │   │   │   │   ├── binoculars.bin
     │   │   │   │   ├── cavern_door131_frames.bin
     │   │   │   │   ├── cavern_pickup_meshes.bin
     │   │   │   │   ├── cavern_sky.bin
@@ -2521,6 +2530,8 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── alexhub.lua
     │   │   │   │   ├── ang_race.lua
     │   │   │   │   ├── angkor1.lua
+    │   │   │   │   ├── bikebit.lua
+    │   │   │   │   ├── cortyard.lua
     │   │   │   │   ├── csplit1.lua
     │   │   │   │   ├── highstrt.lua
     │   │   │   │   ├── joby2.lua
@@ -2540,7 +2551,8 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── semer2.lua
     │   │   │   │   ├── semer.lua
     │   │   │   │   ├── settomb1.lua
-    │   │   │   │   └── settomb2.lua
+    │   │   │   │   ├── settomb2.lua
+    │   │   │   │   └── train.lua
     │   │   │   ├── catalog_item_actions.csv
     │   │   │   ├── catalog_lara_anims.csv
     │   │   │   ├── catalog_lara_states.csv
