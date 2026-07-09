@@ -3,6 +3,7 @@
 #include <trx/core/math.h>
 #include <trx/core/utils.h>
 #include <trx/game/camera.h>
+#include <trx/game/game/state.h>
 #include <trx/game/interpolation.h>
 #include <trx/game/items.h>
 #include <trx/game/lara.h>
@@ -588,8 +589,9 @@ void Rope_AlignLara(ITEM *const item)
 
 static void M_DrawRope(const ROPE *const rope, const int32_t sprite_idx)
 {
-    const double rate =
-        Interpolation_IsActive() ? Interpolation_GetRate() : 1.0;
+    const double rate = (Interpolation_IsActive() && Game_IsPlaying())
+        ? Interpolation_GetRate()
+        : 1.0;
     XYZ_F points[ROPE_SEGMENTS];
     for (int32_t n = 0; n < ROPE_SEGMENTS; n++) {
         const XYZ_32 *const prev = &rope->prev_mesh_segments[n];
