@@ -43,6 +43,7 @@
         "misc_sprites.bin",
         "lara_outfits.bin",
         "crystal.bin",
+        "binoculars.bin",
     ],
 
     "levels": [

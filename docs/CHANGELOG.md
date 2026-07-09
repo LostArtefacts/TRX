@@ -53,11 +53,13 @@
 **TR1**:
 - added Lara's PS1 shimmying sound effects (Sound → Misc → PS1 SFX replacements) (#943)
 - added the TR2 inventory background as an option for the inventory, pause and stats screens
+- added Binoculars, available using the console command `/give binoculars`
 - fixed missing hand grab SFX when Lara is climbing a ladder (#4266)
 - removed the option to fix the chain block sound via the UI in Unfinished Business
 
 **TR2**:
 - added the option to toggle FMVs via the UI in The Golden Mask
+- added Binoculars, available using the console command `/give binoculars`
 - fixed Lara not greeting the player at the start of the assault course (regression from 1.8)
 - fixed missing hand grab SFX when Lara is climbing a ladder (#4266)
 - fixed missing and mistimed closing SFX on doors type 1 and 2 in Barkhang Monastery (#4417, #4418)
@@ -66,6 +68,7 @@
 
 **TR3**:
 - added support for embedded injections in level files
+- added Binoculars, available using the console command `/give binoculars`
 - added the TR2 inventory background as an option for the inventory, pause and stats screens
 - fixed water ripples appearing too intense compared to OG (regression from 1.1)
 - fixed missing portals in Aldwych room 87, which could lead to Lara becoming softlocked

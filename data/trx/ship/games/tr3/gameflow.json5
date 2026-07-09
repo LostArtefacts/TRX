@@ -43,6 +43,7 @@
         "winston_model.bin",
         "sparks_gfx.bin",
         "inv_background.bin",
+        "binoculars.bin",
     ],
 
     "globe_select_entries": [
@@ -83,6 +84,7 @@
                 "fish_sprites.bin",
                 "sparks_gfx.bin",
                 "inv_background.bin",
+                "binoculars.bin",
             ],
         },
 

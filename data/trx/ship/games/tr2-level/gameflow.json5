@@ -25,6 +25,7 @@
         "secret_models_og.bin",
         "misc_sprites.bin",
         "lara_outfits.bin",
+        "binoculars.bin",
     ],
 
     "levels": [
