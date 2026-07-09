@@ -22,6 +22,7 @@
         "pickup_aid.bin",
         "winston_model.bin",
         "sparks_gfx.bin",
+        "inv_background.bin",
     ],
 
     "levels": [

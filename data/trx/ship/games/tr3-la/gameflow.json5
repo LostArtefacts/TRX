@@ -22,6 +22,7 @@
         ],
         "injections": [
             "common_pickup_meshes.bin",
+            "inv_background.bin",
         ]
     },
 
@@ -41,6 +42,7 @@
         "pickup_aid.bin",
         "winston_model.bin",
         "sparks_gfx.bin",
+        "inv_background.bin",
     ],
 
     "levels": [

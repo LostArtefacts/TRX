@@ -26,6 +26,7 @@
         "lara_outfits.bin",
         "crystal.bin",
         "shimmy_sfx.bin",
+        "inv_background.bin",
     ],
 
     "enable_tr2_item_drops": false,
@@ -44,6 +45,7 @@
             "font.bin",
             "title_textures.bin",
             "misc_sprites.bin",
+            "inv_background.bin",
         ],
         "sequence": [
             {"type": "display_picture", "path": "eidos.webp", "legal": true, "display_time": 1, "fade_in_time": 1.0, "fade_out_time": 1.0},
