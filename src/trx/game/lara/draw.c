@@ -409,7 +409,8 @@ bool Lara_Draw(const ITEM *const item)
     const ITEM *const lara_item = Lara_GetItem();
     m_IsLara = item == lara_item;
     if (m_IsLara
-        && (item->status == IS_INVISIBLE || (item->flags & IF_ONE_SHOT) != 0)) {
+        && (item->status == IS_INVISIBLE || (item->flags & IF_ONE_SHOT) != 0
+            || item->mesh_bits == 0)) {
         return false;
     }
 
