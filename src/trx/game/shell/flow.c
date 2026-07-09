@@ -364,7 +364,7 @@ int32_t Shell_Main(const SHELL_ARGS *const args)
     }
     GameStringManager_AddSourceFile(common_strings_path, false);
     if (s->args->startup.mod->base_mod != nullptr) {
-        const char *const base_strings_path =
+        char *base_strings_path =
             Shell_GetBaseGameStringsPath(s->args->startup.mod);
         if (base_strings_path == nullptr) {
             Shell_ExitSystemFmt(
@@ -372,15 +372,16 @@ int32_t Shell_Main(const SHELL_ARGS *const args)
                 s->args->startup.mod->name);
         }
         GameStringManager_AddSourceFile(base_strings_path, false);
+        Memory_FreePointer(&base_strings_path);
     }
-    const char *const mod_strings_path =
-        Shell_GetGameStringsPath(s->args->startup.mod);
+    char *mod_strings_path = Shell_GetGameStringsPath(s->args->startup.mod);
     if (mod_strings_path == nullptr) {
         Shell_ExitSystemFmt(
             "Missing strings file for selected mod '%s'",
             s->args->startup.mod->name);
     }
     GameStringManager_AddSourceFile(mod_strings_path, true);
+    Memory_FreePointer(&mod_strings_path);
     GameStringManager_DiscoverLanguages();
     GameStringManager_ReloadLanguage(g_Config.language);
 

@@ -32,6 +32,6 @@ bool Shell_CanSwitchToMod(const SHELL_MOD *mod);
 bool Shell_IsCurrentMod(const char *name);
 
 const char *Shell_GetCommonStringsPath(void);
-const char *Shell_GetBaseGameStringsPath(const SHELL_MOD *mod);
-const char *Shell_GetGameStringsPath(const SHELL_MOD *mod);
+char *Shell_GetBaseGameStringsPath(const SHELL_MOD *mod);
+char *Shell_GetGameStringsPath(const SHELL_MOD *mod);
 const char *Shell_GetGameFlowPath(const SHELL_MOD *mod);
