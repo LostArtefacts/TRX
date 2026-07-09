@@ -264,6 +264,8 @@ X_OBJ_NAME_DEFINE(O_WORKER_5,              "worker_5",              X_OBJ_NAMES(
 X_OBJ_NAME_DEFINE(O_JELLY,                 "jelly",                 X_OBJ_NAMES("Jellyfish"))
 X_OBJ_NAME_DEFINE(O_SPIDER,                "spider",                X_OBJ_NAMES("Spider"))
 X_OBJ_NAME_DEFINE(O_BIG_SPIDER,            "big_spider",            X_OBJ_NAMES("Giant Spider"))
+X_OBJ_NAME_DEFINE(O_SCORPION,              "scorpion",              X_OBJ_NAMES("Scorpion"))
+X_OBJ_NAME_DEFINE(O_SMALL_SCORPION,        "small_scorpion",        X_OBJ_NAMES("Small Scorpion"))
 X_OBJ_NAME_DEFINE(O_CROW,                  "crow",                  X_OBJ_NAMES("Crow"))
 X_OBJ_NAME_DEFINE(O_TIGER,                 "tiger",                 X_OBJ_NAMES("Tiger"))
 X_OBJ_NAME_DEFINE(O_BARTOLI,               "bartoli",               X_OBJ_NAMES("Marco Bartoli"))

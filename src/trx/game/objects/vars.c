@@ -111,6 +111,8 @@ const OBJECT_ID g_CreatureObjects[] = {
     O_SKIDOO_DRIVER,
     O_SOPHIA,
     O_SPIDER,
+    O_SCORPION,
+    O_SMALL_SCORPION,
     O_STHPAC_MERCENARY,
     O_SWAT_1,
     O_SWAT_2,

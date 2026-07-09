@@ -465,6 +465,7 @@ common_sources = [
   'trx/game/objects/creatures/rx_worker_1.c',
   'trx/game/objects/creatures/rx_worker_2.c',
   'trx/game/objects/creatures/rx_worker_3.c',
+  'trx/game/objects/creatures/scorpion.c',
   'trx/game/objects/creatures/security_guard.c',
   'trx/game/objects/creatures/shark.c',
   'trx/game/objects/creatures/shiva.c',
