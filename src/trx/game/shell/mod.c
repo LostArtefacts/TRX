@@ -212,7 +212,7 @@ static void M_ValidateNoMixedModLayouts(void)
     }
 }
 
-static const char *M_GetModStringsPath(const char *const mod_id)
+static char *M_GetModStringsPath(const char *const mod_id)
 {
     ASSERT(mod_id != nullptr);
     return TRXPath_Join(
@@ -411,14 +411,14 @@ const char *Shell_GetCommonStringsPath(void)
         TRX_DYNAMIC_PATH_COMMON_CONFIG, "base_strings.json5");
 }
 
-const char *Shell_GetBaseGameStringsPath(const SHELL_MOD *const mod)
+char *Shell_GetBaseGameStringsPath(const SHELL_MOD *const mod)
 {
     const char *const base_mod =
         mod->base_mod != nullptr ? mod->base_mod : mod->name;
     return M_GetModStringsPath(base_mod);
 }
 
-const char *Shell_GetGameStringsPath(const SHELL_MOD *const mod)
+char *Shell_GetGameStringsPath(const SHELL_MOD *const mod)
 {
     return M_GetModStringsPath(mod->name);
 }

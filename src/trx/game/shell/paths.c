@@ -244,29 +244,21 @@ static void M_ClearResolveCache(void)
     m_ResolveCache = nullptr;
 }
 
-// Returns a non-owning pointer that may reference static formatting storage.
-// Do not free it.
-static const char *M_JoinPathStatic(const char *const a, const char *const b)
+// Returns an owning joined path; caller must free.
+static char *M_JoinPath(const char *const a, const char *const b)
 {
     ASSERT(b != nullptr);
     if (a == nullptr) {
-        return b;
+        return Memory_DupStr(b);
     }
     if (String_IsEmpty(b)) {
-        return a;
+        return Memory_DupStr(a);
     }
     const bool a_has_sep = String_EndsWith(a, "/") || String_EndsWith(a, "\\");
     const bool b_has_sep = b[0] == '/' || b[0] == '\\';
     const char *const b_join = a_has_sep && b_has_sep ? b + 1 : b;
     const char *const sep = (!a_has_sep && !b_has_sep) ? "/" : "";
-    return String_FormatStatic("%s%s%s", a, sep, b_join);
-}
-
-static char *M_JoinPathAlloc(const char *const a, const char *const b)
-{
-    ASSERT(a != nullptr);
-    ASSERT(b != nullptr);
-    return Memory_DupStr(M_JoinPathStatic(a, b));
+    return String_Format("%s%s%s", a, sep, b_join);
 }
 
 static M_DIR_CACHE_ENTRY *M_FindDirCache(const char *const dir)
@@ -388,7 +380,7 @@ static char *M_ResolveCasePathCached(const char *const path)
             Memory_FreePointer(&current_path);
             return nullptr;
         }
-        char *next = M_JoinPathAlloc(current_path, resolved_piece);
+        char *next = M_JoinPath(current_path, resolved_piece);
         Memory_FreePointer(&current_path);
         current_path = next;
 
@@ -518,16 +510,16 @@ static const char *M_GetCurrentModID(void)
     return nullptr;
 }
 
-static const char *M_GetModDir(const char *const mod_id)
+static char *M_GetModDir(const char *const mod_id)
 {
     if (mod_id == nullptr || String_IsEmpty(mod_id)
         || m_Context.games_dir == nullptr) {
         return nullptr;
     }
-    return M_JoinPathStatic(m_Context.games_dir, mod_id);
+    return M_JoinPath(m_Context.games_dir, mod_id);
 }
 
-static const char *M_GetCurrentModDir(void)
+static char *M_GetCurrentModDir(void)
 {
     return M_GetModDir(M_GetCurrentModID());
 }
@@ -551,42 +543,62 @@ static const char *M_GetDirectLevelArg(void)
         : "";
 }
 
-static const char *M_GetBaseModDir(void)
+static char *M_GetBaseModDir(void)
 {
     return M_GetModDir(M_GetBaseModID());
 }
 
-static const char *M_GetLegacyDataDir(void)
+static char *M_GetLegacyDataDir(void)
 {
-    return M_JoinPathStatic(m_Context.trx_dir, "data");
+    return M_JoinPath(m_Context.trx_dir, "data");
 }
 
-static const char *M_GetBaseDirForDynamicPath(const TRX_DYNAMIC_PATH path)
+static char *M_GetBaseDirForDynamicPath(const TRX_DYNAMIC_PATH path)
 {
     switch (path) {
     case TRX_DYNAMIC_PATH_COMMON_CONFIG:
     case TRX_DYNAMIC_PATH_CATALOG:
-        return m_Context.config_dir;
+        return Memory_DupStr(m_Context.config_dir);
     case TRX_DYNAMIC_PATH_LEVEL_FILE:
     case TRX_DYNAMIC_PATH_SHARED_LEVEL_FILE:
     case TRX_DYNAMIC_PATH_SFX_FILE:
         return M_GetLegacyDataDir();
-    case TRX_DYNAMIC_PATH_IMAGE_FILE:
-        return M_JoinPathStatic(M_GetLegacyDataDir(), "images");
-    case TRX_DYNAMIC_PATH_INJECTION_FILE:
-        return M_JoinPathStatic(M_GetLegacyDataDir(), "injections");
-    case TRX_DYNAMIC_PATH_SCRIPT_FILE:
-        return M_JoinPathStatic(M_GetLegacyDataDir(), "scripts");
+    case TRX_DYNAMIC_PATH_IMAGE_FILE: {
+        char *legacy_data_dir = M_GetLegacyDataDir();
+        char *result = M_JoinPath(legacy_data_dir, "images");
+        Memory_FreePointer(&legacy_data_dir);
+        return result;
+    }
+    case TRX_DYNAMIC_PATH_INJECTION_FILE: {
+        char *legacy_data_dir = M_GetLegacyDataDir();
+        char *result = M_JoinPath(legacy_data_dir, "injections");
+        Memory_FreePointer(&legacy_data_dir);
+        return result;
+    }
+    case TRX_DYNAMIC_PATH_SCRIPT_FILE: {
+        char *legacy_data_dir = M_GetLegacyDataDir();
+        char *result = M_JoinPath(legacy_data_dir, "scripts");
+        Memory_FreePointer(&legacy_data_dir);
+        return result;
+    }
     case TRX_DYNAMIC_PATH_SHADER_FILE:
-        return M_JoinPathStatic(m_Context.trx_dir, "shaders");
+        return M_JoinPath(m_Context.trx_dir, "shaders");
     case TRX_DYNAMIC_PATH_FMV_FILE:
-        return M_JoinPathStatic(m_Context.trx_dir, "fmv");
-    case TRX_DYNAMIC_PATH_CDAUDIO_FILE:
-        return M_JoinPathStatic(M_GetLegacyDataDir(), "audio");
-    case TRX_DYNAMIC_PATH_MUSIC_DIR:
-        return M_JoinPathStatic(M_GetLegacyDataDir(), "music");
+        return M_JoinPath(m_Context.trx_dir, "fmv");
+    case TRX_DYNAMIC_PATH_CDAUDIO_FILE: {
+        char *legacy_data_dir = M_GetLegacyDataDir();
+        char *result = M_JoinPath(legacy_data_dir, "audio");
+        Memory_FreePointer(&legacy_data_dir);
+        return result;
+    }
+    case TRX_DYNAMIC_PATH_MUSIC_DIR: {
+        char *legacy_data_dir = M_GetLegacyDataDir();
+        char *result = M_JoinPath(legacy_data_dir, "music");
+        Memory_FreePointer(&legacy_data_dir);
+        return result;
+    }
     default:
-        return m_Context.trx_dir;
+        return Memory_DupStr(m_Context.trx_dir);
     }
 }
 
@@ -696,28 +708,42 @@ char *TRXPath_ExpandVars(const char *const in)
     char *result = Memory_DupStr(in);
     const char *const mod_id = M_GetCurrentModID();
     const char *const base_mod_id = M_GetBaseModID();
+    char *mod_dir = M_GetCurrentModDir();
+    char *levels_dir = M_GetBaseDirForDynamicPath(TRX_DYNAMIC_PATH_LEVEL_FILE);
+    char *images_dir = M_GetBaseDirForDynamicPath(TRX_DYNAMIC_PATH_IMAGE_FILE);
+    char *injections_dir =
+        M_GetBaseDirForDynamicPath(TRX_DYNAMIC_PATH_INJECTION_FILE);
+    char *scripts_dir =
+        M_GetBaseDirForDynamicPath(TRX_DYNAMIC_PATH_SCRIPT_FILE);
+    char *base_mod_dir = M_GetBaseModDir();
+    char *tr_version = String_Format("%d", g_TRVersion);
 
     const M_PATH_TOKEN tokens[] = {
 #define M_PATH_TOKEN_ITEM(name, field, token) { token, m_Context.field },
         TRX_PATH_DIR_LIST(M_PATH_TOKEN_ITEM)
 #undef M_PATH_TOKEN_ITEM
-            { "%mod%", mod_id != nullptr ? mod_id : "" },
-        { "%mod_dir%", M_GetCurrentModDir() },
-        { "%levels_dir%",
-          M_GetBaseDirForDynamicPath(TRX_DYNAMIC_PATH_LEVEL_FILE) },
-        { "%images_dir%",
-          M_GetBaseDirForDynamicPath(TRX_DYNAMIC_PATH_IMAGE_FILE) },
-        { "%injections_dir%",
-          M_GetBaseDirForDynamicPath(TRX_DYNAMIC_PATH_INJECTION_FILE) },
-        { "%scripts_dir%",
-          M_GetBaseDirForDynamicPath(TRX_DYNAMIC_PATH_SCRIPT_FILE) },
+            { "%mod_dir%", mod_dir },
+        { "%mod%", mod_id != nullptr ? mod_id : "" },
+        { "%levels_dir%", levels_dir },
+        { "%images_dir%", images_dir },
+        { "%injections_dir%", injections_dir },
+        { "%scripts_dir%", scripts_dir },
+        { "%base_mod_dir%", base_mod_dir },
         { "%base_mod%", base_mod_id != nullptr ? base_mod_id : "" },
-        { "%base_mod_dir%", M_GetBaseModDir() },
         { "%direct_level%", M_GetDirectLevelArg() },
-        { "%tr_version%", String_FormatStatic("%d", g_TRVersion) },
+        { "%tr_version%", tr_version },
     };
 
-    return M_ReplacePathTokens(result, tokens, ARRAY_SIZE(tokens));
+    result = M_ReplacePathTokens(result, tokens, ARRAY_SIZE(tokens));
+
+    Memory_FreePointer(&tr_version);
+    Memory_FreePointer(&base_mod_dir);
+    Memory_FreePointer(&scripts_dir);
+    Memory_FreePointer(&injections_dir);
+    Memory_FreePointer(&images_dir);
+    Memory_FreePointer(&levels_dir);
+    Memory_FreePointer(&mod_dir);
+    return result;
 }
 
 static void M_BuildModChain(const SHELL_ARGS *const args)
@@ -756,6 +782,20 @@ static void M_BuildModChain(const SHELL_ARGS *const args)
 
 static void M_SeedResolverCaches(void)
 {
+    char *current_mod_dir = M_GetCurrentModDir();
+    char *base_mod_dir = M_GetBaseModDir();
+    char *legacy_data_dir = M_JoinPath(m_Context.trx_dir, "data");
+    char *legacy_levels_dir = M_JoinPath(legacy_data_dir, "levels");
+    char *legacy_images_dir = M_JoinPath(legacy_data_dir, "images");
+    char *legacy_injections_dir = M_JoinPath(legacy_data_dir, "injections");
+    char *legacy_scripts_dir = M_JoinPath(legacy_data_dir, "scripts");
+    char *cuts_dir = M_JoinPath(m_Context.trx_dir, "cuts");
+    char *fmv_dir = M_JoinPath(m_Context.trx_dir, "fmv");
+    char *audio_dir = M_JoinPath(m_Context.trx_dir, "audio");
+    char *music_dir = M_JoinPath(m_Context.trx_dir, "music");
+    char *shaders_dir = M_JoinPath(m_Context.trx_dir, "shaders");
+    char *cfg_dir = M_JoinPath(m_Context.trx_dir, "cfg");
+
     const char *const dirs[] = {
         m_Context.trx_dir,
         m_Context.config_dir,
@@ -764,24 +804,38 @@ static void M_SeedResolverCaches(void)
         m_Context.screenshots_dir,
         m_Context.saves_dir,
         m_Context.legacy_saves_dir,
-        M_GetCurrentModDir(),
-        M_GetBaseModDir(),
-        M_GetLegacyDataDir(),
-        M_JoinPathStatic(M_GetLegacyDataDir(), "levels"),
-        M_JoinPathStatic(M_GetLegacyDataDir(), "images"),
-        M_JoinPathStatic(M_GetLegacyDataDir(), "injections"),
-        M_JoinPathStatic(M_GetLegacyDataDir(), "scripts"),
-        M_JoinPathStatic(m_Context.trx_dir, "cuts"),
-        M_JoinPathStatic(m_Context.trx_dir, "fmv"),
-        M_JoinPathStatic(m_Context.trx_dir, "audio"),
-        M_JoinPathStatic(m_Context.trx_dir, "music"),
-        M_JoinPathStatic(m_Context.trx_dir, "shaders"),
-        M_JoinPathStatic(m_Context.trx_dir, "cfg"),
+        current_mod_dir,
+        base_mod_dir,
+        legacy_data_dir,
+        legacy_levels_dir,
+        legacy_images_dir,
+        legacy_injections_dir,
+        legacy_scripts_dir,
+        cuts_dir,
+        fmv_dir,
+        audio_dir,
+        music_dir,
+        shaders_dir,
+        cfg_dir,
         nullptr,
     };
     for (int32_t i = 0; dirs[i] != nullptr; i++) {
         M_LoadDirCache(dirs[i]);
     }
+
+    Memory_FreePointer(&cfg_dir);
+    Memory_FreePointer(&shaders_dir);
+    Memory_FreePointer(&music_dir);
+    Memory_FreePointer(&audio_dir);
+    Memory_FreePointer(&fmv_dir);
+    Memory_FreePointer(&cuts_dir);
+    Memory_FreePointer(&base_mod_dir);
+    Memory_FreePointer(&current_mod_dir);
+    Memory_FreePointer(&legacy_scripts_dir);
+    Memory_FreePointer(&legacy_injections_dir);
+    Memory_FreePointer(&legacy_images_dir);
+    Memory_FreePointer(&legacy_levels_dir);
+    Memory_FreePointer(&legacy_data_dir);
 }
 
 __attribute__((destructor)) static void M_Shutdown(void)
@@ -873,16 +927,16 @@ const char *TRXPath_Get(const TRX_PATH path)
     }
 }
 
-const char *TRXPath_Join(const TRX_PATH path, const char *const rel)
+char *TRXPath_Join(const TRX_PATH path, const char *const rel)
 {
     const char *const root = TRXPath_Get(path);
     if (root == nullptr || rel == nullptr || String_IsEmpty(rel)) {
-        return root;
+        return root != nullptr ? Memory_DupStr(root) : nullptr;
     }
-    return M_JoinPathStatic(root, rel);
+    return M_JoinPath(root, rel);
 }
 
-static const char *M_ExpandDynamicPattern(
+static char *M_ExpandDynamicPattern(
     const TRX_DYNAMIC_PATH path, const char *const pattern,
     const char *const rel, const char *const mod_dir_override)
 {
@@ -891,6 +945,12 @@ static const char *M_ExpandDynamicPattern(
     const char *rel_value = rel;
     const char *const mod_id = M_GetCurrentModID();
     const char *const base_mod_id = M_GetBaseModID();
+    char *mod_dir = mod_dir_override != nullptr
+        ? Memory_DupStr(mod_dir_override)
+        : M_GetCurrentModDir();
+    char *base_mod_dir = M_GetBaseModDir();
+    char *base_dir = M_GetBaseDirForDynamicPath(path);
+    char *tr_version = String_Format("%d", g_TRVersion);
 
     const M_PATH_TOKEN tokens[] = {
 #define M_DYNAMIC_PATH_TOKEN_ITEM(name, field, token)                          \
@@ -898,20 +958,22 @@ static const char *M_ExpandDynamicPattern(
         TRX_PATH_DIR_LIST(M_DYNAMIC_PATH_TOKEN_ITEM)
 #undef M_DYNAMIC_PATH_TOKEN_ITEM
             { "%rel%", rel_value },
+        { "%mod_dir%", mod_dir },
         { "%mod%", mod_id != nullptr ? mod_id : "" },
+        { "%base_mod_dir%", base_mod_dir },
         { "%base_mod%", base_mod_id != nullptr ? base_mod_id : "" },
-        { "%mod_dir%",
-          mod_dir_override != nullptr ? mod_dir_override
-                                      : M_GetCurrentModDir() },
-        { "%base_mod_dir%", M_GetBaseModDir() },
-        { "%base_dir%", M_GetBaseDirForDynamicPath(path) },
-        { "%tr_version%", String_FormatStatic("%d", g_TRVersion) },
+        { "%base_dir%", base_dir },
+        { "%tr_version%", tr_version },
     };
 
     char *expanded = Memory_DupStr(pattern);
     expanded = M_ReplacePathTokens(expanded, tokens, ARRAY_SIZE(tokens));
 
-    const char *const resolved = String_FormatStatic("%s", expanded);
+    char *const resolved = String_Format("%s", expanded);
+    Memory_FreePointer(&tr_version);
+    Memory_FreePointer(&base_dir);
+    Memory_FreePointer(&base_mod_dir);
+    Memory_FreePointer(&mod_dir);
     Memory_FreePointer(&expanded);
     return resolved;
 }
@@ -943,8 +1005,8 @@ static bool M_ForEachResolveAttempt(
             break;
         }
 
-        char *candidate = Memory_DupStr(
-            M_ExpandDynamicPattern(path, pattern, effective_rel, nullptr));
+        char *candidate =
+            M_ExpandDynamicPattern(path, pattern, effective_rel, nullptr);
         if (strchr(candidate, '%') != nullptr) {
             Memory_FreePointer(&candidate);
             continue;

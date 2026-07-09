@@ -59,9 +59,8 @@ char *TRXPath_ExpandVars(const char *in);
 const char *TRXPath_Get(TRX_PATH path);
 
 // Join static root and relative path.
-// Returned pointer may use static formatting storage; copy if you need to keep
-// it.
-const char *TRXPath_Join(TRX_PATH path, const char *rel);
+// Returns an owning string; caller must free.
+char *TRXPath_Join(TRX_PATH path, const char *rel);
 
 // Resolve with policy fallback and existence checks.
 // Returns nullptr on miss; does not log.
