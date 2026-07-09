@@ -588,7 +588,14 @@ void Lara_Animate(ITEM *const item)
             switch (command->type) {
             case AC_MOVE_ORIGIN: {
                 const XYZ_16 *const pos = (XYZ_16 *)command->data;
+                const XYZ_32 old_pos = item->pos;
                 Item_Translate(item, pos->x, pos->y, pos->z);
+                // The re-base is invisible in OG as the pose compensates for
+                // it, so move the interpolation baseline along to keep the
+                // renderer from smearing it across the next tick.
+                item->interp.prev.pos.x += item->pos.x - old_pos.x;
+                item->interp.prev.pos.y += item->pos.y - old_pos.y;
+                item->interp.prev.pos.z += item->pos.z - old_pos.z;
                 break;
             }
 
