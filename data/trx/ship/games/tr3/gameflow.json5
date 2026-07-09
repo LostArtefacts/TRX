@@ -22,6 +22,7 @@
         ],
         "injections": [
             "common_pickup_meshes.bin",
+            "inv_background.bin",
         ]
     },
 
@@ -41,6 +42,7 @@
         "pickup_aid.bin",
         "winston_model.bin",
         "sparks_gfx.bin",
+        "inv_background.bin",
     ],
 
     "globe_select_entries": [
@@ -80,6 +82,7 @@
                 "common_pickup_meshes.bin",
                 "fish_sprites.bin",
                 "sparks_gfx.bin",
+                "inv_background.bin",
             ],
         },
 
@@ -624,6 +627,7 @@
                 "font.bin",
                 "lara_outfits.bin",
                 "sparks_gfx.bin",
+                "inv_background.bin",
             ],
         },
         // Cutscene 2
@@ -642,6 +646,7 @@
                 "india_sky.bin",
                 "lara_outfits.bin",
                 "sparks_gfx.bin",
+                "inv_background.bin",
             ],
         },
         // Cutscene 3
@@ -660,6 +665,7 @@
                 "crash_sky.bin",
                 "lara_outfits.bin",
                 "sparks_gfx.bin",
+                "inv_background.bin",
             ],
         },
         // Cutscene 4
@@ -677,6 +683,7 @@
                 "font.bin",
                 "lara_outfits.bin",
                 "sparks_gfx.bin",
+                "inv_background.bin",
             ],
         },
         // Cutscene 5
@@ -696,6 +703,7 @@
                 "london_sky.bin",
                 "lara_outfits.bin",
                 "sparks_gfx.bin",
+                "inv_background.bin",
             ],
         },
         // Cutscene 6
@@ -714,6 +722,7 @@
                 "font.bin",
                 "lara_outfits.bin",
                 "sparks_gfx.bin",
+                "inv_background.bin",
             ],
         },
         // Cutscene 7
@@ -732,6 +741,7 @@
                 "london_sky.bin",
                 "lara_outfits.bin",
                 "sparks_gfx.bin",
+                "inv_background.bin",
             ],
         },
         // Cutscene 8
@@ -750,6 +760,7 @@
                 "nevada_sky.bin",
                 "lara_outfits.bin",
                 "sparks_gfx.bin",
+                "inv_background.bin",
             ],
         },
         // Cutscene 9
@@ -768,6 +779,7 @@
                 "font.bin",
                 "lara_outfits.bin",
                 "sparks_gfx.bin",
+                "inv_background.bin",
             ],
         },
         // Cutscene 10
@@ -787,6 +799,7 @@
                 "font.bin",
                 "lara_outfits.bin",
                 "sparks_gfx.bin",
+                "inv_background.bin",
             ],
         },
         // Cutscene 11
@@ -804,6 +817,7 @@
                 "font.bin",
                 "lara_outfits.bin",
                 "sparks_gfx.bin",
+                "inv_background.bin",
             ],
         },
     ],

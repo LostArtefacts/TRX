@@ -51,6 +51,7 @@
 
 **TR1**:
 - added Lara's PS1 shimmying sound effects (Sound → Misc → PS1 SFX replacements) (#943)
+- added the TR2 inventory background as an option for the inventory, pause and stats screens
 - fixed missing hand grab SFX when Lara is climbing a ladder (#4266)
 - removed the option to fix the chain block sound via the UI in Unfinished Business
 
@@ -64,6 +65,7 @@
 
 **TR3**:
 - added support for embedded injections in level files
+- added the TR2 inventory background as an option for the inventory, pause and stats screens
 - fixed missing portals in Aldwych room 87, which could lead to Lara becoming softlocked
 - fixed the ticket booth SFX playing in Aldwych when Lara treads in shallow water
 - fixed the underwater swimming SFX playing when Lara turns to the right in shallow water

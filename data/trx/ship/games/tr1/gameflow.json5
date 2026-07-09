@@ -26,6 +26,7 @@
         "misc_sprites.bin",
         "lara_outfits.bin",
         "shimmy_sfx.bin",
+        "inv_background.bin",
     ],
 
     "enable_tr2_item_drops": false,
@@ -47,6 +48,7 @@
             "font.bin",
             "title_textures.bin",
             "misc_sprites.bin",
+            "inv_background.bin",
         ],
     },
 
@@ -82,6 +84,7 @@
                 "lara_feet_sfx.bin",
                 "lara_outfits.bin",
                 "shimmy_sfx.bin",
+                "inv_background.bin",
             ],
         },
 
@@ -490,6 +493,7 @@
                 "font.bin",
                 "lara_outfits.bin",
                 "misc_sprites.bin",
+                "inv_background.bin",
             ],
             "sequence": [
                 {"type": "loop_game"},
@@ -510,6 +514,7 @@
                 "font.bin",
                 "lara_outfits.bin",
                 "misc_sprites.bin",
+                "inv_background.bin",
             ],
             "sequence": [
                 {"type": "loop_game"},
@@ -530,6 +535,7 @@
                 "font.bin",
                 "lara_outfits.bin",
                 "misc_sprites.bin",
+                "inv_background.bin",
             ],
             "sequence": [
                 {"type": "loop_game"},
@@ -553,6 +559,7 @@
                 "font.bin",
                 "lara_outfits.bin",
                 "misc_sprites.bin",
+                "inv_background.bin",
             ],
             "sequence": [
                 {"type": "loop_game"},

@@ -164,6 +164,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── hive_fd.bin
 │   │   │   ├── hive_itemrots.bin
 │   │   │   ├── hive_textures.bin
+│   │   │   ├── inv_background.bin
 │   │   │   ├── khamoon_fd.bin
 │   │   │   ├── khamoon_itemrots.bin
 │   │   │   ├── khamoon_meshfixes.bin
@@ -992,6 +993,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── gym_textures.bin
 │   │   │   ├── hiss_sfx.bin
 │   │   │   ├── india_sky.bin
+│   │   │   ├── inv_background.bin
 │   │   │   ├── lara_animations.bin
 │   │   │   ├── lara_extra.bin
 │   │   │   ├── lara_guns.bin
@@ -1231,6 +1233,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── catalog_lara_anims.csv
 │   │   ├── catalog_lara_states.csv
 │   │   ├── catalog_music.csv
+│   │   ├── catalog_music_files.csv
 │   │   ├── catalog_objects.csv
 │   │   ├── catalog_samples.csv
 │   │   ├── gameflow.json5
@@ -1473,6 +1476,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── hive_fd.bin
     │   │   │   │   ├── hive_itemrots.bin
     │   │   │   │   ├── hive_textures.bin
+    │   │   │   │   ├── inv_background.bin
     │   │   │   │   ├── khamoon_fd.bin
     │   │   │   │   ├── khamoon_itemrots.bin
     │   │   │   │   ├── khamoon_meshfixes.bin
@@ -2301,6 +2305,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── gym_textures.bin
     │   │   │   │   ├── hiss_sfx.bin
     │   │   │   │   ├── india_sky.bin
+    │   │   │   │   ├── inv_background.bin
     │   │   │   │   ├── lara_animations.bin
     │   │   │   │   ├── lara_extra.bin
     │   │   │   │   ├── lara_guns.bin
@@ -2540,6 +2545,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   ├── catalog_lara_anims.csv
     │   │   │   ├── catalog_lara_states.csv
     │   │   │   ├── catalog_music.csv
+    │   │   │   ├── catalog_music_files.csv
     │   │   │   ├── catalog_objects.csv
     │   │   │   ├── catalog_samples.csv
     │   │   │   ├── gameflow.json5
