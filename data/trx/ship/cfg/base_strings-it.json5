@@ -892,6 +892,10 @@
             "title": "Inciampo su pendenza",
             "description": "Fa in modo che Lara inciampi se effettua un salto all'indietro e, alle sue spalle, c'è una pendenza (TR3). Se disabilitato, Lara si fermerà bruscamente contro la pendenza (TR1/2).",
         },
+        "gameplay.enable_binoculars": {
+            "title": "\\{review}Binocolo",
+            "description": "\\{review}Rende il binocolo disponibile per la selezione nell'inventario.",
+        },
         "gameplay.enable_body_bags": {
             "title": "Rimozione cadaveri",
             "description": "Consente la rimozione dei nemici uccisi quando Lara attraversa specifici punti di attivazione in determinati livelli. Se disabilitato, i nemici morti non saranno rimossi.",

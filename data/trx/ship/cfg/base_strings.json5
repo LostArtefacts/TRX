@@ -892,6 +892,10 @@
             "title": "Backwards slope stumble",
             "description": "Makes Lara perform a stumble if she hops back and there is a slope behind her (TR3). If disabled, Lara will come to a hard stop against the slope (TR1/2).",
         },
+        "gameplay.enable_binoculars": {
+            "title": "Binoculars",
+            "description": "Makes the Binoculars available to select from the inventory.",
+        },
         "gameplay.enable_body_bags": {
             "title": "Body bag triggers",
             "description": "Enables removal of killed enemies when Lara crosses specific triggers in certain levels. If disabled, dead enemies will always be drawn.",

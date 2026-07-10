@@ -227,6 +227,7 @@ typedef struct {
         bool enable_compass_stats;
         bool enable_total_stats;
         bool pause_on_focus_lost;
+        bool enable_binoculars;
 
         bool enable_jump_twists;
         bool enable_uw_roll;

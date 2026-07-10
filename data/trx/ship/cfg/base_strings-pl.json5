@@ -892,6 +892,10 @@
             "title": "Potknięcia na spadach do tyłu",
             "description": "Powoduje, że Lara potyka się, gdy się cofa, a za nią znajduje się pochylnia (TR3). Przy wyłączonej opcji, Lara zatrzymuje się gwałtownie na pochylniach (TR1/2).",
         },
+        "gameplay.enable_binoculars": {
+            "title": "\\{review}Lornetka",
+            "description": "\\{review}Udostępnia lornetkę do wyboru w ekwipunku.",
+        },
         "gameplay.enable_body_bags": {
             "title": "Usuwanie ciał",
             "description": "Umożliwia usuwanie zabitych przeciwników, gdy Lara przekracza określone wyzwalacze na niektórych poziomach. Wyłączenie tej opcji spowoduje, że martwi przeciwnicy będą zawsze wyświetlani.",
