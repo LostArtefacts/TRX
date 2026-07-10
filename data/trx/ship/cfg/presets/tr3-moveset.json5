@@ -4,6 +4,7 @@
         "gameplay.enable_back_slope_stumble": true,
         "gameplay.enable_continuous_pushblocks": false,
         "gameplay.enable_controlled_drops": false,
+        "gameplay.enable_corner_shimmying": false,
         "gameplay.enable_crawl_jump": false,
         "gameplay.enable_crawl_tilt": false,
         "gameplay.enable_crawling": true,
