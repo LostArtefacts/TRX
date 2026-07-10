@@ -208,35 +208,45 @@ class RenderSource(BaseSource):
     index: int | None = None
     offset_x: int = 0
     offset_y: int = 0
+    size: int = 18
+    baseline: int = -6
 
     def load(self, glyph: Glyph) -> tuple[np.ndarray, Rect]:
         text = glyph.text
 
-        offset = -23
-        font_size = 18
+        font_size = self.size
         pad = 5
         font = ImageFont.truetype(DATA_DIR / self.font, font_size)
 
-        # Measure text
+        # Measure text relative to its baseline (anchor="ls") rather than the
+        # font's ascender line, so glyphs from different fonts land on the
+        # same baseline row without a font-specific offset - fonts differ in
+        # how far their ascender sits above the baseline, and tuning that gap
+        # by hand per font is what caused a previous baseline mismatch.
         dummy = Image.new("RGBA", (1, 1))
         draw = ImageDraw.Draw(dummy)
-        x, y, w, h = draw.textbbox((0, 0), text, font=font)
+        x, y, right, bottom = draw.textbbox((0, 0), text, font=font, anchor="ls")
+        w = right
+        h = bottom - y
 
         img = Image.new("RGBA", (w + pad * 2, h + pad * 2))
+        origin = (pad - x, pad - y)
 
         # Shadow
         img_black = Image.new("RGBA", img.size, (0, 0, 0, 0))
         draw_b = ImageDraw.Draw(img_black)
         draw_b.fontmode = "L"
-        draw_b.text((pad + 1, pad + 1), text, font=font, fill=(0, 0, 0, 255))
+        draw_b.text(
+            (origin[0] + 1, origin[1] + 1),
+            text, font=font, fill=(0, 0, 0, 255), anchor="ls")
 
         # Fill
         img_white = Image.new("RGBA", img.size, (0, 0, 0, 0))
         draw_w = ImageDraw.Draw(img_white)
         draw_w.fontmode = "L"
         # Draw twice to establish a stronger weight
-        draw_w.text((pad, pad), text, font=font, fill=(255, 255, 255, 255))
-        draw_w.text((pad, pad), text, font=font, fill=(255, 255, 255, 255))
+        draw_w.text(origin, text, font=font, fill=(255, 255, 255, 255), anchor="ls")
+        draw_w.text(origin, text, font=font, fill=(255, 255, 255, 255), anchor="ls")
 
         # Composite both layers in order
         img.alpha_composite(img_black)
@@ -247,7 +257,7 @@ class RenderSource(BaseSource):
         pixels, removed = trim_transparent_pixels(cell_pixels)
         bbox = Rect(
             x=self.offset_x + x,
-            y=self.offset_y + offset + removed[0],
+            y=self.offset_y + self.baseline + y + removed[0],
             w=img.width + 1 - removed[2] - removed[3],
             h=img.height + 1 - removed[1] - removed[0])
         return pixels, bbox
