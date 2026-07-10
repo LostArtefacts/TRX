@@ -59,6 +59,7 @@
             "lara_outfit": "tr1_classic",
             "sequence": [
                 {"type": "loading_screen", "path": "peru.webp"},
+                {"type": "give_item", "object_id": "binoculars"},
                 {"type": "loop_game"},
                 {"type": "level_stats"},
                 {"type": "level_complete"},

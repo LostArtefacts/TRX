@@ -57,6 +57,7 @@
             "lara_outfit": "tr2_gym",
             "sequence": [
                 {"type": "loading_screen", "path": "mansion.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
+                {"type": "give_item", "object_id": "binoculars"},
                 {"type": "loop_game"},
                 {"type": "level_stats"},
             ],
@@ -90,6 +91,7 @@
                 {"type": "give_item", "object_id": "small_medipack"},
                 {"type": "give_item", "object_id": "large_medipack"},
                 {"type": "give_item", "object_id": "flare", "quantity": 2},
+                {"type": "give_item", "object_id": "binoculars"},
                 {"type": "add_secret_reward", "object_id": "grenade_launcher"},
                 {"type": "add_secret_reward", "object_id": "grenade_launcher_ammo", "quantity": 2},
                 {"type": "add_secret_reward", "object_id": "small_medipack"},

@@ -81,6 +81,7 @@
                 // {"type": "setup_inv_item", "obj_id": "puzzle_1_combo_2", "offset_y": 23, "scale": 1280, "rot_x": 0, "rot_y": 0, "rot_z": 0, "flags": 2},
                 // {"type": "loading_camera", "source_x": 87075, "source_y": -14188, "source_Z": 26581, "target_x": 89090, "target_y": -15443, "target_z": 25670, "room": 29},
                 // {"type": "reset_hub", "level_idx": 4},
+                {"type": "give_item", "object_id": "binoculars"},
                 {"type": "loop_game"},
                 {"type": "level_complete"},
             ],

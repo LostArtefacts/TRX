@@ -41,6 +41,7 @@
     X(GFS_REMOVE_SCIONS,     M_HandleInventoryModifier)                        \
     X(GFS_ADD_SECRET_REWARD, M_HandleInventoryModifier)                        \
     X(GFS_REMOVE_FLARES,     M_HandleInventoryModifier)                        \
+    X(GFS_REMOVE_BINOCULARS, M_HandleInventoryModifier)                        \
     X(GFS_LOADING_SCREEN,    M_HandlePicture)                                  \
     X(GFS_DISPLAY_PICTURE,   M_HandlePicture)                                  \
     X(GFS_LEVEL_STATS,       M_HandleLevelStats)                               \

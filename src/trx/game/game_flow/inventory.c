@@ -15,6 +15,7 @@ static bool m_RemoveAmmo = false;
 static bool m_RemoveFlares = false;
 static bool m_RemoveMedipacks = false;
 static bool m_RemoveScions = false;
+static bool m_RemoveBinoculars = false;
 
 static bool M_CanHaveItem(const OBJECT_ID object_id)
 {
@@ -116,6 +117,9 @@ static void M_ResumeInfo_AddItem(
     case O_FLAREBOX_OPTION:
     case O_FLARE_ITEM:
         resume->flares += qty;
+        break;
+    case O_BINOCULARS_ITEM:
+        resume->flags.has_binoculars = true;
         break;
     default:
         break;
@@ -250,6 +254,7 @@ void GF_InventoryModifier_Scan(const GF_LEVEL *const level)
     m_RemoveFlares = false;
     m_RemoveMedipacks = false;
     m_RemoveScions = false;
+    m_RemoveBinoculars = false;
 
     if (level == nullptr) {
         return;
@@ -277,6 +282,8 @@ void GF_InventoryModifier_Scan(const GF_LEVEL *const level)
             m_RemoveMedipacks = true;
         } else if (event->type == GFS_REMOVE_SCIONS) {
             m_RemoveScions = true;
+        } else if (event->type == GFS_REMOVE_BINOCULARS) {
+            m_RemoveBinoculars = true;
         }
     }
 }
@@ -362,6 +369,12 @@ void GF_InventoryModifier_ApplyToResumeInfo(const GF_LEVEL *const level)
         resume->large_medipacks = 0;
         resume->small_medipacks = 0;
         m_RemoveMedipacks = false;
+    }
+
+    if (m_RemoveBinoculars) {
+        resume->flags.has_binoculars = false;
+    } else {
+        M_ModifyResumeInfo_Item(resume, O_BINOCULARS_ITEM);
     }
 
     M_ModifyResumeInfo_GunOrAmmo(resume, LGT_PISTOLS);

@@ -65,6 +65,7 @@
             "sequence": [
                 {"type": "play_fmv", "fmv_id": 3},
                 {"type": "loading_screen", "path": "gym.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
+                {"type": "give_item", "object_id": "binoculars"},
                 {"type": "loop_game"},
                 {"type": "level_stats"},
                 {"type": "exit_to_title"},
@@ -98,6 +99,7 @@
             "sequence": [
                 {"type": "play_fmv", "fmv_id": 4},
                 {"type": "loading_screen", "path": "peru.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
+                {"type": "give_item", "object_id": "binoculars"},
                 {"type": "loop_game"},
                 {"type": "level_stats"},
                 {"type": "level_complete"},

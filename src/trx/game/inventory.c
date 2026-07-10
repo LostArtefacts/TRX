@@ -236,6 +236,11 @@ bool Inv_AddItem(const OBJECT_ID object_id)
         return false;
     }
 
+    if (inv_object_id == O_BINOCULARS_OPTION
+        && Inv_RequestItem(O_BINOCULARS_ITEM) > 0) {
+        return false;
+    }
+
     LARA_INFO *const lara = Lara_GetLaraInfo();
     if (Object_IsType(pickup_object_id, g_GunObjects)) {
         Gun_UpdateLaraMeshes(pickup_object_id);

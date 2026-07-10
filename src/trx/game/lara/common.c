@@ -171,6 +171,10 @@ void Lara_InitialiseInventory(const GF_LEVEL *const level)
     RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
 
     if (resume != nullptr) {
+        if (resume->flags.has_binoculars) {
+            Inv_AddItem(O_BINOCULARS_ITEM);
+        }
+
         if (resume->flags.has_pistols) {
             Inv_AddItem(O_PISTOL_ITEM);
         }

@@ -912,10 +912,13 @@ static bool M_ReadResumeInfo(JSON_READ_IO *const io, RESUME_INFO *const resume)
     M_SHOULD(JSON_READ(io, "mp5_ammo", &resume->mp5_ammo));
     M_SHOULD(JSON_READ(io, "has_rocket", &resume->flags.has_rocket));
     M_SHOULD(JSON_READ(io, "rocket_ammo", &resume->rocket_ammo));
+
+    // Introduced in TRX 1.9
     M_SHOULD(JSON_READ(io, "has_crossbow", &resume->flags.has_crossbow));
     M_SHOULD(JSON_READ(io, "crossbow_ammo", &resume->crossbow_ammo));
     M_SHOULD(JSON_READ(io, "has_revolver", &resume->flags.has_revolver));
     M_SHOULD(JSON_READ(io, "revolver_ammo", &resume->revolver_ammo));
+    M_SHOULD(JSON_READ(io, "has_binoculars", &resume->flags.has_binoculars));
 
     M_MUST(JSON_READ(io, "timer", &resume->stats.timer));
     M_MUST(JSON_READ(io, "ammo_hits", &resume->stats.ammo_hits));
