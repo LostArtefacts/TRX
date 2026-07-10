@@ -58,6 +58,7 @@
             "lara_outfit": "tr2_bomber_jacket",
             "sequence": [
                 {"type": "loading_screen", "path": "gm_level1.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
+                {"type": "give_item", "object_id": "binoculars"},
                 {"type": "give_item", "object_id": "shotgun"},
                 {"type": "give_item", "object_id": "small_medipack"},
                 {"type": "give_item", "object_id": "large_medipack"},

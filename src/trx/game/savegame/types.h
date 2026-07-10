@@ -57,6 +57,7 @@ typedef struct {
         bool has_harpoon;
         bool has_crossbow;
         bool has_revolver;
+        bool has_binoculars;
     } flags;
 
     bool level_completed;

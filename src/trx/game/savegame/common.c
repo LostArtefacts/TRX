@@ -705,6 +705,7 @@ void Savegame_PersistGameToCurrentInfo(const GF_LEVEL *const level)
     resume->flags.has_revolver = Inv_RequestItem(O_REVOLVER_ITEM) > 0;
     resume->revolver_ammo = lara->revolver_ammo.ammo;
 
+    resume->flags.has_binoculars = Inv_RequestItem(O_BINOCULARS_ITEM) > 0;
     resume->flares = Inv_RequestItem(O_FLARE_ITEM);
     resume->num_scions = Inv_RequestItem(O_SCION_ITEM_1);
     resume->num_quest_item_1 = Inv_RequestItem(O_QUEST_ITEM_1);

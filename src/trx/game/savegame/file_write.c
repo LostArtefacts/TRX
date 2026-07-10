@@ -308,6 +308,7 @@ static void M_WriteResumeInfo(
     JSONW_WRITE(io, "has_harpoon", resume->flags.has_harpoon);
     JSONW_WRITE(io, "has_crossbow", resume->flags.has_crossbow);
     JSONW_WRITE(io, "has_revolver", resume->flags.has_revolver);
+    JSONW_WRITE(io, "has_binoculars", resume->flags.has_binoculars);
 
     JSONW_WRITE(io, "costume", resume->flags.costume);
     JSONW_WRITE(io, "timer", resume->stats.timer);
