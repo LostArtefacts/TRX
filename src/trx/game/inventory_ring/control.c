@@ -41,6 +41,8 @@ static int32_t m_StartLevel;
 static OBJECT_ID m_InvChosen = NO_OBJECT;
 static INV_RING *m_ActiveRing = nullptr;
 
+static bool m_RestoreBinoculars = false;
+
 INV_RING *InvRing_GetActiveRing(void)
 {
     return m_ActiveRing;
@@ -778,6 +780,11 @@ INV_RING *InvRing_Open(const INVENTORY_MODE mode)
         return nullptr;
     }
 
+    if (mode == INV_GAME_MODE && !g_Config.gameplay.enable_binoculars) {
+        m_RestoreBinoculars = Inv_RequestItem(O_BINOCULARS_ITEM) > 0;
+        Inv_RemoveItem(O_BINOCULARS_ITEM);
+    }
+
     m_InvChosen = NO_OBJECT;
 
     g_InvRing_OldCamera = g_Camera;
@@ -929,6 +936,11 @@ INV_RING *InvRing_Open(const INVENTORY_MODE mode)
 
 void InvRing_Close(INV_RING *const ring)
 {
+    if (m_RestoreBinoculars) {
+        Inv_AddItem(O_BINOCULARS_ITEM);
+        m_RestoreBinoculars = false;
+    }
+
     InvRing_RemoveAllText();
     InvRing_RemoveVersionText();
 
