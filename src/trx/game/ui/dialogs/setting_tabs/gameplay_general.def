@@ -13,6 +13,7 @@ X_UI_CFG(gameplay.enable_save_crystals)
 
 X_UI_CFG(gameplay.enable_auto_item_selection)
 X_UI_CFG(gameplay.enable_item_examining)
+X_UI_CFG(gameplay.enable_binoculars)
 
 X_UI_CFG(gameplay.enable_compass_stats)
 X_UI_CFG(gameplay.enable_total_stats)

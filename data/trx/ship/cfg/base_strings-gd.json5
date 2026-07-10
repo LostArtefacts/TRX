@@ -892,6 +892,10 @@
             "title": "Tuiseal air leathad air chùl",
             "description": "Bheir seo air Lara tuisleadh ma leumas i air ais agus nuair a tha leathad air a cùlaibh (TR3). Ma tha e à comas, stadaidh Lara gu cruaidh an aghaidh an leathaid (TR1/2).",
         },
+        "gameplay.enable_binoculars": {
+            "title": "Prosbaig",
+            "description": "Bidh a' phrosbaig ri fhaighinn airson a thaghadh san chlàr-seilbhe.",
+        },
         "gameplay.enable_body_bags": {
             "title": "Pocannan-cuirp",
             "description": "Cuirish seo an comas a chuir às ri nàimhdean a chaidh a mharbhadh nuair a thèid Lara thairis air brosnachaidhean sònraichte ann an cuid de dh'ìrean. Ma tha e à comas, bidh nàimhdean marbh air an taisbeanadh an-còmhnaidh.",
@@ -1878,7 +1882,7 @@
             "name": "Damhan-allaidh Fuamhaireil",
         },
         "binoculars": {
-            "name": "\\{review}Binoculars",
+            "name": "Prosbaig",
         },
         "bird_guardian": {
             "name": "Eun-uilebheisteach",
