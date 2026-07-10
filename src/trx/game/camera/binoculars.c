@@ -23,13 +23,19 @@
 #define M_TARGET_DIST 20736
 #define M_TORCH_BRIGHTNESS 192
 #define M_TORCH_STEPS 32
+#define M_FOR_EACH_EXIT_INPUT(X)                                               \
+    X(Draw, draw)                                                              \
+    X(Look, look)                                                              \
+    X(Option, option)
 
 static bool m_Active = false;
 static bool m_Pending = false;
 static bool m_JustEntered = false;
 static bool m_TorchActive = false;
-static bool m_SuppressDraw = false;
-static bool m_SuppressLook = false;
+#define M_DECLARE_SUPPRESS_FLAG(name, field)                                   \
+    static bool m_Suppress##name = false;
+M_FOR_EACH_EXIT_INPUT(M_DECLARE_SUPPRESS_FLAG)
+#undef M_DECLARE_SUPPRESS_FLAG
 static int32_t m_Range = M_MIN_RANGE;
 static int32_t m_OriginalFOV;
 static FOV_MODE m_OriginalFOVMode;
@@ -183,8 +189,9 @@ void Camera_Binoculars_Reset(void)
     m_Active = false;
     m_Pending = false;
     m_TorchActive = false;
-    m_SuppressDraw = false;
-    m_SuppressLook = false;
+#define M_RESET_SUPPRESS_FLAG(name, field) m_Suppress##name = false;
+    M_FOR_EACH_EXIT_INPUT(M_RESET_SUPPRESS_FLAG)
+#undef M_RESET_SUPPRESS_FLAG
     m_Range = M_MIN_RANGE;
 }
 
@@ -194,26 +201,21 @@ void Camera_Binoculars_Request(void)
 }
 
 // Swallow the key that closed the binoculars until it is released, so that
-// it does not trigger an immediate action (e.g. drawing a weapon or
-// entering look mode).
+// it does not trigger an immediate action (e.g. drawing a weapon, entering
+// look mode, or opening the inventory ring).
 static void M_SuppressExitInputs(void)
 {
-    if (m_SuppressDraw) {
-        if (g_Input.draw) {
-            g_Input.draw = 0;
-            g_InputDB.draw = 0;
-        } else {
-            m_SuppressDraw = false;
-        }
+#define M_SUPPRESS_EXIT_INPUT(name, field)                                     \
+    if (m_Suppress##name) {                                                    \
+        if (g_Input.field) {                                                   \
+            g_Input.field = 0;                                                 \
+            g_InputDB.field = 0;                                               \
+        } else {                                                               \
+            m_Suppress##name = false;                                          \
+        }                                                                      \
     }
-    if (m_SuppressLook) {
-        if (g_Input.look) {
-            g_Input.look = 0;
-            g_InputDB.look = 0;
-        } else {
-            m_SuppressLook = false;
-        }
-    }
+    M_FOR_EACH_EXIT_INPUT(M_SUPPRESS_EXIT_INPUT)
+#undef M_SUPPRESS_EXIT_INPUT
 }
 
 void Camera_Binoculars_Control(void)
@@ -231,8 +233,9 @@ void Camera_Binoculars_Control(void)
 
     if (M_ShouldExit()) {
         Camera_Binoculars_Exit();
-        m_SuppressDraw = g_Input.draw;
-        m_SuppressLook = g_Input.look;
+#define M_CAPTURE_EXIT_INPUT(name, field) m_Suppress##name = g_Input.field;
+        M_FOR_EACH_EXIT_INPUT(M_CAPTURE_EXIT_INPUT)
+#undef M_CAPTURE_EXIT_INPUT
         M_SuppressExitInputs();
         return;
     }
