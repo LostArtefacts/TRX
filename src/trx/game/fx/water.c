@@ -515,27 +515,15 @@ static void M_DrawRipple(const FX_WATER_RIPPLE *r)
         return;
     }
 
-    // double-sided
-    const XYZ_32 quad_pos[2][4] = {
-        {
-            { r->x - n, r->y, r->z - n },
-            { r->x + n, r->y, r->z - n },
-            { r->x + n, r->y, r->z + n },
-            { r->x - n, r->y, r->z + n },
-        },
-        {
-            { r->x - n, r->y, r->z - n },
-            { r->x - n, r->y, r->z + n },
-            { r->x + n, r->y, r->z + n },
-            { r->x + n, r->y, r->z - n },
-        },
+    const XYZ_32 quad_pos[4] = {
+        { r->x - n, r->y, r->z - n },
+        { r->x + n, r->y, r->z - n },
+        { r->x + n, r->y, r->z + n },
+        { r->x - n, r->y, r->z + n },
     };
     const RGBA_8888 quad_color[4] = { color, color, color, color };
     OutputSource_PolyFX_StageSpriteQuadWorldDepth(
-        sprite_idx, quad_pos[0], quad_color, M_RIPPLE_Z_DEPTH_ADJUST,
-        DRAW_BLEND_ADD);
-    OutputSource_PolyFX_StageSpriteQuadWorldDepth(
-        sprite_idx, quad_pos[1], quad_color, M_RIPPLE_Z_DEPTH_ADJUST,
+        sprite_idx, quad_pos, quad_color, M_RIPPLE_Z_DEPTH_ADJUST,
         DRAW_BLEND_ADD);
 }
 

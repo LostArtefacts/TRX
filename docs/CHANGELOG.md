@@ -67,6 +67,7 @@
 **TR3**:
 - added support for embedded injections in level files
 - added the TR2 inventory background as an option for the inventory, pause and stats screens
+- fixed water ripples appearing too intense compared to OG (regression from 1.1)
 - fixed missing portals in Aldwych room 87, which could lead to Lara becoming softlocked
 - fixed the ticket booth SFX playing in Aldwych when Lara treads in shallow water
 - fixed the underwater swimming SFX playing when Lara turns to the right in shallow water
