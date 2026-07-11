@@ -17,7 +17,6 @@
         "sequence": [
             {"type": "display_picture", "path": "legal_eu.webp", "legal": true},
             {"type": "play_fmv", "fmv_id": 0},
-            {"type": "play_fmv", "fmv_id": 1},
             {"type": "exit_to_title"},
         ],
         "injections": [
@@ -97,6 +96,7 @@
             "lara_outfit": "tr3_classic",
             "weather_type": "rain",
             "sequence": [
+                {"type": "play_fmv", "fmv_id": 1},
                 {"type": "loading_screen", "path": "india.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "give_item", "object_id": "small_medipack"},
                 {"type": "give_item", "object_id": "large_medipack"},
