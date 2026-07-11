@@ -669,6 +669,10 @@
             "INPUT_ROLE_USE_FLARE": "Fackel",
             "INPUT_ROLE_USE_SMALL_MEDI": "Kleines Medi-Pack",
         },
+        "INTRO_FMV_MODE": {
+            "INTRO_FMV_LAUNCH": "\\{review}Starten",
+            "INTRO_FMV_NEW_GAME": "\\{review}Neues Spiel",
+        },
         "JUMP_LOCK_MODE": {
             "JUMP_LOCK_DISABLED": "Deaktiviert",
             "JUMP_LOCK_LEGACY": "Original",
@@ -1215,6 +1219,10 @@
         "gameplay.idle_pose_timeout": {
             "title": "\\{review}Leerlauf-Zeit",
             "description": "\\{review}Ermöglicht Lara, nach der angegebenen Anzahl an Sekunden Inaktivität eine Posenanimation zu starten. Auf 0 setzen, um zu deaktivieren.",
+        },
+        "gameplay.intro_fmv_mode": {
+            "title": "\\{review}Intro-FMV-Timing",
+            "description": "\\{review}Steuert, wann der Eröffnungsstory-FMV jedes Spiels abgespielt wird.\n\n- Neues Spiel: Wird beim Start eines neuen Spiels abgespielt.\n- Start: Wird jedes Mal abgespielt, wenn das Spiel gestartet oder gewechselt wird, wie bei den Originalspielen.",
         },
         "gameplay.jump_lock_mode": {
             "title": "Sprung-Block Modus",

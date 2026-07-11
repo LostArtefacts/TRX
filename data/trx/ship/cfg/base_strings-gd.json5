@@ -669,6 +669,10 @@
             "INPUT_ROLE_USE_FLARE": "Cleachd Lòchran",
             "INPUT_ROLE_USE_SMALL_MEDI": "Pasgan Beag",
         },
+        "INTRO_FMV_MODE": {
+            "INTRO_FMV_LAUNCH": "\\{review}Tòisich",
+            "INTRO_FMV_NEW_GAME": "\\{review}Geama ùr",
+        },
         "JUMP_LOCK_MODE": {
             "JUMP_LOCK_DISABLED": "Dheth",
             "JUMP_LOCK_LEGACY": "Dualchasach",
@@ -1215,6 +1219,10 @@
         "gameplay.idle_pose_timeout": {
             "title": "Dàil seasaimh",
             "description": "Leigidh seo le Lara beòthalachd shònraichte a thòiseachadh às dèidh dhi dad a dhèanamh fad an àireamh de dhiogan suidhichte. Suidhich gu 0 gus a chur à comas.",
+        },
+        "gameplay.intro_fmv_mode": {
+            "title": "\\{review}Ùine FMV Ro-ràdh",
+            "description": "\\{review}Smachdan air cuin a chluicheas FMV sgeulachd fosglaidh gach geama.\n\n- Geama ùr: cluich e nuair a thòisicheas geama ùr.\n- Tòiseachadh: cluich e a h-uile uair a thèid am geama a thòiseachadh no atharrachadh gu, coltach ris na geamannan tùsail.",
         },
         "gameplay.jump_lock_mode": {
             "title": "Modh glasadh leum",

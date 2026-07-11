@@ -147,6 +147,12 @@ const UI_SETTINGS_ENUM_ENTRY UI_Settings_LoadingScreensModeEnumEntries[] = {
     { -1 },
 };
 
+const UI_SETTINGS_ENUM_ENTRY UI_Settings_IntroFMVModeEnumEntries[] = {
+    { INTRO_FMV_NEW_GAME },
+    { INTRO_FMV_LAUNCH },
+    { -1 },
+};
+
 const UI_SETTINGS_ENUM_ENTRY UI_Settings_MusicLoadConditionEnumEntries[] = {
     { MUSIC_LOAD_CONDITION_NEVER },
     { MUSIC_LOAD_CONDITION_NON_AMBIENT },

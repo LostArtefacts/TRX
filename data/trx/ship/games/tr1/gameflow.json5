@@ -575,7 +575,7 @@
     "fmvs": [
         {"path": "core.avi", "legal": true},
         {"path": "escape.avi", "legal": true},
-        {"path": "cafe.avi"},
+        {"path": "cafe.avi", "intro": true},
         {"path": "mansion.avi"},
         {"path": "snow.avi"},
         {"path": "lift.avi"},

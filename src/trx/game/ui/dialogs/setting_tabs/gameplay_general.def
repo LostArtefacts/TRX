@@ -1,6 +1,7 @@
 X_UI_CFG(gameplay.enable_legal)
 X_UI_CFG(gameplay.enable_credits)
 X_UI_CFG(gameplay.enable_fmv)
+X_UI_CFG_ENUM(gameplay.intro_fmv_mode,        .misc = UI_Settings_IntroFMVModeEnumEntries)
 X_UI_CFG(gameplay.enable_demo)
 X_UI_CFG(gameplay.enable_cinematics)
 X_UI_CFG(gameplay.enable_cinematic_skips)
