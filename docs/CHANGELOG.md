@@ -50,6 +50,7 @@
 - fixed the installer not completing normally if an error is encountered during directory clean-up
 - fixed debug status overlays visible over inventory ring, pause screen and FMVs, including the end credits
 - fixed Lara being able to push/pull a block that is sitting on a collapsible tile about to drop (#5786, regression from 1.8)
+- fixed Lara being unable to pull a block that is sitting directly below a room portal and she has a ceiling directly above her
 - removed the hard-coded spawn distance between Puna and his Lizards (#5686)
 
 **TR1**:

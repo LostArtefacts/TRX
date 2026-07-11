@@ -352,7 +352,6 @@ static bool M_TestPull(
     // Test Lara destination sector.
     base_pos.x += x_add;
     base_pos.z += z_add;
-    room_num = item->room_num;
     sector = Room_GetSector(base_pos, &room_num);
     if (Room_GetHeight(sector, base_pos) != base_pos.y) {
         return false;
