@@ -1,6 +1,7 @@
 project(
   'TRX',
   'c',
+  version: 'undefined',
   default_options: [
     'c_std=c2x',
     'warning_level=3',
@@ -12,14 +13,27 @@ project(
 fs = import('fs')
 
 staticdeps = get_option('staticdeps')
+trx_version = get_option('trx_version')
 # Always dynamically link on macOS
 if host_machine.system() == 'darwin'
   staticdeps = false
 endif
 
 c_compiler = meson.get_compiler('c')
-git = find_program('git', required: true)
 python3 = find_program('python3', required: true)
+
+if trx_version == ''
+  version_result = run_command(
+    python3,
+    meson.project_source_root() + '/../tools/get_version',
+    check: false,
+  )
+  if version_result.returncode() == 0
+    trx_version = version_result.stdout().strip()
+  else
+    trx_version = '?'
+  endif
+endif
 
 trx_lua_embed = custom_target(
   'trx_lua_embed',
@@ -94,7 +108,7 @@ dep_pcre2 = dependency('libpcre2-8', static: staticdeps)
 dep_backtrace = c_compiler.find_library('backtrace', static: true, required: false)
 dep_swscale = dependency('libswscale', static: staticdeps)
 dep_swresample = dependency('libswresample', static: staticdeps)
-dep_lua = dependency('lua', static: staticdeps)
+dep_lua = dependency(get_option('lua_dep'), static: staticdeps)
 c_compiler.check_header('uthash.h', required: true)
 dep_mathlibrary = c_compiler.find_library('m', static: staticdeps, required: false)
 
@@ -853,13 +867,27 @@ endif
 trx_init = custom_target(
   'trx_fake_init',
   output: ['trx_init.c'],
-  command: [python3, meson.project_source_root() + '/../tools/generate_init', '-o', meson.current_build_dir() / '@OUTPUT0@'],
+  command: [
+    python3,
+    meson.project_source_root() + '/../tools/generate_init',
+    '--version',
+    trx_version,
+    '-o',
+    meson.current_build_dir() / '@OUTPUT0@',
+  ],
   build_always_stale: true,
 )
 trx_version_rc = custom_target(
   'trx_fake_version',
   output: ['trx_version.rc'],
-  command: [python3, meson.project_source_root() + '/../tools/generate_rcfile', '-o', '@OUTPUT0@'],
+  command: [
+    python3,
+    meson.project_source_root() + '/../tools/generate_rcfile',
+    '--version',
+    trx_version,
+    '-o',
+    '@OUTPUT0@',
+  ],
   build_always_stale: true,
 )
 trx_icon_rc = custom_target(
