@@ -78,11 +78,13 @@ typedef struct {
     int32_t misc;
 } INV_RING_MOTION;
 
+#define INV_RING_MAX_ITEMS 24
+
 typedef struct {
     int16_t current;
     int16_t count;
-    int32_t qtys[24];
-    INVENTORY_ITEM *items[24];
+    int32_t qtys[INV_RING_MAX_ITEMS];
+    INVENTORY_ITEM *items[INV_RING_MAX_ITEMS];
 } INV_RING_SOURCE;
 
 typedef struct {

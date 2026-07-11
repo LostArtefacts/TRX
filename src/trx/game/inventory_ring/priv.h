@@ -20,8 +20,16 @@ typedef enum {
     INV_RING_ARROW_BR,
 } INV_RING_ARROW;
 
+// Filtered, display-only view of a ring's items — see M_GetVisibleRing in
+// control.c. items points at storage owned by that filter, valid until the
+// next call for the same RING_TYPE.
+typedef struct {
+    INVENTORY_ITEM **items;
+    int16_t count;
+} INV_RING_VISIBLE;
+
 void InvRing_InitRing(
-    INV_RING *ring, RING_TYPE type, INVENTORY_ITEM **list, int16_t qty,
+    INV_RING *ring, RING_TYPE type, const INV_RING_VISIBLE *visible,
     int16_t current);
 void InvRing_InitInvItem(INVENTORY_ITEM *inv_item);
 

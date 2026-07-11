@@ -7,6 +7,7 @@
 #include <trx/game/game_strings/entries.h>
 #include <trx/game/input.h>
 #include <trx/game/inventory.h>
+#include <trx/game/inventory_ring/control.h>
 #include <trx/game/inventory_ring/vars.h>
 #include <trx/game/matrix.h>
 #include <trx/game/music.h>
@@ -206,16 +207,16 @@ void InvRing_SetRequestedObjectID(const OBJECT_ID obj_id)
 }
 
 void InvRing_InitRing(
-    INV_RING *const ring, const RING_TYPE type, INVENTORY_ITEM **const list,
-    const int16_t qty, const int16_t current)
+    INV_RING *const ring, const RING_TYPE type,
+    const INV_RING_VISIBLE *const visible, const int16_t current)
 {
     ring->type = type;
-    ring->list = list;
+    ring->list = visible->items;
     ring->radius = 0;
     ring->prev_radius = 0;
-    ring->number_of_objects = qty;
+    ring->number_of_objects = visible->count;
     ring->current_object = current;
-    ring->angle_adder = DEG_360 / qty;
+    ring->angle_adder = DEG_360 / visible->count;
 
     ring->is_pass_open = false;
     ring->is_demo_needed = false;
@@ -708,7 +709,7 @@ void InvRing_ShowHeader(INV_RING *const ring)
     }
 
     const bool show_up_arrow = ring->type == RT_OPTION
-        || (ring->type == RT_MAIN && g_InvRing_Source[RT_KEYS].count > 0);
+        || (ring->type == RT_MAIN && InvRing_IsRingAvailable(RT_KEYS));
     const bool show_bottom_arrow = ring->type == RT_KEYS
         || (ring->type == RT_MAIN && !InvRing_IsOptionLockedOut());
 

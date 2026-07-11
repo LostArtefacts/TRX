@@ -41,11 +41,34 @@ static int32_t m_StartLevel;
 static OBJECT_ID m_InvChosen = NO_OBJECT;
 static INV_RING *m_ActiveRing = nullptr;
 
-static bool m_RestoreBinoculars = false;
+// Display-only filter for the rings: hidden items stay in the real
+// inventory (g_InvRing_Source) so nothing else in the game (savegames, gun
+// logic, Inv_RequestItem callers) ever sees them as missing. Only what
+// InvRing_Open/M_TransitionToRing show is affected.
+static INVENTORY_ITEM *m_VisibleRingItems[RT_NUMBER_OF][INV_RING_MAX_ITEMS];
 
 INV_RING *InvRing_GetActiveRing(void)
 {
     return m_ActiveRing;
+}
+
+static bool M_IsRuntimeHidden(const OBJECT_ID object_id)
+{
+    return object_id == O_BINOCULARS_OPTION
+        && !g_Config.gameplay.enable_binoculars;
+}
+
+static INV_RING_VISIBLE M_GetVisibleRing(const RING_TYPE type)
+{
+    const INV_RING_SOURCE *const source = &g_InvRing_Source[type];
+    INVENTORY_ITEM **const dst = m_VisibleRingItems[type];
+    int16_t count = 0;
+    for (int16_t i = 0; i < source->count; i++) {
+        if (!M_IsRuntimeHidden(source->items[i]->object_id)) {
+            dst[count++] = source->items[i];
+        }
+    }
+    return (INV_RING_VISIBLE) { .items = dst, .count = count };
 }
 
 static void M_ShowAmmoQuantity(const char *const fmt, const int32_t qty)
@@ -338,11 +361,14 @@ static void M_TransitionToRing(
     INV_RING *const ring, const RING_TYPE source_type,
     const RING_TYPE target_type)
 {
+    // The real count never changes while the ring is being browsed, so
+    // g_InvRing_Source[source_type].count doesn't need writing back; doing
+    // so would clobber it with a filtered (possibly smaller) count.
     g_InvRing_Source[source_type].current = ring->current_object;
-    g_InvRing_Source[source_type].count = ring->number_of_objects;
     ring->type = target_type;
-    ring->list = g_InvRing_Source[target_type].items;
-    ring->number_of_objects = g_InvRing_Source[target_type].count;
+    const INV_RING_VISIBLE visible = M_GetVisibleRing(target_type);
+    ring->list = visible.items;
+    ring->number_of_objects = visible.count;
     ring->current_object = g_InvRing_Source[target_type].current;
     InvRing_SetStatusTransition(
         ring, RNG_OPENING, RNG_OPEN, M_RING_SWITCH_FRAMES / 2);
@@ -524,8 +550,7 @@ static GF_COMMAND M_Control(INV_RING *const ring)
             }
 
             g_InvRing_Source[ring->type].current = ring->current_object;
-            INVENTORY_ITEM *const inv_item =
-                g_InvRing_Source[ring->type].items[ring->current_object];
+            INVENTORY_ITEM *const inv_item = ring->list[ring->current_object];
 
             if (examine) {
                 inv_item->action = ACTION_EXAMINE;
@@ -583,13 +608,13 @@ static GF_COMMAND M_Control(INV_RING *const ring)
             && ring->mode != INV_KEYS_MODE
             && ring->mode != INV_GLOBE_SELECT_MODE) {
             if (ring->type == RT_MAIN) {
-                if (g_InvRing_Source[RT_KEYS].count > 0) {
+                if (InvRing_IsRingAvailable(RT_KEYS)) {
                     M_SetupRingSwitchClose(ring, RNG_MAIN2KEYS);
                 }
                 g_Input = (INPUT_STATE) {};
                 g_InputDB = (INPUT_STATE) {};
             } else if (ring->type == RT_OPTION) {
-                if (g_InvRing_Source[RT_MAIN].count > 0) {
+                if (InvRing_IsRingAvailable(RT_MAIN)) {
                     M_SetupRingSwitchClose(ring, RNG_OPTION2MAIN);
                 }
                 g_InputDB = (INPUT_STATE) {};
@@ -599,13 +624,12 @@ static GF_COMMAND M_Control(INV_RING *const ring)
             && ring->mode != INV_KEYS_MODE
             && ring->mode != INV_GLOBE_SELECT_MODE) {
             if (ring->type == RT_MAIN) {
-                if (g_InvRing_Source[RT_OPTION].count > 0
-                    && !InvRing_IsOptionLockedOut()) {
+                if (InvRing_IsRingAvailable(RT_OPTION)) {
                     M_SetupRingSwitchClose(ring, RNG_MAIN2OPTION);
                 }
                 g_InputDB = (INPUT_STATE) {};
             } else if (ring->type == RT_KEYS) {
-                if (g_InvRing_Source[RT_MAIN].count > 0) {
+                if (InvRing_IsRingAvailable(RT_MAIN)) {
                     M_SetupRingSwitchClose(ring, RNG_KEYS2MAIN);
                 }
                 g_Input = (INPUT_STATE) {};
@@ -775,14 +799,9 @@ void InvRing_RemoveAllText(void)
 
 INV_RING *InvRing_Open(const INVENTORY_MODE mode)
 {
-    if (mode == INV_KEYS_MODE && g_InvRing_Source[RT_KEYS].count == 0) {
+    if (mode == INV_KEYS_MODE && !InvRing_IsRingAvailable(RT_KEYS)) {
         m_InvChosen = NO_OBJECT;
         return nullptr;
-    }
-
-    if (mode == INV_GAME_MODE && !g_Config.gameplay.enable_binoculars) {
-        m_RestoreBinoculars = Inv_RequestItem(O_BINOCULARS_ITEM) > 0;
-        Inv_RemoveItem(O_BINOCULARS_ITEM);
     }
 
     m_InvChosen = NO_OBJECT;
@@ -877,46 +896,49 @@ INV_RING *InvRing_Open(const INVENTORY_MODE mode)
         : nullptr;
 
     switch (mode) {
-    case INV_GLOBE_SELECT_MODE:
+    case INV_GLOBE_SELECT_MODE: {
         ring->background_style = BK_NONE;
         ring->background_path = nullptr;
+        const INV_RING_VISIBLE visible = M_GetVisibleRing(RT_GLOBE_SELECT);
         InvRing_InitRing(
-            ring, RT_GLOBE_SELECT, g_InvRing_Source[RT_GLOBE_SELECT].items,
-            g_InvRing_Source[RT_GLOBE_SELECT].count,
+            ring, RT_GLOBE_SELECT, &visible,
             g_InvRing_Source[RT_GLOBE_SELECT].current);
         Option_GlobeSelect_UpdateSelectable(ring);
         break;
+    }
 
     case INV_TITLE_MODE:
     case INV_SAVE_MODE:
     case INV_SAVE_CRYSTAL_MODE:
     case INV_LOAD_MODE:
-    case INV_DEATH_MODE:
+    case INV_DEATH_MODE: {
+        const INV_RING_VISIBLE visible = M_GetVisibleRing(RT_OPTION);
         InvRing_InitRing(
-            ring, RT_OPTION, g_InvRing_Source[RT_OPTION].items,
-            g_InvRing_Source[RT_OPTION].count,
-            g_InvRing_Source[RT_OPTION].current);
+            ring, RT_OPTION, &visible, g_InvRing_Source[RT_OPTION].current);
         break;
+    }
 
-    case INV_KEYS_MODE:
+    case INV_KEYS_MODE: {
+        const INV_RING_VISIBLE visible = M_GetVisibleRing(RT_KEYS);
         InvRing_InitRing(
-            ring, RT_KEYS, g_InvRing_Source[RT_KEYS].items,
-            g_InvRing_Source[RT_KEYS].count, g_InvRing_Source[RT_MAIN].current);
+            ring, RT_KEYS, &visible, g_InvRing_Source[RT_MAIN].current);
         break;
+    }
 
-    default:
-        if (g_InvRing_Source[RT_MAIN].count > 0) {
+    default: {
+        const INV_RING_VISIBLE main_visible = M_GetVisibleRing(RT_MAIN);
+        if (main_visible.count > 0) {
             InvRing_InitRing(
-                ring, RT_MAIN, g_InvRing_Source[RT_MAIN].items,
-                g_InvRing_Source[RT_MAIN].count,
+                ring, RT_MAIN, &main_visible,
                 g_InvRing_Source[RT_MAIN].current);
         } else {
+            const INV_RING_VISIBLE option_visible = M_GetVisibleRing(RT_OPTION);
             InvRing_InitRing(
-                ring, RT_OPTION, g_InvRing_Source[RT_OPTION].items,
-                g_InvRing_Source[RT_OPTION].count,
+                ring, RT_OPTION, &option_visible,
                 g_InvRing_Source[RT_OPTION].current);
         }
         break;
+    }
     }
 
     g_Inv_Mode = mode;
@@ -936,11 +958,6 @@ INV_RING *InvRing_Open(const INVENTORY_MODE mode)
 
 void InvRing_Close(INV_RING *const ring)
 {
-    if (m_RestoreBinoculars) {
-        Inv_AddItem(O_BINOCULARS_ITEM);
-        m_RestoreBinoculars = false;
-    }
-
     InvRing_RemoveAllText();
     InvRing_RemoveVersionText();
 
@@ -1011,7 +1028,7 @@ bool InvRing_IsRingAvailable(const RING_TYPE ring_type)
     if (ring_type == RT_OPTION && InvRing_IsOptionLockedOut()) {
         return false;
     }
-    return g_InvRing_Source[ring_type].count > 0;
+    return M_GetVisibleRing(ring_type).count > 0;
 }
 
 bool InvRing_IsOptionLockedOut(void)
