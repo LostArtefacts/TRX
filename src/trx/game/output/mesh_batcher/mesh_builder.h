@@ -23,16 +23,20 @@ void MeshBuilder_AddVertices(
     MESH_BUILDER *builder, const OUTPUT_MESH_VERTEX *vertices,
     size_t vertex_count);
 
-// Add a face using the recently added vertices.
+// Add a face using the recently added vertices. Setting depth_write to false
+// is only valid for SCENE_PASS_TRANSPARENT faces: the face then draws only
+// depth-sorted in the transparent pass, skipping the opaque depth prepass, so
+// it never writes to the depth buffer and cannot clip other blended geometry.
 void MeshBuilder_AddFace(
     MESH_BUILDER *builder, SCENE_PASS pass, const int32_t *indices,
-    size_t idx_count);
+    size_t idx_count, bool depth_write);
 
 // Add a triangle fan face using the last vertices added: a center followed by
 // ring vertices.If double_sided is true, generates mirrored winding
 // for backfaces as well.
 void MeshBuilder_AddFan(
-    MESH_BUILDER *builder, SCENE_PASS pass, bool double_sided);
+    MESH_BUILDER *builder, SCENE_PASS pass, bool double_sided,
+    bool depth_write);
 
 // Applies invisible z offset to all vertices that helps with the z-fighting.
 void MeshBuilder_AdjustDepth(MESH_BUILDER *builder, float depth);

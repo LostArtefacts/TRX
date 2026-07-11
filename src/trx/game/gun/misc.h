@@ -19,3 +19,7 @@ void Gun_HitTarget(
     int32_t damage);
 
 void Gun_DrawFlash(LARA_GUN_TYPE weapon_type, CLIP clip, bool interpolated);
+
+// Marks the TR1/TR2 muzzle flash and flare fire meshes semi-transparent per
+// the gun glow setting, matching the PS1 versions.
+void Gun_ApplyFlashSemiTransparency(void);

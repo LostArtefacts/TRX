@@ -1612,6 +1612,10 @@
             "title": "\\{review}Caméras en glissement",
             "description": "\\{review}Active un effet de glissement sur les caméras fixes qui regardent Lara en adoptant une courbe de vitesse fluide. Si désactivé, ces caméras changeront immédiatement la vue pour regarder Lara.",
         },
+        "visuals.enable_gun_glow": {
+            "title": "\\{review}Lueur de l'arme",
+            "description": "\\{review}Rend les éclairs de pistolet et de fusée éclairante semi-transparents et ajoute une lueur autour d'eux, comme dans la version TR2 PS1.",
+        },
         "visuals.enable_gun_lighting": {
             "title": "Éclairage des armes",
             "description": "\\{review}Permet de générer un éclairage dynamique pour les coups de feu et les explosions.",

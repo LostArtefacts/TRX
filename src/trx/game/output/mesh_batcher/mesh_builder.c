@@ -131,12 +131,13 @@ void MeshBuilder_AddVertices(
 
 void MeshBuilder_AddFace(
     MESH_BUILDER *const builder, const SCENE_PASS pass, const int32_t *indices,
-    const size_t idx_count)
+    const size_t idx_count, const bool depth_write)
 {
     ASSERT(builder != nullptr);
     ASSERT(
         (pass == SCENE_PASS_TRANSPARENT) || (pass == SCENE_PASS_OPAQUE)
         || (pass == SCENE_PASS_BLEND_SUB) || (pass == SCENE_PASS_BLEND_ADD));
+    ASSERT(depth_write || pass == SCENE_PASS_TRANSPARENT);
     M_EnsureMesh(builder);
     ASSERT(builder->mesh != nullptr);
     ASSERT(!builder->mesh->sealed);
@@ -170,18 +171,23 @@ void MeshBuilder_AddFace(
         }
         Vector_Add(builder->mesh->transparent_faces, &face);
     }
-    VECTOR *const target = pass == SCENE_PASS_BLEND_ADD
-        ? builder->mesh->blend_add_vertex_indices
-        : builder->mesh->opaque_vertex_indices;
-    uint32_t *const out = Vector_Expand(target, idx_count);
-    for (size_t i = 0; i < idx_count; i++) {
-        out[i] = start + indices[i];
+    // No-depth faces draw only in the sorted transparent pass; keeping them
+    // out of the opaque bucket keeps them out of the depth buffer.
+    if (depth_write) {
+        VECTOR *const target = pass == SCENE_PASS_BLEND_ADD
+            ? builder->mesh->blend_add_vertex_indices
+            : builder->mesh->opaque_vertex_indices;
+        uint32_t *const out = Vector_Expand(target, idx_count);
+        for (size_t i = 0; i < idx_count; i++) {
+            out[i] = start + indices[i];
+        }
     }
     builder->pending_vertex_count = 0;
 }
 
 void MeshBuilder_AddFan(
-    MESH_BUILDER *const builder, const SCENE_PASS pass, const bool double_sided)
+    MESH_BUILDER *const builder, const SCENE_PASS pass, const bool double_sided,
+    const bool depth_write)
 {
     ASSERT(builder != nullptr);
     M_EnsureMesh(builder);
@@ -190,7 +196,7 @@ void MeshBuilder_AddFan(
     M_FillFanIndices(builder->indices, vtx_count, double_sided);
     MeshBuilder_AddFace(
         builder, pass, Vector_GetData(builder->indices),
-        builder->indices->count);
+        builder->indices->count, depth_write);
     Vector_Clear(builder->indices);
 }
 
@@ -225,7 +231,7 @@ void MeshBuilder_AddRoomSprite(
         };
         MeshBuilder_AddVertex(builder, &vertex);
     }
-    MeshBuilder_AddFan(builder, SCENE_PASS_TRANSPARENT, false);
+    MeshBuilder_AddFan(builder, SCENE_PASS_TRANSPARENT, false, true);
 }
 
 void MeshBuilder_AdjustDepth(MESH_BUILDER *const builder, const float depth)

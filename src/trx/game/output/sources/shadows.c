@@ -39,7 +39,7 @@ static OUTPUT_MESH *M_GenerateShadow(
         edge.pos.z = z;
         MeshBuilder_AddVertex(builder, &edge);
     }
-    MeshBuilder_AddFan(builder, SCENE_PASS_TRANSPARENT, false);
+    MeshBuilder_AddFan(builder, SCENE_PASS_TRANSPARENT, false, true);
     return MeshBuilder_Seal(builder);
 }
 

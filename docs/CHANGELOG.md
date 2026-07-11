@@ -22,6 +22,7 @@
 - added rope mechanics for custom levels
 - added climbing poles for custom levels
 - added a setting to control whether the opening story FMV plays on new game or at launch (Gameplay → General → Intro FMV timing) (#5658)
+- added an option to render gun/flare flashes semi-transparent with a glow bloom effect, like the TR2 PS1 version, for TR1/TR2 (Graphic Options → Visuals → Gun glow) (#1709)
 - changed `Game mode selection` to allow hiding the dialog even after having completed the game (Gameplay → General → Game mode selection)
 - changed opening story FMVs to play on new game rather than on every launch/switch by default (#5658)
 - changed `O_SPARKS_GFX` sprite ordering and contents - refer to migration guide

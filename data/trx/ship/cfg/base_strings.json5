@@ -1612,6 +1612,10 @@
             "title": "Glide cameras",
             "description": "Enables a glide action on fixed cameras that look at Lara by adopting a smooth speed curve. If disabled, such cameras will change the view to look at Lara immediately.",
         },
+        "visuals.enable_gun_glow": {
+            "title": "Gun glow",
+            "description": "Renders gun and flare flashes semi-transparent and adds a glow bloom around them, as seen in the TR2 PS1 version.",
+        },
         "visuals.enable_gun_lighting": {
             "title": "Gun lighting",
             "description": "Enables dynamic lighting to be generated for gunshots and explosions.",

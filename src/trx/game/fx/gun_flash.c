@@ -177,7 +177,8 @@ void FX_GunFlash_Draw(void)
         if (glow_obj->loaded) {
             Output_DrawSprite(
                 flash_pos.x, flash_pos.y, flash_pos.z, glow_obj->mesh_idx,
-                SHADE_NEUTRAL, (RGB_F) { 1.0f, 0.89f, 0.13f }, DRAW_BLEND_ADD);
+                SHADE_NEUTRAL, (RGB_F) { 1.0f, 0.89f, 0.13f }, DRAW_BLEND_ADD,
+                1.0f);
         }
 
         Matrix_Push();

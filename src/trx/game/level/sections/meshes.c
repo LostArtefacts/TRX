@@ -33,6 +33,7 @@ static void M_ReadFace(
     face->double_sided = (texture_idx & 0x8000) != 0;
     face->effects = 0;
     face->enable_reflections = false;
+    face->semi_transparent = false;
     if (loader->game_version == 4) {
         face->effects = VFile_ReadU16(file);
     }

@@ -1,6 +1,7 @@
 #include <trx/config.h>
 #include <trx/core/log.h>
 #include <trx/game/game_strings/manager.h>
+#include <trx/game/gun/misc.h>
 #include <trx/game/lara.h>
 #include <trx/game/music.h>
 #include <trx/game/option/controls.h>
@@ -174,6 +175,11 @@ void Shell_HandleConfigChange(const CONFIG *const old, const CONFIG *const new)
         || L_CHANGED(visuals.water_color.g) || L_CHANGED(visuals.water_color.b)
         || L_CHANGED(visuals.water_color.r)) {
         Output_ApplyLevelSettings();
+    }
+
+    if (L_CHANGED(visuals.enable_gun_glow)) {
+        Gun_ApplyFlashSemiTransparency();
+        Output_RefreshObjectMeshes();
     }
 
     if (L_CHANGED(visuals.enable_braid) || L_CHANGED(visuals.sunglasses_mode)) {
