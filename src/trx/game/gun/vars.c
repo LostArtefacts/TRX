@@ -88,6 +88,10 @@ void Gun_LoadVars(const char *const path)
         Shell_ExitSystemFmt("invalid weapons vars file: %s", path);
     }
 
+    for (int32_t i = 0; i < NUM_WEAPONS; i++) {
+        g_Weapons[i].glow_scale = 1.0f;
+    }
+
     for (JSON_OBJECT_ELEMENT *elem = root_obj->start; elem != nullptr;
          elem = elem->next) {
         const char *const name = elem->name->string;
@@ -148,6 +152,10 @@ void Gun_LoadVars(const char *const path)
         M_ReadRGB_F(
             JSON_ObjectGetValue(obj, "glow_color"),
             &g_Weapons[type].glow_color);
+        g_Weapons[type].glow_scale =
+            JSON_ObjectGetDouble(obj, "glow_scale", g_Weapons[type].glow_scale);
+        g_Weapons[type].glow_flicker = JSON_ObjectGetBool(
+            obj, "glow_flicker", g_Weapons[type].glow_flicker);
 
         M_ReadXYZ32(
             JSON_ObjectGetValue(obj, "muzzle_pos"),

@@ -9,9 +9,10 @@ void Output_DrawObjectMesh(const OBJECT_MESH *mesh, CLIP clip);
 void Output_DrawObjectMesh_I(const OBJECT_MESH *mesh, CLIP clip);
 void Output_DrawRoom(const ROOM *room, bool is_outside);
 
+// scale multiplies the sprite's own size around its anchor point.
 void Output_DrawSprite(
     int32_t x, int32_t y, int32_t z, int16_t sprnum, int16_t shade, RGB_F tint,
-    DRAW_TYPE draw_type);
+    DRAW_TYPE draw_type, float scale);
 void Output_DrawShadow(int16_t size, const BOUNDS_16 *bounds, const ITEM *item);
 void Output_DrawLightningSegment(const LIGHTNING_SEGMENT segment);
 

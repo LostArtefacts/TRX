@@ -2,6 +2,7 @@
 
 #include <trx/config.h>
 #include <trx/core/math.h>
+#include <trx/core/utils.h>
 #include <trx/game/creature.h>
 #include <trx/game/gun/common.h>
 #include <trx/game/gun/pistols.h>
@@ -117,9 +118,32 @@ static void M_ConsiderTarget(M_TARGET_CONTEXT *const ctx, ITEM *const item)
     }
 }
 
-static void M_DrawGunGlow(const XYZ_32 offset, const RGB_F color)
+void Gun_ApplyFlashSemiTransparency(void)
 {
-    if (g_TRVersion < 3) {
+    // TR3+ level data already flags the flash faces as semi-transparent;
+    // never touch it there.
+    if (g_TRVersion >= 3) {
+        return;
+    }
+    // The PS1 versions drew the muzzle flashes and the flare fire
+    // semi-transparent; the PC data has them as plain opaque meshes.
+    static const OBJECT_ID flash_objects[] = {
+        O_GUN_FLASH,
+        O_M16_FLASH,
+        O_FLARE_FIRE,
+    };
+    for (int32_t i = 0; i < (int32_t)ARRAY_SIZE(flash_objects); i++) {
+        Object_SetSemiTransparent(
+            flash_objects[i], g_Config.visuals.enable_gun_glow);
+    }
+}
+
+static void M_DrawGunGlow(const WEAPON_INFO *const weapon)
+{
+    if (g_TRVersion < 3 && !g_Config.visuals.enable_gun_glow) {
+        return;
+    }
+    if (weapon->glow_scale <= 0.0f) {
         return;
     }
     const OBJECT *const glow_obj = Object_Get(O_GLOW);
@@ -128,15 +152,20 @@ static void M_DrawGunGlow(const XYZ_32 offset, const RGB_F color)
     }
 
     Matrix_Push();
-    Matrix_TranslateRel32(offset);
+    Matrix_TranslateRel32(weapon->glow_pos);
     const XYZ_32 pos = {
         .x = (int32_t)(g_WMatrixPtr->_03 >> W2V_SHIFT),
         .y = (int32_t)(g_WMatrixPtr->_13 >> W2V_SHIFT),
         .z = (int32_t)(g_WMatrixPtr->_23 >> W2V_SHIFT),
     };
     Matrix_Pop();
+
+    // The flare's glow pulses as its pyro burns; gunfire glows are steady.
+    const int16_t shade =
+        weapon->glow_flicker ? (Random_GetDraw() & 0xFFF) + SHADE_NEUTRAL : 0;
     Output_DrawSprite(
-        pos.x, pos.y, pos.z, glow_obj->mesh_idx, 0, color, DRAW_BLEND_ADD);
+        pos.x, pos.y, pos.z, glow_obj->mesh_idx, shade, weapon->glow_color,
+        DRAW_BLEND_ADD, weapon->glow_scale);
 }
 
 void Gun_FindTargetPoint(const ITEM *const item, GAME_VECTOR *const target)
@@ -369,7 +398,7 @@ void Gun_DrawFlash(
         Object_DrawMesh(flash_obj->mesh_idx, clip, interpolated);
     }
 
-    M_DrawGunGlow(weapon.glow_pos, weapon.glow_color);
+    M_DrawGunGlow(&weapon);
     Output_PopTintOverride();
 }
 

@@ -46,4 +46,6 @@ typedef struct {
     uint16_t effects;
     bool double_sided;
     bool enable_reflections;
+    // Draws the face at half opacity, like the PSX half blend mode.
+    bool semi_transparent;
 } FACE;

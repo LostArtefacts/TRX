@@ -22,6 +22,7 @@ bool UI_Settings_ShadowType_IsEnumValueAvailable(
 
 bool UI_Settings_FogColor_IsAvailable(const UI_SETTINGS_OPTION *option);
 bool UI_Settings_FogBulbs_IsVisible(const UI_SETTINGS_OPTION *option);
+bool UI_Settings_GunGlow_IsVisible(const UI_SETTINGS_OPTION *option);
 bool UI_Settings_EnableBreeze_IsAvailable(const UI_SETTINGS_OPTION *option);
 bool UI_Settings_ResponsiveJumping_IsAvailable(
     const UI_SETTINGS_OPTION *option);

@@ -1,6 +1,7 @@
 #include <trx/config.h>
 #include <trx/core/colors.h>
 #include <trx/game/effects.h>
+#include <trx/game/gun/misc.h>
 #include <trx/game/objects.h>
 #include <trx/game/output.h>
 #include <trx/game/random.h>
@@ -30,6 +31,7 @@ static void M_Control(const int16_t effect_num)
 static void M_Setup(OBJECT *const obj)
 {
     obj->control_func = M_Control;
+    Gun_ApplyFlashSemiTransparency();
 }
 
 REGISTER_OBJECT(O_GUN_FLASH, M_Setup)

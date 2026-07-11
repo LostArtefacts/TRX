@@ -29,6 +29,7 @@ X_UI_CFG(visuals.enable_ps1_crystals,  .custom_handler = { .is_available = UI_Se
 
 X_UI_CFG_ENUM(visuals.shadow_type,     .misc = UI_Settings_ShadowTypeEnumEntries, .custom_handler = { .is_enum_value_available = UI_Settings_ShadowType_IsEnumValueAvailable })
 X_UI_CFG(visuals.enable_gun_lighting)
+X_UI_CFG(visuals.enable_gun_glow,      .custom_handler = { .is_visible = UI_Settings_GunGlow_IsVisible })
 X_UI_CFG(visuals.enable_fire_lighting)
 
 X_UI_CFG(visuals.enable_shotgun_flash)

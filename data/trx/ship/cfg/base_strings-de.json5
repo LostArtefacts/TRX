@@ -1612,6 +1612,10 @@
             "title": "\\{review}Gleitende Kameras",
             "description": "\\{review}Ermöglicht bei festen Kameras, die Lara ansehen, eine Gleitbewegung mit einer sanften Geschwindigkeitskurve. Wenn deaktiviert, wechseln diese Kameras sofort zur Ansicht auf Lara.",
         },
+        "visuals.enable_gun_glow": {
+            "title": "\\{review}Waffenleuchten",
+            "description": "\\{review}Macht Waffen- und Fackelblitze halbtransparent und fügt einen Leuchteffekt um sie herum hinzu, wie in der TR2 PS1-Version zu sehen.",
+        },
         "visuals.enable_gun_lighting": {
             "title": "Dynamisches Licht für Waffen",
             "description": "Aktiviert die verwendung von dynamischer Beleuchtung für Schüsse und Explosionen.",

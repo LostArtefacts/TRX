@@ -27,6 +27,9 @@ void Output_ApplyLevelSettings(void);
 
 void Output_DispatchLevelLoad(void);
 void Output_DispatchLevelUnload(void);
+// Rebakes the object meshes so that face data changes (e.g. semi-transparency
+// flags) take effect without a level reload.
+void Output_RefreshObjectMeshes(void);
 void Output_DispatchRoomFlip(const ROOM *room);
 void Output_DispatchObjectMeshUpdate(int32_t mesh_idx);
 void Output_DispatchObjectMeshSwap(int32_t mesh_idx_0, int32_t mesh_idx_1);

@@ -69,6 +69,7 @@ static void M_ReadFace(
     face->double_sided = (texture_idx & 0x8000) != 0;
     face->effects = 0;
     face->enable_reflections = false;
+    face->semi_transparent = false;
 }
 
 static void M_ReadRoomLightTR4(LIGHT *const light, VFILE *const file)

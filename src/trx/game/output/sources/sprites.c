@@ -33,7 +33,7 @@ static void M_RenderBegin(const SCENE_SOURCE *const src)
 
 static void M_AddSpriteMesh(
     MESH_BUILDER *const builder, const int32_t texture_idx,
-    const SCENE_PASS pass, const uint16_t extra_flags)
+    const SCENE_PASS pass, const uint16_t extra_flags, const bool depth_write)
 {
     const SPRITE_TEXTURE *const sprite = Output_GetSpriteTexture(texture_idx);
     const struct {
@@ -57,7 +57,7 @@ static void M_AddSpriteMesh(
         };
         MeshBuilder_AddVertex(builder, &vertex);
     }
-    MeshBuilder_AddFan(builder, pass, false);
+    MeshBuilder_AddFan(builder, pass, false, depth_write);
 }
 
 static void M_PrepareMeshes(M_PRIV *const p)
@@ -68,12 +68,18 @@ static void M_PrepareMeshes(M_PRIV *const p)
         Memory_Alloc(sizeof(*p->meshes_blend_add) * p->mesh_count);
     MESH_BUILDER *const builder = MeshBuilder_Create();
     for (int32_t i = 0; i < (int32_t)p->mesh_count; i++) {
-        M_AddSpriteMesh(builder, i, SCENE_PASS_TRANSPARENT, VERT_USE_OWN_LIGHT);
+        // The original engines painter-sorted every sprite instead of using
+        // a depth buffer, so sprites never occlude other blended geometry;
+        // skipping the depth prepass reproduces that in the sorted
+        // transparent pass.
+        M_AddSpriteMesh(
+            builder, i, SCENE_PASS_TRANSPARENT, VERT_USE_OWN_LIGHT, false);
         OUTPUT_MESH *const mesh_transparent = MeshBuilder_Seal(builder);
         MeshBatcher_AddMesh(p->batcher, mesh_transparent);
         p->meshes[i] = mesh_transparent;
 
-        M_AddSpriteMesh(builder, i, SCENE_PASS_BLEND_ADD, VERT_USE_OWN_LIGHT);
+        M_AddSpriteMesh(
+            builder, i, SCENE_PASS_BLEND_ADD, VERT_USE_OWN_LIGHT, true);
         OUTPUT_MESH *const mesh_blend_add = MeshBuilder_Seal(builder);
         MeshBatcher_AddMesh(p->batcher, mesh_blend_add);
         p->meshes_blend_add[i] = mesh_blend_add;

@@ -23,7 +23,6 @@ typedef struct MESH_INSTANCE {
     OUTPUT_LIGHT_INFO light_info;
 
     bool enable_scissor;
-    bool disable_z_writes;
     float depth_adjust;
     VIEWPORT_RECT scissor;
 } MESH_INSTANCE;

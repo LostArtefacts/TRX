@@ -49,6 +49,12 @@ bool UI_Settings_FogBulbs_IsVisible(const UI_SETTINGS_OPTION *const option)
     return g_TRVersion == 4;
 }
 
+bool UI_Settings_GunGlow_IsVisible(const UI_SETTINGS_OPTION *const option)
+{
+    // TR3/4 always draw the gun glow; only TR1/2 have it as optional.
+    return g_TRVersion == 1 || g_TRVersion == 2;
+}
+
 bool UI_Settings_EnableBreeze_IsAvailable(
     const UI_SETTINGS_OPTION *const option)
 {

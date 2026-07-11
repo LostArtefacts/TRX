@@ -361,3 +361,17 @@ void Object_SetMeshReflectiveEx(const int32_t abs_mesh_idx, const bool enabled)
     }
     Output_DispatchObjectMeshUpdate(abs_mesh_idx);
 }
+
+void Object_SetSemiTransparent(const OBJECT_ID obj_id, const bool enabled)
+{
+    const OBJECT *const obj = Object_Get(obj_id);
+    if (!obj->loaded) {
+        return;
+    }
+    for (int32_t i = 0; i < obj->mesh_count; i++) {
+        OBJECT_MESH *const mesh = Object_GetMesh(obj->mesh_idx + i);
+        for (int32_t j = 0; j < mesh->all_faces.count; j++) {
+            mesh->all_faces.data[j].semi_transparent = enabled;
+        }
+    }
+}

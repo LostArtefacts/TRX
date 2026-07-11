@@ -1612,6 +1612,10 @@
             "title": "Płynne kamery",
             "description": "Włącza efekt płynnych przejść dla kamer skierowanych na Larę. Wyłączenie tej opcji spowoduje natychmiastową zmianę widoku na Larę.",
         },
+        "visuals.enable_gun_glow": {
+            "title": "\\{review}Poświata broni",
+            "description": "\\{review}Renderuje błyski broni i flar półprzezroczyste oraz dodaje wokół nich efekt rozbłysku, jak w wersji TR2 na PS1.",
+        },
         "visuals.enable_gun_lighting": {
             "title": "Efekty świetlne broni",
             "description": "Włącza dynamiczne oświetlenie przy strzelaniu z broni i eksplozjach.",

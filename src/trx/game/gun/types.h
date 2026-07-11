@@ -42,6 +42,10 @@ typedef struct {
     SAMPLE_TRX_ID sample_num;
     RGB_F glow_color;
     XYZ_32 glow_pos;
+    // Multiplies the glow sprite's own size; 0 disables the glow.
+    float glow_scale;
+    // Randomizes the glow's brightness every frame, like a burning flare.
+    bool glow_flicker;
     XYZ_32 muzzle_pos;
     XYZ_32 muzzle_pos_alt;
     XYZ_32 shell_pos;

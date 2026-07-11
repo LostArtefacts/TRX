@@ -80,6 +80,11 @@ void Object_SetReflective(OBJECT_ID obj_id, bool enabled);
 void Object_SetMeshReflective(OBJECT_ID obj_id, int32_t mesh_idx, bool enabled);
 void Object_SetMeshReflectiveEx(int32_t abs_mesh_idx, bool enabled);
 
+// Marks every face of the object's meshes to draw at half opacity, like the
+// PSX half blend mode. Face scene passes are baked at level load; when
+// changing this mid-game, follow up with Output_RefreshObjectMeshes().
+void Object_SetSemiTransparent(OBJECT_ID obj_id, bool enabled);
+
 bool Object_CanInterpolate(const ITEM *item, int32_t frame_a, int32_t frame_b);
 
 #define REGISTER_OBJECT(object_id, setup_func_)                                \

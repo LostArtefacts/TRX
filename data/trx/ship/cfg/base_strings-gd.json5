@@ -1612,6 +1612,10 @@
             "title": "Camarathan sleamhainn",
             "description": "Cuir an comas gluasad sleamhainn air camarathan stèidhichte a bhios a' coimhead air Lara le lùb astair rèidh a chleachdadh. Ma tha e à comas, atharraichidh na camarathan seo an sealladh sa bhad.",
         },
+        "visuals.enable_gun_glow": {
+            "title": "\\{review}Soillseachadh gunna",
+            "description": "\\{review}Tha seallaidh e losgadh gun agus losgadh flare gu leth-truailleach agus cuiridh e bloom de sholas timcheall orra, mar a chìthear anns an dreach TR2 PS1.",
+        },
         "visuals.enable_gun_lighting": {
             "title": "Solais armachd",
             "description": "Cuiridh seo solais beòthail ri losgadh agus spreadhadh.",

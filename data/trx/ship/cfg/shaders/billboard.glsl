@@ -31,7 +31,12 @@ vec4 offsetBillboard(vec3 pos, vec2 disp, mat4 view, mat4 model, mat4 proj, int 
         up    = normalize(cross(right, forward));
     }
 
+    // Billboards ignore the model matrix's orientation, but still honor its
+    // scale - regular meshes carry an orthonormal basis, so this is 1.0 for
+    // them.
+    float scale = length(vec3(model[0][0], model[0][1], model[0][2]));
+
     vec4 wp = model * vec4(pos,1);
-    wp.xyz += disp.x * right + disp.y * up;
+    wp.xyz += (disp.x * right + disp.y * up) * scale;
     return view * wp;
 }

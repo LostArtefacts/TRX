@@ -160,7 +160,7 @@ static void M_AddRoomFace(
         };
     }
     MeshBuilder_AddVertices(builder, vertices, face->vertex_count);
-    MeshBuilder_AddFan(builder, M_GetScenePass(face), face->double_sided);
+    MeshBuilder_AddFan(builder, M_GetScenePass(face), face->double_sided, true);
 }
 
 static int32_t M_GetWaterEffect(const ROOM *const room)

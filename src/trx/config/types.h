@@ -88,6 +88,7 @@ typedef struct {
         bool enable_braid;
         bool enable_breeze;
         bool enable_gun_lighting;
+        bool enable_gun_glow;
         bool enable_fire_lighting;
         bool enable_shotgun_flash;
         bool enable_responsive_mesh_tint;

@@ -201,6 +201,12 @@ void Output_DispatchLevelUnload(void)
     OutputSource_Sprites_ObserveLevelUnload();
 }
 
+void Output_RefreshObjectMeshes(void)
+{
+    OutputSource_Objects_ObserveLevelLoad();
+    MeshBatcher_Seal(m_Batcher);
+}
+
 void Output_DispatchRoomFlip(const ROOM *room)
 {
     OutputSource_Rooms_ObserveRoomFlip(room);

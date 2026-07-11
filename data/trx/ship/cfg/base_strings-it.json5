@@ -1612,6 +1612,10 @@
             "title": "Inquadratura fluida",
             "description": "Abilita lo spostamento fluido dell'inquadratura delle telecamere fisse che osservano Lara. Se disabilitato, tali telecamere sposteranno immediatamente l'inquadratura su Lara.",
         },
+        "visuals.enable_gun_glow": {
+            "title": "\\{review}Bagliore dell'arma",
+            "description": "\\{review}Rende i lampeggiamenti di pistola e bengala semi-trasparenti e aggiunge un bagliore luminoso intorno a essi, come visto nella versione TR2 per PS1.",
+        },
         "visuals.enable_gun_lighting": {
             "title": "Illuminazione spari",
             "description": "Abilita l'illuminazione dinamica per spari ed esplosioni.",
