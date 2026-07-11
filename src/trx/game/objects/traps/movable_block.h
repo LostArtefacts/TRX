@@ -6,6 +6,8 @@
 // Block or unblock a block's box overlap index.
 void MovableBlock_UpdateBox(const ITEM *item, bool blocked);
 
+// Lock a stack that is about to drop.
+void MovableBlock_LockStack(XYZ_32 drop_pos, int16_t room_num);
 // Drop a stack of blocks.
 void MovableBlock_DropStack(XYZ_32 drop_pos, int16_t room_num);
 
