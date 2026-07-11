@@ -1128,15 +1128,30 @@ void MovableBlock_UpdateBox(const ITEM *const item, const bool blocked)
     }
 }
 
-void MovableBlock_DropStack(const XYZ_32 drop_pos, int16_t room_num)
+void MovableBlock_LockStack(const XYZ_32 drop_pos, const int16_t room_num)
 {
-    VECTOR *stack = Vector_Create(sizeof(int16_t));
+    VECTOR *const stack = Vector_Create(sizeof(int16_t));
+    M_GetStack(stack, drop_pos, drop_pos.y, -WALL_L, room_num);
+
+    for (int16_t i = 0; i < stack->count; i++) {
+        const int16_t item_num = *(const int16_t *)Vector_Get(stack, i);
+        ITEM *const item = Item_Get(item_num);
+        M_SetForcedMoving(item, true);
+    }
+
+    Vector_Free(stack);
+}
+
+void MovableBlock_DropStack(const XYZ_32 drop_pos, const int16_t room_num)
+{
+    VECTOR *const stack = Vector_Create(sizeof(int16_t));
     M_GetStack(stack, drop_pos, drop_pos.y, -WALL_L, room_num);
 
     for (int16_t i = stack->count - 1; i >= 0; i--) {
         const int16_t item_num = *(const int16_t *)Vector_Get(stack, i);
         ITEM *const item = Item_Get(item_num);
         M_SetGravityFrames(item, i);
+        M_SetForcedMoving(item, false);
         item->status = IS_ACTIVE;
         Item_AddActive(item_num);
         Item_Animate(item);

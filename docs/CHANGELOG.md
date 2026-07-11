@@ -49,6 +49,7 @@
 - fixed Lara being able to break out of locked cameras activated by heavy triggers by equipping her weapons (regression from 1.1)
 - fixed the installer not completing normally if an error is encountered during directory clean-up
 - fixed debug status overlays visible over inventory ring, pause screen and FMVs, including the end credits
+- fixed Lara being able to push/pull a block that is sitting on a collapsible tile about to drop (#5786, regression from 1.8)
 - removed the hard-coded spawn distance between Puna and his Lizards (#5686)
 
 **TR1**:

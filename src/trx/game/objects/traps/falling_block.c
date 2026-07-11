@@ -33,14 +33,28 @@ static void M_Initialise(const int16_t item_num)
     Walkable_AllocateNodes(item, 1);
 }
 
-static void M_DropStack(const ITEM *const item)
+static XYZ_32 M_GetStackPos(const ITEM *const item)
 {
     const int32_t origin = M_GetOrigin(item);
-    const XYZ_32 drop_pos = {
+    return (XYZ_32) {
         .x = item->pos.x,
         .y = item->pos.y + origin,
         .z = item->pos.z,
     };
+}
+
+static void M_LockStack(const ITEM *const item)
+{
+    // Once the floor begins to break, any walkables on the stack cannot be
+    // moved by Lara.
+    const XYZ_32 drop_pos = M_GetStackPos(item);
+    MovableBlock_LockStack(drop_pos, item->room_num);
+}
+
+static void M_DropStack(const ITEM *const item)
+{
+    // Once the floor has broken, drop any stacked walkables.
+    const XYZ_32 drop_pos = M_GetStackPos(item);
     MovableBlock_DropStack(drop_pos, item->room_num);
 }
 
@@ -95,7 +109,10 @@ static void M_Control(const int16_t item_num)
             Item_RemoveActive(item_num);
             return;
         }
-        item->goal_anim_state = TRAP_ACTIVATE;
+        if (item->goal_anim_state != TRAP_ACTIVATE) {
+            item->goal_anim_state = TRAP_ACTIVATE;
+            M_LockStack(item);
+        }
         p->heavy_triggered = false;
         break;
 
