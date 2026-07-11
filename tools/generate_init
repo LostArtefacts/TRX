@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 import argparse
-import re
 from pathlib import Path
 
 from shared.versioning import generate_version
@@ -13,27 +12,33 @@ const char *g_TRXVersion = "TRX {version}";
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
     parser.add_argument("-o", "--output", type=Path)
+    parser.add_argument("--version", type=str, default="")
     return parser.parse_args()
 
 
-def get_init_c() -> str:
+def get_init_c(version: str) -> str:
     return TEMPLATE.format(
-        version=generate_version()
+        version=version
     )
 
 
-def update_init_c(output_path: Path) -> None:
-    new_text = get_init_c()
+def update_init_c(output_path: Path, version: str) -> None:
+    new_text = get_init_c(version=version)
     if not output_path.exists() or output_path.read_text() != new_text:
         output_path.write_text(new_text)
 
 
+def get_version(args: argparse.Namespace) -> str:
+    return args.version or generate_version()
+
+
 def main() -> None:
     args = parse_args()
+    version = get_version(args)
     if args.output:
-        update_init_c(output_path=args.output)
+        update_init_c(output_path=args.output, version=version)
     else:
-        print(get_init_c(), end="")
+        print(get_init_c(version=version), end="")
 
 
 if __name__ == "__main__":

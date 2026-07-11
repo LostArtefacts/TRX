@@ -1,1 +1,3 @@
 option('staticdeps', type: 'boolean', value: true, description: 'Try to build against static dependencies. default: true')
+option('trx_version', type: 'string', value: '', description: 'Override the TRX version string used by Meson and generated build files.')
+option('lua_dep', type: 'string', value: 'lua', description: 'Override the dependency() name used for Lua.')

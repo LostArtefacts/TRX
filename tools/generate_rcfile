@@ -9,6 +9,7 @@ from shared.versioning import generate_version
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
     parser.add_argument("-o", "--output", type=Path, nargs="+")
+    parser.add_argument("--version", type=str, default="")
     return parser.parse_args()
 
 
@@ -25,7 +26,7 @@ def write_rc_template(
 
 def main() -> None:
     args = parse_args()
-    version = generate_version()
+    version = args.version or generate_version()
 
     for output_path in args.output or []:
         write_rc_template(
