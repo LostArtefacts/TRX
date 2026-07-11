@@ -669,6 +669,10 @@
             "INPUT_ROLE_USE_FLARE": "\\{review}Flare",
             "INPUT_ROLE_USE_SMALL_MEDI": "Petite trousse de soins",
         },
+        "INTRO_FMV_MODE": {
+            "INTRO_FMV_LAUNCH": "\\{review}Lancer",
+            "INTRO_FMV_NEW_GAME": "\\{review}Nouveau jeu",
+        },
         "JUMP_LOCK_MODE": {
             "JUMP_LOCK_DISABLED": "\\{review}Désactivé",
             "JUMP_LOCK_LEGACY": "\\{review}Hérité",
@@ -1215,6 +1219,10 @@
         "gameplay.idle_pose_timeout": {
             "title": "\\{review}Délai inactivité",
             "description": "\\{review}Permet à Lara d'entrer dans une animation de pose après le nombre de secondes d'inactivité défini. Réglez sur 0 pour désactiver.",
+        },
+        "gameplay.intro_fmv_mode": {
+            "title": "\\{review}Timing de la cinématique d'introduction",
+            "description": "\\{review}Contrôle quand la cinématique d'ouverture de l'histoire de chaque jeu est diffusée.\n\n- Nouvelle partie : la jouer au début d'une nouvelle partie.\n- Lancement : la jouer à chaque fois que le jeu est lancé ou repris, comme dans les jeux originaux.",
         },
         "gameplay.jump_lock_mode": {
             "title": "\\{review}Verrou saut",

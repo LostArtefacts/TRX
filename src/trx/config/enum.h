@@ -69,6 +69,11 @@ typedef enum {
 } LOADING_SCREENS_MODE;
 
 typedef enum {
+    INTRO_FMV_NEW_GAME,
+    INTRO_FMV_LAUNCH,
+} INTRO_FMV_MODE;
+
+typedef enum {
     UI_STYLE_PS1,
     UI_STYLE_PC,
 } UI_STYLE;

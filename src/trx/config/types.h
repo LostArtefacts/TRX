@@ -219,6 +219,7 @@ typedef struct {
         bool enable_fmv;
         bool enable_legal;
         bool enable_credits;
+        INTRO_FMV_MODE intro_fmv_mode;
         bool enable_cinematics;
         bool enable_cinematic_skips;
         bool enable_cutscenes;

@@ -669,6 +669,10 @@
             "INPUT_ROLE_USE_FLARE": "Razzo di Segnalazione",
             "INPUT_ROLE_USE_SMALL_MEDI": "Kit Medico Piccolo",
         },
+        "INTRO_FMV_MODE": {
+            "INTRO_FMV_LAUNCH": "\\{review}Avvia",
+            "INTRO_FMV_NEW_GAME": "\\{review}Nuova partita",
+        },
         "JUMP_LOCK_MODE": {
             "JUMP_LOCK_DISABLED": "Disattivato",
             "JUMP_LOCK_LEGACY": "Originale",
@@ -1215,6 +1219,10 @@
         "gameplay.idle_pose_timeout": {
             "title": "Tempo di inattività",
             "description": "Permette a Lara di riprodurre la sua animazione di posa dopo il numero di secondi d'inattività specificato. Impostalo a 0 per disabilitarlo.",
+        },
+        "gameplay.intro_fmv_mode": {
+            "title": "\\{review}Tempi FMV introduttivi",
+            "description": "\\{review}Controlla quando viene riprodotto il FMV della storia di apertura di ogni gioco.\n\n- Nuova partita: riproducilo all'inizio di una nuova partita.\n- Avvio: riproducilo ogni volta che il gioco viene avviato o riattivato, come nei giochi originali.",
         },
         "gameplay.jump_lock_mode": {
             "title": "Modalità blocco salto",

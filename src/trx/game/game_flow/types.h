@@ -78,6 +78,7 @@ typedef struct {
     const char *path;
     bool is_legal;
     bool is_credit;
+    bool is_intro;
 } GF_FMV;
 
 typedef struct {

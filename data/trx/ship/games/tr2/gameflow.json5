@@ -747,7 +747,7 @@
 
     "fmvs": [
         {"path": "LOGO.AVI", "legal": true},
-        {"path": "ANCIENT.AVI"},
+        {"path": "ANCIENT.AVI", "intro": true},
         {"path": "MODERN.AVI"},
         {"path": "LANDING.AVI"},
         {"path": "MS.AVI"},

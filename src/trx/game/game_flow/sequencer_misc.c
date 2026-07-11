@@ -2,6 +2,7 @@
 #include <trx/core/log.h>
 #include <trx/core/memory.h>
 #include <trx/game/demo.h>
+#include <trx/game/fmv.h>
 #include <trx/game/game.h>
 #include <trx/game/game_flow/common.h>
 #include <trx/game/game_flow/sequencer.h>
@@ -14,6 +15,20 @@
 #include <trx/game/phase.h>
 #include <trx/game/savegame.h>
 #include <trx/game/shell/common.h>
+
+static void M_PlayIntroFMVs(void)
+{
+    if (g_Config.gameplay.intro_fmv_mode != INTRO_FMV_LAUNCH) {
+        return;
+    }
+
+    for (int32_t i = 0; i < g_GameFlow.fmv_count; i++) {
+        const GF_FMV *const fmv = &g_GameFlow.fmvs[i];
+        if (fmv->is_intro) {
+            FMV_Play(fmv->path);
+        }
+    }
+}
 
 GF_COMMAND GF_RunTitle(void)
 {
@@ -159,7 +174,13 @@ GF_COMMAND GF_DoFrontendSequence(void)
     if (g_GameFlow.title_level == nullptr) {
         return (GF_COMMAND) { .action = GF_NOOP };
     }
-    return GF_InterpretSequence(g_GameFlow.title_level, GFSC_NORMAL, nullptr);
+
+    const GF_COMMAND gf_cmd =
+        GF_InterpretSequence(g_GameFlow.title_level, GFSC_NORMAL, nullptr);
+    if (gf_cmd.action == GF_NOOP || gf_cmd.action == GF_EXIT_TO_TITLE) {
+        M_PlayIntroFMVs();
+    }
+    return gf_cmd;
 }
 
 GF_COMMAND GF_DoLevelSequence(

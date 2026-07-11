@@ -411,6 +411,10 @@
         },
         "legal": {
           "type": "boolean"
+        },
+        "intro": {
+          "type": "boolean",
+          "description": "Marks this FMV as the opening story FMV, whose playback timing is controlled by the intro_fmv_mode setting."
         }
       },
       "required": [

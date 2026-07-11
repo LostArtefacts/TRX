@@ -669,6 +669,10 @@
             "INPUT_ROLE_USE_FLARE": "\\{review}Вспышка",
             "INPUT_ROLE_USE_SMALL_MEDI": "Малая аптечка",
         },
+        "INTRO_FMV_MODE": {
+            "INTRO_FMV_LAUNCH": "\\{review}Запуск",
+            "INTRO_FMV_NEW_GAME": "\\{review}Новая игра",
+        },
         "JUMP_LOCK_MODE": {
             "JUMP_LOCK_DISABLED": "Отключена",
             "JUMP_LOCK_LEGACY": "Оригинал",
@@ -1215,6 +1219,10 @@
         "gameplay.idle_pose_timeout": {
             "title": "\\{review}Таймер ожидания",
             "description": "\\{review}Позволяет Ларе перейти в анимацию позы после заданного количества секунд бездействия. Установите 0, чтобы отключить.",
+        },
+        "gameplay.intro_fmv_mode": {
+            "title": "\\{review}Время воспроизведения вступительного FMV",
+            "description": "\\{review}Управляет временем воспроизведения вступительного сюжетного FMV каждой игры.\n\n- Новая игра: воспроизводится при начале новой игры.\n- Запуск: воспроизводится каждый раз при запуске игры или переключении на неё, как в оригинальных играх.",
         },
         "gameplay.jump_lock_mode": {
             "title": "Блокировка прыжков",

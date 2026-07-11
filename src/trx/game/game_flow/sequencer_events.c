@@ -224,6 +224,9 @@ M_GF_HANDLER(M_HandlePlayFMV)
         return gf_cmd;
     }
     const GF_FMV *const fmv = &g_GameFlow.fmvs[fmv_id];
+    if (fmv->is_intro && g_Config.gameplay.intro_fmv_mode == INTRO_FMV_LAUNCH) {
+        return gf_cmd;
+    }
     if (fmv->is_legal && !g_Config.gameplay.enable_legal) {
         return gf_cmd;
     }

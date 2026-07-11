@@ -2,7 +2,6 @@
 #include <trx/config.h>
 #include <trx/debug.h>
 #include <trx/game/console/common.h>
-#include <trx/game/fmv.h>
 #include <trx/game/input/common.h>
 #include <trx/game/replay/test_recorder.h>
 #include <trx/game/replay/test_replay.h>

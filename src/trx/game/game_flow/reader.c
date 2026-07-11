@@ -951,6 +951,7 @@ static bool M_LoadFMV(
     fmv->path = path;
     JSON_READ_D(io, "legal", &fmv->is_legal, false);
     JSON_READ_D(io, "credit", &fmv->is_credit, false);
+    JSON_READ_D(io, "intro", &fmv->is_intro, false);
     JSON_FINISH();
 }
 

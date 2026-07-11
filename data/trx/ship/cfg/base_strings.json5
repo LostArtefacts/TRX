@@ -669,6 +669,10 @@
             "INPUT_ROLE_USE_FLARE": "Flare",
             "INPUT_ROLE_USE_SMALL_MEDI": "Small Medi",
         },
+        "INTRO_FMV_MODE": {
+            "INTRO_FMV_LAUNCH": "Launch",
+            "INTRO_FMV_NEW_GAME": "New game",
+        },
         "JUMP_LOCK_MODE": {
             "JUMP_LOCK_DISABLED": "Disabled",
             "JUMP_LOCK_LEGACY": "Legacy",
@@ -1215,6 +1219,10 @@
         "gameplay.idle_pose_timeout": {
             "title": "Idle pose timeout",
             "description": "Allows Lara to enter a pose animation when she has been idle for the specified number of seconds. Set to 0 to disable.",
+        },
+        "gameplay.intro_fmv_mode": {
+            "title": "Intro FMV timing",
+            "description": "Controls when each game's opening story FMV plays.\n\n- New game: play it when starting a new game.\n- Launch: play it every time the game is launched or switched to, like the original games.",
         },
         "gameplay.jump_lock_mode": {
             "title": "Jump lock mode",
