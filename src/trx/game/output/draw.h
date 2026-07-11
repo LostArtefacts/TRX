@@ -5,7 +5,6 @@
 #include <trx/game/output/types.h>
 #include <trx/game/rooms/types.h>
 
-void Output_DrawSkybox(const OBJECT_MESH *mesh);
 void Output_DrawObjectMesh(const OBJECT_MESH *mesh, CLIP clip);
 void Output_DrawObjectMesh_I(const OBJECT_MESH *mesh, CLIP clip);
 void Output_DrawRoom(const ROOM *room, bool is_outside);
@@ -15,9 +14,6 @@ void Output_DrawSprite(
     DRAW_TYPE draw_type);
 void Output_DrawShadow(int16_t size, const BOUNDS_16 *bounds, const ITEM *item);
 void Output_DrawLightningSegment(const LIGHTNING_SEGMENT segment);
-
-// Fades
-void Output_DrawBlackRectangle(int32_t opacity);
 
 // UI
 void Output_DrawScreenSprite(
