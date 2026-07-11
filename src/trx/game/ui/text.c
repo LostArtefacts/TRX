@@ -543,7 +543,7 @@ static void M_Process(
 
         if (glyph->role == GLYPH_SECRET) {
             const int16_t sprite_idx =
-                Object_Get(O_SECRET_1 + glyph->mesh_idx)->mesh_idx;
+                Object_Get(g_SecretObjects[glyph->mesh_idx])->mesh_idx;
             const SPRITE_TEXTURE *const sprite =
                 Output_GetSpriteTexture(sprite_idx);
             const float input_scale_h =

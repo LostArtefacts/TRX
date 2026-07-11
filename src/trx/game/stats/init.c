@@ -25,7 +25,7 @@
 
 #include <string.h>
 
-#define M_CACHE_VERSION 5
+#define M_CACHE_VERSION 6
 #define M_CACHE_FILENAME "max_stats.cache.json"
 
 static LEVEL_MAX_STATS *m_Stats = nullptr;
