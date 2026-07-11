@@ -35,6 +35,32 @@ static struct {
 } m_PreviousState;
 static BOUNDS_32 m_WorldBounds = {};
 
+static void M_SyncCameraOrientationFromView(void)
+{
+    int16_t angles[2];
+    Math_GetVectorAngles(
+        g_Camera.target.x - g_Camera.pos.x, g_Camera.target.y - g_Camera.pos.y,
+        g_Camera.target.z - g_Camera.pos.z, angles);
+    g_Camera.target_angle = angles[0];
+    g_Camera.target_elevation = angles[1];
+}
+
+static void M_RestoreSnapshotDriver(const CAMERA_INFO *const snapshot)
+{
+    const CAMERA_INFO live_camera = g_Camera;
+    g_Camera = *snapshot;
+    // Restore the camera owner/type and other flyby-managed state from the
+    // entry snapshot, but preserve the live view that the flyby has already
+    // advanced to while photo mode was open.
+    g_Camera.pos = live_camera.pos;
+    g_Camera.target = live_camera.target;
+    g_Camera.shift = live_camera.shift;
+    g_Camera.roll = live_camera.roll;
+    g_Camera.underwater = live_camera.underwater;
+    g_Camera.mic_pos = live_camera.mic_pos;
+    g_Camera.interp = live_camera.interp;
+}
+
 static void M_ResetCamera(const bool exiting)
 {
     CAMERA_INFO camera = g_Camera;
@@ -274,12 +300,7 @@ void Camera_PhotoMode_Enter(void)
 {
     m_OriginalCamera = g_Camera;
 
-    int16_t angles[2];
-    Math_GetVectorAngles(
-        g_Camera.target.x - g_Camera.pos.x, g_Camera.target.y - g_Camera.pos.y,
-        g_Camera.target.z - g_Camera.pos.z, angles);
-    g_Camera.target_angle = angles[0];
-    g_Camera.target_elevation = angles[1];
+    M_SyncCameraOrientationFromView();
     g_Camera.target_distance = CAMERA_DEFAULT_DISTANCE;
     g_Camera.target_square = SQUARE(g_Camera.target_distance);
 
@@ -307,6 +328,14 @@ void Camera_PhotoMode_Enter(void)
 void Camera_PhotoMode_Exit(void)
 {
     Lara_Pose_Clear();
+    if (Camera_FlybyMode_IsActive()) {
+        // The snapshot from when photo mode opened still has the correct
+        // flyby-owned driver state, but its view data is stale. Rewind only
+        // the driver half so the flyby can finish normally without snapping
+        // the visible camera back to the old entry position.
+        M_RestoreSnapshotDriver(&m_OriginalCamera);
+        return;
+    }
     Viewport_AlterFOV(m_OriginalFOV, m_OriginalFOVMode);
     M_ResetCamera(true);
 }
@@ -353,12 +382,29 @@ void Camera_PhotoMode_Pause(void)
     m_PreviousState.is_chunky = Camera_IsChunky();
     m_PreviousState.fov = Viewport_GetSystemFOV();
     m_PreviousState.fov_mode = Viewport_GetFOVMode();
-    g_Camera = m_OriginalCamera;
+    // A running flyby already carries its own live camera state (including
+    // interpolation history); rebasing it onto the stale entry-time snapshot
+    // causes a one-frame interpolation snap when the result is kept in
+    // Camera_PhotoMode_Resume().
+    if (!Camera_FlybyMode_IsActive()) {
+        g_Camera = m_OriginalCamera;
+    }
 }
 
 void Camera_PhotoMode_Resume(void)
 {
-    g_Camera = m_PreviousState.camera;
+    // A flyby drives the camera itself, so the frame we just simulated is
+    // the only thing moving it forward. Restoring the pre-step snapshot
+    // here would discard that progress and make advancing a frame look
+    // like a no-op while a flyby plays.
+    if (Camera_FlybyMode_IsActive()) {
+        // Keep photo mode's local movement axes aligned with the live flyby
+        // view that just advanced; otherwise left/right movement can use the
+        // stale pre-step orientation basis.
+        M_SyncCameraOrientationFromView();
+    } else {
+        g_Camera = m_PreviousState.camera;
+    }
     Camera_SetChunky(m_PreviousState.is_chunky);
     Viewport_AlterFOV(m_PreviousState.fov, m_PreviousState.fov_mode);
 }
