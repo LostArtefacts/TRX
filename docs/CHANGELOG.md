@@ -22,6 +22,7 @@
 - added rope mechanics for custom levels
 - added climbing poles for custom levels
 - changed `Game mode selection` to allow hiding the dialog even after having completed the game (Gameplay → General → Game mode selection)
+- changed opening story FMVs to play on new game rather than on every launch/switch (#5658)
 - changed `O_SPARKS_GFX` sprite ordering and contents - refer to migration guide
 - improved the `-l` command line option to match installed level titles when no file path is found
 - improved handling of dead enemies used as switch triggers in custom levels by not altering their activation status and by adding detection for having been exploded (#5682)

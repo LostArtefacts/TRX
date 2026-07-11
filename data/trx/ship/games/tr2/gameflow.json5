@@ -17,7 +17,6 @@
         "sequence": [
             {"type": "display_picture", "path": "legal_eu.webp", "legal": true},
             {"type": "play_fmv", "fmv_id": 0},
-            {"type": "play_fmv", "fmv_id": 1},
             {"type": "exit_to_title"},
         ],
         "inherit_injections": false,
@@ -85,6 +84,7 @@
             "music_track": 29,
             "lara_outfit": "tr2_classic",
             "sequence": [
+                {"type": "play_fmv", "fmv_id": 1},
                 {"type": "play_fmv", "fmv_id": 2},
                 {"type": "loading_screen", "path": "china.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "give_item", "object_id": "shotgun"},

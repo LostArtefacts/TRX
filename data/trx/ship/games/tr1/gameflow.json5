@@ -41,7 +41,6 @@
             {"type": "display_picture", "path": "eidos.webp", "legal": true, "display_time": 1, "fade_in_time": 1.0, "fade_out_time": 1.0},
             {"type": "play_fmv", "fmv_id": 0},
             {"type": "play_fmv", "fmv_id": 1},
-            {"type": "play_fmv", "fmv_id": 2},
             {"type": "exit_to_title"},
         ],
         "injections": [
@@ -97,6 +96,7 @@
             "music_track": 57,
             "lara_outfit": "tr1_classic",
             "sequence": [
+                {"type": "play_fmv", "fmv_id": 2},
                 {"type": "play_fmv", "fmv_id": 4},
                 {"type": "loading_screen", "path": "peru.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "give_item", "object_id": "binoculars"},
