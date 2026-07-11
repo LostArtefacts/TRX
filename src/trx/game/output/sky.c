@@ -272,7 +272,7 @@ static void M_AdjustLightInfo(OUTPUT_LIGHT_INFO *const info)
 }
 
 static const OUTPUT_OBJECT_MESH_POLICY m_SkyboxMeshPolicy = {
-    .vertex_flags = VERT_USE_OWN_LIGHT | VERT_NO_LIGHTING,
+    .vertex_flags = 0,
     .get_face_pass = M_GetFacePass,
     .get_vertex_color = M_GetVertexColor,
     .get_vertex_shade = M_GetVertexShade,
@@ -352,7 +352,8 @@ bool Output_Sky_Draw(void)
         OutputSource_Sky_StageFogGradient(
             g_WMatrixPtr, mesh, Output_GetFogColor());
     }
-    Output_DrawSkybox(mesh);
+    OutputSource_Objects_StageObjectMesh(mesh);
+    SceneCompositor_Flush();
     Matrix_Pop();
     return true;
 }

@@ -242,16 +242,6 @@ static void M_DrawScreenQuad(
     });
 }
 
-void Output_DrawBlackRectangle(const int32_t opacity)
-{
-    const int32_t sx = 0;
-    const int32_t sy = 0;
-    const int32_t sw = Viewport_GetWidth(VIEWPORT_UI);
-    const int32_t sh = Viewport_GetHeight(VIEWPORT_UI);
-    const RGBA_8888 background = { 0, 0, 0, opacity };
-    Output_DrawScreenFlatQuad(sx, sy, 0, sw, sh, background);
-}
-
 void Output_DrawRoom(const ROOM *const room, const bool is_outside)
 {
     OutputSource_Rooms_StageRoom(room);
@@ -282,12 +272,6 @@ void Output_DrawObjectMesh_I(const OBJECT_MESH *const mesh, const CLIP clip)
     Matrix_Interpolate();
     Output_DrawObjectMesh(mesh, clip);
     Matrix_Pop();
-}
-
-void Output_DrawSkybox(const OBJECT_MESH *const mesh)
-{
-    OutputSource_Objects_StageObjectMesh(mesh);
-    SceneCompositor_Flush();
 }
 
 void Output_DrawShadow(
