@@ -214,9 +214,16 @@ static void M_FormatIconSecrets(
         }
         const OBJECT_ID obj_id = Stats_GetSecretObject(i);
         if (obj_id != NO_OBJECT) {
+            int32_t secret_num = 0;
+            for (int32_t j = 0; g_SecretObjects[j] != NO_OBJECT; j++) {
+                if (g_SecretObjects[j] == obj_id) {
+                    secret_num = j + 1;
+                    break;
+                }
+            }
             ptr += sprintf(
                 ptr, has_secret ? "\\{secret %d}" : "\\{i}\\{secret %d}\\{/i}",
-                obj_id + 1 - O_SECRET_1);
+                secret_num);
         }
         if (has_secret) {
             num_secrets++;
