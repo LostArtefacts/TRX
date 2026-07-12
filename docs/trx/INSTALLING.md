@@ -30,6 +30,39 @@
    to ["Manually copying original game files"](#manually-copying-original-game-files)
    section in this document.
 
+## Split installs and custom paths
+
+By default, TRX expects a bundled layout where the executable sits next to
+the `cfg/` and `games/` directories. If you want to keep the executable in a
+different location, such as `/usr/local/bin`, you can override the runtime
+paths with environment variables:
+
+- `TRX_CONFIG_DIR`  
+  Defaults to `<trx_dir>/cfg`.
+- `TRX_CACHE_DIR`  
+  Defaults to `<trx_dir>/cache`.
+- `TRX_GAMES_DIR`  
+  Defaults to `<trx_dir>/games`.
+- `TRX_SCREENSHOTS_DIR`  
+  Defaults to `<trx_dir>/screenshots`.
+- `TRX_SAVES_DIR`  
+  Defaults to `<trx_dir>/saves`.
+
+For example, a wrapper script can keep the binary in one location while
+pointing TRX at a separate game-data directory:
+
+```sh
+#!/bin/sh
+export TRX_GAMES_DIR="$HOME/Work/TRX/games"
+export TRX_CONFIG_DIR="$HOME/Work/TRX/cfg"
+export TRX_SAVES_DIR="$HOME/Work/TRX/saves"
+export TRX_SCREENSHOTS_DIR="$HOME/Work/TRX/screenshots"
+exec /usr/local/bin/TRX.bin "$@"
+```
+
+This is especially useful for package managers and ports that install the
+binary outside the main TRX data tree.
+
 ## Verifying the installation
 
 If you install everything correctly, your game directory should look more or less like this (click to expand):
