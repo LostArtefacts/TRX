@@ -1043,6 +1043,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── madubu_spike_sfx.bin
 │   │   │   ├── madubu_textures.bin
 │   │   │   ├── menu_artefacts.bin
+│   │   │   ├── menu_artefacts_london.bin
 │   │   │   ├── mines_textures.bin
 │   │   │   ├── misc_sprites.bin
 │   │   │   ├── nevada_door132_frames.bin
@@ -2362,6 +2363,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── madubu_spike_sfx.bin
     │   │   │   │   ├── madubu_textures.bin
     │   │   │   │   ├── menu_artefacts.bin
+    │   │   │   │   ├── menu_artefacts_london.bin
     │   │   │   │   ├── mines_textures.bin
     │   │   │   │   ├── misc_sprites.bin
     │   │   │   │   ├── nevada_door132_frames.bin
