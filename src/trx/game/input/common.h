@@ -2,19 +2,13 @@
 
 #include <trx/config/enum.h>
 #include <trx/core/json.h>
+#include <trx/game/input/enum.h>
 
 #include <SDL2/SDL_events.h>
 #include <stdint.h>
 
 #define INPUT_COMBO_MAX_KEYS 3
 #define INPUT_BINDING_SLOTS 2
-
-typedef enum {
-#define X_INPUT_ROLE(role_name, state_name) role_name,
-#include <trx/game/input/roles.def>
-    INPUT_ROLE_NUMBER_OF,
-#undef X_INPUT_ROLE
-} INPUT_ROLE;
 
 #define INPUT_STATE_ANY_WORDS ((INPUT_ROLE_NUMBER_OF + 63) / 64)
 

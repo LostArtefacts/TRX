@@ -63,6 +63,34 @@ test_field_exe = executable(
 )
 test('field', test_field_exe, suite: 'unit')
 
+# The name<->value registry the Lua enum bridge reflects. Its two dependencies
+# outside core - the formatting helper and the localized game strings - are
+# stubbed: the real ones live in translation units that want PCRE2 and the game
+# string table, and neither is what the enum map is being tested for.
+enum_map_src = files(
+  '../trx/core/enum_map.c',
+  '../trx/core/memory.c',
+  '../trx/core/vector.c',
+) + files('unit/stubs_enum_map.c')
+
+test_enum_map_exe = executable(
+  'test_enum_map',
+  files('unit/test_enum_map.c') + test_stubs + enum_map_src,
+  include_directories: [src_inc, test_inc],
+  build_by_default: false,
+)
+test('enum_map', test_enum_map_exe, suite: 'unit')
+
+test_lua_enum_exe = executable(
+  'test_lua_enum',
+  files('unit/test_lua_enum.c') + test_stubs + enum_map_src
+    + files('../trx/game/lua/enum.c'),
+  include_directories: [src_inc, test_inc],
+  dependencies: [dep_lua],
+  build_by_default: false,
+)
+test('lua_enum', test_lua_enum_exe, suite: 'unit')
+
 # field.c and lua/struct.c are leaf modules, so the reflection layer and the Lua
 # bridge can be exercised against a synthetic struct type.
 test_lua_struct_exe = executable(

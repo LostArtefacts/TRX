@@ -410,6 +410,7 @@ common_sources = [
   'trx/game/lua/config.c',
   'trx/game/lua/console.c',
   'trx/game/lua/creatures.c',
+  'trx/game/lua/enum.c',
   'trx/game/lua/events.c',
   'trx/game/lua/game.c',
   'trx/game/lua/items.c',

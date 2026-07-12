@@ -40,6 +40,18 @@ local function fresh_env()
         }
       end,
     },
+    -- Stands in for the ENUM_MAP reflection. Deliberately not in numeric order,
+    -- and with a gap, so the tests pin what api.lua does with what C hands it.
+    enum = {
+      values = function(backing)
+        assert(backing == "WIDGET_STATE", "unknown enum: " .. tostring(backing))
+        return {
+          { name = "BROKEN", value = 7 },
+          { name = "OFF", value = 0 },
+          { name = "ON", value = 1 },
+        }
+      end,
+    },
   }
   _G.trx = { log = { debug = function() end, warn = function() end } }
   _G.require = function() end
@@ -146,6 +158,66 @@ test("describe() reports fields, methods and extensions", function()
   assert(#d.functions == 1, "functions missing")
 end)
 
+-- The whole point of api.enum: the numbers live in C and nowhere else, so a Lua
+-- declaration that restated them could not go stale, because it cannot state
+-- them at all.
+test("enum() reflects the constants out of C", function()
+  local api = fresh_env()
+  api.enum("things.State", {
+    backing = "WIDGET_STATE",
+    values = { OFF = "off.", ON = "on.", BROKEN = "broken." },
+  })
+
+  assert(trx.things.State.OFF == 0)
+  assert(trx.things.State.ON == 1)
+  -- Not 2: the value is C's to decide, gaps and all.
+  assert(trx.things.State.BROKEN == 7)
+end)
+
+test("enum() rejects a constant nobody documented", function()
+  local api = fresh_env()
+  -- BROKEN exists in C. Leaving it out here would quietly drop it from the docs.
+  local ok, err = pcall(api.enum, "things.State", {
+    backing = "WIDGET_STATE",
+    values = { OFF = "off.", ON = "on." },
+  })
+  assert(not ok, "an undocumented constant was accepted")
+  assert(tostring(err):find("BROKEN"), "the error should name the constant: " .. tostring(err))
+end)
+
+test("enum() rejects documentation for a constant that does not exist", function()
+  local api = fresh_env()
+  local ok, err = pcall(api.enum, "things.State", {
+    backing = "WIDGET_STATE",
+    values = { OFF = "off.", ON = "on.", BROKEN = "broken.", IMAGINARY = "not a real constant." },
+  })
+  assert(not ok, "documentation for a nonexistent constant was accepted")
+  assert(tostring(err):find("IMAGINARY"), "the error should name the constant: " .. tostring(err))
+end)
+
+test("describe() reports enum values in numeric order", function()
+  local api = fresh_env()
+  api.module("things", {})
+  api.enum("things.State", {
+    backing = "WIDGET_STATE",
+    description = "A state.",
+    values = { OFF = "off.", ON = "on.", BROKEN = "broken." },
+  })
+
+  local d = api.describe()
+  assert(#d.enums == 1, "enum missing from describe()")
+  local e = d.enums[1]
+  assert(e.path == "things.State")
+  assert(e.description == "A state.")
+
+  -- C hands them over in hash order; the docs must not come out shuffled.
+  assert(#e.values == 3)
+  assert(e.values[1].name == "OFF" and e.values[1].value == 0)
+  assert(e.values[2].name == "ON" and e.values[2].value == 1)
+  assert(e.values[3].name == "BROKEN" and e.values[3].value == 7)
+  assert(e.values[3].description == "broken.", "prose missing from describe()")
+end)
+
 test("to_json round-trips the surface", function()
   local api = fresh_env()
   api.module("things", {})
@@ -163,6 +235,7 @@ test("seal blocks further declarations", function()
   -- level script re-expose the members the declarations deliberately withheld.
   assert(not pcall(api.type, "things.Widget", { backing = "WIDGET" }), "type() after seal")
   assert(not pcall(api.define, "things.evil", { impl = function() end }), "define() after seal")
+  assert(not pcall(api.enum, "things.State", { backing = "WIDGET_STATE", values = {} }), "enum() after seal")
 end)
 
 print(("\n%d passed, %d failed, %d total"):format(passed, failures, passed + failures))
