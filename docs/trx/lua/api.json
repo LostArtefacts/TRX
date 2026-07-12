@@ -1,4 +1,26 @@
 {
+  "constants": [
+    {
+      "description": "One degree in TRX units. Multiply by it to say an angle in degrees: `45 * trx.math.DEG_1`.",
+      "path": "math.DEG_1",
+      "value": 182
+    },
+    {
+      "description": "A 45-degree turn, in TRX units.",
+      "path": "math.DEG_45",
+      "value": 8192
+    },
+    {
+      "description": "A quarter turn, in TRX units. A full turn is four of these, and wraps to zero.",
+      "path": "math.DEG_90",
+      "value": 16384
+    },
+    {
+      "description": "The size of one sector in world units. Level geometry is laid out on this grid, so it is the step to take to move an item a sector over.",
+      "path": "math.WALL_L",
+      "value": 1024
+    }
+  ],
   "enums": [
     {
       "description": "The values `item.status` can take.",
@@ -149,6 +171,56 @@
       }
     },
     {
+      "description": "Sine of an angle.",
+      "params": [
+        {
+          "description": "Angle in TRX units.",
+          "name": "angle",
+          "type": "integer"
+        }
+      ],
+      "path": "math.sin",
+      "returns": {
+        "description": "A value in [-1, 1].",
+        "type": "number"
+      }
+    },
+    {
+      "description": "Cosine of an angle.",
+      "params": [
+        {
+          "description": "Angle in TRX units.",
+          "name": "angle",
+          "type": "integer"
+        }
+      ],
+      "path": "math.cos",
+      "returns": {
+        "description": "A value in [-1, 1].",
+        "type": "number"
+      }
+    },
+    {
+      "description": "Angle of the vector (x, z), in TRX units.",
+      "examples": [
+        "-- face an item towards Lara\nlocal angle = trx.math.atan(lara.pos.z - pos.z, lara.pos.x - pos.x)"
+      ],
+      "params": [
+        {
+          "name": "z",
+          "type": "integer"
+        },
+        {
+          "name": "x",
+          "type": "integer"
+        }
+      ],
+      "path": "math.atan",
+      "returns": {
+        "type": "integer"
+      }
+    },
+    {
       "description": "Retrieves a room by 1-based index.",
       "examples": [
         "local room = trx.rooms[15]\nroom.underwater = true"
@@ -225,6 +297,11 @@
       "description": "Module for controlling all moveables.",
       "name": "items",
       "order": 4
+    },
+    {
+      "description": "Fixed-point trigonometry, matching the engine's own tables.\n\nTRX angles are 16-bit units where 65536 is a full turn, not radians. Using these rather than Lua's `math` library guarantees a script places things exactly where the engine would.",
+      "name": "math",
+      "order": 17
     },
     {
       "description": "Module for inspecting and altering the rooms of the current level.",

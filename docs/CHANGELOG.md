@@ -1,4 +1,5 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.9.1...develop) - ××××-××-××
+- added a new Lua module, `trx.math`
 
 
 
