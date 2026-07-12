@@ -93,7 +93,10 @@ def lint_const_primitives(
 def lint_meson_build_sort_order(
     context: LintContext, path: Path
 ) -> Iterable[LintWarning]:
-    if path.name != "meson.build" or path.parent.name == "dwarfstack":
+    # The rule keeps the engine's source list ordered. Projects that have no
+    # such list - the vendored dwarfstack, and the unit tests, which name their
+    # sources per test executable - have nothing to sort.
+    if path.name != "meson.build" or path.parent.name in ("dwarfstack", "tests"):
         return
     pattern = re.compile(r"\bcommon_sources\s*=\s*\[(.*?)\]", re.S)
     match = pattern.search(path.read_text())
