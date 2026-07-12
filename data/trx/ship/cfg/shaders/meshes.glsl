@@ -70,15 +70,12 @@ void main(void) {
         gEyePos = uMatView * worldPos;
     }
 
-#if TR_VERSION >= 4
-    // The OG maps the env map from the view-space normal (it transforms the
-    // mesh normals by the view matrix). Its mesh normals are unit vectors,
-    // whereas ours arrive as raw int16s, so normalize to land in the same
-    // [-1, 1] range the env map window is addressed with.
+    // Reflections are sphere-mapped, so the normal has to be in view space for
+    // the reflection to track the camera - an object space normal locks it to
+    // the object instead. This is what the OG does for TR4, transforming the
+    // mesh normals by the view matrix. Normalize because ours arrive as raw
+    // int16s rather than the unit vectors the mapping expects.
     gNormal = normalize(mat3(uMatView * uMatModel) * inNormal.xyz);
-#else
-    gNormal = inNormal.xyz;
-#endif
     gl_Position = uMatProj * gEyePos;
     gl_Position.z += inPosition.w;
 
@@ -356,7 +353,7 @@ void main(void) {
         // bottom left, hence the flip.
         vec2 env_uv = normalize(gNormal).xy * 0.5 + 0.5;
         env_uv.y = 1.0 - env_uv.y;
-        texColor *= texture(uTexEnvMap, env_uv) * 2;
+        texColor.rgb *= texture(uTexEnvMap, env_uv).rgb * 2.0;
 #endif
     }
 

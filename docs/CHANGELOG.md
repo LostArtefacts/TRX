@@ -1,5 +1,6 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.9.1...develop) - ××××-××-××
 - added a new Lua module, `trx.math`
+- changed reflections UV mapping to be more correct
 - fixed TR1 and TR2 skyboxes being 2× too bright (regression from 1.9)
 
 **TR4**
