@@ -25,6 +25,27 @@
           "value": 3
         }
       ]
+    },
+    {
+      "description": "The values `room.flip_status` can take.",
+      "path": "rooms.FlipStatus",
+      "values": [
+        {
+          "description": "This is a normal room.",
+          "name": "NONE",
+          "value": 0
+        },
+        {
+          "description": "This room is currently reachable by Lara.",
+          "name": "UNFLIPPED",
+          "value": 1
+        },
+        {
+          "description": "This room is currently inactive and unreachable by Lara.",
+          "name": "FLIPPED",
+          "value": 2
+        }
+      ]
     }
   ],
   "functions": [
@@ -126,6 +147,77 @@
         "nullable": true,
         "type": "Item"
       }
+    },
+    {
+      "description": "Retrieves a room by 1-based index.",
+      "examples": [
+        "local room = trx.rooms[15]\nroom.underwater = true"
+      ],
+      "params": [
+        {
+          "description": "1-based room number.",
+          "name": "num",
+          "type": "integer"
+        }
+      ],
+      "path": "rooms.get",
+      "returns": {
+        "nullable": true,
+        "type": "Room"
+      }
+    },
+    {
+      "description": "Returns the number of rooms in the level. Same as `#trx.rooms`.",
+      "path": "rooms.count",
+      "returns": {
+        "type": "integer"
+      }
+    },
+    {
+      "description": "Flips the current room map, swapping every room with its flip pair.",
+      "path": "rooms.flip"
+    },
+    {
+      "description": "Sets the active flip effect, and optionally its timer.",
+      "examples": [
+        "trx.rooms.flip_effect(trx.catalog.flip_effects.floor_shake, 10)"
+      ],
+      "params": [
+        {
+          "description": "0-based effect id. Use `-1` to clear the current effect.",
+          "enum": "catalog.flip_effects",
+          "name": "effect_id",
+          "type": "integer"
+        },
+        {
+          "description": "Flip timer value.",
+          "name": "timer",
+          "optional": true,
+          "type": "integer"
+        }
+      ],
+      "path": "rooms.flip_effect"
+    },
+    {
+      "description": "Nudges a position into valid room geometry, e.g. to find somewhere an item can legally be placed.",
+      "params": [
+        {
+          "description": "Position to search near.",
+          "name": "pos",
+          "type": "vec3"
+        },
+        {
+          "description": "1-based room to search from.",
+          "name": "room_num",
+          "type": "integer"
+        }
+      ],
+      "path": "rooms.find_valid_pos",
+      "returns": {
+        "description": "The valid position and its 1-based room number, or `nil` if none was found nearby.",
+        "nullable": true,
+        "type": "vec3"
+      }
     }
   ],
   "modules": [
@@ -133,6 +225,11 @@
       "description": "Module for controlling all moveables.",
       "name": "items",
       "order": 4
+    },
+    {
+      "description": "Module for inspecting and altering the rooms of the current level.",
+      "name": "rooms",
+      "order": 10
     }
   ],
   "types": [
@@ -378,6 +475,67 @@
         }
       ],
       "path": "items.Item"
+    },
+    {
+      "description": "A room in the current level.",
+      "extensions": [
+        {
+          "description": "World-coordinate bounds of the room: `min_x`, `min_y`, `min_z`, `max_x`, `max_y`, `max_z`.",
+          "name": "bounds",
+          "type": "table"
+        },
+        {
+          "description": "This room's flip pair, or `nil` if it has none.",
+          "name": "flipped_room",
+          "type": "Room"
+        },
+        {
+          "description": "As `bounds`, but excluding the outer ring of sectors, which is solid wall.",
+          "name": "internal_bounds",
+          "type": "table"
+        }
+      ],
+      "fields": [
+        {
+          "description": "Whether Lara's breath is visible in the room.",
+          "name": "cold",
+          "type": "boolean",
+          "writable": true
+        },
+        {
+          "description": "Whether the room drains Lara's exposure meter.",
+          "name": "damaging",
+          "type": "boolean",
+          "writable": true
+        },
+        {
+          "description": "Current flip status.",
+          "enum": "rooms.FlipStatus",
+          "name": "flip_status",
+          "type": "integer",
+          "writable": false
+        },
+        {
+          "description": "1-based room number.",
+          "name": "num",
+          "type": "integer",
+          "writable": false
+        },
+        {
+          "description": "Whether the room is filled with water.",
+          "name": "underwater",
+          "type": "boolean",
+          "writable": true
+        },
+        {
+          "description": "Whether the room has a breeze. Requires the player to have breeze enabled.",
+          "name": "wind",
+          "type": "boolean",
+          "writable": true
+        }
+      ],
+      "methods": [],
+      "path": "rooms.Room"
     }
   ]
 }

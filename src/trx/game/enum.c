@@ -8,6 +8,7 @@
 #include <trx/game/lara/skin/types.h>
 #include <trx/game/lara/types.h>
 #include <trx/game/objects/ids.h>
+#include <trx/game/rooms/enum.h>
 #include <trx/game/screenshot.h>
 #include <trx/game/ui/settings.h>
 
@@ -62,6 +63,10 @@ static __attribute__((constructor)) void M_Init(void)
     ENUM_MAP(ITEM_STATUS, IS_ACTIVE, "active");
     ENUM_MAP(ITEM_STATUS, IS_DEACTIVATED, "deactivated");
     ENUM_MAP(ITEM_STATUS, IS_INVISIBLE, "invisible");
+
+    ENUM_MAP(ROOM_FLIP_STATUS, RFS_NONE, "none");
+    ENUM_MAP(ROOM_FLIP_STATUS, RFS_UNFLIPPED, "unflipped");
+    ENUM_MAP(ROOM_FLIP_STATUS, RFS_FLIPPED, "flipped");
 
     ENUM_MAP(GF_SEQUENCE_EVENT_TYPE, GFS_LOOP_GAME, "loop_game");
     ENUM_MAP(GF_SEQUENCE_EVENT_TYPE, GFS_PLAY_FMV, "play_fmv");

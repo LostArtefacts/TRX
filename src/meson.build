@@ -728,6 +728,7 @@ common_sources = [
   'trx/game/replay/test_replay.c',
   'trx/game/rooms/common.c',
   'trx/game/rooms/draw.c',
+  'trx/game/rooms/fields.c',
   'trx/game/rooms/floor_data.c',
   'trx/game/rooms/geometry.c',
   'trx/game/rooms/triggers/camera.c',

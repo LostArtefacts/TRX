@@ -3,62 +3,94 @@ title: Rooms
 order: 10
 ---
 
+<!--
+  GENERATED FILE - do not edit.
+  Regenerate with: just lua-api-dump
+  The public API is declared next to its implementation, in
+  data/scripting/rooms.lua. Edit it there.
+-->
+
 ## Rooms module
 
-Module for inspecting all rooms in the current level.
+Module for inspecting and altering the rooms of the current level.
+
+### Enums
+
+- [lua]`trx.rooms.FlipStatus`
+
+    The values `room.flip_status` can take.
+
+    - `trx.rooms.FlipStatus.NONE` = `0`  
+        This is a normal room.
+    - `trx.rooms.FlipStatus.UNFLIPPED` = `1`  
+        This room is currently reachable by Lara.
+    - `trx.rooms.FlipStatus.FLIPPED` = `2`  
+        This room is currently inactive and unreachable by Lara.
 
 ### Structures
 
-- [lua]`trx.rooms.fn.FlipStatus`:
-    - `trx.rooms.fn.FlipStatus.NONE`  
-        This is a normal room.
-    - `trx.rooms.fn.FlipStatus.UNFLIPPED`  
-        This room is currently reachable by Lara.
-    - `trx.rooms.fn.FlipStatus.FLIPPED`  
-        This room is currently inactive and unreachable by Lara.
+- [lua]`trx.rooms.Room`
 
-- [lua]`trx.rooms.fn.Room`
+    A room in the current level.
 
-    Represents a room.
+    Handles are live references: if the underlying object is destroyed,
+    using the handle raises an error rather than silently reading an
+    unrelated one.
 
     Properties:
-    - **`num`**: 1-based room number.
-    - **`underwater`**: Whether the room is underwater or not.
-    - **`wind`**: Whether the room has breeze enabled or not. (Requires the player to have breeze enabled in the game settings).
-    - **`damaging`**: Whether the room uses Lara's exposure meter.
-    - **`cold`**: Whether Lara's breath is visible in the room.
-    - **`bounds`**: a table with world-coordinate bounds of the room. The table contains:
-      - **`min_x`**: minimum x coordinate.
-      - **`min_y`**: minimum y coordinate.
-      - **`min_z`**: minimum z coordinate.
-      - **`max_x`**: maximum x coordinate.
-      - **`max_y`**: maximum y coordinate.
-      - **`max_z`**: maximum z coordinate.
-    - **`internal_bounds`**: similar to `bounds`, but excludes the outer sector.
-    - **`flip_status`**: current room flip status (see `trx.rooms.fn.FlipStatus`).
-    - **`flipped_room`**: linked flip room of this room.
+    - **`cold`**: boolean. Whether Lara's breath is visible in the room.
+    - **`damaging`**: boolean. Whether the room drains Lara's exposure meter.
+    - **`flip_status`**: integer. Current flip status. Compare against `trx.rooms.FlipStatus`. *(read-only)*
+    - **`num`**: integer. 1-based room number. *(read-only)*
+    - **`underwater`**: boolean. Whether the room is filled with water.
+    - **`wind`**: boolean. Whether the room has a breeze. Requires the player to have breeze enabled.
 
-    Writable properties:
-    - `underwater`
-    - `wind`
-    - `damaging`
-    - `cold`
+    Computed properties (derived, not stored on the object):
+    - **`bounds`**: table. World-coordinate bounds of the room: `min_x`, `min_y`, `min_z`, `max_x`, `max_y`, `max_z`.
+    - **`flipped_room`**: Room. This room's flip pair, or `nil` if it has none.
+    - **`internal_bounds`**: table. As `bounds`, but excluding the outer ring of sectors, which is solid wall.
 
 ### Functions
 
--- Uses Lua length operator on the rooms table:
-- [lua]`#trx.rooms`  
-  Returns the total number of rooms.
+- [lua]`trx.rooms.get(num)`  
+  Retrieves a room by 1-based index.
 
-- [lua]`trx.rooms[num]`  
-  Retrieves the [lua]`trx.rooms.fn.Room` at the given 1-based index, or `nil` if out of range.
+  Parameters:
+  - **`num`** (integer). 1-based room number.
 
-- [lua]`trx.rooms.fn.get(arg)`  
-  Alias of `trx.rooms[arg]`.
+  Returns: Room or `nil`.
+
+  Example:
+  ```lua
+  local room = trx.rooms[15]
+  room.underwater = true
+  ```
+
+- [lua]`trx.rooms.count()`  
+  Returns the number of rooms in the level. Same as `#trx.rooms`.
+
+  Returns: integer.
 
 - [lua]`trx.rooms.flip()`  
-  Flips the current room map.
+  Flips the current room map, swapping every room with its flip pair.
 
 - [lua]`trx.rooms.flip_effect(effect_id, [timer])`  
-  Sets the flip effect id (0-based), and optionally the flip timer.  
-  Use `effect_id=-1` to disable the current effect.
+  Sets the active flip effect, and optionally its timer.
+
+  Parameters:
+  - **`effect_id`** (integer). 0-based effect id. Use `-1` to clear the current effect. Compare against `trx.catalog.flip_effects`.
+  - **`timer`** (integer, optional). Flip timer value.
+
+  Example:
+  ```lua
+  trx.rooms.flip_effect(trx.catalog.flip_effects.floor_shake, 10)
+  ```
+
+- [lua]`trx.rooms.find_valid_pos(pos, room_num)`  
+  Nudges a position into valid room geometry, e.g. to find somewhere an item can legally be placed.
+
+  Parameters:
+  - **`pos`** (vec3). Position to search near.
+  - **`room_num`** (integer). 1-based room to search from.
+
+  Returns: vec3 or `nil`. The valid position and its 1-based room number, or `nil` if none was found nearby.
