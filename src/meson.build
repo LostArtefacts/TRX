@@ -38,6 +38,7 @@ endif
 trx_lua_embed = custom_target(
   'trx_lua_embed',
   input: [
+    '../data/scripting/api.lua',
     '../data/scripting/assault.lua',
     '../data/scripting/camera.lua',
     '../data/scripting/catalog.lua',
