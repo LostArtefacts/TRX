@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import copy
 import json
 import unittest
 
@@ -55,6 +56,9 @@ SURFACE = {
                 {"name": "BROKEN", "value": 7, "description": "It is broken."},
             ],
         }
+    ],
+    "constants": [
+        {"path": "things.WALL_L", "value": 1024, "description": "One sector."}
     ],
     "functions": [
         {
@@ -163,6 +167,28 @@ class TestLuaDocs(unittest.TestCase):
         a = docs.render_page(SURFACE["modules"][0], SURFACE)
         b = docs.render_page(SURFACE["modules"][0], SURFACE)
         self.assertEqual(a, b)
+
+    def test_a_declared_member_with_no_description_is_reported(self):
+        """A member with no description still reaches scripts; it just renders
+        blank."""
+        self.assertEqual(docs.undocumented(SURFACE), [])
+
+        cases = [
+            (("functions", 0), "things.spawn"),
+            (("constants", 0), "things.WALL_L"),
+            (("enums", 0, "values", 1), "things.State.ON"),
+            (("types", 0, "fields", 0), "things.Widget.shown"),
+            (("types", 0, "methods", 0), "things.Widget.poke"),
+            (("types", 0, "extensions", 0), "things.Widget.derived"),
+        ]
+        for path, expected in cases:
+            with self.subTest(member=expected):
+                surface = copy.deepcopy(SURFACE)
+                target = surface
+                for key in path:
+                    target = target[key]
+                del target["description"]
+                self.assertEqual(docs.undocumented(surface), [expected])
 
     def test_dump_extracts_the_json_from_a_noisy_stream(self):
         """The engine logs to stdout alongside the JSON, so the payload must be

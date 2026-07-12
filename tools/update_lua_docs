@@ -222,6 +222,27 @@ def render_page(module: dict, api: dict) -> str:
     return "\n".join(out).rstrip() + "\n"
 
 
+def undocumented(api: dict) -> list[str]:
+    """Declared names carrying no description - they render as a blank line."""
+    out = []
+    for func in api.get("functions", []):
+        if not func.get("description"):
+            out.append(func["path"])
+    for const in api.get("constants", []):
+        if not const.get("description"):
+            out.append(const["path"])
+    for enum in api.get("enums", []):
+        for value in enum.get("values") or []:
+            if not value.get("description"):
+                out.append(f"{enum['path']}.{value['name']}")
+    for spec in api.get("types", []):
+        for kind in ("fields", "methods", "extensions"):
+            for member in spec.get(kind) or []:
+                if not member.get("description"):
+                    out.append(f"{spec['path']}.{member['name']}")
+    return out
+
+
 def dump_api(binary: Path) -> str:
     result = subprocess.run(
         [str(binary), "--dump-lua-api"], capture_output=True, text=True, check=True
@@ -263,6 +284,14 @@ def main() -> int:
             f"  just lua-api-dump"
         )
     api = json.loads(API_JSON.read_text())
+
+    blank = undocumented(api)
+    if blank:
+        print("error: declared with no description:", file=sys.stderr)
+        for path in blank:
+            print(f"  {path}", file=sys.stderr)
+        print("document it in data/scripting/, next to the declaration", file=sys.stderr)
+        return 1
 
     stale = []
     for module in api["modules"]:
