@@ -22,6 +22,7 @@ static int16_t m_MaxUsedItemCount = 0;
 static ITEM *m_Items = nullptr;
 static int16_t m_NextItemActive = NO_ITEM;
 static int16_t m_NextItemFree = NO_ITEM;
+static uint32_t m_ItemGen = 0;
 
 static inline bool M_ItemBoundsIntersectsPortal(
     const ITEM *item, const ROOM *room, const PORTAL *const portal)
@@ -66,6 +67,9 @@ void Item_InitialiseItems(const int32_t num_items)
 
     for (int32_t i = 0; i < MAX_ITEMS; i++) {
         m_Items[i].properties = (ITEM_PROPERTY_SET) {};
+        // A handle retained across a level change must not rebind to whatever
+        // now occupies the same slot index, so every slot gets a fresh gen.
+        m_Items[i].gen = ++m_ItemGen;
     }
 
     for (int32_t i = m_NextItemFree; i < MAX_ITEMS - 1; i++) {
@@ -172,6 +176,7 @@ int16_t Item_Create(void)
         m_Items[item_num].flags = 0;
         // A recycled slot must not inherit the previous occupant's name.
         m_Items[item_num].name = nullptr;
+        m_Items[item_num].gen = ++m_ItemGen;
         ObjectProperty_ResetItem(&m_Items[item_num]);
         m_NextItemFree = m_Items[item_num].next_item;
     }
@@ -331,6 +336,9 @@ void Item_Kill(const int16_t item_num)
     }
 
     item->flags |= IF_KILLED;
+    // Invalidate any script handle to this item, whether or not the slot is
+    // recycled below.
+    item->gen = ++m_ItemGen;
 
     if (item_num >= m_LevelItemCount) {
         item->next_item = m_NextItemFree;
