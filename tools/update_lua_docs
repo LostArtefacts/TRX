@@ -42,9 +42,9 @@ def signature(path: str, params: list[dict] | None) -> str:
 def describe(spec: dict) -> str:
     """The description, plus the enum cross-reference if the spec names one.
 
-    `enum` is a fully-qualified path - "catalog.objects" - so a field or param
-    points at the constants it accepts instead of spelling them out in prose that
-    has to be kept in sync by hand.
+    `enum` is a fully-qualified path - "items.Status", "catalog.objects" - so a
+    field or param points at the constants it accepts instead of spelling them
+    out in prose that has to be kept in sync by hand.
     """
     desc = spec.get("description") or ""
     if spec.get("enum"):
@@ -97,6 +97,18 @@ def render_function(func: dict) -> list[str]:
     out.extend(render_params(func.get("params"), "  "))
     out.extend(render_returns(func.get("returns"), "  "))
     out.extend(render_examples(func.get("examples"), "  "))
+    out.append("")
+    return out
+
+
+def render_enum(spec: dict) -> list[str]:
+    out = [f"- [lua]`trx.{spec['path']}`", ""]
+    if spec.get("description"):
+        out.append(f"{INDENT}{spec['description']}")
+        out.append("")
+    for value in spec.get("values") or []:
+        out.append(f"{INDENT}- `trx.{spec['path']}.{value['name']}` = `{value['value']}`  ")
+        out.append(f"{INDENT}    {value.get('description') or ''}".rstrip())
     out.append("")
     return out
 
@@ -170,6 +182,13 @@ def render_page(module: dict, api: dict) -> str:
     if module.get("description"):
         out.append(module["description"])
         out.append("")
+
+    enums = [e for e in api.get("enums", []) if e["path"].startswith(f"{name}.")]
+    if enums:
+        out.append("### Enums")
+        out.append("")
+        for spec in enums:
+            out.extend(render_enum(spec))
 
     types = [t for t in api["types"] if t["path"].startswith(f"{name}.")]
     if types:

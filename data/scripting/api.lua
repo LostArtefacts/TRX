@@ -20,6 +20,7 @@ require("trx.log")
 -- Captured at module scope: the raw C bridge is removed from the globals once
 -- the trx.* modules have loaded, so builders cannot reach past the public API.
 local struct = trxc.struct
+local enum = trxc.enum
 
 local api = {}
 
@@ -30,6 +31,8 @@ local modules = {}
 local module_order = {}
 local types = {}
 local type_order = {}
+local enums = {}
+local enum_order = {}
 local strict_enabled = false
 local sealed = false
 
@@ -209,8 +212,45 @@ function api.type(path, spec)
   types[path] = spec
 end
 
+-- Declares an enum: what the constants of a C enum are called in Lua, and what
+-- they mean. As with api.type, C is the mechanism and this is the contract - the
+-- names and values are reflected out of ENUM_MAP (see trx/game/enum.c), so a
+-- number is never written twice and the two cannot drift.
+--
+-- Unlike a struct, an enum is small and wholly public: there is nothing to hide,
+-- so exposure is not opt-in. Every constant must be documented, and documenting
+-- one that does not exist is an error.
+function api.enum(path, spec)
+  assert(not sealed, "the trx.api registry is sealed; declarations happen at load time")
+  assert(type(spec) == "table", "api.enum: spec must be a table")
+  assert(type(spec.backing) == "string", "api.enum: backing must be a C enum name")
+  assert(type(spec.values) == "table", "api.enum: values must be a table")
+  local module, name = split_path(path)
+
+  local public = {}
+  local reflected = {}
+  for _, constant in ipairs(enum.values(spec.backing)) do
+    assert(spec.values[constant.name] ~= nil, "api.enum: " .. path .. "." .. constant.name .. " is not documented")
+    public[constant.name] = constant.value
+    reflected[constant.name] = true
+  end
+
+  for value_name in pairs(spec.values) do
+    assert(reflected[value_name], "api.enum: " .. path .. "." .. value_name .. " is not a constant of " .. spec.backing)
+  end
+
+  trx[module] = trx[module] or {}
+  rawset(trx[module], name, public)
+
+  if enums[path] == nil then
+    table.insert(enum_order, path)
+  end
+  enums[path] = spec
+  return public
+end
+
 function api.describe()
-  local out = { modules = {}, functions = {}, types = {} }
+  local out = { modules = {}, functions = {}, types = {}, enums = {} }
   for _, name in ipairs(module_order) do
     table.insert(out.modules, {
       name = name,
@@ -243,6 +283,7 @@ function api.describe()
         type = field.type,
         writable = field.writable ~= false,
         description = field.description,
+        enum = field.enum,
       })
     end
     for name, method in pairs(spec.methods or {}) do
@@ -268,6 +309,23 @@ function api.describe()
     table.sort(entry.methods, by_name)
     table.sort(entry.extensions, by_name)
     table.insert(out.types, entry)
+  end
+  for _, path in ipairs(enum_order) do
+    local spec = enums[path]
+    local entry = { path = path, description = spec.description, values = {} }
+    for _, constant in ipairs(enum.values(spec.backing)) do
+      table.insert(entry.values, {
+        name = constant.name,
+        value = constant.value,
+        description = spec.values[constant.name],
+      })
+    end
+    -- Numeric order: the order the constants are meant to be read in, and stable
+    -- across dumps, which the reflected order is not.
+    table.sort(entry.values, function(a, b)
+      return a.value < b.value
+    end)
+    table.insert(out.enums, entry)
   end
   return out
 end

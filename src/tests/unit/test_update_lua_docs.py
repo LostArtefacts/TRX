@@ -23,7 +23,7 @@ SURFACE = {
                     "type": "integer",
                     "writable": True,
                     "description": "Visible value.",
-                    "enum": "catalog.objects",
+                    "enum": "things.State",
                 },
                 {
                     "name": "locked",
@@ -42,6 +42,17 @@ SURFACE = {
             ],
             "extensions": [
                 {"name": "derived", "type": "integer", "description": "Computed."}
+            ],
+        }
+    ],
+    "enums": [
+        {
+            "path": "things.State",
+            "description": "A state.",
+            "values": [
+                {"name": "OFF", "value": 0, "description": "It is off."},
+                {"name": "ON", "value": 1, "description": "It is on."},
+                {"name": "BROKEN", "value": 7, "description": "It is broken."},
             ],
         }
     ],
@@ -86,13 +97,37 @@ class TestLuaDocs(unittest.TestCase):
                     )
         for func in SURFACE["functions"]:
             self.assertIn(func["path"], page)
+        for spec in SURFACE["enums"]:
+            for value in spec["values"]:
+                self.assertIn(
+                    value["name"],
+                    page,
+                    f"constant '{value['name']}' is missing from the page",
+                )
+
+    def test_enum_constants_are_rendered_with_their_values(self):
+        """The regression this whole change exists to fix.
+
+        The reference used to point readers at `trx.rooms.fn.FlipStatus` while
+        documenting none of its constants, because enums were pushed onto the
+        module table outside the registry and the dump could not see them.
+        """
+        page = docs.render_page(SURFACE["modules"][0], SURFACE)
+        self.assertIn("### Enums", page)
+        self.assertIn("`trx.things.State.OFF` = `0`", page)
+        self.assertIn("`trx.things.State.ON` = `1`", page)
+        # Not 2. The value comes from C, gaps and all.
+        self.assertIn("`trx.things.State.BROKEN` = `7`", page)
+        self.assertIn("It is broken.", page)
 
     def test_enum_cross_references_are_rendered(self):
         """A field or param names the enum it accepts by path, rather than
         repeating it in prose that nothing keeps in sync."""
         page = docs.render_page(SURFACE["modules"][0], SURFACE)
         shown = next(line for line in page.splitlines() if "`shown`" in line)
-        self.assertIn("Compare against `trx.catalog.objects`.", shown)
+        self.assertIn("Compare against `trx.things.State`.", shown)
+        # Params too, and the target need not be a registry enum: the catalog
+        # tables are CSV-driven, and a pointer at them is still worth rendering.
         param = next(line for line in page.splitlines() if "**`id`**" in line)
         self.assertIn("Compare against `trx.catalog.objects`.", param)
 
