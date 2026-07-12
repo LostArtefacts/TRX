@@ -144,6 +144,22 @@ test_lua_items_exe = executable(
 )
 test('lua_items', test_lua_items_exe, suite: 'unit')
 
+test_lua_api_seal_exe = executable(
+  'test_lua_api_seal',
+  files('unit/test_lua_api_seal.c', 'unit/fake_engine_items.c') + test_stubs
+    + lua_surface_src
+    + files(
+      '../trx/game/items/fields.c',
+      '../trx/game/lua/items.c',
+      '../trx/game/lua/utils.c',
+    ),
+  include_directories: [src_inc, test_inc],
+  dependencies: [dep_lua],
+  c_args: lua_surface_args,
+  build_by_default: false,
+)
+test('lua_api_seal', test_lua_api_seal_exe, suite: 'unit')
+
 # field.c and lua/struct.c are leaf modules, so the reflection layer and the Lua
 # bridge can be exercised against a synthetic struct type.
 test_lua_struct_exe = executable(
