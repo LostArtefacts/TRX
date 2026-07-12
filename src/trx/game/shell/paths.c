@@ -210,15 +210,15 @@ static const M_DYNAMIC_PATH_POLICY m_PathPolicies[TRX_DYNAMIC_PATH_NUMBER_OF] = 
             "%mod_dir%/shaders/%rel%",
             "%base_mod_dir%/shaders/%rel%",
             "%trx_dir%/shaders/%rel%",
-            "%trx_dir%/cfg/shaders/%rel%",
+            "%config_dir%/shaders/%rel%",
             nullptr,
         },
         .check_exists = true,
     },
     [TRX_DYNAMIC_PATH_SCREENSHOT_WRITE_FILE] = {
         .patterns = {
-            "%trx_dir%/screenshots/%mod%/%rel%",
-            "%trx_dir%/screenshots/%rel%",
+            "%screenshots_dir%/%mod%/%rel%",
+            "%screenshots_dir%/%rel%",
             nullptr,
         },
         .check_exists = false,
