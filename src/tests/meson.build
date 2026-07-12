@@ -19,6 +19,11 @@ project(
 c_compiler = meson.get_compiler('c')
 dep_mathlibrary = c_compiler.find_library('m', required: false)
 
+# We compile engine sources, so hold them to the engine's warning policy - see
+# common_build_opts in src/meson.build. Otherwise code that builds clean in the
+# game warns only here.
+add_project_arguments(['-Wno-unused', '-Wno-unused-parameter'], language: 'c')
+
 # The engine takes the dependency name from -Dlua_dep; standing alone, this
 # project has to find Lua itself, and distributions disagree on the name.
 dep_lua = dependency('lua5.4', 'lua-5.4', 'lua54', 'lua')
