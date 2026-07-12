@@ -47,6 +47,14 @@ static void M_Initialise(const int16_t item_num)
     p->old_pos.room_num = item->room_num;
 }
 
+static void M_LetGo(const ITEM *const item, ITEM *const lara_item)
+{
+    Lara_AnimateUntil(lara_item, LS(LS_JUMP_FORWARD));
+    lara_item->gravity = true;
+    lara_item->speed = item->fall_speed;
+    lara_item->fall_speed = item->fall_speed >> 2;
+}
+
 static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
@@ -102,11 +110,7 @@ static void M_Control(const int16_t item_num)
     }
 
     if (lara_on_zipline) {
-        lara_item->goal_anim_state = LS(LS_JUMP_FORWARD);
-        Lara_Animate(lara_item);
-        lara_item->gravity = true;
-        lara_item->speed = item->fall_speed;
-        lara_item->fall_speed = item->fall_speed >> 2;
+        M_LetGo(item, lara_item);
     }
     Sound_Effect(SFX_ZIPLINE_STOP, &item->pos, SPM_ALWAYS);
     Item_RemoveActive(item_num);
