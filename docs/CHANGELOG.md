@@ -1,4 +1,5 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.9...develop) - ××××-××-××
+- fixed Lara's arms becoming locked if she draws a flare on a specific frame after pulling into a crawlspace from a ladder (#5801, regression from 1.3)
 
 ## [1.9](https://github.com/LostArtefacts/TRX/compare/trx-1.8.1...trx-1.9) - 2026-07-12
 Showcase: https://youtu.be/FapipqrYQI0
