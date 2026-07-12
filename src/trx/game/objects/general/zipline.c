@@ -4,20 +4,20 @@
 #include <trx/game/rooms.h>
 #include <trx/game/sound.h>
 
-#define ZIPLINE_MAX_SPEED 100
-#define ZIPLINE_ACCELERATION 5
+#define M_MAX_SPEED 100
+#define M_ACCELERATION 5
 
 typedef struct {
     GAME_VECTOR old_pos;
 } M_PRIV;
 
 typedef enum {
-    ZIPLINE_STATE_EMPTY = 0,
-    ZIPLINE_STATE_GRAB = 1,
-    ZIPLINE_STATE_HANG = 2,
-} ZIPLINE_STATE;
+    M_STATE_EMPTY,
+    M_STATE_GRAB,
+    M_STATE_HANG,
+} M_STATE;
 
-static XYZ_32 m_ZiplineHandlePosition = {
+static const XYZ_32 m_ZiplineHandlePosition = {
     .x = 0,
     .y = 0,
     .z = WALL_L / 2 - 141,
@@ -54,26 +54,26 @@ static void M_Control(const int16_t item_num)
         return;
     }
 
-    if (!(item->flags & IF_ONE_SHOT)) {
+    if ((item->flags & IF_ONE_SHOT) == 0) {
         const M_PRIV *const p = item->priv;
         item->pos = p->old_pos.pos;
         Item_UpdateRoom(item_num, p->old_pos.room_num);
         item->status = IS_INACTIVE;
-        item->goal_anim_state = ZIPLINE_STATE_GRAB;
-        item->current_anim_state = ZIPLINE_STATE_GRAB;
+        item->goal_anim_state = M_STATE_GRAB;
+        item->current_anim_state = M_STATE_GRAB;
         Item_SwitchToAnim(item, 0, 0);
         Item_RemoveActive(item_num);
         return;
     }
 
-    if (item->current_anim_state == ZIPLINE_STATE_GRAB) {
+    if (item->current_anim_state == M_STATE_GRAB) {
         Item_Animate(item);
         return;
     }
 
     Item_Animate(item);
-    if (item->fall_speed < ZIPLINE_MAX_SPEED) {
-        item->fall_speed += ZIPLINE_ACCELERATION;
+    if (item->fall_speed < M_MAX_SPEED) {
+        item->fall_speed += M_ACCELERATION;
     }
 
     item->pos.y += item->fall_speed >> 2;
