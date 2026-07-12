@@ -3,6 +3,7 @@
 #include <trx/core/filesystem.h>
 #include <trx/core/log.h>
 #include <trx/core/memory.h>
+#include <trx/core/shell.h>
 #include <trx/core/strings.h>
 #include <trx/debug.h>
 #include <trx/game/game_flow/common.h>
@@ -151,9 +152,12 @@ static void M_RequireTRXModule(lua_State *const L, const char *name)
 
 static void M_SealPublicAPI(lua_State *const L)
 {
+    // Sealing audits the API too, and only engine scripts declare - so a
+    // failure here means our own data is wrong. Fatal, like any other bad
+    // engine data.
     if (luaL_dostring(L, "trx.api.seal()") != LUA_OK) {
-        LOG_ERROR("failed to seal the Lua API: %s", lua_tostring(L, -1));
-        lua_pop(L, 1);
+        Shell_ExitSystemFmt(
+            "failed to seal the Lua API: %s", lua_tostring(L, -1));
     }
     lua_pushnil(L);
     lua_setglobal(L, "trxc");
