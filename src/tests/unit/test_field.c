@@ -19,6 +19,7 @@ typedef struct {
     const char *text;
     int16_t locked;
     int32_t guarded;
+    int16_t narrow;
     struct {
         bool nested_flag;
     } group;
@@ -40,6 +41,14 @@ static const char *M_SetRejecting(void *const self, const FIELD_VALUE *const in)
     return nullptr;
 }
 
+// A setter that assigns the widened carrier straight into a narrow member, as
+// the engine's own validating setters do.
+static const char *M_SetNarrow(void *const self, const FIELD_VALUE *const in)
+{
+    ((SAMPLE *)self)->narrow = in->as_int;
+    return nullptr;
+}
+
 // clang-format off
 static const FIELD_DESC M_SAMPLE_FIELDS[] = {
     FIELD    (SAMPLE, flag,              FT_BOOL),
@@ -58,6 +67,7 @@ static const FIELD_DESC M_SAMPLE_FIELDS[] = {
     FIELD_RO (SAMPLE, locked,            FT_INT16),
     FIELD_FN ("doubled", FT_INT32, M_GetDoubled, nullptr),
     FIELD_SET(SAMPLE, guarded, FT_INT32, M_SetRejecting),
+    FIELD_SET(SAMPLE, narrow,  FT_INT16, M_SetNarrow),
 };
 // clang-format on
 
@@ -237,6 +247,20 @@ TEST(a_validating_setter_can_reject_a_value)
     CHECK_NULL(Field_Set(
         F("guarded"), &s, &(FIELD_VALUE) { .type = FT_INT32, .as_int = 11 }));
     CHECK_EQ_INT(s.guarded, 11);
+}
+
+TEST(a_value_too_wide_for_the_member_is_rejected_even_with_a_setter)
+{
+    SAMPLE s = { .narrow = 7 };
+
+    const char *const err = Field_Set(
+        F("narrow"), &s, &(FIELD_VALUE) { .type = FT_INT16, .as_int = 99999 });
+    CHECK_NOT_NULL(err);
+    CHECK_EQ_INT(s.narrow, 7); // rejected, so not truncated
+
+    CHECK_NULL(Field_Set(
+        F("narrow"), &s, &(FIELD_VALUE) { .type = FT_INT16, .as_int = 1234 }));
+    CHECK_EQ_INT(s.narrow, 1234);
 }
 
 // Found while writing these tests: Field_Find returns the first match, so a

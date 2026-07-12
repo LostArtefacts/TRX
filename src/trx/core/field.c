@@ -249,10 +249,12 @@ const char *Field_Set(
     if (field->flags & FF_READONLY) {
         return "field is read-only";
     }
-    if (field->set != nullptr) {
-        return field->set(self, in);
-    }
 
+    // Whether the value fits is a property of the member's storage, not of the
+    // setter, so it is checked before a custom setter runs too. A validating
+    // setter guards its own semantics - a legal animation number, a room that
+    // exists - and then assigns the widened carrier straight into the member;
+    // it has no width of its own to check against.
     switch (field->type) {
     case FT_INT8:
     case FT_UINT8:
@@ -275,6 +277,10 @@ const char *Field_Set(
         break;
     default:
         break;
+    }
+
+    if (field->set != nullptr) {
+        return field->set(self, in);
     }
 
     void *const p = (char *)self + field->offset;
