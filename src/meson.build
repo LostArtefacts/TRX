@@ -419,6 +419,7 @@ common_sources = [
   'trx/game/lua/pickup.c',
   'trx/game/lua/rooms.c',
   'trx/game/lua/sound.c',
+  'trx/game/lua/struct.c',
   'trx/game/lua/utils.c',
   'trx/game/matrix.c',
   'trx/game/music/backend_cdaudio.c',

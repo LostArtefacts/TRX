@@ -1,0 +1,405 @@
+#include <trx/game/lua/struct.h>
+
+#include <string.h>
+
+// Metatable keys. __fields / __methods / __ext are the public surface, and are
+// empty until a script declares it. __raw_methods is every method C could
+// offer; it is never reachable from a handle - Lua selects from it by name.
+static const char M_KEY_FIELDS[] = "__fields";
+static const char M_KEY_METHODS[] = "__methods";
+static const char M_KEY_EXT[] = "__ext";
+static const char M_KEY_RAW_METHODS[] = "__raw_methods";
+
+static void M_PushValue(lua_State *const L, const FIELD_VALUE *const value)
+{
+    switch (value->type) {
+    case FT_BOOL:
+        lua_pushboolean(L, value->as_bool);
+        break;
+    case FT_FLOAT:
+    case FT_DOUBLE:
+        lua_pushnumber(L, value->as_num);
+        break;
+    case FT_STRING:
+        if (value->as_str == nullptr) {
+            lua_pushnil(L);
+        } else {
+            lua_pushstring(L, value->as_str);
+        }
+        break;
+    case FT_XYZ_16:
+    case FT_XYZ_32:
+        lua_newtable(L);
+        lua_pushinteger(L, value->as_xyz.x);
+        lua_setfield(L, -2, "x");
+        lua_pushinteger(L, value->as_xyz.y);
+        lua_setfield(L, -2, "y");
+        lua_pushinteger(L, value->as_xyz.z);
+        lua_setfield(L, -2, "z");
+        break;
+    default:
+        lua_pushinteger(L, value->as_int);
+        break;
+    }
+}
+
+static FIELD_VALUE M_CheckValue(
+    lua_State *const L, const int idx, const FIELD_TYPE type)
+{
+    FIELD_VALUE value = { .type = type };
+    switch (type) {
+    case FT_BOOL:
+        luaL_checktype(L, idx, LUA_TBOOLEAN);
+        value.as_bool = lua_toboolean(L, idx);
+        break;
+    case FT_FLOAT:
+    case FT_DOUBLE:
+        value.as_num = luaL_checknumber(L, idx);
+        break;
+    case FT_STRING:
+        value.as_str = luaL_checkstring(L, idx);
+        break;
+    case FT_XYZ_16:
+    case FT_XYZ_32: {
+        const int abs_idx = lua_absindex(L, idx);
+        luaL_checktype(L, abs_idx, LUA_TTABLE);
+        lua_getfield(L, abs_idx, "x");
+        value.as_xyz.x = luaL_checkinteger(L, -1);
+        lua_getfield(L, abs_idx, "y");
+        value.as_xyz.y = luaL_checkinteger(L, -1);
+        lua_getfield(L, abs_idx, "z");
+        value.as_xyz.z = luaL_checkinteger(L, -1);
+        lua_pop(L, 3);
+        break;
+    }
+    default:
+        value.as_int = luaL_checkinteger(L, idx);
+        break;
+    }
+    return value;
+}
+
+LUA_STRUCT_REF *LUA_Struct_CheckRef(
+    lua_State *const L, const int idx, const TYPE_DESC *const type)
+{
+    return luaL_checkudata(L, idx, type->name);
+}
+
+void *LUA_Struct_Deref(lua_State *const L, LUA_STRUCT_REF *const ref)
+{
+    void *const self = ref->resolve(ref);
+    if (self == nullptr) {
+        luaL_error(L, "stale %s handle", ref->type->name);
+    }
+    return self;
+}
+
+// Upvalue 1 of __index and __newindex maps public name -> FIELD_DESC *. A
+// linear strcmp scan over the field table measured ~43ns per access; this is a
+// single interned-string hash lookup.
+static const FIELD_DESC *M_LookUpField(lua_State *const L, const int key_idx)
+{
+    lua_pushvalue(L, key_idx);
+    lua_rawget(L, lua_upvalueindex(1));
+    const FIELD_DESC *const field = lua_touserdata(L, -1);
+    lua_pop(L, 1);
+    return field;
+}
+
+static int M_Index(lua_State *const L)
+{
+    LUA_STRUCT_REF *const ref = lua_touserdata(L, 1);
+
+    const FIELD_DESC *const field = M_LookUpField(L, 2);
+    if (field != nullptr) {
+        FIELD_VALUE value;
+        if (!Field_Get(field, LUA_Struct_Deref(L, ref), &value)) {
+            lua_pushnil(L);
+            return 1;
+        }
+        M_PushValue(L, &value);
+        return 1;
+    }
+
+    // Upvalue 2: methods. Returned as-is; Lua calls them with the userdata as
+    // self, so no rebinding wrapper is needed.
+    lua_pushvalue(L, 2);
+    if (lua_rawget(L, lua_upvalueindex(2)) != LUA_TNIL) {
+        return 1;
+    }
+    lua_pop(L, 1);
+
+    // Upvalue 3: computed members declared in Lua (item.room, item.properties).
+    // Invoked now, with the userdata; the result is the value.
+    lua_pushvalue(L, 2);
+    if (lua_rawget(L, lua_upvalueindex(3)) != LUA_TFUNCTION) {
+        lua_pop(L, 1);
+        lua_pushnil(L);
+        return 1;
+    }
+    lua_pushvalue(L, 1);
+    lua_call(L, 1, 1);
+    return 1;
+}
+
+static int M_NewIndex(lua_State *const L)
+{
+    LUA_STRUCT_REF *const ref = lua_touserdata(L, 1);
+
+    const FIELD_DESC *const field = M_LookUpField(L, 2);
+    if (field == nullptr) {
+        return luaL_error(
+            L, "unknown %s field '%s'", ref->type->name, lua_tostring(L, 2));
+    }
+
+    const FIELD_VALUE value = M_CheckValue(L, 3, field->type);
+    const char *const err = Field_Set(field, LUA_Struct_Deref(L, ref), &value);
+    if (err != nullptr) {
+        return luaL_error(
+            L, "cannot set %s.%s: %s", ref->type->name, lua_tostring(L, 2),
+            err);
+    }
+    return 0;
+}
+
+static int M_PairsIter(lua_State *const L)
+{
+    LUA_STRUCT_REF *const ref = lua_touserdata(L, 1);
+
+    // Iterate the declared public fields, not the C table: a member C can reach
+    // but no script declared is not part of the type.
+    lua_pushvalue(L, 2);
+    if (lua_next(L, lua_upvalueindex(1)) == 0) {
+        lua_pushnil(L);
+        return 1;
+    }
+
+    const FIELD_DESC *const field = lua_touserdata(L, -1);
+    lua_pop(L, 1); // value; the public name stays on the stack as the key
+
+    FIELD_VALUE value;
+    if (!Field_Get(field, LUA_Struct_Deref(L, ref), &value)) {
+        lua_pushnil(L);
+        return 1;
+    }
+    lua_pushvalue(L, -1); // key again, as the iterator's control variable
+    lua_insert(L, -2);
+    M_PushValue(L, &value);
+    return 2;
+}
+
+static int M_Pairs(lua_State *const L)
+{
+    luaL_getmetatable(L, ((LUA_STRUCT_REF *)lua_touserdata(L, 1))->type->name);
+    lua_getfield(L, -1, M_KEY_FIELDS);
+    lua_remove(L, -2);
+    lua_pushcclosure(L, M_PairsIter, 1);
+    lua_pushvalue(L, 1);
+    lua_pushnil(L);
+    return 3;
+}
+
+void LUA_Struct_Register(
+    lua_State *const L, const TYPE_DESC *const type,
+    const luaL_Reg *const methods)
+{
+    Field_ValidateType(type);
+
+    luaL_newmetatable(L, type->name);
+
+    // Everything C could offer, for Lua to select from. Not reachable from a
+    // handle.
+    lua_newtable(L);
+    if (methods != nullptr) {
+        luaL_setfuncs(L, methods, 0);
+    }
+    lua_setfield(L, -2, M_KEY_RAW_METHODS);
+
+    // The public surface: empty until a script declares it.
+    lua_newtable(L); // fields
+    lua_newtable(L); // methods
+    lua_newtable(L); // ext
+
+    lua_pushvalue(L, -3);
+    lua_setfield(L, -5, M_KEY_FIELDS);
+    lua_pushvalue(L, -2);
+    lua_setfield(L, -5, M_KEY_METHODS);
+    lua_pushvalue(L, -1);
+    lua_setfield(L, -5, M_KEY_EXT);
+
+    // __index and __newindex close over (fields, methods, ext). Populating
+    // those tables later from Lua is visible here, because the upvalues are the
+    // tables themselves.
+    lua_pushvalue(L, -3);
+    lua_pushvalue(L, -3);
+    lua_pushvalue(L, -3);
+    lua_pushcclosure(L, M_Index, 3);
+    lua_setfield(L, -5, "__index");
+
+    lua_pushvalue(L, -3);
+    lua_pushcclosure(L, M_NewIndex, 1);
+    lua_setfield(L, -5, "__newindex");
+
+    lua_pop(L, 3); // fields, methods, ext
+
+    lua_pushcfunction(L, M_Pairs);
+    lua_setfield(L, -2, "__pairs");
+
+    // Protect the metatable. Without this, getmetatable(item).__raw_methods
+    // hands a script every C method the type could offer, including the ones no
+    // declaration exposed - which would make the opt-in surface a fiction.
+    lua_pushstring(L, type->name);
+    lua_setfield(L, -2, "__metatable");
+
+    lua_pop(L, 1);
+}
+
+void LUA_Struct_Push(
+    lua_State *const L, const TYPE_DESC *const type,
+    void *(*const resolve)(const LUA_STRUCT_REF *), const int32_t idx,
+    const uint32_t gen)
+{
+    LUA_STRUCT_REF *const ref = lua_newuserdatauv(L, sizeof(LUA_STRUCT_REF), 0);
+    *ref = (LUA_STRUCT_REF) {
+        .type = type,
+        .resolve = resolve,
+        .idx = idx,
+        .gen = gen,
+    };
+    luaL_setmetatable(L, type->name);
+}
+
+// --- trxc.struct: how Lua declares the public surface -----------------------
+
+static const TYPE_DESC *M_CheckType(lua_State *const L, const int idx)
+{
+    const char *const name = luaL_checkstring(L, idx);
+    const TYPE_DESC *const type = Type_GetByName(name);
+    if (type == nullptr) {
+        luaL_error(L, "unknown struct type '%s'", name);
+    }
+    return type;
+}
+
+// trxc.struct.members(type) -> { {name=, type=, writable=}, ... }
+//
+// Every member C can reach. Used by the Lua layer to validate a declaration and
+// to report members nobody exposed.
+static int M_L_Members(lua_State *const L)
+{
+    const TYPE_DESC *const type = M_CheckType(L, 1);
+    lua_newtable(L);
+    for (int32_t i = 0; i < type->field_count; i++) {
+        const FIELD_DESC *const field = &type->fields[i];
+        lua_newtable(L);
+        lua_pushstring(L, field->name);
+        lua_setfield(L, -2, "name");
+        lua_pushstring(L, Field_GetTypeName(field->type));
+        lua_setfield(L, -2, "type");
+        lua_pushboolean(L, !(field->flags & FF_READONLY));
+        lua_setfield(L, -2, "writable");
+        lua_rawseti(L, -2, i + 1);
+    }
+    return 1;
+}
+
+// trxc.struct.method_names(type) -> { "kill", "activate", ... }
+static int M_L_MethodNames(lua_State *const L)
+{
+    const TYPE_DESC *const type = M_CheckType(L, 1);
+    luaL_getmetatable(L, type->name);
+    lua_getfield(L, -1, M_KEY_RAW_METHODS);
+
+    lua_newtable(L);
+    int32_t n = 0;
+    lua_pushnil(L);
+    while (lua_next(L, -3) != 0) {
+        lua_pop(L, 1); // value
+        lua_pushvalue(L, -1); // key
+        lua_rawseti(L, -3, ++n);
+    }
+    return 1;
+}
+
+// trxc.struct.expose_field(type, public_name, c_name, writable)
+static int M_L_ExposeField(lua_State *const L)
+{
+    const TYPE_DESC *const type = M_CheckType(L, 1);
+    const char *const public_name = luaL_checkstring(L, 2);
+    const char *const c_name = luaL_checkstring(L, 3);
+    const bool writable = lua_toboolean(L, 4);
+
+    const FIELD_DESC *const field = Field_Find(type, c_name);
+    if (field == nullptr) {
+        return luaL_error(
+            L, "%s has no member '%s' (declared as '%s')", type->name, c_name,
+            public_name);
+    }
+    if (writable && (field->flags & FF_READONLY)) {
+        return luaL_error(
+            L, "%s.%s is read-only in C and cannot be declared writable",
+            type->name, c_name);
+    }
+
+    luaL_getmetatable(L, type->name);
+    lua_getfield(L, -1, M_KEY_FIELDS);
+    lua_pushstring(L, public_name);
+    lua_pushlightuserdata(L, (void *)field);
+    lua_rawset(L, -3);
+    return 0;
+}
+
+// trxc.struct.expose_method(type, public_name, c_name)
+static int M_L_ExposeMethod(lua_State *const L)
+{
+    const TYPE_DESC *const type = M_CheckType(L, 1);
+    const char *const public_name = luaL_checkstring(L, 2);
+    const char *const c_name = luaL_checkstring(L, 3);
+
+    luaL_getmetatable(L, type->name);
+    lua_getfield(L, -1, M_KEY_RAW_METHODS);
+    if (lua_getfield(L, -1, c_name) != LUA_TFUNCTION) {
+        return luaL_error(
+            L, "%s has no method '%s' (declared as '%s')", type->name, c_name,
+            public_name);
+    }
+
+    lua_getfield(L, -3, M_KEY_METHODS);
+    lua_pushstring(L, public_name);
+    lua_pushvalue(L, -3); // the C function
+    lua_rawset(L, -3);
+    return 0;
+}
+
+// trxc.struct.expose_computed(type, public_name, fn)
+static int M_L_ExposeComputed(lua_State *const L)
+{
+    const TYPE_DESC *const type = M_CheckType(L, 1);
+    const char *const public_name = luaL_checkstring(L, 2);
+    luaL_checktype(L, 3, LUA_TFUNCTION);
+
+    luaL_getmetatable(L, type->name);
+    lua_getfield(L, -1, M_KEY_EXT);
+    lua_pushstring(L, public_name);
+    lua_pushvalue(L, 3);
+    lua_rawset(L, -3);
+    return 0;
+}
+
+void LUA_CreateStruct(lua_State *const L)
+{
+    lua_getglobal(L, "trxc");
+    lua_newtable(L);
+    lua_pushcfunction(L, M_L_Members);
+    lua_setfield(L, -2, "members");
+    lua_pushcfunction(L, M_L_MethodNames);
+    lua_setfield(L, -2, "method_names");
+    lua_pushcfunction(L, M_L_ExposeField);
+    lua_setfield(L, -2, "expose_field");
+    lua_pushcfunction(L, M_L_ExposeMethod);
+    lua_setfield(L, -2, "expose_method");
+    lua_pushcfunction(L, M_L_ExposeComputed);
+    lua_setfield(L, -2, "expose_computed");
+    lua_setfield(L, -2, "struct");
+    lua_pop(L, 1);
+}

@@ -19,6 +19,10 @@ project(
 c_compiler = meson.get_compiler('c')
 dep_mathlibrary = c_compiler.find_library('m', required: false)
 
+# The engine takes the dependency name from -Dlua_dep; standing alone, this
+# project has to find Lua itself, and distributions disagree on the name.
+dep_lua = dependency('lua5.4', 'lua-5.4', 'lua54', 'lua')
+
 # <trx/...> resolves against src/; the harness header against src/tests/unit/.
 src_inc = include_directories('..')
 test_inc = include_directories('unit')
@@ -58,3 +62,15 @@ test_field_exe = executable(
   build_by_default: false,
 )
 test('field', test_field_exe, suite: 'unit')
+
+# field.c and lua/struct.c are leaf modules, so the reflection layer and the Lua
+# bridge can be exercised against a synthetic struct type.
+test_lua_struct_exe = executable(
+  'test_lua_struct',
+  files('unit/test_lua_struct.c') + test_stubs
+    + files('../trx/core/field.c', '../trx/game/lua/struct.c'),
+  include_directories: [src_inc, test_inc],
+  dependencies: [dep_lua],
+  build_by_default: false,
+)
+test('lua_struct', test_lua_struct_exe, suite: 'unit')
