@@ -58,6 +58,7 @@
 - fixed Lara being unable to pull a block that is sitting directly below a room portal and she has a ceiling directly above her
 - fixed Lara continuing to travel in the zip line state despite the zip line having stopped, allowing her to void in some cases
 - fixed Lara jittering when letting go of zip lines in some cases (#2823)
+- fixed Lara's lower meshes re-appearing after saving and loading in the kayak (regression from 1.3)
 - removed the hard-coded spawn distance between Puna and his Lizards (#5686)
 
 **TR1**:
