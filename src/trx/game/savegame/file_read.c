@@ -414,6 +414,14 @@ static bool M_ReadItem(JSON_READ_IO *const io, const int16_t read_index)
         M_FAIL();
     }
 
+    {
+        // Introduced in TRX 1.9
+        int32_t mesh_bits;
+        if (M_SHOULD(JSON_READ(io, "mesh_bits", &mesh_bits))) {
+            item->mesh_bits = (uint32_t)mesh_bits;
+        }
+    }
+
     // Not sure why some items do not have their their position saved,
     // despite OBJECT telling them to.
     if (obj->save_position && JSON_ReadIO_HasKey(io, "room_num")) {

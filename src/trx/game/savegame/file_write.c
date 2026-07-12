@@ -116,6 +116,7 @@ static void M_WriteItem(
 
     const OBJECT *const obj = Object_Get(item->object_id);
     JSONW_WRITE(io, "object_id", Object_ToGameID(item->object_id));
+    JSONW_WRITE(io, "mesh_bits", item->mesh_bits);
 
     if (obj->save_position) {
         M_WriteXYZ32(io, "pos", item->pos);
