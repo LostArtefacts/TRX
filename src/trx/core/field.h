@@ -71,27 +71,58 @@ typedef struct {
     int32_t field_count;
 } TYPE_DESC;
 
-#define M_FIELD(struct_, member_, type_, flags_)                               \
+// The FIELD_TYPE that addresses a member of this C type, resolved from the
+// member itself. A plain member therefore cannot be mistagged: there is no
+// second declaration of its type to disagree with it.
+//
+// This matters because sizeof alone cannot tell INT32 from UINT32 or FLOAT, nor
+// INT16 from UINT16, so a hand-written tag that was wrong within its own width
+// would read the right bytes as the wrong value - and Field_ValidateType, which
+// only compares sizeof, would pass it. Hand-written accessors got this from the
+// compiler for free; a table of offsets has to ask for it.
+//
+// An enum member resolves to whichever integer type the implementation made it
+// compatible with, which is exactly how its storage must be addressed. Listing
+// the types rather than accepting anything means a member of a type nobody
+// thought about - a pointer, a 64-bit integer - fails to compile instead of
+// being addressed as something it is not.
+#define M_FIELD_TYPE_OF(member_)                                               \
+    _Generic(                                                                  \
+        (member_),                                                             \
+        bool: FT_BOOL,                                                         \
+        int8_t: FT_INT8,                                                       \
+        uint8_t: FT_UINT8,                                                     \
+        int16_t: FT_INT16,                                                     \
+        uint16_t: FT_UINT16,                                                   \
+        int32_t: FT_INT32,                                                     \
+        uint32_t: FT_UINT32,                                                   \
+        float: FT_FLOAT,                                                       \
+        double: FT_DOUBLE,                                                     \
+        XYZ_16: FT_XYZ_16,                                                     \
+        XYZ_32: FT_XYZ_32,                                                     \
+        char *: FT_STRING,                                                     \
+        const char *: FT_STRING)
+
+#define M_FIELD(struct_, member_, flags_)                                      \
     {                                                                          \
         .name = #member_,                                                      \
-        .type = type_,                                                         \
+        .type = M_FIELD_TYPE_OF(((struct_ *)nullptr)->member_),                \
         .offset = offsetof(struct_, member_),                                  \
         .size = sizeof(((struct_ *)nullptr)->member_),                         \
         .flags = flags_,                                                       \
     }
 
 // Plain struct member.
-#define FIELD(struct_, member_, type_) M_FIELD(struct_, member_, type_, FF_NONE)
+#define FIELD(struct_, member_) M_FIELD(struct_, member_, FF_NONE)
 
 // Plain struct member that must never be written through reflection.
-#define FIELD_RO(struct_, member_, type_)                                      \
-    M_FIELD(struct_, member_, type_, FF_READONLY)
+#define FIELD_RO(struct_, member_) M_FIELD(struct_, member_, FF_READONLY)
 
 // Plain struct member whose write has side effects or needs validation.
-#define FIELD_SET(struct_, member_, type_, set_)                               \
+#define FIELD_SET(struct_, member_, set_)                                      \
     {                                                                          \
         .name = #member_,                                                      \
-        .type = type_,                                                         \
+        .type = M_FIELD_TYPE_OF(((struct_ *)nullptr)->member_),                \
         .offset = offsetof(struct_, member_),                                  \
         .size = sizeof(((struct_ *)nullptr)->member_),                         \
         .set = set_,                                                           \
@@ -138,9 +169,13 @@ const char *Field_GetTypeName(FIELD_TYPE type);
 // later entry - including a validating setter that then never runs.
 const char *Field_FindDuplicateName(const TYPE_DESC *type);
 
-// Assert every plain member's sizeof matches its declared FIELD_TYPE. Guards
-// against e.g. tagging a 4-byte enum as FT_INT16, which would silently read the
-// wrong half of the member. Call once per type at startup.
+// Assert every plain member's sizeof matches its declared FIELD_TYPE. Call once
+// per type at startup.
+//
+// A member declared with FIELD/FIELD_RO/FIELD_SET cannot fail this: its type is
+// resolved from the member itself. It remains the backstop for the entries the
+// macros cannot see - a FIELD_FN whose declared type disagrees with what its
+// getter returns, or a table built by hand.
 void Field_ValidateType(const TYPE_DESC *type);
 
 const FIELD_DESC *Field_Find(const TYPE_DESC *type, const char *name);

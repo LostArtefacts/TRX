@@ -51,23 +51,23 @@ static const char *M_SetNarrow(void *const self, const FIELD_VALUE *const in)
 
 // clang-format off
 static const FIELD_DESC M_SAMPLE_FIELDS[] = {
-    FIELD    (SAMPLE, flag,              FT_BOOL),
-    FIELD    (SAMPLE, i8,                FT_INT8),
-    FIELD    (SAMPLE, u8,                FT_UINT8),
-    FIELD    (SAMPLE, i16,               FT_INT16),
-    FIELD    (SAMPLE, u16,               FT_UINT16),
-    FIELD    (SAMPLE, i32,               FT_INT32),
-    FIELD    (SAMPLE, u32,               FT_UINT32),
-    FIELD    (SAMPLE, f32,               FT_FLOAT),
-    FIELD    (SAMPLE, f64,               FT_DOUBLE),
-    FIELD    (SAMPLE, small_vec,         FT_XYZ_16),
-    FIELD    (SAMPLE, big_vec,           FT_XYZ_32),
-    FIELD    (SAMPLE, text,              FT_STRING),
-    FIELD    (SAMPLE, group.nested_flag, FT_BOOL),
-    FIELD_RO (SAMPLE, locked,            FT_INT16),
+    FIELD    (SAMPLE, flag),
+    FIELD    (SAMPLE, i8),
+    FIELD    (SAMPLE, u8),
+    FIELD    (SAMPLE, i16),
+    FIELD    (SAMPLE, u16),
+    FIELD    (SAMPLE, i32),
+    FIELD    (SAMPLE, u32),
+    FIELD    (SAMPLE, f32),
+    FIELD    (SAMPLE, f64),
+    FIELD    (SAMPLE, small_vec),
+    FIELD    (SAMPLE, big_vec),
+    FIELD    (SAMPLE, text),
+    FIELD    (SAMPLE, group.nested_flag),
+    FIELD_RO (SAMPLE, locked),
     FIELD_FN ("doubled", FT_INT32, M_GetDoubled, nullptr),
-    FIELD_SET(SAMPLE, guarded, FT_INT32, M_SetRejecting),
-    FIELD_SET(SAMPLE, narrow,  FT_INT16, M_SetNarrow),
+    FIELD_SET(SAMPLE, guarded, M_SetRejecting),
+    FIELD_SET(SAMPLE, narrow, M_SetNarrow),
 };
 // clang-format on
 
@@ -249,6 +249,9 @@ TEST(a_validating_setter_can_reject_a_value)
     CHECK_EQ_INT(s.guarded, 11);
 }
 
+// Whether a value fits is a property of the member's storage, so a custom
+// setter does not get to skip the check: it has no width of its own to check
+// against, and would assign the widened carrier straight into a narrow member.
 TEST(a_value_too_wide_for_the_member_is_rejected_even_with_a_setter)
 {
     SAMPLE s = { .narrow = 7 };
@@ -271,9 +274,9 @@ TEST(duplicate_field_names_are_detected)
     CHECK_NULL(Field_FindDuplicateName(&TYPE_SAMPLE));
 
     static const FIELD_DESC BAD_FIELDS[] = {
-        FIELD(SAMPLE, i16, FT_INT16),
-        FIELD(SAMPLE, i32, FT_INT32),
-        FIELD_SET(SAMPLE, i16, FT_INT16, nullptr), // shadowed by the first
+        FIELD(SAMPLE, i16),
+        FIELD(SAMPLE, i32),
+        FIELD_SET(SAMPLE, i16, nullptr), // shadowed by the first
     };
     static const TYPE_DESC BAD_TYPE = {
         .name = "BAD",
