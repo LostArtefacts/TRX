@@ -272,15 +272,19 @@ static void M_CommitBraidSegment(HAIR_SEGMENT *const segment)
 
 static void M_RememberBraid(void)
 {
-    for (int32_t i = 0; i < Lara_Hair_GetSegmentCount(); i++) {
-        M_RememberBraidSegment(Lara_Hair_GetSegment(i));
+    for (int32_t i = 0; i < Lara_Hair_GetBraidCount(); i++) {
+        for (int32_t j = 0; j < Lara_Hair_GetSegmentCount(); j++) {
+            M_RememberBraidSegment(Lara_Hair_GetSegment(i, j));
+        }
     }
 }
 
 static void M_CommitBraid(void)
 {
-    for (int32_t i = 0; i < Lara_Hair_GetSegmentCount(); i++) {
-        M_CommitBraidSegment(Lara_Hair_GetSegment(i));
+    for (int32_t i = 0; i < Lara_Hair_GetBraidCount(); i++) {
+        for (int32_t j = 0; j < Lara_Hair_GetSegmentCount(); j++) {
+            M_CommitBraidSegment(Lara_Hair_GetSegment(i, j));
+        }
     }
 }
 
@@ -288,8 +292,11 @@ static void M_InterpolateBraid(const double ratio, ITEM *const lara_item)
 {
     ASSERT(lara_item != nullptr);
     const XYZ_32 max_delta = M_GetItemMaxDelta(lara_item);
-    for (int32_t i = 0; i < Lara_Hair_GetSegmentCount(); i++) {
-        M_InterpolateBraidSegment(Lara_Hair_GetSegment(i), ratio, max_delta);
+    for (int32_t i = 0; i < Lara_Hair_GetBraidCount(); i++) {
+        for (int32_t j = 0; j < Lara_Hair_GetSegmentCount(); j++) {
+            M_InterpolateBraidSegment(
+                Lara_Hair_GetSegment(i, j), ratio, max_delta);
+        }
     }
 }
 

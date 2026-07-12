@@ -24,7 +24,8 @@ typedef struct {
     bool enabled;
     int32_t mesh_offset;
     int32_t gold_offset;
-    XYZ_32 hair_pos;
+    XYZ_32 positions[2];
+    int32_t count;
 } LARA_SKIN_BRAID;
 
 typedef struct {

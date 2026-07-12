@@ -11,11 +11,13 @@
                 "mode": "BRAID_MODE_TR1_HEAD_ONLY",
                 "mesh_offset": 10,
                 "gold_offset": 16,
-                "hair_pos": {
-                    "x": 0,
-                    "y": 20,
-                    "z": -45,
-                },
+                "positions": [
+                    {
+                        "x": 0,
+                        "y": 20,
+                        "z": -45,
+                    },
+                ],
             },
             "extra_outfits": {
                 "LS_EXTRA_MIDAS_KILL": "tr1_golden_lara",
@@ -32,11 +34,13 @@
                 "mode": "BRAID_MODE_TR1_FULL",
                 "mesh_offset": 10,
                 "gold_offset": 16,
-                "hair_pos": {
-                    "x": 0,
-                    "y": 20,
-                    "z": -45,
-                },
+                "positions": [
+                    {
+                        "x": 0,
+                        "y": 20,
+                        "z": -45,
+                    },
+                ],
             },
             "no_holster_offsets": {
                 "thigh_r": 1,
@@ -58,11 +62,13 @@
                 "mode": "BRAID_MODE_TR1_MAULED",
                 "mesh_offset": 10,
                 "gold_offset": 16,
-                "hair_pos": {
-                    "x": 0,
-                    "y": 20,
-                    "z": -45,
-                },
+                "positions": [
+                    {
+                        "x": 0,
+                        "y": 20,
+                        "z": -45,
+                    },
+                ],
             },
             "no_holster_offsets": {
                 "thigh_r": 3,
@@ -83,11 +89,13 @@
                 "mode": "BRAID_MODE_TR1_HEAD_ONLY",
                 "mesh_offset": 10,
                 "gold_offset": 16,
-                "hair_pos": {
-                    "x": 0,
-                    "y": 20,
-                    "z": -45,
-                },
+                "positions": [
+                    {
+                        "x": 0,
+                        "y": 20,
+                        "z": -45,
+                    },
+                ],
             },
             "no_holster_offsets": {
                 "thigh_r": 1,
@@ -108,11 +116,13 @@
                 "mode": "BRAID_MODE_TR1_HEAD_ONLY",
                 "mesh_offset": 10,
                 "gold_offset": 16,
-                "hair_pos": {
-                    "x": 0,
-                    "y": 20,
-                    "z": -45,
-                },
+                "positions": [
+                    {
+                        "x": 0,
+                        "y": 20,
+                        "z": -45,
+                    },
+                ],
             },
             "no_holster_offsets": {
                 "thigh_r": 25,
@@ -134,11 +144,13 @@
                 "mode": "BRAID_MODE_TR1_GOLD",
                 "mesh_offset": 10,
                 "gold_offset": 16,
-                "hair_pos": {
-                    "x": 0,
-                    "y": 20,
-                    "z": -45,
-                },
+                "positions": [
+                    {
+                        "x": 0,
+                        "y": 20,
+                        "z": -45,
+                    },
+                ],
             },
         },
 
@@ -174,11 +186,13 @@
             "braid": {
                 "mesh_offset": 22,
                 "gold_offset": 28,
-                "hair_pos": {
-                    "x": 0,
-                    "y": -23,
-                    "z": -55,
-                },
+                "positions": [
+                    {
+                        "x": 0,
+                        "y": -23,
+                        "z": -55,
+                    },
+                ],
             },
             "no_holster_offsets": {
                 "thigh_r": 5,
@@ -198,11 +212,13 @@
             "braid": {
                 "mesh_offset": 22,
                 "gold_offset": 28,
-                "hair_pos": {
-                    "x": 0,
-                    "y": -23,
-                    "z": -55,
-                },
+                "positions": [
+                    {
+                        "x": 0,
+                        "y": -23,
+                        "z": -55,
+                    },
+                ],
             },
             "no_holster_offsets": {
                 "thigh_r": 7,
@@ -223,11 +239,13 @@
             "braid": {
                 "mesh_offset": 22,
                 "gold_offset": 28,
-                "hair_pos": {
-                    "x": 0,
-                    "y": -23,
-                    "z": -55,
-                },
+                "positions": [
+                    {
+                        "x": 0,
+                        "y": -23,
+                        "z": -55,
+                    },
+                ],
             },
             "extra_outfits": {
                 "LS_EXTRA_MIDAS_KILL": "tr23_golden_lara",
@@ -244,11 +262,13 @@
             "braid": {
                 "mesh_offset": 22,
                 "gold_offset": 28,
-                "hair_pos": {
-                    "x": 0,
-                    "y": -23,
-                    "z": -55,
-                },
+                "positions": [
+                    {
+                        "x": 0,
+                        "y": -23,
+                        "z": -55,
+                    },
+                ],
             },
             "extra_outfits": {
                 "LS_EXTRA_MIDAS_KILL": "tr23_golden_lara",
@@ -264,11 +284,13 @@
             "braid": {
                 "mesh_offset": 22,
                 "gold_offset": 28,
-                "hair_pos": {
-                    "x": 0,
-                    "y": -23,
-                    "z": -55,
-                },
+                "positions": [
+                    {
+                        "x": 0,
+                        "y": -23,
+                        "z": -55,
+                    },
+                ],
             },
             "no_holster_offsets": {
                 "thigh_r": 7,
@@ -288,11 +310,13 @@
             "braid": {
                 "mesh_offset": 22,
                 "gold_offset": 28,
-                "hair_pos": {
-                    "x": 0,
-                    "y": -23,
-                    "z": -55,
-                },
+                "positions": [
+                    {
+                        "x": 0,
+                        "y": -23,
+                        "z": -55,
+                    },
+                ],
             },
             "no_holster_offsets": {
                 "thigh_r": 7,
@@ -313,11 +337,13 @@
             "braid": {
                 "mesh_offset": 22,
                 "gold_offset": 28,
-                "hair_pos": {
-                    "x": 0,
-                    "y": -23,
-                    "z": -55,
-                },
+                "positions": [
+                    {
+                        "x": 0,
+                        "y": -23,
+                        "z": -55,
+                    },
+                ],
             },
             "no_holster_offsets": {
                 "thigh_r": 9,
@@ -337,11 +363,13 @@
             "braid": {
                 "mesh_offset": 22,
                 "gold_offset": 28,
-                "hair_pos": {
-                    "x": 0,
-                    "y": -23,
-                    "z": -55,
-                },
+                "positions": [
+                    {
+                        "x": 0,
+                        "y": -23,
+                        "z": -55,
+                    },
+                ],
             },
             "no_holster_offsets": {
                 "thigh_r": 11,
@@ -362,11 +390,13 @@
             "braid": {
                 "mesh_offset": 22,
                 "gold_offset": 28,
-                "hair_pos": {
-                    "x": 0,
-                    "y": -23,
-                    "z": -55,
-                },
+                "positions": [
+                    {
+                        "x": 0,
+                        "y": -23,
+                        "z": -55,
+                    },
+                ],
             },
         },
 
@@ -379,11 +409,13 @@
             "braid": {
                 "mesh_offset": 22,
                 "gold_offset": 28,
-                "hair_pos": {
-                    "x": 0,
-                    "y": -23,
-                    "z": -55,
-                },
+                "positions": [
+                    {
+                        "x": 0,
+                        "y": -23,
+                        "z": -55,
+                    },
+                ],
             },
             "no_holster_offsets": {
                 "thigh_r": 13,
@@ -403,11 +435,13 @@
             "braid": {
                 "mesh_offset": 22,
                 "gold_offset": 28,
-                "hair_pos": {
-                    "x": 0,
-                    "y": -23,
-                    "z": -55,
-                },
+                "positions": [
+                    {
+                        "x": 0,
+                        "y": -23,
+                        "z": -55,
+                    },
+                ],
             },
             "no_holster_offsets": {
                 "thigh_r": 15,
@@ -427,11 +461,13 @@
             "braid": {
                 "mesh_offset": 22,
                 "gold_offset": 28,
-                "hair_pos": {
-                    "x": 0,
-                    "y": -23,
-                    "z": -55,
-                },
+                "positions": [
+                    {
+                        "x": 0,
+                        "y": -23,
+                        "z": -55,
+                    },
+                ],
             },
             "no_holster_offsets": {
                 "thigh_r": 17,
@@ -451,11 +487,13 @@
             "braid": {
                 "mesh_offset": 22,
                 "gold_offset": 28,
-                "hair_pos": {
-                    "x": 0,
-                    "y": -23,
-                    "z": -55,
-                },
+                "positions": [
+                    {
+                        "x": 0,
+                        "y": -23,
+                        "z": -55,
+                    },
+                ],
             },
             "no_holster_offsets": {
                 "thigh_r": 19,
@@ -475,11 +513,13 @@
             "braid": {
                 "mesh_offset": 22,
                 "gold_offset": 28,
-                "hair_pos": {
-                    "x": 0,
-                    "y": -23,
-                    "z": -55,
-                },
+                "positions": [
+                    {
+                        "x": 0,
+                        "y": -23,
+                        "z": -55,
+                    },
+                ],
             },
             "no_holster_offsets": {
                 "thigh_r": 21,
@@ -499,11 +539,13 @@
             "braid": {
                 "mesh_offset": 22,
                 "gold_offset": 28,
-                "hair_pos": {
-                    "x": 0,
-                    "y": -23,
-                    "z": -55,
-                },
+                "positions": [
+                    {
+                        "x": 0,
+                        "y": -23,
+                        "z": -55,
+                    },
+                ],
             },
             "no_holster_offsets": {
                 "thigh_r": 23,
@@ -523,11 +565,13 @@
             "braid": {
                 "mesh_offset": 22,
                 "gold_offset": 28,
-                "hair_pos": {
-                    "x": 0,
-                    "y": -23,
-                    "z": -55,
-                },
+                "positions": [
+                    {
+                        "x": 0,
+                        "y": -23,
+                        "z": -55,
+                    },
+                ],
             },
             "no_holster_offsets": {
                 "thigh_r": 27,

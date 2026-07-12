@@ -102,11 +102,13 @@ behave. The structure of this file is described below.
     "mode": "BRAID_MODE_TR1_FULL",
     "mesh_offset": 10,
     "gold_offset": 16,
-    "hair_pos": {
-      "x": 0,
-      "y": 20,
-      "z": -45,
-    },
+    "positions": [
+      {
+        "x": 0,
+        "y": 20,
+        "z": -45,
+      },
+    ],
   },
   "no_holster_offsets": {
     "thigh_r": 1,
@@ -297,9 +299,11 @@ behave. The structure of this file is described below.
   </tr>
   <tr valign="top">
     <td><code>hair_pos</code></td>
-    <td>XYZ</td>
+    <td>XYZ array</td>
     <td colspan="2">
-      The position relative to Lara's head where the braid will be drawn.
+      The position relative to Lara's head where the braid will be drawn. At
+      most, two positions can be defined. If missing or empty, no braid will be
+      drawn.
     </td>
   </tr>
 </table>

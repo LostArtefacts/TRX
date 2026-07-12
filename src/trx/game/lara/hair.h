@@ -19,5 +19,6 @@ bool Lara_Hair_IsActive(void);
 void Lara_Hair_Control(bool in_cutscene);
 void Lara_Hair_Draw(void);
 
+int32_t Lara_Hair_GetBraidCount(void);
 int32_t Lara_Hair_GetSegmentCount(void);
-HAIR_SEGMENT *Lara_Hair_GetSegment(int32_t n);
+HAIR_SEGMENT *Lara_Hair_GetSegment(int32_t braid_idx, int32_t segment_idx);

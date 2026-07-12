@@ -172,6 +172,25 @@ static bool M_ReadExtraMeshes(JSON_READ_IO *const io)
     JSON_FINISH();
 }
 
+static bool M_LoadBraidPositions(
+    JSON_READ_IO *const io, LARA_SKIN_BRAID *const braid)
+{
+    if (!JSON_OPTIONAL(JSON_PUSH(io, "positions"))) {
+        JSON_FAIL();
+    }
+
+    const int32_t count = JSON_ARRAY_LEN(io);
+    if (count > 0) {
+        braid->count = MIN(count, Lara_Hair_GetBraidCount());
+        for (int32_t i = 0; i < braid->count; ++i) {
+            JSON_MUST(JSON_READ_A(io, i, &braid->positions[i]));
+        }
+    }
+
+    JSON_MUST(JSON_POP(io));
+    JSON_FINISH();
+}
+
 static bool M_LoadBraid(JSON_READ_IO *const io, LARA_SKIN_OUTFIT *const outfit)
 {
     if (JSON_OPTIONAL(JSON_PUSH(io, "braid"))) {
@@ -190,7 +209,7 @@ static bool M_LoadBraid(JSON_READ_IO *const io, LARA_SKIN_OUTFIT *const outfit)
 
         JSON_READ_D(io, "mesh_offset", &outfit->braid.mesh_offset, 0);
         JSON_READ_D(io, "gold_offset", &outfit->braid.gold_offset, 0);
-        JSON_READ_D(io, "hair_pos", &outfit->braid.hair_pos, (XYZ_32) {});
+        M_LoadBraidPositions(io, &outfit->braid);
         outfit->braid.enabled = true;
         JSON_MUST(JSON_POP(io));
     } else {
