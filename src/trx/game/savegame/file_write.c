@@ -105,6 +105,26 @@ static void M_GetFXOrder(M_FX_ORDER *const order)
     }
 }
 
+// Global anim indices shift as injections append anims, so persist the owning
+// object and an index relative to it.
+static void M_WriteAnimNum(JSON_WRITE_IO *const io, const int16_t anim_num)
+{
+    JSONW_WRITE(io, "anim_num", anim_num);
+    for (OBJECT_ID id = O_FIRST; id < O_NUMBER_OF; id++) {
+        const OBJECT *const obj = Object_Get(id);
+        if (!obj->loaded || obj->anim_idx == NO_ANIM || anim_num < obj->anim_idx
+            || anim_num >= obj->anim_idx + obj->anim_count) {
+            continue;
+        }
+        const int32_t game_id = Object_ToGameID(id);
+        if (game_id != -1) {
+            JSONW_WRITE(io, "anim_obj", game_id);
+            JSONW_WRITE(io, "anim_rel", anim_num - obj->anim_idx);
+        }
+        break;
+    }
+}
+
 static void M_WriteItem(
     JSON_WRITE_IO *const io, const ITEM *const item,
     const M_FX_ORDER *const fx_order)
@@ -130,7 +150,7 @@ static void M_WriteItem(
         JSONW_WRITE(io, "current_anim", item->current_anim_state);
         JSONW_WRITE(io, "goal_anim", item->goal_anim_state);
         JSONW_WRITE(io, "required_anim", item->required_anim_state);
-        JSONW_WRITE(io, "anim_num", item->anim_num);
+        M_WriteAnimNum(io, item->anim_num);
         JSONW_WRITE(io, "frame_num", item->frame_num);
         JSONW_WRITE(io, "prev_frame_num", item->prev_frame_num);
     }
@@ -223,7 +243,7 @@ static void M_WriteArm(
 {
     ASSERT(arm != nullptr);
     JSONW_PUSH_OBJECT(io);
-    JSONW_WRITE(io, "anim_num", arm->anim_num);
+    M_WriteAnimNum(io, arm->anim_num);
     JSONW_WRITE(io, "frame_num", arm->frame_num);
     JSONW_WRITE(io, "lock", arm->lock);
     JSONW_WRITE(io, "flash_gun", arm->flash_gun);
@@ -646,7 +666,7 @@ void SG_File_DumpLara(JSON_WRITE_IO *const io)
         JSONW_PUSH_OBJECT(io);
         const ITEM *const weapon_item = Item_Get(lara->gun_item_num);
         JSONW_WRITE(io, "object_id", Object_ToGameID(weapon_item->object_id));
-        JSONW_WRITE(io, "anim_num", weapon_item->anim_num);
+        M_WriteAnimNum(io, weapon_item->anim_num);
         JSONW_WRITE(io, "frame_num", weapon_item->frame_num);
         JSONW_WRITE(io, "current_anim_state", weapon_item->current_anim_state);
         JSONW_WRITE(io, "goal_anim_state", weapon_item->goal_anim_state);

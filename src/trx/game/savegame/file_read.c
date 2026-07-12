@@ -45,12 +45,90 @@ static bool M_ReadObjectID(
     M_FINISH();
 }
 
+// Global anim indices shift as injections append anims, so prefer the
+// object-relative reference where the save carries one.
+static bool M_ReadAnimNum(JSON_READ_IO *const io, int16_t *const anim_num)
+{
+    const bool has_anim_num = JSON_READ(io, "anim_num", anim_num);
+
+    int32_t game_id = 0;
+    int32_t anim_rel = 0;
+    if (M_OPTIONAL(JSON_READ(io, "anim_obj", &game_id))
+        && M_OPTIONAL(JSON_READ(io, "anim_rel", &anim_rel))) {
+        const OBJECT *const obj = Object_GetByGameID(game_id);
+        if (obj != nullptr && obj->loaded && obj->anim_idx != NO_ANIM) {
+            *anim_num = obj->anim_idx + anim_rel;
+        }
+    }
+
+    return has_anim_num;
+}
+
+// Saves older than SG_VERSION_19 store a bare global anim index, which shifts
+// when an object injected earlier gains anims.
+// TODO: remove after 1.14
+static void M_RepairItemAnim(ITEM *const item)
+{
+    const OBJECT *const obj = Object_Get(item->object_id);
+    if (!obj->loaded || obj->anim_idx == NO_ANIM || obj->anim_count == 0) {
+        return;
+    }
+
+    if (item->anim_num >= obj->anim_idx
+        && item->anim_num < obj->anim_idx + obj->anim_count) {
+        const ANIM *const anim = Item_GetAnim(item);
+        if (item->frame_num >= anim->frame_base
+            && item->frame_num <= anim->frame_end) {
+            return;
+        }
+    }
+
+    // The anim data itself did not move, and frame ranges are disjoint within
+    // an object, so the saved frame identifies the anim and the offset into it.
+    for (int16_t i = 0; i < obj->anim_count; i++) {
+        const ANIM *const anim = Object_GetAnim(obj, i);
+        if (item->frame_num < anim->frame_base
+            || item->frame_num > anim->frame_end) {
+            continue;
+        }
+        LOG_WARNING(
+            "Item %d (object %d) has a stale anim %d; recovered anim %d from "
+            "frame %d",
+            Item_GetIndex(item), item->object_id, item->anim_num, i,
+            item->frame_num);
+        Item_SwitchToAnim(item, i, item->frame_num - anim->frame_base);
+        item->current_anim_state = anim->current_anim_state;
+        item->prev_frame_num = item->frame_num;
+        return;
+    }
+
+    // The frame is unusable too, so fall back to the anim state.
+    int16_t anim_idx = 0;
+    for (int16_t i = 0; i < obj->anim_count; i++) {
+        if (Object_GetAnim(obj, i)->current_anim_state
+            == item->current_anim_state) {
+            anim_idx = i;
+            break;
+        }
+    }
+
+    LOG_WARNING(
+        "Item %d (object %d) has a stale anim %d and frame %d; resetting to "
+        "anim %d",
+        Item_GetIndex(item), item->object_id, item->anim_num, item->frame_num,
+        anim_idx);
+    Item_SwitchToAnim(item, anim_idx, 0);
+    item->current_anim_state = Item_GetAnim(item)->current_anim_state;
+    item->goal_anim_state = item->current_anim_state;
+    item->prev_frame_num = item->frame_num;
+}
+
 static bool M_ReadArm(
     JSON_READ_IO *const io, const char *const key, LARA_ARM *const arm)
 {
     ASSERT(arm != nullptr);
     M_MUST(JSON_PUSH(io, key));
-    M_MUST(JSON_READ(io, "anim_num", &arm->anim_num));
+    M_MUST(M_ReadAnimNum(io, &arm->anim_num));
     M_MUST(JSON_READ(io, "frame_num", &arm->frame_num));
     M_MUST(JSON_READ(io, "lock", &arm->lock));
     M_MUST(JSON_READ(io, "flash_gun", &arm->flash_gun));
@@ -245,6 +323,7 @@ static bool M_ReadLara(JSON_READ_IO *const io)
     M_MUST(JSON_READ(io, "torso_rot", &lara->torso_rot));
     M_MUST(JSON_READ(io, "last_pos", &lara->last_pos));
 
+    // Arms need no repair; the gun control recomputes them every frame.
     M_MUST(M_ReadArm(io, "left_arm", &lara->left_arm));
     M_MUST(M_ReadArm(io, "right_arm", &lara->right_arm));
     M_MUST(M_ReadAmmo(io, "pistols", &lara->pistol_ammo));
@@ -271,12 +350,15 @@ static bool M_ReadLara(JSON_READ_IO *const io)
                 M_ReadObjectID(io, "object_id", &weapon_item->object_id))) {
             M_MUST(M_ReadObjectID(io, "obj_id", &weapon_item->object_id));
         }
-        M_MUST(JSON_READ(io, "anim_num", &weapon_item->anim_num));
+        M_MUST(M_ReadAnimNum(io, &weapon_item->anim_num));
         M_MUST(JSON_READ(io, "frame_num", &weapon_item->frame_num));
         M_MUST(JSON_READ(
             io, "current_anim_state", &weapon_item->current_anim_state));
         M_MUST(JSON_READ(io, "goal_anim_state", &weapon_item->goal_anim_state));
         M_MUST(JSON_POP(io));
+        if (JSON_ReadIO_GetVersion(io) < SG_VERSION_19) {
+            M_RepairItemAnim(weapon_item);
+        }
     }
 
     M_MUST(JSON_PUSH(io, "interact_target"));
@@ -441,7 +523,7 @@ static bool M_ReadItem(JSON_READ_IO *const io, const int16_t read_index)
         M_SHOULD(JSON_READ(io, "current_anim", &item->current_anim_state));
         M_SHOULD(JSON_READ(io, "goal_anim", &item->goal_anim_state));
         M_SHOULD(JSON_READ(io, "required_anim", &item->required_anim_state));
-        M_SHOULD(JSON_READ(io, "anim_num", &item->anim_num));
+        M_SHOULD(M_ReadAnimNum(io, &item->anim_num));
         M_SHOULD(JSON_READ(io, "frame_num", &item->frame_num));
         M_SHOULD(JSON_READ(io, "prev_frame_num", &item->prev_frame_num));
 
@@ -452,10 +534,10 @@ static bool M_ReadItem(JSON_READ_IO *const io, const int16_t read_index)
             item->anim_num += obj->anim_idx;
         }
 
-        // TODO: remove after 1.9
-        if (g_TRVersion == 3 && item->object_id == O_SWITCH_TYPE_BUTTON
-            && item->anim_num < obj->anim_idx) {
-            Item_SwitchToAnim(item, item->current_anim_state == 1 ? 0 : 1, 0);
+        // Lara's anim may belong to a vehicle rather than to herself.
+        if (JSON_ReadIO_GetVersion(io) < SG_VERSION_19
+            && item->object_id != O_LARA) {
+            M_RepairItemAnim(item);
         }
     }
 
