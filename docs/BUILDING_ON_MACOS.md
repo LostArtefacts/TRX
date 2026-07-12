@@ -4,7 +4,8 @@ This guide describes the native macOS build workflow using Meson.
 
 ## Installing dependencies
 
-Install either Homebrew or MacPorts, then install the required dependencies. (If you have both installed, use MacPorts)
+Install either Homebrew or MacPorts, then install the required dependencies.
+(If you have both installed, use MacPorts.)
 
 Homebrew:
 
@@ -56,7 +57,9 @@ official build workflow.
 
 ## Running the game
 
-For running the game for just debugging, you can directly run the compiled executable and place in its directory the game files, otherwise if you want to create a bundled .app, follow the steps below
+For running the game for just debugging, you can directly run the compiled
+executable and place in its directory the game files, otherwise if you want to
+create a bundled `.app`, follow the steps below.
 
 To prepare the game directory:
 
