@@ -74,3 +74,11 @@ test_lua_struct_exe = executable(
   build_by_default: false,
 )
 test('lua_struct', test_lua_struct_exe, suite: 'unit')
+
+# api.lua is read from the repository root, two levels up from this project.
+repo_root = meson.current_source_dir() / '../..'
+
+lua_exe = find_program('lua', 'lua5.4', 'lua5.5', required: false)
+if lua_exe.found()
+  test('api', lua_exe, args: [files('unit/test_api.lua'), repo_root], suite: 'unit')
+endif
