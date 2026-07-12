@@ -112,7 +112,7 @@ local function is_matching(item, query)
 end
 
 local function find_items(query, first_only)
-  local matches = first_only and nil or {}
+  local matches = {}
   local count = raw.count()
   for i = 1, count do
     local item = setmetatable({ idx = i }, Item)
@@ -123,7 +123,10 @@ local function find_items(query, first_only)
       table.insert(matches, item)
     end
   end
-  return first_only and nil or matches
+  if first_only then
+    return nil
+  end
+  return matches
 end
 
 function fn.find(query)
