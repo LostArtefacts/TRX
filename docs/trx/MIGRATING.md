@@ -7,6 +7,23 @@ order: 3
 
 ## TRX
 
+### Version 1.9 to 1.10
+
+1. **Update scripts that use item handles**
+   `trx.items` hands out opaque item handles rather than `{ idx = ... }` tables.
+   - `trx.items.fn` was removed. Replace `trx.items.fn.get(arg)` with
+     `trx.items.get(arg)`, or index the module directly: `trx.items[17]`,
+     `trx.items["lara"]`.
+   - `item.idx` no longer exists, and a handle can no longer carry extra keys of
+     your own. Pass the handle itself where you used to pass the index.
+   - A handle to a killed or recycled item now raises `stale ITEM handle` when
+     read or written, instead of silently addressing whatever item took over the
+     slot. Guard handles held across time with `item:is_valid()`.
+   - Writing a value a field cannot hold now raises instead of truncating - e.g.
+     `item.hit_points = 99999`, where the field is 16-bit.
+   - `pairs(item)` iterates the item's public fields; it used to yield `idx`
+     alone.
+
 ### Version 1.8 to 1.9
 
 1. **Update Lara pushblock animations**
@@ -29,7 +46,6 @@ order: 3
    The `O_SPARKS_GFX` sprites from TR3 were combined with TR4. Download the TR3X
    assets file from https://lostartefacts.dev/pub/tr3-assets.zip, or use the
    shipped `sparks_gfx.bin` injection.
-
 
 ### Version 1.7 to 1.8
 

@@ -23,6 +23,9 @@ dep_mathlibrary = c_compiler.find_library('m', required: false)
 # project has to find Lua itself, and distributions disagree on the name.
 dep_lua = dependency('lua5.4', 'lua-5.4', 'lua54', 'lua')
 
+# enum_map.c hashes with uthash, which is headers only.
+c_compiler.check_header('uthash.h', required: true)
+
 # <trx/...> resolves against src/; the harness header against src/tests/unit/.
 src_inc = include_directories('..')
 test_inc = include_directories('unit')
@@ -90,6 +93,39 @@ test_lua_enum_exe = executable(
   build_by_default: false,
 )
 test('lua_enum', test_lua_enum_exe, suite: 'unit')
+
+# The public Lua surface, driven the way a level script drives it. Everything
+# below the assertions is real - the FIELD_DESC tables, the struct and enum
+# bridges, the trxc modules, and data/scripting/*.lua read from the tree - and
+# only the engine underneath is faked. The modules are read from disk rather than
+# from the embedded copy, so the tests need to know where the tree is.
+lua_surface_src = files(
+  '../trx/core/enum_map.c',
+  '../trx/core/field.c',
+  '../trx/core/memory.c',
+  '../trx/core/vector.c',
+  '../trx/game/enum.c',
+  '../trx/game/lua/enum.c',
+  '../trx/game/lua/struct.c',
+) + files('unit/lua_surface.c', 'unit/stubs_enum_map.c')
+
+lua_surface_args = ['-DREPO_ROOT="' + meson.current_source_dir() / '../..' + '"']
+
+test_lua_items_exe = executable(
+  'test_lua_items',
+  files('unit/test_lua_items.c', 'unit/fake_engine_items.c') + test_stubs
+    + lua_surface_src
+    + files(
+      '../trx/game/items/fields.c',
+      '../trx/game/lua/items.c',
+      '../trx/game/lua/utils.c',
+    ),
+  include_directories: [src_inc, test_inc],
+  dependencies: [dep_lua],
+  c_args: lua_surface_args,
+  build_by_default: false,
+)
+test('lua_items', test_lua_items_exe, suite: 'unit')
 
 # field.c and lua/struct.c are leaf modules, so the reflection layer and the Lua
 # bridge can be exercised against a synthetic struct type.

@@ -339,6 +339,7 @@ common_sources = [
   'trx/game/items/carrier.c',
   'trx/game/items/col.c',
   'trx/game/items/draw.c',
+  'trx/game/items/fields.c',
   'trx/game/items/manager.c',
   'trx/game/items/utils.c',
   'trx/game/items/walkable.c',

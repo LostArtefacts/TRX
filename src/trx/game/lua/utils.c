@@ -1,5 +1,33 @@
 #include <trx/game/lua/utils.h>
 
+void LUA_PushPropertyValue(
+    lua_State *const L, const OBJECT_PROPERTY_VALUE *const value)
+{
+    switch (value->type) {
+    case OBJECT_PROPERTY_TYPE_INT:
+        lua_pushinteger(L, value->as_int);
+        break;
+    case OBJECT_PROPERTY_TYPE_FLOAT:
+        lua_pushnumber(L, value->as_float);
+        break;
+    case OBJECT_PROPERTY_TYPE_DOUBLE:
+        lua_pushnumber(L, value->as_double);
+        break;
+    case OBJECT_PROPERTY_TYPE_BOOL:
+        lua_pushboolean(L, value->as_bool);
+        break;
+    case OBJECT_PROPERTY_TYPE_XYZ:
+        lua_newtable(L);
+        lua_pushinteger(L, value->as_xyz.x);
+        lua_setfield(L, -2, "x");
+        lua_pushinteger(L, value->as_xyz.y);
+        lua_setfield(L, -2, "y");
+        lua_pushinteger(L, value->as_xyz.z);
+        lua_setfield(L, -2, "z");
+        break;
+    }
+}
+
 OBJECT_PROPERTY_VALUE LUA_CheckPropertyValue(lua_State *const L, const int idx)
 {
     switch (lua_type(L, idx)) {

@@ -1,0 +1,30 @@
+#pragma once
+
+// Runner for the Lua surface tests.
+//
+// It stands the world up the way common.c does at boot - minus the engine - and
+// then hands over to src/tests/unit/lua/<tests>.lua, where the assertions are
+// written the way a level script would write them.
+//
+// A test names the module it exercises, the bridges under test, and the fake
+// engine's Lua face; everything else is the same for all of them.
+
+#include <lauxlib.h>
+#include <lualib.h>
+
+typedef struct {
+    // data/scripting/<module>.lua - the declaration under test.
+    const char *module;
+    // src/tests/unit/lua/<tests>.lua - the assertions.
+    const char *tests;
+    // Registers the trxc bridges the module binds to.
+    void (*setup_trxc)(lua_State *L);
+    // Adds the fake engine's constants to the `fake` table.
+    void (*push_fake)(lua_State *L);
+    // fake.reset() and fake.calls().
+    lua_CFunction fake_reset;
+    lua_CFunction fake_calls;
+} LUA_SURFACE_TEST;
+
+// Runs the test file and returns its failure count as a process exit code.
+int LuaSurface_Run(const LUA_SURFACE_TEST *test);
