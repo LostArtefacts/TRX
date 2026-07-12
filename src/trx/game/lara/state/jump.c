@@ -215,16 +215,6 @@ static void M_FastFall(ITEM *const item, COLL_INFO *const coll)
 static void M_Zipline(ITEM *const item, COLL_INFO *const coll)
 {
     g_Camera.target_angle = M_CAM_ZIPLINE_ANGLE;
-
-    if (!g_Input.action) {
-        item->goal_anim_state = LS(LS_JUMP_FORWARD);
-        Lara_Animate(item);
-        item->gravity = true;
-        item->speed = 100;
-        item->fall_speed = 40;
-        LARA_INFO *const lara = Lara_GetLaraInfo();
-        lara->move_angle = item->rot.y;
-    }
 }
 
 // clang-format off

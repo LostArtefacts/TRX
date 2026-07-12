@@ -57,6 +57,7 @@
 - fixed Lara being able to push/pull a block that is sitting on a collapsible tile about to drop (#5786, regression from 1.8)
 - fixed Lara being unable to pull a block that is sitting directly below a room portal and she has a ceiling directly above her
 - fixed Lara continuing to travel in the zip line state despite the zip line having stopped, allowing her to void in some cases
+- fixed Lara jittering when letting go of zip lines in some cases (#2823)
 - removed the hard-coded spawn distance between Puna and his Lizards (#5686)
 
 **TR1**:
