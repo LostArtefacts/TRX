@@ -28,6 +28,9 @@ typedef enum {
     // Crystal statistics are persisted in savegames.
     SG_VERSION_18 = 18,
 
+    // Animations are persisted as an object and an index relative to it.
+    SG_VERSION_19 = 19,
+
     SG_MIN_SUPPORTED_VERSION = SG_VERSION_13,
-    SG_CURRENT_VERSION = SG_VERSION_18,
+    SG_CURRENT_VERSION = SG_VERSION_19,
 } SAVEGAME_VERSION;
