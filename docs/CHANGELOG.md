@@ -1,4 +1,8 @@
-## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.9...develop) - ××××-××-××
+## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.9.1...develop) - ××××-××-××
+
+
+
+## [1.9.1](https://github.com/LostArtefacts/TRX/compare/trx-1.9...trx-1.9.1) - 2026-07-12
 - fixed Lara's arms becoming locked if she draws a flare on a specific frame after pulling into a crawlspace from a ladder (#5801, regression from 1.3)
 - fixed bad animation frames on some switches in Lud's Gate (#5804, regression from 1.6)
 - fixed enemies and objects animating erratically in savegames carried over from an earlier version of the game (#5802)
