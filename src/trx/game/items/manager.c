@@ -90,7 +90,8 @@ void Item_Reset(void)
 
 ITEM *Item_Get(const int16_t item_num)
 {
-    if (item_num == NO_ITEM || m_Items == nullptr) {
+    if (item_num == NO_ITEM || m_Items == nullptr || item_num < 0
+        || item_num >= MAX_ITEMS) {
         return nullptr;
     }
     return &m_Items[item_num];
@@ -169,6 +170,8 @@ int16_t Item_Create(void)
     const int16_t item_num = m_NextItemFree;
     if (item_num != NO_ITEM) {
         m_Items[item_num].flags = 0;
+        // A recycled slot must not inherit the previous occupant's name.
+        m_Items[item_num].name = nullptr;
         ObjectProperty_ResetItem(&m_Items[item_num]);
         m_NextItemFree = m_Items[item_num].next_item;
     }
