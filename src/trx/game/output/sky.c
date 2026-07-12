@@ -239,10 +239,9 @@ static bool M_GetVertexColor(
 static bool M_GetVertexShade(
     const FACE *const face, const int32_t vertex_idx, int32_t *const shade)
 {
-    if (g_TRVersion < 3) {
-        return false;
-    }
-    *shade = 0;
+    // TR1/2 spell "no dimming" as SHADE_NEUTRAL: their shade multiplier is
+    // 2 - shade / SHADE_NEUTRAL, so a 0 shade would double the texture.
+    *shade = g_TRVersion < 3 ? SHADE_NEUTRAL : 0;
     return true;
 }
 
@@ -271,7 +270,7 @@ static void M_AdjustLightInfo(OUTPUT_LIGHT_INFO *const info)
     }
 }
 
-static const OUTPUT_OBJECT_MESH_POLICY m_SkyboxMeshPolicy = {
+static OUTPUT_OBJECT_MESH_POLICY m_SkyboxMeshPolicy = {
     .vertex_flags = 0,
     .get_face_pass = M_GetFacePass,
     .get_vertex_color = M_GetVertexColor,
@@ -285,6 +284,11 @@ void Output_Sky_ObserveLevelLoad(void)
     if (!skybox->loaded) {
         return;
     }
+    // Pin TR1/2 to the own-light path so the horizon reads only the sky shade
+    // adder, whichever way the level's mesh data is lit. TR3/TR4 must keep the
+    // path their mesh data selects: forcing own light there makes the horizon
+    // eligible for the dynamic point-light term (the binoculars lighting it).
+    m_SkyboxMeshPolicy.vertex_flags = g_TRVersion < 3 ? VERT_USE_OWN_LIGHT : 0;
     for (int32_t i = 0; i < skybox->mesh_count; i++) {
         OutputSource_Objects_AddMeshPolicy(
             skybox->mesh_idx + i, &m_SkyboxMeshPolicy);
