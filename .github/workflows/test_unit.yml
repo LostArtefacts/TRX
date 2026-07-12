@@ -1,9 +1,9 @@
 name: Run unit tests
 
 # The unit suite needs no game data, no level and no replay recordings, so unlike
-# the replay tests it can actually run in CI. It also needs none of the engine's
-# libraries: src/tests is a meson project of its own, so this job installs a
-# compiler and meson and nothing else.
+# the replay tests it can actually run in CI. src/tests is a meson project of its
+# own, so this job installs a compiler, meson, and whatever the tests themselves
+# reach for - never the engine's own libraries.
 
 on:
   - push
@@ -23,7 +23,7 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y meson ninja-build
+          sudo apt-get install -y meson ninja-build liblua5.4-dev lua5.4
 
       - name: Run unit tests
         run: |
