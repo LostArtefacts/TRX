@@ -99,6 +99,17 @@ test_lua_enum_exe = executable(
 )
 test('lua_enum', test_lua_enum_exe, suite: 'unit')
 
+# The sandbox depends on nothing but Lua, so the wall the engine stands up at
+# boot stands up here against a bare state - no modules, no engine.
+test_lua_sandbox_exe = executable(
+  'test_lua_sandbox',
+  files('unit/test_lua_sandbox.c') + test_stubs + files('../trx/game/lua/sandbox.c'),
+  include_directories: [src_inc, test_inc],
+  dependencies: [dep_lua],
+  build_by_default: false,
+)
+test('lua_sandbox', test_lua_sandbox_exe, suite: 'unit')
+
 # The public Lua surface, driven the way a level script drives it. Everything
 # below the assertions is real - the FIELD_DESC tables, the struct and enum
 # bridges, the trxc modules, and data/scripting/*.lua read from the tree - and
