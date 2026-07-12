@@ -24,6 +24,23 @@ order: 3
    - `pairs(item)` iterates the item's public fields; it used to yield `idx`
      alone.
 
+2. **Update scripts that use room handles**
+   `trx.rooms` hands out opaque room handles rather than `{ idx = ... }` tables.
+   - `room.idx` was replaced by `room.num`. Both count from 1.
+   - `trx.rooms.fn` was removed. Replace `trx.rooms.fn.get(num)` with
+     `trx.rooms.get(num)`, or index the module directly: `trx.rooms[15]`.
+     `trx.rooms.fn.FlipStatus` is now `trx.rooms.FlipStatus`, and
+     `trx.rooms.fn.Room`, `trx.rooms.fn.flip` and `trx.rooms.fn.flip_effect`
+     became `trx.rooms.Room`, `trx.rooms.flip` and `trx.rooms.flip_effect`.
+   - An unset room flag now reads as `false` rather than `nil`, so
+     `if room.underwater == nil` no longer detects a dry room. Test the flag
+     itself.
+   - Room flags accept booleans only. `room.wind = 1` and `room.cold = nil` used
+     to be silently accepted and now raise.
+   - `trx.rooms["5"]` no longer resolves - index with a number, not a numeric
+     string.
+   - Writing to an out-of-range room raises instead of silently doing nothing.
+
 ### Version 1.8 to 1.9
 
 1. **Update Lara pushblock animations**

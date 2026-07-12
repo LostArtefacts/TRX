@@ -111,6 +111,18 @@ lua_surface_src = files(
 
 lua_surface_args = ['-DREPO_ROOT="' + meson.current_source_dir() / '../..' + '"']
 
+test_lua_rooms_exe = executable(
+  'test_lua_rooms',
+  files('unit/test_lua_rooms.c', 'unit/fake_engine_rooms.c') + test_stubs
+    + lua_surface_src
+    + files('../trx/game/rooms/fields.c', '../trx/game/lua/rooms.c'),
+  include_directories: [src_inc, test_inc],
+  dependencies: [dep_lua],
+  c_args: lua_surface_args,
+  build_by_default: false,
+)
+test('lua_rooms', test_lua_rooms_exe, suite: 'unit')
+
 test_lua_items_exe = executable(
   'test_lua_items',
   files('unit/test_lua_items.c', 'unit/fake_engine_items.c') + test_stubs
