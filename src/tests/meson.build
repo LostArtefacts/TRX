@@ -50,3 +50,11 @@ test_hash_exe = executable(
   build_by_default: false,
 )
 test('hash', test_hash_exe, suite: 'unit')
+
+test_field_exe = executable(
+  'test_field',
+  files('unit/test_field.c') + test_stubs + files('../trx/core/field.c'),
+  include_directories: [src_inc, test_inc],
+  build_by_default: false,
+)
+test('field', test_field_exe, suite: 'unit')

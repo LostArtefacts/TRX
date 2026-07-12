@@ -161,6 +161,7 @@ common_sources = [
   'trx/core/csv.c',
   'trx/core/enum_map.c',
   'trx/core/event_manager.c',
+  'trx/core/field.c',
   'trx/core/filesystem.c',
   'trx/core/hash.c',
   'trx/core/json/base.c',
