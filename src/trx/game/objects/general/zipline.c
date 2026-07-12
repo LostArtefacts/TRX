@@ -49,10 +49,15 @@ static void M_Initialise(const int16_t item_num)
 
 static void M_LetGo(const ITEM *const item, ITEM *const lara_item)
 {
+    if (lara_item->current_anim_state != LS(LS_ZIPLINE)) {
+        return;
+    }
     Lara_AnimateUntil(lara_item, LS(LS_JUMP_FORWARD));
     lara_item->gravity = true;
     lara_item->speed = item->fall_speed;
     lara_item->fall_speed = item->fall_speed >> 2;
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    lara->move_angle = item->rot.y;
 }
 
 static void M_Control(const int16_t item_num)
@@ -96,6 +101,9 @@ static void M_Control(const int16_t item_num)
         lara_item->current_anim_state == LS(LS_ZIPLINE);
     if (lara_on_zipline) {
         lara_item->pos = item->pos;
+        if (!g_Input.action) {
+            M_LetGo(item, lara_item);
+        }
     }
 
     XYZ_32 pos = item->pos;
