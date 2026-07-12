@@ -19,13 +19,17 @@
 #define M_PENDULUM_GRAVITY 0x60000
 #define M_NODE_GRAVITY 0x30000
 #define M_LARA_HAND_OFFSET (-112)
-#define M_SPRITE_IDX 16
 #define M_HALF_WIDTH 24.0f
 
+// OG's DrawRope modulates the rope sprite by a flat 0xFF7F7F7F, i.e. half
+// brightness. The TR4 shader path reads an unlit vertex color as a prelit
+// value on the "128 = neutral" scale and doubles it, so OG's 0x7F modulate
+// has to be halved here to survive that doubling: 0x40/255 * 255/128 = 0.5.
+// Storing 0x7F instead leaves the rope at full bright, ignoring the room.
 static const RGBA_8888 m_RopeColor = {
-    .r = 0x7F,
-    .g = 0x7F,
-    .b = 0x7F,
+    .r = 0x40,
+    .g = 0x40,
+    .b = 0x40,
     .a = 0xFF,
 };
 
@@ -624,10 +628,15 @@ static void M_DrawRope(const ROPE *const rope, const int32_t sprite_idx)
             .y = points[n].y - g_Camera.pos.y,
             .z = points[n].z - g_Camera.pos.z,
         };
+        // cross(to_cam, dir), not cross(dir, to_cam): OG's DrawRope takes the
+        // screen-space perpendicular (-dy, dx) with Y pointing down, which
+        // ends up on the opposite side of the rope from the world-space
+        // cross. Getting this backwards mirrors the sprite's U axis and the
+        // rope's weave leans the wrong way.
         XYZ_F perp = {
-            .x = dir.y * to_cam.z - dir.z * to_cam.y,
-            .y = dir.z * to_cam.x - dir.x * to_cam.z,
-            .z = dir.x * to_cam.y - dir.y * to_cam.x,
+            .x = to_cam.y * dir.z - to_cam.z * dir.y,
+            .y = to_cam.z * dir.x - to_cam.x * dir.z,
+            .z = to_cam.x * dir.y - to_cam.y * dir.x,
         };
         const float length =
             sqrtf(SQUARE(perp.x) + SQUARE(perp.y) + SQUARE(perp.z));
