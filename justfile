@@ -102,3 +102,10 @@ trx-package-win-te artifact_path output *args:
 trx-package-win-installer target='release' *args: \
     (trx-build-win-installer target args) \
     (_docker_run "rrdash/trx-win" "package" "--platform" "win-installer" args)
+
+# Run the unit tests. The tests are a separate meson project.
+[group('test')]
+test *args='--suite unit':
+    #!/usr/bin/env sh
+    meson setup build/tests src/tests >/dev/null 2>&1 || meson setup --reconfigure build/tests src/tests >/dev/null
+    meson test -C build/tests --print-errorlogs {{args}}
