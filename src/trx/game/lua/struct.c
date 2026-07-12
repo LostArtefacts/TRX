@@ -6,6 +6,7 @@
 // empty until a script declares it. __raw_methods is every method C could
 // offer; it is never reachable from a handle - Lua selects from it by name.
 static const char M_KEY_FIELDS[] = "__fields";
+static const char M_KEY_WRITABLE[] = "__writable";
 static const char M_KEY_METHODS[] = "__methods";
 static const char M_KEY_EXT[] = "__ext";
 static const char M_KEY_RAW_METHODS[] = "__raw_methods";
@@ -57,7 +58,11 @@ static FIELD_VALUE M_CheckValue(
         value.as_num = luaL_checknumber(L, idx);
         break;
     case FT_STRING:
-        value.as_str = luaL_checkstring(L, idx);
+        // nil clears a string field; its setter decides whether that is
+        // allowed (e.g. item.name = nil removes the name). A field with no
+        // custom setter still rejects the write in Field_Set.
+        value.as_str =
+            lua_isnoneornil(L, idx) ? nullptr : luaL_checkstring(L, idx);
         break;
     case FT_XYZ_16:
     case FT_XYZ_32: {
@@ -146,8 +151,23 @@ static int M_NewIndex(lua_State *const L)
 {
     LUA_STRUCT_REF *const ref = lua_touserdata(L, 1);
 
+    // Upvalue 1 is the *writable* subset, not every field. A field the
+    // declaration marked read-only is absent here even when the C member is
+    // plain and Field_Set would happily write it: writability is the
+    // declaration's to decide, and several members are read-only precisely
+    // because writing them directly would wedge engine state.
     const FIELD_DESC *const field = M_LookUpField(L, 2);
     if (field == nullptr) {
+        // Upvalue 2 is every declared field, so a read-only one can be named as
+        // such instead of being reported as unknown.
+        lua_pushvalue(L, 2);
+        lua_rawget(L, lua_upvalueindex(2));
+        const bool declared = !lua_isnil(L, -1);
+        lua_pop(L, 1);
+        if (declared) {
+            return luaL_error(
+                L, "%s.%s is read-only", ref->type->name, lua_tostring(L, 2));
+        }
         return luaL_error(
             L, "unknown %s field '%s'", ref->type->name, lua_tostring(L, 2));
     }
@@ -215,32 +235,36 @@ void LUA_Struct_Register(
     }
     lua_setfield(L, -2, M_KEY_RAW_METHODS);
 
-    // The public surface: empty until a script declares it.
+    // The public surface: empty until a script declares it. `writable` is the
+    // subset of `fields` the declaration allows a script to set.
     lua_newtable(L); // fields
+    lua_newtable(L); // writable
     lua_newtable(L); // methods
     lua_newtable(L); // ext
 
+    lua_pushvalue(L, -4);
+    lua_setfield(L, -6, M_KEY_FIELDS);
     lua_pushvalue(L, -3);
-    lua_setfield(L, -5, M_KEY_FIELDS);
+    lua_setfield(L, -6, M_KEY_WRITABLE);
     lua_pushvalue(L, -2);
-    lua_setfield(L, -5, M_KEY_METHODS);
+    lua_setfield(L, -6, M_KEY_METHODS);
     lua_pushvalue(L, -1);
-    lua_setfield(L, -5, M_KEY_EXT);
+    lua_setfield(L, -6, M_KEY_EXT);
 
-    // __index and __newindex close over (fields, methods, ext). Populating
-    // those tables later from Lua is visible here, because the upvalues are the
-    // tables themselves.
-    lua_pushvalue(L, -3);
-    lua_pushvalue(L, -3);
-    lua_pushvalue(L, -3);
+    // __index and __newindex close over these tables. Populating them later
+    // from Lua is visible here, because the upvalues are the tables themselves.
+    lua_pushvalue(L, -4); // fields
+    lua_pushvalue(L, -3); // methods
+    lua_pushvalue(L, -3); // ext
     lua_pushcclosure(L, M_Index, 3);
-    lua_setfield(L, -5, "__index");
+    lua_setfield(L, -6, "__index");
 
-    lua_pushvalue(L, -3);
-    lua_pushcclosure(L, M_NewIndex, 1);
-    lua_setfield(L, -5, "__newindex");
+    lua_pushvalue(L, -3); // writable
+    lua_pushvalue(L, -5); // fields
+    lua_pushcclosure(L, M_NewIndex, 2);
+    lua_setfield(L, -6, "__newindex");
 
-    lua_pop(L, 3); // fields, methods, ext
+    lua_pop(L, 4); // fields, writable, methods, ext
 
     lua_pushcfunction(L, M_Pairs);
     lua_setfield(L, -2, "__pairs");
@@ -342,10 +366,24 @@ static int M_L_ExposeField(lua_State *const L)
     }
 
     luaL_getmetatable(L, type->name);
+
     lua_getfield(L, -1, M_KEY_FIELDS);
     lua_pushstring(L, public_name);
     lua_pushlightuserdata(L, (void *)field);
     lua_rawset(L, -3);
+    lua_pop(L, 1);
+
+    // Read-only is not merely documentation: a field the declaration withholds
+    // must be absent from the writable set, or __newindex would let a script
+    // set it anyway. FF_READONLY is the hard floor, checked above; this is the
+    // declaration narrowing a member C would otherwise write.
+    if (writable) {
+        lua_getfield(L, -1, M_KEY_WRITABLE);
+        lua_pushstring(L, public_name);
+        lua_pushlightuserdata(L, (void *)field);
+        lua_rawset(L, -3);
+        lua_pop(L, 1);
+    }
     return 0;
 }
 

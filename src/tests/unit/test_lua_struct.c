@@ -110,6 +110,9 @@ static const char DECL[] =
     "trxc.struct.expose_field('WIDGET', 'visible', 'visible', true)\n"
     "trxc.struct.expose_field('WIDGET', 'flag', 'flag', true)\n"
     "trxc.struct.expose_field('WIDGET', 'locked', 'locked', false)\n"
+    // The same plain C member under two public names, one writable and one not.
+    // Read-only is the declaration's to decide, not the struct's.
+    "trxc.struct.expose_field('WIDGET', 'guarded', 'visible', false)\n"
     "trxc.struct.expose_method('WIDGET', 'reveal', 'reveal')\n"
     "trxc.struct.expose_computed('WIDGET', 'doubled', function(w)\n"
     "  return w.visible * 2\n"
@@ -143,6 +146,31 @@ TEST(a_declared_field_reads_and_writes)
         "w.flag = true\n"
         "assert(w.flag == true, 'bool')\n"));
     CHECK_EQ_INT(m_Pool[0].visible, 55);
+    lua_close(L);
+}
+
+// A member may be exposed read-only even though the C member is plain, because
+// writing it directly would wedge engine state. If `writable` never reached the
+// metatable the field would still be settable, and only the documentation would
+// say otherwise.
+TEST(a_field_the_declaration_withheld_refuses_writes)
+{
+    lua_State *const L = M_NewState(DECL);
+
+    CHECK(M_Run(L, "assert(trxc.get_widget(0).guarded == 10, 'readable')\n"));
+
+    const char *const err =
+        M_RunExpectingError(L, "trxc.get_widget(0).guarded = 5\n");
+    CHECK_NOT_NULL(err);
+    if (err != nullptr) {
+        CHECK(strstr(err, "read-only") != nullptr);
+    }
+    CHECK_EQ_INT(m_Pool[0].visible, 10); // the C member is plain, and untouched
+
+    // The same member stays writable through the name that declared it so.
+    CHECK(M_Run(L, "trxc.get_widget(0).visible = 5\n"));
+    CHECK_EQ_INT(m_Pool[0].visible, 5);
+
     lua_close(L);
 }
 
