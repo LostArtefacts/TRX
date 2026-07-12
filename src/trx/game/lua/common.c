@@ -32,6 +32,7 @@ extern void LUA_CreateItems(lua_State *L);
 extern void LUA_CreateLara(lua_State *L);
 extern void LUA_CreateLog(lua_State *L);
 extern void LUA_CreateMusic(lua_State *L);
+extern void LUA_CreateStruct(lua_State *L);
 extern void LUA_CreateSound(lua_State *L);
 extern void LUA_CreateConfig(lua_State *L);
 extern void LUA_CreateRooms(lua_State *L);
@@ -148,14 +149,24 @@ static void M_RequireTRXModule(lua_State *const L, const char *name)
 
 static void M_LoadTRXScripts(lua_State *const L)
 {
+    // Register every module's preload entry before requiring any of them.
+    // Doing both in one pass would mean a module could only ever require one
+    // that happens to appear earlier in the list, which silently couples the
+    // Lua load order to the ordering of the source list in meson.build.
     for (const LUA_EMBEDDED_SCRIPT *script = g_LUA_EmbeddedScripts;
          script->path != nullptr; script++) {
-        LOG_DEBUG("Loading TRX module %s", script->path);
         char *name = M_DeriveTRXModuleName(script->path);
         const char *const chunk_name =
             String_FormatStatic("@trx/%s", script->path);
         M_RegisterTRXPreloadEmbedded(
             L, script->data, script->size, chunk_name, name);
+        Memory_FreePointer(&name);
+    }
+
+    for (const LUA_EMBEDDED_SCRIPT *script = g_LUA_EmbeddedScripts;
+         script->path != nullptr; script++) {
+        LOG_DEBUG("Loading TRX module %s", script->path);
+        char *name = M_DeriveTRXModuleName(script->path);
         M_RequireTRXModule(L, name);
         Memory_FreePointer(&name);
     }
@@ -173,6 +184,7 @@ void LUA_Init(void)
     lua_setglobal(L, "trx");
 
     // Initialize internal modules
+    M_LoadTRXCModule(L, LUA_CreateStruct);
     M_LoadTRXCModule(L, LUA_CreateCatalog);
     M_LoadTRXCModule(L, LUA_CreateCamera);
     M_LoadTRXCModule(L, LUA_CreateConsole);
