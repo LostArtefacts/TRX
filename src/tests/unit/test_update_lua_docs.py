@@ -1,0 +1,142 @@
+#!/usr/bin/env python3
+"""Unit tests for tools/update_lua_docs. No engine, no binary, no game data."""
+
+from __future__ import annotations
+
+import json
+import unittest
+
+from tools_helper import load
+
+docs = load("update_lua_docs")
+
+# A surface with one of everything, so the renderer has to handle each kind.
+SURFACE = {
+    "modules": [{"name": "things", "order": 4, "description": "Things module."}],
+    "types": [
+        {
+            "path": "things.Widget",
+            "description": "A widget.",
+            "fields": [
+                {
+                    "name": "shown",
+                    "type": "integer",
+                    "writable": True,
+                    "description": "Visible value.",
+                    "enum": "catalog.objects",
+                },
+                {
+                    "name": "locked",
+                    "type": "integer",
+                    "writable": False,
+                    "description": "Cannot be written.",
+                },
+            ],
+            "methods": [
+                {
+                    "name": "poke",
+                    "description": "Pokes it.",
+                    "params": [{"name": "force", "type": "integer"}],
+                    "returns": {"type": "boolean"},
+                }
+            ],
+            "extensions": [
+                {"name": "derived", "type": "integer", "description": "Computed."}
+            ],
+        }
+    ],
+    "functions": [
+        {
+            "path": "things.spawn",
+            "description": "Spawns a thing.",
+            "params": [
+                {"name": "id", "type": "integer", "enum": "catalog.objects"},
+                {
+                    "name": "angle",
+                    "type": "integer",
+                    "optional": True,
+                    "default": 0,
+                    "description": "Facing.",
+                },
+            ],
+            "returns": {"type": "Widget", "nullable": True},
+            "examples": ["local w = trx.things.spawn(1)"],
+        }
+    ],
+}
+
+
+class TestLuaDocs(unittest.TestCase):
+    def test_every_member_of_the_surface_reaches_the_page(self):
+        """The property whose absence caused the original bug.
+
+        The generated reference documented 31 struct fields but silently omitted
+        both computed members and all eight methods, while presenting itself as
+        the complete surface. Assert that nothing in the registry can go missing.
+        """
+        page = docs.render_page(SURFACE["modules"][0], SURFACE)
+
+        for spec in SURFACE["types"]:
+            for kind in ("fields", "methods", "extensions"):
+                for member in spec[kind]:
+                    self.assertIn(
+                        member["name"],
+                        page,
+                        f"{kind[:-1]} '{member['name']}' is missing from the page",
+                    )
+        for func in SURFACE["functions"]:
+            self.assertIn(func["path"], page)
+
+    def test_enum_cross_references_are_rendered(self):
+        """A field or param names the enum it accepts by path, rather than
+        repeating it in prose that nothing keeps in sync."""
+        page = docs.render_page(SURFACE["modules"][0], SURFACE)
+        shown = next(line for line in page.splitlines() if "`shown`" in line)
+        self.assertIn("Compare against `trx.catalog.objects`.", shown)
+        param = next(line for line in page.splitlines() if "**`id`**" in line)
+        self.assertIn("Compare against `trx.catalog.objects`.", param)
+
+        # A member with no enum must not grow the sentence.
+        locked = next(line for line in page.splitlines() if "`locked`" in line)
+        self.assertNotIn("Compare against", locked)
+
+    def test_read_only_members_are_marked(self):
+        page = docs.render_page(SURFACE["modules"][0], SURFACE)
+        locked = next(
+            line for line in page.splitlines() if "`locked`" in line
+        )
+        shown = next(line for line in page.splitlines() if "`shown`" in line)
+        self.assertIn("read-only", locked)
+        self.assertNotIn("read-only", shown)
+
+    def test_optional_params_are_bracketed_with_their_default(self):
+        page = docs.render_page(SURFACE["modules"][0], SURFACE)
+        self.assertIn("things.spawn(id, [angle])", page)
+        self.assertIn("default `0`", page)
+
+    def test_nullable_returns_say_so(self):
+        page = docs.render_page(SURFACE["modules"][0], SURFACE)
+        self.assertIn("Widget or `nil`", page)
+
+    def test_examples_are_rendered_as_lua_blocks(self):
+        page = docs.render_page(SURFACE["modules"][0], SURFACE)
+        self.assertIn("```lua", page)
+        self.assertIn("trx.things.spawn(1)", page)
+
+    def test_rendering_is_stable(self):
+        """Two runs must agree, or --check would flag spurious drift forever."""
+        a = docs.render_page(SURFACE["modules"][0], SURFACE)
+        b = docs.render_page(SURFACE["modules"][0], SURFACE)
+        self.assertEqual(a, b)
+
+    def test_dump_extracts_the_json_from_a_noisy_stream(self):
+        """The engine logs to stdout alongside the JSON, so the payload must be
+        picked out rather than the whole stream trusted."""
+        stream = 'INF | starting\nDBG | loading\n{"modules": []}\n'
+        payload = next(
+            (line for line in stream.splitlines() if line.startswith("{")), None
+        )
+        self.assertEqual(json.loads(payload), {"modules": []})
+
+if __name__ == "__main__":
+    unittest.main(verbosity=2)

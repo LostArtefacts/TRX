@@ -186,6 +186,12 @@ static void M_InitModules(void)
 
     Clock_Init();
     LUA_Init();
+
+    const SHELL_ARGS *const args = Shell_GetArgs();
+    if (args != nullptr && args->startup.dump_lua_api) {
+        LUA_DumpAPI();
+        exit(0);
+    }
 }
 
 static void M_ShutdownModules(void)

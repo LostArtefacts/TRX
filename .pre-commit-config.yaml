@@ -42,6 +42,13 @@ repos:
     additional_dependencies:
       - pyjson5
 
+  - id: update-lua-docs
+    name: Regenerate Lua API docs from docs/trx/lua/api.json
+    entry: tools/update_lua_docs
+    language: python
+    stages: [pre-commit]
+    pass_filenames: false
+
 - repo: https://github.com/JohnnyMorganz/StyLua
   rev: v2.3.0
   hooks:

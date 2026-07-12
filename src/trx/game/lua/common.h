@@ -17,6 +17,10 @@ typedef enum {
 void LUA_Init(void);
 void LUA_Shutdown(void);
 
+// Prints the full public API surface as JSON: the C-side FIELD_DESC tables plus
+// the Lua-side trx.api registry. Used by --dump-lua-api.
+void LUA_DumpAPI(void);
+
 // Set script context: level script vs global script
 LUA_CONTEXT Lua_GetScriptContext(void);
 void Lua_SetScriptContext(LUA_CONTEXT context);

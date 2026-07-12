@@ -1,0 +1,256 @@
+#!/usr/bin/env python3
+"""Regenerate the Lua API reference from the engine itself.
+
+The public API is declared in one place - the trx.api registry in
+data/scripting/*.lua - and that declaration is what builds the metatables. A
+member the engine can reach but no script declares is not reachable from Lua at
+all, so a single registry is the whole surface and the dump cannot omit anything
+that exists.
+
+`TRX --dump-lua-api` boots Lua and prints that registry as JSON. It is committed
+to docs/trx/lua/api.json so this tool - and the pre-commit hook - need no
+compiled binary; `just lua-api-check` re-dumps from a real build and fails on
+drift, so the committed copy cannot go stale. Committing it also means an API
+change shows up as a reviewable diff.
+
+Reference pages are generated in full. Do not edit them by hand: edit the
+declaration next to the implementation instead.
+"""
+
+from __future__ import annotations
+
+import argparse
+import json
+import subprocess
+import sys
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+API_JSON = ROOT / "docs/trx/lua/api.json"
+DOCS_DIR = ROOT / "docs/trx/lua/reference"
+
+INDENT = "    "
+
+
+def signature(path: str, params: list[dict] | None) -> str:
+    parts = [
+        f"[{p['name']}]" if p.get("optional") else p["name"] for p in params or []
+    ]
+    return f"{path}({', '.join(parts)})"
+
+
+def describe(spec: dict) -> str:
+    """The description, plus the enum cross-reference if the spec names one.
+
+    `enum` is a fully-qualified path - "catalog.objects" - so a field or param
+    points at the constants it accepts instead of spelling them out in prose that
+    has to be kept in sync by hand.
+    """
+    desc = spec.get("description") or ""
+    if spec.get("enum"):
+        desc = f"{desc} Compare against `trx.{spec['enum']}`.".lstrip()
+    return desc
+
+
+def render_params(params: list[dict] | None, indent: str) -> list[str]:
+    if not params:
+        return []
+    out = ["", f"{indent}Parameters:"]
+    for param in params:
+        bits = [param["type"]]
+        if param.get("optional"):
+            default = param.get("default")
+            bits.append(
+                "optional" if default is None else f"optional, default `{default}`"
+            )
+        out.append(
+            f"{indent}- **`{param['name']}`** ({', '.join(bits)}). {describe(param)}".rstrip()
+        )
+    return out
+
+
+def render_returns(returns: dict | None, indent: str) -> list[str]:
+    if not returns:
+        return []
+    bits = [returns["type"]]
+    if returns.get("nullable"):
+        bits.append("or `nil`")
+    desc = returns.get("description") or ""
+    return ["", f"{indent}Returns: {' '.join(bits)}. {desc}".rstrip()]
+
+
+def render_examples(examples: list[str] | None, indent: str) -> list[str]:
+    out = []
+    for example in examples or []:
+        out.append("")
+        out.append(f"{indent}Example:")
+        out.append(f"{indent}```lua")
+        out.extend(f"{indent}{line}" for line in example.splitlines())
+        out.append(f"{indent}```")
+    return out
+
+
+def render_function(func: dict) -> list[str]:
+    out = [f"- [lua]`trx.{signature(func['path'], func.get('params'))}`  "]
+    if func.get("description"):
+        out.append(f"  {func['description']}")
+    out.extend(render_params(func.get("params"), "  "))
+    out.extend(render_returns(func.get("returns"), "  "))
+    out.extend(render_examples(func.get("examples"), "  "))
+    out.append("")
+    return out
+
+
+def render_type(spec: dict) -> list[str]:
+    out = [f"- [lua]`trx.{spec['path']}`", ""]
+    if spec.get("description"):
+        out.append(f"{INDENT}{spec['description']}")
+        out.append("")
+    out.append(
+        f"{INDENT}Handles are live references: if the underlying object is destroyed,"
+    )
+    out.append(
+        f"{INDENT}using the handle raises an error rather than silently reading an"
+    )
+    out.append(f"{INDENT}unrelated one.")
+    out.append("")
+
+    if spec.get("fields"):
+        out.append(f"{INDENT}Properties:")
+        for field in spec["fields"]:
+            suffix = "" if field.get("writable") else " *(read-only)*"
+            out.append(
+                f"{INDENT}- **`{field['name']}`**: {field['type']}. {describe(field)}{suffix}"
+            )
+        out.append("")
+
+    if spec.get("extensions"):
+        out.append(f"{INDENT}Computed properties (derived, not stored on the object):")
+        for ext in spec["extensions"]:
+            desc = ext.get("description") or ""
+            out.append(f"{INDENT}- **`{ext['name']}`**: {ext['type']}. {desc}")
+        out.append("")
+
+    if spec.get("methods"):
+        out.append(f"{INDENT}Methods:")
+        out.append("")
+
+    for method in spec.get("methods") or []:
+        name = spec["path"].rsplit(".", 1)[-1].lower()
+        out.append(
+            f"{INDENT}- [lua]`{name}:{signature(method['name'], method.get('params'))}`  "
+        )
+        if method.get("description"):
+            out.append(f"{INDENT}  {method['description']}")
+        out.extend(render_params(method.get("params"), f"{INDENT}  "))
+        out.extend(render_returns(method.get("returns"), f"{INDENT}  "))
+        out.extend(render_examples(method.get("examples"), f"{INDENT}  "))
+        out.append("")
+    return out
+
+
+def render_page(module: dict, api: dict) -> str:
+    name = module["name"]
+    out = [
+        "---",
+        f"title: {name.capitalize()}",
+        f"order: {module.get('order', 99)}",
+        "---",
+        "",
+        "<!--",
+        "  GENERATED FILE - do not edit.",
+        "  Regenerate with: just lua-api-dump",
+        "  The public API is declared next to its implementation, in",
+        f"  data/scripting/{name}.lua. Edit it there.",
+        "-->",
+        "",
+        f"## {name.capitalize()} module",
+        "",
+    ]
+    if module.get("description"):
+        out.append(module["description"])
+        out.append("")
+
+    types = [t for t in api["types"] if t["path"].startswith(f"{name}.")]
+    if types:
+        out.append("### Structures")
+        out.append("")
+        for spec in types:
+            out.extend(render_type(spec))
+
+    funcs = [f for f in api["functions"] if f["path"].startswith(f"{name}.")]
+    if funcs:
+        out.append("### Functions")
+        out.append("")
+        for func in funcs:
+            out.extend(render_function(func))
+
+    return "\n".join(out).rstrip() + "\n"
+
+
+def dump_api(binary: Path) -> str:
+    result = subprocess.run(
+        [str(binary), "--dump-lua-api"], capture_output=True, text=True, check=True
+    )
+    # The engine logs to stdout alongside the JSON, so take the payload rather
+    # than the whole stream. Validate before writing: a broken build must not be
+    # able to poison the committed artifact.
+    payload = next(
+        (line for line in result.stdout.splitlines() if line.startswith("{")), None
+    )
+    if payload is None:
+        raise SystemExit(
+            f"error: {binary} --dump-lua-api produced no JSON.\n{result.stdout[-500:]}"
+        )
+    return json.dumps(json.loads(payload), indent=2, sort_keys=True) + "\n"
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--dump-from",
+        type=Path,
+        metavar="BINARY",
+        help=f"run BINARY --dump-lua-api and refresh {API_JSON.name} first",
+    )
+    parser.add_argument(
+        "--check",
+        action="store_true",
+        help="fail if any page would change instead of rewriting it",
+    )
+    args = parser.parse_args()
+
+    if args.dump_from is not None:
+        API_JSON.write_text(dump_api(args.dump_from))
+
+    if not API_JSON.exists():
+        raise SystemExit(
+            f"error: {API_JSON} is missing. Build TRX, then run:\n"
+            f"  just lua-api-dump"
+        )
+    api = json.loads(API_JSON.read_text())
+
+    stale = []
+    for module in api["modules"]:
+        path = DOCS_DIR / f"{module['name'].upper()}.md"
+        new = render_page(module, api)
+        old = path.read_text() if path.exists() else None
+        if new == old:
+            continue
+        if args.check:
+            stale.append(path.relative_to(ROOT))
+        else:
+            path.write_text(new)
+            print(f"generated {path.relative_to(ROOT)}")
+
+    if stale:
+        print("error: generated Lua docs are out of date:", file=sys.stderr)
+        for path in stale:
+            print(f"  {path}", file=sys.stderr)
+        print("run: just lua-api-dump", file=sys.stderr)
+        return 1
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())
