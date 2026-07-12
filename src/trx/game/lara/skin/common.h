@@ -18,7 +18,7 @@ void Lara_Skin_SwapSingleExtra(LARA_MESH mesh, LARA_EXTRA_STATE state);
 const ANIM_BONE *Lara_Skin_GetBoneBase(void);
 
 bool Lara_Skin_IsBraidSupported(void);
-XYZ_32 Lara_Skin_GetBraidOffset(void);
+const LARA_SKIN_BRAID *Lara_Skin_GetBraid(void);
 int32_t Lara_Skin_GetBraidMeshIdx(void);
 const ANIM_BONE *Lara_Skin_GetBraidBoneBase(void);
 

@@ -128,6 +128,11 @@ order: 3
    It was an undocumented alias of `trx.music.play` and was removed. Use
    `trx.music.play(id[, opts])`.
 
+17. **Update Lara's outfit definitions**
+   The `hair_pos` entries for Lara's braids were changed to `positions`. This
+   field is now an array (of at most two values) rather than a single position.
+   Update `outfits.json5` accordingly.
+
 ### Version 1.8 to 1.9
 
 1. **Update Lara pushblock animations**

@@ -2,6 +2,7 @@
 
 #include <trx/config.h>
 #include <trx/core/utils.h>
+#include <trx/debug.h>
 #include <trx/game/lara.h>
 #include <trx/game/lara/pose.h>
 #include <trx/game/matrix.h>
@@ -10,17 +11,19 @@
 #include <trx/game/sparks.h>
 #include <trx/version.h>
 
+#define M_MAX_BRAIDS 2
 #define M_HAIR_SEGMENTS 6
 #define M_HAIR_SPHERES 5
 #define M_BONE_IDX(segment)                                                    \
     (segment == M_HAIR_SEGMENTS ? (segment - 2) : (segment - 1))
 
-static bool m_IsFirstHair;
+static bool m_IsFirstHair[M_MAX_BRAIDS];
 static SPHERE m_HairSpheres[M_HAIR_SPHERES];
 static XYZ_32 m_HairVelocity[M_HAIR_SEGMENTS + 1];
-static HAIR_SEGMENT m_HairSegments[M_HAIR_SEGMENTS + 1];
+static HAIR_SEGMENT m_HairSegments[M_MAX_BRAIDS][M_HAIR_SEGMENTS + 1];
 
-static void M_CalculateSpheres(const ANIM_FRAME *const frame)
+static void M_CalculateSpheres(
+    const ANIM_FRAME *const frame, const XYZ_32 offset_pos)
 {
     const LARA_INFO *const lara = Lara_GetLaraInfo();
     const OBJECT *const lara_obj = Object_Get(O_LARA);
@@ -94,12 +97,12 @@ static void M_CalculateSpheres(const ANIM_FRAME *const frame)
     m_HairSpheres[2].r = mesh->radius;
     Matrix_Pop();
 
-    Matrix_TranslateRel32(Lara_Skin_GetBraidOffset());
+    Matrix_TranslateRel32(offset_pos);
 }
 
 static void M_CalculateSpheres_I(
     const ANIM_FRAME *const frame_1, const ANIM_FRAME *const frame_2,
-    const int32_t frac, const int32_t rate)
+    const int32_t frac, const int32_t rate, const XYZ_32 offset_pos)
 {
     const LARA_INFO *const lara = Lara_GetLaraInfo();
     const OBJECT *const lara_obj = Object_Get(O_LARA);
@@ -181,7 +184,7 @@ static void M_CalculateSpheres_I(
     m_HairSpheres[2].r = mesh->radius;
     Matrix_Pop_I();
 
-    Matrix_TranslateRel32_I(Lara_Skin_GetBraidOffset());
+    Matrix_TranslateRel32_I(offset_pos);
     Matrix_Interpolate();
 }
 
@@ -192,26 +195,25 @@ void Lara_Hair_Initialise(void)
         return;
     }
 
-    m_IsFirstHair = true;
-    m_HairSegments[0].rot.x = -DEG_90;
-    m_HairSegments[0].rot.y = 0;
+    for (int32_t i = 0; i < M_MAX_BRAIDS; i++) {
+        m_IsFirstHair[i] = true;
+        m_HairSegments[i][0].rot.x = -DEG_90;
+        m_HairSegments[i][0].rot.y = 0;
 
-    for (int32_t i = 1; i <= M_HAIR_SEGMENTS; i++) {
-        const ANIM_BONE *const bone = &bones[M_BONE_IDX(i)];
-        m_HairSegments[i].pos = bone->pos;
-        m_HairSegments[i].rot.x = -DEG_90;
-        m_HairSegments[i].rot.y = 0;
-        m_HairSegments[i].rot.z = 0;
-        m_HairVelocity[i - 1] = (XYZ_32) {};
+        for (int32_t j = 1; j <= M_HAIR_SEGMENTS; j++) {
+            const ANIM_BONE *const bone = &bones[M_BONE_IDX(j)];
+            m_HairSegments[i][j].pos = bone->pos;
+            m_HairSegments[i][j].rot.x = -DEG_90;
+            m_HairSegments[i][j].rot.y = 0;
+            m_HairSegments[i][j].rot.z = 0;
+            m_HairVelocity[j - 1] = (XYZ_32) {};
+        }
     }
 }
 
-void Lara_Hair_Control(const bool in_cutscene)
+static void M_Control(
+    const bool in_cutscene, const int32_t braid_idx, const XYZ_32 offset_pos)
 {
-    if (!Lara_Hair_IsActive()) {
-        return;
-    }
-
     const ITEM *const lara_item = Lara_GetItem();
     const LARA_INFO *const lara_info = Lara_GetLaraInfo();
 
@@ -235,9 +237,9 @@ void Lara_Hair_Control(const bool in_cutscene)
     Matrix_Rot16(lara_item->rot);
 
     if (frac == 0 || Lara_Pose_Get() != nullptr) {
-        M_CalculateSpheres(frame_1);
+        M_CalculateSpheres(frame_1, offset_pos);
     } else {
-        M_CalculateSpheres_I(frame_1, frame_2, frac, rate);
+        M_CalculateSpheres_I(frame_1, frame_2, frac, rate, offset_pos);
     }
 
     const XYZ_32 pos = {
@@ -249,15 +251,15 @@ void Lara_Hair_Control(const bool in_cutscene)
 
     const ANIM_BONE *const bones = Lara_Skin_GetBraidBoneBase();
 
-    HAIR_SEGMENT *const fs = &m_HairSegments[0];
+    HAIR_SEGMENT *const fs = &m_HairSegments[braid_idx][0];
     fs->pos = pos;
 
-    if (m_IsFirstHair) {
-        m_IsFirstHair = false;
+    if (m_IsFirstHair[braid_idx]) {
+        m_IsFirstHair[braid_idx] = false;
         for (int32_t i = 1; i <= M_HAIR_SEGMENTS; i++) {
             const ANIM_BONE *const bone = &bones[M_BONE_IDX(i)];
-            const HAIR_SEGMENT *const ps = &m_HairSegments[i - 1];
-            HAIR_SEGMENT *const s = &m_HairSegments[i];
+            const HAIR_SEGMENT *const ps = &m_HairSegments[braid_idx][i - 1];
+            HAIR_SEGMENT *const s = &m_HairSegments[braid_idx][i];
 
             Matrix_PushUnit();
             Matrix_TranslateSet32(ps->pos);
@@ -301,8 +303,8 @@ void Lara_Hair_Control(const bool in_cutscene)
     const int32_t hair_wind_z = Sparks_GetHairWindZ();
 
     for (int32_t i = 1; i <= M_HAIR_SEGMENTS; i++) {
-        HAIR_SEGMENT *const ps = &m_HairSegments[i - 1];
-        HAIR_SEGMENT *const s = &m_HairSegments[i];
+        HAIR_SEGMENT *const ps = &m_HairSegments[braid_idx][i - 1];
+        HAIR_SEGMENT *const s = &m_HairSegments[braid_idx][i];
 
         m_HairVelocity[0] = s->pos;
 
@@ -396,6 +398,18 @@ void Lara_Hair_Control(const bool in_cutscene)
     }
 }
 
+void Lara_Hair_Control(const bool in_cutscene)
+{
+    if (!Lara_Hair_IsActive()) {
+        return;
+    }
+
+    const LARA_SKIN_BRAID *const braid = Lara_Skin_GetBraid();
+    for (int32_t i = 0; i < braid->count; i++) {
+        M_Control(in_cutscene, i, braid->positions[i]);
+    }
+}
+
 void Lara_Hair_Draw(void)
 {
     if (!Lara_Hair_IsActive()) {
@@ -404,19 +418,23 @@ void Lara_Hair_Draw(void)
 
     const ITEM *const lara_item = Lara_GetItem();
     const int32_t mesh_idx = Lara_Skin_GetBraidMeshIdx();
+    const LARA_SKIN_BRAID *const braid = Lara_Skin_GetBraid();
 
-    for (int32_t i = 0; i < M_HAIR_SEGMENTS; i++) {
-        const HAIR_SEGMENT *const s = &m_HairSegments[i];
-        Matrix_Push();
-        Matrix_TranslateAbs32(s->interp.result.pos);
-        Matrix_RotY(s->interp.result.rot.y);
-        Matrix_RotX(s->interp.result.rot.x);
+    for (int32_t i = 0; i < braid->count; i++) {
+        for (int32_t j = 0; j < M_HAIR_SEGMENTS; j++) {
+            const HAIR_SEGMENT *const s = &m_HairSegments[i][j];
+            Matrix_Push();
+            Matrix_TranslateAbs32(s->interp.result.pos);
+            Matrix_RotY(s->interp.result.rot.y);
+            Matrix_RotX(s->interp.result.rot.x);
 
-        Output_PushTintOverride(Lara_GetMeshTint((GAME_VECTOR) {
-            .pos = s->interp.result.pos, .room_num = lara_item->room_num }));
-        Object_DrawMesh(mesh_idx + i, CLIP_FULLY_VISIBLE, false);
-        Output_PopTintOverride();
-        Matrix_Pop();
+            Output_PushTintOverride(Lara_GetMeshTint(
+                (GAME_VECTOR) { .pos = s->interp.result.pos,
+                                .room_num = lara_item->room_num }));
+            Object_DrawMesh(mesh_idx + j, CLIP_FULLY_VISIBLE, false);
+            Output_PopTintOverride();
+            Matrix_Pop();
+        }
     }
 }
 
@@ -426,12 +444,20 @@ bool Lara_Hair_IsActive(void)
         && Lara_Skin_IsBraidSupported();
 }
 
+int32_t Lara_Hair_GetBraidCount(void)
+{
+    return M_MAX_BRAIDS;
+}
+
 int32_t Lara_Hair_GetSegmentCount(void)
 {
     return M_HAIR_SEGMENTS;
 }
 
-HAIR_SEGMENT *Lara_Hair_GetSegment(const int32_t n)
+HAIR_SEGMENT *Lara_Hair_GetSegment(
+    const int32_t braid_idx, const int32_t segment_idx)
 {
-    return &m_HairSegments[n];
+    ASSERT(braid_idx >= 0 && braid_idx < M_MAX_BRAIDS);
+    ASSERT(segment_idx >= 0 && segment_idx < M_HAIR_SEGMENTS);
+    return &m_HairSegments[braid_idx][segment_idx];
 }

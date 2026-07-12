@@ -533,10 +533,10 @@ bool Lara_Skin_IsBraidSupported(void)
     return Lara_Skin_GetBraidMeshIdx() != M_NO_MESH;
 }
 
-XYZ_32 Lara_Skin_GetBraidOffset(void)
+const LARA_SKIN_BRAID *Lara_Skin_GetBraid(void)
 {
     const LARA_SKIN_OUTFIT *const outfit = M_GetCurrentOutfit();
-    return outfit->braid.hair_pos;
+    return &outfit->braid;
 }
 
 int32_t Lara_Skin_GetBraidMeshIdx(void)
