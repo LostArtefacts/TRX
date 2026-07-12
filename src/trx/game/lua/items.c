@@ -1,289 +1,54 @@
-#include <trx/core/utils.h>
-#include <trx/debug.h>
+#include <trx/game/creature.h>
 #include <trx/game/items.h>
 #include <trx/game/lua/common.h>
+#include <trx/game/lua/struct.h>
 #include <trx/game/lua/utils.h>
+#include <trx/game/objects.h>
+#include <trx/game/objects/vars.h>
+#include <trx/game/pathing/lot.h>
 #include <trx/game/rooms.h>
 
-#define M_ITEM_GETTER(L)                                                       \
-    const int idx = luaL_checkinteger(L, 1);                                   \
-    const ITEM *const item = Item_Get(idx - 1);                                \
-    if (item == nullptr) {                                                     \
-        lua_pushnil(L);                                                        \
-        return 1;                                                              \
+extern const TYPE_DESC TYPE_ITEM;
+
+// Resolve an item handle. This is where the generation counter earns its keep:
+// an index alone would silently rebind to whatever item recycled the slot.
+static void *M_Resolve(const LUA_STRUCT_REF *const ref)
+{
+    if (ref->idx < 0 || ref->idx >= Item_GetTotalCount()) {
+        return nullptr;
     }
-
-#define M_ITEM_SETTER(L)                                                       \
-    const int idx = luaL_checkinteger(L, 1);                                   \
-    ITEM *const item = Item_Get(idx - 1);                                      \
-    if (item == nullptr) {                                                     \
-        return 1;                                                              \
+    ITEM *const item = Item_Get(ref->idx);
+    if (item == nullptr || item->gen != ref->gen) {
+        return nullptr;
     }
-
-// trxc.items.item_count() → int
-static int M_L_ItemsCount(lua_State *const L)
-{
-    lua_pushinteger(L, Item_GetTotalCount());
-    return 1;
+    return item;
 }
 
-// trxc.items.get(index or name) → int (1-based) or nil
-static int M_L_ItemsGet(lua_State *const L)
+static void M_PushItem(lua_State *const L, const int16_t idx)
 {
-    int result = 0;
-    if (lua_type(L, 1) == LUA_TNUMBER) {
-        const int idx = luaL_checkinteger(L, 1);
-        const ITEM *const item = Item_Get(idx - 1);
-        if (item != nullptr) {
-            result = idx;
-        }
-    } else {
-        const char *const name = luaL_checkstring(L, 1);
-        const ITEM *const item = Item_GetByName(name);
-        if (item != nullptr) {
-            result = Item_GetIndex(item) + 1;
-        }
-    }
-    if (result) {
-        lua_pushinteger(L, result);
-    } else {
-        lua_pushnil(L);
-    }
-    return 1;
+    LUA_Struct_Push(L, &TYPE_ITEM, M_Resolve, idx, Item_Get(idx)->gen);
 }
 
-// trxc.items.get_pos(index) → {x, y, z} or nil
-static int M_L_ItemGetPos(lua_State *const L)
+// The object property overlay stays a separate namespace: fields address the
+// ITEM struct, properties are the object's declared defaults plus per-item
+// sparse overrides.
+static int M_L_GetProperty(lua_State *const L)
 {
-    M_ITEM_GETTER(L);
-    lua_newtable(L);
-    lua_pushinteger(L, item->pos.x);
-    lua_setfield(L, -2, "x");
-    lua_pushinteger(L, item->pos.y);
-    lua_setfield(L, -2, "y");
-    lua_pushinteger(L, item->pos.z);
-    lua_setfield(L, -2, "z");
-    return 1;
-}
-
-// trxc.items.get_rot(index) → {x, y, z} or nil
-static int M_L_ItemGetRot(lua_State *const L)
-{
-    M_ITEM_GETTER(L);
-    lua_newtable(L);
-    lua_pushinteger(L, item->rot.x);
-    lua_setfield(L, -2, "x");
-    lua_pushinteger(L, item->rot.y);
-    lua_setfield(L, -2, "y");
-    lua_pushinteger(L, item->rot.z);
-    lua_setfield(L, -2, "z");
-    return 1;
-}
-
-// trxc.items.get_anim(index) → int or nil
-static int M_L_ItemGetAnim(lua_State *const L)
-{
-    M_ITEM_GETTER(L);
-    lua_pushinteger(L, Item_GetRelativeAnim(item));
-    return 1;
-}
-
-// trxc.items.get_frame(index) → int or nil
-static int M_L_ItemGetFrame(lua_State *const L)
-{
-    M_ITEM_GETTER(L);
-    lua_pushinteger(L, Item_GetRelativeFrame(item));
-    return 1;
-}
-
-// trxc.items.get_room(index) → int or nil
-static int M_L_ItemGetRoom(lua_State *const L)
-{
-    M_ITEM_GETTER(L);
-    lua_pushinteger(L, item->room_num + 1);
-    return 1;
-}
-
-// trxc.items.get_status(index) → int or nil
-static int M_L_ItemGetStatus(lua_State *const L)
-{
-    M_ITEM_GETTER(L);
-    lua_pushinteger(L, (int)item->status);
-    return 1;
-}
-
-// trxc.items.get_flags(index) → int or nil
-static int M_L_ItemGetFlags(lua_State *const L)
-{
-    M_ITEM_GETTER(L);
-    lua_pushinteger(L, (int)item->flags);
-    return 1;
-}
-
-// trxc.items.get_timer(index) → int or nil
-static int M_L_ItemGetTimer(lua_State *const L)
-{
-    M_ITEM_GETTER(L);
-    lua_pushinteger(L, (int)item->timer);
-    return 1;
-}
-
-// trxc.items.get_object_id(index) → int or nil
-static int M_L_ItemGetObjectId(lua_State *const L)
-{
-    M_ITEM_GETTER(L);
-    lua_pushinteger(L, item->object_id);
-    return 1;
-}
-
-// trxc.items.get_hit_points(index) → int or nil
-static int M_L_ItemGetHitPoints(lua_State *const L)
-{
-    M_ITEM_GETTER(L);
-    lua_pushinteger(L, item->hit_points);
-    return 1;
-}
-
-static void M_PushPropertyValue(
-    lua_State *const L, const OBJECT_PROPERTY_VALUE *const value)
-{
-    switch (value->type) {
-    case OBJECT_PROPERTY_TYPE_INT:
-        lua_pushinteger(L, value->as_int);
-        break;
-    case OBJECT_PROPERTY_TYPE_FLOAT:
-        lua_pushnumber(L, value->as_float);
-        break;
-    case OBJECT_PROPERTY_TYPE_DOUBLE:
-        lua_pushnumber(L, value->as_double);
-        break;
-    case OBJECT_PROPERTY_TYPE_BOOL:
-        lua_pushboolean(L, value->as_bool);
-        break;
-    case OBJECT_PROPERTY_TYPE_XYZ:
-        lua_newtable(L);
-        lua_pushinteger(L, value->as_xyz.x);
-        lua_setfield(L, -2, "x");
-        lua_pushinteger(L, value->as_xyz.y);
-        lua_setfield(L, -2, "y");
-        lua_pushinteger(L, value->as_xyz.z);
-        lua_setfield(L, -2, "z");
-        break;
-    }
-}
-
-// trxc.items.get_property(index, name) → typed value or nil
-static int M_L_ItemGetProperty(lua_State *const L)
-{
-    M_ITEM_GETTER(L);
-    const char *const name = luaL_checkstring(L, 2);
+    LUA_STRUCT_REF *const ref = LUA_Struct_CheckRef(L, 1, &TYPE_ITEM);
+    const ITEM *const item = LUA_Struct_Deref(L, ref);
     OBJECT_PROPERTY_VALUE value = {};
-    if (!ObjectProperty_GetItemValue(item, name, &value)) {
+    if (!ObjectProperty_GetItemValue(item, luaL_checkstring(L, 2), &value)) {
         lua_pushnil(L);
         return 1;
     }
-    M_PushPropertyValue(L, &value);
+    LUA_PushPropertyValue(L, &value);
     return 1;
 }
 
-// trxc.items.get_name(index) → string or nil
-static int M_L_ItemGetName(lua_State *const L)
+static int M_L_SetProperty(lua_State *const L)
 {
-    M_ITEM_GETTER(L);
-    if (item->name == nullptr) {
-        lua_pushnil(L);
-    } else {
-        lua_pushstring(L, item->name);
-    }
-    return 1;
-}
-
-// trxc.items.set_pos(index, {x,y,z})
-static int M_L_ItemSetPos(lua_State *const L)
-{
-    M_ITEM_SETTER(L);
-    luaL_checktype(L, 2, LUA_TTABLE);
-    lua_getfield(L, 2, "x");
-    item->pos.x = luaL_checkinteger(L, -1);
-    lua_pop(L, 1);
-    lua_getfield(L, 2, "y");
-    item->pos.y = luaL_checkinteger(L, -1);
-    lua_pop(L, 1);
-    lua_getfield(L, 2, "z");
-    item->pos.z = luaL_checkinteger(L, -1);
-    lua_pop(L, 1);
-    const int16_t room_num = Room_GetIndexFromPos(item->pos);
-    Item_UpdateRoom(idx - 1, room_num);
-    return 0;
-}
-
-// trxc.items.set_anim(index, anim_idx)
-static int M_L_ItemSetAnim(lua_State *const L)
-{
-    M_ITEM_SETTER(L);
-    const int32_t anim_idx = luaL_checkinteger(L, 2);
-    const OBJECT *const obj = Object_Get(item->object_id);
-    if (obj->anim_idx == NO_ANIM) {
-        return luaL_error(L, "object has no animations");
-    }
-    if (anim_idx < 0 || anim_idx >= Anim_GetTotalCount()
-        || anim_idx >= obj->anim_count) {
-        return luaL_error(L, "invalid animation index");
-    }
-    ANIM *const anim = Anim_GetAnim(obj->anim_idx + anim_idx);
-    if (anim->frame_ptr == nullptr) {
-        return luaL_error(L, "invalid animation index");
-    }
-    item->anim_num = obj->anim_idx + anim_idx;
-    item->frame_num = anim->frame_base;
-    return 0;
-}
-
-// trxc.items.set_frame(index, frame_idx)
-static int M_L_ItemSetFrame(lua_State *const L)
-{
-    M_ITEM_SETTER(L);
-    const int32_t frame_idx = luaL_checkinteger(L, 2);
-    const OBJECT *const obj = Object_Get(item->object_id);
-    if (obj->anim_idx == NO_ANIM) {
-        return luaL_error(L, "object has no animations");
-    }
-    const ANIM *const anim = Item_GetAnim(item);
-    if (frame_idx < 0) {
-        if (anim->frame_end + frame_idx + 1 < anim->frame_base) {
-            return luaL_error(L, "invalid frame index");
-        }
-        item->frame_num = anim->frame_end + frame_idx + 1;
-    } else {
-        if (anim->frame_base + frame_idx >= anim->frame_end) {
-            return luaL_error(L, "invalid frame index");
-        }
-        item->frame_num = anim->frame_base + frame_idx;
-    }
-    return 0;
-}
-
-// trxc.items.set_hit_points(index, hp)
-static int M_L_ItemSetHitPoints(lua_State *const L)
-{
-    M_ITEM_SETTER(L);
-    item->hit_points = luaL_checkinteger(L, 2);
-    if (item->hit_points > item->max_hit_points) {
-        ObjectProperty_SetItemValueRaw(
-            item, "max_hit_points",
-            (OBJECT_PROPERTY_VALUE) {
-                .type = OBJECT_PROPERTY_TYPE_INT,
-                .as_int = item->hit_points,
-            });
-        item->max_hit_points = item->hit_points;
-    }
-    return 0;
-}
-
-// trxc.items.set_property(index, name, value)
-static int M_L_ItemSetProperty(lua_State *const L)
-{
-    M_ITEM_SETTER(L);
+    LUA_STRUCT_REF *const ref = LUA_Struct_CheckRef(L, 1, &TYPE_ITEM);
+    ITEM *const item = LUA_Struct_Deref(L, ref);
     const char *const name = luaL_checkstring(L, 2);
     const OBJECT_PROPERTY_VALUE value = LUA_CheckPropertyValue(L, 3);
     if (!ObjectProperty_SetItemValueRaw(item, name, value)) {
@@ -292,10 +57,10 @@ static int M_L_ItemSetProperty(lua_State *const L)
     return 0;
 }
 
-// trxc.items.get_property_names(index) → table
-static int M_L_ItemGetPropertyNames(lua_State *const L)
+static int M_L_GetPropertyNames(lua_State *const L)
 {
-    M_ITEM_GETTER(L);
+    LUA_STRUCT_REF *const ref = LUA_Struct_CheckRef(L, 1, &TYPE_ITEM);
+    const ITEM *const item = LUA_Struct_Deref(L, ref);
     lua_newtable(L);
     for (int32_t i = 0; i < ObjectProperty_GetItemNameCount(item); i++) {
         lua_pushinteger(L, i + 1);
@@ -305,83 +70,173 @@ static int M_L_ItemGetPropertyNames(lua_State *const L)
     return 1;
 }
 
-// trxc.items.set_rot(index, {x,y,z})
-static int M_L_ItemSetRot(lua_State *const L)
+static int M_L_Kill(lua_State *const L)
 {
-    M_ITEM_SETTER(L);
-    luaL_checktype(L, 2, LUA_TTABLE);
-    lua_getfield(L, 2, "x");
-    item->rot.x = luaL_checkinteger(L, -1);
-    lua_pop(L, 1);
-    lua_getfield(L, 2, "y");
-    item->rot.y = luaL_checkinteger(L, -1);
-    lua_pop(L, 1);
-    lua_getfield(L, 2, "z");
-    item->rot.z = luaL_checkinteger(L, -1);
-    lua_pop(L, 1);
+    LUA_STRUCT_REF *const ref = LUA_Struct_CheckRef(L, 1, &TYPE_ITEM);
+    LUA_Struct_Deref(L, ref);
+    Item_Kill(ref->idx);
     return 0;
 }
 
-// trxc.items.set_name(index, name)
-static int M_L_ItemSetName(lua_State *const L)
+static int M_L_Activate(lua_State *const L)
 {
-    M_ITEM_SETTER(L);
-    const char *const new_name = luaL_checkstring(L, 2);
-    if (!Item_SetName(Item_GetIndex(item), new_name)) {
-        return luaL_error(L, "item name '%s' already in use", new_name);
-    }
+    LUA_STRUCT_REF *const ref = LUA_Struct_CheckRef(L, 1, &TYPE_ITEM);
+    ITEM *const item = LUA_Struct_Deref(L, ref);
+    Item_AddActive(ref->idx);
+    item->status = IS_ACTIVE;
     return 0;
 }
+
+static int M_L_IsValid(lua_State *const L)
+{
+    LUA_STRUCT_REF *const ref = LUA_Struct_CheckRef(L, 1, &TYPE_ITEM);
+    lua_pushboolean(L, ref->resolve(ref) != nullptr);
+    return 1;
+}
+
+// trxc.items.count() -> int
+static int M_L_Count(lua_State *const L)
+{
+    lua_pushinteger(L, Item_GetTotalCount());
+    return 1;
+}
+
+// trxc.items.get(index | name) -> Item or nil
+static int M_L_Get(lua_State *const L)
+{
+    int32_t idx = -1;
+    if (lua_type(L, 1) == LUA_TNUMBER) {
+        idx = luaL_checkinteger(L, 1) - 1;
+    } else {
+        const ITEM *const item = Item_GetByName(luaL_checkstring(L, 1));
+        idx = item != nullptr ? Item_GetIndex(item) : -1;
+    }
+    if (idx < 0 || idx >= Item_GetTotalCount()) {
+        lua_pushnil(L);
+        return 1;
+    }
+    M_PushItem(L, idx);
+    return 1;
+}
+
+// trxc.items.spawn(object_id, {x,y,z}, angle_y) -> Item or nil
+static int M_L_Spawn(lua_State *const L)
+{
+    const OBJECT_ID object_id = luaL_checkinteger(L, 1);
+    const OBJECT *const obj = Object_Get(object_id);
+    if (obj == nullptr || !obj->loaded) {
+        return luaL_error(L, "object %d is not loaded", object_id);
+    }
+
+    luaL_checktype(L, 2, LUA_TTABLE);
+    XYZ_32 pos = {};
+    lua_getfield(L, 2, "x");
+    pos.x = luaL_checkinteger(L, -1);
+    lua_getfield(L, 2, "y");
+    pos.y = luaL_checkinteger(L, -1);
+    lua_getfield(L, 2, "z");
+    pos.z = luaL_checkinteger(L, -1);
+    lua_pop(L, 3);
+
+    const int16_t room_num = Room_GetIndexFromPos(pos);
+    if (room_num == NO_ROOM) {
+        return luaL_error(L, "position is outside the level");
+    }
+
+    // Read every argument that can raise before taking a slot: luaL_optinteger
+    // longjmps on a non-numeric argument, and doing it after Item_Create would
+    // leave a half-initialised item occupying the pool.
+    const lua_Integer rot_y = luaL_optinteger(L, 3, 0);
+
+    const int16_t idx = Item_Create();
+    if (idx == NO_ITEM) {
+        lua_pushnil(L);
+        return 1;
+    }
+
+    ITEM *const item = Item_Get(idx);
+    item->object_id = object_id;
+    item->pos = pos;
+    item->rot.y = rot_y;
+    item->room_num = room_num;
+    item->shade.value_1 = -1;
+    Item_Initialise(idx);
+
+    // opts.activate: bring the item to life the way the spawn cheat does -
+    // creatures additionally need their AI enabled or they stand inert.
+    if (lua_istable(L, 4)) {
+        lua_getfield(L, 4, "activate");
+        const bool activate = lua_toboolean(L, -1);
+        lua_pop(L, 1);
+        if (activate) {
+            Item_AddActive(idx);
+            if (Object_IsType(object_id, g_CreatureObjects)
+                || Object_IsType(object_id, g_LoyalObjects)
+                || obj->intelligent) {
+                item->status = IS_ACTIVE;
+                LOT_EnableBaddieAI(idx, true);
+            }
+        }
+    }
+
+    M_PushItem(L, idx);
+    return 1;
+}
+
+// item:distance_to({x,y,z}) -> integer
+static int M_L_DistanceTo(lua_State *const L)
+{
+    LUA_STRUCT_REF *const ref = LUA_Struct_CheckRef(L, 1, &TYPE_ITEM);
+    const ITEM *const item = LUA_Struct_Deref(L, ref);
+    luaL_checktype(L, 2, LUA_TTABLE);
+    XYZ_32 target = {};
+    lua_getfield(L, 2, "x");
+    target.x = luaL_checkinteger(L, -1);
+    lua_getfield(L, 2, "y");
+    target.y = luaL_checkinteger(L, -1);
+    lua_getfield(L, 2, "z");
+    target.z = luaL_checkinteger(L, -1);
+    lua_pop(L, 3);
+    lua_pushinteger(L, Item_GetDistance(item, target));
+    return 1;
+}
+
+// item:explode()
+//
+// Runs the object's death handling with an explosion. A primitive: the `kill`
+// cheat is one composition of it, and lives in Lua.
+static int M_L_Explode(lua_State *const L)
+{
+    LUA_STRUCT_REF *const ref = LUA_Struct_CheckRef(L, 1, &TYPE_ITEM);
+    LUA_Struct_Deref(L, ref);
+    Creature_Die(ref->idx, true);
+    return 0;
+}
+
+static const luaL_Reg M_METHODS[] = {
+    { "distance_to", M_L_DistanceTo },
+    { "explode", M_L_Explode },
+    { "kill", M_L_Kill },
+    { "activate", M_L_Activate },
+    { "is_valid", M_L_IsValid },
+    { "get_property", M_L_GetProperty },
+    { "set_property", M_L_SetProperty },
+    { "get_property_names", M_L_GetPropertyNames },
+    { nullptr, nullptr },
+};
 
 void LUA_CreateItems(lua_State *const L)
 {
-    lua_getglobal(L, "trxc");
+    LUA_Struct_Register(L, &TYPE_ITEM, M_METHODS);
 
+    lua_getglobal(L, "trxc");
     lua_newtable(L);
-    lua_pushcfunction(L, M_L_ItemsCount);
+    lua_pushcfunction(L, M_L_Count);
     lua_setfield(L, -2, "count");
-    lua_pushcfunction(L, M_L_ItemsGet);
+    lua_pushcfunction(L, M_L_Get);
     lua_setfield(L, -2, "get");
-    lua_pushcfunction(L, M_L_ItemGetPos);
-    lua_setfield(L, -2, "get_pos");
-    lua_pushcfunction(L, M_L_ItemGetRot);
-    lua_setfield(L, -2, "get_rot");
-    lua_pushcfunction(L, M_L_ItemGetAnim);
-    lua_setfield(L, -2, "get_anim");
-    lua_pushcfunction(L, M_L_ItemGetFrame);
-    lua_setfield(L, -2, "get_frame");
-    lua_pushcfunction(L, M_L_ItemGetRoom);
-    lua_setfield(L, -2, "get_room");
-    lua_pushcfunction(L, M_L_ItemGetStatus);
-    lua_setfield(L, -2, "get_status");
-    lua_pushcfunction(L, M_L_ItemGetFlags);
-    lua_setfield(L, -2, "get_flags");
-    lua_pushcfunction(L, M_L_ItemGetTimer);
-    lua_setfield(L, -2, "get_timer");
-    lua_pushcfunction(L, M_L_ItemGetObjectId);
-    lua_setfield(L, -2, "get_object_id");
-    lua_pushcfunction(L, M_L_ItemGetHitPoints);
-    lua_setfield(L, -2, "get_hit_points");
-    lua_pushcfunction(L, M_L_ItemGetProperty);
-    lua_setfield(L, -2, "get_property");
-    lua_pushcfunction(L, M_L_ItemGetName);
-    lua_setfield(L, -2, "get_name");
-    lua_pushcfunction(L, M_L_ItemSetPos);
-    lua_setfield(L, -2, "set_pos");
-    lua_pushcfunction(L, M_L_ItemSetRot);
-    lua_setfield(L, -2, "set_rot");
-    lua_pushcfunction(L, M_L_ItemSetAnim);
-    lua_setfield(L, -2, "set_anim");
-    lua_pushcfunction(L, M_L_ItemSetFrame);
-    lua_setfield(L, -2, "set_frame");
-    lua_pushcfunction(L, M_L_ItemSetHitPoints);
-    lua_setfield(L, -2, "set_hit_points");
-    lua_pushcfunction(L, M_L_ItemSetProperty);
-    lua_setfield(L, -2, "set_property");
-    lua_pushcfunction(L, M_L_ItemSetName);
-    lua_setfield(L, -2, "set_name");
-    lua_pushcfunction(L, M_L_ItemGetPropertyNames);
-    lua_setfield(L, -2, "get_property_names");
+    lua_pushcfunction(L, M_L_Spawn);
+    lua_setfield(L, -2, "spawn");
     lua_setfield(L, -2, "items");
     lua_pop(L, 1);
 }

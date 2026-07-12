@@ -4,6 +4,7 @@
 #include <trx/game/game_flow/types.h>
 #include <trx/game/gun/types.h>
 #include <trx/game/input/enum.h>
+#include <trx/game/items/enum.h>
 #include <trx/game/lara/skin/types.h>
 #include <trx/game/lara/types.h>
 #include <trx/game/objects/ids.h>
@@ -56,6 +57,11 @@ static __attribute__((constructor)) void M_Init(void)
     ENUM_MAP(GAME_BUFFER, GBUF_SAMPLE_INFOS, "Sample information");
     ENUM_MAP(GAME_BUFFER, GBUF_SAMPLES, "Samples");
     ENUM_MAP(GAME_BUFFER, GBUF_WALKABLES, "Walkables buffer");
+
+    ENUM_MAP(ITEM_STATUS, IS_INACTIVE, "inactive");
+    ENUM_MAP(ITEM_STATUS, IS_ACTIVE, "active");
+    ENUM_MAP(ITEM_STATUS, IS_DEACTIVATED, "deactivated");
+    ENUM_MAP(ITEM_STATUS, IS_INVISIBLE, "invisible");
 
     ENUM_MAP(GF_SEQUENCE_EVENT_TYPE, GFS_LOOP_GAME, "loop_game");
     ENUM_MAP(GF_SEQUENCE_EVENT_TYPE, GFS_PLAY_FMV, "play_fmv");
