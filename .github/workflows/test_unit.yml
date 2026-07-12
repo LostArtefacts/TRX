@@ -1,0 +1,38 @@
+name: Run unit tests
+
+# The unit suite needs no game data, no level and no replay recordings, so unlike
+# the replay tests it can actually run in CI. It also needs none of the engine's
+# libraries: src/tests is a meson project of its own, so this job installs a
+# compiler and meson and nothing else.
+
+on:
+  - push
+  - pull_request
+
+jobs:
+  unit:
+    name: Run unit tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y meson ninja-build
+
+      - name: Run unit tests
+        run: |
+          meson setup build/tests src/tests
+          meson test -C build/tests --suite unit --print-errorlogs
+
+      - name: Upload test log on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: unit-test-log
+          path: build/tests/meson-logs/testlog.txt
