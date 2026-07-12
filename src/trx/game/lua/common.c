@@ -9,6 +9,7 @@
 #include <trx/game/game_flow/common.h>
 #include <trx/game/lua/embedded_scripts.h>
 #include <trx/game/lua/events.h>
+#include <trx/game/lua/sandbox.h>
 
 #include <lauxlib.h>
 #include <lua.h>
@@ -193,7 +194,7 @@ void LUA_Init(void)
 {
     lua_State *const L = luaL_newstate();
     ASSERT(L != nullptr);
-    luaL_openlibs(L);
+    LUA_OpenSafeLibs(L);
 
     lua_newtable(L);
     lua_setglobal(L, "trxc");
@@ -226,6 +227,7 @@ void LUA_Init(void)
 
     M_LoadTRXScripts(L);
     M_SealPublicAPI(L);
+    LUA_HardenGlobals(L);
 }
 
 void LUA_Shutdown(void)
