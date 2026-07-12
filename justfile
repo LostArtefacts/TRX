@@ -109,3 +109,15 @@ test *args='--suite unit':
     #!/usr/bin/env sh
     meson setup build/tests src/tests >/dev/null 2>&1 || meson setup --reconfigure build/tests src/tests >/dev/null
     meson test -C build/tests --print-errorlogs {{args}}
+
+# Regenerate the Lua API reference from a built binary.
+[group('lint')]
+lua-api-dump binary='build/trx/linux/TRX':
+    tools/update_lua_docs --dump-from {{binary}}
+
+# CI guard: fail if the committed Lua API docs or api.json are stale.
+[group('lint')]
+lua-api-check binary='build/trx/linux/TRX': (lua-api-dump binary)
+    @git diff --exit-code -- docs/trx/lua/ || ( \
+        echo 'Lua API docs are stale. Run `just lua-api-dump` and commit the result.'; \
+        exit 1 )

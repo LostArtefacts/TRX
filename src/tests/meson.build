@@ -82,3 +82,8 @@ lua_exe = find_program('lua', 'lua5.4', 'lua5.5', required: false)
 if lua_exe.found()
   test('api', lua_exe, args: [files('unit/test_api.lua'), repo_root], suite: 'unit')
 endif
+
+python_exe = find_program('python3', required: false)
+if python_exe.found()
+  test('update_lua_docs', python_exe, args: [files('unit/test_update_lua_docs.py')], suite: 'unit')
+endif

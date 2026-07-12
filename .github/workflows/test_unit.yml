@@ -23,7 +23,7 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y meson ninja-build liblua5.4-dev lua5.4
+          sudo apt-get install -y meson ninja-build liblua5.4-dev lua5.4 python3
 
       - name: Run unit tests
         run: |

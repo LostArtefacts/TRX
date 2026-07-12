@@ -12,6 +12,7 @@
 #include <lauxlib.h>
 #include <lua.h>
 #include <lualib.h>
+#include <stdio.h>
 #include <string.h>
 
 typedef struct {
@@ -268,4 +269,23 @@ void Lua_FreeResult(LUA_RESULT *const result)
     if (result != nullptr) {
         Memory_FreePointer(&result->message);
     }
+}
+
+void LUA_DumpAPI(void)
+{
+    lua_State *const L = m_Priv.state;
+    if (L == nullptr) {
+        LOG_ERROR("--dump-lua-api: Lua is not initialised");
+        return;
+    }
+    if (luaL_dostring(L, "return trx.api.to_json()") != LUA_OK) {
+        LOG_ERROR("--dump-lua-api failed: %s", lua_tostring(L, -1));
+        lua_pop(L, 1);
+        return;
+    }
+    const char *const json = lua_tostring(L, -1);
+    if (json != nullptr) {
+        puts(json);
+    }
+    lua_pop(L, 1);
 }
