@@ -101,6 +101,14 @@ def render_function(func: dict) -> list[str]:
     return out
 
 
+def render_const(spec: dict) -> list[str]:
+    out = [f"- [lua]`trx.{spec['path']}` = `{spec['value']}`  "]
+    if spec.get("description"):
+        out.append(f"  {spec['description']}")
+    out.append("")
+    return out
+
+
 def render_enum(spec: dict) -> list[str]:
     out = [f"- [lua]`trx.{spec['path']}`", ""]
     if spec.get("description"):
@@ -182,6 +190,13 @@ def render_page(module: dict, api: dict) -> str:
     if module.get("description"):
         out.append(module["description"])
         out.append("")
+
+    consts = [c for c in api.get("constants", []) if c["path"].startswith(f"{name}.")]
+    if consts:
+        out.append("### Constants")
+        out.append("")
+        for spec in consts:
+            out.extend(render_const(spec))
 
     enums = [e for e in api.get("enums", []) if e["path"].startswith(f"{name}.")]
     if enums:

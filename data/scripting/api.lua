@@ -33,6 +33,8 @@ local types = {}
 local type_order = {}
 local enums = {}
 local enum_order = {}
+local consts = {}
+local const_order = {}
 local strict_enabled = false
 local sealed = false
 
@@ -123,7 +125,43 @@ api.checkers = {
 -- Called once, from C, after the trx.* modules have loaded. Declarations are the
 -- engine's to make; a level script re-opening the surface would defeat the point
 -- of declaring it.
+--
+-- Also audits the finished surface: an assignment straight onto a module table
+-- works for scripts, but the docs never see it. Refuse to boot instead.
 function api.seal()
+  local declared = {}
+  local function mark(path)
+    local module, name = split_path(path)
+    declared[module] = declared[module] or {}
+    declared[module][name] = true
+  end
+  for _, path in ipairs(order) do
+    mark(path)
+  end
+  for _, path in ipairs(enum_order) do
+    mark(path)
+  end
+  for _, path in ipairs(const_order) do
+    mark(path)
+  end
+
+  for _, module in ipairs(module_order) do
+    local undeclared = {}
+    for name in pairs(trx[module] or {}) do
+      if not (declared[module] or {})[name] then
+        table.insert(undeclared, "trx." .. module .. "." .. name)
+      end
+    end
+    if #undeclared > 0 then
+      table.sort(undeclared)
+      error(
+        table.concat(undeclared, ", ")
+          .. ": reachable from scripts but not declared, so the reference cannot describe it. "
+          .. "Declare it with api.define, api.enum or api.const."
+      )
+    end
+  end
+
   sealed = true
 end
 
@@ -249,8 +287,27 @@ function api.enum(path, spec)
   return public
 end
 
+-- Declares a lone constant sitting on the module table - an angle unit is a macro,
+-- not a C enum, so api.enum has nothing to reflect. The value still comes from C,
+-- so naming one C does not export fails here rather than quietly being nil.
+function api.const(path, spec)
+  assert(not sealed, "the trx.api registry is sealed; declarations happen at load time")
+  assert(type(spec) == "table", "api.const: spec must be a table")
+  assert(spec.value ~= nil, "api.const: " .. path .. " has no value; is it exported from C?")
+  local module, name = split_path(path)
+
+  if consts[path] == nil then
+    table.insert(const_order, path)
+  end
+  consts[path] = spec
+
+  trx[module] = trx[module] or {}
+  rawset(trx[module], name, spec.value)
+  return spec.value
+end
+
 function api.describe()
-  local out = { modules = {}, functions = {}, types = {}, enums = {} }
+  local out = { modules = {}, functions = {}, types = {}, enums = {}, constants = {} }
   for _, name in ipairs(module_order) do
     table.insert(out.modules, {
       name = name,
@@ -326,6 +383,14 @@ function api.describe()
       return a.value < b.value
     end)
     table.insert(out.enums, entry)
+  end
+  for _, path in ipairs(const_order) do
+    local spec = consts[path]
+    table.insert(out.constants, {
+      path = path,
+      value = spec.value,
+      description = spec.description,
+    })
   end
   return out
 end
