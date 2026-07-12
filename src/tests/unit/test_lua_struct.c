@@ -20,10 +20,10 @@ typedef struct {
 
 // clang-format off
 static const FIELD_DESC M_WIDGET_FIELDS[] = {
-    FIELD    (WIDGET, visible, FT_INT32),
-    FIELD    (WIDGET, secret,  FT_INT32),
-    FIELD    (WIDGET, flag,    FT_BOOL),
-    FIELD_RO (WIDGET, locked,  FT_INT16),
+    FIELD    (WIDGET, visible),
+    FIELD    (WIDGET, secret),
+    FIELD    (WIDGET, flag),
+    FIELD_RO (WIDGET, locked),
 };
 // clang-format on
 
@@ -149,10 +149,10 @@ TEST(a_declared_field_reads_and_writes)
     lua_close(L);
 }
 
-// A member may be exposed read-only even though the C member is plain, because
-// writing it directly would wedge engine state. If `writable` never reached the
-// metatable the field would still be settable, and only the documentation would
-// say otherwise.
+// Several members are exposed read-only even though the C member is plain,
+// because writing them directly would wedge engine state. If the declaration's
+// `writable` never reached the metatable, the field would still be settable and
+// only the documentation would say otherwise.
 TEST(a_field_the_declaration_withheld_refuses_writes)
 {
     lua_State *const L = M_NewState(DECL);
@@ -167,7 +167,7 @@ TEST(a_field_the_declaration_withheld_refuses_writes)
     }
     CHECK_EQ_INT(m_Pool[0].visible, 10); // the C member is plain, and untouched
 
-    // The same member stays writable through the name that declared it so.
+    // The same member remains writable through the name that declared it so.
     CHECK(M_Run(L, "trxc.get_widget(0).visible = 5\n"));
     CHECK_EQ_INT(m_Pool[0].visible, 5);
 
