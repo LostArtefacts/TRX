@@ -149,6 +149,16 @@ static void M_RequireTRXModule(lua_State *const L, const char *name)
     lua_settop(L, 0);
 }
 
+static void M_SealPublicAPI(lua_State *const L)
+{
+    if (luaL_dostring(L, "trx.api.seal()") != LUA_OK) {
+        LOG_ERROR("failed to seal the Lua API: %s", lua_tostring(L, -1));
+        lua_pop(L, 1);
+    }
+    lua_pushnil(L);
+    lua_setglobal(L, "trxc");
+}
+
 static void M_LoadTRXScripts(lua_State *const L)
 {
     // Register every module's preload entry before requiring any of them.
@@ -209,6 +219,7 @@ void LUA_Init(void)
     p->state = L;
 
     M_LoadTRXScripts(L);
+    M_SealPublicAPI(L);
 }
 
 void LUA_Shutdown(void)
