@@ -33,6 +33,8 @@ local consts = {}
 local const_order = {}
 local properties = {}
 local property_order = {}
+local namespaces = {}
+local namespace_order = {}
 -- module -> { name -> spec }. What the module's __index dispatches on.
 local module_properties = {}
 local strict_enabled = false
@@ -42,6 +44,36 @@ local function split_path(path)
   local module, name = path:match("^([%w_]+)%.([%w_]+)$")
   assert(module ~= nil, "api path must be 'module.name', got: " .. tostring(path))
   return module, name
+end
+
+-- A path is 'module.name', or 'module.namespace.name' one level deeper.
+-- Anything deeper is a sign the module wants splitting.
+local function path_parts(path)
+  local parts = {}
+  for segment in tostring(path):gmatch("[^.]+") do
+    parts[#parts + 1] = segment
+  end
+  assert(
+    #parts == 2 or #parts == 3,
+    "api path must be 'module.name' or 'module.namespace.name', got: " .. tostring(path)
+  )
+  return parts
+end
+
+-- The module, the table the member hangs off, and the member's own name.
+local function resolve(path)
+  local parts = path_parts(path)
+  local module = parts[1]
+  trx[module] = trx[module] or {}
+  if #parts == 2 then
+    return module, trx[module], parts[2]
+  end
+  local namespace = rawget(trx[module], parts[2])
+  assert(
+    type(namespace) == "table",
+    "api: " .. path .. " needs api.namespace('" .. module .. "." .. parts[2] .. "') declared first"
+  )
+  return module, namespace, parts[3]
 end
 
 function api.module(name, spec)
@@ -129,11 +161,18 @@ api.checkers = {
 -- Also audits the finished surface: an assignment straight onto a module table
 -- works for scripts, but the docs never see it. Refuse to boot instead.
 function api.seal()
+  -- container path ("items", or "console.log") -> set of declared member names.
   local declared = {}
   local function mark(path)
-    local module, name = split_path(path)
-    declared[module] = declared[module] or {}
-    declared[module][name] = true
+    local parts = path_parts(path)
+    local container = parts[1]
+    local name = parts[2]
+    if #parts == 3 then
+      container = parts[1] .. "." .. parts[2]
+      name = parts[3]
+    end
+    declared[container] = declared[container] or {}
+    declared[container][name] = true
   end
   for _, path in ipairs(order) do
     mark(path)
@@ -144,43 +183,88 @@ function api.seal()
   for _, path in ipairs(const_order) do
     mark(path)
   end
+  -- The namespace table itself is a member of its module.
+  for _, path in ipairs(namespace_order) do
+    mark(path)
+  end
 
-  for _, module in ipairs(module_order) do
-    local undeclared = {}
-    for name in pairs(trx[module] or {}) do
-      if not (declared[module] or {})[name] then
-        table.insert(undeclared, "trx." .. module .. "." .. name)
+  local undeclared = {}
+  local function audit(container_path, tbl)
+    for name in pairs(tbl or {}) do
+      if not (declared[container_path] or {})[name] then
+        table.insert(undeclared, "trx." .. container_path .. "." .. name)
       end
-    end
-    if #undeclared > 0 then
-      table.sort(undeclared)
-      error(
-        table.concat(undeclared, ", ")
-          .. ": reachable from scripts but not declared, so the reference cannot describe it. "
-          .. "Declare it with api.define, api.enum, api.const or api.property."
-      )
     end
   end
 
+  for _, module in ipairs(module_order) do
+    audit(module, trx[module])
+  end
+  -- A namespace hides its members one level down, where the module audit above
+  -- cannot see them. Audit it as its own container.
+  for _, path in ipairs(namespace_order) do
+    local module, name = split_path(path)
+    audit(path, rawget(trx[module] or {}, name))
+  end
+
+  if #undeclared > 0 then
+    table.sort(undeclared)
+    error(
+      table.concat(undeclared, ", ")
+        .. ": reachable from scripts but not declared, so the reference cannot describe it. "
+        .. "Declare it with api.define, api.enum, api.const, api.property or api.namespace."
+    )
+  end
+
   sealed = true
+end
+
+-- Declares a grouping table on a module, holding related members under one
+-- name. `call` makes the group itself callable, so calling the group works
+-- alongside calling the members inside it.
+--
+-- A namespace has to be declared before anything inside it: it is the table the
+-- members hang off, and seal() audits its contents just as it audits a module's.
+function api.namespace(path, spec)
+  assert(not sealed, "the trx.api registry is sealed; declarations happen at load time")
+  assert(type(spec) == "table", "api.namespace: spec must be a table")
+  local module, name = split_path(path)
+
+  local namespace = {}
+  if spec.call ~= nil then
+    assert(type(spec.call) == "function", "api.namespace: call must be a function")
+    setmetatable(namespace, {
+      __call = function(_, ...)
+        return spec.call(...)
+      end,
+    })
+  end
+
+  trx[module] = trx[module] or {}
+  rawset(trx[module], name, namespace)
+
+  if namespaces[path] == nil then
+    table.insert(namespace_order, path)
+  end
+  namespaces[path] = spec
+  return namespace
 end
 
 function api.define(path, spec)
   assert(not sealed, "the trx.api registry is sealed; declarations happen at load time")
   assert(type(spec) == "table", "api.define: spec must be a table")
   assert(type(spec.impl) == "function", "api.define: impl must be a function")
-  local module, name = split_path(path)
+  local _, container, name = resolve(path)
 
   if registry[path] == nil then
     table.insert(order, path)
   end
   registry[path] = spec
 
-  trx[module] = trx[module] or {}
   -- The raw implementation IS the public function. No wrapper, no overhead.
   -- rawset: some module tables guard __newindex, and a declaration is not a
   -- caller poking at the module.
-  rawset(trx[module], name, strict_enabled and make_checked(spec.impl, path, spec.params) or spec.impl)
+  rawset(container, name, strict_enabled and make_checked(spec.impl, path, spec.params) or spec.impl)
   return spec.impl
 end
 
@@ -188,9 +272,9 @@ end
 function api.strict(enabled)
   strict_enabled = enabled and true or false
   for _, path in ipairs(order) do
-    local module, name = split_path(path)
+    local _, container, name = resolve(path)
     local spec = registry[path]
-    rawset(trx[module], name, strict_enabled and make_checked(spec.impl, path, spec.params) or spec.impl)
+    rawset(container, name, strict_enabled and make_checked(spec.impl, path, spec.params) or spec.impl)
   end
 end
 
@@ -358,7 +442,15 @@ function api.property(path, spec)
 end
 
 function api.describe()
-  local out = { modules = {}, functions = {}, types = {}, enums = {}, constants = {}, properties = {} }
+  local out = {
+    modules = {},
+    functions = {},
+    types = {},
+    enums = {},
+    constants = {},
+    properties = {},
+    namespaces = {},
+  }
   for _, name in ipairs(module_order) do
     table.insert(out.modules, {
       name = name,
@@ -442,6 +534,17 @@ function api.describe()
       path = path,
       value = spec.value,
       description = spec.description,
+    })
+  end
+  for _, path in ipairs(namespace_order) do
+    local spec = namespaces[path]
+    table.insert(out.namespaces, {
+      path = path,
+      description = spec.description,
+      params = spec.params,
+      returns = spec.returns,
+      examples = spec.examples,
+      callable = spec.call ~= nil,
     })
   end
   for _, path in ipairs(property_order) do
