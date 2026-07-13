@@ -207,6 +207,19 @@ test_lua_log_exe = executable(
 )
 test('lua_log', test_lua_log_exe, suite: 'unit')
 
+# The log bridge rides along: console.lua takes its levels from trxc.log.
+test_lua_console_exe = executable(
+  'test_lua_console',
+  files('unit/test_lua_console.c', 'unit/fake_engine_console.c') + test_stubs
+    + lua_surface_src
+    + files('../trx/game/lua/console.c', '../trx/game/lua/log.c'),
+  include_directories: [src_inc, test_inc],
+  dependencies: [dep_lua],
+  c_args: lua_surface_args,
+  build_by_default: false,
+)
+test('lua_console', test_lua_console_exe, suite: 'unit')
+
 test_lua_creatures_exe = executable(
   'test_lua_creatures',
   files('unit/test_lua_creatures.c', 'unit/fake_engine_creatures.c') + test_stubs
