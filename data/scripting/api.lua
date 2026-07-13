@@ -13,10 +13,6 @@
 -- checking wrapper (~108ns overhead), which builders can enable while
 -- developing and leave off in play.
 
--- api.type reports members nobody exposed, so the logger must exist by then.
--- Module load order is not guaranteed; state the dependency.
-require("trx.log")
-
 -- Captured at module scope: the raw C bridge is removed from the globals once
 -- the trx.* modules have loaded, so builders cannot reach past the public API.
 local struct = trxc.struct
@@ -462,6 +458,15 @@ function api.describe()
 end
 
 trx.api = api
+
+-- api.type reports members nobody exposed, so the logger must exist by the time
+-- any module declares one, and modules load in source-list order, which puts log
+-- after items. Force it here rather than depend on that ordering.
+--
+-- It has to come after `trx.api` is set, not before: log.lua declares itself
+-- through the registry, so requiring it any earlier would hand it a half-built
+-- api table.
+require("trx.log")
 
 -- Minimal JSON encoder. The dump is consumed by tools/update_lua_docs; keeping
 -- the encoding here means the whole API surface - C field tables included - is
