@@ -29,6 +29,17 @@ Module for controlling all moveables.
     - `trx.items.Status.INVISIBLE` = `3`  
         Neither drawn nor collidable, as a pickup Lara has already collected is.
 
+- [lua]`trx.items.PickupMode`
+
+    The values the `pickup_mode` item property can take. It selects the animation Lara plays when collecting the item.
+
+    - `trx.items.PickupMode.NORMAL` = `0`  
+        Picked up off the floor.
+    - `trx.items.PickupMode.PLINTH_LOW` = `1`  
+        Picked up from a low pedestal.
+    - `trx.items.PickupMode.PLINTH_HIGH` = `2`  
+        Picked up from a high pedestal.
+
 ### Structures
 
 - [lua]`trx.items.Item`
