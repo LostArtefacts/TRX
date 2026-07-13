@@ -72,6 +72,213 @@
   ],
   "functions": [
     {
+      "description": "Happens prior to loading the level file.",
+      "examples": [
+        "trx.events.before_level_file(function(level_num)\n  -- handle pre-file-load setup\nend)"
+      ],
+      "params": [
+        {
+          "name": "callback",
+          "params": [
+            {
+              "description": "Number of the level the event fired for.",
+              "name": "level_num",
+              "type": "integer"
+            }
+          ],
+          "type": "function"
+        }
+      ],
+      "path": "events.before_level_file",
+      "returns": {
+        "description": "Listener id. Pass it to `trx.events.detach` to stop listening.",
+        "type": "integer"
+      }
+    },
+    {
+      "description": "Happens after the level finishes loading, prior to loading information from a savegame.",
+      "params": [
+        {
+          "name": "callback",
+          "params": [
+            {
+              "description": "Number of the level the event fired for.",
+              "name": "level_num",
+              "type": "integer"
+            }
+          ],
+          "type": "function"
+        }
+      ],
+      "path": "events.after_level_file",
+      "returns": {
+        "description": "Listener id. Pass it to `trx.events.detach` to stop listening.",
+        "type": "integer"
+      }
+    },
+    {
+      "description": "Happens after level items exist, before they are initialized. Use this to set object or item properties that item initialization reads.",
+      "params": [
+        {
+          "name": "callback",
+          "params": [
+            {
+              "description": "Number of the level the event fired for.",
+              "name": "level_num",
+              "type": "integer"
+            }
+          ],
+          "type": "function"
+        }
+      ],
+      "path": "events.before_item_setup",
+      "returns": {
+        "description": "Listener id. Pass it to `trx.events.detach` to stop listening.",
+        "type": "integer"
+      }
+    },
+    {
+      "description": "Happens after level items exist, after they are initialized.",
+      "params": [
+        {
+          "name": "callback",
+          "params": [
+            {
+              "description": "Number of the level the event fired for.",
+              "name": "level_num",
+              "type": "integer"
+            }
+          ],
+          "type": "function"
+        }
+      ],
+      "path": "events.after_item_setup",
+      "returns": {
+        "description": "Listener id. Pass it to `trx.events.detach` to stop listening.",
+        "type": "integer"
+      }
+    },
+    {
+      "description": "Happens after the level finishes loading, after loading information from a savegame. If the game is started normally, this duplicates `after_level_file`.",
+      "examples": [
+        "trx.events.after_level_state(function(level_num)\n  -- handle post-savegame state restore\nend)"
+      ],
+      "params": [
+        {
+          "name": "callback",
+          "params": [
+            {
+              "description": "Number of the level the event fired for.",
+              "name": "level_num",
+              "type": "integer"
+            }
+          ],
+          "type": "function"
+        }
+      ],
+      "path": "events.after_level_state",
+      "returns": {
+        "description": "Listener id. Pass it to `trx.events.detach` to stop listening.",
+        "type": "integer"
+      }
+    },
+    {
+      "description": "Happens after the level finishes loading and the game is about to start. Unlike `after_level_file` and `after_level_state`, this waits for the fade-to-black / cross-fade effects to finish, so it is the place to play sound effects and run game logic.",
+      "params": [
+        {
+          "name": "callback",
+          "params": [
+            {
+              "description": "Number of the level being started.",
+              "name": "level_num",
+              "type": "integer"
+            },
+            {
+              "description": "Whether the level is being resumed from a savegame rather than started fresh.",
+              "name": "is_save",
+              "type": "boolean"
+            }
+          ],
+          "type": "function"
+        }
+      ],
+      "path": "events.on_game_start",
+      "returns": {
+        "description": "Listener id. Pass it to `trx.events.detach` to stop listening.",
+        "type": "integer"
+      }
+    },
+    {
+      "description": "Happens just after Lara picks up an item.",
+      "examples": [
+        "trx.events.on_pickup(function(item_num)\n  trx.log.info(trx.items[item_num].object_id)\nend)"
+      ],
+      "params": [
+        {
+          "name": "callback",
+          "params": [
+            {
+              "description": "1-based index of the item that was picked up.",
+              "name": "item_num",
+              "type": "integer"
+            }
+          ],
+          "type": "function"
+        }
+      ],
+      "path": "events.on_pickup",
+      "returns": {
+        "description": "Listener id. Pass it to `trx.events.detach` to stop listening.",
+        "type": "integer"
+      }
+    },
+    {
+      "description": "Happens on every logical game frame, before the main game logic runs. The handler takes no arguments.",
+      "params": [
+        {
+          "name": "callback",
+          "type": "function"
+        }
+      ],
+      "path": "events.before_control",
+      "returns": {
+        "description": "Listener id. Pass it to `trx.events.detach` to stop listening.",
+        "type": "integer"
+      }
+    },
+    {
+      "description": "Happens on every logical game frame, after the main game logic runs. The handler takes no arguments.",
+      "params": [
+        {
+          "name": "callback",
+          "type": "function"
+        }
+      ],
+      "path": "events.after_control",
+      "returns": {
+        "description": "Listener id. Pass it to `trx.events.detach` to stop listening.",
+        "type": "integer"
+      }
+    },
+    {
+      "description": "Removes a previously attached handler, which stops firing immediately.",
+      "examples": [
+        "local id = trx.events.before_control(function()\n  -- handle control loop event\nend)\ntrx.events.detach(id)"
+      ],
+      "params": [
+        {
+          "description": "The id attach returned.",
+          "name": "listener_id",
+          "type": "integer"
+        }
+      ],
+      "path": "events.detach",
+      "returns": {
+        "description": "Whether a handler with that id was attached. `false` means it had already been detached, or the id was never handed out.",
+        "type": "boolean"
+      }
+    },
+    {
       "description": "Retrieves an item by 1-based index or by name.",
       "examples": [
         "local item = trx.items[1]\nitem.name = \"lara\"\nlocal lara = trx.items[\"lara\"]"
@@ -293,6 +500,11 @@
     }
   ],
   "modules": [
+    {
+      "description": "Lua scripts can listen for game events by attaching a handler to one of the hooks below. Attaching returns a listener id, which `trx.events.detach` takes.\n\nA handler attached from a level script is detached automatically when the level ends; one attached from a global script lives for the whole session.",
+      "name": "events",
+      "order": 2
+    },
     {
       "description": "Module for controlling all moveables.",
       "name": "items",

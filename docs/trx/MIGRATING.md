@@ -41,6 +41,11 @@ order: 3
      string.
    - Writing to an out-of-range room raises instead of silently doing nothing.
 
+3. **Update scripts that use event types**
+   `trx.events.EventType` was removed, along with the `._type` field on each
+   hook. The nine hooks are the whole API, and attaching is unchanged:
+   `trx.events.before_control(fn)`.
+
 ### Version 1.8 to 1.9
 
 1. **Update Lara pushblock animations**
