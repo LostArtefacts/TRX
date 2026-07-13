@@ -289,6 +289,20 @@ test_lua_lara_exe = executable(
 )
 test('lua_lara', test_lua_lara_exe, suite: 'unit')
 
+# The catalogs are real ENUM_MAP enums out of the real trx/game/enum.c. Only the
+# slot mapping, which a game loads from a CSV, is faked.
+test_lua_catalog_exe = executable(
+  'test_lua_catalog',
+  files('unit/test_lua_catalog.c', 'unit/fake_engine_catalog.c') + test_stubs
+    + lua_surface_src
+    + files('../trx/game/lua/catalog.c'),
+  include_directories: [src_inc, test_inc],
+  dependencies: [dep_lua],
+  c_args: lua_surface_args,
+  build_by_default: false,
+)
+test('lua_catalog', test_lua_catalog_exe, suite: 'unit')
+
 test_lua_config_exe = executable(
   'test_lua_config',
   files('unit/test_lua_config.c', 'unit/fake_engine_config.c') + test_stubs
