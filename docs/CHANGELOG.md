@@ -6,10 +6,13 @@
 - added new Lua config functions, `trx.config.override()`, `trx.config.restore()` and `trx.config.is_overridden()`, to change a setting without overwriting the player's own value
 - added new Lua level fields, `script_path`, `lara_outfit`, `music_track`, `water_particles` and the unobtainable pickup, kill and secret counts
 - added new Lua object fields, `loaded`, `is_intelligent`, `mesh_count`, `anim_count`, `radius`, `shadow_size`, `smartness`, `pivot_length` and `semi_transparent`
+- added new Lua catalog functions, `trx.catalog.to_slot()` and `trx.catalog.from_slot()`, to convert between a TRX id and the slot the current game's own files use for it
 - changed `trx.config.get()` to return the option's own type rather than always a string; refer to migration notes
 - changed `trx.events.detach()` to return whether a handler was removed
 - changed `trx.events` handlers to no longer receive a dummy argument in `before_control` and `after_control`
 - changed `trx.lara.mesh` and `trx.lara.extra_mesh` to declared enums, `trx.lara.Mesh` and `trx.lara.ExtraMesh`; refer to migration notes
+- changed Lua enums to answer to a constant's name in any case, so `trx.catalog.objects.wolf` and `trx.catalog.objects.WOLF` are the same constant
+- changed Lua enums to be read-only; writing to one used to succeed and silently break every later lookup
 - changed reflections UV mapping to be more correct
 - fixed TR1 and TR2 skyboxes being 2× too bright (regression from 1.9)
 - fixed being unable to drop to the secret ledge in Jungle room 76 from the ledge above (#5818)

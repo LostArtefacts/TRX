@@ -46,20 +46,27 @@ order: 3
    hook. The nine hooks are the whole API, and attaching is unchanged:
    `trx.events.before_control(fn)`.
 
-4. **Update scripts that use `trx.game.settings`**
+4. **Update scripts that write to a catalog**
+   The catalogs, and every other enum, are read-only now. Writing to one used to
+   succeed and silently break every later lookup, the engine's own scripts
+   included. Reading is unchanged, and a catalog answers to a name in any case:
+   `trx.catalog.objects.wolf` and `trx.catalog.objects.WOLF` are the same
+   constant. Upper case is the documented spelling.
+
+5. **Update scripts that use `trx.game.settings`**
    It was removed. It was five aliases over config options, and it wrote through
    `trx.config.set`, which keeps the change. Use `trx.config` directly, and
    prefer `trx.config.override` for anything a level wants only while it runs:
    - Before: `trx.game.settings.play_any_level = true`
    - After: `trx.config.override("flow.play_any_level", true)`
 
-5. **Update scripts that use Lara's mesh tables**
+6. **Update scripts that use Lara's mesh tables**
    `trx.lara.mesh` and `trx.lara.extra_mesh` became declared enums, so their
    names are upper case: replace `trx.lara.mesh.hand_r` with
    `trx.lara.Mesh.HAND_R`, and `trx.lara.extra_mesh.oar` with
    `trx.lara.ExtraMesh.OAR`.
 
-6. **Update scripts that compare `trx.config.get()` against a string**
+7. **Update scripts that compare `trx.config.get()` against a string**
    It returns the option's own type now: a boolean option reads as a boolean and
    a number as a number. Replace `trx.config.get("flow.cheat_keys") == "true"`
    with `trx.config.get("flow.cheat_keys")`. Colors and enums are still strings.
@@ -69,15 +76,15 @@ order: 3
    while it is running - it leaves the player's own value underneath, and
    `trx.config.restore()` puts it back.
 
-7. **Update scripts that use `trx.console.log.LogLevel`**
+8. **Update scripts that use `trx.console.log.LogLevel`**
    It was removed. Use `trx.log.LogLevel`, which is the same enum:
    `trx.console.log.generic(trx.log.LogLevel.ERROR, "...")`.
 
-8. **Update scripts that call `trx.music.play_track`**
+9. **Update scripts that call `trx.music.play_track`**
    It was an undocumented alias of `trx.music.play` and was removed. Use
    `trx.music.play(id[, opts])`.
 
-9. **Update scripts that set `pickup_mode`**
+10. **Update scripts that set `pickup_mode`**
    The `trx.pickup` module is gone. `pickup_mode` is an item property, so its
    enum now lives with the items: replace `trx.pickup.Mode.PLINTH_LOW` with
    `trx.items.PickupMode.PLINTH_LOW`.
