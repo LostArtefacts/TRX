@@ -94,8 +94,7 @@ def render_returns(returns: dict | None, indent: str) -> list[str]:
     bits = [returns["type"]]
     if returns.get("nullable"):
         bits.append("or `nil`")
-    desc = returns.get("description") or ""
-    return ["", f"{indent}Returns: {' '.join(bits)}. {desc}".rstrip()]
+    return ["", f"{indent}Returns: {' '.join(bits)}. {describe(returns)}".rstrip()]
 
 
 def render_examples(examples: list[str] | None, indent: str) -> list[str]:
