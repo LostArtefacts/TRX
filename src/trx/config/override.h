@@ -17,6 +17,11 @@
 // Applies `value` to the option, remembering whatever is currently there.
 bool ConfigOverride_Push(const CONFIG_OPTION *option, const void *value);
 
+// Applies a value parsed from a string. Fails on an option the game flow
+// enforces, and on a value that will not parse.
+bool ConfigOverride_PushFromString(
+    const CONFIG_OPTION *option, const char *value);
+
 // Lifts one layer off. False if the option was not overridden.
 bool ConfigOverride_Pop(const CONFIG_OPTION *option);
 
