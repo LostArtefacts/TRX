@@ -1,5 +1,6 @@
 #include <trx/config/enum.h>
 #include <trx/core/enum_map.h>
+#include <trx/core/log.h>
 #include <trx/game/game_buf.h>
 #include <trx/game/game_flow/types.h>
 #include <trx/game/gun/types.h>
@@ -65,6 +66,13 @@ static __attribute__((constructor)) void M_Init(void)
     ENUM_MAP(ITEM_STATUS, IS_ACTIVE, "active");
     ENUM_MAP(ITEM_STATUS, IS_DEACTIVATED, "deactivated");
     ENUM_MAP(ITEM_STATUS, IS_INVISIBLE, "invisible");
+
+    // LOG_LEVEL_MAX is a sentinel, not a level: leaving it unmapped keeps it
+    // out of trx.log.LogLevel.
+    ENUM_MAP(LOG_LEVEL, LOG_LEVEL_DEBUG, "debug");
+    ENUM_MAP(LOG_LEVEL, LOG_LEVEL_INFO, "info");
+    ENUM_MAP(LOG_LEVEL, LOG_LEVEL_WARNING, "warning");
+    ENUM_MAP(LOG_LEVEL, LOG_LEVEL_ERROR, "error");
 
     ENUM_MAP(MUSIC_PLAY_MODE, MPM_ONCE, "once");
     ENUM_MAP(MUSIC_PLAY_MODE, MPM_LOOP, "loop");

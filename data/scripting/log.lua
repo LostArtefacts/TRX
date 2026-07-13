@@ -1,24 +1,76 @@
 local raw = trxc.log
-local LogLevel = trxc.log.LogLevel
+local api = trx.api
 
-local log = { LogLevel = LogLevel }
-function log.generic(level, ...)
-  raw.log(level, ...)
-end
-function log.info(...)
-  raw.log(LogLevel.INFO, ...)
-end
-function log.warn(...)
-  raw.log(LogLevel.WARNING, ...)
-end
-function log.warning(...)
-  raw.log(LogLevel.WARNING, ...)
-end
-function log.error(...)
-  raw.log(LogLevel.ERROR, ...)
-end
-function log.debug(...)
-  raw.log(LogLevel.DEBUG, ...)
+api.module("log", {
+  order = 1,
+  title = "Logging",
+  description = "Logs a message to the terminal and to `TRX.log` in the installation directory. "
+    .. "Each call records the Lua script's filename, function name and line number.",
+})
+
+local LogLevel = api.enum("log.LogLevel", {
+  backing = "LOG_LEVEL",
+  description = "Severity of a log message. Pass one to `trx.log.generic`.",
+  values = {
+    DEBUG = "Diagnostic detail, of interest while writing a script.",
+    INFO = "Ordinary progress message.",
+    WARNING = "Something is wrong, but the script can carry on.",
+    ERROR = "Something failed.",
+  },
+})
+
+-- One wrapper layer per level, deliberately: the C side walks two stack frames up
+-- to find the caller, so binding raw.log straight to a level would change that
+-- depth and the log would blame the wrong line.
+local function at(level)
+  return function(message)
+    raw.log(level, message)
+  end
 end
 
-trx.log = log
+api.define("log.generic", {
+  description = "Logs a message at a level chosen at runtime, for when the level is computed "
+    .. "rather than written literally.",
+  params = {
+    { name = "level", type = "integer", enum = "log.LogLevel" },
+    { name = "message", type = "string" },
+  },
+  examples = {
+    [[local level = ok and trx.log.LogLevel.INFO or trx.log.LogLevel.ERROR
+trx.log.generic(level, "finished")]],
+  },
+  impl = function(level, message)
+    raw.log(level, message)
+  end,
+})
+
+api.define("log.info", {
+  description = "Logs an informational message.",
+  params = { { name = "message", type = "string" } },
+  examples = { [[trx.log.info("hello from lua")]] },
+  impl = at(LogLevel.INFO),
+})
+
+api.define("log.warn", {
+  description = "Logs a warning.",
+  params = { { name = "message", type = "string" } },
+  impl = at(LogLevel.WARNING),
+})
+
+api.define("log.warning", {
+  description = "Logs a warning. An alias of `trx.log.warn`.",
+  params = { { name = "message", type = "string" } },
+  impl = at(LogLevel.WARNING),
+})
+
+api.define("log.error", {
+  description = "Logs an error.",
+  params = { { name = "message", type = "string" } },
+  impl = at(LogLevel.ERROR),
+})
+
+api.define("log.debug", {
+  description = "Logs a debug message.",
+  params = { { name = "message", type = "string" } },
+  impl = at(LogLevel.DEBUG),
+})

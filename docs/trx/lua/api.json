@@ -23,6 +23,32 @@
   ],
   "enums": [
     {
+      "description": "Severity of a log message. Pass one to `trx.log.generic`.",
+      "path": "log.LogLevel",
+      "values": [
+        {
+          "description": "Diagnostic detail, of interest while writing a script.",
+          "name": "DEBUG",
+          "value": 0
+        },
+        {
+          "description": "Ordinary progress message.",
+          "name": "INFO",
+          "value": 1
+        },
+        {
+          "description": "Something is wrong, but the script can carry on.",
+          "name": "WARNING",
+          "value": 2
+        },
+        {
+          "description": "Something failed.",
+          "name": "ERROR",
+          "value": 3
+        }
+      ]
+    },
+    {
       "description": "The values `item.status` can take.",
       "path": "items.Status",
       "values": [
@@ -123,6 +149,77 @@
     }
   ],
   "functions": [
+    {
+      "description": "Logs a message at a level chosen at runtime, for when the level is computed rather than written literally.",
+      "examples": [
+        "local level = ok and trx.log.LogLevel.INFO or trx.log.LogLevel.ERROR\ntrx.log.generic(level, \"finished\")"
+      ],
+      "params": [
+        {
+          "enum": "log.LogLevel",
+          "name": "level",
+          "type": "integer"
+        },
+        {
+          "name": "message",
+          "type": "string"
+        }
+      ],
+      "path": "log.generic"
+    },
+    {
+      "description": "Logs an informational message.",
+      "examples": [
+        "trx.log.info(\"hello from lua\")"
+      ],
+      "params": [
+        {
+          "name": "message",
+          "type": "string"
+        }
+      ],
+      "path": "log.info"
+    },
+    {
+      "description": "Logs a warning.",
+      "params": [
+        {
+          "name": "message",
+          "type": "string"
+        }
+      ],
+      "path": "log.warn"
+    },
+    {
+      "description": "Logs a warning. An alias of `trx.log.warn`.",
+      "params": [
+        {
+          "name": "message",
+          "type": "string"
+        }
+      ],
+      "path": "log.warning"
+    },
+    {
+      "description": "Logs an error.",
+      "params": [
+        {
+          "name": "message",
+          "type": "string"
+        }
+      ],
+      "path": "log.error"
+    },
+    {
+      "description": "Logs a debug message.",
+      "params": [
+        {
+          "name": "message",
+          "type": "string"
+        }
+      ],
+      "path": "log.debug"
+    },
     {
       "description": "Shakes the camera by setting its bounce value. Positive values shake it upward, negative values downward.",
       "examples": [
@@ -693,6 +790,12 @@
     }
   ],
   "modules": [
+    {
+      "description": "Logs a message to the terminal and to `TRX.log` in the installation directory. Each call records the Lua script's filename, function name and line number.",
+      "name": "log",
+      "order": 1,
+      "title": "Logging"
+    },
     {
       "description": "Module for inspecting the active camera state.",
       "name": "camera",
