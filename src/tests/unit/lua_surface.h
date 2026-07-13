@@ -15,6 +15,9 @@
 typedef struct {
     // data/scripting/<module>.lua - the declaration under test.
     const char *module;
+    // Modules loaded before it, for a declaration that reaches into another -
+    // trx.camera.room hands back a trx.rooms.Room. NULL-terminated.
+    const char *deps[4];
     // src/tests/unit/lua/<tests>.lua - the assertions.
     const char *tests;
     // Registers the trxc bridges the module binds to.

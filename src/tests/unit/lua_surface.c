@@ -50,6 +50,14 @@ int LuaSurface_Run(const LUA_SURFACE_TEST *const test)
     if (luaL_dofile(L, REPO_ROOT "/data/scripting/api.lua") != LUA_OK) {
         M_Fail(L, "loading api.lua");
     }
+    for (int32_t i = 0; i < 4 && test->deps[i] != nullptr; i++) {
+        lua_pushfstring(L, REPO_ROOT "/data/scripting/%s.lua", test->deps[i]);
+        if (luaL_dofile(L, lua_tostring(L, -1)) != LUA_OK) {
+            M_Fail(L, "loading a dependency");
+        }
+        lua_pop(L, 1);
+    }
+
     lua_pushfstring(L, REPO_ROOT "/data/scripting/%s.lua", test->module);
     if (luaL_dofile(L, lua_tostring(L, -1)) != LUA_OK) {
         M_Fail(L, "loading the module");

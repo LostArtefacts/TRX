@@ -155,6 +155,20 @@ test_lua_items_exe = executable(
 )
 test('lua_items', test_lua_items_exe, suite: 'unit')
 
+# rooms rides along: trx.camera.room hands back a trx.rooms.Room.
+test_lua_camera_exe = executable(
+  'test_lua_camera',
+  files('unit/test_lua_camera.c', 'unit/fake_engine_camera.c', 'unit/fake_engine_rooms.c')
+    + test_stubs
+    + lua_surface_src
+    + files('../trx/game/rooms/fields.c', '../trx/game/lua/rooms.c', '../trx/game/lua/camera.c'),
+  include_directories: [src_inc, test_inc],
+  dependencies: [dep_lua],
+  c_args: lua_surface_args,
+  build_by_default: false,
+)
+test('lua_camera', test_lua_camera_exe, suite: 'unit')
+
 test_lua_music_exe = executable(
   'test_lua_music',
   files('unit/test_lua_music.c', 'unit/fake_engine_music.c') + test_stubs
