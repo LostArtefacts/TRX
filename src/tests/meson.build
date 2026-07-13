@@ -193,6 +193,18 @@ test_lua_sound_exe = executable(
 )
 test('lua_sound', test_lua_sound_exe, suite: 'unit')
 
+test_lua_creatures_exe = executable(
+  'test_lua_creatures',
+  files('unit/test_lua_creatures.c', 'unit/fake_engine_creatures.c') + test_stubs
+    + lua_surface_src
+    + files('../trx/game/lua/creatures.c'),
+  include_directories: [src_inc, test_inc],
+  dependencies: [dep_lua],
+  c_args: lua_surface_args,
+  build_by_default: false,
+)
+test('lua_creatures', test_lua_creatures_exe, suite: 'unit')
+
 test_lua_events_exe = executable(
   'test_lua_events',
   files('unit/test_lua_events.c') + test_stubs
