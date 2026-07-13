@@ -124,6 +124,24 @@
   ],
   "functions": [
     {
+      "description": "Shakes the camera by setting its bounce value. Positive values shake it upward, negative values downward.",
+      "examples": [
+        "trx.camera.shake(200)"
+      ],
+      "params": [
+        {
+          "description": "Bounce value.",
+          "name": "intensity",
+          "type": "integer"
+        }
+      ],
+      "path": "camera.shake"
+    },
+    {
+      "description": "Resets the camera to Lara's current position.",
+      "path": "camera.reset"
+    },
+    {
       "description": "Happens prior to loading the level file.",
       "examples": [
         "trx.events.before_level_file(function(level_num)\n  -- handle pre-file-load setup\nend)"
@@ -648,6 +666,11 @@
   ],
   "modules": [
     {
+      "description": "Module for inspecting the active camera state.",
+      "name": "camera",
+      "order": 16
+    },
+    {
       "description": "Lua scripts can listen for game events by attaching a handler to one of the hooks below. Attaching returns a listener id, which `trx.events.detach` takes.\n\nA handler attached from a level script is detached automatically when the level ends; one attached from a global script lives for the whole session.",
       "name": "events",
       "order": 2
@@ -676,6 +699,38 @@
       "description": "Module for playing sound effects.",
       "name": "sound",
       "order": 7
+    }
+  ],
+  "properties": [
+    {
+      "description": "Current camera position.",
+      "path": "camera.pos",
+      "type": "vec3",
+      "writable": false
+    },
+    {
+      "description": "1-based number of the room the camera is in, or `nil` if unknown.",
+      "path": "camera.room_num",
+      "type": "integer",
+      "writable": false
+    },
+    {
+      "description": "The `trx.rooms.Room` the camera is in, or `nil` if unknown.",
+      "path": "camera.room",
+      "type": "Room",
+      "writable": false
+    },
+    {
+      "description": "Position the camera is looking at.",
+      "path": "camera.target_pos",
+      "type": "vec3",
+      "writable": false
+    },
+    {
+      "description": "1-based number of the room the camera is looking at, or `nil` if unknown.",
+      "path": "camera.target_room_num",
+      "type": "integer",
+      "writable": false
     }
   ],
   "types": [
