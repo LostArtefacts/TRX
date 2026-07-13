@@ -164,6 +164,23 @@ class TestLuaDocs(unittest.TestCase):
         locked = next(line for line in page.splitlines() if "`locked`" in line)
         self.assertNotIn("Compare against", locked)
 
+    def test_a_return_value_cross_references_its_enum(self):
+        """A function that hands back an id is as worth cross-referencing as a
+        param that takes one."""
+        surface = copy.deepcopy(SURFACE)
+        surface["functions"][0]["returns"] = {
+            "type": "integer",
+            "enum": "catalog.music",
+            "description": "The track.",
+        }
+        page = docs.render_page(surface["modules"][0], surface)
+        returns = next(
+            line
+            for line in page.splitlines()
+            if "Returns:" in line and "The track." in line
+        )
+        self.assertIn("Compare against `trx.catalog.music`.", returns)
+
     def test_read_only_members_are_marked(self):
         page = docs.render_page(SURFACE["modules"][0], SURFACE)
         locked = next(
