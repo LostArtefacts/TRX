@@ -18,6 +18,17 @@ api.enum("items.Status", {
   },
 })
 
+api.enum("items.PickupMode", {
+  backing = "PICKUP_MODE",
+  description = "The values the `pickup_mode` item property can take. It selects the animation Lara "
+    .. "plays when collecting the item.",
+  values = {
+    NORMAL = "Picked up off the floor.",
+    PLINTH_LOW = "Picked up from a low pedestal.",
+    PLINTH_HIGH = "Picked up from a high pedestal.",
+  },
+})
+
 -- Item handles are bare userdata. Their metatable is populated by the api.type
 -- declaration below, and by nothing else: a member of the C ITEM struct that is
 -- not named here is not reachable from a script at all.

@@ -46,6 +46,11 @@ order: 3
    hook. The nine hooks are the whole API, and attaching is unchanged:
    `trx.events.before_control(fn)`.
 
+4. **Update scripts that set `pickup_mode`**
+   The `trx.pickup` module is gone. `pickup_mode` is an item property, so its
+   enum now lives with the items: replace `trx.pickup.Mode.PLINTH_LOW` with
+   `trx.items.PickupMode.PLINTH_LOW`.
+
 ### Version 1.8 to 1.9
 
 1. **Update Lara pushblock animations**

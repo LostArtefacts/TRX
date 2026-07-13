@@ -81,6 +81,14 @@ test("a value the field cannot hold raises instead of truncating", function()
   assert(trx.items[1].hit_points == 5)
 end)
 
+test("pickup_mode's enum lives with the items, not in a module of its own", function()
+  -- It types an item property, so it belongs here. trx.pickup is gone.
+  assert(trx.items.PickupMode.NORMAL == 0)
+  assert(trx.items.PickupMode.PLINTH_LOW == 1)
+  assert(trx.items.PickupMode.PLINTH_HIGH == 2)
+  assert(trx.pickup == nil, "trx.pickup must not exist")
+end)
+
 test("status matches the enum, and activate() moves it", function()
   assert(trx.items.Status.INACTIVE == 0)
   assert(trx.items.Status.ACTIVE == 1)

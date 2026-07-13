@@ -49,6 +49,27 @@
       ]
     },
     {
+      "description": "The values the `pickup_mode` item property can take. It selects the animation Lara plays when collecting the item.",
+      "path": "items.PickupMode",
+      "values": [
+        {
+          "description": "Picked up off the floor.",
+          "name": "NORMAL",
+          "value": 0
+        },
+        {
+          "description": "Picked up from a low pedestal.",
+          "name": "PLINTH_LOW",
+          "value": 1
+        },
+        {
+          "description": "Picked up from a high pedestal.",
+          "name": "PLINTH_HIGH",
+          "value": 2
+        }
+      ]
+    },
+    {
       "description": "The values `room.flip_status` can take.",
       "path": "rooms.FlipStatus",
       "values": [

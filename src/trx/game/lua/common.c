@@ -45,7 +45,6 @@ extern void LUA_CreateGame(lua_State *L);
 extern void LUA_CreateCreatures(lua_State *L);
 extern void LUA_CreateObjects(lua_State *const L);
 extern void LUA_CreateAssault(lua_State *const L);
-extern void LUA_CreatePickup(lua_State *const L);
 
 static int M_LoadFile(lua_State *const L, const char *const path)
 {
@@ -220,7 +219,6 @@ void LUA_Init(void)
     M_LoadTRXCModule(L, LUA_CreateCreatures);
     M_LoadTRXCModule(L, LUA_CreateObjects);
     M_LoadTRXCModule(L, LUA_CreateAssault);
-    M_LoadTRXCModule(L, LUA_CreatePickup);
 
     M_PRIV *const p = &m_Priv;
     p->state = L;
