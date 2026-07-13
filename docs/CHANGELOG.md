@@ -5,6 +5,7 @@
 
 **Lua**
 - added a new Lua module, `trx.math`, with the engine's own fixed-point trigonometry and the `DEG_1`, `DEG_45`, `DEG_90` and `WALL_L` constants
+- added a new Lua module, `trx.strings`, with `fuzzy_match()` and `regex_match()`
 - added `trx.game.LevelType.TITLE`, and a `demo` level type to the game flow, which could not be named before
 - added `trx.items.spawn()`, to place a new item in the level at runtime
 - added `trx.items.get()`, `trx.items.count()`, `trx.rooms.get()`, `trx.rooms.count()` and `trx.objects.get()`, replacing the `fn` namespaces; refer to migration notes

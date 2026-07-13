@@ -3418,6 +3418,50 @@
     {
       "description": "Stops every sound effect currently playing.",
       "path": "sound.stop_all"
+    },
+    {
+      "description": "Matches what someone typed against a list of candidates, forgivingly: `big medi` finds `large medipack`.\n\nCandidates are ranked, best first. Each carries a `value` of the caller's choosing, which comes back untouched on the match - hang an id off it and read it back.",
+      "examples": [
+        "local matches = trx.strings.fuzzy_match(\"wolf\", {\n  { key = \"wolf\", value = trx.catalog.objects.WOLF },\n  { key = \"bear\", value = trx.catalog.objects.BEAR },\n})\nlocal best = matches[1]"
+      ],
+      "params": [
+        {
+          "description": "What the player typed.",
+          "name": "input",
+          "type": "string"
+        },
+        {
+          "description": "List of `{ key = <the name>, value = <anything>, weight = <integer> }`. A heavier candidate wins a tie; weight defaults to 1.",
+          "name": "sources",
+          "type": "table"
+        }
+      ],
+      "path": "strings.fuzzy_match",
+      "returns": {
+        "description": "The matches, best first: `{ key, value, score, is_full, is_word }`. `is_full` means the whole candidate matched, `is_word` that a whole word did.",
+        "type": "table"
+      }
+    },
+    {
+      "description": "Whether a subject matches a regular expression. Case-insensitive.",
+      "examples": [
+        "if trx.strings.regex_match(args, \"^%d+$\") then ... end"
+      ],
+      "params": [
+        {
+          "name": "subject",
+          "type": "string"
+        },
+        {
+          "description": "A PCRE regular expression.",
+          "name": "pattern",
+          "type": "string"
+        }
+      ],
+      "path": "strings.regex_match",
+      "returns": {
+        "type": "boolean"
+      }
     }
   ],
   "modules": [
@@ -3503,6 +3547,11 @@
       "description": "Module for playing sound effects.",
       "name": "sound",
       "order": 7
+    },
+    {
+      "description": "Utilities for working with strings.\n\n",
+      "name": "strings",
+      "order": 19
     }
   ],
   "namespaces": [

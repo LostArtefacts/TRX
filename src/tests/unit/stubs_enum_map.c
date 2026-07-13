@@ -15,9 +15,13 @@
 // The real one cycles a ring of growing static buffers, so several results can
 // be live at once; the caller never frees them. enum_map.c only keeps one key
 // alive at a time, but match the contract rather than assume that.
+//
+// Weak, so a test that links core/strings itself - see test_lua_strings - gets
+// the real thing instead of this.
 #define M_BUFFER_COUNT 8
 
-const char *String_FormatStaticV(const char *const fmt, va_list args)
+__attribute__((weak)) const char *String_FormatStaticV(
+    const char *const fmt, va_list args)
 {
     static char *m_Buffers[M_BUFFER_COUNT];
     static size_t m_Capacities[M_BUFFER_COUNT];
@@ -41,7 +45,8 @@ const char *String_FormatStaticV(const char *const fmt, va_list args)
     return *buf;
 }
 
-const char *String_FormatStatic(const char *const fmt, ...)
+__attribute__((weak)) const char *String_FormatStatic(
+    const char *const fmt, ...)
 {
     va_list args;
     va_start(args, fmt);
