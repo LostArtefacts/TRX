@@ -320,8 +320,8 @@ test("seal audits inside a namespace", function()
   api.define("console.log.info", { description = "Info.", impl = function() end })
   api.seal()
 
-  -- A member one level down is exactly the surface the old audit could not see:
-  -- it walked the module table and found `log`, a declared namespace, and stopped.
+  -- Walking the module table alone finds `log`, a declared namespace, and stops.
+  -- Everything hanging off it has to be audited as its own container.
   local api2 = fresh_env()
   api2.module("console", {})
   api2.namespace("console.log", { description = "Logging." })

@@ -290,6 +290,17 @@ class TestLuaDocs(unittest.TestCase):
         self.assertIn("`trx.things.stats`", page)
         self.assertNotIn("`trx.things.stats()`", page)
 
+    def test_a_multi_paragraph_description_stays_inside_its_list_item(self):
+        """Indenting only the first line ends the list at the blank line and
+        dumps the remaining paragraphs at the page's top level."""
+        surface = copy.deepcopy(SURFACE)
+        surface["functions"][0]["description"] = "First para.\n\nSecond para."
+        page = docs.render_page(surface["modules"][0], surface)
+        second = next(line for line in page.splitlines() if "Second para." in line)
+        self.assertTrue(
+            second.startswith("  "), f"paragraph escaped its list item: {second!r}"
+        )
+
     def test_rendering_is_stable(self):
         """Two runs must agree, or --check would flag spurious drift forever."""
         a = docs.render_page(SURFACE["modules"][0], SURFACE)
