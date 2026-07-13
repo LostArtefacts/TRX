@@ -14,7 +14,7 @@ order: 19
 
 Utilities for working with strings.
 
-
+Not to be confused with `trx.locale`, which is the text a player reads: this module is about manipulating strings, that one is about which string the player gets.
 
 ### Functions
 
