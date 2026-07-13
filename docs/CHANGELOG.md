@@ -7,6 +7,7 @@
 - fixed being unable to drop to the secret ledge in Jungle room 76 from the ledge above (#5818)
 - fixed TR1 and TR2 skyboxes being 2× too bright (regression from 1.9)
 - removed the `trx.pickup` module; its enum is now `trx.items.PickupMode`; refer to migration notes
+- removed `trx.console.log.LogLevel`, a duplicate of `trx.log.LogLevel`; refer to migration notes
 - removed `trx.music.play_track`, an undocumented alias of `trx.music.play`; refer to migration notes
 
 **TR4**

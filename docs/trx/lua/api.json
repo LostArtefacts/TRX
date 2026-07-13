@@ -239,6 +239,95 @@
       "path": "camera.reset"
     },
     {
+      "description": "Logs at a level chosen at runtime.",
+      "params": [
+        {
+          "enum": "log.LogLevel",
+          "name": "level",
+          "type": "integer"
+        },
+        {
+          "name": "message",
+          "type": "string"
+        }
+      ],
+      "path": "console.log.generic"
+    },
+    {
+      "description": "Logs an informational message.",
+      "params": [
+        {
+          "name": "message",
+          "type": "string"
+        }
+      ],
+      "path": "console.log.info"
+    },
+    {
+      "description": "Logs a warning.",
+      "params": [
+        {
+          "name": "message",
+          "type": "string"
+        }
+      ],
+      "path": "console.log.warn"
+    },
+    {
+      "description": "Logs a warning. An alias of `trx.console.log.warn`.",
+      "params": [
+        {
+          "name": "message",
+          "type": "string"
+        }
+      ],
+      "path": "console.log.warning"
+    },
+    {
+      "description": "Logs an error.",
+      "params": [
+        {
+          "name": "message",
+          "type": "string"
+        }
+      ],
+      "path": "console.log.error"
+    },
+    {
+      "description": "Logs a debug message.",
+      "params": [
+        {
+          "name": "message",
+          "type": "string"
+        }
+      ],
+      "path": "console.log.debug"
+    },
+    {
+      "description": "Runs a string as a developer console command. Raises if the command fails.\n\nOutput is silenced by default and appears only in the terminal and the log file. Pass `{ verbose = true }` to show it in the console as a command typed by the player would.",
+      "examples": [
+        "trx.console.eval(\"play 1\", { verbose = true })"
+      ],
+      "params": [
+        {
+          "description": "Command to run, as the player would type it.",
+          "name": "command",
+          "type": "string"
+        },
+        {
+          "description": "`verbose`: show the command's output.",
+          "name": "opts",
+          "optional": true,
+          "type": "table"
+        }
+      ],
+      "path": "console.eval"
+    },
+    {
+      "description": "Clears the console.",
+      "path": "console.clear"
+    },
+    {
       "description": "Marks an object as an ally of Lara. Every item of that type becomes an ally.",
       "examples": [
         "trx.creatures.add_ally(trx.catalog.objects.monk_1)"
@@ -802,6 +891,11 @@
       "order": 16
     },
     {
+      "description": "Module for interacting with the developer console.\n\n`trx.console.log` writes to the console overlay in-game, where `trx.log` writes only to the terminal and the log file.",
+      "name": "console",
+      "order": 5
+    },
+    {
       "description": "Module for controlling certain creature behavior.",
       "name": "creatures",
       "order": 12
@@ -835,6 +929,22 @@
       "description": "Module for playing sound effects.",
       "name": "sound",
       "order": 7
+    }
+  ],
+  "namespaces": [
+    {
+      "callable": true,
+      "description": "Logs a line to the developer console. Calling the group itself logs at `INFO`.",
+      "examples": [
+        "trx.console.log(\"hello\")"
+      ],
+      "params": [
+        {
+          "name": "message",
+          "type": "string"
+        }
+      ],
+      "path": "console.log"
     }
   ],
   "properties": [
