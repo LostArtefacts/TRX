@@ -263,10 +263,10 @@ static void M_ReplayActors(
     const int32_t end_frame)
 {
     for (int32_t frame_idx = start_frame; frame_idx < end_frame; frame_idx++) {
-        Lua_FireEventInt32(LUA_EVENT_BEFORE_CONTROL, 0);
+        Lua_FireEvent(LUA_EVENT_BEFORE_CONTROL);
         cine_data->frame_idx = frame_idx;
         M_Control();
-        Lua_FireEventInt32(LUA_EVENT_AFTER_CONTROL, 0);
+        Lua_FireEvent(LUA_EVENT_AFTER_CONTROL);
     }
 }
 
