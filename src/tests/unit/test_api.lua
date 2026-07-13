@@ -289,6 +289,54 @@ test("properties reach describe()", function()
   assert(out.properties[2].writable == false, "a getter-only property is read-only")
 end)
 
+test("a namespace groups members one level down, and can itself be callable", function()
+  local api = fresh_env()
+  api.module("console", {})
+
+  local logged = {}
+  api.namespace("console.log", {
+    description = "Logging.",
+    call = function(message)
+      return trx.console.log.info(message)
+    end,
+  })
+  api.define("console.log.info", {
+    description = "Info.",
+    impl = function(message)
+      logged[#logged + 1] = message
+      return "ok"
+    end,
+  })
+
+  assert(trx.console.log.info("a") == "ok", "the member is not reachable")
+  assert(trx.console.log("b") == "ok", "the namespace is not callable")
+  assert(logged[1] == "a" and logged[2] == "b", "the call did not reach info()")
+end)
+
+test("seal audits inside a namespace", function()
+  local api = fresh_env()
+  api.module("console", {})
+  api.namespace("console.log", { description = "Logging." })
+  api.define("console.log.info", { description = "Info.", impl = function() end })
+  api.seal()
+
+  -- A member one level down is exactly the surface the old audit could not see:
+  -- it walked the module table and found `log`, a declared namespace, and stopped.
+  local api2 = fresh_env()
+  api2.module("console", {})
+  api2.namespace("console.log", { description = "Logging." })
+  rawset(trx.console.log, "sneaky", function() end)
+  local ok, err = pcall(api2.seal)
+  assert(not ok, "an undeclared member inside a namespace must fail the seal")
+  assert(tostring(err):find("trx.console.log.sneaky", 1, true), "the audit must name it: " .. tostring(err))
+end)
+
+test("a path deeper than a namespace is rejected", function()
+  local api = fresh_env()
+  api.module("console", {})
+  assert(not pcall(api.define, "console.log.deep.deeper", { impl = function() end }), "3 levels deep")
+end)
+
 test("seal blocks further declarations", function()
   local api = fresh_env()
   api.seal()

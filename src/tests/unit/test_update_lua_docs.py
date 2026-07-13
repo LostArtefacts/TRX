@@ -273,6 +273,23 @@ class TestLuaDocs(unittest.TestCase):
         self.assertIn("title: Thingamabobs", page)
         self.assertIn("## Thingamabobs module", page)
 
+    def test_a_namespace_reaches_the_page_whether_or_not_it_is_callable(self):
+        """A group's own prose - "these records live in the player's profile" -
+        is not something any member's signature can say."""
+        surface = copy.deepcopy(SURFACE)
+        surface["namespaces"] = [
+            {"path": "things.log", "description": "Logs it.", "callable": True},
+            {"path": "things.stats", "description": "Counts it.", "callable": False},
+        ]
+        page = docs.render_page(surface["modules"][0], surface)
+        self.assertIn("Logs it.", page)
+        self.assertIn("Counts it.", page)
+
+        # Callable renders as a call; a plain group does not pretend to be one.
+        self.assertIn("`trx.things.log()`", page)
+        self.assertIn("`trx.things.stats`", page)
+        self.assertNotIn("`trx.things.stats()`", page)
+
     def test_rendering_is_stable(self):
         """Two runs must agree, or --check would flag spurious drift forever."""
         a = docs.render_page(SURFACE["modules"][0], SURFACE)

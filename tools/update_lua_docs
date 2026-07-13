@@ -119,6 +119,28 @@ def render_function(func: dict) -> list[str]:
     return out
 
 
+def render_namespace(spec: dict) -> list[str]:
+    """A grouping table on a module, holding related members under one name.
+
+    Its members render as ordinary functions, since they carry the full path.
+    What needs a bullet of its own is what the members' signatures cannot say:
+    the group's own description, and, when it is callable, that the group may be
+    called directly.
+    """
+    if spec.get("callable"):
+        head = f"- [lua]`trx.{signature(spec['path'], spec.get('params'))}`  "
+    else:
+        head = f"- [lua]`trx.{spec['path']}`  "
+    out = [head]
+    if spec.get("description"):
+        out.append(f"  {spec['description']}")
+    out.extend(render_params(spec.get("params"), "  "))
+    out.extend(render_returns(spec.get("returns"), "  "))
+    out.extend(render_examples(spec.get("examples"), "  "))
+    out.append("")
+    return out
+
+
 def render_const(spec: dict) -> list[str]:
     out = [f"- [lua]`trx.{spec['path']}` = `{spec['value']}`  "]
     if spec.get("description"):
@@ -249,10 +271,13 @@ def render_page(module: dict, api: dict) -> str:
         for spec in types:
             out.extend(render_type(spec))
 
+    spaces = [n for n in api.get("namespaces", []) if n["path"].startswith(f"{name}.")]
     funcs = [f for f in api["functions"] if f["path"].startswith(f"{name}.")]
-    if funcs:
+    if funcs or spaces:
         out.append("### Functions")
         out.append("")
+        for spec in spaces:
+            out.extend(render_namespace(spec))
         for func in funcs:
             out.extend(render_function(func))
 
@@ -271,6 +296,9 @@ def undocumented(api: dict) -> list[str]:
     for prop in api.get("properties", []):
         if not prop.get("description"):
             out.append(prop["path"])
+    for space in api.get("namespaces", []):
+        if not space.get("description"):
+            out.append(space["path"])
     for enum in api.get("enums", []):
         for value in enum.get("values") or []:
             if not value.get("description"):
