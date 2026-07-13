@@ -76,7 +76,32 @@ SURFACE = {
             ],
             "returns": {"type": "Widget", "nullable": True},
             "examples": ["local w = trx.things.spawn(1)"],
-        }
+        },
+        {
+            "path": "things.on_poked",
+            "description": "Registers a handler.",
+            "params": [
+                {
+                    "name": "callback",
+                    "type": "function",
+                    "description": "Called when a thing is poked.",
+                    "params": [
+                        {
+                            "name": "strength",
+                            "type": "integer",
+                            "description": "How hard.",
+                        },
+                        {
+                            "name": "id",
+                            "type": "integer",
+                            "enum": "catalog.objects",
+                            "description": "What was poked.",
+                        },
+                    ],
+                }
+            ],
+            "returns": {"type": "integer"},
+        },
     ],
 }
 
@@ -152,6 +177,34 @@ class TestLuaDocs(unittest.TestCase):
         page = docs.render_page(SURFACE["modules"][0], SURFACE)
         self.assertIn("things.spawn(id, [angle])", page)
         self.assertIn("default `0`", page)
+
+    def test_a_callbacks_own_arguments_are_rendered(self):
+        """An event hook takes nothing but a callback, so the callback's
+        signature is the only one worth documenting. Without this the page says
+        `trx.events.on_pickup(callback)` and never mentions that the callback is
+        handed the item number."""
+        page = docs.render_page(SURFACE["modules"][0], SURFACE)
+        self.assertIn("Called with:", page)
+        strength = next(
+            line for line in page.splitlines() if "**`strength`**" in line
+        )
+        self.assertIn("How hard.", strength)
+        # Indented under the callback, not hoisted to the function's own params.
+        callback = next(
+            line for line in page.splitlines() if "**`callback`**" in line
+        )
+        self.assertGreater(
+            len(strength) - len(strength.lstrip()),
+            len(callback) - len(callback.lstrip()),
+        )
+        # A callback argument gets the same enum cross-reference a param does.
+        arg = next(line for line in page.splitlines() if "**`id`**" in line)
+        self.assertIn("Compare against `trx.catalog.objects`.", arg)
+
+    def test_a_param_with_no_callback_args_stays_flat(self):
+        page = docs.render_page(SURFACE["modules"][0], SURFACE)
+        angle = next(line for line in page.splitlines() if "**`angle`**" in line)
+        self.assertNotIn("Called with:", angle)
 
     def test_nullable_returns_say_so(self):
         page = docs.render_page(SURFACE["modules"][0], SURFACE)

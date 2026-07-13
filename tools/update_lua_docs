@@ -52,6 +52,24 @@ def describe(spec: dict) -> str:
     return desc
 
 
+def render_callback_args(param: dict, indent: str) -> list[str]:
+    """The arguments a callback parameter is itself called with.
+
+    `params` on a function-typed parameter describes the signature the engine
+    invokes it with - which for an event hook is the only signature that matters,
+    since the hook itself takes nothing but the callback.
+    """
+    args = param.get("params")
+    if not args:
+        return []
+    out = [f"{indent}Called with:"]
+    for arg in args:
+        out.append(
+            f"{indent}- **`{arg['name']}`** ({arg['type']}). {describe(arg)}".rstrip()
+        )
+    return out
+
+
 def render_params(params: list[dict] | None, indent: str) -> list[str]:
     if not params:
         return []
@@ -66,6 +84,7 @@ def render_params(params: list[dict] | None, indent: str) -> list[str]:
         out.append(
             f"{indent}- **`{param['name']}`** ({', '.join(bits)}). {describe(param)}".rstrip()
         )
+        out.extend(render_callback_args(param, f"{indent}  "))
     return out
 
 
