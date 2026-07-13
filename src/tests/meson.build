@@ -242,6 +242,18 @@ test('lua_log', test_lua_log_exe, suite: 'unit')
 # trx.lara stands for one C struct, so her fields go through the real reflection
 # layer. Only what is not a field of LARA_INFO is faked.
 # An object is what an item is cut from, so they share a fake engine.
+test_lua_game_exe = executable(
+  'test_lua_game',
+  files('unit/test_lua_game.c', 'unit/fake_engine_game.c') + test_stubs
+    + lua_surface_src
+    + files('../trx/game/game_flow/fields.c', '../trx/game/lua/game.c'),
+  include_directories: [src_inc, test_inc],
+  dependencies: [dep_lua],
+  c_args: lua_surface_args,
+  build_by_default: false,
+)
+test('lua_game', test_lua_game_exe, suite: 'unit')
+
 test_lua_objects_exe = executable(
   'test_lua_objects',
   files('unit/test_lua_objects.c', 'unit/fake_engine_items.c') + test_stubs
