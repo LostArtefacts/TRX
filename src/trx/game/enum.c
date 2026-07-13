@@ -125,9 +125,15 @@ static __attribute__((constructor)) void M_Init(void)
     ENUM_MAP(
         GF_SEQUENCE_EVENT_TYPE, GFS_ADD_SECRET_REWARD, "add_secret_reward");
 
+    ENUM_MAP(GF_LEVEL_TABLE_TYPE, GFLT_TITLE, "title");
+    ENUM_MAP(GF_LEVEL_TABLE_TYPE, GFLT_MAIN, "main");
+    ENUM_MAP(GF_LEVEL_TABLE_TYPE, GFLT_CUTSCENES, "cutscenes");
+    ENUM_MAP(GF_LEVEL_TABLE_TYPE, GFLT_DEMOS, "demos");
+
     ENUM_MAP(GF_LEVEL_TYPE, GFL_TITLE, "title");
     ENUM_MAP(GF_LEVEL_TYPE, GFL_NORMAL, "normal");
     ENUM_MAP(GF_LEVEL_TYPE, GFL_CUTSCENE, "cutscene");
+    ENUM_MAP(GF_LEVEL_TYPE, GFL_DEMO, "demo");
     ENUM_MAP(GF_LEVEL_TYPE, GFL_GYM, "gym");
     ENUM_MAP(GF_LEVEL_TYPE, GFL_BONUS, "bonus");
     ENUM_MAP(GF_LEVEL_TYPE, GFL_DUMMY, "dummy");

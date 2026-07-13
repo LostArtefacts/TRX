@@ -1,5 +1,8 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.9.1...develop) - ××××-××-××
 - added a new Lua module, `trx.math`
+- added new Lua level fields, `script_path`, `lara_outfit`, `music_track`, `water_particles` and the unobtainable pickup, kill and secret counts
+- added `trx.game.LevelType.TITLE`, and a `demo` level type to the game flow, which could not be named before
+- removed `trx.game.settings`, which duplicated `trx.config`; refer to migration notes
 - added new Lua object fields, `loaded`, `is_intelligent`, `mesh_count`, `anim_count`, `radius`, `shadow_size`, `smartness`, `pivot_length` and `semi_transparent`
 - added new Lua Lara state, `trx.lara.poison`, `trx.lara.electric`, `trx.lara.is_burning`, `trx.lara.is_crouched`, `trx.lara.is_climbing`, `trx.lara.water_status`, `trx.lara.gun_status` and the dive, death, sprint and pose timers
 - changed `trx.lara.mesh` and `trx.lara.extra_mesh` to declared enums, `trx.lara.Mesh` and `trx.lara.ExtraMesh`; refer to migration notes

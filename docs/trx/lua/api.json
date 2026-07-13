@@ -65,6 +65,78 @@
       ]
     },
     {
+      "description": "One of the lists of levels the game flow declares.",
+      "path": "game.LevelTable",
+      "values": [
+        {
+          "description": "The title screen.",
+          "name": "TITLE",
+          "value": 0
+        },
+        {
+          "description": "The levels of the game proper.",
+          "name": "MAIN",
+          "value": 1
+        },
+        {
+          "description": "The cutscenes.",
+          "name": "CUTSCENES",
+          "value": 2
+        },
+        {
+          "description": "The demos that play when the title screen is left alone.",
+          "name": "DEMOS",
+          "value": 3
+        }
+      ]
+    },
+    {
+      "description": "What kind of level it is.",
+      "path": "game.LevelType",
+      "values": [
+        {
+          "description": "The title screen.",
+          "name": "TITLE",
+          "value": 0
+        },
+        {
+          "description": "An ordinary level.",
+          "name": "NORMAL",
+          "value": 1
+        },
+        {
+          "description": "A cutscene.",
+          "name": "CUTSCENE",
+          "value": 2
+        },
+        {
+          "description": "A demo.",
+          "name": "DEMO",
+          "value": 3
+        },
+        {
+          "description": "Lara's home, which has no level number.",
+          "name": "GYM",
+          "value": 4
+        },
+        {
+          "description": "A bonus level, played once the game is finished.",
+          "name": "BONUS",
+          "value": 5
+        },
+        {
+          "description": "Not a level. Kept only because old savegames refer to it.",
+          "name": "DUMMY",
+          "value": 6
+        },
+        {
+          "description": "Not a level. Kept only because old savegames refer to it.",
+          "name": "CURRENT",
+          "value": 7
+        }
+      ]
+    },
+    {
       "description": "The values `item.status` can take.",
       "path": "items.Status",
       "values": [
@@ -1024,6 +1096,42 @@
       }
     },
     {
+      "description": "Starts a level of the game proper.",
+      "examples": [
+        "trx.game.play_level(1)"
+      ],
+      "params": [
+        {
+          "description": "The level's number.",
+          "name": "num",
+          "type": "integer"
+        }
+      ],
+      "path": "game.play_level"
+    },
+    {
+      "description": "Plays a cutscene.",
+      "params": [
+        {
+          "description": "The cutscene's number.",
+          "name": "num",
+          "type": "integer"
+        }
+      ],
+      "path": "game.play_cutscene"
+    },
+    {
+      "description": "Plays a demo.",
+      "params": [
+        {
+          "description": "The demo's number.",
+          "name": "num",
+          "type": "integer"
+        }
+      ],
+      "path": "game.play_demo"
+    },
+    {
       "description": "Retrieves an item by 1-based index or by name.",
       "examples": [
         "local item = trx.items[1]\nitem.name = \"lara\"\nlocal lara = trx.items[\"lara\"]"
@@ -1459,6 +1567,11 @@
       "order": 2
     },
     {
+      "description": "Module for the game flow: which levels there are, and which one is being played.",
+      "name": "game",
+      "order": 11
+    },
+    {
       "description": "Module for controlling all moveables.",
       "name": "items",
       "order": 4
@@ -1561,6 +1674,42 @@
       "writable": true
     },
     {
+      "description": "The levels of the game proper, in order, as a list of `trx.game.Level`.",
+      "path": "game.levels",
+      "type": "table",
+      "writable": false
+    },
+    {
+      "description": "The cutscenes, as a list of `trx.game.Level`.",
+      "path": "game.cutscenes",
+      "type": "table",
+      "writable": false
+    },
+    {
+      "description": "The demos, as a list of `trx.game.Level`.",
+      "path": "game.demos",
+      "type": "table",
+      "writable": false
+    },
+    {
+      "description": "The level being played, or `nil` if none is.",
+      "path": "game.current_level",
+      "type": "Level",
+      "writable": false
+    },
+    {
+      "description": "Which Tomb Raider this build is: 1, 2, 3 or 4.",
+      "path": "game.version",
+      "type": "integer",
+      "writable": false
+    },
+    {
+      "description": "The TRX version string.",
+      "path": "game.trx_version",
+      "type": "string",
+      "writable": false
+    },
+    {
       "description": "Lara's own `trx.items.Item`, or `nil` outside a level. Her position, room and hit points are read and written there.",
       "path": "lara.item",
       "type": "Item",
@@ -1592,6 +1741,88 @@
     }
   ],
   "types": [
+    {
+      "description": "A level, as the game flow file declares it. Everything on it is read-only: a level is what the game flow says it is.",
+      "extensions": [],
+      "fields": [
+        {
+          "description": "The outfit Lara starts the level in.",
+          "name": "lara_outfit",
+          "type": "string",
+          "writable": false
+        },
+        {
+          "description": "The track that plays when the level starts.",
+          "enum": "catalog.music",
+          "name": "music_track",
+          "type": "integer",
+          "writable": false
+        },
+        {
+          "description": "The number the level goes by. Not its place in the table: levels the game flow skips do not count, and a gym level has no number at all and reads 0.",
+          "name": "num",
+          "type": "integer",
+          "writable": false
+        },
+        {
+          "description": "Path to the level file.",
+          "name": "path",
+          "type": "string",
+          "writable": false
+        },
+        {
+          "description": "Path to the Lua script that runs when the level loads, or `nil` if it has none.",
+          "name": "script_path",
+          "type": "string",
+          "writable": false
+        },
+        {
+          "description": "The level's name, as shown to the player.",
+          "name": "title",
+          "type": "string",
+          "writable": false
+        },
+        {
+          "description": "What kind of level it is.",
+          "enum": "game.LevelType",
+          "name": "type",
+          "type": "integer",
+          "writable": false
+        },
+        {
+          "description": "Ally kills the stats screen must not hold against the player.",
+          "name": "unobtainable_ally_kills",
+          "type": "integer",
+          "writable": false
+        },
+        {
+          "description": "Kills the stats screen must not hold against the player.",
+          "name": "unobtainable_kills",
+          "type": "integer",
+          "writable": false
+        },
+        {
+          "description": "Pickups the stats screen must not hold against the player, because they cannot be got.",
+          "name": "unobtainable_pickups",
+          "type": "integer",
+          "writable": false
+        },
+        {
+          "description": "Secrets the stats screen must not hold against the player.",
+          "name": "unobtainable_secrets",
+          "type": "integer",
+          "writable": false
+        },
+        {
+          "description": "Whether bubbles rise through the level's water.",
+          "name": "water_particles",
+          "type": "boolean",
+          "writable": false
+        }
+      ],
+      "methods": [],
+      "path": "game.Level"
+    },
     {
       "description": "An item, also known as a moveable.",
       "extensions": [
