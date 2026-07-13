@@ -142,6 +142,34 @@
       "path": "camera.reset"
     },
     {
+      "description": "Marks an object as an ally of Lara. Every item of that type becomes an ally.",
+      "examples": [
+        "trx.creatures.add_ally(trx.catalog.objects.monk_1)"
+      ],
+      "params": [
+        {
+          "enum": "catalog.objects",
+          "name": "object_id",
+          "type": "integer"
+        }
+      ],
+      "path": "creatures.add_ally"
+    },
+    {
+      "description": "Marks an object as one that will fight any of Lara's allies. Every item of that type will target them.",
+      "examples": [
+        "trx.creatures.add_ally_target(trx.catalog.objects.bandit_1)"
+      ],
+      "params": [
+        {
+          "enum": "catalog.objects",
+          "name": "object_id",
+          "type": "integer"
+        }
+      ],
+      "path": "creatures.add_ally_target"
+    },
+    {
       "description": "Happens prior to loading the level file.",
       "examples": [
         "trx.events.before_level_file(function(level_num)\n  -- handle pre-file-load setup\nend)"
@@ -671,6 +699,11 @@
       "order": 16
     },
     {
+      "description": "Module for controlling certain creature behavior.",
+      "name": "creatures",
+      "order": 12
+    },
+    {
       "description": "Lua scripts can listen for game events by attaching a handler to one of the hooks below. Attaching returns a listener id, which `trx.events.detach` takes.\n\nA handler attached from a level script is detached automatically when the level ends; one attached from a global script lives for the whole session.",
       "name": "events",
       "order": 2
@@ -731,6 +764,12 @@
       "path": "camera.target_room_num",
       "type": "integer",
       "writable": false
+    },
+    {
+      "description": "Whether Lara's allies are hostile towards her.",
+      "path": "creatures.hostile_allies",
+      "type": "boolean",
+      "writable": true
     }
   ],
   "types": [
