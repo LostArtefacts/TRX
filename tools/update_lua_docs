@@ -70,6 +70,16 @@ def render_callback_args(param: dict, indent: str) -> list[str]:
     return out
 
 
+def render_prose(text: str, indent: str) -> list[str]:
+    """A description under a list item, indented so it stays inside the item.
+
+    Descriptions can run to several paragraphs. Indenting only the first line
+    would end the list at the blank line and dump the rest at the page's top
+    level.
+    """
+    return [f"{indent}{line}".rstrip() for line in text.splitlines()]
+
+
 def render_params(params: list[dict] | None, indent: str) -> list[str]:
     if not params:
         return []
@@ -111,7 +121,7 @@ def render_examples(examples: list[str] | None, indent: str) -> list[str]:
 def render_function(func: dict) -> list[str]:
     out = [f"- [lua]`trx.{signature(func['path'], func.get('params'))}`  "]
     if func.get("description"):
-        out.append(f"  {func['description']}")
+        out.extend(render_prose(func["description"], "  "))
     out.extend(render_params(func.get("params"), "  "))
     out.extend(render_returns(func.get("returns"), "  "))
     out.extend(render_examples(func.get("examples"), "  "))
@@ -133,7 +143,7 @@ def render_namespace(spec: dict) -> list[str]:
         head = f"- [lua]`trx.{spec['path']}`  "
     out = [head]
     if spec.get("description"):
-        out.append(f"  {spec['description']}")
+        out.extend(render_prose(spec["description"], "  "))
     out.extend(render_params(spec.get("params"), "  "))
     out.extend(render_returns(spec.get("returns"), "  "))
     out.extend(render_examples(spec.get("examples"), "  "))
@@ -210,7 +220,7 @@ def render_type(spec: dict) -> list[str]:
             f"{INDENT}- [lua]`{name}:{signature(method['name'], method.get('params'))}`  "
         )
         if method.get("description"):
-            out.append(f"{INDENT}  {method['description']}")
+            out.extend(render_prose(method["description"], f"{INDENT}  "))
         out.extend(render_params(method.get("params"), f"{INDENT}  "))
         out.extend(render_returns(method.get("returns"), f"{INDENT}  "))
         out.extend(render_examples(method.get("examples"), f"{INDENT}  "))
