@@ -388,6 +388,52 @@ test("a strip that collides two constants onto one name fails", function()
   assert(tostring(err):find("two constants", 1, true), "the error must say why: " .. tostring(err))
 end)
 
+test("an enum answers to a name in any case, and cannot be written to", function()
+  local api = fresh_env()
+  api.module("things", {})
+
+  local e = api.enum("things.State", {
+    backing = "WIDGET_STATE",
+    values = { OFF = "off.", ON = "on.", BROKEN = "broken." },
+  })
+
+  assert(e.ON == 1)
+  assert(e.on == 1, "an enum must answer to a lower case name")
+  assert(e.On == 1, "any case")
+  assert(e.invalid == nil, "a name the enum does not have is still nil")
+
+  local names = {}
+  for name in pairs(e) do
+    names[#names + 1] = name
+  end
+  table.sort(names)
+  assert(table.concat(names, ",") == "BROKEN,OFF,ON", "pairs() must yield the canonical spelling only")
+
+  local ok = pcall(function()
+    e.ON = 7
+  end)
+  assert(not ok, "an enum must not be writable")
+  assert(e.ON == 1, "and the write must not have landed")
+end)
+
+test("a bulk enum is described as a whole, not a constant at a time", function()
+  local api = fresh_env()
+  api.module("catalog", {})
+
+  local e = api.enum("catalog.objects", {
+    backing = "WIDGET_STATE",
+    bulk = true,
+    description = "Every object id, by name.",
+  })
+  assert(e.ON == 1, "the constants are still there")
+  assert(e.on == 1)
+
+  local entry = api.describe().enums[1]
+  assert(entry.bulk == true)
+  assert(entry.count == 3, "a bulk enum reports how many constants it has")
+  assert(#entry.values == 0, "and not what they are")
+end)
+
 test("seal blocks further declarations", function()
   local api = fresh_env()
   api.seal()
