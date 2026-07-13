@@ -120,6 +120,44 @@ static int M_L_AssaultReset(lua_State *const L)
     return 0;
 }
 
+// trxc.assault.finish([track])
+static int M_L_AssaultFinish(lua_State *const L)
+{
+    const GYM_TRACK_TYPE track = M_GetTrack(L);
+    M_CheckTimerAvailable(L, track);
+    Gym_TrackManager_Finish(track);
+    return 0;
+}
+
+// trxc.assault.is_running([track]) -> bool
+//
+// No availability check: asking whether a timer runs is a fair question outside
+// a gym level, and the answer there is simply false.
+static int M_L_AssaultIsRunning(lua_State *const L)
+{
+    lua_pushboolean(L, Gym_TrackManager_IsTimerActive(M_GetTrack(L)));
+    return 1;
+}
+
+// trxc.assault.is_visible([track]) -> bool
+static int M_L_AssaultIsVisible(lua_State *const L)
+{
+    lua_pushboolean(L, Gym_TrackManager_IsTimerDisplay(M_GetTrack(L)));
+    return 1;
+}
+
+// trxc.assault.get_active_track() -> track or nil
+static int M_L_AssaultGetActiveTrack(lua_State *const L)
+{
+    const GYM_TRACK_TYPE track = Gym_TrackManager_GetActiveTrackType();
+    if (track == GYM_TRACK_NONE) {
+        lua_pushnil(L);
+    } else {
+        lua_pushinteger(L, (lua_Integer)track);
+    }
+    return 1;
+}
+
 static int M_L_AssaultRecord(lua_State *const L)
 {
     if (!Gym_TrackManager_HasStats(GYM_TRACK_ASSAULT)) {
@@ -193,6 +231,14 @@ void LUA_CreateAssault(lua_State *const L)
     lua_setfield(L, -2, "stop");
     lua_pushcfunction(L, M_L_AssaultReset);
     lua_setfield(L, -2, "reset");
+    lua_pushcfunction(L, M_L_AssaultFinish);
+    lua_setfield(L, -2, "finish");
+    lua_pushcfunction(L, M_L_AssaultIsRunning);
+    lua_setfield(L, -2, "is_running");
+    lua_pushcfunction(L, M_L_AssaultIsVisible);
+    lua_setfield(L, -2, "is_visible");
+    lua_pushcfunction(L, M_L_AssaultGetActiveTrack);
+    lua_setfield(L, -2, "get_active_track");
 
     lua_newtable(L);
     lua_pushcfunction(L, M_L_AssaultRecord);

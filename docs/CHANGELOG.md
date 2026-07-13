@@ -1,5 +1,6 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.9.1...develop) - ××××-××-××
 - added a new Lua module, `trx.math`
+- added new Lua assault course functions, `trx.assault.finish()`, `trx.assault.is_running()` and `trx.assault.is_visible()`, and a new property, `trx.assault.active_track`
 - changed `trx.events` handlers to no longer receive a dummy argument in `before_control` and `after_control`
 - changed `trx.events.detach()` to return whether a handler was removed
 - changed reflections UV mapping to be more correct

@@ -49,6 +49,22 @@
       ]
     },
     {
+      "description": "A timed gym track.",
+      "path": "assault.Track",
+      "values": [
+        {
+          "description": "The quad bike circuit.",
+          "name": "QUAD",
+          "value": 0
+        },
+        {
+          "description": "Lara's assault course.",
+          "name": "COURSE",
+          "value": 1
+        }
+      ]
+    },
+    {
       "description": "The values `item.status` can take.",
       "path": "items.Status",
       "values": [
@@ -219,6 +235,134 @@
         }
       ],
       "path": "log.debug"
+    },
+    {
+      "description": "Starts the timer and clears its state. Raises outside a gym level.",
+      "params": [
+        {
+          "default": "trx.assault.Track.COURSE",
+          "enum": "assault.Track",
+          "name": "track",
+          "optional": true,
+          "type": "integer"
+        }
+      ],
+      "path": "assault.start"
+    },
+    {
+      "description": "Stops the timer, leaving it on screen. Raises outside a gym level.",
+      "params": [
+        {
+          "default": "trx.assault.Track.COURSE",
+          "enum": "assault.Track",
+          "name": "track",
+          "optional": true,
+          "type": "integer"
+        }
+      ],
+      "path": "assault.stop"
+    },
+    {
+      "description": "Stops the timer as completing the track does, rather than as an abort. Raises outside a gym level.",
+      "params": [
+        {
+          "default": "trx.assault.Track.COURSE",
+          "enum": "assault.Track",
+          "name": "track",
+          "optional": true,
+          "type": "integer"
+        }
+      ],
+      "path": "assault.finish"
+    },
+    {
+      "description": "Stops the timer and clears its state. Raises outside a gym level.",
+      "params": [
+        {
+          "default": "trx.assault.Track.COURSE",
+          "enum": "assault.Track",
+          "name": "track",
+          "optional": true,
+          "type": "integer"
+        }
+      ],
+      "path": "assault.reset"
+    },
+    {
+      "description": "Whether the timer is counting. False outside a gym level.",
+      "params": [
+        {
+          "default": "trx.assault.Track.COURSE",
+          "enum": "assault.Track",
+          "name": "track",
+          "optional": true,
+          "type": "integer"
+        }
+      ],
+      "path": "assault.is_running",
+      "returns": {
+        "type": "boolean"
+      }
+    },
+    {
+      "description": "Whether the timer is shown on screen. It stays visible after `stop`.",
+      "params": [
+        {
+          "default": "trx.assault.Track.COURSE",
+          "enum": "assault.Track",
+          "name": "track",
+          "optional": true,
+          "type": "integer"
+        }
+      ],
+      "path": "assault.is_visible",
+      "returns": {
+        "type": "boolean"
+      }
+    },
+    {
+      "description": "Files a new record, inserting it in time order and bumping the attempt count.",
+      "examples": [
+        "trx.assault.stats.add_record(30.0)"
+      ],
+      "params": [
+        {
+          "description": "Time in seconds. Must be greater than zero.",
+          "name": "time",
+          "type": "number"
+        }
+      ],
+      "path": "assault.stats.add_record",
+      "returns": {
+        "description": "`false` if the table is full and the time is slower than every record in it.",
+        "type": "boolean"
+      }
+    },
+    {
+      "description": "Removes a record, closing the gap behind it.",
+      "params": [
+        {
+          "description": "1-based position in the table.",
+          "name": "record_id",
+          "type": "integer"
+        }
+      ],
+      "path": "assault.stats.remove_record",
+      "returns": {
+        "description": "`false` if there is no record at that position.",
+        "type": "boolean"
+      }
+    },
+    {
+      "description": "The records, fastest first.",
+      "examples": [
+        "for _, record in ipairs(trx.assault.stats.list_records()) do\n  trx.log.info((\"attempt %d: %.2fs\"):format(record.attempt_num, record.time))\nend"
+      ],
+      "path": "assault.stats.list_records",
+      "returns": {
+        "description": "List of `{ time = seconds, attempt_num = which attempt it was }`.",
+        "type": "table"
+      }
     },
     {
       "description": "Shakes the camera by setting its bounce value. Positive values shake it upward, negative values downward.",
@@ -886,6 +1030,12 @@
       "title": "Logging"
     },
     {
+      "description": "Module for controlling the Assault Course and Quad Bike timers in gym levels.",
+      "name": "assault",
+      "order": 14,
+      "title": "Assault course"
+    },
+    {
       "description": "Module for inspecting the active camera state.",
       "name": "camera",
       "order": 16
@@ -933,6 +1083,11 @@
   ],
   "namespaces": [
     {
+      "callable": false,
+      "description": "The Assault Course record table, as shown on the stats screen. The records are stored in the player's profile, so writing to them outlives the level.",
+      "path": "assault.stats"
+    },
+    {
       "callable": true,
       "description": "Logs a line to the developer console. Calling the group itself logs at `INFO`.",
       "examples": [
@@ -948,6 +1103,13 @@
     }
   ],
   "properties": [
+    {
+      "description": "The track Lara is currently running, or `nil` if none.",
+      "enum": "assault.Track",
+      "path": "assault.active_track",
+      "type": "integer",
+      "writable": false
+    },
     {
       "description": "Current camera position.",
       "path": "camera.pos",

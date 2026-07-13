@@ -4,6 +4,7 @@
 #include <trx/game/game_buf.h>
 #include <trx/game/game_flow/types.h>
 #include <trx/game/gun/types.h>
+#include <trx/game/gym.h>
 #include <trx/game/input/enum.h>
 #include <trx/game/items/enum.h>
 #include <trx/game/lara/skin/types.h>
@@ -61,6 +62,11 @@ static __attribute__((constructor)) void M_Init(void)
     ENUM_MAP(GAME_BUFFER, GBUF_SAMPLE_INFOS, "Sample information");
     ENUM_MAP(GAME_BUFFER, GBUF_SAMPLES, "Samples");
     ENUM_MAP(GAME_BUFFER, GBUF_WALKABLES, "Walkables buffer");
+
+    // GYM_TRACK_NONE and GYM_TRACK_NUMBER_OF are sentinels, not tracks: leaving
+    // them unmapped keeps them out of trx.assault.Track.
+    ENUM_MAP(GYM_TRACK_TYPE, GYM_TRACK_ASSAULT, "course");
+    ENUM_MAP(GYM_TRACK_TYPE, GYM_TRACK_QUAD, "quad");
 
     ENUM_MAP(ITEM_STATUS, IS_INACTIVE, "inactive");
     ENUM_MAP(ITEM_STATUS, IS_ACTIVE, "active");
