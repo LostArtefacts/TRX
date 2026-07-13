@@ -1,4 +1,27 @@
+#include <trx/game/lua/struct.h>
 #include <trx/game/lua/utils.h>
+
+extern const TYPE_DESC TYPE_OBJECT;
+
+// An object is addressed by its id, and an id is valid for the whole session -
+// there is no pool to recycle and nothing to go stale. An object the level did
+// not load still exists as a definition; `loaded` is how a script tells.
+static void *M_Resolve(const LUA_STRUCT_REF *const ref)
+{
+    return Object_TryGet((OBJECT_ID)ref->idx);
+}
+
+// trxc.objects.get(object_id) -> OBJECT handle or nil
+static int M_L_ObjectsGet(lua_State *const L)
+{
+    const OBJECT_ID object_id = luaL_checkinteger(L, 1);
+    if (Object_TryGet(object_id) == nullptr) {
+        lua_pushnil(L);
+        return 1;
+    }
+    LUA_Struct_Push(L, &TYPE_OBJECT, M_Resolve, object_id, 0);
+    return 1;
+}
 
 static void M_PushPropertyValue(
     lua_State *const L, const OBJECT_PROPERTY_VALUE *const value)
@@ -44,14 +67,14 @@ static int M_L_ObjectsSwapMesh(lua_State *const L)
     return 0;
 }
 
-// trxc.objects.get_property(object_id, name) → typed value or nil
-static int M_L_ObjectsGetProperty(lua_State *const L)
+// The object property overlay stays a separate namespace: fields address the
+// OBJECT struct, properties are what the object declares about itself.
+static int M_L_GetProperty(lua_State *const L)
 {
-    const OBJECT_ID object_id = luaL_checkinteger(L, 1);
-    const char *const name = luaL_checkstring(L, 2);
+    LUA_STRUCT_REF *const ref = LUA_Struct_CheckRef(L, 1, &TYPE_OBJECT);
+    const OBJECT *const obj = LUA_Struct_Deref(L, ref);
     OBJECT_PROPERTY_VALUE value = {};
-    if (!ObjectProperty_GetObjectValue(
-            Object_TryGet(object_id), name, &value)) {
+    if (!ObjectProperty_GetObjectValue(obj, luaL_checkstring(L, 2), &value)) {
         lua_pushnil(L);
         return 1;
     }
@@ -59,15 +82,11 @@ static int M_L_ObjectsGetProperty(lua_State *const L)
     return 1;
 }
 
-// trxc.objects.set_property(object_id, name, value)
-static int M_L_ObjectsSetProperty(lua_State *const L)
+static int M_L_SetProperty(lua_State *const L)
 {
-    const OBJECT_ID object_id = luaL_checkinteger(L, 1);
+    LUA_STRUCT_REF *const ref = LUA_Struct_CheckRef(L, 1, &TYPE_OBJECT);
+    OBJECT *const obj = LUA_Struct_Deref(L, ref);
     const char *const name = luaL_checkstring(L, 2);
-    OBJECT *const obj = Object_TryGet(object_id);
-    if (obj == nullptr) {
-        return luaL_error(L, "invalid object id %d", object_id);
-    }
     const OBJECT_PROPERTY_VALUE value = LUA_CheckPropertyValue(L, 3);
     if (!ObjectProperty_SetObjectValueRaw(obj, name, value)) {
         return luaL_error(L, "unknown object property '%s'", name);
@@ -75,11 +94,10 @@ static int M_L_ObjectsSetProperty(lua_State *const L)
     return 0;
 }
 
-// trxc.objects.get_property_names(object_id) → table
-static int M_L_ObjectsGetPropertyNames(lua_State *const L)
+static int M_L_GetPropertyNames(lua_State *const L)
 {
-    const OBJECT_ID object_id = luaL_checkinteger(L, 1);
-    const OBJECT *const obj = Object_TryGet(object_id);
+    LUA_STRUCT_REF *const ref = LUA_Struct_CheckRef(L, 1, &TYPE_OBJECT);
+    const OBJECT *const obj = LUA_Struct_Deref(L, ref);
     lua_newtable(L);
     for (int32_t i = 0; i < ObjectProperty_GetObjectNameCount(obj); i++) {
         lua_pushinteger(L, i + 1);
@@ -89,18 +107,23 @@ static int M_L_ObjectsGetPropertyNames(lua_State *const L)
     return 1;
 }
 
+static const luaL_Reg M_METHODS[] = {
+    { "get_property", M_L_GetProperty },
+    { "set_property", M_L_SetProperty },
+    { "get_property_names", M_L_GetPropertyNames },
+    { nullptr, nullptr },
+};
+
 void LUA_CreateObjects(lua_State *const L)
 {
+    LUA_Struct_Register(L, &TYPE_OBJECT, M_METHODS);
+
     lua_getglobal(L, "trxc");
     lua_newtable(L);
+    lua_pushcfunction(L, M_L_ObjectsGet);
+    lua_setfield(L, -2, "get");
     lua_pushcfunction(L, M_L_ObjectsSwapMesh);
     lua_setfield(L, -2, "swap_mesh");
-    lua_pushcfunction(L, M_L_ObjectsGetProperty);
-    lua_setfield(L, -2, "get_property");
-    lua_pushcfunction(L, M_L_ObjectsSetProperty);
-    lua_setfield(L, -2, "set_property");
-    lua_pushcfunction(L, M_L_ObjectsGetPropertyNames);
-    lua_setfield(L, -2, "get_property_names");
     lua_setfield(L, -2, "objects");
     lua_pop(L, 1);
 }
