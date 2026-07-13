@@ -198,9 +198,11 @@ def render_type(spec: dict) -> list[str]:
 
 def render_page(module: dict, api: dict) -> str:
     name = module["name"]
+    # Declare a title where capitalizing the module name makes a worse one.
+    title = module.get("title") or name.capitalize()
     out = [
         "---",
-        f"title: {name.capitalize()}",
+        f"title: {title}",
         f"order: {module.get('order', 99)}",
         "---",
         "",
@@ -211,7 +213,7 @@ def render_page(module: dict, api: dict) -> str:
         f"  data/scripting/{name}.lua. Edit it there.",
         "-->",
         "",
-        f"## {name.capitalize()} module",
+        f"## {title} module",
         "",
     ]
     if module.get("description"):
