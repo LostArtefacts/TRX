@@ -46,5 +46,8 @@ void Lua_ClearLevelListeners(void);
 void Lua_FireEventEx(
     LUA_EVENT_TYPE ev, const LUA_EVENT_ARG *args, int32_t arg_count);
 
+// Fire a Lua event of given type with no arguments
+void Lua_FireEvent(LUA_EVENT_TYPE ev);
+
 // Fire a Lua event of given type with int32 argument
 void Lua_FireEventInt32(LUA_EVENT_TYPE ev, int32_t arg);

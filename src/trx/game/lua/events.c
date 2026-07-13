@@ -152,6 +152,11 @@ void Lua_FireEventEx(
     }
 }
 
+void Lua_FireEvent(const LUA_EVENT_TYPE ev)
+{
+    Lua_FireEventEx(ev, nullptr, 0);
+}
+
 void Lua_FireEventInt32(const LUA_EVENT_TYPE ev, const int32_t arg)
 {
     const LUA_EVENT_ARG args[] = {
