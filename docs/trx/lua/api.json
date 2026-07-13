@@ -3901,6 +3901,18 @@
       "writable": false
     },
     {
+      "description": "Whether a level is loaded.",
+      "path": "game.is_loaded",
+      "type": "boolean",
+      "writable": false
+    },
+    {
+      "description": "Whether the game is loaded and taking input - not in a menu, and not in a cutscene.",
+      "path": "game.is_playable",
+      "type": "boolean",
+      "writable": false
+    },
+    {
       "description": "Lara's own `trx.items.Item`, or `nil` outside a level. Her position, room and hit points are read and written there.",
       "path": "lara.item",
       "type": "Item",

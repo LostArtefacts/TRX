@@ -29,3 +29,5 @@ void FakeGame_SetCurrentTitle(void);
 
 // Whether the flow has a gym. A game without one has nothing to play.
 void FakeGame_SetGymPresent(bool present);
+
+void FakeGame_SetInCutscene(bool in_cutscene);

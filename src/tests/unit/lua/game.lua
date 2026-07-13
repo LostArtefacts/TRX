@@ -145,6 +145,21 @@ test("play_gym raises when the game has no gym", function()
   assert(fake.calls().play_gym == 0)
 end)
 
+test("is_loaded says whether a level is up", function()
+  assert(trx.game.is_loaded == false)
+  fake.set_current_level(2)
+  assert(trx.game.is_loaded == true)
+end)
+
+test("a cutscene is loaded, but not playable", function()
+  fake.set_current_level(2)
+  assert(trx.game.is_playable == true)
+
+  fake.set_in_cutscene(true)
+  assert(trx.game.is_loaded == true, "the level is still loaded")
+  assert(trx.game.is_playable == false, "but the game is not taking input")
+end)
+
 test("a setting is reached through trx.config, and nowhere else", function()
   assert(trx.game.settings == nil)
 end)

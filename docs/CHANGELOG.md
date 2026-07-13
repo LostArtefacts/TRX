@@ -8,6 +8,7 @@
 - added a new Lua module, `trx.math`, with the engine's own fixed-point trigonometry and the `DEG_1`, `DEG_45`, `DEG_90` and `WALL_L` constants
 - added a new Lua module, `trx.strings`, with `fuzzy_match()` and `regex_match()`
 - added a new Lua module, `trx.locale`, for the text the player reads, looked up by key
+- added new Lua game state, `trx.game.is_loaded` and `trx.game.is_playable`
 - added `trx.console.register()`, so a script can add a console command of its own
 - added `trx.game.LevelType.TITLE`, and a `demo` level type to the game flow, which could not be named before
 - added `trx.game.play_gym()`, to start the gym
