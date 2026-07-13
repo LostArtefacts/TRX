@@ -276,6 +276,7 @@ common_sources = [
   'trx/game/game/state.c',
   'trx/game/game_buf.c',
   'trx/game/game_flow/common.c',
+  'trx/game/game_flow/fields.c',
   'trx/game/game_flow/inventory.c',
   'trx/game/game_flow/reader.c',
   'trx/game/game_flow/sequencer.c',

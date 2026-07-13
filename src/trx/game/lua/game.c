@@ -1,5 +1,6 @@
 #include <trx/game/game_flow.h>
 #include <trx/game/lua/common.h>
+#include <trx/game/lua/struct.h>
 #include <trx/game/savegame.h>
 #include <trx/version.h>
 
@@ -27,68 +28,52 @@ static int M_L_GameCountLevels(lua_State *const L)
     return 1;
 }
 
-// Level property getters
-static int M_L_GameLevelGetNum(lua_State *const L)
+extern const TYPE_DESC TYPE_GF_LEVEL;
+
+// A level lives in the game flow for the whole session, so a handle to one
+// never goes stale. It is addressed by table and index, which the ref carries
+// packed: the table in the high half, the index in the low.
+#define M_PACK(table, idx) (((table) << 16) | ((idx) & 0xffff))
+#define M_TABLE(packed) ((packed) >> 16)
+#define M_IDX(packed) ((packed) & 0xffff)
+
+static void *M_Resolve(const LUA_STRUCT_REF *const ref)
 {
-    const GF_LEVEL_TABLE_TYPE table_type = luaL_checkinteger(L, 1);
-    const int32_t idx = luaL_checkinteger(L, 2);
-    const GF_LEVEL *const lvl = GF_GetLevel(table_type, idx - 1);
-    lua_pushinteger(
-        L, lvl != nullptr ? GF_GetLevelOrdinalNumber(table_type, lvl) : 0);
-    return 1;
+    return (void *)GF_GetLevel(M_TABLE(ref->idx), M_IDX(ref->idx));
 }
 
-static int M_L_GameLevelGetName(lua_State *const L)
+static void M_PushLevel(
+    lua_State *const L, const GF_LEVEL_TABLE_TYPE table_type, const int32_t idx)
 {
-    const GF_LEVEL_TABLE_TYPE table_type = luaL_checkinteger(L, 1);
-    const int32_t idx = luaL_checkinteger(L, 2);
-    const GF_LEVEL *const lvl = GF_GetLevel(table_type, idx - 1);
-    if (lvl != nullptr && lvl->title != nullptr) {
-        lua_pushstring(L, lvl->title);
-    } else {
+    if (GF_GetLevel(table_type, idx) == nullptr) {
         lua_pushnil(L);
+        return;
     }
+    LUA_Struct_Push(L, &TYPE_GF_LEVEL, M_Resolve, M_PACK(table_type, idx), 0);
+}
+
+// trxc.game.get_level(table_type, idx) -> GF_LEVEL handle or nil
+static int M_L_GameGetLevel(lua_State *const L)
+{
+    const GF_LEVEL_TABLE_TYPE table_type = luaL_checkinteger(L, 1);
+    // Lua counts from 1, the table from 0.
+    M_PushLevel(L, table_type, luaL_checkinteger(L, 2) - 1);
     return 1;
 }
 
-static int M_L_GameLevelGetPath(lua_State *const L)
+// trxc.game.get_current_level() -> GF_LEVEL handle or nil
+static int M_L_GameGetCurrentLevel(lua_State *const L)
 {
-    const GF_LEVEL_TABLE_TYPE table_type = luaL_checkinteger(L, 1);
-    const int32_t idx = luaL_checkinteger(L, 2);
-    const GF_LEVEL *const lvl = GF_GetLevel(table_type, idx - 1);
-    if (lvl != nullptr && lvl->path != nullptr) {
-        lua_pushstring(L, lvl->path);
-    } else {
+    const GF_LEVEL *const level = GF_GetCurrentLevel();
+    if (level == nullptr) {
         lua_pushnil(L);
+        return 1;
     }
+    const GF_LEVEL_TABLE_TYPE table_type = GF_GetLevelTableType(level->type);
+    M_PushLevel(L, table_type, level - GF_GetLevelTable(table_type)->levels);
     return 1;
 }
 
-static int M_L_GameLevelGetType(lua_State *const L)
-{
-    const GF_LEVEL_TABLE_TYPE table_type = luaL_checkinteger(L, 1);
-    const int32_t idx = luaL_checkinteger(L, 2);
-    const GF_LEVEL *const lvl = GF_GetLevel(table_type, idx - 1);
-    lua_pushinteger(L, lvl != nullptr ? lvl->type : 0);
-    return 1;
-}
-
-static int M_L_GameLevelGetCurrentLevelTable(lua_State *const L)
-{
-    const GF_LEVEL *const lvl = GF_GetCurrentLevel();
-    lua_pushinteger(
-        L, lvl != nullptr ? GF_GetLevelTableType(lvl->type) : GFLT_UNKNOWN);
-    return 1;
-}
-
-static int M_L_GameLevelGetCurrentLevelIndex(lua_State *const L)
-{
-    const GF_LEVEL *const lvl = GF_GetCurrentLevel();
-    lua_pushinteger(L, lvl != nullptr ? lvl->num + 1 : -1);
-    return 1;
-}
-
-// trxc.game.play_level(num) → nil
 static int M_L_GamePlayLevel(lua_State *const L)
 {
     const int32_t level_idx = luaL_checkinteger(L, 1) - 1;
@@ -146,6 +131,9 @@ static int M_L_GamePlayDemo(lua_State *const L)
 
 void LUA_CreateGame(lua_State *const L)
 {
+    LUA_Struct_Register(
+        L, &TYPE_GF_LEVEL, (const luaL_Reg[]) { { nullptr, nullptr } });
+
     lua_getglobal(L, "trxc");
     lua_newtable(L);
 
@@ -155,18 +143,10 @@ void LUA_CreateGame(lua_State *const L)
     lua_setfield(L, -2, "get_trx_version");
     lua_pushcfunction(L, M_L_GameCountLevels);
     lua_setfield(L, -2, "count_levels");
-    lua_pushcfunction(L, M_L_GameLevelGetNum);
-    lua_setfield(L, -2, "get_level_num");
-    lua_pushcfunction(L, M_L_GameLevelGetName);
-    lua_setfield(L, -2, "get_level_name");
-    lua_pushcfunction(L, M_L_GameLevelGetPath);
-    lua_setfield(L, -2, "get_level_path");
-    lua_pushcfunction(L, M_L_GameLevelGetType);
-    lua_setfield(L, -2, "get_level_type");
-    lua_pushcfunction(L, M_L_GameLevelGetCurrentLevelTable);
-    lua_setfield(L, -2, "get_current_level_table");
-    lua_pushcfunction(L, M_L_GameLevelGetCurrentLevelIndex);
-    lua_setfield(L, -2, "get_current_level_idx");
+    lua_pushcfunction(L, M_L_GameGetLevel);
+    lua_setfield(L, -2, "get_level");
+    lua_pushcfunction(L, M_L_GameGetCurrentLevel);
+    lua_setfield(L, -2, "get_current_level");
 
     lua_pushcfunction(L, M_L_GamePlayLevel);
     lua_setfield(L, -2, "play_level");
@@ -174,28 +154,6 @@ void LUA_CreateGame(lua_State *const L)
     lua_setfield(L, -2, "play_cutscene");
     lua_pushcfunction(L, M_L_GamePlayDemo);
     lua_setfield(L, -2, "play_demo");
-
-    lua_newtable(L);
-    lua_pushinteger(L, GFLT_MAIN);
-    lua_setfield(L, -2, "MAIN");
-    lua_pushinteger(L, GFLT_CUTSCENES);
-    lua_setfield(L, -2, "CUTSCENES");
-    lua_pushinteger(L, GFLT_DEMOS);
-    lua_setfield(L, -2, "DEMOS");
-    lua_setfield(L, -2, "LevelTable");
-
-    lua_newtable(L);
-    lua_pushinteger(L, GFL_NORMAL);
-    lua_setfield(L, -2, "NORMAL");
-    lua_pushinteger(L, GFL_CUTSCENE);
-    lua_setfield(L, -2, "CUTSCENE");
-    lua_pushinteger(L, GFL_DEMO);
-    lua_setfield(L, -2, "DEMO");
-    lua_pushinteger(L, GFL_GYM);
-    lua_setfield(L, -2, "GYM");
-    lua_pushinteger(L, GFL_BONUS);
-    lua_setfield(L, -2, "BONUS");
-    lua_setfield(L, -2, "LevelType");
 
     lua_setfield(L, -2, "game");
     lua_pop(L, 1);
