@@ -139,6 +139,15 @@ def render_enum(spec: dict) -> list[str]:
     return out
 
 
+def render_property(spec: dict) -> list[str]:
+    """A computed member on the module table.
+
+    Reading it calls into the engine, so it is neither a function nor a constant.
+    """
+    suffix = "" if spec.get("writable") else " *(read-only)*"
+    return [f"- **`trx.{spec['path']}`** ({spec['type']}). {describe(spec)}{suffix}".rstrip()]
+
+
 def render_type(spec: dict) -> list[str]:
     out = [f"- [lua]`trx.{spec['path']}`", ""]
     if spec.get("description"):
@@ -209,6 +218,14 @@ def render_page(module: dict, api: dict) -> str:
         out.append(module["description"])
         out.append("")
 
+    props = [p for p in api.get("properties", []) if p["path"].startswith(f"{name}.")]
+    if props:
+        out.append("### Properties")
+        out.append("")
+        for spec in props:
+            out.extend(render_property(spec))
+        out.append("")
+
     consts = [c for c in api.get("constants", []) if c["path"].startswith(f"{name}.")]
     if consts:
         out.append("### Constants")
@@ -249,6 +266,9 @@ def undocumented(api: dict) -> list[str]:
     for const in api.get("constants", []):
         if not const.get("description"):
             out.append(const["path"])
+    for prop in api.get("properties", []):
+        if not prop.get("description"):
+            out.append(prop["path"])
     for enum in api.get("enums", []):
         for value in enum.get("values") or []:
             if not value.get("description"):
