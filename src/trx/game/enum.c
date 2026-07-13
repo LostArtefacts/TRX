@@ -7,6 +7,7 @@
 #include <trx/game/gym.h>
 #include <trx/game/input/enum.h>
 #include <trx/game/items/enum.h>
+#include <trx/game/lara/enum.h>
 #include <trx/game/lara/skin/types.h>
 #include <trx/game/lara/types.h>
 #include <trx/game/music/enum.h>
@@ -170,6 +171,35 @@ static __attribute__((constructor)) void M_Init(void)
     ENUM_MAP(UI_BAR_TYPE, UI_BAR_ENEMY_HP, "enemy_hp");
     ENUM_MAP(UI_BAR_TYPE, UI_BAR_ALLY_HP, "ally_hp");
     ENUM_MAP(UI_BAR_TYPE, UI_BAR_PROGRESS, "progress");
+
+    ENUM_MAP(LARA_MESH, LM_HIPS, "hips");
+    ENUM_MAP(LARA_MESH, LM_THIGH_L, "thigh_l");
+    ENUM_MAP(LARA_MESH, LM_CALF_L, "calf_l");
+    ENUM_MAP(LARA_MESH, LM_FOOT_L, "foot_l");
+    ENUM_MAP(LARA_MESH, LM_THIGH_R, "thigh_r");
+    ENUM_MAP(LARA_MESH, LM_CALF_R, "calf_r");
+    ENUM_MAP(LARA_MESH, LM_FOOT_R, "foot_r");
+    ENUM_MAP(LARA_MESH, LM_TORSO, "torso");
+    ENUM_MAP(LARA_MESH, LM_UARM_R, "uarm_r");
+    ENUM_MAP(LARA_MESH, LM_LARM_R, "larm_r");
+    ENUM_MAP(LARA_MESH, LM_HAND_R, "hand_r");
+    ENUM_MAP(LARA_MESH, LM_UARM_L, "uarm_l");
+    ENUM_MAP(LARA_MESH, LM_LARM_L, "larm_l");
+    ENUM_MAP(LARA_MESH, LM_HAND_L, "hand_l");
+    ENUM_MAP(LARA_MESH, LM_HEAD, "head");
+
+    ENUM_MAP(LARA_WATER_STATE, LWS_ABOVE_WATER, "above_water");
+    ENUM_MAP(LARA_WATER_STATE, LWS_UNDERWATER, "underwater");
+    ENUM_MAP(LARA_WATER_STATE, LWS_SURFACE, "surface");
+    ENUM_MAP(LARA_WATER_STATE, LWS_CHEAT, "cheat");
+    ENUM_MAP(LARA_WATER_STATE, LWS_WADE, "wade");
+
+    ENUM_MAP(LARA_GUN_STATE, LGS_ARMLESS, "armless");
+    ENUM_MAP(LARA_GUN_STATE, LGS_HANDS_BUSY, "hands_busy");
+    ENUM_MAP(LARA_GUN_STATE, LGS_DRAW, "draw");
+    ENUM_MAP(LARA_GUN_STATE, LGS_UNDRAW, "undraw");
+    ENUM_MAP(LARA_GUN_STATE, LGS_READY, "ready");
+    ENUM_MAP(LARA_GUN_STATE, LGS_SPECIAL, "special");
 
     ENUM_MAP_SELF(LARA_SKIN_BRAID_MODE, BRAID_MODE_NONE);
     ENUM_MAP_SELF(LARA_SKIN_BRAID_MODE, BRAID_MODE_TR1_HEAD_ONLY);

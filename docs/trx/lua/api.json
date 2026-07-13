@@ -112,6 +112,230 @@
       ]
     },
     {
+      "description": "One of the fifteen meshes Lara is built from.",
+      "path": "lara.Mesh",
+      "values": [
+        {
+          "description": "Hips, the mesh the rest hang off.",
+          "name": "HIPS",
+          "value": 0
+        },
+        {
+          "description": "Left thigh.",
+          "name": "THIGH_L",
+          "value": 1
+        },
+        {
+          "description": "Left calf.",
+          "name": "CALF_L",
+          "value": 2
+        },
+        {
+          "description": "Left foot.",
+          "name": "FOOT_L",
+          "value": 3
+        },
+        {
+          "description": "Right thigh.",
+          "name": "THIGH_R",
+          "value": 4
+        },
+        {
+          "description": "Right calf.",
+          "name": "CALF_R",
+          "value": 5
+        },
+        {
+          "description": "Right foot.",
+          "name": "FOOT_R",
+          "value": 6
+        },
+        {
+          "description": "Torso.",
+          "name": "TORSO",
+          "value": 7
+        },
+        {
+          "description": "Right upper arm.",
+          "name": "UARM_R",
+          "value": 8
+        },
+        {
+          "description": "Right lower arm.",
+          "name": "LARM_R",
+          "value": 9
+        },
+        {
+          "description": "Right hand.",
+          "name": "HAND_R",
+          "value": 10
+        },
+        {
+          "description": "Left upper arm.",
+          "name": "UARM_L",
+          "value": 11
+        },
+        {
+          "description": "Left lower arm.",
+          "name": "LARM_L",
+          "value": 12
+        },
+        {
+          "description": "Left hand.",
+          "name": "HAND_L",
+          "value": 13
+        },
+        {
+          "description": "Head.",
+          "name": "HEAD",
+          "value": 14
+        }
+      ]
+    },
+    {
+      "description": "A mesh Lara can carry on top of one of her own - the dagger in Home Sweet Home, the oar in a boat.",
+      "path": "lara.ExtraMesh",
+      "values": [
+        {
+          "description": "Braided head, out of combat.",
+          "name": "TR1_BRAID_DEFAULT_HEAD",
+          "value": 0
+        },
+        {
+          "description": "Braided head, in combat.",
+          "name": "TR1_BRAID_COMBAT_HEAD",
+          "value": 1
+        },
+        {
+          "description": "Braided torso.",
+          "name": "TR1_BRAID_DEFAULT_TORSO",
+          "value": 2
+        },
+        {
+          "description": "Braided torso, mauled.",
+          "name": "TR1_BRAID_MAULED_TORSO",
+          "value": 3
+        },
+        {
+          "description": "Braided head, gold.",
+          "name": "TR1_BRAID_GOLD_HEAD",
+          "value": 4
+        },
+        {
+          "description": "Braided torso, gold.",
+          "name": "TR1_BRAID_GOLD_TORSO",
+          "value": 5
+        },
+        {
+          "description": "Dagger, in hand.",
+          "name": "DAGGER_HAND",
+          "value": 6
+        },
+        {
+          "description": "Dagger, sheathed at the hips.",
+          "name": "DAGGER_HIPS",
+          "value": 7
+        },
+        {
+          "description": "Oar.",
+          "name": "OAR",
+          "value": 8
+        },
+        {
+          "description": "Spanner.",
+          "name": "SPANNER",
+          "value": 9
+        },
+        {
+          "description": "Drink can.",
+          "name": "DRINK_CAN",
+          "value": 10
+        },
+        {
+          "description": "Sunglasses.",
+          "name": "GLASSES_OPAQUE",
+          "value": 11
+        },
+        {
+          "description": "Sunglasses, transparent lenses.",
+          "name": "GLASSES_TRANSPARENT",
+          "value": 12
+        },
+        {
+          "description": "Crowbar.",
+          "name": "CROWBAR",
+          "value": 13
+        }
+      ]
+    },
+    {
+      "description": "Where Lara is with respect to water.",
+      "path": "lara.WaterState",
+      "values": [
+        {
+          "description": "On dry land.",
+          "name": "ABOVE_WATER",
+          "value": 0
+        },
+        {
+          "description": "Under the surface.",
+          "name": "UNDERWATER",
+          "value": 1
+        },
+        {
+          "description": "Swimming at the surface.",
+          "name": "SURFACE",
+          "value": 2
+        },
+        {
+          "description": "Flying, as the fly cheat leaves her.",
+          "name": "CHEAT",
+          "value": 3
+        },
+        {
+          "description": "Wading, feet still on the floor.",
+          "name": "WADE",
+          "value": 4
+        }
+      ]
+    },
+    {
+      "description": "What Lara's hands are doing.",
+      "path": "lara.GunState",
+      "values": [
+        {
+          "description": "Empty-handed.",
+          "name": "ARMLESS",
+          "value": 0
+        },
+        {
+          "description": "Hands full, so nothing can be drawn.",
+          "name": "HANDS_BUSY",
+          "value": 1
+        },
+        {
+          "description": "Drawing a weapon.",
+          "name": "DRAW",
+          "value": 2
+        },
+        {
+          "description": "Putting one away.",
+          "name": "UNDRAW",
+          "value": 3
+        },
+        {
+          "description": "Armed, weapon out.",
+          "name": "READY",
+          "value": 4
+        },
+        {
+          "description": "In a scripted sequence.",
+          "name": "SPECIAL",
+          "value": 5
+        }
+      ]
+    },
+    {
       "description": "How a track is played. Pass one as `opts.mode` to `trx.music.play`.",
       "path": "music.PlayMode",
       "values": [
@@ -899,6 +1123,39 @@
       }
     },
     {
+      "description": "Hangs an extra mesh on one of Lara's own, replacing whatever is there.",
+      "examples": [
+        "trx.lara.set_extra_equipment(trx.lara.Mesh.HAND_R, trx.lara.ExtraMesh.OAR)"
+      ],
+      "params": [
+        {
+          "description": "Which of Lara's meshes.",
+          "enum": "lara.Mesh",
+          "name": "mesh",
+          "type": "integer"
+        },
+        {
+          "description": "The mesh to hang on it.",
+          "enum": "lara.ExtraMesh",
+          "name": "extra_mesh",
+          "type": "integer"
+        }
+      ],
+      "path": "lara.set_extra_equipment"
+    },
+    {
+      "description": "Takes the extra mesh back off, leaving Lara's own.",
+      "params": [
+        {
+          "description": "Which of Lara's meshes.",
+          "enum": "lara.Mesh",
+          "name": "mesh",
+          "type": "integer"
+        }
+      ],
+      "path": "lara.clear_equipment"
+    },
+    {
       "description": "Sine of an angle.",
       "params": [
         {
@@ -1159,6 +1416,11 @@
       "order": 4
     },
     {
+      "description": "Module for reading and nudging Lara's own state.\n\nHer position, room and hit points are not here: she is an item like any other and they live on it, as `trx.lara.item`.",
+      "name": "lara",
+      "order": 3
+    },
+    {
       "description": "Fixed-point trigonometry, matching the engine's own tables.\n\nTRX angles are 16-bit units where 65536 is a full turn, not radians. Using these rather than Lua's `math` library guarantees a script places things exactly where the engine would.",
       "name": "math",
       "order": 17
@@ -1243,6 +1505,36 @@
       "path": "creatures.hostile_allies",
       "type": "boolean",
       "writable": true
+    },
+    {
+      "description": "Lara's own `trx.items.Item`, or `nil` outside a level. Her position, room and hit points are read and written there.",
+      "path": "lara.item",
+      "type": "Item",
+      "writable": false
+    },
+    {
+      "description": "The item Lara's guns are locked onto, or `nil` if she has none.",
+      "path": "lara.target",
+      "type": "Item",
+      "writable": false
+    },
+    {
+      "description": "The outfit Lara is wearing, by name, as defined in `cfg/outfits.json5`.",
+      "path": "lara.outfit",
+      "type": "string",
+      "writable": true
+    },
+    {
+      "description": "Whether Lara's holsters are drawn on her hips.",
+      "path": "lara.holsters_visible",
+      "type": "boolean",
+      "writable": true
+    },
+    {
+      "description": "Whether Lara is carrying a pistol-class weapon, which is what decides whether she has holsters to show at all.",
+      "path": "lara.has_pistol_weapon",
+      "type": "boolean",
+      "writable": false
     }
   ],
   "types": [
@@ -1488,6 +1780,126 @@
         }
       ],
       "path": "items.Item"
+    },
+    {
+      "description": "Lara's own state, reachable straight off `trx.lara`.",
+      "extensions": [],
+      "fields": [
+        {
+          "description": "Air remaining underwater, out of 1800. Runs down while she is under.",
+          "name": "air_bar",
+          "type": "integer",
+          "writable": true
+        },
+        {
+          "description": "Frames Lara has been dead for.",
+          "name": "death_timer",
+          "type": "integer",
+          "writable": false
+        },
+        {
+          "description": "Frames Lara has been diving for.",
+          "name": "dive_timer",
+          "type": "integer",
+          "writable": false
+        },
+        {
+          "description": "How badly Lara is being electrocuted, and 0 when she is not.",
+          "name": "electric",
+          "type": "integer",
+          "writable": true
+        },
+        {
+          "description": "The weapon Lara is holding.",
+          "enum": "catalog.weapons",
+          "name": "equipped_gun",
+          "type": "integer",
+          "writable": false
+        },
+        {
+          "description": "Warmth remaining in the cold, out of 600. Only moves in a level whose rooms carry the `damaging` flag.",
+          "name": "exposure_bar",
+          "type": "integer",
+          "writable": true
+        },
+        {
+          "description": "Whether a scripted animation is driving Lara rather than her own state machine.",
+          "name": "extra_anim",
+          "type": "boolean",
+          "writable": false
+        },
+        {
+          "description": "What Lara's hands are doing.",
+          "enum": "lara.GunState",
+          "name": "gun_status",
+          "type": "integer",
+          "writable": false
+        },
+        {
+          "description": "Which way the last hit came from, or -1 if she has not been hit.",
+          "name": "hit_direction",
+          "type": "integer",
+          "writable": false
+        },
+        {
+          "description": "Whether Lara is on fire.",
+          "name": "is_burning",
+          "type": "boolean",
+          "writable": false
+        },
+        {
+          "description": "Whether Lara is on a climbable wall.",
+          "name": "is_climbing",
+          "type": "boolean",
+          "writable": false
+        },
+        {
+          "description": "Whether Lara is crouching.",
+          "name": "is_crouched",
+          "type": "boolean",
+          "writable": false
+        },
+        {
+          "description": "Whether Lara has killed one of her own allies, which is what turns the rest of them on her.",
+          "name": "killed_loyal_item",
+          "type": "boolean",
+          "writable": false
+        },
+        {
+          "description": "How poisoned Lara is, and 0 when she is not.",
+          "name": "poison",
+          "type": "integer",
+          "writable": true
+        },
+        {
+          "description": "Frames Lara has stood still for, which is what starts an idle animation.",
+          "name": "pose_count",
+          "type": "integer",
+          "writable": false
+        },
+        {
+          "description": "The weapon Lara is drawing, while she is drawing it.",
+          "enum": "catalog.weapons",
+          "name": "requested_gun",
+          "type": "integer",
+          "writable": false
+        },
+        {
+          "description": "Sprint left in her legs.",
+          "name": "sprint_timer",
+          "type": "integer",
+          "writable": true
+        },
+        {
+          "description": "Where Lara is with respect to water.",
+          "enum": "lara.WaterState",
+          "name": "water_status",
+          "type": "integer",
+          "writable": false
+        }
+      ],
+      "methods": [],
+      "path": "lara.Lara"
     },
     {
       "description": "A room in the current level.",

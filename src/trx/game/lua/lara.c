@@ -3,8 +3,23 @@
 #include <trx/game/lara.h>
 #include <trx/game/lara/skin/storage.h>
 #include <trx/game/lua/common.h>
+#include <trx/game/lua/struct.h>
 
 #include <lauxlib.h>
+
+extern const TYPE_DESC TYPE_LARA_INFO;
+
+static void *M_Resolve(const LUA_STRUCT_REF *const ref)
+{
+    return Lara_GetLaraInfo();
+}
+
+// trxc.lara.state() -> LARA_INFO handle
+static int M_L_LaraState(lua_State *const L)
+{
+    LUA_Struct_Push(L, &TYPE_LARA_INFO, M_Resolve, 0, 0);
+    return 1;
+}
 
 // item_num = trxc.lara.get_item()
 static int M_L_GetLaraItem(lua_State *const L)
@@ -161,58 +176,11 @@ static int M_L_LaraGetEquippedGun(lua_State *const L)
 
 void LUA_CreateLara(lua_State *const L)
 {
+    LUA_Struct_Register(
+        L, &TYPE_LARA_INFO, (const luaL_Reg[]) { { nullptr, nullptr } });
+
     lua_getglobal(L, "trxc");
     lua_newtable(L);
-
-    lua_newtable(L);
-    lua_pushinteger(L, LM_HIPS);
-    lua_setfield(L, -2, "hips");
-    lua_pushinteger(L, LM_THIGH_L);
-    lua_setfield(L, -2, "thigh_l");
-    lua_pushinteger(L, LM_CALF_L);
-    lua_setfield(L, -2, "calf_l");
-    lua_pushinteger(L, LM_FOOT_L);
-    lua_setfield(L, -2, "foot_l");
-    lua_pushinteger(L, LM_THIGH_R);
-    lua_setfield(L, -2, "thigh_r");
-    lua_pushinteger(L, LM_CALF_R);
-    lua_setfield(L, -2, "calf_r");
-    lua_pushinteger(L, LM_FOOT_R);
-    lua_setfield(L, -2, "foot_r");
-    lua_pushinteger(L, LM_TORSO);
-    lua_setfield(L, -2, "torso");
-    lua_pushinteger(L, LM_UARM_R);
-    lua_setfield(L, -2, "uarm_r");
-    lua_pushinteger(L, LM_LARM_R);
-    lua_setfield(L, -2, "larm_r");
-    lua_pushinteger(L, LM_HAND_R);
-    lua_setfield(L, -2, "hand_r");
-    lua_pushinteger(L, LM_UARM_L);
-    lua_setfield(L, -2, "uarm_l");
-    lua_pushinteger(L, LM_LARM_L);
-    lua_setfield(L, -2, "larm_l");
-    lua_pushinteger(L, LM_HAND_L);
-    lua_setfield(L, -2, "hand_l");
-    lua_pushinteger(L, LM_HEAD);
-    lua_setfield(L, -2, "head");
-    lua_setfield(L, -2, "mesh");
-
-    lua_newtable(L);
-    lua_pushinteger(L, EXTRA_MESH_DAGGER_HAND);
-    lua_setfield(L, -2, "dagger_hand");
-    lua_pushinteger(L, EXTRA_MESH_DAGGER_HIPS);
-    lua_setfield(L, -2, "dagger_hips");
-    lua_pushinteger(L, EXTRA_MESH_OAR);
-    lua_setfield(L, -2, "oar");
-    lua_pushinteger(L, EXTRA_MESH_SPANNER);
-    lua_setfield(L, -2, "spanner");
-    lua_pushinteger(L, EXTRA_MESH_DRINK_CAN);
-    lua_setfield(L, -2, "drink_can");
-    lua_pushinteger(L, EXTRA_MESH_GLASSES_OPAQUE);
-    lua_setfield(L, -2, "glasses_opaque");
-    lua_pushinteger(L, EXTRA_MESH_GLASSES_TRANSPARENT);
-    lua_setfield(L, -2, "glasses_transparent");
-    lua_setfield(L, -2, "extra_mesh");
 
     lua_pushcfunction(L, M_L_GetLaraItem);
     lua_setfield(L, -2, "get_item");
@@ -244,6 +212,9 @@ void LUA_CreateLara(lua_State *const L)
     lua_setfield(L, -2, "get_extra_anim");
     lua_pushcfunction(L, M_L_LaraGetEquippedGun);
     lua_setfield(L, -2, "get_equipped_gun");
+    lua_pushcfunction(L, M_L_LaraState);
+    lua_setfield(L, -2, "state");
+
     lua_setfield(L, -2, "lara");
     lua_pop(L, 1);
 }
