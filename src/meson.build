@@ -35,10 +35,8 @@ if trx_version == ''
   endif
 endif
 
-# data/scripting/api declares the trx.* API: each file is a module, required by
-# name. data/scripting/commands holds runtime scripts, which declare nothing and
-# are run once the API is built and sealed. The loader keeps the two apart, so
-# the split is stated here rather than inferred from a path.
+# The loader keeps modules and runtime scripts apart (see embedded_scripts.h),
+# so the split is stated here rather than inferred from a path.
 trx_lua_api_sources = files(
   '../data/scripting/api/api.lua',
   '../data/scripting/api/assault.lua',
@@ -61,7 +59,9 @@ trx_lua_api_sources = files(
   '../data/scripting/api/strings.lua',
 )
 
-trx_lua_script_sources = files()
+trx_lua_script_sources = files(
+  '../data/scripting/commands/heal.lua',
+)
 
 trx_lua_embed = custom_target(
   'trx_lua_embed',
@@ -235,7 +235,6 @@ common_sources = [
   'trx/game/console/cmd/fly.c',
   'trx/game/console/cmd/give_item.c',
   'trx/game/console/cmd/give_secret.c',
-  'trx/game/console/cmd/heal.c',
   'trx/game/console/cmd/help.c',
   'trx/game/console/cmd/immune.c',
   'trx/game/console/cmd/inf_sprint.c',

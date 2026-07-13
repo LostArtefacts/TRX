@@ -2148,7 +2148,7 @@
     },
     {
       "bulk": false,
-      "count": 14,
+      "count": 22,
       "description": "A mesh Lara can carry on top of one of her own - the dagger in Home Sweet Home, the oar in a boat.",
       "path": "lara.ExtraMesh",
       "values": [
@@ -3252,6 +3252,14 @@
         }
       ],
       "path": "lara.set_extra_equipment"
+    },
+    {
+      "description": "Cures Lara's poisoning. Not the same as writing `0` to `poison`: the poison has a target as well as a current value, and clearing only the value lets it climb back.",
+      "path": "lara.cure_poison"
+    },
+    {
+      "description": "Puts Lara's fire out, and stops her being electrocuted with it.",
+      "path": "lara.extinguish"
     },
     {
       "description": "Takes the extra mesh back off, leaving Lara's own.",

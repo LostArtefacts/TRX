@@ -87,8 +87,6 @@
             "give_item_all_guns": "Geladen und entsichert - Lara ist bis zu ihren Zähnen bewaffnet!",
             "give_item_all_keys": "Überraschung! Jedes Schlüsselitem, dass Lara benötigt, ist jetzt in ihrem Inventar.",
             "give_item_cheat": "Laras Rucksack ist schwerer geworden!",
-            "heal_already_full_hp": "Laras Gesundheit ist schon vollständig gefüllt.",
-            "heal_success": "Laras Gesundheit ist wieder vollständig wiederhergestellt.",
             "invalid_cutscene": "Unzulässige Zwischensequenz",
             "invalid_demo": "Unzulässige Demo",
             "invalid_item": "Unbekanntes Item: %s",
@@ -340,7 +338,9 @@
                 "help": "Listet Laras Geheimnisse auf oder nimmt/gibt ein nach Nummern sortiertes Geheimnis.",
             },
             "heal": {
+                "already_full_hp": "Laras Gesundheit ist schon vollständig gefüllt.",
                 "help": "Heilt Lara zurück auf volle Lebensenergie.",
+                "success": "Laras Gesundheit ist wieder vollständig wiederhergestellt.",
             },
             "help": {
                 "help": "Zeigt Hilfe für alle Kommandos oder detaillierte Hilfe für ein bestimmtes.",
