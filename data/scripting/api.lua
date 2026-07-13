@@ -37,6 +37,8 @@ local namespaces = {}
 local namespace_order = {}
 -- module -> { name -> spec }. What the module's __index dispatches on.
 local module_properties = {}
+-- module -> function returning the handle it stands for.
+local module_instances = {}
 local strict_enabled = false
 local sealed = false
 
@@ -76,12 +78,74 @@ local function resolve(path)
   return module, namespace, parts[3]
 end
 
+-- A module is a plain table, and api.define rawsets its functions straight into
+-- it, so they are found before any of this runs. What this adds is the members a
+-- table cannot hold: computed properties, and - for a module that stands for a
+-- single C struct, as trx.lara stands for Lara - that struct's own fields.
+--
+-- The registry owns the metatable, so a member nobody declared is unreachable
+-- rather than merely undocumented. That matters most here: neither a metatable
+-- getter nor a struct field ever shows up in pairs(), so seal()'s audit cannot
+-- see one.
+local function install_module_meta(module)
+  local props = module_properties[module]
+  local instance = module_instances[module]
+  if props == nil and instance == nil then
+    return
+  end
+
+  trx[module] = trx[module] or {}
+  setmetatable(trx[module], {
+    __index = function(_, key)
+      local prop = props ~= nil and props[key] or nil
+      if prop ~= nil then
+        return prop.get()
+      end
+      if instance ~= nil then
+        local handle = instance()
+        if handle ~= nil then
+          return handle[key]
+        end
+      end
+      return nil
+    end,
+    __newindex = function(_, key, value)
+      local prop = props ~= nil and props[key] or nil
+      if prop ~= nil then
+        if prop.set == nil then
+          error("trx." .. module .. "." .. tostring(key) .. " is read-only", 2)
+        end
+        prop.set(value)
+        return
+      end
+      if instance ~= nil then
+        local handle = instance()
+        if handle ~= nil then
+          -- The struct raises on a member it does not expose, which is what
+          -- makes an undeclared field unreachable rather than silently dropped.
+          handle[key] = value
+          return
+        end
+      end
+      error("Cannot set field '" .. tostring(key) .. "' on trx." .. module, 2)
+    end,
+  })
+end
+
 function api.module(name, spec)
   assert(type(name) == "string", "api.module: name must be a string")
   if modules[name] == nil then
     table.insert(module_order, name)
   end
   modules[name] = spec or {}
+
+  -- A module that stands for one C struct reads and writes that struct's fields
+  -- directly: trx.lara.air is Lara's air. `instance` hands back the handle.
+  if modules[name].instance ~= nil then
+    assert(type(modules[name].instance) == "function", "api.module: instance must be a function")
+    module_instances[name] = modules[name].instance
+    install_module_meta(name)
+  end
 end
 
 -- Builds a specialized validating wrapper by generating Lua source for this
@@ -342,6 +406,17 @@ end
 -- Unlike a struct, an enum is small and wholly public: there is nothing to hide,
 -- so exposure is not opt-in. Every constant must be documented, and documenting
 -- one that does not exist is an error.
+-- The name a constant goes by in Lua. `strip` takes a prefix off the reflected
+-- name: the C spelling is what the data files are keyed by and cannot move, but
+-- trx.lara.ExtraMesh.EXTRA_MESH_OAR only says EXTRA_MESH twice.
+function api.enum_name(spec, reflected_name)
+  local strip = spec.strip
+  if strip ~= nil and reflected_name:sub(1, #strip) == strip then
+    return reflected_name:sub(#strip + 1)
+  end
+  return reflected_name
+end
+
 function api.enum(path, spec)
   assert(not sealed, "the trx.api registry is sealed; declarations happen at load time")
   assert(type(spec) == "table", "api.enum: spec must be a table")
@@ -352,9 +427,16 @@ function api.enum(path, spec)
   local public = {}
   local reflected = {}
   for _, constant in ipairs(enum.values(spec.backing)) do
-    assert(spec.values[constant.name] ~= nil, "api.enum: " .. path .. "." .. constant.name .. " is not documented")
-    public[constant.name] = constant.value
-    reflected[constant.name] = true
+    local value_name = api.enum_name(spec, constant.name)
+    -- Stripping a prefix can collide two C constants onto one Lua name, and the
+    -- second would quietly take the first one's place.
+    assert(
+      public[value_name] == nil,
+      "api.enum: " .. path .. "." .. value_name .. " is the name of two constants of " .. spec.backing
+    )
+    assert(spec.values[value_name] ~= nil, "api.enum: " .. path .. "." .. value_name .. " is not documented")
+    public[value_name] = constant.value
+    reflected[value_name] = true
   end
 
   for value_name in pairs(spec.values) do
@@ -410,34 +492,14 @@ function api.property(path, spec)
   end
   properties[path] = spec
 
-  trx[module] = trx[module] or {}
   local props = module_properties[module]
   if props == nil then
     props = {}
     module_properties[module] = props
-    -- api.define uses rawset, so declared functions sit in the table itself and
-    -- are found before __index ever runs.
-    setmetatable(trx[module], {
-      __index = function(_, key)
-        local prop = props[key]
-        if prop == nil then
-          return nil
-        end
-        return prop.get()
-      end,
-      __newindex = function(_, key, value)
-        local prop = props[key]
-        if prop == nil then
-          error("Cannot set field '" .. key .. "' on trx." .. module, 2)
-        end
-        if prop.set == nil then
-          error("trx." .. module .. "." .. tostring(key) .. " is read-only", 2)
-        end
-        prop.set(value)
-      end,
-    })
   end
   props[name] = spec
+
+  install_module_meta(module)
   return spec
 end
 
@@ -515,10 +577,11 @@ function api.describe()
     local spec = enums[path]
     local entry = { path = path, description = spec.description, values = {} }
     for _, constant in ipairs(enum.values(spec.backing)) do
+      local value_name = api.enum_name(spec, constant.name)
       table.insert(entry.values, {
-        name = constant.name,
+        name = value_name,
         value = constant.value,
-        description = spec.values[constant.name],
+        description = spec.values[value_name],
       })
     end
     -- Numeric order: the order the constants are meant to be read in, and stable
