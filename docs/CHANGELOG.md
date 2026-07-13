@@ -1,6 +1,9 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.9.1...develop) - ××××-××-××
 - added a new Lua module, `trx.math`
+- changed `trx.events` handlers to no longer receive a dummy argument in `before_control` and `after_control`
+- changed `trx.events.detach()` to return whether a handler was removed
 - changed reflections UV mapping to be more correct
+- removed `trx.events.EventType`; refer to migration notes
 - fixed TR1 and TR2 skyboxes being 2× too bright (regression from 1.9)
 
 **TR4**
