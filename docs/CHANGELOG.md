@@ -4,6 +4,7 @@
 - changed `trx.events.detach()` to return whether a handler was removed
 - changed reflections UV mapping to be more correct
 - removed `trx.events.EventType`; refer to migration notes
+- fixed being unable to drop to the secret ledge in Jungle room 76 from the ledge above (#5818)
 - fixed TR1 and TR2 skyboxes being 2× too bright (regression from 1.9)
 
 **TR4**
