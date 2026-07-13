@@ -28,6 +28,9 @@ add_project_arguments(['-Wno-unused', '-Wno-unused-parameter'], language: 'c')
 # project has to find Lua itself, and distributions disagree on the name.
 dep_lua = dependency('lua5.4', 'lua-5.4', 'lua54', 'lua')
 
+# core/strings does its regex with PCRE2.
+dep_pcre2 = dependency('libpcre2-8')
+
 # enum_map.c hashes with uthash, which is headers only.
 c_compiler.check_header('uthash.h', required: true)
 
@@ -208,6 +211,24 @@ test_lua_music_exe = executable(
   build_by_default: false,
 )
 test('lua_music', test_lua_music_exe, suite: 'unit')
+
+# The fuzzy matcher and the regex are the real ones out of trx/core/strings.
+test_lua_strings_exe = executable(
+  'test_lua_strings',
+  files('unit/test_lua_strings.c') + test_stubs
+    + lua_surface_src
+    + files(
+      '../trx/core/strings/common.c',
+      '../trx/core/strings/case_funcs.c',
+      '../trx/core/strings/fuzzy_match.c',
+      '../trx/game/lua/strings.c',
+    ),
+  include_directories: [src_inc, test_inc],
+  dependencies: [dep_lua, dep_pcre2],
+  c_args: lua_surface_args + ['-DPCRE2_CODE_UNIT_WIDTH=8'],
+  build_by_default: false,
+)
+test('lua_strings', test_lua_strings_exe, suite: 'unit')
 
 test_lua_sound_exe = executable(
   'test_lua_sound',

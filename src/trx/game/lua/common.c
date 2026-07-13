@@ -37,6 +37,7 @@ extern void LUA_CreateLara(lua_State *L);
 extern void LUA_CreateLog(lua_State *L);
 extern void LUA_CreateMusic(lua_State *L);
 extern void LUA_CreateMath(lua_State *L);
+extern void LUA_CreateStrings(lua_State *L);
 extern void LUA_CreateStruct(lua_State *L);
 extern void LUA_CreateSound(lua_State *L);
 extern void LUA_CreateConfig(lua_State *L);
@@ -200,6 +201,7 @@ void LUA_Init(void)
     lua_newtable(L);
     lua_setglobal(L, "trx");
 
+    M_LoadTRXCModule(L, LUA_CreateStrings);
     M_LoadTRXCModule(L, LUA_CreateStruct);
     M_LoadTRXCModule(L, LUA_CreateEnum);
     M_LoadTRXCModule(L, LUA_CreateCatalog);
