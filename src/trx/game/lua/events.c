@@ -65,22 +65,25 @@ static int32_t M_L_EventsAttach(lua_State *const L)
     return 1;
 }
 
-// trxc.events.detach(id)
+// trxc.events.detach(id) -> bool
 static int32_t M_L_EventsDetach(lua_State *const L)
 {
-    int32_t id = luaL_checkinteger(L, 1);
+    const int32_t id = luaL_checkinteger(L, 1);
     if (m_Listeners == nullptr) {
-        return 0;
+        lua_pushboolean(L, false);
+        return 1;
     }
     for (int32_t i = 0; i < m_Listeners->count; i++) {
         const M_LISTENER *const lst = Vector_Get(m_Listeners, i);
         if (lst->ref == id) {
             luaL_unref(L, LUA_REGISTRYINDEX, lst->ref);
             Vector_RemoveAt(m_Listeners, i);
-            break;
+            lua_pushboolean(L, true);
+            return 1;
         }
     }
-    return 0;
+    lua_pushboolean(L, false);
+    return 1;
 }
 
 void Lua_ClearLevelListeners(void)
