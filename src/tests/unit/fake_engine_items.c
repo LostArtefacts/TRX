@@ -71,6 +71,11 @@ void FakeItems_Reset(void)
         .intelligent = true,
         .anim_idx = 0,
         .anim_count = FAKE_ANIM_COUNT,
+        .mesh_count = 6,
+        .radius = 341,
+        .shadow_size = 128,
+        .smartness = 0x7fff,
+        .pivot_length = 375,
     };
     m_Objects[FAKE_OBJ_VASE] = (OBJECT) {
         .loaded = true,
@@ -251,6 +256,62 @@ OBJECT *Object_Get(const OBJECT_ID object_id)
         return nullptr;
     }
     return &m_Objects[object_id];
+}
+
+OBJECT *Object_TryGet(const OBJECT_ID object_id)
+{
+    return Object_Get(object_id);
+}
+
+void Object_SwapAllMeshes(const OBJECT_ID obj1_id, const OBJECT_ID obj2_id)
+{
+    g_FakeItemCalls.swap_mesh++;
+}
+
+void Object_SwapMeshEx(
+    const OBJECT_ID obj1_id, const OBJECT_ID obj2_id, const int32_t mesh1_num,
+    const int32_t mesh2_num)
+{
+    g_FakeItemCalls.swap_mesh++;
+}
+
+// The object's own properties, which every item of the type inherits. Only
+// max_hit_points is modelled - the split between an object's default and an
+// item's override is the thing worth testing, not the whole property system.
+bool ObjectProperty_GetObjectValue(
+    const OBJECT *const obj, const char *const name,
+    OBJECT_PROPERTY_VALUE *const out_value)
+{
+    if (obj == nullptr || strcmp(name, "max_hit_points") != 0) {
+        return false;
+    }
+    *out_value = (OBJECT_PROPERTY_VALUE) {
+        .type = OBJECT_PROPERTY_TYPE_INT,
+        .as_int = m_ObjectHP[obj - m_Objects],
+    };
+    return true;
+}
+
+bool ObjectProperty_SetObjectValueRaw(
+    OBJECT *const obj, const char *const name,
+    const OBJECT_PROPERTY_VALUE value)
+{
+    if (obj == nullptr || strcmp(name, "max_hit_points") != 0) {
+        return false;
+    }
+    m_ObjectHP[obj - m_Objects] = value.as_int;
+    return true;
+}
+
+int32_t ObjectProperty_GetObjectNameCount(const OBJECT *const obj)
+{
+    return obj != nullptr ? 1 : 0;
+}
+
+const char *ObjectProperty_GetObjectName(
+    const OBJECT *const obj, const int32_t i)
+{
+    return i == 0 ? "max_hit_points" : nullptr;
 }
 
 bool Object_IsType(const OBJECT_ID object_id, const OBJECT_ID *const test_arr)
