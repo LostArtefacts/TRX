@@ -1,31 +1,66 @@
 local raw = trxc.music
+local api = trx.api
 
-local music = {
-  PlayMode = raw.PlayMode,
-}
+api.module("music", {
+  order = 6,
+  description = "Module for playing and controlling the soundtrack.",
+})
 
-function music.get_track()
-  return raw.get_track()
-end
+local PlayMode = api.enum("music.PlayMode", {
+  backing = "MUSIC_PLAY_MODE",
+  description = "How a track is played. Pass one as `opts.mode` to `trx.music.play`.",
+  values = {
+    ONCE = "Plays the track once. When it finishes, any active looped track resumes from its start.",
+    LOOP = "Plays the track continuously. It becomes the ambient track.",
+    NO_REPEAT = "Plays the track once, but does not retrigger it if it is already playing.",
+    DELAY = "Marks the track for later playback rather than starting it now.",
+    OVERLAY = "Plays the track on top of the current one.",
+  },
+})
 
-function music.play(id, opts)
-  opts = opts or {}
-  mode = opts.mode or trx.music.PlayMode.ONCE
-  raw.play(id, mode)
-end
+api.define("music.get_track", {
+  description = "The track currently playing.",
+  returns = {
+    type = "integer",
+    nullable = true,
+    enum = "catalog.music",
+    description = "`nil` if nothing is playing.",
+  },
+  impl = raw.get_track,
+})
 
-function music.pause()
-  raw.pause()
-end
+api.define("music.play", {
+  description = "Plays a track. Raises if the track or the mode is invalid.",
+  params = {
+    { name = "id", type = "integer", enum = "catalog.music", description = "Track to play." },
+    {
+      name = "opts",
+      type = "table",
+      optional = true,
+      description = "`mode`: a `trx.music.PlayMode`. Defaults to `ONCE`.",
+    },
+  },
+  examples = {
+    [[trx.music.play(1)
+trx.music.play(2, { mode = trx.music.PlayMode.LOOP })]],
+  },
+  impl = function(id, opts)
+    opts = opts or {}
+    raw.play(id, opts.mode or PlayMode.ONCE)
+  end,
+})
 
-function music.unpause()
-  raw.unpause()
-end
+api.define("music.pause", {
+  description = "Pauses the music.",
+  impl = raw.pause,
+})
 
-function music.stop()
-  raw.stop()
-end
+api.define("music.unpause", {
+  description = "Resumes paused music.",
+  impl = raw.unpause,
+})
 
-music.play_track = music.play
-
-trx.music = music
+api.define("music.stop", {
+  description = "Stops all music.",
+  impl = raw.stop,
+})

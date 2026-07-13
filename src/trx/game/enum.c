@@ -7,6 +7,7 @@
 #include <trx/game/items/enum.h>
 #include <trx/game/lara/skin/types.h>
 #include <trx/game/lara/types.h>
+#include <trx/game/music/enum.h>
 #include <trx/game/objects/general/pickup.h>
 #include <trx/game/objects/ids.h>
 #include <trx/game/rooms/enum.h>
@@ -64,6 +65,12 @@ static __attribute__((constructor)) void M_Init(void)
     ENUM_MAP(ITEM_STATUS, IS_ACTIVE, "active");
     ENUM_MAP(ITEM_STATUS, IS_DEACTIVATED, "deactivated");
     ENUM_MAP(ITEM_STATUS, IS_INVISIBLE, "invisible");
+
+    ENUM_MAP(MUSIC_PLAY_MODE, MPM_ONCE, "once");
+    ENUM_MAP(MUSIC_PLAY_MODE, MPM_LOOP, "loop");
+    ENUM_MAP(MUSIC_PLAY_MODE, MPM_DELAY, "delay");
+    ENUM_MAP(MUSIC_PLAY_MODE, MPM_NO_REPEAT, "no_repeat");
+    ENUM_MAP(MUSIC_PLAY_MODE, MPM_OVERLAY, "overlay");
 
     ENUM_MAP(PICKUP_MODE, PICKUP_MODE_NORMAL, "normal");
     ENUM_MAP(PICKUP_MODE, PICKUP_MODE_PLINTH_LOW, "plinth_low");

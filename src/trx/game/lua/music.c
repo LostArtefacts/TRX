@@ -69,8 +69,6 @@ void LUA_CreateMusic(lua_State *const L)
     lua_pushcfunction(L, M_L_MusicGetTrack);
     lua_setfield(L, -2, "get_track");
     lua_pushcfunction(L, M_L_MusicPlayTrack);
-    lua_setfield(L, -2, "play_track");
-    lua_pushcfunction(L, M_L_MusicPlayTrack);
     lua_setfield(L, -2, "play");
     lua_pushcfunction(L, M_L_MusicPause);
     lua_setfield(L, -2, "pause");
