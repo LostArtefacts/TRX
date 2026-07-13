@@ -1249,6 +1249,54 @@
       "path": "music.stop"
     },
     {
+      "description": "Retrieves an object definition by id or by name.",
+      "examples": [
+        "local wolf = trx.objects.wolf\nwolf.properties.max_hit_points = 30"
+      ],
+      "params": [
+        {
+          "description": "Object id, or its catalog name: `trx.objects[\"wolf\"]`.",
+          "enum": "catalog.objects",
+          "name": "key",
+          "type": "any"
+        }
+      ],
+      "path": "objects.get",
+      "returns": {
+        "description": "`nil` if no such object exists.",
+        "nullable": true,
+        "type": "Object"
+      }
+    },
+    {
+      "description": "Swaps meshes between two objects. With no mesh numbers, swaps all of them.",
+      "params": [
+        {
+          "enum": "catalog.objects",
+          "name": "object_id1",
+          "type": "integer"
+        },
+        {
+          "enum": "catalog.objects",
+          "name": "object_id2",
+          "type": "integer"
+        },
+        {
+          "description": "Mesh of the first.",
+          "name": "mesh_num1",
+          "optional": true,
+          "type": "integer"
+        },
+        {
+          "description": "Mesh of the second.",
+          "name": "mesh_num2",
+          "optional": true,
+          "type": "integer"
+        }
+      ],
+      "path": "objects.swap_mesh"
+    },
+    {
       "description": "Retrieves a room by 1-based index.",
       "examples": [
         "local room = trx.rooms[15]\nroom.underwater = true"
@@ -1429,6 +1477,12 @@
       "description": "Module for playing and controlling the soundtrack.",
       "name": "music",
       "order": 6
+    },
+    {
+      "description": "Module for the object definitions a level is built from.\n\nAn object is the pattern every item of that type is cut from: a wolf's radius, not this wolf's. Per-item state lives on the item - see `trx.items`.",
+      "name": "objects",
+      "order": 14,
+      "title": "Object"
     },
     {
       "description": "Module for inspecting and altering the rooms of the current level.",
@@ -1900,6 +1954,110 @@
       ],
       "methods": [],
       "path": "lara.Lara"
+    },
+    {
+      "description": "An object definition.",
+      "extensions": [
+        {
+          "description": "The object's own typed properties, which every item of the type inherits. Writing here changes the default for all of them; write to `item.properties` to change one item only. Iterable with `pairs()`. See [Objects](../../OBJECTS.md).",
+          "name": "properties",
+          "type": "table"
+        }
+      ],
+      "fields": [
+        {
+          "description": "How many animations it has.",
+          "name": "anim_count",
+          "type": "integer",
+          "writable": false
+        },
+        {
+          "description": "Whether the object thinks - a creature rather than a door.",
+          "name": "is_intelligent",
+          "type": "boolean",
+          "writable": false
+        },
+        {
+          "description": "Whether the current level has this object at all. An object it never loaded still has a definition; this is how a script tells.",
+          "name": "loaded",
+          "type": "boolean",
+          "writable": false
+        },
+        {
+          "description": "How many meshes the object is built from.",
+          "name": "mesh_count",
+          "type": "integer",
+          "writable": false
+        },
+        {
+          "description": "How far in front of itself the object turns about.",
+          "name": "pivot_length",
+          "type": "integer",
+          "writable": true
+        },
+        {
+          "description": "Collision radius.",
+          "name": "radius",
+          "type": "integer",
+          "writable": true
+        },
+        {
+          "description": "Whether the object is drawn see-through.",
+          "name": "semi_transparent",
+          "type": "boolean",
+          "writable": true
+        },
+        {
+          "description": "Size of the blob shadow drawn under it, and 0 for none.",
+          "name": "shadow_size",
+          "type": "integer",
+          "writable": true
+        },
+        {
+          "description": "How readily a creature of this type finds its way to Lara.",
+          "name": "smartness",
+          "type": "integer",
+          "writable": true
+        }
+      ],
+      "methods": [
+        {
+          "description": "Reads one of the object's properties. Prefer `object.properties.<name>`.",
+          "name": "get_property",
+          "params": [
+            {
+              "name": "name",
+              "type": "string"
+            }
+          ],
+          "returns": {
+            "nullable": true,
+            "type": "any"
+          }
+        },
+        {
+          "description": "Names of every property this object declares.",
+          "name": "get_property_names",
+          "returns": {
+            "type": "table"
+          }
+        },
+        {
+          "description": "Writes one of the object's properties. Prefer `object.properties.<name> = ...`.",
+          "name": "set_property",
+          "params": [
+            {
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "name": "value",
+              "type": "any"
+            }
+          ]
+        }
+      ],
+      "path": "objects.Object"
     },
     {
       "description": "A room in the current level.",
