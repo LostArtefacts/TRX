@@ -261,6 +261,18 @@ class TestLuaDocs(unittest.TestCase):
         self.assertNotIn("read-only", power)
         self.assertIn("Compare against `trx.things.State`.", power)
 
+    def test_a_module_may_override_its_title(self):
+        """Capitalizing the module name gives "Log" and "Assault"; the pages are
+        Logging and Assault course."""
+        page = docs.render_page(SURFACE["modules"][0], SURFACE)
+        self.assertIn("title: Things", page)
+
+        surface = copy.deepcopy(SURFACE)
+        surface["modules"][0]["title"] = "Thingamabobs"
+        page = docs.render_page(surface["modules"][0], surface)
+        self.assertIn("title: Thingamabobs", page)
+        self.assertIn("## Thingamabobs module", page)
+
     def test_rendering_is_stable(self):
         """Two runs must agree, or --check would flag spurious drift forever."""
         a = docs.render_page(SURFACE["modules"][0], SURFACE)

@@ -366,6 +366,7 @@ function api.describe()
   for _, name in ipairs(module_order) do
     table.insert(out.modules, {
       name = name,
+      title = modules[name].title,
       description = modules[name].description,
       order = modules[name].order,
     })
