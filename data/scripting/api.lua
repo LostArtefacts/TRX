@@ -421,8 +421,12 @@ function api.enum(path, spec)
   assert(not sealed, "the trx.api registry is sealed; declarations happen at load time")
   assert(type(spec) == "table", "api.enum: spec must be a table")
   assert(type(spec.backing) == "string", "api.enum: backing must be a C enum name")
-  assert(type(spec.values) == "table", "api.enum: values must be a table")
   local module, name = split_path(path)
+
+  -- `bulk` is for a catalog-sized enum - every object in the game, say. It is
+  -- described as a whole, and its constants carry no description apiece.
+  local bulk = spec.bulk == true
+  assert(bulk or type(spec.values) == "table", "api.enum: values must be a table")
 
   local public = {}
   local reflected = {}
@@ -434,23 +438,54 @@ function api.enum(path, spec)
       public[value_name] == nil,
       "api.enum: " .. path .. "." .. value_name .. " is the name of two constants of " .. spec.backing
     )
-    assert(spec.values[value_name] ~= nil, "api.enum: " .. path .. "." .. value_name .. " is not documented")
+    if not bulk then
+      assert(spec.values[value_name] ~= nil, "api.enum: " .. path .. "." .. value_name .. " is not documented")
+    end
     public[value_name] = constant.value
     reflected[value_name] = true
   end
 
-  for value_name in pairs(spec.values) do
+  for value_name in pairs(spec.values or {}) do
     assert(reflected[value_name], "api.enum: " .. path .. "." .. value_name .. " is not a constant of " .. spec.backing)
   end
 
+  spec.count = 0
+  for _ in pairs(public) do
+    spec.count = spec.count + 1
+  end
+
+  -- The constants are held behind an empty table rather than in one. Lua only
+  -- calls __newindex for a key the table does not have, so a value sitting in
+  -- the table itself could be overwritten without the metatable seeing it, and
+  -- an enum mirrors C: it is read-only.
+  --
+  -- __index also folds the case, so trx.catalog.objects.wolf and
+  -- trx.catalog.objects.WOLF are the same constant. Upper case is canonical: it
+  -- is what pairs() yields and what the docs list.
+  local face = {}
+  setmetatable(face, {
+    __index = function(_, key)
+      if type(key) ~= "string" then
+        return nil
+      end
+      return public[key] ~= nil and public[key] or public[key:upper()]
+    end,
+    __newindex = function(_, key)
+      error("trx." .. path .. "." .. tostring(key) .. ": an enum cannot be written to", 2)
+    end,
+    __pairs = function()
+      return next, public, nil
+    end,
+  })
+
   trx[module] = trx[module] or {}
-  rawset(trx[module], name, public)
+  rawset(trx[module], name, face)
 
   if enums[path] == nil then
     table.insert(enum_order, path)
   end
   enums[path] = spec
-  return public
+  return face
 end
 
 -- Declares a lone constant sitting on the module table - an angle unit is a macro,
@@ -575,20 +610,39 @@ function api.describe()
   end
   for _, path in ipairs(enum_order) do
     local spec = enums[path]
-    local entry = { path = path, description = spec.description, values = {} }
-    for _, constant in ipairs(enum.values(spec.backing)) do
-      local value_name = api.enum_name(spec, constant.name)
-      table.insert(entry.values, {
-        name = value_name,
-        value = constant.value,
-        description = spec.values[value_name],
-      })
+    local entry = {
+      path = path,
+      description = spec.description,
+      examples = spec.examples,
+      bulk = spec.bulk == true,
+      count = spec.count,
+      source = spec.source,
+      values = {},
+    }
+    -- Names only, and no values: the ids are TRX's own, and a script refers to
+    -- them by name.
+    if entry.bulk then
+      entry.names = {}
+      for _, constant in ipairs(enum.values(spec.backing)) do
+        table.insert(entry.names, api.enum_name(spec, constant.name))
+      end
+      table.sort(entry.names)
     end
-    -- Numeric order: the order the constants are meant to be read in, and stable
-    -- across dumps, which the reflected order is not.
-    table.sort(entry.values, function(a, b)
-      return a.value < b.value
-    end)
+    if not entry.bulk then
+      for _, constant in ipairs(enum.values(spec.backing)) do
+        local value_name = api.enum_name(spec, constant.name)
+        table.insert(entry.values, {
+          name = value_name,
+          value = constant.value,
+          description = spec.values[value_name],
+        })
+      end
+      -- Numeric order: the order the constants are meant to be read in, and
+      -- stable across dumps, which the reflected order is not.
+      table.sort(entry.values, function(a, b)
+        return a.value < b.value
+      end)
+    end
     table.insert(out.enums, entry)
   end
   for _, path in ipairs(const_order) do

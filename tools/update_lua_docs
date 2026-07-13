@@ -23,6 +23,7 @@ import argparse
 import json
 import subprocess
 import sys
+import textwrap
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -159,7 +160,41 @@ def render_const(spec: dict) -> list[str]:
     return out
 
 
+def render_enum_names(names: list[str] | None, indent: str) -> list[str]:
+    """The names of a bulk enum, wrapped, and folded away."""
+    if not names:
+        return []
+    out = [
+        "",
+        f"{indent}<details><summary>Click here to see a list of all symbols.</summary>",
+        "",
+    ]
+    quoted = ", ".join(f"`{name}`" for name in names)
+    for line in textwrap.wrap(quoted, width=76, break_long_words=False):
+        out.append(f"{indent}{line}")
+    out.append("")
+    out.append(f"{indent}</details>")
+    return out
+
+
 def render_enum(spec: dict) -> list[str]:
+    # A bulk enum is described as a whole: a count and a folded list of names,
+    # rather than several hundred bullet points. The values stay out - the ids
+    # are TRX's own, and a script refers to them by name.
+    if spec.get("bulk"):
+        head = f"- [lua]`trx.{spec['path']}`"
+        count = spec.get("count")
+        if count:
+            head += f" - {count} names"
+        out = [head, ""]
+        if spec.get("description"):
+            out.append(f"{INDENT}{spec['description']}")
+            out.append("")
+        out.extend(render_examples(spec.get("examples"), INDENT))
+        out.extend(render_enum_names(spec.get("names"), INDENT))
+        out.append("")
+        return out
+
     out = [f"- [lua]`trx.{spec['path']}`", ""]
     if spec.get("description"):
         out.append(f"{INDENT}{spec['description']}")

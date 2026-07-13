@@ -301,6 +301,22 @@ class TestLuaDocs(unittest.TestCase):
             second.startswith("  "), f"paragraph escaped its list item: {second!r}"
         )
 
+    def test_a_bulk_enum_lists_its_names_but_not_its_numbers(self):
+        """The names go in, the values stay out: the ids are TRX's own, and a
+        script refers to them by name."""
+        surface = copy.deepcopy(SURFACE)
+        surface["enums"][0].update(
+            {"bulk": True, "count": 3, "values": [], "names": ["BROKEN", "OFF", "ON"]}
+        )
+        page = docs.render_page(surface["modules"][0], surface)
+
+        self.assertIn("`trx.things.State` - 3 names", page)
+        self.assertIn("`BROKEN`, `OFF`, `ON`", page)
+        self.assertIn("Click here to see a list of all symbols.", page)
+
+        # No bullet per constant, and no values.
+        self.assertNotIn("`trx.things.State.OFF` = `0`", page)
+
     def test_rendering_is_stable(self):
         """Two runs must agree, or --check would flag spurious drift forever."""
         a = docs.render_page(SURFACE["modules"][0], SURFACE)
