@@ -1,20 +1,24 @@
 #include <trx/config/enum.h>
 #include <trx/core/enum_map.h>
 #include <trx/core/log.h>
+#include <trx/game/catalog/manager.h>
 #include <trx/game/game_buf.h>
 #include <trx/game/game_flow/types.h>
 #include <trx/game/gun/types.h>
 #include <trx/game/gym.h>
 #include <trx/game/input/enum.h>
+#include <trx/game/items/actions/ids.h>
 #include <trx/game/items/enum.h>
 #include <trx/game/lara/enum.h>
 #include <trx/game/lara/skin/types.h>
 #include <trx/game/lara/types.h>
 #include <trx/game/music/enum.h>
+#include <trx/game/music/ids.h>
 #include <trx/game/objects/general/pickup.h>
 #include <trx/game/objects/ids.h>
 #include <trx/game/rooms/enum.h>
 #include <trx/game/screenshot.h>
+#include <trx/game/sound/ids.h>
 #include <trx/game/ui/settings.h>
 
 static __attribute__((constructor)) void M_Init(void)
@@ -23,6 +27,41 @@ static __attribute__((constructor)) void M_Init(void)
     ENUM_MAP(INPUT_ROLE, role_name, #state_name);
 #include <trx/game/input/roles.def>
 #undef X_INPUT_ROLE
+
+    // The catalogs: every object, sample, music track, Lara state, Lara
+    // animation and item action TRX knows, by its canonical name. These are the
+    // names a script says - the O_/SFX_/MX_ prefixes come off in the
+    // declaration, not here, because the prefix is what tells them apart in C.
+#define X_CATALOG_ID(enum_value) ENUM_MAP_SELF(OBJECT_ID, enum_value);
+#include <trx/game/catalog/objects.def>
+#undef X_CATALOG_ID
+
+#define X_CATALOG_ID(enum_value) ENUM_MAP_SELF(SAMPLE_TRX_ID, enum_value);
+#include <trx/game/catalog/samples.def>
+#undef X_CATALOG_ID
+
+#define X_CATALOG_ID(enum_value) ENUM_MAP_SELF(MUSIC_TRX_ID, enum_value);
+#include <trx/game/catalog/music.def>
+#undef X_CATALOG_ID
+
+#define X_CATALOG_ID(enum_value) ENUM_MAP_SELF(LARA_TRX_STATE, enum_value);
+#include <trx/game/catalog/lara_states.def>
+#undef X_CATALOG_ID
+
+#define X_CATALOG_ID(enum_value) ENUM_MAP_SELF(LARA_TRX_ANIMATION, enum_value);
+#include <trx/game/catalog/lara_anims.def>
+#undef X_CATALOG_ID
+
+#define X_CATALOG_ID(enum_value) ENUM_MAP_SELF(ITEM_TRX_ACTION, enum_value);
+#include <trx/game/catalog/item_actions.def>
+#undef X_CATALOG_ID
+
+    ENUM_MAP(CATALOG_CONTEXT, CATALOG_OBJECTS, "objects");
+    ENUM_MAP(CATALOG_CONTEXT, CATALOG_MUSIC, "music");
+    ENUM_MAP(CATALOG_CONTEXT, CATALOG_SAMPLES, "samples");
+    ENUM_MAP(CATALOG_CONTEXT, CATALOG_LARA_STATES, "lara_states");
+    ENUM_MAP(CATALOG_CONTEXT, CATALOG_LARA_ANIMS, "lara_anims");
+    ENUM_MAP(CATALOG_CONTEXT, CATALOG_ITEM_ACTIONS, "item_actions");
 
     ENUM_MAP(GAME_BUFFER, GBUF_TEXTURE_PAGES, "Texture pages");
     ENUM_MAP(GAME_BUFFER, GBUF_PALETTES, "Color palettes");
