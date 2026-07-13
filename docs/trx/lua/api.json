@@ -592,6 +592,58 @@
         "nullable": true,
         "type": "vec3"
       }
+    },
+    {
+      "description": "Whether a sound sample exists in the current level.",
+      "params": [
+        {
+          "description": "Sample to test.",
+          "enum": "catalog.samples",
+          "name": "id",
+          "type": "integer"
+        }
+      ],
+      "path": "sound.is_available",
+      "returns": {
+        "type": "boolean"
+      }
+    },
+    {
+      "description": "Plays a sound effect. Raises if the sample is not available.",
+      "examples": [
+        "trx.sound.play(99)\ntrx.sound.play(99, { pos = { x = 100, y = 200, z = 50 } })"
+      ],
+      "params": [
+        {
+          "description": "Sample to play.",
+          "enum": "catalog.samples",
+          "name": "id",
+          "type": "integer"
+        },
+        {
+          "description": "`pos`: a `{ x =, y =, z = }` world position to play from, which applies pan and volume. Omit to play at full volume.",
+          "name": "opts",
+          "optional": true,
+          "type": "table"
+        }
+      ],
+      "path": "sound.play"
+    },
+    {
+      "description": "Stops a sound effect.",
+      "params": [
+        {
+          "description": "Sample to stop.",
+          "enum": "catalog.samples",
+          "name": "id",
+          "type": "integer"
+        }
+      ],
+      "path": "sound.stop"
+    },
+    {
+      "description": "Stops every sound effect currently playing.",
+      "path": "sound.stop_all"
     }
   ],
   "modules": [
@@ -619,6 +671,11 @@
       "description": "Module for inspecting and altering the rooms of the current level.",
       "name": "rooms",
       "order": 10
+    },
+    {
+      "description": "Module for playing sound effects.",
+      "name": "sound",
+      "order": 7
     }
   ],
   "types": [

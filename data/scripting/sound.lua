@@ -1,21 +1,48 @@
 local raw = trxc.sound
+local api = trx.api
 
-local sound = {}
+api.module("sound", {
+  order = 7,
+  description = "Module for playing sound effects.",
+})
 
-function sound.is_available(id)
-  return raw.is_available(id)
-end
+api.define("sound.is_available", {
+  description = "Whether a sound sample exists in the current level.",
+  params = {
+    { name = "id", type = "integer", enum = "catalog.samples", description = "Sample to test." },
+  },
+  returns = { type = "boolean" },
+  impl = raw.is_available,
+})
 
-function sound.play(id, opts)
-  raw.play(id, opts)
-end
+api.define("sound.play", {
+  description = "Plays a sound effect. Raises if the sample is not available.",
+  params = {
+    { name = "id", type = "integer", enum = "catalog.samples", description = "Sample to play." },
+    {
+      name = "opts",
+      type = "table",
+      optional = true,
+      description = "`pos`: a `{ x =, y =, z = }` world position to play from, which applies pan "
+        .. "and volume. Omit to play at full volume.",
+    },
+  },
+  examples = {
+    [[trx.sound.play(99)
+trx.sound.play(99, { pos = { x = 100, y = 200, z = 50 } })]],
+  },
+  impl = raw.play,
+})
 
-function sound.stop(id)
-  raw.stop(id)
-end
+api.define("sound.stop", {
+  description = "Stops a sound effect.",
+  params = {
+    { name = "id", type = "integer", enum = "catalog.samples", description = "Sample to stop." },
+  },
+  impl = raw.stop,
+})
 
-function sound.stop_all()
-  raw.stop_all()
-end
-
-trx.sound = sound
+api.define("sound.stop_all", {
+  description = "Stops every sound effect currently playing.",
+  impl = raw.stop_all,
+})
