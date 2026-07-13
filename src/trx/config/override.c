@@ -82,6 +82,37 @@ bool ConfigOverride_Push(
     return true;
 }
 
+bool ConfigOverride_PushFromString(
+    const CONFIG_OPTION *const option, const char *const value)
+{
+    ASSERT(option != nullptr);
+    ASSERT(option->target != nullptr);
+
+    // There is one string parser, and it writes straight into the option. So
+    // park what is in there, let the parser land on the option, lift out what
+    // it produced, and put the original back before pushing it properly - the
+    // value the stack records underneath has to be the player's, not the one
+    // about to go over the top of it.
+    CONFIG_VALUE original;
+    ConfigValue_Copy(option, &original, option->target);
+
+    if (!Config_SetOptionValueFromString(option, value)) {
+        ConfigValue_Free(option, &original);
+        return false;
+    }
+
+    CONFIG_VALUE parsed;
+    ConfigValue_Copy(option, &parsed, option->target);
+    ConfigValue_Apply(option, &original);
+
+    const bool ok =
+        ConfigOverride_Push(option, ConfigValue_GetPtr(option, &parsed));
+
+    ConfigValue_Free(option, &parsed);
+    ConfigValue_Free(option, &original);
+    return ok;
+}
+
 bool ConfigOverride_Pop(const CONFIG_OPTION *const option)
 {
     ASSERT(option != nullptr);

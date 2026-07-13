@@ -71,6 +71,24 @@ test_field_exe = executable(
 )
 test('field', test_field_exe, suite: 'unit')
 
+# The runtime override stack: how a script holds a setting away from the player's
+# own value and gives it back. It asks the config layer where an option lives and
+# how a string becomes a value, and the test answers both - so no option map, no
+# settings file, no game.
+test_config_override_exe = executable(
+  'test_config_override',
+  files('unit/test_config_override.c') + test_stubs
+    + files(
+      '../trx/config/override.c',
+      '../trx/config/value.c',
+      '../trx/core/memory.c',
+      '../trx/core/vector.c',
+    ),
+  include_directories: [src_inc, test_inc],
+  build_by_default: false,
+)
+test('config_override', test_config_override_exe, suite: 'unit')
+
 # The name<->value registry the Lua enum bridge reflects. Its two dependencies
 # outside core - the formatting helper and the localized game strings - are
 # stubbed: the real ones live in translation units that want PCRE2 and the game
