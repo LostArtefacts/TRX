@@ -60,6 +60,21 @@ SURFACE = {
     "constants": [
         {"path": "things.WALL_L", "value": 1024, "description": "One sector."}
     ],
+    "properties": [
+        {
+            "path": "things.pos",
+            "type": "vec3",
+            "writable": False,
+            "description": "Where it is.",
+        },
+        {
+            "path": "things.power",
+            "type": "integer",
+            "writable": True,
+            "description": "How strong it is.",
+            "enum": "things.State",
+        },
+    ],
     "functions": [
         {
             "path": "things.spawn",
@@ -232,6 +247,20 @@ class TestLuaDocs(unittest.TestCase):
         self.assertIn("```lua", page)
         self.assertIn("trx.things.spawn(1)", page)
 
+    def test_module_properties_are_rendered(self):
+        """trx.camera.pos is neither a function nor a constant: reading it calls
+        into the engine. It still has to reach the page."""
+        page = docs.render_page(SURFACE["modules"][0], SURFACE)
+        self.assertIn("### Properties", page)
+
+        pos = next(line for line in page.splitlines() if "`trx.things.pos`" in line)
+        self.assertIn("Where it is.", pos)
+        self.assertIn("read-only", pos)
+
+        power = next(line for line in page.splitlines() if "`trx.things.power`" in line)
+        self.assertNotIn("read-only", power)
+        self.assertIn("Compare against `trx.things.State`.", power)
+
     def test_rendering_is_stable(self):
         """Two runs must agree, or --check would flag spurious drift forever."""
         a = docs.render_page(SURFACE["modules"][0], SURFACE)
@@ -250,6 +279,7 @@ class TestLuaDocs(unittest.TestCase):
             (("types", 0, "fields", 0), "things.Widget.shown"),
             (("types", 0, "methods", 0), "things.Widget.poke"),
             (("types", 0, "extensions", 0), "things.Widget.derived"),
+            (("properties", 0), "things.pos"),
         ]
         for path, expected in cases:
             with self.subTest(member=expected):

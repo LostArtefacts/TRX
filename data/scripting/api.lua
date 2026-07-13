@@ -35,6 +35,10 @@ local enums = {}
 local enum_order = {}
 local consts = {}
 local const_order = {}
+local properties = {}
+local property_order = {}
+-- module -> { name -> spec }. What the module's __index dispatches on.
+local module_properties = {}
 local strict_enabled = false
 local sealed = false
 
@@ -157,7 +161,7 @@ function api.seal()
       error(
         table.concat(undeclared, ", ")
           .. ": reachable from scripts but not declared, so the reference cannot describe it. "
-          .. "Declare it with api.define, api.enum or api.const."
+          .. "Declare it with api.define, api.enum, api.const or api.property."
       )
     end
   end
@@ -306,8 +310,59 @@ function api.const(path, spec)
   return spec.value
 end
 
+-- Declares a computed member on a module table. It is not a function and not a
+-- stored field: reading it calls into C, and writing it calls a setter, or fails
+-- if there is none.
+--
+-- The registry OWNS the module's __index/__newindex, so an undeclared property is
+-- unreachable rather than merely undocumented. That matters here more than
+-- anywhere else: a metatable getter never appears in pairs(), so seal()'s audit
+-- cannot see one, and a hand-rolled getter table would sail past it.
+function api.property(path, spec)
+  assert(not sealed, "the trx.api registry is sealed; declarations happen at load time")
+  assert(type(spec) == "table", "api.property: spec must be a table")
+  assert(type(spec.get) == "function", "api.property: get must be a function")
+  assert(spec.set == nil or type(spec.set) == "function", "api.property: set must be a function")
+  local module, name = split_path(path)
+
+  if properties[path] == nil then
+    table.insert(property_order, path)
+  end
+  properties[path] = spec
+
+  trx[module] = trx[module] or {}
+  local props = module_properties[module]
+  if props == nil then
+    props = {}
+    module_properties[module] = props
+    -- api.define uses rawset, so declared functions sit in the table itself and
+    -- are found before __index ever runs.
+    setmetatable(trx[module], {
+      __index = function(_, key)
+        local prop = props[key]
+        if prop == nil then
+          return nil
+        end
+        return prop.get()
+      end,
+      __newindex = function(_, key, value)
+        local prop = props[key]
+        if prop == nil then
+          error("Cannot set field '" .. key .. "' on trx." .. module, 2)
+        end
+        if prop.set == nil then
+          error("trx." .. module .. "." .. tostring(key) .. " is read-only", 2)
+        end
+        prop.set(value)
+      end,
+    })
+  end
+  props[name] = spec
+  return spec
+end
+
 function api.describe()
-  local out = { modules = {}, functions = {}, types = {}, enums = {}, constants = {} }
+  local out = { modules = {}, functions = {}, types = {}, enums = {}, constants = {}, properties = {} }
   for _, name in ipairs(module_order) do
     table.insert(out.modules, {
       name = name,
@@ -390,6 +445,16 @@ function api.describe()
       path = path,
       value = spec.value,
       description = spec.description,
+    })
+  end
+  for _, path in ipairs(property_order) do
+    local spec = properties[path]
+    table.insert(out.properties, {
+      path = path,
+      type = spec.type,
+      description = spec.description,
+      enum = spec.enum,
+      writable = spec.set ~= nil,
     })
   end
   return out

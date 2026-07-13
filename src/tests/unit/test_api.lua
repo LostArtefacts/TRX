@@ -227,6 +227,68 @@ test("to_json round-trips the surface", function()
   assert(json:find('\\"quotes\\"'), "quotes not escaped")
 end)
 
+test("a module property reads through its getter and writes through its setter", function()
+  local api = fresh_env()
+  api.module("things", {})
+
+  local air = 100
+  api.property("things.air", {
+    type = "integer",
+    description = "Air.",
+    get = function()
+      return air
+    end,
+    set = function(value)
+      air = value
+    end,
+  })
+  api.property("things.pos", {
+    type = "vec3",
+    description = "Where.",
+    get = function()
+      return { x = 1, y = 2, z = 3 }
+    end,
+  })
+
+  assert(trx.things.air == 100, "the getter did not run")
+  trx.things.air = 50
+  assert(air == 50, "the setter did not run")
+  assert(trx.things.pos.x == 1, "computed property")
+
+  -- No setter means read-only, and the message says so.
+  local ok, err = pcall(function()
+    trx.things.pos = { x = 0 }
+  end)
+  assert(not ok and tostring(err):find("read-only", 1, true), "a getter-only property must not be writable")
+
+  -- The registry owns __newindex, so a name nobody declared cannot be created.
+  -- This is the whole point: a metatable getter never shows up in pairs(), so
+  -- seal()'s audit could never have caught one.
+  ok = pcall(function()
+    trx.things.undeclared = 1
+  end)
+  assert(not ok, "writing an undeclared property must raise")
+  assert(trx.things.undeclared == nil, "reading an undeclared property must be nil")
+end)
+
+test("properties reach describe()", function()
+  local api = fresh_env()
+  api.module("things", {})
+  api.property("things.air", {
+    type = "integer",
+    description = "Air.",
+    get = function() end,
+    set = function() end,
+  })
+  api.property("things.pos", { type = "vec3", description = "Where.", get = function() end })
+
+  local out = api.describe()
+  assert(#out.properties == 2, "properties missing from describe()")
+  assert(out.properties[1].path == "things.air")
+  assert(out.properties[1].writable == true, "a property with a setter is writable")
+  assert(out.properties[2].writable == false, "a getter-only property is read-only")
+end)
+
 test("seal blocks further declarations", function()
   local api = fresh_env()
   api.seal()
@@ -236,6 +298,7 @@ test("seal blocks further declarations", function()
   assert(not pcall(api.type, "things.Widget", { backing = "WIDGET" }), "type() after seal")
   assert(not pcall(api.define, "things.evil", { impl = function() end }), "define() after seal")
   assert(not pcall(api.enum, "things.State", { backing = "WIDGET_STATE", values = {} }), "enum() after seal")
+  assert(not pcall(api.property, "things.air", { get = function() end }), "property() after seal")
 end)
 
 print(("\n%d passed, %d failed, %d total"):format(passed, failures, passed + failures))
