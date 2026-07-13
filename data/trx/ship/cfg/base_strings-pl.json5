@@ -87,8 +87,6 @@
             "give_item_all_guns": "Lara uzbrojona po zęby. Drżyj, świecie!",
             "give_item_all_keys": "Niespodzianka! Wszystkie kluczowe przedmioty zmaterializowały się w plecaku Lary.",
             "give_item_cheat": "Plecak Lary stał się znacznie cięższy!",
-            "heal_already_full_hp": "Lara jest już w pełni zdrowa",
-            "heal_success": "Lara uleczona do pełni zdrowia",
             "invalid_cutscene": "Nieprawidłowy przerywnik",
             "invalid_demo": "Nieprawidłowe demo",
             "invalid_item": "Nieznany przedmiot: %s",
@@ -340,7 +338,9 @@
                 "help": "Wyświetla sekrety Lary lub zabiera/daje sekret według numeru.",
             },
             "heal": {
+                "already_full_hp": "Lara jest już w pełni zdrowa",
                 "help": "Leczy Larę do pełni zdrowia.",
+                "success": "Lara uleczona do pełni zdrowia",
             },
             "help": {
                 "help": "Pokazuje listę komend lub opis konkretnej komendy.",

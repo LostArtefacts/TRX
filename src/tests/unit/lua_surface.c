@@ -96,7 +96,8 @@ int LuaSurface_Run(const LUA_SURFACE_TEST *const test)
     // the binary: the test exists to pin what data/scripting says today.
     M_RunModule(L, "api");
 
-    for (int32_t i = 0; i < 4 && test->deps[i] != nullptr; i++) {
+    const int32_t max_deps = sizeof(test->deps) / sizeof(test->deps[0]);
+    for (int32_t i = 0; i < max_deps && test->deps[i] != nullptr; i++) {
         M_RunModule(L, test->deps[i]);
 
         // A module states its dependencies with require(). It is loaded now, so
@@ -112,13 +113,28 @@ int LuaSurface_Run(const LUA_SURFACE_TEST *const test)
 
     M_RunModule(L, test->module);
 
-    // From here to the tests, the order is LUA_Init's: seal, then harden.
+    // From here to the tests, the order is LUA_Init's: seal, then the runtime
+    // scripts, then harden.
     if (test->seal) {
         if (luaL_dostring(L, "trx.api.seal()") != LUA_OK) {
             M_Fail(L, "sealing");
         }
         lua_pushnil(L);
         lua_setglobal(L, "trxc");
+    }
+
+    if (test->script != nullptr) {
+        // Not an API module, and not named as one: a command written in Lua is
+        // blamed for its own log lines.
+        char path[512];
+        char chunk_name[256];
+        snprintf(
+            path, sizeof(path), REPO_ROOT "/data/scripting/commands/%s.lua",
+            test->script);
+        snprintf(
+            chunk_name, sizeof(chunk_name), "@trx/commands/%s.lua",
+            test->script);
+        M_RunFileAs(L, path, chunk_name);
     }
 
     if (test->harden) {

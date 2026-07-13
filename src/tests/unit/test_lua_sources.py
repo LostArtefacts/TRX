@@ -2,8 +2,9 @@
 
 """The embedded Lua source list against the tree it is supposed to mirror.
 
-What the engine embeds is stated in src/meson.build and nowhere else, so nothing
-stops a new file in data/scripting/api/ from being left out of it.
+Which array a Lua file lands in - a module the engine requires, or a script it
+runs once - is stated in src/meson.build and nowhere else, so nothing stops a new
+file in data/scripting/api/ from being left out of it.
 
 Left out, the file is still loaded by the surface tests, which read the tree; it
 is simply absent from the binary and from the reference. The suite would be green
@@ -27,7 +28,10 @@ def listed(variable: str) -> set[str]:
 def main() -> int:
     failures = []
 
-    for variable, directory in (("trx_lua_api_sources", ROOT / "data/scripting/api"),):
+    for variable, directory in (
+        ("trx_lua_api_sources", ROOT / "data/scripting/api"),
+        ("trx_lua_script_sources", ROOT / "data/scripting/commands"),
+    ):
         on_disk = {path.name for path in directory.glob("*.lua")}
         in_meson = listed(variable)
 

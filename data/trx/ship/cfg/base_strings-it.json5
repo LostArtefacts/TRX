@@ -87,8 +87,6 @@
             "give_item_all_guns": "Preparati - Lara è armata fino ai denti!",
             "give_item_all_keys": "Sorpresa! Ogni oggetto chiave di cui Lara ha bisogno è ora nel suo zaino.",
             "give_item_cheat": "Lo zaino di Lara è diventato molto più pesante!",
-            "heal_already_full_hp": "Lara è già in piena salute",
-            "heal_success": "Lara è tornata in piena salute",
             "invalid_cutscene": "Scena di intermezzo non valida",
             "invalid_demo": "Demo non valida",
             "invalid_item": "Oggetto sconosciuto: %s",
@@ -340,7 +338,9 @@
                 "help": "Mostra i segreti ottenuti da Lara, oppure aggiunge/rimuove un segreto in base al numero specificato.",
             },
             "heal": {
+                "already_full_hp": "Lara è già in piena salute",
                 "help": "Riporta Lara in piena salute.",
+                "success": "Lara è tornata in piena salute",
             },
             "help": {
                 "help": "Mostra la guida per tutti i comandi o la guida dettagliata per uno solo.",

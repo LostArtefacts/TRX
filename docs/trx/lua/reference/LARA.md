@@ -186,6 +186,12 @@ Her position, room and hit points are not here: she is an item like any other an
   trx.lara.set_extra_equipment(trx.lara.Mesh.HAND_R, trx.lara.ExtraMesh.OAR)
   ```
 
+- [lua]`trx.lara.cure_poison()`  
+  Cures Lara's poisoning. Not the same as writing `0` to `poison`: the poison has a target as well as a current value, and clearing only the value lets it climb back.
+
+- [lua]`trx.lara.extinguish()`  
+  Puts Lara's fire out, and stops her being electrocuted with it.
+
 - [lua]`trx.lara.clear_equipment(mesh)`  
   Takes the extra mesh back off, leaving Lara's own.
 

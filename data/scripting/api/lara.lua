@@ -265,6 +265,17 @@ api.define("lara.set_extra_equipment", {
   impl = raw.set_extra_equipment,
 })
 
+api.define("lara.cure_poison", {
+  description = "Cures Lara's poisoning. Not the same as writing `0` to `poison`: the poison has a "
+    .. "target as well as a current value, and clearing only the value lets it climb back.",
+  impl = raw.cure_poison,
+})
+
+api.define("lara.extinguish", {
+  description = "Puts Lara's fire out, and stops her being electrocuted with it.",
+  impl = raw.extinguish,
+})
+
 api.define("lara.clear_equipment", {
   description = "Takes the extra mesh back off, leaving Lara's own.",
   params = {

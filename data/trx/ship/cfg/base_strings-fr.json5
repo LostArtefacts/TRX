@@ -87,8 +87,6 @@
             "give_item_all_guns": "A vos marques, prêts... feu ! Lara est armée jusqu'aux dents.",
             "give_item_all_keys": "Surprise ! Chaque clé dont Lara pourrait avoir besoin est maintenant dans son sac à dos.",
             "give_item_cheat": "Le sac à dos de Lara est soudainement beaucoup plus lourd !",
-            "heal_already_full_hp": "Lara est déjà en pleine forme",
-            "heal_success": "Lara est maintenant en pleine forme",
             "invalid_cutscene": "Cinématique invalide",
             "invalid_demo": "Démo invalide",
             "invalid_item": "Objet inconnu : %s",
@@ -340,7 +338,9 @@
                 "help": "\\{review}Liste les secrets de Lara, ou prend/donne un secret par numéro.",
             },
             "heal": {
+                "already_full_hp": "Lara est déjà en pleine forme",
                 "help": "Redonne toute sa santé à Lara.",
+                "success": "Lara est maintenant en pleine forme",
             },
             "help": {
                 "help": "Affiche l'aide générale ou l'aide détaillée pour une commande.",

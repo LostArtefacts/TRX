@@ -138,6 +138,12 @@ order: 3
    field is now an array (of at most two values) rather than a single position.
    Update `outfits.json5` accordingly.
 
+18. **Update strings files that override the healing text**
+   `general/osd/heal_already_full_hp` and `general/osd/heal_success` are now
+   `console/cmd/heal/already_full_hp` and `console/cmd/heal/success`. An
+   override under an old key is no longer read, and nothing reports it.
+
+
 ### Version 1.8 to 1.9
 
 1. **Update Lara pushblock animations**

@@ -303,7 +303,9 @@ test_lua_game_exe = executable(
   'test_lua_game',
   files('unit/test_lua_game.c', 'unit/fake_engine_game.c') + test_stubs
     + lua_surface_src
-    + files('../trx/game/lua/capi/game.c'),
+    + files(
+      '../trx/game/lua/capi/game.c',
+    ),
   include_directories: [src_inc, test_inc],
   dependencies: [dep_lua],
   c_args: lua_surface_args,
@@ -336,7 +338,10 @@ test_lua_lara_exe = executable(
   files('unit/test_lua_lara.c', 'unit/fake_engine_lara.c', 'unit/fake_engine_items.c')
     + test_stubs
     + lua_surface_src
-    + files('../trx/game/lua/capi/items.c', '../trx/game/lua/capi/lara.c'),
+    + files(
+      '../trx/game/lua/capi/items.c',
+      '../trx/game/lua/capi/lara.c',
+    ),
   include_directories: [src_inc, test_inc],
   dependencies: [dep_lua],
   c_args: lua_surface_args,
@@ -378,13 +383,45 @@ test_lua_console_exe = executable(
   'test_lua_console',
   files('unit/test_lua_console.c', 'unit/fake_engine_console.c') + test_stubs
     + lua_surface_src
-    + files('../trx/game/lua/capi/console.c', '../trx/game/lua/capi/log.c'),
+    + files(
+      '../trx/game/lua/capi/console.c',
+      '../trx/game/lua/capi/log.c',
+    ),
   include_directories: [src_inc, test_inc],
   dependencies: [dep_lua],
   c_args: lua_surface_args,
   build_by_default: false,
 )
 test('lua_console', test_lua_console_exe, suite: 'unit')
+
+# A console command written in Lua, exercised through the console that dispatches
+# it. Everything the command touches is a real bridge, so the test says whether
+# the command works, not whether it was written the way we expected.
+test_lua_cmd_heal_exe = executable(
+  'test_lua_cmd_heal',
+  files(
+    'unit/test_lua_cmd_heal.c',
+    'unit/fake_engine_console.c',
+    'unit/fake_engine_game.c',
+    'unit/fake_engine_items.c',
+    'unit/fake_engine_lara.c',
+    'unit/fake_engine_locale.c',
+  ) + test_stubs
+    + lua_surface_src
+    + files(
+      '../trx/game/lua/capi/console.c',
+      '../trx/game/lua/capi/game.c',
+      '../trx/game/lua/capi/items.c',
+      '../trx/game/lua/capi/lara.c',
+      '../trx/game/lua/capi/locale.c',
+      '../trx/game/lua/capi/log.c',
+    ),
+  include_directories: [src_inc, test_inc],
+  dependencies: [dep_lua],
+  c_args: lua_surface_args,
+  build_by_default: false,
+)
+test('lua_cmd_heal', test_lua_cmd_heal_exe, suite: 'unit')
 
 test_lua_creatures_exe = executable(
   'test_lua_creatures',

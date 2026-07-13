@@ -10,6 +10,7 @@
 - added a new Lua module, `trx.locale`, for the text the player reads, looked up by key
 - added new Lua game state, `trx.game.is_loaded` and `trx.game.is_playable`
 - added `trx.console.register()`, so a script can add a console command of its own
+- added `trx.lara.cure_poison()` and `trx.lara.extinguish()`, to clear Lara's poison and put her out
 - added `trx.game.LevelType.TITLE`, and a `demo` level type to the game flow, which could not be named before
 - added `trx.game.play_gym()`, to start the gym
 - added `trx.items.spawn()`, to place a new item in the level at runtime

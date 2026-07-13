@@ -94,4 +94,21 @@ test("an undeclared name cannot be written onto the module", function()
   assert(trx.lara.nonsense == nil)
 end)
 
+test("cure_poison clears the poison outright", function()
+  trx.lara.poison = 40
+  trx.lara.cure_poison()
+
+  assert(trx.lara.poison == 0)
+  assert(fake.calls().cure_poison == 1, "the engine verb must be the one that runs")
+end)
+
+test("extinguish puts Lara out, and stops the electrocution with it", function()
+  trx.lara.electric = 30
+  trx.lara.extinguish()
+
+  assert(trx.lara.is_burning == false)
+  assert(trx.lara.electric == 0, "extinguishing must clear the electrocution too")
+  assert(fake.calls().extinguish == 1)
+end)
+
 return h.report()

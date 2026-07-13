@@ -87,8 +87,6 @@
             "give_item_all_guns": "Glasaich is losgaidh – tha Lara armaichte gu fiadhaich!",
             "give_item_all_keys": "Ionndrainn! Tha a h-uile iuchair aig Lara a-nis.",
             "give_item_cheat": "Tha baga-droma Lara mòran nas truime a-nis!",
-            "heal_already_full_hp": "Tha slàinte làn aig Lara mu thràth",
-            "heal_success": "Chaidh slàinte Lara a lìonadh gu lèir",
             "invalid_cutscene": "Sealladh-film mì-dhligheach",
             "invalid_demo": "Taisbeanadh mì-dhligheach",
             "invalid_item": "Nì neo-aithnichte: %s",
@@ -340,7 +338,9 @@
                 "help": "Seall liosta de dhìomhaireachdan Lara, neo cuir/thoir air falbh fear a rèir àireamh.",
             },
             "heal": {
+                "already_full_hp": "Tha slàinte làn aig Lara mu thràth",
                 "help": "Leighis Lara gu slàinte làn a-rithist.",
+                "success": "Chaidh slàinte Lara a lìonadh gu lèir",
             },
             "help": {
                 "help": "Seallas cuideachadh airson gach àithne neo cuideachadh mionaideach airson tè shonraichte.",

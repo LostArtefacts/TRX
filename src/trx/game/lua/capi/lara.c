@@ -2,6 +2,8 @@
 #include <trx/game/inventory.h>
 #include <trx/game/items/const.h>
 #include <trx/game/lara.h>
+#include <trx/game/lara/misc.h>
+#include <trx/game/lara/poison.h>
 #include <trx/game/lara/skin/storage.h>
 #include <trx/game/lara/types.h>
 #include <trx/game/lua/common.h>
@@ -182,6 +184,20 @@ static int M_L_LaraGetExtraAnim(lua_State *const L)
     return 1;
 }
 
+// trxc.lara.cure_poison()
+static int M_L_LaraCurePoison(lua_State *const L)
+{
+    Lara_Poison_Cure();
+    return 0;
+}
+
+// trxc.lara.extinguish()
+static int M_L_LaraExtinguish(lua_State *const L)
+{
+    Lara_Extinguish();
+    return 0;
+}
+
 static const luaL_Reg m_Module[] = {
     { "get_item", M_L_LaraGetItem },
     { "get_target", M_L_LaraGetTarget },
@@ -189,6 +205,8 @@ static const luaL_Reg m_Module[] = {
     { "set_outfit", M_L_LaraSetOutfit },
     { "set_extra_equipment", M_L_LaraSetExtraEquipment },
     { "clear_equipment", M_L_LaraClearEquipment },
+    { "cure_poison", M_L_LaraCurePoison },
+    { "extinguish", M_L_LaraExtinguish },
     { "are_holsters_visible", M_L_LaraAreHolstersVisible },
     { "set_holsters_visible", M_L_LaraSetHolstersVisible },
     { "has_pistol_weapon", M_L_LaraHasPistolWeapon },

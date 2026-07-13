@@ -726,8 +726,6 @@ GS_DEFINE(general/osd/burn_fail_already_off, "Lara's not currently on fire")
 GS_DEFINE(general/osd/burn_fail_already_on, "Lara's already on fire")
 GS_DEFINE(general/osd/burn_on, "Lara's now on fire - ouch!")
 GS_DEFINE(general/osd/burn_off, "Lara's been extinguished - phew!")
-GS_DEFINE(general/osd/heal_already_full_hp, "Lara's already at full health")
-GS_DEFINE(general/osd/heal_success, "Healed Lara back to full health")
 GS_DEFINE(general/osd/give_item, "Added %s to Lara's inventory")
 GS_DEFINE(general/osd/invalid_item, "Unknown item: %s")
 GS_DEFINE(general/osd/kill_all, "Poof! %d enemies gone!")
@@ -868,6 +866,9 @@ GS_DEFINE(general/actions/unbind, "Unbind")
 
 GS_DEFINE(console/cmd/lua/syntax_error,   "Lua syntax error: %s")
 GS_DEFINE(console/cmd/lua/runtime_error,  "Lua runtime error: %s")
+
+GS_DEFINE(console/cmd/heal/already_full_hp, "Lara's already at full health")
+GS_DEFINE(console/cmd/heal/success,         "Healed Lara back to full health")
 
 GS_DEFINE(console/cmd/give/secret_list,   "Secrets collected: %d of %d (%s)")
 GS_DEFINE(console/cmd/give/secret_none,   "Secrets collected: %d of %d")
