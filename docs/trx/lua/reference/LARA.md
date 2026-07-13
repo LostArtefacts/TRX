@@ -3,125 +3,175 @@ title: Lara
 order: 3
 ---
 
+<!--
+  GENERATED FILE - do not edit.
+  Regenerate with: just lua-api-dump
+  The public API is declared next to its implementation, in
+  data/scripting/lara.lua. Edit it there.
+-->
+
 ## Lara module
 
-Module for interacting with the Lara's object.
+Module for reading and nudging Lara's own state.
+
+Her position, room and hit points are not here: she is an item like any other and they live on it, as `trx.lara.item`.
+
+### Properties
+
+- **`trx.lara.item`** (Item). Lara's own `trx.items.Item`, or `nil` outside a level. Her position, room and hit points are read and written there. *(read-only)*
+- **`trx.lara.target`** (Item). The item Lara's guns are locked onto, or `nil` if she has none. *(read-only)*
+- **`trx.lara.outfit`** (string). The outfit Lara is wearing, by name, as defined in `cfg/outfits.json5`.
+- **`trx.lara.holsters_visible`** (boolean). Whether Lara's holsters are drawn on her hips.
+- **`trx.lara.has_pistol_weapon`** (boolean). Whether Lara is carrying a pistol-class weapon, which is what decides whether she has holsters to show at all. *(read-only)*
+
+### Enums
+
+- [lua]`trx.lara.Mesh`
+
+    One of the fifteen meshes Lara is built from.
+
+    - `trx.lara.Mesh.HIPS` = `0`  
+        Hips, the mesh the rest hang off.
+    - `trx.lara.Mesh.THIGH_L` = `1`  
+        Left thigh.
+    - `trx.lara.Mesh.CALF_L` = `2`  
+        Left calf.
+    - `trx.lara.Mesh.FOOT_L` = `3`  
+        Left foot.
+    - `trx.lara.Mesh.THIGH_R` = `4`  
+        Right thigh.
+    - `trx.lara.Mesh.CALF_R` = `5`  
+        Right calf.
+    - `trx.lara.Mesh.FOOT_R` = `6`  
+        Right foot.
+    - `trx.lara.Mesh.TORSO` = `7`  
+        Torso.
+    - `trx.lara.Mesh.UARM_R` = `8`  
+        Right upper arm.
+    - `trx.lara.Mesh.LARM_R` = `9`  
+        Right lower arm.
+    - `trx.lara.Mesh.HAND_R` = `10`  
+        Right hand.
+    - `trx.lara.Mesh.UARM_L` = `11`  
+        Left upper arm.
+    - `trx.lara.Mesh.LARM_L` = `12`  
+        Left lower arm.
+    - `trx.lara.Mesh.HAND_L` = `13`  
+        Left hand.
+    - `trx.lara.Mesh.HEAD` = `14`  
+        Head.
+
+- [lua]`trx.lara.ExtraMesh`
+
+    A mesh Lara can carry on top of one of her own - the dagger in Home Sweet Home, the oar in a boat.
+
+    - `trx.lara.ExtraMesh.TR1_BRAID_DEFAULT_HEAD` = `0`  
+        Braided head, out of combat.
+    - `trx.lara.ExtraMesh.TR1_BRAID_COMBAT_HEAD` = `1`  
+        Braided head, in combat.
+    - `trx.lara.ExtraMesh.TR1_BRAID_DEFAULT_TORSO` = `2`  
+        Braided torso.
+    - `trx.lara.ExtraMesh.TR1_BRAID_MAULED_TORSO` = `3`  
+        Braided torso, mauled.
+    - `trx.lara.ExtraMesh.TR1_BRAID_GOLD_HEAD` = `4`  
+        Braided head, gold.
+    - `trx.lara.ExtraMesh.TR1_BRAID_GOLD_TORSO` = `5`  
+        Braided torso, gold.
+    - `trx.lara.ExtraMesh.DAGGER_HAND` = `6`  
+        Dagger, in hand.
+    - `trx.lara.ExtraMesh.DAGGER_HIPS` = `7`  
+        Dagger, sheathed at the hips.
+    - `trx.lara.ExtraMesh.OAR` = `8`  
+        Oar.
+    - `trx.lara.ExtraMesh.SPANNER` = `9`  
+        Spanner.
+    - `trx.lara.ExtraMesh.DRINK_CAN` = `10`  
+        Drink can.
+    - `trx.lara.ExtraMesh.GLASSES_OPAQUE` = `11`  
+        Sunglasses.
+    - `trx.lara.ExtraMesh.GLASSES_TRANSPARENT` = `12`  
+        Sunglasses, transparent lenses.
+    - `trx.lara.ExtraMesh.CROWBAR` = `13`  
+        Crowbar.
+
+- [lua]`trx.lara.WaterState`
+
+    Where Lara is with respect to water.
+
+    - `trx.lara.WaterState.ABOVE_WATER` = `0`  
+        On dry land.
+    - `trx.lara.WaterState.UNDERWATER` = `1`  
+        Under the surface.
+    - `trx.lara.WaterState.SURFACE` = `2`  
+        Swimming at the surface.
+    - `trx.lara.WaterState.CHEAT` = `3`  
+        Flying, as the fly cheat leaves her.
+    - `trx.lara.WaterState.WADE` = `4`  
+        Wading, feet still on the floor.
+
+- [lua]`trx.lara.GunState`
+
+    What Lara's hands are doing.
+
+    - `trx.lara.GunState.ARMLESS` = `0`  
+        Empty-handed.
+    - `trx.lara.GunState.HANDS_BUSY` = `1`  
+        Hands full, so nothing can be drawn.
+    - `trx.lara.GunState.DRAW` = `2`  
+        Drawing a weapon.
+    - `trx.lara.GunState.UNDRAW` = `3`  
+        Putting one away.
+    - `trx.lara.GunState.READY` = `4`  
+        Armed, weapon out.
+    - `trx.lara.GunState.SPECIAL` = `5`  
+        In a scripted sequence.
+
+### Structures
+
+- [lua]`trx.lara.Lara`
+
+    Lara's own state, reachable straight off `trx.lara`.
+
+    Handles are live references: if the underlying object is destroyed,
+    using the handle raises an error rather than silently reading an
+    unrelated one.
+
+    Properties:
+    - **`air_bar`**: integer. Air remaining underwater, out of 1800. Runs down while she is under.
+    - **`death_timer`**: integer. Frames Lara has been dead for. *(read-only)*
+    - **`dive_timer`**: integer. Frames Lara has been diving for. *(read-only)*
+    - **`electric`**: integer. How badly Lara is being electrocuted, and 0 when she is not.
+    - **`equipped_gun`**: integer. The weapon Lara is holding. Compare against `trx.catalog.weapons`. *(read-only)*
+    - **`exposure_bar`**: integer. Warmth remaining in the cold, out of 600. Only moves in a level whose rooms carry the `damaging` flag.
+    - **`extra_anim`**: boolean. Whether a scripted animation is driving Lara rather than her own state machine. *(read-only)*
+    - **`gun_status`**: integer. What Lara's hands are doing. Compare against `trx.lara.GunState`. *(read-only)*
+    - **`hit_direction`**: integer. Which way the last hit came from, or -1 if she has not been hit. *(read-only)*
+    - **`is_burning`**: boolean. Whether Lara is on fire. *(read-only)*
+    - **`is_climbing`**: boolean. Whether Lara is on a climbable wall. *(read-only)*
+    - **`is_crouched`**: boolean. Whether Lara is crouching. *(read-only)*
+    - **`killed_loyal_item`**: boolean. Whether Lara has killed one of her own allies, which is what turns the rest of them on her. *(read-only)*
+    - **`poison`**: integer. How poisoned Lara is, and 0 when she is not.
+    - **`pose_count`**: integer. Frames Lara has stood still for, which is what starts an idle animation. *(read-only)*
+    - **`requested_gun`**: integer. The weapon Lara is drawing, while she is drawing it. Compare against `trx.catalog.weapons`. *(read-only)*
+    - **`sprint_timer`**: integer. Sprint left in her legs.
+    - **`water_status`**: integer. Where Lara is with respect to water. Compare against `trx.lara.WaterState`. *(read-only)*
 
 ### Functions
 
-- [lua]`trx.lara.item`  
-    Returns [lua]`trx.items.Item` associated with Lara, or [lua]`nil` if the
-    Lara object is not available.
+- [lua]`trx.lara.set_extra_equipment(mesh, extra_mesh)`  
+  Hangs an extra mesh on one of Lara's own, replacing whatever is there.
 
-- [lua]`trx.lara.target`  
-    Read-only - returns Lara's current gun target as [lua]`trx.items.Item`,
-    or [lua]`nil` if no target is locked.
+  Parameters:
+  - **`mesh`** (integer). Which of Lara's meshes. Compare against `trx.lara.Mesh`.
+  - **`extra_mesh`** (integer). The mesh to hang on it. Compare against `trx.lara.ExtraMesh`.
 
-- [lua]`trx.lara.exposure_bar`  
-    Reads/writes Lara's exposure timer. The maximum value is 600.
-    The current level must use damaging rooms flag for this property to work.
+  Example:
+  ```lua
+  trx.lara.set_extra_equipment(trx.lara.Mesh.HAND_R, trx.lara.ExtraMesh.OAR)
+  ```
 
-- [lua]`trx.lara.air_bar`  
-    Reads/writes Lara's air timer. The maximum value is 1800.  
-      
-    Example:
-    ```lua
-    -- Infinite oxygen
-    trx.events.after_control(function()
-        trx.lara.air_bar = 1800
-    end)
-    ```
+- [lua]`trx.lara.clear_equipment(mesh)`  
+  Takes the extra mesh back off, leaving Lara's own.
 
-- [lua]`trx.lara.outfit`  
-    Reads/writes Lara's outfit name string (for example [lua]`"tr2_diving_suit"`).
-    Outfit names are the keys defined in [md]`cfg/outfits.json5`. Outfits are
-    stored in saves, but writing this value does not change the global config
-    setting, so subsequent levels will adhere to regular outfit changes.
-
-- [lua]`trx.lara.set_extra_equipment(lara_mesh_id, extra_mesh_id)`  
-    Defines a specific extra mesh to be drawn at the same position as the given
-    Lara mesh.
-
-    The extra mesh must be present in the `O_LARA_SKIN_SWAP_EXTRA` object and 
-    should be setup properly in the [outfits JSON](../../OUTFITS.md). Refer
-    to the constants further below.
-
-    Example:
-    ```lua
-    -- Put an oar in Lara's right hand
-    trx.lara.set_extra_equipment(trx.lara.mesh.hand_r, trx.lara.extra_mesh.oar)
-    ```
-
-- [lua]`trx.lara.clear_equipment(lara_mesh_id)`  
-    Removes any equipment on the given Lara mesh. This applies to guns and extra
-    meshes.
-
-- [lua]`trx.lara.holsters_visible`  
-    Hides or shows Lara's holsters. This is used in OG TR1/2 gym and Home Sweet
-    Home levels to maintain original outfit appearance. If Lara picks up a
-    holster type weapon, or the weapon cheat is used, or a gun is given via the
-    console, the holsters will automatically be made visible.
-
-- [lua]`trx.lara.has_pistol_weapon`  
-    Read-only - returns true if Lara has any pistol-type weapon currently in her
-    inventory.
-
-- [lua]`trx.lara.extra_anim`  
-    Read-only - if Lara is currently in an extra anim state, returns the
-    relative animation number of the `O_LARA_EXTRA` object.  
-    Otherwise, returns -1.
-
-- [lua]`trx.lara.equipped_gun`  
-    Read-only - returns Lara's currently equipped gun ID.
-    Compare values using [lua]`trx.catalog.weapons`.
-
-## Mesh constants
-
-- `trx.lara.mesh.hips`  
-    An index to Lara's hips mesh.
-- `trx.lara.mesh.thigh_l`  
-    An index to Lara's left thigh mesh.
-- `trx.lara.mesh.calf_l`  
-    An index to Lara's left calf mesh.
-- `trx.lara.mesh.foot_l`  
-    An index to Lara's left foot mesh.
-- `trx.lara.mesh.thigh_r`  
-    An index to Lara's right thigh mesh.
-- `trx.lara.mesh.calf_r`  
-    An index to Lara's right calf mesh.
-- `trx.lara.mesh.foot_r`  
-    An index to Lara's right foot mesh.
-- `trx.lara.mesh.torso`  
-    An index to Lara's torso mesh.
-- `trx.lara.mesh.uarm_r`  
-    An index to Lara's upper right arm mesh.
-- `trx.lara.mesh.larm_r`  
-    An index to Lara's lower right arm mesh.
-- `trx.lara.mesh.hand_r`  
-    An index to Lara's right hand mesh.
-- `trx.lara.mesh.uarm_l`  
-    An index to Lara's upper left arm mesh.
-- `trx.lara.mesh.larm_l`  
-    An index to Lara's lower left arm mesh.
-- `trx.lara.mesh.hand_l`  
-    An index to Lara's left hand mesh.
-- `trx.lara.mesh.head`  
-    An index to Lara's head mesh.
-
-## Extra mesh constants
-
-- `trx.lara.extra_mesh.dagger_hand`  
-    An index to the dagger mesh used when Lara retrieves it from the dragon and
-    when inspecting it at home.
-- `trx.lara.extra_mesh.dagger_hips`  
-    An index to the dagger mesh that sits on Lara's hips during Home Sweet Home.
-- `trx.lara.extra_mesh.oar`  
-    An index to the oar mesh used when Lara is in the kayak.
-- `trx.lara.extra_mesh.spanner`  
-    An index to the spanner mesh used when Lara is in the minecart.
-- `trx.lara.extra_mesh.drink_can`  
-    An index to the drink can mesh used in the High Security Compound cutscene.
-- `trx.lara.extra_mesh.glasses_opaque`  
-    An index to Lara's opaque sunglasses mesh.
-- `trx.lara.extra_mesh.glasses_transparent`  
-    An index to Lara's transparent sunglasses mesh.
+  Parameters:
+  - **`mesh`** (integer). Which of Lara's meshes. Compare against `trx.lara.Mesh`.

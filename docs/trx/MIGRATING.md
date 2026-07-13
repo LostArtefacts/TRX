@@ -46,7 +46,13 @@ order: 3
    hook. The nine hooks are the whole API, and attaching is unchanged:
    `trx.events.before_control(fn)`.
 
-4. **Update scripts that compare `trx.config.get()` against a string**
+4. **Update scripts that use Lara's mesh tables**
+   `trx.lara.mesh` and `trx.lara.extra_mesh` became declared enums, so their
+   names are upper case: replace `trx.lara.mesh.hand_r` with
+   `trx.lara.Mesh.HAND_R`, and `trx.lara.extra_mesh.oar` with
+   `trx.lara.ExtraMesh.OAR`.
+
+5. **Update scripts that compare `trx.config.get()` against a string**
    It returns the option's own type now: a boolean option reads as a boolean and
    a number as a number. Replace `trx.config.get("flow.cheat_keys") == "true"`
    with `trx.config.get("flow.cheat_keys")`. Colors and enums are still strings.
@@ -56,15 +62,15 @@ order: 3
    while it is running - it leaves the player's own value underneath, and
    `trx.config.restore()` puts it back.
 
-5. **Update scripts that use `trx.console.log.LogLevel`**
+6. **Update scripts that use `trx.console.log.LogLevel`**
    It was removed. Use `trx.log.LogLevel`, which is the same enum:
    `trx.console.log.generic(trx.log.LogLevel.ERROR, "...")`.
 
-6. **Update scripts that call `trx.music.play_track`**
+7. **Update scripts that call `trx.music.play_track`**
    It was an undocumented alias of `trx.music.play` and was removed. Use
    `trx.music.play(id[, opts])`.
 
-7. **Update scripts that set `pickup_mode`**
+8. **Update scripts that set `pickup_mode`**
    The `trx.pickup` module is gone. `pickup_mode` is an item property, so its
    enum now lives with the items: replace `trx.pickup.Mode.PLINTH_LOW` with
    `trx.items.PickupMode.PLINTH_LOW`.

@@ -1,5 +1,7 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.9.1...develop) - ××××-××-××
 - added a new Lua module, `trx.math`
+- added new Lua Lara state, `trx.lara.poison`, `trx.lara.electric`, `trx.lara.is_burning`, `trx.lara.is_crouched`, `trx.lara.is_climbing`, `trx.lara.water_status`, `trx.lara.gun_status` and the dive, death, sprint and pose timers
+- changed `trx.lara.mesh` and `trx.lara.extra_mesh` to declared enums, `trx.lara.Mesh` and `trx.lara.ExtraMesh`; refer to migration notes
 - added new Lua config functions, `trx.config.override()`, `trx.config.restore()` and `trx.config.is_overridden()`, to change a setting without overwriting the player's own value
 - changed `trx.config.get()` to return the option's own type rather than always a string; refer to migration notes
 - added new Lua assault course functions, `trx.assault.finish()`, `trx.assault.is_running()` and `trx.assault.is_visible()`, and a new property, `trx.assault.active_track`
