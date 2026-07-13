@@ -241,6 +241,23 @@ test('lua_log', test_lua_log_exe, suite: 'unit')
 # The override stack underneath is the real one; only the config facade is faked.
 # trx.lara stands for one C struct, so her fields go through the real reflection
 # layer. Only what is not a field of LARA_INFO is faked.
+# An object is what an item is cut from, so they share a fake engine.
+test_lua_objects_exe = executable(
+  'test_lua_objects',
+  files('unit/test_lua_objects.c', 'unit/fake_engine_items.c') + test_stubs
+    + lua_surface_src
+    + files(
+      '../trx/game/objects/fields.c',
+      '../trx/game/lua/objects.c',
+      '../trx/game/lua/utils.c',
+    ),
+  include_directories: [src_inc, test_inc],
+  dependencies: [dep_lua],
+  c_args: lua_surface_args,
+  build_by_default: false,
+)
+test('lua_objects', test_lua_objects_exe, suite: 'unit')
+
 test_lua_lara_exe = executable(
   'test_lua_lara',
   files('unit/test_lua_lara.c', 'unit/fake_engine_lara.c', 'unit/fake_engine_items.c')

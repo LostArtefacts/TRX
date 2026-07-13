@@ -10,6 +10,7 @@
 
 // What the surface asked the engine to do, recorded rather than performed.
 typedef struct {
+    int32_t swap_mesh;
     int32_t creature_die;
     bool creature_die_explode;
     int32_t enable_baddie_ai;
