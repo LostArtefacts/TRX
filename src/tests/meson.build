@@ -155,6 +155,18 @@ test_lua_items_exe = executable(
 )
 test('lua_items', test_lua_items_exe, suite: 'unit')
 
+test_lua_assault_exe = executable(
+  'test_lua_assault',
+  files('unit/test_lua_assault.c', 'unit/fake_engine_assault.c') + test_stubs
+    + lua_surface_src
+    + files('../trx/game/lua/assault.c'),
+  include_directories: [src_inc, test_inc],
+  dependencies: [dep_lua],
+  c_args: lua_surface_args,
+  build_by_default: false,
+)
+test('lua_assault', test_lua_assault_exe, suite: 'unit')
+
 # rooms rides along: trx.camera.room hands back a trx.rooms.Room.
 test_lua_camera_exe = executable(
   'test_lua_camera',
