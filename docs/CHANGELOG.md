@@ -1,5 +1,7 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.9.1...develop) - ××××-××-××
 - added a new Lua module, `trx.math`
+- added new Lua config functions, `trx.config.override()`, `trx.config.restore()` and `trx.config.is_overridden()`, to change a setting without overwriting the player's own value
+- changed `trx.config.get()` to return the option's own type rather than always a string; refer to migration notes
 - added new Lua assault course functions, `trx.assault.finish()`, `trx.assault.is_running()` and `trx.assault.is_visible()`, and a new property, `trx.assault.active_track`
 - changed `trx.events` handlers to no longer receive a dummy argument in `before_control` and `after_control`
 - changed `trx.events.detach()` to return whether a handler was removed

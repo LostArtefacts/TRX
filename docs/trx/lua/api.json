@@ -383,6 +383,99 @@
       "path": "camera.reset"
     },
     {
+      "description": "Reads a setting. The value comes back as the type the option is declared with, so a boolean option reads as a boolean. Colors and enums read as strings.",
+      "examples": [
+        "if trx.config.get(\"audio.enable_music\") then trx.music.play(1) end"
+      ],
+      "params": [
+        {
+          "description": "Dotted path, e.g. `visuals.water_color`.",
+          "name": "key",
+          "type": "string"
+        }
+      ],
+      "path": "config.get",
+      "returns": {
+        "description": "Raises if no option has that key.",
+        "type": "any"
+      }
+    },
+    {
+      "description": "Changes the player's setting, and keeps the change. Raises if the key is unknown or the value will not parse.\n\nThe old value is not kept anywhere: the new one becomes the active setting as if the player had chosen it, and is remembered across saves and relaunches. Prefer `override` for anything a level wants only while it is running.",
+      "params": [
+        {
+          "description": "Dotted path.",
+          "name": "key",
+          "type": "string"
+        },
+        {
+          "description": "A boolean, a number, or a string, matching the option's type. A color is a 6-digit hex string.",
+          "name": "value",
+          "type": "any"
+        }
+      ],
+      "path": "config.set"
+    },
+    {
+      "description": "Changes a setting for as long as the script keeps the override, without touching the player's own value.\n\nThe player's value sits underneath and comes back on `restore`. Nothing is written to disk. Overrides stack, so one can be pushed over another; each `restore` lifts one off. A setting the game flow enforces cannot be overridden.",
+      "examples": [
+        "trx.config.override(\"visuals.water_color\", \"0080ff\")\n-- ... and when the level is done with it:\ntrx.config.restore(\"visuals.water_color\")"
+      ],
+      "params": [
+        {
+          "description": "Dotted path.",
+          "name": "key",
+          "type": "string"
+        },
+        {
+          "description": "As for `set`.",
+          "name": "value",
+          "type": "any"
+        }
+      ],
+      "path": "config.override"
+    },
+    {
+      "description": "Lifts one override off a setting, putting back whatever was underneath it.",
+      "params": [
+        {
+          "description": "Dotted path.",
+          "name": "key",
+          "type": "string"
+        }
+      ],
+      "path": "config.restore",
+      "returns": {
+        "description": "`false` if the setting was not overridden.",
+        "type": "boolean"
+      }
+    },
+    {
+      "description": "Whether a script or the game flow is currently holding this setting away from the player's own value.",
+      "params": [
+        {
+          "description": "Dotted path.",
+          "name": "key",
+          "type": "string"
+        }
+      ],
+      "path": "config.is_overridden",
+      "returns": {
+        "type": "boolean"
+      }
+    },
+    {
+      "description": "Every setting and its current value.",
+      "examples": [
+        "for key, value in pairs(trx.config.list()) do\n  trx.log.info(key .. \" = \" .. tostring(value))\nend"
+      ],
+      "path": "config.list",
+      "returns": {
+        "description": "Maps each option's key to its value.",
+        "type": "table"
+      }
+    },
+    {
       "description": "Logs at a level chosen at runtime.",
       "params": [
         {
@@ -1039,6 +1132,11 @@
       "description": "Module for inspecting the active camera state.",
       "name": "camera",
       "order": 16
+    },
+    {
+      "description": "Module for reading and changing engine settings.\n\nThese are the player's settings, not the level's. `set` writes to them and keeps the change: it is remembered across saves and relaunches, exactly as if the player had made it themselves. A level that wants to tint the water or pull the fog in wants `override` instead, which lasts as long as the script keeps it and leaves the player's own value untouched underneath.",
+      "name": "config",
+      "order": 8
     },
     {
       "description": "Module for interacting with the developer console.\n\n`trx.console.log` writes to the console overlay in-game, where `trx.log` writes only to the terminal and the log file.",
