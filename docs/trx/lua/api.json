@@ -70,6 +70,37 @@
       ]
     },
     {
+      "description": "How a track is played. Pass one as `opts.mode` to `trx.music.play`.",
+      "path": "music.PlayMode",
+      "values": [
+        {
+          "description": "Plays the track once. When it finishes, any active looped track resumes from its start.",
+          "name": "ONCE",
+          "value": 0
+        },
+        {
+          "description": "Plays the track continuously. It becomes the ambient track.",
+          "name": "LOOP",
+          "value": 1
+        },
+        {
+          "description": "Marks the track for later playback rather than starting it now.",
+          "name": "DELAY",
+          "value": 2
+        },
+        {
+          "description": "Plays the track once, but does not retrigger it if it is already playing.",
+          "name": "NO_REPEAT",
+          "value": 3
+        },
+        {
+          "description": "Plays the track on top of the current one.",
+          "name": "OVERLAY",
+          "value": 4
+        }
+      ]
+    },
+    {
       "description": "The values `room.flip_status` can take.",
       "path": "rooms.FlipStatus",
       "values": [
@@ -449,6 +480,49 @@
       }
     },
     {
+      "description": "The track currently playing.",
+      "path": "music.get_track",
+      "returns": {
+        "description": "`nil` if nothing is playing.",
+        "enum": "catalog.music",
+        "nullable": true,
+        "type": "integer"
+      }
+    },
+    {
+      "description": "Plays a track. Raises if the track or the mode is invalid.",
+      "examples": [
+        "trx.music.play(1)\ntrx.music.play(2, { mode = trx.music.PlayMode.LOOP })"
+      ],
+      "params": [
+        {
+          "description": "Track to play.",
+          "enum": "catalog.music",
+          "name": "id",
+          "type": "integer"
+        },
+        {
+          "description": "`mode`: a `trx.music.PlayMode`. Defaults to `ONCE`.",
+          "name": "opts",
+          "optional": true,
+          "type": "table"
+        }
+      ],
+      "path": "music.play"
+    },
+    {
+      "description": "Pauses the music.",
+      "path": "music.pause"
+    },
+    {
+      "description": "Resumes paused music.",
+      "path": "music.unpause"
+    },
+    {
+      "description": "Stops all music.",
+      "path": "music.stop"
+    },
+    {
       "description": "Retrieves a room by 1-based index.",
       "examples": [
         "local room = trx.rooms[15]\nroom.underwater = true"
@@ -535,6 +609,11 @@
       "description": "Fixed-point trigonometry, matching the engine's own tables.\n\nTRX angles are 16-bit units where 65536 is a full turn, not radians. Using these rather than Lua's `math` library guarantees a script places things exactly where the engine would.",
       "name": "math",
       "order": 17
+    },
+    {
+      "description": "Module for playing and controlling the soundtrack.",
+      "name": "music",
+      "order": 6
     },
     {
       "description": "Module for inspecting and altering the rooms of the current level.",
