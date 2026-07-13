@@ -58,7 +58,7 @@ static void M_Compress(ITEM *const item, COLL_INFO *const coll)
 static void M_UpJump(ITEM *const item, COLL_INFO *const coll)
 {
     const int16_t fast_speed =
-        (g_Config.gameplay.enable_swing_cancel && g_TRVersion == 1)
+        (g_Config.gameplay.enable_swing_cancel && g_TRVersion != 2)
         ? M_SWING_FAST_FALL_SPEED
         : M_FAST_FALL_SPEED;
     if (item->fall_speed > fast_speed) {
