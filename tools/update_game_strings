@@ -14,7 +14,7 @@ from typing import Any
 from shared.cdefs import expand_def_file
 from shared.files import find_versioned_files
 from shared.json_utils import load_json5_from_string, write_json_to_string
-from shared.paths import DATA_DIR, REPO_DIR, CommonPaths
+from shared.paths import DATA_DIR, REPO_DIR, SRC_DIR, CommonPaths
 from shared.utils import chunks, uniq
 from shared.vfs import VirtualFilesystem
 
@@ -43,6 +43,11 @@ RE_INPUT_ROLE_USAGE = re.compile(
     r"X_INPUT_ROLE\(\s*(INPUT_ROLE_[A-Z0-9_]+)\s*,"
 )
 RE_OBJ_NAME_DEFINE = re.compile(r'@NAME\("([^"]+)"((?:,\s*"[^"]*")+)\)')
+
+RE_LUA_GAME_STRING_USAGE = re.compile(
+    r"trx\.locale\.(?:get|format)\(\s*"
+    r"""(?:"((?:\\.|[^"\\])*)"|'((?:\\.|[^'\\])*)')"""
+)
 ROOT_SECTIONS = ("general", "console", "enums", "dynamic", "settings")
 TOP_LEVEL_SECTION_ORDER = (
     "extends",
@@ -308,18 +313,23 @@ def root_flatten(file_data: dict[str, Any]) -> dict[str, Any]:
     return result
 
 
+def unescape(value: str) -> str:
+    """The text a source-level string literal stands for."""
+    return (
+        value.replace("\\n", "\n")
+        .replace('\\"', '"')
+        .replace("\\'", "'")
+        .replace("\\\\", "\\")
+    )
+
+
 def get_used_strings(
     path: Path, enum_value_types: dict[str, str], aliases: dict[str, str] | None = None
 ) -> Iterable[tuple[int, str]]:
     source = re.sub("//.*", "", path.read_text(), flags=re.M)
     source = re.sub(r"^\s*#define\s+.*$", "", source, flags=re.M)
     for match in re.finditer(RE_GAME_STRING_USAGE, source):
-        yield source.count("\n", 0, match.start()) + 1, (
-            match.group(1)
-            .replace("\\n", "\n")
-            .replace('\\"', '"')
-            .replace("\\\\", "\\")
-        )
+        yield source.count("\n", 0, match.start()) + 1, unescape(match.group(1))
     for match in re.finditer(RE_UI_SETTING_USAGE, source):
         option_name = match.group(1)
         if aliases is not None:
@@ -340,6 +350,83 @@ def get_used_strings(
         yield source.count("\n", 0, match.start()) + 1, enum_label_key(
             "INPUT_ROLE", enum_value
         )
+
+
+def long_bracket_size(source: str, i: int) -> int | None:
+    """Length of the long bracket opening at i - ``[[``, ``[=[`` - if there is one."""
+    if source[i] != "[":
+        return None
+    j = i + 1
+    while j < len(source) and source[j] == "=":
+        j += 1
+    if j < len(source) and source[j] == "[":
+        return j + 1 - i
+    return None
+
+
+def strip_lua_noncode(source: str) -> str:
+    """Blank out everything in a Lua source that a script does not execute.
+
+    Comments go, and so do long-bracket strings: in data/scripting those hold
+    the api.define examples, and a key named in an example is documentation, not
+    a usage. Quoted strings stay, because that is where a key is written.
+    Newlines are kept so the line numbers still line up.
+
+    Scanning rather than substituting, so that a ``--`` inside a string reads as
+    two dashes rather than as the start of a comment.
+    """
+    out: list[str] = []
+    i = 0
+    n = len(source)
+
+    def skip_long_bracket(start: int, size: int) -> int:
+        closing = "]" + "=" * (size - 2) + "]"
+        end = source.find(closing, start + size)
+        stop = n if end == -1 else end + len(closing)
+        out.append("\n" * source.count("\n", start, stop))
+        return stop
+
+    while i < n:
+        ch = source[i]
+        if ch in ("'", '"'):
+            quote = ch
+            out.append(ch)
+            i += 1
+            while i < n and source[i] != quote:
+                if source[i] == "\\" and i + 1 < n:
+                    out.append(source[i : i + 2])
+                    i += 2
+                    continue
+                out.append(source[i])
+                i += 1
+            if i < n:
+                out.append(source[i])
+                i += 1
+            continue
+        if source.startswith("--", i):
+            i += 2
+            size = long_bracket_size(source, i) if i < n else None
+            if size is not None:
+                i = skip_long_bracket(i, size)
+            else:
+                while i < n and source[i] != "\n":
+                    i += 1
+            continue
+        size = long_bracket_size(source, i)
+        if size is not None:
+            i = skip_long_bracket(i, size)
+            continue
+        out.append(ch)
+        i += 1
+    return "".join(out)
+
+
+def get_used_lua_strings(path: Path) -> Iterable[tuple[int, str]]:
+    """Game string keys named from a Lua script."""
+    source = strip_lua_noncode(path.read_text())
+    for match in re.finditer(RE_LUA_GAME_STRING_USAGE, source):
+        literal = match.group(1) if match.group(1) is not None else match.group(2)
+        yield source.count("\n", 0, match.start()) + 1, unescape(literal)
 
 
 def get_enum_value_types(paths: list[Path]) -> dict[str, str]:
@@ -453,10 +540,17 @@ class RunContext:
             if mod_path.is_dir()
         }
 
+        versioned_files = list(find_versioned_files(REPO_DIR))
         source_files = [
+            path for path in versioned_files if path.suffix in [".c", ".h", ".def"]
+        ]
+        # The test fixtures name keys that exist to be looked up in a test, and
+        # keys that exist to be missing. Neither says anything about what the
+        # game ships.
+        lua_files = [
             path
-            for path in find_versioned_files(REPO_DIR)
-            if path.suffix in [".c", ".h", ".def"]
+            for path in versioned_files
+            if path.suffix == ".lua" and SRC_DIR / "tests" not in path.parents
         ]
         self.enum_value_types = get_enum_value_types(source_files)
         self.config_aliases = get_config_aliases(CommonPaths.src_dir / "config/map.def")
@@ -475,6 +569,10 @@ class RunContext:
                 )
                 for path in source_files
             ],
+            [],
+        )
+        self.used_game_strings += sum(
+            [list(get_used_lua_strings(path)) for path in lua_files],
             [],
         )
         self.used_game_strings += list(

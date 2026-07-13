@@ -3156,6 +3156,47 @@
       "path": "lara.clear_equipment"
     },
     {
+      "description": "The text behind a game string key.",
+      "examples": [
+        "trx.console.log(trx.locale.get(\"general/misc/off\"))"
+      ],
+      "params": [
+        {
+          "description": "The key, e.g. `general/misc/off`.",
+          "name": "key",
+          "type": "string"
+        }
+      ],
+      "path": "locale.get",
+      "returns": {
+        "description": "The key itself if nothing is behind it, so a typo shows up on screen rather than as a nil further down.",
+        "type": "string"
+      }
+    },
+    {
+      "description": "The text behind a key with its placeholders filled in.",
+      "examples": [
+        "trx.console.log(trx.locale.format(\"general/misc/pagination_nav\", 1, 5))"
+      ],
+      "params": [
+        {
+          "description": "The key.",
+          "name": "key",
+          "type": "string"
+        },
+        {
+          "description": "What to fill the placeholders with.",
+          "name": "...",
+          "type": "any"
+        }
+      ],
+      "path": "locale.format",
+      "returns": {
+        "description": "The text with the arguments in it. A translation whose placeholders do not line up with the arguments comes back unformatted, with a warning in the log: a player is better served by text they can read than by a script that stops.",
+        "type": "string"
+      }
+    },
+    {
       "description": "Sine of an angle.",
       "params": [
         {
@@ -3523,6 +3564,11 @@
       "order": 3
     },
     {
+      "description": "The text the player reads, in the player's own language.",
+      "name": "locale",
+      "order": 18
+    },
+    {
       "description": "Fixed-point trigonometry, matching the engine's own tables.\n\nTRX angles are 16-bit units where 65536 is a full turn, not radians. Using these rather than Lua's `math` library guarantees a script places things exactly where the engine would.",
       "name": "math",
       "order": 17
@@ -3549,7 +3595,7 @@
       "order": 7
     },
     {
-      "description": "Utilities for working with strings.\n\n",
+      "description": "Utilities for working with strings.\n\nNot to be confused with `trx.locale`, which is the text a player reads: this module is about manipulating strings, that one is about which string the player gets.",
       "name": "strings",
       "order": 19
     }

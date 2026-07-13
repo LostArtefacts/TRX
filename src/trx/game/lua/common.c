@@ -34,6 +34,7 @@ extern void LUA_CreateEnum(lua_State *L);
 extern void LUA_CreateEvents(lua_State *L);
 extern void LUA_CreateItems(lua_State *L);
 extern void LUA_CreateLara(lua_State *L);
+extern void LUA_CreateLocale(lua_State *L);
 extern void LUA_CreateLog(lua_State *L);
 extern void LUA_CreateMusic(lua_State *L);
 extern void LUA_CreateMath(lua_State *L);
@@ -210,6 +211,7 @@ void LUA_Init(void)
     M_LoadTRXCModule(L, LUA_CreateEvents);
     M_LoadTRXCModule(L, LUA_CreateItems);
     M_LoadTRXCModule(L, LUA_CreateLara);
+    M_LoadTRXCModule(L, LUA_CreateLocale);
     M_LoadTRXCModule(L, LUA_CreateLog);
     M_LoadTRXCModule(L, LUA_CreateMusic);
     M_LoadTRXCModule(L, LUA_CreateMath);

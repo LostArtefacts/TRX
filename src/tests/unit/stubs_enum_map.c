@@ -57,7 +57,10 @@ __attribute__((weak)) const char *String_FormatStatic(
 
 // Enum labels are a UI concern. The name<->value reflection the Lua bridge and
 // the docs rely on never touches them.
-const char *GameString_Get(const char *const key)
+//
+// Weak, so a test that is about the game strings themselves - see
+// fake_engine_locale.c - can put a real table behind this instead.
+__attribute__((weak)) const char *GameString_Get(const char *const key)
 {
     return key;
 }

@@ -3,7 +3,9 @@ local api = trx.api
 
 api.module("strings", {
   order = 19,
-  description = "Utilities for working with strings.\n\n",
+  description = "Utilities for working with strings.\n\n"
+    .. "Not to be confused with `trx.locale`, which is the text a player reads: this module is "
+    .. "about manipulating strings, that one is about which string the player gets.",
 })
 
 api.define("strings.fuzzy_match", {

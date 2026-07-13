@@ -242,6 +242,18 @@ test_lua_sound_exe = executable(
 )
 test('lua_sound', test_lua_sound_exe, suite: 'unit')
 
+test_lua_locale_exe = executable(
+  'test_lua_locale',
+  files('unit/test_lua_locale.c', 'unit/fake_engine_locale.c') + test_stubs
+    + lua_surface_src
+    + files('../trx/game/lua/locale.c'),
+  include_directories: [src_inc, test_inc],
+  dependencies: [dep_lua],
+  c_args: lua_surface_args,
+  build_by_default: false,
+)
+test('lua_locale', test_lua_locale_exe, suite: 'unit')
+
 # No test_stubs: fake_engine_log.c provides Log_Message itself, because which
 # line the log blames is the thing under test.
 test_lua_log_exe = executable(
@@ -408,4 +420,10 @@ endif
 python_exe = find_program('python3', required: false)
 if python_exe.found()
   test('update_lua_docs', python_exe, args: [files('unit/test_update_lua_docs.py')], suite: 'unit')
+  test(
+    'update_game_strings',
+    python_exe,
+    args: [files('unit/test_update_game_strings.py')],
+    suite: 'unit',
+  )
 endif
