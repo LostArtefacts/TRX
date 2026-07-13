@@ -19,6 +19,7 @@ static GF_LEVEL m_TitleLevel;
 static GF_LEVEL_TABLE m_Tables[GFLT_NUMBER_OF];
 static const GF_LEVEL *m_CurrentLevel;
 static bool m_HasGym;
+static bool m_InCutscene;
 
 const GF_LEVEL_TABLE *GF_GetLevelTable(const GF_LEVEL_TABLE_TYPE table_type)
 {
@@ -161,6 +162,21 @@ RESUME_INFO *Savegame_GetCurrentInfo(const GF_LEVEL *const level)
 int32_t g_TRVersion = 1;
 const char *g_TRXVersion = "TRX-test";
 
+bool Game_IsLoaded(void)
+{
+    return m_CurrentLevel != nullptr;
+}
+
+bool Game_IsPlayable(void)
+{
+    return m_CurrentLevel != nullptr && !m_InCutscene;
+}
+
+void FakeGame_SetInCutscene(const bool in_cutscene)
+{
+    m_InCutscene = in_cutscene;
+}
+
 void FakeGame_Reset(void)
 {
     memset(m_Levels, 0, sizeof(m_Levels));
@@ -217,6 +233,7 @@ void FakeGame_Reset(void)
 
     m_CurrentLevel = nullptr;
     m_HasGym = true;
+    m_InCutscene = false;
     g_FakeGameCalls = (FAKE_GAME_CALLS) {};
 }
 

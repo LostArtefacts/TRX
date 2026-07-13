@@ -1,3 +1,4 @@
+#include <trx/game/game/state.h>
 #include <trx/game/game_flow.h>
 #include <trx/game/game_flow/types.h>
 #include <trx/game/lua/common.h>
@@ -162,6 +163,20 @@ static int M_L_GameGetCurrentLevel(lua_State *const L)
     return 1;
 }
 
+// trxc.game.is_loaded() -> bool
+static int M_L_GameIsLoaded(lua_State *const L)
+{
+    lua_pushboolean(L, Game_IsLoaded());
+    return 1;
+}
+
+// trxc.game.is_playable() -> bool
+static int M_L_GameIsPlayable(lua_State *const L)
+{
+    lua_pushboolean(L, Game_IsPlayable());
+    return 1;
+}
+
 // trxc.game.play_level(num) → nil
 // What the game flow's commands carry is the level's place in its table, which
 // is GF_LEVEL.num - the same number the `play` console command hands them.
@@ -231,6 +246,8 @@ static const luaL_Reg m_Module[] = {
     { "count_levels", M_L_GameCountLevels },
     { "get_level", M_L_GameGetLevel },
     { "get_current_level", M_L_GameGetCurrentLevel },
+    { "is_loaded", M_L_GameIsLoaded },
+    { "is_playable", M_L_GameIsPlayable },
     { "play_level", M_L_GamePlayLevel },
     { "play_cutscene", M_L_GamePlayCutscene },
     { "play_demo", M_L_GamePlayDemo },

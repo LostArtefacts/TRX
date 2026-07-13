@@ -23,6 +23,8 @@ Module for the game flow: which levels there are, and which one is being played.
 - **`trx.game.gym`** (Level). The gym level, or `nil` if this game has no gym. *(read-only)*
 - **`trx.game.version`** (integer). Which Tomb Raider this build is: 1, 2, 3 or 4. *(read-only)*
 - **`trx.game.trx_version`** (string). The TRX version string. *(read-only)*
+- **`trx.game.is_loaded`** (boolean). Whether a level is loaded. *(read-only)*
+- **`trx.game.is_playable`** (boolean). Whether the game is loaded and taking input - not in a menu, and not in a cutscene. *(read-only)*
 
 ### Enums
 

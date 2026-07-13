@@ -178,6 +178,18 @@ api.property("game.trx_version", {
   get = raw.get_trx_version,
 })
 
+api.property("game.is_loaded", {
+  type = "boolean",
+  description = "Whether a level is loaded.",
+  get = raw.is_loaded,
+})
+
+api.property("game.is_playable", {
+  type = "boolean",
+  description = "Whether the game is loaded and taking input - not in a menu, and not in a cutscene.",
+  get = raw.is_playable,
+})
+
 api.define("game.play_level", {
   description = "Starts a level from `trx.game.levels`.",
   params = {
