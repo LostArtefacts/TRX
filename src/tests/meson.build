@@ -135,7 +135,7 @@ test('lua_sandbox', test_lua_sandbox_exe, suite: 'unit')
 
 # The public Lua surface, driven the way a level script drives it. Everything
 # below the assertions is real - the FIELD_DESC tables, the struct and enum
-# bridges, the trxc modules, and data/scripting/*.lua read from the tree - and
+# bridges, the trxc modules, and data/scripting/api/*.lua read from the tree - and
 # only the engine underneath is faked. The modules are read from disk rather than
 # from the embedded copy, so the tests need to know where the tree is.
 lua_surface_src = files(

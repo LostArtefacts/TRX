@@ -1,4 +1,4 @@
--- Unit tests for data/scripting/api.lua, run under a plain Lua interpreter with
+-- Unit tests for data/scripting/api/api.lua, run under a plain Lua interpreter with
 -- a stubbed C bridge. No engine, no binary, no level.
 
 local ROOT = (arg[1] or ".") .. "/"
@@ -79,7 +79,7 @@ local function fresh_env()
   _G.trx = { log = { debug = function() end, warn = function() end } }
   _G.require = function() end
 
-  dofile(ROOT .. "data/scripting/api.lua")
+  dofile(ROOT .. "data/scripting/api/api.lua")
   return trx.api, exposed
 end
 

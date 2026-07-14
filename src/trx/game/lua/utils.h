@@ -7,7 +7,7 @@
 #include <lua.h>
 
 // What an API module's chunk is named. A runtime script is named without it.
-#define LUA_API_CHUNK_PREFIX "@trx/"
+#define LUA_API_CHUNK_PREFIX "@trx/api/"
 
 // The script frame that reached the API. The wrappers in between vary in
 // number, so the caller is found by name rather than at a fixed depth.

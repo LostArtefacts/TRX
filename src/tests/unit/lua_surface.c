@@ -47,7 +47,7 @@ static void M_RunModule(lua_State *const L, const char *const name)
 {
     char path[512];
     char chunk_name[256];
-    snprintf(path, sizeof(path), REPO_ROOT "/data/scripting/%s.lua", name);
+    snprintf(path, sizeof(path), REPO_ROOT "/data/scripting/api/%s.lua", name);
     snprintf(
         chunk_name, sizeof(chunk_name), LUA_API_CHUNK_PREFIX "%s.lua", name);
     M_RunFileAs(L, path, chunk_name);

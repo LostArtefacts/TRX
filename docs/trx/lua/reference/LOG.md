@@ -7,7 +7,7 @@ order: 1
   GENERATED FILE - do not edit.
   Regenerate with: just lua-api-dump
   The public API is declared next to its implementation, in
-  data/scripting/log.lua. Edit it there.
+  data/scripting/api/log.lua. Edit it there.
 -->
 
 ## Logging module

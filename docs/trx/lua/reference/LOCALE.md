@@ -7,7 +7,7 @@ order: 18
   GENERATED FILE - do not edit.
   Regenerate with: just lua-api-dump
   The public API is declared next to its implementation, in
-  data/scripting/locale.lua. Edit it there.
+  data/scripting/api/locale.lua. Edit it there.
 -->
 
 ## Locale module
