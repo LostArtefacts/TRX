@@ -523,6 +523,10 @@
                 "tr3_gym": "Allenamento TR3",
                 "tr3_nevada": "Nevada",
                 "tr3_south_pacific": "Sud Pacifico",
+                "tr4_classic": "\\{review}Classico TR4",
+                "tr4_golden_lara": "\\{review}Lara Dorata TR4",
+                "tr4_young": "\\{review}Giovane TR4",
+                "tr4_young_golden_lara": "\\{review}Lara Giovane Dorata TR4",
             }
         },
         "mods": {

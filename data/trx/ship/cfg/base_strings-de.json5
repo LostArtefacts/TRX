@@ -523,6 +523,10 @@
                 "tr3_gym": "\\{review}TR3 Trainingsanzug",
                 "tr3_nevada": "\\{review}Nevada",
                 "tr3_south_pacific": "\\{review}Südpazifik",
+                "tr4_classic": "\\{review}TR4 Klassisch",
+                "tr4_golden_lara": "\\{review}TR4 Goldene Lara",
+                "tr4_young": "\\{review}TR4 Jung",
+                "tr4_young_golden_lara": "\\{review}TR4 Jung Goldene Lara",
             }
         },
         "mods": {

@@ -523,6 +523,10 @@
                 "tr3_gym": "TR3 dres",
                 "tr3_nevada": "TR3 Nevada",
                 "tr3_south_pacific": "TR3 Południowy Pacyfik",
+                "tr4_classic": "\\{review}TR4 klasyczny",
+                "tr4_golden_lara": "\\{review}TR4 złota Lara",
+                "tr4_young": "\\{review}TR4 Młoda",
+                "tr4_young_golden_lara": "\\{review}TR4 złota Młoda",
             }
         },
         "mods": {
