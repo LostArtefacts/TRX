@@ -313,6 +313,45 @@ void LUA_Struct_Push(
     luaL_setmetatable(L, type->name);
 }
 
+int LUA_Property_Get(lua_State *const L, const LUA_PROPERTY_DESC *const desc)
+{
+    LUA_STRUCT_REF *const ref = LUA_Struct_CheckRef(L, 1, desc->type);
+    const void *const self = LUA_Struct_Deref(L, ref);
+    OBJECT_PROPERTY_VALUE value = {};
+    if (!desc->get(self, luaL_checkstring(L, 2), &value)) {
+        lua_pushnil(L);
+        return 1;
+    }
+    LUA_PushPropertyValue(L, &value);
+    return 1;
+}
+
+int LUA_Property_Set(lua_State *const L, const LUA_PROPERTY_DESC *const desc)
+{
+    LUA_STRUCT_REF *const ref = LUA_Struct_CheckRef(L, 1, desc->type);
+    void *const self = LUA_Struct_Deref(L, ref);
+    const char *const name = luaL_checkstring(L, 2);
+    const OBJECT_PROPERTY_VALUE value = LUA_CheckPropertyValue(L, 3);
+    if (!desc->set(self, name, value)) {
+        return luaL_error(L, "unknown %s property '%s'", desc->what, name);
+    }
+    return 0;
+}
+
+int LUA_Property_GetNames(
+    lua_State *const L, const LUA_PROPERTY_DESC *const desc)
+{
+    LUA_STRUCT_REF *const ref = LUA_Struct_CheckRef(L, 1, desc->type);
+    const void *const self = LUA_Struct_Deref(L, ref);
+    const int32_t count = desc->name_count(self);
+    lua_createtable(L, count, 0);
+    for (int32_t i = 0; i < count; i++) {
+        lua_pushstring(L, desc->name_at(self, i));
+        lua_rawseti(L, -2, i + 1);
+    }
+    return 1;
+}
+
 // --- trxc.struct: how Lua declares the public surface -----------------------
 
 static const TYPE_DESC *M_CheckType(lua_State *const L, const int idx)

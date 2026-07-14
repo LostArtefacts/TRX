@@ -214,44 +214,53 @@ static void M_PushItem(lua_State *const L, const int16_t idx)
 }
 
 // The object property overlay stays a separate namespace: fields address the
-// ITEM struct, properties are the object's declared defaults plus per-item
-// sparse overrides.
+// ITEM struct, properties are the object's declared defaults plus this item's
+// own overrides. The bridges themselves are in lua/utils.
+static bool M_GetPropertyValue(
+    const void *const self, const char *const name,
+    OBJECT_PROPERTY_VALUE *const out)
+{
+    return ObjectProperty_GetItemValue(self, name, out);
+}
+
+static bool M_SetPropertyValue(
+    void *const self, const char *const name, const OBJECT_PROPERTY_VALUE value)
+{
+    return ObjectProperty_SetItemValueRaw(self, name, value);
+}
+
+static int32_t M_GetPropertyCount(const void *const self)
+{
+    return ObjectProperty_GetItemNameCount(self);
+}
+
+static const char *M_GetPropertyName(const void *const self, const int32_t idx)
+{
+    return ObjectProperty_GetItemName(self, idx);
+}
+
+static const LUA_PROPERTY_DESC m_Properties = {
+    .type = &TYPE_ITEM,
+    .what = "item",
+    .get = M_GetPropertyValue,
+    .set = M_SetPropertyValue,
+    .name_count = M_GetPropertyCount,
+    .name_at = M_GetPropertyName,
+};
+
 static int M_L_GetProperty(lua_State *const L)
 {
-    LUA_STRUCT_REF *const ref = LUA_Struct_CheckRef(L, 1, &TYPE_ITEM);
-    const ITEM *const item = LUA_Struct_Deref(L, ref);
-    OBJECT_PROPERTY_VALUE value = {};
-    if (!ObjectProperty_GetItemValue(item, luaL_checkstring(L, 2), &value)) {
-        lua_pushnil(L);
-        return 1;
-    }
-    LUA_PushPropertyValue(L, &value);
-    return 1;
+    return LUA_Property_Get(L, &m_Properties);
 }
 
 static int M_L_SetProperty(lua_State *const L)
 {
-    LUA_STRUCT_REF *const ref = LUA_Struct_CheckRef(L, 1, &TYPE_ITEM);
-    ITEM *const item = LUA_Struct_Deref(L, ref);
-    const char *const name = luaL_checkstring(L, 2);
-    const OBJECT_PROPERTY_VALUE value = LUA_CheckPropertyValue(L, 3);
-    if (!ObjectProperty_SetItemValueRaw(item, name, value)) {
-        return luaL_error(L, "unknown item property '%s'", name);
-    }
-    return 0;
+    return LUA_Property_Set(L, &m_Properties);
 }
 
 static int M_L_GetPropertyNames(lua_State *const L)
 {
-    LUA_STRUCT_REF *const ref = LUA_Struct_CheckRef(L, 1, &TYPE_ITEM);
-    const ITEM *const item = LUA_Struct_Deref(L, ref);
-    lua_newtable(L);
-    for (int32_t i = 0; i < ObjectProperty_GetItemNameCount(item); i++) {
-        lua_pushinteger(L, i + 1);
-        lua_pushstring(L, ObjectProperty_GetItemName(item, i));
-        lua_settable(L, -3);
-    }
-    return 1;
+    return LUA_Property_GetNames(L, &m_Properties);
 }
 
 static int M_L_Kill(lua_State *const L)
