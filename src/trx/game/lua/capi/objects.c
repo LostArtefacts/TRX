@@ -84,43 +84,53 @@ static int M_L_ObjectsSwapMesh(lua_State *const L)
 }
 
 // The object property overlay stays a separate namespace: fields address the
-// OBJECT struct, properties are what the object declares about itself.
+// OBJECT struct, properties are what the object declares about itself. The
+// bridges themselves are in lua/utils.
+static bool M_GetPropertyValue(
+    const void *const self, const char *const name,
+    OBJECT_PROPERTY_VALUE *const out)
+{
+    return ObjectProperty_GetObjectValue(self, name, out);
+}
+
+static bool M_SetPropertyValue(
+    void *const self, const char *const name, const OBJECT_PROPERTY_VALUE value)
+{
+    return ObjectProperty_SetObjectValueRaw(self, name, value);
+}
+
+static int32_t M_GetPropertyCount(const void *const self)
+{
+    return ObjectProperty_GetObjectNameCount(self);
+}
+
+static const char *M_GetPropertyName(const void *const self, const int32_t idx)
+{
+    return ObjectProperty_GetObjectName(self, idx);
+}
+
+static const LUA_PROPERTY_DESC m_Properties = {
+    .type = &TYPE_OBJECT,
+    .what = "object",
+    .get = M_GetPropertyValue,
+    .set = M_SetPropertyValue,
+    .name_count = M_GetPropertyCount,
+    .name_at = M_GetPropertyName,
+};
+
 static int M_L_GetProperty(lua_State *const L)
 {
-    LUA_STRUCT_REF *const ref = LUA_Struct_CheckRef(L, 1, &TYPE_OBJECT);
-    const OBJECT *const obj = LUA_Struct_Deref(L, ref);
-    OBJECT_PROPERTY_VALUE value = {};
-    if (!ObjectProperty_GetObjectValue(obj, luaL_checkstring(L, 2), &value)) {
-        lua_pushnil(L);
-        return 1;
-    }
-    LUA_PushPropertyValue(L, &value);
-    return 1;
+    return LUA_Property_Get(L, &m_Properties);
 }
 
 static int M_L_SetProperty(lua_State *const L)
 {
-    LUA_STRUCT_REF *const ref = LUA_Struct_CheckRef(L, 1, &TYPE_OBJECT);
-    OBJECT *const obj = LUA_Struct_Deref(L, ref);
-    const char *const name = luaL_checkstring(L, 2);
-    const OBJECT_PROPERTY_VALUE value = LUA_CheckPropertyValue(L, 3);
-    if (!ObjectProperty_SetObjectValueRaw(obj, name, value)) {
-        return luaL_error(L, "unknown object property '%s'", name);
-    }
-    return 0;
+    return LUA_Property_Set(L, &m_Properties);
 }
 
 static int M_L_GetPropertyNames(lua_State *const L)
 {
-    LUA_STRUCT_REF *const ref = LUA_Struct_CheckRef(L, 1, &TYPE_OBJECT);
-    const OBJECT *const obj = LUA_Struct_Deref(L, ref);
-    lua_newtable(L);
-    for (int32_t i = 0; i < ObjectProperty_GetObjectNameCount(obj); i++) {
-        lua_pushinteger(L, i + 1);
-        lua_pushstring(L, ObjectProperty_GetObjectName(obj, i));
-        lua_settable(L, -3);
-    }
-    return 1;
+    return LUA_Property_GetNames(L, &m_Properties);
 }
 
 static const luaL_Reg m_Methods[] = {

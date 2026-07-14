@@ -1,6 +1,7 @@
 #pragma once
 
 #include <trx/game/lua/field.h>
+#include <trx/game/objects.h>
 
 #include <lauxlib.h>
 #include <lualib.h>
@@ -40,3 +41,22 @@ LUA_STRUCT_REF *LUA_Struct_CheckRef(
 
 // Resolve a handle to a live pointer, raising a Lua error if it is stale.
 void *LUA_Struct_Deref(lua_State *L, LUA_STRUCT_REF *ref);
+
+// The object property overlay, which items and objects both carry. Fields
+// address the C struct; a property is what the object declares about itself,
+// plus - for an item - that item's own override. Only the struct the overlay
+// hangs off differs between the two, so the three bridges are written once and
+// each type says how to reach its own.
+typedef struct {
+    const TYPE_DESC *type;
+    // What an unknown property is called back to the script.
+    const char *what;
+    bool (*get)(const void *self, const char *name, OBJECT_PROPERTY_VALUE *out);
+    bool (*set)(void *self, const char *name, OBJECT_PROPERTY_VALUE value);
+    int32_t (*name_count)(const void *self);
+    const char *(*name_at)(const void *self, int32_t idx);
+} LUA_PROPERTY_DESC;
+
+int LUA_Property_Get(lua_State *L, const LUA_PROPERTY_DESC *desc);
+int LUA_Property_Set(lua_State *L, const LUA_PROPERTY_DESC *desc);
+int LUA_Property_GetNames(lua_State *L, const LUA_PROPERTY_DESC *desc);
