@@ -17,6 +17,8 @@
 -- the trx.* modules have loaded, so builders cannot reach past the public API.
 local struct = trxc.struct
 local enum = trxc.enum
+-- Hardening nils this out of the globals, and api.strict runs long after that.
+local load = load
 
 local api = {}
 
