@@ -1,9 +1,9 @@
 local raw = trxc.console
 local api = trx.api
 
--- The same LOG_LEVEL the logging module declares. One enum, one declaration:
--- trx.console.log.generic takes a trx.log.LogLevel.
-local LogLevel = trxc.log.LogLevel
+-- trx.console.log.generic takes a trx.log.LogLevel, and the log module is what
+-- declares it.
+local LogLevel = trx.log.LogLevel
 
 api.module("console", {
   order = 5,

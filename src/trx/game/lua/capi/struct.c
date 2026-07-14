@@ -345,24 +345,6 @@ static int M_L_Members(lua_State *const L)
     return 1;
 }
 
-// trxc.struct.method_names(type) -> { "kill", "activate", ... }
-static int M_L_MethodNames(lua_State *const L)
-{
-    const TYPE_DESC *const type = M_CheckType(L, 1);
-    luaL_getmetatable(L, type->name);
-    lua_getfield(L, -1, M_KEY_RAW_METHODS);
-
-    lua_newtable(L);
-    int32_t n = 0;
-    lua_pushnil(L);
-    while (lua_next(L, -3) != 0) {
-        lua_pop(L, 1); // value
-        lua_pushvalue(L, -1); // key
-        lua_rawseti(L, -3, ++n);
-    }
-    return 1;
-}
-
 // trxc.struct.expose_field(type, public_name, c_name, writable)
 static int M_L_ExposeField(lua_State *const L)
 {
@@ -444,7 +426,6 @@ static int M_L_ExposeComputed(lua_State *const L)
 
 static const luaL_Reg m_Module[] = {
     { "members", M_L_Members },
-    { "method_names", M_L_MethodNames },
     { "expose_field", M_L_ExposeField },
     { "expose_method", M_L_ExposeMethod },
     { "expose_computed", M_L_ExposeComputed },

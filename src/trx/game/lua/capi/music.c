@@ -59,21 +59,6 @@ static const luaL_Reg m_Module[] = {
 static void M_Create(lua_State *const L)
 {
     LUA_RegisterModule(L, "music", m_Module);
-
-    LUA_GetModule(L, "music");
-    lua_newtable(L);
-    lua_pushinteger(L, MPM_ONCE);
-    lua_setfield(L, -2, "ONCE");
-    lua_pushinteger(L, MPM_LOOP);
-    lua_setfield(L, -2, "LOOP");
-    lua_pushinteger(L, MPM_DELAY);
-    lua_setfield(L, -2, "DELAY");
-    lua_pushinteger(L, MPM_NO_REPEAT);
-    lua_setfield(L, -2, "NO_REPEAT");
-    lua_pushinteger(L, MPM_OVERLAY);
-    lua_setfield(L, -2, "OVERLAY");
-    lua_setfield(L, -2, "PlayMode");
-    lua_pop(L, 1);
 }
 
 REGISTER_LUA_CAPI(.create = M_Create)
