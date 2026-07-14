@@ -13,7 +13,7 @@
 #include <lualib.h>
 
 typedef struct {
-    // data/scripting/<module>.lua - the declaration under test.
+    // data/scripting/api/<module>.lua - the declaration under test.
     const char *module;
     // Modules loaded before it, for a declaration that reaches into another -
     // trx.camera.room hands back a trx.rooms.Room. NULL-terminated.

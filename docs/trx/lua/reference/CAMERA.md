@@ -7,7 +7,7 @@ order: 16
   GENERATED FILE - do not edit.
   Regenerate with: just lua-api-dump
   The public API is declared next to its implementation, in
-  data/scripting/camera.lua. Edit it there.
+  data/scripting/api/camera.lua. Edit it there.
 -->
 
 ## Camera module

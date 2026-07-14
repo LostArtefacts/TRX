@@ -7,7 +7,7 @@ order: 5
   GENERATED FILE - do not edit.
   Regenerate with: just lua-api-dump
   The public API is declared next to its implementation, in
-  data/scripting/console.lua. Edit it there.
+  data/scripting/api/console.lua. Edit it there.
 -->
 
 ## Console module

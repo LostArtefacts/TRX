@@ -267,7 +267,7 @@ local function make_checked(fn, path, params)
     error(("%s: invalid argument '%s'"):format(where, arg), 3)
   end
   -- Named as an API module is, so LUA_GetCallerInfo walks past this frame too.
-  return load(src, "@trx/" .. path .. " (checked)")(fn, param_checkers, defaults, on_fail)
+  return load(src, "@trx/api/" .. path .. " (checked)")(fn, param_checkers, defaults, on_fail)
 end
 
 -- The function a caller reaches: the checking wrapper under strict mode, the raw
