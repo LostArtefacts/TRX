@@ -143,6 +143,7 @@ lua_surface_src = files(
   '../trx/core/memory.c',
   '../trx/core/vector.c',
   '../trx/game/enum.c',
+  '../trx/game/lua/capi/api.c',
   '../trx/game/lua/capi/enum.c',
   '../trx/game/lua/capi/struct.c',
   '../trx/game/lua/field.c',

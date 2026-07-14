@@ -33,6 +33,10 @@ local function fresh_env()
       expose_computed = function(t, public, fn)
         exposed.computed[public] = fn
       end,
+      -- What strict mode wraps: the C function behind a method.
+      method = function(t, from)
+        return function() end
+      end,
       members = function()
         return {
           { name = "visible", type = "INT32", writable = true },
@@ -66,6 +70,10 @@ local function fresh_env()
           { name = "ON", value = 1 },
         }
       end,
+    },
+    -- Where the registry hands C the entrypoints it keeps after the seal.
+    api = {
+      set_entrypoint = function() end,
     },
   }
   _G.trx = { log = { debug = function() end, warn = function() end } }
@@ -169,7 +177,13 @@ test("describe() reports fields, methods and extensions", function()
   assert(#t.fields == 1, "fields missing")
   assert(#t.methods == 1, "methods missing from describe()")
   assert(#t.extensions == 1, "extensions missing from describe()")
-  assert(#d.functions == 1, "functions missing")
+
+  -- Named rather than counted: the registry declares its own functions too.
+  local declared = {}
+  for _, fn in ipairs(d.functions) do
+    declared[fn.path] = true
+  end
+  assert(declared["things.count"], "functions missing")
 end)
 
 test("enum() reflects the constants out of C", function()
