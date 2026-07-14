@@ -8,13 +8,47 @@
 #include <lua.h>
 
 typedef struct {
+    // What a script detaches by. Its own, and not its Lua ref: luaL_unref hands
+    // a ref back out to the next attach, so a detached listener's ref can come
+    // back as another's.
+    int32_t id;
     int32_t ref;
     LUA_EVENT_TYPE type;
     bool level_scoped;
+    bool dead;
 } M_LISTENER;
 
 static lua_State *m_L = nullptr;
 static VECTOR *m_Listeners = nullptr;
+static int32_t m_NextId = 1;
+static int32_t m_DispatchDepth = 0;
+
+// Removing outright would move the listeners out from under a dispatch in
+// flight. While one is up, a removed listener is only marked, and the vector is
+// compacted once the last one unwinds.
+static void M_RemoveListener(lua_State *const L, const int32_t i)
+{
+    M_LISTENER *const lst = Vector_Get(m_Listeners, i);
+    luaL_unref(L, LUA_REGISTRYINDEX, lst->ref);
+    lst->ref = LUA_NOREF;
+    if (m_DispatchDepth > 0) {
+        lst->dead = true;
+    } else {
+        Vector_RemoveAt(m_Listeners, i);
+    }
+}
+
+static void M_CompactListeners(void)
+{
+    for (int32_t i = 0; i < m_Listeners->count;) {
+        const M_LISTENER *const lst = Vector_Get(m_Listeners, i);
+        if (lst->dead) {
+            Vector_RemoveAt(m_Listeners, i);
+        } else {
+            i++;
+        }
+    }
+}
 
 static void M_ClearAllListeners(const bool unref_from_lua)
 {
@@ -57,12 +91,13 @@ static int32_t M_L_EventsAttach(lua_State *const L)
         m_Listeners = Vector_Create(sizeof(M_LISTENER));
     }
     const M_LISTENER listener = {
+        .id = m_NextId++,
         .ref = ref,
         .type = ev,
         .level_scoped = LUA_GetScriptContext() == LUA_CONTEXT_LEVEL,
     };
     Vector_Add(m_Listeners, &listener);
-    lua_pushinteger(L, ref);
+    lua_pushinteger(L, listener.id);
     return 1;
 }
 
@@ -76,9 +111,8 @@ static int32_t M_L_EventsDetach(lua_State *const L)
     }
     for (int32_t i = 0; i < m_Listeners->count; i++) {
         const M_LISTENER *const lst = Vector_Get(m_Listeners, i);
-        if (lst->ref == id) {
-            luaL_unref(L, LUA_REGISTRYINDEX, lst->ref);
-            Vector_RemoveAt(m_Listeners, i);
+        if (lst->id == id && !lst->dead) {
+            M_RemoveListener(L, i);
             lua_pushboolean(L, true);
             return 1;
         }
@@ -111,6 +145,36 @@ static void M_PushArg(lua_State *const L, const LUA_EVENT_ARG arg)
         break;
     }
 }
+
+// One listener's call. Setting it up allocates - a string argument is interned,
+// and the stack may have to grow - so it can raise just as the call itself can.
+// Run under lua_pcall, an error comes back to LUA_FireEventEx instead of
+// unwinding past the dispatch depth it holds.
+typedef struct {
+    int32_t ref;
+    const LUA_EVENT_ARG *args;
+    int32_t arg_count;
+} M_DISPATCH;
+
+static int M_CallListener(lua_State *const L)
+{
+    const M_DISPATCH *const dispatch = lua_touserdata(L, 1);
+    if (lua_checkstack(L, dispatch->arg_count + 1) == 0) {
+        return luaL_error(L, "no room for the handler and its arguments");
+    }
+    lua_rawgeti(L, LUA_REGISTRYINDEX, dispatch->ref);
+    for (int32_t i = 0; i < dispatch->arg_count; i++) {
+        M_PushArg(L, dispatch->args[i]);
+    }
+    lua_call(L, dispatch->arg_count, 0);
+    return 0;
+}
+
+static const luaL_Reg m_Module[] = {
+    { "attach", M_L_EventsAttach },
+    { "detach", M_L_EventsDetach },
+    { nullptr, nullptr },
+};
 
 static void M_Create(lua_State *const L)
 {
@@ -158,11 +222,13 @@ void LUA_ClearLevelListeners(void)
         return;
     }
     for (int32_t i = 0; i < m_Listeners->count;) {
-        M_LISTENER *const lst = Vector_Get(m_Listeners, i);
-        if (lst->level_scoped) {
-            luaL_unref(L, LUA_REGISTRYINDEX, lst->ref);
-            Vector_RemoveAt(m_Listeners, i);
-        } else {
+        const M_LISTENER *const lst = Vector_Get(m_Listeners, i);
+        if (!lst->level_scoped || lst->dead) {
+            i++;
+            continue;
+        }
+        M_RemoveListener(L, i);
+        if (m_DispatchDepth > 0) {
             i++;
         }
     }
@@ -176,19 +242,42 @@ void LUA_FireEventEx(
     if (L == nullptr || m_Listeners == nullptr) {
         return;
     }
-    for (int32_t i = 0; i < m_Listeners->count; i++) {
-        M_LISTENER *const lst = Vector_Get(m_Listeners, i);
-        if (lst->type != ev) {
+
+    // Room for the protected call and its argument. Taken before the depth goes
+    // up: from here to the matching decrement nothing may raise, or the
+    // listeners would never be compacted again.
+    if (lua_checkstack(L, 2) == 0) {
+        LOG_ERROR("Lua stack exhausted; event %d not dispatched", (int32_t)ev);
+        return;
+    }
+
+    // A handler may attach while the event is in flight. Anything it adds lands
+    // past the count taken here, so it waits for the next event.
+    const int32_t count = m_Listeners->count;
+    m_DispatchDepth++;
+
+    for (int32_t i = 0; i < count; i++) {
+        // Re-read each time: an attach can move the vector.
+        const M_LISTENER *const lst = Vector_Get(m_Listeners, i);
+        if (lst->type != ev || lst->dead) {
             continue;
         }
-        lua_rawgeti(L, LUA_REGISTRYINDEX, lst->ref);
-        for (int32_t arg_idx = 0; arg_idx < arg_count; arg_idx++) {
-            M_PushArg(L, args[arg_idx]);
-        }
-        if (lua_pcall(L, arg_count, 0, 0) != LUA_OK) {
+        const M_DISPATCH dispatch = {
+            .ref = lst->ref,
+            .args = args,
+            .arg_count = arg_count,
+        };
+        lua_pushcfunction(L, M_CallListener);
+        lua_pushlightuserdata(L, (void *)&dispatch);
+        if (lua_pcall(L, 1, 0, 0) != LUA_OK) {
             LOG_ERROR("Lua event handler error: %s", lua_tostring(L, -1));
             lua_pop(L, 1);
         }
+    }
+
+    m_DispatchDepth--;
+    if (m_DispatchDepth == 0) {
+        M_CompactListeners();
     }
 }
 

@@ -102,6 +102,35 @@ test("a handler only fires for its own event", function()
   assert(calls == 0, "a handler fired for someone else's event")
 end)
 
+test("a handler that takes a detached one's place waits for the next event", function()
+  local second_calls, replacement_calls = 0, 0
+  local second_id
+
+  trx.events.before_control(function()
+    if second_id == nil then
+      return
+    end
+    trx.events.detach(second_id)
+    second_id = nil
+    -- Detaching gives the handler's slot in the Lua registry back, and this
+    -- attach takes it: the two are told apart by their listener id, not by the
+    -- slot they happen to sit in.
+    trx.events.before_control(function()
+      replacement_calls = replacement_calls + 1
+    end)
+  end)
+  second_id = trx.events.before_control(function()
+    second_calls = second_calls + 1
+  end)
+
+  fake.fire("before_control")
+  assert(second_calls == 0, "a handler detached mid-dispatch still fired")
+  assert(replacement_calls == 0, "a handler attached mid-dispatch fired for that same event")
+
+  fake.fire("before_control")
+  assert(replacement_calls == 1, "the new handler never fired")
+end)
+
 test("a level script's handlers are dropped when the level ends", function()
   local level_calls, global_calls = 0, 0
 
