@@ -95,7 +95,7 @@ Module for inspecting and altering the rooms of the current level.
   Sets the active flip effect, and optionally its timer.
 
   Parameters:
-  - **`effect_id`** (integer). 0-based effect id. Use `-1` to clear the current effect. Compare against `trx.catalog.flip_effects`.
+  - **`effect_id`** (integer). Use `-1` to clear the current effect. Compare against `trx.catalog.flip_effects`.
   - **`timer`** (integer, optional). Flip timer value.
 
   Example:
@@ -110,4 +110,6 @@ Module for inspecting and altering the rooms of the current level.
   - **`pos`** (vec3). Position to search near.
   - **`room_num`** (integer). 1-based room to search from.
 
-  Returns: vec3 or `nil`. The valid position and its 1-based room number, or `nil` if none was found nearby.
+  Returns:
+  - vec3 or `nil`. The valid position, or `nil` if none was found nearby.
+  - integer. The 1-based room the position is in.

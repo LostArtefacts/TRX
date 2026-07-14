@@ -2923,7 +2923,7 @@
       ],
       "params": [
         {
-          "description": "The level's number.",
+          "description": "1-based position in `trx.game.levels`. This is not `Level.num`, which is the number the level carries.",
           "name": "num",
           "type": "integer"
         }
@@ -2934,7 +2934,7 @@
       "description": "Plays a cutscene.",
       "params": [
         {
-          "description": "The cutscene's number.",
+          "description": "1-based position in `trx.game.cutscenes`.",
           "name": "num",
           "type": "integer"
         }
@@ -2945,7 +2945,7 @@
       "description": "Plays a demo.",
       "params": [
         {
-          "description": "The demo's number.",
+          "description": "1-based position in `trx.game.demos`.",
           "name": "num",
           "type": "integer"
         }
@@ -3022,8 +3022,9 @@
       ],
       "params": [
         {
-          "description": "Supported keys: `object_id`, `room_num`. Unknown keys are ignored and logged.",
+          "description": "Supported keys: `object_id`, `room_num`. Unknown keys are ignored and logged. Omit it for no matches.",
           "name": "query",
+          "optional": true,
           "type": "table"
         }
       ],
@@ -3040,8 +3041,9 @@
       ],
       "params": [
         {
-          "description": "Supported keys: `object_id`, `room_num`.",
+          "description": "Supported keys: `object_id`, `room_num`. Omit it for no match.",
           "name": "query",
+          "optional": true,
           "type": "table"
         }
       ],
@@ -3310,7 +3312,7 @@
       }
     },
     {
-      "description": "Swaps meshes between two objects. With no mesh numbers, swaps all of them.",
+      "description": "Swaps meshes between two objects. With no mesh numbers, swaps all of them; with both, swaps just those two. One without the other raises.",
       "params": [
         {
           "enum": "catalog.objects",
@@ -3373,7 +3375,7 @@
       ],
       "params": [
         {
-          "description": "0-based effect id. Use `-1` to clear the current effect.",
+          "description": "Use `-1` to clear the current effect.",
           "enum": "catalog.flip_effects",
           "name": "effect_id",
           "type": "integer"
@@ -3402,11 +3404,17 @@
         }
       ],
       "path": "rooms.find_valid_pos",
-      "returns": {
-        "description": "The valid position and its 1-based room number, or `nil` if none was found nearby.",
-        "nullable": true,
-        "type": "vec3"
-      }
+      "returns": [
+        {
+          "description": "The valid position, or `nil` if none was found nearby.",
+          "nullable": true,
+          "type": "vec3"
+        },
+        {
+          "description": "The 1-based room the position is in.",
+          "type": "integer"
+        }
+      ]
     },
     {
       "description": "Whether a sound sample exists in the current level.",
@@ -3581,7 +3589,7 @@
     {
       "description": "Module for the object definitions a level is built from.\n\nAn object is the pattern every item of that type is cut from: a wolf's radius, not this wolf's. Per-item state lives on the item - see `trx.items`.",
       "name": "objects",
-      "order": 14,
+      "order": 15,
       "title": "Object"
     },
     {

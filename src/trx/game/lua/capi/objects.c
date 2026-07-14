@@ -62,6 +62,9 @@ static int M_L_ObjectsSwapMesh(lua_State *const L)
         Object_SwapAllMeshes(obj1_id, obj2_id);
         return 0;
     }
+    if (arg_count != 4) {
+        return luaL_error(L, "swap_mesh takes both mesh numbers, or neither");
+    }
 
     // An object that did not load has no meshes, and no count to measure a mesh
     // number against.

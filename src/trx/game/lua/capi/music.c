@@ -20,7 +20,7 @@ static int M_L_MusicGetTrack(lua_State *const L)
 // trxc.music.play_track(id[, opts])
 static int M_L_MusicPlayTrack(lua_State *const L)
 {
-    const lua_Integer id = luaL_checkinteger(L, 1);
+    const int32_t id = (int32_t)luaL_checkinteger(L, 1);
     const MUSIC_PLAY_MODE mode = luaL_checkinteger(L, 2);
     if (!Music_Play_Direct((MUSIC_ID)id, mode)) {
         return luaL_error(

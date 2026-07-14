@@ -119,13 +119,22 @@ def render_params(params: list[dict] | None, indent: str) -> list[str]:
     return out
 
 
-def render_returns(returns: dict | None, indent: str) -> list[str]:
+def one_return(spec: dict) -> str:
+    bits = [spec["type"]]
+    if spec.get("nullable"):
+        bits.append("or `nil`")
+    return f"{' '.join(bits)}. {describe(spec)}".rstrip()
+
+
+def render_returns(returns: dict | list | None, indent: str) -> list[str]:
+    """One return, or the several a Lua function is free to hand back."""
     if not returns:
         return []
-    bits = [returns["type"]]
-    if returns.get("nullable"):
-        bits.append("or `nil`")
-    return ["", f"{indent}Returns: {' '.join(bits)}. {describe(returns)}".rstrip()]
+    if isinstance(returns, dict):
+        return ["", f"{indent}Returns: {one_return(returns)}"]
+    out = ["", f"{indent}Returns:"]
+    out.extend(f"{indent}- {one_return(spec)}" for spec in returns)
+    return out
 
 
 def render_examples(examples: list[str] | None, indent: str) -> list[str]:

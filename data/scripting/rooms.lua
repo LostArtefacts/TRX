@@ -142,7 +142,7 @@ api.define("rooms.flip_effect", {
       name = "effect_id",
       type = "integer",
       enum = "catalog.flip_effects",
-      description = "0-based effect id. Use `-1` to clear the current effect.",
+      description = "Use `-1` to clear the current effect.",
     },
     { name = "timer", type = "integer", optional = true, description = "Flip timer value." },
   },
@@ -160,9 +160,8 @@ api.define("rooms.find_valid_pos", {
     { name = "room_num", type = "integer", description = "1-based room to search from." },
   },
   returns = {
-    type = "vec3",
-    nullable = true,
-    description = "The valid position and its 1-based room number, or `nil` if none was found nearby.",
+    { type = "vec3", nullable = true, description = "The valid position, or `nil` if none was found nearby." },
+    { type = "integer", description = "The 1-based room the position is in." },
   },
   impl = raw.find_valid_pos,
 })

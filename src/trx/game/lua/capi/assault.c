@@ -67,7 +67,7 @@ static GYM_TRACK_TYPE M_GetTrack(lua_State *const L)
     case GYM_TRACK_QUAD:
         return (GYM_TRACK_TYPE)raw_track;
     default:
-        luaL_error(L, "Invalid track (expected Track.COURSE or Track.QUAD)");
+        luaL_error(L, "unknown assault track");
         return GYM_TRACK_ASSAULT;
     }
 }
@@ -89,12 +89,12 @@ static void M_CheckTimerAvailable(
 {
     if (!Game_IsInGym()) {
         luaL_error(
-            L, "%s timer is only available in gym levels",
+            L, "the %s timer is only available in gym levels",
             M_GetTrackName(track));
     }
 
     if (!Gym_TrackManager_HasStats(track)) {
-        luaL_error(L, "%s timer unavailable", M_GetTrackName(track));
+        luaL_error(L, "the %s timer is unavailable", M_GetTrackName(track));
     }
 }
 
@@ -163,15 +163,17 @@ static int M_L_AssaultGetActiveTrack(lua_State *const L)
 static int M_L_AssaultRecord(lua_State *const L)
 {
     if (!Gym_TrackManager_HasStats(GYM_TRACK_ASSAULT)) {
-        return luaL_error(L, "Assault stats unavailable");
+        return luaL_error(L, "assault stats unavailable");
     }
 
-    const float time = (float)luaL_checknumber(L, 1);
-    if (time <= 0.0f) {
-        return luaL_error(L, "Time must be > 0");
+    // Tested for what is allowed: NaN fails every comparison, so `time <= 0`
+    // let it through to a cast that cannot hold it.
+    const lua_Number time = luaL_checknumber(L, 1);
+    if (!(time > 0.0 && time * LOGIC_FPS < (lua_Number)UINT32_MAX)) {
+        return luaL_error(L, "time must be a positive number of seconds");
     }
 
-    const bool ok = M_StoreAssaultTime(time);
+    const bool ok = M_StoreAssaultTime((float)time);
     lua_pushboolean(L, ok);
     return 1;
 }
@@ -179,13 +181,15 @@ static int M_L_AssaultRecord(lua_State *const L)
 static int M_L_AssaultRemoveRecord(lua_State *const L)
 {
     if (!Gym_TrackManager_HasStats(GYM_TRACK_ASSAULT)) {
-        return luaL_error(L, "Assault stats unavailable");
+        return luaL_error(L, "assault stats unavailable");
     }
 
-    const int64_t index_1 = luaL_checkinteger(L, 1);
+    // Lua's formatter has no %lld, and raised over the format rather than the
+    // index.
+    const lua_Integer index_1 = luaL_checkinteger(L, 1);
     if (index_1 < 1 || index_1 > MAX_ASSAULT_TIMES) {
         return luaL_error(
-            L, "Index out of range: %lld (expected 1..%d)", (long long)index_1,
+            L, "index out of range: %I (expected 1..%d)", index_1,
             MAX_ASSAULT_TIMES);
     }
 
@@ -197,7 +201,7 @@ static int M_L_AssaultRemoveRecord(lua_State *const L)
 static int M_L_AssaultListRecords(lua_State *const L)
 {
     if (!Gym_TrackManager_HasStats(GYM_TRACK_ASSAULT)) {
-        return luaL_error(L, "Assault stats unavailable");
+        return luaL_error(L, "assault stats unavailable");
     }
 
     const GYM_TRACK_STATS *const assault = &g_Config.profile.assault_stats;

@@ -176,27 +176,29 @@ static int M_PairsIter(lua_State *const L)
 {
     const TYPE_DESC *const type = lua_touserdata(L, lua_upvalueindex(2));
     LUA_STRUCT_REF *const ref = LUA_Struct_CheckRef(L, 1, type);
+    void *const self = LUA_Struct_Deref(L, ref);
 
     // Iterate the declared public fields, not the C table: a member C can reach
     // but no script declared is not part of the type.
     lua_pushvalue(L, 2);
-    if (lua_next(L, lua_upvalueindex(1)) == 0) {
-        lua_pushnil(L);
-        return 1;
+    while (lua_next(L, lua_upvalueindex(1)) != 0) {
+        const FIELD_DESC *const field = lua_touserdata(L, -1);
+        lua_pop(L, 1); // value; the public name stays on the stack as the key
+
+        FIELD_VALUE value;
+        if (Field_Get(field, self, &value)) {
+            lua_pushvalue(
+                L, -1); // key again, as the iterator's control variable
+            lua_insert(L, -2);
+            M_PushValue(L, &value);
+            return 2;
+        }
+        // A getter that declines has nothing to yield. Yielding nil would end
+        // the iteration, hiding every field behind it.
     }
 
-    const FIELD_DESC *const field = lua_touserdata(L, -1);
-    lua_pop(L, 1); // value; the public name stays on the stack as the key
-
-    FIELD_VALUE value;
-    if (!Field_Get(field, LUA_Struct_Deref(L, ref), &value)) {
-        lua_pushnil(L);
-        return 1;
-    }
-    lua_pushvalue(L, -1); // key again, as the iterator's control variable
-    lua_insert(L, -2);
-    M_PushValue(L, &value);
-    return 2;
+    lua_pushnil(L);
+    return 1;
 }
 
 // LUA_Struct_Push mints a fresh userdata every time, so two handles to the same
