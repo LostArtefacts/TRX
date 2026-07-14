@@ -124,17 +124,31 @@ void Camera_ApplyBounce(void)
         g_Camera.target.y += g_Camera.bounce;
         g_Camera.bounce = 0;
     } else if (g_Camera.bounce < 0) {
-        const XYZ_32 shake = {
-            .x = g_Camera.bounce * (Random_GetControl() - 0x4000) / 0x7FFF,
-            .y = g_Camera.bounce * (Random_GetControl() - 0x4000) / 0x7FFF,
-            .z = g_Camera.bounce * (Random_GetControl() - 0x4000) / 0x7FFF,
-        };
-        g_Camera.pos.x += shake.x;
-        g_Camera.pos.y += shake.y;
-        g_Camera.pos.z += shake.z;
-        g_Camera.target.y += shake.x;
-        g_Camera.target.y += shake.y;
-        g_Camera.target.z += shake.z;
+        if (g_Config.visuals.camera_mode == CAMERA_MODE_TR4) {
+            const int32_t rnd = ABS(g_Camera.bounce);
+            const int32_t shift = rnd >> 1;
+            const XYZ_32 shake = {
+                .x = (Random_GetControl() % rnd) - shift,
+                .y = (Random_GetControl() % rnd) - shift,
+                .z = (Random_GetControl() % rnd) - shift,
+            };
+            g_Camera.target.x += shake.x;
+            g_Camera.target.y += shake.y;
+            g_Camera.target.z += shake.z;
+        } else {
+            const XYZ_32 shake = {
+                .x = g_Camera.bounce * (Random_GetControl() - 0x4000) / 0x7FFF,
+                .y = g_Camera.bounce * (Random_GetControl() - 0x4000) / 0x7FFF,
+                .z = g_Camera.bounce * (Random_GetControl() - 0x4000) / 0x7FFF,
+            };
+            g_Camera.pos.x += shake.x;
+            g_Camera.pos.y += shake.y;
+            g_Camera.pos.z += shake.z;
+            g_Camera.target.y +=
+                shake.x; // OG bug; using target.x alters behavior considerably
+            g_Camera.target.y += shake.y;
+            g_Camera.target.z += shake.z;
+        }
         g_Camera.bounce += 5;
     }
 }

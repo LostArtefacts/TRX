@@ -592,6 +592,7 @@
             "CAMERA_MODE_TR1": "TR1",
             "CAMERA_MODE_TR2": "TR2",
             "CAMERA_MODE_TR3": "TR3",
+            "CAMERA_MODE_TR4": "TR4",
         },
         "CREATURE_DROWN_POLICY": {
             "CREATURE_DROWN_POLICY_DEFAULT": "Bunaiteach",

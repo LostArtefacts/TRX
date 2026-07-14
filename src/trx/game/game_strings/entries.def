@@ -60,6 +60,7 @@ GS_DEFINE(enums/BLOOD_EFFECTS/BLOOD_EFFECTS_RED,                            "Red
 GS_DEFINE(enums/CAMERA_MODE/CAMERA_MODE_TR1,                                "TR1")
 GS_DEFINE(enums/CAMERA_MODE/CAMERA_MODE_TR2,                                "TR2")
 GS_DEFINE(enums/CAMERA_MODE/CAMERA_MODE_TR3,                                "TR3")
+GS_DEFINE(enums/CAMERA_MODE/CAMERA_MODE_TR4,                                "TR4")
 GS_DEFINE(enums/CREATURE_DROWN_POLICY/CREATURE_DROWN_POLICY_NEVER,          "Never")
 GS_DEFINE(enums/CREATURE_DROWN_POLICY/CREATURE_DROWN_POLICY_DEFAULT,        "Default")
 GS_DEFINE(enums/CREATURE_DROWN_POLICY/CREATURE_DROWN_POLICY_SUBMERGED,      "Submerged")
