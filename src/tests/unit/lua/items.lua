@@ -93,6 +93,24 @@ test("the pickup mode enum is reached through trx.items", function()
   assert(trx.pickup == nil, "trx.pickup must not exist")
 end)
 
+-- The enum is held behind an empty table so every write goes through
+-- __newindex. pairs() hands the caller everything __pairs returns, so what it
+-- returns must not be that table.
+test("pairs() does not hand out the table behind an enum", function()
+  local _, state = pairs(trx.items.Status)
+  pcall(function()
+    state.ACTIVE = 999
+  end)
+  assert(trx.items.Status.ACTIVE == 1, "an enum was written to through pairs()")
+
+  local seen = {}
+  for name, value in pairs(trx.items.Status) do
+    seen[name] = value
+  end
+  assert(seen.INACTIVE == 0 and seen.ACTIVE == 1, "pairs() must still yield the constants")
+  assert(seen.DEACTIVATED == 2 and seen.INVISIBLE == 3)
+end)
+
 test("status matches the enum, and activate() moves it", function()
   assert(trx.items.Status.INACTIVE == 0)
   assert(trx.items.Status.ACTIVE == 1)

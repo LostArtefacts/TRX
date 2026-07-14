@@ -575,8 +575,18 @@ function api.enum(path, spec)
     __newindex = function(_, key)
       error("trx." .. path .. "." .. tostring(key) .. ": an enum cannot be written to", 2)
     end,
-    __pairs = function()
-      return next, public, nil
+    -- pairs() hands the caller every value __pairs returns, so returning
+    -- `next, public` would hand out the very table the face is there to keep
+    -- behind __newindex. The iterator closes over it instead.
+    __pairs = function(self)
+      local key
+      return function()
+        local value
+        key, value = next(public, key)
+        return key, value
+      end,
+        self,
+        nil
     end,
   })
 
