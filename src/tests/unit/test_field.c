@@ -1,6 +1,6 @@
 #include "harness.h"
 
-#include <trx/core/field.h>
+#include <trx/game/lua/field.h>
 
 // A synthetic struct. field.c has no engine dependency, so the reflection layer
 // can be exercised in full without loading a level, an item, or anything else.
