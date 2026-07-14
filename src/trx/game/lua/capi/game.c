@@ -176,34 +176,24 @@ static int M_L_GamePlayDemo(lua_State *const L)
     return 0;
 }
 
+static const luaL_Reg m_Module[] = {
+    { "get_version", M_L_GameVersion },
+    { "get_trx_version", M_L_TRXVersion },
+    { "count_levels", M_L_GameCountLevels },
+    { "get_level", M_L_GameGetLevel },
+    { "get_current_level", M_L_GameGetCurrentLevel },
+    { "play_level", M_L_GamePlayLevel },
+    { "play_cutscene", M_L_GamePlayCutscene },
+    { "play_demo", M_L_GamePlayDemo },
+    { nullptr, nullptr },
+};
+
 static void M_Create(lua_State *const L)
 {
     LUA_Struct_Register(
         L, &TYPE_GF_LEVEL, (const luaL_Reg[]) { { nullptr, nullptr } });
 
-    lua_getglobal(L, "trxc");
-    lua_newtable(L);
-
-    lua_pushcfunction(L, M_L_GameVersion);
-    lua_setfield(L, -2, "get_version");
-    lua_pushcfunction(L, M_L_TRXVersion);
-    lua_setfield(L, -2, "get_trx_version");
-    lua_pushcfunction(L, M_L_GameCountLevels);
-    lua_setfield(L, -2, "count_levels");
-    lua_pushcfunction(L, M_L_GameGetLevel);
-    lua_setfield(L, -2, "get_level");
-    lua_pushcfunction(L, M_L_GameGetCurrentLevel);
-    lua_setfield(L, -2, "get_current_level");
-
-    lua_pushcfunction(L, M_L_GamePlayLevel);
-    lua_setfield(L, -2, "play_level");
-    lua_pushcfunction(L, M_L_GamePlayCutscene);
-    lua_setfield(L, -2, "play_cutscene");
-    lua_pushcfunction(L, M_L_GamePlayDemo);
-    lua_setfield(L, -2, "play_demo");
-
-    lua_setfield(L, -2, "game");
-    lua_pop(L, 1);
+    LUA_RegisterModule(L, "game", m_Module);
 }
 
 REGISTER_LUA_CAPI(.create = M_Create)

@@ -195,29 +195,22 @@ static const luaL_Reg m_Methods[] = {
     { nullptr, nullptr },
 };
 
+static const luaL_Reg m_Module[] = {
+    { "get_flipped_room", M_L_GetFlippedRoom },
+    { "count", M_L_Count },
+    { "get", M_L_Get },
+    { "get_bounds", M_L_GetBounds },
+    { "flip", M_L_Flip },
+    { "flip_effect", M_L_FlipEffect },
+    { "find_valid_pos", M_L_FindValidPos },
+    { nullptr, nullptr },
+};
+
 static void M_Create(lua_State *const L)
 {
     LUA_Struct_Register(L, &TYPE_ROOM, m_Methods);
 
-    lua_getglobal(L, "trxc");
-    lua_newtable(L);
-
-    lua_pushcfunction(L, M_L_GetFlippedRoom);
-    lua_setfield(L, -2, "get_flipped_room");
-    lua_pushcfunction(L, M_L_Count);
-    lua_setfield(L, -2, "count");
-    lua_pushcfunction(L, M_L_Get);
-    lua_setfield(L, -2, "get");
-    lua_pushcfunction(L, M_L_GetBounds);
-    lua_setfield(L, -2, "get_bounds");
-    lua_pushcfunction(L, M_L_Flip);
-    lua_setfield(L, -2, "flip");
-    lua_pushcfunction(L, M_L_FlipEffect);
-    lua_setfield(L, -2, "flip_effect");
-    lua_pushcfunction(L, M_L_FindValidPos);
-    lua_setfield(L, -2, "find_valid_pos");
-    lua_setfield(L, -2, "rooms");
-    lua_pop(L, 1);
+    LUA_RegisterModule(L, "rooms", m_Module);
 }
 
 REGISTER_LUA_CAPI(.create = M_Create)

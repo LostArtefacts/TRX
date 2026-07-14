@@ -442,22 +442,18 @@ static int M_L_ExposeComputed(lua_State *const L)
     return 0;
 }
 
+static const luaL_Reg m_Module[] = {
+    { "members", M_L_Members },
+    { "method_names", M_L_MethodNames },
+    { "expose_field", M_L_ExposeField },
+    { "expose_method", M_L_ExposeMethod },
+    { "expose_computed", M_L_ExposeComputed },
+    { nullptr, nullptr },
+};
+
 static void M_Create(lua_State *const L)
 {
-    lua_getglobal(L, "trxc");
-    lua_newtable(L);
-    lua_pushcfunction(L, M_L_Members);
-    lua_setfield(L, -2, "members");
-    lua_pushcfunction(L, M_L_MethodNames);
-    lua_setfield(L, -2, "method_names");
-    lua_pushcfunction(L, M_L_ExposeField);
-    lua_setfield(L, -2, "expose_field");
-    lua_pushcfunction(L, M_L_ExposeMethod);
-    lua_setfield(L, -2, "expose_method");
-    lua_pushcfunction(L, M_L_ExposeComputed);
-    lua_setfield(L, -2, "expose_computed");
-    lua_setfield(L, -2, "struct");
-    lua_pop(L, 1);
+    LUA_RegisterModule(L, "struct", m_Module);
 }
 
 REGISTER_LUA_CAPI(.create = M_Create)

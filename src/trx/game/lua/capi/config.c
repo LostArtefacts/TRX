@@ -3,6 +3,7 @@
 #include <trx/config/override.h>
 #include <trx/game/lua/common.h>
 #include <trx/game/lua/registry.h>
+#include <trx/game/lua/utils.h>
 
 #include <lauxlib.h>
 
@@ -125,24 +126,19 @@ static int M_L_ConfigList(lua_State *const L)
     return 1;
 }
 
+static const luaL_Reg m_Module[] = {
+    { "get", M_L_ConfigGet },
+    { "set", M_L_ConfigSet },
+    { "override", M_L_ConfigOverride },
+    { "restore", M_L_ConfigRestore },
+    { "is_overridden", M_L_ConfigIsOverridden },
+    { "list", M_L_ConfigList },
+    { nullptr, nullptr },
+};
+
 static void M_Create(lua_State *const L)
 {
-    lua_getglobal(L, "trxc");
-    lua_newtable(L);
-    lua_pushcfunction(L, M_L_ConfigGet);
-    lua_setfield(L, -2, "get");
-    lua_pushcfunction(L, M_L_ConfigSet);
-    lua_setfield(L, -2, "set");
-    lua_pushcfunction(L, M_L_ConfigOverride);
-    lua_setfield(L, -2, "override");
-    lua_pushcfunction(L, M_L_ConfigRestore);
-    lua_setfield(L, -2, "restore");
-    lua_pushcfunction(L, M_L_ConfigIsOverridden);
-    lua_setfield(L, -2, "is_overridden");
-    lua_pushcfunction(L, M_L_ConfigList);
-    lua_setfield(L, -2, "list");
-    lua_setfield(L, -2, "config");
-    lua_pop(L, 1);
+    LUA_RegisterModule(L, "config", m_Module);
 }
 
 REGISTER_LUA_CAPI(.create = M_Create)

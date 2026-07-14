@@ -65,18 +65,16 @@ static int M_L_ConsoleEval(lua_State *const L)
     return luaL_error(L, "console.eval %s: %s", err, cmd);
 }
 
+static const luaL_Reg m_Module[] = {
+    { "log", M_L_ConsoleLog },
+    { "eval", M_L_ConsoleEval },
+    { "clear", M_L_ConsoleClear },
+    { nullptr, nullptr },
+};
+
 static void M_Create(lua_State *const L)
 {
-    lua_getglobal(L, "trxc");
-    lua_newtable(L);
-    lua_pushcfunction(L, M_L_ConsoleLog);
-    lua_setfield(L, -2, "log");
-    lua_pushcfunction(L, M_L_ConsoleEval);
-    lua_setfield(L, -2, "eval");
-    lua_pushcfunction(L, M_L_ConsoleClear);
-    lua_setfield(L, -2, "clear");
-    lua_setfield(L, -2, "console");
-    lua_pop(L, 1);
+    LUA_RegisterModule(L, "console", m_Module);
 }
 
 REGISTER_LUA_CAPI(.create = M_Create)

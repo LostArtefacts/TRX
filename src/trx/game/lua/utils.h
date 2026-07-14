@@ -10,6 +10,13 @@
 // number, so the caller is found by name rather than at a fixed depth.
 bool LUA_GetCallerInfo(lua_State *L, lua_Debug *ar);
 
+// Creates trxc.<name> and fills it with `fns`. Terminate with
+// {nullptr, nullptr}.
+void LUA_RegisterModule(lua_State *L, const char *name, const luaL_Reg *fns);
+
+// Pushes trxc.<name>, for a module with more on it than functions.
+void LUA_GetModule(lua_State *L, const char *name);
+
 OBJECT_PROPERTY_VALUE LUA_CheckPropertyValue(lua_State *L, int arg);
 void LUA_PushPropertyValue(lua_State *L, const OBJECT_PROPERTY_VALUE *value);
 

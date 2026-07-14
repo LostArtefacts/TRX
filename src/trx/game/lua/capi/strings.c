@@ -2,6 +2,7 @@
 #include <trx/core/strings/fuzzy_match.h>
 #include <trx/game/lua/common.h>
 #include <trx/game/lua/registry.h>
+#include <trx/game/lua/utils.h>
 
 #include <lauxlib.h>
 
@@ -148,16 +149,15 @@ static int M_L_StringsRegexMatch(lua_State *const L)
     return 1;
 }
 
+static const luaL_Reg m_Module[] = {
+    { "fuzzy_match", M_L_StringsFuzzyMatch },
+    { "regex_match", M_L_StringsRegexMatch },
+    { nullptr, nullptr },
+};
+
 static void M_Create(lua_State *const L)
 {
-    lua_getglobal(L, "trxc");
-    lua_newtable(L);
-    lua_pushcfunction(L, M_L_StringsFuzzyMatch);
-    lua_setfield(L, -2, "fuzzy_match");
-    lua_pushcfunction(L, M_L_StringsRegexMatch);
-    lua_setfield(L, -2, "regex_match");
-    lua_setfield(L, -2, "strings");
-    lua_pop(L, 1);
+    LUA_RegisterModule(L, "strings", m_Module);
 }
 
 REGISTER_LUA_CAPI(.create = M_Create)

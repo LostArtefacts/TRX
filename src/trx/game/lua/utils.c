@@ -37,6 +37,23 @@ OBJECT_ID LUA_CheckObjectID(lua_State *const L, const int arg)
     return (OBJECT_ID)LUA_CheckRange(L, arg, O_NUMBER_OF, "unknown object id");
 }
 
+void LUA_RegisterModule(
+    lua_State *const L, const char *const name, const luaL_Reg *const fns)
+{
+    lua_getglobal(L, "trxc");
+    lua_newtable(L);
+    luaL_setfuncs(L, fns, 0);
+    lua_setfield(L, -2, name);
+    lua_pop(L, 1);
+}
+
+void LUA_GetModule(lua_State *const L, const char *const name)
+{
+    lua_getglobal(L, "trxc");
+    lua_getfield(L, -1, name);
+    lua_remove(L, -2);
+}
+
 XYZ_32 LUA_CheckXYZAt(lua_State *const L, const int idx, const int arg)
 {
     const int abs_idx = lua_absindex(L, idx);

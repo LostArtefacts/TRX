@@ -5,6 +5,7 @@
 #include <trx/game/gym.h>
 #include <trx/game/lua/common.h>
 #include <trx/game/lua/registry.h>
+#include <trx/game/lua/utils.h>
 
 #include <lauxlib.h>
 #include <stdint.h>
@@ -221,33 +222,32 @@ static int M_L_AssaultListRecords(lua_State *const L)
     return 1;
 }
 
+static const luaL_Reg m_Module[] = {
+    { "start", M_L_AssaultStart },
+    { "stop", M_L_AssaultStop },
+    { "reset", M_L_AssaultReset },
+    { "finish", M_L_AssaultFinish },
+    { "is_running", M_L_AssaultIsRunning },
+    { "is_visible", M_L_AssaultIsVisible },
+    { "get_active_track", M_L_AssaultGetActiveTrack },
+    { nullptr, nullptr },
+};
+
+static const luaL_Reg m_Stats[] = {
+    { "record", M_L_AssaultRecord },
+    { "remove", M_L_AssaultRemoveRecord },
+    { "list", M_L_AssaultListRecords },
+    { nullptr, nullptr },
+};
+
 static void M_Create(lua_State *const L)
 {
-    lua_getglobal(L, "trxc");
-    lua_newtable(L);
+    LUA_RegisterModule(L, "assault", m_Module);
 
-    lua_pushcfunction(L, M_L_AssaultStart);
-    lua_setfield(L, -2, "start");
-    lua_pushcfunction(L, M_L_AssaultStop);
-    lua_setfield(L, -2, "stop");
-    lua_pushcfunction(L, M_L_AssaultReset);
-    lua_setfield(L, -2, "reset");
-    lua_pushcfunction(L, M_L_AssaultFinish);
-    lua_setfield(L, -2, "finish");
-    lua_pushcfunction(L, M_L_AssaultIsRunning);
-    lua_setfield(L, -2, "is_running");
-    lua_pushcfunction(L, M_L_AssaultIsVisible);
-    lua_setfield(L, -2, "is_visible");
-    lua_pushcfunction(L, M_L_AssaultGetActiveTrack);
-    lua_setfield(L, -2, "get_active_track");
-
+    // The records are a group of their own on the module.
+    LUA_GetModule(L, "assault");
     lua_newtable(L);
-    lua_pushcfunction(L, M_L_AssaultRecord);
-    lua_setfield(L, -2, "record");
-    lua_pushcfunction(L, M_L_AssaultRemoveRecord);
-    lua_setfield(L, -2, "remove");
-    lua_pushcfunction(L, M_L_AssaultListRecords);
-    lua_setfield(L, -2, "list");
+    luaL_setfuncs(L, m_Stats, 0);
     lua_setfield(L, -2, "stats");
 
     lua_newtable(L);
@@ -257,7 +257,6 @@ static void M_Create(lua_State *const L)
     lua_setfield(L, -2, "QUAD");
     lua_setfield(L, -2, "Track");
 
-    lua_setfield(L, -2, "assault");
     lua_pop(L, 1);
 }
 

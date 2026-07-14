@@ -34,20 +34,17 @@ static int M_L_CreaturesAddAllyTarget(lua_State *const L)
     return 0;
 }
 
+static const luaL_Reg m_Module[] = {
+    { "are_allies_hostile", M_L_CreaturesAreAlliesHostile },
+    { "set_allies_hostile", M_L_CreaturesSetAlliesHostile },
+    { "add_ally", M_L_CreaturesAddAlly },
+    { "add_ally_target", M_L_CreaturesAddAllyTarget },
+    { nullptr, nullptr },
+};
+
 static void M_Create(lua_State *const L)
 {
-    lua_getglobal(L, "trxc");
-    lua_newtable(L);
-    lua_pushcfunction(L, M_L_CreaturesAreAlliesHostile);
-    lua_setfield(L, -2, "are_allies_hostile");
-    lua_pushcfunction(L, M_L_CreaturesSetAlliesHostile);
-    lua_setfield(L, -2, "set_allies_hostile");
-    lua_pushcfunction(L, M_L_CreaturesAddAlly);
-    lua_setfield(L, -2, "add_ally");
-    lua_pushcfunction(L, M_L_CreaturesAddAllyTarget);
-    lua_setfield(L, -2, "add_ally_target");
-    lua_setfield(L, -2, "creatures");
-    lua_pop(L, 1);
+    LUA_RegisterModule(L, "creatures", m_Module);
 }
 
 REGISTER_LUA_CAPI(.create = M_Create)

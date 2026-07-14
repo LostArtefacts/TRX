@@ -49,20 +49,17 @@ static int M_L_SoundStopAll(lua_State *const L)
     return 0;
 }
 
+static const luaL_Reg m_Module[] = {
+    { "is_available", M_L_SoundIsAvailable },
+    { "play", M_L_SoundPlay },
+    { "stop", M_L_SoundStop },
+    { "stop_all", M_L_SoundStopAll },
+    { nullptr, nullptr },
+};
+
 static void M_Create(lua_State *const L)
 {
-    lua_getglobal(L, "trxc");
-    lua_newtable(L);
-    lua_pushcfunction(L, M_L_SoundIsAvailable);
-    lua_setfield(L, -2, "is_available");
-    lua_pushcfunction(L, M_L_SoundPlay);
-    lua_setfield(L, -2, "play");
-    lua_pushcfunction(L, M_L_SoundStop);
-    lua_setfield(L, -2, "stop");
-    lua_pushcfunction(L, M_L_SoundStopAll);
-    lua_setfield(L, -2, "stop_all");
-    lua_setfield(L, -2, "sound");
-    lua_pop(L, 1);
+    LUA_RegisterModule(L, "sound", m_Module);
 }
 
 REGISTER_LUA_CAPI(.create = M_Create)

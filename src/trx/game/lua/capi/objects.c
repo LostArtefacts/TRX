@@ -155,18 +155,17 @@ static const luaL_Reg m_Methods[] = {
     { nullptr, nullptr },
 };
 
+static const luaL_Reg m_Module[] = {
+    { "get", M_L_ObjectsGet },
+    { "swap_mesh", M_L_ObjectsSwapMesh },
+    { nullptr, nullptr },
+};
+
 static void M_Create(lua_State *const L)
 {
     LUA_Struct_Register(L, &TYPE_OBJECT, m_Methods);
 
-    lua_getglobal(L, "trxc");
-    lua_newtable(L);
-    lua_pushcfunction(L, M_L_ObjectsGet);
-    lua_setfield(L, -2, "get");
-    lua_pushcfunction(L, M_L_ObjectsSwapMesh);
-    lua_setfield(L, -2, "swap_mesh");
-    lua_setfield(L, -2, "objects");
-    lua_pop(L, 1);
+    LUA_RegisterModule(L, "objects", m_Module);
 }
 
 REGISTER_LUA_CAPI(.create = M_Create)
