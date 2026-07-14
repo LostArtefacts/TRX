@@ -47,7 +47,7 @@
 
 **TR4**
 - added reflections
-- fixed the camera snapping to elevatation and angle changes in instances such as opening floor trapdoors
+- fixed the camera snapping to elevation and angle changes in instances such as opening floor trapdoors
 
 
 
