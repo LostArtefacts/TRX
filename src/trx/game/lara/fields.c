@@ -1,7 +1,3 @@
-// How to reach the members of LARA_INFO. Offsets and storage types, nothing
-// else: which of these are public, under what name, and what they mean is
-// declared in data/scripting/lara.lua.
-//
 // Lara's position, room and hit points are not here. She is an item like any
 // other, and those live on it - see trx.lara.item.
 

@@ -1814,7 +1814,7 @@
           "writable": false
         },
         {
-          "description": "Whether bubbles rise through the level's water.",
+          "description": "Whether water particles are visible in the level's water.",
           "name": "water_particles",
           "type": "boolean",
           "writable": false

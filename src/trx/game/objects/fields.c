@@ -1,7 +1,3 @@
-// How to reach the members of OBJECT. Offsets and storage types, nothing else:
-// which of these are public, under what name, and what they mean is declared in
-// data/scripting/objects.lua.
-//
 // An object is the definition every item of that type is cut from - a wolf's
 // radius, not this wolf's. Per-item state lives on the item; see trx.items.
 

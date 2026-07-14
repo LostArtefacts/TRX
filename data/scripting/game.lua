@@ -87,7 +87,7 @@ api.type("game.Level", {
       from = "water_particles",
       type = "boolean",
       writable = false,
-      description = "Whether bubbles rise through the level's water.",
+      description = "Whether water particles are visible in the level's water.",
     },
     unobtainable_pickups = {
       from = "unobtainable.pickups",
