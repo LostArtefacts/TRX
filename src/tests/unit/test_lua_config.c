@@ -6,13 +6,6 @@
 
 #include <lauxlib.h>
 
-extern void LUA_CreateConfig(lua_State *L);
-
-static void M_SetUpTRXC(lua_State *const L)
-{
-    LUA_CreateConfig(L);
-}
-
 static int M_FakeReset(lua_State *const L)
 {
     FakeConfig_Reset();
@@ -44,7 +37,6 @@ int main(void)
     const LUA_SURFACE_TEST test = {
         .module = "config",
         .tests = "config",
-        .setup_trxc = M_SetUpTRXC,
         .push_fake = M_PushFake,
         .fake_reset = M_FakeReset,
         .fake_calls = M_FakeCalls,

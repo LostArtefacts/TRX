@@ -1,6 +1,7 @@
 #include <trx/core/enum_map.h>
 #include <trx/core/memory.h>
 #include <trx/core/vector.h>
+#include <trx/game/lua/registry.h>
 
 #include <ctype.h>
 #include <lauxlib.h>
@@ -50,7 +51,7 @@ static int M_L_Values(lua_State *const L)
     return 1;
 }
 
-void LUA_CreateEnum(lua_State *const L)
+static void M_Create(lua_State *const L)
 {
     lua_getglobal(L, "trxc");
     lua_newtable(L);
@@ -59,3 +60,5 @@ void LUA_CreateEnum(lua_State *const L)
     lua_setfield(L, -2, "enum");
     lua_pop(L, 1);
 }
+
+REGISTER_LUA_CAPI(.create = M_Create)

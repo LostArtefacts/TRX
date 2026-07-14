@@ -4,13 +4,6 @@
 #include "fake_engine_log.h"
 #include "lua_surface.h"
 
-extern void LUA_CreateLog(lua_State *L);
-
-static void M_SetUpTRXC(lua_State *const L)
-{
-    LUA_CreateLog(L);
-}
-
 static int M_FakeReset(lua_State *const L)
 {
     FakeLog_Reset();
@@ -40,7 +33,6 @@ int main(void)
     const LUA_SURFACE_TEST test = {
         .module = "log",
         .tests = "log",
-        .setup_trxc = M_SetUpTRXC,
         .push_fake = M_PushFake,
         .fake_reset = M_FakeReset,
         .fake_calls = M_FakeCalls,

@@ -1,5 +1,6 @@
 #include <trx/game/items/actions/ids.h>
 #include <trx/game/lua/common.h>
+#include <trx/game/lua/registry.h>
 #include <trx/game/lua/struct.h>
 #include <trx/game/rooms.h>
 
@@ -141,7 +142,7 @@ static int M_L_FindValidPos(lua_State *const L)
     return 2;
 }
 
-void LUA_CreateRooms(lua_State *const L)
+static void M_Create(lua_State *const L)
 {
     LUA_Struct_Register(L, &TYPE_ROOM, nullptr);
 
@@ -165,3 +166,5 @@ void LUA_CreateRooms(lua_State *const L)
     lua_setfield(L, -2, "rooms");
     lua_pop(L, 1);
 }
+
+REGISTER_LUA_CAPI(.create = M_Create)

@@ -11,15 +11,6 @@
 #include <trx/game/camera/types.h>
 #include <trx/game/camera/vars.h>
 
-extern void LUA_CreateCamera(lua_State *L);
-extern void LUA_CreateRooms(lua_State *L);
-
-static void M_SetUpTRXC(lua_State *const L)
-{
-    LUA_CreateCamera(L);
-    LUA_CreateRooms(L);
-}
-
 static int M_FakeReset(lua_State *const L)
 {
     FakeCamera_Reset();
@@ -59,7 +50,6 @@ int main(void)
         .module = "camera",
         .deps = { "rooms", nullptr },
         .tests = "camera",
-        .setup_trxc = M_SetUpTRXC,
         .push_fake = M_PushFake,
         .fake_reset = M_FakeReset,
         .fake_calls = M_FakeCalls,

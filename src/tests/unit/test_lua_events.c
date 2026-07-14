@@ -10,11 +10,10 @@
 
 #include <trx/game/lua/common.h>
 #include <trx/game/lua/events.h>
+#include <trx/game/lua/registry.h>
 
 #include <lauxlib.h>
 #include <string.h>
-
-extern void LUA_CreateEvents(lua_State *L);
 
 static LUA_CONTEXT m_Context = LUA_CONTEXT_GLOBAL;
 
@@ -26,11 +25,6 @@ LUA_CONTEXT LUA_GetScriptContext(void)
 void LUA_SetScriptContext(const LUA_CONTEXT context)
 {
     m_Context = context;
-}
-
-static void M_SetUpTRXC(lua_State *const L)
-{
-    LUA_CreateEvents(L);
 }
 
 // fake.fire(name, ...) - mirrors the engine's own fire sites, argument for
@@ -95,10 +89,10 @@ static int M_FakeEndLevel(lua_State *const L)
 
 static int M_FakeReset(lua_State *const L)
 {
-    // Drops every listener, then puts m_L back: LUA_ShutdownEvents clears it,
-    // and the next fire would be a no-op without it.
-    LUA_ShutdownEvents();
-    LUA_CreateEvents(L);
+    // Drops every listener, then stands the module back up: the shutdown clears
+    // m_L, and the next fire would be a no-op without it.
+    LUA_Registry_ShutdownAll();
+    LUA_Registry_CreateAll(L);
     m_Context = LUA_CONTEXT_GLOBAL;
     return 0;
 }
@@ -124,7 +118,6 @@ int main(void)
     const LUA_SURFACE_TEST test = {
         .module = "events",
         .tests = "events",
-        .setup_trxc = M_SetUpTRXC,
         .push_fake = M_PushFake,
         .fake_reset = M_FakeReset,
         .fake_calls = M_FakeCalls,

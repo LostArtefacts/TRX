@@ -1,8 +1,8 @@
-#include <trx/game/lua/events.h>
-
 #include <trx/core/log.h>
 #include <trx/core/vector.h>
 #include <trx/game/lua/common.h>
+#include <trx/game/lua/events.h>
+#include <trx/game/lua/registry.h>
 
 #include <lauxlib.h>
 #include <lua.h>
@@ -33,13 +33,14 @@ static void M_ClearAllListeners(const bool unref_from_lua)
     m_Listeners = nullptr;
 }
 
-__attribute__((destructor)) static void M_Shutdown(void)
+// The state is gone by now, so a listener's ref cannot be given back to it.
+__attribute__((destructor)) static void M_AtExit(void)
 {
     M_ClearAllListeners(false);
     m_L = nullptr;
 }
 
-void LUA_ShutdownEvents(void)
+static void M_Shutdown(void)
 {
     M_ClearAllListeners(true);
     m_L = nullptr;
@@ -86,26 +87,6 @@ static int32_t M_L_EventsDetach(lua_State *const L)
     return 1;
 }
 
-void LUA_ClearLevelListeners(void)
-{
-    lua_State *const L = m_L;
-    if (L == nullptr) {
-        return;
-    }
-    if (m_Listeners == nullptr) {
-        return;
-    }
-    for (int32_t i = 0; i < m_Listeners->count;) {
-        M_LISTENER *const lst = Vector_Get(m_Listeners, i);
-        if (lst->level_scoped) {
-            luaL_unref(L, LUA_REGISTRYINDEX, lst->ref);
-            Vector_RemoveAt(m_Listeners, i);
-        } else {
-            i++;
-        }
-    }
-}
-
 static void M_PushArg(lua_State *const L, const LUA_EVENT_ARG arg)
 {
     switch (arg.type) {
@@ -128,6 +109,62 @@ static void M_PushArg(lua_State *const L, const LUA_EVENT_ARG arg)
             lua_pushnil(L);
         }
         break;
+    }
+}
+
+static void M_Create(lua_State *const L)
+{
+    m_L = L;
+    lua_getglobal(L, "trxc");
+    lua_newtable(L);
+
+    lua_pushcfunction(L, M_L_EventsAttach);
+    lua_setfield(L, -2, "attach");
+    lua_pushcfunction(L, M_L_EventsDetach);
+    lua_setfield(L, -2, "detach");
+
+    lua_newtable(L);
+    lua_pushinteger(L, LUA_EVENT_BEFORE_LEVEL_FILE);
+    lua_setfield(L, -2, "BEFORE_LEVEL_FILE");
+    lua_pushinteger(L, LUA_EVENT_AFTER_LEVEL_FILE);
+    lua_setfield(L, -2, "AFTER_LEVEL_FILE");
+    lua_pushinteger(L, LUA_EVENT_BEFORE_ITEM_SETUP);
+    lua_setfield(L, -2, "BEFORE_ITEM_SETUP");
+    lua_pushinteger(L, LUA_EVENT_AFTER_ITEM_SETUP);
+    lua_setfield(L, -2, "AFTER_ITEM_SETUP");
+    lua_pushinteger(L, LUA_EVENT_AFTER_LEVEL_STATE);
+    lua_setfield(L, -2, "AFTER_LEVEL_STATE");
+    lua_pushinteger(L, LUA_EVENT_GAME_START);
+    lua_setfield(L, -2, "GAME_START");
+    lua_pushinteger(L, LUA_EVENT_PICKUP);
+    lua_setfield(L, -2, "PICKUP");
+    lua_pushinteger(L, LUA_EVENT_BEFORE_CONTROL);
+    lua_setfield(L, -2, "BEFORE_CONTROL");
+    lua_pushinteger(L, LUA_EVENT_AFTER_CONTROL);
+    lua_setfield(L, -2, "AFTER_CONTROL");
+    lua_setfield(L, -2, "EventType");
+
+    lua_setfield(L, -2, "events");
+    lua_pop(L, 1);
+}
+
+void LUA_ClearLevelListeners(void)
+{
+    lua_State *const L = m_L;
+    if (L == nullptr) {
+        return;
+    }
+    if (m_Listeners == nullptr) {
+        return;
+    }
+    for (int32_t i = 0; i < m_Listeners->count;) {
+        M_LISTENER *const lst = Vector_Get(m_Listeners, i);
+        if (lst->level_scoped) {
+            luaL_unref(L, LUA_REGISTRYINDEX, lst->ref);
+            Vector_RemoveAt(m_Listeners, i);
+        } else {
+            i++;
+        }
     }
 }
 
@@ -168,38 +205,4 @@ void LUA_FireEventInt32(const LUA_EVENT_TYPE ev, const int32_t arg)
     LUA_FireEventEx(ev, args, 1);
 }
 
-void LUA_CreateEvents(lua_State *const L)
-{
-    m_L = L;
-    lua_getglobal(L, "trxc");
-    lua_newtable(L);
-
-    lua_pushcfunction(L, M_L_EventsAttach);
-    lua_setfield(L, -2, "attach");
-    lua_pushcfunction(L, M_L_EventsDetach);
-    lua_setfield(L, -2, "detach");
-
-    lua_newtable(L);
-    lua_pushinteger(L, LUA_EVENT_BEFORE_LEVEL_FILE);
-    lua_setfield(L, -2, "BEFORE_LEVEL_FILE");
-    lua_pushinteger(L, LUA_EVENT_AFTER_LEVEL_FILE);
-    lua_setfield(L, -2, "AFTER_LEVEL_FILE");
-    lua_pushinteger(L, LUA_EVENT_BEFORE_ITEM_SETUP);
-    lua_setfield(L, -2, "BEFORE_ITEM_SETUP");
-    lua_pushinteger(L, LUA_EVENT_AFTER_ITEM_SETUP);
-    lua_setfield(L, -2, "AFTER_ITEM_SETUP");
-    lua_pushinteger(L, LUA_EVENT_AFTER_LEVEL_STATE);
-    lua_setfield(L, -2, "AFTER_LEVEL_STATE");
-    lua_pushinteger(L, LUA_EVENT_GAME_START);
-    lua_setfield(L, -2, "GAME_START");
-    lua_pushinteger(L, LUA_EVENT_PICKUP);
-    lua_setfield(L, -2, "PICKUP");
-    lua_pushinteger(L, LUA_EVENT_BEFORE_CONTROL);
-    lua_setfield(L, -2, "BEFORE_CONTROL");
-    lua_pushinteger(L, LUA_EVENT_AFTER_CONTROL);
-    lua_setfield(L, -2, "AFTER_CONTROL");
-    lua_setfield(L, -2, "EventType");
-
-    lua_setfield(L, -2, "events");
-    lua_pop(L, 1);
-}
+REGISTER_LUA_CAPI(.create = M_Create, .shutdown = M_Shutdown)

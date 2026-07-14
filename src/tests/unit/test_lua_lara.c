@@ -9,15 +9,6 @@
 #include "fake_engine_lara.h"
 #include "lua_surface.h"
 
-extern void LUA_CreateItems(lua_State *L);
-extern void LUA_CreateLara(lua_State *L);
-
-static void M_SetUpTRXC(lua_State *const L)
-{
-    LUA_CreateItems(L);
-    LUA_CreateLara(L);
-}
-
 static int M_FakeReset(lua_State *const L)
 {
     FakeItems_Reset();
@@ -49,7 +40,6 @@ int main(void)
         .module = "lara",
         .deps = { "items", nullptr },
         .tests = "lara",
-        .setup_trxc = M_SetUpTRXC,
         .push_fake = M_PushFake,
         .fake_reset = M_FakeReset,
         .fake_calls = M_FakeCalls,

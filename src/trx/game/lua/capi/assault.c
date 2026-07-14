@@ -4,6 +4,7 @@
 #include <trx/game/game.h>
 #include <trx/game/gym.h>
 #include <trx/game/lua/common.h>
+#include <trx/game/lua/registry.h>
 
 #include <lauxlib.h>
 #include <stdint.h>
@@ -220,7 +221,7 @@ static int M_L_AssaultListRecords(lua_State *const L)
     return 1;
 }
 
-void LUA_CreateAssault(lua_State *const L)
+static void M_Create(lua_State *const L)
 {
     lua_getglobal(L, "trxc");
     lua_newtable(L);
@@ -259,3 +260,5 @@ void LUA_CreateAssault(lua_State *const L)
     lua_setfield(L, -2, "assault");
     lua_pop(L, 1);
 }
+
+REGISTER_LUA_CAPI(.create = M_Create)

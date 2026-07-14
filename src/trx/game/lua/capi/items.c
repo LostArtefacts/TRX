@@ -1,6 +1,7 @@
 #include <trx/game/creature.h>
 #include <trx/game/items.h>
 #include <trx/game/lua/common.h>
+#include <trx/game/lua/registry.h>
 #include <trx/game/lua/struct.h>
 #include <trx/game/lua/utils.h>
 #include <trx/game/objects.h>
@@ -213,7 +214,7 @@ static int M_L_Explode(lua_State *const L)
     return 0;
 }
 
-static const luaL_Reg M_METHODS[] = {
+static const luaL_Reg m_Methods[] = {
     { "distance_to", M_L_DistanceTo },
     { "explode", M_L_Explode },
     { "kill", M_L_Kill },
@@ -225,9 +226,9 @@ static const luaL_Reg M_METHODS[] = {
     { nullptr, nullptr },
 };
 
-void LUA_CreateItems(lua_State *const L)
+static void M_Create(lua_State *const L)
 {
-    LUA_Struct_Register(L, &TYPE_ITEM, M_METHODS);
+    LUA_Struct_Register(L, &TYPE_ITEM, m_Methods);
 
     lua_getglobal(L, "trxc");
     lua_newtable(L);
@@ -240,3 +241,5 @@ void LUA_CreateItems(lua_State *const L)
     lua_setfield(L, -2, "items");
     lua_pop(L, 1);
 }
+
+REGISTER_LUA_CAPI(.create = M_Create)

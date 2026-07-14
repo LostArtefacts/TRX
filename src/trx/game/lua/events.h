@@ -35,10 +35,6 @@ typedef struct {
     } value;
 } LUA_EVENT_ARG;
 
-// Initialize event API in Lua state
-void LUA_CreateEvents(lua_State *L);
-void LUA_ShutdownEvents(void);
-
 // Clear all listeners declared during the current level script
 void LUA_ClearLevelListeners(void);
 

@@ -9,6 +9,7 @@
 #include <trx/game/game_flow/common.h>
 #include <trx/game/lua/embedded_scripts.h>
 #include <trx/game/lua/events.h>
+#include <trx/game/lua/registry.h>
 #include <trx/game/lua/sandbox.h>
 
 #include <lauxlib.h>
@@ -25,28 +26,6 @@ typedef struct {
 static M_PRIV m_Priv = {
     .context = LUA_CONTEXT_GLOBAL,
 };
-
-// Initialize internal APIs
-extern void LUA_CreateCatalog(lua_State *L);
-extern void LUA_CreateCamera(lua_State *L);
-extern void LUA_CreateConsole(lua_State *L);
-extern void LUA_CreateEnum(lua_State *L);
-extern void LUA_CreateEvents(lua_State *L);
-extern void LUA_CreateItems(lua_State *L);
-extern void LUA_CreateLara(lua_State *L);
-extern void LUA_CreateLocale(lua_State *L);
-extern void LUA_CreateLog(lua_State *L);
-extern void LUA_CreateMusic(lua_State *L);
-extern void LUA_CreateMath(lua_State *L);
-extern void LUA_CreateStrings(lua_State *L);
-extern void LUA_CreateStruct(lua_State *L);
-extern void LUA_CreateSound(lua_State *L);
-extern void LUA_CreateConfig(lua_State *L);
-extern void LUA_CreateRooms(lua_State *L);
-extern void LUA_CreateGame(lua_State *L);
-extern void LUA_CreateCreatures(lua_State *L);
-extern void LUA_CreateObjects(lua_State *const L);
-extern void LUA_CreateAssault(lua_State *const L);
 
 static int M_LoadFile(lua_State *const L, const char *const path)
 {
@@ -91,12 +70,6 @@ static int M_TRXEmbeddedModuleLoader(lua_State *const L)
     }
     // Return all values pushed by the chunk.
     return lua_gettop(L);
-}
-
-static void M_LoadTRXCModule(lua_State *const L, void (*loader)(lua_State *))
-{
-    LOG_DEBUG("Loading TRXC module %p", loader);
-    loader(L);
 }
 
 static char *M_DeriveTRXModuleName(const char *path)
@@ -202,26 +175,7 @@ void LUA_Init(void)
     lua_newtable(L);
     lua_setglobal(L, "trx");
 
-    M_LoadTRXCModule(L, LUA_CreateStrings);
-    M_LoadTRXCModule(L, LUA_CreateStruct);
-    M_LoadTRXCModule(L, LUA_CreateEnum);
-    M_LoadTRXCModule(L, LUA_CreateCatalog);
-    M_LoadTRXCModule(L, LUA_CreateCamera);
-    M_LoadTRXCModule(L, LUA_CreateConsole);
-    M_LoadTRXCModule(L, LUA_CreateEvents);
-    M_LoadTRXCModule(L, LUA_CreateItems);
-    M_LoadTRXCModule(L, LUA_CreateLara);
-    M_LoadTRXCModule(L, LUA_CreateLocale);
-    M_LoadTRXCModule(L, LUA_CreateLog);
-    M_LoadTRXCModule(L, LUA_CreateMusic);
-    M_LoadTRXCModule(L, LUA_CreateMath);
-    M_LoadTRXCModule(L, LUA_CreateSound);
-    M_LoadTRXCModule(L, LUA_CreateConfig);
-    M_LoadTRXCModule(L, LUA_CreateRooms);
-    M_LoadTRXCModule(L, LUA_CreateGame);
-    M_LoadTRXCModule(L, LUA_CreateCreatures);
-    M_LoadTRXCModule(L, LUA_CreateObjects);
-    M_LoadTRXCModule(L, LUA_CreateAssault);
+    LUA_Registry_CreateAll(L);
 
     M_PRIV *const p = &m_Priv;
     p->state = L;
@@ -234,7 +188,7 @@ void LUA_Init(void)
 void LUA_Shutdown(void)
 {
     M_PRIV *const p = &m_Priv;
-    LUA_ShutdownEvents();
+    LUA_Registry_ShutdownAll();
     if (p->state != nullptr) {
         lua_close(p->state);
         p->state = nullptr;

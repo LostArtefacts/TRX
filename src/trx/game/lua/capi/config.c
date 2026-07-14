@@ -2,6 +2,7 @@
 #include <trx/config/option.h>
 #include <trx/config/override.h>
 #include <trx/game/lua/common.h>
+#include <trx/game/lua/registry.h>
 
 #include <lauxlib.h>
 
@@ -124,7 +125,7 @@ static int M_L_ConfigList(lua_State *const L)
     return 1;
 }
 
-void LUA_CreateConfig(lua_State *const L)
+static void M_Create(lua_State *const L)
 {
     lua_getglobal(L, "trxc");
     lua_newtable(L);
@@ -143,3 +144,5 @@ void LUA_CreateConfig(lua_State *const L)
     lua_setfield(L, -2, "config");
     lua_pop(L, 1);
 }
+
+REGISTER_LUA_CAPI(.create = M_Create)

@@ -6,8 +6,8 @@
 // then hands over to src/tests/unit/lua/<tests>.lua, where the assertions are
 // written the way a level script would write them.
 //
-// A test names the module it exercises, the bridges under test, and the fake
-// engine's Lua face; everything else is the same for all of them.
+// A test names the module it exercises and the fake engine's Lua face;
+// everything else is the same for all of them.
 
 #include <lauxlib.h>
 #include <lualib.h>
@@ -20,8 +20,9 @@ typedef struct {
     const char *deps[4];
     // src/tests/unit/lua/<tests>.lua - the assertions.
     const char *tests;
-    // Registers the trxc bridges the module binds to.
-    void (*setup_trxc)(lua_State *L);
+    // Anything the test needs beyond the bridges, which the linked modules
+    // register themselves. Optional.
+    void (*setup_extra)(lua_State *L);
     // Adds the fake engine's constants to the `fake` table.
     void (*push_fake)(lua_State *L);
     // fake.reset() and fake.calls().

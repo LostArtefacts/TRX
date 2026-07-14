@@ -1,5 +1,6 @@
 #include <trx/game/camera.h>
 #include <trx/game/lua/common.h>
+#include <trx/game/lua/registry.h>
 #include <trx/game/rooms/const.h>
 
 #include <lauxlib.h>
@@ -66,7 +67,7 @@ static int M_L_CameraReset(lua_State *const L)
     return 0;
 }
 
-void LUA_CreateCamera(lua_State *const L)
+static void M_Create(lua_State *const L)
 {
     lua_getglobal(L, "trxc");
     lua_newtable(L);
@@ -85,3 +86,5 @@ void LUA_CreateCamera(lua_State *const L)
     lua_setfield(L, -2, "camera");
     lua_pop(L, 1);
 }
+
+REGISTER_LUA_CAPI(.create = M_Create)

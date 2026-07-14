@@ -4,11 +4,8 @@
 #include "fake_engine_items.h"
 #include "lua_surface.h"
 
-extern void LUA_CreateItems(lua_State *L);
-
-static void M_SetUpTRXC(lua_State *const L)
+static void M_SetUpExtra(lua_State *const L)
 {
-    LUA_CreateItems(L);
     (void)luaL_dostring(
         L,
         "trx.rooms = setmetatable({}, {\n"
@@ -36,7 +33,7 @@ int main(void)
     const LUA_SURFACE_TEST test = {
         .module = "items",
         .tests = "api_seal",
-        .setup_trxc = M_SetUpTRXC,
+        .setup_extra = M_SetUpExtra,
         .push_fake = M_PushFake,
         .fake_reset = M_FakeReset,
         .fake_calls = M_FakeCalls,

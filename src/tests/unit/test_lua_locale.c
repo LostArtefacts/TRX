@@ -3,13 +3,6 @@
 
 #include "lua_surface.h"
 
-extern void LUA_CreateLocale(lua_State *L);
-
-static void M_SetUpTRXC(lua_State *const L)
-{
-    LUA_CreateLocale(L);
-}
-
 static int M_FakeReset(lua_State *const L)
 {
     return 0;
@@ -30,7 +23,6 @@ int main(void)
     const LUA_SURFACE_TEST test = {
         .module = "locale",
         .tests = "locale",
-        .setup_trxc = M_SetUpTRXC,
         .push_fake = M_PushFake,
         .fake_reset = M_FakeReset,
         .fake_calls = M_FakeCalls,

@@ -1,3 +1,4 @@
+#include <trx/game/lua/registry.h>
 #include <trx/game/lua/struct.h>
 #include <trx/game/lua/utils.h>
 
@@ -107,16 +108,16 @@ static int M_L_GetPropertyNames(lua_State *const L)
     return 1;
 }
 
-static const luaL_Reg M_METHODS[] = {
+static const luaL_Reg m_Methods[] = {
     { "get_property", M_L_GetProperty },
     { "set_property", M_L_SetProperty },
     { "get_property_names", M_L_GetPropertyNames },
     { nullptr, nullptr },
 };
 
-void LUA_CreateObjects(lua_State *const L)
+static void M_Create(lua_State *const L)
 {
-    LUA_Struct_Register(L, &TYPE_OBJECT, M_METHODS);
+    LUA_Struct_Register(L, &TYPE_OBJECT, m_Methods);
 
     lua_getglobal(L, "trxc");
     lua_newtable(L);
@@ -127,3 +128,5 @@ void LUA_CreateObjects(lua_State *const L)
     lua_setfield(L, -2, "objects");
     lua_pop(L, 1);
 }
+
+REGISTER_LUA_CAPI(.create = M_Create)
