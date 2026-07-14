@@ -1,5 +1,6 @@
 #include <trx/game/creature.h>
 #include <trx/game/fx.h>
+#include <trx/game/interpolation.h>
 #include <trx/game/lara.h>
 #include <trx/game/objects.h>
 #include <trx/game/output.h>
@@ -111,10 +112,7 @@ static void M_Control(int16_t item_num)
         if (Item_GetRelativeFrame(item) == 59) {
             item->rot.x = -item->rot.x;
             item->rot.y += DEG_180;
-            item->interp.prev.pos = item->pos;
-            item->interp.prev.rot = item->rot;
-            item->interp.result.pos = item->pos;
-            item->interp.result.rot = item->rot;
+            Interpolation_RememberItem(item);
         }
         break;
     }

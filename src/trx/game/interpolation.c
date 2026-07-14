@@ -293,18 +293,6 @@ static void M_InterpolateBraid(const double ratio, ITEM *const lara_item)
     }
 }
 
-static void M_RememberItem(ITEM *const item)
-{
-    REMEMBER(item, floor);
-    REMEMBER(item, pos.x);
-    REMEMBER(item, pos.y);
-    REMEMBER(item, pos.z);
-    REMEMBER(item, rot.x);
-    REMEMBER(item, rot.y);
-    REMEMBER(item, rot.z);
-    item->prev_frame_num = item->frame_num;
-}
-
 static void M_CommitItem(ITEM *const item)
 {
     COMMIT(item, floor);
@@ -331,12 +319,12 @@ static void M_InterpolateItem(ITEM *const item, const double ratio)
 static void M_RememberItems(void)
 {
     for (int32_t i = 0; i < Item_GetTotalCount(); i++) {
-        M_RememberItem(Item_Get(i));
+        Interpolation_RememberItem(Item_Get(i));
     }
 
     ITEM *const lara_item = Lara_GetItem();
     if (lara_item != nullptr) {
-        M_RememberItem(lara_item);
+        Interpolation_RememberItem(lara_item);
     }
 }
 
@@ -469,6 +457,18 @@ void Interpolation_Remember(void)
     }
     M_RememberItems();
     M_RememberEffects();
+}
+
+void Interpolation_RememberItem(ITEM *const item)
+{
+    REMEMBER(item, floor);
+    REMEMBER(item, pos.x);
+    REMEMBER(item, pos.y);
+    REMEMBER(item, pos.z);
+    REMEMBER(item, rot.x);
+    REMEMBER(item, rot.y);
+    REMEMBER(item, rot.z);
+    item->prev_frame_num = item->frame_num;
 }
 
 void Interpolation_Interpolate(void)

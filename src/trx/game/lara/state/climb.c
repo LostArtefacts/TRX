@@ -1,6 +1,7 @@
 #include <trx/config.h>
 #include <trx/game/camera.h>
 #include <trx/game/input.h>
+#include <trx/game/interpolation.h>
 #include <trx/game/lara.h>
 #include <trx/game/lara/util.h>
 #include <trx/version.h>
@@ -97,8 +98,7 @@ static void M_SetCornerAnim(
     item->pos.x = lara->corner_pos.x;
     item->pos.z = lara->corner_pos.z;
     item->rot.y += rot;
-    item->interp.prev.pos = item->pos;
-    item->interp.prev.rot = item->rot;
+    Interpolation_RememberItem(item);
 }
 
 static void M_ShimmyCornerOuterLeft(ITEM *const item, COLL_INFO *const coll)
