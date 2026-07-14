@@ -17,6 +17,7 @@
 -- the trx.* modules have loaded, so builders cannot reach past the public API.
 local struct = trxc.struct
 local enum = trxc.enum
+local capi = trxc.api
 -- Hardening nils this out of the globals, and api.strict runs long after that.
 local load = load
 
@@ -284,6 +285,16 @@ end
 -- Also audits the finished surface: an assignment straight onto a module table
 -- works for scripts, but the docs never see it. Refuse to boot instead.
 function api.seal()
+  -- The declaring half has done its job, and every one of those functions
+  -- raises from here on. It goes the way trxc goes at this same moment: what a
+  -- script cannot successfully call, it should not be able to reach. Done
+  -- before the audit, so the audit sees the surface a script is left with. C
+  -- keeps the two entrypoints it still needs - see lua/capi/api.c.
+  trx.api = {
+    strict = api.strict,
+    is_strict = api.is_strict,
+  }
+
   -- container path ("items", or "console.log") -> set of declared member names.
   local declared = {}
   local function mark(path)
@@ -984,3 +995,32 @@ end
 function api.to_json()
   return table.concat(encode(api.describe(), {}))
 end
+
+-- The registry declares itself, last of all. What is left of it once seal() has
+-- run is what a script can use: strict mode, and the question of whether it is
+-- on. The rest declared the surface and is gone by the time any script runs.
+api.module("api", {
+  order = 20,
+  title = "API registry",
+  description = "Argument checking for the whole of `trx`.",
+})
+
+api.define("api.strict", {
+  description = "Turns argument checking on or off for every function in `trx`, and for the methods "
+    .. "on its handles. Off by default: checking costs about 100ns a call, which a per-frame handler "
+    .. "notices. Turn it on while writing a level, and leave it off in play.",
+  params = { { name = "enabled", type = "boolean" } },
+  examples = { [[trx.api.strict(true)]] },
+  impl = api.strict,
+})
+
+api.define("api.is_strict", {
+  description = "Whether argument checking is on.",
+  returns = { type = "boolean" },
+  impl = api.is_strict,
+})
+
+-- Sealing and dumping the surface stay C's to call, and the dump runs after the
+-- seal has taken them off trx.api. Hand them over while they are still here.
+capi.set_entrypoint("seal", api.seal)
+capi.set_entrypoint("to_json", api.to_json)

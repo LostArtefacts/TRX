@@ -411,6 +411,7 @@ common_sources = [
   'trx/game/level/sections/rooms.c',
   'trx/game/level/sections/textures.c',
   'trx/game/level/settings.c',
+  'trx/game/lua/capi/api.c',
   'trx/game/lua/capi/assault.c',
   'trx/game/lua/capi/camera.c',
   'trx/game/lua/capi/catalog.c',

@@ -2354,6 +2354,26 @@
   ],
   "functions": [
     {
+      "description": "Turns argument checking on or off for every function in `trx`, and for the methods on its handles. Off by default: checking costs about 100ns a call, which a per-frame handler notices. Turn it on while writing a level, and leave it off in play.",
+      "examples": [
+        "trx.api.strict(true)"
+      ],
+      "params": [
+        {
+          "name": "enabled",
+          "type": "boolean"
+        }
+      ],
+      "path": "api.strict"
+    },
+    {
+      "description": "Whether argument checking is on.",
+      "path": "api.is_strict",
+      "returns": {
+        "type": "boolean"
+      }
+    },
+    {
       "description": "Starts the timer and clears its state. Raises outside a gym level.",
       "params": [
         {
@@ -3591,6 +3611,12 @@
     }
   ],
   "modules": [
+    {
+      "description": "Argument checking for the whole of `trx`.",
+      "name": "api",
+      "order": 20,
+      "title": "API registry"
+    },
     {
       "description": "Module for controlling the Assault Course and Quad Bike timers in gym levels.",
       "name": "assault",

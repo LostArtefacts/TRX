@@ -7,6 +7,7 @@
 #include <trx/core/strings.h>
 #include <trx/debug.h>
 #include <trx/game/game_flow/common.h>
+#include <trx/game/lua/api.h>
 #include <trx/game/lua/embedded_scripts.h>
 #include <trx/game/lua/events.h>
 #include <trx/game/lua/registry.h>
@@ -126,7 +127,10 @@ static void M_SealPublicAPI(lua_State *const L)
     // Sealing audits the API too, and only engine scripts declare - so a
     // failure here means our own data is wrong. Fatal, like any other bad
     // engine data.
-    if (luaL_dostring(L, "trx.api.seal()") != LUA_OK) {
+    if (!LUA_API_PushEntrypoint(L, "seal")) {
+        Shell_ExitSystem("the Lua API registry handed over no sealer");
+    }
+    if (lua_pcall(L, 0, 0, 0) != LUA_OK) {
         Shell_ExitSystemFmt(
             "failed to seal the Lua API: %s", lua_tostring(L, -1));
     }
@@ -253,7 +257,12 @@ void LUA_DumpAPI(void)
         LOG_ERROR("--dump-lua-api: Lua is not initialised");
         return;
     }
-    if (luaL_dostring(L, "return trx.api.to_json()") != LUA_OK) {
+    // Sealing has already run by now, so the dumper is no longer on trx.api.
+    if (!LUA_API_PushEntrypoint(L, "to_json")) {
+        LOG_ERROR("--dump-lua-api: the Lua API registry handed over no dumper");
+        return;
+    }
+    if (lua_pcall(L, 0, 1, 0) != LUA_OK) {
         LOG_ERROR("--dump-lua-api failed: %s", lua_tostring(L, -1));
         lua_pop(L, 1);
         return;

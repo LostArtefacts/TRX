@@ -32,9 +32,9 @@ test("strict mode still works once the globals are hardened", function()
 end)
 
 test("the surface cannot be reopened", function()
-  raises(function()
-    trx.api.define("items.evil", { impl = function() end })
-  end, "sealed")
+  assert(trx.api.define == nil, "the registry's declaring half must not survive the seal")
+  assert(trx.api.type == nil)
+  assert(trx.api.strict ~= nil, "strict mode is a builder's, and stays")
 end)
 
 return h.report()
