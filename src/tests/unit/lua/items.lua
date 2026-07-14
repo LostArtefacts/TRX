@@ -118,6 +118,26 @@ test("a handle to a killed item goes stale", function()
   end, "stale")
 end)
 
+-- pairs() hands the iterator to the script, so it is reachable with whatever
+-- the script cares to pass it.
+test("the field iterator refuses a value that is not an item", function()
+  local it = trx.items[1]
+
+  local seen = {}
+  for k, v in pairs(it) do
+    seen[k] = v
+  end
+  assert(seen.timer ~= nil, "pairs() should yield the declared fields")
+
+  local iter = pairs(it)
+  raises(function()
+    iter({}, nil)
+  end)
+  raises(function()
+    iter(nil, nil)
+  end)
+end)
+
 test("spawn creates an item and validates its arguments", function()
   local w = trx.items.spawn(WOLF, { x = 100, y = 0, z = 100 })
   assert(w ~= nil, "spawn returned nil")

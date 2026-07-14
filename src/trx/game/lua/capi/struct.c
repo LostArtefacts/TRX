@@ -183,9 +183,13 @@ static int M_NewIndex(lua_State *const L)
     return 0;
 }
 
+// Unlike the metamethods, this one is a value in its own right: __pairs hands
+// it to the script, which is then free to call it with anything at all. Upvalue
+// 2 carries the type so that anything else is refused rather than dereferenced.
 static int M_PairsIter(lua_State *const L)
 {
-    LUA_STRUCT_REF *const ref = lua_touserdata(L, 1);
+    const TYPE_DESC *const type = lua_touserdata(L, lua_upvalueindex(2));
+    LUA_STRUCT_REF *const ref = LUA_Struct_CheckRef(L, 1, type);
 
     // Iterate the declared public fields, not the C table: a member C can reach
     // but no script declared is not part of the type.
@@ -209,12 +213,18 @@ static int M_PairsIter(lua_State *const L)
     return 2;
 }
 
+// __index, __newindex and __pairs are only ever reached through a handle's
+// metatable, and that metatable is protected, so arg 1 is always a handle of
+// this type. The iterator __pairs returns is the one thing here that escapes.
 static int M_Pairs(lua_State *const L)
 {
-    luaL_getmetatable(L, ((LUA_STRUCT_REF *)lua_touserdata(L, 1))->type->name);
+    const TYPE_DESC *const type =
+        ((LUA_STRUCT_REF *)lua_touserdata(L, 1))->type;
+    luaL_getmetatable(L, type->name);
     lua_getfield(L, -1, M_KEY_FIELDS);
     lua_remove(L, -2);
-    lua_pushcclosure(L, M_PairsIter, 1);
+    lua_pushlightuserdata(L, (void *)type);
+    lua_pushcclosure(L, M_PairsIter, 2);
     lua_pushvalue(L, 1);
     lua_pushnil(L);
     return 3;
