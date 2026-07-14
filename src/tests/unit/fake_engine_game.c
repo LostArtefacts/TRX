@@ -15,6 +15,7 @@ FAKE_GAME_CALLS g_FakeGameCalls;
 static GF_LEVEL m_Levels[FAKE_LEVEL_COUNT];
 static GF_LEVEL m_Cutscenes[FAKE_CUTSCENE_COUNT];
 static GF_LEVEL m_Demos[FAKE_DEMO_COUNT];
+static GF_LEVEL m_TitleLevel;
 static GF_LEVEL_TABLE m_Tables[GFLT_NUMBER_OF];
 static const GF_LEVEL *m_CurrentLevel;
 
@@ -26,10 +27,21 @@ const GF_LEVEL_TABLE *GF_GetLevelTable(const GF_LEVEL_TABLE_TYPE table_type)
     return &m_Tables[table_type];
 }
 
+// As the real one: a gym is in the table but is not one of the levels the game
+// numbers, so it is not counted either.
 int32_t GF_GetLevelCount(const GF_LEVEL_TABLE_TYPE table_type)
 {
     const GF_LEVEL_TABLE *const tbl = GF_GetLevelTable(table_type);
-    return tbl != nullptr ? tbl->count : 0;
+    if (tbl == nullptr) {
+        return 0;
+    }
+    int32_t count = 0;
+    for (int32_t i = 0; i < tbl->count; i++) {
+        if (tbl->levels[i].type != GFL_GYM) {
+            count++;
+        }
+    }
+    return count;
 }
 
 const GF_LEVEL *GF_GetLevel(
@@ -40,6 +52,11 @@ const GF_LEVEL *GF_GetLevel(
         return nullptr;
     }
     return &tbl->levels[num];
+}
+
+const GF_LEVEL *GF_GetTitleLevel(void)
+{
+    return &m_TitleLevel;
 }
 
 const GF_LEVEL *GF_GetCurrentLevel(void)
@@ -76,6 +93,22 @@ int32_t GF_GetLevelOrdinalNumber(
         }
     }
     return 0;
+}
+
+GF_LEVEL *GF_GetLevelByOrdinalNumber(
+    const GF_LEVEL_TABLE_TYPE table_type, const int32_t level_num)
+{
+    const GF_LEVEL_TABLE *const tbl = GF_GetLevelTable(table_type);
+    if (tbl == nullptr) {
+        return nullptr;
+    }
+    for (int32_t i = 0; i < tbl->count; i++) {
+        GF_LEVEL *const level = &tbl->levels[i];
+        if (GF_GetLevelOrdinalNumber(table_type, level) == level_num) {
+            return level;
+        }
+    }
+    return nullptr;
 }
 
 // The gameflow command the play_* verbs queue, and the savegame bookkeeping
@@ -150,6 +183,11 @@ void FakeGame_Reset(void)
         .type = GFL_DEMO,
         .title = "Demo 1",
     };
+    m_TitleLevel = (GF_LEVEL) {
+        .num = 0,
+        .type = GFL_TITLE,
+        .title = "Title",
+    };
 
     m_Tables[GFLT_MAIN] =
         (GF_LEVEL_TABLE) { .count = FAKE_LEVEL_COUNT, .levels = m_Levels };
@@ -166,4 +204,10 @@ void FakeGame_Reset(void)
 void FakeGame_SetCurrentLevel(const int32_t idx)
 {
     m_CurrentLevel = idx < 0 ? nullptr : &m_Levels[idx];
+}
+
+// The title level, which is not in any table.
+void FakeGame_SetCurrentTitle(void)
+{
+    m_CurrentLevel = &m_TitleLevel;
 }

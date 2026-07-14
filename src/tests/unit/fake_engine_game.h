@@ -22,3 +22,6 @@ void FakeGame_Reset(void);
 
 // A negative index leaves the current level unset.
 void FakeGame_SetCurrentLevel(int32_t idx);
+
+// The title level, which is not in any table.
+void FakeGame_SetCurrentTitle(void);

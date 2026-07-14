@@ -128,7 +128,12 @@ order: 3
    It was an undocumented alias of `trx.music.play` and was removed. Use
    `trx.music.play(id[, opts])`.
 
-17. **Update Lara's outfit definitions**
+17. **Update scripts that address levels by number**
+   `trx.game.play_level` and the `trx.game.levels` list leaves out the gym.
+   In a game with a gym `trx.game.levels[1]` used to be the gym; drop any offset
+   that stepped over it.
+
+18. **Update Lara's outfit definitions**
    The `hair_pos` entries for Lara's braids were changed to `positions`. This
    field is now an array (of at most two values) rather than a single position.
    Update `outfits.json5` accordingly.

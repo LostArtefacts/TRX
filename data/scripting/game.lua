@@ -172,8 +172,7 @@ api.define("game.play_level", {
     {
       name = "num",
       type = "integer",
-      description = "1-based position in `trx.game.levels`. This is not `Level.num`, which is the "
-        .. "number the level carries.",
+      description = "1-based position in `trx.game.levels`.",
     },
   },
   examples = { [[trx.game.play_level(1)]] },

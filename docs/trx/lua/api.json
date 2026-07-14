@@ -2973,7 +2973,7 @@
       ],
       "params": [
         {
-          "description": "1-based position in `trx.game.levels`. This is not `Level.num`, which is the number the level carries.",
+          "description": "1-based position in `trx.game.levels`.",
           "name": "num",
           "type": "integer"
         }
