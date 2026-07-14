@@ -134,6 +134,7 @@ local function install_module_meta(module)
 end
 
 function api.module(name, spec)
+  assert(not sealed, "the trx.api registry is sealed; declarations happen at load time")
   assert(type(name) == "string", "api.module: name must be a string")
   if modules[name] == nil then
     table.insert(module_order, name)
