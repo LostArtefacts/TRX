@@ -40,17 +40,22 @@ static void M_CheckSources(lua_State *const L, const int32_t arg)
     }
 }
 
-// trxc.strings.fuzzy_match(input, sources) -> matches
-//
-// `sources` is a list of { key, value, weight }. The value is the caller's own:
-// it is not read here, and it comes back on the match.
-static int M_L_StringsFuzzyMatch(lua_State *const L)
-{
-    const char *const input = luaL_checkstring(L, 1);
-    luaL_checktype(L, 2, LUA_TTABLE);
-    M_CheckSources(L, 2);
+typedef struct {
+    VECTOR *sources;
+    VECTOR *matches;
+} M_FUZZY_STATE;
 
-    VECTOR *const sources = Vector_Create(sizeof(STRING_FUZZY_SOURCE));
+// Everything the vectors are alive for. Every table and string built here goes
+// through the Lua allocator and can raise, and an error would unwind straight
+// past a Vector_Free. Run under lua_pcall it comes back to the caller instead,
+// which still holds both vectors.
+//
+// Arg 1 is the input, arg 2 the source list as the caller passed it, and arg 3
+// the state whose vectors the caller frees either way.
+static int M_FuzzyMatch(lua_State *const L)
+{
+    const char *const input = lua_tostring(L, 1);
+    M_FUZZY_STATE *const state = lua_touserdata(L, 3);
 
     const int32_t count = (int32_t)lua_rawlen(L, 2);
     for (int32_t i = 1; i <= count; i++) {
@@ -72,15 +77,15 @@ static int M_L_StringsFuzzyMatch(lua_State *const L)
             .value = (void *)(intptr_t)i,
             .weight = weight,
         };
-        Vector_Add(sources, (void *)&source);
+        Vector_Add(state->sources, (void *)&source);
         lua_pop(L, 1);
     }
 
-    VECTOR *const matches = String_FuzzyMatch(input, sources);
+    state->matches = String_FuzzyMatch(input, state->sources);
 
     lua_newtable(L);
-    for (int32_t i = 0; i < matches->count; i++) {
-        const STRING_FUZZY_MATCH *const match = Vector_Get(matches, i);
+    for (int32_t i = 0; i < state->matches->count; i++) {
+        const STRING_FUZZY_MATCH *const match = Vector_Get(state->matches, i);
 
         lua_newtable(L);
         lua_pushstring(L, match->key);
@@ -100,9 +105,38 @@ static int M_L_StringsFuzzyMatch(lua_State *const L)
 
         lua_seti(L, -2, i + 1);
     }
+    return 1;
+}
 
-    Vector_Free(matches);
-    Vector_Free(sources);
+// trxc.strings.fuzzy_match(input, sources) -> matches
+//
+// `sources` is a list of { key, value, weight }. The value is the caller's own:
+// it is not read here, and it comes back on the match.
+static int M_L_StringsFuzzyMatch(lua_State *const L)
+{
+    luaL_checkstring(L, 1);
+    luaL_checktype(L, 2, LUA_TTABLE);
+    M_CheckSources(L, 2);
+
+    M_FUZZY_STATE state = {
+        .sources = Vector_Create(sizeof(STRING_FUZZY_SOURCE)),
+        .matches = nullptr,
+    };
+
+    lua_pushcfunction(L, M_FuzzyMatch);
+    lua_pushvalue(L, 1);
+    lua_pushvalue(L, 2);
+    lua_pushlightuserdata(L, &state);
+    const int status = lua_pcall(L, 3, 1, 0);
+
+    if (state.matches != nullptr) {
+        Vector_Free(state.matches);
+    }
+    Vector_Free(state.sources);
+
+    if (status != LUA_OK) {
+        return lua_error(L);
+    }
     return 1;
 }
 
