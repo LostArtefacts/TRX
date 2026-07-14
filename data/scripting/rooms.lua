@@ -166,14 +166,11 @@ api.define("rooms.find_valid_pos", {
   impl = raw.find_valid_pos,
 })
 
--- trx.rooms holds the registered functions and FlipStatus; the metatable adds
--- indexing and the length operator on top.
-setmetatable(trx.rooms, {
-  __len = raw.count,
-  __index = function(_, key)
-    if type(key) == "number" then
-      return raw.get(key)
-    end
-    return nil
-  end,
+api.container("rooms", {
+  description = "Indexing the module reaches a room, and `#trx.rooms` is how many the level has.",
+  key = { type = "integer", description = "1-based room number." },
+  value = { type = "Room", nullable = true },
+  examples = { [[trx.log.info(#trx.rooms .. " rooms, first is " .. trx.rooms[1].num)]] },
+  get = raw.get,
+  count = raw.count,
 })

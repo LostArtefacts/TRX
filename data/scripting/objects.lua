@@ -123,7 +123,7 @@ api.type("objects.Object", {
   },
 })
 
-api.define("objects.get", {
+local get = api.define("objects.get", {
   description = "Retrieves an object definition by id or by name.",
   params = {
     {
@@ -162,10 +162,10 @@ api.define("objects.swap_mesh", {
   impl = raw.swap_mesh,
 })
 
--- trx.objects holds the registered functions; the metatable adds indexing by id
--- and by name on top, so trx.objects.wolf is the wolf.
-setmetatable(trx.objects, {
-  __index = function(_, key)
-    return trx.objects.get(key)
-  end,
+api.container("objects", {
+  description = "Indexing the module reaches an object definition, so `trx.objects.wolf` is the wolf.",
+  key = { type = "any", description = "Object id, or its catalog name." },
+  value = { type = "Object", nullable = true },
+  examples = { [[trx.objects.wolf.properties.max_hit_points = 30]] },
+  get = get,
 })

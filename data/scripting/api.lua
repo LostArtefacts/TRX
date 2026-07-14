@@ -40,6 +40,13 @@ local namespace_order = {}
 -- path -> { fn = what calling the namespace runs }. Held apart from the
 -- metatable so api.strict can swap the wrapper in.
 local namespace_dispatch = {}
+-- Type name -> predicate. Private: reachable, a script could hand strict mode a
+-- checker that accepts anything.
+local checkers
+local containers = {}
+local container_order = {}
+-- module -> { get, count, accepts }. What indexing the module table reaches.
+local module_containers = {}
 -- module -> { name -> spec }. What the module's __index dispatches on.
 local module_properties = {}
 -- module -> function returning the handle it stands for.
@@ -94,16 +101,20 @@ end
 local function install_module_meta(module)
   local props = module_properties[module]
   local instance = module_instances[module]
-  if props == nil and instance == nil then
+  local container = module_containers[module]
+  if props == nil and instance == nil and container == nil then
     return
   end
 
   trx[module] = trx[module] or {}
-  setmetatable(trx[module], {
+  local meta = {
     __index = function(_, key)
       local prop = props ~= nil and props[key] or nil
       if prop ~= nil then
         return prop.get()
+      end
+      if container ~= nil and container.accepts(key) then
+        return container.get(key)
       end
       if instance ~= nil then
         local handle = instance()
@@ -121,7 +132,7 @@ local function install_module_meta(module)
         end
         -- A property is written, not called, so make_checked never sees it.
         -- Strict mode still has to.
-        if strict_enabled and not api.checkers[prop.type](value) then
+        if strict_enabled and not checkers[prop.type](value) then
           error("trx." .. module .. "." .. tostring(key) .. ": expected a " .. tostring(prop.type), 2)
         end
         prop.set(value)
@@ -138,7 +149,13 @@ local function install_module_meta(module)
       end
       error("Cannot set field '" .. tostring(key) .. "' on trx." .. module, 2)
     end,
-  })
+  }
+  if container ~= nil and container.count ~= nil then
+    meta.__len = function()
+      return container.count()
+    end
+  end
+  setmetatable(trx[module], meta)
 end
 
 function api.module(name, spec)
@@ -207,14 +224,12 @@ local function make_checked(fn, path, params)
     table.concat(body, " ")
   )
 
-  local checkers, defaults = {}, {}
+  local param_checkers, defaults = {}, {}
   for i = 1, fixed do
     local p = params[i]
-    -- seal() refuses a parameter whose type nothing can check, so by the time a
-    -- script turns strict mode on there is a checker for every one of them.
-    local check = api.checkers[p.type]
+    local check = checkers[p.type]
     assert(check ~= nil, path .. ": no checker for type '" .. tostring(p.type) .. "'")
-    checkers[i] = check
+    param_checkers[i] = check
     defaults[i] = p.default
   end
 
@@ -222,11 +237,11 @@ local function make_checked(fn, path, params)
     error(("%s: invalid argument '%s'"):format(where, arg), 3)
   end
   -- Named as an API module is, so LUA_GetCallerInfo walks past this frame too.
-  return load(src, "@trx/" .. path .. " (checked)")(fn, checkers, defaults, on_fail)
+  return load(src, "@trx/" .. path .. " (checked)")(fn, param_checkers, defaults, on_fail)
 end
 
--- Type name -> predicate. Doc-facing type names, not Lua type names.
-api.checkers = {
+-- Doc-facing type names, not Lua type names.
+checkers = {
   integer = function(v)
     return math.type(v) == "integer"
   end,
@@ -328,7 +343,7 @@ function api.seal()
   -- value through while strict mode reports a clean run over it.
   local bad = {}
   local function audit_type(where, what, type_name)
-    if api.checkers[type_name] == nil then
+    if checkers[type_name] == nil then
       table.insert(bad, where .. ": " .. what .. " has an unknown type '" .. tostring(type_name) .. "'")
       return false
     end
@@ -340,7 +355,7 @@ function api.seal()
     for _, p in ipairs(params or {}) do
       if p.name ~= "..." then
         if audit_type(where, "'" .. tostring(p.name) .. "'", p.type) and p.default ~= nil then
-          if not api.checkers[p.type](p.default) then
+          if not checkers[p.type](p.default) then
             table.insert(bad, where .. ": the default for '" .. p.name .. "' is not a " .. p.type)
           end
         end
@@ -409,6 +424,39 @@ function api.namespace(path, spec)
   return namespace
 end
 
+-- Declares that a module table can be indexed - trx.items[3], trx.objects.wolf -
+-- and, if it can be counted, that #trx.items is its length.
+--
+-- The registry owns the module's metatable, so a module that set its own would
+-- lose it to the first property declared on it. And pairs() never sees a
+-- metatable, so only a declaration puts the indexing in the reference.
+function api.container(name, spec)
+  assert(not sealed, "the trx.api registry is sealed; declarations happen at load time")
+  assert(type(spec) == "table", "api.container: spec must be a table")
+  assert(type(spec.get) == "function", "api.container: get must be a function")
+  assert(spec.count == nil or type(spec.count) == "function", "api.container: count must be a function")
+  assert(type(spec.key) == "table", "api.container: key must describe what the module is indexed by")
+
+  -- A module keyed only by number leaves a string key to the rest of the
+  -- metatable, so trx.rooms.nonsense is nil rather than an error out of C.
+  local by_number_only = spec.key.type == "integer"
+  module_containers[name] = {
+    get = spec.get,
+    count = spec.count,
+    accepts = function(key)
+      local kind = type(key)
+      return kind == "number" or (kind == "string" and not by_number_only)
+    end,
+  }
+
+  if containers[name] == nil then
+    table.insert(container_order, name)
+  end
+  containers[name] = spec
+
+  install_module_meta(name)
+end
+
 function api.define(path, spec)
   assert(not sealed, "the trx.api registry is sealed; declarations happen at load time")
   assert(type(spec) == "table", "api.define: spec must be a table")
@@ -459,7 +507,7 @@ function api.type(path, spec)
 
   -- Declaring the type is what makes its name checkable in a params list.
   local _, type_name = split_path(path)
-  api.checkers[type_name] = handle_checker(backing)
+  checkers[type_name] = handle_checker(backing)
 
   local declared = {}
 
@@ -656,7 +704,19 @@ function api.describe()
     constants = {},
     properties = {},
     namespaces = {},
+    containers = {},
   }
+  for _, name in ipairs(container_order) do
+    local spec = containers[name]
+    table.insert(out.containers, {
+      module = name,
+      description = spec.description,
+      key = spec.key,
+      value = spec.value,
+      countable = spec.count ~= nil,
+      examples = spec.examples,
+    })
+  end
   for _, name in ipairs(module_order) do
     table.insert(out.modules, {
       name = name,
@@ -812,6 +872,10 @@ function api.describe()
   by_module(out.constants)
   by_module(out.namespaces)
   by_module(out.properties)
+  -- Keyed by module, not by path, so by_module has nothing to sort on.
+  table.sort(out.containers, function(a, b)
+    return a.module < b.module
+  end)
   table.sort(out.modules, function(a, b)
     return a.name < b.name
   end)

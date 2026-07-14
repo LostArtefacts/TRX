@@ -24,6 +24,7 @@
 - added new Lua enums, `trx.items.Status`, `trx.lara.WaterState`, `trx.lara.GunState`, `trx.game.LevelTable`, `trx.catalog.Context` and `trx.rooms.FlipStatus`
 - added `trx.log.generic()` and the `trx.log.LogLevel` enum, to log at a level chosen at runtime
 - added the braid and crowbar constants to `trx.lara.ExtraMesh`, which the engine had but never exposed
+- added indexing and the length operator to `trx.items`, `trx.rooms` and `trx.objects`, so `trx.items[1]` is the first item and `#trx.items` is how many the level has
 - changed `trx.items` and `trx.rooms` to hand out opaque handles rather than `{ idx = ... }` tables, so a handle to a killed item now raises instead of silently addressing whatever took its slot; refer to migration notes
 - changed `room.idx` to `room.num`; refer to migration notes
 - changed the Lua level field `name` to `title`; refer to migration notes

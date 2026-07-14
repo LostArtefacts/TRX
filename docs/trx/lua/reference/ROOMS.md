@@ -14,6 +14,18 @@ order: 10
 
 Module for inspecting and altering the rooms of the current level.
 
+### Indexing
+
+Indexing the module reaches a room, and `#trx.rooms` is how many the level has.
+
+- **`trx.rooms[key]`** (Room or `nil`). 1-based room number.
+- **`#trx.rooms`** (integer). How many there are.
+
+Example:
+```lua
+trx.log.info(#trx.rooms .. " rooms, first is " .. trx.rooms[1].num)
+```
+
 ### Enums
 
 - [lua]`trx.rooms.FlipStatus`

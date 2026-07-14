@@ -403,14 +403,15 @@ api.define("items.first", {
   end,
 })
 
--- trx.items holds the registered functions and Status; the metatable adds
--- indexing and the length operator on top.
-setmetatable(trx.items, {
-  __len = raw.count,
-  __index = function(_, key)
-    if type(key) == "number" or type(key) == "string" then
-      return raw.get(key)
-    end
-    return nil
-  end,
+api.container("items", {
+  description = "Indexing the module reaches an item, and `#trx.items` is how many the level has.",
+  key = { type = "any", description = "1-based index, or the item's unique name." },
+  value = { type = "Item", nullable = true },
+  examples = {
+    [[for i = 1, #trx.items do
+  trx.log.info(trx.items[i].object_id)
+end]],
+  },
+  get = raw.get,
+  count = raw.count,
 })
