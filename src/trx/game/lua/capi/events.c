@@ -84,7 +84,8 @@ static void M_Shutdown(void)
 // trxc.events.attach(event_type, callback) → id
 static int M_L_EventsAttach(lua_State *const L)
 {
-    const LUA_EVENT_TYPE ev = luaL_checkinteger(L, 1);
+    const LUA_EVENT_TYPE ev = (LUA_EVENT_TYPE)LUA_CheckRange(
+        L, 1, LUA_EVENT_NUMBER_OF, "unknown event type");
     luaL_checktype(L, 2, LUA_TFUNCTION);
     lua_pushvalue(L, 2);
     const int32_t ref = luaL_ref(L, LUA_REGISTRYINDEX);
@@ -182,29 +183,6 @@ static void M_Create(lua_State *const L)
     m_L = L;
 
     LUA_RegisterModule(L, "events", m_Module);
-
-    LUA_GetModule(L, "events");
-    lua_newtable(L);
-    lua_pushinteger(L, LUA_EVENT_BEFORE_LEVEL_FILE);
-    lua_setfield(L, -2, "BEFORE_LEVEL_FILE");
-    lua_pushinteger(L, LUA_EVENT_AFTER_LEVEL_FILE);
-    lua_setfield(L, -2, "AFTER_LEVEL_FILE");
-    lua_pushinteger(L, LUA_EVENT_BEFORE_ITEM_SETUP);
-    lua_setfield(L, -2, "BEFORE_ITEM_SETUP");
-    lua_pushinteger(L, LUA_EVENT_AFTER_ITEM_SETUP);
-    lua_setfield(L, -2, "AFTER_ITEM_SETUP");
-    lua_pushinteger(L, LUA_EVENT_AFTER_LEVEL_STATE);
-    lua_setfield(L, -2, "AFTER_LEVEL_STATE");
-    lua_pushinteger(L, LUA_EVENT_GAME_START);
-    lua_setfield(L, -2, "GAME_START");
-    lua_pushinteger(L, LUA_EVENT_PICKUP);
-    lua_setfield(L, -2, "PICKUP");
-    lua_pushinteger(L, LUA_EVENT_BEFORE_CONTROL);
-    lua_setfield(L, -2, "BEFORE_CONTROL");
-    lua_pushinteger(L, LUA_EVENT_AFTER_CONTROL);
-    lua_setfield(L, -2, "AFTER_CONTROL");
-    lua_setfield(L, -2, "EventType");
-    lua_pop(L, 1);
 }
 
 void LUA_ClearLevelListeners(void)
