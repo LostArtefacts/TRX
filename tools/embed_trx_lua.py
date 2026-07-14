@@ -18,6 +18,9 @@ def _c_ident_from_path(path: Path) -> str:
 
 
 def _bytes_to_c_array(data: bytes) -> str:
+    if not data:
+        # An empty initialiser is not C. The loader reads the size, which is zero.
+        return "    0"
     per_line = 16
     chunks: list[str] = []
     for i in range(0, len(data), per_line):
