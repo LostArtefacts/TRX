@@ -34,12 +34,15 @@ static int M_L_Count(lua_State *const L)
 // trxc.rooms.get(index) -> Room or nil
 static int M_L_Get(lua_State *const L)
 {
-    const int32_t idx = luaL_checkinteger(L, 1) - 1;
-    if (idx < 0 || idx >= Room_GetCount()) {
+    // Read wide and range-test before narrowing, as find_valid_pos does: an
+    // index past int32_t's width would wrap into range and name a room the
+    // script did not ask for.
+    const lua_Integer num = luaL_checkinteger(L, 1);
+    if (num < 1 || num > Room_GetCount()) {
         lua_pushnil(L);
         return 1;
     }
-    M_PushRoom(L, idx);
+    M_PushRoom(L, (int32_t)(num - 1));
     return 1;
 }
 

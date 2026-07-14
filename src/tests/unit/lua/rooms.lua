@@ -21,6 +21,10 @@ test("rooms are indexed from 1, and counted", function()
   assert(trx.rooms[0] == nil, "room 0 must not resolve")
   assert(trx.rooms[5] == nil, "out of range must be nil")
   assert(trx.rooms["2"] == nil, "a numeric string is not a room number")
+
+  -- Narrowed to the engine's index, 2^32 + 1 is 1. It must not come back as
+  -- room 1.
+  assert(trx.rooms[4294967297] == nil, "a wide index must not wrap into range")
 end)
 
 test("room flags read and write as booleans", function()

@@ -1,5 +1,6 @@
 #include <trx/game/creature.h>
 #include <trx/game/lua/registry.h>
+#include <trx/game/lua/utils.h>
 
 #include <lauxlib.h>
 
@@ -22,16 +23,14 @@ static int M_L_CreaturesSetAlliesHostile(lua_State *const L)
 // trxc.creatures.add_ally(obj_id)
 static int M_L_CreaturesAddAlly(lua_State *const L)
 {
-    const OBJECT_ID obj_id = luaL_checkinteger(L, 1);
-    Creature_AddAlly(obj_id);
+    Creature_AddAlly(LUA_CheckObjectID(L, 1));
     return 0;
 }
 
 // trxc.creatures.add_ally_target(obj_id)
 static int M_L_CreaturesAddAllyTarget(lua_State *const L)
 {
-    const OBJECT_ID obj_id = luaL_checkinteger(L, 1);
-    Creature_AddAllyTargetingEnemy(obj_id);
+    Creature_AddAllyTargetingEnemy(LUA_CheckObjectID(L, 1));
     return 0;
 }
 
