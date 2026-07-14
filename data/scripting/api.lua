@@ -669,6 +669,38 @@ function api.describe()
       writable = spec.set ~= nil,
     })
   end
+
+  -- Which module a declaration lands under is the surface talking; which module
+  -- loaded first is not - that is the source list in meson.build, and a module
+  -- that requires another pulls it forward. The dump is committed and diffed, so
+  -- it groups by module and cannot move when a load order does, the way a type's
+  -- members and an enum's values already cannot.
+  --
+  -- Within a module the order is the order the file declares in, which is a
+  -- choice someone made: trx.music reads play, pause, unpause, stop.
+  local function by_module(list)
+    local declared_at = {}
+    for i, entry in ipairs(list) do
+      declared_at[entry] = i
+    end
+    table.sort(list, function(a, b)
+      local mod_a = a.path:match("^[^.]+")
+      local mod_b = b.path:match("^[^.]+")
+      if mod_a ~= mod_b then
+        return mod_a < mod_b
+      end
+      return declared_at[a] < declared_at[b]
+    end)
+  end
+  by_module(out.functions)
+  by_module(out.types)
+  by_module(out.enums)
+  by_module(out.constants)
+  by_module(out.namespaces)
+  by_module(out.properties)
+  table.sort(out.modules, function(a, b)
+    return a.name < b.name
+  end)
   return out
 end
 
