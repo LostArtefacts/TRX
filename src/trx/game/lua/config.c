@@ -49,9 +49,9 @@ static void M_PushValue(lua_State *const L, const CONFIG_OPTION *const option)
     }
 }
 
-// Everything reaches the option through the one string parser, so a Lua value
-// is spelled the way that parser reads it. A boolean has to be spelled out:
-// lua's own conversion would make it "1".
+// A value is handed to the config string parser, so it is spelled the way that
+// parser reads it. A boolean has to be spelled out: Lua's own conversion would
+// make it "1".
 static const char *M_ValueAsString(lua_State *const L, const int32_t arg)
 {
     if (lua_isboolean(L, arg)) {

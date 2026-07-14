@@ -61,7 +61,6 @@ GF_LEVEL_TABLE_TYPE GF_GetLevelTableType(const GF_LEVEL_TYPE level_type)
     }
 }
 
-// A gym has no number, and everything after it still counts up.
 int32_t GF_GetLevelOrdinalNumber(
     const GF_LEVEL_TABLE_TYPE table_type, const GF_LEVEL *const ref_level)
 {

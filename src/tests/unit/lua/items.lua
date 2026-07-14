@@ -72,7 +72,7 @@ test("a field that does not exist raises rather than being created", function()
 end)
 
 test("a value the field cannot hold raises instead of truncating", function()
-  -- hit_points is 16-bit. Silently truncating is what the old proxy did.
+  -- hit_points is 16-bit.
   raises(function()
     trx.items[1].hit_points = 99999
   end)
@@ -81,8 +81,7 @@ test("a value the field cannot hold raises instead of truncating", function()
   assert(trx.items[1].hit_points == 5)
 end)
 
-test("pickup_mode's enum lives with the items, not in a module of its own", function()
-  -- It types an item property, so it belongs here. trx.pickup is gone.
+test("the pickup mode enum is reached through trx.items", function()
   assert(trx.items.PickupMode.NORMAL == 0)
   assert(trx.items.PickupMode.PLINTH_LOW == 1)
   assert(trx.items.PickupMode.PLINTH_HIGH == 2)
@@ -103,8 +102,8 @@ test("status matches the enum, and activate() moves it", function()
   assert(it.is_active == true, "activate() did not take")
 end)
 
--- The generation counter earning its keep: an index alone would silently rebind
--- to whatever item recycled the slot.
+-- An index alone would rebind to whatever item recycled the slot; the
+-- generation counter is what makes the handle go stale instead.
 test("a handle to a killed item goes stale", function()
   local it = trx.items[1]
   assert(it:is_valid())
@@ -217,8 +216,7 @@ test("find and first query by object and room", function()
   assert(#trx.items.find() == 0 and trx.items.first() == nil)
 end)
 
--- The point of declaring the surface: a member C can reach but nobody names
--- simply does not exist. ITEM has nineteen of them.
+-- ITEM has many members the declaration does not name.
 test("undeclared members are unreachable", function()
   local it = trx.items[1]
   for _, name in ipairs({

@@ -12,9 +12,8 @@ api.module("console", {
     .. "the terminal and the log file.",
 })
 
--- The C side walks two stack frames up to find the caller, so every entry point
--- here keeps exactly one wrapper between the script and raw.log. Extra arguments
--- are concatenated with spaces by C; the contract is one message.
+-- One wrapper between a script and raw.log, for the reason log.lua gives. Extra
+-- arguments are concatenated with spaces by C; the contract is one message.
 local function at(level)
   return function(message)
     raw.log(level, message)

@@ -121,7 +121,7 @@ TEST(an_override_holds_the_option_and_a_restore_gives_it_back)
     CHECK(ConfigOverride_IsOverridden(fov));
 
     CHECK(ConfigOverride_Pop(fov));
-    // The player chose 65. Not the default, not 90: 65.
+    // The pop puts the player's own 65 back, not the default and not the 90.
     CHECK_EQ_INT(m_Fov, 65);
     CHECK(!ConfigOverride_IsOverridden(fov));
 }
@@ -129,10 +129,6 @@ TEST(an_override_holds_the_option_and_a_restore_gives_it_back)
 TEST(the_value_underneath_is_the_players_own_not_the_one_being_pushed)
 {
     M_SetUp();
-    // The parser writes straight into the option, so a push has to lift the
-    // parsed value back out and put the player's value back before recording
-    // it. Get that wrong and the base recorded is the override itself, and the
-    // player's setting is gone for good.
     const CONFIG_OPTION *const fov = M_Option("visuals.fov");
 
     ConfigOverride_PushFromString(fov, "90");

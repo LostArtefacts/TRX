@@ -31,8 +31,9 @@ LARA_INFO *Lara_GetLaraInfo(void)
     return &m_Lara;
 }
 
-// Lara is item 1 in the fake level, so trx.lara.item is a live Item handle out
-// of the same pool as any other.
+// Lara is item 0 in the pool, which a script sees as item 1: Lua indexes items
+// from 1. trx.lara.item is a live Item handle out of the same pool as any
+// other.
 ITEM *Lara_GetItem(void)
 {
     return Item_Get(0);

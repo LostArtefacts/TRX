@@ -20,5 +20,5 @@ extern FAKE_GAME_CALLS g_FakeGameCalls;
 
 void FakeGame_Reset(void);
 
-// Nothing is being played until something is.
+// A negative index leaves the current level unset.
 void FakeGame_SetCurrentLevel(int32_t idx);

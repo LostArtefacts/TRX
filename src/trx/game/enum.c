@@ -113,8 +113,7 @@ static __attribute__((constructor)) void M_Init(void)
     ENUM_MAP(ITEM_STATUS, IS_DEACTIVATED, "deactivated");
     ENUM_MAP(ITEM_STATUS, IS_INVISIBLE, "invisible");
 
-    // LOG_LEVEL_MAX is a sentinel, not a level: leaving it unmapped keeps it
-    // out of trx.log.LogLevel.
+    // LOG_LEVEL_MAX is a sentinel, not a level.
     ENUM_MAP(LOG_LEVEL, LOG_LEVEL_DEBUG, "debug");
     ENUM_MAP(LOG_LEVEL, LOG_LEVEL_INFO, "info");
     ENUM_MAP(LOG_LEVEL, LOG_LEVEL_WARNING, "warning");

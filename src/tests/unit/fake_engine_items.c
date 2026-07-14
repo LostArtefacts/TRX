@@ -275,9 +275,7 @@ void Object_SwapMeshEx(
     g_FakeItemCalls.swap_mesh++;
 }
 
-// The object's own properties, which every item of the type inherits. Only
-// max_hit_points is modelled - the split between an object's default and an
-// item's override is the thing worth testing, not the whole property system.
+// The object's own properties, which every item of the type inherits.
 bool ObjectProperty_GetObjectValue(
     const OBJECT *const obj, const char *const name,
     OBJECT_PROPERTY_VALUE *const out_value)

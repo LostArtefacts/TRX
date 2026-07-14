@@ -1,9 +1,5 @@
 // The config surface. The assertions live in src/tests/unit/lua/config.lua;
 // this stands up the world they run against.
-//
-// The override stack underneath is the real one - that is the whole point. Only
-// the facade around it is faked: which options exist, how a string becomes a
-// value, and what writing to the settings file means.
 
 #include "fake_engine_config.h"
 #include "lua_surface.h"

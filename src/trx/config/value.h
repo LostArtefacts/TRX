@@ -7,8 +7,7 @@
 #include <stdint.h>
 
 // A config value held apart from the option it belongs to - a copy, rather than
-// the live setting. The override stack keeps the player's value in one of these
-// while a script holds a different value in the option itself.
+// the live setting.
 //
 // An option's type says which member is the live one, so a value is never
 // meaningful without the option it came from. Every function here takes both.

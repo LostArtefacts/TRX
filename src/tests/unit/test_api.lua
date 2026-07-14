@@ -82,8 +82,7 @@ test("define exposes the raw impl, with no dispatch wrapper", function()
   end
   api.define("things.double", { params = { { name = "a", type = "integer" } }, impl = impl })
 
-  -- The public function IS the implementation. Anything else means the spec has
-  -- crept into the call path, which measured 26x slower.
+  -- Anything else means the spec has crept into the call path.
   assert(trx.things.double == impl, "define wrapped the impl")
   assert(trx.things.double(21) == 42)
 end)
@@ -165,17 +164,14 @@ test("describe() reports fields, methods and extensions", function()
   assert(#d.types == 1, "type missing from describe()")
   local t = d.types[1]
 
-  -- The bug that started all this: methods and extensions existed but were
-  -- absent from the dump, so the generated docs silently omitted them.
+  -- The docs are generated from the dump, so methods and extensions have to
+  -- reach it.
   assert(#t.fields == 1, "fields missing")
   assert(#t.methods == 1, "methods missing from describe()")
   assert(#t.extensions == 1, "extensions missing from describe()")
   assert(#d.functions == 1, "functions missing")
 end)
 
--- The whole point of api.enum: the numbers live in C and nowhere else, so a Lua
--- declaration that restated them could not go stale, because it cannot state
--- them at all.
 test("enum() reflects the constants out of C", function()
   local api = fresh_env()
   api.enum("things.State", {
@@ -225,7 +221,7 @@ test("describe() reports enum values in numeric order", function()
   assert(e.path == "things.State")
   assert(e.description == "A state.")
 
-  -- C hands them over in hash order; the docs must not come out shuffled.
+  -- C hands them over in hash order.
   assert(#e.values == 3)
   assert(e.values[1].name == "OFF" and e.values[1].value == 0)
   assert(e.values[2].name == "ON" and e.values[2].value == 1)
@@ -276,9 +272,7 @@ test("a module property reads through its getter and writes through its setter",
   end)
   assert(not ok and tostring(err):find("read-only", 1, true), "a getter-only property must not be writable")
 
-  -- The registry owns __newindex, so a name nobody declared cannot be created.
-  -- This is the whole point: a metatable getter never shows up in pairs(), so
-  -- seal()'s audit could never have caught one.
+  -- The registry owns __newindex, so an undeclared name cannot be created.
   ok = pcall(function()
     trx.things.undeclared = 1
   end)
@@ -335,8 +329,6 @@ test("seal audits inside a namespace", function()
   api.define("console.log.info", { description = "Info.", impl = function() end })
   api.seal()
 
-  -- Walking the module table alone finds `log`, a declared namespace, and stops.
-  -- Everything hanging off it has to be audited as its own container.
   local api2 = fresh_env()
   api2.module("console", {})
   api2.namespace("console.log", { description = "Logging." })
@@ -362,9 +354,9 @@ test("strip takes a prefix off a constant's name, by name and not by position", 
     values = { OFF = "off.", ON = "on." },
   })
 
-  -- The name is derived from the C name; the value is the C value. Nothing here
-  -- depends on the order the constants came back in, and `values` is a hash, so
-  -- it has no order to depend on.
+  -- The name is derived from the C name; the value is the C value. Nothing
+  -- depends on the order the constants came back in, and `values` is a hash,
+  -- so it has no order to depend on.
   assert(e.OFF == 0, "OFF did not resolve to WIDGET_OFF's value")
   assert(e.ON == 1)
   assert(e.WIDGET_OFF == nil, "the C spelling must not survive the strip")
@@ -377,8 +369,7 @@ test("a strip that collides two constants onto one name fails", function()
   local api = fresh_env()
   api.module("things", {})
 
-  -- WIDGET_ON strips to ON, and ON is already a constant. Silently letting the
-  -- second take the first one's place would hand a script the wrong number.
+  -- WIDGET_ON strips to ON, and ON is already a constant.
   local ok, err = pcall(api.enum, "things.State", {
     backing = "COLLIDING_STATE",
     strip = "WIDGET_",
@@ -438,8 +429,6 @@ test("seal blocks further declarations", function()
   local api = fresh_env()
   api.seal()
 
-  -- api.type() reaches into the C struct binder. Leaving it callable would let a
-  -- level script re-expose the members the declarations deliberately withheld.
   assert(not pcall(api.type, "things.Widget", { backing = "WIDGET" }), "type() after seal")
   assert(not pcall(api.define, "things.evil", { impl = function() end }), "define() after seal")
   assert(not pcall(api.enum, "things.State", { backing = "WIDGET_STATE", values = {} }), "enum() after seal")

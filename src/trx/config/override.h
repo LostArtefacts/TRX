@@ -10,9 +10,7 @@
 // it and applies the new one; popping puts it back. Overrides stack, so a demo
 // can override what a level already overrode, and each pop lifts one layer.
 //
-// Overrides are runtime-only: they never reach the settings file. What gets
-// saved is the value underneath, which is what ConfigOverride_GetBaseValuePtr
-// is for.
+// Overrides are runtime-only: they never reach the settings file.
 
 // Applies `value` to the option, remembering whatever is currently there.
 bool ConfigOverride_Push(const CONFIG_OPTION *option, const void *value);
