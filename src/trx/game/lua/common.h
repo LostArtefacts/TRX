@@ -22,17 +22,17 @@ void LUA_Shutdown(void);
 void LUA_DumpAPI(void);
 
 // Set script context: level script vs global script
-LUA_CONTEXT Lua_GetScriptContext(void);
-void Lua_SetScriptContext(LUA_CONTEXT context);
+LUA_CONTEXT LUA_GetScriptContext(void);
+void LUA_SetScriptContext(LUA_CONTEXT context);
 
-// Evaluate a Lua code string. Caller must free the result with Lua_FreeResult.
-LUA_RESULT Lua_Eval(const char *code);
+// Evaluate a Lua code string. Caller must free the result with LUA_FreeResult.
+LUA_RESULT LUA_Eval(const char *code);
 
 // Free the LUA eval result.
-void Lua_FreeResult(LUA_RESULT *result);
+void LUA_FreeResult(LUA_RESULT *result);
 
-// Evaluate a Lua script file. Caller must free the result with Lua_FreeResult.
-LUA_RESULT Lua_EvalFile(const char *path);
+// Evaluate a Lua script file. Caller must free the result with LUA_FreeResult.
+LUA_RESULT LUA_EvalFile(const char *path);
 
 // Reload current level script and reset level-scoped listeners.
-void Lua_ReloadLevelScript(void);
+void LUA_ReloadLevelScript(void);

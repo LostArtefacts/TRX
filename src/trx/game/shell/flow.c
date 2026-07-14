@@ -396,11 +396,11 @@ int32_t Shell_Main(const SHELL_ARGS *const args)
 
     // Execute global Lua script if provided
     if (g_GameFlow.main_script_path != nullptr) {
-        LUA_RESULT res = Lua_EvalFile(g_GameFlow.main_script_path);
+        LUA_RESULT res = LUA_EvalFile(g_GameFlow.main_script_path);
         if (res.code != LUA_OK) {
             LOG_ERROR("Lua main script error: %s", res.message);
         }
-        Lua_FreeResult(&res);
+        LUA_FreeResult(&res);
     }
 
     Stats_CalculateMaxStats();

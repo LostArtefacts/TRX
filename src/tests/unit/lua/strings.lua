@@ -60,16 +60,12 @@ test("an empty source list matches nothing, rather than raising", function()
 end)
 
 test("a key that is not a string is refused", function()
-  -- The matcher holds the key for the length of the match. A key read out of a
-  -- number field would be a string nothing owns by then.
   raises(function()
     trx.strings.fuzzy_match("wolf", { { key = 8, value = "WOLF" } })
   end, "string key")
 end)
 
 test("an empty key is refused", function()
-  -- The scorer measures how much of the key the input covers, so a key of no
-  -- length has nothing to divide by.
   raises(function()
     trx.strings.fuzzy_match("wolf", { { key = "", value = "WOLF" } })
   end, "empty")

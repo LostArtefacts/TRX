@@ -2,7 +2,7 @@
 --
 -- Everything under these assertions is real: trxc.events, the listener registry
 -- in lua/events.c, and data/scripting/events.lua itself. `fake.fire()` calls the
--- same Lua_FireEvent* entrypoints the engine calls, so a handler here sees
+-- same LUA_FireEvent* entrypoints the engine calls, so a handler here sees
 -- exactly what a handler sees in the game.
 
 local h = require("harness")

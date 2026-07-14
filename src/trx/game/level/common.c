@@ -88,7 +88,7 @@ bool Level_Initialise(
 
     Level_Unload();
 
-    Lua_FireEventInt32(LUA_EVENT_BEFORE_LEVEL_FILE, level->num);
+    LUA_FireEventInt32(LUA_EVENT_BEFORE_LEVEL_FILE, level->num);
 
     Level_Pipeline_Load(level);
 

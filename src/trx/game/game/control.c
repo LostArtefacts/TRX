@@ -60,7 +60,7 @@ bool Game_Start(const GF_LEVEL *const level, const GF_SEQUENCE_CONTEXT seq_ctx)
         { .type = LUA_EVENT_ARG_INT32, .value = { .i32 = level->num } },
         { .type = LUA_EVENT_ARG_BOOL, .value = { .b = seq_ctx == GFSC_SAVED } },
     };
-    Lua_FireEventEx(LUA_EVENT_GAME_START, args, 2);
+    LUA_FireEventEx(LUA_EVENT_GAME_START, args, 2);
     return true;
 }
 

@@ -37,17 +37,17 @@ typedef struct {
 
 // Initialize event API in Lua state
 void LUA_CreateEvents(lua_State *L);
-void Lua_ShutdownEvents(void);
+void LUA_ShutdownEvents(void);
 
 // Clear all listeners declared during the current level script
-void Lua_ClearLevelListeners(void);
+void LUA_ClearLevelListeners(void);
 
 // Fire a Lua event of given type with arbitrary arguments
-void Lua_FireEventEx(
+void LUA_FireEventEx(
     LUA_EVENT_TYPE ev, const LUA_EVENT_ARG *args, int32_t arg_count);
 
 // Fire a Lua event of given type with no arguments
-void Lua_FireEvent(LUA_EVENT_TYPE ev);
+void LUA_FireEvent(LUA_EVENT_TYPE ev);
 
 // Fire a Lua event of given type with int32 argument
-void Lua_FireEventInt32(LUA_EVENT_TYPE ev, int32_t arg);
+void LUA_FireEventInt32(LUA_EVENT_TYPE ev, int32_t arg);

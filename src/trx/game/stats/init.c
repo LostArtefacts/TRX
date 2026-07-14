@@ -335,17 +335,17 @@ void Stats_CalculateMaxStats(void)
             Level_Unload();
             Creature_Reset();
 
-            Lua_ClearLevelListeners();
-            Lua_SetScriptContext(LUA_CONTEXT_LEVEL);
+            LUA_ClearLevelListeners();
+            LUA_SetScriptContext(LUA_CONTEXT_LEVEL);
             if (level->script_path != nullptr) {
-                LUA_RESULT res = Lua_EvalFile(level->script_path);
+                LUA_RESULT res = LUA_EvalFile(level->script_path);
                 if (res.code != LUA_OK) {
                     LOG_ERROR("Lua level script error: %s", res.message);
                 }
-                Lua_FreeResult(&res);
+                LUA_FreeResult(&res);
             }
-            Lua_SetScriptContext(LUA_CONTEXT_GLOBAL);
-            Lua_FireEventInt32(LUA_EVENT_BEFORE_LEVEL_FILE, level->num);
+            LUA_SetScriptContext(LUA_CONTEXT_GLOBAL);
+            LUA_FireEventInt32(LUA_EVENT_BEFORE_LEVEL_FILE, level->num);
 
             Inject_InitLevel(level, INJECTION_MODE_STATS);
             if (loader->probe(loader, file, LEVEL_FORMAT_PROBE_STATS)) {
@@ -357,7 +357,7 @@ void Stats_CalculateMaxStats(void)
                     ObjectProperty_ResetItem(Item_Get(item_num));
                 }
 
-                Lua_FireEventInt32(LUA_EVENT_BEFORE_ITEM_SETUP, level->num);
+                LUA_FireEventInt32(LUA_EVENT_BEFORE_ITEM_SETUP, level->num);
 
                 const int32_t item_count = Item_GetLevelCount();
                 for (int32_t item_num = 0; item_num < item_count; item_num++) {
@@ -371,7 +371,7 @@ void Stats_CalculateMaxStats(void)
                     }
                 }
 
-                Lua_FireEventInt32(LUA_EVENT_AFTER_ITEM_SETUP, level->num);
+                LUA_FireEventInt32(LUA_EVENT_AFTER_ITEM_SETUP, level->num);
 
                 Carrier_InitialiseLevel(level);
                 Stats_ScanLevel(level);

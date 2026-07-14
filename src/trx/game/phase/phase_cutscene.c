@@ -64,10 +64,10 @@ static void M_Resume(PHASE *const phase)
 
 static PHASE_CONTROL M_Control(PHASE *const phase)
 {
-    Lua_FireEvent(LUA_EVENT_BEFORE_CONTROL);
+    LUA_FireEvent(LUA_EVENT_BEFORE_CONTROL);
     M_PRIV *const p = phase->priv;
     const GF_COMMAND gf_cmd = Cutscene_Control();
-    Lua_FireEvent(LUA_EVENT_AFTER_CONTROL);
+    LUA_FireEvent(LUA_EVENT_AFTER_CONTROL);
     if (gf_cmd.action != GF_NOOP) {
         return (PHASE_CONTROL) {
             .action = PHASE_ACTION_END,

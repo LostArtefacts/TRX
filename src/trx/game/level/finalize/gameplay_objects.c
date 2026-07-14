@@ -160,7 +160,7 @@ void Level_Finalize_LoadObjectsAndItems(LEVEL_CONTEXT *const ctx)
 
     M_PrepareTR4Items(ctx);
 
-    Lua_FireEventInt32(LUA_EVENT_BEFORE_ITEM_SETUP, GF_GetCurrentLevel()->num);
+    LUA_FireEventInt32(LUA_EVENT_BEFORE_ITEM_SETUP, GF_GetCurrentLevel()->num);
 
     const int32_t item_count = Item_GetLevelCount();
     for (int32_t i = 0; i < item_count; i++) {

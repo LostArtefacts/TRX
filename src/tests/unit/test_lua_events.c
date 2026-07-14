@@ -2,7 +2,7 @@
 // stands up the world they run against.
 //
 // There is no fake engine here: lua/events.c is self-contained - attach, detach
-// and fire - so `fake.fire()` calls the same Lua_FireEvent* entrypoints the
+// and fire - so `fake.fire()` calls the same LUA_FireEvent* entrypoints the
 // engine calls. That is the point: it pins the declared callback arguments
 // against what C actually pushes.
 
@@ -18,12 +18,12 @@ extern void LUA_CreateEvents(lua_State *L);
 
 static LUA_CONTEXT m_Context = LUA_CONTEXT_GLOBAL;
 
-LUA_CONTEXT Lua_GetScriptContext(void)
+LUA_CONTEXT LUA_GetScriptContext(void)
 {
     return m_Context;
 }
 
-void Lua_SetScriptContext(const LUA_CONTEXT context)
+void LUA_SetScriptContext(const LUA_CONTEXT context)
 {
     m_Context = context;
 }
@@ -40,11 +40,11 @@ static int M_FakeFire(lua_State *const L)
     const char *const name = luaL_checkstring(L, 1);
 
     if (strcmp(name, "before_control") == 0) {
-        Lua_FireEvent(LUA_EVENT_BEFORE_CONTROL);
+        LUA_FireEvent(LUA_EVENT_BEFORE_CONTROL);
     } else if (strcmp(name, "after_control") == 0) {
-        Lua_FireEvent(LUA_EVENT_AFTER_CONTROL);
+        LUA_FireEvent(LUA_EVENT_AFTER_CONTROL);
     } else if (strcmp(name, "on_pickup") == 0) {
-        Lua_FireEventInt32(LUA_EVENT_PICKUP, luaL_checkinteger(L, 2));
+        LUA_FireEventInt32(LUA_EVENT_PICKUP, luaL_checkinteger(L, 2));
     } else if (strcmp(name, "on_game_start") == 0) {
         const LUA_EVENT_ARG args[] = {
             { .type = LUA_EVENT_ARG_INT32,
@@ -52,19 +52,19 @@ static int M_FakeFire(lua_State *const L)
             { .type = LUA_EVENT_ARG_BOOL,
               .value = { .b = lua_toboolean(L, 3) } },
         };
-        Lua_FireEventEx(LUA_EVENT_GAME_START, args, 2);
+        LUA_FireEventEx(LUA_EVENT_GAME_START, args, 2);
     } else if (strcmp(name, "before_level_file") == 0) {
-        Lua_FireEventInt32(
+        LUA_FireEventInt32(
             LUA_EVENT_BEFORE_LEVEL_FILE, luaL_checkinteger(L, 2));
     } else if (strcmp(name, "after_level_file") == 0) {
-        Lua_FireEventInt32(LUA_EVENT_AFTER_LEVEL_FILE, luaL_checkinteger(L, 2));
+        LUA_FireEventInt32(LUA_EVENT_AFTER_LEVEL_FILE, luaL_checkinteger(L, 2));
     } else if (strcmp(name, "before_item_setup") == 0) {
-        Lua_FireEventInt32(
+        LUA_FireEventInt32(
             LUA_EVENT_BEFORE_ITEM_SETUP, luaL_checkinteger(L, 2));
     } else if (strcmp(name, "after_item_setup") == 0) {
-        Lua_FireEventInt32(LUA_EVENT_AFTER_ITEM_SETUP, luaL_checkinteger(L, 2));
+        LUA_FireEventInt32(LUA_EVENT_AFTER_ITEM_SETUP, luaL_checkinteger(L, 2));
     } else if (strcmp(name, "after_level_state") == 0) {
-        Lua_FireEventInt32(
+        LUA_FireEventInt32(
             LUA_EVENT_AFTER_LEVEL_STATE, luaL_checkinteger(L, 2));
     } else {
         return luaL_error(L, "unknown event: %s", name);
@@ -89,15 +89,15 @@ static int M_FakeAsLevelScript(lua_State *const L)
 // fake.end_level() - what the engine does when a level ends.
 static int M_FakeEndLevel(lua_State *const L)
 {
-    Lua_ClearLevelListeners();
+    LUA_ClearLevelListeners();
     return 0;
 }
 
 static int M_FakeReset(lua_State *const L)
 {
-    // Drops every listener, then puts m_L back: Lua_ShutdownEvents clears it,
+    // Drops every listener, then puts m_L back: LUA_ShutdownEvents clears it,
     // and the next fire would be a no-op without it.
-    Lua_ShutdownEvents();
+    LUA_ShutdownEvents();
     LUA_CreateEvents(L);
     m_Context = LUA_CONTEXT_GLOBAL;
     return 0;

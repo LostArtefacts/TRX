@@ -39,7 +39,7 @@ __attribute__((destructor)) static void M_Shutdown(void)
     m_L = nullptr;
 }
 
-void Lua_ShutdownEvents(void)
+void LUA_ShutdownEvents(void)
 {
     M_ClearAllListeners(true);
     m_L = nullptr;
@@ -58,7 +58,7 @@ static int32_t M_L_EventsAttach(lua_State *const L)
     const M_LISTENER listener = {
         .ref = ref,
         .type = ev,
-        .level_scoped = Lua_GetScriptContext() == LUA_CONTEXT_LEVEL,
+        .level_scoped = LUA_GetScriptContext() == LUA_CONTEXT_LEVEL,
     };
     Vector_Add(m_Listeners, &listener);
     lua_pushinteger(L, ref);
@@ -86,7 +86,7 @@ static int32_t M_L_EventsDetach(lua_State *const L)
     return 1;
 }
 
-void Lua_ClearLevelListeners(void)
+void LUA_ClearLevelListeners(void)
 {
     lua_State *const L = m_L;
     if (L == nullptr) {
@@ -131,7 +131,7 @@ static void M_PushArg(lua_State *const L, const LUA_EVENT_ARG arg)
     }
 }
 
-void Lua_FireEventEx(
+void LUA_FireEventEx(
     const LUA_EVENT_TYPE ev, const LUA_EVENT_ARG *const args,
     const int32_t arg_count)
 {
@@ -155,17 +155,17 @@ void Lua_FireEventEx(
     }
 }
 
-void Lua_FireEvent(const LUA_EVENT_TYPE ev)
+void LUA_FireEvent(const LUA_EVENT_TYPE ev)
 {
-    Lua_FireEventEx(ev, nullptr, 0);
+    LUA_FireEventEx(ev, nullptr, 0);
 }
 
-void Lua_FireEventInt32(const LUA_EVENT_TYPE ev, const int32_t arg)
+void LUA_FireEventInt32(const LUA_EVENT_TYPE ev, const int32_t arg)
 {
     const LUA_EVENT_ARG args[] = {
         { .type = LUA_EVENT_ARG_INT32, .value = { .i32 = arg } },
     };
-    Lua_FireEventEx(ev, args, 1);
+    LUA_FireEventEx(ev, args, 1);
 }
 
 void LUA_CreateEvents(lua_State *const L)
