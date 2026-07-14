@@ -22,6 +22,15 @@ test("sealing rejects further declarations", function()
     })
   end, "sealed")
 
+  -- api.module installs a module's metatable, so it reopens what the seal shut.
+  raises(function()
+    trx.api.module("items", {
+      instance = function()
+        return trx.items[1]
+      end,
+    })
+  end, "sealed")
+
   -- A rejected declaration must not have bound anything on its way out.
   assert(trx.items[1].box_num == nil, "box_num must still be unreachable")
 end)
