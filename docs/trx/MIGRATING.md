@@ -19,6 +19,9 @@ order: 3
    - A handle to a killed or recycled item now raises `stale ITEM handle` when
      read or written, instead of silently addressing whatever item took over the
      slot. Guard handles held across time with `item:is_valid()`.
+   - Two handles are equal when they name the same thing, so
+     `trx.items[1] == trx.items[1]` is now true where it used to be false - every
+     lookup handed back a fresh handle. A stale handle does not equal a live one.
    - Writing a value a field cannot hold now raises instead of truncating - e.g.
      `item.hit_points = 99999`, where the field is 16-bit.
    - `pairs(item)` iterates the item's public fields; it used to yield `idx`
@@ -32,6 +35,11 @@ order: 3
      `trx.rooms.fn.FlipStatus` is now `trx.rooms.FlipStatus`, and
      `trx.rooms.fn.Room`, `trx.rooms.fn.flip` and `trx.rooms.fn.flip_effect`
      became `trx.rooms.Room`, `trx.rooms.flip` and `trx.rooms.flip_effect`.
+   - A room handle now goes stale when the level changes, as an item handle
+     already did: reading or writing a field raises `stale ROOM handle` rather
+     than naming whatever room sits at that number in the new level. Guard a
+     handle held across time with `room:is_valid()`. Handles compare by identity,
+     as item handles do.
    - An unset room flag now reads as `false` rather than `nil`, so
      `if room.underwater == nil` no longer detects a dry room. Test the flag
      itself.
@@ -68,12 +76,14 @@ order: 3
    picks up the wrong item rather than failing - pass `item_num` straight
    through.
 
-6. **Update scripts that write to a catalog**
+6. **Update scripts that write to a catalog or enum**
    The catalogs, and every other enum, are read-only now. Writing to one used to
    succeed and silently break every later lookup, the engine's own scripts
    included. Reading is unchanged, and a catalog answers to a name in any case:
    `trx.catalog.objects.wolf` and `trx.catalog.objects.WOLF` are the same
-   constant. Upper case is the documented spelling.
+   constant. Upper case is the documented spelling. `pairs(trx.items.Status)`
+   yields the constants alone; it used to hand back the writable table behind the
+   enum.
 
 7. **Update scripts that use Lara's mesh tables**
    `trx.lara.mesh` and `trx.lara.extra_mesh` became declared enums, so their
@@ -129,20 +139,43 @@ order: 3
    `trx.music.play(id[, opts])`.
 
 17. **Update scripts that address levels by number**
-   `trx.game.play_level` and the `trx.game.levels` list leaves out the gym.
-   In a game with a gym `trx.game.levels[1]` used to be the gym; drop any offset
-   that stepped over it; use `trx.game.play_gym()` and `trx.game.gym`.
+   `trx.game.levels` is the levels the game numbers, and a gym is not one of
+   them. Where a game flow has a gym, `trx.game.levels[1]` used to be the gym;
+   now every entry after it has shifted down by one and the last level -
+   previously unreachable - is in the list. `trx.game.play_level(1)` starts the
+   first numbered level rather than the gym, so drop any offset that stepped over
+   it; use `trx.game.play_gym()` and `trx.game.gym` for the gym. The same holds
+   for `trx.game.cutscenes`, `trx.game.demos` and their `play_` functions.
 
 18. **Update Lara's outfit definitions**
    The `hair_pos` entries for Lara's braids were changed to `positions`. This
    field is now an array (of at most two values) rather than a single position.
    Update `outfits.json5` accordingly.
 
-18. **Update strings files that override the healing text**
+19. **Update strings files that override the healing text**
    `general/osd/heal_already_full_hp` and `general/osd/heal_success` are now
    `console/cmd/heal/already_full_hp` and `console/cmd/heal/success`. An
    override under an old key is no longer read, and nothing reports it.
 
+20. **Update scripts that pass an incomplete position**
+   `{ x = , y = , z = }` needs all three coordinates. A missing one used to read
+   as zero in `trx.sound.play`, placing the sound at the edge of the world, and
+   raised an unhelpful error elsewhere. It now names the coordinate and the
+   argument it came in on.
+
+21. **Update scripts that file assault course records**
+   `trx.assault.stats.add_record`, `remove_record` and `list_records` take the
+   track as a last, optional argument, defaulting to the course as the rest of
+   the module does. The quad bike keeps its own record table, which could not be
+   reached at all before: `trx.assault.stats.list_records(trx.assault.Track.QUAD)`.
+
+22. **Update scripts that reach into `trx.api`**
+   `trx.api` is `strict` and `is_strict`. The declaring functions - `api.define`,
+   `api.type`, `api.enum` and the rest - are gone once the engine has sealed the
+   surface, which happens before any script runs. `trx.api.strict(true)` now
+   checks the arguments of a handle's methods too, so `item:distance_to("over
+   there")` raises where it used to reach C unchecked, and it catches a method
+   called with a dot where a colon was meant.
 
 ### Version 1.8 to 1.9
 
