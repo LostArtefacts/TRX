@@ -118,6 +118,23 @@ test("a handle to a killed item goes stale", function()
   end, "stale")
 end)
 
+-- Every lookup mints a fresh handle, so equality has to compare what the two
+-- handles point at rather than the userdata itself.
+test("two handles to the same item are equal", function()
+  assert(trx.items[1] == trx.items[1], "the same item twice must compare equal")
+  assert(trx.items[1] == trx.items.get(1))
+  assert(trx.items[1] ~= trx.items[2], "different items must not")
+
+  local it = trx.items[1]
+  assert(it ~= 1 and it ~= "wolf" and it ~= nil)
+
+  -- The slot is what a stale handle still names, and the generation is what
+  -- tells the two occupants apart.
+  it:kill()
+  local fresh = trx.items[1]
+  assert(it ~= fresh, "a stale handle must not equal a live one")
+end)
+
 -- pairs() hands the iterator to the script, so it is reachable with whatever
 -- the script cares to pass it.
 test("the field iterator refuses a value that is not an item", function()

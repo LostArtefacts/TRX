@@ -213,6 +213,23 @@ static int M_PairsIter(lua_State *const L)
     return 2;
 }
 
+// LUA_Struct_Push mints a fresh userdata every time, so two handles to the same
+// thing are never the same value. Compare what they point at instead: the type,
+// the slot, and the generation that says which occupant of the slot is meant.
+static int M_Eq(lua_State *const L)
+{
+    // Lua takes __eq from the first operand, or from the second when the first
+    // has none, so neither side is known to be a handle of this type. Upvalue 1
+    // carries the type; anything else is unequal rather than dereferenced.
+    const TYPE_DESC *const type = lua_touserdata(L, lua_upvalueindex(1));
+    const LUA_STRUCT_REF *const a = luaL_testudata(L, 1, type->name);
+    const LUA_STRUCT_REF *const b = luaL_testudata(L, 2, type->name);
+    lua_pushboolean(
+        L,
+        a != nullptr && b != nullptr && a->idx == b->idx && a->gen == b->gen);
+    return 1;
+}
+
 // __index, __newindex and __pairs are only ever reached through a handle's
 // metatable, and that metatable is protected, so arg 1 is always a handle of
 // this type. The iterator __pairs returns is the one thing here that escapes.
@@ -279,6 +296,10 @@ void LUA_Struct_Register(
 
     lua_pushcfunction(L, M_Pairs);
     lua_setfield(L, -2, "__pairs");
+
+    lua_pushlightuserdata(L, (void *)type);
+    lua_pushcclosure(L, M_Eq, 1);
+    lua_setfield(L, -2, "__eq");
 
     // Protect the metatable. Without this, getmetatable(item).__raw_methods
     // hands a script every C method the type could offer, including the ones no
