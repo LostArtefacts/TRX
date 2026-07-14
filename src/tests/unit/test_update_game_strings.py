@@ -39,6 +39,10 @@ class TestGameStrings(unittest.TestCase):
         )
         self.assertEqual(found, {"test/plain", "test/formatted"})
 
+    def test_command_help_id_is_found(self):
+        found = self.scan('trx.console.register({ help = "test/help" })\n')
+        self.assertEqual(found, {"test/help"})
+
     def test_single_quoted_key_is_found(self):
         # Both quoting styles are ordinary Lua, and a script that picks the one
         # the scanner cannot see loses its key to the pruning step.

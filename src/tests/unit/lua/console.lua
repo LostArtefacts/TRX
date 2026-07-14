@@ -79,6 +79,153 @@ test("clear clears the console", function()
   assert(fake.calls().clear_count == 1)
 end)
 
+test("a registered command runs when the player types it", function()
+  local seen = nil
+  trx.console.register({
+    name = "greet",
+    run = function(args)
+      seen = args
+    end,
+  })
+
+  assert(fake.run("greet", "world") == trx.console.Result.OK, "a command that says nothing is OK")
+  assert(seen == "world", "the arguments did not reach the handler")
+end)
+
+test("the arguments are trimmed", function()
+  local seen = nil
+  trx.console.register({
+    name = "trimmed",
+    run = function(args)
+      seen = args
+    end,
+  })
+  fake.run("trimmed", "   spaced   ")
+  assert(seen == "spaced", "the handler was handed untrimmed arguments")
+end)
+
+test("a command answers to whatever case the player typed", function()
+  local seen = nil
+  trx.console.register({
+    name = "shout",
+    run = function(args)
+      seen = args
+    end,
+  })
+
+  assert(fake.run("SHOUT", "loudly") == trx.console.Result.OK)
+  assert(seen == "loudly", "the command did not run for an upper case name")
+end)
+
+test("a command says how it went", function()
+  trx.console.register({
+    name = "picky",
+    run = function(args)
+      if args == "" then
+        return trx.console.Result.BAD_INVOCATION, "picky what?"
+      end
+      return trx.console.Result.FAILURE, "could not"
+    end,
+  })
+
+  assert(fake.run("picky", "") == trx.console.Result.BAD_INVOCATION)
+  assert(fake.calls().last_message == "picky what?")
+  assert(fake.calls().last_level == trx.log.LogLevel.ERROR)
+
+  assert(fake.run("picky", "x") == trx.console.Result.FAILURE)
+end)
+
+test("a message from a command that worked is not an error", function()
+  trx.console.register({
+    name = "chatty",
+    run = function()
+      return trx.console.Result.OK, "did it"
+    end,
+  })
+  fake.run("chatty", "")
+  assert(fake.calls().last_message == "did it")
+  assert(fake.calls().last_level == trx.log.LogLevel.INFO, "OK is not an error")
+end)
+
+test("a command that raises is a failure, not a crash", function()
+  trx.console.register({
+    name = "broken",
+    run = function()
+      error("boom")
+    end,
+  })
+  assert(fake.run("broken", "") == trx.console.Result.FAILURE)
+end)
+
+test("a result that is not a Result is a failure", function()
+  trx.console.register({
+    name = "confused",
+    run = function()
+      return "failure"
+    end,
+  })
+  assert(fake.run("confused", "") == trx.console.Result.FAILURE)
+end)
+
+-- The bridge takes the handler's answer straight from Lua, and lua_tointeger
+-- reads a table as 0, which is OK. Reached here through the raw bridge, past
+-- the check trx.console.register makes.
+test("the bridge refuses an answer that is not a result", function()
+  trxc.console.register("raw_table", nil, function()
+    return {}
+  end)
+  assert(fake.run("raw_table", "") == trx.console.Result.FAILURE)
+
+  trxc.console.register("raw_number", nil, function()
+    return 99
+  end)
+  assert(fake.run("raw_number", "") == trx.console.Result.FAILURE)
+end)
+
+test("false is not a way of saying OK", function()
+  trx.console.register({
+    name = "denier",
+    run = function()
+      return false
+    end,
+  })
+  assert(fake.run("denier", "") == trx.console.Result.FAILURE)
+end)
+
+test("a command carries its help string", function()
+  trx.console.register({
+    name = "helpful",
+    help = "console/cmd/helpful/help",
+    run = function() end,
+  })
+  assert(fake.help_id("helpful") == "console/cmd/helpful/help")
+end)
+
+test("a name the console could not dispatch is refused", function()
+  raises(function()
+    trx.console.register({ name = "two words", run = function() end })
+  end)
+  raises(function()
+    trx.console.register({ name = "", run = function() end })
+  end)
+end)
+
+test("a command cannot be registered twice", function()
+  trx.console.register({ name = "once", run = function() end })
+  raises(function()
+    trx.console.register({ name = "once", run = function() end })
+  end)
+end)
+
+test("register wants a name and a function", function()
+  raises(function()
+    trx.console.register({ run = function() end })
+  end)
+  raises(function()
+    trx.console.register({ name = "nofn" })
+  end)
+end)
+
 test("the raw bridge is not part of the surface", function()
   -- trxc.console.log is a plain function taking a level. The declaration turns
   -- it into a namespace, and the raw entry point must not leak alongside it.

@@ -35,9 +35,10 @@ if trx_version == ''
   endif
 endif
 
-# Each file in data/scripting/api declares part of the trx.* API and is required
-# by name. The list is what the engine ships; test_lua_sources.py holds it to the
-# tree.
+# data/scripting/api declares the trx.* API: each file is a module, required by
+# name. data/scripting/commands holds runtime scripts, which declare nothing and
+# are run once the API is built and sealed. The loader keeps the two apart, so
+# the split is stated here rather than inferred from a path.
 trx_lua_api_sources = files(
   '../data/scripting/api/api.lua',
   '../data/scripting/api/assault.lua',
@@ -60,16 +61,25 @@ trx_lua_api_sources = files(
   '../data/scripting/api/strings.lua',
 )
 
+trx_lua_script_sources = files()
+
 trx_lua_embed = custom_target(
   'trx_lua_embed',
-  input: trx_lua_api_sources,
+  input: trx_lua_api_sources + trx_lua_script_sources,
   output: ['trx_embedded_lua.c'],
   command: [
     python3,
     meson.project_source_root() + '/../tools/embed_trx_lua.py',
     '--output',
     '@OUTPUT0@',
-    '@INPUT@',
+    '--module-root',
+    meson.project_source_root() + '/../data/scripting/api',
+    '--modules',
+    trx_lua_api_sources,
+    '--script-root',
+    meson.project_source_root() + '/../data/scripting',
+    '--scripts',
+    trx_lua_script_sources,
   ],
 )
 

@@ -98,6 +98,16 @@ int LuaSurface_Run(const LUA_SURFACE_TEST *const test)
 
     for (int32_t i = 0; i < 4 && test->deps[i] != nullptr; i++) {
         M_RunModule(L, test->deps[i]);
+
+        // A module states its dependencies with require(). It is loaded now, so
+        // hand it back.
+        lua_pushfstring(
+            L, "package.preload['trx.%s'] = function() return trx.%s end",
+            test->deps[i], test->deps[i]);
+        if (luaL_dostring(L, lua_tostring(L, -1)) != LUA_OK) {
+            M_Fail(L, "preloading a dependency");
+        }
+        lua_pop(L, 1);
     }
 
     M_RunModule(L, test->module);

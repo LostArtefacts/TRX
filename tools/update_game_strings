@@ -48,6 +48,12 @@ RE_LUA_GAME_STRING_USAGE = re.compile(
     r"trx\.locale\.(?:get|format)\(\s*"
     r"""(?:"((?:\\.|[^"\\])*)"|'((?:\\.|[^'\\])*)')"""
 )
+# The help key of a trx.console.register{} spec. Loose on purpose: keeping a key
+# too many is harmless where pruning one too few loses a command its text.
+RE_LUA_HELP_ID_USAGE = re.compile(
+    r"\bhelp\s*=\s*"
+    r"""(?:"((?:\\.|[^"\\])*)"|'((?:\\.|[^'\\])*)')"""
+)
 ROOT_SECTIONS = ("general", "console", "enums", "dynamic", "settings")
 TOP_LEVEL_SECTION_ORDER = (
     "extends",
@@ -424,9 +430,10 @@ def strip_lua_noncode(source: str) -> str:
 def get_used_lua_strings(path: Path) -> Iterable[tuple[int, str]]:
     """Game string keys named from a Lua script."""
     source = strip_lua_noncode(path.read_text())
-    for match in re.finditer(RE_LUA_GAME_STRING_USAGE, source):
-        literal = match.group(1) if match.group(1) is not None else match.group(2)
-        yield source.count("\n", 0, match.start()) + 1, unescape(literal)
+    for regex in (RE_LUA_GAME_STRING_USAGE, RE_LUA_HELP_ID_USAGE):
+        for match in re.finditer(regex, source):
+            literal = match.group(1) if match.group(1) is not None else match.group(2)
+            yield source.count("\n", 0, match.start()) + 1, unescape(literal)
 
 
 def get_enum_value_types(paths: list[Path]) -> dict[str, str]:

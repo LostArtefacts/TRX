@@ -2,6 +2,7 @@
 #include <trx/core/enum_map.h>
 #include <trx/core/log.h>
 #include <trx/game/catalog/manager.h>
+#include <trx/game/console/enum.h>
 #include <trx/game/game_buf.h>
 #include <trx/game/game_flow/types.h>
 #include <trx/game/gun/types.h>
@@ -103,6 +104,11 @@ static __attribute__((constructor)) void M_Init(void)
     ENUM_MAP(GAME_BUFFER, GBUF_SAMPLE_INFOS, "Sample information");
     ENUM_MAP(GAME_BUFFER, GBUF_SAMPLES, "Samples");
     ENUM_MAP(GAME_BUFFER, GBUF_WALKABLES, "Walkables buffer");
+
+    ENUM_MAP(COMMAND_RESULT, CR_SUCCESS, "ok");
+    ENUM_MAP(COMMAND_RESULT, CR_FAILURE, "failure");
+    ENUM_MAP(COMMAND_RESULT, CR_UNAVAILABLE, "unavailable");
+    ENUM_MAP(COMMAND_RESULT, CR_BAD_INVOCATION, "bad_invocation");
 
     // GYM_TRACK_NONE and GYM_TRACK_NUMBER_OF are sentinels, not tracks: leaving
     // them unmapped keeps them out of trx.assault.Track.
