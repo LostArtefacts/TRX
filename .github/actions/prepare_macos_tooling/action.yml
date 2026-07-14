@@ -74,7 +74,9 @@ runs:
     - name: "Build dependency: lua (universal)"
       if: steps.restore-cache.outputs.cache-hit != 'true'
       shell: bash
-      run: sudo port -N install lua +universal
+      # The `lua` port is stuck on 5.3; we need the 5.4 API. It installs as
+      # lua5.4.pc, hence -Dlua_dep=lua5.4 at meson setup time.
+      run: sudo port -N install lua54 +universal
 
     - name: "Build dependency: uthash (universal)"
       if: steps.restore-cache.outputs.cache-hit != 'true'

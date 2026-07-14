@@ -10,14 +10,18 @@ Install either Homebrew or MacPorts, then install the required dependencies.
 Homebrew:
 
 ```bash
-brew install sdl2 glew ffmpeg@6 uthash pkgconfig meson python@3.14
+brew install sdl2 glew ffmpeg@6 uthash pkgconfig lua meson python@3.14
 ```
 
 MacPorts:
 
 ```bash
-sudo port install libsdl2 ffmpeg uthash pkgconfig glew meson python@3.14
+sudo port install libsdl2 ffmpeg uthash pkgconfig glew lua54 meson python@3.14
 ```
+
+TRX needs Lua 5.4. MacPorts' plain `lua` port is still on 5.3, so install `lua54`
+instead and add `-Dlua_dep=lua5.4` to the `meson setup` commands below — that is
+the pkg-config name the port installs under.
 
 ## Building TRX
 

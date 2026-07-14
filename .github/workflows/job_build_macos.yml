@@ -109,7 +109,7 @@ jobs:
           CC: clang
         run: |
           BUILD_DIR=build-arm64
-          BUILD_OPTIONS="src --prefix=/tmp/${{ steps.vars.outputs.name }}.app --bindir=Contents/MacOS --buildtype ${{ inputs.target }}"
+          BUILD_OPTIONS="src --prefix=/tmp/${{ steps.vars.outputs.name }}.app --bindir=Contents/MacOS --buildtype ${{ inputs.target }} -Dlua_dep=lua5.4"
           meson setup $BUILD_DIR $BUILD_OPTIONS
           meson install -C $BUILD_DIR --tags "trx,common"
 
@@ -118,7 +118,7 @@ jobs:
           CC: clang
         run: |
           BUILD_DIR=build-x86-64
-          BUILD_OPTIONS="src --prefix=/tmp/${{ steps.vars.outputs.name }}.app --bindir=Contents/MacOS --cross-file tools/shared/mac/x86-64_cross_file.txt --buildtype ${{ inputs.target }}"
+          BUILD_OPTIONS="src --prefix=/tmp/${{ steps.vars.outputs.name }}.app --bindir=Contents/MacOS --cross-file tools/shared/mac/x86-64_cross_file.txt --buildtype ${{ inputs.target }} -Dlua_dep=lua5.4"
           meson setup $BUILD_DIR $BUILD_OPTIONS
           meson compile -C $BUILD_DIR
 
