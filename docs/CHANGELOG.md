@@ -1,6 +1,7 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.9.1...develop) - ××××-××-××
 - changed reflections UV mapping to be more correct
 - fixed TR1 and TR2 skyboxes being 2× too bright (regression from 1.9)
+- fixed Lara being unable to use binoculars when fixed cameras or track path flyby sequences are active (regression from 1.9)
 - fixed being unable to drop to the secret ledge in Jungle room 76 from the ledge above (#5818)
 
 **Lua**
