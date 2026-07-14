@@ -75,14 +75,16 @@ api.property("assault.active_track", {
 })
 
 api.namespace("assault.stats", {
-  description = "The Assault Course record table, as shown on the stats screen. The records are "
-    .. "stored in the player's profile, so writing to them outlives the level.",
+  description = "A track's record table, as shown on the stats screen. Each track keeps its own. "
+    .. "The records are stored in the player's profile, so writing to them outlives the level, and "
+    .. "they can be read outside a gym level.",
 })
 
 api.define("assault.stats.add_record", {
   description = "Files a new record, inserting it in time order and bumping the attempt count.",
   params = {
     { name = "time", type = "number", description = "Time in seconds. Must be greater than zero." },
+    track_param(),
   },
   returns = {
     type = "boolean",
@@ -96,6 +98,7 @@ api.define("assault.stats.remove_record", {
   description = "Removes a record, closing the gap behind it.",
   params = {
     { name = "record_id", type = "integer", description = "1-based position in the table." },
+    track_param(),
   },
   returns = { type = "boolean", description = "`false` if there is no record at that position." },
   impl = raw.stats.remove,
@@ -103,12 +106,13 @@ api.define("assault.stats.remove_record", {
 
 api.define("assault.stats.list_records", {
   description = "The records, fastest first.",
+  params = { track_param() },
   returns = {
     type = "table",
     description = "List of `{ time = seconds, attempt_num = which attempt it was }`.",
   },
   examples = {
-    [[for _, record in ipairs(trx.assault.stats.list_records()) do
+    [[for _, record in ipairs(trx.assault.stats.list_records(trx.assault.Track.QUAD)) do
   trx.log.info(("attempt %d: %.2fs"):format(record.attempt_num, record.time))
 end]],
   },

@@ -2447,6 +2447,13 @@
           "description": "Time in seconds. Must be greater than zero.",
           "name": "time",
           "type": "number"
+        },
+        {
+          "default": 1,
+          "enum": "assault.Track",
+          "name": "track",
+          "optional": true,
+          "type": "integer"
         }
       ],
       "path": "assault.stats.add_record",
@@ -2462,6 +2469,13 @@
           "description": "1-based position in the table.",
           "name": "record_id",
           "type": "integer"
+        },
+        {
+          "default": 1,
+          "enum": "assault.Track",
+          "name": "track",
+          "optional": true,
+          "type": "integer"
         }
       ],
       "path": "assault.stats.remove_record",
@@ -2473,7 +2487,16 @@
     {
       "description": "The records, fastest first.",
       "examples": [
-        "for _, record in ipairs(trx.assault.stats.list_records()) do\n  trx.log.info((\"attempt %d: %.2fs\"):format(record.attempt_num, record.time))\nend"
+        "for _, record in ipairs(trx.assault.stats.list_records(trx.assault.Track.QUAD)) do\n  trx.log.info((\"attempt %d: %.2fs\"):format(record.attempt_num, record.time))\nend"
+      ],
+      "params": [
+        {
+          "default": 1,
+          "enum": "assault.Track",
+          "name": "track",
+          "optional": true,
+          "type": "integer"
+        }
       ],
       "path": "assault.stats.list_records",
       "returns": {
@@ -3665,7 +3688,7 @@
   "namespaces": [
     {
       "callable": false,
-      "description": "The Assault Course record table, as shown on the stats screen. The records are stored in the player's profile, so writing to them outlives the level.",
+      "description": "A track's record table, as shown on the stats screen. Each track keeps its own. The records are stored in the player's profile, so writing to them outlives the level, and they can be read outside a gym level.",
       "path": "assault.stats"
     },
     {

@@ -275,7 +275,7 @@ bool Gym_TrackManager_HasStats(const GYM_TRACK_TYPE track)
     }
 }
 
-const GYM_TRACK_STATS *Gym_TrackManager_GetStats(const GYM_TRACK_TYPE track)
+GYM_TRACK_STATS *Gym_TrackManager_GetMutableStats(const GYM_TRACK_TYPE track)
 {
     switch (track) {
     case GYM_TRACK_ASSAULT:
@@ -285,6 +285,11 @@ const GYM_TRACK_STATS *Gym_TrackManager_GetStats(const GYM_TRACK_TYPE track)
     default:
         return nullptr;
     }
+}
+
+const GYM_TRACK_STATS *Gym_TrackManager_GetStats(const GYM_TRACK_TYPE track)
+{
+    return Gym_TrackManager_GetMutableStats(track);
 }
 
 bool Gym_TrackManager_IsTimerDisplay(const GYM_TRACK_TYPE track)
