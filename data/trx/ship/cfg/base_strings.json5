@@ -523,6 +523,10 @@
                 "tr3_gym": "TR3 Gym",
                 "tr3_nevada": "Nevada",
                 "tr3_south_pacific": "South Pacific",
+                "tr4_classic": "TR4 Classic",
+                "tr4_golden_lara": "TR4 Golden Lara",
+                "tr4_young": "TR4 Young",
+                "tr4_young_golden_lara": "TR4 Young Golden Lara",
             }
         },
         "mods": {

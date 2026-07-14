@@ -523,6 +523,10 @@
                 "tr3_gym": "\\{review}TR3 Тренировочный",
                 "tr3_nevada": "\\{review}Невада",
                 "tr3_south_pacific": "\\{review}Южный Тихий океан",
+                "tr4_classic": "\\{review}TR4 Классический",
+                "tr4_golden_lara": "\\{review}TR4 Золотая Лара",
+                "tr4_young": "\\{review}TR4 Юная",
+                "tr4_young_golden_lara": "\\{review}TR4 Юная Золотая Лара",
             }
         },
         "mods": {

@@ -523,6 +523,10 @@
                 "tr3_gym": "TR3 Trèanadh",
                 "tr3_nevada": "Nevada",
                 "tr3_south_pacific": "A' Chuain Sèimh a Deas",
+                "tr4_classic": "TR4 Clasaigeach",
+                "tr4_golden_lara": "TR4 Lara Òir",
+                "tr4_young": "TR4 Òg",
+                "tr4_young_golden_lara": "TR4 Òg Òir",
             }
         },
         "mods": {

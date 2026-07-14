@@ -602,6 +602,112 @@
             "is_reflective": true,
             "combat_face_offset": -1,
         },
+
+        // TR4 Young
+        "tr4_young": {
+            "name_gs": "dynamic/enums/lara_outfit/tr4_young",
+            "mesh_object": "O_LARA_SKIN_SWAP_27",
+            "gun_map": 3,
+            "is_selectable": false,
+            "combat_face_offset": -1,
+            "braid": {
+                "mesh_offset": 54,
+                "gold_offset": 60,
+                "positions": [
+                    {
+                        "x": -52,
+                        "y": -48,
+                        "z": -50,
+                    },
+                    {
+                        "x": 44,
+                        "y": -48,
+                        "z": -50,
+                    },
+                ],
+            },
+            "no_holster_offsets": {
+                "thigh_r": 15,
+                "thigh_l": 16,
+            },
+            "extra_outfits": {
+                "LS_EXTRA_MIDAS_KILL": "tr4_young_golden_lara",
+            },
+        },
+
+        // TR4 Young Golden Lara
+        "tr4_young_golden_lara": {
+            "name_gs": "dynamic/enums/lara_outfit/tr4_young_golden_lara",
+            "mesh_object": "O_LARA_SKIN_SWAP_28",
+            "gun_map": 1,
+            "is_selectable": false,
+            "is_reflective": true,
+            "combat_face_offset": -1,
+            "braid": {
+                "mesh_offset": 54,
+                "gold_offset": 60,
+                "positions": [
+                    {
+                        "x": -52,
+                        "y": -48,
+                        "z": -50,
+                    },
+                    {
+                        "x": 44,
+                        "y": -48,
+                        "z": -50,
+                    },
+                ],
+            },
+        },
+
+        // TR4 Classic
+        "tr4_classic": {
+            "name_gs": "dynamic/enums/lara_outfit/tr4_classic",
+            "mesh_object": "O_LARA_SKIN_SWAP_29",
+            "gun_map": 3,
+            "is_selectable": false,
+            "combat_face_offset": 66,
+            "braid": {
+                "mesh_offset": 42,
+                "gold_offset": 48,
+                "positions": [
+                    {
+                        "x": -4,
+                        "y": -4,
+                        "z": -48,
+                    },
+                ],
+            },
+            "no_holster_offsets": {
+                "thigh_r": 15,
+                "thigh_l": 16,
+            },
+            "extra_outfits": {
+                "LS_EXTRA_MIDAS_KILL": "tr4_golden_lara",
+            },
+        },
+
+        // TR4 Golden Lara
+        "tr4_golden_lara": {
+            "name_gs": "dynamic/enums/lara_outfit/tr4_golden_lara",
+            "mesh_object": "O_LARA_SKIN_SWAP_30",
+            "gun_map": 1,
+            "is_selectable": false,
+            "is_reflective": true,
+            "combat_face_offset": -1,
+            "braid": {
+                "mesh_offset": 42,
+                "gold_offset": 48,
+                "positions": [
+                    {
+                        "x": -4,
+                        "y": -4,
+                        "z": -48,
+                    },
+                ],
+            },
+        },
     },
 
     "extra_meshes": {
