@@ -91,38 +91,6 @@ static int M_L_GetLaraTarget(lua_State *const L)
     return 1;
 }
 
-// trxc.lara.get_exposure_bar() → int
-static int M_L_LaraGetExposureBar(lua_State *const L)
-{
-    LARA_INFO *const lara = Lara_GetLaraInfo();
-    lua_pushinteger(L, lara->exposure_timer);
-    return 1;
-}
-
-// trxc.lara.set_exposure_bar(timer)
-static int M_L_LaraSetExposureBar(lua_State *const L)
-{
-    LARA_INFO *const lara = Lara_GetLaraInfo();
-    lara->exposure_timer = luaL_checkinteger(L, 1);
-    return 0;
-}
-
-// trxc.lara.get_air_bar() → int
-static int M_L_LaraGetAirBar(lua_State *const L)
-{
-    LARA_INFO *const lara = Lara_GetLaraInfo();
-    lua_pushinteger(L, lara->air);
-    return 1;
-}
-
-// trxc.lara.set_air_bar(timer)
-static int M_L_LaraSetAirBar(lua_State *const L)
-{
-    LARA_INFO *const lara = Lara_GetLaraInfo();
-    lara->air = luaL_checkinteger(L, 1);
-    return 0;
-}
-
 // trxc.lara.get_outfit() → string
 static int M_L_LaraGetOutfit(lua_State *const L)
 {
@@ -222,13 +190,6 @@ static int M_L_LaraGetExtraAnim(lua_State *const L)
     return 1;
 }
 
-// trxc.lara.get_equipped_gun() → int
-static int M_L_LaraGetEquippedGun(lua_State *const L)
-{
-    lua_pushinteger(L, Lara_GetLaraInfo()->gun_type);
-    return 1;
-}
-
 static void M_Create(lua_State *const L)
 {
     LUA_Struct_Register(
@@ -241,14 +202,6 @@ static void M_Create(lua_State *const L)
     lua_setfield(L, -2, "get_item");
     lua_pushcfunction(L, M_L_GetLaraTarget);
     lua_setfield(L, -2, "get_target");
-    lua_pushcfunction(L, M_L_LaraGetExposureBar);
-    lua_setfield(L, -2, "get_exposure_bar");
-    lua_pushcfunction(L, M_L_LaraSetExposureBar);
-    lua_setfield(L, -2, "set_exposure_bar");
-    lua_pushcfunction(L, M_L_LaraGetAirBar);
-    lua_setfield(L, -2, "get_air_bar");
-    lua_pushcfunction(L, M_L_LaraSetAirBar);
-    lua_setfield(L, -2, "set_air_bar");
     lua_pushcfunction(L, M_L_LaraGetOutfit);
     lua_setfield(L, -2, "get_outfit");
     lua_pushcfunction(L, M_L_LaraSetOutfit);
@@ -265,8 +218,6 @@ static void M_Create(lua_State *const L)
     lua_setfield(L, -2, "has_pistol_weapon");
     lua_pushcfunction(L, M_L_LaraGetExtraAnim);
     lua_setfield(L, -2, "get_extra_anim");
-    lua_pushcfunction(L, M_L_LaraGetEquippedGun);
-    lua_setfield(L, -2, "get_equipped_gun");
     lua_pushcfunction(L, M_L_LaraState);
     lua_setfield(L, -2, "state");
 
