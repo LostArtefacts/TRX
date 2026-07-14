@@ -1,6 +1,7 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.9.1...develop) - ××××-××-××
 - fixed TR1 and TR2 skyboxes being 2× too bright (regression from 1.9)
 - fixed Lara being unable to use binoculars when fixed cameras or track path flyby sequences are active (regression from 1.9)
+- fixed an interpolation issue when Lara performs inner-corner climbing (regression from 1.9)
 
 
 
