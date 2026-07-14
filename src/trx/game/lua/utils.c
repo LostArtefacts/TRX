@@ -37,6 +37,22 @@ OBJECT_ID LUA_CheckObjectID(lua_State *const L, const int arg)
     return (OBJECT_ID)LUA_CheckRange(L, arg, O_NUMBER_OF, "unknown object id");
 }
 
+void LUA_CheckLogCall(lua_State *const L, LUA_LOG_CALL *const out)
+{
+    *out = (LUA_LOG_CALL) {
+        .level = LUA_CheckRange(L, 1, LOG_LEVEL_ERROR + 1, "unknown log level"),
+        .msg = luaL_checkstring(L, 2),
+        .src = "?",
+        .func = "?",
+        .line = 0,
+    };
+    if (LUA_GetCallerInfo(L, &out->ar)) {
+        out->src = out->ar.short_src;
+        out->func = out->ar.name != nullptr ? out->ar.name : "?";
+        out->line = out->ar.currentline;
+    }
+}
+
 void LUA_RegisterModule(
     lua_State *const L, const char *const name, const luaL_Reg *const fns)
 {
