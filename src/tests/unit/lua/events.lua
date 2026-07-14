@@ -161,9 +161,21 @@ test("attaching something that is not a function raises", function()
   end)
 end)
 
+-- The sentinel the enum grew is what gives the bridge an upper bound to check
+-- against. Reached here through the raw bridge: no hook hands it a bad type.
+test("attaching to an event type the engine does not have raises", function()
+  raises(function()
+    trxc.events.attach(999, function() end)
+  end, "unknown event type")
+  raises(function()
+    trxc.events.attach(-1, function() end)
+  end, "unknown event type")
+end)
+
 test("the event type is not part of the surface", function()
   -- The nine hooks are the whole surface: neither the event type nor raw attach
-  -- is reachable from a script.
+  -- is reachable from a script. The types are reflected out of C, but they stay
+  -- behind the hooks.
   assert(trx.events.EventType == nil, "EventType is still reachable")
   assert(trx.events.attach == nil, "raw attach must not be public")
 

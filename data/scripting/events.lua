@@ -1,6 +1,13 @@
 local raw = trxc.events
-local types = trxc.events.EventType
 local api = trx.api
+
+-- The event types, reflected out of ENUM_MAP as any other enum is, so no number
+-- is written twice. Not declared with api.enum, and so not public: the named
+-- hooks below are the whole surface, and a script never has to name a type.
+local types = {}
+for _, constant in ipairs(trxc.enum.values("LUA_EVENT_TYPE")) do
+  types[constant.name] = constant.value
+end
 
 api.module("events", {
   order = 2,
@@ -10,10 +17,9 @@ api.module("events", {
     .. "attached from a global script lives for the whole session.",
 })
 
--- Each hook is a plain function closing over its event type. The type itself is
--- not public: the nine named hooks are the whole surface, so a script never has
--- to name a type or reach for attach() directly.
+-- Each hook is a plain function closing over its event type.
 local function hook(event_type)
+  assert(event_type ~= nil, "events: the engine has no such event type")
   return function(callback)
     return raw.attach(event_type, callback)
   end

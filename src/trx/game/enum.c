@@ -12,6 +12,7 @@
 #include <trx/game/lara/enum.h>
 #include <trx/game/lara/skin/types.h>
 #include <trx/game/lara/types.h>
+#include <trx/game/lua/events.h>
 #include <trx/game/music/enum.h>
 #include <trx/game/music/ids.h>
 #include <trx/game/objects/general/pickup.h>
@@ -112,6 +113,17 @@ static __attribute__((constructor)) void M_Init(void)
     ENUM_MAP(ITEM_STATUS, IS_ACTIVE, "active");
     ENUM_MAP(ITEM_STATUS, IS_DEACTIVATED, "deactivated");
     ENUM_MAP(ITEM_STATUS, IS_INVISIBLE, "invisible");
+
+    // LUA_EVENT_NUMBER_OF is a sentinel, not an event.
+    ENUM_MAP(LUA_EVENT_TYPE, LUA_EVENT_BEFORE_LEVEL_FILE, "before_level_file");
+    ENUM_MAP(LUA_EVENT_TYPE, LUA_EVENT_AFTER_LEVEL_FILE, "after_level_file");
+    ENUM_MAP(LUA_EVENT_TYPE, LUA_EVENT_BEFORE_ITEM_SETUP, "before_item_setup");
+    ENUM_MAP(LUA_EVENT_TYPE, LUA_EVENT_AFTER_ITEM_SETUP, "after_item_setup");
+    ENUM_MAP(LUA_EVENT_TYPE, LUA_EVENT_AFTER_LEVEL_STATE, "after_level_state");
+    ENUM_MAP(LUA_EVENT_TYPE, LUA_EVENT_GAME_START, "game_start");
+    ENUM_MAP(LUA_EVENT_TYPE, LUA_EVENT_PICKUP, "pickup");
+    ENUM_MAP(LUA_EVENT_TYPE, LUA_EVENT_BEFORE_CONTROL, "before_control");
+    ENUM_MAP(LUA_EVENT_TYPE, LUA_EVENT_AFTER_CONTROL, "after_control");
 
     // LOG_LEVEL_MAX is a sentinel, not a level.
     ENUM_MAP(LOG_LEVEL, LOG_LEVEL_DEBUG, "debug");
