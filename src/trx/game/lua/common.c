@@ -38,19 +38,21 @@ static LUA_RESULT M_LuaLoadAndRun(
     const char *const src)
 {
     LUA_RESULT result = { .code = LUA_OK, .message = nullptr };
+    // This is the state's main stack, and it outlives the call.
+    const int32_t base = lua_gettop(L);
     int status = loader(L, src);
     if (status != LUA_OK) {
         result.code = status;
         result.message = Memory_DupStr(lua_tostring(L, -1));
-        lua_pop(L, 1);
+        lua_settop(L, base);
         return result;
     }
     status = lua_pcall(L, 0, LUA_MULTRET, 0);
     if (status != LUA_OK) {
         result.code = status;
         result.message = Memory_DupStr(lua_tostring(L, -1));
-        lua_pop(L, 1);
     }
+    lua_settop(L, base);
     return result;
 }
 
