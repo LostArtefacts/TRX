@@ -362,7 +362,9 @@ api.define("items.find", {
     {
       name = "query",
       type = "table",
-      description = "Supported keys: `object_id`, `room_num`. Unknown keys are ignored and logged.",
+      optional = true,
+      description = "Supported keys: `object_id`, `room_num`. Unknown keys are ignored and logged. "
+        .. "Omit it for no matches.",
     },
   },
   returns = { type = "table", description = "List of `Item`." },
@@ -381,7 +383,12 @@ api.define("items.find", {
 api.define("items.first", {
   description = "Finds the first item matching the query.",
   params = {
-    { name = "query", type = "table", description = "Supported keys: `object_id`, `room_num`." },
+    {
+      name = "query",
+      type = "table",
+      optional = true,
+      description = "Supported keys: `object_id`, `room_num`. Omit it for no match.",
+    },
   },
   returns = { type = "Item", nullable = true },
   examples = {

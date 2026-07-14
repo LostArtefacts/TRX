@@ -169,7 +169,12 @@ api.property("game.trx_version", {
 api.define("game.play_level", {
   description = "Starts a level of the game proper.",
   params = {
-    { name = "num", type = "integer", description = "The level's number." },
+    {
+      name = "num",
+      type = "integer",
+      description = "1-based position in `trx.game.levels`. This is not `Level.num`, which is the "
+        .. "number the level carries.",
+    },
   },
   examples = { [[trx.game.play_level(1)]] },
   impl = raw.play_level,
@@ -178,7 +183,7 @@ api.define("game.play_level", {
 api.define("game.play_cutscene", {
   description = "Plays a cutscene.",
   params = {
-    { name = "num", type = "integer", description = "The cutscene's number." },
+    { name = "num", type = "integer", description = "1-based position in `trx.game.cutscenes`." },
   },
   impl = raw.play_cutscene,
 })
@@ -186,7 +191,7 @@ api.define("game.play_cutscene", {
 api.define("game.play_demo", {
   description = "Plays a demo.",
   params = {
-    { name = "num", type = "integer", description = "The demo's number." },
+    { name = "num", type = "integer", description = "1-based position in `trx.game.demos`." },
   },
   impl = raw.play_demo,
 })

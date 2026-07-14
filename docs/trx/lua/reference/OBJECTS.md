@@ -1,6 +1,6 @@
 ---
 title: Object
-order: 14
+order: 15
 ---
 
 <!--
@@ -79,7 +79,7 @@ An object is the pattern every item of that type is cut from: a wolf's radius, n
   ```
 
 - [lua]`trx.objects.swap_mesh(object_id1, object_id2, [mesh_num1], [mesh_num2])`  
-  Swaps meshes between two objects. With no mesh numbers, swaps all of them.
+  Swaps meshes between two objects. With no mesh numbers, swaps all of them; with both, swaps just those two. One without the other raises.
 
   Parameters:
   - **`object_id1`** (integer). Compare against `trx.catalog.objects`.

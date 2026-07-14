@@ -2,7 +2,7 @@ local raw = trxc.objects
 local api = trx.api
 
 api.module("objects", {
-  order = 14,
+  order = 15,
   title = "Object",
   description = "Module for the object definitions a level is built from.\n\n"
     .. "An object is the pattern every item of that type is cut from: a wolf's radius, not this "
@@ -151,7 +151,8 @@ wolf.properties.max_hit_points = 30]],
 })
 
 api.define("objects.swap_mesh", {
-  description = "Swaps meshes between two objects. With no mesh numbers, swaps all of them.",
+  description = "Swaps meshes between two objects. With no mesh numbers, swaps all of them; with "
+    .. "both, swaps just those two. One without the other raises.",
   params = {
     { name = "object_id1", type = "integer", enum = "catalog.objects" },
     { name = "object_id2", type = "integer", enum = "catalog.objects" },

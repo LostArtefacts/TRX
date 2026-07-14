@@ -89,7 +89,7 @@ Module for the game flow: which levels there are, and which one is being played.
   Starts a level of the game proper.
 
   Parameters:
-  - **`num`** (integer). The level's number.
+  - **`num`** (integer). 1-based position in `trx.game.levels`. This is not `Level.num`, which is the number the level carries.
 
   Example:
   ```lua
@@ -100,10 +100,10 @@ Module for the game flow: which levels there are, and which one is being played.
   Plays a cutscene.
 
   Parameters:
-  - **`num`** (integer). The cutscene's number.
+  - **`num`** (integer). 1-based position in `trx.game.cutscenes`.
 
 - [lua]`trx.game.play_demo(num)`  
   Plays a demo.
 
   Parameters:
-  - **`num`** (integer). The demo's number.
+  - **`num`** (integer). 1-based position in `trx.game.demos`.

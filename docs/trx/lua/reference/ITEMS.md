@@ -174,11 +174,11 @@ Module for controlling all moveables.
 
   Returns: integer.
 
-- [lua]`trx.items.find(query)`  
+- [lua]`trx.items.find([query])`  
   Finds all items matching the query.
 
   Parameters:
-  - **`query`** (table). Supported keys: `object_id`, `room_num`. Unknown keys are ignored and logged.
+  - **`query`** (table, optional). Supported keys: `object_id`, `room_num`. Unknown keys are ignored and logged. Omit it for no matches.
 
   Returns: table. List of `Item`.
 
@@ -187,11 +187,11 @@ Module for controlling all moveables.
   local wolves = trx.items.find({ object_id = trx.catalog.objects.wolf })
   ```
 
-- [lua]`trx.items.first(query)`  
+- [lua]`trx.items.first([query])`  
   Finds the first item matching the query.
 
   Parameters:
-  - **`query`** (table). Supported keys: `object_id`, `room_num`.
+  - **`query`** (table, optional). Supported keys: `object_id`, `room_num`. Omit it for no match.
 
   Returns: Item or `nil`.
 
