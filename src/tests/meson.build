@@ -147,6 +147,7 @@ lua_surface_src = files(
   '../trx/game/lua/capi/struct.c',
   '../trx/game/lua/field.c',
   '../trx/game/lua/registry.c',
+  '../trx/game/lua/sandbox.c',
   '../trx/game/lua/utils.c',
 ) + files('unit/lua_surface.c', 'unit/stubs_enum_map.c')
 
@@ -175,6 +176,33 @@ test_lua_items_exe = executable(
   build_by_default: false,
 )
 test('lua_items', test_lua_items_exe, suite: 'unit')
+
+# The same surface, taken through the two boot steps the other suites stop short
+# of: the seal, and hardening the globals.
+test_lua_boot_exe = executable(
+  'test_lua_boot',
+  files('unit/test_lua_boot.c', 'unit/fake_engine_items.c') + test_stubs
+    + lua_surface_src
+    + files('../trx/game/lua/capi/items.c'),
+  include_directories: [src_inc, test_inc],
+  dependencies: [dep_lua],
+  c_args: lua_surface_args,
+  build_by_default: false,
+)
+test('lua_boot', test_lua_boot_exe, suite: 'unit')
+
+# No fake engine: the real trig tables are the thing under test.
+test_lua_math_exe = executable(
+  'test_lua_math',
+  files('unit/test_lua_math.c') + test_stubs
+    + lua_surface_src
+    + files('../trx/game/lua/capi/math.c', '../trx/core/math/trig.c'),
+  include_directories: [src_inc, test_inc],
+  dependencies: [dep_lua, dep_mathlibrary],
+  c_args: lua_surface_args,
+  build_by_default: false,
+)
+test('lua_math', test_lua_math_exe, suite: 'unit')
 
 test_lua_assault_exe = executable(
   'test_lua_assault',
@@ -413,6 +441,7 @@ endif
 
 python_exe = find_program('python3', required: false)
 if python_exe.found()
+  test('lua_sources', python_exe, args: [files('unit/test_lua_sources.py')], suite: 'unit')
   test('update_lua_docs', python_exe, args: [files('unit/test_update_lua_docs.py')], suite: 'unit')
   test(
     'update_game_strings',

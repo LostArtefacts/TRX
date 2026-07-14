@@ -26,6 +26,10 @@ function M.raises(fn, needle)
 end
 
 function M.report()
+  -- A suite that registered nothing reports "0 failed" and the runner takes the
+  -- zero for a pass, which reads exactly like a suite that ran.
+  assert(#M.cases > 0, "the suite registered no cases")
+
   local order = {}
   for i = 1, #M.cases do
     order[i] = i

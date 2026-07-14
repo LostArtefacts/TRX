@@ -1,0 +1,52 @@
+#!/usr/bin/env python3
+
+"""The embedded Lua source list against the tree it is supposed to mirror.
+
+What the engine embeds is stated in src/meson.build and nowhere else, so nothing
+stops a new file in data/scripting/ from being left out of it.
+
+Left out, the file is still loaded by the surface tests, which read the tree; it
+is simply absent from the binary and from the reference. The suite would be green
+and the module would not exist.
+"""
+
+import re
+import sys
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[3]
+MESON = ROOT / "src/meson.build"
+
+
+def listed(variable: str) -> set[str]:
+    body = re.search(rf"^{variable} = files\((.*?)^\)", MESON.read_text(), re.S | re.M)
+    assert body is not None, f"{variable} is not a files() list in src/meson.build"
+    return {Path(m).name for m in re.findall(r"'([^']+)'", body.group(1))}
+
+
+def main() -> int:
+    failures = []
+
+    for variable, directory in (("trx_lua_api_sources", ROOT / "data/scripting"),):
+        on_disk = {path.name for path in directory.glob("*.lua")}
+        in_meson = listed(variable)
+
+        for name in sorted(on_disk - in_meson):
+            failures.append(
+                f"{directory.relative_to(ROOT)}/{name} is not in {variable}, "
+                f"so the engine would not ship it"
+            )
+        for name in sorted(in_meson - on_disk):
+            failures.append(f"{variable} names {name}, which does not exist")
+
+    for failure in failures:
+        print(f"  FAIL  {failure}", file=sys.stderr)
+    if failures:
+        return 1
+
+    print("  PASS  every Lua source is embedded")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

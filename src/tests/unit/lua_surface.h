@@ -18,6 +18,11 @@ typedef struct {
     // Modules loaded before it, for a declaration that reaches into another -
     // trx.camera.room hands back a trx.rooms.Room. NULL-terminated.
     const char *deps[4];
+    // Seal the surface and take trxc off the globals, as the engine does once
+    // the modules have declared.
+    bool seal;
+    // Harden the globals, as the engine does last of all.
+    bool harden;
     // src/tests/unit/lua/<tests>.lua - the assertions.
     const char *tests;
     // Anything the test needs beyond the bridges, which the linked modules

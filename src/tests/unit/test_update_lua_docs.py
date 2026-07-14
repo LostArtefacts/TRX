@@ -207,6 +207,57 @@ class TestLuaDocs(unittest.TestCase):
         self.assertIn("things.spawn(id, [angle])", page)
         self.assertIn("default `0`", page)
 
+    def test_an_enum_default_reads_as_the_constant(self):
+        """The default is stored as the constant's value, because that is what
+        the wrapper substitutes. It has to read as the constant."""
+        surface = copy.deepcopy(SURFACE)
+        surface["functions"][0]["params"][1].update(
+            {"default": 1, "enum": "things.State"}
+        )
+        docs.ENUM_CONSTANTS.clear()
+        docs.ENUM_CONSTANTS["things.State"] = {0: "OFF", 1: "ON", 7: "BROKEN"}
+
+        page = docs.render_page(surface["modules"][0], surface)
+        self.assertIn("default `trx.things.State.ON`", page)
+        self.assertNotIn("default `1`", page)
+        docs.ENUM_CONSTANTS.clear()
+
+    def test_several_returns_are_all_rendered(self):
+        """A Lua function is free to hand back more than one value, and the
+        reference has to say what each of them is."""
+        surface = copy.deepcopy(SURFACE)
+        surface["functions"][0]["returns"] = [
+            {"type": "vec3", "nullable": True, "description": "Where."},
+            {"type": "integer", "description": "Which room."},
+        ]
+
+        page = docs.render_page(surface["modules"][0], surface)
+        self.assertIn("vec3 or `nil`. Where.", page)
+        self.assertIn("integer. Which room.", page)
+
+    def test_an_indexable_module_is_described(self):
+        """Indexing lives on a metatable, which pairs() never sees, so the page
+        can only describe it because the container is declared."""
+        surface = copy.deepcopy(SURFACE)
+        surface["containers"] = [
+            {
+                "module": "things",
+                "description": "Indexing reaches a thing.",
+                "key": {"type": "integer", "description": "1-based."},
+                "value": {"type": "Widget", "nullable": True},
+                "countable": True,
+            }
+        ]
+
+        page = docs.render_page(surface["modules"][0], surface)
+        self.assertIn("### Indexing", page)
+        self.assertIn("**`trx.things[key]`** (Widget or `nil`). 1-based.", page)
+        self.assertIn("**`#trx.things`** (integer).", page)
+
+    def test_a_module_with_no_container_gets_no_indexing_section(self):
+        page = docs.render_page(SURFACE["modules"][0], SURFACE)
+        self.assertNotIn("### Indexing", page)
+
     def test_a_callbacks_own_arguments_are_rendered(self):
         """A function-typed parameter renders the arguments it is called with,
         indented under the parameter itself."""
