@@ -7,79 +7,17 @@
 #include "fake_engine_console.h"
 #include "lua_surface.h"
 
-#include <lauxlib.h>
-
 static int M_FakeReset(lua_State *const L)
 {
     FakeConsole_Reset();
     return 0;
 }
 
-// fake.set_eval_result(result) - what the next Console_Eval hands back.
-static int M_FakeSetEvalResult(lua_State *const L)
-{
-    FakeConsole_SetEvalResult((COMMAND_RESULT)luaL_checkinteger(L, 1));
-    return 0;
-}
-
-// fake.run(prefix, args) - the console running a command the player typed.
-static int M_FakeRun(lua_State *const L)
-{
-    lua_pushinteger(
-        L, FakeConsole_Run(luaL_checkstring(L, 1), luaL_optstring(L, 2, "")));
-    return 1;
-}
-
-static int M_FakeHelpId(lua_State *const L)
-{
-    const char *const help_id = FakeConsole_HelpId(luaL_checkstring(L, 1));
-    if (help_id == nullptr) {
-        lua_pushnil(L);
-    } else {
-        lua_pushstring(L, help_id);
-    }
-    return 1;
-}
-
 static int M_FakeCalls(lua_State *const L)
 {
     lua_newtable(L);
-    lua_pushinteger(L, g_FakeConsoleCalls.log_count);
-    lua_setfield(L, -2, "log_count");
-    lua_pushinteger(L, g_FakeConsoleCalls.last_level);
-    lua_setfield(L, -2, "last_level");
-    lua_pushstring(L, g_FakeConsoleCalls.last_message);
-    lua_setfield(L, -2, "last_message");
-    lua_pushinteger(L, g_FakeConsoleCalls.clear_count);
-    lua_setfield(L, -2, "clear_count");
-    lua_pushinteger(L, g_FakeConsoleCalls.eval_count);
-    lua_setfield(L, -2, "eval_count");
-    lua_pushstring(L, g_FakeConsoleCalls.last_command);
-    lua_setfield(L, -2, "last_command");
-    lua_pushboolean(L, g_FakeConsoleCalls.verbose_during_eval);
-    lua_setfield(L, -2, "verbose_during_eval");
-    lua_pushboolean(L, Console_IsVerbose());
-    lua_setfield(L, -2, "verbose_now");
+    FakeConsole_PushCalls(L);
     return 1;
-}
-
-static void M_PushFake(lua_State *const L)
-{
-    lua_pushcfunction(L, M_FakeSetEvalResult);
-    lua_setfield(L, -2, "set_eval_result");
-    lua_pushcfunction(L, M_FakeRun);
-    lua_setfield(L, -2, "run");
-    lua_pushcfunction(L, M_FakeHelpId);
-    lua_setfield(L, -2, "help_id");
-
-    lua_newtable(L);
-    lua_pushinteger(L, CR_SUCCESS);
-    lua_setfield(L, -2, "SUCCESS");
-    lua_pushinteger(L, CR_FAILURE);
-    lua_setfield(L, -2, "FAILURE");
-    lua_pushinteger(L, CR_BAD_INVOCATION);
-    lua_setfield(L, -2, "BAD_INVOCATION");
-    lua_setfield(L, -2, "CommandResult");
 }
 
 int main(void)
@@ -88,7 +26,7 @@ int main(void)
         .module = "console",
         .deps = { "log", nullptr },
         .tests = "console",
-        .push_fake = M_PushFake,
+        .push_fake = FakeConsole_PushLua,
         .fake_reset = M_FakeReset,
         .fake_calls = M_FakeCalls,
     };

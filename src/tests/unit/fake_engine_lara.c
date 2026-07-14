@@ -11,6 +11,7 @@
 #include <trx/game/items/types.h>
 #include <trx/game/lara/skin/types.h>
 
+#include <lauxlib.h>
 #include <stdbool.h>
 #include <string.h>
 
@@ -125,4 +126,34 @@ void FakeLara_Reset(void)
     m_HolstersVisible = true;
     m_HasPistols = true;
     m_Skin = 0;
+}
+
+void Lara_Poison_Cure(void)
+{
+    g_FakeLaraCalls.cure_poison++;
+    m_Lara.poison.value = 0;
+    m_Lara.poison.target = 0;
+}
+
+void Lara_Extinguish(void)
+{
+    g_FakeLaraCalls.extinguish++;
+    m_Lara.burn = false;
+    m_Lara.electric = 0;
+}
+
+void FakeLara_PushCalls(lua_State *const L)
+{
+    lua_pushinteger(L, g_FakeLaraCalls.set_equipment);
+    lua_setfield(L, -2, "set_equipment");
+    lua_pushinteger(L, g_FakeLaraCalls.clear_equipment);
+    lua_setfield(L, -2, "clear_equipment");
+    lua_pushinteger(L, g_FakeLaraCalls.last_mesh);
+    lua_setfield(L, -2, "last_mesh");
+    lua_pushinteger(L, g_FakeLaraCalls.last_extra_mesh);
+    lua_setfield(L, -2, "last_extra_mesh");
+    lua_pushinteger(L, g_FakeLaraCalls.cure_poison);
+    lua_setfield(L, -2, "cure_poison");
+    lua_pushinteger(L, g_FakeLaraCalls.extinguish);
+    lua_setfield(L, -2, "extinguish");
 }
