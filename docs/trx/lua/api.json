@@ -21,6 +21,56 @@
       "value": 1024
     }
   ],
+  "containers": [
+    {
+      "countable": true,
+      "description": "Indexing the module reaches an item, and `#trx.items` is how many the level has.",
+      "examples": [
+        "for i = 1, #trx.items do\n  trx.log.info(trx.items[i].object_id)\nend"
+      ],
+      "key": {
+        "description": "1-based index, or the item's unique name.",
+        "type": "any"
+      },
+      "module": "items",
+      "value": {
+        "nullable": true,
+        "type": "Item"
+      }
+    },
+    {
+      "countable": false,
+      "description": "Indexing the module reaches an object definition, so `trx.objects.wolf` is the wolf.",
+      "examples": [
+        "trx.objects.wolf.properties.max_hit_points = 30"
+      ],
+      "key": {
+        "description": "Object id, or its catalog name.",
+        "type": "any"
+      },
+      "module": "objects",
+      "value": {
+        "nullable": true,
+        "type": "Object"
+      }
+    },
+    {
+      "countable": true,
+      "description": "Indexing the module reaches a room, and `#trx.rooms` is how many the level has.",
+      "examples": [
+        "trx.log.info(#trx.rooms .. \" rooms, first is \" .. trx.rooms[1].num)"
+      ],
+      "key": {
+        "description": "1-based room number.",
+        "type": "integer"
+      },
+      "module": "rooms",
+      "value": {
+        "nullable": true,
+        "type": "Room"
+      }
+    }
+  ],
   "enums": [
     {
       "bulk": false,

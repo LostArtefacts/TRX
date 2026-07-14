@@ -16,6 +16,17 @@ Module for the object definitions a level is built from.
 
 An object is the pattern every item of that type is cut from: a wolf's radius, not this wolf's. Per-item state lives on the item - see `trx.items`.
 
+### Indexing
+
+Indexing the module reaches an object definition, so `trx.objects.wolf` is the wolf.
+
+- **`trx.objects[key]`** (Object or `nil`). Object id, or its catalog name.
+
+Example:
+```lua
+trx.objects.wolf.properties.max_hit_points = 30
+```
+
 ### Structures
 
 - [lua]`trx.objects.Object`

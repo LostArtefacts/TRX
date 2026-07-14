@@ -14,6 +14,20 @@ order: 4
 
 Module for controlling all moveables.
 
+### Indexing
+
+Indexing the module reaches an item, and `#trx.items` is how many the level has.
+
+- **`trx.items[key]`** (Item or `nil`). 1-based index, or the item's unique name.
+- **`#trx.items`** (integer). How many there are.
+
+Example:
+```lua
+for i = 1, #trx.items do
+  trx.log.info(trx.items[i].object_id)
+end
+```
+
 ### Enums
 
 - [lua]`trx.items.Status`

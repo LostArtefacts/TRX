@@ -291,6 +291,21 @@ def render_type(spec: dict) -> list[str]:
     return out
 
 
+def render_container(name: str, spec: dict) -> list[str]:
+    key, value = spec["key"], spec["value"]
+    nullable = " or `nil`" if value.get("nullable") else ""
+    out = ["### Indexing", ""]
+    if spec.get("description"):
+        out.extend(render_prose(spec["description"], ""))
+        out.append("")
+    out.append(f"- **`trx.{name}[key]`** ({value['type']}{nullable}). {describe(key)}")
+    if spec.get("countable"):
+        out.append(f"- **`#trx.{name}`** (integer). How many there are.")
+    out.extend(render_examples(spec.get("examples"), ""))
+    out.append("")
+    return out
+
+
 def render_page(module: dict, api: dict) -> str:
     name = module["name"]
     # Declare a title where capitalizing the module name makes a worse one.
@@ -314,6 +329,12 @@ def render_page(module: dict, api: dict) -> str:
     if module.get("description"):
         out.append(module["description"])
         out.append("")
+
+    container = next(
+        (c for c in api.get("containers", []) if c["module"] == name), None
+    )
+    if container:
+        out.extend(render_container(name, container))
 
     props = [p for p in api.get("properties", []) if p["path"].startswith(f"{name}.")]
     if props:
@@ -372,6 +393,9 @@ def undocumented(api: dict) -> list[str]:
     for space in api.get("namespaces", []):
         if not space.get("description"):
             out.append(space["path"])
+    for container in api.get("containers", []):
+        if not container.get("description"):
+            out.append(f"{container['module']}[]")
     for enum in api.get("enums", []):
         for value in enum.get("values") or []:
             if not value.get("description"):
