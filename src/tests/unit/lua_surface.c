@@ -65,8 +65,15 @@ int LuaSurface_Run(const LUA_SURFACE_TEST *const test)
     lua_pop(L, 1);
 
     lua_pushfstring(L, REPO_ROOT "/src/tests/unit/lua/%s.lua", test->tests);
+    const int32_t base = lua_gettop(L);
     if (luaL_dofile(L, lua_tostring(L, -1)) != LUA_OK) {
         M_Fail(L, "running the tests");
+    }
+
+    // A suite that returns nothing has registered its cases and run none of
+    // them, and would otherwise read as zero failures.
+    if (lua_gettop(L) <= base || !lua_isinteger(L, -1)) {
+        M_Fail(L, "the tests returned no failure count - missing h.report()?");
     }
 
     const int failures = (int)lua_tointeger(L, -1);
