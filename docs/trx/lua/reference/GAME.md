@@ -81,7 +81,7 @@ Module for the game flow: which levels there are, and which one is being played.
     - **`unobtainable_kills`**: integer. Kills the stats screen must not hold against the player. *(read-only)*
     - **`unobtainable_pickups`**: integer. Pickups the stats screen must not hold against the player, because they cannot be got. *(read-only)*
     - **`unobtainable_secrets`**: integer. Secrets the stats screen must not hold against the player. *(read-only)*
-    - **`water_particles`**: boolean. Whether bubbles rise through the level's water. *(read-only)*
+    - **`water_particles`**: boolean. Whether water particles are visible in the level's water. *(read-only)*
 
 ### Functions
 

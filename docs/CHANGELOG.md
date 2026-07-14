@@ -1,23 +1,23 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.9.1...develop) - ××××-××-××
-- added a new Lua module, `trx.math`
-- added new Lua level fields, `script_path`, `lara_outfit`, `music_track`, `water_particles` and the unobtainable pickup, kill and secret counts
 - added `trx.game.LevelType.TITLE`, and a `demo` level type to the game flow, which could not be named before
-- removed `trx.game.settings`, which duplicated `trx.config`; refer to migration notes
-- added new Lua object fields, `loaded`, `is_intelligent`, `mesh_count`, `anim_count`, `radius`, `shadow_size`, `smartness`, `pivot_length` and `semi_transparent`
+- added a new Lua module, `trx.math`
 - added new Lua Lara state, `trx.lara.poison`, `trx.lara.electric`, `trx.lara.is_burning`, `trx.lara.is_crouched`, `trx.lara.is_climbing`, `trx.lara.water_status`, `trx.lara.gun_status` and the dive, death, sprint and pose timers
-- changed `trx.lara.mesh` and `trx.lara.extra_mesh` to declared enums, `trx.lara.Mesh` and `trx.lara.ExtraMesh`; refer to migration notes
-- added new Lua config functions, `trx.config.override()`, `trx.config.restore()` and `trx.config.is_overridden()`, to change a setting without overwriting the player's own value
-- changed `trx.config.get()` to return the option's own type rather than always a string; refer to migration notes
 - added new Lua assault course functions, `trx.assault.finish()`, `trx.assault.is_running()` and `trx.assault.is_visible()`, and a new property, `trx.assault.active_track`
-- changed `trx.events` handlers to no longer receive a dummy argument in `before_control` and `after_control`
+- added new Lua config functions, `trx.config.override()`, `trx.config.restore()` and `trx.config.is_overridden()`, to change a setting without overwriting the player's own value
+- added new Lua level fields, `script_path`, `lara_outfit`, `music_track`, `water_particles` and the unobtainable pickup, kill and secret counts
+- added new Lua object fields, `loaded`, `is_intelligent`, `mesh_count`, `anim_count`, `radius`, `shadow_size`, `smartness`, `pivot_length` and `semi_transparent`
+- changed `trx.config.get()` to return the option's own type rather than always a string; refer to migration notes
 - changed `trx.events.detach()` to return whether a handler was removed
+- changed `trx.events` handlers to no longer receive a dummy argument in `before_control` and `after_control`
+- changed `trx.lara.mesh` and `trx.lara.extra_mesh` to declared enums, `trx.lara.Mesh` and `trx.lara.ExtraMesh`; refer to migration notes
 - changed reflections UV mapping to be more correct
-- removed `trx.events.EventType`; refer to migration notes
-- fixed being unable to drop to the secret ledge in Jungle room 76 from the ledge above (#5818)
 - fixed TR1 and TR2 skyboxes being 2× too bright (regression from 1.9)
-- removed the `trx.pickup` module; its enum is now `trx.items.PickupMode`; refer to migration notes
+- fixed being unable to drop to the secret ledge in Jungle room 76 from the ledge above (#5818)
 - removed `trx.console.log.LogLevel`, a duplicate of `trx.log.LogLevel`; refer to migration notes
+- removed `trx.events.EventType`; refer to migration notes
+- removed `trx.game.settings`, which duplicated `trx.config`; refer to migration notes
 - removed `trx.music.play_track`, an undocumented alias of `trx.music.play`; refer to migration notes
+- removed the `trx.pickup` module; its enum is now `trx.items.PickupMode`; refer to migration notes
 
 **TR4**
 - added reflections
