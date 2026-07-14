@@ -1,6 +1,6 @@
 #pragma once
 
-#include <trx/core/field.h>
+#include <trx/game/lua/field.h>
 
 #include <lauxlib.h>
 #include <lualib.h>

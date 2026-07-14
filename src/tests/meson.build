@@ -68,7 +68,7 @@ test('hash', test_hash_exe, suite: 'unit')
 
 test_field_exe = executable(
   'test_field',
-  files('unit/test_field.c') + test_stubs + files('../trx/core/field.c'),
+  files('unit/test_field.c') + test_stubs + files('../trx/game/lua/field.c'),
   include_directories: [src_inc, test_inc],
   build_by_default: false,
 )
@@ -136,12 +136,12 @@ test('lua_sandbox', test_lua_sandbox_exe, suite: 'unit')
 # from the embedded copy, so the tests need to know where the tree is.
 lua_surface_src = files(
   '../trx/core/enum_map.c',
-  '../trx/core/field.c',
   '../trx/core/memory.c',
   '../trx/core/vector.c',
   '../trx/game/enum.c',
   '../trx/game/lua/capi/enum.c',
   '../trx/game/lua/capi/struct.c',
+  '../trx/game/lua/field.c',
   '../trx/game/lua/registry.c',
 ) + files('unit/lua_surface.c', 'unit/stubs_enum_map.c')
 
@@ -151,7 +151,7 @@ test_lua_rooms_exe = executable(
   'test_lua_rooms',
   files('unit/test_lua_rooms.c', 'unit/fake_engine_rooms.c') + test_stubs
     + lua_surface_src
-    + files('../trx/game/rooms/fields.c', '../trx/game/lua/capi/rooms.c'),
+    + files('../trx/game/lua/capi/rooms.c'),
   include_directories: [src_inc, test_inc],
   dependencies: [dep_lua],
   c_args: lua_surface_args,
@@ -163,11 +163,7 @@ test_lua_items_exe = executable(
   'test_lua_items',
   files('unit/test_lua_items.c', 'unit/fake_engine_items.c') + test_stubs
     + lua_surface_src
-    + files(
-      '../trx/game/items/fields.c',
-      '../trx/game/lua/capi/items.c',
-      '../trx/game/lua/utils.c',
-    ),
+    + files('../trx/game/lua/capi/items.c', '../trx/game/lua/utils.c'),
   include_directories: [src_inc, test_inc],
   dependencies: [dep_lua],
   c_args: lua_surface_args,
@@ -193,7 +189,7 @@ test_lua_camera_exe = executable(
   files('unit/test_lua_camera.c', 'unit/fake_engine_camera.c', 'unit/fake_engine_rooms.c')
     + test_stubs
     + lua_surface_src
-    + files('../trx/game/rooms/fields.c', '../trx/game/lua/capi/rooms.c', '../trx/game/lua/capi/camera.c'),
+    + files('../trx/game/lua/capi/rooms.c', '../trx/game/lua/capi/camera.c'),
   include_directories: [src_inc, test_inc],
   dependencies: [dep_lua],
   c_args: lua_surface_args,
@@ -273,11 +269,7 @@ test_lua_game_exe = executable(
   'test_lua_game',
   files('unit/test_lua_game.c', 'unit/fake_engine_game.c') + test_stubs
     + lua_surface_src
-    + files(
-      '../trx/game/game_flow/fields.c',
-      '../trx/game/lua/capi/game.c',
-      '../trx/game/lua/utils.c',
-    ),
+    + files('../trx/game/lua/capi/game.c', '../trx/game/lua/utils.c'),
   include_directories: [src_inc, test_inc],
   dependencies: [dep_lua],
   c_args: lua_surface_args,
@@ -290,7 +282,6 @@ test_lua_objects_exe = executable(
   files('unit/test_lua_objects.c', 'unit/fake_engine_items.c') + test_stubs
     + lua_surface_src
     + files(
-      '../trx/game/objects/fields.c',
       '../trx/game/lua/capi/objects.c',
       '../trx/game/lua/utils.c',
     ),
@@ -307,8 +298,6 @@ test_lua_lara_exe = executable(
     + test_stubs
     + lua_surface_src
     + files(
-      '../trx/game/items/fields.c',
-      '../trx/game/lara/fields.c',
       '../trx/game/lua/capi/items.c',
       '../trx/game/lua/capi/lara.c',
       '../trx/game/lua/utils.c',
@@ -394,11 +383,7 @@ test_lua_api_seal_exe = executable(
   'test_lua_api_seal',
   files('unit/test_lua_api_seal.c', 'unit/fake_engine_items.c') + test_stubs
     + lua_surface_src
-    + files(
-      '../trx/game/items/fields.c',
-      '../trx/game/lua/capi/items.c',
-      '../trx/game/lua/utils.c',
-    ),
+    + files('../trx/game/lua/capi/items.c', '../trx/game/lua/utils.c'),
   include_directories: [src_inc, test_inc],
   dependencies: [dep_lua],
   c_args: lua_surface_args,
@@ -412,9 +397,9 @@ test_lua_struct_exe = executable(
   'test_lua_struct',
   files('unit/test_lua_struct.c') + test_stubs
     + files(
-      '../trx/core/field.c',
       '../trx/core/memory.c',
       '../trx/game/lua/capi/struct.c',
+      '../trx/game/lua/field.c',
       '../trx/game/lua/registry.c',
     ),
   include_directories: [src_inc, test_inc],
