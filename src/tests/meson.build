@@ -370,7 +370,7 @@ test_lua_creatures_exe = executable(
   'test_lua_creatures',
   files('unit/test_lua_creatures.c', 'unit/fake_engine_creatures.c') + test_stubs
     + lua_surface_src
-    + files('../trx/game/lua/capi/creatures.c'),
+    + files('../trx/game/lua/capi/creatures.c', '../trx/game/lua/utils.c'),
   include_directories: [src_inc, test_inc],
   dependencies: [dep_lua],
   c_args: lua_surface_args,

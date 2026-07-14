@@ -39,6 +39,22 @@ test("add_ally_target names the object it was given", function()
   assert(calls.add_ally == 0, "add_ally_target must not make an ally")
 end)
 
+-- Creature_AddAlly indexes the object table with what it is given.
+test("an object the game has no such id for is refused", function()
+  raises(function()
+    trx.creatures.add_ally(-1)
+  end)
+  -- Narrowed to the engine's id, 2^32 + 42 is 42.
+  raises(function()
+    trx.creatures.add_ally(4294967338)
+  end)
+  raises(function()
+    trx.creatures.add_ally_target(4294967338)
+  end)
+  local calls = fake.calls()
+  assert(calls.add_ally == 0 and calls.add_ally_target == 0)
+end)
+
 test("the raw bridge is not part of the surface", function()
   -- The C table has are_allies_hostile/set_allies_hostile. The declaration turns
   -- them into one property, and the raw pair must not leak alongside it.

@@ -18,6 +18,11 @@ test("items are indexed from 1, and by name", function()
   assert(trx.items[1] ~= nil and trx.items[2] ~= nil)
   assert(trx.items[99] == nil, "out of range must be nil")
 
+  -- Narrowed to the engine's index, 2^32 + 1 is 1. It must not come back as
+  -- item 1.
+  assert(trx.items[4294967297] == nil, "a wide index must not wrap into range")
+  assert(trx.items[-1] == nil)
+
   trx.items[1].name = "wolfie"
   assert(trx.items["wolfie"] ~= nil, "lookup by name")
   assert(trx.items.get("wolfie").name == "wolfie")
