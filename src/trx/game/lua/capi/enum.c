@@ -1,5 +1,4 @@
 #include <trx/core/enum_map.h>
-#include <trx/core/memory.h>
 #include <trx/core/vector.h>
 #include <trx/game/lua/registry.h>
 
@@ -17,34 +16,46 @@
 //
 // The public key is the uppercased ENUM_MAP string: "active" -> ACTIVE.
 
+// The public key, uppercased into a Lua string. A C allocation would have to
+// survive the pushes below, and a push that raises never comes back to free it.
+static void M_PushKey(lua_State *const L, const char *const name)
+{
+    const size_t len = strlen(name);
+    luaL_Buffer buffer;
+    char *const key = luaL_buffinitsize(L, &buffer, len);
+    for (size_t i = 0; i < len; i++) {
+        key[i] = (char)toupper((unsigned char)name[i]);
+    }
+    luaL_pushresultsize(&buffer, len);
+}
+
 // trxc.enum.values(type) -> { { name = "ACTIVE", value = 1 }, ... }
 static int M_L_Values(lua_State *const L)
 {
     const char *const type_name = luaL_checkstring(L, 1);
     VECTOR *const values = EnumMap_ListValues(type_name);
+
     // An enum with no values is a misspelled type name, not an empty enum: a
     // silent {} here would document the enum as having no constants at all.
-    luaL_argcheck(L, values != nullptr && values->count > 0, 1, "unknown enum");
+    // EnumMap_ListValues hands back an empty vector for a name it does not
+    // know, and raising is a longjmp, so it has to go before the raise.
+    if (values == nullptr || values->count == 0) {
+        if (values != nullptr) {
+            Vector_Free(values);
+        }
+        return luaL_argerror(L, 1, "unknown enum");
+    }
 
     lua_newtable(L);
     for (int32_t i = 0; i < values->count; i++) {
         const char *const str_value = *(const char **)Vector_Get(values, i);
 
-        const size_t len = strlen(str_value);
-        char *const key = Memory_Alloc(len + 1);
-        for (size_t j = 0; j < len; j++) {
-            key[j] = (char)toupper((unsigned char)str_value[j]);
-        }
-        key[len] = '\0';
-
         lua_newtable(L);
-        lua_pushstring(L, key);
+        M_PushKey(L, str_value);
         lua_setfield(L, -2, "name");
         lua_pushinteger(L, EnumMap_Get(type_name, str_value, 0));
         lua_setfield(L, -2, "value");
         lua_rawseti(L, -2, i + 1);
-
-        Memory_Free(key);
     }
 
     Vector_Free(values);
