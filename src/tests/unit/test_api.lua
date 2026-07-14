@@ -435,5 +435,142 @@ test("seal blocks further declarations", function()
   assert(not pcall(api.property, "things.air", { get = function() end }), "property() after seal")
 end)
 
+-- Several bridges read lua_gettop() to tell an omitted argument from a nil one,
+-- so the wrapper must not pass one the caller did not.
+test("strict mode drops an optional argument that carries no default", function()
+  local api = fresh_env()
+  api.define("things.flip", {
+    params = {
+      { name = "id", type = "integer" },
+      { name = "timer", type = "integer", optional = true },
+    },
+    impl = function(...)
+      return select("#", ...)
+    end,
+  })
+
+  api.strict(true)
+  assert(trx.things.flip(1) == 1, "an omitted optional must not arrive as nil")
+  assert(trx.things.flip(1, 5) == 2, "one that was passed must arrive")
+end)
+
+test("strict mode substitutes a default and still checks it", function()
+  local api = fresh_env()
+  api.define("things.track", {
+    params = { { name = "track", type = "integer", optional = true, default = 3 } },
+    impl = function(track)
+      return track
+    end,
+  })
+
+  api.strict(true)
+  assert(trx.things.track() == 3, "the default stands in for the argument")
+  assert(not pcall(trx.things.track, "nope"))
+end)
+
+test("strict mode checks a namespace's call and a property's write", function()
+  local api = fresh_env()
+  local logged, air
+  api.module("things", {})
+  api.namespace("things.log", {
+    description = "Logging.",
+    params = { { name = "message", type = "string" } },
+    call = function(message)
+      logged = message
+    end,
+  })
+  api.property("things.air", {
+    type = "integer",
+    description = "Air.",
+    get = function()
+      return air
+    end,
+    set = function(value)
+      air = value
+    end,
+  })
+
+  api.strict(true)
+  trx.things.log("hello")
+  assert(logged == "hello")
+  assert(not pcall(trx.things.log, 42), "calling the group must be checked")
+
+  trx.things.air = 5
+  assert(air == 5)
+  assert(not pcall(function()
+    trx.things.air = "not an integer"
+  end), "writing a property must be checked")
+end)
+
+test("seal refuses a parameter nothing can check", function()
+  local api = fresh_env()
+  api.define("things.bad", {
+    params = { { name = "a", type = "intger" } },
+    impl = function() end,
+  })
+
+  local ok, err = pcall(api.seal)
+  assert(not ok, "a misspelled type must fail the seal")
+  assert(tostring(err):find("intger", 1, true), "the audit must name it: " .. tostring(err))
+end)
+
+test("seal refuses a default of the wrong type", function()
+  local api = fresh_env()
+  api.define("things.bad", {
+    params = { { name = "a", type = "integer", optional = true, default = "trx.things.A" } },
+    impl = function() end,
+  })
+
+  assert(not pcall(api.seal), "a default that is not of the parameter's type must fail the seal")
+end)
+
+test("seal refuses a required parameter behind an optional one", function()
+  local api = fresh_env()
+  api.define("things.bad", {
+    params = {
+      { name = "a", type = "integer", optional = true },
+      { name = "b", type = "integer" },
+    },
+    impl = function() end,
+  })
+
+  assert(not pcall(api.seal), "a call cannot reach b without passing a")
+end)
+
+test("a container is declared, not hand-rolled onto the module table", function()
+  local api = fresh_env()
+  local things = { "first", "second" }
+  api.module("things", {})
+  api.container("things", {
+    description = "Indexing.",
+    key = { type = "integer", description = "1-based." },
+    value = { type = "string" },
+    get = function(key)
+      return things[key]
+    end,
+    count = function()
+      return #things
+    end,
+  })
+
+  assert(trx.things[1] == "first")
+  assert(#trx.things == 2)
+
+  -- A property declared afterwards must not take the metatable with it.
+  api.property("things.best", {
+    type = "string",
+    description = "Best.",
+    get = function()
+      return things[1]
+    end,
+  })
+  assert(trx.things[2] == "second", "declaring a property must not drop the indexing")
+  assert(trx.things.best == "first")
+end)
+
+-- A suite that registers nothing prints "0 failed" and exits clean, which reads
+-- exactly like a suite that passed.
+assert(passed + failures > 0, "the suite registered no tests")
+
 print(("\n%d passed, %d failed, %d total"):format(passed, failures, passed + failures))
 os.exit(failures == 0 and 0 or 1)

@@ -1,6 +1,7 @@
 #include "lua_surface.h"
 
 #include <trx/game/lua/registry.h>
+#include <trx/game/lua/sandbox.h>
 #include <trx/game/lua/utils.h>
 
 #include <stdio.h>
@@ -72,7 +73,9 @@ int LuaSurface_Run(const LUA_SURFACE_TEST *const test)
     lua_setfield(L, -2, "reset");
     lua_pushcfunction(L, test->fake_calls);
     lua_setfield(L, -2, "calls");
-    test->push_fake(L);
+    if (test->push_fake != nullptr) {
+        test->push_fake(L);
+    }
     lua_setglobal(L, "fake");
 
     if (luaL_dostring(
@@ -81,7 +84,10 @@ int LuaSurface_Run(const LUA_SURFACE_TEST *const test)
             "            warn = function() end, error = function() end }\n"
             "package.preload['trx.log'] = function() return trx.log end\n"
             "package.path = '" REPO_ROOT
-            "/src/tests/unit/lua/?.lua;' .. package.path\n")
+            "/src/tests/unit/lua/?.lua;' .. package.path\n"
+            // Hardening takes require() away, and a hardened suite still needs
+            // the harness.
+            "_G.harness = require('harness')\n")
         != LUA_OK) {
         M_Fail(L, "preamble");
     }
@@ -95,6 +101,19 @@ int LuaSurface_Run(const LUA_SURFACE_TEST *const test)
     }
 
     M_RunModule(L, test->module);
+
+    // From here to the tests, the order is LUA_Init's: seal, then harden.
+    if (test->seal) {
+        if (luaL_dostring(L, "trx.api.seal()") != LUA_OK) {
+            M_Fail(L, "sealing");
+        }
+        lua_pushnil(L);
+        lua_setglobal(L, "trxc");
+    }
+
+    if (test->harden) {
+        LUA_HardenGlobals(L);
+    }
 
     lua_pushfstring(L, REPO_ROOT "/src/tests/unit/lua/%s.lua", test->tests);
     const int32_t base = lua_gettop(L);

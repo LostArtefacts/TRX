@@ -35,29 +35,34 @@ if trx_version == ''
   endif
 endif
 
+# Each file in data/scripting declares part of the trx.* API and is required by
+# name. The list is what the engine ships; test_lua_sources.py holds it to the
+# tree.
+trx_lua_api_sources = files(
+  '../data/scripting/api.lua',
+  '../data/scripting/assault.lua',
+  '../data/scripting/camera.lua',
+  '../data/scripting/catalog.lua',
+  '../data/scripting/config.lua',
+  '../data/scripting/console.lua',
+  '../data/scripting/creatures.lua',
+  '../data/scripting/events.lua',
+  '../data/scripting/game.lua',
+  '../data/scripting/items.lua',
+  '../data/scripting/lara.lua',
+  '../data/scripting/locale.lua',
+  '../data/scripting/log.lua',
+  '../data/scripting/math.lua',
+  '../data/scripting/music.lua',
+  '../data/scripting/objects.lua',
+  '../data/scripting/rooms.lua',
+  '../data/scripting/sound.lua',
+  '../data/scripting/strings.lua',
+)
+
 trx_lua_embed = custom_target(
   'trx_lua_embed',
-  input: [
-    '../data/scripting/api.lua',
-    '../data/scripting/assault.lua',
-    '../data/scripting/camera.lua',
-    '../data/scripting/catalog.lua',
-    '../data/scripting/config.lua',
-    '../data/scripting/console.lua',
-    '../data/scripting/creatures.lua',
-    '../data/scripting/events.lua',
-    '../data/scripting/game.lua',
-    '../data/scripting/items.lua',
-    '../data/scripting/lara.lua',
-    '../data/scripting/locale.lua',
-    '../data/scripting/log.lua',
-    '../data/scripting/math.lua',
-    '../data/scripting/music.lua',
-    '../data/scripting/objects.lua',
-    '../data/scripting/rooms.lua',
-    '../data/scripting/sound.lua',
-    '../data/scripting/strings.lua',
-  ],
+  input: trx_lua_api_sources,
   output: ['trx_embedded_lua.c'],
   command: [
     python3,
