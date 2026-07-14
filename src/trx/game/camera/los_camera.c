@@ -1,3 +1,4 @@
+#include <trx/config.h>
 #include <trx/core/math.h>
 #include <trx/debug.h>
 #include <trx/game/camera.h>
@@ -29,8 +30,8 @@ typedef struct {
         XYZ_16 torso_rot;
     } lara;
     CAMERA_TYPE cam_type;
-    int16_t additional_angle;
-    int16_t additional_elevation;
+    int16_t target_angle;
+    int16_t target_elevation;
 } M_STATE;
 
 typedef struct {
@@ -237,6 +238,15 @@ static bool M_UpdateLaraState(void)
     const LARA_INFO *const lara = Lara_GetLaraInfo();
     const ITEM *const lara_item = Lara_GetItem();
 
+    const int16_t current_angle =
+        g_Config.visuals.camera_mode == CAMERA_MODE_TR3
+        ? g_Camera.additional_angle
+        : g_Camera.target_angle;
+    const int16_t current_elevation =
+        g_Config.visuals.camera_mode == CAMERA_MODE_TR3
+        ? g_Camera.additional_elevation
+        : g_Camera.target_elevation;
+
     bool same_lara_state =
         m_LastState.lara.current_anim_state == lara_item->current_anim_state
         && m_LastState.lara.goal_anim_state == lara_item->goal_anim_state
@@ -248,10 +258,8 @@ static bool M_UpdateLaraState(void)
             XYZ_16_AreEquivalent(m_LastState.lara.rot, lara_item->rot)
             && XYZ_16_AreEquivalent(
                 m_LastState.lara.torso_rot, lara->torso_rot);
-        same_camera_state &=
-            m_LastState.additional_angle == g_Camera.additional_angle
-            && m_LastState.additional_elevation
-                == g_Camera.additional_elevation;
+        same_camera_state &= m_LastState.target_angle == current_angle
+            && m_LastState.target_elevation == current_elevation;
     }
     if (same_lara_state && same_camera_state) {
         return false;
@@ -264,8 +272,8 @@ static bool M_UpdateLaraState(void)
     if (g_Camera.type != CAM_LOOK) {
         m_LastState.lara.rot = lara_item->rot;
         m_LastState.lara.torso_rot = lara->torso_rot;
-        m_LastState.additional_angle = g_Camera.additional_angle;
-        m_LastState.additional_elevation = g_Camera.additional_elevation;
+        m_LastState.target_angle = current_angle;
+        m_LastState.target_elevation = current_elevation;
     }
 
     return true;
@@ -949,3 +957,4 @@ static const CAMERA_STRATEGY m_Strategy = {
 };
 
 REGISTER_CAMERA(CAMERA_MODE_TR3, m_Strategy)
+REGISTER_CAMERA(CAMERA_MODE_TR4, m_Strategy)

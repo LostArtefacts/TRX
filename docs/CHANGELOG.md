@@ -1,4 +1,5 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.9.1...develop) - ××××-××-××
+- added TR4 camera mode, which is similar to TR3 but more responsive to Lara's actions such as picking up items
 - changed reflections UV mapping to be more correct
 - fixed TR1 and TR2 skyboxes being 2× too bright (regression from 1.9)
 - fixed Lara being unable to use binoculars when fixed cameras or track path flyby sequences are active (regression from 1.9)
@@ -46,6 +47,7 @@
 
 **TR4**
 - added reflections
+- fixed the camera snapping to elevatation and angle changes in instances such as opening floor trapdoors
 
 
 

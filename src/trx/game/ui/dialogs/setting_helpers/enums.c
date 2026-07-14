@@ -77,6 +77,7 @@ const UI_SETTINGS_ENUM_ENTRY UI_Settings_CameraModeEnumEntries[] = {
     { CAMERA_MODE_TR1 },
     { CAMERA_MODE_TR2 },
     { CAMERA_MODE_TR3 },
+    { CAMERA_MODE_TR4 },
     { -1 },
 };
 
