@@ -536,24 +536,55 @@ static int M_L_StructExposeField(lua_State *const L)
     return 0;
 }
 
-// trxc.struct.expose_method(type, public_name, c_name)
+// One of the C methods the type offers, by its C name.
+static int M_PushRawMethod(
+    lua_State *const L, const TYPE_DESC *const type, const char *const c_name)
+{
+    luaL_getmetatable(L, type->name);
+    lua_getfield(L, -1, m_KeyRawMethods);
+    const int found = lua_getfield(L, -1, c_name);
+    lua_remove(L, -2); // raw_methods; the metatable stays below the result
+    return found;
+}
+
+// trxc.struct.method(type, c_name) -> the C function
+//
+// What strict mode wraps. The wrapper goes back through expose_method.
+static int M_L_StructMethod(lua_State *const L)
+{
+    const TYPE_DESC *const type = M_CheckType(L, 1);
+    const char *const c_name = luaL_checkstring(L, 2);
+    if (M_PushRawMethod(L, type, c_name) != LUA_TFUNCTION) {
+        return luaL_error(L, "%s has no method '%s'", type->name, c_name);
+    }
+    return 1;
+}
+
+// trxc.struct.expose_method(type, public_name, c_name | fn)
+//
+// A string names one of the C methods the type offers. A function is exposed as
+// it stands, which is how strict mode puts a checking wrapper in front of one.
 static int M_L_StructExposeMethod(lua_State *const L)
 {
     const TYPE_DESC *const type = M_CheckType(L, 1);
     const char *const public_name = luaL_checkstring(L, 2);
-    const char *const c_name = luaL_checkstring(L, 3);
 
-    luaL_getmetatable(L, type->name);
-    lua_getfield(L, -1, m_KeyRawMethods);
-    if (lua_getfield(L, -1, c_name) != LUA_TFUNCTION) {
-        return luaL_error(
-            L, "%s has no method '%s' (declared as '%s')", type->name, c_name,
-            public_name);
+    if (lua_isfunction(L, 3)) {
+        luaL_getmetatable(L, type->name);
+        lua_pushvalue(L, 3);
+    } else {
+        const char *const c_name = luaL_checkstring(L, 3);
+        if (M_PushRawMethod(L, type, c_name) != LUA_TFUNCTION) {
+            return luaL_error(
+                L, "%s has no method '%s' (declared as '%s')", type->name,
+                c_name, public_name);
+        }
     }
 
-    lua_getfield(L, -3, m_KeyMethods);
+    // stack: metatable, fn
+    lua_getfield(L, -2, m_KeyMethods);
     lua_pushstring(L, public_name);
-    lua_pushvalue(L, -3); // the C function
+    lua_pushvalue(L, -3);
     lua_rawset(L, -3);
     return 0;
 }
@@ -576,6 +607,7 @@ static int M_L_StructExposeComputed(lua_State *const L)
 static const luaL_Reg m_Module[] = {
     { "members", M_L_StructMembers },
     { "expose_field", M_L_StructExposeField },
+    { "method", M_L_StructMethod },
     { "expose_method", M_L_StructExposeMethod },
     { "expose_computed", M_L_StructExposeComputed },
     { nullptr, nullptr },

@@ -375,6 +375,14 @@ function api.seal()
   for _, path in ipairs(namespace_order) do
     audit_params(path, namespaces[path].params)
   end
+  -- Strict mode checks a method's arguments too, and make_checked needs a
+  -- checker for each. Without this, a type nobody can check would only surface
+  -- the day a builder turned strict mode on.
+  for _, path in ipairs(type_order) do
+    for name, method in pairs(types[path].methods or {}) do
+      audit_params(path .. "." .. name, method.params)
+    end
+  end
   for _, path in ipairs(property_order) do
     audit_type(path, "the property", properties[path].type)
   end
@@ -475,6 +483,38 @@ function api.define(path, spec)
   return spec.impl
 end
 
+-- A method is called with the handle as its first argument, which the
+-- declaration does not name because a script never writes it. Checking it
+-- catches `item.distance_to(pos)` - a dot where a colon was meant.
+local function method_params(spec_params, type_name)
+  local params = { { name = "self", type = type_name } }
+  for i, param in ipairs(spec_params or {}) do
+    params[i + 1] = param
+  end
+  return params
+end
+
+-- A type's methods reach C directly, so make_checked has to go in front of the
+-- C function rather than around a Lua one. Extensions take nothing but the
+-- handle __index hands them, so there is nothing of the script's to check.
+local function bind_type_methods(path)
+  local spec = types[path]
+  local backing = spec.backing
+  local _, type_name = split_path(path)
+  for name, method in pairs(spec.methods or {}) do
+    local from = method.from or name
+    if strict_enabled then
+      struct.expose_method(
+        backing,
+        name,
+        make_checked(struct.method(backing, from), path .. "." .. name, method_params(method.params, type_name))
+      )
+    else
+      struct.expose_method(backing, name, from)
+    end
+  end
+end
+
 -- Rebinds every registered function to (or away from) its checking wrapper.
 function api.strict(enabled)
   strict_enabled = enabled and true or false
@@ -486,6 +526,9 @@ function api.strict(enabled)
   for path, dispatch in pairs(namespace_dispatch) do
     local spec = namespaces[path]
     dispatch.fn = strict_enabled and make_checked(spec.call, path, spec.params) or spec.call
+  end
+  for _, path in ipairs(type_order) do
+    bind_type_methods(path)
   end
 end
 
@@ -518,10 +561,6 @@ function api.type(path, spec)
     declared[from] = true
   end
 
-  for name, method in pairs(spec.methods or {}) do
-    struct.expose_method(backing, name, method.from or name)
-  end
-
   for name, computed in pairs(spec.extensions or {}) do
     assert(type(computed.impl) == "function", "api.type: extension '" .. name .. "' needs an impl")
     struct.expose_computed(backing, name, computed.impl)
@@ -546,6 +585,8 @@ function api.type(path, spec)
     table.insert(type_order, path)
   end
   types[path] = spec
+
+  bind_type_methods(path)
 end
 
 -- Declares an enum: what the constants of a C enum are called in Lua, and what

@@ -285,6 +285,39 @@ test("find and first query by object and room", function()
   assert(#trx.items.find() == 0 and trx.items.first() == nil)
 end)
 
+-- A method reaches C directly, so strict mode has to put its wrapper in front of
+-- the C function rather than around a Lua one.
+test("strict mode checks a method's arguments", function()
+  local it = trx.items[1]
+  trx.api.strict(true)
+
+  local ok = pcall(function()
+    -- A colon call with a bad argument.
+    it:distance_to("over there")
+  end)
+  trx.api.strict(false)
+  assert(not ok, "strict mode let a bad argument through to a method")
+
+  -- And it still works with a good one, strict or not.
+  trx.api.strict(true)
+  local distance = it:distance_to({ x = 0, y = 0, z = 0 })
+  trx.api.strict(false)
+  assert(distance == 0)
+  assert(it:distance_to({ x = 0, y = 0, z = 0 }) == 0)
+end)
+
+-- The handle is the method's first argument, and a dot where a colon was meant
+-- passes whatever came first instead.
+test("strict mode catches a method called with a dot", function()
+  local it = trx.items[1]
+  trx.api.strict(true)
+  local ok = pcall(function()
+    return it.distance_to({ x = 0, y = 0, z = 0 })
+  end)
+  trx.api.strict(false)
+  assert(not ok, "strict mode let a method run without its handle")
+end)
+
 -- ITEM has many members the declaration does not name.
 test("undeclared members are unreachable", function()
   local it = trx.items[1]
