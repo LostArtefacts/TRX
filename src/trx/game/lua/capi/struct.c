@@ -1,5 +1,6 @@
 #include <trx/game/lua/registry.h>
 #include <trx/game/lua/struct.h>
+#include <trx/game/lua/utils.h>
 
 #include <string.h>
 
@@ -31,13 +32,7 @@ static void M_PushValue(lua_State *const L, const FIELD_VALUE *const value)
         break;
     case FT_XYZ_16:
     case FT_XYZ_32:
-        lua_newtable(L);
-        lua_pushinteger(L, value->as_xyz.x);
-        lua_setfield(L, -2, "x");
-        lua_pushinteger(L, value->as_xyz.y);
-        lua_setfield(L, -2, "y");
-        lua_pushinteger(L, value->as_xyz.z);
-        lua_setfield(L, -2, "z");
+        LUA_PushXYZ(L, value->as_xyz);
         break;
     default:
         lua_pushinteger(L, value->as_int);
@@ -66,18 +61,9 @@ static FIELD_VALUE M_CheckValue(
             lua_isnoneornil(L, idx) ? nullptr : luaL_checkstring(L, idx);
         break;
     case FT_XYZ_16:
-    case FT_XYZ_32: {
-        const int abs_idx = lua_absindex(L, idx);
-        luaL_checktype(L, abs_idx, LUA_TTABLE);
-        lua_getfield(L, abs_idx, "x");
-        value.as_xyz.x = luaL_checkinteger(L, -1);
-        lua_getfield(L, abs_idx, "y");
-        value.as_xyz.y = luaL_checkinteger(L, -1);
-        lua_getfield(L, abs_idx, "z");
-        value.as_xyz.z = luaL_checkinteger(L, -1);
-        lua_pop(L, 3);
+    case FT_XYZ_32:
+        value.as_xyz = LUA_CheckXYZ(L, idx);
         break;
-    }
     default:
         value.as_int = luaL_checkinteger(L, idx);
         break;
