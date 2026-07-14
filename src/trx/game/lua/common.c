@@ -111,13 +111,13 @@ static void M_RegisterTRXPreloadEmbedded(
     lua_pop(L, 2);
 }
 
+// Fatal for the reason a failure to seal is, in M_SealPublicAPI.
 static void M_RequireTRXModule(lua_State *const L, const char *name)
 {
     lua_getglobal(L, "require");
     lua_pushstring(L, name);
     if (lua_pcall(L, 1, LUA_MULTRET, 0) != LUA_OK) {
-        LOG_ERROR("Failed to require module %s: %s", name, lua_tostring(L, -1));
-        lua_pop(L, 1);
+        Shell_ExitSystemFmt("failed to load %s: %s", name, lua_tostring(L, -1));
     }
     lua_settop(L, 0);
 }
@@ -138,13 +138,13 @@ static void M_SealPublicAPI(lua_State *const L)
     lua_setglobal(L, "trxc");
 }
 
-static void M_LoadTRXScripts(lua_State *const L)
+static void M_LoadTRXModules(lua_State *const L)
 {
     // Register every module's preload entry before requiring any of them.
     // Doing both in one pass would mean a module could only ever require one
     // that happens to appear earlier in the list, which silently couples the
     // Lua load order to the ordering of the source list in meson.build.
-    for (const LUA_EMBEDDED_SCRIPT *script = g_LUA_EmbeddedScripts;
+    for (const LUA_EMBEDDED_SCRIPT *script = g_LUA_EmbeddedModules;
          script->path != nullptr; script++) {
         char *name = M_DeriveTRXModuleName(script->path);
         const char *const chunk_name =
@@ -154,12 +154,33 @@ static void M_LoadTRXScripts(lua_State *const L)
         Memory_FreePointer(&name);
     }
 
-    for (const LUA_EMBEDDED_SCRIPT *script = g_LUA_EmbeddedScripts;
+    for (const LUA_EMBEDDED_SCRIPT *script = g_LUA_EmbeddedModules;
          script->path != nullptr; script++) {
         LOG_DEBUG("Loading TRX module %s", script->path);
         char *name = M_DeriveTRXModuleName(script->path);
         M_RequireTRXModule(L, name);
         Memory_FreePointer(&name);
+    }
+}
+
+// Run after M_SealPublicAPI, so a script reaches all of trx.* without naming
+// the parts it wants, and api.define raises by then: it cannot extend the API
+// it consumes.
+static void M_RunTRXRuntimeScripts(lua_State *const L)
+{
+    for (const LUA_EMBEDDED_SCRIPT *script = g_LUA_EmbeddedRuntimeScripts;
+         script->path != nullptr; script++) {
+        LOG_DEBUG("Running TRX script %s", script->path);
+        const char *const chunk_name =
+            String_FormatStatic("@trx/%s", script->path);
+        if (luaL_loadbuffer(
+                L, (const char *)script->data, script->size, chunk_name)
+                != LUA_OK
+            || lua_pcall(L, 0, 0, 0) != LUA_OK) {
+            Shell_ExitSystemFmt(
+                "failed to run %s: %s", script->path, lua_tostring(L, -1));
+        }
+        lua_settop(L, 0);
     }
 }
 
@@ -179,8 +200,9 @@ void LUA_Init(void)
     M_PRIV *const p = &m_Priv;
     p->state = L;
 
-    M_LoadTRXScripts(L);
+    M_LoadTRXModules(L);
     M_SealPublicAPI(L);
+    M_RunTRXRuntimeScripts(L);
     LUA_HardenGlobals(L);
 }
 

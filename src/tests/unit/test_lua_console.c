@@ -22,6 +22,25 @@ static int M_FakeSetEvalResult(lua_State *const L)
     return 0;
 }
 
+// fake.run(prefix, args) - the console running a command the player typed.
+static int M_FakeRun(lua_State *const L)
+{
+    lua_pushinteger(
+        L, FakeConsole_Run(luaL_checkstring(L, 1), luaL_optstring(L, 2, "")));
+    return 1;
+}
+
+static int M_FakeHelpId(lua_State *const L)
+{
+    const char *const help_id = FakeConsole_HelpId(luaL_checkstring(L, 1));
+    if (help_id == nullptr) {
+        lua_pushnil(L);
+    } else {
+        lua_pushstring(L, help_id);
+    }
+    return 1;
+}
+
 static int M_FakeCalls(lua_State *const L)
 {
     lua_newtable(L);
@@ -48,6 +67,10 @@ static void M_PushFake(lua_State *const L)
 {
     lua_pushcfunction(L, M_FakeSetEvalResult);
     lua_setfield(L, -2, "set_eval_result");
+    lua_pushcfunction(L, M_FakeRun);
+    lua_setfield(L, -2, "run");
+    lua_pushcfunction(L, M_FakeHelpId);
+    lua_setfield(L, -2, "help_id");
 
     lua_newtable(L);
     lua_pushinteger(L, CR_SUCCESS);

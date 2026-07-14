@@ -25,6 +25,11 @@ extern FAKE_CONSOLE_CALLS g_FakeConsoleCalls;
 
 bool Console_IsVerbose(void);
 
+// Runs a command the way the console does when the player types it.
+COMMAND_RESULT FakeConsole_Run(const char *prefix, const char *args);
+int32_t FakeConsole_CommandCount(void);
+const char *FakeConsole_HelpId(const char *prefix);
+
 void FakeConsole_Reset(void);
 
 // The result the next Console_Eval hands back.

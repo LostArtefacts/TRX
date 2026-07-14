@@ -18,6 +18,22 @@ local function at(level)
   end
 end
 
+local Result = api.enum("console.Result", {
+  backing = "COMMAND_RESULT",
+  description = "How a console command went. What a command's `run` gives back.",
+  values = {
+    OK = "It worked.",
+    FAILURE = "It ran and could not do what was asked.",
+    UNAVAILABLE = "It cannot run here - no level is loaded, or the game is in a menu.",
+    BAD_INVOCATION = "The player typed it wrong.",
+  },
+})
+
+local is_result = {}
+for _, value in pairs(Result) do
+  is_result[value] = true
+end
+
 api.namespace("console.log", {
   description = "Logs a line to the developer console. Calling the group itself logs at `INFO`.",
   params = { { name = "message", type = "string" } },
@@ -76,6 +92,57 @@ api.define("console.eval", {
   },
   examples = { [[trx.console.eval("play 1", { verbose = true })]] },
   impl = raw.eval,
+})
+
+api.define("console.register", {
+  description = "Registers a console command written in Lua.\n\n"
+    .. "`run` is called with whatever the player typed after the command word, trimmed. What it "
+    .. "gives back is a `trx.console.Result`, and returning nothing means `OK`. It may return a "
+    .. "message after that, which is logged to the console - as an error, for any result but `OK`.\n\n"
+    .. "A command lives for the whole run, so it can only be registered from a global script. A "
+    .. "level script raises if it calls this: it runs again every time its level is loaded.",
+  params = {
+    {
+      name = "spec",
+      type = "table",
+      description = "`name`: the word the player types. `help`: a game string key for the help "
+        .. "text, optional. `run`: the function.",
+    },
+  },
+  examples = {
+    [[trx.console.register({
+  name = "greet",
+  run = function(args)
+    if args == "" then
+      return trx.console.Result.BAD_INVOCATION, "greet who?"
+    end
+    trx.console.log("hello " .. args)
+  end,
+})]],
+  },
+  impl = function(spec)
+    assert(type(spec) == "table", "trx.console.register expects a table")
+    assert(type(spec.name) == "string", "trx.console.register: name must be a string")
+    assert(spec.help == nil or type(spec.help) == "string", "trx.console.register: help must be a string")
+    assert(type(spec.run) == "function", "trx.console.register: run must be a function")
+
+    raw.register(spec.name, spec.help, function(args)
+      local result, message = spec.run((args or ""):match("^%s*(.-)%s*$"))
+      -- Only returning nothing means OK; `or` would take a `false` for it too.
+      if result == nil then
+        result = Result.OK
+      end
+      assert(is_result[result], spec.name .. ": run must give back a trx.console.Result")
+      if message ~= nil then
+        if result == Result.OK then
+          trx.console.log.info(message)
+        else
+          trx.console.log.error(message)
+        end
+      end
+      return result
+    end)
+  end,
 })
 
 api.define("console.clear", {
