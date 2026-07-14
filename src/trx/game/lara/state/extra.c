@@ -2,6 +2,7 @@
 #include <trx/game/camera.h>
 #include <trx/game/collision.h>
 #include <trx/game/game.h>
+#include <trx/game/interpolation.h>
 #include <trx/game/inventory.h>
 #include <trx/game/lara.h>
 #include <trx/game/lara/util.h>
@@ -323,8 +324,7 @@ static void M_JailWakeUp(ITEM *const item, COLL_INFO *const coll)
     Lara_GetMeshPos(LM_HIPS, &pos);
     item->pos.x = pos.x;
     item->pos.z = pos.z;
-    item->interp.prev.pos = item->pos;
-    item->interp.prev.rot = item->rot;
+    Interpolation_RememberItem(item);
 }
 
 // clang-format off
