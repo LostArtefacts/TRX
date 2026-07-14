@@ -1,3 +1,6 @@
+#pragma once
+
+#include <trx/core/log.h>
 #include <trx/game/objects.h>
 
 #include <lauxlib.h>
@@ -16,6 +19,22 @@ void LUA_RegisterModule(lua_State *L, const char *name, const luaL_Reg *fns);
 
 // Pushes trxc.<name>, for a module with more on it than functions.
 void LUA_GetModule(lua_State *L, const char *name);
+
+// What a log bridge takes: a level, a message, and where the call came from.
+// `ar` is what `src` points into, so the whole struct has to outlive the log
+// call.
+typedef struct {
+    LOG_LEVEL level;
+    const char *msg;
+    lua_Debug ar;
+    const char *src;
+    const char *func;
+    int line;
+} LUA_LOG_CALL;
+
+// Reads (level, msg) off the stack and resolves the caller, falling back to "?"
+// for a frame that cannot be named.
+void LUA_CheckLogCall(lua_State *L, LUA_LOG_CALL *out);
 
 OBJECT_PROPERTY_VALUE LUA_CheckPropertyValue(lua_State *L, int arg);
 void LUA_PushPropertyValue(lua_State *L, const OBJECT_PROPERTY_VALUE *value);

@@ -8,19 +8,9 @@
 // trxc.log.log(level, msg)
 static int M_L_LogGeneric(lua_State *const L)
 {
-    const LOG_LEVEL level =
-        LUA_CheckRange(L, 1, LOG_LEVEL_ERROR + 1, "unknown log level");
-    const char *const msg = luaL_checkstring(L, 2);
-    lua_Debug ar;
-    const char *src = "?";
-    const char *func = "?";
-    int line = 0;
-    if (LUA_GetCallerInfo(L, &ar)) {
-        src = ar.short_src;
-        func = ar.name != nullptr ? ar.name : "?";
-        line = ar.currentline;
-    }
-    Log_Message(level, src, line, func, "%s", msg);
+    LUA_LOG_CALL call;
+    LUA_CheckLogCall(L, &call);
+    Log_Message(call.level, call.src, call.line, call.func, "%s", call.msg);
     return 0;
 }
 
