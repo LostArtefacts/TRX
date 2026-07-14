@@ -4340,7 +4340,18 @@
           "writable": true
         }
       ],
-      "methods": [],
+      "methods": [
+        {
+          "description": "Whether the handle still refers to a room of the level that is loaded. A level change replaces the rooms, so a handle held across one goes stale rather than naming a different room: reading or writing a field on it raises an error. Check this for a handle held across time.",
+          "examples": [
+            "local start_room = trx.rooms[1]\ntrx.events.after_control(function()\n  if start_room:is_valid() then\n    trx.log.info(tostring(start_room.underwater))\n  end\nend)"
+          ],
+          "name": "is_valid",
+          "returns": {
+            "type": "boolean"
+          }
+        }
+      ],
       "path": "rooms.Room"
     }
   ]

@@ -108,6 +108,27 @@ test("find_valid_pos nudges a position, or gives nil", function()
   assert(trx.rooms.find_valid_pos({ x = -1, y = 0, z = 0 }, 1) == nil)
 end)
 
+-- The rooms of the next level sit where the old ones did, so a bounds check
+-- alone would let a held handle name a different room.
+test("a room handle goes stale at a level change", function()
+  local r = trx.rooms[1]
+  assert(r:is_valid())
+  assert(r.num == 1)
+
+  fake.load_next_level()
+  assert(not r:is_valid(), "the handle should be stale after a level change")
+
+  raises(function()
+    return r.underwater
+  end, "stale")
+  raises(function()
+    r.underwater = true
+  end, "stale")
+
+  -- A handle taken from the level that is loaded is fine.
+  assert(trx.rooms[1]:is_valid())
+end)
+
 -- The point of declaring the surface: a member C can reach but nobody names
 -- simply does not exist.
 test("undeclared members are unreachable", function()

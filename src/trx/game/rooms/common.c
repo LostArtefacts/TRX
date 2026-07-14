@@ -18,6 +18,7 @@
 
 static int32_t m_RoomCount = 0;
 static ROOM *m_Rooms = nullptr;
+static uint32_t m_RoomGen = 0;
 static bool m_FlipStatus = false;
 static int32_t m_FlipEffect = -1;
 static int32_t m_FlipTimer = 0;
@@ -85,6 +86,7 @@ static void M_GetNewRoom(
 void Room_InitialiseRooms(const int32_t num_rooms)
 {
     m_RoomCount = num_rooms;
+    m_RoomGen++;
     m_Rooms = num_rooms == 0
         ? nullptr
         : GameBuf_Alloc(sizeof(ROOM) * num_rooms, GBUF_ROOMS);
@@ -117,6 +119,11 @@ void Room_Shutdown(void)
 int32_t Room_GetCount(void)
 {
     return m_RoomCount;
+}
+
+uint32_t Room_GetGeneration(void)
+{
+    return m_RoomGen;
 }
 
 ROOM *Room_Get(const int32_t room_num)

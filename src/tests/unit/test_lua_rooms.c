@@ -22,10 +22,20 @@ static int M_FakeCalls(lua_State *const L)
     return 1;
 }
 
+// fake.load_next_level() - the rooms are replaced, as they are at a level
+// change.
+static int M_L_LoadNextLevel(lua_State *const L)
+{
+    FakeRooms_LoadNextLevel();
+    return 0;
+}
+
 static void M_PushFake(lua_State *const L)
 {
     lua_pushinteger(L, FAKE_ROOM_COUNT);
     lua_setfield(L, -2, "ROOM_COUNT");
+    lua_pushcfunction(L, M_L_LoadNextLevel);
+    lua_setfield(L, -2, "load_next_level");
 }
 
 int main(void)

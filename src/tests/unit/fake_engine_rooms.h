@@ -14,3 +14,6 @@ typedef struct {
 extern FAKE_ROOM_CALLS g_FakeRoomCalls;
 
 void FakeRooms_Reset(void);
+
+// The rooms of the next level replace the ones a handle was taken from.
+void FakeRooms_LoadNextLevel(void);

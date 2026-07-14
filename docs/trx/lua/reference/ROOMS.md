@@ -50,6 +50,23 @@ Module for inspecting and altering the rooms of the current level.
     - **`flipped_room`**: Room. This room's flip pair, or `nil` if it has none.
     - **`internal_bounds`**: table. As `bounds`, but excluding the outer ring of sectors, which is solid wall.
 
+    Methods:
+
+    - [lua]`room:is_valid()`  
+      Whether the handle still refers to a room of the level that is loaded. A level change replaces the rooms, so a handle held across one goes stale rather than naming a different room: reading or writing a field on it raises an error. Check this for a handle held across time.
+
+      Returns: boolean.
+
+      Example:
+      ```lua
+      local start_room = trx.rooms[1]
+      trx.events.after_control(function()
+        if start_room:is_valid() then
+          trx.log.info(tostring(start_room.underwater))
+        end
+      end)
+      ```
+
 ### Functions
 
 - [lua]`trx.rooms.get(num)`  

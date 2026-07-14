@@ -9,11 +9,12 @@
 
 extern const TYPE_DESC TYPE_ROOM;
 
-// Rooms are a fixed array for the level's lifetime: unlike items they are never
-// recycled, so the handle needs no generation - only a bounds check.
+// A room is never recycled within a level, but the table is replaced whole at
+// the next one. A bounds check alone would let a handle held across the change
+// resolve to a different room; the generation is what makes it go stale.
 static void *M_Resolve(const LUA_STRUCT_REF *const ref)
 {
-    if (ref->idx < 0 || ref->idx >= Room_GetCount()) {
+    if (ref->gen != Room_GetGeneration()) {
         return nullptr;
     }
     return Room_Get(ref->idx);
@@ -21,7 +22,14 @@ static void *M_Resolve(const LUA_STRUCT_REF *const ref)
 
 static void M_PushRoom(lua_State *const L, const int32_t idx)
 {
-    LUA_Struct_Push(L, &TYPE_ROOM, M_Resolve, idx, 0);
+    LUA_Struct_Push(L, &TYPE_ROOM, M_Resolve, idx, Room_GetGeneration());
+}
+
+static int M_L_IsValid(lua_State *const L)
+{
+    LUA_STRUCT_REF *const ref = LUA_Struct_CheckRef(L, 1, &TYPE_ROOM);
+    lua_pushboolean(L, ref->resolve(ref) != nullptr);
+    return 1;
 }
 
 // trxc.rooms.count() -> int
@@ -151,9 +159,14 @@ static int M_L_FindValidPos(lua_State *const L)
     return 2;
 }
 
+static const luaL_Reg m_Methods[] = {
+    { "is_valid", M_L_IsValid },
+    { nullptr, nullptr },
+};
+
 static void M_Create(lua_State *const L)
 {
-    LUA_Struct_Register(L, &TYPE_ROOM, nullptr);
+    LUA_Struct_Register(L, &TYPE_ROOM, m_Methods);
 
     lua_getglobal(L, "trxc");
     lua_newtable(L);

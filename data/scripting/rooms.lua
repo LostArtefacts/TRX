@@ -61,6 +61,24 @@ api.type("rooms.Room", {
     -- remaining flags. They are engine internals, not a contract.
   },
 
+  methods = {
+    is_valid = {
+      returns = { type = "boolean" },
+      description = "Whether the handle still refers to a room of the level that is loaded. A level "
+        .. "change replaces the rooms, so a handle held across one goes stale rather than naming a "
+        .. "different room: reading or writing a field on it raises an error. Check this for a "
+        .. "handle held across time.",
+      examples = {
+        [[local start_room = trx.rooms[1]
+trx.events.after_control(function()
+  if start_room:is_valid() then
+    trx.log.info(tostring(start_room.underwater))
+  end
+end)]],
+      },
+    },
+  },
+
   extensions = {
     flipped_room = {
       type = "Room",
