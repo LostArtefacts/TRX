@@ -249,14 +249,6 @@ static void M_Create(lua_State *const L)
     lua_newtable(L);
     luaL_setfuncs(L, m_Stats, 0);
     lua_setfield(L, -2, "stats");
-
-    lua_newtable(L);
-    lua_pushinteger(L, GYM_TRACK_ASSAULT);
-    lua_setfield(L, -2, "COURSE");
-    lua_pushinteger(L, GYM_TRACK_QUAD);
-    lua_setfield(L, -2, "QUAD");
-    lua_setfield(L, -2, "Track");
-
     lua_pop(L, 1);
 }
 
