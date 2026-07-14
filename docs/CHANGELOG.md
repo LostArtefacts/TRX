@@ -5,6 +5,9 @@
 - fixed being unable to drop to the secret ledge in Jungle room 76 from the ledge above (#5818)
 
 **Lua**
+
+The Lua integration was rewritten and existing scripts will need updating; refer to migration notes.
+
 - added a new Lua module, `trx.math`, with the engine's own fixed-point trigonometry and the `DEG_1`, `DEG_45`, `DEG_90` and `WALL_L` constants
 - added a new Lua module, `trx.strings`, with `fuzzy_match()` and `regex_match()`
 - added a new Lua module, `trx.locale`, for the text the player reads, looked up by key
@@ -14,8 +17,7 @@
 - added `trx.game.LevelType.TITLE`, and a `demo` level type to the game flow, which could not be named before
 - added `trx.game.play_gym()`, to start the gym
 - added `trx.items.spawn()`, to place a new item in the level at runtime
-- added `trx.items.get()`, `trx.items.count()`, `trx.rooms.get()`, `trx.rooms.count()` and `trx.objects.get()`, replacing the `fn` namespaces; refer to migration notes
-- added `trx.rooms.find_valid_pos()`, to nudge a position into valid room geometry
+- added `trx.items.get()`, `trx.items.count()`, `trx.rooms.get()`, `trx.rooms.count()` and `trx.objects.get()`, replacing the `fn` namespaces- added `trx.rooms.find_valid_pos()`, to nudge a position into valid room geometry
 - added item methods, `activate()`, `kill()`, `explode()`, `distance_to()`, `is_valid()`, `get_property()`, `set_property()` and `get_property_names()`
 - added object methods, `get_property()`, `set_property()` and `get_property_names()`
 - added new Lua item fields, `anim_state`, `goal_anim_state`, `speed`, `fall_speed`, `gravity`, `collidable`, `mesh_bits`, `touch_bits`, `max_hit_points`, `was_hit`, `is_active`, `is_alive`, `is_hostile` and `is_killed`, and made `timer` writable
@@ -30,27 +32,34 @@
 - added the braid and crowbar constants to `trx.lara.ExtraMesh`, which the engine had but never exposed
 - added indexing and the length operator to `trx.items`, `trx.rooms` and `trx.objects`, so `trx.items[1]` is the first item and `#trx.items` is how many the level has
 - added `trx.api.strict()`, which checks a script's arguments against the API's own declarations - worth turning on while writing a level, and leaving off in play
-- changed `trx.items` and `trx.rooms` to hand out opaque handles rather than `{ idx = ... }` tables, so a handle to a killed item now raises instead of silently addressing whatever took its slot; refer to migration notes
-- changed `room.idx` to `room.num`; refer to migration notes
-- changed the Lua level field `name` to `title`; refer to migration notes
-- changed `trx.lara.extra_anim` to a boolean, where it used to be the relative animation number, or -1; refer to migration notes
-- changed `item.object_id` to be read-only; refer to migration notes
+- added `room:is_valid()`, so a room handle held across a level change can be checked the way an item handle can
+- added the track to the assault course record functions, so the quad bike's records can be read and written at last
+- changed `trx.items` and `trx.rooms` to hand out opaque handles rather than `{ idx = ... }` tables, so a handle to a killed item now raises instead of silently addressing whatever took its slot
+- changed handles to compare equal when they name the same thing, so `trx.items[1] == trx.items[1]`
+- changed room handles to go stale at a level change rather than quietly naming a different room
+- changed `trx.game.levels` and `trx.game.play_level` to leave out the gym, so numbering no longer shifts and the last level is reachable
+- changed `trx.api` to hold only `strict` and `is_strict` once sealed, and `trx.api.strict()` to check handle method arguments too
+- changed a position table to require all three coordinates, rather than reading a missing one as zero
+- changed `room.idx` to `room.num`
+- changed the Lua level field `name` to `title`
+- changed `trx.lara.extra_anim` to a boolean, where it used to be the relative animation number, or -1
+- changed `item.object_id` to be read-only
 - changed `trx.objects[id]` to return `nil` for an unknown id, where it used to return an object that answered to nothing
-- changed `trx.config.get()` to return the option's own type rather than always a string; refer to migration notes
+- changed `trx.config.get()` to return the option's own type rather than always a string
 - changed `trx.events.detach()` to return whether a handler was removed
 - changed `trx.events` handlers to no longer receive a dummy argument in `before_control` and `after_control`
-- changed `trx.lara.mesh` and `trx.lara.extra_mesh` to declared enums, `trx.lara.Mesh` and `trx.lara.ExtraMesh`; refer to migration notes
-- changed the Lua logging functions to take a single message rather than a list of strings; refer to migration notes
+- changed `trx.lara.mesh` and `trx.lara.extra_mesh` to declared enums, `trx.lara.Mesh` and `trx.lara.ExtraMesh`
+- changed the Lua logging functions to take a single message rather than a list of strings
 - changed Lua enums to answer to a constant's name in any case, so `trx.catalog.objects.wolf` and `trx.catalog.objects.WOLF` are the same constant
-- changed Lua enums to be read-only; writing to one used to succeed and silently break every later lookup
+- changed Lua enums to be read-only, including the table `pairs()` used to hand out; writing to one used to break every later lookup
 - changed writes that a field cannot hold to raise rather than truncate, so `item.hit_points = 99999` no longer wraps
 - fixed `trx.events.on_pickup` firing with a 0-based item number, where it is documented to pass a 1-based one
-- fixed `trx.game.play_level` numbering shifting every level in a game with a gym
-- removed `trx.console.log.LogLevel`, a duplicate of `trx.log.LogLevel`; refer to migration notes
-- removed `trx.events.EventType`; refer to migration notes
-- removed `trx.game.settings`, which duplicated `trx.config`; refer to migration notes
-- removed `trx.music.play_track`, an undocumented alias of `trx.music.play`; refer to migration notes
-- removed the `trx.pickup` module; its enum is now `trx.items.PickupMode`; refer to migration notes
+- fixed a number too large for the engine wrapping into range rather than being refused, so `trx.items[4294967297]` no longer reads as the first item
+- removed `trx.console.log.LogLevel`, a duplicate of `trx.log.LogLevel`
+- removed `trx.events.EventType`
+- removed `trx.game.settings`, which duplicated `trx.config`
+- removed `trx.music.play_track`, an undocumented alias of `trx.music.play`
+- removed the `trx.pickup` module; its enum is now `trx.items.PickupMode`
 
 **TR4**
 - added reflections
