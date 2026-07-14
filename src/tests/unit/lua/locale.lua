@@ -28,4 +28,14 @@ test("format of text a translator put a bare percent sign in", function()
   assert(trx.locale.format("test/percent") == "100% of the text")
 end)
 
+test("format keeps every argument under strict", function()
+  -- The checked wrapper is generated per parameter list, and format's is a "..."
+  -- one: an arity pinned to the named parameters would drop the rest.
+  trx.api.strict(true)
+  local ok, result = pcall(trx.locale.format, "test/two", 1, 5)
+  trx.api.strict(false)
+  assert(ok, result)
+  assert(result == "1 of 5", result)
+end)
+
 return h.report()
