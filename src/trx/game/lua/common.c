@@ -62,6 +62,9 @@ static int M_TRXEmbeddedModuleLoader(lua_State *const L)
     const uint8_t *const data = lua_touserdata(L, lua_upvalueindex(1));
     const size_t size = (size_t)lua_tointeger(L, lua_upvalueindex(2));
     const char *const chunk_name = lua_tostring(L, lua_upvalueindex(3));
+    // require() calls a preload loader with the module name and ":preload:".
+    // Those are still on the stack, and they are not the module.
+    const int32_t base = lua_gettop(L);
     int status = luaL_loadbuffer(L, (const char *)data, size, chunk_name);
     if (status != LUA_OK) {
         lua_error(L);
@@ -70,8 +73,7 @@ static int M_TRXEmbeddedModuleLoader(lua_State *const L)
     if (status != LUA_OK) {
         lua_error(L);
     }
-    // Return all values pushed by the chunk.
-    return lua_gettop(L);
+    return lua_gettop(L) - base;
 }
 
 static char *M_DeriveTRXModuleName(const char *path)
