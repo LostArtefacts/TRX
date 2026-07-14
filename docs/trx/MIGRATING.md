@@ -41,53 +41,92 @@ order: 3
      string.
    - Writing to an out-of-range room raises instead of silently doing nothing.
 
-3. **Update scripts that use event types**
-   `trx.events.EventType` was removed, along with the `._type` field on each
-   hook. The nine hooks are the whole API, and attaching is unchanged:
-   `trx.events.before_control(fn)`.
-
-4. **Update scripts that write to a catalog**
-   The catalogs, and every other enum, are read-only now. Writing to one used to
-   succeed and silently break every later lookup, the engine's own scripts
-   included. Reading is unchanged, and a catalog answers to a name in any case:
-   `trx.catalog.objects.wolf` and `trx.catalog.objects.WOLF` are the same
-   constant. Upper case is the documented spelling.
-
-5. **Update scripts that use `trx.game.settings`**
-   It was removed. It was five aliases over config options, and it wrote through
-   `trx.config.set`, which keeps the change. Use `trx.config` directly, and
-   prefer `trx.config.override` for anything a level wants only while it runs:
-   - Before: `trx.game.settings.play_any_level = true`
-   - After: `trx.config.override("flow.play_any_level", true)`
-
-6. **Update scripts that use Lara's mesh tables**
-   `trx.lara.mesh` and `trx.lara.extra_mesh` became declared enums, so their
-   names are upper case: replace `trx.lara.mesh.hand_r` with
-   `trx.lara.Mesh.HAND_R`, and `trx.lara.extra_mesh.oar` with
-   `trx.lara.ExtraMesh.OAR`.
-
-7. **Update scripts that compare `trx.config.get()` against a string**
+3. **Update scripts that compare `trx.config.get()` against a string**
    It returns the option's own type now: a boolean option reads as a boolean and
-   a number as a number. Replace `trx.config.get("flow.cheat_keys") == "true"`
-   with `trx.config.get("flow.cheat_keys")`. Colors and enums are still strings.
+   a number as a number. `trx.config.get("flow.cheat_keys") == "true"` is now
+   false whatever the setting says - drop the comparison and test the value:
+   `if trx.config.get("flow.cheat_keys") then`. Colors and enums are still
+   strings.
 
    `trx.config.set()` still writes to the player's settings and keeps the
    change. Use the new `trx.config.override()` for anything a level wants only
    while it is running - it leaves the player's own value underneath, and
    `trx.config.restore()` puts it back.
 
-8. **Update scripts that use `trx.console.log.LogLevel`**
-   It was removed. Use `trx.log.LogLevel`, which is the same enum:
-   `trx.console.log.generic(trx.log.LogLevel.ERROR, "...")`.
+4. **Update scripts that read `trx.lara.extra_anim`**
+   It is a boolean now - whether a scripted animation is driving Lara - where
+   it used to be the relative animation number of `O_LARA_EXTRA`, or `-1` when
+   she was in no such animation. `if trx.lara.extra_anim ~= -1` is now always
+   true, and comparing it against a number raises. Test the boolean:
+   `if trx.lara.extra_anim then`. The animation number itself is no longer
+   exposed; read `trx.lara.item.anim` if you need it.
 
-9. **Update scripts that call `trx.music.play_track`**
-   It was an undocumented alias of `trx.music.play` and was removed. Use
-   `trx.music.play(id[, opts])`.
+5. **Update scripts that compensate for `on_pickup`'s item number**
+   The handler passes a 1-based item number, as it is documented to; it used to
+   pass the 0-based engine index. A script that
+   worked around this with `trx.items[item_num + 1]` is now off by one, and
+   picks up the wrong item rather than failing - pass `item_num` straight
+   through.
 
-10. **Update scripts that set `pickup_mode`**
+6. **Update scripts that write to a catalog**
+   The catalogs, and every other enum, are read-only now. Writing to one used to
+   succeed and silently break every later lookup, the engine's own scripts
+   included. Reading is unchanged, and a catalog answers to a name in any case:
+   `trx.catalog.objects.wolf` and `trx.catalog.objects.WOLF` are the same
+   constant. Upper case is the documented spelling.
+
+7. **Update scripts that use Lara's mesh tables**
+   `trx.lara.mesh` and `trx.lara.extra_mesh` became declared enums, so their
+   names are upper case: replace `trx.lara.mesh.hand_r` with
+   `trx.lara.Mesh.HAND_R`, and `trx.lara.extra_mesh.oar` with
+   `trx.lara.ExtraMesh.OAR`.
+
+8. **Update scripts that read a level's `name`**
+   The field is called `title` now. It holds what it always did, the name shown
+   to the player. Replace `trx.game.levels[1].name` with
+   `trx.game.levels[1].title`. Every field on a level is read-only.
+
+9. **Update scripts that use `trx.game.settings`**
+   It was removed. It was five aliases over config options, and it wrote through
+   `trx.config.set`, which keeps the change. Use `trx.config` directly, and
+   prefer `trx.config.override` for anything a level wants only while it runs:
+   - Before: `trx.game.settings.play_any_level = true`
+   - After: `trx.config.override("flow.play_any_level", true)`
+
+10. **Update scripts that assign to `item.object_id`**
+   It is read-only now. Writing it swapped the item's type underneath the
+   engine without reinitializing it, which left the item half-built. Spawn the
+   type you want instead: `trx.items.spawn(trx.catalog.objects.WOLF, pos)`.
+
+11. **Update scripts that set `pickup_mode`**
    The `trx.pickup` module is gone. `pickup_mode` is an item property, so its
    enum now lives with the items: replace `trx.pickup.Mode.PLINTH_LOW` with
    `trx.items.PickupMode.PLINTH_LOW`.
+
+12. **Update scripts that index `trx.objects` with an unknown id**
+   `trx.objects[id]` returns `nil` for an id the game does not have, where it
+   used to hand back an object that answered to nothing, so `if trx.objects[id]`
+   now tells a missing object from a present one. Code that went straight on to
+   `trx.objects[id].properties` raises at the lookup rather than further along.
+
+13. **Update scripts that log more than one string per call**
+   The logging functions take a single message. `trx.console.log("a", "b")`
+   used to concatenate its arguments and now raises. Format the message before
+   passing it: `trx.console.log(("a %s"):format(b))`. This applies to `trx.console.log` and
+   its levels, and to `trx.log`.
+
+14. **Update scripts that use event types**
+   `trx.events.EventType` was removed, along with the `._type` field on each
+   hook. The nine hooks are the whole API, and attaching is unchanged:
+   `trx.events.before_control(fn)`.
+
+15. **Update scripts that use `trx.console.log.LogLevel`**
+   It was removed. Use `trx.log.LogLevel`, which is the same enum:
+   `trx.console.log.generic(trx.log.LogLevel.ERROR, "...")`.
+
+16. **Update scripts that call `trx.music.play_track`**
+   It was an undocumented alias of `trx.music.play` and was removed. Use
+   `trx.music.play(id[, opts])`.
 
 ### Version 1.8 to 1.9
 
