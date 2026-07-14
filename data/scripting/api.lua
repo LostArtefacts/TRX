@@ -158,8 +158,12 @@ local function make_checked(fn, path, params)
     return fn
   end
 
+  local variadic = params[#params].name == "..."
+  local fixed = variadic and #params - 1 or #params
+
   local names, checks = {}, {}
-  for i, p in ipairs(params) do
+  for i = 1, fixed do
+    local p = params[i]
     names[i] = "a" .. i
     local fail = ("E(%q,%q)"):format(path, p.name)
     if p.optional then
@@ -169,14 +173,20 @@ local function make_checked(fn, path, params)
     end
   end
 
+  local sig = table.concat(names, ",")
+  if variadic then
+    sig = sig == "" and "..." or (sig .. ",...")
+  end
+
   local src = ("local fn,C,D,E=... return function(%s) %s return fn(%s) end"):format(
-    table.concat(names, ","),
+    sig,
     table.concat(checks, " "),
-    table.concat(names, ",")
+    sig
   )
 
   local checkers, defaults = {}, {}
-  for i, p in ipairs(params) do
+  for i = 1, fixed do
+    local p = params[i]
     checkers[i] = api.checkers[p.type] or function()
       return true
     end
