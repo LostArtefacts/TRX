@@ -23,6 +23,18 @@ test("opts.pos plays the sound in the world", function()
   assert(calls.last_x == 100 and calls.last_y == 200 and calls.last_z == 50)
 end)
 
+-- A missing coordinate used to read as zero, so a typo put the sound at the
+-- edge of the world rather than saying so.
+test("a position missing a coordinate raises", function()
+  raises(function()
+    trx.sound.play(fake.SAMPLE, { pos = { y = 200 } })
+  end, "x")
+  raises(function()
+    trx.sound.play(fake.SAMPLE, { pos = { x = 1, y = 2, z = "far" } })
+  end, "z")
+  assert(fake.calls().play_count == 0)
+end)
+
 test("an unavailable sample raises rather than playing silence", function()
   raises(function()
     trx.sound.play(fake.MISSING_SAMPLE)

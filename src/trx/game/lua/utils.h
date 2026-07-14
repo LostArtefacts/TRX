@@ -10,7 +10,7 @@
 // number, so the caller is found by name rather than at a fixed depth.
 bool LUA_GetCallerInfo(lua_State *L, lua_Debug *ar);
 
-OBJECT_PROPERTY_VALUE LUA_CheckPropertyValue(lua_State *L, int idx);
+OBJECT_PROPERTY_VALUE LUA_CheckPropertyValue(lua_State *L, int arg);
 void LUA_PushPropertyValue(lua_State *L, const OBJECT_PROPERTY_VALUE *value);
 
 // An argument the engine indexes one of its own tables with, unchecked.
@@ -20,3 +20,16 @@ int32_t LUA_CheckRange(lua_State *L, int arg, int32_t count, const char *what);
 // An object id, checked against the object table. Object_Get asserts on one
 // outside it.
 OBJECT_ID LUA_CheckObjectID(lua_State *L, int arg);
+
+// The position table a script writes: { x = , y = , z = }. `arg` is the
+// argument number the table came in on, and stays that in the error - reading a
+// field with luaL_checkinteger blames the stack slot the field landed at
+// instead, which is not an argument number at all.
+XYZ_32 LUA_CheckXYZ(lua_State *L, int arg);
+
+// The same, for a table that sits inside an argument rather than being one (an
+// options table's `pos`). `idx` is where it sits; `arg` is what the error
+// names.
+XYZ_32 LUA_CheckXYZAt(lua_State *L, int idx, int arg);
+
+void LUA_PushXYZ(lua_State *L, XYZ_32 value);

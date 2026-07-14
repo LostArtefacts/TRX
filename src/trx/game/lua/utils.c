@@ -37,6 +37,44 @@ OBJECT_ID LUA_CheckObjectID(lua_State *const L, const int arg)
     return (OBJECT_ID)LUA_CheckRange(L, arg, O_NUMBER_OF, "unknown object id");
 }
 
+XYZ_32 LUA_CheckXYZAt(lua_State *const L, const int idx, const int arg)
+{
+    const int abs_idx = lua_absindex(L, idx);
+    luaL_checktype(L, abs_idx, LUA_TTABLE);
+
+    XYZ_32 result = {};
+    int32_t *const members[] = { &result.x, &result.y, &result.z };
+    static const char *const names[] = { "x", "y", "z" };
+    for (int32_t i = 0; i < 3; i++) {
+        lua_getfield(L, abs_idx, names[i]);
+        int is_integer = 0;
+        const lua_Integer value = lua_tointegerx(L, -1, &is_integer);
+        if (is_integer == 0 || value < INT32_MIN || value > INT32_MAX) {
+            luaL_argerror(
+                L, arg, lua_pushfstring(L, "%s must be an integer", names[i]));
+        }
+        *members[i] = (int32_t)value;
+        lua_pop(L, 1);
+    }
+    return result;
+}
+
+XYZ_32 LUA_CheckXYZ(lua_State *const L, const int arg)
+{
+    return LUA_CheckXYZAt(L, arg, arg);
+}
+
+void LUA_PushXYZ(lua_State *const L, const XYZ_32 value)
+{
+    lua_createtable(L, 0, 3);
+    lua_pushinteger(L, value.x);
+    lua_setfield(L, -2, "x");
+    lua_pushinteger(L, value.y);
+    lua_setfield(L, -2, "y");
+    lua_pushinteger(L, value.z);
+    lua_setfield(L, -2, "z");
+}
+
 void LUA_PushPropertyValue(
     lua_State *const L, const OBJECT_PROPERTY_VALUE *const value)
 {
@@ -54,61 +92,37 @@ void LUA_PushPropertyValue(
         lua_pushboolean(L, value->as_bool);
         break;
     case OBJECT_PROPERTY_TYPE_XYZ:
-        lua_newtable(L);
-        lua_pushinteger(L, value->as_xyz.x);
-        lua_setfield(L, -2, "x");
-        lua_pushinteger(L, value->as_xyz.y);
-        lua_setfield(L, -2, "y");
-        lua_pushinteger(L, value->as_xyz.z);
-        lua_setfield(L, -2, "z");
+        LUA_PushXYZ(L, value->as_xyz);
         break;
     }
 }
 
-OBJECT_PROPERTY_VALUE LUA_CheckPropertyValue(lua_State *const L, const int idx)
+OBJECT_PROPERTY_VALUE LUA_CheckPropertyValue(lua_State *const L, const int arg)
 {
-    switch (lua_type(L, idx)) {
+    switch (lua_type(L, arg)) {
     case LUA_TBOOLEAN:
         return (OBJECT_PROPERTY_VALUE) {
             .type = OBJECT_PROPERTY_TYPE_BOOL,
-            .as_bool = lua_toboolean(L, idx),
+            .as_bool = lua_toboolean(L, arg),
         };
 
     case LUA_TNUMBER:
-        if (lua_isinteger(L, idx)) {
+        if (lua_isinteger(L, arg)) {
             return (OBJECT_PROPERTY_VALUE) {
                 .type = OBJECT_PROPERTY_TYPE_INT,
-                .as_int = lua_tointeger(L, idx),
+                .as_int = lua_tointeger(L, arg),
             };
         }
         return (OBJECT_PROPERTY_VALUE) {
             .type = OBJECT_PROPERTY_TYPE_DOUBLE,
-            .as_double = lua_tonumber(L, idx),
+            .as_double = lua_tonumber(L, arg),
         };
 
     case LUA_TTABLE:
-        XYZ_32 vec = {};
-        XYZ_32 check = {};
-
-        lua_getfield(L, idx, "x");
-        vec.x = lua_tointegerx(L, -1, &check.x);
-        lua_pop(L, 1);
-
-        lua_getfield(L, idx, "y");
-        vec.y = lua_tointegerx(L, -1, &check.y);
-        lua_pop(L, 1);
-
-        lua_getfield(L, idx, "z");
-        vec.z = lua_tointegerx(L, -1, &check.z);
-        lua_pop(L, 1);
-
-        if (check.x != 0 && check.y != 0 && check.z != 0) {
-            return (OBJECT_PROPERTY_VALUE) {
-                .type = OBJECT_PROPERTY_TYPE_XYZ,
-                .as_xyz = vec,
-            };
-        }
-        break;
+        return (OBJECT_PROPERTY_VALUE) {
+            .type = OBJECT_PROPERTY_TYPE_XYZ,
+            .as_xyz = LUA_CheckXYZ(L, arg),
+        };
 
     default:
         break;

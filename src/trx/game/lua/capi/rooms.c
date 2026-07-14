@@ -172,15 +172,7 @@ static int M_L_FlipEffect(lua_State *const L)
 // trxc.rooms.find_valid_pos({x,y,z}, room_num) -> pos, room_num or nil
 static int M_L_FindValidPos(lua_State *const L)
 {
-    luaL_checktype(L, 1, LUA_TTABLE);
-    XYZ_32 pos = {};
-    lua_getfield(L, 1, "x");
-    pos.x = luaL_checkinteger(L, -1);
-    lua_getfield(L, 1, "y");
-    pos.y = luaL_checkinteger(L, -1);
-    lua_getfield(L, 1, "z");
-    pos.z = luaL_checkinteger(L, -1);
-    lua_pop(L, 3);
+    XYZ_32 pos = LUA_CheckXYZ(L, 1);
 
     // Room_FindValidPos dereferences Room_Get(room_num) without checking, and
     // Room_Get gives back nullptr for a room outside the level.
@@ -193,13 +185,7 @@ static int M_L_FindValidPos(lua_State *const L)
         return 1;
     }
 
-    lua_newtable(L);
-    lua_pushinteger(L, pos.x);
-    lua_setfield(L, -2, "x");
-    lua_pushinteger(L, pos.y);
-    lua_setfield(L, -2, "y");
-    lua_pushinteger(L, pos.z);
-    lua_setfield(L, -2, "z");
+    LUA_PushXYZ(L, pos);
     lua_pushinteger(L, room_num + 1);
     return 2;
 }

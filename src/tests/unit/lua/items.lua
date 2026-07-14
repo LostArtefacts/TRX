@@ -208,6 +208,15 @@ test("a spawn that raises does not leave an item behind", function()
     trx.items.spawn(WOLF, { x = 0, y = 0, z = 0 }, "north")
   end)
 
+  -- A position table missing a coordinate names the coordinate and the
+  -- argument it came in on, not the stack slot the field landed at.
+  raises(function()
+    trx.items.spawn(WOLF, { x = 0, z = 0 })
+  end, "y")
+  raises(function()
+    trx.items.spawn(WOLF, { x = 0, y = 0, z = 0.5 })
+  end, "z")
+
   assert(#trx.items == 2, "a failed spawn must not consume a slot")
 end)
 

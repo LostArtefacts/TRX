@@ -1,5 +1,6 @@
 #include <trx/game/lua/common.h>
 #include <trx/game/lua/registry.h>
+#include <trx/game/lua/utils.h>
 #include <trx/game/sound/common.h>
 
 #include <lauxlib.h>
@@ -22,17 +23,9 @@ static int M_L_SoundPlay(lua_State *const L)
     XYZ_32 pos;
     const XYZ_32 *pos_ptr = nullptr;
     if (lua_gettop(L) >= 2 && lua_istable(L, 2)) {
-        lua_getfield(L, 2, "pos");
-        if (lua_istable(L, -1)) {
-            lua_getfield(L, -1, "x");
-            pos.x = (int32_t)luaL_optinteger(L, -1, 0);
-            lua_pop(L, 1);
-            lua_getfield(L, -1, "y");
-            pos.y = (int32_t)luaL_optinteger(L, -1, 0);
-            lua_pop(L, 1);
-            lua_getfield(L, -1, "z");
-            pos.z = (int32_t)luaL_optinteger(L, -1, 0);
-            lua_pop(L, 1);
+        if (lua_getfield(L, 2, "pos") == LUA_TTABLE) {
+            // The blame is the options table, which is what the script wrote.
+            pos = LUA_CheckXYZAt(L, -1, 2);
             pos_ptr = &pos;
         }
         lua_pop(L, 1);

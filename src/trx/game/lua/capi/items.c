@@ -321,16 +321,7 @@ static int M_L_Spawn(lua_State *const L)
         return luaL_error(L, "object %d is not loaded", object_id);
     }
 
-    luaL_checktype(L, 2, LUA_TTABLE);
-    XYZ_32 pos = {};
-    lua_getfield(L, 2, "x");
-    pos.x = luaL_checkinteger(L, -1);
-    lua_getfield(L, 2, "y");
-    pos.y = luaL_checkinteger(L, -1);
-    lua_getfield(L, 2, "z");
-    pos.z = luaL_checkinteger(L, -1);
-    lua_pop(L, 3);
-
+    const XYZ_32 pos = LUA_CheckXYZ(L, 2);
     const int16_t room_num = Room_GetIndexFromPos(pos);
     if (room_num == NO_ROOM) {
         return luaL_error(L, "position is outside the level");
@@ -381,16 +372,7 @@ static int M_L_DistanceTo(lua_State *const L)
 {
     LUA_STRUCT_REF *const ref = LUA_Struct_CheckRef(L, 1, &TYPE_ITEM);
     const ITEM *const item = LUA_Struct_Deref(L, ref);
-    luaL_checktype(L, 2, LUA_TTABLE);
-    XYZ_32 target = {};
-    lua_getfield(L, 2, "x");
-    target.x = luaL_checkinteger(L, -1);
-    lua_getfield(L, 2, "y");
-    target.y = luaL_checkinteger(L, -1);
-    lua_getfield(L, 2, "z");
-    target.z = luaL_checkinteger(L, -1);
-    lua_pop(L, 3);
-    lua_pushinteger(L, Item_GetDistance(item, target));
+    lua_pushinteger(L, Item_GetDistance(item, LUA_CheckXYZ(L, 2)));
     return 1;
 }
 
