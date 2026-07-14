@@ -18,6 +18,13 @@ static int M_FakeSetInGym(lua_State *const L)
     return 0;
 }
 
+static int M_FakeSetHasStats(lua_State *const L)
+{
+    FakeAssault_SetHasStats(
+        (GYM_TRACK_TYPE)luaL_checkinteger(L, 1), lua_toboolean(L, 2));
+    return 0;
+}
+
 static int M_FakeSetRunning(lua_State *const L)
 {
     FakeAssault_SetRunning(
@@ -62,6 +69,8 @@ static void M_PushFake(lua_State *const L)
 {
     lua_pushcfunction(L, M_FakeSetInGym);
     lua_setfield(L, -2, "set_in_gym");
+    lua_pushcfunction(L, M_FakeSetHasStats);
+    lua_setfield(L, -2, "set_has_stats");
     lua_pushcfunction(L, M_FakeSetRunning);
     lua_setfield(L, -2, "set_running");
     lua_pushcfunction(L, M_FakeSetVisible);

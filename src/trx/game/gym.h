@@ -20,6 +20,10 @@ bool Gym_IsInventoryOpenEnabled(void);
 GYM_TRACK_TYPE Gym_TrackManager_GetActiveTrackType(void);
 bool Gym_TrackManager_HasStats(GYM_TRACK_TYPE track);
 const GYM_TRACK_STATS *Gym_TrackManager_GetStats(GYM_TRACK_TYPE track);
+
+// The record table a finished run is filed into. It lives in the player's
+// profile, so a caller that writes it is expected to call Config_Update.
+GYM_TRACK_STATS *Gym_TrackManager_GetMutableStats(GYM_TRACK_TYPE track);
 bool Gym_TrackManager_IsTimerDisplay(GYM_TRACK_TYPE track);
 bool Gym_TrackManager_IsTimerActive(GYM_TRACK_TYPE track);
 void Gym_TrackManager_Reset(GYM_TRACK_TYPE track);

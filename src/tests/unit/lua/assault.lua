@@ -146,6 +146,52 @@ test("a time of zero or less raises", function()
   end)
 end)
 
+-- Every track keeps its own record table. Filing one against the quad bike used
+-- to land in the assault course's.
+test("each track keeps its own records", function()
+  local COURSE, QUAD = trx.assault.Track.COURSE, trx.assault.Track.QUAD
+
+  trx.assault.stats.add_record(30.0)
+  trx.assault.stats.add_record(12.5, QUAD)
+
+  local course = trx.assault.stats.list_records(COURSE)
+  assert(#course == 1 and course[1].time == 30.0, "the course record")
+
+  local quad = trx.assault.stats.list_records(QUAD)
+  assert(#quad == 1 and quad[1].time == 12.5, "the quad record went somewhere else")
+
+  -- Omitting the track still means the course, as it does everywhere else.
+  assert(#trx.assault.stats.list_records() == 1)
+  assert(trx.assault.stats.list_records()[1].time == 30.0)
+
+  assert(trx.assault.stats.remove_record(1, QUAD) == true)
+  assert(#trx.assault.stats.list_records(QUAD) == 0, "the quad record was not removed")
+  assert(#trx.assault.stats.list_records(COURSE) == 1, "the course record went with it")
+end)
+
+-- The records are in the player's profile, not in the level.
+test("records can be read outside a gym level", function()
+  trx.assault.stats.add_record(30.0)
+  fake.set_in_gym(false)
+
+  assert(#trx.assault.stats.list_records() == 1)
+  assert(trx.assault.stats.add_record(10.0) == true)
+end)
+
+-- Which game this is decides whether a track has a record table at all.
+test("a track this game has no records for raises", function()
+  fake.set_has_stats(trx.assault.Track.QUAD, false)
+  raises(function()
+    trx.assault.stats.list_records(trx.assault.Track.QUAD)
+  end, "unavailable")
+  raises(function()
+    trx.assault.stats.add_record(10.0, trx.assault.Track.QUAD)
+  end, "unavailable")
+
+  -- And the course is untouched by it.
+  assert(trx.assault.stats.add_record(10.0) == true)
+end)
+
 test("stats is a table, not a function", function()
   assert(type(trx.assault.stats) == "table")
 end)

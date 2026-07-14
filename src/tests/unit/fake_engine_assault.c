@@ -12,6 +12,7 @@ CONFIG g_Config;
 FAKE_ASSAULT_CALLS g_FakeAssaultCalls;
 
 static bool m_InGym;
+static bool m_HasStats[GYM_TRACK_NUMBER_OF];
 static bool m_Running[GYM_TRACK_NUMBER_OF];
 static bool m_Visible[GYM_TRACK_NUMBER_OF];
 static GYM_TRACK_TYPE m_ActiveTrack;
@@ -27,9 +28,23 @@ bool Config_Update(void)
     return true;
 }
 
+// Which game this is decides whether a track has a record table, not which
+// level is up. Both tracks have one here; m_HasStats is what turns one off.
 bool Gym_TrackManager_HasStats(const GYM_TRACK_TYPE track)
 {
-    return m_InGym;
+    return track >= 0 && track < GYM_TRACK_NUMBER_OF && m_HasStats[track];
+}
+
+GYM_TRACK_STATS *Gym_TrackManager_GetMutableStats(const GYM_TRACK_TYPE track)
+{
+    switch (track) {
+    case GYM_TRACK_ASSAULT:
+        return &g_Config.profile.assault_stats;
+    case GYM_TRACK_QUAD:
+        return &g_Config.profile.racetrack_stats;
+    default:
+        return nullptr;
+    }
 }
 
 GYM_TRACK_TYPE Gym_TrackManager_GetActiveTrackType(void)
@@ -78,9 +93,15 @@ void FakeAssault_Reset(void)
     m_InGym = true;
     m_ActiveTrack = GYM_TRACK_NONE;
     for (int32_t i = 0; i < GYM_TRACK_NUMBER_OF; i++) {
+        m_HasStats[i] = true;
         m_Running[i] = false;
         m_Visible[i] = false;
     }
+}
+
+void FakeAssault_SetHasStats(const GYM_TRACK_TYPE track, const bool has_stats)
+{
+    m_HasStats[track] = has_stats;
 }
 
 void FakeAssault_SetInGym(const bool in_gym)

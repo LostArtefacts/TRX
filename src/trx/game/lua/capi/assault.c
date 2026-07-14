@@ -10,15 +10,14 @@
 #include <lauxlib.h>
 #include <stdint.h>
 
-static bool M_StoreAssaultTime(const float time)
+static bool M_StoreTime(GYM_TRACK_STATS *const stats, const float time)
 {
-    GYM_TRACK_STATS *const assault = &g_Config.profile.assault_stats;
     uint32_t logic_time = (uint32_t)(time * LOGIC_FPS);
     int32_t insert_idx = -1;
 
     for (int32_t i = 0; i < MAX_ASSAULT_TIMES; i++) {
-        if (assault->entries[i].time == 0
-            || logic_time < assault->entries[i].time) {
+        if (stats->entries[i].time == 0
+            || logic_time < stats->entries[i].time) {
             insert_idx = i;
             break;
         }
@@ -28,48 +27,52 @@ static bool M_StoreAssaultTime(const float time)
     }
 
     for (int32_t i = MAX_ASSAULT_TIMES - 1; i > insert_idx; i--) {
-        assault->entries[i] = assault->entries[i - 1];
+        stats->entries[i] = stats->entries[i - 1];
     }
 
-    assault->total_attempts++;
-    assault->entries[insert_idx].time = logic_time;
-    assault->entries[insert_idx].attempt_num = assault->total_attempts;
+    stats->total_attempts++;
+    stats->entries[insert_idx].time = logic_time;
+    stats->entries[insert_idx].attempt_num = stats->total_attempts;
     Config_Update();
     return true;
 }
 
-static bool M_RemoveAssaultTimeAtIndex(const int32_t idx)
+static bool M_RemoveTimeAtIndex(GYM_TRACK_STATS *const stats, const int32_t idx)
 {
-    GYM_TRACK_STATS *const assault = &g_Config.profile.assault_stats;
     if (idx < 0 || idx >= MAX_ASSAULT_TIMES) {
         return false;
     }
-    if (assault->entries[idx].time == 0) {
+    if (stats->entries[idx].time == 0) {
         return false;
     }
 
     for (int32_t i = idx; i < MAX_ASSAULT_TIMES - 1; i++) {
-        assault->entries[i] = assault->entries[i + 1];
+        stats->entries[i] = stats->entries[i + 1];
     }
 
-    assault->entries[MAX_ASSAULT_TIMES - 1].time = 0;
-    assault->entries[MAX_ASSAULT_TIMES - 1].attempt_num = 0;
+    stats->entries[MAX_ASSAULT_TIMES - 1].time = 0;
+    stats->entries[MAX_ASSAULT_TIMES - 1].attempt_num = 0;
     Config_Update();
     return true;
 }
 
-static GYM_TRACK_TYPE M_GetTrack(lua_State *const L)
+static GYM_TRACK_TYPE M_GetTrackAt(lua_State *const L, const int arg)
 {
-    const int32_t raw_track = (int32_t)luaL_optinteger(L, 1, GYM_TRACK_ASSAULT);
+    const lua_Integer raw_track = luaL_optinteger(L, arg, GYM_TRACK_ASSAULT);
 
     switch (raw_track) {
     case GYM_TRACK_ASSAULT:
     case GYM_TRACK_QUAD:
         return (GYM_TRACK_TYPE)raw_track;
     default:
-        luaL_error(L, "unknown assault track");
+        luaL_argerror(L, arg, "unknown assault track");
         return GYM_TRACK_ASSAULT;
     }
+}
+
+static GYM_TRACK_TYPE M_GetTrack(lua_State *const L)
+{
+    return M_GetTrackAt(L, 1);
 }
 
 static const char *M_GetTrackName(const GYM_TRACK_TYPE track)
@@ -96,6 +99,19 @@ static void M_CheckTimerAvailable(
     if (!Gym_TrackManager_HasStats(track)) {
         luaL_error(L, "the %s timer is unavailable", M_GetTrackName(track));
     }
+}
+
+// The record table the track keeps. No gym check, unlike the timers: the
+// records live in the player's profile rather than in the level, and it is
+// which game this is that decides whether a track has a table at all.
+static GYM_TRACK_STATS *M_CheckStats(
+    lua_State *const L, const GYM_TRACK_TYPE track)
+{
+    GYM_TRACK_STATS *const stats = Gym_TrackManager_GetMutableStats(track);
+    if (stats == nullptr || !Gym_TrackManager_HasStats(track)) {
+        luaL_error(L, "the %s records are unavailable", M_GetTrackName(track));
+    }
+    return stats;
 }
 
 // trxc.assault.start([track])
@@ -163,32 +179,27 @@ static int M_L_AssaultGetActiveTrack(lua_State *const L)
     return 1;
 }
 
-// trxc.assault.stats.record(time) -> bool
+// trxc.assault.stats.record(time, [track]) -> bool
+//
+// The track comes second here and in remove: a record is about a time, and the
+// time is what a script always says.
 static int M_L_AssaultRecord(lua_State *const L)
 {
-    if (!Gym_TrackManager_HasStats(GYM_TRACK_ASSAULT)) {
-        return luaL_error(L, "assault stats unavailable");
-    }
-
     // Tested for what is allowed: NaN fails every comparison, so `time <= 0`
     // let it through to a cast that cannot hold it.
     const lua_Number time = luaL_checknumber(L, 1);
     if (!(time > 0.0 && time * LOGIC_FPS < (lua_Number)UINT32_MAX)) {
         return luaL_error(L, "time must be a positive number of seconds");
     }
+    GYM_TRACK_STATS *const stats = M_CheckStats(L, M_GetTrackAt(L, 2));
 
-    const bool ok = M_StoreAssaultTime((float)time);
-    lua_pushboolean(L, ok);
+    lua_pushboolean(L, M_StoreTime(stats, (float)time));
     return 1;
 }
 
-// trxc.assault.stats.remove(index) -> bool
+// trxc.assault.stats.remove(record_id, [track]) -> bool
 static int M_L_AssaultRemoveRecord(lua_State *const L)
 {
-    if (!Gym_TrackManager_HasStats(GYM_TRACK_ASSAULT)) {
-        return luaL_error(L, "assault stats unavailable");
-    }
-
     // Lua's formatter has no %lld, and raised over the format rather than the
     // index.
     const lua_Integer index_1 = luaL_checkinteger(L, 1);
@@ -197,33 +208,30 @@ static int M_L_AssaultRemoveRecord(lua_State *const L)
             L, "index out of range: %I (expected 1..%d)", index_1,
             MAX_ASSAULT_TIMES);
     }
+    GYM_TRACK_STATS *const stats = M_CheckStats(L, M_GetTrackAt(L, 2));
 
-    const bool ok = M_RemoveAssaultTimeAtIndex(index_1 - 1);
-    lua_pushboolean(L, ok);
+    lua_pushboolean(L, M_RemoveTimeAtIndex(stats, (int32_t)index_1 - 1));
     return 1;
 }
 
-// trxc.assault.stats.list() -> { { time=, attempt_num= }, ... }
+// trxc.assault.stats.list([track]) -> { { time=, attempt_num= }, ... }
 static int M_L_AssaultListRecords(lua_State *const L)
 {
-    if (!Gym_TrackManager_HasStats(GYM_TRACK_ASSAULT)) {
-        return luaL_error(L, "assault stats unavailable");
-    }
+    const GYM_TRACK_STATS *const stats = M_CheckStats(L, M_GetTrack(L));
 
-    const GYM_TRACK_STATS *const assault = &g_Config.profile.assault_stats;
     lua_newtable(L);
     int32_t out_idx = 1;
 
     for (int32_t i = 0; i < MAX_ASSAULT_TIMES; i++) {
-        if (assault->entries[i].time == 0) {
+        if (stats->entries[i].time == 0) {
             break;
         }
 
         lua_newtable(L);
         lua_pushnumber(
-            L, (lua_Number)((float)assault->entries[i].time / LOGIC_FPS));
+            L, (lua_Number)((float)stats->entries[i].time / LOGIC_FPS));
         lua_setfield(L, -2, "time");
-        lua_pushinteger(L, (lua_Integer)assault->entries[i].attempt_num);
+        lua_pushinteger(L, (lua_Integer)stats->entries[i].attempt_num);
         lua_setfield(L, -2, "attempt_num");
         lua_seti(L, -2, out_idx);
         out_idx++;
