@@ -81,7 +81,7 @@ static void M_Shutdown(void)
 }
 
 // trxc.events.attach(event_type, callback) → id
-static int32_t M_L_EventsAttach(lua_State *const L)
+static int M_L_EventsAttach(lua_State *const L)
 {
     const LUA_EVENT_TYPE ev = luaL_checkinteger(L, 1);
     luaL_checktype(L, 2, LUA_TFUNCTION);
@@ -102,7 +102,7 @@ static int32_t M_L_EventsAttach(lua_State *const L)
 }
 
 // trxc.events.detach(id) -> bool
-static int32_t M_L_EventsDetach(lua_State *const L)
+static int M_L_EventsDetach(lua_State *const L)
 {
     const int32_t id = luaL_checkinteger(L, 1);
     if (m_Listeners == nullptr) {
