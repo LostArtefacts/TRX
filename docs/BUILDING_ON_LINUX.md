@@ -22,13 +22,11 @@ Depending on your system, the Docker package may be named `docker`,
 
 ## Building TRX
 
-1. Download the shipped game assets for the game you want to build:
+1. Download the shipped assets for the combined build:
 
     ```bash
-    ./tools/download_assets X
+    ./tools/download_assets
     ```
-
-    Replace `X` with the TR version.
 
 2. Build the Linux target:
 
