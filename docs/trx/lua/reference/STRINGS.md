@@ -25,7 +25,7 @@ Utilities for working with strings.
 
   Parameters:
   - **`input`** (string). What the player typed.
-  - **`sources`** (table). List of `{ key = <the name>, value = <anything>, weight = <integer> }`. A heavier candidate wins a tie; weight defaults to 1.
+  - **`sources`** (table). List of `{ key = <the name>, value = <anything>, weight = <integer> }`. The key is a non-empty string. A heavier candidate wins a tie; weight defaults to 1, and a weight of zero or less drops the candidate.
 
   Returns: table. The matches, best first: `{ key, value, score, is_full, is_word }`. `is_full` means the whole candidate matched, `is_word` that a whole word did.
 
@@ -49,5 +49,5 @@ Utilities for working with strings.
 
   Example:
   ```lua
-  if trx.strings.regex_match(args, "^%d+$") then ... end
+  if trx.strings.regex_match(args, "^\\d+$") then ... end
   ```

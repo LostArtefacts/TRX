@@ -59,10 +59,44 @@ test("an empty source list matches nothing, rather than raising", function()
   assert(#trx.strings.fuzzy_match("wolf", {}) == 0)
 end)
 
+test("a key that is not a string is refused", function()
+  -- The matcher holds the key for the length of the match. A key read out of a
+  -- number field would be a string nothing owns by then.
+  raises(function()
+    trx.strings.fuzzy_match("wolf", { { key = 8, value = "WOLF" } })
+  end, "string key")
+end)
+
+test("an empty key is refused", function()
+  -- The scorer measures how much of the key the input covers, so a key of no
+  -- length has nothing to divide by.
+  raises(function()
+    trx.strings.fuzzy_match("wolf", { { key = "", value = "WOLF" } })
+  end, "empty")
+end)
+
+test("a weight that is not an integer is refused", function()
+  raises(function()
+    trx.strings.fuzzy_match("wolf", { { key = "wolf", weight = "heavy" } })
+  end, "integer")
+end)
+
+test("a source that is not a table is refused", function()
+  raises(function()
+    trx.strings.fuzzy_match("wolf", { "wolf" })
+  end, "list of tables")
+end)
+
 test("regex_match answers, and ignores case", function()
   assert(trx.strings.regex_match("wolf", "^wo") == true)
   assert(trx.strings.regex_match("WOLF", "^wo") == true, "the match is case-insensitive")
   assert(trx.strings.regex_match("bear", "^wo") == false)
+end)
+
+test("the pattern is PCRE, not a Lua pattern", function()
+  -- `%d` is what Lua's own string library wants; PCRE reads it as a literal.
+  assert(trx.strings.regex_match("42", "^\\d+$") == true)
+  assert(trx.strings.regex_match("42", "^%d+$") == false)
 end)
 
 return h.report()

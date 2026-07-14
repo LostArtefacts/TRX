@@ -3431,7 +3431,7 @@
           "type": "string"
         },
         {
-          "description": "List of `{ key = <the name>, value = <anything>, weight = <integer> }`. A heavier candidate wins a tie; weight defaults to 1.",
+          "description": "List of `{ key = <the name>, value = <anything>, weight = <integer> }`. The key is a non-empty string. A heavier candidate wins a tie; weight defaults to 1, and a weight of zero or less drops the candidate.",
           "name": "sources",
           "type": "table"
         }
@@ -3445,7 +3445,7 @@
     {
       "description": "Whether a subject matches a regular expression. Case-insensitive.",
       "examples": [
-        "if trx.strings.regex_match(args, \"^%d+$\") then ... end"
+        "if trx.strings.regex_match(args, \"^\\\\d+$\") then ... end"
       ],
       "params": [
         {
