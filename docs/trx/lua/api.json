@@ -24,34 +24,6 @@
   "enums": [
     {
       "bulk": false,
-      "count": 4,
-      "description": "Severity of a log message. Pass one to `trx.log.generic`.",
-      "path": "log.LogLevel",
-      "values": [
-        {
-          "description": "Diagnostic detail, of interest while writing a script.",
-          "name": "DEBUG",
-          "value": 0
-        },
-        {
-          "description": "Ordinary progress message.",
-          "name": "INFO",
-          "value": 1
-        },
-        {
-          "description": "Something is wrong, but the script can carry on.",
-          "name": "WARNING",
-          "value": 2
-        },
-        {
-          "description": "Something failed.",
-          "name": "ERROR",
-          "value": 3
-        }
-      ]
-    },
-    {
-      "bulk": false,
       "count": 2,
       "description": "A timed gym track.",
       "path": "assault.Track",
@@ -2247,6 +2219,34 @@
     },
     {
       "bulk": false,
+      "count": 4,
+      "description": "Severity of a log message. Pass one to `trx.log.generic`.",
+      "path": "log.LogLevel",
+      "values": [
+        {
+          "description": "Diagnostic detail, of interest while writing a script.",
+          "name": "DEBUG",
+          "value": 0
+        },
+        {
+          "description": "Ordinary progress message.",
+          "name": "INFO",
+          "value": 1
+        },
+        {
+          "description": "Something is wrong, but the script can carry on.",
+          "name": "WARNING",
+          "value": 2
+        },
+        {
+          "description": "Something failed.",
+          "name": "ERROR",
+          "value": 3
+        }
+      ]
+    },
+    {
+      "bulk": false,
       "count": 5,
       "description": "How a track is played. Pass one as `opts.mode` to `trx.music.play`.",
       "path": "music.PlayMode",
@@ -2303,77 +2303,6 @@
     }
   ],
   "functions": [
-    {
-      "description": "Logs a message at a level chosen at runtime, for when the level is computed rather than written literally.",
-      "examples": [
-        "local level = ok and trx.log.LogLevel.INFO or trx.log.LogLevel.ERROR\ntrx.log.generic(level, \"finished\")"
-      ],
-      "params": [
-        {
-          "enum": "log.LogLevel",
-          "name": "level",
-          "type": "integer"
-        },
-        {
-          "name": "message",
-          "type": "string"
-        }
-      ],
-      "path": "log.generic"
-    },
-    {
-      "description": "Logs an informational message.",
-      "examples": [
-        "trx.log.info(\"hello from lua\")"
-      ],
-      "params": [
-        {
-          "name": "message",
-          "type": "string"
-        }
-      ],
-      "path": "log.info"
-    },
-    {
-      "description": "Logs a warning.",
-      "params": [
-        {
-          "name": "message",
-          "type": "string"
-        }
-      ],
-      "path": "log.warn"
-    },
-    {
-      "description": "Logs a warning. An alias of `trx.log.warn`.",
-      "params": [
-        {
-          "name": "message",
-          "type": "string"
-        }
-      ],
-      "path": "log.warning"
-    },
-    {
-      "description": "Logs an error.",
-      "params": [
-        {
-          "name": "message",
-          "type": "string"
-        }
-      ],
-      "path": "log.error"
-    },
-    {
-      "description": "Logs a debug message.",
-      "params": [
-        {
-          "name": "message",
-          "type": "string"
-        }
-      ],
-      "path": "log.debug"
-    },
     {
       "description": "Starts the timer and clears its state. Raises outside a gym level.",
       "params": [
@@ -3197,6 +3126,77 @@
       }
     },
     {
+      "description": "Logs a message at a level chosen at runtime, for when the level is computed rather than written literally.",
+      "examples": [
+        "local level = ok and trx.log.LogLevel.INFO or trx.log.LogLevel.ERROR\ntrx.log.generic(level, \"finished\")"
+      ],
+      "params": [
+        {
+          "enum": "log.LogLevel",
+          "name": "level",
+          "type": "integer"
+        },
+        {
+          "name": "message",
+          "type": "string"
+        }
+      ],
+      "path": "log.generic"
+    },
+    {
+      "description": "Logs an informational message.",
+      "examples": [
+        "trx.log.info(\"hello from lua\")"
+      ],
+      "params": [
+        {
+          "name": "message",
+          "type": "string"
+        }
+      ],
+      "path": "log.info"
+    },
+    {
+      "description": "Logs a warning.",
+      "params": [
+        {
+          "name": "message",
+          "type": "string"
+        }
+      ],
+      "path": "log.warn"
+    },
+    {
+      "description": "Logs a warning. An alias of `trx.log.warn`.",
+      "params": [
+        {
+          "name": "message",
+          "type": "string"
+        }
+      ],
+      "path": "log.warning"
+    },
+    {
+      "description": "Logs an error.",
+      "params": [
+        {
+          "name": "message",
+          "type": "string"
+        }
+      ],
+      "path": "log.error"
+    },
+    {
+      "description": "Logs a debug message.",
+      "params": [
+        {
+          "name": "message",
+          "type": "string"
+        }
+      ],
+      "path": "log.debug"
+    },
+    {
       "description": "Sine of an angle.",
       "params": [
         {
@@ -3507,12 +3507,6 @@
   ],
   "modules": [
     {
-      "description": "Logs a message to the terminal and to `TRX.log` in the installation directory. Each call records the Lua script's filename, function name and line number.",
-      "name": "log",
-      "order": 1,
-      "title": "Logging"
-    },
-    {
       "description": "Module for controlling the Assault Course and Quad Bike timers in gym levels.",
       "name": "assault",
       "order": 14,
@@ -3567,6 +3561,12 @@
       "description": "The text the player reads, in the player's own language.",
       "name": "locale",
       "order": 18
+    },
+    {
+      "description": "Logs a message to the terminal and to `TRX.log` in the installation directory. Each call records the Lua script's filename, function name and line number.",
+      "name": "log",
+      "order": 1,
+      "title": "Logging"
     },
     {
       "description": "Fixed-point trigonometry, matching the engine's own tables.\n\nTRX angles are 16-bit units where 65536 is a full turn, not radians. Using these rather than Lua's `math` library guarantees a script places things exactly where the engine would.",
