@@ -264,17 +264,7 @@ GF_COMMAND GF_InterpretSequence(
         }
     }
 
-    // Run any level Lua script
-    LUA_ClearLevelListeners();
-    LUA_SetScriptContext(LUA_CONTEXT_LEVEL);
-    if (level->script_path != nullptr) {
-        LUA_RESULT res = LUA_EvalFile(level->script_path);
-        if (res.code != LUA_OK) {
-            LOG_ERROR("Lua level script error: %s", res.message);
-        }
-        LUA_FreeResult(&res);
-    }
-    LUA_SetScriptContext(LUA_CONTEXT_GLOBAL);
+    LUA_RunLevelScript(level);
 
     // load the level
     const GF_SEQUENCE *const sequence = &level->sequence;
