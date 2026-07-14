@@ -1,5 +1,6 @@
 #include <trx/game/game_flow.h>
 #include <trx/game/lua/common.h>
+#include <trx/game/lua/registry.h>
 #include <trx/game/lua/struct.h>
 #include <trx/game/savegame.h>
 #include <trx/version.h>
@@ -129,7 +130,7 @@ static int M_L_GamePlayDemo(lua_State *const L)
     return 0;
 }
 
-void LUA_CreateGame(lua_State *const L)
+static void M_Create(lua_State *const L)
 {
     LUA_Struct_Register(
         L, &TYPE_GF_LEVEL, (const luaL_Reg[]) { { nullptr, nullptr } });
@@ -158,3 +159,5 @@ void LUA_CreateGame(lua_State *const L)
     lua_setfield(L, -2, "game");
     lua_pop(L, 1);
 }
+
+REGISTER_LUA_CAPI(.create = M_Create)

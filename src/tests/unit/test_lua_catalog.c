@@ -5,13 +5,6 @@
 
 #define FAKE_SLOT_OFFSET 13
 
-extern void LUA_CreateCatalog(lua_State *L);
-
-static void M_SetUpTRXC(lua_State *const L)
-{
-    LUA_CreateCatalog(L);
-}
-
 static int M_FakeReset(lua_State *const L)
 {
     return 0;
@@ -34,7 +27,6 @@ int main(void)
     const LUA_SURFACE_TEST test = {
         .module = "catalog",
         .tests = "catalog",
-        .setup_trxc = M_SetUpTRXC,
         .push_fake = M_PushFake,
         .fake_reset = M_FakeReset,
         .fake_calls = M_FakeCalls,

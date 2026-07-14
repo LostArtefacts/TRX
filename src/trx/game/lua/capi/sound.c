@@ -1,4 +1,5 @@
 #include <trx/game/lua/common.h>
+#include <trx/game/lua/registry.h>
 #include <trx/game/sound/common.h>
 
 #include <lauxlib.h>
@@ -55,7 +56,7 @@ static int M_L_SoundStopAll(lua_State *const L)
     return 0;
 }
 
-void LUA_CreateSound(lua_State *const L)
+static void M_Create(lua_State *const L)
 {
     lua_getglobal(L, "trxc");
     lua_newtable(L);
@@ -70,3 +71,5 @@ void LUA_CreateSound(lua_State *const L)
     lua_setfield(L, -2, "sound");
     lua_pop(L, 1);
 }
+
+REGISTER_LUA_CAPI(.create = M_Create)

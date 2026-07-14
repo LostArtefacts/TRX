@@ -111,7 +111,7 @@ test('enum_map', test_enum_map_exe, suite: 'unit')
 test_lua_enum_exe = executable(
   'test_lua_enum',
   files('unit/test_lua_enum.c') + test_stubs + enum_map_src
-    + files('../trx/game/lua/enum.c'),
+    + files('../trx/game/lua/capi/enum.c', '../trx/game/lua/registry.c'),
   include_directories: [src_inc, test_inc],
   dependencies: [dep_lua],
   build_by_default: false,
@@ -140,8 +140,9 @@ lua_surface_src = files(
   '../trx/core/memory.c',
   '../trx/core/vector.c',
   '../trx/game/enum.c',
-  '../trx/game/lua/enum.c',
-  '../trx/game/lua/struct.c',
+  '../trx/game/lua/capi/enum.c',
+  '../trx/game/lua/capi/struct.c',
+  '../trx/game/lua/registry.c',
 ) + files('unit/lua_surface.c', 'unit/stubs_enum_map.c')
 
 lua_surface_args = ['-DREPO_ROOT="' + meson.current_source_dir() / '../..' + '"']
@@ -150,7 +151,7 @@ test_lua_rooms_exe = executable(
   'test_lua_rooms',
   files('unit/test_lua_rooms.c', 'unit/fake_engine_rooms.c') + test_stubs
     + lua_surface_src
-    + files('../trx/game/rooms/fields.c', '../trx/game/lua/rooms.c'),
+    + files('../trx/game/rooms/fields.c', '../trx/game/lua/capi/rooms.c'),
   include_directories: [src_inc, test_inc],
   dependencies: [dep_lua],
   c_args: lua_surface_args,
@@ -164,7 +165,7 @@ test_lua_items_exe = executable(
     + lua_surface_src
     + files(
       '../trx/game/items/fields.c',
-      '../trx/game/lua/items.c',
+      '../trx/game/lua/capi/items.c',
       '../trx/game/lua/utils.c',
     ),
   include_directories: [src_inc, test_inc],
@@ -178,7 +179,7 @@ test_lua_assault_exe = executable(
   'test_lua_assault',
   files('unit/test_lua_assault.c', 'unit/fake_engine_assault.c') + test_stubs
     + lua_surface_src
-    + files('../trx/game/lua/assault.c'),
+    + files('../trx/game/lua/capi/assault.c'),
   include_directories: [src_inc, test_inc],
   dependencies: [dep_lua],
   c_args: lua_surface_args,
@@ -192,7 +193,7 @@ test_lua_camera_exe = executable(
   files('unit/test_lua_camera.c', 'unit/fake_engine_camera.c', 'unit/fake_engine_rooms.c')
     + test_stubs
     + lua_surface_src
-    + files('../trx/game/rooms/fields.c', '../trx/game/lua/rooms.c', '../trx/game/lua/camera.c'),
+    + files('../trx/game/rooms/fields.c', '../trx/game/lua/capi/rooms.c', '../trx/game/lua/capi/camera.c'),
   include_directories: [src_inc, test_inc],
   dependencies: [dep_lua],
   c_args: lua_surface_args,
@@ -204,7 +205,7 @@ test_lua_music_exe = executable(
   'test_lua_music',
   files('unit/test_lua_music.c', 'unit/fake_engine_music.c') + test_stubs
     + lua_surface_src
-    + files('../trx/game/lua/music.c'),
+    + files('../trx/game/lua/capi/music.c'),
   include_directories: [src_inc, test_inc],
   dependencies: [dep_lua],
   c_args: lua_surface_args,
@@ -221,7 +222,7 @@ test_lua_strings_exe = executable(
       '../trx/core/strings/common.c',
       '../trx/core/strings/case_funcs.c',
       '../trx/core/strings/fuzzy_match.c',
-      '../trx/game/lua/strings.c',
+      '../trx/game/lua/capi/strings.c',
     ),
   include_directories: [src_inc, test_inc],
   dependencies: [dep_lua, dep_pcre2],
@@ -234,7 +235,7 @@ test_lua_sound_exe = executable(
   'test_lua_sound',
   files('unit/test_lua_sound.c', 'unit/fake_engine_sound.c') + test_stubs
     + lua_surface_src
-    + files('../trx/game/lua/sound.c'),
+    + files('../trx/game/lua/capi/sound.c'),
   include_directories: [src_inc, test_inc],
   dependencies: [dep_lua],
   c_args: lua_surface_args,
@@ -246,7 +247,7 @@ test_lua_locale_exe = executable(
   'test_lua_locale',
   files('unit/test_lua_locale.c', 'unit/fake_engine_locale.c') + test_stubs
     + lua_surface_src
-    + files('../trx/game/lua/locale.c'),
+    + files('../trx/game/lua/capi/locale.c'),
   include_directories: [src_inc, test_inc],
   dependencies: [dep_lua],
   c_args: lua_surface_args,
@@ -260,7 +261,7 @@ test_lua_log_exe = executable(
   'test_lua_log',
   files('unit/test_lua_log.c', 'unit/fake_engine_log.c')
     + lua_surface_src
-    + files('../trx/game/lua/log.c'),
+    + files('../trx/game/lua/capi/log.c'),
   include_directories: [src_inc, test_inc],
   dependencies: [dep_lua],
   c_args: lua_surface_args,
@@ -272,7 +273,7 @@ test_lua_game_exe = executable(
   'test_lua_game',
   files('unit/test_lua_game.c', 'unit/fake_engine_game.c') + test_stubs
     + lua_surface_src
-    + files('../trx/game/game_flow/fields.c', '../trx/game/lua/game.c'),
+    + files('../trx/game/game_flow/fields.c', '../trx/game/lua/capi/game.c'),
   include_directories: [src_inc, test_inc],
   dependencies: [dep_lua],
   c_args: lua_surface_args,
@@ -286,7 +287,7 @@ test_lua_objects_exe = executable(
     + lua_surface_src
     + files(
       '../trx/game/objects/fields.c',
-      '../trx/game/lua/objects.c',
+      '../trx/game/lua/capi/objects.c',
       '../trx/game/lua/utils.c',
     ),
   include_directories: [src_inc, test_inc],
@@ -304,8 +305,8 @@ test_lua_lara_exe = executable(
     + files(
       '../trx/game/items/fields.c',
       '../trx/game/lara/fields.c',
-      '../trx/game/lua/items.c',
-      '../trx/game/lua/lara.c',
+      '../trx/game/lua/capi/items.c',
+      '../trx/game/lua/capi/lara.c',
       '../trx/game/lua/utils.c',
     ),
   include_directories: [src_inc, test_inc],
@@ -321,7 +322,7 @@ test_lua_catalog_exe = executable(
   'test_lua_catalog',
   files('unit/test_lua_catalog.c', 'unit/fake_engine_catalog.c') + test_stubs
     + lua_surface_src
-    + files('../trx/game/lua/catalog.c'),
+    + files('../trx/game/lua/capi/catalog.c'),
   include_directories: [src_inc, test_inc],
   dependencies: [dep_lua],
   c_args: lua_surface_args,
@@ -336,7 +337,7 @@ test_lua_config_exe = executable(
     + files(
       '../trx/config/override.c',
       '../trx/config/value.c',
-      '../trx/game/lua/config.c',
+      '../trx/game/lua/capi/config.c',
     ),
   include_directories: [src_inc, test_inc],
   dependencies: [dep_lua],
@@ -349,7 +350,7 @@ test_lua_console_exe = executable(
   'test_lua_console',
   files('unit/test_lua_console.c', 'unit/fake_engine_console.c') + test_stubs
     + lua_surface_src
-    + files('../trx/game/lua/console.c', '../trx/game/lua/log.c'),
+    + files('../trx/game/lua/capi/console.c', '../trx/game/lua/capi/log.c'),
   include_directories: [src_inc, test_inc],
   dependencies: [dep_lua],
   c_args: lua_surface_args,
@@ -361,7 +362,7 @@ test_lua_creatures_exe = executable(
   'test_lua_creatures',
   files('unit/test_lua_creatures.c', 'unit/fake_engine_creatures.c') + test_stubs
     + lua_surface_src
-    + files('../trx/game/lua/creatures.c'),
+    + files('../trx/game/lua/capi/creatures.c'),
   include_directories: [src_inc, test_inc],
   dependencies: [dep_lua],
   c_args: lua_surface_args,
@@ -373,7 +374,7 @@ test_lua_events_exe = executable(
   'test_lua_events',
   files('unit/test_lua_events.c') + test_stubs
     + lua_surface_src
-    + files('../trx/game/lua/events.c'),
+    + files('../trx/game/lua/capi/events.c'),
   include_directories: [src_inc, test_inc],
   dependencies: [dep_lua],
   c_args: lua_surface_args,
@@ -387,7 +388,7 @@ test_lua_api_seal_exe = executable(
     + lua_surface_src
     + files(
       '../trx/game/items/fields.c',
-      '../trx/game/lua/items.c',
+      '../trx/game/lua/capi/items.c',
       '../trx/game/lua/utils.c',
     ),
   include_directories: [src_inc, test_inc],
@@ -402,7 +403,12 @@ test('lua_api_seal', test_lua_api_seal_exe, suite: 'unit')
 test_lua_struct_exe = executable(
   'test_lua_struct',
   files('unit/test_lua_struct.c') + test_stubs
-    + files('../trx/core/field.c', '../trx/game/lua/struct.c'),
+    + files(
+      '../trx/core/field.c',
+      '../trx/core/memory.c',
+      '../trx/game/lua/capi/struct.c',
+      '../trx/game/lua/registry.c',
+    ),
   include_directories: [src_inc, test_inc],
   dependencies: [dep_lua],
   build_by_default: false,

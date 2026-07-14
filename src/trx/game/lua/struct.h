@@ -29,9 +29,6 @@ typedef struct LUA_STRUCT_REF {
 void LUA_Struct_Register(
     lua_State *L, const TYPE_DESC *type, const luaL_Reg *methods);
 
-// Registers trxc.struct, through which Lua declares the public surface.
-void LUA_CreateStruct(lua_State *L);
-
 // Push a handle userdata for an instance of a registered type.
 void LUA_Struct_Push(
     lua_State *L, const TYPE_DESC *type,

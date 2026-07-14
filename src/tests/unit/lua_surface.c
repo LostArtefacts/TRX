@@ -1,10 +1,9 @@
 #include "lua_surface.h"
 
+#include <trx/game/lua/registry.h>
+
 #include <stdio.h>
 #include <stdlib.h>
-
-extern void LUA_CreateStruct(lua_State *L);
-extern void LUA_CreateEnum(lua_State *L);
 
 static void M_Fail(lua_State *const L, const char *const what)
 {
@@ -22,9 +21,10 @@ int LuaSurface_Run(const LUA_SURFACE_TEST *const test)
     lua_newtable(L);
     lua_setglobal(L, "trx");
 
-    LUA_CreateStruct(L);
-    LUA_CreateEnum(L);
-    test->setup_trxc(L);
+    LUA_Registry_CreateAll(L);
+    if (test->setup_extra != nullptr) {
+        test->setup_extra(L);
+    }
 
     lua_newtable(L);
     lua_pushcfunction(L, test->fake_reset);

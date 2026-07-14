@@ -6,13 +6,6 @@
 
 #include <lauxlib.h>
 
-extern void LUA_CreateGame(lua_State *L);
-
-static void M_SetUpTRXC(lua_State *const L)
-{
-    LUA_CreateGame(L);
-}
-
 static int M_FakeReset(lua_State *const L)
 {
     FakeGame_Reset();
@@ -53,7 +46,6 @@ int main(void)
     const LUA_SURFACE_TEST test = {
         .module = "game",
         .tests = "game",
-        .setup_trxc = M_SetUpTRXC,
         .push_fake = M_PushFake,
         .fake_reset = M_FakeReset,
         .fake_calls = M_FakeCalls,

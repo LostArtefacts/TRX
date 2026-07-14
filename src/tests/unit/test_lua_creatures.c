@@ -4,13 +4,6 @@
 #include "fake_engine_creatures.h"
 #include "lua_surface.h"
 
-extern void LUA_CreateCreatures(lua_State *L);
-
-static void M_SetUpTRXC(lua_State *const L)
-{
-    LUA_CreateCreatures(L);
-}
-
 static int M_FakeReset(lua_State *const L)
 {
     FakeCreatures_Reset();
@@ -40,7 +33,6 @@ int main(void)
     const LUA_SURFACE_TEST test = {
         .module = "creatures",
         .tests = "creatures",
-        .setup_trxc = M_SetUpTRXC,
         .push_fake = M_PushFake,
         .fake_reset = M_FakeReset,
         .fake_calls = M_FakeCalls,

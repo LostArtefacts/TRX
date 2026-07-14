@@ -1,6 +1,7 @@
 #include "harness.h"
 
 #include <trx/core/enum_map.h>
+#include <trx/game/lua/registry.h>
 
 #include <lauxlib.h>
 #include <lualib.h>
@@ -13,8 +14,6 @@
 // drift from ITEM_STATUS, and the generated reference cannot document a
 // constant the engine does not have. These tests pin the reflection that
 // guarantees it.
-
-extern void LUA_CreateEnum(lua_State *L);
 
 typedef enum {
     M_WIDGET_OFF = 0,
@@ -35,7 +34,7 @@ static lua_State *M_NewState(void)
     luaL_openlibs(L);
     lua_newtable(L);
     lua_setglobal(L, "trxc");
-    LUA_CreateEnum(L);
+    LUA_Registry_CreateAll(L);
     return L;
 }
 

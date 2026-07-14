@@ -9,15 +9,6 @@
 
 #include <lauxlib.h>
 
-extern void LUA_CreateConsole(lua_State *L);
-extern void LUA_CreateLog(lua_State *L);
-
-static void M_SetUpTRXC(lua_State *const L)
-{
-    LUA_CreateConsole(L);
-    LUA_CreateLog(L);
-}
-
 static int M_FakeReset(lua_State *const L)
 {
     FakeConsole_Reset();
@@ -74,7 +65,6 @@ int main(void)
         .module = "console",
         .deps = { "log", nullptr },
         .tests = "console",
-        .setup_trxc = M_SetUpTRXC,
         .push_fake = M_PushFake,
         .fake_reset = M_FakeReset,
         .fake_calls = M_FakeCalls,

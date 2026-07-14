@@ -4,13 +4,6 @@
 #include "fake_engine_sound.h"
 #include "lua_surface.h"
 
-extern void LUA_CreateSound(lua_State *L);
-
-static void M_SetUpTRXC(lua_State *const L)
-{
-    LUA_CreateSound(L);
-}
-
 static int M_FakeReset(lua_State *const L)
 {
     FakeSound_Reset();
@@ -54,7 +47,6 @@ int main(void)
     const LUA_SURFACE_TEST test = {
         .module = "sound",
         .tests = "sound",
-        .setup_trxc = M_SetUpTRXC,
         .push_fake = M_PushFake,
         .fake_reset = M_FakeReset,
         .fake_calls = M_FakeCalls,

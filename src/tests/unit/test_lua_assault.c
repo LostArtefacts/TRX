@@ -6,13 +6,6 @@
 
 #include <lauxlib.h>
 
-extern void LUA_CreateAssault(lua_State *L);
-
-static void M_SetUpTRXC(lua_State *const L)
-{
-    LUA_CreateAssault(L);
-}
-
 static int M_FakeReset(lua_State *const L)
 {
     FakeAssault_Reset();
@@ -82,7 +75,6 @@ int main(void)
     const LUA_SURFACE_TEST test = {
         .module = "assault",
         .tests = "assault",
-        .setup_trxc = M_SetUpTRXC,
         .push_fake = M_PushFake,
         .fake_reset = M_FakeReset,
         .fake_calls = M_FakeCalls,

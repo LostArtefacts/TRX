@@ -1,5 +1,6 @@
 #include "harness.h"
 
+#include <trx/game/lua/registry.h>
 #include <trx/game/lua/struct.h>
 
 #include <lauxlib.h>
@@ -61,7 +62,7 @@ static int M_L_Backdoor(lua_State *const L)
     return 1;
 }
 
-static const luaL_Reg M_METHODS[] = {
+static const luaL_Reg m_Methods[] = {
     { "reveal", M_L_Reveal },
     { "backdoor", M_L_Backdoor },
     { nullptr, nullptr },
@@ -89,8 +90,8 @@ static lua_State *M_NewState(const char *const declaration)
     lua_newtable(L);
     lua_setglobal(L, "trxc");
 
-    LUA_Struct_Register(L, &TYPE_WIDGET, M_METHODS);
-    LUA_CreateStruct(L);
+    LUA_Struct_Register(L, &TYPE_WIDGET, m_Methods);
+    LUA_Registry_CreateAll(L);
 
     lua_getglobal(L, "trxc");
     lua_pushcfunction(L, M_L_GetWidget);
