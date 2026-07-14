@@ -79,8 +79,15 @@ void FlybyMode_PreControl(void)
 
 void FlybyMode_PostControl(void)
 {
-    if (FlybyMode_IsActive()) {
-        g_Camera.type = CAM_FLYBY_MODE;
-        M_RestoreLaraInfo();
+    if (!FlybyMode_IsActive()) {
+        return;
     }
+
+    if (Camera_Binoculars_IsActive()) {
+        FlybyMode_Cancel();
+        return;
+    }
+
+    g_Camera.type = CAM_FLYBY_MODE;
+    M_RestoreLaraInfo();
 }

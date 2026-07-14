@@ -48,8 +48,7 @@ static bool M_CanEnter(void)
         && lara_info->water_status == LWS_ABOVE_WATER
         && Lara_Vehicle_GetItem() == nullptr
         && lara_item->current_anim_state == LS(LS_STOP)
-        && g_Camera.type != CAM_CINEMATIC && g_Camera.type != CAM_PHOTO_MODE
-        && g_Camera.type != CAM_FLYBY_MODE;
+        && g_Camera.type != CAM_CINEMATIC && g_Camera.type != CAM_PHOTO_MODE;
 }
 
 static void M_Enter(void)
