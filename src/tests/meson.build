@@ -71,10 +71,8 @@ test_field_exe = executable(
 )
 test('field', test_field_exe, suite: 'unit')
 
-# The runtime override stack: how a script holds a setting away from the player's
-# own value and gives it back. It asks the config layer where an option lives and
-# how a string becomes a value, and the test answers both - so no option map, no
-# settings file, no game.
+# The runtime override stack. The test answers the config layer for it, so no
+# option map, no settings file, no game.
 test_config_override_exe = executable(
   'test_config_override',
   files('unit/test_config_override.c') + test_stubs
@@ -237,11 +235,6 @@ test_lua_log_exe = executable(
 )
 test('lua_log', test_lua_log_exe, suite: 'unit')
 
-# The log bridge rides along: console.lua takes its levels from trxc.log.
-# The override stack underneath is the real one; only the config facade is faked.
-# trx.lara stands for one C struct, so her fields go through the real reflection
-# layer. Only what is not a field of LARA_INFO is faked.
-# An object is what an item is cut from, so they share a fake engine.
 test_lua_game_exe = executable(
   'test_lua_game',
   files('unit/test_lua_game.c', 'unit/fake_engine_game.c') + test_stubs

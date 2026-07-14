@@ -12,7 +12,6 @@ test("a catalog holds the names the engine has", function()
 end)
 
 test("a catalog answers to a name in any case", function()
-  -- Lower case has always been the spelling a script used, so it keeps working.
   assert(trx.catalog.objects.wolf == trx.catalog.objects.WOLF)
   assert(trx.catalog.objects.Wolf == trx.catalog.objects.WOLF)
   assert(trx.catalog.weapons.desert_eagle == trx.catalog.weapons.DESERT_EAGLE)

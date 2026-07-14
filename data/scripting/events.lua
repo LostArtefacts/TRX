@@ -11,8 +11,8 @@ api.module("events", {
 })
 
 -- Each hook is a plain function closing over its event type. The type itself is
--- not public: with nine named hooks there is nothing left for a script to do
--- with it, and exposing it would only invite raw attach() calls.
+-- not public: the nine named hooks are the whole surface, so a script never has
+-- to name a type or reach for attach() directly.
 local function hook(event_type)
   return function(callback)
     return raw.attach(event_type, callback)

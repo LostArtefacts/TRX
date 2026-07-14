@@ -4,8 +4,7 @@
 The public API is declared in one place - the trx.api registry in
 data/scripting/*.lua - and that declaration is what builds the metatables. A
 member the engine can reach but no script declares is not reachable from Lua at
-all, so a single registry is the whole surface and the dump cannot omit anything
-that exists.
+all.
 
 `TRX --dump-lua-api` boots Lua and prints that registry as JSON. It is committed
 to docs/trx/lua/api.json so this tool - and the pre-commit hook - need no
@@ -179,8 +178,7 @@ def render_enum_names(names: list[str] | None, indent: str) -> list[str]:
 
 def render_enum(spec: dict) -> list[str]:
     # A bulk enum is described as a whole: a count and a folded list of names,
-    # rather than several hundred bullet points. The values stay out - the ids
-    # are TRX's own, and a script refers to them by name.
+    # rather than several hundred bullet points. The values stay out.
     if spec.get("bulk"):
         head = f"- [lua]`trx.{spec['path']}`"
         count = spec.get("count")

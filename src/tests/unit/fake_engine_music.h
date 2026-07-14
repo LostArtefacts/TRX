@@ -4,8 +4,7 @@
 
 #include <stdint.h>
 
-// The only track the fake soundtrack knows about. Anything else fails to play,
-// which is how the engine reports a track that is not there.
+// The only track the fake soundtrack knows about.
 #define FAKE_MUSIC_TRACK 5
 #define FAKE_MUSIC_MISSING_TRACK 999
 
@@ -23,5 +22,5 @@ extern FAKE_MUSIC_CALLS g_FakeMusicCalls;
 
 void FakeMusic_Reset(void);
 
-// Nothing is playing until something is.
+// Marks a track as playing without going through Music_Play.
 void FakeMusic_SetPlaying(int32_t track);

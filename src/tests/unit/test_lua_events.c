@@ -34,7 +34,7 @@ static void M_SetUpTRXC(lua_State *const L)
 }
 
 // fake.fire(name, ...) - mirrors the engine's own fire sites, argument for
-// argument. A handler must see exactly what C pushes.
+// argument.
 static int M_FakeFire(lua_State *const L)
 {
     const char *const name = luaL_checkstring(L, 1);

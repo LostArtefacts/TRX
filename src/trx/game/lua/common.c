@@ -200,7 +200,6 @@ void LUA_Init(void)
     lua_newtable(L);
     lua_setglobal(L, "trx");
 
-    // Initialize internal modules
     M_LoadTRXCModule(L, LUA_CreateStruct);
     M_LoadTRXCModule(L, LUA_CreateEnum);
     M_LoadTRXCModule(L, LUA_CreateCatalog);

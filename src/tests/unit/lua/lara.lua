@@ -34,8 +34,8 @@ test("a field declared read-only cannot be written", function()
 end)
 
 test("a member of LARA_INFO nobody declared is not reachable", function()
-  -- The C struct has turn_rate, move_angle, a whole LOT and both arms. None of
-  -- them is declared, so none of them exists as far as a script is concerned.
+  -- The C struct has turn_rate, move_angle, the LOT and both arms. None of them
+  -- is declared, so none of them exists as far as a script is concerned.
   assert(trx.lara.turn_rate == nil)
   assert(trx.lara.move_angle == nil)
   assert(trx.lara.lot == nil)

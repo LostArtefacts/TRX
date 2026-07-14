@@ -4,14 +4,14 @@
 -- registry is what the docs are generated from, so the reference cannot drift
 -- from the code.
 --
--- PERFORMANCE: the spec is metadata, NOT a dispatch layer. `trx.items.spawn` is
--- the raw implementation - calling it costs exactly what calling any Lua
--- function costs. A generic spec-driven wrapper that validated arguments on
--- every call measured 26x slower (416ns vs 16ns), which is untenable for
--- anything a script calls per frame. Argument validation is therefore opt-in:
--- trx.api.strict(true) rebinds every registered function to a code-generated
--- checking wrapper (~108ns overhead), which builders can enable while
--- developing and leave off in play.
+-- On performance: the spec is metadata, not a dispatch layer.
+-- `trx.items.spawn` is the raw implementation - calling it costs exactly what
+-- calling any Lua function costs. A generic spec-driven wrapper that validated
+-- arguments on every call measured 26x slower (416ns vs 16ns), which is
+-- untenable for anything a script calls per frame. Argument validation is
+-- therefore opt-in: trx.api.strict(true) rebinds every registered function to
+-- a code-generated checking wrapper (~108ns overhead), which builders can
+-- enable while developing and leave off in play.
 
 -- Captured at module scope: the raw C bridge is removed from the globals once
 -- the trx.* modules have loaded, so builders cannot reach past the public API.
@@ -83,10 +83,9 @@ end
 -- table cannot hold: computed properties, and - for a module that stands for a
 -- single C struct, as trx.lara stands for Lara - that struct's own fields.
 --
--- The registry owns the metatable, so a member nobody declared is unreachable
--- rather than merely undocumented. That matters most here: neither a metatable
--- getter nor a struct field ever shows up in pairs(), so seal()'s audit cannot
--- see one.
+-- The registry owns the metatable, so an undeclared member is unreachable rather
+-- than merely undocumented. That matters most here: neither a metatable getter
+-- nor a struct field ever shows up in pairs(), so seal()'s audit cannot see one.
 local function install_module_meta(module)
   local props = module_properties[module]
   local instance = module_instances[module]
@@ -325,7 +324,7 @@ function api.define(path, spec)
   end
   registry[path] = spec
 
-  -- The raw implementation IS the public function. No wrapper, no overhead.
+  -- The raw implementation is the public function. No wrapper, no overhead.
   -- rawset: some module tables guard __newindex, and a declaration is not a
   -- caller poking at the module.
   rawset(container, name, strict_enabled and make_checked(spec.impl, path, spec.params) or spec.impl)
@@ -346,7 +345,6 @@ function api.is_strict()
   return strict_enabled
 end
 
--- Returns the whole surface as plain data: what the docs generator consumes.
 -- Declares a handle type: which C members are public, under what name, plus the
 -- methods and computed members that complete the type.
 --
@@ -509,12 +507,8 @@ end
 
 -- Declares a computed member on a module table. It is not a function and not a
 -- stored field: reading it calls into C, and writing it calls a setter, or fails
--- if there is none.
---
--- The registry OWNS the module's __index/__newindex, so an undeclared property is
--- unreachable rather than merely undocumented. That matters here more than
--- anywhere else: a metatable getter never appears in pairs(), so seal()'s audit
--- cannot see one, and a hand-rolled getter table would sail past it.
+-- if there is none. The registry owns the module's metatable - see
+-- install_module_meta - so a hand-rolled getter table would sail past seal().
 function api.property(path, spec)
   assert(not sealed, "the trx.api registry is sealed; declarations happen at load time")
   assert(type(spec) == "table", "api.property: spec must be a table")
@@ -538,6 +532,7 @@ function api.property(path, spec)
   return spec
 end
 
+-- The whole surface as plain data: what the docs generator consumes.
 function api.describe()
   local out = {
     modules = {},

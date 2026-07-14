@@ -31,7 +31,6 @@ test("detaching twice reports that there was nothing to remove", function()
 end)
 
 test("the control events pass no arguments", function()
-  -- They used to be fired with a meaningless 0. A handler must see nothing.
   local seen = "unset"
   trx.events.before_control(function(...)
     seen = select("#", ...)
@@ -134,8 +133,8 @@ test("attaching something that is not a function raises", function()
 end)
 
 test("the event type is not part of the surface", function()
-  -- The nine hooks are the whole API. EventType and the `_type` field on the
-  -- callable proxies were internals that leaked; nothing may reach them.
+  -- The nine hooks are the whole surface: neither the event type nor raw attach
+  -- is reachable from a script.
   assert(trx.events.EventType == nil, "EventType is still reachable")
   assert(trx.events.attach == nil, "raw attach must not be public")
 

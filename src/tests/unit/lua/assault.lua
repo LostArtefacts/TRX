@@ -48,8 +48,6 @@ test("the timers do not exist outside a gym level", function()
 end)
 
 test("is_running and is_visible answer without raising outside a gym", function()
-  -- Asking whether a timer runs is a fair question anywhere. The answer outside
-  -- a gym is false, not an error.
   fake.set_in_gym(false)
   assert(trx.assault.is_running() == false)
   assert(trx.assault.is_visible() == false)
@@ -72,7 +70,8 @@ end)
 test("active_track is nil when Lara is running nothing", function()
   assert(trx.assault.active_track == nil, "no track means nil, not zero")
 
-  -- QUAD is 0 in the C enum, so a naive bridge would report it as nothing.
+  -- QUAD is 0 in the C enum, and a bridge testing for truth would report it as
+  -- nothing.
   fake.set_active_track(trx.assault.Track.QUAD)
   assert(trx.assault.active_track == trx.assault.Track.QUAD, "QUAD is 0 and must survive")
 

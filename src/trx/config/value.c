@@ -1,6 +1,5 @@
-// The four things anyone does with a config value: copy it out of an option,
-// put it back, reach it as a raw pointer, and let it go. Nothing here knows
-// what an override is, or that the game exists.
+// Copying a config value out of an option, putting it back, reaching it as a
+// raw pointer, and freeing it. This layer knows nothing about overrides.
 
 #include <trx/config/value.h>
 

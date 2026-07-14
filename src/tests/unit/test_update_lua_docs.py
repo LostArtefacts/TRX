@@ -123,11 +123,10 @@ SURFACE = {
 
 class TestLuaDocs(unittest.TestCase):
     def test_every_member_of_the_surface_reaches_the_page(self):
-        """The property whose absence caused the original bug.
+        """Every kind of member in the registry reaches the page.
 
-        The generated reference documented 31 struct fields but silently omitted
-        both computed members and all eight methods, while presenting itself as
-        the complete surface. Assert that nothing in the registry can go missing.
+        Fields, computed members and methods all render, so nothing declared in
+        the registry can go missing from the reference.
         """
         page = docs.render_page(SURFACE["modules"][0], SURFACE)
 
@@ -150,11 +149,10 @@ class TestLuaDocs(unittest.TestCase):
                 )
 
     def test_enum_constants_are_rendered_with_their_values(self):
-        """The regression this whole change exists to fix.
+        """An enum's constants render with their names and values.
 
-        The reference used to point readers at `trx.rooms.fn.FlipStatus` while
-        documenting none of its constants, because enums were pushed onto the
-        module table outside the registry and the dump could not see them.
+        An enum reaches the docs only through the registry: the dump cannot see
+        one pushed straight onto a module table.
         """
         page = docs.render_page(SURFACE["modules"][0], SURFACE)
         self.assertIn("### Enums", page)
@@ -165,8 +163,7 @@ class TestLuaDocs(unittest.TestCase):
         self.assertIn("It is broken.", page)
 
     def test_enum_cross_references_are_rendered(self):
-        """A field or param names the enum it accepts by path, rather than
-        repeating it in prose that nothing keeps in sync."""
+        """A field names the enum it accepts by path."""
         page = docs.render_page(SURFACE["modules"][0], SURFACE)
         shown = next(line for line in page.splitlines() if "`shown`" in line)
         self.assertIn("Compare against `trx.things.State`.", shown)
@@ -211,10 +208,8 @@ class TestLuaDocs(unittest.TestCase):
         self.assertIn("default `0`", page)
 
     def test_a_callbacks_own_arguments_are_rendered(self):
-        """An event hook takes nothing but a callback, so the callback's
-        signature is the only one worth documenting. Without this the page says
-        `trx.events.on_pickup(callback)` and never mentions that the callback is
-        handed the item number."""
+        """A function-typed parameter renders the arguments it is called with,
+        indented under the parameter itself."""
         page = docs.render_page(SURFACE["modules"][0], SURFACE)
         self.assertIn("Called with:", page)
         strength = next(
@@ -248,8 +243,8 @@ class TestLuaDocs(unittest.TestCase):
         self.assertIn("trx.things.spawn(1)", page)
 
     def test_module_properties_are_rendered(self):
-        """trx.camera.pos is neither a function nor a constant: reading it calls
-        into the engine. It still has to reach the page."""
+        """A module property reaches the page, marked read-only when it has no
+        setter."""
         page = docs.render_page(SURFACE["modules"][0], SURFACE)
         self.assertIn("### Properties", page)
 
@@ -274,8 +269,8 @@ class TestLuaDocs(unittest.TestCase):
         self.assertIn("## Thingamabobs module", page)
 
     def test_a_namespace_reaches_the_page_whether_or_not_it_is_callable(self):
-        """A group's own prose - "these records live in the player's profile" -
-        is not something any member's signature can say."""
+        """A namespace gets its own bullet either way; only a callable one
+        renders as a call."""
         surface = copy.deepcopy(SURFACE)
         surface["namespaces"] = [
             {"path": "things.log", "description": "Logs it.", "callable": True},
@@ -291,8 +286,7 @@ class TestLuaDocs(unittest.TestCase):
         self.assertNotIn("`trx.things.stats()`", page)
 
     def test_a_multi_paragraph_description_stays_inside_its_list_item(self):
-        """Indenting only the first line ends the list at the blank line and
-        dumps the remaining paragraphs at the page's top level."""
+        """Every paragraph of a description stays indented inside its list item."""
         surface = copy.deepcopy(SURFACE)
         surface["functions"][0]["description"] = "First para.\n\nSecond para."
         page = docs.render_page(surface["modules"][0], surface)
@@ -302,8 +296,7 @@ class TestLuaDocs(unittest.TestCase):
         )
 
     def test_a_bulk_enum_lists_its_names_but_not_its_numbers(self):
-        """The names go in, the values stay out: the ids are TRX's own, and a
-        script refers to them by name."""
+        """A bulk enum renders a count and a folded name list, and no values."""
         surface = copy.deepcopy(SURFACE)
         surface["enums"][0].update(
             {"bulk": True, "count": 3, "values": [], "names": ["BROKEN", "OFF", "ON"]}
@@ -347,8 +340,7 @@ class TestLuaDocs(unittest.TestCase):
                 self.assertEqual(docs.undocumented(surface), [expected])
 
     def test_dump_extracts_the_json_from_a_noisy_stream(self):
-        """The engine logs to stdout alongside the JSON, so the payload must be
-        picked out rather than the whole stream trusted."""
+        """The JSON payload is picked out of a stream that also carries logs."""
         stream = 'INF | starting\nDBG | loading\n{"modules": []}\n'
         payload = next(
             (line for line in stream.splitlines() if line.startswith("{")), None

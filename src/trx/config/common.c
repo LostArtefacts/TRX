@@ -277,9 +277,9 @@ static bool M_RestoreOptionDefault(const void *const target, const bool force)
         const char *const def = (const char *)option->default_value;
         char *const old = *p;
         *p = def != nullptr ? Memory_DupStr(def) : nullptr;
-        // VERY IMPORTANT: free the memory AFTER we allocate, so that we force
-        // the pointer to get a different macro, so that change subscribers
-        // can see the string has changed by comparing just the pointers.
+        // Free the old string only after allocating the new one: the allocation
+        // then lands on a different pointer, and change subscribers compare
+        // pointers alone to tell that the string moved.
         Memory_Free(old);
         return true;
     }
@@ -605,9 +605,8 @@ static bool M_SetOptionValueFromString(
         char **const p = (char **)option->target;
         char *const old = *p;
         *p = new_value != nullptr ? Memory_DupStr(new_value) : nullptr;
-        // VERY IMPORTANT: free the memory AFTER we allocate, so that we force
-        // the pointer to get a different macro, so that change subscribers
-        // can see the string has changed by comparing just the pointers.
+        // Free after allocating, as in M_RestoreOptionDefault: subscribers tell
+        // the string moved by comparing pointers.
         Memory_Free(old);
         return true;
     }

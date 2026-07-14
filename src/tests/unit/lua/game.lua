@@ -101,9 +101,7 @@ test("play_level rejects a level that is not there", function()
   assert(fake.calls().play_level == 0)
 end)
 
-test("settings is gone", function()
-  -- It was five aliases over trx.config, and it wrote through the destructive
-  -- set. One way to reach a setting is enough.
+test("a setting is reached through trx.config, and nowhere else", function()
   assert(trx.game.settings == nil)
 end)
 

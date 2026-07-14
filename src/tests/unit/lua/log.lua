@@ -26,8 +26,7 @@ test("generic logs at the level it is handed", function()
 end)
 
 test("the level values come from C", function()
-  -- Reflected out of ENUM_MAP, so the numbers are never written twice. DEBUG is
-  -- 0 and ERROR is 3 in the C enum, and the order is least to most important.
+  -- DEBUG is 0 and ERROR is 3 in the C enum, least to most important.
   assert(trx.log.LogLevel.DEBUG == 0)
   assert(trx.log.LogLevel.INFO == 1)
   assert(trx.log.LogLevel.WARNING == 2)
@@ -35,9 +34,6 @@ test("the level values come from C", function()
 end)
 
 test("the log blames the line that called it, not the wrapper", function()
-  -- The bridge walks two stack frames up to find the caller, which holds only
-  -- while exactly one wrapper sits between a script and C. Binding raw.log
-  -- straight to a level would drop a frame and blame this file's insides.
   local expected = debug.getinfo(1, "l").currentline + 1
   trx.log.info("who called me")
   assert(

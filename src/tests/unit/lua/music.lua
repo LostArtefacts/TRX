@@ -57,8 +57,7 @@ test("pause, unpause and stop reach the engine", function()
   assert(calls.stop_count == 1)
 end)
 
-test("play_track is not part of the surface", function()
-  -- It was an alias of play, and one name for one thing is enough.
+test("play is the only name for playing a track", function()
   assert(trx.music.play_track == nil)
 end)
 
