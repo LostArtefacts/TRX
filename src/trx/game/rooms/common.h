@@ -7,6 +7,11 @@ void Room_InitialiseRooms(int32_t num_rooms);
 void Room_Shutdown(void);
 int32_t Room_GetCount(void);
 ROOM *Room_Get(int32_t room_num);
+
+// Which level's rooms these are. A room is never recycled within a level, but
+// the table is replaced whole at the next one, so a reference kept across the
+// change names a different room. Bumped by Room_InitialiseRooms.
+uint32_t Room_GetGeneration(void);
 int32_t Room_GetNumber(const ROOM *room);
 
 void Room_InitialiseFlipStatus(void);

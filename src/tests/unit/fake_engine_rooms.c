@@ -7,12 +7,21 @@
 #include <trx/game/rooms.h>
 
 static ROOM m_Rooms[FAKE_ROOM_COUNT];
+static uint32_t m_RoomGen = 1;
 
 FAKE_ROOM_CALLS g_FakeRoomCalls;
+
+// What loading the next level does to the room table: the rooms are replaced,
+// so every handle to one of the old ones is stale.
+void FakeRooms_LoadNextLevel(void)
+{
+    m_RoomGen++;
+}
 
 void FakeRooms_Reset(void)
 {
     g_FakeRoomCalls = (FAKE_ROOM_CALLS) { 0 };
+    m_RoomGen++;
 
     for (int32_t i = 0; i < FAKE_ROOM_COUNT; i++) {
         m_Rooms[i] = (ROOM) {
@@ -36,8 +45,16 @@ int32_t Room_GetCount(void)
     return FAKE_ROOM_COUNT;
 }
 
+uint32_t Room_GetGeneration(void)
+{
+    return m_RoomGen;
+}
+
 ROOM *Room_Get(const int32_t room_num)
 {
+    if (room_num < 0 || room_num >= FAKE_ROOM_COUNT) {
+        return nullptr;
+    }
     return &m_Rooms[room_num];
 }
 
