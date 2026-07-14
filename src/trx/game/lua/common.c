@@ -223,13 +223,8 @@ LUA_RESULT LUA_EvalFile(const char *const path)
     return M_LuaLoadAndRun(p->state, M_LoadFile, path);
 }
 
-void LUA_ReloadLevelScript(void)
+void LUA_RunLevelScript(const GF_LEVEL *const level)
 {
-    const GF_LEVEL *const level = GF_GetCurrentLevel();
-    if (level == nullptr) {
-        return;
-    }
-
     LUA_ClearLevelListeners();
     LUA_SetScriptContext(LUA_CONTEXT_LEVEL);
 
@@ -242,6 +237,15 @@ void LUA_ReloadLevelScript(void)
     }
 
     LUA_SetScriptContext(LUA_CONTEXT_GLOBAL);
+}
+
+void LUA_ReloadLevelScript(void)
+{
+    const GF_LEVEL *const level = GF_GetCurrentLevel();
+    if (level == nullptr) {
+        return;
+    }
+    LUA_RunLevelScript(level);
 }
 
 void LUA_FreeResult(LUA_RESULT *const result)

@@ -335,16 +335,7 @@ void Stats_CalculateMaxStats(void)
             Level_Unload();
             Creature_Reset();
 
-            LUA_ClearLevelListeners();
-            LUA_SetScriptContext(LUA_CONTEXT_LEVEL);
-            if (level->script_path != nullptr) {
-                LUA_RESULT res = LUA_EvalFile(level->script_path);
-                if (res.code != LUA_OK) {
-                    LOG_ERROR("Lua level script error: %s", res.message);
-                }
-                LUA_FreeResult(&res);
-            }
-            LUA_SetScriptContext(LUA_CONTEXT_GLOBAL);
+            LUA_RunLevelScript(level);
             LUA_FireEventInt32(LUA_EVENT_BEFORE_LEVEL_FILE, level->num);
 
             Inject_InitLevel(level, INJECTION_MODE_STATS);

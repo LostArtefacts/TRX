@@ -1,5 +1,7 @@
 #pragma once
 
+#include <trx/game/game_flow/types.h>
+
 #include <lualib.h>
 #include <stdint.h>
 
@@ -33,6 +35,9 @@ void LUA_FreeResult(LUA_RESULT *result);
 
 // Evaluate a Lua script file. Caller must free the result with LUA_FreeResult.
 LUA_RESULT LUA_EvalFile(const char *path);
+
+// Run a level's script, having dropped what the last run of one left behind.
+void LUA_RunLevelScript(const GF_LEVEL *level);
 
 // Reload current level script and reset level-scoped listeners.
 void LUA_ReloadLevelScript(void);
