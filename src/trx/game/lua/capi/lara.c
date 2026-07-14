@@ -190,39 +190,27 @@ static int M_L_LaraGetExtraAnim(lua_State *const L)
     return 1;
 }
 
+static const luaL_Reg m_Module[] = {
+    { "get_item", M_L_GetLaraItem },
+    { "get_target", M_L_GetLaraTarget },
+    { "get_outfit", M_L_LaraGetOutfit },
+    { "set_outfit", M_L_LaraSetOutfit },
+    { "set_extra_equipment", M_L_LaraSetExtraEquipment },
+    { "clear_equipment", M_L_LaraClearEquipment },
+    { "are_holsters_visible", M_L_LaraAreHolstersVisible },
+    { "set_holsters_visible", M_L_LaraSetHolstersVisible },
+    { "has_pistol_weapon", M_L_LaraHasPistolWeapon },
+    { "get_extra_anim", M_L_LaraGetExtraAnim },
+    { "state", M_L_LaraState },
+    { nullptr, nullptr },
+};
+
 static void M_Create(lua_State *const L)
 {
     LUA_Struct_Register(
         L, &TYPE_LARA_INFO, (const luaL_Reg[]) { { nullptr, nullptr } });
 
-    lua_getglobal(L, "trxc");
-    lua_newtable(L);
-
-    lua_pushcfunction(L, M_L_GetLaraItem);
-    lua_setfield(L, -2, "get_item");
-    lua_pushcfunction(L, M_L_GetLaraTarget);
-    lua_setfield(L, -2, "get_target");
-    lua_pushcfunction(L, M_L_LaraGetOutfit);
-    lua_setfield(L, -2, "get_outfit");
-    lua_pushcfunction(L, M_L_LaraSetOutfit);
-    lua_setfield(L, -2, "set_outfit");
-    lua_pushcfunction(L, M_L_LaraSetExtraEquipment);
-    lua_setfield(L, -2, "set_extra_equipment");
-    lua_pushcfunction(L, M_L_LaraClearEquipment);
-    lua_setfield(L, -2, "clear_equipment");
-    lua_pushcfunction(L, M_L_LaraAreHolstersVisible);
-    lua_setfield(L, -2, "are_holsters_visible");
-    lua_pushcfunction(L, M_L_LaraSetHolstersVisible);
-    lua_setfield(L, -2, "set_holsters_visible");
-    lua_pushcfunction(L, M_L_LaraHasPistolWeapon);
-    lua_setfield(L, -2, "has_pistol_weapon");
-    lua_pushcfunction(L, M_L_LaraGetExtraAnim);
-    lua_setfield(L, -2, "get_extra_anim");
-    lua_pushcfunction(L, M_L_LaraState);
-    lua_setfield(L, -2, "state");
-
-    lua_setfield(L, -2, "lara");
-    lua_pop(L, 1);
+    LUA_RegisterModule(L, "lara", m_Module);
 }
 
 REGISTER_LUA_CAPI(.create = M_Create)

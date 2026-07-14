@@ -1,6 +1,7 @@
 #include <trx/game/camera.h>
 #include <trx/game/lua/common.h>
 #include <trx/game/lua/registry.h>
+#include <trx/game/lua/utils.h>
 #include <trx/game/rooms/const.h>
 
 #include <lauxlib.h>
@@ -67,24 +68,19 @@ static int M_L_CameraReset(lua_State *const L)
     return 0;
 }
 
+static const luaL_Reg m_Module[] = {
+    { "get_pos", M_L_CameraGetPos },
+    { "get_room", M_L_CameraGetRoom },
+    { "get_target_pos", M_L_CameraGetTargetPos },
+    { "get_target_room", M_L_CameraGetTargetRoom },
+    { "shake", M_L_CameraShake },
+    { "reset", M_L_CameraReset },
+    { nullptr, nullptr },
+};
+
 static void M_Create(lua_State *const L)
 {
-    lua_getglobal(L, "trxc");
-    lua_newtable(L);
-    lua_pushcfunction(L, M_L_CameraGetPos);
-    lua_setfield(L, -2, "get_pos");
-    lua_pushcfunction(L, M_L_CameraGetRoom);
-    lua_setfield(L, -2, "get_room");
-    lua_pushcfunction(L, M_L_CameraGetTargetPos);
-    lua_setfield(L, -2, "get_target_pos");
-    lua_pushcfunction(L, M_L_CameraGetTargetRoom);
-    lua_setfield(L, -2, "get_target_room");
-    lua_pushcfunction(L, M_L_CameraShake);
-    lua_setfield(L, -2, "shake");
-    lua_pushcfunction(L, M_L_CameraReset);
-    lua_setfield(L, -2, "reset");
-    lua_setfield(L, -2, "camera");
-    lua_pop(L, 1);
+    LUA_RegisterModule(L, "camera", m_Module);
 }
 
 REGISTER_LUA_CAPI(.create = M_Create)

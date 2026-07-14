@@ -24,14 +24,16 @@ static int M_L_LogGeneric(lua_State *const L)
     return 0;
 }
 
+static const luaL_Reg m_Module[] = {
+    { "log", M_L_LogGeneric },
+    { nullptr, nullptr },
+};
+
 static void M_Create(lua_State *const L)
 {
-    lua_getglobal(L, "trxc");
-    lua_newtable(L);
+    LUA_RegisterModule(L, "log", m_Module);
 
-    lua_pushcfunction(L, M_L_LogGeneric);
-    lua_setfield(L, -2, "log");
-
+    LUA_GetModule(L, "log");
     lua_newtable(L);
     lua_pushinteger(L, LOG_LEVEL_INFO);
     lua_setfield(L, -2, "INFO");
@@ -42,8 +44,6 @@ static void M_Create(lua_State *const L)
     lua_pushinteger(L, LOG_LEVEL_DEBUG);
     lua_setfield(L, -2, "DEBUG");
     lua_setfield(L, -2, "LogLevel");
-
-    lua_setfield(L, -2, "log");
     lua_pop(L, 1);
 }
 

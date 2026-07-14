@@ -111,7 +111,11 @@ test('enum_map', test_enum_map_exe, suite: 'unit')
 test_lua_enum_exe = executable(
   'test_lua_enum',
   files('unit/test_lua_enum.c') + test_stubs + enum_map_src
-    + files('../trx/game/lua/capi/enum.c', '../trx/game/lua/registry.c'),
+    + files(
+      '../trx/game/lua/capi/enum.c',
+      '../trx/game/lua/registry.c',
+      '../trx/game/lua/utils.c',
+    ),
   include_directories: [src_inc, test_inc],
   dependencies: [dep_lua],
   build_by_default: false,

@@ -400,20 +400,18 @@ static const luaL_Reg m_Methods[] = {
     { nullptr, nullptr },
 };
 
+static const luaL_Reg m_Module[] = {
+    { "count", M_L_Count },
+    { "get", M_L_Get },
+    { "spawn", M_L_Spawn },
+    { nullptr, nullptr },
+};
+
 static void M_Create(lua_State *const L)
 {
     LUA_Struct_Register(L, &TYPE_ITEM, m_Methods);
 
-    lua_getglobal(L, "trxc");
-    lua_newtable(L);
-    lua_pushcfunction(L, M_L_Count);
-    lua_setfield(L, -2, "count");
-    lua_pushcfunction(L, M_L_Get);
-    lua_setfield(L, -2, "get");
-    lua_pushcfunction(L, M_L_Spawn);
-    lua_setfield(L, -2, "spawn");
-    lua_setfield(L, -2, "items");
-    lua_pop(L, 1);
+    LUA_RegisterModule(L, "items", m_Module);
 }
 
 REGISTER_LUA_CAPI(.create = M_Create)

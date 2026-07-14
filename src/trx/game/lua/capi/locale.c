@@ -6,6 +6,7 @@
 #include <trx/game/game_strings/entries.h>
 #include <trx/game/lua/common.h>
 #include <trx/game/lua/registry.h>
+#include <trx/game/lua/utils.h>
 
 #include <lauxlib.h>
 
@@ -21,14 +22,14 @@ static int M_L_LocaleGet(lua_State *const L)
     return 1;
 }
 
+static const luaL_Reg m_Module[] = {
+    { "get", M_L_LocaleGet },
+    { nullptr, nullptr },
+};
+
 static void M_Create(lua_State *const L)
 {
-    lua_getglobal(L, "trxc");
-    lua_newtable(L);
-    lua_pushcfunction(L, M_L_LocaleGet);
-    lua_setfield(L, -2, "get");
-    lua_setfield(L, -2, "locale");
-    lua_pop(L, 1);
+    LUA_RegisterModule(L, "locale", m_Module);
 }
 
 REGISTER_LUA_CAPI(.create = M_Create)

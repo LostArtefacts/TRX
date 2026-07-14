@@ -3,6 +3,7 @@
 #include <trx/game/lua/common.h>
 #include <trx/game/lua/events.h>
 #include <trx/game/lua/registry.h>
+#include <trx/game/lua/utils.h>
 
 #include <lauxlib.h>
 #include <lua.h>
@@ -179,14 +180,10 @@ static const luaL_Reg m_Module[] = {
 static void M_Create(lua_State *const L)
 {
     m_L = L;
-    lua_getglobal(L, "trxc");
-    lua_newtable(L);
 
-    lua_pushcfunction(L, M_L_EventsAttach);
-    lua_setfield(L, -2, "attach");
-    lua_pushcfunction(L, M_L_EventsDetach);
-    lua_setfield(L, -2, "detach");
+    LUA_RegisterModule(L, "events", m_Module);
 
+    LUA_GetModule(L, "events");
     lua_newtable(L);
     lua_pushinteger(L, LUA_EVENT_BEFORE_LEVEL_FILE);
     lua_setfield(L, -2, "BEFORE_LEVEL_FILE");
@@ -207,8 +204,6 @@ static void M_Create(lua_State *const L)
     lua_pushinteger(L, LUA_EVENT_AFTER_CONTROL);
     lua_setfield(L, -2, "AFTER_CONTROL");
     lua_setfield(L, -2, "EventType");
-
-    lua_setfield(L, -2, "events");
     lua_pop(L, 1);
 }
 

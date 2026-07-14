@@ -2,6 +2,7 @@
 #include <trx/game/const.h>
 #include <trx/game/lua/common.h>
 #include <trx/game/lua/registry.h>
+#include <trx/game/lua/utils.h>
 
 #include <lauxlib.h>
 
@@ -35,16 +36,19 @@ static int M_L_Atan(lua_State *const L)
     return 1;
 }
 
+static const luaL_Reg m_Module[] = {
+    { "sin", M_L_Sin },
+    { "cos", M_L_Cos },
+    { "atan", M_L_Atan },
+    { nullptr, nullptr },
+};
+
 static void M_Create(lua_State *const L)
 {
-    lua_getglobal(L, "trxc");
-    lua_newtable(L);
-    lua_pushcfunction(L, M_L_Sin);
-    lua_setfield(L, -2, "sin");
-    lua_pushcfunction(L, M_L_Cos);
-    lua_setfield(L, -2, "cos");
-    lua_pushcfunction(L, M_L_Atan);
-    lua_setfield(L, -2, "atan");
+    LUA_RegisterModule(L, "math", m_Module);
+
+    // The angle units are numbers, not functions.
+    LUA_GetModule(L, "math");
     lua_pushinteger(L, DEG_1);
     lua_setfield(L, -2, "DEG_1");
     lua_pushinteger(L, DEG_45);
@@ -53,7 +57,6 @@ static void M_Create(lua_State *const L)
     lua_setfield(L, -2, "DEG_90");
     lua_pushinteger(L, WALL_L);
     lua_setfield(L, -2, "WALL_L");
-    lua_setfield(L, -2, "math");
     lua_pop(L, 1);
 }
 
