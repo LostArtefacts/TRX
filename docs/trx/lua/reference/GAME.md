@@ -89,7 +89,7 @@ Module for the game flow: which levels there are, and which one is being played.
   Starts a level of the game proper.
 
   Parameters:
-  - **`num`** (integer). 1-based position in `trx.game.levels`. This is not `Level.num`, which is the number the level carries.
+  - **`num`** (integer). 1-based position in `trx.game.levels`.
 
   Example:
   ```lua

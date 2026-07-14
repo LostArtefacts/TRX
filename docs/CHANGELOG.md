@@ -40,6 +40,7 @@
 - changed Lua enums to be read-only; writing to one used to succeed and silently break every later lookup
 - changed writes that a field cannot hold to raise rather than truncate, so `item.hit_points = 99999` no longer wraps
 - fixed `trx.events.on_pickup` firing with a 0-based item number, where it is documented to pass a 1-based one
+- fixed `trx.game.play_level` numbering shifting every level in a game with a gym
 - removed `trx.console.log.LogLevel`, a duplicate of `trx.log.LogLevel`; refer to migration notes
 - removed `trx.events.EventType`; refer to migration notes
 - removed `trx.game.settings`, which duplicated `trx.config`; refer to migration notes

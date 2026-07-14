@@ -7,26 +7,25 @@
 local h = require("harness")
 local test, raises = h.test, h.raises
 
-test("the level list is a list of Level handles", function()
+-- The list holds the levels the game numbers, which is what count_levels counts.
+-- The gym sits in the table ahead of them and is not one of them, so the list
+-- and the table disagree on where every level after it sits.
+test("the level list is the levels the game numbers", function()
   local levels = trx.game.levels
-  assert(#levels == fake.LEVEL_COUNT, "wrong number of levels")
-  assert(levels[2].title == "Caves")
-  assert(levels[3].title == "Vilcabamba")
+  assert(#levels == fake.NUMBERED_LEVEL_COUNT, "wrong number of levels")
+  assert(levels[1].title == "Caves")
+  assert(levels[2].title == "Vilcabamba", "the last level must be reachable")
+  assert(levels[1].type == trx.game.LevelType.NORMAL, "the gym is not in the list")
 end)
 
-test("a level's num is its number, not its place in the list", function()
+test("a level's num is its place in the game flow, not in the list", function()
   local levels = trx.game.levels
-  -- The gym is first in the table and has no number at all.
-  assert(levels[1].type == trx.game.LevelType.GYM)
-  assert(levels[1].num == 0, "a gym has no number")
-
-  -- And the levels after it are numbered from 1, as the player sees them.
-  assert(levels[2].num == 1)
-  assert(levels[3].num == 2)
+  assert(levels[1].num == 1)
+  assert(levels[2].num == 2)
 end)
 
 test("a level carries what the game flow said about it", function()
-  local caves = trx.game.levels[2]
+  local caves = trx.game.levels[1]
   assert(caves.path == "level1.phd")
   assert(caves.script_path == "caves.lua")
   assert(caves.lara_outfit == "default")
@@ -37,16 +36,16 @@ end)
 
 test("a level is read-only", function()
   raises(function()
-    trx.game.levels[2].title = "Nope"
+    trx.game.levels[1].title = "Nope"
   end)
   raises(function()
-    trx.game.levels[2].num = 99
+    trx.game.levels[1].num = 99
   end)
 end)
 
 test("a member of GF_LEVEL nobody declared is not reachable", function()
   -- The struct has a sequence, injections and item drops. None is declared.
-  local caves = trx.game.levels[2]
+  local caves = trx.game.levels[1]
   assert(caves.sequence == nil)
   assert(caves.injections == nil)
   assert(caves.item_drops == nil)
@@ -69,6 +68,22 @@ test("current_level is nil until a level is playing", function()
   assert(trx.game.current_level.title == "Caves")
 end)
 
+-- Neither is in the list the game numbers, and the title level is not even in a
+-- table, so both are only reachable as the level being played.
+test("the gym and the title level still resolve as the current level", function()
+  fake.set_current_level(1)
+  local gym = trx.game.current_level
+  assert(gym ~= nil, "the gym must resolve")
+  assert(gym.type == trx.game.LevelType.GYM)
+  assert(gym.num == 0, "a gym has no number")
+
+  fake.set_current_title()
+  local title = trx.game.current_level
+  assert(title ~= nil, "the title level must resolve")
+  assert(title.type == trx.game.LevelType.TITLE)
+  assert(title.title == "Title")
+end)
+
 test("the enums come from C", function()
   assert(trx.game.LevelTable.MAIN ~= nil)
   assert(trx.game.LevelTable.CUTSCENES ~= nil)
@@ -85,18 +100,29 @@ test("version reads through", function()
   assert(trx.game.trx_version == "TRX-test")
 end)
 
-test("play_level queues the level", function()
+test("play_level queues the level the list named", function()
   fake.set_current_level(2)
-  trx.game.play_level(3)
+
+  -- The second level of the list is the third entry of the table, because the
+  -- gym sits ahead of them. What reaches the game flow is the level's own num.
+  trx.game.play_level(2)
   local calls = fake.calls()
   assert(calls.play_level == 1, "play_level did not reach the game flow")
-  -- Lua counts from 1, the game flow from 0.
+  assert(calls.last_num == trx.game.levels[2].num)
   assert(calls.last_num == 2)
 end)
 
 test("play_level rejects a level that is not there", function()
   raises(function()
     trx.game.play_level(99)
+  end)
+  raises(function()
+    trx.game.play_level(0)
+  end)
+  -- A number too wide for the engine's would otherwise wrap into range and
+  -- start whatever level it landed on.
+  raises(function()
+    trx.game.play_level(4294967297)
   end)
   assert(fake.calls().play_level == 0)
 end)
