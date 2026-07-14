@@ -2307,7 +2307,7 @@
       "description": "Starts the timer and clears its state. Raises outside a gym level.",
       "params": [
         {
-          "default": "trx.assault.Track.COURSE",
+          "default": 1,
           "enum": "assault.Track",
           "name": "track",
           "optional": true,
@@ -2320,7 +2320,7 @@
       "description": "Stops the timer, leaving it on screen. Raises outside a gym level.",
       "params": [
         {
-          "default": "trx.assault.Track.COURSE",
+          "default": 1,
           "enum": "assault.Track",
           "name": "track",
           "optional": true,
@@ -2333,7 +2333,7 @@
       "description": "Stops the timer as completing the track does, rather than as an abort. Raises outside a gym level.",
       "params": [
         {
-          "default": "trx.assault.Track.COURSE",
+          "default": 1,
           "enum": "assault.Track",
           "name": "track",
           "optional": true,
@@ -2346,7 +2346,7 @@
       "description": "Stops the timer and clears its state. Raises outside a gym level.",
       "params": [
         {
-          "default": "trx.assault.Track.COURSE",
+          "default": 1,
           "enum": "assault.Track",
           "name": "track",
           "optional": true,
@@ -2359,7 +2359,7 @@
       "description": "Whether the timer is counting. False outside a gym level.",
       "params": [
         {
-          "default": "trx.assault.Track.COURSE",
+          "default": 1,
           "enum": "assault.Track",
           "name": "track",
           "optional": true,
@@ -2375,7 +2375,7 @@
       "description": "Whether the timer is shown on screen. It stays visible after `stop`.",
       "params": [
         {
-          "default": "trx.assault.Track.COURSE",
+          "default": 1,
           "enum": "assault.Track",
           "name": "track",
           "optional": true,

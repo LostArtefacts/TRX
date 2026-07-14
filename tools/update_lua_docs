@@ -80,6 +80,25 @@ def render_prose(text: str, indent: str) -> list[str]:
     return [f"{indent}{line}".rstrip() for line in text.splitlines()]
 
 
+# enum path -> { value: constant name }, filled in from the dump before any page
+# is rendered.
+ENUM_CONSTANTS: dict[str, dict[int, str]] = {}
+
+
+def render_default(param: dict) -> str:
+    """The default as a script would write it.
+
+    A default that names an enum constant is stored as the constant's value,
+    since that is what the wrapper substitutes when the argument is omitted. It
+    reads as the constant.
+    """
+    default = param.get("default")
+    constants = ENUM_CONSTANTS.get(param.get("enum", ""), {})
+    if default in constants:
+        return f"trx.{param['enum']}.{constants[default]}"
+    return str(default)
+
+
 def render_params(params: list[dict] | None, indent: str) -> list[str]:
     if not params:
         return []
@@ -89,7 +108,9 @@ def render_params(params: list[dict] | None, indent: str) -> list[str]:
         if param.get("optional"):
             default = param.get("default")
             bits.append(
-                "optional" if default is None else f"optional, default `{default}`"
+                "optional"
+                if default is None
+                else f"optional, default `{render_default(param)}`"
             )
         out.append(
             f"{indent}- **`{param['name']}`** ({', '.join(bits)}). {describe(param)}".rstrip()
@@ -395,6 +416,11 @@ def main() -> int:
             f"  just lua-api-dump"
         )
     api = json.loads(API_JSON.read_text())
+
+    for enum in api.get("enums", []):
+        ENUM_CONSTANTS[enum["path"]] = {
+            value["value"]: value["name"] for value in enum.get("values", [])
+        }
 
     blank = undocumented(api)
     if blank:

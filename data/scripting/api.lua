@@ -37,6 +37,9 @@ local properties = {}
 local property_order = {}
 local namespaces = {}
 local namespace_order = {}
+-- path -> { fn = what calling the namespace runs }. Held apart from the
+-- metatable so api.strict can swap the wrapper in.
+local namespace_dispatch = {}
 -- module -> { name -> spec }. What the module's __index dispatches on.
 local module_properties = {}
 -- module -> function returning the handle it stands for.
@@ -116,6 +119,11 @@ local function install_module_meta(module)
         if prop.set == nil then
           error("trx." .. module .. "." .. tostring(key) .. " is read-only", 2)
         end
+        -- A property is written, not called, so make_checked never sees it.
+        -- Strict mode still has to.
+        if strict_enabled and not api.checkers[prop.type](value) then
+          error("trx." .. module .. "." .. tostring(key) .. ": expected a " .. tostring(prop.type), 2)
+        end
         prop.set(value)
         return
       end
@@ -178,18 +186,35 @@ local function make_checked(fn, path, params)
     sig = sig == "" and "..." or (sig .. ",...")
   end
 
-  local src = ("local fn,C,D,E=... return function(%s) %s return fn(%s) end"):format(
+  -- Several bridges read lua_gettop() to tell "not given" from "given nil", so an
+  -- optional parameter with no default has to stay absent rather than arrive as
+  -- nil. A variadic call carries its own count and needs none of this.
+  local body = {}
+  if not variadic then
+    for i = fixed, 1, -1 do
+      local p = params[i]
+      if not (p.optional and p.default == nil) then
+        break
+      end
+      table.insert(body, 1, ("if a%d==nil then return fn(%s) end"):format(i, table.concat(names, ",", 1, i - 1)))
+    end
+  end
+  body[#body + 1] = ("return fn(%s)"):format(sig)
+
+  local src = ("local fn,C,D,E=... return function(%s) %s %s end"):format(
     sig,
     table.concat(checks, " "),
-    sig
+    table.concat(body, " ")
   )
 
   local checkers, defaults = {}, {}
   for i = 1, fixed do
     local p = params[i]
-    checkers[i] = api.checkers[p.type] or function()
-      return true
-    end
+    -- seal() refuses a parameter whose type nothing can check, so by the time a
+    -- script turns strict mode on there is a checker for every one of them.
+    local check = api.checkers[p.type]
+    assert(check ~= nil, path .. ": no checker for type '" .. tostring(p.type) .. "'")
+    checkers[i] = check
     defaults[i] = p.default
   end
 
@@ -222,13 +247,19 @@ api.checkers = {
   vec3 = function(v)
     return type(v) == "table" and v.x ~= nil and v.y ~= nil and v.z ~= nil
   end,
-  Item = function(v)
-    return v ~= nil
-  end,
   any = function()
     return true
   end,
 }
+
+-- A handle's metatable is its C type name - see LUA_Struct_Register - so one
+-- type of handle is told from another. api.type registers one of these per type,
+-- which is why Item and Room are absent above.
+local function handle_checker(backing)
+  return function(v)
+    return getmetatable(v) == backing
+  end
+end
 
 -- Called once, from C, after the trx.* modules have loaded. Declarations are the
 -- engine's to make; a level script re-opening the surface would defeat the point
@@ -292,6 +323,51 @@ function api.seal()
     )
   end
 
+  -- A type nothing can check prints a name that means nothing, and waves every
+  -- value through while strict mode reports a clean run over it.
+  local bad = {}
+  local function audit_type(where, what, type_name)
+    if api.checkers[type_name] == nil then
+      table.insert(bad, where .. ": " .. what .. " has an unknown type '" .. tostring(type_name) .. "'")
+      return false
+    end
+    return true
+  end
+
+  local function audit_params(where, params)
+    local optional_seen = false
+    for _, p in ipairs(params or {}) do
+      if p.name ~= "..." then
+        if audit_type(where, "'" .. tostring(p.name) .. "'", p.type) and p.default ~= nil then
+          if not api.checkers[p.type](p.default) then
+            table.insert(bad, where .. ": the default for '" .. p.name .. "' is not a " .. p.type)
+          end
+        end
+        -- Nothing can reach it without passing the optional one too.
+        if p.optional then
+          optional_seen = true
+        elseif optional_seen then
+          table.insert(bad, where .. ": '" .. p.name .. "' is required but follows an optional parameter")
+        end
+      end
+    end
+  end
+
+  for _, path in ipairs(order) do
+    audit_params(path, registry[path].params)
+  end
+  for _, path in ipairs(namespace_order) do
+    audit_params(path, namespaces[path].params)
+  end
+  for _, path in ipairs(property_order) do
+    audit_type(path, "the property", properties[path].type)
+  end
+
+  if #bad > 0 then
+    table.sort(bad)
+    error(table.concat(bad, "\n"))
+  end
+
   sealed = true
 end
 
@@ -309,9 +385,15 @@ function api.namespace(path, spec)
   local namespace = {}
   if spec.call ~= nil then
     assert(type(spec.call) == "function", "api.namespace: call must be a function")
+    -- Through a holder, so api.strict can swap the wrapper in as it does for the
+    -- members.
+    local dispatch = {
+      fn = strict_enabled and make_checked(spec.call, path, spec.params) or spec.call,
+    }
+    namespace_dispatch[path] = dispatch
     setmetatable(namespace, {
       __call = function(_, ...)
-        return spec.call(...)
+        return dispatch.fn(...)
       end,
     })
   end
@@ -352,6 +434,10 @@ function api.strict(enabled)
     local spec = registry[path]
     rawset(container, name, strict_enabled and make_checked(spec.impl, path, spec.params) or spec.impl)
   end
+  for path, dispatch in pairs(namespace_dispatch) do
+    local spec = namespaces[path]
+    dispatch.fn = strict_enabled and make_checked(spec.call, path, spec.params) or spec.call
+  end
 end
 
 function api.is_strict()
@@ -369,6 +455,10 @@ function api.type(path, spec)
   assert(type(spec) == "table", "api.type: spec must be a table")
   assert(type(spec.backing) == "string", "api.type: backing must be a C type name")
   local backing = spec.backing
+
+  -- Declaring the type is what makes its name checkable in a params list.
+  local _, type_name = split_path(path)
+  api.checkers[type_name] = handle_checker(backing)
 
   local declared = {}
 

@@ -23,7 +23,7 @@ local function track_param()
     name = "track",
     type = "integer",
     optional = true,
-    default = "trx.assault.Track.COURSE",
+    default = Track.COURSE,
     enum = "assault.Track",
   }
 end
