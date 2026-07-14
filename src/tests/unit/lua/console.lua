@@ -72,6 +72,11 @@ test("a command that fails raises, and says why", function()
   raises(function()
     trx.console.eval("kill")
   end, "bad invocation")
+
+  fake.set_eval_result(fake.CommandResult.UNAVAILABLE)
+  raises(function()
+    trx.console.eval("heal")
+  end, "unavailable")
 end)
 
 test("clear clears the console", function()
@@ -215,6 +220,18 @@ test("a command cannot be registered twice", function()
   raises(function()
     trx.console.register({ name = "once", run = function() end })
   end)
+end)
+
+-- A level script runs again every time its level is loaded, so a command
+-- registered from one would work once and then raise on the reload, taking the
+-- rest of the script with it.
+test("a level script cannot register a command", function()
+  raises(function()
+    fake.as_level_script(function()
+      trx.console.register({ name = "leveller", run = function() end })
+    end)
+  end, "level script")
+  assert(not fake.is_registered("leveller"), "the command was registered anyway")
 end)
 
 test("register wants a name and a function", function()

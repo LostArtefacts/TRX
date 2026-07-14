@@ -7,6 +7,7 @@
 #include <trx/game/game_flow/common.h>
 #include <trx/game/savegame.h>
 
+#include <lauxlib.h>
 #include <stdbool.h>
 #include <string.h>
 
@@ -247,8 +248,62 @@ void FakeGame_SetCurrentLevel(const int32_t idx)
     m_CurrentLevel = idx < 0 ? nullptr : &m_Levels[idx];
 }
 
-// The title level, which is not in any table.
-void FakeGame_SetCurrentTitle(void)
+// fake.set_current_level(n) - nil for a game that is not in a level at all.
+static int M_L_SetCurrentLevel(lua_State *const L)
+{
+    FakeGame_SetCurrentLevel(
+        lua_isnil(L, 1) ? -1 : (int32_t)luaL_checkinteger(L, 1) - 1);
+    return 0;
+}
+
+// fake.set_current_title() - the title level, which is not in any table.
+static int M_L_SetCurrentTitle(lua_State *const L)
 {
     m_CurrentLevel = &m_TitleLevel;
+    return 0;
+}
+
+// fake.set_in_cutscene(bool) - a level is loaded, but the game takes no input.
+static int M_L_SetInCutscene(lua_State *const L)
+{
+    FakeGame_SetInCutscene(lua_toboolean(L, 1));
+    return 0;
+}
+
+// fake.set_gym_present(bool) - whether the flow has a gym to play.
+static int M_L_SetGymPresent(lua_State *const L)
+{
+    FakeGame_SetGymPresent(lua_toboolean(L, 1));
+    return 0;
+}
+
+void FakeGame_PushLua(lua_State *const L)
+{
+    lua_pushcfunction(L, M_L_SetCurrentLevel);
+    lua_setfield(L, -2, "set_current_level");
+    lua_pushcfunction(L, M_L_SetCurrentTitle);
+    lua_setfield(L, -2, "set_current_title");
+    lua_pushcfunction(L, M_L_SetInCutscene);
+    lua_setfield(L, -2, "set_in_cutscene");
+    lua_pushcfunction(L, M_L_SetGymPresent);
+    lua_setfield(L, -2, "set_gym_present");
+    lua_pushinteger(L, FAKE_LEVEL_COUNT);
+    lua_setfield(L, -2, "LEVEL_COUNT");
+    // The levels the game numbers: the gym is in the table but is not one.
+    lua_pushinteger(L, FAKE_LEVEL_COUNT - 1);
+    lua_setfield(L, -2, "NUMBERED_LEVEL_COUNT");
+}
+
+void FakeGame_PushCalls(lua_State *const L)
+{
+    lua_pushinteger(L, g_FakeGameCalls.play_level);
+    lua_setfield(L, -2, "play_level");
+    lua_pushinteger(L, g_FakeGameCalls.play_cutscene);
+    lua_setfield(L, -2, "play_cutscene");
+    lua_pushinteger(L, g_FakeGameCalls.play_demo);
+    lua_setfield(L, -2, "play_demo");
+    lua_pushinteger(L, g_FakeGameCalls.play_gym);
+    lua_setfield(L, -2, "play_gym");
+    lua_pushinteger(L, g_FakeGameCalls.last_num);
+    lua_setfield(L, -2, "last_num");
 }

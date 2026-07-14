@@ -8,6 +8,7 @@
 #include <trx/game/lua/common.h>
 
 #include <assert.h>
+#include <lauxlib.h>
 #include <stdarg.h>
 #include <stdio.h>
 #include <string.h>
@@ -137,4 +138,94 @@ void FakeConsole_Reset(void)
 void FakeConsole_SetEvalResult(const COMMAND_RESULT result)
 {
     m_EvalResult = result;
+}
+
+// fake.set_eval_result(result) - what the next Console_Eval hands back.
+static int M_L_SetEvalResult(lua_State *const L)
+{
+    FakeConsole_SetEvalResult((COMMAND_RESULT)luaL_checkinteger(L, 1));
+    return 0;
+}
+
+// fake.run(prefix, args) - the console running a command the player typed.
+static int M_L_Run(lua_State *const L)
+{
+    lua_pushinteger(
+        L, FakeConsole_Run(luaL_checkstring(L, 1), luaL_optstring(L, 2, "")));
+    return 1;
+}
+
+// fake.as_level_script(fn) - run fn the way the engine runs a level script.
+static int M_L_AsLevelScript(lua_State *const L)
+{
+    luaL_checktype(L, 1, LUA_TFUNCTION);
+    m_Context = LUA_CONTEXT_LEVEL;
+    const int status = lua_pcall(L, 0, 0, 0);
+    m_Context = LUA_CONTEXT_GLOBAL;
+    if (status != LUA_OK) {
+        return lua_error(L);
+    }
+    return 0;
+}
+
+static int M_L_IsRegistered(lua_State *const L)
+{
+    lua_pushboolean(L, Console_Registry_Get(luaL_checkstring(L, 1)) != nullptr);
+    return 1;
+}
+
+static int M_L_HelpId(lua_State *const L)
+{
+    const char *const help_id = FakeConsole_HelpId(luaL_checkstring(L, 1));
+    if (help_id == nullptr) {
+        lua_pushnil(L);
+    } else {
+        lua_pushstring(L, help_id);
+    }
+    return 1;
+}
+
+void FakeConsole_PushLua(lua_State *const L)
+{
+    lua_pushcfunction(L, M_L_SetEvalResult);
+    lua_setfield(L, -2, "set_eval_result");
+    lua_pushcfunction(L, M_L_Run);
+    lua_setfield(L, -2, "run");
+    lua_pushcfunction(L, M_L_HelpId);
+    lua_setfield(L, -2, "help_id");
+    lua_pushcfunction(L, M_L_IsRegistered);
+    lua_setfield(L, -2, "is_registered");
+    lua_pushcfunction(L, M_L_AsLevelScript);
+    lua_setfield(L, -2, "as_level_script");
+
+    lua_newtable(L);
+    lua_pushinteger(L, CR_SUCCESS);
+    lua_setfield(L, -2, "SUCCESS");
+    lua_pushinteger(L, CR_FAILURE);
+    lua_setfield(L, -2, "FAILURE");
+    lua_pushinteger(L, CR_UNAVAILABLE);
+    lua_setfield(L, -2, "UNAVAILABLE");
+    lua_pushinteger(L, CR_BAD_INVOCATION);
+    lua_setfield(L, -2, "BAD_INVOCATION");
+    lua_setfield(L, -2, "CommandResult");
+}
+
+void FakeConsole_PushCalls(lua_State *const L)
+{
+    lua_pushinteger(L, g_FakeConsoleCalls.log_count);
+    lua_setfield(L, -2, "log_count");
+    lua_pushinteger(L, g_FakeConsoleCalls.last_level);
+    lua_setfield(L, -2, "last_level");
+    lua_pushstring(L, g_FakeConsoleCalls.last_message);
+    lua_setfield(L, -2, "last_message");
+    lua_pushinteger(L, g_FakeConsoleCalls.clear_count);
+    lua_setfield(L, -2, "clear_count");
+    lua_pushinteger(L, g_FakeConsoleCalls.eval_count);
+    lua_setfield(L, -2, "eval_count");
+    lua_pushstring(L, g_FakeConsoleCalls.last_command);
+    lua_setfield(L, -2, "last_command");
+    lua_pushboolean(L, g_FakeConsoleCalls.verbose_during_eval);
+    lua_setfield(L, -2, "verbose_during_eval");
+    lua_pushboolean(L, Console_IsVerbose());
+    lua_setfield(L, -2, "verbose_now");
 }

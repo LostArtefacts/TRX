@@ -3,6 +3,7 @@
 #include <trx/core/log.h>
 #include <trx/game/console/enum.h>
 
+#include <lualib.h>
 #include <stdbool.h>
 #include <stdint.h>
 
@@ -34,3 +35,11 @@ void FakeConsole_Reset(void);
 
 // The result the next Console_Eval hands back.
 void FakeConsole_SetEvalResult(COMMAND_RESULT result);
+
+// The console as a test script sees it: fake.run(), fake.help_id(),
+// fake.is_registered(), fake.set_eval_result(), fake.as_level_script(), and
+// fake.CommandResult.
+void FakeConsole_PushLua(lua_State *L);
+
+// Adds what the console was asked to do to the table on top of the stack.
+void FakeConsole_PushCalls(lua_State *L);

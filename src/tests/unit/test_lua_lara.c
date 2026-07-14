@@ -19,19 +19,8 @@ static int M_FakeReset(lua_State *const L)
 static int M_FakeCalls(lua_State *const L)
 {
     lua_newtable(L);
-    lua_pushinteger(L, g_FakeLaraCalls.set_equipment);
-    lua_setfield(L, -2, "set_equipment");
-    lua_pushinteger(L, g_FakeLaraCalls.clear_equipment);
-    lua_setfield(L, -2, "clear_equipment");
-    lua_pushinteger(L, g_FakeLaraCalls.last_mesh);
-    lua_setfield(L, -2, "last_mesh");
-    lua_pushinteger(L, g_FakeLaraCalls.last_extra_mesh);
-    lua_setfield(L, -2, "last_extra_mesh");
+    FakeLara_PushCalls(L);
     return 1;
-}
-
-static void M_PushFake(lua_State *const L)
-{
 }
 
 int main(void)
@@ -40,7 +29,6 @@ int main(void)
         .module = "lara",
         .deps = { "items", nullptr },
         .tests = "lara",
-        .push_fake = M_PushFake,
         .fake_reset = M_FakeReset,
         .fake_calls = M_FakeCalls,
     };
