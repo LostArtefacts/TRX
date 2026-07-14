@@ -17,7 +17,8 @@ api.define("strings.fuzzy_match", {
       name = "sources",
       type = "table",
       description = "List of `{ key = <the name>, value = <anything>, weight = <integer> }`. "
-        .. "A heavier candidate wins a tie; weight defaults to 1.",
+        .. "The key is a non-empty string. A heavier candidate wins a tie; weight defaults to 1, "
+        .. "and a weight of zero or less drops the candidate.",
     },
   },
   returns = {
@@ -42,6 +43,6 @@ api.define("strings.regex_match", {
     { name = "pattern", type = "string", description = "A PCRE regular expression." },
   },
   returns = { type = "boolean" },
-  examples = { [[if trx.strings.regex_match(args, "^%d+$") then ... end]] },
+  examples = { [[if trx.strings.regex_match(args, "^\\d+$") then ... end]] },
   impl = raw.regex_match,
 })
