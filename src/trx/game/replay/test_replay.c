@@ -576,7 +576,7 @@ static bool M_ParseExpectEvent(const char *const event_str)
         "if not ((function() return %s\n end)()) then error('expect failed') "
         "end",
         expr);
-    LUA_RESULT eval_result = Lua_Eval(script);
+    LUA_RESULT eval_result = LUA_Eval(script);
 
     p->test_mode.case_checks++;
     if (eval_result.code == LUA_OK) {
@@ -591,7 +591,7 @@ static bool M_ParseExpectEvent(const char *const event_str)
             eval_result.message != nullptr ? eval_result.message : "lua error");
     }
 
-    Lua_FreeResult(&eval_result);
+    LUA_FreeResult(&eval_result);
     Memory_Free(script);
     Memory_Free(expr);
     return true;
@@ -656,10 +656,10 @@ static bool M_ParseLuaEvent(const char *const event_str)
     LUA_RESULT eval_result = {};
     if (M_GetBracedPayload(event_str, "lua ", &chunk_start, &chunk_len)) {
         char *const chunk = String_Format("%.*s", (int)chunk_len, chunk_start);
-        eval_result = Lua_Eval(chunk);
+        eval_result = LUA_Eval(chunk);
         Memory_Free(chunk);
     } else {
-        eval_result = Lua_Eval(event_str + 4);
+        eval_result = LUA_Eval(event_str + 4);
     }
     if (eval_result.code == LUA_ERRSYNTAX) {
         LOG_ERROR(
@@ -671,7 +671,7 @@ static bool M_ParseLuaEvent(const char *const event_str)
             "LUA error on frame %d: %s", p->frame_idx, eval_result.message);
         Shell_Terminate(1);
     }
-    Lua_FreeResult(&eval_result);
+    LUA_FreeResult(&eval_result);
     return true;
 }
 

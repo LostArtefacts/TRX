@@ -263,10 +263,10 @@ static void M_ReplayActors(
     const int32_t end_frame)
 {
     for (int32_t frame_idx = start_frame; frame_idx < end_frame; frame_idx++) {
-        Lua_FireEvent(LUA_EVENT_BEFORE_CONTROL);
+        LUA_FireEvent(LUA_EVENT_BEFORE_CONTROL);
         cine_data->frame_idx = frame_idx;
         M_Control();
-        Lua_FireEvent(LUA_EVENT_AFTER_CONTROL);
+        LUA_FireEvent(LUA_EVENT_AFTER_CONTROL);
     }
 }
 
@@ -341,7 +341,7 @@ static void M_Skip(const int32_t frames)
     if (target_frame > source_frame) {
         M_ReplayActors(cine_data, source_frame, target_frame);
     } else {
-        Lua_ReloadLevelScript();
+        LUA_ReloadLevelScript();
         M_ResetActorsToStart();
         M_ReplayActors(cine_data, 0, target_frame);
     }

@@ -11,7 +11,7 @@ static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *ctx)
     }
 
     COMMAND_RESULT cmd_result;
-    LUA_RESULT eval_result = Lua_Eval(ctx->args);
+    LUA_RESULT eval_result = LUA_Eval(ctx->args);
     if (eval_result.code == LUA_ERRSYNTAX) {
         Console_LogError(
             GS("console/cmd/lua/syntax_error"), eval_result.message);
@@ -23,7 +23,7 @@ static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *ctx)
     } else {
         cmd_result = CR_SUCCESS;
     }
-    Lua_FreeResult(&eval_result);
+    LUA_FreeResult(&eval_result);
     return cmd_result;
 }
 

@@ -234,59 +234,59 @@ void LUA_Init(void)
 void LUA_Shutdown(void)
 {
     M_PRIV *const p = &m_Priv;
-    Lua_ShutdownEvents();
+    LUA_ShutdownEvents();
     if (p->state != nullptr) {
         lua_close(p->state);
         p->state = nullptr;
     }
 }
 
-LUA_CONTEXT Lua_GetScriptContext(void)
+LUA_CONTEXT LUA_GetScriptContext(void)
 {
     M_PRIV *const p = &m_Priv;
     return p->context;
 }
 
-void Lua_SetScriptContext(const LUA_CONTEXT context)
+void LUA_SetScriptContext(const LUA_CONTEXT context)
 {
     M_PRIV *const p = &m_Priv;
     p->context = context;
 }
 
-LUA_RESULT Lua_Eval(const char *const code)
+LUA_RESULT LUA_Eval(const char *const code)
 {
     M_PRIV *const p = &m_Priv;
     return M_LuaLoadAndRun(p->state, luaL_loadstring, code);
 }
 
-LUA_RESULT Lua_EvalFile(const char *const path)
+LUA_RESULT LUA_EvalFile(const char *const path)
 {
     M_PRIV *const p = &m_Priv;
     return M_LuaLoadAndRun(p->state, M_LoadFile, path);
 }
 
-void Lua_ReloadLevelScript(void)
+void LUA_ReloadLevelScript(void)
 {
     const GF_LEVEL *const level = GF_GetCurrentLevel();
     if (level == nullptr) {
         return;
     }
 
-    Lua_ClearLevelListeners();
-    Lua_SetScriptContext(LUA_CONTEXT_LEVEL);
+    LUA_ClearLevelListeners();
+    LUA_SetScriptContext(LUA_CONTEXT_LEVEL);
 
     if (level->script_path != nullptr) {
-        LUA_RESULT res = Lua_EvalFile(level->script_path);
+        LUA_RESULT res = LUA_EvalFile(level->script_path);
         if (res.code != LUA_OK) {
             LOG_ERROR("Lua level script error: %s", res.message);
         }
-        Lua_FreeResult(&res);
+        LUA_FreeResult(&res);
     }
 
-    Lua_SetScriptContext(LUA_CONTEXT_GLOBAL);
+    LUA_SetScriptContext(LUA_CONTEXT_GLOBAL);
 }
 
-void Lua_FreeResult(LUA_RESULT *const result)
+void LUA_FreeResult(LUA_RESULT *const result)
 {
     if (result != nullptr) {
         Memory_FreePointer(&result->message);

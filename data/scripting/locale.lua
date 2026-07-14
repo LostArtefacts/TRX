@@ -1,6 +1,8 @@
 local raw = trxc.locale
 local api = trx.api
 
+require("trx.log")
+
 api.module("locale", {
   order = 18,
   description = "The text the player reads, in the player's own language.",

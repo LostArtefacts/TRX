@@ -1,12 +1,12 @@
-#include <trx/game/game_strings/entries.h>
-#include <trx/game/lua/common.h>
-
-#include <lauxlib.h>
-
 // The localized text the player sees. Named locale rather than strings: TRX
 // already has two other things called that - trx/core/strings, which
 // manipulates them, and trx/game/game_strings, which is this - and a third
 // would shadow Lua's own string library besides.
+
+#include <trx/game/game_strings/entries.h>
+#include <trx/game/lua/common.h>
+
+#include <lauxlib.h>
 
 // trxc.locale.get(key) -> string or nil
 static int M_L_LocaleGet(lua_State *const L)
