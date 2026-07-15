@@ -273,7 +273,11 @@ test_lua_game_exe = executable(
   'test_lua_game',
   files('unit/test_lua_game.c', 'unit/fake_engine_game.c') + test_stubs
     + lua_surface_src
-    + files('../trx/game/game_flow/fields.c', '../trx/game/lua/capi/game.c'),
+    + files(
+      '../trx/game/game_flow/fields.c',
+      '../trx/game/lua/capi/game.c',
+      '../trx/game/lua/utils.c',
+    ),
   include_directories: [src_inc, test_inc],
   dependencies: [dep_lua],
   c_args: lua_surface_args,
@@ -322,7 +326,7 @@ test_lua_catalog_exe = executable(
   'test_lua_catalog',
   files('unit/test_lua_catalog.c', 'unit/fake_engine_catalog.c') + test_stubs
     + lua_surface_src
-    + files('../trx/game/lua/capi/catalog.c'),
+    + files('../trx/game/lua/capi/catalog.c', '../trx/game/lua/utils.c'),
   include_directories: [src_inc, test_inc],
   dependencies: [dep_lua],
   c_args: lua_surface_args,

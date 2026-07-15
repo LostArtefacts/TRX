@@ -2,6 +2,7 @@
 #include <trx/game/lua/common.h>
 #include <trx/game/lua/registry.h>
 #include <trx/game/lua/struct.h>
+#include <trx/game/lua/utils.h>
 #include <trx/game/rooms.h>
 
 #include <lauxlib.h>
@@ -125,7 +126,12 @@ static int M_L_FindValidPos(lua_State *const L)
     pos.z = luaL_checkinteger(L, -1);
     lua_pop(L, 3);
 
-    int16_t room_num = luaL_checkinteger(L, 2) - 1;
+    // Room_FindValidPos dereferences Room_Get(room_num) without checking, and
+    // Room_Get gives back nullptr for a room outside the level.
+    const lua_Integer room_arg = luaL_checkinteger(L, 2);
+    luaL_argcheck(
+        L, room_arg >= 1 && room_arg <= Room_GetCount(), 2, "unknown room");
+    int16_t room_num = (int16_t)(room_arg - 1);
     if (!Room_FindValidPos(&pos, &room_num)) {
         lua_pushnil(L);
         return 1;

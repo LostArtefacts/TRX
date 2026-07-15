@@ -123,9 +123,10 @@ static int M_L_Get(lua_State *const L)
 // trxc.items.spawn(object_id, {x,y,z}, angle_y) -> Item or nil
 static int M_L_Spawn(lua_State *const L)
 {
-    const OBJECT_ID object_id = luaL_checkinteger(L, 1);
+    // Object_Get asserts on an id outside the table.
+    const OBJECT_ID object_id = LUA_CheckObjectID(L, 1);
     const OBJECT *const obj = Object_Get(object_id);
-    if (obj == nullptr || !obj->loaded) {
+    if (!obj->loaded) {
         return luaL_error(L, "object %d is not loaded", object_id);
     }
 

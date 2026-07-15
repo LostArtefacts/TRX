@@ -5,6 +5,7 @@
 #include <trx/game/lua/common.h>
 #include <trx/game/lua/registry.h>
 #include <trx/game/lua/struct.h>
+#include <trx/game/lua/utils.h>
 
 #include <lauxlib.h>
 
@@ -107,11 +108,24 @@ static int M_L_LaraSetOutfit(lua_State *const L)
     return 0;
 }
 
+// M_SetEquipment writes through &m_Equipment[mesh] without checking it.
+static LARA_MESH M_CheckLaraMesh(lua_State *const L, const int arg)
+{
+    return (LARA_MESH)LUA_CheckRange(L, arg, LM_NUMBER_OF, "unknown Lara mesh");
+}
+
+// Lara_Skin_GetExtraMeshOffset asserts, which traps rather than raises.
+static LARA_SKIN_EXTRA_MESH M_CheckExtraMesh(lua_State *const L, const int arg)
+{
+    return (LARA_SKIN_EXTRA_MESH)LUA_CheckRange(
+        L, arg, NUM_EXTRA_MESHES, "unknown extra mesh");
+}
+
 // trxc.lara.set_extra_equipment(lara_mesh, extra_mesh)
 static int M_L_LaraSetExtraEquipment(lua_State *const L)
 {
-    const LARA_MESH lara_mesh = luaL_checkinteger(L, 1);
-    const LARA_SKIN_EXTRA_MESH extra_mesh = luaL_checkinteger(L, 2);
+    const LARA_MESH lara_mesh = M_CheckLaraMesh(L, 1);
+    const LARA_SKIN_EXTRA_MESH extra_mesh = M_CheckExtraMesh(L, 2);
     Lara_Skin_SetExtraEquipment(lara_mesh, extra_mesh);
     return 0;
 }
@@ -119,7 +133,7 @@ static int M_L_LaraSetExtraEquipment(lua_State *const L)
 // trxc.lara.clear_equipment(lara_mesh)
 static int M_L_LaraClearEquipment(lua_State *const L)
 {
-    const LARA_MESH lara_mesh = luaL_checkinteger(L, 1);
+    const LARA_MESH lara_mesh = M_CheckLaraMesh(L, 1);
     Lara_Skin_ClearEquipment(lara_mesh);
     return 0;
 }

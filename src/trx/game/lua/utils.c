@@ -1,5 +1,23 @@
 #include <trx/game/lua/utils.h>
 
+#include <trx/game/objects/ids.h>
+
+#include <stdint.h>
+
+int32_t LUA_CheckRange(
+    lua_State *const L, const int arg, const int32_t count,
+    const char *const what)
+{
+    const lua_Integer value = luaL_checkinteger(L, arg);
+    luaL_argcheck(L, value >= 0 && value < count, arg, what);
+    return (int32_t)value;
+}
+
+OBJECT_ID LUA_CheckObjectID(lua_State *const L, const int arg)
+{
+    return (OBJECT_ID)LUA_CheckRange(L, arg, O_NUMBER_OF, "unknown object id");
+}
+
 void LUA_PushPropertyValue(
     lua_State *const L, const OBJECT_PROPERTY_VALUE *const value)
 {

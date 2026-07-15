@@ -81,6 +81,8 @@ void FakeItems_Reset(void)
         .loaded = true,
         .anim_idx = 0,
         .anim_count = 1,
+        // swap_mesh measures a mesh number against this.
+        .mesh_count = 3,
     };
     m_Objects[FAKE_OBJ_UNLOADED] = (OBJECT) { .loaded = false };
 
