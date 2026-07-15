@@ -1,5 +1,6 @@
 #include <trx/core/log.h>
 #include <trx/game/lua/registry.h>
+#include <trx/game/lua/utils.h>
 
 #include <lauxlib.h>
 #include <lua.h>
@@ -7,15 +8,16 @@
 // trxc.log.log(level, msg)
 static int M_L_LogGeneric(lua_State *const L)
 {
-    const LOG_LEVEL level = luaL_checkinteger(L, 1);
+    const LOG_LEVEL level =
+        LUA_CheckRange(L, 1, LOG_LEVEL_ERROR + 1, "unknown log level");
     const char *const msg = luaL_checkstring(L, 2);
     lua_Debug ar;
     const char *src = "?";
     const char *func = "?";
     int line = 0;
-    if (lua_getstack(L, 2, &ar) && lua_getinfo(L, "nSl", &ar)) {
+    if (LUA_GetCallerInfo(L, &ar)) {
         src = ar.short_src;
-        func = ar.name ? ar.name : "?";
+        func = ar.name != nullptr ? ar.name : "?";
         line = ar.currentline;
     }
     Log_Message(level, src, line, func, "%s", msg);

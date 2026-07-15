@@ -1,6 +1,7 @@
 #include "lua_surface.h"
 
 #include <trx/game/lua/registry.h>
+#include <trx/game/lua/utils.h>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -9,6 +10,46 @@ static void M_Fail(lua_State *const L, const char *const what)
 {
     fprintf(stderr, "%s: %s\n", what, lua_tostring(L, -1));
     exit(EXIT_FAILURE);
+}
+
+// Under the chunk name the engine would give it, not the path it sits at.
+// LUA_GetCallerInfo tells the engine's own frames from a script's by that name,
+// so loading a module as its path would test a naming the engine never uses.
+static void M_RunFileAs(
+    lua_State *const L, const char *const path, const char *const chunk_name)
+{
+    FILE *const fp = fopen(path, "rb");
+    if (fp == nullptr) {
+        fprintf(stderr, "cannot open %s\n", path);
+        exit(EXIT_FAILURE);
+    }
+    fseek(fp, 0, SEEK_END);
+    const long size = ftell(fp);
+    fseek(fp, 0, SEEK_SET);
+
+    char *const source = malloc((size_t)size);
+    if (source == nullptr
+        || fread(source, 1, (size_t)size, fp) != (size_t)size) {
+        fprintf(stderr, "cannot read %s\n", path);
+        exit(EXIT_FAILURE);
+    }
+    fclose(fp);
+
+    if (luaL_loadbuffer(L, source, (size_t)size, chunk_name) != LUA_OK
+        || lua_pcall(L, 0, 0, 0) != LUA_OK) {
+        M_Fail(L, path);
+    }
+    free(source);
+}
+
+static void M_RunModule(lua_State *const L, const char *const name)
+{
+    char path[512];
+    char chunk_name[256];
+    snprintf(path, sizeof(path), REPO_ROOT "/data/scripting/%s.lua", name);
+    snprintf(
+        chunk_name, sizeof(chunk_name), LUA_API_CHUNK_PREFIX "%s.lua", name);
+    M_RunFileAs(L, path, chunk_name);
 }
 
 int LuaSurface_Run(const LUA_SURFACE_TEST *const test)
@@ -47,22 +88,13 @@ int LuaSurface_Run(const LUA_SURFACE_TEST *const test)
 
     // The declarations are read from the tree, not from the copy embedded in
     // the binary: the test exists to pin what data/scripting says today.
-    if (luaL_dofile(L, REPO_ROOT "/data/scripting/api.lua") != LUA_OK) {
-        M_Fail(L, "loading api.lua");
-    }
+    M_RunModule(L, "api");
+
     for (int32_t i = 0; i < 4 && test->deps[i] != nullptr; i++) {
-        lua_pushfstring(L, REPO_ROOT "/data/scripting/%s.lua", test->deps[i]);
-        if (luaL_dofile(L, lua_tostring(L, -1)) != LUA_OK) {
-            M_Fail(L, "loading a dependency");
-        }
-        lua_pop(L, 1);
+        M_RunModule(L, test->deps[i]);
     }
 
-    lua_pushfstring(L, REPO_ROOT "/data/scripting/%s.lua", test->module);
-    if (luaL_dofile(L, lua_tostring(L, -1)) != LUA_OK) {
-        M_Fail(L, "loading the module");
-    }
-    lua_pop(L, 1);
+    M_RunModule(L, test->module);
 
     lua_pushfstring(L, REPO_ROOT "/src/tests/unit/lua/%s.lua", test->tests);
     const int32_t base = lua_gettop(L);

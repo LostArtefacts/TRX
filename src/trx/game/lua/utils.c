@@ -3,6 +3,25 @@
 #include <trx/game/objects/ids.h>
 
 #include <stdint.h>
+#include <string.h>
+
+bool LUA_GetCallerInfo(lua_State *const L, lua_Debug *const ar)
+{
+    // Level 0 is the bridge. Above it sit the module's binding, a group's
+    // __call, and strict mode's wrapper - all of them engine chunks.
+    for (int32_t level = 1; lua_getstack(L, level, ar) != 0; level++) {
+        if (lua_getinfo(L, "nSl", ar) == 0) {
+            return false;
+        }
+        if (strncmp(
+                ar->source, LUA_API_CHUNK_PREFIX,
+                sizeof(LUA_API_CHUNK_PREFIX) - 1)
+            != 0) {
+            return true;
+        }
+    }
+    return false;
+}
 
 int32_t LUA_CheckRange(
     lua_State *const L, const int arg, const int32_t count,

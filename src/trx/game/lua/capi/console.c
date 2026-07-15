@@ -1,44 +1,29 @@
 #include <trx/core/log.h>
-#include <trx/core/strings.h>
 #include <trx/game/console/common.h>
 #include <trx/game/console/registry.h>
 #include <trx/game/game_strings/entries.h>
 #include <trx/game/lua/common.h>
 #include <trx/game/lua/registry.h>
+#include <trx/game/lua/utils.h>
 
 #include <lauxlib.h>
 
-// trxc.console.log(...)
+// trxc.console.log(level, msg)
 static int M_L_ConsoleLog(lua_State *const L)
 {
-    int num_args = lua_gettop(L);
-    if (num_args < 2) {
-        return 0;
-    }
-
-    const LOG_LEVEL log_level = (int)lua_tointeger(L, 1);
-    const char *msg = nullptr;
-
-    for (int32_t i = 2; i <= num_args; i++) {
-        lua_getglobal(L, "tostring");
-        lua_pushvalue(L, i);
-        lua_call(L, 1, 1);
-        const char *arg = lua_tostring(L, -1);
-        lua_pop(L, 1);
-        msg = (i > 2) ? String_FormatStatic("%s %s", msg, arg)
-                      : String_FormatStatic("%s", arg);
-    }
-
+    const LOG_LEVEL level =
+        LUA_CheckRange(L, 1, LOG_LEVEL_ERROR + 1, "unknown log level");
+    const char *const msg = luaL_checkstring(L, 2);
     lua_Debug ar;
     const char *src = "?";
     const char *func = "?";
     int line = 0;
-    if (lua_getstack(L, 2, &ar) && lua_getinfo(L, "nSl", &ar)) {
+    if (LUA_GetCallerInfo(L, &ar)) {
         src = ar.short_src;
-        func = ar.name ? ar.name : "?";
+        func = ar.name != nullptr ? ar.name : "?";
         line = ar.currentline;
     }
-    Console_LogEx(log_level, src, line, func, "%s", msg);
+    Console_LogEx(level, src, line, func, "%s", msg);
     return 0;
 }
 

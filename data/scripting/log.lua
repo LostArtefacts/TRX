@@ -19,9 +19,6 @@ local LogLevel = api.enum("log.LogLevel", {
   },
 })
 
--- One wrapper layer per level, deliberately: the C side walks two stack frames up
--- to find the caller, so binding raw.log straight to a level would change that
--- depth and the log would blame the wrong line.
 local function at(level)
   return function(message)
     raw.log(level, message)

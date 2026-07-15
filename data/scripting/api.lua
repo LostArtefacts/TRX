@@ -221,7 +221,8 @@ local function make_checked(fn, path, params)
   local function on_fail(where, arg)
     error(("%s: invalid argument '%s'"):format(where, arg), 3)
   end
-  return load(src, "=" .. path .. " (checked)")(fn, checkers, defaults, on_fail)
+  -- Named as an API module is, so LUA_GetCallerInfo walks past this frame too.
+  return load(src, "@trx/" .. path .. " (checked)")(fn, checkers, defaults, on_fail)
 end
 
 -- Type name -> predicate. Doc-facing type names, not Lua type names.

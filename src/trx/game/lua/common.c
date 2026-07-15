@@ -11,6 +11,7 @@
 #include <trx/game/lua/events.h>
 #include <trx/game/lua/registry.h>
 #include <trx/game/lua/sandbox.h>
+#include <trx/game/lua/utils.h>
 
 #include <lauxlib.h>
 #include <lua.h>
@@ -153,7 +154,7 @@ static void M_LoadTRXScripts(lua_State *const L)
          script->path != nullptr; script++) {
         char *name = M_DeriveTRXModuleName(script->path);
         const char *const chunk_name =
-            String_FormatStatic("@trx/%s", script->path);
+            String_FormatStatic(LUA_API_CHUNK_PREFIX "%s", script->path);
         M_RegisterTRXPreloadEmbedded(
             L, script->data, script->size, chunk_name, name);
         Memory_FreePointer(&name);
