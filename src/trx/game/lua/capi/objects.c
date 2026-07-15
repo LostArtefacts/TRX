@@ -67,10 +67,8 @@ static const char *M_GetPropertyName(const void *const self, const int32_t idx)
 // trxc.objects.get(object_id) -> OBJECT handle or nil
 static int M_L_ObjectsGet(lua_State *const L)
 {
-    // Read wide and range-test before narrowing: an id past OBJECT_ID's width
-    // would wrap into the table and name an object the script did not ask for.
-    const lua_Integer object_id = luaL_checkinteger(L, 1);
-    if (object_id < O_FIRST || object_id >= O_NUMBER_OF) {
+    int32_t object_id;
+    if (!LUA_CheckBoundedInt(L, 1, O_FIRST, O_NUMBER_OF - 1, &object_id)) {
         lua_pushnil(L);
         return 1;
     }

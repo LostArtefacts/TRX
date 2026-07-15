@@ -279,15 +279,12 @@ static int M_L_ItemsGet(lua_State *const L)
 {
     int32_t idx = -1;
     if (lua_type(L, 1) == LUA_TNUMBER) {
-        // Read wide and range-test before narrowing: an index past int32_t's
-        // width would wrap into range and name an item the script did not ask
-        // for.
-        const lua_Integer num = luaL_checkinteger(L, 1);
-        if (num < 1 || num > Item_GetTotalCount()) {
+        int32_t num;
+        if (!LUA_CheckBoundedInt(L, 1, 1, Item_GetTotalCount(), &num)) {
             lua_pushnil(L);
             return 1;
         }
-        idx = (int32_t)(num - 1);
+        idx = num - 1;
     } else {
         const ITEM *const item = Item_GetByName(luaL_checkstring(L, 1));
         idx = item != nullptr ? Item_GetIndex(item) : -1;

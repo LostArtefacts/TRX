@@ -40,6 +40,13 @@ void LUA_CheckLogCall(lua_State *L, LUA_LOG_CALL *out);
 // Narrowed only once it fits, so a wider value cannot wrap into range.
 int32_t LUA_CheckRange(lua_State *L, int arg, int32_t count, const char *what);
 
+// A wide integer argument, range-tested against [lo, hi] before it is narrowed,
+// so a value past int32_t's width cannot wrap into range and name something the
+// script did not ask for. Returns false with nothing pushed when out of range;
+// the caller decides what that means (nil, an error).
+bool LUA_CheckBoundedInt(
+    lua_State *L, int arg, lua_Integer lo, lua_Integer hi, int32_t *out);
+
 // An object id, checked against the object table. Object_Get asserts on one
 // outside it.
 OBJECT_ID LUA_CheckObjectID(lua_State *L, int arg);

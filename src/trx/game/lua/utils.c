@@ -37,6 +37,18 @@ OBJECT_ID LUA_CheckObjectID(lua_State *const L, const int arg)
     return (OBJECT_ID)LUA_CheckRange(L, arg, O_NUMBER_OF, "unknown object id");
 }
 
+bool LUA_CheckBoundedInt(
+    lua_State *const L, const int arg, const lua_Integer lo,
+    const lua_Integer hi, int32_t *const out)
+{
+    const lua_Integer value = luaL_checkinteger(L, arg);
+    if (value < lo || value > hi) {
+        return false;
+    }
+    *out = (int32_t)value;
+    return true;
+}
+
 void LUA_CheckLogCall(lua_State *const L, LUA_LOG_CALL *const out)
 {
     *out = (LUA_LOG_CALL) {
