@@ -304,6 +304,9 @@
             },
             "debug": {
                 "help": "Tionndaidheas fiosrachadh deasbug.",
+                "option_get": "Tha %s air a rèiteachadh gu %s",
+                "option_set": "%s air atharrachadh gu %s",
+                "unknown_option": "Roghainn neo-aithnichte: %s",
             },
             "drain": {
                 "help": "Drèaneas an t-seomair làithreach.",

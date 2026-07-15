@@ -304,6 +304,9 @@
             },
             "debug": {
                 "help": "Włącza lub wyłącza różne informacje diagnostyczne.",
+                "option_get": "%s jest obecnie ustawione na %s",
+                "option_set": "Zmieniono %s na %s",
+                "unknown_option": "Nieznana opcja: %s",
             },
             "drain": {
                 "help": "Osusza aktualne pomieszczenie usuwając z niego wodę.",

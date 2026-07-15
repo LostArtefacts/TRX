@@ -61,6 +61,7 @@ trx_lua_api_sources = files(
 
 trx_lua_script_sources = files(
   '../data/scripting/commands/clear.lua',
+  '../data/scripting/commands/debug.lua',
   '../data/scripting/commands/heal.lua',
 )
 
@@ -224,7 +225,6 @@ common_sources = [
   'trx/game/collision/los.c',
   'trx/game/console/cmd/burn.c',
   'trx/game/console/cmd/config.c',
-  'trx/game/console/cmd/debug.c',
   'trx/game/console/cmd/die.c',
   'trx/game/console/cmd/easy_config.c',
   'trx/game/console/cmd/end_level.c',

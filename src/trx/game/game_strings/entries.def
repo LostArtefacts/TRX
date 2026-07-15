@@ -882,6 +882,10 @@ GS_DEFINE(console/cmd/immune/off, "Lara is now vulnerable")
 GS_DEFINE(console/cmd/inf_sprint/on,  "Lara can now sprint forever")
 GS_DEFINE(console/cmd/inf_sprint/off, "Lara can no longer sprint forever")
 
+GS_DEFINE(console/cmd/debug/option_get,     "%s is currently set to %s")
+GS_DEFINE(console/cmd/debug/option_set,     "%s changed to %s")
+GS_DEFINE(console/cmd/debug/unknown_option, "Unknown option: %s")
+
 GS_DEFINE(console/cmd/spawn/success,      "Requested object spawned near Lara")
 GS_DEFINE(console/cmd/spawn/fail, "Failed to spawn requested object")
 

@@ -304,6 +304,9 @@
             },
             "debug": {
                 "help": "Toggles visual debug information.",
+                "option_get": "%s is currently set to %s",
+                "option_set": "%s changed to %s",
+                "unknown_option": "Unknown option: %s",
             },
             "drain": {
                 "help": "Dries the current room, removing the water.",
