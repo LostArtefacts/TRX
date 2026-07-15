@@ -134,11 +134,7 @@ static int M_L_GetFlippedRoom(lua_State *const L)
 {
     LUA_STRUCT_REF *const ref = LUA_Struct_CheckRef(L, 1, &TYPE_ROOM);
     const ROOM *const room = LUA_Struct_Deref(L, ref);
-    if (room->flipped_room == NO_ROOM) {
-        lua_pushnil(L);
-    } else {
-        lua_pushinteger(L, room->flipped_room + 1);
-    }
+    LUA_PushOptIndex(L, room->flipped_room, NO_ROOM);
     return 1;
 }
 

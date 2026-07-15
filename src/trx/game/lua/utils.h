@@ -56,3 +56,8 @@ XYZ_32 LUA_CheckXYZ(lua_State *L, int arg);
 XYZ_32 LUA_CheckXYZAt(lua_State *L, int idx, int arg);
 
 void LUA_PushXYZ(lua_State *L, XYZ_32 value);
+
+// Pushes a zero-based engine index to a script as a one-based number, or nil
+// when it holds `sentinel` (the value that means "none"). Scripts count rooms
+// and items from 1.
+void LUA_PushOptIndex(lua_State *L, int32_t value, int32_t sentinel);

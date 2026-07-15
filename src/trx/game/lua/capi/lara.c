@@ -1,5 +1,6 @@
 #include <trx/game/gun.h>
 #include <trx/game/inventory.h>
+#include <trx/game/items/const.h>
 #include <trx/game/lara.h>
 #include <trx/game/lara/skin/storage.h>
 #include <trx/game/lara/types.h>
@@ -67,15 +68,8 @@ static int M_L_LaraState(lua_State *const L)
 static int M_L_GetLaraItem(lua_State *const L)
 {
     const ITEM *const item = Lara_GetItem();
-    int result = 0;
-    if (item != nullptr) {
-        result = Item_GetIndex(item) + 1;
-    }
-    if (result == 0) {
-        lua_pushnil(L);
-    } else {
-        lua_pushinteger(L, result);
-    }
+    LUA_PushOptIndex(
+        L, item != nullptr ? Item_GetIndex(item) : NO_ITEM, NO_ITEM);
     return 1;
 }
 
@@ -83,11 +77,9 @@ static int M_L_GetLaraItem(lua_State *const L)
 static int M_L_GetLaraTarget(lua_State *const L)
 {
     const LARA_INFO *const lara = Lara_GetLaraInfo();
-    if (lara->target == nullptr) {
-        lua_pushnil(L);
-    } else {
-        lua_pushinteger(L, Item_GetIndex(lara->target) + 1);
-    }
+    LUA_PushOptIndex(
+        L, lara->target != nullptr ? Item_GetIndex(lara->target) : NO_ITEM,
+        NO_ITEM);
     return 1;
 }
 
