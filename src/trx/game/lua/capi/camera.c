@@ -9,13 +9,7 @@
 // trxc.camera.get_pos() → {x, y, z}
 static int M_L_CameraGetPos(lua_State *const L)
 {
-    lua_newtable(L);
-    lua_pushinteger(L, g_Camera.pos.x);
-    lua_setfield(L, -2, "x");
-    lua_pushinteger(L, g_Camera.pos.y);
-    lua_setfield(L, -2, "y");
-    lua_pushinteger(L, g_Camera.pos.z);
-    lua_setfield(L, -2, "z");
+    LUA_PushXYZ(L, g_Camera.pos.pos);
     return 1;
 }
 
@@ -33,13 +27,7 @@ static int M_L_CameraGetRoom(lua_State *const L)
 // trxc.camera.get_target_pos() → {x, y, z}
 static int M_L_CameraGetTargetPos(lua_State *const L)
 {
-    lua_newtable(L);
-    lua_pushinteger(L, g_Camera.target.x);
-    lua_setfield(L, -2, "x");
-    lua_pushinteger(L, g_Camera.target.y);
-    lua_setfield(L, -2, "y");
-    lua_pushinteger(L, g_Camera.target.z);
-    lua_setfield(L, -2, "z");
+    LUA_PushXYZ(L, g_Camera.target.pos);
     return 1;
 }
 
