@@ -13,6 +13,7 @@ void Lara_Skin_SetType(LARA_SKIN_TYPE skin_type);
 void Lara_Skin_ApplyOutfit(void);
 
 void Lara_Skin_SetCombatFace(bool enabled);
+void Lara_Skin_SetSpeechFace(int32_t index);
 void Lara_Skin_SwapAllExtra(LARA_EXTRA_STATE state);
 void Lara_Skin_SwapSingleExtra(LARA_MESH mesh, LARA_EXTRA_STATE state);
 const ANIM_BONE *Lara_Skin_GetBoneBase(void);
