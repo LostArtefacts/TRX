@@ -607,8 +607,8 @@
         "tr4_young": {
             "name_gs": "dynamic/enums/lara_outfit/tr4_young",
             "mesh_object": "O_LARA_SKIN_SWAP_27",
+            "joints_object": "O_LARA_SKIN_JOINTS_1",
             "gun_map": 3,
-            "is_selectable": false,
             "combat_face_offset": -1,
             "speech_face_offset": 67,
             "braid": {
@@ -640,6 +640,7 @@
         "tr4_young_golden_lara": {
             "name_gs": "dynamic/enums/lara_outfit/tr4_young_golden_lara",
             "mesh_object": "O_LARA_SKIN_SWAP_28",
+            "joints_object": "O_LARA_SKIN_JOINTS_2",
             "gun_map": 1,
             "is_selectable": false,
             "is_reflective": true,
@@ -666,8 +667,8 @@
         "tr4_classic": {
             "name_gs": "dynamic/enums/lara_outfit/tr4_classic",
             "mesh_object": "O_LARA_SKIN_SWAP_29",
+            "joints_object": "O_LARA_SKIN_JOINTS_3",
             "gun_map": 3,
-            "is_selectable": false,
             "combat_face_offset": 66,
             "speech_face_offset": 71,
             "braid": {
@@ -694,6 +695,7 @@
         "tr4_golden_lara": {
             "name_gs": "dynamic/enums/lara_outfit/tr4_golden_lara",
             "mesh_object": "O_LARA_SKIN_SWAP_30",
+            "joints_object": "O_LARA_SKIN_JOINTS_4",
             "gun_map": 1,
             "is_selectable": false,
             "is_reflective": true,

@@ -161,7 +161,7 @@ static inline int32_t M_GetRelativeBraidOffset(void)
 static inline int32_t M_GetMeshIdx(
     const LARA_MESH mesh, const LARA_SKIN_OUTFIT *const outfit)
 {
-    const OBJECT *const skin_obj = Object_Get(outfit->obj_id);
+    const OBJECT *const skin_obj = Object_Get(outfit->mesh_obj_id);
     int32_t offset = M_NO_MESH;
 
     if (g_Config.visuals.enable_braid) {
@@ -338,7 +338,7 @@ void Lara_Skin_Initialise(void)
             continue;
         }
 
-        const OBJECT *const skin_obj = Object_Get(outfit->obj_id);
+        const OBJECT *const skin_obj = Object_Get(outfit->mesh_obj_id);
         ASSERT(skin_obj->loaded);
         ASSERT(skin_obj->mesh_count == LM_NUMBER_OF);
         if (!outfit->is_reflective) {
@@ -538,7 +538,7 @@ void Lara_Skin_SwapSingleExtra(
 const ANIM_BONE *Lara_Skin_GetBoneBase(void)
 {
     const LARA_SKIN_OUTFIT *const outfit = M_GetCurrentOutfit();
-    const OBJECT *const skin_obj = Object_Get(outfit->obj_id);
+    const OBJECT *const skin_obj = Object_Get(outfit->mesh_obj_id);
     return Object_TryGetBone(skin_obj, 0);
 }
 

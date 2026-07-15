@@ -291,18 +291,32 @@ static bool M_LoadExtras(JSON_READ_IO *const io, LARA_SKIN_OUTFIT *const outfit)
     JSON_FINISH();
 }
 
-static bool M_LoadOutfit(JSON_READ_IO *const io, LARA_SKIN_OUTFIT *const outfit)
+static bool M_LoadObjectID(
+    JSON_READ_IO *const io, const char *const key, OBJECT_ID *const out_obj_id)
 {
-    const char *mesh_obj_name = nullptr;
-    JSON_MUST(JSON_READ(io, "mesh_object", &mesh_obj_name));
+    *out_obj_id = NO_OBJECT;
 
-    CATALOG_ID mesh_object_id;
-    if (!Catalog_NameToEnum(CATALOG_OBJECTS, mesh_obj_name, &mesh_object_id)) {
-        JSON_ReadIO_SetError(
-            io, "unknown outfit object_id '%s'", mesh_obj_name);
+    const char *obj_name = nullptr;
+    if (!JSON_READ(io, key, &obj_name)) {
         JSON_FAIL();
     }
-    outfit->obj_id = mesh_object_id;
+
+    CATALOG_ID object_id;
+    if (!Catalog_NameToEnum(CATALOG_OBJECTS, obj_name, &object_id)) {
+        JSON_ReadIO_SetError(io, "unknown outfit object_id '%s'", obj_name);
+        JSON_FAIL();
+    }
+    *out_obj_id = object_id;
+
+    JSON_FINISH();
+}
+
+static bool M_LoadOutfit(JSON_READ_IO *const io, LARA_SKIN_OUTFIT *const outfit)
+{
+    if (!M_LoadObjectID(io, "mesh_object", &outfit->mesh_obj_id)) {
+        JSON_FAIL();
+    }
+    M_LoadObjectID(io, "joints_object", &outfit->joints_obj_id);
 
     JSON_READ_D(io, "is_reflective", &outfit->is_reflective, false);
     JSON_READ_D(io, "is_selectable", &outfit->is_selectable, true);

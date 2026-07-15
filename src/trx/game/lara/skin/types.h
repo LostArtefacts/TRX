@@ -30,7 +30,8 @@ typedef struct {
 
 typedef struct {
     bool is_defined;
-    OBJECT_ID obj_id;
+    OBJECT_ID mesh_obj_id;
+    OBJECT_ID joints_obj_id;
     LARA_SKIN_GUN_MAP *gun_map;
     LARA_SKIN_BRAID braid;
     bool is_selectable;
