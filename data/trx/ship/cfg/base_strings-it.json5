@@ -116,7 +116,6 @@
             "save_game_fail_invalid_slot": "Slot di salvataggio %d non valido",
             "sound_available_samples": "Suoni disponibili: %s",
             "sound_playing_sample": "Riproduzione del suono %d",
-            "speed_get": "Velocità attuale: %d",
             "speed_set": "Velocità impostata su %d",
             "strings_failed": "Impossibile ricaricare i file di lingua",
             "strings_reloaded": "File di lingua ricaricati",
@@ -429,7 +428,9 @@
                 "success": "Oggetto richiesto generato vicino a Lara",
             },
             "speed": {
+                "get": "Velocità attuale: %d",
                 "help": "Modifica la velocità di gioco.",
+                "set": "Velocità impostata su %d",
             },
             "strings": {
                 "help": "Ricarica i file di lingua correnti dal disco.",

@@ -116,7 +116,6 @@
             "save_game_fail_invalid_slot": "Nieprawidłowy slot zapisu %d",
             "sound_available_samples": "Dostępne dźwięki: %s",
             "sound_playing_sample": "Odtwarzanie dźwięku %d",
-            "speed_get": "Aktualna prędkość: %d",
             "speed_set": "Prędkość ustawiona na %d",
             "strings_failed": "Nie udało się przeładować plików językowych",
             "strings_reloaded": "Pliki językowe zostały przeładowane",
@@ -429,7 +428,9 @@
                 "success": "Żądany obiekt przywołany w pobliżu Lary",
             },
             "speed": {
+                "get": "Aktualna prędkość: %d",
                 "help": "Zmienia prędkość gry.",
+                "set": "Prędkość ustawiona na %d",
             },
             "strings": {
                 "help": "Przeładowuje bieżące pliki językowe z dysku.",

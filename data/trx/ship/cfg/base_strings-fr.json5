@@ -116,7 +116,6 @@
             "save_game_fail_invalid_slot": "Emplacement de sauvegarde %d invalide",
             "sound_available_samples": "Effets sonores disponibles : %s",
             "sound_playing_sample": "Lecture de l'effet sonore %d",
-            "speed_get": "Vitesse actuelle : %d",
             "speed_set": "Vitesse réglée sur %d",
             "strings_failed": "\\{review}Échec du rechargement des fichiers de langue",
             "strings_reloaded": "\\{review}Fichiers de langue rechargés",
@@ -429,7 +428,9 @@
                 "success": "\\{review}Objet demandé apparu près de Lara",
             },
             "speed": {
+                "get": "Vitesse actuelle : %d",
                 "help": "Change la vitesse du jeu.",
+                "set": "Vitesse réglée sur %d",
             },
             "strings": {
                 "help": "\\{review}Recharge les fichiers de langue actuels depuis le disque.",

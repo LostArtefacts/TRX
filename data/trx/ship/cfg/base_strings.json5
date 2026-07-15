@@ -116,7 +116,6 @@
             "save_game_fail_invalid_slot": "Invalid save slot %d",
             "sound_available_samples": "Available sounds: %s",
             "sound_playing_sample": "Playing sound %d",
-            "speed_get": "Current speed: %d",
             "speed_set": "Speed set to %d",
             "strings_failed": "Failed to reload the language files",
             "strings_reloaded": "Language files reloaded",
@@ -429,7 +428,9 @@
                 "success": "Requested object spawned near Lara",
             },
             "speed": {
+                "get": "Current speed: %d",
                 "help": "Changes the game's speed.",
+                "set": "Speed set to %d",
             },
             "strings": {
                 "help": "Reloads the current language files from disk.",
