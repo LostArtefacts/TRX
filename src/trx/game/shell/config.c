@@ -1,5 +1,6 @@
 #include <trx/config.h>
 #include <trx/core/log.h>
+#include <trx/game/clock.h>
 #include <trx/game/game_strings/manager.h>
 #include <trx/game/gun/misc.h>
 #include <trx/game/lara.h>
@@ -214,6 +215,13 @@ void Shell_HandleConfigChange(const CONFIG *const old, const CONFIG *const new)
     if (L_CHANGED(input.enable_touch_controls)) {
         TouchOverlay_SetVisible(new->input.enable_touch_controls);
         Option_Controls_RefreshBackendPicker();
+    }
+
+    // The frame pacing reads the multiplier live, but the sim-time clock caches
+    // its own speed and has to be re-anchored, or writing turbo_speed leaves
+    // sim time running at the old rate until the next flow transition.
+    if (L_CHANGED(gameplay.turbo_speed)) {
+        Clock_SetSimSpeed(Clock_GetSpeedMultiplier());
     }
 #undef L_CHANGED
 }
