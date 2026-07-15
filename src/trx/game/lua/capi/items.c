@@ -280,13 +280,6 @@ static int M_L_Activate(lua_State *const L)
     return 0;
 }
 
-static int M_L_IsValid(lua_State *const L)
-{
-    LUA_STRUCT_REF *const ref = LUA_Struct_CheckRef(L, 1, &TYPE_ITEM);
-    lua_pushboolean(L, ref->resolve(ref) != nullptr);
-    return 1;
-}
-
 // trxc.items.count() -> int
 static int M_L_Count(lua_State *const L)
 {
@@ -402,7 +395,6 @@ static const luaL_Reg m_Methods[] = {
     { "explode", M_L_Explode },
     { "kill", M_L_Kill },
     { "activate", M_L_Activate },
-    { "is_valid", M_L_IsValid },
     { "get_property", M_L_GetProperty },
     { "set_property", M_L_SetProperty },
     { "get_property_names", M_L_GetPropertyNames },

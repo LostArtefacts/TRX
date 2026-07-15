@@ -70,13 +70,6 @@ static void M_PushRoom(lua_State *const L, const int32_t idx)
     LUA_Struct_Push(L, &TYPE_ROOM, M_Resolve, idx, Room_GetGeneration());
 }
 
-static int M_L_IsValid(lua_State *const L)
-{
-    LUA_STRUCT_REF *const ref = LUA_Struct_CheckRef(L, 1, &TYPE_ROOM);
-    lua_pushboolean(L, ref->resolve(ref) != nullptr);
-    return 1;
-}
-
 // trxc.rooms.count() -> int
 static int M_L_Count(lua_State *const L)
 {
@@ -186,11 +179,6 @@ static int M_L_FindValidPos(lua_State *const L)
     return 2;
 }
 
-static const luaL_Reg m_Methods[] = {
-    { "is_valid", M_L_IsValid },
-    { nullptr, nullptr },
-};
-
 static const luaL_Reg m_Module[] = {
     { "get_flipped_room", M_L_GetFlippedRoom },
     { "count", M_L_Count },
@@ -204,7 +192,7 @@ static const luaL_Reg m_Module[] = {
 
 static void M_Create(lua_State *const L)
 {
-    LUA_Struct_Register(L, &TYPE_ROOM, m_Methods);
+    LUA_Struct_Register(L, &TYPE_ROOM, nullptr);
 
     LUA_RegisterModule(L, "rooms", m_Module);
 }
