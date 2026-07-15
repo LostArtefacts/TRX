@@ -107,3 +107,13 @@ void LUA_PushXYZ(lua_State *const L, const XYZ_32 value)
     lua_pushinteger(L, value.z);
     lua_setfield(L, -2, "z");
 }
+
+void LUA_PushOptIndex(
+    lua_State *const L, const int32_t value, const int32_t sentinel)
+{
+    if (value == sentinel) {
+        lua_pushnil(L);
+    } else {
+        lua_pushinteger(L, value + 1);
+    }
+}
