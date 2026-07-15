@@ -395,6 +395,8 @@
             },
             "play_gym": {
                 "help": "Wczytuje poziom z domem Lary.",
+                "invalid": "Nieznany poziom",
+                "loading": "Wczytano %s",
             },
             "play_level": {
                 "help": "Wczytuje poziom o podanej nazwie lub numerze.",

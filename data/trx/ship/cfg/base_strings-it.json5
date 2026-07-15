@@ -395,6 +395,8 @@
             },
             "play_gym": {
                 "help": "Gioca al livello di allenamento.",
+                "invalid": "Livello non valido",
+                "loading": "Caricamento %s",
             },
             "play_level": {
                 "help": "Gioca un livello con il nome o il numero specificato.",

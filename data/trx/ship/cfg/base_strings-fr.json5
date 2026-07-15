@@ -395,6 +395,8 @@
             },
             "play_gym": {
                 "help": "Lance le niveau de gym.",
+                "invalid": "Niveau invalide",
+                "loading": "Chargement de %s",
             },
             "play_level": {
                 "help": "Lance un niveau correspondant au nom ou au numéro donné.",
