@@ -17,7 +17,7 @@ local LevelTable = api.enum("game.LevelTable", {
   },
 })
 
-api.enum("game.LevelType", {
+local LevelType = api.enum("game.LevelType", {
   backing = "GF_LEVEL_TYPE",
   description = "What kind of level it is.",
   values = {
@@ -126,7 +126,7 @@ end
 
 api.property("game.levels", {
   type = "table",
-  description = "The levels of the game proper, in order, as a list of `trx.game.Level`.",
+  description = "The levels of the game, in order, as a list of `trx.game.Level`.",
   get = function()
     return level_list(LevelTable.MAIN)
   end,
@@ -154,6 +154,18 @@ api.property("game.current_level", {
   get = raw.get_current_level,
 })
 
+api.property("game.gym", {
+  type = "Level",
+  description = "The gym level, or `nil` if this game has no gym.",
+  get = function()
+    local level = raw.get_level(LevelTable.MAIN, 0)
+    if level ~= nil and level.type == LevelType.GYM then
+      return level
+    end
+    return nil
+  end,
+})
+
 api.property("game.version", {
   type = "integer",
   description = "Which Tomb Raider this build is: 1, 2, 3 or 4.",
@@ -167,7 +179,7 @@ api.property("game.trx_version", {
 })
 
 api.define("game.play_level", {
-  description = "Starts a level of the game proper.",
+  description = "Starts a level from `trx.game.levels`.",
   params = {
     {
       name = "num",
@@ -193,4 +205,9 @@ api.define("game.play_demo", {
     { name = "num", type = "integer", description = "1-based position in `trx.game.demos`." },
   },
   impl = raw.play_demo,
+})
+
+api.define("game.play_gym", {
+  description = "Starts the gym. Raises if this game has no gym.",
+  impl = raw.play_gym,
 })
