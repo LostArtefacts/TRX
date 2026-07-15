@@ -70,6 +70,7 @@ trx_lua_script_sources = files(
   '../data/scripting/commands/play_gym.lua',
   '../data/scripting/commands/set_health.lua',
   '../data/scripting/commands/speed.lua',
+  '../data/scripting/commands/test_text.lua',
 )
 
 trx_lua_embed = custom_target(
@@ -257,7 +258,6 @@ common_sources = [
   'trx/game/console/cmd/spawn.c',
   'trx/game/console/cmd/strings.c',
   'trx/game/console/cmd/teleport.c',
-  'trx/game/console/cmd/test_text.c',
   'trx/game/console/cmd/trigger.c',
   'trx/game/console/cmd/weather.c',
   'trx/game/console/cmd/winston.c',
