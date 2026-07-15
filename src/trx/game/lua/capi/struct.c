@@ -494,6 +494,21 @@ static int M_L_StructMembers(lua_State *const L)
     return 1;
 }
 
+// Puts the value at val_idx under public_name into the type's metatable
+// subtable named `key`. Leaves the stack as it found it.
+static void M_ExposeInto(
+    lua_State *const L, const TYPE_DESC *const type, const char *const key,
+    const char *const public_name, const int val_idx)
+{
+    const int val = lua_absindex(L, val_idx);
+    luaL_getmetatable(L, type->name);
+    lua_getfield(L, -1, key);
+    lua_pushstring(L, public_name);
+    lua_pushvalue(L, val);
+    lua_rawset(L, -3);
+    lua_pop(L, 2); // subtable, metatable
+}
+
 // trxc.struct.expose_field(type, public_name, c_name, writable)
 static int M_L_StructExposeField(lua_State *const L)
 {
@@ -514,25 +529,17 @@ static int M_L_StructExposeField(lua_State *const L)
             type->name, c_name);
     }
 
-    luaL_getmetatable(L, type->name);
-
-    lua_getfield(L, -1, m_KeyFields);
-    lua_pushstring(L, public_name);
     lua_pushlightuserdata(L, (void *)field);
-    lua_rawset(L, -3);
-    lua_pop(L, 1);
+    M_ExposeInto(L, type, m_KeyFields, public_name, -1);
 
     // Read-only is not merely documentation: a field the declaration withholds
     // must be absent from the writable set, or __newindex would let a script
     // set it anyway. FF_READONLY is the hard floor, checked above; this is the
     // declaration narrowing a member C would otherwise write.
     if (writable) {
-        lua_getfield(L, -1, m_KeyWritable);
-        lua_pushstring(L, public_name);
-        lua_pushlightuserdata(L, (void *)field);
-        lua_rawset(L, -3);
-        lua_pop(L, 1);
+        M_ExposeInto(L, type, m_KeyWritable, public_name, -1);
     }
+    lua_pop(L, 1); // field
     return 0;
 }
 
@@ -570,7 +577,6 @@ static int M_L_StructExposeMethod(lua_State *const L)
     const char *const public_name = luaL_checkstring(L, 2);
 
     if (lua_isfunction(L, 3)) {
-        luaL_getmetatable(L, type->name);
         lua_pushvalue(L, 3);
     } else {
         const char *const c_name = luaL_checkstring(L, 3);
@@ -579,13 +585,11 @@ static int M_L_StructExposeMethod(lua_State *const L)
                 L, "%s has no method '%s' (declared as '%s')", type->name,
                 c_name, public_name);
         }
+        lua_remove(L, -2); // the metatable M_PushRawMethod leaves below the fn
     }
 
-    // stack: metatable, fn
-    lua_getfield(L, -2, m_KeyMethods);
-    lua_pushstring(L, public_name);
-    lua_pushvalue(L, -3);
-    lua_rawset(L, -3);
+    M_ExposeInto(L, type, m_KeyMethods, public_name, -1);
+    lua_pop(L, 1); // fn
     return 0;
 }
 
@@ -596,11 +600,7 @@ static int M_L_StructExposeComputed(lua_State *const L)
     const char *const public_name = luaL_checkstring(L, 2);
     luaL_checktype(L, 3, LUA_TFUNCTION);
 
-    luaL_getmetatable(L, type->name);
-    lua_getfield(L, -1, m_KeyExt);
-    lua_pushstring(L, public_name);
-    lua_pushvalue(L, 3);
-    lua_rawset(L, -3);
+    M_ExposeInto(L, type, m_KeyExt, public_name, 3);
     return 0;
 }
 
