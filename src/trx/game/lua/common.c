@@ -77,32 +77,22 @@ static int M_TRXEmbeddedModuleLoader(lua_State *const L)
     return lua_gettop(L) - base;
 }
 
-static char *M_DeriveTRXModuleName(const char *path)
+// The module name a script is required under: "objects/door.lua" becomes
+// "trx.objects.door". Caller frees the result.
+static char *M_DeriveTRXModuleName(const char *const path)
 {
-    char *raw = Memory_DupStr(path);
-    size_t raw_len = strlen(raw);
-
-    // Drop ".lua"
-    if (raw_len > 4 && strcmp(raw + raw_len - 4, ".lua") == 0) {
-        raw[raw_len - 4] = '\0';
+    char *stem = Memory_DupStr(path);
+    const size_t stem_len = strlen(stem);
+    if (stem_len > 4 && strcmp(stem + stem_len - 4, ".lua") == 0) {
+        stem[stem_len - 4] = '\0';
     }
-
-    // Convert '/' → '.'
-    for (char *c = raw; *c; ++c) {
+    for (char *c = stem; *c != '\0'; c++) {
         if (*c == '/') {
             *c = '.';
         }
     }
-
-    // Prefix "trx."
-    const char *modprefix = "trx.";
-    size_t prefix_len = strlen(modprefix);
-    raw_len = strlen(raw);
-    char *name = Memory_Alloc(prefix_len + raw_len + 1);
-    memcpy(name, modprefix, prefix_len);
-    memcpy(name + prefix_len, raw, raw_len + 1);
-
-    Memory_FreePointer(&raw);
+    char *const name = String_Format("trx.%s", stem);
+    Memory_FreePointer(&stem);
     return name;
 }
 
