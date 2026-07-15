@@ -55,6 +55,23 @@ void Console_Registry_Add(CONSOLE_COMMAND cmd)
     m_List = node;
 }
 
+void Console_Registry_RemoveByProc(
+    COMMAND_RESULT (*const proc)(const COMMAND_CONTEXT *ctx))
+{
+    M_NODE **link = &m_List;
+    while (*link != nullptr) {
+        M_NODE *const node = *link;
+        if (node->cmd.proc != proc) {
+            link = &node->next;
+            continue;
+        }
+        *link = node->next;
+        Memory_Free((char *)node->cmd.prefix);
+        Memory_Free((char *)node->cmd.help_id);
+        Memory_Free(node);
+    }
+}
+
 VECTOR *Console_Registry_GetAll(void)
 {
     VECTOR *vec = Vector_Create(sizeof(const CONSOLE_COMMAND *));

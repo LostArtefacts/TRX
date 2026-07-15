@@ -37,8 +37,8 @@ void FakeConsole_Reset(void);
 void FakeConsole_SetEvalResult(COMMAND_RESULT result);
 
 // The console as a test script sees it: fake.run(), fake.help_id(),
-// fake.is_registered(), fake.set_eval_result(), fake.as_level_script(), and
-// fake.CommandResult.
+// fake.is_registered(), fake.set_eval_result(), fake.as_level_script(),
+// fake.reload(), and fake.CommandResult.
 void FakeConsole_PushLua(lua_State *L);
 
 // Adds what the console was asked to do to the table on top of the stack.

@@ -222,6 +222,16 @@ test("a command cannot be registered twice", function()
   end)
 end)
 
+-- A global script runs again after a mod switch, so the command it registered
+-- last time must be gone by then, or the second run raises on it.
+test("a command can be registered again after a reload", function()
+  trx.console.register({ name = "twice", run = function() end })
+  fake.reload()
+  assert(not fake.is_registered("twice"), "the reload left the command behind")
+  trx.console.register({ name = "twice", run = function() end })
+  assert(fake.is_registered("twice"))
+end)
+
 -- A level script runs again every time its level is loaded, so a command
 -- registered from one would work once and then raise on the reload, taking the
 -- rest of the script with it.

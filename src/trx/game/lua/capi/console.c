@@ -179,6 +179,10 @@ static void M_Create(lua_State *const L)
 
 static void M_Shutdown(void)
 {
+    // The commands this state registered dispatch through M_LuaCommandProc and
+    // their handlers live in the state that is about to close. Drop them so a
+    // fresh state's scripts can register them again.
+    Console_Registry_RemoveByProc(M_LuaCommandProc);
     m_L = nullptr;
 }
 
