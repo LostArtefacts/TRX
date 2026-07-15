@@ -122,7 +122,6 @@ void Lara_Initialise(const GF_LEVEL *const level)
     lara_info->electric = 0;
     lara_info->climb_status = false;
     lara_info->sprinting = false;
-    lara_info->killed_loyal_item = false;
     lara_info->mesh_effects = 0;
     lara_info->torso_rot.x = 0;
     lara_info->torso_rot.y = 0;

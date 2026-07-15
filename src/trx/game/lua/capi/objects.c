@@ -118,6 +118,8 @@ static const struct {
     const char *name;
     const OBJECT_ID *objects;
 } m_Families[] = {
+    { "creature", g_CreatureObjects }, //
+    { "loyal", g_LoyalObjects }, //
     { "pickup", g_PickupObjects }, //
     { "null", g_NullObjects }, //
     { "anim", g_AnimObjects }, //

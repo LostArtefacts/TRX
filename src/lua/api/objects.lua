@@ -206,9 +206,9 @@ local function enumerate()
 end
 
 -- The families a query narrows by. Membership is the engine's; a script names a
--- family by calling the method, never by spelling the family out. `pickup` is
--- searchable: a by_name of "pickup" matches every pickup, so /spawn and /tp can
--- reach the family by name. Its key is the one place the word is written.
+-- family by calling the method, never by spelling the family out. Some are
+-- searchable: a by_name of "pickup" matches every pickup, so /spawn and /kill
+-- can reach a family by name. The key is the one place the word is written.
 local filters = {
   loaded = function()
     return function(_id, object)
@@ -225,6 +225,23 @@ local filters = {
         and not raw.is_type(id, "inventory")
     end
   end,
+  creature = {
+    searchable = true,
+    test = function()
+      return function(id)
+        return raw.is_type(id, "creature")
+      end
+    end,
+  },
+  -- One of Lara's own: the butler, and Lara herself.
+  loyal = {
+    searchable = true,
+    test = function()
+      return function(id)
+        return raw.is_type(id, "loyal")
+      end
+    end,
+  },
   pickup = {
     searchable = true,
     test = function()
@@ -269,7 +286,9 @@ api.property("objects.query", {
   description = "The identity query over every object definition. Narrow it and read it - see "
     .. "[Query](../../QUERY.md).\n\n"
     .. "Its own narrowings, beyond the shared `by_name` and the operators: `loaded`, `spawnable`, "
-    .. "`pickup`, `inventory_item`, `null_object` and `animation`.\n\n"
+    .. "`creature`, `loyal`, `pickup`, `inventory_item`, `null_object` and `animation`. Of those, "
+    .. "`creature`, `loyal` and `pickup` are searchable: a `by_name` of the family's own name "
+    .. "matches every member.\n\n"
     .. 'Example: `trx.objects.query:spawnable():by_name("wolf"):ids()`.',
   get = function()
     return object_query
