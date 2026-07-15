@@ -18,6 +18,7 @@ static GF_LEVEL m_Demos[FAKE_DEMO_COUNT];
 static GF_LEVEL m_TitleLevel;
 static GF_LEVEL_TABLE m_Tables[GFLT_NUMBER_OF];
 static const GF_LEVEL *m_CurrentLevel;
+static bool m_HasGym;
 
 const GF_LEVEL_TABLE *GF_GetLevelTable(const GF_LEVEL_TABLE_TYPE table_type)
 {
@@ -57,6 +58,20 @@ const GF_LEVEL *GF_GetLevel(
 const GF_LEVEL *GF_GetTitleLevel(void)
 {
     return &m_TitleLevel;
+}
+
+const GF_LEVEL *GF_GetGymLevel(void)
+{
+    if (!m_HasGym) {
+        return nullptr;
+    }
+    const GF_LEVEL_TABLE *const tbl = GF_GetLevelTable(GFLT_MAIN);
+    for (int32_t i = 0; i < tbl->count; i++) {
+        if (tbl->levels[i].type == GFL_GYM) {
+            return &tbl->levels[i];
+        }
+    }
+    return nullptr;
 }
 
 const GF_LEVEL *GF_GetCurrentLevel(void)
@@ -124,6 +139,9 @@ void GF_OverrideCommand(const GF_COMMAND command)
         break;
     case GF_START_DEMO:
         g_FakeGameCalls.play_demo++;
+        break;
+    case GF_SELECT_GAME:
+        g_FakeGameCalls.play_gym++;
         break;
     default:
         break;
@@ -198,7 +216,13 @@ void FakeGame_Reset(void)
     m_Tables[GFLT_TITLE] = (GF_LEVEL_TABLE) { .count = 0, .levels = nullptr };
 
     m_CurrentLevel = nullptr;
+    m_HasGym = true;
     g_FakeGameCalls = (FAKE_GAME_CALLS) {};
+}
+
+void FakeGame_SetGymPresent(const bool present)
+{
+    m_HasGym = present;
 }
 
 void FakeGame_SetCurrentLevel(const int32_t idx)

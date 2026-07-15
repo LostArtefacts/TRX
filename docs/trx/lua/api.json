@@ -2967,7 +2967,7 @@
       }
     },
     {
-      "description": "Starts a level of the game proper.",
+      "description": "Starts a level from `trx.game.levels`.",
       "examples": [
         "trx.game.play_level(1)"
       ],
@@ -3001,6 +3001,10 @@
         }
       ],
       "path": "game.play_demo"
+    },
+    {
+      "description": "Starts the gym. Raises if this game has no gym.",
+      "path": "game.play_gym"
     },
     {
       "description": "Retrieves an item by 1-based index or by name.",
@@ -3724,7 +3728,7 @@
       "writable": true
     },
     {
-      "description": "The levels of the game proper, in order, as a list of `trx.game.Level`.",
+      "description": "The levels of the game, in order, as a list of `trx.game.Level`.",
       "path": "game.levels",
       "type": "table",
       "writable": false
@@ -3744,6 +3748,12 @@
     {
       "description": "The level being played, or `nil` if none is.",
       "path": "game.current_level",
+      "type": "Level",
+      "writable": false
+    },
+    {
+      "description": "The gym level, or `nil` if this game has no gym.",
+      "path": "game.gym",
       "type": "Level",
       "writable": false
     },

@@ -114,32 +114,33 @@ static int M_L_GameCountLevels(lua_State *const L)
     return 1;
 }
 
-// The level a script named, or an error naming the argument it came in on. Read
-// wide and range-tested before narrowing, so a number too big for the engine's
-// cannot wrap into range.
+// The level a script named, or an error naming the argument it came in on. The
+// numbered levels start at 1; the gym, which sits at ordinal 0, is not one of
+// them and play_level cannot name it.
 static const GF_LEVEL *M_CheckLevel(
     lua_State *const L, const int arg, const GF_LEVEL_TABLE_TYPE table_type,
     const char *const what)
 {
-    const lua_Integer num = luaL_checkinteger(L, arg);
+    int32_t num;
     const GF_LEVEL *const level =
-        num >= 1 && num <= GF_GetLevelCount(table_type)
-        ? M_GetLevel(table_type, (int32_t)num)
+        LUA_CheckBoundedInt(L, arg, 1, INT32_MAX, &num)
+        ? M_GetLevel(table_type, num)
         : nullptr;
     luaL_argcheck(L, level != nullptr, arg, what);
     return level;
 }
 
 // trxc.game.get_level(table_type, num) -> GF_LEVEL handle or nil
+// Ordinal 0 is the gym, so the range starts there.
 static int M_L_GameGetLevel(lua_State *const L)
 {
     const GF_LEVEL_TABLE_TYPE table_type = M_CheckTableType(L, 1);
-    const lua_Integer num = luaL_checkinteger(L, 2);
-    if (num < 1 || num > INT32_MAX) {
+    int32_t num;
+    if (!LUA_CheckBoundedInt(L, 2, 0, INT32_MAX, &num)) {
         lua_pushnil(L);
         return 1;
     }
-    M_PushLevel(L, table_type, (int32_t)num);
+    M_PushLevel(L, table_type, num);
     return 1;
 }
 
@@ -207,6 +208,23 @@ static int M_L_GamePlayDemo(lua_State *const L)
     return 0;
 }
 
+// trxc.game.play_gym() → nil
+//
+// A gym has no ordinal, so play_level cannot reach it. It is started through
+// GF_SELECT_GAME, as the `gym` console command starts it.
+static int M_L_GamePlayGym(lua_State *const L)
+{
+    const GF_LEVEL *const gym_level = GF_GetGymLevel();
+    if (gym_level == nullptr) {
+        return luaL_error(L, "this game has no gym");
+    }
+    GF_OverrideCommand((GF_COMMAND) {
+        .action = GF_SELECT_GAME,
+        .param = gym_level->num,
+    });
+    return 0;
+}
+
 static const luaL_Reg m_Module[] = {
     { "get_version", M_L_GameVersion },
     { "get_trx_version", M_L_TRXVersion },
@@ -216,6 +234,7 @@ static const luaL_Reg m_Module[] = {
     { "play_level", M_L_GamePlayLevel },
     { "play_cutscene", M_L_GamePlayCutscene },
     { "play_demo", M_L_GamePlayDemo },
+    { "play_gym", M_L_GamePlayGym },
     { nullptr, nullptr },
 };
 

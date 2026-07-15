@@ -13,6 +13,7 @@ typedef struct {
     int32_t play_level;
     int32_t play_cutscene;
     int32_t play_demo;
+    int32_t play_gym;
     int32_t last_num;
 } FAKE_GAME_CALLS;
 
@@ -25,3 +26,6 @@ void FakeGame_SetCurrentLevel(int32_t idx);
 
 // The title level, which is not in any table.
 void FakeGame_SetCurrentTitle(void);
+
+// Whether the flow has a gym. A game without one has nothing to play.
+void FakeGame_SetGymPresent(bool present);

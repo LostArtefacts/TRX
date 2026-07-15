@@ -25,6 +25,12 @@ static int M_FakeSetCurrentTitle(lua_State *const L)
     return 0;
 }
 
+static int M_FakeSetGymPresent(lua_State *const L)
+{
+    FakeGame_SetGymPresent(lua_toboolean(L, 1));
+    return 0;
+}
+
 static int M_FakeCalls(lua_State *const L)
 {
     lua_newtable(L);
@@ -34,6 +40,8 @@ static int M_FakeCalls(lua_State *const L)
     lua_setfield(L, -2, "play_cutscene");
     lua_pushinteger(L, g_FakeGameCalls.play_demo);
     lua_setfield(L, -2, "play_demo");
+    lua_pushinteger(L, g_FakeGameCalls.play_gym);
+    lua_setfield(L, -2, "play_gym");
     lua_pushinteger(L, g_FakeGameCalls.last_num);
     lua_setfield(L, -2, "last_num");
     return 1;
@@ -45,6 +53,8 @@ static void M_PushFake(lua_State *const L)
     lua_setfield(L, -2, "set_current_level");
     lua_pushcfunction(L, M_FakeSetCurrentTitle);
     lua_setfield(L, -2, "set_current_title");
+    lua_pushcfunction(L, M_FakeSetGymPresent);
+    lua_setfield(L, -2, "set_gym_present");
     lua_pushinteger(L, FAKE_LEVEL_COUNT);
     lua_setfield(L, -2, "LEVEL_COUNT");
     // The levels the game numbers: the gym is in the table but is not one.

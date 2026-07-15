@@ -127,6 +127,24 @@ test("play_level rejects a level that is not there", function()
   assert(fake.calls().play_level == 0)
 end)
 
+-- The gym has no ordinal, so play_level cannot name it; play_gym is the only way
+-- to reach it, and it queues the gym's own num.
+test("play_gym queues the gym", function()
+  trx.game.play_gym()
+  local calls = fake.calls()
+  assert(calls.play_gym == 1, "play_gym did not reach the game flow")
+  assert(calls.last_num == 0, "the gym's own num reaches the game flow")
+  assert(calls.play_level == 0, "the gym is not one of the numbered levels")
+end)
+
+test("play_gym raises when the game has no gym", function()
+  fake.set_gym_present(false)
+  raises(function()
+    trx.game.play_gym()
+  end)
+  assert(fake.calls().play_gym == 0)
+end)
+
 test("a setting is reached through trx.config, and nowhere else", function()
   assert(trx.game.settings == nil)
 end)
