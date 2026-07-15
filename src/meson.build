@@ -64,6 +64,7 @@ trx_lua_script_sources = files(
   '../data/scripting/commands/debug.lua',
   '../data/scripting/commands/flood.lua',
   '../data/scripting/commands/heal.lua',
+  '../data/scripting/commands/immune.lua',
 )
 
 trx_lua_embed = custom_target(
@@ -236,7 +237,6 @@ common_sources = [
   'trx/game/console/cmd/give_item.c',
   'trx/game/console/cmd/give_secret.c',
   'trx/game/console/cmd/help.c',
-  'trx/game/console/cmd/immune.c',
   'trx/game/console/cmd/inf_sprint.c',
   'trx/game/console/cmd/kill.c',
   'trx/game/console/cmd/load_game.c',
