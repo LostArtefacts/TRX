@@ -116,7 +116,6 @@
             "save_game_fail_invalid_slot": "Unzulässiger Speicher-Slot %d",
             "sound_available_samples": "Verfügbare Sounds: %s",
             "sound_playing_sample": "Spiele Sound: %d",
-            "speed_get": "Momentane Geschwindigkeit: %d",
             "speed_set": "Geschwindigkeit eingestellt auf %d",
             "strings_failed": "Neu Laden der Sprachdateien ist fehlgeschlagen",
             "strings_reloaded": "Sprachdateien neu geladen",
@@ -429,7 +428,9 @@
                 "success": "\\{review}Angefordertes Objekt in der Nähe von Lara erzeugt",
             },
             "speed": {
+                "get": "Momentane Geschwindigkeit: %d",
                 "help": "Ändert die Geschwindigkeit des Spiels.",
+                "set": "Geschwindigkeit eingestellt auf %d",
             },
             "strings": {
                 "help": "Lädt erneut die aktuellen Sprachdateien von der Festplatte.",

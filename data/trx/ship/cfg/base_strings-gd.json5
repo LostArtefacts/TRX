@@ -116,7 +116,6 @@
             "save_game_fail_invalid_slot": "Slot sàbhalaidh mì-dhligheach: %d",
             "sound_available_samples": "Fuaimean ri làimh: %s",
             "sound_playing_sample": "A' cluich fuaim %d",
-            "speed_get": "Astar làithreach: %d",
             "speed_set": "Astar air a shuidheachadh air %d",
             "strings_failed": "Dh'fhàillig ath-luchdadh nam faidhlichean cànain",
             "strings_reloaded": "Chaidh na faidhlichean cànain ath-luchdachadh",
@@ -429,7 +428,9 @@
                 "success": "Chaidh an nì air iarraidh a chruthachadh faisg air Lara",
             },
             "speed": {
+                "get": "Astar làithreach: %d",
                 "help": "Atharraich astar a' gheama.",
+                "set": "Astar air a shuidheachadh air %d",
             },
             "strings": {
                 "help": "Ath-luchdaich faidhlichean cànain làithreach on diosg.",
