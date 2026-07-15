@@ -55,6 +55,14 @@ api.enum("lara.ExtraMesh", {
     GLASSES_OPAQUE = "Sunglasses.",
     GLASSES_TRANSPARENT = "Sunglasses, transparent lenses.",
     CROWBAR = "Crowbar.",
+    WOODEN_TORCH = "Wooden torch.",
+    BINOCULARS = "Binoculars.",
+    HOOK_AND_POLE = "Hook and pole.",
+    DETONATOR = "Detonator.",
+    SHOVEL = "Shovel.",
+    JERRYCAN = "Jerrycan.",
+    SANDBAG = "Sandbag.",
+    WATERSKIN = "Waterskin.",
   },
 })
 
