@@ -235,6 +235,17 @@ static int M_Pairs(lua_State *const L)
     return 3;
 }
 
+// Whether a handle still resolves. Every type offers it; a declaration exposes
+// it by name. Upvalue 1 carries the type, and it typechecks its argument as
+// M_Eq does.
+static int M_IsValid(lua_State *const L)
+{
+    const TYPE_DESC *const type = lua_touserdata(L, lua_upvalueindex(1));
+    LUA_STRUCT_REF *const ref = LUA_Struct_CheckRef(L, 1, type);
+    lua_pushboolean(L, ref->resolve(ref) != nullptr);
+    return 1;
+}
+
 void LUA_Struct_Register(
     lua_State *const L, const TYPE_DESC *const type,
     const luaL_Reg *const methods)
@@ -249,6 +260,9 @@ void LUA_Struct_Register(
     if (methods != nullptr) {
         luaL_setfuncs(L, methods, 0);
     }
+    lua_pushlightuserdata(L, (void *)type);
+    lua_pushcclosure(L, M_IsValid, 1);
+    lua_setfield(L, -2, "is_valid");
     lua_setfield(L, -2, M_KEY_RAW_METHODS);
 
     // The public surface: empty until a script declares it. `writable` is the
