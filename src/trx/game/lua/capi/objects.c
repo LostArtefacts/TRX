@@ -8,7 +8,7 @@
 // radius, not this wolf's. Per-item state lives on the item; see trx.items.
 
 // clang-format off
-static const FIELD_DESC M_OBJECT_FIELDS[] = {
+static const FIELD_DESC m_Fields[] = {
     // what the level actually has
     FIELD_RO(OBJECT, loaded),
     FIELD_RO(OBJECT, intelligent),
@@ -28,7 +28,7 @@ static const FIELD_DESC M_OBJECT_FIELDS[] = {
 };
 // clang-format on
 
-TYPE_DEFINE(OBJECT, M_OBJECT_FIELDS)
+TYPE_DEFINE(OBJECT, m_Fields)
 
 // An object is addressed by its id, and an id is valid for the whole session -
 // there is no pool to recycle and nothing to go stale. An object the level did
@@ -36,6 +36,32 @@ TYPE_DEFINE(OBJECT, M_OBJECT_FIELDS)
 static void *M_Resolve(const LUA_STRUCT_REF *const ref)
 {
     return Object_TryGet((OBJECT_ID)ref->idx);
+}
+
+// The object property overlay stays a separate namespace: fields address the
+// OBJECT struct, properties are what the object declares about itself. The
+// bridges themselves are in lua/utils.
+static bool M_GetPropertyValue(
+    const void *const self, const char *const name,
+    OBJECT_PROPERTY_VALUE *const out)
+{
+    return ObjectProperty_GetObjectValue(self, name, out);
+}
+
+static bool M_SetPropertyValue(
+    void *const self, const char *const name, const OBJECT_PROPERTY_VALUE value)
+{
+    return ObjectProperty_SetObjectValueRaw(self, name, value);
+}
+
+static int32_t M_GetPropertyCount(const void *const self)
+{
+    return ObjectProperty_GetObjectNameCount(self);
+}
+
+static const char *M_GetPropertyName(const void *const self, const int32_t idx)
+{
+    return ObjectProperty_GetObjectName(self, idx);
 }
 
 // trxc.objects.get(object_id) -> OBJECT handle or nil
@@ -83,32 +109,6 @@ static int M_L_ObjectsSwapMesh(lua_State *const L)
     return 0;
 }
 
-// The object property overlay stays a separate namespace: fields address the
-// OBJECT struct, properties are what the object declares about itself. The
-// bridges themselves are in lua/utils.
-static bool M_GetPropertyValue(
-    const void *const self, const char *const name,
-    OBJECT_PROPERTY_VALUE *const out)
-{
-    return ObjectProperty_GetObjectValue(self, name, out);
-}
-
-static bool M_SetPropertyValue(
-    void *const self, const char *const name, const OBJECT_PROPERTY_VALUE value)
-{
-    return ObjectProperty_SetObjectValueRaw(self, name, value);
-}
-
-static int32_t M_GetPropertyCount(const void *const self)
-{
-    return ObjectProperty_GetObjectNameCount(self);
-}
-
-static const char *M_GetPropertyName(const void *const self, const int32_t idx)
-{
-    return ObjectProperty_GetObjectName(self, idx);
-}
-
 static const LUA_PROPERTY_DESC m_Properties = {
     .type = &TYPE_OBJECT,
     .what = "object",
@@ -128,7 +128,6 @@ static void M_Create(lua_State *const L)
 {
     LUA_Struct_Register(L, &TYPE_OBJECT, nullptr);
     LUA_Property_Register(L, &m_Properties);
-
     LUA_RegisterModule(L, "objects", m_Module);
 }
 

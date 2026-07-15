@@ -16,7 +16,7 @@
 // other, and those live on it - see trx.lara.item.
 
 // clang-format off
-static const FIELD_DESC M_LARA_FIELDS[] = {
+static const FIELD_DESC m_Fields[] = {
     // condition
     FIELD(LARA_INFO, air),
     FIELD(LARA_INFO, exposure_timer),
@@ -50,11 +50,24 @@ static const FIELD_DESC M_LARA_FIELDS[] = {
 };
 // clang-format on
 
-TYPE_DEFINE(LARA_INFO, M_LARA_FIELDS)
+TYPE_DEFINE(LARA_INFO, m_Fields)
 
 static void *M_Resolve(const LUA_STRUCT_REF *const ref)
 {
     return Lara_GetLaraInfo();
+}
+
+// M_SetEquipment writes through &m_Equipment[mesh] without checking it.
+static LARA_MESH M_CheckLaraMesh(lua_State *const L, const int arg)
+{
+    return (LARA_MESH)LUA_CheckRange(L, arg, LM_NUMBER_OF, "unknown Lara mesh");
+}
+
+// Lara_Skin_GetExtraMeshOffset asserts, which traps rather than raises.
+static LARA_SKIN_EXTRA_MESH M_CheckExtraMesh(lua_State *const L, const int arg)
+{
+    return (LARA_SKIN_EXTRA_MESH)LUA_CheckRange(
+        L, arg, NUM_EXTRA_MESHES, "unknown extra mesh");
 }
 
 // trxc.lara.state() -> LARA_INFO handle
@@ -65,7 +78,7 @@ static int M_L_LaraState(lua_State *const L)
 }
 
 // item_num = trxc.lara.get_item()
-static int M_L_GetLaraItem(lua_State *const L)
+static int M_L_LaraGetItem(lua_State *const L)
 {
     const ITEM *const item = Lara_GetItem();
     LUA_PushOptIndex(
@@ -74,7 +87,7 @@ static int M_L_GetLaraItem(lua_State *const L)
 }
 
 // item_num = trxc.lara.get_target()
-static int M_L_GetLaraTarget(lua_State *const L)
+static int M_L_LaraGetTarget(lua_State *const L)
 {
     const LARA_INFO *const lara = Lara_GetLaraInfo();
     LUA_PushOptIndex(
@@ -106,19 +119,6 @@ static int M_L_LaraSetOutfit(lua_State *const L)
     }
     Lara_Skin_SetType(outfit_idx);
     return 0;
-}
-
-// M_SetEquipment writes through &m_Equipment[mesh] without checking it.
-static LARA_MESH M_CheckLaraMesh(lua_State *const L, const int arg)
-{
-    return (LARA_MESH)LUA_CheckRange(L, arg, LM_NUMBER_OF, "unknown Lara mesh");
-}
-
-// Lara_Skin_GetExtraMeshOffset asserts, which traps rather than raises.
-static LARA_SKIN_EXTRA_MESH M_CheckExtraMesh(lua_State *const L, const int arg)
-{
-    return (LARA_SKIN_EXTRA_MESH)LUA_CheckRange(
-        L, arg, NUM_EXTRA_MESHES, "unknown extra mesh");
 }
 
 // trxc.lara.set_extra_equipment(lara_mesh, extra_mesh)
@@ -183,8 +183,8 @@ static int M_L_LaraGetExtraAnim(lua_State *const L)
 }
 
 static const luaL_Reg m_Module[] = {
-    { "get_item", M_L_GetLaraItem },
-    { "get_target", M_L_GetLaraTarget },
+    { "get_item", M_L_LaraGetItem },
+    { "get_target", M_L_LaraGetTarget },
     { "get_outfit", M_L_LaraGetOutfit },
     { "set_outfit", M_L_LaraSetOutfit },
     { "set_extra_equipment", M_L_LaraSetExtraEquipment },
@@ -199,9 +199,7 @@ static const luaL_Reg m_Module[] = {
 
 static void M_Create(lua_State *const L)
 {
-    LUA_Struct_Register(
-        L, &TYPE_LARA_INFO, (const luaL_Reg[]) { { nullptr, nullptr } });
-
+    LUA_Struct_Register(L, &TYPE_LARA_INFO, nullptr);
     LUA_RegisterModule(L, "lara", m_Module);
 }
 

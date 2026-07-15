@@ -19,6 +19,16 @@ typedef struct {
     bool dead;
 } M_LISTENER;
 
+// One listener's call. Setting it up allocates - a string argument is interned,
+// and the stack may have to grow - so it can raise just as the call itself can.
+// Run under lua_pcall, an error comes back to LUA_FireEventEx instead of
+// unwinding past the dispatch depth it holds.
+typedef struct {
+    int32_t ref;
+    const LUA_EVENT_ARG *args;
+    int32_t arg_count;
+} M_DISPATCH;
+
 static lua_State *m_L = nullptr;
 static VECTOR *m_Listeners = nullptr;
 static int32_t m_NextId = 1;
@@ -68,17 +78,55 @@ static void M_ClearAllListeners(const bool unref_from_lua)
     m_Listeners = nullptr;
 }
 
-// The state is gone by now, so a listener's ref cannot be given back to it.
-__attribute__((destructor)) static void M_AtExit(void)
-{
-    M_ClearAllListeners(false);
-    m_L = nullptr;
-}
-
 static void M_Shutdown(void)
 {
     M_ClearAllListeners(true);
     m_L = nullptr;
+}
+
+// The state is gone by now, so a listener's ref cannot be given back to it.
+__attribute__((destructor)) static void M_AtExit(void)
+{
+    M_Shutdown();
+}
+
+static void M_PushArg(lua_State *const L, const LUA_EVENT_ARG arg)
+{
+    switch (arg.type) {
+    case LUA_EVENT_ARG_NIL:
+        lua_pushnil(L);
+        break;
+    case LUA_EVENT_ARG_INT32:
+        lua_pushinteger(L, arg.value.i32);
+        break;
+    case LUA_EVENT_ARG_BOOL:
+        lua_pushboolean(L, arg.value.b);
+        break;
+    case LUA_EVENT_ARG_NUMBER:
+        lua_pushnumber(L, arg.value.number);
+        break;
+    case LUA_EVENT_ARG_STRING:
+        if (arg.value.str != nullptr) {
+            lua_pushstring(L, arg.value.str);
+        } else {
+            lua_pushnil(L);
+        }
+        break;
+    }
+}
+
+static int M_CallListener(lua_State *const L)
+{
+    const M_DISPATCH *const dispatch = lua_touserdata(L, 1);
+    if (lua_checkstack(L, dispatch->arg_count + 1) == 0) {
+        return luaL_error(L, "no room for the handler and its arguments");
+    }
+    lua_rawgeti(L, LUA_REGISTRYINDEX, dispatch->ref);
+    for (int32_t i = 0; i < dispatch->arg_count; i++) {
+        M_PushArg(L, dispatch->args[i]);
+    }
+    lua_call(L, dispatch->arg_count, 0);
+    return 0;
 }
 
 // trxc.events.attach(event_type, callback) → id
@@ -121,55 +169,6 @@ static int M_L_EventsDetach(lua_State *const L)
     }
     lua_pushboolean(L, false);
     return 1;
-}
-
-static void M_PushArg(lua_State *const L, const LUA_EVENT_ARG arg)
-{
-    switch (arg.type) {
-    case LUA_EVENT_ARG_NIL:
-        lua_pushnil(L);
-        break;
-    case LUA_EVENT_ARG_INT32:
-        lua_pushinteger(L, arg.value.i32);
-        break;
-    case LUA_EVENT_ARG_BOOL:
-        lua_pushboolean(L, arg.value.b);
-        break;
-    case LUA_EVENT_ARG_NUMBER:
-        lua_pushnumber(L, arg.value.number);
-        break;
-    case LUA_EVENT_ARG_STRING:
-        if (arg.value.str != nullptr) {
-            lua_pushstring(L, arg.value.str);
-        } else {
-            lua_pushnil(L);
-        }
-        break;
-    }
-}
-
-// One listener's call. Setting it up allocates - a string argument is interned,
-// and the stack may have to grow - so it can raise just as the call itself can.
-// Run under lua_pcall, an error comes back to LUA_FireEventEx instead of
-// unwinding past the dispatch depth it holds.
-typedef struct {
-    int32_t ref;
-    const LUA_EVENT_ARG *args;
-    int32_t arg_count;
-} M_DISPATCH;
-
-static int M_CallListener(lua_State *const L)
-{
-    const M_DISPATCH *const dispatch = lua_touserdata(L, 1);
-    if (lua_checkstack(L, dispatch->arg_count + 1) == 0) {
-        return luaL_error(L, "no room for the handler and its arguments");
-    }
-    lua_rawgeti(L, LUA_REGISTRYINDEX, dispatch->ref);
-    for (int32_t i = 0; i < dispatch->arg_count; i++) {
-        M_PushArg(L, dispatch->args[i]);
-    }
-    lua_call(L, dispatch->arg_count, 0);
-    return 0;
 }
 
 static const luaL_Reg m_Module[] = {

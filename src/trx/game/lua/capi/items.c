@@ -136,7 +136,7 @@ static const char *M_SetName(void *const self, const FIELD_VALUE *const in)
 }
 
 // clang-format off
-static const FIELD_DESC M_ITEM_FIELDS[] = {
+static const FIELD_DESC m_Fields[] = {
     // computed / validated
     FIELD_FN("anim",       FT_INT16, M_GetAnim,      M_SetAnim),
     FIELD_FN("frame",      FT_INT16, M_GetFrame,     M_SetFrame),
@@ -192,7 +192,7 @@ static const FIELD_DESC M_ITEM_FIELDS[] = {
 };
 // clang-format on
 
-TYPE_DEFINE(ITEM, M_ITEM_FIELDS)
+TYPE_DEFINE(ITEM, m_Fields)
 
 // Resolve an item handle. This is where the generation counter earns its keep:
 // an index alone would silently rebind to whatever item recycled the slot.
@@ -248,7 +248,8 @@ static const LUA_PROPERTY_DESC m_Properties = {
     .name_at = M_GetPropertyName,
 };
 
-static int M_L_Kill(lua_State *const L)
+// item:kill()
+static int M_L_ItemsKill(lua_State *const L)
 {
     LUA_STRUCT_REF *const ref = LUA_Struct_CheckRef(L, 1, &TYPE_ITEM);
     LUA_Struct_Deref(L, ref);
@@ -256,7 +257,8 @@ static int M_L_Kill(lua_State *const L)
     return 0;
 }
 
-static int M_L_Activate(lua_State *const L)
+// item:activate()
+static int M_L_ItemsActivate(lua_State *const L)
 {
     LUA_STRUCT_REF *const ref = LUA_Struct_CheckRef(L, 1, &TYPE_ITEM);
     ITEM *const item = LUA_Struct_Deref(L, ref);
@@ -266,14 +268,14 @@ static int M_L_Activate(lua_State *const L)
 }
 
 // trxc.items.count() -> int
-static int M_L_Count(lua_State *const L)
+static int M_L_ItemsCount(lua_State *const L)
 {
     lua_pushinteger(L, Item_GetTotalCount());
     return 1;
 }
 
 // trxc.items.get(index | name) -> Item or nil
-static int M_L_Get(lua_State *const L)
+static int M_L_ItemsGet(lua_State *const L)
 {
     int32_t idx = -1;
     if (lua_type(L, 1) == LUA_TNUMBER) {
@@ -299,7 +301,7 @@ static int M_L_Get(lua_State *const L)
 }
 
 // trxc.items.spawn(object_id, {x,y,z}, angle_y) -> Item or nil
-static int M_L_Spawn(lua_State *const L)
+static int M_L_ItemsSpawn(lua_State *const L)
 {
     // Object_Get asserts on an id outside the table.
     const OBJECT_ID object_id = LUA_CheckObjectID(L, 1);
@@ -355,7 +357,7 @@ static int M_L_Spawn(lua_State *const L)
 }
 
 // item:distance_to({x,y,z}) -> integer
-static int M_L_DistanceTo(lua_State *const L)
+static int M_L_ItemsDistanceTo(lua_State *const L)
 {
     LUA_STRUCT_REF *const ref = LUA_Struct_CheckRef(L, 1, &TYPE_ITEM);
     const ITEM *const item = LUA_Struct_Deref(L, ref);
@@ -367,7 +369,7 @@ static int M_L_DistanceTo(lua_State *const L)
 //
 // Runs the object's death handling with an explosion. A primitive: the `kill`
 // cheat is one composition of it, and lives in Lua.
-static int M_L_Explode(lua_State *const L)
+static int M_L_ItemsExplode(lua_State *const L)
 {
     LUA_STRUCT_REF *const ref = LUA_Struct_CheckRef(L, 1, &TYPE_ITEM);
     LUA_Struct_Deref(L, ref);
@@ -376,17 +378,17 @@ static int M_L_Explode(lua_State *const L)
 }
 
 static const luaL_Reg m_Methods[] = {
-    { "distance_to", M_L_DistanceTo },
-    { "explode", M_L_Explode },
-    { "kill", M_L_Kill },
-    { "activate", M_L_Activate },
+    { "distance_to", M_L_ItemsDistanceTo },
+    { "explode", M_L_ItemsExplode },
+    { "kill", M_L_ItemsKill },
+    { "activate", M_L_ItemsActivate },
     { nullptr, nullptr },
 };
 
 static const luaL_Reg m_Module[] = {
-    { "count", M_L_Count },
-    { "get", M_L_Get },
-    { "spawn", M_L_Spawn },
+    { "count", M_L_ItemsCount },
+    { "get", M_L_ItemsGet },
+    { "spawn", M_L_ItemsSpawn },
     { nullptr, nullptr },
 };
 

@@ -7,11 +7,11 @@
 // Metatable keys. __fields / __methods / __ext are the public surface, and are
 // empty until a script declares it. __raw_methods is every method C could
 // offer; it is never reachable from a handle - Lua selects from it by name.
-static const char M_KEY_FIELDS[] = "__fields";
-static const char M_KEY_WRITABLE[] = "__writable";
-static const char M_KEY_METHODS[] = "__methods";
-static const char M_KEY_EXT[] = "__ext";
-static const char M_KEY_RAW_METHODS[] = "__raw_methods";
+static const char m_KeyFields[] = "__fields";
+static const char m_KeyWritable[] = "__writable";
+static const char m_KeyMethods[] = "__methods";
+static const char m_KeyExt[] = "__ext";
+static const char m_KeyRawMethods[] = "__raw_methods";
 
 static void M_PushValue(lua_State *const L, const FIELD_VALUE *const value)
 {
@@ -69,21 +69,6 @@ static FIELD_VALUE M_CheckValue(
         break;
     }
     return value;
-}
-
-LUA_STRUCT_REF *LUA_Struct_CheckRef(
-    lua_State *const L, const int idx, const TYPE_DESC *const type)
-{
-    return luaL_checkudata(L, idx, type->name);
-}
-
-void *LUA_Struct_Deref(lua_State *const L, LUA_STRUCT_REF *const ref)
-{
-    void *const self = ref->resolve(ref);
-    if (self == nullptr) {
-        luaL_error(L, "stale %s handle", ref->type->name);
-    }
-    return self;
 }
 
 // Upvalue 1 of __index and __newindex maps public name -> FIELD_DESC *. A
@@ -226,7 +211,7 @@ static int M_Pairs(lua_State *const L)
     const TYPE_DESC *const type =
         ((LUA_STRUCT_REF *)lua_touserdata(L, 1))->type;
     luaL_getmetatable(L, type->name);
-    lua_getfield(L, -1, M_KEY_FIELDS);
+    lua_getfield(L, -1, m_KeyFields);
     lua_remove(L, -2);
     lua_pushlightuserdata(L, (void *)type);
     lua_pushcclosure(L, M_PairsIter, 2);
@@ -244,87 +229,6 @@ static int M_IsValid(lua_State *const L)
     LUA_STRUCT_REF *const ref = LUA_Struct_CheckRef(L, 1, type);
     lua_pushboolean(L, ref->resolve(ref) != nullptr);
     return 1;
-}
-
-void LUA_Struct_Register(
-    lua_State *const L, const TYPE_DESC *const type,
-    const luaL_Reg *const methods)
-{
-    Field_ValidateType(type);
-
-    luaL_newmetatable(L, type->name);
-
-    // Everything C could offer, for Lua to select from. Not reachable from a
-    // handle.
-    lua_newtable(L);
-    if (methods != nullptr) {
-        luaL_setfuncs(L, methods, 0);
-    }
-    lua_pushlightuserdata(L, (void *)type);
-    lua_pushcclosure(L, M_IsValid, 1);
-    lua_setfield(L, -2, "is_valid");
-    lua_setfield(L, -2, M_KEY_RAW_METHODS);
-
-    // The public surface: empty until a script declares it. `writable` is the
-    // subset of `fields` the declaration allows a script to set.
-    lua_newtable(L); // fields
-    lua_newtable(L); // writable
-    lua_newtable(L); // methods
-    lua_newtable(L); // ext
-
-    lua_pushvalue(L, -4);
-    lua_setfield(L, -6, M_KEY_FIELDS);
-    lua_pushvalue(L, -3);
-    lua_setfield(L, -6, M_KEY_WRITABLE);
-    lua_pushvalue(L, -2);
-    lua_setfield(L, -6, M_KEY_METHODS);
-    lua_pushvalue(L, -1);
-    lua_setfield(L, -6, M_KEY_EXT);
-
-    // __index and __newindex close over these tables. Populating them later
-    // from Lua is visible here, because the upvalues are the tables themselves.
-    lua_pushvalue(L, -4); // fields
-    lua_pushvalue(L, -3); // methods
-    lua_pushvalue(L, -3); // ext
-    lua_pushcclosure(L, M_Index, 3);
-    lua_setfield(L, -6, "__index");
-
-    lua_pushvalue(L, -3); // writable
-    lua_pushvalue(L, -5); // fields
-    lua_pushcclosure(L, M_NewIndex, 2);
-    lua_setfield(L, -6, "__newindex");
-
-    lua_pop(L, 4); // fields, writable, methods, ext
-
-    lua_pushcfunction(L, M_Pairs);
-    lua_setfield(L, -2, "__pairs");
-
-    lua_pushlightuserdata(L, (void *)type);
-    lua_pushcclosure(L, M_Eq, 1);
-    lua_setfield(L, -2, "__eq");
-
-    // Protect the metatable. Without this, getmetatable(item).__raw_methods
-    // hands a script every C method the type could offer, including the ones no
-    // declaration exposed - which would make the opt-in surface a fiction.
-    lua_pushstring(L, type->name);
-    lua_setfield(L, -2, "__metatable");
-
-    lua_pop(L, 1);
-}
-
-void LUA_Struct_Push(
-    lua_State *const L, const TYPE_DESC *const type,
-    void *(*const resolve)(const LUA_STRUCT_REF *), const int32_t idx,
-    const uint32_t gen)
-{
-    LUA_STRUCT_REF *const ref = lua_newuserdatauv(L, sizeof(LUA_STRUCT_REF), 0);
-    *ref = (LUA_STRUCT_REF) {
-        .type = type,
-        .resolve = resolve,
-        .idx = idx,
-        .gen = gen,
-    };
-    luaL_setmetatable(L, type->name);
 }
 
 // A property carrier tells float and double apart; a field carrier widens both
@@ -438,6 +342,102 @@ static int M_PropertyGetNames(lua_State *const L)
     return 1;
 }
 
+LUA_STRUCT_REF *LUA_Struct_CheckRef(
+    lua_State *const L, const int idx, const TYPE_DESC *const type)
+{
+    return luaL_checkudata(L, idx, type->name);
+}
+
+void *LUA_Struct_Deref(lua_State *const L, LUA_STRUCT_REF *const ref)
+{
+    void *const self = ref->resolve(ref);
+    if (self == nullptr) {
+        luaL_error(L, "stale %s handle", ref->type->name);
+    }
+    return self;
+}
+
+void LUA_Struct_Register(
+    lua_State *const L, const TYPE_DESC *const type,
+    const luaL_Reg *const methods)
+{
+    Field_ValidateType(type);
+
+    luaL_newmetatable(L, type->name);
+
+    // Everything C could offer, for Lua to select from. Not reachable from a
+    // handle.
+    lua_newtable(L);
+    if (methods != nullptr) {
+        luaL_setfuncs(L, methods, 0);
+    }
+    lua_pushlightuserdata(L, (void *)type);
+    lua_pushcclosure(L, M_IsValid, 1);
+    lua_setfield(L, -2, "is_valid");
+    lua_setfield(L, -2, m_KeyRawMethods);
+
+    // The public surface: empty until a script declares it. `writable` is the
+    // subset of `fields` the declaration allows a script to set.
+    lua_newtable(L); // fields
+    lua_newtable(L); // writable
+    lua_newtable(L); // methods
+    lua_newtable(L); // ext
+
+    lua_pushvalue(L, -4);
+    lua_setfield(L, -6, m_KeyFields);
+    lua_pushvalue(L, -3);
+    lua_setfield(L, -6, m_KeyWritable);
+    lua_pushvalue(L, -2);
+    lua_setfield(L, -6, m_KeyMethods);
+    lua_pushvalue(L, -1);
+    lua_setfield(L, -6, m_KeyExt);
+
+    // __index and __newindex close over these tables. Populating them later
+    // from Lua is visible here, because the upvalues are the tables themselves.
+    lua_pushvalue(L, -4); // fields
+    lua_pushvalue(L, -3); // methods
+    lua_pushvalue(L, -3); // ext
+    lua_pushcclosure(L, M_Index, 3);
+    lua_setfield(L, -6, "__index");
+
+    lua_pushvalue(L, -3); // writable
+    lua_pushvalue(L, -5); // fields
+    lua_pushcclosure(L, M_NewIndex, 2);
+    lua_setfield(L, -6, "__newindex");
+
+    lua_pop(L, 4); // fields, writable, methods, ext
+
+    lua_pushcfunction(L, M_Pairs);
+    lua_setfield(L, -2, "__pairs");
+
+    lua_pushlightuserdata(L, (void *)type);
+    lua_pushcclosure(L, M_Eq, 1);
+    lua_setfield(L, -2, "__eq");
+
+    // Protect the metatable. Without this, getmetatable(item).__raw_methods
+    // hands a script every C method the type could offer, including the ones no
+    // declaration exposed - which would make the opt-in surface a fiction.
+    lua_pushstring(L, type->name);
+    lua_setfield(L, -2, "__metatable");
+
+    lua_pop(L, 1);
+}
+
+void LUA_Struct_Push(
+    lua_State *const L, const TYPE_DESC *const type,
+    void *(*const resolve)(const LUA_STRUCT_REF *), const int32_t idx,
+    const uint32_t gen)
+{
+    LUA_STRUCT_REF *const ref = lua_newuserdatauv(L, sizeof(LUA_STRUCT_REF), 0);
+    *ref = (LUA_STRUCT_REF) {
+        .type = type,
+        .resolve = resolve,
+        .idx = idx,
+        .gen = gen,
+    };
+    luaL_setmetatable(L, type->name);
+}
+
 void LUA_Property_Register(
     lua_State *const L, const LUA_PROPERTY_DESC *const desc)
 {
@@ -451,7 +451,7 @@ void LUA_Property_Register(
     };
 
     luaL_getmetatable(L, desc->type->name);
-    lua_getfield(L, -1, M_KEY_RAW_METHODS);
+    lua_getfield(L, -1, m_KeyRawMethods);
     for (size_t i = 0; i < sizeof(bridges) / sizeof(bridges[0]); i++) {
         lua_pushlightuserdata(L, (void *)desc);
         lua_pushcclosure(L, bridges[i].fn, 1);
@@ -476,7 +476,7 @@ static const TYPE_DESC *M_CheckType(lua_State *const L, const int idx)
 //
 // Every member C can reach. Used by the Lua layer to validate a declaration and
 // to report members nobody exposed.
-static int M_L_Members(lua_State *const L)
+static int M_L_StructMembers(lua_State *const L)
 {
     const TYPE_DESC *const type = M_CheckType(L, 1);
     lua_newtable(L);
@@ -495,7 +495,7 @@ static int M_L_Members(lua_State *const L)
 }
 
 // trxc.struct.expose_field(type, public_name, c_name, writable)
-static int M_L_ExposeField(lua_State *const L)
+static int M_L_StructExposeField(lua_State *const L)
 {
     const TYPE_DESC *const type = M_CheckType(L, 1);
     const char *const public_name = luaL_checkstring(L, 2);
@@ -516,7 +516,7 @@ static int M_L_ExposeField(lua_State *const L)
 
     luaL_getmetatable(L, type->name);
 
-    lua_getfield(L, -1, M_KEY_FIELDS);
+    lua_getfield(L, -1, m_KeyFields);
     lua_pushstring(L, public_name);
     lua_pushlightuserdata(L, (void *)field);
     lua_rawset(L, -3);
@@ -527,7 +527,7 @@ static int M_L_ExposeField(lua_State *const L)
     // set it anyway. FF_READONLY is the hard floor, checked above; this is the
     // declaration narrowing a member C would otherwise write.
     if (writable) {
-        lua_getfield(L, -1, M_KEY_WRITABLE);
+        lua_getfield(L, -1, m_KeyWritable);
         lua_pushstring(L, public_name);
         lua_pushlightuserdata(L, (void *)field);
         lua_rawset(L, -3);
@@ -537,21 +537,21 @@ static int M_L_ExposeField(lua_State *const L)
 }
 
 // trxc.struct.expose_method(type, public_name, c_name)
-static int M_L_ExposeMethod(lua_State *const L)
+static int M_L_StructExposeMethod(lua_State *const L)
 {
     const TYPE_DESC *const type = M_CheckType(L, 1);
     const char *const public_name = luaL_checkstring(L, 2);
     const char *const c_name = luaL_checkstring(L, 3);
 
     luaL_getmetatable(L, type->name);
-    lua_getfield(L, -1, M_KEY_RAW_METHODS);
+    lua_getfield(L, -1, m_KeyRawMethods);
     if (lua_getfield(L, -1, c_name) != LUA_TFUNCTION) {
         return luaL_error(
             L, "%s has no method '%s' (declared as '%s')", type->name, c_name,
             public_name);
     }
 
-    lua_getfield(L, -3, M_KEY_METHODS);
+    lua_getfield(L, -3, m_KeyMethods);
     lua_pushstring(L, public_name);
     lua_pushvalue(L, -3); // the C function
     lua_rawset(L, -3);
@@ -559,14 +559,14 @@ static int M_L_ExposeMethod(lua_State *const L)
 }
 
 // trxc.struct.expose_computed(type, public_name, fn)
-static int M_L_ExposeComputed(lua_State *const L)
+static int M_L_StructExposeComputed(lua_State *const L)
 {
     const TYPE_DESC *const type = M_CheckType(L, 1);
     const char *const public_name = luaL_checkstring(L, 2);
     luaL_checktype(L, 3, LUA_TFUNCTION);
 
     luaL_getmetatable(L, type->name);
-    lua_getfield(L, -1, M_KEY_EXT);
+    lua_getfield(L, -1, m_KeyExt);
     lua_pushstring(L, public_name);
     lua_pushvalue(L, 3);
     lua_rawset(L, -3);
@@ -574,10 +574,10 @@ static int M_L_ExposeComputed(lua_State *const L)
 }
 
 static const luaL_Reg m_Module[] = {
-    { "members", M_L_Members },
-    { "expose_field", M_L_ExposeField },
-    { "expose_method", M_L_ExposeMethod },
-    { "expose_computed", M_L_ExposeComputed },
+    { "members", M_L_StructMembers },
+    { "expose_field", M_L_StructExposeField },
+    { "expose_method", M_L_StructExposeMethod },
+    { "expose_computed", M_L_StructExposeComputed },
     { nullptr, nullptr },
 };
 

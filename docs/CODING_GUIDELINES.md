@@ -49,6 +49,10 @@ declaring them as `static` within the module they're used.
 
 Other things:
 
+- Within a file, top-level declarations follow the order: defines, local module
+  types (typedef structs), static module variables, static module functions,
+  public functions. Deviate only when code shape requires it (e.g. a forward
+  declaration or a type dependency that forces a different order).
 - We use clang-format to automatically format the code.
 - We do not omit `{` and `}`.
 - We use K&R brace style.

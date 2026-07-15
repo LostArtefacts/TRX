@@ -98,6 +98,7 @@ static void M_CheckTimerAvailable(
     }
 }
 
+// trxc.assault.start([track])
 static int M_L_AssaultStart(lua_State *const L)
 {
     const GYM_TRACK_TYPE track = M_GetTrack(L);
@@ -106,6 +107,7 @@ static int M_L_AssaultStart(lua_State *const L)
     return 0;
 }
 
+// trxc.assault.stop([track])
 static int M_L_AssaultStop(lua_State *const L)
 {
     const GYM_TRACK_TYPE track = M_GetTrack(L);
@@ -114,6 +116,7 @@ static int M_L_AssaultStop(lua_State *const L)
     return 0;
 }
 
+// trxc.assault.reset([track])
 static int M_L_AssaultReset(lua_State *const L)
 {
     const GYM_TRACK_TYPE track = M_GetTrack(L);
@@ -160,6 +163,7 @@ static int M_L_AssaultGetActiveTrack(lua_State *const L)
     return 1;
 }
 
+// trxc.assault.stats.record(time) -> bool
 static int M_L_AssaultRecord(lua_State *const L)
 {
     if (!Gym_TrackManager_HasStats(GYM_TRACK_ASSAULT)) {
@@ -178,6 +182,7 @@ static int M_L_AssaultRecord(lua_State *const L)
     return 1;
 }
 
+// trxc.assault.stats.remove(index) -> bool
 static int M_L_AssaultRemoveRecord(lua_State *const L)
 {
     if (!Gym_TrackManager_HasStats(GYM_TRACK_ASSAULT)) {
@@ -198,6 +203,7 @@ static int M_L_AssaultRemoveRecord(lua_State *const L)
     return 1;
 }
 
+// trxc.assault.stats.list() -> { { time=, attempt_num= }, ... }
 static int M_L_AssaultListRecords(lua_State *const L)
 {
     if (!Gym_TrackManager_HasStats(GYM_TRACK_ASSAULT)) {

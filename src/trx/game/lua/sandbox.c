@@ -8,7 +8,7 @@
 // captured in a local.
 void LUA_OpenSafeLibs(lua_State *const L)
 {
-    static const luaL_Reg LIBS[] = {
+    static const luaL_Reg libs[] = {
         { LUA_GNAME, luaopen_base },
         { LUA_LOADLIBNAME, luaopen_package },
         { LUA_COLIBNAME, luaopen_coroutine },
@@ -18,7 +18,7 @@ void LUA_OpenSafeLibs(lua_State *const L)
         { LUA_UTF8LIBNAME, luaopen_utf8 },
         { nullptr, nullptr },
     };
-    for (const luaL_Reg *lib = LIBS; lib->func != nullptr; lib++) {
+    for (const luaL_Reg *lib = libs; lib->func != nullptr; lib++) {
         luaL_requiref(L, lib->name, lib->func, 1);
         lua_pop(L, 1);
     }

@@ -21,7 +21,7 @@ static bool M_GetIndex(const void *const self, FIELD_VALUE *const out)
 }
 
 // clang-format off
-static const FIELD_DESC M_ROOM_FIELDS[] = {
+static const FIELD_DESC m_Fields[] = {
     FIELD_FN("room_index", FT_INT16, M_GetIndex, nullptr),
 
     FIELD(ROOM, flags.underwater),
@@ -52,7 +52,7 @@ static const FIELD_DESC M_ROOM_FIELDS[] = {
 };
 // clang-format on
 
-TYPE_DEFINE(ROOM, M_ROOM_FIELDS)
+TYPE_DEFINE(ROOM, m_Fields)
 
 // A room is never recycled within a level, but the table is replaced whole at
 // the next one. A bounds check alone would let a handle held across the change
@@ -71,14 +71,14 @@ static void M_PushRoom(lua_State *const L, const int32_t idx)
 }
 
 // trxc.rooms.count() -> int
-static int M_L_Count(lua_State *const L)
+static int M_L_RoomsCount(lua_State *const L)
 {
     lua_pushinteger(L, Room_GetCount());
     return 1;
 }
 
 // trxc.rooms.get(index) -> Room or nil
-static int M_L_Get(lua_State *const L)
+static int M_L_RoomsGet(lua_State *const L)
 {
     // Read wide and range-test before narrowing, as find_valid_pos does: an
     // index past int32_t's width would wrap into range and name a room the
@@ -97,7 +97,7 @@ static int M_L_Get(lua_State *const L)
 //
 // A table, not a scalar, so it cannot be a reflected field. Lua wraps this as a
 // computed property.
-static int M_L_GetBounds(lua_State *const L)
+static int M_L_RoomsGetBounds(lua_State *const L)
 {
     LUA_STRUCT_REF *const ref = LUA_Struct_CheckRef(L, 1, &TYPE_ROOM);
     const ROOM *const room = LUA_Struct_Deref(L, ref);
@@ -120,10 +120,7 @@ static int M_L_GetBounds(lua_State *const L)
 }
 
 // trxc.rooms.get_flipped_room(room) -> 1-based room number or nil
-//
-// The public API turns this into a Room object, so it stays a helper rather
-// than a reflected field.
-static int M_L_GetFlippedRoom(lua_State *const L)
+static int M_L_RoomsGetFlippedRoom(lua_State *const L)
 {
     LUA_STRUCT_REF *const ref = LUA_Struct_CheckRef(L, 1, &TYPE_ROOM);
     const ROOM *const room = LUA_Struct_Deref(L, ref);
@@ -132,14 +129,14 @@ static int M_L_GetFlippedRoom(lua_State *const L)
 }
 
 // trxc.rooms.flip()
-static int M_L_Flip(lua_State *const L)
+static int M_L_RoomsFlip(lua_State *const L)
 {
     Room_FlipMap();
     return 0;
 }
 
 // trxc.rooms.flip_effect(effect_id, [timer])
-static int M_L_FlipEffect(lua_State *const L)
+static int M_L_RoomsFlipEffect(lua_State *const L)
 {
     const int32_t trx_effect_id = luaL_checkinteger(L, 1);
     if (trx_effect_id == -1) {
@@ -159,7 +156,7 @@ static int M_L_FlipEffect(lua_State *const L)
 }
 
 // trxc.rooms.find_valid_pos({x,y,z}, room_num) -> pos, room_num or nil
-static int M_L_FindValidPos(lua_State *const L)
+static int M_L_RoomsFindValidPos(lua_State *const L)
 {
     XYZ_32 pos = LUA_CheckXYZ(L, 1);
 
@@ -180,20 +177,19 @@ static int M_L_FindValidPos(lua_State *const L)
 }
 
 static const luaL_Reg m_Module[] = {
-    { "get_flipped_room", M_L_GetFlippedRoom },
-    { "count", M_L_Count },
-    { "get", M_L_Get },
-    { "get_bounds", M_L_GetBounds },
-    { "flip", M_L_Flip },
-    { "flip_effect", M_L_FlipEffect },
-    { "find_valid_pos", M_L_FindValidPos },
+    { "get_flipped_room", M_L_RoomsGetFlippedRoom },
+    { "count", M_L_RoomsCount },
+    { "get", M_L_RoomsGet },
+    { "get_bounds", M_L_RoomsGetBounds },
+    { "flip", M_L_RoomsFlip },
+    { "flip_effect", M_L_RoomsFlipEffect },
+    { "find_valid_pos", M_L_RoomsFindValidPos },
     { nullptr, nullptr },
 };
 
 static void M_Create(lua_State *const L)
 {
     LUA_Struct_Register(L, &TYPE_ROOM, nullptr);
-
     LUA_RegisterModule(L, "rooms", m_Module);
 }
 

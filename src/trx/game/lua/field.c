@@ -7,8 +7,51 @@
 // Types self-register from constructors, so this must be a plain static array:
 // it has to be usable before any engine subsystem is initialised.
 #define M_MAX_TYPES 64
+
 static const TYPE_DESC *m_Types[M_MAX_TYPES];
 static int32_t m_TypeCount = 0;
+
+// Returns nullptr if `value` fits the integer `type`, else an error message.
+// The reflection layer is the one place that knows every field's exact width,
+// so it is where an out-of-range store must be rejected rather than silently
+// truncated (e.g. writing 99999 into an int16 member).
+static const char *M_CheckIntRange(const FIELD_TYPE type, const int64_t value)
+{
+    int64_t min = 0;
+    int64_t max = 0;
+    switch (type) {
+    case FT_INT8:
+        min = INT8_MIN;
+        max = INT8_MAX;
+        break;
+    case FT_UINT8:
+        min = 0;
+        max = UINT8_MAX;
+        break;
+    case FT_INT16:
+        min = INT16_MIN;
+        max = INT16_MAX;
+        break;
+    case FT_UINT16:
+        min = 0;
+        max = UINT16_MAX;
+        break;
+    case FT_INT32:
+        min = INT32_MIN;
+        max = INT32_MAX;
+        break;
+    case FT_UINT32:
+        min = 0;
+        max = UINT32_MAX;
+        break;
+    default:
+        return nullptr;
+    }
+    if (value < min || value > max) {
+        return "value out of range for field";
+    }
+    return nullptr;
+}
 
 void Type_Register(const TYPE_DESC *const type)
 {
@@ -198,48 +241,6 @@ bool Field_Get(
         break;
     }
     return true;
-}
-
-// Returns nullptr if `value` fits the integer `type`, else an error message.
-// The reflection layer is the one place that knows every field's exact width,
-// so it is where an out-of-range store must be rejected rather than silently
-// truncated (e.g. writing 99999 into an int16 member).
-static const char *M_CheckIntRange(const FIELD_TYPE type, const int64_t value)
-{
-    int64_t min = 0;
-    int64_t max = 0;
-    switch (type) {
-    case FT_INT8:
-        min = INT8_MIN;
-        max = INT8_MAX;
-        break;
-    case FT_UINT8:
-        min = 0;
-        max = UINT8_MAX;
-        break;
-    case FT_INT16:
-        min = INT16_MIN;
-        max = INT16_MAX;
-        break;
-    case FT_UINT16:
-        min = 0;
-        max = UINT16_MAX;
-        break;
-    case FT_INT32:
-        min = INT32_MIN;
-        max = INT32_MAX;
-        break;
-    case FT_UINT32:
-        min = 0;
-        max = UINT32_MAX;
-        break;
-    default:
-        return nullptr;
-    }
-    if (value < min || value > max) {
-        return "value out of range for field";
-    }
-    return nullptr;
 }
 
 const char *Field_Set(
