@@ -93,6 +93,22 @@ Her position, room and hit points are not here: she is an item like any other an
         Sunglasses, transparent lenses.
     - `trx.lara.ExtraMesh.CROWBAR` = `13`  
         Crowbar.
+    - `trx.lara.ExtraMesh.WOODEN_TORCH` = `14`  
+        Wooden torch.
+    - `trx.lara.ExtraMesh.BINOCULARS` = `15`  
+        Binoculars.
+    - `trx.lara.ExtraMesh.HOOK_AND_POLE` = `16`  
+        Hook and pole.
+    - `trx.lara.ExtraMesh.DETONATOR` = `17`  
+        Detonator.
+    - `trx.lara.ExtraMesh.SHOVEL` = `18`  
+        Shovel.
+    - `trx.lara.ExtraMesh.JERRYCAN` = `19`  
+        Jerrycan.
+    - `trx.lara.ExtraMesh.SANDBAG` = `20`  
+        Sandbag.
+    - `trx.lara.ExtraMesh.WATERSKIN` = `21`  
+        Waterskin.
 
 - [lua]`trx.lara.WaterState`
 

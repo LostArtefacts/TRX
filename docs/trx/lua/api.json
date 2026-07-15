@@ -2193,6 +2193,46 @@
           "description": "Crowbar.",
           "name": "CROWBAR",
           "value": 13
+        },
+        {
+          "description": "Wooden torch.",
+          "name": "WOODEN_TORCH",
+          "value": 14
+        },
+        {
+          "description": "Binoculars.",
+          "name": "BINOCULARS",
+          "value": 15
+        },
+        {
+          "description": "Hook and pole.",
+          "name": "HOOK_AND_POLE",
+          "value": 16
+        },
+        {
+          "description": "Detonator.",
+          "name": "DETONATOR",
+          "value": 17
+        },
+        {
+          "description": "Shovel.",
+          "name": "SHOVEL",
+          "value": 18
+        },
+        {
+          "description": "Jerrycan.",
+          "name": "JERRYCAN",
+          "value": 19
+        },
+        {
+          "description": "Sandbag.",
+          "name": "SANDBAG",
+          "value": 20
+        },
+        {
+          "description": "Waterskin.",
+          "name": "WATERSKIN",
+          "value": 21
         }
       ]
     },
