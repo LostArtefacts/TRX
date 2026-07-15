@@ -3679,6 +3679,25 @@
       }
     },
     {
+      "description": "Reads a boolean the way the console does: `1`, `true` or `on` for true, `0`, `false` or `off` for false, in any case. Anything else is not a boolean.",
+      "examples": [
+        "local on = trx.strings.parse_bool(\"on\")"
+      ],
+      "params": [
+        {
+          "description": "The text to read.",
+          "name": "text",
+          "type": "string"
+        }
+      ],
+      "path": "strings.parse_bool",
+      "returns": {
+        "description": "`nil` when the text does not name a boolean.",
+        "nullable": true,
+        "type": "boolean"
+      }
+    },
+    {
       "description": "Whether a subject matches a regular expression. Case-insensitive.",
       "examples": [
         "if trx.strings.regex_match(args, \"^\\\\d+$\") then ... end"
