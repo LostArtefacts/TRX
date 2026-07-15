@@ -87,7 +87,6 @@
             "give_item_all_guns": "Glasaich is losgaidh – tha Lara armaichte gu fiadhaich!",
             "give_item_all_keys": "Ionndrainn! Tha a h-uile iuchair aig Lara a-nis.",
             "give_item_cheat": "Tha baga-droma Lara mòran nas truime a-nis!",
-            "invalid_cutscene": "Sealladh-film mì-dhligheach",
             "invalid_demo": "Taisbeanadh mì-dhligheach",
             "invalid_item": "Nì neo-aithnichte: %s",
             "invalid_level": "Ìre mì-dhligheach",
@@ -103,7 +102,6 @@
             "load_game_fail_invalid_slot": "Slot mì-dhligheach: %d",
             "load_game_fail_unavailable_slot": "Chan eil slot sàbhalaidh %d ri làimh",
             "object_not_found": "Cha deach an t-oibseact a lorg",
-            "play_cutscene": "A' luchdachadh sealladh-film %d",
             "play_demo": "A' luchdachadh taisbeanaidh %d",
             "play_level": "A' luchdachadh %s",
             "pos_lara_missing": "Chan eil Lara an làthair",
@@ -389,6 +387,8 @@
             },
             "play_cutscene": {
                 "help": "Cluich sealladh-film leis an àireamh ainmichte.",
+                "invalid": "Sealladh-film mì-dhligheach",
+                "loading": "A' luchdachadh sealladh-film %d",
             },
             "play_demo": {
                 "help": "Cluich taisbeanadh leis an àireamh ainmichte.",

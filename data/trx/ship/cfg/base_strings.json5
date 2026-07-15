@@ -87,7 +87,6 @@
             "give_item_all_guns": "Lock'n'load - Lara's armed to the teeth!",
             "give_item_all_keys": "Surprise! Every key item Lara needs is now in her backpack.",
             "give_item_cheat": "Lara's backpack just got way heavier!",
-            "invalid_cutscene": "Invalid cutscene",
             "invalid_demo": "Invalid demo",
             "invalid_item": "Unknown item: %s",
             "invalid_level": "Invalid level",
@@ -103,7 +102,6 @@
             "load_game_fail_invalid_slot": "Invalid save slot %d",
             "load_game_fail_unavailable_slot": "Save slot %d is not available",
             "object_not_found": "Object not found",
-            "play_cutscene": "Loading cutscene %d",
             "play_demo": "Loading demo %d",
             "play_level": "Loading %s",
             "pos_lara_missing": "Lara not present",
@@ -389,6 +387,8 @@
             },
             "play_cutscene": {
                 "help": "Plays a cutscene with the given number.",
+                "invalid": "Invalid cutscene",
+                "loading": "Loading cutscene %d",
             },
             "play_demo": {
                 "help": "Plays a demo with the given number.",
