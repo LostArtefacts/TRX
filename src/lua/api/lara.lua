@@ -177,13 +177,6 @@ api.type("lara.Lara", {
       description = "Whether a scripted animation is driving Lara rather than her own state "
         .. "machine.",
     },
-    killed_loyal_item = {
-      from = "killed_loyal_item",
-      type = "boolean",
-      writable = false,
-      description = "Whether Lara has killed one of her own allies, which is what turns the rest "
-        .. "of them on her.",
-    },
     dive_timer = {
       from = "dive_timer",
       type = "integer",

@@ -93,7 +93,6 @@ typedef struct {
     XZ_32 corner_pos;
     bool is_crouched;
     bool keep_crouched;
-    bool killed_loyal_item;
 
     struct {
         int32_t item_num;

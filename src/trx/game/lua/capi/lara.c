@@ -55,7 +55,6 @@ static const FIELD_DESC m_Fields[] = {
     FIELD_RO(LARA_INFO, is_crouched),
     FIELD_RO(LARA_INFO, climb_status),
     FIELD_RO(LARA_INFO, extra_anim),
-    FIELD_RO(LARA_INFO, killed_loyal_item),
 
     // timers
     FIELD_RO(LARA_INFO, dive_timer),

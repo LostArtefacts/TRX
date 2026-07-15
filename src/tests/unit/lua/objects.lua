@@ -158,6 +158,13 @@ test("a family method narrows to that family", function()
   assert(trx.objects.query:pickup():count() == 2)
 end)
 
+test("creature and loyal narrow to what fights", function()
+  local ids = trx.objects.query:creature():ids()
+  assert(#ids == 1 and ids[1] == fake.WOLF)
+  -- The fake level has no allies.
+  assert(trx.objects.query:loyal():count() == 0)
+end)
+
 test("~ excludes a family", function()
   -- Loaded, and not a pickup: the wolf, neither pickup.
   local q = trx.objects.query
@@ -210,6 +217,11 @@ test("a searchable family answers to its own name", function()
   local set = id_set(ids)
   assert(set[fake.VASE] and set[fake.KEY])
   assert(not set[fake.WOLF], "the wolf is not a pickup")
+end)
+
+test("creature is searchable too", function()
+  local ids = trx.objects.query:by_name("creature"):ids()
+  assert(#ids == 1 and ids[1] == fake.WOLF)
 end)
 
 test(

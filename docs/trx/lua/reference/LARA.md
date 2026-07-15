@@ -167,7 +167,6 @@ Her position, room and hit points are not here: she is an item like any other an
     - **`is_burning`**: boolean. Whether Lara is on fire. Setting it lights her or puts her out.
     - **`is_climbing`**: boolean. Whether Lara is on a climbable wall. *(read-only)*
     - **`is_crouched`**: boolean. Whether Lara is crouching. *(read-only)*
-    - **`killed_loyal_item`**: boolean. Whether Lara has killed one of her own allies, which is what turns the rest of them on her. *(read-only)*
     - **`poison`**: integer. How poisoned Lara is, and 0 when she is not.
     - **`poison_target`**: integer. The poison reservoir that drains into `poison` over time. TR4 only.
     - **`pose_count`**: integer. Frames Lara has stood still for, which is what starts an idle animation. *(read-only)*

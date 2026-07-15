@@ -4923,7 +4923,7 @@
       "writable": false
     },
     {
-      "description": "The identity query over every object definition. Narrow it and read it - see [Query](../../QUERY.md).\n\nIts own narrowings, beyond the shared `by_name` and the operators: `loaded`, `spawnable`, `pickup`, `inventory_item`, `null_object` and `animation`.\n\nExample: `trx.objects.query:spawnable():by_name(\"wolf\"):ids()`.",
+      "description": "The identity query over every object definition. Narrow it and read it - see [Query](../../QUERY.md).\n\nIts own narrowings, beyond the shared `by_name` and the operators: `loaded`, `spawnable`, `creature`, `loyal`, `pickup`, `inventory_item`, `null_object` and `animation`. Of those, `creature`, `loyal` and `pickup` are searchable: a `by_name` of the family's own name matches every member.\n\nExample: `trx.objects.query:spawnable():by_name(\"wolf\"):ids()`.",
       "path": "objects.query",
       "type": "table",
       "writable": false
@@ -5750,12 +5750,6 @@
         {
           "description": "Whether Lara is crouching.",
           "name": "is_crouched",
-          "type": "boolean",
-          "writable": false
-        },
-        {
-          "description": "Whether Lara has killed one of her own allies, which is what turns the rest of them on her.",
-          "name": "killed_loyal_item",
           "type": "boolean",
           "writable": false
         },

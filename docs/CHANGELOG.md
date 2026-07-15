@@ -121,13 +121,14 @@ The Lua integration was rewritten and existing scripts will need updating; refer
 - added `trx.game.exit_game()`, to close the game
 - added `trx.items.spawn()`, to place a new item in the level at runtime
 - added `trx.objects.query` and `trx.items.query`, composable filters over a level's objects and items that match names, families and state, and combine with `&`, `|` and `~`
+- added the `creature` and `loyal` narrowings to `trx.objects.query`, searchable like `pickup`, so a family answers to its own name
 - added `trx.items.get()`, `trx.items.count()`, `trx.rooms.get()`, `trx.rooms.count()` and `trx.objects.get()`, replacing the `fn` namespaces- added `trx.rooms.find_valid_pos()`, to nudge a position into valid room geometry
 - added item methods, `activate()`, `deactivate()`, `trigger()`, `destroy()`, `die()`, `shatter()`, `distance_to()`, `is_valid()`, `get_property()`, `set_property()` and `get_property_names()`, letting a script fire a trigger or antitrigger at an item exactly as a level would
 - added the writable Lua item field `is_one_shot`
 - added object methods, `get_property()`, `set_property()` and `get_property_names()`
 - added new Lua item fields, `anim_state`, `goal_anim_state`, `speed`, `fall_speed`, `gravity`, `collidable`, `mesh_bits`, `touch_bits`, `max_hit_points`, `index`, `is_triggered`, `trigger_mask`, `is_reversed`, `was_hit`, `is_simulated`, `is_present`, `is_visible`, `is_finished`, `is_in_play`, `is_alive`, `is_targetable`, `is_hostile` and `is_killed`, replacing the `item.status` enum, and made `timer` writable
 - removed the raw `item.flags` field; its trigger bits are read through `trigger_mask`, `is_reversed`, `is_triggered`, `is_killed` and `is_one_shot`
-- added new Lua Lara state, `trx.lara.poison`, `trx.lara.electric`, `trx.lara.is_burning`, `trx.lara.is_crouched`, `trx.lara.is_climbing`, `trx.lara.water_status`, `trx.lara.gun_status`, `trx.lara.hit_direction`, `trx.lara.requested_gun`, `trx.lara.killed_loyal_item` and the dive, death, sprint and pose timers
+- added new Lua Lara state, `trx.lara.poison`, `trx.lara.electric`, `trx.lara.is_burning`, `trx.lara.is_crouched`, `trx.lara.is_climbing`, `trx.lara.water_status`, `trx.lara.gun_status`, `trx.lara.hit_direction`, `trx.lara.requested_gun` and the dive, death, sprint and pose timers
 - added new Lua assault course functions, `trx.assault.finish()`, `trx.assault.is_running()` and `trx.assault.is_visible()`, and a new property, `trx.assault.active_track`
 - added new Lua config functions, `trx.config.override()`, `trx.config.restore()` and `trx.config.is_overridden()`, to change a setting without overwriting the player's own value
 - added new Lua level fields, `script_path`, `lara_outfit`, `music_track`, `water_particles` and the unobtainable pickup, kill and secret counts

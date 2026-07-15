@@ -53,7 +53,8 @@ trx.console.register({
         trx.locale.get("console/cmd/winston/spawn_failed")
     end
 
-    if trx.lara.killed_loyal_item then
+    -- Lara has turned on her allies, which is no way to be served tea.
+    if trx.creatures.hostile_allies then
       trx.music.stop()
       return trx.console.Result.FAILURE,
         trx.locale.get("console/cmd/winston/dead")

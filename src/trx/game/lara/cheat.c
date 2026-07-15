@@ -218,26 +218,6 @@ void Lara_Cheat_EndLevel(void)
     Console_Log(GS("general/osd/complete_level"));
 }
 
-bool Lara_Cheat_KillEnemy(const int16_t item_num)
-{
-    ITEM *const item = Item_Get(item_num);
-    if (item->is_destroyed) {
-        return false;
-    }
-    if (!Item_IsAlive(item) && !Item_IsInPlay(item)) {
-        return false;
-    }
-
-    if (Object_IsType(item->object_id, g_LoyalObjects)) {
-        LARA_INFO *const lara_info = Lara_GetLaraInfo();
-        lara_info->killed_loyal_item = true;
-    }
-
-    Sound_Effect(SFX_EXPLOSION_1, &item->pos, SPM_NORMAL);
-    Creature_Die(item_num, true);
-    return true;
-}
-
 bool Lara_Cheat_OpenNearestDoor(void)
 {
     const ITEM *const lara_item = Lara_GetItem();
