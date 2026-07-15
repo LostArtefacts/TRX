@@ -248,21 +248,6 @@ static const LUA_PROPERTY_DESC m_Properties = {
     .name_at = M_GetPropertyName,
 };
 
-static int M_L_GetProperty(lua_State *const L)
-{
-    return LUA_Property_Get(L, &m_Properties);
-}
-
-static int M_L_SetProperty(lua_State *const L)
-{
-    return LUA_Property_Set(L, &m_Properties);
-}
-
-static int M_L_GetPropertyNames(lua_State *const L)
-{
-    return LUA_Property_GetNames(L, &m_Properties);
-}
-
 static int M_L_Kill(lua_State *const L)
 {
     LUA_STRUCT_REF *const ref = LUA_Struct_CheckRef(L, 1, &TYPE_ITEM);
@@ -395,9 +380,6 @@ static const luaL_Reg m_Methods[] = {
     { "explode", M_L_Explode },
     { "kill", M_L_Kill },
     { "activate", M_L_Activate },
-    { "get_property", M_L_GetProperty },
-    { "set_property", M_L_SetProperty },
-    { "get_property_names", M_L_GetPropertyNames },
     { nullptr, nullptr },
 };
 
@@ -411,6 +393,7 @@ static const luaL_Reg m_Module[] = {
 static void M_Create(lua_State *const L)
 {
     LUA_Struct_Register(L, &TYPE_ITEM, m_Methods);
+    LUA_Property_Register(L, &m_Properties);
 
     LUA_RegisterModule(L, "items", m_Module);
 }

@@ -393,8 +393,11 @@ static OBJECT_PROPERTY_VALUE M_CheckPropertyValue(
     return (OBJECT_PROPERTY_VALUE) {};
 }
 
-int LUA_Property_Get(lua_State *const L, const LUA_PROPERTY_DESC *const desc)
+// Each bridge closes over its LUA_PROPERTY_DESC in upvalue 1.
+static int M_PropertyGet(lua_State *const L)
 {
+    const LUA_PROPERTY_DESC *const desc =
+        lua_touserdata(L, lua_upvalueindex(1));
     LUA_STRUCT_REF *const ref = LUA_Struct_CheckRef(L, 1, desc->type);
     const void *const self = LUA_Struct_Deref(L, ref);
     OBJECT_PROPERTY_VALUE value = {};
@@ -406,8 +409,10 @@ int LUA_Property_Get(lua_State *const L, const LUA_PROPERTY_DESC *const desc)
     return 1;
 }
 
-int LUA_Property_Set(lua_State *const L, const LUA_PROPERTY_DESC *const desc)
+static int M_PropertySet(lua_State *const L)
 {
+    const LUA_PROPERTY_DESC *const desc =
+        lua_touserdata(L, lua_upvalueindex(1));
     LUA_STRUCT_REF *const ref = LUA_Struct_CheckRef(L, 1, desc->type);
     void *const self = LUA_Struct_Deref(L, ref);
     const char *const name = luaL_checkstring(L, 2);
@@ -418,9 +423,10 @@ int LUA_Property_Set(lua_State *const L, const LUA_PROPERTY_DESC *const desc)
     return 0;
 }
 
-int LUA_Property_GetNames(
-    lua_State *const L, const LUA_PROPERTY_DESC *const desc)
+static int M_PropertyGetNames(lua_State *const L)
 {
+    const LUA_PROPERTY_DESC *const desc =
+        lua_touserdata(L, lua_upvalueindex(1));
     LUA_STRUCT_REF *const ref = LUA_Struct_CheckRef(L, 1, desc->type);
     const void *const self = LUA_Struct_Deref(L, ref);
     const int32_t count = desc->name_count(self);
@@ -430,6 +436,28 @@ int LUA_Property_GetNames(
         lua_rawseti(L, -2, i + 1);
     }
     return 1;
+}
+
+void LUA_Property_Register(
+    lua_State *const L, const LUA_PROPERTY_DESC *const desc)
+{
+    static const struct {
+        const char *name;
+        lua_CFunction fn;
+    } bridges[] = {
+        { "get_property", M_PropertyGet },
+        { "set_property", M_PropertySet },
+        { "get_property_names", M_PropertyGetNames },
+    };
+
+    luaL_getmetatable(L, desc->type->name);
+    lua_getfield(L, -1, M_KEY_RAW_METHODS);
+    for (size_t i = 0; i < sizeof(bridges) / sizeof(bridges[0]); i++) {
+        lua_pushlightuserdata(L, (void *)desc);
+        lua_pushcclosure(L, bridges[i].fn, 1);
+        lua_setfield(L, -2, bridges[i].name);
+    }
+    lua_pop(L, 2);
 }
 
 // --- trxc.struct: how Lua declares the public surface -----------------------

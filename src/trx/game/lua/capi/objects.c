@@ -118,28 +118,6 @@ static const LUA_PROPERTY_DESC m_Properties = {
     .name_at = M_GetPropertyName,
 };
 
-static int M_L_GetProperty(lua_State *const L)
-{
-    return LUA_Property_Get(L, &m_Properties);
-}
-
-static int M_L_SetProperty(lua_State *const L)
-{
-    return LUA_Property_Set(L, &m_Properties);
-}
-
-static int M_L_GetPropertyNames(lua_State *const L)
-{
-    return LUA_Property_GetNames(L, &m_Properties);
-}
-
-static const luaL_Reg m_Methods[] = {
-    { "get_property", M_L_GetProperty },
-    { "set_property", M_L_SetProperty },
-    { "get_property_names", M_L_GetPropertyNames },
-    { nullptr, nullptr },
-};
-
 static const luaL_Reg m_Module[] = {
     { "get", M_L_ObjectsGet },
     { "swap_mesh", M_L_ObjectsSwapMesh },
@@ -148,7 +126,8 @@ static const luaL_Reg m_Module[] = {
 
 static void M_Create(lua_State *const L)
 {
-    LUA_Struct_Register(L, &TYPE_OBJECT, m_Methods);
+    LUA_Struct_Register(L, &TYPE_OBJECT, nullptr);
+    LUA_Property_Register(L, &m_Properties);
 
     LUA_RegisterModule(L, "objects", m_Module);
 }

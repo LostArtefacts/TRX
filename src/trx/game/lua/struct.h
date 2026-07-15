@@ -57,6 +57,7 @@ typedef struct {
     const char *(*name_at)(const void *self, int32_t idx);
 } LUA_PROPERTY_DESC;
 
-int LUA_Property_Get(lua_State *L, const LUA_PROPERTY_DESC *desc);
-int LUA_Property_Set(lua_State *L, const LUA_PROPERTY_DESC *desc);
-int LUA_Property_GetNames(lua_State *L, const LUA_PROPERTY_DESC *desc);
+// Installs get_property/set_property/get_property_names on the type's method
+// set, bound to `desc`. Call after LUA_Struct_Register; a declaration exposes
+// them by name.
+void LUA_Property_Register(lua_State *L, const LUA_PROPERTY_DESC *desc);
