@@ -15,7 +15,7 @@ static int M_L_CreaturesAreAlliesHostile(lua_State *const L)
 // trxc.creatures.set_allies_hostile(enable)
 static int M_L_CreaturesSetAlliesHostile(lua_State *const L)
 {
-    const bool hostile = lua_toboolean(L, 1) != 0;
+    const bool hostile = lua_toboolean(L, 1);
     Creature_SetAlliesHostile(hostile);
     return 0;
 }

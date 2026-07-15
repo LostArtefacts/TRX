@@ -148,7 +148,7 @@ static int M_L_LaraAreHolstersVisible(lua_State *const L)
 // trxc.lara.set_holsters_visible(visible)
 static int M_L_LaraSetHolstersVisible(lua_State *const L)
 {
-    const bool visible = lua_toboolean(L, 1) != 0;
+    const bool visible = lua_toboolean(L, 1);
     Lara_Skin_SetHolstersVisible(visible);
     return 0;
 }
