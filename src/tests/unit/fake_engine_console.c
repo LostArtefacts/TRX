@@ -11,6 +11,7 @@
 #include <lauxlib.h>
 #include <stdarg.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <strings.h>
 
@@ -101,6 +102,21 @@ const CONSOLE_COMMAND *Console_Registry_Get(const char *const prefix)
     return nullptr;
 }
 
+void Console_Registry_RemoveByProc(
+    COMMAND_RESULT (*const proc)(const COMMAND_CONTEXT *ctx))
+{
+    int32_t kept = 0;
+    for (int32_t i = 0; i < m_CommandCount; i++) {
+        if (m_Commands[i].proc == proc) {
+            free((char *)m_Commands[i].prefix);
+            free((char *)m_Commands[i].help_id);
+            continue;
+        }
+        m_Commands[kept++] = m_Commands[i];
+    }
+    m_CommandCount = kept;
+}
+
 COMMAND_RESULT FakeConsole_Run(const char *const prefix, const char *const args)
 {
     const CONSOLE_COMMAND *const command = Console_Registry_Get(prefix);
@@ -174,6 +190,18 @@ static int M_L_IsRegistered(lua_State *const L)
     return 1;
 }
 
+// fake.reload() - the state that registered the commands shuts down, as it does
+// on a mod switch, and takes its commands with it. Every command a test
+// registers dispatches through the one Lua proc, which is what the engine
+// drops.
+static int M_L_Reload(lua_State *const L)
+{
+    if (m_CommandCount > 0) {
+        Console_Registry_RemoveByProc(m_Commands[0].proc);
+    }
+    return 0;
+}
+
 static int M_L_HelpId(lua_State *const L)
 {
     const char *const help_id = FakeConsole_HelpId(luaL_checkstring(L, 1));
@@ -197,6 +225,8 @@ void FakeConsole_PushLua(lua_State *const L)
     lua_setfield(L, -2, "is_registered");
     lua_pushcfunction(L, M_L_AsLevelScript);
     lua_setfield(L, -2, "as_level_script");
+    lua_pushcfunction(L, M_L_Reload);
+    lua_setfield(L, -2, "reload");
 
     lua_newtable(L);
     lua_pushinteger(L, CR_SUCCESS);

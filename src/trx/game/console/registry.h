@@ -8,6 +8,13 @@
 
 void Console_Registry_Add(CONSOLE_COMMAND cmd);
 
+// Remove every command that dispatches through the given proc. A command
+// declared in C lives for the whole process; one a Lua state registers lives
+// only as long as that state, and is dropped when the state shuts down, so its
+// script can register it again on the next run.
+void Console_Registry_RemoveByProc(
+    COMMAND_RESULT (*proc)(const COMMAND_CONTEXT *ctx));
+
 const CONSOLE_COMMAND *Console_Registry_Get(const char *cmdline);
 
 // Retrieve a vector containing pointers to all registered console commands.
