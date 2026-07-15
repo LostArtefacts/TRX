@@ -610,6 +610,7 @@
             "gun_map": 3,
             "is_selectable": false,
             "combat_face_offset": -1,
+            "speech_face_offset": 67,
             "braid": {
                 "mesh_offset": 54,
                 "gold_offset": 60,
@@ -668,6 +669,7 @@
             "gun_map": 3,
             "is_selectable": false,
             "combat_face_offset": 66,
+            "speech_face_offset": 71,
             "braid": {
                 "mesh_offset": 42,
                 "gold_offset": 48,

@@ -489,6 +489,20 @@ void Lara_Skin_SetCombatFace(const bool enabled)
     }
 }
 
+void Lara_Skin_SetSpeechFace(const int32_t index)
+{
+    const LARA_SKIN_OUTFIT *const outfit = M_GetCurrentOutfit();
+    if (outfit->speech_face_offset == M_NO_MESH) {
+        return;
+    }
+
+    const OBJECT *const extra_obj = Object_Get(O_LARA_SKIN_SWAP_EXTRA);
+    const int32_t offset = outfit->speech_face_offset + index;
+    if (offset >= 0 && offset < extra_obj->mesh_count) {
+        Lara_Mesh_Set(LM_HEAD, Object_GetMesh(extra_obj->mesh_idx + offset));
+    }
+}
+
 void Lara_Skin_SwapAllExtra(const LARA_EXTRA_STATE state)
 {
     const LARA_SKIN_OUTFIT *const outfit = M_GetExtraOutfit(state);

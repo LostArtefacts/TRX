@@ -303,6 +303,7 @@ static bool M_LoadOutfit(JSON_READ_IO *const io, LARA_SKIN_OUTFIT *const outfit)
     JSON_READ_D(io, "is_reflective", &outfit->is_reflective, false);
     JSON_READ_D(io, "is_selectable", &outfit->is_selectable, true);
     JSON_READ_D(io, "combat_face_offset", &outfit->combat_face_offset, -1);
+    JSON_READ_D(io, "speech_face_offset", &outfit->speech_face_offset, -1);
     JSON_READ_D(io, "supports_sunglasses", &outfit->supports_sunglasses, true);
     JSON_READ_D(io, "is_barefoot", &outfit->is_barefoot, false);
 

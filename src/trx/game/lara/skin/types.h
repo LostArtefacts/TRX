@@ -38,6 +38,7 @@ typedef struct {
     bool supports_sunglasses;
     bool is_barefoot;
     int32_t combat_face_offset;
+    int32_t speech_face_offset;
     MESH_PAIR no_holster_offsets;
     int32_t extra_outfits[LS_EXTRA_NUMBER_OF];
 } LARA_SKIN_OUTFIT;
