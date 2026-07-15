@@ -261,7 +261,7 @@ test_lua_log_exe = executable(
   'test_lua_log',
   files('unit/test_lua_log.c', 'unit/fake_engine_log.c')
     + lua_surface_src
-    + files('../trx/game/lua/capi/log.c'),
+    + files('../trx/game/lua/capi/log.c', '../trx/game/lua/utils.c'),
   include_directories: [src_inc, test_inc],
   dependencies: [dep_lua],
   c_args: lua_surface_args,
@@ -354,7 +354,11 @@ test_lua_console_exe = executable(
   'test_lua_console',
   files('unit/test_lua_console.c', 'unit/fake_engine_console.c') + test_stubs
     + lua_surface_src
-    + files('../trx/game/lua/capi/console.c', '../trx/game/lua/capi/log.c'),
+    + files(
+      '../trx/game/lua/capi/console.c',
+      '../trx/game/lua/capi/log.c',
+      '../trx/game/lua/utils.c',
+    ),
   include_directories: [src_inc, test_inc],
   dependencies: [dep_lua],
   c_args: lua_surface_args,
