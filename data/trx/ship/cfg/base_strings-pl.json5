@@ -87,7 +87,6 @@
             "give_item_all_guns": "Lara uzbrojona po zęby. Drżyj, świecie!",
             "give_item_all_keys": "Niespodzianka! Wszystkie kluczowe przedmioty zmaterializowały się w plecaku Lary.",
             "give_item_cheat": "Plecak Lary stał się znacznie cięższy!",
-            "invalid_cutscene": "Nieprawidłowy przerywnik",
             "invalid_demo": "Nieprawidłowe demo",
             "invalid_item": "Nieznany przedmiot: %s",
             "invalid_level": "Nieznany poziom",
@@ -103,7 +102,6 @@
             "load_game_fail_invalid_slot": "Nieprawidłowy slot zapisu %d",
             "load_game_fail_unavailable_slot": "Slot zapisu %d jest niedostępny",
             "object_not_found": "Nie odnaleziono tego obiektu",
-            "play_cutscene": "Wczytano przerywnik %d",
             "play_demo": "Wczytano demo %d",
             "play_level": "Wczytano %s",
             "pos_lara_missing": "Nie znaleziono Lary",
@@ -389,6 +387,8 @@
             },
             "play_cutscene": {
                 "help": "Wczytuje przerywnik o podanym numerze.",
+                "invalid": "Nieprawidłowy przerywnik",
+                "loading": "Wczytano przerywnik %d",
             },
             "play_demo": {
                 "help": "Wczytuje demo o podanym numerze.",

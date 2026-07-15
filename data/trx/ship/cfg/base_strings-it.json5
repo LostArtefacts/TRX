@@ -87,7 +87,6 @@
             "give_item_all_guns": "Preparati - Lara è armata fino ai denti!",
             "give_item_all_keys": "Sorpresa! Ogni oggetto chiave di cui Lara ha bisogno è ora nel suo zaino.",
             "give_item_cheat": "Lo zaino di Lara è diventato molto più pesante!",
-            "invalid_cutscene": "Scena di intermezzo non valida",
             "invalid_demo": "Demo non valida",
             "invalid_item": "Oggetto sconosciuto: %s",
             "invalid_level": "Livello non valido",
@@ -103,7 +102,6 @@
             "load_game_fail_invalid_slot": "Slot di salvataggio %d non valido",
             "load_game_fail_unavailable_slot": "Lo slot di salvataggio %d non è disponibile",
             "object_not_found": "Oggetto non trovato",
-            "play_cutscene": "Caricamento scena di intermezzo %d",
             "play_demo": "Caricamento demo %d",
             "play_level": "Caricamento %s",
             "pos_lara_missing": "Lara non presente",
@@ -389,6 +387,8 @@
             },
             "play_cutscene": {
                 "help": "Riproduce la scena di intermezzo con il numero specificato.",
+                "invalid": "Scena di intermezzo non valida",
+                "loading": "Caricamento scena di intermezzo %d",
             },
             "play_demo": {
                 "help": "Riproduce la demo con il numero specificato.",

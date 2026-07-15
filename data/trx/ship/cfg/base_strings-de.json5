@@ -87,7 +87,6 @@
             "give_item_all_guns": "Geladen und entsichert - Lara ist bis zu ihren Zähnen bewaffnet!",
             "give_item_all_keys": "Überraschung! Jedes Schlüsselitem, dass Lara benötigt, ist jetzt in ihrem Inventar.",
             "give_item_cheat": "Laras Rucksack ist schwerer geworden!",
-            "invalid_cutscene": "Unzulässige Zwischensequenz",
             "invalid_demo": "Unzulässige Demo",
             "invalid_item": "Unbekanntes Item: %s",
             "invalid_level": "Unzulässiger Level",
@@ -103,7 +102,6 @@
             "load_game_fail_invalid_slot": "Unzulässiger Speicher-Slot %d",
             "load_game_fail_unavailable_slot": "Speicher-Slot %d ist nicht verfügbar",
             "object_not_found": "Objekt nicht gefunden",
-            "play_cutscene": "Lade Zwischensequenz %d",
             "play_demo": "Lade Demo %d",
             "play_level": "Lade %s",
             "pos_lara_missing": "Lara nicht vorhanden",
@@ -389,6 +387,8 @@
             },
             "play_cutscene": {
                 "help": "Spielt Zwischensequenz mit dazugehöriger Nummer ab.",
+                "invalid": "Unzulässige Zwischensequenz",
+                "loading": "Lade Zwischensequenz %d",
             },
             "play_demo": {
                 "help": "Spielt eine Demo mit der angegebenen Nummer ab.",

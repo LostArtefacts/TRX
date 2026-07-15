@@ -87,7 +87,6 @@
             "give_item_all_guns": "A vos marques, prêts... feu ! Lara est armée jusqu'aux dents.",
             "give_item_all_keys": "Surprise ! Chaque clé dont Lara pourrait avoir besoin est maintenant dans son sac à dos.",
             "give_item_cheat": "Le sac à dos de Lara est soudainement beaucoup plus lourd !",
-            "invalid_cutscene": "Cinématique invalide",
             "invalid_demo": "Démo invalide",
             "invalid_item": "Objet inconnu : %s",
             "invalid_level": "Niveau invalide",
@@ -103,7 +102,6 @@
             "load_game_fail_invalid_slot": "Emplacement de sauvegarde %d invalide",
             "load_game_fail_unavailable_slot": "L'emplacement de sauvegarde %d n'est pas disponible",
             "object_not_found": "Objet non trouvé",
-            "play_cutscene": "Chargement de la cinématique %d",
             "play_demo": "Chargement de la démo %d",
             "play_level": "Chargement de %s",
             "pos_lara_missing": "Lara n'est pas présente",
@@ -389,6 +387,8 @@
             },
             "play_cutscene": {
                 "help": "Lance la cinématique correspondant au numéro donné.",
+                "invalid": "Cinématique invalide",
+                "loading": "Chargement de la cinématique %d",
             },
             "play_demo": {
                 "help": "Lance la démo correspondant au numéro donné.",
