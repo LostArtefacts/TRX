@@ -23,29 +23,45 @@ local load = load
 
 local api = {}
 
--- path -> spec. Ordered separately so docs come out in declaration order.
-local registry = {}
-local order = {}
-local modules = {}
-local module_order = {}
-local types = {}
-local type_order = {}
-local enums = {}
-local enum_order = {}
-local consts = {}
-local const_order = {}
-local properties = {}
-local property_order = {}
-local namespaces = {}
-local namespace_order = {}
+-- A registry keyed by path, keeping the paths in declaration order alongside so
+-- the docs come out the way the files declare, not the way pairs() happens to
+-- iterate. record() is the only writer.
+local function ordered()
+  return { by_path = {}, order = {} }
+end
+
+local function record(reg, path, spec)
+  if reg.by_path[path] == nil then
+    reg.order[#reg.order + 1] = path
+  end
+  reg.by_path[path] = spec
+  return spec
+end
+
+-- Every registry projects to a doc entry the same way: walk it in declaration
+-- order, turn each spec into a plain table. Only the projection differs.
+local function collect(reg, project)
+  local list = {}
+  for _, key in ipairs(reg.order) do
+    list[#list + 1] = project(key, reg.by_path[key])
+  end
+  return list
+end
+
+local registry = ordered()
+local modules = ordered()
+local types = ordered()
+local enums = ordered()
+local consts = ordered()
+local properties = ordered()
+local namespaces = ordered()
 -- path -> { fn = what calling the namespace runs }. Held apart from the
 -- metatable so api.strict can swap the wrapper in.
 local namespace_dispatch = {}
 -- Type name -> predicate. Private: reachable, a script could hand strict mode a
 -- checker that accepts anything.
 local checkers
-local containers = {}
-local container_order = {}
+local containers = ordered()
 -- module -> { get, count, accepts }. What indexing the module table reaches.
 local module_containers = {}
 -- module -> { name -> spec }. What the module's __index dispatches on.
@@ -75,11 +91,27 @@ local function path_parts(path)
   return parts
 end
 
+-- The trx.<module> table, created on first mention. Every declaration hangs its
+-- member off one of these.
+local function module_table(module)
+  trx[module] = trx[module] or {}
+  return trx[module]
+end
+
+-- The guard every declarator opens with: declarations are the engine's to make
+-- at load time, and a spec is a table. `fn` names the caller for the message.
+local function opening(fn, spec)
+  assert(not sealed, "the trx.api registry is sealed; declarations happen at load time")
+  if spec ~= nil then
+    assert(type(spec) == "table", fn .. ": spec must be a table")
+  end
+end
+
 -- The module, the table the member hangs off, and the member's own name.
 local function resolve(path)
   local parts = path_parts(path)
   local module = parts[1]
-  trx[module] = trx[module] or {}
+  module_table(module)
   if #parts == 2 then
     return module, trx[module], parts[2]
   end
@@ -107,7 +139,7 @@ local function install_module_meta(module)
     return
   end
 
-  trx[module] = trx[module] or {}
+  module_table(module)
   local meta = {
     __index = function(_, key)
       local prop = props ~= nil and props[key] or nil
@@ -160,18 +192,15 @@ local function install_module_meta(module)
 end
 
 function api.module(name, spec)
-  assert(not sealed, "the trx.api registry is sealed; declarations happen at load time")
+  opening("api.module")
   assert(type(name) == "string", "api.module: name must be a string")
-  if modules[name] == nil then
-    table.insert(module_order, name)
-  end
-  modules[name] = spec or {}
+  spec = record(modules, name, spec or {})
 
   -- A module that stands for one C struct reads and writes that struct's fields
   -- directly: trx.lara.air is Lara's air. `instance` hands back the handle.
-  if modules[name].instance ~= nil then
-    assert(type(modules[name].instance) == "function", "api.module: instance must be a function")
-    module_instances[name] = modules[name].instance
+  if spec.instance ~= nil then
+    assert(type(spec.instance) == "function", "api.module: instance must be a function")
+    module_instances[name] = spec.instance
     install_module_meta(name)
   end
 end
@@ -241,6 +270,12 @@ local function make_checked(fn, path, params)
   return load(src, "@trx/" .. path .. " (checked)")(fn, param_checkers, defaults, on_fail)
 end
 
+-- The function a caller reaches: the checking wrapper under strict mode, the raw
+-- one otherwise. api.strict flips every binding through here.
+local function bound(fn, path, params)
+  return strict_enabled and make_checked(fn, path, params) or fn
+end
+
 -- Doc-facing type names, not Lua type names.
 checkers = {
   integer = function(v)
@@ -308,17 +343,17 @@ function api.seal()
     declared[container] = declared[container] or {}
     declared[container][name] = true
   end
-  for _, path in ipairs(order) do
+  for _, path in ipairs(registry.order) do
     mark(path)
   end
-  for _, path in ipairs(enum_order) do
+  for _, path in ipairs(enums.order) do
     mark(path)
   end
-  for _, path in ipairs(const_order) do
+  for _, path in ipairs(consts.order) do
     mark(path)
   end
   -- The namespace table itself is a member of its module.
-  for _, path in ipairs(namespace_order) do
+  for _, path in ipairs(namespaces.order) do
     mark(path)
   end
 
@@ -331,12 +366,12 @@ function api.seal()
     end
   end
 
-  for _, module in ipairs(module_order) do
+  for _, module in ipairs(modules.order) do
     audit(module, trx[module])
   end
   -- A namespace hides its members one level down, where the module audit above
   -- cannot see them. Audit it as its own container.
-  for _, path in ipairs(namespace_order) do
+  for _, path in ipairs(namespaces.order) do
     local module, name = split_path(path)
     audit(path, rawget(trx[module] or {}, name))
   end
@@ -380,22 +415,22 @@ function api.seal()
     end
   end
 
-  for _, path in ipairs(order) do
-    audit_params(path, registry[path].params)
+  for _, path in ipairs(registry.order) do
+    audit_params(path, registry.by_path[path].params)
   end
-  for _, path in ipairs(namespace_order) do
-    audit_params(path, namespaces[path].params)
+  for _, path in ipairs(namespaces.order) do
+    audit_params(path, namespaces.by_path[path].params)
   end
   -- Strict mode checks a method's arguments too, and make_checked needs a
   -- checker for each. Without this, a type nobody can check would only surface
   -- the day a builder turned strict mode on.
-  for _, path in ipairs(type_order) do
-    for name, method in pairs(types[path].methods or {}) do
+  for _, path in ipairs(types.order) do
+    for name, method in pairs(types.by_path[path].methods or {}) do
       audit_params(path .. "." .. name, method.params)
     end
   end
-  for _, path in ipairs(property_order) do
-    audit_type(path, "the property", properties[path].type)
+  for _, path in ipairs(properties.order) do
+    audit_type(path, "the property", properties.by_path[path].type)
   end
 
   if #bad > 0 then
@@ -413,8 +448,7 @@ end
 -- A namespace has to be declared before anything inside it: it is the table the
 -- members hang off, and seal() audits its contents just as it audits a module's.
 function api.namespace(path, spec)
-  assert(not sealed, "the trx.api registry is sealed; declarations happen at load time")
-  assert(type(spec) == "table", "api.namespace: spec must be a table")
+  opening("api.namespace", spec)
   local module, name = split_path(path)
 
   local namespace = {}
@@ -422,9 +456,7 @@ function api.namespace(path, spec)
     assert(type(spec.call) == "function", "api.namespace: call must be a function")
     -- Through a holder, so api.strict can swap the wrapper in as it does for the
     -- members.
-    local dispatch = {
-      fn = strict_enabled and make_checked(spec.call, path, spec.params) or spec.call,
-    }
+    local dispatch = { fn = bound(spec.call, path, spec.params) }
     namespace_dispatch[path] = dispatch
     setmetatable(namespace, {
       __call = function(_, ...)
@@ -433,13 +465,9 @@ function api.namespace(path, spec)
     })
   end
 
-  trx[module] = trx[module] or {}
-  rawset(trx[module], name, namespace)
+  rawset(module_table(module), name, namespace)
 
-  if namespaces[path] == nil then
-    table.insert(namespace_order, path)
-  end
-  namespaces[path] = spec
+  record(namespaces, path, spec)
   return namespace
 end
 
@@ -450,8 +478,7 @@ end
 -- lose it to the first property declared on it. And pairs() never sees a
 -- metatable, so only a declaration puts the indexing in the reference.
 function api.container(name, spec)
-  assert(not sealed, "the trx.api registry is sealed; declarations happen at load time")
-  assert(type(spec) == "table", "api.container: spec must be a table")
+  opening("api.container", spec)
   assert(type(spec.get) == "function", "api.container: get must be a function")
   assert(spec.count == nil or type(spec.count) == "function", "api.container: count must be a function")
   assert(type(spec.key) == "table", "api.container: key must describe what the module is indexed by")
@@ -468,29 +495,22 @@ function api.container(name, spec)
     end,
   }
 
-  if containers[name] == nil then
-    table.insert(container_order, name)
-  end
-  containers[name] = spec
+  record(containers, name, spec)
 
   install_module_meta(name)
 end
 
 function api.define(path, spec)
-  assert(not sealed, "the trx.api registry is sealed; declarations happen at load time")
-  assert(type(spec) == "table", "api.define: spec must be a table")
+  opening("api.define", spec)
   assert(type(spec.impl) == "function", "api.define: impl must be a function")
   local _, container, name = resolve(path)
 
-  if registry[path] == nil then
-    table.insert(order, path)
-  end
-  registry[path] = spec
+  record(registry, path, spec)
 
   -- The raw implementation is the public function. No wrapper, no overhead.
   -- rawset: some module tables guard __newindex, and a declaration is not a
   -- caller poking at the module.
-  rawset(container, name, strict_enabled and make_checked(spec.impl, path, spec.params) or spec.impl)
+  rawset(container, name, bound(spec.impl, path, spec.params))
   return spec.impl
 end
 
@@ -509,36 +529,34 @@ end
 -- C function rather than around a Lua one. Extensions take nothing but the
 -- handle __index hands them, so there is nothing of the script's to check.
 local function bind_type_methods(path)
-  local spec = types[path]
+  local spec = types.by_path[path]
   local backing = spec.backing
   local _, type_name = split_path(path)
   for name, method in pairs(spec.methods or {}) do
     local from = method.from or name
+    -- The wrapper goes in front of the C function, which struct.method hands
+    -- back; without strict mode the name reaches C to bind directly.
+    local exposed = from
     if strict_enabled then
-      struct.expose_method(
-        backing,
-        name,
-        make_checked(struct.method(backing, from), path .. "." .. name, method_params(method.params, type_name))
-      )
-    else
-      struct.expose_method(backing, name, from)
+      exposed = make_checked(struct.method(backing, from), path .. "." .. name, method_params(method.params, type_name))
     end
+    struct.expose_method(backing, name, exposed)
   end
 end
 
 -- Rebinds every registered function to (or away from) its checking wrapper.
 function api.strict(enabled)
   strict_enabled = enabled and true or false
-  for _, path in ipairs(order) do
+  for _, path in ipairs(registry.order) do
     local _, container, name = resolve(path)
-    local spec = registry[path]
-    rawset(container, name, strict_enabled and make_checked(spec.impl, path, spec.params) or spec.impl)
+    local spec = registry.by_path[path]
+    rawset(container, name, bound(spec.impl, path, spec.params))
   end
   for path, dispatch in pairs(namespace_dispatch) do
-    local spec = namespaces[path]
-    dispatch.fn = strict_enabled and make_checked(spec.call, path, spec.params) or spec.call
+    local spec = namespaces.by_path[path]
+    dispatch.fn = bound(spec.call, path, spec.params)
   end
-  for _, path in ipairs(type_order) do
+  for _, path in ipairs(types.order) do
     bind_type_methods(path)
   end
 end
@@ -554,8 +572,7 @@ end
 -- how to reach a member; this says whether it is part of the API and what it is
 -- called. A member C can reach but nobody declares simply does not exist.
 function api.type(path, spec)
-  assert(not sealed, "the trx.api registry is sealed; declarations happen at load time")
-  assert(type(spec) == "table", "api.type: spec must be a table")
+  opening("api.type", spec)
   assert(type(spec.backing) == "string", "api.type: backing must be a C type name")
   local backing = spec.backing
 
@@ -592,10 +609,7 @@ function api.type(path, spec)
     )
   end
 
-  if types[path] == nil then
-    table.insert(type_order, path)
-  end
-  types[path] = spec
+  record(types, path, spec)
 
   bind_type_methods(path)
 end
@@ -620,8 +634,7 @@ function api.enum_name(spec, reflected_name)
 end
 
 function api.enum(path, spec)
-  assert(not sealed, "the trx.api registry is sealed; declarations happen at load time")
-  assert(type(spec) == "table", "api.enum: spec must be a table")
+  opening("api.enum", spec)
   assert(type(spec.backing) == "string", "api.enum: backing must be a C enum name")
   local module, name = split_path(path)
 
@@ -690,13 +703,9 @@ function api.enum(path, spec)
     end,
   })
 
-  trx[module] = trx[module] or {}
-  rawset(trx[module], name, face)
+  rawset(module_table(module), name, face)
 
-  if enums[path] == nil then
-    table.insert(enum_order, path)
-  end
-  enums[path] = spec
+  record(enums, path, spec)
   return face
 end
 
@@ -704,18 +713,13 @@ end
 -- not a C enum, so api.enum has nothing to reflect. The value still comes from C,
 -- so naming one C does not export fails here rather than quietly being nil.
 function api.const(path, spec)
-  assert(not sealed, "the trx.api registry is sealed; declarations happen at load time")
-  assert(type(spec) == "table", "api.const: spec must be a table")
+  opening("api.const", spec)
   assert(spec.value ~= nil, "api.const: " .. path .. " has no value; is it exported from C?")
   local module, name = split_path(path)
 
-  if consts[path] == nil then
-    table.insert(const_order, path)
-  end
-  consts[path] = spec
+  record(consts, path, spec)
 
-  trx[module] = trx[module] or {}
-  rawset(trx[module], name, spec.value)
+  rawset(module_table(module), name, spec.value)
   return spec.value
 end
 
@@ -724,16 +728,12 @@ end
 -- if there is none. The registry owns the module's metatable - see
 -- install_module_meta - so a hand-rolled getter table would sail past seal().
 function api.property(path, spec)
-  assert(not sealed, "the trx.api registry is sealed; declarations happen at load time")
-  assert(type(spec) == "table", "api.property: spec must be a table")
+  opening("api.property", spec)
   assert(type(spec.get) == "function", "api.property: get must be a function")
   assert(spec.set == nil or type(spec.set) == "function", "api.property: set must be a function")
   local module, name = split_path(path)
 
-  if properties[path] == nil then
-    table.insert(property_order, path)
-  end
-  properties[path] = spec
+  record(properties, path, spec)
 
   local props = module_properties[module]
   if props == nil then
@@ -748,47 +748,36 @@ end
 
 -- The whole surface as plain data: what the docs generator consumes.
 function api.describe()
-  local out = {
-    modules = {},
-    functions = {},
-    types = {},
-    enums = {},
-    constants = {},
-    properties = {},
-    namespaces = {},
-    containers = {},
-  }
-  for _, name in ipairs(container_order) do
-    local spec = containers[name]
-    table.insert(out.containers, {
+  local out = { types = {}, enums = {} }
+  out.containers = collect(containers, function(name, spec)
+    return {
       module = name,
       description = spec.description,
       key = spec.key,
       value = spec.value,
       countable = spec.count ~= nil,
       examples = spec.examples,
-    })
-  end
-  for _, name in ipairs(module_order) do
-    table.insert(out.modules, {
+    }
+  end)
+  out.modules = collect(modules, function(name, spec)
+    return {
       name = name,
-      title = modules[name].title,
-      description = modules[name].description,
-      order = modules[name].order,
-    })
-  end
-  for _, path in ipairs(order) do
-    local spec = registry[path]
-    table.insert(out.functions, {
+      title = spec.title,
+      description = spec.description,
+      order = spec.order,
+    }
+  end)
+  out.functions = collect(registry, function(path, spec)
+    return {
       path = path,
       description = spec.description,
       params = spec.params,
       returns = spec.returns,
       examples = spec.examples,
-    })
-  end
-  for _, path in ipairs(type_order) do
-    local spec = types[path]
+    }
+  end)
+  for _, path in ipairs(types.order) do
+    local spec = types.by_path[path]
     local entry = {
       path = path,
       description = spec.description,
@@ -829,8 +818,8 @@ function api.describe()
     table.sort(entry.extensions, by_name)
     table.insert(out.types, entry)
   end
-  for _, path in ipairs(enum_order) do
-    local spec = enums[path]
+  for _, path in ipairs(enums.order) do
+    local spec = enums.by_path[path]
     local entry = {
       path = path,
       description = spec.description,
@@ -866,35 +855,32 @@ function api.describe()
     end
     table.insert(out.enums, entry)
   end
-  for _, path in ipairs(const_order) do
-    local spec = consts[path]
-    table.insert(out.constants, {
+  out.constants = collect(consts, function(path, spec)
+    return {
       path = path,
       value = spec.value,
       description = spec.description,
-    })
-  end
-  for _, path in ipairs(namespace_order) do
-    local spec = namespaces[path]
-    table.insert(out.namespaces, {
+    }
+  end)
+  out.namespaces = collect(namespaces, function(path, spec)
+    return {
       path = path,
       description = spec.description,
       params = spec.params,
       returns = spec.returns,
       examples = spec.examples,
       callable = spec.call ~= nil,
-    })
-  end
-  for _, path in ipairs(property_order) do
-    local spec = properties[path]
-    table.insert(out.properties, {
+    }
+  end)
+  out.properties = collect(properties, function(path, spec)
+    return {
       path = path,
       type = spec.type,
       description = spec.description,
       enum = spec.enum,
       writable = spec.set ~= nil,
-    })
-  end
+    }
+  end)
 
   -- Which module a declaration lands under is the surface talking; which module
   -- loaded first is not - that is the source list in meson.build, and a module
