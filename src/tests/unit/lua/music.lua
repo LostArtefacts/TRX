@@ -8,7 +8,10 @@ test("play defaults to playing the track once", function()
   local calls = fake.calls()
   assert(calls.play_count == 1, "play did not reach the engine")
   assert(calls.last_track == fake.TRACK)
-  assert(calls.last_mode == trx.music.PlayMode.ONCE, "the default mode must be ONCE")
+  assert(
+    calls.last_mode == trx.music.PlayMode.ONCE,
+    "the default mode must be ONCE"
+  )
 end)
 
 test("opts.mode selects the play mode", function()

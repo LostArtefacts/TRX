@@ -12,7 +12,10 @@ test("a field reads straight off Lara", function()
   assert(trx.lara.exposure_bar == 600)
   assert(trx.lara.poison == 0)
   assert(trx.lara.is_burning == false)
-  assert(trx.lara.hit_direction == -1, "a negative field must survive as negative")
+  assert(
+    trx.lara.hit_direction == -1,
+    "a negative field must survive as negative"
+  )
 end)
 
 test("a writable field writes straight through", function()
@@ -99,16 +102,25 @@ test("cure_poison clears the poison outright", function()
   trx.lara.cure_poison()
 
   assert(trx.lara.poison == 0)
-  assert(fake.calls().cure_poison == 1, "the engine verb must be the one that runs")
+  assert(
+    fake.calls().cure_poison == 1,
+    "the engine verb must be the one that runs"
+  )
 end)
 
-test("extinguish puts Lara out, and stops the electrocution with it", function()
-  trx.lara.electric = 30
-  trx.lara.extinguish()
+test(
+  "extinguish puts Lara out, and stops the electrocution with it",
+  function()
+    trx.lara.electric = 30
+    trx.lara.extinguish()
 
-  assert(trx.lara.is_burning == false)
-  assert(trx.lara.electric == 0, "extinguishing must clear the electrocution too")
-  assert(fake.calls().extinguish == 1)
-end)
+    assert(trx.lara.is_burning == false)
+    assert(
+      trx.lara.electric == 0,
+      "extinguishing must clear the electrocution too"
+    )
+    assert(fake.calls().extinguish == 1)
+  end
+)
 
 return h.report()

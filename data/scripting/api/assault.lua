@@ -83,7 +83,11 @@ api.namespace("assault.stats", {
 api.define("assault.stats.add_record", {
   description = "Files a new record, inserting it in time order and bumping the attempt count.",
   params = {
-    { name = "time", type = "number", description = "Time in seconds. Must be greater than zero." },
+    {
+      name = "time",
+      type = "number",
+      description = "Time in seconds. Must be greater than zero.",
+    },
     track_param(),
   },
   returns = {
@@ -97,10 +101,17 @@ api.define("assault.stats.add_record", {
 api.define("assault.stats.remove_record", {
   description = "Removes a record, closing the gap behind it.",
   params = {
-    { name = "record_id", type = "integer", description = "1-based position in the table." },
+    {
+      name = "record_id",
+      type = "integer",
+      description = "1-based position in the table.",
+    },
     track_param(),
   },
-  returns = { type = "boolean", description = "`false` if there is no record at that position." },
+  returns = {
+    type = "boolean",
+    description = "`false` if there is no record at that position.",
+  },
   impl = raw.stats.remove,
 })
 

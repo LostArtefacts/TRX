@@ -32,7 +32,10 @@ test("strict mode still works once the globals are hardened", function()
 end)
 
 test("the surface cannot be reopened", function()
-  assert(trx.api.define == nil, "the registry's declaring half must not survive the seal")
+  assert(
+    trx.api.define == nil,
+    "the registry's declaring half must not survive the seal"
+  )
   assert(trx.api.type == nil)
   assert(trx.api.strict ~= nil, "strict mode is a builder's, and stays")
 end)

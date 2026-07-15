@@ -52,7 +52,10 @@ end)
 test("a slot converts back to the id it came from", function()
   local wolf = trx.catalog.objects.WOLF
   local slot = trx.catalog.to_slot(trx.catalog.Context.OBJECTS, wolf)
-  assert(trx.catalog.from_slot(trx.catalog.Context.OBJECTS, slot) == wolf, "the round trip broke")
+  assert(
+    trx.catalog.from_slot(trx.catalog.Context.OBJECTS, slot) == wolf,
+    "the round trip broke"
+  )
 end)
 
 test("a catalog this game has nothing in reports nil, not zero", function()
@@ -61,18 +64,32 @@ test("a catalog this game has nothing in reports nil, not zero", function()
   assert(trx.catalog.from_slot(trx.catalog.Context.MUSIC, 1) == nil)
 end)
 
-test("an id too wide for the engine's does not wrap into the catalog", function()
-  -- Narrowed to the engine's id, 2^32 + wolf is wolf, and the slot for a wolf
-  -- would come back for an id that is not one.
-  local wolf = trx.catalog.objects.WOLF
-  assert(trx.catalog.to_slot(trx.catalog.Context.OBJECTS, 4294967296 + wolf) == nil)
-  assert(trx.catalog.from_slot(trx.catalog.Context.OBJECTS, 4294967296 + wolf + fake.SLOT_OFFSET) == nil)
-end)
+test(
+  "an id too wide for the engine's does not wrap into the catalog",
+  function()
+    -- Narrowed to the engine's id, 2^32 + wolf is wolf, and the slot for a wolf
+    -- would come back for an id that is not one.
+    local wolf = trx.catalog.objects.WOLF
+    assert(
+      trx.catalog.to_slot(trx.catalog.Context.OBJECTS, 4294967296 + wolf)
+        == nil
+    )
+    assert(
+      trx.catalog.from_slot(
+        trx.catalog.Context.OBJECTS,
+        4294967296 + wolf + fake.SLOT_OFFSET
+      ) == nil
+    )
+  end
+)
 
 test("the contexts are named", function()
   assert(trx.catalog.Context.OBJECTS ~= nil)
   assert(trx.catalog.Context.SAMPLES ~= nil)
-  assert(trx.catalog.Context.objects == trx.catalog.Context.OBJECTS, "contexts answer to any case too")
+  assert(
+    trx.catalog.Context.objects == trx.catalog.Context.OBJECTS,
+    "contexts answer to any case too"
+  )
 end)
 
 return h.report()

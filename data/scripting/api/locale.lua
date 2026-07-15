@@ -11,7 +11,11 @@ api.module("locale", {
 api.define("locale.get", {
   description = "The text behind a game string key.",
   params = {
-    { name = "key", type = "string", description = "The key, e.g. `general/misc/off`." },
+    {
+      name = "key",
+      type = "string",
+      description = "The key, e.g. `general/misc/off`.",
+    },
   },
   returns = {
     type = "string",
@@ -28,7 +32,11 @@ api.define("locale.format", {
   description = "The text behind a key with its placeholders filled in.",
   params = {
     { name = "key", type = "string", description = "The key." },
-    { name = "...", type = "any", description = "What to fill the placeholders with." },
+    {
+      name = "...",
+      type = "any",
+      description = "What to fill the placeholders with.",
+    },
   },
   returns = {
     type = "string",
@@ -36,7 +44,9 @@ api.define("locale.format", {
       .. "line up with the arguments comes back unformatted, with a warning in the log: a "
       .. "player is better served by text they can read than by a script that stops.",
   },
-  examples = { [[trx.console.log(trx.locale.format("general/misc/pagination_nav", 1, 5))]] },
+  examples = {
+    [[trx.console.log(trx.locale.format("general/misc/pagination_nav", 1, 5))]],
+  },
   impl = function(key, ...)
     local text = trx.locale.get(key)
     local ok, formatted = pcall(string.format, text, ...)

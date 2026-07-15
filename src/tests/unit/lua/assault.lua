@@ -10,7 +10,10 @@ test("a verb with no track means the assault course", function()
   trx.assault.start()
   local calls = fake.calls()
   assert(calls.start == 1, "start did not reach the track manager")
-  assert(calls.last_track == trx.assault.Track.COURSE, "the default track must be the course")
+  assert(
+    calls.last_track == trx.assault.Track.COURSE,
+    "the default track must be the course"
+  )
 end)
 
 test("a verb takes the track it is given", function()
@@ -44,14 +47,20 @@ test("the timers do not exist outside a gym level", function()
       trx.assault[verb]()
     end)
   end
-  assert(fake.calls().start == 0, "a verb outside the gym must not reach the engine")
+  assert(
+    fake.calls().start == 0,
+    "a verb outside the gym must not reach the engine"
+  )
 end)
 
-test("is_running and is_visible answer without raising outside a gym", function()
-  fake.set_in_gym(false)
-  assert(trx.assault.is_running() == false)
-  assert(trx.assault.is_visible() == false)
-end)
+test(
+  "is_running and is_visible answer without raising outside a gym",
+  function()
+    fake.set_in_gym(false)
+    assert(trx.assault.is_running() == false)
+    assert(trx.assault.is_visible() == false)
+  end
+)
 
 test("is_running follows the timer", function()
   assert(trx.assault.is_running() == false)
@@ -61,11 +70,14 @@ test("is_running follows the timer", function()
   assert(trx.assault.is_running(trx.assault.Track.QUAD) == false)
 end)
 
-test("is_visible is not is_running: a stopped timer stays on screen", function()
-  fake.set_visible(trx.assault.Track.COURSE, true)
-  assert(trx.assault.is_visible() == true)
-  assert(trx.assault.is_running() == false)
-end)
+test(
+  "is_visible is not is_running: a stopped timer stays on screen",
+  function()
+    fake.set_visible(trx.assault.Track.COURSE, true)
+    assert(trx.assault.is_visible() == true)
+    assert(trx.assault.is_running() == false)
+  end
+)
 
 test("active_track is nil when Lara is running nothing", function()
   assert(trx.assault.active_track == nil, "no track means nil, not zero")
@@ -73,7 +85,10 @@ test("active_track is nil when Lara is running nothing", function()
   -- QUAD is 0 in the C enum, and a bridge testing for truth would report it as
   -- nothing.
   fake.set_active_track(trx.assault.Track.QUAD)
-  assert(trx.assault.active_track == trx.assault.Track.QUAD, "QUAD is 0 and must survive")
+  assert(
+    trx.assault.active_track == trx.assault.Track.QUAD,
+    "QUAD is 0 and must survive"
+  )
 
   fake.set_active_track(trx.assault.Track.COURSE)
   assert(trx.assault.active_track == trx.assault.Track.COURSE)
@@ -85,22 +100,25 @@ test("active_track is read-only", function()
   end, "read-only")
 end)
 
-test("records go in fastest first, and carry the attempt they came from", function()
-  assert(trx.assault.stats.add_record(30.0) == true)
-  assert(trx.assault.stats.add_record(20.0) == true)
-  assert(trx.assault.stats.add_record(40.0) == true)
+test(
+  "records go in fastest first, and carry the attempt they came from",
+  function()
+    assert(trx.assault.stats.add_record(30.0) == true)
+    assert(trx.assault.stats.add_record(20.0) == true)
+    assert(trx.assault.stats.add_record(40.0) == true)
 
-  local records = trx.assault.stats.list_records()
-  assert(#records == 3, "wrong number of records")
-  assert(records[1].time == 20.0, "records must be sorted by time")
-  assert(records[2].time == 30.0)
-  assert(records[3].time == 40.0)
+    local records = trx.assault.stats.list_records()
+    assert(#records == 3, "wrong number of records")
+    assert(records[1].time == 20.0, "records must be sorted by time")
+    assert(records[2].time == 30.0)
+    assert(records[3].time == 40.0)
 
-  -- The attempt number counts entries filed, not the position in the table.
-  assert(records[1].attempt_num == 2, "the 20s run was the second attempt")
-  assert(records[2].attempt_num == 1)
-  assert(records[3].attempt_num == 3)
-end)
+    -- The attempt number counts entries filed, not the position in the table.
+    assert(records[1].attempt_num == 2, "the 20s run was the second attempt")
+    assert(records[2].attempt_num == 1)
+    assert(records[3].attempt_num == 3)
+  end
+)
 
 test("a record is written through to the player's profile", function()
   trx.assault.stats.add_record(30.0)
@@ -121,7 +139,10 @@ test("removing a record closes the gap behind it", function()
 end)
 
 test("removing a record that is not there reports false", function()
-  assert(trx.assault.stats.remove_record(1) == false, "there is nothing to remove")
+  assert(
+    trx.assault.stats.remove_record(1) == false,
+    "there is nothing to remove"
+  )
 
   trx.assault.stats.add_record(10.0)
   assert(trx.assault.stats.remove_record(2) == false, "slot 2 is empty")
@@ -158,15 +179,24 @@ test("each track keeps its own records", function()
   assert(#course == 1 and course[1].time == 30.0, "the course record")
 
   local quad = trx.assault.stats.list_records(QUAD)
-  assert(#quad == 1 and quad[1].time == 12.5, "the quad record went somewhere else")
+  assert(
+    #quad == 1 and quad[1].time == 12.5,
+    "the quad record went somewhere else"
+  )
 
   -- Omitting the track still means the course, as it does everywhere else.
   assert(#trx.assault.stats.list_records() == 1)
   assert(trx.assault.stats.list_records()[1].time == 30.0)
 
   assert(trx.assault.stats.remove_record(1, QUAD) == true)
-  assert(#trx.assault.stats.list_records(QUAD) == 0, "the quad record was not removed")
-  assert(#trx.assault.stats.list_records(COURSE) == 1, "the course record went with it")
+  assert(
+    #trx.assault.stats.list_records(QUAD) == 0,
+    "the quad record was not removed"
+  )
+  assert(
+    #trx.assault.stats.list_records(COURSE) == 1,
+    "the course record went with it"
+  )
 end)
 
 -- The records are in the player's profile, not in the level.

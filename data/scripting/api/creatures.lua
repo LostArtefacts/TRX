@@ -28,6 +28,8 @@ api.define("creatures.add_ally_target", {
   params = {
     { name = "object_id", type = "integer", enum = "catalog.objects" },
   },
-  examples = { [[trx.creatures.add_ally_target(trx.catalog.objects.bandit_1)]] },
+  examples = {
+    [[trx.creatures.add_ally_target(trx.catalog.objects.bandit_1)]],
+  },
   impl = raw.add_ally_target,
 })

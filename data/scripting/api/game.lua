@@ -93,7 +93,8 @@ api.type("game.Level", {
       from = "unobtainable.pickups",
       type = "integer",
       writable = false,
-      description = "Pickups the stats screen must not hold against the player, because they " .. "cannot be got.",
+      description = "Pickups the stats screen must not hold against the player, because they "
+        .. "cannot be got.",
     },
     unobtainable_kills = {
       from = "unobtainable.kills",
@@ -206,7 +207,11 @@ api.define("game.play_level", {
 api.define("game.play_cutscene", {
   description = "Plays a cutscene.",
   params = {
-    { name = "num", type = "integer", description = "1-based position in `trx.game.cutscenes`." },
+    {
+      name = "num",
+      type = "integer",
+      description = "1-based position in `trx.game.cutscenes`.",
+    },
   },
   impl = raw.play_cutscene,
 })
@@ -214,7 +219,11 @@ api.define("game.play_cutscene", {
 api.define("game.play_demo", {
   description = "Plays a demo.",
   params = {
-    { name = "num", type = "integer", description = "1-based position in `trx.game.demos`." },
+    {
+      name = "num",
+      type = "integer",
+      description = "1-based position in `trx.game.demos`.",
+    },
   },
   impl = raw.play_demo,
 })

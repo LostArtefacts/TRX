@@ -24,7 +24,9 @@ trx.console.register({
     -- An unhurt Lara is still cured and extinguished: the command worked, and
     -- only has nothing to say about her hit points.
     if was_full then
-      trx.console.log.warning(trx.locale.get("console/cmd/heal/already_full_hp"))
+      trx.console.log.warning(
+        trx.locale.get("console/cmd/heal/already_full_hp")
+      )
       return trx.console.Result.OK
     end
     return trx.console.Result.OK, trx.locale.get("console/cmd/heal/success")

@@ -55,11 +55,15 @@ end
 
 api.define(
   "events.before_level_file",
-  level_hook(types.BEFORE_LEVEL_FILE, "Happens prior to loading the level file.", {
-    [[trx.events.before_level_file(function(level_num)
+  level_hook(
+    types.BEFORE_LEVEL_FILE,
+    "Happens prior to loading the level file.",
+    {
+      [[trx.events.before_level_file(function(level_num)
   -- handle pre-file-load setup
 end)]],
-  })
+    }
+  )
 )
 
 api.define(
@@ -81,7 +85,10 @@ api.define(
 
 api.define(
   "events.after_item_setup",
-  level_hook(types.AFTER_ITEM_SETUP, "Happens after level items exist, after they are initialized.")
+  level_hook(
+    types.AFTER_ITEM_SETUP,
+    "Happens after level items exist, after they are initialized."
+  )
 )
 
 api.define(
@@ -167,7 +174,11 @@ api.define("events.after_control", {
 api.define("events.detach", {
   description = "Removes a previously attached handler, which stops firing immediately.",
   params = {
-    { name = "listener_id", type = "integer", description = "The id attach returned." },
+    {
+      name = "listener_id",
+      type = "integer",
+      description = "The id attach returned.",
+    },
   },
   returns = {
     type = "boolean",

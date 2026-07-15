@@ -8,15 +8,30 @@ local h = require("harness")
 local test, raises = h.test, h.raises
 
 test("a value reads back as the type the option is declared with", function()
-  assert(trx.config.get("audio.enable_music") == true, "a bool option must read as a bool")
-  assert(trx.config.get("visuals.fov") == 65, "an int option must read as a number")
-  assert(trx.config.get("visuals.brightness") == 1.5, "a double option must read as a number")
-  assert(trx.config.get("visuals.water_color") == "ff0000", "a color stays a string")
+  assert(
+    trx.config.get("audio.enable_music") == true,
+    "a bool option must read as a bool"
+  )
+  assert(
+    trx.config.get("visuals.fov") == 65,
+    "an int option must read as a number"
+  )
+  assert(
+    trx.config.get("visuals.brightness") == 1.5,
+    "a double option must read as a number"
+  )
+  assert(
+    trx.config.get("visuals.water_color") == "ff0000",
+    "a color stays a string"
+  )
 end)
 
 test("a value is written as the type it is, not as a string", function()
   trx.config.set("audio.enable_music", false)
-  assert(trx.config.get("audio.enable_music") == false, "a boolean did not go through")
+  assert(
+    trx.config.get("audio.enable_music") == false,
+    "a boolean did not go through"
+  )
 
   trx.config.set("visuals.fov", 90)
   assert(trx.config.get("visuals.fov") == 90, "a number did not go through")
@@ -48,19 +63,28 @@ test("set writes the player's settings; override does not", function()
   assert(fake.calls().config_writes == 1, "set must persist")
 
   trx.config.override("visuals.fov", 100)
-  assert(fake.calls().config_writes == 1, "an override must never reach the settings file")
+  assert(
+    fake.calls().config_writes == 1,
+    "an override must never reach the settings file"
+  )
 end)
 
-test("an override holds the setting, and restore gives the player theirs back", function()
-  trx.config.override("visuals.fov", 90)
-  assert(trx.config.get("visuals.fov") == 90, "the override did not take")
-  assert(trx.config.is_overridden("visuals.fov") == true)
+test(
+  "an override holds the setting, and restore gives the player theirs back",
+  function()
+    trx.config.override("visuals.fov", 90)
+    assert(trx.config.get("visuals.fov") == 90, "the override did not take")
+    assert(trx.config.is_overridden("visuals.fov") == true)
 
-  assert(trx.config.restore("visuals.fov") == true)
-  -- The player chose 65. That is what comes back - not a default, not 90.
-  assert(trx.config.get("visuals.fov") == 65, "the player's value did not come back")
-  assert(trx.config.is_overridden("visuals.fov") == false)
-end)
+    assert(trx.config.restore("visuals.fov") == true)
+    -- The player chose 65. That is what comes back - not a default, not 90.
+    assert(
+      trx.config.get("visuals.fov") == 65,
+      "the player's value did not come back"
+    )
+    assert(trx.config.is_overridden("visuals.fov") == false)
+  end
+)
 
 test("overrides stack, and each restore lifts one", function()
   trx.config.override("visuals.fov", 90)
@@ -68,10 +92,16 @@ test("overrides stack, and each restore lifts one", function()
   assert(trx.config.get("visuals.fov") == 120)
 
   trx.config.restore("visuals.fov")
-  assert(trx.config.get("visuals.fov") == 90, "the one underneath is the other override")
+  assert(
+    trx.config.get("visuals.fov") == 90,
+    "the one underneath is the other override"
+  )
 
   trx.config.restore("visuals.fov")
-  assert(trx.config.get("visuals.fov") == 65, "and under that, the player's own")
+  assert(
+    trx.config.get("visuals.fov") == 65,
+    "and under that, the player's own"
+  )
 end)
 
 test("a string option is given back by value", function()
@@ -79,7 +109,10 @@ test("a string option is given back by value", function()
   assert(trx.config.get("visuals.water_color") == "0080ff")
 
   trx.config.restore("visuals.water_color")
-  assert(trx.config.get("visuals.water_color") == "ff0000", "the player's color did not come back")
+  assert(
+    trx.config.get("visuals.water_color") == "ff0000",
+    "the player's color did not come back"
+  )
 end)
 
 test("restoring what was never overridden reports false", function()

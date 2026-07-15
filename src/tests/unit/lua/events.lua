@@ -89,7 +89,10 @@ test("every handler attached to an event fires, in order", function()
     order[#order + 1] = "second"
   end)
   fake.fire("before_control")
-  assert(#order == 2 and order[1] == "first" and order[2] == "second", "attach order")
+  assert(
+    #order == 2 and order[1] == "first" and order[2] == "second",
+    "attach order"
+  )
 end)
 
 test("a handler only fires for its own event", function()
@@ -102,34 +105,40 @@ test("a handler only fires for its own event", function()
   assert(calls == 0, "a handler fired for someone else's event")
 end)
 
-test("a handler that takes a detached one's place waits for the next event", function()
-  local second_calls, replacement_calls = 0, 0
-  local second_id
+test(
+  "a handler that takes a detached one's place waits for the next event",
+  function()
+    local second_calls, replacement_calls = 0, 0
+    local second_id
 
-  trx.events.before_control(function()
-    if second_id == nil then
-      return
-    end
-    trx.events.detach(second_id)
-    second_id = nil
-    -- Detaching gives the handler's slot in the Lua registry back, and this
-    -- attach takes it: the two are told apart by their listener id, not by the
-    -- slot they happen to sit in.
     trx.events.before_control(function()
-      replacement_calls = replacement_calls + 1
+      if second_id == nil then
+        return
+      end
+      trx.events.detach(second_id)
+      second_id = nil
+      -- Detaching gives the handler's slot in the Lua registry back, and this
+      -- attach takes it: the two are told apart by their listener id, not by the
+      -- slot they happen to sit in.
+      trx.events.before_control(function()
+        replacement_calls = replacement_calls + 1
+      end)
     end)
-  end)
-  second_id = trx.events.before_control(function()
-    second_calls = second_calls + 1
-  end)
+    second_id = trx.events.before_control(function()
+      second_calls = second_calls + 1
+    end)
 
-  fake.fire("before_control")
-  assert(second_calls == 0, "a handler detached mid-dispatch still fired")
-  assert(replacement_calls == 0, "a handler attached mid-dispatch fired for that same event")
+    fake.fire("before_control")
+    assert(second_calls == 0, "a handler detached mid-dispatch still fired")
+    assert(
+      replacement_calls == 0,
+      "a handler attached mid-dispatch fired for that same event"
+    )
 
-  fake.fire("before_control")
-  assert(replacement_calls == 1, "the new handler never fired")
-end)
+    fake.fire("before_control")
+    assert(replacement_calls == 1, "the new handler never fired")
+  end
+)
 
 test("a level script's handlers are dropped when the level ends", function()
   local level_calls, global_calls = 0, 0
@@ -144,7 +153,10 @@ test("a level script's handlers are dropped when the level ends", function()
   end)
 
   fake.fire("before_control")
-  assert(level_calls == 1 and global_calls == 1, "both should fire while the level runs")
+  assert(
+    level_calls == 1 and global_calls == 1,
+    "both should fire while the level runs"
+  )
 
   fake.end_level()
   fake.fire("before_control")
@@ -180,7 +192,10 @@ test("the event type is not part of the surface", function()
   assert(trx.events.attach == nil, "raw attach must not be public")
 
   -- A hook is a plain function, not a table carrying its event type around.
-  assert(type(trx.events.before_control) == "function", "a hook must be a function")
+  assert(
+    type(trx.events.before_control) == "function",
+    "a hook must be a function"
+  )
   raises(function()
     return trx.events.before_control._type
   end)

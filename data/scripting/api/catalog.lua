@@ -56,7 +56,9 @@ api.enum("catalog.lara_states", {
   strip = "LS_",
   bulk = true,
   description = "Every state Lara can be in.",
-  examples = { [[if trx.lara.item.anim_state == trx.catalog.lara_states.RUN then ... end]] },
+  examples = {
+    [[if trx.lara.item.anim_state == trx.catalog.lara_states.RUN then ... end]],
+  },
 })
 
 api.enum("catalog.lara_anims", {
@@ -71,7 +73,9 @@ api.enum("catalog.flip_effects", {
   strip = "ITEM_ACTION_",
   bulk = true,
   description = "Every item action a flip effect can trigger.",
-  examples = { [[trx.rooms.flip_effect(trx.catalog.flip_effects.FLOOR_SHAKE, 10)]] },
+  examples = {
+    [[trx.rooms.flip_effect(trx.catalog.flip_effects.FLOOR_SHAKE, 10)]],
+  },
 })
 
 api.enum("catalog.weapons", {
@@ -79,14 +83,21 @@ api.enum("catalog.weapons", {
   strip = "LGT_",
   bulk = true,
   description = "Every weapon Lara can hold.",
-  examples = { [[if trx.lara.equipped_gun == trx.catalog.weapons.DESERT_EAGLE then ... end]] },
+  examples = {
+    [[if trx.lara.equipped_gun == trx.catalog.weapons.DESERT_EAGLE then ... end]],
+  },
 })
 
 api.define("catalog.to_slot", {
   description = "Converts a TRX id into the slot this game's own files use for it - the number a "
     .. "builder reads off Tomb Editor.",
   params = {
-    { name = "context", type = "integer", enum = "catalog.Context", description = "Which catalog." },
+    {
+      name = "context",
+      type = "integer",
+      enum = "catalog.Context",
+      description = "Which catalog.",
+    },
     { name = "id", type = "integer", description = "The TRX id." },
   },
   returns = {
@@ -103,7 +114,12 @@ api.define("catalog.to_slot", {
 api.define("catalog.from_slot", {
   description = "Converts a slot from this game's own files into the TRX id for it.",
   params = {
-    { name = "context", type = "integer", enum = "catalog.Context", description = "Which catalog." },
+    {
+      name = "context",
+      type = "integer",
+      enum = "catalog.Context",
+      description = "Which catalog.",
+    },
     { name = "slot", type = "integer", description = "The game's own id." },
   },
   returns = {

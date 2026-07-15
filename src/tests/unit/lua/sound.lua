@@ -13,7 +13,10 @@ test("play with no position plays at full volume", function()
   local calls = fake.calls()
   assert(calls.play_count == 1, "play did not reach the engine")
   assert(calls.last_sample == fake.SAMPLE)
-  assert(calls.had_pos == false, "no position means no position, not the origin")
+  assert(
+    calls.had_pos == false,
+    "no position means no position, not the origin"
+  )
 end)
 
 test("opts.pos plays the sound in the world", function()
@@ -39,7 +42,10 @@ test("an unavailable sample raises rather than playing silence", function()
   raises(function()
     trx.sound.play(fake.MISSING_SAMPLE)
   end)
-  assert(fake.calls().play_count == 0, "an unavailable sample must not reach the engine")
+  assert(
+    fake.calls().play_count == 0,
+    "an unavailable sample must not reach the engine"
+  )
 end)
 
 test("stop names the sample, stop_all names none", function()

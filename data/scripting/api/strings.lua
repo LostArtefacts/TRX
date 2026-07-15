@@ -14,7 +14,11 @@ api.define("strings.fuzzy_match", {
     .. "Candidates are ranked, best first. Each carries a `value` of the caller's choosing, which "
     .. "comes back untouched on the match - hang an id off it and read it back.",
   params = {
-    { name = "input", type = "string", description = "What the player typed." },
+    {
+      name = "input",
+      type = "string",
+      description = "What the player typed.",
+    },
     {
       name = "sources",
       type = "table",
@@ -42,7 +46,11 @@ api.define("strings.regex_match", {
   description = "Whether a subject matches a regular expression. Case-insensitive.",
   params = {
     { name = "subject", type = "string" },
-    { name = "pattern", type = "string", description = "A PCRE regular expression." },
+    {
+      name = "pattern",
+      type = "string",
+      description = "A PCRE regular expression.",
+    },
   },
   returns = { type = "boolean" },
   examples = { [[if trx.strings.regex_match(args, "^\\d+$") then ... end]] },

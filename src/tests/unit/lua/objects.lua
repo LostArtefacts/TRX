@@ -37,7 +37,10 @@ end)
 test("a writable field writes through", function()
   local wolf = trx.objects[fake.WOLF]
   wolf.radius = 500
-  assert(trx.objects[fake.WOLF].radius == 500, "the write did not reach the object")
+  assert(
+    trx.objects[fake.WOLF].radius == 500,
+    "the write did not reach the object"
+  )
 
   wolf.shadow_size = 64
   assert(trx.objects[fake.WOLF].shadow_size == 64)
@@ -61,13 +64,19 @@ test("a member of OBJECT nobody declared is not reachable", function()
   assert(wolf.control_func == nil)
 end)
 
-test("properties are the object's own, and every item inherits them", function()
-  local wolf = trx.objects[fake.WOLF]
-  assert(wolf.properties.max_hit_points == 20, "the object's default")
+test(
+  "properties are the object's own, and every item inherits them",
+  function()
+    local wolf = trx.objects[fake.WOLF]
+    assert(wolf.properties.max_hit_points == 20, "the object's default")
 
-  wolf.properties.max_hit_points = 30
-  assert(trx.objects[fake.WOLF].properties.max_hit_points == 30, "the default did not move")
-end)
+    wolf.properties.max_hit_points = 30
+    assert(
+      trx.objects[fake.WOLF].properties.max_hit_points == 30,
+      "the default did not move"
+    )
+  end
+)
 
 test("properties iterate", function()
   local seen = {}
@@ -100,7 +109,10 @@ test("swap_mesh will not reach past an object's meshes", function()
   raises(function()
     trx.objects.swap_mesh(fake.WOLF, fake.VASE, -1, 0)
   end)
-  assert(fake.calls().swap_mesh == 0, "a rejected swap must not reach the engine")
+  assert(
+    fake.calls().swap_mesh == 0,
+    "a rejected swap must not reach the engine"
+  )
 end)
 
 test("swap_mesh takes both mesh numbers or neither", function()

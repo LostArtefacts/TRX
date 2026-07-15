@@ -169,13 +169,15 @@ api.type("lara.Lara", {
       from = "extra_anim",
       type = "boolean",
       writable = false,
-      description = "Whether a scripted animation is driving Lara rather than her own state " .. "machine.",
+      description = "Whether a scripted animation is driving Lara rather than her own state "
+        .. "machine.",
     },
     killed_loyal_item = {
       from = "killed_loyal_item",
       type = "boolean",
       writable = false,
-      description = "Whether Lara has killed one of her own allies, which is what turns the rest " .. "of them on her.",
+      description = "Whether Lara has killed one of her own allies, which is what turns the rest "
+        .. "of them on her.",
     },
     dive_timer = {
       from = "dive_timer",
@@ -251,7 +253,12 @@ api.property("lara.has_pistol_weapon", {
 api.define("lara.set_extra_equipment", {
   description = "Hangs an extra mesh on one of Lara's own, replacing whatever is there.",
   params = {
-    { name = "mesh", type = "integer", enum = "lara.Mesh", description = "Which of Lara's meshes." },
+    {
+      name = "mesh",
+      type = "integer",
+      enum = "lara.Mesh",
+      description = "Which of Lara's meshes.",
+    },
     {
       name = "extra_mesh",
       type = "integer",
@@ -279,7 +286,12 @@ api.define("lara.extinguish", {
 api.define("lara.clear_equipment", {
   description = "Takes the extra mesh back off, leaving Lara's own.",
   params = {
-    { name = "mesh", type = "integer", enum = "lara.Mesh", description = "Which of Lara's meshes." },
+    {
+      name = "mesh",
+      type = "integer",
+      enum = "lara.Mesh",
+      description = "Which of Lara's meshes.",
+    },
   },
   impl = raw.clear_equipment,
 })

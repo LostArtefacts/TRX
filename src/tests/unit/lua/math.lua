@@ -33,7 +33,10 @@ end)
 test("atan takes z before x", function()
   assert(trx.math.atan(0, 0) == 0)
   assert(trx.math.atan(1024, 0) == 0, "straight along +z is angle zero")
-  assert(trx.math.atan(0, 1024) == DEG_90, "straight along +x is a quarter turn")
+  assert(
+    trx.math.atan(0, 1024) == DEG_90,
+    "straight along +x is a quarter turn"
+  )
   assert(trx.math.atan(1024, 1024) == trx.math.DEG_45)
 end)
 

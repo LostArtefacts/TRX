@@ -32,7 +32,12 @@ api.define("music.get_track", {
 api.define("music.play", {
   description = "Plays a track. Raises if the track or the mode is invalid.",
   params = {
-    { name = "id", type = "integer", enum = "catalog.music", description = "Track to play." },
+    {
+      name = "id",
+      type = "integer",
+      enum = "catalog.music",
+      description = "Track to play.",
+    },
     {
       name = "opts",
       type = "table",

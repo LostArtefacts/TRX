@@ -87,8 +87,17 @@ api.define("console.eval", {
     .. "Output is silenced by default and appears only in the terminal and the log file. Pass "
     .. "`{ verbose = true }` to show it in the console as a command typed by the player would.",
   params = {
-    { name = "command", type = "string", description = "Command to run, as the player would type it." },
-    { name = "opts", type = "table", optional = true, description = "`verbose`: show the command's output." },
+    {
+      name = "command",
+      type = "string",
+      description = "Command to run, as the player would type it.",
+    },
+    {
+      name = "opts",
+      type = "table",
+      optional = true,
+      description = "`verbose`: show the command's output.",
+    },
   },
   examples = { [[trx.console.eval("play 1", { verbose = true })]] },
   impl = raw.eval,
@@ -122,9 +131,18 @@ api.define("console.register", {
   },
   impl = function(spec)
     assert(type(spec) == "table", "trx.console.register expects a table")
-    assert(type(spec.name) == "string", "trx.console.register: name must be a string")
-    assert(spec.help == nil or type(spec.help) == "string", "trx.console.register: help must be a string")
-    assert(type(spec.run) == "function", "trx.console.register: run must be a function")
+    assert(
+      type(spec.name) == "string",
+      "trx.console.register: name must be a string"
+    )
+    assert(
+      spec.help == nil or type(spec.help) == "string",
+      "trx.console.register: help must be a string"
+    )
+    assert(
+      type(spec.run) == "function",
+      "trx.console.register: run must be a function"
+    )
 
     raw.register(spec.name, spec.help, function(args)
       local result, message = spec.run((args or ""):match("^%s*(.-)%s*$"))
@@ -132,7 +150,10 @@ api.define("console.register", {
       if result == nil then
         result = Result.OK
       end
-      assert(is_result[result], spec.name .. ": run must give back a trx.console.Result")
+      assert(
+        is_result[result],
+        spec.name .. ": run must give back a trx.console.Result"
+      )
       if message ~= nil then
         if result == Result.OK then
           trx.console.log.info(message)

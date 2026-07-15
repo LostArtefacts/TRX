@@ -36,7 +36,10 @@ test("sealing takes the declaring half off trx.api", function()
     "describe",
     "to_json",
   }) do
-    assert(trx.api[name] == nil, "trx.api." .. name .. " must not survive the seal")
+    assert(
+      trx.api[name] == nil,
+      "trx.api." .. name .. " must not survive the seal"
+    )
   end
 
   assert(trx.items[1].box_num == nil, "box_num must still be unreachable")

@@ -15,10 +15,16 @@ api.define("config.get", {
   description = "Reads a setting. The value comes back as the type the option is declared with, so "
     .. "a boolean option reads as a boolean. Colors and enums read as strings.",
   params = {
-    { name = "key", type = "string", description = "Dotted path, e.g. `visuals.water_color`." },
+    {
+      name = "key",
+      type = "string",
+      description = "Dotted path, e.g. `visuals.water_color`.",
+    },
   },
   returns = { type = "any", description = "Raises if no option has that key." },
-  examples = { [[if trx.config.get("audio.enable_music") then trx.music.play(1) end]] },
+  examples = {
+    [[if trx.config.get("audio.enable_music") then trx.music.play(1) end]],
+  },
   impl = raw.get,
 })
 
@@ -82,7 +88,10 @@ api.define("config.is_overridden", {
 
 api.define("config.list", {
   description = "Every setting and its current value.",
-  returns = { type = "table", description = "Maps each option's key to its value." },
+  returns = {
+    type = "table",
+    description = "Maps each option's key to its value.",
+  },
   examples = {
     [[for key, value in pairs(trx.config.list()) do
   trx.log.info(key .. " = " .. tostring(value))

@@ -73,7 +73,10 @@ local sealed = false
 
 local function split_path(path)
   local module, name = path:match("^([%w_]+)%.([%w_]+)$")
-  assert(module ~= nil, "api path must be 'module.name', got: " .. tostring(path))
+  assert(
+    module ~= nil,
+    "api path must be 'module.name', got: " .. tostring(path)
+  )
   return module, name
 end
 
@@ -86,7 +89,8 @@ local function path_parts(path)
   end
   assert(
     #parts == 2 or #parts == 3,
-    "api path must be 'module.name' or 'module.namespace.name', got: " .. tostring(path)
+    "api path must be 'module.name' or 'module.namespace.name', got: "
+      .. tostring(path)
   )
   return parts
 end
@@ -101,7 +105,10 @@ end
 -- The guard every declarator opens with: declarations are the engine's to make
 -- at load time, and a spec is a table. `fn` names the caller for the message.
 local function opening(fn, spec)
-  assert(not sealed, "the trx.api registry is sealed; declarations happen at load time")
+  assert(
+    not sealed,
+    "the trx.api registry is sealed; declarations happen at load time"
+  )
   if spec ~= nil then
     assert(type(spec) == "table", fn .. ": spec must be a table")
   end
@@ -118,7 +125,13 @@ local function resolve(path)
   local namespace = rawget(trx[module], parts[2])
   assert(
     type(namespace) == "table",
-    "api: " .. path .. " needs api.namespace('" .. module .. "." .. parts[2] .. "') declared first"
+    "api: "
+      .. path
+      .. " needs api.namespace('"
+      .. module
+      .. "."
+      .. parts[2]
+      .. "') declared first"
   )
   return module, namespace, parts[3]
 end
@@ -166,7 +179,15 @@ local function install_module_meta(module)
         -- A property is written, not called, so make_checked never sees it.
         -- Strict mode still has to.
         if strict_enabled and not checkers[prop.type](value) then
-          error("trx." .. module .. "." .. tostring(key) .. ": expected a " .. tostring(prop.type), 2)
+          error(
+            "trx."
+              .. module
+              .. "."
+              .. tostring(key)
+              .. ": expected a "
+              .. tostring(prop.type),
+            2
+          )
         end
         prop.set(value)
         return
@@ -199,7 +220,10 @@ function api.module(name, spec)
   -- A module that stands for one C struct reads and writes that struct's fields
   -- directly: trx.lara.air is Lara's air. `instance` hands back the handle.
   if spec.instance ~= nil then
-    assert(type(spec.instance) == "function", "api.module: instance must be a function")
+    assert(
+      type(spec.instance) == "function",
+      "api.module: instance must be a function"
+    )
     module_instances[name] = spec.instance
     install_module_meta(name)
   end
@@ -222,9 +246,20 @@ local function make_checked(fn, path, params)
     names[i] = "a" .. i
     local fail = ("E(%q,%q)"):format(path, p.name)
     if p.optional then
-      checks[#checks + 1] = ("if a%d==nil then a%d=D[%d] elseif not C[%d](a%d) then %s end"):format(i, i, i, i, i, fail)
+      checks[#checks + 1] = ("if a%d==nil then a%d=D[%d] elseif not C[%d](a%d) then %s end"):format(
+        i,
+        i,
+        i,
+        i,
+        i,
+        fail
+      )
     else
-      checks[#checks + 1] = ("if not C[%d](a%d) then %s end"):format(i, i, fail)
+      checks[#checks + 1] = ("if not C[%d](a%d) then %s end"):format(
+        i,
+        i,
+        fail
+      )
     end
   end
 
@@ -243,7 +278,14 @@ local function make_checked(fn, path, params)
       if not (p.optional and p.default == nil) then
         break
       end
-      table.insert(body, 1, ("if a%d==nil then return fn(%s) end"):format(i, table.concat(names, ",", 1, i - 1)))
+      table.insert(
+        body,
+        1,
+        ("if a%d==nil then return fn(%s) end"):format(
+          i,
+          table.concat(names, ",", 1, i - 1)
+        )
+      )
     end
   end
   body[#body + 1] = ("return fn(%s)"):format(sig)
@@ -258,7 +300,10 @@ local function make_checked(fn, path, params)
   for i = 1, fixed do
     local p = params[i]
     local check = checkers[p.type]
-    assert(check ~= nil, path .. ": no checker for type '" .. tostring(p.type) .. "'")
+    assert(
+      check ~= nil,
+      path .. ": no checker for type '" .. tostring(p.type) .. "'"
+    )
     param_checkers[i] = check
     defaults[i] = p.default
   end
@@ -267,7 +312,12 @@ local function make_checked(fn, path, params)
     error(("%s: invalid argument '%s'"):format(where, arg), 3)
   end
   -- Named as an API module is, so LUA_GetCallerInfo walks past this frame too.
-  return load(src, "@trx/api/" .. path .. " (checked)")(fn, param_checkers, defaults, on_fail)
+  return load(src, "@trx/api/" .. path .. " (checked)")(
+    fn,
+    param_checkers,
+    defaults,
+    on_fail
+  )
 end
 
 -- The function a caller reaches: the checking wrapper under strict mode, the raw
@@ -390,7 +440,15 @@ function api.seal()
   local bad = {}
   local function audit_type(where, what, type_name)
     if checkers[type_name] == nil then
-      table.insert(bad, where .. ": " .. what .. " has an unknown type '" .. tostring(type_name) .. "'")
+      table.insert(
+        bad,
+        where
+          .. ": "
+          .. what
+          .. " has an unknown type '"
+          .. tostring(type_name)
+          .. "'"
+      )
       return false
     end
     return true
@@ -400,16 +458,32 @@ function api.seal()
     local optional_seen = false
     for _, p in ipairs(params or {}) do
       if p.name ~= "..." then
-        if audit_type(where, "'" .. tostring(p.name) .. "'", p.type) and p.default ~= nil then
+        if
+          audit_type(where, "'" .. tostring(p.name) .. "'", p.type)
+          and p.default ~= nil
+        then
           if not checkers[p.type](p.default) then
-            table.insert(bad, where .. ": the default for '" .. p.name .. "' is not a " .. p.type)
+            table.insert(
+              bad,
+              where
+                .. ": the default for '"
+                .. p.name
+                .. "' is not a "
+                .. p.type
+            )
           end
         end
         -- Nothing can reach it without passing the optional one too.
         if p.optional then
           optional_seen = true
         elseif optional_seen then
-          table.insert(bad, where .. ": '" .. p.name .. "' is required but follows an optional parameter")
+          table.insert(
+            bad,
+            where
+              .. ": '"
+              .. p.name
+              .. "' is required but follows an optional parameter"
+          )
         end
       end
     end
@@ -453,7 +527,10 @@ function api.namespace(path, spec)
 
   local namespace = {}
   if spec.call ~= nil then
-    assert(type(spec.call) == "function", "api.namespace: call must be a function")
+    assert(
+      type(spec.call) == "function",
+      "api.namespace: call must be a function"
+    )
     -- Through a holder, so api.strict can swap the wrapper in as it does for the
     -- members.
     local dispatch = { fn = bound(spec.call, path, spec.params) }
@@ -480,8 +557,14 @@ end
 function api.container(name, spec)
   opening("api.container", spec)
   assert(type(spec.get) == "function", "api.container: get must be a function")
-  assert(spec.count == nil or type(spec.count) == "function", "api.container: count must be a function")
-  assert(type(spec.key) == "table", "api.container: key must describe what the module is indexed by")
+  assert(
+    spec.count == nil or type(spec.count) == "function",
+    "api.container: count must be a function"
+  )
+  assert(
+    type(spec.key) == "table",
+    "api.container: key must describe what the module is indexed by"
+  )
 
   -- A module keyed only by number leaves a string key to the rest of the
   -- metatable, so trx.rooms.nonsense is nil rather than an error out of C.
@@ -538,7 +621,11 @@ local function bind_type_methods(path)
     -- back; without strict mode the name reaches C to bind directly.
     local exposed = from
     if strict_enabled then
-      exposed = make_checked(struct.method(backing, from), path .. "." .. name, method_params(method.params, type_name))
+      exposed = make_checked(
+        struct.method(backing, from),
+        path .. "." .. name,
+        method_params(method.params, type_name)
+      )
     end
     struct.expose_method(backing, name, exposed)
   end
@@ -573,7 +660,10 @@ end
 -- called. A member C can reach but nobody declares simply does not exist.
 function api.type(path, spec)
   opening("api.type", spec)
-  assert(type(spec.backing) == "string", "api.type: backing must be a C type name")
+  assert(
+    type(spec.backing) == "string",
+    "api.type: backing must be a C type name"
+  )
   local backing = spec.backing
 
   -- Declaring the type is what makes its name checkable in a params list.
@@ -590,7 +680,10 @@ function api.type(path, spec)
   end
 
   for name, computed in pairs(spec.extensions or {}) do
-    assert(type(computed.impl) == "function", "api.type: extension '" .. name .. "' needs an impl")
+    assert(
+      type(computed.impl) == "function",
+      "api.type: extension '" .. name .. "' needs an impl"
+    )
     struct.expose_computed(backing, name, computed.impl)
   end
 
@@ -605,7 +698,11 @@ function api.type(path, spec)
   if #undeclared > 0 then
     table.sort(undeclared)
     trx.log.debug(
-      backing .. ": " .. #undeclared .. " member(s) not exposed to scripts: " .. table.concat(undeclared, ", ")
+      backing
+        .. ": "
+        .. #undeclared
+        .. " member(s) not exposed to scripts: "
+        .. table.concat(undeclared, ", ")
     )
   end
 
@@ -635,13 +732,19 @@ end
 
 function api.enum(path, spec)
   opening("api.enum", spec)
-  assert(type(spec.backing) == "string", "api.enum: backing must be a C enum name")
+  assert(
+    type(spec.backing) == "string",
+    "api.enum: backing must be a C enum name"
+  )
   local module, name = split_path(path)
 
   -- `bulk` is for a catalog-sized enum - every object in the game, say. It is
   -- described as a whole, and its constants carry no description apiece.
   local bulk = spec.bulk == true
-  assert(bulk or type(spec.values) == "table", "api.enum: values must be a table")
+  assert(
+    bulk or type(spec.values) == "table",
+    "api.enum: values must be a table"
+  )
 
   local public = {}
   local reflected = {}
@@ -651,17 +754,33 @@ function api.enum(path, spec)
     -- second would quietly take the first one's place.
     assert(
       public[value_name] == nil,
-      "api.enum: " .. path .. "." .. value_name .. " is the name of two constants of " .. spec.backing
+      "api.enum: "
+        .. path
+        .. "."
+        .. value_name
+        .. " is the name of two constants of "
+        .. spec.backing
     )
     if not bulk then
-      assert(spec.values[value_name] ~= nil, "api.enum: " .. path .. "." .. value_name .. " is not documented")
+      assert(
+        spec.values[value_name] ~= nil,
+        "api.enum: " .. path .. "." .. value_name .. " is not documented"
+      )
     end
     public[value_name] = constant.value
     reflected[value_name] = true
   end
 
   for value_name in pairs(spec.values or {}) do
-    assert(reflected[value_name], "api.enum: " .. path .. "." .. value_name .. " is not a constant of " .. spec.backing)
+    assert(
+      reflected[value_name],
+      "api.enum: "
+        .. path
+        .. "."
+        .. value_name
+        .. " is not a constant of "
+        .. spec.backing
+    )
   end
 
   spec.count = 0
@@ -686,7 +805,14 @@ function api.enum(path, spec)
       return public[key] ~= nil and public[key] or public[key:upper()]
     end,
     __newindex = function(_, key)
-      error("trx." .. path .. "." .. tostring(key) .. ": an enum cannot be written to", 2)
+      error(
+        "trx."
+          .. path
+          .. "."
+          .. tostring(key)
+          .. ": an enum cannot be written to",
+        2
+      )
     end,
     -- pairs() hands the caller every value __pairs returns, so returning
     -- `next, public` would hand out the very table the face is there to keep
@@ -714,7 +840,10 @@ end
 -- so naming one C does not export fails here rather than quietly being nil.
 function api.const(path, spec)
   opening("api.const", spec)
-  assert(spec.value ~= nil, "api.const: " .. path .. " has no value; is it exported from C?")
+  assert(
+    spec.value ~= nil,
+    "api.const: " .. path .. " has no value; is it exported from C?"
+  )
   local module, name = split_path(path)
 
   record(consts, path, spec)
@@ -730,7 +859,10 @@ end
 function api.property(path, spec)
   opening("api.property", spec)
   assert(type(spec.get) == "function", "api.property: get must be a function")
-  assert(spec.set == nil or type(spec.set) == "function", "api.property: set must be a function")
+  assert(
+    spec.set == nil or type(spec.set) == "function",
+    "api.property: set must be a function"
+  )
   local module, name = split_path(path)
 
   record(properties, path, spec)
@@ -943,7 +1075,13 @@ local function encode(value, out)
   elseif kind == "number" then
     out[#out + 1] = tostring(value)
   elseif kind == "string" then
-    out[#out + 1] = '"' .. value:gsub("\\", "\\\\"):gsub('"', '\\"'):gsub("\n", "\\n"):gsub("\t", "\\t") .. '"'
+    out[#out + 1] = '"'
+      .. value
+        :gsub("\\", "\\\\")
+        :gsub('"', '\\"')
+        :gsub("\n", "\\n")
+        :gsub("\t", "\\t")
+      .. '"'
   elseif kind == "table" then
     if value[1] ~= nil or next(value) == nil then
       out[#out + 1] = "["

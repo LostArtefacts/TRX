@@ -11,7 +11,10 @@ test("the log group is callable, and logs at INFO", function()
   local calls = fake.calls()
   assert(calls.log_count == 1, "calling the group did not reach the console")
   assert(calls.last_message == "hello")
-  assert(calls.last_level == trx.log.LogLevel.INFO, "calling the group must log at INFO")
+  assert(
+    calls.last_level == trx.log.LogLevel.INFO,
+    "calling the group must log at INFO"
+  )
 end)
 
 test("each level logs at its own level", function()
@@ -26,7 +29,10 @@ test("each level logs at its own level", function()
     case.fn("msg")
     assert(fake.calls().last_level == case.level, "wrong level")
   end
-  assert(fake.calls().log_count == #cases, "not every level reached the console")
+  assert(
+    fake.calls().log_count == #cases,
+    "not every level reached the console"
+  )
 end)
 
 test("generic logs at the level it is handed", function()
@@ -51,10 +57,16 @@ end)
 
 test("eval is quiet unless asked to be verbose", function()
   trx.console.eval("play 1")
-  assert(fake.calls().verbose_during_eval == false, "eval must be quiet by default")
+  assert(
+    fake.calls().verbose_during_eval == false,
+    "eval must be quiet by default"
+  )
 
   trx.console.eval("play 1", { verbose = true })
-  assert(fake.calls().verbose_during_eval == true, "verbose did not reach the console")
+  assert(
+    fake.calls().verbose_during_eval == true,
+    "verbose did not reach the console"
+  )
 end)
 
 test("eval puts the verbose flag back the way it found it", function()
@@ -93,7 +105,10 @@ test("a registered command runs when the player types it", function()
     end,
   })
 
-  assert(fake.run("greet", "world") == trx.console.Result.OK, "a command that says nothing is OK")
+  assert(
+    fake.run("greet", "world") == trx.console.Result.OK,
+    "a command that says nothing is OK"
+  )
   assert(seen == "world", "the arguments did not reach the handler")
 end)
 
@@ -149,7 +164,10 @@ test("a message from a command that worked is not an error", function()
   })
   fake.run("chatty", "")
   assert(fake.calls().last_message == "did it")
-  assert(fake.calls().last_level == trx.log.LogLevel.INFO, "OK is not an error")
+  assert(
+    fake.calls().last_level == trx.log.LogLevel.INFO,
+    "OK is not an error"
+  )
 end)
 
 test("a command that raises is a failure, not a crash", function()
@@ -241,7 +259,10 @@ test("a level script cannot register a command", function()
       trx.console.register({ name = "leveller", run = function() end })
     end)
   end, "level script")
-  assert(not fake.is_registered("leveller"), "the command was registered anyway")
+  assert(
+    not fake.is_registered("leveller"),
+    "the command was registered anyway"
+  )
 end)
 
 test("register wants a name and a function", function()
@@ -256,7 +277,10 @@ end)
 test("the raw bridge is not part of the surface", function()
   -- trxc.console.log is a plain function taking a level. The declaration turns
   -- it into a namespace, and the raw entry point must not leak alongside it.
-  assert(type(trx.console.log) == "table", "log must be the namespace, not the raw function")
+  assert(
+    type(trx.console.log) == "table",
+    "log must be the namespace, not the raw function"
+  )
 end)
 
 return h.report()

@@ -90,7 +90,8 @@ end)]],
     },
     bounds = {
       type = "table",
-      description = "World-coordinate bounds of the room: `min_x`, `min_y`, `min_z`, `max_x`, " .. "`max_y`, `max_z`.",
+      description = "World-coordinate bounds of the room: `min_x`, `min_y`, `min_z`, `max_x`, "
+        .. "`max_y`, `max_z`.",
       impl = function(room)
         return raw.get_bounds(room)
       end,
@@ -115,7 +116,9 @@ end)]],
 
 api.define("rooms.get", {
   description = "Retrieves a room by 1-based index.",
-  params = { { name = "num", type = "integer", description = "1-based room number." } },
+  params = {
+    { name = "num", type = "integer", description = "1-based room number." },
+  },
   returns = { type = "Room", nullable = true },
   examples = {
     [[local room = trx.rooms[15]
@@ -144,7 +147,12 @@ api.define("rooms.flip_effect", {
       enum = "catalog.flip_effects",
       description = "Use `-1` to clear the current effect.",
     },
-    { name = "timer", type = "integer", optional = true, description = "Flip timer value." },
+    {
+      name = "timer",
+      type = "integer",
+      optional = true,
+      description = "Flip timer value.",
+    },
   },
   examples = {
     [[trx.rooms.flip_effect(trx.catalog.flip_effects.floor_shake, 10)]],
@@ -157,10 +165,18 @@ api.define("rooms.find_valid_pos", {
     .. "legally be placed.",
   params = {
     { name = "pos", type = "vec3", description = "Position to search near." },
-    { name = "room_num", type = "integer", description = "1-based room to search from." },
+    {
+      name = "room_num",
+      type = "integer",
+      description = "1-based room to search from.",
+    },
   },
   returns = {
-    { type = "vec3", nullable = true, description = "The valid position, or `nil` if none was found nearby." },
+    {
+      type = "vec3",
+      nullable = true,
+      description = "The valid position, or `nil` if none was found nearby.",
+    },
     { type = "integer", description = "The 1-based room the position is in." },
   },
   impl = raw.find_valid_pos,
@@ -170,7 +186,9 @@ api.container("rooms", {
   description = "Indexing the module reaches a room, and `#trx.rooms` is how many the level has.",
   key = { type = "integer", description = "1-based room number." },
   value = { type = "Room", nullable = true },
-  examples = { [[trx.log.info(#trx.rooms .. " rooms, first is " .. trx.rooms[1].num)]] },
+  examples = {
+    [[trx.log.info(#trx.rooms .. " rooms, first is " .. trx.rooms[1].num)]],
+  },
   get = raw.get,
   count = raw.count,
 })

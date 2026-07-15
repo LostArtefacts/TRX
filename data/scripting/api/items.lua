@@ -128,7 +128,11 @@ api.type("items.Item", {
       type = "integer",
       description = "Trigger-related timer value.",
     },
-    speed = { from = "speed", type = "integer", description = "Forward speed." },
+    speed = {
+      from = "speed",
+      type = "integer",
+      description = "Forward speed.",
+    },
     fall_speed = {
       from = "fall_speed",
       type = "integer",
@@ -244,7 +248,9 @@ end)]],
         .. "would. Unlike `kill()`, which simply removes the item from the game.",
     },
     distance_to = {
-      params = { { name = "pos", type = "vec3", description = "World position." } },
+      params = {
+        { name = "pos", type = "vec3", description = "World position." },
+      },
       returns = { type = "integer" },
       description = "Distance from this item to a world position.",
     },
@@ -255,7 +261,10 @@ end)]],
         .. "Prefer `item.properties.<name>`.",
     },
     set_property = {
-      params = { { name = "name", type = "string" }, { name = "value", type = "any" } },
+      params = {
+        { name = "name", type = "string" },
+        { name = "value", type = "any" },
+      },
       description = "Overrides an object property for this item. Prefer `item.properties.<name> = ...`.",
     },
     get_property_names = {
@@ -273,7 +282,13 @@ local function validate_query(query, fn_name)
   end
   for key, _ in pairs(query) do
     if not FIND_KEYS[key] then
-      trx.log.warn("trx.items." .. fn_name .. ": unknown property '" .. tostring(key) .. "'")
+      trx.log.warn(
+        "trx.items."
+          .. fn_name
+          .. ": unknown property '"
+          .. tostring(key)
+          .. "'"
+      )
     end
   end
 end
@@ -307,7 +322,11 @@ end
 api.define("items.get", {
   description = "Retrieves an item by 1-based index or by name.",
   params = {
-    { name = "key", type = "any", description = "1-based index, or the item's unique name." },
+    {
+      name = "key",
+      type = "any",
+      description = "1-based index, or the item's unique name.",
+    },
   },
   returns = { type = "Item", nullable = true },
   examples = {
@@ -327,7 +346,11 @@ api.define("items.spawn", {
       enum = "catalog.objects",
       description = "Object type to spawn.",
     },
-    { name = "pos", type = "vec3", description = "World position. Must lie inside the level." },
+    {
+      name = "pos",
+      type = "vec3",
+      description = "World position. Must lie inside the level.",
+    },
     {
       name = "angle_y",
       type = "integer",
@@ -342,7 +365,11 @@ api.define("items.spawn", {
       description = "`activate`: bring the item to life, enabling AI for creatures.",
     },
   },
-  returns = { type = "Item", nullable = true, description = "`nil` if the item pool is exhausted." },
+  returns = {
+    type = "Item",
+    nullable = true,
+    description = "`nil` if the item pool is exhausted.",
+  },
   examples = {
     [[local wolf = trx.items.spawn(
   trx.catalog.objects.wolf, trx.lara.item.pos, 0, { activate = true })]],
@@ -405,7 +432,10 @@ api.define("items.first", {
 
 api.container("items", {
   description = "Indexing the module reaches an item, and `#trx.items` is how many the level has.",
-  key = { type = "any", description = "1-based index, or the item's unique name." },
+  key = {
+    type = "any",
+    description = "1-based index, or the item's unique name.",
+  },
   value = { type = "Item", nullable = true },
   examples = {
     [[for i = 1, #trx.items do

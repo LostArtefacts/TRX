@@ -38,7 +38,10 @@ test("a partial name matches, which is the point", function()
   local matches = trx.strings.fuzzy_match("medi", sources())
   assert(#matches > 0, "medi matched nothing")
   for _, match in ipairs(matches) do
-    assert(match.key:find("medi"), "matched something with no medi in it: " .. match.key)
+    assert(
+      match.key:find("medi"),
+      "matched something with no medi in it: " .. match.key
+    )
   end
 end)
 
@@ -85,7 +88,10 @@ end)
 
 test("regex_match answers, and ignores case", function()
   assert(trx.strings.regex_match("wolf", "^wo") == true)
-  assert(trx.strings.regex_match("WOLF", "^wo") == true, "the match is case-insensitive")
+  assert(
+    trx.strings.regex_match("WOLF", "^wo") == true,
+    "the match is case-insensitive"
+  )
   assert(trx.strings.regex_match("bear", "^wo") == false)
 end)
 

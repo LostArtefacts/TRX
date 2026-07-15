@@ -15,7 +15,10 @@ test("the level list is the levels the game numbers", function()
   assert(#levels == fake.NUMBERED_LEVEL_COUNT, "wrong number of levels")
   assert(levels[1].title == "Caves")
   assert(levels[2].title == "Vilcabamba", "the last level must be reachable")
-  assert(levels[1].type == trx.game.LevelType.NORMAL, "the gym is not in the list")
+  assert(
+    levels[1].type == trx.game.LevelType.NORMAL,
+    "the gym is not in the list"
+  )
 end)
 
 test("a level's num is its place in the game flow, not in the list", function()
@@ -57,7 +60,10 @@ test("cutscenes and demos are their own lists", function()
   assert(trx.game.cutscenes[1].type == trx.game.LevelType.CUTSCENE)
 
   assert(#trx.game.demos == 1)
-  assert(trx.game.demos[1].type == trx.game.LevelType.DEMO, "DEMO must exist as a level type")
+  assert(
+    trx.game.demos[1].type == trx.game.LevelType.DEMO,
+    "DEMO must exist as a level type"
+  )
 end)
 
 test("current_level is nil until a level is playing", function()
@@ -70,19 +76,22 @@ end)
 
 -- Neither is in the list the game numbers, and the title level is not even in a
 -- table, so both are only reachable as the level being played.
-test("the gym and the title level still resolve as the current level", function()
-  fake.set_current_level(1)
-  local gym = trx.game.current_level
-  assert(gym ~= nil, "the gym must resolve")
-  assert(gym.type == trx.game.LevelType.GYM)
-  assert(gym.num == 0, "a gym has no number")
+test(
+  "the gym and the title level still resolve as the current level",
+  function()
+    fake.set_current_level(1)
+    local gym = trx.game.current_level
+    assert(gym ~= nil, "the gym must resolve")
+    assert(gym.type == trx.game.LevelType.GYM)
+    assert(gym.num == 0, "a gym has no number")
 
-  fake.set_current_title()
-  local title = trx.game.current_level
-  assert(title ~= nil, "the title level must resolve")
-  assert(title.type == trx.game.LevelType.TITLE)
-  assert(title.title == "Title")
-end)
+    fake.set_current_title()
+    local title = trx.game.current_level
+    assert(title ~= nil, "the title level must resolve")
+    assert(title.type == trx.game.LevelType.TITLE)
+    assert(title.title == "Title")
+  end
+)
 
 test("the enums come from C", function()
   assert(trx.game.LevelTable.MAIN ~= nil)

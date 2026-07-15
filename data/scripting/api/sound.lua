@@ -9,7 +9,12 @@ api.module("sound", {
 api.define("sound.is_available", {
   description = "Whether a sound sample exists in the current level.",
   params = {
-    { name = "id", type = "integer", enum = "catalog.samples", description = "Sample to test." },
+    {
+      name = "id",
+      type = "integer",
+      enum = "catalog.samples",
+      description = "Sample to test.",
+    },
   },
   returns = { type = "boolean" },
   impl = raw.is_available,
@@ -18,7 +23,12 @@ api.define("sound.is_available", {
 api.define("sound.play", {
   description = "Plays a sound effect. Raises if the sample is not available.",
   params = {
-    { name = "id", type = "integer", enum = "catalog.samples", description = "Sample to play." },
+    {
+      name = "id",
+      type = "integer",
+      enum = "catalog.samples",
+      description = "Sample to play.",
+    },
     {
       name = "opts",
       type = "table",
@@ -37,7 +47,12 @@ trx.sound.play(99, { pos = { x = 100, y = 200, z = 50 } })]],
 api.define("sound.stop", {
   description = "Stops a sound effect.",
   params = {
-    { name = "id", type = "integer", enum = "catalog.samples", description = "Sample to stop." },
+    {
+      name = "id",
+      type = "integer",
+      enum = "catalog.samples",
+      description = "Sample to stop.",
+    },
   },
   impl = raw.stop,
 })

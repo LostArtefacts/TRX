@@ -11,14 +11,18 @@ api.module("math", {
 
 api.define("math.sin", {
   description = "Sine of an angle.",
-  params = { { name = "angle", type = "integer", description = "Angle in TRX units." } },
+  params = {
+    { name = "angle", type = "integer", description = "Angle in TRX units." },
+  },
   returns = { type = "number", description = "A value in [-1, 1]." },
   impl = raw.sin,
 })
 
 api.define("math.cos", {
   description = "Cosine of an angle.",
-  params = { { name = "angle", type = "integer", description = "Angle in TRX units." } },
+  params = {
+    { name = "angle", type = "integer", description = "Angle in TRX units." },
+  },
   returns = { type = "number", description = "A value in [-1, 1]." },
   impl = raw.cos,
 })

@@ -101,13 +101,19 @@ test("pairs() does not hand out the table behind an enum", function()
   pcall(function()
     state.ACTIVE = 999
   end)
-  assert(trx.items.Status.ACTIVE == 1, "an enum was written to through pairs()")
+  assert(
+    trx.items.Status.ACTIVE == 1,
+    "an enum was written to through pairs()"
+  )
 
   local seen = {}
   for name, value in pairs(trx.items.Status) do
     seen[name] = value
   end
-  assert(seen.INACTIVE == 0 and seen.ACTIVE == 1, "pairs() must still yield the constants")
+  assert(
+    seen.INACTIVE == 0 and seen.ACTIVE == 1,
+    "pairs() must still yield the constants"
+  )
   assert(seen.DEACTIVATED == 2 and seen.INVISIBLE == 3)
 end)
 
@@ -144,7 +150,10 @@ end)
 -- Every lookup mints a fresh handle, so equality has to compare what the two
 -- handles point at rather than the userdata itself.
 test("two handles to the same item are equal", function()
-  assert(trx.items[1] == trx.items[1], "the same item twice must compare equal")
+  assert(
+    trx.items[1] == trx.items[1],
+    "the same item twice must compare equal"
+  )
   assert(trx.items[1] == trx.items.get(1))
   assert(trx.items[1] ~= trx.items[2], "different items must not")
 
@@ -188,7 +197,12 @@ test("spawn creates an item and validates its arguments", function()
   assert(#trx.items == 3, "the pool should have grown")
 
   -- opts.activate brings a creature fully to life: active list plus AI.
-  local live = trx.items.spawn(WOLF, { x = 0, y = 0, z = 0 }, 0, { activate = true })
+  local live = trx.items.spawn(
+    WOLF,
+    { x = 0, y = 0, z = 0 },
+    0,
+    { activate = true }
+  )
   assert(live.is_active == true, "the activate option was ignored")
   assert(live.status == trx.items.Status.ACTIVE)
   assert(fake.calls().enable_baddie_ai == 1, "a creature needs its AI enabled")
@@ -273,7 +287,10 @@ test("find and first query by object and room", function()
   assert(wolves[1].object_id == WOLF)
 
   assert(#trx.items.find({ room_num = 2 }) == 1, "by room")
-  assert(#trx.items.find({ object_id = WOLF, room_num = 2 }) == 0, "both must match")
+  assert(
+    #trx.items.find({ object_id = WOLF, room_num = 2 }) == 0,
+    "both must match"
+  )
 
   assert(trx.items.first({ object_id = VASE }) ~= nil)
   -- Nil, not an empty table: a table is truthy, so `if trx.items.first(q) then`

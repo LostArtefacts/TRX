@@ -20,7 +20,10 @@ function M.raises(fn, needle)
   if needle ~= nil then
     assert(
       tostring(err):find(needle, 1, true),
-      ("expected an error matching '%s', got: %s"):format(needle, tostring(err))
+      ("expected an error matching '%s', got: %s"):format(
+        needle,
+        tostring(err)
+      )
     )
   end
 end
@@ -64,7 +67,13 @@ function M.report()
     end
   end
 
-  print(("\n%d passed, %d failed, %d total"):format(M.passed, M.failed, M.passed + M.failed))
+  print(
+    ("\n%d passed, %d failed, %d total"):format(
+      M.passed,
+      M.failed,
+      M.passed + M.failed
+    )
+  )
   return M.failed
 end
 

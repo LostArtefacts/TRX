@@ -34,7 +34,10 @@ end)
 test("add_ally_target names the object it was given", function()
   trx.creatures.add_ally_target(7)
   local calls = fake.calls()
-  assert(calls.add_ally_target == 1, "add_ally_target did not reach the engine")
+  assert(
+    calls.add_ally_target == 1,
+    "add_ally_target did not reach the engine"
+  )
   assert(calls.last_ally_target_object_id == 7)
   assert(calls.add_ally == 0, "add_ally_target must not make an ally")
 end)

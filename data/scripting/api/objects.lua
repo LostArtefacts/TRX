@@ -113,7 +113,10 @@ api.type("objects.Object", {
       description = "Reads one of the object's properties. Prefer `object.properties.<name>`.",
     },
     set_property = {
-      params = { { name = "name", type = "string" }, { name = "value", type = "any" } },
+      params = {
+        { name = "name", type = "string" },
+        { name = "value", type = "any" },
+      },
       description = "Writes one of the object's properties. Prefer `object.properties.<name> = ...`.",
     },
     get_property_names = {
@@ -133,7 +136,11 @@ local get = api.define("objects.get", {
       description = 'Object id, or its catalog name: `trx.objects["wolf"]`.',
     },
   },
-  returns = { type = "Object", nullable = true, description = "`nil` if no such object exists." },
+  returns = {
+    type = "Object",
+    nullable = true,
+    description = "`nil` if no such object exists.",
+  },
   examples = {
     [[local wolf = trx.objects.wolf
 wolf.properties.max_hit_points = 30]],
@@ -156,8 +163,18 @@ api.define("objects.swap_mesh", {
   params = {
     { name = "object_id1", type = "integer", enum = "catalog.objects" },
     { name = "object_id2", type = "integer", enum = "catalog.objects" },
-    { name = "mesh_num1", type = "integer", optional = true, description = "Mesh of the first." },
-    { name = "mesh_num2", type = "integer", optional = true, description = "Mesh of the second." },
+    {
+      name = "mesh_num1",
+      type = "integer",
+      optional = true,
+      description = "Mesh of the first.",
+    },
+    {
+      name = "mesh_num2",
+      type = "integer",
+      optional = true,
+      description = "Mesh of the second.",
+    },
   },
   impl = raw.swap_mesh,
 })
