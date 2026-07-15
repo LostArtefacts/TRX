@@ -304,6 +304,9 @@
             },
             "debug": {
                 "help": "Aktiviert und deaktiviert visuele Debuginformationen.",
+                "option_get": "%s ist momentan eingestellt auf %s",
+                "option_set": "%s geändert zu %s",
+                "unknown_option": "Unbekannte Option: %s",
             },
             "drain": {
                 "help": "Entfernt das gesamte Wasser aus dem Raum, in dem sie sich im Moment befinden.",

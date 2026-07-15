@@ -304,6 +304,9 @@
             },
             "debug": {
                 "help": "Affiche les informations de débogage visuel.",
+                "option_get": "%s est actuellement réglé sur %s",
+                "option_set": "%s réglé sur %s",
+                "unknown_option": "Option inconnue : %s",
             },
             "drain": {
                 "help": "Retire toute l'eau de la salle actuelle.",

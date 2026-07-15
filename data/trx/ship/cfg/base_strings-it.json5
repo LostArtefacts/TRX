@@ -304,6 +304,9 @@
             },
             "debug": {
                 "help": "Attiva o disattiva le informazioni di debug.",
+                "option_get": "%s è attualmente impostato su %s",
+                "option_set": "%s è stato modificato in %s",
+                "unknown_option": "Opzione sconosciuta: %s",
             },
             "drain": {
                 "help": "Drena la stanza corrente, rimuovendo l'acqua.",
