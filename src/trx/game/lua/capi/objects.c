@@ -15,12 +15,14 @@ static void *M_Resolve(const LUA_STRUCT_REF *const ref)
 // trxc.objects.get(object_id) -> OBJECT handle or nil
 static int M_L_ObjectsGet(lua_State *const L)
 {
-    const OBJECT_ID object_id = luaL_checkinteger(L, 1);
-    if (Object_TryGet(object_id) == nullptr) {
+    // Read wide and range-test before narrowing: an id past OBJECT_ID's width
+    // would wrap into the table and name an object the script did not ask for.
+    const lua_Integer object_id = luaL_checkinteger(L, 1);
+    if (object_id < O_FIRST || object_id >= O_NUMBER_OF) {
         lua_pushnil(L);
         return 1;
     }
-    LUA_Struct_Push(L, &TYPE_OBJECT, M_Resolve, object_id, 0);
+    LUA_Struct_Push(L, &TYPE_OBJECT, M_Resolve, (OBJECT_ID)object_id, 0);
     return 1;
 }
 
@@ -56,15 +58,27 @@ static void M_PushPropertyValue(
 static int M_L_ObjectsSwapMesh(lua_State *const L)
 {
     const int32_t arg_count = lua_gettop(L);
-    const OBJECT_ID obj1_id = luaL_checkinteger(L, 1);
-    const OBJECT_ID obj2_id = luaL_checkinteger(L, 2);
+    const OBJECT_ID obj1_id = LUA_CheckObjectID(L, 1);
+    const OBJECT_ID obj2_id = LUA_CheckObjectID(L, 2);
     if (arg_count == 2) {
         Object_SwapAllMeshes(obj1_id, obj2_id);
-    } else {
-        const int32_t mesh1_num = luaL_checkinteger(L, 3);
-        const int32_t mesh2_num = luaL_checkinteger(L, 4);
-        Object_SwapMeshEx(obj1_id, obj2_id, mesh1_num, mesh2_num);
+        return 0;
     }
+
+    // An object that did not load has no meshes, and no count to measure a mesh
+    // number against.
+    const OBJECT *const obj1 = Object_Get(obj1_id);
+    const OBJECT *const obj2 = Object_Get(obj2_id);
+    if (!obj1->loaded || !obj2->loaded) {
+        return 0;
+    }
+
+    // Object_SwapMeshEx swaps the two pointers at an offset it does not check.
+    const int32_t mesh1_num =
+        LUA_CheckRange(L, 3, obj1->mesh_count, "no such mesh on this object");
+    const int32_t mesh2_num =
+        LUA_CheckRange(L, 4, obj2->mesh_count, "no such mesh on this object");
+    Object_SwapMeshEx(obj1_id, obj2_id, mesh1_num, mesh2_num);
     return 0;
 }
 

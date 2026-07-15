@@ -1,5 +1,6 @@
 #include <trx/game/catalog/manager.h>
 #include <trx/game/lua/registry.h>
+#include <trx/game/lua/utils.h>
 
 #include <lauxlib.h>
 #include <stdint.h>
@@ -12,10 +13,18 @@
 // same number as the TRX id: TRX names an object once, across all four games,
 // and each game's files number it differently.
 
+// Neither Catalog_EnumToGameID nor Catalog_GameIDToEnum checks the context
+// before indexing its table with it.
+static CATALOG_CONTEXT M_CheckContext(lua_State *const L, const int arg)
+{
+    return (CATALOG_CONTEXT)LUA_CheckRange(
+        L, arg, CATALOG_CONTEXT_MAX, "unknown catalog context");
+}
+
 // trxc.catalog.to_slot(context, id) -> int or nil
 static int M_L_CatalogToSlot(lua_State *const L)
 {
-    const CATALOG_CONTEXT context = luaL_checkinteger(L, 1);
+    const CATALOG_CONTEXT context = M_CheckContext(L, 1);
     const CATALOG_ID id = luaL_checkinteger(L, 2);
     int32_t game_id;
     if (!Catalog_EnumToGameID(context, id, &game_id)) {
@@ -29,7 +38,7 @@ static int M_L_CatalogToSlot(lua_State *const L)
 // trxc.catalog.from_slot(context, slot) -> int or nil
 static int M_L_CatalogFromSlot(lua_State *const L)
 {
-    const CATALOG_CONTEXT context = luaL_checkinteger(L, 1);
+    const CATALOG_CONTEXT context = M_CheckContext(L, 1);
     const int32_t game_id = luaL_checkinteger(L, 2);
     CATALOG_ID id;
     if (!Catalog_GameIDToEnum(context, game_id, &id)) {

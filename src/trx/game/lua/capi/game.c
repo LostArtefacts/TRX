@@ -2,6 +2,7 @@
 #include <trx/game/lua/common.h>
 #include <trx/game/lua/registry.h>
 #include <trx/game/lua/struct.h>
+#include <trx/game/lua/utils.h>
 #include <trx/game/savegame.h>
 #include <trx/version.h>
 
@@ -21,10 +22,18 @@ static int M_L_TRXVersion(lua_State *const L)
     return 1;
 }
 
+// GF_GetLevelTable indexes the level tables with this and does not check it,
+// and GFLT_UNKNOWN is -1, so the range starts at zero.
+static GF_LEVEL_TABLE_TYPE M_CheckTableType(lua_State *const L, const int arg)
+{
+    return (GF_LEVEL_TABLE_TYPE)LUA_CheckRange(
+        L, arg, GFLT_NUMBER_OF, "unknown level table");
+}
+
 // trxc.game.count_levels() → int
 static int M_L_GameCountLevels(lua_State *const L)
 {
-    const GF_LEVEL_TABLE_TYPE table_type = luaL_checkinteger(L, 1);
+    const GF_LEVEL_TABLE_TYPE table_type = M_CheckTableType(L, 1);
     lua_pushinteger(L, GF_GetLevelCount(table_type));
     return 1;
 }
@@ -56,7 +65,7 @@ static void M_PushLevel(
 // trxc.game.get_level(table_type, idx) -> GF_LEVEL handle or nil
 static int M_L_GameGetLevel(lua_State *const L)
 {
-    const GF_LEVEL_TABLE_TYPE table_type = luaL_checkinteger(L, 1);
+    const GF_LEVEL_TABLE_TYPE table_type = M_CheckTableType(L, 1);
     // Lua counts from 1, the table from 0.
     M_PushLevel(L, table_type, luaL_checkinteger(L, 2) - 1);
     return 1;
