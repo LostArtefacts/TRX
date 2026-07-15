@@ -6,17 +6,6 @@
 #include <stddef.h>
 #include <stdint.h>
 
-// A FIELD_DESC says how to reach one member of a struct: its storage type and
-// where it lives. That is all. It is mechanism, not contract.
-//
-// It deliberately carries no description and makes no naming decision. The
-// public API - which members are exposed, under what name, with what
-// documentation - is declared in Lua (see data/scripting/api.lua), and that
-// declaration is what builds the metatable. A member listed here is reachable
-// by C; it becomes public only if a script says so.
-//
-// `name` is the C member name and is an internal key, not an API name.
-
 typedef enum {
     FT_BOOL,
     FT_INT8,

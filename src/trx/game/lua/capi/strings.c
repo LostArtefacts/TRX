@@ -6,6 +6,11 @@
 
 #include <lauxlib.h>
 
+typedef struct {
+    VECTOR *sources;
+    VECTOR *matches;
+} M_FUZZY_STATE;
+
 // Reads a field off the table on top of the stack without going through
 // __index, so that what M_CheckSources saw is what the match is built from.
 static void M_PushRawField(lua_State *const L, const char *const name)
@@ -40,11 +45,6 @@ static void M_CheckSources(lua_State *const L, const int32_t arg)
         lua_pop(L, 2);
     }
 }
-
-typedef struct {
-    VECTOR *sources;
-    VECTOR *matches;
-} M_FUZZY_STATE;
 
 // Everything the vectors are alive for. Every table and string built here goes
 // through the Lua allocator and can raise, and an error would unwind straight

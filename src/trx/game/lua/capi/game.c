@@ -10,6 +10,13 @@
 
 #include <lauxlib.h>
 
+// A level lives in the game flow for the whole session, so a handle to one
+// never goes stale. It is addressed by table and index, which the ref carries
+// packed: the table in the high half, the index in the low.
+#define M_PACK(table, idx) (((table) << 16) | ((idx) & 0xffff))
+#define M_TABLE(packed) ((packed) >> 16)
+#define M_IDX(packed) ((packed) & 0xffff)
+
 static bool M_GetOrdinal(const void *const self, FIELD_VALUE *const out)
 {
     const GF_LEVEL *const level = self;
@@ -22,7 +29,7 @@ static bool M_GetOrdinal(const void *const self, FIELD_VALUE *const out)
 }
 
 // clang-format off
-static const FIELD_DESC M_GF_LEVEL_FIELDS[] = {
+static const FIELD_DESC m_Fields[] = {
     FIELD_FN("num", FT_INT32, M_GetOrdinal, nullptr),
     FIELD_RO(GF_LEVEL, type),
     FIELD_RO(GF_LEVEL, path),
@@ -45,7 +52,30 @@ static const FIELD_DESC M_GF_LEVEL_FIELDS[] = {
 };
 // clang-format on
 
-TYPE_DEFINE(GF_LEVEL, M_GF_LEVEL_FIELDS)
+TYPE_DEFINE(GF_LEVEL, m_Fields)
+
+// GF_GetLevelTable indexes the level tables with this and does not check it,
+// and GFLT_UNKNOWN is -1, so the range starts at zero.
+static GF_LEVEL_TABLE_TYPE M_CheckTableType(lua_State *const L, const int arg)
+{
+    return (GF_LEVEL_TABLE_TYPE)LUA_CheckRange(
+        L, arg, GFLT_NUMBER_OF, "unknown level table");
+}
+
+static void *M_Resolve(const LUA_STRUCT_REF *const ref)
+{
+    return (void *)GF_GetLevel(M_TABLE(ref->idx), M_IDX(ref->idx));
+}
+
+static void M_PushLevel(
+    lua_State *const L, const GF_LEVEL_TABLE_TYPE table_type, const int32_t idx)
+{
+    if (GF_GetLevel(table_type, idx) == nullptr) {
+        lua_pushnil(L);
+        return;
+    }
+    LUA_Struct_Push(L, &TYPE_GF_LEVEL, M_Resolve, M_PACK(table_type, idx), 0);
+}
 
 // trxc.game.get_version() → int
 static int M_L_GameVersion(lua_State *const L)
@@ -61,42 +91,12 @@ static int M_L_TRXVersion(lua_State *const L)
     return 1;
 }
 
-// GF_GetLevelTable indexes the level tables with this and does not check it,
-// and GFLT_UNKNOWN is -1, so the range starts at zero.
-static GF_LEVEL_TABLE_TYPE M_CheckTableType(lua_State *const L, const int arg)
-{
-    return (GF_LEVEL_TABLE_TYPE)LUA_CheckRange(
-        L, arg, GFLT_NUMBER_OF, "unknown level table");
-}
-
 // trxc.game.count_levels() → int
 static int M_L_GameCountLevels(lua_State *const L)
 {
     const GF_LEVEL_TABLE_TYPE table_type = M_CheckTableType(L, 1);
     lua_pushinteger(L, GF_GetLevelCount(table_type));
     return 1;
-}
-
-// A level lives in the game flow for the whole session, so a handle to one
-// never goes stale. It is addressed by table and index, which the ref carries
-// packed: the table in the high half, the index in the low.
-#define M_PACK(table, idx) (((table) << 16) | ((idx) & 0xffff))
-#define M_TABLE(packed) ((packed) >> 16)
-#define M_IDX(packed) ((packed) & 0xffff)
-
-static void *M_Resolve(const LUA_STRUCT_REF *const ref)
-{
-    return (void *)GF_GetLevel(M_TABLE(ref->idx), M_IDX(ref->idx));
-}
-
-static void M_PushLevel(
-    lua_State *const L, const GF_LEVEL_TABLE_TYPE table_type, const int32_t idx)
-{
-    if (GF_GetLevel(table_type, idx) == nullptr) {
-        lua_pushnil(L);
-        return;
-    }
-    LUA_Struct_Push(L, &TYPE_GF_LEVEL, M_Resolve, M_PACK(table_type, idx), 0);
 }
 
 // trxc.game.get_level(table_type, idx) -> GF_LEVEL handle or nil
@@ -121,6 +121,7 @@ static int M_L_GameGetCurrentLevel(lua_State *const L)
     return 1;
 }
 
+// trxc.game.play_level(num) → nil
 static int M_L_GamePlayLevel(lua_State *const L)
 {
     const int32_t level_idx = luaL_checkinteger(L, 1) - 1;
@@ -190,9 +191,7 @@ static const luaL_Reg m_Module[] = {
 
 static void M_Create(lua_State *const L)
 {
-    LUA_Struct_Register(
-        L, &TYPE_GF_LEVEL, (const luaL_Reg[]) { { nullptr, nullptr } });
-
+    LUA_Struct_Register(L, &TYPE_GF_LEVEL, nullptr);
     LUA_RegisterModule(L, "game", m_Module);
 }
 

@@ -31,7 +31,7 @@ static void M_PushKey(lua_State *const L, const char *const name)
 }
 
 // trxc.enum.values(type) -> { { name = "ACTIVE", value = 1 }, ... }
-static int M_L_Values(lua_State *const L)
+static int M_L_EnumValues(lua_State *const L)
 {
     const char *const type_name = luaL_checkstring(L, 1);
     VECTOR *const values = EnumMap_ListValues(type_name);
@@ -64,7 +64,7 @@ static int M_L_Values(lua_State *const L)
 }
 
 static const luaL_Reg m_Module[] = {
-    { "values", M_L_Values },
+    { "values", M_L_EnumValues },
     { nullptr, nullptr },
 };
 

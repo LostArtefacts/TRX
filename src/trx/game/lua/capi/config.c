@@ -7,10 +7,6 @@
 
 #include <lauxlib.h>
 
-static const CONFIG_OPTION *M_GetOption(lua_State *L, int32_t arg);
-static void M_PushValue(lua_State *L, const CONFIG_OPTION *option);
-static const char *M_ValueAsString(lua_State *L, int32_t arg);
-
 static const CONFIG_OPTION *M_GetOption(lua_State *const L, const int32_t arg)
 {
     const char *const key = luaL_checkstring(L, arg);
