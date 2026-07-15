@@ -12,7 +12,7 @@ static const CONFIG_OPTION *M_GetOption(lua_State *const L, const int32_t arg)
     const char *const key = luaL_checkstring(L, arg);
     const CONFIG_OPTION *const option = Config_GetOptionByPath(key);
     if (option == nullptr) {
-        luaL_error(L, "Unknown option: %s", key);
+        luaL_error(L, "unknown option: %s", key);
     }
     return option;
 }
@@ -75,7 +75,7 @@ static int M_L_ConfigSet(lua_State *const L)
     const char *const new_value = M_ValueAsString(L, 2);
     if (!Config_SetOptionValueFromString(option, new_value)) {
         return luaL_error(
-            L, "Failed to set option %s to %s", option->name, new_value);
+            L, "failed to set option %s to %s", option->name, new_value);
     }
     Config_Update();
     return 0;
@@ -88,7 +88,7 @@ static int M_L_ConfigOverride(lua_State *const L)
     const char *const new_value = M_ValueAsString(L, 2);
     if (!ConfigOverride_PushFromString(option, new_value)) {
         return luaL_error(
-            L, "Failed to override option %s with %s", option->name, new_value);
+            L, "failed to override option %s with %s", option->name, new_value);
     }
     return 0;
 }
