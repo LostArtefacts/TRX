@@ -38,6 +38,19 @@ Not to be confused with `trx.locale`, which is the text a player reads: this mod
   local best = matches[1]
   ```
 
+- [lua]`trx.strings.parse_bool(text)`  
+  Reads a boolean the way the console does: `1`, `true` or `on` for true, `0`, `false` or `off` for false, in any case. Anything else is not a boolean.
+
+  Parameters:
+  - **`text`** (string). The text to read.
+
+  Returns: boolean or `nil`. `nil` when the text does not name a boolean.
+
+  Example:
+  ```lua
+  local on = trx.strings.parse_bool("on")
+  ```
+
 - [lua]`trx.strings.regex_match(subject, pattern)`  
   Whether a subject matches a regular expression. Case-insensitive.
 

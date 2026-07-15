@@ -42,6 +42,30 @@ local best = matches[1]]==],
   impl = raw.fuzzy_match,
 })
 
+api.define("strings.parse_bool", {
+  description = "Reads a boolean the way the console does: `1`, `true` or `on` for true, `0`, "
+    .. "`false` or `off` for false, in any case. Anything else is not a boolean.",
+  params = {
+    { name = "text", type = "string", description = "The text to read." },
+  },
+  returns = {
+    type = "boolean",
+    nullable = true,
+    description = "`nil` when the text does not name a boolean.",
+  },
+  examples = { [[local on = trx.strings.parse_bool("on")]] },
+  impl = function(text)
+    local lowered = text:lower()
+    if lowered == "1" or lowered == "true" or lowered == "on" then
+      return true
+    end
+    if lowered == "0" or lowered == "false" or lowered == "off" then
+      return false
+    end
+    return nil
+  end,
+})
+
 api.define("strings.regex_match", {
   description = "Whether a subject matches a regular expression. Case-insensitive.",
   params = {
