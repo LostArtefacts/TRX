@@ -68,6 +68,7 @@ trx_lua_script_sources = files(
   '../data/scripting/commands/inf_sprint.lua',
   '../data/scripting/commands/play_cutscene.lua',
   '../data/scripting/commands/play_gym.lua',
+  '../data/scripting/commands/set_health.lua',
 )
 
 trx_lua_embed = custom_target(
@@ -251,7 +252,6 @@ common_sources = [
   'trx/game/console/cmd/pos.c',
   'trx/game/console/cmd/save_game.c',
   'trx/game/console/cmd/screenshot.c',
-  'trx/game/console/cmd/set_health.c',
   'trx/game/console/cmd/sfx.c',
   'trx/game/console/cmd/spawn.c',
   'trx/game/console/cmd/speed.c',
