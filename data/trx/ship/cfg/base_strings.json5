@@ -395,6 +395,8 @@
             },
             "play_gym": {
                 "help": "Plays the Gym level.",
+                "invalid": "Invalid level",
+                "loading": "Loading %s",
             },
             "play_level": {
                 "help": "Plays a level with the given name or number.",

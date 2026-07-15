@@ -67,6 +67,7 @@ trx_lua_script_sources = files(
   '../data/scripting/commands/immune.lua',
   '../data/scripting/commands/inf_sprint.lua',
   '../data/scripting/commands/play_cutscene.lua',
+  '../data/scripting/commands/play_gym.lua',
 )
 
 trx_lua_embed = custom_target(
@@ -245,7 +246,6 @@ common_sources = [
   'trx/game/console/cmd/mod.c',
   'trx/game/console/cmd/music.c',
   'trx/game/console/cmd/play_demo.c',
-  'trx/game/console/cmd/play_gym.c',
   'trx/game/console/cmd/play_level.c',
   'trx/game/console/cmd/poison.c',
   'trx/game/console/cmd/pos.c',

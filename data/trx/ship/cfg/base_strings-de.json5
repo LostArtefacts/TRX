@@ -395,6 +395,8 @@
             },
             "play_gym": {
                 "help": "Startet das Gym-Level.",
+                "invalid": "Unzulässiger Level",
+                "loading": "Lade %s",
             },
             "play_level": {
                 "help": "Startet einen Level mit dem angegebenen Namen oder der dazugehörigen Nummer.",

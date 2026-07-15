@@ -887,6 +887,9 @@ GS_DEFINE(console/cmd/debug/unknown_option, "Unknown option: %s")
 GS_DEFINE(console/cmd/play_cutscene/invalid, "Invalid cutscene")
 GS_DEFINE(console/cmd/play_cutscene/loading, "Loading cutscene %d")
 
+GS_DEFINE(console/cmd/play_gym/invalid, "Invalid level")
+GS_DEFINE(console/cmd/play_gym/loading, "Loading %s")
+
 GS_DEFINE(console/cmd/spawn/success,      "Requested object spawned near Lara")
 GS_DEFINE(console/cmd/spawn/fail, "Failed to spawn requested object")
 
