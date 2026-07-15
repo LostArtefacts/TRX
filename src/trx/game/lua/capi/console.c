@@ -126,17 +126,18 @@ static int M_L_ConsoleRegister(lua_State *const L)
             name);
     }
 
-    // The name is interpolated into the dispatch regex in Console_Registry_Get,
-    // so anything but a plain word would corrupt the matching of every command.
+    // The name is interpolated into the dispatch regex in Console_Registry_Get.
+    // A dash is a literal there, so it is safe; a regex metacharacter would
+    // corrupt the matching of every command, so the rest are refused.
     if (name[0] == '\0') {
         return luaL_error(L, "console command name must not be empty");
     }
     for (const char *c = name; *c != '\0'; c++) {
-        if (isalnum((unsigned char)*c) == 0 && *c != '_') {
+        if (isalnum((unsigned char)*c) == 0 && *c != '_' && *c != '-') {
             return luaL_error(
                 L,
-                "console command name '%s' must contain only letters, digits "
-                "and underscores",
+                "console command name '%s' must contain only letters, digits, "
+                "underscores and dashes",
                 name);
         }
     }
