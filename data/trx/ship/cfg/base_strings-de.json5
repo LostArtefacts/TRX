@@ -67,8 +67,6 @@
             "config_option_get": "%s ist momentan eingestellt auf %s",
             "config_option_set": "%s geändert zu %s",
             "config_option_unknown_option": "Unbekannte Option: %s",
-            "current_health_get": "Laras aktuelle Lebensenergie: %d",
-            "current_health_set": "Laras Lebensenergie eingestellt auf %d",
             "current_poison_get": "\\{review}Aktuelles Gift von Lara: %d (Ziel: %d)",
             "current_poison_set": "\\{review}Laras Gift auf %d gesetzt",
             "current_poison_target_set": "\\{review}Laras Giftziel auf %d gesetzt",
@@ -348,7 +346,9 @@
                 "list": "Verfügbare Kommandos:",
             },
             "hp": {
+                "get": "Laras aktuelle Lebensenergie: %d",
                 "help": "Stellt Laras Lebensenergie auf den bestimmten Wert ein.",
+                "set": "Laras Lebensenergie eingestellt auf %d",
             },
             "immune": {
                 "help": "Aktiviet oder deaktiviert Unverwundbarkeit. (Lara kann unter bestimmten Umständen immernoch sterben.)",

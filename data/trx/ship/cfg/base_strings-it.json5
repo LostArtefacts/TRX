@@ -67,8 +67,6 @@
             "config_option_get": "%s è attualmente impostato su %s",
             "config_option_set": "%s è stato modificato in %s",
             "config_option_unknown_option": "Opzione sconosciuta: %s",
-            "current_health_get": "Salute attuale di Lara: %d",
-            "current_health_set": "Salute di Lara impostata su %d",
             "current_poison_get": "\\{review}Veleno attuale di Lara: %d (obiettivo: %d)",
             "current_poison_set": "\\{review}Veleno di Lara impostato a %d",
             "current_poison_target_set": "\\{review}Obiettivo veleno di Lara impostato a %d",
@@ -348,7 +346,9 @@
                 "list": "Comandi disponibili:",
             },
             "hp": {
+                "get": "Salute attuale di Lara: %d",
                 "help": "Imposta la salute di Lara al valore specificato.",
+                "set": "Salute di Lara impostata su %d",
             },
             "immune": {
                 "help": "Attiva o disattiva l'invulnerabilità. (In alcune circostanze, Lara può essere comunque uccisa.)",

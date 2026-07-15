@@ -691,8 +691,6 @@ GS_DEFINE(general/osd/pos_lara_missing, "Lara not present")
 GS_DEFINE(general/osd/pos_level_fmt, "Level %d")
 GS_DEFINE(general/osd/pos_level_fmt_demo, "Demo %d")
 GS_DEFINE(general/osd/pos_level_fmt_cutscene, "Cutscene %d")
-GS_DEFINE(general/osd/current_health_get, "Current Lara's health: %d")
-GS_DEFINE(general/osd/current_health_set, "Lara's health set to %d")
 GS_DEFINE(general/osd/current_poison_get, "Current Lara's poison: %d (target: %d)")
 GS_DEFINE(general/osd/current_poison_set, "Lara's poison set to %d")
 GS_DEFINE(general/osd/current_poison_target_set, "Lara's poison target set to %d")
@@ -879,6 +877,9 @@ GS_DEFINE(console/cmd/immune/off, "Lara is now vulnerable")
 
 GS_DEFINE(console/cmd/inf_sprint/on,  "Lara can now sprint forever")
 GS_DEFINE(console/cmd/inf_sprint/off, "Lara can no longer sprint forever")
+
+GS_DEFINE(console/cmd/hp/get, "Current Lara's health: %d")
+GS_DEFINE(console/cmd/hp/set, "Lara's health set to %d")
 
 GS_DEFINE(console/cmd/debug/option_get,     "%s is currently set to %s")
 GS_DEFINE(console/cmd/debug/option_set,     "%s changed to %s")

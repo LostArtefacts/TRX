@@ -67,8 +67,6 @@
             "config_option_get": "%s is currently set to %s",
             "config_option_set": "%s changed to %s",
             "config_option_unknown_option": "Unknown option: %s",
-            "current_health_get": "Current Lara's health: %d",
-            "current_health_set": "Lara's health set to %d",
             "current_poison_get": "Current Lara's poison: %d (target: %d)",
             "current_poison_set": "Lara's poison set to %d",
             "current_poison_target_set": "Lara's poison target set to %d",
@@ -348,7 +346,9 @@
                 "list": "Available commands:",
             },
             "hp": {
+                "get": "Current Lara's health: %d",
                 "help": "Sets Lara's health to the specified value.",
+                "set": "Lara's health set to %d",
             },
             "immune": {
                 "help": "Toggles invulnerability. (Lara can still be killed in some circumstances.)",

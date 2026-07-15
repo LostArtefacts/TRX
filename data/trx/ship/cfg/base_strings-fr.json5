@@ -67,8 +67,6 @@
             "config_option_get": "%s est actuellement réglé sur %s",
             "config_option_set": "%s réglé sur %s",
             "config_option_unknown_option": "Option inconnue : %s",
-            "current_health_get": "Santé actuelle de Lara : %d",
-            "current_health_set": "Santé de Lara réglée sur %d",
             "current_poison_get": "\\{review}Poison actuel de Lara : %d (cible : %d)",
             "current_poison_set": "\\{review}Poison de Lara réglé à %d",
             "current_poison_target_set": "\\{review}Cible du poison de Lara réglée à %d",
@@ -348,7 +346,9 @@
                 "list": "Commandes disponibles :",
             },
             "hp": {
+                "get": "Santé actuelle de Lara : %d",
                 "help": "Fixe la santé de Lara à la valeur spécifiée.",
+                "set": "Santé de Lara réglée sur %d",
             },
             "immune": {
                 "help": "\\{review}Active l'invulnérabilité. (Lara peut toujours être tuée dans certaines circonstances.)",

@@ -67,8 +67,6 @@
             "config_option_get": "%s jest obecnie ustawione na %s",
             "config_option_set": "Zmieniono %s na %s",
             "config_option_unknown_option": "Nieznana opcja: %s",
-            "current_health_get": "Aktualne zdrowie Lary: %d",
-            "current_health_set": "Zdrowie Lary ustawione na %d",
             "current_poison_get": "\\{review}Aktualna trucizna Lary: %d (cel: %d)",
             "current_poison_set": "\\{review}Trucizna Lary ustawiona na %d",
             "current_poison_target_set": "\\{review}Cel trucizny Lary ustawiony na %d",
@@ -348,7 +346,9 @@
                 "list": "Dostępne komendy:",
             },
             "hp": {
+                "get": "Aktualne zdrowie Lary: %d",
                 "help": "Ustawia zdrowie Lary na określoną wartość.",
+                "set": "Zdrowie Lary ustawione na %d",
             },
             "immune": {
                 "help": "Przełącza nieśmiertelność. (Lara może być nadal zabita w niektórych okolicznościach.)",
