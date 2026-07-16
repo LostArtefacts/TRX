@@ -103,8 +103,6 @@
             "save_game": "Saved game to save slot %d",
             "save_game_fail_invalid_slot": "Invalid save slot %d",
             "speed_set": "Speed set to %d",
-            "strings_failed": "Failed to reload the language files",
-            "strings_reloaded": "Language files reloaded",
             "textures_off": "Textures: off",
             "textures_on": "Textures: on",
             "trapezoid_filter_off": "Trapezoid filter: off",
@@ -433,7 +431,9 @@
                 "set": "Speed set to %d",
             },
             "strings": {
+                "failed": "Failed to reload the language files",
                 "help": "Reloads the current language files from disk.",
+                "reloaded": "Language files reloaded",
             },
             "teleport": {
                 "item": "Teleported to item: %d",

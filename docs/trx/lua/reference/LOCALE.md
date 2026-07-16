@@ -42,3 +42,8 @@ The text the player reads, in the player's own language.
   ```lua
   trx.console.log(trx.locale.format("general/misc/pagination_nav", 1, 5))
   ```
+
+- [lua]`trx.locale.reload()`  
+  Reloads the current language's text from disk.
+
+  Returns: boolean. Whether the reload succeeded.

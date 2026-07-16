@@ -3,7 +3,9 @@
 // manipulates them, and trx/game/game_strings, which is this - and a third
 // would shadow Lua's own string library besides.
 
+#include <trx/config.h>
 #include <trx/game/game_strings/entries.h>
+#include <trx/game/game_strings/manager.h>
 #include <trx/game/lua/common.h>
 #include <trx/game/lua/registry.h>
 #include <trx/game/lua/utils.h>
@@ -22,8 +24,16 @@ static int M_L_LocaleGet(lua_State *const L)
     return 1;
 }
 
+// trxc.locale.reload() -> bool
+static int M_L_LocaleReload(lua_State *const L)
+{
+    lua_pushboolean(L, GameStringManager_ReloadLanguage(g_Config.language));
+    return 1;
+}
+
 static const luaL_Reg m_Module[] = {
     { "get", M_L_LocaleGet },
+    { "reload", M_L_LocaleReload },
     { nullptr, nullptr },
 };
 

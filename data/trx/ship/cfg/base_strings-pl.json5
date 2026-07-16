@@ -103,8 +103,6 @@
             "save_game": "Zapisano grę na slocie zapisu %d",
             "save_game_fail_invalid_slot": "Nieprawidłowy slot zapisu %d",
             "speed_set": "Prędkość ustawiona na %d",
-            "strings_failed": "Nie udało się przeładować plików językowych",
-            "strings_reloaded": "Pliki językowe zostały przeładowane",
             "textures_off": "Tekstury: wyłączone",
             "textures_on": "Tekstury: włączone",
             "trapezoid_filter_off": "Filtr trapezoidalny wyłączony",
@@ -433,7 +431,9 @@
                 "set": "Prędkość ustawiona na %d",
             },
             "strings": {
+                "failed": "Nie udało się przeładować plików językowych",
                 "help": "Przeładowuje bieżące pliki językowe z dysku.",
+                "reloaded": "Pliki językowe zostały przeładowane",
             },
             "teleport": {
                 "item": "Teleportowano do obiektu: %d",

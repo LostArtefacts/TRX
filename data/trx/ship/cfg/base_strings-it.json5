@@ -103,8 +103,6 @@
             "save_game": "Partita salvata nello slot di salvataggio %d",
             "save_game_fail_invalid_slot": "Slot di salvataggio %d non valido",
             "speed_set": "Velocità impostata su %d",
-            "strings_failed": "Impossibile ricaricare i file di lingua",
-            "strings_reloaded": "File di lingua ricaricati",
             "textures_off": "Texture: disattivate",
             "textures_on": "Texture: attivate",
             "trapezoid_filter_off": "Filtro trapezoidale: disattivato",
@@ -433,7 +431,9 @@
                 "set": "Velocità impostata su %d",
             },
             "strings": {
+                "failed": "Impossibile ricaricare i file di lingua",
                 "help": "Ricarica i file di lingua correnti dal disco.",
+                "reloaded": "File di lingua ricaricati",
             },
             "teleport": {
                 "item": "Teletrasportato all'oggetto: %d",

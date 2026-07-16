@@ -57,3 +57,9 @@ api.define("locale.format", {
     return formatted
   end,
 })
+
+api.define("locale.reload", {
+  description = "Reloads the current language's text from disk.",
+  returns = { type = "boolean", description = "Whether the reload succeeded." },
+  impl = raw.reload,
+})
