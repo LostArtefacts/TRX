@@ -46,6 +46,17 @@ test("is_burning lights Lara and puts her out", function()
   assert(trx.lara.is_burning == false, "she should be out")
 end)
 
+test("is_flying enters and leaves the fly cheat", function()
+  assert(trx.lara.is_flying == false)
+
+  trx.lara.is_flying = true
+  assert(trx.lara.is_flying == true, "she should be flying")
+  assert(trx.lara.water_status == trx.lara.WaterState.CHEAT)
+
+  trx.lara.is_flying = false
+  assert(trx.lara.is_flying == false, "she should have landed")
+end)
+
 test("a member of LARA_INFO nobody declared is not reachable", function()
   -- The C struct has turn_rate, move_angle, the LOT and both arms. None of them
   -- is declared, so none of them exists as far as a script is concerned.

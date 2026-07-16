@@ -307,6 +307,8 @@
                 "help": "Überflutet den Raum, in dem sie sich im Moment befinden, mit Wasser.",
             },
             "fly": {
+                "already_off": "\\{review}Lara is not flying",
+                "already_on": "\\{review}Lara is already flying",
                 "help": "Aktiviert und deaktiviert den Flug-Modus-Cheat.",
             },
             "fps": {

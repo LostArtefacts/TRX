@@ -2,6 +2,7 @@
 #include <trx/game/inventory.h>
 #include <trx/game/items/const.h>
 #include <trx/game/lara.h>
+#include <trx/game/lara/cheat.h>
 #include <trx/game/lara/misc.h>
 #include <trx/game/lara/poison.h>
 #include <trx/game/lara/skin/storage.h>
@@ -217,6 +218,24 @@ static int M_L_LaraExtinguish(lua_State *const L)
     return 0;
 }
 
+// trxc.lara.is_flying() -> bool
+static int M_L_LaraIsFlying(lua_State *const L)
+{
+    lua_pushboolean(L, Lara_GetLaraInfo()->water_status == LWS_CHEAT);
+    return 1;
+}
+
+// trxc.lara.set_flying(bool)
+static int M_L_LaraSetFlying(lua_State *const L)
+{
+    if (lua_toboolean(L, 1)) {
+        Lara_Cheat_EnterFlyMode();
+    } else {
+        Lara_Cheat_ExitFlyMode();
+    }
+    return 0;
+}
+
 static const luaL_Reg m_Module[] = {
     { "get_item", M_L_LaraGetItem },
     { "get_target", M_L_LaraGetTarget },
@@ -226,6 +245,8 @@ static const luaL_Reg m_Module[] = {
     { "clear_equipment", M_L_LaraClearEquipment },
     { "cure_poison", M_L_LaraCurePoison },
     { "extinguish", M_L_LaraExtinguish },
+    { "is_flying", M_L_LaraIsFlying },
+    { "set_flying", M_L_LaraSetFlying },
     { "are_holsters_visible", M_L_LaraAreHolstersVisible },
     { "set_holsters_visible", M_L_LaraSetHolstersVisible },
     { "has_pistol_weapon", M_L_LaraHasPistolWeapon },

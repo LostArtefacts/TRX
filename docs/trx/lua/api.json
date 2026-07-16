@@ -2634,6 +2634,10 @@
       "path": "camera.reset"
     },
     {
+      "description": "Cancels the flyby camera sequence, if one is playing.",
+      "path": "camera.cancel_flyby"
+    },
+    {
       "description": "Converts a TRX id into the slot this game's own files use for it - the number a builder reads off Tomb Editor.",
       "examples": [
         "local slot = trx.catalog.to_slot(trx.catalog.Context.OBJECTS, trx.catalog.objects.WOLF)"
@@ -3967,6 +3971,12 @@
       "writable": false
     },
     {
+      "description": "Whether a flyby camera sequence is playing.",
+      "path": "camera.is_flyby_active",
+      "type": "boolean",
+      "writable": false
+    },
+    {
       "description": "Whether Lara's allies are hostile towards her.",
       "path": "creatures.hostile_allies",
       "type": "boolean",
@@ -4047,6 +4057,12 @@
     {
       "description": "Whether Lara's holsters are drawn on her hips.",
       "path": "lara.holsters_visible",
+      "type": "boolean",
+      "writable": true
+    },
+    {
+      "description": "Whether Lara is in the fly-mode cheat. Setting it enters or leaves fly mode.",
+      "path": "lara.is_flying",
       "type": "boolean",
       "writable": true
     },

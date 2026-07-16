@@ -53,3 +53,14 @@ api.define("camera.reset", {
   description = "Resets the camera to Lara's current position.",
   impl = raw.reset,
 })
+
+api.property("camera.is_flyby_active", {
+  type = "boolean",
+  description = "Whether a flyby camera sequence is playing.",
+  get = raw.is_flyby_active,
+})
+
+api.define("camera.cancel_flyby", {
+  description = "Cancels the flyby camera sequence, if one is playing.",
+  impl = raw.cancel_flyby,
+})

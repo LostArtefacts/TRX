@@ -22,6 +22,7 @@ Her position, room and hit points are not here: she is an item like any other an
 - **`trx.lara.target`** (Item). The item Lara's guns are locked onto, or `nil` if she has none. *(read-only)*
 - **`trx.lara.outfit`** (string). The outfit Lara is wearing, by name, as defined in `cfg/outfits.json5`.
 - **`trx.lara.holsters_visible`** (boolean). Whether Lara's holsters are drawn on her hips.
+- **`trx.lara.is_flying`** (boolean). Whether Lara is in the fly-mode cheat. Setting it enters or leaves fly mode.
 - **`trx.lara.has_pistol_weapon`** (boolean). Whether Lara is carrying a pistol-class weapon, which is what decides whether she has holsters to show at all. *(read-only)*
 
 ### Enums
