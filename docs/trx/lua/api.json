@@ -4407,6 +4407,12 @@
           "writable": true
         },
         {
+          "description": "The poison reservoir that drains into `poison` over time. TR4 only.",
+          "name": "poison_target",
+          "type": "integer",
+          "writable": true
+        },
+        {
           "description": "Frames Lara has stood still for, which is what starts an idle animation.",
           "name": "pose_count",
           "type": "integer",

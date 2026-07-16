@@ -67,9 +67,6 @@
             "config_option_get": "%s è attualmente impostato su %s",
             "config_option_set": "%s è stato modificato in %s",
             "config_option_unknown_option": "Opzione sconosciuta: %s",
-            "current_poison_get": "\\{review}Veleno attuale di Lara: %d (obiettivo: %d)",
-            "current_poison_set": "\\{review}Veleno di Lara impostato a %d",
-            "current_poison_target_set": "\\{review}Obiettivo veleno di Lara impostato a %d",
             "door_close": "Chiuditi Sesamo!",
             "door_open": "Apriti Sesamo!",
             "door_open_fail": "Nessuna porta nelle vicinanze di Lara",
@@ -408,7 +405,10 @@
                 "track": "Riproduzione traccia musicale %d",
             },
             "poison": {
+                "get": "\\{review}Veleno attuale di Lara: %d (obiettivo: %d)",
                 "help": "\\{review}Imposta il livello di veleno di Lara al valore specificato. Usa -t per impostare invece il livello obiettivo (solo TR4).",
+                "set": "\\{review}Veleno di Lara impostato a %d",
+                "target_set": "\\{review}Obiettivo veleno di Lara impostato a %d",
             },
             "pos": {
                 "help": "Mostra la posizione di Lara.",
