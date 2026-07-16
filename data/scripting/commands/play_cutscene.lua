@@ -4,6 +4,12 @@
 --   /cut 1
 
 local function run(args)
+  local cutscenes = trx.game.cutscenes
+  if #cutscenes == 0 then
+    return trx.console.Result.FAILURE,
+      trx.locale.get("console/cmd/play_cutscene/none")
+  end
+
   if args == "" then
     return trx.console.Result.BAD_INVOCATION
   end
@@ -13,7 +19,6 @@ local function run(args)
     return trx.console.Result.BAD_INVOCATION
   end
 
-  local cutscenes = trx.game.cutscenes
   if num < 1 or num > #cutscenes then
     return trx.console.Result.FAILURE,
       trx.locale.get("console/cmd/play_cutscene/invalid")

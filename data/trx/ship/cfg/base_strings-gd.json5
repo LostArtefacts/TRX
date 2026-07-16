@@ -384,6 +384,7 @@
                 "help": "Cluich sealladh-film leis an àireamh ainmichte.",
                 "invalid": "Sealladh-film mì-dhligheach",
                 "loading": "A' luchdachadh sealladh-film %d",
+                "none": "\\{review}Chan eil seallaidhean-film sa gheama seo",
             },
             "play_demo": {
                 "help": "Cluich taisbeanadh leis an àireamh ainmichte.",

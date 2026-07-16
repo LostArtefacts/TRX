@@ -384,6 +384,7 @@
                 "help": "Wczytuje przerywnik o podanym numerze.",
                 "invalid": "Nieprawidłowy przerywnik",
                 "loading": "Wczytano przerywnik %d",
+                "none": "\\{review}W tej grze nie ma przerywników",
             },
             "play_demo": {
                 "help": "Wczytuje demo o podanym numerze.",

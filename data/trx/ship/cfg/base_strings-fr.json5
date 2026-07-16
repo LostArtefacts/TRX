@@ -384,6 +384,7 @@
                 "help": "Lance la cinématique correspondant au numéro donné.",
                 "invalid": "Cinématique invalide",
                 "loading": "Chargement de la cinématique %d",
+                "none": "\\{review}Ce jeu ne contient aucune cinématique",
             },
             "play_demo": {
                 "help": "Lance la démo correspondant au numéro donné.",

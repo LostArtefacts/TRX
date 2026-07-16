@@ -384,6 +384,7 @@
                 "help": "Plays a cutscene with the given number.",
                 "invalid": "Invalid cutscene",
                 "loading": "Loading cutscene %d",
+                "none": "This game has no cutscenes",
             },
             "play_demo": {
                 "help": "Plays a demo with the given number.",
