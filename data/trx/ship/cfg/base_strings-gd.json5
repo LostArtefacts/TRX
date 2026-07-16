@@ -73,10 +73,6 @@
             "door_close": "Dùin Sesame!",
             "door_open": "Fosgail Sesame!",
             "door_open_fail": "Chan eil doras sam bith faisg air Lara",
-            "flipmap_fail_already_off": "Tha am mapa-flip mar-thà DHETH",
-            "flipmap_fail_already_on": "Tha am mapa-flip mar-thà AIR",
-            "flipmap_off": "Mapa-flip air a chur DHETH",
-            "flipmap_on": "Mapa-flip air a chur AIR",
             "fly_mode_off": "Modh itealaich air a chur dheth",
             "fly_mode_on": "Modh itealaich air a chur air",
             "fps_counter_off": "Cuntair FPS dheth",
@@ -309,7 +305,11 @@
                 "help": "Dùinidh an gèama.",
             },
             "flipmap": {
+                "already_off": "Tha am mapa-flip mar-thà DHETH",
+                "already_on": "Tha am mapa-flip mar-thà AIR",
                 "help": "Tionndaidheas am mapa-flip.",
+                "off": "Mapa-flip air a chur DHETH",
+                "on": "Mapa-flip air a chur AIR",
             },
             "flood": {
                 "help": "Lìonas an t-seomair làithreach le uisge.",

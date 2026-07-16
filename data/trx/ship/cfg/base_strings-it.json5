@@ -73,10 +73,6 @@
             "door_close": "Chiuditi Sesamo!",
             "door_open": "Apriti Sesamo!",
             "door_open_fail": "Nessuna porta nelle vicinanze di Lara",
-            "flipmap_fail_already_off": "Mappa capovolta già disattivata",
-            "flipmap_fail_already_on": "Mappa capovolta già attivata",
-            "flipmap_off": "Mappa capovolta disattivata",
-            "flipmap_on": "Mappa capovolta attivata",
             "fly_mode_off": "Modalità volo disabilitata",
             "fly_mode_on": "Modalità volo abilitata",
             "fps_counter_off": "Contatore FPS disabilitato",
@@ -309,7 +305,11 @@
                 "help": "Termina il gioco.",
             },
             "flipmap": {
+                "already_off": "Mappa capovolta già disattivata",
+                "already_on": "Mappa capovolta già attivata",
                 "help": "Attiva o disattiva mappa capovolta.",
+                "off": "Mappa capovolta disattivata",
+                "on": "Mappa capovolta attivata",
             },
             "flood": {
                 "help": "Immerge la stanza corrente nell'acqua.",

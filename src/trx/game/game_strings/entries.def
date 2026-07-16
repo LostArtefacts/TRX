@@ -761,10 +761,6 @@ GS_DEFINE(general/osd/quick_save_fail_no_slots, "No quick save slots are configu
 GS_DEFINE(general/osd/quick_load, "Quick-loaded slot %d")
 GS_DEFINE(general/osd/quick_load_fail_no_bound_slot, "No save slot is currently bound")
 GS_DEFINE(general/osd/quick_load_fail_unavailable_bound_slot, "The bound save slot is not available")
-GS_DEFINE(general/osd/flipmap_on, "Flipmap set to ON")
-GS_DEFINE(general/osd/flipmap_off, "Flipmap set to OFF")
-GS_DEFINE(general/osd/flipmap_fail_already_on, "Flipmap is already ON")
-GS_DEFINE(general/osd/flipmap_fail_already_off, "Flipmap is already OFF")
 GS_DEFINE(general/osd/ambiguous_input_2, "Ambiguous input: %s and %s")
 GS_DEFINE(general/osd/ambiguous_input_3, "Ambiguous input: %s, %s, ...")
 GS_DEFINE(general/osd/ui_on, "UI enabled")
@@ -872,6 +868,11 @@ GS_DEFINE(console/cmd/immune/off, "Lara is now vulnerable")
 
 GS_DEFINE(console/cmd/inf_sprint/on,  "Lara can now sprint forever")
 GS_DEFINE(console/cmd/inf_sprint/off, "Lara can no longer sprint forever")
+
+GS_DEFINE(console/cmd/flipmap/on,          "Flipmap set to ON")
+GS_DEFINE(console/cmd/flipmap/off,         "Flipmap set to OFF")
+GS_DEFINE(console/cmd/flipmap/already_on,  "Flipmap is already ON")
+GS_DEFINE(console/cmd/flipmap/already_off, "Flipmap is already OFF")
 
 GS_DEFINE(console/cmd/hp/get, "Current Lara's health: %d")
 GS_DEFINE(console/cmd/hp/set, "Lara's health set to %d")

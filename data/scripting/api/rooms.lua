@@ -138,6 +138,12 @@ api.define("rooms.flip", {
   impl = raw.flip,
 })
 
+api.property("rooms.flipped", {
+  type = "boolean",
+  description = "Whether the room map is currently flipped.",
+  get = raw.get_flipped,
+})
+
 api.define("rooms.flip_effect", {
   description = "Sets the active flip effect, and optionally its timer.",
   params = {

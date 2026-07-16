@@ -132,6 +132,13 @@ static int M_L_RoomsFlip(lua_State *const L)
     return 0;
 }
 
+// trxc.rooms.get_flipped() -> bool
+static int M_L_RoomsGetFlipped(lua_State *const L)
+{
+    lua_pushboolean(L, Room_GetFlipStatus());
+    return 1;
+}
+
 // trxc.rooms.flip_effect(effect_id, [timer])
 static int M_L_RoomsFlipEffect(lua_State *const L)
 {
@@ -179,6 +186,7 @@ static const luaL_Reg m_Module[] = {
     { "get", M_L_RoomsGet },
     { "get_bounds", M_L_RoomsGetBounds },
     { "flip", M_L_RoomsFlip },
+    { "get_flipped", M_L_RoomsGetFlipped },
     { "flip_effect", M_L_RoomsFlipEffect },
     { "find_valid_pos", M_L_RoomsFindValidPos },
     { nullptr, nullptr },

@@ -73,10 +73,6 @@
             "door_close": "Sezamie, zamknij się!",
             "door_open": "Sezamie, otwórz się!",
             "door_open_fail": "Brak drzwi w pobliżu Lary",
-            "flipmap_fail_already_off": "Flipmapa jest już wyłączona",
-            "flipmap_fail_already_on": "Flipmapa jest już włączona",
-            "flipmap_off": "Flipmapa wyłączona",
-            "flipmap_on": "Flipmapa włączona",
             "fly_mode_off": "Tryb latania wyłączony",
             "fly_mode_on": "Tryb latania włączony",
             "fps_counter_off": "Licznik klatek na sekundę wyłączony",
@@ -309,7 +305,11 @@
                 "help": "Zamyka grę.",
             },
             "flipmap": {
+                "already_off": "Flipmapa jest już wyłączona",
+                "already_on": "Flipmapa jest już włączona",
                 "help": "Przełącza flipmapę.",
+                "off": "Flipmapa wyłączona",
+                "on": "Flipmapa włączona",
             },
             "flood": {
                 "help": "Zalewa aktualne pomieszczenie wodą.",
