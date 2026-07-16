@@ -5,8 +5,8 @@ trx.events.on_game_start(function(level, is_save)
   end
   local records = trx.assault.stats.list_records()
   if #records > 1 then
-    trx.music.play(22)
+    trx.music.tracks[22]:play()
   else
-    trx.music.play(5)
+    trx.music.tracks[5]:play()
   end
 end)

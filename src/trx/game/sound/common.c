@@ -482,11 +482,14 @@ void Sound_ResetSources(void)
     }
 }
 
-bool Sound_Effect_Direct(
+// Returns the active-sound slot the sample plays in, or -1 when it does not
+// play. The slot is the one Sound_GetActiveSlot and the Lua Stream handle
+// address.
+int32_t Sound_Effect_Direct(
     const SAMPLE_ID sample_id, const XYZ_32 *const pos, const uint32_t flags)
 {
     if (!Sound_IsInitialised()) {
-        return false;
+        return -1;
     }
 
     if ((flags & SPM_ALWAYS) == 0) {
@@ -494,13 +497,13 @@ bool Sound_Effect_Direct(
         const ROOM *const room = Room_Get(g_Camera.pos.room_num);
         const bool room_submerged = room != nullptr && room->flags.underwater;
         if (play_underwater != room_submerged) {
-            return false;
+            return -1;
         }
     }
 
     const SAMPLE_INFO *const sample = Sound_GetSample(sample_id);
     if (sample == nullptr || sample->number < 0) {
-        return false;
+        return -1;
     }
 
     if (sample->randomness) {
@@ -509,19 +512,19 @@ bool Sound_Effect_Direct(
             r &= 0xFF;
         }
         if (r > sample->randomness) {
-            return false;
+            return -1;
         }
     }
 
     const int32_t distance = M_GetDistance(sample, pos);
     if (distance == INT32_MAX) {
-        return false;
+        return -1;
     }
 
     const int32_t pan = M_GetPan(sample, pos);
     const int32_t volume = M_GetVolume(sample, distance, true);
     if (volume <= 0) {
-        return false;
+        return -1;
     }
 
     const int32_t pitch = M_GetPitch(sample, flags);
@@ -540,7 +543,7 @@ bool Sound_Effect_Direct(
         sound = g_TRVersion == 1 ? M_SelectUsedSoundWithPos(sample_id, pos)
                                  : M_SelectUsedSound(sample_id);
         if (sound != nullptr && Audio_Sample_IsPlaying(sound->handle)) {
-            return true;
+            return (int32_t)(sound - m_ActiveSounds);
         }
         if (sound == nullptr) {
             sound = M_SelectUnusedSound();
@@ -562,14 +565,14 @@ bool Sound_Effect_Direct(
                 sound->pan = pan;
                 sound->pitch = pitch;
             }
-            return true;
+            return (int32_t)(sound - m_ActiveSounds);
         }
         sound = M_SelectUnusedSound();
         break;
     }
 
     if (sound == nullptr) {
-        return false;
+        return -1;
     }
 
     M_CloseActiveSound(sound);
@@ -577,7 +580,7 @@ bool Sound_Effect_Direct(
         track_id, M_ConvertVolumeToDecibel(volume), M_ConvertPitch(pitch),
         M_ConvertPanToDecibel(pan), sample->mode == SAMPLE_MODE_LOOPED);
     if (handle == AUDIO_NO_SOUND) {
-        return false;
+        return -1;
     }
     sound->sample = sample;
     sound->sample_id = sample_id;
@@ -596,10 +599,10 @@ bool Sound_Effect_Direct(
         sound->pos_ptr = nullptr;
     }
     M_ClearActiveSoundHandles(sound);
-    return true;
+    return (int32_t)(sound - m_ActiveSounds);
 }
 
-bool Sound_Effect(
+int32_t Sound_Effect(
     const SAMPLE_TRX_ID sample_id, const XYZ_32 *const pos,
     const uint32_t flags)
 {

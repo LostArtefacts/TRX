@@ -47,6 +47,18 @@ static void *M_ResolveStream(const LUA_STRUCT_REF *const ref)
     return &m_StreamViews[slot];
 }
 
+// Hands back the stream a play landed in, by the slot the engine reported, or
+// nil when the track is not playing - a delayed or deferred track is marked but
+// not yet playing.
+static void M_PushPlayedStream(lua_State *const L, const int32_t slot)
+{
+    if (slot < 0) {
+        lua_pushnil(L);
+    } else {
+        LUA_Struct_Push(L, &TYPE_MUSIC_STREAM_VIEW, M_ResolveStream, slot, 0);
+    }
+}
+
 // stream:stop()
 static int M_L_MusicStreamStop(lua_State *const L)
 {
@@ -165,7 +177,7 @@ static void *M_ResolveTrack(const LUA_STRUCT_REF *const ref)
     return &m_TrackView;
 }
 
-// track:play([opts])
+// track:play([opts]) -> stream or nil
 static int M_L_MusicTrackPlay(lua_State *const L)
 {
     LUA_STRUCT_REF *const ref =
@@ -180,10 +192,8 @@ static int M_L_MusicTrackPlay(lua_State *const L)
         }
         lua_pop(L, 1);
     }
-    if (!Music_Play_Direct((MUSIC_ID)ref->idx, mode)) {
-        return luaL_error(L, "could not play track %d", ref->idx);
-    }
-    return 0;
+    M_PushPlayedStream(L, Music_Play_Direct((MUSIC_ID)ref->idx, mode));
+    return 1;
 }
 
 // track:path()
@@ -241,18 +251,6 @@ static int M_L_MusicTrackAvailableCount(lua_State *const L)
     return 1;
 }
 
-// trxc.music.play_track(id[, opts])
-static int M_L_MusicPlayTrack(lua_State *const L)
-{
-    const int32_t id = (int32_t)luaL_checkinteger(L, 1);
-    const MUSIC_PLAY_MODE mode = luaL_checkinteger(L, 2);
-    if (!Music_Play_Direct((MUSIC_ID)id, mode)) {
-        return luaL_error(
-            L, "invalid music track or mode (id=%d, mode=%d)", id, mode);
-    }
-    return 0;
-}
-
 // trxc.music.pause()
 static int M_L_MusicPause(lua_State *const L)
 {
@@ -280,7 +278,6 @@ static const luaL_Reg m_Module[] = {
     { "track_get", M_L_MusicTrackGet },
     { "track_limit", M_L_MusicTrackLimit },
     { "track_available_count", M_L_MusicTrackAvailableCount },
-    { "play", M_L_MusicPlayTrack },
     { "pause", M_L_MusicPause },
     { "unpause", M_L_MusicUnpause },
     { "stop", M_L_MusicStop },

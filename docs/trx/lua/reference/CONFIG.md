@@ -28,7 +28,9 @@ These are the player's settings, not the level's. `set` writes to them and keeps
 
   Example:
   ```lua
-  if trx.config.get("audio.enable_music") then trx.music.play(1) end
+  if trx.config.get("audio.enable_music") then
+    trx.music.play(trx.catalog.music.SECRET)
+  end
   ```
 
 - [lua]`trx.config.set(key, value)`  

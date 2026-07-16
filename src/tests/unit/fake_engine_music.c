@@ -22,16 +22,25 @@ typedef struct {
 
 static FAKE_SLOT m_Slots[FAKE_MUSIC_SLOT_COUNT];
 
-bool Music_Play_Direct(const MUSIC_ID track, const MUSIC_PLAY_MODE mode)
+int32_t Music_Play_Direct(const MUSIC_ID track, const MUSIC_PLAY_MODE mode)
 {
     g_FakeMusicCalls.play_count++;
     g_FakeMusicCalls.last_track = track;
     g_FakeMusicCalls.last_mode = mode;
     if (track != FAKE_MUSIC_TRACK) {
-        return false;
+        return -1;
     }
     m_Playing = track;
-    return true;
+    // Land it on the main stream, or the first overlay for OVERLAY mode, and
+    // report the slot.
+    const int32_t slot = mode == MPM_OVERLAY ? 1 : 0;
+    m_Slots[slot] = (FAKE_SLOT) {
+        .active = true,
+        .track_id = track,
+        .mode = mode,
+        .timestamp = 0.0,
+    };
+    return slot;
 }
 
 MUSIC_ID Music_GetCurrentPlayingTrack(void)

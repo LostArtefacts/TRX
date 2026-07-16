@@ -51,7 +51,7 @@ Module for playing and controlling the soundtrack.
     Properties:
     - **`mode`**: integer. How the track is playing. Compare against `trx.music.PlayMode`. *(read-only)*
     - **`timestamp`**: number. How far into the track the stream is, in seconds. *(read-only)*
-    - **`track_id`**: integer. The track this stream is playing. Compare against `trx.catalog.music`. *(read-only)*
+    - **`track_id`**: integer. The track this stream is playing, in the level's own numbering. *(read-only)*
 
     Methods:
 
@@ -86,7 +86,7 @@ Module for playing and controlling the soundtrack.
     unrelated one.
 
     Properties:
-    - **`id`**: integer. The track's id. Compare against `trx.catalog.music`. *(read-only)*
+    - **`id`**: integer. The track's id, in the level's own numbering. *(read-only)*
 
     Methods:
 
@@ -106,19 +106,23 @@ Module for playing and controlling the soundtrack.
       Parameters:
       - **`opts`** (table, optional). `mode`: a `trx.music.PlayMode`. Defaults to `ONCE`.
 
+      Returns: Stream or `nil`. The stream it started, or `nil` if none did.
+
 ### Functions
 
 - [lua]`trx.music.play(id, [opts])`  
-  Plays a track. Raises if the track or the mode is invalid.
+  Plays a track by catalog id, mapping it to the level's own track. A game that does not carry the track plays nothing.
 
   Parameters:
-  - **`id`** (integer). Track to play. Compare against `trx.catalog.music`.
+  - **`id`** (integer). Track to play. To reach a track by the level's own slot, play it through a handle: `trx.music.tracks[slot]:play()`. Compare against `trx.catalog.music`.
   - **`opts`** (table, optional). `mode`: a `trx.music.PlayMode`. Defaults to `ONCE`.
+
+  Returns: Stream or `nil`. The stream it started, or `nil` if none did.
 
   Example:
   ```lua
-  trx.music.play(1)
-  trx.music.play(2, { mode = trx.music.PlayMode.LOOP })
+  trx.music.play(trx.catalog.music.SECRET)
+  trx.music.play(trx.catalog.music.SECRET, { mode = trx.music.PlayMode.LOOP })
   ```
 
 - [lua]`trx.music.pause()`  

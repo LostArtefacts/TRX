@@ -60,7 +60,15 @@ api.type("sound.Sample", {
             .. "pan and volume. Omit to play at full volume.",
         },
       },
+      returns = {
+        type = "Stream",
+        nullable = true,
+        description = "The voice it started, or `nil` if none did.",
+      },
       description = "Plays this sample.",
+    },
+    stop = {
+      description = "Stops every voice playing this sample.",
     },
   },
 })
@@ -167,14 +175,15 @@ api.property("sound.streams", {
 })
 
 api.define("sound.play", {
-  description = "Plays a sound effect. Raises if the sample is not available.",
+  description = "Plays a sound effect by catalog id, mapping it to the level's own sample. A game "
+    .. "that does not carry the sample plays nothing.",
   params = {
     {
       name = "id",
       type = "integer",
-      description = "A sample id in the level's own numbering, as `trx.sound.samples` is keyed by. "
-        .. "For a catalog name, convert it with `trx.catalog.to_slot(trx.catalog.Context.SAMPLES, "
-        .. "id)` first.",
+      enum = "catalog.samples",
+      description = "Sample to play. To reach a sample by the level's own slot, play it through a "
+        .. "handle: `trx.sound.samples[slot]:play()`.",
     },
     {
       name = "opts",
@@ -184,23 +193,40 @@ api.define("sound.play", {
         .. "and volume. Omit to play at full volume.",
     },
   },
-  examples = {
-    [[trx.sound.play(99)
-trx.sound.play(99, { pos = { x = 100, y = 200, z = 50 } })]],
+  returns = {
+    type = "Stream",
+    nullable = true,
+    description = "The voice it started, or `nil` if none did.",
   },
-  impl = raw.play,
+  examples = {
+    [[trx.sound.play(trx.catalog.samples.LARA_NO)
+trx.sound.play(trx.catalog.samples.LARA_NO, { pos = { x = 100, y = 200, z = 50 } })]],
+  },
+  impl = function(id, opts)
+    local slot = trx.catalog.to_slot(trx.catalog.Context.SAMPLES, id)
+    local sample = slot ~= nil and samples[slot] or nil
+    return sample ~= nil and sample:play(opts) or nil
+  end,
 })
 
 api.define("sound.stop", {
-  description = "Stops a sound effect.",
+  description = "Stops a sound effect by catalog id.",
   params = {
     {
       name = "id",
       type = "integer",
-      description = "A sample id in the level's own numbering, as `trx.sound.samples` is keyed by.",
+      enum = "catalog.samples",
+      description = "Sample to stop. To reach a sample by the level's own slot, stop it through a "
+        .. "handle: `trx.sound.samples[slot]:stop()`.",
     },
   },
-  impl = raw.stop,
+  impl = function(id)
+    local slot = trx.catalog.to_slot(trx.catalog.Context.SAMPLES, id)
+    local sample = slot ~= nil and samples[slot] or nil
+    if sample ~= nil then
+      sample:stop()
+    end
+  end,
 })
 
 api.define("sound.stop_all", {

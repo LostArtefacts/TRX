@@ -47,11 +47,12 @@ bool Sound_IsAvailable(SAMPLE_TRX_ID sample_id);
 // Returns SFX_INVALID if no samples are available.
 SAMPLE_ID Sound_GetMaxDirectSampleID(void);
 
-// Play a sample with the given number.
-// pos is an optional argument that takes the world position to play the sound
-// at and can be nullptr.
-bool Sound_Effect_Direct(SAMPLE_ID sfx_num, const XYZ_32 *pos, uint32_t flags);
-bool Sound_Effect(SAMPLE_TRX_ID sfx_num, const XYZ_32 *pos, uint32_t flags);
+// Play a sample with the given number. pos is an optional world position to
+// play the sound at, and can be nullptr. Returns the active-sound slot the
+// sample plays in, or -1 when it does not play.
+int32_t Sound_Effect_Direct(
+    SAMPLE_ID sfx_num, const XYZ_32 *pos, uint32_t flags);
+int32_t Sound_Effect(SAMPLE_TRX_ID sfx_num, const XYZ_32 *pos, uint32_t flags);
 
 void Sound_StopEffect_Direct(SAMPLE_ID sfx_num);
 void Sound_StopEffect(SAMPLE_TRX_ID sfx_num);

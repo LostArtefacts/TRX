@@ -903,9 +903,9 @@
     {
       "bulk": true,
       "count": 203,
-      "description": "Every sound sample TRX has a name for. This is the catalog id, which `trx.sound.play` does not take: convert it to the level's own slot with `trx.catalog.to_slot` first.",
+      "description": "Every sound sample TRX has a name for.",
       "examples": [
-        "local slot = trx.catalog.to_slot(trx.catalog.Context.SAMPLES, trx.catalog.samples.LARA_NO)\ntrx.sound.play(slot)"
+        "trx.sound.play(trx.catalog.samples.LARA_NO)"
       ],
       "names": [
         "AIRPLANE_IDLE",
@@ -2690,7 +2690,7 @@
     {
       "description": "Reads a setting. The value comes back as the type the option is declared with, so a boolean option reads as a boolean. Colors and enums read as strings.",
       "examples": [
-        "if trx.config.get(\"audio.enable_music\") then trx.music.play(1) end"
+        "if trx.config.get(\"audio.enable_music\") then\n  trx.music.play(trx.catalog.music.SECRET)\nend"
       ],
       "params": [
         {
@@ -3507,13 +3507,13 @@
       }
     },
     {
-      "description": "Plays a track. Raises if the track or the mode is invalid.",
+      "description": "Plays a track by catalog id, mapping it to the level's own track. A game that does not carry the track plays nothing.",
       "examples": [
-        "trx.music.play(1)\ntrx.music.play(2, { mode = trx.music.PlayMode.LOOP })"
+        "trx.music.play(trx.catalog.music.SECRET)\ntrx.music.play(trx.catalog.music.SECRET, { mode = trx.music.PlayMode.LOOP })"
       ],
       "params": [
         {
-          "description": "Track to play.",
+          "description": "Track to play. To reach a track by the level's own slot, play it through a handle: `trx.music.tracks[slot]:play()`.",
           "enum": "catalog.music",
           "name": "id",
           "type": "integer"
@@ -3525,7 +3525,12 @@
           "type": "table"
         }
       ],
-      "path": "music.play"
+      "path": "music.play",
+      "returns": {
+        "description": "The stream it started, or `nil` if none did.",
+        "nullable": true,
+        "type": "Stream"
+      }
     },
     {
       "description": "Pauses the music.",
@@ -3665,13 +3670,14 @@
       ]
     },
     {
-      "description": "Plays a sound effect. Raises if the sample is not available.",
+      "description": "Plays a sound effect by catalog id, mapping it to the level's own sample. A game that does not carry the sample plays nothing.",
       "examples": [
-        "trx.sound.play(99)\ntrx.sound.play(99, { pos = { x = 100, y = 200, z = 50 } })"
+        "trx.sound.play(trx.catalog.samples.LARA_NO)\ntrx.sound.play(trx.catalog.samples.LARA_NO, { pos = { x = 100, y = 200, z = 50 } })"
       ],
       "params": [
         {
-          "description": "A sample id in the level's own numbering, as `trx.sound.samples` is keyed by. For a catalog name, convert it with `trx.catalog.to_slot(trx.catalog.Context.SAMPLES, id)` first.",
+          "description": "Sample to play. To reach a sample by the level's own slot, play it through a handle: `trx.sound.samples[slot]:play()`.",
+          "enum": "catalog.samples",
           "name": "id",
           "type": "integer"
         },
@@ -3682,13 +3688,19 @@
           "type": "table"
         }
       ],
-      "path": "sound.play"
+      "path": "sound.play",
+      "returns": {
+        "description": "The voice it started, or `nil` if none did.",
+        "nullable": true,
+        "type": "Stream"
+      }
     },
     {
-      "description": "Stops a sound effect.",
+      "description": "Stops a sound effect by catalog id.",
       "params": [
         {
-          "description": "A sample id in the level's own numbering, as `trx.sound.samples` is keyed by.",
+          "description": "Sample to stop. To reach a sample by the level's own slot, stop it through a handle: `trx.sound.samples[slot]:stop()`.",
+          "enum": "catalog.samples",
           "name": "id",
           "type": "integer"
         }
@@ -4618,8 +4630,7 @@
           "writable": false
         },
         {
-          "description": "The track this stream is playing.",
-          "enum": "catalog.music",
+          "description": "The track this stream is playing, in the level's own numbering.",
           "name": "track_id",
           "type": "integer",
           "writable": false
@@ -4668,8 +4679,7 @@
       "extensions": [],
       "fields": [
         {
-          "description": "The track's id.",
-          "enum": "catalog.music",
+          "description": "The track's id, in the level's own numbering.",
           "name": "id",
           "type": "integer",
           "writable": false
@@ -4702,7 +4712,12 @@
               "optional": true,
               "type": "table"
             }
-          ]
+          ],
+          "returns": {
+            "description": "The stream it started, or `nil` if none did.",
+            "nullable": true,
+            "type": "Stream"
+          }
         }
       ],
       "path": "music.Track"
@@ -4936,7 +4951,16 @@
               "optional": true,
               "type": "table"
             }
-          ]
+          ],
+          "returns": {
+            "description": "The voice it started, or `nil` if none did.",
+            "nullable": true,
+            "type": "Stream"
+          }
+        },
+        {
+          "description": "Stops every voice playing this sample.",
+          "name": "stop"
         }
       ],
       "path": "sound.Sample"

@@ -236,13 +236,15 @@ static int32_t M_GetFreeOverlaySlot(void)
     return -1;
 }
 
-static bool M_PlayOverlayTrack(const MUSIC_ID track_id)
+// Returns the stream slot the overlay plays in - an overlay is slots 1.. - or
+// -1 when it does not play.
+static int32_t M_PlayOverlayTrack(const MUSIC_ID track_id)
 {
     if (m_Backend == nullptr) {
         LOG_WARNING(
             "Not playing overlay track %d because no backend is available",
             track_id);
-        return false;
+        return -1;
     }
 
     const int32_t slot = M_GetFreeOverlaySlot();
@@ -251,13 +253,13 @@ static bool M_PlayOverlayTrack(const MUSIC_ID track_id)
             "Not playing overlay track %d because all %d overlay slots are in "
             "use",
             track_id, MUSIC_MAX_OVERLAY_TRACKS);
-        return false;
+        return -1;
     }
 
     const int32_t stream_id = m_Backend->play(m_Backend, track_id);
     if (stream_id < 0) {
         LOG_ERROR("Failed to create overlay stream for track %d", track_id);
-        return false;
+        return -1;
     }
 
     m_OverlayStreams[slot].audio_stream_id = stream_id;
@@ -268,7 +270,7 @@ static bool M_PlayOverlayTrack(const MUSIC_ID track_id)
     Audio_Stream_SetIsLooped(stream_id, false);
     Audio_Stream_SetFinishCallback(
         stream_id, M_StreamFinished, &m_OverlayStreams[slot]);
-    return true;
+    return slot + 1;
 }
 
 static bool M_GetMainTrackState(MUSIC_STREAM_STATE *const state)
@@ -332,14 +334,17 @@ void Music_Shutdown(void)
     Audio_Shutdown();
 }
 
-bool Music_Play_Direct(const MUSIC_ID track_id, const MUSIC_PLAY_MODE mode)
+// Returns the stream slot the track plays in - the main stream is slot 0, the
+// overlays are slots 1.. - or -1 when the track does not play, which includes a
+// track marked for later (delay) or a deferred ambient.
+int32_t Music_Play_Direct(const MUSIC_ID track_id, const MUSIC_PLAY_MODE mode)
 {
     if (!m_Initialised) {
-        return false;
+        return -1;
     }
 
     if (M_IsBrokenTrack(track_id)) {
-        return false;
+        return -1;
     }
 
     if (mode == MPM_OVERLAY) {
@@ -347,22 +352,23 @@ bool Music_Play_Direct(const MUSIC_ID track_id, const MUSIC_PLAY_MODE mode)
         return M_PlayOverlayTrack(track_id);
     }
 
+    // Already on the main stream, so slot 0 carries it.
     if (track_id == m_TrackCurrent) {
-        return true;
+        return 0;
     }
 
     if (mode == MPM_NO_REPEAT && track_id == m_TrackLastPlayed) {
-        return true;
+        return -1;
     }
 
     const bool is_looped = mode == MPM_LOOP || M_IsAmbientTrack(track_id);
     if (is_looped && track_id == m_TrackLastLooped) {
-        return true;
+        return 0;
     }
 
     if (mode == MPM_DELAY) {
         m_TrackDelayed = track_id;
-        return true;
+        return -1;
     }
 
     if (is_looped && m_TrackCurrent != MX_INACTIVE) {
@@ -371,34 +377,32 @@ bool Music_Play_Direct(const MUSIC_ID track_id, const MUSIC_PLAY_MODE mode)
         m_TrackDelayed = MX_INACTIVE;
         m_TrackLooped = track_id;
         m_TrackLastLooped = track_id;
-        return true;
+        return -1;
     }
 
+    bool played = false;
     M_StopMainStream();
-
     if (m_Backend == nullptr) {
         LOG_WARNING(
             "Not playing track %d because no backend is available", track_id);
-        goto finish;
+    } else {
+        LOG_INFO("Playing track %d, mode: %d", track_id, mode);
+        const int32_t stream_id = m_Backend->play(m_Backend, track_id);
+        if (stream_id < 0) {
+            LOG_ERROR("Failed to create music stream for track %d", track_id);
+        } else {
+            m_MainStream.audio_stream_id = stream_id;
+            m_MainStream.track_id = track_id;
+            m_MainStream.mode = is_looped ? MPM_LOOP : MPM_ONCE;
+            m_MainStream.active = true;
+            M_SyncVolume(&m_MainStream);
+            Audio_Stream_SetIsLooped(stream_id, is_looped);
+            Audio_Stream_SetFinishCallback(
+                stream_id, M_StreamFinished, &m_MainStream);
+            played = true;
+        }
     }
 
-    LOG_INFO("Playing track %d, mode: %d", track_id, mode);
-
-    const int32_t stream_id = m_Backend->play(m_Backend, track_id);
-    if (stream_id < 0) {
-        LOG_ERROR("Failed to create music stream for track %d", track_id);
-        goto finish;
-    }
-
-    m_MainStream.audio_stream_id = stream_id;
-    m_MainStream.track_id = track_id;
-    m_MainStream.mode = is_looped ? MPM_LOOP : MPM_ONCE;
-    m_MainStream.active = true;
-    M_SyncVolume(&m_MainStream);
-    Audio_Stream_SetIsLooped(stream_id, is_looped);
-    Audio_Stream_SetFinishCallback(stream_id, M_StreamFinished, &m_MainStream);
-
-finish:
     m_TrackDelayed = MX_INACTIVE;
     if (is_looped) {
         // Reset the regular track outside of M_StreamFinished so that
@@ -411,10 +415,10 @@ finish:
         m_TrackCurrent = track_id;
         m_TrackLastPlayed = track_id;
     }
-    return true;
+    return played ? 0 : -1;
 }
 
-bool Music_Play(const MUSIC_TRX_ID track, const MUSIC_PLAY_MODE mode)
+int32_t Music_Play(const MUSIC_TRX_ID track, const MUSIC_PLAY_MODE mode)
 {
     return Music_Play_Direct(Music_ToGameID(track), mode);
 }

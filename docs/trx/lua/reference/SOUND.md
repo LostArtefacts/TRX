@@ -49,6 +49,11 @@ Module for playing sound effects.
       Parameters:
       - **`opts`** (table, optional). `pos`: a `{ x =, y =, z = }` world position to play from, which applies pan and volume. Omit to play at full volume.
 
+      Returns: Stream or `nil`. The voice it started, or `nil` if none did.
+
+    - [lua]`sample:stop()`  
+      Stops every voice playing this sample.
+
 - [lua]`trx.sound.Stream`
 
     One of the sound effects playing now. Reach them through `trx.sound.streams`. A handle to a voice that has fallen silent goes stale, so check `is_valid()` first.
@@ -79,23 +84,25 @@ Module for playing sound effects.
 ### Functions
 
 - [lua]`trx.sound.play(id, [opts])`  
-  Plays a sound effect. Raises if the sample is not available.
+  Plays a sound effect by catalog id, mapping it to the level's own sample. A game that does not carry the sample plays nothing.
 
   Parameters:
-  - **`id`** (integer). A sample id in the level's own numbering, as `trx.sound.samples` is keyed by. For a catalog name, convert it with `trx.catalog.to_slot(trx.catalog.Context.SAMPLES, id)` first.
+  - **`id`** (integer). Sample to play. To reach a sample by the level's own slot, play it through a handle: `trx.sound.samples[slot]:play()`. Compare against `trx.catalog.samples`.
   - **`opts`** (table, optional). `pos`: a `{ x =, y =, z = }` world position to play from, which applies pan and volume. Omit to play at full volume.
+
+  Returns: Stream or `nil`. The voice it started, or `nil` if none did.
 
   Example:
   ```lua
-  trx.sound.play(99)
-  trx.sound.play(99, { pos = { x = 100, y = 200, z = 50 } })
+  trx.sound.play(trx.catalog.samples.LARA_NO)
+  trx.sound.play(trx.catalog.samples.LARA_NO, { pos = { x = 100, y = 200, z = 50 } })
   ```
 
 - [lua]`trx.sound.stop(id)`  
-  Stops a sound effect.
+  Stops a sound effect by catalog id.
 
   Parameters:
-  - **`id`** (integer). A sample id in the level's own numbering, as `trx.sound.samples` is keyed by.
+  - **`id`** (integer). Sample to stop. To reach a sample by the level's own slot, stop it through a handle: `trx.sound.samples[slot]:stop()`. Compare against `trx.catalog.samples`.
 
 - [lua]`trx.sound.stop_all()`  
   Stops every sound effect currently playing.
