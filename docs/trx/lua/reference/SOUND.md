@@ -30,7 +30,7 @@ Module for playing sound effects.
     unrelated one.
 
     Properties:
-    - **`id`**: integer. The sample's id. Compare against `trx.catalog.samples`. *(read-only)*
+    - **`id`**: integer. The sample's id, in the level's own numbering. *(read-only)*
     - **`pitch`**: integer. The sample's base pitch. *(read-only)*
     - **`randomness`**: integer. How much the sample's playback is randomized. *(read-only)*
     - **`range`**: integer. How far the sample carries. *(read-only)*
@@ -58,7 +58,7 @@ Module for playing sound effects.
     unrelated one.
 
     Properties:
-    - **`sample_id`**: integer. The sample this voice is playing. Compare against `trx.catalog.samples`. *(read-only)*
+    - **`sample_id`**: integer. The sample this voice is playing, in the level's own numbering. *(read-only)*
 
     Methods:
 
@@ -82,7 +82,7 @@ Module for playing sound effects.
   Plays a sound effect. Raises if the sample is not available.
 
   Parameters:
-  - **`id`** (integer). Sample to play. Compare against `trx.catalog.samples`.
+  - **`id`** (integer). A sample id in the level's own numbering, as `trx.sound.samples` is keyed by. For a catalog name, convert it with `trx.catalog.to_slot(trx.catalog.Context.SAMPLES, id)` first.
   - **`opts`** (table, optional). `pos`: a `{ x =, y =, z = }` world position to play from, which applies pan and volume. Omit to play at full volume.
 
   Example:
@@ -95,7 +95,7 @@ Module for playing sound effects.
   Stops a sound effect.
 
   Parameters:
-  - **`id`** (integer). Sample to stop. Compare against `trx.catalog.samples`.
+  - **`id`** (integer). A sample id in the level's own numbering, as `trx.sound.samples` is keyed by.
 
 - [lua]`trx.sound.stop_all()`  
   Stops every sound effect currently playing.

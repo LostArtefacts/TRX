@@ -28,7 +28,8 @@ The Lua integration was rewritten and existing scripts will need updating; refer
 - added `trx.game.end_level()`, to end the current level
 - added `trx.items.spawn()`, to place a new item in the level at runtime
 - added `trx.items.get()`, `trx.items.count()`, `trx.rooms.get()`, `trx.rooms.count()` and `trx.objects.get()`, replacing the `fn` namespaces- added `trx.rooms.find_valid_pos()`, to nudge a position into valid room geometry
-- added item methods, `activate()`, `kill()`, `explode()`, `distance_to()`, `is_valid()`, `get_property()`, `set_property()` and `get_property_names()`
+- added item methods, `activate()`, `kill()`, `die()`, `shatter()`, `distance_to()`, `is_valid()`, `get_property()`, `set_property()` and `get_property_names()`
+- added the writable Lua item field `is_one_shot`
 - added object methods, `get_property()`, `set_property()` and `get_property_names()`
 - added new Lua item fields, `anim_state`, `goal_anim_state`, `speed`, `fall_speed`, `gravity`, `collidable`, `mesh_bits`, `touch_bits`, `max_hit_points`, `was_hit`, `is_active`, `is_alive`, `is_hostile` and `is_killed`, and made `timer` writable
 - added new Lua Lara state, `trx.lara.poison`, `trx.lara.electric`, `trx.lara.is_burning`, `trx.lara.is_crouched`, `trx.lara.is_climbing`, `trx.lara.water_status`, `trx.lara.gun_status`, `trx.lara.hit_direction`, `trx.lara.requested_gun`, `trx.lara.killed_loyal_item` and the dive, death, sprint and pose timers

@@ -160,6 +160,12 @@ api.type("items.Item", {
       writable = false,
       description = "Whether the item has already been killed.",
     },
+    is_one_shot = {
+      from = "is_one_shot",
+      type = "boolean",
+      description = "Whether the item's one-shot trigger flag is set, so its trigger fires only "
+        .. "once.",
+    },
     is_hostile = {
       from = "is_hostile",
       type = "boolean",
@@ -243,9 +249,32 @@ trx.events.after_control(function()
 end)]],
       },
     },
-    explode = {
-      description = "Runs the object's death handling with an explosion, as a rocket or a grenade "
-        .. "would. Unlike `kill()`, which simply removes the item from the game.",
+    die = {
+      params = {
+        {
+          name = "explode",
+          type = "boolean",
+          optional = true,
+          default = false,
+          description = "Whether to burst the meshes as it dies.",
+        },
+      },
+      description = "Runs the object's creature death handling: the corpse stays, and `explode` "
+        .. "bursts its meshes as a rocket or grenade would. For creatures; `kill()` simply removes "
+        .. "any item from the game.",
+    },
+    shatter = {
+      params = {
+        {
+          name = "damage",
+          type = "integer",
+          optional = true,
+          default = 0,
+          description = "Splash damage dealt to nearby items.",
+        },
+      },
+      description = "Bursts the item's meshes into flying debris, the visual `die(true)` produces, "
+        .. "on its own. It does not kill or remove the item.",
     },
     distance_to = {
       params = {

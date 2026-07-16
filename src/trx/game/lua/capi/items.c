@@ -1,6 +1,7 @@
 #include <trx/game/anims.h>
 #include <trx/game/creature.h>
 #include <trx/game/items.h>
+#include <trx/game/items/utils.h>
 #include <trx/game/lua/common.h>
 #include <trx/game/lua/registry.h>
 #include <trx/game/lua/struct.h>
@@ -93,6 +94,27 @@ static bool M_GetIsKilled(const void *const self, FIELD_VALUE *const out)
     return true;
 }
 
+static bool M_GetIsOneShot(const void *const self, FIELD_VALUE *const out)
+{
+    const ITEM *const item = self;
+    *out = (FIELD_VALUE) {
+        .type = FT_BOOL,
+        .as_bool = (item->flags & IF_ONE_SHOT) != 0,
+    };
+    return true;
+}
+
+static const char *M_SetIsOneShot(void *const self, const FIELD_VALUE *const in)
+{
+    ITEM *const item = self;
+    if (in->as_bool) {
+        item->flags |= IF_ONE_SHOT;
+    } else {
+        item->flags &= ~IF_ONE_SHOT;
+    }
+    return nullptr;
+}
+
 static bool M_GetIsHostile(const void *const self, FIELD_VALUE *const out)
 {
     *out = (FIELD_VALUE) {
@@ -143,6 +165,7 @@ static const FIELD_DESC m_Fields[] = {
     FIELD_FN("is_hostile", FT_BOOL,  M_GetIsHostile, nullptr),
     FIELD_FN("is_alive",   FT_BOOL,  M_GetIsAlive,   nullptr),
     FIELD_FN("is_killed",  FT_BOOL,  M_GetIsKilled,  nullptr),
+    FIELD_FN("is_one_shot", FT_BOOL, M_GetIsOneShot, M_SetIsOneShot),
 
     // side-effecting writes
     FIELD_SET(ITEM, pos,        M_SetPos),
@@ -361,24 +384,28 @@ static int M_L_ItemsDistanceTo(lua_State *const L)
     return 1;
 }
 
-// item:explode()
-//
-// Runs the object's death handling with an explosion. A primitive: the `kill`
-// cheat is one composition of it, and lives in Lua.
-static int M_L_ItemsExplode(lua_State *const L)
+// item:die([explode])
+static int M_L_ItemsDie(lua_State *const L)
 {
     LUA_STRUCT_REF *const ref = LUA_Struct_CheckRef(L, 1, &TYPE_ITEM);
     LUA_Struct_Deref(L, ref);
-    Creature_Die(ref->idx, true);
+    Creature_Die(ref->idx, lua_toboolean(L, 2));
+    return 0;
+}
+
+// item:shatter([damage])
+static int M_L_ItemsShatter(lua_State *const L)
+{
+    LUA_STRUCT_REF *const ref = LUA_Struct_CheckRef(L, 1, &TYPE_ITEM);
+    LUA_Struct_Deref(L, ref);
+    Item_Shatter(ref->idx, -1, (int16_t)luaL_optinteger(L, 2, 0));
     return 0;
 }
 
 static const luaL_Reg m_Methods[] = {
-    { "distance_to", M_L_ItemsDistanceTo },
-    { "explode", M_L_ItemsExplode },
-    { "kill", M_L_ItemsKill },
-    { "activate", M_L_ItemsActivate },
-    { nullptr, nullptr },
+    { "distance_to", M_L_ItemsDistanceTo }, { "die", M_L_ItemsDie },
+    { "shatter", M_L_ItemsShatter },        { "kill", M_L_ItemsKill },
+    { "activate", M_L_ItemsActivate },      { nullptr, nullptr },
 };
 
 static const luaL_Reg m_Module[] = {

@@ -13,6 +13,8 @@ typedef struct {
     int32_t swap_mesh;
     int32_t creature_die;
     bool creature_die_explode;
+    int32_t shatter;
+    int16_t shatter_damage;
     int32_t enable_baddie_ai;
     int32_t kill;
 } FAKE_ITEM_CALLS;

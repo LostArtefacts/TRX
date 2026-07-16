@@ -78,6 +78,7 @@ end
     - **`is_alive`**: boolean. Whether the item is a living creature with hit points remaining. *(read-only)*
     - **`is_hostile`**: boolean. Whether this item is a creature currently hostile to Lara. *(read-only)*
     - **`is_killed`**: boolean. Whether the item has already been killed. *(read-only)*
+    - **`is_one_shot`**: boolean. Whether the item's one-shot trigger flag is set, so its trigger fires only once.
     - **`max_hit_points`**: integer. Maximum hit points. Set `properties.max_hit_points` to change it. *(read-only)*
     - **`mesh_bits`**: integer. Bitmask of which of the item's meshes are drawn.
     - **`name`**: string. Unique item name, or `nil`. Assigning a name already in use raises an error.
@@ -100,6 +101,12 @@ end
     - [lua]`item:activate()`  
       Adds the item to the active list and starts its control routine. Objects with no control routine cannot be activated.
 
+    - [lua]`item:die([explode])`  
+      Runs the object's creature death handling: the corpse stays, and `explode` bursts its meshes as a rocket or grenade would. For creatures; `kill()` simply removes any item from the game.
+
+      Parameters:
+      - **`explode`** (boolean, optional, default `False`). Whether to burst the meshes as it dies.
+
     - [lua]`item:distance_to(pos)`  
       Distance from this item to a world position.
 
@@ -107,9 +114,6 @@ end
       - **`pos`** (vec3). World position.
 
       Returns: integer.
-
-    - [lua]`item:explode()`  
-      Runs the object's death handling with an explosion, as a rocket or a grenade would. Unlike `kill()`, which simply removes the item from the game.
 
     - [lua]`item:get_property(name)`  
       Reads an object property, falling back to the object's default. Prefer `item.properties.<name>`.
@@ -148,6 +152,12 @@ end
       Parameters:
       - **`name`** (string).
       - **`value`** (any).
+
+    - [lua]`item:shatter([damage])`  
+      Bursts the item's meshes into flying debris, the visual `die(true)` produces, on its own. It does not kill or remove the item.
+
+      Parameters:
+      - **`damage`** (integer, optional, default `0`). Splash damage dealt to nearby items.
 
 ### Functions
 

@@ -396,6 +396,14 @@ void Creature_Die(const int16_t item_num, const bool explode)
     m_Items[item_num].hit_points = 0;
 }
 
+int32_t Item_Shatter(
+    const int16_t item_num, const int32_t mesh_bits, const int16_t damage)
+{
+    g_FakeItemCalls.shatter++;
+    g_FakeItemCalls.shatter_damage = damage;
+    return 0;
+}
+
 bool LOT_EnableBaddieAI(const int16_t item_num, const bool always)
 {
     g_FakeItemCalls.enable_baddie_ai++;
