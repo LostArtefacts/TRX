@@ -87,7 +87,6 @@
             "give_item_cheat": "Lo zaino di Lara è diventato molto più pesante!",
             "invalid_demo": "Demo non valida",
             "invalid_item": "Oggetto sconosciuto: %s",
-            "invalid_level": "Livello non valido",
             "invalid_object": "Oggetto non valido",
             "invalid_room": "Stanza non valida: %d. Le stanze valide sono 0-%d",
             "invalid_sample": "Suono non valido: %d",
@@ -101,7 +100,6 @@
             "load_game_fail_unavailable_slot": "Lo slot di salvataggio %d non è disponibile",
             "object_not_found": "Oggetto non trovato",
             "play_demo": "Caricamento demo %d",
-            "play_level": "Caricamento %s",
             "pos_lara_missing": "Lara non presente",
             "pos_lara_pos_fmt": "Stanza: %d\nPosizione: %.3f, %.3f, %.3f\nRotazione: %.3f, %.3f, %.3f",
             "pos_level_fmt": "Livello %d",
@@ -399,6 +397,8 @@
             },
             "play_level": {
                 "help": "Gioca un livello con il nome o il numero specificato.",
+                "invalid": "Livello non valido",
+                "loading": "Caricamento %s",
             },
             "play_music": {
                 "invalid_track": "Traccia musicale non valida",

@@ -87,7 +87,6 @@
             "give_item_cheat": "Laras Rucksack ist schwerer geworden!",
             "invalid_demo": "Unzulässige Demo",
             "invalid_item": "Unbekanntes Item: %s",
-            "invalid_level": "Unzulässiger Level",
             "invalid_object": "Unzulässiges Objekt",
             "invalid_room": "Unzulässiger Raum: %d. Zulässige Räume sind 0-%d",
             "invalid_sample": "Unzulässiger Sound: %d",
@@ -101,7 +100,6 @@
             "load_game_fail_unavailable_slot": "Speicher-Slot %d ist nicht verfügbar",
             "object_not_found": "Objekt nicht gefunden",
             "play_demo": "Lade Demo %d",
-            "play_level": "Lade %s",
             "pos_lara_missing": "Lara nicht vorhanden",
             "pos_lara_pos_fmt": "Raum: %d\nPosition: %.3f, %.3f, %.3f\nRotation: %.3f, %.3f, %.3f",
             "pos_level_fmt": "Level %d",
@@ -399,6 +397,8 @@
             },
             "play_level": {
                 "help": "Startet einen Level mit dem angegebenen Namen oder der dazugehörigen Nummer.",
+                "invalid": "Unzulässiger Level",
+                "loading": "Lade %s",
             },
             "play_music": {
                 "invalid_track": "Unzulässiger Musik Titel",

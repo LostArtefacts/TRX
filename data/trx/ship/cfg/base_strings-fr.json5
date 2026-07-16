@@ -87,7 +87,6 @@
             "give_item_cheat": "Le sac à dos de Lara est soudainement beaucoup plus lourd !",
             "invalid_demo": "Démo invalide",
             "invalid_item": "Objet inconnu : %s",
-            "invalid_level": "Niveau invalide",
             "invalid_object": "Objet invalide",
             "invalid_room": "Salle invalide : %d. Les salles valides sont 0-%d",
             "invalid_sample": "Effet sonore invalide : %d",
@@ -101,7 +100,6 @@
             "load_game_fail_unavailable_slot": "L'emplacement de sauvegarde %d n'est pas disponible",
             "object_not_found": "Objet non trouvé",
             "play_demo": "Chargement de la démo %d",
-            "play_level": "Chargement de %s",
             "pos_lara_missing": "Lara n'est pas présente",
             "pos_lara_pos_fmt": "Salle : %d\nPosition : %.3f, %.3f, %.3f\nRotation : %.3f, %.3f, %.3f",
             "pos_level_fmt": "Niveau %d",
@@ -399,6 +397,8 @@
             },
             "play_level": {
                 "help": "Lance un niveau correspondant au nom ou au numéro donné.",
+                "invalid": "Niveau invalide",
+                "loading": "Chargement de %s",
             },
             "play_music": {
                 "invalid_track": "Piste musicale invalide",

@@ -184,6 +184,27 @@ static int M_L_GamePlayLevel(lua_State *const L)
 {
     const GF_LEVEL *const next_level =
         M_CheckLevel(L, 1, GFLT_MAIN, "unknown level");
+
+    // `select` starts the level the way the level-select screen and the `play`
+    // console command do: Lara's inventory is rebuilt to what she would be
+    // carrying on reaching it. Without it the level continues from the one in
+    // progress, which is recorded as the previous level.
+    bool select = false;
+    if (!lua_isnoneornil(L, 2)) {
+        luaL_checktype(L, 2, LUA_TTABLE);
+        lua_getfield(L, 2, "select");
+        select = lua_toboolean(L, -1);
+        lua_pop(L, 1);
+    }
+
+    if (select) {
+        GF_OverrideCommand((GF_COMMAND) {
+            .action = GF_SELECT_GAME,
+            .param = next_level->num,
+        });
+        return 0;
+    }
+
     const GF_LEVEL *const current_level = GF_GetCurrentLevel();
     if (current_level != nullptr) {
         Savegame_PersistGameToCurrentInfo(next_level);

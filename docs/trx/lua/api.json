@@ -3101,6 +3101,12 @@
           "description": "1-based position in `trx.game.levels`.",
           "name": "num",
           "type": "integer"
+        },
+        {
+          "description": "`select`: start the level as the level-select screen does, rebuilding Lara's inventory to what she would carry on reaching it. Without it the level continues from the one in progress.",
+          "name": "opts",
+          "optional": true,
+          "type": "table"
         }
       ],
       "path": "game.play_level"

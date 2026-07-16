@@ -87,7 +87,6 @@
             "give_item_cheat": "Lara's backpack just got way heavier!",
             "invalid_demo": "Invalid demo",
             "invalid_item": "Unknown item: %s",
-            "invalid_level": "Invalid level",
             "invalid_object": "Invalid object",
             "invalid_room": "Invalid room: %d. Valid rooms are 0-%d",
             "invalid_sample": "Invalid sound: %d",
@@ -101,7 +100,6 @@
             "load_game_fail_unavailable_slot": "Save slot %d is not available",
             "object_not_found": "Object not found",
             "play_demo": "Loading demo %d",
-            "play_level": "Loading %s",
             "pos_lara_missing": "Lara not present",
             "pos_lara_pos_fmt": "Room: %d\nPosition: %.3f, %.3f, %.3f\nRotation: %.3f, %.3f, %.3f",
             "pos_level_fmt": "Level %d",
@@ -399,6 +397,8 @@
             },
             "play_level": {
                 "help": "Plays a level with the given name or number.",
+                "invalid": "Invalid level",
+                "loading": "Loading %s",
             },
             "play_music": {
                 "invalid_track": "Invalid music track",

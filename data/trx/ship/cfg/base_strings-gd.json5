@@ -87,7 +87,6 @@
             "give_item_cheat": "Tha baga-droma Lara mòran nas truime a-nis!",
             "invalid_demo": "Taisbeanadh mì-dhligheach",
             "invalid_item": "Nì neo-aithnichte: %s",
-            "invalid_level": "Ìre mì-dhligheach",
             "invalid_object": "Oibseact mì-dhligheach",
             "invalid_room": "Seòmar mì-dhligheach: %d. Seòmraichean dligheach: 0 gu %d",
             "invalid_sample": "Fuaim mì-dhligheach: %d",
@@ -101,7 +100,6 @@
             "load_game_fail_unavailable_slot": "Chan eil slot sàbhalaidh %d ri làimh",
             "object_not_found": "Cha deach an t-oibseact a lorg",
             "play_demo": "A' luchdachadh taisbeanaidh %d",
-            "play_level": "A' luchdachadh %s",
             "pos_lara_missing": "Chan eil Lara an làthair",
             "pos_lara_pos_fmt": "Seomair: %d\nSuidheachadh: %.3f, %.3f, %.3f\nCuairteachadh: %.3f, %.3f, %.3f",
             "pos_level_fmt": "Ìre %d",
@@ -399,6 +397,8 @@
             },
             "play_level": {
                 "help": "Cluich ìre leis an ainm neo àireamh ainmichte.",
+                "invalid": "Ìre mì-dhligheach",
+                "loading": "A' luchdachadh %s",
             },
             "play_music": {
                 "invalid_track": "Slighe-ciùil mì-dhligheach",
