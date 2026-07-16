@@ -86,11 +86,6 @@
             "load_game_fail_invalid_slot": "Slot di salvataggio %d non valido",
             "load_game_fail_unavailable_slot": "Lo slot di salvataggio %d non è disponibile",
             "object_not_found": "Oggetto non trovato",
-            "pos_lara_missing": "Lara non presente",
-            "pos_lara_pos_fmt": "Stanza: %d\nPosizione: %.3f, %.3f, %.3f\nRotazione: %.3f, %.3f, %.3f",
-            "pos_level_fmt": "Livello %d",
-            "pos_level_fmt_cutscene": "Intermezzo %d",
-            "pos_level_fmt_demo": "Demo %d",
             "quick_load": "Caricamento rapido dallo slot %d",
             "quick_load_fail_no_bound_slot": "Nessuno slot di salvataggio attualmente assegnato",
             "quick_load_fail_unavailable_bound_slot": "Lo slot di salvataggio assegnato non è disponibile",
@@ -407,6 +402,11 @@
             },
             "pos": {
                 "help": "Mostra la posizione di Lara.",
+                "lara_missing": "Lara non presente",
+                "lara_pos_fmt": "Stanza: %d\nPosizione: %.3f, %.3f, %.3f\nRotazione: %.3f, %.3f, %.3f",
+                "level_fmt": "Livello %d",
+                "level_fmt_cutscene": "Intermezzo %d",
+                "level_fmt_demo": "Demo %d",
             },
             "save": {
                 "help": "Salva la partita nello slot di salvataggio indicato o nello slot di salvataggio rapido successivo.",

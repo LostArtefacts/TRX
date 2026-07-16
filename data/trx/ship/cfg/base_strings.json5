@@ -86,11 +86,6 @@
             "load_game_fail_invalid_slot": "Invalid save slot %d",
             "load_game_fail_unavailable_slot": "Save slot %d is not available",
             "object_not_found": "Object not found",
-            "pos_lara_missing": "Lara not present",
-            "pos_lara_pos_fmt": "Room: %d\nPosition: %.3f, %.3f, %.3f\nRotation: %.3f, %.3f, %.3f",
-            "pos_level_fmt": "Level %d",
-            "pos_level_fmt_cutscene": "Cutscene %d",
-            "pos_level_fmt_demo": "Demo %d",
             "quick_load": "Quick-loaded slot %d",
             "quick_load_fail_no_bound_slot": "No save slot is currently bound",
             "quick_load_fail_unavailable_bound_slot": "The bound save slot is not available",
@@ -407,6 +402,11 @@
             },
             "pos": {
                 "help": "Shows Lara's position.",
+                "lara_missing": "Lara not present",
+                "lara_pos_fmt": "Room: %d\nPosition: %.3f, %.3f, %.3f\nRotation: %.3f, %.3f, %.3f",
+                "level_fmt": "Level %d",
+                "level_fmt_cutscene": "Cutscene %d",
+                "level_fmt_demo": "Demo %d",
             },
             "save": {
                 "help": "Saves game to the given save slot or to the next quick save slot.",

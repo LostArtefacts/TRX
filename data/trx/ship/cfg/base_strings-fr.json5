@@ -86,11 +86,6 @@
             "load_game_fail_invalid_slot": "Emplacement de sauvegarde %d invalide",
             "load_game_fail_unavailable_slot": "L'emplacement de sauvegarde %d n'est pas disponible",
             "object_not_found": "Objet non trouvé",
-            "pos_lara_missing": "Lara n'est pas présente",
-            "pos_lara_pos_fmt": "Salle : %d\nPosition : %.3f, %.3f, %.3f\nRotation : %.3f, %.3f, %.3f",
-            "pos_level_fmt": "Niveau %d",
-            "pos_level_fmt_cutscene": "Cinématique %d",
-            "pos_level_fmt_demo": "Démo %d",
             "quick_load": "\\{review}Emplacement de chargement rapide %d",
             "quick_load_fail_no_bound_slot": "\\{review}Aucun emplacement de sauvegarde n'est actuellement assigné",
             "quick_load_fail_unavailable_bound_slot": "\\{review}L'emplacement de sauvegarde assigné n'est pas disponible",
@@ -407,6 +402,11 @@
             },
             "pos": {
                 "help": "Montre la position de Lara.",
+                "lara_missing": "Lara n'est pas présente",
+                "lara_pos_fmt": "Salle : %d\nPosition : %.3f, %.3f, %.3f\nRotation : %.3f, %.3f, %.3f",
+                "level_fmt": "Niveau %d",
+                "level_fmt_cutscene": "Cinématique %d",
+                "level_fmt_demo": "Démo %d",
             },
             "save": {
                 "help": "\\{review}Sauvegarde la partie dans l'emplacement de sauvegarde donné ou dans le prochain emplacement de sauvegarde rapide.",

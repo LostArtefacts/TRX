@@ -86,11 +86,6 @@
             "load_game_fail_invalid_slot": "Nieprawidłowy slot zapisu %d",
             "load_game_fail_unavailable_slot": "Slot zapisu %d jest niedostępny",
             "object_not_found": "Nie odnaleziono tego obiektu",
-            "pos_lara_missing": "Nie znaleziono Lary",
-            "pos_lara_pos_fmt": "Pomieszczenie: %d\nPozycja: %.3f, %.3f, %.3f\nRotacja: %.3f, %.3f, %.3f",
-            "pos_level_fmt": "Poziom %d",
-            "pos_level_fmt_cutscene": "Przerywnik %d",
-            "pos_level_fmt_demo": "Demo %d",
             "quick_load": "Wczytano szybki zapis %d",
             "quick_load_fail_no_bound_slot": "Obecnie nie przypisano żadnego zapisu",
             "quick_load_fail_unavailable_bound_slot": "Szybkie wczytywanie nie jest dostępne",
@@ -407,6 +402,11 @@
             },
             "pos": {
                 "help": "Pokazuje pozycję Lary.",
+                "lara_missing": "Nie znaleziono Lary",
+                "lara_pos_fmt": "Pomieszczenie: %d\nPozycja: %.3f, %.3f, %.3f\nRotacja: %.3f, %.3f, %.3f",
+                "level_fmt": "Poziom %d",
+                "level_fmt_cutscene": "Przerywnik %d",
+                "level_fmt_demo": "Demo %d",
             },
             "save": {
                 "help": "Zapisuje grę do danego slotu zapisu, lub do pierwszego dostępnego slotu szybkiego zapisu.",
