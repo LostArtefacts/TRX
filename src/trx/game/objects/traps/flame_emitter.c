@@ -163,18 +163,22 @@ static void M_Setup(OBJECT *const obj)
 {
     M_SetupCommon(obj, M_Control);
 }
+
 static void M_SetupBig(OBJECT *const obj)
 {
     M_SetupCommon(obj, M_ControlBig);
 }
+
 static void M_SetupSmall(OBJECT *const obj)
 {
     M_SetupCommon(obj, M_ControlSmall);
 }
+
 static void M_SetupJet(OBJECT *const obj)
 {
     M_SetupCommon(obj, M_ControlJet);
 }
+
 static void M_SetupSide(OBJECT *const obj)
 {
     M_SetupCommon(obj, M_ControlSide);

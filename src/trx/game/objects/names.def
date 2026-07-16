@@ -338,6 +338,8 @@ X_OBJ_NAME_DEFINE(O_FLAME_EMITTER_BIG,     "flame_emitter_big",     X_OBJ_NAMES(
 X_OBJ_NAME_DEFINE(O_FLAME_EMITTER_SMALL,   "flame_emitter_small",   X_OBJ_NAMES("Flame Emitter (Small)", "Fire Emitter (Small)"))
 X_OBJ_NAME_DEFINE(O_FLAME_EMITTER_JET,     "flame_emitter_jet",     X_OBJ_NAMES("Flame Emitter (Jet)", "Fire Emitter (Jet)"))
 X_OBJ_NAME_DEFINE(O_FLAME_EMITTER_SIDE,    "flame_emitter_side",    X_OBJ_NAMES("Flame Emitter (Side)", "Fire Emitter (Side)"))
+X_OBJ_NAME_DEFINE(O_FLAME_EMITTER_TR4_GROUND, "flame_emitter_tr4_ground", X_OBJ_NAMES("Flame Emitter (TR4 Ground)"))
+X_OBJ_NAME_DEFINE(O_FLAME_EMITTER_TR4_WALL,   "flame_emitter_tr4_wall",   X_OBJ_NAMES("Flame Emitter (TR4 Wall)"))
 X_OBJ_NAME_DEFINE(O_GONDOLA,               "gondola",               X_OBJ_NAMES("Gondola"))
 X_OBJ_NAME_DEFINE(O_HOOK,                  "hook",                  X_OBJ_NAMES("Hook"))
 X_OBJ_NAME_DEFINE(O_ICICLE,                "icicle",                X_OBJ_NAMES("Icicles"))

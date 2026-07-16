@@ -1,6 +1,7 @@
 #include <trx/game/fx/common.h>
 
 #include <trx/game/fx/droplets.h>
+#include <trx/game/fx/fire.h>
 #include <trx/game/fx/footprint.h>
 #include <trx/game/fx/gun_flash.h>
 #include <trx/game/fx/laser.h>
@@ -10,8 +11,14 @@
 #include <trx/game/fx/water_particles.h>
 #include <trx/game/fx/weather.h>
 
+void FX_NewFrame(void)
+{
+    FX_Fire_NewFrame();
+}
+
 void FX_Control(void)
 {
+    FX_Fire_Control();
     FX_Ring_Control();
     FX_Wake_Control();
     FX_Water_Control();
@@ -25,6 +32,7 @@ void FX_Control(void)
 
 void FX_Draw(void)
 {
+    FX_Fire_Draw();
     FX_Ring_Draw();
     FX_Water_Draw();
     FX_Weather_Draw();
@@ -37,6 +45,7 @@ void FX_Draw(void)
 
 void FX_Reset(void)
 {
+    FX_Fire_Reset();
     FX_Water_Reset();
     FX_Weather_Reset();
     FX_WaterParticles_Reset();

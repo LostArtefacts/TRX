@@ -220,6 +220,7 @@ GF_COMMAND Game_Control(const bool demo_mode)
     }
 
     Output_ResetDynamicLights();
+    FX_NewFrame();
 
     Sound_ResetAmbient();
     Item_Control();

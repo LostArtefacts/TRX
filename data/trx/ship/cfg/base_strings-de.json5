@@ -2274,6 +2274,12 @@
         "flame_emitter_small": {
             "name": "\\{review}Flammenwerfer (Klein)",
         },
+        "flame_emitter_tr4_ground": {
+            "name": "\\{review}Flamenerzeuger (TR4, Boden)",
+        },
+        "flame_emitter_tr4_wall": {
+            "name": "\\{review}Flamenerzeuger (TR4, Wand)",
+        },
         "flare": {
             "name": "Fackel",
         },

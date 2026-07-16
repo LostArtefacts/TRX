@@ -2286,6 +2286,12 @@
                 "Emettitore di Fuoco (Piccolo)",
             ]
         },
+        "flame_emitter_tr4_ground": {
+            "name": "\\{review}Emettitore di Fiamme (TR4, terra)",
+        },
+        "flame_emitter_tr4_wall": {
+            "name": "\\{review}Emettitore di Fiamme (TR4, parete)",
+        },
         "flare": {
             "name": "Razzo di Segnalazione",
         },

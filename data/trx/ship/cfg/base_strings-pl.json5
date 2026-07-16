@@ -2270,6 +2270,12 @@
         "flame_emitter_small": {
             "name": "Emiter płomieni (mały)",
         },
+        "flame_emitter_tr4_ground": {
+            "name": "\\{review}Emiter płomieni (TR4, naziemny)",
+        },
+        "flame_emitter_tr4_wall": {
+            "name": "\\{review}Emiter płomieni (TR4, ścienny)",
+        },
         "flare": {
             "name": "Flara",
         },
