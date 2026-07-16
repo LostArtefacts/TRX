@@ -114,6 +114,11 @@ api.type("lara.Lara", {
       type = "integer",
       description = "How poisoned Lara is, and 0 when she is not.",
     },
+    poison_target = {
+      from = "poison.target",
+      type = "integer",
+      description = "The poison reservoir that drains into `poison` over time. TR4 only.",
+    },
     electric = {
       from = "electric",
       type = "integer",
