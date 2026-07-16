@@ -248,6 +248,13 @@ api.property("lara.holsters_visible", {
   set = raw.set_holsters_visible,
 })
 
+api.property("lara.is_flying", {
+  type = "boolean",
+  description = "Whether Lara is in the fly-mode cheat. Setting it enters or leaves fly mode.",
+  get = raw.is_flying,
+  set = raw.set_flying,
+})
+
 api.property("lara.has_pistol_weapon", {
   type = "boolean",
   description = "Whether Lara is carrying a pistol-class weapon, which is what decides whether she "

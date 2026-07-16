@@ -307,6 +307,8 @@
                 "help": "Lìonas an t-seomair làithreach le uisge.",
             },
             "fly": {
+                "already_off": "\\{review}Lara is not flying",
+                "already_on": "\\{review}Lara is already flying",
                 "help": "Tionndaidheas an cleas itealach.",
             },
             "fps": {

@@ -307,6 +307,8 @@
                 "help": "Submerges the current room with water.",
             },
             "fly": {
+                "already_off": "Lara is not flying",
+                "already_on": "Lara is already flying",
                 "help": "Toggles the fly-mode cheat.",
             },
             "fps": {

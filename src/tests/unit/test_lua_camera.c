@@ -24,6 +24,12 @@ static int M_FakeNoRoom(lua_State *const L)
     return 0;
 }
 
+static int M_FakeStartFlyby(lua_State *const L)
+{
+    FakeCamera_SetFlybyActive(true);
+    return 0;
+}
+
 static int M_FakeCalls(lua_State *const L)
 {
     lua_newtable(L);
@@ -31,6 +37,8 @@ static int M_FakeCalls(lua_State *const L)
     lua_setfield(L, -2, "reset");
     lua_pushinteger(L, g_Camera.bounce);
     lua_setfield(L, -2, "bounce");
+    lua_pushinteger(L, g_FakeCameraCalls.cancel_flyby);
+    lua_setfield(L, -2, "cancel_flyby");
     return 1;
 }
 
@@ -42,6 +50,8 @@ static void M_PushFake(lua_State *const L)
     lua_setfield(L, -2, "CAMERA_TARGET_ROOM");
     lua_pushcfunction(L, M_FakeNoRoom);
     lua_setfield(L, -2, "set_no_room");
+    lua_pushcfunction(L, M_FakeStartFlyby);
+    lua_setfield(L, -2, "start_flyby");
 }
 
 int main(void)

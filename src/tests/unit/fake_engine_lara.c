@@ -148,6 +148,18 @@ void Lara_Extinguish(void)
     m_Lara.electric = 0;
 }
 
+bool Lara_Cheat_EnterFlyMode(void)
+{
+    m_Lara.water_status = LWS_CHEAT;
+    return true;
+}
+
+bool Lara_Cheat_ExitFlyMode(void)
+{
+    m_Lara.water_status = LWS_ABOVE_WATER;
+    return true;
+}
+
 void FakeLara_PushCalls(lua_State *const L)
 {
     lua_pushinteger(L, g_FakeLaraCalls.set_equipment);

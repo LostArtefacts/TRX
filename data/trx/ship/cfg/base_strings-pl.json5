@@ -307,6 +307,8 @@
                 "help": "Zalewa aktualne pomieszczenie wodą.",
             },
             "fly": {
+                "already_off": "\\{review}Lara is not flying",
+                "already_on": "\\{review}Lara is already flying",
                 "help": "Włącza lub wyłącza tryb latania.",
             },
             "fps": {

@@ -307,6 +307,8 @@
                 "help": "Remplit la salle actuelle d'eau.",
             },
             "fly": {
+                "already_off": "\\{review}Lara is not flying",
+                "already_on": "\\{review}Lara is already flying",
                 "help": "Active ou désactive le code pour voler.",
             },
             "fps": {

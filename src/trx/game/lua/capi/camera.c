@@ -1,4 +1,5 @@
 #include <trx/game/camera.h>
+#include <trx/game/flyby_mode.h>
 #include <trx/game/lua/common.h>
 #include <trx/game/lua/registry.h>
 #include <trx/game/lua/utils.h>
@@ -48,6 +49,20 @@ static int M_L_CameraReset(lua_State *const L)
     return 0;
 }
 
+// trxc.camera.is_flyby_active() -> bool
+static int M_L_CameraIsFlybyActive(lua_State *const L)
+{
+    lua_pushboolean(L, FlybyMode_IsActive());
+    return 1;
+}
+
+// trxc.camera.cancel_flyby()
+static int M_L_CameraCancelFlyby(lua_State *const L)
+{
+    FlybyMode_Cancel();
+    return 0;
+}
+
 static const luaL_Reg m_Module[] = {
     { "get_pos", M_L_CameraGetPos },
     { "get_room", M_L_CameraGetRoom },
@@ -55,6 +70,8 @@ static const luaL_Reg m_Module[] = {
     { "get_target_room", M_L_CameraGetTargetRoom },
     { "shake", M_L_CameraShake },
     { "reset", M_L_CameraReset },
+    { "is_flyby_active", M_L_CameraIsFlybyActive },
+    { "cancel_flyby", M_L_CameraCancelFlyby },
     { nullptr, nullptr },
 };
 

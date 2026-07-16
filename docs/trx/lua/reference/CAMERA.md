@@ -21,6 +21,7 @@ Module for inspecting the active camera state.
 - **`trx.camera.room`** (Room). The `trx.rooms.Room` the camera is in, or `nil` if unknown. *(read-only)*
 - **`trx.camera.target_pos`** (vec3). Position the camera is looking at. *(read-only)*
 - **`trx.camera.target_room_num`** (integer). 0-based number of the room the camera is looking at, or `nil` if unknown. *(read-only)*
+- **`trx.camera.is_flyby_active`** (boolean). Whether a flyby camera sequence is playing. *(read-only)*
 
 ### Functions
 
@@ -37,3 +38,6 @@ Module for inspecting the active camera state.
 
 - [lua]`trx.camera.reset()`  
   Resets the camera to Lara's current position.
+
+- [lua]`trx.camera.cancel_flyby()`  
+  Cancels the flyby camera sequence, if one is playing.

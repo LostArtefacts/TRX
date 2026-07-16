@@ -307,6 +307,8 @@
                 "help": "Immerge la stanza corrente nell'acqua.",
             },
             "fly": {
+                "already_off": "\\{review}Lara is not flying",
+                "already_on": "\\{review}Lara is already flying",
                 "help": "Attiva o disattiva il trucco Volo.",
             },
             "fps": {

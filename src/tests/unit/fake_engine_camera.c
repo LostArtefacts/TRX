@@ -5,14 +5,33 @@
 #include "fake_engine_camera.h"
 
 #include <trx/game/camera/types.h>
+#include <trx/game/flyby_mode.h>
 #include <trx/game/rooms/const.h>
 
 CAMERA_INFO g_Camera;
 FAKE_CAMERA_CALLS g_FakeCameraCalls;
+static bool m_FlybyActive;
 
 void Camera_ResetPosition(void)
 {
     g_FakeCameraCalls.reset++;
+}
+
+bool FlybyMode_IsActive(void)
+{
+    return m_FlybyActive;
+}
+
+bool FlybyMode_Cancel(void)
+{
+    g_FakeCameraCalls.cancel_flyby++;
+    m_FlybyActive = false;
+    return true;
+}
+
+void FakeCamera_SetFlybyActive(const bool active)
+{
+    m_FlybyActive = active;
 }
 
 void FakeCamera_Reset(void)
@@ -28,6 +47,7 @@ void FakeCamera_Reset(void)
     g_Camera.target.z = 6144;
     g_Camera.target.room_num = FAKE_CAMERA_TARGET_ROOM;
     g_FakeCameraCalls = (FAKE_CAMERA_CALLS) {};
+    m_FlybyActive = false;
 }
 
 void FakeCamera_SetNoRoom(void)
