@@ -248,3 +248,17 @@ api.define("game.play_gym", {
   description = "Starts the gym. Raises if this game has no gym.",
   impl = raw.play_gym,
 })
+
+api.define("game.screenshot", {
+  description = "Takes a screenshot. Without a path, writes one to the screenshots folder in the "
+    .. "player's configured format; with a path, writes to that file.",
+  params = {
+    {
+      name = "path",
+      type = "string",
+      optional = true,
+      description = "File to write to.",
+    },
+  },
+  impl = raw.screenshot,
+})

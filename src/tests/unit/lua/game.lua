@@ -180,4 +180,9 @@ test("an undeclared name cannot be written onto the module", function()
   assert(trx.game.nonsense == nil)
 end)
 
+test("screenshot reaches the engine, with a path or without", function()
+  trx.game.screenshot()
+  trx.game.screenshot("shot.png")
+end)
+
 return h.report()

@@ -20,6 +20,7 @@ The Lua integration was rewritten and existing scripts will need updating; refer
 - added `trx.lara.cure_poison()` and `trx.lara.extinguish()`, to clear Lara's poison and put her out
 - added `trx.game.LevelType.TITLE`, and a `demo` level type to the game flow, which could not be named before
 - added `trx.game.play_gym()`, to start the gym
+- added `trx.game.screenshot()`, to save a screenshot
 - added `trx.items.spawn()`, to place a new item in the level at runtime
 - added `trx.items.get()`, `trx.items.count()`, `trx.rooms.get()`, `trx.rooms.count()` and `trx.objects.get()`, replacing the `fn` namespaces- added `trx.rooms.find_valid_pos()`, to nudge a position into valid room geometry
 - added item methods, `activate()`, `kill()`, `explode()`, `distance_to()`, `is_valid()`, `get_property()`, `set_property()` and `get_property_names()`

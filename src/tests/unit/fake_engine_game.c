@@ -7,9 +7,18 @@
 #include <trx/game/demo.h>
 #include <trx/game/game_flow/common.h>
 #include <trx/game/savegame.h>
+#include <trx/game/screenshot.h>
 
 #include <lauxlib.h>
 #include <stdbool.h>
+
+void Screenshot_Make(const SCREENSHOT_FORMAT format)
+{
+}
+
+void Screenshot_MakeToPath(const char *const path)
+{
+}
 #include <string.h>
 
 FAKE_GAME_CALLS g_FakeGameCalls;

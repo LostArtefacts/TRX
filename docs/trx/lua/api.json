@@ -3152,6 +3152,18 @@
       "path": "game.play_gym"
     },
     {
+      "description": "Takes a screenshot. Without a path, writes one to the screenshots folder in the player's configured format; with a path, writes to that file.",
+      "params": [
+        {
+          "description": "File to write to.",
+          "name": "path",
+          "optional": true,
+          "type": "string"
+        }
+      ],
+      "path": "game.screenshot"
+    },
+    {
       "description": "Retrieves an item by index or by name. Items count from zero, matching the item numbers level editors show.",
       "examples": [
         "local item = trx.items[0]\nitem.name = \"lara\"\nlocal lara = trx.items[\"lara\"]"

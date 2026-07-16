@@ -1,3 +1,4 @@
+#include <trx/config.h>
 #include <trx/game/demo.h>
 #include <trx/game/game/state.h>
 #include <trx/game/game_flow.h>
@@ -8,6 +9,7 @@
 #include <trx/game/lua/struct.h>
 #include <trx/game/lua/utils.h>
 #include <trx/game/savegame.h>
+#include <trx/game/screenshot.h>
 #include <trx/version.h>
 
 #include <lauxlib.h>
@@ -274,6 +276,17 @@ static int M_L_GamePlayGym(lua_State *const L)
     return 0;
 }
 
+// trxc.game.screenshot([path])
+static int M_L_GameScreenshot(lua_State *const L)
+{
+    if (lua_isnoneornil(L, 1)) {
+        Screenshot_Make(g_Config.rendering.screenshot_format);
+    } else {
+        Screenshot_MakeToPath(luaL_checkstring(L, 1));
+    }
+    return 0;
+}
+
 static const luaL_Reg m_Module[] = {
     { "get_version", M_L_GameVersion },
     { "get_trx_version", M_L_TRXVersion },
@@ -286,6 +299,7 @@ static const luaL_Reg m_Module[] = {
     { "play_cutscene", M_L_GamePlayCutscene },
     { "play_demo", M_L_GamePlayDemo },
     { "play_gym", M_L_GamePlayGym },
+    { "screenshot", M_L_GameScreenshot },
     { nullptr, nullptr },
 };
 
