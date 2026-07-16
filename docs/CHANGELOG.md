@@ -1,5 +1,6 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.9.2...develop) - ××××-××-××
 - added TR4 camera mode, which is similar to TR3 but more responsive to Lara's actions such as picking up items
+- added the ability to paste commands in the developer console (with Ctrl+V)
 - changed reflections UV mapping to be more correct
 - changed outfits to support up to two braids per outfit; refer to migration notes
 - changed the `/music` console command to list the available tracks when given no argument, as `/sfx` does; `/music status` now reports what is playing

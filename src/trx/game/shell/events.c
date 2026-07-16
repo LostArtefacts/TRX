@@ -31,6 +31,12 @@ static void M_HandleKeyDown(const SDL_Event *const event)
         // Zero out the next text event so the console-open glyph never
         // shows up.
         m_ConsoleJustOpened = true;
+    } else if (
+        event->key.keysym.sym == SDLK_v
+        && (event->key.keysym.mod & KMOD_CTRL) != 0) {
+        // SDL does not emit a SDL_TEXTINPUT event for Ctrl+V, so paste
+        // is handled explicitly.
+        UI_HandlePaste();
     } else {
         UI_HandleKeyDown(event->key.keysym.sym);
     }
