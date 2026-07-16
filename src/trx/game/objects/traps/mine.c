@@ -36,7 +36,7 @@ static void M_DetonateAll(
     ITEM *const boat_item = Item_Get(boat_item_num);
     if (Lara_Vehicle_GetIndex() == boat_item_num) {
         ITEM *const lara_item = Lara_GetItem();
-        Item_Explode(Item_GetIndex(lara_item), -1, 0);
+        Item_Shatter(Item_GetIndex(lara_item), -1, 0);
         lara_item->hit_points = 0;
         lara_item->flags |= IF_ONE_SHOT;
     }
@@ -45,7 +45,7 @@ static void M_DetonateAll(
     if (obj->loaded) {
         boat_item->object_id = O_BOAT_BITS;
         boat_item->mesh_bits = (1 << obj->mesh_count) - 1;
-        Item_Explode(boat_item_num, -1, 0);
+        Item_Shatter(boat_item_num, -1, 0);
     }
     Item_Kill(boat_item_num);
     boat_item->object_id = O_BOAT;

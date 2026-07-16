@@ -1268,7 +1268,7 @@ void Creature_Die(const int16_t item_num, const bool explode)
 
     case O_SKIDOO_ARMED:
         if (explode) {
-            Item_Explode(item_num, -1, 0);
+            Item_Shatter(item_num, -1, 0);
             ITEM *const vehicle_item = Item_Get(item_num);
             vehicle_item->hit_points = 0;
             vehicle_item->status = IS_INVISIBLE;
@@ -1278,7 +1278,7 @@ void Creature_Die(const int16_t item_num, const bool explode)
 
     case O_SKIDOO_DRIVER:
         if (explode) {
-            Item_Explode(item_num, -1, 0);
+            Item_Shatter(item_num, -1, 0);
         }
         item->hit_points = 0;
         const int16_t vehicle_item_num = SkidooDriver_GetSkidooItemNum(item);
@@ -1297,7 +1297,7 @@ void Creature_Die(const int16_t item_num, const bool explode)
     item->collidable = false;
     item->hit_points = 0;
     if (explode) {
-        Item_Explode(item_num, -1, 0);
+        Item_Shatter(item_num, -1, 0);
         Item_Kill(item_num);
     } else {
         Item_RemoveActive(item_num);

@@ -90,7 +90,7 @@ static void M_Control(const int16_t item_num)
     int16_t angle = 0;
 
     if (item->hit_points <= 0) {
-        Item_Explode(
+        Item_Shatter(
             item_num, -1,
             m_EnableExplosions
                 ? M_GetDamage(item, "part_damage", M_PART_DAMAGE)

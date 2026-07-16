@@ -179,7 +179,7 @@ void Item_ResetMeshBits(ITEM *const item)
     item->mesh_bits = UINT32_MAX;
 }
 
-int32_t Item_Explode(
+int32_t Item_Shatter(
     const int16_t item_num, const int32_t mesh_bits, const int16_t damage)
 {
     ITEM *const item = Item_Get(item_num);

@@ -355,7 +355,7 @@ static void M_Explode(ITEM *const item)
     }
 
     const int16_t vehicle_item_num = Lara_Vehicle_GetIndex();
-    Item_Explode(vehicle_item_num, -2, 0);
+    Item_Shatter(vehicle_item_num, -2, 0);
     Item_Kill(vehicle_item_num);
     item->status = IS_DEACTIVATED;
     Sound_Effect(SFX_EXPLOSION_1, nullptr, SPM_NORMAL);
@@ -1459,7 +1459,7 @@ bool QuadBike_Control(void)
         g_Camera.target_elevation = -5460;
 
         if (quad->flags & 0x40 && item->pos.y == item->floor) {
-            Item_Explode(lara->item_num, -1, 0);
+            Item_Shatter(lara->item_num, -1, 0);
             lara_item->hit_points = 0;
             lara_item->flags |= IF_INVISIBLE;
             M_Explode(item);
