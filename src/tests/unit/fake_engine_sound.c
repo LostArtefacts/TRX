@@ -80,7 +80,7 @@ void Sound_UnpauseActiveSlot(const int32_t slot)
     g_FakeSoundCalls.slot_unpause_slot = slot;
 }
 
-bool Sound_Effect_Direct(
+int32_t Sound_Effect_Direct(
     const SAMPLE_ID sfx_num, const XYZ_32 *const pos, const uint32_t flags)
 {
     g_FakeSoundCalls.play_count++;
@@ -91,7 +91,18 @@ bool Sound_Effect_Direct(
         g_FakeSoundCalls.last_y = pos->y;
         g_FakeSoundCalls.last_z = pos->z;
     }
-    return true;
+    if (sfx_num != FAKE_SAMPLE) {
+        return -1;
+    }
+    // Land the voice in a free slot and report it, as the engine does.
+    for (int32_t slot = 0; slot < FAKE_SOUND_SLOT_COUNT; slot++) {
+        if (!m_Slots[slot].active) {
+            m_Slots[slot] =
+                (FAKE_SLOT) { .active = true, .sample_id = sfx_num };
+            return slot;
+        }
+    }
+    return -1;
 }
 
 void Sound_StopEffect_Direct(const SAMPLE_ID sfx_num)

@@ -39,13 +39,8 @@ api.enum("catalog.samples", {
   backing = "SAMPLE_TRX_ID",
   strip = "SFX_",
   bulk = true,
-  description = "Every sound sample TRX has a name for. This is the catalog id, which "
-    .. "`trx.sound.play` does not take: convert it to the level's own slot with "
-    .. "`trx.catalog.to_slot` first.",
-  examples = {
-    [[local slot = trx.catalog.to_slot(trx.catalog.Context.SAMPLES, trx.catalog.samples.LARA_NO)
-trx.sound.play(slot)]],
-  },
+  description = "Every sound sample TRX has a name for.",
+  examples = { [[trx.sound.play(trx.catalog.samples.LARA_NO)]] },
 })
 
 api.enum("catalog.music", {

@@ -150,9 +150,11 @@ order: 3
 
 16. **Update scripts that use the music module**
    The soundtrack is addressed through track and stream handles now.
-   - `trx.music.play_track` was an undocumented alias of `trx.music.play` and was
-     removed. Use `trx.music.play(id[, opts])`, which stays as a convenience, or
-     `trx.music.tracks[id]:play([opts])`.
+   - `trx.music.play` now takes a track by catalog id - a `trx.catalog.music`
+     value, which maps to the right track per game - rather than the level's own
+     slot. Play a slot through the handle: `trx.music.tracks[slot]:play([opts])`.
+     It hands back the `trx.music.Stream` it started, or `nil`. `trx.music.play_track`,
+     an undocumented alias, was removed.
    - `trx.music.get_track()` and `trx.music.get_looped_track()` became the
      properties `trx.music.current_track` and `trx.music.looped_track`. They hand
      back a `trx.music.Track` rather than an id, so read `.id` for the number, or
@@ -192,7 +194,11 @@ order: 3
    by id, each of which plays itself and reports its definition, and
    `trx.sound.streams` is a collection of `trx.sound.Stream` handles for the
    effects playing now, each of which can be paused, resumed and stopped on its
-   own. `trx.sound.play`, `stop` and `stop_all` are unchanged.
+   own. `trx.sound.play` and `trx.sound.stop` now take a sample by catalog id - a
+   `trx.catalog.samples` value - rather than the level's own slot; play or stop a
+   slot through the handle, `trx.sound.samples[slot]:play()` / `:stop()`, and
+   `play` hands back the `trx.sound.Stream` it started. `trx.sound.stop_all` is
+   unchanged.
 
 ### Version 1.8 to 1.9
 

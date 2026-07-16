@@ -29,8 +29,7 @@ api.type("music.Stream", {
       from = "track_id",
       type = "integer",
       writable = false,
-      enum = "catalog.music",
-      description = "The track this stream is playing.",
+      description = "The track this stream is playing, in the level's own numbering.",
     },
     mode = {
       from = "mode",
@@ -88,8 +87,7 @@ api.type("music.Track", {
       from = "id",
       type = "integer",
       writable = false,
-      enum = "catalog.music",
-      description = "The track's id.",
+      description = "The track's id, in the level's own numbering.",
     },
   },
 
@@ -106,6 +104,11 @@ api.type("music.Track", {
           optional = true,
           description = "`mode`: a `trx.music.PlayMode`. Defaults to `ONCE`.",
         },
+      },
+      returns = {
+        type = "Stream",
+        nullable = true,
+        description = "The stream it started, or `nil` if none did.",
       },
       description = "Plays this track.",
     },
@@ -210,13 +213,15 @@ api.property("music.looped_track", {
 })
 
 api.define("music.play", {
-  description = "Plays a track. Raises if the track or the mode is invalid.",
+  description = "Plays a track by catalog id, mapping it to the level's own track. A game that "
+    .. "does not carry the track plays nothing.",
   params = {
     {
       name = "id",
       type = "integer",
       enum = "catalog.music",
-      description = "Track to play.",
+      description = "Track to play. To reach a track by the level's own slot, play it through a "
+        .. "handle: `trx.music.tracks[slot]:play()`.",
     },
     {
       name = "opts",
@@ -225,13 +230,21 @@ api.define("music.play", {
       description = "`mode`: a `trx.music.PlayMode`. Defaults to `ONCE`.",
     },
   },
+  returns = {
+    type = "Stream",
+    nullable = true,
+    description = "The stream it started, or `nil` if none did.",
+  },
   examples = {
-    [[trx.music.play(1)
-trx.music.play(2, { mode = trx.music.PlayMode.LOOP })]],
+    [[trx.music.play(trx.catalog.music.SECRET)
+trx.music.play(trx.catalog.music.SECRET, { mode = trx.music.PlayMode.LOOP })]],
   },
   impl = function(id, opts)
     opts = opts or {}
-    raw.play(id, opts.mode or PlayMode.ONCE)
+    local slot = trx.catalog.to_slot(trx.catalog.Context.MUSIC, id)
+    local track = slot ~= nil and tracks[slot] or nil
+    return track ~= nil and track:play({ mode = opts.mode or PlayMode.ONCE })
+      or nil
   end,
 })
 

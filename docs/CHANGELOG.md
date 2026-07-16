@@ -49,12 +49,13 @@ The Lua integration was rewritten and existing scripts will need updating; refer
 - added `trx.music.tracks`, the level's tracks as `trx.music.Track` handles keyed by id, each with `:play()` and `:path()`
 - added `trx.music.current_track` and `trx.music.looped_track`, the playing and ambient tracks as `trx.music.Track` handles
 - added `trx.music.streams`, the soundtrack's streams as `trx.music.Stream` handles, each of which can be paused, resumed, sought and stopped on its own
-- added `trx.sound.samples`, the level's samples as `trx.sound.Sample` handles keyed by id, each with `:play()` and its `volume`, `range`, `randomness` and `pitch`
+- added `trx.sound.samples`, the level's samples as `trx.sound.Sample` handles keyed by id, each with `:play()`, `:stop()` and its `volume`, `range`, `randomness` and `pitch`
 - added `trx.sound.streams`, the sound effects playing now as `trx.sound.Stream` handles, each of which can be paused, resumed and stopped on its own
 - changed `trx.items` and `trx.rooms` to hand out opaque handles rather than `{ idx = ... }` tables, so a handle to a killed item now raises instead of silently addressing whatever took its slot
 - changed handles to compare equal when they name the same thing, so `trx.items[0] == trx.items[0]`
 - changed `trx.items` and `trx.rooms` to count from zero, matching the item and room numbers level editors show, and made `pairs()` walk them keyed by that number
 - changed room handles to go stale at a level change rather than quietly naming a different room
+- changed `trx.sound.play`, `trx.sound.stop` and `trx.music.play` to take a sound or track by catalog name, which works across games, rather than the level's own slot; the slot is reached through the `samples`/`tracks` handles, and `play` hands back the stream it starts
 - changed `trx.game.levels` and `trx.game.play_level` to leave out the gym, so numbering no longer shifts and the last level is reachable
 - changed `trx.api` to hold only `strict` and `is_strict` once sealed, and `trx.api.strict()` to check handle method arguments too
 - changed a position table to require all three coordinates, rather than reading a missing one as zero

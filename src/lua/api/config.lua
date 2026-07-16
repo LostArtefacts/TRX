@@ -23,7 +23,9 @@ api.define("config.get", {
   },
   returns = { type = "any", description = "Raises if no option has that key." },
   examples = {
-    [[if trx.config.get("audio.enable_music") then trx.music.play(1) end]],
+    [[if trx.config.get("audio.enable_music") then
+  trx.music.play(trx.catalog.music.SECRET)
+end]],
   },
   impl = raw.get,
 })

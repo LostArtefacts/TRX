@@ -30,14 +30,18 @@ void Music_Shutdown(void);
 //   The track to play is available with Music_GetDelayedTrack().
 // MPM_OVERLAY:
 //   Plays a non-looping track without interrupting active background music.
-bool Music_Play_Direct(MUSIC_ID track, MUSIC_PLAY_MODE mode);
+// Returns the stream slot the track plays in - the main stream is slot 0, the
+// overlays slots 1.. - or -1 when it does not play, which includes a track
+// marked for later (delay) or a deferred ambient.
+int32_t Music_Play_Direct(MUSIC_ID track, MUSIC_PLAY_MODE mode);
 
 // Stops the provided single track and restarts the looped track if applicable.
 void Music_StopTrack_Direct(MUSIC_ID track);
 
 // Play a music track with a semantical ID that will get mapped to a specific
-// music track slot depending on the game.
-bool Music_Play(MUSIC_TRX_ID track, MUSIC_PLAY_MODE mode);
+// music track slot depending on the game. Returns the stream slot, as
+// Music_Play_Direct does, or -1.
+int32_t Music_Play(MUSIC_TRX_ID track, MUSIC_PLAY_MODE mode);
 
 // Returns true when the active backend can play the given direct track ID.
 bool Music_IsTrackAvailable_Direct(MUSIC_ID track);

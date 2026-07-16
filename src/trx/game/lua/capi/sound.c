@@ -76,28 +76,59 @@ static void *M_ResolveStream(const LUA_STRUCT_REF *const ref)
     return &m_StreamView;
 }
 
-// sample:play([opts])
+// Hands back the voice a play landed in, by the slot the engine reported, or
+// nil when it did not play.
+static void M_PushPlayedStream(lua_State *const L, const int32_t slot)
+{
+    if (slot < 0) {
+        lua_pushnil(L);
+    } else {
+        LUA_Struct_Push(L, &TYPE_SOUND_STREAM_VIEW, M_ResolveStream, slot, 0);
+    }
+}
+
+// Reads the optional position table shared by the play entrypoints.
+static const XYZ_32 *M_ReadPlayPos(lua_State *const L, XYZ_32 *const pos)
+{
+    if (lua_gettop(L) >= 2 && lua_istable(L, 2)) {
+        if (lua_getfield(L, 2, "pos") == LUA_TTABLE) {
+            *pos = LUA_CheckXYZAt(L, -1, 2);
+            lua_pop(L, 1);
+            return pos;
+        }
+        lua_pop(L, 1);
+    }
+    return nullptr;
+}
+
+// sample:play([opts]) -> stream or nil
 static int M_L_SoundSamplePlay(lua_State *const L)
 {
     LUA_STRUCT_REF *const ref =
         LUA_Struct_CheckRef(L, 1, &TYPE_SOUND_SAMPLE_VIEW);
     LUA_Struct_Deref(L, ref);
     XYZ_32 pos;
-    const XYZ_32 *pos_ptr = nullptr;
-    if (lua_gettop(L) >= 2 && lua_istable(L, 2)) {
-        if (lua_getfield(L, 2, "pos") == LUA_TTABLE) {
-            pos = LUA_CheckXYZAt(L, -1, 2);
-            pos_ptr = &pos;
-        }
-        lua_pop(L, 1);
-    }
-    Sound_Effect_Direct(
-        (SAMPLE_ID)ref->idx, pos_ptr, SPM_ALWAYS | SPM_STATIC_POS);
+    const XYZ_32 *const pos_ptr = M_ReadPlayPos(L, &pos);
+    M_PushPlayedStream(
+        L,
+        Sound_Effect_Direct(
+            (SAMPLE_ID)ref->idx, pos_ptr, SPM_ALWAYS | SPM_STATIC_POS));
+    return 1;
+}
+
+// sample:stop()
+static int M_L_SoundSampleStop(lua_State *const L)
+{
+    LUA_STRUCT_REF *const ref =
+        LUA_Struct_CheckRef(L, 1, &TYPE_SOUND_SAMPLE_VIEW);
+    LUA_Struct_Deref(L, ref);
+    Sound_StopEffect_Direct((SAMPLE_ID)ref->idx);
     return 0;
 }
 
 static const luaL_Reg m_SampleMethods[] = {
     { "play", M_L_SoundSamplePlay },
+    { "stop", M_L_SoundSampleStop },
     { nullptr, nullptr },
 };
 
@@ -190,35 +221,6 @@ static int M_L_SoundStreamGet(lua_State *const L)
     return 1;
 }
 
-// trxc.sound.play(id[, opts])
-static int M_L_SoundPlay(lua_State *const L)
-{
-    const SAMPLE_ID id = (SAMPLE_ID)luaL_checkinteger(L, 1);
-    if (!Sound_IsAvailable_Direct(id)) {
-        return luaL_error(L, "invalid sound sample: %d", (int)id);
-    }
-    XYZ_32 pos;
-    const XYZ_32 *pos_ptr = nullptr;
-    if (lua_gettop(L) >= 2 && lua_istable(L, 2)) {
-        if (lua_getfield(L, 2, "pos") == LUA_TTABLE) {
-            // The blame is the options table, which is what the script wrote.
-            pos = LUA_CheckXYZAt(L, -1, 2);
-            pos_ptr = &pos;
-        }
-        lua_pop(L, 1);
-    }
-    Sound_Effect_Direct(id, pos_ptr, SPM_ALWAYS | SPM_STATIC_POS);
-    return 0;
-}
-
-// trxc.sound.stop(id)
-static int M_L_SoundStop(lua_State *const L)
-{
-    const SAMPLE_ID id = (SAMPLE_ID)luaL_checkinteger(L, 1);
-    Sound_StopEffect_Direct(id);
-    return 0;
-}
-
 // trxc.sound.stop_all()
 static int M_L_SoundStopAll(lua_State *const L)
 {
@@ -232,8 +234,6 @@ static const luaL_Reg m_Module[] = {
     { "sample_available_count", M_L_SoundSampleAvailableCount },
     { "stream_count", M_L_SoundStreamCount },
     { "stream_get", M_L_SoundStreamGet },
-    { "play", M_L_SoundPlay },
-    { "stop", M_L_SoundStop },
     { "stop_all", M_L_SoundStopAll },
     { nullptr, nullptr },
 };

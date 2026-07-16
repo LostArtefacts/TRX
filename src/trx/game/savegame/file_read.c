@@ -862,7 +862,7 @@ static bool M_ReadMusicTracks(JSON_READ_IO *const io)
             if (track_id == MX_INACTIVE) {
                 continue;
             }
-            if (!Music_Play_Direct(track_id, mode)) {
+            if (Music_Play_Direct(track_id, mode) < 0) {
                 LOG_WARNING("Could not load stream track %d", track_id);
                 continue;
             }
@@ -884,7 +884,7 @@ static bool M_ReadMusicTracks(JSON_READ_IO *const io)
         const bool is_ambient =
             current_track != MX_INACTIVE && current_track == ambient_track;
         if (!is_ambient && current_track != MX_INACTIVE
-            && !Music_Play_Direct(current_track, MPM_ONCE)) {
+            && Music_Play_Direct(current_track, MPM_ONCE) < 0) {
             LOG_WARNING("Could not load current track %d.", current_track);
         }
 
