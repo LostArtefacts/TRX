@@ -1,7 +1,7 @@
 -- Test harness for the Lua surface tests, mirroring the C one in harness.h.
 --
 -- The C runner builds the world - the fake engine, the real bridges, the real
--- data/scripting modules - and then hands over to a file like items.lua. What a
+-- src/lua modules - and then hands over to a file like items.lua. What a
 -- script can see, the tests see, so the assertions are written the way a level
 -- builder would write them.
 

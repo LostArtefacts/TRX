@@ -1,7 +1,7 @@
 -- The item API as a script actually sees it.
 --
 -- Everything under these assertions is real: the ITEM FIELD_DESC table, the
--- struct and enum bridges, trxc.items, and data/scripting/items.lua itself. Only
+-- struct and enum bridges, trxc.items, and src/lua/items.lua itself. Only
 -- the engine below that is fake (see fake_engine_items.c). So these tests pin
 -- the public surface rather than a restatement of it - rename a C member, drop a
 -- declaration, mark a field writable that must not be, and the assertion that

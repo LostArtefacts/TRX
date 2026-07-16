@@ -47,7 +47,7 @@ static void M_RunModule(lua_State *const L, const char *const name)
 {
     char path[512];
     char chunk_name[256];
-    snprintf(path, sizeof(path), REPO_ROOT "/data/scripting/api/%s.lua", name);
+    snprintf(path, sizeof(path), REPO_ROOT "/src/lua/api/%s.lua", name);
     snprintf(
         chunk_name, sizeof(chunk_name), LUA_API_CHUNK_PREFIX "%s.lua", name);
     M_RunFileAs(L, path, chunk_name);
@@ -93,7 +93,7 @@ int LuaSurface_Run(const LUA_SURFACE_TEST *const test)
     }
 
     // The declarations are read from the tree, not from the copy embedded in
-    // the binary: the test exists to pin what data/scripting says today.
+    // the binary: the test exists to pin what src/lua says today.
     M_RunModule(L, "api");
 
     const int32_t max_deps = sizeof(test->deps) / sizeof(test->deps[0]);
@@ -129,7 +129,7 @@ int LuaSurface_Run(const LUA_SURFACE_TEST *const test)
         char path[512];
         char chunk_name[256];
         snprintf(
-            path, sizeof(path), REPO_ROOT "/data/scripting/commands/%s.lua",
+            path, sizeof(path), REPO_ROOT "/src/lua/commands/%s.lua",
             test->script);
         snprintf(
             chunk_name, sizeof(chunk_name), "@trx/commands/%s.lua",

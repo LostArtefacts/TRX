@@ -13,13 +13,13 @@
 #include <lualib.h>
 
 typedef struct {
-    // data/scripting/api/<module>.lua - the declaration under test.
+    // src/lua/api/<module>.lua - the declaration under test.
     const char *module;
     // Modules loaded before it, for a declaration that reaches into another -
     // trx.camera.room hands back a trx.rooms.Room. NULL-terminated.
     const char *deps[8];
-    // data/scripting/commands/<script>.lua, run once the modules are up, the
-    // way the engine runs it after sealing. Optional.
+    // src/lua/commands/<script>.lua, run once the modules are up, the way the
+    // engine runs it after sealing. Optional.
     const char *script;
     // Seal the surface and take trxc off the globals, as the engine does once
     // the modules have declared.

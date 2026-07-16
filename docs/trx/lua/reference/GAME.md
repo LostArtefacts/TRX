@@ -7,7 +7,7 @@ order: 11
   GENERATED FILE - do not edit.
   Regenerate with: just lua-api-dump
   The public API is declared next to its implementation, in
-  data/scripting/api/game.lua. Edit it there.
+  src/lua/api/game.lua. Edit it there.
 -->
 
 ## Game module

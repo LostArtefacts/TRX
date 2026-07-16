@@ -1,7 +1,7 @@
 -- The event API as a script actually sees it.
 --
 -- Everything under these assertions is real: trxc.events, the listener registry
--- in lua/events.c, and data/scripting/events.lua itself. `fake.fire()` calls the
+-- in lua/events.c, and src/lua/events.lua itself. `fake.fire()` calls the
 -- same LUA_FireEvent* entrypoints the engine calls, so a handler here sees
 -- exactly what a handler sees in the game.
 

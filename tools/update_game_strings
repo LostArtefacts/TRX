@@ -373,7 +373,7 @@ def long_bracket_size(source: str, i: int) -> int | None:
 def strip_lua_noncode(source: str) -> str:
     """Blank out everything in a Lua source that a script does not execute.
 
-    Comments go, and so do long-bracket strings: in data/scripting those hold
+    Comments go, and so do long-bracket strings: in src/lua those hold
     the api.define examples, and a key named in an example is documentation, not
     a usage. Quoted strings stay, because that is where a key is written.
     Newlines are kept so the line numbers still line up.
