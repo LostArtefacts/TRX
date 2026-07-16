@@ -86,11 +86,6 @@
             "load_game_fail_invalid_slot": "Slot mì-dhligheach: %d",
             "load_game_fail_unavailable_slot": "Chan eil slot sàbhalaidh %d ri làimh",
             "object_not_found": "Cha deach an t-oibseact a lorg",
-            "pos_lara_missing": "Chan eil Lara an làthair",
-            "pos_lara_pos_fmt": "Seomair: %d\nSuidheachadh: %.3f, %.3f, %.3f\nCuairteachadh: %.3f, %.3f, %.3f",
-            "pos_level_fmt": "Ìre %d",
-            "pos_level_fmt_cutscene": "Sealladh-film %d",
-            "pos_level_fmt_demo": "Taisbeanadh %d",
             "quick_load": "Slot luchdaichte gu luath %d",
             "quick_load_fail_no_bound_slot": "Chan eil slot sàbhalaidh sam bith ceangailte an-dràsta",
             "quick_load_fail_unavailable_bound_slot": "Chan eil an slot sàbhalaidh ceangailte rim faotainn",
@@ -407,6 +402,11 @@
             },
             "pos": {
                 "help": "Seall suidheachadh Lara.",
+                "lara_missing": "Chan eil Lara an làthair",
+                "lara_pos_fmt": "Seomair: %d\nSuidheachadh: %.3f, %.3f, %.3f\nCuairteachadh: %.3f, %.3f, %.3f",
+                "level_fmt": "Ìre %d",
+                "level_fmt_cutscene": "Sealladh-film %d",
+                "level_fmt_demo": "Taisbeanadh %d",
             },
             "save": {
                 "help": "Sàbhail geama dhan t-slot ainmichte neo dhan ath shlot luath.",

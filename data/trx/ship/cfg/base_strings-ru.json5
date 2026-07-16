@@ -86,11 +86,6 @@
             "load_game_fail_invalid_slot": "Неверный слот сохранения %d",
             "load_game_fail_unavailable_slot": "Слот сохранения %d недоступен",
             "object_not_found": "Объект не найден",
-            "pos_lara_missing": "Лара отсутствует",
-            "pos_lara_pos_fmt": "Комната: %d\nПозиция: %.3f, %.3f, %.3f\nВращение: %.3f,%.3f,%.3f",
-            "pos_level_fmt": "Уровень %d",
-            "pos_level_fmt_cutscene": "Заставка %d",
-            "pos_level_fmt_demo": "Демо %d",
             "quick_load": "\\{review}Быстро загруженный слот %d",
             "quick_load_fail_no_bound_slot": "\\{review}В данный момент не привязан ни один слот сохранения",
             "quick_load_fail_unavailable_bound_slot": "\\{review}Привязанный слот сохранения недоступен",
@@ -407,6 +402,11 @@
             },
             "pos": {
                 "help": "Показывает позицию Лары",
+                "lara_missing": "Лара отсутствует",
+                "lara_pos_fmt": "Комната: %d\nПозиция: %.3f, %.3f, %.3f\nВращение: %.3f,%.3f,%.3f",
+                "level_fmt": "Уровень %d",
+                "level_fmt_cutscene": "Заставка %d",
+                "level_fmt_demo": "Демо %d",
             },
             "save": {
                 "help": "\\{review}Сохраняет игру в указанный слот сохранения или в следующий слот быстрого сохранения.",
