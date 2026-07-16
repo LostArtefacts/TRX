@@ -13,6 +13,7 @@ typedef struct {
     int32_t last_extra_mesh;
     int32_t cure_poison;
     int32_t extinguish;
+    int32_t catch_fire;
 } FAKE_LARA_CALLS;
 
 extern FAKE_LARA_CALLS g_FakeLaraCalls;

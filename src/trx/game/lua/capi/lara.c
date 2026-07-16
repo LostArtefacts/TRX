@@ -17,6 +17,25 @@
 // Lara's position, room and hit points are not here. She is an item like any
 // other, and those live on it - see trx.lara.item.
 
+// Setting the flag alone would not light her, so is_burning goes through the
+// same catch-fire and extinguish paths a flame trap does.
+static bool M_GetBurn(const void *const self, FIELD_VALUE *const out)
+{
+    const LARA_INFO *const lara = self;
+    *out = (FIELD_VALUE) { .type = FT_BOOL, .as_bool = lara->burn };
+    return true;
+}
+
+static const char *M_SetBurn(void *const self, const FIELD_VALUE *const in)
+{
+    if (in->as_bool) {
+        Lara_CatchFire();
+    } else {
+        Lara_Extinguish();
+    }
+    return nullptr;
+}
+
 // clang-format off
 static const FIELD_DESC m_Fields[] = {
     // condition
@@ -25,7 +44,7 @@ static const FIELD_DESC m_Fields[] = {
     FIELD(LARA_INFO, poison.value),
     FIELD(LARA_INFO, poison.target),
     FIELD(LARA_INFO, electric),
-    FIELD_RO(LARA_INFO, burn),
+    FIELD_FN("burn", FT_BOOL, M_GetBurn, M_SetBurn),
 
     // what she is doing
     FIELD_RO(LARA_INFO, water_status),

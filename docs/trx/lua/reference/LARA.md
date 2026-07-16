@@ -162,7 +162,7 @@ Her position, room and hit points are not here: she is an item like any other an
     - **`extra_anim`**: boolean. Whether a scripted animation is driving Lara rather than her own state machine. *(read-only)*
     - **`gun_status`**: integer. What Lara's hands are doing. Compare against `trx.lara.GunState`. *(read-only)*
     - **`hit_direction`**: integer. Which way the last hit came from, or -1 if she has not been hit. *(read-only)*
-    - **`is_burning`**: boolean. Whether Lara is on fire. *(read-only)*
+    - **`is_burning`**: boolean. Whether Lara is on fire. Setting it lights her or puts her out.
     - **`is_climbing`**: boolean. Whether Lara is on a climbable wall. *(read-only)*
     - **`is_crouched`**: boolean. Whether Lara is crouching. *(read-only)*
     - **`killed_loyal_item`**: boolean. Whether Lara has killed one of her own allies, which is what turns the rest of them on her. *(read-only)*

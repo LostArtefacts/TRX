@@ -51,10 +51,6 @@
             "ambiguous_input_3": "Mehrdeutige Eingabe: %s, %s, ...",
             "bilinear_filter_off": "Bilinear-Filter: aus",
             "bilinear_filter_on": "Bilinear-Filter: ein",
-            "burn_fail_already_off": "\\{review}Lara brennt gerade nicht",
-            "burn_fail_already_on": "\\{review}Lara brennt bereits",
-            "burn_off": "\\{review}Lara wurde gelöscht - puh!",
-            "burn_on": "\\{review}Lara brennt jetzt - autsch!",
             "command_bad_invocation": "Unzulässiger Aufruf: %s",
             "command_bool": "ein, aus",
             "command_decimal": "[Dezimal]",
@@ -273,7 +269,11 @@
                 "help": "Aktiviert und deaktiviert Laras Zopf.",
             },
             "burn": {
+                "already_off": "\\{review}Lara brennt gerade nicht",
+                "already_on": "\\{review}Lara brennt bereits",
                 "help": "\\{review}Schaltet um, ob Lara brennt.",
+                "off": "\\{review}Lara wurde gelöscht - puh!",
+                "on": "\\{review}Lara brennt jetzt - autsch!",
             },
             "cheats": {
                 "help": "Schaltet In-Game Cheats ein oder aus.",

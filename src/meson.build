@@ -62,6 +62,7 @@ trx_lua_api_sources = files(
 
 trx_lua_script_sources = files(
   'lua/commands/clear.lua',
+  'lua/commands/burn.lua',
   'lua/commands/debug.lua',
   'lua/commands/end_level.lua',
   'lua/commands/flipmap.lua',
@@ -242,7 +243,6 @@ common_sources = [
   'trx/game/clock/turbo.c',
   'trx/game/collision/common.c',
   'trx/game/collision/los.c',
-  'trx/game/console/cmd/burn.c',
   'trx/game/console/cmd/config.c',
   'trx/game/console/cmd/die.c',
   'trx/game/console/cmd/easy_config.c',

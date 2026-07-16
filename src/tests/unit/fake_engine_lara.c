@@ -135,6 +135,12 @@ void Lara_Poison_Cure(void)
     m_Lara.poison.target = 0;
 }
 
+void Lara_CatchFire(void)
+{
+    g_FakeLaraCalls.catch_fire++;
+    m_Lara.burn = true;
+}
+
 void Lara_Extinguish(void)
 {
     g_FakeLaraCalls.extinguish++;
@@ -156,4 +162,6 @@ void FakeLara_PushCalls(lua_State *const L)
     lua_setfield(L, -2, "cure_poison");
     lua_pushinteger(L, g_FakeLaraCalls.extinguish);
     lua_setfield(L, -2, "extinguish");
+    lua_pushinteger(L, g_FakeLaraCalls.catch_fire);
+    lua_setfield(L, -2, "catch_fire");
 }

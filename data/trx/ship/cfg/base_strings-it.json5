@@ -51,10 +51,6 @@
             "ambiguous_input_3": "Immissione ambigua: %s, %s, ...",
             "bilinear_filter_off": "Filtro bilineare: disattivato",
             "bilinear_filter_on": "Filtro bilineare: attivato",
-            "burn_fail_already_off": "Lara non va attualmente a fuoco",
-            "burn_fail_already_on": "Lara va già a fuoco",
-            "burn_off": "Lara non va più a fuoco - meno male!",
-            "burn_on": "Lara va ora a fuoco - ahi!",
             "command_bad_invocation": "Invocazione non valida: %s",
             "command_bool": "acceso, spento",
             "command_decimal": "[decimale]",
@@ -273,7 +269,11 @@
                 "help": "Attiva o disattiva la treccia di Lara.",
             },
             "burn": {
+                "already_off": "Lara non va attualmente a fuoco",
+                "already_on": "Lara va già a fuoco",
                 "help": "Attiva o disattiva il fuoco su Lara.",
+                "off": "Lara non va più a fuoco - meno male!",
+                "on": "Lara va ora a fuoco - ahi!",
             },
             "cheats": {
                 "help": "Attiva o disattiva i trucchi di gioco.",

@@ -128,8 +128,7 @@ api.type("lara.Lara", {
     is_burning = {
       from = "burn",
       type = "boolean",
-      writable = false,
-      description = "Whether Lara is on fire.",
+      description = "Whether Lara is on fire. Setting it lights her or puts her out.",
     },
     is_crouched = {
       from = "is_crouched",
