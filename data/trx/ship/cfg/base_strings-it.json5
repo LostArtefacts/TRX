@@ -81,7 +81,6 @@
             "invalid_item": "Oggetto sconosciuto: %s",
             "invalid_object": "Oggetto non valido",
             "invalid_room": "Stanza non valida: %d. Le stanze valide sono 0-%d",
-            "invalid_sample": "Suono non valido: %d",
             "kill": "Ciao!",
             "kill_all": "Puff! %d nemici scomparsi!",
             "kill_all_fail": "Oh-oh, non ci sono più nemici da uccidere...",
@@ -103,8 +102,6 @@
             "quick_save_fail_no_slots": "Nessuno slot di salvataggio rapido configurato",
             "save_game": "Partita salvata nello slot di salvataggio %d",
             "save_game_fail_invalid_slot": "Slot di salvataggio %d non valido",
-            "sound_available_samples": "Suoni disponibili: %s",
-            "sound_playing_sample": "Riproduzione del suono %d",
             "speed_set": "Velocità impostata su %d",
             "strings_failed": "Impossibile ricaricare i file di lingua",
             "strings_reloaded": "File di lingua ricaricati",
@@ -421,7 +418,10 @@
                 "help": "Visualizza o aggiorna l'impostazione di configurazione specificata. Utilizzare --force per modificare le impostazioni predefinite del livello per la sessione corrente.",
             },
             "sfx": {
+                "available": "Suoni disponibili: %s",
                 "help": "Riproduce un effetto sonoro con l'ID specificato.",
+                "invalid": "Suono non valido: %d",
+                "playing": "Riproduzione del suono %d",
             },
             "spawn": {
                 "fail": "Impossibile generare l'oggetto richiesto",

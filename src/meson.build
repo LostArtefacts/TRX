@@ -74,6 +74,7 @@ trx_lua_script_sources = files(
   '../data/scripting/commands/play_level.lua',
   '../data/scripting/commands/poison.lua',
   '../data/scripting/commands/set_health.lua',
+  '../data/scripting/commands/sfx.lua',
   '../data/scripting/commands/speed.lua',
   '../data/scripting/commands/test_text.lua',
 )
@@ -254,7 +255,6 @@ common_sources = [
   'trx/game/console/cmd/pos.c',
   'trx/game/console/cmd/save_game.c',
   'trx/game/console/cmd/screenshot.c',
-  'trx/game/console/cmd/sfx.c',
   'trx/game/console/cmd/spawn.c',
   'trx/game/console/cmd/strings.c',
   'trx/game/console/cmd/teleport.c',
