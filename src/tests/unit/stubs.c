@@ -1,12 +1,16 @@
-// The only engine symbol the code under test reaches for is the logger, via
-// ASSERT. Stubbing it keeps the unit tests free of the platform log backend,
-// and therefore free of the engine entirely.
+// Symbols every test needs regardless of which surface it exercises: the logger
+// that ASSERT reaches for, and the config global that several bridges read.
+// Stubbing them here keeps the unit tests free of the platform log backend and
+// gives the config a single definition across the whole test tree.
 
+#include <trx/config/types.h>
 #include <trx/core/log.h>
 
 #include <stdarg.h>
 #include <stdint.h>
 #include <stdio.h>
+
+CONFIG g_Config = {};
 
 void Log_Message(
     const LOG_LEVEL level, const char *const file, const int32_t line,

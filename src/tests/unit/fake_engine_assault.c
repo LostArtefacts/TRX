@@ -8,7 +8,6 @@
 
 #include <stdbool.h>
 
-CONFIG g_Config;
 FAKE_ASSAULT_CALLS g_FakeAssaultCalls;
 
 static bool m_InGym;
