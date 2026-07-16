@@ -204,6 +204,21 @@ void UI_HandleTextEdit(const char *const text)
         .name = "text_edit", .sender = nullptr, .data = (void *)text });
 }
 
+void UI_HandlePaste(void)
+{
+    if (!SDL_HasClipboardText()) {
+        return;
+    }
+
+    char *const text = SDL_GetClipboardText();
+    if (text == nullptr) {
+        return;
+    }
+
+    UI_HandleTextEdit(text);
+    SDL_free(text);
+}
+
 int32_t UI_GetCanvasWidth(void)
 {
     return UI_Scaler_CalcInverse(

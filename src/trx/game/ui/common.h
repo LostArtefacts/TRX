@@ -73,3 +73,7 @@ void UI_ToggleState(bool *config_setting);
 void UI_HandleKeyDown(uint32_t key);
 void UI_HandleKeyUp(uint32_t key);
 void UI_HandleTextEdit(const char *text);
+
+// Inserts the current clipboard contents (if any) into the currently
+// focused text field, as if it had been typed.
+void UI_HandlePaste(void);
