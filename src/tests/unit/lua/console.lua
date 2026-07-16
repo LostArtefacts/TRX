@@ -283,4 +283,33 @@ test("the raw bridge is not part of the surface", function()
   )
 end)
 
+test("logging a non-string coerces it", function()
+  trx.console.log(1000)
+  assert(fake.calls().last_message == "1000")
+
+  trx.console.log(true)
+  assert(fake.calls().last_message == "true")
+end)
+
+test("logging a table pretty-prints it", function()
+  trx.console.log({ hp = 1000, name = "lara" })
+  local message = fake.calls().last_message
+  assert(message:find("hp = 1000"), "a field is shown: " .. message)
+  assert(message:find('name = "lara"'), "a string value is quoted")
+  assert(message:find("{"), "a table prints as a table")
+end)
+
+test("a self-referential table does not loop forever", function()
+  local t = {}
+  t.self = t
+  trx.console.log(t)
+  assert(fake.calls().last_message:find("<cycle>"), "a cycle is marked")
+end)
+
+test("p is a global alias of trx.console.log", function()
+  assert(p == trx.console.log, "p must resolve to the log group")
+  p("via p")
+  assert(fake.calls().last_message == "via p")
+end)
+
 return h.report()

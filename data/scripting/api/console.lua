@@ -12,9 +12,67 @@ api.module("console", {
     .. "the terminal and the log file.",
 })
 
+-- Renders any value for the console. Nested strings are quoted so a table reads
+-- back the way it was written; a table prints across lines, indented.
+local function render(value, indent, seen)
+  local kind = type(value)
+  if kind ~= "table" then
+    return kind == "string" and ("%q"):format(value) or tostring(value)
+  end
+  if seen[value] then
+    return "<cycle>"
+  end
+  seen[value] = true
+
+  local inner = indent .. "  "
+  local parts, len = {}, 0
+  for i, item in ipairs(value) do
+    parts[#parts + 1] = inner .. render(item, inner, seen)
+    len = i
+  end
+
+  local keys = {}
+  for key in pairs(value) do
+    local in_seq = type(key) == "number"
+      and key % 1 == 0
+      and key >= 1
+      and key <= len
+    if not in_seq then
+      keys[#keys + 1] = key
+    end
+  end
+  table.sort(keys, function(a, b)
+    return tostring(a) < tostring(b)
+  end)
+  for _, key in ipairs(keys) do
+    local label = (type(key) == "string" and key:match("^[%a_][%w_]*$"))
+        and key
+      or "[" .. render(key, inner, seen) .. "]"
+    parts[#parts + 1] = inner
+      .. label
+      .. " = "
+      .. render(value[key], inner, seen)
+  end
+
+  seen[value] = nil
+  if #parts == 0 then
+    return "{}"
+  end
+  return "{\n" .. table.concat(parts, ",\n") .. "\n" .. indent .. "}"
+end
+
+-- A string logs as itself; anything else is coerced, and a table is pretty-
+-- printed.
+local function to_display(value)
+  if type(value) == "string" then
+    return value
+  end
+  return render(value, "", {})
+end
+
 local function at(level)
-  return function(message)
-    raw.log(level, message)
+  return function(value)
+    raw.log(level, to_display(value))
   end
 end
 
@@ -34,10 +92,19 @@ for _, value in pairs(Result) do
   is_result[value] = true
 end
 
+-- The logging functions take any value: a string logs as itself, and anything
+-- else is coerced, with a table pretty-printed across lines.
+local message_param = {
+  name = "message",
+  type = "any",
+  description = "Any value; a table is pretty-printed.",
+}
+
 api.namespace("console.log", {
-  description = "Logs a line to the developer console. Calling the group itself logs at `INFO`.",
-  params = { { name = "message", type = "string" } },
-  examples = { [[trx.console.log("hello")]] },
+  description = "Logs a line to the developer console. Calling the group itself logs at `INFO`. "
+    .. "Takes any value: a table is pretty-printed, anything else coerced to a string.",
+  params = { message_param },
+  examples = { [[trx.console.log({ hp = 1000, pos = { x = 1 } })]] },
   call = at(LogLevel.INFO),
 })
 
@@ -45,40 +112,40 @@ api.define("console.log.generic", {
   description = "Logs at a level chosen at runtime.",
   params = {
     { name = "level", type = "integer", enum = "log.LogLevel" },
-    { name = "message", type = "string" },
+    message_param,
   },
-  impl = function(level, message)
-    raw.log(level, message)
+  impl = function(level, value)
+    raw.log(level, to_display(value))
   end,
 })
 
 api.define("console.log.info", {
   description = "Logs an informational message.",
-  params = { { name = "message", type = "string" } },
+  params = { message_param },
   impl = at(LogLevel.INFO),
 })
 
 api.define("console.log.warn", {
   description = "Logs a warning.",
-  params = { { name = "message", type = "string" } },
+  params = { message_param },
   impl = at(LogLevel.WARNING),
 })
 
 api.define("console.log.warning", {
   description = "Logs a warning. An alias of `trx.console.log.warn`.",
-  params = { { name = "message", type = "string" } },
+  params = { message_param },
   impl = at(LogLevel.WARNING),
 })
 
 api.define("console.log.error", {
   description = "Logs an error.",
-  params = { { name = "message", type = "string" } },
+  params = { message_param },
   impl = at(LogLevel.ERROR),
 })
 
 api.define("console.log.debug", {
   description = "Logs a debug message.",
-  params = { { name = "message", type = "string" } },
+  params = { message_param },
   impl = at(LogLevel.DEBUG),
 })
 
@@ -170,3 +237,8 @@ api.define("console.clear", {
   description = "Clears the console.",
   impl = raw.clear,
 })
+
+-- p is a global shorthand for trx.console.log, for quick debugging from the
+-- console. The one global besides trx, and so documented by hand in MISC.md
+-- rather than through the registry.
+_G.p = trx.console.log
