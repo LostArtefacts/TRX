@@ -7,7 +7,7 @@ order: 12
   GENERATED FILE - do not edit.
   Regenerate with: just lua-api-dump
   The public API is declared next to its implementation, in
-  data/scripting/api/creatures.lua. Edit it there.
+  src/lua/api/creatures.lua. Edit it there.
 -->
 
 ## Creatures module

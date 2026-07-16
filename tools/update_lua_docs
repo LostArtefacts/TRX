@@ -2,7 +2,7 @@
 """Regenerate the Lua API reference from the engine itself.
 
 The public API is declared in one place - the trx.api registry in
-data/scripting/api/*.lua - and that declaration is what builds the metatables. A
+src/lua/api/*.lua - and that declaration is what builds the metatables. A
 member the engine can reach but no script declares is not reachable from Lua at
 all.
 
@@ -320,7 +320,7 @@ def render_page(module: dict, api: dict) -> str:
         "  GENERATED FILE - do not edit.",
         "  Regenerate with: just lua-api-dump",
         "  The public API is declared next to its implementation, in",
-        f"  data/scripting/api/{name}.lua. Edit it there.",
+        f"  src/lua/api/{name}.lua. Edit it there.",
         "-->",
         "",
         f"## {title} module",
@@ -460,7 +460,7 @@ def main() -> int:
         print("error: declared with no description:", file=sys.stderr)
         for path in blank:
             print(f"  {path}", file=sys.stderr)
-        print("document it in data/scripting/api/, next to the declaration", file=sys.stderr)
+        print("document it in src/lua/api/, next to the declaration", file=sys.stderr)
         return 1
 
     stale = []

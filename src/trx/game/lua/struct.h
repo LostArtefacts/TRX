@@ -10,8 +10,8 @@
 //
 // Registering a type creates its metatable with EMPTY public tables: no field,
 // method or computed member is reachable until a script declares it (see
-// trx.api.type in data/scripting/api.lua). The declaration is what populates
-// the metatable, so the public API is coined in Lua, while dispatch stays in C
+// trx.api.type in src/lua/api.lua). The declaration is what populates the
+// metatable, so the public API is coined in Lua, while dispatch stays in C
 // - routing field reads through Lua costs ~1.5x on the hottest path scripts
 // have.
 

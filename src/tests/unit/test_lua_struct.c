@@ -76,7 +76,7 @@ static int M_L_GetWidget(lua_State *const L)
 }
 
 // Builds the environment a script would see, then applies the declaration the
-// way data/scripting/*.lua does.
+// way src/lua/*.lua does.
 static lua_State *M_NewState(const char *const declaration)
 {
     for (int32_t i = 0; i < M_POOL_SIZE; i++) {

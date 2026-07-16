@@ -7,7 +7,7 @@ order: 3
   GENERATED FILE - do not edit.
   Regenerate with: just lua-api-dump
   The public API is declared next to its implementation, in
-  data/scripting/api/lara.lua. Edit it there.
+  src/lua/api/lara.lua. Edit it there.
 -->
 
 ## Lara module
