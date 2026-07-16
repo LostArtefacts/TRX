@@ -3,8 +3,7 @@ trx.events.before_level_file(function(level)
 end)
 
 trx.events.after_level_state(function()
-  for i = 1, #trx.rooms do
-    local room = trx.rooms[i]
+  for _, room in pairs(trx.rooms) do
     room.damaging = room.underwater
     room.cold = true
   end

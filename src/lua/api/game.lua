@@ -127,7 +127,7 @@ end
 
 api.property("game.levels", {
   type = "table",
-  description = "The levels of the game, in order, as a list of `trx.game.Level`.",
+  description = "The levels of the game, in order, as a list of `trx.game.Level` counted from one.",
   get = function()
     return level_list(LevelTable.MAIN)
   end,
@@ -135,7 +135,7 @@ api.property("game.levels", {
 
 api.property("game.cutscenes", {
   type = "table",
-  description = "The cutscenes, as a list of `trx.game.Level`.",
+  description = "The cutscenes, as a list of `trx.game.Level` counted from one.",
   get = function()
     return level_list(LevelTable.CUTSCENES)
   end,
@@ -143,7 +143,7 @@ api.property("game.cutscenes", {
 
 api.property("game.demos", {
   type = "table",
-  description = "The demos, as a list of `trx.game.Level`.",
+  description = "The demos, as a list of `trx.game.Level` counted from one.",
   get = function()
     return level_list(LevelTable.DEMOS)
   end,

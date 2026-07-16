@@ -5,8 +5,8 @@ trx.events.before_item_setup(function(level)
 end)
 
 trx.events.before_item_setup(function(level)
-  trx.items[43].properties.crowbar = true
-  trx.items[80].properties.crowbar = true
+  trx.items[42].properties.crowbar = true
+  trx.items[79].properties.crowbar = true
+  trx.items[82].properties.crowbar = true
   trx.items[83].properties.crowbar = true
-  trx.items[84].properties.crowbar = true
 end)

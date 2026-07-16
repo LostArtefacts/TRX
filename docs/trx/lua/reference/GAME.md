@@ -16,9 +16,9 @@ Module for the game flow: which levels there are, and which one is being played.
 
 ### Properties
 
-- **`trx.game.levels`** (table). The levels of the game, in order, as a list of `trx.game.Level`. *(read-only)*
-- **`trx.game.cutscenes`** (table). The cutscenes, as a list of `trx.game.Level`. *(read-only)*
-- **`trx.game.demos`** (table). The demos, as a list of `trx.game.Level`. *(read-only)*
+- **`trx.game.levels`** (table). The levels of the game, in order, as a list of `trx.game.Level` counted from one. *(read-only)*
+- **`trx.game.cutscenes`** (table). The cutscenes, as a list of `trx.game.Level` counted from one. *(read-only)*
+- **`trx.game.demos`** (table). The demos, as a list of `trx.game.Level` counted from one. *(read-only)*
 - **`trx.game.current_level`** (Level). The level being played, or `nil` if none is. *(read-only)*
 - **`trx.game.gym`** (Level). The gym level, or `nil` if this game has no gym. *(read-only)*
 - **`trx.game.version`** (integer). Which Tomb Raider this build is: 1, 2, 3 or 4. *(read-only)*

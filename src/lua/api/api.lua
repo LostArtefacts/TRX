@@ -209,6 +209,21 @@ local function install_module_meta(module)
     meta.__len = function()
       return container.count()
     end
+    -- pairs() over the module walks the collection, 0-based, one handle at a
+    -- time, so a script iterates without the #..-1 idiom. seal()'s audit reads
+    -- the module's own members instead, and iterates raw to reach them.
+    meta.__pairs = function(t)
+      local n = container.count()
+      return function(_, i)
+        i = i + 1
+        if i >= n then
+          return nil
+        end
+        return i, container.get(i)
+      end,
+        t,
+        -1
+    end
   end
   setmetatable(trx[module], meta)
 end
@@ -412,7 +427,9 @@ function api.seal()
 
   local undeclared = {}
   local function audit(container_path, tbl)
-    for name in pairs(tbl or {}) do
+    -- next, not pairs: a container overrides __pairs to walk its collection, so
+    -- the module's own members are only reachable through a raw iteration.
+    for name in next, tbl or {} do
       if not (declared[container_path] or {})[name] then
         table.insert(undeclared, "trx." .. container_path .. "." .. name)
       end

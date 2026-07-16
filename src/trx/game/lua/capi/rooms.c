@@ -8,14 +8,14 @@
 
 #include <lauxlib.h>
 
-// Scripts count rooms from 1; the engine counts from 0. There is no
-// Room_GetIndex, so derive it the way Item_GetIndex does.
+// Scripts and the engine both count rooms from 0. There is no Room_GetIndex, so
+// derive it the way Item_GetIndex does.
 static bool M_GetIndex(const void *const self, FIELD_VALUE *const out)
 {
     const ROOM *const room = self;
     *out = (FIELD_VALUE) {
         .type = FT_INT16,
-        .as_int = (int32_t)(room - Room_Get(0)) + 1,
+        .as_int = (int32_t)(room - Room_Get(0)),
     };
     return true;
 }
@@ -81,11 +81,11 @@ static int M_L_RoomsCount(lua_State *const L)
 static int M_L_RoomsGet(lua_State *const L)
 {
     int32_t num;
-    if (!LUA_CheckBoundedInt(L, 1, 1, Room_GetCount(), &num)) {
+    if (!LUA_CheckBoundedInt(L, 1, 0, Room_GetCount() - 1, &num)) {
         lua_pushnil(L);
         return 1;
     }
-    M_PushRoom(L, num - 1);
+    M_PushRoom(L, num);
     return 1;
 }
 
@@ -116,7 +116,7 @@ static int M_L_RoomsGetBounds(lua_State *const L)
     return 1;
 }
 
-// trxc.rooms.get_flipped_room(room) -> 1-based room number or nil
+// trxc.rooms.get_flipped_room(room) -> 0-based room number or nil
 static int M_L_RoomsGetFlippedRoom(lua_State *const L)
 {
     LUA_STRUCT_REF *const ref = LUA_Struct_CheckRef(L, 1, &TYPE_ROOM);
@@ -168,15 +168,15 @@ static int M_L_RoomsFindValidPos(lua_State *const L)
     // Room_Get gives back nullptr for a room outside the level.
     const lua_Integer room_arg = luaL_checkinteger(L, 2);
     luaL_argcheck(
-        L, room_arg >= 1 && room_arg <= Room_GetCount(), 2, "unknown room");
-    int16_t room_num = (int16_t)(room_arg - 1);
+        L, room_arg >= 0 && room_arg <= Room_GetCount() - 1, 2, "unknown room");
+    int16_t room_num = (int16_t)room_arg;
     if (!Room_FindValidPos(&pos, &room_num)) {
         lua_pushnil(L);
         return 1;
     }
 
     LUA_PushXYZ(L, pos);
-    lua_pushinteger(L, room_num + 1);
+    lua_pushinteger(L, room_num);
     return 2;
 }
 

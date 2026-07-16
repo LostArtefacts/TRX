@@ -18,7 +18,7 @@ An object is the pattern every item of that type is cut from: a wolf's radius, n
 
 ### Indexing
 
-Indexing the module reaches an object definition, so `trx.objects.wolf` is the wolf.
+Indexing the module reaches an object definition, so `trx.objects.wolf` is the wolf. Keyed by object id or catalog name, not by position.
 
 - **`trx.objects[key]`** (Object or `nil`). Object id, or its catalog name.
 

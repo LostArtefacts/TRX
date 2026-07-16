@@ -180,7 +180,8 @@ api.define("objects.swap_mesh", {
 })
 
 api.container("objects", {
-  description = "Indexing the module reaches an object definition, so `trx.objects.wolf` is the wolf.",
+  description = "Indexing the module reaches an object definition, so `trx.objects.wolf` is the wolf. "
+    .. "Keyed by object id or catalog name, not by position.",
   key = { type = "any", description = "Object id, or its catalog name." },
   value = { type = "Object", nullable = true },
   examples = { [[trx.objects.wolf.properties.max_hit_points = 30]] },

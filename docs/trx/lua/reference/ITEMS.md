@@ -16,15 +16,15 @@ Module for controlling all moveables.
 
 ### Indexing
 
-Indexing the module reaches an item, and `#trx.items` is how many the level has.
+Indexing the module reaches an item, and `#trx.items` is how many the level has. Items count from zero, matching the item numbers level editors show. `pairs()` walks them in order, keyed by that number.
 
-- **`trx.items[key]`** (Item or `nil`). 1-based index, or the item's unique name.
+- **`trx.items[key]`** (Item or `nil`). 0-based index, or the item's unique name.
 - **`#trx.items`** (integer). How many there are.
 
 Example:
 ```lua
-for i = 1, #trx.items do
-  trx.log.info(trx.items[i].object_id)
+for num, item in pairs(trx.items) do
+  trx.log.info(item.object_id)
 end
 ```
 
@@ -83,7 +83,7 @@ end
     - **`name`**: string. Unique item name, or `nil`. Assigning a name already in use raises an error.
     - **`object_id`**: integer. The item's object type. Compare against `trx.catalog.objects`. *(read-only)*
     - **`pos`**: vec3. World position. Updating this also updates `room` and `room_num`.
-    - **`room_num`**: integer. 1-based number of the room containing this item. Set `pos` to move the item between rooms. *(read-only)*
+    - **`room_num`**: integer. 0-based number of the room containing this item. Set `pos` to move the item between rooms. *(read-only)*
     - **`rot`**: vec3. Orientation.
     - **`speed`**: integer. Forward speed.
     - **`status`**: integer. Item status. Use `activate()` and `kill()` to change it, so the item's active-list membership stays in sync. Compare against `trx.items.Status`. *(read-only)*
@@ -152,16 +152,16 @@ end
 ### Functions
 
 - [lua]`trx.items.get(key)`  
-  Retrieves an item by 1-based index or by name.
+  Retrieves an item by index or by name. Items count from zero, matching the item numbers level editors show.
 
   Parameters:
-  - **`key`** (any). 1-based index, or the item's unique name.
+  - **`key`** (any). 0-based index, or the item's unique name.
 
   Returns: Item or `nil`.
 
   Example:
   ```lua
-  local item = trx.items[1]
+  local item = trx.items[0]
   item.name = "lara"
   local lara = trx.items["lara"]
   ```

@@ -33,7 +33,7 @@ The Lua integration was rewritten and existing scripts will need updating; refer
 - added new Lua enums, `trx.items.Status`, `trx.lara.WaterState`, `trx.lara.GunState`, `trx.game.LevelTable`, `trx.catalog.Context` and `trx.rooms.FlipStatus`
 - added `trx.log.generic()` and the `trx.log.LogLevel` enum, to log at a level chosen at runtime
 - added the braid and crowbar constants to `trx.lara.ExtraMesh`, which the engine had but never exposed
-- added indexing and the length operator to `trx.items`, `trx.rooms` and `trx.objects`, so `trx.items[1]` is the first item and `#trx.items` is how many the level has
+- added indexing and the length operator to `trx.items`, `trx.rooms` and `trx.objects`, so `trx.items[0]` is the first item and `#trx.items` is how many the level has
 - added `trx.api.strict()`, which checks a script's arguments against the API's own declarations - worth turning on while writing a level, and leaving off in play
 - added `room:is_valid()`, so a room handle held across a level change can be checked the way an item handle can
 - added the track to the assault course record functions, so the quad bike's records can be read and written at last
@@ -44,7 +44,8 @@ The Lua integration was rewritten and existing scripts will need updating; refer
 - added `trx.sound.samples`, the level's samples as `trx.sound.Sample` handles keyed by id, each with `:play()` and its `volume`, `range`, `randomness` and `pitch`
 - added `trx.sound.streams`, the sound effects playing now as `trx.sound.Stream` handles, each of which can be paused, resumed and stopped on its own
 - changed `trx.items` and `trx.rooms` to hand out opaque handles rather than `{ idx = ... }` tables, so a handle to a killed item now raises instead of silently addressing whatever took its slot
-- changed handles to compare equal when they name the same thing, so `trx.items[1] == trx.items[1]`
+- changed handles to compare equal when they name the same thing, so `trx.items[0] == trx.items[0]`
+- changed `trx.items` and `trx.rooms` to count from zero, matching the item and room numbers level editors show, and made `pairs()` walk them keyed by that number
 - changed room handles to go stale at a level change rather than quietly naming a different room
 - changed `trx.game.levels` and `trx.game.play_level` to leave out the gym, so numbering no longer shifts and the last level is reachable
 - changed `trx.api` to hold only `strict` and `is_strict` once sealed, and `trx.api.strict()` to check handle method arguments too
@@ -62,7 +63,6 @@ The Lua integration was rewritten and existing scripts will need updating; refer
 - changed Lua enums to answer to a constant's name in any case, so `trx.catalog.objects.wolf` and `trx.catalog.objects.WOLF` are the same constant
 - changed Lua enums to be read-only, including the table `pairs()` used to hand out; writing to one used to break every later lookup
 - changed writes that a field cannot hold to raise rather than truncate, so `item.hit_points = 99999` no longer wraps
-- fixed `trx.events.on_pickup` firing with a 0-based item number, where it is documented to pass a 1-based one
 - fixed a number too large for the engine wrapping into range rather than being refused, so `trx.items[4294967297]` no longer reads as the first item
 - removed `trx.console.log.LogLevel`, a duplicate of `trx.log.LogLevel`
 - removed `trx.events.EventType`

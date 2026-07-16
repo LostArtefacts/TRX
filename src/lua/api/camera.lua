@@ -14,7 +14,7 @@ api.property("camera.pos", {
 
 api.property("camera.room_num", {
   type = "integer",
-  description = "1-based number of the room the camera is in, or `nil` if unknown.",
+  description = "0-based number of the room the camera is in, or `nil` if unknown.",
   get = raw.get_room,
 })
 
@@ -35,7 +35,7 @@ api.property("camera.target_pos", {
 
 api.property("camera.target_room_num", {
   type = "integer",
-  description = "1-based number of the room the camera is looking at, or `nil` if unknown.",
+  description = "0-based number of the room the camera is looking at, or `nil` if unknown.",
   get = raw.get_target_room,
 })
 

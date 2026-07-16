@@ -4,5 +4,5 @@ end)
 
 trx.events.before_item_setup(function(level)
   -- Setup shoals
-  trx.items[115].properties.range = { x = 22, y = 6, z = 6 }
+  trx.items[114].properties.range = { x = 22, y = 6, z = 6 }
 end)

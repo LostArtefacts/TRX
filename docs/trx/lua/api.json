@@ -24,12 +24,12 @@
   "containers": [
     {
       "countable": true,
-      "description": "Indexing the module reaches an item, and `#trx.items` is how many the level has.",
+      "description": "Indexing the module reaches an item, and `#trx.items` is how many the level has. Items count from zero, matching the item numbers level editors show. `pairs()` walks them in order, keyed by that number.",
       "examples": [
-        "for i = 1, #trx.items do\n  trx.log.info(trx.items[i].object_id)\nend"
+        "for num, item in pairs(trx.items) do\n  trx.log.info(item.object_id)\nend"
       ],
       "key": {
-        "description": "1-based index, or the item's unique name.",
+        "description": "0-based index, or the item's unique name.",
         "type": "any"
       },
       "module": "items",
@@ -40,7 +40,7 @@
     },
     {
       "countable": false,
-      "description": "Indexing the module reaches an object definition, so `trx.objects.wolf` is the wolf.",
+      "description": "Indexing the module reaches an object definition, so `trx.objects.wolf` is the wolf. Keyed by object id or catalog name, not by position.",
       "examples": [
         "trx.objects.wolf.properties.max_hit_points = 30"
       ],
@@ -56,12 +56,12 @@
     },
     {
       "countable": true,
-      "description": "Indexing the module reaches a room, and `#trx.rooms` is how many the level has.",
+      "description": "Indexing the module reaches a room, and `#trx.rooms` is how many the level has. Rooms count from zero, matching the room numbers level editors show. `pairs()` walks them in order, keyed by that number.",
       "examples": [
-        "trx.log.info(#trx.rooms .. \" rooms, first is \" .. trx.rooms[1].num)"
+        "trx.log.info(#trx.rooms .. \" rooms, first is \" .. trx.rooms[0].num)\nfor num, room in pairs(trx.rooms) do\n  room.cold = true\nend"
       ],
       "key": {
-        "description": "1-based room number.",
+        "description": "0-based room number.",
         "type": "integer"
       },
       "module": "rooms",
@@ -2588,7 +2588,7 @@
       ],
       "path": "assault.stats.list_records",
       "returns": {
-        "description": "List of `{ time = seconds, attempt_num = which attempt it was }`.",
+        "description": "List, counted from one, of `{ time = seconds, attempt_num = which attempt it was }`.",
         "type": "table"
       }
     },
@@ -3037,7 +3037,7 @@
           "name": "callback",
           "params": [
             {
-              "description": "1-based index of the item that was picked up.",
+              "description": "0-based index of the item that was picked up.",
               "name": "item_num",
               "type": "integer"
             }
@@ -3152,13 +3152,13 @@
       "path": "game.play_gym"
     },
     {
-      "description": "Retrieves an item by 1-based index or by name.",
+      "description": "Retrieves an item by index or by name. Items count from zero, matching the item numbers level editors show.",
       "examples": [
-        "local item = trx.items[1]\nitem.name = \"lara\"\nlocal lara = trx.items[\"lara\"]"
+        "local item = trx.items[0]\nitem.name = \"lara\"\nlocal lara = trx.items[\"lara\"]"
       ],
       "params": [
         {
-          "description": "1-based index, or the item's unique name.",
+          "description": "0-based index, or the item's unique name.",
           "name": "key",
           "type": "any"
         }
@@ -3537,13 +3537,13 @@
       "path": "objects.swap_mesh"
     },
     {
-      "description": "Retrieves a room by 1-based index.",
+      "description": "Retrieves a room by number. Rooms count from zero, matching the room numbers level editors show.",
       "examples": [
-        "local room = trx.rooms[15]\nroom.underwater = true"
+        "local room = trx.rooms[14]\nroom.underwater = true"
       ],
       "params": [
         {
-          "description": "1-based room number.",
+          "description": "0-based room number.",
           "name": "num",
           "type": "integer"
         }
@@ -3595,7 +3595,7 @@
           "type": "vec3"
         },
         {
-          "description": "1-based room to search from.",
+          "description": "0-based room to search from.",
           "name": "room_num",
           "type": "integer"
         }
@@ -3608,7 +3608,7 @@
           "type": "vec3"
         },
         {
-          "description": "The 1-based room the position is in.",
+          "description": "The 0-based room the position is in.",
           "type": "integer"
         }
       ]
@@ -3876,7 +3876,7 @@
       "writable": false
     },
     {
-      "description": "1-based number of the room the camera is in, or `nil` if unknown.",
+      "description": "0-based number of the room the camera is in, or `nil` if unknown.",
       "path": "camera.room_num",
       "type": "integer",
       "writable": false
@@ -3894,7 +3894,7 @@
       "writable": false
     },
     {
-      "description": "1-based number of the room the camera is looking at, or `nil` if unknown.",
+      "description": "0-based number of the room the camera is looking at, or `nil` if unknown.",
       "path": "camera.target_room_num",
       "type": "integer",
       "writable": false
@@ -3906,19 +3906,19 @@
       "writable": true
     },
     {
-      "description": "The levels of the game, in order, as a list of `trx.game.Level`.",
+      "description": "The levels of the game, in order, as a list of `trx.game.Level` counted from one.",
       "path": "game.levels",
       "type": "table",
       "writable": false
     },
     {
-      "description": "The cutscenes, as a list of `trx.game.Level`.",
+      "description": "The cutscenes, as a list of `trx.game.Level` counted from one.",
       "path": "game.cutscenes",
       "type": "table",
       "writable": false
     },
     {
-      "description": "The demos, as a list of `trx.game.Level`.",
+      "description": "The demos, as a list of `trx.game.Level` counted from one.",
       "path": "game.demos",
       "type": "table",
       "writable": false
@@ -4240,7 +4240,7 @@
           "writable": true
         },
         {
-          "description": "1-based number of the room containing this item. Set `pos` to move the item between rooms.",
+          "description": "0-based number of the room containing this item. Set `pos` to move the item between rooms.",
           "name": "room_num",
           "type": "integer",
           "writable": false
@@ -4735,7 +4735,7 @@
           "writable": false
         },
         {
-          "description": "1-based room number.",
+          "description": "0-based room number, matching the numbers level editors show.",
           "name": "num",
           "type": "integer",
           "writable": false
@@ -4757,7 +4757,7 @@
         {
           "description": "Whether the handle still refers to a room of the level that is loaded. A level change replaces the rooms, so a handle held across one goes stale rather than naming a different room: reading or writing a field on it raises an error. Check this for a handle held across time.",
           "examples": [
-            "local start_room = trx.rooms[1]\ntrx.events.after_control(function()\n  if start_room:is_valid() then\n    trx.log.info(tostring(start_room.underwater))\n  end\nend)"
+            "local start_room = trx.rooms[0]\ntrx.events.after_control(function()\n  if start_room:is_valid() then\n    trx.log.info(tostring(start_room.underwater))\n  end\nend)"
           ],
           "name": "is_valid",
           "returns": {

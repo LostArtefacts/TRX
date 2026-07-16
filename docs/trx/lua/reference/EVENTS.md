@@ -99,7 +99,7 @@ A handler attached from a level script is detached automatically when the level 
   Parameters:
   - **`callback`** (function).
     Called with:
-    - **`item_num`** (integer). 1-based index of the item that was picked up.
+    - **`item_num`** (integer). 0-based index of the item that was picked up.
 
   Returns: integer. Listener id. Pass it to `trx.events.detach` to stop listening.
 

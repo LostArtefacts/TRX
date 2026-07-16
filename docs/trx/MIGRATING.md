@@ -12,15 +12,22 @@ order: 3
 1. **Update scripts that use item handles**
    `trx.items` hands out opaque item handles rather than `{ idx = ... }` tables.
    - `trx.items.fn` was removed. Replace `trx.items.fn.get(arg)` with
-     `trx.items.get(arg)`, or index the module directly: `trx.items[17]`,
+     `trx.items.get(arg)`, or index the module directly: `trx.items[16]`,
      `trx.items["lara"]`.
+   - Items count from 0, matching the item numbers level editors show. An item
+     that was `trx.items[13]` under the earlier 1-based numbering is
+     `trx.items[12]` now. `item.room_num` and the item number `on_pickup` passes
+     its handler count from 0 as well.
+   - `pairs(trx.items)` walks the items in order, keyed by that number, so
+     `for i = 1, #trx.items do local item = trx.items[i]` becomes
+     `for num, item in pairs(trx.items) do`.
    - `item.idx` no longer exists, and a handle can no longer carry extra keys of
      your own. Pass the handle itself where you used to pass the index.
    - A handle to a killed or recycled item now raises `stale ITEM handle` when
      read or written, instead of silently addressing whatever item took over the
      slot. Guard handles held across time with `item:is_valid()`.
    - Two handles are equal when they name the same thing, so
-     `trx.items[1] == trx.items[1]` is now true where it used to be false - every
+     `trx.items[0] == trx.items[0]` is now true where it used to be false - every
      lookup handed back a fresh handle. A stale handle does not equal a live one.
    - Writing a value a field cannot hold now raises instead of truncating - e.g.
      `item.hit_points = 99999`, where the field is 16-bit.
@@ -29,9 +36,16 @@ order: 3
 
 2. **Update scripts that use room handles**
    `trx.rooms` hands out opaque room handles rather than `{ idx = ... }` tables.
-   - `room.idx` was replaced by `room.num`. Both count from 1.
+   - `room.idx` was replaced by `room.num`.
+   - Rooms count from 0, matching the room numbers level editors show. A room
+     that was `trx.rooms[15]` under the earlier 1-based numbering is
+     `trx.rooms[14]` now. `camera.room_num`, `camera.target_room_num` and the
+     room argument to `trx.rooms.find_valid_pos` count from 0 as well.
+   - `pairs(trx.rooms)` walks the rooms in order, keyed by that number, so
+     `for i = 1, #trx.rooms do local room = trx.rooms[i]` becomes
+     `for num, room in pairs(trx.rooms) do`.
    - `trx.rooms.fn` was removed. Replace `trx.rooms.fn.get(num)` with
-     `trx.rooms.get(num)`, or index the module directly: `trx.rooms[15]`.
+     `trx.rooms.get(num)`, or index the module directly: `trx.rooms[14]`.
      `trx.rooms.fn.FlipStatus` is now `trx.rooms.FlipStatus`, and
      `trx.rooms.fn.Room`, `trx.rooms.fn.flip` and `trx.rooms.fn.flip_effect`
      became `trx.rooms.Room`, `trx.rooms.flip` and `trx.rooms.flip_effect`.
