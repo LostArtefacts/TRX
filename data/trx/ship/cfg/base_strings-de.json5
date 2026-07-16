@@ -384,6 +384,7 @@
                 "help": "Spielt Zwischensequenz mit dazugehöriger Nummer ab.",
                 "invalid": "Unzulässige Zwischensequenz",
                 "loading": "Lade Zwischensequenz %d",
+                "none": "\\{review}Dieses Spiel hat keine Zwischensequenzen",
             },
             "play_demo": {
                 "help": "Spielt eine Demo mit der angegebenen Nummer ab.",

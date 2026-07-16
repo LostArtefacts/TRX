@@ -384,6 +384,7 @@
                 "help": "Riproduce la scena di intermezzo con il numero specificato.",
                 "invalid": "Scena di intermezzo non valida",
                 "loading": "Caricamento scena di intermezzo %d",
+                "none": "\\{review}Questo gioco non ha scene di intermezzo",
             },
             "play_demo": {
                 "help": "Riproduce la demo con il numero specificato.",
