@@ -34,14 +34,14 @@ Module for interacting with the developer console.
 ### Functions
 
 - [lua]`trx.console.log(message)`  
-  Logs a line to the developer console. Calling the group itself logs at `INFO`.
+  Logs a line to the developer console. Calling the group itself logs at `INFO`. Takes any value: a table is pretty-printed, anything else coerced to a string.
 
   Parameters:
-  - **`message`** (string).
+  - **`message`** (any). Any value; a table is pretty-printed.
 
   Example:
   ```lua
-  trx.console.log("hello")
+  trx.console.log({ hp = 1000, pos = { x = 1 } })
   ```
 
 - [lua]`trx.console.log.generic(level, message)`  
@@ -49,37 +49,37 @@ Module for interacting with the developer console.
 
   Parameters:
   - **`level`** (integer). Compare against `trx.log.LogLevel`.
-  - **`message`** (string).
+  - **`message`** (any). Any value; a table is pretty-printed.
 
 - [lua]`trx.console.log.info(message)`  
   Logs an informational message.
 
   Parameters:
-  - **`message`** (string).
+  - **`message`** (any). Any value; a table is pretty-printed.
 
 - [lua]`trx.console.log.warn(message)`  
   Logs a warning.
 
   Parameters:
-  - **`message`** (string).
+  - **`message`** (any). Any value; a table is pretty-printed.
 
 - [lua]`trx.console.log.warning(message)`  
   Logs a warning. An alias of `trx.console.log.warn`.
 
   Parameters:
-  - **`message`** (string).
+  - **`message`** (any). Any value; a table is pretty-printed.
 
 - [lua]`trx.console.log.error(message)`  
   Logs an error.
 
   Parameters:
-  - **`message`** (string).
+  - **`message`** (any). Any value; a table is pretty-printed.
 
 - [lua]`trx.console.log.debug(message)`  
   Logs a debug message.
 
   Parameters:
-  - **`message`** (string).
+  - **`message`** (any). Any value; a table is pretty-printed.
 
 - [lua]`trx.console.eval(command, [opts])`  
   Runs a string as a developer console command. Raises if the command fails.

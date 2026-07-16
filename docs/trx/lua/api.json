@@ -2762,8 +2762,9 @@
           "type": "integer"
         },
         {
+          "description": "Any value; a table is pretty-printed.",
           "name": "message",
-          "type": "string"
+          "type": "any"
         }
       ],
       "path": "console.log.generic"
@@ -2772,8 +2773,9 @@
       "description": "Logs an informational message.",
       "params": [
         {
+          "description": "Any value; a table is pretty-printed.",
           "name": "message",
-          "type": "string"
+          "type": "any"
         }
       ],
       "path": "console.log.info"
@@ -2782,8 +2784,9 @@
       "description": "Logs a warning.",
       "params": [
         {
+          "description": "Any value; a table is pretty-printed.",
           "name": "message",
-          "type": "string"
+          "type": "any"
         }
       ],
       "path": "console.log.warn"
@@ -2792,8 +2795,9 @@
       "description": "Logs a warning. An alias of `trx.console.log.warn`.",
       "params": [
         {
+          "description": "Any value; a table is pretty-printed.",
           "name": "message",
-          "type": "string"
+          "type": "any"
         }
       ],
       "path": "console.log.warning"
@@ -2802,8 +2806,9 @@
       "description": "Logs an error.",
       "params": [
         {
+          "description": "Any value; a table is pretty-printed.",
           "name": "message",
-          "type": "string"
+          "type": "any"
         }
       ],
       "path": "console.log.error"
@@ -2812,8 +2817,9 @@
       "description": "Logs a debug message.",
       "params": [
         {
+          "description": "Any value; a table is pretty-printed.",
           "name": "message",
-          "type": "string"
+          "type": "any"
         }
       ],
       "path": "console.log.debug"
@@ -3841,14 +3847,15 @@
     },
     {
       "callable": true,
-      "description": "Logs a line to the developer console. Calling the group itself logs at `INFO`.",
+      "description": "Logs a line to the developer console. Calling the group itself logs at `INFO`. Takes any value: a table is pretty-printed, anything else coerced to a string.",
       "examples": [
-        "trx.console.log(\"hello\")"
+        "trx.console.log({ hp = 1000, pos = { x = 1 } })"
       ],
       "params": [
         {
+          "description": "Any value; a table is pretty-printed.",
           "name": "message",
-          "type": "string"
+          "type": "any"
         }
       ],
       "path": "console.log"
