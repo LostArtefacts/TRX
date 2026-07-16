@@ -17,8 +17,7 @@ api.type("sound.Sample", {
       from = "id",
       type = "integer",
       writable = false,
-      enum = "catalog.samples",
-      description = "The sample's id.",
+      description = "The sample's id, in the level's own numbering.",
     },
     volume = {
       from = "volume",
@@ -76,8 +75,7 @@ api.type("sound.Stream", {
       from = "sample_id",
       type = "integer",
       writable = false,
-      enum = "catalog.samples",
-      description = "The sample this voice is playing.",
+      description = "The sample this voice is playing, in the level's own numbering.",
     },
   },
 
@@ -174,8 +172,9 @@ api.define("sound.play", {
     {
       name = "id",
       type = "integer",
-      enum = "catalog.samples",
-      description = "Sample to play.",
+      description = "A sample id in the level's own numbering, as `trx.sound.samples` is keyed by. "
+        .. "For a catalog name, convert it with `trx.catalog.to_slot(trx.catalog.Context.SAMPLES, "
+        .. "id)` first.",
     },
     {
       name = "opts",
@@ -198,8 +197,7 @@ api.define("sound.stop", {
     {
       name = "id",
       type = "integer",
-      enum = "catalog.samples",
-      description = "Sample to stop.",
+      description = "A sample id in the level's own numbering, as `trx.sound.samples` is keyed by.",
     },
   },
   impl = raw.stop,

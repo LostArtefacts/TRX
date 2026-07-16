@@ -244,14 +244,44 @@ test("a spawn that raises does not leave an item behind", function()
   assert(#trx.items == 2, "a failed spawn must not consume a slot")
 end)
 
-test("explode runs the object's death handling; kill does not", function()
-  trx.items[0]:explode()
-  assert(fake.calls().creature_die == 1, "explode() should reach Creature_Die")
-  assert(fake.calls().creature_die_explode, "and it should explode")
+test("die runs the object's death handling; kill does not", function()
+  trx.items[0]:die()
+  assert(fake.calls().creature_die == 1, "die() should reach Creature_Die")
+  assert(
+    not fake.calls().creature_die_explode,
+    "die() does not burst by default"
+  )
+
+  fake.reset()
+  trx.items[0]:die(true)
+  assert(
+    fake.calls().creature_die_explode,
+    "die(true) should burst the meshes"
+  )
 
   fake.reset()
   trx.items[0]:kill()
   assert(fake.calls().creature_die == 0, "kill() just removes the item")
+end)
+
+test("shatter bursts the meshes on their own", function()
+  fake.reset()
+  trx.items[0]:shatter()
+  assert(fake.calls().shatter == 1, "shatter() should reach Item_Shatter")
+  assert(fake.calls().shatter_damage == 0, "no splash damage by default")
+  assert(fake.calls().creature_die == 0, "shatter() is not a death")
+
+  trx.items[0]:shatter(5)
+  assert(fake.calls().shatter_damage == 5, "the damage should pass through")
+end)
+
+test("is_one_shot reads and sets the trigger flag", function()
+  local it = trx.items[0]
+  assert(it.is_one_shot == false)
+  it.is_one_shot = true
+  assert(it.is_one_shot == true, "the flag did not stick")
+  it.is_one_shot = false
+  assert(it.is_one_shot == false)
 end)
 
 test("properties overlay the object's defaults", function()

@@ -903,9 +903,9 @@
     {
       "bulk": true,
       "count": 203,
-      "description": "Every sound sample TRX has a name for.",
+      "description": "Every sound sample TRX has a name for. This is the catalog id, which `trx.sound.play` does not take: convert it to the level's own slot with `trx.catalog.to_slot` first.",
       "examples": [
-        "trx.sound.play(trx.catalog.samples.LARA_NO)"
+        "local slot = trx.catalog.to_slot(trx.catalog.Context.SAMPLES, trx.catalog.samples.LARA_NO)\ntrx.sound.play(slot)"
       ],
       "names": [
         "AIRPLANE_IDLE",
@@ -3671,8 +3671,7 @@
       ],
       "params": [
         {
-          "description": "Sample to play.",
-          "enum": "catalog.samples",
+          "description": "A sample id in the level's own numbering, as `trx.sound.samples` is keyed by. For a catalog name, convert it with `trx.catalog.to_slot(trx.catalog.Context.SAMPLES, id)` first.",
           "name": "id",
           "type": "integer"
         },
@@ -3689,8 +3688,7 @@
       "description": "Stops a sound effect.",
       "params": [
         {
-          "description": "Sample to stop.",
-          "enum": "catalog.samples",
+          "description": "A sample id in the level's own numbering, as `trx.sound.samples` is keyed by.",
           "name": "id",
           "type": "integer"
         }
@@ -4299,6 +4297,12 @@
           "writable": false
         },
         {
+          "description": "Whether the item's one-shot trigger flag is set, so its trigger fires only once.",
+          "name": "is_one_shot",
+          "type": "boolean",
+          "writable": true
+        },
+        {
           "description": "Maximum hit points. Set `properties.max_hit_points` to change it.",
           "name": "max_hit_points",
           "type": "integer",
@@ -4379,6 +4383,19 @@
           "name": "activate"
         },
         {
+          "description": "Runs the object's creature death handling: the corpse stays, and `explode` bursts its meshes as a rocket or grenade would. For creatures; `kill()` simply removes any item from the game.",
+          "name": "die",
+          "params": [
+            {
+              "default": false,
+              "description": "Whether to burst the meshes as it dies.",
+              "name": "explode",
+              "optional": true,
+              "type": "boolean"
+            }
+          ]
+        },
+        {
           "description": "Distance from this item to a world position.",
           "name": "distance_to",
           "params": [
@@ -4391,10 +4408,6 @@
           "returns": {
             "type": "integer"
           }
-        },
-        {
-          "description": "Runs the object's death handling with an explosion, as a rocket or a grenade would. Unlike `kill()`, which simply removes the item from the game.",
-          "name": "explode"
         },
         {
           "description": "Reads an object property, falling back to the object's default. Prefer `item.properties.<name>`.",
@@ -4442,6 +4455,19 @@
             {
               "name": "value",
               "type": "any"
+            }
+          ]
+        },
+        {
+          "description": "Bursts the item's meshes into flying debris, the visual `die(true)` produces, on its own. It does not kill or remove the item.",
+          "name": "shatter",
+          "params": [
+            {
+              "default": 0,
+              "description": "Splash damage dealt to nearby items.",
+              "name": "damage",
+              "optional": true,
+              "type": "integer"
             }
           ]
         }
@@ -4862,8 +4888,7 @@
       "extensions": [],
       "fields": [
         {
-          "description": "The sample's id.",
-          "enum": "catalog.samples",
+          "description": "The sample's id, in the level's own numbering.",
           "name": "id",
           "type": "integer",
           "writable": false
@@ -4921,8 +4946,7 @@
       "extensions": [],
       "fields": [
         {
-          "description": "The sample this voice is playing.",
-          "enum": "catalog.samples",
+          "description": "The sample this voice is playing, in the level's own numbering.",
           "name": "sample_id",
           "type": "integer",
           "writable": false

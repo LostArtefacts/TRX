@@ -29,6 +29,10 @@ static int M_FakeCalls(lua_State *const L)
     lua_setfield(L, -2, "creature_die");
     lua_pushboolean(L, g_FakeItemCalls.creature_die_explode);
     lua_setfield(L, -2, "creature_die_explode");
+    lua_pushinteger(L, g_FakeItemCalls.shatter);
+    lua_setfield(L, -2, "shatter");
+    lua_pushinteger(L, g_FakeItemCalls.shatter_damage);
+    lua_setfield(L, -2, "shatter_damage");
     lua_pushinteger(L, g_FakeItemCalls.enable_baddie_ai);
     lua_setfield(L, -2, "enable_baddie_ai");
     return 1;
