@@ -99,7 +99,7 @@ end
     Methods:
 
     - [lua]`item:activate()`  
-      Adds the item to the active list and starts its control routine. Objects with no control routine cannot be activated.
+      Adds the item to the active list and starts its control routine, enabling AI for a creature. Objects with no control routine cannot be activated.
 
     - [lua]`item:die([explode])`  
       Runs the object's creature death handling: the corpse stays, and `explode` bursts its meshes as a rocket or grenade would. For creatures; `kill()` simply removes any item from the game.

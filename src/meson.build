@@ -84,6 +84,7 @@ trx_lua_script_sources = files(
   'lua/commands/speed.lua',
   'lua/commands/strings.lua',
   'lua/commands/test_text.lua',
+  'lua/commands/winston.lua',
   'lua/commands/weather.lua',
 )
 
@@ -261,7 +262,6 @@ common_sources = [
   'trx/game/console/cmd/spawn.c',
   'trx/game/console/cmd/teleport.c',
   'trx/game/console/cmd/trigger.c',
-  'trx/game/console/cmd/winston.c',
   'trx/game/console/common.c',
   'trx/game/console/history.c',
   'trx/game/console/registry.c',

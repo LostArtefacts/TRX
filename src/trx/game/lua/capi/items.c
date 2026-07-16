@@ -286,6 +286,13 @@ static int M_L_ItemsActivate(lua_State *const L)
     ITEM *const item = LUA_Struct_Deref(L, ref);
     Item_AddActive(ref->idx);
     item->status = IS_ACTIVE;
+    // A creature stays inert without its AI, the way spawn's activate option
+    // brings one to life.
+    const OBJECT *const obj = Object_Get(item->object_id);
+    if (Object_IsType(item->object_id, g_CreatureObjects)
+        || Object_IsType(item->object_id, g_LoyalObjects) || obj->intelligent) {
+        LOT_EnableBaddieAI(ref->idx, true);
+    }
     return 0;
 }
 
