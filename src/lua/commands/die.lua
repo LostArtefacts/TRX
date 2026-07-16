@@ -33,12 +33,8 @@ local function run(args)
 end
 
 -- The regex the C command matched spelled out.
-for _, name in ipairs({
-  "abortion",
-  "natlasucks",
-  "natla-sucks",
-  "natlastinks",
-  "natla-stinks",
-}) do
-  trx.console.register({ name = name, run = run })
-end
+trx.console.register({
+  name = "abortion",
+  aliases = { "natlasucks", "natla-sucks", "natlastinks", "natla-stinks" },
+  run = run,
+})

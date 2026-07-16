@@ -1,5 +1,6 @@
 #include <trx/core/enum_map.h>
 #include <trx/core/log.h>
+#include <trx/core/memory.h>
 #include <trx/game/console/common.h>
 #include <trx/game/console/registry.h>
 #include <trx/game/game_strings/entries.h>
@@ -9,6 +10,7 @@
 
 #include <ctype.h>
 #include <lauxlib.h>
+#include <string.h>
 
 static lua_State *m_L = nullptr;
 
@@ -110,12 +112,37 @@ static COMMAND_RESULT M_LuaCommandProc(const COMMAND_CONTEXT *const ctx)
     return result;
 }
 
-// trxc.console.register(name, help_id, fn)
+// A name is interpolated into the dispatch regex in Console_Registry_Get. A
+// dash is a literal there, so it is safe; a regex metacharacter would corrupt
+// the matching of every command, so the rest are refused. Raises on a bad or
+// taken name.
+static void M_CheckCommandName(lua_State *const L, const char *const name)
+{
+    if (name[0] == '\0') {
+        luaL_error(L, "console command name must not be empty");
+    }
+    for (const char *c = name; *c != '\0'; c++) {
+        if (isalnum((unsigned char)*c) == 0 && *c != '_' && *c != '-') {
+            luaL_error(
+                L,
+                "console command name '%s' must contain only letters, digits, "
+                "underscores and dashes",
+                name);
+        }
+    }
+    if (Console_Registry_Get(name) != nullptr) {
+        luaL_error(L, "console command '%s' is already registered", name);
+    }
+}
+
+// trxc.console.register(name, help_id, fn, [aliases])
 static int M_L_ConsoleRegister(lua_State *const L)
 {
     const char *const name = luaL_checkstring(L, 1);
     const char *const help_id = luaL_optstring(L, 2, nullptr);
     luaL_checktype(L, 3, LUA_TFUNCTION);
+    const int32_t alias_count =
+        lua_istable(L, 4) ? (int32_t)lua_rawlen(L, 4) : 0;
 
     // A level script runs again every time its level is loaded.
     if (LUA_GetScriptContext() == LUA_CONTEXT_LEVEL) {
@@ -126,25 +153,16 @@ static int M_L_ConsoleRegister(lua_State *const L)
             name);
     }
 
-    // The name is interpolated into the dispatch regex in Console_Registry_Get.
-    // A dash is a literal there, so it is safe; a regex metacharacter would
-    // corrupt the matching of every command, so the rest are refused.
-    if (name[0] == '\0') {
-        return luaL_error(L, "console command name must not be empty");
-    }
-    for (const char *c = name; *c != '\0'; c++) {
-        if (isalnum((unsigned char)*c) == 0 && *c != '_' && *c != '-') {
-            return luaL_error(
-                L,
-                "console command name '%s' must contain only letters, digits, "
-                "underscores and dashes",
-                name);
-        }
-    }
-
-    if (Console_Registry_Get(name) != nullptr) {
-        return luaL_error(
-            L, "console command '%s' is already registered", name);
+    // Validate every name and measure the display string before touching the
+    // registry, so a bad alias leaves nothing half-registered.
+    M_CheckCommandName(L, name);
+    size_t joined_len = 0;
+    for (int32_t i = 1; i <= alias_count; i++) {
+        lua_rawgeti(L, 4, i);
+        const char *const alias = luaL_checkstring(L, -1);
+        M_CheckCommandName(L, alias);
+        joined_len += strlen(alias) + (i > 1 ? 2 : 0);
+        lua_pop(L, 1);
     }
 
     if (lua_getfield(L, LUA_REGISTRYINDEX, m_HandlersKey) != LUA_TTABLE) {
@@ -153,15 +171,48 @@ static int M_L_ConsoleRegister(lua_State *const L)
         lua_pushvalue(L, -1);
         lua_setfield(L, LUA_REGISTRYINDEX, m_HandlersKey);
     }
+    const int handlers = lua_gettop(L);
+
+    // The main spelling and every alias reach the same handler.
     lua_pushvalue(L, 3);
-    lua_setfield(L, -2, name);
+    lua_setfield(L, handlers, name);
+
+    char *joined = nullptr;
+    if (alias_count > 0) {
+        joined = Memory_Alloc(joined_len + 1);
+        joined[0] = '\0';
+        for (int32_t i = 1; i <= alias_count; i++) {
+            lua_rawgeti(L, 4, i);
+            const char *const alias = lua_tostring(L, -1);
+            if (i > 1) {
+                strcat(joined, ", ");
+            }
+            strcat(joined, alias);
+            lua_pushvalue(L, 3);
+            lua_setfield(L, handlers, alias);
+            lua_pop(L, 1);
+        }
+    }
     lua_pop(L, 1);
 
     Console_Registry_Add((CONSOLE_COMMAND) {
         .prefix = name,
         .proc = M_LuaCommandProc,
         .help_id = help_id,
+        .aliases = joined,
     });
+    // The aliases dispatch, but stay out of the listing and carry no help of
+    // their own: the main spelling shows them.
+    for (int32_t i = 1; i <= alias_count; i++) {
+        lua_rawgeti(L, 4, i);
+        Console_Registry_Add((CONSOLE_COMMAND) {
+            .prefix = lua_tostring(L, -1),
+            .proc = M_LuaCommandProc,
+        });
+        lua_pop(L, 1);
+    }
+
+    Memory_Free(joined);
     return 0;
 }
 

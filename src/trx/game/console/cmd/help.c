@@ -45,6 +45,9 @@ static COMMAND_RESULT M_ShowSpecificCommand(const char *const cmd_name)
     }
     const char *const help = GameString_Get(cmd->help_id);
     Console_Log("%s", help);
+    if (cmd->aliases != nullptr) {
+        Console_Log(GS("console/cmd/help/aliases"), cmd->aliases);
+    }
     return CR_SUCCESS;
 }
 

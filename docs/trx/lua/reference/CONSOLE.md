@@ -103,12 +103,13 @@ Module for interacting with the developer console.
   A command lives for the whole run, so it can only be registered from a global script. A level script raises if it calls this: it runs again every time its level is loaded.
 
   Parameters:
-  - **`spec`** (table). `name`: the word the player types. `help`: a game string key for the help text, optional. `run`: the function.
+  - **`spec`** (table). `name`: the word the player types. `help`: a game string key for the help text, optional. `run`: the function. `aliases`: other words that reach the same command, optional; they dispatch but stay out of the command listing, and the help for `name` shows them.
 
   Example:
   ```lua
   trx.console.register({
     name = "greet",
+    aliases = { "hello", "hi" },
     run = function(args)
       if args == "" then
         return trx.console.Result.BAD_INVOCATION, "greet who?"

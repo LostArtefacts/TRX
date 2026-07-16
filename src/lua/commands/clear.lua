@@ -11,10 +11,9 @@ local function run(args)
   return trx.console.Result.OK
 end
 
-for _, name in ipairs({ "cls", "clear" }) do
-  trx.console.register({
-    name = name,
-    help = "console/cmd/clear/help",
-    run = run,
-  })
-end
+trx.console.register({
+  name = "clear",
+  aliases = { "cls" },
+  help = "console/cmd/clear/help",
+  run = run,
+})

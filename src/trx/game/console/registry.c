@@ -21,6 +21,7 @@ __attribute__((destructor)) static void M_Shutdown(void)
         M_NODE *const next = current->next;
         Memory_Free((char *)current->cmd.prefix);
         Memory_Free((char *)current->cmd.help_id);
+        Memory_Free((char *)current->cmd.aliases);
         Memory_Free(current);
         current = next;
     }
@@ -51,6 +52,7 @@ void Console_Registry_Add(CONSOLE_COMMAND cmd)
     node->cmd = cmd;
     node->cmd.prefix = Memory_DupStr(cmd.prefix);
     node->cmd.help_id = Memory_DupStr(cmd.help_id);
+    node->cmd.aliases = Memory_DupStr(cmd.aliases);
     node->next = m_List;
     m_List = node;
 }
@@ -68,6 +70,7 @@ void Console_Registry_RemoveByProc(
         *link = node->next;
         Memory_Free((char *)node->cmd.prefix);
         Memory_Free((char *)node->cmd.help_id);
+        Memory_Free((char *)node->cmd.aliases);
         Memory_Free(node);
     }
 }

@@ -38,10 +38,9 @@ local function run(args)
   return trx.console.Result.OK, trx.locale.get("console/cmd/flipmap/off")
 end
 
-for _, name in ipairs({ "flip", "flipmap" }) do
-  trx.console.register({
-    name = name,
-    help = "console/cmd/flipmap/help",
-    run = run,
-  })
-end
+trx.console.register({
+  name = "flip",
+  aliases = { "flipmap" },
+  help = "console/cmd/flipmap/help",
+  run = run,
+})

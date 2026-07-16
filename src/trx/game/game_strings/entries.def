@@ -917,6 +917,7 @@ GS_DEFINE(console/cmd/weather/current, "Current weather: %s")
 GS_DEFINE(console/cmd/weather/invalid, "Invalid weather: %s (valid: %s)")
 
 GS_DEFINE(console/cmd/help/list,      "Available commands:")
+GS_DEFINE(console/cmd/help/aliases,   "Aliases: %s")
 GS_DEFINE(console/cmd/braid/help,         "Toggles Lara's braid.")
 GS_DEFINE(console/cmd/burn/help,          "Toggles Lara being on fire.")
 GS_DEFINE(console/cmd/burn/on,            "Lara's now on fire - ouch!")

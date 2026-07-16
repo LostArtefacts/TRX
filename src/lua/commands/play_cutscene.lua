@@ -29,10 +29,9 @@ local function run(args)
     trx.locale.format("console/cmd/play_cutscene/loading", cutscenes[num].num)
 end
 
-for _, name in ipairs({ "cut", "cutscene" }) do
-  trx.console.register({
-    name = name,
-    help = "console/cmd/play_cutscene/help",
-    run = run,
-  })
-end
+trx.console.register({
+  name = "cut",
+  aliases = { "cutscene" },
+  help = "console/cmd/play_cutscene/help",
+  run = run,
+})

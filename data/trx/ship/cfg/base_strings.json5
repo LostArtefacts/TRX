@@ -326,6 +326,7 @@
                 "success": "Healed Lara back to full health",
             },
             "help": {
+                "aliases": "Aliases: %s",
                 "help": "Shows help for all commands or detailed help for one.",
                 "list": "Available commands:",
             },

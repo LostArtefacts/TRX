@@ -25,10 +25,9 @@ local function run(args)
   return trx.console.Result.OK, trx.locale.get("console/cmd/immune/off")
 end
 
-for _, name in ipairs({ "immune", "immunity" }) do
-  trx.console.register({
-    name = name,
-    help = "console/cmd/immune/help",
-    run = run,
-  })
-end
+trx.console.register({
+  name = "immune",
+  aliases = { "immunity" },
+  help = "console/cmd/immune/help",
+  run = run,
+})
