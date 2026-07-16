@@ -1,9 +1,9 @@
 -- The event API as a script actually sees it.
 --
 -- Everything under these assertions is real: trxc.events, the listener registry
--- in lua/events.c, and src/lua/events.lua itself. `fake.fire()` calls the
--- same LUA_FireEvent* entrypoints the engine calls, so a handler here sees
--- exactly what a handler sees in the game.
+-- in lua/events.c, and src/lua/events.lua itself. `fake.fire()` calls the same
+-- LUA_FireEvent* entrypoints the engine calls, so a handler here sees exactly
+-- what a handler sees in the game.
 
 local h = require("harness")
 local test, raises = h.test, h.raises
@@ -118,8 +118,8 @@ test(
       trx.events.detach(second_id)
       second_id = nil
       -- Detaching gives the handler's slot in the Lua registry back, and this
-      -- attach takes it: the two are told apart by their listener id, not by the
-      -- slot they happen to sit in.
+      -- attach takes it: the two are told apart by their listener id, not by
+      -- the slot they happen to sit in.
       trx.events.before_control(function()
         replacement_calls = replacement_calls + 1
       end)

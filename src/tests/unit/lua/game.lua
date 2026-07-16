@@ -7,9 +7,9 @@
 local h = require("harness")
 local test, raises = h.test, h.raises
 
--- The list holds the levels the game numbers, which is what count_levels counts.
--- The gym sits in the table ahead of them and is not one of them, so the list
--- and the table disagree on where every level after it sits.
+-- The list holds the levels the game numbers, which is what count_levels
+-- counts. The gym sits in the table ahead of them and is not one of them, so
+-- the list and the table disagree on where every level after it sits.
 test("the level list is the levels the game numbers", function()
   local levels = trx.game.levels
   assert(#levels == fake.NUMBERED_LEVEL_COUNT, "wrong number of levels")
@@ -136,8 +136,8 @@ test("play_level rejects a level that is not there", function()
   assert(fake.calls().play_level == 0)
 end)
 
--- The gym has no ordinal, so play_level cannot name it; play_gym is the only way
--- to reach it, and it queues the gym's own num.
+-- The gym has no ordinal, so play_level cannot name it; play_gym is the only
+-- way to reach it, and it queues the gym's own num.
 test("play_gym queues the gym", function()
   trx.game.play_gym()
   local calls = fake.calls()

@@ -1,5 +1,5 @@
--- The catalog API as a script sees it. The catalogs are the real enums, so every
--- name below is one the engine has; only the slot mapping is faked.
+-- The catalog API as a script sees it. The catalogs are the real enums, so
+-- every name below is one the engine has; only the slot mapping is faked.
 
 local h = require("harness")
 local test, raises = h.test, h.raises

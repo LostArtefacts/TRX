@@ -26,7 +26,8 @@ test("room hands back a Room handle, not a number", function()
   local room = trx.camera.room
   assert(room ~= nil, "no room")
   assert(room.num == fake.CAMERA_ROOM, "wrong room")
-  -- It is the real thing: a handle out of trx.rooms, with the room's own fields.
+  -- It is the real thing: a handle out of trx.rooms, with the room's own
+  -- fields.
   assert(room.num == trx.rooms[fake.CAMERA_ROOM].num)
 end)
 

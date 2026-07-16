@@ -1,5 +1,5 @@
--- Unit tests for src/lua/api/api.lua, run under a plain Lua interpreter with
--- a stubbed C bridge. No engine, no binary, no level.
+-- Unit tests for src/lua/api/api.lua, run under a plain Lua interpreter with a
+-- stubbed C bridge. No engine, no binary, no level.
 
 local ROOT = (arg[1] or ".") .. "/"
 
@@ -149,7 +149,8 @@ test("type() passes the declaration to the C binder", function()
     },
   })
 
-  -- The public name and the C member name are separate: that is the whole point.
+  -- The public name and the C member name are separate: that is the whole
+  -- point.
   assert(exposed.fields.shown.from == "visible")
   assert(exposed.fields.shown.writable == true)
   assert(
@@ -213,7 +214,8 @@ end)
 
 test("enum() rejects a constant nobody documented", function()
   local api = fresh_env()
-  -- BROKEN exists in C. Leaving it out here would quietly drop it from the docs.
+  -- BROKEN exists in C. Leaving it out here would quietly drop it from the
+  -- docs.
   local ok, err = pcall(api.enum, "things.State", {
     backing = "WIDGET_STATE",
     values = { OFF = "off.", ON = "on." },

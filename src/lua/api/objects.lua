@@ -9,9 +9,9 @@ api.module("objects", {
     .. "wolf's. Per-item state lives on the item - see `trx.items`.",
 })
 
--- Object handles are bare userdata. Their metatable is populated by the api.type
--- declaration below, and by nothing else: a member of the C OBJECT struct that is
--- not named here is not reachable from a script at all.
+-- Object handles are bare userdata. Their metatable is populated by the
+-- api.type declaration below, and by nothing else: a member of the C OBJECT
+-- struct that is not named here is not reachable from a script at all.
 
 local function make_properties(object)
   return setmetatable({}, {

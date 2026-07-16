@@ -1,5 +1,6 @@
--- The fixed-point trigonometry a script places things with. The assertions are on
--- the engine's own tables: landing where the engine would is the whole point.
+-- The fixed-point trigonometry a script places things with. The assertions are
+-- on the engine's own tables: landing where the engine would is the whole
+-- point.
 
 local h = require("harness")
 local test = h.test

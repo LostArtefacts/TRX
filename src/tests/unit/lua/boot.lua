@@ -1,5 +1,5 @@
--- The surface as a level script meets it: sealed, and with the globals hardened.
--- No other suite gets that far.
+-- The surface as a level script meets it: sealed, and with the globals
+-- hardened. No other suite gets that far.
 
 local h = harness
 local test, raises = h.test, h.raises
@@ -16,8 +16,8 @@ test("the loader and the globals it feeds are gone", function()
   assert(string.dump == nil, "string.dump feeds the loader")
 end)
 
--- Strict mode compiles its wrappers with load(), which api.lua captures at module
--- scope because hardening nils the global. Every other strict test runs
+-- Strict mode compiles its wrappers with load(), which api.lua captures at
+-- module scope because hardening nils the global. Every other strict test runs
 -- unhardened and would not notice if that capture went.
 test("strict mode still works once the globals are hardened", function()
   trx.api.strict(true)
