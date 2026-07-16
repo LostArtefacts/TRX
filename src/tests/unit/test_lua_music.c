@@ -18,6 +18,20 @@ static int M_FakeSetPlaying(lua_State *const L)
     return 0;
 }
 
+static int M_FakeSetLooped(lua_State *const L)
+{
+    FakeMusic_SetLooped((int32_t)luaL_checkinteger(L, 1));
+    return 0;
+}
+
+static int M_FakeSetStream(lua_State *const L)
+{
+    FakeMusic_SetStream(
+        (int32_t)luaL_checkinteger(L, 1), (int32_t)luaL_checkinteger(L, 2),
+        (int32_t)luaL_checkinteger(L, 3), luaL_checknumber(L, 4));
+    return 0;
+}
+
 static int M_FakeCalls(lua_State *const L)
 {
     lua_newtable(L);
@@ -33,6 +47,22 @@ static int M_FakeCalls(lua_State *const L)
     lua_setfield(L, -2, "unpause_count");
     lua_pushinteger(L, g_FakeMusicCalls.stop_count);
     lua_setfield(L, -2, "stop_count");
+    lua_pushinteger(L, g_FakeMusicCalls.stream_stop_count);
+    lua_setfield(L, -2, "stream_stop_count");
+    lua_pushinteger(L, g_FakeMusicCalls.stream_stop_slot);
+    lua_setfield(L, -2, "stream_stop_slot");
+    lua_pushinteger(L, g_FakeMusicCalls.stream_pause_count);
+    lua_setfield(L, -2, "stream_pause_count");
+    lua_pushinteger(L, g_FakeMusicCalls.stream_pause_slot);
+    lua_setfield(L, -2, "stream_pause_slot");
+    lua_pushinteger(L, g_FakeMusicCalls.stream_unpause_count);
+    lua_setfield(L, -2, "stream_unpause_count");
+    lua_pushinteger(L, g_FakeMusicCalls.stream_seek_count);
+    lua_setfield(L, -2, "stream_seek_count");
+    lua_pushinteger(L, g_FakeMusicCalls.stream_seek_slot);
+    lua_setfield(L, -2, "stream_seek_slot");
+    lua_pushnumber(L, g_FakeMusicCalls.stream_seek_ts);
+    lua_setfield(L, -2, "stream_seek_ts");
     return 1;
 }
 
@@ -44,6 +74,10 @@ static void M_PushFake(lua_State *const L)
     lua_setfield(L, -2, "MISSING_TRACK");
     lua_pushcfunction(L, M_FakeSetPlaying);
     lua_setfield(L, -2, "set_playing");
+    lua_pushcfunction(L, M_FakeSetLooped);
+    lua_setfield(L, -2, "set_looped");
+    lua_pushcfunction(L, M_FakeSetStream);
+    lua_setfield(L, -2, "set_stream");
 }
 
 int main(void)

@@ -46,6 +46,11 @@ bool Music_IsTrackAvailable_Direct(MUSIC_ID track);
 // backend, or 0 if no backend is available.
 int32_t Music_GetTrackLimit(void);
 
+// Resolves a track to its file path, freshly allocated for the caller to free,
+// or nullptr when there is no file for it: a CD-audio backend, or a track the
+// level does not carry.
+char *Music_GetTrackPath(MUSIC_ID track);
+
 // Stops all music streams, including looped, active, and overlay tracks.
 void Music_Stop(void);
 
@@ -69,6 +74,26 @@ int32_t Music_GetStreamCount(void);
 
 // Returns stream state by active index [0..Music_GetStreamCount()).
 bool Music_GetStreamState(int32_t index, MUSIC_STREAM_STATE *state);
+
+// The number of stream slots: the main stream, then the overlay slots. Unlike
+// Music_GetStreamCount, this is fixed and addresses a slot whether it is active
+// or not: slot 0 is the main stream, slots 1.. are the overlays.
+int32_t Music_GetStreamSlotCount(void);
+
+// Fills state for a stream slot. Returns false when the slot is inactive.
+bool Music_GetStreamSlotState(int32_t slot, MUSIC_STREAM_STATE *state);
+
+// Stops the stream in a slot. The main slot resumes the deferred ambient loop,
+// as Music_StopTrack_Direct does; an overlay slot just closes.
+void Music_StopStream(int32_t slot);
+
+// Pauses or resumes the stream in a slot.
+void Music_PauseStream(int32_t slot);
+void Music_UnpauseStream(int32_t slot);
+
+// Seeks the stream in a slot to a timestamp. Returns false when the slot is
+// inactive.
+bool Music_SeekStream(int32_t slot, double timestamp);
 
 // Seeks timestamp for the active stream that matches track and mode.
 bool Music_SeekTrackTimestamp(

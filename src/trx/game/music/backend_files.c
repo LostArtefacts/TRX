@@ -378,6 +378,15 @@ static int32_t M_GetTrackLimit(const MUSIC_BACKEND *const backend)
     return data->track_limit;
 }
 
+static char *M_GetTrackPath(
+    const MUSIC_BACKEND *const backend, const int32_t track_id)
+{
+    ASSERT(backend != nullptr);
+    const M_BACKEND_DATA *const data = backend->data;
+    ASSERT(data != nullptr);
+    return M_GetTrackFileName(data, track_id);
+}
+
 static int32_t M_Play(
     const MUSIC_BACKEND *const backend, const int32_t track_id)
 {
@@ -441,6 +450,7 @@ MUSIC_BACKEND *Music_Backend_Files_Factory(
     backend->describe = M_Describe;
     backend->is_track_available = M_IsTrackAvailable;
     backend->get_track_limit = M_GetTrackLimit;
+    backend->get_track_path = M_GetTrackPath;
     backend->play = M_Play;
     backend->shutdown = M_Shutdown;
     return backend;
