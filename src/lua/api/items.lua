@@ -229,8 +229,8 @@ api.type("items.Item", {
 
   methods = {
     activate = {
-      description = "Adds the item to the active list and starts its control routine. "
-        .. "Objects with no control routine cannot be activated.",
+      description = "Adds the item to the active list and starts its control routine, enabling AI "
+        .. "for a creature. Objects with no control routine cannot be activated.",
     },
     kill = {
       description = "Removes the item from the game. Any other handle to it becomes stale.",

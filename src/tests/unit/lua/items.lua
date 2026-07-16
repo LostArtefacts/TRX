@@ -139,6 +139,10 @@ test("status matches the enum, and activate() moves it", function()
 
   it:activate()
   assert(it.is_active == true, "activate() did not take")
+  assert(
+    fake.calls().enable_baddie_ai == 1,
+    "activating a creature must enable its AI"
+  )
 end)
 
 -- An index alone would rebind to whatever item recycled the slot; the
