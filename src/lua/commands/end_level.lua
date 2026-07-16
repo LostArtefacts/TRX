@@ -20,16 +20,7 @@ end
 
 trx.console.register({
   name = "endlevel",
+  aliases = { "nextlevel", "end-level", "next-level" },
   help = "console/cmd/end_level/help",
   run = run,
 })
-trx.console.register({
-  name = "nextlevel",
-  help = "console/cmd/end_level/help",
-  run = run,
-})
-
--- The dashed spellings are aliases; they stay out of the help listing.
-for _, name in ipairs({ "end-level", "next-level" }) do
-  trx.console.register({ name = name, run = run })
-end

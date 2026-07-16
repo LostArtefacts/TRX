@@ -182,12 +182,15 @@ api.define("console.register", {
       name = "spec",
       type = "table",
       description = "`name`: the word the player types. `help`: a game string key for the help "
-        .. "text, optional. `run`: the function.",
+        .. "text, optional. `run`: the function. `aliases`: other words that reach the same "
+        .. "command, optional; they dispatch but stay out of the command listing, and the help "
+        .. "for `name` shows them.",
     },
   },
   examples = {
     [[trx.console.register({
   name = "greet",
+  aliases = { "hello", "hi" },
   run = function(args)
     if args == "" then
       return trx.console.Result.BAD_INVOCATION, "greet who?"
@@ -210,6 +213,10 @@ api.define("console.register", {
       type(spec.run) == "function",
       "trx.console.register: run must be a function"
     )
+    assert(
+      spec.aliases == nil or type(spec.aliases) == "table",
+      "trx.console.register: aliases must be a table"
+    )
 
     raw.register(spec.name, spec.help, function(args)
       local result, message = spec.run((args or ""):match("^%s*(.-)%s*$"))
@@ -229,7 +236,7 @@ api.define("console.register", {
         end
       end
       return result
-    end)
+    end, spec.aliases)
   end,
 })
 

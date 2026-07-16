@@ -326,6 +326,7 @@
                 "success": "Lara est maintenant en pleine forme",
             },
             "help": {
+                "aliases": "\\{review}Aliases: %s",
                 "help": "Affiche l'aide générale ou l'aide détaillée pour une commande.",
                 "list": "Commandes disponibles :",
             },

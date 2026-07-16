@@ -19,10 +19,9 @@ local function run(args)
     trx.locale.format("console/cmd/play_gym/loading", gym.title)
 end
 
-for _, name in ipairs({ "gym", "home" }) do
-  trx.console.register({
-    name = name,
-    help = "console/cmd/play_gym/help",
-    run = run,
-  })
-end
+trx.console.register({
+  name = "gym",
+  aliases = { "home" },
+  help = "console/cmd/play_gym/help",
+  run = run,
+})

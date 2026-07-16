@@ -112,6 +112,24 @@ test("a registered command runs when the player types it", function()
   assert(seen == "world", "the arguments did not reach the handler")
 end)
 
+test("an alias reaches the command it stands for", function()
+  local seen = nil
+  trx.console.register({
+    name = "primary",
+    aliases = { "secondary", "third" },
+    run = function(args)
+      seen = args
+    end,
+  })
+
+  assert(fake.run("primary", "a") == trx.console.Result.OK)
+  assert(seen == "a")
+  assert(fake.run("secondary", "b") == trx.console.Result.OK, "alias must run")
+  assert(seen == "b")
+  assert(fake.run("third", "c") == trx.console.Result.OK)
+  assert(seen == "c")
+end)
+
 test("the arguments are trimmed", function()
   local seen = nil
   trx.console.register({
