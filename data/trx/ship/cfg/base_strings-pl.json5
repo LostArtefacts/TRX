@@ -466,6 +466,7 @@
                 "help": "Włącza lub wyłącza synchronizację pionową.",
             },
             "weather": {
+                "current": "\\{review}Current weather: %s",
                 "help": "Zmienia aktualną pogodę.",
                 "invalid": "Nieprawidłowa wartość: %s (prawidłowe: %s)",
                 "set": "Pogoda ustawiona na %s",

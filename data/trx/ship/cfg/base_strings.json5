@@ -466,6 +466,7 @@
                 "help": "Toggles vertical sync.",
             },
             "weather": {
+                "current": "Current weather: %s",
                 "help": "Changes the current weather type.",
                 "invalid": "Invalid weather: %s (valid: %s)",
                 "set": "Weather set to %s",

@@ -466,6 +466,7 @@
                 "help": "Active/désactive la synchronisation verticale.",
             },
             "weather": {
+                "current": "\\{review}Current weather: %s",
                 "help": "\\{review}Change le type de météo actuel.",
                 "invalid": "\\{review}Météo invalide : %s (valide : %s)",
                 "set": "\\{review}Météo réglée sur %s",

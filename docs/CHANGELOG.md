@@ -14,6 +14,7 @@ The Lua integration was rewritten and existing scripts will need updating; refer
 - added a new Lua module, `trx.strings`, with `fuzzy_match()` and `regex_match()`
 - added a new Lua module, `trx.locale`, for the text the player reads, looked up by key
 - added `trx.locale.reload()`, to reload the current language's text from disk
+- added a new Lua module, `trx.weather`, to read and set the runtime weather
 - added new Lua game state, `trx.game.is_loaded` and `trx.game.is_playable`
 - added `trx.console.register()`, so a script can add a console command of its own
 - added `p`, a global shorthand for `trx.console.log`, and made the console log functions take any value, pretty-printing a table

@@ -466,6 +466,7 @@
                 "help": "Attiva o disattiva la sincronizzazione verticale.",
             },
             "weather": {
+                "current": "\\{review}Current weather: %s",
                 "help": "Modifica il tempo meteorologico attuale.",
                 "invalid": "Tempo meteorologico non valido: %s (valore valido: %s)",
                 "set": "Tempo meteorologico impostato su %s",
