@@ -85,7 +85,6 @@
             "give_item_all_guns": "Geladen und entsichert - Lara ist bis zu ihren Zähnen bewaffnet!",
             "give_item_all_keys": "Überraschung! Jedes Schlüsselitem, dass Lara benötigt, ist jetzt in ihrem Inventar.",
             "give_item_cheat": "Laras Rucksack ist schwerer geworden!",
-            "invalid_demo": "Unzulässige Demo",
             "invalid_item": "Unbekanntes Item: %s",
             "invalid_object": "Unzulässiges Objekt",
             "invalid_room": "Unzulässiger Raum: %d. Zulässige Räume sind 0-%d",
@@ -99,7 +98,6 @@
             "load_game_fail_invalid_slot": "Unzulässiger Speicher-Slot %d",
             "load_game_fail_unavailable_slot": "Speicher-Slot %d ist nicht verfügbar",
             "object_not_found": "Objekt nicht gefunden",
-            "play_demo": "Lade Demo %d",
             "pos_lara_missing": "Lara nicht vorhanden",
             "pos_lara_pos_fmt": "Raum: %d\nPosition: %.3f, %.3f, %.3f\nRotation: %.3f, %.3f, %.3f",
             "pos_level_fmt": "Level %d",
@@ -389,6 +387,9 @@
             },
             "play_demo": {
                 "help": "Spielt eine Demo mit der angegebenen Nummer ab.",
+                "invalid": "Unzulässige Demo",
+                "loading": "Lade Demo %d",
+                "none": "\\{review}Dieses Spiel hat keine Demos",
             },
             "play_gym": {
                 "help": "Startet das Gym-Level.",

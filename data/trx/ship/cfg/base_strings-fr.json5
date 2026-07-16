@@ -85,7 +85,6 @@
             "give_item_all_guns": "A vos marques, prêts... feu ! Lara est armée jusqu'aux dents.",
             "give_item_all_keys": "Surprise ! Chaque clé dont Lara pourrait avoir besoin est maintenant dans son sac à dos.",
             "give_item_cheat": "Le sac à dos de Lara est soudainement beaucoup plus lourd !",
-            "invalid_demo": "Démo invalide",
             "invalid_item": "Objet inconnu : %s",
             "invalid_object": "Objet invalide",
             "invalid_room": "Salle invalide : %d. Les salles valides sont 0-%d",
@@ -99,7 +98,6 @@
             "load_game_fail_invalid_slot": "Emplacement de sauvegarde %d invalide",
             "load_game_fail_unavailable_slot": "L'emplacement de sauvegarde %d n'est pas disponible",
             "object_not_found": "Objet non trouvé",
-            "play_demo": "Chargement de la démo %d",
             "pos_lara_missing": "Lara n'est pas présente",
             "pos_lara_pos_fmt": "Salle : %d\nPosition : %.3f, %.3f, %.3f\nRotation : %.3f, %.3f, %.3f",
             "pos_level_fmt": "Niveau %d",
@@ -389,6 +387,9 @@
             },
             "play_demo": {
                 "help": "Lance la démo correspondant au numéro donné.",
+                "invalid": "Démo invalide",
+                "loading": "Chargement de la démo %d",
+                "none": "\\{review}Ce jeu ne contient aucune démo",
             },
             "play_gym": {
                 "help": "Lance le niveau de gym.",

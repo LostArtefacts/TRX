@@ -85,7 +85,6 @@
             "give_item_all_guns": "Glasaich is losgaidh – tha Lara armaichte gu fiadhaich!",
             "give_item_all_keys": "Ionndrainn! Tha a h-uile iuchair aig Lara a-nis.",
             "give_item_cheat": "Tha baga-droma Lara mòran nas truime a-nis!",
-            "invalid_demo": "Taisbeanadh mì-dhligheach",
             "invalid_item": "Nì neo-aithnichte: %s",
             "invalid_object": "Oibseact mì-dhligheach",
             "invalid_room": "Seòmar mì-dhligheach: %d. Seòmraichean dligheach: 0 gu %d",
@@ -99,7 +98,6 @@
             "load_game_fail_invalid_slot": "Slot mì-dhligheach: %d",
             "load_game_fail_unavailable_slot": "Chan eil slot sàbhalaidh %d ri làimh",
             "object_not_found": "Cha deach an t-oibseact a lorg",
-            "play_demo": "A' luchdachadh taisbeanaidh %d",
             "pos_lara_missing": "Chan eil Lara an làthair",
             "pos_lara_pos_fmt": "Seomair: %d\nSuidheachadh: %.3f, %.3f, %.3f\nCuairteachadh: %.3f, %.3f, %.3f",
             "pos_level_fmt": "Ìre %d",
@@ -389,6 +387,9 @@
             },
             "play_demo": {
                 "help": "Cluich taisbeanadh leis an àireamh ainmichte.",
+                "invalid": "Taisbeanadh mì-dhligheach",
+                "loading": "A' luchdachadh taisbeanaidh %d",
+                "none": "\\{review}Chan eil taisbeanaidhean sa gheama seo",
             },
             "play_gym": {
                 "help": "Cluich ìre an t-Seòmair-eacarsaich.",
