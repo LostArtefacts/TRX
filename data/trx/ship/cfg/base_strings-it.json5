@@ -375,7 +375,10 @@
                 "current_none": "Traccia corrente: nessuna",
                 "deferred_ambient": "Traccia ambientale differita: %d",
                 "help": "Mostra lo stato attuale della traccia musicale, ferma la musica o riproduce una traccia in base all'ID fornito.",
+                "invalid_track": "Traccia musicale non valida",
                 "overlay": "Traccia(e) sovrapposta(e): %s",
+                "stopped": "Musica interrotta",
+                "track": "Riproduzione traccia musicale %d",
             },
             "play_cutscene": {
                 "help": "Riproduce la scena di intermezzo con il numero specificato.",
@@ -398,11 +401,6 @@
                 "help": "Gioca un livello con il nome o il numero specificato.",
                 "invalid": "Livello non valido",
                 "loading": "Caricamento %s",
-            },
-            "play_music": {
-                "invalid_track": "Traccia musicale non valida",
-                "stopped": "Musica interrotta",
-                "track": "Riproduzione traccia musicale %d",
             },
             "poison": {
                 "get": "\\{review}Veleno attuale di Lara: %d (obiettivo: %d)",

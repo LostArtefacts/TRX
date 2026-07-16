@@ -375,7 +375,10 @@
                 "current_none": "\\{review}Piste actuelle : aucune",
                 "deferred_ambient": "\\{review}Ambiance différée : %d",
                 "help": "\\{review}Affiche l'état actuel de la musique, arrête toute la musique ou joue une piste musicale avec l'identifiant donné.",
+                "invalid_track": "Piste musicale invalide",
                 "overlay": "\\{review}Piste(s) superposée(s) : %s",
+                "stopped": "\\{review}Musique arrêtée",
+                "track": "Lecture de la piste musicale %d",
             },
             "play_cutscene": {
                 "help": "Lance la cinématique correspondant au numéro donné.",
@@ -398,11 +401,6 @@
                 "help": "Lance un niveau correspondant au nom ou au numéro donné.",
                 "invalid": "Niveau invalide",
                 "loading": "Chargement de %s",
-            },
-            "play_music": {
-                "invalid_track": "Piste musicale invalide",
-                "stopped": "\\{review}Musique arrêtée",
-                "track": "Lecture de la piste musicale %d",
             },
             "poison": {
                 "get": "\\{review}Poison actuel de Lara : %d (cible : %d)",

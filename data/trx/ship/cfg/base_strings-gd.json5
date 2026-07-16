@@ -375,7 +375,10 @@
                 "current_none": "\\{review}Trac gnàthach: gun fheum",
                 "deferred_ambient": "\\{review}Àrainneachd air a chur dheth: %d",
                 "help": "\\{review}Seall an stàit ciùil làithreach, stad air a h-uile ciùil, no cluich trac-ciùil leis an ID a chaidh a thoirt seachad.",
+                "invalid_track": "Slighe-ciùil mì-dhligheach",
                 "overlay": "\\{review}Trac(annan) os cionn: %s",
+                "stopped": "Sguir an ceòl",
+                "track": "A' cluich ciùil %d",
             },
             "play_cutscene": {
                 "help": "Cluich sealladh-film leis an àireamh ainmichte.",
@@ -398,11 +401,6 @@
                 "help": "Cluich ìre leis an ainm neo àireamh ainmichte.",
                 "invalid": "Ìre mì-dhligheach",
                 "loading": "A' luchdachadh %s",
-            },
-            "play_music": {
-                "invalid_track": "Slighe-ciùil mì-dhligheach",
-                "stopped": "Sguir an ceòl",
-                "track": "A' cluich ciùil %d",
             },
             "poison": {
                 "get": "\\{review}Fuil làrach làithreach Lara: %d (targaid: %d)",

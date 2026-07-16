@@ -375,7 +375,10 @@
                 "current_none": "\\{review}Aktueller Titel: keiner",
                 "deferred_ambient": "\\{review}Verzögerte Umgebungsgeräusche: %d",
                 "help": "\\{review}Zeigt den aktuellen Musikstatus an, stoppt alle Musik oder spielt einen Musiktrack mit der angegebenen ID ab.",
+                "invalid_track": "Unzulässiger Musik Titel",
                 "overlay": "\\{review}Overlay-Titel: %s",
+                "stopped": "\\{review}Musik gestoppt",
+                "track": "Spiele Musiktitel %d",
             },
             "play_cutscene": {
                 "help": "Spielt Zwischensequenz mit dazugehöriger Nummer ab.",
@@ -398,11 +401,6 @@
                 "help": "Startet einen Level mit dem angegebenen Namen oder der dazugehörigen Nummer.",
                 "invalid": "Unzulässiger Level",
                 "loading": "Lade %s",
-            },
-            "play_music": {
-                "invalid_track": "Unzulässiger Musik Titel",
-                "stopped": "\\{review}Musik gestoppt",
-                "track": "Spiele Musiktitel %d",
             },
             "poison": {
                 "get": "\\{review}Aktuelles Gift von Lara: %d (Ziel: %d)",
