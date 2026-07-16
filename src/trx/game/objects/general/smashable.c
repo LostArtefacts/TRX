@@ -77,7 +77,7 @@ static void M_Control2(const int16_t item_num)
 
     item->mesh_bits = ~1;
     item->collidable = false;
-    Item_Explode(item_num, 65278, 0);
+    Item_Shatter(item_num, 65278, 0);
 
     if (item->object_id == O_SMASH_OBJECT_2) {
         Sound_Effect(SFX_BRITTLE_GROUND_BREAK, &item->pos, SPM_NORMAL);
@@ -119,7 +119,7 @@ void Smashable_Smash(const int16_t item_num)
 
     item->collidable = false;
     item->mesh_bits = ~1;
-    Item_Explode(item_num, 0b11111110'11111110, 0);
+    Item_Shatter(item_num, 0b11111110'11111110, 0);
 
     if (item->object_id == O_SMASH_OBJECT_1) {
         Sound_Effect(SFX_GLASS_BREAK, &item->pos, SPM_NORMAL);

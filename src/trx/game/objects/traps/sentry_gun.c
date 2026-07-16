@@ -139,7 +139,7 @@ static void M_Control(const int16_t item_num)
     }
 
     if (item->hit_points <= 0) {
-        Item_Explode(item_num, -1, 0);
+        Item_Shatter(item_num, -1, 0);
         LOT_DisableBaddieAI(item_num);
         Item_Kill(item_num);
         item->flags |= IF_INVISIBLE;

@@ -99,7 +99,7 @@ static void M_Control(const int16_t item_num)
             Sound_Effect(SFX_EXPLOSION_1, nullptr, SPM_NORMAL);
             item->mesh_bits = -1;
             item->object_id = O_XIAN_KNIGHT_STATUE;
-            Item_Explode(item_num, -1, 0);
+            Item_Shatter(item_num, -1, 0);
             item->object_id = O_XIAN_KNIGHT;
             LOT_DisableBaddieAI(item_num);
             Item_Kill(item_num);
