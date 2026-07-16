@@ -26,6 +26,10 @@ Example:
 trx.log.info(#trx.rooms .. " rooms, first is " .. trx.rooms[1].num)
 ```
 
+### Properties
+
+- **`trx.rooms.flipped`** (boolean). Whether the room map is currently flipped. *(read-only)*
+
 ### Enums
 
 - [lua]`trx.rooms.FlipStatus`

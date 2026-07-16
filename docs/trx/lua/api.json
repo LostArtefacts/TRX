@@ -3982,6 +3982,12 @@
       "path": "lara.has_pistol_weapon",
       "type": "boolean",
       "writable": false
+    },
+    {
+      "description": "Whether the room map is currently flipped.",
+      "path": "rooms.flipped",
+      "type": "boolean",
+      "writable": false
     }
   ],
   "types": [

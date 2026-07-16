@@ -73,10 +73,6 @@
             "door_close": "Sésame, ferme-la !",
             "door_open": "Sésame, ouvre-toi !",
             "door_open_fail": "Aucune porte à proximité de Lara",
-            "flipmap_fail_already_off": "L'état secondaire des salles est déjà DÉSACTIVÉ",
-            "flipmap_fail_already_on": "L'état secondaire des salles est déjà ACTIVÉ",
-            "flipmap_off": "État secondaire des salles DÉSACTIVÉ",
-            "flipmap_on": "État secondaire des salles ACTIVÉ",
             "fly_mode_off": "Mode vol désactivé",
             "fly_mode_on": "Mode vol activé",
             "fps_counter_off": "Compteur de FPS désactivé",
@@ -309,7 +305,11 @@
                 "help": "Quitte le jeu.",
             },
             "flipmap": {
+                "already_off": "L'état secondaire des salles est déjà DÉSACTIVÉ",
+                "already_on": "L'état secondaire des salles est déjà ACTIVÉ",
                 "help": "Bascule les salles à leur état secondaire.",
+                "off": "État secondaire des salles DÉSACTIVÉ",
+                "on": "État secondaire des salles ACTIVÉ",
             },
             "flood": {
                 "help": "Remplit la salle actuelle d'eau.",

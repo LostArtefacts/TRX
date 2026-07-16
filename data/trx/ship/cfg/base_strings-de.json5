@@ -73,10 +73,6 @@
             "door_close": "Sesam, schließe dich!",
             "door_open": "Sesam, öffne dich!",
             "door_open_fail": "Keine Türen in Laras Nähe",
-            "flipmap_fail_already_off": "Flipmap ist bereits AUS",
-            "flipmap_fail_already_on": "Flipmap ist bereits AN",
-            "flipmap_off": "Flipmap ",
-            "flipmap_on": "Flipmap eingeschaltet",
             "fly_mode_off": "Flug-Modus ausgeschaltet",
             "fly_mode_on": "Flug-Modus eingeschaltet",
             "fps_counter_off": "FPS-Counter ausgeschaltet",
@@ -309,7 +305,11 @@
                 "help": "Beendet das Spiel.",
             },
             "flipmap": {
+                "already_off": "Flipmap ist bereits AUS",
+                "already_on": "Flipmap ist bereits AN",
                 "help": "Aktiviert und deaktiviert die Flip-Map.",
+                "off": "Flipmap ",
+                "on": "Flipmap eingeschaltet",
             },
             "flood": {
                 "help": "Überflutet den Raum, in dem sie sich im Moment befinden, mit Wasser.",

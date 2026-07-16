@@ -8,6 +8,7 @@
 
 static ROOM m_Rooms[FAKE_ROOM_COUNT];
 static uint32_t m_RoomGen = 1;
+static bool m_FlipStatus;
 
 FAKE_ROOM_CALLS g_FakeRoomCalls;
 
@@ -22,6 +23,7 @@ void FakeRooms_Reset(void)
 {
     g_FakeRoomCalls = (FAKE_ROOM_CALLS) { 0 };
     m_RoomGen++;
+    m_FlipStatus = false;
 
     for (int32_t i = 0; i < FAKE_ROOM_COUNT; i++) {
         m_Rooms[i] = (ROOM) {
@@ -73,6 +75,12 @@ BOUNDS_32 Room_GetRoomBounds(const ROOM *const room)
 void Room_FlipMap(void)
 {
     g_FakeRoomCalls.flip_map++;
+    m_FlipStatus = !m_FlipStatus;
+}
+
+bool Room_GetFlipStatus(void)
+{
+    return m_FlipStatus;
 }
 
 void Room_SetFlipEffect(const int32_t flip_effect)
