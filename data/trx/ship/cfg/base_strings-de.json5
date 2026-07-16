@@ -466,6 +466,7 @@
                 "help": "Vertical Sync. Ein/Aus",
             },
             "weather": {
+                "current": "\\{review}Current weather: %s",
                 "help": "\\{review}Ändert den aktuellen Wettertyp.",
                 "invalid": "\\{review}Ungültiges Wetter: %s (gültig: %s)",
                 "set": "\\{review}Wetter auf %s eingestellt",

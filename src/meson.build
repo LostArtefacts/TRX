@@ -57,6 +57,7 @@ trx_lua_api_sources = files(
   'lua/api/rooms.lua',
   'lua/api/sound.lua',
   'lua/api/strings.lua',
+  'lua/api/weather.lua',
 )
 
 trx_lua_script_sources = files(
@@ -80,6 +81,7 @@ trx_lua_script_sources = files(
   'lua/commands/speed.lua',
   'lua/commands/strings.lua',
   'lua/commands/test_text.lua',
+  'lua/commands/weather.lua',
 )
 
 trx_lua_embed = custom_target(
@@ -259,7 +261,6 @@ common_sources = [
   'trx/game/console/cmd/spawn.c',
   'trx/game/console/cmd/teleport.c',
   'trx/game/console/cmd/trigger.c',
-  'trx/game/console/cmd/weather.c',
   'trx/game/console/cmd/winston.c',
   'trx/game/console/common.c',
   'trx/game/console/history.c',
@@ -441,6 +442,7 @@ common_sources = [
   'trx/game/lua/capi/sound.c',
   'trx/game/lua/capi/strings.c',
   'trx/game/lua/capi/struct.c',
+  'trx/game/lua/capi/weather.c',
   'trx/game/lua/common.c',
   'trx/game/lua/field.c',
   'trx/game/lua/registry.c',

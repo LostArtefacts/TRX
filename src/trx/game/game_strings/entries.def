@@ -922,6 +922,7 @@ GS_DEFINE(console/cmd/music/deferred_ambient, "Deferred ambient: %d")
 GS_DEFINE(console/cmd/music/overlay, "Overlay track(s): %s")
 
 GS_DEFINE(console/cmd/weather/set, "Weather set to %s")
+GS_DEFINE(console/cmd/weather/current, "Current weather: %s")
 GS_DEFINE(console/cmd/weather/invalid, "Invalid weather: %s (valid: %s)")
 
 GS_DEFINE(console/cmd/help/list,      "Available commands:")

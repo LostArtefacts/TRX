@@ -466,6 +466,7 @@
                 "help": "Tionndaidheas sioncronachadh-inghearach air neo dheth.",
             },
             "weather": {
+                "current": "\\{review}Current weather: %s",
                 "help": "Atharraichidh seo an aimsir.",
                 "invalid": "Aimsir neo-dhligheach: %s (dligheach: %s)",
                 "set": "Suidhich an aimsir gu %s",

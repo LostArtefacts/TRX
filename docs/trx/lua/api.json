@@ -2418,6 +2418,29 @@
           "value": 2
         }
       ]
+    },
+    {
+      "bulk": false,
+      "count": 3,
+      "description": "The kinds of weather a level can show.",
+      "path": "weather.Type",
+      "values": [
+        {
+          "description": "Clear.",
+          "name": "NONE",
+          "value": 0
+        },
+        {
+          "description": "Rain.",
+          "name": "RAIN",
+          "value": 1
+        },
+        {
+          "description": "Snow.",
+          "name": "SNOW",
+          "value": 2
+        }
+      ]
     }
   ],
   "functions": [
@@ -3760,6 +3783,21 @@
       "returns": {
         "type": "boolean"
       }
+    },
+    {
+      "description": "Sets the active weather.",
+      "examples": [
+        "trx.weather.set(trx.weather.Type.SNOW)"
+      ],
+      "params": [
+        {
+          "description": "The weather to show.",
+          "enum": "weather.Type",
+          "name": "type",
+          "type": "integer"
+        }
+      ],
+      "path": "weather.set"
     }
   ],
   "modules": [
@@ -3861,6 +3899,11 @@
       "description": "Utilities for working with strings.\n\nNot to be confused with `trx.locale`, which is the text a player reads: this module is about manipulating strings, that one is about which string the player gets.",
       "name": "strings",
       "order": 19
+    },
+    {
+      "description": "The runtime weather effect the current level shows.",
+      "name": "weather",
+      "order": 21
     }
   ],
   "namespaces": [
@@ -4053,6 +4096,13 @@
       "description": "The sound effects playing now, as `trx.sound.Stream` handles. A slot that is silent still answers, with a stale handle. Indexing and iterating reach one handle at a time.",
       "path": "sound.streams",
       "type": "table",
+      "writable": false
+    },
+    {
+      "description": "The active weather.",
+      "enum": "weather.Type",
+      "path": "weather.current",
+      "type": "integer",
       "writable": false
     }
   ],
