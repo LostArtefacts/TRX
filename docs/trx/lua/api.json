@@ -3608,21 +3608,6 @@
       ]
     },
     {
-      "description": "Whether a sound sample exists in the current level.",
-      "params": [
-        {
-          "description": "Sample to test.",
-          "enum": "catalog.samples",
-          "name": "id",
-          "type": "integer"
-        }
-      ],
-      "path": "sound.is_available",
-      "returns": {
-        "type": "boolean"
-      }
-    },
-    {
       "description": "Plays a sound effect. Raises if the sample is not available.",
       "examples": [
         "trx.sound.play(99)\ntrx.sound.play(99, { pos = { x = 100, y = 200, z = 50 } })"
@@ -4025,6 +4010,18 @@
       "description": "Whether the room map is currently flipped.",
       "path": "rooms.flipped",
       "type": "boolean",
+      "writable": false
+    },
+    {
+      "description": "The samples the current level carries, as `trx.sound.Sample` handles keyed by id: `trx.sound.samples[99]` is sample 99, or `nil` if the level has no such sample. `#` counts them, iterating walks them, and both reach one handle at a time.",
+      "path": "sound.samples",
+      "type": "table",
+      "writable": false
+    },
+    {
+      "description": "The sound effects playing now, as `trx.sound.Stream` handles. A slot that is silent still answers, with a stale handle. Indexing and iterating reach one handle at a time.",
+      "path": "sound.streams",
+      "type": "table",
       "writable": false
     }
   ],
@@ -4762,6 +4759,100 @@
         }
       ],
       "path": "rooms.Room"
+    },
+    {
+      "description": "A sound sample the current level carries. Reach them through `trx.sound.samples`. A handle to a sample the loaded level does not carry goes stale, so `is_valid()` answers whether it is still there.",
+      "extensions": [],
+      "fields": [
+        {
+          "description": "The sample's id.",
+          "enum": "catalog.samples",
+          "name": "id",
+          "type": "integer",
+          "writable": false
+        },
+        {
+          "description": "The sample's base pitch.",
+          "name": "pitch",
+          "type": "integer",
+          "writable": false
+        },
+        {
+          "description": "How much the sample's playback is randomized.",
+          "name": "randomness",
+          "type": "integer",
+          "writable": false
+        },
+        {
+          "description": "How far the sample carries.",
+          "name": "range",
+          "type": "integer",
+          "writable": false
+        },
+        {
+          "description": "The sample's base volume.",
+          "name": "volume",
+          "type": "integer",
+          "writable": false
+        }
+      ],
+      "methods": [
+        {
+          "description": "Whether the loaded level still carries this sample.",
+          "name": "is_valid",
+          "returns": {
+            "type": "boolean"
+          }
+        },
+        {
+          "description": "Plays this sample.",
+          "name": "play",
+          "params": [
+            {
+              "description": "`pos`: a `{ x =, y =, z = }` world position to play from, which applies pan and volume. Omit to play at full volume.",
+              "name": "opts",
+              "optional": true,
+              "type": "table"
+            }
+          ]
+        }
+      ],
+      "path": "sound.Sample"
+    },
+    {
+      "description": "One of the sound effects playing now. Reach them through `trx.sound.streams`. A handle to a voice that has fallen silent goes stale, so check `is_valid()` first.",
+      "extensions": [],
+      "fields": [
+        {
+          "description": "The sample this voice is playing.",
+          "enum": "catalog.samples",
+          "name": "sample_id",
+          "type": "integer",
+          "writable": false
+        }
+      ],
+      "methods": [
+        {
+          "description": "Whether this voice is still playing.",
+          "name": "is_valid",
+          "returns": {
+            "type": "boolean"
+          }
+        },
+        {
+          "description": "Pauses this voice.",
+          "name": "pause"
+        },
+        {
+          "description": "Stops this voice.",
+          "name": "stop"
+        },
+        {
+          "description": "Resumes this voice.",
+          "name": "unpause"
+        }
+      ],
+      "path": "sound.Stream"
     }
   ]
 }

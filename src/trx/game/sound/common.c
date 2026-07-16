@@ -681,3 +681,55 @@ void Sound_StopAll(void)
     Audio_Sample_CloseAll();
     M_ClearAllActiveSounds();
 }
+
+// A slot holds a voice while its handle is set; a paused voice counts, so this
+// tests the handle rather than whether it is audibly playing.
+static M_ACTIVE_SOUND *M_GetActiveSlot(const int32_t slot)
+{
+    if (slot < 0 || slot >= M_MAX_ACTIVE_SOUNDS
+        || m_ActiveSounds[slot].handle == AUDIO_NO_SOUND) {
+        return nullptr;
+    }
+    return &m_ActiveSounds[slot];
+}
+
+int32_t Sound_GetActiveSlotCount(void)
+{
+    return M_MAX_ACTIVE_SOUNDS;
+}
+
+bool Sound_GetActiveSlot(const int32_t slot, SAMPLE_ID *const out_sample_id)
+{
+    const M_ACTIVE_SOUND *const sound = M_GetActiveSlot(slot);
+    if (sound == nullptr) {
+        return false;
+    }
+    if (out_sample_id != nullptr) {
+        *out_sample_id = sound->sample_id;
+    }
+    return true;
+}
+
+void Sound_StopActiveSlot(const int32_t slot)
+{
+    M_ACTIVE_SOUND *const sound = M_GetActiveSlot(slot);
+    if (sound != nullptr) {
+        M_CloseActiveSound(sound);
+    }
+}
+
+void Sound_PauseActiveSlot(const int32_t slot)
+{
+    const M_ACTIVE_SOUND *const sound = M_GetActiveSlot(slot);
+    if (sound != nullptr) {
+        Audio_Sample_Pause(sound->handle);
+    }
+}
+
+void Sound_UnpauseActiveSlot(const int32_t slot)
+{
+    const M_ACTIVE_SOUND *const sound = M_GetActiveSlot(slot);
+    if (sound != nullptr) {
+        Audio_Sample_Unpause(sound->handle);
+    }
+}

@@ -39,6 +39,8 @@ The Lua integration was rewritten and existing scripts will need updating; refer
 - added `trx.music.tracks`, the level's tracks as `trx.music.Track` handles keyed by id, each with `:play()` and `:path()`
 - added `trx.music.current_track` and `trx.music.looped_track`, the playing and ambient tracks as `trx.music.Track` handles
 - added `trx.music.streams`, the soundtrack's streams as `trx.music.Stream` handles, each of which can be paused, resumed, sought and stopped on its own
+- added `trx.sound.samples`, the level's samples as `trx.sound.Sample` handles keyed by id, each with `:play()` and its `volume`, `range`, `randomness` and `pitch`
+- added `trx.sound.streams`, the sound effects playing now as `trx.sound.Stream` handles, each of which can be paused, resumed and stopped on its own
 - changed `trx.items` and `trx.rooms` to hand out opaque handles rather than `{ idx = ... }` tables, so a handle to a killed item now raises instead of silently addressing whatever took its slot
 - changed handles to compare equal when they name the same thing, so `trx.items[1] == trx.items[1]`
 - changed room handles to go stale at a level change rather than quietly naming a different room

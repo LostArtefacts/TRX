@@ -172,6 +172,14 @@ order: 3
    raised an unhelpful error elsewhere. It now names the coordinate and the
    argument it came in on.
 
+20. **Update scripts that use `trx.sound.is_available`**
+   It was removed. A sample is available when `trx.sound.samples[id]` is not
+   `nil`. `trx.sound.samples` is a collection of `trx.sound.Sample` handles keyed
+   by id, each of which plays itself and reports its definition, and
+   `trx.sound.streams` is a collection of `trx.sound.Stream` handles for the
+   effects playing now, each of which can be paused, resumed and stopped on its
+   own. `trx.sound.play`, `stop` and `stop_all` are unchanged.
+
 ### Version 1.8 to 1.9
 
 1. **Update Lara pushblock animations**

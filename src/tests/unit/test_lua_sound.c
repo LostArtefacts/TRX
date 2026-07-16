@@ -4,9 +4,18 @@
 #include "fake_engine_sound.h"
 #include "lua_surface.h"
 
+#include <lauxlib.h>
+
 static int M_FakeReset(lua_State *const L)
 {
     FakeSound_Reset();
+    return 0;
+}
+
+static int M_FakeSetStream(lua_State *const L)
+{
+    FakeSound_SetStream(
+        (int32_t)luaL_checkinteger(L, 1), (int32_t)luaL_checkinteger(L, 2));
     return 0;
 }
 
@@ -31,6 +40,16 @@ static int M_FakeCalls(lua_State *const L)
     lua_setfield(L, -2, "last_stopped_sample");
     lua_pushinteger(L, g_FakeSoundCalls.stop_all_count);
     lua_setfield(L, -2, "stop_all_count");
+    lua_pushinteger(L, g_FakeSoundCalls.slot_stop_count);
+    lua_setfield(L, -2, "slot_stop_count");
+    lua_pushinteger(L, g_FakeSoundCalls.slot_stop_slot);
+    lua_setfield(L, -2, "slot_stop_slot");
+    lua_pushinteger(L, g_FakeSoundCalls.slot_pause_count);
+    lua_setfield(L, -2, "slot_pause_count");
+    lua_pushinteger(L, g_FakeSoundCalls.slot_pause_slot);
+    lua_setfield(L, -2, "slot_pause_slot");
+    lua_pushinteger(L, g_FakeSoundCalls.slot_unpause_count);
+    lua_setfield(L, -2, "slot_unpause_count");
     return 1;
 }
 
@@ -40,6 +59,10 @@ static void M_PushFake(lua_State *const L)
     lua_setfield(L, -2, "SAMPLE");
     lua_pushinteger(L, FAKE_MISSING_SAMPLE);
     lua_setfield(L, -2, "MISSING_SAMPLE");
+    lua_pushinteger(L, FAKE_SAMPLE_VOLUME);
+    lua_setfield(L, -2, "SAMPLE_VOLUME");
+    lua_pushcfunction(L, M_FakeSetStream);
+    lua_setfield(L, -2, "set_stream");
 }
 
 int main(void)
