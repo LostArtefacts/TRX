@@ -81,7 +81,6 @@
             "invalid_item": "Objet inconnu : %s",
             "invalid_object": "Objet invalide",
             "invalid_room": "Salle invalide : %d. Les salles valides sont 0-%d",
-            "invalid_sample": "Effet sonore invalide : %d",
             "kill": "Bye-bye !",
             "kill_all": "Paf ! %d ennemis se sont volatisés !",
             "kill_all_fail": "Oh-oh, il n'y a plus un seul ennemi à tuer...",
@@ -103,8 +102,6 @@
             "quick_save_fail_no_slots": "\\{review}Aucun emplacement de sauvegarde rapide n'est configuré",
             "save_game": "Partie sauvegardée dans l'emplacement de sauvegarde %d",
             "save_game_fail_invalid_slot": "Emplacement de sauvegarde %d invalide",
-            "sound_available_samples": "Effets sonores disponibles : %s",
-            "sound_playing_sample": "Lecture de l'effet sonore %d",
             "speed_set": "Vitesse réglée sur %d",
             "strings_failed": "\\{review}Échec du rechargement des fichiers de langue",
             "strings_reloaded": "\\{review}Fichiers de langue rechargés",
@@ -421,7 +418,10 @@
                 "help": "\\{review}Affiche ou met à jour le paramètre de configuration donné. Utilisez --force pour modifier les paramètres appliqués au niveau pour la session en cours.",
             },
             "sfx": {
+                "available": "Effets sonores disponibles : %s",
                 "help": "Joue un effet sonore avec l'identifiant donné.",
+                "invalid": "Effet sonore invalide : %d",
+                "playing": "Lecture de l'effet sonore %d",
             },
             "spawn": {
                 "fail": "\\{review}Échec de l'apparition de l'objet demandé",

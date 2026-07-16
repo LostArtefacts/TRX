@@ -81,7 +81,6 @@
             "invalid_item": "Unknown item: %s",
             "invalid_object": "Invalid object",
             "invalid_room": "Invalid room: %d. Valid rooms are 0-%d",
-            "invalid_sample": "Invalid sound: %d",
             "kill": "Bye-bye!",
             "kill_all": "Poof! %d enemies gone!",
             "kill_all_fail": "Uh-oh, there are no enemies left to kill...",
@@ -103,8 +102,6 @@
             "quick_save_fail_no_slots": "No quick save slots are configured",
             "save_game": "Saved game to save slot %d",
             "save_game_fail_invalid_slot": "Invalid save slot %d",
-            "sound_available_samples": "Available sounds: %s",
-            "sound_playing_sample": "Playing sound %d",
             "speed_set": "Speed set to %d",
             "strings_failed": "Failed to reload the language files",
             "strings_reloaded": "Language files reloaded",
@@ -421,7 +418,10 @@
                 "help": "Displays or updates the given configuration setting. Use --force to change level-enforced settings for the current session.",
             },
             "sfx": {
+                "available": "Available sounds: %s",
                 "help": "Plays a sound effect with the given id.",
+                "invalid": "Invalid sound: %d",
+                "playing": "Playing sound %d",
             },
             "spawn": {
                 "fail": "Failed to spawn requested object",

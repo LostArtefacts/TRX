@@ -81,7 +81,6 @@
             "invalid_item": "Nieznany przedmiot: %s",
             "invalid_object": "Nieznany obiekt",
             "invalid_room": "Nieprawidłowe pomieszczenie: %d. Prawidłowe pomieszczenia to 0-%d",
-            "invalid_sample": "Nieprawidłowy dźwięk: %d",
             "kill": "I po krzyku!",
             "kill_all": "Sayonara!",
             "kill_all_fail": "Uch, już nic nie zostało do zabicia...",
@@ -103,8 +102,6 @@
             "quick_save_fail_no_slots": "Nie skonfigurowano slotów szybkiego zapisu",
             "save_game": "Zapisano grę na slocie zapisu %d",
             "save_game_fail_invalid_slot": "Nieprawidłowy slot zapisu %d",
-            "sound_available_samples": "Dostępne dźwięki: %s",
-            "sound_playing_sample": "Odtwarzanie dźwięku %d",
             "speed_set": "Prędkość ustawiona na %d",
             "strings_failed": "Nie udało się przeładować plików językowych",
             "strings_reloaded": "Pliki językowe zostały przeładowane",
@@ -421,7 +418,10 @@
                 "help": "Wyświetla lub aktualizuje dane ustawienie. Użyj --force, aby wymusić zmianę zamrożonych ustawień dla bieżącej sesji.",
             },
             "sfx": {
+                "available": "Dostępne dźwięki: %s",
                 "help": "Odtwarza efekt dźwiękowy o podanym numerze.",
+                "invalid": "Nieprawidłowy dźwięk: %d",
+                "playing": "Odtwarzanie dźwięku %d",
             },
             "spawn": {
                 "fail": "Nie udało się przywołać żądanego obiektu",

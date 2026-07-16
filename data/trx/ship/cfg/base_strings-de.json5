@@ -81,7 +81,6 @@
             "invalid_item": "Unbekanntes Item: %s",
             "invalid_object": "Unzulässiges Objekt",
             "invalid_room": "Unzulässiger Raum: %d. Zulässige Räume sind 0-%d",
-            "invalid_sample": "Unzulässiger Sound: %d",
             "kill": "Bye-bye!",
             "kill_all": "Poof! %d Feinde verschwunden!",
             "kill_all_fail": "Oh oh, es sind keine Feinde mehr zum Töten da...",
@@ -103,8 +102,6 @@
             "quick_save_fail_no_slots": "\\{review}Keine Schnellspeicherplätze konfiguriert",
             "save_game": "Spiel gespeichert auf Speicher-Slot %d",
             "save_game_fail_invalid_slot": "Unzulässiger Speicher-Slot %d",
-            "sound_available_samples": "Verfügbare Sounds: %s",
-            "sound_playing_sample": "Spiele Sound: %d",
             "speed_set": "Geschwindigkeit eingestellt auf %d",
             "strings_failed": "Neu Laden der Sprachdateien ist fehlgeschlagen",
             "strings_reloaded": "Sprachdateien neu geladen",
@@ -421,7 +418,10 @@
                 "help": "\\{review}Zeigt die angegebene Konfigurationseinstellung an oder aktualisiert sie. Verwenden Sie --force, um für die aktuelle Sitzung verbindliche Einstellungen zu ändern.",
             },
             "sfx": {
+                "available": "Verfügbare Sounds: %s",
                 "help": "Spielt einen Sound-Effekt mit der angegebenen ID ab.",
+                "invalid": "Unzulässiger Sound: %d",
+                "playing": "Spiele Sound: %d",
             },
             "spawn": {
                 "fail": "\\{review}Erzeugen des angeforderten Objekts fehlgeschlagen",

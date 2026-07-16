@@ -81,7 +81,6 @@
             "invalid_item": "Nì neo-aithnichte: %s",
             "invalid_object": "Oibseact mì-dhligheach",
             "invalid_room": "Seòmar mì-dhligheach: %d. Seòmraichean dligheach: 0 gu %d",
-            "invalid_sample": "Fuaim mì-dhligheach: %d",
             "kill": "Beannachd leat!",
             "kill_all": "Puf! Chaidh %d nàimhdean air falbh!",
             "kill_all_fail": "Och, chan eil nàimhdean air fhàgail airson marbhadh...",
@@ -103,8 +102,6 @@
             "quick_save_fail_no_slots": "Chan eil slotan sàbhalaidh luath sam bith air an rèiteachadh",
             "save_game": "Geama air a shàbhaladh gu slot %d",
             "save_game_fail_invalid_slot": "Slot sàbhalaidh mì-dhligheach: %d",
-            "sound_available_samples": "Fuaimean ri làimh: %s",
-            "sound_playing_sample": "A' cluich fuaim %d",
             "speed_set": "Astar air a shuidheachadh air %d",
             "strings_failed": "Dh'fhàillig ath-luchdadh nam faidhlichean cànain",
             "strings_reloaded": "Chaidh na faidhlichean cànain ath-luchdachadh",
@@ -421,7 +418,10 @@
                 "help": "Cuir air doigh an rèiteachaidh a chaidh a thoirt seachad. Cleachd --force gus atharrachadh a dhèanamh air na rèiteachaidhean a tha air an cur an gnìomh aig ìre airson an t-seisean làithreach.",
             },
             "sfx": {
+                "available": "Fuaimean ri làimh: %s",
                 "help": "Cluich buaidh-fuaime leis an ID ainmichte.",
+                "invalid": "Fuaim mì-dhligheach: %d",
+                "playing": "A' cluich fuaim %d",
             },
             "spawn": {
                 "fail": "Cha deach an nì air iarraidh a chruthachadh",
