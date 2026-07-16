@@ -2268,6 +2268,12 @@
         "flame_emitter_small": {
             "name": "\\{review}Émetteur de flammes (Petit)",
         },
+        "flame_emitter_tr4_ground": {
+            "name": "\\{review}Émetteur de flamme (TR4, sol)",
+        },
+        "flame_emitter_tr4_wall": {
+            "name": "\\{review}Émetteur de flamme (TR4, mur)",
+        },
         "flare": {
             "name": "\\{review}Fusée éclairante",
         },

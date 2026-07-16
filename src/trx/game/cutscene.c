@@ -248,6 +248,7 @@ static void M_DrawGunFlash(const LARA_MESH hand_mesh)
 static void M_Control(void)
 {
     Output_ResetDynamicLights();
+    FX_NewFrame();
     Camera_UpdateCutscene();
     M_ControlGun();
     Item_Control();

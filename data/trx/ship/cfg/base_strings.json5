@@ -2279,6 +2279,12 @@
                 "Fire Emitter (Small)",
             ]
         },
+        "flame_emitter_tr4_ground": {
+            "name": "Flame Emitter (TR4 Ground)",
+        },
+        "flame_emitter_tr4_wall": {
+            "name": "Flame Emitter (TR4 Wall)",
+        },
         "flare": {
             "name": "Flare",
         },

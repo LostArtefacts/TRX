@@ -2271,6 +2271,12 @@
         "flame_emitter_small": {
             "name": "Sgaoileadair Teine (Beag)",
         },
+        "flame_emitter_tr4_ground": {
+            "name": "\\{review}Sgaoiladair Lasair (TR4, làr)",
+        },
+        "flame_emitter_tr4_wall": {
+            "name": "\\{review}Sgaoiladair Lasair (TR4, balla)",
+        },
         "flare": {
             "name": "Lòchran",
         },

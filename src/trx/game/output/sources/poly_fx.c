@@ -501,6 +501,12 @@ static void M_StagePrim(
     memset(prim.color, 0, sizeof(prim.color));
     memcpy(prim.color, color, sizeof(prim.color[0]) * corner_count);
     prim.flags = flags;
+    // The OG draws additive polys with specular disabled (HWR_DrawSortList
+    // drawtype 2); the flag tells the shader to drop the overbright excess,
+    // as the mesh batcher does for its blend-add pass.
+    if (target == m_Priv.scheduled_blend_add) {
+        prim.flags |= VERT_ADDITIVE;
+    }
     if (light_info != nullptr) {
         prim.light_info = *light_info;
     } else {
@@ -836,6 +842,16 @@ void OutputSource_PolyFX_StageSpark(const SPARK *const spark)
     };
 
     RGBA_8888 color = { render_color.r, render_color.g, render_color.b, 255 };
+
+    // The OG TR4 submits spark colors raw with specular disabled, skipping
+    // CalcColorSplit; the TR4 shader lights sprite verts in the 128-neutral
+    // scale, so halve to compensate. Flat sparks modulate without the
+    // doubling and stay raw.
+    if (g_TRVersion == 4 && (spark->flags & SPARK_F_SPRITE) != 0U) {
+        color.r >>= 1;
+        color.g >>= 1;
+        color.b >>= 1;
+    }
 
     if ((spark->flags & SPARK_F_ROTATE) != 0U) {
         const int32_t rot_angle = use_current_state
