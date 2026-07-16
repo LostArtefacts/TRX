@@ -375,7 +375,10 @@
                 "current_none": "Current track: none",
                 "deferred_ambient": "Deferred ambient: %d",
                 "help": "Shows the current music state, stops all music, or plays a music track with the given id.",
+                "invalid_track": "Invalid music track",
                 "overlay": "Overlay track(s): %s",
+                "stopped": "Music stopped",
+                "track": "Playing music track %d",
             },
             "play_cutscene": {
                 "help": "Plays a cutscene with the given number.",
@@ -398,11 +401,6 @@
                 "help": "Plays a level with the given name or number.",
                 "invalid": "Invalid level",
                 "loading": "Loading %s",
-            },
-            "play_music": {
-                "invalid_track": "Invalid music track",
-                "stopped": "Music stopped",
-                "track": "Playing music track %d",
             },
             "poison": {
                 "get": "Current Lara's poison: %d (target: %d)",

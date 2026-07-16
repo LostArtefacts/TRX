@@ -2,6 +2,7 @@
 - added TR4 camera mode, which is similar to TR3 but more responsive to Lara's actions such as picking up items
 - changed reflections UV mapping to be more correct
 - changed outfits to support up to two braids per outfit; refer to migration notes
+- changed the `/music` console command to list the available tracks when given no argument, as `/sfx` does; `/music status` now reports what is playing
 - fixed being unable to drop to the secret ledge in Jungle room 76 from the ledge above (#5818)
 
 **Lua**

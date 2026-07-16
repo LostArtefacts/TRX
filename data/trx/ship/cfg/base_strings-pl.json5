@@ -375,7 +375,10 @@
                 "current_none": "\\{review}Aktualny utwór: brak",
                 "deferred_ambient": "\\{review}Odkładany ambient: %d",
                 "help": "\\{review}Pokazuje aktualny stan muzyki, zatrzymuje całą muzykę lub odtwarza utwór muzyczny o podanym identyfikatorze.",
+                "invalid_track": "Nieprawidłowa ścieżka muzyczka",
                 "overlay": "\\{review}Nakładka utworu(ów): %s",
+                "stopped": "Muzyka zatrzymana",
+                "track": "Odtwarzanie utworu muzycznego %d",
             },
             "play_cutscene": {
                 "help": "Wczytuje przerywnik o podanym numerze.",
@@ -398,11 +401,6 @@
                 "help": "Wczytuje poziom o podanej nazwie lub numerze.",
                 "invalid": "Nieznany poziom",
                 "loading": "Wczytano %s",
-            },
-            "play_music": {
-                "invalid_track": "Nieprawidłowa ścieżka muzyczka",
-                "stopped": "Muzyka zatrzymana",
-                "track": "Odtwarzanie utworu muzycznego %d",
             },
             "poison": {
                 "get": "\\{review}Aktualna trucizna Lary: %d (cel: %d)",
