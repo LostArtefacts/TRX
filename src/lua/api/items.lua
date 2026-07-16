@@ -84,7 +84,7 @@ api.type("items.Item", {
       from = "room_index",
       type = "integer",
       writable = false,
-      description = "1-based number of the room containing this item. Set `pos` to move the item between rooms.",
+      description = "0-based number of the room containing this item. Set `pos` to move the item between rooms.",
     },
     hit_points = {
       from = "hit_points",
@@ -304,7 +304,7 @@ end
 
 local function search(query, first_only)
   local found = {}
-  for i = 1, raw.count() do
+  for i = 0, raw.count() - 1 do
     local item = raw.get(i)
     if item ~= nil and matches(item, query) then
       if first_only then
@@ -320,17 +320,18 @@ local function search(query, first_only)
 end
 
 api.define("items.get", {
-  description = "Retrieves an item by 1-based index or by name.",
+  description = "Retrieves an item by index or by name. Items count from zero, matching the "
+    .. "item numbers level editors show.",
   params = {
     {
       name = "key",
       type = "any",
-      description = "1-based index, or the item's unique name.",
+      description = "0-based index, or the item's unique name.",
     },
   },
   returns = { type = "Item", nullable = true },
   examples = {
-    [==[local item = trx.items[1]
+    [==[local item = trx.items[0]
 item.name = "lara"
 local lara = trx.items["lara"]]==],
   },
@@ -431,15 +432,17 @@ api.define("items.first", {
 })
 
 api.container("items", {
-  description = "Indexing the module reaches an item, and `#trx.items` is how many the level has.",
+  description = "Indexing the module reaches an item, and `#trx.items` is how many the level has. "
+    .. "Items count from zero, matching the item numbers level editors show. `pairs()` walks them "
+    .. "in order, keyed by that number.",
   key = {
     type = "any",
-    description = "1-based index, or the item's unique name.",
+    description = "0-based index, or the item's unique name.",
   },
   value = { type = "Item", nullable = true },
   examples = {
-    [[for i = 1, #trx.items do
-  trx.log.info(trx.items[i].object_id)
+    [[for num, item in pairs(trx.items) do
+  trx.log.info(item.object_id)
 end]],
   },
   get = raw.get,

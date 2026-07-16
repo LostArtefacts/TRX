@@ -141,7 +141,7 @@ api.define("events.on_pickup", {
         {
           name = "item_num",
           type = "integer",
-          description = "1-based index of the item that was picked up.",
+          description = "0-based index of the item that was picked up.",
         },
       },
     },

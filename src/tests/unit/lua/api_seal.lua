@@ -13,7 +13,7 @@ local function seal()
 end
 
 test("an undeclared member is unreachable before the seal", function()
-  assert(trx.items[1].box_num == nil, "box_num was never declared")
+  assert(trx.items[0].box_num == nil, "box_num was never declared")
 end)
 
 -- The declaring half of the registry goes the way trxc goes: a script cannot
@@ -42,7 +42,7 @@ test("sealing takes the declaring half off trx.api", function()
     )
   end
 
-  assert(trx.items[1].box_num == nil, "box_num must still be unreachable")
+  assert(trx.items[0].box_num == nil, "box_num must still be unreachable")
 end)
 
 test("what is left of trx.api is strict mode", function()

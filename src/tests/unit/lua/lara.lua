@@ -75,7 +75,7 @@ test("properties that are not struct fields still work", function()
 end)
 
 test("lara.item is her Item handle", function()
-  -- She is item 0 in C and item 1 to a script, like every other item.
+  -- She is item 0 to the engine and to a script alike, like every other item.
   assert(trx.lara.item ~= nil, "Lara has no item")
 end)
 

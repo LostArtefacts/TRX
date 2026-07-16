@@ -16,8 +16,7 @@ test("position reads through to the engine", function()
   assert(trx.camera.target_pos.z == 6144)
 end)
 
-test("rooms are 1-based, as everywhere else in the API", function()
-  -- The engine counts rooms from 0. A script never sees that.
+test("rooms are 0-based, as everywhere else in the API", function()
   assert(trx.camera.room_num == fake.CAMERA_ROOM)
   assert(trx.camera.target_room_num == fake.CAMERA_TARGET_ROOM)
 end)

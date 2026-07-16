@@ -126,6 +126,6 @@ void LUA_PushOptIndex(
     if (value == sentinel) {
         lua_pushnil(L);
     } else {
-        lua_pushinteger(L, value + 1);
+        lua_pushinteger(L, value);
     }
 }

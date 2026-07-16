@@ -13,7 +13,7 @@ static int M_L_CameraGetPos(lua_State *const L)
     return 1;
 }
 
-// trxc.camera.get_room() → int (1-based) or nil
+// trxc.camera.get_room() → int (0-based) or nil
 static int M_L_CameraGetRoom(lua_State *const L)
 {
     LUA_PushOptIndex(L, g_Camera.pos.room_num, NO_ROOM);
@@ -27,7 +27,7 @@ static int M_L_CameraGetTargetPos(lua_State *const L)
     return 1;
 }
 
-// trxc.camera.get_target_room() → int (1-based) or nil
+// trxc.camera.get_target_room() → int (0-based) or nil
 static int M_L_CameraGetTargetRoom(lua_State *const L)
 {
     LUA_PushOptIndex(L, g_Camera.target.room_num, NO_ROOM);

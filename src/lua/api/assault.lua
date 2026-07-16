@@ -120,7 +120,8 @@ api.define("assault.stats.list_records", {
   params = { track_param() },
   returns = {
     type = "table",
-    description = "List of `{ time = seconds, attempt_num = which attempt it was }`.",
+    description = "List, counted from one, of `{ time = seconds, attempt_num = which attempt it "
+      .. "was }`.",
   },
   examples = {
     [[for _, record in ipairs(trx.assault.stats.list_records(trx.assault.Track.QUAD)) do

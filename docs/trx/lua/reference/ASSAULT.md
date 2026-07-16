@@ -103,7 +103,7 @@ Module for controlling the Assault Course and Quad Bike timers in gym levels.
   Parameters:
   - **`track`** (integer, optional, default `trx.assault.Track.COURSE`). Compare against `trx.assault.Track`.
 
-  Returns: table. List of `{ time = seconds, attempt_num = which attempt it was }`.
+  Returns: table. List, counted from one, of `{ time = seconds, attempt_num = which attempt it was }`.
 
   Example:
   ```lua

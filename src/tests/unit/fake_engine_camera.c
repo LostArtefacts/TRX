@@ -21,12 +21,12 @@ void FakeCamera_Reset(void)
     g_Camera.pos.x = 1024;
     g_Camera.pos.y = 2048;
     g_Camera.pos.z = 3072;
-    // The engine counts rooms from 0 and Lua from 1.
-    g_Camera.pos.room_num = FAKE_CAMERA_ROOM - 1;
+    // The engine and Lua both count rooms from 0.
+    g_Camera.pos.room_num = FAKE_CAMERA_ROOM;
     g_Camera.target.x = 4096;
     g_Camera.target.y = 5120;
     g_Camera.target.z = 6144;
-    g_Camera.target.room_num = FAKE_CAMERA_TARGET_ROOM - 1;
+    g_Camera.target.room_num = FAKE_CAMERA_TARGET_ROOM;
     g_FakeCameraCalls = (FAKE_CAMERA_CALLS) {};
 }
 

@@ -15,8 +15,7 @@ section](../../OBJECTS.md) as a reference for original values.
 -- Adjust HP of certain enemies
 trx.events.before_item_setup(function(level)
   -- Randomize bats HP
-  for i = 1, #trx.items do
-    local item = trx.items[i]
+  for _, item in pairs(trx.items) do
     if item.object_id == trx.catalog.objects.bat then
       item.properties.max_hit_points = math.random(5, 10)
     end

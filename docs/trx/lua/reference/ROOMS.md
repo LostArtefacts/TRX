@@ -16,14 +16,17 @@ Module for inspecting and altering the rooms of the current level.
 
 ### Indexing
 
-Indexing the module reaches a room, and `#trx.rooms` is how many the level has.
+Indexing the module reaches a room, and `#trx.rooms` is how many the level has. Rooms count from zero, matching the room numbers level editors show. `pairs()` walks them in order, keyed by that number.
 
-- **`trx.rooms[key]`** (Room or `nil`). 1-based room number.
+- **`trx.rooms[key]`** (Room or `nil`). 0-based room number.
 - **`#trx.rooms`** (integer). How many there are.
 
 Example:
 ```lua
-trx.log.info(#trx.rooms .. " rooms, first is " .. trx.rooms[1].num)
+trx.log.info(#trx.rooms .. " rooms, first is " .. trx.rooms[0].num)
+for num, room in pairs(trx.rooms) do
+  room.cold = true
+end
 ```
 
 ### Properties
@@ -57,7 +60,7 @@ trx.log.info(#trx.rooms .. " rooms, first is " .. trx.rooms[1].num)
     - **`cold`**: boolean. Whether Lara's breath is visible in the room.
     - **`damaging`**: boolean. Whether the room drains Lara's exposure meter.
     - **`flip_status`**: integer. Current flip status. Compare against `trx.rooms.FlipStatus`. *(read-only)*
-    - **`num`**: integer. 1-based room number. *(read-only)*
+    - **`num`**: integer. 0-based room number, matching the numbers level editors show. *(read-only)*
     - **`underwater`**: boolean. Whether the room is filled with water.
     - **`wind`**: boolean. Whether the room has a breeze. Requires the player to have breeze enabled.
 
@@ -75,7 +78,7 @@ trx.log.info(#trx.rooms .. " rooms, first is " .. trx.rooms[1].num)
 
       Example:
       ```lua
-      local start_room = trx.rooms[1]
+      local start_room = trx.rooms[0]
       trx.events.after_control(function()
         if start_room:is_valid() then
           trx.log.info(tostring(start_room.underwater))
@@ -86,16 +89,16 @@ trx.log.info(#trx.rooms .. " rooms, first is " .. trx.rooms[1].num)
 ### Functions
 
 - [lua]`trx.rooms.get(num)`  
-  Retrieves a room by 1-based index.
+  Retrieves a room by number. Rooms count from zero, matching the room numbers level editors show.
 
   Parameters:
-  - **`num`** (integer). 1-based room number.
+  - **`num`** (integer). 0-based room number.
 
   Returns: Room or `nil`.
 
   Example:
   ```lua
-  local room = trx.rooms[15]
+  local room = trx.rooms[14]
   room.underwater = true
   ```
 
@@ -124,8 +127,8 @@ trx.log.info(#trx.rooms .. " rooms, first is " .. trx.rooms[1].num)
 
   Parameters:
   - **`pos`** (vec3). Position to search near.
-  - **`room_num`** (integer). 1-based room to search from.
+  - **`room_num`** (integer). 0-based room to search from.
 
   Returns:
   - vec3 or `nil`. The valid position, or `nil` if none was found nearby.
-  - integer. The 1-based room the position is in.
+  - integer. The 0-based room the position is in.

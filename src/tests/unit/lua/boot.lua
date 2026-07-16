@@ -25,10 +25,10 @@ test("strict mode still works once the globals are hardened", function()
   raises(function()
     trx.items.spawn("wolf", { x = 0, y = 0, z = 0 })
   end)
-  assert(trx.items.get(1) ~= nil, "a good call still goes through")
+  assert(trx.items.get(0) ~= nil, "a good call still goes through")
 
   trx.api.strict(false)
-  assert(trx.items.get(1) ~= nil)
+  assert(trx.items.get(0) ~= nil)
 end)
 
 test("the surface cannot be reopened", function()

@@ -70,11 +70,10 @@ static const char *M_SetFrame(void *const self, const FIELD_VALUE *const in)
     return nullptr;
 }
 
-// Scripts count rooms from 1; the engine counts from 0.
 static bool M_GetRoomIndex(const void *const self, FIELD_VALUE *const out)
 {
     const ITEM *const item = self;
-    *out = (FIELD_VALUE) { .type = FT_INT16, .as_int = item->room_num + 1 };
+    *out = (FIELD_VALUE) { .type = FT_INT16, .as_int = item->room_num };
     return true;
 }
 
@@ -280,11 +279,11 @@ static int M_L_ItemsGet(lua_State *const L)
     int32_t idx = -1;
     if (lua_type(L, 1) == LUA_TNUMBER) {
         int32_t num;
-        if (!LUA_CheckBoundedInt(L, 1, 1, Item_GetTotalCount(), &num)) {
+        if (!LUA_CheckBoundedInt(L, 1, 0, Item_GetTotalCount() - 1, &num)) {
             lua_pushnil(L);
             return 1;
         }
-        idx = num - 1;
+        idx = num;
     } else {
         const ITEM *const item = Item_GetByName(luaL_checkstring(L, 1));
         idx = item != nullptr ? Item_GetIndex(item) : -1;

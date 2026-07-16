@@ -310,7 +310,7 @@ static void M_DoPickup(const int16_t item_num)
     Inv_AddPickup(item);
     Stats_AddPickup();
     // Notify Lua pickup listeners
-    LUA_FireEventInt32(LUA_EVENT_PICKUP, item_num + 1); // LUA uses 1-indexing
+    LUA_FireEventInt32(LUA_EVENT_PICKUP, item_num);
 
     item->status = IS_INVISIBLE;
     Item_Kill(item_num);

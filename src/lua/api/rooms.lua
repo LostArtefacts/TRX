@@ -27,7 +27,7 @@ api.type("rooms.Room", {
       from = "room_index",
       type = "integer",
       writable = false,
-      description = "1-based room number.",
+      description = "0-based room number, matching the numbers level editors show.",
     },
     underwater = {
       from = "flags.underwater",
@@ -69,7 +69,7 @@ api.type("rooms.Room", {
         .. "different room: reading or writing a field on it raises an error. Check this for a "
         .. "handle held across time.",
       examples = {
-        [[local start_room = trx.rooms[1]
+        [[local start_room = trx.rooms[0]
 trx.events.after_control(function()
   if start_room:is_valid() then
     trx.log.info(tostring(start_room.underwater))
@@ -115,13 +115,14 @@ end)]],
 })
 
 api.define("rooms.get", {
-  description = "Retrieves a room by 1-based index.",
+  description = "Retrieves a room by number. Rooms count from zero, matching the "
+    .. "room numbers level editors show.",
   params = {
-    { name = "num", type = "integer", description = "1-based room number." },
+    { name = "num", type = "integer", description = "0-based room number." },
   },
   returns = { type = "Room", nullable = true },
   examples = {
-    [[local room = trx.rooms[15]
+    [[local room = trx.rooms[14]
 room.underwater = true]],
   },
   impl = raw.get,
@@ -174,7 +175,7 @@ api.define("rooms.find_valid_pos", {
     {
       name = "room_num",
       type = "integer",
-      description = "1-based room to search from.",
+      description = "0-based room to search from.",
     },
   },
   returns = {
@@ -183,17 +184,22 @@ api.define("rooms.find_valid_pos", {
       nullable = true,
       description = "The valid position, or `nil` if none was found nearby.",
     },
-    { type = "integer", description = "The 1-based room the position is in." },
+    { type = "integer", description = "The 0-based room the position is in." },
   },
   impl = raw.find_valid_pos,
 })
 
 api.container("rooms", {
-  description = "Indexing the module reaches a room, and `#trx.rooms` is how many the level has.",
-  key = { type = "integer", description = "1-based room number." },
+  description = "Indexing the module reaches a room, and `#trx.rooms` is how many the level has. "
+    .. "Rooms count from zero, matching the room numbers level editors show. `pairs()` walks them "
+    .. "in order, keyed by that number.",
+  key = { type = "integer", description = "0-based room number." },
   value = { type = "Room", nullable = true },
   examples = {
-    [[trx.log.info(#trx.rooms .. " rooms, first is " .. trx.rooms[1].num)]],
+    [[trx.log.info(#trx.rooms .. " rooms, first is " .. trx.rooms[0].num)
+for num, room in pairs(trx.rooms) do
+  room.cold = true
+end]],
   },
   get = raw.get,
   count = raw.count,
