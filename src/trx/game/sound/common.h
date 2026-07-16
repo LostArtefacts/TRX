@@ -62,3 +62,15 @@ void Sound_UpdateEffects(void);
 void Sound_PauseAll(void);
 void Sound_UnpauseAll(void);
 void Sound_StopAll(void);
+
+// The number of active-sound slots. A slot addresses a playing voice whether it
+// holds one or not, so this is fixed rather than a count of what plays now.
+int32_t Sound_GetActiveSlotCount(void);
+
+// Fills the sample id the slot is playing. Returns false when the slot is idle.
+bool Sound_GetActiveSlot(int32_t slot, SAMPLE_ID *out_sample_id);
+
+// Stops, pauses or resumes the voice in a slot.
+void Sound_StopActiveSlot(int32_t slot);
+void Sound_PauseActiveSlot(int32_t slot);
+void Sound_UnpauseActiveSlot(int32_t slot);
