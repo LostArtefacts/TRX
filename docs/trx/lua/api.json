@@ -3712,6 +3712,30 @@
       }
     },
     {
+      "description": "Writes a list of whole numbers as ranges, so that a long run reads as one: `{ 0, 2, 3, 4, 9 }` becomes `0, 2-4, 9`.\n\nThe list is sorted first, and duplicates survive as they are, so the caller need not tidy up before handing it over.",
+      "examples": [
+        "trx.strings.collapse_ranges({ 4, 1, 2, 3 }) -- \"1-4\""
+      ],
+      "params": [
+        {
+          "description": "List of integers.",
+          "name": "numbers",
+          "type": "table"
+        },
+        {
+          "description": "What to put between the parts. Defaults to `\", \"`.",
+          "name": "separator",
+          "optional": true,
+          "type": "string"
+        }
+      ],
+      "path": "strings.collapse_ranges",
+      "returns": {
+        "description": "Empty when the list is.",
+        "type": "string"
+      }
+    },
+    {
       "description": "Whether a subject matches a regular expression. Case-insensitive.",
       "examples": [
         "if trx.strings.regex_match(args, \"^\\\\d+$\") then ... end"

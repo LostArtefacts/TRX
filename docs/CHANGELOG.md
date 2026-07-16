@@ -34,6 +34,7 @@ The Lua integration was rewritten and existing scripts will need updating; refer
 - added `trx.api.strict()`, which checks a script's arguments against the API's own declarations - worth turning on while writing a level, and leaving off in play
 - added `room:is_valid()`, so a room handle held across a level change can be checked the way an item handle can
 - added the track to the assault course record functions, so the quad bike's records can be read and written at last
+- added a new Lua string function, `trx.strings.collapse_ranges()`
 - changed `trx.items` and `trx.rooms` to hand out opaque handles rather than `{ idx = ... }` tables, so a handle to a killed item now raises instead of silently addressing whatever took its slot
 - changed handles to compare equal when they name the same thing, so `trx.items[1] == trx.items[1]`
 - changed room handles to go stale at a level change rather than quietly naming a different room

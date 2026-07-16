@@ -66,6 +66,45 @@ api.define("strings.parse_bool", {
   end,
 })
 
+api.define("strings.collapse_ranges", {
+  description = "Writes a list of whole numbers as ranges, so that a long run reads as one: "
+    .. "`{ 0, 2, 3, 4, 9 }` becomes `0, 2-4, 9`.\n\n"
+    .. "The list is sorted first, and duplicates survive as they are, so the caller need not tidy "
+    .. "up before handing it over.",
+  params = {
+    { name = "numbers", type = "table", description = "List of integers." },
+    {
+      name = "separator",
+      type = "string",
+      optional = true,
+      description = 'What to put between the parts. Defaults to `", "`.',
+    },
+  },
+  returns = { type = "string", description = "Empty when the list is." },
+  examples = {
+    [[trx.strings.collapse_ranges({ 4, 1, 2, 3 }) -- "1-4"]],
+  },
+  impl = function(numbers, separator)
+    local sorted = { table.unpack(numbers) }
+    table.sort(sorted)
+
+    local parts, i = {}, 1
+    while i <= #sorted do
+      local first = i
+      while i < #sorted and sorted[i + 1] == sorted[i] + 1 do
+        i = i + 1
+      end
+      if i > first then
+        parts[#parts + 1] = ("%d-%d"):format(sorted[first], sorted[i])
+      else
+        parts[#parts + 1] = tostring(sorted[first])
+      end
+      i = i + 1
+    end
+    return table.concat(parts, separator or ", ")
+  end,
+})
+
 api.define("strings.regex_match", {
   description = "Whether a subject matches a regular expression. Case-insensitive.",
   params = {

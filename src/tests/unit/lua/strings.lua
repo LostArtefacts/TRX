@@ -101,4 +101,21 @@ test("the pattern is PCRE, not a Lua pattern", function()
   assert(trx.strings.regex_match("42", "^%d+$") == false)
 end)
 
+test("collapse_ranges writes a run as a range", function()
+  local collapse = trx.strings.collapse_ranges
+
+  assert(collapse({}) == "", "an empty list is an empty string")
+  assert(collapse({ 7 }) == "7")
+  assert(collapse({ 1, 2, 3, 4 }) == "1-4")
+  assert(collapse({ 0, 2, 3, 4, 9 }) == "0, 2-4, 9")
+  assert(collapse({ 1, 3, 5 }) == "1, 3, 5", "gaps must not be bridged")
+end)
+
+test("collapse_ranges sorts, and takes a separator", function()
+  local collapse = trx.strings.collapse_ranges
+
+  assert(collapse({ 4, 1, 3, 2 }) == "1-4", "the caller need not sort first")
+  assert(collapse({ 1, 2, 5 }, " | ") == "1-2 | 5")
+end)
+
 return h.report()
