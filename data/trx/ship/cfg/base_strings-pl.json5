@@ -85,7 +85,6 @@
             "give_item_all_guns": "Lara uzbrojona po zęby. Drżyj, świecie!",
             "give_item_all_keys": "Niespodzianka! Wszystkie kluczowe przedmioty zmaterializowały się w plecaku Lary.",
             "give_item_cheat": "Plecak Lary stał się znacznie cięższy!",
-            "invalid_demo": "Nieprawidłowe demo",
             "invalid_item": "Nieznany przedmiot: %s",
             "invalid_object": "Nieznany obiekt",
             "invalid_room": "Nieprawidłowe pomieszczenie: %d. Prawidłowe pomieszczenia to 0-%d",
@@ -99,7 +98,6 @@
             "load_game_fail_invalid_slot": "Nieprawidłowy slot zapisu %d",
             "load_game_fail_unavailable_slot": "Slot zapisu %d jest niedostępny",
             "object_not_found": "Nie odnaleziono tego obiektu",
-            "play_demo": "Wczytano demo %d",
             "pos_lara_missing": "Nie znaleziono Lary",
             "pos_lara_pos_fmt": "Pomieszczenie: %d\nPozycja: %.3f, %.3f, %.3f\nRotacja: %.3f, %.3f, %.3f",
             "pos_level_fmt": "Poziom %d",
@@ -389,6 +387,9 @@
             },
             "play_demo": {
                 "help": "Wczytuje demo o podanym numerze.",
+                "invalid": "Nieprawidłowe demo",
+                "loading": "Wczytano demo %d",
+                "none": "\\{review}W tej grze nie ma dem",
             },
             "play_gym": {
                 "help": "Wczytuje poziom z domem Lary.",

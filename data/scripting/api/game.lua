@@ -225,12 +225,20 @@ api.define("game.play_cutscene", {
 })
 
 api.define("game.play_demo", {
-  description = "Plays a demo.",
+  description = "Plays a demo, and returns the one that started.",
   params = {
     {
       name = "num",
       type = "integer",
-      description = "1-based position in `trx.game.demos`.",
+      optional = true,
+      description = "1-based position in `trx.game.demos`. Omit to play the next demo in rotation.",
+    },
+  },
+  returns = {
+    {
+      type = "Level",
+      nullable = true,
+      description = "The demo that started, or `nil` if the game has no demos.",
     },
   },
   impl = raw.play_demo,

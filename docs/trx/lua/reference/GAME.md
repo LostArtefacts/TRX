@@ -106,11 +106,14 @@ Module for the game flow: which levels there are, and which one is being played.
   Parameters:
   - **`num`** (integer). 1-based position in `trx.game.cutscenes`.
 
-- [lua]`trx.game.play_demo(num)`  
-  Plays a demo.
+- [lua]`trx.game.play_demo([num])`  
+  Plays a demo, and returns the one that started.
 
   Parameters:
-  - **`num`** (integer). 1-based position in `trx.game.demos`.
+  - **`num`** (integer, optional). 1-based position in `trx.game.demos`. Omit to play the next demo in rotation.
+
+  Returns:
+  - Level or `nil`. The demo that started, or `nil` if the game has no demos.
 
 - [lua]`trx.game.play_gym()`  
   Starts the gym. Raises if this game has no gym.

@@ -1,3 +1,4 @@
+#include <trx/game/demo.h>
 #include <trx/game/game/state.h>
 #include <trx/game/game_flow.h>
 #include <trx/game/game_flow/types.h>
@@ -232,16 +233,28 @@ static int M_L_GamePlayCutscene(lua_State *const L)
     return 0;
 }
 
-// trxc.game.play_demo(num) → nil
+// trxc.game.play_demo([num]) → GF_LEVEL handle or nil
+// With no number, the next demo in rotation plays - the one the attract mode
+// would show next, since both draw from Demo_ChooseLevel.
 static int M_L_GamePlayDemo(lua_State *const L)
 {
-    const GF_LEVEL *const level =
-        M_CheckLevel(L, 1, GFLT_DEMOS, "unknown demo");
+    const GF_LEVEL *level;
+    if (lua_isnoneornil(L, 1)) {
+        const int32_t idx = Demo_ChooseLevel(-1);
+        if (idx < 0) {
+            lua_pushnil(L);
+            return 1;
+        }
+        level = &GF_GetLevelTable(GFLT_DEMOS)->levels[idx];
+    } else {
+        level = M_CheckLevel(L, 1, GFLT_DEMOS, "unknown demo");
+    }
     GF_OverrideCommand((GF_COMMAND) {
         .action = GF_START_DEMO,
         .param = level->num,
     });
-    return 0;
+    M_PushLevel(L, GFLT_DEMOS, GF_GetLevelOrdinalNumber(GFLT_DEMOS, level));
+    return 1;
 }
 
 // trxc.game.play_gym() → nil

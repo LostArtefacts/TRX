@@ -85,7 +85,6 @@
             "give_item_all_guns": "Lock'n'load - Lara's armed to the teeth!",
             "give_item_all_keys": "Surprise! Every key item Lara needs is now in her backpack.",
             "give_item_cheat": "Lara's backpack just got way heavier!",
-            "invalid_demo": "Invalid demo",
             "invalid_item": "Unknown item: %s",
             "invalid_object": "Invalid object",
             "invalid_room": "Invalid room: %d. Valid rooms are 0-%d",
@@ -99,7 +98,6 @@
             "load_game_fail_invalid_slot": "Invalid save slot %d",
             "load_game_fail_unavailable_slot": "Save slot %d is not available",
             "object_not_found": "Object not found",
-            "play_demo": "Loading demo %d",
             "pos_lara_missing": "Lara not present",
             "pos_lara_pos_fmt": "Room: %d\nPosition: %.3f, %.3f, %.3f\nRotation: %.3f, %.3f, %.3f",
             "pos_level_fmt": "Level %d",
@@ -389,6 +387,9 @@
             },
             "play_demo": {
                 "help": "Plays a demo with the given number.",
+                "invalid": "Invalid demo",
+                "loading": "Loading demo %d",
+                "none": "This game has no demos",
             },
             "play_gym": {
                 "help": "Plays the Gym level.",

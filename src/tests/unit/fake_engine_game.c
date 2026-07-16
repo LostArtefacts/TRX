@@ -4,6 +4,7 @@
 
 #include "fake_engine_game.h"
 
+#include <trx/game/demo.h>
 #include <trx/game/game_flow/common.h>
 #include <trx/game/savegame.h>
 
@@ -110,6 +111,15 @@ int32_t GF_GetLevelOrdinalNumber(
         }
     }
     return 0;
+}
+
+// The next demo to play: with no hint, the first; otherwise the one asked for.
+int32_t Demo_ChooseLevel(const int32_t demo_num)
+{
+    if (FAKE_DEMO_COUNT == 0) {
+        return -1;
+    }
+    return demo_num < 0 ? 0 : demo_num;
 }
 
 GF_LEVEL *GF_GetLevelByOrdinalNumber(

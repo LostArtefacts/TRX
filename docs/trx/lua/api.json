@@ -3123,15 +3123,23 @@
       "path": "game.play_cutscene"
     },
     {
-      "description": "Plays a demo.",
+      "description": "Plays a demo, and returns the one that started.",
       "params": [
         {
-          "description": "1-based position in `trx.game.demos`.",
+          "description": "1-based position in `trx.game.demos`. Omit to play the next demo in rotation.",
           "name": "num",
+          "optional": true,
           "type": "integer"
         }
       ],
-      "path": "game.play_demo"
+      "path": "game.play_demo",
+      "returns": [
+        {
+          "description": "The demo that started, or `nil` if the game has no demos.",
+          "nullable": true,
+          "type": "Level"
+        }
+      ]
     },
     {
       "description": "Starts the gym. Raises if this game has no gym.",

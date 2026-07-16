@@ -85,7 +85,6 @@
             "give_item_all_guns": "Preparati - Lara è armata fino ai denti!",
             "give_item_all_keys": "Sorpresa! Ogni oggetto chiave di cui Lara ha bisogno è ora nel suo zaino.",
             "give_item_cheat": "Lo zaino di Lara è diventato molto più pesante!",
-            "invalid_demo": "Demo non valida",
             "invalid_item": "Oggetto sconosciuto: %s",
             "invalid_object": "Oggetto non valido",
             "invalid_room": "Stanza non valida: %d. Le stanze valide sono 0-%d",
@@ -99,7 +98,6 @@
             "load_game_fail_invalid_slot": "Slot di salvataggio %d non valido",
             "load_game_fail_unavailable_slot": "Lo slot di salvataggio %d non è disponibile",
             "object_not_found": "Oggetto non trovato",
-            "play_demo": "Caricamento demo %d",
             "pos_lara_missing": "Lara non presente",
             "pos_lara_pos_fmt": "Stanza: %d\nPosizione: %.3f, %.3f, %.3f\nRotazione: %.3f, %.3f, %.3f",
             "pos_level_fmt": "Livello %d",
@@ -389,6 +387,9 @@
             },
             "play_demo": {
                 "help": "Riproduce la demo con il numero specificato.",
+                "invalid": "Demo non valida",
+                "loading": "Caricamento demo %d",
+                "none": "\\{review}Questo gioco non ha demo",
             },
             "play_gym": {
                 "help": "Gioca al livello di allenamento.",
