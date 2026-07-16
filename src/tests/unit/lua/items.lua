@@ -1,9 +1,9 @@
 -- The item API as a script actually sees it.
 --
 -- Everything under these assertions is real: the ITEM FIELD_DESC table, the
--- struct and enum bridges, trxc.items, and src/lua/items.lua itself. Only
--- the engine below that is fake (see fake_engine_items.c). So these tests pin
--- the public surface rather than a restatement of it - rename a C member, drop a
+-- struct and enum bridges, trxc.items, and src/lua/items.lua itself. Only the
+-- engine below that is fake (see fake_engine_items.c). So these tests pin the
+-- public surface rather than a restatement of it - rename a C member, drop a
 -- declaration, mark a field writable that must not be, and the assertion that
 -- names it fails.
 
@@ -302,8 +302,8 @@ test("find and first query by object and room", function()
   assert(#trx.items.find() == 0 and trx.items.first() == nil)
 end)
 
--- A method reaches C directly, so strict mode has to put its wrapper in front of
--- the C function rather than around a Lua one.
+-- A method reaches C directly, so strict mode has to put its wrapper in front
+-- of the C function rather than around a Lua one.
 test("strict mode checks a method's arguments", function()
   local it = trx.items[1]
   trx.api.strict(true)

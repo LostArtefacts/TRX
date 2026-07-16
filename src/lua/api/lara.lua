@@ -33,8 +33,9 @@ api.enum("lara.Mesh", {
   },
 })
 
--- The C names carry an EXTRA_MESH_ prefix, because cfg/outfits.json5 is keyed by
--- those exact strings and cannot move. Strip it here rather than say it twice.
+-- The C names carry an EXTRA_MESH_ prefix, because cfg/outfits.json5 is keyed
+-- by those exact strings and cannot move. Strip it here rather than say it
+-- twice.
 api.enum("lara.ExtraMesh", {
   backing = "LARA_SKIN_EXTRA_MESH",
   strip = "EXTRA_MESH_",

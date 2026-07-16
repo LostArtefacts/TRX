@@ -59,8 +59,8 @@ test("an object the game has no such id for is refused", function()
 end)
 
 test("the raw bridge is not part of the surface", function()
-  -- The C table has are_allies_hostile/set_allies_hostile. The declaration turns
-  -- them into one property, and the raw pair must not leak alongside it.
+  -- The C table has are_allies_hostile/set_allies_hostile. The declaration
+  -- turns them into one property, and the raw pair must not leak alongside it.
   assert(trx.creatures.are_allies_hostile == nil)
   assert(trx.creatures.set_allies_hostile == nil)
 end)

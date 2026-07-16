@@ -1,9 +1,9 @@
 -- Test harness for the Lua surface tests, mirroring the C one in harness.h.
 --
 -- The C runner builds the world - the fake engine, the real bridges, the real
--- src/lua modules - and then hands over to a file like items.lua. What a
--- script can see, the tests see, so the assertions are written the way a level
--- builder would write them.
+-- src/lua modules - and then hands over to a file like items.lua. What a script
+-- can see, the tests see, so the assertions are written the way a level builder
+-- would write them.
 
 local M = { cases = {}, passed = 0, failed = 0 }
 
@@ -39,8 +39,8 @@ function M.report()
   end
 
   -- The cases share one Lua state, so they must not depend on each other. Set
-  -- TRX_TEST_SEED to shuffle them: an accidental dependency then fails the suite
-  -- instead of lying dormant behind the file order.
+  -- TRX_TEST_SEED to shuffle them: an accidental dependency then fails the
+  -- suite instead of lying dormant behind the file order.
   local seed = tonumber(os.getenv("TRX_TEST_SEED") or "")
   if seed ~= nil then
     math.randomseed(seed)

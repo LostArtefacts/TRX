@@ -24,8 +24,8 @@ test("an exact name matches itself", function()
 end)
 
 test("the value rides along untouched", function()
-  -- It is the caller's, and the matcher never looks at it. Hang an object id off
-  -- a candidate and read it back.
+  -- It is the caller's, and the matcher never looks at it. Hang an object id
+  -- off a candidate and read it back.
   local matches = trx.strings.fuzzy_match("bear", {
     { key = "bear", value = { id = 8, tag = "anything" } },
   })

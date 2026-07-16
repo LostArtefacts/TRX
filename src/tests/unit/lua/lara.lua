@@ -1,8 +1,8 @@
 -- The Lara API as a script actually sees it.
 --
--- trx.lara is the first module that stands for a C struct: reading trx.lara.air_bar
--- reaches into a real LARA_INFO through the reflection layer. What is reachable
--- is what lara.Lara declares, and nothing else.
+-- trx.lara is the first module that stands for a C struct: reading
+-- trx.lara.air_bar reaches into a real LARA_INFO through the reflection layer.
+-- What is reachable is what lara.Lara declares, and nothing else.
 
 local h = require("harness")
 local test, raises = h.test, h.raises

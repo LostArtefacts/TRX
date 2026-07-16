@@ -137,13 +137,14 @@ local function resolve(path)
 end
 
 -- A module is a plain table, and api.define rawsets its functions straight into
--- it, so they are found before any of this runs. What this adds is the members a
--- table cannot hold: computed properties, and - for a module that stands for a
--- single C struct, as trx.lara stands for Lara - that struct's own fields.
+-- it, so they are found before any of this runs. What this adds is the members
+-- a table cannot hold: computed properties, and - for a module that stands for
+-- a single C struct, as trx.lara stands for Lara - that struct's own fields.
 --
--- The registry owns the metatable, so an undeclared member is unreachable rather
--- than merely undocumented. That matters most here: neither a metatable getter
--- nor a struct field ever shows up in pairs(), so seal()'s audit cannot see one.
+-- The registry owns the metatable, so an undeclared member is unreachable
+-- rather than merely undocumented. That matters most here: neither a metatable
+-- getter nor a struct field ever shows up in pairs(), so seal()'s audit cannot
+-- see one.
 local function install_module_meta(module)
   local props = module_properties[module]
   local instance = module_instances[module]
@@ -230,8 +231,8 @@ function api.module(name, spec)
 end
 
 -- Builds a specialized validating wrapper by generating Lua source for this
--- exact parameter list. Avoids the per-call table.pack/unpack and spec loop that
--- made the generic approach 26x slower.
+-- exact parameter list. Avoids the per-call table.pack/unpack and spec loop
+-- that made the generic approach 26x slower.
 local function make_checked(fn, path, params)
   if params == nil or #params == 0 then
     return fn
@@ -268,9 +269,10 @@ local function make_checked(fn, path, params)
     sig = sig == "" and "..." or (sig .. ",...")
   end
 
-  -- Several bridges read lua_gettop() to tell "not given" from "given nil", so an
-  -- optional parameter with no default has to stay absent rather than arrive as
-  -- nil. A variadic call carries its own count and needs none of this.
+  -- Several bridges read lua_gettop() to tell "not given" from "given nil", so
+  -- an optional parameter with no default has to stay absent rather than
+  -- arrive as nil. A variadic call carries its own count and needs none of
+  -- this.
   local body = {}
   if not variadic then
     for i = fixed, 1, -1 do
@@ -320,8 +322,8 @@ local function make_checked(fn, path, params)
   )
 end
 
--- The function a caller reaches: the checking wrapper under strict mode, the raw
--- one otherwise. api.strict flips every binding through here.
+-- The function a caller reaches: the checking wrapper under strict mode, the
+-- raw one otherwise. api.strict flips every binding through here.
 local function bound(fn, path, params)
   return strict_enabled and make_checked(fn, path, params) or fn
 end
@@ -355,17 +357,17 @@ checkers = {
 }
 
 -- A handle's metatable is its C type name - see LUA_Struct_Register - so one
--- type of handle is told from another. api.type registers one of these per type,
--- which is why Item and Room are absent above.
+-- type of handle is told from another. api.type registers one of these per
+-- type, which is why Item and Room are absent above.
 local function handle_checker(backing)
   return function(v)
     return getmetatable(v) == backing
   end
 end
 
--- Called once, from C, after the trx.* modules have loaded. Declarations are the
--- engine's to make; a level script re-opening the surface would defeat the point
--- of declaring it.
+-- Called once, from C, after the trx.* modules have loaded. Declarations are
+-- the engine's to make; a level script re-opening the surface would defeat the
+-- point of declaring it.
 --
 -- Also audits the finished surface: an assignment straight onto a module table
 -- works for scripts, but the docs never see it. Refuse to boot instead.
@@ -380,7 +382,8 @@ function api.seal()
     is_strict = api.is_strict,
   }
 
-  -- container path ("items", or "console.log") -> set of declared member names.
+  -- container path ("items", or "console.log") -> set of declared member
+  -- names.
   local declared = {}
   local function mark(path)
     local parts = path_parts(path)
@@ -519,8 +522,9 @@ end
 -- name. `call` makes the group itself callable, so calling the group works
 -- alongside calling the members inside it.
 --
--- A namespace has to be declared before anything inside it: it is the table the
--- members hang off, and seal() audits its contents just as it audits a module's.
+-- A namespace has to be declared before anything inside it: it is the table
+-- the members hang off, and seal() audits its contents just as it audits a
+-- module's.
 function api.namespace(path, spec)
   opening("api.namespace", spec)
   local module, name = split_path(path)
@@ -531,8 +535,8 @@ function api.namespace(path, spec)
       type(spec.call) == "function",
       "api.namespace: call must be a function"
     )
-    -- Through a holder, so api.strict can swap the wrapper in as it does for the
-    -- members.
+    -- Through a holder, so api.strict can swap the wrapper in as it does for
+    -- the members.
     local dispatch = { fn = bound(spec.call, path, spec.params) }
     namespace_dispatch[path] = dispatch
     setmetatable(namespace, {
@@ -548,8 +552,8 @@ function api.namespace(path, spec)
   return namespace
 end
 
--- Declares that a module table can be indexed - trx.items[3], trx.objects.wolf -
--- and, if it can be counted, that #trx.items is its length.
+-- Declares that a module table can be indexed - trx.items[3], trx.objects.wolf
+-- - and, if it can be counted, that #trx.items is its length.
 --
 -- The registry owns the module's metatable, so a module that set its own would
 -- lose it to the first property declared on it. And pairs() never sees a
@@ -687,8 +691,8 @@ function api.type(path, spec)
     struct.expose_computed(backing, name, computed.impl)
   end
 
-  -- Opt-in exposure is silent by nature: forgetting to declare a member means it
-  -- quietly does not exist. Say so, rather than let it vanish unnoticed.
+  -- Opt-in exposure is silent by nature: forgetting to declare a member means
+  -- it quietly does not exist. Say so, rather than let it vanish unnoticed.
   local undeclared = {}
   for _, member in ipairs(struct.members(backing)) do
     if not declared[member.name] then
@@ -712,15 +716,15 @@ function api.type(path, spec)
 end
 
 -- Declares an enum: what the constants of a C enum are called in Lua, and what
--- they mean. As with api.type, C is the mechanism and this is the contract - the
--- names and values are reflected out of ENUM_MAP (see trx/game/enum.c), so a
--- number is never written twice and the two cannot drift.
+-- they mean. As with api.type, C is the mechanism and this is the contract -
+-- the names and values are reflected out of ENUM_MAP (see trx/game/enum.c), so
+-- a number is never written twice and the two cannot drift.
 --
--- Unlike a struct, an enum is small and wholly public: there is nothing to hide,
--- so exposure is not opt-in. Every constant must be documented, and documenting
--- one that does not exist is an error.
--- The name a constant goes by in Lua. `strip` takes a prefix off the reflected
--- name: the C spelling is what the data files are keyed by and cannot move, but
+-- Unlike a struct, an enum is small and wholly public: there is nothing to
+-- hide, so exposure is not opt-in. Every constant must be documented, and
+-- documenting one that does not exist is an error. The name a constant goes by
+-- in Lua. `strip` takes a prefix off the reflected name: the C spelling is what
+-- the data files are keyed by and cannot move, but
 -- trx.lara.ExtraMesh.EXTRA_MESH_OAR only says EXTRA_MESH twice.
 function api.enum_name(spec, reflected_name)
   local strip = spec.strip
@@ -835,9 +839,10 @@ function api.enum(path, spec)
   return face
 end
 
--- Declares a lone constant sitting on the module table - an angle unit is a macro,
--- not a C enum, so api.enum has nothing to reflect. The value still comes from C,
--- so naming one C does not export fails here rather than quietly being nil.
+-- Declares a lone constant sitting on the module table - an angle unit is a
+-- macro, not a C enum, so api.enum has nothing to reflect. The value still
+-- comes from C, so naming one C does not export fails here rather than quietly
+-- being nil.
 function api.const(path, spec)
   opening("api.const", spec)
   assert(
@@ -853,8 +858,8 @@ function api.const(path, spec)
 end
 
 -- Declares a computed member on a module table. It is not a function and not a
--- stored field: reading it calls into C, and writing it calls a setter, or fails
--- if there is none. The registry owns the module's metatable - see
+-- stored field: reading it calls into C, and writing it calls a setter, or
+-- fails if there is none. The registry owns the module's metatable - see
 -- install_module_meta - so a hand-rolled getter table would sail past seal().
 function api.property(path, spec)
   opening("api.property", spec)
@@ -1016,9 +1021,9 @@ function api.describe()
 
   -- Which module a declaration lands under is the surface talking; which module
   -- loaded first is not - that is the source list in meson.build, and a module
-  -- that requires another pulls it forward. The dump is committed and diffed, so
-  -- it groups by module and cannot move when a load order does, the way a type's
-  -- members and an enum's values already cannot.
+  -- that requires another pulls it forward. The dump is committed and diffed,
+  -- so it groups by module and cannot move when a load order does, the way a
+  -- type's members and an enum's values already cannot.
   --
   -- Within a module the order is the order the file declares in, which is a
   -- choice someone made: trx.music reads play, pause, unpause, stop.
@@ -1055,8 +1060,8 @@ end
 trx.api = api
 
 -- api.type reports members nobody exposed, so the logger must exist by the time
--- any module declares one, and modules load in source-list order, which puts log
--- after items. Force it here rather than depend on that ordering.
+-- any module declares one, and modules load in source-list order, which puts
+-- log after items. Force it here rather than depend on that ordering.
 --
 -- It has to come after `trx.api` is set, not before: log.lua declares itself
 -- through the registry, so requiring it any earlier would hand it a half-built
@@ -1114,8 +1119,8 @@ local function encode(value, out)
 end
 
 -- The complete public API surface. One registry, one source: whatever is not
--- declared here is not reachable from a script, so the dump cannot omit anything
--- that exists.
+-- declared here is not reachable from a script, so the dump cannot omit
+-- anything that exists.
 function api.to_json()
   return table.concat(encode(api.describe(), {}))
 end

@@ -1,8 +1,8 @@
 -- The room API as a script actually sees it.
 --
 -- Everything under these assertions is real: the ROOM FIELD_DESC table, the
--- struct and enum bridges, trxc.rooms, and src/lua/rooms.lua itself. Only
--- the engine below that is fake (see fake_engine_rooms.c).
+-- struct and enum bridges, trxc.rooms, and src/lua/rooms.lua itself. Only the
+-- engine below that is fake (see fake_engine_rooms.c).
 --
 -- The fake level has four rooms. Room 1 and room 2 are a flip pair; rooms 3 and
 -- 4 are ordinary.
