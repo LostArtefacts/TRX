@@ -152,30 +152,11 @@ order: 3
    field is now an array (of at most two values) rather than a single position.
    Update `outfits.json5` accordingly.
 
-19. **Update strings files that override the healing text**
-   `general/osd/heal_already_full_hp` and `general/osd/heal_success` are now
-   `console/cmd/heal/already_full_hp` and `console/cmd/heal/success`. An
-   override under an old key is no longer read, and nothing reports it.
-
-20. **Update scripts that pass an incomplete position**
+19. **Update scripts that pass an incomplete position**
    `{ x = , y = , z = }` needs all three coordinates. A missing one used to read
    as zero in `trx.sound.play`, placing the sound at the edge of the world, and
    raised an unhelpful error elsewhere. It now names the coordinate and the
    argument it came in on.
-
-21. **Update scripts that file assault course records**
-   `trx.assault.stats.add_record`, `remove_record` and `list_records` take the
-   track as a last, optional argument, defaulting to the course as the rest of
-   the module does. The quad bike keeps its own record table, which could not be
-   reached at all before: `trx.assault.stats.list_records(trx.assault.Track.QUAD)`.
-
-22. **Update scripts that reach into `trx.api`**
-   `trx.api` is `strict` and `is_strict`. The declaring functions - `api.define`,
-   `api.type`, `api.enum` and the rest - are gone once the engine has sealed the
-   surface, which happens before any script runs. `trx.api.strict(true)` now
-   checks the arguments of a handle's methods too, so `item:distance_to("over
-   there")` raises where it used to reach C unchecked, and it catches a method
-   called with a dot where a colon was meant.
 
 ### Version 1.8 to 1.9
 
