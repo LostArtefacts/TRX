@@ -38,4 +38,8 @@ test("format keeps every argument under strict", function()
   assert(result == "1 of 5", result)
 end)
 
+test("reload reports whether the language files came back", function()
+  assert(trx.locale.reload() == true)
+end)
+
 return h.report()

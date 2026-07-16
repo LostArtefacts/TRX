@@ -103,8 +103,6 @@
             "save_game": "Geama air a shàbhaladh gu slot %d",
             "save_game_fail_invalid_slot": "Slot sàbhalaidh mì-dhligheach: %d",
             "speed_set": "Astar air a shuidheachadh air %d",
-            "strings_failed": "Dh'fhàillig ath-luchdadh nam faidhlichean cànain",
-            "strings_reloaded": "Chaidh na faidhlichean cànain ath-luchdachadh",
             "textures_off": "Teacsaichean: dheth",
             "textures_on": "Teacsaichean: air",
             "trapezoid_filter_off": "Criathradh trapeasoid dheth",
@@ -433,7 +431,9 @@
                 "set": "Astar air a shuidheachadh air %d",
             },
             "strings": {
+                "failed": "Dh'fhàillig ath-luchdadh nam faidhlichean cànain",
                 "help": "Ath-luchdaich faidhlichean cànain làithreach on diosg.",
+                "reloaded": "Chaidh na faidhlichean cànain ath-luchdachadh",
             },
             "teleport": {
                 "item": "Air a ghluasad gu nì: %d",

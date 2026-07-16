@@ -103,8 +103,6 @@
             "save_game": "Spiel gespeichert auf Speicher-Slot %d",
             "save_game_fail_invalid_slot": "Unzulässiger Speicher-Slot %d",
             "speed_set": "Geschwindigkeit eingestellt auf %d",
-            "strings_failed": "Neu Laden der Sprachdateien ist fehlgeschlagen",
-            "strings_reloaded": "Sprachdateien neu geladen",
             "textures_off": "\\{review}Texturen: aus",
             "textures_on": "\\{review}Texturen: an",
             "trapezoid_filter_off": "Deaktiviert Trapezoid-Filter",
@@ -433,7 +431,9 @@
                 "set": "Geschwindigkeit eingestellt auf %d",
             },
             "strings": {
+                "failed": "Neu Laden der Sprachdateien ist fehlgeschlagen",
                 "help": "Lädt erneut die aktuellen Sprachdateien von der Festplatte.",
+                "reloaded": "Sprachdateien neu geladen",
             },
             "teleport": {
                 "item": "Teleportiert zu Objekt: %d",

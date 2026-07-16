@@ -103,8 +103,6 @@
             "save_game": "Partie sauvegardée dans l'emplacement de sauvegarde %d",
             "save_game_fail_invalid_slot": "Emplacement de sauvegarde %d invalide",
             "speed_set": "Vitesse réglée sur %d",
-            "strings_failed": "\\{review}Échec du rechargement des fichiers de langue",
-            "strings_reloaded": "\\{review}Fichiers de langue rechargés",
             "textures_off": "\\{review}Textures : désactivées",
             "textures_on": "\\{review}Textures : activées",
             "trapezoid_filter_off": "Filtre trapézoïdal désactivé",
@@ -433,7 +431,9 @@
                 "set": "Vitesse réglée sur %d",
             },
             "strings": {
+                "failed": "\\{review}Échec du rechargement des fichiers de langue",
                 "help": "\\{review}Recharge les fichiers de langue actuels depuis le disque.",
+                "reloaded": "\\{review}Fichiers de langue rechargés",
             },
             "teleport": {
                 "item": "Téléporté à l'objet : %d",

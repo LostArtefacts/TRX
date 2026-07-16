@@ -4,9 +4,20 @@
 // translations; what is under test is what the surface does with these and with
 // a key it does not have.
 
+#include <trx/config/types.h>
 #include <trx/game/game_strings/entries.h>
+#include <trx/game/game_strings/manager.h>
 
 #include <string.h>
+
+CONFIG g_Config;
+
+// trx.locale.reload() reloads the language files from disk. There is no disk
+// here, so report success without doing anything.
+bool GameStringManager_ReloadLanguage(const char *const lang)
+{
+    return true;
+}
 
 const char *GameString_Get(const char *const key)
 {

@@ -3335,6 +3335,14 @@
       }
     },
     {
+      "description": "Reloads the current language's text from disk.",
+      "path": "locale.reload",
+      "returns": {
+        "description": "Whether the reload succeeded.",
+        "type": "boolean"
+      }
+    },
+    {
       "description": "Logs a message at a level chosen at runtime, for when the level is computed rather than written literally.",
       "examples": [
         "local level = ok and trx.log.LogLevel.INFO or trx.log.LogLevel.ERROR\ntrx.log.generic(level, \"finished\")"
