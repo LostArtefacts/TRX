@@ -185,4 +185,9 @@ test("screenshot reaches the engine, with a path or without", function()
   trx.game.screenshot("shot.png")
 end)
 
+test("end_level reaches the engine", function()
+  trx.game.end_level()
+  assert(fake.calls().end_level == 1)
+end)
+
 return h.report()

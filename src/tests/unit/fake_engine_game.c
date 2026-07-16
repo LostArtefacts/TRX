@@ -19,6 +19,11 @@ void Screenshot_Make(const SCREENSHOT_FORMAT format)
 void Screenshot_MakeToPath(const char *const path)
 {
 }
+
+void Lara_Cheat_EndLevel(void)
+{
+    g_FakeGameCalls.end_level++;
+}
 #include <string.h>
 
 FAKE_GAME_CALLS g_FakeGameCalls;
@@ -323,6 +328,8 @@ void FakeGame_PushCalls(lua_State *const L)
     lua_setfield(L, -2, "play_demo");
     lua_pushinteger(L, g_FakeGameCalls.play_gym);
     lua_setfield(L, -2, "play_gym");
+    lua_pushinteger(L, g_FakeGameCalls.end_level);
+    lua_setfield(L, -2, "end_level");
     lua_pushinteger(L, g_FakeGameCalls.last_num);
     lua_setfield(L, -2, "last_num");
 }

@@ -3,6 +3,7 @@
 #include <trx/game/game/state.h>
 #include <trx/game/game_flow.h>
 #include <trx/game/game_flow/types.h>
+#include <trx/game/lara/cheat.h>
 #include <trx/game/lua/common.h>
 #include <trx/game/lua/field.h>
 #include <trx/game/lua/registry.h>
@@ -276,6 +277,13 @@ static int M_L_GamePlayGym(lua_State *const L)
     return 0;
 }
 
+// trxc.game.end_level()
+static int M_L_GameEndLevel(lua_State *const L)
+{
+    Lara_Cheat_EndLevel();
+    return 0;
+}
+
 // trxc.game.screenshot([path])
 static int M_L_GameScreenshot(lua_State *const L)
 {
@@ -300,6 +308,7 @@ static const luaL_Reg m_Module[] = {
     { "play_demo", M_L_GamePlayDemo },
     { "play_gym", M_L_GamePlayGym },
     { "screenshot", M_L_GameScreenshot },
+    { "end_level", M_L_GameEndLevel },
     { nullptr, nullptr },
 };
 

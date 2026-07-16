@@ -249,6 +249,11 @@ api.define("game.play_gym", {
   impl = raw.play_gym,
 })
 
+api.define("game.end_level", {
+  description = "Ends the current level, as though Lara had reached its exit.",
+  impl = raw.end_level,
+})
+
 api.define("game.screenshot", {
   description = "Takes a screenshot. Without a path, writes one to the screenshots folder in the "
     .. "player's configured format; with a path, writes to that file.",

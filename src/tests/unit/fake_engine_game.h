@@ -15,6 +15,7 @@ typedef struct {
     int32_t play_cutscene;
     int32_t play_demo;
     int32_t play_gym;
+    int32_t end_level;
     int32_t last_num;
 } FAKE_GAME_CALLS;
 

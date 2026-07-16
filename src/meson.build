@@ -62,6 +62,7 @@ trx_lua_api_sources = files(
 trx_lua_script_sources = files(
   'lua/commands/clear.lua',
   'lua/commands/debug.lua',
+  'lua/commands/end_level.lua',
   'lua/commands/flipmap.lua',
   'lua/commands/flood.lua',
   'lua/commands/heal.lua',
@@ -243,7 +244,6 @@ common_sources = [
   'trx/game/console/cmd/config.c',
   'trx/game/console/cmd/die.c',
   'trx/game/console/cmd/easy_config.c',
-  'trx/game/console/cmd/end_level.c',
   'trx/game/console/cmd/exit_game.c',
   'trx/game/console/cmd/exit_to_title.c',
   'trx/game/console/cmd/fly.c',

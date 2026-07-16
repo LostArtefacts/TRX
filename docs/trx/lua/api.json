@@ -3152,6 +3152,10 @@
       "path": "game.play_gym"
     },
     {
+      "description": "Ends the current level, as though Lara had reached its exit.",
+      "path": "game.end_level"
+    },
+    {
       "description": "Takes a screenshot. Without a path, writes one to the screenshots folder in the player's configured format; with a path, writes to that file.",
       "params": [
         {
