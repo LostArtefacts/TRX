@@ -87,7 +87,6 @@
             "give_item_cheat": "Plecak Lary stał się znacznie cięższy!",
             "invalid_demo": "Nieprawidłowe demo",
             "invalid_item": "Nieznany przedmiot: %s",
-            "invalid_level": "Nieznany poziom",
             "invalid_object": "Nieznany obiekt",
             "invalid_room": "Nieprawidłowe pomieszczenie: %d. Prawidłowe pomieszczenia to 0-%d",
             "invalid_sample": "Nieprawidłowy dźwięk: %d",
@@ -101,7 +100,6 @@
             "load_game_fail_unavailable_slot": "Slot zapisu %d jest niedostępny",
             "object_not_found": "Nie odnaleziono tego obiektu",
             "play_demo": "Wczytano demo %d",
-            "play_level": "Wczytano %s",
             "pos_lara_missing": "Nie znaleziono Lary",
             "pos_lara_pos_fmt": "Pomieszczenie: %d\nPozycja: %.3f, %.3f, %.3f\nRotacja: %.3f, %.3f, %.3f",
             "pos_level_fmt": "Poziom %d",
@@ -399,6 +397,8 @@
             },
             "play_level": {
                 "help": "Wczytuje poziom o podanej nazwie lub numerze.",
+                "invalid": "Nieznany poziom",
+                "loading": "Wczytano %s",
             },
             "play_music": {
                 "invalid_track": "Nieprawidłowa ścieżka muzyczka",

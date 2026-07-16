@@ -199,6 +199,14 @@ api.define("game.play_level", {
       type = "integer",
       description = "1-based position in `trx.game.levels`.",
     },
+    {
+      name = "opts",
+      type = "table",
+      optional = true,
+      description = "`select`: start the level as the level-select screen does, rebuilding "
+        .. "Lara's inventory to what she would carry on reaching it. Without it the level "
+        .. "continues from the one in progress.",
+    },
   },
   examples = { [[trx.game.play_level(1)]] },
   impl = raw.play_level,

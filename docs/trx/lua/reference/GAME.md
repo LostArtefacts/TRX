@@ -88,11 +88,12 @@ Module for the game flow: which levels there are, and which one is being played.
 
 ### Functions
 
-- [lua]`trx.game.play_level(num)`  
+- [lua]`trx.game.play_level(num, [opts])`  
   Starts a level from `trx.game.levels`.
 
   Parameters:
   - **`num`** (integer). 1-based position in `trx.game.levels`.
+  - **`opts`** (table, optional). `select`: start the level as the level-select screen does, rebuilding Lara's inventory to what she would carry on reaching it. Without it the level continues from the one in progress.
 
   Example:
   ```lua
