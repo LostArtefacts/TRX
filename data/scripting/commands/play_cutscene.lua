@@ -21,10 +21,7 @@ local function run(args)
 
   trx.game.play_cutscene(num)
   return trx.console.Result.OK,
-    trx.locale.format(
-      "console/cmd/play_cutscene/loading",
-      cutscenes[num].num + 1
-    )
+    trx.locale.format("console/cmd/play_cutscene/loading", cutscenes[num].num)
 end
 
 for _, name in ipairs({ "cut", "cutscene" }) do
