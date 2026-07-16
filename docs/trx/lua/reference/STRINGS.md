@@ -51,6 +51,22 @@ Not to be confused with `trx.locale`, which is the text a player reads: this mod
   local on = trx.strings.parse_bool("on")
   ```
 
+- [lua]`trx.strings.collapse_ranges(numbers, [separator])`  
+  Writes a list of whole numbers as ranges, so that a long run reads as one: `{ 0, 2, 3, 4, 9 }` becomes `0, 2-4, 9`.
+
+  The list is sorted first, and duplicates survive as they are, so the caller need not tidy up before handing it over.
+
+  Parameters:
+  - **`numbers`** (table). List of integers.
+  - **`separator`** (string, optional). What to put between the parts. Defaults to `", "`.
+
+  Returns: string. Empty when the list is.
+
+  Example:
+  ```lua
+  trx.strings.collapse_ranges({ 4, 1, 2, 3 }) -- "1-4"
+  ```
+
 - [lua]`trx.strings.regex_match(subject, pattern)`  
   Whether a subject matches a regular expression. Case-insensitive.
 
