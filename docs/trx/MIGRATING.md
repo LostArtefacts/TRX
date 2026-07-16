@@ -134,9 +134,23 @@ order: 3
    It was removed. Use `trx.log.LogLevel`, which is the same enum:
    `trx.console.log.generic(trx.log.LogLevel.ERROR, "...")`.
 
-16. **Update scripts that call `trx.music.play_track`**
-   It was an undocumented alias of `trx.music.play` and was removed. Use
-   `trx.music.play(id[, opts])`.
+16. **Update scripts that use the music module**
+   The soundtrack is addressed through track and stream handles now.
+   - `trx.music.play_track` was an undocumented alias of `trx.music.play` and was
+     removed. Use `trx.music.play(id[, opts])`, which stays as a convenience, or
+     `trx.music.tracks[id]:play([opts])`.
+   - `trx.music.get_track()` and `trx.music.get_looped_track()` became the
+     properties `trx.music.current_track` and `trx.music.looped_track`. They hand
+     back a `trx.music.Track` rather than an id, so read `.id` for the number, or
+     call `:play()` / `:path()` on it. Both are `nil` when nothing is playing.
+   - `trx.music.is_available(id)` was removed. A track is available when
+     `trx.music.tracks[id]` is not `nil`.
+   - `trx.music.available_tracks()` became `trx.music.tracks`, a collection of
+     `trx.music.Track` handles keyed by id: `trx.music.tracks[5]` is track 5, `#`
+     counts the available ones, and iterating walks them.
+   - `trx.music.streams` is a collection of `trx.music.Stream` handles - `[1]` the
+     main stream, `[2]` onwards the overlays - each of which can be paused,
+     resumed, sought and stopped on its own.
 
 17. **Update scripts that address levels by number**
    `trx.game.levels` is the levels the game numbers, and a gym is not one of

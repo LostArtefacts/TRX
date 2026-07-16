@@ -3450,16 +3450,6 @@
       }
     },
     {
-      "description": "The track currently playing.",
-      "path": "music.get_track",
-      "returns": {
-        "description": "`nil` if nothing is playing.",
-        "enum": "catalog.music",
-        "nullable": true,
-        "type": "integer"
-      }
-    },
-    {
       "description": "Plays a track. Raises if the track or the mode is invalid.",
       "examples": [
         "trx.music.play(1)\ntrx.music.play(2, { mode = trx.music.PlayMode.LOOP })"
@@ -4008,6 +3998,30 @@
       "writable": false
     },
     {
+      "description": "The soundtrack's streams as `trx.music.Stream` handles: `[1]` is the main stream, `[2]` onwards the overlay slots. A slot that is not playing still answers, with a stale handle. Indexing and iterating reach one handle at a time.",
+      "path": "music.streams",
+      "type": "table",
+      "writable": false
+    },
+    {
+      "description": "The tracks the current level carries, as `trx.music.Track` handles keyed by id: `trx.music.tracks[5]` is track 5, or `nil` if the level has no such track. `#` counts them, iterating walks them, and both reach one handle at a time.",
+      "path": "music.tracks",
+      "type": "table",
+      "writable": false
+    },
+    {
+      "description": "The track playing now, as a `trx.music.Track`, or `nil` when nothing plays.",
+      "path": "music.current_track",
+      "type": "Track",
+      "writable": false
+    },
+    {
+      "description": "The ambient track that resumes once the current one-shot finishes, as a `trx.music.Track`, or `nil` when none is set.",
+      "path": "music.looped_track",
+      "type": "Track",
+      "writable": false
+    },
+    {
       "description": "Whether the room map is currently flipped.",
       "path": "rooms.flipped",
       "type": "boolean",
@@ -4465,6 +4479,113 @@
       ],
       "methods": [],
       "path": "lara.Lara"
+    },
+    {
+      "description": "One of the soundtrack's playing streams: the main stream, or an overlay. Reach them through `trx.music.streams`. A handle to a slot that is not playing goes stale, so reading a field or calling a method on it raises; check `is_valid()` first.",
+      "extensions": [],
+      "fields": [
+        {
+          "description": "How the track is playing.",
+          "enum": "music.PlayMode",
+          "name": "mode",
+          "type": "integer",
+          "writable": false
+        },
+        {
+          "description": "How far into the track the stream is, in seconds.",
+          "name": "timestamp",
+          "type": "number",
+          "writable": false
+        },
+        {
+          "description": "The track this stream is playing.",
+          "enum": "catalog.music",
+          "name": "track_id",
+          "type": "integer",
+          "writable": false
+        }
+      ],
+      "methods": [
+        {
+          "description": "Whether the slot is still playing. A stream that has finished, or been stopped, leaves its handle stale.",
+          "name": "is_valid",
+          "returns": {
+            "type": "boolean"
+          }
+        },
+        {
+          "description": "Pauses this stream.",
+          "name": "pause"
+        },
+        {
+          "description": "Seeks this stream to a timestamp.",
+          "name": "seek",
+          "params": [
+            {
+              "description": "Where to seek to, in seconds.",
+              "name": "timestamp",
+              "type": "number"
+            }
+          ],
+          "returns": {
+            "description": "Whether the seek took.",
+            "type": "boolean"
+          }
+        },
+        {
+          "description": "Stops this stream. Stopping the main stream lets a deferred ambient loop resume; an overlay just ends.",
+          "name": "stop"
+        },
+        {
+          "description": "Resumes this stream.",
+          "name": "unpause"
+        }
+      ],
+      "path": "music.Stream"
+    },
+    {
+      "description": "A track the current level carries. Reach them through `trx.music.tracks`, or as `trx.music.current_track`. A handle to a track the loaded level does not carry goes stale, so `is_valid()` answers whether it is still there.",
+      "extensions": [],
+      "fields": [
+        {
+          "description": "The track's id.",
+          "enum": "catalog.music",
+          "name": "id",
+          "type": "integer",
+          "writable": false
+        }
+      ],
+      "methods": [
+        {
+          "description": "Whether the loaded level still carries this track.",
+          "name": "is_valid",
+          "returns": {
+            "type": "boolean"
+          }
+        },
+        {
+          "description": "Resolves the track's file path.",
+          "name": "path",
+          "returns": {
+            "description": "`nil` when there is no file, e.g. a CD-audio soundtrack.",
+            "nullable": true,
+            "type": "string"
+          }
+        },
+        {
+          "description": "Plays this track.",
+          "name": "play",
+          "params": [
+            {
+              "description": "`mode`: a `trx.music.PlayMode`. Defaults to `ONCE`.",
+              "name": "opts",
+              "optional": true,
+              "type": "table"
+            }
+          ]
+        }
+      ],
+      "path": "music.Track"
     },
     {
       "description": "An object definition.",

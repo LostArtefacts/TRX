@@ -437,6 +437,15 @@ int32_t Music_GetTrackLimit(void)
     return m_Backend->get_track_limit(m_Backend);
 }
 
+char *Music_GetTrackPath(const MUSIC_ID track)
+{
+    if (!m_Initialised || m_Backend == nullptr
+        || m_Backend->get_track_path == nullptr) {
+        return nullptr;
+    }
+    return m_Backend->get_track_path(m_Backend, track);
+}
+
 void Music_Stop(void)
 {
     m_TrackCurrent = MX_INACTIVE;
@@ -557,6 +566,90 @@ bool Music_GetStreamState(
     }
 
     return false;
+}
+
+// Slot 0 is the main stream; slots 1.. are the overlays.
+static M_MUSIC_STREAM *M_GetStreamBySlot(const int32_t slot)
+{
+    if (slot == 0) {
+        return &m_MainStream;
+    }
+    if (slot >= 1 && slot <= MUSIC_MAX_OVERLAY_TRACKS) {
+        return &m_OverlayStreams[slot - 1];
+    }
+    return nullptr;
+}
+
+int32_t Music_GetStreamSlotCount(void)
+{
+    return 1 + MUSIC_MAX_OVERLAY_TRACKS;
+}
+
+bool Music_GetStreamSlotState(
+    const int32_t slot, MUSIC_STREAM_STATE *const out_state)
+{
+    if (out_state == nullptr) {
+        return false;
+    }
+    if (slot == 0) {
+        return M_GetMainTrackState(out_state);
+    }
+    const M_MUSIC_STREAM *const stream = M_GetStreamBySlot(slot);
+    if (stream == nullptr || !stream->active) {
+        return false;
+    }
+    out_state->track_id = stream->track_id;
+    out_state->mode = stream->mode;
+    out_state->timestamp = Audio_Stream_GetTimestamp(stream->audio_stream_id);
+    return true;
+}
+
+void Music_StopStream(const int32_t slot)
+{
+    if (slot == 0) {
+        // Stopping the main one-shot lets the deferred ambient loop resume;
+        // when the ambient loop is what plays, there is nothing to resume, so
+        // it ends.
+        const bool had_current = m_TrackCurrent != MX_INACTIVE;
+        const MUSIC_ID looped = m_TrackLooped;
+        M_StopMainStream();
+        m_TrackCurrent = MX_INACTIVE;
+        if (had_current && looped >= 0) {
+            Music_Play_Direct(looped, MPM_LOOP);
+        } else {
+            m_TrackLooped = MX_INACTIVE;
+        }
+        return;
+    }
+    M_MUSIC_STREAM *const stream = M_GetStreamBySlot(slot);
+    if (stream != nullptr) {
+        M_StreamClose(stream);
+    }
+}
+
+void Music_PauseStream(const int32_t slot)
+{
+    const M_MUSIC_STREAM *const stream = M_GetStreamBySlot(slot);
+    if (stream != nullptr && stream->active && stream->audio_stream_id >= 0) {
+        Audio_Stream_Pause(stream->audio_stream_id);
+    }
+}
+
+void Music_UnpauseStream(const int32_t slot)
+{
+    const M_MUSIC_STREAM *const stream = M_GetStreamBySlot(slot);
+    if (stream != nullptr && stream->active && stream->audio_stream_id >= 0) {
+        Audio_Stream_Unpause(stream->audio_stream_id);
+    }
+}
+
+bool Music_SeekStream(const int32_t slot, const double timestamp)
+{
+    const M_MUSIC_STREAM *const stream = M_GetStreamBySlot(slot);
+    if (stream == nullptr || !stream->active || stream->audio_stream_id < 0) {
+        return false;
+    }
+    return Audio_Stream_SeekTimestamp(stream->audio_stream_id, timestamp);
 }
 
 bool Music_SeekTrackTimestamp(

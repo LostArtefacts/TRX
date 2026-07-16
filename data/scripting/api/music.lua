@@ -18,15 +18,195 @@ local PlayMode = api.enum("music.PlayMode", {
   },
 })
 
-api.define("music.get_track", {
-  description = "The track currently playing.",
-  returns = {
-    type = "integer",
-    nullable = true,
-    enum = "catalog.music",
-    description = "`nil` if nothing is playing.",
+api.type("music.Stream", {
+  backing = "MUSIC_STREAM_VIEW",
+  description = "One of the soundtrack's playing streams: the main stream, or an overlay. "
+    .. "Reach them through `trx.music.streams`. A handle to a slot that is not playing goes "
+    .. "stale, so reading a field or calling a method on it raises; check `is_valid()` first.",
+
+  fields = {
+    track_id = {
+      from = "track_id",
+      type = "integer",
+      writable = false,
+      enum = "catalog.music",
+      description = "The track this stream is playing.",
+    },
+    mode = {
+      from = "mode",
+      type = "integer",
+      writable = false,
+      enum = "music.PlayMode",
+      description = "How the track is playing.",
+    },
+    timestamp = {
+      from = "timestamp",
+      type = "number",
+      writable = false,
+      description = "How far into the track the stream is, in seconds.",
+    },
   },
-  impl = raw.get_track,
+
+  methods = {
+    is_valid = {
+      returns = { type = "boolean" },
+      description = "Whether the slot is still playing. A stream that has finished, or been "
+        .. "stopped, leaves its handle stale.",
+    },
+    pause = {
+      description = "Pauses this stream.",
+    },
+    unpause = {
+      description = "Resumes this stream.",
+    },
+    seek = {
+      params = {
+        {
+          name = "timestamp",
+          type = "number",
+          description = "Where to seek to, in seconds.",
+        },
+      },
+      returns = { type = "boolean", description = "Whether the seek took." },
+      description = "Seeks this stream to a timestamp.",
+    },
+    stop = {
+      description = "Stops this stream. Stopping the main stream lets a deferred ambient loop "
+        .. "resume; an overlay just ends.",
+    },
+  },
+})
+
+api.type("music.Track", {
+  backing = "MUSIC_TRACK_VIEW",
+  description = "A track the current level carries. Reach them through `trx.music.tracks`, or "
+    .. "as `trx.music.current_track`. A handle to a track the loaded level does not carry goes "
+    .. "stale, so `is_valid()` answers whether it is still there.",
+
+  fields = {
+    id = {
+      from = "id",
+      type = "integer",
+      writable = false,
+      enum = "catalog.music",
+      description = "The track's id.",
+    },
+  },
+
+  methods = {
+    is_valid = {
+      returns = { type = "boolean" },
+      description = "Whether the loaded level still carries this track.",
+    },
+    play = {
+      params = {
+        {
+          name = "opts",
+          type = "table",
+          optional = true,
+          description = "`mode`: a `trx.music.PlayMode`. Defaults to `ONCE`.",
+        },
+      },
+      description = "Plays this track.",
+    },
+    path = {
+      returns = {
+        type = "string",
+        nullable = true,
+        description = "`nil` when there is no file, e.g. a CD-audio soundtrack.",
+      },
+      description = "Resolves the track's file path.",
+    },
+  },
+})
+
+-- One lazy view apiece: indexing and iterating reach into C a handle at a time,
+-- so neither builds a list up front.
+local streams = setmetatable({}, {
+  __index = function(_, n)
+    if type(n) ~= "number" then
+      return nil
+    end
+    return raw.stream_get(n - 1)
+  end,
+  __len = function()
+    return raw.stream_count()
+  end,
+  __pairs = function()
+    local count = raw.stream_count()
+    local i = 0
+    return function()
+      i = i + 1
+      if i <= count then
+        return i, raw.stream_get(i - 1)
+      end
+    end
+  end,
+})
+
+local tracks = setmetatable({}, {
+  __index = function(_, id)
+    if type(id) ~= "number" then
+      return nil
+    end
+    return raw.track_get(id)
+  end,
+  __len = function()
+    return raw.track_available_count()
+  end,
+  __pairs = function()
+    local limit = raw.track_limit()
+    local id = -1
+    return function()
+      id = id + 1
+      while id < limit do
+        local track = raw.track_get(id)
+        if track ~= nil then
+          return id, track
+        end
+        id = id + 1
+      end
+    end
+  end,
+})
+
+api.property("music.streams", {
+  type = "table",
+  description = "The soundtrack's streams as `trx.music.Stream` handles: `[1]` is the main "
+    .. "stream, `[2]` onwards the overlay slots. A slot that is not playing still answers, with a "
+    .. "stale handle. Indexing and iterating reach one handle at a time.",
+  get = function()
+    return streams
+  end,
+})
+
+api.property("music.tracks", {
+  type = "table",
+  description = "The tracks the current level carries, as `trx.music.Track` handles keyed by id: "
+    .. "`trx.music.tracks[5]` is track 5, or `nil` if the level has no such track. `#` counts them, "
+    .. "iterating walks them, and both reach one handle at a time.",
+  get = function()
+    return tracks
+  end,
+})
+
+api.property("music.current_track", {
+  type = "Track",
+  description = "The track playing now, as a `trx.music.Track`, or `nil` when nothing plays.",
+  get = function()
+    local id = raw.get_track()
+    return id ~= nil and raw.track_get(id) or nil
+  end,
+})
+
+api.property("music.looped_track", {
+  type = "Track",
+  description = "The ambient track that resumes once the current one-shot finishes, as a "
+    .. "`trx.music.Track`, or `nil` when none is set.",
+  get = function()
+    local id = raw.get_looped_track()
+    return id ~= nil and raw.track_get(id) or nil
+  end,
 })
 
 api.define("music.play", {
