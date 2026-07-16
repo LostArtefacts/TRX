@@ -1,0 +1,65 @@
+#!/usr/bin/env python3
+"""Fail the commit if its message breaks the 50/72 rule.
+
+Subject line <= 50 chars, a blank line, then body wrapped at <= 72 chars.
+Wired in as a prek/pre-commit commit-msg hook so it is enforced mechanically
+instead of by memory.
+"""
+
+import sys
+from collections.abc import Sequence
+from pathlib import Path
+
+MAX_SUBJECT = 50
+MAX_BODY = 72
+
+
+def main(argv: Sequence[str]) -> int:
+    if len(argv) != 2:
+        sys.stderr.write(f"Usage: {argv[0]} COMMIT_MSG_FILE\n")
+        return 2
+
+    message_path = Path(argv[1])
+    with message_path.open(encoding="utf-8") as handle:
+        raw_lines = handle.read().splitlines()
+
+    # `git commit -v` appends a diff below a scissors line; ignore it.
+    cut = next(
+        (
+            i
+            for i, line in enumerate(raw_lines)
+            if ">8" in line and line[:1] == "#"
+        ),
+        None,
+    )
+    if cut is not None:
+        raw_lines = raw_lines[:cut]
+
+    lines = [line for line in raw_lines if not line.startswith("#")]
+    while lines and not lines[-1].strip():
+        lines.pop()
+    if not lines:
+        return 0
+
+    errors: list[str] = []
+    subject = lines[0]
+    if len(subject) > MAX_SUBJECT:
+        errors.append(f"subject is {len(subject)} chars (max {MAX_SUBJECT})")
+    if len(lines) > 1 and lines[1].strip():
+        errors.append("second line must be blank (subject, blank, body)")
+    for number, line in enumerate(lines[2:], start=3):
+        if len(line) > MAX_BODY:
+            errors.append(
+                f"body line {number} is {len(line)} chars (max {MAX_BODY})"
+            )
+
+    if errors:
+        sys.stderr.write("Commit message breaks the 50/72 rule:\n")
+        for error in errors:
+            sys.stderr.write(f"  - {error}\n")
+        return 1
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main(sys.argv))
