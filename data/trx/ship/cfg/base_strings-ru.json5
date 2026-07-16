@@ -51,10 +51,6 @@
             "ambiguous_input_3": "Неоднозначный ввод: %s, %s, ...",
             "bilinear_filter_off": "\\{review}Билинейная фильтрация: выкл",
             "bilinear_filter_on": "\\{review}Билинейная фильтрация: вкл",
-            "burn_fail_already_off": "\\{review}Лара сейчас не горит",
-            "burn_fail_already_on": "\\{review}Лара уже горит",
-            "burn_off": "\\{review}Лару потушили - фух!",
-            "burn_on": "\\{review}Лара теперь горит - ай!",
             "command_bad_invocation": "Недопустимый вызов: %s",
             "command_bool": "вкл, выкл",
             "command_decimal": "[десятичн.]",
@@ -273,7 +269,11 @@
                 "help": "Переключает косу Лары.",
             },
             "burn": {
+                "already_off": "\\{review}Лара сейчас не горит",
+                "already_on": "\\{review}Лара уже горит",
                 "help": "\\{review}Включает или отключает состояние горения Лары.",
+                "off": "\\{review}Лару потушили - фух!",
+                "on": "\\{review}Лара теперь горит - ай!",
             },
             "cheats": {
                 "help": "Вкл/выкл внутриигровые читы.",

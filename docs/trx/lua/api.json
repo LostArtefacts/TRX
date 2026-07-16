@@ -4493,10 +4493,10 @@
           "writable": false
         },
         {
-          "description": "Whether Lara is on fire.",
+          "description": "Whether Lara is on fire. Setting it lights her or puts her out.",
           "name": "is_burning",
           "type": "boolean",
-          "writable": false
+          "writable": true
         },
         {
           "description": "Whether Lara is on a climbable wall.",

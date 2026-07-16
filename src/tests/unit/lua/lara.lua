@@ -28,12 +28,22 @@ end)
 
 test("a field declared read-only cannot be written", function()
   raises(function()
-    trx.lara.is_burning = true
-  end)
-  raises(function()
     trx.lara.water_status = trx.lara.WaterState.UNDERWATER
   end)
-  assert(trx.lara.is_burning == false, "the write must not have landed")
+  assert(
+    trx.lara.water_status ~= trx.lara.WaterState.UNDERWATER,
+    "the write must not have landed"
+  )
+end)
+
+test("is_burning lights Lara and puts her out", function()
+  trx.lara.is_burning = true
+  assert(fake.calls().catch_fire == 1, "did not reach Lara_CatchFire")
+  assert(trx.lara.is_burning == true, "she should be on fire")
+
+  trx.lara.is_burning = false
+  assert(fake.calls().extinguish == 1, "did not reach Lara_Extinguish")
+  assert(trx.lara.is_burning == false, "she should be out")
 end)
 
 test("a member of LARA_INFO nobody declared is not reachable", function()

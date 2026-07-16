@@ -51,10 +51,6 @@
             "ambiguous_input_3": "Ambiguous input: %s, %s, ...",
             "bilinear_filter_off": "Bilinear filter: off",
             "bilinear_filter_on": "Bilinear filter: on",
-            "burn_fail_already_off": "Lara's not currently on fire",
-            "burn_fail_already_on": "Lara's already on fire",
-            "burn_off": "Lara's been extinguished - phew!",
-            "burn_on": "Lara's now on fire - ouch!",
             "command_bad_invocation": "Invalid invocation: %s",
             "command_bool": "on, off",
             "command_decimal": "[decimal]",
@@ -273,7 +269,11 @@
                 "help": "Toggles Lara's braid.",
             },
             "burn": {
+                "already_off": "Lara's not currently on fire",
+                "already_on": "Lara's already on fire",
                 "help": "Toggles Lara being on fire.",
+                "off": "Lara's been extinguished - phew!",
+                "on": "Lara's now on fire - ouch!",
             },
             "cheats": {
                 "help": "Toggles in-game cheats on or off.",

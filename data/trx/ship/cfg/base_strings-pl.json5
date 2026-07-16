@@ -51,10 +51,6 @@
             "ambiguous_input_3": "Niejednoznaczne wywołanie: %s, %s, ...",
             "bilinear_filter_off": "Filtr tekstur: punktowy",
             "bilinear_filter_on": "Filtr tekstur: dwuliniowy",
-            "burn_fail_already_off": "\\{review}Lara nie jest obecnie w ogniu",
-            "burn_fail_already_on": "\\{review}Lara już płonie",
-            "burn_off": "\\{review}Lara została ugaszona - uff!",
-            "burn_on": "\\{review}Lara płonie - auć!",
             "command_bad_invocation": "Nieprawidłowe wywołanie: %s",
             "command_bool": "1, 0",
             "command_decimal": "[liczba ułamkowa]",
@@ -273,7 +269,11 @@
                 "help": "Włącza lub wyłącza warkocz Lary.",
             },
             "burn": {
+                "already_off": "\\{review}Lara nie jest obecnie w ogniu",
+                "already_on": "\\{review}Lara już płonie",
                 "help": "\\{review}Włącza lub wyłącza to, czy Lara płonie.",
+                "off": "\\{review}Lara została ugaszona - uff!",
+                "on": "\\{review}Lara płonie - auć!",
             },
             "cheats": {
                 "help": "Włącza lub wyłącza cheaty.",
