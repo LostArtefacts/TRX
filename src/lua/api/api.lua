@@ -630,20 +630,21 @@ local function method_params(spec_params, type_name)
 end
 
 -- A type's methods reach C directly, so make_checked has to go in front of the
--- C function rather than around a Lua one. Extensions take nothing but the
--- handle __index hands them, so there is nothing of the script's to check.
+-- C function rather than around a Lua one. A method may instead carry an
+-- `impl`, a Lua function taking the handle first, and is exposed as it stands.
+-- Extensions take nothing but the handle __index hands them, so there is
+-- nothing of the script's to check.
 local function bind_type_methods(path)
   local spec = types.by_path[path]
   local backing = spec.backing
   local _, type_name = split_path(path)
   for name, method in pairs(spec.methods or {}) do
-    local from = method.from or name
     -- The wrapper goes in front of the C function, which struct.method hands
     -- back; without strict mode the name reaches C to bind directly.
-    local exposed = from
+    local exposed = method.impl or method.from or name
     if strict_enabled then
       exposed = make_checked(
-        struct.method(backing, from),
+        method.impl or struct.method(backing, method.from or name),
         path .. "." .. name,
         method_params(method.params, type_name)
       )

@@ -3346,6 +3346,40 @@
       }
     },
     {
+      "description": "Happens when an item changes rooms during play, which a cutscene or the attract demo is not. `trx.rooms.Room:on_enter` and `:on_exit` are this same event, narrowed to one room.",
+      "examples": [
+        "trx.events.on_room_change(function(item, old_room, new_room)\n  trx.log.info(item.object_id .. \" moved to room \" .. new_room)\nend)"
+      ],
+      "params": [
+        {
+          "name": "callback",
+          "params": [
+            {
+              "description": "The `trx.items.Item` that changed rooms.",
+              "name": "item",
+              "type": "Item"
+            },
+            {
+              "description": "0-based number of the room it left, or -1 if it had none.",
+              "name": "old_room",
+              "type": "integer"
+            },
+            {
+              "description": "0-based number of the room it entered, or -1 if it left the world.",
+              "name": "new_room",
+              "type": "integer"
+            }
+          ],
+          "type": "function"
+        }
+      ],
+      "path": "events.on_room_change",
+      "returns": {
+        "description": "Listener id. Pass it to `trx.events.detach` to stop listening.",
+        "type": "integer"
+      }
+    },
+    {
       "description": "Removes a previously attached handler, which stops firing immediately.",
       "examples": [
         "local id = trx.events.before_control(function()\n  -- handle control loop event\nend)\ntrx.events.detach(id)"
@@ -5383,6 +5417,63 @@
           "name": "is_valid",
           "returns": {
             "type": "boolean"
+          }
+        },
+        {
+          "description": "Happens when something changes rooms into this one.",
+          "examples": [
+            "trx.rooms[7]:on_enter(function(item)\n  trx.log.info(\"entered room 7\")\nend)"
+          ],
+          "name": "on_enter",
+          "params": [
+            {
+              "name": "callback",
+              "params": [
+                {
+                  "description": "The `trx.items.Item` that changed rooms.",
+                  "name": "item",
+                  "type": "Item"
+                }
+              ],
+              "type": "function"
+            },
+            {
+              "description": "Options. `watch = \"lara\"` (the default) reacts to Lara alone; `watch = \"all\"` to every item.",
+              "name": "opts",
+              "optional": true,
+              "type": "table"
+            }
+          ],
+          "returns": {
+            "description": "Listener id. Pass it to `trx.events.detach` to stop listening.",
+            "type": "integer"
+          }
+        },
+        {
+          "description": "Happens when something changes rooms out of this one.",
+          "name": "on_exit",
+          "params": [
+            {
+              "name": "callback",
+              "params": [
+                {
+                  "description": "The `trx.items.Item` that changed rooms.",
+                  "name": "item",
+                  "type": "Item"
+                }
+              ],
+              "type": "function"
+            },
+            {
+              "description": "Options. `watch = \"lara\"` (the default) reacts to Lara alone; `watch = \"all\"` to every item.",
+              "name": "opts",
+              "optional": true,
+              "type": "table"
+            }
+          ],
+          "returns": {
+            "description": "Listener id. Pass it to `trx.events.detach` to stop listening.",
+            "type": "integer"
           }
         }
       ],

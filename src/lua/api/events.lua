@@ -219,6 +219,46 @@ end)]],
   end,
 })
 
+api.define("events.on_room_change", {
+  description = "Happens when an item changes rooms during play, which a cutscene or the attract "
+    .. "demo is not. `trx.rooms.Room:on_enter` and `:on_exit` are this same event, narrowed to "
+    .. "one room.",
+  params = {
+    {
+      name = "callback",
+      type = "function",
+      params = {
+        {
+          name = "item",
+          type = "Item",
+          description = "The `trx.items.Item` that changed rooms.",
+        },
+        {
+          name = "old_room",
+          type = "integer",
+          description = "0-based number of the room it left, or -1 if it had none.",
+        },
+        {
+          name = "new_room",
+          type = "integer",
+          description = "0-based number of the room it entered, or -1 if it left the world.",
+        },
+      },
+    },
+  },
+  returns = LISTENER_ID,
+  examples = {
+    [[trx.events.on_room_change(function(item, old_room, new_room)
+  trx.log.info(item.object_id .. " moved to room " .. new_room)
+end)]],
+  },
+  impl = function(callback)
+    return raw.attach(types.ROOM_CHANGE, function(item_num, old_room, new_room)
+      callback(trx.items[item_num], old_room, new_room)
+    end)
+  end,
+})
+
 api.define("events.detach", {
   description = "Removes a previously attached handler, which stops firing immediately.",
   params = {

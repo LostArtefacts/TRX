@@ -52,6 +52,8 @@ The Lua integration was rewritten and existing scripts will need updating; refer
 - added new Lua game state, `trx.game.is_loaded` and `trx.game.is_playable`
 - added `trx.console.register()`, for a script to add its own console command
 - added `trx.events.on_flip_effect()`, letting a script handle a flipeffect run by a trigger or an animation command (#4108)
+- added `trx.events.on_room_change()`, which happens whenever an item changes rooms
+- added `room:on_enter()` and `room:on_exit()`, which happen when Lara - or, with `watch = "all"`, any item - changes rooms
 - added `trx.lara.cure_poison()` and `trx.lara.extinguish()`, to clear Lara's poison and put her out
 - added `trx.lara.dry()` and `trx.lara.is_wet`, to dry Lara off after a swim and to check whether she needs it
 - added `trx.lara.is_flying`, to read and toggle the fly-mode cheat
