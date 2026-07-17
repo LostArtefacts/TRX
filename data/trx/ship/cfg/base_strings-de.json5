@@ -1603,6 +1603,10 @@
             "title": "Brise",
             "description": "Aktiviert eine Brise, die Laras Zopf in den richtigen Räumen zum Wehen bringt.",
         },
+        "visuals.enable_droplets": {
+            "title": "\\{review}Wassertropfen",
+            "description": "\\{review}Aktiviert das Anzeigen von Wassertropfen, die von Lara tropfen, nachdem sie das Wasser verlassen hat.",
+        },
         "visuals.enable_exit_fade_effects": {
             "title": "Abblenden beim Beenden des Spiels",
             "description": "Aktiviert die Abblend-Effekte wenn man das Spiel vollständig beendet.",

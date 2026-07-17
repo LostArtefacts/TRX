@@ -624,6 +624,13 @@ void SG_File_DumpLara(JSON_WRITE_IO *const io)
 
     JSONW_WRITE(io, "mesh_effects", lara->mesh_effects);
 
+    JSONW_PUSH_ARRAY(io);
+    for (int32_t i = 0; i < LM_NUMBER_OF; i++) {
+        JSONW_PUSH_VALUE(io, (int32_t)lara->wet[i]);
+        JSONW_POP_AND_APPEND(io);
+    }
+    JSONW_POP_AND_SET(io, "wet");
+
     JSONW_PUSH_OBJECT(io);
     JSONW_WRITE(io, "skin_type", Lara_Skin_GetType());
     JSONW_WRITE(io, "skin_is_default", Lara_Skin_IsDefaultType());

@@ -1603,6 +1603,10 @@
             "title": "Effetto brezza",
             "description": "Abilita l'effetto brezza sulla treccia di Lara nelle stanze appropriate.",
         },
+        "visuals.enable_droplets": {
+            "title": "\\{review}Gocce d'acqua",
+            "description": "\\{review}Abilita la visualizzazione delle gocce d'acqua che cadono da Lara dopo che è uscita dall'acqua.",
+        },
         "visuals.enable_exit_fade_effects": {
             "title": "Dissolvenza in uscita",
             "description": "Abilita l'effetto di dissolvenza quando si esce dal gioco.",

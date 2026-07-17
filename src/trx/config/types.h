@@ -100,6 +100,7 @@ typedef struct {
         bool enable_weather;
         bool enable_poison_vision;
         bool enable_footprints;
+        bool enable_droplets;
         bool enable_ps1_crystals;
 
         bool fix_item_rots;

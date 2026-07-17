@@ -279,6 +279,7 @@ common_sources = [
   'trx/game/flyby_mode.c',
   'trx/game/fmv.c',
   'trx/game/fx/common.c',
+  'trx/game/fx/droplets.c',
   'trx/game/fx/footprint.c',
   'trx/game/fx/gun_flash.c',
   'trx/game/fx/laser.c',

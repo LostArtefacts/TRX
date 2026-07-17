@@ -1603,6 +1603,10 @@
             "title": "Gaoth",
             "description": "Cuiridh seo buaidh na gaoithe air feaman-fuilt Lara ann an seòmraichean freagarrach.",
         },
+        "visuals.enable_droplets": {
+            "title": "\\{review}Boinnean uisge",
+            "description": "\\{review}Leigeas le boinnean uisge sileadh far Lara às dèidh dhi an t-uisge fhàgail.",
+        },
         "visuals.enable_exit_fade_effects": {
             "title": "Dorchachadh aig fàgail",
             "description": "Cuiridh seo dorchachadh an comas nuair a dh'fhàgas tu an geama gu deasg.",

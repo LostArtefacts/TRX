@@ -1,3 +1,6 @@
+// TR3 underwater residue: faint specks drifting around Lara while she is
+// submerged. The droplets falling off her once she is out of the water are
+// fx/droplets.c.
 #include <trx/game/fx/water_particles.h>
 
 #include <trx/config.h>

@@ -1603,6 +1603,10 @@
             "title": "Vent",
             "description": "Active l'effet de vent sur la tresse de Lara dans les salles appropriées.",
         },
+        "visuals.enable_droplets": {
+            "title": "\\{review}Gouttes d'eau",
+            "description": "\\{review}Active l'affichage des gouttes d'eau qui tombent de Lara après qu'elle est sortie de l'eau.",
+        },
         "visuals.enable_exit_fade_effects": {
             "title": "Fondu de sortie",
             "description": "Active les effets de fondu lors de la sortie du jeu vers le bureau.",
