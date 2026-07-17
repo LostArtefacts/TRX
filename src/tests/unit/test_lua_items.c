@@ -131,6 +131,20 @@ static int M_L_FireWorld(lua_State *const L)
     return 0;
 }
 
+// fake.fire_hit(item_num, damage) - mirrors the Item_TakeDamage fire site,
+// argument for argument.
+static int M_L_FireHit(lua_State *const L)
+{
+    const LUA_EVENT_ARG args[] = {
+        { .type = LUA_EVENT_ARG_INT32,
+          .value = { .i32 = (int32_t)luaL_checkinteger(L, 1) } },
+        { .type = LUA_EVENT_ARG_INT32,
+          .value = { .i32 = (int32_t)luaL_checkinteger(L, 2) } },
+    };
+    LUA_FireEventEx(LUA_EVENT_HIT, args, 2);
+    return 0;
+}
+
 static void M_PushFake(lua_State *const L)
 {
     lua_pushinteger(L, FAKE_OBJ_WOLF);
@@ -155,6 +169,8 @@ static void M_PushFake(lua_State *const L)
     lua_setfield(L, -2, "fire_destroy");
     lua_pushcfunction(L, M_L_FireWorld);
     lua_setfield(L, -2, "fire_world");
+    lua_pushcfunction(L, M_L_FireHit);
+    lua_setfield(L, -2, "fire_hit");
 }
 
 int main(void)

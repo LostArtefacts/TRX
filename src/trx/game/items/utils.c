@@ -7,6 +7,7 @@
 #include <trx/game/effects.h>
 #include <trx/game/items/manager.h>
 #include <trx/game/lara.h>
+#include <trx/game/lua/events.h>
 #include <trx/game/matrix.h>
 #include <trx/game/objects.h>
 #include <trx/game/objects/vars.h>
@@ -165,6 +166,13 @@ void Item_TakeDamage(
         && M_ShouldCountKill(item, flags, sender)) {
         Stats_AddKill();
     }
+
+    const LUA_EVENT_ARG args[] = {
+        { .type = LUA_EVENT_ARG_INT32,
+          .value = { .i32 = Item_GetIndex(item) } },
+        { .type = LUA_EVENT_ARG_INT32, .value = { .i32 = damage } },
+    };
+    LUA_FireEventEx(LUA_EVENT_HIT, args, 2);
 }
 
 bool Item_IsMeshVisible(const ITEM *const item, const int32_t mesh_num)

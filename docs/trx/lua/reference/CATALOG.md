@@ -37,7 +37,7 @@ The ids in a catalog are TRX's own, and they are the same in all four games. The
     - `trx.catalog.Context.ITEM_ACTIONS` = `5`  
         Item actions, which the flip effects trigger.
 
-- [lua]`trx.catalog.objects` - 794 names
+- [lua]`trx.catalog.objects` - 795 names
 
     Every object TRX has a name for.
 
@@ -216,9 +216,9 @@ The ids in a catalog are TRX's own, and they are the same in all four games. The
     `RICOCHET`, `ROCKET`, `ROCKET_AMMO_ITEM`, `ROCKET_AMMO_OPTION`,
     `ROCKET_GUN_ITEM`, `ROCKET_GUN_OPTION`, `ROLLING_BALL_1`, `ROLLING_BALL_2`,
     `ROLLING_BALL_3`, `ROLLING_BALL_4`, `ROPE`, `ROTATING_LASER`, `RX_WORKER_1`,
-    `RX_WORKER_2`, `RX_WORKER_3`, `SAVE_CRYSTAL_ITEM`, `SCION_HOLDER`,
-    `SCION_ITEM_1`, `SCION_ITEM_2`, `SCION_ITEM_3`, `SCION_ITEM_4`,
-    `SCION_OPTION`, `SECRET_1`, `SECRET_1_OPTION`, `SECRET_2`,
+    `RX_WORKER_2`, `RX_WORKER_3`, `SAVE_CRYSTAL_ITEM`, `SAVE_CRYSTAL_OPTION`,
+    `SCION_HOLDER`, `SCION_ITEM_1`, `SCION_ITEM_2`, `SCION_ITEM_3`,
+    `SCION_ITEM_4`, `SCION_OPTION`, `SECRET_1`, `SECRET_1_OPTION`, `SECRET_2`,
     `SECRET_2_OPTION`, `SECRET_3`, `SECRET_3_OPTION`, `SECURITY_GUARD`,
     `SECURITY_LASER_ALARM`, `SECURITY_LASER_DEADLY`, `SECURITY_LASER_KILLER`,
     `SENTRY_GUN`, `SHADOW`, `SHARK`, `SHIVA`, `SHOTGUN_AMMO_2_ITEM`,

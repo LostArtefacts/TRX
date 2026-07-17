@@ -399,6 +399,36 @@ end)]],
       impl = item_hook("on_trigger"),
     },
 
+    on_hit = {
+      params = {
+        {
+          name = "callback",
+          type = "function",
+          params = {
+            {
+              name = "item",
+              type = "Item",
+              description = "This item.",
+            },
+            {
+              name = "damage",
+              type = "integer",
+              description = "Hit points taken, before clamping to zero.",
+            },
+          },
+        },
+      },
+      returns = ITEM_LISTENER_ID,
+      description = "Happens when this item takes damage. `trx.events.on_hit`, narrowed to this "
+        .. "item.",
+      examples = {
+        [[trx.items[12]:on_hit(function(item, damage)
+  trx.log.info("the item lost " .. damage .. " hit points")
+end)]],
+      },
+      impl = item_hook("on_hit"),
+    },
+
     on_show = item_lifecycle_method(
       "on_show",
       "Happens when this item becomes visible during play. "
