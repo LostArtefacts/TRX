@@ -10,6 +10,8 @@ void Sparks_TriggerBubble(
 
 void Sparks_TriggerWaterfallMist(int32_t x, int32_t y, int32_t z, int32_t ang);
 
+void Sparks_TriggerSmallSplash(XYZ_32 pos, int32_t count);
+
 void Sparks_TriggerBreath(XYZ_32 pos, XYZ_32 vel, int16_t room_num);
 
 void Sparks_TriggerUnderwaterExplosion(const ITEM *item);

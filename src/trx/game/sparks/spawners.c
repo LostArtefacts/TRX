@@ -148,6 +148,53 @@ void Sparks_TriggerWaterfallMist(
     }
 }
 
+void Sparks_TriggerSmallSplash(const XYZ_32 pos, const int32_t count)
+{
+    if (!g_Config.visuals.enable_droplets) {
+        return;
+    }
+
+    for (int32_t i = 0; i < count; i++) {
+        SPARK *const spark = Sparks_GetFreeSpark();
+        spark->on = true;
+        spark->src_color.r = 112;
+        spark->src_color.g = (Random_GetDraw() & 0x1F) + 128;
+        spark->src_color.b = (Random_GetDraw() & 0x1F) + 128;
+        spark->dst_color.r = spark->src_color.r >> 1;
+        spark->dst_color.g = spark->src_color.g >> 1;
+        spark->dst_color.b = spark->src_color.b >> 1;
+        spark->col_fade_speed = 4;
+        spark->fade_to_black = 8;
+        spark->life = 24;
+        spark->s_life = 24;
+        spark->draw_type = DRAW_BLEND_ADD;
+        spark->extras = 0;
+        spark->dynamic = -1;
+        const int32_t ang = Random_GetDraw() & 0xFFF;
+        spark->vel.x = -Math_Sin(ang << 4) >> 7;
+        spark->vel.y = -640 - (Random_GetDraw() & 0xFF);
+        spark->vel.z = Math_Cos(ang << 4) >> 7;
+        spark->pos.x = pos.x + (spark->vel.x >> 3);
+        spark->pos.y = pos.y - (spark->vel.y >> 5);
+        spark->pos.z = pos.z + (spark->vel.z >> 3);
+        spark->friction = 5;
+        // The original leaves the size unset and draws at a fixed screen size;
+        // scale in world space like the blood pixels so the splash stays
+        // visible at higher resolutions.
+        spark->flags = SPARK_F_SCALE;
+        spark->scalar = 3;
+        spark->max_y_vel = 0;
+        spark->gravity = (Random_GetDraw() & 0xF) + 64;
+        spark->size.width = 2;
+        spark->src_size.width = 2;
+        spark->size.height = 2;
+        spark->src_size.height = 2;
+        spark->dst_size.width = 2;
+        spark->dst_size.height = 2;
+        Sparks_FinishSetup(spark);
+    }
+}
+
 void Sparks_TriggerBreath(
     const XYZ_32 pos, const XYZ_32 vel, const int16_t room_num)
 {
