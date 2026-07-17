@@ -173,6 +173,78 @@ test("attaching something that is not a function raises", function()
   end)
 end)
 
+test("on_flip_effect claims its number and receives timer and item", function()
+  local seen_timer, seen_item = nil, nil
+  trx.events.on_flip_effect(62, function(timer, item_num)
+    seen_timer, seen_item = timer, item_num
+  end)
+
+  assert(
+    fake.fire("on_flip_effect", 62, 7, 5),
+    "registering must claim the number"
+  )
+  assert(seen_timer == 7, "the handler did not receive the timer")
+  assert(seen_item == 5, "the handler did not receive the item")
+
+  assert(
+    not fake.fire("on_flip_effect", 63, 9, 5),
+    "a neighbouring number is not claimed"
+  )
+  assert(seen_timer == 7, "an unclaimed number must not dispatch")
+end)
+
+test("handlers on different effect numbers do not cross-fire", function()
+  local seen_a, seen_b = 0, 0
+  trx.events.on_flip_effect(10, function()
+    seen_a = seen_a + 1
+  end)
+  trx.events.on_flip_effect(20, function()
+    seen_b = seen_b + 1
+  end)
+
+  fake.fire("on_flip_effect", 10, 0, 0)
+  assert(seen_a == 1 and seen_b == 0, "the wrong handler fired")
+end)
+
+test("a claim outlives its detached handler", function()
+  local calls = 0
+  local id = trx.events.on_flip_effect(30, function()
+    calls = calls + 1
+  end)
+  trx.events.detach(id)
+
+  assert(
+    fake.fire("on_flip_effect", 30, 0, 0),
+    "the claim must stay for the rest of the level"
+  )
+  assert(calls == 0, "a detached handler kept firing")
+end)
+
+test("a rejected callback does not claim the number", function()
+  assert(not pcall(trx.events.on_flip_effect, 50, "not a function"))
+  assert(
+    not fake.fire("on_flip_effect", 50, 0, 0),
+    "a failed attach left the number claimed"
+  )
+end)
+
+test("a level script's claim clears when the level ends", function()
+  trx.events.on_flip_effect(40, function() end)
+  fake.as_level_script(function()
+    trx.events.on_flip_effect(44, function() end)
+  end)
+
+  fake.end_level()
+  assert(
+    not fake.fire("on_flip_effect", 44, 0, 0),
+    "a level claim survived the level"
+  )
+  assert(
+    fake.fire("on_flip_effect", 40, 0, 0),
+    "a global claim must survive a level change"
+  )
+end)
+
 -- The sentinel the enum grew is what gives the bridge an upper bound to check
 -- against. Reached here through the raw bridge: no hook hands it a bad type.
 test("attaching to an event type the engine does not have raises", function()
@@ -185,7 +257,7 @@ test("attaching to an event type the engine does not have raises", function()
 end)
 
 test("the event type is not part of the surface", function()
-  -- The nine hooks are the whole surface: neither the event type nor raw attach
+  -- The hooks are the whole surface: neither the event type nor raw attach
   -- is reachable from a script. The types are reflected out of C, but they stay
   -- behind the hooks.
   assert(trx.events.EventType == nil, "EventType is still reachable")

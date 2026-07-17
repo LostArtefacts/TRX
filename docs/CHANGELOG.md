@@ -25,6 +25,7 @@ The Lua integration was rewritten and existing scripts will need updating; refer
 - added new Lua game state, `trx.game.is_loaded` and `trx.game.is_playable`
 - added `trx.console.register()`, so a script can add a console command of its own, with optional `aliases` that dispatch but stay out of the command listing and show in the command's help
 - added `p`, a global shorthand for `trx.console.log`, and made the console log functions take any value, pretty-printing a table
+- added `trx.events.on_flip_effect()`, letting a script handle a flipeffect run by a trigger or an animation command (#4108)
 - added `trx.lara.cure_poison()` and `trx.lara.extinguish()`, to clear Lara's poison and put her out
 - made `trx.lara.is_burning` writable, so setting it lights Lara or puts her out
 - added `trx.lara.is_flying`, to read and toggle the fly-mode cheat

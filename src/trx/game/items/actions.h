@@ -14,6 +14,14 @@ void ItemAction_RunDirectWithFX(
 void ItemAction_RunActive(void);
 int16_t ItemAction_GetFXType(void);
 
+// An interceptor takes over an effect before it runs, whether a level trigger
+// or an animation command reached it: when it returns true, the stock routine
+// does not run. At most one is installed.
+typedef bool (*ITEM_ACTION_INTERCEPTOR)(
+    int32_t effect_num, int32_t timer, int16_t item_num);
+void ItemAction_SetInterceptor(ITEM_ACTION_INTERCEPTOR interceptor);
+bool ItemAction_Intercept(int32_t effect_num, int32_t timer, int16_t item_num);
+
 #define REGISTER_ITEM_ACTION(action, action_func)                              \
     __attribute__((constructor)) static void M_RegisterActionHandler##action(  \
         void)                                                                  \

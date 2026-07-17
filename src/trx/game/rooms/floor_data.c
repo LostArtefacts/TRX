@@ -533,8 +533,11 @@ bool Room_TestSectorTrigger(const ITEM *const item, const SECTOR *const sector)
 
     if (status.new_effect != -1
         && (status.flip_map || !status.flip_available)) {
-        Room_SetFlipEffect(status.new_effect);
-        Room_SetFlipTimer(0);
+        if (!ItemAction_Intercept(
+                status.new_effect, trigger->timer, Item_GetIndex(item))) {
+            Room_SetFlipEffect(status.new_effect);
+            Room_SetFlipTimer(0);
+        }
     }
 
     return true;

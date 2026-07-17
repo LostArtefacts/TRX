@@ -3107,6 +3107,40 @@
       }
     },
     {
+      "description": "Claims a flip effect number and happens whenever a level runs it, whether from a floor trigger or an animation command. Place an ordinary flipeffect trigger in a level editor - pad, heavy, switch and antitrigger all work - pick an unused effect number, and handle it here from the level's script.\n\nA claimed number belongs to the script for the rest of the level: its stock engine effect does not run, even if the handler is later detached. Unclaimed numbers are unaffected.\n\nUnlike the other hooks, this happens at effect execution time, in the middle of a game frame.",
+      "examples": [
+        "trx.events.on_flip_effect(62, function(timer, item_num)\n  trx.log.info(\"flipeffect 62 ran with timer \" .. timer)\nend)"
+      ],
+      "params": [
+        {
+          "description": "The flip effect number to claim, as the level editor numbers them. This is not the id space of `trx.rooms.flip_effect`, which takes `trx.catalog.flip_effects` names.",
+          "name": "effect_num",
+          "type": "integer"
+        },
+        {
+          "name": "callback",
+          "params": [
+            {
+              "description": "A floor trigger's timer field, free for the level to use as a parameter. 0 for an animation command, which carries no timer.",
+              "name": "timer",
+              "type": "integer"
+            },
+            {
+              "description": "0-based index of the item that ran the effect: Lara for a pad trigger, the activating object for a heavy trigger, the animating item for an animation command.",
+              "name": "item_num",
+              "type": "integer"
+            }
+          ],
+          "type": "function"
+        }
+      ],
+      "path": "events.on_flip_effect",
+      "returns": {
+        "description": "Listener id. Pass it to `trx.events.detach` to stop listening.",
+        "type": "integer"
+      }
+    },
+    {
       "description": "Removes a previously attached handler, which stops firing immediately.",
       "examples": [
         "local id = trx.events.before_control(function()\n  -- handle control loop event\nend)\ntrx.events.detach(id)"
