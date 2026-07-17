@@ -428,7 +428,7 @@ void Lara_CatchFireEx(const FLAME_TYPE type)
     } else {
         effect->pos = lara_item->pos;
     }
-    effect->frame_num = g_TRVersion == 3 ? type : 0;
+    effect->frame_num = g_TRVersion >= 3 ? type : 0;
     effect->object_id = O_FLAME;
     effect->counter = -1;
     lara_info->burn = true;
