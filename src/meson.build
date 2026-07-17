@@ -445,6 +445,7 @@ common_sources = [
   'trx/game/lua/capi/weather.c',
   'trx/game/lua/common.c',
   'trx/game/lua/field.c',
+  'trx/game/lua/guard.c',
   'trx/game/lua/registry.c',
   'trx/game/lua/sandbox.c',
   'trx/game/lua/utils.c',

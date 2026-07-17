@@ -10,6 +10,7 @@
 #include <trx/game/lua/api.h>
 #include <trx/game/lua/embedded_scripts.h>
 #include <trx/game/lua/events.h>
+#include <trx/game/lua/guard.h>
 #include <trx/game/lua/registry.h>
 #include <trx/game/lua/sandbox.h>
 #include <trx/game/lua/utils.h>
@@ -189,6 +190,7 @@ void LUA_Init(void)
     lua_State *const L = luaL_newstate();
     ASSERT(L != nullptr);
     LUA_OpenSafeLibs(L);
+    LUA_Guard_Install(L, LUA_GUARD_BUDGET_SEC);
 
     lua_newtable(L);
     lua_setglobal(L, "trxc");
