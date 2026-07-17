@@ -1669,6 +1669,10 @@
             "title": "Ciel",
             "description": "Active le ciel dans les niveaux pris en charge.",
         },
+        "visuals.enable_static_lighting": {
+            "title": "\\{review}Éclairage des meshes statiques",
+            "description": "\\{review}Permet aux flammes et aux autres lumières dynamiques d'éclairer les meshes statiques. Le TR4 original n'éclaire que la géométrie des salles.",
+        },
         "visuals.enable_weather": {
             "title": "\\{review}Météo",
             "description": "\\{review}Active le rendu des effets météorologiques dans les niveaux pris en charge.",

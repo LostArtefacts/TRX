@@ -1669,6 +1669,10 @@
             "title": "Bogsa-nan-Speuran",
             "description": "Cuiridh seo bogsa-nan-speuran an comas ann an ìrean far a bheil e freagarrach.",
         },
+        "visuals.enable_static_lighting": {
+            "title": "\\{review}Solas air meshichean statach",
+            "description": "\\{review}Leigidh seo le lasraichean is solais fiùghantach eile meshichean statach a shoillseachadh. Chan eil TR4 tùsail a' soillseachadh ach geoimeatraidh nan seòmraichean.",
+        },
         "visuals.enable_weather": {
             "title": "Aimsir",
             "description": "Cuir air neo dheth an aimsir anns na h-ìrean anns a bheil i an àite.",
