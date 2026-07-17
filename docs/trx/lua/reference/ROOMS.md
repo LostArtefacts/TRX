@@ -86,6 +86,35 @@ end
       end)
       ```
 
+    - [lua]`room:on_enter(callback, [opts])`  
+      Happens when something changes rooms into this one.
+
+      Parameters:
+      - **`callback`** (function).
+        Called with:
+        - **`item`** (Item). The `trx.items.Item` that changed rooms.
+      - **`opts`** (table, optional). Options. `watch = "lara"` (the default) reacts to Lara alone; `watch = "all"` to every item.
+
+      Returns: integer. Listener id. Pass it to `trx.events.detach` to stop listening.
+
+      Example:
+      ```lua
+      trx.rooms[7]:on_enter(function(item)
+        trx.log.info("entered room 7")
+      end)
+      ```
+
+    - [lua]`room:on_exit(callback, [opts])`  
+      Happens when something changes rooms out of this one.
+
+      Parameters:
+      - **`callback`** (function).
+        Called with:
+        - **`item`** (Item). The `trx.items.Item` that changed rooms.
+      - **`opts`** (table, optional). Options. `watch = "lara"` (the default) reacts to Lara alone; `watch = "all"` to every item.
+
+      Returns: integer. Listener id. Pass it to `trx.events.detach` to stop listening.
+
 ### Functions
 
 - [lua]`trx.rooms.get(num)`  

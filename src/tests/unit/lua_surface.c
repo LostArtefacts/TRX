@@ -154,6 +154,10 @@ int LuaSurface_Run(const LUA_SURFACE_TEST *const test)
     }
 
     const int failures = (int)lua_tointeger(L, -1);
+    // The engine's own shutdown order: the capi modules let go of the state
+    // before it closes, so a destructor holding a ref cannot reach into a
+    // closed state.
+    LUA_Registry_ShutdownAll();
     lua_close(L);
     return failures == 0 ? EXIT_SUCCESS : EXIT_FAILURE;
 }

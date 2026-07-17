@@ -162,4 +162,78 @@ test("undeclared members are unreachable", function()
   end
 end)
 
+-- The room hooks tell Lara apart by identity; item 0 stands in for her. Read
+-- fresh each time, as the real trx.lara.item property hands back a live handle.
+trx.lara = setmetatable({}, {
+  __index = function(_, key)
+    return key == "item" and trx.items[0] or nil
+  end,
+})
+
+test("on_enter fires for Lara entering that room, with the item", function()
+  local seen = nil
+  trx.rooms[3]:on_enter(function(item)
+    seen = item
+  end)
+
+  fake.fire_room_change(0, 1, 2)
+  assert(seen == nil, "a change into another room must not fire")
+
+  fake.fire_room_change(0, 2, 3)
+  assert(seen == trx.items[0], "the handler did not receive the item")
+end)
+
+test("on_exit fires for Lara leaving that room", function()
+  local calls = 0
+  trx.rooms[3]:on_exit(function()
+    calls = calls + 1
+  end)
+
+  fake.fire_room_change(0, 2, 3)
+  assert(calls == 0, "entering must not read as leaving")
+
+  fake.fire_room_change(0, 3, 2)
+  assert(calls == 1, "leaving the room did not fire")
+end)
+
+test("only Lara fires a hook unless it watches everything", function()
+  local lara_only, all = 0, 0
+  trx.rooms[1]:on_enter(function()
+    lara_only = lara_only + 1
+  end)
+  trx.rooms[1]:on_enter(function()
+    all = all + 1
+  end, { watch = "all" })
+
+  fake.fire_room_change(7, 0, 1)
+  assert(lara_only == 0, "a non-Lara item fired the default hook")
+  assert(all == 1, 'watch = "all" must see any item')
+
+  fake.fire_room_change(0, 0, 1)
+  assert(lara_only == 1 and all == 2, "Lara must fire both")
+end)
+
+test("a room hook rejects a watch value it does not know", function()
+  raises(function()
+    trx.rooms[0]:on_enter(function() end, { watch = "everyone" })
+  end, 'watch must be "lara" or "all"')
+end)
+
+test("a room hook rejects opts that is not a table", function()
+  raises(function()
+    trx.rooms[0]:on_enter(function() end, "all")
+  end, "opts must be a table")
+end)
+
+test("a room hook detaches through trx.events", function()
+  local calls = 0
+  local id = trx.rooms[2]:on_enter(function()
+    calls = calls + 1
+  end)
+  assert(trx.events.detach(id) == true, "the id must be an events id")
+
+  fake.fire_room_change(0, 1, 2)
+  assert(calls == 0, "a detached room hook kept firing")
+end)
+
 return h.report()

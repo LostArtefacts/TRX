@@ -3,6 +3,55 @@ local api = trx.api
 
 require("trx.log")
 
+-- on_enter and on_exit narrow trx.events.on_room_change to one room: the two
+-- readings of a room change are that this room is the new one, or the old one.
+local function room_hook(pick_room)
+  return function(room, callback, opts)
+    if opts ~= nil and type(opts) ~= "table" then
+      error("opts must be a table", 2)
+    end
+    local watch = opts ~= nil and opts.watch or "lara"
+    if watch ~= "lara" and watch ~= "all" then
+      error('watch must be "lara" or "all"', 2)
+    end
+    local num = room.num
+    return trx.events.on_room_change(function(item, old_room, new_room)
+      if
+        pick_room(old_room, new_room) == num
+        and (watch == "all" or item == trx.lara.item)
+      then
+        callback(item)
+      end
+    end)
+  end
+end
+
+local ROOM_HOOK_PARAMS = {
+  {
+    name = "callback",
+    type = "function",
+    params = {
+      {
+        name = "item",
+        type = "Item",
+        description = "The `trx.items.Item` that changed rooms.",
+      },
+    },
+  },
+  {
+    name = "opts",
+    type = "table",
+    optional = true,
+    description = 'Options. `watch = "lara"` (the default) reacts to Lara alone; `watch = "all"` '
+      .. "to every item.",
+  },
+}
+
+local ROOM_LISTENER_ID = {
+  type = "integer",
+  description = "Listener id. Pass it to `trx.events.detach` to stop listening.",
+}
+
 api.module("rooms", {
   order = 10,
   description = "Module for inspecting and altering the rooms of the current level.",
@@ -62,6 +111,27 @@ api.type("rooms.Room", {
   },
 
   methods = {
+    on_enter = {
+      params = ROOM_HOOK_PARAMS,
+      returns = ROOM_LISTENER_ID,
+      description = "Happens when something changes rooms into this one.",
+      examples = {
+        [[trx.rooms[7]:on_enter(function(item)
+  trx.log.info("entered room 7")
+end)]],
+      },
+      impl = room_hook(function(old_room, new_room)
+        return new_room
+      end),
+    },
+    on_exit = {
+      params = ROOM_HOOK_PARAMS,
+      returns = ROOM_LISTENER_ID,
+      description = "Happens when something changes rooms out of this one.",
+      impl = room_hook(function(old_room, new_room)
+        return old_room
+      end),
+    },
     is_valid = {
       returns = { type = "boolean" },
       description = "Whether the handle still refers to a room of the level that is loaded. A level "

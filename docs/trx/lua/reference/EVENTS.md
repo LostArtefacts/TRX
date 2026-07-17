@@ -149,6 +149,25 @@ A handler attached from a level script is detached automatically when the level 
   end)
   ```
 
+- [lua]`trx.events.on_room_change(callback)`  
+  Happens when an item changes rooms during play, which a cutscene or the attract demo is not. `trx.rooms.Room:on_enter` and `:on_exit` are this same event, narrowed to one room.
+
+  Parameters:
+  - **`callback`** (function).
+    Called with:
+    - **`item`** (Item). The `trx.items.Item` that changed rooms.
+    - **`old_room`** (integer). 0-based number of the room it left, or -1 if it had none.
+    - **`new_room`** (integer). 0-based number of the room it entered, or -1 if it left the world.
+
+  Returns: integer. Listener id. Pass it to `trx.events.detach` to stop listening.
+
+  Example:
+  ```lua
+  trx.events.on_room_change(function(item, old_room, new_room)
+    trx.log.info(item.object_id .. " moved to room " .. new_room)
+  end)
+  ```
+
 - [lua]`trx.events.detach(listener_id)`  
   Removes a previously attached handler, which stops firing immediately.
 

@@ -8,6 +8,7 @@
 #include <trx/game/game_flow.h>
 #include <trx/game/items/carrier.h>
 #include <trx/game/lara/common.h>
+#include <trx/game/lua/events.h>
 #include <trx/game/objects.h>
 #include <trx/game/objects/general/shoal.h>
 #include <trx/game/output/const.h>
@@ -543,6 +544,21 @@ void Item_UpdateRoom(const int16_t item_num, const int16_t room_num)
             item->room_num = room_num;
             item->next_item = room->item_num;
             room->item_num = item_num;
+        }
+
+        // After the room lists above settle, so a handler reads a consistent
+        // world. Level setup assigns every item a room; only live gameplay is
+        // an event, and the demo and cutscene phases play their own actors.
+        const GF_LEVEL *const level = GF_GetCurrentLevel();
+        if (Game_IsPlaying() && level->type != GFL_DEMO
+            && level->type != GFL_CUTSCENE) {
+            const LUA_EVENT_ARG args[] = {
+                { .type = LUA_EVENT_ARG_INT32, .value = { .i32 = item_num } },
+                { .type = LUA_EVENT_ARG_INT32,
+                  .value = { .i32 = old_room_num } },
+                { .type = LUA_EVENT_ARG_INT32, .value = { .i32 = room_num } },
+            };
+            LUA_FireEventEx(LUA_EVENT_ROOM_CHANGE, args, 3);
         }
     }
 }
