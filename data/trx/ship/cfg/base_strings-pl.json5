@@ -1603,6 +1603,10 @@
             "title": "Wiatr",
             "description": "Włącza efekt wiatru na warkoczu Lary w miejscach, które to obsługują.",
         },
+        "visuals.enable_droplets": {
+            "title": "\\{review}Krople wody",
+            "description": "\\{review}Włącza wyświetlanie kropli wody skapujących z Lary po wyjściu z wody.",
+        },
         "visuals.enable_exit_fade_effects": {
             "title": "Przejścia przy wyjściu z gry",
             "description": "Włącza efekt płynnego przejścia przy wychodzeniu z gry do pulpitu.",

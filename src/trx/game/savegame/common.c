@@ -623,6 +623,11 @@ void Savegame_InitCurrentInfo(void)
     if (GF_GetFirstLevel() != nullptr) {
         Savegame_GetCurrentInfo(GF_GetFirstLevel())->flags.available = true;
     }
+
+    // Lara's wetness survives level transitions; a fresh playthrough starts
+    // dry.
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    memset(lara->wet, 0, sizeof(lara->wet));
 }
 
 void Savegame_ResetCurrentInfo(const GF_LEVEL *const level)

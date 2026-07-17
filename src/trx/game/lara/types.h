@@ -141,6 +141,10 @@ typedef struct {
     MATRIX mesh_pos_matrices[LM_NUMBER_OF];
     bool mesh_pos_matrices_valid;
 
+    // TR4: per-mesh wetness, maintained by fx/droplets.c. Carried across
+    // levels, as in the original.
+    uint8_t wet[LM_NUMBER_OF];
+
     // TR3: persistent gun smoke spawned from muzzle after firing.
     int32_t tr3_smoke_count_l;
     int32_t tr3_smoke_count_r;

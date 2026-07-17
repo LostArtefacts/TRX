@@ -1,5 +1,6 @@
 #include <trx/config.h>
 #include <trx/core/json/util/read_io.h>
+#include <trx/core/utils.h>
 #include <trx/debug.h>
 #include <trx/game/camera.h>
 #include <trx/game/effects.h>
@@ -25,6 +26,8 @@
 #include <trx/game/savegame.h>
 #include <trx/game/stats.h>
 #include <trx/version.h>
+
+#include <string.h>
 
 #define M_SHOULD JSON_SHOULD
 #define M_OPTIONAL JSON_OPTIONAL
@@ -251,6 +254,18 @@ static bool M_ReadLara(JSON_READ_IO *const io)
     M_SHOULD(JSON_READ(io, "electric", &lara->electric));
 
     M_MUST(JSON_READ(io, "mesh_effects", &lara->mesh_effects));
+
+    // Introduced in TRX 1.10
+    memset(lara->wet, 0, sizeof(lara->wet));
+    if (M_OPTIONAL(JSON_PUSH(io, "wet"))) {
+        const int32_t count = MIN(JSON_ARRAY_LEN(io), LM_NUMBER_OF);
+        for (int32_t i = 0; i < count; i++) {
+            int32_t value = 0;
+            M_MUST(JSON_READ_A(io, i, &value));
+            lara->wet[i] = value;
+        }
+        M_MUST(JSON_POP(io));
+    }
     M_MUST(JSON_READ(io, "extra_anim", &lara->extra_anim));
     M_MUST(JSON_READ(io, "water_surface_dist", &lara->water_surface_dist));
 

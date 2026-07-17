@@ -1603,6 +1603,10 @@
             "title": "Breeze",
             "description": "Enables the breeze effect on Lara's braid in appropriate rooms.",
         },
+        "visuals.enable_droplets": {
+            "title": "Water droplets",
+            "description": "Enables rendering of water droplets dripping off Lara after she leaves water.",
+        },
         "visuals.enable_exit_fade_effects": {
             "title": "Fade on game exit",
             "description": "Enables the fade effects when exiting the game to desktop.",
