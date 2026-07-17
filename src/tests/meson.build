@@ -74,6 +74,15 @@ test_handle_exe = executable(
 )
 test('handle', test_handle_exe, suite: 'unit')
 
+test_item_actions_exe = executable(
+  'test_item_actions',
+  files('unit/test_item_actions.c') + test_stubs
+    + files('../trx/game/items/actions/common.c'),
+  include_directories: [src_inc, test_inc],
+  build_by_default: false,
+)
+test('item_actions', test_item_actions_exe, suite: 'unit')
+
 test_field_exe = executable(
   'test_field',
   files('unit/test_field.c') + test_stubs
@@ -534,7 +543,7 @@ test('lua_creatures', test_lua_creatures_exe, suite: 'unit')
 
 test_lua_events_exe = executable(
   'test_lua_events',
-  files('unit/test_lua_events.c') + test_stubs
+  files('unit/test_lua_events.c', 'unit/fake_engine_rooms.c') + test_stubs
     + lua_surface_src
     + files('../trx/game/lua/capi/events.c'),
   include_directories: [src_inc, test_inc],

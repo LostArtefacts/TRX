@@ -171,6 +171,54 @@ api.define("events.after_control", {
   impl = hook(types.AFTER_CONTROL),
 })
 
+api.define("events.on_flip_effect", {
+  description = "Claims a flip effect number and happens whenever a level runs it, whether from a "
+    .. "floor trigger or an animation command. Place an ordinary flipeffect trigger in a level "
+    .. "editor - pad, heavy, switch and antitrigger all work - pick an unused effect number, and "
+    .. "handle it here from the level's script.\n\n"
+    .. "A claimed number belongs to the script for the rest of the level: its stock engine effect "
+    .. "does not run, even if the handler is later detached. Unclaimed numbers are unaffected.\n\n"
+    .. "Unlike the other hooks, this happens at effect execution time, in the middle of a game "
+    .. "frame.",
+  params = {
+    {
+      name = "effect_num",
+      type = "integer",
+      description = "The flip effect number to claim, as the level editor numbers them. This is "
+        .. "not the id space of `trx.rooms.flip_effect`, which takes `trx.catalog.flip_effects` "
+        .. "names.",
+    },
+    {
+      name = "callback",
+      type = "function",
+      params = {
+        {
+          name = "timer",
+          type = "integer",
+          description = "A floor trigger's timer field, free for the level to use as a parameter. "
+            .. "0 for an animation command, which carries no timer.",
+        },
+        {
+          name = "item_num",
+          type = "integer",
+          description = "0-based index of the item that ran the effect: Lara for a pad trigger, "
+            .. "the activating object for a heavy trigger, the animating item for an animation "
+            .. "command.",
+        },
+      },
+    },
+  },
+  returns = LISTENER_ID,
+  examples = {
+    [[trx.events.on_flip_effect(62, function(timer, item_num)
+  trx.log.info("flipeffect 62 ran with timer " .. timer)
+end)]],
+  },
+  impl = function(effect_num, callback)
+    return raw.attach(types.FLIP_EFFECT, callback, effect_num)
+  end,
+})
+
 api.define("events.detach", {
   description = "Removes a previously attached handler, which stops firing immediately.",
   params = {

@@ -1,5 +1,6 @@
 #include <trx/core/log.h>
 #include <trx/core/vector.h>
+#include <trx/game/items/actions.h>
 #include <trx/game/lua/common.h>
 #include <trx/game/lua/events.h>
 #include <trx/game/lua/registry.h>
@@ -8,6 +9,8 @@
 #include <lauxlib.h>
 #include <lua.h>
 
+#define M_NO_KEY (-1)
+
 typedef struct {
     // What a script detaches by. Its own, and not its Lua ref: luaL_unref hands
     // a ref back out to the next attach, so a detached listener's ref can come
@@ -15,6 +18,10 @@ typedef struct {
     int32_t id;
     int32_t ref;
     LUA_EVENT_TYPE type;
+    // An optional dispatch key: a keyed fire reaches only the listeners
+    // holding the same key. M_NO_KEY on both sides means unkeyed. Flip
+    // effects key on the claimed effect number.
+    int32_t key;
     bool level_scoped;
     bool dead;
 } M_LISTENER;
@@ -29,10 +36,22 @@ typedef struct {
     int32_t arg_count;
 } M_DISPATCH;
 
+// A key that has been attached for an event at least once, per M_IsKeyClaimed.
+typedef struct {
+    LUA_EVENT_TYPE type;
+    int32_t key;
+    bool level_scoped;
+} M_CLAIM;
+
 static lua_State *m_L = nullptr;
 static VECTOR *m_Listeners = nullptr;
+static VECTOR *m_Claims = nullptr;
 static int32_t m_NextId = 1;
 static int32_t m_DispatchDepth = 0;
+
+static void M_FireEvent(
+    LUA_EVENT_TYPE ev, int32_t key, const LUA_EVENT_ARG *args,
+    int32_t arg_count);
 
 // Removing outright would move the listeners out from under a dispatch in
 // flight. While one is up, a removed listener is only marked, and the vector is
@@ -80,7 +99,12 @@ static void M_ClearAllListeners(const bool unref_from_lua)
 
 static void M_Shutdown(void)
 {
+    ItemAction_SetInterceptor(nullptr);
     M_ClearAllListeners(true);
+    if (m_Claims != nullptr) {
+        Vector_Free(m_Claims);
+        m_Claims = nullptr;
+    }
     m_L = nullptr;
 }
 
@@ -129,12 +153,47 @@ static int M_CallListener(lua_State *const L)
     return 0;
 }
 
-// trxc.events.attach(event_type, callback) → id
+// A keyed listener claims its key as it attaches. Claims are not refcounted:
+// a claim stays until its scope ends even if every listener for the key
+// detaches first.
+static void M_ClaimKey(const LUA_EVENT_TYPE ev, const int32_t key)
+{
+    const M_CLAIM claim = {
+        .type = ev,
+        .key = key,
+        .level_scoped = LUA_GetScriptContext() == LUA_CONTEXT_LEVEL,
+    };
+    if (m_Claims == nullptr) {
+        m_Claims = Vector_Create(sizeof(M_CLAIM));
+    }
+    for (int32_t i = 0; i < m_Claims->count; i++) {
+        const M_CLAIM *const existing = Vector_Get(m_Claims, i);
+        if (existing->type == claim.type && existing->key == claim.key
+            && existing->level_scoped == claim.level_scoped) {
+            return;
+        }
+    }
+    Vector_Add(m_Claims, &claim);
+}
+
+// trxc.events.attach(event_type, callback, [key]) → id
 static int M_L_EventsAttach(lua_State *const L)
 {
     const LUA_EVENT_TYPE ev = (LUA_EVENT_TYPE)LUA_CheckRange(
         L, 1, LUA_EVENT_NUMBER_OF, "unknown event type");
     luaL_checktype(L, 2, LUA_TFUNCTION);
+
+    // A flip effect listener keys on the number it dispatches for, and its
+    // attach is what claims the key: everything is validated by the time the
+    // claim is recorded, so a failed attach claims nothing.
+    int32_t key = M_NO_KEY;
+    if (ev == LUA_EVENT_FLIP_EFFECT) {
+        key = luaL_checkinteger(L, 3);
+    }
+    if (key != M_NO_KEY) {
+        M_ClaimKey(ev, key);
+    }
+
     lua_pushvalue(L, 2);
     const int32_t ref = luaL_ref(L, LUA_REGISTRYINDEX);
     if (m_Listeners == nullptr) {
@@ -144,6 +203,7 @@ static int M_L_EventsAttach(lua_State *const L)
         .id = m_NextId++,
         .ref = ref,
         .type = ev,
+        .key = key,
         .level_scoped = LUA_GetScriptContext() == LUA_CONTEXT_LEVEL,
     };
     Vector_Add(m_Listeners, &listener);
@@ -177,11 +237,42 @@ static const luaL_Reg m_Module[] = {
     { nullptr, nullptr },
 };
 
+static bool M_IsKeyClaimed(const LUA_EVENT_TYPE ev, const int32_t key)
+{
+    if (m_Claims == nullptr) {
+        return false;
+    }
+    for (int32_t i = 0; i < m_Claims->count; i++) {
+        const M_CLAIM *const claim = Vector_Get(m_Claims, i);
+        if (claim->type == ev && claim->key == key) {
+            return true;
+        }
+    }
+    return false;
+}
+
+// A claimed number fires to its listeners with the trigger's timer and the item
+// that ran it.
+static bool M_InterceptFlipEffect(
+    const int32_t effect_num, const int32_t timer, const int16_t item_num)
+{
+    if (!M_IsKeyClaimed(LUA_EVENT_FLIP_EFFECT, effect_num)) {
+        return false;
+    }
+    const LUA_EVENT_ARG args[] = {
+        { .type = LUA_EVENT_ARG_INT32, .value = { .i32 = timer } },
+        { .type = LUA_EVENT_ARG_INT32, .value = { .i32 = item_num } },
+    };
+    M_FireEvent(LUA_EVENT_FLIP_EFFECT, effect_num, args, 2);
+    return true;
+}
+
 static void M_Create(lua_State *const L)
 {
     m_L = L;
 
     LUA_RegisterModule(L, "events", m_Module);
+    ItemAction_SetInterceptor(M_InterceptFlipEffect);
 }
 
 void LUA_ClearLevelListeners(void)
@@ -190,6 +281,18 @@ void LUA_ClearLevelListeners(void)
     if (L == nullptr) {
         return;
     }
+
+    if (m_Claims != nullptr) {
+        for (int32_t i = 0; i < m_Claims->count;) {
+            const M_CLAIM *const claim = Vector_Get(m_Claims, i);
+            if (claim->level_scoped) {
+                Vector_RemoveAt(m_Claims, i);
+            } else {
+                i++;
+            }
+        }
+    }
+
     if (m_Listeners == nullptr) {
         return;
     }
@@ -206,8 +309,8 @@ void LUA_ClearLevelListeners(void)
     }
 }
 
-void LUA_FireEventEx(
-    const LUA_EVENT_TYPE ev, const LUA_EVENT_ARG *const args,
+static void M_FireEvent(
+    const LUA_EVENT_TYPE ev, const int32_t key, const LUA_EVENT_ARG *const args,
     const int32_t arg_count)
 {
     lua_State *const L = m_L;
@@ -231,7 +334,7 @@ void LUA_FireEventEx(
     for (int32_t i = 0; i < count; i++) {
         // Re-read each time: an attach can move the vector.
         const M_LISTENER *const lst = Vector_Get(m_Listeners, i);
-        if (lst->type != ev || lst->dead) {
+        if (lst->type != ev || lst->key != key || lst->dead) {
             continue;
         }
         const M_DISPATCH dispatch = {
@@ -251,6 +354,13 @@ void LUA_FireEventEx(
     if (m_DispatchDepth == 0) {
         M_CompactListeners();
     }
+}
+
+void LUA_FireEventEx(
+    const LUA_EVENT_TYPE ev, const LUA_EVENT_ARG *const args,
+    const int32_t arg_count)
+{
+    M_FireEvent(ev, M_NO_KEY, args, arg_count);
 }
 
 void LUA_FireEvent(const LUA_EVENT_TYPE ev)

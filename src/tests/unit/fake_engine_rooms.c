@@ -4,12 +4,13 @@
 #include "fake_engine_rooms.h"
 
 #include <trx/core/handle.h>
-#include <trx/game/items/actions/ids.h>
+#include <trx/game/items/actions.h>
 #include <trx/game/rooms.h>
 
 static ROOM m_Rooms[FAKE_ROOM_COUNT];
 static HANDLE_EPOCH m_RoomEpoch;
 static bool m_FlipStatus;
+static ITEM_ACTION_INTERCEPTOR m_Interceptor;
 
 FAKE_ROOM_CALLS g_FakeRoomCalls;
 
@@ -95,6 +96,18 @@ bool Room_GetFlipStatus(void)
 void Room_SetFlipEffect(const int32_t flip_effect)
 {
     g_FakeRoomCalls.flip_effect = flip_effect;
+}
+
+void ItemAction_SetInterceptor(const ITEM_ACTION_INTERCEPTOR interceptor)
+{
+    m_Interceptor = interceptor;
+}
+
+bool ItemAction_Intercept(
+    const int32_t effect_num, const int32_t timer, const int16_t item_num)
+{
+    return m_Interceptor != nullptr
+        && m_Interceptor(effect_num, timer, item_num);
 }
 
 void Room_SetFlipTimer(const int32_t flip_timer)

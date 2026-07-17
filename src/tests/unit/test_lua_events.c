@@ -1,13 +1,14 @@
 // The event surface. The assertions live in src/tests/unit/lua/events.lua; this
 // stands up the world they run against.
 //
-// There is no fake engine here: lua/events.c is self-contained - attach, detach
-// and fire - so `fake.fire()` calls the same LUA_FireEvent* entrypoints the
-// engine calls. That is the point: it pins the declared callback arguments
-// against what C actually pushes.
+// `fake.fire()` calls the same LUA_FireEvent* entrypoints the engine calls,
+// and flip effects go through the same ItemAction interceptor seam that
+// floor_data.c and the animation-command paths fire through. That is the point:
+// it pins the declared callback arguments against what C actually pushes.
 
 #include "lua_surface.h"
 
+#include <trx/game/items/actions.h>
 #include <trx/game/lua/common.h>
 #include <trx/game/lua/events.h>
 #include <trx/game/lua/registry.h>
@@ -60,6 +61,16 @@ static int M_FakeFire(lua_State *const L)
     } else if (strcmp(name, "after_level_state") == 0) {
         LUA_FireEventInt32(
             LUA_EVENT_AFTER_LEVEL_STATE, luaL_checkinteger(L, 2));
+    } else if (strcmp(name, "on_flip_effect") == 0) {
+        // The seam floor_data.c and the animation-command paths fire through.
+        // The result - whether a script took the effect - is handed back, so
+        // the tests observe claims the same way the engine does.
+        lua_pushboolean(
+            L,
+            ItemAction_Intercept(
+                luaL_checkinteger(L, 2), luaL_checkinteger(L, 3),
+                luaL_checkinteger(L, 4)));
+        return 1;
     } else {
         return luaL_error(L, "unknown event: %s", name);
     }

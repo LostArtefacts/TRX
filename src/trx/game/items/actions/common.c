@@ -1,8 +1,11 @@
 #include <trx/game/items/actions.h>
+#include <trx/game/items/const.h>
+#include <trx/game/items/manager.h>
 #include <trx/game/rooms.h>
 
 static void (*m_Routines[ITEM_ACTION_NUMBER_OF])(ITEM *item) = {};
 static int16_t m_FXType = 0;
+static ITEM_ACTION_INTERCEPTOR m_Interceptor = nullptr;
 
 int16_t ItemAction_GetFXType(void)
 {
@@ -31,8 +34,32 @@ static void M_RunWithFX(
     m_FXType = 0;
 }
 
+void ItemAction_SetInterceptor(const ITEM_ACTION_INTERCEPTOR interceptor)
+{
+    m_Interceptor = interceptor;
+}
+
+bool ItemAction_Intercept(
+    const int32_t effect_num, const int32_t timer, const int16_t item_num)
+{
+    return m_Interceptor != nullptr
+        && m_Interceptor(effect_num, timer, item_num);
+}
+
+// An animation command carries no trigger field, so the timer is 0. The stored
+// floor effect reaches here through RunActive with a null item, but a claimed
+// number is never stored, so that path never intercepts.
+static bool M_InterceptDirect(const ITEM_ACTION action_id, ITEM *const item)
+{
+    const int16_t item_num = item != nullptr ? Item_GetIndex(item) : NO_ITEM;
+    return ItemAction_Intercept(action_id, 0, item_num);
+}
+
 void ItemAction_RunDirect(const ITEM_ACTION action_id, ITEM *const item)
 {
+    if (M_InterceptDirect(action_id, item)) {
+        return;
+    }
     const ITEM_TRX_ACTION trx_id = ItemAction_FromGameID(action_id);
     ItemAction_Run(trx_id, item);
 }
@@ -40,6 +67,9 @@ void ItemAction_RunDirect(const ITEM_ACTION action_id, ITEM *const item)
 void ItemAction_RunDirectWithFX(
     const ITEM_ACTION action_id, ITEM *const item, const int16_t fx_type)
 {
+    if (M_InterceptDirect(action_id, item)) {
+        return;
+    }
     const ITEM_TRX_ACTION trx_id = ItemAction_FromGameID(action_id);
     M_RunWithFX(trx_id, item, fx_type);
 }
