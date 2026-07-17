@@ -435,6 +435,31 @@ end)]],
       impl = item_hook("on_hit"),
     },
 
+    on_kill = {
+      params = {
+        {
+          name = "callback",
+          type = "function",
+          params = {
+            {
+              name = "item",
+              type = "Item",
+              description = "This item.",
+            },
+          },
+        },
+      },
+      returns = ITEM_LISTENER_ID,
+      description = "Happens when damage takes this item's hit points to zero. "
+        .. "`trx.events.on_kill`, narrowed to this item.",
+      examples = {
+        [[trx.items[12]:on_kill(function(item)
+  trx.log.info("the item is down")
+end)]],
+      },
+      impl = item_hook("on_kill"),
+    },
+
     on_show = item_lifecycle_method(
       "on_show",
       "Happens when this item becomes visible during play. "

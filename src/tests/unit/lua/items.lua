@@ -283,6 +283,35 @@ test("item:on_hit fires only for that item, with the damage", function()
   assert(damage == 10, "the damage did not reach the handler")
 end)
 
+test("on_kill passes the item damage brought down", function()
+  local seen
+  trx.events.on_kill(function(item)
+    seen = item
+  end)
+
+  fake.fire_kill(1)
+
+  assert(seen == trx.items[1], "on_kill did not receive the item")
+end)
+
+test("item:on_kill reports after item:on_hit on the fatal blow", function()
+  local order = {}
+  trx.items[1]:on_hit(function()
+    order[#order + 1] = "hit"
+  end)
+  trx.items[1]:on_kill(function()
+    order[#order + 1] = "kill"
+  end)
+
+  fake.fire_hit(1, 25)
+  assert(#order == 1 and order[1] == "hit", "a survivable hit must not kill")
+
+  fake.fire_hit(1, 25)
+  fake.fire_kill(1)
+  assert(#order == 3, "the fatal blow must fire both")
+  assert(order[2] == "hit" and order[3] == "kill", "hit reports before kill")
+end)
+
 test("on_show and on_hide pass the item that changed visibility", function()
   local shown, hidden
   trx.events.on_show(function(item)

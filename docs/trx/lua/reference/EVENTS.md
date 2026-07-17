@@ -405,6 +405,27 @@ A handler attached from a level script is detached automatically when the level 
   end)
   ```
 
+- [lua]`trx.events.on_kill(callback)`  
+  Happens when damage takes an item's hit points to zero, Lara included. It is the
+  same blow `on_hit` reports, which fires first. A death that does not go through damage - a script
+  writing `hit_points`, or `destroy()` - does not report.
+
+  `trx.items.Item:on_kill` is this same event, narrowed to one item.
+
+  Parameters:
+  - **`callback`** (function).
+    Called with:
+    - **`item`** (Item). The `trx.items.Item` that was brought down.
+
+  Returns: integer. Listener id. Pass it to `trx.events.detach` to stop listening.
+
+  Example:
+  ```lua
+  trx.events.on_kill(function(item)
+    trx.log.info(item.object_id .. " is down")
+  end)
+  ```
+
 - [lua]`trx.events.detach(listener_id)`  
   Removes a previously attached handler, which stops firing immediately.
 

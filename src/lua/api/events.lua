@@ -569,6 +569,38 @@ end)]],
   end,
 })
 
+api.define("events.on_kill", {
+  description = [[Happens when damage takes an item's hit points to zero, Lara included. It is the
+same blow `on_hit` reports, which fires first. A death that does not go through damage - a script
+writing `hit_points`, or `destroy()` - does not report.
+
+`trx.items.Item:on_kill` is this same event, narrowed to one item.]],
+  params = {
+    {
+      name = "callback",
+      type = "function",
+      params = {
+        {
+          name = "item",
+          type = "Item",
+          description = "The `trx.items.Item` that was brought down.",
+        },
+      },
+    },
+  },
+  returns = LISTENER_ID,
+  examples = {
+    [[trx.events.on_kill(function(item)
+  trx.log.info(item.object_id .. " is down")
+end)]],
+  },
+  impl = function(callback)
+    return raw.attach(types.KILL, function(item_num)
+      callback(trx.items[item_num])
+    end)
+  end,
+})
+
 api.define("events.detach", {
   description = "Removes a previously attached handler, which stops firing immediately.",
   params = {
