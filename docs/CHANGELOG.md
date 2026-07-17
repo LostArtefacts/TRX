@@ -11,6 +11,7 @@
 - added water droplets dripping off Lara after she leaves water (also enabled in TR3)
 - added a small splash when spent shells land on water (also enabled in TR3)
 - added fires
+- added Lara catching fire, from fires and other hazards
 - added an option to let fires and other dynamic lights illuminate static meshes (Graphic Options → Visuals → Static mesh lighting)
 - fixed pixel sparks, such as blood and the shell splash, drawing as squares instead of the original streaks
 - fixed the camera snapping to elevation and angle changes in instances such as opening floor trapdoors

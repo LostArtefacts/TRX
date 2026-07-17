@@ -458,9 +458,76 @@ static void M_TR12_Control(const int16_t effect_num)
     }
 }
 
+// Port of the TR4 FlameControl (traps.cpp). In TR4 the FLAME effect only
+// ever burns Lara; level fires come from the flame emitters.
+static void M_TR4_Control(const int16_t effect_num)
+{
+    EFFECT *const effect = Effect_Get(effect_num);
+    ITEM *const lara_item = Lara_GetItem();
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+
+    if (lara->water_status == LWS_CHEAT) {
+        effect->counter = 0;
+        Effect_Kill(effect_num);
+        lara->burn = false;
+        return;
+    }
+
+    const bool is_green = M_IsGreenAttachedFlame(effect);
+    const int32_t time4 = Output_GetTimeInGame() * 4;
+    for (int32_t i = 14; i > 0; i--) {
+        if ((time4 & 0xC) != 0) {
+            continue;
+        }
+        effect->pos = (XYZ_32) {};
+        Collide_GetJointAbsPosition(lara_item, &effect->pos, i);
+        Sparks_TriggerFireFlame(effect->pos, -1, is_green ? 254 : 255);
+    }
+
+    if (g_Config.visuals.enable_fire_lighting) {
+        RGB_888 color;
+        if (is_green) {
+            color.r = Random_GetControl() & 0x3F;
+            color.g = (Random_GetControl() & 0x3F) + 192;
+            color.b = (Random_GetControl() & 0x1F) + 96;
+        } else {
+            color.r = (Random_GetControl() & 0x3F) + 192;
+            color.g = (Random_GetControl() & 0x1F) + 96;
+            color.b = 0;
+        }
+        Output_AddDynamicLightRGB(lara_item->pos, 13, color);
+    }
+
+    if (lara_item->room_num != effect->room_num) {
+        Effect_UpdateRoom(effect_num, lara_item->room_num);
+    }
+
+    const int32_t wh = Room_GetWaterHeight(effect->pos, effect->room_num);
+    if (wh != NO_HEIGHT && effect->pos.y > wh) {
+        effect->counter = 0;
+        Effect_Kill(effect_num);
+        lara->burn = false;
+        return;
+    }
+
+    Sound_Effect(SFX_LOOP_FOR_SMALL_FIRES, &effect->pos, SPM_NORMAL);
+    Lara_TakeDamage(M_ON_FIRE_DAMAGE, true);
+}
+
+// In TR4 the sparks are the whole rendition; there is no mesh to draw.
+static bool M_TR4_Draw(const EFFECT *const effect)
+{
+    return true;
+}
+
 static void M_Setup(OBJECT *const obj)
 {
-    obj->control_func = g_TRVersion == 3 ? M_TR3_Control : M_TR12_Control;
+    if (g_TRVersion == 4) {
+        obj->control_func = M_TR4_Control;
+        obj->effect_draw_func = M_TR4_Draw;
+    } else {
+        obj->control_func = g_TRVersion == 3 ? M_TR3_Control : M_TR12_Control;
+    }
     obj->semi_transparent = true;
 }
 

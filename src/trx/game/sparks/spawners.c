@@ -7,6 +7,7 @@
 #include <trx/game/random.h>
 #include <trx/game/rooms.h>
 #include <trx/game/spawn.h>
+#include <trx/version.h>
 
 static bool M_GetBloodSparkColors(RGB_888 *const src, RGB_888 *const dst)
 {
@@ -288,22 +289,25 @@ void Sparks_TriggerFireFlame(
         spark->dst_color.g = (Random_GetControl() & 0x3F) + 128;
     }
 
-    if (body_part == -1) {
-        if (type == 2 || type == 255 || type == 254) {
-            spark->fade_to_black = 6;
-            spark->col_fade_speed = (Random_GetControl() & 3) + 5;
-            spark->life = (type < 254 ? 0 : 8) + (Random_GetControl() & 3) + 16;
-            spark->s_life = spark->life;
-        } else {
-            spark->fade_to_black = 8;
-            spark->col_fade_speed = (Random_GetControl() & 3) + 20;
-            spark->life = (Random_GetControl() & 7) + 40;
-            spark->s_life = spark->life;
-        }
-    } else {
+    // TR4 gives the slow 16-frame fade to the free sparks and the
+    // type-based recipes to the attached ones; TR3 and TR5 arrange it the
+    // other way around.
+    const bool use_slow_fade =
+        g_TRVersion == 4 ? body_part == -1 : body_part != -1;
+    if (use_slow_fade) {
         spark->fade_to_black = 16;
         spark->col_fade_speed = (Random_GetControl() & 3) + 8;
         spark->life = (Random_GetControl() & 3) + 28;
+        spark->s_life = spark->life;
+    } else if (type == 2 || type == 255 || type == 254) {
+        spark->fade_to_black = 6;
+        spark->col_fade_speed = (Random_GetControl() & 3) + 5;
+        spark->life = (type < 254 ? 0 : 8) + (Random_GetControl() & 3) + 16;
+        spark->s_life = spark->life;
+    } else {
+        spark->fade_to_black = 8;
+        spark->col_fade_speed = (Random_GetControl() & 3) + 20;
+        spark->life = (Random_GetControl() & 7) + 40;
         spark->s_life = spark->life;
     }
 
