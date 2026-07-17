@@ -3,6 +3,7 @@
 #include <trx/debug.h>
 #include <trx/game/console/common.h>
 #include <trx/game/input/common.h>
+#include <trx/game/lua/guard.h>
 #include <trx/game/replay/test_recorder.h>
 #include <trx/game/replay/test_replay.h>
 #include <trx/game/screenshot.h>
@@ -181,6 +182,8 @@ bool Shell_ProcessEvent(const SDL_Event *const event)
 
 void Shell_ProcessEvents(void)
 {
+    LUA_Guard_Heartbeat();
+
     SDL_Event event;
     if (TestReplay_IsOpened()) {
         TestReplay_RunFrame();
