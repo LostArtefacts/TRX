@@ -291,6 +291,24 @@ end
       end)
       ```
 
+    - [lua]`item:on_hit(callback)`  
+      Happens when this item takes damage. `trx.events.on_hit`, narrowed to this item.
+
+      Parameters:
+      - **`callback`** (function).
+        Called with:
+        - **`item`** (Item). This item.
+        - **`damage`** (integer). Hit points taken, before clamping to zero.
+
+      Returns: integer. Listener id. Pass it to `trx.events.detach` to stop listening.
+
+      Example:
+      ```lua
+      trx.items[12]:on_hit(function(item, damage)
+        trx.log.info("the item lost " .. damage .. " hit points")
+      end)
+      ```
+
     - [lua]`item:on_leave_sim(callback)`  
       Happens when this item stops being simulated during play. `trx.events.on_leave_sim`, narrowed to this item.
 

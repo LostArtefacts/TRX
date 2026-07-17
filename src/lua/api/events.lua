@@ -531,6 +531,44 @@ end)]],
   )
 )
 
+api.define("events.on_hit", {
+  description = [[Happens when an item takes damage, Lara included. It is the raw damage that
+fires, before the item's hit points are clamped, so a fatal blow reports the whole amount the
+attacker dealt. A death that does not go through damage - a script writing `hit_points`, or
+`destroy()` - does not report.
+
+`trx.items.Item:on_hit` is this same event, narrowed to one item.]],
+  params = {
+    {
+      name = "callback",
+      type = "function",
+      params = {
+        {
+          name = "item",
+          type = "Item",
+          description = "The `trx.items.Item` that took the damage.",
+        },
+        {
+          name = "damage",
+          type = "integer",
+          description = "Hit points taken, before clamping to zero.",
+        },
+      },
+    },
+  },
+  returns = LISTENER_ID,
+  examples = {
+    [[trx.events.on_hit(function(item, damage)
+  trx.log.info(item.object_id .. " lost " .. damage .. " hit points")
+end)]],
+  },
+  impl = function(callback)
+    return raw.attach(types.HIT, function(item_num, damage)
+      callback(trx.items[item_num], damage)
+    end)
+  end,
+})
+
 api.define("events.detach", {
   description = "Removes a previously attached handler, which stops firing immediately.",
   params = {

@@ -3656,6 +3656,35 @@
       }
     },
     {
+      "description": "Happens when an item takes damage, Lara included. It is the raw damage that\nfires, before the item's hit points are clamped, so a fatal blow reports the whole amount the\nattacker dealt. A death that does not go through damage - a script writing `hit_points`, or\n`destroy()` - does not report.\n\n`trx.items.Item:on_hit` is this same event, narrowed to one item.",
+      "examples": [
+        "trx.events.on_hit(function(item, damage)\n  trx.log.info(item.object_id .. \" lost \" .. damage .. \" hit points\")\nend)"
+      ],
+      "params": [
+        {
+          "name": "callback",
+          "params": [
+            {
+              "description": "The `trx.items.Item` that took the damage.",
+              "name": "item",
+              "type": "Item"
+            },
+            {
+              "description": "Hit points taken, before clamping to zero.",
+              "name": "damage",
+              "type": "integer"
+            }
+          ],
+          "type": "function"
+        }
+      ],
+      "path": "events.on_hit",
+      "returns": {
+        "description": "Listener id. Pass it to `trx.events.detach` to stop listening.",
+        "type": "integer"
+      }
+    },
+    {
       "description": "Removes a previously attached handler, which stops firing immediately.",
       "examples": [
         "local id = trx.events.before_control(function()\n  -- handle control loop event\nend)\ntrx.events.detach(id)"
@@ -5572,6 +5601,35 @@
                   "description": "This item.",
                   "name": "item",
                   "type": "Item"
+                }
+              ],
+              "type": "function"
+            }
+          ],
+          "returns": {
+            "description": "Listener id. Pass it to `trx.events.detach` to stop listening.",
+            "type": "integer"
+          }
+        },
+        {
+          "description": "Happens when this item takes damage. `trx.events.on_hit`, narrowed to this item.",
+          "examples": [
+            "trx.items[12]:on_hit(function(item, damage)\n  trx.log.info(\"the item lost \" .. damage .. \" hit points\")\nend)"
+          ],
+          "name": "on_hit",
+          "params": [
+            {
+              "name": "callback",
+              "params": [
+                {
+                  "description": "This item.",
+                  "name": "item",
+                  "type": "Item"
+                },
+                {
+                  "description": "Hit points taken, before clamping to zero.",
+                  "name": "damage",
+                  "type": "integer"
                 }
               ],
               "type": "function"

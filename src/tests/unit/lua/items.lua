@@ -255,6 +255,34 @@ test("item:on_trigger fires only for that item, with the trigger", function()
   assert(mask == 31, "the trigger fundamentals did not reach the handler")
 end)
 
+test("on_hit passes the item and the damage it took", function()
+  local seen_item, seen_damage
+  trx.events.on_hit(function(item, damage)
+    seen_item = item
+    seen_damage = damage
+  end)
+
+  fake.fire_hit(1, 25)
+
+  assert(seen_item == trx.items[1], "on_hit did not receive the item")
+  assert(seen_damage == 25, "on_hit did not receive the damage")
+end)
+
+test("item:on_hit fires only for that item, with the damage", function()
+  local count, damage = 0, nil
+  trx.items[1]:on_hit(function(item, taken)
+    count = count + 1
+    assert(item == trx.items[1], "the wrong item reached the handler")
+    damage = taken
+  end)
+
+  fake.fire_hit(0, 10)
+  assert(count == 0, "damage to another item must not fire this one")
+  fake.fire_hit(1, 10)
+  assert(count == 1, "damage to this item must fire it")
+  assert(damage == 10, "the damage did not reach the handler")
+end)
+
 test("on_show and on_hide pass the item that changed visibility", function()
   local shown, hidden
   trx.events.on_show(function(item)
