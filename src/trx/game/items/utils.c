@@ -162,8 +162,8 @@ void Item_TakeDamage(
         item->hit_status = true;
     }
 
-    if (was_alive && item->hit_points <= 0
-        && M_ShouldCountKill(item, flags, sender)) {
+    const bool died = was_alive && item->hit_points <= 0;
+    if (died && M_ShouldCountKill(item, flags, sender)) {
         Stats_AddKill();
     }
 
@@ -173,6 +173,9 @@ void Item_TakeDamage(
         { .type = LUA_EVENT_ARG_INT32, .value = { .i32 = damage } },
     };
     LUA_FireEventEx(LUA_EVENT_HIT, args, 2);
+    if (died) {
+        LUA_FireEventInt32(LUA_EVENT_KILL, Item_GetIndex(item));
+    }
 }
 
 bool Item_IsMeshVisible(const ITEM *const item, const int32_t mesh_num)

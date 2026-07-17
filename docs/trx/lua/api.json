@@ -3685,6 +3685,30 @@
       }
     },
     {
+      "description": "Happens when damage takes an item's hit points to zero, Lara included. It is the\nsame blow `on_hit` reports, which fires first. A death that does not go through damage - a script\nwriting `hit_points`, or `destroy()` - does not report.\n\n`trx.items.Item:on_kill` is this same event, narrowed to one item.",
+      "examples": [
+        "trx.events.on_kill(function(item)\n  trx.log.info(item.object_id .. \" is down\")\nend)"
+      ],
+      "params": [
+        {
+          "name": "callback",
+          "params": [
+            {
+              "description": "The `trx.items.Item` that was brought down.",
+              "name": "item",
+              "type": "Item"
+            }
+          ],
+          "type": "function"
+        }
+      ],
+      "path": "events.on_kill",
+      "returns": {
+        "description": "Listener id. Pass it to `trx.events.detach` to stop listening.",
+        "type": "integer"
+      }
+    },
+    {
       "description": "Removes a previously attached handler, which stops firing immediately.",
       "examples": [
         "local id = trx.events.before_control(function()\n  -- handle control loop event\nend)\ntrx.events.detach(id)"
@@ -5576,6 +5600,30 @@
                   "description": "Hit points taken, before clamping to zero.",
                   "name": "damage",
                   "type": "integer"
+                }
+              ],
+              "type": "function"
+            }
+          ],
+          "returns": {
+            "description": "Listener id. Pass it to `trx.events.detach` to stop listening.",
+            "type": "integer"
+          }
+        },
+        {
+          "description": "Happens when damage takes this item's hit points to zero. `trx.events.on_kill`, narrowed to this item.",
+          "examples": [
+            "trx.items[12]:on_kill(function(item)\n  trx.log.info(\"the item is down\")\nend)"
+          ],
+          "name": "on_kill",
+          "params": [
+            {
+              "name": "callback",
+              "params": [
+                {
+                  "description": "This item.",
+                  "name": "item",
+                  "type": "Item"
                 }
               ],
               "type": "function"
