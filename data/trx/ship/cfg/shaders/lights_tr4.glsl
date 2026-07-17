@@ -69,8 +69,10 @@ vec3 lightDynamicRoomTR4(vec3 rawNormal, vec4 vertexPos)
     return add;
 }
 
-// Port of the OG static mesh dynamic lighting (output.cpp:314-338):
-// cheaper falloff (1.7x distance), no Lambert term.
+// Port of the tomb4 static mesh dynamic lighting (output.cpp:314-338):
+// cheaper falloff (1.7x distance), no Lambert term. This is a tomb4
+// addition gated behind its static_lighting option; the retail game lit
+// statics by prelight only.
 vec3 lightDynamicStaticTR4(vec4 vertexPos)
 {
     vec3 add = vec3(0.0);
@@ -108,7 +110,8 @@ LightingResult light(
     if ((flags & VERT_USE_DYNAMIC_LIGHT) != 0u) {
         result.add +=
             lightDynamicRoomTR4(normal, pos) * getDynamicLightContrastMul();
-    } else if ((flags & VERT_USE_OWN_LIGHT) != 0u) {
+    } else if (
+        (flags & VERT_USE_OWN_LIGHT) != 0u && uStaticLightingEnabled != 0) {
         result.add +=
             lightDynamicStaticTR4(pos) * getDynamicLightContrastMul();
     }

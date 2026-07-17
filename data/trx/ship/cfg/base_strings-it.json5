@@ -1663,6 +1663,10 @@
             "title": "Cieli",
             "description": "Abilita il cielo nei livelli supportati.",
         },
+        "visuals.enable_static_lighting": {
+            "title": "\\{review}Illuminazione dei mesh statici",
+            "description": "\\{review}Consente alle fiamme e alle altre luci dinamiche di illuminare i mesh statici. Il TR4 originale illumina solo la geometria delle stanze.",
+        },
         "visuals.enable_weather": {
             "title": "Tempo meteorologico",
             "description": "Abilita, nei livelli supportati, la visualizzazione degli effetti atmosferici.",

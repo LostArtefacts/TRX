@@ -1663,6 +1663,10 @@
             "title": "Niebo",
             "description": "Włącza niebo w obsługiwanych poziomach.",
         },
+        "visuals.enable_static_lighting": {
+            "title": "\\{review}Oświetlenie statycznych meshy",
+            "description": "\\{review}Pozwala płomieniom i innym dynamicznym światłom oświetlać statyczne meshe. Oryginalny TR4 oświetla wyłącznie geometrię pomieszczeń.",
+        },
         "visuals.enable_weather": {
             "title": "Pogoda",
             "description": "Włącza efekty pogodowe w obsługiwanych poziomach.",

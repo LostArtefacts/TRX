@@ -1663,6 +1663,10 @@
             "title": "Skyboxes",
             "description": "Enables the skybox in supported levels.",
         },
+        "visuals.enable_static_lighting": {
+            "title": "Static mesh lighting",
+            "description": "Lets flames and other dynamic lights illuminate static meshes. The original TR4 lights only room geometry.",
+        },
         "visuals.enable_weather": {
             "title": "Weather",
             "description": "Enables rendering of weather effects in supported levels.",
