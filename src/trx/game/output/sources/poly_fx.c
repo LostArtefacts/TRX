@@ -15,6 +15,7 @@
 #include <trx/game/output/utils.h>
 #include <trx/game/sparks.h>
 #include <trx/gl/utils.h>
+#include <trx/version.h>
 
 #include <math.h>
 #include <stddef.h>
@@ -787,6 +788,23 @@ void OutputSource_PolyFX_StageSpark(const SPARK *const spark)
               .b = (uint8_t)LERP(
                   (int32_t)spark->prev_color.b, (int32_t)spark->color.b, ratio),
           };
+
+    // TR4 draws non-sprite sparks as short line streaks trailing behind the
+    // velocity; TR3 draws them as flat quads.
+    if (g_TRVersion == 4 && (spark->flags & SPARK_F_SPRITE) == 0U) {
+        const XYZ_32 tail = {
+            .x = pos.x - (spark->vel.x >> 4),
+            .y = pos.y - (spark->vel.y >> 4),
+            .z = pos.z - (spark->vel.z >> 4),
+        };
+        const RGBA_8888 head_color = { render_color.r, render_color.g,
+                                       render_color.b, 255 };
+        const RGBA_8888 tail_color = { render_color.r >> 1, render_color.g >> 1,
+                                       render_color.b >> 1, 255 };
+        OutputSource_PolyFX_StageLineSegment(
+            tail, tail_color, pos, head_color, 1.0f, draw_type);
+        return;
+    }
 
     const int32_t render_width = use_current_state
         ? (int32_t)spark->size.width

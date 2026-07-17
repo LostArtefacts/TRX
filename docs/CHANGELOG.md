@@ -10,6 +10,7 @@
 - added reflections
 - added water droplets dripping off Lara after she leaves water (also enabled in TR3)
 - added a small splash when spent shells land on water (also enabled in TR3)
+- fixed pixel sparks, such as blood and the shell splash, drawing as squares instead of the original streaks
 - fixed the camera snapping to elevation and angle changes in instances such as opening floor trapdoors
 
 **Lua**
