@@ -24,6 +24,8 @@ int32_t VFile_ReadS32(VFILE *file);
 uint8_t VFile_ReadU8(VFILE *file);
 uint16_t VFile_ReadU16(VFILE *file);
 uint32_t VFile_ReadU32(VFILE *file);
+float VFile_ReadFloat(VFILE *file);
+double VFile_ReadDouble(VFILE *file);
 
 bool VFile_TrySkip(VFILE *file, int32_t offset);
 bool VFile_TryRead(VFILE *file, void *target, size_t size);

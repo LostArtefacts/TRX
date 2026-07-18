@@ -1,0 +1,224 @@
+#include <trx/core/log.h>
+#include <trx/core/memory.h>
+#include <trx/core/vector.h>
+#include <trx/game/inject.h>
+#include <trx/game/objects.h>
+
+typedef enum {
+    M_TARGET_OBJECT,
+    M_TARGET_ITEM,
+} M_TARGET_TYPE;
+
+typedef struct {
+    const char *name;
+    OBJECT_PROPERTY_VALUE value;
+} M_PROPERTY;
+
+typedef struct {
+    M_TARGET_TYPE target_type;
+    int32_t target_id;
+    VECTOR *properties;
+} M_PROPERTY_BATCH;
+
+static VECTOR *m_Batches = nullptr;
+
+static const char *M_ReadName(const INJECTION *const injection)
+{
+    const int32_t length = VFile_ReadS32(injection->fp);
+    if (length <= 0) {
+        return nullptr;
+    }
+
+    char *const name = Memory_Alloc((size_t)(length + 1));
+    VFile_Read(injection->fp, name, length);
+    name[length] = '\0';
+
+    return name;
+}
+
+static OBJECT_PROPERTY_VALUE M_ReadValue(const INJECTION *const injection)
+{
+    OBJECT_PROPERTY_VALUE value = {};
+    value.type = VFile_ReadS32(injection->fp);
+
+    switch (value.type) {
+    case OBJECT_PROPERTY_TYPE_INT:
+        value.as_int = VFile_ReadS32(injection->fp);
+        break;
+    case OBJECT_PROPERTY_TYPE_FLOAT:
+        value.as_float = VFile_ReadFloat(injection->fp);
+        break;
+    case OBJECT_PROPERTY_TYPE_DOUBLE:
+        value.as_double = VFile_ReadDouble(injection->fp);
+        break;
+    case OBJECT_PROPERTY_TYPE_BOOL:
+        value.as_bool = VFile_ReadS32(injection->fp) != 0;
+        break;
+    case OBJECT_PROPERTY_TYPE_XYZ:
+        value.as_xyz = (XYZ_32) {
+            .x = VFile_ReadS32(injection->fp),
+            .y = VFile_ReadS32(injection->fp),
+            .z = VFile_ReadS32(injection->fp),
+        };
+        break;
+    default:
+        LOG_WARNING("Unknown property type %d", value.type);
+        break;
+    }
+
+    return value;
+}
+
+static void *M_GetBatchTarget(const M_PROPERTY_BATCH *const batch)
+{
+    void *target = nullptr;
+    switch (batch->target_type) {
+    case M_TARGET_OBJECT:
+        OBJECT *const obj = Object_TryGet(batch->target_id);
+        if (obj != nullptr && obj->loaded) {
+            target = (void *)obj;
+        }
+        break;
+
+    case M_TARGET_ITEM:
+        target = (void *)Item_Get(batch->target_id);
+        break;
+
+    default:
+        break;
+    }
+
+    return target;
+}
+
+static void M_ApplyBatch(const M_PROPERTY_BATCH *const batch)
+{
+    void *target = M_GetBatchTarget(batch);
+    if (target == nullptr) {
+        LOG_WARNING(
+            "Invalid property target type %d, id %d", batch->target_type,
+            batch->target_id);
+        return;
+    }
+
+    for (int32_t i = 0; i < batch->properties->count; i++) {
+        const M_PROPERTY *const property = Vector_Get(batch->properties, i);
+
+        bool result;
+        switch (batch->target_type) {
+        case M_TARGET_OBJECT:
+            result = ObjectProperty_SetObjectValueRaw(
+                (OBJECT *)target, property->name, property->value);
+            break;
+
+        case M_TARGET_ITEM:
+            result = ObjectProperty_SetItemValueRaw(
+                (ITEM *)target, property->name, property->value);
+            break;
+
+        default:
+            result = false;
+            break;
+        }
+
+        if (!result) {
+            LOG_WARNING(
+                "Failed to set property %s on target type %d, id %d",
+                property->name, batch->target_type, batch->target_id);
+        }
+    }
+}
+
+static void M_PropertyEdits(
+    const INJECTION_CONTEXT *const ctx, const INJECTION *const injection,
+    const int32_t data_count)
+{
+    if (data_count <= 0) {
+        return;
+    }
+
+    if (m_Batches == nullptr) {
+        m_Batches =
+            Vector_CreateAtCapacity(sizeof(M_PROPERTY_BATCH), data_count);
+    }
+
+    for (int32_t i = 0; i < data_count; i++) {
+        M_PROPERTY_BATCH batch = {};
+        batch.target_type = VFile_ReadS32(injection->fp);
+
+        switch (batch.target_type) {
+        case M_TARGET_OBJECT:
+            const INJECTION_OBJECT_INFO obj_info =
+                Inject_ReadObjectPtr(injection);
+            batch.target_id = obj_info.id;
+            break;
+
+        case M_TARGET_ITEM:
+            batch.target_id = VFile_ReadS32(injection->fp);
+            break;
+
+        default:
+            LOG_WARNING("Unknown property target type %d", batch.target_type);
+            break;
+        }
+
+        const int32_t property_count = VFile_ReadS32(injection->fp);
+        if (property_count > 0) {
+            batch.properties =
+                Vector_CreateAtCapacity(sizeof(M_PROPERTY), property_count);
+            for (int32_t j = 0; j < property_count; j++) {
+                const M_PROPERTY property = {
+                    .name = M_ReadName(injection),
+                    .value = M_ReadValue(injection),
+                };
+                Vector_Add(batch.properties, &property);
+            }
+        }
+
+        Vector_Add(m_Batches, &batch);
+    }
+}
+
+static void M_FreeBatch(M_PROPERTY_BATCH *const batch)
+{
+    if (batch->properties == nullptr) {
+        return;
+    }
+
+    for (int32_t i = 0; i < batch->properties->count; i++) {
+        M_PROPERTY *const property = Vector_Get(batch->properties, i);
+        Memory_FreePointer(&property->name);
+    }
+
+    Vector_Free(batch->properties);
+    batch->properties = nullptr;
+}
+
+static void M_Cleanup(void)
+{
+    if (m_Batches == nullptr) {
+        return;
+    }
+
+    for (int32_t i = 0; i < m_Batches->count; i++) {
+        M_FreeBatch(Vector_Get(m_Batches, i));
+    }
+
+    Vector_Free(m_Batches);
+    m_Batches = nullptr;
+}
+
+void Inject_ApplyProperties(void)
+{
+    if (m_Batches == nullptr) {
+        return;
+    }
+
+    for (int32_t i = 0; i < m_Batches->count; i++) {
+        M_ApplyBatch(Vector_Get(m_Batches, i));
+    }
+
+    M_Cleanup();
+}
+
+REGISTER_INJECT_EDITOR(IDT_PROPERTY_EDITS, M_PropertyEdits)

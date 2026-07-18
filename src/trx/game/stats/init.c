@@ -348,6 +348,7 @@ void Stats_CalculateMaxStats(void)
                     ObjectProperty_ResetItem(Item_Get(item_num));
                 }
 
+                Inject_ApplyProperties();
                 LUA_FireEventInt32(LUA_EVENT_BEFORE_ITEM_SETUP, level->num);
 
                 const int32_t item_count = Item_GetLevelCount();
