@@ -410,6 +410,7 @@ void Camera_FlybyMode_Update(void)
     g_Camera.shift = 0;
     g_Camera.roll = roll;
     Viewport_AlterFOV(fov, FOV_MODE_GAME);
+    Camera_UpdateMicPosition();
 
     M_TestTriggers();
 
