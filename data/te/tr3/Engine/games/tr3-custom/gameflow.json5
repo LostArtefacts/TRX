@@ -18,6 +18,7 @@
         "misc_sprites.bin",
         "pda_model.bin",
         "pickup_aid.bin",
+        "sparks_gfx.bin",
     ],
 
     "enable_tr2_item_drops": true,
