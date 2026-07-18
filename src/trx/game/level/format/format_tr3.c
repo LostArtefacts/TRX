@@ -127,7 +127,6 @@ static bool M_Load(const LEVEL_FORMAT_LOADER *const loader, VFILE *const file)
     Level_Section_ReadSpriteTextures(ctx, file);
     Level_Section_ReadSpriteSequences(ctx, file);
     Level_Section_ReadCamerasAndSinks(ctx, file);
-    Level_Section_ReadFlybyCameras(ctx, file);
     Level_Section_ReadSoundSources(ctx, file);
     Level_Section_ReadPathingData(ctx, file);
 
@@ -145,6 +144,8 @@ static bool M_Load(const LEVEL_FORMAT_LOADER *const loader, VFILE *const file)
             file->cur_ptr, file->size - VFile_GetPos(file));
         Inject_AppendInjection(embedded_injection);
     }
+
+    Level_Section_PrepareTR123FlybyCameras();
     return true;
 }
 
