@@ -229,7 +229,7 @@ bool ObjectProperty_SetObjectValueRaw(
     if (!M_CoerceValue(entry->value, value, &coerced_value)) {
         return false;
     }
-    M_ApplyObjectValue(obj, name, &coerced_value);
+    M_ApplyObjectValue(obj, entry->name, &coerced_value);
     return true;
 }
 
@@ -267,7 +267,7 @@ bool ObjectProperty_SetItemValueRaw(
     if (!M_CoerceValue(object_entry->value, value, &coerced_value)) {
         return false;
     }
-    M_ApplyItemValue(item, name, &coerced_value);
+    M_ApplyItemValue(item, object_entry->name, &coerced_value);
     return true;
 }
 

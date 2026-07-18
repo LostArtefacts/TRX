@@ -5,6 +5,7 @@ void Inject_RegisterEditor(
     void (*handle_func)(
         const INJECTION_CONTEXT *ctx, const INJECTION *injection,
         int32_t element_count));
+void Inject_ApplyProperties(void);
 
 #define REGISTER_INJECT_EDITOR(data_type, handle_func)                         \
     __attribute__((constructor)) static void                                   \

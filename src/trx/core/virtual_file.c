@@ -139,6 +139,20 @@ uint32_t VFile_ReadU32(VFILE *file)
     return result;
 }
 
+float VFile_ReadFloat(VFILE *const file)
+{
+    float result;
+    VFile_Read(file, &result, sizeof(result));
+    return result;
+}
+
+double VFile_ReadDouble(VFILE *const file)
+{
+    double result;
+    VFile_Read(file, &result, sizeof(result));
+    return result;
+}
+
 #define DEFINE_TRY_READ(name, type)                                            \
     bool name(VFILE *const file, type *const dst)                              \
     {                                                                          \

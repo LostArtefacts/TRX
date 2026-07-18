@@ -1,4 +1,5 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.9.2...develop) - ××××-××-××
+- added support to inject object and item properties, for example via TombEditor
 
 ## [1.9.2](https://github.com/LostArtefacts/TRX/compare/trx-0.1...trx-1.9.2) - 2026-07-14
 - fixed TR1 and TR2 skyboxes being 2× too bright (regression from 1.9)
