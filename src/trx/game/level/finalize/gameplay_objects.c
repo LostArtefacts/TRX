@@ -1,3 +1,4 @@
+#include <trx/game/inject.h>
 #include <trx/game/items.h>
 #include <trx/game/items/walkable.h>
 #include <trx/game/lara.h>
@@ -160,6 +161,7 @@ void Level_Finalize_LoadObjectsAndItems(LEVEL_CONTEXT *const ctx)
 
     M_PrepareTR4Items(ctx);
 
+    Inject_ApplyProperties();
     LUA_FireEventInt32(LUA_EVENT_BEFORE_ITEM_SETUP, GF_GetCurrentLevel()->num);
 
     const int32_t item_count = Item_GetLevelCount();

@@ -326,6 +326,7 @@ common_sources = [
   'trx/game/inject/editors/items.c',
   'trx/game/inject/editors/meshes.c',
   'trx/game/inject/editors/objects.c',
+  'trx/game/inject/editors/properties.c',
   'trx/game/inject/editors/rooms.c',
   'trx/game/inject/editors/textures.c',
   'trx/game/inject/testers/items.c',
