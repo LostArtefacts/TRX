@@ -145,7 +145,6 @@ static bool M_Load(const LEVEL_FORMAT_LOADER *const loader, VFILE *const file)
     }
 
     Level_Section_ReadCamerasAndSinks(ctx, file);
-    Level_Section_ReadFlybyCameras(ctx, file);
     Level_Section_ReadSoundSources(ctx, file);
     Level_Section_ReadPathingData(ctx, file);
     Level_Section_ReadAnimatedTextureRanges(ctx, file);
@@ -168,6 +167,7 @@ static bool M_Load(const LEVEL_FORMAT_LOADER *const loader, VFILE *const file)
 
     VFile_SetPos(file, 4);
     Level_Section_ReadTexturePages(ctx, file);
+    Level_Section_PrepareTR123FlybyCameras();
 
     return true;
 }
