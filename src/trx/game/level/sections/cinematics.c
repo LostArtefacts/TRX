@@ -61,20 +61,21 @@ void Level_Section_ReadCamerasAndSinks(
     Benchmark_End(&benchmark, nullptr);
 }
 
-void Level_Section_ReadFlybyCameras(LEVEL_CONTEXT *const ctx, VFILE *const file)
+void Level_Section_PrepareTR123FlybyCameras(void)
 {
     const int32_t inject_count = Inject_GetDataCount(IDT_FLYBY_CAMERAS);
-    if (ctx->loader->game_version < 4) {
-        Camera_InitialiseFlybys(inject_count);
-        return;
-    }
+    Camera_InitialiseFlybys(inject_count);
+}
 
+void Level_Section_ReadFlybyCameras(LEVEL_CONTEXT *const ctx, VFILE *const file)
+{
     BENCHMARK benchmark = Benchmark_Start();
     const int16_t num_cameras = VFile_ReadS16(file);
     LEVEL_CONTEXT_INFO *const info = &ctx->info;
     info->cameras.flyby_count = num_cameras;
     VFile_Skip(file, sizeof(int16_t)); // reserved padding
-    Camera_InitialiseFlybys(num_cameras + inject_count);
+    Camera_InitialiseFlybys(
+        num_cameras + Inject_GetDataCount(IDT_FLYBY_CAMERAS));
     LOG_INFO("flyby cameras: %d", num_cameras);
     Level_Section_AppendFlybyCameras(0, num_cameras, file);
 

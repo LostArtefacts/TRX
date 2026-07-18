@@ -6,6 +6,7 @@
 - changed outfits to support up to two braids per outfit; refer to migration notes
 - changed the `/music` console command to list the available tracks when given no argument, as `/sfx` does; `/music status` now reports what is playing
 - fixed being unable to drop to the secret ledge in Jungle room 76 from the ledge above (#5818)
+- fixed flyby cameras not working when part of an injection embedded in a level file (regression from 1.9)
 
 **Lua**
 
