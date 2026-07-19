@@ -6,6 +6,10 @@
 - changed the `/music` console command to list the available tracks when given no argument, as `/sfx` does; `/music status` now reports what is playing
 - fixed being unable to drop to the secret ledge in Jungle room 76 from the ledge above (#5818)
 
+**TR4**
+- added reflections
+- fixed the camera snapping to elevation and angle changes in instances such as opening floor trapdoors
+
 **Lua**
 
 The Lua integration was rewritten and existing scripts will need updating; refer to migration notes.
@@ -79,10 +83,6 @@ The Lua integration was rewritten and existing scripts will need updating; refer
 - removed `trx.game.settings`, which duplicated `trx.config`
 - removed `trx.music.play_track`, an undocumented alias of `trx.music.play`
 - removed the `trx.pickup` module; its enum is now `trx.items.PickupMode`
-
-**TR4**
-- added reflections
-- fixed the camera snapping to elevation and angle changes in instances such as opening floor trapdoors
 
 
 
