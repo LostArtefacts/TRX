@@ -101,6 +101,10 @@ static void M_DrawLaraMesh(
     } else {
         Output_DrawObjectMesh(mesh, clip);
     }
+
+    if (m_IsLara) {
+        Lara_Joints_Draw(mesh_num, clip, interpolated);
+    }
     Output_PopTintOverride();
 }
 

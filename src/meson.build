@@ -397,6 +397,7 @@ common_sources = [
   'trx/game/lara/pose.c',
   'trx/game/lara/rope.c',
   'trx/game/lara/skin/common.c',
+  'trx/game/lara/skin/joints.c',
   'trx/game/lara/skin/storage.c',
   'trx/game/lara/state.c',
   'trx/game/lara/state/climb.c',
