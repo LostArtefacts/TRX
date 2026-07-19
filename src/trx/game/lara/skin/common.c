@@ -480,6 +480,7 @@ void Lara_Skin_ApplyOutfit(void)
     M_SetGunEquipment(LM_THIGH_R, m_HolsterType_R, outfit);
     M_SetCombatFace(m_UseCombatFace);
     M_UpdateSunglasses();
+    Lara_Joints_Initialise(outfit);
 }
 
 void Lara_Skin_SetCombatFace(const bool enabled)
