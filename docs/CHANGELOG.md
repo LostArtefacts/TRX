@@ -1,13 +1,10 @@
-## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.9.2...develop) - ××××-××-××
+## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.9.3...develop) - ××××-××-××
 - added TR4 camera mode, which is similar to TR3 but more responsive to Lara's actions such as picking up items
 - added the ability to paste commands in the developer console (with Ctrl+V)
-- added support to inject object and item properties, for example via TombEditor
 - changed reflections UV mapping to be more correct
 - changed outfits to support up to two braids per outfit; refer to migration notes
 - changed the `/music` console command to list the available tracks when given no argument, as `/sfx` does; `/music status` now reports what is playing
 - fixed being unable to drop to the secret ledge in Jungle room 76 from the ledge above (#5818)
-- fixed flyby cameras not working when part of an injection embedded in a level file (regression from 1.9)
-- fixed the microphone's position not updating during flyby sequences (regression from 1.9)
 
 **Lua**
 
@@ -86,6 +83,13 @@ The Lua integration was rewritten and existing scripts will need updating; refer
 **TR4**
 - added reflections
 - fixed the camera snapping to elevation and angle changes in instances such as opening floor trapdoors
+
+
+
+## [1.9.3](https://github.com/LostArtefacts/TRX/compare/trx-1.9.2...trx-1.9.3) - 2026-07-19
+- added support to inject object and item properties, for example via TombEditor
+- fixed flyby cameras not working when part of an injection embedded in a level file (regression from 1.9)
+- fixed the microphone's position not updating during flyby sequences (regression from 1.9)
 
 
 
@@ -1324,15 +1328,23 @@ Their hard work gave us the perfect base to push TRX further, and made the climb
 - fixed Lara letting go of some ledges
 - fixed shadow sizes dependent on Lara's placement instead of their owner's
 
+
+
 ## [1.0.3](https://github.com/LostArtefacts/TRX/compare/trx-1.0.2...trx-1.0.3) - 2025-11-27
 - fixed the conveyor belt fuse in Natla's Mines not appearing after using the nearby switch (#4349, regression from 1.0)
+
+
 
 ## [1.0.2](https://github.com/LostArtefacts/TRX/compare/trx-1.0.1...trx-1.0.2) - 2025-11-26
 - fixed Lara being unable to interact with keyholes after picking up an item if animated interactions are enabled (#4342, regression from 1.0)
 
+
+
 ## [1.0.1](https://github.com/LostArtefacts/TRX/compare/trx-1.0...trx-1.0.1) - 2025-11-25
 - changed default master volume to 80% in TR2 to match TR1 (#4337)
 - fixed 2D sprites not appearing in the UI (#4338, regression since 1.0)
+
+
 
 ## [1.0](https://github.com/LostArtefacts/TRX/compare/76109a8855da99f3304ca4d9a3f5882dada2dd40...trx-1.0) - 2025-11-23
 Showcase: https://youtu.be/vVU9vbUXTXc
