@@ -139,8 +139,8 @@ static const char *M_SetHitPoints(void *const self, const TRX_VALUE *const in)
     if (item->hit_points > item->max_hit_points) {
         ObjectProperty_SetItemValueRaw(
             item, "max_hit_points",
-            (OBJECT_PROPERTY_VALUE) {
-                .type = OBJECT_PROPERTY_TYPE_INT,
+            (TRX_VALUE) {
+                .type = TVT_S32,
                 .as_int = item->hit_points,
             });
         item->max_hit_points = item->hit_points;
@@ -231,14 +231,13 @@ static void M_PushItem(lua_State *const L, const int16_t idx)
 // ITEM struct, properties are the object's declared defaults plus this item's
 // own overrides. The bridges themselves are in lua/utils.
 static bool M_GetPropertyValue(
-    const void *const self, const char *const name,
-    OBJECT_PROPERTY_VALUE *const out)
+    const void *const self, const char *const name, TRX_VALUE *const out)
 {
     return ObjectProperty_GetItemValue(self, name, out);
 }
 
 static bool M_SetPropertyValue(
-    void *const self, const char *const name, const OBJECT_PROPERTY_VALUE value)
+    void *const self, const char *const name, const TRX_VALUE value)
 {
     return ObjectProperty_SetItemValueRaw(self, name, value);
 }

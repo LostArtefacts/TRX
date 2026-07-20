@@ -21,7 +21,7 @@ static void M_Initialise(const int16_t item_num)
     M_PRIV *const p = item->priv;
     p->flip_slot = M_DEFAULT_FLIP_SLOT;
 
-    OBJECT_PROPERTY_VALUE value = {};
+    TRX_VALUE value = {};
     if (ObjectProperty_GetItemValue(item, "flip_slot", &value)
         && value.as_int < MAX_FLIP_MAPS) {
         p->flip_slot = value.as_int;

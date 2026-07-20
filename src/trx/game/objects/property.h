@@ -1,7 +1,7 @@
 #pragma once
 
-#include <trx/core/math.h>
 #include <trx/core/utils.h>
+#include <trx/core/value.h>
 
 #include <stddef.h>
 #include <stdint.h>
@@ -17,28 +17,9 @@ typedef struct JSON_READ_IO JSON_READ_IO;
 typedef struct JSON_WRITE_IO JSON_WRITE_IO;
 typedef struct OBJECT OBJECT;
 
-typedef enum {
-    OBJECT_PROPERTY_TYPE_INT,
-    OBJECT_PROPERTY_TYPE_FLOAT,
-    OBJECT_PROPERTY_TYPE_DOUBLE,
-    OBJECT_PROPERTY_TYPE_BOOL,
-    OBJECT_PROPERTY_TYPE_XYZ,
-} OBJECT_PROPERTY_TYPE;
-
-typedef struct {
-    OBJECT_PROPERTY_TYPE type;
-    union {
-        int32_t as_int;
-        float as_float;
-        double as_double;
-        bool as_bool;
-        XYZ_32 as_xyz;
-    };
-} OBJECT_PROPERTY_VALUE;
-
 typedef struct {
     const char *name, *description;
-    OBJECT_PROPERTY_VALUE value;
+    TRX_VALUE value;
 } OBJECT_PROPERTY_DECL;
 
 typedef struct OBJECT_PROPERTY_ENTRY OBJECT_PROPERTY_ENTRY;
@@ -52,21 +33,21 @@ typedef OBJECT_PROPERTY_SET ITEM_PROPERTY_SET;
 #define OBJECT_PROPERTY_INT(name_, value_, description_)                       \
     {                                                                          \
         .name = name_, .description = description_, .value = {                 \
-            .type = OBJECT_PROPERTY_TYPE_INT,                                  \
+            .type = TVT_S32,                                                   \
             .as_int = value_                                                   \
         }                                                                      \
     }
 #define OBJECT_PROPERTY_BOOL(name_, value_, description_)                      \
     {                                                                          \
         .name = name_, .description = description_, .value = {                 \
-            .type = OBJECT_PROPERTY_TYPE_BOOL,                                 \
+            .type = TVT_BOOL,                                                  \
             .as_bool = value_                                                  \
         }                                                                      \
     }
 #define OBJECT_PROPERTY_XYZ(name_, value_, description_)                       \
     {                                                                          \
         .name = name_, .description = description_, .value = {                 \
-            .type = OBJECT_PROPERTY_TYPE_XYZ,                                  \
+            .type = TVT_XYZ_32,                                                \
             .as_xyz = value_                                                   \
         }                                                                      \
     }
@@ -74,8 +55,8 @@ typedef OBJECT_PROPERTY_SET ITEM_PROPERTY_SET;
 #define OBJECT_PROPERTY_DOUBLE(name_, value_, description_)                    \
     {                                                                          \
         .name = name_, .description = description_, .value = {                 \
-            .type = OBJECT_PROPERTY_TYPE_DOUBLE,                               \
-            .as_double = value_                                                \
+            .type = TVT_DOUBLE,                                                \
+            .as_num = value_                                                   \
         }                                                                      \
     }
 
@@ -85,14 +66,14 @@ void ObjectProperty_ApplyDeclarations(
     OBJECT *obj, const OBJECT_PROPERTY_DECL *declarations, size_t count);
 
 bool ObjectProperty_GetObjectValue(
-    const OBJECT *obj, const char *name, OBJECT_PROPERTY_VALUE *out_value);
+    const OBJECT *obj, const char *name, TRX_VALUE *out_value);
 bool ObjectProperty_SetObjectValueRaw(
-    OBJECT *obj, const char *name, OBJECT_PROPERTY_VALUE value);
+    OBJECT *obj, const char *name, TRX_VALUE value);
 
 bool ObjectProperty_GetItemValue(
-    const ITEM *item, const char *name, OBJECT_PROPERTY_VALUE *out_value);
+    const ITEM *item, const char *name, TRX_VALUE *out_value);
 bool ObjectProperty_SetItemValueRaw(
-    ITEM *item, const char *name, OBJECT_PROPERTY_VALUE value);
+    ITEM *item, const char *name, TRX_VALUE value);
 
 int32_t ObjectProperty_GetObjectNameCount(const OBJECT *obj);
 const char *ObjectProperty_GetObjectName(const OBJECT *obj, int32_t index);

@@ -21,7 +21,7 @@ typedef struct {
 
 static bool M_IsPoison(const ITEM *const item)
 {
-    OBJECT_PROPERTY_VALUE poison = {};
+    TRX_VALUE poison = {};
     if (ObjectProperty_GetItemValue(item, "poison", &poison)) {
         return poison.as_bool;
     }
@@ -31,7 +31,7 @@ static bool M_IsPoison(const ITEM *const item)
 
 static int32_t M_GetDamage(const ITEM *const item)
 {
-    OBJECT_PROPERTY_VALUE damage = {};
+    TRX_VALUE damage = {};
     if (ObjectProperty_GetItemValue(item, "damage", &damage)) {
         return damage.as_int;
     }

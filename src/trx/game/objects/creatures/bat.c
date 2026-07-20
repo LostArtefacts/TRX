@@ -29,7 +29,7 @@ static BITE m_BatBite = {
 
 static int32_t M_GetAttackDamage(const ITEM *const item)
 {
-    OBJECT_PROPERTY_VALUE damage = {};
+    TRX_VALUE damage = {};
     if (ObjectProperty_GetItemValue(item, "damage", &damage)) {
         return damage.as_int;
     }

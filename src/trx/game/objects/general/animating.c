@@ -11,7 +11,7 @@ static void M_Initialise(const int16_t item_num)
     M_PRIV *const p = item->priv;
     p->collidable = true;
 
-    OBJECT_PROPERTY_VALUE value = {};
+    TRX_VALUE value = {};
     if (ObjectProperty_GetItemValue(item, "collidable", &value)) {
         p->collidable = value.as_bool;
     }

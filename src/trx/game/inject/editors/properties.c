@@ -11,7 +11,7 @@ typedef enum {
 
 typedef struct {
     const char *name;
-    OBJECT_PROPERTY_VALUE value;
+    TRX_VALUE value;
 } M_PROPERTY;
 
 typedef struct {
@@ -36,25 +36,41 @@ static const char *M_ReadName(const INJECTION *const injection)
     return name;
 }
 
-static OBJECT_PROPERTY_VALUE M_ReadValue(const INJECTION *const injection)
-{
-    OBJECT_PROPERTY_VALUE value = {};
-    value.type = VFile_ReadS32(injection->fp);
+// On-disk property type tags, fixed by the injection file format.
+// TRX_VALUE_TYPE orders its own constants independently, so the tag read from
+// the file is mapped to a TRX_VALUE_TYPE explicitly rather than cast.
+typedef enum {
+    M_DISK_INT = 0,
+    M_DISK_FLOAT = 1,
+    M_DISK_DOUBLE = 2,
+    M_DISK_BOOL = 3,
+    M_DISK_XYZ = 4,
+} M_DISK_PROPERTY_TYPE;
 
-    switch (value.type) {
-    case OBJECT_PROPERTY_TYPE_INT:
+static TRX_VALUE M_ReadValue(const INJECTION *const injection)
+{
+    TRX_VALUE value = {};
+    const int32_t disk_type = VFile_ReadS32(injection->fp);
+
+    switch (disk_type) {
+    case M_DISK_INT:
+        value.type = TVT_S32;
         value.as_int = VFile_ReadS32(injection->fp);
         break;
-    case OBJECT_PROPERTY_TYPE_FLOAT:
-        value.as_float = VFile_ReadFloat(injection->fp);
+    case M_DISK_FLOAT:
+        value.type = TVT_FLOAT;
+        value.as_num = VFile_ReadFloat(injection->fp);
         break;
-    case OBJECT_PROPERTY_TYPE_DOUBLE:
-        value.as_double = VFile_ReadDouble(injection->fp);
+    case M_DISK_DOUBLE:
+        value.type = TVT_DOUBLE;
+        value.as_num = VFile_ReadDouble(injection->fp);
         break;
-    case OBJECT_PROPERTY_TYPE_BOOL:
+    case M_DISK_BOOL:
+        value.type = TVT_BOOL;
         value.as_bool = VFile_ReadS32(injection->fp) != 0;
         break;
-    case OBJECT_PROPERTY_TYPE_XYZ:
+    case M_DISK_XYZ:
+        value.type = TVT_XYZ_32;
         value.as_xyz = (XYZ_32) {
             .x = VFile_ReadS32(injection->fp),
             .y = VFile_ReadS32(injection->fp),
@@ -62,7 +78,7 @@ static OBJECT_PROPERTY_VALUE M_ReadValue(const INJECTION *const injection)
         };
         break;
     default:
-        LOG_WARNING("Unknown property type %d", value.type);
+        LOG_WARNING("Unknown property type %d", disk_type);
         break;
     }
 

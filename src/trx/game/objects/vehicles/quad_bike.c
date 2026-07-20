@@ -225,7 +225,7 @@ static void M_Initialise(const int16_t item_num)
 
     item->extra_rotations = p->extra_rotation;
 
-    OBJECT_PROPERTY_VALUE value = {};
+    TRX_VALUE value = {};
     if (ObjectProperty_GetItemValue(item, "test_static_collision", &value)) {
         p->test_static_collision = value.as_bool;
     }

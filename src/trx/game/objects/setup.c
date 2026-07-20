@@ -25,8 +25,8 @@ static void M_SetupLara(OBJECT *const obj)
             "max_hit_points", LARA_MAX_HITPOINTS, "Maximum hit points."));
     ObjectProperty_SetObjectValueRaw(
         obj, "max_hit_points",
-        (OBJECT_PROPERTY_VALUE) {
-            .type = OBJECT_PROPERTY_TYPE_INT,
+        (TRX_VALUE) {
+            .type = TVT_S32,
             .as_int = g_Config.gameplay.start_lara_hitpoints,
         });
 }

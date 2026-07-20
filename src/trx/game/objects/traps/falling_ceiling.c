@@ -7,7 +7,7 @@
 
 static int32_t M_GetDamage(const ITEM *const item)
 {
-    OBJECT_PROPERTY_VALUE damage = {};
+    TRX_VALUE damage = {};
     if (ObjectProperty_GetItemValue(item, "damage", &damage)) {
         return damage.as_int;
     }

@@ -15,7 +15,7 @@ static const uint8_t m_Falloffs[5] = { 13, 7, 7, 7, 7 };
 
 static int32_t M_GetDamage(void)
 {
-    OBJECT_PROPERTY_VALUE damage = {};
+    TRX_VALUE damage = {};
     const OBJECT *const obj = Object_Get(O_WILLARD);
     if (ObjectProperty_GetObjectValue(obj, "plasma_ball_damage", &damage)) {
         return damage.as_int;

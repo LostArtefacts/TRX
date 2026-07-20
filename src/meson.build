@@ -214,6 +214,7 @@ common_sources = [
   'trx/core/json/parse.c',
   'trx/core/json/util/file.c',
   'trx/core/json/util/read_io.c',
+  'trx/core/json/util/value.c',
   'trx/core/json/util/write_io.c',
   'trx/core/json/write.c',
   'trx/core/log.c',

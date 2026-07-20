@@ -172,7 +172,7 @@ void Door_Initialise(const int16_t item_num)
 
     p->crowbar = false;
     p->lift = false;
-    OBJECT_PROPERTY_VALUE value = {};
+    TRX_VALUE value = {};
     if (ObjectProperty_GetItemValue(item, "crowbar", &value)) {
         p->crowbar = value.as_bool;
     }

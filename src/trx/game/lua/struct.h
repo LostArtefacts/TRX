@@ -53,8 +53,8 @@ typedef struct {
     const TYPE_DESC *type;
     // What an unknown property is called back to the script.
     const char *what;
-    bool (*get)(const void *self, const char *name, OBJECT_PROPERTY_VALUE *out);
-    bool (*set)(void *self, const char *name, OBJECT_PROPERTY_VALUE value);
+    bool (*get)(const void *self, const char *name, TRX_VALUE *out);
+    bool (*set)(void *self, const char *name, TRX_VALUE value);
     int32_t (*name_count)(const void *self);
     const char *(*name_at)(const void *self, int32_t idx);
 } LUA_PROPERTY_DESC;

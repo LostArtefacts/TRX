@@ -259,7 +259,7 @@ static void M_Initialise(const int16_t item_num)
     p->speed = M_DEFAULT_SPEED;
     p->is_moving = false;
 
-    OBJECT_PROPERTY_VALUE value = {};
+    TRX_VALUE value = {};
     if (ObjectProperty_GetItemValue(item, "wait_time", &value)
         && value.as_int > 0) {
         p->max_wait_time = value.as_int;

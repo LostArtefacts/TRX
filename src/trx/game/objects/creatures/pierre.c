@@ -47,7 +47,7 @@ static int16_t m_PierreItemNum = NO_ITEM;
 
 static int32_t M_GetShotDamage(const ITEM *const item)
 {
-    OBJECT_PROPERTY_VALUE damage = {};
+    TRX_VALUE damage = {};
     if (ObjectProperty_GetItemValue(item, "damage", &damage)) {
         return damage.as_int;
     }

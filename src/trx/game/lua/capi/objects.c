@@ -42,14 +42,13 @@ static void *M_Resolve(const LUA_STRUCT_REF *const ref)
 // OBJECT struct, properties are what the object declares about itself. The
 // bridges themselves are in lua/utils.
 static bool M_GetPropertyValue(
-    const void *const self, const char *const name,
-    OBJECT_PROPERTY_VALUE *const out)
+    const void *const self, const char *const name, TRX_VALUE *const out)
 {
     return ObjectProperty_GetObjectValue(self, name, out);
 }
 
 static bool M_SetPropertyValue(
-    void *const self, const char *const name, const OBJECT_PROPERTY_VALUE value)
+    void *const self, const char *const name, const TRX_VALUE value)
 {
     return ObjectProperty_SetObjectValueRaw(self, name, value);
 }

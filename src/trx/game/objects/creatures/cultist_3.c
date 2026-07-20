@@ -47,7 +47,7 @@ static const CREATURE_GUN m_Cultist3RightGun = {
 
 static int32_t M_GetShootDamage(const ITEM *const item)
 {
-    OBJECT_PROPERTY_VALUE damage = {};
+    TRX_VALUE damage = {};
     if (ObjectProperty_GetItemValue(item, "damage", &damage)) {
         return damage.as_int;
     }

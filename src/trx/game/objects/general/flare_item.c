@@ -32,14 +32,13 @@ typedef struct {
 
 static double M_GetBurnTimeSeconds(void)
 {
-    OBJECT_PROPERTY_VALUE value = {};
+    TRX_VALUE value = {};
     if (!ObjectProperty_GetObjectValue(
             Object_Get(O_FLARE_ITEM), "burn_time", &value)
-        || value.type != OBJECT_PROPERTY_TYPE_DOUBLE
-        || value.as_double <= 0.0) {
+        || value.type != TVT_DOUBLE || value.as_num <= 0.0) {
         return M_DEFAULT_FLARE_TIME;
     }
-    return value.as_double;
+    return value.as_num;
 }
 
 static XYZ_32 M_TransformLocalOffset(

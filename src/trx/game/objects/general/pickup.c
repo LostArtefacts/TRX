@@ -115,7 +115,7 @@ static void M_Initialise(int16_t item_num)
     }
 
     p->pickup_mode = PICKUP_MODE_NORMAL;
-    OBJECT_PROPERTY_VALUE value = {};
+    TRX_VALUE value = {};
     if (ObjectProperty_GetItemValue(item, "pickup_mode", &value)
         && value.as_int >= 0 && value.as_int < PICKUP_MODE_NUMBER_OF) {
         p->pickup_mode = value.as_int;

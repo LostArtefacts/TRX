@@ -13,7 +13,7 @@
 
 static int32_t M_GetDamage(void)
 {
-    OBJECT_PROPERTY_VALUE damage = {};
+    TRX_VALUE damage = {};
     const OBJECT *const obj = Object_Get(O_TONY);
     if (ObjectProperty_GetObjectValue(obj, "fire_ball_damage", &damage)) {
         return damage.as_int;

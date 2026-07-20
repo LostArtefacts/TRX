@@ -23,7 +23,7 @@ typedef struct {
 
 static int32_t M_GetDamage(const char *const key, const int32_t default_value)
 {
-    OBJECT_PROPERTY_VALUE damage = {};
+    TRX_VALUE damage = {};
     const OBJECT *const obj = Object_Get(O_SOPHIA);
     if (ObjectProperty_GetObjectValue(obj, key, &damage)) {
         return damage.as_int;

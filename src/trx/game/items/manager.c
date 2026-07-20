@@ -249,7 +249,7 @@ void Item_Initialise(const int16_t item_num)
     item->rot.z = 0;
     item->speed = 0;
     item->fall_speed = 0;
-    OBJECT_PROPERTY_VALUE max_hit_points = {};
+    TRX_VALUE max_hit_points = {};
     ObjectProperty_GetItemValue(item, "max_hit_points", &max_hit_points);
     item->hit_points = max_hit_points.as_int;
     item->max_hit_points = max_hit_points.as_int;

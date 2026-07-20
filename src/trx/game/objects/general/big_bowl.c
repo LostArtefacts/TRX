@@ -28,7 +28,7 @@ static void M_Initialise(const int16_t item_num)
     p->pour_time = M_DEFAULT_POUR_TIME;
     p->flip_slot = M_DEFAULT_FLIP_SLOT;
 
-    OBJECT_PROPERTY_VALUE value = {};
+    TRX_VALUE value = {};
     if (ObjectProperty_GetItemValue(item, "pour_time", &value)
         && value.as_int > 0) {
         p->pour_time = value.as_int;
