@@ -463,6 +463,25 @@ void Lara_Extinguish(void)
     }
 }
 
+void Lara_Dry(void)
+{
+    LARA_INFO *const lara_info = Lara_GetLaraInfo();
+    for (LARA_MESH mesh = LM_FIRST; mesh < LM_NUMBER_OF; mesh++) {
+        lara_info->wet[mesh] = 0;
+    }
+}
+
+bool Lara_IsWet(void)
+{
+    const LARA_INFO *const lara_info = Lara_GetLaraInfo();
+    for (LARA_MESH mesh = LM_FIRST; mesh < LM_NUMBER_OF; mesh++) {
+        if (lara_info->wet[mesh] != 0) {
+            return true;
+        }
+    }
+    return false;
+}
+
 bool Lara_HasState(const LARA_TRX_STATE *const test_arr)
 {
     const LARA_INFO *const lara_info = Lara_GetLaraInfo();
