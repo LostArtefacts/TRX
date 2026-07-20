@@ -286,6 +286,7 @@ static void M_WriteResumeInfo(
     JSONW_WRITE(io, "prev_level", resume->prev_level);
 
     JSONW_WRITE(io, "hurt_allies", resume->hurt_allies);
+    JSONW_WRITE(io, "burning", resume->burning);
 
     JSONW_WRITE(io, "lara_hitpoints", resume->lara_hitpoints);
     JSONW_WRITE(io, "pistol_ammo", resume->pistol_ammo);

@@ -668,6 +668,7 @@ void Savegame_PersistGameToCurrentInfo(const GF_LEVEL *const level)
     if (lara_item != nullptr) {
         resume->lara_hitpoints = lara_item->hit_points;
     }
+    resume->burning = g_TRVersion >= 4 && lara->burn;
     resume->small_medipacks = Inv_RequestItem(O_SMALL_MEDIPACK_ITEM);
     resume->large_medipacks = Inv_RequestItem(O_LARGE_MEDIPACK_ITEM);
 

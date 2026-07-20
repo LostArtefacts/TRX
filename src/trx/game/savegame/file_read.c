@@ -1001,6 +1001,10 @@ static bool M_ReadResumeInfo(JSON_READ_IO *const io, RESUME_INFO *const resume)
     M_SHOULD(JSON_READ(io, "prev_level", &resume->prev_level));
     M_SHOULD(JSON_READ(io, "hurt_allies", &resume->hurt_allies));
 
+    // Introduced in TRX 1.10
+    resume->burning = false;
+    M_SHOULD(JSON_READ(io, "burning", &resume->burning));
+
     M_MUST(JSON_READ(io, "has_pistols", &resume->flags.has_pistols));
     M_MUST(JSON_READ(io, "has_shotgun", &resume->flags.has_shotgun));
     M_MUST(JSON_READ(io, "has_uzis", &resume->flags.has_uzis));

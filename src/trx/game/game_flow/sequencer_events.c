@@ -164,6 +164,10 @@ M_GF_HANDLER(M_HandlePlayLevel)
             Savegame_SetInitialVersion(SG_CURRENT_VERSION);
             GF_InventoryModifier_Scan(Game_GetCurrentLevel());
             GF_InventoryModifier_Apply(Game_GetCurrentLevel(), GF_INV_REGULAR);
+            const RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
+            if (resume != nullptr && resume->burning) {
+                Lara_CatchFire();
+            }
         }
         break;
     }
