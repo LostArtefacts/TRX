@@ -76,7 +76,16 @@ test('handle', test_handle_exe, suite: 'unit')
 
 test_field_exe = executable(
   'test_field',
-  files('unit/test_field.c') + test_stubs + files('../trx/game/lua/field.c'),
+  files('unit/test_field.c') + test_stubs
+    + files(
+      '../trx/game/lua/field.c',
+      '../trx/core/value.c',
+      '../trx/core/dynamic_enum.c',
+      '../trx/core/enum_map.c',
+      '../trx/core/memory.c',
+      '../trx/core/vector.c',
+    )
+    + files('unit/stubs_enum_map.c'),
   include_directories: [src_inc, test_inc],
   build_by_default: false,
 )
@@ -116,9 +125,8 @@ test_enum_map_exe = executable(
 )
 test('enum_map', test_enum_map_exe, suite: 'unit')
 
-# The dynamic enum registry, keyed on an opaque token. Its label lookup goes
-# through the localized game strings, which are stubbed; the string helpers it
-# uses live in core/strings (PCRE2).
+# The dynamic enum registry, keyed on an opaque token. Its only dependency
+# outside core is the localized game strings behind labels, which are stubbed.
 test_dynamic_enum_exe = executable(
   'test_dynamic_enum',
   files('unit/test_dynamic_enum.c') + test_stubs
@@ -126,21 +134,16 @@ test_dynamic_enum_exe = executable(
       '../trx/core/dynamic_enum.c',
       '../trx/core/memory.c',
       '../trx/core/vector.c',
-      '../trx/core/strings/common.c',
-      '../trx/core/strings/case_funcs.c',
-      '../trx/core/strings/fuzzy_match.c',
     )
     + files('unit/stubs_enum_map.c'),
   include_directories: [src_inc, test_inc],
-  dependencies: [dep_pcre2],
-  c_args: ['-DPCRE2_CODE_UNIT_WIDTH=8'],
   build_by_default: false,
 )
 test('dynamic_enum', test_dynamic_enum_exe, suite: 'unit')
 
 # The primitive value taxonomy. It leans on the enum map and dynamic enum
-# registry, and on the real string helpers for parsing and formatting (PCRE2 for
-# bool matching); only the localized game strings behind enum labels are stubbed.
+# registry; its formatting helper and the localized game strings behind enum
+# labels are stubbed, the same way the enum map test stands them up.
 test_value_exe = executable(
   'test_value',
   files('unit/test_value.c') + test_stubs
@@ -150,14 +153,9 @@ test_value_exe = executable(
       '../trx/core/enum_map.c',
       '../trx/core/memory.c',
       '../trx/core/vector.c',
-      '../trx/core/strings/common.c',
-      '../trx/core/strings/case_funcs.c',
-      '../trx/core/strings/fuzzy_match.c',
     )
     + files('unit/stubs_enum_map.c'),
   include_directories: [src_inc, test_inc],
-  dependencies: [dep_pcre2],
-  c_args: ['-DPCRE2_CODE_UNIT_WIDTH=8'],
   build_by_default: false,
 )
 test('value', test_value_exe, suite: 'unit')
@@ -205,9 +203,11 @@ test('lua_guard', test_lua_guard_exe, suite: 'unit')
 # disk rather than from the embedded copy, so the tests need to know where the
 # tree is.
 lua_surface_src = files(
+  '../trx/core/dynamic_enum.c',
   '../trx/core/enum_map.c',
   '../trx/core/handle.c',
   '../trx/core/memory.c',
+  '../trx/core/value.c',
   '../trx/core/vector.c',
   '../trx/game/enum.c',
   '../trx/game/lua/capi/api.c',
@@ -544,13 +544,18 @@ test_lua_struct_exe = executable(
   'test_lua_struct',
   files('unit/test_lua_struct.c') + test_stubs
     + files(
+      '../trx/core/dynamic_enum.c',
+      '../trx/core/enum_map.c',
       '../trx/core/handle.c',
       '../trx/core/memory.c',
+      '../trx/core/value.c',
+      '../trx/core/vector.c',
       '../trx/game/lua/capi/struct.c',
       '../trx/game/lua/field.c',
       '../trx/game/lua/registry.c',
       '../trx/game/lua/utils.c',
-    ),
+    )
+    + files('unit/stubs_enum_map.c'),
   include_directories: [src_inc, test_inc],
   dependencies: [dep_lua],
   build_by_default: false,

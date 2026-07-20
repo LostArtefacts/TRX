@@ -22,11 +22,11 @@
 #define M_TABLE(packed) ((packed) >> 16)
 #define M_NUM(packed) ((packed) & 0xffff)
 
-static bool M_GetOrdinal(const void *const self, FIELD_VALUE *const out)
+static bool M_GetOrdinal(const void *const self, TRX_VALUE *const out)
 {
     const GF_LEVEL *const level = self;
-    *out = (FIELD_VALUE) {
-        .type = FT_INT32,
+    *out = (TRX_VALUE) {
+        .type = TVT_S32,
         .as_int =
             GF_GetLevelOrdinalNumber(GF_GetLevelTableType(level->type), level),
     };
@@ -35,7 +35,7 @@ static bool M_GetOrdinal(const void *const self, FIELD_VALUE *const out)
 
 // clang-format off
 static const FIELD_DESC m_Fields[] = {
-    FIELD_FN("num", FT_INT32, M_GetOrdinal, nullptr),
+    FIELD_FN("num", TVT_S32, M_GetOrdinal, nullptr),
     FIELD_RO(GF_LEVEL, type),
     FIELD_RO(GF_LEVEL, path),
     FIELD_RO(GF_LEVEL, title),

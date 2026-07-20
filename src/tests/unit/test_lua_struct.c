@@ -20,15 +20,15 @@ typedef struct {
 } WIDGET;
 
 // clang-format off
-static const FIELD_DESC M_WIDGET_FIELDS[] = {
-    FIELD    (WIDGET, visible),
-    FIELD    (WIDGET, secret),
-    FIELD    (WIDGET, flag),
-    FIELD_RO (WIDGET, locked),
+static const FIELD_DESC m_WidgetFields[] = {
+    FIELD   (WIDGET, visible),
+    FIELD   (WIDGET, secret),
+    FIELD   (WIDGET, flag),
+    FIELD_RO(WIDGET, locked),
 };
 // clang-format on
 
-TYPE_DEFINE(WIDGET, M_WIDGET_FIELDS)
+TYPE_DEFINE(WIDGET, m_WidgetFields)
 
 // A tiny pool so handles can be made stale on demand, the way Item_Kill does.
 #define M_POOL_SIZE 4
@@ -332,6 +332,6 @@ TEST(struct_members_reports_the_c_surface_for_diagnostics)
         "ones')\n"
         "assert(names.locked.writable == false, 'locked is read-only in C')\n"
         "assert(names.visible.writable == true)\n"
-        "assert(names.visible.type == 'INT32')\n"));
+        "assert(names.visible.type == 'S32')\n"));
     lua_close(L);
 }

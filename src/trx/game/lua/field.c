@@ -11,48 +11,6 @@
 static const TYPE_DESC *m_Types[M_MAX_TYPES];
 static int32_t m_TypeCount = 0;
 
-// Returns nullptr if `value` fits the integer `type`, else an error message.
-// The reflection layer is the one place that knows every field's exact width,
-// so it is where an out-of-range store must be rejected rather than silently
-// truncated (e.g. writing 99999 into an int16 member).
-static const char *M_CheckIntRange(const FIELD_TYPE type, const int64_t value)
-{
-    int64_t min = 0;
-    int64_t max = 0;
-    switch (type) {
-    case FT_INT8:
-        min = INT8_MIN;
-        max = INT8_MAX;
-        break;
-    case FT_UINT8:
-        min = 0;
-        max = UINT8_MAX;
-        break;
-    case FT_INT16:
-        min = INT16_MIN;
-        max = INT16_MAX;
-        break;
-    case FT_UINT16:
-        min = 0;
-        max = UINT16_MAX;
-        break;
-    case FT_INT32:
-        min = INT32_MIN;
-        max = INT32_MAX;
-        break;
-    case FT_UINT32:
-        min = 0;
-        max = UINT32_MAX;
-        break;
-    default:
-        return nullptr;
-    }
-    if (value < min || value > max) {
-        return "value out of range for field";
-    }
-    return nullptr;
-}
-
 void Type_Register(const TYPE_DESC *const type)
 {
     ASSERT(m_TypeCount < M_MAX_TYPES);
@@ -80,68 +38,6 @@ const TYPE_DESC *Type_GetByName(const char *const name)
         }
     }
     return nullptr;
-}
-
-const char *Field_GetTypeName(const FIELD_TYPE type)
-{
-    switch (type) {
-    case FT_BOOL:
-        return "BOOL";
-    case FT_INT8:
-        return "INT8";
-    case FT_UINT8:
-        return "UINT8";
-    case FT_INT16:
-        return "INT16";
-    case FT_UINT16:
-        return "UINT16";
-    case FT_INT32:
-        return "INT32";
-    case FT_UINT32:
-        return "UINT32";
-    case FT_FLOAT:
-        return "FLOAT";
-    case FT_DOUBLE:
-        return "DOUBLE";
-    case FT_XYZ_16:
-        return "XYZ_16";
-    case FT_XYZ_32:
-        return "XYZ_32";
-    case FT_STRING:
-        return "STRING";
-    }
-    return "UNKNOWN";
-}
-
-size_t Field_GetTypeSize(const FIELD_TYPE type)
-{
-    switch (type) {
-    case FT_BOOL:
-        return sizeof(bool);
-    case FT_INT8:
-        return sizeof(int8_t);
-    case FT_UINT8:
-        return sizeof(uint8_t);
-    case FT_INT16:
-        return sizeof(int16_t);
-    case FT_UINT16:
-        return sizeof(uint16_t);
-    case FT_INT32:
-        return sizeof(int32_t);
-    case FT_UINT32:
-        return sizeof(uint32_t);
-    case FT_FLOAT:
-        return sizeof(float);
-    case FT_DOUBLE:
-        return sizeof(double);
-    case FT_XYZ_16:
-        return sizeof(XYZ_16);
-    case FT_XYZ_32:
-        return sizeof(XYZ_32);
-    case FT_STRING:
-        return sizeof(char *);
-    }
-    return 0;
 }
 
 const char *Field_FindDuplicateName(const TYPE_DESC *const type)
@@ -175,7 +71,7 @@ void Field_ValidateType(const TYPE_DESC *const type)
         if (!reads_member && !writes_member) {
             continue;
         }
-        ASSERT(field->size == Field_GetTypeSize(field->type));
+        ASSERT(field->size == Value_TypeSize(field->type));
     }
 }
 
@@ -191,61 +87,17 @@ const FIELD_DESC *Field_Find(
 }
 
 bool Field_Get(
-    const FIELD_DESC *const field, const void *const self,
-    FIELD_VALUE *const out)
+    const FIELD_DESC *const field, const void *const self, TRX_VALUE *const out)
 {
     if (field->get != nullptr) {
         return field->get(self, out);
     }
-
-    const void *const p = (const char *)self + field->offset;
-    out->type = field->type;
-    switch (field->type) {
-    case FT_BOOL:
-        out->as_bool = *(const bool *)p;
-        break;
-    case FT_INT8:
-        out->as_int = *(const int8_t *)p;
-        break;
-    case FT_UINT8:
-        out->as_int = *(const uint8_t *)p;
-        break;
-    case FT_INT16:
-        out->as_int = *(const int16_t *)p;
-        break;
-    case FT_UINT16:
-        out->as_int = *(const uint16_t *)p;
-        break;
-    case FT_INT32:
-        out->as_int = *(const int32_t *)p;
-        break;
-    case FT_UINT32:
-        out->as_int = *(const uint32_t *)p;
-        break;
-    case FT_FLOAT:
-        out->as_num = *(const float *)p;
-        break;
-    case FT_DOUBLE:
-        out->as_num = *(const double *)p;
-        break;
-    case FT_XYZ_32:
-        out->as_xyz = *(const XYZ_32 *)p;
-        break;
-    case FT_XYZ_16: {
-        const XYZ_16 *const v = p;
-        out->as_xyz = (XYZ_32) { .x = v->x, .y = v->y, .z = v->z };
-        break;
-    }
-    case FT_STRING:
-        out->as_str = *(const char *const *)p;
-        break;
-    }
+    Value_ReadPtr(field->type, (const char *)self + field->offset, out);
     return true;
 }
 
 const char *Field_Set(
-    const FIELD_DESC *const field, void *const self,
-    const FIELD_VALUE *const in)
+    const FIELD_DESC *const field, void *const self, const TRX_VALUE *const in)
 {
     if (field->flags & FF_READONLY) {
         return "field is read-only";
@@ -256,75 +108,14 @@ const char *Field_Set(
     // setter guards its own semantics - a legal animation number, a room that
     // exists - and then assigns the widened carrier straight into the member;
     // it has no width of its own to check against.
-    switch (field->type) {
-    case FT_INT8:
-    case FT_UINT8:
-    case FT_INT16:
-    case FT_UINT16:
-    case FT_INT32:
-    case FT_UINT32: {
-        const char *const err = M_CheckIntRange(field->type, in->as_int);
-        if (err != nullptr) {
-            return err;
-        }
-        break;
-    }
-    case FT_XYZ_16:
-        if (M_CheckIntRange(FT_INT16, in->as_xyz.x) != nullptr
-            || M_CheckIntRange(FT_INT16, in->as_xyz.y) != nullptr
-            || M_CheckIntRange(FT_INT16, in->as_xyz.z) != nullptr) {
-            return "vector component out of range for field";
-        }
-        break;
-    default:
-        break;
+    const char *const err = Value_CheckRange(field->type, in);
+    if (err != nullptr) {
+        return err;
     }
 
     if (field->set != nullptr) {
         return field->set(self, in);
     }
 
-    void *const p = (char *)self + field->offset;
-    switch (field->type) {
-    case FT_BOOL:
-        *(bool *)p = in->as_bool;
-        break;
-    case FT_INT8:
-        *(int8_t *)p = in->as_int;
-        break;
-    case FT_UINT8:
-        *(uint8_t *)p = in->as_int;
-        break;
-    case FT_INT16:
-        *(int16_t *)p = in->as_int;
-        break;
-    case FT_UINT16:
-        *(uint16_t *)p = in->as_int;
-        break;
-    case FT_INT32:
-        *(int32_t *)p = in->as_int;
-        break;
-    case FT_UINT32:
-        *(uint32_t *)p = in->as_int;
-        break;
-    case FT_FLOAT:
-        *(float *)p = in->as_num;
-        break;
-    case FT_DOUBLE:
-        *(double *)p = in->as_num;
-        break;
-    case FT_XYZ_32:
-        *(XYZ_32 *)p = in->as_xyz;
-        break;
-    case FT_XYZ_16:
-        *(XYZ_16 *)p = (XYZ_16) {
-            .x = in->as_xyz.x,
-            .y = in->as_xyz.y,
-            .z = in->as_xyz.z,
-        };
-        break;
-    case FT_STRING:
-        return "string fields require a custom setter";
-    }
-    return nullptr;
+    return Value_WritePtr(field->type, (char *)self + field->offset, in);
 }

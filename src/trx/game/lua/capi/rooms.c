@@ -10,11 +10,11 @@
 
 // Scripts and the engine both count rooms from 0. There is no Room_GetIndex, so
 // derive it the way Item_GetIndex does.
-static bool M_GetIndex(const void *const self, FIELD_VALUE *const out)
+static bool M_GetIndex(const void *const self, TRX_VALUE *const out)
 {
     const ROOM *const room = self;
-    *out = (FIELD_VALUE) {
-        .type = FT_INT16,
+    *out = (TRX_VALUE) {
+        .type = TVT_S16,
         .as_int = (int32_t)(room - Room_Get(0)),
     };
     return true;
@@ -22,7 +22,7 @@ static bool M_GetIndex(const void *const self, FIELD_VALUE *const out)
 
 // clang-format off
 static const FIELD_DESC m_Fields[] = {
-    FIELD_FN("room_index", FT_INT16, M_GetIndex, nullptr),
+    FIELD_FN("room_index", TVT_S16, M_GetIndex, nullptr),
 
     FIELD(ROOM, flags.underwater),
     FIELD(ROOM, flags.wind),

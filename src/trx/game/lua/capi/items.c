@@ -11,16 +11,16 @@
 #include <trx/game/pathing/lot.h>
 #include <trx/game/rooms.h>
 
-static bool M_GetAnim(const void *const self, FIELD_VALUE *const out)
+static bool M_GetAnim(const void *const self, TRX_VALUE *const out)
 {
-    *out = (FIELD_VALUE) {
-        .type = FT_INT16,
+    *out = (TRX_VALUE) {
+        .type = TVT_S16,
         .as_int = Item_GetRelativeAnim(self),
     };
     return true;
 }
 
-static const char *M_SetAnim(void *const self, const FIELD_VALUE *const in)
+static const char *M_SetAnim(void *const self, const TRX_VALUE *const in)
 {
     ITEM *const item = self;
     const OBJECT *const obj = Object_Get(item->object_id);
@@ -40,16 +40,16 @@ static const char *M_SetAnim(void *const self, const FIELD_VALUE *const in)
     return nullptr;
 }
 
-static bool M_GetFrame(const void *const self, FIELD_VALUE *const out)
+static bool M_GetFrame(const void *const self, TRX_VALUE *const out)
 {
-    *out = (FIELD_VALUE) {
-        .type = FT_INT16,
+    *out = (TRX_VALUE) {
+        .type = TVT_S16,
         .as_int = Item_GetRelativeFrame(self),
     };
     return true;
 }
 
-static const char *M_SetFrame(void *const self, const FIELD_VALUE *const in)
+static const char *M_SetFrame(void *const self, const TRX_VALUE *const in)
 {
     ITEM *const item = self;
     const OBJECT *const obj = Object_Get(item->object_id);
@@ -71,40 +71,40 @@ static const char *M_SetFrame(void *const self, const FIELD_VALUE *const in)
     return nullptr;
 }
 
-static bool M_GetRoomIndex(const void *const self, FIELD_VALUE *const out)
+static bool M_GetRoomIndex(const void *const self, TRX_VALUE *const out)
 {
     const ITEM *const item = self;
-    *out = (FIELD_VALUE) { .type = FT_INT16, .as_int = item->room_num };
+    *out = (TRX_VALUE) { .type = TVT_S16, .as_int = item->room_num };
     return true;
 }
 
-static bool M_GetIsAlive(const void *const self, FIELD_VALUE *const out)
+static bool M_GetIsAlive(const void *const self, TRX_VALUE *const out)
 {
-    *out = (FIELD_VALUE) { .type = FT_BOOL, .as_bool = Item_IsAlive(self) };
+    *out = (TRX_VALUE) { .type = TVT_BOOL, .as_bool = Item_IsAlive(self) };
     return true;
 }
 
-static bool M_GetIsKilled(const void *const self, FIELD_VALUE *const out)
+static bool M_GetIsKilled(const void *const self, TRX_VALUE *const out)
 {
     const ITEM *const item = self;
-    *out = (FIELD_VALUE) {
-        .type = FT_BOOL,
+    *out = (TRX_VALUE) {
+        .type = TVT_BOOL,
         .as_bool = (item->flags & IF_KILLED) != 0,
     };
     return true;
 }
 
-static bool M_GetIsOneShot(const void *const self, FIELD_VALUE *const out)
+static bool M_GetIsOneShot(const void *const self, TRX_VALUE *const out)
 {
     const ITEM *const item = self;
-    *out = (FIELD_VALUE) {
-        .type = FT_BOOL,
+    *out = (TRX_VALUE) {
+        .type = TVT_BOOL,
         .as_bool = (item->flags & IF_ONE_SHOT) != 0,
     };
     return true;
 }
 
-static const char *M_SetIsOneShot(void *const self, const FIELD_VALUE *const in)
+static const char *M_SetIsOneShot(void *const self, const TRX_VALUE *const in)
 {
     ITEM *const item = self;
     if (in->as_bool) {
@@ -115,16 +115,16 @@ static const char *M_SetIsOneShot(void *const self, const FIELD_VALUE *const in)
     return nullptr;
 }
 
-static bool M_GetIsHostile(const void *const self, FIELD_VALUE *const out)
+static bool M_GetIsHostile(const void *const self, TRX_VALUE *const out)
 {
-    *out = (FIELD_VALUE) {
-        .type = FT_BOOL,
+    *out = (TRX_VALUE) {
+        .type = TVT_BOOL,
         .as_bool = Creature_IsHostile(self),
     };
     return true;
 }
 
-static const char *M_SetPos(void *const self, const FIELD_VALUE *const in)
+static const char *M_SetPos(void *const self, const TRX_VALUE *const in)
 {
     ITEM *const item = self;
     item->pos = in->as_xyz;
@@ -132,7 +132,7 @@ static const char *M_SetPos(void *const self, const FIELD_VALUE *const in)
     return nullptr;
 }
 
-static const char *M_SetHitPoints(void *const self, const FIELD_VALUE *const in)
+static const char *M_SetHitPoints(void *const self, const TRX_VALUE *const in)
 {
     ITEM *const item = self;
     item->hit_points = in->as_int;
@@ -148,7 +148,7 @@ static const char *M_SetHitPoints(void *const self, const FIELD_VALUE *const in)
     return nullptr;
 }
 
-static const char *M_SetName(void *const self, const FIELD_VALUE *const in)
+static const char *M_SetName(void *const self, const TRX_VALUE *const in)
 {
     if (!Item_SetName(Item_GetIndex(self), in->as_str)) {
         return "item name already in use";
@@ -159,13 +159,13 @@ static const char *M_SetName(void *const self, const FIELD_VALUE *const in)
 // clang-format off
 static const FIELD_DESC m_Fields[] = {
     // computed / validated
-    FIELD_FN("anim",       FT_INT16, M_GetAnim,      M_SetAnim),
-    FIELD_FN("frame",      FT_INT16, M_GetFrame,     M_SetFrame),
-    FIELD_FN("room_index", FT_INT16, M_GetRoomIndex, nullptr),
-    FIELD_FN("is_hostile", FT_BOOL,  M_GetIsHostile, nullptr),
-    FIELD_FN("is_alive",   FT_BOOL,  M_GetIsAlive,   nullptr),
-    FIELD_FN("is_killed",  FT_BOOL,  M_GetIsKilled,  nullptr),
-    FIELD_FN("is_one_shot", FT_BOOL, M_GetIsOneShot, M_SetIsOneShot),
+    FIELD_FN("anim",        TVT_S16,  M_GetAnim,      M_SetAnim),
+    FIELD_FN("frame",       TVT_S16,  M_GetFrame,     M_SetFrame),
+    FIELD_FN("room_index",  TVT_S16,  M_GetRoomIndex, nullptr),
+    FIELD_FN("is_hostile",  TVT_BOOL, M_GetIsHostile, nullptr),
+    FIELD_FN("is_alive",    TVT_BOOL, M_GetIsAlive,   nullptr),
+    FIELD_FN("is_killed",   TVT_BOOL, M_GetIsKilled,  nullptr),
+    FIELD_FN("is_one_shot", TVT_BOOL, M_GetIsOneShot, M_SetIsOneShot),
 
     // side-effecting writes
     FIELD_SET(ITEM, pos,        M_SetPos),

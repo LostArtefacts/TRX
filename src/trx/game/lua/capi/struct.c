@@ -13,25 +13,25 @@ static const char m_KeyMethods[] = "__methods";
 static const char m_KeyExt[] = "__ext";
 static const char m_KeyRawMethods[] = "__raw_methods";
 
-static void M_PushValue(lua_State *const L, const FIELD_VALUE *const value)
+static void M_PushValue(lua_State *const L, const TRX_VALUE *const value)
 {
     switch (value->type) {
-    case FT_BOOL:
+    case TVT_BOOL:
         lua_pushboolean(L, value->as_bool);
         break;
-    case FT_FLOAT:
-    case FT_DOUBLE:
+    case TVT_FLOAT:
+    case TVT_DOUBLE:
         lua_pushnumber(L, value->as_num);
         break;
-    case FT_STRING:
+    case TVT_STRING:
         if (value->as_str == nullptr) {
             lua_pushnil(L);
         } else {
             lua_pushstring(L, value->as_str);
         }
         break;
-    case FT_XYZ_16:
-    case FT_XYZ_32:
+    case TVT_XYZ_16:
+    case TVT_XYZ_32:
         LUA_PushXYZ(L, value->as_xyz);
         break;
     default:
@@ -40,28 +40,28 @@ static void M_PushValue(lua_State *const L, const FIELD_VALUE *const value)
     }
 }
 
-static FIELD_VALUE M_CheckValue(
-    lua_State *const L, const int idx, const FIELD_TYPE type)
+static TRX_VALUE M_CheckValue(
+    lua_State *const L, const int idx, const TRX_VALUE_TYPE type)
 {
-    FIELD_VALUE value = { .type = type };
+    TRX_VALUE value = { .type = type };
     switch (type) {
-    case FT_BOOL:
+    case TVT_BOOL:
         luaL_checktype(L, idx, LUA_TBOOLEAN);
         value.as_bool = lua_toboolean(L, idx);
         break;
-    case FT_FLOAT:
-    case FT_DOUBLE:
+    case TVT_FLOAT:
+    case TVT_DOUBLE:
         value.as_num = luaL_checknumber(L, idx);
         break;
-    case FT_STRING:
+    case TVT_STRING:
         // nil clears a string field; its setter decides whether that is
         // allowed (e.g. item.name = nil removes the name). A field with no
         // custom setter still rejects the write in Field_Set.
         value.as_str =
             lua_isnoneornil(L, idx) ? nullptr : luaL_checkstring(L, idx);
         break;
-    case FT_XYZ_16:
-    case FT_XYZ_32:
+    case TVT_XYZ_16:
+    case TVT_XYZ_32:
         value.as_xyz = LUA_CheckXYZ(L, idx);
         break;
     default:
@@ -89,7 +89,7 @@ static int M_Index(lua_State *const L)
 
     const FIELD_DESC *const field = M_LookUpField(L, 2);
     if (field != nullptr) {
-        FIELD_VALUE value;
+        TRX_VALUE value;
         if (!Field_Get(field, LUA_Struct_Deref(L, ref), &value)) {
             lua_pushnil(L);
             return 1;
@@ -144,7 +144,7 @@ static int M_NewIndex(lua_State *const L)
             L, "unknown %s field '%s'", ref->type->name, lua_tostring(L, 2));
     }
 
-    const FIELD_VALUE value = M_CheckValue(L, 3, field->type);
+    const TRX_VALUE value = M_CheckValue(L, 3, field->type);
     const char *const err = Field_Set(field, LUA_Struct_Deref(L, ref), &value);
     if (err != nullptr) {
         return luaL_error(
@@ -170,7 +170,7 @@ static int M_PairsIter(lua_State *const L)
         const FIELD_DESC *const field = lua_touserdata(L, -1);
         lua_pop(L, 1); // value; the public name stays on the stack as the key
 
-        FIELD_VALUE value;
+        TRX_VALUE value;
         if (Field_Get(field, self, &value)) {
             lua_pushvalue(
                 L, -1); // key again, as the iterator's control variable
@@ -237,24 +237,23 @@ static int M_IsValid(lua_State *const L)
 static void M_PushPropertyValue(
     lua_State *const L, const OBJECT_PROPERTY_VALUE *const value)
 {
-    FIELD_VALUE as_field = {};
+    TRX_VALUE as_field = {};
     switch (value->type) {
     case OBJECT_PROPERTY_TYPE_INT:
-        as_field = (FIELD_VALUE) { .type = FT_INT32, .as_int = value->as_int };
+        as_field = (TRX_VALUE) { .type = TVT_S32, .as_int = value->as_int };
         break;
     case OBJECT_PROPERTY_TYPE_FLOAT:
-        as_field =
-            (FIELD_VALUE) { .type = FT_FLOAT, .as_num = value->as_float };
+        as_field = (TRX_VALUE) { .type = TVT_FLOAT, .as_num = value->as_float };
         break;
     case OBJECT_PROPERTY_TYPE_DOUBLE:
         as_field =
-            (FIELD_VALUE) { .type = FT_DOUBLE, .as_num = value->as_double };
+            (TRX_VALUE) { .type = TVT_DOUBLE, .as_num = value->as_double };
         break;
     case OBJECT_PROPERTY_TYPE_BOOL:
-        as_field = (FIELD_VALUE) { .type = FT_BOOL, .as_bool = value->as_bool };
+        as_field = (TRX_VALUE) { .type = TVT_BOOL, .as_bool = value->as_bool };
         break;
     case OBJECT_PROPERTY_TYPE_XYZ:
-        as_field = (FIELD_VALUE) { .type = FT_XYZ_32, .as_xyz = value->as_xyz };
+        as_field = (TRX_VALUE) { .type = TVT_XYZ_32, .as_xyz = value->as_xyz };
         break;
     }
     M_PushValue(L, &as_field);
@@ -482,7 +481,7 @@ static int M_L_StructMembers(lua_State *const L)
         lua_newtable(L);
         lua_pushstring(L, field->name);
         lua_setfield(L, -2, "name");
-        lua_pushstring(L, Field_GetTypeName(field->type));
+        lua_pushstring(L, Value_TypeName(field->type));
         lua_setfield(L, -2, "type");
         lua_pushboolean(L, !(field->flags & FF_READONLY));
         lua_setfield(L, -2, "writable");

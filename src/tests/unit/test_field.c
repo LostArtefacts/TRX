@@ -25,14 +25,14 @@ typedef struct {
     } group;
 } SAMPLE;
 
-static bool M_GetDoubled(const void *const self, FIELD_VALUE *const out)
+static bool M_GetDoubled(const void *const self, TRX_VALUE *const out)
 {
     const SAMPLE *const s = self;
-    *out = (FIELD_VALUE) { .type = FT_INT32, .as_int = s->i32 * 2 };
+    *out = (TRX_VALUE) { .type = TVT_S32, .as_int = s->i32 * 2 };
     return true;
 }
 
-static const char *M_SetRejecting(void *const self, const FIELD_VALUE *const in)
+static const char *M_SetRejecting(void *const self, const TRX_VALUE *const in)
 {
     if (in->as_int < 0) {
         return "must not be negative";
@@ -43,14 +43,14 @@ static const char *M_SetRejecting(void *const self, const FIELD_VALUE *const in)
 
 // A setter that assigns the widened carrier straight into a narrow member, as
 // the engine's own validating setters do.
-static const char *M_SetNarrow(void *const self, const FIELD_VALUE *const in)
+static const char *M_SetNarrow(void *const self, const TRX_VALUE *const in)
 {
     ((SAMPLE *)self)->narrow = in->as_int;
     return nullptr;
 }
 
 // clang-format off
-static const FIELD_DESC M_SAMPLE_FIELDS[] = {
+static const FIELD_DESC m_Fields[] = {
     FIELD    (SAMPLE, flag),
     FIELD    (SAMPLE, i8),
     FIELD    (SAMPLE, u8),
@@ -65,13 +65,13 @@ static const FIELD_DESC M_SAMPLE_FIELDS[] = {
     FIELD    (SAMPLE, text),
     FIELD    (SAMPLE, group.nested_flag),
     FIELD_RO (SAMPLE, locked),
-    FIELD_FN ("doubled", FT_INT32, M_GetDoubled, nullptr),
+    FIELD_FN ("doubled", TVT_S32, M_GetDoubled, nullptr),
     FIELD_SET(SAMPLE, guarded, M_SetRejecting),
     FIELD_SET(SAMPLE, narrow, M_SetNarrow),
 };
 // clang-format on
 
-TYPE_DEFINE(SAMPLE, M_SAMPLE_FIELDS)
+TYPE_DEFINE(SAMPLE, m_Fields)
 
 static const FIELD_DESC *F(const char *const name)
 {
@@ -99,7 +99,7 @@ TEST(field_get_reads_every_scalar_type)
         .f64 = 2.25,
         .text = "hello",
     };
-    FIELD_VALUE v;
+    TRX_VALUE v;
 
     CHECK(Field_Get(F("flag"), &s, &v));
     CHECK(v.as_bool);
@@ -131,7 +131,7 @@ TEST(field_get_widens_xyz16_into_the_common_carrier)
         .small_vec = { .x = -1, .y = 2, .z = -3 },
         .big_vec = { .x = 100000, .y = -200000, .z = 300000 },
     };
-    FIELD_VALUE v;
+    TRX_VALUE v;
 
     CHECK(Field_Get(F("small_vec"), &s, &v));
     CHECK_EQ_INT(v.as_xyz.x, -1);
@@ -148,20 +148,20 @@ TEST(field_set_narrows_on_store)
     SAMPLE s = {};
 
     CHECK_NULL(Field_Set(
-        F("i16"), &s, &(FIELD_VALUE) { .type = FT_INT16, .as_int = -4321 }));
+        F("i16"), &s, &(TRX_VALUE) { .type = TVT_S16, .as_int = -4321 }));
     CHECK_EQ_INT(s.i16, -4321);
 
     CHECK_NULL(Field_Set(
         F("small_vec"), &s,
-        &(FIELD_VALUE) {
-            .type = FT_XYZ_16,
+        &(TRX_VALUE) {
+            .type = TVT_XYZ_16,
             .as_xyz = { .x = 7, .y = -8, .z = 9 },
         }));
     CHECK_EQ_INT(s.small_vec.x, 7);
     CHECK_EQ_INT(s.small_vec.z, 9);
 
     CHECK_NULL(Field_Set(
-        F("flag"), &s, &(FIELD_VALUE) { .type = FT_BOOL, .as_bool = true }));
+        F("flag"), &s, &(TRX_VALUE) { .type = TVT_BOOL, .as_bool = true }));
     CHECK(s.flag);
 }
 
@@ -170,11 +170,11 @@ TEST(field_set_narrows_on_store)
 TEST(field_reaches_through_a_nested_struct)
 {
     SAMPLE s = {};
-    FIELD_VALUE v;
+    TRX_VALUE v;
 
     CHECK_NULL(Field_Set(
         F("group.nested_flag"), &s,
-        &(FIELD_VALUE) { .type = FT_BOOL, .as_bool = true }));
+        &(TRX_VALUE) { .type = TVT_BOOL, .as_bool = true }));
     CHECK(s.group.nested_flag);
 
     CHECK(Field_Get(F("group.nested_flag"), &s, &v));
@@ -185,7 +185,7 @@ TEST(field_set_refuses_a_readonly_member)
 {
     SAMPLE s = { .locked = 5 };
     const char *const err = Field_Set(
-        F("locked"), &s, &(FIELD_VALUE) { .type = FT_INT16, .as_int = 99 });
+        F("locked"), &s, &(TRX_VALUE) { .type = TVT_S16, .as_int = 99 });
     CHECK_NOT_NULL(err);
     CHECK_EQ_INT(s.locked, 5); // unchanged
 }
@@ -197,25 +197,25 @@ TEST(field_set_rejects_an_out_of_range_value)
     // 99999 does not fit an int16 - it must be rejected, not truncated to a
     // wrapped value.
     const char *const err = Field_Set(
-        F("i16"), &s, &(FIELD_VALUE) { .type = FT_INT16, .as_int = 99999 });
+        F("i16"), &s, &(TRX_VALUE) { .type = TVT_S16, .as_int = 99999 });
     CHECK_NOT_NULL(err);
     CHECK_EQ_INT(s.i16, 5); // unchanged
 
     // The boundary value fits and is stored.
     CHECK_NULL(Field_Set(
-        F("i16"), &s, &(FIELD_VALUE) { .type = FT_INT16, .as_int = 32767 }));
+        F("i16"), &s, &(TRX_VALUE) { .type = TVT_S16, .as_int = 32767 }));
     CHECK_EQ_INT(s.i16, 32767);
 
     // A negative value for an unsigned member is out of range too.
-    CHECK_NOT_NULL(Field_Set(
-        F("u8"), &s, &(FIELD_VALUE) { .type = FT_UINT8, .as_int = -1 }));
+    CHECK_NOT_NULL(
+        Field_Set(F("u8"), &s, &(TRX_VALUE) { .type = TVT_U8, .as_int = -1 }));
 
     // A vector component past int16 is rejected without a partial store.
     SAMPLE v = {};
     CHECK_NOT_NULL(Field_Set(
         F("small_vec"), &v,
-        &(FIELD_VALUE) {
-            .type = FT_XYZ_16,
+        &(TRX_VALUE) {
+            .type = TVT_XYZ_16,
             .as_xyz = { .x = 1, .y = 99999, .z = 3 },
         }));
     CHECK_EQ_INT(v.small_vec.x, 0); // unchanged
@@ -224,14 +224,14 @@ TEST(field_set_rejects_an_out_of_range_value)
 TEST(computed_member_uses_its_accessor_and_is_readonly)
 {
     SAMPLE s = { .i32 = 21 };
-    FIELD_VALUE v;
+    TRX_VALUE v;
 
     CHECK(Field_Get(F("doubled"), &s, &v));
     CHECK_EQ_INT(v.as_int, 42);
 
     // FIELD_FN with no setter is read-only by construction.
     CHECK_NOT_NULL(Field_Set(
-        F("doubled"), &s, &(FIELD_VALUE) { .type = FT_INT32, .as_int = 1 }));
+        F("doubled"), &s, &(TRX_VALUE) { .type = TVT_S32, .as_int = 1 }));
 }
 
 TEST(a_validating_setter_can_reject_a_value)
@@ -239,13 +239,13 @@ TEST(a_validating_setter_can_reject_a_value)
     SAMPLE s = { .guarded = 7 };
 
     const char *const err = Field_Set(
-        F("guarded"), &s, &(FIELD_VALUE) { .type = FT_INT32, .as_int = -1 });
+        F("guarded"), &s, &(TRX_VALUE) { .type = TVT_S32, .as_int = -1 });
     CHECK_NOT_NULL(err);
     CHECK_EQ_STR(err, "must not be negative");
     CHECK_EQ_INT(s.guarded, 7); // rejected, so unchanged
 
     CHECK_NULL(Field_Set(
-        F("guarded"), &s, &(FIELD_VALUE) { .type = FT_INT32, .as_int = 11 }));
+        F("guarded"), &s, &(TRX_VALUE) { .type = TVT_S32, .as_int = 11 }));
     CHECK_EQ_INT(s.guarded, 11);
 }
 
@@ -257,12 +257,12 @@ TEST(a_value_too_wide_for_the_member_is_rejected_even_with_a_setter)
     SAMPLE s = { .narrow = 7 };
 
     const char *const err = Field_Set(
-        F("narrow"), &s, &(FIELD_VALUE) { .type = FT_INT16, .as_int = 99999 });
+        F("narrow"), &s, &(TRX_VALUE) { .type = TVT_S16, .as_int = 99999 });
     CHECK_NOT_NULL(err);
     CHECK_EQ_INT(s.narrow, 7); // rejected, so not truncated
 
     CHECK_NULL(Field_Set(
-        F("narrow"), &s, &(FIELD_VALUE) { .type = FT_INT16, .as_int = 1234 }));
+        F("narrow"), &s, &(TRX_VALUE) { .type = TVT_S16, .as_int = 1234 }));
     CHECK_EQ_INT(s.narrow, 1234);
 }
 
@@ -288,20 +288,21 @@ TEST(duplicate_field_names_are_detected)
 
 TEST(type_sizes_and_names_are_stable)
 {
-    CHECK_EQ_INT(Field_GetTypeSize(FT_BOOL), sizeof(bool));
-    CHECK_EQ_INT(Field_GetTypeSize(FT_INT16), 2);
-    CHECK_EQ_INT(Field_GetTypeSize(FT_UINT32), 4);
-    CHECK_EQ_INT(Field_GetTypeSize(FT_XYZ_16), sizeof(XYZ_16));
-    CHECK_EQ_INT(Field_GetTypeSize(FT_XYZ_32), sizeof(XYZ_32));
-    CHECK_EQ_INT(Field_GetTypeSize(FT_STRING), sizeof(char *));
+    CHECK_EQ_INT(Value_TypeSize(TVT_BOOL), sizeof(bool));
+    CHECK_EQ_INT(Value_TypeSize(TVT_S16), 2);
+    CHECK_EQ_INT(Value_TypeSize(TVT_U32), 4);
+    CHECK_EQ_INT(Value_TypeSize(TVT_XYZ_16), sizeof(XYZ_16));
+    CHECK_EQ_INT(Value_TypeSize(TVT_XYZ_32), sizeof(XYZ_32));
+    CHECK_EQ_INT(Value_TypeSize(TVT_STRING), sizeof(char *));
 
-    CHECK_EQ_STR(Field_GetTypeName(FT_INT16), "INT16");
-    CHECK_EQ_STR(Field_GetTypeName(FT_XYZ_32), "XYZ_32");
+    CHECK_EQ_STR(Value_TypeName(TVT_S16), "S16");
+    CHECK_EQ_STR(Value_TypeName(TVT_XYZ_32), "XYZ_32");
 }
 
-// Every declared member's sizeof must match its declared FIELD_TYPE. This is
-// the check that caught a real bug: OBJECT_ID and ITEM_STATUS are 4-byte enums,
-// and tagging either as FT_INT16 would have silently read half the member.
+// Every declared member's sizeof must match its declared TRX_VALUE_TYPE. This
+// is the check that caught a real bug: OBJECT_ID and ITEM_STATUS are 4-byte
+// enums, and tagging either as TVT_S16 would have silently read half the
+// member.
 TEST(field_validate_type_accepts_a_consistent_table)
 {
     for (int32_t i = 0; i < TYPE_SAMPLE.field_count; i++) {
@@ -312,7 +313,7 @@ TEST(field_validate_type_accepts_a_consistent_table)
         if (f->get != nullptr && (f->flags & FF_READONLY)) {
             continue; // read-only computed; never addresses memory
         }
-        CHECK_EQ_INT(f->size, Field_GetTypeSize(f->type));
+        CHECK_EQ_INT(f->size, Value_TypeSize(f->type));
     }
     Field_ValidateType(&TYPE_SAMPLE); // asserts on mismatch
 }
