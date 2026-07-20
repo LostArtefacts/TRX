@@ -138,6 +138,30 @@ test_dynamic_enum_exe = executable(
 )
 test('dynamic_enum', test_dynamic_enum_exe, suite: 'unit')
 
+# The primitive value taxonomy. It leans on the enum map and dynamic enum
+# registry, and on the real string helpers for parsing and formatting (PCRE2 for
+# bool matching); only the localized game strings behind enum labels are stubbed.
+test_value_exe = executable(
+  'test_value',
+  files('unit/test_value.c') + test_stubs
+    + files(
+      '../trx/core/value.c',
+      '../trx/core/dynamic_enum.c',
+      '../trx/core/enum_map.c',
+      '../trx/core/memory.c',
+      '../trx/core/vector.c',
+      '../trx/core/strings/common.c',
+      '../trx/core/strings/case_funcs.c',
+      '../trx/core/strings/fuzzy_match.c',
+    )
+    + files('unit/stubs_enum_map.c'),
+  include_directories: [src_inc, test_inc],
+  dependencies: [dep_pcre2],
+  c_args: ['-DPCRE2_CODE_UNIT_WIDTH=8'],
+  build_by_default: false,
+)
+test('value', test_value_exe, suite: 'unit')
+
 test_lua_enum_exe = executable(
   'test_lua_enum',
   files('unit/test_lua_enum.c') + test_stubs + enum_map_src

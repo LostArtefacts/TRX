@@ -226,6 +226,7 @@ common_sources = [
   'trx/core/strings/common.c',
   'trx/core/strings/fuzzy_match.c',
   'trx/core/thread_pool.c',
+  'trx/core/value.c',
   'trx/core/vector.c',
   'trx/core/virtual_file.c',
   'trx/game/anims/commands.c',
