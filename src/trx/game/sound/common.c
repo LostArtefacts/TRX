@@ -56,6 +56,10 @@ typedef struct M_SAMPLE_ENTRY {
 } M_SAMPLE_ENTRY;
 
 static M_ACTIVE_SOUND m_ActiveSounds[M_MAX_ACTIVE_SOUNDS] = {};
+// One generation per slot, bumped when a slot is handed to a new voice, so a
+// script handle to a finished voice does not address whatever replaced it.
+static uint32_t m_SlotGens[M_MAX_ACTIVE_SOUNDS];
+static HANDLE_REGISTRY m_SlotHandles;
 static bool m_Initialised = false;
 static float m_MasterVolume = 0.0f;
 static M_SAMPLE_DATA_ENTRY *m_SampleDataMap = nullptr;
@@ -309,6 +313,9 @@ bool Sound_Init(void)
     }
 
     m_Initialised = true;
+    if (m_SlotHandles.gens == nullptr) {
+        Handle_RegistryInit(&m_SlotHandles, m_SlotGens, M_MAX_ACTIVE_SOUNDS);
+    }
     M_ClearAllActiveSounds();
     return true;
 }
@@ -599,7 +606,12 @@ int32_t Sound_Effect_Direct(
         sound->pos_ptr = nullptr;
     }
     M_ClearActiveSoundHandles(sound);
-    return (int32_t)(sound - m_ActiveSounds);
+    // The slot now holds a new voice, so a handle to whatever was here before
+    // must stop resolving. The WAIT and LOOPED early returns above keep an
+    // existing voice, and its handle, alive.
+    const int32_t slot = (int32_t)(sound - m_ActiveSounds);
+    Handle_RegistryBump(&m_SlotHandles, slot);
+    return slot;
 }
 
 int32_t Sound_Effect(
@@ -711,6 +723,20 @@ bool Sound_GetActiveSlot(const int32_t slot, SAMPLE_ID *const out_sample_id)
         *out_sample_id = sound->sample_id;
     }
     return true;
+}
+
+TRX_HANDLE Sound_GetActiveSlotHandle(const int32_t slot)
+{
+    return Handle_RegistryMint(&m_SlotHandles, slot);
+}
+
+bool Sound_ResolveActiveSlot(
+    const TRX_HANDLE handle, SAMPLE_ID *const out_sample_id)
+{
+    if (!Handle_RegistryIsLive(&m_SlotHandles, handle)) {
+        return false;
+    }
+    return Sound_GetActiveSlot(handle.id, out_sample_id);
 }
 
 void Sound_StopActiveSlot(const int32_t slot)

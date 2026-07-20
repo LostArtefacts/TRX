@@ -73,6 +73,31 @@ test("streams reaches the playing voices and controls them", function()
   assert(calls.slot_stop_count == 1 and calls.slot_stop_slot == 1)
 end)
 
+-- A finished voice frees its slot, and the next play reuses it. The generation
+-- carried by the handle is what keeps the first voice's handle from addressing
+-- the second.
+test(
+  "a reused voice slot does not answer the previous voice's handle",
+  function()
+    local sample = trx.sound.samples[fake.SAMPLE]
+    local old = sample:play()
+    assert(old:is_valid(), "the voice is playing")
+
+    old:stop()
+    assert(not old:is_valid(), "the stopped voice is gone")
+
+    local new = sample:play()
+    assert(new:is_valid() and new ~= old, "the reused slot is a new voice")
+
+    -- Acting on the stale handle raises rather than reaching the voice that now
+    -- holds its slot.
+    raises(function()
+      old:stop()
+    end, "stale")
+    assert(new:is_valid(), "the new voice must be untouched")
+  end
+)
+
 test("a silent voice is stale, and reading it raises", function()
   local voice = trx.sound.streams[1]
   assert(not voice:is_valid(), "nothing plays on the first slot")

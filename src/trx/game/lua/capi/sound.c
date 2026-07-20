@@ -69,7 +69,7 @@ static void *M_ResolveSample(const LUA_STRUCT_REF *const ref)
 static void *M_ResolveStream(const LUA_STRUCT_REF *const ref)
 {
     SAMPLE_ID sample_id;
-    if (!Sound_GetActiveSlot(ref->handle.id, &sample_id)) {
+    if (!Sound_ResolveActiveSlot(ref->handle, &sample_id)) {
         return nullptr;
     }
     m_StreamView.sample_id = sample_id;
@@ -85,7 +85,7 @@ static void M_PushPlayedStream(lua_State *const L, const int32_t slot)
     } else {
         LUA_Struct_Push(
             L, &TYPE_SOUND_STREAM_VIEW, M_ResolveStream,
-            (TRX_HANDLE) { .id = slot });
+            Sound_GetActiveSlotHandle(slot));
     }
 }
 
@@ -222,7 +222,7 @@ static int M_L_SoundStreamGet(lua_State *const L)
     }
     LUA_Struct_Push(
         L, &TYPE_SOUND_STREAM_VIEW, M_ResolveStream,
-        (TRX_HANDLE) { .id = slot });
+        Sound_GetActiveSlotHandle(slot));
     return 1;
 }
 
