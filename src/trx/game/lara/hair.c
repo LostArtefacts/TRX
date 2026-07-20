@@ -869,6 +869,12 @@ void Lara_Hair_Draw(void)
     const LARA_SKIN_BRAID *const braid = Lara_Skin_GetBraid();
 
     for (int32_t i = 0; i < braid->count; i++) {
+        // Until the first control pass has chained the segments off the head,
+        // they still sit at their bone offsets near the world origin - drawn,
+        // the welded ring would stretch from there to the head.
+        if (m_IsFirstHair[i]) {
+            continue;
+        }
         const int32_t seg_base = (i > 0 && m_Joints.clone_base >= 0)
             ? m_Joints.clone_base
             : braid_base;
