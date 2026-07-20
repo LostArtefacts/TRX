@@ -167,9 +167,9 @@ static char *M_FormatDynamicEnumDefaults(const CONFIG_OPTION *const option)
     const char *const default_value = "-";
     Vector_Add(values, &default_value);
 
-    const int32_t value_count = Config_DynamicEnum_GetValueCount(option);
+    const int32_t value_count = DynamicEnum_GetValueCount(option->target);
     for (int32_t i = 0; i < value_count; i++) {
-        const char *const value = Config_DynamicEnum_GetValueAt(option, i);
+        const char *const value = DynamicEnum_GetValueAt(option->target, i);
         if (value != nullptr) {
             Vector_Add(values, &value);
         }

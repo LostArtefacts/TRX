@@ -1,22 +1,19 @@
 #pragma once
 
-#include <trx/config/option.h>
-
 #include <stdint.h>
 
-void Config_DynamicEnum_ResetValues(const CONFIG_OPTION *option);
-bool Config_DynamicEnum_AddValue(
-    const CONFIG_OPTION *option, const char *value, const char *label);
-bool Config_DynamicEnum_IsValidValue(
-    const CONFIG_OPTION *option, const char *value);
-int32_t Config_DynamicEnum_GetValueCount(const CONFIG_OPTION *option);
-const char *Config_DynamicEnum_GetValueAt(
-    const CONFIG_OPTION *option, int32_t index);
-const char *Config_DynamicEnum_GetLabelAt(
-    const CONFIG_OPTION *option, int32_t index);
-const char *Config_DynamicEnum_GetLabelForValue(
-    const CONFIG_OPTION *option, const char *value);
-bool Config_DynamicEnum_CanCycle(
-    const CONFIG_OPTION *option, const char *current, int32_t dir);
-const char *Config_DynamicEnum_GetNext(
-    const CONFIG_OPTION *option, const char *current, int32_t dir);
+// A dynamic enum is a set of string values, discovered at runtime, keyed on an
+// opaque token the caller owns - typically the address of the field that holds
+// the current value. The registry stores the values and their display labels;
+// the caller decides which tokens name a dynamic enum.
+void DynamicEnum_ResetValues(const void *token);
+bool DynamicEnum_AddValue(
+    const void *token, const char *value, const char *label);
+bool DynamicEnum_IsValidValue(const void *token, const char *value);
+int32_t DynamicEnum_GetValueCount(const void *token);
+const char *DynamicEnum_GetValueAt(const void *token, int32_t index);
+const char *DynamicEnum_GetLabelAt(const void *token, int32_t index);
+const char *DynamicEnum_GetLabelForValue(const void *token, const char *value);
+bool DynamicEnum_CanCycle(const void *token, const char *current, int32_t dir);
+const char *DynamicEnum_GetNext(
+    const void *token, const char *current, int32_t dir);

@@ -45,15 +45,18 @@ static void M_SeedDynamicEnumValues(void)
 {
     const CONFIG_OPTION *const option =
         Config_GetOption(&g_Config.visuals.lara_outfit);
-    Config_DynamicEnum_ResetValues(option);
-    Config_DynamicEnum_AddValue(
-        option, nullptr, GS_ID("dynamic/enums/lara_outfit/default"));
+    if (option == nullptr) {
+        return;
+    }
+    DynamicEnum_ResetValues(option->target);
+    DynamicEnum_AddValue(
+        option->target, nullptr, GS_ID("dynamic/enums/lara_outfit/default"));
     for (int32_t i = 0; i < m_OutfitCount; i++) {
         if (!m_Outfits[i].outfit.is_selectable) {
             continue;
         }
-        Config_DynamicEnum_AddValue(
-            option, m_Outfits[i].name, m_Outfits[i].name_gs);
+        DynamicEnum_AddValue(
+            option->target, m_Outfits[i].name, m_Outfits[i].name_gs);
     }
 }
 
