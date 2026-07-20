@@ -20,14 +20,14 @@
 
 // Setting the flag alone would not light her, so is_burning goes through the
 // same catch-fire and extinguish paths a flame trap does.
-static bool M_GetBurn(const void *const self, FIELD_VALUE *const out)
+static bool M_GetBurn(const void *const self, TRX_VALUE *const out)
 {
     const LARA_INFO *const lara = self;
-    *out = (FIELD_VALUE) { .type = FT_BOOL, .as_bool = lara->burn };
+    *out = (TRX_VALUE) { .type = TVT_BOOL, .as_bool = lara->burn };
     return true;
 }
 
-static const char *M_SetBurn(void *const self, const FIELD_VALUE *const in)
+static const char *M_SetBurn(void *const self, const TRX_VALUE *const in)
 {
     if (in->as_bool) {
         Lara_CatchFire();
@@ -45,7 +45,7 @@ static const FIELD_DESC m_Fields[] = {
     FIELD(LARA_INFO, poison.value),
     FIELD(LARA_INFO, poison.target),
     FIELD(LARA_INFO, electric),
-    FIELD_FN("burn", FT_BOOL, M_GetBurn, M_SetBurn),
+    FIELD_FN("burn", TVT_BOOL, M_GetBurn, M_SetBurn),
 
     // what she is doing
     FIELD_RO(LARA_INFO, water_status),
