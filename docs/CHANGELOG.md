@@ -19,6 +19,7 @@
 - added an option to let fires and other dynamic lights illuminate static meshes (Graphic Options → Visuals → Static mesh lighting)
 - fixed pixel sparks, such as blood and the shell splash, drawing as squares instead of the original streaks
 - fixed the camera snapping to elevation and angle changes in instances such as opening floor trapdoors
+- fixed Lara's braid and pigtails spinning around their own axis (OG bug)
 
 **Lua**
 
