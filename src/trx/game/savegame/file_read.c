@@ -561,8 +561,8 @@ static bool M_ReadItem(JSON_READ_IO *const io, const int16_t read_index)
         M_MUST(JSON_READ(io, "max_hitpoints", &item->max_hit_points));
         ObjectProperty_SetItemValueRaw(
             item, "max_hit_points",
-            (OBJECT_PROPERTY_VALUE) {
-                .type = OBJECT_PROPERTY_TYPE_INT,
+            (TRX_VALUE) {
+                .type = TVT_S32,
                 .as_int = item->max_hit_points,
             });
     }

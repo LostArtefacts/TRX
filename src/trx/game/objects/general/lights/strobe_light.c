@@ -31,7 +31,7 @@ static void M_Initialise(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
     M_PRIV *const p = item->priv;
-    OBJECT_PROPERTY_VALUE requires_alarm_active = {};
+    TRX_VALUE requires_alarm_active = {};
     if (ObjectProperty_GetItemValue(
             item, "requires_alarm_active", &requires_alarm_active)) {
         p->requires_alarm_active = requires_alarm_active.as_bool;

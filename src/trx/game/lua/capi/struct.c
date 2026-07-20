@@ -230,60 +230,30 @@ static int M_IsValid(lua_State *const L)
     return 1;
 }
 
-// A property carrier tells float and double apart; a field carrier widens both
-// into as_num. What each becomes in Lua is the same either way, so a property
-// is pushed as the field value it stands for rather than through a second
-// switch that has to agree with M_PushValue.
-static void M_PushPropertyValue(
-    lua_State *const L, const OBJECT_PROPERTY_VALUE *const value)
-{
-    TRX_VALUE as_field = {};
-    switch (value->type) {
-    case OBJECT_PROPERTY_TYPE_INT:
-        as_field = (TRX_VALUE) { .type = TVT_S32, .as_int = value->as_int };
-        break;
-    case OBJECT_PROPERTY_TYPE_FLOAT:
-        as_field = (TRX_VALUE) { .type = TVT_FLOAT, .as_num = value->as_float };
-        break;
-    case OBJECT_PROPERTY_TYPE_DOUBLE:
-        as_field =
-            (TRX_VALUE) { .type = TVT_DOUBLE, .as_num = value->as_double };
-        break;
-    case OBJECT_PROPERTY_TYPE_BOOL:
-        as_field = (TRX_VALUE) { .type = TVT_BOOL, .as_bool = value->as_bool };
-        break;
-    case OBJECT_PROPERTY_TYPE_XYZ:
-        as_field = (TRX_VALUE) { .type = TVT_XYZ_32, .as_xyz = value->as_xyz };
-        break;
-    }
-    M_PushValue(L, &as_field);
-}
-
-static OBJECT_PROPERTY_VALUE M_CheckPropertyValue(
-    lua_State *const L, const int arg)
+static TRX_VALUE M_CheckPropertyValue(lua_State *const L, const int arg)
 {
     switch (lua_type(L, arg)) {
     case LUA_TBOOLEAN:
-        return (OBJECT_PROPERTY_VALUE) {
-            .type = OBJECT_PROPERTY_TYPE_BOOL,
+        return (TRX_VALUE) {
+            .type = TVT_BOOL,
             .as_bool = lua_toboolean(L, arg),
         };
 
     case LUA_TNUMBER:
         if (lua_isinteger(L, arg)) {
-            return (OBJECT_PROPERTY_VALUE) {
-                .type = OBJECT_PROPERTY_TYPE_INT,
+            return (TRX_VALUE) {
+                .type = TVT_S32,
                 .as_int = lua_tointeger(L, arg),
             };
         }
-        return (OBJECT_PROPERTY_VALUE) {
-            .type = OBJECT_PROPERTY_TYPE_DOUBLE,
-            .as_double = lua_tonumber(L, arg),
+        return (TRX_VALUE) {
+            .type = TVT_DOUBLE,
+            .as_num = lua_tonumber(L, arg),
         };
 
     case LUA_TTABLE:
-        return (OBJECT_PROPERTY_VALUE) {
-            .type = OBJECT_PROPERTY_TYPE_XYZ,
+        return (TRX_VALUE) {
+            .type = TVT_XYZ_32,
             .as_xyz = LUA_CheckXYZ(L, arg),
         };
 
@@ -292,7 +262,7 @@ static OBJECT_PROPERTY_VALUE M_CheckPropertyValue(
     }
 
     luaL_error(L, "property value must be a number, boolean or table");
-    return (OBJECT_PROPERTY_VALUE) {};
+    return (TRX_VALUE) {};
 }
 
 // Each bridge closes over its LUA_PROPERTY_DESC in upvalue 1.
@@ -302,12 +272,12 @@ static int M_PropertyGet(lua_State *const L)
         lua_touserdata(L, lua_upvalueindex(1));
     LUA_STRUCT_REF *const ref = LUA_Struct_CheckRef(L, 1, desc->type);
     const void *const self = LUA_Struct_Deref(L, ref);
-    OBJECT_PROPERTY_VALUE value = {};
+    TRX_VALUE value = {};
     if (!desc->get(self, luaL_checkstring(L, 2), &value)) {
         lua_pushnil(L);
         return 1;
     }
-    M_PushPropertyValue(L, &value);
+    M_PushValue(L, &value);
     return 1;
 }
 
@@ -318,7 +288,7 @@ static int M_PropertySet(lua_State *const L)
     LUA_STRUCT_REF *const ref = LUA_Struct_CheckRef(L, 1, desc->type);
     void *const self = LUA_Struct_Deref(L, ref);
     const char *const name = luaL_checkstring(L, 2);
-    const OBJECT_PROPERTY_VALUE value = M_CheckPropertyValue(L, 3);
+    const TRX_VALUE value = M_CheckPropertyValue(L, 3);
     if (!desc->set(self, name, value)) {
         return luaL_error(L, "unknown %s property '%s'", desc->what, name);
     }

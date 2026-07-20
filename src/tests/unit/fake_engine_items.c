@@ -42,7 +42,7 @@ static ANIM_FRAME m_Frames[64];
 // itself writes through.
 static struct {
     char name[32];
-    OBJECT_PROPERTY_VALUE value;
+    TRX_VALUE value;
 } m_Props[FAKE_ITEM_POOL][FAKE_PROP_SLOTS];
 
 // max_hit_points is an object property, not an ITEM/OBJECT member: that split
@@ -301,22 +301,20 @@ void Object_SwapMeshEx(
 
 // The object's own properties, which every item of the type inherits.
 bool ObjectProperty_GetObjectValue(
-    const OBJECT *const obj, const char *const name,
-    OBJECT_PROPERTY_VALUE *const out_value)
+    const OBJECT *const obj, const char *const name, TRX_VALUE *const out_value)
 {
     if (obj == nullptr || strcmp(name, "max_hit_points") != 0) {
         return false;
     }
-    *out_value = (OBJECT_PROPERTY_VALUE) {
-        .type = OBJECT_PROPERTY_TYPE_INT,
+    *out_value = (TRX_VALUE) {
+        .type = TVT_S32,
         .as_int = m_ObjectHP[obj - m_Objects],
     };
     return true;
 }
 
 bool ObjectProperty_SetObjectValueRaw(
-    OBJECT *const obj, const char *const name,
-    const OBJECT_PROPERTY_VALUE value)
+    OBJECT *const obj, const char *const name, const TRX_VALUE value)
 {
     if (obj == nullptr || strcmp(name, "max_hit_points") != 0) {
         return false;
@@ -349,8 +347,7 @@ bool Object_IsType(const OBJECT_ID object_id, const OBJECT_ID *const test_arr)
 // --- object properties ---
 
 bool ObjectProperty_GetItemValue(
-    const ITEM *const item, const char *const name,
-    OBJECT_PROPERTY_VALUE *const out_value)
+    const ITEM *const item, const char *const name, TRX_VALUE *const out_value)
 {
     if (item == nullptr) {
         return false;
@@ -363,8 +360,8 @@ bool ObjectProperty_GetItemValue(
         }
     }
     if (strcmp(name, "max_hit_points") == 0) {
-        *out_value = (OBJECT_PROPERTY_VALUE) {
-            .type = OBJECT_PROPERTY_TYPE_INT,
+        *out_value = (TRX_VALUE) {
+            .type = TVT_S32,
             .as_int = m_ObjectHP[item->object_id],
         };
         return true;
@@ -373,7 +370,7 @@ bool ObjectProperty_GetItemValue(
 }
 
 bool ObjectProperty_SetItemValueRaw(
-    ITEM *const item, const char *const name, const OBJECT_PROPERTY_VALUE value)
+    ITEM *const item, const char *const name, const TRX_VALUE value)
 {
     if (item == nullptr || strcmp(name, "max_hit_points") != 0) {
         return false;
@@ -385,7 +382,7 @@ bool ObjectProperty_SetItemValueRaw(
             snprintf(
                 m_Props[idx][i].name, sizeof(m_Props[idx][i].name), "%s", name);
             m_Props[idx][i].value = value;
-            if (value.type == OBJECT_PROPERTY_TYPE_INT) {
+            if (value.type == TVT_S32) {
                 item->max_hit_points = value.as_int;
             }
             return true;

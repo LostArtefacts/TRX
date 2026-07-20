@@ -138,8 +138,8 @@ static void M_PrepareTR4Items(LEVEL_CONTEXT *const ctx)
 
         ObjectProperty_SetItemValueRaw(
             item, "ocb",
-            (OBJECT_PROPERTY_VALUE) {
-                .type = OBJECT_PROPERTY_TYPE_INT,
+            (TRX_VALUE) {
+                .type = TVT_S32,
                 .as_int = tr4_item->ocb,
             });
     }

@@ -41,7 +41,7 @@ static int32_t M_LoadTrackPool(
         char key[32];
         snprintf(key, sizeof(key), "%s_%d", key_prefix, i + 1);
 
-        OBJECT_PROPERTY_VALUE value = {};
+        TRX_VALUE value = {};
         if (ObjectProperty_GetItemValue(item, key, &value)
             && value.as_int >= 0) {
             out_tracks[track_count++] = value.as_int;
@@ -204,7 +204,7 @@ void Vehicle_TestTriggers(
     const ITEM *const lara_item, const ITEM *const vehicle_item)
 {
     Room_TestTriggers(lara_item);
-    OBJECT_PROPERTY_VALUE value = {};
+    TRX_VALUE value = {};
     if (ObjectProperty_GetItemValue(vehicle_item, "is_heavy", &value)
         && value.as_bool) {
         Room_TestTriggers(vehicle_item);

@@ -14,7 +14,7 @@ typedef struct {
 
 static int32_t M_GetSpeed(const ITEM *const item)
 {
-    OBJECT_PROPERTY_VALUE speed = {};
+    TRX_VALUE speed = {};
     if (ObjectProperty_GetItemValue(item, "speed", &speed)) {
         return speed.as_int;
     }

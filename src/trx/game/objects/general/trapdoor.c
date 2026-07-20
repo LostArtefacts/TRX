@@ -186,7 +186,7 @@ static void M_Initialise(const int16_t item_num)
     M_PRIV *const p = item->priv;
 
     p->auto_open = true;
-    OBJECT_PROPERTY_VALUE value = {};
+    TRX_VALUE value = {};
     if (ObjectProperty_GetItemValue(item, "auto_open", &value)) {
         p->auto_open = value.as_bool;
     }

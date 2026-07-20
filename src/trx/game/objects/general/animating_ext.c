@@ -10,7 +10,7 @@ typedef enum {
 
 static bool M_KillOnTrigger(const ITEM *const item)
 {
-    OBJECT_PROPERTY_VALUE value = {};
+    TRX_VALUE value = {};
     if (!ObjectProperty_GetItemValue(item, "kill_on_trigger", &value)) {
         return false;
     }

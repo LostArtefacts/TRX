@@ -620,7 +620,7 @@ static void M_Initialise(const int16_t item_num)
     p->anchor.pos = item->pos;
     p->anchor.room_num = item->room_num;
 
-    OBJECT_PROPERTY_VALUE range_val = {};
+    TRX_VALUE range_val = {};
     if (ObjectProperty_GetItemValue(item, "range", &range_val)) {
         p->leader.range = range_val.as_xyz;
     } else {
@@ -631,12 +631,12 @@ static void M_Initialise(const int16_t item_num)
     p->leader.range.y = MAX(1, p->leader.range.y) * STEP_L;
     p->leader.range.z = MAX(1, p->leader.range.z) * STEP_L;
 
-    OBJECT_PROPERTY_VALUE sprite_val = {};
+    TRX_VALUE sprite_val = {};
     if (ObjectProperty_GetItemValue(item, "sprite_offset", &sprite_val)) {
         p->sprite_offset = sprite_val.as_int;
     }
 
-    OBJECT_PROPERTY_VALUE use_room_lighting_val = {};
+    TRX_VALUE use_room_lighting_val = {};
     if (ObjectProperty_GetItemValue(
             item, "use_room_lighting", &use_room_lighting_val)) {
         p->use_room_lighting = use_room_lighting_val.as_bool;

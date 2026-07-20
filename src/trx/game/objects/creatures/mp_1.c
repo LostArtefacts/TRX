@@ -71,7 +71,7 @@ static const BITE m_KickBite = {
 static int32_t M_GetDamage(
     const ITEM *const item, const char *const key, const int32_t default_value)
 {
-    OBJECT_PROPERTY_VALUE damage = {};
+    TRX_VALUE damage = {};
     if (ObjectProperty_GetItemValue(item, key, &damage)) {
         return damage.as_int;
     }

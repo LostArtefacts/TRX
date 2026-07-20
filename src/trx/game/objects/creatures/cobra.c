@@ -54,15 +54,18 @@ static void M_Initialise(const int16_t item_num)
     p->radius.attack = M_SETUP_RADIUS(M_ATTACK_RANGE);
     p->radius.forget = M_SETUP_RADIUS(M_FORGET_RANGE);
 
-    OBJECT_PROPERTY_VALUE radius_val = {};
-    if (ObjectProperty_GetItemValue(item, "alert_radius", &radius_val)) {
-        p->radius.alert = M_SETUP_RADIUS(radius_val.as_double);
+    TRX_VALUE radius_val = {};
+    if (ObjectProperty_GetItemValue(item, "alert_radius", &radius_val)
+        && radius_val.type == TVT_DOUBLE) {
+        p->radius.alert = M_SETUP_RADIUS(radius_val.as_num);
     }
-    if (ObjectProperty_GetItemValue(item, "attack_radius", &radius_val)) {
-        p->radius.attack = M_SETUP_RADIUS(radius_val.as_double);
+    if (ObjectProperty_GetItemValue(item, "attack_radius", &radius_val)
+        && radius_val.type == TVT_DOUBLE) {
+        p->radius.attack = M_SETUP_RADIUS(radius_val.as_num);
     }
-    if (ObjectProperty_GetItemValue(item, "forget_radius", &radius_val)) {
-        p->radius.forget = M_SETUP_RADIUS(radius_val.as_double);
+    if (ObjectProperty_GetItemValue(item, "forget_radius", &radius_val)
+        && radius_val.type == TVT_DOUBLE) {
+        p->radius.forget = M_SETUP_RADIUS(radius_val.as_num);
     }
 }
 
@@ -84,7 +87,7 @@ static bool M_CanBeProjectileTarget(const ITEM *const item)
 
 static int32_t M_GetDamage(const ITEM *const item)
 {
-    OBJECT_PROPERTY_VALUE damage = {};
+    TRX_VALUE damage = {};
     if (ObjectProperty_GetItemValue(item, "damage", &damage)) {
         return damage.as_int;
     }

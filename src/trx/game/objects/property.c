@@ -1,8 +1,10 @@
 #include <trx/game/objects/property.h>
 
 #include <trx/core/json/util/read_io.h>
+#include <trx/core/json/util/value.h>
 #include <trx/core/json/util/write_io.h>
 #include <trx/core/memory.h>
+#include <trx/debug.h>
 #include <trx/game/items.h>
 #include <trx/game/objects.h>
 
@@ -11,8 +13,22 @@
 struct OBJECT_PROPERTY_ENTRY {
     const char *name;
     const char *description;
-    OBJECT_PROPERTY_VALUE value;
+    TRX_VALUE value;
 };
+
+// Object properties are numeric: the declaration macros produce only S32, BOOL,
+// XYZ_32 and DOUBLE, none of which own memory. A text-valued property would
+// need string ownership the set does not carry, so it is refused at the door.
+static void M_AssertNumeric(const TRX_VALUE_TYPE type)
+{
+    ASSERT(type != TVT_STRING && type != TVT_DYNAMIC_ENUM);
+}
+
+static void M_FreeSet(OBJECT_PROPERTY_SET *const set)
+{
+    Memory_FreePointer(&set->entries);
+    set->count = 0;
+}
 
 __attribute__((destructor)) static void M_Shutdown(void)
 {
@@ -48,8 +64,9 @@ static const OBJECT_PROPERTY_ENTRY *M_GetObjectEntry(
 
 static OBJECT_PROPERTY_ENTRY *M_AddEntry(
     OBJECT_PROPERTY_SET *const properties, const char *const name,
-    const char *const description, const OBJECT_PROPERTY_VALUE *const value)
+    const char *const description, const TRX_VALUE *const value)
 {
+    M_AssertNumeric(value->type);
     OBJECT_PROPERTY_ENTRY *entry = M_GetEntry(properties, name);
     if (entry != nullptr) {
         entry->description = description;
@@ -71,9 +88,9 @@ static OBJECT_PROPERTY_ENTRY *M_AddEntry(
 }
 
 static void M_ApplyObjectValue(
-    OBJECT *const obj, const char *const name,
-    const OBJECT_PROPERTY_VALUE *const value)
+    OBJECT *const obj, const char *const name, const TRX_VALUE *const value)
 {
+    M_AssertNumeric(value->type);
     OBJECT_PROPERTY_ENTRY *const entry = M_GetEntry(&obj->properties, name);
     if (entry == nullptr) {
         return;
@@ -82,8 +99,7 @@ static void M_ApplyObjectValue(
 }
 
 static void M_ApplyItemValue(
-    ITEM *const item, const char *const name,
-    const OBJECT_PROPERTY_VALUE *const value)
+    ITEM *const item, const char *const name, const TRX_VALUE *const value)
 {
     const OBJECT_PROPERTY_ENTRY *const object_entry =
         M_GetObjectEntry(Object_TryGet(item->object_id), name);
@@ -93,73 +109,14 @@ static void M_ApplyItemValue(
     M_AddEntry(&item->properties, name, object_entry->description, value);
 }
 
-static bool M_CoerceValue(
-    const OBJECT_PROPERTY_VALUE target, const OBJECT_PROPERTY_VALUE input,
-    OBJECT_PROPERTY_VALUE *const out_value)
-{
-    *out_value = input;
-    if (target.type == input.type) {
-        return true;
-    }
-
-    switch (target.type) {
-    case OBJECT_PROPERTY_TYPE_INT:
-        switch (input.type) {
-        case OBJECT_PROPERTY_TYPE_FLOAT:
-            out_value->type = OBJECT_PROPERTY_TYPE_INT;
-            out_value->as_int = input.as_float;
-            return true;
-        case OBJECT_PROPERTY_TYPE_DOUBLE:
-            out_value->type = OBJECT_PROPERTY_TYPE_INT;
-            out_value->as_int = input.as_double;
-            return true;
-        default:
-            return false;
-        }
-    case OBJECT_PROPERTY_TYPE_FLOAT:
-        switch (input.type) {
-        case OBJECT_PROPERTY_TYPE_INT:
-            out_value->type = OBJECT_PROPERTY_TYPE_FLOAT;
-            out_value->as_float = input.as_int;
-            return true;
-        case OBJECT_PROPERTY_TYPE_DOUBLE:
-            out_value->type = OBJECT_PROPERTY_TYPE_FLOAT;
-            out_value->as_float = input.as_double;
-            return true;
-        default:
-            return false;
-        }
-    case OBJECT_PROPERTY_TYPE_DOUBLE:
-        switch (input.type) {
-        case OBJECT_PROPERTY_TYPE_INT:
-            out_value->type = OBJECT_PROPERTY_TYPE_DOUBLE;
-            out_value->as_double = input.as_int;
-            return true;
-        case OBJECT_PROPERTY_TYPE_FLOAT:
-            out_value->type = OBJECT_PROPERTY_TYPE_DOUBLE;
-            out_value->as_double = input.as_float;
-            return true;
-        default:
-            return false;
-        }
-    case OBJECT_PROPERTY_TYPE_BOOL:
-    case OBJECT_PROPERTY_TYPE_XYZ:
-        return false;
-    }
-
-    return false;
-}
-
 void ObjectProperty_ResetObject(OBJECT *const obj)
 {
-    Memory_FreePointer(&obj->properties.entries);
-    obj->properties.count = 0;
+    M_FreeSet(&obj->properties);
 }
 
 void ObjectProperty_ResetItem(ITEM *const item)
 {
-    Memory_FreePointer(&item->properties.entries);
-    item->properties.count = 0;
+    M_FreeSet(&item->properties);
 }
 
 void ObjectProperty_ApplyDeclarations(
@@ -205,8 +162,7 @@ const char *ObjectProperty_GetItemName(
 }
 
 bool ObjectProperty_GetObjectValue(
-    const OBJECT *const obj, const char *const name,
-    OBJECT_PROPERTY_VALUE *const out_value)
+    const OBJECT *const obj, const char *const name, TRX_VALUE *const out_value)
 {
     const OBJECT_PROPERTY_ENTRY *const entry = M_GetObjectEntry(obj, name);
     if (entry == nullptr) {
@@ -217,16 +173,15 @@ bool ObjectProperty_GetObjectValue(
 }
 
 bool ObjectProperty_SetObjectValueRaw(
-    OBJECT *const obj, const char *const name,
-    const OBJECT_PROPERTY_VALUE value)
+    OBJECT *const obj, const char *const name, const TRX_VALUE value)
 {
     OBJECT_PROPERTY_ENTRY *const entry =
         obj == nullptr ? nullptr : M_GetEntry(&obj->properties, name);
     if (entry == nullptr) {
         return false;
     }
-    OBJECT_PROPERTY_VALUE coerced_value = {};
-    if (!M_CoerceValue(entry->value, value, &coerced_value)) {
+    TRX_VALUE coerced_value = {};
+    if (!Value_Coerce(entry->value.type, &value, &coerced_value)) {
         return false;
     }
     M_ApplyObjectValue(obj, entry->name, &coerced_value);
@@ -234,8 +189,7 @@ bool ObjectProperty_SetObjectValueRaw(
 }
 
 bool ObjectProperty_GetItemValue(
-    const ITEM *const item, const char *const name,
-    OBJECT_PROPERTY_VALUE *const out_value)
+    const ITEM *const item, const char *const name, TRX_VALUE *const out_value)
 {
     if (item == nullptr) {
         return false;
@@ -251,7 +205,7 @@ bool ObjectProperty_GetItemValue(
 }
 
 bool ObjectProperty_SetItemValueRaw(
-    ITEM *const item, const char *const name, const OBJECT_PROPERTY_VALUE value)
+    ITEM *const item, const char *const name, const TRX_VALUE value)
 {
     if (item == nullptr) {
         return false;
@@ -263,8 +217,8 @@ bool ObjectProperty_SetItemValueRaw(
         return false;
     }
 
-    OBJECT_PROPERTY_VALUE coerced_value = {};
-    if (!M_CoerceValue(object_entry->value, value, &coerced_value)) {
+    TRX_VALUE coerced_value = {};
+    if (!Value_Coerce(object_entry->value.type, &value, &coerced_value)) {
         return false;
     }
     M_ApplyItemValue(item, object_entry->name, &coerced_value);
@@ -279,30 +233,13 @@ void ObjectProperty_WriteItemOverrides(
     }
 
     JSONW_PUSH_OBJECT(io);
+    JSON_OBJECT *const props = JSON_WriteIO_GetCurrentObject(io);
     for (int32_t i = 0; i < item->properties.count; i++) {
         const OBJECT_PROPERTY_ENTRY *const entry = &item->properties.entries[i];
-        const OBJECT_PROPERTY_VALUE *const value = &entry->value;
-        switch (value->type) {
-        case OBJECT_PROPERTY_TYPE_INT:
-            JSONW_WRITE(io, entry->name, value->as_int);
-            break;
-        case OBJECT_PROPERTY_TYPE_FLOAT:
-            JSONW_WRITE(io, entry->name, value->as_float);
-            break;
-        case OBJECT_PROPERTY_TYPE_DOUBLE:
-            JSONW_WRITE(io, entry->name, value->as_double);
-            break;
-        case OBJECT_PROPERTY_TYPE_BOOL:
-            JSONW_WRITE(io, entry->name, value->as_bool);
-            break;
-        case OBJECT_PROPERTY_TYPE_XYZ:
-            JSONW_PUSH_OBJECT(io);
-            JSONW_WRITE(io, "x", value->as_xyz.x);
-            JSONW_WRITE(io, "y", value->as_xyz.y);
-            JSONW_WRITE(io, "z", value->as_xyz.z);
-            JSONW_POP_AND_SET(io, entry->name);
-            break;
-        }
+        // Object properties are numeric, so no enum-map name is in play;
+        // nullptr is the right param.
+        JSONValue_Write(
+            props, entry->name, entry->value.type, nullptr, &entry->value);
     }
     JSONW_POP_AND_SET(io, key);
 }
@@ -319,50 +256,17 @@ bool ObjectProperty_ReadItemOverrides(JSON_READ_IO *const io, ITEM *const item)
         goto fail;
     }
 
+    const JSON_OBJECT *const props = JSON_ReadIO_GetCurrentObject(io);
     for (int32_t i = 0; i < obj->properties.count; i++) {
         const OBJECT_PROPERTY_ENTRY *const entry = &obj->properties.entries[i];
         if (!JSON_ReadIO_HasKey(io, entry->name)) {
             continue;
         }
-        OBJECT_PROPERTY_VALUE value = {
-            .type = entry->value.type,
-        };
-        switch (value.type) {
-        case OBJECT_PROPERTY_TYPE_INT:
-            if (!JSON_READ(io, entry->name, &value.as_int)) {
-                goto fail;
-            }
-            break;
-        case OBJECT_PROPERTY_TYPE_FLOAT:
-            if (!JSON_READ(io, entry->name, &value.as_float)) {
-                goto fail;
-            }
-            break;
-        case OBJECT_PROPERTY_TYPE_DOUBLE:
-            if (!JSON_READ(io, entry->name, &value.as_double)) {
-                goto fail;
-            }
-            break;
-        case OBJECT_PROPERTY_TYPE_BOOL:
-            if (!JSON_READ(io, entry->name, &value.as_bool)) {
-                goto fail;
-            }
-            break;
-        case OBJECT_PROPERTY_TYPE_XYZ:
-            if (!JSON_PUSH(io, entry->name)) {
-                goto fail;
-            }
-            if (!JSON_READ(io, "x", &value.as_xyz.x)) {
-                goto fail;
-            }
-            if (!JSON_READ(io, "y", &value.as_xyz.y)) {
-                goto fail;
-            }
-            if (!JSON_READ(io, "z", &value.as_xyz.z)) {
-                goto fail;
-            }
-            JSON_POP(io);
-            break;
+
+        TRX_VALUE value;
+        if (!JSONValue_Read(
+                props, entry->name, entry->value.type, nullptr, &value)) {
+            goto fail;
         }
         M_ApplyItemValue(item, entry->name, &value);
     }

@@ -18,7 +18,7 @@ typedef struct {
 
 static int32_t M_GetDamage(const ITEM *const item)
 {
-    OBJECT_PROPERTY_VALUE damage = {};
+    TRX_VALUE damage = {};
     if (ObjectProperty_GetItemValue(item, "damage", &damage)) {
         return damage.as_int;
     }
@@ -28,7 +28,7 @@ static int32_t M_GetDamage(const ITEM *const item)
 
 static int32_t M_GetSpeed(const ITEM *const item)
 {
-    OBJECT_PROPERTY_VALUE speed = {};
+    TRX_VALUE speed = {};
     if (ObjectProperty_GetItemValue(item, "speed", &speed)) {
         return speed.as_int;
     }

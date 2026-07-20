@@ -45,7 +45,7 @@ static void M_Roll(ITEM *const item)
 
 static int32_t M_GetAirDamage(const ITEM *const item)
 {
-    OBJECT_PROPERTY_VALUE damage = {};
+    TRX_VALUE damage = {};
     if (ObjectProperty_GetItemValue(item, "air_damage", &damage)) {
         return damage.as_int;
     }

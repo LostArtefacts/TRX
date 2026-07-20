@@ -35,7 +35,7 @@ static void M_Initialise(const int16_t item_num)
     p->blood_intensity = M_DEFAULT_BLOOD;
     p->push_lara = M_DEFAULT_PUSH;
 
-    OBJECT_PROPERTY_VALUE value = {};
+    TRX_VALUE value = {};
     if (ObjectProperty_GetItemValue(item, "touch_mask", &value)) {
         p->touch_mask = value.as_int;
     }

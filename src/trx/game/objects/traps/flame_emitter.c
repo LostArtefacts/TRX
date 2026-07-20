@@ -70,13 +70,12 @@ static void M_Initialise(const int16_t item_num)
 
 static int32_t M_GetSideDuration(const ITEM *const item)
 {
-    OBJECT_PROPERTY_VALUE value = {};
+    TRX_VALUE value = {};
     if (!ObjectProperty_GetItemValue(item, "interval", &value)
-        || value.type != OBJECT_PROPERTY_TYPE_DOUBLE
-        || value.as_double <= 0.0) {
+        || value.type != TVT_DOUBLE || value.as_num <= 0.0) {
         return M_DEFAULT_SIDE_INTERVAL * LOGIC_FPS;
     }
-    return value.as_double * LOGIC_FPS;
+    return value.as_num * LOGIC_FPS;
 }
 
 static void M_ControlCommon(

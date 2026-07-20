@@ -78,7 +78,7 @@ static const HYBRID_INFO m_CrocodileInfo = {
 
 static int32_t M_GetDamage(const ITEM *const item, const int32_t default_value)
 {
-    OBJECT_PROPERTY_VALUE damage = {};
+    TRX_VALUE damage = {};
     if (ObjectProperty_GetItemValue(item, "damage", &damage)) {
         return damage.as_int;
     }

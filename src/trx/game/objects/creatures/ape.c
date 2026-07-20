@@ -49,7 +49,7 @@ static BITE m_ApeBite = { .pos = { 0, -19, 75 }, .mesh_num = 15 };
 
 static int32_t M_GetAttackDamage(const ITEM *const item)
 {
-    OBJECT_PROPERTY_VALUE damage = {};
+    TRX_VALUE damage = {};
     if (ObjectProperty_GetItemValue(item, "damage", &damage)) {
         return damage.as_int;
     }
