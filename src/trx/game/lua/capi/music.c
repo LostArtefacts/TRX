@@ -31,7 +31,7 @@ TYPE_DEFINE(MUSIC_STREAM_VIEW, m_StreamFields)
 
 static void *M_ResolveStream(const LUA_STRUCT_REF *const ref)
 {
-    const int32_t slot = ref->idx;
+    const int32_t slot = ref->handle.id;
     if (slot < 0 || slot >= Music_GetStreamSlotCount()) {
         return nullptr;
     }
@@ -55,7 +55,9 @@ static void M_PushPlayedStream(lua_State *const L, const int32_t slot)
     if (slot < 0) {
         lua_pushnil(L);
     } else {
-        LUA_Struct_Push(L, &TYPE_MUSIC_STREAM_VIEW, M_ResolveStream, slot, 0);
+        LUA_Struct_Push(
+            L, &TYPE_MUSIC_STREAM_VIEW, M_ResolveStream,
+            (TRX_HANDLE) { .id = slot });
     }
 }
 
@@ -65,7 +67,7 @@ static int M_L_MusicStreamStop(lua_State *const L)
     LUA_STRUCT_REF *const ref =
         LUA_Struct_CheckRef(L, 1, &TYPE_MUSIC_STREAM_VIEW);
     LUA_Struct_Deref(L, ref);
-    Music_StopStream(ref->idx);
+    Music_StopStream(ref->handle.id);
     return 0;
 }
 
@@ -75,7 +77,7 @@ static int M_L_MusicStreamPause(lua_State *const L)
     LUA_STRUCT_REF *const ref =
         LUA_Struct_CheckRef(L, 1, &TYPE_MUSIC_STREAM_VIEW);
     LUA_Struct_Deref(L, ref);
-    Music_PauseStream(ref->idx);
+    Music_PauseStream(ref->handle.id);
     return 0;
 }
 
@@ -85,7 +87,7 @@ static int M_L_MusicStreamUnpause(lua_State *const L)
     LUA_STRUCT_REF *const ref =
         LUA_Struct_CheckRef(L, 1, &TYPE_MUSIC_STREAM_VIEW);
     LUA_Struct_Deref(L, ref);
-    Music_UnpauseStream(ref->idx);
+    Music_UnpauseStream(ref->handle.id);
     return 0;
 }
 
@@ -96,7 +98,7 @@ static int M_L_MusicStreamSeek(lua_State *const L)
         LUA_Struct_CheckRef(L, 1, &TYPE_MUSIC_STREAM_VIEW);
     LUA_Struct_Deref(L, ref);
     const double timestamp = luaL_checknumber(L, 2);
-    lua_pushboolean(L, Music_SeekStream(ref->idx, timestamp));
+    lua_pushboolean(L, Music_SeekStream(ref->handle.id, timestamp));
     return 1;
 }
 
@@ -123,7 +125,9 @@ static int M_L_MusicStreamGet(lua_State *const L)
         lua_pushnil(L);
         return 1;
     }
-    LUA_Struct_Push(L, &TYPE_MUSIC_STREAM_VIEW, M_ResolveStream, slot, 0);
+    LUA_Struct_Push(
+        L, &TYPE_MUSIC_STREAM_VIEW, M_ResolveStream,
+        (TRX_HANDLE) { .id = slot });
     return 1;
 }
 
@@ -169,7 +173,7 @@ TYPE_DEFINE(MUSIC_TRACK_VIEW, m_TrackFields)
 
 static void *M_ResolveTrack(const LUA_STRUCT_REF *const ref)
 {
-    const int32_t id = ref->idx;
+    const int32_t id = ref->handle.id;
     if (id < 0 || !Music_IsTrackAvailable_Direct((MUSIC_ID)id)) {
         return nullptr;
     }
@@ -192,7 +196,7 @@ static int M_L_MusicTrackPlay(lua_State *const L)
         }
         lua_pop(L, 1);
     }
-    M_PushPlayedStream(L, Music_Play_Direct((MUSIC_ID)ref->idx, mode));
+    M_PushPlayedStream(L, Music_Play_Direct((MUSIC_ID)ref->handle.id, mode));
     return 1;
 }
 
@@ -202,7 +206,7 @@ static int M_L_MusicTrackPath(lua_State *const L)
     LUA_STRUCT_REF *const ref =
         LUA_Struct_CheckRef(L, 1, &TYPE_MUSIC_TRACK_VIEW);
     LUA_Struct_Deref(L, ref);
-    char *path = Music_GetTrackPath((MUSIC_ID)ref->idx);
+    char *path = Music_GetTrackPath((MUSIC_ID)ref->handle.id);
     if (path == nullptr) {
         lua_pushnil(L);
     } else {
@@ -226,7 +230,8 @@ static int M_L_MusicTrackGet(lua_State *const L)
         lua_pushnil(L);
         return 1;
     }
-    LUA_Struct_Push(L, &TYPE_MUSIC_TRACK_VIEW, M_ResolveTrack, id, 0);
+    LUA_Struct_Push(
+        L, &TYPE_MUSIC_TRACK_VIEW, M_ResolveTrack, (TRX_HANDLE) { .id = id });
     return 1;
 }
 

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <trx/core/handle.h>
 #include <trx/game/anims.h>
 #include <trx/game/items/types.h>
 
@@ -7,6 +8,13 @@ void Item_Reset(void);
 void Item_InitialiseItems(int32_t num_items);
 ITEM *Item_Get(int16_t num);
 int16_t Item_GetIndex(const ITEM *item);
+
+// A handle to the item currently in the slot, and the item a handle still names
+// or nullptr once its slot has been recycled or the level replaced. Scripts
+// hold these across time; the generation is what tells one occupant from the
+// next.
+TRX_HANDLE Item_GetHandle(int16_t item_num);
+ITEM *Item_FromHandle(TRX_HANDLE handle);
 ITEM *Item_Find(OBJECT_ID obj_id);
 
 int32_t Item_GetLevelCount(void);

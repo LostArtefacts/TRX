@@ -1,5 +1,6 @@
 #pragma once
 
+#include <trx/core/handle.h>
 #include <trx/game/lua/field.h>
 #include <trx/game/objects.h>
 
@@ -20,8 +21,9 @@ typedef struct LUA_STRUCT_REF {
     // Resolves the handle to a live pointer, or nullptr if it went stale (the
     // slot was recycled, the level was unloaded, the index went out of range).
     void *(*resolve)(const struct LUA_STRUCT_REF *ref);
-    int32_t idx;
-    uint32_t gen;
+    // Identity: the entity id and the generation that pins its occupant. What
+    // id means, and how staleness is decided, is the owning module's business.
+    TRX_HANDLE handle;
 } LUA_STRUCT_REF;
 
 // Creates the type's metatable. `methods` is the full set of C methods the type
@@ -33,7 +35,7 @@ void LUA_Struct_Register(
 // Push a handle userdata for an instance of a registered type.
 void LUA_Struct_Push(
     lua_State *L, const TYPE_DESC *type,
-    void *(*resolve)(const LUA_STRUCT_REF *), int32_t idx, uint32_t gen);
+    void *(*resolve)(const LUA_STRUCT_REF *), TRX_HANDLE handle);
 
 // Fetch and typecheck a handle at the given stack index.
 LUA_STRUCT_REF *LUA_Struct_CheckRef(

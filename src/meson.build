@@ -208,6 +208,7 @@ common_sources = [
   'trx/core/enum_map.c',
   'trx/core/event_manager.c',
   'trx/core/filesystem.c',
+  'trx/core/handle.c',
   'trx/core/hash.c',
   'trx/core/json/base.c',
   'trx/core/json/parse.c',

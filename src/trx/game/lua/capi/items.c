@@ -210,29 +210,21 @@ static const FIELD_DESC m_Fields[] = {
     FIELD_RO(ITEM, prev_frame_num),
     FIELD_RO(ITEM, next_item),
     FIELD_RO(ITEM, next_active),
-    FIELD_RO(ITEM, gen),
 };
 // clang-format on
 
 TYPE_DEFINE(ITEM, m_Fields)
 
-// Resolve an item handle. This is where the generation counter earns its keep:
-// an index alone would silently rebind to whatever item recycled the slot.
+// The generation carried by the handle is what keeps an index from silently
+// rebinding to whatever item recycled the slot; Item_FromHandle checks it.
 static void *M_Resolve(const LUA_STRUCT_REF *const ref)
 {
-    if (ref->idx < 0 || ref->idx >= Item_GetTotalCount()) {
-        return nullptr;
-    }
-    ITEM *const item = Item_Get(ref->idx);
-    if (item == nullptr || item->gen != ref->gen) {
-        return nullptr;
-    }
-    return item;
+    return Item_FromHandle(ref->handle);
 }
 
 static void M_PushItem(lua_State *const L, const int16_t idx)
 {
-    LUA_Struct_Push(L, &TYPE_ITEM, M_Resolve, idx, Item_Get(idx)->gen);
+    LUA_Struct_Push(L, &TYPE_ITEM, M_Resolve, Item_GetHandle(idx));
 }
 
 // The object property overlay stays a separate namespace: fields address the
@@ -275,7 +267,7 @@ static int M_L_ItemsKill(lua_State *const L)
 {
     LUA_STRUCT_REF *const ref = LUA_Struct_CheckRef(L, 1, &TYPE_ITEM);
     LUA_Struct_Deref(L, ref);
-    Item_Kill(ref->idx);
+    Item_Kill(ref->handle.id);
     return 0;
 }
 
@@ -284,14 +276,14 @@ static int M_L_ItemsActivate(lua_State *const L)
 {
     LUA_STRUCT_REF *const ref = LUA_Struct_CheckRef(L, 1, &TYPE_ITEM);
     ITEM *const item = LUA_Struct_Deref(L, ref);
-    Item_AddActive(ref->idx);
+    Item_AddActive(ref->handle.id);
     item->status = IS_ACTIVE;
     // A creature stays inert without its AI, the way spawn's activate option
     // brings one to life.
     const OBJECT *const obj = Object_Get(item->object_id);
     if (Object_IsType(item->object_id, g_CreatureObjects)
         || Object_IsType(item->object_id, g_LoyalObjects) || obj->intelligent) {
-        LOT_EnableBaddieAI(ref->idx, true);
+        LOT_EnableBaddieAI(ref->handle.id, true);
     }
     return 0;
 }
@@ -396,7 +388,7 @@ static int M_L_ItemsDie(lua_State *const L)
 {
     LUA_STRUCT_REF *const ref = LUA_Struct_CheckRef(L, 1, &TYPE_ITEM);
     LUA_Struct_Deref(L, ref);
-    Creature_Die(ref->idx, lua_toboolean(L, 2));
+    Creature_Die(ref->handle.id, lua_toboolean(L, 2));
     return 0;
 }
 
@@ -405,7 +397,7 @@ static int M_L_ItemsShatter(lua_State *const L)
 {
     LUA_STRUCT_REF *const ref = LUA_Struct_CheckRef(L, 1, &TYPE_ITEM);
     LUA_Struct_Deref(L, ref);
-    Item_Shatter(ref->idx, -1, (int16_t)luaL_optinteger(L, 2, 0));
+    Item_Shatter(ref->handle.id, -1, (int16_t)luaL_optinteger(L, 2, 0));
     return 0;
 }
 

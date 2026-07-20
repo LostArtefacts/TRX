@@ -188,7 +188,7 @@ static int M_PairsIter(lua_State *const L)
 
 // LUA_Struct_Push mints a fresh userdata every time, so two handles to the same
 // thing are never the same value. Compare what they point at instead: the type,
-// the slot, and the generation that says which occupant of the slot is meant.
+// and the handle that names the entity and its occupant.
 static int M_Eq(lua_State *const L)
 {
     // Lua takes __eq from the first operand, or from the second when the first
@@ -198,8 +198,7 @@ static int M_Eq(lua_State *const L)
     const LUA_STRUCT_REF *const a = luaL_testudata(L, 1, type->name);
     const LUA_STRUCT_REF *const b = luaL_testudata(L, 2, type->name);
     lua_pushboolean(
-        L,
-        a != nullptr && b != nullptr && a->idx == b->idx && a->gen == b->gen);
+        L, a != nullptr && b != nullptr && Handle_Equal(a->handle, b->handle));
     return 1;
 }
 
@@ -425,15 +424,13 @@ void LUA_Struct_Register(
 
 void LUA_Struct_Push(
     lua_State *const L, const TYPE_DESC *const type,
-    void *(*const resolve)(const LUA_STRUCT_REF *), const int32_t idx,
-    const uint32_t gen)
+    void *(*const resolve)(const LUA_STRUCT_REF *), const TRX_HANDLE handle)
 {
     LUA_STRUCT_REF *const ref = lua_newuserdatauv(L, sizeof(LUA_STRUCT_REF), 0);
     *ref = (LUA_STRUCT_REF) {
         .type = type,
         .resolve = resolve,
-        .idx = idx,
-        .gen = gen,
+        .handle = handle,
     };
     luaL_setmetatable(L, type->name);
 }

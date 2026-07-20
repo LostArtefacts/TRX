@@ -38,13 +38,14 @@ static bool m_Dead[M_POOL_SIZE];
 
 static void *M_Resolve(const LUA_STRUCT_REF *const ref)
 {
-    if (ref->idx < 0 || ref->idx >= M_POOL_SIZE || m_Dead[ref->idx]) {
+    const int32_t idx = ref->handle.id;
+    if (idx < 0 || idx >= M_POOL_SIZE || m_Dead[idx]) {
         return nullptr;
     }
-    if (m_Gen[ref->idx] != ref->gen) {
+    if (m_Gen[idx] != ref->handle.gen) {
         return nullptr;
     }
-    return &m_Pool[ref->idx];
+    return &m_Pool[idx];
 }
 
 static int M_L_Reveal(lua_State *const L)
@@ -71,7 +72,9 @@ static const luaL_Reg m_Methods[] = {
 static int M_L_GetWidget(lua_State *const L)
 {
     const int32_t idx = luaL_checkinteger(L, 1);
-    LUA_Struct_Push(L, &TYPE_WIDGET, M_Resolve, idx, m_Gen[idx]);
+    LUA_Struct_Push(
+        L, &TYPE_WIDGET, M_Resolve,
+        (TRX_HANDLE) { .id = idx, .gen = m_Gen[idx] });
     return 1;
 }
 
