@@ -1,6 +1,7 @@
 #include <trx/game/ui/settings.h>
 
 #include <trx/config.h>
+#include <trx/core/dynamic_enum.h>
 #include <trx/core/json/util/file.h>
 #include <trx/core/json/util/read_io.h>
 #include <trx/core/memory.h>

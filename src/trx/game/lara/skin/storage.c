@@ -1,6 +1,7 @@
 #include <trx/game/lara/skin/storage.h>
 
 #include <trx/config.h>
+#include <trx/core/dynamic_enum.h>
 #include <trx/core/enum_map.h>
 #include <trx/core/json/util/file.h>
 #include <trx/core/json/util/read_io.h>
