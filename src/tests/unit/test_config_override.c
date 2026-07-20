@@ -26,10 +26,10 @@ static char *m_WaterColor;
 static bool m_Enforced;
 
 static const CONFIG_OPTION m_Options[] = {
-    { .name = "audio.music", .type = COT_BOOL, .target = &m_MusicOn },
-    { .name = "visuals.fov", .type = COT_INT32, .target = &m_Fov },
+    { .name = "audio.music", .type = TVT_BOOL, .target = &m_MusicOn },
+    { .name = "visuals.fov", .type = TVT_S32, .target = &m_Fov },
     { .name = "visuals.water_color",
-      .type = COT_STRING,
+      .type = TVT_STRING,
       .target = &m_WaterColor },
     { nullptr },
 };
@@ -68,7 +68,7 @@ bool Config_SetOptionValueFromString(
         return false;
     }
     switch (option->type) {
-    case COT_BOOL:
+    case TVT_BOOL:
         if (strcmp(new_value, "true") == 0) {
             *(bool *)option->target = true;
             return true;
@@ -79,7 +79,7 @@ bool Config_SetOptionValueFromString(
         }
         return false;
 
-    case COT_INT32: {
+    case TVT_S32: {
         char *end = nullptr;
         const long parsed = strtol(new_value, &end, 10);
         if (end == new_value || *end != '\0') {
@@ -89,7 +89,7 @@ bool Config_SetOptionValueFromString(
         return true;
     }
 
-    case COT_STRING: {
+    case TVT_STRING: {
         char **const p = (char **)option->target;
         free(*p);
         *p = strdup(new_value);

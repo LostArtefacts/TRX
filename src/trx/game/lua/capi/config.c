@@ -22,29 +22,16 @@ static const CONFIG_OPTION *M_GetOption(lua_State *const L, const int32_t arg)
 // are on the way in as well.
 static void M_PushValue(lua_State *const L, const CONFIG_OPTION *const option)
 {
-    switch (option->type) {
-    case COT_BOOL:
-        lua_pushboolean(L, *(const bool *)option->target);
-        return;
-    case COT_INT32:
-        lua_pushinteger(L, *(const int32_t *)option->target);
-        return;
-    case COT_ENUM:
-        lua_pushinteger(L, *(const int *)option->target);
-        return;
-    case COT_FLOAT:
-    case COT_FLOAT_PERCENT:
-        lua_pushnumber(L, *(const float *)option->target);
-        return;
-    case COT_DOUBLE:
-        lua_pushnumber(L, *(const double *)option->target);
-        return;
-    case COT_RGB888:
-    case COT_STRING:
-    case COT_DYNAMIC_ENUM:
+    // Colours, enums, strings and dynamic enums read back as their name or
+    // display string, which is also how a script gives them on the way in.
+    if (option->type == TVT_RGB_888 || option->type == TVT_ENUM
+        || option->type == TVT_STRING || option->type == TVT_DYNAMIC_ENUM) {
         lua_pushstring(L, Config_GetOptionValueAsString(option, false));
         return;
     }
+    TRX_VALUE value;
+    Value_ReadPtr(option->type, option->target, &value);
+    LUA_PushValue(L, &value);
 }
 
 // A value is handed to the config string parser, so it is spelled the way that

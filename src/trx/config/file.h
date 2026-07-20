@@ -23,12 +23,6 @@ void ConfigFile_LoadOptions(
 void ConfigFile_DumpOptions(
     JSON_OBJECT *root_obj, const CONFIG_OPTION *options);
 
-int ConfigFile_ReadEnum(
-    JSON_OBJECT *obj, const char *name, int default_value,
-    const char *enum_name);
-void ConfigFile_WriteEnum(
-    JSON_OBJECT *obj, const char *name, int value, const char *enum_name);
-
 bool ConfigFile_LoadGymTrackStats(
     JSON_OBJECT *root_obj, const char *key_name,
     GYM_TRACK_STATS *assault_stats);

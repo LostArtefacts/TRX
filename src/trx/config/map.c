@@ -12,35 +12,36 @@
 
 #define X_CFG_BOOL(target_, default_value_)                                    \
     { .name = QUOTE(target_),                                                  \
-      .type = COT_BOOL,                                                        \
+      .type = TVT_BOOL,                                                        \
       .target = &g_Config.target_,                                             \
       .default_value = &(bool) { default_value_ },                             \
       .param = nullptr },
 
 #define X_CFG_INT32(target_, default_value_)                                   \
     { .name = QUOTE(target_),                                                  \
-      .type = COT_INT32,                                                       \
+      .type = TVT_S32,                                                         \
       .target = &g_Config.target_,                                             \
       .default_value = &(int32_t) { default_value_ },                          \
       .param = nullptr },
 
 #define X_CFG_FLOAT(target_, default_value_)                                   \
     { .name = QUOTE(target_),                                                  \
-      .type = COT_FLOAT,                                                       \
+      .type = TVT_FLOAT,                                                       \
       .target = &g_Config.target_,                                             \
       .default_value = &(float) { default_value_ },                            \
       .param = nullptr },
 
 #define X_CFG_FLOAT_PERCENT(target_, default_value_)                           \
     { .name = QUOTE(target_),                                                  \
-      .type = COT_FLOAT_PERCENT,                                               \
+      .type = TVT_FLOAT,                                                       \
+      .percent = true,                                                         \
       .target = &g_Config.target_,                                             \
       .default_value = &(float) { default_value_ },                            \
       .param = nullptr },
 
 #define X_CFG_DOUBLE(target_, default_value_)                                  \
     { .name = QUOTE(target_),                                                  \
-      .type = COT_DOUBLE,                                                      \
+      .type = TVT_DOUBLE,                                                      \
       .target = &g_Config.target_,                                             \
       .default_value = &(double) { default_value_ },                           \
       .param = nullptr },
@@ -50,42 +51,42 @@
 
 #define X_CFG_ENUM_EX(name_, target_, default_value_, enum_map)                \
     { .name = name_,                                                           \
-      .type = COT_ENUM,                                                        \
+      .type = TVT_ENUM,                                                        \
       .target = &g_Config.target_,                                             \
       .default_value = &(int32_t) { default_value_ },                          \
       .param = ENUM_MAP_NAME(enum_map) },
 
 #define X_CFG_RGB888(target_, default_r, default_g, default_b)                 \
     { .name = QUOTE(target_),                                                  \
-      .type = COT_RGB888,                                                      \
+      .type = TVT_RGB_888,                                                     \
       .target = &g_Config.target_,                                             \
       .default_value = &(RGB_888) { default_r, default_g, default_b },         \
       .param = nullptr },
 
 #define X_CFG_STRING(target_, default_value_)                                  \
     { .name = QUOTE(target_),                                                  \
-      .type = COT_STRING,                                                      \
+      .type = TVT_STRING,                                                      \
       .target = &g_Config.target_,                                             \
       .default_value = default_value_,                                         \
       .param = nullptr },
 
 #define X_CFG_STRING_EX(name_, target_, default_value_)                        \
     { .name = name_,                                                           \
-      .type = COT_STRING,                                                      \
+      .type = TVT_STRING,                                                      \
       .target = &g_Config.target_,                                             \
       .default_value = default_value_,                                         \
       .param = nullptr },
 
 #define X_CFG_DYNAMIC_ENUM(target_, default_value_)                            \
     { .name = QUOTE(target_),                                                  \
-      .type = COT_DYNAMIC_ENUM,                                                \
+      .type = TVT_DYNAMIC_ENUM,                                                \
       .target = &g_Config.target_,                                             \
       .default_value = default_value_,                                         \
       .param = nullptr },
 
 #define X_CFG_DYNAMIC_ENUM_EX(name_, target_, default_value_)                  \
     { .name = name_,                                                           \
-      .type = COT_DYNAMIC_ENUM,                                                \
+      .type = TVT_DYNAMIC_ENUM,                                                \
       .target = &g_Config.target_,                                             \
       .default_value = default_value_,                                         \
       .param = nullptr },

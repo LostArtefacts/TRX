@@ -13,64 +13,6 @@ static const char m_KeyMethods[] = "__methods";
 static const char m_KeyExt[] = "__ext";
 static const char m_KeyRawMethods[] = "__raw_methods";
 
-static void M_PushValue(lua_State *const L, const TRX_VALUE *const value)
-{
-    switch (value->type) {
-    case TVT_BOOL:
-        lua_pushboolean(L, value->as_bool);
-        break;
-    case TVT_FLOAT:
-    case TVT_DOUBLE:
-        lua_pushnumber(L, value->as_num);
-        break;
-    case TVT_STRING:
-        if (value->as_str == nullptr) {
-            lua_pushnil(L);
-        } else {
-            lua_pushstring(L, value->as_str);
-        }
-        break;
-    case TVT_XYZ_16:
-    case TVT_XYZ_32:
-        LUA_PushXYZ(L, value->as_xyz);
-        break;
-    default:
-        lua_pushinteger(L, value->as_int);
-        break;
-    }
-}
-
-static TRX_VALUE M_CheckValue(
-    lua_State *const L, const int idx, const TRX_VALUE_TYPE type)
-{
-    TRX_VALUE value = { .type = type };
-    switch (type) {
-    case TVT_BOOL:
-        luaL_checktype(L, idx, LUA_TBOOLEAN);
-        value.as_bool = lua_toboolean(L, idx);
-        break;
-    case TVT_FLOAT:
-    case TVT_DOUBLE:
-        value.as_num = luaL_checknumber(L, idx);
-        break;
-    case TVT_STRING:
-        // nil clears a string field; its setter decides whether that is
-        // allowed (e.g. item.name = nil removes the name). A field with no
-        // custom setter still rejects the write in Field_Set.
-        value.as_str =
-            lua_isnoneornil(L, idx) ? nullptr : luaL_checkstring(L, idx);
-        break;
-    case TVT_XYZ_16:
-    case TVT_XYZ_32:
-        value.as_xyz = LUA_CheckXYZ(L, idx);
-        break;
-    default:
-        value.as_int = luaL_checkinteger(L, idx);
-        break;
-    }
-    return value;
-}
-
 // Upvalue 1 of __index and __newindex maps public name -> FIELD_DESC *. A
 // linear strcmp scan over the field table measured ~43ns per access; this is a
 // single interned-string hash lookup.
@@ -94,7 +36,7 @@ static int M_Index(lua_State *const L)
             lua_pushnil(L);
             return 1;
         }
-        M_PushValue(L, &value);
+        LUA_PushValue(L, &value);
         return 1;
     }
 
@@ -144,7 +86,7 @@ static int M_NewIndex(lua_State *const L)
             L, "unknown %s field '%s'", ref->type->name, lua_tostring(L, 2));
     }
 
-    const TRX_VALUE value = M_CheckValue(L, 3, field->type);
+    const TRX_VALUE value = LUA_CheckValue(L, 3, field->type);
     const char *const err = Field_Set(field, LUA_Struct_Deref(L, ref), &value);
     if (err != nullptr) {
         return luaL_error(
@@ -175,7 +117,7 @@ static int M_PairsIter(lua_State *const L)
             lua_pushvalue(
                 L, -1); // key again, as the iterator's control variable
             lua_insert(L, -2);
-            M_PushValue(L, &value);
+            LUA_PushValue(L, &value);
             return 2;
         }
         // A getter that declines has nothing to yield. Yielding nil would end
@@ -277,7 +219,7 @@ static int M_PropertyGet(lua_State *const L)
         lua_pushnil(L);
         return 1;
     }
-    M_PushValue(L, &value);
+    LUA_PushValue(L, &value);
     return 1;
 }
 
