@@ -1,11 +1,11 @@
 #include <trx/config/common.h>
 
-#include <trx/config/dynamic_enum.h>
 #include <trx/config/file.h>
 #include <trx/config/override.h>
 #include <trx/config/priv.h>
 #include <trx/config/value.h>
 #include <trx/config/vars.h>
+#include <trx/core/dynamic_enum.h>
 #include <trx/core/memory.h>
 #include <trx/core/strings.h>
 #include <trx/core/vector.h>

@@ -1,7 +1,7 @@
 #include <trx/game/ui/dialogs/settings_editor.h>
 
 #include <trx/config.h>
-#include <trx/config/dynamic_enum.h>
+#include <trx/core/dynamic_enum.h>
 #include <trx/core/enum_map.h>
 #include <trx/core/memory.h>
 #include <trx/core/strings.h>

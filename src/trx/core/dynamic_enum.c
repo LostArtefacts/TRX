@@ -1,4 +1,4 @@
-#include <trx/config/dynamic_enum.h>
+#include <trx/core/dynamic_enum.h>
 
 #include <trx/core/memory.h>
 #include <trx/core/strings.h>
