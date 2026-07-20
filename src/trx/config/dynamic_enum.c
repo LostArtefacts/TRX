@@ -14,17 +14,12 @@ typedef struct {
 } M_DYNAMIC_ENUM_VALUE;
 
 typedef struct M_DYNAMIC_ENUM_REGISTRY_ENTRY {
-    const void *target;
+    const void *token;
     VECTOR *values;
     struct M_DYNAMIC_ENUM_REGISTRY_ENTRY *next;
 } M_DYNAMIC_ENUM_REGISTRY_ENTRY;
 
 static M_DYNAMIC_ENUM_REGISTRY_ENTRY *m_Registry = nullptr;
-
-static bool M_IsDynamicEnum(const CONFIG_OPTION *const option)
-{
-    return option != nullptr && option->type == COT_DYNAMIC_ENUM;
-}
 
 static bool M_IsSameValue(const char *const left, const char *const right)
 {
@@ -38,15 +33,15 @@ static bool M_IsSameValue(const char *const left, const char *const right)
 }
 
 static M_DYNAMIC_ENUM_REGISTRY_ENTRY *M_GetRegistryEntry(
-    const CONFIG_OPTION *const option, const bool create)
+    const void *const token, const bool create)
 {
-    if (option == nullptr) {
+    if (token == nullptr) {
         return nullptr;
     }
 
     for (M_DYNAMIC_ENUM_REGISTRY_ENTRY *entry = m_Registry; entry != nullptr;
          entry = entry->next) {
-        if (entry->target == option->target) {
+        if (entry->token == token) {
             return entry;
         }
     }
@@ -56,7 +51,7 @@ static M_DYNAMIC_ENUM_REGISTRY_ENTRY *M_GetRegistryEntry(
     }
 
     M_DYNAMIC_ENUM_REGISTRY_ENTRY *const entry = Memory_Alloc(sizeof(*entry));
-    entry->target = option->target;
+    entry->token = token;
     entry->values = Vector_Create(sizeof(M_DYNAMIC_ENUM_VALUE));
     entry->next = m_Registry;
     m_Registry = entry;
@@ -80,10 +75,10 @@ static void M_FreeValues(VECTOR **const values_ptr)
 }
 
 static int32_t M_FindValueIndex(
-    const CONFIG_OPTION *const option, const char *const value)
+    const void *const token, const char *const value)
 {
     const M_DYNAMIC_ENUM_REGISTRY_ENTRY *const entry =
-        M_GetRegistryEntry(option, false);
+        M_GetRegistryEntry(token, false);
     if (entry == nullptr || entry->values == nullptr) {
         return -1;
     }
@@ -100,10 +95,10 @@ static int32_t M_FindValueIndex(
 }
 
 static const M_DYNAMIC_ENUM_VALUE *M_GetValueEntry(
-    const CONFIG_OPTION *const option, const int32_t index)
+    const void *const token, const int32_t index)
 {
     const M_DYNAMIC_ENUM_REGISTRY_ENTRY *const entry =
-        M_GetRegistryEntry(option, false);
+        M_GetRegistryEntry(token, false);
     if (entry == nullptr || entry->values == nullptr) {
         return nullptr;
     }
@@ -148,29 +143,28 @@ __attribute__((destructor)) static void M_AtShutdown(void)
     M_Shutdown();
 }
 
-void Config_DynamicEnum_ResetValues(const CONFIG_OPTION *const option)
+void DynamicEnum_ResetValues(const void *const token)
 {
-    if (!M_IsDynamicEnum(option)) {
+    if (token == nullptr) {
         return;
     }
 
     M_DYNAMIC_ENUM_REGISTRY_ENTRY *const entry =
-        M_GetRegistryEntry(option, true);
+        M_GetRegistryEntry(token, true);
     ASSERT(entry != nullptr);
     M_FreeValues(&entry->values);
     entry->values = Vector_Create(sizeof(M_DYNAMIC_ENUM_VALUE));
 }
 
-bool Config_DynamicEnum_AddValue(
-    const CONFIG_OPTION *const option, const char *const value,
-    const char *const label)
+bool DynamicEnum_AddValue(
+    const void *const token, const char *const value, const char *const label)
 {
-    if (!M_IsDynamicEnum(option)) {
+    if (token == nullptr) {
         return false;
     }
 
     M_DYNAMIC_ENUM_REGISTRY_ENTRY *const entry =
-        M_GetRegistryEntry(option, true);
+        M_GetRegistryEntry(token, true);
     ASSERT(entry != nullptr);
     if (entry->values == nullptr) {
         entry->values = Vector_Create(sizeof(M_DYNAMIC_ENUM_VALUE));
@@ -184,65 +178,59 @@ bool Config_DynamicEnum_AddValue(
     return true;
 }
 
-bool Config_DynamicEnum_IsValidValue(
-    const CONFIG_OPTION *const option, const char *const value)
+bool DynamicEnum_IsValidValue(const void *const token, const char *const value)
 {
-    return M_FindValueIndex(option, value) >= 0;
+    return M_FindValueIndex(token, value) >= 0;
 }
 
-int32_t Config_DynamicEnum_GetValueCount(const CONFIG_OPTION *const option)
+int32_t DynamicEnum_GetValueCount(const void *const token)
 {
     const M_DYNAMIC_ENUM_REGISTRY_ENTRY *const entry =
-        M_GetRegistryEntry(option, false);
+        M_GetRegistryEntry(token, false);
     if (entry == nullptr || entry->values == nullptr) {
         return 0;
     }
     return entry->values->count;
 }
 
-const char *Config_DynamicEnum_GetValueAt(
-    const CONFIG_OPTION *const option, const int32_t index)
+const char *DynamicEnum_GetValueAt(const void *const token, const int32_t index)
 {
-    const M_DYNAMIC_ENUM_VALUE *const dyn_value =
-        M_GetValueEntry(option, index);
+    const M_DYNAMIC_ENUM_VALUE *const dyn_value = M_GetValueEntry(token, index);
     if (dyn_value == nullptr) {
         return nullptr;
     }
     return dyn_value->value;
 }
 
-const char *Config_DynamicEnum_GetLabelAt(
-    const CONFIG_OPTION *const option, const int32_t index)
+const char *DynamicEnum_GetLabelAt(const void *const token, const int32_t index)
 {
-    const M_DYNAMIC_ENUM_VALUE *const dyn_value =
-        M_GetValueEntry(option, index);
+    const M_DYNAMIC_ENUM_VALUE *const dyn_value = M_GetValueEntry(token, index);
     return M_GetDisplayLabel(dyn_value);
 }
 
-const char *Config_DynamicEnum_GetLabelForValue(
-    const CONFIG_OPTION *const option, const char *const value)
+const char *DynamicEnum_GetLabelForValue(
+    const void *const token, const char *const value)
 {
-    const int32_t idx = M_FindValueIndex(option, value);
+    const int32_t idx = M_FindValueIndex(token, value);
     if (idx < 0) {
         return value != nullptr ? value : "(null)";
     }
-    return Config_DynamicEnum_GetLabelAt(option, idx);
+    return DynamicEnum_GetLabelAt(token, idx);
 }
 
-bool Config_DynamicEnum_CanCycle(
-    const CONFIG_OPTION *const option, const char *const current,
-    const int32_t dir)
+bool DynamicEnum_CanCycle(
+    const void *const token, const char *const current, const int32_t dir)
 {
-    if (!M_IsDynamicEnum(option) || dir == 0) {
+    if (token == nullptr || dir == 0) {
         return false;
     }
 
-    const int32_t value_count = Config_DynamicEnum_GetValueCount(option);
+    const int32_t value_count = DynamicEnum_GetValueCount(token);
     if (value_count <= 0) {
         return false;
     }
 
-    const int32_t cur_idx = M_FindValueIndex(option, current);
+    const int32_t cur_idx = M_FindValueIndex(token, current);
     if (cur_idx < 0) {
         return true;
     }
@@ -252,22 +240,21 @@ bool Config_DynamicEnum_CanCycle(
     return next_idx >= 0 && next_idx < value_count;
 }
 
-const char *Config_DynamicEnum_GetNext(
-    const CONFIG_OPTION *const option, const char *const current,
-    const int32_t dir)
+const char *DynamicEnum_GetNext(
+    const void *const token, const char *const current, const int32_t dir)
 {
-    if (!M_IsDynamicEnum(option) || dir == 0) {
+    if (token == nullptr || dir == 0) {
         return nullptr;
     }
 
-    const int32_t value_count = Config_DynamicEnum_GetValueCount(option);
+    const int32_t value_count = DynamicEnum_GetValueCount(token);
     if (value_count <= 0) {
         return nullptr;
     }
 
-    const int32_t cur_idx = M_FindValueIndex(option, current);
+    const int32_t cur_idx = M_FindValueIndex(token, current);
     if (cur_idx < 0) {
-        return Config_DynamicEnum_GetValueAt(option, 0);
+        return DynamicEnum_GetValueAt(token, 0);
     }
 
     const int32_t step = dir < 0 ? -1 : 1;
@@ -276,5 +263,5 @@ const char *Config_DynamicEnum_GetNext(
         return nullptr;
     }
 
-    return Config_DynamicEnum_GetValueAt(option, next_idx);
+    return DynamicEnum_GetValueAt(token, next_idx);
 }

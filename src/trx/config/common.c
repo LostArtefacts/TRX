@@ -430,7 +430,7 @@ const char *Config_GetOptionValueAsString(
         if (human_readable) {
             const char *const value = *(char **)option->target;
             const char *const label =
-                Config_DynamicEnum_GetLabelForValue(option, value);
+                DynamicEnum_GetLabelForValue(option->target, value);
             if (label != nullptr) {
                 return label;
             }
@@ -506,12 +506,12 @@ char *Config_NormalizeOptionValueString(
     case COT_STRING:
         return Memory_DupStr(M_FormatString(input));
     case COT_DYNAMIC_ENUM:
-        if (!Config_DynamicEnum_IsValidValue(option, input)) {
+        if (!DynamicEnum_IsValidValue(option->target, input)) {
             return Memory_DupStr(input);
         }
         if (human_readable) {
             const char *const label =
-                Config_DynamicEnum_GetLabelForValue(option, input);
+                DynamicEnum_GetLabelForValue(option->target, input);
             if (label != nullptr) {
                 return Memory_DupStr(label);
             }
@@ -599,7 +599,7 @@ static bool M_SetOptionValueFromString(
     case COT_STRING:
     case COT_DYNAMIC_ENUM: {
         if (option->type == COT_DYNAMIC_ENUM
-            && !Config_DynamicEnum_IsValidValue(option, new_value)) {
+            && !DynamicEnum_IsValidValue(option->target, new_value)) {
             return false;
         }
         char **const p = (char **)option->target;

@@ -295,9 +295,10 @@ static float M_MeasureMaxValueWidth(const UI_SETTINGS_OPTION *const option)
     case COT_DYNAMIC_ENUM: {
         const CONFIG_OPTION *const cfg_opt = M_GetConfigOption(option);
         float result = 0.0f;
-        const int32_t count = Config_DynamicEnum_GetValueCount(cfg_opt);
+        const int32_t count = DynamicEnum_GetValueCount(cfg_opt->target);
         for (int32_t i = 0; i < count; i++) {
-            const char *const label = Config_DynamicEnum_GetLabelAt(cfg_opt, i);
+            const char *const label =
+                DynamicEnum_GetLabelAt(cfg_opt->target, i);
             result = MAX(result, UI_Label_MeasureW(label));
         }
         return result;
@@ -375,8 +376,8 @@ static bool M_CanChangeValue(
 
     case COT_DYNAMIC_ENUM: {
         const CONFIG_OPTION *const cfg_opt = M_GetConfigOption(option);
-        return Config_DynamicEnum_CanCycle(
-            cfg_opt, *(char **)option->target, dir);
+        return DynamicEnum_CanCycle(
+            cfg_opt->target, *(char **)option->target, dir);
     }
 
     case COT_ENUM: {
@@ -558,10 +559,10 @@ void UI_SettingsEditor_RequestChange(
     }
     case COT_DYNAMIC_ENUM: {
         const CONFIG_OPTION *const cfg_opt = M_GetConfigOption(option);
-        const char *const next = Config_DynamicEnum_GetNext(
-            cfg_opt, *(char **)option->target, delta);
+        const char *const next = DynamicEnum_GetNext(
+            cfg_opt->target, *(char **)option->target, delta);
         if (next != nullptr
-            || Config_DynamicEnum_IsValidValue(cfg_opt, nullptr)) {
+            || DynamicEnum_IsValidValue(cfg_opt->target, nullptr)) {
             Config_SetOptionValueFromString(cfg_opt, next);
         }
         break;

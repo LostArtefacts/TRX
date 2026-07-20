@@ -120,7 +120,7 @@ static void M_ResetDynamicEnumValues(void)
     const CONFIG_OPTION *const bar_look_option =
         Config_GetOption(&g_Config.ui.bar_look);
     if (bar_look_option != nullptr) {
-        Config_DynamicEnum_ResetValues(bar_look_option);
+        DynamicEnum_ResetValues(bar_look_option->target);
     }
 
     for (int32_t i = 0; i < UI_BAR_NUMBER_OF; i++) {
@@ -128,12 +128,12 @@ static void M_ResetDynamicEnumValues(void)
         const CONFIG_OPTION *const pc_option =
             Config_GetOption(select->pc_color);
         if (pc_option != nullptr) {
-            Config_DynamicEnum_ResetValues(pc_option);
+            DynamicEnum_ResetValues(pc_option->target);
         }
         const CONFIG_OPTION *const ps1_option =
             Config_GetOption(select->ps1_color);
         if (ps1_option != nullptr) {
-            Config_DynamicEnum_ResetValues(ps1_option);
+            DynamicEnum_ResetValues(ps1_option->target);
         }
     }
 }
@@ -162,7 +162,13 @@ static bool M_IsBarColorNameEncountered(
 static void M_SeedDynamicEnumBarColors(
     const CONFIG_OPTION *const option, const UI_BAR_THEME_KIND kind)
 {
-    Config_DynamicEnum_ResetValues(option);
+    // The option map is chosen by TR version, so before the version is set
+    // during boot Config_GetOption finds nothing and seeding no-ops - as it did
+    // when the dynamic enum call still absorbed a null option.
+    if (option == nullptr) {
+        return;
+    }
+    DynamicEnum_ResetValues(option->target);
     for (int32_t i = 0; i < m_Settings.bar_theme_count; i++) {
         const M_BAR_THEME_ENTRY *const theme = &m_Settings.bar_themes[i];
         if (theme->kind != kind) {
@@ -173,7 +179,7 @@ static void M_SeedDynamicEnumBarColors(
             if (M_IsBarColorNameEncountered(kind, name, i, j)) {
                 continue;
             }
-            Config_DynamicEnum_AddValue(option, name, nullptr);
+            DynamicEnum_AddValue(option->target, name, nullptr);
         }
     }
 }
@@ -183,11 +189,11 @@ static void M_SeedDynamicEnumValues(void)
     const CONFIG_OPTION *const bar_look_option =
         Config_GetOption(&g_Config.ui.bar_look);
     if (bar_look_option != nullptr) {
-        Config_DynamicEnum_ResetValues(bar_look_option);
+        DynamicEnum_ResetValues(bar_look_option->target);
         for (int32_t i = 0; i < m_Settings.bar_theme_count; i++) {
             const M_BAR_THEME_ENTRY *const theme = &m_Settings.bar_themes[i];
-            Config_DynamicEnum_AddValue(
-                bar_look_option, theme->name, theme->name_gs);
+            DynamicEnum_AddValue(
+                bar_look_option->target, theme->name, theme->name_gs);
         }
     }
 
