@@ -18,6 +18,12 @@ static int32_t m_StaticObjects3DCount = 0;
 static int32_t m_StaticObjects2DCount = 0;
 static OBJECT_MESH **m_MeshPointers = nullptr;
 static int32_t m_MeshCount = 0;
+static int32_t m_MeshCapacity = 0;
+// Runtime mesh clones live in slots reserved past the level's own meshes. Sized
+// for one extra braid segment set, which is all the second pigtail needs.
+#define M_MESH_CLONE_RESERVE 6
+static int32_t m_MeshCloneBase = -1;
+static int32_t m_MeshCloneCount = 0;
 
 void Object_Reset(void)
 {
@@ -32,6 +38,9 @@ void Object_Reset(void)
     m_StaticObjects2DCount = 0;
     m_MeshPointers = nullptr;
     m_MeshCount = 0;
+    m_MeshCapacity = 0;
+    m_MeshCloneBase = -1;
+    m_MeshCloneCount = 0;
 }
 
 void Object_InitialiseStaticObjects3D(const int32_t count)
@@ -161,15 +170,42 @@ OBJECT_ID Object_GetCognateInverse(
 
 void Object_InitialiseMeshes(const int32_t mesh_count)
 {
-    m_MeshPointers =
-        GameBuf_Alloc(sizeof(OBJECT_MESH *) * mesh_count, GBUF_MESH_POINTERS);
+    m_MeshCapacity = mesh_count + M_MESH_CLONE_RESERVE;
+    m_MeshPointers = GameBuf_Alloc(
+        sizeof(OBJECT_MESH *) * m_MeshCapacity, GBUF_MESH_POINTERS);
     m_MeshCount = 0;
+    m_MeshCloneBase = -1;
+    m_MeshCloneCount = 0;
 }
 
 void Object_StoreMesh(OBJECT_MESH *const mesh)
 {
     m_MeshPointers[m_MeshCount] = mesh;
     m_MeshCount++;
+}
+
+int32_t Object_EnsureMeshClones(const int32_t src_idx, const int32_t count)
+{
+    if (m_MeshCloneBase < 0) {
+        if (m_MeshCount + count > m_MeshCapacity) {
+            return -1;
+        }
+        m_MeshCloneBase = m_MeshCount;
+        m_MeshCloneCount = count;
+        for (int32_t i = 0; i < count; i++) {
+            m_MeshPointers[m_MeshCount++] =
+                GameBuf_Alloc(sizeof(OBJECT_MESH), GBUF_MESHES);
+        }
+    }
+    if (count > m_MeshCloneCount) {
+        return -1;
+    }
+    // Shallow copy: the clone shares the source's vertex and face arrays, which
+    // are only ever read, and gets its own render buffers on the next refresh.
+    for (int32_t i = 0; i < count; i++) {
+        *m_MeshPointers[m_MeshCloneBase + i] = *m_MeshPointers[src_idx + i];
+    }
+    return m_MeshCloneBase;
 }
 
 OBJECT_MESH *Object_GetMesh(const int32_t index)

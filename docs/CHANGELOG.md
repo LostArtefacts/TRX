@@ -10,6 +10,8 @@
 
 **TR4**
 - added reflections
+- added TR4 outfits
+- added seamless body and braid joints to the TR4 outfits, as in the original TR4
 - added water droplets dripping off Lara after she leaves water (also enabled in TR3)
 - added a small splash when spent shells land on water (also enabled in TR3)
 - added fires

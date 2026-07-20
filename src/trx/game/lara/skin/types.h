@@ -1,6 +1,7 @@
 #pragma once
 
 #include <trx/game/lara/skin/enum.h>
+#include <trx/game/lara/skin/seam.h>
 #include <trx/game/lara/types.h>
 #include <trx/game/sound/ids.h>
 
@@ -19,6 +20,16 @@ typedef struct {
     LARA_SKIN_MESH_MAP mesh_offsets[NUM_WEAPONS];
 } LARA_SKIN_GUN_MAP;
 
+// The braid top ring welds onto these head vertices so it meets the scalp
+// instead of hanging off it. vertex_a is a braid segment-0 vertex, vertex_b
+// the head vertex it pins to. Authored per outfit: the two rings sit a gap
+// apart at rest, so no position match finds them, and the vertices differ
+// between outfits and between the two pigtails.
+typedef struct {
+    int32_t count;
+    SEAM_VERTEX_PAIR pairs[SEAM_MAX_VERTEX_PAIRS];
+} LARA_SKIN_BRAID_HEAD_SEAM;
+
 typedef struct {
     LARA_SKIN_BRAID_MODE mode;
     bool enabled;
@@ -26,6 +37,7 @@ typedef struct {
     int32_t gold_offset;
     XYZ_32 positions[2];
     int32_t count;
+    LARA_SKIN_BRAID_HEAD_SEAM head_seam[2];
 } LARA_SKIN_BRAID;
 
 typedef struct {

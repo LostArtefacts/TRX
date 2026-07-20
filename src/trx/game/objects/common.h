@@ -49,6 +49,15 @@ OBJECT_ID Object_GetCognateInverse(
 void Object_InitialiseMeshes(int32_t mesh_count);
 void Object_StoreMesh(OBJECT_MESH *mesh);
 
+// Ensures `count` runtime copies of the meshes starting at src_idx exist and
+// mirror them, returning the base index of the copy range (or -1 if the clone
+// reserve cannot hold them). The copies share the sources' vertex and face
+// data but get their own render buffers once the batcher is refreshed, so their
+// geometry can be deformed independently - Lara's second braid uses this so its
+// seams do not fight the first braid over a shared buffer. Allocated once per
+// level; later calls re-mirror the same slots.
+int32_t Object_EnsureMeshClones(int32_t src_idx, int32_t count);
+
 int32_t Object_GetMeshCount(void);
 OBJECT_MESH *Object_FindMesh(int32_t data_offset);
 int32_t Object_GetMeshIndex(const OBJECT_MESH *mesh);

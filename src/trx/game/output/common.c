@@ -223,3 +223,11 @@ void Output_DispatchObjectMeshUpdate(const int32_t mesh_idx)
 {
     OutputSource_Objects_ObserveObjectMeshUpdate(mesh_idx);
 }
+
+void Output_DispatchObjectMeshGeometry(
+    const int32_t mesh_idx, const XYZ_F *const positions,
+    const XYZ_F *const normals)
+{
+    OutputSource_Objects_ObserveObjectMeshGeometry(
+        mesh_idx, positions, normals);
+}

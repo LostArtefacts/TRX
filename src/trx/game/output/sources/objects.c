@@ -255,34 +255,84 @@ static void M_FreeMeshes(M_PRIV *const p)
     Memory_ArenaReset(&p->alloc);
 }
 
-static void M_UpdateFlags(const OBJECT_MESH *const mesh, M_MESH *const batch)
+typedef void (*M_FACE_VERTEX_FUNC)(
+    OUTPUT_MESH_VERTEX *vertex, const FACE *face, int32_t vertex_idx,
+    const void *user);
+
+// The GPU buffer stores one vertex per face corner, in the same order the
+// faces were flattened in M_PrepareMeshes (tex faces, then flat faces), so
+// this walk mirrors that layout.
+static void M_ForEachFaceVertex(
+    const OBJECT_MESH *const mesh, M_MESH *const batch,
+    const M_FACE_VERTEX_FUNC func, const void *const user)
 {
-    uint16_t mask = VERT_REFLECTIVE | VERT_NO_LIGHTING;
     OUTPUT_MESH_VERTEX *const vertices =
         Vector_GetData(batch->mesh_batch->vertices);
     int32_t vertex_idx = 0;
 
-    for (int32_t i = 0; i < mesh->tex_faces.count; i++) {
-        const FACE *const face = &mesh->tex_faces.data[i];
-        for (int32_t j = 0; j < face->vertex_count; j++) {
-            vertices[vertex_idx + j].flags &= ~mask;
-            if (M_IsReflectiveFace(mesh, face)) {
-                vertices[vertex_idx + j].flags |= VERT_REFLECTIVE;
+    const struct {
+        int16_t count;
+        const FACE *data;
+    } face_lists[] = {
+        { mesh->tex_faces.count, mesh->tex_faces.data },
+        { mesh->flat_faces.count, mesh->flat_faces.data },
+    };
+    for (int32_t list = 0; list < 2; list++) {
+        for (int32_t i = 0; i < face_lists[list].count; i++) {
+            const FACE *const face = &face_lists[list].data[i];
+            for (int32_t j = 0; j < face->vertex_count; j++) {
+                func(&vertices[vertex_idx + j], face, j, user);
             }
+            vertex_idx += face->vertex_count;
         }
-        vertex_idx += face->vertex_count;
     }
+}
 
-    for (int32_t i = 0; i < mesh->flat_faces.count; i++) {
-        const FACE *const face = &mesh->flat_faces.data[i];
-        for (int32_t j = 0; j < face->vertex_count; j++) {
-            vertices[vertex_idx + j].flags &= ~mask;
-            if (M_IsReflectiveFace(mesh, face)) {
-                vertices[vertex_idx + j].flags |= VERT_REFLECTIVE;
-            }
-        }
-        vertex_idx += face->vertex_count;
+static void M_UpdateVertexFlags(
+    OUTPUT_MESH_VERTEX *const vertex, const FACE *const face,
+    const int32_t vertex_idx, const void *const user)
+{
+    const OBJECT_MESH *const mesh = user;
+    vertex->flags &= ~(VERT_REFLECTIVE | VERT_NO_LIGHTING);
+    if (M_IsReflectiveFace(mesh, face)) {
+        vertex->flags |= VERT_REFLECTIVE;
     }
+}
+
+typedef struct {
+    const XYZ_F *positions;
+    const XYZ_F *normals;
+} M_GEOMETRY_UPDATE;
+
+static void M_ResyncVertexGeometry(
+    OUTPUT_MESH_VERTEX *const vertex, const FACE *const face,
+    const int32_t vertex_idx, const void *const user)
+{
+    const M_GEOMETRY_UPDATE *const update = user;
+    const int32_t idx = face->vertices[vertex_idx];
+    const XYZ_F *const pos = &update->positions[idx];
+    vertex->pos.x = pos->x;
+    vertex->pos.y = pos->y;
+    vertex->pos.z = pos->z;
+    if (update->normals != nullptr) {
+        vertex->normal = update->normals[idx];
+    }
+}
+
+static void M_UpdateFlags(const OBJECT_MESH *const mesh, M_MESH *const batch)
+{
+    M_ForEachFaceVertex(mesh, batch, M_UpdateVertexFlags, mesh);
+}
+
+static void M_ResyncGeometry(
+    const OBJECT_MESH *const mesh, M_MESH *const batch,
+    const XYZ_F *const positions, const XYZ_F *const normals)
+{
+    const M_GEOMETRY_UPDATE update = {
+        .positions = positions,
+        .normals = normals,
+    };
+    M_ForEachFaceVertex(mesh, batch, M_ResyncVertexGeometry, &update);
 }
 
 static void M_Stage(const OBJECT_MESH *const mesh)
@@ -411,6 +461,22 @@ void OutputSource_Objects_ObserveObjectMeshUpdate(const int32_t mesh_idx)
         return;
     }
     M_UpdateFlags(Object_GetMesh(mesh_idx), batch);
+    MeshBatcher_UpdateMeshGeometry(p->batcher, batch->mesh_batch);
+}
+
+void OutputSource_Objects_ObserveObjectMeshGeometry(
+    const int32_t mesh_idx, const XYZ_F *const positions,
+    const XYZ_F *const normals)
+{
+    M_PRIV *const p = &m_Priv;
+    if (p->meshes == nullptr) {
+        return;
+    }
+    M_MESH *const batch = &p->meshes[mesh_idx];
+    if (batch->mesh_batch == nullptr) {
+        return;
+    }
+    M_ResyncGeometry(Object_GetMesh(mesh_idx), batch, positions, normals);
     MeshBatcher_UpdateMeshGeometry(p->batcher, batch->mesh_batch);
 }
 

@@ -626,6 +626,11 @@
                         "z": -50,
                     },
                 ],
+                // [braid vertex, head vertex] pairs, per pigtail
+                "head_seam": [
+                    [[0, 79], [3, 77], [1, 78], [2, 76]],
+                    [[0, 68], [3, 71], [1, 69], [2, 70]],
+                ],
             },
             "extra_outfits": {
                 "LS_EXTRA_MIDAS_KILL": "tr4_young_golden_lara",
@@ -656,6 +661,11 @@
                         "z": -50,
                     },
                 ],
+                // [braid vertex, head vertex] pairs, per pigtail
+                "head_seam": [
+                    [[0, 79], [3, 77], [1, 78], [2, 76]],
+                    [[0, 68], [3, 71], [1, 69], [2, 70]],
+                ],
             },
         },
 
@@ -676,6 +686,10 @@
                         "y": -4,
                         "z": -48,
                     },
+                ],
+                // [braid vertex, head vertex] pairs, per pigtail
+                "head_seam": [
+                    [[0, 37], [3, 38], [1, 39], [2, 40]],
                 ],
             },
             "extra_outfits": {
@@ -701,6 +715,10 @@
                         "y": -4,
                         "z": -48,
                     },
+                ],
+                // [braid vertex, head vertex] pairs, per pigtail
+                "head_seam": [
+                    [[0, 37], [3, 38], [1, 39], [2, 40]],
                 ],
             },
         },

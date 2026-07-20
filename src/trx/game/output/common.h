@@ -32,4 +32,11 @@ void Output_DispatchLevelUnload(void);
 void Output_RefreshObjectMeshes(void);
 void Output_DispatchRoomFlip(const ROOM *room);
 void Output_DispatchObjectMeshUpdate(int32_t mesh_idx);
+// Uploads new vertex positions for the mesh into the GPU buffer, for meshes
+// whose geometry is deformed at runtime (e.g. Lara's skin joints). The array
+// is indexed like the OBJECT_MESH's own vertices. A non-null normals array is
+// indexed the same way and replaces the baked normals, letting a deformed seam
+// take on the lighting of the meshes it welds to.
+void Output_DispatchObjectMeshGeometry(
+    int32_t mesh_idx, const XYZ_F *positions, const XYZ_F *normals);
 void Output_DispatchObjectMeshSwap(int32_t mesh_idx_0, int32_t mesh_idx_1);
