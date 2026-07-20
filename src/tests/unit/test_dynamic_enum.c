@@ -42,14 +42,17 @@ TEST(tokens_are_independent)
 }
 
 // A value carrying a label reports the label (the stub GameString_Get echoes
-// its key); a value the registry never saw is echoed back as its own label.
-TEST(labels_resolve_or_echo_the_value)
+// its key); a value with no label falls back to its own text; a value the
+// registry never saw is echoed back as its own label.
+TEST(labels_resolve_or_fall_back_to_the_value)
 {
     DynamicEnum_ResetValues(&m_TokenA);
     DynamicEnum_AddValue(&m_TokenA, "coded", "labels/coded");
+    DynamicEnum_AddValue(&m_TokenA, "raw", nullptr);
 
     CHECK_EQ_STR(
         DynamicEnum_GetLabelForValue(&m_TokenA, "coded"), "labels/coded");
+    CHECK_EQ_STR(DynamicEnum_GetLabelForValue(&m_TokenA, "raw"), "raw");
     CHECK_EQ_STR(DynamicEnum_GetLabelForValue(&m_TokenA, "ghost"), "ghost");
 }
 
