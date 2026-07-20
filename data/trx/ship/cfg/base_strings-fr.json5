@@ -285,6 +285,12 @@
             "drain": {
                 "help": "Retire toute l'eau de la salle actuelle.",
             },
+            "dry": {
+                "already_dry": "\\{review}Lara est déjà toute sèche",
+                "help": "\\{review}Sèche Lara, qui cesse de goutter après une baignade.",
+                "success": "\\{review}Lara a eu droit à sa serviette - plus une goutte",
+                "underwater": "\\{review}Lara est un peu occupée - elle est sous l'eau",
+            },
             "end_level": {
                 "help": "Met fin au niveau actuel.",
             },

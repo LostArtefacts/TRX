@@ -285,6 +285,12 @@
             "drain": {
                 "help": "Drena la stanza corrente, rimuovendo l'acqua.",
             },
+            "dry": {
+                "already_dry": "\\{review}Lara è già perfettamente asciutta",
+                "help": "\\{review}Asciuga Lara, che smette di gocciolare dopo una nuotata.",
+                "success": "\\{review}Lara si è asciugata - niente più gocce",
+                "underwater": "\\{review}Lara è un po' impegnata - è sott'acqua",
+            },
             "end_level": {
                 "help": "Termina il livello attuale.",
             },

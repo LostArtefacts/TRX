@@ -65,6 +65,7 @@ trx_lua_script_sources = files(
   'lua/commands/burn.lua',
   'lua/commands/debug.lua',
   'lua/commands/die.lua',
+  'lua/commands/dry.lua',
   'lua/commands/end_level.lua',
   'lua/commands/flipmap.lua',
   'lua/commands/flood.lua',
