@@ -627,10 +627,6 @@
                     },
                 ],
             },
-            "no_holster_offsets": {
-                "thigh_r": 15,
-                "thigh_l": 16,
-            },
             "extra_outfits": {
                 "LS_EXTRA_MIDAS_KILL": "tr4_young_golden_lara",
             },
@@ -681,10 +677,6 @@
                         "z": -48,
                     },
                 ],
-            },
-            "no_holster_offsets": {
-                "thigh_r": 15,
-                "thigh_l": 16,
             },
             "extra_outfits": {
                 "LS_EXTRA_MIDAS_KILL": "tr4_golden_lara",
