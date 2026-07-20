@@ -144,4 +144,12 @@ test(
   end
 )
 
+test("dry clears the wetness that is_wet reads", function()
+  assert(trx.lara.is_wet == true)
+  trx.lara.dry()
+
+  assert(trx.lara.is_wet == false)
+  assert(fake.calls().dry == 1)
+end)
+
 return h.report()

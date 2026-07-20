@@ -255,6 +255,12 @@ api.property("lara.is_flying", {
   set = raw.set_flying,
 })
 
+api.property("lara.is_wet", {
+  type = "boolean",
+  description = "Whether Lara is still shedding droplets after a swim. `dry` clears it.",
+  get = raw.is_wet,
+})
+
 api.property("lara.has_pistol_weapon", {
   type = "boolean",
   description = "Whether Lara is carrying a pistol-class weapon, which is what decides whether she "
@@ -293,6 +299,12 @@ api.define("lara.cure_poison", {
 api.define("lara.extinguish", {
   description = "Puts Lara's fire out, and stops her being electrocuted with it.",
   impl = raw.extinguish,
+})
+
+api.define("lara.dry", {
+  description = "Dries Lara off, clearing the wetness that sheds droplets after she leaves "
+    .. "water.",
+  impl = raw.dry,
 })
 
 api.define("lara.clear_equipment", {
