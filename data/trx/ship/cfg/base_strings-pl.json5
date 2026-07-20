@@ -285,6 +285,12 @@
             "drain": {
                 "help": "Osusza aktualne pomieszczenie usuwając z niego wodę.",
             },
+            "dry": {
+                "already_dry": "\\{review}Lara jest już zupełnie sucha",
+                "help": "\\{review}Osusza Larę, przerywając kapanie po pływaniu.",
+                "success": "\\{review}Lara wytarta ręcznikiem - koniec kapania",
+                "underwater": "\\{review}Lara jest trochę zajęta - jest pod wodą",
+            },
             "end_level": {
                 "help": "Kończy bieżący poziom.",
             },

@@ -285,6 +285,12 @@
             "drain": {
                 "help": "Dries the current room, removing the water.",
             },
+            "dry": {
+                "already_dry": "Lara's already bone dry",
+                "help": "Dries Lara off, stopping her dripping after a swim.",
+                "success": "Lara's been toweled off - no more dripping",
+                "underwater": "Lara's a bit busy being underwater right now",
+            },
             "end_level": {
                 "help": "Ends the current level.",
             },

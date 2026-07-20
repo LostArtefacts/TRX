@@ -285,6 +285,12 @@
             "drain": {
                 "help": "Entfernt das gesamte Wasser aus dem Raum, in dem sie sich im Moment befinden.",
             },
+            "dry": {
+                "already_dry": "\\{review}Lara ist bereits staubtrocken",
+                "help": "\\{review}Trocknet Lara ab, sodass sie nach dem Schwimmen nicht mehr tropft.",
+                "success": "\\{review}Lara wurde abgetrocknet - nichts tropft mehr",
+                "underwater": "\\{review}Lara ist gerade etwas beschäftigt - sie ist unter Wasser",
+            },
             "end_level": {
                 "help": "Beendet das aktuelle Level.",
             },

@@ -285,6 +285,12 @@
             "drain": {
                 "help": "Drèaneas an t-seomair làithreach.",
             },
+            "dry": {
+                "already_dry": "\\{review}Tha Lara tioram mu thràth",
+                "help": "\\{review}Tiormaichidh seo Lara, a' cur stad air an t-sileadh às dèidh snàmh.",
+                "success": "\\{review}Chaidh Lara a thiormachadh - chan eil sileadh ann tuilleadh",
+                "underwater": "\\{review}Tha Lara caran trang an-dràsta - tha i fon uisge",
+            },
             "end_level": {
                 "help": "Crìochnaicheas an ìre làithreach.",
             },
