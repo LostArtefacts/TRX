@@ -121,6 +121,8 @@ void FakeLara_Reset(void)
     m_Lara.gun_type = LGT_UNARMED;
     m_Lara.request_gun_type = LGT_UNARMED;
     m_Lara.hit_direction = -1;
+    // One damp mesh, so a test can watch is_wet flip when Lara is dried.
+    m_Lara.wet[LM_HEAD] = 1;
 
     g_FakeLaraCalls = (FAKE_LARA_CALLS) {};
     m_HolstersVisible = true;
@@ -146,6 +148,24 @@ void Lara_Extinguish(void)
     g_FakeLaraCalls.extinguish++;
     m_Lara.burn = false;
     m_Lara.electric = 0;
+}
+
+void Lara_Dry(void)
+{
+    g_FakeLaraCalls.dry++;
+    for (LARA_MESH mesh = LM_FIRST; mesh < LM_NUMBER_OF; mesh++) {
+        m_Lara.wet[mesh] = 0;
+    }
+}
+
+bool Lara_IsWet(void)
+{
+    for (LARA_MESH mesh = LM_FIRST; mesh < LM_NUMBER_OF; mesh++) {
+        if (m_Lara.wet[mesh] != 0) {
+            return true;
+        }
+    }
+    return false;
 }
 
 bool Lara_Cheat_EnterFlyMode(void)
@@ -176,4 +196,6 @@ void FakeLara_PushCalls(lua_State *const L)
     lua_setfield(L, -2, "extinguish");
     lua_pushinteger(L, g_FakeLaraCalls.catch_fire);
     lua_setfield(L, -2, "catch_fire");
+    lua_pushinteger(L, g_FakeLaraCalls.dry);
+    lua_setfield(L, -2, "dry");
 }

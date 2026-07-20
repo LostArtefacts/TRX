@@ -23,6 +23,7 @@ Her position, room and hit points are not here: she is an item like any other an
 - **`trx.lara.outfit`** (string). The outfit Lara is wearing, by name, as defined in `cfg/outfits.json5`.
 - **`trx.lara.holsters_visible`** (boolean). Whether Lara's holsters are drawn on her hips.
 - **`trx.lara.is_flying`** (boolean). Whether Lara is in the fly-mode cheat. Setting it enters or leaves fly mode.
+- **`trx.lara.is_wet`** (boolean). Whether Lara is still shedding droplets after a swim. `dry` clears it. *(read-only)*
 - **`trx.lara.has_pistol_weapon`** (boolean). Whether Lara is carrying a pistol-class weapon, which is what decides whether she has holsters to show at all. *(read-only)*
 
 ### Enums
@@ -193,6 +194,9 @@ Her position, room and hit points are not here: she is an item like any other an
 
 - [lua]`trx.lara.extinguish()`  
   Puts Lara's fire out, and stops her being electrocuted with it.
+
+- [lua]`trx.lara.dry()`  
+  Dries Lara off, clearing the wetness that sheds droplets after she leaves water.
 
 - [lua]`trx.lara.clear_equipment(mesh)`  
   Takes the extra mesh back off, leaving Lara's own.

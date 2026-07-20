@@ -3325,6 +3325,10 @@
       "path": "lara.extinguish"
     },
     {
+      "description": "Dries Lara off, clearing the wetness that sheds droplets after she leaves water.",
+      "path": "lara.dry"
+    },
+    {
       "description": "Takes the extra mesh back off, leaving Lara's own.",
       "params": [
         {
@@ -4075,6 +4079,12 @@
       "path": "lara.is_flying",
       "type": "boolean",
       "writable": true
+    },
+    {
+      "description": "Whether Lara is still shedding droplets after a swim. `dry` clears it.",
+      "path": "lara.is_wet",
+      "type": "boolean",
+      "writable": false
     },
     {
       "description": "Whether Lara is carrying a pistol-class weapon, which is what decides whether she has holsters to show at all.",

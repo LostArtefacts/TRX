@@ -218,6 +218,20 @@ static int M_L_LaraExtinguish(lua_State *const L)
     return 0;
 }
 
+// trxc.lara.dry()
+static int M_L_LaraDry(lua_State *const L)
+{
+    Lara_Dry();
+    return 0;
+}
+
+// trxc.lara.is_wet() → bool
+static int M_L_LaraIsWet(lua_State *const L)
+{
+    lua_pushboolean(L, Lara_IsWet());
+    return 1;
+}
+
 // trxc.lara.is_flying() -> bool
 static int M_L_LaraIsFlying(lua_State *const L)
 {
@@ -245,6 +259,8 @@ static const luaL_Reg m_Module[] = {
     { "clear_equipment", M_L_LaraClearEquipment },
     { "cure_poison", M_L_LaraCurePoison },
     { "extinguish", M_L_LaraExtinguish },
+    { "dry", M_L_LaraDry },
+    { "is_wet", M_L_LaraIsWet },
     { "is_flying", M_L_LaraIsFlying },
     { "set_flying", M_L_LaraSetFlying },
     { "are_holsters_visible", M_L_LaraAreHolstersVisible },

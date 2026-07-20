@@ -14,6 +14,7 @@ typedef struct {
     int32_t cure_poison;
     int32_t extinguish;
     int32_t catch_fire;
+    int32_t dry;
 } FAKE_LARA_CALLS;
 
 extern FAKE_LARA_CALLS g_FakeLaraCalls;
