@@ -109,6 +109,97 @@ XYZ_32 LUA_CheckXYZ(lua_State *const L, const int arg)
     return LUA_CheckXYZAt(L, arg, arg);
 }
 
+void LUA_PushValue(lua_State *const L, const TRX_VALUE *const value)
+{
+    switch (value->type) {
+    case TVT_BOOL:
+        lua_pushboolean(L, value->as_bool);
+        break;
+
+    case TVT_S8:
+    case TVT_U8:
+    case TVT_S16:
+    case TVT_U16:
+    case TVT_S32:
+    case TVT_U32:
+    case TVT_ENUM:
+        lua_pushinteger(L, value->as_int);
+        break;
+
+    case TVT_FLOAT:
+    case TVT_DOUBLE:
+        lua_pushnumber(L, value->as_num);
+        break;
+
+    case TVT_XYZ_16:
+    case TVT_XYZ_32:
+        LUA_PushXYZ(L, value->as_xyz);
+        break;
+
+    case TVT_RGB_888:
+        lua_pushstring(L, Value_Format(TVT_RGB_888, nullptr, value, false));
+        break;
+
+    case TVT_STRING:
+    case TVT_DYNAMIC_ENUM:
+        if (value->as_str == nullptr) {
+            lua_pushnil(L);
+        } else {
+            lua_pushstring(L, value->as_str);
+        }
+        break;
+    }
+}
+
+TRX_VALUE LUA_CheckValue(
+    lua_State *const L, const int idx, const TRX_VALUE_TYPE type)
+{
+    TRX_VALUE value = { .type = type };
+    switch (type) {
+    case TVT_BOOL:
+        luaL_checktype(L, idx, LUA_TBOOLEAN);
+        value.as_bool = lua_toboolean(L, idx);
+        break;
+
+    case TVT_S8:
+    case TVT_U8:
+    case TVT_S16:
+    case TVT_U16:
+    case TVT_S32:
+    case TVT_U32:
+    case TVT_ENUM:
+        value.as_int = luaL_checkinteger(L, idx);
+        break;
+
+    case TVT_FLOAT:
+    case TVT_DOUBLE:
+        value.as_num = luaL_checknumber(L, idx);
+        break;
+
+    case TVT_XYZ_16:
+    case TVT_XYZ_32:
+        value.as_xyz = LUA_CheckXYZ(L, idx);
+        break;
+
+    case TVT_RGB_888:
+        if (!Value_Parse(
+                TVT_RGB_888, nullptr, luaL_checkstring(L, idx), &value)) {
+            luaL_error(L, "argument %d is not a colour", idx);
+        }
+        break;
+
+    case TVT_STRING:
+    case TVT_DYNAMIC_ENUM:
+        // nil clears a string field; its setter decides whether that is
+        // allowed (e.g. item.name = nil removes the name).
+        value.as_str =
+            lua_isnoneornil(L, idx) ? nullptr : luaL_checkstring(L, idx);
+        break;
+    }
+
+    return value;
+}
+
 void LUA_PushXYZ(lua_State *const L, const XYZ_32 value)
 {
     lua_createtable(L, 0, 3);

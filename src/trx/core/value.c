@@ -2,6 +2,7 @@
 
 #include <trx/core/dynamic_enum.h>
 #include <trx/core/enum_map.h>
+#include <trx/core/memory.h>
 #include <trx/core/strings.h>
 
 #include <ctype.h>
@@ -234,6 +235,19 @@ bool Value_Parse(
     TRX_VALUE *const out)
 {
     out->type = type;
+    if (str == nullptr) {
+        // A null string only means anything for the string-storage types.
+        switch (type) {
+        case TVT_STRING:
+            out->as_str = nullptr;
+            return true;
+        case TVT_DYNAMIC_ENUM:
+            out->as_str = nullptr;
+            return DynamicEnum_IsValidValue(param, nullptr);
+        default:
+            return false;
+        }
+    }
     switch (type) {
     case TVT_BOOL:
         return M_ParseBool(str, &out->as_bool);
@@ -364,6 +378,23 @@ bool Value_Coerce(
         return true;
     }
     return false;
+}
+
+void Value_CopyPtr(
+    const TRX_VALUE_TYPE type, void *const dst, const void *const src)
+{
+    if (type == TVT_STRING || type == TVT_DYNAMIC_ENUM) {
+        const char *const new_str = *(const char *const *)src;
+        char *const old = *(char **)dst;
+        *(char **)dst = new_str != nullptr ? Memory_DupStr(new_str) : nullptr;
+        // Free after allocating: the new string lands on a different pointer,
+        // and change subscribers compare pointers alone to tell it moved.
+        Memory_Free(old);
+        return;
+    }
+    TRX_VALUE v;
+    Value_ReadPtr(type, src, &v);
+    Value_WritePtr(type, dst, &v);
 }
 
 bool Value_EqualPtr(

@@ -26,7 +26,7 @@ static void M_FreeStringOptionValues(void)
 {
     const CONFIG_OPTION *option = Config_GetOptionMap();
     while (option != nullptr && option->target != nullptr) {
-        if (option->type == COT_STRING || option->type == COT_DYNAMIC_ENUM) {
+        if (option->type == TVT_STRING || option->type == TVT_DYNAMIC_ENUM) {
             Memory_Free(*(char **)option->target);
         }
         option++;
@@ -205,38 +205,18 @@ bool Config_IsOptionAtDefault(const void *const target)
     if (target == nullptr) {
         return true;
     }
-    switch (option->type) {
-    case COT_BOOL:
-        return *(bool *)option->target == *(bool *)option->default_value;
-    case COT_INT32:
-        return *(int32_t *)option->target == *(int32_t *)option->default_value;
-    case COT_FLOAT:
-    case COT_FLOAT_PERCENT:
-        return *(float *)option->target == *(float *)option->default_value;
-    case COT_DOUBLE:
-        return *(double *)option->target == *(double *)option->default_value;
-    case COT_RGB888: {
-        const RGB_888 cur = *(RGB_888 *)option->target;
-        const RGB_888 def = *(RGB_888 *)option->default_value;
-        return cur.r == def.r && cur.g == def.g && cur.b == def.b;
-    }
-    case COT_ENUM:
-        return *(int32_t *)option->target == *(int32_t *)option->default_value;
-        break;
-    case COT_STRING:
-    case COT_DYNAMIC_ENUM: {
+    // A string default is stored inline as the string, not behind a pointer to
+    // one, so it cannot be addressed the way Value_EqualPtr addresses the live
+    // value; compare it here.
+    if (option->type == TVT_STRING || option->type == TVT_DYNAMIC_ENUM) {
         const char *const cur = *(char **)option->target;
         const char *const def = (const char *)option->default_value;
-        if (cur == nullptr && def == nullptr) {
-            return true;
-        }
         if (cur == nullptr || def == nullptr) {
-            return false;
+            return cur == def;
         }
         return strcmp(cur, def) == 0;
     }
-    }
-    return true;
+    return Value_EqualPtr(option->type, option->target, option->default_value);
 }
 
 static bool M_RestoreOptionDefault(const void *const target, const bool force)
@@ -251,40 +231,19 @@ static bool M_RestoreOptionDefault(const void *const target, const bool force)
     if (!force && Config_IsOptionEnforced(target)) {
         return false;
     }
-    switch (option->type) {
-    case COT_BOOL:
-        *(bool *)option->target = *(bool *)option->default_value;
-        return true;
-    case COT_INT32:
-        *(int32_t *)option->target = *(int32_t *)option->default_value;
-        return true;
-    case COT_FLOAT:
-    case COT_FLOAT_PERCENT:
-        *(float *)option->target = *(float *)option->default_value;
-        return true;
-    case COT_DOUBLE:
-        *(double *)option->target = *(double *)option->default_value;
-        return true;
-    case COT_RGB888:
-        *(RGB_888 *)option->target = *(RGB_888 *)option->default_value;
-        return true;
-    case COT_ENUM:
-        *(int32_t *)option->target = *(int32_t *)option->default_value;
-        return true;
-    case COT_STRING:
-    case COT_DYNAMIC_ENUM: {
+    // The string default is stored inline, so it is not a `char **` that
+    // Value_CopyPtr could read; copy it here. The free-after-allocate order (so
+    // subscribers see the pointer move) lives in Value_CopyPtr for the rest.
+    if (option->type == TVT_STRING || option->type == TVT_DYNAMIC_ENUM) {
         char **const p = (char **)option->target;
         const char *const def = (const char *)option->default_value;
         char *const old = *p;
         *p = def != nullptr ? Memory_DupStr(def) : nullptr;
-        // Free the old string only after allocating the new one: the allocation
-        // then lands on a different pointer, and change subscribers compare
-        // pointers alone to tell that the string moved.
         Memory_Free(old);
         return true;
     }
-    }
-    return false;
+    Value_CopyPtr(option->type, (void *)option->target, option->default_value);
+    return true;
 }
 
 bool Config_RestoreOptionDefault(const void *const target)
@@ -297,107 +256,24 @@ bool Config_RestoreOptionDefaultForce(const void *const target)
     return M_RestoreOptionDefault(target, true);
 }
 
-static bool M_ParseBool(const char *const value, bool *const result)
+// The extra argument the value parse and format calls need: the EnumMap name
+// for an enum, the dynamic enum registry token for a dynamic enum, nothing
+// else.
+static const void *M_ValueParam(const CONFIG_OPTION *const option)
 {
-    if (String_Match(value, "^(on|true|1)$")) {
-        *result = true;
-        return true;
-    }
-    if (String_Match(value, "^(off|false|0)$")) {
-        *result = false;
-        return true;
-    }
-    return false;
+    return option->type == TVT_DYNAMIC_ENUM ? option->target : option->param;
 }
 
-static bool M_ParseInt32(const char *const value, int32_t *const result)
-{
-    return sscanf(value, "%d", result) == 1;
-}
-
-static bool M_ParseFloat(const char *const value, float *const result)
-{
-    return sscanf(value, "%f", result) == 1;
-}
-
-static bool M_ParseDouble(const char *const value, double *const result)
-{
-    return sscanf(value, "%lf", result) == 1;
-}
-
-static bool M_ParseEnum(
-    const CONFIG_OPTION *const option, const char *const value,
-    const bool allow_numeric, int32_t *const result)
-{
-    const int32_t mapped = EnumMap_Get(option->param, value, -1);
-    if (mapped != -1) {
-        *result = mapped;
-        return true;
-    }
-    if (allow_numeric) {
-        return M_ParseInt32(value, result);
-    }
-    return false;
-}
-
-static bool M_ParseRGB888(const char *const value, RGB_888 *const result)
-{
-    return String_ParseRGB888(value, result);
-}
-
-static const char *M_FormatBool(const bool value)
-{
-    return String_FormatStatic("%d", value);
-}
-
+// The two presentations Value_Format does not carry, because each reaches past
+// the stored value: a bool as a localized on/off, and a float as a percentage.
 static const char *M_FormatBoolHuman(const bool value)
 {
     return value ? GS("general/misc/on") : GS("general/misc/off");
 }
 
-static const char *M_FormatInt32(const int32_t value)
-{
-    return String_FormatStatic("%d", value);
-}
-
-static const char *M_FormatFloat(const float value)
-{
-    return String_FormatStatic("%.2f", value);
-}
-
 static const char *M_FormatFloatPercent(const float value)
 {
     return String_FormatStatic("%.0f%%", value);
-}
-
-static const char *M_FormatDouble(const double value)
-{
-    return String_FormatStatic("%.2f", value);
-}
-
-static const char *M_FormatEnumMachine(
-    const CONFIG_OPTION *const option, const int32_t value)
-{
-    return String_FormatStatic("%s", EnumMap_ToString(option->param, value));
-}
-
-static const char *M_FormatEnumHuman(
-    const CONFIG_OPTION *const option, const int32_t value)
-{
-    const char *const localized = EnumMap_GetLabel(option->param, value);
-    ASSERT(localized != nullptr);
-    return localized;
-}
-
-static const char *M_FormatRGB888(const RGB_888 *const value)
-{
-    return String_FormatStatic(
-        "%02hhx%02hhx%02hhx", value->r, value->g, value->b);
-}
-
-static const char *M_FormatString(const char *const value)
-{
-    return String_FormatStatic("%s", value != nullptr ? value : "");
 }
 
 const char *Config_GetOptionValueAsString(
@@ -406,40 +282,16 @@ const char *Config_GetOptionValueAsString(
     if (option == nullptr) {
         return nullptr;
     }
-    switch (option->type) {
-    case COT_BOOL:
-        return human_readable ? M_FormatBoolHuman(*(bool *)option->target)
-                              : M_FormatBool(*(bool *)option->target);
-    case COT_INT32:
-        return M_FormatInt32(*(int32_t *)option->target);
-    case COT_FLOAT:
-        return M_FormatFloat(*(float *)option->target);
-    case COT_FLOAT_PERCENT:
+    if (human_readable && option->type == TVT_BOOL) {
+        return M_FormatBoolHuman(*(bool *)option->target);
+    }
+    if (option->percent) {
         return M_FormatFloatPercent((*(float *)option->target) * 100.0f);
-    case COT_DOUBLE:
-        return M_FormatDouble(*(double *)option->target);
-    case COT_ENUM:
-        return human_readable
-            ? M_FormatEnumHuman(option, *(int32_t *)option->target)
-            : M_FormatEnumMachine(option, *(int32_t *)option->target);
-    case COT_RGB888:
-        return M_FormatRGB888(option->target);
-    case COT_STRING:
-        return M_FormatString(*(char **)option->target);
-    case COT_DYNAMIC_ENUM: {
-        if (human_readable) {
-            const char *const value = *(char **)option->target;
-            const char *const label =
-                DynamicEnum_GetLabelForValue(option->target, value);
-            if (label != nullptr) {
-                return label;
-            }
-        }
-        return M_FormatString(*(char **)option->target);
     }
-    default:
-        return nullptr;
-    }
+    TRX_VALUE value;
+    Value_ReadPtr(option->type, option->target, &value);
+    return Value_Format(
+        option->type, M_ValueParam(option), &value, human_readable);
 }
 
 const char *Config_GetOptionTitle(const CONFIG_OPTION *const opt)
@@ -469,58 +321,18 @@ char *Config_NormalizeOptionValueString(
 
     const char *const input = value != nullptr ? value : "";
 
-#define L_NORMALIZE_TYPED(type_, parse_expr_, format_expr_)                    \
-    do {                                                                       \
-        type_ parsed;                                                          \
-        if (!(parse_expr_)) {                                                  \
-            return Memory_DupStr(input);                                       \
-        }                                                                      \
-        return Memory_DupStr(format_expr_);                                    \
-    } while (false)
-
-    switch (option->type) {
-    case COT_BOOL:
-        L_NORMALIZE_TYPED(
-            bool, M_ParseBool(input, &parsed),
-            human_readable ? M_FormatBoolHuman(parsed) : M_FormatBool(parsed));
-    case COT_INT32:
-        L_NORMALIZE_TYPED(
-            int32_t, M_ParseInt32(input, &parsed), M_FormatInt32(parsed));
-    case COT_FLOAT:
-        L_NORMALIZE_TYPED(
-            float, M_ParseFloat(input, &parsed), M_FormatFloat(parsed));
-    case COT_FLOAT_PERCENT:
-        L_NORMALIZE_TYPED(
-            float, M_ParseFloat(input, &parsed), M_FormatFloatPercent(parsed));
-    case COT_DOUBLE:
-        L_NORMALIZE_TYPED(
-            double, M_ParseDouble(input, &parsed), M_FormatDouble(parsed));
-    case COT_ENUM:
-        L_NORMALIZE_TYPED(
-            int32_t, M_ParseEnum(option, input, true, &parsed),
-            human_readable ? M_FormatEnumHuman(option, parsed)
-                           : M_FormatEnumMachine(option, parsed));
-    case COT_RGB888:
-        L_NORMALIZE_TYPED(
-            RGB_888, M_ParseRGB888(input, &parsed), M_FormatRGB888(&parsed));
-    case COT_STRING:
-        return Memory_DupStr(M_FormatString(input));
-    case COT_DYNAMIC_ENUM:
-        if (!DynamicEnum_IsValidValue(option->target, input)) {
-            return Memory_DupStr(input);
-        }
-        if (human_readable) {
-            const char *const label =
-                DynamicEnum_GetLabelForValue(option->target, input);
-            if (label != nullptr) {
-                return Memory_DupStr(label);
-            }
-        }
-        return Memory_DupStr(M_FormatString(input));
+    TRX_VALUE parsed;
+    if (!Value_Parse(option->type, M_ValueParam(option), input, &parsed)) {
+        return Memory_DupStr(input);
     }
-#undef L_NORMALIZE_TYPED
-
-    return Memory_DupStr(input);
+    if (human_readable && option->type == TVT_BOOL) {
+        return Memory_DupStr(M_FormatBoolHuman(parsed.as_bool));
+    }
+    if (option->percent) {
+        return Memory_DupStr(M_FormatFloatPercent(parsed.as_num));
+    }
+    return Memory_DupStr(Value_Format(
+        option->type, M_ValueParam(option), &parsed, human_readable));
 }
 
 static bool M_SetOptionValueFromString(
@@ -532,87 +344,19 @@ static bool M_SetOptionValueFromString(
     if (!force && Config_IsOptionEnforced(option->target)) {
         return false;
     }
-    switch (option->type) {
-    case COT_BOOL: {
-        bool parsed;
-        if (M_ParseBool(new_value, &parsed)) {
-            *(bool *)option->target = parsed;
-            return true;
-        }
-        break;
+    TRX_VALUE parsed;
+    if (!Value_Parse(option->type, M_ValueParam(option), new_value, &parsed)) {
+        return false;
     }
-
-    case COT_INT32: {
-        int32_t parsed;
-        if (M_ParseInt32(new_value, &parsed)) {
-            *(int32_t *)option->target = parsed;
-            return true;
-        }
-        break;
-    }
-
-    case COT_FLOAT: {
-        float parsed;
-        if (M_ParseFloat(new_value, &parsed)) {
-            *(float *)option->target = parsed;
-            return true;
-        }
-        break;
-    }
-
-    case COT_FLOAT_PERCENT: {
-        float parsed;
-        if (M_ParseFloat(new_value, &parsed)) {
-            *(float *)option->target = parsed / 100.0f;
-            return true;
-        }
-        break;
-    }
-
-    case COT_DOUBLE: {
-        double parsed;
-        if (M_ParseDouble(new_value, &parsed)) {
-            *(double *)option->target = parsed;
-            return true;
-        }
-        break;
-    }
-
-    case COT_ENUM: {
-        int32_t parsed;
-        if (M_ParseEnum(option, new_value, false, &parsed)) {
-            *(int32_t *)option->target = parsed;
-            return true;
-        }
-        break;
-    }
-
-    case COT_RGB888: {
-        RGB_888 parsed;
-        if (M_ParseRGB888(new_value, &parsed)) {
-            *(RGB_888 *)option->target = parsed;
-            return true;
-        }
-        break;
-    }
-
-    case COT_STRING:
-    case COT_DYNAMIC_ENUM: {
-        if (option->type == COT_DYNAMIC_ENUM
-            && !DynamicEnum_IsValidValue(option->target, new_value)) {
-            return false;
-        }
-        char **const p = (char **)option->target;
-        char *const old = *p;
-        *p = new_value != nullptr ? Memory_DupStr(new_value) : nullptr;
-        // Free after allocating, as in M_RestoreOptionDefault: subscribers tell
-        // the string moved by comparing pointers.
-        Memory_Free(old);
+    if (option->type == TVT_STRING || option->type == TVT_DYNAMIC_ENUM) {
+        Value_CopyPtr(option->type, (void *)option->target, &parsed.as_str);
         return true;
     }
+    if (option->percent) {
+        parsed.as_num /= 100.0;
     }
-
-    return false;
+    return Value_WritePtr(option->type, (void *)option->target, &parsed)
+        == nullptr;
 }
 
 bool Config_SetOptionValueFromString(

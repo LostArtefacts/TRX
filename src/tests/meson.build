@@ -99,9 +99,13 @@ test_config_override_exe = executable(
     + files(
       '../trx/config/override.c',
       '../trx/config/value.c',
+      '../trx/core/dynamic_enum.c',
+      '../trx/core/enum_map.c',
       '../trx/core/memory.c',
+      '../trx/core/value.c',
       '../trx/core/vector.c',
-    ),
+    )
+    + files('unit/stubs_enum_map.c'),
   include_directories: [src_inc, test_inc],
   build_by_default: false,
 )
@@ -164,6 +168,8 @@ test_lua_enum_exe = executable(
   'test_lua_enum',
   files('unit/test_lua_enum.c') + test_stubs + enum_map_src
     + files(
+      '../trx/core/dynamic_enum.c',
+      '../trx/core/value.c',
       '../trx/game/lua/capi/enum.c',
       '../trx/game/lua/registry.c',
       '../trx/game/lua/utils.c',

@@ -109,3 +109,9 @@ bool Value_Coerce(TRX_VALUE_TYPE target, const TRX_VALUE *in, TRX_VALUE *out);
 
 // Whether the values stored at `a` and `b` are equal when read as `type`.
 bool Value_EqualPtr(TRX_VALUE_TYPE type, const void *a, const void *b);
+
+// Copies the value at `src` into the storage at `dst`, both addressed as
+// `type`. String storage is owned: `dst` holds a `char *` that is freed and
+// replaced with a duplicate of the string `src` points to, so `src` must be a
+// `char **`.
+void Value_CopyPtr(TRX_VALUE_TYPE type, void *dst, const void *src);

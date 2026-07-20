@@ -22,14 +22,14 @@ static bool m_Enforced;
 
 static const CONFIG_OPTION m_Options[] = {
     { .name = "audio.enable_music",
-      .type = COT_BOOL,
+      .type = TVT_BOOL,
       .target = &m_EnableMusic },
-    { .name = "visuals.fov", .type = COT_INT32, .target = &m_Fov },
+    { .name = "visuals.fov", .type = TVT_S32, .target = &m_Fov },
     { .name = "visuals.brightness",
-      .type = COT_DOUBLE,
+      .type = TVT_DOUBLE,
       .target = &m_Brightness },
     { .name = "visuals.water_color",
-      .type = COT_STRING,
+      .type = TVT_STRING,
       .target = &m_WaterColor },
     { nullptr },
 };
@@ -75,15 +75,15 @@ const char *Config_GetOptionValueAsString(
 {
     static char buf[64];
     switch (option->type) {
-    case COT_BOOL:
+    case TVT_BOOL:
         return *(const bool *)option->target ? "true" : "false";
-    case COT_INT32:
+    case TVT_S32:
         snprintf(buf, sizeof(buf), "%d", *(const int32_t *)option->target);
         return buf;
-    case COT_DOUBLE:
+    case TVT_DOUBLE:
         snprintf(buf, sizeof(buf), "%g", *(const double *)option->target);
         return buf;
-    case COT_STRING: {
+    case TVT_STRING: {
         const char *const value = *(const char *const *)option->target;
         return value != nullptr ? value : "";
     }
@@ -99,14 +99,14 @@ bool Config_SetOptionValueFromString(
         return false;
     }
     switch (option->type) {
-    case COT_BOOL:
+    case TVT_BOOL:
         if (strcmp(new_value, "true") == 0 || strcmp(new_value, "false") == 0) {
             *(bool *)option->target = strcmp(new_value, "true") == 0;
             return true;
         }
         return false;
 
-    case COT_INT32: {
+    case TVT_S32: {
         char *end = nullptr;
         const long parsed = strtol(new_value, &end, 10);
         if (end == new_value || *end != '\0') {
@@ -116,7 +116,7 @@ bool Config_SetOptionValueFromString(
         return true;
     }
 
-    case COT_DOUBLE: {
+    case TVT_DOUBLE: {
         char *end = nullptr;
         const double parsed = strtod(new_value, &end);
         if (end == new_value || *end != '\0') {
@@ -126,7 +126,7 @@ bool Config_SetOptionValueFromString(
         return true;
     }
 
-    case COT_STRING: {
+    case TVT_STRING: {
         if (strlen(new_value) != 6) {
             return false;
         }

@@ -203,7 +203,7 @@ void UI_ColorEditorDialog_Open(
 {
     ASSERT(s != nullptr);
     ASSERT(option != nullptr);
-    ASSERT(Config_GetOption(option->target)->type == COT_RGB888);
+    ASSERT(Config_GetOption(option->target)->type == TVT_RGB_888);
     const RGB_888 *const color = option->target;
     s->show = true;
     s->option = option;

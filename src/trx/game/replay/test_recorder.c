@@ -242,8 +242,8 @@ static void M_DumpConfig(MYFILE *const fp)
         raw_opts, opts->count, sizeof(CONFIG_OPTION *), M_CompareConfigOption);
     for (int32_t i = 0; i < opts->count; i++) {
         const CONFIG_OPTION *opt = raw_opts[i];
-        const char *const fmt = opt->type == COT_ENUM || opt->type == COT_STRING
-                || opt->type == COT_DYNAMIC_ENUM
+        const char *const fmt = opt->type == TVT_ENUM || opt->type == TVT_STRING
+                || opt->type == TVT_DYNAMIC_ENUM
             ? "config %s \"%s\"\n"
             : "config %s %s\n";
         File_WriteString(

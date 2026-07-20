@@ -117,7 +117,7 @@ static bool M_IsBarColorEnum(const UI_SETTINGS_OPTION *const option)
 
 static bool M_IsColorEditorOption(const UI_SETTINGS_OPTION *const option)
 {
-    return option != nullptr && M_GetConfigOption(option)->type == COT_RGB888;
+    return option != nullptr && M_GetConfigOption(option)->type == TVT_RGB_888;
 }
 
 static bool M_HasAvailableEnumValue(const UI_SETTINGS_OPTION *const option)
@@ -145,7 +145,7 @@ static bool M_IsOptionHidden(const UI_SETTINGS_OPTION *const option)
     if (Config_IsOptionHidden(option->target)) {
         return true;
     }
-    if (M_GetConfigOption(option)->type == COT_ENUM && option->misc != nullptr
+    if (M_GetConfigOption(option)->type == TVT_ENUM && option->misc != nullptr
         && !M_HasAvailableEnumValue(option)) {
         return true;
     }
@@ -254,12 +254,18 @@ static float M_MeasureMaxValueWidth(const UI_SETTINGS_OPTION *const option)
     }
 
     switch (M_GetConfigOption(option)->type) {
-    case COT_BOOL: {
+    case TVT_BOOL: {
         const float min_value_w = UI_Label_MeasureW(GS("general/misc/off"));
         const float max_value_w = UI_Label_MeasureW(GS("general/misc/on"));
         return MAX(min_value_w, max_value_w);
     }
-    case COT_INT32: {
+
+    case TVT_S8:
+    case TVT_U8:
+    case TVT_S16:
+    case TVT_U16:
+    case TVT_S32:
+    case TVT_U32: {
         const char *const min_value_s =
             String_FormatStatic("%d", option->min_value);
         const float min_value_w = UI_Label_MeasureW(min_value_s);
@@ -268,31 +274,29 @@ static float M_MeasureMaxValueWidth(const UI_SETTINGS_OPTION *const option)
         const float max_value_w = UI_Label_MeasureW(max_value_s);
         return MAX(min_value_w, max_value_w);
     }
-    case COT_DOUBLE:
-    case COT_FLOAT: {
+
+    case TVT_DOUBLE:
+    case TVT_FLOAT: {
+        const bool percent = M_GetConfigOption(option)->percent;
+        const char *const fmt = percent ? "%.00f%%" : "%.2f";
+        const double scale = percent ? 1.0 : 100.0;
         const char *const min_value_s =
-            String_FormatStatic("%.2f", (double)option->min_value / 100.0);
+            String_FormatStatic(fmt, (double)option->min_value / scale);
         const float min_value_w = UI_Label_MeasureW(min_value_s);
         const char *const max_value_s =
-            String_FormatStatic("%.2f", (double)option->max_value / 100.0);
+            String_FormatStatic(fmt, (double)option->max_value / scale);
         const float max_value_w = UI_Label_MeasureW(max_value_s);
         return MAX(min_value_w, max_value_w);
     }
-    case COT_FLOAT_PERCENT: {
-        const char *const min_value_s =
-            String_FormatStatic("%.00f%%", (double)option->min_value);
-        const float min_value_w = UI_Label_MeasureW(min_value_s);
-        const char *const max_value_s =
-            String_FormatStatic("%.00f%%", (double)option->max_value);
-        const float max_value_w = UI_Label_MeasureW(max_value_s);
-        return MAX(min_value_w, max_value_w);
-    }
-    case COT_RGB888:
+
+    case TVT_RGB_888:
         return UI_Label_MeasureW("#FFFFFF") + 8.0f * g_Config.ui.text_scale
             + 32.0f * g_Config.ui.text_scale;
-    case COT_STRING:
+
+    case TVT_STRING:
         return UI_Label_MeasureW(*(char **)option->target);
-    case COT_DYNAMIC_ENUM: {
+
+    case TVT_DYNAMIC_ENUM: {
         const CONFIG_OPTION *const cfg_opt = M_GetConfigOption(option);
         float result = 0.0f;
         const int32_t count = DynamicEnum_GetValueCount(cfg_opt->target);
@@ -303,7 +307,8 @@ static float M_MeasureMaxValueWidth(const UI_SETTINGS_OPTION *const option)
         }
         return result;
     }
-    case COT_ENUM: {
+
+    case TVT_ENUM: {
         const CONFIG_OPTION *const cfg_opt = M_GetConfigOption(option);
         float result = 0.0f;
         const UI_SETTINGS_ENUM_ENTRY *entry = option->misc;
@@ -323,10 +328,40 @@ static float M_MeasureMaxValueWidth(const UI_SETTINGS_OPTION *const option)
         }
         return result;
     }
-    default:
+
+    case TVT_XYZ_16:
+    case TVT_XYZ_32:
+        // Config options are never vectors.
         break;
     }
+
     return 0.0f;
+}
+
+// A float or double config option is edited in hundredths: the stored value
+// times 100 is a whole-number position, and min_value/max_value bound that
+// position. Both widths ride in as_num, so one set of helpers serves them.
+static double M_ReadDecimal(const UI_SETTINGS_OPTION *const option)
+{
+    TRX_VALUE v;
+    Value_ReadPtr(M_GetConfigOption(option)->type, option->target, &v);
+    return v.as_num;
+}
+
+static void M_WriteDecimal(
+    const UI_SETTINGS_OPTION *const option, const double value)
+{
+    const TRX_VALUE_TYPE type = M_GetConfigOption(option)->type;
+    // Fold -0.0, which round() can produce, into 0.0.
+    const TRX_VALUE v = { .type = type, .as_num = value == 0.0 ? 0.0 : value };
+    Value_WritePtr(type, (void *)option->target, &v);
+}
+
+// The stored value after stepping its hundredths position by `step`.
+static double M_SteppedDecimal(
+    const UI_SETTINGS_OPTION *const option, const int32_t step)
+{
+    return (round(M_ReadDecimal(option) * 100) + step) / 100.0;
 }
 
 static bool M_CanChangeValue(
@@ -342,52 +377,49 @@ static bool M_CanChangeValue(
     }
 
     switch (M_GetConfigOption(option)->type) {
-    case COT_BOOL:
+    case TVT_BOOL:
         return true;
 
-    case COT_INT32:
+    case TVT_S8:
+    case TVT_U8:
+    case TVT_S16:
+    case TVT_U16:
+    case TVT_S32:
+    case TVT_U32: {
+        TRX_VALUE v;
+        Value_ReadPtr(M_GetConfigOption(option)->type, option->target, &v);
         if (dir < 0) {
-            return *(int32_t *)option->target > option->min_value;
+            return v.as_int > option->min_value;
         } else if (dir > 0) {
-            return *(int32_t *)option->target < option->max_value;
+            return v.as_int < option->max_value;
         }
         break;
+    }
 
-    case COT_DOUBLE: {
-        const double target_value =
-            (round(*(double *)option->target * 100) + dir) / 100.0;
+    case TVT_DOUBLE:
+    case TVT_FLOAT: {
+        const double target_value = M_SteppedDecimal(option, dir);
         return target_value >= (double)option->min_value / 100.0
             && target_value <= (double)option->max_value / 100.0;
     }
 
-    case COT_FLOAT:
-    case COT_FLOAT_PERCENT: {
-        const float target_value =
-            (round(*(float *)option->target * 100) + dir) / 100.0f;
-        return target_value >= (float)option->min_value / 100.0f
-            && target_value <= (float)option->max_value / 100.0f;
-    }
-
-    case COT_RGB888:
-        return false;
-
-    case COT_STRING:
-        return false;
-
-    case COT_DYNAMIC_ENUM: {
+    case TVT_DYNAMIC_ENUM: {
         const CONFIG_OPTION *const cfg_opt = M_GetConfigOption(option);
         return DynamicEnum_CanCycle(
             cfg_opt->target, *(char **)option->target, dir);
     }
 
-    case COT_ENUM: {
+    case TVT_ENUM: {
         const M_ENUM_LOOKUP enum_lookup = M_GetEnumEntry(option);
         ASSERT(enum_lookup.position >= 0);
         return M_FindNextAvailableEnumPosition(option, &enum_lookup, dir) >= 0;
     }
 
-    default:
-        break;
+    case TVT_RGB_888:
+    case TVT_STRING:
+    case TVT_XYZ_16:
+    case TVT_XYZ_32:
+        return false;
     }
     return false;
 }
@@ -508,30 +540,30 @@ void UI_SettingsEditor_RequestChange(
     delta *= dir;
 
     switch (M_GetConfigOption(option)->type) {
-    case COT_BOOL:
+    case TVT_BOOL:
         *(bool *)option->target = !*(bool *)option->target;
         break;
-    case COT_INT32:
-        *(int32_t *)option->target += delta;
+
+    case TVT_S8:
+    case TVT_U8:
+    case TVT_S16:
+    case TVT_U16:
+    case TVT_S32:
+    case TVT_U32: {
+        const TRX_VALUE_TYPE type = M_GetConfigOption(option)->type;
+        TRX_VALUE v;
+        Value_ReadPtr(type, option->target, &v);
+        v.as_int += delta;
+        Value_WritePtr(type, (void *)option->target, &v);
         break;
-    case COT_DOUBLE:
-        *(double *)option->target =
-            (round(*(double *)option->target * 100) + delta) / 100.0f;
-        if (*(double *)option->target == -0.0) {
-            *(double *)option->target = 0.0;
-        }
+    }
+
+    case TVT_DOUBLE:
+    case TVT_FLOAT:
+        M_WriteDecimal(option, M_SteppedDecimal(option, delta));
         break;
-    case COT_FLOAT:
-    case COT_FLOAT_PERCENT:
-        *(float *)option->target =
-            (round(*(float *)option->target * 100) + delta) / 100.0f;
-        if (*(float *)option->target == -0.0f) {
-            *(float *)option->target = 0.0f;
-        }
-        break;
-    case COT_RGB888:
-        break;
-    case COT_ENUM: {
+
+    case TVT_ENUM: {
         const UI_SETTINGS_ENUM_ENTRY *const entries = option->misc;
         int32_t position = -1;
         int32_t count = 0;
@@ -557,7 +589,8 @@ void UI_SettingsEditor_RequestChange(
         }
         break;
     }
-    case COT_DYNAMIC_ENUM: {
+
+    case TVT_DYNAMIC_ENUM: {
         const CONFIG_OPTION *const cfg_opt = M_GetConfigOption(option);
         const char *const next = DynamicEnum_GetNext(
             cfg_opt->target, *(char **)option->target, delta);
@@ -567,7 +600,11 @@ void UI_SettingsEditor_RequestChange(
         }
         break;
     }
-    case COT_STRING:
+
+    case TVT_RGB_888:
+    case TVT_STRING:
+    case TVT_XYZ_16:
+    case TVT_XYZ_32:
         break;
     }
 }
@@ -831,7 +868,7 @@ void UI_SettingsEditor_DrawFooter(
 
     const bool can_edit_value = dialog_phase == UI_SETTINGS_PHASE_EDIT_SETTINGS
         && row_idx >= 0 && option != nullptr
-        && M_GetConfigOption(option)->type == COT_RGB888
+        && M_GetConfigOption(option)->type == TVT_RGB_888
         && !Config_IsOptionEnforced(option->target);
     const bool can_examine = dialog_phase == UI_SETTINGS_PHASE_EDIT_SETTINGS
         && row_idx >= 0 && option != nullptr

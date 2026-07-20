@@ -1,6 +1,7 @@
 #pragma once
 
 #include <trx/core/log.h>
+#include <trx/core/value.h>
 #include <trx/game/objects.h>
 
 #include <lauxlib.h>
@@ -63,6 +64,16 @@ XYZ_32 LUA_CheckXYZ(lua_State *L, int arg);
 XYZ_32 LUA_CheckXYZAt(lua_State *L, int idx, int arg);
 
 void LUA_PushXYZ(lua_State *L, XYZ_32 value);
+
+// Pushes a TRX_VALUE onto the Lua stack in its natural Lua shape: a boolean, an
+// integer, a number, an {x,y,z} table, or a string (a colour as its hex text,
+// a null string as nil).
+void LUA_PushValue(lua_State *L, const TRX_VALUE *value);
+
+// Reads the argument at `idx` as a value of `type`, the inverse of
+// LUA_PushValue. Raises a Lua error if the argument is the wrong shape. A nil
+// string reads as a null value.
+TRX_VALUE LUA_CheckValue(lua_State *L, int idx, TRX_VALUE_TYPE type);
 
 // Pushes a zero-based engine index to a script as a one-based number, or nil
 // when it holds `sentinel` (the value that means "none"). Scripts count rooms

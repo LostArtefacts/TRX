@@ -182,7 +182,7 @@ static char *M_FormatDynamicEnumDefaults(const CONFIG_OPTION *const option)
 
 static char *M_GetValueForConsole(const CONFIG_OPTION *const option)
 {
-    if ((option->type == COT_STRING || option->type == COT_DYNAMIC_ENUM)
+    if ((option->type == TVT_STRING || option->type == TVT_DYNAMIC_ENUM)
         && *(char **)option->target == nullptr) {
         return Memory_DupStr("(null)");
     }
@@ -192,7 +192,7 @@ static char *M_GetValueForConsole(const CONFIG_OPTION *const option)
         return nullptr;
     }
 
-    if (option->type == COT_ENUM || option->type == COT_DYNAMIC_ENUM) {
+    if (option->type == TVT_ENUM || option->type == TVT_DYNAMIC_ENUM) {
         return M_NormalizeValue(value);
     }
     return Memory_DupStr(value);
@@ -211,7 +211,7 @@ static bool M_TryApplyOptionValue(
         return true;
     }
 
-    if (option->type != COT_ENUM && option->type != COT_DYNAMIC_ENUM) {
+    if (option->type != TVT_ENUM && option->type != TVT_DYNAMIC_ENUM) {
         return false;
     }
 
@@ -306,20 +306,19 @@ static char *M_GetAvailableOptions(const CONFIG_OPTION *const option)
     }
 
     switch (option->type) {
-    case COT_BOOL:
+    case TVT_BOOL:
         return Memory_DupStr(GS("general/osd/command_bool"));
 
-    case COT_INT32:
+    case TVT_S32:
         return Memory_DupStr(GS("general/osd/command_integer"));
 
-    case COT_DOUBLE:
-    case COT_FLOAT:
-        return Memory_DupStr(GS("general/osd/command_decimal"));
+    case TVT_DOUBLE:
+    case TVT_FLOAT:
+        return Memory_DupStr(
+            option->percent ? GS("general/osd/command_percent")
+                            : GS("general/osd/command_decimal"));
 
-    case COT_FLOAT_PERCENT:
-        return Memory_DupStr(GS("general/osd/command_percent"));
-
-    case COT_ENUM: {
+    case TVT_ENUM: {
         const char *enum_name = (const char *)option->param;
         VECTOR *const values = EnumMap_ListValues(enum_name);
         if (values == nullptr) {
@@ -330,10 +329,10 @@ static char *M_GetAvailableOptions(const CONFIG_OPTION *const option)
         return result;
     }
 
-    case COT_DYNAMIC_ENUM:
+    case TVT_DYNAMIC_ENUM:
         return M_FormatDynamicEnumDefaults(option);
 
-    case COT_STRING:
+    case TVT_STRING:
         return nullptr;
 
     default:

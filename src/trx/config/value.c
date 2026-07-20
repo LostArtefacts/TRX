@@ -4,7 +4,13 @@
 #include <trx/config/value.h>
 
 #include <trx/core/memory.h>
+#include <trx/core/value.h>
 #include <trx/debug.h>
+
+static bool M_IsString(const CONFIG_OPTION *const option)
+{
+    return option->type == TVT_STRING || option->type == TVT_DYNAMIC_ENUM;
+}
 
 void ConfigValue_Copy(
     const CONFIG_OPTION *const option, CONFIG_VALUE *const dst,
@@ -14,34 +20,17 @@ void ConfigValue_Copy(
     ASSERT(dst != nullptr);
     ASSERT(src != nullptr);
 
-    switch (option->type) {
-    case COT_BOOL:
-        dst->bool_value = *(const bool *)src;
-        break;
-    case COT_INT32:
-        dst->int32_value = *(const int32_t *)src;
-        break;
-    case COT_ENUM:
-        dst->int32_value = *(const int *)src;
-        break;
-    case COT_FLOAT:
-    case COT_FLOAT_PERCENT:
-        dst->float_value = *(const float *)src;
-        break;
-    case COT_DOUBLE:
-        dst->double_value = *(const double *)src;
-        break;
-    case COT_RGB888:
-        dst->rgb888_value = *(const RGB_888 *)src;
-        break;
-    case COT_STRING:
-    case COT_DYNAMIC_ENUM: {
+    // A CONFIG_VALUE is a fresh copy, so the string is duplicated rather than
+    // replaced - there is no prior owner to free, unlike Value_CopyPtr.
+    if (M_IsString(option)) {
         const char *const src_value = *(const char *const *)src;
         dst->string_value =
             src_value != nullptr ? Memory_DupStr(src_value) : nullptr;
-        break;
+        return;
     }
-    }
+    TRX_VALUE value;
+    Value_ReadPtr(option->type, src, &value);
+    Value_WritePtr(option->type, dst, &value);
 }
 
 void ConfigValue_Free(
@@ -50,7 +39,7 @@ void ConfigValue_Free(
     ASSERT(option != nullptr);
     ASSERT(value != nullptr);
 
-    if (option->type == COT_STRING || option->type == COT_DYNAMIC_ENUM) {
+    if (M_IsString(option)) {
         Memory_FreePointer(&value->string_value);
     }
 }
@@ -60,25 +49,9 @@ const void *ConfigValue_GetPtr(
 {
     ASSERT(option != nullptr);
     ASSERT(value != nullptr);
-
-    switch (option->type) {
-    case COT_BOOL:
-        return &value->bool_value;
-    case COT_INT32:
-    case COT_ENUM:
-        return &value->int32_value;
-    case COT_FLOAT:
-    case COT_FLOAT_PERCENT:
-        return &value->float_value;
-    case COT_DOUBLE:
-        return &value->double_value;
-    case COT_RGB888:
-        return &value->rgb888_value;
-    case COT_STRING:
-    case COT_DYNAMIC_ENUM:
-        return &value->string_value;
-    }
-    return nullptr;
+    // A CONFIG_VALUE is a union, so its address is the value of whichever type
+    // the option holds - the raw pointer the rest of the config layer expects.
+    return value;
 }
 
 void ConfigValue_Apply(
@@ -86,35 +59,5 @@ void ConfigValue_Apply(
 {
     ASSERT(option != nullptr);
     ASSERT(value != nullptr);
-
-    switch (option->type) {
-    case COT_BOOL:
-        *(bool *)option->target = value->bool_value;
-        break;
-    case COT_INT32:
-        *(int32_t *)option->target = value->int32_value;
-        break;
-    case COT_ENUM:
-        *(int *)option->target = value->int32_value;
-        break;
-    case COT_FLOAT:
-    case COT_FLOAT_PERCENT:
-        *(float *)option->target = value->float_value;
-        break;
-    case COT_DOUBLE:
-        *(double *)option->target = value->double_value;
-        break;
-    case COT_RGB888:
-        *(RGB_888 *)option->target = value->rgb888_value;
-        break;
-    case COT_STRING:
-    case COT_DYNAMIC_ENUM: {
-        char **const p = (char **)option->target;
-        char *const old = *p;
-        *p = value->string_value != nullptr ? Memory_DupStr(value->string_value)
-                                            : nullptr;
-        Memory_Free(old);
-        break;
-    }
-    }
+    Value_CopyPtr(option->type, (void *)option->target, value);
 }

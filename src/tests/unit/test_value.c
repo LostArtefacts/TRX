@@ -149,6 +149,24 @@ TEST(equal_ptr_compares_by_type)
     CHECK(!Value_EqualPtr(TVT_STRING, &s1, &s3));
 }
 
+TEST(copy_ptr_moves_scalars_and_owns_strings)
+{
+    int32_t src_i = 77;
+    int32_t dst_i = 0;
+    Value_CopyPtr(TVT_S32, &dst_i, &src_i);
+    CHECK_EQ_INT(dst_i, 77);
+
+    // A string copy duplicates onto a fresh pointer and frees the old one.
+    const char *src_s = "hello";
+    char *dst_s = nullptr;
+    Value_CopyPtr(TVT_STRING, &dst_s, &src_s);
+    CHECK_NOT_NULL(dst_s);
+    CHECK(dst_s != src_s);
+    CHECK_EQ_STR(dst_s, "hello");
+    Value_CopyPtr(TVT_STRING, &dst_s, &(const char *) { nullptr });
+    CHECK_NULL(dst_s);
+}
+
 TEST(enum_resolves_end_to_end)
 {
     EnumMap_Define("TESTCOLOR", "TESTCOLOR_RED", "", 10, "red");

@@ -1,9 +1,11 @@
 #include <trx/config/file.h>
 
 #include <trx/config/common.h>
+#include <trx/config/value.h>
 #include <trx/core/colors.h>
 #include <trx/core/filesystem.h>
 #include <trx/core/json/util/file.h>
+#include <trx/core/json/util/value.h>
 #include <trx/core/log.h>
 #include <trx/core/memory.h>
 #include <trx/core/strings.h>
@@ -141,38 +143,10 @@ static bool M_SetOptionValue(
 {
     ASSERT(option != nullptr);
     ASSERT(value != nullptr);
-
-    switch (option->type) {
-    case COT_BOOL:
-        *(bool *)option->target = *(const bool *)value;
-        return true;
-    case COT_INT32:
-        *(int32_t *)option->target = *(const int32_t *)value;
-        return true;
-    case COT_FLOAT:
-    case COT_FLOAT_PERCENT:
-        *(float *)option->target = *(const float *)value;
-        return true;
-    case COT_DOUBLE:
-        *(double *)option->target = *(const double *)value;
-        return true;
-    case COT_ENUM:
-        *(int *)option->target = *(const int *)value;
-        return true;
-    case COT_STRING:
-    case COT_DYNAMIC_ENUM: {
-        char **const p = (char **)option->target;
-        char *const old = *p;
-        const char *const new_value = *(const char *const *)value;
-        *p = new_value != nullptr ? Memory_DupStr(new_value) : nullptr;
-        Memory_Free(old);
-        return true;
-    }
-    case COT_RGB888:
-        *(RGB_888 *)option->target = *(const RGB_888 *)value;
-        return true;
-    }
-    return false;
+    // Every type here is addressed the same way its member is, and a string
+    // value arrives as a char **, which is what Value_CopyPtr expects.
+    Value_CopyPtr(option->type, (void *)option->target, value);
+    return true;
 }
 
 static bool M_PushOptionOverride(
@@ -189,76 +163,36 @@ static bool M_ProcessOptionValue(
     ASSERT(option != nullptr);
     ASSERT(action != nullptr);
 
-    switch (option->type) {
-    case COT_BOOL: {
-        const bool parsed =
-            JSON_ValueGetBool(value, *(bool *)option->default_value);
-        return action(option, &parsed);
-    }
+    const bool is_text =
+        option->type == TVT_STRING || option->type == TVT_DYNAMIC_ENUM;
 
-    case COT_INT32: {
-        int32_t parsed = *(int32_t *)option->default_value;
-        if (value != nullptr && value->type == JSON_TYPE_NUMBER) {
-            parsed = JSON_ValueGetInt(value, *(int32_t *)option->default_value);
-        } else if (value != nullptr && value->type == JSON_TYPE_STRING) {
-            String_ParseInteger(JSON_ValueGetString(value, ""), &parsed);
+    TRX_VALUE parsed;
+    if (!JSONValue_ReadFrom(value, option->type, option->param, &parsed)) {
+        // Nothing usable at this key; fall back to the option's default. A
+        // string default is stored inline rather than behind a pointer.
+        parsed.type = option->type;
+        if (is_text) {
+            parsed.as_str = (const char *)option->default_value;
+        } else {
+            Value_ReadPtr(option->type, option->default_value, &parsed);
         }
-        return action(option, &parsed);
     }
 
-    case COT_FLOAT:
-    case COT_FLOAT_PERCENT: {
-        const float parsed =
-            JSON_ValueGetDouble(value, *(float *)option->default_value);
-        return action(option, &parsed);
+    // The action wants a raw pointer of the option's own type: a char ** for a
+    // string, and the value itself for the rest, which a CONFIG_VALUE union
+    // holds at the right width.
+    if (is_text) {
+        return action(option, &parsed.as_str);
     }
-
-    case COT_DOUBLE: {
-        const double parsed =
-            JSON_ValueGetDouble(value, *(double *)option->default_value);
-        return action(option, &parsed);
+    CONFIG_VALUE raw;
+    if (Value_WritePtr(option->type, &raw, &parsed) != nullptr) {
+        // The key held a number the option's storage cannot represent; fall
+        // back to the default rather than applying an unchecked value.
+        TRX_VALUE fallback;
+        Value_ReadPtr(option->type, option->default_value, &fallback);
+        Value_WritePtr(option->type, &raw, &fallback);
     }
-
-    case COT_ENUM: {
-        const char *const str_value = JSON_ValueGetString(value, nullptr);
-        const int parsed = str_value != nullptr
-            ? EnumMap_Get(
-                  option->param, str_value, *(int *)option->default_value)
-            : *(int *)option->default_value;
-        return action(option, &parsed);
-    }
-
-    case COT_STRING:
-    case COT_DYNAMIC_ENUM: {
-        const char *const parsed =
-            JSON_ValueGetString(value, (const char *)option->default_value);
-        return action(option, &parsed);
-    }
-
-    case COT_RGB888: {
-        RGB_888 parsed;
-        bool success = false;
-        if (value != nullptr && value->type == JSON_TYPE_NUMBER) {
-            const uint32_t rgb_value =
-                JSON_ValueGetInt(value, JSON_INVALID_NUMBER);
-            ASSERT(rgb_value != JSON_INVALID_NUMBER);
-            parsed.r = (rgb_value >> 0) & 0xFF;
-            parsed.g = (rgb_value >> 8) & 0xFF;
-            parsed.b = (rgb_value >> 16) & 0xFF;
-            success = true;
-        } else if (value != nullptr && value->type == JSON_TYPE_STRING) {
-            const char *str_value =
-                JSON_ValueGetString(value, JSON_INVALID_STRING);
-            ASSERT(str_value != JSON_INVALID_STRING);
-            success = String_ParseRGB888(str_value, &parsed);
-        }
-        if (!success) {
-            parsed = *(RGB_888 *)option->default_value;
-        }
-        return action(option, &parsed);
-    }
-    }
-    return false;
+    return action(option, &raw);
 }
 
 bool ConfigFile_Read(const CONFIG_IO_ARGS *const args)
@@ -298,77 +232,20 @@ void ConfigFile_DumpOptions(JSON_OBJECT *root_obj, const CONFIG_OPTION *options)
     const CONFIG_OPTION *opt = options;
     while (opt->target != nullptr) {
         const void *const value = Config_GetOptionValueForSave(opt);
-        switch (opt->type) {
-        case COT_BOOL:
-            JSON_ObjectAppendBool(
-                root_obj, Config_ResolveOptionName(opt->name),
-                *(const bool *)value);
-            break;
-
-        case COT_INT32:
-            JSON_ObjectAppendInt(
-                root_obj, Config_ResolveOptionName(opt->name),
-                *(const int32_t *)value);
-            break;
-
-        case COT_FLOAT:
-        case COT_FLOAT_PERCENT:
-            JSON_ObjectAppendDouble(
-                root_obj, Config_ResolveOptionName(opt->name),
-                *(const float *)value);
-            break;
-
-        case COT_DOUBLE:
-            JSON_ObjectAppendDouble(
-                root_obj, Config_ResolveOptionName(opt->name),
-                *(const double *)value);
-            break;
-
-        case COT_ENUM:
-            ConfigFile_WriteEnum(
-                root_obj, Config_ResolveOptionName(opt->name),
-                *(const int32_t *)value, (const char *)opt->param);
-            break;
-
-        case COT_STRING:
-        case COT_DYNAMIC_ENUM: {
-            const char *const string_value = *(const char *const *)value;
-            if (string_value != nullptr) {
-                JSON_ObjectAppendString(
-                    root_obj, Config_ResolveOptionName(opt->name),
-                    string_value);
-            }
-            break;
+        // A null string is left out, so a reload falls back to its default.
+        const bool is_text =
+            opt->type == TVT_STRING || opt->type == TVT_DYNAMIC_ENUM;
+        if (is_text && *(const char *const *)value == nullptr) {
+            opt++;
+            continue;
         }
-
-        case COT_RGB888: {
-            const RGB_888 *const color = (const RGB_888 *)value;
-            char tmp[10];
-            sprintf(tmp, "#%02X%02X%02X", color->r, color->g, color->b);
-            JSON_ObjectAppendString(
-                root_obj, Config_ResolveOptionName(opt->name), tmp);
-            break;
-        }
-        }
+        TRX_VALUE parsed;
+        Value_ReadPtr(opt->type, value, &parsed);
+        JSONValue_Write(
+            root_obj, Config_ResolveOptionName(opt->name), opt->type,
+            opt->param, &parsed);
         opt++;
     }
-}
-
-int ConfigFile_ReadEnum(
-    JSON_OBJECT *const obj, const char *const name, const int default_value,
-    const char *const enum_name)
-{
-    const char *value_str = JSON_ObjectGetString(obj, name, nullptr);
-    if (value_str != nullptr) {
-        return EnumMap_Get(enum_name, value_str, default_value);
-    }
-    return default_value;
-}
-
-void ConfigFile_WriteEnum(
-    JSON_OBJECT *obj, const char *name, int value, const char *enum_name)
-{
-    JSON_ObjectAppendString(obj, name, EnumMap_ToString(enum_name, value));
 }
 
 bool ConfigFile_LoadGymTrackStats(
