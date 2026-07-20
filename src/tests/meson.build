@@ -358,6 +358,18 @@ test_lua_locale_exe = executable(
 )
 test('lua_locale', test_lua_locale_exe, suite: 'unit')
 
+test_lua_lua_exe = executable(
+  'test_lua_lua',
+  files('unit/test_lua_lua.c', 'unit/fake_engine_lua.c') + test_stubs
+    + lua_surface_src
+    + files('../trx/game/lua/capi/lua.c'),
+  include_directories: [src_inc, test_inc],
+  dependencies: [dep_lua],
+  c_args: lua_surface_args,
+  build_by_default: false,
+)
+test('lua_lua', test_lua_lua_exe, suite: 'unit')
+
 test_lua_weather_exe = executable(
   'test_lua_weather',
   files('unit/test_lua_weather.c') + test_stubs

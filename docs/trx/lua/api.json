@@ -3461,6 +3461,44 @@
       "path": "log.debug"
     },
     {
+      "description": "Evaluates a string of Lua code, as the `/lua` console command does.",
+      "examples": [
+        "trx.lua.eval_expr(\"trx.console.log('hello')\")"
+      ],
+      "params": [
+        {
+          "description": "The code.",
+          "name": "code",
+          "type": "string"
+        }
+      ],
+      "path": "lua.eval_expr",
+      "returns": {
+        "description": "`nil` when the code ran to completion. Otherwise a table with `kind` (`\"syntax\"` or `\"runtime\"`) and `message`, the error text. A failure comes back as a value rather than raising, so the caller decides what it means.",
+        "nullable": true,
+        "type": "table"
+      }
+    },
+    {
+      "description": "Runs a Lua file, the way a level script is run. A file that cannot be read reports as a `\"runtime\"` failure.",
+      "examples": [
+        "trx.lua.eval_file(\"data/ship/scripts/extra.lua\")"
+      ],
+      "params": [
+        {
+          "description": "Path of the file.",
+          "name": "path",
+          "type": "string"
+        }
+      ],
+      "path": "lua.eval_file",
+      "returns": {
+        "description": "As in `eval_expr`.",
+        "nullable": true,
+        "type": "table"
+      }
+    },
+    {
       "description": "Sine of an angle.",
       "params": [
         {
@@ -3886,6 +3924,11 @@
       "name": "log",
       "order": 1,
       "title": "Logging"
+    },
+    {
+      "description": "Evaluating Lua at runtime: a string of code, or a file on disk. Both run in the same state as every other script.",
+      "name": "lua",
+      "order": 22
     },
     {
       "description": "Fixed-point trigonometry, matching the engine's own tables.\n\nTRX angles are 16-bit units where 65536 is a full turn, not radians. Using these rather than Lua's `math` library guarantees a script places things exactly where the engine would.",
