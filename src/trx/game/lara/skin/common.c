@@ -481,6 +481,7 @@ void Lara_Skin_ApplyOutfit(void)
     M_SetCombatFace(m_UseCombatFace);
     M_UpdateSunglasses();
     Lara_Joints_Initialise(outfit);
+    Lara_Hair_InitJoints(outfit);
 }
 
 void Lara_Skin_SetCombatFace(const bool enabled)

@@ -96,6 +96,9 @@ static void M_DrawLaraMesh(
         .pos = Matrix_MulVec32_M(g_WMatrixPtr, origin),
     };
     Output_PushTintOverride(Lara_GetMeshTint(pos));
+    if (m_IsLara) {
+        Lara_Joints_StashMatrix(mesh_num, interpolated);
+    }
     if (interpolated) {
         Output_DrawObjectMesh_I(mesh, clip);
     } else {

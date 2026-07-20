@@ -39,6 +39,14 @@ void OutputSource_Objects_ObserveLevelUnload(void);
 void OutputSource_Objects_ObserveObjectMeshSwap(
     int32_t mesh_idx_1, int32_t mesh_idx_2);
 void OutputSource_Objects_ObserveObjectMeshUpdate(int32_t mesh_idx);
+// Re-uploads the mesh's vertex positions from the given array, indexed like
+// the OBJECT_MESH's own vertices. Used for meshes whose geometry is rewritten
+// at runtime, unlike the swap/flag paths above; float positions, so runtime
+// deformation is not quantized to the int16 grid. When normals is non-null it
+// is indexed the same way and replaces the baked normals, so a deformed seam
+// can be lit to match the meshes it welds to.
+void OutputSource_Objects_ObserveObjectMeshGeometry(
+    int32_t mesh_idx, const XYZ_F *positions, const XYZ_F *normals);
 
 void OutputSource_Objects_StageObjectMesh(const OBJECT_MESH *mesh);
 

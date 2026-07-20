@@ -1,16 +1,14 @@
 #include <trx/game/lara/skin/joints.h>
 
+#include <trx/core/math/geom.h>
+#include <trx/core/memory.h>
 #include <trx/debug.h>
 #include <trx/game/lara.h>
+#include <trx/game/lara/skin/seam.h>
+#include <trx/game/matrix.h>
 #include <trx/game/output.h>
 
 #define M_STACK_SIZE LM_NUMBER_OF
-#define M_MAX_VERTEX_PAIRS 32
-
-typedef struct {
-    uint16_t body_vertex;
-    uint16_t joint_vertex;
-} M_VERTEX_PAIR;
 
 typedef struct {
     int16_t parent_mesh;
@@ -18,8 +16,17 @@ typedef struct {
     int32_t joint_mesh_idx;
     struct {
         int32_t count;
-        M_VERTEX_PAIR pairs[M_MAX_VERTEX_PAIRS];
+        SEAM_VERTEX_PAIR pairs[SEAM_MAX_VERTEX_PAIRS];
     } parent, child;
+    // Per-frame vertex positions handed to the renderer. Floats, because a
+    // ring vertex pinned across bone frames rarely lands on the int16 grid,
+    // and the leftover quantization reads as a visible crack up close.
+    int32_t vertex_count;
+    XYZ_F *positions;
+    // Per-frame vertex normals, welded the same way as the positions: a ring
+    // vertex takes the normal of the limb vertex it sits on so object lighting
+    // shades the seam continuously instead of stepping across it.
+    XYZ_F *normals;
 } M_JOINT;
 
 typedef struct {
@@ -30,6 +37,11 @@ typedef struct {
 typedef struct {
     bool is_enabled;
     M_JOINT joints[LM_NUMBER_OF];
+    // The matrices the body meshes were staged with this frame. The pose
+    // cache in LARA_INFO holds pre-interpolation matrices, which diverge from
+    // the rendered pose whenever a frame is blended, so the seams are pinned
+    // against these instead.
+    MATRIX mesh_matrices[LM_NUMBER_OF];
 } M_STATE;
 
 static M_STATE m_State = {};
@@ -61,41 +73,6 @@ static void M_CalculateBindPose(
         pos.z += bone->pos.z;
 
         positions[mesh] = pos;
-    }
-}
-
-static bool M_VertexMatches(const XYZ_32 a, const XYZ_32 b)
-{
-    return ABS(a.x - b.x) <= 1 && ABS(a.y - b.y) <= 1 && ABS(a.z - b.z) <= 1;
-}
-
-static void M_FindSharedVertices(
-    M_VERTEX_PAIR *const pairs, int32_t *const pair_count,
-    const OBJECT_MESH *const body_mesh, const OBJECT_MESH *const joint_mesh,
-    const XYZ_32 *const body_pos, const XYZ_32 *const joint_pos)
-{
-    *pair_count = 0;
-    for (int32_t body = 0; body < body_mesh->num_vertices; body++) {
-        const XYZ_32 body_world = {
-            body_mesh->vertices[body].x + body_pos->x,
-            body_mesh->vertices[body].y + body_pos->y,
-            body_mesh->vertices[body].z + body_pos->z,
-        };
-        for (int32_t joint = 0; joint < joint_mesh->num_vertices; joint++) {
-            const XYZ_32 joint_world = {
-                joint_mesh->vertices[joint].x + joint_pos->x,
-                joint_mesh->vertices[joint].y + joint_pos->y,
-                joint_mesh->vertices[joint].z + joint_pos->z,
-            };
-            if (!M_VertexMatches(body_world, joint_world)) {
-                continue;
-            }
-
-            ASSERT(*pair_count < M_MAX_VERTEX_PAIRS);
-            pairs[*pair_count].body_vertex = body;
-            pairs[*pair_count].joint_vertex = joint;
-            (*pair_count)++;
-        }
     }
 }
 
@@ -133,20 +110,40 @@ static void M_CalculateJointInfo(
             Object_GetMesh(mesh_obj->mesh_idx + mesh);
         const OBJECT_MESH *joint_mesh = Object_GetMesh(joint->joint_mesh_idx);
 
-        M_FindSharedVertices(
-            joint->parent.pairs, &joint->parent.count, parent_mesh, joint_mesh,
-            &bind_pose->body_pos[parent], &bind_pose->joint_pos[mesh]);
-        M_FindSharedVertices(
-            joint->child.pairs, &joint->child.count, child_mesh, joint_mesh,
-            &bind_pose->body_pos[mesh], &bind_pose->joint_pos[mesh]);
+        Lara_Seam_FindSharedVertices(
+            joint->parent.pairs, &joint->parent.count, SEAM_MAX_VERTEX_PAIRS,
+            parent_mesh, joint_mesh, &bind_pose->body_pos[parent],
+            &bind_pose->joint_pos[mesh]);
+        Lara_Seam_FindSharedVertices(
+            joint->child.pairs, &joint->child.count, SEAM_MAX_VERTEX_PAIRS,
+            child_mesh, joint_mesh, &bind_pose->body_pos[mesh],
+            &bind_pose->joint_pos[mesh]);
+
+        joint->vertex_count = joint_mesh->num_vertices;
+        joint->positions = Memory_Alloc(sizeof(XYZ_F) * joint->vertex_count);
+        joint->normals = Memory_Alloc(sizeof(XYZ_F) * joint->vertex_count);
 
         parent = mesh;
     }
 }
 
+static void M_Reset(void)
+{
+    for (int32_t i = 0; i < LM_NUMBER_OF; i++) {
+        Memory_FreePointer(&m_State.joints[i].positions);
+        Memory_FreePointer(&m_State.joints[i].normals);
+    }
+    m_State = (M_STATE) {};
+}
+
+__attribute__((destructor)) static void M_Shutdown(void)
+{
+    M_Reset();
+}
+
 void Lara_Joints_Initialise(const LARA_SKIN_OUTFIT *const outfit)
 {
-    m_State.is_enabled = false;
+    M_Reset();
     if (outfit->joints_obj_id == NO_OBJECT) {
         return;
     }
@@ -169,6 +166,91 @@ void Lara_Joints_Initialise(const LARA_SKIN_OUTFIT *const outfit)
     m_State.is_enabled = true;
 }
 
+const MATRIX *Lara_Joints_GetMeshMatrix(const LARA_MESH mesh_idx)
+{
+    if (!m_State.is_enabled) {
+        return nullptr;
+    }
+    return &m_State.mesh_matrices[mesh_idx];
+}
+
+void Lara_Joints_StashMatrix(const LARA_MESH mesh_idx, const bool interpolated)
+{
+    if (!m_State.is_enabled) {
+        return;
+    }
+
+    // Reproduces the matrix Output_DrawObjectMesh_I stages the mesh with.
+    if (interpolated) {
+        Matrix_Push();
+        Matrix_Interpolate();
+        m_State.mesh_matrices[mesh_idx] = *g_WMatrixPtr;
+        Matrix_Pop();
+    } else {
+        m_State.mesh_matrices[mesh_idx] = *g_WMatrixPtr;
+    }
+}
+
+// Welds the joint sleeve to the two limbs it bridges. The joint is drawn with
+// the child's matrix, so the child-side ring is snapped straight onto the
+// child mesh's own vertices; the parent-side ring lives in a different frame
+// and is transformed across. Both rings track the limbs exactly as the joint
+// bends, closing the gap the static sleeve would otherwise leave.
+static void M_PinSeam(
+    const OBJECT_MESH *const mesh, const M_JOINT *const joint,
+    const MATRIX *const parent, const MATRIX *const child)
+{
+    const bool joint_has_normals = mesh->num_lights > 0;
+    for (int32_t i = 0; i < joint->vertex_count; i++) {
+        joint->positions[i] = (XYZ_F) {
+            mesh->vertices[i].x,
+            mesh->vertices[i].y,
+            mesh->vertices[i].z,
+        };
+        joint->normals[i] = joint_has_normals && i < mesh->num_lights
+            ? (XYZ_F) { mesh->lighting.normals[i].x,
+                        mesh->lighting.normals[i].y,
+                        mesh->lighting.normals[i].z }
+            : (XYZ_F) { 0.0f, 0.0f, 0.0f };
+    }
+
+    const OBJECT_MESH *const child_mesh = Lara_Mesh_Get(joint->child_mesh);
+    const bool child_has_normals = child_mesh->num_lights > 0;
+    for (int32_t i = 0; i < joint->child.count; i++) {
+        const SEAM_VERTEX_PAIR *const pair = &joint->child.pairs[i];
+        if (pair->vertex_a >= child_mesh->num_vertices) {
+            continue;
+        }
+        joint->positions[pair->vertex_b] = (XYZ_F) {
+            child_mesh->vertices[pair->vertex_a].x,
+            child_mesh->vertices[pair->vertex_a].y,
+            child_mesh->vertices[pair->vertex_a].z,
+        };
+        // The joint is drawn in the child's frame, so its child-side normal is
+        // copied straight across.
+        if (child_has_normals && pair->vertex_a < child_mesh->num_lights) {
+            const XYZ_16 n = child_mesh->lighting.normals[pair->vertex_a];
+            joint->normals[pair->vertex_b] = (XYZ_F) { n.x, n.y, n.z };
+        }
+    }
+
+    const OBJECT_MESH *const parent_mesh = Lara_Mesh_Get(joint->parent_mesh);
+    const bool parent_has_normals = parent_mesh->num_lights > 0;
+    for (int32_t i = 0; i < joint->parent.count; i++) {
+        const SEAM_VERTEX_PAIR *const pair = &joint->parent.pairs[i];
+        if (pair->vertex_a >= parent_mesh->num_vertices) {
+            continue;
+        }
+        joint->positions[pair->vertex_b] = Lara_Seam_TransformPos(
+            parent, child,
+            XYZ_32_From16(parent_mesh->vertices[pair->vertex_a]));
+        if (parent_has_normals && pair->vertex_a < parent_mesh->num_lights) {
+            joint->normals[pair->vertex_b] = Lara_Seam_TransformNormal(
+                parent, child, parent_mesh->lighting.normals[pair->vertex_a]);
+        }
+    }
+}
+
 void Lara_Joints_Draw(
     const LARA_MESH mesh_idx, const CLIP clip, const bool interpolated)
 {
@@ -181,9 +263,15 @@ void Lara_Joints_Draw(
         return;
     }
 
-    OBJECT_MESH *const mesh = Object_GetMesh(joint->joint_mesh_idx);
-    
-    // TODO: ?
+    const OBJECT_MESH *const mesh = Object_GetMesh(joint->joint_mesh_idx);
+    const MATRIX *const parent = &m_State.mesh_matrices[joint->parent_mesh];
+    const MATRIX *const child = &m_State.mesh_matrices[joint->child_mesh];
+
+    M_PinSeam(mesh, joint, parent, child);
+    const XYZ_F *const normals =
+        mesh->num_lights > 0 ? joint->normals : nullptr;
+    Output_DispatchObjectMeshGeometry(
+        joint->joint_mesh_idx, joint->positions, normals);
 
     if (interpolated) {
         Output_DrawObjectMesh_I(mesh, clip);
