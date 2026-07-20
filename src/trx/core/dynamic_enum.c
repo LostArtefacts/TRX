@@ -1,11 +1,11 @@
 #include <trx/core/dynamic_enum.h>
 
 #include <trx/core/memory.h>
-#include <trx/core/strings.h>
 #include <trx/core/vector.h>
 #include <trx/debug.h>
 #include <trx/game/game_strings/entries.h>
 
+#include <ctype.h>
 #include <string.h>
 
 typedef struct {
@@ -108,15 +108,30 @@ static const M_DYNAMIC_ENUM_VALUE *M_GetValueEntry(
     return Vector_Get(entry->values, index);
 }
 
+// Null or whitespace-only. A value with no label at all falls back to its own
+// text, so blank must read as "no label" rather than a label of spaces.
+static bool M_IsBlank(const char *const str)
+{
+    if (str == nullptr) {
+        return true;
+    }
+    for (const char *c = str; *c != '\0'; c++) {
+        if (!isspace((unsigned char)*c)) {
+            return false;
+        }
+    }
+    return true;
+}
+
 static const char *M_GetDisplayLabel(
     const M_DYNAMIC_ENUM_VALUE *const dyn_value)
 {
     if (dyn_value == nullptr) {
         return "(null)";
     }
-    if (!String_IsEmpty(dyn_value->label)) {
+    if (!M_IsBlank(dyn_value->label)) {
         const char *const resolved = GameString_Get(dyn_value->label);
-        if (!String_IsEmpty(resolved)) {
+        if (!M_IsBlank(resolved)) {
             return resolved;
         }
     }
