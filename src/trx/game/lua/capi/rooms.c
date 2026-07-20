@@ -54,20 +54,16 @@ static const FIELD_DESC m_Fields[] = {
 
 TYPE_DEFINE(ROOM, m_Fields)
 
-// A room is never recycled within a level, but the table is replaced whole at
-// the next one. A bounds check alone would let a handle held across the change
-// resolve to a different room; the generation is what makes it go stale.
+// A bounds check alone would let a handle held across a level change resolve to
+// a different room; Room_FromHandle checks the epoch that makes it go stale.
 static void *M_Resolve(const LUA_STRUCT_REF *const ref)
 {
-    if (ref->gen != Room_GetGeneration()) {
-        return nullptr;
-    }
-    return Room_Get(ref->idx);
+    return Room_FromHandle(ref->handle);
 }
 
 static void M_PushRoom(lua_State *const L, const int32_t idx)
 {
-    LUA_Struct_Push(L, &TYPE_ROOM, M_Resolve, idx, Room_GetGeneration());
+    LUA_Struct_Push(L, &TYPE_ROOM, M_Resolve, Room_GetHandle(idx));
 }
 
 // trxc.rooms.count() -> int

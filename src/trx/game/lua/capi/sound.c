@@ -48,7 +48,7 @@ TYPE_DEFINE(SOUND_STREAM_VIEW, m_StreamFields)
 
 static void *M_ResolveSample(const LUA_STRUCT_REF *const ref)
 {
-    const int32_t id = ref->idx;
+    const int32_t id = ref->handle.id;
     if (id < 0 || !Sound_IsAvailable_Direct((SAMPLE_ID)id)) {
         return nullptr;
     }
@@ -69,7 +69,7 @@ static void *M_ResolveSample(const LUA_STRUCT_REF *const ref)
 static void *M_ResolveStream(const LUA_STRUCT_REF *const ref)
 {
     SAMPLE_ID sample_id;
-    if (!Sound_GetActiveSlot(ref->idx, &sample_id)) {
+    if (!Sound_GetActiveSlot(ref->handle.id, &sample_id)) {
         return nullptr;
     }
     m_StreamView.sample_id = sample_id;
@@ -83,7 +83,9 @@ static void M_PushPlayedStream(lua_State *const L, const int32_t slot)
     if (slot < 0) {
         lua_pushnil(L);
     } else {
-        LUA_Struct_Push(L, &TYPE_SOUND_STREAM_VIEW, M_ResolveStream, slot, 0);
+        LUA_Struct_Push(
+            L, &TYPE_SOUND_STREAM_VIEW, M_ResolveStream,
+            (TRX_HANDLE) { .id = slot });
     }
 }
 
@@ -112,7 +114,7 @@ static int M_L_SoundSamplePlay(lua_State *const L)
     M_PushPlayedStream(
         L,
         Sound_Effect_Direct(
-            (SAMPLE_ID)ref->idx, pos_ptr, SPM_ALWAYS | SPM_STATIC_POS));
+            (SAMPLE_ID)ref->handle.id, pos_ptr, SPM_ALWAYS | SPM_STATIC_POS));
     return 1;
 }
 
@@ -122,7 +124,7 @@ static int M_L_SoundSampleStop(lua_State *const L)
     LUA_STRUCT_REF *const ref =
         LUA_Struct_CheckRef(L, 1, &TYPE_SOUND_SAMPLE_VIEW);
     LUA_Struct_Deref(L, ref);
-    Sound_StopEffect_Direct((SAMPLE_ID)ref->idx);
+    Sound_StopEffect_Direct((SAMPLE_ID)ref->handle.id);
     return 0;
 }
 
@@ -138,7 +140,7 @@ static int M_L_SoundStreamStop(lua_State *const L)
     LUA_STRUCT_REF *const ref =
         LUA_Struct_CheckRef(L, 1, &TYPE_SOUND_STREAM_VIEW);
     LUA_Struct_Deref(L, ref);
-    Sound_StopActiveSlot(ref->idx);
+    Sound_StopActiveSlot(ref->handle.id);
     return 0;
 }
 
@@ -148,7 +150,7 @@ static int M_L_SoundStreamPause(lua_State *const L)
     LUA_STRUCT_REF *const ref =
         LUA_Struct_CheckRef(L, 1, &TYPE_SOUND_STREAM_VIEW);
     LUA_Struct_Deref(L, ref);
-    Sound_PauseActiveSlot(ref->idx);
+    Sound_PauseActiveSlot(ref->handle.id);
     return 0;
 }
 
@@ -158,7 +160,7 @@ static int M_L_SoundStreamUnpause(lua_State *const L)
     LUA_STRUCT_REF *const ref =
         LUA_Struct_CheckRef(L, 1, &TYPE_SOUND_STREAM_VIEW);
     LUA_Struct_Deref(L, ref);
-    Sound_UnpauseActiveSlot(ref->idx);
+    Sound_UnpauseActiveSlot(ref->handle.id);
     return 0;
 }
 
@@ -177,7 +179,8 @@ static int M_L_SoundSampleGet(lua_State *const L)
         lua_pushnil(L);
         return 1;
     }
-    LUA_Struct_Push(L, &TYPE_SOUND_SAMPLE_VIEW, M_ResolveSample, id, 0);
+    LUA_Struct_Push(
+        L, &TYPE_SOUND_SAMPLE_VIEW, M_ResolveSample, (TRX_HANDLE) { .id = id });
     return 1;
 }
 
@@ -217,7 +220,9 @@ static int M_L_SoundStreamGet(lua_State *const L)
         lua_pushnil(L);
         return 1;
     }
-    LUA_Struct_Push(L, &TYPE_SOUND_STREAM_VIEW, M_ResolveStream, slot, 0);
+    LUA_Struct_Push(
+        L, &TYPE_SOUND_STREAM_VIEW, M_ResolveStream,
+        (TRX_HANDLE) { .id = slot });
     return 1;
 }
 

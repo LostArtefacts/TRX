@@ -3,11 +3,12 @@
 
 #include "fake_engine_rooms.h"
 
+#include <trx/core/handle.h>
 #include <trx/game/items/actions/ids.h>
 #include <trx/game/rooms.h>
 
 static ROOM m_Rooms[FAKE_ROOM_COUNT];
-static uint32_t m_RoomGen = 1;
+static HANDLE_EPOCH m_RoomEpoch;
 static bool m_FlipStatus;
 
 FAKE_ROOM_CALLS g_FakeRoomCalls;
@@ -16,13 +17,13 @@ FAKE_ROOM_CALLS g_FakeRoomCalls;
 // so every handle to one of the old ones is stale.
 void FakeRooms_LoadNextLevel(void)
 {
-    m_RoomGen++;
+    Handle_EpochBump(&m_RoomEpoch);
 }
 
 void FakeRooms_Reset(void)
 {
     g_FakeRoomCalls = (FAKE_ROOM_CALLS) { 0 };
-    m_RoomGen++;
+    Handle_EpochBump(&m_RoomEpoch);
     m_FlipStatus = false;
 
     for (int32_t i = 0; i < FAKE_ROOM_COUNT; i++) {
@@ -47,9 +48,17 @@ int32_t Room_GetCount(void)
     return FAKE_ROOM_COUNT;
 }
 
-uint32_t Room_GetGeneration(void)
+TRX_HANDLE Room_GetHandle(const int32_t room_num)
 {
-    return m_RoomGen;
+    return Handle_EpochMint(&m_RoomEpoch, room_num);
+}
+
+ROOM *Room_FromHandle(const TRX_HANDLE handle)
+{
+    if (!Handle_EpochIsLive(&m_RoomEpoch, handle)) {
+        return nullptr;
+    }
+    return Room_Get(handle.id);
 }
 
 ROOM *Room_Get(const int32_t room_num)

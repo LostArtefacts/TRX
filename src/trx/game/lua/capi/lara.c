@@ -95,7 +95,7 @@ static LARA_SKIN_EXTRA_MESH M_CheckExtraMesh(lua_State *const L, const int arg)
 // trxc.lara.state() -> LARA_INFO handle
 static int M_L_LaraState(lua_State *const L)
 {
-    LUA_Struct_Push(L, &TYPE_LARA_INFO, M_Resolve, 0, 0);
+    LUA_Struct_Push(L, &TYPE_LARA_INFO, M_Resolve, (TRX_HANDLE) { .id = 0 });
     return 1;
 }
 

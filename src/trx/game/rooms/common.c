@@ -18,7 +18,7 @@
 
 static int32_t m_RoomCount = 0;
 static ROOM *m_Rooms = nullptr;
-static uint32_t m_RoomGen = 0;
+static HANDLE_EPOCH m_RoomEpoch;
 static bool m_FlipStatus = false;
 static int32_t m_FlipEffect = -1;
 static int32_t m_FlipTimer = 0;
@@ -86,7 +86,7 @@ static void M_GetNewRoom(
 void Room_InitialiseRooms(const int32_t num_rooms)
 {
     m_RoomCount = num_rooms;
-    m_RoomGen++;
+    Handle_EpochBump(&m_RoomEpoch);
     m_Rooms = num_rooms == 0
         ? nullptr
         : GameBuf_Alloc(sizeof(ROOM) * num_rooms, GBUF_ROOMS);
@@ -121,9 +121,17 @@ int32_t Room_GetCount(void)
     return m_RoomCount;
 }
 
-uint32_t Room_GetGeneration(void)
+TRX_HANDLE Room_GetHandle(const int32_t room_num)
 {
-    return m_RoomGen;
+    return Handle_EpochMint(&m_RoomEpoch, room_num);
+}
+
+ROOM *Room_FromHandle(const TRX_HANDLE handle)
+{
+    if (!Handle_EpochIsLive(&m_RoomEpoch, handle)) {
+        return nullptr;
+    }
+    return Room_Get(handle.id);
 }
 
 ROOM *Room_Get(const int32_t room_num)

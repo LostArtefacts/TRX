@@ -84,7 +84,7 @@ static const GF_LEVEL *M_GetLevel(
 
 static void *M_Resolve(const LUA_STRUCT_REF *const ref)
 {
-    return (void *)M_GetLevel(M_TABLE(ref->idx), M_NUM(ref->idx));
+    return (void *)M_GetLevel(M_TABLE(ref->handle.id), M_NUM(ref->handle.id));
 }
 
 static void M_PushLevel(
@@ -94,7 +94,9 @@ static void M_PushLevel(
         lua_pushnil(L);
         return;
     }
-    LUA_Struct_Push(L, &TYPE_GF_LEVEL, M_Resolve, M_PACK(table_type, num), 0);
+    LUA_Struct_Push(
+        L, &TYPE_GF_LEVEL, M_Resolve,
+        (TRX_HANDLE) { .id = M_PACK(table_type, num) });
 }
 
 // trxc.game.get_version() → int

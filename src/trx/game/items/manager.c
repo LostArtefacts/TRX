@@ -1,5 +1,6 @@
 #include <trx/game/items/manager.h>
 
+#include <trx/core/handle.h>
 #include <trx/core/memory.h>
 #include <trx/core/utils.h>
 #include <trx/game/game.h>
@@ -22,7 +23,10 @@ static int16_t m_MaxUsedItemCount = 0;
 static ITEM *m_Items = nullptr;
 static int16_t m_NextItemActive = NO_ITEM;
 static int16_t m_NextItemFree = NO_ITEM;
-static uint32_t m_ItemGen = 0;
+// One generation per slot, kept apart from the pooled ITEM storage so it
+// outlives a level and a handle held across the change goes stale.
+static uint32_t m_ItemGens[MAX_ITEMS];
+static HANDLE_REGISTRY m_ItemHandles;
 
 static inline bool M_ItemBoundsIntersectsPortal(
     const ITEM *item, const ROOM *room, const PORTAL *const portal)
@@ -67,10 +71,14 @@ void Item_InitialiseItems(const int32_t num_items)
 
     for (int32_t i = 0; i < MAX_ITEMS; i++) {
         m_Items[i].properties = (ITEM_PROPERTY_SET) {};
-        // A handle retained across a level change must not rebind to whatever
-        // now occupies the same slot index, so every slot gets a fresh gen.
-        m_Items[i].gen = ++m_ItemGen;
     }
+
+    // A handle retained across a level change must not rebind to whatever now
+    // occupies the same slot index, so the whole pool is retired at once.
+    if (m_ItemHandles.gens == nullptr) {
+        Handle_RegistryInit(&m_ItemHandles, m_ItemGens, MAX_ITEMS);
+    }
+    Handle_RegistryBumpAll(&m_ItemHandles);
 
     for (int32_t i = m_NextItemFree; i < MAX_ITEMS - 1; i++) {
         ITEM *const item = &m_Items[i];
@@ -104,6 +112,20 @@ ITEM *Item_Get(const int16_t item_num)
 int16_t Item_GetIndex(const ITEM *const item)
 {
     return item - Item_Get(0);
+}
+
+TRX_HANDLE Item_GetHandle(const int16_t item_num)
+{
+    return Handle_RegistryMint(&m_ItemHandles, item_num);
+}
+
+ITEM *Item_FromHandle(const TRX_HANDLE handle)
+{
+    if (!Handle_RegistryIsLive(&m_ItemHandles, handle)
+        || handle.id >= m_MaxUsedItemCount) {
+        return nullptr;
+    }
+    return Item_Get((int16_t)handle.id);
 }
 
 ITEM *Item_Find(const OBJECT_ID obj_id)
@@ -176,7 +198,7 @@ int16_t Item_Create(void)
         m_Items[item_num].flags = 0;
         // A recycled slot must not inherit the previous occupant's name.
         m_Items[item_num].name = nullptr;
-        m_Items[item_num].gen = ++m_ItemGen;
+        Handle_RegistryBump(&m_ItemHandles, item_num);
         ObjectProperty_ResetItem(&m_Items[item_num]);
         m_NextItemFree = m_Items[item_num].next_item;
     }
@@ -338,7 +360,7 @@ void Item_Kill(const int16_t item_num)
     item->flags |= IF_KILLED;
     // Invalidate any script handle to this item, whether or not the slot is
     // recycled below.
-    item->gen = ++m_ItemGen;
+    Handle_RegistryBump(&m_ItemHandles, item_num);
 
     if (item_num >= m_LevelItemCount) {
         item->next_item = m_NextItemFree;

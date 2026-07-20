@@ -35,7 +35,7 @@ TYPE_DEFINE(OBJECT, m_Fields)
 // not load still exists as a definition; `loaded` is how a script tells.
 static void *M_Resolve(const LUA_STRUCT_REF *const ref)
 {
-    return Object_TryGet((OBJECT_ID)ref->idx);
+    return Object_TryGet((OBJECT_ID)ref->handle.id);
 }
 
 // The object property overlay stays a separate namespace: fields address the
@@ -72,7 +72,9 @@ static int M_L_ObjectsGet(lua_State *const L)
         lua_pushnil(L);
         return 1;
     }
-    LUA_Struct_Push(L, &TYPE_OBJECT, M_Resolve, (OBJECT_ID)object_id, 0);
+    LUA_Struct_Push(
+        L, &TYPE_OBJECT, M_Resolve,
+        (TRX_HANDLE) { .id = (OBJECT_ID)object_id });
     return 1;
 }
 

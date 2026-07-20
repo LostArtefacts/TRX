@@ -1,5 +1,6 @@
 #pragma once
 
+#include <trx/core/handle.h>
 #include <trx/core/math/types.h>
 #include <trx/game/rooms/types.h>
 
@@ -8,10 +9,12 @@ void Room_Shutdown(void);
 int32_t Room_GetCount(void);
 ROOM *Room_Get(int32_t room_num);
 
-// Which level's rooms these are. A room is never recycled within a level, but
-// the table is replaced whole at the next one, so a reference kept across the
-// change names a different room. Bumped by Room_InitialiseRooms.
-uint32_t Room_GetGeneration(void);
+// A handle to the given room, and the room a handle still names or nullptr. A
+// room is never recycled within a level, but the table is replaced whole at the
+// next one; Room_InitialiseRooms starts a new epoch, so a handle kept across
+// the change goes stale rather than naming a different room.
+TRX_HANDLE Room_GetHandle(int32_t room_num);
+ROOM *Room_FromHandle(TRX_HANDLE handle);
 int32_t Room_GetNumber(const ROOM *room);
 
 void Room_InitialiseFlipStatus(void);

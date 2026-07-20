@@ -66,6 +66,14 @@ test_hash_exe = executable(
 )
 test('hash', test_hash_exe, suite: 'unit')
 
+test_handle_exe = executable(
+  'test_handle',
+  files('unit/test_handle.c') + test_stubs + files('../trx/core/handle.c'),
+  include_directories: [src_inc, test_inc],
+  build_by_default: false,
+)
+test('handle', test_handle_exe, suite: 'unit')
+
 test_field_exe = executable(
   'test_field',
   files('unit/test_field.c') + test_stubs + files('../trx/game/lua/field.c'),
@@ -152,6 +160,7 @@ test('lua_guard', test_lua_guard_exe, suite: 'unit')
 # tree is.
 lua_surface_src = files(
   '../trx/core/enum_map.c',
+  '../trx/core/handle.c',
   '../trx/core/memory.c',
   '../trx/core/vector.c',
   '../trx/game/enum.c',
@@ -489,6 +498,7 @@ test_lua_struct_exe = executable(
   'test_lua_struct',
   files('unit/test_lua_struct.c') + test_stubs
     + files(
+      '../trx/core/handle.c',
       '../trx/core/memory.c',
       '../trx/game/lua/capi/struct.c',
       '../trx/game/lua/field.c',

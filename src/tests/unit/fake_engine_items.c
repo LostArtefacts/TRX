@@ -2,12 +2,13 @@
 // surface with no level loaded.
 //
 // Two behaviours are modelled faithfully because the surface's contract rests
-// on them: Item_Create/Item_Kill bump ITEM.gen, so a handle to a recycled slot
-// goes stale; and Item_SetName refuses a duplicate, which is what makes
-// assigning a name already in use raise.
+// on them: Item_Create/Item_Kill bump the slot's handle generation, so a handle
+// to a recycled slot goes stale; and Item_SetName refuses a duplicate, which is
+// what makes assigning a name already in use raise.
 
 #include "fake_engine_items.h"
 
+#include <trx/core/handle.h>
 #include <trx/game/anims.h>
 #include <trx/game/creature.h>
 #include <trx/game/items.h>
@@ -30,6 +31,8 @@ static ITEM m_Items[FAKE_ITEM_POOL];
 static bool m_Used[FAKE_ITEM_POOL];
 static char m_Names[FAKE_ITEM_POOL][32];
 static int32_t m_Count;
+static uint32_t m_Gens[FAKE_ITEM_POOL];
+static HANDLE_REGISTRY m_Handles;
 
 static OBJECT m_Objects[FAKE_OBJ_COUNT];
 static ANIM m_Anims[FAKE_ANIM_COUNT];
@@ -56,6 +59,13 @@ void FakeItems_Reset(void)
     memset(m_Used, 0, sizeof(m_Used));
     memset(m_Names, 0, sizeof(m_Names));
     memset(m_Props, 0, sizeof(m_Props));
+
+    // A fresh level: the generations persist across the reset, so a handle held
+    // from before it goes stale, as one held across a real level change does.
+    if (m_Handles.gens == nullptr) {
+        Handle_RegistryInit(&m_Handles, m_Gens, FAKE_ITEM_POOL);
+    }
+    Handle_RegistryBumpAll(&m_Handles);
 
     for (int32_t i = 0; i < FAKE_ANIM_COUNT; i++) {
         m_Anims[i] = (ANIM) {
@@ -99,7 +109,6 @@ void FakeItems_Reset(void)
             .hit_points = 20,
             .max_hit_points = 20,
             .status = IS_INACTIVE,
-            .gen = 1,
         };
     }
     m_Items[1].object_id = FAKE_OBJ_VASE;
@@ -131,8 +140,8 @@ int16_t Item_Create(void)
     for (int32_t i = 0; i < FAKE_ITEM_POOL; i++) {
         if (!m_Used[i]) {
             m_Used[i] = true;
-            const uint16_t gen = m_Items[i].gen + 1;
-            m_Items[i] = (ITEM) { .gen = gen };
+            m_Items[i] = (ITEM) {};
+            Handle_RegistryBump(&m_Handles, i);
             if (i >= m_Count) {
                 m_Count = i + 1;
             }
@@ -161,9 +170,22 @@ void Item_Kill(const int16_t item_num)
     item->status = IS_DEACTIVATED;
     item->hit_points = 0;
     item->active = false;
-    item->gen++;
+    Handle_RegistryBump(&m_Handles, item_num);
     m_Used[item_num] = false;
     m_Names[item_num][0] = '\0';
+}
+
+TRX_HANDLE Item_GetHandle(const int16_t item_num)
+{
+    return Handle_RegistryMint(&m_Handles, item_num);
+}
+
+ITEM *Item_FromHandle(const TRX_HANDLE handle)
+{
+    if (!Handle_RegistryIsLive(&m_Handles, handle) || handle.id >= m_Count) {
+        return nullptr;
+    }
+    return Item_Get((int16_t)handle.id);
 }
 
 void Item_AddActive(const int16_t item_num)
