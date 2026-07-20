@@ -2,6 +2,7 @@
 
 #include "fake_engine_sound.h"
 
+#include <trx/core/handle.h>
 #include <trx/core/math/types.h>
 #include <trx/game/sound/common.h>
 #include <trx/game/sound/ids.h>
@@ -17,6 +18,8 @@ typedef struct {
 } FAKE_SLOT;
 
 static FAKE_SLOT m_Slots[FAKE_SOUND_SLOT_COUNT];
+static uint32_t m_SlotGens[FAKE_SOUND_SLOT_COUNT];
+static HANDLE_REGISTRY m_Handles;
 
 bool Sound_IsAvailable_Direct(const SAMPLE_ID sample_id)
 {
@@ -59,6 +62,20 @@ bool Sound_GetActiveSlot(const int32_t slot, SAMPLE_ID *const out_sample_id)
     return true;
 }
 
+TRX_HANDLE Sound_GetActiveSlotHandle(const int32_t slot)
+{
+    return Handle_RegistryMint(&m_Handles, slot);
+}
+
+bool Sound_ResolveActiveSlot(
+    const TRX_HANDLE handle, SAMPLE_ID *const out_sample_id)
+{
+    if (!Handle_RegistryIsLive(&m_Handles, handle)) {
+        return false;
+    }
+    return Sound_GetActiveSlot(handle.id, out_sample_id);
+}
+
 void Sound_StopActiveSlot(const int32_t slot)
 {
     g_FakeSoundCalls.slot_stop_count++;
@@ -99,6 +116,7 @@ int32_t Sound_Effect_Direct(
         if (!m_Slots[slot].active) {
             m_Slots[slot] =
                 (FAKE_SLOT) { .active = true, .sample_id = sfx_num };
+            Handle_RegistryBump(&m_Handles, slot);
             return slot;
         }
     }
@@ -122,6 +140,11 @@ void FakeSound_Reset(void)
     for (int32_t i = 0; i < FAKE_SOUND_SLOT_COUNT; i++) {
         m_Slots[i] = (FAKE_SLOT) {};
     }
+    // The generations persist across the reset, as the engine's do, so a handle
+    // from before it cannot match a slot that a later play reuses.
+    if (m_Handles.gens == nullptr) {
+        Handle_RegistryInit(&m_Handles, m_SlotGens, FAKE_SOUND_SLOT_COUNT);
+    }
 }
 
 void FakeSound_SetStream(const int32_t slot, const int32_t sample_id)
@@ -130,4 +153,5 @@ void FakeSound_SetStream(const int32_t slot, const int32_t sample_id)
         return;
     }
     m_Slots[slot] = (FAKE_SLOT) { .active = true, .sample_id = sample_id };
+    Handle_RegistryBump(&m_Handles, slot);
 }

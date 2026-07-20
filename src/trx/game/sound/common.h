@@ -1,5 +1,6 @@
 #pragma once
 
+#include <trx/core/handle.h>
 #include <trx/core/math.h>
 #include <trx/game/sound/enum.h>
 #include <trx/game/sound/ids.h>
@@ -70,6 +71,12 @@ int32_t Sound_GetActiveSlotCount(void);
 
 // Fills the sample id the slot is playing. Returns false when the slot is idle.
 bool Sound_GetActiveSlot(int32_t slot, SAMPLE_ID *out_sample_id);
+
+// A handle to the voice currently in the slot, and the sample a handle still
+// names or false. Each play hands the slot to a new voice; the generation is
+// what keeps a handle from addressing whatever later took its slot.
+TRX_HANDLE Sound_GetActiveSlotHandle(int32_t slot);
+bool Sound_ResolveActiveSlot(TRX_HANDLE handle, SAMPLE_ID *out_sample_id);
 
 // Stops, pauses or resumes the voice in a slot.
 void Sound_StopActiveSlot(int32_t slot);
