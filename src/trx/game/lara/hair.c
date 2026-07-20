@@ -858,6 +858,50 @@ static void M_WeldBridge(
         mesh->num_lights > 0 ? m_Joints.scratch.normal : nullptr);
 }
 
+// A render roll for every segment. The physics yaws a node from atan2 of its
+// horizontal drift, which is noise while the link hangs vertically; instead
+// of following it, each segment rolls to re-aim the previous segment's
+// sideways axis, starting from the head's, so roll flows down the chain. The
+// physics itself is left as the OG has it.
+static void M_CalculateRenderRolls(
+    const int32_t braid_idx, int16_t *const rolls)
+{
+    const ITEM *const lara_item = Lara_GetItem();
+    const LARA_INFO *const lara = Lara_GetLaraInfo();
+    const int16_t head_yaw = lara_item->rot.y + lara->interp.result.torso_rot.y
+        + lara->interp.result.head_rot.y;
+
+    Matrix_PushUnit();
+    Matrix_RotY(head_yaw);
+    double rx = g_MatrixPtr->_00;
+    double ry = g_MatrixPtr->_10;
+    double rz = g_MatrixPtr->_20;
+    Matrix_Pop();
+
+    for (int32_t j = 0; j < M_HAIR_SEGMENTS; j++) {
+        const HAIR_SEGMENT *const s = &m_HairSegments[braid_idx][j];
+        Matrix_PushUnit();
+        Matrix_RotY(s->interp.result.rot.y);
+        Matrix_RotX(s->interp.result.rot.x);
+        const double ax = g_MatrixPtr->_00;
+        const double ay = g_MatrixPtr->_10;
+        const double az = g_MatrixPtr->_20;
+        const double bx = g_MatrixPtr->_01;
+        const double by = g_MatrixPtr->_11;
+        const double bz = g_MatrixPtr->_21;
+        Matrix_Pop();
+
+        const double roll =
+            atan2(rx * bx + ry * by + rz * bz, rx * ax + ry * ay + rz * az);
+        rolls[j] = (int16_t)(roll * 32768.0 / M_PI);
+        const double rc = cos(roll);
+        const double rs = sin(roll);
+        rx = ax * rc + bx * rs;
+        ry = ay * rc + by * rs;
+        rz = az * rc + bz * rs;
+    }
+}
+
 void Lara_Hair_Draw(void)
 {
     if (!Lara_Hair_IsActive()) {
@@ -879,6 +923,9 @@ void Lara_Hair_Draw(void)
             ? m_Joints.clone_base
             : braid_base;
 
+        int16_t rolls[M_HAIR_SEGMENTS];
+        M_CalculateRenderRolls(i, rolls);
+
         // Anchors first, so the bridges between them can pin to their staged
         // frames - the same two passes the OG DrawHair makes.
         MATRIX anchor_matrices[M_HAIR_SEGMENTS] = {};
@@ -888,6 +935,7 @@ void Lara_Hair_Draw(void)
             Matrix_TranslateAbs32(s->interp.result.pos);
             Matrix_RotY(s->interp.result.rot.y);
             Matrix_RotX(s->interp.result.rot.x);
+            Matrix_RotZ(rolls[j]);
             anchor_matrices[j] = *g_WMatrixPtr;
 
             Output_PushTintOverride(Lara_GetMeshTint(
@@ -904,6 +952,7 @@ void Lara_Hair_Draw(void)
             Matrix_TranslateAbs32(s->interp.result.pos);
             Matrix_RotY(s->interp.result.rot.y);
             Matrix_RotX(s->interp.result.rot.x);
+            Matrix_RotZ(rolls[j]);
 
             if (m_Joints.enabled) {
                 M_WeldBridge(i, seg_base, j, anchor_matrices);
