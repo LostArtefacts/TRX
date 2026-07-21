@@ -121,6 +121,9 @@ Module for the game flow: which levels there are, and which one is being played.
 - [lua]`trx.game.end_level()`  
   Ends the current level, as though Lara had reached its exit.
 
+- [lua]`trx.game.exit_to_title()`  
+  Leaves the current game and returns to the title screen.
+
 - [lua]`trx.game.screenshot([path])`  
   Takes a screenshot. Without a path, writes one to the screenshots folder in the player's configured format; with a path, writes to that file.
 

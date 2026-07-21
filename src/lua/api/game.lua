@@ -254,6 +254,11 @@ api.define("game.end_level", {
   impl = raw.end_level,
 })
 
+api.define("game.exit_to_title", {
+  description = "Leaves the current game and returns to the title screen.",
+  impl = raw.exit_to_title,
+})
+
 api.define("game.screenshot", {
   description = "Takes a screenshot. Without a path, writes one to the screenshots folder in the "
     .. "player's configured format; with a path, writes to that file.",
