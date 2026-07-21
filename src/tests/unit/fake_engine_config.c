@@ -1,4 +1,4 @@
-// A player's config of four options, one of each shape that behaves
+// A player's config of five options, one of each shape that behaves
 // differently. The override stack underneath is the real one; only the facade
 // around it - what options exist, how a string becomes a value, what writing to
 // disk means - is faked.
@@ -6,6 +6,7 @@
 #include "fake_engine_config.h"
 
 #include <trx/config/override.h>
+#include <trx/core/enum_map.h>
 
 #include <stdbool.h>
 #include <stdio.h>
@@ -18,6 +19,7 @@ static bool m_EnableMusic;
 static int32_t m_Fov;
 static double m_Brightness;
 static char *m_WaterColor;
+static int32_t m_ShadowType;
 static bool m_Enforced;
 
 static const CONFIG_OPTION m_Options[] = {
@@ -31,8 +33,32 @@ static const CONFIG_OPTION m_Options[] = {
     { .name = "visuals.water_color",
       .type = TVT_STRING,
       .target = &m_WaterColor },
+    { .name = "visuals.shadow_type",
+      .type = TVT_ENUM,
+      .target = &m_ShadowType,
+      .param = "FAKE_SHADOW" },
     { nullptr },
 };
+
+// The third value carries an underscore, which is what the console's
+// dash-for-underscore spelling is about.
+static void M_DefineEnums(void)
+{
+    static bool defined = false;
+    if (defined) {
+        return;
+    }
+    defined = true;
+    EnumMap_Define(
+        "FAKE_SHADOW", "SHADOW_CIRCLE", "enums/FAKE_SHADOW/circle", 0,
+        "circle");
+    EnumMap_Define(
+        "FAKE_SHADOW", "SHADOW_SPRITE", "enums/FAKE_SHADOW/sprite", 1,
+        "sprite");
+    EnumMap_Define(
+        "FAKE_SHADOW", "SHADOW_EXTRA_DARK", "enums/FAKE_SHADOW/extra_dark", 2,
+        "extra_dark");
+}
 
 const CONFIG_OPTION *Config_GetOptionMap(void)
 {
@@ -87,6 +113,9 @@ const char *Config_GetOptionValueAsString(
         const char *const value = *(const char *const *)option->target;
         return value != nullptr ? value : "";
     }
+    case TVT_ENUM:
+        return EnumMap_ToString(
+            (const char *)option->param, *(const int32_t *)option->target);
     default:
         return "";
     }
@@ -133,6 +162,16 @@ bool Config_SetOptionValueFromStringForce(
         return true;
     }
 
+    case TVT_ENUM: {
+        const int32_t parsed =
+            EnumMap_Get((const char *)option->param, new_value, -1);
+        if (parsed == -1) {
+            return false;
+        }
+        *(int32_t *)option->target = parsed;
+        return true;
+    }
+
     default:
         return false;
     }
@@ -158,6 +197,8 @@ bool Config_RestoreOptionDefaultForce(const void *const target)
     } else if (target == &m_WaterColor) {
         free(m_WaterColor);
         m_WaterColor = strdup("ff0000");
+    } else if (target == &m_ShadowType) {
+        m_ShadowType = 0;
     } else {
         return false;
     }
@@ -174,6 +215,7 @@ bool Config_RestoreOptionDefault(const void *const target)
 
 void FakeConfig_Reset(void)
 {
+    M_DefineEnums();
     ConfigOverride_Clear();
     g_FakeConfigCalls = (FAKE_CONFIG_CALLS) {};
     m_Enforced = false;
@@ -182,6 +224,7 @@ void FakeConfig_Reset(void)
     m_Brightness = 1.5;
     free(m_WaterColor);
     m_WaterColor = strdup("ff0000");
+    m_ShadowType = 0;
 }
 
 void FakeConfig_SetEnforced(const bool enforced)

@@ -2708,6 +2708,24 @@
       }
     },
     {
+      "description": "What shape a setting has: how a value is entered and shown, beyond the type `get` reads back.",
+      "examples": [
+        "for _, value in ipairs(trx.config.describe(\"visuals.shadow_type\").values) do\n  trx.log.info(value)\nend"
+      ],
+      "params": [
+        {
+          "description": "Dotted path.",
+          "name": "key",
+          "type": "string"
+        }
+      ],
+      "path": "config.describe",
+      "returns": {
+        "description": "`kind` is one of `boolean`, `integer`, `number`, `color`, `enum`, `dynamic_enum` or `string`. `percent` marks a number stored 0-1 but entered and shown as a 0-100 percentage. For the enum kinds, `values` lists what the setting accepts.",
+        "type": "table"
+      }
+    },
+    {
       "description": "Changes the player's setting, and keeps the change. Raises if the key is unknown or the value will not parse.\n\nThe old value is not kept anywhere: the new one becomes the active setting as if the player had chosen it, and is remembered across saves and relaunches. Prefer `override` for anything a level wants only while it is running.",
       "params": [
         {
