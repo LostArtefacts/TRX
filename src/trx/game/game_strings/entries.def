@@ -848,6 +848,12 @@ GS_DEFINE(console/cmd/dry/success,     "Lara's been toweled off - no more drippi
 GS_DEFINE(console/cmd/dry/already_dry, "Lara's already bone dry")
 GS_DEFINE(console/cmd/dry/underwater,  "Lara's a bit busy being underwater right now")
 
+GS_DEFINE(console/cmd/easy_config/option_get,      "%s is currently set to %s")
+GS_DEFINE(console/cmd/easy_config/option_set,      "%s changed to %s")
+GS_DEFINE(console/cmd/easy_config/option_enforced, "%s is enforced and cannot be changed")
+GS_DEFINE(console/cmd/easy_config/bad_invocation,  "Invalid invocation: %s")
+GS_DEFINE(console/cmd/easy_config/valid_values,    "Valid values: %s")
+
 GS_DEFINE(console/cmd/give/secret_list,   "Secrets collected: %d of %d (%s)")
 GS_DEFINE(console/cmd/give/secret_none,   "Secrets collected: %d of %d")
 GS_DEFINE(console/cmd/give/secret_given,  "Added secret %s")

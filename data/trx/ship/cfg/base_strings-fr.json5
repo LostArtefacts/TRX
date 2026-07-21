@@ -291,6 +291,13 @@
                 "success": "\\{review}Lara a eu droit à sa serviette - plus une goutte",
                 "underwater": "\\{review}Lara est un peu occupée - elle est sous l'eau",
             },
+            "easy_config": {
+                "bad_invocation": "Invocation invalide : %s",
+                "option_enforced": "\\{review}%s est appliqué et ne peut pas être modifié",
+                "option_get": "%s est actuellement réglé sur %s",
+                "option_set": "%s réglé sur %s",
+                "valid_values": "Valeurs acceptées : %s",
+            },
             "end_level": {
                 "help": "Met fin au niveau actuel.",
             },

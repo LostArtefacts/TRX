@@ -291,6 +291,13 @@
                 "success": "\\{review}Lara wytarta ręcznikiem - koniec kapania",
                 "underwater": "\\{review}Lara jest trochę zajęta - jest pod wodą",
             },
+            "easy_config": {
+                "bad_invocation": "Nieprawidłowe wywołanie: %s",
+                "option_enforced": "%s jest zablokowane i nie może zostać zmienione",
+                "option_get": "%s jest obecnie ustawione na %s",
+                "option_set": "Zmieniono %s na %s",
+                "valid_values": "Dopuszczalne wartości: %s",
+            },
             "end_level": {
                 "help": "Kończy bieżący poziom.",
             },

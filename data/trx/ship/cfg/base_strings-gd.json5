@@ -291,6 +291,13 @@
                 "success": "\\{review}Chaidh Lara a thiormachadh - chan eil sileadh ann tuilleadh",
                 "underwater": "\\{review}Tha Lara caran trang an-dràsta - tha i fon uisge",
             },
+            "easy_config": {
+                "bad_invocation": "Iarrtas mì-dhligheach: %s",
+                "option_enforced": "Tha %s air a chur an gnìomh agus chan urrainnear atharrachadh",
+                "option_get": "Tha %s air a rèiteachadh gu %s",
+                "option_set": "%s air atharrachadh gu %s",
+                "valid_values": "Luachan dligheach: %s",
+            },
             "end_level": {
                 "help": "Crìochnaicheas an ìre làithreach.",
             },
