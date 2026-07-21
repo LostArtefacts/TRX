@@ -242,6 +242,15 @@ behave. The structure of this file is described below.
     <td><code>LS_EXTRA_MIDAS_KILL</code></td>
     <td>When Lara steps on the Midas hand - progressive outfit swap.</td>
   </tr>
+  <tr valign="top">
+    <td><code>extra_mesh_positions</code></td>
+    <td>XYZ map</td>
+    <td colspan="2">
+      Positional offsets for Lara's extra equipment meshes, allowing adjustments
+      to be made per outfit. Used by default in the TR4 outfits to adjust Lara's
+      sunglasses.
+    </td>
+  </tr>
 </table>
 
 ### Braids
@@ -311,7 +320,7 @@ behave. The structure of this file is described below.
   </tr>
   <tr valign="top">
     <td><code>position</code></td>
-    <td>XYZ array</td>
+    <td>XYZ</td>
     <td colspan="2">
       The position relative to Lara's head where the braid will be drawn.
     </td>

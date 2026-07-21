@@ -56,6 +56,7 @@ typedef struct {
     int32_t speech_face_offset;
     MESH_PAIR no_holster_offsets;
     int32_t extra_outfits[LS_EXTRA_NUMBER_OF];
+    XYZ_16 extra_mesh_positions[NUM_EXTRA_MESHES];
 } LARA_SKIN_OUTFIT;
 
 typedef struct {
@@ -63,4 +64,5 @@ typedef struct {
     int32_t data;
     bool visible;
     const OBJECT_MESH *mesh;
+    XYZ_16 offset;
 } LARA_SKIN_EQUIPMENT;

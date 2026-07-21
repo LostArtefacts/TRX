@@ -46,8 +46,10 @@ static void M_CacheMatrix(const LARA_MESH mesh)
 }
 
 static void M_DrawEquipmentMesh(
-    const OBJECT_MESH *const mesh, const CLIP clip, const bool interpolated)
+    const LARA_SKIN_EQUIPMENT *const equipment, const CLIP clip,
+    const bool interpolated)
 {
+    const OBJECT_MESH *const mesh = equipment->mesh;
     const GAME_VECTOR pos = {
         .room_num = Lara_GetItem()->room_num,
         .pos = Matrix_MulVec32_M(
@@ -60,9 +62,15 @@ static void M_DrawEquipmentMesh(
     };
     Output_PushTintOverride(Lara_GetMeshTint(pos));
     if (interpolated) {
+        Matrix_Push_I();
+        Matrix_TranslateRel16_I(equipment->offset);
         Output_DrawObjectMesh_I(mesh, clip);
+        Matrix_Pop_I();
     } else {
+        Matrix_Push();
+        Matrix_TranslateRel16(equipment->offset);
         Output_DrawObjectMesh(mesh, clip);
+        Matrix_Pop();
     }
     Output_PopTintOverride();
 }
@@ -145,7 +153,7 @@ static inline void M_DrawEquipment(
         return;
     }
 
-    M_DrawEquipmentMesh(equipment->mesh, clip, interpolated);
+    M_DrawEquipmentMesh(equipment, clip, interpolated);
 }
 
 static bool M_Draw_I(

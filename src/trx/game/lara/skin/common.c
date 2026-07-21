@@ -239,13 +239,17 @@ static void M_SetEquipment(
     case EQUIPMENT_TYPE_WEAPON:
         const OBJECT *const gun_swap_obj = Object_Get(O_LARA_SKIN_SWAP_GUNS);
         equipment->mesh = Object_GetMesh(gun_swap_obj->mesh_idx + offset);
+        equipment->offset = (XYZ_16) {};
         break;
     case EQUIPMENT_TYPE_EXTRA:
         const OBJECT *const extra_obj = Object_Get(O_LARA_SKIN_SWAP_EXTRA);
         equipment->mesh = Object_GetMesh(extra_obj->mesh_idx + offset);
+        const LARA_SKIN_OUTFIT *const outfit = M_GetCurrentOutfit();
+        equipment->offset = outfit->extra_mesh_positions[data];
         break;
     default:
         equipment->mesh = nullptr;
+        equipment->offset = (XYZ_16) {};
         break;
     }
 }
