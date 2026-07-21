@@ -244,6 +244,18 @@
         }
     },
     "console": {
+        "argparse": {
+            "expected": "\\{review}Ожидается %s.",
+            "hint_boolean": "\\{review}on или off",
+            "hint_integer": "\\{review}целое число",
+            "hint_number": "\\{review}число",
+            "hint_or": "\\{review}%s или %s",
+            "hint_values": "\\{review}одно из: %s",
+            "invalid": "\\{review}Неверное %s: %s.",
+            "missing": "\\{review}Отсутствует %s.",
+            "unexpected": "\\{review}Неожиданный аргумент: %s.",
+            "usage": "\\{review}Использование: %s",
+        },
         "cmd": {
             "braid": {
                 "help": "Переключает косу Лары.",

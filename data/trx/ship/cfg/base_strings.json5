@@ -244,6 +244,18 @@
         }
     },
     "console": {
+        "argparse": {
+            "expected": "Expected %s.",
+            "hint_boolean": "on or off",
+            "hint_integer": "a whole number",
+            "hint_number": "a number",
+            "hint_or": "%s, or %s",
+            "hint_values": "one of: %s",
+            "invalid": "Invalid %s: %s.",
+            "missing": "Missing %s.",
+            "unexpected": "Unexpected argument: %s.",
+            "usage": "Usage: %s",
+        },
         "cmd": {
             "braid": {
                 "help": "Toggles Lara's braid.",

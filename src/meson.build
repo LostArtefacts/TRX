@@ -39,6 +39,7 @@ endif
 # so the split is stated here rather than inferred from a path.
 trx_lua_api_sources = files(
   'lua/api/api.lua',
+  'lua/api/argparse.lua',
   'lua/api/assault.lua',
   'lua/api/camera.lua',
   'lua/api/catalog.lua',

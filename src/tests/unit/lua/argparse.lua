@@ -1,0 +1,243 @@
+-- The argument parser as a command actually uses it: real fuzzy matching out of
+-- trx.strings, so parsing and completion read the way the console does. parse
+-- returns structured errors, which the console layer turns into localized text.
+
+local h = require("harness")
+local test, raises = h.test, h.raises
+
+test("a positional comes back under its name", function()
+  local p = trx.argparse.new({ prog = "weather" })
+  p:positional("state", { choices = { "snow", "rain", "none" } })
+  assert(p:parse("snow").state == "snow")
+end)
+
+test("choices restrict, and an unknown one is rejected", function()
+  local p = trx.argparse.new()
+  p:positional("state", { choices = { "snow", "rain", "none" } })
+  local parsed, err = p:parse("hail")
+  assert(parsed == nil, "hail is not a choice")
+  assert(err.kind == "invalid" and err.token == "hail")
+end)
+
+test("a required positional must be given", function()
+  local p = trx.argparse.new()
+  p:positional("state", { choices = { "snow", "rain" } })
+  local parsed, err = p:parse("")
+  assert(parsed == nil)
+  assert(err.kind == "missing" and err.metavar == "state")
+end)
+
+test("an optional positional may be absent", function()
+  local p = trx.argparse.new()
+  p:positional("state", { optional = true, choices = { "snow" } })
+  assert(p:parse("").state == nil, "absent is nil")
+end)
+
+test("an integer positional is a number", function()
+  local p = trx.argparse.new()
+  p:positional("id", { type = "integer" })
+  assert(p:parse("42").id == 42)
+  assert(p:parse("-3").id == -3, "a negative whole number is fine")
+  assert(p:parse("nope") == nil, "a non-integer is rejected")
+  assert(p:parse("3.5") == nil, "a fractional value is not an integer")
+  assert(p:parse("0x10") == nil, "hex is not an integer")
+end)
+
+test("a number reads plain decimals, not hex or scientific", function()
+  local p = trx.argparse.new()
+  p:positional("factor", { type = "number" })
+  assert(p:parse("2.5").factor == 2.5)
+  assert(p:parse("-0.5").factor == -0.5)
+  assert(p:parse(".5").factor == 0.5)
+  assert(p:parse("nope") == nil)
+  assert(p:parse("0x10") == nil, "hex is not a plain number")
+  assert(p:parse("1e5") == nil, "scientific is not a plain number")
+end)
+
+test("a choices function that raises is a clean rejection", function()
+  local p = trx.argparse.new()
+  p:positional("x", {
+    choices = function()
+      error("boom")
+    end,
+  })
+  local parsed, err = p:parse("anything")
+  assert(parsed == nil, "the raise does not propagate out of parse")
+  assert(err.kind == "invalid")
+end)
+
+test("a positional reads a token one way, not several", function()
+  local p = trx.argparse.new()
+  raises(function()
+    p:positional("level", { type = "integer", choices = { "a" } })
+  end, "any_of")
+end)
+
+test("any_of tries its matchers in turn", function()
+  -- /play: a number is the ordinal, a name resolves to one.
+  local p = trx.argparse.new()
+  p:any_of("level", {
+    { type = "integer" },
+    {
+      choices = { { key = "Caves", value = 1 }, { key = "City", value = 2 } },
+    },
+  })
+  assert(p:parse("3").level == 3, "a number reads as itself")
+  assert(p:parse("caves").level == 1, "a name resolves to its value")
+  local _, err = p:parse("nope")
+  assert(err.hint.type == "integer", "the hint keeps the number")
+  local seen = {}
+  for _, v in ipairs(err.hint.values) do
+    seen[v] = true
+  end
+  assert(seen.Caves and seen.City, "and lists the names")
+end)
+
+test("a greedy argument takes the whole line, spaces and all", function()
+  -- /play: a number, or a level name that has spaces in it.
+  local p = trx.argparse.new()
+  p:any_of("level", {
+    { type = "integer" },
+    { choices = { { key = "Natla's Mines", value = 13 } } },
+  }, { greedy = true })
+  assert(p:parse("3").level == 3)
+  assert(p:parse("natla's mines").level == 13, "the whole name is matched")
+end)
+
+test("a match matcher reads a token its own way", function()
+  local p = trx.argparse.new()
+  p:positional("slot", {
+    match = function(token)
+      local n = token:match("^q(%d+)$")
+      if n ~= nil then
+        return { quick = true, index = tonumber(n) }, true
+      end
+      if token:match("^%d+$") then
+        return { quick = false, index = tonumber(token) }, true
+      end
+      return nil, false
+    end,
+  })
+  assert(p:parse("3").slot.index == 3)
+  assert(p:parse("q2").slot.quick == true)
+  assert(p:parse("q2").slot.index == 2)
+  assert(p:parse("nonsense") == nil)
+end)
+
+test("a free positional takes any token and carries no hint", function()
+  local p = trx.argparse.new()
+  p:positional("option")
+  -- No matcher, so any token is taken.
+  assert(p:parse("whatever").option == "whatever")
+  -- A missing free option carries no "expected" hint.
+  local _, err = p:parse("")
+  assert(err.kind == "missing" and err.hint == nil)
+end)
+
+test("a flag floats anywhere", function()
+  local p = trx.argparse.new()
+  p:flag("force", { short = "-f", long = "--force" })
+  p:positional("slot", { type = "integer", optional = true })
+  assert(p:parse("-f 1").force == true)
+  assert(p:parse("-f 1").slot == 1)
+  assert(p:parse("1 --force").force == true, "it may trail")
+  assert(p:parse("3").force == false, "absent means false")
+  assert(p:parse("3").slot == 3)
+end)
+
+test("rest is the remainder, verbatim; optional is nil when absent", function()
+  local p = trx.argparse.new()
+  p:positional("option", { choices = { "name" } })
+  p:rest("value", { optional = true })
+  local parsed = p:parse("name a   b  c")
+  assert(parsed.option == "name")
+  assert(parsed.value == "a   b  c", "the spacing is kept")
+  assert(p:parse("name").value == nil, "absent optional rest is nil")
+end)
+
+test("a required rest is missing when absent", function()
+  local p = trx.argparse.new()
+  p:rest("code")
+  local parsed, err = p:parse("")
+  assert(parsed == nil and err.kind == "missing" and err.metavar == "code")
+end)
+
+test("a leading -h reaches help, a later one is literal", function()
+  local p = trx.argparse.new()
+  p:rest("code")
+  assert(p:parse("-h").help == true)
+  assert(p:parse("x = -h").code == "x = -h", "a later -h is part of the rest")
+end)
+
+test("help wins over a token that would otherwise fail", function()
+  local p = trx.argparse.new()
+  -- No positionals, so a stray token is 'unexpected'; -h answers regardless.
+  assert(p:parse("-h stray").help == true)
+end)
+
+test("help is a reserved flag name", function()
+  local p = trx.argparse.new()
+  raises(function()
+    p:flag("help", { long = "--help" })
+  end, "reserved")
+end)
+
+test(
+  "a positional may be named help without hijacking the help path",
+  function()
+    local p = trx.argparse.new()
+    p:positional("help", { type = "integer", optional = true })
+    assert(p:parse("5").help == 5, "its value reaches run")
+    assert(p:parse("-h").help == true, "the flag still shows help")
+  end
+)
+
+test("an unexpected argument is refused with its token", function()
+  local p = trx.argparse.new()
+  local parsed, err = p:parse("stray")
+  assert(parsed == nil and err.kind == "unexpected" and err.token == "stray")
+end)
+
+test("usage joins alternatives and lines them out", function()
+  local saved = trx.locale
+  trx.locale = {
+    get = function(key)
+      return key
+    end,
+    format = function(key, ...)
+      local a = { ... }
+      return key .. (#a > 0 and (" " .. table.concat(a, " ")) or "")
+    end,
+  }
+  local p = trx.argparse.new({ prog = "music" })
+  p:any_of("what", {
+    { choices = { "status" }, metavar = "status", help = "h_status" },
+    { type = "integer", metavar = "id", help = "h_id" },
+  }, { optional = true })
+  local u = p:usage()
+  trx.locale = saved
+  assert(u:find("[status|id]", 1, true), "synopsis joins the metavars: " .. u)
+  assert(u:find("status: h_status", 1, true), u)
+  assert(u:find("id (", 1, true) and u:find("h_id", 1, true), u)
+end)
+
+test("format_error turns a structured error into text", function()
+  -- The console layer localizes; a plain stub stands in for trx.locale here.
+  local saved = trx.locale
+  trx.locale = {
+    get = function(key)
+      return key
+    end,
+    format = function(key, ...)
+      return key .. ":" .. table.concat({ ... }, ",")
+    end,
+  }
+  local p = trx.argparse.new()
+  p:positional("state", { choices = { "snow", "rain" } })
+  local _, err = p:parse("hail")
+  local msg = p:format_error(err)
+  trx.locale = saved
+  assert(msg:find("state") and msg:find("hail") and msg:find("snow"), msg)
+end)
+
+return h.report()

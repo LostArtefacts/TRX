@@ -2518,6 +2518,25 @@
       }
     },
     {
+      "description": "Creates an argument parser. See the module description for the parser's methods.",
+      "examples": [
+        "local p = trx.argparse.new({ prog = \"weather\" })\np:positional(\"state\", { choices = { \"snow\", \"rain\", \"none\" } })\nlocal parsed = p:parse(\"snow\")  -- { state = \"snow\" }"
+      ],
+      "params": [
+        {
+          "description": "`prog`: the command word, for messages. `description`: what the command does.",
+          "name": "spec",
+          "optional": true,
+          "type": "table"
+        }
+      ],
+      "path": "argparse.new",
+      "returns": {
+        "description": "A parser. Describe its arguments with `positional`, `any_of`, `rest` and `flag`, then read them with `parse`.",
+        "type": "table"
+      }
+    },
+    {
       "description": "Starts the timer and clears its state. Raises outside a gym level.",
       "params": [
         {
@@ -4147,6 +4166,11 @@
       "name": "api",
       "order": 20,
       "title": "API registry"
+    },
+    {
+      "description": "A small, declarative argument parser for console commands, in the shape of\nPython's argparse.\n\nA parser reads a command's arguments from one declaration. Every command\nwritten with `trx.console.register` has one; a command shapes it through the\n`args` function it hands over, and `run` then receives a table of parsed\nvalues. A command that shapes nothing takes no arguments, and is told so when\ngiven one.\n\nEvery parser answers `-h` and `--help` on its own, printing what it accepts.\n\nHow a positional reads a token is its `matcher`, one of:\n\n- `type` - coerce to `\"integer\"`, `\"number\"`, `\"string\"` or `\"boolean\"`.\n- `choices` - the allowed set: a list of values or a `function(parsed)`\n  returning one. The token must match one; the set is shown in errors.\n- `match` - a `function(token, parsed)` returning `value, ok`, for a shape of its own.\n\nThese do not combine on one positional; a value that is a number *or* a name is\ntwo matchers, declared with `any_of`.\n\nA parser has these methods, each returning the parser so calls chain:\n\n- `positional(name, opts)` - a positional with one matcher (`opts.type`,\n  `opts.choices` or `opts.match`). `opts.optional` lets it be left out;\n  `opts.greedy` reads the rest of the line as one token, so a value with spaces\n  in it still arrives whole; `opts.help` describes it.\n- `any_of(name, alternatives, opts)` - a positional whose value is the first of\n  several matchers to take the token. Each alternative is a matcher table,\n  `{ type = ... }` or `{ choices = ... }`. Same `opts` as `positional`.\n- `rest(name, opts)` - the rest of the line from here on, verbatim as one\n  string, or nil when an optional one is absent. Always the last argument.\n- `flag(name, opts)` - a boolean that may sit anywhere. `opts.short` and\n  `opts.long` are the spellings, e.g. `\"-f\"` and `\"--force\"`; `opts.help`\n  describes it.\n- `parse(args)` - reads the argument string, returning a table of values, or\n  `nil` and a structured error the console layer turns into localized text. A\n  value carried by a `{ key, value }` choice comes back as its `value`;\n  `-h`/`--help` comes back as `{ help = true }`.\n- `usage()` - a short description of what the command accepts.\n\nA choice is either a bare string, where the key and value are the same, or a\n`{ key, value }` pair, where `key` is matched and shown and `value` is what\n`parse` gives back. Matching is forgiving, through `trx.strings.fuzzy_match`.",
+      "name": "argparse",
+      "order": 23
     },
     {
       "description": "Module for controlling the Assault Course and Quad Bike timers in gym levels.",

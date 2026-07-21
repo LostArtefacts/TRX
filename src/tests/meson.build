@@ -346,6 +346,25 @@ test_lua_strings_exe = executable(
 )
 test('lua_strings', test_lua_strings_exe, suite: 'unit')
 
+# The parser is pure Lua, but it leans on the real fuzzy matcher out of
+# trx.strings, so the two are stood up together.
+test_lua_argparse_exe = executable(
+  'test_lua_argparse',
+  files('unit/test_lua_argparse.c') + test_stubs
+    + lua_surface_src
+    + files(
+      '../trx/core/strings/common.c',
+      '../trx/core/strings/case_funcs.c',
+      '../trx/core/strings/fuzzy_match.c',
+      '../trx/game/lua/capi/strings.c',
+    ),
+  include_directories: [src_inc, test_inc],
+  dependencies: [dep_lua, dep_pcre2],
+  c_args: lua_surface_args + ['-DPCRE2_CODE_UNIT_WIDTH=8'],
+  build_by_default: false,
+)
+test('lua_argparse', test_lua_argparse_exe, suite: 'unit')
+
 test_lua_sound_exe = executable(
   'test_lua_sound',
   files('unit/test_lua_sound.c', 'unit/fake_engine_sound.c') + test_stubs

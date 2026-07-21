@@ -244,6 +244,18 @@
         }
     },
     "console": {
+        "argparse": {
+            "expected": "\\{review}Bha dùil ri %s.",
+            "hint_boolean": "\\{review}on no off",
+            "hint_integer": "\\{review}àireamh shlàn",
+            "hint_number": "\\{review}àireamh",
+            "hint_or": "\\{review}%s, no %s",
+            "hint_values": "\\{review}fear de: %s",
+            "invalid": "\\{review}%s mì-dhligheach: %s.",
+            "missing": "\\{review}%s a dhìth.",
+            "unexpected": "\\{review}Argamaid ris nach robh dùil: %s.",
+            "usage": "\\{review}Cleachdadh: %s",
+        },
         "cmd": {
             "braid": {
                 "help": "Tionndaidheas feaman-fuilt Lara.",
