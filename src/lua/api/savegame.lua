@@ -59,3 +59,28 @@ api.define("savegame.load", {
     raw.load(index, pool or Pool.NORMAL)
   end,
 })
+
+api.define("savegame.save", {
+  description = "Writes a saved game to a slot. A quick save with no index goes to the next "
+    .. "slot in the rotation; with one, it saves to the slot named.",
+  params = {
+    {
+      name = "index",
+      type = "integer",
+      optional = true,
+      description = "1-based slot number. The quick pool uses the next slot in its rotation "
+        .. "when it is omitted.",
+    },
+    pool_param,
+  },
+  returns = {
+    {
+      type = "boolean",
+      description = "Whether the save was written. `false` means the quick pool had no slot.",
+    },
+  },
+  examples = { [[trx.savegame.save(1)]] },
+  impl = function(index, pool)
+    return raw.save(index, pool or Pool.NORMAL)
+  end,
+})

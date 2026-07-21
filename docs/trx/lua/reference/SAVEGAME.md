@@ -57,3 +57,18 @@ The save slots, and starting or reading a saved game.
   ```lua
   trx.savegame.load(1)
   ```
+
+- [lua]`trx.savegame.save([index], [pool])`  
+  Writes a saved game to a slot. A quick save with no index goes to the next slot in the rotation; with one, it saves to the slot named.
+
+  Parameters:
+  - **`index`** (integer, optional). 1-based slot number. The quick pool uses the next slot in its rotation when it is omitted.
+  - **`pool`** (integer, optional). Which set of slots to look in. Defaults to `NORMAL`. Compare against `trx.savegame.Pool`.
+
+  Returns:
+  - boolean. Whether the save was written. `false` means the quick pool had no slot.
+
+  Example:
+  ```lua
+  trx.savegame.save(1)
+  ```

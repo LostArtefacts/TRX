@@ -3969,6 +3969,34 @@
       "path": "savegame.load"
     },
     {
+      "description": "Writes a saved game to a slot. A quick save with no index goes to the next slot in the rotation; with one, it saves to the slot named.",
+      "examples": [
+        "trx.savegame.save(1)"
+      ],
+      "params": [
+        {
+          "description": "1-based slot number. The quick pool uses the next slot in its rotation when it is omitted.",
+          "name": "index",
+          "optional": true,
+          "type": "integer"
+        },
+        {
+          "description": "Which set of slots to look in. Defaults to `NORMAL`.",
+          "enum": "savegame.Pool",
+          "name": "pool",
+          "optional": true,
+          "type": "integer"
+        }
+      ],
+      "path": "savegame.save",
+      "returns": [
+        {
+          "description": "Whether the save was written. `false` means the quick pool had no slot.",
+          "type": "boolean"
+        }
+      ]
+    },
+    {
       "description": "Plays a sound effect by catalog id, mapping it to the level's own sample. A game that does not carry the sample plays nothing.",
       "examples": [
         "trx.sound.play(trx.catalog.samples.LARA_NO)\ntrx.sound.play(trx.catalog.samples.LARA_NO, { pos = { x = 100, y = 200, z = 50 } })"
