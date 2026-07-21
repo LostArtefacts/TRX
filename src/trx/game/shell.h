@@ -7,3 +7,4 @@
 #include <trx/game/shell/flow.h>
 #include <trx/game/shell/input.h>
 #include <trx/game/shell/paths.h>
+#include <trx/game/shell/window.h>
