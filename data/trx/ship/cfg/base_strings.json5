@@ -268,6 +268,8 @@
                 "unknown_option": "Unknown option: %s",
             },
             "drain": {
+                "already": "Room %d is already drained",
+                "done": "Drained room %d",
                 "help": "Dries the current room, removing the water.",
             },
             "dry": {
@@ -290,6 +292,8 @@
                 "on": "Flipmap set to ON",
             },
             "flood": {
+                "already": "Room %d is already flooded",
+                "done": "Flooded room %d",
                 "help": "Submerges the current room with water.",
             },
             "fly": {

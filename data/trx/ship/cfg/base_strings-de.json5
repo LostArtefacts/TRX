@@ -268,6 +268,8 @@
                 "unknown_option": "Unbekannte Option: %s",
             },
             "drain": {
+                "already": "\\{review}Raum %d ist bereits entwässert",
+                "done": "\\{review}Raum %d entwässert",
                 "help": "Entfernt das gesamte Wasser aus dem Raum, in dem sie sich im Moment befinden.",
             },
             "dry": {
@@ -290,6 +292,8 @@
                 "on": "Flipmap eingeschaltet",
             },
             "flood": {
+                "already": "\\{review}Raum %d ist bereits geflutet",
+                "done": "\\{review}Raum %d geflutet",
                 "help": "Überflutet den Raum, in dem sie sich im Moment befinden, mit Wasser.",
             },
             "fly": {
