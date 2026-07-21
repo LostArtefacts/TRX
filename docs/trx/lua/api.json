@@ -130,7 +130,7 @@
     },
     {
       "bulk": true,
-      "count": 760,
+      "count": 762,
       "description": "Every object TRX has a name for.",
       "examples": [
         "if item.object_id == trx.catalog.objects.WOLF then ... end"
@@ -333,6 +333,8 @@
         "FLAME_EMITTER_JET",
         "FLAME_EMITTER_SIDE",
         "FLAME_EMITTER_SMALL",
+        "FLAME_EMITTER_TR4_GROUND",
+        "FLAME_EMITTER_TR4_WALL",
         "FLAREBOX_ITEM",
         "FLAREBOX_OPTION",
         "FLARE_FIRE",
@@ -2717,9 +2719,36 @@
           "description": "A boolean, a number, or a string, matching the option's type. A color is a 6-digit hex string.",
           "name": "value",
           "type": "any"
+        },
+        {
+          "description": "Write through a setting the game flow enforces.",
+          "name": "force",
+          "optional": true,
+          "type": "boolean"
         }
       ],
       "path": "config.set"
+    },
+    {
+      "description": "Puts a setting back to its default, and keeps the change, as `set` does.",
+      "params": [
+        {
+          "description": "Dotted path.",
+          "name": "key",
+          "type": "string"
+        },
+        {
+          "description": "As for `set`.",
+          "name": "force",
+          "optional": true,
+          "type": "boolean"
+        }
+      ],
+      "path": "config.reset",
+      "returns": {
+        "description": "`false` when a script or the game flow is holding the setting (see `is_overridden`).",
+        "type": "boolean"
+      }
     },
     {
       "description": "Changes a setting for as long as the script keeps the override, without touching the player's own value.\n\nThe player's value sits underneath and comes back on `restore`. Nothing is written to disk. Overrides stack, so one can be pushed over another; each `restore` lifts one off. A setting the game flow enforces cannot be overridden.",

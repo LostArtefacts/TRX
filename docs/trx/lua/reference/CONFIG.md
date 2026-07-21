@@ -33,7 +33,7 @@ These are the player's settings, not the level's. `set` writes to them and keeps
   end
   ```
 
-- [lua]`trx.config.set(key, value)`  
+- [lua]`trx.config.set(key, value, [force])`  
   Changes the player's setting, and keeps the change. Raises if the key is unknown or the value will not parse.
 
   The old value is not kept anywhere: the new one becomes the active setting as if the player had chosen it, and is remembered across saves and relaunches. Prefer `override` for anything a level wants only while it is running.
@@ -41,6 +41,16 @@ These are the player's settings, not the level's. `set` writes to them and keeps
   Parameters:
   - **`key`** (string). Dotted path.
   - **`value`** (any). A boolean, a number, or a string, matching the option's type. A color is a 6-digit hex string.
+  - **`force`** (boolean, optional). Write through a setting the game flow enforces.
+
+- [lua]`trx.config.reset(key, [force])`  
+  Puts a setting back to its default, and keeps the change, as `set` does.
+
+  Parameters:
+  - **`key`** (string). Dotted path.
+  - **`force`** (boolean, optional). As for `set`.
+
+  Returns: boolean. `false` when a script or the game flow is holding the setting (see `is_overridden`).
 
 - [lua]`trx.config.override(key, value)`  
   Changes a setting for as long as the script keeps the override, without touching the player's own value.
