@@ -46,6 +46,7 @@ The Lua integration was rewritten and existing scripts will need updating; refer
 - added `trx.game.screenshot()`, to save a screenshot
 - added `trx.game.end_level()`, to end the current level
 - added `trx.game.exit_to_title()`, to leave the current game for the title screen
+- added `trx.game.exit_game()`, to close the game
 - added `trx.items.spawn()`, to place a new item in the level at runtime
 - added `trx.items.get()`, `trx.items.count()`, `trx.rooms.get()`, `trx.rooms.count()` and `trx.objects.get()`, replacing the `fn` namespaces- added `trx.rooms.find_valid_pos()`, to nudge a position into valid room geometry
 - added item methods, `activate()`, `kill()`, `die()`, `shatter()`, `distance_to()`, `is_valid()`, `get_property()`, `set_property()` and `get_property_names()`
