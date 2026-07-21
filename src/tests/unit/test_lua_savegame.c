@@ -42,6 +42,24 @@ int32_t Savegame_SlotToParam(const SAVEGAME_SLOT_REF slot)
     return slot.index;
 }
 
+SAVEGAME_SLOT_REF Savegame_GetNextQuickSlot(void)
+{
+    return (SAVEGAME_SLOT_REF) { .pool = SAVEGAME_SLOT_POOL_QUICK, .index = 3 };
+}
+
+bool Savegame_IsValidSlotRef(const SAVEGAME_SLOT_REF slot)
+{
+    return slot.index >= 0;
+}
+
+static SAVEGAME_SLOT_REF m_SavedSlot = { .index = -1 };
+
+bool Savegame_Save(const SAVEGAME_SLOT_REF slot)
+{
+    m_SavedSlot = slot;
+    return true;
+}
+
 static int32_t m_LoadedParam = -1;
 
 void GF_OverrideCommand(const GF_COMMAND command)
@@ -52,6 +70,7 @@ void GF_OverrideCommand(const GF_COMMAND command)
 static int M_FakeReset(lua_State *const L)
 {
     m_LoadedParam = -1;
+    m_SavedSlot = (SAVEGAME_SLOT_REF) { .index = -1 };
     return 0;
 }
 
@@ -60,6 +79,10 @@ static int M_FakeCalls(lua_State *const L)
     lua_newtable(L);
     lua_pushinteger(L, m_LoadedParam);
     lua_setfield(L, -2, "loaded_param");
+    lua_pushinteger(L, m_SavedSlot.index);
+    lua_setfield(L, -2, "saved_index");
+    lua_pushinteger(L, m_SavedSlot.pool);
+    lua_setfield(L, -2, "saved_pool");
     return 1;
 }
 

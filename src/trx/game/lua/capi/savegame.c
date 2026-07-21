@@ -59,10 +59,31 @@ static int M_L_SavegameLoad(lua_State *const L)
     return 0;
 }
 
+// trxc.savegame.save(index, pool) -> bool
+static int M_L_SavegameSave(lua_State *const L)
+{
+    const SAVEGAME_SLOT_POOL pool = M_CheckPool(L, 2);
+
+    SAVEGAME_SLOT_REF slot;
+    if (pool == SAVEGAME_SLOT_POOL_QUICK && lua_isnoneornil(L, 1)) {
+        slot = Savegame_GetNextQuickSlot();
+        if (!Savegame_IsValidSlotRef(slot)) {
+            lua_pushboolean(L, false);
+            return 1;
+        }
+    } else {
+        slot = M_ResolveSlot(luaL_checkinteger(L, 1), pool);
+    }
+
+    lua_pushboolean(L, Savegame_Save(slot));
+    return 1;
+}
+
 static const luaL_Reg m_Module[] = {
     { "slot_count", M_L_SavegameSlotCount },
     { "is_free", M_L_SavegameIsFree },
     { "load", M_L_SavegameLoad },
+    { "save", M_L_SavegameSave },
     { nullptr, nullptr },
 };
 
