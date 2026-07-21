@@ -14,7 +14,7 @@
 
 static lua_State *m_L = nullptr;
 
-// Command prefix -> Lua handler.
+// Command name -> Lua handler.
 static const char m_HandlersKey[] = "trx.console.handlers";
 
 // trxc.console.log(level, msg)
@@ -112,10 +112,9 @@ static COMMAND_RESULT M_LuaCommandProc(const COMMAND_CONTEXT *const ctx)
     return result;
 }
 
-// A name is interpolated into the dispatch regex in Console_Registry_Get. A
-// dash is a literal there, so it is safe; a regex metacharacter would corrupt
-// the matching of every command, so the rest are refused. Raises on a bad or
-// taken name.
+// Console_Registry_Get compares the name literally, so any spelling is safe to
+// match; the alnum/underscore/dash rule keeps names typeable and completable.
+// Raises on a bad or taken name.
 static void M_CheckCommandName(lua_State *const L, const char *const name)
 {
     if (name[0] == '\0') {
@@ -165,17 +164,17 @@ static int M_L_ConsoleRegister(lua_State *const L)
         lua_pop(L, 1);
     }
 
+    // The name reaches the handler; the aliases dispatch through the registry's
+    // aliases field, so they share it without a lookup of their own.
     if (lua_getfield(L, LUA_REGISTRYINDEX, m_HandlersKey) != LUA_TTABLE) {
         lua_pop(L, 1);
         lua_newtable(L);
         lua_pushvalue(L, -1);
         lua_setfield(L, LUA_REGISTRYINDEX, m_HandlersKey);
     }
-    const int handlers = lua_gettop(L);
-
-    // The main spelling and every alias reach the same handler.
     lua_pushvalue(L, 3);
-    lua_setfield(L, handlers, name);
+    lua_setfield(L, -2, name);
+    lua_pop(L, 1);
 
     char *joined = nullptr;
     if (alias_count > 0) {
@@ -183,17 +182,13 @@ static int M_L_ConsoleRegister(lua_State *const L)
         joined[0] = '\0';
         for (int32_t i = 1; i <= alias_count; i++) {
             lua_rawgeti(L, 4, i);
-            const char *const alias = lua_tostring(L, -1);
             if (i > 1) {
                 strcat(joined, ", ");
             }
-            strcat(joined, alias);
-            lua_pushvalue(L, 3);
-            lua_setfield(L, handlers, alias);
+            strcat(joined, lua_tostring(L, -1));
             lua_pop(L, 1);
         }
     }
-    lua_pop(L, 1);
 
     Console_Registry_Add((CONSOLE_COMMAND) {
         .prefix = name,
@@ -201,16 +196,6 @@ static int M_L_ConsoleRegister(lua_State *const L)
         .help_id = help_id,
         .aliases = joined,
     });
-    // The aliases dispatch, but stay out of the listing and carry no help of
-    // their own: the main spelling shows them.
-    for (int32_t i = 1; i <= alias_count; i++) {
-        lua_rawgeti(L, 4, i);
-        Console_Registry_Add((CONSOLE_COMMAND) {
-            .prefix = lua_tostring(L, -1),
-            .proc = M_LuaCommandProc,
-        });
-        lua_pop(L, 1);
-    }
 
     Memory_Free(joined);
     return 0;

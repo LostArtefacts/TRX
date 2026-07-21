@@ -88,14 +88,46 @@ void Console_Registry_Add(const CONSOLE_COMMAND command)
     slot->prefix = command.prefix != nullptr ? strdup(command.prefix) : nullptr;
     slot->help_id =
         command.help_id != nullptr ? strdup(command.help_id) : nullptr;
+    slot->aliases =
+        command.aliases != nullptr ? strdup(command.aliases) : nullptr;
 }
 
-// The real registry matches a command with a case-insensitive regex, so a test
-// that matched exactly would not see what the player typing /HEAL sees.
+// The aliases arrive comma-joined ("secondary, third"); each spelling
+// dispatches.
+static bool M_FakeAliasMatch(const char *const aliases, const char *const word)
+{
+    if (aliases == nullptr) {
+        return false;
+    }
+    const size_t word_len = strlen(word);
+    const char *p = aliases;
+    while (*p != '\0') {
+        while (*p == ',' || *p == ' ') {
+            p++;
+        }
+        const char *const start = p;
+        while (*p != '\0' && *p != ',') {
+            p++;
+        }
+        const char *end = p;
+        while (end > start && end[-1] == ' ') {
+            end--;
+        }
+        if ((size_t)(end - start) == word_len
+            && strncasecmp(start, word, word_len) == 0) {
+            return true;
+        }
+    }
+    return false;
+}
+
+// The real registry matches a command name case-insensitively, so a test that
+// matched exactly would not see what the player typing /HEAL sees.
 const CONSOLE_COMMAND *Console_Registry_Get(const char *const prefix)
 {
     for (int32_t i = 0; i < m_CommandCount; i++) {
-        if (strcasecmp(m_Commands[i].prefix, prefix) == 0) {
+        if (strcasecmp(m_Commands[i].prefix, prefix) == 0
+            || M_FakeAliasMatch(m_Commands[i].aliases, prefix)) {
             return &m_Commands[i];
         }
     }
@@ -110,6 +142,7 @@ void Console_Registry_RemoveByProc(
         if (m_Commands[i].proc == proc) {
             free((char *)m_Commands[i].prefix);
             free((char *)m_Commands[i].help_id);
+            free((char *)m_Commands[i].aliases);
             continue;
         }
         m_Commands[kept++] = m_Commands[i];
