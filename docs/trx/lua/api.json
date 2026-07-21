@@ -3297,6 +3297,10 @@
       "path": "game.end_level"
     },
     {
+      "description": "Leaves the current game and returns to the title screen.",
+      "path": "game.exit_to_title"
+    },
+    {
       "description": "Takes a screenshot. Without a path, writes one to the screenshots folder in the player's configured format; with a path, writes to that file.",
       "params": [
         {

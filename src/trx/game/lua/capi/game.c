@@ -286,6 +286,13 @@ static int M_L_GameEndLevel(lua_State *const L)
     return 0;
 }
 
+// trxc.game.exit_to_title()
+static int M_L_GameExitToTitle(lua_State *const L)
+{
+    GF_OverrideCommand((GF_COMMAND) { .action = GF_EXIT_TO_TITLE });
+    return 0;
+}
+
 // trxc.game.screenshot([path])
 static int M_L_GameScreenshot(lua_State *const L)
 {
@@ -311,6 +318,7 @@ static const luaL_Reg m_Module[] = {
     { "play_gym", M_L_GamePlayGym },
     { "screenshot", M_L_GameScreenshot },
     { "end_level", M_L_GameEndLevel },
+    { "exit_to_title", M_L_GameExitToTitle },
     { nullptr, nullptr },
 };
 
