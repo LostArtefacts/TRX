@@ -1,8 +1,10 @@
 #pragma once
 
 #include <trx/core/log.h>
+#include <trx/core/vector.h>
 #include <trx/game/console/types.h>
 
+#include <stddef.h>
 #include <stdint.h>
 
 #define Console_LogGeneric(level, ...)                                         \

@@ -37,8 +37,9 @@ local function level_choices()
   return out
 end
 
--- A number is an ordinal; a name is fuzzy-matched to one. Using choices would
--- list every level back in an error, so this resolves them itself instead.
+-- A number is an ordinal; a name is fuzzy-matched to one. The levels are not
+-- listed back in errors, only offered for completion, so this resolves them
+-- itself rather than leaning on choices.
 local function level_match(token)
   if token:match("^%-?%d+$") then
     return tonumber(token), true
@@ -75,6 +76,7 @@ for _, name in ipairs({ "play", "level" }) do
       parser:positional("level", {
         match = level_match,
         greedy = true,
+        suggest = level_choices,
         help = "console/cmd/play_level/level_help",
       })
     end,

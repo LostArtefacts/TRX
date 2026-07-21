@@ -381,4 +381,36 @@ test("a line the parser rejects never reaches run", function()
   assert(not reached, "run must not run on a bad line")
 end)
 
+test(
+  "the console completes a command's arguments through its parser",
+  function()
+    trx.console.register({
+      name = "completing",
+      args = function(parser)
+        parser:positional("state", { choices = { "snow", "rain", "none" } })
+      end,
+      run = function() end,
+    })
+    local all, at_empty = fake.complete_args("completing", "")
+    assert(#all == 3, "an empty argument offers every choice")
+    assert(at_empty == 0, "an empty argument replaces nothing, at the start")
+    local one, at_word = fake.complete_args("completing", "sn")
+    assert(one[1] == "snow", "a prefix narrows the candidates")
+    assert(at_word == 0, "the run to replace begins where the argument does")
+  end
+)
+
+test("an alias reaches the same argument completer", function()
+  trx.console.register({
+    name = "aliased_parser",
+    aliases = { "ap" },
+    args = function(parser)
+      parser:positional("state", { choices = { "snow", "rain" } })
+    end,
+    run = function() end,
+  })
+  local out = fake.complete_args("ap", "ra")
+  assert(out[1] == "rain", "the alias completes as the command would")
+end)
+
 return h.report()

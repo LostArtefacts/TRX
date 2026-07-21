@@ -3,6 +3,9 @@
 
 #include "fake_engine_console.h"
 
+#include <trx/core/memory.h>
+#include <trx/core/vector.h>
+#include <trx/game/console/common.h>
 #include <trx/game/console/registry.h>
 #include <trx/game/console/types.h>
 #include <trx/game/lua/common.h>
@@ -235,6 +238,36 @@ static int M_L_Reload(lua_State *const L)
     return 0;
 }
 
+// fake.complete_args(cmd, text[, caret]) - the suggestions the registered
+// argument suggester gives back as a list, and the region-relative byte offsets
+// start, end of the run they replace.
+static int M_L_CompleteArgs(lua_State *const L)
+{
+    const char *const cmd = luaL_checkstring(L, 1);
+    const char *const text = luaL_optstring(L, 2, "");
+    const int32_t caret =
+        (int32_t)luaL_optinteger(L, 3, (lua_Integer)strlen(text));
+    lua_newtable(L);
+    const CONSOLE_COMMAND *const command = Console_Registry_Get(cmd);
+    if (command == nullptr || command->complete == nullptr) {
+        lua_pushinteger(L, 0);
+        lua_pushinteger(L, 0);
+        return 3;
+    }
+    COMPLETION out;
+    Completion_Init(&out);
+    command->complete(command, text, caret, &out);
+    for (int32_t i = 0; i < out.suggestions->count; i++) {
+        const SUGGESTION *const s = Vector_Get(out.suggestions, i);
+        lua_pushstring(L, s->text);
+        lua_rawseti(L, -2, i + 1);
+    }
+    lua_pushinteger(L, (lua_Integer)out.start);
+    lua_pushinteger(L, (lua_Integer)out.end);
+    Completion_Free(&out);
+    return 3;
+}
+
 static int M_L_HelpId(lua_State *const L)
 {
     const char *const help_id = FakeConsole_HelpId(luaL_checkstring(L, 1));
@@ -254,6 +287,8 @@ void FakeConsole_PushLua(lua_State *const L)
     lua_setfield(L, -2, "run");
     lua_pushcfunction(L, M_L_HelpId);
     lua_setfield(L, -2, "help_id");
+    lua_pushcfunction(L, M_L_CompleteArgs);
+    lua_setfield(L, -2, "complete_args");
     lua_pushcfunction(L, M_L_IsRegistered);
     lua_setfield(L, -2, "is_registered");
     lua_pushcfunction(L, M_L_AsLevelScript);

@@ -174,8 +174,8 @@ api.define("console.register", {
   description = "Registers a console command written in Lua.\n\n"
     .. "Every command has a `trx.argparse` parser. `args` is an optional function that shapes it - "
     .. "it receives the parser and declares the arguments the command takes. A command that omits "
-    .. "`args` takes none, and reports so when handed one. The parser answers `-h`/`--help` on its "
-    .. "own.\n\n"
+    .. "`args` takes none, and reports so when handed one. The console completes the arguments from "
+    .. "the parser, and answers `-h`/`--help` from it.\n\n"
     .. "`run` receives the parsed values, a table keyed by argument name. What it gives back is a "
     .. "`trx.console.Result`, and returning nothing means `OK`. It may return a message after that, "
     .. "which is logged to the console - as an error, for any result but `OK`. A line the parser "
@@ -233,41 +233,49 @@ api.define("console.register", {
       spec.args(parser)
     end
 
-    raw.register(spec.name, spec.help, function(args)
-      local parsed, err = parser:parse((args or ""):match("^%s*(.-)%s*$"))
-      if parsed == nil then
-        -- A parse error names what it expected, so it stands in for the console's
-        -- generic one; FAILURE keeps that generic line from also being logged.
-        trx.console.log.error(parser:format_error(err))
-        return Result.FAILURE
-      end
-      if parsed.help then
-        local text = parser:usage()
-        if spec.help ~= nil then
-          text = trx.locale.get(spec.help) .. "\n\n" .. text
+    raw.register(
+      spec.name,
+      spec.help,
+      function(args)
+        local parsed, err = parser:parse((args or ""):match("^%s*(.-)%s*$"))
+        if parsed == nil then
+          -- A parse error names what it expected, so it stands in for the console's
+          -- generic one; FAILURE keeps that generic line from also being logged.
+          trx.console.log.error(parser:format_error(err))
+          return Result.FAILURE
         end
-        trx.console.log(text)
-        return Result.OK
-      end
+        if parsed.help then
+          local text = parser:usage()
+          if spec.help ~= nil then
+            text = trx.locale.get(spec.help) .. "\n\n" .. text
+          end
+          trx.console.log(text)
+          return Result.OK
+        end
 
-      local result, message = spec.run(parsed)
-      -- Only returning nothing means OK; `or` would take a `false` for it too.
-      if result == nil then
-        result = Result.OK
-      end
-      assert(
-        is_result[result],
-        spec.name .. ": run must give back a trx.console.Result"
-      )
-      if message ~= nil then
-        if result == Result.OK then
-          trx.console.log.info(message)
-        else
-          trx.console.log.error(message)
+        local result, message = spec.run(parsed)
+        -- Only returning nothing means OK; `or` would take a `false` for it too.
+        if result == nil then
+          result = Result.OK
         end
+        assert(
+          is_result[result],
+          spec.name .. ": run must give back a trx.console.Result"
+        )
+        if message ~= nil then
+          if result == Result.OK then
+            trx.console.log.info(message)
+          else
+            trx.console.log.error(message)
+          end
+        end
+        return result
+      end,
+      spec.aliases,
+      function(text, caret)
+        return parser:complete(text or "", caret)
       end
-      return result
-    end, spec.aliases)
+    )
   end,
 })
 

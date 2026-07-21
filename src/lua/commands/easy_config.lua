@@ -45,6 +45,26 @@ local function display(key)
   return (key:gsub("_", "-"))
 end
 
+-- What the setting takes, for completion: on/off or the enum values, and the
+-- dash that puts the default back. A number has no list to offer, so nothing is
+-- advertised for it.
+local function value_choices(key)
+  local desc = trx.config.describe(key)
+  local out = {}
+  if desc.kind == "boolean" then
+    out[#out + 1] = { key = "on", value = "on" }
+    out[#out + 1] = { key = "off", value = "off" }
+  elseif desc.kind == "enum" or desc.kind == "dynamic_enum" then
+    for _, value in ipairs(desc.values) do
+      out[#out + 1] = { key = display(value), value = display(value) }
+    end
+  else
+    return nil
+  end
+  out[#out + 1] = { key = "-", value = "-" }
+  return out
+end
+
 local function run(key, args)
   if args.value == nil then
     trx.console.log(
@@ -97,7 +117,12 @@ for _, cmd in ipairs(COMMANDS) do
     name = cmd.name,
     help = cmd.help,
     args = function(parser)
-      parser:rest("value", { optional = true })
+      parser:rest("value", {
+        optional = true,
+        suggest = function()
+          return value_choices(cmd.key)
+        end,
+      })
     end,
     run = function(args)
       return run(cmd.key, args)

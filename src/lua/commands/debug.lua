@@ -64,11 +64,19 @@ local function match_keys(text)
   return matched
 end
 
+local function overlay_choices()
+  local out = {}
+  for _, key in ipairs(KEYS) do
+    out[#out + 1] = { key = display(key), value = key }
+  end
+  return out
+end
+
 trx.console.register({
   name = "debug",
   help = "console/cmd/debug/help",
   args = function(parser)
-    parser:positional("option", { optional = true })
+    parser:positional("option", { optional = true, suggest = overlay_choices })
     parser:positional("state", { type = "boolean", optional = true })
   end,
   run = function(args)

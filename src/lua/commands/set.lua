@@ -11,7 +11,7 @@ local function display(text)
   return (text:gsub("_", "-"))
 end
 
--- Every setting, by its dashed name, for matching.
+-- Every setting, by its dashed name, for matching and completion.
 local function option_sources()
   local sources = {}
   for key in pairs(trx.config.list()) do
@@ -112,8 +112,9 @@ trx.console.register({
   help = "console/cmd/set/help",
   args = function(parser)
     parser:flag("force", { short = "-f", long = "--force" })
-    -- The option is matched by run, forgivingly and with its own messages.
-    parser:positional("option", { optional = true })
+    -- The option is matched by run, forgivingly and with its own messages, so
+    -- the parser only suggests the keys for completion.
+    parser:positional("option", { optional = true, suggest = option_sources })
     parser:rest("value", { optional = true })
   end,
   run = run,
