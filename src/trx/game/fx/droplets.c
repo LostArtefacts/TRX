@@ -152,7 +152,7 @@ static void M_UpdateDroplet(M_DROPLET *const droplet)
 
     droplet->prev_pos = droplet->pos;
     droplet->y_vel += droplet->gravity;
-    if (Room_Get(droplet->room_num)->flags.outside) {
+    if (Room_Get(droplet->room_num)->flags.wind) {
         const XZ_32 wind = Sparks_GetSmokeWind();
         droplet->pos.x += wind.x >> 1;
         droplet->pos.z += wind.z >> 1;
@@ -224,7 +224,7 @@ void FX_Droplets_Draw(void)
         // The streak trails one step behind the drop.
         XYZ_32 tail = head;
         tail.y -= droplet->y_vel >> 6;
-        if (Room_Get(droplet->room_num)->flags.outside) {
+        if (Room_Get(droplet->room_num)->flags.wind) {
             const XZ_32 wind = Sparks_GetSmokeWind();
             tail.x -= wind.x >> 1;
             tail.z -= wind.z >> 1;
