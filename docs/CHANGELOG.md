@@ -6,6 +6,7 @@
 - changed outfits to support up to two braids per outfit; refer to migration notes
 - changed the `/music` console command to list the available tracks when given no argument, as `/sfx` does; `/music status` now reports what is playing
 - fixed being unable to drop to the secret ledge in Jungle room 76 from the ledge above (#5818)
+- fixed a crash when drawing an animating object that has no frame data (#5869)
 
 **TR4**
 - added reflections
