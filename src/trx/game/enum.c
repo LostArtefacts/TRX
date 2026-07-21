@@ -19,6 +19,7 @@
 #include <trx/game/objects/general/pickup.h>
 #include <trx/game/objects/ids.h>
 #include <trx/game/rooms/enum.h>
+#include <trx/game/savegame/types.h>
 #include <trx/game/screenshot.h>
 #include <trx/game/shell/mod.h>
 #include <trx/game/sound/ids.h>
@@ -206,6 +207,9 @@ static __attribute__((constructor)) void M_Init(void)
     ENUM_MAP(SHELL_MOD_TYPE, MOD_MISC, "misc");
     ENUM_MAP(SHELL_MOD_TYPE, MOD_DIRECT_LEVEL, "direct_level");
     ENUM_MAP(SHELL_MOD_TYPE, MOD_CUSTOM, "custom");
+
+    ENUM_MAP(SAVEGAME_SLOT_POOL, SAVEGAME_SLOT_POOL_NORMAL, "normal");
+    ENUM_MAP(SAVEGAME_SLOT_POOL, SAVEGAME_SLOT_POOL_QUICK, "quick");
 
     ENUM_MAP(GF_DEATH_TILE, GF_DEATH_TILE_LAVA, "lava");
     ENUM_MAP(GF_DEATH_TILE, GF_DEATH_TILE_RAPIDS, "rapids");

@@ -29,6 +29,7 @@ The Lua integration was rewritten and existing scripts will need updating; refer
 - added a new Lua module, `trx.weather`, to read and set the runtime weather
 - added a new Lua module, `trx.mod`, to list the game's mods and read the loaded one
 - added `trx.mod.switch()`, to restart the game into another mod
+- added a new Lua module, `trx.savegame`, to read the save slots and start a saved game
 - added a new Lua module, `trx.lua`, with `eval_expr()` and `eval_file()`, to evaluate Lua code at runtime
 - added `trx.config.reset()`, to put a setting back to its default
 - added `trx.config.describe()`, to read a setting's shape and accepted values
