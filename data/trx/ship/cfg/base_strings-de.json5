@@ -355,7 +355,9 @@
                 "syntax_error": "\\{review}Lua-Syntaxfehler: %s",
             },
             "mod": {
+                "current": "\\{review}Aktuell geladene Mod: %s",
                 "help": "\\{review}Wechselt zum angegebenen Mod und startet das Spiel neu.",
+                "invalid": "\\{review}Ungültige Mod: %s",
             },
             "music": {
                 "available_tracks": "\\{review}Verfügbare Musikstücke: %s",

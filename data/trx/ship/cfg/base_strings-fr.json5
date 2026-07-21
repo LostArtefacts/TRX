@@ -355,7 +355,9 @@
                 "syntax_error": "\\{review}Erreur de syntaxe Lua : %s",
             },
             "mod": {
+                "current": "\\{review}Mod actuellement chargé : %s",
                 "help": "\\{review}Bascule vers le mod spécifié et redémarre le jeu.",
+                "invalid": "\\{review}Mod invalide : %s",
             },
             "music": {
                 "available_tracks": "\\{review}Pistes musicales disponibles : %s",

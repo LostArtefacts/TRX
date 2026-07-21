@@ -355,7 +355,9 @@
                 "syntax_error": "Lua syntax error: %s",
             },
             "mod": {
+                "current": "Currently loaded mod: %s",
                 "help": "Switches to the specified mod and restarts the game.",
+                "invalid": "Invalid mod: %s",
             },
             "music": {
                 "available_tracks": "Available music tracks: %s",
