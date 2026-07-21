@@ -92,12 +92,9 @@ const char *Config_GetOptionValueAsString(
     }
 }
 
-bool Config_SetOptionValueFromString(
+bool Config_SetOptionValueFromStringForce(
     const CONFIG_OPTION *const option, const char *const new_value)
 {
-    if (m_Enforced) {
-        return false;
-    }
     switch (option->type) {
     case TVT_BOOL:
         if (strcmp(new_value, "true") == 0 || strcmp(new_value, "false") == 0) {
@@ -139,6 +136,40 @@ bool Config_SetOptionValueFromString(
     default:
         return false;
     }
+}
+
+bool Config_SetOptionValueFromString(
+    const CONFIG_OPTION *const option, const char *const new_value)
+{
+    if (m_Enforced) {
+        return false;
+    }
+    return Config_SetOptionValueFromStringForce(option, new_value);
+}
+
+bool Config_RestoreOptionDefaultForce(const void *const target)
+{
+    if (target == &m_EnableMusic) {
+        m_EnableMusic = true;
+    } else if (target == &m_Fov) {
+        m_Fov = 65;
+    } else if (target == &m_Brightness) {
+        m_Brightness = 1.5;
+    } else if (target == &m_WaterColor) {
+        free(m_WaterColor);
+        m_WaterColor = strdup("ff0000");
+    } else {
+        return false;
+    }
+    return true;
+}
+
+bool Config_RestoreOptionDefault(const void *const target)
+{
+    if (m_Enforced) {
+        return false;
+    }
+    return Config_RestoreOptionDefaultForce(target);
 }
 
 void FakeConfig_Reset(void)

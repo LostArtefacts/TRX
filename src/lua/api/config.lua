@@ -44,8 +44,33 @@ api.define("config.set", {
       description = "A boolean, a number, or a string, matching the option's type. A color is a "
         .. "6-digit hex string.",
     },
+    {
+      name = "force",
+      type = "boolean",
+      optional = true,
+      description = "Write through a setting the game flow enforces.",
+    },
   },
   impl = raw.set,
+})
+
+api.define("config.reset", {
+  description = "Puts a setting back to its default, and keeps the change, as `set` does.",
+  params = {
+    { name = "key", type = "string", description = "Dotted path." },
+    {
+      name = "force",
+      type = "boolean",
+      optional = true,
+      description = "As for `set`.",
+    },
+  },
+  returns = {
+    type = "boolean",
+    description = "`false` when a script or the game flow is holding the setting "
+      .. "(see `is_overridden`).",
+  },
+  impl = raw.reset,
 })
 
 api.define("config.override", {

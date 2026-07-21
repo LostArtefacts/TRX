@@ -55,17 +55,34 @@ static int M_L_ConfigGet(lua_State *const L)
     return 1;
 }
 
-// trxc.config.set(key, value)
+// trxc.config.set(key, value, force?)
 static int M_L_ConfigSet(lua_State *const L)
 {
     const CONFIG_OPTION *const option = M_GetOption(L, 1);
     const char *const new_value = M_ValueAsString(L, 2);
-    if (!Config_SetOptionValueFromString(option, new_value)) {
+    const bool force = lua_toboolean(L, 3);
+    if (!(force ? Config_SetOptionValueFromStringForce(option, new_value)
+                : Config_SetOptionValueFromString(option, new_value))) {
         return luaL_error(
             L, "failed to set option %s to %s", option->name, new_value);
     }
     Config_Update();
     return 0;
+}
+
+// trxc.config.reset(key, force?) -> bool
+static int M_L_ConfigReset(lua_State *const L)
+{
+    const CONFIG_OPTION *const option = M_GetOption(L, 1);
+    const bool force = lua_toboolean(L, 2);
+    const bool changed = force
+        ? Config_RestoreOptionDefaultForce(option->target)
+        : Config_RestoreOptionDefault(option->target);
+    if (changed) {
+        Config_Update();
+    }
+    lua_pushboolean(L, changed);
+    return 1;
 }
 
 // trxc.config.override(key, value)
@@ -112,6 +129,7 @@ static int M_L_ConfigList(lua_State *const L)
 static const luaL_Reg m_Module[] = {
     { "get", M_L_ConfigGet },
     { "set", M_L_ConfigSet },
+    { "reset", M_L_ConfigReset },
     { "override", M_L_ConfigOverride },
     { "restore", M_L_ConfigRestore },
     { "is_overridden", M_L_ConfigIsOverridden },
