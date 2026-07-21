@@ -31,6 +31,11 @@ Each of these should contain a distinct Lara model, with the mesh count and bone
 order conforming to the standard for Lara. Bone offsets are used (e.g. consider
 Bacon Lara's different structure); animations are not used.
 
+#### `O_LARA_SKIN_JOINTS_1`...`O_LARA_SKIN_JOINTS_32`
+Each of these should contain a distinct Lara joints model. The data setup is
+identical to TR4/5, so joint vertices should map to the corresponding meshes
+that they stitch together.
+
 #### `O_LARA_SKIN_SWAP_EXTRA`
 This object contains various additional meshes for Lara, such as altered torsos
 when the TR1 braid is in use, Lara's combat face, and meshes used in extra
@@ -98,18 +103,18 @@ behave. The structure of this file is described below.
   "gun_map": 0,
   "combat_face_offset": 1,
   "supports_sunglasses": true,
-  "braid": {
-    "mode": "BRAID_MODE_TR1_FULL",
-    "mesh_offset": 10,
-    "gold_offset": 16,
-    "positions": [
-      {
+  "braid": [
+    {
+      "mode": "BRAID_MODE_TR1_FULL",
+      "mesh_offset": 10,
+      "gold_offset": 16,
+      "position": {
         "x": 0,
         "y": 20,
         "z": -45,
       },
-    ],
-  },
+    },
+  ],
   "no_holster_offsets": {
     "thigh_r": 1,
     "thigh_l": 2,
@@ -141,6 +146,13 @@ behave. The structure of this file is described below.
     <td>String</td>
     <td colspan="2">
      Indicates which object contains the outfit's meshes and bones.
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><code>joints_object</code></td>
+    <td>String</td>
+    <td colspan="2">
+     Optional; indicates which object contains the joints for this outfit.
     </td>
   </tr>
   <tr valign="top">
@@ -182,10 +194,10 @@ behave. The structure of this file is described below.
   </tr>
   <tr valign="top">
     <td><code>braid</code></td>
-    <td>Object</td>
+    <td>Object array</td>
     <td colspan="2">
-      The braid setup specific to this outfit. If omitted, no braid will be
-      shown. See the braids section below.
+      The braid setup specific to this outfit. At most two braids can be
+      defined. If omitted, no braid will be shown. See the braids section below.
     </td>
   </tr>
   <tr valign="top">
@@ -298,12 +310,18 @@ behave. The structure of this file is described below.
     </td>
   </tr>
   <tr valign="top">
-    <td><code>hair_pos</code></td>
+    <td><code>position</code></td>
     <td>XYZ array</td>
     <td colspan="2">
-      The position relative to Lara's head where the braid will be drawn. At
-      most, two positions can be defined. If missing or empty, no braid will be
-      drawn.
+      The position relative to Lara's head where the braid will be drawn.
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><code>head_seam</code></td>
+    <td>Array of [braid vertex, head vertex] pairs</td>
+    <td colspan="2">
+      The vertex mapping used to stitch the braid to Lara's head. This is only
+      applicable when the outfit itself is jointed.
     </td>
   </tr>
 </table>
