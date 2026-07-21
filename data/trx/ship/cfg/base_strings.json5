@@ -291,6 +291,13 @@
                 "success": "Lara's been toweled off - no more dripping",
                 "underwater": "Lara's a bit busy being underwater right now",
             },
+            "easy_config": {
+                "bad_invocation": "Invalid invocation: %s",
+                "option_enforced": "%s is enforced and cannot be changed",
+                "option_get": "%s is currently set to %s",
+                "option_set": "%s changed to %s",
+                "valid_values": "Valid values: %s",
+            },
             "end_level": {
                 "help": "Ends the current level.",
             },

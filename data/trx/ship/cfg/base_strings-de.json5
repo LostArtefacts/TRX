@@ -291,6 +291,13 @@
                 "success": "\\{review}Lara wurde abgetrocknet - nichts tropft mehr",
                 "underwater": "\\{review}Lara ist gerade etwas beschäftigt - sie ist unter Wasser",
             },
+            "easy_config": {
+                "bad_invocation": "Unzulässiger Aufruf: %s",
+                "option_enforced": "\\{review}%s ist verbindlich und kann nicht geändert werden",
+                "option_get": "%s ist momentan eingestellt auf %s",
+                "option_set": "%s geändert zu %s",
+                "valid_values": "Zulässige Werte: %s",
+            },
             "end_level": {
                 "help": "Beendet das aktuelle Level.",
             },

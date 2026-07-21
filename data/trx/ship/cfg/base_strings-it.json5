@@ -291,6 +291,13 @@
                 "success": "\\{review}Lara si è asciugata - niente più gocce",
                 "underwater": "\\{review}Lara è un po' impegnata - è sott'acqua",
             },
+            "easy_config": {
+                "bad_invocation": "Invocazione non valida: %s",
+                "option_enforced": "%s è stato applicato e non può essere modificato",
+                "option_get": "%s è attualmente impostato su %s",
+                "option_set": "%s è stato modificato in %s",
+                "valid_values": "Valori validi: %s",
+            },
             "end_level": {
                 "help": "Termina il livello attuale.",
             },
