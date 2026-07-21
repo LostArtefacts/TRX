@@ -1,6 +1,9 @@
 #include <trx/config/common.h>
 #include <trx/config/option.h>
 #include <trx/config/override.h>
+#include <trx/core/dynamic_enum.h>
+#include <trx/core/enum_map.h>
+#include <trx/core/vector.h>
 #include <trx/game/lua/common.h>
 #include <trx/game/lua/registry.h>
 #include <trx/game/lua/utils.h>
@@ -52,6 +55,75 @@ static const char *M_ValueAsString(lua_State *const L, const int32_t arg)
 static int M_L_ConfigGet(lua_State *const L)
 {
     M_PushValue(L, M_GetOption(L, 1));
+    return 1;
+}
+
+// The name a value shape goes by in a description.
+static const char *M_KindName(const TRX_VALUE_TYPE type)
+{
+    switch (type) {
+    case TVT_BOOL:
+        return "boolean";
+    case TVT_S8:
+    case TVT_U8:
+    case TVT_S16:
+    case TVT_U16:
+    case TVT_S32:
+    case TVT_U32:
+        return "integer";
+    case TVT_FLOAT:
+    case TVT_DOUBLE:
+        return "number";
+    case TVT_XYZ_16:
+    case TVT_XYZ_32:
+        return "xyz";
+    case TVT_RGB_888:
+        return "color";
+    case TVT_ENUM:
+        return "enum";
+    case TVT_DYNAMIC_ENUM:
+        return "dynamic_enum";
+    case TVT_STRING:
+        return "string";
+    }
+    return "";
+}
+
+// trxc.config.describe(key) -> table
+static int M_L_ConfigDescribe(lua_State *const L)
+{
+    const CONFIG_OPTION *const option = M_GetOption(L, 1);
+    lua_newtable(L);
+    lua_pushstring(L, M_KindName(option->type));
+    lua_setfield(L, -2, "kind");
+    lua_pushboolean(L, option->percent);
+    lua_setfield(L, -2, "percent");
+
+    if (option->type == TVT_ENUM) {
+        VECTOR *const values = EnumMap_ListValues((const char *)option->param);
+        lua_createtable(L, values != nullptr ? values->count : 0, 0);
+        if (values != nullptr) {
+            for (int32_t i = 0; i < values->count; i++) {
+                lua_pushstring(L, *(char **)Vector_Get(values, i));
+                lua_rawseti(L, -2, i + 1);
+            }
+            Vector_Free(values);
+        }
+        lua_setfield(L, -2, "values");
+    } else if (option->type == TVT_DYNAMIC_ENUM) {
+        const int32_t count = DynamicEnum_GetValueCount(option->target);
+        lua_createtable(L, count, 0);
+        int32_t n = 0;
+        for (int32_t i = 0; i < count; i++) {
+            const char *const value = DynamicEnum_GetValueAt(option->target, i);
+            if (value != nullptr) {
+                lua_pushstring(L, value);
+                n++;
+                lua_rawseti(L, -2, n);
+            }
+        }
+        lua_setfield(L, -2, "values");
+    }
     return 1;
 }
 
@@ -128,6 +200,7 @@ static int M_L_ConfigList(lua_State *const L)
 
 static const luaL_Reg m_Module[] = {
     { "get", M_L_ConfigGet },
+    { "describe", M_L_ConfigDescribe },
     { "set", M_L_ConfigSet },
     { "reset", M_L_ConfigReset },
     { "override", M_L_ConfigOverride },

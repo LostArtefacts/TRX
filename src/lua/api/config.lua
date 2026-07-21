@@ -30,6 +30,27 @@ end]],
   impl = raw.get,
 })
 
+api.define("config.describe", {
+  description = "What shape a setting has: how a value is entered and shown, beyond the type "
+    .. "`get` reads back.",
+  params = {
+    { name = "key", type = "string", description = "Dotted path." },
+  },
+  returns = {
+    type = "table",
+    description = "`kind` is one of `boolean`, `integer`, `number`, `color`, `enum`, "
+      .. "`dynamic_enum` or `string`. `percent` marks a number stored 0-1 but entered and "
+      .. "shown as a 0-100 percentage. For the enum kinds, `values` lists what the setting "
+      .. "accepts.",
+  },
+  examples = {
+    [[for _, value in ipairs(trx.config.describe("visuals.shadow_type").values) do
+  trx.log.info(value)
+end]],
+  },
+  impl = raw.describe,
+})
+
 api.define("config.set", {
   description = "Changes the player's setting, and keeps the change. Raises if the key is unknown "
     .. "or the value will not parse.\n\n"

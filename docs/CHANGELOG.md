@@ -28,6 +28,7 @@ The Lua integration was rewritten and existing scripts will need updating; refer
 - added a new Lua module, `trx.weather`, to read and set the runtime weather
 - added a new Lua module, `trx.lua`, with `eval_expr()` and `eval_file()`, to evaluate Lua code at runtime
 - added `trx.config.reset()`, to put a setting back to its default
+- added `trx.config.describe()`, to read a setting's shape and accepted values
 - added new Lua game state, `trx.game.is_loaded` and `trx.game.is_playable`
 - added `trx.console.register()`, so a script can add a console command of its own, with optional `aliases` that dispatch but stay out of the command listing and show in the command's help
 - added `p`, a global shorthand for `trx.console.log`, and made the console log functions take any value, pretty-printing a table

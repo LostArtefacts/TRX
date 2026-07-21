@@ -33,6 +33,21 @@ These are the player's settings, not the level's. `set` writes to them and keeps
   end
   ```
 
+- [lua]`trx.config.describe(key)`  
+  What shape a setting has: how a value is entered and shown, beyond the type `get` reads back.
+
+  Parameters:
+  - **`key`** (string). Dotted path.
+
+  Returns: table. `kind` is one of `boolean`, `integer`, `number`, `color`, `enum`, `dynamic_enum` or `string`. `percent` marks a number stored 0-1 but entered and shown as a 0-100 percentage. For the enum kinds, `values` lists what the setting accepts.
+
+  Example:
+  ```lua
+  for _, value in ipairs(trx.config.describe("visuals.shadow_type").values) do
+    trx.log.info(value)
+  end
+  ```
+
 - [lua]`trx.config.set(key, value, [force])`  
   Changes the player's setting, and keeps the change. Raises if the key is unknown or the value will not parse.
 
