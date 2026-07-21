@@ -580,6 +580,99 @@ test_lua_cmd_heal_exe = executable(
 )
 test('lua_cmd_heal', test_lua_cmd_heal_exe, suite: 'unit')
 
+# The commands with non-trivial arguments, exercised through the console. Name
+# matching goes through fake_engine_strings, a pcre2-free stand-in, so these stay
+# light: the real matcher is covered by lua_strings and lua_argparse.
+test_lua_cmd_play_exe = executable(
+  'test_lua_cmd_play',
+  files(
+    'unit/test_lua_cmd_play.c',
+    'unit/fake_engine_console.c',
+    'unit/fake_engine_game.c',
+    'unit/fake_engine_locale.c',
+    'unit/fake_engine_strings.c',
+  ) + test_stubs
+    + lua_surface_src
+    + files(
+      '../trx/game/lua/capi/console.c',
+      '../trx/game/lua/capi/game.c',
+      '../trx/game/lua/capi/locale.c',
+      '../trx/game/lua/capi/log.c',
+    ),
+  include_directories: [src_inc, test_inc],
+  dependencies: [dep_lua],
+  c_args: lua_surface_args,
+  build_by_default: false,
+)
+test('lua_cmd_play', test_lua_cmd_play_exe, suite: 'unit')
+
+test_lua_cmd_music_exe = executable(
+  'test_lua_cmd_music',
+  files(
+    'unit/test_lua_cmd_music.c',
+    'unit/fake_engine_console.c',
+    'unit/fake_engine_music.c',
+    'unit/fake_engine_locale.c',
+    'unit/fake_engine_strings.c',
+  ) + test_stubs
+    + lua_surface_src
+    + files(
+      '../trx/game/lua/capi/console.c',
+      '../trx/game/lua/capi/music.c',
+      '../trx/game/lua/capi/locale.c',
+      '../trx/game/lua/capi/log.c',
+    ),
+  include_directories: [src_inc, test_inc],
+  dependencies: [dep_lua],
+  c_args: lua_surface_args,
+  build_by_default: false,
+)
+test('lua_cmd_music', test_lua_cmd_music_exe, suite: 'unit')
+
+test_lua_cmd_load_exe = executable(
+  'test_lua_cmd_load',
+  files(
+    'unit/test_lua_cmd_load.c',
+    'unit/fake_engine_console.c',
+    'unit/fake_engine_savegame.c',
+    'unit/fake_engine_locale.c',
+  ) + test_stubs
+    + lua_surface_src
+    + files(
+      '../trx/game/lua/capi/console.c',
+      '../trx/game/lua/capi/locale.c',
+      '../trx/game/lua/capi/log.c',
+    ),
+  include_directories: [src_inc, test_inc],
+  dependencies: [dep_lua],
+  c_args: lua_surface_args,
+  build_by_default: false,
+)
+test('lua_cmd_load', test_lua_cmd_load_exe, suite: 'unit')
+
+test_lua_cmd_save_exe = executable(
+  'test_lua_cmd_save',
+  files(
+    'unit/test_lua_cmd_save.c',
+    'unit/fake_engine_console.c',
+    'unit/fake_engine_game.c',
+    'unit/fake_engine_savegame.c',
+    'unit/fake_engine_locale.c',
+  ) + test_stubs
+    + lua_surface_src
+    + files(
+      '../trx/game/lua/capi/console.c',
+      '../trx/game/lua/capi/game.c',
+      '../trx/game/lua/capi/locale.c',
+      '../trx/game/lua/capi/log.c',
+    ),
+  include_directories: [src_inc, test_inc],
+  dependencies: [dep_lua],
+  c_args: lua_surface_args,
+  build_by_default: false,
+)
+test('lua_cmd_save', test_lua_cmd_save_exe, suite: 'unit')
+
 test_lua_cmd_set_exe = executable(
   'test_lua_cmd_set',
   files(
