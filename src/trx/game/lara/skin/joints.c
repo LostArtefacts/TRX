@@ -166,6 +166,30 @@ void Lara_Joints_Initialise(const LARA_SKIN_OUTFIT *const outfit)
     m_State.is_enabled = true;
 }
 
+void Lara_Joints_SwapSingle(
+    const LARA_MESH mesh_idx, const LARA_SKIN_OUTFIT *const outfit)
+{
+    if (!m_State.is_enabled) {
+        return;
+    }
+
+    if (outfit->joints_obj_id == NO_OBJECT) {
+        return;
+    }
+
+    if (mesh_idx == LM_FIRST) {
+        return;
+    }
+
+    const OBJECT *const joints_obj = Object_Get(outfit->joints_obj_id);
+    if (!joints_obj->loaded) {
+        return;
+    }
+
+    M_JOINT *const joint = &m_State.joints[mesh_idx];
+    joint->joint_mesh_idx = joints_obj->mesh_idx + mesh_idx;
+}
+
 const MATRIX *Lara_Joints_GetMeshMatrix(const LARA_MESH mesh_idx)
 {
     if (!m_State.is_enabled) {
