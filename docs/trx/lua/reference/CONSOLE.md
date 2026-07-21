@@ -98,23 +98,25 @@ Module for interacting with the developer console.
 - [lua]`trx.console.register(spec)`  
   Registers a console command written in Lua.
 
-  `run` is called with whatever the player typed after the command word, trimmed. What it gives back is a `trx.console.Result`, and returning nothing means `OK`. It may return a message after that, which is logged to the console - as an error, for any result but `OK`.
+  Every command has a `trx.argparse` parser. `args` is an optional function that shapes it - it receives the parser and declares the arguments the command takes. A command that omits `args` takes none, and reports so when handed one. The parser answers `-h`/`--help` on its own.
+
+  `run` receives the parsed values, a table keyed by argument name. What it gives back is a `trx.console.Result`, and returning nothing means `OK`. It may return a message after that, which is logged to the console - as an error, for any result but `OK`. A line the parser rejects is reported with what it expected, without reaching `run`.
 
   A command lives for the whole run, so it can only be registered from a global script. A level script raises if it calls this: it runs again every time its level is loaded.
 
   Parameters:
-  - **`spec`** (table). `name`: the word the player types. `help`: a game string key for the help text, optional. `run`: the function. `aliases`: other words that reach the same command, optional; they dispatch but stay out of the command listing, and the help for `name` shows them.
+  - **`spec`** (table). `name`: the word the player types. `help`: a game string key for the help text, optional. `args`: a function that shapes the parser, optional. `run`: the function, called with the parsed arguments. `aliases`: other words that reach the same command, optional; they dispatch but stay out of the command listing, and the help for `name` shows them.
 
   Example:
   ```lua
   trx.console.register({
     name = "greet",
     aliases = { "hello", "hi" },
+    args = function(parser)
+      parser:positional("who", { help = "who to greet" })
+    end,
     run = function(args)
-      if args == "" then
-        return trx.console.Result.BAD_INVOCATION, "greet who?"
-      end
-      trx.console.log("hello " .. args)
+      trx.console.log("hello " .. args.who)
     end,
   })
   ```

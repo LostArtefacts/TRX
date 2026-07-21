@@ -67,43 +67,34 @@ end
 trx.console.register({
   name = "debug",
   help = "console/cmd/debug/help",
+  args = function(parser)
+    parser:positional("option", { optional = true })
+    parser:positional("state", { type = "boolean", optional = true })
+  end,
   run = function(args)
-    if args == "" then
+    if args.option == nil then
       for _, key in ipairs(KEYS) do
         log_get(key)
       end
       return trx.console.Result.OK
     end
 
-    local key, val = args:match("^(%S+)%s+(.+)$")
-    if key == nil then
-      key = args
-    end
-    if val ~= nil and val:match("%s") then
-      return trx.console.Result.BAD_INVOCATION
-    end
-
-    local explicit
-    if val == nil then
+    local explicit = args.state
+    if explicit == nil then
       -- A lone on/off with no name sets every overlay at once.
-      local all = trx.strings.parse_bool(key)
+      local all = trx.strings.parse_bool(args.option)
       if all ~= nil then
         for _, k in ipairs(KEYS) do
           set(k, all)
         end
         return trx.console.Result.OK
       end
-    else
-      explicit = trx.strings.parse_bool(val)
-      if explicit == nil then
-        return trx.console.Result.BAD_INVOCATION
-      end
     end
 
-    local matched = match_keys(key)
+    local matched = match_keys(args.option)
     if #matched == 0 then
       return trx.console.Result.FAILURE,
-        trx.locale.format("console/cmd/debug/unknown_option", key)
+        trx.locale.format("console/cmd/debug/unknown_option", args.option)
     end
 
     for _, k in ipairs(matched) do

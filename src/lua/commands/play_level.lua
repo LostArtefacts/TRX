@@ -17,59 +17,67 @@ local function start_gym()
     trx.locale.format("console/cmd/play_level/loading", gym.title)
 end
 
-local function run(args)
-  if args == "" then
-    return trx.console.Result.BAD_INVOCATION
-  end
-
-  local levels = trx.game.levels
-
-  local num = tonumber(args)
-  if num ~= nil and num % 1 == 0 then
-    if num == 0 then
-      return start_gym()
+-- The levels by title, with the gym first, reachable as "gym" or by its title. A
+-- number typed straight is read as an ordinal, so both spellings reach the same
+-- value.
+local function level_choices()
+  local out = {}
+  local gym = trx.game.gym
+  if gym ~= nil then
+    out[#out + 1] = { key = "gym", value = "gym" }
+    if gym.title ~= nil then
+      out[#out + 1] = { key = gym.title, value = "gym" }
     end
-    local level = levels[num]
-    if level == nil then
-      return trx.console.Result.FAILURE,
-        trx.locale.get("console/cmd/play_level/invalid")
-    end
-    trx.game.play_level(num, { select = true })
-    return trx.console.Result.OK,
-      trx.locale.format("console/cmd/play_level/loading", level.title)
   end
-
-  -- Match the name against the level titles, with the gym reachable as "gym".
-  local sources = {}
-  for ordinal, level in ipairs(levels) do
+  for ordinal, level in ipairs(trx.game.levels) do
     if level.title ~= nil then
-      sources[#sources + 1] =
-        { key = level.title, value = ordinal, weight = 1 }
+      out[#out + 1] = { key = level.title, value = ordinal }
     end
   end
-  if trx.game.gym ~= nil then
-    sources[#sources + 1] = { key = "gym", value = "gym", weight = 1 }
+  return out
+end
+
+-- A number is an ordinal; a name is fuzzy-matched to one. Using choices would
+-- list every level back in an error, so this resolves them itself instead.
+local function level_match(token)
+  if token:match("^%-?%d+$") then
+    return tonumber(token), true
+  end
+  local matches = trx.strings.fuzzy_match(token, level_choices())
+  if #matches > 0 then
+    return matches[1].value, true
+  end
+  return nil, false
+end
+
+local function run(args)
+  local pick = args.level
+  -- Ordinal zero and the word "gym" both mean Lara's home.
+  if pick == 0 or pick == "gym" then
+    return start_gym()
   end
 
-  local matches = trx.strings.fuzzy_match(args, sources)
-  if #matches == 0 then
+  local level = trx.game.levels[pick]
+  if level == nil then
     return trx.console.Result.FAILURE,
       trx.locale.get("console/cmd/play_level/invalid")
   end
-
-  local pick = matches[1].value
-  if pick == "gym" then
-    return start_gym()
-  end
   trx.game.play_level(pick, { select = true })
   return trx.console.Result.OK,
-    trx.locale.format("console/cmd/play_level/loading", levels[pick].title)
+    trx.locale.format("console/cmd/play_level/loading", level.title)
 end
 
 for _, name in ipairs({ "play", "level" }) do
   trx.console.register({
     name = name,
     help = "console/cmd/play_level/help",
+    args = function(parser)
+      parser:positional("level", {
+        match = level_match,
+        greedy = true,
+        help = "console/cmd/play_level/level_help",
+      })
+    end,
     run = run,
   })
 end

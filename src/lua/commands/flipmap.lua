@@ -10,14 +10,9 @@ local function run(args)
     return trx.console.Result.UNAVAILABLE
   end
 
-  local target
-  if args == "" then
+  local target = args.state
+  if target == nil then
     target = not trx.rooms.flipped
-  else
-    target = trx.strings.parse_bool(args)
-    if target == nil then
-      return trx.console.Result.BAD_INVOCATION
-    end
   end
 
   if trx.rooms.flipped == target then
@@ -42,5 +37,8 @@ trx.console.register({
   name = "flip",
   aliases = { "flipmap" },
   help = "console/cmd/flipmap/help",
+  args = function(parser)
+    parser:positional("state", { type = "boolean", optional = true })
+  end,
   run = run,
 })

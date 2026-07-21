@@ -40,7 +40,7 @@ int main(void)
     const LUA_SURFACE_TEST test = {
         .module = "console",
         // config requires locale, so locale loads first.
-        .deps = { "log", "locale", "strings", "config", nullptr },
+        .deps = { "log", "locale", "strings", "config", "argparse", nullptr },
         .script = "set",
         .tests = "cmd_set",
         .push_fake = M_PushFake,

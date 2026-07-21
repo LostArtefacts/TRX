@@ -34,9 +34,9 @@ test("ordinal zero starts the gym", function()
   assert(fake.calls().last_num == 0)
 end)
 
-test("the gym's title does not resolve, starting nothing", function()
-  assert(play("lara's home") == R.FAILURE)
-  assert(fake.calls().play_gym == 0, "only the word gym reaches the gym")
+test("the gym's title, spaces and all, starts the gym", function()
+  assert(play("lara's home") == R.OK)
+  assert(fake.calls().last_num == 0, "the two-word title did not resolve")
 end)
 
 test("an out-of-range number fails, starting nothing", function()
@@ -49,8 +49,8 @@ test("a negative ordinal fails, starting nothing", function()
   assert(fake.calls().play_gym == 0)
 end)
 
-test("no argument is a bad invocation", function()
-  assert(play("") == R.BAD_INVOCATION)
+test("no argument is rejected before run", function()
+  assert(play("") == R.FAILURE)
   assert(fake.calls().play_gym == 0)
 end)
 

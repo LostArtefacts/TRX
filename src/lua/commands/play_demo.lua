@@ -12,18 +12,14 @@ local function run(args)
   end
 
   local demo
-  if args == "" then
+  if args.num == nil then
     demo = trx.game.play_demo()
   else
-    local num = tonumber(args)
-    if num == nil or num % 1 ~= 0 then
-      return trx.console.Result.BAD_INVOCATION
-    end
-    if num < 1 or num > #demos then
+    if args.num < 1 or args.num > #demos then
       return trx.console.Result.FAILURE,
         trx.locale.get("console/cmd/play_demo/invalid")
     end
-    demo = trx.game.play_demo(num)
+    demo = trx.game.play_demo(args.num)
   end
 
   return trx.console.Result.OK,
@@ -33,5 +29,8 @@ end
 trx.console.register({
   name = "demo",
   help = "console/cmd/play_demo/help",
+  args = function(parser)
+    parser:positional("num", { type = "integer", optional = true })
+  end,
   run = run,
 })

@@ -363,6 +363,7 @@
                 "fail_unavailable_slot": "Chan eil slot sàbhalaidh %d ri làimh",
                 "help": "Luchdaich geama bhon t-slot sàbhalaidh ainmichte neo slot luath.",
                 "quick_success": "Slot luchdaichte gu luath %d",
+                "slot_help": "\\{review}àireamh sliot, q no quick airson an t-sàbhalaidh luaith as ùire, q2 airson an dàrna fear",
                 "success": "Geama air a luchdadh bho slot %d",
             },
             "lua": {
@@ -381,8 +382,11 @@
                 "current_none": "\\{review}Trac gnàthach: gun fheum",
                 "deferred_ambient": "\\{review}Àrainneachd air a chur dheth: %d",
                 "help": "\\{review}Seall an stàit ciùil làithreach, stad air a h-uile ciùil, no cluich trac-ciùil leis an ID a chaidh a thoirt seachad.",
+                "id_help": "\\{review}cluich an trac leis an id seo",
                 "invalid_track": "Slighe-ciùil mì-dhligheach",
                 "overlay": "\\{review}Trac(annan) os cionn: %s",
+                "status_help": "\\{review}seall dè tha a' cluich",
+                "stop_help": "\\{review}cuir stad air a' cheòl gu lèir",
                 "stopped": "Sguir an ceòl",
                 "track": "A' cluich ciùil %d",
             },
@@ -406,6 +410,7 @@
             "play_level": {
                 "help": "Cluich ìre leis an ainm neo àireamh ainmichte.",
                 "invalid": "Ìre mì-dhligheach",
+                "level_help": "\\{review}àireamh ìre, ainm no gym",
                 "loading": "A' luchdachadh %s",
             },
             "poison": {
@@ -427,6 +432,7 @@
                 "help": "Sàbhail geama dhan t-slot ainmichte neo dhan ath shlot luath.",
                 "quick_fail_no_slots": "Chan eil slotan sàbhalaidh luath sam bith air an rèiteachadh",
                 "quick_success": "Sàbhailte gu luath",
+                "slot_help": "\\{review}àireamh sliot, q no quick airson an ath shàbhaladh luath, q2 airson an dàrna fear",
                 "success": "Geama air a shàbhaladh gu slot %d",
             },
             "screenshot": {
@@ -446,6 +452,7 @@
             "sfx": {
                 "available": "Fuaimean ri làimh: %s",
                 "help": "Cluich buaidh-fuaime leis an ID ainmichte.",
+                "id_help": "\\{review}cluich an sampall leis an id seo",
                 "invalid": "Fuaim mì-dhligheach: %d",
                 "playing": "A' cluich fuaim %d",
             },

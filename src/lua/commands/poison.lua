@@ -8,12 +8,17 @@
 trx.console.register({
   name = "poison",
   help = "console/cmd/poison/help",
+  args = function(parser)
+    -- -t sets the target reservoir instead of the current level (TR4 only).
+    parser:flag("target", { short = "-t", long = "--target" })
+    parser:positional("value", { type = "integer", optional = true })
+  end,
   run = function(args)
     if not trx.game.is_playable then
       return trx.console.Result.UNAVAILABLE
     end
 
-    if args == "" then
+    if not args.target and args.value == nil then
       return trx.console.Result.OK,
         trx.locale.format(
           "console/cmd/poison/get",
@@ -22,24 +27,12 @@ trx.console.register({
         )
     end
 
-    -- -t, as a standalone token, sets the target reservoir instead of the
-    -- current level. Anything left over is the value.
-    local set_target = false
-    local rest = {}
-    for tok in args:gmatch("%S+") do
-      if tok == "-t" then
-        set_target = true
-      else
-        rest[#rest + 1] = tok
-      end
-    end
-
-    local value = #rest == 1 and tonumber(rest[1]) or nil
-    if value == nil or value % 1 ~= 0 then
+    local value = args.value
+    if value == nil then
       return trx.console.Result.BAD_INVOCATION
     end
 
-    if set_target then
+    if args.target then
       if trx.game.version ~= 4 then
         return trx.console.Result.UNAVAILABLE
       end

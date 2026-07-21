@@ -8,14 +8,9 @@
 local KEY = "debug.enable_invulnerability"
 
 local function run(args)
-  local enable
-  if args == "" then
+  local enable = args.state
+  if enable == nil then
     enable = not trx.config.get(KEY)
-  else
-    enable = trx.strings.parse_bool(args)
-    if enable == nil then
-      return trx.console.Result.BAD_INVOCATION
-    end
   end
 
   trx.config.set(KEY, enable)
@@ -29,5 +24,8 @@ trx.console.register({
   name = "immune",
   aliases = { "immunity" },
   help = "console/cmd/immune/help",
+  args = function(parser)
+    parser:positional("state", { type = "boolean", optional = true })
+  end,
   run = run,
 })

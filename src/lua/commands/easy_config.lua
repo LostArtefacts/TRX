@@ -46,7 +46,7 @@ local function display(key)
 end
 
 local function run(key, args)
-  if args == "" then
+  if args.value == nil then
     trx.console.log(
       trx.locale.format(
         "console/cmd/set/option_get",
@@ -63,15 +63,15 @@ local function run(key, args)
   end
 
   local ok
-  if args == "-" then
+  if args.value == "-" then
     ok = trx.config.reset(key)
   else
-    ok = pcall(trx.config.set, key, args)
+    ok = pcall(trx.config.set, key, args.value)
   end
 
   if not ok then
     trx.console.log.error(
-      trx.locale.format("console/cmd/set/bad_invocation", args)
+      trx.locale.format("console/cmd/set/bad_invocation", args.value)
     )
     trx.console.log(
       trx.locale.format(
@@ -96,6 +96,9 @@ for _, cmd in ipairs(COMMANDS) do
   trx.console.register({
     name = cmd.name,
     help = cmd.help,
+    args = function(parser)
+      parser:rest("value", { optional = true })
+    end,
     run = function(args)
       return run(cmd.key, args)
     end,

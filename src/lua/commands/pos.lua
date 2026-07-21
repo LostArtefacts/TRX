@@ -50,13 +50,9 @@ end
 trx.console.register({
   name = "pos",
   help = "console/cmd/pos/help",
-  run = function(args)
+  run = function()
     if not trx.game.is_loaded then
       return trx.console.Result.UNAVAILABLE
-    end
-
-    if args ~= "" then
-      return trx.console.Result.BAD_INVOCATION
     end
 
     local level = trx.game.current_level

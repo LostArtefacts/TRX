@@ -6,7 +6,7 @@ local function heal(args)
 end
 
 test("heal takes no arguments", function()
-  assert(heal("me") == trx.console.Result.BAD_INVOCATION)
+  assert(heal("me") == trx.console.Result.FAILURE)
 end)
 
 test("heal needs a level", function()

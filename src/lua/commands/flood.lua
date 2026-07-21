@@ -6,30 +6,27 @@
 --   /drain        and the same, taking the water back
 
 -- The console counts rooms from zero, as the engine does; Lua counts from one.
-local function room_from_args(args)
-  if args == "" then
+local function room_for(num)
+  if num == nil then
     local lara = trx.lara.item
     if lara == nil then
       return nil
     end
     return trx.rooms.get(lara.room_num)
   end
-
-  local num = tonumber(args)
-  if num == nil or num % 1 ~= 0 then
-    return nil, true
-  end
   return trx.rooms.get(num + 1)
+end
+
+local function args(parser)
+  parser:positional("room", { type = "integer", optional = true })
 end
 
 trx.console.register({
   name = "flood",
   help = "console/cmd/flood/help",
+  args = args,
   run = function(args)
-    local room, bad = room_from_args(args)
-    if bad then
-      return trx.console.Result.BAD_INVOCATION
-    end
+    local room = room_for(args.room)
     if room == nil then
       return trx.console.Result.UNAVAILABLE
     end
@@ -48,11 +45,9 @@ trx.console.register({
 trx.console.register({
   name = "drain",
   help = "console/cmd/drain/help",
+  args = args,
   run = function(args)
-    local room, bad = room_from_args(args)
-    if bad then
-      return trx.console.Result.BAD_INVOCATION
-    end
+    local room = room_for(args.room)
     if room == nil then
       return trx.console.Result.UNAVAILABLE
     end

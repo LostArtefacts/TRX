@@ -1,10 +1,6 @@
 -- Kills Lara with an explosion. An easter-egg command, so it carries no help.
 
-local function run(args)
-  if args ~= "" then
-    return trx.console.Result.BAD_INVOCATION
-  end
-
+local function run()
   if not trx.game.is_playable then
     return trx.console.Result.UNAVAILABLE
   end
@@ -22,7 +18,6 @@ local function run(args)
   return trx.console.Result.OK
 end
 
--- The regex the C command matched spelled out.
 trx.console.register({
   name = "abortion",
   aliases = { "natlasucks", "natla-sucks", "natlastinks", "natla-stinks" },

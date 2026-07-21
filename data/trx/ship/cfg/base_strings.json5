@@ -363,6 +363,7 @@
                 "fail_unavailable_slot": "Save slot %d is not available",
                 "help": "Loads game from the given save slot or from a quick save.",
                 "quick_success": "Quick-loaded slot %d",
+                "slot_help": "a slot number, q or quick for the most recent quick save, q2 for the second",
                 "success": "Loaded game from save slot %d",
             },
             "lua": {
@@ -381,8 +382,11 @@
                 "current_none": "Current track: none",
                 "deferred_ambient": "Deferred ambient: %d",
                 "help": "Shows the current music state, stops all music, or plays a music track with the given id.",
+                "id_help": "play the track with this id",
                 "invalid_track": "Invalid music track",
                 "overlay": "Overlay track(s): %s",
+                "status_help": "report what is playing",
+                "stop_help": "stop all music",
                 "stopped": "Music stopped",
                 "track": "Playing music track %d",
             },
@@ -406,6 +410,7 @@
             "play_level": {
                 "help": "Plays a level with the given name or number.",
                 "invalid": "Invalid level",
+                "level_help": "a level number, name or gym",
                 "loading": "Loading %s",
             },
             "poison": {
@@ -427,6 +432,7 @@
                 "help": "Saves game to the given save slot or to the next quick save slot.",
                 "quick_fail_no_slots": "No quick save slots are configured",
                 "quick_success": "Quick-saved",
+                "slot_help": "a slot number, q or quick for the next quick save, q2 for the second",
                 "success": "Saved game to save slot %d",
             },
             "screenshot": {
@@ -446,6 +452,7 @@
             "sfx": {
                 "available": "Available sounds: %s",
                 "help": "Plays a sound effect with the given id.",
+                "id_help": "play the sample with this id",
                 "invalid": "Invalid sound: %d",
                 "playing": "Playing sound %d",
             },

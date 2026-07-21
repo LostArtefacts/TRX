@@ -6,11 +6,11 @@
 trx.console.register({
   name = "lua",
   help = "console/cmd/lua/help",
+  args = function(parser)
+    parser:rest("code")
+  end,
   run = function(args)
-    if args == "" then
-      return trx.console.Result.BAD_INVOCATION
-    end
-    local err = trx.lua.eval_expr(args)
+    local err = trx.lua.eval_expr(args.code)
     if err == nil then
       return trx.console.Result.OK
     end

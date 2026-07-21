@@ -363,6 +363,7 @@
                 "fail_unavailable_slot": "Lo slot di salvataggio %d non è disponibile",
                 "help": "Carica la partita dallo slot di salvataggio indicato o da un salvataggio rapido.",
                 "quick_success": "Caricamento rapido dallo slot %d",
+                "slot_help": "\\{review}un numero di slot, q o quick per il salvataggio rapido più recente, q2 per il secondo",
                 "success": "Partita caricata dallo slot di salvataggio %d",
             },
             "lua": {
@@ -381,8 +382,11 @@
                 "current_none": "Traccia corrente: nessuna",
                 "deferred_ambient": "Traccia ambientale differita: %d",
                 "help": "Mostra lo stato attuale della traccia musicale, ferma la musica o riproduce una traccia in base all'ID fornito.",
+                "id_help": "\\{review}riproduci la traccia con questo id",
                 "invalid_track": "Traccia musicale non valida",
                 "overlay": "Traccia(e) sovrapposta(e): %s",
+                "status_help": "\\{review}mostra cosa è in riproduzione",
+                "stop_help": "\\{review}ferma tutta la musica",
                 "stopped": "Musica interrotta",
                 "track": "Riproduzione traccia musicale %d",
             },
@@ -406,6 +410,7 @@
             "play_level": {
                 "help": "Gioca un livello con il nome o il numero specificato.",
                 "invalid": "Livello non valido",
+                "level_help": "\\{review}un numero di livello, un nome o gym",
                 "loading": "Caricamento %s",
             },
             "poison": {
@@ -427,6 +432,7 @@
                 "help": "Salva la partita nello slot di salvataggio indicato o nello slot di salvataggio rapido successivo.",
                 "quick_fail_no_slots": "Nessuno slot di salvataggio rapido configurato",
                 "quick_success": "Salvataggio rapido",
+                "slot_help": "\\{review}un numero di slot, q o quick per il prossimo salvataggio rapido, q2 per il secondo",
                 "success": "Partita salvata nello slot di salvataggio %d",
             },
             "screenshot": {
@@ -446,6 +452,7 @@
             "sfx": {
                 "available": "Suoni disponibili: %s",
                 "help": "Riproduce un effetto sonoro con l'ID specificato.",
+                "id_help": "\\{review}riproduci il campione con questo id",
                 "invalid": "Suono non valido: %d",
                 "playing": "Riproduzione del suono %d",
             },

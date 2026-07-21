@@ -15,8 +15,16 @@ end
 trx.console.register({
   name = "sfx",
   help = "console/cmd/sfx/help",
+  args = function(parser)
+    parser:positional("id", {
+      type = "integer",
+      optional = true,
+      metavar = "id",
+      help = "console/cmd/sfx/id_help",
+    })
+  end,
   run = function(args)
-    if args == "" then
+    if args.id == nil then
       return trx.console.Result.OK,
         trx.locale.format(
           "console/cmd/sfx/available",
@@ -24,19 +32,14 @@ trx.console.register({
         )
     end
 
-    local id = tonumber(args)
-    if id == nil or id % 1 ~= 0 then
-      return trx.console.Result.BAD_INVOCATION
-    end
-
-    local sample = trx.sound.samples[id]
+    local sample = trx.sound.samples[args.id]
     if sample == nil then
       return trx.console.Result.FAILURE,
-        trx.locale.format("console/cmd/sfx/invalid", id)
+        trx.locale.format("console/cmd/sfx/invalid", args.id)
     end
 
     sample:play()
     return trx.console.Result.OK,
-      trx.locale.format("console/cmd/sfx/playing", id)
+      trx.locale.format("console/cmd/sfx/playing", args.id)
   end,
 })
