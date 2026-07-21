@@ -310,6 +310,30 @@ static bool M_LoadExtras(JSON_READ_IO *const io, LARA_SKIN_OUTFIT *const outfit)
         JSON_MUST(JSON_POP(io));
     }
 
+    if (JSON_OPTIONAL(JSON_PUSH(io, "extra_mesh_positions"))) {
+        JSON_OBJECT *const extra_obj = JSON_ReadIO_GetCurrentObject(io);
+        if (extra_obj == nullptr) {
+            JSON_ReadIO_SetError(
+                io, "'extra_mesh_positions' must be an object");
+            JSON_MUST(JSON_POP(io));
+            JSON_FAIL();
+        }
+
+        for (JSON_OBJECT_ELEMENT *elem = extra_obj->start; elem != nullptr;
+             elem = elem->next) {
+            const char *const name = elem->name->string;
+            const int32_t type = ENUM_MAP_GET(LARA_SKIN_EXTRA_MESH, name, -1);
+            if (type < 0 || type >= NUM_EXTRA_MESHES) {
+                JSON_ReadIO_SetError(io, "unknown extra mesh type '%s'", name);
+                JSON_MUST(JSON_POP(io));
+                JSON_FAIL();
+            }
+
+            JSON_MUST(JSON_READ(io, name, &outfit->extra_mesh_positions[type]));
+        }
+        JSON_MUST(JSON_POP(io));
+    }
+
     JSON_FINISH();
 }
 

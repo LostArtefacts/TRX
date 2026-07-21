@@ -642,6 +642,18 @@
             "extra_outfits": {
                 "LS_EXTRA_MIDAS_KILL": "tr4_young_golden_lara",
             },
+            "extra_mesh_positions": {
+                "EXTRA_MESH_GLASSES_OPAQUE": {
+                    "x": 0,
+                    "y": -4,
+                    "z": 0,
+                },
+                "EXTRA_MESH_GLASSES_TRANSPARENT": {
+                    "x": 0,
+                    "y": -4,
+                    "z": 0,
+                },
+            },
         },
 
         // TR4 Young Golden Lara
@@ -681,6 +693,18 @@
                     ],
                 },
             ],
+            "extra_mesh_positions": {
+                "EXTRA_MESH_GLASSES_OPAQUE": {
+                    "x": 0,
+                    "y": -4,
+                    "z": 0,
+                },
+                "EXTRA_MESH_GLASSES_TRANSPARENT": {
+                    "x": 0,
+                    "y": -4,
+                    "z": 0,
+                },
+            },
         },
 
         // TR4 Classic
@@ -709,6 +733,18 @@
             "extra_outfits": {
                 "LS_EXTRA_MIDAS_KILL": "tr4_golden_lara",
             },
+            "extra_mesh_positions": {
+                "EXTRA_MESH_GLASSES_OPAQUE": {
+                    "x": 0,
+                    "y": -3,
+                    "z": 0,
+                },
+                "EXTRA_MESH_GLASSES_TRANSPARENT": {
+                    "x": 0,
+                    "y": -3,
+                    "z": 0,
+                },
+            },
         },
 
         // TR4 Golden Lara
@@ -735,6 +771,18 @@
                     ],
                 },
             ],
+            "extra_mesh_positions": {
+                "EXTRA_MESH_GLASSES_OPAQUE": {
+                    "x": 0,
+                    "y": -3,
+                    "z": 0,
+                },
+                "EXTRA_MESH_GLASSES_TRANSPARENT": {
+                    "x": 0,
+                    "y": -3,
+                    "z": 0,
+                },
+            },
         },
     },
 
