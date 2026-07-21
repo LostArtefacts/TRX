@@ -2456,6 +2456,24 @@
     },
     {
       "bulk": false,
+      "count": 2,
+      "description": "Which set of save slots a slot belongs to.",
+      "path": "savegame.Pool",
+      "values": [
+        {
+          "description": "The numbered save slots.",
+          "name": "NORMAL",
+          "value": 0
+        },
+        {
+          "description": "The quick-save slots, counted and addressed by their on-screen order.",
+          "name": "QUICK",
+          "value": 1
+        }
+      ]
+    },
+    {
+      "bulk": false,
       "count": 3,
       "description": "The kinds of weather a level can show.",
       "path": "weather.Type",
@@ -3887,6 +3905,70 @@
       ]
     },
     {
+      "description": "How many slots a pool has. The quick pool counts only the slots that hold a save, which is how it is shown and addressed.",
+      "params": [
+        {
+          "description": "Which set of slots to look in. Defaults to `NORMAL`.",
+          "enum": "savegame.Pool",
+          "name": "pool",
+          "optional": true,
+          "type": "integer"
+        }
+      ],
+      "path": "savegame.slot_count",
+      "returns": [
+        {
+          "description": "The number of slots.",
+          "type": "integer"
+        }
+      ]
+    },
+    {
+      "description": "Whether a slot holds no save.",
+      "params": [
+        {
+          "description": "1-based slot number. For the quick pool this is the on-screen order.",
+          "name": "index",
+          "type": "integer"
+        },
+        {
+          "description": "Which set of slots to look in. Defaults to `NORMAL`.",
+          "enum": "savegame.Pool",
+          "name": "pool",
+          "optional": true,
+          "type": "integer"
+        }
+      ],
+      "path": "savegame.is_free",
+      "returns": [
+        {
+          "description": "Whether the slot is empty.",
+          "type": "boolean"
+        }
+      ]
+    },
+    {
+      "description": "Starts the saved game in a slot. The load happens once the game flow picks it up, not on the call.",
+      "examples": [
+        "trx.savegame.load(1)"
+      ],
+      "params": [
+        {
+          "description": "1-based slot number. For the quick pool this is the on-screen order.",
+          "name": "index",
+          "type": "integer"
+        },
+        {
+          "description": "Which set of slots to look in. Defaults to `NORMAL`.",
+          "enum": "savegame.Pool",
+          "name": "pool",
+          "optional": true,
+          "type": "integer"
+        }
+      ],
+      "path": "savegame.load"
+    },
+    {
       "description": "Plays a sound effect by catalog id, mapping it to the level's own sample. A game that does not carry the sample plays nothing.",
       "examples": [
         "trx.sound.play(trx.catalog.samples.LARA_NO)\ntrx.sound.play(trx.catalog.samples.LARA_NO, { pos = { x = 100, y = 200, z = 50 } })"
@@ -4130,6 +4212,11 @@
       "description": "Module for inspecting and altering the rooms of the current level.",
       "name": "rooms",
       "order": 10
+    },
+    {
+      "description": "The save slots, and starting or reading a saved game.",
+      "name": "savegame",
+      "order": 24
     },
     {
       "description": "Module for playing sound effects.",

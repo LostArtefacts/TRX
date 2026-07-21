@@ -406,6 +406,18 @@ test_lua_mod_exe = executable(
 )
 test('lua_mod', test_lua_mod_exe, suite: 'unit')
 
+test_lua_savegame_exe = executable(
+  'test_lua_savegame',
+  files('unit/test_lua_savegame.c') + test_stubs
+    + lua_surface_src
+    + files('../trx/game/lua/capi/savegame.c'),
+  include_directories: [src_inc, test_inc],
+  dependencies: [dep_lua],
+  c_args: lua_surface_args,
+  build_by_default: false,
+)
+test('lua_savegame', test_lua_savegame_exe, suite: 'unit')
+
 # No test_stubs: fake_engine_log.c provides Log_Message itself, because which
 # line the log blames is the thing under test.
 test_lua_log_exe = executable(
