@@ -49,7 +49,7 @@ local function run(key, args)
   if args == "" then
     trx.console.log(
       trx.locale.format(
-        "console/cmd/easy_config/option_get",
+        "console/cmd/set/option_get",
         display(key),
         trx.config.format_value(key)
       )
@@ -59,10 +59,7 @@ local function run(key, args)
 
   if trx.config.is_overridden(key) then
     return trx.console.Result.FAILURE,
-      trx.locale.format(
-        "console/cmd/easy_config/option_enforced",
-        display(key)
-      )
+      trx.locale.format("console/cmd/set/option_enforced", display(key))
   end
 
   local ok
@@ -74,11 +71,11 @@ local function run(key, args)
 
   if not ok then
     trx.console.log.error(
-      trx.locale.format("console/cmd/easy_config/bad_invocation", args)
+      trx.locale.format("console/cmd/set/bad_invocation", args)
     )
     trx.console.log(
       trx.locale.format(
-        "console/cmd/easy_config/valid_values",
+        "console/cmd/set/valid_values",
         trx.config.accepted_values(key)
       )
     )
@@ -87,7 +84,7 @@ local function run(key, args)
 
   trx.console.log(
     trx.locale.format(
-      "console/cmd/easy_config/option_set",
+      "console/cmd/set/option_set",
       display(key),
       trx.config.format_value(key)
     )
