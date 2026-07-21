@@ -264,7 +264,10 @@ static void M_UpdateWind(void)
                 m_HairWindZ--;
             }
         }
-        m_SmokeWind = (XZ_32) {};
+        m_SmokeWind = (XZ_32) {
+            .x = 0,
+            .z = m_HairWindZ << 1,
+        };
         return;
     }
 
