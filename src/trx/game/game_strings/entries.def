@@ -985,6 +985,11 @@ GS_DEFINE(console/cmd/vsync/help,         "Toggles vertical sync.")
 GS_DEFINE(console/cmd/weather/help,       "Changes the current weather type.")
 GS_DEFINE(console/cmd/wireframe/help,     "Toggles wireframe rendering.")
 
+GS_DEFINE(console/config/accepted_bool,    "on, off")
+GS_DEFINE(console/config/accepted_integer, "[integer]")
+GS_DEFINE(console/config/accepted_decimal, "[decimal]")
+GS_DEFINE(console/config/accepted_percent, "[integer]")
+
 GS_DEFINE(general/settings/common/all_hidden_disclaimer,    "Settings are disabled for this level set.")
 GS_DEFINE(general/settings/common/chroma,                   "Chroma")
 GS_DEFINE(general/settings/common/edit_value,               "Edit value")

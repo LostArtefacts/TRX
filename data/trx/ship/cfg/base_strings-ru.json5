@@ -489,6 +489,12 @@
             "wireframe": {
                 "help": "Переключает рендеринг каркаса.",
             }
+        },
+        "config": {
+            "accepted_bool": "вкл, выкл",
+            "accepted_decimal": "[десятичн.]",
+            "accepted_integer": "[цел.]",
+            "accepted_percent": "[цел.]",
         }
     },
     "dynamic": {

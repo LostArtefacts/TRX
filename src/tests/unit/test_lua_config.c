@@ -36,6 +36,7 @@ int main(void)
 {
     const LUA_SURFACE_TEST test = {
         .module = "config",
+        .deps = { "locale", nullptr },
         .tests = "config",
         .push_fake = M_PushFake,
         .fake_reset = M_FakeReset,

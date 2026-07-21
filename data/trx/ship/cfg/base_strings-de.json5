@@ -489,6 +489,12 @@
             "wireframe": {
                 "help": "Aktiviert und deaktiviert den Gitterrahmen-Render.",
             }
+        },
+        "config": {
+            "accepted_bool": "ein, aus",
+            "accepted_decimal": "[Dezimal]",
+            "accepted_integer": "[Integer]",
+            "accepted_percent": "[Integer]",
         }
     },
     "dynamic": {

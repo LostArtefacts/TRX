@@ -1,6 +1,8 @@
 local raw = trxc.config
 local api = trx.api
 
+require("trx.locale")
+
 api.module("config", {
   order = 8,
   description = "Module for reading and changing engine settings.\n\n"
@@ -51,6 +53,79 @@ end]],
   impl = raw.describe,
 })
 
+-- The console spells enum values and keys with dashes for underscores.
+local function display(text)
+  return (text:gsub("_", "-"))
+end
+
+api.define("config.format_value", {
+  description = "The current value as the console prints it: `1` or `0` for a boolean, two "
+    .. "decimals for a plain number, a 0-100 percentage where the option is one, and enum "
+    .. "values with dashes for underscores.",
+  params = {
+    { name = "key", type = "string", description = "Dotted path." },
+  },
+  returns = { type = "string" },
+  examples = { [[trx.console.log(trx.config.format_value("visuals.fov"))]] },
+  impl = function(key)
+    local desc = raw.describe(key)
+    local value = raw.get(key)
+    if value == nil then
+      return "(null)"
+    end
+    if desc.kind == "boolean" then
+      return value and "1" or "0"
+    end
+    if desc.percent then
+      return ("%.0f%%"):format(value * 100)
+    end
+    if desc.kind == "number" then
+      return ("%.2f"):format(value)
+    end
+    if desc.kind == "enum" or desc.kind == "dynamic_enum" then
+      return display(value)
+    end
+    return tostring(value)
+  end,
+})
+
+api.define("config.accepted_values", {
+  description = "What a setting accepts, as text for an error message: `on, off` for a "
+    .. "boolean, a marker like `[integer]` for the number kinds, or the value names for "
+    .. "the enum kinds, with dashes for underscores.",
+  params = {
+    { name = "key", type = "string", description = "Dotted path." },
+  },
+  returns = {
+    type = "string",
+    nullable = true,
+    description = "`nil` for the kinds with nothing to list, such as a color.",
+  },
+  impl = function(key)
+    local desc = raw.describe(key)
+    if desc.kind == "boolean" then
+      return trx.locale.get("console/config/accepted_bool")
+    end
+    if desc.kind == "integer" then
+      return trx.locale.get("console/config/accepted_integer")
+    end
+    if desc.kind == "number" then
+      if desc.percent then
+        return trx.locale.get("console/config/accepted_percent")
+      end
+      return trx.locale.get("console/config/accepted_decimal")
+    end
+    if desc.kind == "enum" or desc.kind == "dynamic_enum" then
+      local values = {}
+      for _, value in ipairs(desc.values) do
+        values[#values + 1] = display(value)
+      end
+      return table.concat(values, ", ")
+    end
+    return nil
+  end,
+})
+
 api.define("config.set", {
   description = "Changes the player's setting, and keeps the change. Raises if the key is unknown "
     .. "or the value will not parse.\n\n"
@@ -63,7 +138,8 @@ api.define("config.set", {
       name = "value",
       type = "any",
       description = "A boolean, a number, or a string, matching the option's type. A color is a "
-        .. "6-digit hex string.",
+        .. "6-digit hex string. An enum value is taken in either spelling: underscores or the "
+        .. "dashes the console shows.",
     },
     {
       name = "force",
@@ -72,7 +148,26 @@ api.define("config.set", {
       description = "Write through a setting the game flow enforces.",
     },
   },
-  impl = raw.set,
+  impl = function(key, value, force)
+    local ok, err = pcall(raw.set, key, value, force)
+    if ok then
+      return
+    end
+    -- Enum values are shown with dashes for underscores, so they are taken
+    -- in either spelling as well.
+    if type(value) == "string" then
+      local kind = raw.describe(key).kind
+      if kind == "enum" or kind == "dynamic_enum" then
+        local variants = { (value:gsub("_", "-")), (value:gsub("-", "_")) }
+        for _, variant in ipairs(variants) do
+          if variant ~= value and pcall(raw.set, key, variant, force) then
+            return
+          end
+        end
+      end
+    end
+    error(err, 0)
+  end,
 })
 
 api.define("config.reset", {

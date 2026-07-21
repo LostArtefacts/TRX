@@ -489,6 +489,12 @@
             "wireframe": {
                 "help": "Active/désactive le rendu en fil de fer.",
             }
+        },
+        "config": {
+            "accepted_bool": "activé, désactivé",
+            "accepted_decimal": "[décimal]",
+            "accepted_integer": "[entier]",
+            "accepted_percent": "[entier]",
         }
     },
     "dynamic": {

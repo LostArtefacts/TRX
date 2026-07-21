@@ -489,6 +489,12 @@
             "wireframe": {
                 "help": "Włącza lub wyłącza rysowanie w widoku siatki.",
             }
+        },
+        "config": {
+            "accepted_bool": "1, 0",
+            "accepted_decimal": "[liczba ułamkowa]",
+            "accepted_integer": "[liczba całkowita]",
+            "accepted_percent": "[procent]",
         }
     },
     "dynamic": {

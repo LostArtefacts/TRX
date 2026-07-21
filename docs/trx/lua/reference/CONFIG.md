@@ -48,6 +48,27 @@ These are the player's settings, not the level's. `set` writes to them and keeps
   end
   ```
 
+- [lua]`trx.config.format_value(key)`  
+  The current value as the console prints it: `1` or `0` for a boolean, two decimals for a plain number, a 0-100 percentage where the option is one, and enum values with dashes for underscores.
+
+  Parameters:
+  - **`key`** (string). Dotted path.
+
+  Returns: string.
+
+  Example:
+  ```lua
+  trx.console.log(trx.config.format_value("visuals.fov"))
+  ```
+
+- [lua]`trx.config.accepted_values(key)`  
+  What a setting accepts, as text for an error message: `on, off` for a boolean, a marker like `[integer]` for the number kinds, or the value names for the enum kinds, with dashes for underscores.
+
+  Parameters:
+  - **`key`** (string). Dotted path.
+
+  Returns: string or `nil`. `nil` for the kinds with nothing to list, such as a color.
+
 - [lua]`trx.config.set(key, value, [force])`  
   Changes the player's setting, and keeps the change. Raises if the key is unknown or the value will not parse.
 
@@ -55,7 +76,7 @@ These are the player's settings, not the level's. `set` writes to them and keeps
 
   Parameters:
   - **`key`** (string). Dotted path.
-  - **`value`** (any). A boolean, a number, or a string, matching the option's type. A color is a 6-digit hex string.
+  - **`value`** (any). A boolean, a number, or a string, matching the option's type. A color is a 6-digit hex string. An enum value is taken in either spelling: underscores or the dashes the console shows.
   - **`force`** (boolean, optional). Write through a setting the game flow enforces.
 
 - [lua]`trx.config.reset(key, [force])`  

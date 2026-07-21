@@ -489,6 +489,12 @@
             "wireframe": {
                 "help": "Attiva o disattiva la renderizzazione in modalità reticolo.",
             }
+        },
+        "config": {
+            "accepted_bool": "acceso, spento",
+            "accepted_decimal": "[decimale]",
+            "accepted_integer": "[intero]",
+            "accepted_percent": "[intero]",
         }
     },
     "dynamic": {
