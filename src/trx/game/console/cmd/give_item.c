@@ -87,5 +87,12 @@ static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *const ctx)
     return CR_SUCCESS;
 }
 
-REGISTER_CONSOLE_COMMAND(
-    "give|keys|(?:more)?guns", M_Entrypoint, GS_ID("console/cmd/give/help"))
+__attribute__((__constructor__)) static void M_Register(void)
+{
+    Console_Registry_Add((CONSOLE_COMMAND) {
+        .prefix = "give",
+        .proc = M_Entrypoint,
+        .help_id = GS_ID("console/cmd/give/help"),
+        .aliases = "keys, guns, moreguns",
+    });
+}
