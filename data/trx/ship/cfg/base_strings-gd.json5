@@ -72,8 +72,6 @@
             "kill_fail": "Chan eil nàmhaid sam bith faisg air làimh...",
             "lighting_contrast_fmt": "Coimeas Solais: %s",
             "load_game": "Geama air a luchdadh bho slot %d",
-            "load_game_fail_invalid_slot": "Slot mì-dhligheach: %d",
-            "load_game_fail_unavailable_slot": "Chan eil slot sàbhalaidh %d ri làimh",
             "object_not_found": "Cha deach an t-oibseact a lorg",
             "quick_load": "Slot luchdaichte gu luath %d",
             "quick_load_fail_no_bound_slot": "Chan eil slot sàbhalaidh sam bith ceangailte an-dràsta",
@@ -347,7 +345,11 @@
                 "help": "Tionndaidh siostam solais",
             },
             "load": {
+                "fail_invalid_slot": "Slot mì-dhligheach: %d",
+                "fail_unavailable_slot": "Chan eil slot sàbhalaidh %d ri làimh",
                 "help": "Luchdaich geama bhon t-slot sàbhalaidh ainmichte neo slot luath.",
+                "quick_success": "Slot luchdaichte gu luath %d",
+                "success": "Geama air a luchdadh bho slot %d",
             },
             "lua": {
                 "help": "Ruith an t-sreang còd Lua a chaidh a thoirt seachad.",

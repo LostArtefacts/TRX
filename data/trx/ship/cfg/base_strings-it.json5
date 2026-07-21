@@ -72,8 +72,6 @@
             "kill_fail": "Nessun nemico nelle vicinanze...",
             "lighting_contrast_fmt": "Contrasto: %s",
             "load_game": "Partita caricata dallo slot di salvataggio %d",
-            "load_game_fail_invalid_slot": "Slot di salvataggio %d non valido",
-            "load_game_fail_unavailable_slot": "Lo slot di salvataggio %d non è disponibile",
             "object_not_found": "Oggetto non trovato",
             "quick_load": "Caricamento rapido dallo slot %d",
             "quick_load_fail_no_bound_slot": "Nessuno slot di salvataggio attualmente assegnato",
@@ -347,7 +345,11 @@
                 "help": "Attiva o disattiva il sistema di illuminazione.",
             },
             "load": {
+                "fail_invalid_slot": "Slot di salvataggio %d non valido",
+                "fail_unavailable_slot": "Lo slot di salvataggio %d non è disponibile",
                 "help": "Carica la partita dallo slot di salvataggio indicato o da un salvataggio rapido.",
+                "quick_success": "Caricamento rapido dallo slot %d",
+                "success": "Partita caricata dallo slot di salvataggio %d",
             },
             "lua": {
                 "help": "Esegue la stringa di codice Lua specificata.",

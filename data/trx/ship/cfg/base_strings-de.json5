@@ -72,8 +72,6 @@
             "kill_fail": "Kein Feind in der Nähe...",
             "lighting_contrast_fmt": "Beleuchtungs-Kontrast: %s",
             "load_game": "Spiel laden von folgendem Speicher-Slot %d",
-            "load_game_fail_invalid_slot": "Unzulässiger Speicher-Slot %d",
-            "load_game_fail_unavailable_slot": "Speicher-Slot %d ist nicht verfügbar",
             "object_not_found": "Objekt nicht gefunden",
             "quick_load": "\\{review}Schnell geladener Slot %d",
             "quick_load_fail_no_bound_slot": "\\{review}Kein Speicherplatz ist derzeit zugewiesen",
@@ -347,7 +345,11 @@
                 "help": "Aktiviet oder deaktiviert Beleuchtungs-Sytem.",
             },
             "load": {
+                "fail_invalid_slot": "Unzulässiger Speicher-Slot %d",
+                "fail_unavailable_slot": "Speicher-Slot %d ist nicht verfügbar",
                 "help": "\\{review}Lädt das Spiel aus dem angegebenen Speicherplatz oder von einem Schnell-Speicher.",
+                "quick_success": "\\{review}Schnell geladener Slot %d",
+                "success": "Spiel laden von folgendem Speicher-Slot %d",
             },
             "lua": {
                 "help": "\\{review}Führt den angegebenen Lua-Code-String aus.",
