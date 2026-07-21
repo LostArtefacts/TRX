@@ -259,6 +259,11 @@ api.define("game.exit_to_title", {
   impl = raw.exit_to_title,
 })
 
+api.define("game.exit_game", {
+  description = "Closes the game.",
+  impl = raw.exit_game,
+})
+
 api.define("game.screenshot", {
   description = "Takes a screenshot. Without a path, writes one to the screenshots folder in the "
     .. "player's configured format; with a path, writes to that file.",

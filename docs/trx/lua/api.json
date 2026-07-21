@@ -3301,6 +3301,10 @@
       "path": "game.exit_to_title"
     },
     {
+      "description": "Closes the game.",
+      "path": "game.exit_game"
+    },
+    {
       "description": "Takes a screenshot. Without a path, writes one to the screenshots folder in the player's configured format; with a path, writes to that file.",
       "params": [
         {
