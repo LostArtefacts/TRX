@@ -72,8 +72,6 @@
             "kill_fail": "No enemy nearby...",
             "lighting_contrast_fmt": "Lighting Contrast: %s",
             "load_game": "Loaded game from save slot %d",
-            "load_game_fail_invalid_slot": "Invalid save slot %d",
-            "load_game_fail_unavailable_slot": "Save slot %d is not available",
             "object_not_found": "Object not found",
             "quick_load": "Quick-loaded slot %d",
             "quick_load_fail_no_bound_slot": "No save slot is currently bound",
@@ -347,7 +345,11 @@
                 "help": "Toggles lighting system.",
             },
             "load": {
+                "fail_invalid_slot": "Invalid save slot %d",
+                "fail_unavailable_slot": "Save slot %d is not available",
                 "help": "Loads game from the given save slot or from a quick save.",
+                "quick_success": "Quick-loaded slot %d",
+                "success": "Loaded game from save slot %d",
             },
             "lua": {
                 "help": "Executes the given Lua code string.",

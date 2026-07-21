@@ -72,8 +72,6 @@
             "kill_fail": "Brak wrogów w pobliżu",
             "lighting_contrast_fmt": "Kontrast oświetlenia: %s",
             "load_game": "Wczytano grę ze slotu %d",
-            "load_game_fail_invalid_slot": "Nieprawidłowy slot zapisu %d",
-            "load_game_fail_unavailable_slot": "Slot zapisu %d jest niedostępny",
             "object_not_found": "Nie odnaleziono tego obiektu",
             "quick_load": "Wczytano szybki zapis %d",
             "quick_load_fail_no_bound_slot": "Obecnie nie przypisano żadnego zapisu",
@@ -347,7 +345,11 @@
                 "help": "Włącza lub wyłącza system oświetlenia.",
             },
             "load": {
+                "fail_invalid_slot": "Nieprawidłowy slot zapisu %d",
+                "fail_unavailable_slot": "Slot zapisu %d jest niedostępny",
                 "help": "Ładuje grę z danego slotu zapisu lub szybkiego zapisu.",
+                "quick_success": "Wczytano szybki zapis %d",
+                "success": "Wczytano grę ze slotu %d",
             },
             "lua": {
                 "help": "Wykonuje podany kod Lua.",

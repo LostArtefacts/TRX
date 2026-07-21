@@ -72,8 +72,6 @@
             "kill_fail": "Aucun ennemi à proximité...",
             "lighting_contrast_fmt": "\\{review}Contraste de l'éclairage : %s",
             "load_game": "Partie chargée depuis l'emplacement de sauvegarde %d",
-            "load_game_fail_invalid_slot": "Emplacement de sauvegarde %d invalide",
-            "load_game_fail_unavailable_slot": "L'emplacement de sauvegarde %d n'est pas disponible",
             "object_not_found": "Objet non trouvé",
             "quick_load": "\\{review}Emplacement de chargement rapide %d",
             "quick_load_fail_no_bound_slot": "\\{review}Aucun emplacement de sauvegarde n'est actuellement assigné",
@@ -347,7 +345,11 @@
                 "help": "\\{review}Active le système d'éclairage.",
             },
             "load": {
+                "fail_invalid_slot": "Emplacement de sauvegarde %d invalide",
+                "fail_unavailable_slot": "L'emplacement de sauvegarde %d n'est pas disponible",
                 "help": "\\{review}Charge la partie depuis l'emplacement de sauvegarde donné ou depuis une sauvegarde rapide.",
+                "quick_success": "\\{review}Emplacement de chargement rapide %d",
+                "success": "Partie chargée depuis l'emplacement de sauvegarde %d",
             },
             "lua": {
                 "help": "\\{review}Exécute la chaîne de code Lua donnée.",
