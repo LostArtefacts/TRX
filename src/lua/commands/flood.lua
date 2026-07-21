@@ -22,24 +22,26 @@ local function room_from_args(args)
   return trx.rooms.get(num + 1)
 end
 
-local function run(args, underwater)
-  local room, bad = room_from_args(args)
-  if bad then
-    return trx.console.Result.BAD_INVOCATION
-  end
-  if room == nil then
-    return trx.console.Result.UNAVAILABLE
-  end
-
-  room.underwater = underwater
-  return trx.console.Result.OK
-end
-
 trx.console.register({
   name = "flood",
   help = "console/cmd/flood/help",
   run = function(args)
-    return run(args, true)
+    local room, bad = room_from_args(args)
+    if bad then
+      return trx.console.Result.BAD_INVOCATION
+    end
+    if room == nil then
+      return trx.console.Result.UNAVAILABLE
+    end
+    if room.underwater then
+      trx.console.log.warning(
+        trx.locale.format("console/cmd/flood/already", room.num)
+      )
+      return trx.console.Result.OK
+    end
+    room.underwater = true
+    return trx.console.Result.OK,
+      trx.locale.format("console/cmd/flood/done", room.num)
   end,
 })
 
@@ -47,6 +49,21 @@ trx.console.register({
   name = "drain",
   help = "console/cmd/drain/help",
   run = function(args)
-    return run(args, false)
+    local room, bad = room_from_args(args)
+    if bad then
+      return trx.console.Result.BAD_INVOCATION
+    end
+    if room == nil then
+      return trx.console.Result.UNAVAILABLE
+    end
+    if not room.underwater then
+      trx.console.log.warning(
+        trx.locale.format("console/cmd/drain/already", room.num)
+      )
+      return trx.console.Result.OK
+    end
+    room.underwater = false
+    return trx.console.Result.OK,
+      trx.locale.format("console/cmd/drain/done", room.num)
   end,
 })

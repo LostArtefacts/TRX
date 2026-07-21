@@ -268,6 +268,8 @@
                 "unknown_option": "Roghainn neo-aithnichte: %s",
             },
             "drain": {
+                "already": "\\{review}Tha seòmar %d air a dhrèanadh mar-thà",
+                "done": "\\{review}Chaidh seòmar %d a dhrèanadh",
                 "help": "Drèaneas an t-seomair làithreach.",
             },
             "dry": {
@@ -290,6 +292,8 @@
                 "on": "Mapa-flip air a chur AIR",
             },
             "flood": {
+                "already": "\\{review}Tha seòmar %d fo thuil mar-thà",
+                "done": "\\{review}Chaidh seòmar %d a thuiladh",
                 "help": "Lìonas an t-seomair làithreach le uisge.",
             },
             "fly": {

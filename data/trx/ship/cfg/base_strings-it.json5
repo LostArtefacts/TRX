@@ -268,6 +268,8 @@
                 "unknown_option": "Opzione sconosciuta: %s",
             },
             "drain": {
+                "already": "\\{review}La stanza %d è già drenata",
+                "done": "\\{review}Stanza %d drenata",
                 "help": "Drena la stanza corrente, rimuovendo l'acqua.",
             },
             "dry": {
@@ -290,6 +292,8 @@
                 "on": "Mappa capovolta attivata",
             },
             "flood": {
+                "already": "\\{review}La stanza %d è già allagata",
+                "done": "\\{review}Stanza %d allagata",
                 "help": "Immerge la stanza corrente nell'acqua.",
             },
             "fly": {
