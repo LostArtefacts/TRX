@@ -78,8 +78,6 @@
             "quick_load_fail_unavailable_bound_slot": "Chan eil an slot sàbhalaidh ceangailte rim faotainn",
             "quick_save": "Sàbhailte gu luath",
             "quick_save_fail_no_slots": "Chan eil slotan sàbhalaidh luath sam bith air an rèiteachadh",
-            "save_game": "Geama air a shàbhaladh gu slot %d",
-            "save_game_fail_invalid_slot": "Slot sàbhalaidh mì-dhligheach: %d",
             "speed_set": "Astar air a shuidheachadh air %d",
             "textures_off": "Teacsaichean: dheth",
             "textures_on": "Teacsaichean: air",
@@ -409,7 +407,11 @@
                 "level_fmt_demo": "Taisbeanadh %d",
             },
             "save": {
+                "fail_invalid_slot": "Slot sàbhalaidh mì-dhligheach: %d",
                 "help": "Sàbhail geama dhan t-slot ainmichte neo dhan ath shlot luath.",
+                "quick_fail_no_slots": "Chan eil slotan sàbhalaidh luath sam bith air an rèiteachadh",
+                "quick_success": "Sàbhailte gu luath",
+                "success": "Geama air a shàbhaladh gu slot %d",
             },
             "screenshot": {
                 "help": "Sàbhail glacadh-sgrìn gu diosc, le slighe fhaidhle roghainneil.",

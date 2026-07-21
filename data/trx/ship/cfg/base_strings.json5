@@ -78,8 +78,6 @@
             "quick_load_fail_unavailable_bound_slot": "The bound save slot is not available",
             "quick_save": "Quick-saved",
             "quick_save_fail_no_slots": "No quick save slots are configured",
-            "save_game": "Saved game to save slot %d",
-            "save_game_fail_invalid_slot": "Invalid save slot %d",
             "speed_set": "Speed set to %d",
             "textures_off": "Textures: off",
             "textures_on": "Textures: on",
@@ -409,7 +407,11 @@
                 "level_fmt_demo": "Demo %d",
             },
             "save": {
+                "fail_invalid_slot": "Invalid save slot %d",
                 "help": "Saves game to the given save slot or to the next quick save slot.",
+                "quick_fail_no_slots": "No quick save slots are configured",
+                "quick_success": "Quick-saved",
+                "success": "Saved game to save slot %d",
             },
             "screenshot": {
                 "help": "Saves a screenshot to disk at optional location.",

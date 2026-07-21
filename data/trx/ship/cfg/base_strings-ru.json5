@@ -78,8 +78,6 @@
             "quick_load_fail_unavailable_bound_slot": "\\{review}Привязанный слот сохранения недоступен",
             "quick_save": "\\{review}Быстро сохранено",
             "quick_save_fail_no_slots": "\\{review}Слоты быстрого сохранения не настроены",
-            "save_game": "Игра сохранена в слот %d",
-            "save_game_fail_invalid_slot": "Неверный слот сохранения %d",
             "speed_set": "Скорость установлена на %d",
             "textures_off": "\\{review}Текстуры: выключены",
             "textures_on": "\\{review}Текстуры: включены",
@@ -409,7 +407,11 @@
                 "level_fmt_demo": "Демо %d",
             },
             "save": {
+                "fail_invalid_slot": "Неверный слот сохранения %d",
                 "help": "\\{review}Сохраняет игру в указанный слот сохранения или в следующий слот быстрого сохранения.",
+                "quick_fail_no_slots": "\\{review}Слоты быстрого сохранения не настроены",
+                "quick_success": "\\{review}Быстро сохранено",
+                "success": "Игра сохранена в слот %d",
             },
             "screenshot": {
                 "help": "\\{review}Сохраняет скриншот на диск с возможным указанием пути.",

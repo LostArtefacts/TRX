@@ -78,8 +78,6 @@
             "quick_load_fail_unavailable_bound_slot": "\\{review}L'emplacement de sauvegarde assigné n'est pas disponible",
             "quick_save": "\\{review}Sauvegarde rapide",
             "quick_save_fail_no_slots": "\\{review}Aucun emplacement de sauvegarde rapide n'est configuré",
-            "save_game": "Partie sauvegardée dans l'emplacement de sauvegarde %d",
-            "save_game_fail_invalid_slot": "Emplacement de sauvegarde %d invalide",
             "speed_set": "Vitesse réglée sur %d",
             "textures_off": "\\{review}Textures : désactivées",
             "textures_on": "\\{review}Textures : activées",
@@ -409,7 +407,11 @@
                 "level_fmt_demo": "Démo %d",
             },
             "save": {
+                "fail_invalid_slot": "Emplacement de sauvegarde %d invalide",
                 "help": "\\{review}Sauvegarde la partie dans l'emplacement de sauvegarde donné ou dans le prochain emplacement de sauvegarde rapide.",
+                "quick_fail_no_slots": "\\{review}Aucun emplacement de sauvegarde rapide n'est configuré",
+                "quick_success": "\\{review}Sauvegarde rapide",
+                "success": "Partie sauvegardée dans l'emplacement de sauvegarde %d",
             },
             "screenshot": {
                 "help": "\\{review}Enregistre une capture d'écran sur le disque, avec un chemin optionnel.",

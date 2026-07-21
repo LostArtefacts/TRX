@@ -78,8 +78,6 @@
             "quick_load_fail_unavailable_bound_slot": "\\{review}Der zugewiesene Speicherplatz ist nicht verfügbar",
             "quick_save": "\\{review}Schnell gespeichert",
             "quick_save_fail_no_slots": "\\{review}Keine Schnellspeicherplätze konfiguriert",
-            "save_game": "Spiel gespeichert auf Speicher-Slot %d",
-            "save_game_fail_invalid_slot": "Unzulässiger Speicher-Slot %d",
             "speed_set": "Geschwindigkeit eingestellt auf %d",
             "textures_off": "\\{review}Texturen: aus",
             "textures_on": "\\{review}Texturen: an",
@@ -409,7 +407,11 @@
                 "level_fmt_demo": "Demo %d",
             },
             "save": {
+                "fail_invalid_slot": "Unzulässiger Speicher-Slot %d",
                 "help": "\\{review}Speichert das Spiel im angegebenen Speicherplatz oder im nächsten Schnell-Speicherplatz.",
+                "quick_fail_no_slots": "\\{review}Keine Schnellspeicherplätze konfiguriert",
+                "quick_success": "\\{review}Schnell gespeichert",
+                "success": "Spiel gespeichert auf Speicher-Slot %d",
             },
             "screenshot": {
                 "help": "\\{review}Speichert einen Screenshot auf der Festplatte, mit optionalem Pfad.",
