@@ -1639,7 +1639,7 @@
         },
         "visuals.enable_breeze": {
             "title": "Gaoth",
-            "description": "Cuiridh seo buaidh na gaoithe air feaman-fuilt Lara ann an seòmraichean freagarrach.",
+            "description": "Cuiridh seo buaidh na gaoithe air feaman-fuilt Lara, boinneagan uisge a' thuiteas far Lara, agus an t-uisge/sneachd ann an seòmraichean freagarrach.",
         },
         "visuals.enable_droplets": {
             "title": "\\{review}Boinnean uisge",

@@ -1639,7 +1639,7 @@
         },
         "visuals.enable_breeze": {
             "title": "Effetto brezza",
-            "description": "Abilita l'effetto brezza sulla treccia di Lara nelle stanze appropriate.",
+            "description": "\\{review}Abilita l'effetto della brezza sulla treccia di Lara, le gocce d'acqua che cadono da Lara e la pioggia o la neve nelle aree appropriate.",
         },
         "visuals.enable_droplets": {
             "title": "\\{review}Gocce d'acqua",

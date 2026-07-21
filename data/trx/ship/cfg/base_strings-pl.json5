@@ -1639,7 +1639,7 @@
         },
         "visuals.enable_breeze": {
             "title": "Wiatr",
-            "description": "Włącza efekt wiatru na warkoczu Lary w miejscach, które to obsługują.",
+            "description": "\\{review}Włącza efekt powiewu na warkoczu Lary, krople wody spadające z Lary oraz deszcz i śnieg w odpowiednich pomieszczeniach.",
         },
         "visuals.enable_droplets": {
             "title": "\\{review}Krople wody",

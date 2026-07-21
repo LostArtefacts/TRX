@@ -58,7 +58,8 @@ bool UI_Settings_GunGlow_IsVisible(const UI_SETTINGS_OPTION *const option)
 bool UI_Settings_EnableBreeze_IsAvailable(
     const UI_SETTINGS_OPTION *const option)
 {
-    return g_Config.visuals.enable_braid || g_TRVersion == 3;
+    return g_Config.visuals.enable_braid || g_Config.visuals.enable_weather
+        || g_Config.visuals.enable_droplets;
 }
 
 bool UI_Settings_ResponsiveJumping_IsAvailable(
