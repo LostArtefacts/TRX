@@ -3,7 +3,7 @@
 - added the ability to paste commands in the developer console (with Ctrl+V)
 - added a `/dry` console command, to dry Lara off after a swim
 - changed reflections UV mapping to be more correct
-- changed outfits to support up to two braids per outfit; refer to migration notes
+- changed outfits to support joints and up to two braids per outfit; refer to migration notes
 - changed the `/music` console command to list the available tracks when given no argument, as `/sfx` does; `/music status` now reports what is playing
 - fixed being unable to drop to the secret ledge in Jungle room 76 from the ledge above (#5818)
 - fixed a crash when drawing an animating object that has no frame data (#5869)
@@ -20,6 +20,8 @@
 - fixed pixel sparks, such as blood and the shell splash, drawing as squares instead of the original streaks
 - fixed the camera snapping to elevation and angle changes in instances such as opening floor trapdoors
 - fixed Lara's braid and pigtails spinning around their own axis (OG bug)
+- fixed a missing texture on Young Lara's left hand
+- fixed a misaligned texture on Young Lara's hips
 
 **Lua**
 

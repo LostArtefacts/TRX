@@ -178,9 +178,10 @@ order: 3
    for `trx.game.cutscenes`, `trx.game.demos` and their `play_` functions.
 
 18. **Update Lara's outfit definitions**
-   The `hair_pos` entries for Lara's braids were changed to `positions`. This
-   field is now an array (of at most two values) rather than a single position.
-   Update `outfits.json5` accordingly.
+   The `braid` entries for Lara's outfits were changed to arrays to support up
+   to two instances. Additionally, a `joints_object` can now be specified to
+   allow using TR4/5 outfits. `outfits.json5` must be updated accordingly; refer
+   to the default shipped file and [outfits documentation](OUTFITS.md).
 
 19. **Update scripts that pass an incomplete position**
    `{ x = , y = , z = }` needs all three coordinates. A missing one used to read
