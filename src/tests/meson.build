@@ -462,12 +462,17 @@ test('lua_catalog', test_lua_catalog_exe, suite: 'unit')
 
 test_lua_config_exe = executable(
   'test_lua_config',
-  files('unit/test_lua_config.c', 'unit/fake_engine_config.c') + test_stubs
+  files(
+    'unit/test_lua_config.c',
+    'unit/fake_engine_config.c',
+    'unit/fake_engine_locale.c',
+  ) + test_stubs
     + lua_surface_src
     + files(
       '../trx/config/override.c',
       '../trx/config/value.c',
       '../trx/game/lua/capi/config.c',
+      '../trx/game/lua/capi/locale.c',
     ),
   include_directories: [src_inc, test_inc],
   dependencies: [dep_lua],

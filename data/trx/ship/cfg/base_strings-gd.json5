@@ -489,6 +489,12 @@
             "wireframe": {
                 "help": "Tionndaidh reandaradh frèam-uèir air neo dheth.",
             }
+        },
+        "config": {
+            "accepted_bool": "air, dheth",
+            "accepted_decimal": "[deicheach]",
+            "accepted_integer": "[àireamh slàn]",
+            "accepted_percent": "[àireamh slàn]",
         }
     },
     "dynamic": {

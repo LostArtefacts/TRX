@@ -1,4 +1,4 @@
-// A player's config of five options, one of each shape that behaves
+// A player's config of a handful of options, one of each shape that behaves
 // differently. The override stack underneath is the real one; only the facade
 // around it - what options exist, how a string becomes a value, what writing to
 // disk means - is faked.
@@ -18,6 +18,7 @@ FAKE_CONFIG_CALLS g_FakeConfigCalls;
 static bool m_EnableMusic;
 static int32_t m_Fov;
 static double m_Brightness;
+static double m_MasterVolume;
 static char *m_WaterColor;
 static int32_t m_ShadowType;
 static bool m_Enforced;
@@ -30,6 +31,10 @@ static const CONFIG_OPTION m_Options[] = {
     { .name = "visuals.brightness",
       .type = TVT_DOUBLE,
       .target = &m_Brightness },
+    { .name = "audio.master_volume",
+      .type = TVT_DOUBLE,
+      .target = &m_MasterVolume,
+      .percent = true },
     { .name = "visuals.water_color",
       .type = TVT_STRING,
       .target = &m_WaterColor },
@@ -194,6 +199,8 @@ bool Config_RestoreOptionDefaultForce(const void *const target)
         m_Fov = 65;
     } else if (target == &m_Brightness) {
         m_Brightness = 1.5;
+    } else if (target == &m_MasterVolume) {
+        m_MasterVolume = 1.0;
     } else if (target == &m_WaterColor) {
         free(m_WaterColor);
         m_WaterColor = strdup("ff0000");
@@ -222,6 +229,7 @@ void FakeConfig_Reset(void)
     m_EnableMusic = true;
     m_Fov = 65;
     m_Brightness = 1.5;
+    m_MasterVolume = 1.0;
     free(m_WaterColor);
     m_WaterColor = strdup("ff0000");
     m_ShadowType = 0;

@@ -489,6 +489,12 @@
             "wireframe": {
                 "help": "Toggles wireframe rendering.",
             }
+        },
+        "config": {
+            "accepted_bool": "on, off",
+            "accepted_decimal": "[decimal]",
+            "accepted_integer": "[integer]",
+            "accepted_percent": "[integer]",
         }
     },
     "dynamic": {

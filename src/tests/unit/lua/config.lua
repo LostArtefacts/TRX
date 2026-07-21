@@ -166,6 +166,11 @@ test("an enum option reads and writes by value name", function()
   end)
 end)
 
+test("an enum value is taken in either spelling", function()
+  trx.config.set("visuals.shadow_type", "extra-dark")
+  assert(trx.config.get("visuals.shadow_type") == "extra_dark")
+end)
+
 test("describe tells the shape of a setting", function()
   assert(trx.config.describe("audio.enable_music").kind == "boolean")
   assert(trx.config.describe("visuals.fov").kind == "integer")
@@ -185,6 +190,47 @@ test("describe tells the shape of a setting", function()
   raises(function()
     trx.config.describe("visuals.nonsense")
   end)
+end)
+
+test("format_value spells a value the way the console prints it", function()
+  assert(trx.config.format_value("audio.enable_music") == "1")
+  trx.config.set("audio.enable_music", false)
+  assert(trx.config.format_value("audio.enable_music") == "0")
+
+  assert(trx.config.format_value("visuals.fov") == "65")
+  assert(trx.config.format_value("visuals.brightness") == "1.50")
+  assert(trx.config.format_value("audio.master_volume") == "100%")
+  assert(trx.config.format_value("visuals.water_color") == "ff0000")
+
+  trx.config.set("visuals.shadow_type", "extra_dark")
+  assert(trx.config.format_value("visuals.shadow_type") == "extra-dark")
+end)
+
+test("accepted_values says what a setting takes", function()
+  -- The locale fake answers a key it does not have with the key itself, so the
+  -- type markers read back as their keys.
+  assert(
+    trx.config.accepted_values("audio.enable_music")
+      == "console/config/accepted_bool"
+  )
+  assert(
+    trx.config.accepted_values("visuals.fov")
+      == "console/config/accepted_integer"
+  )
+  assert(
+    trx.config.accepted_values("visuals.brightness")
+      == "console/config/accepted_decimal"
+  )
+  assert(
+    trx.config.accepted_values("audio.master_volume")
+      == "console/config/accepted_percent"
+  )
+  assert(trx.config.accepted_values("visuals.water_color") == nil)
+
+  local values = trx.config.accepted_values("visuals.shadow_type")
+  assert(values:find("circle", 1, true), values)
+  assert(values:find("extra-dark", 1, true), values)
+  assert(not values:find("extra_dark", 1, true), values)
 end)
 
 test("list gives every setting, typed", function()
