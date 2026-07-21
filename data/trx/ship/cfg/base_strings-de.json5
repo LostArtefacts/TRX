@@ -1639,7 +1639,7 @@
         },
         "visuals.enable_breeze": {
             "title": "Brise",
-            "description": "Aktiviert eine Brise, die Laras Zopf in den richtigen Räumen zum Wehen bringt.",
+            "description": "\\{review}Aktiviert den Briseneffekt für Laras Zopf sowie Wassertropfen, die von Lara abfallen, und Regen bzw. Schnee in entsprechenden Räumen.",
         },
         "visuals.enable_droplets": {
             "title": "\\{review}Wassertropfen",

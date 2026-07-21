@@ -1639,7 +1639,7 @@
         },
         "visuals.enable_breeze": {
             "title": "Breeze",
-            "description": "Enables the breeze effect on Lara's braid in appropriate rooms.",
+            "description": "Enables the breeze effect on Lara's braid, water droplets falling off Lara, and rain/snow in appropriate rooms.",
         },
         "visuals.enable_droplets": {
             "title": "Water droplets",

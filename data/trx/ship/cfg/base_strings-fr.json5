@@ -1639,7 +1639,7 @@
         },
         "visuals.enable_breeze": {
             "title": "Vent",
-            "description": "Active l'effet de vent sur la tresse de Lara dans les salles appropriées.",
+            "description": "\\{review}Active l'effet de brise sur la tresse de Lara, les gouttes d'eau qui ruissellent de Lara, ainsi que la pluie et la neige dans les pièces appropriées.",
         },
         "visuals.enable_droplets": {
             "title": "\\{review}Gouttes d'eau",
