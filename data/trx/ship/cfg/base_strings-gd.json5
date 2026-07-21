@@ -355,7 +355,9 @@
                 "syntax_error": "Mearachd sìntacs Lua: %s",
             },
             "mod": {
+                "current": "\\{review}Am mod air a luchdadh an-dràsta: %s",
                 "help": "Ath-thòisich an geama le mod sònraichte.",
+                "invalid": "\\{review}Mod mì-dhligheach: %s",
             },
             "music": {
                 "available_tracks": "\\{review}Tracannan-ciùil rim faighinn: %s",

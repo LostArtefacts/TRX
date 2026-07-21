@@ -355,7 +355,9 @@
                 "syntax_error": "Errore di sintassi Lua: %s",
             },
             "mod": {
+                "current": "\\{review}Mod attualmente caricata: %s",
                 "help": "Passa alla mod specificata e riavvia il gioco.",
+                "invalid": "\\{review}Mod non valida: %s",
             },
             "music": {
                 "available_tracks": "Tracce musicali disponibili: %s",

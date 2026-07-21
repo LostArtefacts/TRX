@@ -355,7 +355,9 @@
                 "syntax_error": "Błąd składni: %s",
             },
             "mod": {
+                "current": "\\{review}Aktualnie załadowany mod: %s",
                 "help": "Przełącza do określonej gry.",
+                "invalid": "\\{review}Nieprawidłowy mod: %s",
             },
             "music": {
                 "available_tracks": "\\{review}Dostępne utwory muzyczne: %s",
