@@ -5,8 +5,11 @@
 
 #include "lua_surface.h"
 
-#include <trx/game/shell/common.h>
+#include <trx/game/game_flow.h>
+#include <trx/game/shell/args.h>
 #include <trx/game/shell/mod.h>
+
+#include <string.h>
 
 static SHELL_MOD m_Mods[] = {
     {
@@ -49,8 +52,36 @@ const SHELL_ARGS *Shell_GetArgs(void)
     return &m_Args;
 }
 
+const SHELL_MOD *Shell_GetModByName(const char *const name)
+{
+    for (int32_t i = 0; i < 2; i++) {
+        if (strcmp(m_Mods[i].name, name) == 0) {
+            return &m_Mods[i];
+        }
+    }
+    return nullptr;
+}
+
+// A mod stands in for one that can be switched to when it is valid.
+bool Shell_CanSwitchToMod(const SHELL_MOD *const mod)
+{
+    return mod != nullptr && mod->is_valid;
+}
+
+static const char *m_RequestedMod;
+
+void Shell_RequestModSwitch(const char *const mod_name)
+{
+    m_RequestedMod = mod_name;
+}
+
+void GF_OverrideCommand(const GF_COMMAND command)
+{
+}
+
 static int M_FakeReset(lua_State *const L)
 {
+    m_RequestedMod = nullptr;
     return 0;
 }
 

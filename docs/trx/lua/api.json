@@ -3704,6 +3704,26 @@
       }
     },
     {
+      "description": "Restarts the game into another mod. The switch happens once the game flow picks it up, not on the call.",
+      "examples": [
+        "trx.mod.switch(\"arabian-nights\")"
+      ],
+      "params": [
+        {
+          "description": "A `trx.mod.Mod` or a mod name.",
+          "name": "mod",
+          "type": "any"
+        }
+      ],
+      "path": "mod.switch",
+      "returns": [
+        {
+          "description": "Whether the mod can be switched to. `false` leaves the game where it is.",
+          "type": "boolean"
+        }
+      ]
+    },
+    {
       "description": "Plays a track by catalog id, mapping it to the level's own track. A game that does not carry the track plays nothing.",
       "examples": [
         "trx.music.play(trx.catalog.music.SECRET)\ntrx.music.play(trx.catalog.music.SECRET, { mode = trx.music.PlayMode.LOOP })"

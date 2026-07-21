@@ -1,3 +1,5 @@
+#include <trx/game/game_flow.h>
+#include <trx/game/game_flow/types.h>
 #include <trx/game/lua/common.h>
 #include <trx/game/lua/field.h>
 #include <trx/game/lua/registry.h>
@@ -84,10 +86,33 @@ static int M_L_ModGetCurrent(lua_State *const L)
     return 1;
 }
 
+// trxc.mod.switch(mod|name) -> bool
+static int M_L_ModSwitch(lua_State *const L)
+{
+    const SHELL_MOD *mod;
+    if (lua_type(L, 1) == LUA_TSTRING) {
+        mod = Shell_GetModByName(lua_tostring(L, 1));
+    } else {
+        LUA_STRUCT_REF *const ref = LUA_Struct_CheckRef(L, 1, &TYPE_SHELL_MOD);
+        mod = LUA_Struct_Deref(L, ref);
+    }
+
+    if (!Shell_CanSwitchToMod(mod)) {
+        lua_pushboolean(L, false);
+        return 1;
+    }
+
+    Shell_RequestModSwitch(mod->name);
+    GF_OverrideCommand((GF_COMMAND) { .action = GF_SWITCH_MOD });
+    lua_pushboolean(L, true);
+    return 1;
+}
+
 static const luaL_Reg m_Module[] = {
     { "count", M_L_ModCount },
     { "get", M_L_ModGet },
     { "get_current", M_L_ModGetCurrent },
+    { "switch", M_L_ModSwitch },
     { nullptr, nullptr },
 };
 
