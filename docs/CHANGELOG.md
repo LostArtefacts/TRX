@@ -28,28 +28,24 @@
 
 The Lua integration was rewritten and existing scripts will need updating; refer to migration notes.
 
+- added `p`, a global shorthand for `trx.console.log`, and made the console log functions take any value, pretty-printing a table
 - added a new Lua module, `trx.math`, with the engine's own fixed-point trigonometry and the `DEG_1`, `DEG_45`, `DEG_90` and `WALL_L` constants
 - added a new Lua module, `trx.strings`, with `fuzzy_match()` and `regex_match()`
-- added a new Lua module, `trx.argparse`, a declarative argument parser for console commands, in the shape of Python's argparse, that both reads and completes a command's arguments
+- added a new Lua module, `trx.argparse`, a declarative argument parser inspired by Python's argparse
 - added a new Lua module, `trx.locale`, for the text the player reads, looked up by key
-- added `trx.locale.reload()`, to reload the current language's text from disk
 - added a new Lua module, `trx.weather`, to read and set the runtime weather
 - added a new Lua module, `trx.mod`, to list the game's mods and read the loaded one
-- added `trx.mod.switch()`, to restart the game into another mod
 - added a new Lua module, `trx.savegame`, to read the save slots and start a saved game
-- added `trx.savegame.save()`, to write a saved game to a slot
 - added a new Lua module, `trx.lua`, with `eval_expr()` and `eval_file()`, to evaluate Lua code at runtime
 - added `trx.config.reset()`, to put a setting back to its default
 - added `trx.config.describe()`, to read a setting's shape and accepted values
 - added `trx.config.format_value()`, the current value spelled the way the console prints it
 - added `trx.config.accepted_values()`, what a setting takes, as text for an error message
 - added new Lua game state, `trx.game.is_loaded` and `trx.game.is_playable`
-- added `trx.console.register()`, for a script to add its own console command, with optional `aliases` and an `args` function describing the arguments it takes
-- added `p`, a global shorthand for `trx.console.log`, and made the console log functions take any value, pretty-printing a table
+- added `trx.console.register()`, for a script to add its own console command
 - added `trx.events.on_flip_effect()`, letting a script handle a flipeffect run by a trigger or an animation command (#4108)
 - added `trx.lara.cure_poison()` and `trx.lara.extinguish()`, to clear Lara's poison and put her out
 - added `trx.lara.dry()` and `trx.lara.is_wet`, to dry Lara off after a swim and to check whether she needs it
-- made `trx.lara.is_burning` writable, so setting it lights Lara or puts her out
 - added `trx.lara.is_flying`, to read and toggle the fly-mode cheat
 - added `trx.camera.is_flyby_active` and `trx.camera.cancel_flyby()`, to see and stop a flyby sequence
 - added `trx.game.LevelType.TITLE`, and a `demo` level type to the game flow, which could not be named before
@@ -84,6 +80,9 @@ The Lua integration was rewritten and existing scripts will need updating; refer
 - added `trx.sound.samples`, the level's samples as `trx.sound.Sample` handles keyed by id, each with `:play()`, `:stop()` and its `volume`, `range`, `randomness` and `pitch`
 - added `trx.sound.streams`, the sound effects playing now as `trx.sound.Stream` handles, each of which can be paused, resumed and stopped on its own
 - added a script watchdog: a script that runs for over 5 seconds without handing control back is stopped with a script error, where it used to freeze the game
+- changed `trx.lara.is_burning` to be writable, so setting it lights Lara or puts her out
+- changed `trx.lara.extra_anim` to a boolean, where it used to be the relative animation number, or -1
+- changed `trx.lara.mesh` and `trx.lara.extra_mesh` to declared enums, `trx.lara.Mesh` and `trx.lara.ExtraMesh`
 - changed `trx.items` and `trx.rooms` to hand out opaque handles rather than `{ idx = ... }` tables, so a handle to a killed item now raises instead of silently addressing whatever took its slot
 - changed handles to compare equal when they name the same thing, so `trx.items[0] == trx.items[0]`
 - changed `trx.items` and `trx.rooms` to count from zero, matching the item and room numbers level editors show, and made `pairs()` walk them keyed by that number
@@ -94,13 +93,11 @@ The Lua integration was rewritten and existing scripts will need updating; refer
 - changed a position table to require all three coordinates, rather than reading a missing one as zero
 - changed `room.idx` to `room.num`
 - changed the Lua level field `name` to `title`
-- changed `trx.lara.extra_anim` to a boolean, where it used to be the relative animation number, or -1
 - changed `item.object_id` to be read-only
 - changed `trx.objects[id]` to return `nil` for an unknown id, where it used to return an object that answered to nothing
 - changed `trx.config.get()` to return the option's own type rather than always a string
 - changed `trx.events.detach()` to return whether a handler was removed
 - changed `trx.events` handlers to no longer receive a dummy argument in `before_control` and `after_control`
-- changed `trx.lara.mesh` and `trx.lara.extra_mesh` to declared enums, `trx.lara.Mesh` and `trx.lara.ExtraMesh`
 - changed the Lua logging functions to take a single message rather than a list of strings
 - changed Lua enums to answer to a constant's name in any case, so `trx.catalog.objects.wolf` and `trx.catalog.objects.WOLF` are the same constant
 - changed Lua enums to be read-only, including the table `pairs()` used to hand out; writing to one used to break every later lookup
