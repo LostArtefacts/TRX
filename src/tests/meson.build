@@ -525,6 +525,34 @@ test_lua_cmd_heal_exe = executable(
 )
 test('lua_cmd_heal', test_lua_cmd_heal_exe, suite: 'unit')
 
+test_lua_cmd_set_exe = executable(
+  'test_lua_cmd_set',
+  files(
+    'unit/test_lua_cmd_set.c',
+    'unit/fake_engine_config.c',
+    'unit/fake_engine_console.c',
+    'unit/fake_engine_locale.c',
+  ) + test_stubs
+    + lua_surface_src
+    + files(
+      '../trx/config/override.c',
+      '../trx/config/value.c',
+      '../trx/core/strings/case_funcs.c',
+      '../trx/core/strings/common.c',
+      '../trx/core/strings/fuzzy_match.c',
+      '../trx/game/lua/capi/config.c',
+      '../trx/game/lua/capi/console.c',
+      '../trx/game/lua/capi/locale.c',
+      '../trx/game/lua/capi/log.c',
+      '../trx/game/lua/capi/strings.c',
+    ),
+  include_directories: [src_inc, test_inc],
+  dependencies: [dep_lua, dep_pcre2],
+  c_args: lua_surface_args + ['-DPCRE2_CODE_UNIT_WIDTH=8'],
+  build_by_default: false,
+)
+test('lua_cmd_set', test_lua_cmd_set_exe, suite: 'unit')
+
 test_lua_creatures_exe = executable(
   'test_lua_creatures',
   files('unit/test_lua_creatures.c', 'unit/fake_engine_creatures.c') + test_stubs
