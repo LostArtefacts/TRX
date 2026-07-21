@@ -20,6 +20,7 @@
 #include <trx/game/objects/ids.h>
 #include <trx/game/rooms/enum.h>
 #include <trx/game/screenshot.h>
+#include <trx/game/shell/mod.h>
 #include <trx/game/sound/ids.h>
 #include <trx/game/ui/settings.h>
 
@@ -199,6 +200,12 @@ static __attribute__((constructor)) void M_Init(void)
     ENUM_MAP(WEATHER_TYPE, WEATHER_NONE, "none");
     ENUM_MAP(WEATHER_TYPE, WEATHER_RAIN, "rain");
     ENUM_MAP(WEATHER_TYPE, WEATHER_SNOW, "snow");
+
+    ENUM_MAP(SHELL_MOD_TYPE, MOD_BASE_GAME, "base_game");
+    ENUM_MAP(SHELL_MOD_TYPE, MOD_EXPANSION_PACK, "expansion_pack");
+    ENUM_MAP(SHELL_MOD_TYPE, MOD_MISC, "misc");
+    ENUM_MAP(SHELL_MOD_TYPE, MOD_DIRECT_LEVEL, "direct_level");
+    ENUM_MAP(SHELL_MOD_TYPE, MOD_CUSTOM, "custom");
 
     ENUM_MAP(GF_DEATH_TILE, GF_DEATH_TILE_LAVA, "lava");
     ENUM_MAP(GF_DEATH_TILE, GF_DEATH_TILE_RAPIDS, "rapids");

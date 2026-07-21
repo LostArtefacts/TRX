@@ -5,7 +5,6 @@
 #include <trx/core/shell.h>
 #include <trx/game/shell/args.h>
 
-#include <SDL2/SDL_events.h>
 #include <stdint.h>
 
 typedef struct {
@@ -15,7 +14,6 @@ typedef struct {
 
 void Shell_Shutdown(void);
 
-SDL_Window *Shell_GetWindow(void);
 const char *Shell_GetConfigDir(void);
 const char *Shell_GetCacheDir(void);
 

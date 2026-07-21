@@ -2368,6 +2368,39 @@
     {
       "bulk": false,
       "count": 5,
+      "description": "What kind of mod it is.",
+      "path": "mod.Type",
+      "values": [
+        {
+          "description": "The base game.",
+          "name": "BASE_GAME",
+          "value": 0
+        },
+        {
+          "description": "An expansion pack.",
+          "name": "EXPANSION_PACK",
+          "value": 1
+        },
+        {
+          "description": "A miscellaneous mod.",
+          "name": "MISC",
+          "value": 2
+        },
+        {
+          "description": "A single level loaded on its own.",
+          "name": "DIRECT_LEVEL",
+          "value": 3
+        },
+        {
+          "description": "A custom mod.",
+          "name": "CUSTOM",
+          "value": 4
+        }
+      ]
+    },
+    {
+      "bulk": false,
+      "count": 5,
       "description": "How a track is played. Pass one as `opts.mode` to `trx.music.play`.",
       "path": "music.PlayMode",
       "values": [
@@ -4058,6 +4091,11 @@
       "order": 17
     },
     {
+      "description": "The mods the game was built with, and which one is loaded.",
+      "name": "mod",
+      "order": 23
+    },
+    {
       "description": "Module for playing and controlling the soundtrack.",
       "name": "music",
       "order": 6
@@ -4255,6 +4293,18 @@
       "description": "Whether Lara is carrying a pistol-class weapon, which is what decides whether she has holsters to show at all.",
       "path": "lara.has_pistol_weapon",
       "type": "boolean",
+      "writable": false
+    },
+    {
+      "description": "The mods the game was built with, as a list of `trx.mod.Mod` counted from one.",
+      "path": "mod.list",
+      "type": "table",
+      "writable": false
+    },
+    {
+      "description": "The loaded mod, as a `trx.mod.Mod`.",
+      "path": "mod.current",
+      "type": "Mod",
       "writable": false
     },
     {
@@ -4786,6 +4836,57 @@
       ],
       "methods": [],
       "path": "lara.Lara"
+    },
+    {
+      "description": "A mod the game can run. Everything on it is read-only.",
+      "extensions": [],
+      "fields": [
+        {
+          "description": "The mod this one builds on, or `nil` if it stands alone.",
+          "name": "base_mod",
+          "type": "string",
+          "writable": false
+        },
+        {
+          "description": "Which Tomb Raider the mod runs on.",
+          "name": "engine_version",
+          "type": "integer",
+          "writable": false
+        },
+        {
+          "description": "Whether the mod's files are present.",
+          "name": "is_available",
+          "type": "boolean",
+          "writable": false
+        },
+        {
+          "description": "Whether the mod can be loaded.",
+          "name": "is_valid",
+          "type": "boolean",
+          "writable": false
+        },
+        {
+          "description": "The mod's identifier, as `trx.mod.switch` takes it.",
+          "name": "name",
+          "type": "string",
+          "writable": false
+        },
+        {
+          "description": "The mod's name, as shown to the player.",
+          "name": "title",
+          "type": "string",
+          "writable": false
+        },
+        {
+          "description": "What kind of mod it is.",
+          "enum": "mod.Type",
+          "name": "type",
+          "type": "integer",
+          "writable": false
+        }
+      ],
+      "methods": [],
+      "path": "mod.Mod"
     },
     {
       "description": "One of the soundtrack's playing streams: the main stream, or an overlay. Reach them through `trx.music.streams`. A handle to a slot that is not playing goes stale, so reading a field or calling a method on it raises; check `is_valid()` first.",
