@@ -3,6 +3,7 @@
 #include <trx/game/lara/skin/types.h>
 
 void Lara_Joints_Initialise(const LARA_SKIN_OUTFIT *outfit);
+void Lara_Joints_SwapSingle(LARA_MESH mesh_idx, const LARA_SKIN_OUTFIT *outfit);
 void Lara_Joints_StashMatrix(LARA_MESH mesh_idx, bool interpolated);
 void Lara_Joints_Draw(LARA_MESH mesh_idx, CLIP clip, bool interpolated);
 

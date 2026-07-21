@@ -365,6 +365,13 @@ void Lara_Skin_Initialise(void)
             }
         }
 
+        if (outfit->joints_obj_id != NO_OBJECT) {
+            const OBJECT *const joints_obj = Object_Get(outfit->joints_obj_id);
+            if (joints_obj->loaded) {
+                Object_SetReflective(outfit->joints_obj_id, true);
+            }
+        }
+
         if (!outfit->braid.enabled || outfit->braid.gold_offset == M_NO_MESH) {
             continue;
         }
@@ -529,6 +536,7 @@ void Lara_Skin_SwapSingleExtra(
     }
 
     M_ApplyMeshIfValid(mesh, outfit);
+    Lara_Joints_SwapSingle(mesh, outfit);
 
     if (mesh == LM_THIGH_L) {
         M_SetGunEquipment(LM_THIGH_L, m_HolsterType_L, outfit);
