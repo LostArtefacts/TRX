@@ -78,8 +78,6 @@
             "quick_load_fail_unavailable_bound_slot": "Szybkie wczytywanie nie jest dostępne",
             "quick_save": "Szybki zapis",
             "quick_save_fail_no_slots": "Nie skonfigurowano slotów szybkiego zapisu",
-            "save_game": "Zapisano grę na slocie zapisu %d",
-            "save_game_fail_invalid_slot": "Nieprawidłowy slot zapisu %d",
             "speed_set": "Prędkość ustawiona na %d",
             "textures_off": "Tekstury: wyłączone",
             "textures_on": "Tekstury: włączone",
@@ -409,7 +407,11 @@
                 "level_fmt_demo": "Demo %d",
             },
             "save": {
+                "fail_invalid_slot": "Nieprawidłowy slot zapisu %d",
                 "help": "Zapisuje grę do danego slotu zapisu, lub do pierwszego dostępnego slotu szybkiego zapisu.",
+                "quick_fail_no_slots": "Nie skonfigurowano slotów szybkiego zapisu",
+                "quick_success": "Szybki zapis",
+                "success": "Zapisano grę na slocie zapisu %d",
             },
             "screenshot": {
                 "help": "Zapisuje zrzut ekranu na dysku w opcjonalnej lokalizacji.",

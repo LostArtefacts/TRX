@@ -78,8 +78,6 @@
             "quick_load_fail_unavailable_bound_slot": "Lo slot di salvataggio assegnato non è disponibile",
             "quick_save": "Salvataggio rapido",
             "quick_save_fail_no_slots": "Nessuno slot di salvataggio rapido configurato",
-            "save_game": "Partita salvata nello slot di salvataggio %d",
-            "save_game_fail_invalid_slot": "Slot di salvataggio %d non valido",
             "speed_set": "Velocità impostata su %d",
             "textures_off": "Texture: disattivate",
             "textures_on": "Texture: attivate",
@@ -409,7 +407,11 @@
                 "level_fmt_demo": "Demo %d",
             },
             "save": {
+                "fail_invalid_slot": "Slot di salvataggio %d non valido",
                 "help": "Salva la partita nello slot di salvataggio indicato o nello slot di salvataggio rapido successivo.",
+                "quick_fail_no_slots": "Nessuno slot di salvataggio rapido configurato",
+                "quick_success": "Salvataggio rapido",
+                "success": "Partita salvata nello slot di salvataggio %d",
             },
             "screenshot": {
                 "help": "Salva un'istantanea dello schermo su disco in un percorso facoltativo.",
