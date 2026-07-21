@@ -55,7 +55,7 @@ test("an unknown track plays nothing, and stops nothing", function()
 end)
 
 test("a word that is neither keyword nor number is refused", function()
-  assert(music("nonsense") == R.BAD_INVOCATION)
+  assert(music("nonsense") == R.FAILURE)
   assert(fake.calls().play_count == 0)
 end)
 

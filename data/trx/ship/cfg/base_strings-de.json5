@@ -363,6 +363,7 @@
                 "fail_unavailable_slot": "Speicher-Slot %d ist nicht verfügbar",
                 "help": "\\{review}Lädt das Spiel aus dem angegebenen Speicherplatz oder von einem Schnell-Speicher.",
                 "quick_success": "\\{review}Schnell geladener Slot %d",
+                "slot_help": "\\{review}eine Slot-Nummer, q oder quick für den letzten Schnellspeicherstand, q2 für den zweiten",
                 "success": "Spiel laden von folgendem Speicher-Slot %d",
             },
             "lua": {
@@ -381,8 +382,11 @@
                 "current_none": "\\{review}Aktueller Titel: keiner",
                 "deferred_ambient": "\\{review}Verzögerte Umgebungsgeräusche: %d",
                 "help": "\\{review}Zeigt den aktuellen Musikstatus an, stoppt alle Musik oder spielt einen Musiktrack mit der angegebenen ID ab.",
+                "id_help": "\\{review}den Titel mit dieser ID abspielen",
                 "invalid_track": "Unzulässiger Musik Titel",
                 "overlay": "\\{review}Overlay-Titel: %s",
+                "status_help": "\\{review}anzeigen, was gerade läuft",
+                "stop_help": "\\{review}alle Musik stoppen",
                 "stopped": "\\{review}Musik gestoppt",
                 "track": "Spiele Musiktitel %d",
             },
@@ -406,6 +410,7 @@
             "play_level": {
                 "help": "Startet einen Level mit dem angegebenen Namen oder der dazugehörigen Nummer.",
                 "invalid": "Unzulässiger Level",
+                "level_help": "\\{review}eine Levelnummer, ein Name oder gym",
                 "loading": "Lade %s",
             },
             "poison": {
@@ -427,6 +432,7 @@
                 "help": "\\{review}Speichert das Spiel im angegebenen Speicherplatz oder im nächsten Schnell-Speicherplatz.",
                 "quick_fail_no_slots": "\\{review}Keine Schnellspeicherplätze konfiguriert",
                 "quick_success": "\\{review}Schnell gespeichert",
+                "slot_help": "\\{review}eine Slot-Nummer, q oder quick für den nächsten Schnellspeicherstand, q2 für den zweiten",
                 "success": "Spiel gespeichert auf Speicher-Slot %d",
             },
             "screenshot": {
@@ -446,6 +452,7 @@
             "sfx": {
                 "available": "Verfügbare Sounds: %s",
                 "help": "Spielt einen Sound-Effekt mit der angegebenen ID ab.",
+                "id_help": "\\{review}das Sample mit dieser ID abspielen",
                 "invalid": "Unzulässiger Sound: %d",
                 "playing": "Spiele Sound: %d",
             },

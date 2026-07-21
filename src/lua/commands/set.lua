@@ -11,26 +11,17 @@ local function display(text)
   return (text:gsub("_", "-"))
 end
 
--- Pulls -f/--force out of the arguments, wherever it sits.
-local function extract_force(args)
-  local force = false
-  local tokens = {}
-  for token in args:gmatch("%S+") do
-    if token == "-f" or token == "--force" then
-      force = true
-    else
-      tokens[#tokens + 1] = token
-    end
-  end
-  return force, tokens
-end
-
-local function match_options(text)
+-- Every setting, by its dashed name, for matching.
+local function option_sources()
   local sources = {}
   for key in pairs(trx.config.list()) do
     sources[#sources + 1] = { key = display(key), value = key, weight = 1 }
   end
-  return trx.strings.fuzzy_match(text, sources)
+  return sources
+end
+
+local function match_options(text)
+  return trx.strings.fuzzy_match(text, option_sources())
 end
 
 -- What the option accepts, for the message after a value that would not parse.
@@ -44,15 +35,14 @@ local function valid_values(key)
 end
 
 local function run(args)
-  local force, tokens = extract_force(args)
-  if #tokens == 0 then
+  if args.option == nil then
     return trx.console.Result.BAD_INVOCATION
   end
 
-  local matches = match_options(tokens[1])
+  local matches = match_options(args.option)
   if #matches == 0 then
     return trx.console.Result.FAILURE,
-      trx.locale.format("console/cmd/set/unknown_option", tokens[1])
+      trx.locale.format("console/cmd/set/unknown_option", args.option)
   end
   if #matches == 2 then
     return trx.console.Result.FAILURE,
@@ -72,7 +62,7 @@ local function run(args)
   end
   local key = matches[1].value
 
-  if #tokens == 1 then
+  if args.value == nil then
     trx.console.log(
       trx.locale.format(
         "console/cmd/set/option_get",
@@ -83,17 +73,17 @@ local function run(args)
     return trx.console.Result.OK
   end
 
-  if not force and trx.config.is_overridden(key) then
+  if not args.force and trx.config.is_overridden(key) then
     return trx.console.Result.FAILURE,
       trx.locale.format("console/cmd/set/option_enforced", display(key))
   end
 
-  local value = table.concat(tokens, " ", 2)
+  local value = args.value
   local ok
   if value == "-" then
-    ok = trx.config.reset(key, force)
+    ok = trx.config.reset(key, args.force)
   else
-    ok = pcall(trx.config.set, key, value, force)
+    ok = pcall(trx.config.set, key, value, args.force)
   end
 
   if not ok then
@@ -120,5 +110,11 @@ end
 trx.console.register({
   name = "set",
   help = "console/cmd/set/help",
+  args = function(parser)
+    parser:flag("force", { short = "-f", long = "--force" })
+    -- The option is matched by run, forgivingly and with its own messages.
+    parser:positional("option", { optional = true })
+    parser:rest("value", { optional = true })
+  end,
   run = run,
 })

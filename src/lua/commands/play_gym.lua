@@ -3,11 +3,7 @@
 -- Usages:
 --   /gym
 
-local function run(args)
-  if args ~= "" then
-    return trx.console.Result.BAD_INVOCATION
-  end
-
+local function run()
   local gym = trx.game.gym
   if gym == nil then
     return trx.console.Result.FAILURE,

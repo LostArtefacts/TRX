@@ -26,6 +26,9 @@ end
 trx.console.register({
   name = "weather",
   help = "console/cmd/weather/help",
+  args = function(parser)
+    parser:positional("state", { optional = true, choices = type_names })
+  end,
   run = function(args)
     if not trx.game.is_loaded then
       return trx.console.Result.UNAVAILABLE
@@ -36,7 +39,7 @@ trx.console.register({
       return trx.console.Result.UNAVAILABLE
     end
 
-    if args == "" then
+    if args.state == nil then
       return trx.console.Result.OK,
         trx.locale.format(
           "console/cmd/weather/current",
@@ -44,19 +47,19 @@ trx.console.register({
         )
     end
 
-    local want = args:lower()
+    local want = args.state:lower()
     for name, value in pairs(trx.weather.Type) do
       if name:lower() == want then
         trx.weather.set(value)
         return trx.console.Result.OK,
-          trx.locale.format("console/cmd/weather/set", args)
+          trx.locale.format("console/cmd/weather/set", args.state)
       end
     end
 
     return trx.console.Result.FAILURE,
       trx.locale.format(
         "console/cmd/weather/invalid",
-        args,
+        args.state,
         table.concat(type_names(), ", ")
       )
   end,

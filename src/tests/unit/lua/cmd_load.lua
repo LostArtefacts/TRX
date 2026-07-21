@@ -43,8 +43,8 @@ test("an out-of-range slot fails, loading nothing", function()
   assert(fake.calls().load_count == 0)
 end)
 
-test("nonsense is a bad invocation", function()
-  assert(load("blah") == R.BAD_INVOCATION)
+test("nonsense is refused before run", function()
+  assert(load("blah") == R.FAILURE)
   assert(fake.calls().load_count == 0)
 end)
 

@@ -8,6 +8,9 @@
 trx.console.register({
   name = "burn",
   help = "console/cmd/burn/help",
+  args = function(parser)
+    parser:positional("state", { type = "boolean", optional = true })
+  end,
   run = function(args)
     if not trx.game.is_playable then
       return trx.console.Result.UNAVAILABLE
@@ -18,14 +21,9 @@ trx.console.register({
       return trx.console.Result.UNAVAILABLE
     end
 
-    local target
-    if args == "" then
+    local target = args.state
+    if target == nil then
       target = not trx.lara.is_burning
-    else
-      target = trx.strings.parse_bool(args)
-      if target == nil then
-        return trx.console.Result.BAD_INVOCATION
-      end
     end
 
     if trx.lara.is_burning == target then

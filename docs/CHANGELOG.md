@@ -2,6 +2,7 @@
 - added TR4 camera mode, which is similar to TR3 but more responsive to Lara's actions such as picking up items
 - added the ability to paste commands in the developer console (with Ctrl+V)
 - added a `/dry` console command, to dry Lara off after a swim
+- improved error messages related to bad command invocations
 - changed reflections UV mapping to be more correct
 - changed outfits to support up to two braids per outfit; refer to migration notes
 - changed the `/music` console command to list the available tracks when given no argument, as `/sfx` does; `/music status` now reports what is playing
@@ -38,7 +39,7 @@ The Lua integration was rewritten and existing scripts will need updating; refer
 - added `trx.config.format_value()`, the current value spelled the way the console prints it
 - added `trx.config.accepted_values()`, what a setting takes, as text for an error message
 - added new Lua game state, `trx.game.is_loaded` and `trx.game.is_playable`
-- added `trx.console.register()`, so a script can add a console command of its own, with optional `aliases` that dispatch but stay out of the command listing and show in the command's help
+- added `trx.console.register()`, for a script to add its own console command, with optional `aliases` and an `args` function describing the arguments it takes
 - added `p`, a global shorthand for `trx.console.log`, and made the console log functions take any value, pretty-printing a table
 - added `trx.events.on_flip_effect()`, letting a script handle a flipeffect run by a trigger or an animation command (#4108)
 - added `trx.lara.cure_poison()` and `trx.lara.extinguish()`, to clear Lara's poison and put her out

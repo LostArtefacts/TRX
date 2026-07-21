@@ -363,6 +363,7 @@
                 "fail_unavailable_slot": "Slot zapisu %d jest niedostępny",
                 "help": "Ładuje grę z danego slotu zapisu lub szybkiego zapisu.",
                 "quick_success": "Wczytano szybki zapis %d",
+                "slot_help": "\\{review}numer slotu, q lub quick dla ostatniego szybkiego zapisu, q2 dla drugiego",
                 "success": "Wczytano grę ze slotu %d",
             },
             "lua": {
@@ -381,8 +382,11 @@
                 "current_none": "\\{review}Aktualny utwór: brak",
                 "deferred_ambient": "\\{review}Odkładany ambient: %d",
                 "help": "\\{review}Pokazuje aktualny stan muzyki, zatrzymuje całą muzykę lub odtwarza utwór muzyczny o podanym identyfikatorze.",
+                "id_help": "\\{review}odtwórz utwór o tym id",
                 "invalid_track": "Nieprawidłowa ścieżka muzyczka",
                 "overlay": "\\{review}Nakładka utworu(ów): %s",
+                "status_help": "\\{review}pokaż, co jest odtwarzane",
+                "stop_help": "\\{review}zatrzymaj całą muzykę",
                 "stopped": "Muzyka zatrzymana",
                 "track": "Odtwarzanie utworu muzycznego %d",
             },
@@ -406,6 +410,7 @@
             "play_level": {
                 "help": "Wczytuje poziom o podanej nazwie lub numerze.",
                 "invalid": "Nieznany poziom",
+                "level_help": "\\{review}numer poziomu, nazwa lub gym",
                 "loading": "Wczytano %s",
             },
             "poison": {
@@ -427,6 +432,7 @@
                 "help": "Zapisuje grę do danego slotu zapisu, lub do pierwszego dostępnego slotu szybkiego zapisu.",
                 "quick_fail_no_slots": "Nie skonfigurowano slotów szybkiego zapisu",
                 "quick_success": "Szybki zapis",
+                "slot_help": "\\{review}numer slotu, q lub quick dla następnego szybkiego zapisu, q2 dla drugiego",
                 "success": "Zapisano grę na slocie zapisu %d",
             },
             "screenshot": {
@@ -446,6 +452,7 @@
             "sfx": {
                 "available": "Dostępne dźwięki: %s",
                 "help": "Odtwarza efekt dźwiękowy o podanym numerze.",
+                "id_help": "\\{review}odtwórz próbkę o tym id",
                 "invalid": "Nieprawidłowy dźwięk: %d",
                 "playing": "Odtwarzanie dźwięku %d",
             },

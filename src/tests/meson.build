@@ -538,15 +538,24 @@ test('lua_config', test_lua_config_exe, suite: 'unit')
 
 test_lua_console_exe = executable(
   'test_lua_console',
-  files('unit/test_lua_console.c', 'unit/fake_engine_console.c') + test_stubs
+  files(
+    'unit/test_lua_console.c',
+    'unit/fake_engine_console.c',
+    'unit/fake_engine_locale.c',
+  ) + test_stubs
     + lua_surface_src
     + files(
+      '../trx/core/strings/common.c',
+      '../trx/core/strings/case_funcs.c',
+      '../trx/core/strings/fuzzy_match.c',
       '../trx/game/lua/capi/console.c',
+      '../trx/game/lua/capi/locale.c',
       '../trx/game/lua/capi/log.c',
+      '../trx/game/lua/capi/strings.c',
     ),
   include_directories: [src_inc, test_inc],
-  dependencies: [dep_lua],
-  c_args: lua_surface_args,
+  dependencies: [dep_lua, dep_pcre2],
+  c_args: lua_surface_args + ['-DPCRE2_CODE_UNIT_WIDTH=8'],
   build_by_default: false,
 )
 test('lua_console', test_lua_console_exe, suite: 'unit')

@@ -10,12 +10,8 @@ local function run(args)
       trx.locale.get("console/cmd/play_cutscene/none")
   end
 
-  if args == "" then
-    return trx.console.Result.BAD_INVOCATION
-  end
-
-  local num = tonumber(args)
-  if num == nil or num % 1 ~= 0 then
+  local num = args.num
+  if num == nil then
     return trx.console.Result.BAD_INVOCATION
   end
 
@@ -33,5 +29,8 @@ trx.console.register({
   name = "cut",
   aliases = { "cutscene" },
   help = "console/cmd/play_cutscene/help",
+  args = function(parser)
+    parser:positional("num", { type = "integer", optional = true })
+  end,
   run = run,
 })

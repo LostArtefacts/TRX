@@ -3,10 +3,7 @@
 -- Usages:
 --   /cls
 
-local function run(args)
-  if args ~= "" then
-    return trx.console.Result.BAD_INVOCATION
-  end
+local function run()
   trx.console.clear()
   return trx.console.Result.OK
 end

@@ -68,8 +68,28 @@ end
 trx.console.register({
   name = "music",
   help = "console/cmd/music/help",
+  args = function(parser)
+    -- A track number, or one of the keywords; run tells them apart by type.
+    parser:any_of("what", {
+      {
+        choices = { "status" },
+        metavar = "status",
+        help = "console/cmd/music/status_help",
+      },
+      {
+        choices = { "stop" },
+        metavar = "stop",
+        help = "console/cmd/music/stop_help",
+      },
+      {
+        type = "integer",
+        metavar = "id",
+        help = "console/cmd/music/id_help",
+      },
+    }, { optional = true })
+  end,
   run = function(args)
-    if args == "" then
+    if args.what == nil then
       return trx.console.Result.OK,
         trx.locale.format(
           "console/cmd/music/available_tracks",
@@ -77,22 +97,17 @@ trx.console.register({
         )
     end
 
-    local lowered = args:lower()
-    if lowered == "status" then
+    if args.what == "status" then
       show_status()
       return trx.console.Result.OK
     end
 
-    if lowered == "stop" then
+    if args.what == "stop" then
       trx.music.stop()
       return trx.console.Result.OK, trx.locale.get("console/cmd/music/stopped")
     end
 
-    local num = tonumber(args)
-    if num == nil or num % 1 ~= 0 then
-      return trx.console.Result.BAD_INVOCATION
-    end
-
+    local num = args.what
     if num == 0 or num == -1 then
       trx.music.stop()
       return trx.console.Result.OK, trx.locale.get("console/cmd/music/stopped")

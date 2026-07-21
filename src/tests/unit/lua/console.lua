@@ -96,12 +96,17 @@ test("clear clears the console", function()
   assert(fake.calls().clear_count == 1)
 end)
 
+local function echo_arg(parser)
+  parser:rest("text", { optional = true })
+end
+
 test("a registered command runs when the player types it", function()
   local seen = nil
   trx.console.register({
     name = "greet",
+    args = echo_arg,
     run = function(args)
-      seen = args
+      seen = args.text
     end,
   })
 
@@ -117,8 +122,9 @@ test("an alias reaches the command it stands for", function()
   trx.console.register({
     name = "primary",
     aliases = { "secondary", "third" },
+    args = echo_arg,
     run = function(args)
-      seen = args
+      seen = args.text
     end,
   })
 
@@ -134,8 +140,9 @@ test("the arguments are trimmed", function()
   local seen = nil
   trx.console.register({
     name = "trimmed",
+    args = echo_arg,
     run = function(args)
-      seen = args
+      seen = args.text
     end,
   })
   fake.run("trimmed", "   spaced   ")
@@ -146,8 +153,9 @@ test("a command answers to whatever case the player typed", function()
   local seen = nil
   trx.console.register({
     name = "shout",
+    args = echo_arg,
     run = function(args)
-      seen = args
+      seen = args.text
     end,
   })
 
@@ -158,8 +166,9 @@ end)
 test("a command says how it went", function()
   trx.console.register({
     name = "picky",
+    args = echo_arg,
     run = function(args)
-      if args == "" then
+      if args.text == nil then
         return trx.console.Result.BAD_INVOCATION, "picky what?"
       end
       return trx.console.Result.FAILURE, "could not"
@@ -171,6 +180,18 @@ test("a command says how it went", function()
   assert(fake.calls().last_level == trx.log.LogLevel.ERROR)
 
   assert(fake.run("picky", "x") == trx.console.Result.FAILURE)
+end)
+
+test("a command with no args declared refuses one", function()
+  trx.console.register({
+    name = "nullary",
+    run = function() end,
+  })
+  assert(fake.run("nullary", "") == trx.console.Result.OK)
+  assert(
+    fake.run("nullary", "stray") == trx.console.Result.FAILURE,
+    "an argument to an argument-less command is refused"
+  )
 end)
 
 test("a message from a command that worked is not an error", function()
@@ -328,6 +349,36 @@ test("p is a global alias of trx.console.log", function()
   assert(p == trx.console.log, "p must resolve to the log group")
   p("via p")
   assert(fake.calls().last_message == "via p")
+end)
+
+test("run receives its arguments already read", function()
+  local seen
+  trx.console.register({
+    name = "with_parser",
+    args = function(parser)
+      parser:positional("id", { type = "integer" })
+    end,
+    run = function(args)
+      seen = args.id
+    end,
+  })
+  assert(fake.run("with_parser", "42") == trx.console.Result.OK)
+  assert(seen == 42, "run saw the parsed number, not the string")
+end)
+
+test("a line the parser rejects never reaches run", function()
+  local reached = false
+  trx.console.register({
+    name = "strict_parser",
+    args = function(parser)
+      parser:positional("id", { type = "integer" })
+    end,
+    run = function()
+      reached = true
+    end,
+  })
+  assert(fake.run("strict_parser", "nope") == trx.console.Result.FAILURE)
+  assert(not reached, "run must not run on a bad line")
 end)
 
 return h.report()

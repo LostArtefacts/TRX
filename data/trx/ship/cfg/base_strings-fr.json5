@@ -363,6 +363,7 @@
                 "fail_unavailable_slot": "L'emplacement de sauvegarde %d n'est pas disponible",
                 "help": "\\{review}Charge la partie depuis l'emplacement de sauvegarde donné ou depuis une sauvegarde rapide.",
                 "quick_success": "\\{review}Emplacement de chargement rapide %d",
+                "slot_help": "\\{review}un numéro d'emplacement, q ou quick pour la sauvegarde rapide la plus récente, q2 pour la deuxième",
                 "success": "Partie chargée depuis l'emplacement de sauvegarde %d",
             },
             "lua": {
@@ -381,8 +382,11 @@
                 "current_none": "\\{review}Piste actuelle : aucune",
                 "deferred_ambient": "\\{review}Ambiance différée : %d",
                 "help": "\\{review}Affiche l'état actuel de la musique, arrête toute la musique ou joue une piste musicale avec l'identifiant donné.",
+                "id_help": "\\{review}jouer la piste avec cet identifiant",
                 "invalid_track": "Piste musicale invalide",
                 "overlay": "\\{review}Piste(s) superposée(s) : %s",
+                "status_help": "\\{review}indiquer ce qui est en cours de lecture",
+                "stop_help": "\\{review}arrêter toute la musique",
                 "stopped": "\\{review}Musique arrêtée",
                 "track": "Lecture de la piste musicale %d",
             },
@@ -406,6 +410,7 @@
             "play_level": {
                 "help": "Lance un niveau correspondant au nom ou au numéro donné.",
                 "invalid": "Niveau invalide",
+                "level_help": "\\{review}un numéro de niveau, un nom ou gym",
                 "loading": "Chargement de %s",
             },
             "poison": {
@@ -427,6 +432,7 @@
                 "help": "\\{review}Sauvegarde la partie dans l'emplacement de sauvegarde donné ou dans le prochain emplacement de sauvegarde rapide.",
                 "quick_fail_no_slots": "\\{review}Aucun emplacement de sauvegarde rapide n'est configuré",
                 "quick_success": "\\{review}Sauvegarde rapide",
+                "slot_help": "\\{review}un numéro d'emplacement, q ou quick pour la prochaine sauvegarde rapide, q2 pour la deuxième",
                 "success": "Partie sauvegardée dans l'emplacement de sauvegarde %d",
             },
             "screenshot": {
@@ -446,6 +452,7 @@
             "sfx": {
                 "available": "Effets sonores disponibles : %s",
                 "help": "Joue un effet sonore avec l'identifiant donné.",
+                "id_help": "\\{review}jouer l'échantillon avec cet identifiant",
                 "invalid": "Effet sonore invalide : %d",
                 "playing": "Lecture de l'effet sonore %d",
             },

@@ -7,23 +7,21 @@
 trx.console.register({
   name = "hp",
   help = "console/cmd/hp/help",
+  args = function(parser)
+    parser:positional("hp", { type = "integer", optional = true })
+  end,
   run = function(args)
     if not trx.game.is_playable then
       return trx.console.Result.UNAVAILABLE
     end
 
     local lara = trx.lara.item
-    if args == "" then
+    if args.hp == nil then
       return trx.console.Result.OK,
         trx.locale.format("console/cmd/hp/get", lara.hit_points)
     end
 
-    local hp = tonumber(args)
-    if hp == nil or hp % 1 ~= 0 then
-      return trx.console.Result.BAD_INVOCATION
-    end
-
-    hp = math.max(0, math.min(hp, lara.max_hit_points))
+    local hp = math.max(0, math.min(args.hp, lara.max_hit_points))
     lara.hit_points = hp
     return trx.console.Result.OK, trx.locale.format("console/cmd/hp/set", hp)
   end,

@@ -4,11 +4,7 @@
 --   /endlevel
 --   /nextlevel
 
-local function run(args)
-  if args ~= "" then
-    return trx.console.Result.BAD_INVOCATION
-  end
-
+local function run()
   local level = trx.game.current_level
   if level == nil or level.type == trx.game.LevelType.TITLE then
     return trx.console.Result.UNAVAILABLE

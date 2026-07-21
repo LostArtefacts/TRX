@@ -8,6 +8,9 @@
 trx.console.register({
   name = "fly",
   help = "console/cmd/fly/help",
+  args = function(parser)
+    parser:positional("state", { type = "boolean", optional = true })
+  end,
   run = function(args)
     -- A flyby is cancellable even from a menu, so it lifts the playable guard.
     local flyby = trx.camera.is_flyby_active
@@ -15,14 +18,9 @@ trx.console.register({
       return trx.console.Result.UNAVAILABLE
     end
 
-    local target
-    if args == "" then
+    local target = args.state
+    if target == nil then
       target = not trx.lara.is_flying
-    else
-      target = trx.strings.parse_bool(args)
-      if target == nil then
-        return trx.console.Result.BAD_INVOCATION
-      end
     end
 
     if flyby then

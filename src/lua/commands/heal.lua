@@ -6,10 +6,7 @@
 trx.console.register({
   name = "heal",
   help = "console/cmd/heal/help",
-  run = function(args)
-    if args ~= "" then
-      return trx.console.Result.BAD_INVOCATION
-    end
+  run = function()
     if not trx.game.is_playable then
       return trx.console.Result.UNAVAILABLE
     end

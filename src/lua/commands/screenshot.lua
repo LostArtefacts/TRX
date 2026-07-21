@@ -7,11 +7,14 @@
 trx.console.register({
   name = "screenshot",
   help = "console/cmd/screenshot/help",
+  args = function(parser)
+    parser:rest("path", { optional = true })
+  end,
   run = function(args)
-    if args == "" then
+    if args.path == nil then
       trx.game.screenshot()
     else
-      trx.game.screenshot(args)
+      trx.game.screenshot(args.path)
     end
     return trx.console.Result.OK
   end,
