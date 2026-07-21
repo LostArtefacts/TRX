@@ -83,6 +83,11 @@ api.define("config.format_value", {
       return ("%.2f"):format(value)
     end
     if desc.kind == "enum" or desc.kind == "dynamic_enum" then
+      -- A dynamic enum with nothing chosen reads back as an empty string, which
+      -- prints as nothing; say so plainly instead.
+      if value == "" then
+        return "(null)"
+      end
       return display(value)
     end
     return tostring(value)
