@@ -102,6 +102,20 @@ test("a greedy argument takes the whole line, spaces and all", function()
   }, { greedy = true })
   assert(p:parse("3").level == 3)
   assert(p:parse("natla's mines").level == 13, "the whole name is matched")
+  local out, start, stop = p:complete("natla's mi")
+  assert(out[1] == "Natla's Mines", "completion sees the whole tail too")
+  assert(start == 0, "the run it replaces reaches back to the tail's start")
+  assert(stop == 10, "the greedy run reaches to the end of the line")
+end)
+
+test("a greedy run reaches the line end from a caret mid-tail", function()
+  local p = trx.argparse.new()
+  p:positional("level", { suggest = { "Angkor Wat" }, greedy = true })
+  -- "angkor wa" with the caret after "angko": the run still spans the tail.
+  local out, start, stop = p:complete("angkor wa", 5)
+  assert(out[1] == "Angkor Wat")
+  assert(start == 0, "the run begins at the tail's start")
+  assert(stop == 9, "the run reaches the end of the line, past the caret")
 end)
 
 test("a match matcher reads a token its own way", function()
@@ -124,12 +138,14 @@ test("a match matcher reads a token its own way", function()
   assert(p:parse("nonsense") == nil)
 end)
 
-test("a free positional takes any token and carries no hint", function()
+test("suggest completes but does not restrict or hint", function()
   local p = trx.argparse.new()
-  p:positional("option")
-  -- No matcher, so any token is taken.
+  p:positional("option", { suggest = { "fov", "gamma" } })
+  -- Any token is taken; suggest never rejects.
   assert(p:parse("whatever").option == "whatever")
-  -- A missing free option carries no "expected" hint.
+  -- It offers completions...
+  assert(p:complete("f")[1] == "fov")
+  -- ...but stays out of the error: a missing option carries no "expected" hint.
   local _, err = p:parse("")
   assert(err.kind == "missing" and err.hint == nil)
 end)
@@ -196,6 +212,91 @@ test("an unexpected argument is refused with its token", function()
   local p = trx.argparse.new()
   local parsed, err = p:parse("stray")
   assert(parsed == nil and err.kind == "unexpected" and err.token == "stray")
+end)
+
+test("complete offers a choice's keys, filtered", function()
+  local p = trx.argparse.new()
+  p:positional("state", { choices = { "snow", "rain", "none" } })
+  assert(#p:complete("") == 3, "an empty token offers them all")
+  assert(p:complete("sn")[1] == "snow", "a prefix narrows to the match")
+end)
+
+test("complete reports where the run it replaces begins", function()
+  local p = trx.argparse.new()
+  p:positional("first", { choices = { "a", "b" } })
+  p:positional("state", { choices = { "snow", "rain" } })
+
+  local _, empty_start, empty_end = p:complete("a ")
+  assert(
+    empty_start == 2 and empty_end == 2,
+    "past a space, the run is empty and sits at the caret"
+  )
+
+  local out, at_word, word_end = p:complete("a sn")
+  assert(out[1] == "snow")
+  assert(at_word == 2, "the run begins where the active token starts")
+  assert(word_end == 4, "and ends where it ends")
+end)
+
+test("complete finds the token the caret sits in, not the last", function()
+  local p = trx.argparse.new()
+  p:positional("first", { choices = { "snow", "sun" } })
+  p:positional("second", { choices = { "rain" } })
+  -- "sn rain" with the caret after "sn": complete the first token, not "rain".
+  local out, start, stop = p:complete("sn rain", 2)
+  assert(out[1] == "snow", "the caret's token is completed")
+  assert(start == 0 and stop == 2, "and its run is the token, not the tail")
+end)
+
+test("complete follows a runtime choice list", function()
+  local levels = { "Caves", "City" }
+  local p = trx.argparse.new()
+  p:positional("level", {
+    choices = function()
+      local out = {}
+      for _, name in ipairs(levels) do
+        out[#out + 1] = name
+      end
+      return out
+    end,
+  })
+  assert(p:complete("cit")[1] == "City")
+  levels[#levels + 1] = "Cistern"
+  assert(#p:complete("ci") == 2, "the list is read afresh each time")
+end)
+
+test("a boolean offers on and off without being told to", function()
+  local p = trx.argparse.new()
+  p:positional("state", { type = "boolean", optional = true })
+  local seen = {}
+  for _, key in ipairs(p:complete("")) do
+    seen[key] = true
+  end
+  assert(seen.on and seen.off)
+end)
+
+test("a flag completes from either spelling alone", function()
+  local p = trx.argparse.new()
+  p:flag("force", { long = "--force" })
+  p:flag("quiet", { short = "-q" })
+  assert(p:complete("--f")[1] == "--force", "a long-only flag is offered")
+  assert(p:complete("-q")[1] == "-q", "a short-only flag is offered")
+end)
+
+test("complete offers each value once", function()
+  local p = trx.argparse.new()
+  p:positional("state", {
+    choices = { "snow", "rain" },
+    suggest = { "snow", "sleet" },
+  })
+  local seen, dupes = {}, 0
+  for _, key in ipairs(p:complete("")) do
+    if seen[key] then
+      dupes = dupes + 1
+    end
+    seen[key] = true
+  end
+  assert(dupes == 0, "a value in both choices and suggest is not repeated")
 end)
 
 test("usage joins alternatives and lines them out", function()

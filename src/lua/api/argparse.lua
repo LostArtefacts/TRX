@@ -6,11 +6,11 @@ api.module("argparse", {
 A small, declarative argument parser for console commands, in the shape of
 Python's argparse.
 
-A parser reads a command's arguments from one declaration. Every command
-written with `trx.console.register` has one; a command shapes it through the
-`args` function it hands over, and `run` then receives a table of parsed
-values. A command that shapes nothing takes no arguments, and is told so when
-given one.
+A parser both reads a command's arguments and offers completions for them,
+from one declaration. Every command written with `trx.console.register` has
+one; a command shapes it through the `args` function it hands over, and `run`
+then receives a table of parsed values. A command that shapes nothing takes no
+arguments, and is told so when given one.
 
 Every parser answers `-h` and `--help` on its own, printing what it accepts.
 
@@ -18,23 +18,28 @@ How a positional reads a token is its `matcher`, one of:
 
 - `type` - coerce to `"integer"`, `"number"`, `"string"` or `"boolean"`.
 - `choices` - the allowed set: a list of values or a `function(parsed)`
-  returning one. The token must match one; the set is shown in errors.
+  returning one. The token must match one; the set is shown in errors and
+  completes.
 - `match` - a `function(token, parsed)` returning `value, ok`, for a shape of its own.
 
 These do not combine on one positional; a value that is a number *or* a name is
-two matchers, declared with `any_of`.
+two matchers, declared with `any_of`. Separately, `suggest` offers completions
+without restricting or being shown in errors - for a free value with a long
+list behind it, like a setting name.
 
 A parser has these methods, each returning the parser so calls chain:
 
 - `positional(name, opts)` - a positional with one matcher (`opts.type`,
   `opts.choices` or `opts.match`). `opts.optional` lets it be left out;
   `opts.greedy` reads the rest of the line as one token, so a value with spaces
-  in it still arrives whole; `opts.help` describes it.
+  in it still arrives whole; `opts.suggest` completes it; `opts.help` describes
+  it.
 - `any_of(name, alternatives, opts)` - a positional whose value is the first of
   several matchers to take the token. Each alternative is a matcher table,
   `{ type = ... }` or `{ choices = ... }`. Same `opts` as `positional`.
 - `rest(name, opts)` - the rest of the line from here on, verbatim as one
-  string, or nil when an optional one is absent. Always the last argument.
+  string, or nil when an optional one is absent. Always the last argument;
+  `opts.suggest` completes it.
 - `flag(name, opts)` - a boolean that may sit anywhere. `opts.short` and
   `opts.long` are the spellings, e.g. `"-f"` and `"--force"`; `opts.help`
   describes it.
@@ -42,6 +47,9 @@ A parser has these methods, each returning the parser so calls chain:
   `nil` and a structured error the console layer turns into localized text. A
   value carried by a `{ key, value }` choice comes back as its `value`;
   `-h`/`--help` comes back as `{ help = true }`.
+- `complete(text, caret)` - the candidate completions for the token the caret
+  sits in, and the byte offsets `start, end` of the run they replace (reaching
+  to the end of the line for a greedy argument).
 - `usage()` - a short description of what the command accepts.
 
 A choice is either a bare string, where the key and value are the same, or a
@@ -75,8 +83,8 @@ local function choices_from(source, parsed)
 end
 
 -- choices_from, but a source function that raises yields no choices rather than
--- propagating out of parse. match_one and hint_of both go through this, so a bad
--- runtime choices list is a clean rejection.
+-- propagating out of parse or complete. match_one, hint_of and candidates_for
+-- all go through this, so a bad runtime choices list is a clean rejection.
 local function safe_choices(source, parsed)
   local ok, choices = pcall(choices_from, source, parsed)
   if not ok then
@@ -147,7 +155,9 @@ local function resolve(arg, token, parsed)
 end
 
 -- What an argument accepts, as data the caller turns into words: a coercing type
--- and the choice keys across its matchers. Returns nil for a free value.
+-- and the choice keys across its matchers. `suggest` is left out - it is for
+-- completion, not for telling the player what fits. Returns nil for a free
+-- value.
 local function hint_of(arg, parsed)
   local htype, values = nil, nil
   for _, matcher in ipairs(arg.matchers) do
@@ -265,6 +275,7 @@ function Parser:positional(name, opts)
     greedy = opts.greedy == true,
     metavar = opts.metavar or name,
     help = opts.help,
+    suggest = opts.suggest,
     matchers = { make_matcher(opts) },
   }
   return self
@@ -282,6 +293,7 @@ function Parser:any_of(name, alternatives, opts)
     greedy = opts.greedy == true,
     metavar = opts.metavar or name,
     help = opts.help,
+    suggest = opts.suggest,
     matchers = matchers,
   }
   return self
@@ -298,6 +310,7 @@ function Parser:rest(name, opts)
     greedy = true,
     metavar = opts.metavar or name,
     help = opts.help,
+    suggest = opts.suggest,
     matchers = { {} },
   }
   return self
@@ -316,7 +329,8 @@ function Parser:flag(name, opts)
 end
 
 -- Splits on whitespace, each token keeping the byte offset it starts at, so a
--- `rest` positional can hand back the original input from that point, verbatim.
+-- `rest` positional can hand back the original input from that point, verbatim,
+-- and completion can point at where a token begins.
 local function tokenize_offsets(s)
   local out = {}
   local init = 1
@@ -425,6 +439,152 @@ function Parser:format_error(err)
   return msg
 end
 
+-- The keys an argument offers for `active`, best first. An empty `active` offers
+-- them all. Both the choices its matchers restrict to and its `suggest` list
+-- contribute; a boolean offers on/off without being told to.
+local function candidates_for(arg, parsed, active)
+  local out = {}
+  local seen = {}
+  local function emit(key)
+    if not seen[key] then
+      seen[key] = true
+      out[#out + 1] = key
+    end
+  end
+  local function add(choices)
+    if choices == nil then
+      return
+    end
+    if active == "" then
+      for _, choice in ipairs(choices) do
+        emit(choice.key)
+      end
+      return
+    end
+    local sources = {}
+    for _, choice in ipairs(choices) do
+      sources[#sources + 1] = { key = choice.key, value = choice.key }
+    end
+    for _, match in ipairs(trx.strings.fuzzy_match(active, sources)) do
+      emit(match.value)
+    end
+  end
+
+  for _, matcher in ipairs(arg.matchers) do
+    local choices = safe_choices(matcher.choices, parsed)
+    if choices == nil and matcher.type == "boolean" then
+      choices = normalize_choices({ "on", "off" })
+    end
+    add(choices)
+  end
+  add(safe_choices(arg.suggest, parsed))
+  return out
+end
+
+-- The candidates for the token the caret sits in within `text`, best first, and
+-- the byte offsets `start, end` of the run they replace. The run is the token,
+-- or the whole tail a greedy argument swallows, reaching to the end of the line;
+-- in whitespace it is empty, at the caret. Matching is against the text before
+-- the caret.
+function Parser:complete(text, caret)
+  text = text or ""
+  caret = caret or #text
+  if caret < 0 then
+    caret = 0
+  elseif caret > #text then
+    caret = #text
+  end
+  local toks = tokenize_offsets(text)
+
+  -- The token the caret sits in - its bytes span [start, end) with the caret at
+  -- or between them - or none, in whitespace.
+  local active = nil
+  for i, tok in ipairs(toks) do
+    local s = tok.start - 1
+    if s <= caret and caret <= s + #tok.text then
+      active = i
+      break
+    end
+  end
+
+  -- The run [rstart, rend) a suggestion replaces, and the prefix typed into it.
+  local rstart, rend, prefix
+  if active ~= nil then
+    rstart = toks[active].start - 1
+    rend = rstart + #toks[active].text
+    prefix = toks[active].text:sub(1, caret - rstart)
+  else
+    rstart, rend, prefix = caret, caret, ""
+  end
+
+  -- Completing a flag by its dashes.
+  if prefix:match("^%-") ~= nil then
+    local out = {}
+    for _, flag in ipairs(self.flags) do
+      -- short and long are each optional, so gather them without a nil hole
+      -- that ipairs would stop at.
+      local spellings = { flag.short }
+      spellings[#spellings + 1] = flag.long
+      for _, spelling in ipairs(spellings) do
+        if spelling:sub(1, #prefix) == prefix then
+          out[#out + 1] = spelling
+        end
+      end
+    end
+    return out, rstart, rend
+  end
+
+  -- The positionals filled before the active one: non-flag tokens ending at or
+  -- before the caret. Resolving them lets a later argument's choices depend on
+  -- them.
+  local consumed = {}
+  for i, tok in ipairs(toks) do
+    if i ~= active and self:flag_for(tok.text) == nil then
+      if (tok.start - 1) + #tok.text <= caret then
+        consumed[#consumed + 1] = tok
+      end
+    end
+  end
+  local slot = #consumed + 1
+
+  -- A greedy argument, always last, owns everything from its slot to the end of
+  -- the line.
+  local greedy_idx = nil
+  local last = self.positionals[#self.positionals]
+  if last ~= nil and last.greedy then
+    greedy_idx = #self.positionals
+  end
+
+  local arg, prior_count
+  if greedy_idx ~= nil and slot >= greedy_idx then
+    arg = last
+    prior_count = greedy_idx - 1
+    -- The run reaches from the greedy slot's first token - or the caret, if none
+    -- has been typed there yet - to the end of the line.
+    if consumed[greedy_idx] ~= nil then
+      rstart = consumed[greedy_idx].start - 1
+    elseif active == nil then
+      rstart = caret
+    end
+    rend = #text
+    prefix = text:sub(rstart + 1, caret)
+  else
+    arg = self.positionals[slot]
+    prior_count = slot - 1
+  end
+  if arg == nil then
+    return {}, rstart, rend
+  end
+  local values = {}
+  for j = 1, prior_count do
+    local prior = self.positionals[j]
+    if prior ~= nil and consumed[j] ~= nil then
+      values[prior.name] = resolve(prior, consumed[j].text, values)
+    end
+  end
+  return candidates_for(arg, values, prefix), rstart, rend
+end
+
 -- The metavar an argument shows in the synopsis: its alternatives joined with
 -- `|` when they name themselves, else its own.
 local function arg_metavar(arg)
@@ -524,7 +684,7 @@ api.define("argparse.new", {
   returns = {
     type = "table",
     description = "A parser. Describe its arguments with `positional`, `any_of`, `rest` and "
-      .. "`flag`, then read them with `parse`.",
+      .. "`flag`, then read them with `parse` or offer completions with `complete`.",
   },
   examples = {
     [[local p = trx.argparse.new({ prog = "weather" })

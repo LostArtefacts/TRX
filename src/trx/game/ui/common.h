@@ -13,6 +13,8 @@ typedef enum {
     UI_KEY_BACK,
     UI_KEY_RETURN,
     UI_KEY_ESCAPE,
+    UI_KEY_TAB,
+    UI_KEY_SHIFT_TAB,
 } UI_INPUT;
 
 // Forward declaration of the node and its vtable.

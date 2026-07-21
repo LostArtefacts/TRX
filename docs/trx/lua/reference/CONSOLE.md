@@ -98,7 +98,7 @@ Module for interacting with the developer console.
 - [lua]`trx.console.register(spec)`  
   Registers a console command written in Lua.
 
-  Every command has a `trx.argparse` parser. `args` is an optional function that shapes it - it receives the parser and declares the arguments the command takes. A command that omits `args` takes none, and reports so when handed one. The parser answers `-h`/`--help` on its own.
+  Every command has a `trx.argparse` parser. `args` is an optional function that shapes it - it receives the parser and declares the arguments the command takes. A command that omits `args` takes none, and reports so when handed one. The console completes the arguments from the parser, and answers `-h`/`--help` from it.
 
   `run` receives the parsed values, a table keyed by argument name. What it gives back is a `trx.console.Result`, and returning nothing means `OK`. It may return a message after that, which is logged to the console - as an error, for any result but `OK`. A line the parser rejects is reported with what it expected, without reaching `run`.
 

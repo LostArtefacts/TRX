@@ -108,6 +108,7 @@ static void M_Draw(const UI_NODE *node)
 void UI_Console_Init(UI_CONSOLE_STATE *const s)
 {
     UI_Prompt_Init(&s->prompt);
+    UI_Prompt_SetCompletionProvider(&s->prompt, Console_GetCompleter);
     UI_ConsoleLogs_Init(&s->logs);
 
     struct {

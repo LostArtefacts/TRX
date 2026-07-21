@@ -1,5 +1,6 @@
 #pragma once
 
+#include <trx/core/completion.h>
 #include <trx/core/utils.h>
 #include <trx/core/vector.h>
 #include <trx/game/console/types.h>
@@ -16,6 +17,10 @@ void Console_Registry_RemoveByProc(
     COMMAND_RESULT (*proc)(const COMMAND_CONTEXT *ctx));
 
 const CONSOLE_COMMAND *Console_Registry_Get(const char *cmdline);
+
+// Adds a suggestion to `out` for every command spelling that begins with
+// word_prefix, deduped and sorted.
+void Console_Registry_Suggest(const char *word_prefix, COMPLETION *out);
 
 // Retrieve a vector containing pointers to all registered console commands.
 // The returned vector must be freed via Vector_Free().

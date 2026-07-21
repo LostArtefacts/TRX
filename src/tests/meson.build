@@ -86,6 +86,34 @@ test_item_actions_exe = executable(
 )
 test('item_actions', test_item_actions_exe, suite: 'unit')
 
+test_console_complete_exe = executable(
+  'test_console_complete',
+  files('unit/test_console_complete.c') + test_stubs
+    + files(
+      '../trx/core/completion.c',
+      '../trx/game/console/completion.c',
+      '../trx/game/console/registry.c',
+      '../trx/core/memory.c',
+      '../trx/core/vector.c',
+    ),
+  include_directories: [src_inc, test_inc],
+  build_by_default: false,
+)
+test('console_complete', test_console_complete_exe, suite: 'unit')
+
+test_completion_exe = executable(
+  'test_completion',
+  files('unit/test_completion.c') + test_stubs
+    + files(
+      '../trx/core/completion.c',
+      '../trx/core/memory.c',
+      '../trx/core/vector.c',
+    ),
+  include_directories: [src_inc, test_inc],
+  build_by_default: false,
+)
+test('completion', test_completion_exe, suite: 'unit')
+
 test_field_exe = executable(
   'test_field',
   files('unit/test_field.c') + test_stubs
@@ -548,6 +576,7 @@ test_lua_console_exe = executable(
       '../trx/core/strings/common.c',
       '../trx/core/strings/case_funcs.c',
       '../trx/core/strings/fuzzy_match.c',
+      '../trx/core/completion.c',
       '../trx/game/lua/capi/console.c',
       '../trx/game/lua/capi/locale.c',
       '../trx/game/lua/capi/log.c',
@@ -575,6 +604,7 @@ test_lua_cmd_heal_exe = executable(
   ) + test_stubs
     + lua_surface_src
     + files(
+      '../trx/core/completion.c',
       '../trx/game/lua/capi/console.c',
       '../trx/game/lua/capi/game.c',
       '../trx/game/lua/capi/items.c',
@@ -603,6 +633,7 @@ test_lua_cmd_play_exe = executable(
   ) + test_stubs
     + lua_surface_src
     + files(
+      '../trx/core/completion.c',
       '../trx/game/lua/capi/console.c',
       '../trx/game/lua/capi/game.c',
       '../trx/game/lua/capi/locale.c',
@@ -626,6 +657,7 @@ test_lua_cmd_music_exe = executable(
   ) + test_stubs
     + lua_surface_src
     + files(
+      '../trx/core/completion.c',
       '../trx/game/lua/capi/console.c',
       '../trx/game/lua/capi/music.c',
       '../trx/game/lua/capi/locale.c',
@@ -648,6 +680,7 @@ test_lua_cmd_load_exe = executable(
   ) + test_stubs
     + lua_surface_src
     + files(
+      '../trx/core/completion.c',
       '../trx/game/lua/capi/console.c',
       '../trx/game/lua/capi/locale.c',
       '../trx/game/lua/capi/log.c',
@@ -670,6 +703,7 @@ test_lua_cmd_save_exe = executable(
   ) + test_stubs
     + lua_surface_src
     + files(
+      '../trx/core/completion.c',
       '../trx/game/lua/capi/console.c',
       '../trx/game/lua/capi/game.c',
       '../trx/game/lua/capi/locale.c',
@@ -698,6 +732,7 @@ test_lua_cmd_set_exe = executable(
       '../trx/core/strings/common.c',
       '../trx/core/strings/fuzzy_match.c',
       '../trx/game/lua/capi/config.c',
+      '../trx/core/completion.c',
       '../trx/game/lua/capi/console.c',
       '../trx/game/lua/capi/locale.c',
       '../trx/game/lua/capi/log.c',

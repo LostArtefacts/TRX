@@ -111,13 +111,20 @@ COMMAND_RESULT Console_Eval(const char *const cmdline)
 {
     LOG_INFO("executing command: %s", cmdline);
 
-    const CONSOLE_COMMAND *const matching_cmd = Console_Registry_Get(cmdline);
+    // A completed line can carry leading indentation; the command word and its
+    // arguments both begin after it.
+    const char *line = cmdline;
+    while (*line == ' ') {
+        line++;
+    }
+
+    const CONSOLE_COMMAND *const matching_cmd = Console_Registry_Get(line);
     if (matching_cmd == nullptr) {
-        Console_LogError(GS("general/osd/unknown_command"), cmdline);
+        Console_LogError(GS("general/osd/unknown_command"), line);
         return CR_BAD_INVOCATION;
     }
 
-    char *prefix = Memory_DupStr(cmdline);
+    char *prefix = Memory_DupStr(line);
     char *args = "";
     char *space = strchr(prefix, ' ');
     if (space != nullptr) {
