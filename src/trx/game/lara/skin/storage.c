@@ -176,48 +176,23 @@ static bool M_ReadExtraMeshes(JSON_READ_IO *const io)
     JSON_FINISH();
 }
 
-static bool M_LoadBraidPositions(
-    JSON_READ_IO *const io, LARA_SKIN_BRAID *const braid)
-{
-    if (!JSON_OPTIONAL(JSON_PUSH(io, "positions"))) {
-        JSON_FAIL();
-    }
-
-    const int32_t count = JSON_ARRAY_LEN(io);
-    if (count > 0) {
-        braid->count = MIN(count, Lara_Hair_GetBraidCount());
-        for (int32_t i = 0; i < braid->count; ++i) {
-            JSON_MUST(JSON_READ_A(io, i, &braid->positions[i]));
-        }
-    }
-
-    JSON_MUST(JSON_POP(io));
-    JSON_FINISH();
-}
-
 static bool M_LoadBraidHeadSeam(
-    JSON_READ_IO *const io, LARA_SKIN_BRAID *const braid)
+    JSON_READ_IO *const io, LARA_SKIN_BRAID_HEAD_SEAM *const seam)
 {
     if (!JSON_OPTIONAL(JSON_PUSH(io, "head_seam"))) {
         return true;
     }
 
-    const int32_t pigtails = MIN(JSON_ARRAY_LEN(io), Lara_Hair_GetBraidCount());
-    for (int32_t i = 0; i < pigtails; i++) {
+    const int32_t pairs = MIN(JSON_ARRAY_LEN(io), SEAM_MAX_VERTEX_PAIRS);
+    for (int32_t i = 0; i < pairs; i++) {
         JSON_MUST(JSON_PUSH_INDEX(io, i));
-        LARA_SKIN_BRAID_HEAD_SEAM *const seam = &braid->head_seam[i];
-        const int32_t pairs = MIN(JSON_ARRAY_LEN(io), SEAM_MAX_VERTEX_PAIRS);
-        for (int32_t k = 0; k < pairs; k++) {
-            JSON_MUST(JSON_PUSH_INDEX(io, k));
-            int32_t seg_vertex = 0;
-            int32_t head_vertex = 0;
-            JSON_MUST(JSON_READ_A(io, 0, &seg_vertex));
-            JSON_MUST(JSON_READ_A(io, 1, &head_vertex));
-            seam->pairs[seam->count].vertex_a = seg_vertex;
-            seam->pairs[seam->count].vertex_b = head_vertex;
-            seam->count++;
-            JSON_MUST(JSON_POP(io));
-        }
+        int32_t seg_vertex = 0;
+        int32_t head_vertex = 0;
+        JSON_MUST(JSON_READ_A(io, 0, &seg_vertex));
+        JSON_MUST(JSON_READ_A(io, 1, &head_vertex));
+        seam->pairs[seam->count].vertex_a = seg_vertex;
+        seam->pairs[seam->count].vertex_b = head_vertex;
+        seam->count++;
         JSON_MUST(JSON_POP(io));
     }
 
@@ -227,7 +202,21 @@ static bool M_LoadBraidHeadSeam(
 
 static bool M_LoadBraid(JSON_READ_IO *const io, LARA_SKIN_OUTFIT *const outfit)
 {
-    if (JSON_OPTIONAL(JSON_PUSH(io, "braid"))) {
+    if (!JSON_OPTIONAL(JSON_PUSH(io, "braid"))) {
+        outfit->braid.enabled = false;
+        return true;
+    }
+
+    const int32_t count = JSON_ARRAY_LEN(io);
+    if (count == 0) {
+        outfit->braid.enabled = false;
+        return true;
+    }
+
+    outfit->braid.count = MIN(count, Lara_Hair_GetBraidCount());
+    for (int32_t i = 0; i < outfit->braid.count; ++i) {
+        JSON_MUST(JSON_PUSH_INDEX(io, i));
+
         const char *braid_mode_name = nullptr;
         if (JSON_OPTIONAL(JSON_READ(io, "mode", &braid_mode_name))) {
             const int32_t mode =
@@ -241,15 +230,17 @@ static bool M_LoadBraid(JSON_READ_IO *const io, LARA_SKIN_OUTFIT *const outfit)
             outfit->braid.mode = mode;
         }
 
-        JSON_READ_D(io, "mesh_offset", &outfit->braid.mesh_offset, 0);
-        JSON_READ_D(io, "gold_offset", &outfit->braid.gold_offset, 0);
-        M_LoadBraidPositions(io, &outfit->braid);
-        M_LoadBraidHeadSeam(io, &outfit->braid);
-        outfit->braid.enabled = true;
+        JSON_READ_D(io, "mesh_offset", &outfit->braid.setup[i].mesh_offset, 0);
+        JSON_READ_D(io, "gold_offset", &outfit->braid.setup[i].gold_offset, 0);
+        JSON_READ_D(
+            io, "position", &outfit->braid.setup[i].position, (XYZ_32) {});
+        M_LoadBraidHeadSeam(io, &outfit->braid.setup[i].head_seam);
+
         JSON_MUST(JSON_POP(io));
-    } else {
-        outfit->braid.enabled = false;
     }
+
+    outfit->braid.enabled = true;
+    JSON_MUST(JSON_POP(io));
 
     JSON_FINISH();
 }
