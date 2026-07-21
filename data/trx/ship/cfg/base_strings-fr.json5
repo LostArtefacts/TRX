@@ -244,6 +244,18 @@
         }
     },
     "console": {
+        "argparse": {
+            "expected": "\\{review}%s attendu.",
+            "hint_boolean": "\\{review}on ou off",
+            "hint_integer": "\\{review}un nombre entier",
+            "hint_number": "\\{review}un nombre",
+            "hint_or": "\\{review}%s, ou %s",
+            "hint_values": "\\{review}l'un de : %s",
+            "invalid": "\\{review}%s invalide : %s.",
+            "missing": "\\{review}%s manquant.",
+            "unexpected": "\\{review}Argument inattendu : %s.",
+            "usage": "\\{review}Utilisation : %s",
+        },
         "cmd": {
             "braid": {
                 "help": "Active la tresse de Lara.",

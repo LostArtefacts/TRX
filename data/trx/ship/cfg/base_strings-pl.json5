@@ -244,6 +244,18 @@
         }
     },
     "console": {
+        "argparse": {
+            "expected": "\\{review}Oczekiwano %s.",
+            "hint_boolean": "\\{review}on lub off",
+            "hint_integer": "\\{review}liczba całkowita",
+            "hint_number": "\\{review}liczba",
+            "hint_or": "\\{review}%s lub %s",
+            "hint_values": "\\{review}jedno z: %s",
+            "invalid": "\\{review}Nieprawidłowe %s: %s.",
+            "missing": "\\{review}Brak %s.",
+            "unexpected": "\\{review}Nieoczekiwany argument: %s.",
+            "usage": "\\{review}Użycie: %s",
+        },
         "cmd": {
             "braid": {
                 "help": "Włącza lub wyłącza warkocz Lary.",

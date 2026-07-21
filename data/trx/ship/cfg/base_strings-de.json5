@@ -244,6 +244,18 @@
         }
     },
     "console": {
+        "argparse": {
+            "expected": "\\{review}%s erwartet.",
+            "hint_boolean": "\\{review}on oder off",
+            "hint_integer": "\\{review}eine ganze Zahl",
+            "hint_number": "\\{review}eine Zahl",
+            "hint_or": "\\{review}%s oder %s",
+            "hint_values": "\\{review}eines von: %s",
+            "invalid": "\\{review}Ungültiges %s: %s.",
+            "missing": "\\{review}%s fehlt.",
+            "unexpected": "\\{review}Unerwartetes Argument: %s.",
+            "usage": "\\{review}Verwendung: %s",
+        },
         "cmd": {
             "braid": {
                 "help": "Aktiviert und deaktiviert Laras Zopf.",

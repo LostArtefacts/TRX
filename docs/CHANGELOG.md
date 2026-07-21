@@ -24,6 +24,7 @@ The Lua integration was rewritten and existing scripts will need updating; refer
 
 - added a new Lua module, `trx.math`, with the engine's own fixed-point trigonometry and the `DEG_1`, `DEG_45`, `DEG_90` and `WALL_L` constants
 - added a new Lua module, `trx.strings`, with `fuzzy_match()` and `regex_match()`
+- added a new Lua module, `trx.argparse`, a declarative argument parser for console commands, in the shape of Python's argparse, that both reads and completes a command's arguments
 - added a new Lua module, `trx.locale`, for the text the player reads, looked up by key
 - added `trx.locale.reload()`, to reload the current language's text from disk
 - added a new Lua module, `trx.weather`, to read and set the runtime weather

@@ -244,6 +244,18 @@
         }
     },
     "console": {
+        "argparse": {
+            "expected": "\\{review}Atteso %s.",
+            "hint_boolean": "\\{review}on o off",
+            "hint_integer": "\\{review}un numero intero",
+            "hint_number": "\\{review}un numero",
+            "hint_or": "\\{review}%s, oppure %s",
+            "hint_values": "\\{review}uno tra: %s",
+            "invalid": "\\{review}%s non valido: %s.",
+            "missing": "\\{review}%s mancante.",
+            "unexpected": "\\{review}Argomento inatteso: %s.",
+            "usage": "\\{review}Uso: %s",
+        },
         "cmd": {
             "braid": {
                 "help": "Attiva o disattiva la treccia di Lara.",
