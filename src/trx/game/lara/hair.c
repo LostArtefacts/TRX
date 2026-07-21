@@ -71,11 +71,7 @@ static struct {
     // outfit that does not weld them can be handed back authored geometry.
     int32_t welded_indices[M_MAX_BRAIDS * M_HAIR_SEGMENTS];
     int32_t welded_count;
-    // Base index of the runtime-cloned segment meshes the second pigtail draws,
-    // or -1 when a single braid needs no copies. Each pigtail deforms its own
-    // meshes so their seams do not share a buffer.
-    int32_t clone_base;
-} m_Joints = { .clone_base = -1 };
+} m_Joints = {};
 
 static void M_CalculateSpheres(
     const ANIM_FRAME *const frame, const XYZ_32 offset_pos)
@@ -245,12 +241,12 @@ static void M_CalculateSpheres_I(
 
 void Lara_Hair_Initialise(void)
 {
-    const ANIM_BONE *const bones = Lara_Skin_GetBraidBoneBase();
-    if (bones == nullptr) {
-        return;
-    }
-
     for (int32_t i = 0; i < M_MAX_BRAIDS; i++) {
+        const ANIM_BONE *const bones = Lara_Skin_GetBraidBoneBase(i);
+        if (bones == nullptr) {
+            continue;
+        }
+
         m_IsFirstHair[i] = true;
         m_HairSegments[i][0].rot.x = -DEG_90;
         m_HairSegments[i][0].rot.y = 0;
@@ -304,7 +300,7 @@ static void M_Control(
     };
     Matrix_Pop();
 
-    const ANIM_BONE *const bones = Lara_Skin_GetBraidBoneBase();
+    const ANIM_BONE *const bones = Lara_Skin_GetBraidBoneBase(braid_idx);
 
     HAIR_SEGMENT *const fs = &m_HairSegments[braid_idx][0];
     fs->pos = pos;
@@ -462,7 +458,7 @@ void Lara_Hair_Control(const bool in_cutscene)
 
     const LARA_SKIN_BRAID *const braid = Lara_Skin_GetBraid();
     for (int32_t i = 0; i < braid->count; i++) {
-        M_Control(in_cutscene, i, braid->positions[i]);
+        M_Control(in_cutscene, i, braid->setup[i].position);
     }
 }
 
@@ -520,7 +516,6 @@ static void M_ResetJoints(void)
     }
     m_Joints.welded_count = 0;
     m_Joints.enabled = false;
-    m_Joints.clone_base = -1;
     for (int32_t j = 0; j < M_HAIR_SEGMENTS; j++) {
         m_Joints.upper[j].count = 0;
         m_Joints.lower[j].count = 0;
@@ -582,8 +577,8 @@ void Lara_Hair_InitJoints(const LARA_SKIN_OUTFIT *const outfit)
         return;
     }
 
-    const int32_t braid_base = Lara_Skin_GetBraidMeshIdx();
-    const ANIM_BONE *const bones = Lara_Skin_GetBraidBoneBase();
+    const int32_t braid_base = Lara_Skin_GetBraidMeshIdx(0);
+    const ANIM_BONE *const bones = Lara_Skin_GetBraidBoneBase(0);
     if (braid_base < 0 || bones == nullptr) {
         return;
     }
@@ -636,7 +631,7 @@ void Lara_Hair_InitJoints(const LARA_SKIN_OUTFIT *const outfit)
     const OBJECT_MESH *const head_mesh = Lara_Mesh_Get(LM_HEAD);
     const OBJECT_MESH *const seg0_mesh = Object_GetMesh(braid_base);
     for (int32_t i = 0; i < braid->count; i++) {
-        const LARA_SKIN_BRAID_HEAD_SEAM *const src = &braid->head_seam[i];
+        const LARA_SKIN_BRAID_HEAD_SEAM *const src = &braid->setup[i].head_seam;
         m_Joints.head[i].count = 0;
         for (int32_t k = 0; k < src->count; k++) {
             if (src->pairs[k].vertex_a >= seg0_mesh->num_vertices
@@ -647,22 +642,11 @@ void Lara_Hair_InitJoints(const LARA_SKIN_OUTFIT *const outfit)
         }
     }
 
-    if (braid->count > 1 && Game_IsLoaded()) {
-        const int32_t clone_base =
-            Object_EnsureMeshClones(braid_base, M_HAIR_SEGMENTS);
-        if (clone_base >= 0) {
-            m_Joints.clone_base = clone_base;
-            Output_RefreshObjectMeshes();
-        }
-    }
-
     // Record which meshes the draw will deform - the bridges - so a later
     // outfit can restore them. Restoring a mesh that was never deformed is a
     // no-op.
     for (int32_t i = 0; i < braid->count; i++) {
-        const int32_t seg_base = (i > 0 && m_Joints.clone_base >= 0)
-            ? m_Joints.clone_base
-            : braid_base;
+        const int32_t seg_base = Lara_Skin_GetBraidMeshIdx(i);
         for (int32_t j = 0; j < M_HAIR_SEGMENTS; j += 2) {
             m_Joints.welded_indices[m_Joints.welded_count++] = seg_base + j;
         }
@@ -909,7 +893,6 @@ void Lara_Hair_Draw(void)
     }
 
     const ITEM *const lara_item = Lara_GetItem();
-    const int32_t braid_base = Lara_Skin_GetBraidMeshIdx();
     const LARA_SKIN_BRAID *const braid = Lara_Skin_GetBraid();
 
     for (int32_t i = 0; i < braid->count; i++) {
@@ -919,9 +902,7 @@ void Lara_Hair_Draw(void)
         if (m_IsFirstHair[i]) {
             continue;
         }
-        const int32_t seg_base = (i > 0 && m_Joints.clone_base >= 0)
-            ? m_Joints.clone_base
-            : braid_base;
+        const int32_t seg_base = Lara_Skin_GetBraidMeshIdx(i);
 
         int16_t rolls[M_HAIR_SEGMENTS];
         M_CalculateRenderRolls(i, rolls);

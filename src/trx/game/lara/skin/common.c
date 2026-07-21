@@ -142,17 +142,21 @@ static int32_t M_GetNoHolsterMeshIdx(
     return obj->mesh_idx + offset;
 }
 
-static inline int32_t M_GetRelativeBraidOffset(void)
+static inline int32_t M_GetRelativeBraidOffset(const int32_t braid_idx)
 {
     const LARA_SKIN_OUTFIT *const outfit = M_GetCurrentOutfit();
     if (!outfit->braid.enabled) {
         return M_NO_MESH;
     }
 
+    if (braid_idx < 0 || braid_idx >= outfit->braid.count) {
+        return M_NO_MESH;
+    }
+
     const LARA_INFO *const lara = Lara_GetLaraInfo();
-    int32_t offset = outfit->braid.mesh_offset;
+    int32_t offset = outfit->braid.setup[braid_idx].mesh_offset;
     if (outfit->is_reflective || (lara->mesh_effects & (1 << LM_HEAD)) != 0) {
-        offset = outfit->braid.gold_offset;
+        offset = outfit->braid.setup[braid_idx].gold_offset;
     }
 
     return offset;
@@ -372,13 +376,19 @@ void Lara_Skin_Initialise(void)
             }
         }
 
-        if (!outfit->braid.enabled || outfit->braid.gold_offset == M_NO_MESH) {
+        if (!outfit->braid.enabled) {
             continue;
         }
 
-        for (int32_t j = 0; j < hair_segment_count; j++) {
-            Object_SetMeshReflectiveEx(
-                extra_obj->mesh_idx + outfit->braid.gold_offset + j, true);
+        for (int32_t j = 0; j < outfit->braid.count; j++) {
+            const int32_t gold_offset = outfit->braid.setup[j].gold_offset;
+            if (gold_offset == M_NO_MESH) {
+                continue;
+            }
+            for (int32_t k = 0; k < hair_segment_count; k++) {
+                Object_SetMeshReflectiveEx(
+                    extra_obj->mesh_idx + gold_offset + k, true);
+            }
         }
     }
 
@@ -554,7 +564,7 @@ const ANIM_BONE *Lara_Skin_GetBoneBase(void)
 
 bool Lara_Skin_IsBraidSupported(void)
 {
-    return Lara_Skin_GetBraidMeshIdx() != M_NO_MESH;
+    return Lara_Skin_GetBraidMeshIdx(0) != M_NO_MESH;
 }
 
 const LARA_SKIN_BRAID *Lara_Skin_GetBraid(void)
@@ -563,9 +573,9 @@ const LARA_SKIN_BRAID *Lara_Skin_GetBraid(void)
     return &outfit->braid;
 }
 
-int32_t Lara_Skin_GetBraidMeshIdx(void)
+int32_t Lara_Skin_GetBraidMeshIdx(const int32_t braid_idx)
 {
-    const int32_t offset = M_GetRelativeBraidOffset();
+    const int32_t offset = M_GetRelativeBraidOffset(braid_idx);
     if (offset == M_NO_MESH) {
         return offset;
     }
@@ -574,9 +584,9 @@ int32_t Lara_Skin_GetBraidMeshIdx(void)
     return obj->mesh_idx + offset;
 }
 
-const ANIM_BONE *Lara_Skin_GetBraidBoneBase(void)
+const ANIM_BONE *Lara_Skin_GetBraidBoneBase(const int32_t braid_idx)
 {
-    const int32_t offset = M_GetRelativeBraidOffset();
+    const int32_t offset = M_GetRelativeBraidOffset(braid_idx);
     if (offset == M_NO_MESH) {
         return nullptr;
     }
