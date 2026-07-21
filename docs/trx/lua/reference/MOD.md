@@ -54,3 +54,19 @@ The mods the game was built with, and which one is loaded.
     - **`name`**: string. The mod's identifier, as `trx.mod.switch` takes it. *(read-only)*
     - **`title`**: string. The mod's name, as shown to the player. *(read-only)*
     - **`type`**: integer. What kind of mod it is. Compare against `trx.mod.Type`. *(read-only)*
+
+### Functions
+
+- [lua]`trx.mod.switch(mod)`  
+  Restarts the game into another mod. The switch happens once the game flow picks it up, not on the call.
+
+  Parameters:
+  - **`mod`** (any). A `trx.mod.Mod` or a mod name.
+
+  Returns:
+  - boolean. Whether the mod can be switched to. `false` leaves the game where it is.
+
+  Example:
+  ```lua
+  trx.mod.switch("arabian-nights")
+  ```

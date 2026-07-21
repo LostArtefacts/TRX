@@ -31,4 +31,14 @@ test("current is the loaded mod", function()
   assert(trx.mod.current.name == "base")
 end)
 
+test("switch takes a valid mod, by name or by handle", function()
+  assert(trx.mod.switch("base") == true)
+  assert(trx.mod.switch(trx.mod.list[1]) == true)
+end)
+
+test("switch refuses an invalid or unknown mod", function()
+  assert(trx.mod.switch("extra") == false)
+  assert(trx.mod.switch("nope") == false)
+end)
+
 return h.report()

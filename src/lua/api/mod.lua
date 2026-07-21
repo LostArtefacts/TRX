@@ -86,3 +86,23 @@ api.property("mod.current", {
   description = "The loaded mod, as a `trx.mod.Mod`.",
   get = raw.get_current,
 })
+
+api.define("mod.switch", {
+  description = "Restarts the game into another mod. The switch happens once the game flow "
+    .. "picks it up, not on the call.",
+  params = {
+    {
+      name = "mod",
+      type = "any",
+      description = "A `trx.mod.Mod` or a mod name.",
+    },
+  },
+  returns = {
+    {
+      type = "boolean",
+      description = "Whether the mod can be switched to. `false` leaves the game where it is.",
+    },
+  },
+  examples = { [[trx.mod.switch("arabian-nights")]] },
+  impl = raw.switch,
+})
