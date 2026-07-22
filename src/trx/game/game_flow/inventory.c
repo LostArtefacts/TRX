@@ -430,7 +430,9 @@ void GF_InventoryModifier_Apply(
 #define X_PICKUP_NUMBERED(item, option) M_ModifyInventory_Item(type, item);
 #define X_PICKUP_MISC(item, option) M_ModifyInventory_Item(type, item);
 #define X_PICKUP_VARIANT(item, option) M_ModifyInventory_Item(type, item);
+#define X_PICKUP_SUPPLY_VARIANT(item, option)
 #include <trx/game/objects/pickups.def>
+#undef X_PICKUP_SUPPLY_VARIANT
 #undef X_PICKUP_VARIANT
 #undef X_PICKUP_MISC
 #undef X_PICKUP_NUMBERED
