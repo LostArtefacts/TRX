@@ -109,6 +109,15 @@ repos:
     pass_filenames: false
     files: ^data/trx/ship/
 
+  - id: gen-water-colors
+    name: Regenerate WATER_COLORS.md from water_colors.yml
+    entry: tools/lint/gen/water_colors
+    language: python
+    pass_filenames: false
+    files: ^docs/trx/water_colors\.yml$
+    additional_dependencies:
+      - pyyaml
+
 - repo: https://github.com/JohnnyMorganz/StyLua
   rev: v2.3.0
   hooks:

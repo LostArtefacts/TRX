@@ -1,16 +1,10 @@
-#!/usr/bin/env -S uv run --script
-#
-# /// script
-# requires-python = ">=3.14"
-# dependencies = ["pyyaml"]
-# ///
-
+#!/usr/bin/env python3
 from pathlib import Path
 from typing import Any
 
 import yaml
 
-ROOT = Path(__file__).resolve().parent.parent
+ROOT = Path(__file__).resolve().parents[3]
 YAML_PATH = ROOT / "docs" / "trx" / "water_colors.yml"
 MD_PATH = ROOT / "docs" / "trx" / "WATER_COLORS.md"
 
