@@ -28,6 +28,14 @@ for num, item in pairs(trx.items) do
 end
 ```
 
+### Properties
+
+- **`trx.items.query`** (table). The identity query over every item in the level. Narrow it and read it - see [Query](../../QUERY.md).
+
+Its own narrowings, beyond the operators: `active`, `of_object` (by object id or name) and `in_room`.
+
+Example: `trx.items.query:of_object("wolf"):active():matches()`. *(read-only)*
+
 ### Enums
 
 - [lua]`trx.items.Status`

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <trx/core/vector.h>
 #include <trx/game/objects/ids.h>
 
 #include <stdint.h>
@@ -15,6 +16,16 @@ const char *Object_GetName(OBJECT_ID obj_id);
 // Get a stable pointer-to-pointer for the object name, content of which
 // automatically udpates on each language reload.
 const char *const *Object_GetNamePtr(OBJECT_ID obj_id);
+
+// Every localized name the object answers to, or nullptr if it has none. A
+// vector of char*, owned by the name table.
+const VECTOR *Object_GetNames(OBJECT_ID obj_id);
+
+// The compile-time English names, nullptr-terminated, or nullptr if the object
+// has none. A name lookup falls back on these when the player's language has no
+// name to match - which is the case before a language file is loaded at all.
+const char *const *Object_GetDefaultNames(OBJECT_ID obj_id);
+
 const char *Object_GetDescription(OBJECT_ID obj_id);
 
 void Object_ResetAllNames(void);

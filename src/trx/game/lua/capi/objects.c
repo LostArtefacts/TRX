@@ -2,7 +2,11 @@
 #include <trx/game/lua/registry.h>
 #include <trx/game/lua/struct.h>
 #include <trx/game/lua/utils.h>
+#include <trx/game/objects/names.h>
 #include <trx/game/objects/types.h>
+#include <trx/game/objects/vars.h>
+
+#include <string.h>
 
 // An object is the definition every item of that type is cut from - a wolf's
 // radius, not this wolf's. Per-item state lives on the item; see trx.items.
@@ -108,6 +112,75 @@ static int M_L_ObjectsSwapMesh(lua_State *const L)
     return 0;
 }
 
+// The families an object can belong to. A script names one; C knows which array
+// it is in.
+static const struct {
+    const char *name;
+    const OBJECT_ID *objects;
+} m_Families[] = {
+    { "pickup", g_PickupObjects }, //
+    { "null", g_NullObjects }, //
+    { "anim", g_AnimObjects }, //
+    { "inventory", g_InvObjects }, //
+    { nullptr, nullptr },
+};
+
+// trxc.objects.is_type(object_id, kind) -> bool
+static int M_L_ObjectsIsType(lua_State *const L)
+{
+    const OBJECT_ID object_id = luaL_checkinteger(L, 1);
+    const char *const kind = luaL_checkstring(L, 2);
+    for (int32_t i = 0; m_Families[i].name != nullptr; i++) {
+        if (strcmp(kind, m_Families[i].name) == 0) {
+            lua_pushboolean(L, Object_IsType(object_id, m_Families[i].objects));
+            return 1;
+        }
+    }
+    return luaL_error(L, "unknown object kind '%s'", kind);
+}
+
+// The names an object answers to are lists, because it has more than one: a
+// large medipack is also a "medipack" and a "big medi". get_names is the
+// player's language; get_default_names is the compile-time English fallback a
+// lookup takes before any language file is loaded.
+static int M_L_GetNames(lua_State *const L)
+{
+    const LUA_STRUCT_REF *const ref = LUA_Struct_CheckRef(L, 1, &TYPE_OBJECT);
+    lua_newtable(L);
+    const VECTOR *const names = Object_GetNames((OBJECT_ID)ref->handle.id);
+    if (names != nullptr) {
+        for (int32_t i = 0; i < names->count; i++) {
+            const char *const name = *(char **)Vector_Get(names, i);
+            if (name != nullptr) {
+                lua_pushstring(L, name);
+                lua_seti(L, -2, lua_rawlen(L, -2) + 1);
+            }
+        }
+    }
+    return 1;
+}
+
+static int M_L_GetDefaultNames(lua_State *const L)
+{
+    const LUA_STRUCT_REF *const ref = LUA_Struct_CheckRef(L, 1, &TYPE_OBJECT);
+    lua_newtable(L);
+    const char *const *const names =
+        Object_GetDefaultNames((OBJECT_ID)ref->handle.id);
+    if (names != nullptr) {
+        for (int32_t i = 0; names[i] != nullptr; i++) {
+            lua_pushstring(L, names[i]);
+            lua_seti(L, -2, i + 1);
+        }
+    }
+    return 1;
+}
+
+static const luaL_Reg m_Methods[] = {
+    { "get_names", M_L_GetNames },
+    { "get_default_names", M_L_GetDefaultNames },
+    { nullptr, nullptr },
+};
+
 static const LUA_PROPERTY_DESC m_Properties = {
     .type = &TYPE_OBJECT,
     .what = "object",
@@ -119,13 +192,14 @@ static const LUA_PROPERTY_DESC m_Properties = {
 
 static const luaL_Reg m_Module[] = {
     { "get", M_L_ObjectsGet },
+    { "is_type", M_L_ObjectsIsType },
     { "swap_mesh", M_L_ObjectsSwapMesh },
     { nullptr, nullptr },
 };
 
 static void M_Create(lua_State *const L)
 {
-    LUA_Struct_Register(L, &TYPE_OBJECT, nullptr);
+    LUA_Struct_Register(L, &TYPE_OBJECT, m_Methods);
     LUA_Property_Register(L, &m_Properties);
     LUA_RegisterModule(L, "objects", m_Module);
 }

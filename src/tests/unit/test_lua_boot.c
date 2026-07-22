@@ -33,6 +33,7 @@ int main(void)
 {
     const LUA_SURFACE_TEST test = {
         .module = "items",
+        .deps = { "query", nullptr },
         .tests = "boot",
         .seal = true,
         .harden = true,

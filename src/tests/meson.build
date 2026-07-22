@@ -286,12 +286,24 @@ test('lua_rooms', test_lua_rooms_exe, suite: 'unit')
 
 test_lua_items_exe = executable(
   'test_lua_items',
-  files('unit/test_lua_items.c', 'unit/fake_engine_items.c') + test_stubs
+  files(
+    'unit/test_lua_items.c',
+    'unit/fake_engine_items.c',
+    'unit/fake_engine_catalog.c',
+  ) + test_stubs
     + lua_surface_src
-    + files('../trx/game/lua/capi/items.c'),
+    + files(
+      '../trx/core/strings/case_funcs.c',
+      '../trx/core/strings/common.c',
+      '../trx/core/strings/fuzzy_match.c',
+      '../trx/game/lua/capi/items.c',
+      '../trx/game/lua/capi/objects.c',
+      '../trx/game/lua/capi/catalog.c',
+      '../trx/game/lua/capi/strings.c',
+    ),
   include_directories: [src_inc, test_inc],
-  dependencies: [dep_lua],
-  c_args: lua_surface_args,
+  dependencies: [dep_lua, dep_pcre2],
+  c_args: lua_surface_args + ['-DPCRE2_CODE_UNIT_WIDTH=8'],
   build_by_default: false,
 )
 test('lua_items', test_lua_items_exe, suite: 'unit')

@@ -404,4 +404,51 @@ test("undeclared members are unreachable", function()
   end)
 end)
 
+test("query of_object narrows by object, taken by id or by name", function()
+  assert(#trx.items.query:of_object(WOLF):matches() == 1, "by id")
+  assert(trx.items.query:of_object(WOLF):matches()[1].object_id == WOLF)
+  -- A name resolves through the object query, the way a player would type it.
+  assert(#trx.items.query:of_object("wolf"):matches() == 1, "by name")
+  assert(#trx.items.query:of_object("vase"):matches() == 1)
+end)
+
+test("query of_object matches nothing for a name nobody has", function()
+  assert(trx.items.query:of_object("wombat"):count() == 0)
+end)
+
+test("query in_room narrows by room", function()
+  assert(#trx.items.query:in_room(1):matches() == 1, "the vase is in room 1")
+  assert(trx.items.query:in_room(1):matches()[1].object_id == VASE)
+  assert(trx.items.query:in_room(0):count() == 1, "the wolf is in room 0")
+end)
+
+test("query ids() are item numbers", function()
+  local ids = trx.items.query:of_object(VASE):ids()
+  assert(#ids == 1 and ids[1] == 1, "the vase is item 1")
+end)
+
+test("query active tracks the active list", function()
+  assert(trx.items.query:active():count() == 0, "nothing starts active")
+  assert((~trx.items.query:active()):count() == 2)
+
+  trx.items[0]:activate()
+  assert(trx.items.query:active():count() == 1, "the wolf woke up")
+  assert(trx.items.query:active():matches()[1].object_id == WOLF)
+end)
+
+test("query | unions, & intersects", function()
+  local q = trx.items.query
+  assert((q:of_object(WOLF) | q:of_object(VASE)):count() == 2)
+  assert(
+    (q:of_object(WOLF) & q:in_room(1)):count() == 0,
+    "the wolf is in room 0"
+  )
+end)
+
+test("a query cannot cross domains", function()
+  raises(function()
+    local _ = trx.items.query:active() & trx.objects.query:pickup()
+  end)
+end)
+
 return h.report()

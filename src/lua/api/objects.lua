@@ -1,6 +1,10 @@
 local raw = trxc.objects
 local api = trx.api
 
+require("trx.strings")
+require("trx.catalog")
+require("trx.query")
+
 api.module("objects", {
   order = 15,
   title = "Object",
@@ -97,6 +101,23 @@ api.type("objects.Object", {
   },
 
   extensions = {
+    names = {
+      type = "table",
+      description = "Every name the object answers to, in the player's language. An object has "
+        .. "more than one: a large medipack is also a `medipack` and a `big medi`.",
+      impl = function(object)
+        return object:get_names()
+      end,
+    },
+    default_names = {
+      type = "table",
+      description = "The compile-time English names. A lookup falls back on these when the "
+        .. "player's language has no name to match, which is the case before a language file is "
+        .. "loaded at all.",
+      impl = function(object)
+        return object:get_default_names()
+      end,
+    },
     properties = {
       type = "table",
       description = "The object's own typed properties, which every item of the type inherits. "
@@ -107,6 +128,16 @@ api.type("objects.Object", {
   },
 
   methods = {
+    get_names = {
+      returns = { type = "table" },
+      description = "Every name the object answers to, in the player's language. Prefer "
+        .. "`object.names`.",
+    },
+    get_default_names = {
+      returns = { type = "table" },
+      description = "The compile-time English names, which a lookup falls back on before a "
+        .. "language file is loaded. Prefer `object.default_names`.",
+    },
     get_property = {
       params = { { name = "name", type = "string" } },
       returns = { type = "any", nullable = true },
@@ -154,6 +185,94 @@ wolf.properties.max_hit_points = 30]],
       return object_id ~= nil and raw.get(object_id) or nil
     end
     return nil
+  end,
+})
+
+-- Every object the engine knows, each once. The catalog answers to a name in
+-- any case, so pairs() reaches an id under several keys; a seen set keeps a
+-- candidate from being weighed more than once.
+local function enumerate()
+  local out, seen = {}, {}
+  for _, id in pairs(trx.catalog.objects) do
+    if not seen[id] then
+      seen[id] = true
+      local object = raw.get(id)
+      if object ~= nil then
+        out[#out + 1] = { id, object }
+      end
+    end
+  end
+  return out
+end
+
+-- The families a query narrows by. Membership is the engine's; a script names a
+-- family by calling the method, never by spelling the family out. `pickup` is
+-- searchable: a by_name of "pickup" matches every pickup, so /spawn and /tp can
+-- reach the family by name. Its key is the one place the word is written.
+local filters = {
+  loaded = function()
+    return function(_id, object)
+      return object.loaded
+    end
+  end,
+  -- A thing that exists in the world at all, rather than an inventory icon, an
+  -- animation, or a null placeholder.
+  spawnable = function()
+    return function(id, object)
+      return object.loaded
+        and not raw.is_type(id, "null")
+        and not raw.is_type(id, "anim")
+        and not raw.is_type(id, "inventory")
+    end
+  end,
+  pickup = {
+    searchable = true,
+    test = function()
+      return function(id)
+        return raw.is_type(id, "pickup")
+      end
+    end,
+  },
+  inventory_item = function()
+    return function(id)
+      return raw.is_type(id, "inventory")
+    end
+  end,
+  null_object = function()
+    return function(id)
+      return raw.is_type(id, "null")
+    end
+  end,
+  animation = function()
+    return function(id)
+      return raw.is_type(id, "anim")
+    end
+  end,
+}
+
+local object_query = trx.query.new({
+  enumerate = enumerate,
+  id_of = function(id)
+    return id
+  end,
+  filters = filters,
+  names_of = function(object)
+    return object.names
+  end,
+  default_names_of = function(object)
+    return object.default_names
+  end,
+})
+
+api.property("objects.query", {
+  type = "table",
+  description = "The identity query over every object definition. Narrow it and read it - see "
+    .. "[Query](../../QUERY.md).\n\n"
+    .. "Its own narrowings, beyond the shared `by_name` and the operators: `loaded`, `spawnable`, "
+    .. "`pickup`, `inventory_item`, `null_object` and `animation`.\n\n"
+    .. 'Example: `trx.objects.query:spawnable():by_name("wolf"):ids()`.',
+  get = function()
+    return object_query
   end,
 })
 
