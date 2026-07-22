@@ -550,19 +550,26 @@ def collect_object_property_declarations(
     return declarations
 
 
+IDENTIFIER_RE = re.compile(r"\b[A-Za-z_]\w*\b")
+
+
 def resolve_identifiers(
     expr: str, constants: dict[str, str], game_version: int
 ) -> str:
+    # Replace every known identifier with its value, repeating so a value that
+    # itself names another constant resolves too. Each pass rewrites all the
+    # identifiers in one scan and looks each up in the map, rather than sweeping
+    # the whole expression once per known constant.
+    def replace(match: re.Match[str]) -> str:
+        value = constants.get(match.group(0))
+        return f"({value})" if value is not None else match.group(0)
+
     expr = expr.replace("g_TRVersion", str(game_version))
     for _ in range(16):
-        changed = False
-        for name, value in constants.items():
-            next_expr = re.sub(rf"\b{re.escape(name)}\b", f"({value})", expr)
-            if next_expr != expr:
-                expr = next_expr
-                changed = True
-        if not changed:
+        next_expr = IDENTIFIER_RE.sub(replace, expr)
+        if next_expr == expr:
             break
+        expr = next_expr
     return expr.replace("g_TRVersion", str(game_version))
 
 
