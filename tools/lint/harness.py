@@ -29,12 +29,22 @@ def _report(warnings: Iterable[LintWarning]) -> int:
     return exit_code
 
 
-def file_check(check: Callable[[Path, str], Iterable[LintWarning]]) -> None:
+def file_check(
+    check: Callable[[Path, str], Iterable[LintWarning]],
+    fix: Callable[[Path, str], str] | None = None,
+) -> None:
     # Run `check` over each file prek passes on the command line. Files that do
     # not decode as UTF-8 are binary and get skipped; the hook's `files` and
     # `exclude` patterns handle everything else. Exits non-zero on any warning.
+    #
+    # With `--fix` and a `fix` rewriter, apply it in place and report nothing;
+    # the check still runs on the rewritten text so anything `fix` cannot
+    # resolve is surfaced as a warning.
+    apply_fix = fix is not None and "--fix" in sys.argv[1:]
     warnings: list[LintWarning] = []
     for arg in sys.argv[1:]:
+        if arg.startswith("-"):
+            continue
         path = Path(arg)
         if not path.is_file():
             continue
@@ -42,6 +52,11 @@ def file_check(check: Callable[[Path, str], Iterable[LintWarning]]) -> None:
             text = path.read_text(encoding="utf-8")
         except UnicodeDecodeError:
             continue
+        if apply_fix:
+            fixed = fix(path, text)
+            if fixed != text:
+                path.write_text(fixed, encoding="utf-8")
+            text = fixed
         warnings.extend(check(path, text))
     sys.exit(_report(warnings))
 
