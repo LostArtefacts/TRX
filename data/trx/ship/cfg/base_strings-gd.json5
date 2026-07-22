@@ -459,6 +459,9 @@
             },
             "spawn": {
                 "fail": "Cha deach an nì air iarraidh a chruthachadh",
+                "help": "\\{review}Cruthaichidh nì a-rèir ainm air beulaibh Lara.",
+                "invalid": "\\{review}Nì neo-aithnichte: %s",
+                "name_help": "\\{review}an nì ri chruthachadh, a-rèir ainm",
                 "success": "Chaidh an nì air iarraidh a chruthachadh faisg air Lara",
             },
             "speed": {

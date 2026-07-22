@@ -459,6 +459,9 @@
             },
             "spawn": {
                 "fail": "\\{review}Échec de l'apparition de l'objet demandé",
+                "help": "\\{review}Fait apparaître un objet par son nom devant Lara.",
+                "invalid": "\\{review}Objet inconnu : %s",
+                "name_help": "\\{review}l'objet à faire apparaître, par son nom",
                 "success": "\\{review}Objet demandé apparu près de Lara",
             },
             "speed": {

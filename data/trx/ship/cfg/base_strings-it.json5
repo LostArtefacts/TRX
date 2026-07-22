@@ -459,6 +459,9 @@
             },
             "spawn": {
                 "fail": "Impossibile generare l'oggetto richiesto",
+                "help": "\\{review}Genera un oggetto in base al nome davanti a Lara.",
+                "invalid": "\\{review}Oggetto sconosciuto: %s",
+                "name_help": "\\{review}l'oggetto da generare, in base al nome",
                 "success": "Oggetto richiesto generato vicino a Lara",
             },
             "speed": {
