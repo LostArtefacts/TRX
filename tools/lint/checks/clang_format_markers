@@ -1,0 +1,26 @@
+#!/usr/bin/env python3
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
+from harness import LintWarning, file_check
+
+
+def check(path, text):
+    off_open = False
+    for i, line in enumerate(text.split("\n"), 1):
+        if "// clang-format on" in line:
+            off_open = False
+        if "// clang-format off" in line:
+            if off_open:
+                yield LintWarning(
+                    path,
+                    "found `// clang-format off` before previous block was "
+                    "closed with `// clang-format on`",
+                    line=i,
+                )
+            off_open = True
+
+
+file_check(check)

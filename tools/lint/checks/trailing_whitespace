@@ -1,0 +1,16 @@
+#!/usr/bin/env python3
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
+from harness import LintWarning, file_check
+
+
+def check(path, text):
+    for i, line in enumerate(text.split("\n"), 1):
+        if line.endswith(" "):
+            yield LintWarning(path, "trailing whitespace", line=i)
+
+
+file_check(check)
