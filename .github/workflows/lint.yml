@@ -38,34 +38,23 @@ jobs:
           restore-keys: |
             prek-v1-${{ runner.os }}-
 
-      - name: Check formatted code differences
+      - name: Check lint differences
         working-directory: ${{ github.workspace }}
         run: |
           set +e
-          just lint-format
-          lint_format_status=$?
+          just lint
+          lint_status=$?
           set -e
           if ! git diff --quiet; then
-            echo 'Formatting diffs detected in:'
+            echo 'Lint diffs detected in:'
             git diff --exit-code || (
               clang-format --version
               echo 'Please run `just lint` and commit the changes.'
               exit 1
             )
           fi
-          if [ "${lint_format_status}" -ne 0 ]; then
+          if [ "${lint_status}" -ne 0 ]; then
             clang-format --version
-            echo 'just lint-format failed.'
-            exit "${lint_format_status}"
+            echo 'just lint failed.'
+            exit "${lint_status}"
           fi
-
-      - name: Check imports
-        working-directory: ${{ github.workspace }}
-        run: |
-          git add -u
-          just lint-imports
-          git diff --exit-code || (
-            include-what-you-use --version
-            echo 'Please run `just lint` and commit the changes.'
-            exit 1
-          )
