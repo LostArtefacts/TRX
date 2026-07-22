@@ -395,23 +395,36 @@ def split_args(args: str) -> list[str]:
     return parts
 
 
+_BALANCE_SCANNERS: dict[tuple[str, str], re.Pattern[str]] = {}
+
+
 def find_balanced_end(
     source: str,
     content_start: int,
     open_char: str,
     close_char: str,
 ) -> int:
+    # Jump straight to the next character that can change nesting or string
+    # state, skipping the ordinary characters in between, rather than walking
+    # the source one character at a time.
+    scanner = _BALANCE_SCANNERS.get((open_char, close_char))
+    if scanner is None:
+        chars = "".join(re.escape(c) for c in (open_char, close_char, '"', "\\"))
+        scanner = re.compile(f"[{chars}]")
+        _BALANCE_SCANNERS[open_char, close_char] = scanner
+
     depth = 1
     in_string = False
-    escaped = False
     idx = content_start
-    while idx < len(source) and depth != 0:
-        char = source[idx]
+    while depth != 0:
+        match = scanner.search(source, idx)
+        if match is None:
+            return len(source)
+        idx = match.end()
+        char = match.group()
         if in_string:
-            if escaped:
-                escaped = False
-            elif char == "\\":
-                escaped = True
+            if char == "\\":
+                idx += 1
             elif char == '"':
                 in_string = False
         elif char == '"':
@@ -420,7 +433,6 @@ def find_balanced_end(
             depth += 1
         elif char == close_char:
             depth -= 1
-        idx += 1
     return idx
 
 
