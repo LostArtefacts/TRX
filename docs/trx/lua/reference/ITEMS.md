@@ -143,7 +143,7 @@ Example: `trx.items.query:of_object("wolf"):active():matches()`. *(read-only)*
 
       Example:
       ```lua
-      local wolf = trx.items.first({ object_id = trx.catalog.objects.wolf })
+      local wolf = trx.items.query:of_object(trx.catalog.objects.wolf):first()
       trx.events.after_control(function()
         if wolf:is_valid() and wolf.hit_points <= 0 then
           trx.log.info("the wolf is down")
@@ -205,29 +205,3 @@ Example: `trx.items.query:of_object("wolf"):active():matches()`. *(read-only)*
   Returns the total number of allocated items. Same as `#trx.items`.
 
   Returns: integer.
-
-- [lua]`trx.items.find([query])`  
-  Finds all items matching the query.
-
-  Parameters:
-  - **`query`** (table, optional). Supported keys: `object_id`, `room_num`. Unknown keys are ignored and logged. Omit it for no matches.
-
-  Returns: table. List of `Item`.
-
-  Example:
-  ```lua
-  local wolves = trx.items.find({ object_id = trx.catalog.objects.wolf })
-  ```
-
-- [lua]`trx.items.first([query])`  
-  Finds the first item matching the query.
-
-  Parameters:
-  - **`query`** (table, optional). Supported keys: `object_id`, `room_num`. Omit it for no match.
-
-  Returns: Item or `nil`.
-
-  Example:
-  ```lua
-  local natla = trx.items.first({ object_id = trx.catalog.objects.natla })
-  ```

@@ -3539,44 +3539,6 @@
       }
     },
     {
-      "description": "Finds all items matching the query.",
-      "examples": [
-        "local wolves = trx.items.find({ object_id = trx.catalog.objects.wolf })"
-      ],
-      "params": [
-        {
-          "description": "Supported keys: `object_id`, `room_num`. Unknown keys are ignored and logged. Omit it for no matches.",
-          "name": "query",
-          "optional": true,
-          "type": "table"
-        }
-      ],
-      "path": "items.find",
-      "returns": {
-        "description": "List of `Item`.",
-        "type": "table"
-      }
-    },
-    {
-      "description": "Finds the first item matching the query.",
-      "examples": [
-        "local natla = trx.items.first({ object_id = trx.catalog.objects.natla })"
-      ],
-      "params": [
-        {
-          "description": "Supported keys: `object_id`, `room_num`. Omit it for no match.",
-          "name": "query",
-          "optional": true,
-          "type": "table"
-        }
-      ],
-      "path": "items.first",
-      "returns": {
-        "nullable": true,
-        "type": "Item"
-      }
-    },
-    {
       "description": "Hangs an extra mesh on one of Lara's own, replacing whatever is there.",
       "examples": [
         "trx.lara.set_extra_equipment(trx.lara.Mesh.HAND_R, trx.lara.ExtraMesh.OAR)"
@@ -4951,7 +4913,7 @@
         {
           "description": "Whether the handle still refers to a live item. Reading or writing a field on a stale handle raises an error rather than silently operating on an unrelated item, so check this for a handle held across time.",
           "examples": [
-            "local wolf = trx.items.first({ object_id = trx.catalog.objects.wolf })\ntrx.events.after_control(function()\n  if wolf:is_valid() and wolf.hit_points <= 0 then\n    trx.log.info(\"the wolf is down\")\n  end\nend)"
+            "local wolf = trx.items.query:of_object(trx.catalog.objects.wolf):first()\ntrx.events.after_control(function()\n  if wolf:is_valid() and wolf.hit_points <= 0 then\n    trx.log.info(\"the wolf is down\")\n  end\nend)"
           ],
           "name": "is_valid",
           "returns": {
