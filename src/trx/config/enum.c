@@ -127,4 +127,8 @@ static __attribute__((constructor)) void M_Init(void)
     ENUM_MAP(GAME_MODES_POLICY, GAME_MODES_POLICY_ALWAYS, "always");
     ENUM_MAP(
         GAME_MODES_POLICY, GAME_MODES_POLICY_ON_COMPLETION, "on-completion");
+
+    ENUM_MAP(BREEZE_MODE, BREEZE_MODE_OFF, "off");
+    ENUM_MAP(BREEZE_MODE, BREEZE_MODE_TR2, "tr2");
+    ENUM_MAP(BREEZE_MODE, BREEZE_MODE_TR3, "tr3");
 }

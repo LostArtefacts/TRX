@@ -640,6 +640,11 @@
             "BLOOD_EFFECTS_PINK": "Pinc",
             "BLOOD_EFFECTS_RED": "Dearg",
         },
+        "BREEZE_MODE": {
+            "BREEZE_MODE_OFF": "Dheth",
+            "BREEZE_MODE_TR2": "TR2",
+            "BREEZE_MODE_TR3": "TR3",
+        },
         "CAMERA_MODE": {
             "CAMERA_MODE_TR1": "TR1",
             "CAMERA_MODE_TR2": "TR2",
@@ -1625,6 +1630,10 @@
             "title": "Buaidhean fuil",
             "description": "Smachd air dathan spàirn fola.\n\n- Ciorramh: chan eilear a’ sealltainn spàirn fola sam bith.\n- Pinc: an àbhaist ann an sgaoilidhean PC Gearmailteach de TR3.\n- Dearg: an àbhaist anns a h-uile sgaoileadh reic eile.",
         },
+        "visuals.breeze_mode": {
+            "title": "Gaoth",
+            "description": "Cuiridh seo buaidh na gaoithe air feaman-fuilt Lara, boinneagan uisge a' thuiteas far Lara, agus an t-uisge/sneachd ann an seòmraichean freagarrach.\n\n- Dheth: cuir à comas buaidh na gaoithe.\n- TR2: bidh a' ghaoth an-còmhnaidh a' sèideadh air aon taobh.\n- TR3: bidh taobh na gaoithe ag atharrachadh thar ùine.",
+        },
         "visuals.camera_mode": {
             "title": "Modh camara",
             "description": "Atharraichidh seo an doigh anns a bhios a' chamara ag obair, m.e. aig àm ghnìomhan shonraichte, mar a bhith a' cleachdadh iuchraichean.",
@@ -1636,10 +1645,6 @@
         "visuals.enable_braid": {
             "title": "Feaman-fuilt Lara",
             "description": "Cuiridh seo feaman-fuilt Lara an comas.",
-        },
-        "visuals.enable_breeze": {
-            "title": "Gaoth",
-            "description": "Cuiridh seo buaidh na gaoithe air feaman-fuilt Lara, boinneagan uisge a' thuiteas far Lara, agus an t-uisge/sneachd ann an seòmraichean freagarrach.",
         },
         "visuals.enable_droplets": {
             "title": "\\{review}Boinnean uisge",

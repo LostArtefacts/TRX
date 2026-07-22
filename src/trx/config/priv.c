@@ -523,6 +523,18 @@ static void M_LoadLegacyOptions(JSON_OBJECT *const parent_obj)
             : GAME_MODES_POLICY_NEVER;
     }
 
+    // TRX ..1.10: breeze on/off changed to mode
+    if (JSON_ObjectGetValue(parent_obj, "breeze_mode") == nullptr) {
+        const JSON_VALUE *const value =
+            JSON_ObjectGetValue(parent_obj, "enable_breeze");
+        if (JSON_ValueIsTrue(value)) {
+            g_Config.visuals.breeze_mode =
+                g_TRVersion <= 2 ? BREEZE_MODE_TR2 : BREEZE_MODE_TR3;
+        } else {
+            g_Config.visuals.breeze_mode = BREEZE_MODE_OFF;
+        }
+    }
+
     if (g_Config.config_version >= 0
         && g_Config.config_version < M_CONFIG_VERSION_CURRENT) {
         g_Config.config_version = M_CONFIG_VERSION_CURRENT;

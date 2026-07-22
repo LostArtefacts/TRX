@@ -640,6 +640,11 @@
             "BLOOD_EFFECTS_PINK": "Rosa",
             "BLOOD_EFFECTS_RED": "Rosso",
         },
+        "BREEZE_MODE": {
+            "BREEZE_MODE_OFF": "\\{review}Disattivato",
+            "BREEZE_MODE_TR2": "\\{review}TR2",
+            "BREEZE_MODE_TR3": "\\{review}TR3",
+        },
         "CAMERA_MODE": {
             "CAMERA_MODE_TR1": "TR1",
             "CAMERA_MODE_TR2": "TR2",
@@ -1625,6 +1630,10 @@
             "title": "Effetti sangue",
             "description": "Permette di modificare il colore degli schizzi di sangue o di disattivarli.\n\n- Disabilitato: gli schizzi di sangue non vengono mostrati.\n- Rosa: impostazione predefinita nelle versioni tedesche per PC di TR3.\n- Rosso: impostazione predefinita in tutte le altre versioni per la vendita al dettaglio.",
         },
+        "visuals.breeze_mode": {
+            "title": "Effetto brezza",
+            "description": "\\{review}Modifica il modo in cui la brezza influisce sulla treccia di Lara, sulle gocce d'acqua che cadono da Lara e sulla pioggia/neve nelle stanze appropriate.\n\n- Disattivato: disabilita l'effetto della brezza.\n- TR2: la brezza soffia sempre nella stessa direzione.\n- TR3: la direzione della brezza cambia nel tempo.",
+        },
         "visuals.camera_mode": {
             "title": "Modalità telecamera",
             "description": "Regola il comportamento della telecamera durante azioni come l'uso degli oggetti chiave.",
@@ -1636,10 +1645,6 @@
         "visuals.enable_braid": {
             "title": "Treccia di Lara",
             "description": "Abilita la treccia di Lara.",
-        },
-        "visuals.enable_breeze": {
-            "title": "Effetto brezza",
-            "description": "\\{review}Abilita l'effetto della brezza sulla treccia di Lara, le gocce d'acqua che cadono da Lara e la pioggia o la neve nelle aree appropriate.",
         },
         "visuals.enable_droplets": {
             "title": "\\{review}Gocce d'acqua",

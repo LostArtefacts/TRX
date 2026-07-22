@@ -640,6 +640,11 @@
             "BLOOD_EFFECTS_PINK": "\\{review}Rose",
             "BLOOD_EFFECTS_RED": "\\{review}Rouge",
         },
+        "BREEZE_MODE": {
+            "BREEZE_MODE_OFF": "\\{review}Désactivé",
+            "BREEZE_MODE_TR2": "\\{review}TR2",
+            "BREEZE_MODE_TR3": "\\{review}TR3",
+        },
         "CAMERA_MODE": {
             "CAMERA_MODE_TR1": "TR1",
             "CAMERA_MODE_TR2": "TR2",
@@ -1625,6 +1630,10 @@
             "title": "\\{review}Effets de sang",
             "description": "\\{review}Contrôle les couleurs des étincelles de sang.\n\n- Désactivé : aucune étincelle de sang n'est affichée.\n- Rose : la valeur par défaut dans les versions PC allemandes de TR3.\n- Rouge : la valeur par défaut dans toutes les autres versions commerciales.",
         },
+        "visuals.breeze_mode": {
+            "title": "Vent",
+            "description": "\\{review}Modifie la façon dont la brise affecte la tresse de Lara, les gouttes d'eau tombant de Lara, ainsi que la pluie/neige dans les pièces appropriées.\n\n- Désactivé : désactive l'effet de brise.\n- TR2 : la brise souffle toujours dans la même direction.\n- TR3 : la direction de la brise change au fil du temps.",
+        },
         "visuals.camera_mode": {
             "title": "Mode caméra",
             "description": "Ajuste le comportement de la caméra lors d'actions comme l'utilisation de clés.",
@@ -1636,10 +1645,6 @@
         "visuals.enable_braid": {
             "title": "Tresse de Lara",
             "description": "Active la tresse de Lara.",
-        },
-        "visuals.enable_breeze": {
-            "title": "Vent",
-            "description": "\\{review}Active l'effet de brise sur la tresse de Lara, les gouttes d'eau qui ruissellent de Lara, ainsi que la pluie et la neige dans les pièces appropriées.",
         },
         "visuals.enable_droplets": {
             "title": "\\{review}Gouttes d'eau",

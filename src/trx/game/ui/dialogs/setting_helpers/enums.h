@@ -37,3 +37,4 @@ extern const UI_SETTINGS_ENUM_ENTRY
 extern const UI_SETTINGS_ENUM_ENTRY UI_Settings_SunglassesModeEnumEntries[];
 extern const UI_SETTINGS_ENUM_ENTRY UI_Settings_GameModesPolicyEnumEntries[];
 extern const UI_SETTINGS_ENUM_ENTRY UI_Settings_IntroFMVModeEnumEntries[];
+extern const UI_SETTINGS_ENUM_ENTRY UI_Settings_BreezeModeEnumEntries[];
