@@ -79,9 +79,9 @@ repos:
     language: system
     files: \.[ch](pp)?$
 
-  - id: update-game-strings
+  - id: gen-game-strings
     name: Update game strings to match source code
-    entry: tools/update_game_strings
+    entry: tools/lint/gen/game_strings
     language: python
     stages: [pre-commit]
     pass_filenames: false

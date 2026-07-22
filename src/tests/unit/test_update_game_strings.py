@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Unit tests for tools/update_game_strings. No engine, no binary, no game data."""
+"""Unit tests for tools/lint/gen/game_strings. No engine, no binary, no game data."""
 
 from __future__ import annotations
 
@@ -19,7 +19,7 @@ class TestGameStrings(unittest.TestCase):
     """
 
     def setUp(self):
-        self.strings = load("update_game_strings")
+        self.strings = load("lint/gen/game_strings")
 
     def scan_lines(self, source: str) -> list[tuple[int, str]]:
         with tempfile.NamedTemporaryFile("w", suffix=".lua", delete=False) as fh:

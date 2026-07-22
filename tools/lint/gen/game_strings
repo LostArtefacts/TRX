@@ -11,6 +11,8 @@ from enum import Enum, auto
 from pathlib import Path
 from typing import Any
 
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+
 from shared.cdefs import expand_def_file
 from shared.files import find_versioned_files
 from shared.json_utils import load_json5_from_string, write_json_to_string
