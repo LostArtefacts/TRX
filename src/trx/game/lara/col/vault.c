@@ -114,7 +114,7 @@ static bool M_IsLowVault(
 static bool M_HasHeadClearance(const M_COLL *const coll)
 {
     const LARA_INFO *const lara = Lara_GetLaraInfo();
-    return lara->climb_status
+    return (lara->climb_status && coll->front.floor == NO_HEIGHT)
         || coll->front.floor - coll->mid.ceiling >= M_MIN_CLEARANCE;
 }
 
