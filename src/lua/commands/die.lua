@@ -19,7 +19,7 @@ local function run()
 end
 
 trx.console.register({
-  name = "abortion",
+  name = "die",
   aliases = { "natlasucks", "natla-sucks", "natlastinks", "natla-stinks" },
   run = run,
 })
