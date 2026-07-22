@@ -16,6 +16,7 @@
 - fixed Lara attempting to climb ladders from inside lifts (#5890)
 - fixed Lara attempting to pull up into gaps that would not allow her to stand, resulting in her being pushed out (#5891)
 - fixed crawler mutants killed by Lara's allies not being included in the stats when the option to include ally kills is enabled (#5691, regression from 1.7)
+- fixed Lara receiving twice the number of flares if given via the game flow (regression from 1.9)
 
 **TR1**
 - changed weather to be affected by the breeze
