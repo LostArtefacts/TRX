@@ -82,6 +82,7 @@ INJECTION_LINKS: dict[tuple[str, str], tuple[str, ...]] = {
         "misc_sprites.bin",
         "pda_model.bin",
         "pickup_aid.bin",
+        "sparks_gfx.bin",
     ),
 }
 
@@ -103,6 +104,8 @@ def create_cfg_links() -> None:
         target_dir = ROOT / "data" / "te" / game / "Engine" / "cfg"
         for source_path in sorted(source_dir.rglob("*")):
             if source_path.is_dir():
+                continue
+            if source_path.parent.name == 'presets':
                 continue
             rel_path = source_path.relative_to(source_dir)
             target_path = target_dir / rel_path
