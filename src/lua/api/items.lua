@@ -243,7 +243,7 @@ api.type("items.Item", {
         .. "stale handle raises an error rather than silently operating on an unrelated item, so "
         .. "check this for a handle held across time.",
       examples = {
-        [[local wolf = trx.items.first({ object_id = trx.catalog.objects.wolf })
+        [[local wolf = trx.items.query:of_object(trx.catalog.objects.wolf):first()
 trx.events.after_control(function()
   if wolf:is_valid() and wolf.hit_points <= 0 then
     trx.log.info("the wolf is down")
@@ -304,51 +304,6 @@ end)]],
     },
   },
 })
-
-local FIND_KEYS = { object_id = true, room_num = true }
-
-local function validate_query(query, fn_name)
-  if type(query) ~= "table" then
-    error("trx.items." .. fn_name .. " query must be a table", 3)
-  end
-  for key, _ in pairs(query) do
-    if not FIND_KEYS[key] then
-      trx.log.warn(
-        "trx.items."
-          .. fn_name
-          .. ": unknown property '"
-          .. tostring(key)
-          .. "'"
-      )
-    end
-  end
-end
-
-local function matches(item, query)
-  for key, _ in pairs(FIND_KEYS) do
-    if query[key] ~= nil and item[key] ~= query[key] then
-      return false
-    end
-  end
-  return true
-end
-
-local function search(query, first_only)
-  local found = {}
-  for i = 0, raw.count() - 1 do
-    local item = raw.get(i)
-    if item ~= nil and matches(item, query) then
-      if first_only then
-        return item
-      end
-      found[#found + 1] = item
-    end
-  end
-  if first_only then
-    return nil
-  end
-  return found
-end
 
 api.define("items.get", {
   description = "Retrieves an item by index or by name. Items count from zero, matching the "
@@ -413,53 +368,6 @@ api.define("items.count", {
   description = "Returns the total number of allocated items. Same as `#trx.items`.",
   returns = { type = "integer" },
   impl = raw.count,
-})
-
-api.define("items.find", {
-  description = "Finds all items matching the query.",
-  params = {
-    {
-      name = "query",
-      type = "table",
-      optional = true,
-      description = "Supported keys: `object_id`, `room_num`. Unknown keys are ignored and logged. "
-        .. "Omit it for no matches.",
-    },
-  },
-  returns = { type = "table", description = "List of `Item`." },
-  examples = {
-    [[local wolves = trx.items.find({ object_id = trx.catalog.objects.wolf })]],
-  },
-  impl = function(query)
-    if query == nil then
-      return {}
-    end
-    validate_query(query, "find")
-    return search(query, false)
-  end,
-})
-
-api.define("items.first", {
-  description = "Finds the first item matching the query.",
-  params = {
-    {
-      name = "query",
-      type = "table",
-      optional = true,
-      description = "Supported keys: `object_id`, `room_num`. Omit it for no match.",
-    },
-  },
-  returns = { type = "Item", nullable = true },
-  examples = {
-    [[local natla = trx.items.first({ object_id = trx.catalog.objects.natla })]],
-  },
-  impl = function(query)
-    if query == nil then
-      return nil
-    end
-    validate_query(query, "first")
-    return search(query, true)
-  end,
 })
 
 -- Every item the level holds, each by its number.

@@ -33,6 +33,10 @@ order: 3
      `item.hit_points = 99999`, where the field is 16-bit.
    - `pairs(item)` iterates the item's public fields; it used to yield `idx`
      alone.
+   - `trx.items.find(query)` and `trx.items.first(query)` were removed.
+     `trx.items.query` does both: `trx.items.query:of_object(id):matches()` for
+     the list and `:first()` for one, with `:in_room(num)` in place of the
+     `room_num` key. `of_object` also takes a name, not just an id.
 
 2. **Update scripts that use room handles**
    `trx.rooms` hands out opaque room handles rather than `{ idx = ... }` tables.

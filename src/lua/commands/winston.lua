@@ -5,7 +5,7 @@ local STEP_L = trx.math.WALL_L // 4
 -- Brings an existing Winston to Lara. Returns whether one was found - a dead one
 -- counts, and reports itself.
 local function summon_existing(object_id, target, lara)
-  local items = trx.items.find({ object_id = object_id })
+  local items = trx.items.query:of_object(object_id):matches()
   local winston = items[1]
   if winston == nil then
     return false

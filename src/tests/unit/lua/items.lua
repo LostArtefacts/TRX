@@ -325,25 +325,11 @@ test("computed members and methods are declared", function()
   assert(it.is_killed == false)
 end)
 
-test("find and first query by object and room", function()
-  local wolves = trx.items.find({ object_id = WOLF })
-  assert(#wolves == 1, "expected one wolf, got " .. #wolves)
-  assert(wolves[1].object_id == WOLF)
-
-  assert(#trx.items.find({ room_num = 1 }) == 1, "by room")
-  assert(
-    #trx.items.find({ object_id = WOLF, room_num = 1 }) == 0,
-    "both must match"
-  )
-
-  assert(trx.items.first({ object_id = VASE }) ~= nil)
-  -- Nil, not an empty table: a table is truthy, so `if trx.items.first(q) then`
-  -- would take the branch even when nothing matched.
-  assert(trx.items.first({ object_id = 99 }) == nil, "no match must be nil")
-
-  -- An unknown query key is logged and ignored, not fatal.
-  assert(#trx.items.find({ nonsense = 1 }) == 2, "an unknown key is ignored")
-  assert(#trx.items.find() == 0 and trx.items.first() == nil)
+test("query first is a handle or nil, never an empty table", function()
+  assert(trx.items.query:of_object(VASE):first() ~= nil)
+  -- Nil, not an empty table: a table is truthy, so `if q:first() then` would
+  -- take the branch even when nothing matched.
+  assert(trx.items.query:of_object(99):first() == nil, "no match must be nil")
 end)
 
 -- A method reaches C directly, so strict mode has to put its wrapper in front

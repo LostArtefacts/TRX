@@ -118,6 +118,7 @@ The Lua integration was rewritten and existing scripts will need updating; refer
 - changed Lua enums to be read-only, including the table `pairs()` used to hand out; writing to one used to break every later lookup
 - changed writes that a field cannot hold to raise rather than truncate, so `item.hit_points = 99999` no longer wraps
 - fixed a number too large for the engine wrapping into range rather than being refused, so `trx.items[4294967297]` no longer reads as the first item
+- removed `trx.items.find()` and `trx.items.first()`; `trx.items.query` does both
 - removed `trx.console.log.LogLevel`, a duplicate of `trx.log.LogLevel`
 - removed `trx.events.EventType`
 - removed `trx.game.settings`, which duplicated `trx.config`
