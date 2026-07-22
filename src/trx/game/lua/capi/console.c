@@ -274,9 +274,61 @@ static int M_L_ConsoleRegister(lua_State *const L)
     return 0;
 }
 
+// Pushes a command as { name, help, aliases }; help and aliases are left out
+// when the command carries none.
+static void M_PushCommand(lua_State *const L, const CONSOLE_COMMAND *const cmd)
+{
+    lua_newtable(L);
+    lua_pushstring(L, cmd->prefix);
+    lua_setfield(L, -2, "name");
+    if (cmd->help_id != nullptr) {
+        lua_pushstring(L, cmd->help_id);
+        lua_setfield(L, -2, "help");
+    }
+    if (cmd->aliases != nullptr) {
+        lua_pushstring(L, cmd->aliases);
+        lua_setfield(L, -2, "aliases");
+    }
+}
+
+// trxc.console.commands() -> a list of every command, each { name, help,
+// aliases }, in registration order. help is the game string key, or absent;
+// aliases is the comma-joined display string, or absent.
+static int M_L_ConsoleCommands(lua_State *const L)
+{
+    VECTOR *const vec = Console_Registry_GetAll();
+    const CONSOLE_COMMAND **const list =
+        (const CONSOLE_COMMAND **)Vector_GetData(vec);
+    lua_newtable(L);
+    for (int32_t i = 0; i < vec->count; i++) {
+        M_PushCommand(L, list[i]);
+        lua_rawseti(L, -2, i + 1);
+    }
+    Vector_Free(vec);
+    return 1;
+}
+
+// trxc.console.command(name) -> { name, help, aliases }, or nil. Matches by
+// name or alias, as the console does when it dispatches.
+static int M_L_ConsoleCommand(lua_State *const L)
+{
+    const CONSOLE_COMMAND *const cmd =
+        Console_Registry_Get(luaL_checkstring(L, 1));
+    if (cmd == nullptr) {
+        lua_pushnil(L);
+        return 1;
+    }
+    M_PushCommand(L, cmd);
+    return 1;
+}
+
 static const luaL_Reg m_Module[] = {
-    { "log", M_L_ConsoleLog },     { "eval", M_L_ConsoleEval },
-    { "clear", M_L_ConsoleClear }, { "register", M_L_ConsoleRegister },
+    { "log", M_L_ConsoleLog },
+    { "eval", M_L_ConsoleEval },
+    { "clear", M_L_ConsoleClear },
+    { "register", M_L_ConsoleRegister },
+    { "commands", M_L_ConsoleCommands },
+    { "command", M_L_ConsoleCommand },
     { nullptr, nullptr },
 };
 
