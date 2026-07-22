@@ -102,6 +102,13 @@ repos:
     pass_filenames: false
     files: ^src/trx/game/.*\.(c|h|def)$
 
+  - id: gen-install-trees
+    name: Regenerate install trees in INSTALLING.md
+    entry: tools/lint/gen/install_trees
+    language: python
+    pass_filenames: false
+    files: ^data/trx/ship/
+
 - repo: https://github.com/JohnnyMorganz/StyLua
   rev: v2.3.0
   hooks:
