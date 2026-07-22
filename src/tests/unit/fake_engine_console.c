@@ -137,6 +137,16 @@ const CONSOLE_COMMAND *Console_Registry_Get(const char *const prefix)
     return nullptr;
 }
 
+VECTOR *Console_Registry_GetAll(void)
+{
+    VECTOR *const vec = Vector_Create(sizeof(const CONSOLE_COMMAND *));
+    for (int32_t i = 0; i < m_CommandCount; i++) {
+        const CONSOLE_COMMAND *const cmd = &m_Commands[i];
+        Vector_Add(vec, &cmd);
+    }
+    return vec;
+}
+
 void Console_Registry_RemoveByProc(
     COMMAND_RESULT (*const proc)(const COMMAND_CONTEXT *ctx))
 {
