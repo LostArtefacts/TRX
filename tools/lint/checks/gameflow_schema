@@ -1,0 +1,27 @@
+#!/usr/bin/env python3
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
+import fastjsonschema
+
+from harness import LintWarning, repo_check
+from shared.json_utils import load_json5
+from shared.paths import DATA_DIR, CommonPaths
+
+
+def check():
+    schema_path = CommonPaths.docs_dir / "gameflow.schema.json"
+    if not schema_path.exists():
+        return
+    validate = fastjsonschema.compile(load_json5(schema_path))
+    games_dir = DATA_DIR / "trx" / "ship" / "games"
+    for game_flow_path in games_dir.rglob("gameflow.json5"):
+        try:
+            validate(load_json5(game_flow_path))
+        except fastjsonschema.JsonSchemaException as ex:
+            yield LintWarning(game_flow_path, ex.message)
+
+
+repo_check(check)

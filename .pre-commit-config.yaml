@@ -11,24 +11,67 @@ repos:
     language: system
     files: \.[ch](pp)?$
 
-  - id: additional-lint
-    name: Run additional linters
-    entry: tools/additional_lint
+  - id: lint-json-validity
+    name: JSON files parse
+    entry: tools/lint/checks/json_validity
     language: python
-    stages: [pre-commit]
-    additional_dependencies:
-      - pyjson5
-      - jsonschema
+    files: \.json$
 
-  - id: additional-lint -a
-    name: Run additional linters (repo-wide)
-    entry: tools/additional_lint -a
+  - id: lint-newlines
+    name: Files end in a single newline
+    entry: tools/lint/checks/newlines
     language: python
-    stages: [pre-commit]
+    exclude: \.patch$
+
+  - id: lint-trailing-whitespace
+    name: No trailing whitespace
+    entry: tools/lint/checks/trailing_whitespace
+    language: python
+    exclude: \.(md|patch)$
+
+  - id: lint-const-primitives
+    name: No useless const on primitives
+    entry: tools/lint/checks/const_primitives
+    language: python
+    files: \.h$
+
+  - id: lint-no-stdbool
+    name: No stdbool.h
+    entry: tools/lint/checks/no_stdbool
+    language: python
+    files: \.(c|h|cpp|hpp|cc|cxx)$
+
+  - id: lint-meson-sort
+    name: meson.build source list is ordered
+    entry: tools/lint/checks/meson_sort
+    language: python
+    files: (^|/)meson\.build$
+    exclude: /(dwarfstack|tests)/meson\.build$
+
+  - id: lint-clang-format-markers
+    name: clang-format markers are balanced
+    entry: tools/lint/checks/clang_format_markers
+    language: python
+    files: \.c$
+
+  - id: lint-gameflow-schema
+    name: Gameflow files match the schema
+    entry: tools/lint/checks/gameflow_schema
+    language: python
     pass_filenames: false
+    files: (games/.*/gameflow\.json5|docs/gameflow\.schema\.json)$
     additional_dependencies:
       - pyjson5
-      - jsonschema
+      - fastjsonschema
+
+  - id: lint-preset-keys
+    name: Preset setting keys are known
+    entry: tools/lint/checks/preset_keys
+    language: python
+    pass_filenames: false
+    files: (config/map(_tr[123])?\.def|cfg/presets/.*\.json5)$
+    additional_dependencies:
+      - pyjson5
 
   - id: imports
     name: imports

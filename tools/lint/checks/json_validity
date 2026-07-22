@@ -1,0 +1,18 @@
+#!/usr/bin/env python3
+import json
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
+from harness import LintWarning, file_check
+
+
+def check(path, text):
+    try:
+        json.loads(text)
+    except json.JSONDecodeError as ex:
+        yield LintWarning(path, f"malformed JSON: {ex!s}")
+
+
+file_check(check)
