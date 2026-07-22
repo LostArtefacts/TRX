@@ -158,7 +158,7 @@ static COMMAND_RESULT M_KillEnemyType(const char *const enemy_name)
 
 static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *const ctx)
 {
-    if (!Game_IsLoaded()) {
+    if (!Game_IsPlayable()) {
         return CR_UNAVAILABLE;
     }
 
