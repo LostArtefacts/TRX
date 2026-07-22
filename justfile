@@ -75,15 +75,8 @@ clean:
     -find . -mindepth 1 -empty -type d -delete
 
 [group('lint')]
-lint-imports:
-    tools/sort_imports
-
-[group('lint')]
-lint-format:
+lint:
     prek -a
-
-[group('lint')]
-lint: (lint-imports) (lint-format)
 
 trx-build-linux target='debug': (image-linux "0") (_docker_run "rrdash/trx-linux" "build" "--target" target)
 trx-build-win target='debug': (image-win "0") (_docker_run "rrdash/trx-win" "build" "--target" target)
