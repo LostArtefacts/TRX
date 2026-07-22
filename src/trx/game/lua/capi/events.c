@@ -48,6 +48,10 @@ static VECTOR *m_Listeners = nullptr;
 static VECTOR *m_Claims = nullptr;
 static int32_t m_NextId = 1;
 static int32_t m_DispatchDepth = 0;
+// Live listeners per type, so a fire for a type nobody watches returns without
+// walking the vector. A listener counts until it stops being able to fire,
+// which M_RemoveListener decides for both its branches.
+static int32_t m_ListenerCount[LUA_EVENT_NUMBER_OF] = { 0 };
 
 static void M_FireEvent(
     LUA_EVENT_TYPE ev, int32_t key, const LUA_EVENT_ARG *args,
@@ -61,6 +65,7 @@ static void M_RemoveListener(lua_State *const L, const int32_t i)
     M_LISTENER *const lst = Vector_Get(m_Listeners, i);
     luaL_unref(L, LUA_REGISTRYINDEX, lst->ref);
     lst->ref = LUA_NOREF;
+    m_ListenerCount[lst->type]--;
     if (m_DispatchDepth > 0) {
         lst->dead = true;
     } else {
@@ -95,6 +100,9 @@ static void M_ClearAllListeners(const bool unref_from_lua)
 
     Vector_Free(m_Listeners);
     m_Listeners = nullptr;
+    for (int32_t i = 0; i < LUA_EVENT_NUMBER_OF; i++) {
+        m_ListenerCount[i] = 0;
+    }
 }
 
 static void M_Shutdown(void)
@@ -207,6 +215,7 @@ static int M_L_EventsAttach(lua_State *const L)
         .level_scoped = LUA_GetScriptContext() == LUA_CONTEXT_LEVEL,
     };
     Vector_Add(m_Listeners, &listener);
+    m_ListenerCount[ev]++;
     lua_pushinteger(L, listener.id);
     return 1;
 }
@@ -314,7 +323,7 @@ static void M_FireEvent(
     const int32_t arg_count)
 {
     lua_State *const L = m_L;
-    if (L == nullptr || m_Listeners == nullptr) {
+    if (L == nullptr || m_Listeners == nullptr || m_ListenerCount[ev] == 0) {
         return;
     }
 
