@@ -459,6 +459,9 @@
             },
             "spawn": {
                 "fail": "Failed to spawn requested object",
+                "help": "Spawns an object by name in front of Lara.",
+                "invalid": "Unknown object: %s",
+                "name_help": "the object to spawn, by name",
                 "success": "Requested object spawned near Lara",
             },
             "speed": {

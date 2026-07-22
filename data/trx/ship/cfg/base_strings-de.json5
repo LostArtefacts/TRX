@@ -459,6 +459,9 @@
             },
             "spawn": {
                 "fail": "\\{review}Erzeugen des angeforderten Objekts fehlgeschlagen",
+                "help": "\\{review}Erzeugt ein Objekt anhand seines Namens vor Lara.",
+                "invalid": "\\{review}Unbekanntes Objekt: %s",
+                "name_help": "\\{review}das zu erzeugende Objekt, anhand des Namens",
                 "success": "\\{review}Angefordertes Objekt in der Nähe von Lara erzeugt",
             },
             "speed": {

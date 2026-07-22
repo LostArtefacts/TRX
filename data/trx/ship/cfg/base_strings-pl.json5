@@ -459,6 +459,9 @@
             },
             "spawn": {
                 "fail": "Nie udało się przywołać żądanego obiektu",
+                "help": "\\{review}Przywołuje obiekt o podanej nazwie przed Larą.",
+                "invalid": "\\{review}Nieznany obiekt: %s",
+                "name_help": "\\{review}obiekt do przywołania, wg nazwy",
                 "success": "Żądany obiekt przywołany w pobliżu Lary",
             },
             "speed": {
