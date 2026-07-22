@@ -111,7 +111,9 @@ static void M_Control(const int16_t item_num)
     Room_GetSector(item->pos, &room_num);
     Item_UpdateRoom(item_num, room_num);
 
-    item->rot.x = (mid_height - front_height) << 1;
+    if (mid_height != NO_HEIGHT && front_height != NO_HEIGHT) {
+        item->rot.x = (mid_height - front_height) << 1;
+    }
 
     const XYZ_32 light_pos =
         XYZ_32_OffsetYaw(item->pos, item->rot.y, M_LIGHT_DIST);
