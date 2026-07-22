@@ -640,6 +640,11 @@
             "BLOOD_EFFECTS_PINK": "\\{review}Pink",
             "BLOOD_EFFECTS_RED": "\\{review}Rot",
         },
+        "BREEZE_MODE": {
+            "BREEZE_MODE_OFF": "\\{review}Aus",
+            "BREEZE_MODE_TR2": "\\{review}TR2",
+            "BREEZE_MODE_TR3": "\\{review}TR3",
+        },
         "CAMERA_MODE": {
             "CAMERA_MODE_TR1": "TR1",
             "CAMERA_MODE_TR2": "TR2",
@@ -1625,6 +1630,10 @@
             "title": "\\{review}Bluteffekte",
             "description": "\\{review}Steuert die Farben der Blutspritzer.\n\n- Deaktiviert: Es werden keine Blutspritzer angezeigt.\n- Pink: Standard in den deutschen PC-Versionen von TR3.\n- Rot: Standard in allen anderen Einzelhandelsversionen.",
         },
+        "visuals.breeze_mode": {
+            "title": "Brise",
+            "description": "\\{review}Ändert, wie die Brise Laras Zopf, die von Lara herabtropfenden Wassertropfen sowie Regen/Schnee in entsprechenden Räumen beeinflusst.\n\n- Aus: Briseneffekt deaktivieren.\n- TR2: Die Brise weht immer in dieselbe Richtung.\n- TR3: Die Brise ändert ihre Richtung mit der Zeit.",
+        },
         "visuals.camera_mode": {
             "title": "Kamera-Modus",
             "description": "Passt das Kameraverhalten während Aktionen, wie dem Benutzen von Schlüsseln, ausegführt werden.",
@@ -1636,10 +1645,6 @@
         "visuals.enable_braid": {
             "title": "Laras Zopf",
             "description": "Aktiviert Laras Zopf.",
-        },
-        "visuals.enable_breeze": {
-            "title": "Brise",
-            "description": "\\{review}Aktiviert den Briseneffekt für Laras Zopf sowie Wassertropfen, die von Lara abfallen, und Regen bzw. Schnee in entsprechenden Räumen.",
         },
         "visuals.enable_droplets": {
             "title": "\\{review}Wassertropfen",

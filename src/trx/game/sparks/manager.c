@@ -7,7 +7,6 @@
 #include <trx/game/output/lights.h>
 #include <trx/game/output/sources/poly_fx.h>
 #include <trx/game/random.h>
-#include <trx/version.h>
 
 #define M_MAX_SPARKS 400
 #define M_MAX_SPARK_DYNAMICS 32
@@ -236,13 +235,13 @@ int32_t Sparks_GetHairWindZ(void)
 
 static void M_UpdateWind(void)
 {
-    if (!g_Config.visuals.enable_breeze) {
+    if (g_Config.visuals.breeze_mode == BREEZE_MODE_OFF) {
         m_SmokeWind = (XZ_32) {};
         m_HairWindZ = 0;
         return;
     }
 
-    if (g_TRVersion < 3) {
+    if (g_Config.visuals.breeze_mode == BREEZE_MODE_TR2) {
         const ITEM *const lara_item = Lara_GetItem();
         if (lara_item == nullptr) {
             m_HairWindZ = 0;

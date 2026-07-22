@@ -17,7 +17,6 @@
 #include <trx/game/output/state.h>
 #include <trx/game/rooms.h>
 #include <trx/game/sparks.h>
-#include <trx/version.h>
 
 #include <math.h>
 
@@ -364,7 +363,7 @@ static void M_Control(
         s->pos.y += velocity[i].y * 3 / 4;
         s->pos.z += velocity[i].z * 3 / 4;
 
-        if (g_TRVersion >= 3) {
+        if (g_Config.visuals.breeze_mode == BREEZE_MODE_TR3) {
             if (lara_info->water_status == LWS_ABOVE_WATER
                 && Room_Get(room_num)->flags.wind) {
                 s->pos.x += smoke_wind.x;

@@ -188,3 +188,10 @@ const UI_SETTINGS_ENUM_ENTRY UI_Settings_GameModesPolicyEnumEntries[] = {
     { GAME_MODES_POLICY_ON_COMPLETION },
     { -1 },
 };
+
+const UI_SETTINGS_ENUM_ENTRY UI_Settings_BreezeModeEnumEntries[] = {
+    { BREEZE_MODE_OFF },
+    { BREEZE_MODE_TR2 },
+    { BREEZE_MODE_TR3 },
+    { -1 },
+};
