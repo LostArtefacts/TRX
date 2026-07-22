@@ -88,12 +88,13 @@ repos:
     additional_dependencies:
       - pyjson5
 
-  - id: update-lua-docs
+  - id: gen-lua-docs
     name: Regenerate Lua API docs from docs/trx/lua/api.json
-    entry: tools/update_lua_docs
+    entry: tools/lint/gen/lua_docs
     language: python
     stages: [pre-commit]
     pass_filenames: false
+    files: ^(docs/trx/lua/|src/lua/api/)
 
   - id: gen-object-docs
     name: Regenerate object docs from the sources
