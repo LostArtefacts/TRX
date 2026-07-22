@@ -8,8 +8,6 @@
 #include <trx/game/sound/ids.h>
 #include <trx/game/sound/types.h>
 
-#include <stdbool.h>
-
 FAKE_SOUND_CALLS g_FakeSoundCalls;
 
 typedef struct {

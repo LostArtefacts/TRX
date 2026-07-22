@@ -12,7 +12,6 @@
 #include <trx/game/lara/skin/types.h>
 
 #include <lauxlib.h>
-#include <stdbool.h>
 #include <string.h>
 
 FAKE_LARA_CALLS g_FakeLaraCalls;

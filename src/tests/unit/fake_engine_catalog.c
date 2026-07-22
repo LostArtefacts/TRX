@@ -6,8 +6,6 @@
 
 #include <trx/game/catalog/manager.h>
 
-#include <stdbool.h>
-
 #define FAKE_SLOT_OFFSET 13
 
 bool Catalog_EnumToGameID(

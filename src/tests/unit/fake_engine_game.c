@@ -10,7 +10,6 @@
 #include <trx/game/screenshot.h>
 
 #include <lauxlib.h>
-#include <stdbool.h>
 
 void Screenshot_Make(const SCREENSHOT_FORMAT format)
 {

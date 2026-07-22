@@ -6,8 +6,6 @@
 #include <trx/config/types.h>
 #include <trx/config/vars.h>
 
-#include <stdbool.h>
-
 FAKE_ASSAULT_CALLS g_FakeAssaultCalls;
 
 static bool m_InGym;

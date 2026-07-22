@@ -3,7 +3,6 @@
 #include <trx/config/option.h>
 #include <trx/core/colors.h>
 
-#include <stdbool.h>
 #include <stdint.h>
 
 // A config value held apart from the option it belongs to - a copy, rather than

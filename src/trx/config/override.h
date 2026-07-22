@@ -2,8 +2,6 @@
 
 #include <trx/config/option.h>
 
-#include <stdbool.h>
-
 // A stack of runtime overrides, one per option.
 //
 // The point is that the player's own value survives underneath. Pushing records

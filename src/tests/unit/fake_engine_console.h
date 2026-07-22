@@ -4,7 +4,6 @@
 #include <trx/game/console/enum.h>
 
 #include <lualib.h>
-#include <stdbool.h>
 #include <stdint.h>
 
 // The console overlay, reduced to the last line written to it.
