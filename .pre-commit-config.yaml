@@ -64,6 +64,12 @@ repos:
       - pyjson5
       - fastjsonschema
 
+  - id: lint-game-strings-align
+    name: Game string values are aligned within each group
+    entry: tools/lint/checks/game_strings_align
+    language: python
+    files: (^|/)game_strings/entries\.def$
+
   - id: lint-preset-keys
     name: Preset setting keys are known
     entry: tools/lint/checks/preset_keys

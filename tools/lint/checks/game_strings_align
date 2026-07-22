@@ -1,0 +1,68 @@
+#!/usr/bin/env python3
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
+from harness import LintWarning, file_check
+
+
+def _comma(line):
+    # Keys never contain a comma, so the first one separates the key from the
+    # English value.
+    return line.index(",")
+
+
+def check(path, text):
+    # Values are aligned within each blank-line-delimited group: one space
+    # follows the longest key's comma, and shorter keys pad to the same column.
+    group = []
+    for i, line in enumerate(text.split("\n"), 1):
+        if line.strip():
+            group.append((i, line))
+            continue
+        yield from _check_group(path, group)
+        group = []
+    yield from _check_group(path, group)
+
+
+def _check_group(path, group):
+    entries = [(i, line) for i, line in group if line.startswith("GS_DEFINE(")]
+    if not entries:
+        return
+    target = max(_comma(line) for _, line in entries) + 2
+    for i, line in entries:
+        actual = line.index('"')
+        if actual != target:
+            yield LintWarning(
+                path,
+                f"value not aligned to group column {target + 1} (found {actual + 1})",
+                line=i,
+            )
+
+
+def fix(path, text):
+    lines = text.split("\n")
+    group = []
+    for i, line in enumerate(lines):
+        if line.strip():
+            group.append(i)
+            continue
+        _fix_group(lines, group)
+        group = []
+    _fix_group(lines, group)
+    return "\n".join(lines)
+
+
+def _fix_group(lines, group):
+    entries = [i for i in group if lines[i].startswith("GS_DEFINE(")]
+    if not entries:
+        return
+    target = max(_comma(lines[i]) for i in entries) + 2
+    for i in entries:
+        line = lines[i]
+        comma = _comma(line)
+        lines[i] = line[: comma + 1] + " " * (target - comma - 1) + line[line.index('"') :]
+
+
+file_check(check, fix)
