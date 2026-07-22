@@ -435,6 +435,24 @@ test("commands reports a command's help and aliases", function()
     found.help:find("Plain text", 1, true),
     "its help has the description"
   )
+  assert(
+    found.help:find("Aliases: desc, d", 1, true),
+    "its help shows the aliases"
+  )
+end)
+
+test("a command shows its aliases in its --help", function()
+  trx.console.register({
+    name = "aliased_help",
+    help = "test/plain",
+    aliases = { "ah", "a_h" },
+    run = function() end,
+  })
+  assert(fake.run("aliased_help", "--help") == trx.console.Result.OK)
+  assert(
+    fake.calls().last_message:find("Aliases: ah, a_h", 1, true),
+    "the aliases are shown"
+  )
 end)
 
 test("commands leaves out what a bare command has none of", function()

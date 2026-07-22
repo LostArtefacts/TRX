@@ -92,14 +92,23 @@ for _, value in pairs(Result) do
   is_result[value] = true
 end
 
--- What a command prints for `--help`: its description and the synopsis its
--- parser gives.
-local function help_text(help_key, parser)
+-- The "Aliases: a, b" line a command's help ends with, or empty when it has
+-- none. aliases is the comma-joined display string.
+local function aliases_line(aliases)
+  if aliases == nil then
+    return ""
+  end
+  return "\n" .. trx.locale.format("console/argparse/aliases", aliases)
+end
+
+-- What a command prints for `--help`: its description, the synopsis its parser
+-- gives, and its aliases.
+local function help_text(help_key, parser, aliases)
   local text = parser:usage()
   if help_key ~= nil then
     text = trx.locale.get(help_key) .. "\n\n" .. text
   end
-  return text
+  return text .. aliases_line(aliases)
 end
 
 -- Every command registered from Lua, by name, holding what its help is composed
@@ -248,7 +257,12 @@ api.define("console.register", {
       spec.args(parser)
     end
 
-    commands[spec.name] = { help = spec.help, parser = parser }
+    local aliases = nil
+    if spec.aliases ~= nil and #spec.aliases > 0 then
+      aliases = table.concat(spec.aliases, ", ")
+    end
+    commands[spec.name] =
+      { help = spec.help, parser = parser, aliases = aliases }
 
     raw.register(
       spec.name,
@@ -262,7 +276,7 @@ api.define("console.register", {
           return Result.FAILURE
         end
         if parsed.help then
-          trx.console.log(help_text(spec.help, parser))
+          trx.console.log(help_text(spec.help, parser, aliases))
           return Result.OK
         end
 
@@ -312,18 +326,18 @@ end
 
 -- The help a command shows, or nil when it carries none. A command written in
 -- Lua composes it from its parser, the same way it answers `--help`. One written
--- in C has no parser, so it falls back to the description the registry holds. A
--- command with no help id is undocumented either way, even though its parser
--- could still answer `--help` with a bare synopsis.
+-- in C has no parser, so it falls back to the description and aliases the
+-- registry holds. A command with no help id is undocumented either way, even
+-- though its parser could still answer `--help` with a bare synopsis.
 local function command_help(cmd)
   if cmd.help == nil then
     return nil
   end
   local record = commands[cmd.name]
   if record ~= nil then
-    return help_text(record.help, record.parser)
+    return help_text(record.help, record.parser, record.aliases)
   end
-  return trx.locale.get(cmd.help)
+  return trx.locale.get(cmd.help) .. aliases_line(cmd.aliases)
 end
 
 -- A command as a script reads it: the word, its aliases as a list, and the text

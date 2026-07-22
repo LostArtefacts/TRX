@@ -245,6 +245,7 @@
     },
     "console": {
         "argparse": {
+            "aliases": "Aliases: %s",
             "expected": "Expected %s.",
             "hint_boolean": "on or off",
             "hint_integer": "a whole number",

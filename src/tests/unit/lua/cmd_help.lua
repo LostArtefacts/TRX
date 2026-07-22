@@ -23,6 +23,7 @@ test("help for a command matches that command's --help", function()
 
   assert(via_help == via_flag, "help must print what --help prints")
   assert(via_help:find("Plain text", 1, true), "the description is shown")
+  assert(via_help:find("Aliases: doc", 1, true), "the aliases are shown")
 end)
 
 test("an alias reaches the same help as the command", function()

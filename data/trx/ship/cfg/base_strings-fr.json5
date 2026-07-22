@@ -245,6 +245,7 @@
     },
     "console": {
         "argparse": {
+            "aliases": "\\{review}Aliases: %s",
             "expected": "\\{review}%s attendu.",
             "hint_boolean": "\\{review}on ou off",
             "hint_integer": "\\{review}un nombre entier",

@@ -32,6 +32,9 @@ const char *GameString_Get(const char *const key)
     }
     // The help command composes its output from these, so its tests need them
     // resolved rather than left nil.
+    if (strcmp(key, "console/argparse/aliases") == 0) {
+        return "Aliases: %s";
+    }
     if (strcmp(key, "console/cmd/help/list") == 0) {
         return "Available commands:";
     }
