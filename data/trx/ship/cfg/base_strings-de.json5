@@ -333,9 +333,9 @@
                 "success": "Laras Gesundheit ist wieder vollständig wiederhergestellt.",
             },
             "help": {
-                "aliases": "\\{review}Aliases: %s",
                 "help": "Zeigt Hilfe für alle Kommandos oder detaillierte Hilfe für ein bestimmtes.",
                 "list": "Verfügbare Kommandos:",
+                "unknown_command": "Unbekanntes Kommando: %s",
             },
             "hp": {
                 "get": "Laras aktuelle Lebensenergie: %d",

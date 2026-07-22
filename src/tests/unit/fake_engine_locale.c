@@ -30,5 +30,13 @@ const char *GameString_Get(const char *const key)
     if (strcmp(key, "test/percent") == 0) {
         return "100% of the text";
     }
+    // The help command composes its output from these, so its tests need them
+    // resolved rather than left nil.
+    if (strcmp(key, "console/cmd/help/list") == 0) {
+        return "Available commands:";
+    }
+    if (strcmp(key, "console/cmd/help/unknown_command") == 0) {
+        return "Unknown command: %s";
+    }
     return nullptr;
 }

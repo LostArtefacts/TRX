@@ -333,9 +333,9 @@
                 "success": "Chaidh slàinte Lara a lìonadh gu lèir",
             },
             "help": {
-                "aliases": "\\{review}Aliases: %s",
                 "help": "Seallas cuideachadh airson gach àithne neo cuideachadh mionaideach airson tè shonraichte.",
                 "list": "Òrdughan rim faighinn:",
+                "unknown_command": "Àithne neo-aithnichte: %s",
             },
             "hp": {
                 "get": "Slàinte làithreach Lara: %d",
