@@ -10,6 +10,7 @@
 - changed the Breeze option to allow selecting TR2 or TR3 behavior (Graphic Options → Visuals → Breeze)
 - fixed being unable to drop to the secret ledge in Jungle room 76 from the ledge above (#5818)
 - fixed a crash when drawing an animating object that has no frame data (#5869)
+- fixed trains using extreme tilt angles when they come to a stop at a wall (#5886)
 
 **TR1**
 - changed weather to be affected by the breeze
