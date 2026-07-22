@@ -95,6 +95,13 @@ repos:
     stages: [pre-commit]
     pass_filenames: false
 
+  - id: gen-object-docs
+    name: Regenerate object docs from the sources
+    entry: tools/lint/gen/object_docs
+    language: python
+    pass_filenames: false
+    files: ^src/trx/game/.*\.(c|h|def)$
+
 - repo: https://github.com/JohnnyMorganz/StyLua
   rev: v2.3.0
   hooks:

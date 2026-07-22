@@ -10,7 +10,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Iterator
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[3]
 OBJECT_SOURCE = ROOT / "src/trx/game/objects"
 OBJECT_SETUP_SOURCE = ROOT / "src/trx/game/objects/setup.c"
 MD_OUTPUT = ROOT / "docs/trx/OBJECTS.md"
@@ -18,7 +18,7 @@ XML_OUTPUT = ROOT / "data/te"
 HEADER_SOURCE = ROOT / "src/trx/game"
 PICKUPS_DEF = ROOT / "src/trx/game/objects/pickups.def"
 
-sys.path.insert(0, str(Path(__file__).resolve().parent))
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
 from shared.cdefs import expand_def_file  # noqa: E402
 
