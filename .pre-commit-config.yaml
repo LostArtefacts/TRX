@@ -119,6 +119,13 @@ repos:
     additional_dependencies:
       - pyyaml
 
+  - id: gen-te-symlinks
+    name: Regenerate TombEditor symlink trees
+    entry: tools/lint/gen/te_symlinks
+    language: python
+    pass_filenames: false
+    files: ^(data/trx/ship/cfg/|tools/lint/gen/te_symlinks$)
+
 - repo: https://github.com/JohnnyMorganz/StyLua
   rev: v2.3.0
   hooks:
