@@ -94,6 +94,155 @@ test("a property nobody declared reads nil and cannot be written", function()
   end)
 end)
 
+test("an object knows the names it answers to", function()
+  -- More than one: a vase is also a large vase.
+  local names = trx.objects[fake.VASE].default_names
+  assert(#names == 2, "the vase should answer to two names")
+  assert(names[1] == "vase")
+  assert(names[2] == "large vase")
+end)
+
+test("by_name matches the way a player types it", function()
+  local ids = trx.objects.query:by_name("wolf"):ids()
+  assert(#ids == 1, "the wolf did not match")
+  assert(ids[1] == fake.WOLF)
+end)
+
+test("by_name matches a name the object also answers to", function()
+  local ids = trx.objects.query:by_name("large vase"):ids()
+  assert(#ids >= 1, "the vase did not match its second name")
+  assert(ids[1] == fake.VASE)
+end)
+
+test("a name nobody has matches nothing", function()
+  assert(#trx.objects.query:by_name("wombat"):ids() == 0)
+end)
+
+test("an id comes back once, however many of its names matched", function()
+  -- The vase answers to two names and is a pickup besides, so it is three
+  -- candidates. It is still one object.
+  local ids = trx.objects.query:by_name("vase"):ids()
+  local seen = 0
+  for _, id in ipairs(ids) do
+    if id == fake.VASE then
+      seen = seen + 1
+    end
+  end
+  assert(seen == 1, "the vase came back " .. seen .. " times")
+end)
+
+local function id_set(ids)
+  local set = {}
+  for _, id in ipairs(ids) do
+    set[id] = true
+  end
+  return set
+end
+
+test("spawnable keeps the things that exist in the world", function()
+  -- The wolf and the two pickups are loaded; nothing else in the fake is. Every
+  -- other id the catalog names reads as present but unloaded.
+  local ids = trx.objects.query:spawnable():ids()
+  assert(#ids == 3, "spawnable should be the wolf, the vase and the key")
+  local set = id_set(ids)
+  assert(set[fake.WOLF] and set[fake.VASE] and set[fake.KEY])
+  assert(not set[fake.UNLOADED], "an unloaded object is not spawnable")
+end)
+
+test("a family method narrows to that family", function()
+  local ids = trx.objects.query:pickup():ids()
+  assert(#ids == 2, "the vase and the key are the pickups")
+  local set = id_set(ids)
+  assert(set[fake.VASE] and set[fake.KEY])
+  assert(not set[fake.WOLF], "the wolf is not a pickup")
+  assert(trx.objects.query:pickup():count() == 2)
+end)
+
+test("~ excludes a family", function()
+  -- Loaded, and not a pickup: the wolf, neither pickup.
+  local q = trx.objects.query
+  local ids = (q:loaded() & ~q:pickup()):ids()
+  assert(#ids == 1 and ids[1] == fake.WOLF)
+end)
+
+test("| unions two families", function()
+  local q = trx.objects.query
+  -- The fake has no null objects, so the union is just the pickups.
+  local ids = (q:pickup() | q:null_object()):ids()
+  assert(#ids == 2)
+  local set = id_set(ids)
+  assert(set[fake.VASE] and set[fake.KEY])
+end)
+
+test("a chain and the same narrowings by & agree", function()
+  local q = trx.objects.query
+  local chained = id_set(q:spawnable():pickup():ids())
+  local anded = id_set((q:spawnable() & q:pickup()):ids())
+  assert(chained[fake.VASE] and chained[fake.KEY])
+  assert(anded[fake.VASE] and anded[fake.KEY])
+end)
+
+test("matches() hands back handles, first() one or nil", function()
+  local pickup = trx.objects.query:pickup():first()
+  assert(pickup ~= nil and pickup.loaded == true)
+  assert(#trx.objects.query:pickup():matches() == 2)
+  assert(trx.objects.query:null_object():first() == nil, "no null objects")
+end)
+
+test("narrowing a query does not change the base", function()
+  local base = trx.objects.query
+  local before = base:count()
+  base:pickup():ids()
+  assert(base:count() == before, "the base query was mutated")
+  assert(base:count() > 1, "the base matches everything")
+end)
+
+test("by_name ranks what the rest of the query kept", function()
+  -- Spawnable, then matched by name: the vase survives both.
+  local ids = trx.objects.query:spawnable():by_name("vase"):ids()
+  assert(ids[1] == fake.VASE)
+end)
+
+test("a searchable family answers to its own name", function()
+  -- "pickup" is a group name: it matches every pickup, not one object.
+  local ids = trx.objects.query:by_name("pickup"):ids()
+  assert(#ids == 2, "both pickups should match the group name")
+  local set = id_set(ids)
+  assert(set[fake.VASE] and set[fake.KEY])
+  assert(not set[fake.WOLF], "the wolf is not a pickup")
+end)
+
+test(
+  "names() lists what the matches answer to, group names included",
+  function()
+    local names = {}
+    for _, name in ipairs(trx.objects.query:spawnable():names()) do
+      names[name] = true
+    end
+    assert(names["wolf"], "an own name")
+    assert(names["vase"] and names["large vase"], "every own name")
+    assert(names["key"])
+    assert(names["pickup"], "the group name, because a pickup is present")
+  end
+)
+
+test("best() is one for a name, the whole group for a group name", function()
+  local q = trx.objects.query
+  -- A name only one object answers to yields a single best.
+  local one = q:by_name("wolf"):best()
+  assert(#one == 1 and one[1] == fake.WOLF)
+
+  -- A group name: every member ties for the top score.
+  local group = id_set(q:by_name("pickup"):best())
+  assert(group[fake.VASE] and group[fake.KEY])
+end)
+
+test("best() with no by_name is every match", function()
+  local ids = trx.objects.query:pickup():ids()
+  local best = trx.objects.query:pickup():best()
+  assert(#best == #ids, "unranked best is the whole set")
+end)
+
 test("swap_mesh reaches the engine", function()
   trx.objects.swap_mesh(fake.WOLF, fake.VASE)
   assert(fake.calls().swap_mesh == 1, "the whole-object swap did not land")

@@ -3936,6 +3936,21 @@
       "path": "objects.swap_mesh"
     },
     {
+      "description": "Builds the identity query for a domain. `trx.objects` and `trx.items` call this to make the query a script reaches through `trx.objects.query` and `trx.items.query`.",
+      "params": [
+        {
+          "description": "What the query runs against: `enumerate`, `id_of`, `filters`, and an optional `names_of`/`default_names_of` name layer. See the module source.",
+          "name": "domain",
+          "type": "table"
+        }
+      ],
+      "path": "query.new",
+      "returns": {
+        "description": "The identity query, matching everything until narrowed.",
+        "type": "table"
+      }
+    },
+    {
       "description": "Retrieves a room by number. Rooms count from zero, matching the room numbers level editors show.",
       "examples": [
         "local room = trx.rooms[14]\nroom.underwater = true"
@@ -4350,6 +4365,12 @@
       "title": "Object"
     },
     {
+      "description": "A composable filter over a domain of things - the objects a level is built\nfrom, or the items alive in it. `trx.objects.query` and `trx.items.query` are\neach the identity query, matching everything; you narrow one down and then read\nthe result.\n\nA query is immutable. Every method returns a fresh query, so a base can be kept\nand branched from without one narrowing leaking into another.\n\nThree ways to narrow, which mix freely:\n\n- Chain methods read left to right and combine with AND:\n  `q:spawnable():by_name(\"wolf\")`. Each domain adds its own - see\n  `trx.objects.query` and `trx.items.query` for the ones it has.\n- The operators `&`, `|` and `~` are AND, OR and NOT over whole queries, for\n  what a chain cannot say: `q:pickup() | q:inventory_item()`, `~q:animation()`.\n  Both sides of `&`/`|` must come from the same domain.\n- `by_name(name)` ranks rather than filters: it matches the way a player types\n  a name, forgivingly, and orders what survives the rest of the query best\n  first. Some of a domain's filters are also searchable groups - `pickup` is\n  one - so their name matches every member. Only a domain that has names offers\n  `by_name`, `names` and `best`.\n\nRead a query with a terminal:\n\n- `ids()` - the matching ids, a list. For objects these are object ids; for\n  items, their numbers.\n- `matches()` - the matching handles: `trx.objects.Object`s or\n  `trx.items.Item`s.\n- `first()` - the first matching handle, or `nil`.\n- `count()` - how many match.\n- `names()` - every name the matches answer to, group names included, for\n  offering completions.\n- `best()` - the ids tied for the best `by_name` score: one for a name only one\n  thing answers to, the whole group for a group name.\n",
+      "name": "query",
+      "order": 16,
+      "title": "Query"
+    },
+    {
       "description": "Module for inspecting and altering the rooms of the current level.",
       "name": "rooms",
       "order": 10
@@ -4502,6 +4523,12 @@
       "writable": false
     },
     {
+      "description": "The identity query over every item in the level. Narrow it and read it - see [Query](../../QUERY.md).\n\nIts own narrowings, beyond the operators: `active`, `of_object` (by object id or name) and `in_room`.\n\nExample: `trx.items.query:of_object(\"wolf\"):active():matches()`.",
+      "path": "items.query",
+      "type": "table",
+      "writable": false
+    },
+    {
       "description": "Lara's own `trx.items.Item`, or `nil` outside a level. Her position, room and hit points are read and written there.",
       "path": "lara.item",
       "type": "Item",
@@ -4577,6 +4604,12 @@
       "description": "The ambient track that resumes once the current one-shot finishes, as a `trx.music.Track`, or `nil` when none is set.",
       "path": "music.looped_track",
       "type": "Track",
+      "writable": false
+    },
+    {
+      "description": "The identity query over every object definition. Narrow it and read it - see [Query](../../QUERY.md).\n\nIts own narrowings, beyond the shared `by_name` and the operators: `loaded`, `spawnable`, `pickup`, `inventory_item`, `null_object` and `animation`.\n\nExample: `trx.objects.query:spawnable():by_name(\"wolf\"):ids()`.",
+      "path": "objects.query",
+      "type": "table",
       "writable": false
     },
     {
@@ -5250,6 +5283,16 @@
       "description": "An object definition.",
       "extensions": [
         {
+          "description": "The compile-time English names. A lookup falls back on these when the player's language has no name to match, which is the case before a language file is loaded at all.",
+          "name": "default_names",
+          "type": "table"
+        },
+        {
+          "description": "Every name the object answers to, in the player's language. An object has more than one: a large medipack is also a `medipack` and a `big medi`.",
+          "name": "names",
+          "type": "table"
+        },
+        {
           "description": "The object's own typed properties, which every item of the type inherits. Writing here changes the default for all of them; write to `item.properties` to change one item only. Iterable with `pairs()`. See [Objects](../../OBJECTS.md).",
           "name": "properties",
           "type": "table"
@@ -5312,6 +5355,20 @@
         }
       ],
       "methods": [
+        {
+          "description": "The compile-time English names, which a lookup falls back on before a language file is loaded. Prefer `object.default_names`.",
+          "name": "get_default_names",
+          "returns": {
+            "type": "table"
+          }
+        },
+        {
+          "description": "Every name the object answers to, in the player's language. Prefer `object.names`.",
+          "name": "get_names",
+          "returns": {
+            "type": "table"
+          }
+        },
         {
           "description": "Reads one of the object's properties. Prefer `object.properties.<name>`.",
           "name": "get_property",

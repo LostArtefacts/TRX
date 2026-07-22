@@ -75,7 +75,7 @@ int main(void)
     const LUA_SURFACE_TEST test = {
         .module = "rooms",
         .tests = "rooms",
-        .deps = { "items", "events" },
+        .deps = { "query", "items", "events" },
         .push_fake = M_PushFake,
         .fake_reset = M_FakeReset,
         .fake_calls = M_FakeCalls,

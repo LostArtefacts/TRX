@@ -27,7 +27,7 @@ int main(void)
 {
     const LUA_SURFACE_TEST test = {
         .module = "lara",
-        .deps = { "items", nullptr },
+        .deps = { "query", "items", nullptr },
         .tests = "lara",
         .fake_reset = M_FakeReset,
         .fake_calls = M_FakeCalls,

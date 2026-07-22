@@ -1,6 +1,8 @@
 local raw = trxc.items
 local api = trx.api
 
+require("trx.query")
+
 api.module("items", {
   order = 4,
   description = "Module for controlling all moveables.",
@@ -457,6 +459,69 @@ api.define("items.first", {
     end
     validate_query(query, "first")
     return search(query, true)
+  end,
+})
+
+-- Every item the level holds, each by its number.
+local function enumerate()
+  local out = {}
+  for i = 0, raw.count() - 1 do
+    local item = raw.get(i)
+    if item ~= nil then
+      out[#out + 1] = { i, item }
+    end
+  end
+  return out
+end
+
+-- An object named by string resolves through the object query, so `of_object`
+-- takes a name the same way a player would. An id passes straight through.
+-- trx.objects is reached at call time, not required: it is up long before a
+-- console line runs, and leaving it out keeps a script that only queries items
+-- from dragging the object surface in behind it.
+local function resolve_object(key)
+  if type(key) == "number" then
+    return key
+  end
+  return trx.objects.query:by_name(key):ids()[1]
+end
+
+local filters = {
+  active = function()
+    return function(_i, item)
+      return item.is_active
+    end
+  end,
+  of_object = function(key)
+    local object_id = resolve_object(key)
+    return function(_i, item)
+      return object_id ~= nil and item.object_id == object_id
+    end
+  end,
+  in_room = function(room_num)
+    return function(_i, item)
+      return item.room_num == room_num
+    end
+  end,
+}
+
+local item_query = trx.query.new({
+  enumerate = enumerate,
+  id_of = function(i)
+    return i
+  end,
+  filters = filters,
+})
+
+api.property("items.query", {
+  type = "table",
+  description = "The identity query over every item in the level. Narrow it and read it - see "
+    .. "[Query](../../QUERY.md).\n\n"
+    .. "Its own narrowings, beyond the operators: `active`, `of_object` (by object id or name) and "
+    .. "`in_room`.\n\n"
+    .. 'Example: `trx.items.query:of_object("wolf"):active():matches()`.',
+  get = function()
+    return item_query
   end,
 })
 

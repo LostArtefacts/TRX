@@ -27,6 +27,14 @@ Example:
 trx.objects.wolf.properties.max_hit_points = 30
 ```
 
+### Properties
+
+- **`trx.objects.query`** (table). The identity query over every object definition. Narrow it and read it - see [Query](../../QUERY.md).
+
+Its own narrowings, beyond the shared `by_name` and the operators: `loaded`, `spawnable`, `pickup`, `inventory_item`, `null_object` and `animation`.
+
+Example: `trx.objects.query:spawnable():by_name("wolf"):ids()`. *(read-only)*
+
 ### Structures
 
 - [lua]`trx.objects.Object`
@@ -49,9 +57,21 @@ trx.objects.wolf.properties.max_hit_points = 30
     - **`smartness`**: integer. How readily a creature of this type finds its way to Lara.
 
     Computed properties (derived, not stored on the object):
+    - **`default_names`**: table. The compile-time English names. A lookup falls back on these when the player's language has no name to match, which is the case before a language file is loaded at all.
+    - **`names`**: table. Every name the object answers to, in the player's language. An object has more than one: a large medipack is also a `medipack` and a `big medi`.
     - **`properties`**: table. The object's own typed properties, which every item of the type inherits. Writing here changes the default for all of them; write to `item.properties` to change one item only. Iterable with `pairs()`. See [Objects](../../OBJECTS.md).
 
     Methods:
+
+    - [lua]`object:get_default_names()`  
+      The compile-time English names, which a lookup falls back on before a language file is loaded. Prefer `object.default_names`.
+
+      Returns: table.
+
+    - [lua]`object:get_names()`  
+      Every name the object answers to, in the player's language. Prefer `object.names`.
+
+      Returns: table.
 
     - [lua]`object:get_property(name)`  
       Reads one of the object's properties. Prefer `object.properties.<name>`.

@@ -29,12 +29,17 @@ static void M_PushFake(lua_State *const L)
     lua_setfield(L, -2, "VASE");
     lua_pushinteger(L, FAKE_OBJ_UNLOADED);
     lua_setfield(L, -2, "UNLOADED");
+    lua_pushinteger(L, FAKE_OBJ_KEY);
+    lua_setfield(L, -2, "KEY");
 }
 
 int main(void)
 {
     const LUA_SURFACE_TEST test = {
         .module = "objects",
+        // trx.objects.query matches names with trx.strings over the catalog,
+        // and is itself built on trx.query, so all three ride along.
+        .deps = { "strings", "catalog", "query", nullptr },
         .tests = "objects",
         .push_fake = M_PushFake,
         .fake_reset = M_FakeReset,

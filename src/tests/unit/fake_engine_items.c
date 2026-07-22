@@ -13,6 +13,7 @@
 #include <trx/game/creature.h>
 #include <trx/game/items.h>
 #include <trx/game/objects.h>
+#include <trx/game/objects/names.h>
 #include <trx/game/objects/property.h>
 #include <trx/game/objects/vars.h>
 #include <trx/game/pathing/lot.h>
@@ -21,7 +22,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#define FAKE_OBJ_COUNT 4
+#define FAKE_OBJ_COUNT 5
 #define FAKE_ANIM_COUNT 2
 #define FAKE_PROP_SLOTS 4
 
@@ -51,6 +52,10 @@ static int32_t m_ObjectHP[FAKE_OBJ_COUNT];
 
 const OBJECT_ID g_CreatureObjects[] = { FAKE_OBJ_WOLF, NO_OBJECT };
 const OBJECT_ID g_LoyalObjects[] = { NO_OBJECT };
+const OBJECT_ID g_PickupObjects[] = { FAKE_OBJ_VASE, FAKE_OBJ_KEY, NO_OBJECT };
+const OBJECT_ID g_NullObjects[] = { NO_OBJECT };
+const OBJECT_ID g_AnimObjects[] = { NO_OBJECT };
+const OBJECT_ID g_InvObjects[] = { NO_OBJECT };
 
 void FakeItems_Reset(void)
 {
@@ -95,9 +100,16 @@ void FakeItems_Reset(void)
         .mesh_count = 3,
     };
     m_Objects[FAKE_OBJ_UNLOADED] = (OBJECT) { .loaded = false };
+    m_Objects[FAKE_OBJ_KEY] = (OBJECT) {
+        .loaded = true,
+        .anim_idx = 0,
+        .anim_count = 1,
+        .mesh_count = 1,
+    };
 
     m_ObjectHP[FAKE_OBJ_WOLF] = 20;
     m_ObjectHP[FAKE_OBJ_VASE] = 0;
+    m_ObjectHP[FAKE_OBJ_KEY] = 0;
 
     m_Count = 2;
     for (int32_t i = 0; i < m_Count; i++) {
@@ -276,10 +288,44 @@ int32_t Anim_GetTotalCount(void)
 
 OBJECT *Object_Get(const OBJECT_ID object_id)
 {
-    if (object_id < 0 || object_id >= FAKE_OBJ_COUNT) {
+    if (object_id < 0 || object_id >= O_NUMBER_OF) {
         return nullptr;
     }
+    // Every id the engine knows resolves to a definition, loaded or not - a
+    // lookup that walks the whole catalog reads `loaded` on each. The fake
+    // models a handful; the rest read as present but unloaded.
+    static OBJECT m_Unloaded = { .loaded = false };
+    if (object_id >= FAKE_OBJ_COUNT) {
+        return &m_Unloaded;
+    }
     return &m_Objects[object_id];
+}
+
+// The names an object answers to. The lookup that fuzzy-matches them is Lua
+// now, so all the engine has to do is say what they are.
+static const char *const m_WolfNames[] = { "wolf", nullptr };
+static const char *const m_VaseNames[] = { "vase", "large vase", nullptr };
+static const char *const m_KeyNames[] = { "key", nullptr };
+
+const VECTOR *Object_GetNames(const OBJECT_ID obj_id)
+{
+    // The fake level localizes nothing, so a lookup always takes the
+    // compile-time fallback.
+    return nullptr;
+}
+
+const char *const *Object_GetDefaultNames(const OBJECT_ID obj_id)
+{
+    if (obj_id == FAKE_OBJ_WOLF) {
+        return m_WolfNames;
+    }
+    if (obj_id == FAKE_OBJ_VASE) {
+        return m_VaseNames;
+    }
+    if (obj_id == FAKE_OBJ_KEY) {
+        return m_KeyNames;
+    }
+    return nullptr;
 }
 
 OBJECT *Object_TryGet(const OBJECT_ID object_id)

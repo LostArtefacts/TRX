@@ -4,8 +4,9 @@
 
 #define FAKE_ITEM_POOL 8 // small, so pool exhaustion is reachable
 #define FAKE_OBJ_WOLF 1 // intelligent, has animations
-#define FAKE_OBJ_VASE 2 // inert scenery
+#define FAKE_OBJ_VASE 2 // inert scenery, and a pickup
 #define FAKE_OBJ_UNLOADED 3 // declared but not loaded
+#define FAKE_OBJ_KEY 4 // a second pickup, so a group name matches more than one
 
 // What the surface asked the engine to do, recorded rather than performed.
 typedef struct {

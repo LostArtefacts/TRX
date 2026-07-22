@@ -34,7 +34,7 @@ int main(void)
 {
     const LUA_SURFACE_TEST test = {
         .module = "console",
-        .deps = { "log", "items", "lara", "game", "locale", "argparse",
+        .deps = { "log", "query", "items", "lara", "game", "locale", "argparse",
                   nullptr },
         .script = "heal",
         .tests = "cmd_heal",

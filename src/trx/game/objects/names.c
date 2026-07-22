@@ -178,6 +178,17 @@ void Object_ResetAllNames(void)
     }
 }
 
+const VECTOR *Object_GetNames(const OBJECT_ID obj_id)
+{
+    return M_ResolveNameEntry(obj_id)->names;
+}
+
+const char *const *Object_GetDefaultNames(const OBJECT_ID obj_id)
+{
+    const M_DEFAULT *const def = M_ResolveDefault(obj_id);
+    return def != nullptr ? def->default_names : nullptr;
+}
+
 OBJECT_NAME_MATCH *Object_IdsFromName(
     const char *user_input, int32_t *out_match_count, bool (*filter)(OBJECT_ID))
 {

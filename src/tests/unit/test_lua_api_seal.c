@@ -32,6 +32,7 @@ int main(void)
 {
     const LUA_SURFACE_TEST test = {
         .module = "items",
+        .deps = { "query", nullptr },
         .tests = "api_seal",
         .setup_extra = M_SetUpExtra,
         .push_fake = M_PushFake,
