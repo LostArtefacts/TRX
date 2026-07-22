@@ -413,4 +413,44 @@ test("an alias reaches the same argument completer", function()
   assert(out[1] == "rain", "the alias completes as the command would")
 end)
 
+test("commands reports a command's help and aliases", function()
+  trx.console.register({
+    name = "described",
+    help = "test/plain",
+    aliases = { "desc", "d" },
+    run = function() end,
+  })
+  local found
+  for _, cmd in ipairs(trx.console.commands()) do
+    if cmd.name == "described" then
+      found = cmd
+    end
+  end
+  assert(found ~= nil, "the command is reported")
+  assert(
+    found.aliases[1] == "desc" and found.aliases[2] == "d",
+    "its aliases come back as a list"
+  )
+  assert(
+    found.help:find("Plain text", 1, true),
+    "its help has the description"
+  )
+end)
+
+test("commands leaves out what a bare command has none of", function()
+  trx.console.register({ name = "bare", run = function() end })
+  local found
+  for _, cmd in ipairs(trx.console.commands()) do
+    if cmd.name == "bare" then
+      found = cmd
+    end
+  end
+  assert(found ~= nil)
+  assert(found.help == nil, "no help is reported for a command that has none")
+  assert(
+    found.aliases == nil,
+    "no aliases are reported for a command with none"
+  )
+end)
+
 return h.report()

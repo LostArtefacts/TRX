@@ -333,9 +333,9 @@
                 "success": "Lara è tornata in piena salute",
             },
             "help": {
-                "aliases": "\\{review}Aliases: %s",
                 "help": "Mostra la guida per tutti i comandi o la guida dettagliata per uno solo.",
                 "list": "Comandi disponibili:",
+                "unknown_command": "Comando sconosciuto: %s",
             },
             "hp": {
                 "get": "Salute attuale di Lara: %d",

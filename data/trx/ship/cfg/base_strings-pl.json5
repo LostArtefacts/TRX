@@ -333,9 +333,9 @@
                 "success": "Lara uleczona do pełni zdrowia",
             },
             "help": {
-                "aliases": "\\{review}Aliases: %s",
                 "help": "Pokazuje listę komend lub opis konkretnej komendy.",
                 "list": "Dostępne komendy:",
+                "unknown_command": "Nieznana komenda: %s",
             },
             "hp": {
                 "get": "Aktualne zdrowie Lary: %d",

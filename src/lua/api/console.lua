@@ -92,6 +92,21 @@ for _, value in pairs(Result) do
   is_result[value] = true
 end
 
+-- What a command prints for `--help`: its description and the synopsis its
+-- parser gives.
+local function help_text(help_key, parser)
+  local text = parser:usage()
+  if help_key ~= nil then
+    text = trx.locale.get(help_key) .. "\n\n" .. text
+  end
+  return text
+end
+
+-- Every command registered from Lua, by name, holding what its help is composed
+-- from. The help command reads this to answer for a command the way that command
+-- answers `--help`, so the two cannot drift.
+local commands = {}
+
 -- The logging functions take any value: a string logs as itself, and anything
 -- else is coerced, with a table pretty-printed across lines.
 local message_param = {
@@ -233,6 +248,8 @@ api.define("console.register", {
       spec.args(parser)
     end
 
+    commands[spec.name] = { help = spec.help, parser = parser }
+
     raw.register(
       spec.name,
       spec.help,
@@ -245,11 +262,7 @@ api.define("console.register", {
           return Result.FAILURE
         end
         if parsed.help then
-          local text = parser:usage()
-          if spec.help ~= nil then
-            text = trx.locale.get(spec.help) .. "\n\n" .. text
-          end
-          trx.console.log(text)
+          trx.console.log(help_text(spec.help, parser))
           return Result.OK
         end
 
@@ -282,6 +295,87 @@ api.define("console.register", {
 api.define("console.clear", {
   description = "Clears the console.",
   impl = raw.clear,
+})
+
+-- The aliases string the registry holds is comma-joined for display; a script
+-- reads them as a list. Absent when the command has none.
+local function split_aliases(joined)
+  if joined == nil then
+    return nil
+  end
+  local out = {}
+  for alias in joined:gmatch("[^,%s]+") do
+    out[#out + 1] = alias
+  end
+  return out
+end
+
+-- The help a command shows, or nil when it carries none. A command written in
+-- Lua composes it from its parser, the same way it answers `--help`. One written
+-- in C has no parser, so it falls back to the description the registry holds. A
+-- command with no help id is undocumented either way, even though its parser
+-- could still answer `--help` with a bare synopsis.
+local function command_help(cmd)
+  if cmd.help == nil then
+    return nil
+  end
+  local record = commands[cmd.name]
+  if record ~= nil then
+    return help_text(record.help, record.parser)
+  end
+  return trx.locale.get(cmd.help)
+end
+
+-- A command as a script reads it: the word, its aliases as a list, and the text
+-- the console shows for `--help`.
+local function descriptor(cmd)
+  return {
+    name = cmd.name,
+    aliases = split_aliases(cmd.aliases),
+    help = command_help(cmd),
+  }
+end
+
+api.define("console.commands", {
+  description = "Every registered console command, in registration order. Each is "
+    .. "`{ name, aliases, help }`: `name` is the word the player types, `aliases` the other "
+    .. "words that reach it (a list, or absent), and `help` the text the console shows for "
+    .. "`name --help` (absent when the command carries none). The help command is built on this.",
+  returns = {
+    type = "table",
+    description = "A list of `{ name, aliases, help }`.",
+  },
+  impl = function()
+    local out = {}
+    for _, cmd in ipairs(raw.commands()) do
+      out[#out + 1] = descriptor(cmd)
+    end
+    return out
+  end,
+})
+
+api.define("console.command", {
+  description = "The command a name reaches, by its own name or an alias, matched as the console "
+    .. "matches when it dispatches. The same `{ name, aliases, help }` as an entry of "
+    .. "`trx.console.commands`, or nil when nothing answers to the name.",
+  params = {
+    {
+      name = "name",
+      type = "string",
+      description = "The word or alias to look up.",
+    },
+  },
+  returns = {
+    type = "table",
+    description = "`{ name, aliases, help }`, or nil.",
+  },
+  impl = function(name)
+    local cmd = raw.command(name)
+    if cmd == nil then
+      return nil
+    end
+    return descriptor(cmd)
+  end,
 })
 
 -- p is a global shorthand for trx.console.log, for quick debugging from the

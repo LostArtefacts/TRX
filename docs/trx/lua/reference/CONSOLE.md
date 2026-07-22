@@ -123,3 +123,16 @@ Module for interacting with the developer console.
 
 - [lua]`trx.console.clear()`  
   Clears the console.
+
+- [lua]`trx.console.commands()`  
+  Every registered console command, in registration order. Each is `{ name, aliases, help }`: `name` is the word the player types, `aliases` the other words that reach it (a list, or absent), and `help` the text the console shows for `name --help` (absent when the command carries none). The help command is built on this.
+
+  Returns: table. A list of `{ name, aliases, help }`.
+
+- [lua]`trx.console.command(name)`  
+  The command a name reaches, by its own name or an alias, matched as the console matches when it dispatches. The same `{ name, aliases, help }` as an entry of `trx.console.commands`, or nil when nothing answers to the name.
+
+  Parameters:
+  - **`name`** (string). The word or alias to look up.
+
+  Returns: table. `{ name, aliases, help }`, or nil.

@@ -589,6 +589,33 @@ test_lua_console_exe = executable(
 )
 test('lua_console', test_lua_console_exe, suite: 'unit')
 
+# The help command, which the console module registers and composes from the
+# same parser a command answers --help from.
+test_lua_cmd_help_exe = executable(
+  'test_lua_cmd_help',
+  files(
+    'unit/test_lua_cmd_help.c',
+    'unit/fake_engine_console.c',
+    'unit/fake_engine_locale.c',
+  ) + test_stubs
+    + lua_surface_src
+    + files(
+      '../trx/core/strings/common.c',
+      '../trx/core/strings/case_funcs.c',
+      '../trx/core/strings/fuzzy_match.c',
+      '../trx/core/completion.c',
+      '../trx/game/lua/capi/console.c',
+      '../trx/game/lua/capi/locale.c',
+      '../trx/game/lua/capi/log.c',
+      '../trx/game/lua/capi/strings.c',
+    ),
+  include_directories: [src_inc, test_inc],
+  dependencies: [dep_lua, dep_pcre2],
+  c_args: lua_surface_args + ['-DPCRE2_CODE_UNIT_WIDTH=8'],
+  build_by_default: false,
+)
+test('lua_cmd_help', test_lua_cmd_help_exe, suite: 'unit')
+
 # A console command written in Lua, exercised through the console that dispatches
 # it. Everything the command touches is a real bridge, so the test says whether
 # the command works, not whether it was written the way we expected.
