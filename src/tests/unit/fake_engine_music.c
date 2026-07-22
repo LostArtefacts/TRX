@@ -7,8 +7,6 @@
 #include <trx/game/music/common.h>
 #include <trx/game/music/ids.h>
 
-#include <stdbool.h>
-
 FAKE_MUSIC_CALLS g_FakeMusicCalls;
 static MUSIC_ID m_Playing = MX_INACTIVE;
 static MUSIC_ID m_Looped = MX_INACTIVE;

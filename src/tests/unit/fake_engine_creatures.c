@@ -6,8 +6,6 @@
 
 #include <trx/game/objects/ids.h>
 
-#include <stdbool.h>
-
 FAKE_CREATURE_CALLS g_FakeCreatureCalls;
 static bool m_AlliesHostile;
 

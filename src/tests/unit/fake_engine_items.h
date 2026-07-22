@@ -1,6 +1,5 @@
 #pragma once
 
-#include <stdbool.h>
 #include <stdint.h>
 
 #define FAKE_ITEM_POOL 8 // small, so pool exhaustion is reachable

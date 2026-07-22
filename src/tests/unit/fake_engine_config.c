@@ -8,7 +8,6 @@
 #include <trx/config/override.h>
 #include <trx/core/enum_map.h>
 
-#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

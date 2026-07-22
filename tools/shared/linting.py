@@ -90,6 +90,23 @@ def lint_const_primitives(
             yield LintWarning(path, "useless const", line=i)
 
 
+def lint_no_stdbool(
+    context: LintContext, path: Path
+) -> Iterable[LintWarning]:
+    if path.suffix not in {".c", ".h", ".cpp", ".hpp", ".cc", ".cxx"}:
+        return
+    text = path.read_text()
+    if "stdbool.h" not in text:
+        return
+    for match in re.finditer(r'#\s*include\s*[<"]stdbool\.h[>"]', text):
+        yield LintWarning(
+            path,
+            "stdbool.h is redundant: bool, true and false are built in "
+            "under C23",
+            line=text.count("\n", 0, match.start()) + 1,
+        )
+
+
 def lint_meson_build_sort_order(
     context: LintContext, path: Path
 ) -> Iterable[LintWarning]:
@@ -246,6 +263,7 @@ ALL_FILE_LINTERS: list[
     lint_newlines,
     lint_trailing_whitespace,
     lint_const_primitives,
+    lint_no_stdbool,
     lint_meson_build_sort_order,
     lint_clang_format_markers,
 ]
