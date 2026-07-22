@@ -73,9 +73,9 @@ repos:
     additional_dependencies:
       - pyjson5
 
-  - id: imports
-    name: imports
-    entry: tools/sort_imports
+  - id: gen-sort-imports
+    name: Sort C includes
+    entry: tools/lint/gen/sort_imports
     language: system
     files: \.[ch](pp)?$
 
