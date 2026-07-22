@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Unit tests for tools/update_lua_docs. No engine, no binary, no game data."""
+"""Unit tests for tools/lint/gen/lua_docs. No engine, no binary, no game data."""
 
 from __future__ import annotations
 
@@ -9,7 +9,7 @@ import unittest
 
 from tools_helper import load
 
-docs = load("update_lua_docs")
+docs = load("lint/gen/lua_docs")
 
 # A surface with one of everything, so the renderer has to handle each kind.
 SURFACE = {

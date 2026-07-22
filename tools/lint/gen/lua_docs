@@ -20,12 +20,13 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import subprocess
 import sys
 import textwrap
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[3]
 API_JSON = ROOT / "docs/trx/lua/api.json"
 DOCS_DIR = ROOT / "docs/trx/lua/reference"
 
@@ -440,8 +441,18 @@ def main() -> int:
     )
     args = parser.parse_args()
 
-    if args.dump_from is not None:
-        API_JSON.write_text(dump_api(args.dump_from))
+    # The api.json refresh needs a built engine to query. --dump-from names it
+    # explicitly; the hook has no binary to pass, so it reads TRX_BINARY and
+    # refreshes only when that points at a real build. Without it the tool
+    # regenerates the pages from the committed api.json.
+    binary = args.dump_from
+    if binary is None:
+        env_binary = os.environ.get("TRX_BINARY")
+        if env_binary and Path(env_binary).exists():
+            binary = Path(env_binary)
+
+    if binary is not None:
+        API_JSON.write_text(dump_api(binary))
 
     if not API_JSON.exists():
         raise SystemExit(

@@ -106,7 +106,7 @@ test *args='--suite unit':
 # Regenerate the Lua API reference from a built binary.
 [group('lint')]
 lua-api-dump binary='build/trx/linux/TRX':
-    tools/update_lua_docs --dump-from {{binary}}
+    tools/lint/gen/lua_docs --dump-from {{binary}}
 
 # CI guard: fail if the committed Lua API docs or api.json are stale.
 [group('lint')]
