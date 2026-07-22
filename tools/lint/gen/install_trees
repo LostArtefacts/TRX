@@ -1,15 +1,24 @@
 #!/usr/bin/env python3
 import argparse
+import os
 import re
+import sys
 from collections import defaultdict
 from collections.abc import Iterable
 from pathlib import Path
 from typing import Any
 
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+
 from shared.paths import DATA_DIR, DOCS_DIR, REPO_DIR
 from shared.vfs import VirtualFilesystem
 
-DATA_REPO_ROOT_DIR = REPO_DIR.parent / "TRX-data"
+# The install-tree docs list the images that ship from the TRX-data repo. Point
+# TRX_DATA_DIR at a local checkout to regenerate them; without it the tool has
+# nothing to read and bows out.
+DATA_REPO_ROOT_DIR = Path(
+    os.environ.get("TRX_DATA_DIR", REPO_DIR.parent / "TRX-data")
+)
 
 IGNORED_FILES = """
 max_stats.cache.json
@@ -358,7 +367,7 @@ def parse_args() -> argparse.Namespace:
 def collect(root_dir: Path) -> Iterable[Path]:
     paths = [
         path.relative_to(root_dir)
-        for path in root_dir.rglob("*", recurse_symlinks=True)
+        for path in root_dir.rglob("*")
         if path.is_file() and path.name not in IGNORED_FILES
     ]
     return sorted(paths)
@@ -482,6 +491,15 @@ def process_install_doc(content: str, platform: str, paths: list[Path]) -> str:
 
 def main() -> None:
     args = parse_args()
+
+    if not DATA_REPO_ROOT_DIR.exists():
+        print(
+            f"install_trees: TRX-data not found at {DATA_REPO_ROOT_DIR}, "
+            "skipping",
+            file=sys.stderr,
+        )
+        return
+
     vfs = VirtualFilesystem()
 
     for path, platform, paths in build_doc_trees():
