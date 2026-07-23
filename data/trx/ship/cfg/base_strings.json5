@@ -1230,6 +1230,10 @@
             "title": "Fix pickup embed glitch",
             "description": "Fixes Lara sometimes drifting into walls when collecting underwater items, and fixes Lara embedding under steeply sloped ceilings when picking up an item above water.",
         },
+        "gameplay.fix_lift_collision": {
+            "title": "Fix lift collision",
+            "description": "Fixes Lara not colliding correctly with moving lifts, which can cause her to become stuck or pass through them.",
+        },
         "gameplay.fix_m16_accuracy": {
             "title": "Fix M16/MP5 accuracy",
             "description": "Fixes the accuracy of the M16/MP5 while Lara is running.",

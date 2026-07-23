@@ -229,5 +229,6 @@
         "enable_cinematic_skips",
         "fix_animated_spikes",
         "fix_animated_sprites",
+        "fix_lift_collision",
     ],
 }

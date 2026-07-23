@@ -1230,6 +1230,10 @@
             "title": "Càraich cath-thogail",
             "description": "Càradh far am bi Lara uaireannan a' gluasad a-steach gu ballachan nuair a tha i a' togail rudeigin fon uisge, agus os cionn uisge fo mhullaichean cas leathann.",
         },
+        "gameplay.fix_lift_collision": {
+            "title": "Ceartaich bualadh lioftan",
+            "description": "Ceartaichidh seo duilgheadasan far nach bi Lara a' bualadh air lioftan a tha a' gluasad. Dh'fhaodadh sin a fàgail glaiste no toirt oirre dol troimhe.",
+        },
         "gameplay.fix_m16_accuracy": {
             "title": "Càraich cruinneas M16/MP5",
             "description": "Càradh cruinneas M16/MP5 fhad 's a tha Lara a' ruith.",

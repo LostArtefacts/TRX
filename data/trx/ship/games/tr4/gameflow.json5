@@ -881,5 +881,7 @@
         {"path": "fmv12.avi"},
     ],
 
-    "hidden_config": [],
+    "hidden_config": [
+        "fix_lift_collision",
+    ],
 }

@@ -1230,6 +1230,10 @@
             "title": "Correggi errore di raccolta",
             "description": "Risolve i problemi per cui Lara a volte scivola contro i muri quando raccoglie oggetti sott’acqua, e per cui si incastra sotto i soffitti fortemente inclinati quando raccoglie gli oggetti sopra l'acqua.",
         },
+        "gameplay.fix_lift_collision": {
+            "title": "Correggi collisione ascensori",
+            "description": "\\{review}Corregge i problemi di collisione con gli ascensori mobili, che possono bloccare Lara o permetterle di attraversarli.",
+        },
         "gameplay.fix_m16_accuracy": {
             "title": "Correggi precisione M16/MP5",
             "description": "Corregge la precisione della mira dell'M16/MP5 mentre Lara corre.",
