@@ -32,9 +32,9 @@ end
 
 - **`trx.items.query`** (table). The identity query over every item in the level. Narrow it and read it - see [Query](../../QUERY.md).
 
-Its own narrowings, beyond the operators: `active`, `of_object` (by object id or name) and `in_room`.
+  Its own narrowings, beyond the operators: `active`, `of_object` (by object id or name) and `in_room`.
 
-Example: `trx.items.query:of_object("wolf"):active():matches()`. *(read-only)*
+  Example: `trx.items.query:of_object("wolf"):active():matches()`. *(read-only)*
 
 ### Enums
 
@@ -106,7 +106,7 @@ Example: `trx.items.query:of_object("wolf"):active():matches()`. *(read-only)*
     - **`is_reversed`**: boolean. Whether the item's trigger is inverted, so it runs until triggered rather than once triggered. This is how a level ships something already on.
     - **`is_triggered`**: boolean. Whether the item's trigger currently says go. This is what a door, a switch or an alarm reads to decide whether to act; a creature ignores it and goes by whether it is running.
 
-It is a verdict on `trigger_mask`, `timer` and `is_reversed` together, not a field of its own. *(read-only)*
+      It is a verdict on `trigger_mask`, `timer` and `is_reversed` together, not a field of its own. *(read-only)*
     - **`max_hit_points`**: integer. Maximum hit points. Set `properties.max_hit_points` to change it. *(read-only)*
     - **`mesh_bits`**: integer. Bitmask of which of the item's meshes are drawn.
     - **`name`**: string. Unique item name, or `nil`. Assigning a name already in use raises an error.
@@ -221,11 +221,11 @@ It is a verdict on `trigger_mask`, `timer` and `is_reversed` together, not a fie
       Parameters:
       - **`opts`** (table, optional). `type`: which `items.TriggerType` to fire; a plain `TRIGGER` by default.
 
-`mask`: which of the five code bits to set, `1` to `31`, all of them by default. Pass fewer to act as one of several triggers a puzzle is waiting on.
+        `mask`: which of the five code bits to set, `1` to `31`, all of them by default. Pass fewer to act as one of several triggers a puzzle is waiting on.
 
-`timer`: how long it should keep the item going, in seconds. `0`, the default, means until something takes the trigger back. A timer of exactly `1` is a single frame, not a second, matching the level format.
+        `timer`: how long it should keep the item going, in seconds. `0`, the default, means until something takes the trigger back. A timer of exactly `1` is a single frame, not a second, matching the level format.
 
-`one_shot`: never let it fire again.
+        `one_shot`: never let it fire again.
 
       Example:
       ```lua
