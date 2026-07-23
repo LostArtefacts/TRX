@@ -9,6 +9,7 @@
 - changed the `/music` console command to list the available tracks when given no argument, as `/sfx` does; `/music status` now reports what is playing
 - changed the `/spawn` console command to accept a family such as `pickup` to spawn one of its members
 - changed the Breeze option to allow selecting TR2 or TR3 behavior (Graphic Options → Visuals → Breeze)
+- changed lift collision to force Lara out of her climbing animations if one collides with her (#5899)
 - fixed some console commands being able to target unintended items
 - fixed the `/trigger` and `/untrigger` console commands crashing or doing nothing on some objects, so they now act on any item exactly as a level trigger would
 - fixed the `/trigger` and `/untrigger` console commands being usable in demos and cutscenes
