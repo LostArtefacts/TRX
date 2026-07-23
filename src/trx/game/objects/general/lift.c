@@ -1,13 +1,13 @@
 #include <trx/config.h>
 #include <trx/core/json/util/read_io.h>
 #include <trx/core/json/util/write_io.h>
-#include <trx/core/log.h>
 #include <trx/core/math.h>
 #include <trx/core/strings.h>
 #include <trx/core/vector.h>
 #include <trx/game/lara.h>
 #include <trx/game/objects.h>
 #include <trx/game/objects/traps/movable_block.h>
+#include <trx/game/output.h>
 #include <trx/game/random.h>
 #include <trx/game/spawn.h>
 
@@ -17,6 +17,8 @@
 #define M_DEFAULT_SPEED       16
 #define M_MAXIMUM_SPEED       64
 #define M_HEIGHT              (STEP_L * 5) // = 1280
+#define M_WALL_WIDTH          (STEP_L / 4) // = 64
+#define M_WALL_COLOR          ((RGBA_8888) { 0, 255, 255, 255 })
 #define M_NUM_FLOOR_SECTORS   4
 #define M_NUM_SECTORS         (M_NUM_FLOOR_SECTORS * 2)
 // clang-format on
@@ -44,6 +46,7 @@ typedef struct {
     int32_t speed;
     bool is_moving;
     GAME_VECTOR linked[M_NUM_SECTORS];
+    BOUNDS_16 wall_bounds;
 } M_PRIV;
 
 static const LARA_TRX_STATE m_ClimbingStates[] = {
@@ -236,34 +239,13 @@ static void M_GetSectorPositions(
     };
 
     // Orient.
-    const DIRECTION dir = Math_GetDirection(item->rot.y);
-    int32_t dx = 0, dz = 0;
-    switch (dir) {
-    case DIR_NORTH:
-        dx = -1;
-        dz = 1;
-        break;
-    case DIR_EAST:
-        dx = 1;
-        dz = 1;
-        break;
-    case DIR_SOUTH:
-        dx = 1;
-        dz = -1;
-        break;
-    case DIR_WEST:
-        dx = -1;
-        dz = -1;
-        break;
-    default:
-        break;
-    }
+    const XZ_32 offset = M_GetShaftOffset(item->rot.y);
 
     // Collect a 2×2 footprint that lines up with the shaft tiles.
     for (int32_t ix = 0; ix < 2; ix++) {
         for (int32_t iz = 0; iz < 2; iz++) {
-            const int32_t sx = lift_tile.x - dx * ix;
-            const int32_t sz = lift_tile.z - dz * iz;
+            const int32_t sx = lift_tile.x - offset.x * ix;
+            const int32_t sz = lift_tile.z - offset.z * iz;
 
             const XYZ_32 pos = {
                 .x = sx * WALL_L + WALL_L / 2,
@@ -277,8 +259,8 @@ static void M_GetSectorPositions(
     // Collect a 2×2 footprint that lines up with the shaft ceiling tiles.
     for (int32_t ix = 0; ix < 2; ix++) {
         for (int32_t iz = 0; iz < 2; iz++) {
-            const int32_t sx = lift_tile.x - dx * ix;
-            const int32_t sz = lift_tile.z - dz * iz;
+            const int32_t sx = lift_tile.x - offset.x * ix;
+            const int32_t sz = lift_tile.z - offset.z * iz;
 
             const XYZ_32 pos = {
                 .x = sx * WALL_L + WALL_L / 2,
@@ -288,6 +270,16 @@ static void M_GetSectorPositions(
             Vector_Add(sector_pos, &pos);
         }
     }
+}
+
+static void M_SetupInternalWall(ITEM *const item)
+{
+    M_PRIV *const p = item->priv;
+    const BOUNDS_16 *const bounds = Item_GetBoundsAccurate(item);
+    p->wall_bounds = *bounds;
+    p->wall_bounds.max.x = bounds->min.x + M_WALL_WIDTH;
+    p->wall_bounds.min.y += STEP_L / 2;
+    p->wall_bounds.max.y -= STEP_L / 2;
 }
 
 static void M_Initialise(const int16_t item_num)
@@ -329,6 +321,8 @@ static void M_Initialise(const int16_t item_num)
     }
     Walkable_AllocateNodes(item, positions->count);
     Vector_Free(positions);
+
+    M_SetupInternalWall(item);
 }
 
 static void M_KillLara(ITEM *const lara)
@@ -356,6 +350,21 @@ static void M_KillLara(ITEM *const lara)
     }
 }
 
+static void M_InternalCollision(const ITEM *const item, COLL_INFO *const coll)
+{
+    const M_PRIV *const p = item->priv;
+    COLL_ITEM wall = {
+        .bounds = p->wall_bounds,
+        .pos = item->pos,
+        .rot = item->rot,
+    };
+    for (int32_t i = 0; i < M_NUM_FLOOR_SECTORS; i++) {
+        wall.rot.y += DEG_90;
+        wall.pos = XYZ_32_OffsetYaw(wall.pos, wall.rot.y, WALL_L);
+        Lara_Col_Push(&wall, coll, false, true);
+    }
+}
+
 static void M_Collision(
     const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
 {
@@ -378,6 +387,7 @@ static void M_Collision(
 
     const M_LARA_STATUS lara_status = M_GetLaraStatus(item, lara_item);
     if (lara_status == M_LARA_INSIDE) {
+        M_InternalCollision(item, coll);
         return;
     }
 
@@ -531,6 +541,33 @@ static void M_AddWalkable(const int16_t item_num)
     Vector_Free(positions);
 }
 
+static bool M_Draw(const ITEM *const item)
+{
+    Object_DrawAnimatingItem(item);
+    if (!g_Config.debug.enable_debug_bounding_boxes
+        || !g_Config.gameplay.fix_lift_collision) {
+        return true;
+    }
+
+    const M_PRIV *const p = item->priv;
+    if (!p->is_moving) {
+        return true;
+    }
+
+    Matrix_Push();
+    Matrix_TranslateAbs32(item->interp.result.pos);
+    Matrix_Rot16(item->interp.result.rot);
+
+    for (int32_t i = 0; i < M_NUM_FLOOR_SECTORS; i++) {
+        Matrix_TranslateRel(WALL_L, 0, 0);
+        Matrix_RotY(DEG_90);
+        Output_DrawCuboidEx(&p->wall_bounds, M_WALL_COLOR);
+    }
+
+    Matrix_Pop();
+    return true;
+}
+
 static void M_Setup(OBJECT *const obj)
 {
     obj->initialise_func = M_Initialise;
@@ -542,6 +579,7 @@ static void M_Setup(OBJECT *const obj)
     obj->priv_size = sizeof(M_PRIV);
     obj->priv_load_func = M_LoadPriv;
     obj->priv_save_func = M_SavePriv;
+    obj->draw_func = M_Draw;
     obj->save_position = true;
     obj->save_flags = true;
     obj->save_anim = true;
