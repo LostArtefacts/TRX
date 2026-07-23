@@ -363,10 +363,25 @@ void FX_Fire_Add(
     }
 }
 
+static bool M_AnyFireActive(void)
+{
+    for (int32_t i = 0; i < M_MAX_FIRES; i++) {
+        if (m_Fires[i].on) {
+            return true;
+        }
+    }
+    return false;
+}
+
 void FX_Fire_Control(void)
 {
-    m_Wibble = (m_Wibble + 4) & 0xFC;
-    M_KeepBurning();
+    // Spawning draws from the control RNG that demo playback is locked to, so
+    // only run the pool while a fire is registered this frame. Existing sparks
+    // still advance to fade out; that path draws no RNG.
+    if (M_AnyFireActive()) {
+        m_Wibble = (m_Wibble + 4) & 0xFC;
+        M_KeepBurning();
+    }
 
     const int32_t base_sprite = Sparks_GetSpriteIndex(SPARK_TYPE_EXPLOSION);
     for (int32_t i = 0; i < M_MAX_SPARKS; i++) {
