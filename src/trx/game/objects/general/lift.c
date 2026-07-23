@@ -365,6 +365,42 @@ static void M_InternalCollision(const ITEM *const item, COLL_INFO *const coll)
     }
 }
 
+static bool M_ShouldPreventClimbing(
+    const ITEM *const item, const ITEM *const lara_item,
+    const M_LARA_STATUS lara_status)
+{
+    if (!Lara_TestBoundsCollide(item, 0)) {
+        return false;
+    }
+
+    if (Lara_HasState(m_ClimbingStates)) {
+        return true;
+    }
+
+    if (lara_status == M_LARA_BELOW) {
+        return false;
+    }
+
+    // Allow vaulting only if the lift is descending to avoid embedding. This
+    // avoids doing item->pos.y += coll->side_mid.floor in the regular routines
+    // as that would impact vaulting off collapsible tiles and suchlike.
+    if (Item_IsTriggerActiveRO(item)) {
+        return false;
+    }
+
+    return Item_TestAnimEqual(lara_item, LA(LA_CLIMB_2CLICK))
+        || Item_TestAnimEqual(lara_item, LA(LA_CLIMB_3CLICK))
+        || Item_TestAnimEqual(lara_item, LA(LA_STAND_TO_JUMP_UP));
+}
+
+static void M_PreventClimbing(ITEM *const lara_item)
+{
+    lara_item->goal_anim_state = LS(LS_FAST_FALL);
+    lara_item->current_anim_state = LS(LS_FAST_FALL);
+    Item_SwitchToAnim(lara_item, LA(LA_SMASH_JUMP), 0);
+    Lara_GetLaraInfo()->gun_status = LGS_ARMLESS;
+}
+
 static void M_Collision(
     const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
 {
@@ -391,11 +427,8 @@ static void M_Collision(
         return;
     }
 
-    if (Lara_HasState(m_ClimbingStates) && Lara_TestBoundsCollide(item, 0)) {
-        lara_item->goal_anim_state = LS(LS_FAST_FALL);
-        lara_item->current_anim_state = LS(LS_FAST_FALL);
-        Item_SwitchToAnim(lara_item, LA(LA_SMASH_JUMP), 0);
-        Lara_GetLaraInfo()->gun_status = LGS_ARMLESS;
+    if (M_ShouldPreventClimbing(item, lara_item, lara_status)) {
+        M_PreventClimbing(lara_item);
         return;
     }
 
