@@ -10,6 +10,8 @@
 - changed the `/spawn` console command to accept a family such as `pickup` to spawn one of its members
 - changed the Breeze option to allow selecting TR2 or TR3 behavior (Graphic Options → Visuals → Breeze)
 - fixed some console commands being able to target unintended items
+- fixed the `/trigger` and `/untrigger` console commands crashing or doing nothing on some objects, so they now act on any item exactly as a level trigger would
+- fixed the `/trigger` and `/untrigger` console commands being usable in demos and cutscenes
 - fixed being unable to drop to the secret ledge in Jungle room 76 from the ledge above (#5818)
 - fixed a crash when drawing an animating object that has no frame data (#5869)
 - fixed trains using extreme tilt angles when they come to a stop at a wall (#5886)
