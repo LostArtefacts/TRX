@@ -1215,7 +1215,7 @@
     },
     {
       "bulk": true,
-      "count": 130,
+      "count": 131,
       "description": "Every state Lara can be in.",
       "examples": [
         "if trx.lara.item.anim_state == trx.catalog.lara_states.RUN then ... end"
@@ -1269,6 +1269,7 @@
         "LARA_TEST1",
         "LARA_TEST2",
         "LARA_TEST3",
+        "LIFT_DEATH",
         "LIFT_TRAPDOOR",
         "MONKEY_FORWARD",
         "MONKEY_IDLE",
