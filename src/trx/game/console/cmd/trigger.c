@@ -74,34 +74,18 @@ static char *M_BuildCollapsedItemNums(
 
 static void M_ApplyTrigger(const int16_t item_num, const bool enable)
 {
-    ITEM *const item = Item_Get(item_num);
-    if (item == nullptr) {
-        return;
-    }
-    const OBJECT *const obj = Object_Get(item->object_id);
-
-    if (obj->trigger_func != nullptr) {
-        const bool use_default_handling = obj->trigger_func(item, nullptr);
-        if (!use_default_handling) {
-            return;
-        }
-    }
-
-    if (enable) {
-        item->flags |= IF_CODE_BITS;
-        item->timer = 0;
-        Item_AddActive(item_num);
-        if (obj->intelligent) {
-            item->status = IS_ACTIVE;
-            LOT_EnableBaddieAI(item_num, true);
-        }
-    } else {
-        item->flags &= ~IF_CODE_BITS;
-        Item_RemoveActive(item_num);
-        if (obj->intelligent) {
-            item->status = IS_ACTIVE;
-            LOT_DisableBaddieAI(item_num);
-        }
+    // A full code-bit mask so the item starts the moment it is triggered, with
+    // no timer. Untriggering clears the bits and stands the item down outright,
+    // rather than the floordata antitrigger's leave-it-running behavior.
+    const ITEM_TRIGGER trigger = {
+        .kind = enable ? ITEM_TRIGGER_NORMAL : ITEM_TRIGGER_ANTI,
+        .mask = IF_CODE_BITS,
+        .timer = 0.0f,
+        .one_shot = false,
+    };
+    Item_Trigger(item_num, &trigger);
+    if (!enable) {
+        Item_Deactivate(item_num);
     }
 }
 

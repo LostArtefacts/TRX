@@ -285,10 +285,10 @@ static void M_Control(const int16_t item_num)
     }
 }
 
-static bool M_Trigger(ITEM *const item, const TRIGGER *const trigger)
+static bool M_Trigger(ITEM *const item, const ITEM_TRIGGER *const trigger)
 {
-    if (trigger != nullptr && !Room_IsAntiTrigger(trigger->type)) {
-        item->hit_points = trigger->timer & 7;
+    if (trigger->kind != ITEM_TRIGGER_ANTI) {
+        item->hit_points = (int16_t)trigger->timer & 7;
         if (item->hit_points == 0) {
             item->hit_points = 1;
         }

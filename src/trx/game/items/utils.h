@@ -16,6 +16,26 @@
 bool Item_IsTriggerActiveRO(const ITEM *item);
 bool Item_IsTriggerActive(ITEM *item);
 
+// Every code bit set, which is what a lone trigger with nothing to wait for
+// carries.
+#define ITEM_TRIGGER_MASK_ALL 31
+
+// The item's code bits, counted the way a level editor counts them: five bits,
+// 1 to 31. An item runs its trigger only once every bit is set, so several
+// triggers can be made to agree before anything happens.
+int32_t Item_GetTriggerMask(const ITEM *item);
+void Item_SetTriggerMask(ITEM *item, int32_t mask);
+
+// Fire a trigger at the item, exactly as a floordata trigger does. The kind
+// selects the flag operation: a forward trigger ORs in the mask and, once every
+// code bit is set, starts the item running; a switch XORs it; an antitrigger
+// (ITEM_TRIGGER_ANTI) clears the code bits and leaves the item on the active
+// list to stand itself down, which is how a door animates shut rather than
+// freezing half open. Room_Handle builds one of these from a floordata trigger;
+// the console and scripts build them directly. Use Item_Deactivate to stop an
+// item outright.
+void Item_Trigger(int16_t item_num, const ITEM_TRIGGER *trigger);
+
 bool Item_IsAlive(const ITEM *item);
 bool Item_IsTargetable(const ITEM *item);
 bool Item_CanTakeDamage(const ITEM *item);

@@ -155,15 +155,11 @@ static bool M_IsTargetable(const ITEM *const item)
     return false;
 }
 
-static bool M_Trigger(ITEM *const item, const TRIGGER *const trigger)
+static bool M_Trigger(ITEM *const item, const ITEM_TRIGGER *const trigger)
 {
-    if (trigger == nullptr) {
-        return false;
-    }
-
     item->timer = 0;
 
-    if (Room_IsAntiTrigger(trigger->type)) {
+    if (trigger->kind == ITEM_TRIGGER_ANTI) {
         Shoal_TriggerDeactivate(item);
     }
 

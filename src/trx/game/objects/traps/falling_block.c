@@ -88,10 +88,10 @@ static void M_AddWalkable(const int16_t item_num)
     Walkable_Add(item_num, item->pos);
 }
 
-static bool M_Trigger(ITEM *const item, const TRIGGER *const trigger)
+static bool M_Trigger(ITEM *const item, const ITEM_TRIGGER *const trigger)
 {
     M_PRIV *const p = item->priv;
-    p->heavy_triggered = trigger->type == TT_HEAVY;
+    p->heavy_triggered = trigger->kind == ITEM_TRIGGER_HEAVY;
     return true;
 }
 

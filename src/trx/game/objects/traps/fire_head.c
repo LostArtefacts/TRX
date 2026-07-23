@@ -134,19 +134,19 @@ static void M_Initialise(const int16_t item_num)
     item->goal_anim_state = M_STATE_REAR;
 }
 
-static bool M_Trigger(ITEM *const item, const TRIGGER *const trigger)
+static bool M_Trigger(ITEM *const item, const ITEM_TRIGGER *const trigger)
 {
     M_PRIV *const p = item->priv;
     if (p == nullptr) {
         return true;
     }
 
-    if (trigger == nullptr || Room_IsAntiTrigger(trigger->type)) {
+    if (trigger->kind == ITEM_TRIGGER_ANTI) {
         return true;
     }
 
     item->timer = 0;
-    p->blow_loops.max = trigger->timer;
+    p->blow_loops.max = (int32_t)trigger->timer;
     return true;
 }
 

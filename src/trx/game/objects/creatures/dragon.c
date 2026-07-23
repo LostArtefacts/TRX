@@ -153,7 +153,7 @@ static void M_InitialiseBack(const int16_t item_num)
     Item_Initialise(p->dragon_front_item_num);
 }
 
-static bool M_TriggerBack(ITEM *const item, const TRIGGER *const trigger)
+static bool M_TriggerBack(ITEM *const item, const ITEM_TRIGGER *const trigger)
 {
     M_PRIV *const p = item->priv;
     p->mode = M_MODE_ONE_PHASE;

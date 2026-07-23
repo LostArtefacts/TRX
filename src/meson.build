@@ -372,6 +372,7 @@ common_sources = [
   'trx/game/items/col.c',
   'trx/game/items/draw.c',
   'trx/game/items/manager.c',
+  'trx/game/items/trigger.c',
   'trx/game/items/utils.c',
   'trx/game/items/walkable.c',
   'trx/game/lara/breath.c',
