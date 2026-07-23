@@ -488,6 +488,59 @@ void Item_AddActive(const int16_t item_num)
     m_NextItemActive = item_num;
 }
 
+void Item_Activate(const int16_t item_num, const bool force)
+{
+    ITEM *const item = &m_Items[item_num];
+    const OBJECT *const obj = Object_Get(item->object_id);
+
+    if (item->active) {
+        return;
+    }
+
+    if (obj->activate_func != nullptr) {
+        obj->activate_func(item);
+    } else if (obj->intelligent) {
+        if (item->status == IS_INACTIVE) {
+            item->touch_bits = 0;
+            item->status = IS_ACTIVE;
+            Item_AddActive(item_num);
+            LOT_EnableBaddieAI(item_num, true);
+        } else if (item->status == IS_INVISIBLE) {
+            item->touch_bits = 0;
+            if (LOT_EnableBaddieAI(item_num, force)) {
+                item->status = IS_ACTIVE;
+            } else {
+                item->status = IS_INVISIBLE;
+            }
+            Item_AddActive(item_num);
+        }
+    } else {
+        item->touch_bits = 0;
+        item->status = IS_ACTIVE;
+        Item_AddActive(item_num);
+    }
+}
+
+void Item_Deactivate(const int16_t item_num)
+{
+    ITEM *const item = &m_Items[item_num];
+    const OBJECT *const obj = Object_Get(item->object_id);
+
+    Item_RemoveActive(item_num);
+    if (obj->intelligent) {
+        LOT_DisableBaddieAI(item_num);
+    }
+
+    // Back to IS_INACTIVE, not IS_DEACTIVATED: a trigger only ever re-arms an
+    // item that is inactive or invisible, so leaving it deactivated would put
+    // it beyond the reach of the thing most likely to want it back. An item
+    // that was already spent stays spent, and an ambushing creature stays
+    // hidden.
+    if (item->status == IS_ACTIVE) {
+        item->status = IS_INACTIVE;
+    }
+}
+
 void Item_UpdateRoom(const int16_t item_num, const int16_t room_num)
 {
     ITEM *const item = &m_Items[item_num];

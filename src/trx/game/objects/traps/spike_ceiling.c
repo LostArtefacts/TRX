@@ -24,14 +24,14 @@ static int32_t M_GetSpeed(const ITEM *const item)
     return M_DEFAULT_SPEED;
 }
 
-static bool M_Trigger(ITEM *const item, const TRIGGER *const trigger)
+static bool M_Trigger(ITEM *const item, const ITEM_TRIGGER *const trigger)
 {
     M_PRIV *const p = item->priv;
     if (p == nullptr) {
         return true;
     }
 
-    if (trigger == nullptr || Room_IsAntiTrigger(trigger->type)) {
+    if (trigger->kind == ITEM_TRIGGER_ANTI) {
         return true;
     }
 

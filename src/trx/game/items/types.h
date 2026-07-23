@@ -20,6 +20,17 @@ typedef struct CARRIED_ITEM {
 typedef struct TRAP_DATA TRAP_DATA;
 typedef struct CREATURE CREATURE;
 
+// The lean description an item trigger acts on, all an item needs from a
+// floordata trigger or a script. `mask` is pre-shifted into IF_CODE_BITS
+// positions (a heavy switch has its heavy mask already folded in). `timer` is
+// in seconds; Item_Trigger converts it to frames.
+typedef struct ITEM_TRIGGER {
+    ITEM_TRIGGER_KIND kind;
+    int16_t mask;
+    float timer;
+    bool one_shot;
+} ITEM_TRIGGER;
+
 typedef struct ITEM {
     int32_t floor;
     uint32_t touch_bits;

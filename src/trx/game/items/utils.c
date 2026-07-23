@@ -4,6 +4,7 @@
 #include <trx/core/utils.h>
 #include <trx/game/creature.h>
 #include <trx/game/effects.h>
+#include <trx/game/items/manager.h>
 #include <trx/game/lara.h>
 #include <trx/game/matrix.h>
 #include <trx/game/objects.h>
@@ -332,4 +333,19 @@ bool Item_IsTriggerActive(ITEM *const item)
         }
     }
     return result;
+}
+
+// The code bits sit in the middle of the flag word, so a mask counted from 1
+// has to be shifted into place.
+#define M_CODE_BITS_SHIFT 9
+
+int32_t Item_GetTriggerMask(const ITEM *const item)
+{
+    return (item->flags & IF_CODE_BITS) >> M_CODE_BITS_SHIFT;
+}
+
+void Item_SetTriggerMask(ITEM *const item, const int32_t mask)
+{
+    item->flags &= ~IF_CODE_BITS;
+    item->flags |= (mask << M_CODE_BITS_SHIFT) & IF_CODE_BITS;
 }

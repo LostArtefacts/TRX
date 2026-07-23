@@ -128,9 +128,9 @@ static void M_SpawnWasp(const ITEM *const spawner_item, const int32_t slot_idx)
     LOT_EnableBaddieAI(p->slots[slot_idx], true);
 }
 
-static bool M_Trigger(ITEM *const item, const TRIGGER *const trigger)
+static bool M_Trigger(ITEM *const item, const ITEM_TRIGGER *const trigger)
 {
-    if (trigger == nullptr || Room_IsAntiTrigger(trigger->type)) {
+    if (trigger->kind == ITEM_TRIGGER_ANTI) {
         return true;
     }
 
@@ -138,7 +138,7 @@ static bool M_Trigger(ITEM *const item, const TRIGGER *const trigger)
     item->flags |= IF_ONE_SHOT;
 
     M_PRIV *const p = item->priv;
-    p->spawn_total = trigger->timer;
+    p->spawn_total = (int32_t)trigger->timer;
     p->spawn_count = 0;
     return true;
 }

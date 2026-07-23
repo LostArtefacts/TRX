@@ -34,6 +34,23 @@ void Item_RemoveActive(int16_t item_num);
 void Item_RemoveDrawn(int16_t item_num);
 void Item_ClearKilled(void);
 void Item_AddActive(int16_t item_num);
+
+// Bring an item to life the way a trigger does: start its control routine, and
+// enable a creature's AI so it does more than stand there. An object with a
+// custom activation runs that instead. An already-active item is left alone.
+//
+// `force` only matters once all the AI slots are taken, and only for a creature
+// lying in wait. A trigger passes false and leaves it hidden until a slot frees
+// on its own, which is what the games do. Something that asked for this
+// creature by name passes true and takes a slot off whichever creature is
+// furthest away.
+void Item_Activate(int16_t item_num, bool force);
+
+// Stop an item: take it off the active list and take a creature's AI away. It
+// stays where it is and keeps its hit points; it stops running. A trigger can
+// still bring it back, which is what separates this from Item_Kill.
+void Item_Deactivate(int16_t item_num);
+
 void Item_UpdateRoom(int16_t item_num, int16_t room_num);
 
 int32_t Item_GlobalReplace(OBJECT_ID src_obj_id, OBJECT_ID dst_obj_id);

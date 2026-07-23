@@ -79,7 +79,7 @@ typedef struct OBJECT {
         const ITEM *item, XYZ_32 pos, int32_t height);
     void (*activate_func)(ITEM *item);
     void (*event_func)(ITEM *item, OBJECT_EVENT event, const void *data);
-    bool (*trigger_func)(ITEM *item, const TRIGGER *trigger);
+    bool (*trigger_func)(ITEM *item, const ITEM_TRIGGER *trigger);
     bool (*gun_hit_func)(
         ITEM *item, const GAME_VECTOR *start, const GAME_VECTOR *hit_pos,
         int32_t *damage);

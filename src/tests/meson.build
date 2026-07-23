@@ -86,6 +86,16 @@ test_item_actions_exe = executable(
 )
 test('item_actions', test_item_actions_exe, suite: 'unit')
 
+test_trigger_exe = executable(
+  'test_trigger',
+  files('unit/test_trigger.c') + test_stubs
+    + files('../trx/game/items/trigger.c', '../trx/version.c'),
+  include_directories: [src_inc, test_inc],
+  dependencies: [dep_mathlibrary],
+  build_by_default: false,
+)
+test('trigger', test_trigger_exe, suite: 'unit')
+
 test_console_complete_exe = executable(
   'test_console_complete',
   files('unit/test_console_complete.c') + test_stubs
