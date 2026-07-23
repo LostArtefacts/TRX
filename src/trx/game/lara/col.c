@@ -12,7 +12,7 @@
 static void (*m_CollisionRoutines[LS_NUMBER_OF])(
     ITEM *item, COLL_INFO *coll) = {};
 
-static void M_Push(
+void Lara_Col_Push(
     const COLL_ITEM *const item, COLL_INFO *const coll, const bool hit_on,
     const bool big_push)
 {
@@ -143,7 +143,7 @@ void Lara_Col_ItemPush(
         .pos = item->pos,
         .rot = item->rot,
     };
-    M_Push(&src_item, coll, hit_on, big_push);
+    Lara_Col_Push(&src_item, coll, hit_on, big_push);
 }
 
 void Lara_Col_Static3DPush(const STATIC_MESH *const mesh, COLL_INFO *const coll)
@@ -153,7 +153,7 @@ void Lara_Col_Static3DPush(const STATIC_MESH *const mesh, COLL_INFO *const coll)
         .pos = mesh->pos,
         .rot = { .y = mesh->rot.y },
     };
-    M_Push(&src_item, coll, false, true);
+    Lara_Col_Push(&src_item, coll, false, true);
 }
 
 void Lara_Col_WadeSplash(ITEM *const item)
