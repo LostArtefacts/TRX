@@ -299,7 +299,7 @@ static void M_ControlCrawler(const int16_t item_num)
 
     M_PRIV *const p = item->priv;
     if (p->burn_timer > M_MAX_BURN_TIME) {
-        item->hit_points = 0;
+        Item_TakeDamage(item, item->hit_points, IDF_NONE, creature->enemy);
     }
 
     if (item->hit_points <= 0) {
