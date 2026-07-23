@@ -65,8 +65,12 @@ def render_callback_args(param: dict, indent: str) -> list[str]:
         return []
     out = [f"{indent}Called with:"]
     for arg in args:
-        out.append(
-            f"{indent}- **`{arg['name']}`** ({arg['type']}). {describe(arg)}".rstrip()
+        out.extend(
+            render_lead(
+                f"{indent}- **`{arg['name']}`** ({arg['type']}). ",
+                describe(arg),
+                f"{indent}  ",
+            )
         )
     return out
 
@@ -79,6 +83,19 @@ def render_prose(text: str, indent: str) -> list[str]:
     level.
     """
     return [f"{indent}{line}".rstrip() for line in text.splitlines()]
+
+
+def render_lead(head: str, text: str, indent: str) -> list[str]:
+    """A line whose text may run to several paragraphs.
+
+    Only the first line fits after the head; the rest is indented so it stays
+    inside the list item instead of ending it.
+    """
+    first, _, rest = text.partition("\n")
+    out = [f"{head}{first}".rstrip()]
+    if rest:
+        out.extend(render_prose(rest, indent))
+    return out
 
 
 # enum path -> { value: constant name }, filled in from the dump before any page
@@ -113,8 +130,12 @@ def render_params(params: list[dict] | None, indent: str) -> list[str]:
                 if default is None
                 else f"optional, default `{render_default(param)}`"
             )
-        out.append(
-            f"{indent}- **`{param['name']}`** ({', '.join(bits)}). {describe(param)}".rstrip()
+        out.extend(
+            render_lead(
+                f"{indent}- **`{param['name']}`** ({', '.join(bits)}). ",
+                describe(param),
+                f"{indent}  ",
+            )
         )
         out.extend(render_callback_args(param, f"{indent}  "))
     return out
@@ -132,9 +153,10 @@ def render_returns(returns: dict | list | None, indent: str) -> list[str]:
     if not returns:
         return []
     if isinstance(returns, dict):
-        return ["", f"{indent}Returns: {one_return(returns)}"]
+        return ["", *render_lead(f"{indent}Returns: ", one_return(returns), f"{indent}  ")]
     out = ["", f"{indent}Returns:"]
-    out.extend(f"{indent}- {one_return(spec)}" for spec in returns)
+    for spec in returns:
+        out.extend(render_lead(f"{indent}- ", one_return(spec), f"{indent}  "))
     return out
 
 
@@ -185,7 +207,7 @@ def render_namespace(spec: dict) -> list[str]:
 def render_const(spec: dict) -> list[str]:
     out = [f"- [lua]`trx.{spec['path']}` = `{spec['value']}`  "]
     if spec.get("description"):
-        out.append(f"  {spec['description']}")
+        out.extend(render_prose(spec["description"], "  "))
     out.append("")
     return out
 
@@ -230,7 +252,7 @@ def render_enum(spec: dict) -> list[str]:
         out.append("")
     for value in spec.get("values") or []:
         out.append(f"{INDENT}- `trx.{spec['path']}.{value['name']}` = `{value['value']}`  ")
-        out.append(f"{INDENT}    {value.get('description') or ''}".rstrip())
+        out.extend(render_prose(value.get("description") or "", f"{INDENT}    "))
     out.append("")
     return out
 
@@ -241,7 +263,11 @@ def render_property(spec: dict) -> list[str]:
     Reading it calls into the engine, so it is neither a function nor a constant.
     """
     suffix = "" if spec.get("writable") else " *(read-only)*"
-    return [f"- **`trx.{spec['path']}`** ({spec['type']}). {describe(spec)}{suffix}".rstrip()]
+    return render_lead(
+        f"- **`trx.{spec['path']}`** ({spec['type']}). ",
+        f"{describe(spec)}{suffix}",
+        "  ",
+    )
 
 
 def render_type(spec: dict) -> list[str]:
@@ -262,16 +288,25 @@ def render_type(spec: dict) -> list[str]:
         out.append(f"{INDENT}Properties:")
         for field in spec["fields"]:
             suffix = "" if field.get("writable") else " *(read-only)*"
-            out.append(
-                f"{INDENT}- **`{field['name']}`**: {field['type']}. {describe(field)}{suffix}"
+            out.extend(
+                render_lead(
+                    f"{INDENT}- **`{field['name']}`**: {field['type']}. ",
+                    f"{describe(field)}{suffix}",
+                    f"{INDENT}  ",
+                )
             )
         out.append("")
 
     if spec.get("extensions"):
         out.append(f"{INDENT}Computed properties (derived, not stored on the object):")
         for ext in spec["extensions"]:
-            desc = ext.get("description") or ""
-            out.append(f"{INDENT}- **`{ext['name']}`**: {ext['type']}. {desc}")
+            out.extend(
+                render_lead(
+                    f"{INDENT}- **`{ext['name']}`**: {ext['type']}. ",
+                    ext.get("description") or "",
+                    f"{INDENT}  ",
+                )
+            )
         out.append("")
 
     if spec.get("methods"):
@@ -299,7 +334,13 @@ def render_container(name: str, spec: dict) -> list[str]:
     if spec.get("description"):
         out.extend(render_prose(spec["description"], ""))
         out.append("")
-    out.append(f"- **`trx.{name}[key]`** ({value['type']}{nullable}). {describe(key)}")
+    out.extend(
+        render_lead(
+            f"- **`trx.{name}[key]`** ({value['type']}{nullable}). ",
+            describe(key),
+            "  ",
+        )
+    )
     if spec.get("countable"):
         out.append(f"- **`#trx.{name}`** (integer). How many there are.")
     out.extend(render_examples(spec.get("examples"), ""))
