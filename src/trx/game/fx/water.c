@@ -7,6 +7,7 @@
 #include <trx/game/lara/common.h>
 #include <trx/game/objects.h>
 #include <trx/game/output/sources/poly_fx.h>
+#include <trx/game/output/state.h>
 #include <trx/game/random.h>
 #include <trx/game/rooms.h>
 #include <trx/game/sound.h>
@@ -29,14 +30,12 @@ static const uint8_t m_SplashQuadLinks[32] = {
 static FX_WATER_SPLASH m_Splashes[4];
 static FX_WATER_RIPPLE m_Ripples[16];
 static int32_t m_SplashCount = 0;
-static int32_t m_Wibble = 0;
 
 void FX_Water_Reset(void)
 {
     memset(m_Splashes, 0, sizeof(m_Splashes));
     memset(m_Ripples, 0, sizeof(m_Ripples));
     m_SplashCount = 0;
-    m_Wibble = 0;
 }
 
 static bool M_IsRoomUnderwater(const int16_t room_num)
@@ -318,6 +317,7 @@ void FX_Water_WadeSplash(
         return;
     }
 
+    const int32_t time4 = Output_GetTimeInGame() * 4;
     if (item->fall_speed > 0 && depth < 474 && m_SplashCount == 0) {
         const FX_WATER_SPLASH_SETUP setup = {
             .x = item->pos.x,
@@ -345,7 +345,7 @@ void FX_Water_WadeSplash(
         FX_Water_SetupSplash(&setup);
         m_SplashCount = 16;
     } else if (
-        (m_Wibble & 0xF) == 0
+        (time4 & 0xF) == 0
         && (((Random_GetControl() & 0xF) == 0)
             || item->current_anim_state != LS(LS_STOP))) {
         FX_Water_SetupRipple(
@@ -421,6 +421,7 @@ static void M_DrawSplash(const FX_WATER_SPLASH *s)
     const double ratio = Interpolation_GetWorldRate();
     const bool do_interp =
         Interpolation_IsActive() && ratio > 0.0 && ratio < 1.0;
+    const int32_t time4 = Output_GetTimeInGame() * 4;
 
     XYZ_32 points[48];
     for (int32_t i = 0; i < 48; i++) {
@@ -441,7 +442,7 @@ static void M_DrawSplash(const FX_WATER_SPLASH *s)
         int32_t sprite_idx = big_splash_idx;
         if (ring == 2 || (ring == 0 && (s->flags & 4U) != 0U)
             || (ring == 1 && (s->flags & 8U) != 0U)) {
-            sprite_idx = small_splash_idx + ((m_Wibble >> 4) & 3);
+            sprite_idx = small_splash_idx + ((time4 >> 4) & 3);
         }
 
         const int32_t life = do_interp
@@ -625,6 +626,4 @@ void FX_Water_Control(void)
             }
         }
     }
-
-    m_Wibble = (m_Wibble + 4) & 0xFC;
 }
