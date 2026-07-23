@@ -14,6 +14,7 @@
 - fixed a crash when drawing an animating object that has no frame data (#5869)
 - fixed trains using extreme tilt angles when they come to a stop at a wall (#5886)
 - fixed Lara attempting to climb ladders from inside lifts (#5890)
+- fixed Lara attempting to pull up into gaps that would not allow her to stand, resulting in her being pushed out (#5891)
 
 **TR1**
 - changed weather to be affected by the breeze
