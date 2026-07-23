@@ -16,6 +16,8 @@ typedef struct {
     int32_t shatter;
     int16_t shatter_damage;
     int32_t enable_baddie_ai;
+    bool enable_baddie_ai_forced;
+    int32_t disable_baddie_ai;
     int32_t kill;
 } FAKE_ITEM_CALLS;
 

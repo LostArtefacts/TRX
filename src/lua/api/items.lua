@@ -31,6 +31,22 @@ api.enum("items.PickupMode", {
   },
 })
 
+api.enum("items.TriggerType", {
+  backing = "ITEM_TRIGGER_KIND",
+  description = "The kind of trigger `item:trigger` fires, matching the trigger types a level editor "
+    .. "offers. Most are forward triggers that differ only in what trips them in a level; from a "
+    .. "script they behave alike, and `TRIGGER` is the one to reach for.",
+  values = {
+    TRIGGER = "A plain trigger: sets the code bits and, once they are all set, starts the item.",
+    ANTITRIGGER = "Takes the trigger back, clearing the code bits. The item is left running so it "
+      .. "can stand itself down, which is how a door animates shut.",
+    SWITCH = "Toggles the code bits, so firing it a second time takes the trigger back.",
+    HEAVY = "A forward trigger a heavy object trips. A falling block reads this to know it was set "
+      .. "off by weight.",
+    HEAVY_SWITCH = "A switch a heavy object trips.",
+  },
+})
+
 -- Item handles are bare userdata. Their metatable is populated by the api.type
 -- declaration below, and by nothing else: a member of the C ITEM struct that is
 -- not named here is not reachable from a script at all.
@@ -82,6 +98,13 @@ api.type("items.Item", {
       type = "integer",
       description = "Object-relative frame number, 0-indexed. Negative values count back from the end.",
     },
+    index = {
+      from = "index",
+      type = "integer",
+      writable = false,
+      description = "The index `trx.items[i]` takes, counted from 0. An item handed over by a query "
+        .. "can say where it lives.",
+    },
     room_num = {
       from = "room_index",
       type = "integer",
@@ -128,7 +151,32 @@ api.type("items.Item", {
     timer = {
       from = "timer",
       type = "integer",
-      description = "Trigger-related timer value.",
+      description = "How long the item's trigger keeps it going, in game frames. `0` runs it until "
+        .. "something takes the trigger back; `-1` means it has run out; anything else counts down. "
+        .. "This is the raw frame count - `trigger()` takes its timer in seconds instead.",
+    },
+    is_triggered = {
+      from = "is_triggered",
+      type = "boolean",
+      writable = false,
+      description = "Whether the item's trigger currently says go. This is what a door, a switch or "
+        .. "an alarm reads to decide whether to act; a creature ignores it and goes by whether it "
+        .. "is running.\n\n"
+        .. "It is a verdict on `trigger_mask`, `timer` and `is_reversed` together, not a field of "
+        .. "its own.",
+    },
+    trigger_mask = {
+      from = "trigger_mask",
+      type = "integer",
+      description = "The five code bits, counted the way a level editor counts them: `1` to `31`. "
+        .. "The trigger only says go once every bit is set, which is how a level makes several "
+        .. "triggers agree before anything happens. A lone trigger carries all of them.",
+    },
+    is_reversed = {
+      from = "is_reversed",
+      type = "boolean",
+      description = "Whether the item's trigger is inverted, so it runs until triggered rather than "
+        .. "once triggered. This is how a level ships something already on.",
     },
     speed = {
       from = "speed",
@@ -165,8 +213,7 @@ api.type("items.Item", {
     is_one_shot = {
       from = "is_one_shot",
       type = "boolean",
-      description = "Whether the item's one-shot trigger flag is set, so its trigger fires only "
-        .. "once.",
+      description = "Whether the item's trigger has been spent and will never fire again.",
     },
     is_hostile = {
       from = "is_hostile",
@@ -231,8 +278,44 @@ api.type("items.Item", {
 
   methods = {
     activate = {
-      description = "Adds the item to the active list and starts its control routine, enabling AI "
-        .. "for a creature. Objects with no control routine cannot be activated.",
+      description = "Brings the item to life, exactly as tripping a trigger on it would: its control "
+        .. "routine starts running, and a creature also gets its AI, without which it would stand "
+        .. "there and ignore Lara.\n\n"
+        .. "Objects with no control routine cannot be activated, and an item that is already active "
+        .. "is left alone.",
+    },
+    deactivate = {
+      description = "Stops the item: its control routine no longer runs, and a creature loses its AI "
+        .. "and stands down. The item stays where it is and keeps its hit points, so this is not a "
+        .. "way of getting rid of it - use `kill()` for that.\n\n"
+        .. "A trigger can still bring it back, and so can `activate()`.",
+    },
+    trigger = {
+      description = "Fires a trigger at the item, exactly as a floor trigger in the level would: "
+        .. "sets the code bits, and once they are all set, starts the item running.\n\n"
+        .. "This is the one to reach for on anything a level would trigger - a door, a switch, an "
+        .. "alarm - because those read their trigger before they act, and merely `activate()`-ing "
+        .. "one leaves it running but doing nothing. Pass `type = "
+        .. "trx.items.TriggerType.ANTITRIGGER` to take the trigger back instead.",
+      params = {
+        {
+          name = "opts",
+          type = "table",
+          optional = true,
+          description = "`type`: which `items.TriggerType` to fire; a plain `TRIGGER` by default.\n\n"
+            .. "`mask`: which of the five code bits to set, `1` to `31`, all of them by default. "
+            .. "Pass fewer to act as one of several triggers a puzzle is waiting on.\n\n"
+            .. "`timer`: how long it should keep the item going, in seconds. `0`, the default, means "
+            .. "until something takes the trigger back. A timer of exactly `1` is a single frame, "
+            .. "not a second, matching the level format.\n\n"
+            .. "`one_shot`: never let it fire again.",
+        },
+      },
+      examples = {
+        [[trx.items[12]:trigger()]],
+        [[trx.items[12]:trigger({ timer = 3, one_shot = true })]],
+        [[trx.items[12]:trigger({ type = trx.items.TriggerType.ANTITRIGGER })]],
+      },
     },
     kill = {
       description = "Removes the item from the game. Any other handle to it becomes stale.",

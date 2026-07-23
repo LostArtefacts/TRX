@@ -139,10 +139,92 @@ test("status matches the enum, and activate() moves it", function()
 
   it:activate()
   assert(it.is_active == true, "activate() did not take")
+  assert(it.status == trx.items.Status.ACTIVE)
+end)
+
+-- Item 0 is a creature. Putting it on the active list is not enough: without its
+-- AI it stands there and ignores Lara, which is not what activate() promises.
+test("activating a creature enables its AI, by force", function()
+  trx.items[0]:activate()
+  assert(fake.calls().enable_baddie_ai == 1, "a creature needs its AI enabled")
   assert(
-    fake.calls().enable_baddie_ai == 1,
-    "activating a creature must enable its AI"
+    fake.calls().enable_baddie_ai_forced == true,
+    "a named activation takes a slot by force"
   )
+end)
+
+test("activating an inert object does not touch AI", function()
+  local vase = trx.items[1]
+  vase:activate()
+  assert(vase.is_active == true)
+  assert(fake.calls().enable_baddie_ai == 0, "a vase has no AI to enable")
+end)
+
+test("deactivate stops the item and takes a creature's AI away", function()
+  local wolf = trx.items[0]
+  wolf:activate()
+  wolf:deactivate()
+  assert(
+    wolf.is_active == false,
+    "deactivate did not take it off the active list"
+  )
+  assert(
+    wolf.status == trx.items.Status.INACTIVE,
+    "it goes back to inactive, not deactivated"
+  )
+  assert(
+    fake.calls().disable_baddie_ai == 1,
+    "the creature's AI was left running"
+  )
+end)
+
+test("an item knows its own index, counted from 0", function()
+  assert(trx.items[0].index == 0)
+  assert(trx.items[1].index == 1)
+end)
+
+-- A door reads its trigger before it acts, which activate() alone does not set.
+test("trigger sets the item running and its trigger reads active", function()
+  local door = trx.items[1]
+  assert(door.is_triggered == false)
+
+  door:trigger()
+  assert(door.is_active == true, "a full trigger starts the item")
+  assert(door.is_triggered == true, "and its trigger now says go")
+  assert(door.trigger_mask == 31, "a lone trigger carries every code bit")
+end)
+
+test(
+  "an antitrigger takes the trigger back but leaves the item running",
+  function()
+    local door = trx.items[1]
+    door:trigger()
+    door:trigger({ type = trx.items.TriggerType.ANTITRIGGER })
+    assert(door.is_triggered == false, "the trigger no longer says go")
+    assert(
+      door.is_active == true,
+      "the item is left running so it can animate shut"
+    )
+  end
+)
+
+test("a partial trigger waits for the rest", function()
+  local door = trx.items[1]
+  door:trigger({ mask = 1 })
+  assert(door.is_active == false, "one code bit is not enough to start it")
+  assert(door.is_triggered == false)
+end)
+
+test("a mask outside the five bits is refused", function()
+  raises(function()
+    trx.items[1]:trigger({ mask = 99 })
+  end)
+end)
+
+test("an unknown trigger type is refused", function()
+  raises(function()
+    trx.items[1]:trigger({ type = 99 })
+  end)
 end)
 
 -- An index alone would rebind to whatever item recycled the slot; the

@@ -122,6 +122,12 @@ static __attribute__((constructor)) void M_Init(void)
     ENUM_MAP(ITEM_STATUS, IS_DEACTIVATED, "deactivated");
     ENUM_MAP(ITEM_STATUS, IS_INVISIBLE, "invisible");
 
+    ENUM_MAP(ITEM_TRIGGER_KIND, ITEM_TRIGGER_NORMAL, "trigger");
+    ENUM_MAP(ITEM_TRIGGER_KIND, ITEM_TRIGGER_HEAVY, "heavy");
+    ENUM_MAP(ITEM_TRIGGER_KIND, ITEM_TRIGGER_SWITCH, "switch");
+    ENUM_MAP(ITEM_TRIGGER_KIND, ITEM_TRIGGER_HEAVY_SWITCH, "heavy_switch");
+    ENUM_MAP(ITEM_TRIGGER_KIND, ITEM_TRIGGER_ANTI, "antitrigger");
+
     // LUA_EVENT_NUMBER_OF is a sentinel, not an event.
     ENUM_MAP(LUA_EVENT_TYPE, LUA_EVENT_BEFORE_LEVEL_FILE, "before_level_file");
     ENUM_MAP(LUA_EVENT_TYPE, LUA_EVENT_AFTER_LEVEL_FILE, "after_level_file");
