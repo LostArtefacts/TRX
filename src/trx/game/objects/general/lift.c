@@ -401,6 +401,23 @@ static void M_PreventClimbing(ITEM *const lara_item)
     Lara_GetLaraInfo()->gun_status = LGS_ARMLESS;
 }
 
+static bool M_ShouldKillLara(
+    const ITEM *const item, const ITEM *const lara_item)
+{
+    int16_t room_num = lara_item->room_num;
+    const SECTOR *const sector = Room_GetSector(lara_item->pos, &room_num);
+    const int32_t height = Room_GetHeight(sector, lara_item->pos);
+    const int32_t ceiling = Room_GetCeiling(sector, lara_item->pos);
+    if (height == NO_HEIGHT || ceiling == NO_HEIGHT) {
+        return false;
+    }
+
+    const int32_t clearance = ABS(height - ceiling);
+    const BOUNDS_16 *const bounds = Item_GetBoundsAccurate(lara_item);
+    const int32_t lara_height = ABS(bounds->max.y - bounds->min.y);
+    return clearance < lara_height;
+}
+
 static void M_Collision(
     const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
 {
@@ -432,18 +449,7 @@ static void M_Collision(
         return;
     }
 
-    int16_t room_num = lara_item->room_num;
-    const SECTOR *const sector = Room_GetSector(lara_item->pos, &room_num);
-    const int32_t height = Room_GetHeight(sector, lara_item->pos);
-    const int32_t ceiling = Room_GetCeiling(sector, lara_item->pos);
-    if (height == NO_HEIGHT || ceiling == NO_HEIGHT) {
-        return;
-    }
-
-    const int32_t clearance = ABS(height - ceiling);
-    const BOUNDS_16 *const bounds = Item_GetBoundsAccurate(lara_item);
-    const int32_t lara_height = ABS(bounds->max.y - bounds->min.y);
-    if (lara_height < clearance) {
+    if (!M_ShouldKillLara(item, lara_item)) {
         return;
     }
 
