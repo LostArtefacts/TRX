@@ -679,6 +679,12 @@ static void M_Death(ITEM *const item, COLL_INFO *const coll)
     }
 }
 
+static void M_LiftDeath(ITEM *const item, COLL_INFO *const coll)
+{
+    Lara_Col_GetInfo(item, coll);
+    item->pos.y += coll->side_mid.floor;
+}
+
 static void M_Splat(ITEM *const item, COLL_INFO *const coll)
 {
     M_Default(item, coll);
@@ -986,6 +992,7 @@ REGISTER_LARA_COL(LS_FAST_BACK,     M_FastBack)
 REGISTER_LARA_COL(LS_TURN_RIGHT,    M_Turn)
 REGISTER_LARA_COL(LS_TURN_LEFT,     M_Turn)
 REGISTER_LARA_COL(LS_DEATH,         M_Death)
+REGISTER_LARA_COL(LS_LIFT_DEATH,    M_LiftDeath)
 REGISTER_LARA_COL(LS_SPLAT,         M_Splat)
 REGISTER_LARA_COL(LS_SLIDE,         M_Slide)
 REGISTER_LARA_COL(LS_SLIDE_BACK,    M_Slide)
