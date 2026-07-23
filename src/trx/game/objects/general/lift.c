@@ -359,6 +359,10 @@ static void M_KillLara(ITEM *const lara)
 static void M_Collision(
     const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
 {
+    if (!g_Config.gameplay.fix_lift_collision) {
+        return;
+    }
+
     const ITEM *const item = Item_Get(item_num);
     const M_PRIV *const p = item->priv;
     if (!p->is_moving) {

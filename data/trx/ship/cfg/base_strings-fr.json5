@@ -1230,6 +1230,10 @@
             "title": "\\{review}Bug de ramassage corrigé",
             "description": "\\{review}Corrige un problème où Lara dérivait parfois dans les murs en ramassant des objets sous l’eau, ainsi qu’en ramassant des objets au-dessus de l’eau sous des plafonds fortement inclinés.",
         },
+        "gameplay.fix_lift_collision": {
+            "title": "Corriger les collisions des plateformes",
+            "description": "\\{review}Corrige les problèmes de collision avec les plateformes mobiles pouvant coincer Lara ou lui permettre de passer à travers.",
+        },
         "gameplay.fix_m16_accuracy": {
             "title": "\\{review}Corriger la précision du M16/MP5",
             "description": "\\{review}Corrige la précision du M16/MP5 pendant que Lara court.",

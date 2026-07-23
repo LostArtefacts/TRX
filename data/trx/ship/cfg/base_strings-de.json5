@@ -1230,6 +1230,10 @@
             "title": "Fix: Pickup-Fehler",
             "description": "\\{review}Behebt ein Problem, bei dem Lara manchmal in Wände driftet, wenn sie unter Wasser Gegenstände einsammelt, sowie beim Einsammeln von Gegenständen über Wasser unter steil geneigten Decken.",
         },
+        "gameplay.fix_lift_collision": {
+            "title": "Aufzug-Kollision beheben",
+            "description": "\\{review}Behebt Fehler bei der Kollision mit beweglichen Aufzügen, durch die Lara stecken bleiben oder hindurchfallen kann.",
+        },
         "gameplay.fix_m16_accuracy": {
             "title": "\\{review}Fix: M16/MP5-Genauigkeit",
             "description": "\\{review}Fixt die Genauigkeit des M16/MP5, während Lara rennt.",

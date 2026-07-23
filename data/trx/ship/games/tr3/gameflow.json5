@@ -851,5 +851,6 @@
         "fix_speeches_killing_music",
         "fix_animated_sprites",
         "enable_cinematic_skips",
+        "fix_lift_collision",
     ],
 }

@@ -1230,6 +1230,10 @@
             "title": "Napraw podnoszenie przedmiotów",
             "description": "Naprawia problem, w wyniku którego gra umieszczała Larę wewnątrz ścian podczas zbierania przedmiotów pod wodą lub pod stromymi sufitami.",
         },
+        "gameplay.fix_lift_collision": {
+            "title": "Napraw kolizje wind",
+            "description": "\\{review}Naprawia problemy z kolizją ruchomych wind, które mogą spowodować zablokowanie Lary lub przenikanie przez nie.",
+        },
         "gameplay.fix_m16_accuracy": {
             "title": "Napraw celność M16/MP5",
             "description": "Naprawia celność M16/MP5 podczas biegania.",
