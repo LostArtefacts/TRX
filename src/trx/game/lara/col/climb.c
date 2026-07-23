@@ -35,6 +35,28 @@ typedef enum {
     // clang-format on
 } M_CLIMB_RESULT;
 
+static int32_t M_GetDestinationClearance(const ITEM *const item)
+{
+    XYZ_32 pos = {
+        .x = 0,
+        .y = -M_CLIMB_HEIGHT,
+        .z = 0,
+    };
+    Lara_GetJointAbsPosition(&pos, LM_HAND_R);
+    int16_t room_num = item->room_num;
+    Room_GetSector(pos, &room_num);
+
+    pos = XYZ_32_OffsetYaw(pos, item->rot.y, LARA_RADIUS * 2);
+    const SECTOR *const sector = Room_GetSector(pos, &room_num);
+    const int32_t height = Room_GetHeight(sector, pos);
+    const int32_t ceiling = Room_GetCeiling(sector, pos);
+
+    if (height == NO_HEIGHT || ceiling == NO_HEIGHT) {
+        return NO_HEIGHT;
+    }
+    return ABS(height - ceiling);
+}
+
 static M_CLIMB_RESULT M_TestClimbPos(
     const ITEM *const item, const int32_t front, const int32_t right,
     const int32_t origin, const int32_t item_height, int32_t *const shift)
@@ -841,7 +863,7 @@ static M_CLIMB_RESULT M_TestClimbUpPos(
             return CLIMB_RESULT_POS;
         }
 
-        if (height - ceiling > LARA_HEIGHT) {
+        if (M_GetDestinationClearance(item) > LARA_HEIGHT) {
             *shift = height;
             return CLIMB_RESULT_NEG;
         }
@@ -925,6 +947,7 @@ static void M_Hang(ITEM *const item, COLL_INFO *const coll)
 
     if (g_Input.forward) {
         if (coll->side_front.floor > -850 && coll->side_front.floor < -650
+            && M_GetDestinationClearance(item) > LARA_HEIGHT
             && coll->side_front.floor - coll->side_front.ceiling >= 0
             && coll->side_left2.floor - coll->side_left2.ceiling >= 0
             && coll->side_right2.floor - coll->side_right2.ceiling >= 0
