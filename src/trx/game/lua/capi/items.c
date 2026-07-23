@@ -124,6 +124,64 @@ static bool M_GetIsHostile(const void *const self, TRX_VALUE *const out)
     return true;
 }
 
+static bool M_GetIndex(const void *const self, TRX_VALUE *const out)
+{
+    // The index trx.items[i] takes; counts from 0, as the engine does.
+    *out = (TRX_VALUE) {
+        .type = TVT_S16,
+        .as_int = Item_GetIndex(self),
+    };
+    return true;
+}
+
+static bool M_GetIsTriggered(const void *const self, TRX_VALUE *const out)
+{
+    *out = (TRX_VALUE) {
+        .type = TVT_BOOL,
+        .as_bool = Item_IsTriggerActiveRO(self),
+    };
+    return true;
+}
+
+static bool M_GetTriggerMask(const void *const self, TRX_VALUE *const out)
+{
+    *out = (TRX_VALUE) {
+        .type = TVT_S32,
+        .as_int = Item_GetTriggerMask(self),
+    };
+    return true;
+}
+
+static const char *M_SetTriggerMask(void *const self, const TRX_VALUE *const in)
+{
+    if (in->as_int < 0 || in->as_int > ITEM_TRIGGER_MASK_ALL) {
+        return "trigger mask must be between 0 and 31";
+    }
+    Item_SetTriggerMask(self, in->as_int);
+    return nullptr;
+}
+
+static bool M_GetIsReversed(const void *const self, TRX_VALUE *const out)
+{
+    const ITEM *const item = self;
+    *out = (TRX_VALUE) {
+        .type = TVT_BOOL,
+        .as_bool = (item->flags & IF_REVERSE) != 0,
+    };
+    return true;
+}
+
+static const char *M_SetIsReversed(void *const self, const TRX_VALUE *const in)
+{
+    ITEM *const item = self;
+    if (in->as_bool) {
+        item->flags |= IF_REVERSE;
+    } else {
+        item->flags &= ~IF_REVERSE;
+    }
+    return nullptr;
+}
+
 static const char *M_SetPos(void *const self, const TRX_VALUE *const in)
 {
     ITEM *const item = self;
@@ -166,6 +224,12 @@ static const FIELD_DESC m_Fields[] = {
     FIELD_FN("is_alive",    TVT_BOOL, M_GetIsAlive,   nullptr),
     FIELD_FN("is_killed",   TVT_BOOL, M_GetIsKilled,  nullptr),
     FIELD_FN("is_one_shot", TVT_BOOL, M_GetIsOneShot, M_SetIsOneShot),
+    FIELD_FN("index",       TVT_S16,  M_GetIndex,     nullptr),
+
+    // the trigger state a door reads before it acts and a creature ignores
+    FIELD_FN("is_triggered", TVT_BOOL, M_GetIsTriggered, nullptr),
+    FIELD_FN("trigger_mask", TVT_S32,  M_GetTriggerMask, M_SetTriggerMask),
+    FIELD_FN("is_reversed",  TVT_BOOL, M_GetIsReversed,  M_SetIsReversed),
 
     // side-effecting writes
     FIELD_SET(ITEM, pos,        M_SetPos),
@@ -274,16 +338,83 @@ static int M_L_ItemsKill(lua_State *const L)
 static int M_L_ItemsActivate(lua_State *const L)
 {
     LUA_STRUCT_REF *const ref = LUA_Struct_CheckRef(L, 1, &TYPE_ITEM);
-    ITEM *const item = LUA_Struct_Deref(L, ref);
-    Item_AddActive(ref->handle.id);
-    item->status = IS_ACTIVE;
-    // A creature stays inert without its AI, the way spawn's activate option
-    // brings one to life.
-    const OBJECT *const obj = Object_Get(item->object_id);
-    if (Object_IsType(item->object_id, g_CreatureObjects)
-        || Object_IsType(item->object_id, g_LoyalObjects) || obj->intelligent) {
-        LOT_EnableBaddieAI(ref->handle.id, true);
+    LUA_Struct_Deref(L, ref);
+    Item_Activate(ref->handle.id, true);
+    return 0;
+}
+
+// item:deactivate()
+static int M_L_ItemsDeactivate(lua_State *const L)
+{
+    LUA_STRUCT_REF *const ref = LUA_Struct_CheckRef(L, 1, &TYPE_ITEM);
+    LUA_Struct_Deref(L, ref);
+    Item_Deactivate(ref->handle.id);
+    return 0;
+}
+
+// An optional flag in an optional options table.
+static bool M_OptFlag(
+    lua_State *const L, const int32_t idx, const char *const key)
+{
+    if (!lua_istable(L, idx)) {
+        return false;
     }
+    lua_getfield(L, idx, key);
+    const bool value = lua_toboolean(L, -1);
+    lua_pop(L, 1);
+    return value;
+}
+
+// An optional integer in an optional options table.
+static int32_t M_OptInt(
+    lua_State *const L, const int32_t idx, const char *const key,
+    const int32_t fallback)
+{
+    if (!lua_istable(L, idx)) {
+        return fallback;
+    }
+    lua_getfield(L, idx, key);
+    const int32_t value =
+        lua_isnil(L, -1) ? fallback : (int32_t)luaL_checkinteger(L, -1);
+    lua_pop(L, 1);
+    return value;
+}
+
+// item:trigger([opts])
+static int M_L_ItemsTrigger(lua_State *const L)
+{
+    LUA_STRUCT_REF *const ref = LUA_Struct_CheckRef(L, 1, &TYPE_ITEM);
+    LUA_Struct_Deref(L, ref);
+
+    const int32_t kind = M_OptInt(L, 2, "type", ITEM_TRIGGER_NORMAL);
+    if (kind < 0 || kind > ITEM_TRIGGER_ANTI) {
+        return luaL_error(L, "unknown trigger type %d", kind);
+    }
+
+    const int32_t mask = M_OptInt(L, 2, "mask", ITEM_TRIGGER_MASK_ALL);
+    if (mask < 0 || mask > ITEM_TRIGGER_MASK_ALL) {
+        return luaL_error(
+            L, "trigger mask must be between 0 and %d, got %d",
+            ITEM_TRIGGER_MASK_ALL, mask);
+    }
+
+    float timer = 0.0f;
+    if (lua_istable(L, 2)) {
+        lua_getfield(L, 2, "timer");
+        if (!lua_isnil(L, -1)) {
+            timer = (float)luaL_checknumber(L, -1);
+        }
+        lua_pop(L, 1);
+    }
+
+    const ITEM_TRIGGER trigger = {
+        .kind = (ITEM_TRIGGER_KIND)kind,
+        // The 1..31 mask shifts up into the IF_CODE_BITS field of the flags.
+        .mask = (int16_t)((mask << 9) & IF_CODE_BITS),
+        .timer = timer,
+        .one_shot = M_OptFlag(L, 2, "one_shot"),
+    };
+    Item_Trigger(ref->handle.id, &trigger);
     return 0;
 }
 
@@ -352,20 +483,12 @@ static int M_L_ItemsSpawn(lua_State *const L)
     item->shade.value_1 = -1;
     Item_Initialise(idx);
 
-    // opts.activate: bring the item to life the way the spawn cheat does -
-    // creatures additionally need their AI enabled or they stand inert.
     if (lua_istable(L, 4)) {
         lua_getfield(L, 4, "activate");
         const bool activate = lua_toboolean(L, -1);
         lua_pop(L, 1);
         if (activate) {
-            Item_AddActive(idx);
-            if (Object_IsType(object_id, g_CreatureObjects)
-                || Object_IsType(object_id, g_LoyalObjects)
-                || obj->intelligent) {
-                item->status = IS_ACTIVE;
-                LOT_EnableBaddieAI(idx, true);
-            }
+            Item_Activate(idx, true);
         }
     }
 
@@ -401,9 +524,14 @@ static int M_L_ItemsShatter(lua_State *const L)
 }
 
 static const luaL_Reg m_Methods[] = {
-    { "distance_to", M_L_ItemsDistanceTo }, { "die", M_L_ItemsDie },
-    { "shatter", M_L_ItemsShatter },        { "kill", M_L_ItemsKill },
-    { "activate", M_L_ItemsActivate },      { nullptr, nullptr },
+    { "distance_to", M_L_ItemsDistanceTo },
+    { "die", M_L_ItemsDie },
+    { "shatter", M_L_ItemsShatter },
+    { "kill", M_L_ItemsKill },
+    { "activate", M_L_ItemsActivate },
+    { "deactivate", M_L_ItemsDeactivate },
+    { "trigger", M_L_ItemsTrigger },
+    { nullptr, nullptr },
 };
 
 static const luaL_Reg m_Module[] = {

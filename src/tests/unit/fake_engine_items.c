@@ -205,6 +205,93 @@ void Item_AddActive(const int16_t item_num)
     m_Items[item_num].active = true;
 }
 
+void Item_RemoveActive(const int16_t item_num)
+{
+    m_Items[item_num].active = false;
+}
+
+// The code bits sit in the middle of the flag word.
+#define M_CODE_BITS_SHIFT 9
+
+void Item_Activate(const int16_t item_num, const bool force)
+{
+    ITEM *const item = &m_Items[item_num];
+    if (item->active) {
+        return;
+    }
+    item->status = IS_ACTIVE;
+    Item_AddActive(item_num);
+    if (Object_Get(item->object_id)->intelligent) {
+        LOT_EnableBaddieAI(item_num, force);
+    }
+}
+
+void Item_Deactivate(const int16_t item_num)
+{
+    ITEM *const item = &m_Items[item_num];
+    Item_RemoveActive(item_num);
+    if (Object_Get(item->object_id)->intelligent) {
+        LOT_DisableBaddieAI(item_num);
+    }
+    if (item->status == IS_ACTIVE) {
+        item->status = IS_INACTIVE;
+    }
+}
+
+bool Item_IsTriggerActiveRO(const ITEM *const item)
+{
+    const bool ok = (item->flags & IF_REVERSE) == 0;
+    if ((item->flags & IF_CODE_BITS) != IF_CODE_BITS) {
+        return !ok;
+    }
+    if (item->timer == 0) {
+        return ok;
+    }
+    if (item->timer == -1) {
+        return !ok;
+    }
+    return ok;
+}
+
+int32_t Item_GetTriggerMask(const ITEM *const item)
+{
+    return (item->flags & IF_CODE_BITS) >> M_CODE_BITS_SHIFT;
+}
+
+void Item_SetTriggerMask(ITEM *const item, const int32_t mask)
+{
+    item->flags &= ~IF_CODE_BITS;
+    item->flags |= (mask << M_CODE_BITS_SHIFT) & IF_CODE_BITS;
+}
+
+// A stand-in for the real primitive (which test_trigger exercises directly):
+// enough of the flag work for a binding test to see the item change, keyed on
+// the same kind the bridge builds.
+void Item_Trigger(const int16_t item_num, const ITEM_TRIGGER *const trigger)
+{
+    ITEM *const item = &m_Items[item_num];
+    item->timer = (int16_t)trigger->timer;
+    switch (trigger->kind) {
+    case ITEM_TRIGGER_SWITCH:
+    case ITEM_TRIGGER_HEAVY_SWITCH:
+        item->flags ^= trigger->mask;
+        break;
+    case ITEM_TRIGGER_ANTI:
+        item->flags &= ~trigger->mask;
+        break;
+    default:
+        item->flags |= trigger->mask;
+        break;
+    }
+    if ((item->flags & IF_CODE_BITS) != IF_CODE_BITS) {
+        return;
+    }
+    if (trigger->one_shot) {
+        item->flags |= IF_ONE_SHOT;
+    }
+    Item_Activate(item_num, false);
+}
+
 void Item_UpdateRoom(const int16_t item_num, const int16_t room_num)
 {
     if (room_num != NO_ROOM) {
@@ -472,7 +559,13 @@ int32_t Item_Shatter(
 bool LOT_EnableBaddieAI(const int16_t item_num, const bool always)
 {
     g_FakeItemCalls.enable_baddie_ai++;
+    g_FakeItemCalls.enable_baddie_ai_forced = always;
     return true;
+}
+
+void LOT_DisableBaddieAI(const int16_t item_num)
+{
+    g_FakeItemCalls.disable_baddie_ai++;
 }
 
 // A negative x is outside the level; everything else is room 0.

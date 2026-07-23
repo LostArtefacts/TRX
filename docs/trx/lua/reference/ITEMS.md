@@ -62,6 +62,21 @@ Example: `trx.items.query:of_object("wolf"):active():matches()`. *(read-only)*
     - `trx.items.PickupMode.PLINTH_HIGH` = `2`  
         Picked up from a high pedestal.
 
+- [lua]`trx.items.TriggerType`
+
+    The kind of trigger `item:trigger` fires, matching the trigger types a level editor offers. Most are forward triggers that differ only in what trips them in a level; from a script they behave alike, and `TRIGGER` is the one to reach for.
+
+    - `trx.items.TriggerType.TRIGGER` = `0`  
+        A plain trigger: sets the code bits and, once they are all set, starts the item.
+    - `trx.items.TriggerType.HEAVY` = `1`  
+        A forward trigger a heavy object trips. A falling block reads this to know it was set off by weight.
+    - `trx.items.TriggerType.SWITCH` = `2`  
+        Toggles the code bits, so firing it a second time takes the trigger back.
+    - `trx.items.TriggerType.HEAVY_SWITCH` = `3`  
+        A switch a heavy object trips.
+    - `trx.items.TriggerType.ANTITRIGGER` = `4`  
+        Takes the trigger back, clearing the code bits. The item is left running so it can stand itself down, which is how a door animates shut.
+
 ### Structures
 
 - [lua]`trx.items.Item`
@@ -82,11 +97,16 @@ Example: `trx.items.query:of_object("wolf"):active():matches()`. *(read-only)*
     - **`goal_anim_state`**: integer. Animation state the item is transitioning towards.
     - **`gravity`**: boolean. Whether gravity applies to this item.
     - **`hit_points`**: integer. Current hit points. Raising this above the maximum also raises `properties.max_hit_points`.
+    - **`index`**: integer. The index `trx.items[i]` takes, counted from 0. An item handed over by a query can say where it lives. *(read-only)*
     - **`is_active`**: boolean. Whether the item's control routine is running. Call `activate()` to start it. *(read-only)*
     - **`is_alive`**: boolean. Whether the item is a living creature with hit points remaining. *(read-only)*
     - **`is_hostile`**: boolean. Whether this item is a creature currently hostile to Lara. *(read-only)*
     - **`is_killed`**: boolean. Whether the item has already been killed. *(read-only)*
-    - **`is_one_shot`**: boolean. Whether the item's one-shot trigger flag is set, so its trigger fires only once.
+    - **`is_one_shot`**: boolean. Whether the item's trigger has been spent and will never fire again.
+    - **`is_reversed`**: boolean. Whether the item's trigger is inverted, so it runs until triggered rather than once triggered. This is how a level ships something already on.
+    - **`is_triggered`**: boolean. Whether the item's trigger currently says go. This is what a door, a switch or an alarm reads to decide whether to act; a creature ignores it and goes by whether it is running.
+
+It is a verdict on `trigger_mask`, `timer` and `is_reversed` together, not a field of its own. *(read-only)*
     - **`max_hit_points`**: integer. Maximum hit points. Set `properties.max_hit_points` to change it. *(read-only)*
     - **`mesh_bits`**: integer. Bitmask of which of the item's meshes are drawn.
     - **`name`**: string. Unique item name, or `nil`. Assigning a name already in use raises an error.
@@ -96,8 +116,9 @@ Example: `trx.items.query:of_object("wolf"):active():matches()`. *(read-only)*
     - **`rot`**: vec3. Orientation.
     - **`speed`**: integer. Forward speed.
     - **`status`**: integer. Item status. Use `activate()` and `kill()` to change it, so the item's active-list membership stays in sync. Compare against `trx.items.Status`. *(read-only)*
-    - **`timer`**: integer. Trigger-related timer value.
+    - **`timer`**: integer. How long the item's trigger keeps it going, in game frames. `0` runs it until something takes the trigger back; `-1` means it has run out; anything else counts down. This is the raw frame count - `trigger()` takes its timer in seconds instead.
     - **`touch_bits`**: integer. Bitmask of which of the item's meshes Lara is touching. *(read-only)*
+    - **`trigger_mask`**: integer. The five code bits, counted the way a level editor counts them: `1` to `31`. The trigger only says go once every bit is set, which is how a level makes several triggers agree before anything happens. A lone trigger carries all of them.
     - **`was_hit`**: boolean. Whether the item was hit during the current frame. *(read-only)*
 
     Computed properties (derived, not stored on the object):
@@ -107,7 +128,14 @@ Example: `trx.items.query:of_object("wolf"):active():matches()`. *(read-only)*
     Methods:
 
     - [lua]`item:activate()`  
-      Adds the item to the active list and starts its control routine, enabling AI for a creature. Objects with no control routine cannot be activated.
+      Brings the item to life, exactly as tripping a trigger on it would: its control routine starts running, and a creature also gets its AI, without which it would stand there and ignore Lara.
+
+      Objects with no control routine cannot be activated, and an item that is already active is left alone.
+
+    - [lua]`item:deactivate()`  
+      Stops the item: its control routine no longer runs, and a creature loses its AI and stands down. The item stays where it is and keeps its hit points, so this is not a way of getting rid of it - use `kill()` for that.
+
+      A trigger can still bring it back, and so can `activate()`.
 
     - [lua]`item:die([explode])`  
       Runs the object's creature death handling: the corpse stays, and `explode` bursts its meshes as a rocket or grenade would. For creatures; `kill()` simply removes any item from the game.
@@ -166,6 +194,35 @@ Example: `trx.items.query:of_object("wolf"):active():matches()`. *(read-only)*
 
       Parameters:
       - **`damage`** (integer, optional, default `0`). Splash damage dealt to nearby items.
+
+    - [lua]`item:trigger([opts])`  
+      Fires a trigger at the item, exactly as a floor trigger in the level would: sets the code bits, and once they are all set, starts the item running.
+
+      This is the one to reach for on anything a level would trigger - a door, a switch, an alarm - because those read their trigger before they act, and merely `activate()`-ing one leaves it running but doing nothing. Pass `type = trx.items.TriggerType.ANTITRIGGER` to take the trigger back instead.
+
+      Parameters:
+      - **`opts`** (table, optional). `type`: which `items.TriggerType` to fire; a plain `TRIGGER` by default.
+
+`mask`: which of the five code bits to set, `1` to `31`, all of them by default. Pass fewer to act as one of several triggers a puzzle is waiting on.
+
+`timer`: how long it should keep the item going, in seconds. `0`, the default, means until something takes the trigger back. A timer of exactly `1` is a single frame, not a second, matching the level format.
+
+`one_shot`: never let it fire again.
+
+      Example:
+      ```lua
+      trx.items[12]:trigger()
+      ```
+
+      Example:
+      ```lua
+      trx.items[12]:trigger({ timer = 3, one_shot = true })
+      ```
+
+      Example:
+      ```lua
+      trx.items[12]:trigger({ type = trx.items.TriggerType.ANTITRIGGER })
+      ```
 
 ### Functions
 
