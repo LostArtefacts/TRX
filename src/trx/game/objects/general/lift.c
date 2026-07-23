@@ -46,6 +46,25 @@ typedef struct {
     GAME_VECTOR linked[M_NUM_SECTORS];
 } M_PRIV;
 
+static const LARA_TRX_STATE m_ClimbingStates[] = {
+    // clang-format off
+    LS_CLIMB_STANCE,
+    LS_CLIMBING,
+    LS_CLIMB_LEFT,
+    LS_CLIMB_END,
+    LS_CLIMB_RIGHT,
+    LS_CLIMB_DOWN,
+    LS_HANG,
+    LS_SHIMMY_LEFT,
+    LS_SHIMMY_RIGHT,
+    LS_SHIMMY_OUTER_LEFT,
+    LS_SHIMMY_OUTER_RIGHT,
+    LS_SHIMMY_INNER_LEFT,
+    LS_SHIMMY_INNER_RIGHT,
+    LS_TRX_INVALID, // sentinel
+    // clang-format on
+};
+
 static void M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
 {
     M_PRIV *const p = item->priv;
@@ -355,6 +374,14 @@ static void M_Collision(
 
     const M_LARA_STATUS lara_status = M_GetLaraStatus(item, lara_item);
     if (lara_status == M_LARA_INSIDE) {
+        return;
+    }
+
+    if (Lara_HasState(m_ClimbingStates) && Lara_TestBoundsCollide(item, 0)) {
+        lara_item->goal_anim_state = LS(LS_FAST_FALL);
+        lara_item->current_anim_state = LS(LS_FAST_FALL);
+        Item_SwitchToAnim(lara_item, LA(LA_SMASH_JUMP), 0);
+        Lara_GetLaraInfo()->gun_status = LGS_ARMLESS;
         return;
     }
 
