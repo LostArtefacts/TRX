@@ -30,6 +30,12 @@ typedef enum {
     M_ANIM_CLOSED = 0,
 } M_ANIM;
 
+typedef enum {
+    M_LARA_ABOVE,
+    M_LARA_INSIDE,
+    M_LARA_BELOW,
+} M_LARA_STATUS;
+
 typedef struct {
     int32_t start_height;
     int32_t wait_time;
@@ -102,6 +108,23 @@ static bool M_IsTileInShaft(
         && (tile.z == shaft_tile.z || tile.z + offset.z == shaft_tile.z);
 }
 
+static M_LARA_STATUS M_GetLaraStatus(
+    const ITEM *const item, const ITEM *const lara_item)
+{
+    const int32_t lift_bottom = item->pos.y + STEP_L;
+    const int32_t lift_ceiling = item->pos.y - M_HEIGHT + STEP_L;
+
+    if (lara_item->pos.y < lift_bottom && lara_item->pos.y > lift_ceiling) {
+        return M_LARA_INSIDE;
+    }
+
+    if (lara_item->pos.y <= lift_ceiling) {
+        return M_LARA_ABOVE;
+    }
+
+    return M_LARA_BELOW;
+}
+
 static void M_FloorCeiling(
     const ITEM *const item, const XYZ_32 pos, int32_t *const out_floor,
     int32_t *const out_ceiling)
@@ -121,7 +144,7 @@ static void M_FloorCeiling(
     const int32_t lift_top = item->pos.y - M_HEIGHT;
 
     const bool lara_inside_lift =
-        (lara_item->pos.y < lift_bottom) && (lara_item->pos.y > lift_ceiling);
+        M_GetLaraStatus(item, lara_item) == M_LARA_INSIDE;
 
     *out_floor = -UNDEFINED_HEIGHT;
     *out_ceiling = UNDEFINED_HEIGHT;
@@ -296,14 +319,13 @@ static void M_KillLara(ITEM *const lara)
     }
 
     lara->hit_points = -1;
-    lara->pos.y = lara->floor;
     lara->speed = 0;
     lara->fall_speed = 0;
     lara->gravity = false;
     lara->rot.x = 0;
     lara->rot.z = 0;
-    lara->current_anim_state = LS(LS_SPECIAL);
-    lara->goal_anim_state = LS(LS_SPECIAL);
+    lara->current_anim_state = LS(LS_LIFT_DEATH);
+    lara->goal_anim_state = LS(LS_LIFT_DEATH);
     Item_SwitchToAnim(lara, LA(LA_BOULDER_DEATH), 0);
 
     for (int32_t i = 0; i < 15; i++) {
@@ -324,10 +346,6 @@ static void M_Collision(
         return;
     }
 
-    if (lara_item->pos.y < item->pos.y + STEP_L) {
-        return;
-    }
-
     const XZ_32 lift_tile = M_GetTile(item->pos);
     const XZ_32 lara_tile = M_GetTile(lara_item->pos);
     const XZ_32 offset = M_GetShaftOffset(item->rot.y);
@@ -335,12 +353,30 @@ static void M_Collision(
         return;
     }
 
-    if (!Lara_TestBoundsCollide(item, 0)) {
+    const M_LARA_STATUS lara_status = M_GetLaraStatus(item, lara_item);
+    if (lara_status == M_LARA_INSIDE) {
+        return;
+    }
+
+    int16_t room_num = lara_item->room_num;
+    const SECTOR *const sector = Room_GetSector(lara_item->pos, &room_num);
+    const int32_t height = Room_GetHeight(sector, lara_item->pos);
+    const int32_t ceiling = Room_GetCeiling(sector, lara_item->pos);
+    if (height == NO_HEIGHT || ceiling == NO_HEIGHT) {
+        return;
+    }
+
+    const int32_t clearance = ABS(height - ceiling);
+    const BOUNDS_16 *const bounds = Item_GetBoundsAccurate(lara_item);
+    const int32_t lara_height = ABS(bounds->max.y - bounds->min.y);
+    if (lara_height < clearance) {
         return;
     }
 
     if (g_Config.debug.enable_invulnerability) {
-        lara_item->pos.y = item->pos.y;
+        lara_item->pos.y = lara_status == M_LARA_BELOW
+            ? item->pos.y
+            : item->pos.y - M_HEIGHT + STEP_L;
         Lara_UpdateRoomToHeight(0);
     } else {
         M_KillLara(lara_item);

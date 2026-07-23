@@ -16,6 +16,7 @@
 - fixed a crash when drawing an animating object that has no frame data (#5869)
 - fixed trains using extreme tilt angles when they come to a stop at a wall (#5886)
 - fixed Lara attempting to climb ladders from inside lifts (#5890)
+- fixed Lara not getting killed by lifts if standing on top of one and the ceiling space becomes too low
 - fixed Lara attempting to pull up into gaps that would not allow her to stand, resulting in her being pushed out (#5891)
 - fixed crawler mutants killed by Lara's allies not being included in the stats when the option to include ally kills is enabled (#5691, regression from 1.7)
 - fixed Lara receiving twice the number of flares if given via the game flow (regression from 1.9)
