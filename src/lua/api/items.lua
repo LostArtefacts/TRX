@@ -77,6 +77,23 @@ local function make_properties(item)
   })
 end
 
+-- on_trigger narrows the global event to this one item. trx.events is reached
+-- at call time, so its module need not load before this one.
+local function item_hook(event_name)
+  return function(item, callback)
+    return trx.events[event_name](function(fired, ...)
+      if fired == item then
+        callback(fired, ...)
+      end
+    end)
+  end
+end
+
+local ITEM_LISTENER_ID = {
+  type = "integer",
+  description = "Listener id. Pass it to `trx.events.detach` to stop listening.",
+}
+
 api.type("items.Item", {
   backing = "ITEM",
   description = "An item, also known as a moveable.",
@@ -316,6 +333,36 @@ api.type("items.Item", {
         [[trx.items[12]:trigger({ timer = 3, one_shot = true })]],
         [[trx.items[12]:trigger({ type = trx.items.TriggerType.ANTITRIGGER })]],
       },
+    },
+    on_trigger = {
+      params = {
+        {
+          name = "callback",
+          type = "function",
+          params = {
+            {
+              name = "item",
+              type = "Item",
+              description = "This item.",
+            },
+            {
+              name = "trigger",
+              type = "table",
+              description = "What the trigger carried: `type`, `mask`, `timer` and `one_shot`. See "
+                .. "`trx.events.on_trigger`.",
+            },
+          },
+        },
+      },
+      returns = ITEM_LISTENER_ID,
+      description = "Happens every time a trigger is aimed at this item, of any kind. "
+        .. "`trx.events.on_trigger`, narrowed to this item.",
+      examples = {
+        [[trx.items[12]:on_trigger(function(item, trigger)
+  trx.log.info("triggered with mask " .. trigger.mask)
+end)]],
+      },
+      impl = item_hook("on_trigger"),
     },
     kill = {
       description = "Removes the item from the game. Any other handle to it becomes stale.",

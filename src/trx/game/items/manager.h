@@ -31,6 +31,11 @@ void Item_Control(void);
 void Item_Kill(int16_t item_num);
 void Item_KillAllActive(void);
 void Item_RemoveActive(int16_t item_num);
+
+// Fire the on_trigger event: a trigger of any kind was aimed at the item, with
+// its fundamentals. Item_Trigger calls this for every trigger it acts on; kept
+// in the manager, next to the event stack, so the primitive stays clear of it.
+void Item_NotifyTriggered(int16_t item_num, const ITEM_TRIGGER *trigger);
 void Item_RemoveDrawn(int16_t item_num);
 void Item_ClearKilled(void);
 void Item_AddActive(int16_t item_num);

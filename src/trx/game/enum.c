@@ -140,6 +140,7 @@ static __attribute__((constructor)) void M_Init(void)
     ENUM_MAP(LUA_EVENT_TYPE, LUA_EVENT_AFTER_CONTROL, "after_control");
     ENUM_MAP(LUA_EVENT_TYPE, LUA_EVENT_FLIP_EFFECT, "flip_effect");
     ENUM_MAP(LUA_EVENT_TYPE, LUA_EVENT_ROOM_CHANGE, "room_change");
+    ENUM_MAP(LUA_EVENT_TYPE, LUA_EVENT_TRIGGER, "trigger");
 
     // LOG_LEVEL_MAX is a sentinel, not a level.
     ENUM_MAP(LOG_LEVEL, LOG_LEVEL_DEBUG, "debug");

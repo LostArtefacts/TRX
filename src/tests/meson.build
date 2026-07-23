@@ -306,6 +306,7 @@ test_lua_items_exe = executable(
       '../trx/core/strings/case_funcs.c',
       '../trx/core/strings/common.c',
       '../trx/core/strings/fuzzy_match.c',
+      '../trx/game/lua/capi/events.c',
       '../trx/game/lua/capi/items.c',
       '../trx/game/lua/capi/objects.c',
       '../trx/game/lua/capi/catalog.c',

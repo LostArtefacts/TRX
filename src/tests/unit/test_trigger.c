@@ -44,6 +44,13 @@ void Item_Activate(const int16_t item_num, const bool force)
     m_ActivateCount++;
 }
 
+// The on_trigger fire lives in the manager, past the item event stack; this
+// matrix is about the primitive, so it goes nowhere here.
+void Item_NotifyTriggered(
+    const int16_t item_num, const ITEM_TRIGGER *const trigger)
+{
+}
+
 // Mirrors the objects that read the trigger (falling_block reads the kind):
 // with the old convention this would dereference a null trigger. It must not
 // now.

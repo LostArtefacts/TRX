@@ -26,6 +26,9 @@
 #define FAKE_ANIM_COUNT 2
 #define FAKE_PROP_SLOTS 4
 
+// The code bits sit in the middle of the flag word.
+#define M_CODE_BITS_SHIFT 9
+
 FAKE_ITEM_CALLS g_FakeItemCalls;
 
 static ITEM m_Items[FAKE_ITEM_POOL];
@@ -209,9 +212,6 @@ void Item_RemoveActive(const int16_t item_num)
 {
     m_Items[item_num].active = false;
 }
-
-// The code bits sit in the middle of the flag word.
-#define M_CODE_BITS_SHIFT 9
 
 void Item_Activate(const int16_t item_num, const bool force)
 {

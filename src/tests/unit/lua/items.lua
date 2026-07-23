@@ -227,6 +227,39 @@ test("an unknown trigger type is refused", function()
   end)
 end)
 
+local ANTITRIGGER = 4 -- trx.items.TriggerType.ANTITRIGGER
+
+test("on_trigger passes the item and the trigger's fundamentals", function()
+  local seen_item, seen_trigger
+  trx.events.on_trigger(function(item, trigger)
+    seen_item = item
+    seen_trigger = trigger
+  end)
+
+  fake.fire_trigger(1, ANTITRIGGER, 7, 2.5, true)
+
+  assert(seen_item == trx.items[1], "on_trigger did not receive the item")
+  assert(seen_trigger.type == trx.items.TriggerType.ANTITRIGGER)
+  assert(seen_trigger.mask == 7)
+  assert(seen_trigger.timer == 2.5)
+  assert(seen_trigger.one_shot == true)
+end)
+
+test("item:on_trigger fires only for that item, with the trigger", function()
+  local count, mask = 0, nil
+  trx.items[1]:on_trigger(function(item, trigger)
+    count = count + 1
+    assert(item == trx.items[1], "the wrong item reached the handler")
+    mask = trigger.mask
+  end)
+
+  fake.fire_trigger(0, 0, 31, 0, false)
+  assert(count == 0, "a trigger on another item must not fire this one")
+  fake.fire_trigger(1, 0, 31, 0, false)
+  assert(count == 1, "a trigger on this item must fire it")
+  assert(mask == 31, "the trigger fundamentals did not reach the handler")
+end)
+
 -- An index alone would rebind to whatever item recycled the slot; the
 -- generation counter is what makes the handle go stale instead.
 test("a handle to a killed item goes stale", function()

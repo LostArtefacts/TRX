@@ -259,6 +259,57 @@ end)]],
   end,
 })
 
+api.define("events.on_trigger", {
+  description = "Happens every time a trigger is aimed at an item - a floor trigger in the level, "
+    .. "the `/trigger` console command, or `item:trigger` from a script - of any kind, an "
+    .. "antitrigger included. It is the raw trigger, not a state change: a floor pad fires it every "
+    .. "frame Lara stands on it, and a partial trigger fires it too. A cutscene or the attract demo "
+    .. "does not.\n\n"
+    .. "The handler runs after the trigger has been applied, so the item already reflects it, and "
+    .. "changes the handler makes to the item are not overwritten.\n\n"
+    .. "`trx.items.Item:on_trigger` is this same event, narrowed to one item.",
+  params = {
+    {
+      name = "callback",
+      type = "function",
+      params = {
+        {
+          name = "item",
+          type = "Item",
+          description = "The `trx.items.Item` the trigger was aimed at.",
+        },
+        {
+          name = "trigger",
+          type = "table",
+          description = "What the trigger carried: `type` (an `items.TriggerType`), `mask` (the "
+            .. "code bits it set, `1` to `31`), `timer` (in seconds), and `one_shot`.",
+        },
+      },
+    },
+  },
+  returns = LISTENER_ID,
+  examples = {
+    [[trx.events.on_trigger(function(item, trigger)
+  if trigger.type == trx.items.TriggerType.ANTITRIGGER then
+    trx.log.info(item.object_id .. " was antitriggered")
+  end
+end)]],
+  },
+  impl = function(callback)
+    return raw.attach(
+      types.TRIGGER,
+      function(item_num, kind, mask, timer, one_shot)
+        callback(trx.items[item_num], {
+          type = kind,
+          mask = mask,
+          timer = timer,
+          one_shot = one_shot,
+        })
+      end
+    )
+  end,
+})
+
 api.define("events.detach", {
   description = "Removes a previously attached handler, which stops firing immediately.",
   params = {

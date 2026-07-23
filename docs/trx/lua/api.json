@@ -3413,6 +3413,35 @@
       }
     },
     {
+      "description": "Happens every time a trigger is aimed at an item - a floor trigger in the level, the `/trigger` console command, or `item:trigger` from a script - of any kind, an antitrigger included. It is the raw trigger, not a state change: a floor pad fires it every frame Lara stands on it, and a partial trigger fires it too. A cutscene or the attract demo does not.\n\nThe handler runs after the trigger has been applied, so the item already reflects it, and changes the handler makes to the item are not overwritten.\n\n`trx.items.Item:on_trigger` is this same event, narrowed to one item.",
+      "examples": [
+        "trx.events.on_trigger(function(item, trigger)\n  if trigger.type == trx.items.TriggerType.ANTITRIGGER then\n    trx.log.info(item.object_id .. \" was antitriggered\")\n  end\nend)"
+      ],
+      "params": [
+        {
+          "name": "callback",
+          "params": [
+            {
+              "description": "The `trx.items.Item` the trigger was aimed at.",
+              "name": "item",
+              "type": "Item"
+            },
+            {
+              "description": "What the trigger carried: `type` (an `items.TriggerType`), `mask` (the code bits it set, `1` to `31`), `timer` (in seconds), and `one_shot`.",
+              "name": "trigger",
+              "type": "table"
+            }
+          ],
+          "type": "function"
+        }
+      ],
+      "path": "events.on_trigger",
+      "returns": {
+        "description": "Listener id. Pass it to `trx.events.detach` to stop listening.",
+        "type": "integer"
+      }
+    },
+    {
       "description": "Removes a previously attached handler, which stops firing immediately.",
       "examples": [
         "local id = trx.events.before_control(function()\n  -- handle control loop event\nend)\ntrx.events.detach(id)"
@@ -4984,6 +5013,35 @@
         {
           "description": "Removes the item from the game. Any other handle to it becomes stale.",
           "name": "kill"
+        },
+        {
+          "description": "Happens every time a trigger is aimed at this item, of any kind. `trx.events.on_trigger`, narrowed to this item.",
+          "examples": [
+            "trx.items[12]:on_trigger(function(item, trigger)\n  trx.log.info(\"triggered with mask \" .. trigger.mask)\nend)"
+          ],
+          "name": "on_trigger",
+          "params": [
+            {
+              "name": "callback",
+              "params": [
+                {
+                  "description": "This item.",
+                  "name": "item",
+                  "type": "Item"
+                },
+                {
+                  "description": "What the trigger carried: `type`, `mask`, `timer` and `one_shot`. See `trx.events.on_trigger`.",
+                  "name": "trigger",
+                  "type": "table"
+                }
+              ],
+              "type": "function"
+            }
+          ],
+          "returns": {
+            "description": "Listener id. Pass it to `trx.events.detach` to stop listening.",
+            "type": "integer"
+          }
         },
         {
           "description": "Overrides an object property for this item. Prefer `item.properties.<name> = ...`.",
