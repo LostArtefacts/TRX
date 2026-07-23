@@ -4,6 +4,7 @@
 #include <trx/game/const.h>
 #include <trx/game/matrix.h>
 #include <trx/game/output/sources/poly_fx.h>
+#include <trx/game/output/state.h>
 #include <trx/game/random.h>
 #include <trx/game/sparks.h>
 
@@ -28,7 +29,6 @@ typedef struct {
 static SPARK m_Sparks[M_MAX_SPARKS];
 static M_FIRE m_Fires[M_MAX_FIRES];
 static int32_t m_NextSpark = 1;
-static uint8_t m_Wibble = 0;
 
 // Slots 1..19 form a shared pool; slot 0 is reserved for the static flame base.
 static int32_t M_GetFreeSpark(void)
@@ -160,10 +160,11 @@ static void M_TriggerSmoke(void)
 
 static void M_KeepBurning(void)
 {
+    const int32_t time4 = Output_GetTimeInGame() * 4;
     M_TriggerStaticFlame();
-    if ((m_Wibble & 0xF) == 0) {
+    if ((time4 & 0xF) == 0) {
         M_TriggerFireFlame();
-        if ((m_Wibble & 0x1F) == 0) {
+        if ((time4 & 0x1F) == 0) {
             M_TriggerSmoke();
         }
     }
@@ -332,7 +333,6 @@ void FX_Fire_Reset(void)
     memset(m_Sparks, 0, sizeof(m_Sparks));
     memset(m_Fires, 0, sizeof(m_Fires));
     m_NextSpark = 1;
-    m_Wibble = 0;
 }
 
 void FX_Fire_NewFrame(void)
@@ -379,7 +379,6 @@ void FX_Fire_Control(void)
     // only run the pool while a fire is registered this frame. Existing sparks
     // still advance to fade out; that path draws no RNG.
     if (M_AnyFireActive()) {
-        m_Wibble = (m_Wibble + 4) & 0xFC;
         M_KeepBurning();
     }
 
