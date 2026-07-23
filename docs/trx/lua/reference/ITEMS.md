@@ -182,6 +182,24 @@ It is a verdict on `trigger_mask`, `timer` and `is_reversed` together, not a fie
     - [lua]`item:kill()`  
       Removes the item from the game. Any other handle to it becomes stale.
 
+    - [lua]`item:on_trigger(callback)`  
+      Happens every time a trigger is aimed at this item, of any kind. `trx.events.on_trigger`, narrowed to this item.
+
+      Parameters:
+      - **`callback`** (function).
+        Called with:
+        - **`item`** (Item). This item.
+        - **`trigger`** (table). What the trigger carried: `type`, `mask`, `timer` and `one_shot`. See `trx.events.on_trigger`.
+
+      Returns: integer. Listener id. Pass it to `trx.events.detach` to stop listening.
+
+      Example:
+      ```lua
+      trx.items[12]:on_trigger(function(item, trigger)
+        trx.log.info("triggered with mask " .. trigger.mask)
+      end)
+      ```
+
     - [lua]`item:set_property(name, value)`  
       Overrides an object property for this item. Prefer `item.properties.<name> = ...`.
 

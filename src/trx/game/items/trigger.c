@@ -39,43 +39,43 @@ void Item_Trigger(const int16_t item_num, const ITEM_TRIGGER *const trigger)
         : (int16_t)lroundf(trigger->timer * LOGIC_FPS);
 
     const OBJECT *const obj = Object_Get(item->object_id);
-    if (obj->trigger_func != nullptr && !obj->trigger_func(item, trigger)) {
-        return;
-    }
+    if (obj->trigger_func == nullptr || obj->trigger_func(item, trigger)) {
+        switch (trigger->kind) {
+        case ITEM_TRIGGER_SWITCH:
+        case ITEM_TRIGGER_HEAVY_SWITCH:
+            item->flags ^= trigger->mask;
+            if (trigger->one_shot && g_TRVersion == 3) {
+                item->flags |= IF_ONE_SHOT_SWITCH;
+            }
+            break;
 
-    switch (trigger->kind) {
-    case ITEM_TRIGGER_SWITCH:
-    case ITEM_TRIGGER_HEAVY_SWITCH:
-        item->flags ^= trigger->mask;
-        if (trigger->one_shot && g_TRVersion == 3) {
-            item->flags |= IF_ONE_SHOT_SWITCH;
+        case ITEM_TRIGGER_ANTI:
+            // TODO investigate unifying as ~(trigger->mask | IF_REVERSE)
+            if (g_TRVersion >= 3) {
+                item->flags &= ~(IF_CODE_BITS | IF_REVERSE);
+            } else {
+                item->flags &= ~trigger->mask;
+            }
+            if (trigger->one_shot) {
+                item->flags |=
+                    g_TRVersion == 3 ? IF_ONE_SHOT_ANTITRIGGER : IF_ONE_SHOT;
+            }
+            break;
+
+        default:
+            item->flags |= trigger->mask;
+            break;
         }
-        break;
 
-    case ITEM_TRIGGER_ANTI:
-        // TODO investigate unifying as ~(trigger->mask | IF_REVERSE)
-        if (g_TRVersion >= 3) {
-            item->flags &= ~(IF_CODE_BITS | IF_REVERSE);
-        } else {
-            item->flags &= ~trigger->mask;
+        if ((item->flags & IF_CODE_BITS) == IF_CODE_BITS) {
+            if (trigger->one_shot) {
+                item->flags |= IF_ONE_SHOT;
+            }
+            Item_Activate(item_num, false);
         }
-        if (trigger->one_shot) {
-            item->flags |=
-                g_TRVersion == 3 ? IF_ONE_SHOT_ANTITRIGGER : IF_ONE_SHOT;
-        }
-        break;
-
-    default:
-        item->flags |= trigger->mask;
-        break;
     }
 
-    if ((item->flags & IF_CODE_BITS) != IF_CODE_BITS) {
-        return;
-    }
-
-    if (trigger->one_shot) {
-        item->flags |= IF_ONE_SHOT;
-    }
-    Item_Activate(item_num, false);
+    // Fired last, so a handler sees the item as the trigger left it, and
+    // nothing it does to the item is then overwritten from under it.
+    Item_NotifyTriggered(item_num, trigger);
 }

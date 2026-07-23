@@ -402,6 +402,34 @@ void Item_KillAllActive(void)
     }
 }
 
+// Only live gameplay is worth an item event; level setup wires items up, and
+// the demo and cutscene phases play their own actors. Shared by the trigger,
+// the acting-state and room-change hooks.
+static bool M_ItemEventsLive(void)
+{
+    const GF_LEVEL *const level = GF_GetCurrentLevel();
+    return Game_IsPlaying() && level->type != GFL_DEMO
+        && level->type != GFL_CUTSCENE;
+}
+
+void Item_NotifyTriggered(
+    const int16_t item_num, const ITEM_TRIGGER *const trigger)
+{
+    if (!M_ItemEventsLive()) {
+        return;
+    }
+    const LUA_EVENT_ARG args[] = {
+        { .type = LUA_EVENT_ARG_INT32, .value = { .i32 = item_num } },
+        { .type = LUA_EVENT_ARG_INT32, .value = { .i32 = trigger->kind } },
+        // The mask the way a level editor counts it, 1 to 31.
+        { .type = LUA_EVENT_ARG_INT32,
+          .value = { .i32 = (trigger->mask & IF_CODE_BITS) >> 9 } },
+        { .type = LUA_EVENT_ARG_NUMBER, .value = { .number = trigger->timer } },
+        { .type = LUA_EVENT_ARG_BOOL, .value = { .b = trigger->one_shot } },
+    };
+    LUA_FireEventEx(LUA_EVENT_TRIGGER, args, 5);
+}
+
 void Item_RemoveActive(const int16_t item_num)
 {
     ITEM *const item = &m_Items[item_num];
@@ -600,11 +628,8 @@ void Item_UpdateRoom(const int16_t item_num, const int16_t room_num)
         }
 
         // After the room lists above settle, so a handler reads a consistent
-        // world. Level setup assigns every item a room; only live gameplay is
-        // an event, and the demo and cutscene phases play their own actors.
-        const GF_LEVEL *const level = GF_GetCurrentLevel();
-        if (Game_IsPlaying() && level->type != GFL_DEMO
-            && level->type != GFL_CUTSCENE) {
+        // world.
+        if (M_ItemEventsLive()) {
             const LUA_EVENT_ARG args[] = {
                 { .type = LUA_EVENT_ARG_INT32, .value = { .i32 = item_num } },
                 { .type = LUA_EVENT_ARG_INT32,
