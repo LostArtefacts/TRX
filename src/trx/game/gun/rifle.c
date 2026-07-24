@@ -697,7 +697,7 @@ void Gun_Rifle_Undraw(const LARA_GUN_TYPE weapon_type)
 
     const WEAPON_INFO *const weapon = &g_Weapons[weapon_type];
     if (item->status == IS_DEACTIVATED) {
-        Item_Kill(lara->gun_item_num);
+        Item_Destroy(lara->gun_item_num);
         lara->gun_item_num = NO_ITEM;
         lara->gun_status = LGS_ARMLESS;
         lara->target = nullptr;

@@ -859,7 +859,7 @@ static void M_Control(const int16_t item_num)
     }
 
     if ((item->flags & IF_ONE_SHOT) != 0) {
-        Item_Kill(item_num);
+        Item_Destroy(item_num);
         Walkable_Remove(item_num);
         MovableBlock_UpdateBox(item, false);
         return;

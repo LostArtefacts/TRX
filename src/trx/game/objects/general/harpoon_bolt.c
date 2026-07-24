@@ -72,7 +72,7 @@ static void M_Control_TR3(const int16_t item_num)
     };
     if (Gun_SmashItems(old_pos, new_pos, nullptr, item->object_id)
         == PROJECTILE_HIT_STOP) {
-        Item_Kill(item_num);
+        Item_Destroy(item_num);
         return;
     }
 
@@ -137,7 +137,7 @@ static void M_Control_TR3(const int16_t item_num)
             Stats_AddAmmoHits();
         }
 
-        Item_Kill(item_num);
+        Item_Destroy(item_num);
         return;
     }
 
@@ -170,7 +170,7 @@ static void M_Control_TR3(const int16_t item_num)
 
         item->hit_points--;
         if (item->hit_points <= 0) {
-            Item_Kill(item_num);
+            Item_Destroy(item_num);
             return;
         }
 
@@ -313,7 +313,7 @@ static void M_Control_TR12(const int16_t item_num)
     }
 
     if (hit) {
-        Item_Kill(item_num);
+        Item_Destroy(item_num);
     } else if (Room_Get(item->room_num)->flags.underwater) {
         Spawn_Bubble(&item->pos, item->room_num);
     }

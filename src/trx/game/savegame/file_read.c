@@ -584,7 +584,7 @@ static bool M_ReadItem(JSON_READ_IO *const io, const int16_t read_index)
         M_SHOULD(JSON_READ(io, "status", &saved_status));
 
         if ((item->flags & IF_DESTROYED) != 0) {
-            Item_Kill(item_num);
+            Item_Destroy(item_num);
             item->status = saved_status;
         } else {
             bool is_active = false;

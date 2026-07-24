@@ -67,7 +67,7 @@ static void M_Control(const int16_t item_num)
 
     p->counter++;
     if (p->counter >= LOGIC_FPS * 3) {
-        Item_Kill(item_num);
+        Item_Destroy(item_num);
     }
 }
 

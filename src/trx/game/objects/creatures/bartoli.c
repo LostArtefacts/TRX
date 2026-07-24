@@ -43,7 +43,7 @@ static void M_ConvertBartoliToDragon(const int16_t item_num)
             dragon_obj->activate_func(dragon_item);
         }
     }
-    Item_Kill(item_num);
+    Item_Destroy(item_num);
 }
 
 static bool M_CheckLaraProximity(const ITEM *const origin_item)

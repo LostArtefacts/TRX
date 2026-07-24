@@ -97,7 +97,7 @@ static void M_Control(const int16_t item_num)
                 : -M_GetDamage(item, "part_damage", M_PART_DAMAGE));
         Sound_Effect(SFX_ATLANTEAN_DEATH, &item->pos, SPM_NORMAL);
         LOT_DisableBaddieAI(item_num);
-        Item_Kill(item_num);
+        Item_Destroy(item_num);
         item->status = IS_DEACTIVATED;
         Carrier_TestItemDrops(item_num);
         return;

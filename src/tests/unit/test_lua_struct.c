@@ -30,7 +30,8 @@ static const FIELD_DESC m_WidgetFields[] = {
 
 TYPE_DEFINE(WIDGET, m_WidgetFields)
 
-// A tiny pool so handles can be made stale on demand, the way Item_Kill does.
+// A tiny pool so handles can be made stale on demand, the way Item_Destroy
+// does.
 #define M_POOL_SIZE 4
 static WIDGET m_Pool[M_POOL_SIZE];
 static uint16_t m_Gen[M_POOL_SIZE];
@@ -268,7 +269,8 @@ TEST(a_stale_handle_raises_rather_than_rebinding)
     lua_State *const L = M_NewState(DECL);
     CHECK(M_Run(L, "held = trxc.get_widget(2)\nassert(held.visible == 12)\n"));
 
-    // The slot is recycled by a different owner, as Item_Kill + Item_Create do.
+    // The slot is recycled by a different owner, as Item_Destroy + Item_Create
+    // do.
     m_Gen[2]++;
     m_Pool[2].visible = 5000;
 

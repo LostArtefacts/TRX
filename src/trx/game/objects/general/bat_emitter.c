@@ -374,7 +374,7 @@ static void M_Control(const int16_t item_num)
     }
 
     if (!p->bats_alive) {
-        Item_Kill(item_num);
+        Item_Destroy(item_num);
     }
 }
 

@@ -356,7 +356,7 @@ static void M_Explode(ITEM *const item)
 
     const int16_t vehicle_item_num = Lara_Vehicle_GetIndex();
     Item_Shatter(vehicle_item_num, -2, 0);
-    Item_Kill(vehicle_item_num);
+    Item_Destroy(vehicle_item_num);
     item->status = IS_DEACTIVATED;
     Sound_Effect(SFX_EXPLOSION_1, nullptr, SPM_NORMAL);
     Sound_Effect(SFX_EXPLOSION_2, nullptr, SPM_NORMAL);

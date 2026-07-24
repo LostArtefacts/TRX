@@ -171,7 +171,7 @@ static void M_ControlHeal(const int16_t item_num)
         // PS1: SFX_SAVE_CRYSTAL, PC: SFX_MENU_MEDI
         Sound_Effect(SFX_MENU_MEDI, &lara_item->pos, SPM_NORMAL);
 
-        Item_Kill(item_num);
+        Item_Destroy(item_num);
     }
 }
 

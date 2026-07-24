@@ -49,7 +49,7 @@ static void M_AssignTR123AIBits(const LEVEL_CONTEXT *const ctx)
                 && ai_item->pos.z == item->pos.z) {
                 item->ai_bits |= ai_bit;
                 item->ai_tag = ai_item->rot.y;
-                Item_Kill(ai_item_num);
+                Item_Destroy(ai_item_num);
                 ai_item->room_num = NO_ROOM;
             }
             ai_item_num = next_num;

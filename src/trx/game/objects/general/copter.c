@@ -39,7 +39,7 @@ static void M_Control(const int16_t item_num)
     Sound_Effect(SFX_HELICOPTER_LOOP, &pos, SPM_NORMAL);
 
     if (item->status == IS_DEACTIVATED) {
-        Item_Kill(item_num);
+        Item_Destroy(item_num);
     }
 }
 

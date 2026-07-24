@@ -52,7 +52,7 @@ static void M_Control(const int16_t item_num)
         p->summon_lifetime++;
 
         if (p->summon_lifetime >= 16) {
-            Item_Kill(item_num);
+            Item_Destroy(item_num);
             return;
         }
     }
@@ -115,7 +115,7 @@ static void M_Control(const int16_t item_num)
                 }
             }
 
-            Item_Kill(item_num);
+            Item_Destroy(item_num);
             return;
         }
     }

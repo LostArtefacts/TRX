@@ -10,7 +10,7 @@ static void M_ActivateHeavyTriggers(const int16_t item_num)
 {
     const ITEM *const item = Item_Get(item_num);
     Room_TestTriggers(item);
-    Item_Kill(item_num);
+    Item_Destroy(item_num);
 }
 
 static void M_Control(const int16_t item_num)

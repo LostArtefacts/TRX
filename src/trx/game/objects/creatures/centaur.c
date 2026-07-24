@@ -148,7 +148,7 @@ static void M_Control(const int16_t item_num)
         Sound_Effect(SFX_ATLANTEAN_DEATH, &item->pos, SPM_NORMAL);
         Item_Shatter(
             item_num, -1, M_GetDamage(item, "part_damage", M_PART_DAMAGE));
-        Item_Kill(item_num);
+        Item_Destroy(item_num);
         item->status = IS_DEACTIVATED;
     }
 }

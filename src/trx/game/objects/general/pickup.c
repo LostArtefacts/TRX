@@ -310,7 +310,7 @@ static void M_DoPickup(const int16_t item_num)
     LUA_FireEventInt32(LUA_EVENT_PICKUP, item_num);
 
     item->status = IS_INVISIBLE;
-    Item_Kill(item_num);
+    Item_Destroy(item_num);
 
     LARA_INFO *const lara = Lara_GetLaraInfo();
     lara->interact_target.is_moving = false;
@@ -325,7 +325,7 @@ static void M_DoFlarePickup(const int16_t item_num)
     Gun_InitialiseNewWeapon();
     lara->gun_status = LGS_SPECIAL;
     lara->flare.age = FlareItem_GetAge(item);
-    Item_Kill(item_num);
+    Item_Destroy(item_num);
     lara->interact_target.is_moving = false;
 }
 
