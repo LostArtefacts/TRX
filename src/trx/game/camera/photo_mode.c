@@ -403,6 +403,11 @@ void Camera_PhotoMode_Resume(void)
         // stale pre-step orientation basis.
         M_SyncCameraOrientationFromView();
     } else {
+        if (m_OriginalCamera.type == CAM_FLYBY_MODE) {
+            // The flyby finished between pausing and resuming photo mode.
+            // Resync the original camera to the one generated post-flyby.
+            m_OriginalCamera = g_Camera;
+        }
         g_Camera = m_PreviousState.camera;
     }
     Camera_SetChunky(m_PreviousState.is_chunky);
