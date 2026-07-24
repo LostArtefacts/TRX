@@ -21,9 +21,9 @@ typedef struct TRAP_DATA TRAP_DATA;
 typedef struct CREATURE CREATURE;
 
 // The lean description an item trigger acts on, all an item needs from a
-// floordata trigger or a script. `mask` is pre-shifted into IF_CODE_BITS
-// positions (a heavy switch has its heavy mask already folded in). `timer` is
-// in seconds; Item_Trigger converts it to frames.
+// floordata trigger or a script. `mask` is the 0..31 editor mask (a heavy
+// switch has its heavy mask already folded in). `timer` is in seconds;
+// Item_Trigger converts it to frames.
 typedef struct ITEM_TRIGGER {
     ITEM_TRIGGER_KIND kind;
     int16_t mask;
@@ -34,7 +34,7 @@ typedef struct ITEM_TRIGGER {
 // An item's live trigger state. Held as fields at runtime; the level-load word
 // and the savegame word decode into it (see Item_Initialise, M_PackItemFlags).
 typedef struct ITEM_TRIGGER_STATE {
-    uint16_t mask; // the five floordata code bits, in IF_CODE_BITS positions
+    uint8_t mask; // 0..31, the five floordata code bits
     bool reversed;
     bool spent; // general one-shot latch: this trigger target is spent
     bool switch_spent; // TR3 latch: a spent one-shot switch

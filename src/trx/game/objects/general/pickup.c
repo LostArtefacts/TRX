@@ -143,7 +143,7 @@ static bool M_Trigger(ITEM *const item, const ITEM_TRIGGER *const trigger)
         item->trigger.mask |= trigger->mask;
     }
 
-    if (item->trigger.mask != IF_CODE_BITS) {
+    if (item->trigger.mask != TRIGGER_MASK_ALL) {
         Item_SetVisible(item, false);
         item->is_destroyed = true;
     } else if (

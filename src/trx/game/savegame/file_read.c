@@ -581,7 +581,7 @@ static bool M_ReadItem(JSON_READ_IO *const io, const int16_t read_index)
         uint16_t flags = 0;
         M_SHOULD(JSON_READ(io, "flags", &flags));
         item->trigger = (ITEM_TRIGGER_STATE) {
-            .mask = flags & IF_CODE_BITS,
+            .mask = (flags & IF_CODE_BITS) >> TRIGGER_MASK_SHIFT,
             .reversed = (flags & IF_REVERSE) != 0,
             .switch_spent = (flags & IF_ONE_SHOT_SWITCH) != 0,
             .anti_spent = (flags & IF_ONE_SHOT_ANTITRIGGER) != 0,
@@ -970,7 +970,7 @@ static bool M_ReadMusicTrackFlags(JSON_READ_IO *const io)
         uint32_t flags;
         M_MUST(JSON_READ_A(io, i, &flags));
         MUSIC_TRACK_STATE *const track = Music_GetTrackState(i);
-        track->mask = flags & MTF_CODE_BITS;
+        track->mask = (flags & MTF_CODE_BITS) >> TRIGGER_MASK_SHIFT;
         track->is_one_shot = (flags & MTF_ONE_SHOT) != 0;
         track->delay = flags & 0xFF;
     }
@@ -1129,7 +1129,7 @@ bool SG_File_LoadFlipmaps(JSON_READ_IO *const io)
         uint32_t flags;
         M_MUST(JSON_READ_A(io, i, &flags));
         FLIP_SLOT *const slot = Room_GetFlipSlot(i);
-        slot->mask = (flags << 8) & FSF_CODE_BITS;
+        slot->mask = ((flags << 8) & FSF_CODE_BITS) >> TRIGGER_MASK_SHIFT;
         slot->is_one_shot = ((flags << 8) & FSF_ONE_SHOT) != 0;
     }
     M_MUST(JSON_POP(io));

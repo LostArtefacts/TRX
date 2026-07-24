@@ -5,7 +5,7 @@
 static void M_Control(const int16_t item_num)
 {
     const ITEM *const item = Item_Get(item_num);
-    if (item->trigger.mask == IF_CODE_BITS) {
+    if (item->trigger.mask == TRIGGER_MASK_ALL) {
         Sound_Effect(SFX_BURGLAR_ALARM, &item->pos, SPM_NORMAL);
     }
 }

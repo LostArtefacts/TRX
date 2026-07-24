@@ -535,7 +535,7 @@ bool Room_TriggerFlipSlot(
         slot->mask |= trigger->mask;
     }
 
-    const bool complete = (slot->mask & FSF_CODE_BITS) == FSF_CODE_BITS;
+    const bool complete = slot->mask == TRIGGER_MASK_ALL;
     if (complete && trigger->one_shot) {
         slot->is_one_shot = true;
     }

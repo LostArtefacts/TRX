@@ -170,7 +170,7 @@ static bool M_GetTriggerMask(const void *const self, TRX_VALUE *const out)
 
 static const char *M_SetTriggerMask(void *const self, const TRX_VALUE *const in)
 {
-    if (in->as_int < 0 || in->as_int > ITEM_TRIGGER_MASK_ALL) {
+    if (in->as_int < 0 || in->as_int > TRIGGER_MASK_ALL) {
         return "trigger mask must be between 0 and 31";
     }
     Item_SetTriggerMask(self, in->as_int);
@@ -406,11 +406,11 @@ static int M_L_ItemsTrigger(lua_State *const L)
         return luaL_error(L, "unknown trigger type %d", kind);
     }
 
-    const int32_t mask = M_OptInt(L, 2, "mask", ITEM_TRIGGER_MASK_ALL);
-    if (mask < 0 || mask > ITEM_TRIGGER_MASK_ALL) {
+    const int32_t mask = M_OptInt(L, 2, "mask", TRIGGER_MASK_ALL);
+    if (mask < 0 || mask > TRIGGER_MASK_ALL) {
         return luaL_error(
             L, "trigger mask must be between 0 and %d, got %d",
-            ITEM_TRIGGER_MASK_ALL, mask);
+            TRIGGER_MASK_ALL, mask);
     }
 
     float timer = 0.0f;
@@ -424,7 +424,7 @@ static int M_L_ItemsTrigger(lua_State *const L)
 
     const ITEM_TRIGGER trigger = {
         .kind = (ITEM_TRIGGER_KIND)kind,
-        .mask = (int16_t)((mask << 9) & IF_CODE_BITS),
+        .mask = (int16_t)(mask & TRIGGER_MASK_ALL),
         .timer = timer,
         .one_shot = M_OptFlag(L, 2, "one_shot"),
     };

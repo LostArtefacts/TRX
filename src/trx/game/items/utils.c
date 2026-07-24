@@ -16,10 +16,6 @@
 #include <trx/game/stats.h>
 #include <trx/version.h>
 
-// The code bits sit in the middle of the flag word, so a mask counted from 1
-// has to be shifted into place.
-#define M_CODE_BITS_SHIFT 9
-
 static bool M_UseTR3ExplodingEffects(const ITEM *const item)
 {
     if (g_TRVersion < 3) {
@@ -361,7 +357,7 @@ int16_t Item_FindTypeAtPos(
 bool Item_IsTriggerActiveRO(const ITEM *const item)
 {
     const bool ok = !item->trigger.reversed;
-    if (item->trigger.mask != IF_CODE_BITS) {
+    if (item->trigger.mask != TRIGGER_MASK_ALL) {
         return !ok;
     }
     if (item->timer == 0) {
@@ -387,10 +383,10 @@ bool Item_IsTriggerActive(ITEM *const item)
 
 int32_t Item_GetTriggerMask(const ITEM *const item)
 {
-    return item->trigger.mask >> M_CODE_BITS_SHIFT;
+    return item->trigger.mask;
 }
 
 void Item_SetTriggerMask(ITEM *const item, const int32_t mask)
 {
-    item->trigger.mask = (mask << M_CODE_BITS_SHIFT) & IF_CODE_BITS;
+    item->trigger.mask = mask & TRIGGER_MASK_ALL;
 }

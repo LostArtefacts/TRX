@@ -93,7 +93,8 @@ static void M_MarkDone(ITEM *const receptacle_item)
     receptacle_item->current_anim_state = anim->current_anim_state;
     receptacle_item->goal_anim_state = receptacle_item->current_anim_state;
     receptacle_item->required_anim_state = 0;
-    receptacle_item->trigger = (ITEM_TRIGGER_STATE) { .mask = IF_CODE_BITS };
+    receptacle_item->trigger =
+        (ITEM_TRIGGER_STATE) { .mask = TRIGGER_MASK_ALL };
     // A save taken after the done hole triggered records it finished; re-arming
     // it on load has to clear that so Item_IsInPlay reads it as active again.
     Item_SetFinished(receptacle_item, false);

@@ -20,7 +20,7 @@
 #define M_TRIG_TYPE(t) ((t & 0x7F00) >> 8)
 #define M_TRIG_TIMER(t) (t & 0xFF)
 #define M_TRIG_ONE_SHOT(t) ((t & 0x100) == 0x100)
-#define M_TRIG_MASK(t) (t & 0x3E00)
+#define M_TRIG_MASK(t) ((t & 0x3E00) >> TRIGGER_MASK_SHIFT)
 #define M_TRIG_CMD_TYPE(t) ((t & 0x7C00) >> 10)
 #define M_TRIG_CMD_ARG(t) (t & 0x3FF)
 #define M_TRIG_CAM_GLIDE(t) ((t & 0x3E00) >> 6)

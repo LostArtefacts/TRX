@@ -19,7 +19,6 @@
 #include <trx/game/objects/vars.h>
 #include <trx/game/pathing/lot.h>
 
-#define M_CODE_BITS_SHIFT 9
 #include <trx/game/rooms.h>
 
 #include <stdio.h>
@@ -254,7 +253,7 @@ void Item_Deactivate(const int16_t item_num)
 bool Item_IsTriggerActiveRO(const ITEM *const item)
 {
     const bool ok = !item->trigger.reversed;
-    if (item->trigger.mask != IF_CODE_BITS) {
+    if (item->trigger.mask != TRIGGER_MASK_ALL) {
         return !ok;
     }
     if (item->timer == 0) {
@@ -268,12 +267,12 @@ bool Item_IsTriggerActiveRO(const ITEM *const item)
 
 int32_t Item_GetTriggerMask(const ITEM *const item)
 {
-    return item->trigger.mask >> M_CODE_BITS_SHIFT;
+    return item->trigger.mask;
 }
 
 void Item_SetTriggerMask(ITEM *const item, const int32_t mask)
 {
-    item->trigger.mask = (mask << M_CODE_BITS_SHIFT) & IF_CODE_BITS;
+    item->trigger.mask = mask & TRIGGER_MASK_ALL;
 }
 
 // A stand-in for the real primitive (which test_trigger exercises directly):
@@ -295,7 +294,7 @@ void Item_Trigger(const int16_t item_num, const ITEM_TRIGGER *const trigger)
         item->trigger.mask |= trigger->mask;
         break;
     }
-    if (item->trigger.mask != IF_CODE_BITS) {
+    if (item->trigger.mask != TRIGGER_MASK_ALL) {
         return;
     }
     if (trigger->one_shot) {

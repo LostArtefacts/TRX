@@ -123,8 +123,7 @@ void Item_NotifyTriggered(
         { .type = LUA_EVENT_ARG_INT32, .value = { .i32 = item_num } },
         { .type = LUA_EVENT_ARG_INT32, .value = { .i32 = trigger->kind } },
         // The mask the way a level editor counts it, 1 to 31.
-        { .type = LUA_EVENT_ARG_INT32,
-          .value = { .i32 = (trigger->mask & IF_CODE_BITS) >> 9 } },
+        { .type = LUA_EVENT_ARG_INT32, .value = { .i32 = trigger->mask } },
         { .type = LUA_EVENT_ARG_NUMBER, .value = { .number = trigger->timer } },
         { .type = LUA_EVENT_ARG_BOOL, .value = { .b = trigger->one_shot } },
     };
@@ -347,7 +346,7 @@ void Item_Initialise(const int16_t item_num)
     // seed it always means invisible, so it is read as such here.
     const uint16_t init_flags = item->init_flags;
     item->trigger = (ITEM_TRIGGER_STATE) {
-        .mask = init_flags & IF_CODE_BITS,
+        .mask = (init_flags & IF_CODE_BITS) >> TRIGGER_MASK_SHIFT,
         .reversed = (init_flags & IF_REVERSE) != 0,
     };
 
@@ -359,7 +358,7 @@ void Item_Initialise(const int16_t item_num)
         item->is_visible = false;
     }
 
-    if (item->trigger.mask == IF_CODE_BITS) {
+    if (item->trigger.mask == TRIGGER_MASK_ALL) {
         item->trigger.mask = 0;
         item->trigger.reversed = true;
         Item_AddSimulated(item_num);

@@ -329,7 +329,7 @@ static void M_CrowbarCollision(
                 Item_SwitchToAnim(lara_item, LA(LA_PRY_DOOR), 0);
                 lara_item->current_anim_state = LS(LS_CONTROLLED);
                 Item_AddSimulated(item_num);
-                item->trigger.mask = IF_CODE_BITS;
+                item->trigger.mask = TRIGGER_MASK_ALL;
                 item->goal_anim_state = DOOR_STATE_OPEN;
                 lara->interact_target.is_moving = false;
                 lara->gun_status = LGS_HANDS_BUSY;
