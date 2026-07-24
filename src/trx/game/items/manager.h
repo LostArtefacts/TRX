@@ -35,7 +35,7 @@ void Item_RemoveActive(int16_t item_num);
 // its fundamentals. Item_Trigger calls this for every trigger it acts on; kept
 // in the manager, next to the event stack, so the primitive stays clear of it.
 void Item_NotifyTriggered(int16_t item_num, const ITEM_TRIGGER *trigger);
-void Item_RemoveDrawn(int16_t item_num);
+void Item_DetachFromRoom(int16_t item_num);
 void Item_ClearKilled(void);
 void Item_AddActive(int16_t item_num);
 

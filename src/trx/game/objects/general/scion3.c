@@ -45,7 +45,7 @@ static void M_Control(const int16_t item_num)
         item->status = IS_INVISIBLE;
         item->hit_points = 0;
         Room_TestTriggers(item);
-        Item_RemoveDrawn(item_num);
+        Item_DetachFromRoom(item_num);
     }
 
     if (p->counter % 10 == 0) {
