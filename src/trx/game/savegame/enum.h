@@ -13,6 +13,27 @@ typedef enum {
     // clang-format on
 } ITEM_STATUS;
 
+// The flip-map slot word as the released save format stores it. Not a runtime
+// concept: the slot carries a 0..31 mask, and this pack/unpack is the only code
+// that shifts it into FSF_CODE_BITS and back.
+typedef enum {
+    // clang-format off
+    FSF_ONE_SHOT  = 0x0100,
+    FSF_CODE_BITS = 0x3E00,
+    // clang-format on
+} FLIP_SLOT_FLAG;
+
+// A music track's packed trigger word as the released save format stores it;
+// the low byte carries the TR2 delay counter. Not a runtime concept: the track
+// carries a 0..31 mask, and this pack/unpack is the only code that shifts it
+// into MTF_CODE_BITS and back.
+typedef enum {
+    // clang-format off
+    MTF_ONE_SHOT  = 0x0100,
+    MTF_CODE_BITS = 0x3E00,
+    // clang-format on
+} MUSIC_TRACK_FLAG;
+
 typedef enum {
     SAVEGAME_STAGE_BEFORE_LOAD,
     SAVEGAME_STAGE_AFTER_LOAD,

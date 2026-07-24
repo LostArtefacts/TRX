@@ -4,17 +4,18 @@
 
 #include <stdint.h>
 
-// A track's accumulated trigger state. The mask holds the floordata code bits
-// (MTF_CODE_BITS), as the packed save word does; `delay` is the TR2
+// A track's accumulated trigger state. The mask is the 0..31 editor mask; only
+// the savegame packs it back into the released save word. `delay` is the TR2
 // delayed-play countdown in frames.
 typedef struct {
-    uint16_t mask;
+    uint8_t mask;
     bool is_one_shot;
     uint8_t delay;
 } MUSIC_TRACK_STATE;
 
 // The lean description a music trigger acts on, mapped from floordata at
-// the trigger-handler boundary. `timer` is in seconds.
+// the trigger-handler boundary, as with ITEM_TRIGGER. `timer` is in
+// seconds.
 typedef struct {
     MUSIC_TRIGGER_KIND kind;
     uint16_t mask;
