@@ -79,7 +79,7 @@ static void M_Control(const int16_t item_num)
     } else if (item->frame_num == Item_GetAnim(item)->frame_end) {
         item->current_anim_state = M_STATE_OFF;
         item->status = IS_INACTIVE;
-        Item_RemoveActive(item_num);
+        Item_RemoveSimulated(item_num);
         Item_SwitchToAnim(lara_item, LA(LA_STAND_STILL), 0);
         lara_item->current_anim_state = LS(LS_STOP);
         lara_item->goal_anim_state = LS(LS_STOP);
@@ -105,7 +105,7 @@ static void M_Collision(
                 lara_item->current_anim_state = LS(LS_COG_SWITCH);
                 lara_item->goal_anim_state = LS(LS_COG_SWITCH);
                 Lara_Interact_FinishControl(LARA_INTERACT_SWITCH);
-                Item_AddActive(item_num);
+                Item_AddSimulated(item_num);
                 item->status = IS_ACTIVE;
                 item->goal_anim_state = M_STATE_ON;
 
@@ -114,7 +114,7 @@ static void M_Collision(
                 if (p->door_item_num != NO_ITEM) {
                     ITEM *const door_item = Item_Get(p->door_item_num);
                     if (door_item->status != IS_ACTIVE) {
-                        Item_AddActive(p->door_item_num);
+                        Item_AddSimulated(p->door_item_num);
                         door_item->status = IS_ACTIVE;
                     }
                 }

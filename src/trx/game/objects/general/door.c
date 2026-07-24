@@ -327,7 +327,7 @@ static void M_CrowbarCollision(
             if (Lara_MovePosition(item, &m_CrowbarDoorPosition)) {
                 Item_SwitchToAnim(lara_item, LA(LA_PRY_DOOR), 0);
                 lara_item->current_anim_state = LS(LS_CONTROLLED);
-                Item_AddActive(item_num);
+                Item_AddSimulated(item_num);
                 item->flags |= IF_CODE_BITS;
                 item->status = IS_ACTIVE;
                 item->goal_anim_state = DOOR_STATE_OPEN;

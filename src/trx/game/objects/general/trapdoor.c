@@ -241,7 +241,7 @@ static void M_Control(const int16_t item_num)
 static void M_OpenManually(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
-    Item_AddActive(item_num);
+    Item_AddSimulated(item_num);
     item->flags |= IF_CODE_BITS;
     item->goal_anim_state = TRAPDOOR_STATE_OPEN;
     item->status = IS_ACTIVE;

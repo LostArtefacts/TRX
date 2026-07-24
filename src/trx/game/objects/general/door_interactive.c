@@ -55,7 +55,7 @@ static bool M_Open(
 
     Item_SwitchToAnim(lara_item, LA(lara_anim), 0);
     item->goal_anim_state = door_goal_state;
-    Item_AddActive(item_num);
+    Item_AddSimulated(item_num);
     item->status = IS_ACTIVE;
     lara->interact_target.is_moving = false;
     lara->gun_status = LGS_HANDS_BUSY;
@@ -132,7 +132,7 @@ static void M_DoubleDoorsCollision(
         if (Lara_MovePosition(item, &m_DoubleDoorsPosition)) {
             Item_SwitchToAnim(lara_item, LA(LA_DOUBLEDOORS_PUSH), 0);
             lara_item->current_anim_state = LS(LS_PUSH_DOORS);
-            Item_AddActive(item_num);
+            Item_AddSimulated(item_num);
             item->status = IS_ACTIVE;
             Lara_Interact_FinishControl(LARA_INTERACT_DOOR);
         } else {
@@ -168,7 +168,7 @@ static void M_UWDoorCollision(
                 lara_item->current_anim_state = LS(LS_CONTROLLED);
                 lara_item->fall_speed = 0;
                 item->goal_anim_state = M_STATE_OPEN;
-                Item_AddActive(item_num);
+                Item_AddSimulated(item_num);
                 item->status = IS_ACTIVE;
                 Item_Animate(item);
                 lara->interact_target.is_moving = false;

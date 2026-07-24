@@ -31,10 +31,10 @@ static void M_SpawnRaptor(const ITEM *const spawner_item, int32_t slot_idx)
     raptor_item->is_collidable = true;
 
     if (raptor_item->active) {
-        Item_RemoveActive(p->slots[slot_idx]);
+        Item_RemoveSimulated(p->slots[slot_idx]);
     }
 
-    Item_AddActive(p->slots[slot_idx]);
+    Item_AddSimulated(p->slots[slot_idx]);
     Item_UpdateRoom(p->slots[slot_idx], NO_ITEM);
     Item_UpdateRoom(p->slots[slot_idx], spawner_item->room_num);
     LOT_EnableBaddieAI(p->slots[slot_idx], true);

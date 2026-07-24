@@ -101,7 +101,7 @@ void Propeller_Control(const int16_t item_num)
     Item_Animate(item);
 
     if (item->status == IS_DEACTIVATED) {
-        Item_RemoveActive(item_num);
+        Item_RemoveSimulated(item_num);
         if (item->object_id != O_POWER_SAW) {
             item->is_collidable = false;
         }

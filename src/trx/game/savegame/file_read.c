@@ -590,7 +590,7 @@ static bool M_ReadItem(JSON_READ_IO *const io, const int16_t read_index)
             bool is_active = false;
             M_SHOULD(JSON_READ(io, "active", &is_active));
             if (is_active && !item->active) {
-                Item_AddActive(item_num);
+                Item_AddSimulated(item_num);
             }
             item->status = saved_status;
             M_SHOULD(JSON_READ(io, "gravity", &item->gravity));
@@ -745,7 +745,7 @@ static bool M_ReadFlare(JSON_READ_IO *const io)
     int32_t flare_age;
     M_MUST(JSON_READ(io, "age", &flare_age));
     FlareItem_SetAge(item, flare_age & 0x7FFF, (flare_age & 0x8000) != 0);
-    Item_AddActive(item_num);
+    Item_AddSimulated(item_num);
     M_FINISH();
 }
 

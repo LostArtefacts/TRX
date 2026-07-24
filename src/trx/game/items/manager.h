@@ -19,7 +19,7 @@ ITEM *Item_FromHandle(TRX_HANDLE handle);
 int32_t Item_GetLevelCount(void);
 int32_t Item_GetTotalCount(void);
 
-int16_t Item_GetNextActive(void);
+int16_t Item_GetNextSimulated(void);
 
 int16_t Item_Create(void);
 int16_t Item_CreateLevelItem(void);
@@ -29,7 +29,7 @@ void Item_Initialise(int16_t item_num);
 void Item_Control(void);
 void Item_Kill(int16_t item_num);
 void Item_KillAllActive(void);
-void Item_RemoveActive(int16_t item_num);
+void Item_RemoveSimulated(int16_t item_num);
 
 // Fire the on_trigger event: a trigger of any kind was aimed at the item, with
 // its fundamentals. Item_Trigger calls this for every trigger it acts on; kept
@@ -37,7 +37,7 @@ void Item_RemoveActive(int16_t item_num);
 void Item_NotifyTriggered(int16_t item_num, const ITEM_TRIGGER *trigger);
 void Item_DetachFromRoom(int16_t item_num);
 void Item_ClearKilled(void);
-void Item_AddActive(int16_t item_num);
+void Item_AddSimulated(int16_t item_num);
 
 // Bring an item to life the way a trigger does: start its control routine, and
 // enable a creature's AI so it does more than stand there. An object with a
@@ -50,9 +50,9 @@ void Item_AddActive(int16_t item_num);
 // furthest away.
 void Item_Activate(int16_t item_num, bool force);
 
-// Stop an item: take it off the active list and take a creature's AI away. It
-// stays where it is and keeps its hit points; it stops running. A trigger can
-// still bring it back, which is what separates this from Item_Kill.
+// Stop an item: take it off the simulation list and take a creature's AI away.
+// It stays where it is and keeps its hit points; it stops running. A trigger
+// can still bring it back, which is what separates this from Item_Kill.
 void Item_Deactivate(int16_t item_num);
 
 void Item_UpdateRoom(int16_t item_num, int16_t room_num);

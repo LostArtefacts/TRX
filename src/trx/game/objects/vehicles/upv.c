@@ -217,7 +217,7 @@ static void M_GetOn(ITEM *const item)
 
     if (item->status != IS_ACTIVE) {
         item->status = IS_ACTIVE;
-        Item_AddActive(Item_GetIndex(item));
+        Item_AddSimulated(Item_GetIndex(item));
     }
 }
 
@@ -658,7 +658,7 @@ static void M_FireHarpoon(ITEM *const item)
     bolt->speed = (256 * Math_Cos(bolt->rot.x)) >> W2V_SHIFT;
     bolt->hit_points = 256;
     // bolt->item_flags[0] = 1; // TODO: what
-    Item_AddActive(item_num);
+    Item_AddSimulated(item_num);
     Sound_Effect(SFX_UPV_HARPOON, &Lara_GetItem()->pos, SPM_ALWAYS);
 
     if (!Game_IsBonusFlagSet(GBF_NGPLUS)) {

@@ -487,7 +487,7 @@ test("undeclared members are unreachable", function()
     "box_num",
     "floor",
     "next_item",
-    "next_active",
+    "next_simulated",
     "gen",
     "anim_num",
     "frame_num",

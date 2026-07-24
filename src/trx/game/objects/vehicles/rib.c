@@ -260,7 +260,7 @@ static void M_Collision(
     Item_Animate(lara_item);
 
     if (item->status != IS_ACTIVE) {
-        Item_AddActive(item_num);
+        Item_AddSimulated(item_num);
         item->status = IS_ACTIVE;
     }
 

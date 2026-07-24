@@ -45,7 +45,7 @@ typedef struct ITEM {
     int16_t prev_frame_num;
     int16_t room_num;
     int16_t next_item;
-    int16_t next_active;
+    int16_t next_simulated;
     int16_t speed;
     int16_t fall_speed;
     int16_t hit_points;

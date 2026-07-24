@@ -177,8 +177,8 @@ static void M_ActivateBack(ITEM *const dragon_back_item)
     dragon_front_item->touch_bits = 0;
 
     LOT_EnableBaddieAI(dragon_front_item_num, true);
-    Item_AddActive(dragon_front_item_num);
-    Item_AddActive(Item_GetIndex(dragon_back_item));
+    Item_AddSimulated(dragon_front_item_num);
+    Item_AddSimulated(Item_GetIndex(dragon_back_item));
     dragon_back_item->status = IS_ACTIVE;
 }
 
@@ -384,8 +384,8 @@ static void M_ControlBack(const int16_t item_num)
                     Item_Kill(dragon_front_item_num);
                     Item_Kill(dragon_back_item_num);
                 } else {
-                    Item_RemoveActive(dragon_front_item_num);
-                    Item_RemoveActive(dragon_back_item_num);
+                    Item_RemoveSimulated(dragon_front_item_num);
+                    Item_RemoveSimulated(dragon_back_item_num);
                     dragon_front_item->is_collidable = false;
                     dragon_back_item->is_collidable = false;
                     dragon_front_item->flags |= IF_ONE_SHOT;

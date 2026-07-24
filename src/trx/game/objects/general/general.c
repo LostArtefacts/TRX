@@ -39,7 +39,7 @@ void General_Control(const int16_t item_num)
     Output_AddDynamicLight(pos, 14, 11);
 
     if (item->status == IS_DEACTIVATED) {
-        Item_RemoveActive(item_num);
+        Item_RemoveSimulated(item_num);
         item->flags |= IF_ONE_SHOT;
     }
 }

@@ -111,7 +111,7 @@ static void M_Initialise(int16_t item_num)
     }
 
     if (item->status != IS_INVISIBLE) {
-        Item_AddActive(item_num);
+        Item_AddSimulated(item_num);
     }
 
     p->pickup_mode = PICKUP_MODE_NORMAL;
@@ -150,7 +150,7 @@ static bool M_Trigger(ITEM *const item, const ITEM_TRIGGER *const trigger)
         || Object_IsType(item->object_id, g_QuestObjects)) {
         item->touch_bits = 0;
         item->status = IS_ACTIVE;
-        Item_AddActive(Item_GetIndex(item));
+        Item_AddSimulated(Item_GetIndex(item));
     }
 
     return false;
@@ -248,7 +248,7 @@ static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
     if (item->status == IS_INVISIBLE || item->status == IS_DEACTIVATED) {
-        Item_RemoveActive(item_num);
+        Item_RemoveSimulated(item_num);
         return;
     }
 

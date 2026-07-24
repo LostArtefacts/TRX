@@ -75,7 +75,7 @@ static void M_Control(const int16_t item_num)
         item->goal_anim_state = M_STATE_GRAB;
         item->current_anim_state = M_STATE_GRAB;
         Item_SwitchToAnim(item, 0, 0);
-        Item_RemoveActive(item_num);
+        Item_RemoveSimulated(item_num);
         return;
     }
 
@@ -121,7 +121,7 @@ static void M_Control(const int16_t item_num)
         M_LetGo(item, lara_item);
     }
     Sound_Effect(SFX_ZIPLINE_STOP, &item->pos, SPM_ALWAYS);
-    Item_RemoveActive(item_num);
+    Item_RemoveSimulated(item_num);
     item->status = IS_INACTIVE;
     item->flags &= ~IF_ONE_SHOT;
 }
@@ -154,7 +154,7 @@ static void M_Collision(
     } while (lara_item->current_anim_state != LS(LS_PULL_UP));
 
     if (!item->active) {
-        Item_AddActive(item_num);
+        Item_AddSimulated(item_num);
     }
 
     item->status = IS_ACTIVE;

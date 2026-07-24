@@ -302,7 +302,7 @@ static void M_InitialisePlayer(const int16_t item_num)
     obj->control_func = M_PlayerControl;
     obj->shadow_size = (UNIT_SHADOW * 10) / 16;
 
-    Item_AddActive(item_num);
+    Item_AddSimulated(item_num);
     ITEM *const item = Item_Get(item_num);
     CAMERA_INFO *const camera = Cutscene_GetCamera();
     Camera_GetCineData()->position.target_angle = item->rot.y;

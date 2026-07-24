@@ -9,7 +9,7 @@
 
 static void M_Initialise(const int16_t item_num)
 {
-    Item_AddActive(item_num);
+    Item_AddSimulated(item_num);
     ITEM *const item = Item_Get(item_num);
     item->rot.y = 0;
 }

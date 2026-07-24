@@ -28,5 +28,5 @@ void Trap_Reset(ITEM *const item)
     item->goal_anim_state = Item_GetAnim(item)->current_anim_state;
     item->current_anim_state = item->goal_anim_state;
     item->required_anim_state = TRAP_SET;
-    Item_RemoveActive(item_num);
+    Item_RemoveSimulated(item_num);
 }

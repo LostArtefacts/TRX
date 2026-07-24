@@ -1300,7 +1300,7 @@ void Creature_Die(const int16_t item_num, const bool explode)
         Item_Shatter(item_num, -1, 0);
         Item_Kill(item_num);
     } else {
-        Item_RemoveActive(item_num);
+        Item_RemoveSimulated(item_num);
     }
 
     const OBJECT *const obj = Object_Get(item->object_id);

@@ -22,7 +22,7 @@
 static int32_t m_LevelItemCount = 0;
 static int16_t m_MaxUsedItemCount = 0;
 static ITEM *m_Items = nullptr;
-static int16_t m_NextItemActive = NO_ITEM;
+static int16_t m_NextItemSimulated = NO_ITEM;
 static int16_t m_NextItemFree = NO_ITEM;
 // One generation per slot, kept apart from the pooled ITEM storage so it
 // outlives a level and a handle held across the change goes stale.
@@ -68,7 +68,7 @@ void Item_InitialiseItems(const int32_t num_items)
     m_LevelItemCount = num_items;
     m_MaxUsedItemCount = num_items;
     m_NextItemFree = num_items;
-    m_NextItemActive = NO_ITEM;
+    m_NextItemSimulated = NO_ITEM;
 
     for (int32_t i = 0; i < MAX_ITEMS; i++) {
         m_Items[i].properties = (ITEM_PROPERTY_SET) {};
@@ -97,7 +97,7 @@ void Item_Reset(void)
     m_LevelItemCount = 0;
     m_MaxUsedItemCount = 0;
     m_Items = nullptr;
-    m_NextItemActive = NO_ITEM;
+    m_NextItemSimulated = NO_ITEM;
     m_NextItemFree = NO_ITEM;
 }
 
@@ -175,9 +175,9 @@ int32_t Item_GetTotalCount(void)
     return m_MaxUsedItemCount;
 }
 
-int16_t Item_GetNextActive(void)
+int16_t Item_GetNextSimulated(void)
 {
-    return m_NextItemActive;
+    return m_NextItemSimulated;
 }
 
 int16_t Item_Create(void)
@@ -283,7 +283,7 @@ void Item_Initialise(const int16_t item_num)
     if ((item->flags & IF_CODE_BITS) == IF_CODE_BITS) {
         item->flags &= ~IF_CODE_BITS;
         item->flags |= IF_REVERSE;
-        Item_AddActive(item_num);
+        Item_AddSimulated(item_num);
         item->status = IS_ACTIVE;
     }
 
@@ -320,10 +320,10 @@ void Item_Initialise(const int16_t item_num)
 
 void Item_Control(void)
 {
-    int16_t item_num = Item_GetNextActive();
+    int16_t item_num = Item_GetNextSimulated();
     while (item_num != NO_ITEM) {
         const ITEM *const item = Item_Get(item_num);
-        const int16_t next = item->next_active;
+        const int16_t next = item->next_simulated;
         const OBJECT *obj = Object_Get(item->object_id);
         if ((item->flags & IF_DESTROYED) == 0 && obj->control_func != nullptr) {
             obj->control_func(item_num);
@@ -337,7 +337,7 @@ void Item_Control(void)
 void Item_Kill(const int16_t item_num)
 {
     Sparks_DetachItem(item_num);
-    Item_RemoveActive(item_num);
+    Item_RemoveSimulated(item_num);
     Item_DetachFromRoom(item_num);
 
     ITEM *const item = &m_Items[item_num];
@@ -364,10 +364,10 @@ void Item_Kill(const int16_t item_num)
 
 void Item_KillAllActive(void)
 {
-    int16_t item_num = Item_GetNextActive();
+    int16_t item_num = Item_GetNextSimulated();
     while (item_num != NO_ITEM) {
         ITEM *const item = Item_Get(item_num);
-        const int16_t next_item_num = item->next_active;
+        const int16_t next_item_num = item->next_simulated;
 
         if (item->active && (item->flags & IF_REVERSE) == 0
             && item->object_id != O_LARA
@@ -418,7 +418,7 @@ void Item_NotifyTriggered(
     LUA_FireEventEx(LUA_EVENT_TRIGGER, args, 5);
 }
 
-void Item_RemoveActive(const int16_t item_num)
+void Item_RemoveSimulated(const int16_t item_num)
 {
     ITEM *const item = &m_Items[item_num];
     if (!item->active) {
@@ -427,18 +427,18 @@ void Item_RemoveActive(const int16_t item_num)
 
     item->active = false;
 
-    int16_t link_num = m_NextItemActive;
+    int16_t link_num = m_NextItemSimulated;
     if (link_num == item_num) {
-        m_NextItemActive = item->next_active;
+        m_NextItemSimulated = item->next_simulated;
         return;
     }
 
     while (link_num != NO_ITEM) {
-        if (m_Items[link_num].next_active == item_num) {
-            m_Items[link_num].next_active = item->next_active;
+        if (m_Items[link_num].next_simulated == item_num) {
+            m_Items[link_num].next_simulated = item->next_simulated;
             return;
         }
-        link_num = m_Items[link_num].next_active;
+        link_num = m_Items[link_num].next_simulated;
     }
 }
 
@@ -487,7 +487,7 @@ void Item_ClearKilled(void)
     }
 }
 
-void Item_AddActive(const int16_t item_num)
+void Item_AddSimulated(const int16_t item_num)
 {
     ITEM *const item = &m_Items[item_num];
     if (Object_Get(item->object_id)->control_func == nullptr) {
@@ -500,8 +500,8 @@ void Item_AddActive(const int16_t item_num)
     }
 
     item->active = true;
-    item->next_active = m_NextItemActive;
-    m_NextItemActive = item_num;
+    item->next_simulated = m_NextItemSimulated;
+    m_NextItemSimulated = item_num;
 }
 
 void Item_Activate(const int16_t item_num, const bool force)
@@ -519,7 +519,7 @@ void Item_Activate(const int16_t item_num, const bool force)
         if (item->status == IS_INACTIVE) {
             item->touch_bits = 0;
             item->status = IS_ACTIVE;
-            Item_AddActive(item_num);
+            Item_AddSimulated(item_num);
             LOT_EnableBaddieAI(item_num, true);
         } else if (item->status == IS_INVISIBLE) {
             item->touch_bits = 0;
@@ -528,12 +528,12 @@ void Item_Activate(const int16_t item_num, const bool force)
             } else {
                 item->status = IS_INVISIBLE;
             }
-            Item_AddActive(item_num);
+            Item_AddSimulated(item_num);
         }
     } else {
         item->touch_bits = 0;
         item->status = IS_ACTIVE;
-        Item_AddActive(item_num);
+        Item_AddSimulated(item_num);
     }
 }
 
@@ -542,7 +542,7 @@ void Item_Deactivate(const int16_t item_num)
     ITEM *const item = &m_Items[item_num];
     const OBJECT *const obj = Object_Get(item->object_id);
 
-    Item_RemoveActive(item_num);
+    Item_RemoveSimulated(item_num);
     if (obj->intelligent) {
         LOT_DisableBaddieAI(item_num);
     }

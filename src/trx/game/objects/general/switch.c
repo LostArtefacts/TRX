@@ -220,7 +220,7 @@ static void M_CollisionControlled(
                     M_TurnSwitchOff(item, lara_item);
                 }
                 Lara_Interact_FinishControl(LARA_INTERACT_SWITCH);
-                Item_AddActive(item_num);
+                Item_AddSimulated(item_num);
                 item->status = IS_ACTIVE;
                 Item_Animate(item);
             } else {
@@ -279,7 +279,7 @@ static void M_Collision(
     lara->gun_status = LGS_HANDS_BUSY;
 
     item->status = IS_ACTIVE;
-    Item_AddActive(item_num);
+    Item_AddSimulated(item_num);
     Item_Animate(item);
 }
 
@@ -322,7 +322,7 @@ static void M_CollisionUW(
         item->goal_anim_state = SWITCH_STATE_OFF;
     }
     item->status = IS_ACTIVE;
-    Item_AddActive(item_num);
+    Item_AddSimulated(item_num);
     Item_Animate(item);
 }
 
@@ -366,7 +366,7 @@ bool Switch_Trigger(const int16_t item_num, const int16_t timer)
 
     if (item->object_id == O_SWITCH_TYPE_AIRLOCK) {
         if (item->status == IS_DEACTIVATED) {
-            Item_RemoveActive(item_num);
+            Item_RemoveSimulated(item_num);
             item->status = IS_INACTIVE;
             return false;
         } else if (
@@ -406,7 +406,7 @@ bool Switch_Trigger(const int16_t item_num, const int16_t timer)
         }
         item->status = IS_ACTIVE;
     } else {
-        Item_RemoveActive(item_num);
+        Item_RemoveSimulated(item_num);
         item->status = IS_INACTIVE;
     }
     return true;
