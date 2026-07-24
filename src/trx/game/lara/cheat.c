@@ -220,7 +220,7 @@ void Lara_Cheat_EndLevel(void)
 bool Lara_Cheat_KillEnemy(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
-    if ((item->flags & IF_DESTROYED) != 0) {
+    if (item->is_destroyed) {
         return false;
     }
     if (!Item_IsAlive(item) && item->status != IS_ACTIVE) {

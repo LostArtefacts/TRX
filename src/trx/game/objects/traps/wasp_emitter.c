@@ -110,7 +110,8 @@ static void M_SpawnWasp(const ITEM *const spawner_item, const int32_t slot_idx)
     wasp_item->current_anim_state = Item_GetAnim(wasp_item)->current_anim_state;
     wasp_item->goal_anim_state = wasp_item->current_anim_state;
     wasp_item->required_anim_state = 0;
-    wasp_item->flags &= ~(IF_INVISIBLE | IF_DESTROYED | 3);
+    wasp_item->is_destroyed = false;
+    wasp_item->flags &= ~(IF_INVISIBLE | 3);
     wasp_item->creature_data = nullptr;
     wasp_item->hit_points = wasp_item->max_hit_points;
     wasp_item->mesh_bits = -1;

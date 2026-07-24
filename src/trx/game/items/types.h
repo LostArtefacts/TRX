@@ -74,6 +74,8 @@ typedef struct ITEM {
     bool enable_interpolation;
     bool enable_shadow;
     bool active;
+    // Runtime form of the saved IF_DESTROYED bit: the slot is dead and removed.
+    bool is_destroyed;
     bool gravity;
     bool hit_status;
     bool is_collidable;

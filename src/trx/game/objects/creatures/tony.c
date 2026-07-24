@@ -242,7 +242,7 @@ static bool M_CanDropItems(const ITEM *const item)
     if (item->hit_points > 0) {
         return false;
     }
-    if ((item->flags & IF_DESTROYED) != 0) {
+    if (item->is_destroyed) {
         return true;
     }
     return item->current_anim_state == M_STATE_DEATH

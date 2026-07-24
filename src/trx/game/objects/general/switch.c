@@ -384,8 +384,7 @@ bool Switch_Trigger(const int16_t item_num, const int16_t timer)
         // death; the following addition is a safer approach for such, rather
         // than altering item status and timer as though they were regular
         // switch objects.
-        if (item->status != IS_DEACTIVATED
-            && (item->flags & IF_DESTROYED) == 0) {
+        if (item->status != IS_DEACTIVATED && !item->is_destroyed) {
             return false;
         }
         if ((item->flags & IF_ONE_SHOT_SWITCH) != 0) {

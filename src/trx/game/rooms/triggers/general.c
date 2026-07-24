@@ -14,7 +14,7 @@ static void M_DestroyKilledBodies(void)
         ITEM *const item = Item_Get(i);
         const OBJECT *const obj = Object_Get(item->object_id);
         if (obj->intelligent && item->clear_body && item->hit_points <= 0
-            && (item->flags & IF_DESTROYED) == 0) {
+            && !item->is_destroyed) {
             Item_Destroy(i);
         }
     }

@@ -181,7 +181,7 @@ void Item_Destroy(const int16_t item_num)
 {
     g_FakeItemCalls.kill++;
     ITEM *const item = &m_Items[item_num];
-    item->flags |= IF_DESTROYED;
+    item->is_destroyed = true;
     item->status = IS_DEACTIVATED;
     item->hit_points = 0;
     item->active = false;
@@ -311,8 +311,7 @@ int32_t Item_GetDistance(const ITEM *const item, const XYZ_32 target)
 bool Item_IsAlive(const ITEM *const item)
 {
     const OBJECT *const obj = Object_Get(item->object_id);
-    return obj->intelligent && item->hit_points > 0
-        && (item->flags & IF_DESTROYED) == 0;
+    return obj->intelligent && item->hit_points > 0 && !item->is_destroyed;
 }
 
 bool Item_SetName(const int16_t item_num, const char *const name)

@@ -55,7 +55,7 @@ static int32_t M_CountAssaultTargets(void)
             continue;
         }
 
-        if ((item->flags & IF_DESTROYED) == 0 && item->hit_points > 0) {
+        if (!item->is_destroyed && item->hit_points > 0) {
             remaining++;
         }
     }
@@ -77,7 +77,7 @@ static void M_ResetAssaultTargets(void)
             continue;
         }
 
-        if ((item->flags & IF_DESTROYED) != 0) {
+        if (item->is_destroyed) {
             // Rockets can kill targets via Creature_Die()+Item_Destroy(), which
             // removes them from room draw + item lists. Use Item_Initialise()
             // to re-link them back.
