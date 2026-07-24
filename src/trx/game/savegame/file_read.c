@@ -1092,7 +1092,9 @@ bool SG_File_LoadFlipmaps(JSON_READ_IO *const io)
     for (size_t i = 0; i < count; i++) {
         uint32_t flags;
         M_MUST(JSON_READ_A(io, i, &flags));
-        Room_SetFlipSlotFlags(i, flags << 8);
+        FLIP_SLOT *const slot = Room_GetFlipSlot(i);
+        slot->mask = (flags << 8) & FSF_CODE_BITS;
+        slot->is_one_shot = ((flags << 8) & FSF_ONE_SHOT) != 0;
     }
     M_MUST(JSON_POP(io));
 

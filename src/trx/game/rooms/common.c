@@ -22,7 +22,7 @@ static HANDLE_EPOCH m_RoomEpoch;
 static bool m_FlipStatus = false;
 static int32_t m_FlipEffect = -1;
 static int32_t m_FlipTimer = 0;
-static int32_t m_FlipSlotFlags[MAX_FLIP_MAPS] = {};
+static FLIP_SLOT m_FlipSlots[MAX_FLIP_MAPS] = {};
 
 #define M_OUTSIDE_TABLE_STEP_SHIFT 2
 #define M_OUTSIDE_TABLE_STEP (1 << M_OUTSIDE_TABLE_STEP_SHIFT)
@@ -106,7 +106,7 @@ void Room_Shutdown(void)
     m_FlipStatus = false;
     m_FlipEffect = -1;
     m_FlipTimer = 0;
-    memset(m_FlipSlotFlags, 0, sizeof(m_FlipSlotFlags));
+    memset(m_FlipSlots, 0, sizeof(m_FlipSlots));
 
     m_OutsideRoomTable = nullptr;
     m_OutsideRoomOffsets = nullptr;
@@ -443,7 +443,7 @@ void Room_InitialiseFlipStatus(void)
     m_FlipEffect = -1;
     m_FlipTimer = 0;
     for (int32_t i = 0; i < MAX_FLIP_MAPS; i++) {
-        m_FlipSlotFlags[i] = 0;
+        m_FlipSlots[i] = (FLIP_SLOT) {};
     }
 }
 
@@ -520,14 +520,26 @@ void Room_IncrementFlipTimer(const int32_t num_frames)
     m_FlipTimer += num_frames;
 }
 
-int32_t Room_GetFlipSlotFlags(const int32_t slot_idx)
+FLIP_SLOT *Room_GetFlipSlot(const int32_t slot_idx)
 {
-    return m_FlipSlotFlags[slot_idx];
+    return &m_FlipSlots[slot_idx];
 }
 
-void Room_SetFlipSlotFlags(const int32_t slot_idx, const int32_t flags)
+bool Room_TriggerFlipSlot(
+    const int32_t slot_idx, const FLIP_TRIGGER *const trigger)
 {
-    m_FlipSlotFlags[slot_idx] = flags;
+    FLIP_SLOT *const slot = &m_FlipSlots[slot_idx];
+    if (trigger->from_switch) {
+        slot->mask ^= trigger->mask;
+    } else {
+        slot->mask |= trigger->mask;
+    }
+
+    const bool complete = (slot->mask & FSF_CODE_BITS) == FSF_CODE_BITS;
+    if (complete && trigger->one_shot) {
+        slot->is_one_shot = true;
+    }
+    return complete;
 }
 
 int32_t Room_GetAdjoiningRooms(

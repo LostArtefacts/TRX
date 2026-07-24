@@ -5,32 +5,24 @@ static void M_HandleFlipMap(
     TRIGGER_STATUS *const status)
 {
     const int16_t flip_slot = (int16_t)(intptr_t)cmd->parameter;
-    int32_t slot_flags = Room_GetFlipSlotFlags(flip_slot);
     status->flip_available = true;
 
-    if ((slot_flags & IF_ONE_SHOT) != 0) {
+    if (Room_GetFlipSlot(flip_slot)->is_one_shot) {
         return;
     }
 
-    if (trigger->type == TT_SWITCH) {
-        slot_flags ^= trigger->mask;
-    } else {
-        slot_flags |= trigger->mask;
-    }
-
-    if ((slot_flags & IF_CODE_BITS) == IF_CODE_BITS) {
-        if (trigger->one_shot) {
-            slot_flags |= IF_ONE_SHOT;
-        }
-
+    const FLIP_TRIGGER flip_trigger = {
+        .from_switch = trigger->type == TT_SWITCH,
+        .mask = trigger->mask,
+        .one_shot = trigger->one_shot,
+    };
+    if (Room_TriggerFlipSlot(flip_slot, &flip_trigger)) {
         if (!status->flip_status) {
             status->flip_map = true;
         }
     } else if (status->flip_status) {
         status->flip_map = true;
     }
-
-    Room_SetFlipSlotFlags(flip_slot, slot_flags);
 }
 
 static void M_HandleFlipOn(
@@ -38,10 +30,10 @@ static void M_HandleFlipOn(
     TRIGGER_STATUS *const status)
 {
     const int16_t flip_slot = (int16_t)(intptr_t)cmd->parameter;
-    const int32_t slot_flags = Room_GetFlipSlotFlags(flip_slot);
+    const FLIP_SLOT *const slot = Room_GetFlipSlot(flip_slot);
     status->flip_available = true;
 
-    if ((slot_flags & IF_CODE_BITS) == IF_CODE_BITS && !status->flip_status) {
+    if ((slot->mask & FSF_CODE_BITS) == FSF_CODE_BITS && !status->flip_status) {
         status->flip_map = true;
     }
 }
@@ -51,10 +43,10 @@ static void M_HandleFlipOff(
     TRIGGER_STATUS *const status)
 {
     const int16_t flip_slot = (int16_t)(intptr_t)cmd->parameter;
-    const int32_t slot_flags = Room_GetFlipSlotFlags(flip_slot);
+    const FLIP_SLOT *const slot = Room_GetFlipSlot(flip_slot);
     status->flip_available = true;
 
-    if ((slot_flags & IF_CODE_BITS) == IF_CODE_BITS && status->flip_status) {
+    if ((slot->mask & FSF_CODE_BITS) == FSF_CODE_BITS && status->flip_status) {
         status->flip_map = true;
     }
 }
