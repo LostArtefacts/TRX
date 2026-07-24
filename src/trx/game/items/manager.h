@@ -15,7 +15,6 @@ int16_t Item_GetIndex(const ITEM *item);
 // next.
 TRX_HANDLE Item_GetHandle(int16_t item_num);
 ITEM *Item_FromHandle(TRX_HANDLE handle);
-ITEM *Item_Find(OBJECT_ID obj_id);
 
 int32_t Item_GetLevelCount(void);
 int32_t Item_GetTotalCount(void);

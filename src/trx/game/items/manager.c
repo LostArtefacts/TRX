@@ -129,18 +129,6 @@ ITEM *Item_FromHandle(const TRX_HANDLE handle)
     return Item_Get((int16_t)handle.id);
 }
 
-ITEM *Item_Find(const OBJECT_ID obj_id)
-{
-    for (int32_t item_num = 0; item_num < Item_GetTotalCount(); item_num++) {
-        ITEM *const item = Item_Get(item_num);
-        if (item->object_id == obj_id) {
-            return item;
-        }
-    }
-
-    return nullptr;
-}
-
 bool Item_SetName(const int16_t item_num, const char *const name)
 {
     ITEM *const item = Item_Get(item_num);

@@ -58,5 +58,9 @@ int32_t Item_Shatter(int16_t item_num, int32_t mesh_bits, int16_t damage);
 
 bool Item_ShouldSpawnBlood(const ITEM *item);
 
+// The first item of the given object type, or nullptr. Item_FindTypeInRoom
+// narrows the search to a single room.
+ITEM *Item_Find(OBJECT_ID obj_id);
+
 int16_t Item_FindTypeInRoom(int16_t room_num, OBJECT_ID obj_id);
 int16_t Item_FindTypeAtPos(int16_t room_num, XYZ_32 pos, OBJECT_ID obj_id);
