@@ -47,7 +47,7 @@ static void M_HandleSave(ITEM *const item, const SAVEGAME_STAGE stage)
     if (stage == SAVEGAME_STAGE_AFTER_LOAD) {
         if (item->status == IS_DEACTIVATED) {
             item->mesh_bits = 0x1FF;
-            item->collidable = false;
+            item->is_collidable = false;
         }
     }
 }
@@ -83,7 +83,7 @@ static void M_Control(const int16_t item_num)
         if (explode) {
             item->goal_anim_state = M_STATE_EXPLODE;
             item->mesh_bits = 0xFFFFFF;
-            item->collidable = false;
+            item->is_collidable = false;
             Item_Shatter(item_num, 0xFFFE00, 0);
 
             const M_PRIV *const p = item->priv;

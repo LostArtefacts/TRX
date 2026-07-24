@@ -89,7 +89,7 @@ static void M_ExplodeLara(void)
     Sound_Effect(SFX_EXPLOSION_1, &lara_item->pos, SPM_NORMAL);
     lara_item->hit_points = 0;
     lara_item->status = IS_INVISIBLE;
-    lara_item->collidable = false;
+    lara_item->is_collidable = false;
     lara_item->flags |= IF_INVISIBLE;
 }
 

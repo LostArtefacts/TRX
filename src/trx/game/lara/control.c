@@ -317,7 +317,7 @@ static void M_ObjectCollision(COLL_INFO *const coll)
                 && !Object_IsType(item->object_id, g_SwitchObjects)) {
                 goto loop_end;
             }
-            if (!item->collidable || item->status == IS_INVISIBLE) {
+            if (!item->is_collidable || item->status == IS_INVISIBLE) {
                 goto loop_end;
             }
 

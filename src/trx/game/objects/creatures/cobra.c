@@ -82,7 +82,7 @@ static bool M_CanTakeDamage(const ITEM *const item)
 
 static bool M_CanBeProjectileTarget(const ITEM *const item)
 {
-    return item->hit_points > 0 && item->collidable;
+    return item->hit_points > 0 && item->is_collidable;
 }
 
 static int32_t M_GetDamage(const ITEM *const item)

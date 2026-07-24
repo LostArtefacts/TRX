@@ -244,7 +244,7 @@ static const FIELD_DESC m_Fields[] = {
     FIELD(ITEM, speed),
     FIELD(ITEM, fall_speed),
     FIELD(ITEM, gravity),
-    FIELD(ITEM, collidable),
+    FIELD(ITEM, is_collidable),
     FIELD(ITEM, enable_shadow),
     FIELD(ITEM, enable_interpolation),
     FIELD(ITEM, dynamic_light),

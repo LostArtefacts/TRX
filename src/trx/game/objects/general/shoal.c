@@ -603,7 +603,7 @@ static void M_Initialise(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
     item->enable_shadow = false;
-    item->collidable = false;
+    item->is_collidable = false;
 
     if (item->priv == nullptr) {
         item->priv = GameBuf_Alloc(sizeof(M_PRIV), GBUF_ITEM_DATA);

@@ -91,7 +91,7 @@ void Lara_Initialise(const GF_LEVEL *const level)
 {
     ITEM *const lara_item = Lara_GetItem();
     LARA_INFO *const lara_info = Lara_GetLaraInfo();
-    lara_item->collidable = false;
+    lara_item->is_collidable = false;
 
     m_Controllable = true;
     m_DeathCameraTarget = NO_ITEM;

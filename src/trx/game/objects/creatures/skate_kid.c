@@ -84,7 +84,7 @@ static void M_Initialise(const int16_t item_num)
     skateboard_item->rot = item->rot;
     skateboard_item->room_num = item->room_num;
     skateboard_item->status = item->status;
-    skateboard_item->collidable = false;
+    skateboard_item->is_collidable = false;
     skateboard_item->shade.value_1 = -1;
     Item_Initialise(skateboard_item_num);
 

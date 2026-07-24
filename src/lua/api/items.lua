@@ -211,7 +211,7 @@ api.type("items.Item", {
       description = "Whether gravity applies to this item.",
     },
     collidable = {
-      from = "collidable",
+      from = "is_collidable",
       type = "boolean",
       description = "Whether Lara can collide with this item.",
     },

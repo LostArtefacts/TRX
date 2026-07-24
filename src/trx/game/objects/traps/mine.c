@@ -74,7 +74,7 @@ static void M_Explode(ITEM *const mine_item)
 
     mine_item->flags |= IF_ONE_SHOT;
     mine_item->mesh_bits = 1;
-    mine_item->collidable = false;
+    mine_item->is_collidable = false;
 }
 
 static void M_HandleSave(ITEM *const item, const SAVEGAME_STAGE stage)

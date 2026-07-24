@@ -76,7 +76,7 @@ static void M_Control2(const int16_t item_num)
     M_SetBoxBlocked(item, false);
 
     item->mesh_bits = ~1;
-    item->collidable = false;
+    item->is_collidable = false;
     Item_Shatter(item_num, 65278, 0);
 
     if (item->object_id == O_SMASH_OBJECT_2) {
@@ -117,7 +117,7 @@ void Smashable_Smash(const int16_t item_num)
     ITEM *const item = Item_Get(item_num);
     M_SetBoxBlocked(item, false);
 
-    item->collidable = false;
+    item->is_collidable = false;
     item->mesh_bits = ~1;
     Item_Shatter(item_num, 0b11111110'11111110, 0);
 

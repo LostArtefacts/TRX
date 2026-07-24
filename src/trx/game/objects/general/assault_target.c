@@ -81,7 +81,7 @@ static void M_Initialise(const int16_t item_num)
     item->active = false;
     item->status = IS_INACTIVE;
     item->flags = 0;
-    item->collidable = true;
+    item->is_collidable = true;
 
     M_ResetItemState(item);
 }
@@ -226,7 +226,7 @@ static bool M_CanBeProjectileTarget(const ITEM *const item)
 {
     const M_PRIV *const p = item->priv;
     return p != nullptr && p->targetable && item->status == IS_ACTIVE
-        && item->collidable && item->hit_points > 0;
+        && item->is_collidable && item->hit_points > 0;
 }
 
 static void M_Setup(OBJECT *const obj)

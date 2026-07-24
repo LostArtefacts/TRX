@@ -172,7 +172,7 @@ finish:
 
     Creature_Animate(item_num, angle, 0);
     if (g_TRVersion == 1) {
-        item->collidable = true;
+        item->is_collidable = true;
     }
 }
 

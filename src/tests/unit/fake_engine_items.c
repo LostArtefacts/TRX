@@ -174,7 +174,7 @@ void Item_Initialise(const int16_t item_num)
     item->max_hit_points = m_ObjectHP[item->object_id];
     item->status = IS_INACTIVE;
     item->anim_num = obj->anim_idx;
-    item->collidable = true;
+    item->is_collidable = true;
 }
 
 void Item_Kill(const int16_t item_num)

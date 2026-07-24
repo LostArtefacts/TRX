@@ -115,7 +115,7 @@ static void M_SpawnWasp(const ITEM *const spawner_item, const int32_t slot_idx)
     wasp_item->hit_points = wasp_item->max_hit_points;
     wasp_item->mesh_bits = -1;
     wasp_item->status = IS_ACTIVE;
-    wasp_item->collidable = true;
+    wasp_item->is_collidable = true;
     wasp_item->ai_bits = AI_MODIFY;
 
     if (wasp_item->active) {
