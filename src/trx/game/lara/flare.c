@@ -464,7 +464,6 @@ void Lara_Flare_Dispose(const bool thrown)
     }
 
     Item_AddSimulated(item_num);
-    item->status = IS_ACTIVE;
 
 finish:
     M_UndrawMeshes();

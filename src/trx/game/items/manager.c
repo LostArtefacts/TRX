@@ -3,6 +3,7 @@
 #include <trx/core/handle.h>
 #include <trx/core/memory.h>
 #include <trx/core/utils.h>
+#include <trx/game/const.h>
 #include <trx/game/game.h>
 #include <trx/game/game_buf.h>
 #include <trx/game/game_flow.h>
@@ -61,6 +62,75 @@ static inline bool M_ItemBoundsIntersectsPortal(
     return !Bounds32_Intersect(&bounds, &room_bounds);
 }
 
+// Take the item out of a room's draw queues: the room itself and every portal
+// neighbour it may have been queued into. Paired with the chain unlink below;
+// both must run when an item leaves a room.
+static void M_RemoveFromDrawQueues(
+    const int16_t item_num, const int16_t room_num)
+{
+    if (room_num == NO_ROOM) {
+        return;
+    }
+    Room_RemoveDrawnItem(room_num, item_num);
+    const ROOM *const room = Room_Get(room_num);
+    if (room != nullptr && room->portals != nullptr) {
+        for (int32_t i = 0; i < room->portals->count; i++) {
+            Room_RemoveDrawnItem(room->portals->portal[i].room_num, item_num);
+        }
+    }
+}
+
+// Splice the item out of the room item chain that collision and
+// Item_FindTypeInRoom walk.
+static void M_UnlinkChain(const int16_t item_num, const int16_t room_num)
+{
+    if (room_num == NO_ROOM) {
+        return;
+    }
+    ITEM *const item = &m_Items[item_num];
+    ROOM *const room = Room_Get(room_num);
+    int16_t link_num = room->item_num;
+    if (link_num == item_num) {
+        room->item_num = item->next_item;
+    } else {
+        while (link_num != NO_ITEM) {
+            if (m_Items[link_num].next_item == item_num) {
+                m_Items[link_num].next_item = item->next_item;
+                break;
+            }
+            link_num = m_Items[link_num].next_item;
+        }
+    }
+}
+
+// Only live gameplay is worth an item event; level setup wires items up, and
+// the demo and cutscene phases play their own actors. Shared by the trigger
+// and room-change hooks.
+static bool M_ItemEventsLive(void)
+{
+    const GF_LEVEL *const level = GF_GetCurrentLevel();
+    return Game_IsPlaying() && level->type != GFL_DEMO
+        && level->type != GFL_CUTSCENE;
+}
+
+void Item_NotifyTriggered(
+    const int16_t item_num, const ITEM_TRIGGER *const trigger)
+{
+    if (!M_ItemEventsLive()) {
+        return;
+    }
+    const LUA_EVENT_ARG args[] = {
+        { .type = LUA_EVENT_ARG_INT32, .value = { .i32 = item_num } },
+        { .type = LUA_EVENT_ARG_INT32, .value = { .i32 = trigger->kind } },
+        // The mask the way a level editor counts it, 1 to 31.
+        { .type = LUA_EVENT_ARG_INT32,
+          .value = { .i32 = (trigger->mask & IF_CODE_BITS) >> 9 } },
+        { .type = LUA_EVENT_ARG_NUMBER, .value = { .number = trigger->timer } },
+        { .type = LUA_EVENT_ARG_BOOL, .value = { .b = trigger->one_shot } },
+    };
+    LUA_FireEventEx(LUA_EVENT_TRIGGER, args, 5);
+}
+
 void Item_InitialiseItems(const int32_t num_items)
 {
     m_Items = GameBuf_Alloc(sizeof(ITEM) * MAX_ITEMS, GBUF_ITEMS);
@@ -82,7 +152,7 @@ void Item_InitialiseItems(const int32_t num_items)
 
     for (int32_t i = m_NextItemFree; i < MAX_ITEMS - 1; i++) {
         ITEM *const item = &m_Items[i];
-        item->active = false;
+        item->is_simulated = false;
         item->next_item = i + 1;
     }
     m_Items[MAX_ITEMS - 1].next_item = NO_ITEM;
@@ -183,8 +253,10 @@ int16_t Item_Create(void)
 {
     const int16_t item_num = m_NextItemFree;
     if (item_num != NO_ITEM) {
-        m_Items[item_num].flags = 0;
+        m_Items[item_num].init_flags = 0;
+        m_Items[item_num].trigger = (ITEM_TRIGGER_STATE) { 0 };
         m_Items[item_num].is_destroyed = false;
+        m_Items[item_num].is_finished = false;
         // A recycled slot must not inherit the previous occupant's name.
         m_Items[item_num].name = nullptr;
         Handle_RegistryBump(&m_ItemHandles, item_num);
@@ -214,7 +286,6 @@ int16_t Item_Spawn(const ITEM *const item, const OBJECT_ID obj_id)
         spawn->pos = item->pos;
         spawn->rot = item->rot;
         Item_Initialise(spawn_num);
-        spawn->status = IS_INACTIVE;
         spawn->shade.value_1 = SHADE_NEUTRAL;
     }
     return spawn_num;
@@ -256,9 +327,12 @@ void Item_Initialise(const int16_t item_num)
     item->interp.result.pos = item->pos;
     item->interp.result.rot = item->rot;
 
-    item->active = false;
+    item->is_simulated = false;
+    item->is_present = false;
     item->is_destroyed = false;
-    item->status = IS_INACTIVE;
+    item->trigger.spent = false;
+    item->is_visible = true;
+    item->is_finished = false;
     item->gravity = false;
     item->hit_status = false;
     item->is_collidable = true;
@@ -268,29 +342,34 @@ void Item_Initialise(const int16_t item_num)
     item->dynamic_light = false;
     item->include_in_kill_stats = true;
 
-    item->clear_body = false;
-    if ((item->flags & IF_DESTROYED) != 0) {
-        item->clear_body = true;
-        item->flags &= ~IF_DESTROYED;
-    }
+    // The level-format word decodes into the trigger fields and the axes it
+    // seeds. Bit IF_INVISIBLE shares its value with IF_ONE_SHOT; in a level
+    // seed it always means invisible, so it is read as such here.
+    const uint16_t init_flags = item->init_flags;
+    item->trigger = (ITEM_TRIGGER_STATE) {
+        .mask = init_flags & IF_CODE_BITS,
+        .reversed = (init_flags & IF_REVERSE) != 0,
+    };
 
-    if ((item->flags & IF_INVISIBLE) != 0) {
-        item->status = IS_INVISIBLE;
-        item->flags &= ~IF_INVISIBLE;
+    item->clear_body = (init_flags & IF_DESTROYED) != 0;
+
+    if ((init_flags & IF_INVISIBLE) != 0) {
+        item->is_visible = false;
     } else if (g_TRVersion >= 2 && obj->intelligent) {
-        item->status = IS_INVISIBLE;
+        item->is_visible = false;
     }
 
-    if ((item->flags & IF_CODE_BITS) == IF_CODE_BITS) {
-        item->flags &= ~IF_CODE_BITS;
-        item->flags |= IF_REVERSE;
+    if (item->trigger.mask == IF_CODE_BITS) {
+        item->trigger.mask = 0;
+        item->trigger.reversed = true;
         Item_AddSimulated(item_num);
-        item->status = IS_ACTIVE;
+        item->is_visible = true;
     }
 
     ROOM *const room = Room_Get(item->room_num);
     item->next_item = room->item_num;
     room->item_num = item_num;
+    item->is_present = true;
 
     const SECTOR *const sector =
         Room_GetWorldSector(room, item->pos.x, item->pos.z);
@@ -348,6 +427,7 @@ void Item_Destroy(const int16_t item_num)
     }
 
     item->is_destroyed = true;
+
     // Invalidate any script handle to this item, whether or not the slot is
     // recycled below.
     Handle_RegistryBump(&m_ItemHandles, item_num);
@@ -363,102 +443,52 @@ void Item_Destroy(const int16_t item_num)
     }
 }
 
-// Only live gameplay is worth an item event; level setup wires items up, and
-// the demo and cutscene phases play their own actors. Shared by the trigger,
-// the acting-state and room-change hooks.
-static bool M_ItemEventsLive(void)
-{
-    const GF_LEVEL *const level = GF_GetCurrentLevel();
-    return Game_IsPlaying() && level->type != GFL_DEMO
-        && level->type != GFL_CUTSCENE;
-}
-
-void Item_NotifyTriggered(
-    const int16_t item_num, const ITEM_TRIGGER *const trigger)
-{
-    if (!M_ItemEventsLive()) {
-        return;
-    }
-    const LUA_EVENT_ARG args[] = {
-        { .type = LUA_EVENT_ARG_INT32, .value = { .i32 = item_num } },
-        { .type = LUA_EVENT_ARG_INT32, .value = { .i32 = trigger->kind } },
-        // The mask the way a level editor counts it, 1 to 31.
-        { .type = LUA_EVENT_ARG_INT32,
-          .value = { .i32 = (trigger->mask & IF_CODE_BITS) >> 9 } },
-        { .type = LUA_EVENT_ARG_NUMBER, .value = { .number = trigger->timer } },
-        { .type = LUA_EVENT_ARG_BOOL, .value = { .b = trigger->one_shot } },
-    };
-    LUA_FireEventEx(LUA_EVENT_TRIGGER, args, 5);
-}
-
 void Item_RemoveSimulated(const int16_t item_num)
 {
     ITEM *const item = &m_Items[item_num];
-    if (!item->active) {
+    if (!item->is_simulated) {
         return;
     }
 
-    item->active = false;
+    item->is_simulated = false;
 
     int16_t link_num = m_NextItemSimulated;
     if (link_num == item_num) {
         m_NextItemSimulated = item->next_simulated;
-        return;
-    }
-
-    while (link_num != NO_ITEM) {
-        if (m_Items[link_num].next_simulated == item_num) {
-            m_Items[link_num].next_simulated = item->next_simulated;
-            return;
+    } else {
+        while (link_num != NO_ITEM) {
+            if (m_Items[link_num].next_simulated == item_num) {
+                m_Items[link_num].next_simulated = item->next_simulated;
+                break;
+            }
+            link_num = m_Items[link_num].next_simulated;
         }
-        link_num = m_Items[link_num].next_simulated;
     }
 }
 
 void Item_DetachFromRoom(const int16_t item_num)
 {
-    const ITEM *const item = &m_Items[item_num];
-    if (item->room_num == NO_ROOM) {
-        return;
-    }
+    ITEM *const item = &m_Items[item_num];
+    item->is_present = false;
 
-    ROOM *const room = Room_Get(item->room_num);
-    Room_RemoveDrawnItem(item->room_num, item_num);
-    if (room->portals != nullptr) {
-        for (int32_t i = 0; i < room->portals->count; i++) {
-            const PORTAL *const portal = &room->portals->portal[i];
-            Room_RemoveDrawnItem(portal->room_num, item_num);
-        }
-    }
-
-    int16_t link_num = room->item_num;
-    if (link_num == item_num) {
-        room->item_num = item->next_item;
-        return;
-    }
-
-    while (link_num != NO_ITEM) {
-        if (m_Items[link_num].next_item == item_num) {
-            m_Items[link_num].next_item = item->next_item;
-            return;
-        }
-        link_num = m_Items[link_num].next_item;
-    }
+    M_RemoveFromDrawQueues(item_num, item->room_num);
+    M_UnlinkChain(item_num, item->room_num);
 }
 
 void Item_AddSimulated(const int16_t item_num)
 {
     ITEM *const item = &m_Items[item_num];
+    // A control-less item cannot simulate; leaving is_simulated false is the
+    // whole of the resting state this used to force here.
     if (Object_Get(item->object_id)->control_func == nullptr) {
-        item->status = IS_INACTIVE;
         return;
     }
 
-    if (item->active) {
+    if (item->is_simulated) {
         return;
     }
 
-    item->active = true;
+    item->is_simulated = true;
     item->next_simulated = m_NextItemSimulated;
     m_NextItemSimulated = item_num;
 }
@@ -468,30 +498,28 @@ void Item_Activate(const int16_t item_num, const bool force)
     ITEM *const item = &m_Items[item_num];
     const OBJECT *const obj = Object_Get(item->object_id);
 
-    if (item->active) {
+    if (item->is_simulated) {
         return;
     }
 
     if (obj->activate_func != nullptr) {
         obj->activate_func(item);
     } else if (obj->intelligent) {
-        if (item->status == IS_INACTIVE) {
+        if (item->is_visible && !item->is_finished) { // sleeping visible item
             item->touch_bits = 0;
-            item->status = IS_ACTIVE;
             Item_AddSimulated(item_num);
             LOT_EnableBaddieAI(item_num, true);
-        } else if (item->status == IS_INVISIBLE) {
+        } else if (!item->is_visible) { // hidden ambush item
             item->touch_bits = 0;
             if (LOT_EnableBaddieAI(item_num, force)) {
-                item->status = IS_ACTIVE;
-            } else {
-                item->status = IS_INVISIBLE;
+                item->is_visible = true;
             }
             Item_AddSimulated(item_num);
         }
     } else {
         item->touch_bits = 0;
-        item->status = IS_ACTIVE;
+        item->is_visible = true;
+        item->is_finished = false;
         Item_AddSimulated(item_num);
     }
 }
@@ -501,19 +529,34 @@ void Item_Deactivate(const int16_t item_num)
     ITEM *const item = &m_Items[item_num];
     const OBJECT *const obj = Object_Get(item->object_id);
 
+    // RemoveActive clears is_simulated, which is the whole of the downgrade:
+    // is_visible and is_finished are untouched, so a spent item stays spent and
+    // an ambushing creature stays hidden, while a running item merely stops.
     Item_RemoveSimulated(item_num);
     if (obj->intelligent) {
         LOT_DisableBaddieAI(item_num);
     }
+}
 
-    // Back to IS_INACTIVE, not IS_DEACTIVATED: a trigger only ever re-arms an
-    // item that is inactive or invisible, so leaving it deactivated would put
-    // it beyond the reach of the thing most likely to want it back. An item
-    // that was already spent stays spent, and an ambushing creature stays
-    // hidden.
-    if (item->status == IS_ACTIVE) {
-        item->status = IS_INACTIVE;
+void Item_Respawn(const int16_t item_num, const int16_t room_num)
+{
+    ITEM *const item = Item_Get(item_num);
+    // A recycled slot may still be simulated - a creature whose AI slot was
+    // reclaimed keeps is_simulated with no creature data. Item_Activate no-ops
+    // on an already-simulated item, so drop it first to force a full wake.
+    if (item->is_simulated) {
+        Item_RemoveSimulated(item_num);
     }
+    // The previous occupant died in this slot, leaving it visible and finished.
+    // Clear finished so Item_Activate takes the visible item back into play
+    // rather than reading it as a spent corpse.
+    item->is_finished = false;
+    // Force the slot back into the room's item chain: a same-room update alone
+    // will not relink a slot Item_Destroy left detached, so bounce it through
+    // NO_ROOM. Item_Activate then enables the AI with the room settled.
+    Item_UpdateRoom(item_num, NO_ROOM);
+    Item_UpdateRoom(item_num, room_num);
+    Item_Activate(item_num, true);
 }
 
 void Item_UpdateRoom(const int16_t item_num, const int16_t room_num)
@@ -521,18 +564,7 @@ void Item_UpdateRoom(const int16_t item_num, const int16_t room_num)
     ITEM *const item = &m_Items[item_num];
     const int16_t old_room_num = item->room_num;
 
-    // Add to new-room draw queues (including portal rooms)
-    // draw queue removal for primary room and portal rooms
-    if (old_room_num != NO_ROOM) {
-        Room_RemoveDrawnItem(old_room_num, item_num);
-        const ROOM *const room = Room_Get(old_room_num);
-        if (room != nullptr && room->portals != nullptr) {
-            for (int32_t i = 0; i < room->portals->count; i++) {
-                Room_RemoveDrawnItem(
-                    room->portals->portal[i].room_num, item_num);
-            }
-        }
-    }
+    M_RemoveFromDrawQueues(item_num, old_room_num);
     if (room_num != NO_ROOM) {
         Room_AddDrawnItem(room_num, item_num);
         const ROOM *const neighbor_room = Room_Get(room_num);
@@ -547,28 +579,13 @@ void Item_UpdateRoom(const int16_t item_num, const int16_t room_num)
     }
 
     if (old_room_num != room_num) {
-        ROOM *room = nullptr;
-        if (old_room_num != NO_ROOM) {
-            room = Room_Get(old_room_num);
-            int16_t link_num = room->item_num;
-            if (link_num == item_num) {
-                room->item_num = item->next_item;
-            } else {
-                while (link_num != NO_ITEM) {
-                    if (m_Items[link_num].next_item == item_num) {
-                        m_Items[link_num].next_item = item->next_item;
-                        break;
-                    }
-                    link_num = m_Items[link_num].next_item;
-                }
-            }
-        }
+        M_UnlinkChain(item_num, old_room_num);
 
         if (room_num == NO_ROOM) {
             Item_DetachFromRoom(item_num);
             item->room_num = NO_ROOM;
         } else {
-            room = Room_Get(room_num);
+            ROOM *const room = Room_Get(room_num);
             item->room_num = room_num;
             item->next_item = room->item_num;
             room->item_num = item_num;

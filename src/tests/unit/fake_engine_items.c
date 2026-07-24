@@ -8,6 +8,7 @@
 
 #include "fake_engine_items.h"
 
+#include <trx/game/const.h>
 #include <trx/core/handle.h>
 #include <trx/game/anims.h>
 #include <trx/game/creature.h>
@@ -17,6 +18,8 @@
 #include <trx/game/objects/property.h>
 #include <trx/game/objects/vars.h>
 #include <trx/game/pathing/lot.h>
+
+#define M_CODE_BITS_SHIFT 9
 #include <trx/game/rooms.h>
 
 #include <stdio.h>
@@ -25,9 +28,6 @@
 #define FAKE_OBJ_COUNT 5
 #define FAKE_ANIM_COUNT 2
 #define FAKE_PROP_SLOTS 4
-
-// The code bits sit in the middle of the flag word.
-#define M_CODE_BITS_SHIFT 9
 
 FAKE_ITEM_CALLS g_FakeItemCalls;
 
@@ -123,7 +123,7 @@ void FakeItems_Reset(void)
             .pos = { .x = 1024 * i, .y = 0, .z = 0 },
             .hit_points = 20,
             .max_hit_points = 20,
-            .status = IS_INACTIVE,
+            .is_visible = true,
         };
     }
     m_Items[1].object_id = FAKE_OBJ_VASE;
@@ -172,19 +172,20 @@ void Item_Initialise(const int16_t item_num)
     const OBJECT *const obj = Object_Get(item->object_id);
     item->hit_points = m_ObjectHP[item->object_id];
     item->max_hit_points = m_ObjectHP[item->object_id];
-    item->status = IS_INACTIVE;
+    item->is_visible = true;
+    item->is_finished = false;
     item->anim_num = obj->anim_idx;
     item->is_collidable = true;
 }
 
 void Item_Destroy(const int16_t item_num)
 {
-    g_FakeItemCalls.kill++;
+    g_FakeItemCalls.destroy++;
     ITEM *const item = &m_Items[item_num];
     item->is_destroyed = true;
-    item->status = IS_DEACTIVATED;
+    item->is_finished = true;
     item->hit_points = 0;
-    item->active = false;
+    item->is_simulated = false;
     Handle_RegistryBump(&m_Handles, item_num);
     m_Used[item_num] = false;
     m_Names[item_num][0] = '\0';
@@ -205,21 +206,32 @@ ITEM *Item_FromHandle(const TRX_HANDLE handle)
 
 void Item_AddSimulated(const int16_t item_num)
 {
-    m_Items[item_num].active = true;
+    m_Items[item_num].is_simulated = true;
 }
 
 void Item_RemoveSimulated(const int16_t item_num)
 {
-    m_Items[item_num].active = false;
+    m_Items[item_num].is_simulated = false;
+}
+
+bool Item_IsInPlay(const ITEM *const item)
+{
+    return item->is_simulated && item->is_visible && !item->is_finished;
+}
+
+bool Item_IsInactive(const ITEM *const item)
+{
+    return item->is_visible && !item->is_finished && !item->is_simulated;
 }
 
 void Item_Activate(const int16_t item_num, const bool force)
 {
     ITEM *const item = &m_Items[item_num];
-    if (item->active) {
+    if (item->is_simulated) {
         return;
     }
-    item->status = IS_ACTIVE;
+    item->is_visible = true;
+    item->is_finished = false;
     Item_AddSimulated(item_num);
     if (Object_Get(item->object_id)->intelligent) {
         LOT_EnableBaddieAI(item_num, force);
@@ -233,15 +245,16 @@ void Item_Deactivate(const int16_t item_num)
     if (Object_Get(item->object_id)->intelligent) {
         LOT_DisableBaddieAI(item_num);
     }
-    if (item->status == IS_ACTIVE) {
-        item->status = IS_INACTIVE;
+    if (Item_IsInPlay(item)) {
+        item->is_visible = true;
+        item->is_finished = false;
     }
 }
 
 bool Item_IsTriggerActiveRO(const ITEM *const item)
 {
-    const bool ok = (item->flags & IF_REVERSE) == 0;
-    if ((item->flags & IF_CODE_BITS) != IF_CODE_BITS) {
+    const bool ok = !item->trigger.reversed;
+    if (item->trigger.mask != IF_CODE_BITS) {
         return !ok;
     }
     if (item->timer == 0) {
@@ -255,13 +268,12 @@ bool Item_IsTriggerActiveRO(const ITEM *const item)
 
 int32_t Item_GetTriggerMask(const ITEM *const item)
 {
-    return (item->flags & IF_CODE_BITS) >> M_CODE_BITS_SHIFT;
+    return item->trigger.mask >> M_CODE_BITS_SHIFT;
 }
 
 void Item_SetTriggerMask(ITEM *const item, const int32_t mask)
 {
-    item->flags &= ~IF_CODE_BITS;
-    item->flags |= (mask << M_CODE_BITS_SHIFT) & IF_CODE_BITS;
+    item->trigger.mask = (mask << M_CODE_BITS_SHIFT) & IF_CODE_BITS;
 }
 
 // A stand-in for the real primitive (which test_trigger exercises directly):
@@ -274,20 +286,20 @@ void Item_Trigger(const int16_t item_num, const ITEM_TRIGGER *const trigger)
     switch (trigger->kind) {
     case ITEM_TRIGGER_SWITCH:
     case ITEM_TRIGGER_HEAVY_SWITCH:
-        item->flags ^= trigger->mask;
+        item->trigger.mask ^= trigger->mask;
         break;
     case ITEM_TRIGGER_ANTI:
-        item->flags &= ~trigger->mask;
+        item->trigger.mask &= ~trigger->mask;
         break;
     default:
-        item->flags |= trigger->mask;
+        item->trigger.mask |= trigger->mask;
         break;
     }
-    if ((item->flags & IF_CODE_BITS) != IF_CODE_BITS) {
+    if (item->trigger.mask != IF_CODE_BITS) {
         return;
     }
     if (trigger->one_shot) {
-        item->flags |= IF_ONE_SHOT;
+        item->trigger.spent = true;
     }
     Item_Activate(item_num, false);
 }
@@ -312,6 +324,11 @@ bool Item_IsAlive(const ITEM *const item)
 {
     const OBJECT *const obj = Object_Get(item->object_id);
     return obj->intelligent && item->hit_points > 0 && !item->is_destroyed;
+}
+
+bool Item_IsTargetable(const ITEM *const item)
+{
+    return item->hit_points > 0 && Item_IsInPlay(item);
 }
 
 bool Item_SetName(const int16_t item_num, const char *const name)

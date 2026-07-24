@@ -24,7 +24,7 @@ typedef enum {
     IF_CODE_BITS            = 0x3E00,
     IF_REVERSE              = 0x4000,
     IF_INVISIBLE            = 0x0100,
-    IF_DESTROYED               = 0x8000,
+    IF_DESTROYED            = 0x8000,
     // clang-format on
 } ITEM_FLAG;
 
@@ -52,12 +52,3 @@ typedef enum {
     AI_FOLLOW   = 1 << 4,
     // clang-format on
 } AI_BITS;
-
-typedef enum {
-    // clang-format off
-    IS_INACTIVE    = 0,
-    IS_ACTIVE      = 1,
-    IS_DEACTIVATED = 2,
-    IS_INVISIBLE   = 3,
-    // clang-format on
-} ITEM_STATUS;

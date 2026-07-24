@@ -107,7 +107,7 @@ static void M_Stop(ITEM *const item, const XYZ_32 old_pos)
 {
     if (item->object_id == O_ROLLING_BALL_1) {
         Sound_Effect(SFX_ROLLING_BALL_1_STOP, &item->pos, SPM_NORMAL);
-        item->status = IS_DEACTIVATED;
+        item->is_finished = true;
     } else if (item->object_id == O_ROLLING_BALL_2) {
         Sound_Effect(SFX_ROLLING_BALL_2_STOP, &item->pos, SPM_NORMAL);
         item->goal_anim_state = TRAP_WORKING;
@@ -116,7 +116,7 @@ static void M_Stop(ITEM *const item, const XYZ_32 old_pos)
         item->goal_anim_state = TRAP_WORKING;
     } else if (item->object_id == O_ROLLING_BALL_4) {
         Sound_Effect(SFX_ROLLING_BALL_4_STOP, &item->pos, SPM_NORMAL);
-        item->status = IS_DEACTIVATED;
+        item->is_finished = true;
     }
 
     item->pos.x = old_pos.x;
@@ -130,19 +130,19 @@ static void M_Stop(ITEM *const item, const XYZ_32 old_pos)
 static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
-    item->enable_interpolation = item->status == IS_ACTIVE;
+    item->enable_interpolation = Item_IsInPlay(item);
 
-    if (item->status == IS_DEACTIVATED && !Item_IsTriggerActive(item)) {
+    if (item->is_finished && !Item_IsTriggerActive(item)) {
         Trap_Reset(item);
         return;
     }
 
-    if (item->status != IS_ACTIVE) {
+    if (!Item_IsInPlay(item)) {
         int16_t room_num = item->room_num;
         const SECTOR *const sector = Room_GetSector(item->pos, &room_num);
         const int32_t height = Room_GetHeight(sector, item->pos);
         if (item->floor < height) {
-            item->status = IS_ACTIVE;
+            item->is_finished = false;
             item->floor = height;
         }
         return;
@@ -187,8 +187,8 @@ static void M_Collision(
     ITEM *const item = Item_Get(item_num);
     const LARA_INFO *const lara = Lara_GetLaraInfo();
 
-    if (item->status != IS_ACTIVE) {
-        if (item->status != IS_INVISIBLE) {
+    if (!Item_IsInPlay(item)) {
+        if (item->is_visible) {
             Object_Collision(item_num, lara_item, coll);
         }
         return;

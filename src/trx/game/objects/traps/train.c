@@ -51,7 +51,7 @@ static void M_Collision(
     const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
 {
     ITEM *const train_item = Item_Get(item_num);
-    if (train_item->status != IS_ACTIVE) {
+    if (!Item_IsInPlay(train_item)) {
         Object_Collision(item_num, lara_item, coll);
         return;
     }

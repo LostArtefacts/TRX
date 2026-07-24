@@ -13,12 +13,10 @@
         }                                                                      \
     } while (0)
 
+#define ITEM_TRIGGER_MASK_ALL 31
+
 bool Item_IsTriggerActiveRO(const ITEM *item);
 bool Item_IsTriggerActive(ITEM *item);
-
-// Every code bit set, which is what a lone trigger with nothing to wait for
-// carries.
-#define ITEM_TRIGGER_MASK_ALL 31
 
 // The item's code bits, counted the way a level editor counts them: five bits,
 // 1 to 31. An item runs its trigger only once every bit is set, so several
@@ -36,6 +34,8 @@ void Item_SetTriggerMask(ITEM *item, int32_t mask);
 // item outright.
 void Item_Trigger(int16_t item_num, const ITEM_TRIGGER *trigger);
 
+bool Item_IsInPlay(const ITEM *item);
+bool Item_IsInactive(const ITEM *item);
 bool Item_IsAlive(const ITEM *item);
 bool Item_IsTargetable(const ITEM *item);
 bool Item_CanTakeDamage(const ITEM *item);

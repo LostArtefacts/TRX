@@ -1,5 +1,6 @@
 #include <trx/core/utils.h>
 #include <trx/game/camera.h>
+#include <trx/game/const.h>
 #include <trx/game/objects.h>
 #include <trx/game/random.h>
 #include <trx/game/rooms.h>
@@ -14,9 +15,11 @@ typedef struct {
 
 static void M_ActivateRelatedItem(ITEM *const earth_item)
 {
+    // The related item may have been authored hidden; the quake reveals it as
+    // it starts simulating.
+    earth_item->is_visible = true;
     Item_AddSimulated(Item_GetIndex(earth_item));
-    earth_item->status = IS_ACTIVE;
-    earth_item->flags = IF_CODE_BITS;
+    earth_item->trigger = (ITEM_TRIGGER_STATE) { .mask = IF_CODE_BITS };
     earth_item->timer = 0;
 }
 
@@ -38,8 +41,7 @@ static void M_FindAndActivateRelatedItems(const ITEM *const item)
     while (related_item_num != NO_ITEM) {
         ITEM *const earth_item = Item_Get(related_item_num);
         if (earth_item->object_id == object_id_to_activate
-            && earth_item->status != IS_ACTIVE
-            && earth_item->status != IS_DEACTIVATED) {
+            && !Item_IsInPlay(earth_item) && !earth_item->is_finished) {
             M_ActivateRelatedItem(earth_item);
             break;
         }
@@ -54,7 +56,6 @@ static void M_Reset(const int16_t item_num)
     p->shake_intensity = 0;
     p->target_intensity = 0;
     p->target_timer = 0;
-    item->status = IS_INACTIVE;
     Item_RemoveSimulated(item_num);
 }
 

@@ -2,6 +2,7 @@
 
 #include <trx/config.h>
 #include <trx/core/utils.h>
+#include <trx/game/const.h>
 #include <trx/game/creature.h>
 #include <trx/game/effects.h>
 #include <trx/game/items/manager.h>
@@ -37,6 +38,21 @@ static bool M_IsFloating(const ITEM *const item)
         && Object_Get(item->object_id)->intelligent && item->hit_points <= 0;
 }
 
+// Running, in the world, and not spent: simulated, visible, unfinished. Named
+// apart from Item_IsAlive, which is the looser has-HP-or-simulated damage
+// check.
+bool Item_IsInPlay(const ITEM *const item)
+{
+    return item->is_simulated && item->is_visible && !item->is_finished;
+}
+
+// Present and at rest - neither running, hidden, nor spent. The re-armable
+// state a trigger looks for.
+bool Item_IsInactive(const ITEM *const item)
+{
+    return item->is_visible && !item->is_finished && !item->is_simulated;
+}
+
 bool Item_IsAlive(const ITEM *const item)
 {
     const OBJECT *const obj = Object_Get(item->object_id);
@@ -47,7 +63,7 @@ bool Item_IsAlive(const ITEM *const item)
     if (obj->intelligent && Object_IsType(item->object_id, g_WaterObjects)) {
         return item->hit_points > 0;
     }
-    return (item->hit_points > 0) || (item->active);
+    return (item->hit_points > 0) || (item->is_simulated);
 }
 
 bool Item_IsTargetable(const ITEM *const item)
@@ -61,7 +77,7 @@ bool Item_IsTargetable(const ITEM *const item)
         return obj->is_targetable_func(item);
     }
 
-    return item->hit_points > 0 && item->status == IS_ACTIVE
+    return item->hit_points > 0 && Item_IsInPlay(item)
         && (g_Config.gameplay.enable_ally_targeting
             || Creature_IsHostile(item));
 }
@@ -96,7 +112,7 @@ bool Item_CanBeProjectileTarget(const ITEM *const item)
         return true;
     }
 
-    if (!item->is_collidable || item->status == IS_INVISIBLE
+    if (!item->is_collidable || !item->is_visible
         || obj->collision_func == nullptr) {
         return false;
     }
@@ -344,8 +360,8 @@ int16_t Item_FindTypeAtPos(
 
 bool Item_IsTriggerActiveRO(const ITEM *const item)
 {
-    const bool ok = (item->flags & IF_REVERSE) == 0;
-    if ((item->flags & IF_CODE_BITS) != IF_CODE_BITS) {
+    const bool ok = !item->trigger.reversed;
+    if (item->trigger.mask != IF_CODE_BITS) {
         return !ok;
     }
     if (item->timer == 0) {
@@ -371,11 +387,10 @@ bool Item_IsTriggerActive(ITEM *const item)
 
 int32_t Item_GetTriggerMask(const ITEM *const item)
 {
-    return (item->flags & IF_CODE_BITS) >> M_CODE_BITS_SHIFT;
+    return item->trigger.mask >> M_CODE_BITS_SHIFT;
 }
 
 void Item_SetTriggerMask(ITEM *const item, const int32_t mask)
 {
-    item->flags &= ~IF_CODE_BITS;
-    item->flags |= (mask << M_CODE_BITS_SHIFT) & IF_CODE_BITS;
+    item->trigger.mask = (mask << M_CODE_BITS_SHIFT) & IF_CODE_BITS;
 }

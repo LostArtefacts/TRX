@@ -243,7 +243,6 @@ static void M_FireHarpoon(void)
     }
 
     Item_AddSimulated(item_num);
-    projectile_item->status = IS_ACTIVE;
 
     Gun_SmashItems(
         origin,
@@ -343,7 +342,6 @@ static void M_FireGrenade(void)
     }
 
     Item_AddSimulated(item_num);
-    projectile_item->status = IS_ACTIVE;
 
     Gun_SmashItems(
         origin,
@@ -407,7 +405,6 @@ static void M_FireRocket(void)
 
     projectile_item->speed = 16;
     Item_AddSimulated(item_num);
-    projectile_item->status = IS_ACTIVE;
 
     Gun_SmashItems(
         origin,
@@ -655,7 +652,7 @@ void Gun_Rifle_Draw(const LARA_GUN_TYPE weapon_type)
         Item_SwitchToAnim(item, weapon->equip_anim_idx, 0);
         item->goal_anim_state = LA_G_DRAW;
         item->current_anim_state = LA_G_DRAW;
-        item->status = IS_ACTIVE;
+        item->is_visible = true;
         item->room_num = NO_ROOM;
         const OBJECT *const obj = Object_Get(item->object_id);
         lara->right_arm.frame_base = obj->frame_base;
@@ -696,7 +693,7 @@ void Gun_Rifle_Undraw(const LARA_GUN_TYPE weapon_type)
     M_AnimateGun(item);
 
     const WEAPON_INFO *const weapon = &g_Weapons[weapon_type];
-    if (item->status == IS_DEACTIVATED) {
+    if (item->is_finished) {
         Item_Destroy(lara->gun_item_num);
         lara->gun_item_num = NO_ITEM;
         lara->gun_status = LGS_ARMLESS;

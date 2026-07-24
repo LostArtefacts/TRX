@@ -24,7 +24,6 @@ static void M_Control(const int16_t item_num)
     Item_Animate(item);
 
     if (item->current_anim_state == BELL_STATE_STOP) {
-        item->status = IS_INACTIVE;
         Item_RemoveSimulated(item_num);
     }
 }

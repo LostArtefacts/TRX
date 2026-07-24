@@ -39,8 +39,7 @@ void Creature_AlertAllGuards(const int16_t item_num)
         }
 
         const ITEM *const target = Item_Get(creature->item_num);
-        if (target->object_id == item->object_id
-            && target->status == IS_ACTIVE) {
+        if (target->object_id == item->object_id && Item_IsInPlay(target)) {
             creature->alerted = true;
         }
     }

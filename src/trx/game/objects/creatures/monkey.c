@@ -114,8 +114,7 @@ static bool M_CarryPickup(
         return false;
     }
 
-    if (creature->enemy->room_num == NO_ROOM
-        || creature->enemy->status == IS_INVISIBLE
+    if (creature->enemy->room_num == NO_ROOM || !creature->enemy->is_visible
         || creature->enemy->clear_body) {
         creature->enemy = nullptr;
         return true;

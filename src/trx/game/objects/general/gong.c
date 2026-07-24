@@ -47,7 +47,6 @@ static void M_CreateGongBonger(ITEM *const lara_item)
 
     Item_Initialise(item_gong_bonger_num);
     Item_AddSimulated(item_gong_bonger_num);
-    item_gong_bonger->status = IS_ACTIVE;
     item_gong_bonger->shade.value_1 = -1;
 }
 
@@ -89,7 +88,7 @@ static void M_Collision(
         return;
     }
 
-    if (item->status != IS_INACTIVE || !g_Input.action
+    if (!Item_IsInactive(item) || !g_Input.action
         || lara->gun_status != LGS_ARMLESS || lara_item->gravity
         || !Lara_Interact_CanBegin(LARA_INTERACT_RECEPTACLE)) {
         goto normal_collision;

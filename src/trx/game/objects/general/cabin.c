@@ -1,3 +1,4 @@
+#include <trx/game/const.h>
 #include <trx/game/objects.h>
 #include <trx/game/rooms.h>
 
@@ -49,7 +50,7 @@ static void M_Control(const int16_t item_num)
     ITEM *const item = Item_Get(item_num);
     const M_PRIV *const p = item->priv;
 
-    if ((item->flags & IF_CODE_BITS) == IF_CODE_BITS) {
+    if (item->trigger.mask == IF_CODE_BITS) {
         switch (item->current_anim_state) {
         case M_STATE_START:
             item->goal_anim_state = M_STATE_DROP_1;
@@ -61,7 +62,7 @@ static void M_Control(const int16_t item_num)
             item->goal_anim_state = M_STATE_DROP_3;
             break;
         }
-        item->flags = 0;
+        item->trigger = (ITEM_TRIGGER_STATE) { 0 };
     }
 
     if (item->current_anim_state == M_STATE_FINISH) {

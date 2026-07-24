@@ -68,7 +68,6 @@ static void M_Control(const int16_t item_num)
         }
 
         Item_RemoveSimulated(item_num);
-        item->status = IS_INACTIVE;
         return;
     }
 

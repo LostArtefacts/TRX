@@ -82,13 +82,12 @@ static void M_ResetAssaultTargets(void)
             // removes them from room draw + item lists. Use Item_Initialise()
             // to re-link them back.
 
-            // Clear the flags so that Item_Initialise doesn't mark the item
+            // Clear the seed so that Item_Initialise doesn't mark the item
             // as active preemptively.
-            item->flags = 0;
+            item->init_flags = 0;
 
             Item_Initialise(item_num);
-        } else if (
-            item->status != IS_INACTIVE && obj->initialise_func != nullptr) {
+        } else if (!Item_IsInactive(item) && obj->initialise_func != nullptr) {
             obj->initialise_func(item_num);
         }
     }

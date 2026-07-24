@@ -419,14 +419,11 @@ bool Room_TestSectorTrigger(const ITEM *const item, const SECTOR *const sector)
         case TT_HEAVY_ANTITRIGGER:
             break;
         case TT_HEAVY_SWITCH:
-            const int32_t item_flags = item->flags & IF_CODE_BITS;
-            if (item_flags == 0) {
+            const int32_t item_mask = item->trigger.mask;
+            if (item_mask == 0) {
                 return false;
             }
-
-            if (item_flags < 0) {
-                status.heavy_mask += item_flags;
-            } else if (item_flags != status.heavy_mask) {
+            if (item_mask != status.heavy_mask) {
                 return false;
             }
             break;
@@ -456,7 +453,7 @@ bool Room_TestSectorTrigger(const ITEM *const item, const SECTOR *const sector)
             const bool intelligent =
                 Object_Get(switch_item->object_id)->intelligent;
             if (!intelligent && g_TRVersion >= 3 && trigger->one_shot) {
-                switch_item->flags |= IF_ONE_SHOT_SWITCH;
+                switch_item->trigger.switch_spent = true;
             }
             if (!switch_result) {
                 return false;

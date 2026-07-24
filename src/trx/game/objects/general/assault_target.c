@@ -64,7 +64,7 @@ static void M_Initialise(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
 
-    if (item->active) {
+    if (item->is_simulated) {
         Item_RemoveSimulated(item_num);
     }
 
@@ -78,9 +78,9 @@ static void M_Initialise(const int16_t item_num)
     p->destroyed = false;
     p->targetable = true;
 
-    item->active = false;
-    item->status = IS_INACTIVE;
-    item->flags = 0;
+    item->is_simulated = false;
+    item->is_finished = false;
+    item->trigger = (ITEM_TRIGGER_STATE) { 0 };
     item->is_collidable = true;
 
     M_ResetItemState(item);
@@ -93,7 +93,7 @@ static void M_Control(const int16_t item_num)
     }
 
     ITEM *const item = Item_Get(item_num);
-    if (item->status != IS_ACTIVE) {
+    if (!Item_IsInPlay(item)) {
         return;
     }
 
@@ -169,6 +169,7 @@ static void M_Control(const int16_t item_num)
                 if (p->bounce_stage == 2) {
                     item->rot.x = 0x3800;
                     Item_RemoveSimulated(item_num);
+                    item->is_finished = true;
                     return;
                 }
 
@@ -191,6 +192,7 @@ static void M_Control(const int16_t item_num)
                 if (p->bounce_stage == 2) {
                     item->rot.x = -0x2A00;
                     Item_RemoveSimulated(item_num);
+                    item->is_finished = true;
                     return;
                 }
 
@@ -212,7 +214,7 @@ static void M_Control(const int16_t item_num)
 static bool M_IsTargetable(const ITEM *const item)
 {
     const M_PRIV *const p = item->priv;
-    return p != nullptr && p->targetable && item->status == IS_ACTIVE
+    return p != nullptr && p->targetable && Item_IsInPlay(item)
         && item->hit_points > 0;
 }
 
@@ -225,7 +227,7 @@ static bool M_CanTakeDamage(const ITEM *const item)
 static bool M_CanBeProjectileTarget(const ITEM *const item)
 {
     const M_PRIV *const p = item->priv;
-    return p != nullptr && p->targetable && item->status == IS_ACTIVE
+    return p != nullptr && p->targetable && Item_IsInPlay(item)
         && item->is_collidable && item->hit_points > 0;
 }
 

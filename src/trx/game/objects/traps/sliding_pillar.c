@@ -91,7 +91,7 @@ static bool M_IsItemOnTop(
 static int32_t M_GetFloorHeight(
     const ITEM *const item, const XYZ_32 pos, const int32_t height)
 {
-    if (item->status == IS_INVISIBLE) {
+    if (!item->is_visible) {
         return height;
     }
 
@@ -119,7 +119,7 @@ static int32_t M_GetFloorHeight(
 static int32_t M_GetCeilingHeight(
     const ITEM *item, const XYZ_32 pos, const int32_t height)
 {
-    if (item->status == IS_INVISIBLE) {
+    if (!item->is_visible) {
         return height;
     }
 
@@ -184,13 +184,13 @@ static void M_Control(const int16_t item_num)
 
     const GAME_VECTOR linked = M_GetLinked(item);
 
-    if (item->status == IS_ACTIVE
+    if (Item_IsInPlay(item)
         && (item->pos.x != linked.pos.x || item->pos.z != linked.pos.z)) {
         MovableBlock_SlideStack(
             item->pos.y - WALL_L * 2, linked.pos, item, false);
         MovableBlock_UpdateBox(item, false);
     } else if (
-        item->status == IS_DEACTIVATED
+        item->is_finished
         && (item->pos.x != linked.pos.x || item->pos.z != linked.pos.z)) {
         item->pos.x &= -WALL_L;
         item->pos.x += WALL_L / 2;
@@ -208,7 +208,7 @@ static void M_Control(const int16_t item_num)
             item->pos.y - WALL_L * 2, linked.pos, item, true);
 
         MovableBlock_UpdateBox(item, true);
-        item->status = IS_ACTIVE;
+        item->is_finished = false;
     }
 }
 

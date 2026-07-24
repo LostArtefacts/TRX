@@ -8,18 +8,6 @@ api.module("items", {
   description = "Module for controlling all moveables.",
 })
 
-api.enum("items.Status", {
-  backing = "ITEM_STATUS",
-  description = "The values `item.status` can take.",
-  values = {
-    INACTIVE = "In the level, but not yet triggered. Its control routine does not run.",
-    ACTIVE = "Triggered: its control routine runs every frame.",
-    DEACTIVATED = "Ran and finished - a creature that died, or a one-shot trigger that fired. It stays "
-      .. "in the level, but no longer runs.",
-    INVISIBLE = "Neither drawn nor collidable, as a pickup Lara has already collected is.",
-  },
-})
-
 api.enum("items.PickupMode", {
   backing = "PICKUP_MODE",
   description = "The values the `pickup_mode` item property can take. It selects the animation Lara "
@@ -94,6 +82,30 @@ local ITEM_LISTENER_ID = {
   description = "Listener id. Pass it to `trx.events.detach` to stop listening.",
 }
 
+-- The item-lifecycle methods share a shape: a callback taking this item, over
+-- the matching trx.events hook narrowed to it. Only the wording differs.
+local function item_lifecycle_method(event_name, description, examples)
+  return {
+    params = {
+      {
+        name = "callback",
+        type = "function",
+        params = {
+          {
+            name = "item",
+            type = "Item",
+            description = "This item.",
+          },
+        },
+      },
+    },
+    returns = ITEM_LISTENER_ID,
+    description = description,
+    examples = examples,
+    impl = item_hook(event_name),
+  }
+end
+
 api.type("items.Item", {
   backing = "ITEM",
   description = "An item, also known as a moveable.",
@@ -151,19 +163,24 @@ api.type("items.Item", {
       enum = "catalog.objects",
       description = "The item's object type.",
     },
-    status = {
-      from = "status",
-      type = "integer",
-      writable = false,
-      enum = "items.Status",
-      description = "Item status. Use `activate()` and `kill()` to change it, so the item's "
-        .. "active-list membership stays in sync.",
+    is_visible = {
+      from = "is_visible",
+      type = "boolean",
+      description = "Whether the item is drawn. It can be present in the world but not visible, "
+        .. "like an ambush enemy waiting to appear.",
     },
-    flags = {
-      from = "flags",
-      type = "integer",
+    is_finished = {
+      from = "is_finished",
+      type = "boolean",
+      description = "Whether the item has finished its run - a creature that died, or a one-shot "
+        .. "trigger that fired. It stays in the level but no longer acts.",
+    },
+    is_present = {
+      from = "is_present",
+      type = "boolean",
       writable = false,
-      description = "Trigger-related flag bits. Read-only: writing them directly would let a script set `IF_DESTROYED` without unlinking the item, wedging engine state. Use `kill()` instead.",
+      description = "Whether the item is in the world at all: linked in its room, so drawn and "
+        .. "collidable in principle. Managed by the engine.",
     },
     timer = {
       from = "timer",
@@ -221,6 +238,12 @@ api.type("items.Item", {
       writable = false,
       description = "Whether the item is a living creature with hit points remaining.",
     },
+    is_targetable = {
+      from = "is_targetable",
+      type = "boolean",
+      writable = false,
+      description = "Whether Lara's auto-aim can lock onto the item right now.",
+    },
     is_killed = {
       from = "is_killed",
       type = "boolean",
@@ -238,11 +261,18 @@ api.type("items.Item", {
       writable = false,
       description = "Whether this item is a creature currently hostile to Lara.",
     },
-    is_active = {
-      from = "active",
+    is_simulated = {
+      from = "is_simulated",
       type = "boolean",
       writable = false,
-      description = "Whether the item's control routine is running. Call `activate()` to start it.",
+      description = "Whether the item's control routine runs each frame. Call `activate()` to start it.",
+    },
+    is_in_play = {
+      from = "is_in_play",
+      type = "boolean",
+      writable = false,
+      description = "Whether the item is live: simulated, visible and not finished - the state a "
+        .. "targetable enemy is in. A read-only composite of the axes.",
     },
     was_hit = {
       from = "hit_status",
@@ -284,6 +314,7 @@ api.type("items.Item", {
         return trx.rooms[item.room_num]
       end,
     },
+
     properties = {
       type = "table",
       description = "Typed, object-specific item properties. Writing here overrides the object's "
@@ -301,12 +332,14 @@ api.type("items.Item", {
         .. "Objects with no control routine cannot be activated, and an item that is already active "
         .. "is left alone.",
     },
+
     deactivate = {
       description = "Stops the item: its control routine no longer runs, and a creature loses its AI "
         .. "and stands down. The item stays where it is and keeps its hit points, so this is not a "
-        .. "way of getting rid of it - use `kill()` for that.\n\n"
+        .. "way of getting rid of it - use `destroy()` for that.\n\n"
         .. "A trigger can still bring it back, and so can `activate()`.",
     },
+
     trigger = {
       description = "Fires a trigger at the item, exactly as a floor trigger in the level would: "
         .. "sets the code bits, and once they are all set, starts the item running.\n\n"
@@ -334,6 +367,7 @@ api.type("items.Item", {
         [[trx.items[12]:trigger({ type = trx.items.TriggerType.ANTITRIGGER })]],
       },
     },
+
     on_trigger = {
       params = {
         {
@@ -364,9 +398,121 @@ end)]],
       },
       impl = item_hook("on_trigger"),
     },
-    kill = {
+
+    on_show = item_lifecycle_method(
+      "on_show",
+      "Happens when this item becomes visible during play. "
+        .. "`trx.events.on_show`, narrowed to this item.",
+      {
+        [[trx.items[12]:on_show(function(item)
+  trx.log.info("the item appeared")
+end)]],
+      }
+    ),
+
+    on_hide = item_lifecycle_method(
+      "on_hide",
+      "Happens when this item becomes hidden during play. "
+        .. "`trx.events.on_hide`, narrowed to this item.",
+      {
+        [[trx.items[12]:on_hide(function(item)
+  trx.log.info("the item vanished")
+end)]],
+      }
+    ),
+
+    on_finish = item_lifecycle_method(
+      "on_finish",
+      "Happens when this item finishes its run during play. "
+        .. "`trx.events.on_finish`, narrowed to this item.",
+      {
+        [[trx.items[12]:on_finish(function(item)
+  trx.log.info("the item finished its run")
+end)]],
+      }
+    ),
+
+    on_enter_sim = item_lifecycle_method(
+      "on_enter_sim",
+      "Happens when this item starts being simulated during play. "
+        .. "`trx.events.on_enter_sim`, narrowed to this item.",
+      {
+        [[trx.items[12]:on_enter_sim(function(item)
+  trx.log.info("the item started running")
+end)]],
+      }
+    ),
+
+    on_leave_sim = item_lifecycle_method(
+      "on_leave_sim",
+      "Happens when this item stops being simulated during play. "
+        .. "`trx.events.on_leave_sim`, narrowed to this item.",
+      {
+        [[trx.items[12]:on_leave_sim(function(item)
+  trx.log.info("the item stopped running")
+end)]],
+      }
+    ),
+
+    on_activate = item_lifecycle_method(
+      "on_activate",
+      "Happens when this item is activated through the lifecycle front door during play. "
+        .. "`trx.events.on_activate`, narrowed to this item.",
+      {
+        [[trx.items[12]:on_activate(function(item)
+  trx.log.info("the item was activated")
+end)]],
+      }
+    ),
+
+    on_deactivate = item_lifecycle_method(
+      "on_deactivate",
+      "Happens when this item is deactivated through the lifecycle front door during play. "
+        .. "`trx.events.on_deactivate`, narrowed to this item.",
+      {
+        [[trx.items[12]:on_deactivate(function(item)
+  trx.log.info("the item was deactivated")
+end)]],
+      }
+    ),
+
+    on_destroy = item_lifecycle_method(
+      "on_destroy",
+      "Happens as this item is removed from the game during play. It can still be read from the "
+        .. "handler, but not after. `trx.events.on_destroy`, narrowed to this item.",
+      {
+        [[trx.items[12]:on_destroy(function(item)
+  trx.log.info("the item was removed")
+end)]],
+      }
+    ),
+
+    on_enter_world = item_lifecycle_method(
+      "on_enter_world",
+      "Happens when this item enters the world during play, such as a runtime spawn. "
+        .. "`trx.events.on_enter_world`, narrowed to this item.",
+      {
+        [[trx.items[12]:on_enter_world(function(item)
+  trx.log.info("the item entered the world")
+end)]],
+      }
+    ),
+
+    on_leave_world = item_lifecycle_method(
+      "on_leave_world",
+      "Happens when this item leaves the world during play. "
+        .. "`trx.events.on_leave_world`, narrowed to this item.",
+      {
+        [[trx.items[12]:on_leave_world(function(item)
+  trx.log.info("the item left the world")
+end)]],
+      }
+    ),
+
+    destroy = {
       description = "Removes the item from the game. Any other handle to it becomes stale.",
     },
+
     is_valid = {
       returns = { type = "boolean" },
       description = "Whether the handle still refers to a live item. Reading or writing a field on a "
@@ -381,6 +527,7 @@ trx.events.after_control(function()
 end)]],
       },
     },
+
     die = {
       params = {
         {
@@ -392,9 +539,10 @@ end)]],
         },
       },
       description = "Runs the object's creature death handling: the corpse stays, and `explode` "
-        .. "bursts its meshes as a rocket or grenade would. For creatures; `kill()` simply removes "
+        .. "bursts its meshes as a rocket or grenade would. For creatures; `destroy()` simply removes "
         .. "any item from the game.",
     },
+
     shatter = {
       params = {
         {
@@ -408,6 +556,7 @@ end)]],
       description = "Bursts the item's meshes into flying debris, the visual `die(true)` produces, "
         .. "on its own. It does not kill or remove the item.",
     },
+
     distance_to = {
       params = {
         { name = "pos", type = "vec3", description = "World position." },
@@ -415,12 +564,14 @@ end)]],
       returns = { type = "integer" },
       description = "Distance from this item to a world position.",
     },
+
     get_property = {
       params = { { name = "name", type = "string" } },
       returns = { type = "any", nullable = true },
       description = "Reads an object property, falling back to the object's default. "
         .. "Prefer `item.properties.<name>`.",
     },
+
     set_property = {
       params = {
         { name = "name", type = "string" },
@@ -428,6 +579,7 @@ end)]],
       },
       description = "Overrides an object property for this item. Prefer `item.properties.<name> = ...`.",
     },
+
     get_property_names = {
       returns = { type = "table" },
       description = "Names of every property this item's object declares.",
@@ -524,12 +676,22 @@ local function resolve_object(key)
   return trx.objects.query:by_name(key):ids()[1]
 end
 
-local filters = {
-  active = function()
+local function axis_filter(field)
+  return function()
     return function(_i, item)
-      return item.is_active
+      return item[field]
     end
-  end,
+  end
+end
+
+local filters = {
+  simulated = axis_filter("is_simulated"),
+  present = axis_filter("is_present"),
+  visible = axis_filter("is_visible"),
+  finished = axis_filter("is_finished"),
+  in_play = axis_filter("is_in_play"),
+  alive = axis_filter("is_alive"),
+  targetable = axis_filter("is_targetable"),
   of_object = function(key)
     local object_id = resolve_object(key)
     return function(_i, item)
@@ -555,9 +717,9 @@ api.property("items.query", {
   type = "table",
   description = "The identity query over every item in the level. Narrow it and read it - see "
     .. "[Query](../../QUERY.md).\n\n"
-    .. "Its own narrowings, beyond the operators: `active`, `of_object` (by object id or name) and "
-    .. "`in_room`.\n\n"
-    .. 'Example: `trx.items.query:of_object("wolf"):active():matches()`.',
+    .. "Its own narrowings, beyond the operators: `simulated`, `present`, `visible`, `finished`, "
+    .. "`in_play`, `alive`, `targetable`, `of_object` (by object id or name) and `in_room`.\n\n"
+    .. 'Example: `trx.items.query:of_object("wolf"):simulated():matches()`.',
   get = function()
     return item_query
   end,

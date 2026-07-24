@@ -1,4 +1,5 @@
 #include <trx/game/anims.h>
+#include <trx/game/const.h>
 #include <trx/game/creature.h>
 #include <trx/game/items.h>
 #include <trx/game/items/utils.h>
@@ -84,6 +85,12 @@ static bool M_GetIsAlive(const void *const self, TRX_VALUE *const out)
     return true;
 }
 
+static bool M_GetIsTargetable(const void *const self, TRX_VALUE *const out)
+{
+    *out = (TRX_VALUE) { .type = TVT_BOOL, .as_bool = Item_IsTargetable(self) };
+    return true;
+}
+
 static bool M_GetIsKilled(const void *const self, TRX_VALUE *const out)
 {
     const ITEM *const item = self;
@@ -99,7 +106,7 @@ static bool M_GetIsOneShot(const void *const self, TRX_VALUE *const out)
     const ITEM *const item = self;
     *out = (TRX_VALUE) {
         .type = TVT_BOOL,
-        .as_bool = (item->flags & IF_ONE_SHOT) != 0,
+        .as_bool = item->trigger.spent,
     };
     return true;
 }
@@ -108,11 +115,20 @@ static const char *M_SetIsOneShot(void *const self, const TRX_VALUE *const in)
 {
     ITEM *const item = self;
     if (in->as_bool) {
-        item->flags |= IF_ONE_SHOT;
+        item->trigger.spent = true;
     } else {
-        item->flags &= ~IF_ONE_SHOT;
+        item->trigger.spent = false;
     }
     return nullptr;
+}
+
+static bool M_GetIsInPlay(const void *const self, TRX_VALUE *const out)
+{
+    *out = (TRX_VALUE) {
+        .type = TVT_BOOL,
+        .as_bool = Item_IsInPlay(self),
+    };
+    return true;
 }
 
 static bool M_GetIsHostile(const void *const self, TRX_VALUE *const out)
@@ -166,7 +182,7 @@ static bool M_GetIsReversed(const void *const self, TRX_VALUE *const out)
     const ITEM *const item = self;
     *out = (TRX_VALUE) {
         .type = TVT_BOOL,
-        .as_bool = (item->flags & IF_REVERSE) != 0,
+        .as_bool = item->trigger.reversed,
     };
     return true;
 }
@@ -174,11 +190,7 @@ static bool M_GetIsReversed(const void *const self, TRX_VALUE *const out)
 static const char *M_SetIsReversed(void *const self, const TRX_VALUE *const in)
 {
     ITEM *const item = self;
-    if (in->as_bool) {
-        item->flags |= IF_REVERSE;
-    } else {
-        item->flags &= ~IF_REVERSE;
-    }
+    item->trigger.reversed = in->as_bool;
     return nullptr;
 }
 
@@ -222,6 +234,7 @@ static const FIELD_DESC m_Fields[] = {
     FIELD_FN("room_index",  TVT_S16,  M_GetRoomIndex, nullptr),
     FIELD_FN("is_hostile",  TVT_BOOL, M_GetIsHostile, nullptr),
     FIELD_FN("is_alive",    TVT_BOOL, M_GetIsAlive,   nullptr),
+    FIELD_FN("is_targetable", TVT_BOOL, M_GetIsTargetable, nullptr),
     FIELD_FN("is_killed",   TVT_BOOL, M_GetIsKilled,  nullptr),
     FIELD_FN("is_one_shot", TVT_BOOL, M_GetIsOneShot, M_SetIsOneShot),
     FIELD_FN("index",       TVT_S16,  M_GetIndex,     nullptr),
@@ -239,8 +252,8 @@ static const FIELD_DESC m_Fields[] = {
     // plain members
     FIELD(ITEM, rot),
     FIELD(ITEM, timer),
-    FIELD(ITEM, flags),
-    FIELD(ITEM, status),
+    FIELD(ITEM, is_visible),
+    FIELD(ITEM, is_finished),
     FIELD(ITEM, speed),
     FIELD(ITEM, fall_speed),
     FIELD(ITEM, gravity),
@@ -265,7 +278,9 @@ static const FIELD_DESC m_Fields[] = {
     // semantics are internal, so these are read-only here
     FIELD_RO(ITEM, object_id),
     FIELD_RO(ITEM, max_hit_points),
-    FIELD_RO(ITEM, active),
+    FIELD_RO(ITEM, is_simulated),
+    FIELD_RO(ITEM, is_present),
+    FIELD_FN("is_in_play", TVT_BOOL, M_GetIsInPlay, nullptr),
     FIELD_RO(ITEM, hit_status),
     FIELD_RO(ITEM, floor),
     FIELD_RO(ITEM, room_num),
@@ -325,8 +340,8 @@ static const LUA_PROPERTY_DESC m_Properties = {
     .name_at = M_GetPropertyName,
 };
 
-// item:kill()
-static int M_L_ItemsKill(lua_State *const L)
+// item:destroy()
+static int M_L_ItemsDestroy(lua_State *const L)
 {
     LUA_STRUCT_REF *const ref = LUA_Struct_CheckRef(L, 1, &TYPE_ITEM);
     LUA_Struct_Deref(L, ref);
@@ -409,7 +424,6 @@ static int M_L_ItemsTrigger(lua_State *const L)
 
     const ITEM_TRIGGER trigger = {
         .kind = (ITEM_TRIGGER_KIND)kind,
-        // The 1..31 mask shifts up into the IF_CODE_BITS field of the flags.
         .mask = (int16_t)((mask << 9) & IF_CODE_BITS),
         .timer = timer,
         .one_shot = M_OptFlag(L, 2, "one_shot"),
@@ -527,7 +541,7 @@ static const luaL_Reg m_Methods[] = {
     { "distance_to", M_L_ItemsDistanceTo },
     { "die", M_L_ItemsDie },
     { "shatter", M_L_ItemsShatter },
-    { "kill", M_L_ItemsKill },
+    { "destroy", M_L_ItemsDestroy },
     { "activate", M_L_ItemsActivate },
     { "deactivate", M_L_ItemsDeactivate },
     { "trigger", M_L_ItemsTrigger },

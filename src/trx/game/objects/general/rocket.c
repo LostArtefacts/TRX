@@ -120,8 +120,7 @@ static bool M_TryExplodeItem(
         return false;
     }
 
-    if (target_item->status == IS_INVISIBLE
-        || target_obj->collision_func == nullptr) {
+    if (!target_item->is_visible || target_obj->collision_func == nullptr) {
         return false;
     }
 

@@ -7,8 +7,8 @@
 
 void Item_ControlDraw(ITEM *const item)
 {
-    if (g_TRVersion == 3 && item->status != IS_INVISIBLE
-        && item->after_death < 32 && item->after_death > 0) {
+    if (g_TRVersion == 3 && item->is_visible && item->after_death < 32
+        && item->after_death > 0) {
         item->after_death++;
 
         if (!Item_ShouldSpawnBlood(item)) {

@@ -2,7 +2,6 @@
 #include <trx/core/json/util/write_io.h>
 #include <trx/game/lara.h>
 #include <trx/game/objects.h>
-#include <trx/game/pathing.h>
 #include <trx/game/rooms.h>
 
 // clang-format off
@@ -63,7 +62,7 @@ static void M_Initialise(const int16_t item_num)
         wasp_item->room_num = item->room_num;
         wasp_item->pos = item->pos;
         wasp_item->rot = item->rot;
-        wasp_item->status = IS_INVISIBLE;
+        wasp_item->is_visible = false;
         wasp_item->shade.value_1 = -1;
         wasp_item->shade.value_2 = -1;
         Item_Initialise(wasp_item_num);
@@ -92,7 +91,7 @@ static int32_t M_GetActiveCount(const M_PRIV *const p)
     int32_t count = 0;
     for (int32_t i = 0; i < M_MAX_SLOTS; i++) {
         const ITEM *const item = M_GetWaspItem(p, i);
-        if (item != nullptr && item->active) {
+        if (item != nullptr && item->is_simulated) {
             count++;
         }
     }
@@ -111,22 +110,14 @@ static void M_SpawnWasp(const ITEM *const spawner_item, const int32_t slot_idx)
     wasp_item->goal_anim_state = wasp_item->current_anim_state;
     wasp_item->required_anim_state = 0;
     wasp_item->is_destroyed = false;
-    wasp_item->flags &= ~(IF_INVISIBLE | 3);
+    wasp_item->trigger.spent = false;
     wasp_item->creature_data = nullptr;
     wasp_item->hit_points = wasp_item->max_hit_points;
     wasp_item->mesh_bits = -1;
-    wasp_item->status = IS_ACTIVE;
     wasp_item->is_collidable = true;
     wasp_item->ai_bits = AI_MODIFY;
 
-    if (wasp_item->active) {
-        Item_RemoveSimulated(p->slots[slot_idx]);
-    }
-
-    Item_AddSimulated(p->slots[slot_idx]);
-    Item_UpdateRoom(p->slots[slot_idx], NO_ITEM);
-    Item_UpdateRoom(p->slots[slot_idx], spawner_item->room_num);
-    LOT_EnableBaddieAI(p->slots[slot_idx], true);
+    Item_Respawn(p->slots[slot_idx], spawner_item->room_num);
 }
 
 static bool M_Trigger(ITEM *const item, const ITEM_TRIGGER *const trigger)
@@ -136,7 +127,7 @@ static bool M_Trigger(ITEM *const item, const ITEM_TRIGGER *const trigger)
     }
 
     item->timer = 0;
-    item->flags |= IF_ONE_SHOT;
+    item->trigger.spent = true;
 
     M_PRIV *const p = item->priv;
     p->spawn_total = (int32_t)trigger->timer;
@@ -148,7 +139,7 @@ static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
     M_PRIV *const p = item->priv;
-    if (!item->active || p->spawn_count >= p->spawn_total) {
+    if (!item->is_simulated || p->spawn_count >= p->spawn_total) {
         return;
     }
 

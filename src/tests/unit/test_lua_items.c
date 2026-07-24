@@ -38,8 +38,8 @@ static int M_FakeReset(lua_State *const L)
 static int M_FakeCalls(lua_State *const L)
 {
     lua_newtable(L);
-    lua_pushinteger(L, g_FakeItemCalls.kill);
-    lua_setfield(L, -2, "kill");
+    lua_pushinteger(L, g_FakeItemCalls.destroy);
+    lua_setfield(L, -2, "destroy");
     lua_pushinteger(L, g_FakeItemCalls.creature_die);
     lua_setfield(L, -2, "creature_die");
     lua_pushboolean(L, g_FakeItemCalls.creature_die_explode);

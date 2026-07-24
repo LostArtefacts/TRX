@@ -223,7 +223,7 @@ static void M_Die(int16_t item_num)
     item->hit_points = 0;
     Item_Destroy(item_num);
     LOT_DisableBaddieAI(item_num);
-    item->flags |= IF_INVISIBLE;
+    item->trigger.spent = true;
 }
 
 static bool M_CanBeExploded(const ITEM *const item)
@@ -331,27 +331,18 @@ static bool M_TriggerLizard(M_PRIV *const p)
 
     item->rot.z = 0;
     item->timer = 0;
-    item->flags = 0;
+    item->trigger = (ITEM_TRIGGER_STATE) { 0 };
     item->creature_data = nullptr;
     item->mesh_bits = -1;
     item->hit_points = item->max_hit_points;
-    item->active = false;
-    item->status = IS_ACTIVE;
     item->is_collidable = true;
     item->is_destroyed = false;
-    item->flags &= ~IF_ONE_SHOT;
+    item->trigger.spent = false;
     item->include_in_kill_stats = false;
 
-    // Item_Destroy removes it from room item chains; reinsert even when room is
-    // unchanged.
-    Item_UpdateRoom(p->lizard_item_num, NO_ROOM);
-    Item_UpdateRoom(p->lizard_item_num, room_num);
-
-    Item_AddSimulated(p->lizard_item_num);
-    LOT_EnableBaddieAI(p->lizard_item_num, true);
+    Item_Respawn(p->lizard_item_num, room_num);
 
     Room_GetSector(item->pos, &room_num);
-
     if (item->room_num != room_num) {
         Item_UpdateRoom(p->lizard_item_num, room_num);
     }

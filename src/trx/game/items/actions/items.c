@@ -27,14 +27,14 @@ static void M_Turn90(ITEM *const item)
 static void M_InvisibilityOn(ITEM *const item)
 {
     if (item != nullptr) {
-        item->status = IS_INVISIBLE;
+        item->is_visible = false;
     }
 }
 
 static void M_InvisibilityOff(ITEM *const item)
 {
     if (item != nullptr) {
-        item->status = IS_ACTIVE;
+        item->is_visible = true;
     }
 }
 

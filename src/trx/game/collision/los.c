@@ -177,7 +177,7 @@ int32_t LOS_CheckSmashable(
 
     for (int16_t item_num = 0; item_num < Item_GetTotalCount(); item_num++) {
         const ITEM *const item = Item_Get(item_num);
-        if (item->status == IS_DEACTIVATED) {
+        if (item->is_finished) {
             continue;
         }
         if (!Object_IsType(item->object_id, g_SmashableObjects)

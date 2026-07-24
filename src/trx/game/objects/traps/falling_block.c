@@ -105,7 +105,6 @@ static void M_Control(const int16_t item_num)
         const ITEM *const lara_item = Lara_GetItem();
         M_PRIV *const p = item->priv;
         if (!p->heavy_triggered && lara_item->pos.y != item->pos.y + origin) {
-            item->status = IS_INACTIVE;
             Item_RemoveSimulated(item_num);
             return;
         }
@@ -134,7 +133,7 @@ static void M_Control(const int16_t item_num)
     }
 
     Item_Animate(item);
-    if (item->status == IS_DEACTIVATED) {
+    if (item->is_finished) {
         if (!Item_IsTriggerActive(item)) {
             Trap_Reset(item);
         }

@@ -2,7 +2,6 @@
 #include <trx/core/json/util/write_io.h>
 #include <trx/game/lara.h>
 #include <trx/game/objects.h>
-#include <trx/game/pathing.h>
 
 #define M_MAX_SLOTS 3
 
@@ -24,21 +23,13 @@ static void M_SpawnRaptor(const ITEM *const spawner_item, int32_t slot_idx)
     raptor_item->goal_anim_state = raptor_item->current_anim_state;
     raptor_item->required_anim_state = 0;
     raptor_item->is_destroyed = false;
-    raptor_item->flags &= ~(IF_INVISIBLE | 3); // 3?
+    raptor_item->trigger.spent = false;
     raptor_item->creature_data = nullptr;
     raptor_item->hit_points = raptor_item->max_hit_points;
     raptor_item->mesh_bits = -1;
-    raptor_item->status = IS_ACTIVE;
     raptor_item->is_collidable = true;
 
-    if (raptor_item->active) {
-        Item_RemoveSimulated(p->slots[slot_idx]);
-    }
-
-    Item_AddSimulated(p->slots[slot_idx]);
-    Item_UpdateRoom(p->slots[slot_idx], NO_ITEM);
-    Item_UpdateRoom(p->slots[slot_idx], spawner_item->room_num);
-    LOT_EnableBaddieAI(p->slots[slot_idx], true);
+    Item_Respawn(p->slots[slot_idx], spawner_item->room_num);
 }
 
 static void M_PopulateSlots(M_PRIV *const p)
@@ -93,7 +84,7 @@ static void M_Initialise(const int16_t item_num)
 static void M_Control(int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
-    if (!item->active || item->timer <= 0) {
+    if (!item->is_simulated || item->timer <= 0) {
         return;
     }
 

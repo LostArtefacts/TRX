@@ -4,8 +4,9 @@
 #include <trx/game/objects/general/shoal.h>
 #include <trx/game/pathing/lot.h>
 
-// The active cast this trigger claims, minus the fixtures a mass kill leaves
-// standing: Lara, the save crystal, pickups, and doors.
+// The simulated cast this trigger claims, minus the fixtures a mass kill
+// leaves standing: Lara, the save crystal, pickups, doors, and a filled
+// receptacle (control-less, on the simulation list only as a marker).
 static void M_DestroyAllSimulatedItems(void)
 {
     int16_t item_num = Item_GetNextSimulated();
@@ -13,11 +14,12 @@ static void M_DestroyAllSimulatedItems(void)
         ITEM *const item = Item_Get(item_num);
         const int16_t next_item_num = item->next_simulated;
 
-        if (item->active && (item->flags & IF_REVERSE) == 0
+        if (item->is_simulated && !item->trigger.reversed
             && item->object_id != O_LARA
             && item->object_id != O_SAVE_CRYSTAL_ITEM
             && !Object_IsType(item->object_id, g_PickupObjects)
-            && !Object_IsType(item->object_id, g_DoorObjects)) {
+            && !Object_IsType(item->object_id, g_DoorObjects)
+            && !Object_IsType(item->object_id, g_ReceptacleObjects)) {
             Item_Destroy(item_num);
 
             if (Object_IsType(item->object_id, g_ShoalObjects)) {
@@ -34,8 +36,8 @@ static void M_DestroyAllSimulatedItems(void)
     }
 }
 
-// Active effects with a control routine, sparing a flame whose counter has gone
-// negative.
+// Active effects with a control routine, sparing a flame whose counter has
+// gone negative.
 static void M_DestroyAllActiveEffects(void)
 {
     int16_t effect_num = Effect_GetActiveNum();

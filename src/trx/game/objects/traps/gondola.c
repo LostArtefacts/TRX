@@ -39,7 +39,7 @@ static void M_Control(const int16_t item_num)
 
     Item_Animate(item);
 
-    if (item->status == IS_DEACTIVATED) {
+    if (item->is_finished) {
         Item_RemoveSimulated(item_num);
     }
 }

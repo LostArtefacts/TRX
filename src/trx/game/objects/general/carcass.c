@@ -46,7 +46,7 @@ static void M_SpawnSplash(const ITEM *const item)
 static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
-    if (item->status != IS_ACTIVE) {
+    if (!Item_IsInPlay(item)) {
         return;
     }
 

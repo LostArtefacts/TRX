@@ -16,14 +16,14 @@ static bool M_IsOneShotSpent(
     if (g_TRVersion == 3) {
         switch (trigger->kind) {
         case ITEM_TRIGGER_SWITCH:
-            return (item->flags & IF_ONE_SHOT_SWITCH) != 0;
+            return item->trigger.switch_spent;
         case ITEM_TRIGGER_ANTI:
-            return (item->flags & IF_ONE_SHOT_ANTITRIGGER) != 0;
+            return item->trigger.anti_spent;
         default:
             break;
         }
     }
-    return (item->flags & IF_ONE_SHOT) != 0;
+    return item->trigger.spent;
 }
 
 void Item_Trigger(const int16_t item_num, const ITEM_TRIGGER *const trigger)
@@ -43,33 +43,36 @@ void Item_Trigger(const int16_t item_num, const ITEM_TRIGGER *const trigger)
         switch (trigger->kind) {
         case ITEM_TRIGGER_SWITCH:
         case ITEM_TRIGGER_HEAVY_SWITCH:
-            item->flags ^= trigger->mask;
+            item->trigger.mask ^= trigger->mask;
             if (trigger->one_shot && g_TRVersion == 3) {
-                item->flags |= IF_ONE_SHOT_SWITCH;
+                item->trigger.switch_spent = true;
             }
             break;
 
         case ITEM_TRIGGER_ANTI:
-            // TODO investigate unifying as ~(trigger->mask | IF_REVERSE)
             if (g_TRVersion >= 3) {
-                item->flags &= ~(IF_CODE_BITS | IF_REVERSE);
+                item->trigger.mask = 0;
+                item->trigger.reversed = false;
             } else {
-                item->flags &= ~trigger->mask;
+                item->trigger.mask &= ~trigger->mask;
             }
             if (trigger->one_shot) {
-                item->flags |=
-                    g_TRVersion == 3 ? IF_ONE_SHOT_ANTITRIGGER : IF_ONE_SHOT;
+                if (g_TRVersion == 3) {
+                    item->trigger.anti_spent = true;
+                } else {
+                    item->trigger.spent = true;
+                }
             }
             break;
 
         default:
-            item->flags |= trigger->mask;
+            item->trigger.mask |= trigger->mask;
             break;
         }
 
-        if ((item->flags & IF_CODE_BITS) == IF_CODE_BITS) {
+        if (item->trigger.mask == IF_CODE_BITS) {
             if (trigger->one_shot) {
-                item->flags |= IF_ONE_SHOT;
+                item->trigger.spent = true;
             }
             Item_Activate(item_num, false);
         }

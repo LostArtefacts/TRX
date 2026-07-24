@@ -1,6 +1,7 @@
 #include <trx/game/objects/general/pickup.h>
 
 #include <trx/config.h>
+#include <trx/game/const.h>
 #include <trx/game/effects.h>
 #include <trx/game/game.h>
 #include <trx/game/gun.h>
@@ -110,7 +111,7 @@ static void M_Initialise(int16_t item_num)
         p->secret_mask = Stats_GetSecretMaskForItem(level, item_num);
     }
 
-    if (item->status != IS_INVISIBLE) {
+    if (item->is_visible) {
         Item_AddSimulated(item_num);
     }
 
@@ -125,7 +126,7 @@ static void M_Initialise(int16_t item_num)
 static void M_HandleSave(ITEM *const item, const SAVEGAME_STAGE stage)
 {
     if (stage == SAVEGAME_STAGE_AFTER_LOAD) {
-        if (item->status == IS_DEACTIVATED) {
+        if (item->is_finished) {
             const int16_t item_num = Item_GetIndex(item);
             Item_DetachFromRoom(item_num);
         }
@@ -135,21 +136,20 @@ static void M_HandleSave(ITEM *const item, const SAVEGAME_STAGE stage)
 static bool M_Trigger(ITEM *const item, const ITEM_TRIGGER *const trigger)
 {
     if (trigger->kind == ITEM_TRIGGER_SWITCH) {
-        item->flags ^= trigger->mask;
+        item->trigger.mask ^= trigger->mask;
     } else if (trigger->kind == ITEM_TRIGGER_ANTI) {
-        item->flags &= ~trigger->mask;
+        item->trigger.mask &= ~trigger->mask;
     } else {
-        item->flags |= trigger->mask;
+        item->trigger.mask |= trigger->mask;
     }
 
-    if ((item->flags & IF_CODE_BITS) != IF_CODE_BITS) {
-        item->status = IS_INVISIBLE;
+    if (item->trigger.mask != IF_CODE_BITS) {
+        item->is_visible = false;
         item->is_destroyed = true;
     } else if (
-        item->status == IS_INVISIBLE
-        || Object_IsType(item->object_id, g_QuestObjects)) {
+        !item->is_visible || Object_IsType(item->object_id, g_QuestObjects)) {
         item->touch_bits = 0;
-        item->status = IS_ACTIVE;
+        item->is_visible = true;
         Item_AddSimulated(Item_GetIndex(item));
     }
 
@@ -247,7 +247,7 @@ static void M_ControlPickupLights(ITEM *const item)
 static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
-    if (item->status == IS_INVISIBLE || item->status == IS_DEACTIVATED) {
+    if (!item->is_visible || item->is_finished) {
         Item_RemoveSimulated(item_num);
         return;
     }
@@ -257,7 +257,7 @@ static void M_Control(const int16_t item_num)
     }
 
     if (Object_IsType(item->object_id, g_QuestObjects)) {
-        if (item->status != IS_INACTIVE) {
+        if (!Item_IsInactive(item)) {
             item->rot.y += 1024;
             M_ControlPickupLights(item);
         }
@@ -309,7 +309,7 @@ static void M_DoPickup(const int16_t item_num)
     // Notify Lua pickup listeners
     LUA_FireEventInt32(LUA_EVENT_PICKUP, item_num);
 
-    item->status = IS_INVISIBLE;
+    item->is_visible = false;
     Item_Destroy(item_num);
 
     LARA_INFO *const lara = Lara_GetLaraInfo();
@@ -693,11 +693,11 @@ const OBJECT_BOUNDS *Pickup_Bounds(void)
 bool Pickup_Trigger(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
-    if (item->status != IS_INVISIBLE) {
+    if (item->is_visible) {
         return false;
     }
 
-    item->status = IS_DEACTIVATED;
+    item->is_finished = true;
     return true;
 }
 
@@ -705,7 +705,7 @@ void Pickup_Collision(
     const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
 {
     const ITEM *const item = Item_Get(item_num);
-    if ((item->flags & IF_INVISIBLE) != 0) {
+    if (item->trigger.spent) {
         return;
     }
 

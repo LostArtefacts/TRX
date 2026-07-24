@@ -16,8 +16,7 @@ static void M_Control(const int16_t item_num)
     ITEM *const item = Item_Get(item_num);
     const ITEM *const lara_item = Lara_GetItem();
 
-    if (item->current_anim_state == COPTER_STATE_SPIN
-        && (item->flags & IF_ONE_SHOT)) {
+    if (item->current_anim_state == COPTER_STATE_SPIN && item->trigger.spent) {
         item->goal_anim_state = COPTER_STATE_TAKEOFF;
     }
 
@@ -38,7 +37,7 @@ static void M_Control(const int16_t item_num)
     pos.z = lara_item->pos.z + ((pos.z - lara_item->pos.z) >> 2);
     Sound_Effect(SFX_HELICOPTER_LOOP, &pos, SPM_NORMAL);
 
-    if (item->status == IS_DEACTIVATED) {
+    if (item->is_finished) {
         Item_Destroy(item_num);
     }
 }

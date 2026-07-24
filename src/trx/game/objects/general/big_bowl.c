@@ -1,3 +1,4 @@
+#include <trx/game/const.h>
 #include <trx/game/effects.h>
 #include <trx/game/objects/common.h>
 #include <trx/game/random.h>
@@ -92,7 +93,7 @@ static void M_Control(const int16_t item_num)
 
     Item_Animate(item);
 
-    if (item->status == IS_DEACTIVATED && item->timer >= p->pour_time) {
+    if (item->is_finished && item->timer >= p->pour_time) {
         Item_RemoveSimulated(item_num);
     }
 }

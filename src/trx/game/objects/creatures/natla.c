@@ -58,7 +58,7 @@ static bool M_GunHit(
 
 static bool M_IsTargetable(const ITEM *const item)
 {
-    return item->hit_points > 0 && item->status == IS_ACTIVE
+    return item->hit_points > 0 && Item_IsInPlay(item)
         && item->current_anim_state != M_STATE_SEMIDEATH;
 }
 
@@ -181,7 +181,7 @@ static void M_Control(const int16_t item_num)
         case M_STATE_AIM:
         case M_STATE_SHOOT:
             item->goal_anim_state = M_STATE_SEMIDEATH;
-            item->flags = 0;
+            item->trigger = (ITEM_TRIGGER_STATE) { 0 };
             timer = 0;
             break;
         }

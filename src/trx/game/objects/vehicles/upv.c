@@ -215,8 +215,7 @@ static void M_GetOn(ITEM *const item)
     lara_item->current_anim_state = M_STATE_GET_ON;
     Item_Animate(lara_item);
 
-    if (item->status != IS_ACTIVE) {
-        item->status = IS_ACTIVE;
+    if (!Item_IsInPlay(item)) {
         Item_AddSimulated(Item_GetIndex(item));
     }
 }

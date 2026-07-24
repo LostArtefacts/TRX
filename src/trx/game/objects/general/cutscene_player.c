@@ -17,7 +17,6 @@ static void M_Initialise(const int16_t item_num)
 static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
-    item->status = IS_ACTIVE;
     CAMERA_INFO *const camera = Cutscene_GetCamera();
     item->rot.y = camera->target_angle;
     item->pos = camera->pos.pos;
@@ -35,7 +34,7 @@ static void M_Control(const int16_t item_num)
     const int32_t height = Room_GetHeight(sector, pos);
     item->floor = height == NO_HEIGHT ? pos.y : height;
 
-    if (item->dynamic_light && item->status != IS_INVISIBLE) {
+    if (item->dynamic_light && item->is_visible) {
         pos.x = 0;
         pos.y = 0;
         pos.z = 0;

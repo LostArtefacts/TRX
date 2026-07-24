@@ -200,7 +200,7 @@ void Level_Section_ReadItems(LEVEL_CONTEXT *const ctx, VFILE *const file)
         M_ReadPosition(&item->pos, file);
         item->rot.y = VFile_ReadS16(file);
         M_ReadShade(loader, &item->shade, file);
-        item->flags = VFile_ReadS16(file);
+        item->init_flags = VFile_ReadS16(file);
     }
 
 finish:

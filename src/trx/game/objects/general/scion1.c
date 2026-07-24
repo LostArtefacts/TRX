@@ -33,7 +33,7 @@ static const OBJECT_BOUNDS *M_Bounds(void)
 static void M_HandleSave(ITEM *const item, const SAVEGAME_STAGE stage)
 {
     if (stage == SAVEGAME_STAGE_AFTER_LOAD) {
-        if (item->status == IS_DEACTIVATED) {
+        if (item->is_finished) {
             const int16_t item_num = Item_GetIndex(item);
             Item_DetachFromRoom(item_num);
         }

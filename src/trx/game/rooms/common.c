@@ -66,13 +66,13 @@ static void M_RemoveFlipItems(const ROOM *const room)
 
         // TR2 does not have land/water objects like crocodile/alligator in TR1,
         // so avoid instances of floating water creatures in drained rooms.
-        if (g_TRVersion >= 2 && (item->flags & IF_ONE_SHOT) && obj->intelligent
+        const int16_t next_item_num = item->next_item;
+        if (g_TRVersion >= 2 && item->trigger.spent && obj->intelligent
             && item->hit_points <= 0) {
-            Item_DetachFromRoom(item_num);
-            item->is_destroyed = true;
+            Item_Destroy(item_num);
         }
 
-        item_num = item->next_item;
+        item_num = next_item_num;
     }
 }
 

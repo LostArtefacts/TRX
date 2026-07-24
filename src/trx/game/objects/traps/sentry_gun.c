@@ -142,8 +142,8 @@ static void M_Control(const int16_t item_num)
         Item_Shatter(item_num, -1, 0);
         LOT_DisableBaddieAI(item_num);
         Item_Destroy(item_num);
-        item->flags |= IF_INVISIBLE;
-        item->status = IS_DEACTIVATED;
+        item->trigger.spent = true;
+        item->is_finished = true;
     }
 
     if (!p->is_alerted) {

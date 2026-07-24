@@ -300,9 +300,8 @@ TEST(type_sizes_and_names_are_stable)
 }
 
 // Every declared member's sizeof must match its declared TRX_VALUE_TYPE. This
-// is the check that caught a real bug: OBJECT_ID and ITEM_STATUS are 4-byte
-// enums, and tagging either as TVT_S16 would have silently read half the
-// member.
+// is the check that caught a real bug: OBJECT_ID is a 4-byte enum, and tagging
+// it as TVT_S16 would have silently read half the member.
 TEST(field_validate_type_accepts_a_consistent_table)
 {
     for (int32_t i = 0; i < TYPE_SAMPLE.field_count; i++) {

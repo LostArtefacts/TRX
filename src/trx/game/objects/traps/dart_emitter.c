@@ -111,7 +111,6 @@ static void M_CreateProjectile(const ITEM *const item)
     projectile_item->pos.z = item->pos.z + z;
     Item_Initialise(projectile_item_num);
     Item_AddSimulated(projectile_item_num);
-    projectile_item->status = IS_ACTIVE;
 
     if (is_poison) {
         projectile_item->rot.y += DEG_180;

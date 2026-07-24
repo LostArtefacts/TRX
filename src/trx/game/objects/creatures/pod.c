@@ -3,7 +3,6 @@
 #include <trx/core/utils.h>
 #include <trx/game/lara.h>
 #include <trx/game/objects/common.h>
-#include <trx/game/pathing.h>
 
 #define M_EXPLODE_DIST (WALL_L * 4) // = 4096
 
@@ -31,21 +30,21 @@ static void M_Initialise(const int16_t item_num)
         bug->pos.y = item->pos.y;
         bug->pos.z = item->pos.z;
         bug->rot.y = item->rot.y;
-        bug->flags = IF_INVISIBLE;
+        bug->init_flags = IF_INVISIBLE;
         bug->shade.value_1 = -1;
 
         Item_Initialise(bug_item_num);
         p->bug_item_num = bug_item_num;
     }
 
-    item->flags = 0;
+    item->trigger = (ITEM_TRIGGER_STATE) { 0 };
     item->mesh_bits = 0xFF0001FF;
 }
 
 static void M_HandleSave(ITEM *const item, const SAVEGAME_STAGE stage)
 {
     if (stage == SAVEGAME_STAGE_AFTER_LOAD) {
-        if (item->status == IS_DEACTIVATED) {
+        if (item->is_finished) {
             item->mesh_bits = 0x1FF;
             item->is_collidable = false;
         }
@@ -65,7 +64,7 @@ static void M_Control(const int16_t item_num)
     if (item->goal_anim_state != M_STATE_EXPLODE) {
         int32_t explode = 0;
 
-        if (item->flags & IF_ONE_SHOT) {
+        if (item->trigger.spent) {
             explode = 1;
         } else if (item->object_id == O_BIG_POD) {
             explode = 1;
@@ -90,16 +89,11 @@ static void M_Control(const int16_t item_num)
             if (p->bug_item_num != NO_ITEM) {
                 ITEM *const bug = Item_Get(p->bug_item_num);
                 if (Object_Get(bug->object_id)->loaded) {
-                    bug->touch_bits = 0;
-                    Item_AddSimulated(p->bug_item_num);
-                    if (LOT_EnableBaddieAI(p->bug_item_num, false)) {
-                        bug->status = IS_ACTIVE;
-                    } else {
-                        bug->status = IS_INVISIBLE;
-                    }
+                    // Ambush wake: revealed only if a free AI slot is found.
+                    Item_Activate(p->bug_item_num, false);
                 }
             }
-            item->status = IS_DEACTIVATED;
+            item->is_finished = true;
         }
     }
 
@@ -123,7 +117,7 @@ static void M_Setup(OBJECT *const obj)
 
 OBJECT_ID Pod_GetBugObjectID(const ITEM *const item)
 {
-    switch ((item->flags & IF_CODE_BITS) >> 9) {
+    switch (item->trigger.mask) {
     case 1:
         return O_ATLANTEAN_SHOOTER;
     case 2:

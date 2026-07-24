@@ -350,7 +350,7 @@ static void M_TriggerBats(M_PRIV *const p, const XYZ_32 pos, int16_t ang)
 static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
-    if (item->active == 0) {
+    if (item->is_simulated == 0) {
         return;
     }
 

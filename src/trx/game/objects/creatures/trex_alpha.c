@@ -101,7 +101,7 @@ static void M_KillLara(ITEM *const item)
 static bool M_IsCandidateTarget(const ITEM *const item)
 {
     if (item->object_id == O_RAPTOR) {
-        return item->status == IS_ACTIVE && item->hit_points > 0;
+        return Item_IsInPlay(item) && item->hit_points > 0;
     }
     if (item->object_id == O_FLARE_ITEM) {
         return FlareItem_IsActive(item) && item->hit_points != M_FLARE_SEEN;

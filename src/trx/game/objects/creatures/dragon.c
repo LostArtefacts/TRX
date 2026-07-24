@@ -121,7 +121,7 @@ static bool M_IsTwoPhaseMode(const ITEM *const item)
 
 static bool M_CanDropItemsBack(const ITEM *const item)
 {
-    return item->hit_points <= 0 && item->status == IS_DEACTIVATED;
+    return item->hit_points <= 0 && item->is_finished;
 }
 
 static void M_InitialiseFront(const int16_t item_num)
@@ -136,7 +136,7 @@ static void M_InitialiseBack(const int16_t item_num)
     M_PRIV *const p = dragon_back_item->priv;
     p->mode = M_MODE_TWO_PHASE;
 
-    dragon_back_item->status = IS_INVISIBLE;
+    dragon_back_item->is_visible = false;
     dragon_back_item->shade.value_1 = -1;
     dragon_back_item->mesh_bits = 0x1FFFFF;
 
@@ -148,7 +148,7 @@ static void M_InitialiseBack(const int16_t item_num)
     dragon_front_item->pos = dragon_back_item->pos;
     dragon_front_item->rot.y = dragon_back_item->rot.y;
     dragon_front_item->room_num = dragon_back_item->room_num;
-    dragon_front_item->flags = IF_INVISIBLE;
+    dragon_front_item->init_flags = IF_INVISIBLE;
     dragon_front_item->shade.value_1 = -1;
     Item_Initialise(p->dragon_front_item_num);
 }
@@ -162,8 +162,7 @@ static bool M_TriggerBack(ITEM *const item, const ITEM_TRIGGER *const trigger)
 
 static void M_ActivateBack(ITEM *const dragon_back_item)
 {
-    if (dragon_back_item->active
-        || dragon_back_item->status == IS_DEACTIVATED) {
+    if (dragon_back_item->is_simulated || dragon_back_item->is_finished) {
         return;
     }
 
@@ -179,7 +178,7 @@ static void M_ActivateBack(ITEM *const dragon_back_item)
     LOT_EnableBaddieAI(dragon_front_item_num, true);
     Item_AddSimulated(dragon_front_item_num);
     Item_AddSimulated(Item_GetIndex(dragon_back_item));
-    dragon_back_item->status = IS_ACTIVE;
+    dragon_back_item->is_visible = true;
 }
 
 static void M_MarkDragonDead(ITEM *const dragon_back_item)
@@ -194,11 +193,14 @@ static void M_MarkDragonDead(ITEM *const dragon_back_item)
     Stats_AddKill();
 
     // Allow drops to occur at the beginning of the cinematic camera for a
-    // better window to avoid seeing the items spawn.
-    const ITEM_STATUS current_status = dragon_back_item->status;
-    dragon_back_item->status = IS_DEACTIVATED;
+    // better window to avoid seeing the items spawn. Carrier_TestItemDrops
+    // only drops for a finished item, so force that phase and restore it.
+    // A raw write: the value never actually changes across the call, so
+    // nothing should observe the momentary flip.
+    const bool was_finished = dragon_back_item->is_finished;
+    dragon_back_item->is_finished = true;
     Carrier_TestItemDrops(Item_GetIndex(dragon_back_item));
-    dragon_back_item->status = current_status;
+    dragon_back_item->is_finished = was_finished;
 }
 
 static void M_PushLaraAway(
@@ -265,7 +267,7 @@ static void M_Bones(const int16_t item_num)
 static void M_HandleSaveBack(ITEM *const item, const SAVEGAME_STAGE stage)
 {
     if (stage == SAVEGAME_STAGE_AFTER_LOAD) {
-        if (item->status == IS_DEACTIVATED && M_IsTwoPhaseMode(item)) {
+        if (item->is_finished && M_IsTwoPhaseMode(item)) {
             const int32_t y_pos = item->pos.y;
             int16_t room_num = item->room_num;
             const SECTOR *const sector = Room_GetSector(item->pos, &room_num);
@@ -378,8 +380,8 @@ static void M_ControlBack(const int16_t item_num)
             } else if (creature->flags == M_DISSOLVE_TIME) {
                 Room_TestTriggers(dragon_back_item);
                 LOT_DisableBaddieAI(dragon_front_item_num);
-                dragon_front_item->status = IS_DEACTIVATED;
-                dragon_back_item->status = IS_DEACTIVATED;
+                dragon_front_item->is_finished = true;
+                dragon_back_item->is_finished = true;
                 if (is_two_phase) {
                     Item_Destroy(dragon_front_item_num);
                     Item_Destroy(dragon_back_item_num);
@@ -388,8 +390,8 @@ static void M_ControlBack(const int16_t item_num)
                     Item_RemoveSimulated(dragon_back_item_num);
                     dragon_front_item->is_collidable = false;
                     dragon_back_item->is_collidable = false;
-                    dragon_front_item->flags |= IF_ONE_SHOT;
-                    dragon_back_item->flags |= IF_ONE_SHOT;
+                    dragon_front_item->trigger.spent = true;
+                    dragon_back_item->trigger.spent = true;
                 }
             } else if (creature->flags < M_BONE_TIME) {
                 dragon_front_item->pos.y += M_DISSOLVE_SHIFT;

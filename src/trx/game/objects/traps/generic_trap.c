@@ -112,7 +112,7 @@ static void M_Control(const int16_t item_num)
         Item_UpdateRoom(item_num, room_num);
     }
 
-    if (item->status == IS_DEACTIVATED) {
+    if (item->is_finished) {
         Item_RemoveSimulated(item_num);
     }
 }

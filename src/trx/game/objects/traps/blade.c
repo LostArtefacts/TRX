@@ -38,7 +38,6 @@ static void M_Stop(ITEM *const item)
         const ANIM *const anim = Item_GetAnim(item);
         if (!Item_IsTriggerActive(item) && anim->jump_anim_num == item->anim_num
             && Item_TestFrameEqual(item, -1)) {
-            item->status = IS_INACTIVE;
             Item_RemoveSimulated(Item_GetIndex(item));
             return;
         }

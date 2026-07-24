@@ -261,7 +261,7 @@ static void M_Die(const int16_t item_num)
     item->is_collidable = false;
     Item_Destroy(item_num);
     LOT_DisableBaddieAI(item_num);
-    item->flags |= IF_INVISIBLE;
+    item->trigger.spent = true;
 }
 
 static void M_Initialise(int16_t item_num)

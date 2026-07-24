@@ -22,7 +22,7 @@ static void M_Collision(
     const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
 {
     ITEM *const item = Item_Get(item_num);
-    if (item->status == IS_ACTIVE && item->current_anim_state == M_STATE_OFF) {
+    if (Item_IsInPlay(item) && item->current_anim_state == M_STATE_OFF) {
         Object_Collision(item_num, lara_item, coll);
     } else {
         Object_Collision_Trap(item_num, lara_item, coll);
@@ -38,7 +38,7 @@ static void M_Control(const int16_t item_num)
         return;
     }
 
-    if (Item_IsTriggerActive(item) && (item->flags & IF_ONE_SHOT) == 0) {
+    if (Item_IsTriggerActive(item) && !item->trigger.spent) {
         item->goal_anim_state = M_STATE_ON;
     } else if (item->goal_anim_state != M_STATE_OFF) {
         item->goal_anim_state = M_STATE_OFF;
@@ -54,7 +54,7 @@ static void M_Control(const int16_t item_num)
         Item_UpdateRoom(item_num, room_num);
     }
 
-    if (item->status == IS_DEACTIVATED) {
+    if (item->is_finished) {
         Item_RemoveSimulated(item_num);
         item->is_collidable = false;
     }

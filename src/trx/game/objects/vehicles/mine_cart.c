@@ -3,6 +3,7 @@
 #include <trx/core/json/util/read_io.h>
 #include <trx/core/json/util/write_io.h>
 #include <trx/game/camera.h>
+#include <trx/game/const.h>
 #include <trx/game/input.h>
 #include <trx/game/lara.h>
 #include <trx/game/music.h>
@@ -273,7 +274,7 @@ static void M_Collision(
 
 static void M_CheckStrikeSwitch(ITEM *const item)
 {
-    if (item->status == IS_ACTIVE) {
+    if (Item_IsInPlay(item)) {
         return;
     }
 
@@ -287,14 +288,13 @@ static void M_CheckStrikeSwitch(ITEM *const item)
     Sound_Effect(SFX_SPANNER_CLUNK, &item->pos, SPM_ALWAYS);
     Room_TestTriggers(item);
     Item_AddSimulated(Item_GetIndex(item));
-    item->flags = IF_CODE_BITS;
-    item->status = IS_ACTIVE;
+    item->trigger = (ITEM_TRIGGER_STATE) { .mask = IF_CODE_BITS };
 }
 
 static void M_CheckObjectCollision(ITEM *const item, ITEM *const cart)
 {
-    if (!item->is_collidable || item->status == IS_INVISIBLE
-        || item == Lara_GetItem() || item == cart) {
+    if (!item->is_collidable || !item->is_visible || item == Lara_GetItem()
+        || item == cart) {
         return;
     }
 
