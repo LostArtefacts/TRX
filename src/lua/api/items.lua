@@ -163,7 +163,7 @@ api.type("items.Item", {
       from = "flags",
       type = "integer",
       writable = false,
-      description = "Trigger-related flag bits. Read-only: writing them directly would let a script set `IF_KILLED` without unlinking the item, wedging engine state. Use `kill()` instead.",
+      description = "Trigger-related flag bits. Read-only: writing them directly would let a script set `IF_DESTROYED` without unlinking the item, wedging engine state. Use `kill()` instead.",
     },
     timer = {
       from = "timer",

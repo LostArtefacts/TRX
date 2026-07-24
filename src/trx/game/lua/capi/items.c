@@ -89,7 +89,7 @@ static bool M_GetIsKilled(const void *const self, TRX_VALUE *const out)
     const ITEM *const item = self;
     *out = (TRX_VALUE) {
         .type = TVT_BOOL,
-        .as_bool = (item->flags & IF_KILLED) != 0,
+        .as_bool = (item->flags & IF_DESTROYED) != 0,
     };
     return true;
 }

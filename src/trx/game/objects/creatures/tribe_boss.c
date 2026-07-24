@@ -292,7 +292,7 @@ static bool M_CanDropItems(const ITEM *const item)
     if (item->hit_points > 0) {
         return false;
     }
-    if ((item->flags & IF_KILLED) != 0) {
+    if ((item->flags & IF_DESTROYED) != 0) {
         return true;
     }
     return item->current_anim_state == M_STATE_DEATH
@@ -338,7 +338,7 @@ static bool M_TriggerLizard(M_PRIV *const p)
     item->active = false;
     item->status = IS_ACTIVE;
     item->collidable = true;
-    item->flags &= ~(IF_KILLED | IF_ONE_SHOT);
+    item->flags &= ~(IF_DESTROYED | IF_ONE_SHOT);
     item->include_in_kill_stats = false;
 
     // Item_Kill removes it from room item chains; reinsert even when room is
