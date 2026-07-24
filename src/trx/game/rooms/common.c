@@ -69,7 +69,7 @@ static void M_RemoveFlipItems(const ROOM *const room)
         if (g_TRVersion >= 2 && (item->flags & IF_ONE_SHOT) && obj->intelligent
             && item->hit_points <= 0) {
             Item_RemoveDrawn(item_num);
-            item->flags |= IF_KILLED;
+            item->flags |= IF_DESTROYED;
         }
 
         item_num = item->next_item;

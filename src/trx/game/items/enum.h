@@ -24,7 +24,7 @@ typedef enum {
     IF_CODE_BITS            = 0x3E00,
     IF_REVERSE              = 0x4000,
     IF_INVISIBLE            = 0x0100,
-    IF_KILLED               = 0x8000,
+    IF_DESTROYED               = 0x8000,
     // clang-format on
 } ITEM_FLAG;
 

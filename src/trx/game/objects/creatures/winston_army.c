@@ -67,7 +67,7 @@ static bool M_RemoveNormalWinston(void)
     const int32_t item_count = Item_GetTotalCount();
     for (int32_t item_num = 0; item_num < item_count; item_num++) {
         ITEM *const item = Item_Get(item_num);
-        if (item->object_id != O_WINSTON || (item->flags & IF_KILLED) != 0) {
+        if (item->object_id != O_WINSTON || (item->flags & IF_DESTROYED) != 0) {
             continue;
         }
         item->status = IS_INVISIBLE;

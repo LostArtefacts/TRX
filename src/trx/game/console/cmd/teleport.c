@@ -57,7 +57,7 @@ static bool M_CanTargetItem(
     }
 
     // Killed enemies and removed items
-    if (item->flags & IF_KILLED) {
+    if (item->flags & IF_DESTROYED) {
         return false;
     }
 
@@ -88,7 +88,7 @@ static bool M_CanTargetItem(
 static bool M_CanTargetEnemyItem(const ITEM *const item)
 {
     if (!Creature_IsHostile(item) || item->room_num == NO_ROOM
-        || item->hit_points <= 0 || (item->flags & IF_KILLED) != 0) {
+        || item->hit_points <= 0 || (item->flags & IF_DESTROYED) != 0) {
         return false;
     }
 
@@ -255,7 +255,7 @@ static COMMAND_RESULT M_TeleportToItemNum(const int16_t item_num)
         return CR_FAILURE;
     }
 
-    if ((item->flags & IF_KILLED) != 0) {
+    if ((item->flags & IF_DESTROYED) != 0) {
         Console_LogError(GS("console/cmd/teleport/item_fail"), item_num);
         return CR_FAILURE;
     }

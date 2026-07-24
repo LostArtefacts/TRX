@@ -23,7 +23,7 @@ static void M_SpawnRaptor(const ITEM *const spawner_item, int32_t slot_idx)
         Item_GetAnim(raptor_item)->current_anim_state;
     raptor_item->goal_anim_state = raptor_item->current_anim_state;
     raptor_item->required_anim_state = 0;
-    raptor_item->flags &= ~(IF_INVISIBLE | IF_KILLED | 3); // 3?
+    raptor_item->flags &= ~(IF_INVISIBLE | IF_DESTROYED | 3); // 3?
     raptor_item->creature_data = nullptr;
     raptor_item->hit_points = raptor_item->max_hit_points;
     raptor_item->mesh_bits = -1;

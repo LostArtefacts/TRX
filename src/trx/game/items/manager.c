@@ -280,9 +280,9 @@ void Item_Initialise(const int16_t item_num)
     item->include_in_kill_stats = true;
 
     item->clear_body = false;
-    if ((item->flags & IF_KILLED) != 0) {
+    if ((item->flags & IF_DESTROYED) != 0) {
         item->clear_body = true;
-        item->flags &= ~IF_KILLED;
+        item->flags &= ~IF_DESTROYED;
     }
 
     if ((item->flags & IF_INVISIBLE) != 0) {
@@ -337,7 +337,7 @@ void Item_Control(void)
         const ITEM *const item = Item_Get(item_num);
         const int16_t next = item->next_active;
         const OBJECT *obj = Object_Get(item->object_id);
-        if ((item->flags & IF_KILLED) == 0 && obj->control_func != nullptr) {
+        if ((item->flags & IF_DESTROYED) == 0 && obj->control_func != nullptr) {
             obj->control_func(item_num);
         }
         item_num = next;
@@ -358,7 +358,7 @@ void Item_Kill(const int16_t item_num)
         lara->target = nullptr;
     }
 
-    item->flags |= IF_KILLED;
+    item->flags |= IF_DESTROYED;
     // Invalidate any script handle to this item, whether or not the slot is
     // recycled below.
     Handle_RegistryBump(&m_ItemHandles, item_num);
@@ -369,7 +369,7 @@ void Item_Kill(const int16_t item_num)
     }
 
     while (m_MaxUsedItemCount > 0
-           && m_Items[m_MaxUsedItemCount - 1].flags & IF_KILLED) {
+           && m_Items[m_MaxUsedItemCount - 1].flags & IF_DESTROYED) {
         m_MaxUsedItemCount--;
     }
 }
@@ -493,7 +493,7 @@ void Item_ClearKilled(void)
         ITEM *const item = Item_Get(i);
         const OBJECT *const obj = Object_Get(item->object_id);
         if (obj->intelligent && item->clear_body && item->hit_points <= 0
-            && (item->flags & IF_KILLED) == 0) {
+            && (item->flags & IF_DESTROYED) == 0) {
             Item_Kill(i);
         }
     }

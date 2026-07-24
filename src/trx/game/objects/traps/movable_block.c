@@ -551,7 +551,7 @@ static void M_HandleSave(ITEM *const item, const SAVEGAME_STAGE stage)
         }
 
         const int16_t item_num = Item_GetIndex(item);
-        if (item->flags & IF_KILLED) {
+        if (item->flags & IF_DESTROYED) {
             Walkable_Remove(item_num);
             return;
         }
@@ -1113,7 +1113,7 @@ void MovableBlock_UpdateBox(const ITEM *const item, const bool blocked)
 {
     if (blocked
         && (item->status == IS_ACTIVE || item->status == IS_INVISIBLE
-            || (item->flags & IF_KILLED) != 0)) {
+            || (item->flags & IF_DESTROYED) != 0)) {
         return;
     }
 
