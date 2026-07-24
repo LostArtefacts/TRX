@@ -54,10 +54,8 @@ static void M_HandleSave(ITEM *const item, const SAVEGAME_STAGE stage)
 {
     if (stage == SAVEGAME_STAGE_AFTER_LOAD) {
         if (item->hit_points <= 0) {
-            const uint16_t flags =
-                Music_GetTrackFlags(Music_ToGameID(MX_BALDY_SPEECH));
-            Music_SetTrackFlags(
-                Music_ToGameID(MX_BALDY_SPEECH), flags | IF_ONE_SHOT);
+            Music_GetTrackState(Music_ToGameID(MX_BALDY_SPEECH))->is_one_shot =
+                true;
         }
     }
 }

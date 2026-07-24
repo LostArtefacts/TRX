@@ -1,106 +1,28 @@
-#include <trx/config.h>
-#include <trx/game/game.h>
-#include <trx/game/gym.h>
 #include <trx/game/music.h>
 #include <trx/game/rooms.h>
-#include <trx/version.h>
 
-static bool M_IsSpeechTrack(const MUSIC_ID track_id)
-{
-    switch (Music_FromGameID(track_id)) {
-    case MX_BALDY_SPEECH:
-    case MX_COWBOY_SPEECH:
-    case MX_LARSON_SPEECH:
-    case MX_NATLA_SPEECH:
-    case MX_PIERRE_SPEECH:
-    case MX_SKATEKID_SPEECH:
-        return true;
-    default:
-        return false;
-    }
-}
-
+// Maps a floordata trigger onto a MUSIC_TRIGGER at the rooms->music
+// boundary; the music mechanic only ever sees the kind.
 static void M_Handle(
     const TRIGGER *const trigger, const TRIGGER_CMD *const cmd,
     TRIGGER_STATUS *const status)
 {
-    MUSIC_ID track_id = (MUSIC_ID)(intptr_t)cmd->parameter;
+    const MUSIC_ID track_id = (MUSIC_ID)(intptr_t)cmd->parameter;
 
-    if (track_id == (MUSIC_ID)0 && Room_IsAntiTrigger(trigger->type)) {
-        Music_Stop();
-        return;
+    MUSIC_TRIGGER_KIND kind = MUSIC_TRIGGER_NORMAL;
+    if (trigger->type == TT_SWITCH) {
+        kind = MUSIC_TRIGGER_SWITCH;
+    } else if (Room_IsAntiTrigger(trigger->type)) {
+        kind = MUSIC_TRIGGER_ANTI;
     }
 
-    if (track_id <= Music_ToGameID(MX_UNUSED_1) || track_id >= MAX_MUSIC_TRACKS
-        || (Game_IsInGym() && !Gym_CanPlayMusicTrack(&track_id))) {
-        return;
-    }
-
-    uint16_t flags = Music_GetTrackFlags(track_id);
-    MUSIC_PLAY_MODE play_mode = MPM_NO_REPEAT;
-    if (g_Config.audio.fix_speeches_killing_music
-        && M_IsSpeechTrack(track_id)) {
-        play_mode = MPM_OVERLAY;
-    }
-
-    // TODO: consolidate
-    if (g_TRVersion == 1) {
-        if ((flags & IF_ONE_SHOT) != 0) {
-            return;
-        }
-
-        if (trigger->type == TT_SWITCH) {
-            flags ^= trigger->mask;
-        } else if (Room_IsAntiTrigger(trigger->type)) {
-            flags &= -1 - trigger->mask;
-        } else if (trigger->mask) {
-            flags |= trigger->mask;
-        }
-
-        if ((flags & IF_CODE_BITS) == IF_CODE_BITS) {
-            if (trigger->one_shot) {
-                flags |= IF_ONE_SHOT;
-            }
-            Music_Play_Direct(track_id, play_mode);
-        } else {
-            Music_StopTrack_Direct(track_id);
-        }
-    } else {
-        if (trigger->type != TT_SWITCH) {
-            const int32_t code = trigger->mask;
-            if ((flags & code) != 0) {
-                return;
-            }
-            if (trigger->one_shot) {
-                flags |= code;
-            }
-        }
-
-        if (trigger->timer == 0 || g_TRVersion != 2) {
-            Music_Play_Direct(track_id, play_mode);
-            goto finish;
-        }
-
-        if (track_id != Music_GetDelayedTrack()) {
-            Music_Play_Direct(track_id, MPM_DELAY);
-            flags = (flags & 0xFF00) | ((LOGIC_FPS * trigger->timer) & 0xFF);
-            goto finish;
-        }
-
-        int32_t timer = flags & 0xFF;
-        if (timer == 0) {
-            goto finish;
-        }
-
-        timer--;
-        if (timer == 0) {
-            Music_Play_Direct(track_id, play_mode);
-        }
-        flags = (flags & 0xFF00) | (timer & 0xFF);
-    }
-
-finish:
-    Music_SetTrackFlags(track_id, flags);
+    const MUSIC_TRIGGER music_trigger = {
+        .kind = kind,
+        .mask = trigger->mask,
+        .timer = trigger->timer,
+        .one_shot = trigger->one_shot,
+    };
+    Music_Trigger(track_id, &music_trigger);
 }
 
 REGISTER_TRIGGER_HANDLER(TO_MUSIC, M_Handle)

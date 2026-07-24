@@ -1,6 +1,26 @@
 #pragma once
 
+#include <trx/game/music/enum.h>
+
 #include <stdint.h>
+
+// A track's accumulated trigger state. The mask holds the floordata code bits
+// (MTF_CODE_BITS), as the packed save word does; `delay` is the TR2
+// delayed-play countdown in frames.
+typedef struct {
+    uint16_t mask;
+    bool is_one_shot;
+    uint8_t delay;
+} MUSIC_TRACK_STATE;
+
+// The lean description a music trigger acts on, mapped from floordata at
+// the trigger-handler boundary. `timer` is in seconds.
+typedef struct {
+    MUSIC_TRIGGER_KIND kind;
+    uint16_t mask;
+    int8_t timer;
+    bool one_shot;
+} MUSIC_TRIGGER;
 
 typedef struct MUSIC_BACKEND {
     bool (*init)(struct MUSIC_BACKEND *backend);

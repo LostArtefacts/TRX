@@ -5,7 +5,10 @@
 #include <trx/core/log.h>
 #include <trx/core/memory.h>
 #include <trx/core/vector.h>
+#include <trx/game/const.h>
+#include <trx/game/game.h>
 #include <trx/game/game_flow.h>
+#include <trx/game/gym.h>
 #include <trx/game/level.h>
 #include <trx/game/music.h>
 #include <trx/game/music/backend_cdaudio.h>
@@ -15,7 +18,7 @@
 #include <trx/version.h>
 
 static bool m_Initialised = false;
-static uint16_t m_MusicTrackFlags[MAX_MUSIC_TRACKS] = {};
+static MUSIC_TRACK_STATE m_TrackStates[MAX_MUSIC_TRACKS] = {};
 static MUSIC_ID m_TrackCurrent = MX_INACTIVE;
 static MUSIC_ID m_TrackDelayed = MX_INACTIVE;
 static MUSIC_ID m_TrackLooped = MX_INACTIVE;
@@ -705,19 +708,105 @@ void Music_SetVolume(float volume)
     }
 }
 
-void Music_ResetTrackFlags(void)
+void Music_ResetTrackStates(void)
 {
     for (int32_t i = 0; i < MAX_MUSIC_TRACKS; i++) {
-        m_MusicTrackFlags[i] = 0;
+        m_TrackStates[i] = (MUSIC_TRACK_STATE) {};
     }
 }
 
-uint16_t Music_GetTrackFlags(const MUSIC_ID track_id)
+MUSIC_TRACK_STATE *Music_GetTrackState(const MUSIC_ID track_id)
 {
-    return m_MusicTrackFlags[track_id];
+    return &m_TrackStates[track_id];
 }
 
-void Music_SetTrackFlags(const MUSIC_ID track_id, const uint16_t flags)
+static bool M_IsSpeechTrack(const MUSIC_ID track_id)
 {
-    m_MusicTrackFlags[track_id] = flags;
+    switch (Music_FromGameID(track_id)) {
+    case MX_BALDY_SPEECH:
+    case MX_COWBOY_SPEECH:
+    case MX_LARSON_SPEECH:
+    case MX_NATLA_SPEECH:
+    case MX_PIERRE_SPEECH:
+    case MX_SKATEKID_SPEECH:
+        return true;
+    default:
+        return false;
+    }
+}
+
+void Music_Trigger(MUSIC_ID track_id, const MUSIC_TRIGGER *const trigger)
+{
+    // An antitrigger aimed at track 0 silences whatever plays.
+    if (track_id == (MUSIC_ID)0 && trigger->kind == MUSIC_TRIGGER_ANTI) {
+        Music_Stop();
+        return;
+    }
+
+    if (track_id <= Music_ToGameID(MX_UNUSED_1) || track_id >= MAX_MUSIC_TRACKS
+        || (Game_IsInGym() && !Gym_CanPlayMusicTrack(&track_id))) {
+        return;
+    }
+
+    MUSIC_TRACK_STATE *const track = &m_TrackStates[track_id];
+
+    MUSIC_PLAY_MODE play_mode = MPM_NO_REPEAT;
+    if (g_Config.audio.fix_speeches_killing_music
+        && M_IsSpeechTrack(track_id)) {
+        play_mode = MPM_OVERLAY;
+    }
+
+    // TODO: consolidate
+    if (g_TRVersion == 1) {
+        if (track->is_one_shot) {
+            return;
+        }
+
+        if (trigger->kind == MUSIC_TRIGGER_SWITCH) {
+            track->mask ^= trigger->mask;
+        } else if (trigger->kind == MUSIC_TRIGGER_ANTI) {
+            track->mask &= ~trigger->mask;
+        } else if (trigger->mask != 0) {
+            track->mask |= trigger->mask;
+        }
+
+        if ((track->mask & MTF_CODE_BITS) == MTF_CODE_BITS) {
+            if (trigger->one_shot) {
+                track->is_one_shot = true;
+            }
+            Music_Play_Direct(track_id, play_mode);
+        } else {
+            Music_StopTrack_Direct(track_id);
+        }
+        return;
+    }
+
+    if (trigger->kind != MUSIC_TRIGGER_SWITCH) {
+        if ((track->mask & trigger->mask) != 0) {
+            return;
+        }
+        if (trigger->one_shot) {
+            track->mask |= trigger->mask;
+        }
+    }
+
+    if (trigger->timer == 0 || g_TRVersion != 2) {
+        Music_Play_Direct(track_id, play_mode);
+        return;
+    }
+
+    if (track_id != Music_GetDelayedTrack()) {
+        Music_Play_Direct(track_id, MPM_DELAY);
+        track->delay = LOGIC_FPS * trigger->timer;
+        return;
+    }
+
+    if (track->delay == 0) {
+        return;
+    }
+
+    track->delay--;
+    if (track->delay == 0) {
+        Music_Play_Direct(track_id, play_mode);
+    }
 }

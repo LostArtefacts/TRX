@@ -2,6 +2,7 @@
 
 #include <trx/game/music/enum.h>
 #include <trx/game/music/ids.h>
+#include <trx/game/music/types.h>
 
 #include <stdint.h>
 
@@ -115,11 +116,11 @@ MUSIC_ID Music_GetCurrentLoopedTrack(void);
 // Sets the game volume.
 void Music_SetVolume(float volume);
 
-// Resets all track trigger mask flags.
-void Music_ResetTrackFlags(void);
+// Resets all track trigger state.
+void Music_ResetTrackStates(void);
 
-// Returns trigger mask flags for the given track.
-uint16_t Music_GetTrackFlags(MUSIC_ID track_id);
+// Returns the accumulated trigger state for the given track.
+MUSIC_TRACK_STATE *Music_GetTrackState(MUSIC_ID track_id);
 
-// Sets the trigger mask flags for the given track.
-void Music_SetTrackFlags(MUSIC_ID track_id, uint16_t flags);
+// Applies a trigger to the track, playing or stopping it per the OG rules.
+void Music_Trigger(MUSIC_ID track_id, const MUSIC_TRIGGER *trigger);
