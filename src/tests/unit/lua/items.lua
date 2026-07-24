@@ -251,6 +251,192 @@ test("item:on_trigger fires only for that item, with the trigger", function()
   assert(mask == 31, "the trigger fundamentals did not reach the handler")
 end)
 
+test("on_show and on_hide pass the item that changed visibility", function()
+  local shown, hidden
+  trx.events.on_show(function(item)
+    shown = item
+  end)
+  trx.events.on_hide(function(item)
+    hidden = item
+  end)
+
+  fake.fire_visibility(1, true)
+  fake.fire_visibility(1, false)
+
+  assert(shown == trx.items[1], "on_show did not receive the item")
+  assert(hidden == trx.items[1], "on_hide did not receive the item")
+end)
+
+test("item:on_show and item:on_hide fire only for that item", function()
+  local shows, hides = 0, 0
+  trx.items[1]:on_show(function(item)
+    shows = shows + 1
+    assert(item == trx.items[1], "the wrong item reached on_show")
+  end)
+  trx.items[1]:on_hide(function(item)
+    hides = hides + 1
+    assert(item == trx.items[1], "the wrong item reached on_hide")
+  end)
+
+  fake.fire_visibility(0, true)
+  fake.fire_visibility(0, false)
+  assert(shows == 0 and hides == 0, "another item's visibility must not fire")
+  fake.fire_visibility(1, true)
+  fake.fire_visibility(1, false)
+  assert(shows == 1, "this item becoming visible must fire on_show")
+  assert(hides == 1, "this item becoming hidden must fire on_hide")
+end)
+
+test("on_finish and item:on_finish pass the item that finished", function()
+  local seen
+  trx.events.on_finish(function(item)
+    seen = item
+  end)
+  local count = 0
+  trx.items[1]:on_finish(function(item)
+    count = count + 1
+    assert(item == trx.items[1], "the wrong item reached on_finish")
+  end)
+
+  fake.fire_finish(0)
+  assert(count == 0, "another item finishing must not fire this one")
+  fake.fire_finish(1)
+  assert(seen == trx.items[1], "on_finish did not receive the item")
+  assert(count == 1, "this item finishing must fire it")
+end)
+
+test("on_enter_sim and on_leave_sim pass the item that changed", function()
+  local entered, left
+  trx.events.on_enter_sim(function(item)
+    entered = item
+  end)
+  trx.events.on_leave_sim(function(item)
+    left = item
+  end)
+
+  fake.fire_sim(1, true)
+  fake.fire_sim(1, false)
+
+  assert(entered == trx.items[1], "on_enter_sim did not receive the item")
+  assert(left == trx.items[1], "on_leave_sim did not receive the item")
+end)
+
+test(
+  "item:on_enter_sim and item:on_leave_sim fire only for that item",
+  function()
+    local ins, outs = 0, 0
+    trx.items[1]:on_enter_sim(function()
+      ins = ins + 1
+    end)
+    trx.items[1]:on_leave_sim(function()
+      outs = outs + 1
+    end)
+
+    fake.fire_sim(0, true)
+    fake.fire_sim(0, false)
+    assert(ins == 0 and outs == 0, "another item's simulation must not fire")
+    fake.fire_sim(1, true)
+    fake.fire_sim(1, false)
+    assert(ins == 1, "this item starting simulation must fire on_enter_sim")
+    assert(outs == 1, "this item stopping simulation must fire on_leave_sim")
+  end
+)
+
+test("on_activate and on_deactivate pass the item", function()
+  local activated, deactivated
+  trx.events.on_activate(function(item)
+    activated = item
+  end)
+  trx.events.on_deactivate(function(item)
+    deactivated = item
+  end)
+
+  fake.fire_activation(1, true)
+  fake.fire_activation(1, false)
+
+  assert(activated == trx.items[1], "on_activate did not receive the item")
+  assert(deactivated == trx.items[1], "on_deactivate did not receive the item")
+end)
+
+test(
+  "item:on_activate and item:on_deactivate fire only for that item",
+  function()
+    local ons, offs = 0, 0
+    trx.items[1]:on_activate(function()
+      ons = ons + 1
+    end)
+    trx.items[1]:on_deactivate(function()
+      offs = offs + 1
+    end)
+
+    fake.fire_activation(0, true)
+    fake.fire_activation(0, false)
+    assert(ons == 0 and offs == 0, "another item's activation must not fire")
+    fake.fire_activation(1, true)
+    fake.fire_activation(1, false)
+    assert(ons == 1, "this item's activation must fire on_activate")
+    assert(offs == 1, "this item's deactivation must fire on_deactivate")
+  end
+)
+
+test("on_destroy and item:on_destroy pass the item being removed", function()
+  local seen
+  trx.events.on_destroy(function(item)
+    seen = item
+  end)
+  local count = 0
+  trx.items[1]:on_destroy(function(item)
+    count = count + 1
+    assert(item == trx.items[1], "the wrong item reached on_destroy")
+  end)
+
+  fake.fire_destroy(0)
+  assert(count == 0, "another item being removed must not fire this one")
+  fake.fire_destroy(1)
+  assert(seen == trx.items[1], "on_destroy did not receive the item")
+  assert(count == 1, "this item being removed must fire it")
+end)
+
+test("on_enter_world and on_leave_world pass the item that changed", function()
+  local entered, left
+  trx.events.on_enter_world(function(item)
+    entered = item
+  end)
+  trx.events.on_leave_world(function(item)
+    left = item
+  end)
+
+  fake.fire_world(1, true)
+  fake.fire_world(1, false)
+
+  assert(entered == trx.items[1], "on_enter_world did not receive the item")
+  assert(left == trx.items[1], "on_leave_world did not receive the item")
+end)
+
+test(
+  "item:on_enter_world and item:on_leave_world fire only for that item",
+  function()
+    local ins, outs = 0, 0
+    trx.items[1]:on_enter_world(function()
+      ins = ins + 1
+    end)
+    trx.items[1]:on_leave_world(function()
+      outs = outs + 1
+    end)
+
+    fake.fire_world(0, true)
+    fake.fire_world(0, false)
+    assert(
+      ins == 0 and outs == 0,
+      "another item entering the world must not fire"
+    )
+    fake.fire_world(1, true)
+    fake.fire_world(1, false)
+    assert(ins == 1, "this item entering the world must fire on_enter_world")
+    assert(outs == 1, "this item leaving the world must fire on_leave_world")
+  end
+)
+
 -- An index alone would rebind to whatever item recycled the slot; the
 -- generation counter is what makes the handle go stale instead.
 test("a handle to a destroyed item goes stale", function()

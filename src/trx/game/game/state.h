@@ -25,6 +25,14 @@ bool Game_IsLoaded(void);
 // title, a demo or a cutscene, and if Lara is loaded and controllable.
 bool Game_IsPlayable(void);
 
+// Whether the engine is populating the item pool for a level - the initial
+// cast at load, plus a save overlaid on top. The item lifecycle events read
+// this so the bulk setup stays quiet; it is set as the level loads and cleared
+// once live play begins. Distinct from a suspended game (pause, photo mode,
+// inventory), where a script may still drive an item and its events must fire.
+void Game_SetIsSettingUpItems(bool value);
+bool Game_IsSettingUpItems(void);
+
 GAME_BONUS_FLAG Game_GetBonusFlag(void);
 void Game_SetBonusFlag(GAME_BONUS_FLAG flag);
 bool Game_IsBonusFlagSet(GAME_BONUS_FLAG flag);

@@ -192,6 +192,196 @@ A handler attached from a level script is detached automatically when the level 
   end)
   ```
 
+- [lua]`trx.events.on_show(callback)`  
+  Happens when an item becomes visible during play - drawn and in the world, taking part in collision and targeting. It is the change that fires, not the state: an item already visible does not fire it again, and only a live level does, not a cutscene or the attract demo.
+
+  `trx.items.Item:on_show` is this same event, narrowed to one item.
+
+  Parameters:
+  - **`callback`** (function).
+    Called with:
+    - **`item`** (Item). The `trx.items.Item` that became visible.
+
+  Returns: integer. Listener id. Pass it to `trx.events.detach` to stop listening.
+
+  Example:
+  ```lua
+  trx.events.on_show(function(item)
+    trx.log.info(item.object_id .. " appeared")
+  end)
+  ```
+
+- [lua]`trx.events.on_hide(callback)`  
+  Happens when an item becomes hidden during play - drawn and in the world, taking part in collision and targeting. It is the change that fires, not the state: an item already hidden does not fire it again, and only a live level does, not a cutscene or the attract demo.
+
+  `trx.items.Item:on_hide` is this same event, narrowed to one item.
+
+  Parameters:
+  - **`callback`** (function).
+    Called with:
+    - **`item`** (Item). The `trx.items.Item` that became hidden.
+
+  Returns: integer. Listener id. Pass it to `trx.events.detach` to stop listening.
+
+  Example:
+  ```lua
+  trx.events.on_hide(function(item)
+    trx.log.info(item.object_id .. " vanished")
+  end)
+  ```
+
+- [lua]`trx.events.on_finish(callback)`  
+  Happens when an item finishes its run during play - a trap that has sprung, a switch thrown, a one-shot object spent. It is the change that fires, once, and only a live level does, not a cutscene or the attract demo.
+
+  `trx.items.Item:on_finish` is this same event, narrowed to one item.
+
+  Parameters:
+  - **`callback`** (function).
+    Called with:
+    - **`item`** (Item). The `trx.items.Item` that finished.
+
+  Returns: integer. Listener id. Pass it to `trx.events.detach` to stop listening.
+
+  Example:
+  ```lua
+  trx.events.on_finish(function(item)
+    trx.log.info(item.object_id .. " finished its run")
+  end)
+  ```
+
+- [lua]`trx.events.on_enter_sim(callback)`  
+  Happens when an item starts being simulated during play - its control routine begins running each frame. Every path that starts an item fires it: a trigger, a switch, a respawn, a cheat. A trigger also fires `on_activate`, which this does not.
+
+  `trx.items.Item:on_enter_sim` is this same event, narrowed to one item.
+
+  Parameters:
+  - **`callback`** (function).
+    Called with:
+    - **`item`** (Item). The `trx.items.Item` that started being simulated.
+
+  Returns: integer. Listener id. Pass it to `trx.events.detach` to stop listening.
+
+  Example:
+  ```lua
+  trx.events.on_enter_sim(function(item)
+    trx.log.info(item.object_id .. " started running")
+  end)
+  ```
+
+- [lua]`trx.events.on_leave_sim(callback)`  
+  Happens when an item stops being simulated during play - its control routine no longer runs. It keeps its place and its state; it merely stops.
+
+  `trx.items.Item:on_leave_sim` is this same event, narrowed to one item.
+
+  Parameters:
+  - **`callback`** (function).
+    Called with:
+    - **`item`** (Item). The `trx.items.Item` that stopped being simulated.
+
+  Returns: integer. Listener id. Pass it to `trx.events.detach` to stop listening.
+
+  Example:
+  ```lua
+  trx.events.on_leave_sim(function(item)
+    trx.log.info(item.object_id .. " stopped running")
+  end)
+  ```
+
+- [lua]`trx.events.on_activate(callback)`  
+  Happens when an item is activated through the lifecycle front door during play - the path a level trigger takes. Switches, respawns and cheats start an item without it, firing only `on_enter_sim`; watch that one for a start of any cause.
+
+  `trx.items.Item:on_activate` is this same event, narrowed to one item.
+
+  Parameters:
+  - **`callback`** (function).
+    Called with:
+    - **`item`** (Item). The `trx.items.Item` that was activated.
+
+  Returns: integer. Listener id. Pass it to `trx.events.detach` to stop listening.
+
+  Example:
+  ```lua
+  trx.events.on_activate(function(item)
+    trx.log.info(item.object_id .. " was activated")
+  end)
+  ```
+
+- [lua]`trx.events.on_deactivate(callback)`  
+  Happens when a running item is deactivated through the lifecycle front door during play - the path an antitrigger takes. It fires only when the item was actually running.
+
+  `trx.items.Item:on_deactivate` is this same event, narrowed to one item.
+
+  Parameters:
+  - **`callback`** (function).
+    Called with:
+    - **`item`** (Item). The `trx.items.Item` that was deactivated.
+
+  Returns: integer. Listener id. Pass it to `trx.events.detach` to stop listening.
+
+  Example:
+  ```lua
+  trx.events.on_deactivate(function(item)
+    trx.log.info(item.object_id .. " was deactivated")
+  end)
+  ```
+
+- [lua]`trx.events.on_destroy(callback)`  
+  Happens as an item is removed from the game during play - a creature cleared away, a pickup taken, an object that has run its course. The item can still be read from the handler, which runs before the removal completes, but a handle kept past the handler goes stale.
+
+  `trx.items.Item:on_destroy` is this same event, narrowed to one item.
+
+  Parameters:
+  - **`callback`** (function).
+    Called with:
+    - **`item`** (Item). The `trx.items.Item` being removed. Valid only for the duration of the handler.
+
+  Returns: integer. Listener id. Pass it to `trx.events.detach` to stop listening.
+
+  Example:
+  ```lua
+  trx.events.on_destroy(function(item)
+    trx.log.info(item.object_id .. " was removed")
+  end)
+  ```
+
+- [lua]`trx.events.on_enter_world(callback)`  
+  Happens when an item enters the world during play - a runtime spawn, such as a creature an emitter releases or an item a script creates. The level's own items do not fire it as they load; only an arrival during a live level counts.
+
+  `trx.items.Item:on_enter_world` is this same event, narrowed to one item.
+
+  Parameters:
+  - **`callback`** (function).
+    Called with:
+    - **`item`** (Item). The `trx.items.Item` that entered the world.
+
+  Returns: integer. Listener id. Pass it to `trx.events.detach` to stop listening.
+
+  Example:
+  ```lua
+  trx.events.on_enter_world(function(item)
+    trx.log.info(item.object_id .. " entered the world")
+  end)
+  ```
+
+- [lua]`trx.events.on_leave_world(callback)`  
+  Happens when an item leaves the world during play - unlinked from its room, no longer drawn or collidable. It need not be destroyed; a destroyed item leaves the world on its way out, and fires this first.
+
+  `trx.items.Item:on_leave_world` is this same event, narrowed to one item.
+
+  Parameters:
+  - **`callback`** (function).
+    Called with:
+    - **`item`** (Item). The `trx.items.Item` that left the world.
+
+  Returns: integer. Listener id. Pass it to `trx.events.detach` to stop listening.
+
+  Example:
+  ```lua
+  trx.events.on_leave_world(function(item)
+    trx.log.info(item.object_id .. " left the world")
+  end)
+  ```
+
 - [lua]`trx.events.detach(listener_id)`  
   Removes a previously attached handler, which stops firing immediately.
 

@@ -36,13 +36,10 @@ int16_t Item_Spawn(const ITEM *item, OBJECT_ID obj_id);
 void Item_Initialise(int16_t item_num);
 void Item_Control(void);
 
-// Remove the item from the game; any other handle to it becomes stale.
+// Remove the item from the game; any other handle to it becomes stale. Fires
+// on_destroy during live play, while the item can still be read from the
+// handler.
 void Item_Destroy(int16_t item_num);
-
-// Fire the on_trigger event: a trigger of any kind was aimed at the item, with
-// its fundamentals. Item_Trigger calls this for every trigger it acts on; kept
-// in the manager, next to the event stack, so the primitive stays clear of it.
-void Item_NotifyTriggered(int16_t item_num, const ITEM_TRIGGER *trigger);
 
 // Three ways to take an item out of view, chosen by whether it comes back.
 // Item_SetVisible(false) is the reversible hide: a trigger can restore it, so
@@ -52,7 +49,8 @@ void Item_NotifyTriggered(int16_t item_num, const ITEM_TRIGGER *trigger);
 // Item_Destroy is terminal and frees the slot.
 //
 // Unlink the item from the room item chain that collision and
-// Item_FindTypeInRoom walk, and from the room draw queues.
+// Item_FindTypeInRoom walk, and from the room draw queues. Fires on_leave_world
+// during live play if it was present.
 void Item_DetachFromRoom(int16_t item_num);
 
 // Item_AddSimulated is the bare half of Item_Activate below: it only puts the
@@ -63,10 +61,12 @@ void Item_DetachFromRoom(int16_t item_num);
 // for a trigger (floordata, scripts) call Item_Activate.
 //
 // Put the item on the simulation list so its control routine runs. A
-// control-less item cannot simulate and is left off.
+// control-less item cannot simulate and is left off. Fires on_enter_sim during
+// live play when it goes on.
 void Item_AddSimulated(int16_t item_num);
 
-// Take the item off the simulation list, whatever put it there.
+// Take the item off the simulation list, whatever put it there. Fires
+// on_leave_sim during live play if it was simulated.
 void Item_RemoveSimulated(int16_t item_num);
 
 // Bring an item to life the way a trigger does: start its control routine, and
@@ -77,12 +77,13 @@ void Item_RemoveSimulated(int16_t item_num);
 // lying in wait. A trigger passes false and leaves it hidden until a slot frees
 // on its own, which is what the games do. Something that asked for this
 // creature by name passes true and takes a slot off whichever creature is
-// furthest away.
+// furthest away. Fires on_activate during live play when it acts.
 void Item_Activate(int16_t item_num, bool force);
 
 // Stop an item: take it off the simulation list and take a creature's AI away.
 // It stays where it is and keeps its hit points; it stops running. A trigger
 // can still bring it back, which is what separates this from Item_Destroy.
+// Fires on_deactivate during live play if it was running.
 void Item_Deactivate(int16_t item_num);
 
 // Return a recycled slot to play in a room, re-linking and activating it. The
@@ -92,15 +93,17 @@ void Item_Respawn(int16_t item_num, int16_t room_num);
 
 // Set is_visible, the drawn-and-in-the-world axis. The single writer of its
 // runtime transitions: Item_Initialise and the savegame reader seed the field
-// directly, everything else routes here. Re-setting the current value is a
-// no-op, so the per-frame control routines do not repeat it.
+// directly, everything else routes here. A transition fires the on_show or
+// on_hide event during live play; re-setting the current value is a no-op, so
+// the per-frame control routines do not repeat it.
 void Item_SetVisible(ITEM *item, bool value);
 
 // Set is_finished, the object-local "my run is over" marker. As with
-// Item_SetVisible, the single writer of its runtime transitions; the seed comes
-// from Item_Initialise and the savegame reader. Re-setting the current value is
-// a no-op, which the per-frame control routines that mark themselves finished
-// every frame rely on.
+// Item_SetVisible, the single writer of its runtime transitions; the seed
+// comes from Item_Initialise and the savegame reader. Becoming finished during
+// live play fires the on_finish event; re-setting the current value is a no-op,
+// which the per-frame control routines that mark themselves finished every
+// frame rely on.
 //
 // Not the same as item->trigger.spent. spent is the trigger system's one-shot
 // latch: it makes Item_Trigger return early for this item, so no further

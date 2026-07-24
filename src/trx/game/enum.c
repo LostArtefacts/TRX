@@ -117,11 +117,6 @@ static __attribute__((constructor)) void M_Init(void)
     ENUM_MAP(GYM_TRACK_TYPE, GYM_TRACK_ASSAULT, "course");
     ENUM_MAP(GYM_TRACK_TYPE, GYM_TRACK_QUAD, "quad");
 
-    ENUM_MAP(ITEM_STATUS, IS_INACTIVE, "inactive");
-    ENUM_MAP(ITEM_STATUS, IS_ACTIVE, "active");
-    ENUM_MAP(ITEM_STATUS, IS_DEACTIVATED, "deactivated");
-    ENUM_MAP(ITEM_STATUS, IS_INVISIBLE, "invisible");
-
     ENUM_MAP(ITEM_TRIGGER_KIND, ITEM_TRIGGER_NORMAL, "trigger");
     ENUM_MAP(ITEM_TRIGGER_KIND, ITEM_TRIGGER_HEAVY, "heavy");
     ENUM_MAP(ITEM_TRIGGER_KIND, ITEM_TRIGGER_SWITCH, "switch");
@@ -141,6 +136,16 @@ static __attribute__((constructor)) void M_Init(void)
     ENUM_MAP(LUA_EVENT_TYPE, LUA_EVENT_FLIP_EFFECT, "flip_effect");
     ENUM_MAP(LUA_EVENT_TYPE, LUA_EVENT_ROOM_CHANGE, "room_change");
     ENUM_MAP(LUA_EVENT_TYPE, LUA_EVENT_TRIGGER, "trigger");
+    ENUM_MAP(LUA_EVENT_TYPE, LUA_EVENT_SHOW, "show");
+    ENUM_MAP(LUA_EVENT_TYPE, LUA_EVENT_HIDE, "hide");
+    ENUM_MAP(LUA_EVENT_TYPE, LUA_EVENT_FINISH, "finish");
+    ENUM_MAP(LUA_EVENT_TYPE, LUA_EVENT_ENTER_SIM, "enter_sim");
+    ENUM_MAP(LUA_EVENT_TYPE, LUA_EVENT_LEAVE_SIM, "leave_sim");
+    ENUM_MAP(LUA_EVENT_TYPE, LUA_EVENT_ACTIVATE, "activate");
+    ENUM_MAP(LUA_EVENT_TYPE, LUA_EVENT_DEACTIVATE, "deactivate");
+    ENUM_MAP(LUA_EVENT_TYPE, LUA_EVENT_DESTROY, "destroy");
+    ENUM_MAP(LUA_EVENT_TYPE, LUA_EVENT_ENTER_WORLD, "enter_world");
+    ENUM_MAP(LUA_EVENT_TYPE, LUA_EVENT_LEAVE_WORLD, "leave_world");
 
     // LOG_LEVEL_MAX is a sentinel, not a level.
     ENUM_MAP(LOG_LEVEL, LOG_LEVEL_DEBUG, "debug");

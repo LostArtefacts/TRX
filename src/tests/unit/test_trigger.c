@@ -45,11 +45,30 @@ void Item_Activate(const int16_t item_num, const bool force)
     m_ActivateCount++;
 }
 
-// The on_trigger fire lives in the manager, past the item event stack; this
-// matrix is about the primitive, so it goes nowhere here.
-void Item_NotifyTriggered(
-    const int16_t item_num, const ITEM_TRIGGER *const trigger)
+// Item_Trigger fires on_trigger through LUA_FireEventEx. Record that fire so
+// the matrix can check the notification, argument for argument, against the
+// real LUA_EVENT_ARG layout.
+static int32_t m_NotifyCount;
+static ITEM_TRIGGER_KIND m_NotifyKind;
+static int32_t m_NotifyMask;
+static bool m_NotifyOneShot;
+
+bool Game_IsSettingUpItems(void)
 {
+    return false;
+}
+
+void LUA_FireEventEx(
+    const LUA_EVENT_TYPE ev, const LUA_EVENT_ARG *const args,
+    const int32_t arg_count)
+{
+    if (ev != LUA_EVENT_TRIGGER) {
+        return;
+    }
+    m_NotifyCount++;
+    m_NotifyKind = args[1].value.i32;
+    m_NotifyMask = args[2].value.i32;
+    m_NotifyOneShot = args[4].value.b;
 }
 
 // Mirrors the objects that read the trigger (falling_block reads the kind):
@@ -74,12 +93,35 @@ static ITEM *M_Reset(const int32_t version)
     m_FuncCalled = false;
     m_FuncSawKind = ITEM_TRIGGER_NORMAL;
     m_FuncReturn = true;
+    m_NotifyCount = 0;
+    m_NotifyKind = ITEM_TRIGGER_NORMAL;
+    m_NotifyMask = 0;
+    m_NotifyOneShot = false;
     return &m_Items[M_ITEM];
 }
 
 static void M_Fire(const ITEM_TRIGGER trigger)
 {
     Item_Trigger(M_ITEM, &trigger);
+}
+
+TEST(notify_carries_the_trigger_fundamentals)
+{
+    M_Reset(1);
+    M_Fire((ITEM_TRIGGER) {
+        .kind = ITEM_TRIGGER_SWITCH, .mask = M_MASK(5), .one_shot = true });
+    CHECK_EQ_INT(m_NotifyCount, 1);
+    CHECK_EQ_INT(m_NotifyKind, ITEM_TRIGGER_SWITCH);
+    CHECK_EQ_INT(m_NotifyMask, M_MASK(5));
+    CHECK(m_NotifyOneShot);
+}
+
+TEST(spent_trigger_does_not_notify)
+{
+    ITEM *const item = M_Reset(1);
+    item->trigger.spent = true;
+    M_Fire((ITEM_TRIGGER) { .kind = ITEM_TRIGGER_NORMAL, .mask = M_MASK_ALL });
+    CHECK_EQ_INT(m_NotifyCount, 0);
 }
 
 TEST(forward_full_mask_activates)

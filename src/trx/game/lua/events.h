@@ -1,7 +1,6 @@
 // Lua event listener support
 #pragma once
 
-#include <lualib.h>
 #include <stdint.h>
 
 // Event types for Lua listeners. Named in ENUM_MAP (see trx/game/enum.c), which
@@ -19,6 +18,16 @@ typedef enum {
     LUA_EVENT_FLIP_EFFECT,
     LUA_EVENT_ROOM_CHANGE,
     LUA_EVENT_TRIGGER,
+    LUA_EVENT_SHOW,
+    LUA_EVENT_HIDE,
+    LUA_EVENT_FINISH,
+    LUA_EVENT_ENTER_SIM,
+    LUA_EVENT_LEAVE_SIM,
+    LUA_EVENT_ACTIVATE,
+    LUA_EVENT_DEACTIVATE,
+    LUA_EVENT_DESTROY,
+    LUA_EVENT_ENTER_WORLD,
+    LUA_EVENT_LEAVE_WORLD,
     LUA_EVENT_NUMBER_OF,
 } LUA_EVENT_TYPE;
 

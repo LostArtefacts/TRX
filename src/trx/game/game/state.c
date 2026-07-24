@@ -8,6 +8,7 @@
 #include <trx/game/random.h>
 
 static bool m_IsPlaying = false;
+static bool m_IsSettingUpItems = false;
 static const GF_LEVEL *m_CurrentLevel = nullptr;
 static GAME_BONUS_FLAG m_BonusFlag = GBF_NONE;
 static bool m_IsLevelComplete = false;
@@ -16,11 +17,26 @@ void Game_SetIsPlaying(const bool is_playing)
 {
     m_IsPlaying = is_playing;
     Random_FreezeDraw(!is_playing);
+    if (is_playing) {
+        // Reaching live play means the level and any loaded save are in place;
+        // item setup is over, so lifecycle events flow again.
+        m_IsSettingUpItems = false;
+    }
 }
 
 bool Game_IsPlaying(void)
 {
     return m_IsPlaying;
+}
+
+void Game_SetIsSettingUpItems(const bool value)
+{
+    m_IsSettingUpItems = value;
+}
+
+bool Game_IsSettingUpItems(void)
+{
+    return m_IsSettingUpItems;
 }
 
 const GF_LEVEL *Game_GetCurrentLevel(void)
