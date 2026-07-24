@@ -444,20 +444,6 @@ void Item_DetachFromRoom(const int16_t item_num)
     }
 }
 
-void Item_ClearKilled(void)
-{
-    // Remove corpses and other killed items. Part of OG performance
-    // improvements, generously used in Opera House and Barkhang Monastery
-    for (int32_t i = 0; i < Item_GetLevelCount(); i++) {
-        ITEM *const item = Item_Get(i);
-        const OBJECT *const obj = Object_Get(item->object_id);
-        if (obj->intelligent && item->clear_body && item->hit_points <= 0
-            && (item->flags & IF_DESTROYED) == 0) {
-            Item_Destroy(i);
-        }
-    }
-}
-
 void Item_AddSimulated(const int16_t item_num)
 {
     ITEM *const item = &m_Items[item_num];

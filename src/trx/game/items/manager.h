@@ -35,7 +35,6 @@ void Item_RemoveSimulated(int16_t item_num);
 // in the manager, next to the event stack, so the primitive stays clear of it.
 void Item_NotifyTriggered(int16_t item_num, const ITEM_TRIGGER *trigger);
 void Item_DetachFromRoom(int16_t item_num);
-void Item_ClearKilled(void);
 void Item_AddSimulated(int16_t item_num);
 
 // Bring an item to life the way a trigger does: start its control routine, and

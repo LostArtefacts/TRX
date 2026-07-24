@@ -2,15 +2,30 @@
 #include <trx/game/game.h>
 #include <trx/game/items.h>
 #include <trx/game/music.h>
+#include <trx/game/objects.h>
 #include <trx/game/rooms.h>
 #include <trx/game/stats.h>
+
+// Remove intelligent items marked to leave a corpse once dead. Part of the OG
+// performance work, generously used in Opera House and Barkhang Monastery.
+static void M_DestroyKilledBodies(void)
+{
+    for (int32_t i = 0; i < Item_GetLevelCount(); i++) {
+        ITEM *const item = Item_Get(i);
+        const OBJECT *const obj = Object_Get(item->object_id);
+        if (obj->intelligent && item->clear_body && item->hit_points <= 0
+            && (item->flags & IF_DESTROYED) == 0) {
+            Item_Destroy(i);
+        }
+    }
+}
 
 static void M_HandleBodyBag(
     const TRIGGER *const trigger, const TRIGGER_CMD *const cmd,
     TRIGGER_STATUS *const status)
 {
     if (g_Config.gameplay.enable_body_bags) {
-        Item_ClearKilled();
+        M_DestroyKilledBodies();
     }
 }
 
