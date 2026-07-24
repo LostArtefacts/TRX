@@ -43,10 +43,10 @@ static bool M_ShouldCenterDrop(const OBJECT_ID obj_id)
 static void M_Drop(ITEM *const pickup)
 {
     if (Object_IsType(pickup->object_id, g_QuestObjects)) {
-        pickup->is_visible = true;
+        Item_SetVisible(pickup, true);
         Item_AddSimulated(Item_GetIndex(pickup));
     } else {
-        pickup->is_visible = true;
+        Item_SetVisible(pickup, true);
     }
 }
 
@@ -374,7 +374,7 @@ void Carrier_SyncItem(
         if (pickup_item->room_num != NO_ROOM) {
             Item_UpdateRoom(carried_item->spawn_num, NO_ROOM);
         }
-        pickup_item->is_visible = false;
+        Item_SetVisible(pickup_item, false);
         break;
     }
 }

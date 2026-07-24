@@ -70,7 +70,7 @@ static bool M_RemoveNormalWinston(void)
         if (item->object_id != O_WINSTON || item->is_destroyed) {
             continue;
         }
-        item->is_visible = false;
+        Item_SetVisible(item, false);
         Item_Destroy(item_num);
         return true;
     }

@@ -45,7 +45,7 @@ void Item_Destroy(int16_t item_num);
 void Item_NotifyTriggered(int16_t item_num, const ITEM_TRIGGER *trigger);
 
 // Three ways to take an item out of view, chosen by whether it comes back.
-// Setting is_visible false is the reversible hide: a trigger can restore it, so
+// Item_SetVisible(false) is the reversible hide: a trigger can restore it, so
 // it stays linked in the room and keeps its place, only unseen, unhittable, and
 // untargetable. Item_DetachFromRoom removes it from the world as a positional
 // object while its slot lives on (carried away, or consumed into another form).
@@ -89,6 +89,26 @@ void Item_Deactivate(int16_t item_num);
 // caller resets the slot's object state -- position, animation, hit points,
 // creature data -- first.
 void Item_Respawn(int16_t item_num, int16_t room_num);
+
+// Set is_visible, the drawn-and-in-the-world axis. The single writer of its
+// runtime transitions: Item_Initialise and the savegame reader seed the field
+// directly, everything else routes here. Re-setting the current value is a
+// no-op, so the per-frame control routines do not repeat it.
+void Item_SetVisible(ITEM *item, bool value);
+
+// Set is_finished, the object-local "my run is over" marker. As with
+// Item_SetVisible, the single writer of its runtime transitions; the seed comes
+// from Item_Initialise and the savegame reader. Re-setting the current value is
+// a no-op, which the per-frame control routines that mark themselves finished
+// every frame rely on.
+//
+// Not the same as item->trigger.spent. spent is the trigger system's one-shot
+// latch: it makes Item_Trigger return early for this item, so no further
+// trigger reaches the object, and it is what IF_ONE_SHOT saves. is_finished is
+// the object's own phase; Item_Trigger does not read it, so it does not by
+// itself stop a re-trigger. Set spent to consume a one-shot trigger; set
+// is_finished to record that the object's run has played out.
+void Item_SetFinished(ITEM *item, bool value);
 
 void Item_UpdateRoom(int16_t item_num, int16_t room_num);
 

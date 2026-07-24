@@ -512,14 +512,14 @@ void Item_Activate(const int16_t item_num, const bool force)
         } else if (!item->is_visible) { // hidden ambush item
             item->touch_bits = 0;
             if (LOT_EnableBaddieAI(item_num, force)) {
-                item->is_visible = true;
+                Item_SetVisible(item, true);
             }
             Item_AddSimulated(item_num);
         }
     } else {
         item->touch_bits = 0;
-        item->is_visible = true;
-        item->is_finished = false;
+        Item_SetVisible(item, true);
+        Item_SetFinished(item, false);
         Item_AddSimulated(item_num);
     }
 }
@@ -550,13 +550,29 @@ void Item_Respawn(const int16_t item_num, const int16_t room_num)
     // The previous occupant died in this slot, leaving it visible and finished.
     // Clear finished so Item_Activate takes the visible item back into play
     // rather than reading it as a spent corpse.
-    item->is_finished = false;
+    Item_SetFinished(item, false);
     // Force the slot back into the room's item chain: a same-room update alone
     // will not relink a slot Item_Destroy left detached, so bounce it through
     // NO_ROOM. Item_Activate then enables the AI with the room settled.
     Item_UpdateRoom(item_num, NO_ROOM);
     Item_UpdateRoom(item_num, room_num);
     Item_Activate(item_num, true);
+}
+
+void Item_SetVisible(ITEM *const item, const bool value)
+{
+    if (item->is_visible == value) {
+        return;
+    }
+    item->is_visible = value;
+}
+
+void Item_SetFinished(ITEM *const item, const bool value)
+{
+    if (item->is_finished == value) {
+        return;
+    }
+    item->is_finished = value;
 }
 
 void Item_UpdateRoom(const int16_t item_num, const int16_t room_num)

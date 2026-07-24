@@ -143,7 +143,7 @@ static void M_Control(const int16_t item_num)
         LOT_DisableBaddieAI(item_num);
         Item_Destroy(item_num);
         item->trigger.spent = true;
-        item->is_finished = true;
+        Item_SetFinished(item, true);
     }
 
     if (!p->is_alerted) {

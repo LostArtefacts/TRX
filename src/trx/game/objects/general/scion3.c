@@ -31,7 +31,7 @@ static void M_Control(const int16_t item_num)
         if (!LOT_EnableBaddieAI(item_num, true)) {
             return;
         }
-        item->is_visible = true;
+        Item_SetVisible(item, true);
     }
 
     M_PRIV *const p = item->priv;
@@ -42,7 +42,7 @@ static void M_Control(const int16_t item_num)
     }
 
     if (p->counter == 0) {
-        item->is_visible = false;
+        Item_SetVisible(item, false);
         item->hit_points = 0;
         Room_TestTriggers(item);
         Item_DetachFromRoom(item_num);

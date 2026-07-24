@@ -54,7 +54,7 @@ static void M_Move(const int16_t item_num)
     const SECTOR *const sector = Room_GetSector(pos, &room_num);
 
     if (Room_GetHeight(sector, pos) != pos.y) {
-        item->is_finished = true;
+        Item_SetFinished(item, true);
         Sound_StopEffect(SFX_SPIKE_WALL);
     } else {
         item->pos = pos;

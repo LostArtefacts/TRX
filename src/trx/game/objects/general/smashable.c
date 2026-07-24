@@ -87,7 +87,7 @@ static void M_Control2(const int16_t item_num)
     }
 
     item->trigger.spent = true;
-    item->is_finished = true;
+    Item_SetFinished(item, true);
     Item_RemoveSimulated(item_num);
 }
 
@@ -131,7 +131,7 @@ void Smashable_Smash(const int16_t item_num)
     if (Item_IsInPlay(item)) {
         Item_RemoveSimulated(item_num);
     }
-    item->is_finished = true;
+    Item_SetFinished(item, true);
 }
 
 REGISTER_OBJECT(O_SMASH_OBJECT_1, M_Setup1)

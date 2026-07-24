@@ -364,7 +364,7 @@ bool Switch_Trigger(const int16_t item_num, const int16_t timer)
     if (item->object_id == O_SWITCH_TYPE_AIRLOCK) {
         if (item->is_finished) {
             Item_RemoveSimulated(item_num);
-            item->is_finished = false;
+            Item_SetFinished(item, false);
             return false;
         } else if (
             item->trigger.spent
@@ -400,10 +400,10 @@ bool Switch_Trigger(const int16_t item_num, const int16_t timer)
         if (timer != 1) {
             item->timer *= LOGIC_FPS;
         }
-        item->is_finished = false;
+        Item_SetFinished(item, false);
     } else {
         Item_RemoveSimulated(item_num);
-        item->is_finished = false;
+        Item_SetFinished(item, false);
     }
     return true;
 }

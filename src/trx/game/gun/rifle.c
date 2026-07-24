@@ -652,7 +652,7 @@ void Gun_Rifle_Draw(const LARA_GUN_TYPE weapon_type)
         Item_SwitchToAnim(item, weapon->equip_anim_idx, 0);
         item->goal_anim_state = LA_G_DRAW;
         item->current_anim_state = LA_G_DRAW;
-        item->is_visible = true;
+        Item_SetVisible(item, true);
         item->room_num = NO_ROOM;
         const OBJECT *const obj = Object_Get(item->object_id);
         lara->right_arm.frame_base = obj->frame_base;

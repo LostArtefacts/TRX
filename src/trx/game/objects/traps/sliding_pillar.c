@@ -208,7 +208,7 @@ static void M_Control(const int16_t item_num)
             item->pos.y - WALL_L * 2, linked.pos, item, true);
 
         MovableBlock_UpdateBox(item, true);
-        item->is_finished = false;
+        Item_SetFinished(item, false);
     }
 }
 
