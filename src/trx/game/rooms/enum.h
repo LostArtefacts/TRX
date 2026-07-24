@@ -117,12 +117,3 @@ typedef enum {
     MINE_CART_STOP,
     NUM_MINE_CART_TYPES,
 } MINE_CART_TYPE;
-
-// Flags of a flip-map slot word. The values are fixed by the floordata
-// trigger encoding and round-trip through save files.
-typedef enum {
-    // clang-format off
-    FSF_ONE_SHOT  = 0x0100,
-    FSF_CODE_BITS = 0x3E00,
-    // clang-format on
-} FLIP_SLOT_FLAG;
