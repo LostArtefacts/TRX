@@ -293,7 +293,7 @@ static void M_CheckStrikeSwitch(ITEM *const item)
 
 static void M_CheckObjectCollision(ITEM *const item, ITEM *const cart)
 {
-    if (!item->collidable || item->status == IS_INVISIBLE
+    if (!item->is_collidable || item->status == IS_INVISIBLE
         || item == Lara_GetItem() || item == cart) {
         return;
     }

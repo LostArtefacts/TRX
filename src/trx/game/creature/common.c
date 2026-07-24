@@ -291,7 +291,7 @@ void Creature_Initialise(const int16_t item_num)
         || GF_GetCurrentLevel()->type == GFL_DEMO) {
         item->rot.y += (Random_GetControl() - DEG_90) >> 1;
     }
-    item->collidable = true;
+    item->is_collidable = true;
     item->creature_data = nullptr;
     item->extra_rotations = nullptr;
 }
@@ -1294,7 +1294,7 @@ void Creature_Die(const int16_t item_num, const bool explode)
         break;
     }
 
-    item->collidable = false;
+    item->is_collidable = false;
     item->hit_points = 0;
     if (explode) {
         Item_Shatter(item_num, -1, 0);

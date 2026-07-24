@@ -76,7 +76,7 @@ typedef struct ITEM {
     bool active;
     bool gravity;
     bool hit_status;
-    bool collidable;
+    bool is_collidable;
     bool looked_at;
     bool dynamic_light;
     bool clear_body;

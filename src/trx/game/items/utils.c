@@ -96,7 +96,7 @@ bool Item_CanBeProjectileTarget(const ITEM *const item)
         return true;
     }
 
-    if (!item->collidable || item->status == IS_INVISIBLE
+    if (!item->is_collidable || item->status == IS_INVISIBLE
         || obj->collision_func == nullptr) {
         return false;
     }

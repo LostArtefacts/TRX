@@ -595,7 +595,7 @@ static bool M_ReadItem(JSON_READ_IO *const io, const int16_t read_index)
             item->status = saved_status;
             M_SHOULD(JSON_READ(io, "gravity", &item->gravity));
             // Introduced in TRX 1.2
-            M_OPTIONAL(JSON_READ(io, "collidable", &item->collidable));
+            M_OPTIONAL(JSON_READ(io, "collidable", &item->is_collidable));
         }
         // Introduced in TRX 1.2, not written if zero
         M_OPTIONAL(JSON_READ(io, "ai_bits", &item->ai_bits));

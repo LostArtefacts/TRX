@@ -166,7 +166,7 @@ static void M_WriteItem(
         JSONW_WRITE(io, "status", item->status);
         JSONW_WRITE(io, "active", item->active);
         JSONW_WRITE(io, "gravity", item->gravity);
-        JSONW_WRITE(io, "collidable", item->collidable);
+        JSONW_WRITE(io, "collidable", item->is_collidable);
         const bool intelligent =
             obj->intelligent && item->creature_data != nullptr;
         JSONW_WRITE(io, "intelligent", intelligent);

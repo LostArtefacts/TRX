@@ -56,7 +56,7 @@ static void M_Control(const int16_t item_num)
 
     if (item->status == IS_DEACTIVATED) {
         Item_RemoveActive(item_num);
-        item->collidable = false;
+        item->is_collidable = false;
     }
 }
 

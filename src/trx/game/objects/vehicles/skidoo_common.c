@@ -112,7 +112,7 @@ static bool M_IsArmed(const SKIDOO_INFO *const skidoo_data)
 
 static bool M_CheckBaddieCollision(ITEM *const item, ITEM *const skidoo)
 {
-    if (!item->collidable || item->status == IS_INVISIBLE
+    if (!item->is_collidable || item->status == IS_INVISIBLE
         || item == Lara_GetItem() || item == skidoo) {
         return false;
     }
@@ -758,7 +758,7 @@ bool Skidoo_CheckGetOff(void)
         lara->gun_status = LGS_ARMLESS;
         lara->move_angle = skidoo->rot.y;
         skidoo->flags |= IF_ONE_SHOT;
-        skidoo->collidable = 0;
+        skidoo->is_collidable = 0;
         return false;
     }
 

@@ -84,7 +84,7 @@ static void M_Control_TR3(const int16_t item_num)
             continue;
         }
 
-        if (!target_item->collidable) {
+        if (!target_item->is_collidable) {
             continue;
         }
 
@@ -247,7 +247,7 @@ static void M_Control_TR12(const int16_t item_num)
             continue;
         }
 
-        if (!target_item->collidable) {
+        if (!target_item->is_collidable) {
             continue;
         }
 

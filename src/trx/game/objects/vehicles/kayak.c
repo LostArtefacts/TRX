@@ -1104,7 +1104,7 @@ static void M_KayakToBaddieCollision(const ITEM *const p)
              item_num != NO_ITEM; item_num = item->next_item) {
             item = Item_Get(item_num);
 
-            if (!item->collidable || item->status == IS_INVISIBLE) {
+            if (!item->is_collidable || item->status == IS_INVISIBLE) {
                 continue;
             }
 

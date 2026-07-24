@@ -116,7 +116,7 @@ static bool M_TryExplodeItem(
     if (target_item == Lara_GetItem()) {
         return false;
     }
-    if (!target_item->collidable) {
+    if (!target_item->is_collidable) {
         return false;
     }
 

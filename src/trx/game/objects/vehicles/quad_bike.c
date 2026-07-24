@@ -712,7 +712,7 @@ static void M_SkidooBaddieCollision(ITEM *const quad)
         while (item_num != NO_ITEM) {
             ITEM *const item = Item_Get(item_num);
 
-            if (!item->collidable || item->status == IS_INVISIBLE
+            if (!item->is_collidable || item->status == IS_INVISIBLE
                 || item == lara_item || item == quad) {
                 goto loop_end;
             }

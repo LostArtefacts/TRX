@@ -28,7 +28,7 @@ static void M_SpawnRaptor(const ITEM *const spawner_item, int32_t slot_idx)
     raptor_item->hit_points = raptor_item->max_hit_points;
     raptor_item->mesh_bits = -1;
     raptor_item->status = IS_ACTIVE;
-    raptor_item->collidable = true;
+    raptor_item->is_collidable = true;
 
     if (raptor_item->active) {
         Item_RemoveActive(p->slots[slot_idx]);

@@ -219,7 +219,7 @@ static void M_Explode(ITEM *const item)
 static void M_Die(int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
-    item->collidable = 0;
+    item->is_collidable = 0;
     item->hit_points = 0;
     Item_Kill(item_num);
     LOT_DisableBaddieAI(item_num);
@@ -337,7 +337,7 @@ static bool M_TriggerLizard(M_PRIV *const p)
     item->hit_points = item->max_hit_points;
     item->active = false;
     item->status = IS_ACTIVE;
-    item->collidable = true;
+    item->is_collidable = true;
     item->flags &= ~(IF_DESTROYED | IF_ONE_SHOT);
     item->include_in_kill_stats = false;
 

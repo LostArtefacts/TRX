@@ -386,8 +386,8 @@ static void M_ControlBack(const int16_t item_num)
                 } else {
                     Item_RemoveActive(dragon_front_item_num);
                     Item_RemoveActive(dragon_back_item_num);
-                    dragon_front_item->collidable = false;
-                    dragon_back_item->collidable = false;
+                    dragon_front_item->is_collidable = false;
+                    dragon_back_item->is_collidable = false;
                     dragon_front_item->flags |= IF_ONE_SHOT;
                     dragon_back_item->flags |= IF_ONE_SHOT;
                 }
