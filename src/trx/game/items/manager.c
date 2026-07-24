@@ -184,6 +184,7 @@ int16_t Item_Create(void)
     const int16_t item_num = m_NextItemFree;
     if (item_num != NO_ITEM) {
         m_Items[item_num].flags = 0;
+        m_Items[item_num].is_destroyed = false;
         // A recycled slot must not inherit the previous occupant's name.
         m_Items[item_num].name = nullptr;
         Handle_RegistryBump(&m_ItemHandles, item_num);
@@ -256,6 +257,7 @@ void Item_Initialise(const int16_t item_num)
     item->interp.result.rot = item->rot;
 
     item->active = false;
+    item->is_destroyed = false;
     item->status = IS_INACTIVE;
     item->gravity = false;
     item->hit_status = false;
@@ -324,7 +326,7 @@ void Item_Control(void)
         const ITEM *const item = Item_Get(item_num);
         const int16_t next = item->next_simulated;
         const OBJECT *obj = Object_Get(item->object_id);
-        if ((item->flags & IF_DESTROYED) == 0 && obj->control_func != nullptr) {
+        if (!item->is_destroyed && obj->control_func != nullptr) {
             obj->control_func(item_num);
         }
         item_num = next;
@@ -345,7 +347,7 @@ void Item_Destroy(const int16_t item_num)
         lara->target = nullptr;
     }
 
-    item->flags |= IF_DESTROYED;
+    item->is_destroyed = true;
     // Invalidate any script handle to this item, whether or not the slot is
     // recycled below.
     Handle_RegistryBump(&m_ItemHandles, item_num);
@@ -356,7 +358,7 @@ void Item_Destroy(const int16_t item_num)
     }
 
     while (m_MaxUsedItemCount > 0
-           && m_Items[m_MaxUsedItemCount - 1].flags & IF_DESTROYED) {
+           && m_Items[m_MaxUsedItemCount - 1].is_destroyed) {
         m_MaxUsedItemCount--;
     }
 }

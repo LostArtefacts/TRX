@@ -144,7 +144,7 @@ static bool M_Trigger(ITEM *const item, const ITEM_TRIGGER *const trigger)
 
     if ((item->flags & IF_CODE_BITS) != IF_CODE_BITS) {
         item->status = IS_INVISIBLE;
-        item->flags |= IF_DESTROYED;
+        item->is_destroyed = true;
     } else if (
         item->status == IS_INVISIBLE
         || Object_IsType(item->object_id, g_QuestObjects)) {

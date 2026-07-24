@@ -162,7 +162,8 @@ static void M_WriteItem(
     ObjectProperty_WriteItemOverrides(io, item, "properties");
 
     if (obj->save_flags) {
-        JSONW_WRITE(io, "flags", item->flags);
+        JSONW_WRITE(
+            io, "flags", item->flags | (item->is_destroyed ? IF_DESTROYED : 0));
         JSONW_WRITE(io, "status", item->status);
         JSONW_WRITE(io, "active", item->active);
         JSONW_WRITE(io, "gravity", item->gravity);

@@ -579,11 +579,13 @@ static bool M_ReadItem(JSON_READ_IO *const io, const int16_t read_index)
         }
         // TRX 1.8 introduced fixing animated spikes on load
         M_SHOULD(JSON_READ(io, "flags", &item->flags));
+        item->is_destroyed = (item->flags & IF_DESTROYED) != 0;
+        item->flags &= ~IF_DESTROYED;
         M_SHOULD(JSON_READ(io, "timer", &item->timer));
         ITEM_STATUS saved_status = item->status;
         M_SHOULD(JSON_READ(io, "status", &saved_status));
 
-        if ((item->flags & IF_DESTROYED) != 0) {
+        if (item->is_destroyed) {
             Item_Destroy(item_num);
             item->status = saved_status;
         } else {

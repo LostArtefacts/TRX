@@ -49,7 +49,7 @@ static void M_Initialise(const int16_t item_num)
 static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
-    if (item->flags & IF_DESTROYED) {
+    if (item->is_destroyed) {
         return;
     }
 

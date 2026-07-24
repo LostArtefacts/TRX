@@ -340,7 +340,7 @@ static void M_InterpolateItems(const double ratio)
     const int16_t lara_vehicle_num = Lara_Vehicle_GetIndex();
     for (int32_t i = 0; i < Item_GetTotalCount(); i++) {
         ITEM *const item = Item_Get(i);
-        if (((item->flags & IF_DESTROYED) || item->status == IS_INACTIVE)
+        if (((item->is_destroyed) || item->status == IS_INACTIVE)
             && i != lara_vehicle_num
             && XYZ_32_AreEquivalent(item->pos, item->interp.prev.pos)) {
             M_CommitItem(item);
