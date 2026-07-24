@@ -338,7 +338,7 @@ void Item_Kill(const int16_t item_num)
 {
     Sparks_DetachItem(item_num);
     Item_RemoveActive(item_num);
-    Item_RemoveDrawn(item_num);
+    Item_DetachFromRoom(item_num);
 
     ITEM *const item = &m_Items[item_num];
     LARA_INFO *const lara = Lara_GetLaraInfo();
@@ -442,7 +442,7 @@ void Item_RemoveActive(const int16_t item_num)
     }
 }
 
-void Item_RemoveDrawn(const int16_t item_num)
+void Item_DetachFromRoom(const int16_t item_num)
 {
     const ITEM *const item = &m_Items[item_num];
     if (item->room_num == NO_ROOM) {
@@ -606,7 +606,7 @@ void Item_UpdateRoom(const int16_t item_num, const int16_t room_num)
         }
 
         if (room_num == NO_ROOM) {
-            Item_RemoveDrawn(item_num);
+            Item_DetachFromRoom(item_num);
             item->room_num = NO_ROOM;
         } else {
             room = Room_Get(room_num);

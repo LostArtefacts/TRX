@@ -68,7 +68,7 @@ static void M_RemoveFlipItems(const ROOM *const room)
         // so avoid instances of floating water creatures in drained rooms.
         if (g_TRVersion >= 2 && (item->flags & IF_ONE_SHOT) && obj->intelligent
             && item->hit_points <= 0) {
-            Item_RemoveDrawn(item_num);
+            Item_DetachFromRoom(item_num);
             item->flags |= IF_DESTROYED;
         }
 

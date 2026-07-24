@@ -127,7 +127,7 @@ static void M_HandleSave(ITEM *const item, const SAVEGAME_STAGE stage)
     if (stage == SAVEGAME_STAGE_AFTER_LOAD) {
         if (item->status == IS_DEACTIVATED) {
             const int16_t item_num = Item_GetIndex(item);
-            Item_RemoveDrawn(item_num);
+            Item_DetachFromRoom(item_num);
         }
     }
 }

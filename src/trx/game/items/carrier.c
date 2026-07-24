@@ -195,7 +195,7 @@ static void M_InitialiseDataDrops(void)
             if (Object_IsType(pickup->object_id, g_PickupObjects)
                 && XYZ_32_AreEquivalent(pickup->pos, carrier->pos)) {
                 Vector_Add(pickups, (void *)&pickup_num);
-                Item_RemoveDrawn(pickup_num);
+                Item_DetachFromRoom(pickup_num);
                 pickup->room_num = NO_ROOM;
             }
 
@@ -211,7 +211,7 @@ static void M_InitialiseDataDrops(void)
         CARRIED_ITEM *drop = carrier->carried_item;
         for (int32_t j = 0; j < pickups->count; j++) {
             drop->spawn_num = *(const int16_t *)Vector_Get(pickups, j);
-            Item_RemoveDrawn(drop->spawn_num);
+            Item_DetachFromRoom(drop->spawn_num);
             drop->room_num = NO_ROOM;
             drop->fall_speed = 0;
             drop->status = DS_CARRIED;
