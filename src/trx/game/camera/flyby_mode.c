@@ -338,6 +338,10 @@ void Camera_FlybyMode_Update(void)
 
     const FLYBY_SEQUENCE *const sequence =
         Camera_GetSequence(m_CurrentSequence);
+    if (sequence == nullptr) {
+        return;
+    }
+
     const FLYBY_CAMERA *const first_camera =
         Camera_GetFlybyCamera(sequence->camera_idx);
     const FLYBY_CAMERA *const current_camera =
