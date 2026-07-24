@@ -69,7 +69,7 @@ static void M_Control(const int16_t item_num)
             Sound_Effect(SFX_DAMOCLES_SWORD, &item->pos, SPM_NORMAL);
             item->pos.y = item->floor + 10;
             item->gravity = false;
-            item->is_finished = true;
+            Item_SetFinished(item, true);
         }
     } else if (item->pos.y != item->floor) {
         item->rot.y += item->required_anim_state;

@@ -143,7 +143,7 @@ bool LOT_EnableBaddieAI(const int16_t item_num, const bool always)
     }
 
     const CREATURE *const creature = &m_BaddieSlots[worst_slot];
-    Item_Get(creature->item_num)->is_visible = false;
+    Item_SetVisible(Item_Get(creature->item_num), false);
     LOT_DisableBaddieAI(creature->item_num);
     LOT_InitialiseSlot(item_num, worst_slot);
     return true;

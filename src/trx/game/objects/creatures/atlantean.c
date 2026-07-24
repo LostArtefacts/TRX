@@ -98,7 +98,7 @@ static void M_Control(const int16_t item_num)
         Sound_Effect(SFX_ATLANTEAN_DEATH, &item->pos, SPM_NORMAL);
         LOT_DisableBaddieAI(item_num);
         Item_Destroy(item_num);
-        item->is_finished = true;
+        Item_SetFinished(item, true);
         Carrier_TestItemDrops(item_num);
         return;
     }

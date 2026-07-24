@@ -93,7 +93,7 @@ static void M_Control(const int16_t item_num)
                     Item_Activate(p->bug_item_num, false);
                 }
             }
-            item->is_finished = true;
+            Item_SetFinished(item, true);
         }
     }
 

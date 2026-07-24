@@ -61,7 +61,7 @@ static void M_Control(const int16_t item_num)
         && SQUARE(x) + SQUARE(z) < SQUARE(STATUE_EXPLODE_DIST)) {
         Item_Shatter(item_num, -1, 0);
         Item_Destroy(item_num);
-        item->is_finished = true;
+        Item_SetFinished(item, true);
 
         const M_PRIV *const p = item->priv;
         if (p->centaur_item_num != NO_ITEM) {

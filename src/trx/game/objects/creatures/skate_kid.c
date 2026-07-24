@@ -97,8 +97,8 @@ static void M_Initialise(const int16_t item_num)
     skateboard_item->pos = item->pos;
     skateboard_item->rot = item->rot;
     skateboard_item->room_num = item->room_num;
-    skateboard_item->is_visible = item->is_visible;
-    skateboard_item->is_finished = item->is_finished;
+    Item_SetVisible(skateboard_item, item->is_visible);
+    Item_SetFinished(skateboard_item, item->is_finished);
     skateboard_item->is_collidable = false;
     skateboard_item->shade.value_1 = -1;
     Item_Initialise(skateboard_item_num);
@@ -204,8 +204,8 @@ static void M_Control(const int16_t item_num)
         ITEM *const skateboard_item = Item_Get(p->skateboard_item_num);
         skateboard_item->pos = item->pos;
         skateboard_item->rot = item->rot;
-        skateboard_item->is_visible = item->is_visible;
-        skateboard_item->is_finished = item->is_finished;
+        Item_SetVisible(skateboard_item, item->is_visible);
+        Item_SetFinished(skateboard_item, item->is_finished);
         Item_UpdateRoom(p->skateboard_item_num, item->room_num);
 
         const int16_t relative_anim = Item_GetRelativeAnim(item);

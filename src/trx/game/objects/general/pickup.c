@@ -144,12 +144,12 @@ static bool M_Trigger(ITEM *const item, const ITEM_TRIGGER *const trigger)
     }
 
     if (item->trigger.mask != IF_CODE_BITS) {
-        item->is_visible = false;
+        Item_SetVisible(item, false);
         item->is_destroyed = true;
     } else if (
         !item->is_visible || Object_IsType(item->object_id, g_QuestObjects)) {
         item->touch_bits = 0;
-        item->is_visible = true;
+        Item_SetVisible(item, true);
         Item_AddSimulated(Item_GetIndex(item));
     }
 
@@ -309,7 +309,7 @@ static void M_DoPickup(const int16_t item_num)
     // Notify Lua pickup listeners
     LUA_FireEventInt32(LUA_EVENT_PICKUP, item_num);
 
-    item->is_visible = false;
+    Item_SetVisible(item, false);
     Item_Destroy(item_num);
 
     LARA_INFO *const lara = Lara_GetLaraInfo();
@@ -697,7 +697,7 @@ bool Pickup_Trigger(const int16_t item_num)
         return false;
     }
 
-    item->is_finished = true;
+    Item_SetFinished(item, true);
     return true;
 }
 

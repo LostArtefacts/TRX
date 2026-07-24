@@ -736,7 +736,7 @@ static void M_ResetPosition(ITEM *const item)
 
     Item_RemoveSimulated(item_num);
     item->timer = -1;
-    item->is_finished = false;
+    Item_SetFinished(item, false);
 }
 
 static void M_SnapToLara(
@@ -823,7 +823,7 @@ static void M_AnimatePushPull(ITEM *const item)
             item->pos.z = (item->pos.z & -M_GRID_SNAP) | M_GRID_SNAP;
         } else if (Item_TestFrameEqual(lara_item, -1)) {
             item->current_anim_state = M_STATE_STILL;
-            item->is_finished = true;
+            Item_SetFinished(item, true);
         }
         break;
 
@@ -926,7 +926,7 @@ static void M_Control(const int16_t item_num)
         item->gravity = false;
         item->fall_speed = 0;
         item->pos.y = under_block_height;
-        item->is_finished = true;
+        Item_SetFinished(item, true);
         ItemAction_Run(ITEM_ACTION_FLOOR_SHAKE, item);
         Sound_Effect(SFX_PUSHBLOCK_LAND, &item->pos, SPM_NORMAL);
     } else if (
@@ -935,7 +935,7 @@ static void M_Control(const int16_t item_num)
         // the block again.
         item->pos.y >= under_block_height && !item->gravity
         && !M_IsPushPull(item) && !M_IsForcedMoving(item)) {
-        item->is_finished = false;
+        Item_SetFinished(item, false);
         Item_RemoveSimulated(item_num);
     }
 
@@ -956,7 +956,7 @@ static void M_Control(const int16_t item_num)
         };
         Walkable_Reposition(item_num, M_GetLinked(item), target);
         M_SetLinked(item);
-        item->is_finished = false;
+        Item_SetFinished(item, false);
         Item_RemoveSimulated(item_num);
         M_UpdateStoppers(item, false);
         MovableBlock_UpdateBox(item, true);
@@ -1180,7 +1180,7 @@ void MovableBlock_ShiftStackY(
             };
             Walkable_Reposition(item_num, M_GetLinked(item), target);
             M_SetLinked(item);
-            item->is_finished = false;
+            Item_SetFinished(item, false);
             M_SetForcedMoving(item, false);
         }
     }
@@ -1213,7 +1213,7 @@ void MovableBlock_SlideStack(
             };
             Walkable_Reposition(item_num, M_GetLinked(item), target);
             M_SetLinked(item);
-            item->is_finished = false;
+            Item_SetFinished(item, false);
             M_SetForcedMoving(item, false);
         }
     }

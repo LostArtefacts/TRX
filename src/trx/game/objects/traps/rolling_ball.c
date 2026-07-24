@@ -107,7 +107,7 @@ static void M_Stop(ITEM *const item, const XYZ_32 old_pos)
 {
     if (item->object_id == O_ROLLING_BALL_1) {
         Sound_Effect(SFX_ROLLING_BALL_1_STOP, &item->pos, SPM_NORMAL);
-        item->is_finished = true;
+        Item_SetFinished(item, true);
     } else if (item->object_id == O_ROLLING_BALL_2) {
         Sound_Effect(SFX_ROLLING_BALL_2_STOP, &item->pos, SPM_NORMAL);
         item->goal_anim_state = TRAP_WORKING;
@@ -116,7 +116,7 @@ static void M_Stop(ITEM *const item, const XYZ_32 old_pos)
         item->goal_anim_state = TRAP_WORKING;
     } else if (item->object_id == O_ROLLING_BALL_4) {
         Sound_Effect(SFX_ROLLING_BALL_4_STOP, &item->pos, SPM_NORMAL);
-        item->is_finished = true;
+        Item_SetFinished(item, true);
     }
 
     item->pos.x = old_pos.x;
@@ -142,7 +142,7 @@ static void M_Control(const int16_t item_num)
         const SECTOR *const sector = Room_GetSector(item->pos, &room_num);
         const int32_t height = Room_GetHeight(sector, item->pos);
         if (item->floor < height) {
-            item->is_finished = false;
+            Item_SetFinished(item, false);
             item->floor = height;
         }
         return;

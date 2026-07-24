@@ -79,7 +79,7 @@ static void M_Initialise(const int16_t item_num)
     p->targetable = true;
 
     item->is_simulated = false;
-    item->is_finished = false;
+    Item_SetFinished(item, false);
     item->trigger = (ITEM_TRIGGER_STATE) { 0 };
     item->is_collidable = true;
 
@@ -169,7 +169,7 @@ static void M_Control(const int16_t item_num)
                 if (p->bounce_stage == 2) {
                     item->rot.x = 0x3800;
                     Item_RemoveSimulated(item_num);
-                    item->is_finished = true;
+                    Item_SetFinished(item, true);
                     return;
                 }
 
@@ -192,7 +192,7 @@ static void M_Control(const int16_t item_num)
                 if (p->bounce_stage == 2) {
                     item->rot.x = -0x2A00;
                     Item_RemoveSimulated(item_num);
-                    item->is_finished = true;
+                    Item_SetFinished(item, true);
                     return;
                 }
 

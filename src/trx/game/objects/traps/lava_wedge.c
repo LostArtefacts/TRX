@@ -68,7 +68,7 @@ static void M_Control(const int16_t item_num)
 
         const SECTOR *const sector = Room_GetSector(pos, &room_num);
         if (Room_GetHeight(sector, pos) != item->pos.y) {
-            item->is_finished = true;
+            Item_SetFinished(item, true);
         }
     }
 

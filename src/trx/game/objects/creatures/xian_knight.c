@@ -105,7 +105,7 @@ static void M_Control(const int16_t item_num)
             item->object_id = O_XIAN_KNIGHT;
             LOT_DisableBaddieAI(item_num);
             Item_Destroy(item_num);
-            item->is_finished = true;
+            Item_SetFinished(item, true);
             item->trigger.spent = true;
             Carrier_TestItemDrops(item_num);
         }

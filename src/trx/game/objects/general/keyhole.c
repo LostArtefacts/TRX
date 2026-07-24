@@ -194,7 +194,7 @@ bool Keyhole_Trigger(const int16_t item_num)
     if (!Item_IsInPlay(item) || lara->gun_status == LGS_HANDS_BUSY) {
         return false;
     }
-    item->is_finished = true;
+    Item_SetFinished(item, true);
     Item_RemoveSimulated(item_num);
     return true;
 }

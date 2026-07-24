@@ -113,8 +113,8 @@ static void M_Collision(
                     ITEM *const door_item = Item_Get(p->door_item_num);
                     if (!Item_IsInPlay(door_item)) {
                         Item_AddSimulated(p->door_item_num);
-                        door_item->is_visible = true;
-                        door_item->is_finished = false;
+                        Item_SetVisible(door_item, true);
+                        Item_SetFinished(door_item, false);
                     }
                 }
             } else {

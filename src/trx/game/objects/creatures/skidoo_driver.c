@@ -66,7 +66,7 @@ static void M_MakeMountable(ITEM *const skidoo_item)
     const int32_t skidoo_item_num = Item_GetIndex(skidoo_item);
     LOT_DisableBaddieAI(skidoo_item_num);
     skidoo_item->object_id = O_SKIDOO_FAST;
-    skidoo_item->is_finished = true;
+    Item_SetFinished(skidoo_item, true);
     Skidoo_Initialise(skidoo_item_num);
 
     SKIDOO_INFO *const skidoo_data = skidoo_item->priv;
@@ -234,7 +234,7 @@ static void M_Control(const int16_t driver_item_num)
 
     if (skidoo_item->creature_data == nullptr) {
         LOT_EnableBaddieAI(skidoo_item_num, true);
-        skidoo_item->is_visible = true;
+        Item_SetVisible(skidoo_item, true);
         // The skidoo is a control-less puppet the driver drives, so it never
         // joins the simulation list through Item_AddSimulated. It is still an
         // enemy in play, though: set is_simulated directly so Item_IsInPlay

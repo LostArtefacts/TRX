@@ -227,7 +227,7 @@ void Item_Animate(ITEM *const item)
             case AC_DEACTIVATE:
                 const OBJECT *const obj = Object_Get(item->object_id);
                 item->after_death = obj->intelligent ? 1 : 64;
-                item->is_finished = true;
+                Item_SetFinished(item, true);
                 break;
 
             default:

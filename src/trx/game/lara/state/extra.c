@@ -83,7 +83,7 @@ static void M_ScionPedestal(ITEM *const item, COLL_INFO *const coll)
     }
 
     Inv_AddItem(scion->object_id);
-    scion->is_visible = false;
+    Item_SetVisible(scion, false);
     Item_DetachFromRoom(lara->interact_target.item_num);
     Stats_AddPickup();
     lara->interact_target.item_num = NO_ITEM;

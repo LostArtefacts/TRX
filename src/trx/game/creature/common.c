@@ -307,7 +307,7 @@ bool Creature_Activate(const int16_t item_num)
         return false;
     }
 
-    item->is_visible = true;
+    Item_SetVisible(item, true);
     return true;
 }
 
@@ -1271,7 +1271,7 @@ void Creature_Die(const int16_t item_num, const bool explode)
             Item_Shatter(item_num, -1, 0);
             ITEM *const vehicle_item = Item_Get(item_num);
             vehicle_item->hit_points = 0;
-            vehicle_item->is_visible = false;
+            Item_SetVisible(vehicle_item, false);
             return;
         }
         break;
@@ -1287,7 +1287,7 @@ void Creature_Die(const int16_t item_num, const bool explode)
         }
         ITEM *const vehicle_item = Item_Get(vehicle_item_num);
         vehicle_item->hit_points = 0;
-        vehicle_item->is_visible = false;
+        Item_SetVisible(vehicle_item, false);
         return;
 
     default:

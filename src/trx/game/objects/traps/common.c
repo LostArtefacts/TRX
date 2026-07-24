@@ -18,7 +18,7 @@ void Trap_Reset(ITEM *const item)
     const TRAP_DATA *const data = item->trap_data;
     const int16_t item_num = Item_GetIndex(item);
 
-    item->is_finished = false;
+    Item_SetFinished(item, false);
     item->pos = data->pos;
     Item_UpdateRoom(item_num, data->room_num);
 

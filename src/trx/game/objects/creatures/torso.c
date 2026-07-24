@@ -238,7 +238,7 @@ static void M_Control(const int16_t item_num)
         Room_TestTriggers(item);
 
         Item_Destroy(item_num);
-        item->is_finished = true;
+        Item_SetFinished(item, true);
     }
 }
 

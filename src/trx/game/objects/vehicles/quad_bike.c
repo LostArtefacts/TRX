@@ -357,7 +357,7 @@ static void M_Explode(ITEM *const item)
     const int16_t vehicle_item_num = Lara_Vehicle_GetIndex();
     Item_Shatter(vehicle_item_num, -2, 0);
     Item_Destroy(vehicle_item_num);
-    item->is_finished = true;
+    Item_SetFinished(item, true);
     Sound_Effect(SFX_EXPLOSION_1, nullptr, SPM_NORMAL);
     Sound_Effect(SFX_EXPLOSION_2, nullptr, SPM_NORMAL);
     Lara_Vehicle_SetIndex(NO_ITEM);

@@ -117,7 +117,7 @@ static void M_ControlHandle(const int16_t item_num)
         Room_TestTriggers(item);
         M_UpdateBox(item, true);
         Item_RemoveSimulated(item_num);
-        item->is_finished = true;
+        Item_SetFinished(item, true);
         break;
     }
     }

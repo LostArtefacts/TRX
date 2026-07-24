@@ -41,7 +41,7 @@ static void M_Control(const int16_t item_num)
         if (Item_Shatter(item_num, -1, 0)) {
             LOT_DisableBaddieAI(item_num);
             Item_Destroy(item_num);
-            item->is_finished = true;
+            Item_SetFinished(item, true);
         }
     } else {
         AI_INFO info;

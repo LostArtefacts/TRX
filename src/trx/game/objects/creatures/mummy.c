@@ -41,7 +41,7 @@ static void M_Control(const int16_t item_num)
         if (!LOT_EnableBaddieAI(item_num, true)) {
             return;
         }
-        item->is_visible = true;
+        Item_SetVisible(item, true);
     }
 
     if (item->current_anim_state == M_STATE_STOP) {

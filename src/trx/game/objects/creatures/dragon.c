@@ -136,7 +136,7 @@ static void M_InitialiseBack(const int16_t item_num)
     M_PRIV *const p = dragon_back_item->priv;
     p->mode = M_MODE_TWO_PHASE;
 
-    dragon_back_item->is_visible = false;
+    Item_SetVisible(dragon_back_item, false);
     dragon_back_item->shade.value_1 = -1;
     dragon_back_item->mesh_bits = 0x1FFFFF;
 
@@ -178,7 +178,7 @@ static void M_ActivateBack(ITEM *const dragon_back_item)
     LOT_EnableBaddieAI(dragon_front_item_num, true);
     Item_AddSimulated(dragon_front_item_num);
     Item_AddSimulated(Item_GetIndex(dragon_back_item));
-    dragon_back_item->is_visible = true;
+    Item_SetVisible(dragon_back_item, true);
 }
 
 static void M_MarkDragonDead(ITEM *const dragon_back_item)
@@ -195,8 +195,8 @@ static void M_MarkDragonDead(ITEM *const dragon_back_item)
     // Allow drops to occur at the beginning of the cinematic camera for a
     // better window to avoid seeing the items spawn. Carrier_TestItemDrops
     // only drops for a finished item, so force that phase and restore it.
-    // A raw write: the value never actually changes across the call, so
-    // nothing should observe the momentary flip.
+    // A raw write, not Item_SetFinished: the value never actually changes
+    // across the call, so nothing should observe the momentary flip.
     const bool was_finished = dragon_back_item->is_finished;
     dragon_back_item->is_finished = true;
     Carrier_TestItemDrops(Item_GetIndex(dragon_back_item));
@@ -380,8 +380,8 @@ static void M_ControlBack(const int16_t item_num)
             } else if (creature->flags == M_DISSOLVE_TIME) {
                 Room_TestTriggers(dragon_back_item);
                 LOT_DisableBaddieAI(dragon_front_item_num);
-                dragon_front_item->is_finished = true;
-                dragon_back_item->is_finished = true;
+                Item_SetFinished(dragon_front_item, true);
+                Item_SetFinished(dragon_back_item, true);
                 if (is_two_phase) {
                     Item_Destroy(dragon_front_item_num);
                     Item_Destroy(dragon_back_item_num);
