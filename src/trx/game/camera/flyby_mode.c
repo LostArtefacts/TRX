@@ -303,9 +303,14 @@ bool Camera_Flybymode_Cancel(void)
     return true;
 }
 
-void Camera_FlybyMode_Deactivate(void)
+void Camera_FlybyMode_Reset(void)
 {
     m_CurrentSequence = M_NO_SEQUENCE;
+}
+
+void Camera_FlybyMode_Deactivate(void)
+{
+    Camera_FlybyMode_Reset();
     Lara_SetControllable(true);
 
     g_Camera.type = CAM_CHASE;

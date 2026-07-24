@@ -114,7 +114,7 @@ void Camera_Reset(void)
 {
     g_Camera.mic_pos.room_num = NO_ROOM;
     g_Camera.pos.room_num = NO_ROOM;
-    Camera_FlybyMode_Deactivate();
+    Camera_FlybyMode_Reset();
 }
 
 void Camera_ApplyBounce(void)
