@@ -457,7 +457,7 @@ void Lara_Extinguish(void)
         const int16_t next_effect_num = effect->next_active;
         if (effect->object_id == O_FLAME && effect->counter < 0) {
             effect->counter = 0;
-            Effect_Kill(effect_num);
+            Effect_Destroy(effect_num);
         }
         effect_num = next_effect_num;
     }

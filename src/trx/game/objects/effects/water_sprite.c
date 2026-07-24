@@ -17,7 +17,7 @@ static void M_Control(const int16_t effect_num)
     }
 
     if (effect->counter == 0 || effect->fall_speed > 0) {
-        Effect_Kill(effect_num);
+        Effect_Destroy(effect_num);
         return;
     }
 

@@ -170,7 +170,7 @@ static void M_KillFireEffect(ITEM *const item)
         return;
     }
 
-    Effect_Kill(p->effect_num);
+    Effect_Destroy(p->effect_num);
     p->effect_num = NO_EFFECT;
     if (g_TRVersion == 1) {
         Sound_StopEffect(SFX_LOOP_FOR_SMALL_FIRES);

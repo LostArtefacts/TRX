@@ -9,7 +9,7 @@ static void M_Control(int16_t effect_num)
         effect->counter = 0;
         effect->frame_num--;
         if (effect->frame_num <= Object_Get(effect->object_id)->mesh_count) {
-            Effect_Kill(effect_num);
+            Effect_Destroy(effect_num);
         }
     }
 }

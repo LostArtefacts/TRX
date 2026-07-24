@@ -55,7 +55,7 @@ static void M_Control_TR12(const int16_t effect_num)
             effect->shade = SHADE_NEUTRAL;
             Sound_Effect(SFX_EXPLOSION_1, &effect->pos, SPM_NORMAL);
         } else {
-            Effect_Kill(effect_num);
+            Effect_Destroy(effect_num);
         }
         return;
     }
@@ -80,7 +80,7 @@ static void M_Control_TR12(const int16_t effect_num)
             lara->hit_effect_count = 5;
             lara->hit_effect = effect;
         } else {
-            Effect_Kill(effect_num);
+            Effect_Destroy(effect_num);
         }
     }
 
@@ -140,7 +140,7 @@ static void M_Control_TR3(const int16_t effect_num)
             Sound_Effect(SFX_EXPLOSION_1, &effect->pos, SPM_NORMAL);
         }
 
-        Effect_Kill(effect_num);
+        Effect_Destroy(effect_num);
         return;
     }
 
@@ -162,7 +162,7 @@ static void M_Control_TR3(const int16_t effect_num)
             Sound_Effect(SFX_EXPLOSION_1, &effect->pos, SPM_NORMAL);
         }
 
-        Effect_Kill(effect_num);
+        Effect_Destroy(effect_num);
     }
 
     if (effect->room_num != room_num) {
@@ -217,7 +217,7 @@ static void M_Control_TR4(const int16_t effect_num)
         if ((effect->counter & 3) != 0) {
             M_SpawnTR4Explosion(
                 (XYZ_32) { effect->pos.x, height, effect->pos.z }, room_num);
-            Effect_Kill(effect_num);
+            Effect_Destroy(effect_num);
             return;
         }
 
@@ -243,7 +243,7 @@ static void M_Control_TR4(const int16_t effect_num)
     if (effect->speed == 0) {
         effect->flag1++;
         if (effect->flag1 > 32) {
-            Effect_Kill(effect_num);
+            Effect_Destroy(effect_num);
             return;
         }
     }

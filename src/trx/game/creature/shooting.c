@@ -166,7 +166,7 @@ bool Creature_Shoot(
 
     if (FX_GunFlash_Spawn(item, gun) && effect_num != NO_EFFECT) {
         // Kill the old-style flash effect just spawned from previous chunk
-        Effect_Kill(effect_num);
+        Effect_Destroy(effect_num);
         effect_num = NO_EFFECT;
     }
 

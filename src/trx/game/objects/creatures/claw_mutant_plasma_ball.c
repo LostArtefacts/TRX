@@ -160,7 +160,7 @@ static void M_Control(const int16_t effect_num)
             }
         }
 
-        Effect_Kill(effect_num);
+        Effect_Destroy(effect_num);
         return;
     }
 
@@ -172,7 +172,7 @@ static void M_Control(const int16_t effect_num)
         }
 
         Lara_TakeDamage(M_GetDamage(), true);
-        Effect_Kill(effect_num);
+        Effect_Destroy(effect_num);
         return;
     }
 

@@ -66,7 +66,7 @@ static void M_Control(const int16_t effect_num)
     if (effect->counter < 0) {
         effect->counter++;
         if (effect->counter == 0) {
-            Effect_Kill(effect_num);
+            Effect_Destroy(effect_num);
         }
         return;
     }
@@ -75,7 +75,7 @@ static void M_Control(const int16_t effect_num)
     const XYZ_32 target_pos = M_GetTargetPos(item);
     M_NudgeTowardsItem(effect, &target_pos);
     if (M_ShouldDisappear(effect, &target_pos)) {
-        Effect_Kill(effect_num);
+        Effect_Destroy(effect_num);
     }
 }
 

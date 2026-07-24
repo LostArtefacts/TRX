@@ -15,7 +15,7 @@ static void M_Control(const int16_t effect_num)
         effect->frame_num--;
         effect->counter = 0;
         if (effect->frame_num <= obj->mesh_count) {
-            Effect_Kill(effect_num);
+            Effect_Destroy(effect_num);
         }
     }
 }
