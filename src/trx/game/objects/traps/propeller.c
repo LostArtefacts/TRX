@@ -21,7 +21,7 @@ static void M_Collision(
     const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
 {
     ITEM *const item = Item_Get(item_num);
-    if (item->status == IS_ACTIVE && item->object_id == O_PROPELLER_2
+    if (Item_IsInPlay(item) && item->object_id == O_PROPELLER_2
         && item->current_anim_state == M_STATE_OFF) {
         Object_Collision(item_num, lara_item, coll);
     } else {
@@ -65,7 +65,7 @@ void Propeller_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
 
-    if (Item_IsTriggerActive(item) && !(item->flags & IF_ONE_SHOT)) {
+    if (Item_IsTriggerActive(item) && !item->trigger.spent) {
         item->goal_anim_state = M_STATE_ON;
 
         if ((item->touch_bits & 6) != 0) {
@@ -100,7 +100,7 @@ void Propeller_Control(const int16_t item_num)
 
     Item_Animate(item);
 
-    if (item->status == IS_DEACTIVATED) {
+    if (item->is_finished) {
         Item_RemoveSimulated(item_num);
         if (item->object_id != O_POWER_SAW) {
             item->is_collidable = false;

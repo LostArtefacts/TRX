@@ -22,7 +22,7 @@ typedef enum {
 
 static bool M_CanDropItems(const ITEM *const item)
 {
-    return item->hit_points <= 0 || item->status == IS_DEACTIVATED;
+    return item->hit_points <= 0 || item->is_finished;
 }
 
 static void M_Initialise(const int16_t item_num)
@@ -41,7 +41,7 @@ static void M_Control(const int16_t item_num)
         if (!LOT_EnableBaddieAI(item_num, true)) {
             return;
         }
-        item->status = IS_ACTIVE;
+        item->is_visible = true;
     }
 
     if (item->current_anim_state == M_STATE_STOP) {
@@ -60,7 +60,7 @@ static void M_Control(const int16_t item_num)
     Creature_Head(item, head);
     Item_Animate(item);
 
-    if (item->status == IS_DEACTIVATED) {
+    if (item->is_finished) {
         // Count kill if Lara touches mummy and it falls.
         if (item->hit_points > 0) {
             Stats_AddKill();

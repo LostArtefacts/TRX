@@ -1,3 +1,4 @@
+#include <trx/game/const.h>
 #include <trx/game/items.h>
 #include <trx/game/objects.h>
 #include <trx/game/output.h>
@@ -10,7 +11,7 @@ typedef struct {
 static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
-    if ((item->flags & IF_CODE_BITS) != IF_CODE_BITS) {
+    if (item->trigger.mask != IF_CODE_BITS) {
         return;
     }
 

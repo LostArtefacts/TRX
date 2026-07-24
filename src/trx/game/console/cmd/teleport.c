@@ -30,7 +30,7 @@ static bool M_ObjectCanBePickedUp(const OBJECT_ID obj_id)
     }
     for (int32_t item_num = 0; item_num < Item_GetTotalCount(); item_num++) {
         const ITEM *const item = Item_Get(item_num);
-        if (item->object_id == obj_id && item->status != IS_INVISIBLE) {
+        if (item->object_id == obj_id && item->is_visible) {
             return true;
         }
     }
@@ -51,7 +51,7 @@ static bool M_CanTargetItem(
 {
     // Collected pickups
     if (Object_IsType(item->object_id, g_PickupObjects)
-        && (item->status == IS_INVISIBLE || item->status == IS_DEACTIVATED
+        && (!item->is_visible || item->is_finished
             || item->room_num == NO_ROOM)) {
         return false;
     }

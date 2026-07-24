@@ -449,7 +449,7 @@ static void M_HandleEvent(
 static void M_ControlDying(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
-    if (item->status != IS_ACTIVE) {
+    if (!Item_IsInPlay(item)) {
         return;
     }
 

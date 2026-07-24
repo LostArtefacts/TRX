@@ -1,4 +1,5 @@
 #include <trx/config.h>
+#include <trx/game/const.h>
 #include <trx/game/game_flow.h>
 #include <trx/game/input.h>
 #include <trx/game/inventory.h>
@@ -52,7 +53,7 @@ static const OBJECT_BOUNDS *M_Bounds(void)
 static bool M_IsUsable(const int16_t item_num)
 {
     const ITEM *const item = Item_Get(item_num);
-    return item->status == IS_INACTIVE;
+    return Item_IsInactive(item);
 }
 
 static void M_Use(ITEM *const lara_item, ITEM *const receptacle_item)
@@ -83,7 +84,7 @@ static void M_MarkDone(ITEM *const receptacle_item)
     if (done_obj_id != NO_OBJECT) {
         receptacle_item->object_id = done_obj_id;
     }
-    if (receptacle_item->status == IS_ACTIVE) {
+    if (Item_IsInPlay(receptacle_item)) {
         return;
     }
 
@@ -92,8 +93,10 @@ static void M_MarkDone(ITEM *const receptacle_item)
     receptacle_item->current_anim_state = anim->current_anim_state;
     receptacle_item->goal_anim_state = receptacle_item->current_anim_state;
     receptacle_item->required_anim_state = 0;
-    receptacle_item->flags = IF_CODE_BITS;
-    receptacle_item->status = IS_ACTIVE;
+    receptacle_item->trigger = (ITEM_TRIGGER_STATE) { .mask = IF_CODE_BITS };
+    // A save taken after the done hole triggered records it finished; re-arming
+    // it on load has to clear that so Item_IsInPlay reads it as active again.
+    receptacle_item->is_finished = false;
     Item_AddSimulated(Item_GetIndex(receptacle_item));
     Item_Animate(receptacle_item);
 }
@@ -101,7 +104,7 @@ static void M_MarkDone(ITEM *const receptacle_item)
 static void M_HandleSave(ITEM *const item, const SAVEGAME_STAGE stage)
 {
     if (stage == SAVEGAME_STAGE_AFTER_LOAD) {
-        if (item->status == IS_DEACTIVATED || item->status == IS_ACTIVE) {
+        if (item->is_finished || Item_IsInPlay(item)) {
             M_MarkDone(item);
         }
     }

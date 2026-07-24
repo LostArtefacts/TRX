@@ -54,7 +54,7 @@ static void M_Move(const int16_t item_num)
     const SECTOR *const sector = Room_GetSector(pos, &room_num);
 
     if (Room_GetHeight(sector, pos) != pos.y) {
-        item->status = IS_DEACTIVATED;
+        item->is_finished = true;
         Sound_StopEffect(SFX_SPIKE_WALL);
     } else {
         item->pos = pos;
@@ -83,7 +83,7 @@ static void M_Control(const int16_t item_num)
 
     if (!Item_IsTriggerActive(item)) {
         Trap_Reset(item);
-    } else if (item->status != IS_DEACTIVATED) {
+    } else if (!item->is_finished) {
         M_Move(item_num);
     }
 

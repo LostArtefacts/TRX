@@ -43,7 +43,7 @@ static void M_Control(const int16_t item_num)
     Room_GetSector(item->pos, &room_num);
     Item_UpdateRoom(item_num, room_num);
 
-    if (item->status != IS_DEACTIVATED) {
+    if (!item->is_finished) {
         const M_PRIV *const p = item->priv;
         XYZ_32 pos = item->pos;
 
@@ -68,7 +68,7 @@ static void M_Control(const int16_t item_num)
 
         const SECTOR *const sector = Room_GetSector(pos, &room_num);
         if (Room_GetHeight(sector, pos) != item->pos.y) {
-            item->status = IS_DEACTIVATED;
+            item->is_finished = true;
         }
     }
 

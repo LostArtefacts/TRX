@@ -144,12 +144,12 @@ static void M_Control(const int16_t item_num)
     Creature_Head(item, head);
     Creature_Animate(item_num, angle, 0);
 
-    if (item->status == IS_DEACTIVATED) {
+    if (item->is_finished) {
         Sound_Effect(SFX_ATLANTEAN_DEATH, &item->pos, SPM_NORMAL);
         Item_Shatter(
             item_num, -1, M_GetDamage(item, "part_damage", M_PART_DAMAGE));
         Item_Destroy(item_num);
-        item->status = IS_DEACTIVATED;
+        item->is_finished = true;
     }
 }
 

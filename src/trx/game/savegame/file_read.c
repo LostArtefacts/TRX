@@ -358,7 +358,7 @@ static bool M_ReadLara(JSON_READ_IO *const io)
     if (M_OPTIONAL(JSON_PUSH(io, "weapon"))) {
         lara->gun_item_num = Item_Create();
         ITEM *const weapon_item = Item_Get(lara->gun_item_num);
-        weapon_item->status = IS_ACTIVE;
+        weapon_item->is_visible = true;
         weapon_item->room_num = NO_ROOM;
         // Introduced in TRX 1.2
         if (!M_SHOULD(
@@ -578,23 +578,54 @@ static bool M_ReadItem(JSON_READ_IO *const io, const int16_t read_index)
             }
         }
         // TRX 1.8 introduced fixing animated spikes on load
-        M_SHOULD(JSON_READ(io, "flags", &item->flags));
-        item->is_destroyed = (item->flags & IF_DESTROYED) != 0;
-        item->flags &= ~IF_DESTROYED;
+        uint16_t flags = 0;
+        M_SHOULD(JSON_READ(io, "flags", &flags));
+        item->trigger = (ITEM_TRIGGER_STATE) {
+            .mask = flags & IF_CODE_BITS,
+            .reversed = (flags & IF_REVERSE) != 0,
+            .switch_spent = (flags & IF_ONE_SHOT_SWITCH) != 0,
+            .anti_spent = (flags & IF_ONE_SHOT_ANTITRIGGER) != 0,
+        };
+        item->is_destroyed = (flags & IF_DESTROYED) != 0;
+        item->trigger.spent = (flags & IF_ONE_SHOT) != 0;
         M_SHOULD(JSON_READ(io, "timer", &item->timer));
-        ITEM_STATUS saved_status = item->status;
+        // Unpack the released save format's status into the visibility and
+        // finished axes; is_simulated comes from the separate "active" field
+        // below. A missing key leaves the level-load axes untouched.
+        int32_t saved_status = -1;
         M_SHOULD(JSON_READ(io, "status", &saved_status));
+        if (saved_status >= 0) {
+            item->is_visible = saved_status != IS_INVISIBLE;
+            item->is_finished = saved_status == IS_DEACTIVATED;
+        }
+        // Written since the axes split; a hidden finished item packs to
+        // IS_INVISIBLE, so the status alone would drop the marker. Released
+        // saves lack the key and keep the value derived above.
+        M_OPTIONAL(JSON_READ(io, "finished", &item->is_finished));
 
         if (item->is_destroyed) {
             Item_Destroy(item_num);
-            item->status = saved_status;
         } else {
             bool is_active = false;
             M_SHOULD(JSON_READ(io, "active", &is_active));
-            if (is_active && !item->active) {
+            if (is_active && !item->is_simulated) {
+                Item_AddSimulated(item_num);
+                // Item_AddSimulated skips control-less items, which cannot
+                // join the simulation list; they still carry the axis, set
+                // where something else simulates them (the skidoo the driver
+                // puppets, in skidoo_driver.c).
+                item->is_simulated = true;
+            } else if (
+                !is_active && saved_status == IS_ACTIVE
+                && Object_IsType(item->object_id, g_ReceptacleObjects)) {
+                // A released save recorded a receptacle's armed "key inserted"
+                // state as IS_ACTIVE without the active bit - the keyhole was
+                // control-less and never joined the active list. New saves
+                // carry active=true and take the branch above. Re-arm it so
+                // the pending key trigger still fires (Keyhole_Trigger reads
+                // Item_IsInPlay, which needs is_simulated).
                 Item_AddSimulated(item_num);
             }
-            item->status = saved_status;
             M_SHOULD(JSON_READ(io, "gravity", &item->gravity));
             // Introduced in TRX 1.2
             M_OPTIONAL(JSON_READ(io, "collidable", &item->is_collidable));

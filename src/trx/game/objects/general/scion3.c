@@ -20,7 +20,7 @@ static bool M_ShouldSpawnBlood(const ITEM *const item)
 
 static bool M_CanTakeDamage(const ITEM *const item)
 {
-    return item->status == IS_ACTIVE;
+    return Item_IsInPlay(item);
 }
 
 static void M_Control(const int16_t item_num)
@@ -31,7 +31,7 @@ static void M_Control(const int16_t item_num)
         if (!LOT_EnableBaddieAI(item_num, true)) {
             return;
         }
-        item->status = IS_ACTIVE;
+        item->is_visible = true;
     }
 
     M_PRIV *const p = item->priv;
@@ -42,7 +42,7 @@ static void M_Control(const int16_t item_num)
     }
 
     if (p->counter == 0) {
-        item->status = IS_INVISIBLE;
+        item->is_visible = false;
         item->hit_points = 0;
         Room_TestTriggers(item);
         Item_DetachFromRoom(item_num);

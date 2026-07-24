@@ -116,7 +116,7 @@ static void M_GetBaddieTarget(const int16_t item_num, const bool goody)
     }
 
     const ITEM *const target = creature->enemy;
-    if (target == nullptr || target->status != IS_ACTIVE) {
+    if (target == nullptr || !Item_IsInPlay(target)) {
         creature->enemy = best_item;
     } else {
         const int32_t dx = (target->pos.x - item->pos.x) >> 6;
@@ -233,7 +233,7 @@ const ITEM *M_GetBaddieOverlap(const int16_t item_num)
     int16_t link = Room_Get(item->room_num)->item_num;
     while (link != NO_ITEM && link != item_num) {
         item = Item_Get(link);
-        if (item != Lara_GetItem() && item->status == IS_ACTIVE) {
+        if (item != Lara_GetItem() && Item_IsInPlay(item)) {
             if (g_TRVersion >= 3 && item->hit_points > 0) {
                 const int32_t dx = ABS(item->pos.x - x);
                 const int32_t dz = ABS(item->pos.z - z);
@@ -299,7 +299,7 @@ void Creature_Initialise(const int16_t item_num)
 bool Creature_Activate(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
-    if (item->status != IS_INVISIBLE) {
+    if (item->is_visible) {
         return item->creature_data != nullptr;
     }
 
@@ -307,7 +307,7 @@ bool Creature_Activate(const int16_t item_num)
         return false;
     }
 
-    item->status = IS_ACTIVE;
+    item->is_visible = true;
     return true;
 }
 
@@ -427,7 +427,7 @@ bool Creature_EnsureHabitat(
     if (wh != nullptr) {
         *wh = water_height;
     }
-    if (item->status == IS_INACTIVE) {
+    if (Item_IsInactive(item)) {
         return false;
     }
 
@@ -884,7 +884,7 @@ bool Creature_Animate(
     }
 
     Item_Animate(item);
-    if (item->status == IS_DEACTIVATED) {
+    if (item->is_finished) {
         Creature_Die(item_num, false);
         return false;
     }
@@ -1271,7 +1271,7 @@ void Creature_Die(const int16_t item_num, const bool explode)
             Item_Shatter(item_num, -1, 0);
             ITEM *const vehicle_item = Item_Get(item_num);
             vehicle_item->hit_points = 0;
-            vehicle_item->status = IS_INVISIBLE;
+            vehicle_item->is_visible = false;
             return;
         }
         break;
@@ -1287,7 +1287,7 @@ void Creature_Die(const int16_t item_num, const bool explode)
         }
         ITEM *const vehicle_item = Item_Get(vehicle_item_num);
         vehicle_item->hit_points = 0;
-        vehicle_item->status = IS_INVISIBLE;
+        vehicle_item->is_visible = false;
         return;
 
     default:
@@ -1307,7 +1307,7 @@ void Creature_Die(const int16_t item_num, const bool explode)
     if (obj->intelligent) {
         LOT_DisableBaddieAI(item_num);
     }
-    item->flags |= IF_ONE_SHOT;
+    item->trigger.spent = true;
 
     Carrier_TestItemDrops(item_num);
 }
@@ -1561,7 +1561,7 @@ void Creature_GetAITarget(CREATURE *const creature)
 
                     if (target->object_id == O_KEY_ITEM_4
                         && target->room_num != NO_ROOM && !target->ai_bits
-                        && target->status != IS_INVISIBLE && !target->clear_body
+                        && target->is_visible && !target->clear_body
                         && M_SameZone(creature, target)) {
                         creature->enemy = target;
                         return;
@@ -1573,7 +1573,7 @@ void Creature_GetAITarget(CREATURE *const creature)
                 ITEM *const target = Item_Get(i);
                 if (target->object_id == O_SMALL_MEDIPACK_ITEM
                     && target->room_num != NO_ROOM && !target->ai_bits
-                    && target->status != IS_INVISIBLE && !target->clear_body
+                    && target->is_visible && !target->clear_body
                     && M_SameZone(creature, target)) {
                     creature->enemy = target;
                     return;

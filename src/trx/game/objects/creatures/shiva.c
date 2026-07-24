@@ -225,7 +225,9 @@ static void M_Initialise(const int16_t item_num)
         item->goal_anim_state = M_STATE_START;
     }
 
-    item->status = IS_INACTIVE;
+    // A visible, at-rest statue until triggered; override the hidden default
+    // Item_Initialise gives an intelligent item.
+    item->is_visible = true;
     item->mesh_bits = 0;
     p->effect_mesh = 0;
 }
@@ -488,8 +490,7 @@ bool M_Draw(const ITEM *const item)
 {
     M_PRIV *const p = item->priv;
 
-    if (item->hit_points <= 0 && item->status != IS_ACTIVE
-        && item->mesh_bits != 0) {
+    if (item->hit_points <= 0 && !Item_IsInPlay(item) && item->mesh_bits != 0) {
         ITEM *const mutable_item = (ITEM *)item;
         mutable_item->mesh_bits >>= 1;
         XYZ_32 smoke_pos = { 0, 0, 256 };

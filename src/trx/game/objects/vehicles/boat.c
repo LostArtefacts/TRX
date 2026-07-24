@@ -653,9 +653,8 @@ static void M_Collision(
     Item_UpdateRoom(lara->item_num, boat_item->room_num);
 
     Item_Animate(lara_item);
-    if (boat_item->status != IS_ACTIVE) {
+    if (!Item_IsInPlay(boat_item)) {
         Item_AddSimulated(item_num);
-        boat_item->status = IS_ACTIVE;
     }
 }
 

@@ -57,13 +57,13 @@ static int32_t M_GetShotDamage(const ITEM *const item)
 
 static bool M_CanDropItems(const ITEM *const item)
 {
-    return item->hit_points <= 0 && (item->flags & IF_ONE_SHOT) != 0;
+    return item->hit_points <= 0 && item->trigger.spent;
 }
 
 static void M_HandleSave(ITEM *const item, const SAVEGAME_STAGE stage)
 {
     if (stage == SAVEGAME_STAGE_AFTER_LOAD) {
-        if (item->hit_points <= 0 && (item->flags & IF_ONE_SHOT)) {
+        if (item->hit_points <= 0 && item->trigger.spent) {
             Music_GetTrackState(Music_ToGameID(MX_PIERRE_SPEECH))->is_one_shot =
                 true;
         }
@@ -79,8 +79,8 @@ static void M_Control(const int16_t item_num)
             m_PierreItemNum = item_num;
         } else if (m_PierreItemNum != item_num) {
             ITEM *old_pierre = Item_Get(m_PierreItemNum);
-            if (old_pierre->flags & IF_ONE_SHOT) {
-                if (!(item->flags & IF_ONE_SHOT)) {
+            if (old_pierre->trigger.spent) {
+                if (!item->trigger.spent) {
                     Item_Destroy(item_num);
                 }
             } else {
@@ -92,7 +92,7 @@ static void M_Control(const int16_t item_num)
         if (m_PierreItemNum == NO_ITEM) {
             m_PierreItemNum = item_num;
         } else if (m_PierreItemNum != item_num) {
-            if (item->flags & IF_ONE_SHOT) {
+            if (item->trigger.spent) {
                 Item_Destroy(m_PierreItemNum);
             } else {
                 Item_Destroy(item_num);
@@ -109,7 +109,7 @@ static void M_Control(const int16_t item_num)
     int16_t angle = 0;
     int16_t tilt = 0;
 
-    if (item->hit_points <= M_RUN_HITPOINTS && !(item->flags & IF_ONE_SHOT)) {
+    if (item->hit_points <= M_RUN_HITPOINTS && !item->trigger.spent) {
         item->hit_points = M_RUN_HITPOINTS;
         pierre->flags++;
     }

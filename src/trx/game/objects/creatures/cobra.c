@@ -71,7 +71,7 @@ static void M_Initialise(const int16_t item_num)
 
 static bool M_IsTargetable(const ITEM *const item)
 {
-    return item->hit_points > 0 && item->status == IS_ACTIVE
+    return item->hit_points > 0 && Item_IsInPlay(item)
         && item->current_anim_state != M_STATE_SLEEP;
 }
 

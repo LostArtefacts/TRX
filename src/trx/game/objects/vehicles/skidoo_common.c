@@ -112,8 +112,8 @@ static bool M_IsArmed(const SKIDOO_INFO *const skidoo_data)
 
 static bool M_CheckBaddieCollision(ITEM *const item, ITEM *const skidoo)
 {
-    if (!item->is_collidable || item->status == IS_INVISIBLE
-        || item == Lara_GetItem() || item == skidoo) {
+    if (!item->is_collidable || !item->is_visible || item == Lara_GetItem()
+        || item == skidoo) {
         return false;
     }
 
@@ -139,7 +139,7 @@ static bool M_CheckBaddieCollision(ITEM *const item, ITEM *const skidoo)
             Lara_TakeDamage(100, true);
         }
     } else if (
-        obj->intelligent && item->status == IS_ACTIVE
+        obj->intelligent && Item_IsInPlay(item)
         && (Item_IsTargetable(item) || item->hit_points == 0)) {
         if (Item_ShouldSpawnBlood(item)) {
             Spawn_BloodBath(
@@ -411,7 +411,7 @@ int32_t Skidoo_Dynamics(ITEM *const skidoo)
         .x = skidoo->pos.x,
         .z = skidoo->pos.z,
     };
-    if (!(skidoo->flags & IF_ONE_SHOT)) {
+    if (!skidoo->trigger.spent) {
         Skidoo_BaddieCollision(skidoo);
     }
 
@@ -757,7 +757,7 @@ bool Skidoo_CheckGetOff(void)
         lara_item->gravity = true;
         lara->gun_status = LGS_ARMLESS;
         lara->move_angle = skidoo->rot.y;
-        skidoo->flags |= IF_ONE_SHOT;
+        skidoo->trigger.spent = true;
         skidoo->is_collidable = 0;
         return false;
     }
@@ -825,7 +825,7 @@ bool Skidoo_Control(void)
 
     int32_t drive;
     int32_t pitch;
-    if (skidoo->flags & IF_ONE_SHOT) {
+    if (skidoo->trigger.spent) {
         drive = 0;
         collide = 0;
     } else {
@@ -882,7 +882,7 @@ bool Skidoo_Control(void)
     Room_GetSector(
         (XYZ_32) { skidoo->pos.x, skidoo->pos.y - 16, skidoo->pos.z },
         &room_num);
-    if (skidoo->flags & IF_ONE_SHOT) {
+    if (skidoo->trigger.spent) {
         Vehicle_TestTriggers(lara_item, skidoo);
         Item_UpdateRoom(Item_GetIndex(skidoo), room_num);
         if (skidoo->pos.y == skidoo->floor) {

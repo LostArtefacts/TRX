@@ -1,5 +1,18 @@
 #pragma once
 
+// The item lifecycle as the released save format stores it. Not a runtime
+// concept - the engine carries is_visible, is_finished and is_simulated; the
+// savegame path is the only code that packs them into this value and back
+// (M_PackItemStatus in file_write.c).
+typedef enum {
+    // clang-format off
+    IS_INACTIVE    = 0,
+    IS_ACTIVE      = 1,
+    IS_DEACTIVATED = 2,
+    IS_INVISIBLE   = 3,
+    // clang-format on
+} ITEM_STATUS;
+
 typedef enum {
     SAVEGAME_STAGE_BEFORE_LOAD,
     SAVEGAME_STAGE_AFTER_LOAD,

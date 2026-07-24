@@ -2,6 +2,7 @@
 #include <trx/game/game_flow.h>
 #include <trx/game/input.h>
 #include <trx/game/inventory.h>
+#include <trx/game/items.h>
 #include <trx/game/lara.h>
 #include <trx/game/sound.h>
 
@@ -70,7 +71,19 @@ static void M_ConsumeKeyItem(ITEM *const receptacle_item)
 
 static void M_MarkDone(ITEM *const receptacle_item)
 {
-    receptacle_item->status = IS_ACTIVE;
+    // The inserted key is the receptacle entering the simulation, the same
+    // done-state the puzzle hole uses. Item_IsInPlay then reads as "armed".
+    // A new save carries this in the active field; a released save recorded it
+    // as IS_ACTIVE off the active list, re-armed on load in M_ReadItem.
+    Item_AddSimulated(Item_GetIndex(receptacle_item));
+}
+
+static void M_Control(const int16_t item_num)
+{
+    // A keyhole has nothing to animate; it holds a control function only so a
+    // filled hole can join the simulation, since Item_AddSimulated skips a
+    // control-less item. Being simulated is what lets Keyhole_Trigger, shared
+    // with the puzzle hole, gate on Item_IsInPlay.
 }
 
 static void M_CollisionControlled(
@@ -152,7 +165,7 @@ static void M_Collision(
         return;
     }
 
-    if (item->status != IS_INACTIVE) {
+    if (!Item_IsInactive(item)) {
         Lara_RefuseInteraction();
     } else if (!GF_ShowInventoryKeys(item->object_id)) {
         Lara_RefuseInteraction();
@@ -162,11 +175,12 @@ static void M_Collision(
 static bool M_IsUsable(const int16_t item_num)
 {
     const ITEM *const item = Item_Get(item_num);
-    return item->status == IS_INACTIVE;
+    return Item_IsInactive(item);
 }
 
 static void M_Setup(OBJECT *const obj)
 {
+    obj->control_func = M_Control;
     obj->collision_func = M_Collision;
     obj->bounds_func = M_Bounds;
     obj->save_flags = true;
@@ -177,10 +191,11 @@ bool Keyhole_Trigger(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
     const LARA_INFO *const lara = Lara_GetLaraInfo();
-    if (item->status != IS_ACTIVE || lara->gun_status == LGS_HANDS_BUSY) {
+    if (!Item_IsInPlay(item) || lara->gun_status == LGS_HANDS_BUSY) {
         return false;
     }
-    item->status = IS_DEACTIVATED;
+    item->is_finished = true;
+    Item_RemoveSimulated(item_num);
     return true;
 }
 

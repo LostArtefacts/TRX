@@ -2049,34 +2049,6 @@
     },
     {
       "bulk": false,
-      "count": 4,
-      "description": "The values `item.status` can take.",
-      "path": "items.Status",
-      "values": [
-        {
-          "description": "In the level, but not yet triggered. Its control routine does not run.",
-          "name": "INACTIVE",
-          "value": 0
-        },
-        {
-          "description": "Triggered: its control routine runs every frame.",
-          "name": "ACTIVE",
-          "value": 1
-        },
-        {
-          "description": "Ran and finished - a creature that died, or a one-shot trigger that fired. It stays in the level, but no longer runs.",
-          "name": "DEACTIVATED",
-          "value": 2
-        },
-        {
-          "description": "Neither drawn nor collidable, as a pickup Lara has already collected is.",
-          "name": "INVISIBLE",
-          "value": 3
-        }
-      ]
-    },
-    {
-      "bulk": false,
       "count": 3,
       "description": "The values the `pickup_mode` item property can take. It selects the animation Lara plays when collecting the item.",
       "path": "items.PickupMode",
@@ -4548,7 +4520,7 @@
       "writable": false
     },
     {
-      "description": "The identity query over every item in the level. Narrow it and read it - see [Query](../../QUERY.md).\n\nIts own narrowings, beyond the operators: `active`, `of_object` (by object id or name) and `in_room`.\n\nExample: `trx.items.query:of_object(\"wolf\"):active():matches()`.",
+      "description": "The identity query over every item in the level. Narrow it and read it - see [Query](../../QUERY.md).\n\nIts own narrowings, beyond the operators: `simulated`, `present`, `visible`, `finished`, `in_play`, `alive`, `targetable`, `of_object` (by object id or name) and `in_room`.\n\nExample: `trx.items.query:of_object(\"wolf\"):simulated():matches()`.",
       "path": "items.query",
       "type": "table",
       "writable": false
@@ -4786,12 +4758,6 @@
           "writable": true
         },
         {
-          "description": "Trigger-related flag bits. Read-only: writing them directly would let a script set `IF_KILLED` without unlinking the item, wedging engine state. Use `kill()` instead.",
-          "name": "flags",
-          "type": "integer",
-          "writable": false
-        },
-        {
           "description": "Object-relative frame number, 0-indexed. Negative values count back from the end.",
           "name": "frame",
           "type": "integer",
@@ -4822,20 +4788,26 @@
           "writable": false
         },
         {
-          "description": "Whether the item's control routine is running. Call `activate()` to start it.",
-          "name": "is_active",
-          "type": "boolean",
-          "writable": false
-        },
-        {
           "description": "Whether the item is a living creature with hit points remaining.",
           "name": "is_alive",
           "type": "boolean",
           "writable": false
         },
         {
+          "description": "Whether the item has finished its run - a creature that died, or a one-shot trigger that fired. It stays in the level but no longer acts.",
+          "name": "is_finished",
+          "type": "boolean",
+          "writable": true
+        },
+        {
           "description": "Whether this item is a creature currently hostile to Lara.",
           "name": "is_hostile",
+          "type": "boolean",
+          "writable": false
+        },
+        {
+          "description": "Whether the item is live: simulated, visible and not finished - the state a targetable enemy is in. A read-only composite of the axes.",
+          "name": "is_in_play",
           "type": "boolean",
           "writable": false
         },
@@ -4852,16 +4824,40 @@
           "writable": true
         },
         {
+          "description": "Whether the item is in the world at all: linked in its room, so drawn and collidable in principle. Managed by the engine.",
+          "name": "is_present",
+          "type": "boolean",
+          "writable": false
+        },
+        {
           "description": "Whether the item's trigger is inverted, so it runs until triggered rather than once triggered. This is how a level ships something already on.",
           "name": "is_reversed",
           "type": "boolean",
           "writable": true
         },
         {
+          "description": "Whether the item's control routine runs each frame. Call `activate()` to start it.",
+          "name": "is_simulated",
+          "type": "boolean",
+          "writable": false
+        },
+        {
+          "description": "Whether Lara's auto-aim can lock onto the item right now.",
+          "name": "is_targetable",
+          "type": "boolean",
+          "writable": false
+        },
+        {
           "description": "Whether the item's trigger currently says go. This is what a door, a switch or an alarm reads to decide whether to act; a creature ignores it and goes by whether it is running.\n\nIt is a verdict on `trigger_mask`, `timer` and `is_reversed` together, not a field of its own.",
           "name": "is_triggered",
           "type": "boolean",
           "writable": false
+        },
+        {
+          "description": "Whether the item is drawn. It can be present in the world but not visible, like an ambush enemy waiting to appear.",
+          "name": "is_visible",
+          "type": "boolean",
+          "writable": true
         },
         {
           "description": "Maximum hit points. Set `properties.max_hit_points` to change it.",
@@ -4913,13 +4909,6 @@
           "writable": true
         },
         {
-          "description": "Item status. Use `activate()` and `kill()` to change it, so the item's active-list membership stays in sync.",
-          "enum": "items.Status",
-          "name": "status",
-          "type": "integer",
-          "writable": false
-        },
-        {
           "description": "How long the item's trigger keeps it going, in game frames. `0` runs it until something takes the trigger back; `-1` means it has run out; anything else counts down. This is the raw frame count - `trigger()` takes its timer in seconds instead.",
           "name": "timer",
           "type": "integer",
@@ -4950,11 +4939,15 @@
           "name": "activate"
         },
         {
-          "description": "Stops the item: its control routine no longer runs, and a creature loses its AI and stands down. The item stays where it is and keeps its hit points, so this is not a way of getting rid of it - use `kill()` for that.\n\nA trigger can still bring it back, and so can `activate()`.",
+          "description": "Stops the item: its control routine no longer runs, and a creature loses its AI and stands down. The item stays where it is and keeps its hit points, so this is not a way of getting rid of it - use `destroy()` for that.\n\nA trigger can still bring it back, and so can `activate()`.",
           "name": "deactivate"
         },
         {
-          "description": "Runs the object's creature death handling: the corpse stays, and `explode` bursts its meshes as a rocket or grenade would. For creatures; `kill()` simply removes any item from the game.",
+          "description": "Removes the item from the game. Any other handle to it becomes stale.",
+          "name": "destroy"
+        },
+        {
+          "description": "Runs the object's creature death handling: the corpse stays, and `explode` bursts its meshes as a rocket or grenade would. For creatures; `destroy()` simply removes any item from the game.",
           "name": "die",
           "params": [
             {
@@ -5012,8 +5005,244 @@
           }
         },
         {
-          "description": "Removes the item from the game. Any other handle to it becomes stale.",
-          "name": "kill"
+          "description": "Happens when this item is activated through the lifecycle front door during play. `trx.events.on_activate`, narrowed to this item.",
+          "examples": [
+            "trx.items[12]:on_activate(function(item)\n  trx.log.info(\"the item was activated\")\nend)"
+          ],
+          "name": "on_activate",
+          "params": [
+            {
+              "name": "callback",
+              "params": [
+                {
+                  "description": "This item.",
+                  "name": "item",
+                  "type": "Item"
+                }
+              ],
+              "type": "function"
+            }
+          ],
+          "returns": {
+            "description": "Listener id. Pass it to `trx.events.detach` to stop listening.",
+            "type": "integer"
+          }
+        },
+        {
+          "description": "Happens when this item is deactivated through the lifecycle front door during play. `trx.events.on_deactivate`, narrowed to this item.",
+          "examples": [
+            "trx.items[12]:on_deactivate(function(item)\n  trx.log.info(\"the item was deactivated\")\nend)"
+          ],
+          "name": "on_deactivate",
+          "params": [
+            {
+              "name": "callback",
+              "params": [
+                {
+                  "description": "This item.",
+                  "name": "item",
+                  "type": "Item"
+                }
+              ],
+              "type": "function"
+            }
+          ],
+          "returns": {
+            "description": "Listener id. Pass it to `trx.events.detach` to stop listening.",
+            "type": "integer"
+          }
+        },
+        {
+          "description": "Happens as this item is removed from the game during play. It can still be read from the handler, but not after. `trx.events.on_destroy`, narrowed to this item.",
+          "examples": [
+            "trx.items[12]:on_destroy(function(item)\n  trx.log.info(\"the item was removed\")\nend)"
+          ],
+          "name": "on_destroy",
+          "params": [
+            {
+              "name": "callback",
+              "params": [
+                {
+                  "description": "This item.",
+                  "name": "item",
+                  "type": "Item"
+                }
+              ],
+              "type": "function"
+            }
+          ],
+          "returns": {
+            "description": "Listener id. Pass it to `trx.events.detach` to stop listening.",
+            "type": "integer"
+          }
+        },
+        {
+          "description": "Happens when this item starts being simulated during play. `trx.events.on_enter_sim`, narrowed to this item.",
+          "examples": [
+            "trx.items[12]:on_enter_sim(function(item)\n  trx.log.info(\"the item started running\")\nend)"
+          ],
+          "name": "on_enter_sim",
+          "params": [
+            {
+              "name": "callback",
+              "params": [
+                {
+                  "description": "This item.",
+                  "name": "item",
+                  "type": "Item"
+                }
+              ],
+              "type": "function"
+            }
+          ],
+          "returns": {
+            "description": "Listener id. Pass it to `trx.events.detach` to stop listening.",
+            "type": "integer"
+          }
+        },
+        {
+          "description": "Happens when this item enters the world during play, such as a runtime spawn. `trx.events.on_enter_world`, narrowed to this item.",
+          "examples": [
+            "trx.items[12]:on_enter_world(function(item)\n  trx.log.info(\"the item entered the world\")\nend)"
+          ],
+          "name": "on_enter_world",
+          "params": [
+            {
+              "name": "callback",
+              "params": [
+                {
+                  "description": "This item.",
+                  "name": "item",
+                  "type": "Item"
+                }
+              ],
+              "type": "function"
+            }
+          ],
+          "returns": {
+            "description": "Listener id. Pass it to `trx.events.detach` to stop listening.",
+            "type": "integer"
+          }
+        },
+        {
+          "description": "Happens when this item finishes its run during play. `trx.events.on_finish`, narrowed to this item.",
+          "examples": [
+            "trx.items[12]:on_finish(function(item)\n  trx.log.info(\"the item finished its run\")\nend)"
+          ],
+          "name": "on_finish",
+          "params": [
+            {
+              "name": "callback",
+              "params": [
+                {
+                  "description": "This item.",
+                  "name": "item",
+                  "type": "Item"
+                }
+              ],
+              "type": "function"
+            }
+          ],
+          "returns": {
+            "description": "Listener id. Pass it to `trx.events.detach` to stop listening.",
+            "type": "integer"
+          }
+        },
+        {
+          "description": "Happens when this item becomes hidden during play. `trx.events.on_hide`, narrowed to this item.",
+          "examples": [
+            "trx.items[12]:on_hide(function(item)\n  trx.log.info(\"the item vanished\")\nend)"
+          ],
+          "name": "on_hide",
+          "params": [
+            {
+              "name": "callback",
+              "params": [
+                {
+                  "description": "This item.",
+                  "name": "item",
+                  "type": "Item"
+                }
+              ],
+              "type": "function"
+            }
+          ],
+          "returns": {
+            "description": "Listener id. Pass it to `trx.events.detach` to stop listening.",
+            "type": "integer"
+          }
+        },
+        {
+          "description": "Happens when this item stops being simulated during play. `trx.events.on_leave_sim`, narrowed to this item.",
+          "examples": [
+            "trx.items[12]:on_leave_sim(function(item)\n  trx.log.info(\"the item stopped running\")\nend)"
+          ],
+          "name": "on_leave_sim",
+          "params": [
+            {
+              "name": "callback",
+              "params": [
+                {
+                  "description": "This item.",
+                  "name": "item",
+                  "type": "Item"
+                }
+              ],
+              "type": "function"
+            }
+          ],
+          "returns": {
+            "description": "Listener id. Pass it to `trx.events.detach` to stop listening.",
+            "type": "integer"
+          }
+        },
+        {
+          "description": "Happens when this item leaves the world during play. `trx.events.on_leave_world`, narrowed to this item.",
+          "examples": [
+            "trx.items[12]:on_leave_world(function(item)\n  trx.log.info(\"the item left the world\")\nend)"
+          ],
+          "name": "on_leave_world",
+          "params": [
+            {
+              "name": "callback",
+              "params": [
+                {
+                  "description": "This item.",
+                  "name": "item",
+                  "type": "Item"
+                }
+              ],
+              "type": "function"
+            }
+          ],
+          "returns": {
+            "description": "Listener id. Pass it to `trx.events.detach` to stop listening.",
+            "type": "integer"
+          }
+        },
+        {
+          "description": "Happens when this item becomes visible during play. `trx.events.on_show`, narrowed to this item.",
+          "examples": [
+            "trx.items[12]:on_show(function(item)\n  trx.log.info(\"the item appeared\")\nend)"
+          ],
+          "name": "on_show",
+          "params": [
+            {
+              "name": "callback",
+              "params": [
+                {
+                  "description": "This item.",
+                  "name": "item",
+                  "type": "Item"
+                }
+              ],
+              "type": "function"
+            }
+          ],
+          "returns": {
+            "description": "Listener id. Pass it to `trx.events.detach` to stop listening.",
+            "type": "integer"
+          }
         },
         {
           "description": "Happens every time a trigger is aimed at this item, of any kind. `trx.events.on_trigger`, narrowed to this item.",

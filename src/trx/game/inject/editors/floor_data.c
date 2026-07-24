@@ -214,7 +214,7 @@ static void M_TriggeredItem(const INJECTION *const injection)
     if (g_TRVersion >= 2) {
         item->shade.value_2 = item->shade.value_1;
     }
-    item->flags = VFile_ReadU16(injection->fp);
+    item->init_flags = VFile_ReadU16(injection->fp);
 
     if (injection->version < INJ_VERSION_7) {
         return;

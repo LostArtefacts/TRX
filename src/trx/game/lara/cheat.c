@@ -3,6 +3,7 @@
 #include <trx/core/vector.h>
 #include <trx/game/camera.h>
 #include <trx/game/console.h>
+#include <trx/game/const.h>
 #include <trx/game/game.h>
 #include <trx/game/game_strings/entries.h>
 #include <trx/game/gun.h>
@@ -131,7 +132,7 @@ static bool M_CanEnterFlyMode(void)
         return false;
     }
 
-    if ((lara_item->flags & IF_ONE_SHOT) != 0) {
+    if (lara_item->trigger.spent) {
         // The explosion cheat has been used, so Lara's death is permanent.
         return false;
     }
@@ -223,7 +224,7 @@ bool Lara_Cheat_KillEnemy(const int16_t item_num)
     if (item->is_destroyed) {
         return false;
     }
-    if (!Item_IsAlive(item) && item->status != IS_ACTIVE) {
+    if (!Item_IsAlive(item) && !Item_IsInPlay(item)) {
         return false;
     }
 
@@ -264,15 +265,15 @@ bool Lara_Cheat_OpenNearestDoor(void)
             continue;
         }
 
-        if (!item->active) {
+        if (!item->is_simulated) {
             Item_AddSimulated(item_num);
-            item->flags |= IF_CODE_BITS;
+            item->trigger.mask = IF_CODE_BITS;
             opened++;
-        } else if ((item->flags & IF_CODE_BITS) != 0) {
-            item->flags &= ~IF_CODE_BITS;
+        } else if (item->trigger.mask != 0) {
+            item->trigger.mask = 0;
             closed++;
         } else {
-            item->flags |= IF_CODE_BITS;
+            item->trigger.mask = IF_CODE_BITS;
             opened++;
         }
         item->timer = 0;

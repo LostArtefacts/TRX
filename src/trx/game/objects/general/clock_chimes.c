@@ -26,8 +26,7 @@ static void M_Control(const int16_t item_num)
         M_DoChimeSound(item);
         item->timer = -1;
         Item_RemoveSimulated(item_num);
-        item->status = IS_INACTIVE;
-        item->flags &= ~IF_CODE_BITS;
+        item->trigger.mask = 0;
     }
 }
 

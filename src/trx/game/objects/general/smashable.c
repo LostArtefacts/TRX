@@ -28,7 +28,7 @@ static void M_SetBoxBlocked(const ITEM *const item, const bool blocked)
 static void M_Initialise(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
-    item->flags = 0;
+    item->trigger = (ITEM_TRIGGER_STATE) { 0 };
     item->mesh_bits = 1;
     M_SetBoxBlocked(item, true);
 }
@@ -36,7 +36,7 @@ static void M_Initialise(const int16_t item_num)
 static void M_HandleSave(ITEM *const item, const SAVEGAME_STAGE stage)
 {
     if (stage == SAVEGAME_STAGE_AFTER_LOAD) {
-        if ((item->flags & IF_ONE_SHOT) != 0) {
+        if (item->trigger.spent) {
             item->mesh_bits = 0x100;
             M_SetBoxBlocked(item, false);
         }
@@ -46,7 +46,7 @@ static void M_HandleSave(ITEM *const item, const SAVEGAME_STAGE stage)
 static void M_Control1(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
-    if ((item->flags & IF_ONE_SHOT) != 0) {
+    if (item->trigger.spent) {
         return;
     }
 
@@ -69,7 +69,7 @@ static void M_Control1(const int16_t item_num)
 static void M_Control2(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
-    if ((item->flags & IF_ONE_SHOT) != 0) {
+    if (item->trigger.spent) {
         return;
     }
 
@@ -86,8 +86,8 @@ static void M_Control2(const int16_t item_num)
         Sound_Effect(SFX_EXPLOSION_2, &item->pos, SPM_NORMAL);
     }
 
-    item->flags |= IF_ONE_SHOT;
-    item->status = IS_DEACTIVATED;
+    item->trigger.spent = true;
+    item->is_finished = true;
     Item_RemoveSimulated(item_num);
 }
 
@@ -127,11 +127,11 @@ void Smashable_Smash(const int16_t item_num)
         Sound_Effect(SFX_SHUTTERS_BREAK, &item->pos, SPM_NORMAL);
     }
 
-    item->flags |= IF_ONE_SHOT;
-    if (item->status == IS_ACTIVE) {
+    item->trigger.spent = true;
+    if (Item_IsInPlay(item)) {
         Item_RemoveSimulated(item_num);
     }
-    item->status = IS_DEACTIVATED;
+    item->is_finished = true;
 }
 
 REGISTER_OBJECT(O_SMASH_OBJECT_1, M_Setup1)

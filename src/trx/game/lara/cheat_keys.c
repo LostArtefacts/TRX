@@ -88,9 +88,9 @@ static void M_ExplodeLara(void)
     Item_Shatter(lara_info->item_num, -1, 1);
     Sound_Effect(SFX_EXPLOSION_1, &lara_item->pos, SPM_NORMAL);
     lara_item->hit_points = 0;
-    lara_item->status = IS_INVISIBLE;
+    lara_item->is_visible = false;
     lara_item->is_collidable = false;
-    lara_item->flags |= IF_INVISIBLE;
+    lara_item->trigger.spent = true;
 }
 
 static bool M_ProcessOutcome(

@@ -43,10 +43,10 @@ static bool M_ShouldCenterDrop(const OBJECT_ID obj_id)
 static void M_Drop(ITEM *const pickup)
 {
     if (Object_IsType(pickup->object_id, g_QuestObjects)) {
-        pickup->status = IS_ACTIVE;
+        pickup->is_visible = true;
         Item_AddSimulated(Item_GetIndex(pickup));
     } else {
-        pickup->status = IS_INACTIVE;
+        pickup->is_visible = true;
     }
 }
 
@@ -155,7 +155,6 @@ static void M_AnimateDrop(CARRIED_ITEM *const item)
         pickup->fall_speed = 0;
         m_AnimatingCount--;
     } else {
-        pickup->status = IS_ACTIVE;
         pickup->fall_speed +=
             (!in_water && pickup->fall_speed < FAST_FALL_SPEED)
             ? M_DROP_FAST_RATE
@@ -336,7 +335,7 @@ DROP_STATUS Carrier_GetSaveStatus(const CARRIED_ITEM *item)
 {
     if (item->status == DS_DROPPED) {
         const ITEM *const pickup = Item_Get(item->spawn_num);
-        return pickup->status == IS_INVISIBLE ? DS_COLLECTED : DS_DROPPED;
+        return !pickup->is_visible ? DS_COLLECTED : DS_DROPPED;
     }
     return item->status;
 }
@@ -375,7 +374,7 @@ void Carrier_SyncItem(
         if (pickup_item->room_num != NO_ROOM) {
             Item_UpdateRoom(carried_item->spawn_num, NO_ROOM);
         }
-        pickup_item->status = IS_INVISIBLE;
+        pickup_item->is_visible = false;
         break;
     }
 }

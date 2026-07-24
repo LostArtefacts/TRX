@@ -231,14 +231,14 @@ static void M_Control(const int16_t item_num)
         Creature_Animate(item_num, 0, 0);
     }
 
-    if (item->status == IS_DEACTIVATED) {
+    if (item->is_finished) {
         Sound_Effect(SFX_ATLANTEAN_DEATH, &item->pos, SPM_NORMAL);
         Item_Shatter(
             item_num, -1, M_GetDamage(item, "part_damage", M_PART_DAMAGE));
         Room_TestTriggers(item);
 
         Item_Destroy(item_num);
-        item->status = IS_DEACTIVATED;
+        item->is_finished = true;
     }
 }
 

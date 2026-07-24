@@ -38,9 +38,9 @@ void General_Control(const int16_t item_num)
     Collide_GetJointAbsPosition(item, &pos, 0);
     Output_AddDynamicLight(pos, 14, 11);
 
-    if (item->status == IS_DEACTIVATED) {
+    if (item->is_finished) {
         Item_RemoveSimulated(item_num);
-        item->flags |= IF_ONE_SHOT;
+        item->trigger.spent = true;
     }
 }
 

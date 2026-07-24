@@ -259,7 +259,7 @@ static void M_ReadItemsTR4(LEVEL_CONTEXT *const ctx, VFILE *const file)
         item->shade.value_2 = shade;
         tr4_item->ocb = VFile_ReadS16(file);
         tr4_item->flags = VFile_ReadU16(file);
-        item->flags = tr4_item->flags;
+        item->init_flags = tr4_item->flags;
         if (item->object_id == NO_OBJECT) {
             LOG_WARNING("Unsupported TR4 item object %d on item %d", obj_id, i);
         }

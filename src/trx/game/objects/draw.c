@@ -341,7 +341,7 @@ bool Object_DrawSpriteItem(const ITEM *const item)
 
 bool Object_DrawPickupItem(const ITEM *const item)
 {
-    if ((item->flags & IF_INVISIBLE) != 0) {
+    if (item->trigger.spent) {
         return false;
     }
 

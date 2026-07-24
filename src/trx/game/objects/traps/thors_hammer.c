@@ -94,7 +94,6 @@ static void M_ControlHandle(const int16_t item_num)
             item->goal_anim_state = M_STATE_TEASE;
         } else {
             Item_RemoveSimulated(item_num);
-            item->status = IS_INACTIVE;
         }
         break;
 
@@ -118,7 +117,7 @@ static void M_ControlHandle(const int16_t item_num)
         Room_TestTriggers(item);
         M_UpdateBox(item, true);
         Item_RemoveSimulated(item_num);
-        item->status = IS_DEACTIVATED;
+        item->is_finished = true;
         break;
     }
     }

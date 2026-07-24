@@ -36,8 +36,7 @@ void Gun_SmashItem(const int16_t item_num)
     case O_FUSE_BOX:
     case O_SMASH_OBJECT_2:
     case O_SMASH_OBJECT_3:
-        if (item->status != IS_ACTIVE) {
-            item->status = IS_ACTIVE;
+        if (!Item_IsInPlay(item)) {
             Item_AddSimulated(item_num);
         }
         break;

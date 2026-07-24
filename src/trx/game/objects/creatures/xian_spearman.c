@@ -112,7 +112,9 @@ static void M_Initialise(const int16_t item_num)
     Item_SwitchToAnim(item, M_ANIM_START, 0);
     item->goal_anim_state = M_STATE_START;
     item->current_anim_state = M_STATE_START;
-    item->status = IS_INACTIVE;
+    // A visible, at-rest statue until triggered; override the hidden default
+    // Item_Initialise gives an intelligent item.
+    item->is_visible = true;
     item->mesh_bits = 0;
 }
 
@@ -144,8 +146,8 @@ static void M_Control(const int16_t item_num)
             item->object_id = O_XIAN_SPEARMAN;
             LOT_DisableBaddieAI(item_num);
             Item_Destroy(item_num);
-            item->status = IS_DEACTIVATED;
-            item->flags |= IF_ONE_SHOT;
+            item->is_finished = true;
+            item->trigger.spent = true;
             Carrier_TestItemDrops(item_num);
         }
         return;

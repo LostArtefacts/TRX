@@ -32,24 +32,11 @@ end
 
 - **`trx.items.query`** (table). The identity query over every item in the level. Narrow it and read it - see [Query](../../QUERY.md).
 
-  Its own narrowings, beyond the operators: `active`, `of_object` (by object id or name) and `in_room`.
+  Its own narrowings, beyond the operators: `simulated`, `present`, `visible`, `finished`, `in_play`, `alive`, `targetable`, `of_object` (by object id or name) and `in_room`.
 
-  Example: `trx.items.query:of_object("wolf"):active():matches()`. *(read-only)*
+  Example: `trx.items.query:of_object("wolf"):simulated():matches()`. *(read-only)*
 
 ### Enums
-
-- [lua]`trx.items.Status`
-
-    The values `item.status` can take.
-
-    - `trx.items.Status.INACTIVE` = `0`  
-        In the level, but not yet triggered. Its control routine does not run.
-    - `trx.items.Status.ACTIVE` = `1`  
-        Triggered: its control routine runs every frame.
-    - `trx.items.Status.DEACTIVATED` = `2`  
-        Ran and finished - a creature that died, or a one-shot trigger that fired. It stays in the level, but no longer runs.
-    - `trx.items.Status.INVISIBLE` = `3`  
-        Neither drawn nor collidable, as a pickup Lara has already collected is.
 
 - [lua]`trx.items.PickupMode`
 
@@ -92,21 +79,25 @@ end
     - **`anim_state`**: integer. Current animation state.
     - **`collidable`**: boolean. Whether Lara can collide with this item.
     - **`fall_speed`**: integer. Vertical speed.
-    - **`flags`**: integer. Trigger-related flag bits. Read-only: writing them directly would let a script set `IF_KILLED` without unlinking the item, wedging engine state. Use `kill()` instead. *(read-only)*
     - **`frame`**: integer. Object-relative frame number, 0-indexed. Negative values count back from the end.
     - **`goal_anim_state`**: integer. Animation state the item is transitioning towards.
     - **`gravity`**: boolean. Whether gravity applies to this item.
     - **`hit_points`**: integer. Current hit points. Raising this above the maximum also raises `properties.max_hit_points`.
     - **`index`**: integer. The index `trx.items[i]` takes, counted from 0. An item handed over by a query can say where it lives. *(read-only)*
-    - **`is_active`**: boolean. Whether the item's control routine is running. Call `activate()` to start it. *(read-only)*
     - **`is_alive`**: boolean. Whether the item is a living creature with hit points remaining. *(read-only)*
+    - **`is_finished`**: boolean. Whether the item has finished its run - a creature that died, or a one-shot trigger that fired. It stays in the level but no longer acts.
     - **`is_hostile`**: boolean. Whether this item is a creature currently hostile to Lara. *(read-only)*
+    - **`is_in_play`**: boolean. Whether the item is live: simulated, visible and not finished - the state a targetable enemy is in. A read-only composite of the axes. *(read-only)*
     - **`is_killed`**: boolean. Whether the item has already been killed. *(read-only)*
     - **`is_one_shot`**: boolean. Whether the item's trigger has been spent and will never fire again.
+    - **`is_present`**: boolean. Whether the item is in the world at all: linked in its room, so drawn and collidable in principle. Managed by the engine. *(read-only)*
     - **`is_reversed`**: boolean. Whether the item's trigger is inverted, so it runs until triggered rather than once triggered. This is how a level ships something already on.
+    - **`is_simulated`**: boolean. Whether the item's control routine runs each frame. Call `activate()` to start it. *(read-only)*
+    - **`is_targetable`**: boolean. Whether Lara's auto-aim can lock onto the item right now. *(read-only)*
     - **`is_triggered`**: boolean. Whether the item's trigger currently says go. This is what a door, a switch or an alarm reads to decide whether to act; a creature ignores it and goes by whether it is running.
 
       It is a verdict on `trigger_mask`, `timer` and `is_reversed` together, not a field of its own. *(read-only)*
+    - **`is_visible`**: boolean. Whether the item is drawn. It can be present in the world but not visible, like an ambush enemy waiting to appear.
     - **`max_hit_points`**: integer. Maximum hit points. Set `properties.max_hit_points` to change it. *(read-only)*
     - **`mesh_bits`**: integer. Bitmask of which of the item's meshes are drawn.
     - **`name`**: string. Unique item name, or `nil`. Assigning a name already in use raises an error.
@@ -115,7 +106,6 @@ end
     - **`room_num`**: integer. 0-based number of the room containing this item. Set `pos` to move the item between rooms. *(read-only)*
     - **`rot`**: vec3. Orientation.
     - **`speed`**: integer. Forward speed.
-    - **`status`**: integer. Item status. Use `activate()` and `kill()` to change it, so the item's active-list membership stays in sync. Compare against `trx.items.Status`. *(read-only)*
     - **`timer`**: integer. How long the item's trigger keeps it going, in game frames. `0` runs it until something takes the trigger back; `-1` means it has run out; anything else counts down. This is the raw frame count - `trigger()` takes its timer in seconds instead.
     - **`touch_bits`**: integer. Bitmask of which of the item's meshes Lara is touching. *(read-only)*
     - **`trigger_mask`**: integer. The five code bits, counted the way a level editor counts them: `1` to `31`. The trigger only says go once every bit is set, which is how a level makes several triggers agree before anything happens. A lone trigger carries all of them.
@@ -133,12 +123,15 @@ end
       Objects with no control routine cannot be activated, and an item that is already active is left alone.
 
     - [lua]`item:deactivate()`  
-      Stops the item: its control routine no longer runs, and a creature loses its AI and stands down. The item stays where it is and keeps its hit points, so this is not a way of getting rid of it - use `kill()` for that.
+      Stops the item: its control routine no longer runs, and a creature loses its AI and stands down. The item stays where it is and keeps its hit points, so this is not a way of getting rid of it - use `destroy()` for that.
 
       A trigger can still bring it back, and so can `activate()`.
 
+    - [lua]`item:destroy()`  
+      Removes the item from the game. Any other handle to it becomes stale.
+
     - [lua]`item:die([explode])`  
-      Runs the object's creature death handling: the corpse stays, and `explode` bursts its meshes as a rocket or grenade would. For creatures; `kill()` simply removes any item from the game.
+      Runs the object's creature death handling: the corpse stays, and `explode` bursts its meshes as a rocket or grenade would. For creatures; `destroy()` simply removes any item from the game.
 
       Parameters:
       - **`explode`** (boolean, optional, default `False`). Whether to burst the meshes as it dies.
@@ -179,8 +172,175 @@ end
       end)
       ```
 
-    - [lua]`item:kill()`  
-      Removes the item from the game. Any other handle to it becomes stale.
+    - [lua]`item:on_activate(callback)`  
+      Happens when this item is activated through the lifecycle front door during play. `trx.events.on_activate`, narrowed to this item.
+
+      Parameters:
+      - **`callback`** (function).
+        Called with:
+        - **`item`** (Item). This item.
+
+      Returns: integer. Listener id. Pass it to `trx.events.detach` to stop listening.
+
+      Example:
+      ```lua
+      trx.items[12]:on_activate(function(item)
+        trx.log.info("the item was activated")
+      end)
+      ```
+
+    - [lua]`item:on_deactivate(callback)`  
+      Happens when this item is deactivated through the lifecycle front door during play. `trx.events.on_deactivate`, narrowed to this item.
+
+      Parameters:
+      - **`callback`** (function).
+        Called with:
+        - **`item`** (Item). This item.
+
+      Returns: integer. Listener id. Pass it to `trx.events.detach` to stop listening.
+
+      Example:
+      ```lua
+      trx.items[12]:on_deactivate(function(item)
+        trx.log.info("the item was deactivated")
+      end)
+      ```
+
+    - [lua]`item:on_destroy(callback)`  
+      Happens as this item is removed from the game during play. It can still be read from the handler, but not after. `trx.events.on_destroy`, narrowed to this item.
+
+      Parameters:
+      - **`callback`** (function).
+        Called with:
+        - **`item`** (Item). This item.
+
+      Returns: integer. Listener id. Pass it to `trx.events.detach` to stop listening.
+
+      Example:
+      ```lua
+      trx.items[12]:on_destroy(function(item)
+        trx.log.info("the item was removed")
+      end)
+      ```
+
+    - [lua]`item:on_enter_sim(callback)`  
+      Happens when this item starts being simulated during play. `trx.events.on_enter_sim`, narrowed to this item.
+
+      Parameters:
+      - **`callback`** (function).
+        Called with:
+        - **`item`** (Item). This item.
+
+      Returns: integer. Listener id. Pass it to `trx.events.detach` to stop listening.
+
+      Example:
+      ```lua
+      trx.items[12]:on_enter_sim(function(item)
+        trx.log.info("the item started running")
+      end)
+      ```
+
+    - [lua]`item:on_enter_world(callback)`  
+      Happens when this item enters the world during play, such as a runtime spawn. `trx.events.on_enter_world`, narrowed to this item.
+
+      Parameters:
+      - **`callback`** (function).
+        Called with:
+        - **`item`** (Item). This item.
+
+      Returns: integer. Listener id. Pass it to `trx.events.detach` to stop listening.
+
+      Example:
+      ```lua
+      trx.items[12]:on_enter_world(function(item)
+        trx.log.info("the item entered the world")
+      end)
+      ```
+
+    - [lua]`item:on_finish(callback)`  
+      Happens when this item finishes its run during play. `trx.events.on_finish`, narrowed to this item.
+
+      Parameters:
+      - **`callback`** (function).
+        Called with:
+        - **`item`** (Item). This item.
+
+      Returns: integer. Listener id. Pass it to `trx.events.detach` to stop listening.
+
+      Example:
+      ```lua
+      trx.items[12]:on_finish(function(item)
+        trx.log.info("the item finished its run")
+      end)
+      ```
+
+    - [lua]`item:on_hide(callback)`  
+      Happens when this item becomes hidden during play. `trx.events.on_hide`, narrowed to this item.
+
+      Parameters:
+      - **`callback`** (function).
+        Called with:
+        - **`item`** (Item). This item.
+
+      Returns: integer. Listener id. Pass it to `trx.events.detach` to stop listening.
+
+      Example:
+      ```lua
+      trx.items[12]:on_hide(function(item)
+        trx.log.info("the item vanished")
+      end)
+      ```
+
+    - [lua]`item:on_leave_sim(callback)`  
+      Happens when this item stops being simulated during play. `trx.events.on_leave_sim`, narrowed to this item.
+
+      Parameters:
+      - **`callback`** (function).
+        Called with:
+        - **`item`** (Item). This item.
+
+      Returns: integer. Listener id. Pass it to `trx.events.detach` to stop listening.
+
+      Example:
+      ```lua
+      trx.items[12]:on_leave_sim(function(item)
+        trx.log.info("the item stopped running")
+      end)
+      ```
+
+    - [lua]`item:on_leave_world(callback)`  
+      Happens when this item leaves the world during play. `trx.events.on_leave_world`, narrowed to this item.
+
+      Parameters:
+      - **`callback`** (function).
+        Called with:
+        - **`item`** (Item). This item.
+
+      Returns: integer. Listener id. Pass it to `trx.events.detach` to stop listening.
+
+      Example:
+      ```lua
+      trx.items[12]:on_leave_world(function(item)
+        trx.log.info("the item left the world")
+      end)
+      ```
+
+    - [lua]`item:on_show(callback)`  
+      Happens when this item becomes visible during play. `trx.events.on_show`, narrowed to this item.
+
+      Parameters:
+      - **`callback`** (function).
+        Called with:
+        - **`item`** (Item). This item.
+
+      Returns: integer. Listener id. Pass it to `trx.events.detach` to stop listening.
+
+      Example:
+      ```lua
+      trx.items[12]:on_show(function(item)
+        trx.log.info("the item appeared")
+      end)
+      ```
 
     - [lua]`item:on_trigger(callback)`  
       Happens every time a trigger is aimed at this item, of any kind. `trx.events.on_trigger`, narrowed to this item.

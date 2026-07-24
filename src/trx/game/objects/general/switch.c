@@ -82,16 +82,16 @@ static const OBJECT_BOUNDS *M_BoundsUW(void)
 static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
-    item->flags |= IF_CODE_BITS;
+    item->trigger.mask = IF_CODE_BITS;
     if (!Item_IsTriggerActive(item)) {
         item->goal_anim_state = SWITCH_STATE_OFF;
         item->timer = 0;
     }
     Item_Animate(item);
 
-    if (g_TRVersion >= 3 && (item->flags & IF_ONE_SHOT_SWITCH) != 0) {
-        item->flags &= ~IF_ONE_SHOT_SWITCH;
-        item->flags |= IF_ONE_SHOT;
+    if (g_TRVersion >= 3 && item->trigger.switch_spent) {
+        item->trigger.switch_spent = false;
+        item->trigger.spent = true;
     }
 }
 
@@ -221,7 +221,6 @@ static void M_CollisionControlled(
                 }
                 Lara_Interact_FinishControl(LARA_INTERACT_SWITCH);
                 Item_AddSimulated(item_num);
-                item->status = IS_ACTIVE;
                 Item_Animate(item);
             } else {
                 lara->interact_target.item_num = item_num;
@@ -241,7 +240,7 @@ static void M_Collision(
     const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
 {
     ITEM *const item = Item_Get(item_num);
-    if (g_TRVersion >= 3 && (item->flags & IF_ONE_SHOT) != 0) {
+    if (g_TRVersion >= 3 && item->trigger.spent) {
         return;
     }
 
@@ -253,7 +252,7 @@ static void M_Collision(
     LARA_INFO *const lara = Lara_GetLaraInfo();
     const OBJECT *const obj = Object_Get(item->object_id);
 
-    if (!g_Input.action || item->status != IS_INACTIVE
+    if (!g_Input.action || !Item_IsInactive(item)
         || lara->gun_status != LGS_ARMLESS || lara_item->gravity
         || !Lara_Interact_CanBegin(LARA_INTERACT_SWITCH)
         || !Lara_TestPosition(item, obj->bounds_func())) {
@@ -278,7 +277,6 @@ static void M_Collision(
     }
     lara->gun_status = LGS_HANDS_BUSY;
 
-    item->status = IS_ACTIVE;
     Item_AddSimulated(item_num);
     Item_Animate(item);
 }
@@ -290,7 +288,7 @@ static void M_CollisionUW(
     LARA_INFO *const lara = Lara_GetLaraInfo();
     const OBJECT *const obj = Object_Get(item->object_id);
 
-    if (!g_Input.action || item->status != IS_INACTIVE
+    if (!g_Input.action || !Item_IsInactive(item)
         || (lara->water_status != LWS_UNDERWATER
             && lara->water_status != LWS_CHEAT)
         || lara->gun_status != LGS_ARMLESS
@@ -321,7 +319,6 @@ static void M_CollisionUW(
     } else {
         item->goal_anim_state = SWITCH_STATE_OFF;
     }
-    item->status = IS_ACTIVE;
     Item_AddSimulated(item_num);
     Item_Animate(item);
 }
@@ -365,17 +362,17 @@ bool Switch_Trigger(const int16_t item_num, const int16_t timer)
     ITEM *const item = Item_Get(item_num);
 
     if (item->object_id == O_SWITCH_TYPE_AIRLOCK) {
-        if (item->status == IS_DEACTIVATED) {
+        if (item->is_finished) {
             Item_RemoveSimulated(item_num);
-            item->status = IS_INACTIVE;
+            item->is_finished = false;
             return false;
         } else if (
-            (item->flags & IF_ONE_SHOT) != 0
+            item->trigger.spent
             || item->current_anim_state == SWITCH_STATE_ON) {
             return false;
         }
 
-        item->flags |= IF_ONE_SHOT;
+        item->trigger.spent = true;
         return true;
     }
 
@@ -384,17 +381,17 @@ bool Switch_Trigger(const int16_t item_num, const int16_t timer)
         // death; the following addition is a safer approach for such, rather
         // than altering item status and timer as though they were regular
         // switch objects.
-        if (item->status != IS_DEACTIVATED && !item->is_destroyed) {
+        if (!item->is_finished && !item->is_destroyed) {
             return false;
         }
-        if ((item->flags & IF_ONE_SHOT_SWITCH) != 0) {
+        if (item->trigger.switch_spent) {
             return false;
         }
-        item->flags |= IF_ONE_SHOT_SWITCH;
+        item->trigger.switch_spent = true;
         return true;
     }
 
-    if (item->status != IS_DEACTIVATED) {
+    if (!item->is_finished) {
         return false;
     }
 
@@ -403,10 +400,10 @@ bool Switch_Trigger(const int16_t item_num, const int16_t timer)
         if (timer != 1) {
             item->timer *= LOGIC_FPS;
         }
-        item->status = IS_ACTIVE;
+        item->is_finished = false;
     } else {
         Item_RemoveSimulated(item_num);
-        item->status = IS_INACTIVE;
+        item->is_finished = false;
     }
     return true;
 }

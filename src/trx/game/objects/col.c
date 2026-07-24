@@ -25,11 +25,11 @@ void Object_Collision_Trap(
 {
     ITEM *const item = Item_Get(item_num);
 
-    if (item->status == IS_ACTIVE) {
+    if (Item_IsInPlay(item)) {
         if (Lara_TestBoundsCollide(item, coll->radius)) {
             Collide_TestCollision(item, lara_item);
         }
-    } else if (item->status != IS_INVISIBLE) {
+    } else if (item->is_visible) {
         Object_Collision(item_num, lara_item, coll);
     }
 }

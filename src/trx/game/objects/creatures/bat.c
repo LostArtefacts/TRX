@@ -40,7 +40,7 @@ static int32_t M_GetAttackDamage(const ITEM *const item)
 static void M_FixEmbeddedPosition(int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
-    if (item->status == IS_ACTIVE) {
+    if (Item_IsInPlay(item)) {
         return;
     }
 

@@ -1,5 +1,6 @@
 #include <trx/game/objects/general/door.h>
 
+#include <trx/game/const.h>
 #include <trx/game/game_flow/common.h>
 #include <trx/game/game_flow/sequencer.h>
 #include <trx/game/inventory.h>
@@ -328,8 +329,7 @@ static void M_CrowbarCollision(
                 Item_SwitchToAnim(lara_item, LA(LA_PRY_DOOR), 0);
                 lara_item->current_anim_state = LS(LS_CONTROLLED);
                 Item_AddSimulated(item_num);
-                item->flags |= IF_CODE_BITS;
-                item->status = IS_ACTIVE;
+                item->trigger.mask = IF_CODE_BITS;
                 item->goal_anim_state = DOOR_STATE_OPEN;
                 lara->interact_target.is_moving = false;
                 lara->gun_status = LGS_HANDS_BUSY;
@@ -351,7 +351,7 @@ static void M_Collision(
 {
     const ITEM *const item = Item_Get(item_num);
     const M_PRIV *const p = item->priv;
-    if (p->crowbar && item->status != IS_ACTIVE) {
+    if (p->crowbar && !Item_IsInPlay(item)) {
         M_CrowbarCollision(item_num, lara_item, coll);
     }
     Door_Collision(item_num, lara_item, coll);
@@ -412,7 +412,7 @@ int16_t Door_FindNearbyCrowbarDoor(void)
     for (int16_t item_num = 0; item_num < Item_GetLevelCount(); item_num++) {
         const ITEM *const item = Item_Get(item_num);
         if (item->object_id < O_DOOR_TYPE_1 || item->object_id > O_DOOR_TYPE_8
-            || item->status == IS_ACTIVE) {
+            || Item_IsInPlay(item)) {
             continue;
         }
 

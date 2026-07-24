@@ -5,7 +5,9 @@
 
 #include "harness.h"
 
+#include <trx/game/const.h>
 #include <trx/game/items/utils.h>
+#include <trx/game/lua/events.h>
 #include <trx/game/objects/types.h>
 #include <trx/version.h>
 
@@ -13,8 +15,7 @@
 #define M_OBJ_PLAIN 0
 #define M_OBJ_FUNC 1
 
-// A code-bit mask counted the level-editor way (1..31), shifted into the flag
-// word where Item_Trigger expects it.
+// A code-bit mask counted the level-editor way, 1..31.
 #define M_MASK(bits) ((int16_t)((bits) << 9))
 #define M_MASK_ALL ((int16_t)IF_CODE_BITS)
 
@@ -85,7 +86,7 @@ TEST(forward_full_mask_activates)
 {
     ITEM *const item = M_Reset(1);
     M_Fire((ITEM_TRIGGER) { .kind = ITEM_TRIGGER_NORMAL, .mask = M_MASK_ALL });
-    CHECK_EQ_INT(item->flags & IF_CODE_BITS, IF_CODE_BITS);
+    CHECK_EQ_INT(item->trigger.mask, IF_CODE_BITS);
     CHECK_EQ_INT(m_ActivateCount, 1);
     CHECK_EQ_INT(m_Activated, M_ITEM);
 }
@@ -95,12 +96,12 @@ TEST(forward_partial_mask_waits_then_accumulates)
     ITEM *const item = M_Reset(1);
 
     M_Fire((ITEM_TRIGGER) { .kind = ITEM_TRIGGER_NORMAL, .mask = M_MASK(3) });
-    CHECK(((item->flags & IF_CODE_BITS) != IF_CODE_BITS));
+    CHECK(item->trigger.mask != IF_CODE_BITS);
     CHECK_EQ_INT(m_ActivateCount, 0);
 
     // The remaining bits arrive on a second trigger; only now does it run.
     M_Fire((ITEM_TRIGGER) { .kind = ITEM_TRIGGER_NORMAL, .mask = M_MASK(28) });
-    CHECK_EQ_INT(item->flags & IF_CODE_BITS, IF_CODE_BITS);
+    CHECK_EQ_INT(item->trigger.mask, IF_CODE_BITS);
     CHECK_EQ_INT(m_ActivateCount, 1);
 }
 
@@ -143,34 +144,37 @@ TEST(switch_xor_toggles_both_ways)
 
     // Off to on: sets the bits and runs.
     M_Fire((ITEM_TRIGGER) { .kind = ITEM_TRIGGER_SWITCH, .mask = M_MASK_ALL });
-    CHECK_EQ_INT(item->flags & IF_CODE_BITS, IF_CODE_BITS);
+    CHECK_EQ_INT(item->trigger.mask, IF_CODE_BITS);
     CHECK_EQ_INT(m_ActivateCount, 1);
 
     // On to off: clears the bits again and does not re-run.
     M_Fire((ITEM_TRIGGER) { .kind = ITEM_TRIGGER_SWITCH, .mask = M_MASK_ALL });
-    CHECK_EQ_INT(item->flags & IF_CODE_BITS, 0);
+    CHECK_EQ_INT(item->trigger.mask, 0);
     CHECK_EQ_INT(m_ActivateCount, 1);
 }
 
 TEST(antitrigger_tr1_clears_only_its_mask)
 {
     ITEM *const item = M_Reset(1);
-    item->flags |= IF_CODE_BITS | IF_REVERSE;
+    item->trigger.mask = IF_CODE_BITS;
+    item->trigger.reversed = true;
 
     M_Fire((ITEM_TRIGGER) { .kind = ITEM_TRIGGER_ANTI, .mask = M_MASK(3) });
-    // Only bits 1 and 2 cleared; the rest and IF_REVERSE stand.
-    CHECK_EQ_INT(item->flags & IF_CODE_BITS, IF_CODE_BITS & ~M_MASK(3));
-    CHECK(((item->flags & IF_REVERSE) != 0));
+    // Only bits 1 and 2 cleared; the rest and the reverse flag stand.
+    CHECK_EQ_INT(item->trigger.mask, IF_CODE_BITS & ~M_MASK(3));
+    CHECK(item->trigger.reversed);
     CHECK_EQ_INT(m_ActivateCount, 0);
 }
 
 TEST(antitrigger_tr3_clears_all_bits_and_reverse)
 {
     ITEM *const item = M_Reset(3);
-    item->flags |= IF_CODE_BITS | IF_REVERSE;
+    item->trigger.mask = IF_CODE_BITS;
+    item->trigger.reversed = true;
 
     M_Fire((ITEM_TRIGGER) { .kind = ITEM_TRIGGER_ANTI, .mask = M_MASK(3) });
-    CHECK_EQ_INT(item->flags & (IF_CODE_BITS | IF_REVERSE), 0);
+    CHECK_EQ_INT(item->trigger.mask, 0);
+    CHECK(!item->trigger.reversed);
     CHECK_EQ_INT(m_ActivateCount, 0);
 }
 
@@ -180,7 +184,7 @@ TEST(one_shot_forward_latches_and_spends)
 
     M_Fire((ITEM_TRIGGER) {
         .kind = ITEM_TRIGGER_NORMAL, .mask = M_MASK_ALL, .one_shot = true });
-    CHECK(((item->flags & IF_ONE_SHOT) != 0));
+    CHECK(item->trigger.spent);
     CHECK_EQ_INT(m_ActivateCount, 1);
 
     // Spent: a second trigger is ignored outright.
@@ -195,7 +199,7 @@ TEST(one_shot_switch_tr3_latches_in_its_own_bit)
 
     M_Fire((ITEM_TRIGGER) {
         .kind = ITEM_TRIGGER_SWITCH, .mask = M_MASK_ALL, .one_shot = true });
-    CHECK(((item->flags & IF_ONE_SHOT_SWITCH) != 0));
+    CHECK(item->trigger.switch_spent);
     CHECK_EQ_INT(m_ActivateCount, 1);
 
     M_Fire((ITEM_TRIGGER) {
@@ -206,21 +210,21 @@ TEST(one_shot_switch_tr3_latches_in_its_own_bit)
 TEST(one_shot_anti_tr3_latches_in_its_own_bit)
 {
     ITEM *const item = M_Reset(3);
-    item->flags |= IF_CODE_BITS;
+    item->trigger.mask = IF_CODE_BITS;
 
     M_Fire((ITEM_TRIGGER) {
         .kind = ITEM_TRIGGER_ANTI, .mask = M_MASK_ALL, .one_shot = true });
-    CHECK(((item->flags & IF_ONE_SHOT_ANTITRIGGER) != 0));
+    CHECK(item->trigger.anti_spent);
 }
 
 TEST(one_shot_anti_tr1_latches_in_the_general_bit)
 {
     ITEM *const item = M_Reset(1);
-    item->flags |= IF_CODE_BITS;
+    item->trigger.mask = IF_CODE_BITS;
 
     M_Fire((ITEM_TRIGGER) {
         .kind = ITEM_TRIGGER_ANTI, .mask = M_MASK_ALL, .one_shot = true });
-    CHECK(((item->flags & IF_ONE_SHOT) != 0));
+    CHECK(item->trigger.spent);
 }
 
 TEST(heavy_switch_spends_on_general_bit_not_the_switch_bit)
@@ -229,14 +233,14 @@ TEST(heavy_switch_spends_on_general_bit_not_the_switch_bit)
     // the general one-shot bit, not the switch bit. A stray switch-bit must not
     // stop it.
     ITEM *item = M_Reset(3);
-    item->flags |= IF_ONE_SHOT_SWITCH;
+    item->trigger.switch_spent = true;
     M_Fire((ITEM_TRIGGER) { .kind = ITEM_TRIGGER_HEAVY_SWITCH,
                             .mask = M_MASK_ALL });
-    CHECK_EQ_INT(item->flags & IF_CODE_BITS, IF_CODE_BITS);
+    CHECK_EQ_INT(item->trigger.mask, IF_CODE_BITS);
     CHECK_EQ_INT(m_ActivateCount, 1);
 
     item = M_Reset(3);
-    item->flags |= IF_ONE_SHOT;
+    item->trigger.spent = true;
     M_Fire((ITEM_TRIGGER) { .kind = ITEM_TRIGGER_HEAVY_SWITCH,
                             .mask = M_MASK_ALL });
     CHECK_EQ_INT(m_ActivateCount, 0);
@@ -250,7 +254,7 @@ TEST(trigger_func_veto_stops_default_handling)
 
     M_Fire((ITEM_TRIGGER) { .kind = ITEM_TRIGGER_NORMAL, .mask = M_MASK_ALL });
     CHECK(m_FuncCalled);
-    CHECK_EQ_INT(item->flags & IF_CODE_BITS, 0);
+    CHECK_EQ_INT(item->trigger.mask, 0);
     CHECK_EQ_INT(m_ActivateCount, 0);
 }
 
@@ -270,7 +274,7 @@ TEST(spent_one_shot_skips_the_trigger_func)
 {
     ITEM *const item = M_Reset(1);
     item->object_id = M_OBJ_FUNC;
-    item->flags |= IF_ONE_SHOT;
+    item->trigger.spent = true;
 
     M_Fire((ITEM_TRIGGER) {
         .kind = ITEM_TRIGGER_NORMAL, .mask = M_MASK_ALL, .one_shot = true });

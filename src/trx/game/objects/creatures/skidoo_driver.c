@@ -53,20 +53,20 @@ static void M_KillDriver(ITEM *const driver_item)
     const int32_t driver_item_num = Item_GetIndex(driver_item);
     Item_RemoveSimulated(driver_item_num);
     driver_item->is_collidable = 0;
-    driver_item->flags |= IF_ONE_SHOT;
+    driver_item->trigger.spent = true;
     driver_item->hit_points = 0;
 }
 
 static void M_MakeMountable(ITEM *const skidoo_item)
 {
-    if (skidoo_item->status == IS_INVISIBLE) {
+    if (!skidoo_item->is_visible) {
         return;
     }
 
     const int32_t skidoo_item_num = Item_GetIndex(skidoo_item);
     LOT_DisableBaddieAI(skidoo_item_num);
     skidoo_item->object_id = O_SKIDOO_FAST;
-    skidoo_item->status = IS_DEACTIVATED;
+    skidoo_item->is_finished = true;
     Skidoo_Initialise(skidoo_item_num);
 
     SKIDOO_INFO *const skidoo_data = skidoo_item->priv;
@@ -204,7 +204,7 @@ static void M_Initialise(const int16_t item_num)
     skidoo->pos.z = skidoo_driver->pos.z;
     skidoo->rot.y = skidoo_driver->rot.y;
     skidoo->room_num = skidoo_driver->room_num;
-    skidoo->flags = IF_ONE_SHOT;
+    skidoo->init_flags = IF_INVISIBLE;
     skidoo->shade.value_1 = -1;
     Item_Initialise(skidoo_item_num);
 
@@ -214,7 +214,7 @@ static void M_Initialise(const int16_t item_num)
 static void M_HandleSave(ITEM *const item, const SAVEGAME_STAGE stage)
 {
     if (stage == SAVEGAME_STAGE_AFTER_LOAD) {
-        if (item->status == IS_DEACTIVATED) {
+        if (item->is_finished) {
             item->hit_points = 0;
             const M_PRIV *const p = item->priv;
             const int16_t skidoo_num = p->skidoo_item_num;
@@ -234,7 +234,13 @@ static void M_Control(const int16_t driver_item_num)
 
     if (skidoo_item->creature_data == nullptr) {
         LOT_EnableBaddieAI(skidoo_item_num, true);
-        skidoo_item->status = IS_ACTIVE;
+        skidoo_item->is_visible = true;
+        // The skidoo is a control-less puppet the driver drives, so it never
+        // joins the simulation list through Item_AddSimulated. It is still an
+        // enemy in play, though: set is_simulated directly so Item_IsInPlay
+        // reports it targetable, the whole of what its old IS_ACTIVE status
+        // did.
+        skidoo_item->is_simulated = true;
     }
 
     CREATURE *const driver_data = skidoo_item->creature_data;
@@ -251,7 +257,7 @@ static void M_Control(const int16_t driver_item_num)
         Sound_Effect(SFX_SKIDOO_IDLE, &skidoo_item->pos, SPM_NORMAL);
     } else {
         driver_data->head_rotation = driver_data->head_rotation == 1 ? 2 : 1;
-        if (skidoo_item->status != IS_INVISIBLE) {
+        if (skidoo_item->is_visible) {
             Skidoo_DoSnowEffect(skidoo_item);
         }
 
@@ -264,7 +270,7 @@ static void M_Control(const int16_t driver_item_num)
     Creature_Animate(skidoo_item_num, angle, 0);
 
     if (driver_item->current_anim_state == M_STATE_DEATH) {
-        if (driver_item->status == IS_DEACTIVATED && skidoo_item->speed == 0
+        if (driver_item->is_finished && skidoo_item->speed == 0
             && skidoo_item->fall_speed == 0) {
             M_KillDriver(driver_item);
             M_MakeMountable(skidoo_item);

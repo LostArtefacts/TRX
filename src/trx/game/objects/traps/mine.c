@@ -38,7 +38,7 @@ static void M_DetonateAll(
         ITEM *const lara_item = Lara_GetItem();
         Item_Shatter(Item_GetIndex(lara_item), -1, 0);
         lara_item->hit_points = 0;
-        lara_item->flags |= IF_ONE_SHOT;
+        lara_item->trigger.spent = true;
     }
 
     const OBJECT *const obj = Object_Get(O_BOAT_BITS);
@@ -72,7 +72,7 @@ static void M_Explode(ITEM *const mine_item)
     Spawn_Splash(mine_item);
     Sound_Effect(SFX_EXPLOSION_1, &mine_item->pos, SPM_NORMAL);
 
-    mine_item->flags |= IF_ONE_SHOT;
+    mine_item->trigger.spent = true;
     mine_item->mesh_bits = 1;
     mine_item->is_collidable = false;
 }
@@ -80,7 +80,7 @@ static void M_Explode(ITEM *const mine_item)
 static void M_HandleSave(ITEM *const item, const SAVEGAME_STAGE stage)
 {
     if (stage == SAVEGAME_STAGE_AFTER_LOAD) {
-        if (item->flags & IF_ONE_SHOT) {
+        if (item->trigger.spent) {
             item->mesh_bits = 1;
         }
     }
@@ -89,7 +89,7 @@ static void M_HandleSave(ITEM *const item, const SAVEGAME_STAGE stage)
 static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
-    if (item->flags & IF_ONE_SHOT) {
+    if (item->trigger.spent) {
         return;
     }
 

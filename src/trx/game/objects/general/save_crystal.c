@@ -102,7 +102,7 @@ static void M_Initialise(const int16_t item_num)
         if (g_Config.gameplay.enable_save_crystals) {
             Item_AddSimulated(item_num);
         } else {
-            Item_Get(item_num)->status = IS_INVISIBLE;
+            Item_Get(item_num)->is_visible = false;
         }
     }
 }
@@ -111,7 +111,7 @@ static void M_HandleSave(ITEM *const item, const SAVEGAME_STAGE stage)
 {
     switch (stage) {
     case SAVEGAME_STAGE_AFTER_LOAD:
-        if (item->status == IS_DEACTIVATED) {
+        if (item->is_finished) {
             const int16_t item_num = Item_GetIndex(item);
             Item_DetachFromRoom(item_num);
         }
@@ -121,7 +121,7 @@ static void M_HandleSave(ITEM *const item, const SAVEGAME_STAGE stage)
         M_PRIV *const p = item->priv;
         if (p->used_for_save) {
             // need to reset the crystal status
-            item->status = IS_DEACTIVATED;
+            item->is_finished = true;
             p->used_for_save = false;
             const int16_t item_num = Item_GetIndex(item);
             Item_DetachFromRoom(item_num);
@@ -136,7 +136,7 @@ static void M_ControlHeal(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
 
-    if (item->status == IS_INVISIBLE || item->clear_body) {
+    if (!item->is_visible || item->clear_body) {
         return;
     }
 

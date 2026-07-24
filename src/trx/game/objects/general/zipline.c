@@ -63,15 +63,14 @@ static void M_LetGo(const ITEM *const item, ITEM *const lara_item)
 static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
-    if (item->status != IS_ACTIVE) {
+    if (!Item_IsInPlay(item)) {
         return;
     }
 
-    if ((item->flags & IF_ONE_SHOT) == 0) {
+    if (!item->trigger.spent) {
         const M_PRIV *const p = item->priv;
         item->pos = p->old_pos.pos;
         Item_UpdateRoom(item_num, p->old_pos.room_num);
-        item->status = IS_INACTIVE;
         item->goal_anim_state = M_STATE_GRAB;
         item->current_anim_state = M_STATE_GRAB;
         Item_SwitchToAnim(item, 0, 0);
@@ -122,8 +121,7 @@ static void M_Control(const int16_t item_num)
     }
     Sound_Effect(SFX_ZIPLINE_STOP, &item->pos, SPM_ALWAYS);
     Item_RemoveSimulated(item_num);
-    item->status = IS_INACTIVE;
-    item->flags &= ~IF_ONE_SHOT;
+    item->trigger.spent = false;
 }
 
 static void M_Collision(
@@ -136,7 +134,7 @@ static void M_Collision(
     }
 
     ITEM *const item = Item_Get(item_num);
-    if (item->status != IS_INACTIVE) {
+    if (!Item_IsInactive(item)) {
         return;
     }
 
@@ -153,12 +151,11 @@ static void M_Collision(
         Item_Animate(lara_item);
     } while (lara_item->current_anim_state != LS(LS_PULL_UP));
 
-    if (!item->active) {
+    if (!item->is_simulated) {
         Item_AddSimulated(item_num);
     }
 
-    item->status = IS_ACTIVE;
-    item->flags |= IF_ONE_SHOT;
+    item->trigger.spent = true;
 }
 
 static void M_Setup(OBJECT *const obj)

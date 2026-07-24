@@ -311,7 +311,6 @@ void Sophia_TriggerLaserBolt(
     }
 
     Item_AddSimulated(item_num);
-    bolt->status = IS_ACTIVE;
 }
 
 REGISTER_OBJECT(O_SOPHIA_LASER_BOLT, M_Setup)

@@ -125,6 +125,38 @@ static void M_WriteAnimNum(JSON_WRITE_IO *const io, const int16_t anim_num)
     }
 }
 
+// Pack the item lifecycle axes into the released save format's status value.
+// The priority order reproduces the old active/status divergences: an
+// ambushing item is simulated but hidden (packs to IS_INVISIBLE), a trap
+// playing out its finish is simulated but spent (IS_DEACTIVATED). is_simulated
+// itself round-trips through the separate "active" field, is_finished through
+// "finished" - the enum is mutually exclusive and a hidden finished item packs
+// to IS_INVISIBLE, which older readers take as the whole of its state.
+static ITEM_STATUS M_PackItemStatus(const ITEM *const item)
+{
+    if (!item->is_visible) {
+        return IS_INVISIBLE;
+    }
+    if (item->is_finished) {
+        return IS_DEACTIVATED;
+    }
+    if (item->is_simulated) {
+        return IS_ACTIVE;
+    }
+    return IS_INACTIVE;
+}
+
+// Encode the runtime trigger fields and the two synthesized axis bits back into
+// the released save format's flags word.
+static uint16_t M_PackItemFlags(const ITEM *const item)
+{
+    return item->trigger.mask | (item->trigger.reversed ? IF_REVERSE : 0)
+        | (item->trigger.switch_spent ? IF_ONE_SHOT_SWITCH : 0)
+        | (item->trigger.anti_spent ? IF_ONE_SHOT_ANTITRIGGER : 0)
+        | (item->trigger.spent ? IF_ONE_SHOT : 0)
+        | (item->is_destroyed ? IF_DESTROYED : 0);
+}
+
 static void M_WriteItem(
     JSON_WRITE_IO *const io, const ITEM *const item,
     const M_FX_ORDER *const fx_order)
@@ -162,10 +194,12 @@ static void M_WriteItem(
     ObjectProperty_WriteItemOverrides(io, item, "properties");
 
     if (obj->save_flags) {
-        JSONW_WRITE(
-            io, "flags", item->flags | (item->is_destroyed ? IF_DESTROYED : 0));
-        JSONW_WRITE(io, "status", item->status);
-        JSONW_WRITE(io, "active", item->active);
+        JSONW_WRITE(io, "flags", M_PackItemFlags(item));
+        JSONW_WRITE(io, "status", M_PackItemStatus(item));
+        JSONW_WRITE(io, "active", item->is_simulated);
+        // is_finished also reaches the status value above, but only where the
+        // mutually exclusive enum can hold it; this key carries the axis whole.
+        JSONW_WRITE(io, "finished", item->is_finished);
         JSONW_WRITE(io, "gravity", item->gravity);
         JSONW_WRITE(io, "collidable", item->is_collidable);
         const bool intelligent =
@@ -422,7 +456,7 @@ void SG_File_DumpFlares(JSON_WRITE_IO *const io)
     JSONW_PUSH_ARRAY(io);
     for (int32_t i = 0; i < Item_GetTotalCount(); i++) {
         const ITEM *const item = Item_Get(i);
-        if (!item->active || item->object_id != O_FLARE_ITEM) {
+        if (!item->is_simulated || item->object_id != O_FLARE_ITEM) {
             continue;
         }
         JSONW_PUSH_OBJECT(io);

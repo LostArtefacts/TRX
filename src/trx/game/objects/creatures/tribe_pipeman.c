@@ -102,7 +102,6 @@ static void M_SpawnDart(ITEM *const item)
     dart_item->rot.y = angles[0];
     dart_item->speed = 256;
     Item_AddSimulated(dart_item_num);
-    dart_item->status = IS_ACTIVE;
 
     XYZ_32 smoke_pos = {
         .x = m_ShootHit.pos.x,

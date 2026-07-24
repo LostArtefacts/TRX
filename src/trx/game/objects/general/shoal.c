@@ -514,7 +514,7 @@ static void M_Control(const int16_t item_num)
 
 static bool M_Draw(const ITEM *const item)
 {
-    if (!item->active) {
+    if (!item->is_simulated) {
         return false;
     }
 

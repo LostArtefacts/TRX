@@ -43,7 +43,6 @@ static void M_Use(ITEM *const lara_item, ITEM *const receptacle_item)
         M_ConsumeKeyItem(receptacle_item);
     }
 
-    receptacle_item->status = IS_ACTIVE;
     Item_AddSimulated(Item_GetIndex(receptacle_item));
 
     LARA_INFO *const lara = Lara_GetLaraInfo();
@@ -70,7 +69,7 @@ static void M_Control(const int16_t item_num)
         Sound_Effect(SFX_EXPLOSION_1, nullptr, SPM_ALWAYS);
     }
 
-    if (item->status == IS_DEACTIVATED) {
+    if (item->is_finished) {
         Item_RemoveSimulated(item_num);
     }
 }
@@ -91,7 +90,7 @@ static void M_Collision(
         return;
     }
 
-    if (item->status != IS_INACTIVE || !g_Input.action
+    if (!Item_IsInactive(item) || !g_Input.action
         || lara->gun_status != LGS_ARMLESS || lara_item->gravity
         || !Lara_Interact_CanBegin(LARA_INTERACT_RECEPTACLE)) {
         goto normal_collision;

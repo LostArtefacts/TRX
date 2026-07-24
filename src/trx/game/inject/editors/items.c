@@ -46,7 +46,7 @@ static void M_ItemFlagEdits(
 
         ITEM *const item = Item_Get(item_num);
         item->object_id = obj_info.id;
-        item->flags = flags;
+        item->init_flags = flags;
     }
 }
 

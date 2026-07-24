@@ -66,12 +66,11 @@ end)
 -- plain and the struct would happily take the write.
 test("read-only fields refuse writes", function()
   for _, name in ipairs({
-    "flags",
-    "status",
     "touch_bits",
     "object_id",
     "room_num",
-    "is_active",
+    "is_simulated",
+    "is_present",
     "max_hit_points",
   }) do
     raises(function()
@@ -107,39 +106,34 @@ end)
 -- __newindex. pairs() hands the caller everything __pairs returns, so what it
 -- returns must not be that table.
 test("pairs() does not hand out the table behind an enum", function()
-  local _, state = pairs(trx.items.Status)
+  local _, state = pairs(trx.items.PickupMode)
   pcall(function()
-    state.ACTIVE = 999
+    state.NORMAL = 999
   end)
   assert(
-    trx.items.Status.ACTIVE == 1,
+    trx.items.PickupMode.NORMAL == 0,
     "an enum was written to through pairs()"
   )
 
   local seen = {}
-  for name, value in pairs(trx.items.Status) do
+  for name, value in pairs(trx.items.PickupMode) do
     seen[name] = value
   end
   assert(
-    seen.INACTIVE == 0 and seen.ACTIVE == 1,
+    seen.NORMAL == 0 and seen.PLINTH_LOW == 1,
     "pairs() must still yield the constants"
   )
-  assert(seen.DEACTIVATED == 2 and seen.INVISIBLE == 3)
+  assert(seen.PLINTH_HIGH == 2)
 end)
 
-test("status matches the enum, and activate() moves it", function()
-  assert(trx.items.Status.INACTIVE == 0)
-  assert(trx.items.Status.ACTIVE == 1)
-  assert(trx.items.Status.DEACTIVATED == 2)
-  assert(trx.items.Status.INVISIBLE == 3)
-
+test("activate() moves the item into play", function()
   local it = trx.items[0]
-  assert(it.status == trx.items.Status.INACTIVE)
-  assert(it.is_active == false)
+  assert(it.is_simulated == false)
+  assert(it.is_in_play == false, "not live until simulated")
 
   it:activate()
-  assert(it.is_active == true, "activate() did not take")
-  assert(it.status == trx.items.Status.ACTIVE)
+  assert(it.is_simulated == true, "activate() did not take")
+  assert(it.is_in_play == true, "a running, visible item is in play")
 end)
 
 -- Item 0 is a creature. Putting it on the active list is not enough: without its
@@ -156,7 +150,7 @@ end)
 test("activating an inert object does not touch AI", function()
   local vase = trx.items[1]
   vase:activate()
-  assert(vase.is_active == true)
+  assert(vase.is_simulated == true)
   assert(fake.calls().enable_baddie_ai == 0, "a vase has no AI to enable")
 end)
 
@@ -165,13 +159,10 @@ test("deactivate stops the item and takes a creature's AI away", function()
   wolf:activate()
   wolf:deactivate()
   assert(
-    wolf.is_active == false,
+    wolf.is_simulated == false,
     "deactivate did not take it off the active list"
   )
-  assert(
-    wolf.status == trx.items.Status.INACTIVE,
-    "it goes back to inactive, not deactivated"
-  )
+  assert(not wolf.is_finished, "it goes back to inactive, not finished")
   assert(
     fake.calls().disable_baddie_ai == 1,
     "the creature's AI was left running"
@@ -189,7 +180,7 @@ test("trigger sets the item running and its trigger reads active", function()
   assert(door.is_triggered == false)
 
   door:trigger()
-  assert(door.is_active == true, "a full trigger starts the item")
+  assert(door.is_simulated == true, "a full trigger starts the item")
   assert(door.is_triggered == true, "and its trigger now says go")
   assert(door.trigger_mask == 31, "a lone trigger carries every code bit")
 end)
@@ -202,7 +193,7 @@ test(
     door:trigger({ type = trx.items.TriggerType.ANTITRIGGER })
     assert(door.is_triggered == false, "the trigger no longer says go")
     assert(
-      door.is_active == true,
+      door.is_simulated == true,
       "the item is left running so it can animate shut"
     )
   end
@@ -211,7 +202,7 @@ test(
 test("a partial trigger waits for the rest", function()
   local door = trx.items[1]
   door:trigger({ mask = 1 })
-  assert(door.is_active == false, "one code bit is not enough to start it")
+  assert(door.is_simulated == false, "one code bit is not enough to start it")
   assert(door.is_triggered == false)
 end)
 
@@ -262,13 +253,13 @@ end)
 
 -- An index alone would rebind to whatever item recycled the slot; the
 -- generation counter is what makes the handle go stale instead.
-test("a handle to a killed item goes stale", function()
+test("a handle to a destroyed item goes stale", function()
   local it = trx.items[0]
   assert(it:is_valid())
 
-  it:kill()
-  assert(not it:is_valid(), "the handle should be stale after kill()")
-  assert(fake.calls().kill == 1)
+  it:destroy()
+  assert(not it:is_valid(), "the handle should be stale after destroy()")
+  assert(fake.calls().destroy == 1)
 
   -- Reading a stale handle raises rather than addressing whatever took over.
   raises(function()
@@ -291,7 +282,7 @@ test("two handles to the same item are equal", function()
 
   -- The slot is what a stale handle still names, and the generation is what
   -- tells the two occupants apart.
-  it:kill()
+  it:destroy()
   local fresh = trx.items[0]
   assert(it ~= fresh, "a stale handle must not equal a live one")
 end)
@@ -321,8 +312,8 @@ test("spawn creates an item and validates its arguments", function()
   assert(w ~= nil, "spawn returned nil")
   assert(w.object_id == WOLF)
   assert(w.pos.x == 100 and w.pos.z == 100)
-  assert(w.status == trx.items.Status.INACTIVE, "inert until asked")
-  assert(w.is_active == false)
+  assert(w.is_simulated == false, "inert until asked")
+  assert(not w.is_in_play)
   assert(#trx.items == 3, "the pool should have grown")
 
   -- opts.activate brings a creature fully to life: active list plus AI.
@@ -332,8 +323,8 @@ test("spawn creates an item and validates its arguments", function()
     0,
     { activate = true }
   )
-  assert(live.is_active == true, "the activate option was ignored")
-  assert(live.status == trx.items.Status.ACTIVE)
+  assert(live.is_simulated == true, "the activate option was ignored")
+  assert(live.is_in_play == true)
   assert(fake.calls().enable_baddie_ai == 1, "a creature needs its AI enabled")
 end)
 
@@ -363,7 +354,7 @@ test("a spawn that raises does not leave an item behind", function()
   assert(#trx.items == 2, "a failed spawn must not consume a slot")
 end)
 
-test("die runs the object's death handling; kill does not", function()
+test("die runs the object's death handling; destroy does not", function()
   trx.items[0]:die()
   assert(fake.calls().creature_die == 1, "die() should reach Creature_Die")
   assert(
@@ -379,8 +370,8 @@ test("die runs the object's death handling; kill does not", function()
   )
 
   fake.reset()
-  trx.items[0]:kill()
-  assert(fake.calls().creature_die == 0, "kill() just removes the item")
+  trx.items[0]:destroy()
+  assert(fake.calls().creature_die == 0, "destroy() just removes the item")
 end)
 
 test("shatter bursts the meshes on their own", function()
@@ -529,12 +520,12 @@ test("query ids() are item numbers", function()
 end)
 
 test("query active tracks the active list", function()
-  assert(trx.items.query:active():count() == 0, "nothing starts active")
-  assert((~trx.items.query:active()):count() == 2)
+  assert(trx.items.query:simulated():count() == 0, "nothing starts active")
+  assert((~trx.items.query:simulated()):count() == 2)
 
   trx.items[0]:activate()
-  assert(trx.items.query:active():count() == 1, "the wolf woke up")
-  assert(trx.items.query:active():matches()[1].object_id == WOLF)
+  assert(trx.items.query:simulated():count() == 1, "the wolf woke up")
+  assert(trx.items.query:simulated():matches()[1].object_id == WOLF)
 end)
 
 test("query | unions, & intersects", function()
@@ -548,7 +539,7 @@ end)
 
 test("a query cannot cross domains", function()
   raises(function()
-    local _ = trx.items.query:active() & trx.objects.query:pickup()
+    local _ = trx.items.query:simulated() & trx.objects.query:pickup()
   end)
 end)
 

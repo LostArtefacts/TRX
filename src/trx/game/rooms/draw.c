@@ -322,8 +322,7 @@ static void M_DrawRoomItem(const int16_t item_num, void *const ud)
     ITEM *const item = Item_Get(item_num);
     const OBJECT *const obj = Object_Get(item->object_id);
     OUTPUT_ITEM_BIND *const bind = Output_Bind_GetItem(item);
-    if (bind->drawn || item->status == IS_INVISIBLE
-        || obj->draw_func == nullptr) {
+    if (bind->drawn || !item->is_visible || obj->draw_func == nullptr) {
         return;
     }
 

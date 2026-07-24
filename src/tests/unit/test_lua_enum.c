@@ -10,10 +10,9 @@
 // level, no items, no assets.
 //
 // The property that matters: an enum's names and values are written once, in C.
-// Lua reflects them rather than restating them, so trx.items.Status cannot
-// drift from ITEM_STATUS, and the generated reference cannot document a
-// constant the engine does not have. These tests pin the reflection that
-// guarantees it.
+// Lua reflects them rather than restating them, so a Lua enum table cannot
+// drift from its C enum, and the generated reference cannot document a constant
+// the engine does not have. These tests pin the reflection that guarantees it.
 
 typedef enum {
     M_WIDGET_OFF = 0,

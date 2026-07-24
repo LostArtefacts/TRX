@@ -238,7 +238,7 @@ static int32_t M_GetOnQuadBike(
     ITEM *const lara_item = Lara_GetItem();
     LARA_INFO *const lara = Lara_GetLaraInfo();
 
-    if (!g_Input.action || (item->flags & IF_INVISIBLE) != 0
+    if (!g_Input.action || item->trigger.spent
         || lara->gun_status != LGS_ARMLESS || lara_item->gravity) {
         return 0;
     }
@@ -357,7 +357,7 @@ static void M_Explode(ITEM *const item)
     const int16_t vehicle_item_num = Lara_Vehicle_GetIndex();
     Item_Shatter(vehicle_item_num, -2, 0);
     Item_Destroy(vehicle_item_num);
-    item->status = IS_DEACTIVATED;
+    item->is_finished = true;
     Sound_Effect(SFX_EXPLOSION_1, nullptr, SPM_NORMAL);
     Sound_Effect(SFX_EXPLOSION_2, nullptr, SPM_NORMAL);
     Lara_Vehicle_SetIndex(NO_ITEM);
@@ -407,7 +407,7 @@ static bool M_CheckGetOff(void)
             lara_item->rot.z = 0;
             lara_item->hit_points = 0;
             lara->gun_status = LGS_ARMLESS;
-            item->flags |= IF_INVISIBLE;
+            item->trigger.spent = true;
             return false;
         }
 
@@ -712,8 +712,8 @@ static void M_SkidooBaddieCollision(ITEM *const quad)
         while (item_num != NO_ITEM) {
             ITEM *const item = Item_Get(item_num);
 
-            if (!item->is_collidable || item->status == IS_INVISIBLE
-                || item == lara_item || item == quad) {
+            if (!item->is_collidable || !item->is_visible || item == lara_item
+                || item == quad) {
                 goto loop_end;
             }
 
@@ -875,7 +875,7 @@ static int32_t M_SkidooDynamics(ITEM *const item)
     new_pos.x = item->pos.x;
     new_pos.z = item->pos.z;
 
-    if ((item->flags & IF_INVISIBLE) == 0) {
+    if (!item->trigger.spent) {
         M_SkidooBaddieCollision(item);
     }
 
@@ -1461,7 +1461,7 @@ bool QuadBike_Control(void)
         if (quad->flags & 0x40 && item->pos.y == item->floor) {
             Item_Shatter(lara->item_num, -1, 0);
             lara_item->hit_points = 0;
-            lara_item->flags |= IF_INVISIBLE;
+            lara_item->trigger.spent = true;
             M_Explode(item);
             return false;
         }

@@ -259,9 +259,8 @@ static void M_Collision(
 
     Item_Animate(lara_item);
 
-    if (item->status != IS_ACTIVE) {
+    if (!Item_IsInPlay(item)) {
         Item_AddSimulated(item_num);
-        item->status = IS_ACTIVE;
     }
 
     Vehicle_PlayTrackPool(item, "track", MPM_ONCE);

@@ -78,7 +78,6 @@ static void M_Control(const int16_t item_num)
         }
     } else if (item->frame_num == Item_GetAnim(item)->frame_end) {
         item->current_anim_state = M_STATE_OFF;
-        item->status = IS_INACTIVE;
         Item_RemoveSimulated(item_num);
         Item_SwitchToAnim(lara_item, LA(LA_STAND_STILL), 0);
         lara_item->current_anim_state = LS(LS_STOP);
@@ -93,11 +92,11 @@ static void M_Collision(
     ITEM *const item = Item_Get(item_num);
     LARA_INFO *const lara = Lara_GetLaraInfo();
 
-    if (item->status != IS_INACTIVE) {
+    if (!Item_IsInactive(item)) {
         return;
     }
 
-    if ((item->flags & IF_INVISIBLE) == 0
+    if (!item->trigger.spent
         && Lara_Interact_CanControl(LARA_INTERACT_SWITCH, item_num)) {
         if (Lara_TestPosition(item, &m_CogSwitchBounds)) {
             if (Lara_MovePosition(item, &m_CogSwitchPosition)) {
@@ -106,16 +105,16 @@ static void M_Collision(
                 lara_item->goal_anim_state = LS(LS_COG_SWITCH);
                 Lara_Interact_FinishControl(LARA_INTERACT_SWITCH);
                 Item_AddSimulated(item_num);
-                item->status = IS_ACTIVE;
                 item->goal_anim_state = M_STATE_ON;
 
                 M_PRIV *const p = item->priv;
                 p->door_item_num = M_FindLinkedDoor(item);
                 if (p->door_item_num != NO_ITEM) {
                     ITEM *const door_item = Item_Get(p->door_item_num);
-                    if (door_item->status != IS_ACTIVE) {
+                    if (!Item_IsInPlay(door_item)) {
                         Item_AddSimulated(p->door_item_num);
-                        door_item->status = IS_ACTIVE;
+                        door_item->is_visible = true;
+                        door_item->is_finished = false;
                     }
                 }
             } else {

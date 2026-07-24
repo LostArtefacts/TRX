@@ -317,7 +317,7 @@ static void M_ObjectCollision(COLL_INFO *const coll)
                 && !Object_IsType(item->object_id, g_SwitchObjects)) {
                 goto loop_end;
             }
-            if (!item->is_collidable || item->status == IS_INVISIBLE) {
+            if (!item->is_collidable || !item->is_visible) {
                 goto loop_end;
             }
 
@@ -1029,7 +1029,7 @@ void Lara_Control(void)
         lara_info->death_timer++;
         lara_info->target = nullptr;
 
-        if ((item->flags & IF_ONE_SHOT) != 0) {
+        if (item->trigger.spent) {
             lara_info->death_timer++;
             return;
         }

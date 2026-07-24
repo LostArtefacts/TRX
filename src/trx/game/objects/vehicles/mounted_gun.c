@@ -163,7 +163,6 @@ static void M_Fire(ITEM *const gun_item)
 
     projectile_item->speed = 16;
     Item_AddSimulated(item_num);
-    projectile_item->status = IS_ACTIVE;
 
     Sound_Effect(SFX_ROCKET_FIRE, &projectile_item->pos, SPM_NORMAL);
     if (g_TRVersion >= 3) {

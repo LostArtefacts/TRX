@@ -217,7 +217,6 @@ static void M_Control(const int16_t item_num)
         working = true;
         if (!Item_IsTriggerActive(item) && Item_TestFrameEqual(item, -1)) {
             Item_SwitchToAnim(item, 0, 0);
-            item->status = IS_INACTIVE;
             Item_RemoveSimulated(item_num);
             item->enable_interpolation = false;
             M_KillFireEffect(item);
@@ -262,7 +261,7 @@ static void M_Control(const int16_t item_num)
 static void M_HandleSave(ITEM *const item, const SAVEGAME_STAGE stage)
 {
     if (stage == SAVEGAME_STAGE_AFTER_LOAD) {
-        item->enable_interpolation = item->status == IS_ACTIVE;
+        item->enable_interpolation = Item_IsInPlay(item);
     }
 }
 

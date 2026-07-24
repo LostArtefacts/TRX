@@ -1,4 +1,6 @@
 #include <trx/config.h>
+#include <trx/core/json/util/read_io.h>
+#include <trx/core/json/util/write_io.h>
 #include <trx/core/log.h>
 #include <trx/core/utils.h>
 #include <trx/game/creature.h>
@@ -21,7 +23,6 @@
 #define M_SKATE_CHANCE      0x400
 #define M_SMARTNESS         0x7FFF
 #define M_SPEECH_HITPOINTS  120
-#define M_SPEECH_STARTED    1
 // clang-format on
 
 typedef enum {
@@ -39,7 +40,20 @@ typedef enum {
 
 typedef struct {
     int16_t skateboard_item_num;
+    bool speech_started;
 } M_PRIV;
+
+static void M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
+{
+    M_PRIV *const p = item->priv;
+    JSON_SHOULD(JSON_READ(io, "speech_started", &p->speech_started));
+}
+
+static void M_SavePriv(const ITEM *const item, JSON_WRITE_IO *const io)
+{
+    const M_PRIV *const p = item->priv;
+    JSONW_WRITE(io, "speech_started", p->speech_started);
+}
 
 static const CREATURE_GUN m_KidGun1 = {
     .muzzle = { .pos = { 0, 150, 34 }, .mesh_num = 7 },
@@ -83,7 +97,8 @@ static void M_Initialise(const int16_t item_num)
     skateboard_item->pos = item->pos;
     skateboard_item->rot = item->rot;
     skateboard_item->room_num = item->room_num;
-    skateboard_item->status = item->status;
+    skateboard_item->is_visible = item->is_visible;
+    skateboard_item->is_finished = item->is_finished;
     skateboard_item->is_collidable = false;
     skateboard_item->shade.value_1 = -1;
     Item_Initialise(skateboard_item_num);
@@ -120,13 +135,12 @@ static void M_Control(const int16_t item_num)
 
         angle = Creature_Turn(item, M_SKATE_TURN);
 
-        if (item->hit_points < M_SPEECH_HITPOINTS
-            && !(item->flags & M_SPEECH_STARTED)) {
+        if (item->hit_points < M_SPEECH_HITPOINTS && !p->speech_started) {
             const MUSIC_PLAY_MODE mode =
                 g_Config.audio.fix_speeches_killing_music ? MPM_OVERLAY
                                                           : MPM_NO_REPEAT;
             Music_Play(MX_SKATEKID_SPEECH, mode);
-            item->flags |= M_SPEECH_STARTED;
+            p->speech_started = true;
         }
 
         switch (item->current_anim_state) {
@@ -190,7 +204,8 @@ static void M_Control(const int16_t item_num)
         ITEM *const skateboard_item = Item_Get(p->skateboard_item_num);
         skateboard_item->pos = item->pos;
         skateboard_item->rot = item->rot;
-        skateboard_item->status = item->status;
+        skateboard_item->is_visible = item->is_visible;
+        skateboard_item->is_finished = item->is_finished;
         Item_UpdateRoom(p->skateboard_item_num, item->room_num);
 
         const int16_t relative_anim = Item_GetRelativeAnim(item);
@@ -218,6 +233,8 @@ static void M_Setup(OBJECT *const obj)
     obj->save_hitpoints = true;
     obj->save_anim = true;
     obj->save_flags = true;
+    obj->priv_load_func = M_LoadPriv;
+    obj->priv_save_func = M_SavePriv;
 
     Object_GetBone(obj, 0)->rot.y = true;
 
