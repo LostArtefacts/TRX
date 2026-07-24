@@ -24,6 +24,7 @@
 - fixed crawler mutants killed by Lara's allies not being included in the stats when the option to include ally kills is enabled (#5691, regression from 1.7)
 - fixed Lara receiving twice the number of flares if given via the game flow (regression from 1.9)
 - fixed a crash when advancing through a flyby sequence in photo mode and the sequence reaches its end (regression from 1.9)
+- fixed the camera snapping aggressively to Lara after some flyby sequences (regression from 1.9)
 
 **TR1**
 - changed weather to be affected by the breeze

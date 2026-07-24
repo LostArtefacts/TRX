@@ -322,6 +322,7 @@ void Camera_FlybyMode_Deactivate(void)
         g_Camera.target = m_State.initial.camera_target;
         g_Camera.interp.prev.pos = g_Camera.pos.pos;
         g_Camera.interp.prev.target = g_Camera.target.pos;
+        Camera_Update();
     }
     // TODO: undo fade clip
 }
