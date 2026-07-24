@@ -19,7 +19,7 @@ static void M_ActivateRelatedItem(ITEM *const earth_item)
     // it starts simulating.
     Item_SetVisible(earth_item, true);
     Item_AddSimulated(Item_GetIndex(earth_item));
-    earth_item->trigger = (ITEM_TRIGGER_STATE) { .mask = IF_CODE_BITS };
+    earth_item->trigger = (ITEM_TRIGGER_STATE) { .mask = TRIGGER_MASK_ALL };
     earth_item->timer = 0;
 }
 

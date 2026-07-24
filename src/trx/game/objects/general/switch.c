@@ -82,7 +82,7 @@ static const OBJECT_BOUNDS *M_BoundsUW(void)
 static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
-    item->trigger.mask = IF_CODE_BITS;
+    item->trigger.mask = TRIGGER_MASK_ALL;
     if (!Item_IsTriggerActive(item)) {
         item->goal_anim_state = SWITCH_STATE_OFF;
         item->timer = 0;

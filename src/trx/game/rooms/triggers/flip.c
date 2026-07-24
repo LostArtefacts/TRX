@@ -1,3 +1,4 @@
+#include <trx/game/const.h>
 #include <trx/game/rooms.h>
 
 static void M_HandleFlipMap(
@@ -33,7 +34,7 @@ static void M_HandleFlipOn(
     const FLIP_SLOT *const slot = Room_GetFlipSlot(flip_slot);
     status->flip_available = true;
 
-    if ((slot->mask & FSF_CODE_BITS) == FSF_CODE_BITS && !status->flip_status) {
+    if (slot->mask == TRIGGER_MASK_ALL && !status->flip_status) {
         status->flip_map = true;
     }
 }
@@ -46,7 +47,7 @@ static void M_HandleFlipOff(
     const FLIP_SLOT *const slot = Room_GetFlipSlot(flip_slot);
     status->flip_available = true;
 
-    if ((slot->mask & FSF_CODE_BITS) == FSF_CODE_BITS && status->flip_status) {
+    if (slot->mask == TRIGGER_MASK_ALL && status->flip_status) {
         status->flip_map = true;
     }
 }

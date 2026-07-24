@@ -70,7 +70,7 @@ void Item_Trigger(const int16_t item_num, const ITEM_TRIGGER *const trigger)
             break;
         }
 
-        if (item->trigger.mask == IF_CODE_BITS) {
+        if (item->trigger.mask == TRIGGER_MASK_ALL) {
             if (trigger->one_shot) {
                 item->trigger.spent = true;
             }

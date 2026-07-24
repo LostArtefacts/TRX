@@ -770,7 +770,7 @@ void Music_Trigger(MUSIC_ID track_id, const MUSIC_TRIGGER *const trigger)
             track->mask |= trigger->mask;
         }
 
-        if ((track->mask & MTF_CODE_BITS) == MTF_CODE_BITS) {
+        if (track->mask == TRIGGER_MASK_ALL) {
             if (trigger->one_shot) {
                 track->is_one_shot = true;
             }

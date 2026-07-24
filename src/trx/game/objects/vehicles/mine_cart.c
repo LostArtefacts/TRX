@@ -288,7 +288,7 @@ static void M_CheckStrikeSwitch(ITEM *const item)
     Sound_Effect(SFX_SPANNER_CLUNK, &item->pos, SPM_ALWAYS);
     Room_TestTriggers(item);
     Item_AddSimulated(Item_GetIndex(item));
-    item->trigger = (ITEM_TRIGGER_STATE) { .mask = IF_CODE_BITS };
+    item->trigger = (ITEM_TRIGGER_STATE) { .mask = TRIGGER_MASK_ALL };
 }
 
 static void M_CheckObjectCollision(ITEM *const item, ITEM *const cart)

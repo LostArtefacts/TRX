@@ -150,7 +150,8 @@ static ITEM_STATUS M_PackItemStatus(const ITEM *const item)
 // the released save format's flags word.
 static uint16_t M_PackItemFlags(const ITEM *const item)
 {
-    return item->trigger.mask | (item->trigger.reversed ? IF_REVERSE : 0)
+    return ((uint16_t)item->trigger.mask << TRIGGER_MASK_SHIFT)
+        | (item->trigger.reversed ? IF_REVERSE : 0)
         | (item->trigger.switch_spent ? IF_ONE_SHOT_SWITCH : 0)
         | (item->trigger.anti_spent ? IF_ONE_SHOT_ANTITRIGGER : 0)
         | (item->trigger.spent ? IF_ONE_SHOT : 0)
@@ -383,7 +384,8 @@ static void M_WriteResumeInfo(
 static uint16_t M_PackMusicTrackFlags(const MUSIC_ID track_id)
 {
     const MUSIC_TRACK_STATE *const track = Music_GetTrackState(track_id);
-    return track->mask | (track->is_one_shot ? MTF_ONE_SHOT : 0) | track->delay;
+    return (track->mask << TRIGGER_MASK_SHIFT)
+        | (track->is_one_shot ? MTF_ONE_SHOT : 0) | track->delay;
 }
 
 static int32_t M_GetMusicTrackFlagsCount(void)
@@ -535,8 +537,8 @@ void SG_File_DumpFlipmaps(JSON_WRITE_IO *const io)
     JSONW_PUSH_ARRAY(io);
     for (int32_t i = 0; i < MAX_FLIP_MAPS; i++) {
         const FLIP_SLOT *const slot = Room_GetFlipSlot(i);
-        const uint16_t flags =
-            slot->mask | (slot->is_one_shot ? FSF_ONE_SHOT : 0);
+        const uint16_t flags = (slot->mask << TRIGGER_MASK_SHIFT)
+            | (slot->is_one_shot ? FSF_ONE_SHOT : 0);
         JSONW_PUSH_VALUE(io, flags >> 8);
         JSONW_POP_AND_APPEND(io);
     }

@@ -267,13 +267,13 @@ bool Lara_Cheat_OpenNearestDoor(void)
 
         if (!item->is_simulated) {
             Item_AddSimulated(item_num);
-            item->trigger.mask = IF_CODE_BITS;
+            item->trigger.mask = TRIGGER_MASK_ALL;
             opened++;
         } else if (item->trigger.mask != 0) {
             item->trigger.mask = 0;
             closed++;
         } else {
-            item->trigger.mask = IF_CODE_BITS;
+            item->trigger.mask = TRIGGER_MASK_ALL;
             opened++;
         }
         item->timer = 0;

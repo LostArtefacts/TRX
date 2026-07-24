@@ -242,7 +242,7 @@ static void M_OpenManually(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
     Item_AddSimulated(item_num);
-    item->trigger.mask = IF_CODE_BITS;
+    item->trigger.mask = TRIGGER_MASK_ALL;
     item->goal_anim_state = TRAPDOOR_STATE_OPEN;
 }
 

@@ -40,7 +40,7 @@ static bool M_ShouldFlipMap(const ITEM *const item)
 static void M_FlipMap(const M_PRIV *const p)
 {
     FLIP_SLOT *const slot = Room_GetFlipSlot(p->flip_slot);
-    slot->mask = FSF_CODE_BITS;
+    slot->mask = TRIGGER_MASK_ALL;
     slot->is_one_shot = true;
     Room_FlipMap();
 }
@@ -50,7 +50,7 @@ static void M_Control(const int16_t item_num)
     ITEM *const item = Item_Get(item_num);
     const M_PRIV *const p = item->priv;
 
-    if (item->trigger.mask == IF_CODE_BITS) {
+    if (item->trigger.mask == TRIGGER_MASK_ALL) {
         switch (item->current_anim_state) {
         case M_STATE_START:
             item->goal_anim_state = M_STATE_DROP_1;

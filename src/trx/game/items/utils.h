@@ -13,8 +13,6 @@
         }                                                                      \
     } while (0)
 
-#define ITEM_TRIGGER_MASK_ALL 31
-
 bool Item_IsTriggerActiveRO(const ITEM *item);
 bool Item_IsTriggerActive(ITEM *item);
 
