@@ -494,7 +494,10 @@ void SG_File_DumpFlipmaps(JSON_WRITE_IO *const io)
     JSONW_WRITE(io, "timer", Room_GetFlipTimer());
     JSONW_PUSH_ARRAY(io);
     for (int32_t i = 0; i < MAX_FLIP_MAPS; i++) {
-        JSONW_PUSH_VALUE(io, Room_GetFlipSlotFlags(i) >> 8);
+        const FLIP_SLOT *const slot = Room_GetFlipSlot(i);
+        const uint16_t flags =
+            slot->mask | (slot->is_one_shot ? FSF_ONE_SHOT : 0);
+        JSONW_PUSH_VALUE(io, flags >> 8);
         JSONW_POP_AND_APPEND(io);
     }
     JSONW_POP_AND_SET(io, "table");

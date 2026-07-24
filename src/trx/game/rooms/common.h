@@ -25,8 +25,9 @@ void Room_SetFlipEffect(int32_t flip_effect);
 int32_t Room_GetFlipTimer(void);
 void Room_SetFlipTimer(int32_t flip_timer);
 void Room_IncrementFlipTimer(int32_t num_frames);
-int32_t Room_GetFlipSlotFlags(int32_t slot_idx);
-void Room_SetFlipSlotFlags(int32_t slot_idx, int32_t flags);
+FLIP_SLOT *Room_GetFlipSlot(int32_t slot_idx);
+// Applies a trigger to the slot; returns whether the slot's mask is complete.
+bool Room_TriggerFlipSlot(int32_t slot_idx, const FLIP_TRIGGER *trigger);
 
 int32_t Room_GetAdjoiningRooms(
     int16_t init_room_num, int16_t out_room_nums[], int32_t max_room_num_count);

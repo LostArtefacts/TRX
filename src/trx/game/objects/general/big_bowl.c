@@ -71,7 +71,9 @@ static bool M_ShouldFlipMap(const ITEM *const item)
 
 static void M_FlipMap(const M_PRIV *const p)
 {
-    Room_SetFlipSlotFlags(p->flip_slot, IF_CODE_BITS | IF_ONE_SHOT);
+    FLIP_SLOT *const slot = Room_GetFlipSlot(p->flip_slot);
+    slot->mask = FSF_CODE_BITS;
+    slot->is_one_shot = true;
     Room_FlipMap();
 }
 

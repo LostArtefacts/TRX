@@ -47,6 +47,21 @@ typedef struct {
     int32_t heavy_mask;
 } TRIGGER_STATUS;
 
+// A flip-map slot's accumulated trigger state. The mask holds the floordata
+// code bits (FSF_CODE_BITS), as the released save word does.
+typedef struct {
+    uint16_t mask;
+    bool is_one_shot;
+} FLIP_SLOT;
+
+// The lean description a flip-slot trigger acts on, mapped from floordata at
+// the trigger-handler boundary.
+typedef struct {
+    bool from_switch;
+    uint16_t mask;
+    bool one_shot;
+} FLIP_TRIGGER;
+
 typedef struct {
     int16_t room_num;
     XYZ_16 normal;
