@@ -28,7 +28,6 @@ int16_t Item_Spawn(const ITEM *item, OBJECT_ID obj_id);
 void Item_Initialise(int16_t item_num);
 void Item_Control(void);
 void Item_Destroy(int16_t item_num);
-void Item_KillAllActive(void);
 void Item_RemoveSimulated(int16_t item_num);
 
 // Fire the on_trigger event: a trigger of any kind was aimed at the item, with

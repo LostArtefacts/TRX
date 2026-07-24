@@ -10,7 +10,6 @@
 #include <trx/game/lara/common.h>
 #include <trx/game/lua/events.h>
 #include <trx/game/objects.h>
-#include <trx/game/objects/general/shoal.h>
 #include <trx/game/output/const.h>
 #include <trx/game/pathing.h>
 #include <trx/game/rooms.h>
@@ -359,34 +358,6 @@ void Item_Destroy(const int16_t item_num)
     while (m_MaxUsedItemCount > 0
            && m_Items[m_MaxUsedItemCount - 1].flags & IF_DESTROYED) {
         m_MaxUsedItemCount--;
-    }
-}
-
-void Item_KillAllActive(void)
-{
-    int16_t item_num = Item_GetNextSimulated();
-    while (item_num != NO_ITEM) {
-        ITEM *const item = Item_Get(item_num);
-        const int16_t next_item_num = item->next_simulated;
-
-        if (item->active && (item->flags & IF_REVERSE) == 0
-            && item->object_id != O_LARA
-            && item->object_id != O_SAVE_CRYSTAL_ITEM
-            && !Object_IsType(item->object_id, g_PickupObjects)
-            && !Object_IsType(item->object_id, g_DoorObjects)) {
-            Item_Destroy(item_num);
-
-            if (Object_IsType(item->object_id, g_ShoalObjects)) {
-                Shoal_TriggerDeactivate(item);
-            } else {
-                const OBJECT *const obj = Object_Get(item->object_id);
-                if (obj->intelligent) {
-                    LOT_DisableBaddieAI(item_num);
-                    item->hit_points = 0;
-                }
-            }
-        }
-        item_num = next_item_num;
     }
 }
 

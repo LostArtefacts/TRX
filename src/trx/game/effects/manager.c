@@ -136,22 +136,6 @@ void Effect_Destroy(const int16_t effect_num)
     m_NextEffectFree = effect_num;
 }
 
-void Effect_KillAllActive(void)
-{
-    int16_t effect_num = Effect_GetActiveNum();
-    while (effect_num != NO_EFFECT) {
-        EFFECT *const effect = Effect_Get(effect_num);
-        const int16_t next_effect_num = effect->next_active;
-        const OBJECT *const obj = Object_Get(effect->object_id);
-
-        if (obj->control_func != nullptr
-            && (effect->object_id != O_FLAME || effect->counter >= 0)) {
-            Effect_Destroy(effect_num);
-        }
-        effect_num = next_effect_num;
-    }
-}
-
 void Effect_UpdateRoom(const int16_t effect_num, const int16_t room_num)
 {
     EFFECT *const effect = Effect_Get(effect_num);

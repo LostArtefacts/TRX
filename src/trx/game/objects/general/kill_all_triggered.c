@@ -1,10 +1,61 @@
 #include <trx/game/effects.h>
+#include <trx/game/items.h>
 #include <trx/game/objects.h>
+#include <trx/game/objects/general/shoal.h>
+#include <trx/game/pathing/lot.h>
+
+// The active cast this trigger claims, minus the fixtures a mass kill leaves
+// standing: Lara, the save crystal, pickups, and doors.
+static void M_DestroyAllSimulatedItems(void)
+{
+    int16_t item_num = Item_GetNextSimulated();
+    while (item_num != NO_ITEM) {
+        ITEM *const item = Item_Get(item_num);
+        const int16_t next_item_num = item->next_simulated;
+
+        if (item->active && (item->flags & IF_REVERSE) == 0
+            && item->object_id != O_LARA
+            && item->object_id != O_SAVE_CRYSTAL_ITEM
+            && !Object_IsType(item->object_id, g_PickupObjects)
+            && !Object_IsType(item->object_id, g_DoorObjects)) {
+            Item_Destroy(item_num);
+
+            if (Object_IsType(item->object_id, g_ShoalObjects)) {
+                Shoal_TriggerDeactivate(item);
+            } else {
+                const OBJECT *const obj = Object_Get(item->object_id);
+                if (obj->intelligent) {
+                    LOT_DisableBaddieAI(item_num);
+                    item->hit_points = 0;
+                }
+            }
+        }
+        item_num = next_item_num;
+    }
+}
+
+// Active effects with a control routine, sparing a flame whose counter has gone
+// negative.
+static void M_DestroyAllActiveEffects(void)
+{
+    int16_t effect_num = Effect_GetActiveNum();
+    while (effect_num != NO_EFFECT) {
+        EFFECT *const effect = Effect_Get(effect_num);
+        const int16_t next_effect_num = effect->next_active;
+        const OBJECT *const obj = Object_Get(effect->object_id);
+
+        if (obj->control_func != nullptr
+            && (effect->object_id != O_FLAME || effect->counter >= 0)) {
+            Effect_Destroy(effect_num);
+        }
+        effect_num = next_effect_num;
+    }
+}
 
 static void M_Control(const int16_t item_num)
 {
-    Item_KillAllActive();
-    Effect_KillAllActive();
+    M_DestroyAllSimulatedItems();
+    M_DestroyAllActiveEffects();
 }
 
 static void M_Setup(OBJECT *const obj)
