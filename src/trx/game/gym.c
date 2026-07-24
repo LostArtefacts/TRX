@@ -527,11 +527,11 @@ int32_t Gym_TrackManager_GetLapTime(const GYM_TRACK_TYPE track)
 
 bool Gym_CanPlayMusicTrack(MUSIC_ID *const track_id)
 {
-    const uint16_t flags = Music_GetTrackFlags(*track_id);
+    const MUSIC_TRACK_STATE *const track_state = Music_GetTrackState(*track_id);
     const ITEM *const lara = Lara_GetItem();
     switch (Music_FromGameID(*track_id)) {
     case MX_TR1_GYM_HINT_03:
-        if ((flags & IF_ONE_SHOT) != 0
+        if (track_state->is_one_shot
             && lara->current_anim_state == LS(LS_JUMP_UP)) {
             *track_id = Music_ToGameID(MX_TR1_GYM_HINT_04);
         }
@@ -550,7 +550,7 @@ bool Gym_CanPlayMusicTrack(MUSIC_ID *const track_id)
         break;
 
     case MX_TR1_GYM_HINT_17:
-        if ((flags & IF_ONE_SHOT) != 0
+        if (track_state->is_one_shot
             && lara->current_anim_state == LS(LS_HANG)) {
             *track_id = Music_ToGameID(MX_TR1_GYM_HINT_18);
         }
@@ -563,7 +563,7 @@ bool Gym_CanPlayMusicTrack(MUSIC_ID *const track_id)
         break;
 
     case MX_TR1_GYM_HINT_25:
-        if ((flags & IF_ONE_SHOT) != 0) {
+        if (track_state->is_one_shot) {
             M_PRIV *const p = &m_Priv;
             p->completion_timer++;
             if (p->completion_timer == LOGIC_FPS * 4) {

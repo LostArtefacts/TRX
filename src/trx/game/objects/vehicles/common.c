@@ -190,14 +190,14 @@ void Vehicle_PlayOneShotTrackPool(
     }
 
     for (int32_t i = 0; i < track_count; i++) {
-        if ((Music_GetTrackFlags(tracks[i]) & IF_ONE_SHOT) != 0) {
+        if (Music_GetTrackState(tracks[i])->is_one_shot) {
             return;
         }
     }
 
     const MUSIC_ID track = tracks[Random_GetControl() % track_count];
     Music_Play_Direct(track, MPM_ONCE);
-    Music_SetTrackFlags(track, Music_GetTrackFlags(track) | IF_ONE_SHOT);
+    Music_GetTrackState(track)->is_one_shot = true;
 }
 
 void Vehicle_TestTriggers(

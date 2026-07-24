@@ -936,7 +936,10 @@ static bool M_ReadMusicTrackFlags(JSON_READ_IO *const io)
     for (int32_t i = 0; i < count; i++) {
         uint32_t flags;
         M_MUST(JSON_READ_A(io, i, &flags));
-        Music_SetTrackFlags(i, flags);
+        MUSIC_TRACK_STATE *const track = Music_GetTrackState(i);
+        track->mask = flags & MTF_CODE_BITS;
+        track->is_one_shot = (flags & MTF_ONE_SHOT) != 0;
+        track->delay = flags & 0xFF;
     }
 
     M_FINISH();

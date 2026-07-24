@@ -25,7 +25,7 @@
 
 void Level_Unload(void)
 {
-    Music_ResetTrackFlags();
+    Music_ResetTrackStates();
     Sound_ResetSamples();
 
     Lara_InitialiseLoad(NO_ITEM);

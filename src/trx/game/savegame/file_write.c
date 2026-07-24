@@ -345,12 +345,17 @@ static void M_WriteResumeInfo(
     JSONW_WRITE(io, "death_count", resume->stats.death_count);
 }
 
+static uint16_t M_PackMusicTrackFlags(const MUSIC_ID track_id)
+{
+    const MUSIC_TRACK_STATE *const track = Music_GetTrackState(track_id);
+    return track->mask | (track->is_one_shot ? MTF_ONE_SHOT : 0) | track->delay;
+}
+
 static int32_t M_GetMusicTrackFlagsCount(void)
 {
     int32_t last_index = -1;
     for (int32_t i = 0; i < MAX_MUSIC_TRACKS; i++) {
-        const uint16_t flags = Music_GetTrackFlags(i);
-        if (flags != 0) {
+        if (M_PackMusicTrackFlags(i) != 0) {
             last_index = i;
         }
     }
@@ -529,7 +534,7 @@ void SG_File_DumpMusic(JSON_WRITE_IO *const io)
     JSONW_PUSH_OBJECT(io);
     JSONW_PUSH_ARRAY(io);
     for (int32_t i = 0; i < track_flag_count; i++) {
-        JSONW_PUSH_VALUE(io, Music_GetTrackFlags(i));
+        JSONW_PUSH_VALUE(io, M_PackMusicTrackFlags(i));
         JSONW_POP_AND_APPEND(io);
     }
     JSONW_POP_AND_SET(io, "flags");
