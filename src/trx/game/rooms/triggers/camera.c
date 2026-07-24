@@ -13,7 +13,7 @@ static void M_HandleCamera(
     const TRIGGER_CAMERA_DATA *const cam_data =
         (TRIGGER_CAMERA_DATA *)cmd->parameter;
     OBJECT_VECTOR *const camera = Camera_GetFixedObject(cam_data->camera_num);
-    if ((camera->flags & IF_ONE_SHOT) != 0) {
+    if ((camera->flags & FCF_ONE_SHOT) != 0) {
         return;
     }
 
@@ -40,7 +40,7 @@ static void M_HandleCamera(
     g_Camera.timer = LOGIC_FPS * cam_data->timer;
 
     if (cam_data->one_shot) {
-        camera->flags |= IF_ONE_SHOT;
+        camera->flags |= FCF_ONE_SHOT;
     }
 
     g_Camera.speed = 1;

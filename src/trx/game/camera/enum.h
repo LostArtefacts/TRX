@@ -18,3 +18,9 @@ typedef enum {
     CF_NO_CHUNKY = 2,
     CF_CHASE_OBJECT = 3,
 } CAMERA_FLAGS;
+
+// Flags of a fixed camera's OBJECT_VECTOR word. The value is fixed by the
+// floordata trigger encoding and round-trips through level and save files.
+typedef enum {
+    FCF_ONE_SHOT = 0x0100,
+} FIXED_CAMERA_FLAG;
