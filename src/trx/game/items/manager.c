@@ -3,6 +3,7 @@
 #include <trx/core/handle.h>
 #include <trx/core/memory.h>
 #include <trx/core/utils.h>
+#include <trx/debug.h>
 #include <trx/game/const.h>
 #include <trx/game/game.h>
 #include <trx/game/game_buf.h>
@@ -410,6 +411,10 @@ void Item_Destroy(const int16_t item_num)
     }
 
     item->is_destroyed = true;
+
+    // The removals above are what makes is_destroyed terminal; the struct's
+    // axis invariants lean on it, so pin it at the sole writer.
+    ASSERT(!item->is_simulated && !item->is_present);
 
     // Fired while the item still resolves: the handler runs synchronously, so
     // it can read the item, but only until the handle below goes stale.
