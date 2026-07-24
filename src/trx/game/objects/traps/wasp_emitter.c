@@ -119,10 +119,10 @@ static void M_SpawnWasp(const ITEM *const spawner_item, const int32_t slot_idx)
     wasp_item->ai_bits = AI_MODIFY;
 
     if (wasp_item->active) {
-        Item_RemoveActive(p->slots[slot_idx]);
+        Item_RemoveSimulated(p->slots[slot_idx]);
     }
 
-    Item_AddActive(p->slots[slot_idx]);
+    Item_AddSimulated(p->slots[slot_idx]);
     Item_UpdateRoom(p->slots[slot_idx], NO_ITEM);
     Item_UpdateRoom(p->slots[slot_idx], spawner_item->room_num);
     LOT_EnableBaddieAI(p->slots[slot_idx], true);

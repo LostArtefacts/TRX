@@ -271,7 +271,7 @@ api.type("items.Item", {
       type = "integer",
       description = "Animation state the item is transitioning towards.",
     },
-    -- Deliberately not exposed: box_num, floor, next_item, next_active, gen,
+    -- Deliberately not exposed: box_num, floor, next_item, next_simulated, gen,
     -- anim_num, frame_num, prev_frame_num, ai_bits, ai_tag, after_death and the
     -- render flags. They are engine internals, not a contract.
   },

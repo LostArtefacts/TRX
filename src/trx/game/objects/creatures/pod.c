@@ -91,7 +91,7 @@ static void M_Control(const int16_t item_num)
                 ITEM *const bug = Item_Get(p->bug_item_num);
                 if (Object_Get(bug->object_id)->loaded) {
                     bug->touch_bits = 0;
-                    Item_AddActive(p->bug_item_num);
+                    Item_AddSimulated(p->bug_item_num);
                     if (LOT_EnableBaddieAI(p->bug_item_num, false)) {
                         bug->status = IS_ACTIVE;
                     } else {

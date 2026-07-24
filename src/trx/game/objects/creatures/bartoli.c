@@ -27,7 +27,7 @@ static void M_CreateBoom(const OBJECT_ID obj_id, const ITEM *const origin_item)
     sphere_item->room_num = origin_item->room_num;
     sphere_item->shade.value_1 = -1;
     Item_Initialise(item_num);
-    Item_AddActive(item_num);
+    Item_AddSimulated(item_num);
     sphere_item->status = IS_ACTIVE;
 }
 

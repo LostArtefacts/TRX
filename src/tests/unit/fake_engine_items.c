@@ -203,12 +203,12 @@ ITEM *Item_FromHandle(const TRX_HANDLE handle)
     return Item_Get((int16_t)handle.id);
 }
 
-void Item_AddActive(const int16_t item_num)
+void Item_AddSimulated(const int16_t item_num)
 {
     m_Items[item_num].active = true;
 }
 
-void Item_RemoveActive(const int16_t item_num)
+void Item_RemoveSimulated(const int16_t item_num)
 {
     m_Items[item_num].active = false;
 }
@@ -220,7 +220,7 @@ void Item_Activate(const int16_t item_num, const bool force)
         return;
     }
     item->status = IS_ACTIVE;
-    Item_AddActive(item_num);
+    Item_AddSimulated(item_num);
     if (Object_Get(item->object_id)->intelligent) {
         LOT_EnableBaddieAI(item_num, force);
     }
@@ -229,7 +229,7 @@ void Item_Activate(const int16_t item_num, const bool force)
 void Item_Deactivate(const int16_t item_num)
 {
     ITEM *const item = &m_Items[item_num];
-    Item_RemoveActive(item_num);
+    Item_RemoveSimulated(item_num);
     if (Object_Get(item->object_id)->intelligent) {
         LOT_DisableBaddieAI(item_num);
     }

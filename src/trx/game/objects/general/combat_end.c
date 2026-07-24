@@ -99,7 +99,7 @@ static void M_ActivateNearestBoss(void)
         item->touch_bits = 0;
         item->status = IS_ACTIVE;
         item->mesh_bits = 0xFFFF1FFF;
-        Item_AddActive(item_num);
+        Item_AddSimulated(item_num);
         LOT_EnableBaddieAI(item_num, true);
     }
 }

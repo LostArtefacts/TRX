@@ -14,7 +14,7 @@ typedef struct {
 
 static void M_ActivateRelatedItem(ITEM *const earth_item)
 {
-    Item_AddActive(Item_GetIndex(earth_item));
+    Item_AddSimulated(Item_GetIndex(earth_item));
     earth_item->status = IS_ACTIVE;
     earth_item->flags = IF_CODE_BITS;
     earth_item->timer = 0;
@@ -55,7 +55,7 @@ static void M_Reset(const int16_t item_num)
     p->target_intensity = 0;
     p->target_timer = 0;
     item->status = IS_INACTIVE;
-    Item_RemoveActive(item_num);
+    Item_RemoveSimulated(item_num);
 }
 
 static void M_Control(const int16_t item_num)

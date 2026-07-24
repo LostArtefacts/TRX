@@ -46,7 +46,7 @@ static void M_CreateGongBonger(ITEM *const lara_item)
     item_gong_bonger->room_num = lara_item->room_num;
 
     Item_Initialise(item_gong_bonger_num);
-    Item_AddActive(item_gong_bonger_num);
+    Item_AddSimulated(item_gong_bonger_num);
     item_gong_bonger->status = IS_ACTIVE;
     item_gong_bonger->shade.value_1 = -1;
 }

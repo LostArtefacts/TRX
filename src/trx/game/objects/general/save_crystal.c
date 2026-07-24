@@ -100,7 +100,7 @@ static void M_Initialise(const int16_t item_num)
 
     if (g_TRVersion != 3) {
         if (g_Config.gameplay.enable_save_crystals) {
-            Item_AddActive(item_num);
+            Item_AddSimulated(item_num);
         } else {
             Item_Get(item_num)->status = IS_INVISIBLE;
         }

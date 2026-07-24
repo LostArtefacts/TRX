@@ -346,7 +346,7 @@ static bool M_TriggerLizard(M_PRIV *const p)
     Item_UpdateRoom(p->lizard_item_num, NO_ROOM);
     Item_UpdateRoom(p->lizard_item_num, room_num);
 
-    Item_AddActive(p->lizard_item_num);
+    Item_AddSimulated(p->lizard_item_num);
     LOT_EnableBaddieAI(p->lizard_item_num, true);
 
     Room_GetSector(item->pos, &room_num);

@@ -88,7 +88,7 @@ static void M_Control2(const int16_t item_num)
 
     item->flags |= IF_ONE_SHOT;
     item->status = IS_DEACTIVATED;
-    Item_RemoveActive(item_num);
+    Item_RemoveSimulated(item_num);
 }
 
 static void M_SetupBase(OBJECT *const obj)
@@ -129,7 +129,7 @@ void Smashable_Smash(const int16_t item_num)
 
     item->flags |= IF_ONE_SHOT;
     if (item->status == IS_ACTIVE) {
-        Item_RemoveActive(item_num);
+        Item_RemoveSimulated(item_num);
     }
     item->status = IS_DEACTIVATED;
 }

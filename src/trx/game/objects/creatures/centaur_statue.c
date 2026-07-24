@@ -68,7 +68,7 @@ static void M_Control(const int16_t item_num)
         if (p->centaur_item_num != NO_ITEM) {
             ITEM *const centaur = Item_Get(p->centaur_item_num);
             centaur->touch_bits = 0;
-            Item_AddActive(p->centaur_item_num);
+            Item_AddSimulated(p->centaur_item_num);
             LOT_EnableBaddieAI(p->centaur_item_num, true);
             centaur->status = IS_ACTIVE;
             Sound_Effect(SFX_EXPLOSION_1, &centaur->pos, SPM_NORMAL);

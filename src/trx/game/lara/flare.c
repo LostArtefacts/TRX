@@ -463,7 +463,7 @@ void Lara_Flare_Dispose(const bool thrown)
         FlareItem_SetAge(item, lara_info->flare.age, false);
     }
 
-    Item_AddActive(item_num);
+    Item_AddSimulated(item_num);
     item->status = IS_ACTIVE;
 
 finish:

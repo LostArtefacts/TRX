@@ -265,7 +265,7 @@ bool Lara_Cheat_OpenNearestDoor(void)
         }
 
         if (!item->active) {
-            Item_AddActive(item_num);
+            Item_AddSimulated(item_num);
             item->flags |= IF_CODE_BITS;
             opened++;
         } else if ((item->flags & IF_CODE_BITS) != 0) {

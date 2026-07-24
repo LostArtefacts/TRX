@@ -51,7 +51,7 @@ static int32_t M_GetDamage(
 static void M_KillDriver(ITEM *const driver_item)
 {
     const int32_t driver_item_num = Item_GetIndex(driver_item);
-    Item_RemoveActive(driver_item_num);
+    Item_RemoveSimulated(driver_item_num);
     driver_item->is_collidable = 0;
     driver_item->flags |= IF_ONE_SHOT;
     driver_item->hit_points = 0;

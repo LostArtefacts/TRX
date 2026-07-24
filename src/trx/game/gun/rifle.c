@@ -242,7 +242,7 @@ static void M_FireHarpoon(void)
         projectile_item->hit_points = 256;
     }
 
-    Item_AddActive(item_num);
+    Item_AddSimulated(item_num);
     projectile_item->status = IS_ACTIVE;
 
     Gun_SmashItems(
@@ -342,7 +342,7 @@ static void M_FireGrenade(void)
         projectile_item->fall_speed = 0;
     }
 
-    Item_AddActive(item_num);
+    Item_AddSimulated(item_num);
     projectile_item->status = IS_ACTIVE;
 
     Gun_SmashItems(
@@ -406,7 +406,7 @@ static void M_FireRocket(void)
     }
 
     projectile_item->speed = 16;
-    Item_AddActive(item_num);
+    Item_AddSimulated(item_num);
     projectile_item->status = IS_ACTIVE;
 
     Gun_SmashItems(

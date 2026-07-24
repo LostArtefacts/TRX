@@ -94,7 +94,7 @@ static void M_MarkDone(ITEM *const receptacle_item)
     receptacle_item->required_anim_state = 0;
     receptacle_item->flags = IF_CODE_BITS;
     receptacle_item->status = IS_ACTIVE;
-    Item_AddActive(Item_GetIndex(receptacle_item));
+    Item_AddSimulated(Item_GetIndex(receptacle_item));
     Item_Animate(receptacle_item);
 }
 

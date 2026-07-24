@@ -273,7 +273,7 @@ static const FIELD_DESC m_Fields[] = {
     FIELD_RO(ITEM, frame_num),
     FIELD_RO(ITEM, prev_frame_num),
     FIELD_RO(ITEM, next_item),
-    FIELD_RO(ITEM, next_active),
+    FIELD_RO(ITEM, next_simulated),
 };
 // clang-format on
 

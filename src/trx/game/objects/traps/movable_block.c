@@ -558,7 +558,7 @@ static void M_HandleSave(ITEM *const item, const SAVEGAME_STAGE stage)
         if (item->status == IS_ACTIVE && !item->gravity
             && !M_IsForcedMoving(item)
             && item->current_anim_state == M_STATE_STILL) {
-            Item_RemoveActive(Item_GetIndex(item));
+            Item_RemoveSimulated(Item_GetIndex(item));
             item->status = IS_INACTIVE;
         }
 
@@ -704,7 +704,7 @@ static void M_Collision(
 
         M_SetLinked(item);
         item->status = IS_ACTIVE;
-        Item_AddActive(item_num);
+        Item_AddSimulated(item_num);
         M_UpdateStoppers(item, true);
         MovableBlock_UpdateBox(item, false);
         M_SetPushPull(item, true);
@@ -735,7 +735,7 @@ static void M_ResetPosition(ITEM *const item)
     M_SetLinked(item);
     MovableBlock_UpdateBox(item, true);
 
-    Item_RemoveActive(item_num);
+    Item_RemoveSimulated(item_num);
     item->timer = -1;
     item->status = IS_INACTIVE;
 }
@@ -937,7 +937,7 @@ static void M_Control(const int16_t item_num)
         item->pos.y >= under_block_height && !item->gravity
         && !M_IsPushPull(item) && !M_IsForcedMoving(item)) {
         item->status = IS_INACTIVE;
-        Item_RemoveActive(item_num);
+        Item_RemoveSimulated(item_num);
     }
 
     // Don't update room number if on a walkable because room number can fall
@@ -958,7 +958,7 @@ static void M_Control(const int16_t item_num)
         Walkable_Reposition(item_num, M_GetLinked(item), target);
         M_SetLinked(item);
         item->status = IS_INACTIVE;
-        Item_RemoveActive(item_num);
+        Item_RemoveSimulated(item_num);
         M_UpdateStoppers(item, false);
         MovableBlock_UpdateBox(item, true);
         Room_TestTriggers(item);
@@ -1152,7 +1152,7 @@ void MovableBlock_DropStack(const XYZ_32 drop_pos, const int16_t room_num)
         M_SetGravityFrames(item, i);
         M_SetForcedMoving(item, false);
         item->status = IS_ACTIVE;
-        Item_AddActive(item_num);
+        Item_AddSimulated(item_num);
         Item_Animate(item);
     }
 

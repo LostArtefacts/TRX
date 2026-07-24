@@ -218,7 +218,7 @@ static void M_Control(const int16_t item_num)
         if (!Item_IsTriggerActive(item) && Item_TestFrameEqual(item, -1)) {
             Item_SwitchToAnim(item, 0, 0);
             item->status = IS_INACTIVE;
-            Item_RemoveActive(item_num);
+            Item_RemoveSimulated(item_num);
             item->enable_interpolation = false;
             M_KillFireEffect(item);
             return;

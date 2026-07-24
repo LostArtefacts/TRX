@@ -44,7 +44,7 @@ static void M_Drop(ITEM *const pickup)
 {
     if (Object_IsType(pickup->object_id, g_QuestObjects)) {
         pickup->status = IS_ACTIVE;
-        Item_AddActive(Item_GetIndex(pickup));
+        Item_AddSimulated(Item_GetIndex(pickup));
     } else {
         pickup->status = IS_INACTIVE;
     }

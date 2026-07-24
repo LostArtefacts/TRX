@@ -65,7 +65,7 @@ static void M_Initialise(const int16_t item_num)
     ITEM *const item = Item_Get(item_num);
 
     if (item->active) {
-        Item_RemoveActive(item_num);
+        Item_RemoveSimulated(item_num);
     }
 
     if (item->creature_data != nullptr) {
@@ -168,7 +168,7 @@ static void M_Control(const int16_t item_num)
             if (rot_x > 0x3800) {
                 if (p->bounce_stage == 2) {
                     item->rot.x = 0x3800;
-                    Item_RemoveActive(item_num);
+                    Item_RemoveSimulated(item_num);
                     return;
                 }
 
@@ -190,7 +190,7 @@ static void M_Control(const int16_t item_num)
             if (rot_x < -0x2A00) {
                 if (p->bounce_stage == 2) {
                     item->rot.x = -0x2A00;
-                    Item_RemoveActive(item_num);
+                    Item_RemoveSimulated(item_num);
                     return;
                 }
 

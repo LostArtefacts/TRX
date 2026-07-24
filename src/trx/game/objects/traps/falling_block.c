@@ -106,7 +106,7 @@ static void M_Control(const int16_t item_num)
         M_PRIV *const p = item->priv;
         if (!p->heavy_triggered && lara_item->pos.y != item->pos.y + origin) {
             item->status = IS_INACTIVE;
-            Item_RemoveActive(item_num);
+            Item_RemoveSimulated(item_num);
             return;
         }
         if (item->goal_anim_state != TRAP_ACTIVATE) {

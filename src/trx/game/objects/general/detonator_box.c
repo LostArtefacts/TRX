@@ -44,7 +44,7 @@ static void M_Use(ITEM *const lara_item, ITEM *const receptacle_item)
     }
 
     receptacle_item->status = IS_ACTIVE;
-    Item_AddActive(Item_GetIndex(receptacle_item));
+    Item_AddSimulated(Item_GetIndex(receptacle_item));
 
     LARA_INFO *const lara = Lara_GetLaraInfo();
     lara->interact_target.is_moving = false;
@@ -71,7 +71,7 @@ static void M_Control(const int16_t item_num)
     }
 
     if (item->status == IS_DEACTIVATED) {
-        Item_RemoveActive(item_num);
+        Item_RemoveSimulated(item_num);
     }
 }
 

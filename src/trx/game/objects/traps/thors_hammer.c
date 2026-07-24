@@ -93,7 +93,7 @@ static void M_ControlHandle(const int16_t item_num)
         if (Item_IsTriggerActive(item)) {
             item->goal_anim_state = M_STATE_TEASE;
         } else {
-            Item_RemoveActive(item_num);
+            Item_RemoveSimulated(item_num);
             item->status = IS_INACTIVE;
         }
         break;
@@ -117,7 +117,7 @@ static void M_ControlHandle(const int16_t item_num)
     case M_STATE_DONE: {
         Room_TestTriggers(item);
         M_UpdateBox(item, true);
-        Item_RemoveActive(item_num);
+        Item_RemoveSimulated(item_num);
         item->status = IS_DEACTIVATED;
         break;
     }

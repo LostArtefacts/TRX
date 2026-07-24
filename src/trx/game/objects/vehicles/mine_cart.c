@@ -286,7 +286,7 @@ static void M_CheckStrikeSwitch(ITEM *const item)
 
     Sound_Effect(SFX_SPANNER_CLUNK, &item->pos, SPM_ALWAYS);
     Room_TestTriggers(item);
-    Item_AddActive(Item_GetIndex(item));
+    Item_AddSimulated(Item_GetIndex(item));
     item->flags = IF_CODE_BITS;
     item->status = IS_ACTIVE;
 }

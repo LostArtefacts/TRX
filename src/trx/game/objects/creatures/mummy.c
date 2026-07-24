@@ -65,7 +65,7 @@ static void M_Control(const int16_t item_num)
         if (item->hit_points > 0) {
             Stats_AddKill();
         }
-        Item_RemoveActive(item_num);
+        Item_RemoveSimulated(item_num);
         Carrier_TestItemDrops(item_num);
         item->hit_points = 0;
     }

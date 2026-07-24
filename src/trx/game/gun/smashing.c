@@ -38,7 +38,7 @@ void Gun_SmashItem(const int16_t item_num)
     case O_SMASH_OBJECT_3:
         if (item->status != IS_ACTIVE) {
             item->status = IS_ACTIVE;
-            Item_AddActive(item_num);
+            Item_AddSimulated(item_num);
         }
         break;
 
