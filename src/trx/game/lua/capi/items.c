@@ -330,7 +330,7 @@ static int M_L_ItemsKill(lua_State *const L)
 {
     LUA_STRUCT_REF *const ref = LUA_Struct_CheckRef(L, 1, &TYPE_ITEM);
     LUA_Struct_Deref(L, ref);
-    Item_Kill(ref->handle.id);
+    Item_Destroy(ref->handle.id);
     return 0;
 }
 

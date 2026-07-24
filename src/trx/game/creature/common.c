@@ -59,7 +59,7 @@ static bool M_TestSwitchOrKill(
     LOG_WARNING(
         "Object %d is not loaded; item %d cannot be converted.", target_id,
         item_num);
-    Item_Kill(item_num);
+    Item_Destroy(item_num);
     return false;
 }
 
@@ -1298,7 +1298,7 @@ void Creature_Die(const int16_t item_num, const bool explode)
     item->hit_points = 0;
     if (explode) {
         Item_Shatter(item_num, -1, 0);
-        Item_Kill(item_num);
+        Item_Destroy(item_num);
     } else {
         Item_RemoveSimulated(item_num);
     }

@@ -243,7 +243,7 @@ static void M_ControlRocket(ITEM *const item)
             item->required_anim_state += 32;
 
             if (item->required_anim_state > 16000) {
-                Item_Kill(Item_GetIndex(item));
+                Item_Destroy(Item_GetIndex(item));
             } else {
                 const int32_t base = 0x4000 - item->required_anim_state;
                 const RGB_888 color = {

@@ -221,7 +221,7 @@ static void M_Die(int16_t item_num)
     ITEM *const item = Item_Get(item_num);
     item->is_collidable = 0;
     item->hit_points = 0;
-    Item_Kill(item_num);
+    Item_Destroy(item_num);
     LOT_DisableBaddieAI(item_num);
     item->flags |= IF_INVISIBLE;
 }
@@ -341,7 +341,7 @@ static bool M_TriggerLizard(M_PRIV *const p)
     item->flags &= ~(IF_DESTROYED | IF_ONE_SHOT);
     item->include_in_kill_stats = false;
 
-    // Item_Kill removes it from room item chains; reinsert even when room is
+    // Item_Destroy removes it from room item chains; reinsert even when room is
     // unchanged.
     Item_UpdateRoom(p->lizard_item_num, NO_ROOM);
     Item_UpdateRoom(p->lizard_item_num, room_num);

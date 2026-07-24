@@ -27,7 +27,7 @@ int16_t Item_Spawn(const ITEM *item, OBJECT_ID obj_id);
 
 void Item_Initialise(int16_t item_num);
 void Item_Control(void);
-void Item_Kill(int16_t item_num);
+void Item_Destroy(int16_t item_num);
 void Item_KillAllActive(void);
 void Item_RemoveSimulated(int16_t item_num);
 
@@ -52,7 +52,7 @@ void Item_Activate(int16_t item_num, bool force);
 
 // Stop an item: take it off the simulation list and take a creature's AI away.
 // It stays where it is and keeps its hit points; it stops running. A trigger
-// can still bring it back, which is what separates this from Item_Kill.
+// can still bring it back, which is what separates this from Item_Destroy.
 void Item_Deactivate(int16_t item_num);
 
 void Item_UpdateRoom(int16_t item_num, int16_t room_num);

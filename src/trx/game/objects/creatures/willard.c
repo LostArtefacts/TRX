@@ -414,7 +414,7 @@ static void M_Die(const int16_t item_num)
     Stats_AddKill();
     item->hit_points = 0;
     item->is_collidable = false;
-    Item_Kill(item_num);
+    Item_Destroy(item_num);
     LOT_DisableBaddieAI(item_num);
     item->flags |= IF_INVISIBLE;
 }

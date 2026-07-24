@@ -71,7 +71,7 @@ static bool M_RemoveNormalWinston(void)
             continue;
         }
         item->status = IS_INVISIBLE;
-        Item_Kill(item_num);
+        Item_Destroy(item_num);
         return true;
     }
     return false;

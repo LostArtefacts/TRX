@@ -2,9 +2,9 @@
 // surface with no level loaded.
 //
 // Two behaviours are modelled faithfully because the surface's contract rests
-// on them: Item_Create/Item_Kill bump the slot's handle generation, so a handle
-// to a recycled slot goes stale; and Item_SetName refuses a duplicate, which is
-// what makes assigning a name already in use raise.
+// on them: Item_Create/Item_Destroy bump the slot's handle generation, so a
+// handle to a recycled slot goes stale; and Item_SetName refuses a duplicate,
+// which is what makes assigning a name already in use raise.
 
 #include "fake_engine_items.h"
 
@@ -177,7 +177,7 @@ void Item_Initialise(const int16_t item_num)
     item->is_collidable = true;
 }
 
-void Item_Kill(const int16_t item_num)
+void Item_Destroy(const int16_t item_num)
 {
     g_FakeItemCalls.kill++;
     ITEM *const item = &m_Items[item_num];

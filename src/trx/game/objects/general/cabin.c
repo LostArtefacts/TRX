@@ -66,7 +66,7 @@ static void M_Control(const int16_t item_num)
         if (M_ShouldFlipMap(item)) {
             M_FlipMap(p);
         }
-        Item_Kill(item_num);
+        Item_Destroy(item_num);
     }
 
     Item_Animate(item);

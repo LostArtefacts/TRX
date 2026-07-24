@@ -83,10 +83,10 @@ static void M_Control(const int16_t item_num)
             ITEM *old_pierre = Item_Get(m_PierreItemNum);
             if (old_pierre->flags & IF_ONE_SHOT) {
                 if (!(item->flags & IF_ONE_SHOT)) {
-                    Item_Kill(item_num);
+                    Item_Destroy(item_num);
                 }
             } else {
-                Item_Kill(m_PierreItemNum);
+                Item_Destroy(m_PierreItemNum);
                 m_PierreItemNum = item_num;
             }
         }
@@ -95,9 +95,9 @@ static void M_Control(const int16_t item_num)
             m_PierreItemNum = item_num;
         } else if (m_PierreItemNum != item_num) {
             if (item->flags & IF_ONE_SHOT) {
-                Item_Kill(m_PierreItemNum);
+                Item_Destroy(m_PierreItemNum);
             } else {
-                Item_Kill(item_num);
+                Item_Destroy(item_num);
             }
         }
     }
@@ -244,7 +244,7 @@ static void M_Control(const int16_t item_num)
         } else if (pierre->flags > M_DISAPPEAR) {
             item->hit_points = 0;
             LOT_DisableBaddieAI(item_num);
-            Item_Kill(item_num);
+            Item_Destroy(item_num);
             m_PierreItemNum = NO_ITEM;
         }
     }
@@ -253,7 +253,7 @@ static void M_Control(const int16_t item_num)
     if (wh != NO_HEIGHT) {
         item->hit_points = 0;
         LOT_DisableBaddieAI(item_num);
-        Item_Kill(item_num);
+        Item_Destroy(item_num);
         m_PierreItemNum = NO_ITEM;
     }
 }

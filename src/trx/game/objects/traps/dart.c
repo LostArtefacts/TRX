@@ -70,7 +70,7 @@ static void M_Hit(
         return;
     }
 
-    Item_Kill(item_num);
+    Item_Destroy(item_num);
     Sound_Effect(SFX_PROJECTILE_HIT, &item->pos, SPM_NORMAL);
 
     int16_t room_num = item->room_num;
@@ -106,7 +106,7 @@ static void M_Control(const int16_t item_num)
     if (item->object_id == O_POISON_DART) {
         M_PRIV *const p = item->priv;
         if (p->pending_kill) {
-            Item_Kill(item_num);
+            Item_Destroy(item_num);
             return;
         }
     }
@@ -114,7 +114,7 @@ static void M_Control(const int16_t item_num)
     if (item->touch_bits != 0) {
         M_DamageLara(item);
         if (item->object_id == O_POISON_DART) {
-            Item_Kill(item_num);
+            Item_Destroy(item_num);
             return;
         }
     }

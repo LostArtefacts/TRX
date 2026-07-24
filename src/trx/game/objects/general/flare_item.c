@@ -62,7 +62,7 @@ static void M_Control(const int16_t item_num)
     ITEM *const item = Item_Get(item_num);
     const ROOM *const room = Room_Get(item->room_num);
     if (room->flags.swamp) {
-        Item_Kill(item_num);
+        Item_Destroy(item_num);
         return;
     }
 
@@ -92,7 +92,7 @@ static void M_Control(const int16_t item_num)
     if (flare_age < Flare_GetMaxAge()) {
         flare_age++;
     } else if (item->fall_speed == 0 && item->speed == 0) {
-        Item_Kill(item_num);
+        Item_Destroy(item_num);
         return;
     }
 

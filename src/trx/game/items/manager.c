@@ -334,7 +334,7 @@ void Item_Control(void)
     Carrier_AnimateDrops();
 }
 
-void Item_Kill(const int16_t item_num)
+void Item_Destroy(const int16_t item_num)
 {
     Sparks_DetachItem(item_num);
     Item_RemoveSimulated(item_num);
@@ -374,7 +374,7 @@ void Item_KillAllActive(void)
             && item->object_id != O_SAVE_CRYSTAL_ITEM
             && !Object_IsType(item->object_id, g_PickupObjects)
             && !Object_IsType(item->object_id, g_DoorObjects)) {
-            Item_Kill(item_num);
+            Item_Destroy(item_num);
 
             if (Object_IsType(item->object_id, g_ShoalObjects)) {
                 Shoal_TriggerDeactivate(item);
@@ -482,7 +482,7 @@ void Item_ClearKilled(void)
         const OBJECT *const obj = Object_Get(item->object_id);
         if (obj->intelligent && item->clear_body && item->hit_points <= 0
             && (item->flags & IF_DESTROYED) == 0) {
-            Item_Kill(i);
+            Item_Destroy(i);
         }
     }
 }

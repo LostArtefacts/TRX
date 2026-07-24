@@ -61,7 +61,7 @@ static void M_InitialiseFire(ITEM *const pendulum_item)
         pendulum_item->room_num, pendulum_item->pos, fire_obj_id);
     if (fire_item_idx != NO_ITEM) {
         ITEM *const fire_item = Item_Get(fire_item_idx);
-        Item_Kill(fire_item_idx);
+        Item_Destroy(fire_item_idx);
         fire_item->room_num = NO_ROOM;
         p->on_fire = true;
     }

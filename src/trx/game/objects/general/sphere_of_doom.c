@@ -64,7 +64,7 @@ static void M_Control(const int16_t item_num)
     pos.z += ((dist - radius) * dz) / radius;
     Sound_Effect(SFX_MARCO_BARTOLLI_TRANSFORM, &pos, SPM_NORMAL);
     if (item->timer > 60 * 64) {
-        Item_Kill(item_num);
+        Item_Destroy(item_num);
     }
 }
 

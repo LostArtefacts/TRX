@@ -47,7 +47,7 @@ static void M_DetonateAll(
         boat_item->mesh_bits = (1 << obj->mesh_count) - 1;
         Item_Shatter(boat_item_num, -1, 0);
     }
-    Item_Kill(boat_item_num);
+    Item_Destroy(boat_item_num);
     boat_item->object_id = O_BOAT;
 
     Room_TestTriggers(mine_item);

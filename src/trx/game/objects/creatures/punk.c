@@ -119,7 +119,7 @@ static void M_InitialiseStick(ITEM *const punk_item)
         punk_item->room_num, punk_item->pos, O_FLAME_EMITTER_BIG);
     if (fire_item_idx != NO_ITEM) {
         ITEM *const fire_item = Item_Get(fire_item_idx);
-        Item_Kill(fire_item_idx);
+        Item_Destroy(fire_item_idx);
         fire_item->room_num = NO_ROOM;
         p->stick.on_fire = true;
     }

@@ -102,7 +102,7 @@ static void M_Control(const int16_t item_num)
             Item_Shatter(item_num, -1, 0);
             item->object_id = O_XIAN_KNIGHT;
             LOT_DisableBaddieAI(item_num);
-            Item_Kill(item_num);
+            Item_Destroy(item_num);
             item->status = IS_DEACTIVATED;
             item->flags |= IF_ONE_SHOT;
             Carrier_TestItemDrops(item_num);

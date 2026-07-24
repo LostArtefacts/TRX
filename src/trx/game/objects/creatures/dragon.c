@@ -381,8 +381,8 @@ static void M_ControlBack(const int16_t item_num)
                 dragon_front_item->status = IS_DEACTIVATED;
                 dragon_back_item->status = IS_DEACTIVATED;
                 if (is_two_phase) {
-                    Item_Kill(dragon_front_item_num);
-                    Item_Kill(dragon_back_item_num);
+                    Item_Destroy(dragon_front_item_num);
+                    Item_Destroy(dragon_back_item_num);
                 } else {
                     Item_RemoveSimulated(dragon_front_item_num);
                     Item_RemoveSimulated(dragon_back_item_num);

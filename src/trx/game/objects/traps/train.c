@@ -102,7 +102,7 @@ static void M_Control(const int16_t item_num)
     item->pos.y = mid_height;
 
     if (item->pos.y == NO_HEIGHT) {
-        Item_Kill(item_num);
+        Item_Destroy(item_num);
         return;
     }
 
