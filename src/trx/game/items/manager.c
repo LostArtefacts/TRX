@@ -103,35 +103,13 @@ static void M_UnlinkChain(const int16_t item_num, const int16_t room_num)
     }
 }
 
-// Only live gameplay is worth an item event; level setup wires items up, and
-// the demo and cutscene phases play their own actors. Shared by the trigger
-// and room-change hooks.
-static bool M_ItemEventsLive(void)
-{
-    const GF_LEVEL *const level = GF_GetCurrentLevel();
-    return Game_IsPlaying() && level->type != GFL_DEMO
-        && level->type != GFL_CUTSCENE;
-}
-
-void Item_NotifyTriggered(
-    const int16_t item_num, const ITEM_TRIGGER *const trigger)
-{
-    if (!M_ItemEventsLive()) {
-        return;
-    }
-    const LUA_EVENT_ARG args[] = {
-        { .type = LUA_EVENT_ARG_INT32, .value = { .i32 = item_num } },
-        { .type = LUA_EVENT_ARG_INT32, .value = { .i32 = trigger->kind } },
-        // The mask the way a level editor counts it, 1 to 31.
-        { .type = LUA_EVENT_ARG_INT32, .value = { .i32 = trigger->mask } },
-        { .type = LUA_EVENT_ARG_NUMBER, .value = { .number = trigger->timer } },
-        { .type = LUA_EVENT_ARG_BOOL, .value = { .b = trigger->one_shot } },
-    };
-    LUA_FireEventEx(LUA_EVENT_TRIGGER, args, 5);
-}
-
 void Item_InitialiseItems(const int32_t num_items)
 {
+    // From here until live play begins, the level's cast and any save overlaid
+    // on it are wired up; keep their lifecycle events quiet (see
+    // Game_IsSettingUpItems).
+    Game_SetIsSettingUpItems(true);
+
     m_Items = GameBuf_Alloc(sizeof(ITEM) * MAX_ITEMS, GBUF_ITEMS);
     m_LevelItemCount = num_items;
     m_MaxUsedItemCount = num_items;
@@ -395,6 +373,12 @@ void Item_Initialise(const int16_t item_num)
     if (item->room_num != NO_ROOM) {
         Room_AddDrawnItem(item->room_num, item_num);
     }
+
+    // The gate keeps the level's starting cast quiet: only an item initialised
+    // during live play - a runtime spawn - counts as entering the world.
+    if (!Game_IsSettingUpItems()) {
+        LUA_FireEventInt32(LUA_EVENT_ENTER_WORLD, item_num);
+    }
 }
 
 void Item_Control(void)
@@ -427,6 +411,12 @@ void Item_Destroy(const int16_t item_num)
 
     item->is_destroyed = true;
 
+    // Fired while the item still resolves: the handler runs synchronously, so
+    // it can read the item, but only until the handle below goes stale.
+    // on_leave_sim and on_leave_world have already fired for it.
+    if (!Game_IsSettingUpItems()) {
+        LUA_FireEventInt32(LUA_EVENT_DESTROY, item_num);
+    }
     // Invalidate any script handle to this item, whether or not the slot is
     // recycled below.
     Handle_RegistryBump(&m_ItemHandles, item_num);
@@ -463,15 +453,25 @@ void Item_RemoveSimulated(const int16_t item_num)
             link_num = m_Items[link_num].next_simulated;
         }
     }
+
+    if (!Game_IsSettingUpItems()) {
+        LUA_FireEventInt32(LUA_EVENT_LEAVE_SIM, item_num);
+    }
 }
 
 void Item_DetachFromRoom(const int16_t item_num)
 {
     ITEM *const item = &m_Items[item_num];
+    const bool was_present = item->is_present;
     item->is_present = false;
 
     M_RemoveFromDrawQueues(item_num, item->room_num);
     M_UnlinkChain(item_num, item->room_num);
+
+    // Only when it was in the world, so an already-detached item does not fire.
+    if (was_present && !Game_IsSettingUpItems()) {
+        LUA_FireEventInt32(LUA_EVENT_LEAVE_WORLD, item_num);
+    }
 }
 
 void Item_AddSimulated(const int16_t item_num)
@@ -490,6 +490,10 @@ void Item_AddSimulated(const int16_t item_num)
     item->is_simulated = true;
     item->next_simulated = m_NextItemSimulated;
     m_NextItemSimulated = item_num;
+
+    if (!Game_IsSettingUpItems()) {
+        LUA_FireEventInt32(LUA_EVENT_ENTER_SIM, item_num);
+    }
 }
 
 void Item_Activate(const int16_t item_num, const bool force)
@@ -521,12 +525,20 @@ void Item_Activate(const int16_t item_num, const bool force)
         Item_SetFinished(item, false);
         Item_AddSimulated(item_num);
     }
+
+    // The front door ran on an item that was not already simulated.
+    // on_enter_sim has fired for whichever of the branches above simulated it;
+    // this is the operation on top of that, the one a trigger drives.
+    if (!Game_IsSettingUpItems()) {
+        LUA_FireEventInt32(LUA_EVENT_ACTIVATE, item_num);
+    }
 }
 
 void Item_Deactivate(const int16_t item_num)
 {
     ITEM *const item = &m_Items[item_num];
     const OBJECT *const obj = Object_Get(item->object_id);
+    const bool was_simulated = item->is_simulated;
 
     // RemoveActive clears is_simulated, which is the whole of the downgrade:
     // is_visible and is_finished are untouched, so a spent item stays spent and
@@ -534,6 +546,12 @@ void Item_Deactivate(const int16_t item_num)
     Item_RemoveSimulated(item_num);
     if (obj->intelligent) {
         LOT_DisableBaddieAI(item_num);
+    }
+
+    // Only when it was actually running, so an antitrigger on an idle item is
+    // not reported as a stop. on_leave_sim has already fired for it.
+    if (was_simulated && !Game_IsSettingUpItems()) {
+        LUA_FireEventInt32(LUA_EVENT_DEACTIVATE, item_num);
     }
 }
 
@@ -564,6 +582,10 @@ void Item_SetVisible(ITEM *const item, const bool value)
         return;
     }
     item->is_visible = value;
+    if (!Game_IsSettingUpItems()) {
+        LUA_FireEventInt32(
+            value ? LUA_EVENT_SHOW : LUA_EVENT_HIDE, Item_GetIndex(item));
+    }
 }
 
 void Item_SetFinished(ITEM *const item, const bool value)
@@ -571,7 +593,11 @@ void Item_SetFinished(ITEM *const item, const bool value)
     if (item->is_finished == value) {
         return;
     }
+
     item->is_finished = value;
+    if (value && !Game_IsSettingUpItems()) {
+        LUA_FireEventInt32(LUA_EVENT_FINISH, Item_GetIndex(item));
+    }
 }
 
 void Item_UpdateRoom(const int16_t item_num, const int16_t room_num)
@@ -608,7 +634,7 @@ void Item_UpdateRoom(const int16_t item_num, const int16_t room_num)
 
         // After the room lists above settle, so a handler reads a consistent
         // world.
-        if (M_ItemEventsLive()) {
+        if (!Game_IsSettingUpItems()) {
             const LUA_EVENT_ARG args[] = {
                 { .type = LUA_EVENT_ARG_INT32, .value = { .i32 = item_num } },
                 { .type = LUA_EVENT_ARG_INT32,

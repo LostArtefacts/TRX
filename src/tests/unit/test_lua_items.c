@@ -76,6 +76,61 @@ static int M_L_FireTrigger(lua_State *const L)
     return 0;
 }
 
+// fake.fire_visibility(item_num, visible) - mirrors the Item_SetVisible fire
+// site, which picks the event by the value it settled on.
+static int M_L_FireVisibility(lua_State *const L)
+{
+    LUA_FireEventInt32(
+        lua_toboolean(L, 2) ? LUA_EVENT_SHOW : LUA_EVENT_HIDE,
+        (int32_t)luaL_checkinteger(L, 1));
+    return 0;
+}
+
+// fake.fire_finish(item_num) - mirrors the Item_SetFinished fire site, which
+// fires only as the item becomes finished.
+static int M_L_FireFinish(lua_State *const L)
+{
+    LUA_FireEventInt32(LUA_EVENT_FINISH, (int32_t)luaL_checkinteger(L, 1));
+    return 0;
+}
+
+// fake.fire_sim(item_num, simulated) - mirrors the Item_AddSimulated and
+// Item_RemoveSimulated fire sites.
+static int M_L_FireSim(lua_State *const L)
+{
+    LUA_FireEventInt32(
+        lua_toboolean(L, 2) ? LUA_EVENT_ENTER_SIM : LUA_EVENT_LEAVE_SIM,
+        (int32_t)luaL_checkinteger(L, 1));
+    return 0;
+}
+
+// fake.fire_activation(item_num, activated) - mirrors the Item_Activate and
+// Item_Deactivate fire sites.
+static int M_L_FireActivation(lua_State *const L)
+{
+    LUA_FireEventInt32(
+        lua_toboolean(L, 2) ? LUA_EVENT_ACTIVATE : LUA_EVENT_DEACTIVATE,
+        (int32_t)luaL_checkinteger(L, 1));
+    return 0;
+}
+
+// fake.fire_destroy(item_num) - mirrors the Item_Destroy fire site.
+static int M_L_FireDestroy(lua_State *const L)
+{
+    LUA_FireEventInt32(LUA_EVENT_DESTROY, (int32_t)luaL_checkinteger(L, 1));
+    return 0;
+}
+
+// fake.fire_world(item_num, entered) - mirrors the Item_Initialise and
+// Item_DetachFromRoom fire sites.
+static int M_L_FireWorld(lua_State *const L)
+{
+    LUA_FireEventInt32(
+        lua_toboolean(L, 2) ? LUA_EVENT_ENTER_WORLD : LUA_EVENT_LEAVE_WORLD,
+        (int32_t)luaL_checkinteger(L, 1));
+    return 0;
+}
+
 static void M_PushFake(lua_State *const L)
 {
     lua_pushinteger(L, FAKE_OBJ_WOLF);
@@ -88,6 +143,18 @@ static void M_PushFake(lua_State *const L)
     lua_setfield(L, -2, "KEY");
     lua_pushcfunction(L, M_L_FireTrigger);
     lua_setfield(L, -2, "fire_trigger");
+    lua_pushcfunction(L, M_L_FireVisibility);
+    lua_setfield(L, -2, "fire_visibility");
+    lua_pushcfunction(L, M_L_FireFinish);
+    lua_setfield(L, -2, "fire_finish");
+    lua_pushcfunction(L, M_L_FireSim);
+    lua_setfield(L, -2, "fire_sim");
+    lua_pushcfunction(L, M_L_FireActivation);
+    lua_setfield(L, -2, "fire_activation");
+    lua_pushcfunction(L, M_L_FireDestroy);
+    lua_setfield(L, -2, "fire_destroy");
+    lua_pushcfunction(L, M_L_FireWorld);
+    lua_setfield(L, -2, "fire_world");
 }
 
 int main(void)

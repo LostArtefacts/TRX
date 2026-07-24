@@ -1,10 +1,32 @@
 #include <trx/game/const.h>
+#include <trx/game/game.h>
 #include <trx/game/items/manager.h>
 #include <trx/game/items/utils.h>
+#include <trx/game/lua/events.h>
 #include <trx/game/objects.h>
 #include <trx/version.h>
 
 #include <math.h>
+
+// Fire the on_trigger event: a trigger of any kind was aimed at the item, with
+// its fundamentals. Held here, next to Item_Trigger, so the primitive stays
+// clear of the event stack.
+static void M_FireTriggerEvent(
+    const int16_t item_num, const ITEM_TRIGGER *const trigger)
+{
+    if (Game_IsSettingUpItems()) {
+        return;
+    }
+    const LUA_EVENT_ARG args[] = {
+        { .type = LUA_EVENT_ARG_INT32, .value = { .i32 = item_num } },
+        { .type = LUA_EVENT_ARG_INT32, .value = { .i32 = trigger->kind } },
+        // The mask the way a level editor counts it, 1 to 31.
+        { .type = LUA_EVENT_ARG_INT32, .value = { .i32 = trigger->mask } },
+        { .type = LUA_EVENT_ARG_NUMBER, .value = { .number = trigger->timer } },
+        { .type = LUA_EVENT_ARG_BOOL, .value = { .b = trigger->one_shot } },
+    };
+    LUA_FireEventEx(LUA_EVENT_TRIGGER, args, 5);
+}
 
 // Whether a spent one-shot trigger of this kind must be ignored. TR3 latches a
 // spent switch and a spent antitrigger in their own bits, apart from the
@@ -80,5 +102,5 @@ void Item_Trigger(const int16_t item_num, const ITEM_TRIGGER *const trigger)
 
     // Fired last, so a handler sees the item as the trigger left it, and
     // nothing it does to the item is then overwritten from under it.
-    Item_NotifyTriggered(item_num, trigger);
+    M_FireTriggerEvent(item_num, trigger);
 }

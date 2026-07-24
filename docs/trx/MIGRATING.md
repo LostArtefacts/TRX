@@ -37,6 +37,9 @@ order: 3
      `trx.items.query` does both: `trx.items.query:of_object(id):matches()` for
      the list and `:first()` for one, with `:in_room(num)` in place of the
      `room_num` key. `of_object` also takes a name, not just an id.
+   - `item.flags` was removed. Read the trigger bits it packed through the
+     named properties instead: `item.trigger_mask`, `item.is_reversed`,
+     `item.is_triggered`, `item.is_killed` and `item.is_one_shot`.
 
 2. **Update scripts that use room handles**
    `trx.rooms` hands out opaque room handles rather than `{ idx = ... }` tables.
@@ -204,6 +207,23 @@ order: 3
    slot through the handle, `trx.sound.samples[slot]:play()` / `:stop()`, and
    `play` hands back the `trx.sound.Stream` it started. `trx.sound.stop_all` is
    unchanged.
+
+21. **Update scripts that read `item.status`**
+   The `item.status` field and the `items.Status` enum were removed in favour of
+   separate boolean axes:
+   - `item.is_simulated` (read-only): its control routine runs each frame -
+     `status == items.Status.ACTIVE`. Call `activate()` to start it.
+   - `item.is_visible` (writable): drawn on screen; `status == INVISIBLE` becomes
+     `not item.is_visible`.
+   - `item.is_finished` (writable): a spent one-shot or a dead creature -
+     `status == DEACTIVATED`.
+   - `item.is_present` (read-only): in the world at all, linked in its room.
+   - `item.is_in_play` (read-only): the live composite - simulated, visible and
+     not finished - what `status == ACTIVE` meant for a targetable enemy;
+     `item.is_targetable` reports whether auto-aim can lock on now.
+
+   The item query narrows on each: `simulated`, `present`, `visible`, `finished`,
+   `in_play`, `alive`, `targetable`.
 
 ### Version 1.8 to 1.9
 

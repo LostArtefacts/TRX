@@ -3415,6 +3415,246 @@
       }
     },
     {
+      "description": "Happens when an item becomes visible during play - drawn and in the world, taking part in collision and targeting. It is the change that fires, not the state: an item already visible does not fire it again, and only a live level does, not a cutscene or the attract demo.\n\n`trx.items.Item:on_show` is this same event, narrowed to one item.",
+      "examples": [
+        "trx.events.on_show(function(item)\n  trx.log.info(item.object_id .. \" appeared\")\nend)"
+      ],
+      "params": [
+        {
+          "name": "callback",
+          "params": [
+            {
+              "description": "The `trx.items.Item` that became visible.",
+              "name": "item",
+              "type": "Item"
+            }
+          ],
+          "type": "function"
+        }
+      ],
+      "path": "events.on_show",
+      "returns": {
+        "description": "Listener id. Pass it to `trx.events.detach` to stop listening.",
+        "type": "integer"
+      }
+    },
+    {
+      "description": "Happens when an item becomes hidden during play - drawn and in the world, taking part in collision and targeting. It is the change that fires, not the state: an item already hidden does not fire it again, and only a live level does, not a cutscene or the attract demo.\n\n`trx.items.Item:on_hide` is this same event, narrowed to one item.",
+      "examples": [
+        "trx.events.on_hide(function(item)\n  trx.log.info(item.object_id .. \" vanished\")\nend)"
+      ],
+      "params": [
+        {
+          "name": "callback",
+          "params": [
+            {
+              "description": "The `trx.items.Item` that became hidden.",
+              "name": "item",
+              "type": "Item"
+            }
+          ],
+          "type": "function"
+        }
+      ],
+      "path": "events.on_hide",
+      "returns": {
+        "description": "Listener id. Pass it to `trx.events.detach` to stop listening.",
+        "type": "integer"
+      }
+    },
+    {
+      "description": "Happens when an item finishes its run during play - a trap that has sprung, a switch thrown, a one-shot object spent. It is the change that fires, once, and only a live level does, not a cutscene or the attract demo.\n\n`trx.items.Item:on_finish` is this same event, narrowed to one item.",
+      "examples": [
+        "trx.events.on_finish(function(item)\n  trx.log.info(item.object_id .. \" finished its run\")\nend)"
+      ],
+      "params": [
+        {
+          "name": "callback",
+          "params": [
+            {
+              "description": "The `trx.items.Item` that finished.",
+              "name": "item",
+              "type": "Item"
+            }
+          ],
+          "type": "function"
+        }
+      ],
+      "path": "events.on_finish",
+      "returns": {
+        "description": "Listener id. Pass it to `trx.events.detach` to stop listening.",
+        "type": "integer"
+      }
+    },
+    {
+      "description": "Happens when an item starts being simulated during play - its control routine begins running each frame. Every path that starts an item fires it: a trigger, a switch, a respawn, a cheat. A trigger also fires `on_activate`, which this does not.\n\n`trx.items.Item:on_enter_sim` is this same event, narrowed to one item.",
+      "examples": [
+        "trx.events.on_enter_sim(function(item)\n  trx.log.info(item.object_id .. \" started running\")\nend)"
+      ],
+      "params": [
+        {
+          "name": "callback",
+          "params": [
+            {
+              "description": "The `trx.items.Item` that started being simulated.",
+              "name": "item",
+              "type": "Item"
+            }
+          ],
+          "type": "function"
+        }
+      ],
+      "path": "events.on_enter_sim",
+      "returns": {
+        "description": "Listener id. Pass it to `trx.events.detach` to stop listening.",
+        "type": "integer"
+      }
+    },
+    {
+      "description": "Happens when an item stops being simulated during play - its control routine no longer runs. It keeps its place and its state; it merely stops.\n\n`trx.items.Item:on_leave_sim` is this same event, narrowed to one item.",
+      "examples": [
+        "trx.events.on_leave_sim(function(item)\n  trx.log.info(item.object_id .. \" stopped running\")\nend)"
+      ],
+      "params": [
+        {
+          "name": "callback",
+          "params": [
+            {
+              "description": "The `trx.items.Item` that stopped being simulated.",
+              "name": "item",
+              "type": "Item"
+            }
+          ],
+          "type": "function"
+        }
+      ],
+      "path": "events.on_leave_sim",
+      "returns": {
+        "description": "Listener id. Pass it to `trx.events.detach` to stop listening.",
+        "type": "integer"
+      }
+    },
+    {
+      "description": "Happens when an item is activated through the lifecycle front door during play - the path a level trigger takes. Switches, respawns and cheats start an item without it, firing only `on_enter_sim`; watch that one for a start of any cause.\n\n`trx.items.Item:on_activate` is this same event, narrowed to one item.",
+      "examples": [
+        "trx.events.on_activate(function(item)\n  trx.log.info(item.object_id .. \" was activated\")\nend)"
+      ],
+      "params": [
+        {
+          "name": "callback",
+          "params": [
+            {
+              "description": "The `trx.items.Item` that was activated.",
+              "name": "item",
+              "type": "Item"
+            }
+          ],
+          "type": "function"
+        }
+      ],
+      "path": "events.on_activate",
+      "returns": {
+        "description": "Listener id. Pass it to `trx.events.detach` to stop listening.",
+        "type": "integer"
+      }
+    },
+    {
+      "description": "Happens when a running item is deactivated through the lifecycle front door during play - the path an antitrigger takes. It fires only when the item was actually running.\n\n`trx.items.Item:on_deactivate` is this same event, narrowed to one item.",
+      "examples": [
+        "trx.events.on_deactivate(function(item)\n  trx.log.info(item.object_id .. \" was deactivated\")\nend)"
+      ],
+      "params": [
+        {
+          "name": "callback",
+          "params": [
+            {
+              "description": "The `trx.items.Item` that was deactivated.",
+              "name": "item",
+              "type": "Item"
+            }
+          ],
+          "type": "function"
+        }
+      ],
+      "path": "events.on_deactivate",
+      "returns": {
+        "description": "Listener id. Pass it to `trx.events.detach` to stop listening.",
+        "type": "integer"
+      }
+    },
+    {
+      "description": "Happens as an item is removed from the game during play - a creature cleared away, a pickup taken, an object that has run its course. The item can still be read from the handler, which runs before the removal completes, but a handle kept past the handler goes stale.\n\n`trx.items.Item:on_destroy` is this same event, narrowed to one item.",
+      "examples": [
+        "trx.events.on_destroy(function(item)\n  trx.log.info(item.object_id .. \" was removed\")\nend)"
+      ],
+      "params": [
+        {
+          "name": "callback",
+          "params": [
+            {
+              "description": "The `trx.items.Item` being removed. Valid only for the duration of the handler.",
+              "name": "item",
+              "type": "Item"
+            }
+          ],
+          "type": "function"
+        }
+      ],
+      "path": "events.on_destroy",
+      "returns": {
+        "description": "Listener id. Pass it to `trx.events.detach` to stop listening.",
+        "type": "integer"
+      }
+    },
+    {
+      "description": "Happens when an item enters the world during play - a runtime spawn, such as a creature an emitter releases or an item a script creates. The level's own items do not fire it as they load; only an arrival during a live level counts.\n\n`trx.items.Item:on_enter_world` is this same event, narrowed to one item.",
+      "examples": [
+        "trx.events.on_enter_world(function(item)\n  trx.log.info(item.object_id .. \" entered the world\")\nend)"
+      ],
+      "params": [
+        {
+          "name": "callback",
+          "params": [
+            {
+              "description": "The `trx.items.Item` that entered the world.",
+              "name": "item",
+              "type": "Item"
+            }
+          ],
+          "type": "function"
+        }
+      ],
+      "path": "events.on_enter_world",
+      "returns": {
+        "description": "Listener id. Pass it to `trx.events.detach` to stop listening.",
+        "type": "integer"
+      }
+    },
+    {
+      "description": "Happens when an item leaves the world during play - unlinked from its room, no longer drawn or collidable. It need not be destroyed; a destroyed item leaves the world on its way out, and fires this first.\n\n`trx.items.Item:on_leave_world` is this same event, narrowed to one item.",
+      "examples": [
+        "trx.events.on_leave_world(function(item)\n  trx.log.info(item.object_id .. \" left the world\")\nend)"
+      ],
+      "params": [
+        {
+          "name": "callback",
+          "params": [
+            {
+              "description": "The `trx.items.Item` that left the world.",
+              "name": "item",
+              "type": "Item"
+            }
+          ],
+          "type": "function"
+        }
+      ],
+      "path": "events.on_leave_world",
+      "returns": {
+        "description": "Listener id. Pass it to `trx.events.detach` to stop listening.",
+        "type": "integer"
+      }
+    },
+    {
       "description": "Removes a previously attached handler, which stops firing immediately.",
       "examples": [
         "local id = trx.events.before_control(function()\n  -- handle control loop event\nend)\ntrx.events.detach(id)"

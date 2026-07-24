@@ -11,10 +11,7 @@ local function summon_existing(object_id, target, lara)
     return false
   end
 
-  if
-    winston.status == trx.items.Status.INVISIBLE
-    or winston.status == trx.items.Status.INACTIVE
-  then
+  if not winston.is_simulated and not winston.is_finished then
     winston:activate()
   elseif winston.is_killed then
     trx.music.stop()
