@@ -21,13 +21,13 @@ static void M_Control_TR1TR2(const int16_t effect_num)
     int16_t room_num = effect->room_num;
     const SECTOR *const sector = Room_GetSector(pos, &room_num);
     if (sector == nullptr || !Room_Get(room_num)->flags.underwater) {
-        Effect_Kill(effect_num);
+        Effect_Destroy(effect_num);
         return;
     }
 
     const int32_t ceiling = Room_GetCeiling(sector, pos);
     if (ceiling == NO_HEIGHT || pos.y <= ceiling) {
-        Effect_Kill(effect_num);
+        Effect_Destroy(effect_num);
         return;
     }
 
@@ -53,13 +53,13 @@ static void M_Control_TR3(const int16_t effect_num)
     int16_t room_num = effect->room_num;
     const SECTOR *const sector = Room_GetSector(pos, &room_num);
     if (sector == nullptr) {
-        Effect_Kill(effect_num);
+        Effect_Destroy(effect_num);
         return;
     }
 
     const int32_t floor = Room_GetHeight(sector, pos);
     if (pos.y > floor) {
-        Effect_Kill(effect_num);
+        Effect_Destroy(effect_num);
         return;
     }
 
@@ -68,13 +68,13 @@ static void M_Control_TR3(const int16_t effect_num)
         FX_Water_SetupRipple(
             effect->pos.x, old_room->max_ceiling, effect->pos.z,
             -2 - (Random_GetControl() & 1), true);
-        Effect_Kill(effect_num);
+        Effect_Destroy(effect_num);
         return;
     }
 
     const int32_t ceiling = Room_GetCeiling(sector, pos);
     if (ceiling == NO_HEIGHT || pos.y <= ceiling) {
-        Effect_Kill(effect_num);
+        Effect_Destroy(effect_num);
         return;
     }
 

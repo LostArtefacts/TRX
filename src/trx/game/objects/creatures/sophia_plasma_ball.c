@@ -122,13 +122,13 @@ static void M_Control(const int16_t effect_num)
 
     if (effect->pos.y >= h || effect->pos.y < c
         || Room_Get(room_num)->flags.underwater) {
-        Effect_Kill(effect_num);
+        Effect_Destroy(effect_num);
         return;
     }
 
     if (effect->flag2 == 0 && Lara_IsNearItem(&effect->pos, 200)) {
         Lara_TakeDamage(M_GetDamage(), true);
-        Effect_Kill(effect_num);
+        Effect_Destroy(effect_num);
         return;
     }
 

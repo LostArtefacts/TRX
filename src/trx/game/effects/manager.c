@@ -125,7 +125,7 @@ int16_t Effect_Create(const int16_t room_num)
     return effect_num;
 }
 
-void Effect_Kill(const int16_t effect_num)
+void Effect_Destroy(const int16_t effect_num)
 {
     EFFECT *const effect = Effect_Get(effect_num);
     Sparks_DetachEffect(effect_num);
@@ -146,7 +146,7 @@ void Effect_KillAllActive(void)
 
         if (obj->control_func != nullptr
             && (effect->object_id != O_FLAME || effect->counter >= 0)) {
-            Effect_Kill(effect_num);
+            Effect_Destroy(effect_num);
         }
         effect_num = next_effect_num;
     }

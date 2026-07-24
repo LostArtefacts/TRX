@@ -20,10 +20,10 @@ static void M_Control(const int16_t effect_num)
     const int32_t height = Room_GetHeight(sector, effect->pos);
 
     if (effect->pos.y >= height || effect->pos.y < ceiling) {
-        Effect_Kill(effect_num);
+        Effect_Destroy(effect_num);
     } else if (Lara_IsNearItem(&effect->pos, M_RANGE)) {
         Lara_TakeDamage(M_DAMAGE, true);
-        Effect_Kill(effect_num);
+        Effect_Destroy(effect_num);
     } else if (room_num != effect->room_num) {
         Effect_UpdateRoom(effect_num, room_num);
     }

@@ -279,18 +279,18 @@ static void M_Control(const int16_t effect_num)
             }
         }
 
-        Effect_Kill(effect_num);
+        Effect_Destroy(effect_num);
         return;
     }
 
     if (Room_Get(room_num)->flags.underwater) {
-        Effect_Kill(effect_num);
+        Effect_Destroy(effect_num);
         return;
     }
 
     LARA_INFO *const lara = Lara_GetLaraInfo();
     if (!lara->burn && Lara_IsNearItem(&effect->pos, 200)) {
-        Effect_Kill(effect_num);
+        Effect_Destroy(effect_num);
         Lara_TakeDamage(M_GetDamage(), true);
         Lara_CatchFire();
         return;

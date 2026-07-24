@@ -16,7 +16,7 @@ static void M_Control(const int16_t effect_num)
             && effect->frame_num > obj->mesh_count) {
             Output_AddDynamicLight(effect->pos, 13, 11);
         } else if (effect->frame_num <= obj->mesh_count) {
-            Effect_Kill(effect_num);
+            Effect_Destroy(effect_num);
         }
     } else if (g_Config.visuals.enable_gun_lighting) {
         Output_AddDynamicLight(effect->pos, 12, 10);

@@ -171,7 +171,7 @@ static void M_TR3_ControlSmall(
     // water extinguishes it.
     if (lara->water_status == LWS_CHEAT) {
         effect->counter = 0;
-        Effect_Kill(Effect_GetIndex(effect));
+        Effect_Destroy(Effect_GetIndex(effect));
         lara->burn = 0;
         return;
     }
@@ -213,7 +213,7 @@ static void M_TR3_ControlSmall(
         Lara_TakeDamage(M_ON_FIRE_DAMAGE, true);
     } else {
         effect->counter = 0;
-        Effect_Kill(Effect_GetIndex(effect));
+        Effect_Destroy(Effect_GetIndex(effect));
         lara->burn = false;
     }
 }
@@ -448,7 +448,7 @@ static void M_TR12_Control(const int16_t effect_num)
         if ((water_height != NO_HEIGHT && effect->pos.y > water_height)
             || lara_info->water_status == LWS_CHEAT) {
             effect->counter = 0;
-            Effect_Kill(Effect_GetIndex(effect));
+            Effect_Destroy(Effect_GetIndex(effect));
             lara_info->burn = false;
         } else {
             M_TR12_DoEffects(effect);
@@ -468,7 +468,7 @@ static void M_TR4_Control(const int16_t effect_num)
 
     if (lara->water_status == LWS_CHEAT) {
         effect->counter = 0;
-        Effect_Kill(effect_num);
+        Effect_Destroy(effect_num);
         lara->burn = false;
         return;
     }
@@ -505,7 +505,7 @@ static void M_TR4_Control(const int16_t effect_num)
     const int32_t wh = Room_GetWaterHeight(effect->pos, effect->room_num);
     if (wh != NO_HEIGHT && effect->pos.y > wh) {
         effect->counter = 0;
-        Effect_Kill(effect_num);
+        Effect_Destroy(effect_num);
         lara->burn = false;
         return;
     }

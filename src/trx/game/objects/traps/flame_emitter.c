@@ -39,7 +39,7 @@ static void M_KillIfAlive(const ITEM *const item)
         return;
     }
 
-    Effect_Kill(p->effect_num);
+    Effect_Destroy(p->effect_num);
     p->effect_num = NO_EFFECT;
 
     if (g_TRVersion == 1) {
