@@ -4,6 +4,7 @@
 #include <trx/core/math.h>
 #include <trx/core/utils.h>
 #include <trx/game/camera.h>
+#include <trx/game/fx/common.h>
 #include <trx/game/game/state.h>
 #include <trx/game/interpolation.h>
 #include <trx/game/lara.h>
@@ -397,6 +398,36 @@ static void M_DrawSnow(void)
     }
 }
 
+static void M_Control(void)
+{
+    if (!g_Config.visuals.enable_weather) {
+        return;
+    }
+    const WEATHER_TYPE weather_type = m_WeatherType;
+    if (weather_type == WEATHER_RAIN) {
+        M_UpdateRain();
+    } else if (weather_type == WEATHER_SNOW) {
+        M_UpdateSnow();
+    }
+}
+
+static void M_Draw(void)
+{
+    if (!g_Config.visuals.enable_weather) {
+        return;
+    }
+    switch (m_WeatherType) {
+    case WEATHER_RAIN:
+        M_DrawRain();
+        break;
+    case WEATHER_SNOW:
+        M_DrawSnow();
+        break;
+    default:
+        break;
+    }
+}
+
 void FX_Weather_Reset(void)
 {
     M_ClearWeather();
@@ -428,32 +459,10 @@ FX_SNOWFLAKE *FX_Weather_GetSnowflake(const int32_t idx)
     return &m_Snowflakes[idx];
 }
 
-void FX_Weather_Control(void)
-{
-    if (!g_Config.visuals.enable_weather) {
-        return;
-    }
-    const WEATHER_TYPE weather_type = m_WeatherType;
-    if (weather_type == WEATHER_RAIN) {
-        M_UpdateRain();
-    } else if (weather_type == WEATHER_SNOW) {
-        M_UpdateSnow();
-    }
-}
+static const FX_MODULE m_Module = {
+    .control_func = M_Control,
+    .draw_func = M_Draw,
+    .reset_func = FX_Weather_Reset,
+};
 
-void FX_Weather_Draw(void)
-{
-    if (!g_Config.visuals.enable_weather) {
-        return;
-    }
-    switch (m_WeatherType) {
-    case WEATHER_RAIN:
-        M_DrawRain();
-        break;
-    case WEATHER_SNOW:
-        M_DrawSnow();
-        break;
-    default:
-        break;
-    }
-}
+REGISTER_FX(m_Module)

@@ -2,6 +2,7 @@
 
 #include <trx/core/utils.h>
 #include <trx/game/const.h>
+#include <trx/game/fx/common.h>
 #include <trx/game/los.h>
 #include <trx/game/output/sources/poly_fx.h>
 
@@ -34,25 +35,7 @@ static bool M_GetOwnerItem(const M_LASER *const laser, ITEM **const out_item)
     return *out_item != nullptr;
 }
 
-bool FX_Laser_Spawn(const ITEM *const owner_item, const CREATURE_GUN *const gun)
-{
-    if (owner_item == nullptr || gun == nullptr || !gun->tr3_enemy_flash) {
-        return false;
-    }
-
-    M_LASER *const laser = &m_Priv.lasers[m_Priv.next_idx];
-    laser->active = true;
-    laser->lifetime = M_LIFETIME;
-    laser->owner_item_num = Item_GetIndex(owner_item);
-    laser->bite = gun->tr3_laser.bite;
-    laser->color = gun->tr3_laser.color;
-    laser->width = gun->tr3_laser.width;
-
-    m_Priv.next_idx = (m_Priv.next_idx + 1) % M_MAX_LASERS;
-    return true;
-}
-
-void FX_Laser_Control(void)
+static void M_Control(void)
 {
     for (int32_t i = 0; i < M_MAX_LASERS; i++) {
         M_LASER *const laser = &m_Priv.lasers[i];
@@ -73,7 +56,7 @@ void FX_Laser_Control(void)
     }
 }
 
-void FX_Laser_Draw(void)
+static void M_Draw(void)
 {
     for (int32_t i = 0; i < M_MAX_LASERS; i++) {
         const M_LASER *const laser = &m_Priv.lasers[i];
@@ -129,3 +112,28 @@ void FX_Laser_Draw(void)
         }
     }
 }
+
+bool FX_Laser_Spawn(const ITEM *const owner_item, const CREATURE_GUN *const gun)
+{
+    if (owner_item == nullptr || gun == nullptr || !gun->tr3_enemy_flash) {
+        return false;
+    }
+
+    M_LASER *const laser = &m_Priv.lasers[m_Priv.next_idx];
+    laser->active = true;
+    laser->lifetime = M_LIFETIME;
+    laser->owner_item_num = Item_GetIndex(owner_item);
+    laser->bite = gun->tr3_laser.bite;
+    laser->color = gun->tr3_laser.color;
+    laser->width = gun->tr3_laser.width;
+
+    m_Priv.next_idx = (m_Priv.next_idx + 1) % M_MAX_LASERS;
+    return true;
+}
+
+static const FX_MODULE m_Module = {
+    .control_func = M_Control,
+    .draw_func = M_Draw,
+};
+
+REGISTER_FX(m_Module)

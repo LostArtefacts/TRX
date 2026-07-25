@@ -69,10 +69,6 @@ typedef struct {
     int16_t outer_friction;
 } FX_WATER_SPLASH_SETUP;
 
-void FX_Water_Reset(void);
-void FX_Water_Control(void);
-void FX_Water_Draw(void);
-
 FX_WATER_RIPPLE *FX_Water_SetupRipple(
     int32_t x, int32_t y, int32_t z, int32_t size, bool is_still);
 void FX_Water_SetupSplash(const FX_WATER_SPLASH_SETUP *setup);

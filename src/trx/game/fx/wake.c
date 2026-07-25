@@ -3,6 +3,7 @@
 #include <trx/core/math.h>
 #include <trx/core/utils.h>
 #include <trx/game/const.h>
+#include <trx/game/fx/common.h>
 #include <trx/game/interpolation.h>
 #include <trx/game/output/sources/poly_fx.h>
 
@@ -30,16 +31,7 @@ static XYZ_32 M_GetWakeOrigin(const ITEM *const item, const XZ_32 offset)
     return pos;
 }
 
-void FX_Wake_Reset(void)
-{
-    for (int32_t i = 0; i < M_MAX_POINTS; i++) {
-        m_Points[i][0].life = 0;
-        m_Points[i][1].life = 0;
-    }
-    m_Active = false;
-}
-
-void FX_Wake_Control(void)
+static void M_Control(void)
 {
     if (!m_Active) {
         return;
@@ -66,6 +58,15 @@ void FX_Wake_Control(void)
     if (!any_active) {
         m_Active = false;
     }
+}
+
+void FX_Wake_Reset(void)
+{
+    for (int32_t i = 0; i < M_MAX_POINTS; i++) {
+        m_Points[i][0].life = 0;
+        m_Points[i][1].life = 0;
+    }
+    m_Active = false;
 }
 
 FX_WAKE_POINT *FX_Wake_GetPoint(const int32_t wake_idx, const int32_t side)
@@ -215,3 +216,10 @@ void FX_Wake_Draw(const ITEM *const item)
         }
     }
 }
+
+static const FX_MODULE m_Module = {
+    .control_func = M_Control,
+    .reset_func = FX_Wake_Reset,
+};
+
+REGISTER_FX(m_Module)

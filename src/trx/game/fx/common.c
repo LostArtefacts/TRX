@@ -1,56 +1,52 @@
 #include <trx/game/fx/common.h>
 
-#include <trx/game/fx/droplets.h>
-#include <trx/game/fx/fire.h>
-#include <trx/game/fx/footprint.h>
-#include <trx/game/fx/gun_flash.h>
-#include <trx/game/fx/laser.h>
-#include <trx/game/fx/ring.h>
-#include <trx/game/fx/wake.h>
-#include <trx/game/fx/water.h>
-#include <trx/game/fx/water_particles.h>
-#include <trx/game/fx/weather.h>
+#include <trx/debug.h>
+
+#include <stdint.h>
+
+#define M_MAX_MODULES 16
+
+static const FX_MODULE *m_Modules[M_MAX_MODULES];
+static int32_t m_ModuleCount = 0;
+
+void FX_RegisterModule(const FX_MODULE *const module)
+{
+    ASSERT(m_ModuleCount < M_MAX_MODULES);
+    m_Modules[m_ModuleCount++] = module;
+}
 
 void FX_NewFrame(void)
 {
-    FX_Fire_NewFrame();
+    for (int32_t i = 0; i < m_ModuleCount; i++) {
+        if (m_Modules[i]->new_frame_func != nullptr) {
+            m_Modules[i]->new_frame_func();
+        }
+    }
 }
 
 void FX_Control(void)
 {
-    FX_Fire_Control();
-    FX_Ring_Control();
-    FX_Wake_Control();
-    FX_Water_Control();
-    FX_Weather_Control();
-    FX_WaterParticles_Control();
-    FX_Droplets_Control();
-    FX_Footprint_Control();
-    FX_GunFlash_Control();
-    FX_Laser_Control();
+    for (int32_t i = 0; i < m_ModuleCount; i++) {
+        if (m_Modules[i]->control_func != nullptr) {
+            m_Modules[i]->control_func();
+        }
+    }
 }
 
 void FX_Draw(void)
 {
-    FX_Fire_Draw();
-    FX_Ring_Draw();
-    FX_Water_Draw();
-    FX_Weather_Draw();
-    FX_WaterParticles_Draw();
-    FX_Droplets_Draw();
-    FX_GunFlash_Draw();
-    FX_Laser_Draw();
-    FX_Footprint_Draw();
+    for (int32_t i = 0; i < m_ModuleCount; i++) {
+        if (m_Modules[i]->draw_func != nullptr) {
+            m_Modules[i]->draw_func();
+        }
+    }
 }
 
 void FX_Reset(void)
 {
-    FX_Fire_Reset();
-    FX_Water_Reset();
-    FX_Weather_Reset();
-    FX_WaterParticles_Reset();
-    FX_Droplets_Reset();
-    FX_Footprint_Reset();
-    FX_Wake_Reset();
-    FX_Ring_Reset();
+    for (int32_t i = 0; i < m_ModuleCount; i++) {
+        if (m_Modules[i]->reset_func != nullptr) {
+            m_Modules[i]->reset_func();
+        }
+    }
 }

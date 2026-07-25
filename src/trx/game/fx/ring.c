@@ -3,6 +3,7 @@
 #include <trx/core/math/func.h>
 #include <trx/core/utils.h>
 #include <trx/game/const.h>
+#include <trx/game/fx/common.h>
 #include <trx/game/interpolation.h>
 #include <trx/game/objects/common.h>
 #include <trx/game/output.h>
@@ -382,6 +383,21 @@ static void M_DrawKnockBackRings(const int32_t angle_base)
     }
 }
 
+static void M_Control(void)
+{
+    if (m_Active[FX_RING_TYPE_BLAST]) {
+        M_ControlExplosionRings();
+    }
+
+    if (m_Active[FX_RING_TYPE_SUMMON]) {
+        M_ControlSummonRings();
+    }
+
+    if (m_Active[FX_RING_TYPE_KNOCKBACK]) {
+        M_ControlKnockBackRings();
+    }
+}
+
 void FX_Ring_Reset(void)
 {
     memset(m_Rings, 0, sizeof(m_Rings));
@@ -411,21 +427,6 @@ FX_RING *FX_Ring_PeekRing(const FX_RING_TYPE type, const int32_t idx)
         return nullptr;
     }
     return &m_Rings[type][idx];
-}
-
-void FX_Ring_Control(void)
-{
-    if (m_Active[FX_RING_TYPE_BLAST]) {
-        M_ControlExplosionRings();
-    }
-
-    if (m_Active[FX_RING_TYPE_SUMMON]) {
-        M_ControlSummonRings();
-    }
-
-    if (m_Active[FX_RING_TYPE_KNOCKBACK]) {
-        M_ControlKnockBackRings();
-    }
 }
 
 void FX_Ring_SpawnKnockBack(const XYZ_32 pos)
@@ -467,3 +468,11 @@ void FX_Ring_Draw(void)
     M_DrawSummonRings(angle_base);
     M_DrawKnockBackRings(angle_base);
 }
+
+static const FX_MODULE m_Module = {
+    .control_func = M_Control,
+    .draw_func = FX_Ring_Draw,
+    .reset_func = FX_Ring_Reset,
+};
+
+REGISTER_FX(m_Module)
