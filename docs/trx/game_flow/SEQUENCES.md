@@ -223,15 +223,6 @@ default game flow for examples.
     <td colspan="2" align="center">N/A</td>
   </tr>
   <tr valign="top">
-    <td><code>setup_bacon_lara</code></td>
-    <td><code>anchor_room</code></td>
-    <td>Integer</td>
-    <td>
-      Sets the room number in which Bacon Lara will be anchored to enable
-      correct mirroring behaviour with Lara.
-    </td>
-  </tr>
-  <tr valign="top">
     <td><code>enable_sunset</code><strong>²</strong></td>
     <td colspan="2" align="center">N/A</td>
     <td>

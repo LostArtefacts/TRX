@@ -497,9 +497,6 @@
           "$ref": "#/definitions/seq_set_lara_start_anim"
         },
         {
-          "$ref": "#/definitions/seq_setup_bacon_lara"
-        },
-        {
           "$ref": "#/definitions/seq_disable_floor"
         },
         {
@@ -958,23 +955,6 @@
       "required": [
         "type",
         "anim"
-      ],
-      "additionalProperties": false
-    },
-    "seq_setup_bacon_lara": {
-      "type": "object",
-      "description": "Sets the room number in which Bacon Lara will be anchored to enable correct mirroring behaviour with Lara.",
-      "properties": {
-        "type": {
-          "const": "setup_bacon_lara"
-        },
-        "anchor_room": {
-          "type": "integer"
-        }
-      },
-      "required": [
-        "type",
-        "anchor_room"
       ],
       "additionalProperties": false
     },

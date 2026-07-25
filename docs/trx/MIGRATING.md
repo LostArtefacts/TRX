@@ -225,6 +225,18 @@ order: 3
    The item query narrows on each: `simulated`, `present`, `visible`, `finished`,
    `in_play`, `alive`, `targetable`.
 
+22. **Update game flows that anchor Bacon Lara**
+   The `setup_bacon_lara` sequence event was removed. The anchor room is an
+   `anchor_room` object property now, which a level editor can set on the object
+   or on a single item, and a script can set in `before_item_setup`:
+   ```lua
+   trx.events.before_item_setup(function()
+     trx.objects.bacon_lara.properties.anchor_room = 10
+   end)
+   ```
+   The property is optional: at its default of -1, the room Bacon Lara is placed
+   in is the anchor. Refer to the Atlantis level in the default game flow.
+
 ### Version 1.8 to 1.9
 
 1. **Update Lara pushblock animations**
