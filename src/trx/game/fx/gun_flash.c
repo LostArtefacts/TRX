@@ -4,6 +4,7 @@
 #include <trx/core/colors.h>
 #include <trx/core/math.h>
 #include <trx/game/collision.h>
+#include <trx/game/fx/common.h>
 #include <trx/game/items.h>
 #include <trx/game/matrix.h>
 #include <trx/game/objects.h>
@@ -89,29 +90,7 @@ static void M_GetJointPose(
     out_rot->_23 = 0;
 }
 
-bool FX_GunFlash_Spawn(
-    const ITEM *const owner_item, const CREATURE_GUN *const gun)
-{
-    if (owner_item == nullptr || gun == nullptr || !gun->tr3_enemy_flash) {
-        return false;
-    }
-
-    M_GUN_FLASH *const flash = &m_Priv.flashes[m_Priv.next_idx];
-    flash->active = true;
-    flash->owner_item_num = Item_GetIndex(owner_item);
-    flash->room_num = owner_item->room_num;
-    flash->lifetime = M_LIFETIME;
-    flash->rot = (XZ_16) { .x = gun->tr3_flash_rot_x, .z = M_GetRandomRoll() };
-    flash->bite = gun->tr3_flash;
-    flash->flash_object_id =
-        (gun->tr3_enemy_weapon_flags & 1) != 0 ? O_M16_FLASH : O_GUN_FLASH;
-    flash->light_pos = owner_item->pos;
-
-    m_Priv.next_idx = (m_Priv.next_idx + 1) % M_MAX_FLASHES;
-    return true;
-}
-
-void FX_GunFlash_Control(void)
+static void M_Control(void)
 {
     for (int32_t i = 0; i < M_MAX_FLASHES; i++) {
         M_GUN_FLASH *const flash = &m_Priv.flashes[i];
@@ -150,7 +129,7 @@ void FX_GunFlash_Control(void)
     }
 }
 
-void FX_GunFlash_Draw(void)
+static void M_Draw(void)
 {
     const OBJECT *const glow_obj = Object_Get(O_GLOW);
 
@@ -193,3 +172,32 @@ void FX_GunFlash_Draw(void)
         Matrix_Pop();
     }
 }
+
+bool FX_GunFlash_Spawn(
+    const ITEM *const owner_item, const CREATURE_GUN *const gun)
+{
+    if (owner_item == nullptr || gun == nullptr || !gun->tr3_enemy_flash) {
+        return false;
+    }
+
+    M_GUN_FLASH *const flash = &m_Priv.flashes[m_Priv.next_idx];
+    flash->active = true;
+    flash->owner_item_num = Item_GetIndex(owner_item);
+    flash->room_num = owner_item->room_num;
+    flash->lifetime = M_LIFETIME;
+    flash->rot = (XZ_16) { .x = gun->tr3_flash_rot_x, .z = M_GetRandomRoll() };
+    flash->bite = gun->tr3_flash;
+    flash->flash_object_id =
+        (gun->tr3_enemy_weapon_flags & 1) != 0 ? O_M16_FLASH : O_GUN_FLASH;
+    flash->light_pos = owner_item->pos;
+
+    m_Priv.next_idx = (m_Priv.next_idx + 1) % M_MAX_FLASHES;
+    return true;
+}
+
+static const FX_MODULE m_Module = {
+    .control_func = M_Control,
+    .draw_func = M_Draw,
+};
+
+REGISTER_FX(m_Module)

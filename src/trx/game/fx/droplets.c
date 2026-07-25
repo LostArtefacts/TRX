@@ -4,10 +4,9 @@
 // underwater and drained here as droplets spawn. Not to be confused with
 // fx/water_particles.c, which is the TR3 residue drifting around Lara
 // while she is submerged.
-#include <trx/game/fx/droplets.h>
-
 #include <trx/config.h>
 #include <trx/core/math.h>
+#include <trx/game/fx/common.h>
 #include <trx/game/interpolation.h>
 #include <trx/game/lara.h>
 #include <trx/game/output/sources/poly_fx.h>
@@ -169,7 +168,7 @@ static void M_UpdateDroplet(M_DROPLET *const droplet)
     }
 }
 
-void FX_Droplets_Reset(void)
+static void M_Reset(void)
 {
     memset(m_Droplets, 0, sizeof(m_Droplets));
     memset(m_MeshUnderwater, 0, sizeof(m_MeshUnderwater));
@@ -177,7 +176,7 @@ void FX_Droplets_Reset(void)
     m_Ticks = 0;
 }
 
-void FX_Droplets_Control(void)
+static void M_Control(void)
 {
     if (!M_IsEnabled()) {
         return;
@@ -197,7 +196,7 @@ void FX_Droplets_Control(void)
     }
 }
 
-void FX_Droplets_Draw(void)
+static void M_Draw(void)
 {
     if (!M_IsEnabled()) {
         return;
@@ -239,3 +238,11 @@ void FX_Droplets_Draw(void)
             tail, tail_color, head, head_color, 1.0f, DRAW_BLEND_ADD);
     }
 }
+
+static const FX_MODULE m_Module = {
+    .control_func = M_Control,
+    .draw_func = M_Draw,
+    .reset_func = M_Reset,
+};
+
+REGISTER_FX(m_Module)

@@ -1,11 +1,10 @@
 // TR3 underwater residue: faint specks drifting around Lara while she is
 // submerged. The droplets falling off her once she is out of the water are
 // fx/droplets.c.
-#include <trx/game/fx/water_particles.h>
-
 #include <trx/config.h>
 #include <trx/core/math.h>
 #include <trx/core/utils.h>
+#include <trx/game/fx/common.h>
 #include <trx/game/game_flow/common.h>
 #include <trx/game/interpolation.h>
 #include <trx/game/lara.h>
@@ -110,12 +109,12 @@ static void M_Spawn(M_WATER_PARTICLE *const particle)
     particle->prev_pos = particle->pos;
 }
 
-void FX_WaterParticles_Reset(void)
+static void M_Reset(void)
 {
     M_Clear();
 }
 
-void FX_WaterParticles_Control(void)
+static void M_Control(void)
 {
     if (!M_IsEnabled()) {
         M_Clear();
@@ -152,7 +151,7 @@ void FX_WaterParticles_Control(void)
     }
 }
 
-void FX_WaterParticles_Draw(void)
+static void M_Draw(void)
 {
     if (!M_IsEnabled()) {
         return;
@@ -246,3 +245,11 @@ void FX_WaterParticles_Draw(void)
             DRAW_BLEND_ADD);
     }
 }
+
+static const FX_MODULE m_Module = {
+    .control_func = M_Control,
+    .draw_func = M_Draw,
+    .reset_func = M_Reset,
+};
+
+REGISTER_FX(m_Module)

@@ -2,6 +2,7 @@
 
 #include <trx/core/utils.h>
 #include <trx/game/const.h>
+#include <trx/game/fx/common.h>
 #include <trx/game/matrix.h>
 #include <trx/game/output/sources/poly_fx.h>
 #include <trx/game/output/state.h>
@@ -328,17 +329,59 @@ static void M_DrawFire(const M_FIRE *const fire)
     }
 }
 
-void FX_Fire_Reset(void)
+static void M_Reset(void)
 {
     memset(m_Sparks, 0, sizeof(m_Sparks));
     memset(m_Fires, 0, sizeof(m_Fires));
     m_NextSpark = 1;
 }
 
-void FX_Fire_NewFrame(void)
+static void M_NewFrame(void)
 {
     for (int32_t i = 0; i < M_MAX_FIRES; i++) {
         m_Fires[i].on = 0;
+    }
+}
+
+static bool M_AnyFireActive(void)
+{
+    for (int32_t i = 0; i < M_MAX_FIRES; i++) {
+        if (m_Fires[i].on) {
+            return true;
+        }
+    }
+    return false;
+}
+
+static void M_Control(void)
+{
+    // Spawning draws from the control RNG that demo playback is locked to, so
+    // only run the pool while a fire is registered this frame. Existing sparks
+    // still advance to fade out; that path draws no RNG.
+    if (M_AnyFireActive()) {
+        M_KeepBurning();
+    }
+
+    const int32_t base_sprite = Sparks_GetSpriteIndex(SPARK_TYPE_EXPLOSION);
+    for (int32_t i = 0; i < M_MAX_SPARKS; i++) {
+        SPARK *const spark = &m_Sparks[i];
+        if (spark->on) {
+            M_AdvanceSpark(spark, base_sprite);
+        }
+    }
+}
+
+static void M_Draw(void)
+{
+    if (Sparks_GetSpriteIndex(SPARK_TYPE_EXPLOSION) == NO_ITEM) {
+        return;
+    }
+
+    for (int32_t i = 0; i < M_MAX_FIRES; i++) {
+        const M_FIRE *const fire = &m_Fires[i];
+        if (fire->on) {
+            M_DrawFire(fire);
+        }
     }
 }
 
@@ -363,44 +406,11 @@ void FX_Fire_Add(
     }
 }
 
-static bool M_AnyFireActive(void)
-{
-    for (int32_t i = 0; i < M_MAX_FIRES; i++) {
-        if (m_Fires[i].on) {
-            return true;
-        }
-    }
-    return false;
-}
+static const FX_MODULE m_Module = {
+    .new_frame_func = M_NewFrame,
+    .control_func = M_Control,
+    .draw_func = M_Draw,
+    .reset_func = M_Reset,
+};
 
-void FX_Fire_Control(void)
-{
-    // Spawning draws from the control RNG that demo playback is locked to, so
-    // only run the pool while a fire is registered this frame. Existing sparks
-    // still advance to fade out; that path draws no RNG.
-    if (M_AnyFireActive()) {
-        M_KeepBurning();
-    }
-
-    const int32_t base_sprite = Sparks_GetSpriteIndex(SPARK_TYPE_EXPLOSION);
-    for (int32_t i = 0; i < M_MAX_SPARKS; i++) {
-        SPARK *const spark = &m_Sparks[i];
-        if (spark->on) {
-            M_AdvanceSpark(spark, base_sprite);
-        }
-    }
-}
-
-void FX_Fire_Draw(void)
-{
-    if (Sparks_GetSpriteIndex(SPARK_TYPE_EXPLOSION) == NO_ITEM) {
-        return;
-    }
-
-    for (int32_t i = 0; i < M_MAX_FIRES; i++) {
-        const M_FIRE *const fire = &m_Fires[i];
-        if (fire->on) {
-            M_DrawFire(fire);
-        }
-    }
-}
+REGISTER_FX(m_Module)

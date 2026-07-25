@@ -10,7 +10,6 @@ typedef struct {
 } FX_WAKE_POINT;
 
 void FX_Wake_Reset(void);
-void FX_Wake_Control(void);
 
 FX_WAKE_POINT *FX_Wake_GetPoint(int32_t wake_idx, int32_t side);
 

@@ -2,6 +2,7 @@
 
 #include <trx/config.h>
 #include <trx/core/utils.h>
+#include <trx/game/fx/common.h>
 #include <trx/game/interpolation.h>
 #include <trx/game/items.h>
 #include <trx/game/lara/common.h>
@@ -31,7 +32,7 @@ static FX_WATER_SPLASH m_Splashes[4];
 static FX_WATER_RIPPLE m_Ripples[16];
 static int32_t m_SplashCount = 0;
 
-void FX_Water_Reset(void)
+static void M_Reset(void)
 {
     memset(m_Splashes, 0, sizeof(m_Splashes));
     memset(m_Ripples, 0, sizeof(m_Ripples));
@@ -528,7 +529,7 @@ static void M_DrawRipple(const FX_WATER_RIPPLE *r)
         DRAW_BLEND_ADD);
 }
 
-void FX_Water_Draw(void)
+static void M_Draw(void)
 {
     for (int32_t i = 0; i < (int32_t)ARRAY_SIZE(m_Splashes); i++) {
         const FX_WATER_SPLASH *const splash = &m_Splashes[i];
@@ -547,7 +548,7 @@ void FX_Water_Draw(void)
     }
 }
 
-void FX_Water_Control(void)
+static void M_Control(void)
 {
     if (m_SplashCount > 0) {
         m_SplashCount--;
@@ -627,3 +628,11 @@ void FX_Water_Control(void)
         }
     }
 }
+
+static const FX_MODULE m_Module = {
+    .control_func = M_Control,
+    .draw_func = M_Draw,
+    .reset_func = M_Reset,
+};
+
+REGISTER_FX(m_Module)
