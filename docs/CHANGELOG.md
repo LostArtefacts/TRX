@@ -46,6 +46,7 @@
 - fixed Lara's braid and pigtails spinning around their own axis (OG bug)
 - fixed a missing texture on Young Lara's left hand
 - fixed a misaligned texture on Young Lara's hips
+- fixed the camera getting stuck when Lara traverses around corner ladders (OG bug)
 
 **Lua**
 
