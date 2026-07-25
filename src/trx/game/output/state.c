@@ -377,7 +377,8 @@ void Output_SetTime(const float time)
 
 void Output_AnimateTextures(int32_t num_frames)
 {
-    const int32_t anim_delta = g_TRVersion == 3 ? 2 : 1;
+    // TR3 and TR4 halve the cycle threshold relative to TR1 and TR2.
+    const int32_t anim_delta = g_TRVersion >= 3 ? 2 : 1;
 
     m_TimeInGame += num_frames;
     m_AnimatedTexturesOffset += num_frames * anim_delta;
