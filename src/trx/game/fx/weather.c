@@ -1,6 +1,8 @@
 #include <trx/game/fx/weather.h>
 
 #include <trx/config.h>
+#include <trx/core/json/util/read_io.h>
+#include <trx/core/json/util/write_io.h>
 #include <trx/core/math.h>
 #include <trx/core/utils.h>
 #include <trx/game/camera.h>
@@ -35,8 +37,31 @@
 #define M_SNOW_YV_MIN 8
 #define M_SNOW_YV_RANGE 24
 
-static FX_RAINDROP m_Raindrops[M_MAX_WEATHER];
-static FX_SNOWFLAKE m_Snowflakes[M_MAX_WEATHER];
+typedef struct {
+    XYZ_32 pos;
+    XYZ_32 prev_pos;
+    int32_t prev_yv;
+    int8_t xv;
+    uint8_t yv;
+    int8_t zv;
+    uint8_t life;
+} M_RAINDROP;
+
+typedef struct {
+    XYZ_32 pos;
+    XYZ_32 prev_pos;
+    bool stopped;
+    int32_t prev_yv;
+    int32_t prev_life;
+    int8_t xv;
+    uint8_t yv;
+    int8_t zv;
+    uint8_t life;
+} M_SNOWFLAKE;
+
+// A zero pos.x marks a free slot.
+static M_RAINDROP m_Raindrops[M_MAX_WEATHER];
+static M_SNOWFLAKE m_Snowflakes[M_MAX_WEATHER];
 static WEATHER_TYPE m_WeatherType = WEATHER_NONE;
 
 static void M_ClearWeather(void)
@@ -90,7 +115,7 @@ static bool M_SpawnParticle(XYZ_32 *const pos)
     return true;
 }
 
-static void M_SpawnRainDrop(FX_RAINDROP *const drop)
+static void M_SpawnRainDrop(M_RAINDROP *const drop)
 {
     if (!M_SpawnParticle(&drop->pos)) {
         return;
@@ -111,7 +136,7 @@ static void M_UpdateRain(void)
 
     int32_t num_alive = 0;
     for (int32_t i = 0; i < M_MAX_WEATHER; i++) {
-        FX_RAINDROP *const drop = &m_Raindrops[i];
+        M_RAINDROP *const drop = &m_Raindrops[i];
 
         if (drop->pos.x == 0 && num_alive < M_MAX_WEATHER_ALIVE) {
             num_alive++;
@@ -176,7 +201,7 @@ static void M_DrawRain(void)
         Interpolation_IsActive() && ratio > 0.0 && ratio < 1.0;
 
     for (int32_t i = 0; i < M_MAX_WEATHER; i++) {
-        const FX_RAINDROP *const drop = &m_Raindrops[i];
+        const M_RAINDROP *const drop = &m_Raindrops[i];
         if (drop->pos.x == 0) {
             continue;
         }
@@ -204,7 +229,7 @@ static void M_DrawRain(void)
     }
 }
 
-static void M_SpawnSnowflake(FX_SNOWFLAKE *const snow)
+static void M_SpawnSnowflake(M_SNOWFLAKE *const snow)
 {
     if (!M_SpawnParticle(&snow->pos)) {
         return;
@@ -225,7 +250,7 @@ static void M_UpdateSnow(void)
 {
     int32_t num_alive = 0;
     for (int32_t i = 0; i < M_MAX_WEATHER; i++) {
-        FX_SNOWFLAKE *const snow = &m_Snowflakes[i];
+        M_SNOWFLAKE *const snow = &m_Snowflakes[i];
 
         if (snow->pos.x == 0 && num_alive < M_MAX_WEATHER_ALIVE) {
             num_alive++;
@@ -314,7 +339,7 @@ static void M_DrawSnow(void)
     const bool do_interp =
         Interpolation_IsActive() && ratio > 0.0 && ratio < 1.0;
     for (int32_t i = 0; i < M_MAX_WEATHER; i++) {
-        FX_SNOWFLAKE *const snow = &m_Snowflakes[i];
+        M_SNOWFLAKE *const snow = &m_Snowflakes[i];
         if (snow->pos.x == 0) {
             continue;
         }
@@ -398,6 +423,122 @@ static void M_DrawSnow(void)
     }
 }
 
+static void M_SaveRain(JSON_WRITE_IO *const io)
+{
+    JSONW_PUSH_ARRAY(io);
+    for (int32_t i = 0; i < M_MAX_WEATHER; i++) {
+        const M_RAINDROP *const drop = &m_Raindrops[i];
+        if (drop->pos.x == 0) {
+            continue;
+        }
+
+        JSONW_PUSH_OBJECT(io);
+        JSONW_WRITE(io, "pos", drop->pos);
+        JSONW_WRITE(io, "xv", drop->xv);
+        JSONW_WRITE(io, "yv", drop->yv);
+        JSONW_WRITE(io, "zv", drop->zv);
+        JSONW_WRITE(io, "life", drop->life);
+        JSONW_POP_AND_APPEND(io);
+    }
+    JSONW_POP_AND_SET_NZ(io, "rain");
+}
+
+static void M_SaveSnow(JSON_WRITE_IO *const io)
+{
+    JSONW_PUSH_ARRAY(io);
+    for (int32_t i = 0; i < M_MAX_WEATHER; i++) {
+        const M_SNOWFLAKE *const snow = &m_Snowflakes[i];
+        if (snow->pos.x == 0) {
+            continue;
+        }
+
+        JSONW_PUSH_OBJECT(io);
+        JSONW_WRITE(io, "pos", snow->pos);
+        JSONW_WRITE(io, "xv", snow->xv);
+        JSONW_WRITE(io, "yv", snow->yv);
+        JSONW_WRITE(io, "zv", snow->zv);
+        JSONW_WRITE(io, "life", snow->life);
+        JSONW_WRITE(io, "stopped", snow->stopped);
+        JSONW_POP_AND_APPEND(io);
+    }
+    JSONW_POP_AND_SET_NZ(io, "snow");
+}
+
+static void M_Save(JSON_WRITE_IO *const io)
+{
+    // Particles of the inactive type are neither updated nor drawn.
+    if (m_WeatherType == WEATHER_RAIN) {
+        M_SaveRain(io);
+    } else if (m_WeatherType == WEATHER_SNOW) {
+        M_SaveSnow(io);
+    }
+}
+
+static bool M_LoadRain(JSON_READ_IO *const io)
+{
+    const int32_t count = JSON_ARRAY_LEN(io);
+    for (int32_t i = 0; i < count; i++) {
+        if (i >= M_MAX_WEATHER) {
+            LOG_WARNING(
+                "Malformed save: too many raindrops. Extra raindrops will be "
+                "ignored.");
+            break;
+        }
+
+        M_RAINDROP *const drop = &m_Raindrops[i];
+        JSON_MUST(JSON_PUSH_INDEX(io, i));
+        JSON_MUST(JSON_READ(io, "pos", &drop->pos));
+        JSON_MUST(JSON_READ(io, "xv", &drop->xv));
+        JSON_MUST(JSON_READ(io, "yv", &drop->yv));
+        JSON_MUST(JSON_READ(io, "zv", &drop->zv));
+        JSON_MUST(JSON_READ(io, "life", &drop->life));
+        JSON_MUST(JSON_POP(io));
+        drop->prev_pos = drop->pos;
+        drop->prev_yv = drop->yv;
+    }
+    JSON_FINISH();
+}
+
+static bool M_LoadSnow(JSON_READ_IO *const io)
+{
+    const int32_t count = JSON_ARRAY_LEN(io);
+    for (int32_t i = 0; i < count; i++) {
+        if (i >= M_MAX_WEATHER) {
+            LOG_WARNING(
+                "Malformed save: too many snowflakes. Extra snowflakes will "
+                "be ignored.");
+            break;
+        }
+
+        M_SNOWFLAKE *const snow = &m_Snowflakes[i];
+        JSON_MUST(JSON_PUSH_INDEX(io, i));
+        JSON_MUST(JSON_READ(io, "pos", &snow->pos));
+        JSON_MUST(JSON_READ(io, "xv", &snow->xv));
+        JSON_MUST(JSON_READ(io, "yv", &snow->yv));
+        JSON_MUST(JSON_READ(io, "zv", &snow->zv));
+        JSON_MUST(JSON_READ(io, "life", &snow->life));
+        JSON_MUST(JSON_READ(io, "stopped", &snow->stopped));
+        JSON_MUST(JSON_POP(io));
+        snow->prev_pos = snow->pos;
+        snow->prev_yv = snow->yv;
+        snow->prev_life = snow->life;
+    }
+    JSON_FINISH();
+}
+
+static bool M_Load(JSON_READ_IO *const io)
+{
+    if (JSON_OPTIONAL(JSON_PUSH(io, "rain"))) {
+        JSON_MUST(M_LoadRain(io));
+        JSON_MUST(JSON_POP(io));
+    }
+    if (JSON_OPTIONAL(JSON_PUSH(io, "snow"))) {
+        JSON_MUST(M_LoadSnow(io));
+        JSON_MUST(JSON_POP(io));
+    }
+    JSON_FINISH();
+}
+
 static void M_Control(void)
 {
     if (!g_Config.visuals.enable_weather) {
@@ -428,7 +569,7 @@ static void M_Draw(void)
     }
 }
 
-void FX_Weather_Reset(void)
+static void M_Reset(void)
 {
     M_ClearWeather();
 }
@@ -443,26 +584,13 @@ void FX_Weather_SetWeather(const WEATHER_TYPE weather_type)
     m_WeatherType = weather_type;
 }
 
-FX_RAINDROP *FX_Weather_GetRaindrop(const int32_t idx)
-{
-    if (idx < 0 || idx >= M_MAX_WEATHER) {
-        return nullptr;
-    }
-    return &m_Raindrops[idx];
-}
-
-FX_SNOWFLAKE *FX_Weather_GetSnowflake(const int32_t idx)
-{
-    if (idx < 0 || idx >= M_MAX_WEATHER) {
-        return nullptr;
-    }
-    return &m_Snowflakes[idx];
-}
-
 static const FX_MODULE m_Module = {
     .control_func = M_Control,
     .draw_func = M_Draw,
-    .reset_func = FX_Weather_Reset,
+    .reset_func = M_Reset,
+    .save_key = "weather",
+    .save_func = M_Save,
+    .load_func = M_Load,
 };
 
 REGISTER_FX(m_Module)

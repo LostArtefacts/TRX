@@ -1,5 +1,8 @@
 #include <trx/game/fx/ring.h>
 
+#include <trx/core/json/util/read_io.h>
+#include <trx/core/json/util/write_io.h>
+#include <trx/core/log.h>
 #include <trx/core/math/func.h>
 #include <trx/core/utils.h>
 #include <trx/game/const.h>
@@ -383,6 +386,95 @@ static void M_DrawKnockBackRings(const int32_t angle_base)
     }
 }
 
+static void M_SaveRings(
+    JSON_WRITE_IO *const io, const FX_RING_TYPE type, const char *const key)
+{
+    if (!m_Active[type]) {
+        return;
+    }
+
+    JSONW_PUSH_ARRAY(io);
+    for (int32_t i = 0; i < M_MAX_RINGS; i++) {
+        const FX_RING *const ring = &m_Rings[type][i];
+        JSONW_PUSH_OBJECT(io);
+        JSONW_WRITE(io, "on", ring->on);
+        JSONW_WRITE(io, "life", ring->life);
+        JSONW_WRITE(io, "speed", ring->speed);
+        JSONW_WRITE(io, "radius", ring->radius);
+        JSONW_WRITE(io, "prev_radius", ring->prev_radius);
+        JSONW_WRITE(io, "rot", ((XYZ_16) { ring->rot.x, 0, ring->rot.z }));
+        JSONW_WRITE(
+            io, "prev_rot",
+            ((XYZ_16) { ring->prev_rot.x, 0, ring->prev_rot.z }));
+        JSONW_WRITE(io, "pos", ring->pos);
+        JSONW_WRITE(io, "prev_pos", ring->prev_pos);
+        JSONW_POP_AND_APPEND(io);
+    }
+    JSONW_POP_AND_SET_NZ(io, key);
+}
+
+static void M_Save(JSON_WRITE_IO *const io)
+{
+    M_SaveRings(io, FX_RING_TYPE_BLAST, "blast");
+    M_SaveRings(io, FX_RING_TYPE_KNOCKBACK, "knockback");
+    M_SaveRings(io, FX_RING_TYPE_SUMMON, "summon");
+}
+
+static bool M_LoadRing(JSON_READ_IO *const io, FX_RING *const ring)
+{
+    JSON_MUST(JSON_READ(io, "on", &ring->on));
+    JSON_MUST(JSON_READ(io, "life", &ring->life));
+    JSON_MUST(JSON_READ(io, "speed", &ring->speed));
+    JSON_MUST(JSON_READ(io, "radius", &ring->radius));
+    JSON_MUST(JSON_READ(io, "prev_radius", &ring->prev_radius));
+
+    XYZ_16 rot = {};
+    JSON_MUST(JSON_READ(io, "rot", &rot));
+    ring->rot = (XZ_16) { rot.x, rot.z };
+
+    XYZ_16 prev_rot = {};
+    JSON_MUST(JSON_READ(io, "prev_rot", &prev_rot));
+    ring->prev_rot = (XZ_16) { prev_rot.x, prev_rot.z };
+
+    JSON_MUST(JSON_READ(io, "pos", &ring->pos));
+    JSON_MUST(JSON_READ(io, "prev_pos", &ring->prev_pos));
+    JSON_FINISH();
+}
+
+static bool M_LoadRings(
+    JSON_READ_IO *const io, const FX_RING_TYPE type, const char *const key)
+{
+    if (!JSON_OPTIONAL(JSON_PUSH(io, key))) {
+        return true;
+    }
+
+    const int32_t count = JSON_ARRAY_LEN(io);
+    for (int32_t i = 0; i < count; i++) {
+        JSON_MUST(JSON_PUSH_INDEX(io, i));
+        FX_RING *const ring = FX_Ring_GetRing(type, i);
+        if (ring != nullptr) {
+            JSON_MUST(M_LoadRing(io, ring));
+        } else {
+            LOG_WARNING(
+                "Malformed save: too many %s rings. Extra rings will be "
+                "ignored.",
+                key);
+        }
+        JSON_MUST(JSON_POP(io));
+    }
+
+    JSON_MUST(JSON_POP(io));
+    JSON_FINISH();
+}
+
+static bool M_Load(JSON_READ_IO *const io)
+{
+    JSON_MUST(M_LoadRings(io, FX_RING_TYPE_BLAST, "blast"));
+    JSON_MUST(M_LoadRings(io, FX_RING_TYPE_KNOCKBACK, "knockback"));
+    JSON_MUST(M_LoadRings(io, FX_RING_TYPE_SUMMON, "summon"));
+    JSON_FINISH();
+}
+
 static void M_Control(void)
 {
     if (m_Active[FX_RING_TYPE_BLAST]) {
@@ -398,7 +490,7 @@ static void M_Control(void)
     }
 }
 
-void FX_Ring_Reset(void)
+static void M_Reset(void)
 {
     memset(m_Rings, 0, sizeof(m_Rings));
     memset(m_Active, 0, sizeof(m_Active));
@@ -472,7 +564,10 @@ void FX_Ring_Draw(void)
 static const FX_MODULE m_Module = {
     .control_func = M_Control,
     .draw_func = FX_Ring_Draw,
-    .reset_func = FX_Ring_Reset,
+    .reset_func = M_Reset,
+    .save_key = "rings",
+    .save_func = M_Save,
+    .load_func = M_Load,
 };
 
 REGISTER_FX(m_Module)

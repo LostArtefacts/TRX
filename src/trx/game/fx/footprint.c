@@ -1,6 +1,8 @@
 #include <trx/game/fx/footprint.h>
 
 #include <trx/config.h>
+#include <trx/core/json/util/read_io.h>
+#include <trx/core/json/util/write_io.h>
 #include <trx/core/math.h>
 #include <trx/core/utils.h>
 #include <trx/game/collision.h>
@@ -20,7 +22,14 @@
 #define M_FOOTPRINT_Z_DEPTH_ADJUST -0.5f
 
 typedef struct {
-    FX_FOOTPRINT prints[M_MAX_FOOTPRINTS];
+    XYZ_32 pos;
+    int16_t room_num;
+    int16_t y_rot;
+    int16_t life;
+} M_FOOTPRINT;
+
+typedef struct {
+    M_FOOTPRINT prints[M_MAX_FOOTPRINTS];
     int32_t next_idx;
 } M_PRIV;
 
@@ -43,8 +52,7 @@ static const SAMPLE_TRX_ID m_StepSounds[14] = {
 };
 
 static void M_GetWorldPoint(
-    const FX_FOOTPRINT *const print, const XYZ_32 local,
-    XYZ_32 *const out_world)
+    const M_FOOTPRINT *const print, const XYZ_32 local, XYZ_32 *const out_world)
 {
     const int32_t s = Math_Sin(print->y_rot);
     const int32_t c = Math_Cos(print->y_rot);
@@ -56,7 +64,7 @@ static void M_GetWorldPoint(
 }
 
 static int32_t M_GetVertexYOffset(
-    const FX_FOOTPRINT *const print, const XYZ_32 world_pos)
+    const M_FOOTPRINT *const print, const XYZ_32 world_pos)
 {
     int16_t room_num = print->room_num;
     const XYZ_32 pos = { world_pos.x, print->pos.y, world_pos.z };
@@ -77,6 +85,63 @@ static int32_t M_GetVertexYOffset(
     return dy;
 }
 
+static bool M_HasActivePrints(void)
+{
+    for (int32_t i = 0; i < M_MAX_FOOTPRINTS; i++) {
+        if (m_Priv.prints[i].life != 0) {
+            return true;
+        }
+    }
+    return false;
+}
+
+static void M_Save(JSON_WRITE_IO *const io)
+{
+    if (!M_HasActivePrints()) {
+        return;
+    }
+
+    JSONW_PUSH_ARRAY(io);
+    for (int32_t i = 0; i < M_MAX_FOOTPRINTS; i++) {
+        const M_FOOTPRINT *const print = &m_Priv.prints[i];
+        JSONW_PUSH_OBJECT(io);
+        JSONW_WRITE(io, "pos", print->pos);
+        JSONW_WRITE(io, "room_num", print->room_num);
+        JSONW_WRITE(io, "y_rot", print->y_rot);
+        JSONW_WRITE(io, "life", print->life);
+        JSONW_POP_AND_APPEND(io);
+    }
+    JSONW_POP_AND_SET(io, "prints");
+}
+
+static bool M_Load(JSON_READ_IO *const io)
+{
+    if (!JSON_OPTIONAL(JSON_PUSH(io, "prints"))) {
+        return true;
+    }
+
+    const int32_t count = JSON_ARRAY_LEN(io);
+    for (int32_t i = 0; i < count; i++) {
+        if (i >= M_MAX_FOOTPRINTS) {
+            LOG_WARNING(
+                "Malformed save: too many footprints. Extra footprints will "
+                "be ignored.");
+            break;
+        }
+
+        M_FOOTPRINT *const print = &m_Priv.prints[i];
+        JSON_MUST(JSON_PUSH_INDEX(io, i));
+        JSON_MUST(JSON_READ(io, "pos", &print->pos));
+        JSON_MUST(JSON_READ(io, "room_num", &print->room_num));
+        JSON_MUST(JSON_READ(io, "y_rot", &print->y_rot));
+        JSON_MUST(JSON_READ(io, "life", &print->life));
+        JSON_MUST(JSON_POP(io));
+    }
+
+    JSON_MUST(JSON_POP(io));
+    JSON_FINISH();
+}
+
 static void M_Control(void)
 {
     if (!g_Config.visuals.enable_footprints) {
@@ -84,7 +149,7 @@ static void M_Control(void)
     }
     M_PRIV *const p = &m_Priv;
     for (int32_t i = 0; i < M_MAX_FOOTPRINTS; i++) {
-        FX_FOOTPRINT *const print = &p->prints[i];
+        M_FOOTPRINT *const print = &p->prints[i];
         if (print->life != 0) {
             print->life--;
         }
@@ -110,7 +175,7 @@ static void M_Draw(void)
     };
 
     for (int32_t i = 0; i < M_MAX_FOOTPRINTS; i++) {
-        const FX_FOOTPRINT *const print = &p->prints[i];
+        const M_FOOTPRINT *const print = &p->prints[i];
         if (print->life == 0) {
             continue;
         }
@@ -135,7 +200,7 @@ static void M_Draw(void)
     }
 }
 
-void FX_Footprint_Reset(void)
+static void M_Reset(void)
 {
     M_PRIV *const p = &m_Priv;
     memset(p, 0, sizeof(*p));
@@ -172,7 +237,7 @@ void FX_Footprint_Add(const ITEM *const lara_item, const bool is_left_foot)
         return;
     }
 
-    FX_FOOTPRINT *const print = &m_Priv.prints[m_Priv.next_idx];
+    M_FOOTPRINT *const print = &m_Priv.prints[m_Priv.next_idx];
     print->pos.x = pos.x;
     print->pos.y = y;
     print->pos.z = pos.z;
@@ -182,28 +247,13 @@ void FX_Footprint_Add(const ITEM *const lara_item, const bool is_left_foot)
     p->next_idx = (p->next_idx + 1) % M_MAX_FOOTPRINTS;
 }
 
-bool FX_Footprint_HasActivePrints(void)
-{
-    for (int32_t i = 0; i < M_MAX_FOOTPRINTS; i++) {
-        if (m_Priv.prints[i].life != 0) {
-            return true;
-        }
-    }
-    return false;
-}
-
-FX_FOOTPRINT *FX_Footprint_GetPrint(const int32_t idx)
-{
-    if (idx < 0 || idx >= M_MAX_FOOTPRINTS) {
-        return nullptr;
-    }
-    return &m_Priv.prints[idx];
-}
-
 static const FX_MODULE m_Module = {
     .control_func = M_Control,
     .draw_func = M_Draw,
-    .reset_func = FX_Footprint_Reset,
+    .reset_func = M_Reset,
+    .save_key = "footprints",
+    .save_func = M_Save,
+    .load_func = M_Load,
 };
 
 REGISTER_FX(m_Module)

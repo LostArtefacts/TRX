@@ -30,8 +30,6 @@ typedef enum {
     FX_RING_TYPE_NUMBER_OF,
 } FX_RING_TYPE;
 
-void FX_Ring_Reset(void);
-
 void FX_Ring_Draw(void);
 void FX_Ring_SpawnKnockBack(XYZ_32 pos);
 void FX_Ring_BounceKnockBack(void);

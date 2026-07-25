@@ -1,5 +1,7 @@
 #include <trx/game/fx/common.h>
 
+#include <trx/core/json/util/read_io.h>
+#include <trx/core/json/util/write_io.h>
 #include <trx/debug.h>
 
 #include <stdint.h>
@@ -49,4 +51,36 @@ void FX_Reset(void)
             m_Modules[i]->reset_func();
         }
     }
+}
+
+void FX_Save(JSON_WRITE_IO *const io)
+{
+    for (int32_t i = 0; i < m_ModuleCount; i++) {
+        const FX_MODULE *const module = m_Modules[i];
+        if (module->save_func == nullptr) {
+            continue;
+        }
+        JSONW_PUSH_OBJECT(io);
+        module->save_func(io);
+        JSONW_POP_AND_SET_NZ(io, module->save_key);
+    }
+}
+
+bool FX_Load(JSON_READ_IO *const io)
+{
+    for (int32_t i = 0; i < m_ModuleCount; i++) {
+        const FX_MODULE *const module = m_Modules[i];
+        if (module->load_func == nullptr) {
+            continue;
+        }
+        if (module->reset_func != nullptr) {
+            module->reset_func();
+        }
+        if (!JSON_OPTIONAL(JSON_PUSH(io, module->save_key))) {
+            continue;
+        }
+        JSON_MUST(module->load_func(io));
+        JSON_MUST(JSON_POP(io));
+    }
+    JSON_FINISH();
 }
