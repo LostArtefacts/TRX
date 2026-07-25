@@ -138,6 +138,9 @@ static void M_Control(const int16_t item_num)
             item->fall_speed = 0;
             item->goal_anim_state = LS(LS_DEATH);
             item->required_anim_state = LS(LS_DEATH);
+            if (room_num != item->room_num) {
+                Item_UpdateRoom(item_num, room_num);
+            }
         }
     }
 }
