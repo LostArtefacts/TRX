@@ -118,11 +118,17 @@ normal_collision:
     Object_Collision(item_num, lara_item, coll);
 }
 
+static bool M_IsUsable(const int16_t item_num)
+{
+    return Item_IsInactive(Item_Get(item_num));
+}
+
 static void M_Setup(OBJECT *const obj)
 {
     obj->collision_func = M_Collision;
     obj->control_func = M_Control;
     obj->bounds_func = M_Bounds;
+    obj->is_usable_func = M_IsUsable;
     obj->save_flags = true;
     obj->save_anim = true;
 }
