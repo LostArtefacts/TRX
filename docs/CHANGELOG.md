@@ -13,6 +13,7 @@
 - changed the Breeze option to allow selecting TR2 or TR3 behavior (Graphic Options → Visuals → Breeze)
 - changed lift collision to force Lara out of her climbing and vaulting animations if one collides with her (#5899, #5911)
 - changed lift collision to be optional (Gameplay → Fixes → Fix lift collision)
+- changed skidoo and quad bike crashes to not kill Lara when she is immune
 - fixed exploding deaths in TR4 showing no flames or explosions
 - fixed some console commands being able to target unintended items
 - fixed the `/trigger` and `/untrigger` console commands crashing or doing nothing on some objects, so they now act on any item exactly as a level trigger would
