@@ -173,7 +173,8 @@ M_GF_HANDLER(M_HandlePlayLevel)
 
     LUA_FireEventInt32(LUA_EVENT_AFTER_LEVEL_STATE, level->num);
 
-    g_Passport.ask_for_save = g_Config.gameplay.enable_save_crystals
+    g_Passport.ask_for_save =
+        g_Config.gameplay.save_crystal_mode == SAVE_CRYSTAL_SAVE
         && seq_ctx == GFSC_NORMAL
         && GF_GetLevelTableType(level->type) == GFLT_MAIN
         && level != GF_GetFirstLevel() && level != GF_GetGymLevel();

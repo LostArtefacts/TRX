@@ -229,4 +229,9 @@
         <property category="TRX" defaultValue="50" description="Damage dealt by the pounce attack." displayName="Pounce Damage" internalName="pounce_damage" minValue="0" type="Int" />
         <property category="TRX" defaultValue="100" description="Damage dealt by the bite attack." displayName="Bite Damage" internalName="bite_damage" minValue="0" type="Int" />
     </moveable>
+    <moveable id="269">
+        <property category="TRX" defaultValue="false" description="Whether the crystal hovers and bobs in place." displayName="Bob" internalName="bob" type="Bool" />
+        <property category="TRX" defaultValue="-1" description="Mesh the crystal is drawn with. -1 picks one from the save crystal mode." displayName="Mesh Index" internalName="mesh_index" minValue="-1" type="Int" />
+        <property category="TRX" defaultValue="500" description="Health restored by a healing crystal." displayName="Heal Amount" internalName="heal_amount" minValue="0" type="Int" />
+    </moveable>
 </propertyCatalog>

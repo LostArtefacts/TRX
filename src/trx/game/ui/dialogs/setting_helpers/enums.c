@@ -36,6 +36,14 @@ const UI_SETTINGS_ENUM_ENTRY UI_Settings_JumpLockModeEnumEntries[] = {
     { -1 },
 };
 
+const UI_SETTINGS_ENUM_ENTRY UI_Settings_SaveCrystalModeEnumEntries[] = {
+    { SAVE_CRYSTAL_OFF },
+    { SAVE_CRYSTAL_SAVE },
+    { SAVE_CRYSTAL_HEAL },
+    { SAVE_CRYSTAL_PICKUP },
+    { -1 },
+};
+
 const UI_SETTINGS_ENUM_ENTRY UI_Settings_WallGlitchEnumEntries[] = {
     { WALL_GLITCH_FIXED },
     { WALL_GLITCH_TR1 },

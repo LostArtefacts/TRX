@@ -1,19 +1,27 @@
 #include <trx/config.h>
 #include <trx/core/json/util/read_io.h>
 #include <trx/core/json/util/write_io.h>
+#include <trx/game/catalog/manager.h>
 #include <trx/game/input.h>
 #include <trx/game/lara.h>
 #include <trx/game/lara/poison.h>
 #include <trx/game/objects/common.h>
 #include <trx/game/objects/general/pickup.h>
+#include <trx/game/objects/property.h>
 #include <trx/game/output.h>
 #include <trx/game/rooms.h>
 #include <trx/game/sound.h>
 #include <trx/game/stats.h>
 #include <trx/version.h>
 
-#define M_PC_MESH 0b00000000'00000001
-#define M_PS_MESH 0b00000000'00000010
+// The crystal injection gives TR1 and TR2 one mesh per tint: the PC crystal,
+// the PS1 tint, and the heal crystal. TR3's own crystal is green, so its
+// injection keeps that as mesh 0 and adds a blue copy for the other modes.
+#define M_MESH_PC 0
+#define M_MESH_PS1 1
+#define M_MESH_HEAL 2
+#define M_MESH_TR3_HEAL 0
+#define M_MESH_TR3_SAVE 1
 
 typedef struct {
     bool initialised;
@@ -21,33 +29,6 @@ typedef struct {
     bool used_for_save;
     int16_t initial_angle;
 } M_PRIV;
-
-static void M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
-{
-    M_PRIV *const p = item->priv;
-    JSON_SHOULD(JSON_READ(io, "counted_for_stats", &p->counted_for_stats));
-    JSON_SHOULD(JSON_READ(io, "used_for_save", &p->used_for_save));
-    JSON_SHOULD(JSON_READ(io, "initialised", &p->initialised));
-    JSON_SHOULD(JSON_READ(io, "initial_angle", &p->initial_angle));
-}
-
-static void M_SavePriv(const ITEM *const item, JSON_WRITE_IO *const io)
-{
-    const M_PRIV *const p = item->priv;
-    JSONW_WRITE(io, "counted_for_stats", p->counted_for_stats);
-    JSONW_WRITE(io, "used_for_save", p->used_for_save);
-    JSONW_WRITE(io, "initialised", p->initialised);
-    JSONW_WRITE(io, "initial_angle", p->initial_angle);
-}
-
-static void M_CountCrystal(M_PRIV *const p)
-{
-    if (p->counted_for_stats) {
-        return;
-    }
-    p->counted_for_stats = true;
-    Stats_AddCrystal();
-}
 
 static const OBJECT_BOUNDS m_SaveCrystal_Bounds = {
     .shift = {
@@ -80,6 +61,33 @@ static const LARA_TRX_STATE m_StopStates[] = {
     // clang-format on
 };
 
+static void M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
+{
+    M_PRIV *const p = item->priv;
+    JSON_SHOULD(JSON_READ(io, "counted_for_stats", &p->counted_for_stats));
+    JSON_SHOULD(JSON_READ(io, "used_for_save", &p->used_for_save));
+    JSON_SHOULD(JSON_READ(io, "initialised", &p->initialised));
+    JSON_SHOULD(JSON_READ(io, "initial_angle", &p->initial_angle));
+}
+
+static void M_SavePriv(const ITEM *const item, JSON_WRITE_IO *const io)
+{
+    const M_PRIV *const p = item->priv;
+    JSONW_WRITE(io, "counted_for_stats", p->counted_for_stats);
+    JSONW_WRITE(io, "used_for_save", p->used_for_save);
+    JSONW_WRITE(io, "initialised", p->initialised);
+    JSONW_WRITE(io, "initial_angle", p->initial_angle);
+}
+
+static void M_CountCrystal(M_PRIV *const p)
+{
+    if (p->counted_for_stats) {
+        return;
+    }
+    p->counted_for_stats = true;
+    Stats_AddCrystal();
+}
+
 static const OBJECT_BOUNDS *M_Bounds(void)
 {
     const LARA_INFO *const lara = Lara_GetLaraInfo();
@@ -87,6 +95,40 @@ static const OBJECT_BOUNDS *M_Bounds(void)
             || lara->water_status == LWS_WADE
         ? &m_SaveCrystal_Bounds
         : &m_UW_Bounds;
+}
+
+// Resolves the mesh the crystal is drawn with. A negative mesh_index means the
+// mode picks; the mesh count guard keeps older crystal injections working.
+// Every crystal needs this from the start: a crystal that is never simulated
+// would otherwise keep the default mesh_bits and draw all of its tints at once.
+static void M_ApplyMesh(ITEM *const item)
+{
+    const int32_t mesh_count = Object_Get(item->object_id)->mesh_count;
+
+    TRX_VALUE value = {};
+    int32_t mesh_index = -1;
+    if (ObjectProperty_GetItemValue(item, "mesh_index", &value)) {
+        mesh_index = value.as_int;
+    }
+
+    const SAVE_CRYSTAL_MODE mode = g_Config.gameplay.save_crystal_mode;
+    if (mesh_index < 0) {
+        if (g_TRVersion == 3) {
+            mesh_index =
+                mode == SAVE_CRYSTAL_HEAL ? M_MESH_TR3_HEAL : M_MESH_TR3_SAVE;
+        } else if (mode == SAVE_CRYSTAL_HEAL) {
+            mesh_index = M_MESH_HEAL;
+        } else if (g_Config.visuals.enable_ps1_crystals) {
+            mesh_index = M_MESH_PS1;
+        } else {
+            mesh_index = M_MESH_PC;
+        }
+    }
+
+    if (mesh_index >= mesh_count) {
+        mesh_index = 0;
+    }
+    item->mesh_bits = 1 << mesh_index;
 }
 
 static void M_Initialise(const int16_t item_num)
@@ -98,12 +140,14 @@ static void M_Initialise(const int16_t item_num)
     p->used_for_save = false;
     p->initial_angle = 0;
 
-    if (g_TRVersion != 3) {
-        if (g_Config.gameplay.enable_save_crystals) {
-            Item_AddSimulated(item_num);
-        } else {
-            Item_SetVisible(Item_Get(item_num), false);
-        }
+    M_ApplyMesh(item);
+
+    if (g_Config.gameplay.save_crystal_mode == SAVE_CRYSTAL_OFF) {
+        Item_SetVisible(item, false);
+    } else if (g_TRVersion != 3) {
+        // TR3 places its crystals with the code bits already set, so the item
+        // manager activates them; the injected TR1/TR2 ones need it done here.
+        Item_AddSimulated(item_num);
     }
 }
 
@@ -111,6 +155,9 @@ static void M_HandleSave(ITEM *const item, const SAVEGAME_STAGE stage)
 {
     switch (stage) {
     case SAVEGAME_STAGE_AFTER_LOAD:
+        // The save carries the mesh the crystal had when it was written, which
+        // the mode may since have changed.
+        M_ApplyMesh(item);
         if (item->is_finished) {
             const int16_t item_num = Item_GetIndex(item);
             Item_DetachFromRoom(item_num);
@@ -132,15 +179,57 @@ static void M_HandleSave(ITEM *const item, const SAVEGAME_STAGE stage)
     }
 }
 
-static void M_ControlHeal(const int16_t item_num)
+// The light matches the crystal: green for healing, blue otherwise. TR1 and
+// TR2 crystals cast no light, as in the original games.
+static RGB_888 M_GetModeGlow(void)
 {
-    ITEM *const item = Item_Get(item_num);
+    if (g_TRVersion != 3) {
+        return (RGB_888) { 0, 0, 0 };
+    }
+    return g_Config.gameplay.save_crystal_mode == SAVE_CRYSTAL_HEAL
+        ? (RGB_888) { 0, 0xFF, 0 }
+        : (RGB_888) { 0, 0x40, 0xFF };
+}
 
-    if (!item->is_visible || item->clear_body) {
+static void M_AddGlow(const ITEM *const item, const int32_t intensity)
+{
+    TRX_VALUE value = {};
+    if (!ObjectProperty_GetItemValue(item, "glow_color", &value)) {
         return;
     }
 
+    RGB_888 color = value.as_rgb;
+    if (color.r == 0 && color.g == 0 && color.b == 0) {
+        color = M_GetModeGlow();
+    }
+    if (color.r == 0 && color.g == 0 && color.b == 0) {
+        return;
+    }
+
+    Output_AddDynamicLightRGB(
+        item->pos, 8,
+        (RGB_888) {
+            .r = (color.r * intensity) >> 8,
+            .g = (color.g * intensity) >> 8,
+            .b = (color.b * intensity) >> 8,
+        });
+}
+
+// TR1 and TR2 crystals rest on the floor and spin through the model's own
+// animation. TR3 crystals hover and bob, and spin by hand.
+static void M_Animate(ITEM *const item)
+{
     M_PRIV *const p = item->priv;
+
+    TRX_VALUE value = {};
+    const bool bob =
+        ObjectProperty_GetItemValue(item, "bob", &value) && value.as_bool;
+    if (!bob) {
+        Item_Animate(item);
+        M_AddGlow(item, 0xFF);
+        return;
+    }
+
     if (!p->initialised) {
         p->initialised = true;
         p->initial_angle = item->pos.y;
@@ -154,38 +243,71 @@ static void M_ControlHeal(const int16_t item_num)
     c <<= 3;
 
     item->pos.y = p->initial_angle - ABS(angle >> 6) - 64;
+    M_AddGlow(item, c);
+}
 
-    Output_AddDynamicLightRGB(item->pos, 8, (RGB_888) { 0, c, 0 });
-
-    ITEM *const lara_item = Lara_GetItem();
+// Heal and pickup crystals are taken as soon as Lara reaches them.
+static bool M_TestProximity(const ITEM *const item, const ITEM *const lara_item)
+{
     const int32_t dx = ABS(item->pos.x - lara_item->pos.x);
     const int32_t dy = ABS(item->pos.y - lara_item->pos.y);
     const int32_t dz = ABS(item->pos.z - lara_item->pos.z);
-    if (dx < STEP_L && dy < WALL_L && dz < STEP_L) {
-        M_CountCrystal(p);
-
-        Lara_Poison_Cure();
-        lara_item->hit_points += LARA_MAX_HITPOINTS / 2;
-        CLAMPG(lara_item->hit_points, LARA_MAX_HITPOINTS);
-
-        // PS1: SFX_SAVE_CRYSTAL, PC: SFX_MENU_MEDI
-        Sound_Effect(SFX_MENU_MEDI, &lara_item->pos, SPM_NORMAL);
-
-        Item_Destroy(item_num);
-    }
+    return dx < STEP_L && dy < WALL_L && dz < STEP_L;
 }
 
-static void M_ControlSave(const int16_t item_num)
+static void M_Heal(ITEM *const lara_item, const ITEM *const item)
+{
+    TRX_VALUE value = {};
+    int32_t heal_amount = LARA_MAX_HITPOINTS / 2;
+    if (ObjectProperty_GetItemValue(item, "heal_amount", &value)) {
+        heal_amount = value.as_int;
+    }
+
+    Lara_Poison_Cure();
+    lara_item->hit_points += heal_amount;
+    CLAMPG(lara_item->hit_points, LARA_MAX_HITPOINTS);
+
+    // PS1: SFX_SAVE_CRYSTAL, PC: SFX_MENU_MEDI
+    Sound_Effect(SFX_MENU_MEDI, &lara_item->pos, SPM_NORMAL);
+}
+
+static void M_Collect(const ITEM *const lara_item)
+{
+    Sound_Effect(SFX_SAVE_CRYSTAL, &lara_item->pos, SPM_NORMAL);
+}
+
+static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
-    item->mesh_bits = g_Config.visuals.enable_ps1_crystals
-            && Object_Get(item->object_id)->mesh_count > 1
-        ? M_PS_MESH
-        : M_PC_MESH;
-    Item_Animate(item);
+
+    if (!item->is_visible || item->clear_body) {
+        return;
+    }
+
+    M_ApplyMesh(item);
+    M_Animate(item);
+
+    const SAVE_CRYSTAL_MODE mode = g_Config.gameplay.save_crystal_mode;
+    if (mode != SAVE_CRYSTAL_HEAL && mode != SAVE_CRYSTAL_PICKUP) {
+        return;
+    }
+
+    ITEM *const lara_item = Lara_GetItem();
+    if (!M_TestProximity(item, lara_item)) {
+        return;
+    }
+
+    M_PRIV *const p = item->priv;
+    M_CountCrystal(p);
+    if (mode == SAVE_CRYSTAL_HEAL) {
+        M_Heal(lara_item, item);
+    } else {
+        M_Collect(lara_item);
+    }
+    Item_Destroy(item_num);
 }
 
-static void M_CollisionSave(
+static void M_Collision(
     const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
 {
     ITEM *const item = Item_Get(item_num);
@@ -237,17 +359,38 @@ static void M_Setup(OBJECT *const obj)
     obj->priv_load_func = M_LoadPriv;
     obj->priv_save_func = M_SavePriv;
     obj->priv_size = sizeof(M_PRIV);
-    if (g_TRVersion == 3) {
-        obj->control_func = M_ControlHeal;
-        obj->collision_func = nullptr;
-        obj->save_flags = true;
-    } else if (g_Config.gameplay.enable_save_crystals) {
-        obj->control_func = M_ControlSave;
-        obj->collision_func = M_CollisionSave;
-        obj->save_flags = true;
+    obj->bounds_func = M_Bounds;
+
+    OBJECT_PROPERTIES(
+        obj,
+        OBJECT_PROPERTY_BOOL(
+            "bob", g_TRVersion == 3,
+            "Whether the crystal hovers and bobs in place."),
+        OBJECT_PROPERTY_RGB(
+            "glow_color", 0, 0, 0,
+            "Color of the light the crystal casts. Black picks one from the "
+            "save crystal mode."),
+        OBJECT_PROPERTY_INT(
+            "mesh_index", -1,
+            "Mesh the crystal is drawn with. -1 picks one from the save "
+            "crystal mode."),
+        OBJECT_PROPERTY_INT(
+            "heal_amount", LARA_MAX_HITPOINTS / 2,
+            "Health restored by a healing crystal."));
+
+    const SAVE_CRYSTAL_MODE mode = g_Config.gameplay.save_crystal_mode;
+    if (mode == SAVE_CRYSTAL_OFF) {
+        return;
+    }
+
+    obj->control_func = M_Control;
+    obj->save_flags = true;
+    if (mode == SAVE_CRYSTAL_SAVE) {
+        obj->collision_func = M_Collision;
+    }
+    if (g_TRVersion != 3) {
         Object_SetReflective(O_SAVE_CRYSTAL_ITEM, true);
     }
-    obj->bounds_func = M_Bounds;
 }
 
 REGISTER_OBJECT(O_SAVE_CRYSTAL_ITEM, M_Setup)

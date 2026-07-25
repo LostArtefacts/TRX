@@ -212,7 +212,7 @@ typedef struct {
         bool disable_medpacks;
         bool disable_extra_guns;
         bool enable_pickup_aids;
-        bool enable_save_crystals;
+        SAVE_CRYSTAL_MODE save_crystal_mode;
         bool enable_enhanced_saves;
 
         bool enable_cheats;

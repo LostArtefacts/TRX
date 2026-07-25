@@ -768,6 +768,12 @@
             "QUICK_GUNS_MODE_DRAW_AND_HOLSTER": "Ziehen oder wegstecken",
             "QUICK_GUNS_MODE_DRAW_ONLY": "Nur ziehen",
         },
+        "SAVE_CRYSTAL_MODE": {
+            "SAVE_CRYSTAL_HEAL": "\\{review}Heilung",
+            "SAVE_CRYSTAL_OFF": "\\{review}Aus",
+            "SAVE_CRYSTAL_PICKUP": "\\{review}Fundstücke",
+            "SAVE_CRYSTAL_SAVE": "\\{review}Speichern",
+        },
         "SCREENSHOT_FORMAT": {
             "SCREENSHOT_FORMAT_JPEG": "JPG",
             "SCREENSHOT_FORMAT_PNG": "PNG",
@@ -1110,10 +1116,6 @@
             "title": "\\{review}Reaktives Sprinten",
             "description": "\\{review}Aktiviert einen reaktiveren Sprintzustand für Lara.\n\n- ermöglicht Sprinten, sobald Lara Energie hat, statt nur bei voller Ausdauer.\n- erlaubt Sprinten auf Treppen, ohne von Laras normaler Laufanimation unterbrochen zu werden.",
         },
-        "gameplay.enable_save_crystals": {
-            "title": "Speicherkristalle",
-            "description": "Beschränkt Speichern auf den Anfang des Levels und Speicherkristalle. Level haben eine limitierte Anzahl von Speicherkristallen. Die Speicherkristalle funktionieren nur einmal, so wie auf der PS1. Eine Änderung dieser Option erfordert einen Neustart.",
-        },
         "gameplay.enable_slide_to_run": {
             "title": "\\{review}Rutsch-Lauf-Übergang",
             "description": "\\{review}Ermöglicht es Lara, sofort loszulaufen, sobald sie nach dem Vorwärtsrutschen auf einer Schräge den Boden erreicht. Halte die Vorwärts-Taste gedrückt, um dies zu aktivieren.",
@@ -1325,6 +1327,10 @@
         "gameplay.restore_ps1_enemies": {
             "title": "PS1 Feinde wiederherstellen",
             "description": "\\{review}Fügt die Mumie hinzu, die in der PlayStation-Version von City of Khamoon, Raum 25, erscheint.\nDas Ändern dieser Option erfordert einen Neustart des Spiels.",
+        },
+        "gameplay.save_crystal_mode": {
+            "title": "\\{review}Kristallmodus",
+            "description": "\\{review}Legt fest, was die in den Leveln verteilten Kristalle bewirken.\n\n- Aus: Es sind keine Kristalle vorhanden.\n- Speichern: Kristalle sind einmalig verwendbar und erlauben Lara, das Spiel zu speichern, so wie auf der PS1. Ansonsten kann nur am Anfang eines Levels gespeichert werden.\n- Heilung: Kristalle stellen die Hälfte von Laras Gesundheit wieder her und heilen Vergiftungen, sobald sie sie berührt, wie in der PC-Version von TR3.\n- Fundstücke: Kristalle sind Sammelobjekte, die in der Levelstatistik gezählt werden, und bewirken sonst nichts.\n\nEine Änderung dieser Option erfordert einen Neustart des Levels.",
         },
         "gameplay.start_lara_hitpoints": {
             "title": "Laras Lebensenergie beim Starten eines Levels",

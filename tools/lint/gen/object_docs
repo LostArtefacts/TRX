@@ -460,12 +460,15 @@ def iter_macro_calls(source: str, macro_name: str) -> list[str]:
 def iter_object_property_declarations(source: str) -> list[PropertyInfo]:
     declarations: list[PropertyInfo] = []
     pattern = re.compile(
-        r"\bOBJECT_PROPERTY_(INT|FLOAT|DOUBLE|BOOL|XYZ)\(",
+        r"\bOBJECT_PROPERTY_(INT|FLOAT|DOUBLE|BOOL|XYZ|RGB)\(",
         re.MULTILINE,
     )
     for match, args in iter_balanced_calls(source, pattern):
         macro_type = match.group(1)
         parts = split_args(args)
+        # RGB takes its channels as separate arguments.
+        if macro_type == "RGB" and len(parts) == 5:
+            parts = [parts[0], ", ".join(parts[1:4]), parts[4]]
         if len(parts) == 3:
             internal_name, value, description = parts
             internal_name = parse_c_string(internal_name)
@@ -673,6 +676,10 @@ def evaluate_expression(
         )
     except Exception:
         return expr
+    if isinstance(value, bool):
+        # A comparison in the declaration evaluates to a Python bool; spell it
+        # the way a C bool literal already reaches here.
+        return "true" if value else "false"
     if isinstance(value, float) and value.is_integer():
         value = int(value)
     return str(value)
@@ -692,6 +699,14 @@ def format_value(
     game_version: int,
     music_catalog: dict[str, str],
 ) -> str:
+    if info.macro_type == "RGB":
+        channels = [
+            evaluate_expression(
+                channel, info.constants, game_version, music_catalog
+            )
+            for channel in split_args(info.value_expr)
+        ]
+        return f"({', '.join(channels)})"
     return evaluate_expression(
         info.value_expr, info.constants, game_version, music_catalog
     )
@@ -896,8 +911,11 @@ class XmlExporter:
                 continue
 
             props = self.property_catalog.properties_for(object_id)
+            # Tomb Editor has no color property type to map RGB onto.
             properties = [
-                self._build_property_dict(name, props[name]) for name in props
+                self._build_property_dict(name, props[name])
+                for name in props
+                if props[name].macro_type != "RGB"
             ]
             key = tuple(tuple(sorted(prop.items())) for prop in properties)
             group = grouped_moveables.setdefault(

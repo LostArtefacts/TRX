@@ -768,6 +768,12 @@
             "QUICK_GUNS_MODE_DRAW_AND_HOLSTER": "Equipaggia o riponi",
             "QUICK_GUNS_MODE_DRAW_ONLY": "Solo equipaggia",
         },
+        "SAVE_CRYSTAL_MODE": {
+            "SAVE_CRYSTAL_HEAL": "\\{review}Cura",
+            "SAVE_CRYSTAL_OFF": "\\{review}Disattivato",
+            "SAVE_CRYSTAL_PICKUP": "\\{review}Oggetti",
+            "SAVE_CRYSTAL_SAVE": "\\{review}Salvataggio",
+        },
         "SCREENSHOT_FORMAT": {
             "SCREENSHOT_FORMAT_JPEG": "JPG",
             "SCREENSHOT_FORMAT_PNG": "PNG",
@@ -1110,10 +1116,6 @@
             "title": "Scatto migliorato",
             "description": "Abilita per Lara una modalità di scatto migliorata.\n\n- consente di effettuare uno scatto non appena Lara ha energia, invece di dover aspettare che la barra della resistenza sia piena.\n- consente di effettuare uno scatto sulle scale senza essere interrotti dall’animazione di corsa normale.",
         },
-        "gameplay.enable_save_crystals": {
-            "title": "Cristalli di salvataggio",
-            "description": "Permette di salvare all'inizio di ogni livello o utilizzando i cristalli. I livelli hanno un numero limitato di cristalli di salvataggio che possono essere utilizzati una sola volta, come nella versione PS1. La modifica di questa opzione richiederà il riavvio del livello.",
-        },
         "gameplay.enable_slide_to_run": {
             "title": "Corri dopo scivolata",
             "description": "Permette a Lara di iniziare a correre immediatamente quando tocca terra dopo essere scivolata in avanti da una pendenza. Per farlo, tieni premuto il tasto Corri.",
@@ -1325,6 +1327,10 @@
         "gameplay.restore_ps1_enemies": {
             "title": "Ripristina nemici PS1",
             "description": "Aggiunge la mummia che appare nella versione PlayStation del livello 'Città di Khamoon', stanza 25.\nLa modifica di questa opzione richiederà il riavvio della partita.",
+        },
+        "gameplay.save_crystal_mode": {
+            "title": "\\{review}Modalità cristalli",
+            "description": "\\{review}Determina cosa fanno i cristalli sparsi nei livelli.\n\n- Disattivato: i cristalli non sono presenti.\n- Salvataggio: i cristalli sono monouso e permettono a Lara di salvare la partita, come nella versione PS1. Altrimenti è possibile salvare solo all'inizio dei livelli.\n- Cura: i cristalli ripristinano metà della salute di Lara e curano l'avvelenamento quando li tocca, come nella versione PC di TR3.\n- Oggetti: i cristalli sono collezionabili conteggiati nelle statistiche del livello e non fanno altro.\n\nLa modifica di questa opzione richiederà il riavvio del livello.",
         },
         "gameplay.start_lara_hitpoints": {
             "title": "Salute iniziale di Lara",

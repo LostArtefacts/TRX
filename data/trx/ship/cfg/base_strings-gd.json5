@@ -768,6 +768,12 @@
             "QUICK_GUNS_MODE_DRAW_AND_HOLSTER": "Tarraing/falach",
             "QUICK_GUNS_MODE_DRAW_ONLY": "Tarraing a-mhàin",
         },
+        "SAVE_CRYSTAL_MODE": {
+            "SAVE_CRYSTAL_HEAL": "\\{review}Slànachadh",
+            "SAVE_CRYSTAL_OFF": "\\{review}Dheth",
+            "SAVE_CRYSTAL_PICKUP": "\\{review}Nithean",
+            "SAVE_CRYSTAL_SAVE": "\\{review}Sàbhaladh",
+        },
         "SCREENSHOT_FORMAT": {
             "SCREENSHOT_FORMAT_JPEG": "JPG",
             "SCREENSHOT_FORMAT_PNG": "PNG",
@@ -1110,10 +1116,6 @@
             "title": "Ruith luath freagairteach",
             "description": "Cuiridh seo staid ruith luath nas freagairtiche an gnìomh do Lara.\n\n- leigidh le Lara ruith gu luath cho luath 's a tha neart aice, seach a bhith a' feitheamh gus am bi stamina làn aice.\n- leigidh le Lara ruith gu luath suas staidhre gun a bhith a stad le beòthalachd ruith àbhaisteach.",
         },
-        "gameplay.enable_save_crystals": {
-            "title": "Criostalan sàbhalaidh",
-            "description": "Cuiridh seo cuingealachadh air sàbhaladh gu toiseach ìrean is criostalan sàbhalaidh aon-chleachdadh, coltach ris a' PhS1. Feumar ath-thòiseachadh an ìre airson seo obrachadh.",
-        },
         "gameplay.enable_slide_to_run": {
             "title": "Sleamhnaich-gus-ruith",
             "description": "Leigidh seo le Lara ruith sa bhad nuair a ruigeas i air uachdar còmhnard às dèidh a bhith a' sleamhnachadh air leac leathann. Cum am putan air adhart sios gus a ghnìomhachadh.",
@@ -1325,6 +1327,10 @@
         "gameplay.restore_ps1_enemies": {
             "title": "Aisig nàimhdean PS1",
             "description": "Cuiridh seo spaoileadan ann an City of Khamoon (PS1), seòmar 25. Feumaidh ath-thòiseachadh a' gheama gu lèir gus obraicheas seo.",
+        },
+        "gameplay.save_crystal_mode": {
+            "title": "\\{review}Modh nan criostal",
+            "description": "\\{review}Suidhichidh seo dè nì na criostalan a tha sgapte tro na h-ìrean.\n\n- Dheth: chan eil criostalan ann.\n- Sàbhaladh: tha na criostalan aon-chleachdaidh agus leigidh iad le Lara an geama a shàbhaladh, coltach ris a' PhS1. A bharrachd air sin, chan urrainnear sàbhaladh ach aig toiseach nan ìrean.\n- Slànachadh: aisigidh na criostalan leth de shlàinte Lara agus leigheasaidh iad puinnsean nuair a bheanas i riutha, mar a tha ann an tionndadh PC de TR3.\n- Nithean: 's e nithean cruinneachaidh a th' anns na criostalan a thèid a chunntadh ann an staitistig na h-ìre, 's chan eil iad a' dèanamh dad eile.\n\nFeumar an ìre ath-thòiseachadh airson seo obrachadh.",
         },
         "gameplay.start_lara_hitpoints": {
             "title": "Slàinte tòiseachaidh Lara",

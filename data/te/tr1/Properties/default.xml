@@ -151,6 +151,11 @@
     <moveable id="77-80,191">
         <property category="TRX" defaultValue="1" description="Maximum hit points." displayName="Max Hit Points" internalName="max_hit_points" minValue="0" type="Int" />
     </moveable>
+    <moveable id="83">
+        <property category="TRX" defaultValue="false" description="Whether the crystal hovers and bobs in place." displayName="Bob" internalName="bob" type="Bool" />
+        <property category="TRX" defaultValue="-1" description="Mesh the crystal is drawn with. -1 picks one from the save crystal mode." displayName="Mesh Index" internalName="mesh_index" minValue="-1" type="Int" />
+        <property category="TRX" defaultValue="500" description="Health restored by a healing crystal." displayName="Heal Amount" internalName="heal_amount" minValue="0" type="Int" />
+    </moveable>
     <moveable id="84-94,110-113,126,129-132,141,142,144,187,241-246,248,249,251-256">
         <property category="TRX" defaultValue="Normal" description="Pickup animation mode." displayName="Pickup Mode" entries="Normal, Low Pedestal, High Pedestal" internalName="pickup_mode" type="Enum" />
     </moveable>

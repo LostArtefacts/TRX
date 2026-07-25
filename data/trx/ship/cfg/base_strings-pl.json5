@@ -768,6 +768,12 @@
             "QUICK_GUNS_MODE_DRAW_AND_HOLSTER": "Wyposaż",
             "QUICK_GUNS_MODE_DRAW_ONLY": "Wyposaż lub schowaj",
         },
+        "SAVE_CRYSTAL_MODE": {
+            "SAVE_CRYSTAL_HEAL": "\\{review}Leczenie",
+            "SAVE_CRYSTAL_OFF": "\\{review}Wyłączone",
+            "SAVE_CRYSTAL_PICKUP": "\\{review}Znajdźki",
+            "SAVE_CRYSTAL_SAVE": "\\{review}Zapisywanie",
+        },
         "SCREENSHOT_FORMAT": {
             "SCREENSHOT_FORMAT_JPEG": "JPG",
             "SCREENSHOT_FORMAT_PNG": "PNG",
@@ -1110,10 +1116,6 @@
             "title": "Responsywny sprint",
             "description": "Włącza bardziej responsywny tryb sprintu dla Lary.\n\n- Pozwala sprintować, gdy Lara ma energię, a nie tylko przy pełnej wytrzymałości.\n- Umożliwia sprint po schodach bez przerywania zwykłą animacją biegu.",
         },
-        "gameplay.enable_save_crystals": {
-            "title": "Kryształy zapisu",
-            "description": "Ogranicza zapisywanie do początku poziomów oraz kryształów zapisu umieszczonych w konkretnych lokacjach. Poziomy mają ograniczone, jednorazowe kryształy zapisu jak w wersji PS1. Zmiana tej opcji wymaga ponownego uruchomienia poziomu.",
-        },
         "gameplay.enable_slide_to_run": {
             "title": "Bieg po zjechaniu",
             "description": "Umożliwia Larze natychmiastowe wznowienie biegu po zjechaniu w dół stoku. Aby aktywować, należy przytrzymać przycisk ruchu do przodu.",
@@ -1325,6 +1327,10 @@
         "gameplay.restore_ps1_enemies": {
             "title": "Przywróć przeciwników z PS1",
             "description": "Dodaje mumię, która pojawia się w wersji na PlayStation w City of Khamoon, pokój 25.\nZmiana tej opcji do poprawnego działania wymaga ponownego uruchomienia gry.",
+        },
+        "gameplay.save_crystal_mode": {
+            "title": "\\{review}Tryb kryształów",
+            "description": "\\{review}Określa, co robią kryształy rozmieszczone na poziomach.\n\n- Wyłączone: kryształy nie występują.\n- Zapisywanie: kryształy są jednorazowe i pozwalają Larze zapisać grę, jak w wersji PS1. Poza tym zapis jest możliwy tylko na początku poziomów.\n- Leczenie: kryształy przywracają połowę zdrowia Lary i leczą zatrucie, gdy ich dotknie, jak w wersji PC TR3.\n- Znajdźki: kryształy są przedmiotami do zebrania, liczonymi w statystykach poziomu, i nie robią nic więcej.\n\nZmiana tej opcji wymaga ponownego uruchomienia poziomu.",
         },
         "gameplay.start_lara_hitpoints": {
             "title": "Startowe zdrowie Lary",

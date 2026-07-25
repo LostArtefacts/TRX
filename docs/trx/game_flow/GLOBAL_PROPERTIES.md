@@ -32,7 +32,7 @@ remains distinct for each game.
     ],
     "convert_dropped_guns": false,
     "enforced_config": {
-        "enable_save_crystals": false,
+        "save_crystal_mode": "off",
     },
     "hidden_config": [
         "enable_legal",
@@ -349,7 +349,7 @@ remains distinct for each game.
         enable_3d_pickups": false,
     },
     "hidden_config": [
-        "enable_save_crystals",
+        "save_crystal_mode",
     ],
 }
 ```

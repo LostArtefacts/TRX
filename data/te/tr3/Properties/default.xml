@@ -267,6 +267,11 @@
     <moveable id="179">
         <property category="TRX" defaultValue="30" description="How long the flare burns for, in seconds." displayName="Burn Time" internalName="burn_time" minValue="0" type="Float" />
     </moveable>
+    <moveable id="180">
+        <property category="TRX" defaultValue="true" description="Whether the crystal hovers and bobs in place." displayName="Bob" internalName="bob" type="Bool" />
+        <property category="TRX" defaultValue="-1" description="Mesh the crystal is drawn with. -1 picks one from the save crystal mode." displayName="Mesh Index" internalName="mesh_index" minValue="-1" type="Int" />
+        <property category="TRX" defaultValue="500" description="Health restored by a healing crystal." displayName="Heal Amount" internalName="heal_amount" minValue="0" type="Int" />
+    </moveable>
     <moveable id="287">
         <property category="TRX" defaultValue="800" description="Maximum hit points." displayName="Max Hit Points" internalName="max_hit_points" minValue="0" type="Int" />
         <property category="TRX" defaultValue="1" description="Damage dealt by body contact." displayName="Touch Damage" internalName="touch_damage" minValue="0" type="Int" />
@@ -291,12 +296,12 @@
     </moveable>
     <moveable id="338">
         <property category="TRX" defaultValue="TEN.Vec3(1, 1, 1)" description="Swim range, in quarter tiles." displayName="Range" internalName="range" type="Vec3" />
-        <property category="TRX" defaultValue="False" description="Whether the shoal uses the surrounding room lighting." displayName="Use Room Lighting" internalName="use_room_lighting" type="Bool" />
+        <property category="TRX" defaultValue="false" description="Whether the shoal uses the surrounding room lighting." displayName="Use Room Lighting" internalName="use_room_lighting" type="Bool" />
     </moveable>
     <moveable id="339">
         <property category="TRX" defaultValue="0" description="Texture offset in `O_TROPICAL_FISH_GFX`." displayName="Sprite Offset" internalName="sprite_offset" minValue="0" type="Int" />
         <property category="TRX" defaultValue="TEN.Vec3(1, 1, 1)" description="Swim range, in quarter tiles." displayName="Range" internalName="range" type="Vec3" />
-        <property category="TRX" defaultValue="False" description="Whether the shoal uses the surrounding room lighting." displayName="Use Room Lighting" internalName="use_room_lighting" type="Bool" />
+        <property category="TRX" defaultValue="false" description="Whether the shoal uses the surrounding room lighting." displayName="Use Room Lighting" internalName="use_room_lighting" type="Bool" />
     </moveable>
     <moveable id="349-354">
         <property category="TRX" defaultValue="true" description="Whether or not Lara can collide with the animating." displayName="Collidable" internalName="collidable" type="Bool" />
