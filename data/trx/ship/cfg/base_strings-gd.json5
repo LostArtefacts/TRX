@@ -224,6 +224,7 @@
             "assault_finish": "Crìochnaich",
             "assault_no_times_set": "Gun Àmanan Fhathast",
             "assault_other_times_fmt": "%s",
+            "assault_reset_times": "\\{review}Ath-shuidhich",
             "assault_title": "NA H-ÀMANAN AS FHEÀRR",
             "basic_fmt": "%d",
             "bonus_statistics": "Staitistig a Bharrachd",

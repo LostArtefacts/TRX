@@ -66,6 +66,7 @@ typedef struct UI_STATS_DIALOG_STATE {
     };
 
     const M_LOOK *look;
+    UI_PROGRESS_BUTTON_STATE *reset_button;
     bool has_floordata_secrets;
     bool has_visible_rows;
 } UI_STATS_DIALOG_STATE;
@@ -652,6 +653,26 @@ static int32_t M_GetAssaultCourseRowCount(const UI_STATS_DIALOG_STATE *const s)
     return MAX(count, M_MIN_ASSAULT_COURSE_ROWS);
 }
 
+static bool M_HasAnyRecordedTime(const UI_STATS_DIALOG_STATE *const s)
+{
+    for (GYM_TRACK_TYPE track = 0; track < GYM_TRACK_NUMBER_OF; track++) {
+        if (s->assault_stats[track]->entries[0].time != 0) {
+            return true;
+        }
+    }
+    return false;
+}
+
+static void M_ResetAssaultCourseStats(void *const user_data)
+{
+    UI_STATS_DIALOG_STATE *const s = user_data;
+    for (GYM_TRACK_TYPE track = 0; track < GYM_TRACK_NUMBER_OF; track++) {
+        Gym_TrackManager_ClearStats(track);
+    }
+    UI_Scrollable_SetMaxItems(&s->scrollable, M_GetAssaultCourseRowCount(s));
+    UI_Scrollable_SelectFirstItem(&s->scrollable);
+}
+
 static UI_WINDOW_SETTINGS M_GetWindowSettings(
     const UI_STATS_DIALOG_STATE *const s)
 {
@@ -742,6 +763,10 @@ UI_STATS_DIALOG_STATE *UI_StatsDialog_Init(const UI_STATS_DIALOG_ARGS args)
         }
         s->scrollable.max_items = M_GetAssaultCourseRowCount(s);
         s->has_visible_rows = true;
+        s->reset_button = UI_ProgressButton_Init(
+            g_Config.input.backend, INPUT_ROLE_UNBIND_KEY,
+            GS_ID("general/stats/assault_reset_times"),
+            M_ResetAssaultCourseStats, s);
         break;
     }
 
@@ -750,6 +775,9 @@ UI_STATS_DIALOG_STATE *UI_StatsDialog_Init(const UI_STATS_DIALOG_ARGS args)
 
 void UI_StatsDialog_Free(UI_STATS_DIALOG_STATE *const s)
 {
+    if (s->reset_button != nullptr) {
+        UI_ProgressButton_Free(s->reset_button);
+    }
     Memory_Free(s);
 }
 
@@ -760,6 +788,9 @@ bool UI_StatsDialog_HasVisibleRows(const UI_STATS_DIALOG_STATE *const s)
 
 int32_t UI_StatsDialog_Control(UI_STATS_DIALOG_STATE *const s)
 {
+    if (s->reset_button != nullptr && M_HasAnyRecordedTime(s)) {
+        UI_ProgressButton_Control(s->reset_button);
+    }
     return UI_ScrollableStack_Control(&s->scrollable, UI_STACK_VERTICAL);
 }
 
@@ -789,6 +820,11 @@ void UI_StatsDialog(UI_STATS_DIALOG_STATE *const s)
             });
         M_AssaultCourseStatsRows(s);
         UI_EndScrollableStack();
+        UI_BeginHide(!M_HasAnyRecordedTime(s));
+        UI_BeginAnchor(0.5f, 0.5f);
+        UI_ProgressButton(s->reset_button);
+        UI_EndAnchor();
+        UI_EndHide();
         break;
     }
 

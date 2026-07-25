@@ -689,6 +689,7 @@ GS_DEFINE(general/stats/assault_best_time_fmt,   "%s")
 GS_DEFINE(general/stats/assault_other_times_fmt, "%s")
 GS_DEFINE(general/stats/gym_assault_course,      "Assault Course")
 GS_DEFINE(general/stats/gym_racetrack_course,    "Race Track Course")
+GS_DEFINE(general/stats/assault_reset_times,     "Reset")
 
 // Misc
 GS_DEFINE(general/inventory_ring/heading_inventory,           "INVENTORY")

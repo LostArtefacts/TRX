@@ -4,6 +4,7 @@
 - added autocompletion to the developer console (with Tab and Shift+Tab to cycle the matches)
 - added a `/dry` console command, to dry Lara off after a swim
 - added an option for the wobbly geometry of the PlayStation releases (Graphic Options → Rendering → Vertex snapping)
+- added the ability to clear the gym's best times, by holding the key shown below them
 - added internal collision to lifts when they are moving, so that Lara cannot exit through the meshes
 - improved error messages related to bad command invocations
 - changed reflections UV mapping to be more correct

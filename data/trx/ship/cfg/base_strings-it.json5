@@ -224,6 +224,7 @@
             "assault_finish": "Fine",
             "assault_no_times_set": "Nessun tempo impostato",
             "assault_other_times_fmt": "%s",
+            "assault_reset_times": "\\{review}Ripristina",
             "assault_title": "MIGLIORI TEMPI",
             "basic_fmt": "%d",
             "bonus_statistics": "Statistiche Bonus",
