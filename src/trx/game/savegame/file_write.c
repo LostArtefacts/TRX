@@ -453,6 +453,69 @@ static void M_WriteFXFootprints(JSON_WRITE_IO *const io)
     JSONW_POP_AND_SET_NZ(io, "footprints");
 }
 
+static void M_WriteFXRaindrops(JSON_WRITE_IO *const io)
+{
+    if (FX_Weather_GetWeather() != WEATHER_RAIN) {
+        return;
+    }
+
+    JSONW_PUSH_ARRAY(io);
+    for (int32_t i = 0;; i++) {
+        const FX_RAINDROP *const drop = FX_Weather_GetRaindrop(i);
+        if (drop == nullptr) {
+            break;
+        }
+        if (drop->pos.x == 0) {
+            continue;
+        }
+
+        JSONW_PUSH_OBJECT(io);
+        M_WriteXYZ32(io, "pos", drop->pos);
+        JSONW_WRITE(io, "xv", drop->xv);
+        JSONW_WRITE(io, "yv", drop->yv);
+        JSONW_WRITE(io, "zv", drop->zv);
+        JSONW_WRITE(io, "life", drop->life);
+        JSONW_POP_AND_APPEND(io);
+    }
+    JSONW_POP_AND_SET_NZ(io, "rain");
+}
+
+static void M_WriteFXSnowflakes(JSON_WRITE_IO *const io)
+{
+    if (FX_Weather_GetWeather() != WEATHER_SNOW) {
+        return;
+    }
+
+    JSONW_PUSH_ARRAY(io);
+    for (int32_t i = 0;; i++) {
+        const FX_SNOWFLAKE *const snow = FX_Weather_GetSnowflake(i);
+        if (snow == nullptr) {
+            break;
+        }
+        if (snow->pos.x == 0) {
+            continue;
+        }
+
+        JSONW_PUSH_OBJECT(io);
+        M_WriteXYZ32(io, "pos", snow->pos);
+        JSONW_WRITE(io, "xv", snow->xv);
+        JSONW_WRITE(io, "yv", snow->yv);
+        JSONW_WRITE(io, "zv", snow->zv);
+        JSONW_WRITE(io, "life", snow->life);
+        JSONW_WRITE(io, "stopped", snow->stopped);
+        JSONW_POP_AND_APPEND(io);
+    }
+    JSONW_POP_AND_SET_NZ(io, "snow");
+}
+
+static void M_WriteFXWeather(JSON_WRITE_IO *const io)
+{
+    JSONW_PUSH_OBJECT(io);
+    M_WriteFXRaindrops(io);
+    M_WriteFXSnowflakes(io);
+    JSONW_POP_AND_SET_NZ(io, "weather");
+}
+
 void SG_File_DumpFlares(JSON_WRITE_IO *const io)
 {
     JSONW_PUSH_ARRAY(io);
@@ -515,6 +578,7 @@ void SG_File_DumpFX(JSON_WRITE_IO *const io)
     M_WriteFXRings(io, FX_RING_TYPE_SUMMON, "summon");
     JSONW_POP_AND_SET_NZ(io, "rings");
     M_WriteFXFootprints(io);
+    M_WriteFXWeather(io);
     JSONW_POP_AND_SET_NZ(io, "vfx");
 }
 
