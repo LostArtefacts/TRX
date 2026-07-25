@@ -92,6 +92,18 @@ static void M_SetCornerAnim(
         item->current_anim_state = LS(LS_HANG);
     }
 
+    if (g_Camera.type == CAM_CHASE
+        && (ladder_end_anim == LA_LADDER_CORNER_RIGHT_OUTER_END
+            || ladder_end_anim == LA_LADDER_CORNER_LEFT_OUTER_END)) {
+        // Some camera strategies will be unable to LOS through the corner from
+        // Lara's old position to her new, so will become stuck. Force a
+        // transitional target update with Lara placed at the corner.
+        // TODO: investigate alternatives to this approach
+        item->pos = XYZ_32_OffsetYaw(item->pos, item->rot.y - rot, STEP_L);
+        g_Camera.speed = 1;
+        Camera_Update();
+    }
+
     const LARA_INFO *const lara = Lara_GetLaraInfo();
     coll->old_pos.x = lara->corner_pos.x;
     coll->old_pos.z = lara->corner_pos.z;
