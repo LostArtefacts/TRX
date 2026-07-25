@@ -30,6 +30,7 @@
 - fixed rain and snow starting over when a save is loaded (#5901)
 - fixed Bacon Lara flickering if she dies in a room different to where she fell from
 - fixed Bacon Lara remaining targetable after death
+- fixed the detonator box returning to its original position after loading a save (OG bug)
 - fixed crawler mutants killed by Lara's allies not being included in the stats when the option to include ally kills is enabled (#5691, regression from 1.7)
 - fixed Lara receiving twice the number of flares if given via the game flow (regression from 1.9)
 - fixed a crash when advancing through a flyby sequence in photo mode and the sequence reaches its end (regression from 1.9)
