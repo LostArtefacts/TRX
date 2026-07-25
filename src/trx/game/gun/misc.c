@@ -138,7 +138,8 @@ void Gun_ApplyFlashSemiTransparency(void)
     }
 }
 
-static void M_DrawGunGlow(const WEAPON_INFO *const weapon)
+static void M_DrawGunGlow(
+    const WEAPON_INFO *const weapon, const bool interpolated)
 {
     if (g_TRVersion < 3 && !g_Config.visuals.enable_gun_glow) {
         return;
@@ -151,14 +152,26 @@ static void M_DrawGunGlow(const WEAPON_INFO *const weapon)
         return;
     }
 
-    Matrix_Push();
-    Matrix_TranslateRel32(weapon->glow_pos);
+    // The glow follows a mesh that may be drawn between two game frames, so
+    // the sprite position has to be interpolated the same way.
+    if (interpolated) {
+        Matrix_Push_I();
+        Matrix_TranslateRel32_I(weapon->glow_pos);
+        Matrix_Interpolate();
+    } else {
+        Matrix_Push();
+        Matrix_TranslateRel32(weapon->glow_pos);
+    }
     const XYZ_32 pos = {
         .x = (int32_t)(g_WMatrixPtr->_03 >> W2V_SHIFT),
         .y = (int32_t)(g_WMatrixPtr->_13 >> W2V_SHIFT),
         .z = (int32_t)(g_WMatrixPtr->_23 >> W2V_SHIFT),
     };
-    Matrix_Pop();
+    if (interpolated) {
+        Matrix_Pop_I();
+    } else {
+        Matrix_Pop();
+    }
 
     // The flare's glow pulses as its pyro burns; gunfire glows are steady.
     const int16_t shade =
@@ -398,7 +411,7 @@ void Gun_DrawFlash(
         Object_DrawMesh(flash_obj->mesh_idx, clip, interpolated);
     }
 
-    M_DrawGunGlow(&weapon);
+    M_DrawGunGlow(&weapon, interpolated);
     Output_PopTintOverride();
 }
 
