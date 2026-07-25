@@ -23,6 +23,7 @@
 - fixed Lara attempting to climb ladders from inside lifts (#5890)
 - fixed Lara not getting killed by lifts if standing on top of one and the ceiling space becomes too low
 - fixed Lara attempting to pull up into gaps that would not allow her to stand, resulting in her being pushed out (#5891)
+- fixed shoals of fish and piranhas jumping back to their starting spot when loading a save
 - fixed crawler mutants killed by Lara's allies not being included in the stats when the option to include ally kills is enabled (#5691, regression from 1.7)
 - fixed Lara receiving twice the number of flares if given via the game flow (regression from 1.9)
 - fixed a crash when advancing through a flyby sequence in photo mode and the sequence reaches its end (regression from 1.9)
