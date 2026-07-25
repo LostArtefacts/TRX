@@ -141,6 +141,7 @@ static void M_Control(const int16_t item_num)
             if (room_num != item->room_num) {
                 Item_UpdateRoom(item_num, room_num);
             }
+            Item_SetFinished(item, true);
         }
     }
 }
