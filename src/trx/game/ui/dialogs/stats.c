@@ -444,6 +444,13 @@ static bool M_EmitDummyRow(
     return true;
 }
 
+// Pickup crystals exist only to be counted, so their row is not optional.
+static bool M_ShowCrystals(void)
+{
+    return g_Config.ui.stats.show_crystals
+        || g_Config.gameplay.save_crystal_mode == SAVE_CRYSTAL_PICKUP;
+}
+
 static bool M_EmitConfiguredStatsRows(
     const UI_STATS_DIALOG_STATE *const s, const bool dry_run)
 {
@@ -458,8 +465,7 @@ static bool M_EmitConfiguredStatsRows(
         if (g_Config.ui.stats.show_pickups) {
             has_rows |= emit_row_func(s, M_ROW_PICKUPS, 0);
         }
-        if (g_Config.ui.stats.show_crystals
-            && s->max_stats->max_crystal_count != 0) {
+        if (M_ShowCrystals() && s->max_stats->max_crystal_count != 0) {
             has_rows |= emit_row_func(s, M_ROW_CRYSTALS, 0);
         }
         if (g_Config.ui.stats.show_secrets
@@ -477,8 +483,7 @@ static bool M_EmitConfiguredStatsRows(
             && s->max_stats->max_secret_count != 0) {
             has_rows |= emit_row_func(s, M_ROW_AUTO_SECRETS, 0);
         }
-        if (g_Config.ui.stats.show_crystals
-            && s->max_stats->max_crystal_count != 0) {
+        if (M_ShowCrystals() && s->max_stats->max_crystal_count != 0) {
             has_rows |= emit_row_func(s, M_ROW_CRYSTALS, 0);
         }
         if (g_Config.ui.stats.show_pickups) {

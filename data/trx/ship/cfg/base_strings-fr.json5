@@ -768,6 +768,12 @@
             "QUICK_GUNS_MODE_DRAW_AND_HOLSTER": "\\{review}Équiper & ranger",
             "QUICK_GUNS_MODE_DRAW_ONLY": "\\{review}Tirer seulement",
         },
+        "SAVE_CRYSTAL_MODE": {
+            "SAVE_CRYSTAL_HEAL": "\\{review}Soin",
+            "SAVE_CRYSTAL_OFF": "\\{review}Désactivé",
+            "SAVE_CRYSTAL_PICKUP": "\\{review}Objets",
+            "SAVE_CRYSTAL_SAVE": "\\{review}Sauvegarde",
+        },
         "SCREENSHOT_FORMAT": {
             "SCREENSHOT_FORMAT_JPEG": "JPG",
             "SCREENSHOT_FORMAT_PNG": "PNG",
@@ -1110,10 +1116,6 @@
             "title": "\\{review}Sprint réactif",
             "description": "\\{review}Active un sprint plus réactif pour Lara.\n\n- permet de sprinter dès que Lara a de l'énergie, plutôt que d'attendre que son endurance soit pleine.\n- permet de sprinter dans les escaliers sans être interrompue par l'animation de course normale.",
         },
-        "gameplay.enable_save_crystals": {
-            "title": "Cristaux de sauvegarde",
-            "description": "Limite les sauvegardes aux débuts de niveau et aux cristaux de sauvegarde. Les niveaux ont un nombre limité de cristaux, à usage unique, comme sur PS1. Modifier cette option nécessite de recommencer le niveau.",
-        },
         "gameplay.enable_slide_to_run": {
             "title": "\\{review}Glissade-courir",
             "description": "\\{review}Permet à Lara de commencer à courir immédiatement lorsqu'elle touche le sol après avoir glissé en avant sur une pente. Maintenez l'entrée avant pour activer.",
@@ -1325,6 +1327,10 @@
         "gameplay.restore_ps1_enemies": {
             "title": "Restaure les ennemis PS1",
             "description": "\\{review}Ajoute la momie qui apparaît dans la version PlayStation de City of Khamoon, salle 25.\nModifier cette option nécessitera de redémarrer le jeu.",
+        },
+        "gameplay.save_crystal_mode": {
+            "title": "\\{review}Mode des cristaux",
+            "description": "\\{review}Détermine ce que font les cristaux disséminés dans les niveaux.\n\n- Désactivé : les cristaux sont absents.\n- Sauvegarde : les cristaux sont à usage unique et permettent à Lara de sauvegarder la partie, comme sur PS1. Sinon, la sauvegarde n'est possible qu'en début de niveau.\n- Soin : les cristaux rendent la moitié de la santé de Lara et soignent l'empoisonnement lorsqu'elle les touche, comme dans la version PC de TR3.\n- Objets : les cristaux sont des collectibles comptabilisés dans les statistiques du niveau, et n'ont aucun autre effet.\n\nModifier cette option nécessite de recommencer le niveau.",
         },
         "gameplay.start_lara_hitpoints": {
             "title": "Points de vie de Lara",

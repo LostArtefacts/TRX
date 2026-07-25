@@ -17,7 +17,7 @@
 bool UI_Settings_EnablePS1Crystals_IsAvailable(
     const UI_SETTINGS_OPTION *const option)
 {
-    return g_Config.gameplay.enable_save_crystals;
+    return g_Config.gameplay.save_crystal_mode != SAVE_CRYSTAL_OFF;
 }
 
 bool UI_Settings_ShowCrystals_IsAvailable(
@@ -26,7 +26,10 @@ bool UI_Settings_ShowCrystals_IsAvailable(
     if (!Stats_GameHasCrystals()) {
         return false;
     }
-    if (g_TRVersion <= 2 && !g_Config.gameplay.enable_save_crystals) {
+    // Pickup mode counts crystals and nothing else, so it shows the row
+    // regardless of this setting.
+    const SAVE_CRYSTAL_MODE mode = g_Config.gameplay.save_crystal_mode;
+    if (mode == SAVE_CRYSTAL_OFF || mode == SAVE_CRYSTAL_PICKUP) {
         return false;
     }
     return true;

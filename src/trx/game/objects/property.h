@@ -52,6 +52,14 @@ typedef OBJECT_PROPERTY_SET ITEM_PROPERTY_SET;
         }                                                                      \
     }
 
+#define OBJECT_PROPERTY_RGB(name_, r_, g_, b_, description_)                   \
+    {                                                                          \
+        .name = name_, .description = description_, .value = {                 \
+            .type = TVT_RGB_888,                                               \
+            .as_rgb = { .r = r_, .g = g_, .b = b_ }                            \
+        }                                                                      \
+    }
+
 #define OBJECT_PROPERTY_DOUBLE(name_, value_, description_)                    \
     {                                                                          \
         .name = name_, .description = description_, .value = {                 \

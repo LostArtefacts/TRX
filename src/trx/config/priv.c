@@ -535,6 +535,16 @@ static void M_LoadLegacyOptions(JSON_OBJECT *const parent_obj)
         }
     }
 
+    // TRX ..1.10: save crystals on/off changed to mode. Only an explicit opt-in
+    // carries over; the per-game default covers the rest, so TR3 keeps healing.
+    if (JSON_ObjectGetValue(parent_obj, "save_crystal_mode") == nullptr) {
+        const JSON_VALUE *const value =
+            JSON_ObjectGetValue(parent_obj, "enable_save_crystals");
+        if (JSON_ValueIsTrue(value)) {
+            g_Config.gameplay.save_crystal_mode = SAVE_CRYSTAL_SAVE;
+        }
+    }
+
     if (g_Config.config_version >= 0
         && g_Config.config_version < M_CONFIG_VERSION_CURRENT) {
         g_Config.config_version = M_CONFIG_VERSION_CURRENT;

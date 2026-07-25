@@ -2369,7 +2369,7 @@ This page lists documented moveable object properties.
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (338)</th><th>Description</th></tr></thead>
 <tbody>
 <tr><td><code>range</code></td><td colspan="3" align="center">((XYZ_32) { 1, 1, 1 })</td><td>Swim range, in quarter tiles.</td></tr>
-<tr><td><code>use_room_lighting</code></td><td colspan="2" align="center">True</td><td align="center">False</td><td>Whether the shoal uses the surrounding room lighting.</td></tr>
+<tr><td><code>use_room_lighting</code></td><td colspan="2" align="center">true</td><td align="center">false</td><td>Whether the shoal uses the surrounding room lighting.</td></tr>
 </tbody>
 </table>
 
@@ -2806,6 +2806,17 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
+#### O_SAVE_CRYSTAL_ITEM
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1 (83)</th><th align="center">TR2 (269)</th><th align="center">TR3 (180)</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>bob</code></td><td colspan="2" align="center">false</td><td align="center">true</td><td>Whether the crystal hovers and bobs in place.</td></tr>
+<tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>Color of the light the crystal casts. Black picks one from the save crystal mode.</td></tr>
+<tr><td><code>mesh_index</code></td><td colspan="3" align="center">-1</td><td>Mesh the crystal is drawn with. -1 picks one from the save crystal mode.</td></tr>
+<tr><td><code>heal_amount</code></td><td colspan="3" align="center">500</td><td>Health restored by a healing crystal.</td></tr>
+</tbody>
+</table>
+
 #### O_SCION_ITEM_2
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (144)</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
@@ -2941,7 +2952,7 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>sprite_offset</code></td><td colspan="3" align="center">0</td><td>Texture offset in `O_TROPICAL_FISH_GFX`.</td></tr>
 <tr><td><code>range</code></td><td colspan="3" align="center">((XYZ_32) { 1, 1, 1 })</td><td>Swim range, in quarter tiles.</td></tr>
-<tr><td><code>use_room_lighting</code></td><td colspan="2" align="center">True</td><td align="center">False</td><td>Whether the shoal uses the surrounding room lighting.</td></tr>
+<tr><td><code>use_room_lighting</code></td><td colspan="2" align="center">true</td><td align="center">false</td><td>Whether the shoal uses the surrounding room lighting.</td></tr>
 </tbody>
 </table>
 

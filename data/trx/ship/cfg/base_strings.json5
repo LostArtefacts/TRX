@@ -768,6 +768,12 @@
             "QUICK_GUNS_MODE_DRAW_AND_HOLSTER": "Draw or holster",
             "QUICK_GUNS_MODE_DRAW_ONLY": "Draw only",
         },
+        "SAVE_CRYSTAL_MODE": {
+            "SAVE_CRYSTAL_HEAL": "Healing",
+            "SAVE_CRYSTAL_OFF": "Off",
+            "SAVE_CRYSTAL_PICKUP": "Pickups",
+            "SAVE_CRYSTAL_SAVE": "Saving",
+        },
         "SCREENSHOT_FORMAT": {
             "SCREENSHOT_FORMAT_JPEG": "JPG",
             "SCREENSHOT_FORMAT_PNG": "PNG",
@@ -1110,10 +1116,6 @@
             "title": "Responsive sprinting",
             "description": "Enables a more responsive sprinting state for Lara.\n\n- allows sprinting whenever Lara has energy, rather than only when her stamina is full.\n- allows sprinting up stairs rather than being interrupted by Lara's regular run animation.",
         },
-        "gameplay.enable_save_crystals": {
-            "title": "Save crystals",
-            "description": "Limits saving to the beginning of levels and save crystals. Levels have limited, single use save crystals like the PS1 version. Changing this option will require restarting the level.",
-        },
         "gameplay.enable_slide_to_run": {
             "title": "Slide-to-run",
             "description": "Allows Lara to start running immediately when she reaches ground after sliding forwards on a slope. Hold the forward input to activate.",
@@ -1325,6 +1327,10 @@
         "gameplay.restore_ps1_enemies": {
             "title": "Restore PS1 enemies",
             "description": "Adds the mummy that appears in the PlayStation version of City of Khamoon, room 25.\nChanging this option will require restarting the game.",
+        },
+        "gameplay.save_crystal_mode": {
+            "title": "Crystal mode",
+            "description": "Chooses what the crystals scattered through the levels do.\n\n- Off: crystals are not present.\n- Saving: crystals are single use and let Lara save the game, like the PS1 version. Saving is otherwise limited to the beginning of levels.\n- Healing: crystals restore half of Lara's health and cure poison when she touches them, like the PC version of TR3.\n- Pickups: crystals are collectibles counted in the level statistics, and do nothing else.\n\nChanging this option will require restarting the level.",
         },
         "gameplay.start_lara_hitpoints": {
             "title": "Lara's starting health",

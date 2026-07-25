@@ -11,6 +11,7 @@
 - changed the `/music` console command to list the available tracks when given no argument, as `/sfx` does; `/music status` now reports what is playing
 - changed the `/spawn` console command to accept a family such as `pickup` to spawn one of its members
 - changed the Breeze option to allow selecting TR2 or TR3 behavior (Graphic Options → Visuals → Breeze)
+- changed the save crystals option to a mode, so crystals can save, heal, or count as collectibles, and are colored to match (Gameplay → General → Crystal mode)
 - changed lift collision to force Lara out of her climbing and vaulting animations if one collides with her (#5899, #5911)
 - changed lift collision to be optional (Gameplay → Fixes → Fix lift collision)
 - fixed exploding deaths in TR4 showing no flames or explosions

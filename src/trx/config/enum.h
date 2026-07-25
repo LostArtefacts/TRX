@@ -87,6 +87,13 @@ typedef enum {
 } CAMERA_MODE;
 
 typedef enum {
+    SAVE_CRYSTAL_OFF,
+    SAVE_CRYSTAL_SAVE,
+    SAVE_CRYSTAL_HEAL,
+    SAVE_CRYSTAL_PICKUP,
+} SAVE_CRYSTAL_MODE;
+
+typedef enum {
     WALL_GLITCH_FIXED,
     WALL_GLITCH_TR1,
     WALL_GLITCH_TR2,

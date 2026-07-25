@@ -17,8 +17,9 @@ struct OBJECT_PROPERTY_ENTRY {
 };
 
 // Object properties are numeric: the declaration macros produce only S32, BOOL,
-// XYZ_32 and DOUBLE, none of which own memory. A text-valued property would
-// need string ownership the set does not carry, so it is refused at the door.
+// XYZ_32, RGB_888 and DOUBLE, none of which own memory. A text-valued property
+// would need string ownership the set does not carry, so it is refused at the
+// door.
 static void M_AssertNumeric(const TRX_VALUE_TYPE type)
 {
     ASSERT(type != TVT_STRING && type != TVT_DYNAMIC_ENUM);

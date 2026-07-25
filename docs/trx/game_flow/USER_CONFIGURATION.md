@@ -19,14 +19,14 @@ suitable text editor and add the following.
 {
   // …
   "enforced_config": {
-    "enable_save_crystals": false,
+    "save_crystal_mode": "off",
   }
 }
 ```
 
 This means that the game will enforce your chosen value for this particular
-config setting. If the player tries to edit the settings, the option to toggle
-save crystals will be disabled.
+config setting. If the player tries to edit the settings, the save crystal mode
+will be disabled.
 
 You can add as many settings within the `enforced_config` section as needed.
 Refer to the key names within `cfg/TR1X.json5`, `cfg/TR2X.json5`, and
@@ -51,7 +51,7 @@ dialogs. For example:
   // …
   "hidden_config": [
     "enable_legal",
-    "enable_save_crystals",
+    "save_crystal_mode",
   ]
 }
 ```

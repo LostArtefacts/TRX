@@ -43,6 +43,7 @@
         "sparks_gfx.bin",
         "inv_background.bin",
         "binoculars.bin",
+        "crystal.bin",
     ],
 
     "globe_select_entries": [
@@ -840,8 +841,7 @@
         "enable_item_examining",
         "disable_trex_collision",
         "fix_bear_ai",
-        "enable_save_crystals",
-        "enable_ps1_crystals",
+        "enable_ps1_crystals", // TR3 crystals have no tint variants
         "fix_chainblock_secret_sound",
         "enable_compass_stats",
         "enable_crawling",

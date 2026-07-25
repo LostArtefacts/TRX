@@ -1006,6 +1006,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── crash_animating_bounds.bin
 │   │   │   ├── crash_pickup_meshes.bin
 │   │   │   ├── crash_sky.bin
+│   │   │   ├── crystal.bin
 │   │   │   ├── cut1_setup.bin
 │   │   │   ├── cut2_setup.bin
 │   │   │   ├── cut3_setup.bin
@@ -2327,6 +2328,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── crash_animating_bounds.bin
     │   │   │   │   ├── crash_pickup_meshes.bin
     │   │   │   │   ├── crash_sky.bin
+    │   │   │   │   ├── crystal.bin
     │   │   │   │   ├── cut1_setup.bin
     │   │   │   │   ├── cut2_setup.bin
     │   │   │   │   ├── cut3_setup.bin
