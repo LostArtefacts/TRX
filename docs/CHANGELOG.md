@@ -49,6 +49,7 @@
 
 **TR3**
 - fixed Lara, when on fire, not extinguishing at the right water depth compared with OG (regression from 1.1)
+- fixed the waterfall and drowning mist bunching up in one spot instead of spreading out along the water (regression from 1.2)
 
 **TR4**
 - added reflections
