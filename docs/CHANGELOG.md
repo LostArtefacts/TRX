@@ -35,6 +35,7 @@
 
 **TR2**
 - changed weather to be affected by the breeze
+- fixed Lara being able to use a detonator box or a gong a second time by selecting its key in the inventory
 
 **TR4**
 - added reflections

@@ -61,6 +61,9 @@ static void M_Use(ITEM *const lara_item, ITEM *const receptacle_item)
     }
 
     M_CreateGongBonger(lara_item);
+    // A struck gong is spent. Both the collision path and M_IsUsable, which
+    // gates the key selected from the inventory, read that off this axis.
+    Item_SetFinished(receptacle_item, true);
 
     LARA_INFO *const lara = Lara_GetLaraInfo();
     lara->interact_target.is_moving = false;
@@ -116,10 +119,17 @@ normal_collision:
     Object_Collision(item_num, lara_item, coll);
 }
 
+static bool M_IsUsable(const int16_t item_num)
+{
+    return Item_IsInactive(Item_Get(item_num));
+}
+
 static void M_Setup(OBJECT *const obj)
 {
     obj->collision_func = M_Collision;
     obj->bounds_func = M_Bounds;
+    obj->is_usable_func = M_IsUsable;
+    obj->save_flags = true;
 }
 
 REGISTER_OBJECT(O_GONG, M_Setup)
