@@ -1398,6 +1398,10 @@
             "title": "Filtr trapezoidalny",
             "description": "Poprawia rysowanie czworokątów, rozciągając teksturę między wszystkimi wierzchołkami zamiast dzielić je na dwa trójkąty.",
         },
+        "rendering.enable_vertex_snap": {
+            "title": "\\{review}Przyciąganie wierzchołków",
+            "description": "\\{review}Zaokrągla pozycje wierzchołków do pełnych pikseli ekranu 320x240, odtwarzając drżenie geometrii z wersji na PlayStation.",
+        },
         "rendering.enable_vsync": {
             "title": "Synchronizacja pionowa",
             "description": "Włącza lub wyłącza synchronizację pionową.",

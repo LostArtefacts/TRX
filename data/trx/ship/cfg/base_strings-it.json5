@@ -1398,6 +1398,10 @@
             "title": "Filtro trapezoidale",
             "description": "Corregge la renderizzazione dei quadrilateri.",
         },
+        "rendering.enable_vertex_snap": {
+            "title": "\\{review}Aggancio dei vertici",
+            "description": "\\{review}Arrotonda le posizioni dei vertici ai pixel interi di uno schermo 320x240, per la geometria tremolante delle versioni PlayStation.",
+        },
         "rendering.enable_vsync": {
             "title": "Sincronizzazione verticale",
             "description": "Attiva o disattiva la sincronizzazione verticale.",
