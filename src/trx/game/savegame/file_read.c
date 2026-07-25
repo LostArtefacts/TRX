@@ -4,8 +4,7 @@
 #include <trx/debug.h>
 #include <trx/game/camera.h>
 #include <trx/game/effects.h>
-#include <trx/game/fx/footprint.h>
-#include <trx/game/fx/ring.h>
+#include <trx/game/fx/common.h>
 #include <trx/game/fx/weather.h>
 #include <trx/game/game.h>
 #include <trx/game/game_buf.h>
@@ -782,167 +781,6 @@ static bool M_ReadFlare(JSON_READ_IO *const io)
     M_FINISH();
 }
 
-static bool M_ReadFXRing(JSON_READ_IO *const io, FX_RING *const ring)
-{
-    ASSERT(ring != nullptr);
-
-    M_MUST(JSON_READ(io, "on", &ring->on));
-    M_MUST(JSON_READ(io, "life", &ring->life));
-    M_MUST(JSON_READ(io, "speed", &ring->speed));
-    M_MUST(JSON_READ(io, "radius", &ring->radius));
-    M_MUST(JSON_READ(io, "prev_radius", &ring->prev_radius));
-
-    XYZ_16 rot = {};
-    M_MUST(JSON_READ(io, "rot", &rot));
-    ring->rot = (XZ_16) { rot.x, rot.z };
-
-    XYZ_16 prev_rot = {};
-    M_MUST(JSON_READ(io, "prev_rot", &prev_rot));
-    ring->prev_rot = (XZ_16) { prev_rot.x, prev_rot.z };
-
-    M_MUST(JSON_READ(io, "pos", &ring->pos));
-    M_MUST(JSON_READ(io, "prev_pos", &ring->prev_pos));
-    M_FINISH();
-}
-
-static bool M_ReadFXRings(
-    JSON_READ_IO *const io, const FX_RING_TYPE type, const char *const key)
-{
-    if (!M_OPTIONAL(JSON_PUSH(io, key))) {
-        return true;
-    }
-
-    const int32_t ring_count = JSON_ARRAY_LEN(io);
-    for (int32_t i = 0; i < ring_count; i++) {
-        M_MUST(JSON_PUSH_INDEX(io, i));
-        FX_RING *const ring = FX_Ring_GetRing(type, i);
-        if (ring != nullptr) {
-            M_MUST(M_ReadFXRing(io, ring));
-        } else {
-            LOG_WARNING(
-                "Malformed save: too many %s rings. Extra rings will be "
-                "ignored.",
-                key);
-        }
-        M_MUST(JSON_POP(io));
-    }
-
-    M_MUST(JSON_POP(io));
-    M_FINISH();
-}
-
-static bool M_ReadFXFootprint(JSON_READ_IO *const io, FX_FOOTPRINT *const print)
-{
-    ASSERT(print != nullptr);
-
-    M_MUST(JSON_READ(io, "pos", &print->pos));
-    M_MUST(JSON_READ(io, "room_num", &print->room_num));
-    M_MUST(JSON_READ(io, "y_rot", &print->y_rot));
-    M_MUST(JSON_READ(io, "life", &print->life));
-    M_FINISH();
-}
-
-static bool M_ReadFXFootprints(JSON_READ_IO *const io)
-{
-    if (!M_OPTIONAL(JSON_PUSH(io, "footprints"))) {
-        return true;
-    }
-
-    if (M_OPTIONAL(JSON_PUSH(io, "prints"))) {
-        const int32_t print_count = JSON_ARRAY_LEN(io);
-        for (int32_t i = 0; i < print_count; i++) {
-            M_MUST(JSON_PUSH_INDEX(io, i));
-            FX_FOOTPRINT *const print = FX_Footprint_GetPrint(i);
-            if (print != nullptr) {
-                M_MUST(M_ReadFXFootprint(io, print));
-            } else {
-                LOG_WARNING(
-                    "Malformed save: too many footprints. Extra footprints "
-                    "will be ignored.");
-            }
-            M_MUST(JSON_POP(io));
-        }
-        M_MUST(JSON_POP(io));
-    }
-
-    M_MUST(JSON_POP(io));
-    M_FINISH();
-}
-
-static bool M_ReadFXRaindrop(JSON_READ_IO *const io, FX_RAINDROP *const drop)
-{
-    ASSERT(drop != nullptr);
-
-    M_MUST(JSON_READ(io, "pos", &drop->pos));
-    M_MUST(JSON_READ(io, "xv", &drop->xv));
-    M_MUST(JSON_READ(io, "yv", &drop->yv));
-    M_MUST(JSON_READ(io, "zv", &drop->zv));
-    M_MUST(JSON_READ(io, "life", &drop->life));
-    drop->prev_pos = drop->pos;
-    drop->prev_yv = drop->yv;
-    M_FINISH();
-}
-
-static bool M_ReadFXSnowflake(JSON_READ_IO *const io, FX_SNOWFLAKE *const snow)
-{
-    ASSERT(snow != nullptr);
-
-    M_MUST(JSON_READ(io, "pos", &snow->pos));
-    M_MUST(JSON_READ(io, "xv", &snow->xv));
-    M_MUST(JSON_READ(io, "yv", &snow->yv));
-    M_MUST(JSON_READ(io, "zv", &snow->zv));
-    M_MUST(JSON_READ(io, "life", &snow->life));
-    M_MUST(JSON_READ(io, "stopped", &snow->stopped));
-    snow->prev_pos = snow->pos;
-    snow->prev_yv = snow->yv;
-    snow->prev_life = snow->life;
-    M_FINISH();
-}
-
-static bool M_ReadFXWeather(JSON_READ_IO *const io)
-{
-    if (!M_OPTIONAL(JSON_PUSH(io, "weather"))) {
-        return true;
-    }
-
-    if (M_OPTIONAL(JSON_PUSH(io, "rain"))) {
-        const int32_t drop_count = JSON_ARRAY_LEN(io);
-        for (int32_t i = 0; i < drop_count; i++) {
-            M_MUST(JSON_PUSH_INDEX(io, i));
-            FX_RAINDROP *const drop = FX_Weather_GetRaindrop(i);
-            if (drop != nullptr) {
-                M_MUST(M_ReadFXRaindrop(io, drop));
-            } else {
-                LOG_WARNING(
-                    "Malformed save: too many raindrops. Extra raindrops will "
-                    "be ignored.");
-            }
-            M_MUST(JSON_POP(io));
-        }
-        M_MUST(JSON_POP(io));
-    }
-
-    if (M_OPTIONAL(JSON_PUSH(io, "snow"))) {
-        const int32_t snow_count = JSON_ARRAY_LEN(io);
-        for (int32_t i = 0; i < snow_count; i++) {
-            M_MUST(JSON_PUSH_INDEX(io, i));
-            FX_SNOWFLAKE *const snow = FX_Weather_GetSnowflake(i);
-            if (snow != nullptr) {
-                M_MUST(M_ReadFXSnowflake(io, snow));
-            } else {
-                LOG_WARNING(
-                    "Malformed save: too many snowflakes. Extra snowflakes "
-                    "will be ignored.");
-            }
-            M_MUST(JSON_POP(io));
-        }
-        M_MUST(JSON_POP(io));
-    }
-
-    M_MUST(JSON_POP(io));
-    M_FINISH();
-}
-
 static bool M_ShouldLoadMusicTimestamp(
     const MUSIC_ID track_id, const MUSIC_PLAY_MODE mode,
     const MUSIC_ID ambient_track)
@@ -1304,20 +1142,10 @@ bool SG_File_LoadEffects(JSON_READ_IO *const io)
 
 bool SG_File_LoadFX(JSON_READ_IO *const io)
 {
-    FX_Ring_Reset();
-    FX_Footprint_Reset();
-    FX_Weather_Reset();
-
     if (!M_OPTIONAL(JSON_PUSH(io, "vfx"))) {
         return true;
     }
-    if (M_OPTIONAL(JSON_PUSH(io, "rings"))) {
-        M_MUST(M_ReadFXRings(io, FX_RING_TYPE_BLAST, "blast"));
-        M_MUST(M_ReadFXRings(io, FX_RING_TYPE_KNOCKBACK, "knockback"));
-        M_MUST(M_ReadFXRings(io, FX_RING_TYPE_SUMMON, "summon"));
-        M_MUST(JSON_POP(io));
-    }
-    M_MUST(M_ReadFXFootprints(io));
+    M_MUST(FX_Load(io));
     M_MUST(JSON_POP(io));
     M_FINISH();
 }
