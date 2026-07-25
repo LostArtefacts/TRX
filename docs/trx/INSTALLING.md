@@ -347,6 +347,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── track59.flac
 │   │   │   └── track60.flac
 │   │   ├── scripts
+│   │   │   ├── atlantis.lua
 │   │   │   └── gym.lua
 │   │   ├── catalog_item_actions.csv
 │   │   ├── catalog_lara_anims.csv
@@ -1667,6 +1668,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── track59.flac
     │   │   │   │   └── track60.flac
     │   │   │   ├── scripts
+    │   │   │   │   ├── atlantis.lua
     │   │   │   │   └── gym.lua
     │   │   │   ├── catalog_item_actions.csv
     │   │   │   ├── catalog_lara_anims.csv

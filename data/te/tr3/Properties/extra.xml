@@ -24,6 +24,7 @@
     <!--placeholder for O_BACON_LARA-->
     <moveable id="-1">
         <property category="TRX" defaultValue="1000" description="Maximum hit points." displayName="Max Hit Points" internalName="max_hit_points" minValue="0" type="Int" />
+        <property category="TRX" defaultValue="-1" description="Room whose center Bacon Lara mirrors Lara's movement about. -1 uses the room she is placed in." displayName="Anchor Room" internalName="anchor_room" minValue="-1" type="Int" />
     </moveable>
     <!--placeholder for O_BALDY-->
     <moveable id="-1">

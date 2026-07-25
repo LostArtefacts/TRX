@@ -68,6 +68,7 @@ This page lists documented moveable object properties.
 <thead><tr><th>Property</th><th align="center">TR1 (6)</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
 <tr><td><code>max_hit_points</code></td><td colspan="3" align="center">1000</td><td>Maximum hit points.</td></tr>
+<tr><td><code>anchor_room</code></td><td colspan="3" align="center">-1</td><td>Room whose center Bacon Lara mirrors Lara's movement about. -1 uses the room she is placed in. Value range: minimum -1.</td></tr>
 </tbody>
 </table>
 

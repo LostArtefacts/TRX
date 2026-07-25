@@ -1,7 +1,6 @@
-#include <trx/game/objects/creatures/bacon_lara.h>
-
 #include <trx/core/json/util/read_io.h>
 #include <trx/core/json/util/write_io.h>
+#include <trx/core/log.h>
 #include <trx/game/creature.h>
 #include <trx/game/lara.h>
 #include <trx/game/objects.h>
@@ -12,10 +11,33 @@
 
 typedef struct {
     bool status;
+    bool anchored;
+    int32_t anchor_x;
+    int32_t anchor_z;
 } M_PRIV;
 
-static int32_t m_AnchorX = -1;
-static int32_t m_AnchorZ = -1;
+static void M_InitialiseAnchor(ITEM *const item)
+{
+    M_PRIV *const p = item->priv;
+    p->anchored = false;
+
+    TRX_VALUE value = {};
+    int32_t room_num = item->room_num;
+    if (ObjectProperty_GetItemValue(item, "anchor_room", &value)
+        && value.as_int >= 0) {
+        room_num = value.as_int;
+    }
+
+    if (room_num >= Room_GetCount()) {
+        LOG_ERROR("Could not anchor Bacon Lara to room %d", room_num);
+        return;
+    }
+
+    const ROOM *const room = Room_Get(room_num);
+    p->anchor_x = room->pos.x + room->size.x * (WALL_L >> 1);
+    p->anchor_z = room->pos.z + room->size.z * (WALL_L >> 1);
+    p->anchored = true;
+}
 
 static void M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
 {
@@ -31,23 +53,24 @@ static void M_SavePriv(const ITEM *const item, JSON_WRITE_IO *const io)
 
 static void M_Initialise(const int16_t item_num)
 {
-    const ITEM *const item = Item_Get(item_num);
+    ITEM *const item = Item_Get(item_num);
     M_PRIV *const p = item->priv;
     const OBJECT *const lara_obj = Object_Get(O_LARA);
     OBJECT *const bacon_obj = Object_Get(O_BACON_LARA);
     bacon_obj->anim_idx = lara_obj->anim_idx;
     bacon_obj->frame_base = lara_obj->frame_base;
     p->status = false;
+    M_InitialiseAnchor(item);
 }
 
 static void M_Control(const int16_t item_num)
 {
-    if (m_AnchorX == -1) {
+    ITEM *const item = Item_Get(item_num);
+    M_PRIV *const p = item->priv;
+    if (!p->anchored) {
         return;
     }
 
-    ITEM *const item = Item_Get(item_num);
-    M_PRIV *const p = item->priv;
     const ITEM *const lara_item = Lara_GetItem();
 
     if (Item_IsTriggerActive(item)) {
@@ -64,8 +87,8 @@ static void M_Control(const int16_t item_num)
 
     if (!p->status) {
         const XYZ_32 pos = {
-            .x = 2 * m_AnchorX - lara_item->pos.x,
-            .z = 2 * m_AnchorZ - lara_item->pos.z,
+            .x = 2 * p->anchor_x - lara_item->pos.x,
+            .z = 2 * p->anchor_z - lara_item->pos.z,
             .y = lara_item->pos.y,
         };
 
@@ -159,18 +182,11 @@ static void M_Setup(OBJECT *const obj)
     OBJECT_PROPERTIES(
         obj,
         OBJECT_PROPERTY_INT(
-            "max_hit_points", LARA_MAX_HITPOINTS, "Maximum hit points."));
-}
-
-bool BaconLara_InitialiseAnchor(const int32_t room_index)
-{
-    if (room_index >= Room_GetCount()) {
-        return false;
-    }
-    const ROOM *const room = Room_Get(room_index);
-    m_AnchorX = room->pos.x + room->size.x * (WALL_L >> 1);
-    m_AnchorZ = room->pos.z + room->size.z * (WALL_L >> 1);
-    return true;
+            "max_hit_points", LARA_MAX_HITPOINTS, "Maximum hit points."),
+        OBJECT_PROPERTY_INT(
+            "anchor_room", -1,
+            "Room whose center Bacon Lara mirrors Lara's movement about. "
+            "-1 uses the room she is placed in. Value range: minimum -1."));
 }
 
 REGISTER_OBJECT(O_BACON_LARA, M_Setup)

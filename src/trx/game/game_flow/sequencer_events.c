@@ -12,7 +12,6 @@
 #include <trx/game/lara.h>
 #include <trx/game/lua.h>
 #include <trx/game/music.h>
-#include <trx/game/objects/creatures/bacon_lara.h>
 #include <trx/game/option/passport.h>
 #include <trx/game/output.h>
 #include <trx/game/phase.h>
@@ -54,7 +53,6 @@
     X(GFS_SETUP_UV_ROTATE,   M_HandleSetupUVRotate)                            \
     X(GFS_ENABLE_LIGHTNING,  M_HandleEnableLightning)                          \
     X(GFS_SETUP_LENS_FLARE,  M_HandleSetupLensFlare)                          \
-    X(GFS_SETUP_BACON_LARA,  M_HandleSetupBaconLara)                           \
     X(GFS_DISABLE_FLOOR,     M_HandleDisableFloor)
 // clang-format on
 
@@ -433,20 +431,6 @@ M_GF_HANDLER(M_HandleSetupLensFlare)
             .z = data->pos.z << 8,
         };
         Output_LensFlares_SetSun(pos, data->color);
-    }
-    return (GF_COMMAND) { .action = GF_NOOP };
-}
-
-M_GF_HANDLER(M_HandleSetupBaconLara)
-{
-    // TODO: move me to lua!
-    if (seq_ctx != GFSC_STORY) {
-        const GF_SEQUENCE_EVENT *const event = &sequence->events[event_idx];
-        const int32_t anchor_room = (int32_t)(intptr_t)event->data;
-        if (!BaconLara_InitialiseAnchor(anchor_room)) {
-            LOG_ERROR("Could not anchor Bacon Lara to room %d", anchor_room);
-            return (GF_COMMAND) { .action = GF_EXIT_TO_TITLE };
-        }
     }
     return (GF_COMMAND) { .action = GF_NOOP };
 }

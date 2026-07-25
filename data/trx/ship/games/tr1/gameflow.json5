@@ -371,13 +371,13 @@
         // Level 14: Atlantis
         {
             "path": "level10b.phd",
+            "script": "atlantis.lua",
             "music_track": 60,
             "lara_outfit": "tr1_classic",
             "sequence": [
                 {"type": "play_fmv", "fmv_id": 8},
                 {"type": "loading_screen", "path": "atlantis.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "give_item", "object_id": "pistols", "quantity": 1},
-                {"type": "setup_bacon_lara", "anchor_room": 10},
                 {"type": "loop_game"},
                 {"type": "play_fmv", "fmv_id": 9},
                 {"type": "play_cutscene", "cutscene_id": 3},

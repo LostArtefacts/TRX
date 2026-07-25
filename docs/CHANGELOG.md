@@ -33,6 +33,7 @@
 
 **TR1**
 - changed weather to be affected by the breeze
+- changed Bacon Lara's anchor room to be an optional object property rather than a game flow event; refer to migration notes
 
 **TR2**
 - changed weather to be affected by the breeze
