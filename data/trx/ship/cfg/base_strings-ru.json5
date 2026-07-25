@@ -224,6 +224,7 @@
             "assault_finish": "\\{review}Завершить",
             "assault_no_times_set": "\\{review}Время не установлено",
             "assault_other_times_fmt": "\\{review}%s",
+            "assault_reset_times": "\\{review}Сброс",
             "assault_title": "\\{review}ЛУЧШИЕ ВРЕМЕНА",
             "basic_fmt": "%d",
             "bonus_statistics": "Бонусная статистика",

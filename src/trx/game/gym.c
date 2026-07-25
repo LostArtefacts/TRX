@@ -291,6 +291,16 @@ const GYM_TRACK_STATS *Gym_TrackManager_GetStats(const GYM_TRACK_TYPE track)
     return Gym_TrackManager_GetMutableStats(track);
 }
 
+void Gym_TrackManager_ClearStats(const GYM_TRACK_TYPE track)
+{
+    GYM_TRACK_STATS *const stats = Gym_TrackManager_GetMutableStats(track);
+    if (stats == nullptr) {
+        return;
+    }
+    *stats = (GYM_TRACK_STATS) {};
+    Config_Update();
+}
+
 bool Gym_TrackManager_IsTimerDisplay(const GYM_TRACK_TYPE track)
 {
     M_PRIV *const p = &m_Priv;

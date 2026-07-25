@@ -224,6 +224,7 @@
             "assault_finish": "Zeit",
             "assault_no_times_set": "Keine Zeiten gesetzt",
             "assault_other_times_fmt": "\\{review}%s",
+            "assault_reset_times": "\\{review}Zurücksetzen",
             "assault_title": "Bestzeiten",
             "basic_fmt": "%d",
             "bonus_statistics": "Bonusstatistiken",
