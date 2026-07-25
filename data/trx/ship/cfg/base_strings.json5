@@ -1398,6 +1398,10 @@
             "title": "Trapezoid filter",
             "description": "Corrects rendering of quadrilaterals.",
         },
+        "rendering.enable_vertex_snap": {
+            "title": "Vertex snapping",
+            "description": "Rounds vertex positions to whole pixels of a 320x240 screen, for the wobbly geometry of the PlayStation releases.",
+        },
         "rendering.enable_vsync": {
             "title": "VSync",
             "description": "Turns V-Sync on or off.",

@@ -54,6 +54,18 @@ vec3 waterWibble(vec4 worldPosition, vec4 screenPosition)
     return ndc * screenPosition.w;
 }
 
+// The PS1 GTE computed screen coordinates as integers, so vertices could only
+// land on whole pixels of its 320x240 output. Quantizing the clip position the
+// same way reproduces the wobble that geometry shows when the camera moves.
+#define VERTEX_SNAP_RES vec2(320.0, 240.0)
+
+vec4 vertexSnap(vec4 clipPos)
+{
+    vec3 ndc = clipPos.xyz / clipPos.w;
+    ndc.xy = floor(ndc.xy * VERTEX_SNAP_RES * 0.5) / (VERTEX_SNAP_RES * 0.5);
+    return vec4(ndc * clipPos.w, clipPos.w);
+}
+
 void main(void) {
     vec4 worldPos = uMatModel * vec4(inPosition.xyz, 1.0);
     vec4 lightWorldPos = worldPos;
@@ -82,6 +94,13 @@ void main(void) {
     // Apply water wibble effect only to non-sprite vertices
     if (uWibbleEffect && (inFlags & (VERT_NO_WIBBLE | VERT_BILLBOARD)) == 0u) {
         gl_Position.xyz = waterWibble(worldPos, gl_Position);
+    }
+
+    // Sprites and billboards keep sub-pixel positioning, so that UI elements
+    // and effects don't crawl.
+    if (uVertexSnapEnabled != 0
+        && (inFlags & (VERT_ABS_SPRITE | VERT_BILLBOARD)) == 0u) {
+        gl_Position = vertexSnap(gl_Position);
     }
 
     gFlags = inFlags;

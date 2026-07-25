@@ -45,6 +45,7 @@ layout(std140) uniform Globals {
     int uTrapezoidFilterEnabled; // bool
     int uReflectionsEnabled; // bool
     int uTexturesEnabled; // bool
+    int uVertexSnapEnabled; // bool
     int uTRVersion;
     float uUVRotateOffset;
 };
