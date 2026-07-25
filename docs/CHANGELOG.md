@@ -32,6 +32,7 @@
 - fixed a crash when advancing through a flyby sequence in photo mode and the sequence reaches its end (regression from 1.9)
 - fixed the camera snapping aggressively to Lara after some flyby sequences (regression from 1.9)
 - fixed a brief field of view flicker when exiting photo mode during Lara's special animations, such as turning to gold (regression from 1.5)
+- fixed mesh debug spheres not rendering after switching mods (regression from 1.5)
 
 **TR1**
 - changed weather to be affected by the breeze

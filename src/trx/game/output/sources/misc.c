@@ -242,6 +242,7 @@ void OutputSource_Misc_Shutdown(void)
     if (p->vertices != nullptr) {
         Vector_Free(p->vertices);
         p->vertices = nullptr;
+        p->vertex_count = 0;
     }
     if (p->scheduled_spheres != nullptr) {
         Vector_Free(p->scheduled_spheres);
