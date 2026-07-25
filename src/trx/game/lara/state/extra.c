@@ -8,7 +8,6 @@
 #include <trx/game/lara/util.h>
 #include <trx/game/music.h>
 #include <trx/game/objects/effects/twinkle.h>
-#include <trx/game/output/state.h>
 #include <trx/game/overlay.h>
 #include <trx/game/random.h>
 #include <trx/game/rooms.h>
@@ -228,12 +227,9 @@ static void M_RapidsDrown(ITEM *const item, COLL_INFO *const coll)
 
     item->rot.y += 1024;
 
-    const int32_t time4 = (int32_t)Output_GetTimeInGame() * 4;
-    if ((time4 & 3) == 0) {
-        Sparks_TriggerWaterfallMist(
-            item->pos.x, item->pos.y, item->pos.z,
-            Random_GetControl() & 0x0FFF);
-    }
+    Sparks_TriggerWaterfallMist(
+        item->pos.x, item->pos.y, item->pos.z,
+        (Random_GetControl() & 0x0FFF) << 4);
 }
 
 static void M_PullDagger(ITEM *const item, COLL_INFO *const coll)

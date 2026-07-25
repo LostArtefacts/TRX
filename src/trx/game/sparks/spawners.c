@@ -95,9 +95,12 @@ void Sparks_TriggerWaterfallMist(
     for (int32_t i = 0; i < (int32_t)ARRAY_SIZE(offsets); i++) {
         SPARK *const spark = Sparks_GetFreeSpark();
 
+        // the sparks are spread along the line perpendicular to the flow
         const int32_t offset = (Random_GetControl() & 0x1F) + offsets[i] - 16;
-        const int32_t c = Math_Cos(angle) >> W2V_SHIFT;
-        const int32_t s = Math_Sin(angle) >> W2V_SHIFT;
+        const int32_t spread_x =
+            (offset * Math_Sin(angle + DEG_90)) >> W2V_SHIFT;
+        const int32_t spread_z =
+            (offset * Math_Cos(angle + DEG_90)) >> W2V_SHIFT;
 
         *spark = (SPARK) {
             .on = true,
@@ -111,14 +114,14 @@ void Sparks_TriggerWaterfallMist(
             .dynamic = -1,
             .sprite_idx = sprite_idx,
             .pos = {
-                .x = x + (Random_GetControl() % 16) - 8 + c * offset,
+                .x = x + (Random_GetControl() % 16) - 8 + spread_x,
                 .y = y + (Random_GetControl() % 16) - 8,
-                .z = z + (Random_GetControl() % 16) - 8 + s * offset,
+                .z = z + (Random_GetControl() % 16) - 8 + spread_z,
             },
             .vel = {
-                .x = s,
+                .x = Math_Sin(angle) >> W2V_SHIFT,
                 .y = 0,
-                .z = c,
+                .z = Math_Cos(angle) >> W2V_SHIFT,
             },
             .gravity = 0,
             .max_y_vel = 0,
