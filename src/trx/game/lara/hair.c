@@ -238,6 +238,17 @@ static void M_CalculateSpheres_I(
     Matrix_Interpolate();
 }
 
+static void M_ReduceTorsoSphere(void)
+{
+    m_HairSpheres[1].r -= (m_HairSpheres[1].r >> 2) + (m_HairSpheres[1].r >> 3);
+    m_HairSpheres[1].pos.x =
+        (m_HairSpheres[1].pos.x + m_HairSpheres[2].pos.x) >> 1;
+    m_HairSpheres[1].pos.y =
+        (m_HairSpheres[1].pos.y + m_HairSpheres[2].pos.y) >> 1;
+    m_HairSpheres[1].pos.z =
+        (m_HairSpheres[1].pos.z + m_HairSpheres[2].pos.z) >> 1;
+}
+
 void Lara_Hair_Initialise(void)
 {
     for (int32_t i = 0; i < M_MAX_BRAIDS; i++) {
@@ -262,7 +273,8 @@ void Lara_Hair_Initialise(void)
 }
 
 static void M_Control(
-    const bool in_cutscene, const int32_t braid_idx, const XYZ_32 offset_pos)
+    const bool in_cutscene, const int32_t braid_idx, const XYZ_32 offset_pos,
+    const bool is_twin_setup)
 {
     const ITEM *const lara_item = Lara_GetItem();
     const LARA_INFO *const lara_info = Lara_GetLaraInfo();
@@ -290,6 +302,10 @@ static void M_Control(
         M_CalculateSpheres(frame_1, offset_pos);
     } else {
         M_CalculateSpheres_I(frame_1, frame_2, frac, rate, offset_pos);
+    }
+
+    if (is_twin_setup) {
+        M_ReduceTorsoSphere();
     }
 
     const XYZ_32 pos = {
@@ -457,7 +473,7 @@ void Lara_Hair_Control(const bool in_cutscene)
 
     const LARA_SKIN_BRAID *const braid = Lara_Skin_GetBraid();
     for (int32_t i = 0; i < braid->count; i++) {
-        M_Control(in_cutscene, i, braid->setup[i].position);
+        M_Control(in_cutscene, i, braid->setup[i].position, braid->count > 1);
     }
 }
 
