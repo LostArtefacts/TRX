@@ -129,6 +129,7 @@ static void M_Setup(OBJECT *const obj)
     obj->control_func = M_Control;
     obj->bounds_func = M_Bounds;
     obj->is_usable_func = M_IsUsable;
+    obj->save_position = true;
     obj->save_flags = true;
     obj->save_anim = true;
 }
