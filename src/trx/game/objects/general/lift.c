@@ -17,7 +17,7 @@
 #define M_DEFAULT_SPEED       16
 #define M_MAXIMUM_SPEED       64
 #define M_HEIGHT              (STEP_L * 5) // = 1280
-#define M_WALL_WIDTH          (STEP_L / 4) // = 64
+#define M_WALL_WIDTH          (STEP_L / 6) // = 42
 #define M_WALL_COLOR          ((RGBA_8888) { 0, 255, 255, 255 })
 #define M_NUM_FLOOR_SECTORS   4
 #define M_NUM_SECTORS         (M_NUM_FLOOR_SECTORS * 2)
@@ -361,7 +361,9 @@ static void M_InternalCollision(const ITEM *const item, COLL_INFO *const coll)
     for (int32_t i = 0; i < M_NUM_FLOOR_SECTORS; i++) {
         wall.rot.y += DEG_90;
         wall.pos = XYZ_32_OffsetYaw(wall.pos, wall.rot.y, WALL_L);
-        Lara_Col_Push(&wall, coll, false, true);
+        if (i > 0 || p->is_moving) {
+            Lara_Col_Push(&wall, coll, false, true);
+        }
     }
 }
 
@@ -426,11 +428,6 @@ static void M_Collision(
     }
 
     const ITEM *const item = Item_Get(item_num);
-    const M_PRIV *const p = item->priv;
-    if (!p->is_moving) {
-        return;
-    }
-
     const XZ_32 lift_tile = M_GetTile(item->pos);
     const XZ_32 lara_tile = M_GetTile(lara_item->pos);
     const XZ_32 offset = M_GetShaftOffset(item->rot.y);
@@ -441,6 +438,11 @@ static void M_Collision(
     const M_LARA_STATUS lara_status = M_GetLaraStatus(item, lara_item);
     if (lara_status == M_LARA_INSIDE) {
         M_InternalCollision(item, coll);
+        return;
+    }
+
+    const M_PRIV *const p = item->priv;
+    if (!p->is_moving) {
         return;
     }
 
@@ -589,9 +591,6 @@ static bool M_Draw(const ITEM *const item)
     }
 
     const M_PRIV *const p = item->priv;
-    if (!p->is_moving) {
-        return true;
-    }
 
     Matrix_Push();
     Matrix_TranslateAbs32(item->interp.result.pos);
@@ -600,7 +599,9 @@ static bool M_Draw(const ITEM *const item)
     for (int32_t i = 0; i < M_NUM_FLOOR_SECTORS; i++) {
         Matrix_TranslateRel(WALL_L, 0, 0);
         Matrix_RotY(DEG_90);
-        Output_DrawCuboidEx(&p->wall_bounds, M_WALL_COLOR);
+        if (i > 0 || p->is_moving) {
+            Output_DrawCuboidEx(&p->wall_bounds, M_WALL_COLOR);
+        }
     }
 
     Matrix_Pop();
