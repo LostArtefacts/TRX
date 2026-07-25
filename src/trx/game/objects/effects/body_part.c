@@ -170,9 +170,102 @@ static void M_Control_TR3(const int16_t effect_num)
     }
 }
 
+// TR4 has no explosion sprite object, so the burst is made of sparks the way
+// grenades and mines do it (TriggerExplosionSparks in effect2.cpp).
+static void M_SpawnTR4Explosion(const XYZ_32 pos, const int16_t room_num)
+{
+    Sparks_TriggerExplosionSparks(pos, 3, -2, 0, room_num);
+    for (int32_t i = 0; i < 2; i++) {
+        Sparks_TriggerExplosionSparks(pos, 3, -1, 0, room_num);
+    }
+    Sound_Effect(SFX_EXPLOSION_1, &pos, SPM_NORMAL);
+}
+
+// Port of the TR4 ControlBodyPart (missile.cpp). OG only shatters the part
+// into debris on landing; we trail fire sparks and burst instead, since the
+// parts here come from an exploding death.
+static void M_Control_TR4(const int16_t effect_num)
+{
+    EFFECT *const effect = Effect_Get(effect_num);
+    const XYZ_32 old_pos = effect->pos;
+
+    if (effect->speed != 0) {
+        effect->rot.x += effect->fall_speed * 4;
+    }
+    effect->fall_speed += GRAVITY;
+    effect->pos.x += (effect->speed * Math_Sin(effect->rot.y)) >> W2V_SHIFT;
+    effect->pos.y += effect->fall_speed;
+    effect->pos.z += (effect->speed * Math_Cos(effect->rot.y)) >> W2V_SHIFT;
+
+    const int32_t time4 = (int32_t)Output_GetTimeInGame() * 4;
+    if ((time4 & 0xC) == 0 && (effect->counter & 3) != 0) {
+        Sparks_TriggerFireFlame(effect->pos, effect_num, 0);
+    }
+
+    int16_t room_num = effect->room_num;
+    const SECTOR *const sector = Room_GetSector(effect->pos, &room_num);
+
+    const int32_t ceiling = Room_GetCeiling(sector, effect->pos);
+    if (effect->pos.y < ceiling) {
+        effect->pos.y = ceiling;
+        effect->fall_speed = -effect->fall_speed;
+        effect->speed -= effect->speed >> 3;
+    }
+
+    const int32_t height = Room_GetHeight(sector, effect->pos);
+    if (effect->pos.y >= height) {
+        if ((effect->counter & 3) != 0) {
+            M_SpawnTR4Explosion(
+                (XYZ_32) { effect->pos.x, height, effect->pos.z }, room_num);
+            Effect_Kill(effect_num);
+            return;
+        }
+
+        if (old_pos.y <= height) {
+            if (effect->fall_speed <= 32) {
+                effect->fall_speed = 0;
+            } else {
+                effect->fall_speed = -effect->fall_speed >> 2;
+            }
+        } else {
+            effect->rot.y += DEG_180;
+            effect->pos.x = old_pos.x;
+            effect->pos.z = old_pos.z;
+        }
+
+        effect->speed -= effect->speed >> 2;
+        if (ABS(effect->speed) < 4) {
+            effect->speed = 0;
+        }
+        effect->pos.y = old_pos.y;
+    }
+
+    if (effect->speed == 0) {
+        effect->flag1++;
+        if (effect->flag1 > 32) {
+            Effect_Kill(effect_num);
+            return;
+        }
+    }
+
+    if (room_num != effect->room_num) {
+        Effect_UpdateRoom(effect_num, room_num);
+    }
+}
+
 static void M_Setup(OBJECT *const obj)
 {
-    obj->control_func = g_TRVersion == 3 ? M_Control_TR3 : M_Control_TR12;
+    switch (g_TRVersion) {
+    case 4:
+        obj->control_func = M_Control_TR4;
+        break;
+    case 3:
+        obj->control_func = M_Control_TR3;
+        break;
+    default:
+        obj->control_func = M_Control_TR12;
+        break;
+    }
     obj->loaded = true;
     obj->mesh_count = 0;
 }

@@ -839,13 +839,18 @@ void Sparks_TriggerExplosionSparks(
     if ((Random_GetControl() & 1) != 0) {
         spark->flags |= SPARK_F_ROTATE;
         spark->rot_angle = (uint16_t)(Random_GetControl() & 0xFFF);
-        const int32_t rot_add = (Random_GetControl() & 0x7F) + 32;
-        spark->rot_add = (int8_t)MIN(rot_add, 127);
+        // TR4 spins either way; TR3 only clockwise and slower.
+        const int32_t rot_add = g_TRVersion == 4
+            ? (Random_GetControl() & 0xFF) + 128
+            : MIN((Random_GetControl() & 0x7F) + 32, 127);
+        spark->rot_add = (int8_t)rot_add;
     }
 
     spark->src_size.width = (uint8_t)((Random_GetControl() & 0xF) + 40);
-    spark->src_size.height =
-        (uint8_t)(spark->src_size.width + (Random_GetControl() & 7) + 8);
+    // TR4 keeps the puff square; TR3 stretches it vertically.
+    spark->src_size.height = g_TRVersion == 4
+        ? spark->src_size.width
+        : (uint8_t)(spark->src_size.width + (Random_GetControl() & 7) + 8);
     spark->dst_size.width = (uint8_t)(spark->src_size.width << 1);
     spark->dst_size.height = (uint8_t)(spark->src_size.height << 1);
     spark->size = spark->src_size;

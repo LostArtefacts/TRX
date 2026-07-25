@@ -119,6 +119,8 @@ int16_t Effect_Create(const int16_t room_num)
     effect->next_active = m_NextEffectActive;
     m_NextEffectActive = effect_num;
     effect->shade = SHADE_NEUTRAL;
+    effect->flag1 = 0;
+    effect->flag2 = 0;
 
     return effect_num;
 }

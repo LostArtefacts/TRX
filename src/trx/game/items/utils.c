@@ -11,6 +11,7 @@
 #include <trx/game/objects/vars.h>
 #include <trx/game/output.h>
 #include <trx/game/random.h>
+#include <trx/game/sparks/spawners.h>
 #include <trx/game/stats.h>
 #include <trx/version.h>
 
@@ -196,6 +197,23 @@ int32_t Item_Shatter(
     Output_CalculateLight(item->pos, item->room_num);
 
     const ANIM_FRAME *const best_frame = Item_GetBestFrame(item);
+
+    // TR4 has no explosion sprite, so an exploding death needs a spark
+    // fireball. OG raises it at the call site rather than inside
+    // ExplodingDeath2; here the damage tells the explosive shatters apart from
+    // the likes of falling blocks, which come apart in silence.
+    if (g_TRVersion == 4 && damage != 0) {
+        const BOUNDS_16 bounds = best_frame->bounds;
+        const XYZ_32 pos = {
+            .x = item->pos.x,
+            .y = item->pos.y + ((bounds.min.y + bounds.max.y) / 2),
+            .z = item->pos.z,
+        };
+        Sparks_TriggerExplosionSparks(pos, 3, -2, 0, item->room_num);
+        for (int32_t i = 0; i < 2; i++) {
+            Sparks_TriggerExplosionSparks(pos, 3, -1, 0, item->room_num);
+        }
+    }
 
     Matrix_PushUnit();
     Matrix_Rot16(item->rot);
