@@ -65,6 +65,7 @@
 - fixed a missing texture on Young Lara's left hand
 - fixed a misaligned texture on Young Lara's hips
 - fixed the camera getting stuck when Lara traverses around corner ladders (OG bug)
+- fixed animated textures, such as water surfaces, cycling at half their original speed
 
 **Lua**
 
