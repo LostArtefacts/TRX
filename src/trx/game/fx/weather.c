@@ -34,30 +34,8 @@
 #define M_SNOW_YV_MIN 8
 #define M_SNOW_YV_RANGE 24
 
-typedef struct {
-    XYZ_32 pos;
-    XYZ_32 prev_pos;
-    int32_t prev_yv;
-    int8_t xv;
-    uint8_t yv;
-    int8_t zv;
-    uint8_t life;
-} M_RAINDROP;
-
-typedef struct {
-    XYZ_32 pos;
-    XYZ_32 prev_pos;
-    bool stopped;
-    int32_t prev_yv;
-    int32_t prev_life;
-    int8_t xv;
-    uint8_t yv;
-    int8_t zv;
-    uint8_t life;
-} M_SNOWFLAKE;
-
-static M_RAINDROP m_Raindrops[M_MAX_WEATHER];
-static M_SNOWFLAKE m_Snowflakes[M_MAX_WEATHER];
+static FX_RAINDROP m_Raindrops[M_MAX_WEATHER];
+static FX_SNOWFLAKE m_Snowflakes[M_MAX_WEATHER];
 static WEATHER_TYPE m_WeatherType = WEATHER_NONE;
 
 static void M_ClearWeather(void)
@@ -111,7 +89,7 @@ static bool M_SpawnParticle(XYZ_32 *const pos)
     return true;
 }
 
-static void M_SpawnRainDrop(M_RAINDROP *const drop)
+static void M_SpawnRainDrop(FX_RAINDROP *const drop)
 {
     if (!M_SpawnParticle(&drop->pos)) {
         return;
@@ -132,7 +110,7 @@ static void M_UpdateRain(void)
 
     int32_t num_alive = 0;
     for (int32_t i = 0; i < M_MAX_WEATHER; i++) {
-        M_RAINDROP *const drop = &m_Raindrops[i];
+        FX_RAINDROP *const drop = &m_Raindrops[i];
 
         if (drop->pos.x == 0 && num_alive < M_MAX_WEATHER_ALIVE) {
             num_alive++;
@@ -197,7 +175,7 @@ static void M_DrawRain(void)
         Interpolation_IsActive() && ratio > 0.0 && ratio < 1.0;
 
     for (int32_t i = 0; i < M_MAX_WEATHER; i++) {
-        const M_RAINDROP *const drop = &m_Raindrops[i];
+        const FX_RAINDROP *const drop = &m_Raindrops[i];
         if (drop->pos.x == 0) {
             continue;
         }
@@ -225,7 +203,7 @@ static void M_DrawRain(void)
     }
 }
 
-static void M_SpawnSnowflake(M_SNOWFLAKE *const snow)
+static void M_SpawnSnowflake(FX_SNOWFLAKE *const snow)
 {
     if (!M_SpawnParticle(&snow->pos)) {
         return;
@@ -246,7 +224,7 @@ static void M_UpdateSnow(void)
 {
     int32_t num_alive = 0;
     for (int32_t i = 0; i < M_MAX_WEATHER; i++) {
-        M_SNOWFLAKE *const snow = &m_Snowflakes[i];
+        FX_SNOWFLAKE *const snow = &m_Snowflakes[i];
 
         if (snow->pos.x == 0 && num_alive < M_MAX_WEATHER_ALIVE) {
             num_alive++;
@@ -335,7 +313,7 @@ static void M_DrawSnow(void)
     const bool do_interp =
         Interpolation_IsActive() && ratio > 0.0 && ratio < 1.0;
     for (int32_t i = 0; i < M_MAX_WEATHER; i++) {
-        M_SNOWFLAKE *const snow = &m_Snowflakes[i];
+        FX_SNOWFLAKE *const snow = &m_Snowflakes[i];
         if (snow->pos.x == 0) {
             continue;
         }
@@ -432,6 +410,22 @@ WEATHER_TYPE FX_Weather_GetWeather(void)
 void FX_Weather_SetWeather(const WEATHER_TYPE weather_type)
 {
     m_WeatherType = weather_type;
+}
+
+FX_RAINDROP *FX_Weather_GetRaindrop(const int32_t idx)
+{
+    if (idx < 0 || idx >= M_MAX_WEATHER) {
+        return nullptr;
+    }
+    return &m_Raindrops[idx];
+}
+
+FX_SNOWFLAKE *FX_Weather_GetSnowflake(const int32_t idx)
+{
+    if (idx < 0 || idx >= M_MAX_WEATHER) {
+        return nullptr;
+    }
+    return &m_Snowflakes[idx];
 }
 
 void FX_Weather_Control(void)

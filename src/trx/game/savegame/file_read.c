@@ -869,6 +869,80 @@ static bool M_ReadFXFootprints(JSON_READ_IO *const io)
     M_FINISH();
 }
 
+static bool M_ReadFXRaindrop(JSON_READ_IO *const io, FX_RAINDROP *const drop)
+{
+    ASSERT(drop != nullptr);
+
+    M_MUST(JSON_READ(io, "pos", &drop->pos));
+    M_MUST(JSON_READ(io, "xv", &drop->xv));
+    M_MUST(JSON_READ(io, "yv", &drop->yv));
+    M_MUST(JSON_READ(io, "zv", &drop->zv));
+    M_MUST(JSON_READ(io, "life", &drop->life));
+    drop->prev_pos = drop->pos;
+    drop->prev_yv = drop->yv;
+    M_FINISH();
+}
+
+static bool M_ReadFXSnowflake(JSON_READ_IO *const io, FX_SNOWFLAKE *const snow)
+{
+    ASSERT(snow != nullptr);
+
+    M_MUST(JSON_READ(io, "pos", &snow->pos));
+    M_MUST(JSON_READ(io, "xv", &snow->xv));
+    M_MUST(JSON_READ(io, "yv", &snow->yv));
+    M_MUST(JSON_READ(io, "zv", &snow->zv));
+    M_MUST(JSON_READ(io, "life", &snow->life));
+    M_MUST(JSON_READ(io, "stopped", &snow->stopped));
+    snow->prev_pos = snow->pos;
+    snow->prev_yv = snow->yv;
+    snow->prev_life = snow->life;
+    M_FINISH();
+}
+
+static bool M_ReadFXWeather(JSON_READ_IO *const io)
+{
+    if (!M_OPTIONAL(JSON_PUSH(io, "weather"))) {
+        return true;
+    }
+
+    if (M_OPTIONAL(JSON_PUSH(io, "rain"))) {
+        const int32_t drop_count = JSON_ARRAY_LEN(io);
+        for (int32_t i = 0; i < drop_count; i++) {
+            M_MUST(JSON_PUSH_INDEX(io, i));
+            FX_RAINDROP *const drop = FX_Weather_GetRaindrop(i);
+            if (drop != nullptr) {
+                M_MUST(M_ReadFXRaindrop(io, drop));
+            } else {
+                LOG_WARNING(
+                    "Malformed save: too many raindrops. Extra raindrops will "
+                    "be ignored.");
+            }
+            M_MUST(JSON_POP(io));
+        }
+        M_MUST(JSON_POP(io));
+    }
+
+    if (M_OPTIONAL(JSON_PUSH(io, "snow"))) {
+        const int32_t snow_count = JSON_ARRAY_LEN(io);
+        for (int32_t i = 0; i < snow_count; i++) {
+            M_MUST(JSON_PUSH_INDEX(io, i));
+            FX_SNOWFLAKE *const snow = FX_Weather_GetSnowflake(i);
+            if (snow != nullptr) {
+                M_MUST(M_ReadFXSnowflake(io, snow));
+            } else {
+                LOG_WARNING(
+                    "Malformed save: too many snowflakes. Extra snowflakes "
+                    "will be ignored.");
+            }
+            M_MUST(JSON_POP(io));
+        }
+        M_MUST(JSON_POP(io));
+    }
+
+    M_MUST(JSON_POP(io));
+    M_FINISH();
+}
+
 static bool M_ShouldLoadMusicTimestamp(
     const MUSIC_ID track_id, const MUSIC_PLAY_MODE mode,
     const MUSIC_ID ambient_track)
@@ -1232,6 +1306,7 @@ bool SG_File_LoadFX(JSON_READ_IO *const io)
 {
     FX_Ring_Reset();
     FX_Footprint_Reset();
+    FX_Weather_Reset();
 
     if (!M_OPTIONAL(JSON_PUSH(io, "vfx"))) {
         return true;
