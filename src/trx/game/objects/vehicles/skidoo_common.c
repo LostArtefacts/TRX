@@ -1,5 +1,6 @@
 #include <trx/game/objects/vehicles/skidoo_common.h>
 
+#include <trx/config.h>
 #include <trx/core/math.h>
 #include <trx/core/utils.h>
 #include <trx/game/collision.h>
@@ -741,8 +742,14 @@ bool Skidoo_CheckGetOff(void)
         Item_SwitchToAnim(lara_item, LA(LA_FREEFALL), 0);
         lara_item->current_anim_state = M_STATE_GET_OFF_R;
         if (skidoo->pos.y == skidoo->floor) {
-            lara_item->goal_anim_state = M_STATE_STILL;
-            lara_item->fall_speed = DAMAGE_START + DAMAGE_LENGTH;
+            if (g_Config.debug.enable_invulnerability) {
+                lara_item->goal_anim_state = LS(LS_STOP);
+                lara_item->current_anim_state = LS(LS_STOP);
+                Item_SwitchToAnim(lara_item, LA(LA_FREEFALL_LAND), 0);
+            } else {
+                lara_item->goal_anim_state = M_STATE_STILL;
+                lara_item->fall_speed = DAMAGE_START + DAMAGE_LENGTH;
+            }
             lara_item->speed = 0;
             Skidoo_Explode(skidoo);
         } else {
@@ -750,7 +757,9 @@ bool Skidoo_CheckGetOff(void)
             lara_item->pos.y -= 200;
             lara_item->fall_speed = skidoo->fall_speed;
             lara_item->speed = skidoo->speed;
-            Sound_Effect(SFX_LARA_FALL, &lara_item->pos, SPM_NORMAL);
+            if (!g_Config.debug.enable_invulnerability) {
+                Sound_Effect(SFX_LARA_FALL, &lara_item->pos, SPM_NORMAL);
+            }
         }
         lara_item->rot.x = 0;
         lara_item->rot.z = 0;

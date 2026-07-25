@@ -1,5 +1,6 @@
 #include <trx/game/objects/vehicles/quad_bike.h>
 
+#include <trx/config.h>
 #include <trx/core/json/util/read_io.h>
 #include <trx/core/json/util/write_io.h>
 #include <trx/game/anims.h>
@@ -1459,9 +1460,15 @@ bool QuadBike_Control(void)
         g_Camera.target_elevation = -5460;
 
         if (quad->flags & 0x40 && item->pos.y == item->floor) {
-            Item_Shatter(lara->item_num, -1, 0);
-            lara_item->hit_points = 0;
-            lara_item->trigger.spent = true;
+            if (g_Config.debug.enable_invulnerability) {
+                lara_item->goal_anim_state = LS(LS_STOP);
+                lara_item->current_anim_state = LS(LS_STOP);
+                Item_SwitchToAnim(lara_item, LA(LA_FREEFALL_LAND), 0);
+            } else {
+                Item_Shatter(lara->item_num, -1, 0);
+                lara_item->hit_points = 0;
+                lara_item->trigger.spent = true;
+            }
             M_Explode(item);
             return false;
         }
