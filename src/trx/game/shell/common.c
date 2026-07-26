@@ -19,13 +19,27 @@
 static bool m_IsExiting = false;
 static bool m_IsFocused = true;
 
+// SDL_ShowSimpleMessageBox blocks until the dialog is dismissed, which never
+// happens in a batch run, so such a run hangs instead of reporting the error
+// and stopping.
+static bool M_IsInteractive(void)
+{
+    const SHELL_ARGS *const args = Shell_GetArgs();
+    if (args == nullptr) {
+        return true;
+    }
+    return !args->headless && !args->startup.dump_lua_api;
+}
+
 static void M_ShowFatalError(
     const char *const log_message, const char *const dialog_message)
 {
     LOG_ERROR("%s", log_message);
-    SDL_Window *const window = Shell_GetWindow();
-    SDL_ShowSimpleMessageBox(
-        SDL_MESSAGEBOX_ERROR, "Tomb Raider Error", dialog_message, window);
+    if (M_IsInteractive()) {
+        SDL_Window *const window = Shell_GetWindow();
+        SDL_ShowSimpleMessageBox(
+            SDL_MESSAGEBOX_ERROR, "Tomb Raider Error", dialog_message, window);
+    }
     Shell_Terminate(1);
 }
 
