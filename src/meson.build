@@ -617,6 +617,7 @@ common_sources = [
   'trx/game/objects/general/earthquake.c',
   'trx/game/objects/general/final_cutscene.c',
   'trx/game/objects/general/flare_item.c',
+  'trx/game/objects/general/floor_switch.c',
   'trx/game/objects/general/fuse_box.c',
   'trx/game/objects/general/gas_emitter.c',
   'trx/game/objects/general/general.c',

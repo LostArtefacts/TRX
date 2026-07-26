@@ -3401,6 +3401,12 @@
                 "\\{review}Выключатель",
             ]
         },
+        "switch_type_crowbar": {
+            "name": "\\{review}Переключатель с ломом",
+        },
+        "switch_type_floor": {
+            "name": "\\{review}Напольный переключатель",
+        },
         "switch_type_normal": {
             "name": [
                 "Рычаг",

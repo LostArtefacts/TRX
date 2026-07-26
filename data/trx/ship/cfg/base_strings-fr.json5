@@ -3391,6 +3391,12 @@
                 "\\{review}Interrupteur",
             ]
         },
+        "switch_type_crowbar": {
+            "name": "\\{review}Interrupteur à pied-de-biche",
+        },
+        "switch_type_floor": {
+            "name": "\\{review}Interrupteur au sol",
+        },
         "switch_type_normal": {
             "name": [
                 "\\{review}Levier",

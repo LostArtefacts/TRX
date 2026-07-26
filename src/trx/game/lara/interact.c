@@ -87,7 +87,7 @@ void Lara_Interact_FinishControl(const LARA_INTERACT_MODE mode)
     lara->gun_status = LGS_HANDS_BUSY;
 
     lara->interact_target.is_moving = false;
-    if (mode == LARA_INTERACT_SWITCH) {
+    if (mode == LARA_INTERACT_SWITCH || mode == LARA_INTERACT_FLOOR_SWITCH) {
         lara->interact_target.item_num = NO_ITEM;
     }
 }

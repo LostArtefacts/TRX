@@ -3450,6 +3450,20 @@
                 "Switch",
             ]
         },
+        "switch_type_crowbar": {
+            "name": [
+                "Lever",
+                "Switch",
+                "Crowbar Switch",
+            ]
+        },
+        "switch_type_floor": {
+            "name": [
+                "Lever",
+                "Switch",
+                "Floor Switch",
+            ]
+        },
         "switch_type_normal": {
             "name": [
                 "Lever",

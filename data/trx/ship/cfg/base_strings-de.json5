@@ -3397,6 +3397,12 @@
                 "Switch",
             ]
         },
+        "switch_type_crowbar": {
+            "name": "\\{review}Brecheisen-Schalter",
+        },
+        "switch_type_floor": {
+            "name": "\\{review}Bodenschalter",
+        },
         "switch_type_normal": {
             "name": [
                 "Lever",
