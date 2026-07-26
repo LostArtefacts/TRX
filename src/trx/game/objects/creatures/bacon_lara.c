@@ -8,12 +8,14 @@
 #include <trx/game/rooms.h>
 
 #define M_SMASH_JUMP_FRAME 1
+#define M_MAX_DEATH_COUNT 2
 
 typedef struct {
     bool status;
     bool anchored;
     int32_t anchor_x;
     int32_t anchor_z;
+    int32_t death_count;
 } M_PRIV;
 
 static void M_InitialiseAnchor(ITEM *const item)
@@ -43,12 +45,14 @@ static void M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
 {
     M_PRIV *const p = item->priv;
     JSON_SHOULD(JSON_READ(io, "status", &p->status));
+    JSON_SHOULD(JSON_READ(io, "death_count", &p->death_count));
 }
 
 static void M_SavePriv(const ITEM *const item, JSON_WRITE_IO *const io)
 {
     const M_PRIV *const p = item->priv;
     JSONW_WRITE(io, "status", p->status);
+    JSONW_WRITE(io, "death_count", p->death_count);
 }
 
 static void M_Initialise(const int16_t item_num)
@@ -90,6 +94,15 @@ static void M_SyncToLara(ITEM *const item, const ITEM *const lara_item)
     Item_UpdateRoom(Item_GetIndex(item), lara_item->room_num);
 
     if (floor_height < lara_floor_height + WALL_L || lara_item->gravity) {
+        p->death_count = 0;
+        return;
+    }
+
+    // Bacon Lara runs one frame behind Lara, so the death check must pass twice
+    // in succession. This prevents premature death when Lara is, for example,
+    // pulling out of water.
+    p->death_count++;
+    if (p->death_count < M_MAX_DEATH_COUNT) {
         return;
     }
 
