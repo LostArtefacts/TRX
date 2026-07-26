@@ -148,6 +148,7 @@ bool SG_File_LoadFromFile(MYFILE *const fp)
     M_MUST(SG_File_LoadFlares(io));
     M_MUST(SG_File_LoadMusic(io));
     M_MUST(SG_File_LoadLara(io));
+    M_MUST(SG_File_LoadRules(io));
 
     result = true;
 
@@ -172,6 +173,7 @@ void SG_File_SaveToFile(MYFILE *const fp, SAVEGAME_INFO *const info)
     SG_File_DumpLara(io);
     SG_File_DumpMusic(io);
     SG_File_DumpFlares(io);
+    SG_File_DumpRules(io);
     SG_File_DumpMisc(io);
 
     M_SaveRaw(

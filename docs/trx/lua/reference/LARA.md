@@ -160,7 +160,7 @@ Her position, room and hit points are not here: she is an item like any other an
     - **`dive_timer`**: integer. Frames Lara has been diving for. *(read-only)*
     - **`electric`**: integer. How badly Lara is being electrocuted, and 0 when she is not.
     - **`equipped_gun`**: integer. The weapon Lara is holding. Compare against `trx.catalog.weapons`. *(read-only)*
-    - **`exposure_bar`**: integer. Warmth remaining in the cold, out of 600. Only moves in a level whose rooms carry the `damaging` flag.
+    - **`exposure_bar`**: integer. Warmth remaining in the cold, out of `trx.rules.exposure.max`. Only moves in a level whose rooms carry the `damaging` flag.
     - **`extra_anim`**: boolean. Whether a scripted animation is driving Lara rather than her own state machine. *(read-only)*
     - **`gun_status`**: integer. What Lara's hands are doing. Compare against `trx.lara.GunState`. *(read-only)*
     - **`hit_direction`**: integer. Which way the last hit came from, or -1 if she has not been hit. *(read-only)*

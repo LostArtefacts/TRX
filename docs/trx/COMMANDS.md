@@ -125,6 +125,15 @@ whichever key you have bound, and not include it as part of the command itself.
   - some options need a game or level re-launch to apply.
   - option names use `-`, not `_`, because reasons.
 
+- `/rule`<br>
+  `/rule {rule}`<br>
+  `/rule {rule} {value}`<br>
+  `/rule {rule} -`<br>
+  Retrieve or change the numbers the game plays by, like how fast the cold gets to Lara. Rules were made to be broken. With no arguments, lists every rule and its value.
+  - use `-` as `{value}` to restore the rule to default.
+  - rules are saved with your game and restored with it; a new game starts from the defaults.
+  - rule names use `-`, not `_`, same as options.
+
 - `/cheats on`  
   `/cheats off`  
   Enables or disables the cheater's toolkit. But let's face it – you're reading _this_, so that ship has sailed.

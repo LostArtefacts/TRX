@@ -1,4 +1,5 @@
 #include <trx/config.h>
+#include <trx/core/json/util/value.h>
 #include <trx/core/json/util/write_io.h>
 #include <trx/debug.h>
 #include <trx/game/camera.h>
@@ -17,6 +18,7 @@
 #include <trx/game/random.h>
 #include <trx/game/rooms.h>
 #include <trx/game/rope.h>
+#include <trx/game/rules.h>
 #include <trx/game/savegame.h>
 #include <trx/game/savegame/file.h>
 #include <trx/version.h>
@@ -707,6 +709,21 @@ void SG_File_DumpResumeInfoList(JSON_WRITE_IO *const io)
         JSONW_POP_AND_APPEND(io);
     }
     JSONW_POP_AND_SET(io, "resume_info");
+}
+
+void SG_File_DumpRules(JSON_WRITE_IO *const io)
+{
+    JSONW_PUSH_OBJECT(io);
+    JSON_OBJECT *const rules = JSON_WriteIO_GetCurrentObject(io);
+    for (const RULE *rule = Rules_GetMap(); rule->name != nullptr; rule++) {
+        if (Value_EqualPtr(rule->type, rule->target, rule->default_value)) {
+            continue;
+        }
+        TRX_VALUE value = {};
+        Value_ReadPtr(rule->type, rule->target, &value);
+        JSONValue_Write(rules, rule->name, rule->type, nullptr, &value);
+    }
+    JSONW_POP_AND_SET_NZ(io, "rules");
 }
 
 void SG_File_DumpMisc(JSON_WRITE_IO *const io)

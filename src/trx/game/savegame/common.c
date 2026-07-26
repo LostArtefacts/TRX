@@ -13,6 +13,7 @@
 #include <trx/game/objects.h>
 #include <trx/game/objects/traps/movable_block.h>
 #include <trx/game/pathing/lot.h>
+#include <trx/game/rules.h>
 #include <trx/game/savegame.h>
 #include <trx/game/savegame/file.h>
 #include <trx/game/shell.h>
@@ -628,6 +629,10 @@ void Savegame_InitCurrentInfo(void)
     // dry.
     LARA_INFO *const lara = Lara_GetLaraInfo();
     memset(lara->wet, 0, sizeof(lara->wet));
+
+    // The rules last as long as the playthrough too; a load restores the saved
+    // ones over these once the file is read.
+    Rules_Reset();
 }
 
 void Savegame_ResetCurrentInfo(const GF_LEVEL *const level)

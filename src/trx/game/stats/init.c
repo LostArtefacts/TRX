@@ -21,6 +21,7 @@
 #include <trx/game/objects.h>
 #include <trx/game/objects/property.h>
 #include <trx/game/rooms.h>
+#include <trx/game/rules.h>
 #include <trx/game/stats.h>
 
 #include <string.h>
@@ -334,6 +335,7 @@ void Stats_CalculateMaxStats(void)
         if (loader != nullptr) {
             Level_Unload();
             Creature_Reset();
+            Rules_Reset();
 
             LUA_RunLevelScript(level);
             LUA_FireEventInt32(LUA_EVENT_BEFORE_LEVEL_FILE, level->num);

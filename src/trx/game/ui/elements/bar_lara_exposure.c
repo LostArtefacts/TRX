@@ -3,6 +3,7 @@
 #include <trx/config.h>
 #include <trx/game/lara/common.h>
 #include <trx/game/lara/const.h>
+#include <trx/game/rules.h>
 #include <trx/game/ui/elements/bar.h>
 
 bool UI_LaraExposureBar(const bool blink_state)
@@ -13,10 +14,11 @@ bool UI_LaraExposureBar(const bool blink_state)
     }
     const LARA_INFO *const lara = Lara_GetLaraInfo();
     const bool is_blinking = g_Config.ui.enable_bar_flashing
-        && lara->exposure_timer <= LARA_MAX_EXPOSURE * UI_BAR_BLINK_THRESHOLD;
+        && lara->exposure_timer
+            <= g_Rules.exposure.max * UI_BAR_BLINK_THRESHOLD;
 
     const bool show =
-        g_Config.ui.show_bars && lara->exposure_timer < LARA_MAX_EXPOSURE;
+        g_Config.ui.show_bars && lara->exposure_timer < g_Rules.exposure.max;
     if (!show) {
         return false;
     }
@@ -28,7 +30,7 @@ bool UI_LaraExposureBar(const bool blink_state)
         .w = UI_BAR_WIDTH,
         .h = UI_BAR_HEIGHT,
         .value = value,
-        .max_value = LARA_MAX_EXPOSURE,
+        .max_value = g_Rules.exposure.max,
     });
     return true;
 }

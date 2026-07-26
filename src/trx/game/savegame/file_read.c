@@ -1,5 +1,6 @@
 #include <trx/config.h>
 #include <trx/core/json/util/read_io.h>
+#include <trx/core/json/util/value.h>
 #include <trx/core/utils.h>
 #include <trx/debug.h>
 #include <trx/game/camera.h>
@@ -22,6 +23,7 @@
 #include <trx/game/random.h>
 #include <trx/game/rooms.h>
 #include <trx/game/rope.h>
+#include <trx/game/rules.h>
 #include <trx/game/savegame.h>
 #include <trx/game/stats.h>
 #include <trx/version.h>
@@ -1205,6 +1207,33 @@ bool SG_File_LoadResumeInfoList(JSON_READ_IO *const io)
             }
         }
     }
+    M_MUST(JSON_POP(io));
+    M_FINISH();
+}
+
+bool SG_File_LoadRules(JSON_READ_IO *const io)
+{
+    // Keyed by name over the rules this build has, so a block that names one
+    // it dropped, omits one it gained, or is absent entirely still loads. What
+    // the save does not carry stays where Savegame_InitCurrentInfo left it.
+    if (!M_OPTIONAL(JSON_PUSH(io, "rules"))) {
+        return true;
+    }
+
+    const JSON_OBJECT *const rules = JSON_ReadIO_GetCurrentObject(io);
+    for (const RULE *rule = Rules_GetMap(); rule->name != nullptr; rule++) {
+        if (!JSON_ReadIO_HasKey(io, rule->name)) {
+            continue;
+        }
+        TRX_VALUE value;
+        M_MUST(JSONValue_Read(rules, rule->name, rule->type, nullptr, &value));
+        const char *const err =
+            Value_WritePtr(rule->type, rule->target, &value);
+        if (err != nullptr) {
+            LOG_WARNING("%s: %s", rule->name, err);
+        }
+    }
+
     M_MUST(JSON_POP(io));
     M_FINISH();
 }

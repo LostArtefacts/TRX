@@ -28,6 +28,7 @@ bool SG_File_LoadFX(JSON_READ_IO *io);
 bool SG_File_LoadFlares(JSON_READ_IO *io);
 bool SG_File_LoadMusic(JSON_READ_IO *io);
 bool SG_File_LoadResumeInfoList(JSON_READ_IO *io);
+bool SG_File_LoadRules(JSON_READ_IO *io);
 bool SG_File_LoadMisc(JSON_READ_IO *io);
 // End of reader functions =====================================================
 
@@ -42,6 +43,7 @@ void SG_File_DumpItems(JSON_WRITE_IO *io);
 void SG_File_DumpFX(JSON_WRITE_IO *io);
 void SG_File_DumpLara(JSON_WRITE_IO *io);
 void SG_File_DumpResumeInfoList(JSON_WRITE_IO *io);
+void SG_File_DumpRules(JSON_WRITE_IO *io);
 void SG_File_DumpMisc(JSON_WRITE_IO *io);
 // End of writer functions =====================================================
 

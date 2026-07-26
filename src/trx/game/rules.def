@@ -1,0 +1,20 @@
+// Every rule the engine plays by, with the value it ships with. The storage,
+// the defaults, the console command and the Lua bridge are all generated from
+// these rows. What each one means is documented in src/lua/api/rules.lua.
+//
+// A row names its own group so the group reaches the lookup map, where the
+// markers have expanded to nothing. Naming a group that does not bracket the
+// row fails to compile against the struct.
+//
+// A row's type is the one the engine stores the number in, so the range check
+// that guards a write rejects what the storage could not hold.
+
+// How much warmth Lara holds, and how fast she loses and regains it in a room
+// flagged as damaging. LARA_INFO holds the warmth in an int16_t.
+X_GROUP_BEGIN(exposure)
+X_RULE(int16_t, exposure, max,         20 * LOGIC_FPS)
+X_RULE(int16_t, exposure, drain_land,  1)
+X_RULE(int16_t, exposure, drain_water, 2)
+X_RULE(int16_t, exposure, recovery,    1)
+X_RULE(int16_t, exposure, damage,      10)
+X_GROUP_END(exposure)

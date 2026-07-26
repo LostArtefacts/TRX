@@ -747,6 +747,33 @@ test_lua_cmd_load_exe = executable(
 )
 test('lua_cmd_load', test_lua_cmd_load_exe, suite: 'unit')
 
+test_lua_cmd_rule_exe = executable(
+  'test_lua_cmd_rule',
+  files(
+    'unit/test_lua_cmd_rule.c',
+    'unit/fake_engine_console.c',
+    'unit/fake_engine_locale.c',
+  ) + test_stubs
+    + lua_surface_src
+    + files(
+      '../trx/core/completion.c',
+      '../trx/core/strings/case_funcs.c',
+      '../trx/core/strings/common.c',
+      '../trx/core/strings/fuzzy_match.c',
+      '../trx/game/lua/capi/console.c',
+      '../trx/game/lua/capi/locale.c',
+      '../trx/game/lua/capi/log.c',
+      '../trx/game/lua/capi/rules.c',
+      '../trx/game/lua/capi/strings.c',
+      '../trx/game/rules.c',
+    ),
+  include_directories: [src_inc, test_inc],
+  dependencies: [dep_lua, dep_pcre2],
+  c_args: lua_surface_args + ['-DPCRE2_CODE_UNIT_WIDTH=8'],
+  build_by_default: false,
+)
+test('lua_cmd_rule', test_lua_cmd_rule_exe, suite: 'unit')
+
 test_lua_cmd_save_exe = executable(
   'test_lua_cmd_save',
   files(
