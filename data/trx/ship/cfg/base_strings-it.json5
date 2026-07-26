@@ -3430,6 +3430,12 @@
                 "Interruttore",
             ]
         },
+        "switch_type_crowbar": {
+            "name": "\\{review}Interruttore con piede di porco",
+        },
+        "switch_type_floor": {
+            "name": "\\{review}Interruttore a pavimento",
+        },
         "switch_type_normal": {
             "name": [
                 "Leva",

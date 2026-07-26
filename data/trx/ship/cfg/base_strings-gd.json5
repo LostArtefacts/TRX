@@ -3402,6 +3402,12 @@
                 "Suids",
             ]
         },
+        "switch_type_crowbar": {
+            "name": "Suids Bàr-craobh",
+        },
+        "switch_type_floor": {
+            "name": "Suids Làir",
+        },
         "switch_type_normal": {
             "name": [
                 "Luaidhe",

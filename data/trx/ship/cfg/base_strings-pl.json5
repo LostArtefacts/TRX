@@ -3380,6 +3380,12 @@
                 "Przełącznik",
             ]
         },
+        "switch_type_crowbar": {
+            "name": "\\{review}Przełącznik na łom",
+        },
+        "switch_type_floor": {
+            "name": "\\{review}Przełącznik podłogowy",
+        },
         "switch_type_normal": {
             "name": [
                 "Dźwignia",

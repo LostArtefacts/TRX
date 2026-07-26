@@ -436,6 +436,8 @@ X_OBJ_NAME_DEFINE(O_SMASH_OBJECT_4,        "smashable_4",           X_OBJ_NAMES(
 X_OBJ_NAME_DEFINE(O_SPRINGBOARD,           "springboard",           X_OBJ_NAMES("Springboard"))
 X_OBJ_NAME_DEFINE(O_SWITCH_TYPE_AIRLOCK,   "switch_type_airlock",   X_OBJ_NAMES("Airlock Switch"))
 X_OBJ_NAME_DEFINE(O_SWITCH_TYPE_BUTTON,    "switch_type_button",    X_OBJ_NAMES("Button", "Push Button", "Switch"))
+X_OBJ_NAME_DEFINE(O_SWITCH_TYPE_CROWBAR,   "switch_type_crowbar",   X_OBJ_NAMES("Lever", "Switch", "Crowbar Switch"))
+X_OBJ_NAME_DEFINE(O_SWITCH_TYPE_FLOOR,     "switch_type_floor",     X_OBJ_NAMES("Lever", "Switch", "Floor Switch"))
 X_OBJ_NAME_DEFINE(O_SWITCH_TYPE_NORMAL,    "switch_type_normal",    X_OBJ_NAMES("Lever", "Switch"))
 X_OBJ_NAME_DEFINE(O_SWITCH_TYPE_SMALL,     "switch_type_small",     X_OBJ_NAMES("Small Switch"))
 X_OBJ_NAME_DEFINE(O_SWITCH_TYPE_UW,        "switch_type_uw",        X_OBJ_NAMES("Underwater Lever", "Underwater Switch"))
