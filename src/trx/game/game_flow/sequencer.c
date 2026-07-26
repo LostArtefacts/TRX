@@ -223,8 +223,8 @@ GF_COMMAND GF_InterpretSequence(
         } else {
             // console /play level feature
             Inv_RemoveAllItems();
+            Savegame_InitCurrentInfo();
             if (level == GF_GetGymLevel()) {
-                Savegame_InitCurrentInfo();
                 GF_InventoryModifier_Scan(level);
                 GF_InventoryModifier_ApplyToResumeInfo(level);
             } else {
