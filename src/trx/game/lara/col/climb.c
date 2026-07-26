@@ -376,6 +376,7 @@ static bool M_CanHangSideways(
 {
     LARA_INFO *const lara = Lara_GetLaraInfo();
     const XYZ_32 old_pos = item->pos;
+    const XYZ_32 old_coll_pos = coll->old_pos;
     lara->move_angle = item->rot.y + angle;
 
     int32_t x = item->pos.x;
@@ -401,6 +402,9 @@ static bool M_CanHangSideways(
     item->pos.z = z;
     coll->old_pos.y = item->pos.y;
     const bool blocked = Lara_Col_HangTest(item, coll);
+    if (blocked) {
+        coll->old_pos.y = old_coll_pos.y;
+    }
     item->pos.x = old_pos.x;
     item->pos.z = old_pos.z;
     lara->move_angle = item->rot.y + angle;
