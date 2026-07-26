@@ -126,7 +126,7 @@ void OutputSource_Sprites_ObserveLevelUnload(void)
 }
 
 void OutputSource_Sprites_Stage(
-    const int32_t sprite_idx, const int16_t shade, const RGB_F tint,
+    const int32_t sprite_idx, const int16_t shade, const RGBA_F tint,
     const DRAW_TYPE draw_type)
 {
     M_PRIV *const p = &m_Priv;

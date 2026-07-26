@@ -53,6 +53,9 @@ typedef struct M_MESH_BUF_BINDING {
     UT_hash_handle hh;
 } M_MESH_BUF_BINDING;
 
+// One sorted draw in the transparent pass. A null face means the entry stands
+// for the instance's whole opaque range, which lives in the opaque EBO and is
+// indexed relative to the mesh's first vertex.
 typedef struct {
     int32_t sort_key;
     const MESH_INSTANCE *inst;
@@ -205,6 +208,13 @@ static void M_SortTransparentFaces(const MESH_BATCHER *const batcher)
     M_FACE_SORT *const buf = Vector_GetData(batcher->transparent_sort);
     M_FACE_SORT *bptr = buf;
     for (int32_t i = 0; i < n; i++) {
+        if (bptr->face == nullptr) {
+            // No centroid to work from, so the whole range sorts at the
+            // instance origin.
+            bptr->sort_key = bptr->inst->cwmatrix._23;
+            bptr++;
+            continue;
+        }
         // clang-format off
         bptr->sort_key = (
             bptr->inst->cwmatrix._20 * (int32_t)bptr->face->mesh_centroid.x +
@@ -326,8 +336,24 @@ static void M_OpaquePass(MESH_BATCHER *const batcher)
             M_GetBinding(batcher, inst->mesh);
 
         if (inst->mesh->opaque_vertex_indices->count != 0) {
-            Output_AdjustDepth(0.0f, inst->depth_adjust * 2.0f / 0.005f);
-            M_DrawOpaqueInstance(batcher, inst);
+            if (inst->tint.a < 1.0f) {
+                // An instance drawn at partial coverage cannot write depth:
+                // it would hide whatever the pass draws behind it later. Its
+                // opaque faces go through the sorted pass instead. Face
+                // opacity is fixed when the mesh is built, so the routing has
+                // to happen per instance.
+                Vector_Add(
+                    batcher->transparent_sort,
+                    &(M_FACE_SORT) {
+                        .inst = inst,
+                        .face = nullptr,
+                        .index_start = bind->opaque_index_start,
+                        .index_count = bind->opaque_index_count,
+                    });
+            } else {
+                Output_AdjustDepth(0.0f, inst->depth_adjust * 2.0f / 0.005f);
+                M_DrawOpaqueInstance(batcher, inst);
+            }
         }
 
         // Accumulate transparent polygons and faces.
@@ -374,9 +400,10 @@ static void M_TransparentPass(MESH_BATCHER *const batcher)
     }
 
     glBindVertexArray(batcher->vao);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, batcher->ebo.transparent);
+    GLuint bound_ebo = 0;
 
     const MESH_INSTANCE *inst = nullptr;
+    const M_MESH_BUF_BINDING *inst_bind = nullptr;
 
     for (int32_t i = 0; i < batcher->transparent_sort->count; i++) {
         const M_FACE_SORT *const sort_ptr =
@@ -386,11 +413,19 @@ static void M_TransparentPass(MESH_BATCHER *const batcher)
             continue;
         }
 
+        const GLuint ebo = sort_ptr->face == nullptr ? batcher->ebo.opaque
+                                                     : batcher->ebo.transparent;
+        if (ebo != bound_ebo) {
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
+            bound_ebo = ebo;
+        }
+
         if (sort_ptr->inst != inst) {
             inst = sort_ptr->inst;
             const M_MESH_BUF_BINDING *const bind =
                 M_GetBinding(batcher, inst->mesh);
             ASSERT(bind != nullptr);
+            inst_bind = bind;
             if (bind->needs_object_light) {
                 Output_Lights_UploadCPULight(&inst->light_info);
             } else if (bind->needs_own_light) {
@@ -410,8 +445,15 @@ static void M_TransparentPass(MESH_BATCHER *const batcher)
         const void *index_offset =
             (void *)(intptr_t)(sort_ptr->index_start * sizeof(uint32_t));
 
-        glDrawElements(
-            GL_TRIANGLES, sort_ptr->index_count, GL_UNSIGNED_INT, index_offset);
+        if (sort_ptr->face == nullptr) {
+            glDrawElementsBaseVertex(
+                GL_TRIANGLES, sort_ptr->index_count, GL_UNSIGNED_INT,
+                index_offset, inst_bind->vertex_start);
+        } else {
+            glDrawElements(
+                GL_TRIANGLES, sort_ptr->index_count, GL_UNSIGNED_INT,
+                index_offset);
+        }
 
         g_TRX_GL_Metrics.trans_vert_count += sort_ptr->index_count;
     }

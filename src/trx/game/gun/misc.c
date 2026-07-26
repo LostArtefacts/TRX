@@ -177,8 +177,9 @@ static void M_DrawGunGlow(
     const int16_t shade =
         weapon->glow_flicker ? (Random_GetDraw() & 0xFFF) + SHADE_NEUTRAL : 0;
     Output_DrawSprite(
-        pos.x, pos.y, pos.z, glow_obj->mesh_idx, shade, weapon->glow_color,
-        DRAW_BLEND_ADD, weapon->glow_scale);
+        pos.x, pos.y, pos.z, glow_obj->mesh_idx, shade,
+        Color_RGBToRGBA(weapon->glow_color), DRAW_BLEND_ADD,
+        weapon->glow_scale);
 }
 
 void Gun_FindTargetPoint(const ITEM *const item, GAME_VECTOR *const target)

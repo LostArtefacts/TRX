@@ -223,7 +223,7 @@ void main(void) {
 
 uniform sampler2DArray uTexAtlas;
 uniform sampler2D uTexEnvMap;
-uniform vec3 uTint;
+uniform vec4 uTint;
 uniform bool uDiscardAlpha;
 
 #if TR_VERSION >= 4
@@ -389,7 +389,9 @@ void main(void) {
     }
 
     texColor.rgb *= uBrightnessMultiplier;
-    texColor.rgb *= uTint;
+    // All four components: the framebuffer blend is premultiplied alpha, so
+    // fading a fragment out means scaling its coverage along with its color.
+    texColor *= uTint;
 
     outColor = texColor;
 }

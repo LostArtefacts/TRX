@@ -217,7 +217,7 @@ static void M_RenderPass(
         return;
     }
 
-    Output_MeshShader_UploadTint(p->shader, COLOR_RGB_F_WHITE);
+    Output_MeshShader_UploadTint(p->shader, COLOR_RGBA_F_WHITE);
 
     glBindVertexArray(p->vao);
     glBindBuffer(GL_ARRAY_BUFFER, p->vbo);

@@ -53,7 +53,7 @@ static bool m_IsShadeEffect = false;
 static bool m_IsSkyboxEnabled = false;
 
 static int32_t m_TintOverrideDepth = 0;
-static RGB_F m_TintOverrideStack[8] = {};
+static RGBA_F m_TintOverrideStack[8] = {};
 
 float Output_GetTime(void)
 {
@@ -179,18 +179,18 @@ void Output_SetWaterColor(const RGB_888 color)
     m_WaterColor.b = color.b / 255.0f;
 }
 
-RGB_F Output_GetTint(void)
+RGBA_F Output_GetTint(void)
 {
     if (m_TintOverrideDepth != 0) {
         return m_TintOverrideStack[m_TintOverrideDepth - 1];
     }
     if (m_IsShadeEffect) {
-        return m_WaterColor;
+        return Color_RGBToRGBA(m_WaterColor);
     }
-    return COLOR_RGB_F_WHITE;
+    return COLOR_RGBA_F_WHITE;
 }
 
-void Output_PushTintOverride(const RGB_F tint)
+void Output_PushTintOverride(const RGBA_F tint)
 {
     ASSERT(m_TintOverrideDepth < (int32_t)ARRAY_SIZE(m_TintOverrideStack));
     m_TintOverrideStack[m_TintOverrideDepth++] = tint;

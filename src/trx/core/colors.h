@@ -23,6 +23,7 @@ typedef struct {
 #define COLOR_RGB_888_BLACK ((RGB_888) { 0x00, 0x00, 0x00 })
 #define COLOR_RGB_888_WHITE ((RGB_888) { 0xFF, 0xFF, 0xFF })
 #define COLOR_RGB_F_WHITE ((RGB_F) { 1.0f, 1.0f, 1.0f })
+#define COLOR_RGBA_F_WHITE ((RGBA_F) { 1.0f, 1.0f, 1.0f, 1.0f })
 
 RGBA_8888 Color_RGB888ToRGBA8888_Impl(RGB_888 color);
 RGBA_8888 Color_RGB888ToRGBA8888Ex_Impl(RGB_888 color, uint8_t alpha);

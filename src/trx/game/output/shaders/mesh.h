@@ -50,6 +50,6 @@ void Output_MeshShader_UploadWaterEffect(
     OUTPUT_MESH_SHADER *shader, int32_t water_effect);
 void Output_MeshShader_UploadWibbleEffect(
     OUTPUT_MESH_SHADER *shader, bool is_enabled);
-void Output_MeshShader_UploadTint(OUTPUT_MESH_SHADER *shader, RGB_F tint);
+void Output_MeshShader_UploadTint(OUTPUT_MESH_SHADER *shader, RGBA_F tint);
 void Output_MeshShader_UploadAlphaDiscard(
     OUTPUT_MESH_SHADER *shader, bool is_enabled);

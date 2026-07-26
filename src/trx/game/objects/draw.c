@@ -319,7 +319,7 @@ void Object_ApplyExtraRotation(
 
 bool Object_DrawSpriteItem(const ITEM *const item)
 {
-    const RGB_F tint = Output_GetTint();
+    const RGBA_F tint = Output_GetTint();
     SHADE shade = item->shade;
     if (shade.value_1 < 0) {
         shade.value_1 = SHADE_NEUTRAL;

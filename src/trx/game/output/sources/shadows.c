@@ -89,7 +89,7 @@ void OutputSource_Shadows_StageShadow(void)
         .mesh = mesh,
         .cwmatrix = *g_MatrixPtr,
         .wmatrix = *g_WMatrixPtr,
-        .tint = { 1.0f, 1.0f, 1.0f },
+        .tint = COLOR_RGBA_F_WHITE,
         .room = Output_GetCurrentRoom(),
     };
     // XXX: Mesh batcher currently collects the transparent faces for the
