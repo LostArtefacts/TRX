@@ -81,6 +81,8 @@
 - fixed a misaligned texture on Young Lara's hips
 - fixed the camera getting stuck when Lara traverses around corner ladders (OG bug)
 - fixed animated textures, such as water surfaces, cycling at half their original speed
+- fixed flares burning red and trailing sparks and bubbles, so they now burn green and cast only their light, as in the original TR4
+- fixed Lara being able to light a flare while crawling; she now refuses, as in the original TR4
 
 **Lua**
 

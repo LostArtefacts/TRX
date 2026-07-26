@@ -200,6 +200,26 @@ static bool M_NeedToUndraw(void)
     }
 }
 
+// TR4 refuses the flare outright while Lara is on all fours, and she says so.
+// The other games let her light one from a crawl.
+static bool M_IsFlareRefused(const ITEM *const lara_item)
+{
+    if (g_TRVersion < 4) {
+        return false;
+    }
+    switch (LS_U(lara_item->current_anim_state)) {
+    case LS_CRAWL_IDLE:
+    case LS_CRAWL_FORWARD:
+    case LS_CRAWL_BACK:
+    case LS_CRAWL_TURN_LEFT:
+    case LS_CRAWL_TURN_RIGHT:
+    case LS_CRAWL_TO_CLIMB:
+        return true;
+    default:
+        return false;
+    }
+}
+
 static void M_DecideRequestedWeapon(void)
 {
     LARA_INFO *const lara = Lara_GetLaraInfo();
@@ -219,6 +239,10 @@ static void M_DecideRequestedWeapon(void)
         if (Inv_RequestItem(Gun_GetGunObject(requested_gun)) != 0) {
             lara->request_gun_type = requested_gun;
         }
+        return;
+    }
+
+    if (g_Input.use_flare && M_IsFlareRefused(lara_item)) {
         return;
     }
 
@@ -326,6 +350,12 @@ void Gun_Control(void)
     }
 
     Gun_Smoke_Control();
+
+    // Crawling holds the hands busy, so the refusal has to be answered here
+    // rather than in M_DecideRequestedWeapon, which armless Lara alone reaches.
+    if (g_InputDB.use_flare && M_IsFlareRefused(lara_item)) {
+        Sound_Effect(SFX_LARA_NO, nullptr, SPM_ALWAYS);
+    }
 
     M_UpdateGunState();
 

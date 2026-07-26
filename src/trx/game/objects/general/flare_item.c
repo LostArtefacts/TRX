@@ -24,6 +24,9 @@
 
 #define M_FLARE_DYING_TIME_TR3    3.0
 #define M_FLARE_END_TIME_TR3      0.8
+
+#define M_FLARE_DYING_TIME_TR4    3.0
+#define M_FLARE_END_TIME_TR4      0.8
 // clang-format on
 
 typedef struct {
@@ -101,7 +104,7 @@ static void M_Control(const int16_t item_num)
         Flare_GenerateEffects(&item->pos, item->pos, item->room_num);
     }
 
-    if (g_TRVersion >= 3) {
+    if (g_TRVersion == 3) {
         if (flare_age < Flare_GetMaxAge() && is_active) {
             const BOUNDS_16 *const bounds = &Item_GetBestFrame(item)->bounds;
             const XYZ_32 flare_size = {
@@ -317,13 +320,85 @@ static bool M_GenerateLight_TR3(const XYZ_32 pos, const int32_t flare_age)
     return true;
 }
 
+// TR4's flare burns green rather than the red of TR3's, and the light is
+// jittered below the flare rather than above it. Ages are relative to the end
+// of the burn, so a flare whose burn_time was changed still sputters out over
+// the same stretch.
+static bool M_GenerateLight_TR4(const XYZ_32 pos, const int32_t flare_age)
+{
+    if (flare_age >= Flare_GetMaxAge() || flare_age == 0) {
+        return false;
+    }
+
+    const int32_t dying_age =
+        MAX(0, Flare_GetMaxAge() - M_FLARE_DYING_TIME_TR4 * LOGIC_FPS);
+    const int32_t end_age =
+        MAX(0, Flare_GetMaxAge() - M_FLARE_END_TIME_TR4 * LOGIC_FPS);
+
+    const int32_t rnd = Random_GetControl();
+    const XYZ_32 light_pos = {
+        .x = pos.x + ((rnd & 0xF) << 3),
+        .y = pos.y + ((rnd >> 1) & 0x78) - 256,
+        .z = pos.z + ((rnd >> 5) & 0x78),
+    };
+
+    int32_t r;
+    int32_t g;
+    int32_t b;
+    int32_t falloff;
+    bool lit = true;
+
+    if (flare_age < 4) {
+        falloff = (rnd & 3) + 4 + flare_age * 4;
+        if (falloff > 16) {
+            falloff -= (rnd >> 12) & 3;
+        }
+        r = ((rnd >> 4) & 0x1F) + 8 * flare_age + 32;
+        g = (rnd & 0x1F) + 16 * (flare_age + 10);
+        b = 16 * flare_age + ((rnd >> 8) & 0x1F);
+    } else if (flare_age < 16) {
+        falloff = (rnd & 1) + flare_age + 2;
+        r = ((rnd >> 4) & 0x1F) + 4 * flare_age + 64;
+        g = (rnd & 0x3F) + 4 * flare_age + 128;
+        b = ((rnd >> 8) & 0x1F) + 4 * flare_age + 16;
+    } else if (flare_age < dying_age) {
+        falloff = 16;
+        r = ((rnd >> 4) & 0x1F) + 128;
+        g = (rnd & 0x3F) + 192;
+        b = ((rnd >> 8) & 0x3F) + (((rnd >> 6) & 0x7F) >> 2);
+    } else if (flare_age < end_age) {
+        if (rnd > 0x2000) {
+            falloff = 16;
+            r = (rnd & 0x1F) + 128;
+            g = (rnd & 0x3F) + 192;
+            b = ((rnd >> 8) & 0x3F) + (((rnd >> 6) & 0x7F) >> 2);
+        } else {
+            r = (Random_GetControl() & 0x3F) + 64;
+            g = (Random_GetControl() & 0x3F) + 192;
+            b = Random_GetControl() & 0x7F;
+            falloff = (Random_GetControl() & 6) + 8;
+            lit = false;
+        }
+    } else {
+        falloff = 16 - ((flare_age - end_age) >> 1);
+        r = (Random_GetControl() & 0x3F) + 64;
+        g = (Random_GetControl() & 0x3F) + 192;
+        b = Random_GetControl() & 0x1F;
+        lit = (rnd & 1) != 0;
+    }
+
+    Output_AddDynamicLightRGB(light_pos, falloff, (RGB_888) { r, g, b });
+    return lit;
+}
+
 void Flare_GenerateEffects(
     const XYZ_32 *const sound_pos, const XYZ_32 flare_pos, int16_t room_num)
 {
     Room_GetSector(flare_pos, &room_num);
     if (Room_Get(room_num)->flags.underwater) {
         Sound_Effect(SFX_LARA_FLARE_BURN, sound_pos, SPM_UNDERWATER);
-        if (Random_GetDraw() < 0x4000) {
+        // A TR4 flare gives off nothing but its light, in or out of water.
+        if (g_TRVersion < 4 && Random_GetDraw() < 0x4000) {
             Spawn_Bubble(&flare_pos, room_num);
         }
     } else {
@@ -333,7 +408,9 @@ void Flare_GenerateEffects(
 
 bool Flare_GenerateLight(const XYZ_32 pos, const int32_t flare_age)
 {
-    if (g_TRVersion >= 3) {
+    if (g_TRVersion >= 4) {
+        return M_GenerateLight_TR4(pos, flare_age);
+    } else if (g_TRVersion == 3) {
         return M_GenerateLight_TR3(pos, flare_age);
     } else {
         return M_GenerateLight_TR12(pos, flare_age);
