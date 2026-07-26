@@ -3,6 +3,7 @@
 #include <trx/game/clock.h>
 #include <trx/game/game_strings/manager.h>
 #include <trx/game/gun/misc.h>
+#include <trx/game/input.h>
 #include <trx/game/lara.h>
 #include <trx/game/music.h>
 #include <trx/game/option/controls.h>
@@ -214,6 +215,11 @@ void Shell_HandleConfigChange(const CONFIG *const old, const CONFIG *const new)
 
     if (L_CHANGED(input.enable_touch_controls)) {
         TouchOverlay_SetVisible(new->input.enable_touch_controls);
+        Option_Controls_RefreshBackendPicker();
+    }
+
+    if (L_CHANGED(input.enable_controller)) {
+        Input_Discover();
         Option_Controls_RefreshBackendPicker();
     }
 

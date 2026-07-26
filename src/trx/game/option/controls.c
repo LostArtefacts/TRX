@@ -88,5 +88,5 @@ void Option_Controls_RefreshBackendPicker(void)
     if (!p->ui.is_ready) {
         return;
     }
-    UI_ControlsBackend_Init(&p->ui.state.backend_state);
+    UI_Controls_RefreshBackends(&p->ui.state);
 }

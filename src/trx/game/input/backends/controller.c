@@ -454,6 +454,10 @@ static void M_Discover(void)
         SDL_GameControllerClose(m_Controller);
         m_Controller = nullptr;
     }
+    if (SDL_InitSubSystem(SDL_INIT_GAMECONTROLLER | SDL_INIT_SENSOR) < 0) {
+        LOG_ERROR("Error while calling SDL_InitSubSystem: %s", SDL_GetError());
+        return;
+    }
     m_Controller = M_FindController();
 }
 
@@ -481,13 +485,6 @@ static void M_Init(void)
          layout < INPUT_LAYOUT_NUMBER_OF; layout++) {
         M_ResetLayout(layout);
     }
-
-    int32_t result = SDL_Init(SDL_INIT_GAMECONTROLLER | SDL_INIT_SENSOR);
-    if (result < 0) {
-        LOG_ERROR("Error while calling SDL_Init: 0x%lx", result);
-    } else {
-        M_Discover();
-    }
 }
 
 static void M_Shutdown(void)
@@ -496,6 +493,9 @@ static void M_Shutdown(void)
         SDL_GameControllerClose(m_Controller);
         m_Controller = nullptr;
     }
+    memset(m_ButtonState, 0, sizeof(m_ButtonState));
+    memset(m_AxisState, 0, sizeof(m_AxisState));
+    SDL_QuitSubSystem(SDL_INIT_GAMECONTROLLER | SDL_INIT_SENSOR);
 }
 
 static bool M_CustomUpdate(INPUT_STATE *const result, const INPUT_LAYOUT layout)

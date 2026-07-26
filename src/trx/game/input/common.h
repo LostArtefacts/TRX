@@ -27,13 +27,20 @@ extern INPUT_STATE g_OldInputDB;
 
 void Input_Init(void);
 void Input_Shutdown(void);
-void Input_Discover(void);
 void Input_Update(void);
+
+// Reconciles the connected devices with the current configuration: enabled
+// backends acquire whatever hardware is present, disabled ones release it.
+void Input_Discover(void);
 void Input_Reset(void);
 
 // Processes a SDL event to update global input state before polling.
 // @param event     Event to process.
 void Input_ProcessEvent(const SDL_Event *event);
+
+// Checks whether the given backend is available. A disabled backend is not
+// polled, not offered in the controls dialog, and holds no OS resources.
+bool Input_IsBackendEnabled(INPUT_BACKEND backend);
 
 // Checks whether the given role can be assigned to by the player.
 // Hard-coded roles are exempt from conflict checks (eg will never flash in the

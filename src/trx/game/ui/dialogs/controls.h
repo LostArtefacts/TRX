@@ -23,5 +23,9 @@ void UI_Controls_Init(UI_CONTROLS_STATE *s);
 void UI_Controls_Free(UI_CONTROLS_STATE *s);
 bool UI_Controls_Control(UI_CONTROLS_STATE *s);
 
+// Rebuilds the backend list after a config change altered which backends are
+// available.
+void UI_Controls_RefreshBackends(UI_CONTROLS_STATE *s);
+
 // draw functions
 void UI_Controls(UI_CONTROLS_STATE *s);

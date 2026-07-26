@@ -27,20 +27,23 @@ static const M_OPTION m_Options[] = {
 
 void UI_ControlsBackend_Init(UI_CONTROLS_BACKEND_STATE *const s)
 {
-    int32_t count = 0;
     int32_t sel_row = -1;
+    s->visible_count = 0;
     for (int32_t i = 0; m_Options[i].gs_id != nullptr; i++) {
         if (m_Options[i].requires_touch
             && !g_Config.input.enable_touch_controls) {
             continue;
         }
-        if (m_Options[i].backend == g_Config.input.backend) {
-            sel_row = count;
+        if (!Input_IsBackendEnabled(m_Options[i].backend)) {
+            continue;
         }
-        s->visible_indices[count] = i;
-        count++;
+        if (m_Options[i].backend == g_Config.input.backend) {
+            sel_row = s->visible_count;
+        }
+        s->visible_indices[s->visible_count] = i;
+        s->visible_count++;
     }
-    UI_Requester_Init(&s->req, count, count, true);
+    UI_Requester_Init(&s->req, s->visible_count, s->visible_count, true);
     if (sel_row != -1) {
         UI_Requester_SelectRow(&s->req, sel_row);
     }
@@ -58,6 +61,15 @@ int32_t UI_ControlsBackend_Control(UI_CONTROLS_BACKEND_STATE *const s)
         return m_Options[s->visible_indices[choice]].backend;
     }
     return choice;
+}
+
+int32_t UI_ControlsBackend_GetSoleOption(
+    const UI_CONTROLS_BACKEND_STATE *const s)
+{
+    if (s->visible_count != 1) {
+        return -1;
+    }
+    return m_Options[s->visible_indices[0]].backend;
 }
 
 void UI_ControlsBackend(UI_CONTROLS_BACKEND_STATE *const s)

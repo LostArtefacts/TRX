@@ -53,6 +53,7 @@ typedef struct {
         bool enable_buffering_func_keys;
         bool enable_buffering_inventory;
         bool enable_touch_controls;
+        bool enable_controller;
         float touch_opacity;
         float touch_button_scale;
         float touch_dpad_scale;

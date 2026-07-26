@@ -10,12 +10,16 @@
 typedef struct {
     UI_REQUESTER_STATE req;
     int32_t visible_indices[UI_CONTROLS_BACKEND_MAX_OPTIONS];
+    int32_t visible_count;
 } UI_CONTROLS_BACKEND_STATE;
 
 // state functions
 void UI_ControlsBackend_Init(UI_CONTROLS_BACKEND_STATE *s);
 void UI_ControlsBackend_Free(UI_CONTROLS_BACKEND_STATE *s);
 int32_t UI_ControlsBackend_Control(UI_CONTROLS_BACKEND_STATE *s);
+
+// Returns the only available backend, or -1 when the player has a choice.
+int32_t UI_ControlsBackend_GetSoleOption(const UI_CONTROLS_BACKEND_STATE *s);
 
 // draw functions
 void UI_ControlsBackend(UI_CONTROLS_BACKEND_STATE *s);
