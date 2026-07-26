@@ -183,7 +183,8 @@ static void M_ControlInHand(void)
         return;
     }
 
-    if (g_TRVersion < 3) {
+    // A TR4 flare gives off no sparks; its light is the whole effect.
+    if (g_TRVersion != 3) {
         return;
     }
 
