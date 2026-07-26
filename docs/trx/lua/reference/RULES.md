@@ -28,6 +28,7 @@ again on every entry, so a level that wants the defaults back asks for them.
 - **`trx.rules.exposure.drain_water`** (integer). Warmth lost each frame in the cold, underwater or at the surface.
 - **`trx.rules.exposure.recovery`** (integer). Warmth regained each frame once out of the cold.
 - **`trx.rules.exposure.damage`** (integer). Hit points lost each frame once the warmth has run out.
+- **`trx.rules.corpse.fade_speed`** (integer). How much of a body's coverage goes each frame, out of 255. It is taken away once nothing is left. `0` leaves it where it lies.
 
 ### Functions
 

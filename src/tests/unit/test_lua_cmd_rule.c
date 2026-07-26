@@ -9,6 +9,9 @@
 
 #include <lauxlib.h>
 
+// Rules_Reset reads the version for the rules whose default depends on it.
+int32_t g_TRVersion = 1;
+
 static int M_FakeReset(lua_State *const L)
 {
     FakeConsole_Reset();

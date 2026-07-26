@@ -15,6 +15,7 @@
 #include <trx/game/output/const.h>
 #include <trx/game/pathing.h>
 #include <trx/game/rooms.h>
+#include <trx/game/rules.h>
 #include <trx/game/sparks.h>
 #include <trx/version.h>
 
@@ -297,6 +298,7 @@ void Item_Initialise(const int16_t item_num)
     item->ai_bits = 0;
     item->ai_tag = 0;
     item->after_death = 0;
+    item->fade = 0;
     item->creature_data = nullptr;
     item->extra_rotations = nullptr;
     item->priv = nullptr;
@@ -382,6 +384,34 @@ void Item_Initialise(const int16_t item_num)
     }
 }
 
+void Item_StartFade(ITEM *const item)
+{
+    if (g_Rules.corpse.fade_speed <= 0 || item->fade > 0) {
+        return;
+    }
+    item->fade = 255;
+}
+
+// A body leaves the active list as it dies, so the fade cannot ride on the
+// loop below. The OG counts it off while drawing the room, which leaves a
+// corpse nobody is looking at hanging around; this runs either way.
+static void M_ControlFades(void)
+{
+    // Read every frame, so changing the rule mid-fade changes the slope from
+    // here on.
+    const int32_t speed = g_Rules.corpse.fade_speed;
+    for (int16_t item_num = 0; item_num < m_MaxUsedItemCount; item_num++) {
+        ITEM *const item = &m_Items[item_num];
+        if (item->fade <= 0) {
+            continue;
+        }
+        item->fade -= speed;
+        if (item->fade <= 0) {
+            Item_Destroy(item_num);
+        }
+    }
+}
+
 void Item_Control(void)
 {
     int16_t item_num = Item_GetNextSimulated();
@@ -395,6 +425,7 @@ void Item_Control(void)
         item_num = next;
     }
 
+    M_ControlFades();
     Carrier_AnimateDrops();
 }
 

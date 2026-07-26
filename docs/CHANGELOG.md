@@ -60,6 +60,7 @@
 - fixed the waterfall and drowning mist bunching up in one spot instead of spreading out along the water (regression from 1.2)
 
 **TR4**
+- added dead enemies fading away a few seconds after they fall, as in the original TR4
 - added reflections
 - added TR4 outfits
 - added seamless body and braid joints to the TR4 outfits, as in the original TR4
@@ -83,7 +84,7 @@ The Lua integration was rewritten and existing scripts will need updating; refer
 - added `p`, a global shorthand for `trx.console.log`, and made the console log functions take any value, pretty-printing a table
 - added a new Lua module, `trx.math`, with the engine's own fixed-point trigonometry and the `DEG_1`, `DEG_45`, `DEG_90` and `WALL_L` constants
 - added a new Lua module, `trx.strings`, with `fuzzy_match()` and `regex_match()`
-- added a new Lua module, `trx.rules`, holding the numbers the game plays by; the first of them are the cold exposure ceiling, rates and damage
+- added a new Lua module, `trx.rules`, holding the numbers the game plays by; the first of them are the cold exposure ceiling, rates and damage, and how fast a dead enemy fades away
 - added a new Lua module, `trx.argparse`, a declarative argument parser inspired by Python's argparse
 - added a new Lua module, `trx.locale`, for the text the player reads, looked up by key
 - added a new Lua module, `trx.weather`, to read and set the runtime weather

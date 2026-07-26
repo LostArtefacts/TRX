@@ -40,7 +40,10 @@ static OUTPUT_MESH *M_GenerateShadow(
         edge.pos.z = z;
         MeshBuilder_AddVertex(builder, &edge);
     }
-    MeshBuilder_AddFan(builder, SCENE_PASS_TRANSPARENT, false, true);
+    // The shadow never writes depth: it lies on the floor and occludes
+    // nothing, and its depth-writing copy would be a second sorted draw for an
+    // instance drawn at partial coverage.
+    MeshBuilder_AddFan(builder, SCENE_PASS_TRANSPARENT, false, false);
     return MeshBuilder_Seal(builder);
 }
 
@@ -89,7 +92,10 @@ void OutputSource_Shadows_StageShadow(void)
         .mesh = mesh,
         .cwmatrix = *g_MatrixPtr,
         .wmatrix = *g_WMatrixPtr,
-        .tint = COLOR_RGBA_F_WHITE,
+        // The shadow is black, so the tint only reaches it through its alpha:
+        // an item drawn at partial coverage takes its shadow along with it.
+        .tint = Output_GetTint(),
+        .sort_layer = -1,
         .room = Output_GetCurrentRoom(),
     };
     // XXX: Mesh batcher currently collects the transparent faces for the

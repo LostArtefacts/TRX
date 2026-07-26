@@ -56,6 +56,12 @@ rule("exposure.damage", {
   description = "Hit points lost each frame once the warmth has run out.",
 })
 
+rule("corpse.fade_speed", {
+  type = "integer",
+  description = "How much of a body's coverage goes each frame, out of 255. It is taken "
+    .. "away once nothing is left. `0` leaves it where it lies.",
+})
+
 api.define("rules.list", {
   description = "Every rule there is, as dotted `group.field` keys.",
   params = {},

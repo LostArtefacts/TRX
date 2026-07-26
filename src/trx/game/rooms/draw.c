@@ -327,7 +327,19 @@ static void M_DrawRoomItem(const int16_t item_num, void *const ud)
     }
 
     M_SetupWaterStatus(Room_Get(item->room_num));
+
+    // A fading body scales down whatever tint is already in force rather than
+    // replacing it, so it keeps the water color it is lying in.
+    const bool is_fading = item->fade > 0;
+    if (is_fading) {
+        RGBA_F tint = Output_GetTint();
+        tint.a *= item->fade / 255.0f;
+        Output_PushTintOverride(tint);
+    }
     bind->drawn |= obj->draw_func(item);
+    if (is_fading) {
+        Output_PopTintOverride();
+    }
 
     if (Output_IsControlFrame()) {
         Item_ControlDraw(item);

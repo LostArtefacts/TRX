@@ -18,3 +18,10 @@ X_RULE(int16_t, exposure, drain_water, 2)
 X_RULE(int16_t, exposure, recovery,    1)
 X_RULE(int16_t, exposure, damage,      10)
 X_GROUP_END(exposure)
+
+// What becomes of a body once its owner is dead. TR4 fades a body out and
+// takes it away; the other games leave it where it lies, so the shipped 0 is
+// replaced with the game's own default in Rules_Reset.
+X_GROUP_BEGIN(corpse)
+X_RULE(int16_t, corpse, fade_speed, 0)
+X_GROUP_END(corpse)
