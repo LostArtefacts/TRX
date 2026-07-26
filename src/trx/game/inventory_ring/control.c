@@ -164,6 +164,12 @@ static void M_RingNotActive(
         }
         break;
 
+    case O_SAVE_CRYSTAL_OPTION:
+        if (qty > 1) {
+            InvRing_ShowItemQuantity("%d", qty);
+        }
+        break;
+
     default:
         if (inv_item->object_id == O_SCION_OPTION
             || Object_IsType(inv_item->object_id, g_GenericInvOptions)) {

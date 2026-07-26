@@ -2124,6 +2124,12 @@
         "crowbar_anim": {
             "name": "\\{review}Brechstangen-Animation",
         },
+        "crystal": {
+            "name": [
+                "\\{review}Kristall",
+                "Speicherkristall",
+            ]
+        },
         "cult_1": {
             "name": "Maskierter Schläger 1",
         },

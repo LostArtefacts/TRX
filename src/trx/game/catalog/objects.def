@@ -85,6 +85,7 @@ X_CATALOG_ID(O_PLAYER_3)
 X_CATALOG_ID(O_PLAYER_4)
 X_CATALOG_ID(O_PASSPORT_CLOSED)
 X_CATALOG_ID(O_SAVE_CRYSTAL_ITEM)
+X_CATALOG_ID(O_SAVE_CRYSTAL_OPTION)
 // Pickup items, their inventory counterparts, and receptacles.
 #define X_PICKUP(item, option)                                                 \
     X_CATALOG_ID(item)                                                         \

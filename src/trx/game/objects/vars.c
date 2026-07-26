@@ -440,6 +440,7 @@ const OBJECT_ID g_InvObjects[] = {
     O_SOUND_OPTION,
     O_PDA_OPTION,
     O_PASSPORT_CLOSED,
+    O_SAVE_CRYSTAL_OPTION,
     NO_OBJECT,
     // clang-format on
 };
@@ -517,6 +518,9 @@ const GAME_OBJECT_PAIR g_ItemToInvObjectMap[] = {
 #define X_PICKUP(item, option) { item, option },
 #include <trx/game/objects/pickups.def>
 #undef X_PICKUP
+    // The crystal is collected by its own control routine rather than the
+    // generic pickup code, so it is not part of pickups.def.
+    { O_SAVE_CRYSTAL_ITEM, O_SAVE_CRYSTAL_OPTION },
     { NO_OBJECT, NO_OBJECT },
 };
 

@@ -2124,6 +2124,12 @@
         "crowbar_anim": {
             "name": "\\{review}Animation de pied-de-biche",
         },
+        "crystal": {
+            "name": [
+                "\\{review}Cristal",
+                "Cristal de Sauvegarde",
+            ]
+        },
         "cult_1": {
             "name": "\\{review}Goon masqué 1",
         },

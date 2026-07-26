@@ -702,4 +702,17 @@
         "meshes_drawn": -1,
         "inv_pos": 115,
     },
+
+    {
+        "object_id": "O_SAVE_CRYSTAL_OPTION",
+        "frames_total": 1,
+        "anim_direction": 1,
+        "anim_speed": 1,
+        "x_rot_pt_sel": 7200,
+        "x_rot_sel": -4352,
+        "z_trans_sel": 256,
+        "meshes_sel": -1,
+        "meshes_drawn": -1,
+        "inv_pos": 16,
+    },
 ]

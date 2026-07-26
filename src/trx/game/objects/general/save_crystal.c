@@ -1,8 +1,11 @@
+#include <trx/game/objects/general/save_crystal.h>
+
 #include <trx/config.h>
 #include <trx/core/json/util/read_io.h>
 #include <trx/core/json/util/write_io.h>
 #include <trx/game/catalog/manager.h>
 #include <trx/game/input.h>
+#include <trx/game/inventory.h>
 #include <trx/game/lara.h>
 #include <trx/game/lara/poison.h>
 #include <trx/game/objects/common.h>
@@ -97,20 +100,9 @@ static const OBJECT_BOUNDS *M_Bounds(void)
         : &m_UW_Bounds;
 }
 
-// Resolves the mesh the crystal is drawn with. A negative mesh_index means the
-// mode picks; the mesh count guard keeps older crystal injections working.
-// Every crystal needs this from the start: a crystal that is never simulated
-// would otherwise keep the default mesh_bits and draw all of its tints at once.
-static void M_ApplyMesh(ITEM *const item)
+// The mesh count guard keeps older crystal injections working.
+uint32_t SaveCrystal_GetMeshBits(const OBJECT_ID object_id, int32_t mesh_index)
 {
-    const int32_t mesh_count = Object_Get(item->object_id)->mesh_count;
-
-    TRX_VALUE value = {};
-    int32_t mesh_index = -1;
-    if (ObjectProperty_GetItemValue(item, "mesh_index", &value)) {
-        mesh_index = value.as_int;
-    }
-
     const SAVE_CRYSTAL_MODE mode = g_Config.gameplay.save_crystal_mode;
     if (mesh_index < 0) {
         if (g_TRVersion == 3) {
@@ -125,10 +117,22 @@ static void M_ApplyMesh(ITEM *const item)
         }
     }
 
-    if (mesh_index >= mesh_count) {
+    if (mesh_index >= Object_Get(object_id)->mesh_count) {
         mesh_index = 0;
     }
-    item->mesh_bits = 1 << mesh_index;
+    return 1 << mesh_index;
+}
+
+// Every crystal needs this from the start: a crystal that is never simulated
+// would otherwise keep the default mesh_bits and draw all of its tints at once.
+static void M_ApplyMesh(ITEM *const item)
+{
+    TRX_VALUE value = {};
+    int32_t mesh_index = -1;
+    if (ObjectProperty_GetItemValue(item, "mesh_index", &value)) {
+        mesh_index = value.as_int;
+    }
+    item->mesh_bits = SaveCrystal_GetMeshBits(item->object_id, mesh_index);
 }
 
 static void M_Initialise(const int16_t item_num)
@@ -273,6 +277,7 @@ static void M_Heal(ITEM *const lara_item, const ITEM *const item)
 
 static void M_Collect(const ITEM *const lara_item)
 {
+    Inv_AddItem(O_SAVE_CRYSTAL_ITEM);
     Sound_Effect(SFX_SAVE_CRYSTAL, &lara_item->pos, SPM_NORMAL);
 }
 
@@ -390,6 +395,7 @@ static void M_Setup(OBJECT *const obj)
     }
     if (g_TRVersion != 3) {
         Object_SetReflective(O_SAVE_CRYSTAL_ITEM, true);
+        Object_SetReflective(O_SAVE_CRYSTAL_OPTION, true);
     }
 }
 

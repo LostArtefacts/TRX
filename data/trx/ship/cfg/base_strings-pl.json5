@@ -2127,6 +2127,12 @@
         "crowbar_anim": {
             "name": "\\{review}Animacja łomu",
         },
+        "crystal": {
+            "name": [
+                "\\{review}Kryształ",
+                "Kryształ do zapisu",
+            ]
+        },
         "cult_1": {
             "name": "Zamaskowany zbir 1",
         },
