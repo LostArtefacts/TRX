@@ -51,6 +51,7 @@ const SAVEGAME_INVENTORY_ENTRY g_Savegame_InventoryItems[] = {
     { O_CROWBAR_ITEM, "crowbar" },
     { O_WATERSKIN_1_EMPTY, "waterskin1" },
     { O_WATERSKIN_2_EMPTY, "waterskin2" },
+    { O_SAVE_CRYSTAL_ITEM, "save_crystal" },
     { NO_OBJECT, nullptr },
     // clang-format on
 };

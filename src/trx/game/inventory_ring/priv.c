@@ -12,6 +12,7 @@
 #include <trx/game/matrix.h>
 #include <trx/game/music.h>
 #include <trx/game/objects.h>
+#include <trx/game/objects/general/save_crystal.h>
 #include <trx/game/objects/names.h>
 #include <trx/game/output/state.h>
 #include <trx/game/overlay.h>
@@ -277,9 +278,19 @@ void InvRing_InitRing(
     m_ButtonHintUserData = nullptr;
 }
 
+// The crystal's tint follows the save crystal mode, so it cannot be baked into
+// inv_ring.json5.
+static uint32_t M_GetIdleMeshes(const INVENTORY_ITEM *const inv_item)
+{
+    if (inv_item->object_id == O_SAVE_CRYSTAL_OPTION) {
+        return SaveCrystal_GetMeshBits(O_SAVE_CRYSTAL_OPTION, -1);
+    }
+    return inv_item->meshes_sel;
+}
+
 void InvRing_InitInvItem(INVENTORY_ITEM *const inv_item)
 {
-    inv_item->meshes_drawn = inv_item->meshes_sel;
+    inv_item->meshes_drawn = M_GetIdleMeshes(inv_item);
     inv_item->current_frame = 0;
     inv_item->goal_frame = 0;
     inv_item->manual_rot = g_IDMatrix;
@@ -576,6 +587,10 @@ void InvRing_SelectMeshes(INVENTORY_ITEM *const inv_item)
         }
         break;
 
+    case O_SAVE_CRYSTAL_OPTION:
+        inv_item->meshes_drawn = M_GetIdleMeshes(inv_item);
+        break;
+
     default:
         inv_item->meshes_drawn = -1;
         break;
@@ -588,6 +603,7 @@ void InvRing_ShowItemName(const INVENTORY_ITEM *const inv_item)
         || inv_item->object_id == O_GLOBE_SELECT_OPTION) {
         return;
     }
+
     Overlay_SetBottomText((OVERLAY_TEXT) {
         .kind = UI_OVERLAY_TEXT_OBJECT_NAME,
         .object_id = inv_item->object_id,

@@ -2124,6 +2124,12 @@
         "crowbar_anim": {
             "name": "Crowbar Animation",
         },
+        "crystal": {
+            "name": [
+                "Crystal",
+                "Savegame Crystal",
+            ]
+        },
         "cult_1": {
             "name": "Masked Goon 1",
         },

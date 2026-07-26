@@ -2124,6 +2124,12 @@
         "crowbar_anim": {
             "name": "\\{review}Animazione del piede di porco",
         },
+        "crystal": {
+            "name": [
+                "\\{review}Cristallo",
+                "Cristallo di Salvataggio",
+            ]
+        },
         "cult_1": {
             "name": "Scagnozzo Mascherato 1",
         },

@@ -2127,6 +2127,12 @@
         "crowbar_anim": {
             "name": "\\{review}Beothachadh Bàrr-adhair",
         },
+        "crystal": {
+            "name": [
+                "\\{review}Criostal",
+                "Criostal Geama Sàbhalaidh",
+            ]
+        },
         "cult_1": {
             "name": "Ruspal le Masg 1",
         },

@@ -426,6 +426,7 @@ X_OBJ_NAME_DEFINE(O_MOVABLE_BLOCK_4,       "movable_block_4",       X_OBJ_NAMES(
 X_OBJ_NAME_DEFINE(O_MOVING_BAR,            "moving_bar",            X_OBJ_NAMES("Moving Bar"))
 X_OBJ_NAME_DEFINE(O_PORTACABIN,            "portacabin",            X_OBJ_NAMES("Portable Cabin"))
 X_OBJ_NAME_DEFINE(O_SAVE_CRYSTAL_ITEM,     "save_crystal",          X_OBJ_NAMES("Savegame Crystal"))
+X_OBJ_NAME_DEFINE(O_SAVE_CRYSTAL_OPTION,   "crystal",               X_OBJ_NAMES("Crystal", "Savegame Crystal"))
 X_OBJ_NAME_DEFINE(O_SCION_HOLDER,          "scion_holder",          X_OBJ_NAMES("Scion Holder"))
 X_OBJ_NAME_DEFINE(O_SLIDING_PILLAR,        "sliding_pillar",        X_OBJ_NAMES("Sliding Pillar"))
 X_OBJ_NAME_DEFINE(O_SMASH_OBJECT_1,        "smashable_1",           X_OBJ_NAMES("Smashable 1", "Breakable Window 1"))
