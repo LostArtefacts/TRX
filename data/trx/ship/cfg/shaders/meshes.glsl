@@ -389,9 +389,11 @@ void main(void) {
     }
 
     texColor.rgb *= uBrightnessMultiplier;
-    // All four components: the framebuffer blend is premultiplied alpha, so
-    // fading a fragment out means scaling its coverage along with its color.
+    // The framebuffer blend is premultiplied alpha, so the color carries the
+    // coverage: fading a fragment out scales both, and the color a second time
+    // by the alpha it is premultiplied against.
     texColor *= uTint;
+    texColor.rgb *= uTint.a;
 
     outColor = texColor;
 }

@@ -732,6 +732,14 @@ void Creature_Float(const int16_t item_num)
     const SECTOR *const sector = Room_GetSector(item->pos, &room_num);
     item->floor = Room_GetHeight(sector, item->pos);
     Item_UpdateRoom(item_num, room_num);
+
+    // A drowned body never runs the animation command that starts the fade, so
+    // it begins once the body has risen as far as it is going to. OG also waits
+    // for the death animation to loop back to its first frame, which is how
+    // TR4's rest; the earlier games hold on the last frame instead.
+    if (item->pos.y <= wh) {
+        Item_StartFade(item);
+    }
 }
 
 void Creature_Underwater(ITEM *const item, const int32_t depth)

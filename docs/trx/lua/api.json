@@ -4727,6 +4727,11 @@
       "callable": false,
       "implicit": true,
       "path": "rules.exposure"
+    },
+    {
+      "callable": false,
+      "implicit": true,
+      "path": "rules.corpse"
     }
   ],
   "properties": [
@@ -4956,6 +4961,12 @@
     {
       "description": "Hit points lost each frame once the warmth has run out.",
       "path": "rules.exposure.damage",
+      "type": "integer",
+      "writable": true
+    },
+    {
+      "description": "How much of a body's coverage goes each frame, out of 255. It is taken away once nothing is left. `0` leaves it where it lies.",
+      "path": "rules.corpse.fade_speed",
       "type": "integer",
       "writable": true
     },

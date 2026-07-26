@@ -20,6 +20,12 @@ typedef struct MESH_INSTANCE {
     bool wibble;
     int32_t water_effect;
 
+    // Where the instance sits among the sorted pass's layers, drawn low first
+    // and by depth within a layer. A shadow lies flat under the item it
+    // belongs to, so no depth key puts it reliably behind every part of a body
+    // resting on it; it takes a layer of its own instead.
+    int32_t sort_layer;
+
     OUTPUT_LIGHT_INFO light_info;
 
     bool enable_scissor;

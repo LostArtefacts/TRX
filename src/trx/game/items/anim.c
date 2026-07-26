@@ -228,6 +228,9 @@ void Item_Animate(ITEM *const item)
                 const OBJECT *const obj = Object_Get(item->object_id);
                 item->after_death = obj->intelligent ? 1 : 64;
                 Item_SetFinished(item, true);
+                if (obj->intelligent) {
+                    Item_StartFade(item);
+                }
                 break;
 
             default:

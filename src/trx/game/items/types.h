@@ -46,6 +46,9 @@ typedef struct ITEM {
     uint32_t touch_bits;
     uint32_t mesh_bits;
     int16_t after_death;
+    // Coverage a fading body has left, out of 255, or 0 when it is not
+    // fading. Kept apart from after_death, which TR3 counts its blood bath by.
+    int16_t fade;
     OBJECT_ID object_id;
     int16_t current_anim_state;
     int16_t goal_anim_state;

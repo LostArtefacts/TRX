@@ -36,6 +36,9 @@ int16_t Item_Spawn(const ITEM *item, OBJECT_ID obj_id);
 void Item_Initialise(int16_t item_num);
 void Item_Control(void);
 
+// Begin fading a body out, if the rules call for bodies to fade at all.
+void Item_StartFade(ITEM *item);
+
 // Remove the item from the game; any other handle to it becomes stale. Fires
 // on_destroy during live play, while the item can still be read from the
 // handler.

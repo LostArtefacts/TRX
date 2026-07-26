@@ -634,6 +634,8 @@ static bool M_ReadItem(JSON_READ_IO *const io, const int16_t read_index)
         // Introduced in TRX 1.2, not written if zero
         M_OPTIONAL(JSON_READ(io, "ai_bits", &item->ai_bits));
         M_OPTIONAL(JSON_READ(io, "ai_tag", &item->ai_tag));
+        // Introduced in TRX 1.10, not written if zero
+        M_OPTIONAL(JSON_READ(io, "fade", &item->fade));
 
         bool intelligent = obj->intelligent;
         // Introduced in TRX 1.2
@@ -1213,9 +1215,11 @@ bool SG_File_LoadResumeInfoList(JSON_READ_IO *const io)
 
 bool SG_File_LoadRules(JSON_READ_IO *const io)
 {
-    // Keyed by name over the rules this build has, so a block that names one
-    // it dropped, omits one it gained, or is absent entirely still loads. What
-    // the save does not carry stays where Savegame_InitCurrentInfo left it.
+    // Introduced in TRX 1.10, only carrying the rules that are off their
+    // defaults. Keyed by name over the rules this build has, so a block that
+    // names one it dropped, omits one it gained, or is absent entirely still
+    // loads. What the save does not carry stays where Savegame_InitCurrentInfo
+    // left it.
     if (!M_OPTIONAL(JSON_PUSH(io, "rules"))) {
         return true;
     }

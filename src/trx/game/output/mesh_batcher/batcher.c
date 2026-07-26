@@ -191,6 +191,9 @@ static int M_CompareFaceDepth(const void *const a, const void *const b)
 {
     const M_FACE_SORT *const face_a = a;
     const M_FACE_SORT *const face_b = b;
+    if (face_a->inst->sort_layer != face_b->inst->sort_layer) {
+        return face_a->inst->sort_layer - face_b->inst->sort_layer;
+    }
     if (face_b->sort_key == face_a->sort_key) {
         return face_b->inst - face_a->inst;
     }
