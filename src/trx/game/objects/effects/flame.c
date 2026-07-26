@@ -172,13 +172,13 @@ static void M_TR3_ControlSmall(
     if (lara->water_status == LWS_CHEAT) {
         effect->counter = 0;
         Effect_Destroy(Effect_GetIndex(effect));
-        lara->burn = 0;
+        lara->burn = false;
         return;
     }
 
     const bool is_green = M_IsGreenAttachedFlame(effect);
     const int32_t flame_type = is_green ? 254 : 255;
-    for (int i = 0; i < LM_NUMBER_OF; i++) {
+    for (int32_t i = LM_NUMBER_OF - 1; i >= 0; i--) {
         if ((time4 & 0xC) == 0) {
             effect->pos.x = 0;
             effect->pos.y = 0;

@@ -46,6 +46,9 @@
 - changed weather to be affected by the breeze
 - fixed Lara being able to use a detonator box or a gong a second time by selecting its key in the inventory
 
+**TR3**
+- fixed Lara, when on fire, not extinguishing at the right water depth compared with OG (regression from 1.1)
+
 **TR4**
 - added reflections
 - added TR4 outfits
