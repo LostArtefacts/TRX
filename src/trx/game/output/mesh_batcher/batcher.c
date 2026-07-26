@@ -57,7 +57,10 @@ typedef struct M_MESH_BUF_BINDING {
 // for the instance's whole opaque range, which lives in the opaque EBO and is
 // indexed relative to the mesh's first vertex.
 typedef struct {
-    int32_t sort_key;
+    // As wide as the matrix it comes from: the camera-space depth carries the
+    // W2V_SHIFT scale, so a level deep enough would wrap a 32-bit key and sort
+    // its far geometry as the nearest.
+    int64_t sort_key;
     const MESH_INSTANCE *inst;
     const OUTPUT_MESH_FACE *face;
     int32_t index_start;
@@ -186,18 +189,25 @@ static void M_UpdateMeshGeometry(
         bind->vertex_count * sizeof(M_MESH_GEOM), bind->geom_data);
 }
 
+// Order two values as a sign. The differences here are wider than the int the
+// comparator returns, and a truncated difference orders qsort's input
+// inconsistently rather than merely imprecisely.
+#define M_COMPARE(a_, b_) (((a_) > (b_)) - ((a_) < (b_)))
+
 // Compare two faces by camera-space depth.
 static int M_CompareFaceDepth(const void *const a, const void *const b)
 {
     const M_FACE_SORT *const face_a = a;
     const M_FACE_SORT *const face_b = b;
     if (face_a->inst->sort_layer != face_b->inst->sort_layer) {
-        return face_a->inst->sort_layer - face_b->inst->sort_layer;
+        return M_COMPARE(face_a->inst->sort_layer, face_b->inst->sort_layer);
     }
-    if (face_b->sort_key == face_a->sort_key) {
-        return face_b->inst - face_a->inst;
+    if (face_a->sort_key != face_b->sort_key) {
+        return M_COMPARE(face_b->sort_key, face_a->sort_key);
     }
-    return face_b->sort_key - face_a->sort_key;
+    // The instances share one vector, so their addresses stand for the order
+    // they were staged in.
+    return M_COMPARE(face_b->inst, face_a->inst);
 }
 
 // Compute per-face view depth and sort the mesh's transparent ranges
