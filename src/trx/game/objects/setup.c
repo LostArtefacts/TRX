@@ -64,12 +64,14 @@ void Object_SetupAllObjects(void)
         obj->save_anim = false;
         obj->load_floor = false;
         obj->intelligent = false;
+        obj->leaves_corpse = false;
         obj->smartness = -1;
 
         ObjectProperty_ResetObject(obj);
         if (obj->setup_func != nullptr) {
             obj->setup_func(obj);
         }
+        obj->leaves_corpse |= obj->intelligent;
 
         // TODO: this is poor design
         OBJECT_PROPERTIES(

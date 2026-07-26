@@ -305,6 +305,7 @@ static void M_Setup(OBJECT *const obj)
     obj->priv_size = sizeof(M_PRIV);
     obj->is_targetable_func = M_IsTargetable;
 
+    obj->leaves_corpse = true;
     obj->save_position = true;
     obj->save_flags = true;
     obj->save_anim = true;
