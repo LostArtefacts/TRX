@@ -1361,6 +1361,10 @@
             "title": "Buffering (inventario)",
             "description": "Abilita il buffering dell'inventario (2 fotogrammi) per ottenere un controllo preciso dei movimenti di Lara.",
         },
+        "input.enable_controller": {
+            "title": "\\{review}Supporto controller",
+            "description": "\\{review}Consente al gioco di leggere i controller collegati. Disattiva questa opzione se usi un software di rimappatura esterno che converte già il controller in input da tastiera.",
+        },
         "input.enable_responsive_passport": {
             "title": "Passaporto reattivo",
             "description": "Fa in modo che sfogliare le pagine del passaporto sia più istantaneo, tenendo conto dei tasti premuti dell'utente",

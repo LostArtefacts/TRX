@@ -1361,6 +1361,10 @@
             "title": "\\{review}Mise en mémoire tampon (inventaire)",
             "description": "\\{review}Active la mise en mémoire tampon de l'inventaire (2 images) pour un contrôle précis des mouvements de Lara.",
         },
+        "input.enable_controller": {
+            "title": "\\{review}Prise en charge des manettes",
+            "description": "\\{review}Permet au jeu de lire les manettes connectées. Désactivez cette option si vous utilisez un logiciel de remappage externe qui convertit déjà votre manette en entrées clavier.",
+        },
         "input.enable_responsive_passport": {
             "title": "Passeport plus réactif",
             "description": "Evite de bloquer complètement les contrôles pendant que les pages tournent : à la place, repousse simplement leur effet.",

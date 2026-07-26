@@ -24,3 +24,5 @@ typedef struct {
     bool (*read_and_assign)(INPUT_LAYOUT layout, INPUT_ROLE role, int32_t slot);
     void (*resolve_combos)(INPUT_LAYOUT layout, INPUT_STATE *result);
 } INPUT_BACKEND_IMPL;
+
+const INPUT_BACKEND_IMPL *Input_GetBackendImpl(INPUT_BACKEND backend);

@@ -1361,6 +1361,10 @@
             "title": "\\{review}Pufferung (Inventar)",
             "description": "\\{review}Aktiviert die Pufferung des Inventars (2 Frames), um eine präzise Steuerung von Laras Bewegung zu ermöglichen.",
         },
+        "input.enable_controller": {
+            "title": "\\{review}Controller-Unterstützung",
+            "description": "\\{review}Erlaubt dem Spiel, angeschlossene Controller auszulesen. Deaktiviere dies, wenn du eine externe Remapping-Software verwendest, die deinen Controller bereits in Tastatureingaben übersetzt.",
+        },
         "input.enable_responsive_passport": {
             "title": "Reaktionsfähiger Ausweis",
             "description": "Deaktiviert, dass man die Umblättern-Animation des Ausweises abwarten muss, sie können nun so schnell umblättern, wie sie wollen.",

@@ -12,6 +12,26 @@ typedef enum {
     M_PHASE_EDITOR,
 } M_PHASE;
 
+static void M_EnterEditor(
+    UI_CONTROLS_STATE *const s, const INPUT_BACKEND backend)
+{
+    s->backend = backend;
+    s->phase = M_PHASE_EDITOR;
+    g_Config.input.backend = backend;
+}
+
+// With a single backend available there is nothing to pick, so the dialog
+// opens straight into its editor and closes from there. Config_Update() is
+// left to the caller: this also runs from the config change handler, where
+// updating again would re-enter it.
+static void M_SkipPickerIfSoleBackend(UI_CONTROLS_STATE *const s)
+{
+    const int32_t sole = UI_ControlsBackend_GetSoleOption(&s->backend_state);
+    if (sole != -1) {
+        M_EnterEditor(s, sole);
+    }
+}
+
 void UI_Controls_Init(UI_CONTROLS_STATE *const s)
 {
     s->events = EventManager_Create();
@@ -24,6 +44,15 @@ void UI_Controls_Init(UI_CONTROLS_STATE *const s)
         UI_ControlsEditor_Init(
             &s->editor_state[backend], backend, g_Config.input.layout[backend],
             s->events);
+    }
+    M_SkipPickerIfSoleBackend(s);
+}
+
+void UI_Controls_RefreshBackends(UI_CONTROLS_STATE *const s)
+{
+    UI_ControlsBackend_Init(&s->backend_state);
+    if (s->phase == M_PHASE_BACKEND) {
+        M_SkipPickerIfSoleBackend(s);
     }
 }
 
@@ -49,9 +78,7 @@ bool UI_Controls_Control(UI_CONTROLS_STATE *const s)
         case UI_REQUESTER_CANCEL:
             return true;
         default:
-            s->backend = choice;
-            s->phase = M_PHASE_EDITOR;
-            g_Config.input.backend = s->backend;
+            M_EnterEditor(s, choice);
             Config_Update();
             break;
         }
@@ -70,6 +97,9 @@ bool UI_Controls_Control(UI_CONTROLS_STATE *const s)
         case UI_CONTROLS_CHOICE_NOOP:
             break;
         case UI_CONTROLS_CHOICE_GO_BACK:
+            if (UI_ControlsBackend_GetSoleOption(&s->backend_state) != -1) {
+                return true;
+            }
             s->phase = M_PHASE_BACKEND;
             break;
         case UI_CONTROLS_CHOICE_EXIT:

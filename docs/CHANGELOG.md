@@ -6,6 +6,7 @@
 - added a `/rule` console command, to inspect and change the numbers the game plays by, such as how quickly the cold gets to Lara
 - added an option for the wobbly geometry of the PlayStation releases (Graphic Options → Rendering → Vertex snapping)
 - added the ability to clear the gym's best times, by holding the key shown below them
+- added an option to turn off controller support, for players who remap their controller with external software (Gameplay → Controls → Controller support)
 - added internal collision to lifts when they are moving, so that Lara cannot exit through the meshes
 - improved error messages related to bad command invocations
 - changed reflections UV mapping to be more correct

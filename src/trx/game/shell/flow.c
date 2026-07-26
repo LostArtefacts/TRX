@@ -317,6 +317,10 @@ static void M_PrepareSystem(void)
     }
     TouchOverlay_SetVisible(g_Config.input.enable_touch_controls);
 
+    // Devices are acquired only now: Input_Init() runs before the config is
+    // read, so input.enable_controller still holds its default there.
+    Input_Discover();
+
     Clock_SetSimSpeed(Clock_GetSpeedMultiplier());
     if (!s->args->headless) {
         Sound_Init();

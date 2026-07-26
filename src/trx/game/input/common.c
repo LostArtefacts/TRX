@@ -1,5 +1,6 @@
 #include <trx/game/input/common.h>
 
+#include <trx/config.h>
 #include <trx/core/enum_map.h>
 #include <trx/core/strings.h>
 #include <trx/game/clock.h>
@@ -118,7 +119,7 @@ static const GAME_STRING_ID m_LayoutMap[INPUT_LAYOUT_NUMBER_OF] = {
         GS_ID("general/settings/controls/layout/custom_3"),
 };
 
-static INPUT_BACKEND_IMPL *M_GetBackend(const INPUT_BACKEND backend)
+const INPUT_BACKEND_IMPL *Input_GetBackendImpl(const INPUT_BACKEND backend)
 {
     switch (backend) {
     case INPUT_BACKEND_KEYBOARD:
@@ -183,39 +184,48 @@ void Input_Init(void)
         m_HoldChecks[i].repeat_timer.type = CLOCK_TIMER_REAL;
     }
     Input_Reset();
-    if (g_Input_Keyboard.init != nullptr) {
-        g_Input_Keyboard.init();
-    }
-    if (g_Input_Controller.init != nullptr) {
-        g_Input_Controller.init();
-    }
-    if (g_Input_Touch.init != nullptr) {
-        g_Input_Touch.init();
+    for (INPUT_BACKEND backend = 0; backend < INPUT_BACKEND_NUMBER_OF;
+         backend++) {
+        const INPUT_BACKEND_IMPL *const impl = Input_GetBackendImpl(backend);
+        if (impl->init != nullptr) {
+            impl->init();
+        }
     }
 }
 
 void Input_Shutdown(void)
 {
     Input_Reset();
-    if (g_Input_Keyboard.shutdown != nullptr) {
-        g_Input_Keyboard.shutdown();
-    }
-    if (g_Input_Controller.shutdown != nullptr) {
-        g_Input_Controller.shutdown();
-    }
-    if (g_Input_Touch.shutdown != nullptr) {
-        g_Input_Touch.shutdown();
+    for (INPUT_BACKEND backend = 0; backend < INPUT_BACKEND_NUMBER_OF;
+         backend++) {
+        const INPUT_BACKEND_IMPL *const impl = Input_GetBackendImpl(backend);
+        if (impl->shutdown != nullptr) {
+            impl->shutdown();
+        }
     }
 }
 
 void Input_Discover(void)
 {
-    if (g_Input_Keyboard.discover != nullptr) {
-        g_Input_Keyboard.discover();
+    for (INPUT_BACKEND backend = 0; backend < INPUT_BACKEND_NUMBER_OF;
+         backend++) {
+        const INPUT_BACKEND_IMPL *const impl = Input_GetBackendImpl(backend);
+        if (!Input_IsBackendEnabled(backend)) {
+            if (impl->shutdown != nullptr) {
+                impl->shutdown();
+            }
+        } else if (impl->discover != nullptr) {
+            impl->discover();
+        }
     }
-    if (g_Input_Controller.discover != nullptr) {
-        g_Input_Controller.discover();
+}
+
+bool Input_IsBackendEnabled(const INPUT_BACKEND backend)
+{
+    if (backend == INPUT_BACKEND_CONTROLLER) {
+        return g_Config.input.enable_controller;
     }
+    return true;
 }
 
 bool Input_IsRoleRebindable(const INPUT_ROLE role)
@@ -257,14 +267,14 @@ bool Input_IsPressedEx(
     const INPUT_BACKEND backend, const INPUT_LAYOUT layout,
     const INPUT_ROLE role)
 {
-    return M_GetBackend(backend)->is_pressed(layout, role);
+    return Input_GetBackendImpl(backend)->is_pressed(layout, role);
 }
 
 bool Input_IsKeyConflicted(
     const INPUT_BACKEND backend, const INPUT_LAYOUT layout,
     const INPUT_ROLE role)
 {
-    return M_GetBackend(backend)->is_role_conflicted(layout, role);
+    return Input_GetBackendImpl(backend)->is_role_conflicted(layout, role);
 }
 
 bool Input_ReadAndAssignRole(
@@ -274,7 +284,8 @@ bool Input_ReadAndAssignRole(
     // Check for canceling from other devices
     for (INPUT_BACKEND other_backend = 0;
          other_backend < INPUT_BACKEND_NUMBER_OF; other_backend++) {
-        if (other_backend == backend) {
+        if (other_backend == backend
+            || !Input_IsBackendEnabled(other_backend)) {
             continue;
         }
         if (Input_IsPressedEx(other_backend, layout, INPUT_ROLE_MENU_BACK)
@@ -283,26 +294,26 @@ bool Input_ReadAndAssignRole(
         }
     }
 
-    return M_GetBackend(backend)->read_and_assign(layout, role, slot);
+    return Input_GetBackendImpl(backend)->read_and_assign(layout, role, slot);
 }
 
 void Input_UnassignRole(
     const INPUT_BACKEND backend, const INPUT_LAYOUT layout,
     const INPUT_ROLE role, const int32_t slot)
 {
-    M_GetBackend(backend)->unassign_role(layout, role, slot);
+    Input_GetBackendImpl(backend)->unassign_role(layout, role, slot);
 }
 
 const char *Input_GetKeyName(
     const INPUT_BACKEND backend, const INPUT_LAYOUT layout,
     const INPUT_ROLE role, const int32_t slot)
 {
-    return M_GetBackend(backend)->get_name(layout, role, slot);
+    return Input_GetBackendImpl(backend)->get_name(layout, role, slot);
 }
 
 void Input_ResetLayout(const INPUT_BACKEND backend, const INPUT_LAYOUT layout)
 {
-    M_GetBackend(backend)->reset_layout(layout);
+    Input_GetBackendImpl(backend)->reset_layout(layout);
 }
 
 void Input_EnterListenMode(void)
@@ -325,14 +336,12 @@ bool Input_IsInListenMode(void)
 
 void Input_ProcessEvent(const SDL_Event *event)
 {
-    if (g_Input_Keyboard.process_event != nullptr) {
-        g_Input_Keyboard.process_event(event);
-    }
-    if (g_Input_Controller.process_event != nullptr) {
-        g_Input_Controller.process_event(event);
-    }
-    if (g_Input_Touch.process_event != nullptr) {
-        g_Input_Touch.process_event(event);
+    for (INPUT_BACKEND backend = 0; backend < INPUT_BACKEND_NUMBER_OF;
+         backend++) {
+        const INPUT_BACKEND_IMPL *const impl = Input_GetBackendImpl(backend);
+        if (Input_IsBackendEnabled(backend) && impl->process_event != nullptr) {
+            impl->process_event(event);
+        }
     }
 }
 
@@ -411,7 +420,7 @@ bool Input_AssignFromJSONObject(
     }
 
     const int32_t slot = JSON_ObjectGetInt(bind_obj, "slot", 0);
-    return M_GetBackend(backend)->assign_from_json_object(
+    return Input_GetBackendImpl(backend)->assign_from_json_object(
         layout, role, slot, bind_obj);
 }
 
@@ -424,7 +433,7 @@ bool Input_AssignToJSONObject(
     if (slot != 0) {
         JSON_ObjectAppendInt(bind_obj, "slot", slot);
     }
-    return M_GetBackend(backend)->assign_to_json_object(
+    return Input_GetBackendImpl(backend)->assign_to_json_object(
         layout, role, slot, bind_obj);
 }
 

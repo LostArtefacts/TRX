@@ -1361,6 +1361,10 @@
             "title": "Buffering (inventory)",
             "description": "Enables inventory (2-frame) buffering to achieve precise control of Lara's movement.",
         },
+        "input.enable_controller": {
+            "title": "Controller support",
+            "description": "Lets the game read connected controllers. Turn this off if you use external remapping software that already translates your controller into keyboard input.",
+        },
         "input.enable_responsive_passport": {
             "title": "Responsive passport",
             "description": "Disables blocking user input when passport flips pages, scheduling the page flips instead.",

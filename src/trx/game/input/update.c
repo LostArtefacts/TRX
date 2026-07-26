@@ -23,22 +23,25 @@ void Input_Update(void)
 {
     InputState_Clear(&g_Input);
 
-    M_UpdateFromBackend(
-        &g_Input, &g_Input_Keyboard,
-        g_Config.input.layout[INPUT_BACKEND_KEYBOARD]);
-    M_UpdateFromBackend(
-        &g_Input, &g_Input_Controller,
-        g_Config.input.layout[INPUT_BACKEND_CONTROLLER]);
-    M_UpdateFromBackend(
-        &g_Input, &g_Input_Touch, g_Config.input.layout[INPUT_BACKEND_TOUCH]);
+    for (INPUT_BACKEND backend = 0; backend < INPUT_BACKEND_NUMBER_OF;
+         backend++) {
+        if (!Input_IsBackendEnabled(backend)) {
+            continue;
+        }
+        M_UpdateFromBackend(
+            &g_Input, Input_GetBackendImpl(backend),
+            g_Config.input.layout[backend]);
+    }
 
     // Suppress roles whose bindings are subsets of longer active combos.
-    g_Input_Keyboard.resolve_combos(
-        g_Config.input.layout[INPUT_BACKEND_KEYBOARD], &g_Input);
-    g_Input_Controller.resolve_combos(
-        g_Config.input.layout[INPUT_BACKEND_CONTROLLER], &g_Input);
-    g_Input_Touch.resolve_combos(
-        g_Config.input.layout[INPUT_BACKEND_TOUCH], &g_Input);
+    for (INPUT_BACKEND backend = 0; backend < INPUT_BACKEND_NUMBER_OF;
+         backend++) {
+        if (!Input_IsBackendEnabled(backend)) {
+            continue;
+        }
+        Input_GetBackendImpl(backend)->resolve_combos(
+            g_Config.input.layout[backend], &g_Input);
+    }
 
     g_Input.camera_reset |= g_Input.look;
     g_Input.menu_up |= g_Input.forward;

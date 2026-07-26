@@ -1361,6 +1361,10 @@
             "title": "Bùthadh (clàr-stòraidh)",
             "description": "Leigeas leis am putan clàr-stòraidh smachd mionaideach (2-fhraim) a thoirt air gluasad Lara.",
         },
+        "input.enable_controller": {
+            "title": "\\{review}Taic smachdairean",
+            "description": "\\{review}Leigidh seo leis a' gheama smachdairean ceangailte a leughadh. Cuir seo dheth ma tha thu a' cleachdadh bathar-bog ath-mhapaidh bhon taobh a-muigh a tha mar-thà ag eadar-theangachadh an smachdair gu cur-a-steach a' mheur-chlàir.",
+        },
         "input.enable_responsive_passport": {
             "title": "Pasport freagairteach",
             "description": "Cuiridh seo às do bhacadh cuir a-steach le brath ro-luath air tionndadh duilleagan a' phasport; leigidh e leutha bhith air an clàradh an àite a bhith air an stad.",

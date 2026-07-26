@@ -1361,6 +1361,10 @@
             "title": "Buforowanie (ekwipunek)",
             "description": "Włącza buforowanie ekranu ekwipunku, aby uzyskać precyzyjną kontrolę nad ruchem Lary (2 klatki).",
         },
+        "input.enable_controller": {
+            "title": "\\{review}Obsługa kontrolera",
+            "description": "\\{review}Pozwala grze odczytywać podłączone kontrolery. Wyłącz tę opcję, jeśli korzystasz z zewnętrznego programu mapującego, który już zamienia kontroler na sygnały klawiatury.",
+        },
         "input.enable_responsive_passport": {
             "title": "Responsywny paszport",
             "description": "Wyłącza blokowanie klawiszy podczas przewracania stron paszportu, zamiast tego kolejkując pożądaną nawigację.",
