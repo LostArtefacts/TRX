@@ -197,6 +197,13 @@ const UI_SETTINGS_ENUM_ENTRY UI_Settings_GameModesPolicyEnumEntries[] = {
     { -1 },
 };
 
+const UI_SETTINGS_ENUM_ENTRY UI_Settings_TargetChangeModeEnumEntries[] = {
+    { TARGET_CHANGE_MODE_OFF },
+    { TARGET_CHANGE_MODE_ENHANCED },
+    { TARGET_CHANGE_MODE_TR4 },
+    { -1 },
+};
+
 const UI_SETTINGS_ENUM_ENTRY UI_Settings_BreezeModeEnumEntries[] = {
     { BREEZE_MODE_OFF },
     { BREEZE_MODE_TR2 },

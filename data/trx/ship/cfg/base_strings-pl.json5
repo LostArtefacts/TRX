@@ -801,6 +801,11 @@
             "SUNGLASSES_MODE_OPAQUE": "Nieprzezroczyste",
             "SUNGLASSES_MODE_TRANSPARENT": "Przezroczyste",
         },
+        "TARGET_CHANGE_MODE": {
+            "TARGET_CHANGE_MODE_ENHANCED": "\\{review}Rozszerzone",
+            "TARGET_CHANGE_MODE_OFF": "Wyłączone",
+            "TARGET_CHANGE_MODE_TR4": "\\{review}TR4",
+        },
         "TARGET_LOCK_MODE": {
             "TARGET_LOCK_MODE_FULL": "Całkowity",
             "TARGET_LOCK_MODE_NONE": "Brak",
@@ -1157,10 +1162,6 @@
             "title": "Łapanie krawędzi po puszczeniu",
             "description": "Pozwala na anulowanie animacji huśtania Lary na krawędzi poprzez jej puszczenie i szybkie złapanie ponownie (tak jak w TR2+).",
         },
-        "gameplay.enable_target_change": {
-            "title": "Zmiana celu",
-            "description": "Włącza zmianę celu podczas celowania bronią (tak jak w TR4+).",
-        },
         "gameplay.enable_timer_in_inventory": {
             "title": "Upływ czasu w ekwipunku",
             "description": "Sprawia, że zegar w grze działa nawet podczas wyświetlania menu ekwipunku.",
@@ -1344,6 +1345,10 @@
         "gameplay.start_lara_hitpoints": {
             "title": "Startowe zdrowie Lary",
             "description": "Ustala wartość zdrowia, z którą Lara zaczyna każdy poziom.",
+        },
+        "gameplay.target_change_mode": {
+            "title": "Zmiana celu",
+            "description": "\\{review}Zmienia sposób, w jaki Lara przełącza się między celami podczas celowania.\n\n- Wyłączone: Lara zachowuje obecny cel.\n- Rozszerzone: naciśnij przycisk Zmiana celu, aby przełączyć.\n- TR4: naciśnij krótko przycisk Rozejrzyj się, aby przełączyć; przytrzymanie go pozwala się rozejrzeć po krótkiej chwili.",
         },
         "gameplay.target_mode": {
             "title": "Tryb blokady broni",

@@ -19,7 +19,7 @@
 #define L_MODIFY_CONFIG()                                                      \
     X_PROCESS_CONFIG(gameplay.disable_healing_between_levels, false);          \
     X_PROCESS_CONFIG(gameplay.enable_fast_pickups, false);                     \
-    X_PROCESS_CONFIG(gameplay.enable_target_change, false);                    \
+    X_PROCESS_CONFIG(gameplay.target_change_mode, TARGET_CHANGE_MODE_OFF);     \
     X_PROCESS_CONFIG(gameplay.enable_tr2_jumping, g_TRVersion >= 2);           \
     X_PROCESS_CONFIG(gameplay.enable_tr2_swim_cancel, g_TRVersion >= 2);       \
     X_PROCESS_CONFIG(gameplay.enable_tr2_swimming, g_TRVersion >= 2);          \

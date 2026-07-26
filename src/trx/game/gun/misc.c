@@ -556,7 +556,8 @@ void Gun_GetNewTarget(const WEAPON_INFO *const weapon)
 
     // Preserve OG targeting behavior.
     if (g_Config.gameplay.target_mode == TARGET_LOCK_MODE_FULL
-        && !g_Config.gameplay.enable_target_change && !g_Input.action) {
+        && g_Config.gameplay.target_change_mode == TARGET_CHANGE_MODE_OFF
+        && !g_Input.action) {
         lara->target = nullptr;
     }
 

@@ -801,6 +801,11 @@
             "SUNGLASSES_MODE_OPAQUE": "\\{review}Opaque",
             "SUNGLASSES_MODE_TRANSPARENT": "\\{review}Transparent",
         },
+        "TARGET_CHANGE_MODE": {
+            "TARGET_CHANGE_MODE_ENHANCED": "\\{review}Amélioré",
+            "TARGET_CHANGE_MODE_OFF": "\\{review}Désactivé",
+            "TARGET_CHANGE_MODE_TR4": "\\{review}TR4",
+        },
         "TARGET_LOCK_MODE": {
             "TARGET_LOCK_MODE_FULL": "Complet",
             "TARGET_LOCK_MODE_NONE": "Aucun",
@@ -1157,10 +1162,6 @@
             "title": "Annulation du balancement",
             "description": "Permet d'annuler l'animation de balancement à un rebord de Lara en relâchant puis en se raccrochant aussitôt, comme possible depuis TR2.",
         },
-        "gameplay.enable_target_change": {
-            "title": "Changement de cible",
-            "description": "Rend possible le changement de cible comme possible depuis TR4. Appuyez sur la touche Regarder tout en visant pour changer de cible.",
-        },
         "gameplay.enable_timer_in_inventory": {
             "title": "Comptabiliser du temps de jeu dans l'inventaire",
             "description": "Fait avancer le compteur du jeu même quand l'inventaire est ouvert.",
@@ -1344,6 +1345,10 @@
         "gameplay.start_lara_hitpoints": {
             "title": "Points de vie de Lara",
             "description": "Définit les points de vie de Lara à chaque lancement de niveau.",
+        },
+        "gameplay.target_change_mode": {
+            "title": "Changement de cible",
+            "description": "\\{review}Modifie la façon dont Lara change de cible en visant.\n\n- Désactivé : Lara conserve sa cible.\n- Amélioré : appuyez sur la touche Changement de cible pour changer.\n- TR4 : appuyez brièvement sur la touche Regarder pour changer ; en la maintenant, Lara regarde autour d'elle après un court délai.",
         },
         "gameplay.target_mode": {
             "title": "Mode de verrouillage",

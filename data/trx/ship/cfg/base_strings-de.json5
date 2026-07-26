@@ -801,6 +801,11 @@
             "SUNGLASSES_MODE_OPAQUE": "\\{review}Undurchsichtig",
             "SUNGLASSES_MODE_TRANSPARENT": "\\{review}Transparent",
         },
+        "TARGET_CHANGE_MODE": {
+            "TARGET_CHANGE_MODE_ENHANCED": "\\{review}Erweitert",
+            "TARGET_CHANGE_MODE_OFF": "\\{review}Aus",
+            "TARGET_CHANGE_MODE_TR4": "\\{review}TR4",
+        },
         "TARGET_LOCK_MODE": {
             "TARGET_LOCK_MODE_FULL": "Volles Lock-On",
             "TARGET_LOCK_MODE_NONE": "Kein Lock-On",
@@ -1157,10 +1162,6 @@
             "title": "Schwingen unterbrechen",
             "description": "Erlaubt, Laras Kanten-Schwinganimation abzubrechen, indem man kurz loslässt und sich schnell wieder festhält.",
         },
-        "gameplay.enable_target_change": {
-            "title": "Zielwechsel",
-            "description": "Ermöglicht TR4+ artiges wechseln zwischen den Zielen, während man mit den Waffen auf sie zielt. Drücke die Zielwechsel-Taste während des ziehlens, um das anvisierte Ziel zu wechseln.",
-        },
         "gameplay.enable_timer_in_inventory": {
             "title": "Timer zählt im Inventar",
             "description": "Lässt den In-Game-Timer weiterlaufen, selbst wenn während des Spiels das Inventar geöffnet ist.",
@@ -1344,6 +1345,10 @@
         "gameplay.start_lara_hitpoints": {
             "title": "Laras Lebensenergie beim Starten eines Levels",
             "description": "Legt die Höhe des Gesundheitswertes von Lara für den Start eines jeden Levels fest.",
+        },
+        "gameplay.target_change_mode": {
+            "title": "Zielwechsel",
+            "description": "\\{review}Ändert, wie Lara beim Zielen zwischen Zielen wechselt.\n\n- Aus: Lara behält das aktuelle Ziel.\n- Erweitert: Drücke die Zielwechsel-Taste, um zu wechseln.\n- TR4: Tippe die Umsehen-Taste an, um zu wechseln; hältst du sie gedrückt, sieht sie sich nach kurzer Verzögerung um.",
         },
         "gameplay.target_mode": {
             "title": "Modis für automatische Anvisierung",

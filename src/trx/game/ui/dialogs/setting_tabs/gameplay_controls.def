@@ -40,7 +40,7 @@ X_UI_CFG(gameplay.enable_tr2_swim_cancel)
 X_UI_CFG(gameplay.enable_wading)
 
 X_UI_CFG_ENUM(gameplay.target_mode,         .misc = UI_Settings_TargetModeEnumEntries)
-X_UI_CFG(gameplay.enable_target_change)
+X_UI_CFG_ENUM(gameplay.target_change_mode,  .misc = UI_Settings_TargetChangeModeEnumEntries)
 
 X_UI_CFG(gameplay.enable_inverted_look)
 X_UI_CFG(gameplay.camera_speed,             .min_value = 1, .max_value = 10)

@@ -801,6 +801,11 @@
             "SUNGLASSES_MODE_OPAQUE": "Opaco",
             "SUNGLASSES_MODE_TRANSPARENT": "Trasparente",
         },
+        "TARGET_CHANGE_MODE": {
+            "TARGET_CHANGE_MODE_ENHANCED": "\\{review}Avanzato",
+            "TARGET_CHANGE_MODE_OFF": "Disattivato",
+            "TARGET_CHANGE_MODE_TR4": "\\{review}TR4",
+        },
         "TARGET_LOCK_MODE": {
             "TARGET_LOCK_MODE_FULL": "Completo",
             "TARGET_LOCK_MODE_NONE": "Nessuno",
@@ -1157,10 +1162,6 @@
             "title": "Annulla oscillazione",
             "description": "Consente di annullare l'animazione di oscillazione di Lara dalle sporgenze, lasciandole andare e afferrandole di nuovo rapidamente",
         },
-        "gameplay.enable_target_change": {
-            "title": "Cambio bersaglio",
-            "description": "Abilita il cambio di bersaglio in stile TR4+ mentre si punta l'arma. Premi il tasto Cambia Bersaglio mentre miri per cambiare bersaglio.",
-        },
         "gameplay.enable_timer_in_inventory": {
             "title": "Cronometro nell'inventario",
             "description": "Fa in modo che il tempo di gioco scorra anche nel menu dell'inventario.",
@@ -1344,6 +1345,10 @@
         "gameplay.start_lara_hitpoints": {
             "title": "Salute iniziale di Lara",
             "description": "Imposta il valore di salute di Lara all'inizio di ogni livello.",
+        },
+        "gameplay.target_change_mode": {
+            "title": "Cambio bersaglio",
+            "description": "\\{review}Cambia il modo in cui Lara passa da un bersaglio all'altro mentre mira.\n\n- Disattivato: Lara mantiene il bersaglio corrente.\n- Avanzato: premi il tasto Cambia Bersaglio per cambiare.\n- TR4: premi brevemente il tasto Guarda per cambiare; tenendolo premuto Lara si guarda intorno dopo un breve ritardo.",
         },
         "gameplay.target_mode": {
             "title": "Modalità aggancio bersaglio",
