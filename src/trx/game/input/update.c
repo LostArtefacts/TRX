@@ -9,6 +9,13 @@
 #include <trx/game/lara.h>
 #include <trx/version.h>
 
+// How long TR4 withholds the look input before it counts as a look rather
+// than a tap, in frames.
+#define M_TR4_LOOK_DELAY 6
+
+static int32_t m_LookFrames = 0;
+static bool m_IsLookHeld = false;
+
 static void M_UpdateFromBackend(
     INPUT_STATE *const s, const INPUT_BACKEND_IMPL *const backend,
     const int32_t layout)
@@ -17,6 +24,39 @@ static void M_UpdateFromBackend(
 #include <trx/game/input/roles.def>
 #undef X_INPUT_ROLE
     backend->custom_update(s, layout);
+}
+
+// TR4 changes target off the look input rather than one of its own. With
+// weapons ready it withholds look for the first few frames; letting go before
+// they are up counts as a tap, and changes target instead.
+static void M_UpdateTargetChange(void)
+{
+    const TARGET_CHANGE_MODE mode = g_Config.gameplay.target_change_mode;
+    const bool is_ready = Lara_GetLaraInfo()->gun_status == LGS_READY;
+
+    if (mode != TARGET_CHANGE_MODE_TR4 || !is_ready) {
+        m_LookFrames = 0;
+        m_IsLookHeld = false;
+        if (mode == TARGET_CHANGE_MODE_OFF || !is_ready) {
+            g_Input.change_target = 0;
+        }
+        return;
+    }
+
+    // Look drives it here, so a binding of its own does not.
+    g_Input.change_target = 0;
+
+    if (!g_Input.look) {
+        g_Input.change_target = m_LookFrames > 0 && !m_IsLookHeld;
+        m_LookFrames = 0;
+        m_IsLookHeld = false;
+        return;
+    }
+
+    if (!m_IsLookHeld && ++m_LookFrames > M_TR4_LOOK_DELAY) {
+        m_IsLookHeld = true;
+    }
+    g_Input.look = m_IsLookHeld;
 }
 
 void Input_Update(void)
@@ -70,10 +110,7 @@ void Input_Update(void)
         }
     }
 
-    if (!g_Config.gameplay.enable_target_change
-        || Lara_GetLaraInfo()->gun_status != LGS_READY) {
-        g_Input.change_target = 0;
-    }
+    M_UpdateTargetChange();
 
     g_InputDB = Input_GetDebounced(g_Input);
 

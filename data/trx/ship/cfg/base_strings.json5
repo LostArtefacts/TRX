@@ -801,6 +801,11 @@
             "SUNGLASSES_MODE_OPAQUE": "Opaque",
             "SUNGLASSES_MODE_TRANSPARENT": "Transparent",
         },
+        "TARGET_CHANGE_MODE": {
+            "TARGET_CHANGE_MODE_ENHANCED": "Enhanced",
+            "TARGET_CHANGE_MODE_OFF": "Off",
+            "TARGET_CHANGE_MODE_TR4": "TR4",
+        },
         "TARGET_LOCK_MODE": {
             "TARGET_LOCK_MODE_FULL": "Full lock",
             "TARGET_LOCK_MODE_NONE": "No lock",
@@ -1157,10 +1162,6 @@
             "title": "Swing cancels",
             "description": "Allows Lara's ledge-swinging animation to be canceled by letting go and quickly grabbing again.",
         },
-        "gameplay.enable_target_change": {
-            "title": "Target change",
-            "description": "Enables TR4+ target changing while aiming weapons. Press the Change Target button while aiming to change targets.",
-        },
         "gameplay.enable_timer_in_inventory": {
             "title": "Timer counts in inventory",
             "description": "Makes the in-game timer work even while the game is showing the inventory.",
@@ -1344,6 +1345,10 @@
         "gameplay.start_lara_hitpoints": {
             "title": "Lara's starting health",
             "description": "Sets Lara's health value for the beginning of each level.",
+        },
+        "gameplay.target_change_mode": {
+            "title": "Target change",
+            "description": "Changes how Lara switches between targets while aiming weapons.\n\n- Off: Lara keeps the target she has.\n- Enhanced: press the Change Target button to switch.\n- TR4: tap the Look button to switch; holding it still looks around, after a short delay.",
         },
         "gameplay.target_mode": {
             "title": "Weapon lock mode",

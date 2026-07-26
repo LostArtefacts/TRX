@@ -267,7 +267,7 @@ typedef struct {
         bool enable_auto_item_selection;
         bool enable_manual_camera;
         bool enable_item_examining;
-        bool enable_target_change;
+        TARGET_CHANGE_MODE target_change_mode;
         bool enable_walk_to_items;
         bool enable_snap_interactions;
         bool enable_fast_pickups;

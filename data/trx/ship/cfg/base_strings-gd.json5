@@ -801,6 +801,11 @@
             "SUNGLASSES_MODE_OPAQUE": "Neo-shoilleir",
             "SUNGLASSES_MODE_TRANSPARENT": "Follaiseach",
         },
+        "TARGET_CHANGE_MODE": {
+            "TARGET_CHANGE_MODE_ENHANCED": "\\{review}Leudaichte",
+            "TARGET_CHANGE_MODE_OFF": "Dheth",
+            "TARGET_CHANGE_MODE_TR4": "TR4",
+        },
         "TARGET_LOCK_MODE": {
             "TARGET_LOCK_MODE_FULL": "Glas làn",
             "TARGET_LOCK_MODE_NONE": "Gun ghlas",
@@ -1157,10 +1162,6 @@
             "title": "Sguir siùdadh",
             "description": "Leigidh seo le Lara leigeil às nuair a tha i a' siùdadh, agus grèim a ghlacadh sa bhad airson gluasad luath.",
         },
-        "gameplay.enable_target_change": {
-            "title": "Atharraich targaid",
-            "description": "Cuiridh seo an comas atharrachadh targaid TR4+ fhad 's a tha Lara ag amas.",
-        },
         "gameplay.enable_timer_in_inventory": {
             "title": "Gleoc sa chlàr-seilbhe",
             "description": "Leigidh seo leis a' ghleoc a leantainn air adhart fiù 's nuair a tha an clàr-seilbhe fosgailte.",
@@ -1344,6 +1345,10 @@
         "gameplay.start_lara_hitpoints": {
             "title": "Slàinte tòiseachaidh Lara",
             "description": "Suidhichidh seo luach slàinte Lara aig toiseach gach ìre.",
+        },
+        "gameplay.target_change_mode": {
+            "title": "Atharraich targaid",
+            "description": "\\{review}Atharraichidh seo mar a ghluaiseas Lara eadar targaidean fhad 's a tha i ag amas.\n\n- Dheth: cumaidh Lara an targaid a th' aice.\n- Leudaichte: brùth am putan Atharraich Targaid gus atharrachadh.\n- TR4: thoir gnogag air a' phutan Seall gus atharrachadh; ma chumas tu sìos e, seallaidh i mun cuairt às dèidh dàil ghoirid.",
         },
         "gameplay.target_mode": {
             "title": "Modh glas armachd",

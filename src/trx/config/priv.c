@@ -523,6 +523,15 @@ static void M_LoadLegacyOptions(JSON_OBJECT *const parent_obj)
             : GAME_MODES_POLICY_NEVER;
     }
 
+    // TRX ..1.10: target change on/off changed to mode
+    if (JSON_ObjectGetValue(parent_obj, "target_change_mode") == nullptr) {
+        const JSON_VALUE *const value =
+            JSON_ObjectGetValue(parent_obj, "enable_target_change");
+        g_Config.gameplay.target_change_mode = JSON_ValueIsTrue(value)
+            ? TARGET_CHANGE_MODE_ENHANCED
+            : TARGET_CHANGE_MODE_OFF;
+    }
+
     // TRX ..1.10: breeze on/off changed to mode
     if (JSON_ObjectGetValue(parent_obj, "breeze_mode") == nullptr) {
         const JSON_VALUE *const value =
