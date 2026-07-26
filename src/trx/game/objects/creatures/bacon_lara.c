@@ -63,6 +63,71 @@ static void M_Initialise(const int16_t item_num)
     M_InitialiseAnchor(item);
 }
 
+static void M_SyncToLara(ITEM *const item, const ITEM *const lara_item)
+{
+    M_PRIV *const p = item->priv;
+    const XYZ_32 pos = {
+        .x = 2 * p->anchor_x - lara_item->pos.x,
+        .z = 2 * p->anchor_z - lara_item->pos.z,
+        .y = lara_item->pos.y,
+    };
+
+    int16_t room_num = item->room_num;
+    const SECTOR *sector = Room_GetSector(pos, &room_num);
+    const int32_t floor_height = Room_GetHeight(sector, pos);
+    item->floor = floor_height;
+
+    room_num = lara_item->room_num;
+    sector = Room_GetSector(lara_item->pos, &room_num);
+    const int32_t lara_floor_height = Room_GetHeight(sector, lara_item->pos);
+
+    const int16_t relative_anim = Item_GetRelativeAnim(lara_item);
+    const int16_t relative_frame = Item_GetRelativeFrame(lara_item);
+    Item_SwitchToObjAnim(item, relative_anim, relative_frame, O_LARA);
+    item->pos = pos;
+    item->rot = lara_item->rot;
+    item->rot.y -= DEG_180;
+    Item_UpdateRoom(Item_GetIndex(item), lara_item->room_num);
+
+    if (floor_height < lara_floor_height + WALL_L || lara_item->gravity) {
+        return;
+    }
+
+    item->current_anim_state = LS(LS_FAST_FALL);
+    item->goal_anim_state = LS(LS_FAST_FALL);
+    Item_SwitchToAnim(item, LA(LA_SMASH_JUMP), M_SMASH_JUMP_FRAME);
+    item->speed = 0;
+    item->fall_speed = 0;
+    item->gravity = true;
+    item->pos.y += 50;
+    p->status = true;
+}
+
+static void M_FallToDeath(ITEM *const item)
+{
+    Item_Animate(item);
+
+    int16_t room_num = item->room_num;
+    const SECTOR *const sector = Room_GetSector(item->pos, &room_num);
+    const int32_t height = Room_GetHeight(sector, item->pos);
+    item->floor = height;
+
+    Room_TestTriggers(item);
+    if (item->pos.y >= height) {
+        item->floor = height;
+        item->pos.y = height;
+        Room_TestTriggers(item);
+        item->gravity = false;
+        item->fall_speed = 0;
+        item->goal_anim_state = LS(LS_DEATH);
+        item->required_anim_state = LS(LS_DEATH);
+        if (room_num != item->room_num) {
+            Item_UpdateRoom(Item_GetIndex(item), room_num);
+        }
+        Item_SetFinished(item, true);
+    }
+}
+
 static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
@@ -86,63 +151,13 @@ static void M_Control(const int16_t item_num)
     }
 
     if (!p->status) {
-        const XYZ_32 pos = {
-            .x = 2 * p->anchor_x - lara_item->pos.x,
-            .z = 2 * p->anchor_z - lara_item->pos.z,
-            .y = lara_item->pos.y,
-        };
-
-        int16_t room_num = item->room_num;
-        const SECTOR *sector = Room_GetSector(pos, &room_num);
-        const int32_t h = Room_GetHeight(sector, pos);
-        item->floor = h;
-
-        room_num = lara_item->room_num;
-        sector = Room_GetSector(lara_item->pos, &room_num);
-        int32_t lh = Room_GetHeight(sector, lara_item->pos);
-
-        const int16_t relative_anim = Item_GetRelativeAnim(lara_item);
-        const int16_t relative_frame = Item_GetRelativeFrame(lara_item);
-        Item_SwitchToObjAnim(item, relative_anim, relative_frame, O_LARA);
-        item->pos = pos;
-        item->rot = lara_item->rot;
-        item->rot.y -= DEG_180;
-        Item_UpdateRoom(item_num, lara_item->room_num);
-
-        if (h >= lh + WALL_L && !lara_item->gravity) {
-            item->current_anim_state = LS(LS_FAST_FALL);
-            item->goal_anim_state = LS(LS_FAST_FALL);
-            Item_SwitchToAnim(item, LA(LA_SMASH_JUMP), M_SMASH_JUMP_FRAME);
-            item->speed = 0;
-            item->fall_speed = 0;
-            item->gravity = true;
-            item->pos.y += 50;
-            p->status = true;
-        }
+        M_SyncToLara(item, lara_item);
     }
 
+    // Synchronizing with Lara may have invoked Bacon Lara's death, hence check
+    // the flag again on the same frame.
     if (p->status) {
-        Item_Animate(item);
-
-        int16_t room_num = item->room_num;
-        const SECTOR *sector = Room_GetSector(item->pos, &room_num);
-        const int32_t h = Room_GetHeight(sector, item->pos);
-        item->floor = h;
-
-        Room_TestTriggers(item);
-        if (item->pos.y >= h) {
-            item->floor = h;
-            item->pos.y = h;
-            Room_TestTriggers(item);
-            item->gravity = false;
-            item->fall_speed = 0;
-            item->goal_anim_state = LS(LS_DEATH);
-            item->required_anim_state = LS(LS_DEATH);
-            if (room_num != item->room_num) {
-                Item_UpdateRoom(item_num, room_num);
-            }
-            Item_SetFinished(item, true);
-        }
+        M_FallToDeath(item);
     }
 }
 
