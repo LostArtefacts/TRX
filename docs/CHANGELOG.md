@@ -33,6 +33,7 @@
 - fixed Bacon Lara flickering if she dies in a room different to where she fell from
 - fixed Bacon Lara remaining targetable after death
 - fixed Bacon Lara dying prematurely in some geometry setups
+- fixed jittery interpolation on Bacon Lara when falling from great heights
 - fixed the detonator box returning to its original position after loading a save (OG bug)
 - fixed crawler mutants killed by Lara's allies not being included in the stats when the option to include ally kills is enabled (#5691, regression from 1.7)
 - fixed Lara receiving twice the number of flares if given via the game flow (regression from 1.9)
