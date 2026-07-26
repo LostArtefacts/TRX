@@ -117,6 +117,10 @@ typedef struct OBJECT {
     bool enable_interpolation;
     bool loaded;
     bool intelligent;
+    // Whether the object leaves a body behind when it dies, which the rules
+    // may then fade away. Set for every intelligent object; an object that is
+    // not one of those, such as the mummy, says so itself.
+    bool leaves_corpse;
     bool save_position;
     bool save_hitpoints;
     bool save_flags;

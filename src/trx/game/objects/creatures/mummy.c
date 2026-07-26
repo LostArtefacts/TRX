@@ -82,6 +82,7 @@ static void M_Setup(OBJECT *const obj)
     obj->collision_func = Object_Collision;
     obj->can_drop_items_func = M_CanDropItems;
 
+    obj->leaves_corpse = true;
     obj->save_flags = true;
     obj->save_hitpoints = true;
     obj->save_anim = true;

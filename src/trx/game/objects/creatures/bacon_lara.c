@@ -140,6 +140,7 @@ static void M_FallToDeath(ITEM *const item)
             Item_UpdateRoom(Item_GetIndex(item), room_num);
         }
         Item_SetFinished(item, true);
+        Item_StartFade(item);
     }
 }
 
