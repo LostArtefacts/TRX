@@ -53,9 +53,11 @@ typedef struct M_MESH_BUF_BINDING {
     UT_hash_handle hh;
 } M_MESH_BUF_BINDING;
 
-// One sorted draw in the transparent pass. A null face means the entry stands
-// for the instance's whole opaque range, which lives in the opaque EBO and is
-// indexed relative to the mesh's first vertex.
+// One sorted draw in the transparent pass. A baked entry draws from the baked
+// buffers with no model matrix of its own; it is either a face, or a whole
+// faded object, which is the one kind that arrives with its depth already
+// worked out. Every other entry names a face of a mesh still sitting in the
+// shared buffers.
 typedef struct {
     // As wide as the matrix it comes from: the camera-space depth carries the
     // W2V_SHIFT scale, so a level deep enough would wrap a 32-bit key and sort
@@ -65,7 +67,27 @@ typedef struct {
     const OUTPUT_MESH_FACE *face;
     int32_t index_start;
     int32_t index_count;
+    // Which faded group the entry stands for, when it stands for one rather
+    // than for a face. See M_IsGroupEntry.
+    int32_t group;
+    bool baked;
 } M_FACE_SORT;
+
+// The solid part of one baked instance, contiguous in the baked buffers so it
+// draws in one go.
+typedef struct {
+    const MESH_INSTANCE *inst;
+    int32_t index_start;
+    int32_t index_count;
+} M_BAKED_RANGE;
+
+// One faded object: a run of solid ranges that lay down their depth together
+// and are blended together, and the depth it all sorts at.
+typedef struct {
+    int32_t range_start;
+    int32_t range_count;
+    int64_t depth_total;
+} M_BAKED_GROUP;
 
 typedef struct MESH_BATCHER {
     SCENE_SOURCE source;
@@ -95,6 +117,28 @@ typedef struct MESH_BATCHER {
     int32_t blend_add_total_indices;
     int32_t transparent_total_indices;
     bool layout_dirty;
+
+    // An instance drawn at partial coverage is baked into world space once a
+    // frame and drawn from here. Sharing one model matrix is what lets the
+    // instances of an object be drawn as an object, and lets what stays
+    // sorted interleave with anything else transparent for free.
+    struct {
+        GLuint vao;
+        GLuint geom;
+        GLuint tex;
+        GLuint shade;
+        GLuint ebo;
+    } baked;
+    VECTOR *baked_geom; // M_MESH_GEOM
+    VECTOR *baked_tex; // M_MESH_TEXTURE
+    VECTOR *baked_shade; // M_MESH_SHADE
+    VECTOR *baked_indices; // uint32_t
+    VECTOR *baked_ranges; // M_BAKED_RANGE
+    VECTOR *baked_groups; // M_BAKED_GROUP
+    // The instance baked last, which is what a new one is joined to: an
+    // object is staged a mesh at a time, so a run of them at one coverage is
+    // one object.
+    const MESH_INSTANCE *bake_tail;
 } MESH_BATCHER;
 
 static M_MESH_BUF_BINDING *M_GetBinding(
@@ -189,6 +233,13 @@ static void M_UpdateMeshGeometry(
         bind->vertex_count * sizeof(M_MESH_GEOM), bind->geom_data);
 }
 
+// An entry that names no face is not a face at all: it stands for a whole
+// faded object, which is drawn in one go wherever it sorts.
+static bool M_IsGroupEntry(const M_FACE_SORT *const sort_ptr)
+{
+    return sort_ptr->face == nullptr;
+}
+
 // Order two values as a sign. The differences here are wider than the int the
 // comparator returns, and a truncated difference orders qsort's input
 // inconsistently rather than merely imprecisely.
@@ -207,7 +258,14 @@ static int M_CompareFaceDepth(const void *const a, const void *const b)
     }
     // The instances share one vector, so their addresses stand for the order
     // they were staged in.
-    return M_COMPARE(face_b->inst, face_a->inst);
+    if (face_a->inst != face_b->inst) {
+        return M_COMPARE(face_b->inst, face_a->inst);
+    }
+    // qsort orders entries it is told are equal however it likes, and an
+    // instance can bring many faces at keys that meet. Settle them by where
+    // they sit in the buffer, or the order they are drawn in changes from one
+    // frame to the next.
+    return M_COMPARE(face_b->index_start, face_a->index_start);
 }
 
 // Compute per-face view depth and sort the mesh's transparent ranges
@@ -221,10 +279,8 @@ static void M_SortTransparentFaces(const MESH_BATCHER *const batcher)
     M_FACE_SORT *const buf = Vector_GetData(batcher->transparent_sort);
     M_FACE_SORT *bptr = buf;
     for (int32_t i = 0; i < n; i++) {
-        if (bptr->face == nullptr) {
-            // No centroid to work from, so the whole range sorts at the
-            // instance origin.
-            bptr->sort_key = bptr->inst->cwmatrix._23;
+        if (M_IsGroupEntry(bptr)) {
+            // Not a face: its depth came from the instances it stands for.
             bptr++;
             continue;
         }
@@ -337,6 +393,157 @@ static void M_DrawBlendAddInstance(
     }
 }
 
+// The matrix carries the W2V_SHIFT scale, and the shader divides it out when
+// it uploads. Baking has to land on the same place the shader would have put
+// the vertex, so it divides it out too.
+static XYZ_F M_TransformPoint(
+    const MATRIX *const m, const XYZW_F *const pos, const bool translate)
+{
+    const double x = pos->x;
+    const double y = pos->y;
+    const double z = pos->z;
+    const double w = translate ? 1.0 : 0.0;
+    const double scale = 1.0 / (double)(1 << W2V_SHIFT);
+    return (XYZ_F) {
+        .x = (float)((m->_00 * x + m->_01 * y + m->_02 * z + m->_03 * w)
+                     * scale),
+        .y = (float)((m->_10 * x + m->_11 * y + m->_12 * z + m->_13 * w)
+                     * scale),
+        .z = (float)((m->_20 * x + m->_21 * y + m->_22 * z + m->_23 * w)
+                     * scale),
+    };
+}
+
+static int32_t M_BakeIndices(
+    MESH_BATCHER *const batcher, const int32_t vertex_base,
+    const uint32_t *const indices, const int32_t index_count)
+{
+    const int32_t index_start = batcher->baked_indices->count;
+    for (int32_t i = 0; i < index_count; i++) {
+        const uint32_t index = vertex_base + indices[i];
+        Vector_Add(batcher->baked_indices, &index);
+    }
+    return index_start;
+}
+
+// The object a faded instance belongs to. An object's meshes are staged one
+// after another at the one coverage, so a run of them is an object. Two that
+// happen to run together only share where they sort - each still settles what
+// of itself shows with its own depth.
+static int32_t M_GetBakeGroup(
+    MESH_BATCHER *const batcher, const MESH_INSTANCE *const inst)
+{
+    const MESH_INSTANCE *const tail = batcher->bake_tail;
+    const bool joins = tail != nullptr && batcher->baked_groups->count > 0
+        && tail->room == inst->room && tail->tint.a == inst->tint.a
+        && tail->sort_layer == inst->sort_layer;
+    batcher->bake_tail = inst;
+    if (!joins) {
+        Vector_Add(
+            batcher->baked_groups,
+            &(M_BAKED_GROUP) {
+                .range_start = batcher->baked_ranges->count,
+            });
+    }
+    return batcher->baked_groups->count - 1;
+}
+
+// Put an instance's vertices where the shader would have put them, so that
+// what is drawn from them needs no model matrix of its own.
+static void M_BakeInstance(
+    MESH_BATCHER *const batcher, const M_MESH_BUF_BINDING *const bind,
+    const MESH_INSTANCE *const inst)
+{
+    const int32_t vertex_base = batcher->baked_geom->count;
+    for (int32_t i = 0; i < bind->vertex_count; i++) {
+        M_MESH_GEOM geom = bind->geom_data[i];
+        const XYZ_F pos = M_TransformPoint(&inst->wmatrix, &geom.pos, true);
+        const XYZ_F normal =
+            M_TransformPoint(&inst->wmatrix, &geom.normal, false);
+        geom.pos.x = pos.x;
+        geom.pos.y = pos.y;
+        geom.pos.z = pos.z;
+        geom.normal.x = normal.x;
+        geom.normal.y = normal.y;
+        geom.normal.z = normal.z;
+        Vector_Add(batcher->baked_geom, &geom);
+        Vector_Add(batcher->baked_tex, &bind->tex_data[i]);
+        Vector_Add(batcher->baked_shade, &bind->shade_data[i]);
+    }
+
+    // The solid part goes down whole. Which of it you can see is settled by
+    // the depth buffer, so it needs no order among itself.
+    const int32_t group_idx = M_GetBakeGroup(batcher, inst);
+    M_BAKED_GROUP *const group = Vector_Get(batcher->baked_groups, group_idx);
+    group->depth_total += inst->cwmatrix._23;
+    const int32_t opaque_count = inst->mesh->opaque_vertex_indices->count;
+    if (opaque_count > 0) {
+        const int32_t index_start = M_BakeIndices(
+            batcher, vertex_base,
+            Vector_GetData(inst->mesh->opaque_vertex_indices), opaque_count);
+        Vector_Add(
+            batcher->baked_ranges,
+            &(M_BAKED_RANGE) {
+                .inst = inst,
+                .index_start = index_start,
+                .index_count = opaque_count,
+            });
+        group->range_count++;
+    }
+
+    // The faces that were already transparent stay sorted: they are see
+    // through in their own right, so the solid surface behind them has to
+    // show, and one of them cannot stand in for another.
+    for (int32_t i = 0; i < inst->mesh->transparent_faces->count; i++) {
+        const OUTPUT_MESH_FACE *const face =
+            Vector_Get(inst->mesh->transparent_faces, i);
+        const int32_t index_start = M_BakeIndices(
+            batcher, vertex_base, (const uint32_t *)face->vertex_indices,
+            face->vertex_count);
+        Vector_Add(
+            batcher->transparent_sort,
+            &(M_FACE_SORT) {
+                .inst = inst,
+                .face = face,
+                .index_start = index_start,
+                .index_count = face->vertex_count,
+                .baked = true,
+            });
+    }
+}
+
+static void M_UploadBaked(const MESH_BATCHER *const batcher)
+{
+    if (batcher->baked_geom->count == 0) {
+        return;
+    }
+
+    glBindBuffer(GL_ARRAY_BUFFER, batcher->baked.geom);
+    TRX_GL_TRACK_DATA(
+        glBufferData, GL_ARRAY_BUFFER,
+        batcher->baked_geom->count * sizeof(M_MESH_GEOM),
+        Vector_GetData(batcher->baked_geom), GL_STREAM_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, batcher->baked.tex);
+    TRX_GL_TRACK_DATA(
+        glBufferData, GL_ARRAY_BUFFER,
+        batcher->baked_tex->count * sizeof(M_MESH_TEXTURE),
+        Vector_GetData(batcher->baked_tex), GL_STREAM_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, batcher->baked.shade);
+    TRX_GL_TRACK_DATA(
+        glBufferData, GL_ARRAY_BUFFER,
+        batcher->baked_shade->count * sizeof(M_MESH_SHADE),
+        Vector_GetData(batcher->baked_shade), GL_STREAM_DRAW);
+
+    // The element binding belongs to whichever vertex array is current, so
+    // the baked one goes on first and keeps the change to itself.
+    glBindVertexArray(batcher->baked.vao);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, batcher->baked.ebo);
+    TRX_GL_TRACK_DATA(
+        glBufferData, GL_ELEMENT_ARRAY_BUFFER,
+        batcher->baked_indices->count * sizeof(uint32_t),
+        Vector_GetData(batcher->baked_indices), GL_STREAM_DRAW);
+}
+
 static void M_OpaquePass(MESH_BATCHER *const batcher)
 {
     VECTOR *const staged = batcher->staged[SCENE_PASS_OPAQUE];
@@ -348,25 +555,17 @@ static void M_OpaquePass(MESH_BATCHER *const batcher)
         const M_MESH_BUF_BINDING *const bind =
             M_GetBinding(batcher, inst->mesh);
 
+        // Face opacity is fixed when the mesh is built, so the routing has to
+        // happen per instance: at partial coverage the whole instance is
+        // baked, and it leaves this pass entirely.
+        if (inst->tint.a < 1.0f) {
+            M_BakeInstance(batcher, bind, inst);
+            continue;
+        }
+
         if (inst->mesh->opaque_vertex_indices->count != 0) {
-            if (inst->tint.a < 1.0f) {
-                // An instance drawn at partial coverage cannot write depth:
-                // it would hide whatever the pass draws behind it later. Its
-                // opaque faces go through the sorted pass instead. Face
-                // opacity is fixed when the mesh is built, so the routing has
-                // to happen per instance.
-                Vector_Add(
-                    batcher->transparent_sort,
-                    &(M_FACE_SORT) {
-                        .inst = inst,
-                        .face = nullptr,
-                        .index_start = bind->opaque_index_start,
-                        .index_count = bind->opaque_index_count,
-                    });
-            } else {
-                Output_AdjustDepth(0.0f, inst->depth_adjust * 2.0f / 0.005f);
-                M_DrawOpaqueInstance(batcher, inst);
-            }
+            Output_AdjustDepth(0.0f, inst->depth_adjust * 2.0f / 0.005f);
+            M_DrawOpaqueInstance(batcher, inst);
         }
 
         // Accumulate transparent polygons and faces.
@@ -384,6 +583,108 @@ static void M_OpaquePass(MESH_BATCHER *const batcher)
     }
 
     Output_AdjustDepth(0.0f, 0.0f);
+}
+
+// Put an instance's state up. The bake took its matrix away, so an item's
+// instances of one object differ in nothing, and the uploads below drop what
+// they already hold.
+static void M_ApplyBakedState(
+    MESH_BATCHER *const batcher, const MESH_INSTANCE *const inst,
+    const M_MESH_BUF_BINDING *const bind, const MESH_INSTANCE **const prev)
+{
+    if (*prev == nullptr
+        || memcmp(
+               &(*prev)->light_info, &inst->light_info,
+               sizeof(inst->light_info))
+            != 0) {
+        if (bind->needs_object_light) {
+            Output_Lights_UploadCPULight(&inst->light_info);
+        } else if (bind->needs_own_light) {
+            Output_Lights_UploadOwnLight(&inst->light_info);
+        }
+    }
+    if (*prev == nullptr || (*prev)->room != inst->room) {
+        M_SyncRoom(batcher, bind, inst->room);
+    }
+    Output_MeshShader_UploadModelMatrix(batcher->shader, &g_IDMatrix);
+    Output_MeshShader_UploadTint(batcher->shader, inst->tint);
+    Output_MeshShader_UploadWaterEffect(batcher->shader, inst->water_effect);
+    Output_MeshShader_UploadWibbleEffect(batcher->shader, inst->wibble);
+    Output_AdjustDepth(0.0f, inst->depth_adjust * 2.0f / 0.005f);
+    *prev = inst;
+}
+
+static void M_DrawBakedGroupRanges(
+    MESH_BATCHER *const batcher, const M_BAKED_GROUP *const group)
+{
+    const MESH_INSTANCE *prev = nullptr;
+    for (int32_t i = 0; i < group->range_count; i++) {
+        const M_BAKED_RANGE *const range =
+            Vector_Get(batcher->baked_ranges, group->range_start + i);
+        const M_MESH_BUF_BINDING *const bind =
+            M_GetBinding(batcher, range->inst->mesh);
+        ASSERT(bind != nullptr);
+        M_ApplyBakedState(batcher, range->inst, bind, &prev);
+        glDrawElements(
+            GL_TRIANGLES, range->index_count, GL_UNSIGNED_INT,
+            (void *)(intptr_t)(range->index_start * sizeof(uint32_t)));
+        g_TRX_GL_Metrics.trans_vert_count += range->index_count;
+    }
+}
+
+// Geometry at partial coverage is one object at one coverage, not a heap of
+// see-through faces. Sorting its faces cannot order a part against another it
+// is buried in, so the depth buffer does it instead: the solid part lays down
+// its depth, and then only the surface that depth kept is blended, once. It
+// happens where the object sorts, so whatever is in front of it still comes
+// after.
+static void M_DrawBakedGroup(
+    MESH_BATCHER *const batcher, const int32_t group_idx)
+{
+    const M_BAKED_GROUP *const group =
+        Vector_Get(batcher->baked_groups, group_idx);
+    if (group->range_count == 0) {
+        return;
+    }
+
+    Output_MeshShader_UploadAlphaDiscard(batcher->shader, true);
+
+    glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
+    glDepthMask(GL_TRUE);
+    glDisable(GL_BLEND);
+    M_DrawBakedGroupRanges(batcher, group);
+
+    glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+    glDepthMask(GL_FALSE);
+    glDepthFunc(GL_EQUAL);
+    glEnable(GL_BLEND);
+    M_DrawBakedGroupRanges(batcher, group);
+
+    glDepthFunc(GL_LESS);
+    Output_MeshShader_UploadAlphaDiscard(batcher->shader, false);
+}
+
+// One entry per object, so it takes its place among the transparent faces the
+// way anything else does.
+static void M_StageBakedGroups(MESH_BATCHER *const batcher)
+{
+    for (int32_t i = 0; i < batcher->baked_groups->count; i++) {
+        const M_BAKED_GROUP *const group = Vector_Get(batcher->baked_groups, i);
+        if (group->range_count == 0) {
+            continue;
+        }
+        const M_BAKED_RANGE *const first =
+            Vector_Get(batcher->baked_ranges, group->range_start);
+        Vector_Add(
+            batcher->transparent_sort,
+            &(M_FACE_SORT) {
+                .sort_key = group->depth_total / group->range_count,
+                .inst = first->inst,
+                .face = nullptr,
+                .group = i,
+                .baked = true,
+            });
+    }
 }
 
 static void M_BlendPass(MESH_BATCHER *const batcher, const SCENE_PASS pass)
@@ -412,25 +713,39 @@ static void M_TransparentPass(MESH_BATCHER *const batcher)
         return;
     }
 
-    glBindVertexArray(batcher->vao);
+    M_UploadBaked(batcher);
+
+    GLuint bound_vao = 0;
     GLuint bound_ebo = 0;
 
     const MESH_INSTANCE *inst = nullptr;
-    const M_MESH_BUF_BINDING *inst_bind = nullptr;
 
     for (int32_t i = 0; i < batcher->transparent_sort->count; i++) {
         const M_FACE_SORT *const sort_ptr =
             Vector_Get(batcher->transparent_sort, i);
 
-        if (sort_ptr->index_count == 0) {
+        if (!M_IsGroupEntry(sort_ptr) && sort_ptr->index_count == 0) {
             continue;
         }
 
-        const GLuint ebo = sort_ptr->face == nullptr ? batcher->ebo.opaque
-                                                     : batcher->ebo.transparent;
+        const GLuint vao = sort_ptr->baked ? batcher->baked.vao : batcher->vao;
+        if (vao != bound_vao) {
+            glBindVertexArray(vao);
+            bound_vao = vao;
+            bound_ebo = 0;
+        }
+        const GLuint ebo =
+            sort_ptr->baked ? batcher->baked.ebo : batcher->ebo.transparent;
         if (ebo != bound_ebo) {
             glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
             bound_ebo = ebo;
+        }
+
+        if (M_IsGroupEntry(sort_ptr)) {
+            M_DrawBakedGroup(batcher, sort_ptr->group);
+            // The group put its own state up as it went.
+            inst = nullptr;
+            continue;
         }
 
         if (sort_ptr->inst != inst) {
@@ -438,14 +753,14 @@ static void M_TransparentPass(MESH_BATCHER *const batcher)
             const M_MESH_BUF_BINDING *const bind =
                 M_GetBinding(batcher, inst->mesh);
             ASSERT(bind != nullptr);
-            inst_bind = bind;
             if (bind->needs_object_light) {
                 Output_Lights_UploadCPULight(&inst->light_info);
             } else if (bind->needs_own_light) {
                 Output_Lights_UploadOwnLight(&inst->light_info);
             }
             Output_MeshShader_UploadModelMatrix(
-                batcher->shader, &inst->wmatrix);
+                batcher->shader,
+                sort_ptr->baked ? &g_IDMatrix : &inst->wmatrix);
             Output_MeshShader_UploadTint(batcher->shader, inst->tint);
             Output_MeshShader_UploadWaterEffect(
                 batcher->shader, inst->water_effect);
@@ -455,18 +770,9 @@ static void M_TransparentPass(MESH_BATCHER *const batcher)
         }
 
         // indices live in the EBO starting at index_start
-        const void *index_offset =
-            (void *)(intptr_t)(sort_ptr->index_start * sizeof(uint32_t));
-
-        if (sort_ptr->face == nullptr) {
-            glDrawElementsBaseVertex(
-                GL_TRIANGLES, sort_ptr->index_count, GL_UNSIGNED_INT,
-                index_offset, inst_bind->vertex_start);
-        } else {
-            glDrawElements(
-                GL_TRIANGLES, sort_ptr->index_count, GL_UNSIGNED_INT,
-                index_offset);
-        }
+        glDrawElements(
+            GL_TRIANGLES, sort_ptr->index_count, GL_UNSIGNED_INT,
+            (void *)(intptr_t)(sort_ptr->index_start * sizeof(uint32_t)));
 
         g_TRX_GL_Metrics.trans_vert_count += sort_ptr->index_count;
     }
@@ -481,6 +787,13 @@ static void M_RenderBegin(const SCENE_SOURCE *const source)
         Vector_Clear(batcher->staged[pass]);
     }
     Vector_Clear(batcher->transparent_sort);
+    Vector_Clear(batcher->baked_geom);
+    Vector_Clear(batcher->baked_tex);
+    Vector_Clear(batcher->baked_shade);
+    Vector_Clear(batcher->baked_indices);
+    Vector_Clear(batcher->baked_ranges);
+    Vector_Clear(batcher->baked_groups);
+    batcher->bake_tail = nullptr;
 }
 
 static void M_RenderPass(
@@ -491,6 +804,7 @@ static void M_RenderPass(
     if (pass == SCENE_PASS_OPAQUE) {
         M_OpaquePass(batcher);
     } else if (pass == SCENE_PASS_TRANSPARENT) {
+        M_StageBakedGroups(batcher);
         M_SortTransparentFaces(batcher);
         M_TransparentPass(batcher);
     } else if (pass == SCENE_PASS_BLEND_SUB) {
@@ -544,29 +858,11 @@ static void M_AnimateTextures(const SCENE_SOURCE *const source)
     }
 }
 
-MESH_BATCHER *MeshBatcher_Create(void)
+static void M_SetupVertexArray(
+    const GLuint vao, const GLuint geom, const GLuint tex, const GLuint shade)
 {
-    MESH_BATCHER *const batcher = Memory_Alloc(sizeof(MESH_BATCHER));
-    batcher->shader = Output_GetMeshShader();
-    batcher->bindings = Vector_Create(sizeof(OUTPUT_MESH *));
-    batcher->binding_map = nullptr;
-    for (int32_t pass = 0; pass < SCENE_PASS_COUNT; pass++) {
-        batcher->staged[pass] = Vector_Create(sizeof(MESH_INSTANCE));
-    }
-    batcher->source.render_begin = M_RenderBegin;
-    batcher->source.render_pass = M_RenderPass;
-    batcher->source.is_dirty = M_IsDirty;
-    batcher->source.animate_textures = M_AnimateTextures;
-    batcher->source.priv = batcher;
-
-    batcher->transparent_sort = Vector_Create(sizeof(M_FACE_SORT));
-    batcher->layout_dirty = true;
-
-    glGenVertexArrays(1, &batcher->vao);
-    glGenBuffers(3, &batcher->vbo.geom);
-
-    glBindVertexArray(batcher->vao);
-    glBindBuffer(GL_ARRAY_BUFFER, batcher->vbo.geom);
+    glBindVertexArray(vao);
+    glBindBuffer(GL_ARRAY_BUFFER, geom);
 
     glEnableVertexAttribArray(OUTPUT_MESH_ATTR_POS);
     glEnableVertexAttribArray(OUTPUT_MESH_ATTR_NORMAL);
@@ -585,7 +881,7 @@ MESH_BATCHER *MeshBatcher_Create(void)
         OUTPUT_MESH_ATTR_COLOR, 4, GL_UNSIGNED_BYTE, GL_TRUE,
         sizeof(M_MESH_GEOM), (void *)(intptr_t)offsetof(M_MESH_GEOM, color));
 
-    glBindBuffer(GL_ARRAY_BUFFER, batcher->vbo.tex);
+    glBindBuffer(GL_ARRAY_BUFFER, tex);
     glEnableVertexAttribArray(OUTPUT_MESH_ATTR_UVW);
     glEnableVertexAttribArray(OUTPUT_MESH_ATTR_TEXTURE_SIZE);
     glEnableVertexAttribArray(OUTPUT_MESH_ATTR_TRAPEZOID_RATIO);
@@ -606,12 +902,51 @@ MESH_BATCHER *MeshBatcher_Create(void)
         sizeof(M_MESH_TEXTURE),
         (void *)(intptr_t)offsetof(M_MESH_TEXTURE, reflectivity));
 
-    glBindBuffer(GL_ARRAY_BUFFER, batcher->vbo.shade);
+    glBindBuffer(GL_ARRAY_BUFFER, shade);
     glEnableVertexAttribArray(OUTPUT_MESH_ATTR_SHADE);
     glVertexAttribPointer(
         OUTPUT_MESH_ATTR_SHADE, 1, GL_FLOAT, GL_FALSE, sizeof(M_MESH_SHADE), 0);
+}
+
+MESH_BATCHER *MeshBatcher_Create(void)
+{
+    MESH_BATCHER *const batcher = Memory_Alloc(sizeof(MESH_BATCHER));
+    batcher->shader = Output_GetMeshShader();
+    batcher->bindings = Vector_Create(sizeof(OUTPUT_MESH *));
+    batcher->binding_map = nullptr;
+    for (int32_t pass = 0; pass < SCENE_PASS_COUNT; pass++) {
+        batcher->staged[pass] = Vector_Create(sizeof(MESH_INSTANCE));
+    }
+    batcher->source.render_begin = M_RenderBegin;
+    batcher->source.render_pass = M_RenderPass;
+    batcher->source.is_dirty = M_IsDirty;
+    batcher->source.animate_textures = M_AnimateTextures;
+    batcher->source.priv = batcher;
+
+    batcher->transparent_sort = Vector_Create(sizeof(M_FACE_SORT));
+    batcher->layout_dirty = true;
+
+    batcher->baked_geom = Vector_Create(sizeof(M_MESH_GEOM));
+    batcher->baked_tex = Vector_Create(sizeof(M_MESH_TEXTURE));
+    batcher->baked_shade = Vector_Create(sizeof(M_MESH_SHADE));
+    batcher->baked_indices = Vector_Create(sizeof(uint32_t));
+    batcher->baked_ranges = Vector_Create(sizeof(M_BAKED_RANGE));
+    batcher->baked_groups = Vector_Create(sizeof(M_BAKED_GROUP));
+
+    glGenVertexArrays(1, &batcher->vao);
+    glGenBuffers(3, &batcher->vbo.geom);
+
+    M_SetupVertexArray(
+        batcher->vao, batcher->vbo.geom, batcher->vbo.tex, batcher->vbo.shade);
 
     glGenBuffers(3, &batcher->ebo.opaque);
+
+    glGenVertexArrays(1, &batcher->baked.vao);
+    glGenBuffers(3, &batcher->baked.geom);
+    glGenBuffers(1, &batcher->baked.ebo);
+    M_SetupVertexArray(
+        batcher->baked.vao, batcher->baked.geom, batcher->baked.tex,
+        batcher->baked.shade);
 
     return batcher;
 }
@@ -636,6 +971,32 @@ void MeshBatcher_Destroy(MESH_BATCHER *const batcher)
         batcher->ebo.transparent = 0;
         batcher->ebo.blend_add = 0;
     }
+    if (batcher->baked.vao != 0) {
+        glDeleteVertexArrays(1, &batcher->baked.vao);
+        batcher->baked.vao = 0;
+    }
+    if (batcher->baked.geom != 0) {
+        glDeleteBuffers(3, &batcher->baked.geom);
+        batcher->baked.geom = 0;
+        batcher->baked.tex = 0;
+        batcher->baked.shade = 0;
+    }
+    if (batcher->baked.ebo != 0) {
+        glDeleteBuffers(1, &batcher->baked.ebo);
+        batcher->baked.ebo = 0;
+    }
+    Vector_Free(batcher->baked_geom);
+    Vector_Free(batcher->baked_tex);
+    Vector_Free(batcher->baked_shade);
+    Vector_Free(batcher->baked_indices);
+    Vector_Free(batcher->baked_ranges);
+    Vector_Free(batcher->baked_groups);
+    batcher->baked_ranges = nullptr;
+    batcher->baked_groups = nullptr;
+    batcher->baked_geom = nullptr;
+    batcher->baked_tex = nullptr;
+    batcher->baked_shade = nullptr;
+    batcher->baked_indices = nullptr;
     ASSERT(batcher->bindings->count == 0);
     if (batcher->bindings != nullptr) {
         Vector_Free(batcher->bindings);
