@@ -64,8 +64,9 @@ local checkers
 local containers = ordered()
 -- module -> { get, count, accepts }. What indexing the module table reaches.
 local module_containers = {}
--- module -> { name -> spec }. What the module's __index dispatches on.
-local module_properties = {}
+-- container path -> { name -> spec }. What the container's __index dispatches
+-- on. A module's path is its name; a namespace's is 'module.namespace'.
+local container_properties = {}
 -- module -> function returning the handle it stands for.
 local module_instances = {}
 local strict_enabled = false
@@ -93,6 +94,12 @@ local function path_parts(path)
       .. tostring(path)
   )
   return parts
+end
+
+-- The path of the table a member hangs off: the module, or the namespace
+-- inside it.
+local function owner_path(parts)
+  return #parts == 3 and (parts[1] .. "." .. parts[2]) or parts[1]
 end
 
 -- The trx.<module> table, created on first mention. Every declaration hangs its
@@ -145,15 +152,18 @@ end
 -- rather than merely undocumented. That matters most here: neither a metatable
 -- getter nor a struct field ever shows up in pairs(), so seal()'s audit cannot
 -- see one.
-local function install_module_meta(module)
-  local props = module_properties[module]
-  local instance = module_instances[module]
-  local container = module_containers[module]
+-- `owner` is what the errors name, and `tbl` is the table the metatable goes
+-- on. For a module the two are the module and trx.<module>; for a namespace,
+-- the dotted path and the namespace's own table. Only a module can carry an
+-- instance or be a container, so those lookups come back nil for a namespace.
+local function install_meta(owner, tbl)
+  local props = container_properties[owner]
+  local instance = module_instances[owner]
+  local container = module_containers[owner]
   if props == nil and instance == nil and container == nil then
     return
   end
 
-  module_table(module)
   local meta = {
     __index = function(_, key)
       local prop = props ~= nil and props[key] or nil
@@ -175,14 +185,14 @@ local function install_module_meta(module)
       local prop = props ~= nil and props[key] or nil
       if prop ~= nil then
         if prop.set == nil then
-          error("trx." .. module .. "." .. tostring(key) .. " is read-only", 2)
+          error("trx." .. owner .. "." .. tostring(key) .. " is read-only", 2)
         end
         -- A property is written, not called, so make_checked never sees it.
         -- Strict mode still has to.
         if strict_enabled and not checkers[prop.type](value) then
           error(
             "trx."
-              .. module
+              .. owner
               .. "."
               .. tostring(key)
               .. ": expected a "
@@ -202,7 +212,7 @@ local function install_module_meta(module)
           return
         end
       end
-      error("Cannot set field '" .. tostring(key) .. "' on trx." .. module, 2)
+      error("Cannot set field '" .. tostring(key) .. "' on trx." .. owner, 2)
     end,
   }
   if container ~= nil and container.count ~= nil then
@@ -225,7 +235,13 @@ local function install_module_meta(module)
         -1
     end
   end
-  setmetatable(trx[module], meta)
+  -- A namespace declared callable already carries a metatable, and its call
+  -- is part of the surface just as its members are.
+  local existing = getmetatable(tbl)
+  if existing ~= nil and existing.__call ~= nil then
+    meta.__call = existing.__call
+  end
+  setmetatable(tbl, meta)
 end
 
 function api.module(name, spec)
@@ -241,7 +257,7 @@ function api.module(name, spec)
       "api.module: instance must be a function"
     )
     module_instances[name] = spec.instance
-    install_module_meta(name)
+    install_meta(name, module_table(name))
   end
 end
 
@@ -402,12 +418,8 @@ function api.seal()
   local declared = {}
   local function mark(path)
     local parts = path_parts(path)
-    local container = parts[1]
-    local name = parts[2]
-    if #parts == 3 then
-      container = parts[1] .. "." .. parts[2]
-      name = parts[3]
-    end
+    local container = owner_path(parts)
+    local name = parts[#parts]
     declared[container] = declared[container] or {}
     declared[container][name] = true
   end
@@ -545,6 +557,17 @@ end
 function api.namespace(path, spec)
   opening("api.namespace", spec)
   local module, name = split_path(path)
+  -- The table below replaces whatever stands there now, and with it the
+  -- metatable serving any property already declared inside. Those properties
+  -- would go on reading as nil, which seal() cannot see: it audits the members
+  -- a table holds, and a property is never one of them.
+  assert(
+    namespaces.by_path[path] == nil,
+    "api.namespace: "
+      .. path
+      .. " is already declared. Declare it before "
+      .. "anything inside it."
+  )
 
   local namespace = {}
   if spec.call ~= nil then
@@ -601,7 +624,7 @@ function api.container(name, spec)
 
   record(containers, name, spec)
 
-  install_module_meta(name)
+  install_meta(name, module_table(name))
 end
 
 function api.define(path, spec)
@@ -875,10 +898,11 @@ function api.const(path, spec)
   return spec.value
 end
 
--- Declares a computed member on a module table. It is not a function and not a
--- stored field: reading it calls into C, and writing it calls a setter, or
--- fails if there is none. The registry owns the module's metatable - see
--- install_module_meta - so a hand-rolled getter table would sail past seal().
+-- Declares a computed member on a module table, or on a namespace inside it.
+-- It is not a function and not a stored field: reading it calls into C, and
+-- writing it calls a setter, or fails if there is none. The registry owns the
+-- container's metatable - see install_meta - so a hand-rolled getter table
+-- would sail past seal().
 function api.property(path, spec)
   opening("api.property", spec)
   assert(type(spec.get) == "function", "api.property: get must be a function")
@@ -886,18 +910,27 @@ function api.property(path, spec)
     spec.set == nil or type(spec.set) == "function",
     "api.property: set must be a function"
   )
-  local module, name = split_path(path)
+  local parts = path_parts(path)
+  local owner = owner_path(parts)
+  -- A group of properties is only the table its members hang off, so it need
+  -- not be declared: trx.rules.exposure.max asks for trx.rules.exposure and
+  -- gets it. api.namespace is for a group that has something of its own to
+  -- say, which is why api.define still insists on one.
+  if #parts == 3 and rawget(module_table(parts[1]), parts[2]) == nil then
+    api.namespace(owner, { implicit = true })
+  end
+  local _, container, name = resolve(path)
 
   record(properties, path, spec)
 
-  local props = module_properties[module]
+  local props = container_properties[owner]
   if props == nil then
     props = {}
-    module_properties[module] = props
+    container_properties[owner] = props
   end
   props[name] = spec
 
-  install_module_meta(module)
+  install_meta(owner, container)
   return spec
 end
 
@@ -1025,6 +1058,7 @@ function api.describe()
       returns = spec.returns,
       examples = spec.examples,
       callable = spec.call ~= nil,
+      implicit = spec.implicit,
     }
   end)
   out.properties = collect(properties, function(path, spec)

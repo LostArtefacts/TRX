@@ -4265,6 +4265,70 @@
       ]
     },
     {
+      "description": "Every rule there is, as dotted `group.field` keys.",
+      "params": [],
+      "path": "rules.list",
+      "returns": {
+        "type": "table"
+      }
+    },
+    {
+      "description": "Reads a rule by its key, for code that does not know which one it wants.",
+      "params": [
+        {
+          "description": "Dotted path, e.g. `exposure.damage`.",
+          "name": "key",
+          "type": "string"
+        }
+      ],
+      "path": "rules.get",
+      "returns": {
+        "description": "Raises if no rule has that key.",
+        "type": "any"
+      }
+    },
+    {
+      "description": "Changes a rule by its key. A string is read as text, the way the console gives it; any other value is taken as the rule's own type.",
+      "params": [
+        {
+          "description": "Dotted path, e.g. `exposure.damage`.",
+          "name": "key",
+          "type": "string"
+        },
+        {
+          "name": "value",
+          "type": "any"
+        }
+      ],
+      "path": "rules.set"
+    },
+    {
+      "description": "Puts a rule back to the value the engine ships with, or every rule when given no key. Happens on its own when a new game starts.",
+      "params": [
+        {
+          "description": "Dotted path.",
+          "name": "key",
+          "optional": true,
+          "type": "string"
+        }
+      ],
+      "path": "rules.reset"
+    },
+    {
+      "description": "How a rule's value reads as text, for showing it to the player.",
+      "params": [
+        {
+          "description": "Dotted path.",
+          "name": "key",
+          "type": "string"
+        }
+      ],
+      "path": "rules.format_value",
+      "returns": {
+        "type": "string"
+      }
+    },
+    {
       "description": "How many slots a pool has. The quick pool counts only the slots that hold a save, which is how it is shown and addressed.",
       "params": [
         {
@@ -4613,6 +4677,11 @@
       "order": 10
     },
     {
+      "description": "Module for the numbers the engine plays by.\n\nThese are the game's rules: a mechanic that no single item owns. An object's own numbers live on\nthe object, as `trx.objects.<name>.properties`, and the player's own choices live in `trx.config`.\n\nA rule lasts as long as the playthrough: it is saved with the game and restored with it, and a\nnew game starts from the defaults. A level script states what its level wants, and states it\nagain on every entry, so a level that wants the defaults back asks for them.",
+      "name": "rules",
+      "order": 25
+    },
+    {
       "description": "The save slots, and starting or reading a saved game.",
       "name": "savegame",
       "order": 24
@@ -4653,6 +4722,11 @@
         }
       ],
       "path": "console.log"
+    },
+    {
+      "callable": false,
+      "implicit": true,
+      "path": "rules.exposure"
     }
   ],
   "properties": [
@@ -4854,6 +4928,36 @@
       "path": "rooms.flipped",
       "type": "boolean",
       "writable": false
+    },
+    {
+      "description": "How much warmth Lara holds, in frames, and what `trx.lara.exposure_bar` fills to. Warmth only moves in a room carrying the `damaging` flag, such as the cold water of Antarctica.",
+      "path": "rules.exposure.max",
+      "type": "integer",
+      "writable": true
+    },
+    {
+      "description": "Warmth lost each frame in the cold, on land or wading.",
+      "path": "rules.exposure.drain_land",
+      "type": "integer",
+      "writable": true
+    },
+    {
+      "description": "Warmth lost each frame in the cold, underwater or at the surface.",
+      "path": "rules.exposure.drain_water",
+      "type": "integer",
+      "writable": true
+    },
+    {
+      "description": "Warmth regained each frame once out of the cold.",
+      "path": "rules.exposure.recovery",
+      "type": "integer",
+      "writable": true
+    },
+    {
+      "description": "Hit points lost each frame once the warmth has run out.",
+      "path": "rules.exposure.damage",
+      "type": "integer",
+      "writable": true
     },
     {
       "description": "The samples the current level carries, as `trx.sound.Sample` handles keyed by id: `trx.sound.samples[99]` is sample 99, or `nil` if the level has no such sample. `#` counts them, iterating walks them, and both reach one handle at a time.",
@@ -5596,7 +5700,7 @@
           "writable": false
         },
         {
-          "description": "Warmth remaining in the cold, out of 600. Only moves in a level whose rooms carry the `damaging` flag.",
+          "description": "Warmth remaining in the cold, out of `trx.rules.exposure.max`. Only moves in a level whose rooms carry the `damaging` flag.",
           "name": "exposure_bar",
           "type": "integer",
           "writable": true

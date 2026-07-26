@@ -19,6 +19,7 @@
 #include <trx/game/pathing.h>
 #include <trx/game/rooms.h>
 #include <trx/game/rope.h>
+#include <trx/game/rules.h>
 #include <trx/game/savegame.h>
 #include <trx/game/sound.h>
 #include <trx/game/stats.h>
@@ -110,7 +111,7 @@ void Lara_Initialise(const GF_LEVEL *const level)
     lara_info->hit_frame = 0;
     lara_info->air = LARA_MAX_AIR;
     lara_info->sprint_timer = LARA_MAX_SPRINT;
-    lara_info->exposure_timer = LARA_MAX_EXPOSURE;
+    lara_info->exposure_timer = g_Rules.exposure.max;
     lara_info->water_surface_dist = 100;
     lara_info->death_timer = 0;
     lara_info->dive_timer = 0;

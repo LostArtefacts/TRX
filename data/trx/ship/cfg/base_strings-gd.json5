@@ -429,6 +429,14 @@
                 "level_fmt_cutscene": "Sealladh-film %d",
                 "level_fmt_demo": "Taisbeanadh %d",
             },
+            "rule": {
+                "ambiguous": "Cur-a-steach neo-shoilleir: %s agus %s",
+                "bad_invocation": "Iarrtas mì-dhligheach: %s",
+                "help": "\\{review}Seallaidh no ùraichidh e an riaghailt-gèama a chaidh a shònrachadh. Cleachd - mar luach gus a bhun-luach a chur air ais.",
+                "rule_get": "Tha %s air a rèiteachadh gu %s",
+                "rule_set": "%s air atharrachadh gu %s",
+                "unknown_rule": "\\{review}Riaghailt neo-aithnichte: %s",
+            },
             "save": {
                 "fail_invalid_slot": "Slot sàbhalaidh mì-dhligheach: %d",
                 "help": "Sàbhail geama dhan t-slot ainmichte neo dhan ath shlot luath.",

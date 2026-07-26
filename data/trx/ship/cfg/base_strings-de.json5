@@ -429,6 +429,14 @@
                 "level_fmt_cutscene": "Zwischensequenz %d",
                 "level_fmt_demo": "Demo %d",
             },
+            "rule": {
+                "ambiguous": "Mehrdeutige Eingabe: %s und %s",
+                "bad_invocation": "Unzulässiger Aufruf: %s",
+                "help": "\\{review}Zeigt die angegebene Spielregel an oder ändert sie. Verwende - als Wert, um den Standardwert wiederherzustellen.",
+                "rule_get": "%s ist momentan eingestellt auf %s",
+                "rule_set": "%s geändert zu %s",
+                "unknown_rule": "\\{review}Unbekannte Regel: %s",
+            },
             "save": {
                 "fail_invalid_slot": "Unzulässiger Speicher-Slot %d",
                 "help": "\\{review}Speichert das Spiel im angegebenen Speicherplatz oder im nächsten Schnell-Speicherplatz.",

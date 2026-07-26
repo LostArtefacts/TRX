@@ -429,6 +429,14 @@
                 "level_fmt_cutscene": "Cinématique %d",
                 "level_fmt_demo": "Démo %d",
             },
+            "rule": {
+                "ambiguous": "Entrée ambiguë : %s et %s",
+                "bad_invocation": "Invocation invalide : %s",
+                "help": "\\{review}Affiche ou modifie la règle de jeu indiquée. Utilisez - comme valeur pour rétablir sa valeur par défaut.",
+                "rule_get": "%s est actuellement réglé sur %s",
+                "rule_set": "%s réglé sur %s",
+                "unknown_rule": "\\{review}Règle inconnue : %s",
+            },
             "save": {
                 "fail_invalid_slot": "Emplacement de sauvegarde %d invalide",
                 "help": "\\{review}Sauvegarde la partie dans l'emplacement de sauvegarde donné ou dans le prochain emplacement de sauvegarde rapide.",

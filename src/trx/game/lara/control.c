@@ -15,6 +15,7 @@
 #include <trx/game/output.h>
 #include <trx/game/pathing.h>
 #include <trx/game/rooms.h>
+#include <trx/game/rules.h>
 #include <trx/game/sound.h>
 #include <trx/game/spawn.h>
 #include <trx/game/stats.h>
@@ -838,29 +839,32 @@ static void M_HandleExposure(void)
     const ITEM *const lara_item = Lara_GetItem();
     LARA_INFO *const lara_info = Lara_GetLaraInfo();
 
+    // Widened, so a rule set to either extreme moves the timer to the end of
+    // its range rather than around it.
+    int32_t timer = lara_info->exposure_timer;
     if (lara_info->water_status == LWS_CHEAT) {
-        lara_info->exposure_timer = LARA_MAX_EXPOSURE;
+        timer = g_Rules.exposure.max;
     } else if (Room_Get(lara_item->room_num)->flags.damaging) {
         switch (lara_info->water_status) {
         case LWS_ABOVE_WATER:
         case LWS_WADE:
-            lara_info->exposure_timer--;
+            timer -= g_Rules.exposure.drain_land;
             break;
         case LWS_UNDERWATER:
         case LWS_SURFACE:
-            lara_info->exposure_timer -= 2;
+            timer -= g_Rules.exposure.drain_water;
             break;
         default:
             break;
         }
     } else {
-        lara_info->exposure_timer++;
-        CLAMPG(lara_info->exposure_timer, LARA_MAX_EXPOSURE);
+        timer += g_Rules.exposure.recovery;
     }
+    CLAMP(timer, -1, g_Rules.exposure.max);
+    lara_info->exposure_timer = timer;
 
     if (lara_info->exposure_timer < 0) {
-        lara_info->exposure_timer = -1;
-        Lara_TakeDamage(10, false);
+        Lara_TakeDamage(g_Rules.exposure.damage, false);
     }
 }
 

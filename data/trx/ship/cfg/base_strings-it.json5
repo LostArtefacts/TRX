@@ -429,6 +429,14 @@
                 "level_fmt_cutscene": "Intermezzo %d",
                 "level_fmt_demo": "Demo %d",
             },
+            "rule": {
+                "ambiguous": "Immissione ambigua: %s e %s",
+                "bad_invocation": "Invocazione non valida: %s",
+                "help": "\\{review}Mostra o aggiorna la regola di gioco indicata. Usa - come valore per ripristinare il suo valore predefinito.",
+                "rule_get": "%s è attualmente impostato su %s",
+                "rule_set": "%s è stato modificato in %s",
+                "unknown_rule": "\\{review}Regola sconosciuta: %s",
+            },
             "save": {
                 "fail_invalid_slot": "Slot di salvataggio %d non valido",
                 "help": "Salva la partita nello slot di salvataggio indicato o nello slot di salvataggio rapido successivo.",

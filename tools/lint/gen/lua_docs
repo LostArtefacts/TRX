@@ -378,6 +378,14 @@ def render_page(module: dict, api: dict) -> str:
     if container:
         out.extend(render_container(name, container))
 
+    # A group raised by a property declaration has nothing to say that its
+    # members do not: the properties carry the full dotted path already.
+    spaces = [
+        n
+        for n in api.get("namespaces", [])
+        if n["path"].startswith(f"{name}.") and not n.get("implicit")
+    ]
+
     props = [p for p in api.get("properties", []) if p["path"].startswith(f"{name}.")]
     if props:
         out.append("### Properties")
@@ -407,7 +415,6 @@ def render_page(module: dict, api: dict) -> str:
         for spec in types:
             out.extend(render_type(spec))
 
-    spaces = [n for n in api.get("namespaces", []) if n["path"].startswith(f"{name}.")]
     funcs = [f for f in api["functions"] if f["path"].startswith(f"{name}.")]
     if funcs or spaces:
         out.append("### Functions")
@@ -433,7 +440,8 @@ def undocumented(api: dict) -> list[str]:
         if not prop.get("description"):
             out.append(prop["path"])
     for space in api.get("namespaces", []):
-        if not space.get("description"):
+        # A property group renders as its members, so it has no prose of its own.
+        if not space.get("description") and not space.get("implicit"):
             out.append(space["path"])
     for container in api.get("containers", []):
         if not container.get("description"):

@@ -107,8 +107,8 @@ api.type("lara.Lara", {
     exposure_bar = {
       from = "exposure_timer",
       type = "integer",
-      description = "Warmth remaining in the cold, out of 600. Only moves in a level whose rooms "
-        .. "carry the `damaging` flag.",
+      description = "Warmth remaining in the cold, out of `trx.rules.exposure.max`. Only moves "
+        .. "in a level whose rooms carry the `damaging` flag.",
     },
     poison = {
       from = "poison.value",

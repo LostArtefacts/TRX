@@ -3,6 +3,7 @@
 - added the ability to paste commands in the developer console (with Ctrl+V)
 - added autocompletion to the developer console (with Tab and Shift+Tab to cycle the matches)
 - added a `/dry` console command, to dry Lara off after a swim
+- added a `/rule` console command, to inspect and change the numbers the game plays by, such as how quickly the cold gets to Lara
 - added an option for the wobbly geometry of the PlayStation releases (Graphic Options → Rendering → Vertex snapping)
 - added the ability to clear the gym's best times, by holding the key shown below them
 - added internal collision to lifts when they are moving, so that Lara cannot exit through the meshes
@@ -80,6 +81,7 @@ The Lua integration was rewritten and existing scripts will need updating; refer
 - added `p`, a global shorthand for `trx.console.log`, and made the console log functions take any value, pretty-printing a table
 - added a new Lua module, `trx.math`, with the engine's own fixed-point trigonometry and the `DEG_1`, `DEG_45`, `DEG_90` and `WALL_L` constants
 - added a new Lua module, `trx.strings`, with `fuzzy_match()` and `regex_match()`
+- added a new Lua module, `trx.rules`, holding the numbers the game plays by; the first of them are the cold exposure ceiling, rates and damage
 - added a new Lua module, `trx.argparse`, a declarative argument parser inspired by Python's argparse
 - added a new Lua module, `trx.locale`, for the text the player reads, looked up by key
 - added a new Lua module, `trx.weather`, to read and set the runtime weather

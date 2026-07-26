@@ -429,6 +429,14 @@
                 "level_fmt_cutscene": "Cutscene %d",
                 "level_fmt_demo": "Demo %d",
             },
+            "rule": {
+                "ambiguous": "Ambiguous input: %s and %s",
+                "bad_invocation": "Invalid invocation: %s",
+                "help": "Displays or updates the given gameplay rule. Use - as the value to put its default back.",
+                "rule_get": "%s is currently set to %s",
+                "rule_set": "%s changed to %s",
+                "unknown_rule": "Unknown rule: %s",
+            },
             "save": {
                 "fail_invalid_slot": "Invalid save slot %d",
                 "help": "Saves game to the given save slot or to the next quick save slot.",

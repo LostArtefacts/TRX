@@ -429,6 +429,14 @@
                 "level_fmt_cutscene": "Przerywnik %d",
                 "level_fmt_demo": "Demo %d",
             },
+            "rule": {
+                "ambiguous": "Niejednoznaczne wywołanie: %s i %s",
+                "bad_invocation": "Nieprawidłowe wywołanie: %s",
+                "help": "\\{review}Wyświetla lub zmienia podaną regułę rozgrywki. Użyj - jako wartości, aby przywrócić jej domyślną wartość.",
+                "rule_get": "%s jest obecnie ustawione na %s",
+                "rule_set": "Zmieniono %s na %s",
+                "unknown_rule": "\\{review}Nieznana reguła: %s",
+            },
             "save": {
                 "fail_invalid_slot": "Nieprawidłowy slot zapisu %d",
                 "help": "Zapisuje grę do danego slotu zapisu, lub do pierwszego dostępnego slotu szybkiego zapisu.",
