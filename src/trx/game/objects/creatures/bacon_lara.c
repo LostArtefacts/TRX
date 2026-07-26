@@ -9,6 +9,7 @@
 
 #define M_SMASH_JUMP_FRAME 1
 #define M_MAX_DEATH_COUNT 2
+#define M_FALL_RATE 50
 
 typedef struct {
     bool status;
@@ -91,6 +92,7 @@ static void M_SyncToLara(ITEM *const item, const ITEM *const lara_item)
     item->pos = pos;
     item->rot = lara_item->rot;
     item->rot.y -= DEG_180;
+    item->fall_speed = lara_item->fall_speed;
     Item_UpdateRoom(Item_GetIndex(item), lara_item->room_num);
 
     if (floor_height < lara_floor_height + WALL_L || lara_item->gravity) {
@@ -112,7 +114,7 @@ static void M_SyncToLara(ITEM *const item, const ITEM *const lara_item)
     item->speed = 0;
     item->fall_speed = 0;
     item->gravity = true;
-    item->pos.y += 50;
+    item->pos.y += M_FALL_RATE;
     p->status = true;
 }
 
