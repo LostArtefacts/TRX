@@ -92,7 +92,7 @@ static void M_SetCornerAnim(
         item->current_anim_state = LS(LS_HANG);
     }
 
-    if (g_Camera.type == CAM_CHASE
+    if (g_Camera.type == CAM_CHASE && on_ladder
         && (ladder_end_anim == LA_LADDER_CORNER_RIGHT_OUTER_END
             || ladder_end_anim == LA_LADDER_CORNER_LEFT_OUTER_END)) {
         // Some camera strategies will be unable to LOS through the corner from
