@@ -10,4 +10,4 @@ void OutputSource_Sprites_ObserveLevelLoad(void);
 void OutputSource_Sprites_ObserveLevelUnload(void);
 
 void OutputSource_Sprites_Stage(
-    int32_t sprite_idx, int16_t shade, RGB_F tint, DRAW_TYPE draw_type);
+    int32_t sprite_idx, int16_t shade, RGBA_F tint, DRAW_TYPE draw_type);

@@ -40,7 +40,7 @@ typedef struct {
     uint8_t corner_count;
     float z_depth_adjust;
     float shade;
-    RGB_F tint;
+    RGBA_F tint;
     XYZ_32 world_pos[4];
     OUTPUT_UVW uvw[4];
     OUTPUT_TEXTURE_SIZE texture_size[4];
@@ -290,7 +290,7 @@ static bool M_HasMatchingTintState(
     const M_PRIM *const prim_1, const M_PRIM *const prim_2)
 {
     return prim_1->tint.r == prim_2->tint.r && prim_1->tint.g == prim_2->tint.g
-        && prim_1->tint.b == prim_2->tint.b;
+        && prim_1->tint.b == prim_2->tint.b && prim_1->tint.a == prim_2->tint.a;
 }
 
 static bool M_HasMatchingRenderState(

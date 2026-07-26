@@ -16,7 +16,7 @@ typedef struct MESH_INSTANCE {
     MATRIX cwmatrix;
     MATRIX wmatrix;
     const ROOM *room;
-    RGB_F tint;
+    RGBA_F tint;
     bool wibble;
     int32_t water_effect;
 

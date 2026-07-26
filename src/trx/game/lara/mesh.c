@@ -144,7 +144,7 @@ OBJECT_MESH *Lara_Mesh_Get(const LARA_MESH mesh)
     return m_Meshes[mesh];
 }
 
-RGB_F Lara_GetMeshTint(const GAME_VECTOR pos)
+RGBA_F Lara_GetMeshTint(const GAME_VECTOR pos)
 {
     if (!g_Config.visuals.enable_responsive_mesh_tint || g_Camera.underwater) {
         return Output_GetTint();
@@ -155,13 +155,13 @@ RGB_F Lara_GetMeshTint(const GAME_VECTOR pos)
     const int32_t water_height = Room_GetWaterHeight(pos.pos, room_num);
 
     if (!Room_Get(room_num)->flags.underwater) {
-        return COLOR_RGB_F_WHITE;
+        return COLOR_RGBA_F_WHITE;
     } else if (water_height == NO_HEIGHT) {
-        return Output_GetWaterColor();
+        return Color_RGBToRGBA(Output_GetWaterColor());
     } else if (pos.y > water_height) {
-        return Output_GetWaterColor();
+        return Color_RGBToRGBA(Output_GetWaterColor());
     } else {
-        return COLOR_RGB_F_WHITE;
+        return COLOR_RGBA_F_WHITE;
     }
 }
 

@@ -250,7 +250,7 @@ void Output_DrawRoom(const ROOM *const room, const bool is_outside)
 
 void Output_DrawSprite(
     const int32_t x, const int32_t y, const int32_t z, const int16_t sprite_idx,
-    const int16_t shade, const RGB_F tint, const DRAW_TYPE draw_type,
+    const int16_t shade, const RGBA_F tint, const DRAW_TYPE draw_type,
     const float scale)
 {
     Matrix_Push();

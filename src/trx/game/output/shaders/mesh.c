@@ -28,7 +28,7 @@ struct OUTPUT_MESH_SHADER {
     float water_effect_params[M_VARIANT_COUNT][3];
     bool is_wibble_effect[M_VARIANT_COUNT];
     bool is_alpha_discard_enabled[M_VARIANT_COUNT];
-    RGB_F tint[M_VARIANT_COUNT];
+    RGBA_F tint[M_VARIANT_COUNT];
     OUTPUT_ATLAS_RECT env_map_rect[M_VARIANT_COUNT];
 };
 
@@ -54,7 +54,7 @@ OUTPUT_MESH_SHADER *Output_MeshShader_Create(void)
         shader->water_effect_params[i][2] = 0.0f;
         shader->is_wibble_effect[i] = false;
         shader->is_alpha_discard_enabled[i] = false;
-        shader->tint[i] = (RGB_F) { 0.0f, 0.0f, 0.0f };
+        shader->tint[i] = (RGBA_F) { 0.0f, 0.0f, 0.0f, 0.0f };
         shader->env_map_rect[i] = (OUTPUT_ATLAS_RECT) { .layer = -1 };
 
         shader->base[i] = Output_Shader_Create(m_VariantPaths[i]);
@@ -207,17 +207,18 @@ void Output_MeshShader_UploadWibbleEffect(
     shader->is_wibble_effect[variant_idx] = is_enabled;
 }
 
-void Output_MeshShader_UploadTint(OUTPUT_MESH_SHADER *const shader, RGB_F tint)
+void Output_MeshShader_UploadTint(OUTPUT_MESH_SHADER *const shader, RGBA_F tint)
 {
     const int32_t variant_idx = M_GetVariantIndex();
     OUTPUT_SHADER *const base = M_GetVariantBase(shader, variant_idx);
     if (tint.r == shader->tint[variant_idx].r
         && tint.g == shader->tint[variant_idx].g
-        && tint.b == shader->tint[variant_idx].b) {
+        && tint.b == shader->tint[variant_idx].b
+        && tint.a == shader->tint[variant_idx].a) {
         return;
     }
     TRX_GL_TRACK_UNIFORM(
-        glUniform3f, Output_Shader_LookupUniform(base, "uTint"), tint.r, tint.g,
-        tint.b);
+        glUniform4f, Output_Shader_LookupUniform(base, "uTint"), tint.r, tint.g,
+        tint.b, tint.a);
     shader->tint[variant_idx] = tint;
 }
