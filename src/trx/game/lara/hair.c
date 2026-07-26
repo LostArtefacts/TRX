@@ -401,7 +401,12 @@ static void M_Control(
                 s->pos.z = velocity[0].z;
             }
         } else {
-            switch (lara_info->water_status) {
+            LARA_WATER_STATE water_status = lara_info->water_status;
+            if (water_status == LWS_WADE
+                && (water_height == NO_HEIGHT || s->pos.y <= water_height)) {
+                water_status = LWS_ABOVE_WATER;
+            }
+            switch (water_status) {
             case LWS_ABOVE_WATER:
                 s->pos.y += 10;
                 if (water_height != NO_HEIGHT && s->pos.y > water_height) {
