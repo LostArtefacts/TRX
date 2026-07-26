@@ -47,6 +47,7 @@
 - fixed Lara being able to use a detonator box or a gong a second time by selecting its key in the inventory
 
 **TR3**
+- fixed Willard being visible outside the hut at the beginning of the cutscene following Antarctica (resolves #5929)
 - fixed Lara, when on fire, not extinguishing at the right water depth compared with OG (regression from 1.1)
 
 **TR4**
