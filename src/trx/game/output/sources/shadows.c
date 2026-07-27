@@ -4,6 +4,7 @@
 #include <trx/core/memory.h>
 #include <trx/game/output.h>
 #include <trx/game/output/mesh_batcher/mesh_builder.h>
+#include <trx/version.h>
 
 typedef struct {
     MESH_BATCHER *batcher;
@@ -17,7 +18,7 @@ static OUTPUT_MESH *M_GenerateShadow(
     MESH_BUILDER *const builder, const int32_t fidelity)
 {
     const int32_t y = -5;
-    const RGBA_8888 color = { 0, 0, 0, 128 };
+    const RGBA_8888 color = { 0, 0, 0, g_TRVersion == 4 ? 0x4F : 128 };
     const OUTPUT_MESH_VERTEX center = {
         .pos = { 0.0f, (float)y, 0.0f, 0.0f },
         .normal = { 0.0f, 0.0f, 0.0f },
