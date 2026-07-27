@@ -928,6 +928,12 @@ int32_t Savegame_GetCompletedLevelCount(void)
     return count;
 }
 
+bool Savegame_IsManualSaveAllowed(void)
+{
+    return !g_Config.flow.load_save_disabled
+        && g_Config.gameplay.save_crystal_mode != SAVE_CRYSTAL_SAVE;
+}
+
 void Savegame_ProcessItemsBeforeSave(void)
 {
     for (int32_t i = 0; i < Item_GetLevelCount(); i++) {

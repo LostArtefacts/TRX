@@ -126,8 +126,8 @@ GF_COMMAND Game_Control(const bool demo_mode)
     if ((g_InputDB.quick_save || g_InputDB.quick_load) && !demo_mode
         && !g_Config.flow.load_save_disabled) {
         bool quick_handled = false;
-        if (g_InputDB.quick_save && !lara->extra_anim
-            && lara->death_timer == 0) {
+        if (g_InputDB.quick_save && !lara->extra_anim && lara->death_timer == 0
+            && Savegame_IsManualSaveAllowed()) {
             const SAVEGAME_SLOT_REF slot = Savegame_GetNextQuickSlot();
             if (!Savegame_IsValidSlotRef(slot)) {
                 Console_LogError(

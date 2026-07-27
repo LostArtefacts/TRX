@@ -383,7 +383,7 @@ static void M_DeterminePages(void)
         if (Game_IsInGym()) {
             m_Priv.pages[i].role = M_ROLE_NEW_GAME;
         } else if (
-            g_Config.gameplay.save_crystal_mode == SAVE_CRYSTAL_SAVE
+            !Savegame_IsManualSaveAllowed()
             && g_Inv_Mode != INV_SAVE_CRYSTAL_MODE) {
             if (can_restart) {
                 m_Priv.pages[i].role = M_ROLE_RESTART_LEVEL;

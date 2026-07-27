@@ -44,6 +44,10 @@ SAVEGAME_SLOT_REF Savegame_GetMostRecentlyCreatedSlot(void);
 // an invalid slot.
 SAVEGAME_SLOT_REF Savegame_GetMostRecentlyUsedSlot(void);
 
+// Whether the player can save the game at will. Save crystal modes reserve
+// saving for the crystals themselves.
+bool Savegame_IsManualSaveAllowed(void);
+
 void Savegame_ProcessItemsBeforeLoad(void);
 void Savegame_ProcessItemsBeforeSave(void);
 bool Savegame_Load(SAVEGAME_SLOT_REF slot);
