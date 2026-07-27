@@ -118,6 +118,15 @@ test("find_valid_pos nudges a position, or gives nil", function()
   assert(trx.rooms.find_valid_pos({ x = -1, y = 0, z = 0 }, 0) == nil)
 end)
 
+test("floor_height gives the floor under a position, or nil", function()
+  assert(trx.rooms.floor_height({ x = 0, y = 0, z = 0 }, 0) == 0)
+  assert(trx.rooms.floor_height({ x = -1, y = 0, z = 0 }, 0) == nil)
+
+  raises(function()
+    trx.rooms.floor_height({ x = 0, y = 0, z = 0 }, 99)
+  end, "unknown room")
+end)
+
 -- The rooms of the next level sit where the old ones did, so a bounds check
 -- alone would let a held handle name a different room.
 test("a room handle goes stale at a level change", function()

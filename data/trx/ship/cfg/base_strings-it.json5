@@ -64,7 +64,6 @@
             "give_item_all_keys": "Sorpresa! Ogni oggetto chiave di cui Lara ha bisogno è ora nel suo zaino.",
             "give_item_cheat": "Lo zaino di Lara è diventato molto più pesante!",
             "invalid_item": "Oggetto sconosciuto: %s",
-            "invalid_room": "Stanza non valida: %d. Le stanze valide sono 0-%d",
             "lighting_contrast_fmt": "Contrasto: %s",
             "load_game": "Partita caricata dallo slot di salvataggio %d",
             "quick_load": "Caricamento rapido dallo slot %d",
@@ -484,6 +483,7 @@
                 "reloaded": "File di lingua ricaricati",
             },
             "teleport": {
+                "invalid_room": "Stanza non valida: %d. Le stanze valide sono 0-%d",
                 "item": "Teletrasportato all'oggetto: %d",
                 "item_fail": "Impossibile teletrasportarsi all'oggetto: %d",
                 "object": "Teletrasportato all'oggetto: %s",

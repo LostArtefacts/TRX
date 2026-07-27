@@ -237,6 +237,22 @@ api.define("rooms.flip_effect", {
   impl = raw.flip_effect,
 })
 
+api.define("rooms.floor_height", {
+  description = "The height of the floor under a world position. `nil` where there is no floor at "
+    .. "all: inside solid geometry, or off the edge of the level.",
+  params = {
+    { name = "pos", type = "vec3", description = "World position." },
+    {
+      name = "room_num",
+      type = "integer",
+      description = "0-based room to look from. The search crosses portals, so a neighbouring "
+        .. "room's floor is found too.",
+    },
+  },
+  returns = { type = "integer", nullable = true },
+  impl = raw.get_height,
+})
+
 api.define("rooms.find_valid_pos", {
   description = "Nudges a position into valid room geometry, e.g. to find somewhere an item can "
     .. "legally be placed.",

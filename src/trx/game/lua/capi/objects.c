@@ -121,6 +121,9 @@ static const struct {
     { "creature", g_CreatureObjects }, //
     { "loyal", g_LoyalObjects }, //
     { "pickup", g_PickupObjects }, //
+    { "switch", g_SwitchObjects }, //
+    { "receptacle", g_ReceptacleObjects }, //
+    { "door", g_DoorObjects }, //
     { "null", g_NullObjects }, //
     { "anim", g_AnimObjects }, //
     { "inventory", g_InvObjects }, //

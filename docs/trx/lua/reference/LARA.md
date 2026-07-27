@@ -188,6 +188,22 @@ Her position, room and hit points are not here: she is an item like any other an
   trx.lara.set_extra_equipment(trx.lara.Mesh.HAND_R, trx.lara.ExtraMesh.OAR)
   ```
 
+- [lua]`trx.lara.teleport(pos, [room_num])`  
+  Moves Lara to a world position, putting her down on the floor there. She is taken off any vehicle, her weapons are put away and the camera follows her over.
+
+  The position is nudged into valid room geometry, so a spot inside a wall lands her beside it rather than in it. Somewhere with no floor within reach moves nothing.
+
+  Parameters:
+  - **`pos`** (vec3). World position.
+  - **`room_num`** (integer, optional). 0-based room to look in. Without it, the room is found from the position.
+
+  Returns: boolean. Whether she was moved.
+
+  Example:
+  ```lua
+  trx.lara.teleport(trx.items.query:of_object("wolf"):first().pos)
+  ```
+
 - [lua]`trx.lara.cure_poison()`  
   Cures Lara's poisoning. Not the same as writing `0` to `poison`: the poison has a target as well as a current value, and clearing only the value lets it climb back.
 

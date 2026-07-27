@@ -161,8 +161,27 @@ end)
 test("creature and loyal narrow to what fights", function()
   local ids = trx.objects.query:creature():ids()
   assert(#ids == 1 and ids[1] == fake.WOLF)
-  -- The fake level has no allies.
+  -- The fake level has no allies, so every creature in it is an enemy.
   assert(trx.objects.query:loyal():count() == 0)
+  assert(trx.objects.query:enemy():ids()[1] == fake.WOLF)
+end)
+
+test("the families a level's fixtures belong to", function()
+  local q = trx.objects.query
+  assert(q:switch():ids()[1] == fake.SWITCH)
+  assert(q:receptacle():ids()[1] == fake.RECEPTACLE)
+  assert(q:door():ids()[1] == fake.DOOR)
+  assert(q:door():count() == 1)
+end)
+
+test("where narrows by a test of the caller's own", function()
+  local ids = trx.objects.query
+    :loaded()
+    :where(function(id, object)
+      return object.is_intelligent
+    end)
+    :ids()
+  assert(#ids == 1 and ids[1] == fake.WOLF)
 end)
 
 test("~ excludes a family", function()
@@ -222,6 +241,7 @@ end)
 test("creature is searchable too", function()
   local ids = trx.objects.query:by_name("creature"):ids()
   assert(#ids == 1 and ids[1] == fake.WOLF)
+  assert(trx.objects.query:by_name("enemy"):ids()[1] == fake.WOLF)
 end)
 
 test(

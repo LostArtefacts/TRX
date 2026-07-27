@@ -23,7 +23,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#define FAKE_OBJ_COUNT 5
+#define FAKE_OBJ_COUNT 8
 #define FAKE_ANIM_COUNT 2
 #define FAKE_PROP_SLOTS 4
 
@@ -54,6 +54,9 @@ static int32_t m_ObjectHP[FAKE_OBJ_COUNT];
 const OBJECT_ID g_CreatureObjects[] = { FAKE_OBJ_WOLF, NO_OBJECT };
 const OBJECT_ID g_LoyalObjects[] = { NO_OBJECT };
 const OBJECT_ID g_PickupObjects[] = { FAKE_OBJ_VASE, FAKE_OBJ_KEY, NO_OBJECT };
+const OBJECT_ID g_SwitchObjects[] = { FAKE_OBJ_SWITCH, NO_OBJECT };
+const OBJECT_ID g_ReceptacleObjects[] = { FAKE_OBJ_RECEPTACLE, NO_OBJECT };
+const OBJECT_ID g_DoorObjects[] = { FAKE_OBJ_DOOR, NO_OBJECT };
 const OBJECT_ID g_NullObjects[] = { NO_OBJECT };
 const OBJECT_ID g_AnimObjects[] = { NO_OBJECT };
 const OBJECT_ID g_InvObjects[] = { NO_OBJECT };

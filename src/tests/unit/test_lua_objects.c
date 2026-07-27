@@ -31,6 +31,12 @@ static void M_PushFake(lua_State *const L)
     lua_setfield(L, -2, "UNLOADED");
     lua_pushinteger(L, FAKE_OBJ_KEY);
     lua_setfield(L, -2, "KEY");
+    lua_pushinteger(L, FAKE_OBJ_SWITCH);
+    lua_setfield(L, -2, "SWITCH");
+    lua_pushinteger(L, FAKE_OBJ_RECEPTACLE);
+    lua_setfield(L, -2, "RECEPTACLE");
+    lua_pushinteger(L, FAKE_OBJ_DOOR);
+    lua_setfield(L, -2, "DOOR");
 }
 
 int main(void)

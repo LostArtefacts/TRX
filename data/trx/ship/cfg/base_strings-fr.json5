@@ -64,7 +64,6 @@
             "give_item_all_keys": "Surprise ! Chaque clé dont Lara pourrait avoir besoin est maintenant dans son sac à dos.",
             "give_item_cheat": "Le sac à dos de Lara est soudainement beaucoup plus lourd !",
             "invalid_item": "Objet inconnu : %s",
-            "invalid_room": "Salle invalide : %d. Les salles valides sont 0-%d",
             "lighting_contrast_fmt": "\\{review}Contraste de l'éclairage : %s",
             "load_game": "Partie chargée depuis l'emplacement de sauvegarde %d",
             "quick_load": "\\{review}Emplacement de chargement rapide %d",
@@ -484,6 +483,7 @@
                 "reloaded": "\\{review}Fichiers de langue rechargés",
             },
             "teleport": {
+                "invalid_room": "Salle invalide : %d. Les salles valides sont 0-%d",
                 "item": "Téléporté à l'objet : %d",
                 "item_fail": "Échec du téléport vers l'objet : %d",
                 "object": "Téléporté à l'objet : %s",

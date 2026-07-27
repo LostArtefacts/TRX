@@ -12,6 +12,7 @@
 #include <trx/game/lua/registry.h>
 #include <trx/game/lua/struct.h>
 #include <trx/game/lua/utils.h>
+#include <trx/game/rooms.h>
 
 #include <lauxlib.h>
 
@@ -249,6 +250,25 @@ static int M_L_LaraSetFlying(lua_State *const L)
     return 0;
 }
 
+// trxc.lara.teleport({x,y,z}, room_num) -> bool
+static int M_L_LaraTeleport(lua_State *const L)
+{
+    const XYZ_32 pos = LUA_CheckXYZ(L, 1);
+
+    // Without a room, Lara_Cheat_Teleport finds one from the position.
+    int16_t room_num = NO_ROOM;
+    if (!lua_isnoneornil(L, 2)) {
+        const lua_Integer room_arg = luaL_checkinteger(L, 2);
+        luaL_argcheck(
+            L, room_arg >= 0 && room_arg <= Room_GetCount() - 1, 2,
+            "unknown room");
+        room_num = (int16_t)room_arg;
+    }
+
+    lua_pushboolean(L, Lara_Cheat_Teleport(pos, room_num));
+    return 1;
+}
+
 static const luaL_Reg m_Module[] = {
     { "get_item", M_L_LaraGetItem },
     { "get_target", M_L_LaraGetTarget },
@@ -266,6 +286,7 @@ static const luaL_Reg m_Module[] = {
     { "set_holsters_visible", M_L_LaraSetHolstersVisible },
     { "has_pistol_weapon", M_L_LaraHasPistolWeapon },
     { "get_extra_anim", M_L_LaraGetExtraAnim },
+    { "teleport", M_L_LaraTeleport },
     { "state", M_L_LaraState },
     { nullptr, nullptr },
 };
