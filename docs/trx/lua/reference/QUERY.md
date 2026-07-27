@@ -45,8 +45,8 @@ Read a query with a terminal:
   `trx.items.Item`s.
 - `first()` - the first matching handle, or `nil`.
 - `count()` - how many match.
-- `names()` - every name the matches answer to, group names included, for
-  offering completions.
+- `names()` - every name the matches answer to, for offering completions. The
+  group names any match belongs to come first.
 - `best()` - the ids tied for the best `by_name` score: one for a name only one
   thing answers to, the whole group for a group name.
 

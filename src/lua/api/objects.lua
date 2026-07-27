@@ -205,10 +205,27 @@ local function enumerate()
   return out
 end
 
--- The families a query narrows by. Membership is the engine's; a script names a
--- family by calling the method, never by spelling the family out. Some are
--- searchable: a by_name of "pickup" matches every pickup, so /spawn and /kill
--- can reach a family by name. The key is the one place the word is written.
+-- The families an object belongs to. Membership is the engine's; the key is the
+-- name a script narrows by and the name a player types, and the value is what
+-- the engine calls the same family. Every one of them is searchable, so a
+-- by_name of "pickup" matches every pickup and a command reaches a family by
+-- name. Which families a command offers is then its own query's doing: /kill
+-- narrows to what fights, so "pickup" is not among the names it answers to.
+local FAMILIES = {
+  creature = "creature",
+  -- One of Lara's own: the butler, and Lara herself.
+  loyal = "loyal",
+  pickup = "pickup",
+  switch = "switch",
+  receptacle = "receptacle",
+  door = "door",
+  inventory_item = "inventory",
+  null_object = "null",
+  animation = "anim",
+}
+
+-- The narrowings a query offers: a state an object is in, and a family it
+-- belongs to.
 local filters = {
   loaded = function()
     return function(_id, object)
@@ -225,15 +242,8 @@ local filters = {
         and not raw.is_type(id, "inventory")
     end
   end,
-  creature = {
-    searchable = true,
-    test = function()
-      return function(id)
-        return raw.is_type(id, "creature")
-      end
-    end,
-  },
-  -- A creature that fights Lara rather than for her.
+  -- A creature that fights Lara rather than for her. The one family that is not
+  -- the engine's own, so it is spelled out here.
   enemy = {
     searchable = true,
     test = function()
@@ -242,54 +252,18 @@ local filters = {
       end
     end,
   },
-  -- One of Lara's own: the butler, and Lara herself.
-  loyal = {
-    searchable = true,
-    test = function()
-      return function(id)
-        return raw.is_type(id, "loyal")
-      end
-    end,
-  },
-  pickup = {
-    searchable = true,
-    test = function()
-      return function(id)
-        return raw.is_type(id, "pickup")
-      end
-    end,
-  },
-  switch = function()
-    return function(id)
-      return raw.is_type(id, "switch")
-    end
-  end,
-  receptacle = function()
-    return function(id)
-      return raw.is_type(id, "receptacle")
-    end
-  end,
-  door = function()
-    return function(id)
-      return raw.is_type(id, "door")
-    end
-  end,
-  inventory_item = function()
-    return function(id)
-      return raw.is_type(id, "inventory")
-    end
-  end,
-  null_object = function()
-    return function(id)
-      return raw.is_type(id, "null")
-    end
-  end,
-  animation = function()
-    return function(id)
-      return raw.is_type(id, "anim")
-    end
-  end,
 }
+
+for name, kind in pairs(FAMILIES) do
+  filters[name] = {
+    searchable = true,
+    test = function()
+      return function(id)
+        return raw.is_type(id, kind)
+      end
+    end,
+  }
+end
 
 local object_query = trx.query.new({
   enumerate = enumerate,
@@ -307,14 +281,19 @@ local object_query = trx.query.new({
 
 api.property("objects.query", {
   type = "table",
-  description = "The identity query over every object definition. Narrow it and read it - see "
-    .. "[Query](../../QUERY.md).\n\n"
-    .. "Its own narrowings, beyond the shared `by_name` and the operators: `loaded`, `spawnable`, "
-    .. "`creature`, `enemy`, `loyal`, `pickup`, `switch`, `receptacle`, `door`, "
-    .. "`inventory_item`, `null_object` and `animation`. Of those, `creature`, `enemy`, `loyal` "
-    .. "and `pickup` are searchable: a `by_name` of the family's own name matches every "
-    .. "member.\n\n"
-    .. 'Example: `trx.objects.query:spawnable():by_name("wolf"):ids()`.',
+  description = [[
+The identity query over every object definition. Narrow it and read it - see
+[Query](../../QUERY.md).
+
+Its own narrowings, beyond the shared `by_name` and the operators: the states
+`loaded` and `spawnable`, and the families `creature`, `enemy`, `loyal`,
+`pickup`, `switch`, `receptacle`, `door`, `inventory_item`, `null_object` and
+`animation`. Every family is searchable: a `by_name` of the family's own name
+matches every member, and `names` offers it for completion. Which families a
+query answers to follows from what it kept, so one narrowed to what fights
+offers no `pickup`.
+
+Example: `trx.objects.query:spawnable():by_name("wolf"):ids()`.]],
   get = function()
     return object_query
   end,

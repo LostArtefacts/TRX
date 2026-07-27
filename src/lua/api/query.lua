@@ -37,8 +37,8 @@ Read a query with a terminal:
   `trx.items.Item`s.
 - `first()` - the first matching handle, or `nil`.
 - `count()` - how many match.
-- `names()` - every name the matches answer to, group names included, for
-  offering completions.
+- `names()` - every name the matches answer to, for offering completions. The
+  group names any match belongs to come first.
 - `best()` - the ids tied for the best `by_name` score: one for a name only one
   thing answers to, the whole group for a group name.
 ]],
@@ -116,6 +116,12 @@ local function build(domain)
     end
   end
 
+  -- pairs() reaches the filters in whatever order it likes, and the group names
+  -- are offered for completion in this one.
+  table.sort(searchable, function(a, b)
+    return a.key < b.key
+  end)
+
   -- A test of the caller's own, for a narrowing the domain does not name.
   index.where = function(self, pred)
     return derive(self, function(id, h)
@@ -184,8 +190,10 @@ local function build(domain)
       return derive(self, self._pred, name)
     end
 
-    -- The names to complete against: what each match answers to, plus a
-    -- searchable group's name once any match belongs to it. Localized names,
+    -- The names to complete against: a searchable group's name once any match
+    -- belongs to it, then what each match answers to. The groups come first
+    -- because a completer offers the list in order, and a group name that ties
+    -- with an object's on score would otherwise sit behind it. Localized names,
     -- falling back on the built-in ones before a language is loaded.
     index.names = function(self)
       local kept = kept_pairs(self)
@@ -196,6 +204,14 @@ local function build(domain)
           order[#order + 1] = name
         end
       end
+      for _, group in ipairs(searchable) do
+        for _, pair in ipairs(kept) do
+          if group.pred(pair[1], pair[2]) then
+            add(group.key)
+            break
+          end
+        end
+      end
       for _, pair in ipairs(kept) do
         local names = domain.names_of(pair[2])
         if #names == 0 and domain.default_names_of ~= nil then
@@ -203,14 +219,6 @@ local function build(domain)
         end
         for _, name in ipairs(names) do
           add(name)
-        end
-      end
-      for _, group in ipairs(searchable) do
-        for _, pair in ipairs(kept) do
-          if group.pred(pair[1], pair[2]) then
-            add(group.key)
-            break
-          end
         end
       end
       return order
