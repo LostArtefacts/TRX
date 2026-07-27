@@ -4,6 +4,7 @@ typedef enum {
     // clang-format off
     IDF_NONE          = 0,
     IDF_NO_HIT_STATUS = 1 << 0,
+    IDF_NO_KILL_STATS = 1 << 1,
     // clang-format on
 } ITEM_DAMAGE_FLAGS;
 

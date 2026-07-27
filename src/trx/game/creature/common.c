@@ -235,6 +235,14 @@ static bool M_TestDrowned(
     }
 }
 
+// The kill total is Lara's tally, and this function is reached by removing an
+// item rather than by earning it.
+static void M_Kill(ITEM *const item)
+{
+    Item_TakeDamage(
+        item, item->hit_points, IDF_NO_HIT_STATUS | IDF_NO_KILL_STATS, nullptr);
+}
+
 static bool M_SameZone(const CREATURE *const creature, ITEM *const target_item)
 {
     if (creature->lot.setup.fly != 0) {
@@ -1291,14 +1299,14 @@ void Creature_Die(const int16_t item_num, const bool explode)
 
     case O_DRAGON_FRONT:
     case O_TORSO:
-        item->hit_points = 0;
+        M_Kill(item);
         return;
 
     case O_SKIDOO_ARMED:
         if (explode) {
             Item_Shatter(item_num, -1, 0);
             ITEM *const vehicle_item = Item_Get(item_num);
-            vehicle_item->hit_points = 0;
+            M_Kill(vehicle_item);
             Item_SetVisible(vehicle_item, false);
             return;
         }
@@ -1308,13 +1316,13 @@ void Creature_Die(const int16_t item_num, const bool explode)
         if (explode) {
             Item_Shatter(item_num, -1, 0);
         }
-        item->hit_points = 0;
+        M_Kill(item);
         const int16_t vehicle_item_num = SkidooDriver_GetSkidooItemNum(item);
         if (vehicle_item_num == NO_ITEM) {
             return;
         }
         ITEM *const vehicle_item = Item_Get(vehicle_item_num);
-        vehicle_item->hit_points = 0;
+        M_Kill(vehicle_item);
         Item_SetVisible(vehicle_item, false);
         return;
 
@@ -1323,7 +1331,7 @@ void Creature_Die(const int16_t item_num, const bool explode)
     }
 
     item->is_collidable = false;
-    item->hit_points = 0;
+    M_Kill(item);
     if (explode) {
         Item_Shatter(item_num, -1, 0);
         Item_Destroy(item_num);
