@@ -54,6 +54,10 @@ test("fields read and write through to the struct", function()
   it.rot = { x = 0, y = 16384, z = 0 }
   assert(it.rot.y == 16384)
 
+  -- An angle counts in cycles, so a half turn on top of it wraps round.
+  it.rot = { x = 0, y = it.rot.y + 32768, z = 0 }
+  assert(it.rot.y == -16384, "the rotation should have wrapped")
+
   it.timer = 30
   assert(it.timer == 30)
 

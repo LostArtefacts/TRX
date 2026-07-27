@@ -104,7 +104,7 @@ end
     - **`object_id`**: integer. The item's object type. Compare against `trx.catalog.objects`. *(read-only)*
     - **`pos`**: vec3. World position. Updating this also updates `room` and `room_num`.
     - **`room_num`**: integer. 0-based number of the room containing this item. Set `pos` to move the item between rooms. *(read-only)*
-    - **`rot`**: vec3. Orientation.
+    - **`rot`**: vec3. Orientation, in the units `trx.math` counts angles in. An angle counts in cycles, so one past the end of the turn wraps round to name the same direction rather than raising: adding a half turn to a rotation always works.
     - **`speed`**: integer. Forward speed.
     - **`timer`**: integer. How long the item's trigger keeps it going, in game frames. `0` runs it until something takes the trigger back; `-1` means it has run out; anything else counts down. This is the raw frame count - `trigger()` takes its timer in seconds instead.
     - **`touch_bits`**: integer. Bitmask of which of the item's meshes Lara is touching. *(read-only)*

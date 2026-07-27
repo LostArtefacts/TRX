@@ -201,6 +201,40 @@ const char *Value_CheckRange(
     return nullptr;
 }
 
+void Value_Wrap(const TRX_VALUE_TYPE type, TRX_VALUE *const value)
+{
+    int64_t min = 0;
+    int64_t max = 0;
+    switch (type) {
+#define M_CASE(TAG, MIN, MAX)                                                  \
+    case TAG:                                                                  \
+        min = (MIN);                                                           \
+        max = (MAX);                                                           \
+        break;
+        M_VALUE_INT_TYPES(M_CASE)
+#undef M_CASE
+    case TVT_XYZ_16: {
+        int32_t *const comps[] = { &value->as_xyz.x, &value->as_xyz.y,
+                                   &value->as_xyz.z };
+        for (size_t i = 0; i < 3; i++) {
+            TRX_VALUE comp = { .type = TVT_S16, .as_int = *comps[i] };
+            Value_Wrap(TVT_S16, &comp);
+            *comps[i] = (int32_t)comp.as_int;
+        }
+        return;
+    }
+    default:
+        return;
+    }
+
+    const int64_t span = max - min + 1;
+    value->as_int = (value->as_int - min) % span;
+    if (value->as_int < 0) {
+        value->as_int += span;
+    }
+    value->as_int += min;
+}
+
 const char *Value_WritePtr(
     const TRX_VALUE_TYPE type, void *const dst, const TRX_VALUE *const in)
 {

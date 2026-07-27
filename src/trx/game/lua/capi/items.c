@@ -250,7 +250,7 @@ static const FIELD_DESC m_Fields[] = {
     FIELD_SET(ITEM, name,       M_SetName),
 
     // plain members
-    FIELD(ITEM, rot),
+    FIELD_MODULAR(ITEM, rot),
     FIELD(ITEM, timer),
     FIELD(ITEM, is_visible),
     FIELD(ITEM, is_finished),

@@ -12,6 +12,10 @@ typedef enum {
     // through the reflection layer. Lua may narrow a field to read-only, but it
     // cannot widen one that is marked here.
     FF_READONLY = 1 << 0,
+    // The member counts in cycles rather than along a line - an angle - so a
+    // value outside its width names a value inside it, and wraps instead of
+    // being rejected.
+    FF_MODULAR = 1 << 1,
 } FIELD_FLAGS;
 
 typedef struct {
@@ -46,6 +50,9 @@ typedef struct {
 
 // Plain struct member that must never be written through reflection.
 #define FIELD_RO(struct_, member_) M_FIELD(struct_, member_, FF_READONLY)
+
+// Plain struct member holding a cyclic quantity, such as an angle.
+#define FIELD_MODULAR(struct_, member_) M_FIELD(struct_, member_, FF_MODULAR)
 
 // Plain struct member whose write has side effects or needs validation.
 #define FIELD_SET(struct_, member_, set_)                                      \
