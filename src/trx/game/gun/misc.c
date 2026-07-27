@@ -508,8 +508,9 @@ void Gun_HitTarget(
             }
         } else {
             Spawn_Blood(
-                hit_pos->x, hit_pos->y, hit_pos->z, item->speed, item->rot.y,
-                item->room_num);
+                hit_pos->x, hit_pos->y, hit_pos->z,
+                g_TRVersion == 4 ? (Random_GetControl() & 3) + 3 : item->speed,
+                item->rot.y, item->room_num);
         }
     }
 

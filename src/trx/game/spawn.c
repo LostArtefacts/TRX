@@ -187,12 +187,21 @@ int16_t Spawn_Blood(
     const int32_t x, const int32_t y, const int32_t z, const int16_t speed,
     const int16_t y_rot, const int16_t room_num)
 {
+    if (g_TRVersion == 4) {
+        if (Room_Get(room_num)->flags.underwater) {
+            FX_Water_TriggerUnderwaterBlood((XYZ_32) { x, y, z }, speed);
+        } else {
+            Sparks_TriggerBloodTR4((XYZ_32) { x, y, z }, y_rot >> 4, speed);
+        }
+        return NO_EFFECT;
+    }
+
     if (g_TRVersion == 3) {
         if (M_IsUnderwaterAt((XYZ_32) { x, y, z }, room_num)) {
             FX_Water_TriggerUnderwaterBlood(
                 (XYZ_32) { x, y, z }, Random_GetControl() & 7);
         } else {
-            Sparks_TriggerBlood(
+            Sparks_TriggerBloodTR3(
                 (XYZ_32) { x, y, z }, y_rot >> 4,
                 (Random_GetControl() & 7) + 6);
         }
@@ -240,7 +249,7 @@ int16_t Spawn_BloodD(
             FX_Water_TriggerUnderwaterBloodD(
                 (XYZ_32) { x, y + 64, z }, Random_GetDraw() & 7);
         } else {
-            Sparks_TriggerBloodD(
+            Sparks_TriggerBloodTR3D(
                 (XYZ_32) { x, y, z }, y_rot >> 4, (Random_GetDraw() & 7) + 6);
         }
         return NO_EFFECT;
@@ -253,7 +262,7 @@ void Spawn_BloodBath(
     const int16_t y_rot, const int16_t room_num, const int32_t count)
 {
     for (int32_t i = 0; i < count; i++) {
-        if (g_TRVersion == 3) {
+        if (g_TRVersion >= 3) {
             Spawn_Blood(
                 x - (Random_GetControl() << 9) / 0x8000 + 256,
                 y - (Random_GetControl() << 9) / 0x8000 + 256,
@@ -317,8 +326,9 @@ int16_t Spawn_GunHit(
     Collide_GetJointAbsPosition(
         lara_item, &vec, Random_GetControl() * LM_NUMBER_OF / 0x7FFF);
     Spawn_Blood(
-        vec.x, vec.y, vec.z, lara_item->speed, lara_item->rot.y,
-        lara_item->room_num);
+        vec.x, vec.y, vec.z,
+        g_TRVersion == 4 ? (Random_GetControl() & 3) + 3 : lara_item->speed,
+        lara_item->rot.y, lara_item->room_num);
     Sound_Effect(SFX_LARA_BULLETHIT, &lara_item->pos, SPM_NORMAL);
     return Spawn_GunShot(x, y, z, speed, y_rot, room_num);
 }
