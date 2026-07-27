@@ -141,6 +141,11 @@ static void M_FallToDeath(ITEM *const item)
         }
         Item_SetFinished(item, true);
         Item_StartFade(item);
+        // The pit is what kills her; damage only ever passes through her to
+        // Lara. The tally is untouched, as it was before she reported at all.
+        Item_TakeDamage(
+            item, item->hit_points, IDF_NO_HIT_STATUS | IDF_NO_KILL_STATS,
+            nullptr);
     }
 }
 
@@ -161,7 +166,9 @@ static void M_Control(const int16_t item_num)
         Item_SetVisible(item, true);
     }
 
-    if (item->hit_points < LARA_MAX_HITPOINTS) {
+    // Her own hit points stand in for Lara's, so they are only worth reading
+    // back while she is alive. Once the pit has taken them, they stay taken.
+    if (item->hit_points > 0 && item->hit_points < LARA_MAX_HITPOINTS) {
         Lara_TakeDamage((LARA_MAX_HITPOINTS - item->hit_points) * 10, false);
         item->hit_points = LARA_MAX_HITPOINTS;
     }
