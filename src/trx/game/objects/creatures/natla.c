@@ -168,7 +168,11 @@ static void M_Control(const int16_t item_num)
                     LARA_INFO *const lara = Lara_GetLaraInfo();
                     lara->target = nullptr;
                 }
-                item->hit_points = 0;
+                // She plays dead on what is left of the first stage rather
+                // than on a fatal blow, and the tally waits for the second.
+                Item_TakeDamage(
+                    item, item->hit_points,
+                    IDF_NO_HIT_STATUS | IDF_NO_KILL_STATS, nullptr);
             }
             break;
 
