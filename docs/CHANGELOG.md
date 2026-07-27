@@ -12,7 +12,7 @@
 - changed reflections UV mapping to be more correct
 - changed outfits to support joints, up to two braids per outfit, and to allow positional offset adjustments for equipment meshes; refer to migration notes
 - changed the `/music` console command to list the available tracks when given no argument, as `/sfx` does; `/music status` now reports what is playing
-- changed the `/spawn` console command to accept a family such as `pickup` to spawn one of its members
+- changed the `/spawn`, `/kill` and `/tp` console commands to accept a family such as `pickup`, `door` or `enemy` in place of a name, and to offer the families each of them can act on in autocompletion
 - changed the Breeze option to allow selecting TR2 or TR3 behavior (Graphic Options → Visuals → Breeze)
 - changed the save crystals option to a mode: crystals can save on the spot, be collected to save from the inventory as on PS1 TR3, heal, or be collectibles (Gameplay → General → Crystal mode) (#5939)
 - changed the Target change option to allow selecting TR4 behavior, where tapping Look switches target and holding it looks around (Gameplay → Controls → Target change)

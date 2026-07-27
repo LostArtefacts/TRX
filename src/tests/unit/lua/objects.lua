@@ -238,10 +238,13 @@ test("a searchable family answers to its own name", function()
   assert(not set[fake.WOLF], "the wolf is not a pickup")
 end)
 
-test("creature is searchable too", function()
-  local ids = trx.objects.query:by_name("creature"):ids()
-  assert(#ids == 1 and ids[1] == fake.WOLF)
-  assert(trx.objects.query:by_name("enemy"):ids()[1] == fake.WOLF)
+test("every family answers to its own name", function()
+  local q = trx.objects.query
+  assert(q:by_name("creature"):ids()[1] == fake.WOLF)
+  assert(q:by_name("enemy"):ids()[1] == fake.WOLF)
+  assert(q:by_name("switch"):ids()[1] == fake.SWITCH)
+  assert(q:by_name("receptacle"):ids()[1] == fake.RECEPTACLE)
+  assert(q:by_name("door"):ids()[1] == fake.DOOR)
 end)
 
 test(
@@ -257,6 +260,31 @@ test(
     assert(names["pickup"], "the group name, because a pickup is present")
   end
 )
+
+test("names() offers the group names first", function()
+  -- A completer takes the list in order, so a group name must not sit behind
+  -- the object names it ties with on score.
+  local names = trx.objects.query:spawnable():names()
+  local groups = { creature = true, enemy = true, pickup = true }
+  local seen_own = false
+  for _, name in ipairs(names) do
+    if groups[name] then
+      assert(not seen_own, name .. " came after an object name")
+    else
+      seen_own = true
+    end
+  end
+  assert(seen_own, "the object names are missing")
+end)
+
+test("a query offers only the group names it kept", function()
+  local names = {}
+  for _, name in ipairs(trx.objects.query:creature():names()) do
+    names[name] = true
+  end
+  assert(names["creature"] and names["enemy"])
+  assert(not names["pickup"], "no pickup survived, so it is not a name")
+end)
 
 test("best() is one for a name, the whole group for a group name", function()
   local q = trx.objects.query

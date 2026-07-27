@@ -29,9 +29,16 @@ trx.objects.wolf.properties.max_hit_points = 30
 
 ### Properties
 
-- **`trx.objects.query`** (table). The identity query over every object definition. Narrow it and read it - see [Query](../../QUERY.md).
+- **`trx.objects.query`** (table). The identity query over every object definition. Narrow it and read it - see
+  [Query](../../QUERY.md).
 
-  Its own narrowings, beyond the shared `by_name` and the operators: `loaded`, `spawnable`, `creature`, `enemy`, `loyal`, `pickup`, `switch`, `receptacle`, `door`, `inventory_item`, `null_object` and `animation`. Of those, `creature`, `enemy`, `loyal` and `pickup` are searchable: a `by_name` of the family's own name matches every member.
+  Its own narrowings, beyond the shared `by_name` and the operators: the states
+  `loaded` and `spawnable`, and the families `creature`, `enemy`, `loyal`,
+  `pickup`, `switch`, `receptacle`, `door`, `inventory_item`, `null_object` and
+  `animation`. Every family is searchable: a `by_name` of the family's own name
+  matches every member, and `names` offers it for completion. Which families a
+  query answers to follows from what it kept, so one narrowed to what fights
+  offers no `pickup`.
 
   Example: `trx.objects.query:spawnable():by_name("wolf"):ids()`. *(read-only)*
 
