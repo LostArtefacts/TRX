@@ -3569,7 +3569,10 @@
             "name": "Winston",
         },
         "winston_army": {
-            "name": "Winston (army)",
+            "name": [
+                "Winston (army)",
+                "Army Winston",
+            ]
         },
         "wolf": {
             "name": "Wolf",

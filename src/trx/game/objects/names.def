@@ -585,4 +585,4 @@ X_OBJ_NAME_DEFINE(O_TWINKLE,                 "twinkle",                 X_OBJ_NA
 X_OBJ_NAME_DEFINE(O_WATERFALL,               "waterfall",               X_OBJ_NAMES("Waterfall Mist"))
 X_OBJ_NAME_DEFINE(O_WATER_SPRITE,            "water_sprite",            X_OBJ_NAMES("Boat Wake"))
 X_OBJ_NAME_DEFINE(O_WINSTON,                 "winston",                 X_OBJ_NAMES("Winston"))
-X_OBJ_NAME_DEFINE(O_WINSTON_ARMY,            "winston_army",            X_OBJ_NAMES("Winston (army)"))
+X_OBJ_NAME_DEFINE(O_WINSTON_ARMY,            "winston_army",            X_OBJ_NAMES("Winston (army)", "Army Winston"))
