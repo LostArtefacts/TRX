@@ -1,0 +1,61 @@
+#!/usr/bin/env python3
+import re
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
+from harness import LintWarning, file_check
+
+STATIC_RE = re.compile(r"^(?:__attribute__\(\(\w+\)\)\s+)?static\b")
+NAME_RE = re.compile(r"([A-Za-z_][A-Za-z0-9_]*)\s*\(")
+
+
+def _signature(lines, brace_idx):
+    # Walk back to the start of the paragraph holding the brace, then forward
+    # past any comment lines, which leaves the first line of the signature.
+    start = brace_idx
+    while start > 0 and lines[start - 1].strip():
+        start -= 1
+    while start < brace_idx and lines[start].lstrip().startswith("//"):
+        start += 1
+    if start == brace_idx:
+        return None
+    head = lines[start]
+    if not (head[:1].isalpha() or head.startswith("_")):
+        return None
+    return start + 1, head
+
+
+def _definitions(text):
+    # clang-format gives a top-level definition a signature at column 0 and an
+    # opening brace alone on a line. Initialisers keep their brace on the line
+    # that opens them, so only functions have this shape.
+    lines = text.split("\n")
+    for i, line in enumerate(lines):
+        if line != "{":
+            continue
+        signature = _signature(lines, i)
+        if signature is not None:
+            yield signature
+
+
+def check(path, text):
+    first_public = None
+    for line_num, head in _definitions(text):
+        if STATIC_RE.match(head) is None:
+            if first_public is None:
+                first_public = line_num
+            continue
+        if first_public is None:
+            continue
+        name = NAME_RE.search(head)
+        yield LintWarning(
+            path,
+            f"{name[1] if name else 'static function'} belongs above the "
+            f"public function on line {first_public}",
+            line=line_num,
+        )
+
+
+file_check(check)

@@ -54,6 +54,13 @@ repos:
     language: python
     files: \.c$
 
+  - id: lint-static-order
+    name: Static functions come before public ones
+    entry: tools/lint/checks/static_order
+    language: python
+    files: \.c$
+    exclude: ^src/tests/
+
   - id: lint-gameflow-schema
     name: Gameflow files match the schema
     entry: tools/lint/checks/gameflow_schema
