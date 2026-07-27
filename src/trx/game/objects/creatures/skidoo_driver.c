@@ -48,13 +48,15 @@ static int32_t M_GetDamage(
     return default_value;
 }
 
-static void M_KillDriver(ITEM *const driver_item)
+static void M_KillDriver(ITEM *const driver_item, const ITEM *const skidoo_item)
 {
     const int32_t driver_item_num = Item_GetIndex(driver_item);
     Item_RemoveSimulated(driver_item_num);
     driver_item->is_collidable = 0;
     driver_item->trigger.spent = true;
-    driver_item->hit_points = 0;
+    // The skidoo is what took the damage, and naming it as the killer keeps
+    // the pair from counting as two kills.
+    Item_TakeFatalDamage(driver_item, skidoo_item);
 }
 
 static void M_MakeMountable(ITEM *const skidoo_item)
@@ -272,7 +274,7 @@ static void M_Control(const int16_t driver_item_num)
     if (driver_item->current_anim_state == M_STATE_DEATH) {
         if (driver_item->is_finished && skidoo_item->speed == 0
             && skidoo_item->fall_speed == 0) {
-            M_KillDriver(driver_item);
+            M_KillDriver(driver_item, skidoo_item);
             M_MakeMountable(skidoo_item);
         }
     } else {
