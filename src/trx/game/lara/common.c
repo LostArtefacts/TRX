@@ -761,6 +761,19 @@ void Lara_TakeDamage(const int16_t damage, const bool hit_status)
         nullptr);
 }
 
+// Unlike Lara_TakeDamage, this ignores debug invulnerability: the callers that
+// honor it need to substitute their own outcome for the death, lest Lara be
+// left in a death animation while alive.
+void Lara_Kill(void)
+{
+    ITEM *const lara_item = Lara_GetItem();
+    Item_TakeDamage(
+        lara_item, lara_item->hit_points, IDF_NO_HIT_STATUS, nullptr);
+    // Item_TakeDamage clamps at zero, while the death paths test for a
+    // negative value.
+    lara_item->hit_points = -1;
+}
+
 // TODO: This does the same thing in principle as Lara_GetJointAbsPosition().
 // Consider merging these functions into a single function.
 bool Lara_GetMeshPos(const LARA_MESH mesh, XYZ_32 *const out_pos)

@@ -94,7 +94,7 @@ static void M_TouchFence(const XZ_32 spark_axis, XYZ_32 spark_pos)
 
     LARA_INFO *const lara = Lara_GetLaraInfo();
     lara->electric = 1;
-    lara_item->hit_points = 0;
+    Lara_Kill();
 }
 
 static void M_Control(const int16_t item_num)

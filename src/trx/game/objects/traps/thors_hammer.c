@@ -60,7 +60,7 @@ static bool M_ShouldKillLara(const ITEM *const item)
 static void M_KillLara(const ITEM *const item)
 {
     ITEM *const lara_item = Lara_GetItem();
-    lara_item->hit_points = -1;
+    Lara_Kill();
     lara_item->pos.y = item->floor;
     lara_item->gravity = false;
     lara_item->enable_shadow = false;

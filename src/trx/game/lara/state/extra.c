@@ -294,7 +294,7 @@ static void M_TrainKill(ITEM *const item, COLL_INFO *const coll)
     LARA_INFO *const lara = Lara_GetLaraInfo();
     lara->hit_direction = DIR_UNKNOWN;
     item->gravity = false;
-    item->hit_points = -1;
+    Lara_Kill();
 
     int16_t room_num = item->room_num;
     const SECTOR *const sector = Room_GetSector(item->pos, &room_num);

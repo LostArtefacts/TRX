@@ -197,7 +197,7 @@ static void M_HitLara(ITEM *const item)
     }
 
     lara->electric = 1;
-    Lara_GetItem()->hit_points = 0;
+    Lara_Kill();
 
     M_PRIV *const p = item->priv;
     p->velocity = 0;

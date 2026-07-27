@@ -219,7 +219,7 @@ void Lara_TouchDeathSector(const GF_DEATH_TILE death_tile)
         return;
     }
 
-    lara_item->hit_points = -1;
+    Lara_Kill();
     lara_item->hit_status = true;
 
     switch (death_tile) {
@@ -267,10 +267,9 @@ void Lara_RapidsDrown(void)
     LARA_INFO *const lara_info = Lara_GetLaraInfo();
 
     Lara_SwitchToExtraState(LS_EXTRA_RAPIDS_DROWN);
-
-    lara_item->gravity = false;
-    lara_item->hit_points = -1;
+    Lara_Kill();
     lara_item->hit_status = true;
+    lara_item->gravity = false;
     lara_item->fall_speed = 0;
     lara_item->speed = 0;
 

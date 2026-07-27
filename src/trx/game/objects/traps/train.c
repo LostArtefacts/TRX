@@ -69,7 +69,7 @@ static void M_Collision(
     Sound_StopEffect(SFX_TRAIN_LOOP);
 
     LARA_INFO *const lara = Lara_GetLaraInfo();
-    lara_item->hit_points = 0;
+    Lara_Kill();
     lara_item->rot.y = train_item->rot.y;
     lara->move_angle = lara_item->rot.y;
     lara_item->gravity = false;

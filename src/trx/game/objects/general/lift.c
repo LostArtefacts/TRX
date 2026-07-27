@@ -331,7 +331,7 @@ static void M_KillLara(ITEM *const lara)
         return;
     }
 
-    lara->hit_points = -1;
+    Lara_Kill();
     lara->speed = 0;
     lara->fall_speed = 0;
     lara->gravity = false;

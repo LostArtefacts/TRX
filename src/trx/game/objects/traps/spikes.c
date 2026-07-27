@@ -38,7 +38,7 @@ static void M_Collision(
     if (lara_item->gravity) {
         if (lara_item->fall_speed > M_FALL_SPEED_LIMIT
             && !g_Config.debug.enable_invulnerability) {
-            lara_item->hit_points = -1;
+            Lara_Kill();
             blood_spawn_count = 20;
         }
     } else if (lara_item->speed < 30) {
