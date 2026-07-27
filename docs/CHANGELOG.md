@@ -21,6 +21,7 @@
 - changed skidoo and quad bike crashes to not kill Lara when she is immune
 - fixed exploding deaths in TR4 showing no flames or explosions
 - fixed some console commands being able to target unintended items
+- fixed the `/spawn` and `/kill` console commands not reaching army Winston
 - fixed the `/trigger` and `/untrigger` console commands crashing or doing nothing on some objects, so they now act on any item exactly as a level trigger would
 - fixed the `/trigger`, `/untrigger` and `/kill` console commands being usable in demos and cutscenes
 - fixed being unable to drop to the secret ledge in Jungle room 76 from the ledge above (#5818)

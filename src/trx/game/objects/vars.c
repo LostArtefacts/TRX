@@ -174,6 +174,7 @@ const OBJECT_ID g_LoyalObjects[] = {
     // clang-format off
     O_LARA,
     O_WINSTON,
+    O_WINSTON_ARMY,
     NO_OBJECT,
     // clang-format on
 };
