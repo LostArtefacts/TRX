@@ -3685,7 +3685,7 @@
       }
     },
     {
-      "description": "Happens when damage takes an item's hit points to zero, Lara included. It is the\nsame blow `on_hit` reports, which fires first. A death that does not go through damage - a script\nwriting `hit_points`, or `destroy()` - does not report.\n\nSome bosses fall and get back up: Willard is knocked out, Natla plays dead before her second\nstage, and the dragon lies still until Lara takes the dagger. Their hit points reach zero once per\nstage, so they report once per stage rather than once per boss. Watch for what marks the last\nstage - the item leaving play, say - if you need the final death.\n\n`trx.items.Item:on_kill` is this same event, narrowed to one item.",
+      "description": "Happens when damage takes an item's hit points to zero, Lara included. It is the\nsame blow `on_hit` reports, which fires first. A death that does not go through damage - a script\nwriting `hit_points`, or `destroy()` - does not report.\n\nSome bosses fall and get back up: Willard is knocked out, Natla plays dead before her second\nstage, and the dragon lies still until Lara takes the dagger. Each stage brings their hit points\nto zero, so they report once per stage rather than once per boss, and the dragon reports once\nmore for the dagger that ends it.\n\n`trx.items.Item:on_kill` is this same event, narrowed to one item.",
       "examples": [
         "trx.events.on_kill(function(item)\n  trx.log.info(item.object_id .. \" is down\")\nend)"
       ],
