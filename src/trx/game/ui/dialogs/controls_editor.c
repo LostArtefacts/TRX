@@ -514,6 +514,20 @@ static void M_Footer(UI_CONTROLS_EDITOR_STATE *const s)
     UI_EndStack();
 }
 
+static void M_Header(void *const user_data)
+{
+    UI_CONTROLS_EDITOR_STATE *const s = user_data;
+    UI_BeginStackEx((UI_STACK_SETTINGS) {
+        .orientation = UI_STACK_VERTICAL,
+        .align = { .h = UI_STACK_H_ALIGN_SPAN },
+        .spacing = { .v = 4.0f },
+    });
+    M_CurrentLayout(s);
+    M_GroupsHeader(s);
+    UI_EndStack();
+    UI_Spacer(0.0f, 5.0f);
+}
+
 void UI_ControlsEditor_Init(
     UI_CONTROLS_EDITOR_STATE *const s, const INPUT_BACKEND backend,
     const int32_t layout, EVENT_MANAGER *const events)
@@ -613,20 +627,6 @@ UI_CONTROLS_CHOICE UI_ControlsEditor_Control(UI_CONTROLS_EDITOR_STATE *const s)
     default:
         return UI_CONTROLS_CHOICE_NOOP;
     }
-}
-
-static void M_Header(void *const user_data)
-{
-    UI_CONTROLS_EDITOR_STATE *const s = user_data;
-    UI_BeginStackEx((UI_STACK_SETTINGS) {
-        .orientation = UI_STACK_VERTICAL,
-        .align = { .h = UI_STACK_H_ALIGN_SPAN },
-        .spacing = { .v = 4.0f },
-    });
-    M_CurrentLayout(s);
-    M_GroupsHeader(s);
-    UI_EndStack();
-    UI_Spacer(0.0f, 5.0f);
 }
 
 void UI_ControlsEditor(UI_CONTROLS_EDITOR_STATE *const s)

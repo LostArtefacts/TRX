@@ -287,6 +287,17 @@ static void M_UpdateActiveSoundParams(M_ACTIVE_SOUND *const sound)
     sound->pan = M_GetPan(sound->sample, sound->pos_ptr);
 }
 
+// A slot holds a voice while its handle is set; a paused voice counts, so this
+// tests the handle rather than whether it is audibly playing.
+static M_ACTIVE_SOUND *M_GetActiveSlot(const int32_t slot)
+{
+    if (slot < 0 || slot >= M_MAX_ACTIVE_SOUNDS
+        || m_ActiveSounds[slot].handle == AUDIO_NO_SOUND) {
+        return nullptr;
+    }
+    return &m_ActiveSounds[slot];
+}
+
 bool Sound_Init(void)
 {
     m_MasterVolume = g_Config.audio.sound_volume;
@@ -695,17 +706,6 @@ void Sound_StopAll(void)
     }
     Audio_Sample_CloseAll();
     M_ClearAllActiveSounds();
-}
-
-// A slot holds a voice while its handle is set; a paused voice counts, so this
-// tests the handle rather than whether it is audibly playing.
-static M_ACTIVE_SOUND *M_GetActiveSlot(const int32_t slot)
-{
-    if (slot < 0 || slot >= M_MAX_ACTIVE_SOUNDS
-        || m_ActiveSounds[slot].handle == AUDIO_NO_SOUND) {
-        return nullptr;
-    }
-    return &m_ActiveSounds[slot];
 }
 
 int32_t Sound_GetActiveSlotCount(void)

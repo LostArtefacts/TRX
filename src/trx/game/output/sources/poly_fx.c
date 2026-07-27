@@ -382,6 +382,60 @@ static bool M_IsDirty(const SCENE_SOURCE *const source, const SCENE_PASS pass)
     return false;
 }
 
+static void M_StagePrim(
+    const int32_t sprite_idx, const uint8_t corner_count,
+    const XYZ_32 *const world_pos, const float (*disp)[2],
+    const RGBA_8888 *const color, const uint16_t flags,
+    const float z_depth_adjust, const float shade,
+    const OUTPUT_LIGHT_INFO *const light_info, VECTOR *const target)
+{
+    M_PRIM prim;
+    prim.sprite_idx = sprite_idx;
+    prim.use_custom_uv = false;
+    prim.use_own_light = light_info != nullptr;
+    prim.corner_count = corner_count;
+    prim.z_depth_adjust = z_depth_adjust;
+    prim.shade = shade;
+    prim.tint = Output_GetTint();
+    memset(prim.world_pos, 0, sizeof(prim.world_pos));
+    memcpy(prim.world_pos, world_pos, sizeof(prim.world_pos[0]) * corner_count);
+    memset(prim.uvw, 0, sizeof(prim.uvw));
+    memset(prim.texture_size, 0, sizeof(prim.texture_size));
+    if (disp != nullptr) {
+        memset(prim.disp, 0, sizeof(prim.disp));
+        memcpy(prim.disp, disp, sizeof(prim.disp[0]) * corner_count);
+    } else {
+        memset(prim.disp, 0, sizeof(prim.disp));
+    }
+    memset(prim.color, 0, sizeof(prim.color));
+    memcpy(prim.color, color, sizeof(prim.color[0]) * corner_count);
+    prim.flags = flags;
+    // The OG draws additive polys with specular disabled (HWR_DrawSortList
+    // drawtype 2); the flag tells the shader to drop the overbright excess,
+    // as the mesh batcher does for its blend-add pass.
+    if (target == m_Priv.scheduled_blend_add) {
+        prim.flags |= VERT_ADDITIVE;
+    }
+    if (light_info != nullptr) {
+        prim.light_info = *light_info;
+    } else {
+        prim.light_info = (OUTPUT_LIGHT_INFO) {};
+    }
+    Vector_Add(target, &prim);
+}
+
+static VECTOR *M_GetScheduledVectorForDrawType(
+    M_PRIV *const p, const DRAW_TYPE draw_type)
+{
+    if (draw_type == DRAW_BLEND_ADD || draw_type == DRAW_REFLECTIVE_BLEND_ADD) {
+        return p->scheduled_blend_add;
+    }
+    if (draw_type == DRAW_BLEND_SUB) {
+        return p->scheduled_blend_sub;
+    }
+    return p->scheduled_transparent;
+}
+
 void OutputSource_PolyFX_Init(void)
 {
     M_PRIV *const p = &m_Priv;
@@ -471,60 +525,6 @@ void OutputSource_PolyFX_Shutdown(void)
         glDeleteBuffers(1, &p->vbo);
         p->vbo = 0;
     }
-}
-
-static void M_StagePrim(
-    const int32_t sprite_idx, const uint8_t corner_count,
-    const XYZ_32 *const world_pos, const float (*disp)[2],
-    const RGBA_8888 *const color, const uint16_t flags,
-    const float z_depth_adjust, const float shade,
-    const OUTPUT_LIGHT_INFO *const light_info, VECTOR *const target)
-{
-    M_PRIM prim;
-    prim.sprite_idx = sprite_idx;
-    prim.use_custom_uv = false;
-    prim.use_own_light = light_info != nullptr;
-    prim.corner_count = corner_count;
-    prim.z_depth_adjust = z_depth_adjust;
-    prim.shade = shade;
-    prim.tint = Output_GetTint();
-    memset(prim.world_pos, 0, sizeof(prim.world_pos));
-    memcpy(prim.world_pos, world_pos, sizeof(prim.world_pos[0]) * corner_count);
-    memset(prim.uvw, 0, sizeof(prim.uvw));
-    memset(prim.texture_size, 0, sizeof(prim.texture_size));
-    if (disp != nullptr) {
-        memset(prim.disp, 0, sizeof(prim.disp));
-        memcpy(prim.disp, disp, sizeof(prim.disp[0]) * corner_count);
-    } else {
-        memset(prim.disp, 0, sizeof(prim.disp));
-    }
-    memset(prim.color, 0, sizeof(prim.color));
-    memcpy(prim.color, color, sizeof(prim.color[0]) * corner_count);
-    prim.flags = flags;
-    // The OG draws additive polys with specular disabled (HWR_DrawSortList
-    // drawtype 2); the flag tells the shader to drop the overbright excess,
-    // as the mesh batcher does for its blend-add pass.
-    if (target == m_Priv.scheduled_blend_add) {
-        prim.flags |= VERT_ADDITIVE;
-    }
-    if (light_info != nullptr) {
-        prim.light_info = *light_info;
-    } else {
-        prim.light_info = (OUTPUT_LIGHT_INFO) {};
-    }
-    Vector_Add(target, &prim);
-}
-
-static VECTOR *M_GetScheduledVectorForDrawType(
-    M_PRIV *const p, const DRAW_TYPE draw_type)
-{
-    if (draw_type == DRAW_BLEND_ADD || draw_type == DRAW_REFLECTIVE_BLEND_ADD) {
-        return p->scheduled_blend_add;
-    }
-    if (draw_type == DRAW_BLEND_SUB) {
-        return p->scheduled_blend_sub;
-    }
-    return p->scheduled_transparent;
 }
 
 void OutputSource_PolyFX_StageSpriteQuadWorld(

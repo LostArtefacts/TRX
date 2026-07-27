@@ -54,6 +54,77 @@ __attribute__((destructor)) static void M_Shutdown(void)
     ConfigOverride_Shutdown();
 }
 
+static bool M_RestoreOptionDefault(const void *const target, const bool force)
+{
+    if (target == nullptr) {
+        return false;
+    }
+    const CONFIG_OPTION *option = Config_GetOption(target);
+    if (option == nullptr) {
+        return false;
+    }
+    if (!force && Config_IsOptionEnforced(target)) {
+        return false;
+    }
+    // The string default is stored inline, so it is not a `char **` that
+    // Value_CopyPtr could read; copy it here. The free-after-allocate order (so
+    // subscribers see the pointer move) lives in Value_CopyPtr for the rest.
+    if (option->type == TVT_STRING || option->type == TVT_DYNAMIC_ENUM) {
+        char **const p = (char **)option->target;
+        const char *const def = (const char *)option->default_value;
+        char *const old = *p;
+        *p = def != nullptr ? Memory_DupStr(def) : nullptr;
+        Memory_Free(old);
+        return true;
+    }
+    Value_CopyPtr(option->type, (void *)option->target, option->default_value);
+    return true;
+}
+
+// The extra argument the value parse and format calls need: the EnumMap name
+// for an enum, the dynamic enum registry token for a dynamic enum, nothing
+// else.
+static const void *M_ValueParam(const CONFIG_OPTION *const option)
+{
+    return option->type == TVT_DYNAMIC_ENUM ? option->target : option->param;
+}
+
+// The two presentations Value_Format does not carry, because each reaches past
+// the stored value: a bool as a localized on/off, and a float as a percentage.
+static const char *M_FormatBoolHuman(const bool value)
+{
+    return value ? GS("general/misc/on") : GS("general/misc/off");
+}
+
+static const char *M_FormatFloatPercent(const float value)
+{
+    return String_FormatStatic("%.0f%%", value);
+}
+
+static bool M_SetOptionValueFromString(
+    const CONFIG_OPTION *const option, const char *const new_value,
+    const bool force)
+{
+    ASSERT(option != nullptr);
+    ASSERT(option->target != nullptr);
+    if (!force && Config_IsOptionEnforced(option->target)) {
+        return false;
+    }
+    TRX_VALUE parsed;
+    if (!Value_Parse(option->type, M_ValueParam(option), new_value, &parsed)) {
+        return false;
+    }
+    if (option->type == TVT_STRING || option->type == TVT_DYNAMIC_ENUM) {
+        Value_CopyPtr(option->type, (void *)option->target, &parsed.as_str);
+        return true;
+    }
+    if (option->percent) {
+        parsed.as_num /= 100.0;
+    }
+    return Value_WritePtr(option->type, (void *)option->target, &parsed)
+        == nullptr;
+}
+
 void Config_ApplyDefaultSettings(void)
 {
     const CONFIG_OPTION *option = Config_GetOptionMap();
@@ -219,33 +290,6 @@ bool Config_IsOptionAtDefault(const void *const target)
     return Value_EqualPtr(option->type, option->target, option->default_value);
 }
 
-static bool M_RestoreOptionDefault(const void *const target, const bool force)
-{
-    if (target == nullptr) {
-        return false;
-    }
-    const CONFIG_OPTION *option = Config_GetOption(target);
-    if (option == nullptr) {
-        return false;
-    }
-    if (!force && Config_IsOptionEnforced(target)) {
-        return false;
-    }
-    // The string default is stored inline, so it is not a `char **` that
-    // Value_CopyPtr could read; copy it here. The free-after-allocate order (so
-    // subscribers see the pointer move) lives in Value_CopyPtr for the rest.
-    if (option->type == TVT_STRING || option->type == TVT_DYNAMIC_ENUM) {
-        char **const p = (char **)option->target;
-        const char *const def = (const char *)option->default_value;
-        char *const old = *p;
-        *p = def != nullptr ? Memory_DupStr(def) : nullptr;
-        Memory_Free(old);
-        return true;
-    }
-    Value_CopyPtr(option->type, (void *)option->target, option->default_value);
-    return true;
-}
-
 bool Config_RestoreOptionDefault(const void *const target)
 {
     return M_RestoreOptionDefault(target, false);
@@ -254,26 +298,6 @@ bool Config_RestoreOptionDefault(const void *const target)
 bool Config_RestoreOptionDefaultForce(const void *const target)
 {
     return M_RestoreOptionDefault(target, true);
-}
-
-// The extra argument the value parse and format calls need: the EnumMap name
-// for an enum, the dynamic enum registry token for a dynamic enum, nothing
-// else.
-static const void *M_ValueParam(const CONFIG_OPTION *const option)
-{
-    return option->type == TVT_DYNAMIC_ENUM ? option->target : option->param;
-}
-
-// The two presentations Value_Format does not carry, because each reaches past
-// the stored value: a bool as a localized on/off, and a float as a percentage.
-static const char *M_FormatBoolHuman(const bool value)
-{
-    return value ? GS("general/misc/on") : GS("general/misc/off");
-}
-
-static const char *M_FormatFloatPercent(const float value)
-{
-    return String_FormatStatic("%.0f%%", value);
 }
 
 const char *Config_GetOptionValueAsString(
@@ -333,30 +357,6 @@ char *Config_NormalizeOptionValueString(
     }
     return Memory_DupStr(Value_Format(
         option->type, M_ValueParam(option), &parsed, human_readable));
-}
-
-static bool M_SetOptionValueFromString(
-    const CONFIG_OPTION *const option, const char *const new_value,
-    const bool force)
-{
-    ASSERT(option != nullptr);
-    ASSERT(option->target != nullptr);
-    if (!force && Config_IsOptionEnforced(option->target)) {
-        return false;
-    }
-    TRX_VALUE parsed;
-    if (!Value_Parse(option->type, M_ValueParam(option), new_value, &parsed)) {
-        return false;
-    }
-    if (option->type == TVT_STRING || option->type == TVT_DYNAMIC_ENUM) {
-        Value_CopyPtr(option->type, (void *)option->target, &parsed.as_str);
-        return true;
-    }
-    if (option->percent) {
-        parsed.as_num /= 100.0;
-    }
-    return Value_WritePtr(option->type, (void *)option->target, &parsed)
-        == nullptr;
 }
 
 bool Config_SetOptionValueFromString(

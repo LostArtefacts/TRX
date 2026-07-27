@@ -110,6 +110,18 @@ static uint64_t M_GetLevelHash(const GF_LEVEL *const level)
     return entry->hash;
 }
 
+static const char *M_GetPath(const char *const filename)
+{
+    const SHELL_ARGS *const args = Shell_GetArgs();
+    if (args == nullptr || args->startup.mod == nullptr
+        || args->startup.mod->name == nullptr) {
+        return nullptr;
+    }
+
+    return String_FormatStatic(
+        "%s/%s/%s", Shell_GetCacheDir(), args->startup.mod->name, filename);
+}
+
 uint64_t LevelCache_InitChecksum(
     const char *const scope, const uint32_t version)
 {
@@ -178,18 +190,6 @@ const char *LevelCache_GetLevelKey(const GF_LEVEL *const level)
     const size_t stem_len = strcspn(name, ".");
     return String_FormatStatic(
         "%c%d_%.*s", type_key, level->num, (int)stem_len, name);
-}
-
-static const char *M_GetPath(const char *const filename)
-{
-    const SHELL_ARGS *const args = Shell_GetArgs();
-    if (args == nullptr || args->startup.mod == nullptr
-        || args->startup.mod->name == nullptr) {
-        return nullptr;
-    }
-
-    return String_FormatStatic(
-        "%s/%s/%s", Shell_GetCacheDir(), args->startup.mod->name, filename);
 }
 
 MYFILE *LevelCache_OpenBinaryRead(

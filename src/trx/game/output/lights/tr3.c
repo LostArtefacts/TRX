@@ -439,39 +439,6 @@ static void M_CalculateStaticMeshLight(
         Output_Lights_ShadeFromMul((ambient.r + ambient.g + ambient.b) / 3.0f));
 }
 
-void Output_Lights_TR3_AddDynamicLight(
-    const XYZ_32 pos, const int32_t intensity, const int32_t falloff)
-{
-    int32_t safe_intensity = intensity;
-    int32_t safe_falloff = falloff;
-    CLAMP(safe_intensity, 0, 30);
-    CLAMP(safe_falloff, 0, 30);
-
-    int32_t max_shade = 1 << safe_intensity;
-    int32_t c = max_shade >> 4;
-    CLAMPG(c, 255);
-
-    int32_t radius = 1 << safe_falloff;
-    int32_t falloff_param = radius >> 7;
-    CLAMP(falloff_param, 1, 255);
-
-    const OUTPUT_DYNAMIC_LIGHT light = {
-        .light = {
-            .pos = pos,
-            .color = (RGB_888) { c, c, c },
-            .layout = LIGHT_LAYOUT_LEGACY,
-            .type = LIGHT_TYPE_POINT,
-            .u.legacy =
-                {
-                    .falloff.value_1 = falloff_param
-                        << OUTPUT_DYNAMIC_FALLOFF_SHIFT,
-                },
-        },
-        .kind = OUTPUT_DYNAMIC_LIGHT_RGB,
-    };
-    Vector_Add(Output_GetDynamicLights(), &light);
-}
-
 static void M_UploadCPULight(
     const OUTPUT_UNIFORMS *const uniforms, const OUTPUT_LIGHT_INFO *const info)
 {
@@ -550,6 +517,39 @@ static void M_Init(void)
 static void M_ObserveLevelLoad(void)
 {
     memset(m_ItemLights, 0, sizeof(m_ItemLights));
+}
+
+void Output_Lights_TR3_AddDynamicLight(
+    const XYZ_32 pos, const int32_t intensity, const int32_t falloff)
+{
+    int32_t safe_intensity = intensity;
+    int32_t safe_falloff = falloff;
+    CLAMP(safe_intensity, 0, 30);
+    CLAMP(safe_falloff, 0, 30);
+
+    int32_t max_shade = 1 << safe_intensity;
+    int32_t c = max_shade >> 4;
+    CLAMPG(c, 255);
+
+    int32_t radius = 1 << safe_falloff;
+    int32_t falloff_param = radius >> 7;
+    CLAMP(falloff_param, 1, 255);
+
+    const OUTPUT_DYNAMIC_LIGHT light = {
+        .light = {
+            .pos = pos,
+            .color = (RGB_888) { c, c, c },
+            .layout = LIGHT_LAYOUT_LEGACY,
+            .type = LIGHT_TYPE_POINT,
+            .u.legacy =
+                {
+                    .falloff.value_1 = falloff_param
+                        << OUTPUT_DYNAMIC_FALLOFF_SHIFT,
+                },
+        },
+        .kind = OUTPUT_DYNAMIC_LIGHT_RGB,
+    };
+    Vector_Add(Output_GetDynamicLights(), &light);
 }
 
 const LIGHTING_MODEL g_LightingModelTR3 = {

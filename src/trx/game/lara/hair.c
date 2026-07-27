@@ -249,29 +249,6 @@ static void M_ReduceTorsoSphere(void)
         (m_HairSpheres[1].pos.z + m_HairSpheres[2].pos.z) >> 1;
 }
 
-void Lara_Hair_Initialise(void)
-{
-    for (int32_t i = 0; i < M_MAX_BRAIDS; i++) {
-        const ANIM_BONE *const bones = Lara_Skin_GetBraidBoneBase(i);
-        if (bones == nullptr) {
-            continue;
-        }
-
-        m_IsFirstHair[i] = true;
-        m_HairSegments[i][0].rot.x = -DEG_90;
-        m_HairSegments[i][0].rot.y = 0;
-
-        for (int32_t j = 1; j <= M_HAIR_SEGMENTS; j++) {
-            const ANIM_BONE *const bone = &bones[M_BONE_IDX(j)];
-            m_HairSegments[i][j].pos = bone->pos;
-            m_HairSegments[i][j].rot.x = -DEG_90;
-            m_HairSegments[i][j].rot.y = 0;
-            m_HairSegments[i][j].rot.z = 0;
-            m_HairVelocity[i][j - 1] = (XYZ_32) {};
-        }
-    }
-}
-
 static void M_Control(
     const bool in_cutscene, const int32_t braid_idx, const XYZ_32 offset_pos,
     const bool is_twin_setup)
@@ -470,18 +447,6 @@ static void M_Control(
     }
 }
 
-void Lara_Hair_Control(const bool in_cutscene)
-{
-    if (!Lara_Hair_IsActive()) {
-        return;
-    }
-
-    const LARA_SKIN_BRAID *const braid = Lara_Skin_GetBraid();
-    for (int32_t i = 0; i < braid->count; i++) {
-        M_Control(in_cutscene, i, braid->setup[i].position, braid->count > 1);
-    }
-}
-
 static void M_EnsureScratch(const int32_t vertex_count)
 {
     if (vertex_count <= m_Joints.scratch.capacity) {
@@ -583,92 +548,6 @@ static void M_SortSeamRing(
                 seam->pairs[a] = seam->pairs[b];
                 seam->pairs[b] = p;
             }
-        }
-    }
-}
-
-void Lara_Hair_InitJoints(const LARA_SKIN_OUTFIT *const outfit)
-{
-    M_ResetJoints();
-
-    // Braid welding rides on the body-joint feature; outfits that do not opt
-    // into joints (every TR1-TR3 outfit) keep their braid untouched.
-    if (outfit->joints_obj_id == NO_OBJECT || !Lara_Skin_IsBraidSupported()) {
-        return;
-    }
-
-    const int32_t braid_base = Lara_Skin_GetBraidMeshIdx(0);
-    const ANIM_BONE *const bones = Lara_Skin_GetBraidBoneBase(0);
-    if (braid_base < 0 || bones == nullptr) {
-        return;
-    }
-
-    // At rest every segment shares one orientation, so a shared ring reduces
-    // to a translation by the bone between the two meshes. Only the lower
-    // rings are sorted: the weld rotates their pairing, which needs the pairs
-    // to walk the ring's perimeter.
-    const XYZ_32 zero = {};
-    int32_t total_pairs = 0;
-    int32_t max_vertices = 0;
-    for (int32_t j = 0; j < M_HAIR_SEGMENTS; j += 2) {
-        const OBJECT_MESH *const mesh = Object_GetMesh(braid_base + j);
-        max_vertices = MAX(max_vertices, mesh->num_vertices);
-        if (j > 0) {
-            const OBJECT_MESH *const prev = Object_GetMesh(braid_base + j - 1);
-            const XYZ_32 offset = bones[M_BONE_IDX(j)].pos;
-            Lara_Seam_FindSharedVertices(
-                m_Joints.upper[j].pairs, &m_Joints.upper[j].count,
-                SEAM_MAX_VERTEX_PAIRS, mesh, prev, &offset, &zero);
-            total_pairs += m_Joints.upper[j].count;
-        }
-        if (j + 1 < M_HAIR_SEGMENTS) {
-            const OBJECT_MESH *const next = Object_GetMesh(braid_base + j + 1);
-            const XYZ_32 offset = bones[M_BONE_IDX(j + 1)].pos;
-            Lara_Seam_FindSharedVertices(
-                m_Joints.lower[j].pairs, &m_Joints.lower[j].count,
-                SEAM_MAX_VERTEX_PAIRS, mesh, next, &zero, &offset);
-            M_SortSeamRing(&m_Joints.lower[j], mesh);
-            total_pairs += m_Joints.lower[j].count;
-        }
-    }
-
-    if (total_pairs == 0) {
-        LOG_INFO("braid segments share no ring; welding disabled");
-        return;
-    }
-
-    M_EnsureScratch(max_vertices);
-    m_Joints.enabled = true;
-
-    // A second pigtail shares the first's meshes, so give it its own copies to
-    // deform; otherwise the two would fight over one buffer and only the last
-    // drawn would close. The refresh builds the copies' render buffers.
-    const LARA_SKIN_BRAID *const braid = Lara_Skin_GetBraid();
-
-    // Copy the authored head-attach ring for each pigtail, dropping any pair
-    // that names a vertex past either mesh, so the weld does not have to
-    // bounds-check every frame.
-    const OBJECT_MESH *const head_mesh = Lara_Mesh_Get(LM_HEAD);
-    const OBJECT_MESH *const seg0_mesh = Object_GetMesh(braid_base);
-    for (int32_t i = 0; i < braid->count; i++) {
-        const LARA_SKIN_BRAID_HEAD_SEAM *const src = &braid->setup[i].head_seam;
-        m_Joints.head[i].count = 0;
-        for (int32_t k = 0; k < src->count; k++) {
-            if (src->pairs[k].vertex_a >= seg0_mesh->num_vertices
-                || src->pairs[k].vertex_b >= head_mesh->num_vertices) {
-                continue;
-            }
-            m_Joints.head[i].pairs[m_Joints.head[i].count++] = src->pairs[k];
-        }
-    }
-
-    // Record which meshes the draw will deform - the bridges - so a later
-    // outfit can restore them. Restoring a mesh that was never deformed is a
-    // no-op.
-    for (int32_t i = 0; i < braid->count; i++) {
-        const int32_t seg_base = Lara_Skin_GetBraidMeshIdx(i);
-        for (int32_t j = 0; j < M_HAIR_SEGMENTS; j += 2) {
-            m_Joints.welded_indices[m_Joints.welded_count++] = seg_base + j;
         }
     }
 }
@@ -903,6 +782,127 @@ static void M_CalculateRenderRolls(
         rx = ax * rc + bx * rs;
         ry = ay * rc + by * rs;
         rz = az * rc + bz * rs;
+    }
+}
+
+void Lara_Hair_Initialise(void)
+{
+    for (int32_t i = 0; i < M_MAX_BRAIDS; i++) {
+        const ANIM_BONE *const bones = Lara_Skin_GetBraidBoneBase(i);
+        if (bones == nullptr) {
+            continue;
+        }
+
+        m_IsFirstHair[i] = true;
+        m_HairSegments[i][0].rot.x = -DEG_90;
+        m_HairSegments[i][0].rot.y = 0;
+
+        for (int32_t j = 1; j <= M_HAIR_SEGMENTS; j++) {
+            const ANIM_BONE *const bone = &bones[M_BONE_IDX(j)];
+            m_HairSegments[i][j].pos = bone->pos;
+            m_HairSegments[i][j].rot.x = -DEG_90;
+            m_HairSegments[i][j].rot.y = 0;
+            m_HairSegments[i][j].rot.z = 0;
+            m_HairVelocity[i][j - 1] = (XYZ_32) {};
+        }
+    }
+}
+
+void Lara_Hair_Control(const bool in_cutscene)
+{
+    if (!Lara_Hair_IsActive()) {
+        return;
+    }
+
+    const LARA_SKIN_BRAID *const braid = Lara_Skin_GetBraid();
+    for (int32_t i = 0; i < braid->count; i++) {
+        M_Control(in_cutscene, i, braid->setup[i].position, braid->count > 1);
+    }
+}
+
+void Lara_Hair_InitJoints(const LARA_SKIN_OUTFIT *const outfit)
+{
+    M_ResetJoints();
+
+    // Braid welding rides on the body-joint feature; outfits that do not opt
+    // into joints (every TR1-TR3 outfit) keep their braid untouched.
+    if (outfit->joints_obj_id == NO_OBJECT || !Lara_Skin_IsBraidSupported()) {
+        return;
+    }
+
+    const int32_t braid_base = Lara_Skin_GetBraidMeshIdx(0);
+    const ANIM_BONE *const bones = Lara_Skin_GetBraidBoneBase(0);
+    if (braid_base < 0 || bones == nullptr) {
+        return;
+    }
+
+    // At rest every segment shares one orientation, so a shared ring reduces
+    // to a translation by the bone between the two meshes. Only the lower
+    // rings are sorted: the weld rotates their pairing, which needs the pairs
+    // to walk the ring's perimeter.
+    const XYZ_32 zero = {};
+    int32_t total_pairs = 0;
+    int32_t max_vertices = 0;
+    for (int32_t j = 0; j < M_HAIR_SEGMENTS; j += 2) {
+        const OBJECT_MESH *const mesh = Object_GetMesh(braid_base + j);
+        max_vertices = MAX(max_vertices, mesh->num_vertices);
+        if (j > 0) {
+            const OBJECT_MESH *const prev = Object_GetMesh(braid_base + j - 1);
+            const XYZ_32 offset = bones[M_BONE_IDX(j)].pos;
+            Lara_Seam_FindSharedVertices(
+                m_Joints.upper[j].pairs, &m_Joints.upper[j].count,
+                SEAM_MAX_VERTEX_PAIRS, mesh, prev, &offset, &zero);
+            total_pairs += m_Joints.upper[j].count;
+        }
+        if (j + 1 < M_HAIR_SEGMENTS) {
+            const OBJECT_MESH *const next = Object_GetMesh(braid_base + j + 1);
+            const XYZ_32 offset = bones[M_BONE_IDX(j + 1)].pos;
+            Lara_Seam_FindSharedVertices(
+                m_Joints.lower[j].pairs, &m_Joints.lower[j].count,
+                SEAM_MAX_VERTEX_PAIRS, mesh, next, &zero, &offset);
+            M_SortSeamRing(&m_Joints.lower[j], mesh);
+            total_pairs += m_Joints.lower[j].count;
+        }
+    }
+
+    if (total_pairs == 0) {
+        LOG_INFO("braid segments share no ring; welding disabled");
+        return;
+    }
+
+    M_EnsureScratch(max_vertices);
+    m_Joints.enabled = true;
+
+    // A second pigtail shares the first's meshes, so give it its own copies to
+    // deform; otherwise the two would fight over one buffer and only the last
+    // drawn would close. The refresh builds the copies' render buffers.
+    const LARA_SKIN_BRAID *const braid = Lara_Skin_GetBraid();
+
+    // Copy the authored head-attach ring for each pigtail, dropping any pair
+    // that names a vertex past either mesh, so the weld does not have to
+    // bounds-check every frame.
+    const OBJECT_MESH *const head_mesh = Lara_Mesh_Get(LM_HEAD);
+    const OBJECT_MESH *const seg0_mesh = Object_GetMesh(braid_base);
+    for (int32_t i = 0; i < braid->count; i++) {
+        const LARA_SKIN_BRAID_HEAD_SEAM *const src = &braid->setup[i].head_seam;
+        m_Joints.head[i].count = 0;
+        for (int32_t k = 0; k < src->count; k++) {
+            if (src->pairs[k].vertex_a >= seg0_mesh->num_vertices
+                || src->pairs[k].vertex_b >= head_mesh->num_vertices) {
+                continue;
+            }
+            m_Joints.head[i].pairs[m_Joints.head[i].count++] = src->pairs[k];
+        }
+    }
+
+    // Record which meshes the draw will deform - the bridges - so a later
+    // outfit can restore them. Restoring a mesh that was never deformed is a
+    // no-op.
+    for (int32_t i = 0; i < braid->count; i++) {
+        const int32_t seg_base = Lara_Skin_GetBraidMeshIdx(i);
+        for (int32_t j = 0; j < M_HAIR_SEGMENTS; j += 2) {
+            m_Joints.welded_indices[m_Joints.welded_count++] = seg_base + j;
+        }
     }
 }
 

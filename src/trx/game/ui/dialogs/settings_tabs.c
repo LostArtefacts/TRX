@@ -72,16 +72,6 @@ static const UI_SETTINGS_TAB_OPS m_EditorOps = {
     .get_item_count = M_EditorGetItemCount,
 };
 
-UI_SETTINGS_TAB UI_SettingsTab_MakeEditor(
-    const GAME_STRING_ID header_gs, const UI_SETTINGS_OPTION *const options)
-{
-    return (UI_SETTINGS_TAB) {
-        .header_gs = header_gs,
-        .ops = &m_EditorOps,
-        .user_data = UI_SettingsEditor_Init(options),
-    };
-}
-
 static bool M_PresetsControl(
     void *const user_data, UI_SETTINGS_PHASE *const phase)
 {
@@ -131,6 +121,16 @@ static float M_PresetsGetContentHeight(void *const user_data)
 static int32_t M_PresetsGetItemCount(void *const user_data)
 {
     return UI_ConfigPresets_GetItemCount(user_data);
+}
+
+UI_SETTINGS_TAB UI_SettingsTab_MakeEditor(
+    const GAME_STRING_ID header_gs, const UI_SETTINGS_OPTION *const options)
+{
+    return (UI_SETTINGS_TAB) {
+        .header_gs = header_gs,
+        .ops = &m_EditorOps,
+        .user_data = UI_SettingsEditor_Init(options),
+    };
 }
 
 static const UI_SETTINGS_TAB_OPS m_PresetsOps = {

@@ -174,6 +174,36 @@ static void M_ReorderLanguages(void)
     }
 }
 
+// Recursive load of language chain (handles 'extends' fallback between
+// dialects)
+static bool M_ReloadLangRec(const char *const lang, VECTOR *const visited)
+{
+    for (int32_t i = 0; i < visited->count; i++) {
+        const char *const prev = *(char **)Vector_Get(visited, i);
+        if (String_Equivalent(prev, lang)) {
+            LOG_WARNING("cyclic language extends detected: %s", lang);
+            return false;
+        }
+    }
+    Vector_Add(visited, &lang);
+    M_LANG_ENTRY *const entry = M_FindLangEntry(lang);
+    if (entry == nullptr) {
+        return false;
+    }
+    if (entry->extends) {
+        if (!M_ReloadLangRec(entry->extends, visited)) {
+            return false;
+        }
+    }
+    for (int32_t i = 0; i < entry->files->count; i++) {
+        const M_FILE_ENTRY *const fe = Vector_Get(entry->files, i);
+        if (!GameStringTable_Load(fe->path, fe->load_levels)) {
+            return false;
+        }
+    }
+    return true;
+}
+
 void GameStringManager_Init(void)
 {
     m_EventManager = EventManager_Create();
@@ -288,36 +318,6 @@ VECTOR *GameStringManager_GetAvailableLanguages(void)
         Vector_Add(out, &c);
     }
     return out;
-}
-
-// Recursive load of language chain (handles 'extends' fallback between
-// dialects)
-static bool M_ReloadLangRec(const char *const lang, VECTOR *const visited)
-{
-    for (int32_t i = 0; i < visited->count; i++) {
-        const char *const prev = *(char **)Vector_Get(visited, i);
-        if (String_Equivalent(prev, lang)) {
-            LOG_WARNING("cyclic language extends detected: %s", lang);
-            return false;
-        }
-    }
-    Vector_Add(visited, &lang);
-    M_LANG_ENTRY *const entry = M_FindLangEntry(lang);
-    if (entry == nullptr) {
-        return false;
-    }
-    if (entry->extends) {
-        if (!M_ReloadLangRec(entry->extends, visited)) {
-            return false;
-        }
-    }
-    for (int32_t i = 0; i < entry->files->count; i++) {
-        const M_FILE_ENTRY *const fe = Vector_Get(entry->files, i);
-        if (!GameStringTable_Load(fe->path, fe->load_levels)) {
-            return false;
-        }
-    }
-    return true;
 }
 
 bool GameStringManager_ReloadLanguage(const char *lang)

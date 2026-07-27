@@ -254,45 +254,6 @@ static bool M_ReadStringCurrent(
     return *target != nullptr;
 }
 
-bool JSON_ReadIO_ReadXYZ32Current(
-    JSON_READ_IO *const io, void *const target_void)
-{
-    XYZ_32 *const target = target_void;
-    JSON_ARRAY *const tuple = JSON_ValueAsArray(io->current);
-    if (tuple != nullptr) {
-        const int32_t tuple_len = tuple->length;
-        if (tuple_len != 3) {
-            M_SetError(io, "XYZ tuple must have exactly 3 values");
-            JSON_FAIL();
-        }
-        JSON_MUST(JSON_READ_A(io, 0, &target->x));
-        JSON_MUST(JSON_READ_A(io, 1, &target->y));
-        JSON_MUST(JSON_READ_A(io, 2, &target->z));
-    } else {
-        JSON_MUST(JSON_READ(io, "x", &target->x));
-        JSON_MUST(JSON_READ(io, "y", &target->y));
-        JSON_MUST(JSON_READ(io, "z", &target->z));
-    }
-    JSON_FINISH();
-}
-
-bool JSON_ReadIO_ReadXYZ16Current(
-    JSON_READ_IO *const io, void *const target_void)
-{
-    XYZ_32 tmp;
-    JSON_MUST(JSON_ReadIO_ReadXYZ32Current(io, &tmp));
-    if (tmp.x < INT16_MIN || tmp.x > INT16_MAX || tmp.y < INT16_MIN
-        || tmp.y > INT16_MAX || tmp.z < INT16_MIN || tmp.z > INT16_MAX) {
-        M_SetError(io, "XYZ16 value out of range");
-        JSON_FAIL();
-    }
-    XYZ_16 *const target = target_void;
-    target->x = tmp.x;
-    target->y = tmp.y;
-    target->z = tmp.z;
-    JSON_FINISH();
-}
-
 static bool M_ReadRGB888Current(JSON_READ_IO *const io, RGB_888 *const target)
 {
     JSON_ARRAY *const tuple = JSON_ValueAsArray(io->current);
@@ -339,6 +300,45 @@ static bool M_ReadRGBA8888Current(
         M_SetError(io, "invalid RGBA color string");
         JSON_FAIL();
     }
+    JSON_FINISH();
+}
+
+bool JSON_ReadIO_ReadXYZ32Current(
+    JSON_READ_IO *const io, void *const target_void)
+{
+    XYZ_32 *const target = target_void;
+    JSON_ARRAY *const tuple = JSON_ValueAsArray(io->current);
+    if (tuple != nullptr) {
+        const int32_t tuple_len = tuple->length;
+        if (tuple_len != 3) {
+            M_SetError(io, "XYZ tuple must have exactly 3 values");
+            JSON_FAIL();
+        }
+        JSON_MUST(JSON_READ_A(io, 0, &target->x));
+        JSON_MUST(JSON_READ_A(io, 1, &target->y));
+        JSON_MUST(JSON_READ_A(io, 2, &target->z));
+    } else {
+        JSON_MUST(JSON_READ(io, "x", &target->x));
+        JSON_MUST(JSON_READ(io, "y", &target->y));
+        JSON_MUST(JSON_READ(io, "z", &target->z));
+    }
+    JSON_FINISH();
+}
+
+bool JSON_ReadIO_ReadXYZ16Current(
+    JSON_READ_IO *const io, void *const target_void)
+{
+    XYZ_32 tmp;
+    JSON_MUST(JSON_ReadIO_ReadXYZ32Current(io, &tmp));
+    if (tmp.x < INT16_MIN || tmp.x > INT16_MAX || tmp.y < INT16_MIN
+        || tmp.y > INT16_MAX || tmp.z < INT16_MIN || tmp.z > INT16_MAX) {
+        M_SetError(io, "XYZ16 value out of range");
+        JSON_FAIL();
+    }
+    XYZ_16 *const target = target_void;
+    target->x = tmp.x;
+    target->y = tmp.y;
+    target->z = tmp.z;
     JSON_FINISH();
 }
 

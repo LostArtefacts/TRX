@@ -119,20 +119,6 @@ static const GAME_STRING_ID m_LayoutMap[INPUT_LAYOUT_NUMBER_OF] = {
         GS_ID("general/settings/controls/layout/custom_3"),
 };
 
-const INPUT_BACKEND_IMPL *Input_GetBackendImpl(const INPUT_BACKEND backend)
-{
-    switch (backend) {
-    case INPUT_BACKEND_KEYBOARD:
-        return &g_Input_Keyboard;
-    case INPUT_BACKEND_CONTROLLER:
-        return &g_Input_Controller;
-    case INPUT_BACKEND_TOUCH:
-        return &g_Input_Touch;
-    default:
-        return nullptr;
-    }
-}
-
 static bool M_IsPressed(const INPUT_STATE input, const INPUT_ROLE role)
 {
     switch (role) {
@@ -161,6 +147,20 @@ static INPUT_STATE M_SetPressed(
         break;
     }
     return input;
+}
+
+const INPUT_BACKEND_IMPL *Input_GetBackendImpl(const INPUT_BACKEND backend)
+{
+    switch (backend) {
+    case INPUT_BACKEND_KEYBOARD:
+        return &g_Input_Keyboard;
+    case INPUT_BACKEND_CONTROLLER:
+        return &g_Input_Controller;
+    case INPUT_BACKEND_TOUCH:
+        return &g_Input_Touch;
+    default:
+        return nullptr;
+    }
 }
 
 void Input_Reset(void)

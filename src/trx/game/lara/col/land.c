@@ -135,89 +135,6 @@ static bool M_CanControlDrop(
     }
 }
 
-bool Lara_Col_Fallen(ITEM *const item, const COLL_INFO *const coll)
-{
-    LARA_INFO *const lara = Lara_GetLaraInfo();
-    if (coll->side_mid.floor <= STEPUP_HEIGHT
-        || lara->water_status == LWS_WADE) {
-        return false;
-    }
-    if (M_CanControlDrop(item, coll)) {
-        item->current_anim_state = LS(LS_REACH);
-        item->goal_anim_state = LS(LS_REACH);
-        Item_SwitchToAnim(item, LA(LA_CONTROLLED_DROP), 0);
-        item->speed = 2;
-    } else {
-        item->current_anim_state = LS(LS_JUMP_FORWARD);
-        item->goal_anim_state = LS(LS_JUMP_FORWARD);
-        Item_SwitchToAnim(item, LA(LA_FALL_START), 0);
-    }
-    item->gravity = true;
-    item->fall_speed = 0;
-    lara->sprinting = false;
-    lara->crouching = false;
-    return true;
-}
-
-bool Lara_Col_TestSlide(ITEM *const item, COLL_INFO *const coll)
-{
-    if (ABS(coll->tilt.x) <= MAX_SLOPE && ABS(coll->tilt.z) <= MAX_SLOPE) {
-        return false;
-    }
-
-    const ROOM *const room = Room_Get(item->room_num);
-    if (room->flags.swamp) {
-        return false;
-    }
-
-    int16_t angle = 0;
-    if (coll->tilt.x > MAX_SLOPE) {
-        angle = -DEG_90;
-    } else if (coll->tilt.x < -MAX_SLOPE) {
-        angle = DEG_90;
-    }
-
-    if (coll->tilt.z > 2 && coll->tilt.z > ABS(coll->tilt.x)) {
-        angle = -DEG_180;
-    } else if (coll->tilt.z < -2 && -coll->tilt.z > ABS(coll->tilt.x)) {
-        angle = 0;
-    }
-
-    const int16_t angle_dif = angle - item->rot.y;
-    Lara_Col_Shift(coll);
-
-    LARA_INFO *const lara = Lara_GetLaraInfo();
-    if (angle_dif >= -DEG_90 && angle_dif <= DEG_90) {
-        if (item->current_anim_state == LS(LS_SLIDE)
-            && m_OldSlideAngle == angle) {
-            lara->sprinting = false;
-            lara->crouching = false;
-            return true;
-        }
-        item->goal_anim_state = LS(LS_SLIDE);
-        item->current_anim_state = LS(LS_SLIDE);
-        Item_SwitchToAnim(item, LA(LA_SLIDE_FORWARD), 0);
-        item->rot.y = angle;
-    } else {
-        if (item->current_anim_state == LS(LS_SLIDE_BACK)
-            && m_OldSlideAngle == angle) {
-            lara->sprinting = false;
-            lara->crouching = false;
-            return true;
-        }
-        item->goal_anim_state = LS(LS_SLIDE_BACK);
-        item->current_anim_state = LS(LS_SLIDE_BACK);
-        Item_SwitchToAnim(item, LA(LA_SLIDE_BACKWARD_START), 0);
-        item->rot.y = angle + DEG_180;
-    }
-
-    lara->move_angle = angle;
-    lara->sprinting = false;
-    lara->crouching = false;
-    m_OldSlideAngle = angle;
-    return true;
-}
-
 static bool M_DeflectEdge(ITEM *const item, COLL_INFO *const coll)
 {
     LARA_INFO *const lara = Lara_GetLaraInfo();
@@ -245,26 +162,6 @@ static bool M_DeflectEdge(ITEM *const item, COLL_INFO *const coll)
     default:
         return false;
     }
-}
-
-bool Lara_Col_TestCeiling(ITEM *const item, const COLL_INFO *const coll)
-{
-    if (coll->coll_type != COLL_TOP && coll->coll_type != COLL_CLAMP) {
-        return false;
-    }
-
-    LARA_INFO *const lara = Lara_GetLaraInfo();
-    lara->sprinting = false;
-    lara->crouching = false;
-
-    item->pos = coll->old_pos;
-    item->goal_anim_state = LS(LS_STOP);
-    item->current_anim_state = LS(LS_STOP);
-    Item_SwitchToAnim(item, LA(LA_STAND_STILL), 0);
-    item->speed = 0;
-    item->gravity = false;
-    item->fall_speed = 0;
-    return true;
 }
 
 static void M_CollideStop(ITEM *const item, const COLL_INFO *const coll)
@@ -955,6 +852,109 @@ static void M_SprintRoll(ITEM *const item, COLL_INFO *const coll)
 
     Lara_Col_Shift(coll);
     item->pos.y += coll->side_mid.floor;
+}
+
+bool Lara_Col_Fallen(ITEM *const item, const COLL_INFO *const coll)
+{
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    if (coll->side_mid.floor <= STEPUP_HEIGHT
+        || lara->water_status == LWS_WADE) {
+        return false;
+    }
+    if (M_CanControlDrop(item, coll)) {
+        item->current_anim_state = LS(LS_REACH);
+        item->goal_anim_state = LS(LS_REACH);
+        Item_SwitchToAnim(item, LA(LA_CONTROLLED_DROP), 0);
+        item->speed = 2;
+    } else {
+        item->current_anim_state = LS(LS_JUMP_FORWARD);
+        item->goal_anim_state = LS(LS_JUMP_FORWARD);
+        Item_SwitchToAnim(item, LA(LA_FALL_START), 0);
+    }
+    item->gravity = true;
+    item->fall_speed = 0;
+    lara->sprinting = false;
+    lara->crouching = false;
+    return true;
+}
+
+bool Lara_Col_TestSlide(ITEM *const item, COLL_INFO *const coll)
+{
+    if (ABS(coll->tilt.x) <= MAX_SLOPE && ABS(coll->tilt.z) <= MAX_SLOPE) {
+        return false;
+    }
+
+    const ROOM *const room = Room_Get(item->room_num);
+    if (room->flags.swamp) {
+        return false;
+    }
+
+    int16_t angle = 0;
+    if (coll->tilt.x > MAX_SLOPE) {
+        angle = -DEG_90;
+    } else if (coll->tilt.x < -MAX_SLOPE) {
+        angle = DEG_90;
+    }
+
+    if (coll->tilt.z > 2 && coll->tilt.z > ABS(coll->tilt.x)) {
+        angle = -DEG_180;
+    } else if (coll->tilt.z < -2 && -coll->tilt.z > ABS(coll->tilt.x)) {
+        angle = 0;
+    }
+
+    const int16_t angle_dif = angle - item->rot.y;
+    Lara_Col_Shift(coll);
+
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    if (angle_dif >= -DEG_90 && angle_dif <= DEG_90) {
+        if (item->current_anim_state == LS(LS_SLIDE)
+            && m_OldSlideAngle == angle) {
+            lara->sprinting = false;
+            lara->crouching = false;
+            return true;
+        }
+        item->goal_anim_state = LS(LS_SLIDE);
+        item->current_anim_state = LS(LS_SLIDE);
+        Item_SwitchToAnim(item, LA(LA_SLIDE_FORWARD), 0);
+        item->rot.y = angle;
+    } else {
+        if (item->current_anim_state == LS(LS_SLIDE_BACK)
+            && m_OldSlideAngle == angle) {
+            lara->sprinting = false;
+            lara->crouching = false;
+            return true;
+        }
+        item->goal_anim_state = LS(LS_SLIDE_BACK);
+        item->current_anim_state = LS(LS_SLIDE_BACK);
+        Item_SwitchToAnim(item, LA(LA_SLIDE_BACKWARD_START), 0);
+        item->rot.y = angle + DEG_180;
+    }
+
+    lara->move_angle = angle;
+    lara->sprinting = false;
+    lara->crouching = false;
+    m_OldSlideAngle = angle;
+    return true;
+}
+
+bool Lara_Col_TestCeiling(ITEM *const item, const COLL_INFO *const coll)
+{
+    if (coll->coll_type != COLL_TOP && coll->coll_type != COLL_CLAMP) {
+        return false;
+    }
+
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    lara->sprinting = false;
+    lara->crouching = false;
+
+    item->pos = coll->old_pos;
+    item->goal_anim_state = LS(LS_STOP);
+    item->current_anim_state = LS(LS_STOP);
+    Item_SwitchToAnim(item, LA(LA_STAND_STILL), 0);
+    item->speed = 0;
+    item->gravity = false;
+    item->fall_speed = 0;
+    return true;
 }
 
 // clang-format off

@@ -215,7 +215,47 @@ static bool M_SwitchToLand(
     return true;
 }
 
-const ITEM *M_GetBaddieOverlap(const int16_t item_num)
+static bool M_TestDrowned(
+    const ITEM *const item, const BOUNDS_16 *const bounds,
+    const int16_t room_num)
+{
+    if (item->hit_points <= 0) {
+        return false;
+    }
+
+    switch (g_Config.gameplay.creature_drown_policy) {
+    case CREATURE_DROWN_POLICY_DEFAULT:
+        return Room_Get(room_num)->flags.underwater;
+    case CREATURE_DROWN_POLICY_SUBMERGED:
+        const int32_t water_height = Room_GetWaterHeight(item->pos, room_num);
+        return water_height != NO_HEIGHT
+            && water_height + STEP_L <= item->pos.y - ABS(bounds->min.y);
+    default:
+        return false;
+    }
+}
+
+static bool M_SameZone(const CREATURE *const creature, ITEM *const target_item)
+{
+    if (creature->lot.setup.fly != 0) {
+        return true;
+    }
+
+    int16_t *const zone = Box_GetGroundZone(
+        Room_GetFlipStatus(), (creature->lot.setup.step >> 8) - 1);
+    ITEM *const item = Item_Get(creature->item_num);
+
+    const ROOM *room = Room_Get(item->room_num);
+    item->box_num = Room_GetWorldSector(room, item->pos.x, item->pos.z)->box;
+
+    room = Room_Get(target_item->room_num);
+    target_item->box_num =
+        Room_GetWorldSector(room, target_item->pos.x, target_item->pos.z)->box;
+
+    return zone[item->box_num] == zone[target_item->box_num];
+}
+
+static const ITEM *M_GetBaddieOverlap(const int16_t item_num)
 {
     const ITEM *item = Item_Get(item_num);
     if (item->speed == 0 || item->hit_points <= 0) {
@@ -261,26 +301,6 @@ const ITEM *M_GetBaddieOverlap(const int16_t item_num)
     }
 
     return nullptr;
-}
-
-static bool M_TestDrowned(
-    const ITEM *const item, const BOUNDS_16 *const bounds,
-    const int16_t room_num)
-{
-    if (item->hit_points <= 0) {
-        return false;
-    }
-
-    switch (g_Config.gameplay.creature_drown_policy) {
-    case CREATURE_DROWN_POLICY_DEFAULT:
-        return Room_Get(room_num)->flags.underwater;
-    case CREATURE_DROWN_POLICY_SUBMERGED:
-        const int32_t water_height = Room_GetWaterHeight(item->pos, room_num);
-        return water_height != NO_HEIGHT
-            && water_height + STEP_L <= item->pos.y - ABS(bounds->min.y);
-    default:
-        return false;
-    }
 }
 
 void Creature_Initialise(const int16_t item_num)
@@ -1420,26 +1440,6 @@ int16_t Creature_AIGuard(CREATURE *const creature)
         return DEG_90;
     }
     return 0;
-}
-
-static bool M_SameZone(const CREATURE *const creature, ITEM *const target_item)
-{
-    if (creature->lot.setup.fly != 0) {
-        return true;
-    }
-
-    int16_t *const zone = Box_GetGroundZone(
-        Room_GetFlipStatus(), (creature->lot.setup.step >> 8) - 1);
-    ITEM *const item = Item_Get(creature->item_num);
-
-    const ROOM *room = Room_Get(item->room_num);
-    item->box_num = Room_GetWorldSector(room, item->pos.x, item->pos.z)->box;
-
-    room = Room_Get(target_item->room_num);
-    target_item->box_num =
-        Room_GetWorldSector(room, target_item->pos.x, target_item->pos.z)->box;
-
-    return zone[item->box_num] == zone[target_item->box_num];
 }
 
 void Creature_GetAITarget(CREATURE *const creature)

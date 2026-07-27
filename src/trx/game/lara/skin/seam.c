@@ -10,6 +10,36 @@ static bool M_VertexMatches(const XYZ_32 a, const XYZ_32 b)
     return ABS(a.x - b.x) <= 1 && ABS(a.y - b.y) <= 1 && ABS(a.z - b.z) <= 1;
 }
 
+// Applies the exact inverse of "to"'s rotation to a world-space vector. The
+// entries are quantized to 1/(1<<W2V_SHIFT), so the transpose is only an
+// approximate inverse, and the leftover error reads as a hairline crack
+// between welded meshes; the adjugate stays exact for whatever rotation the
+// matrix holds.
+static XYZ_F M_UndoRotation(
+    const MATRIX *const to, const double dx, const double dy, const double dz)
+{
+    const double r00 = to->_00, r01 = to->_01, r02 = to->_02;
+    const double r10 = to->_10, r11 = to->_11, r12 = to->_12;
+    const double r20 = to->_20, r21 = to->_21, r22 = to->_22;
+
+    const double c00 = r11 * r22 - r12 * r21;
+    const double c01 = r12 * r20 - r10 * r22;
+    const double c02 = r10 * r21 - r11 * r20;
+    const double c10 = r02 * r21 - r01 * r22;
+    const double c11 = r00 * r22 - r02 * r20;
+    const double c12 = r01 * r20 - r00 * r21;
+    const double c20 = r01 * r12 - r02 * r11;
+    const double c21 = r02 * r10 - r00 * r12;
+    const double c22 = r00 * r11 - r01 * r10;
+
+    const double det = r00 * c00 + r01 * c01 + r02 * c02;
+    return (XYZ_F) {
+        (float)((c00 * dx + c10 * dy + c20 * dz) / det),
+        (float)((c01 * dx + c11 * dy + c21 * dz) / det),
+        (float)((c02 * dx + c12 * dy + c22 * dz) / det),
+    };
+}
+
 void Lara_Seam_FindSharedVertices(
     SEAM_VERTEX_PAIR *const pairs, int32_t *const pair_count,
     const int32_t max_pairs, const OBJECT_MESH *const mesh_a,
@@ -39,36 +69,6 @@ void Lara_Seam_FindSharedVertices(
             (*pair_count)++;
         }
     }
-}
-
-// Applies the exact inverse of "to"'s rotation to a world-space vector. The
-// entries are quantized to 1/(1<<W2V_SHIFT), so the transpose is only an
-// approximate inverse, and the leftover error reads as a hairline crack
-// between welded meshes; the adjugate stays exact for whatever rotation the
-// matrix holds.
-static XYZ_F M_UndoRotation(
-    const MATRIX *const to, const double dx, const double dy, const double dz)
-{
-    const double r00 = to->_00, r01 = to->_01, r02 = to->_02;
-    const double r10 = to->_10, r11 = to->_11, r12 = to->_12;
-    const double r20 = to->_20, r21 = to->_21, r22 = to->_22;
-
-    const double c00 = r11 * r22 - r12 * r21;
-    const double c01 = r12 * r20 - r10 * r22;
-    const double c02 = r10 * r21 - r11 * r20;
-    const double c10 = r02 * r21 - r01 * r22;
-    const double c11 = r00 * r22 - r02 * r20;
-    const double c12 = r01 * r20 - r00 * r21;
-    const double c20 = r01 * r12 - r02 * r11;
-    const double c21 = r02 * r10 - r00 * r12;
-    const double c22 = r00 * r11 - r01 * r10;
-
-    const double det = r00 * c00 + r01 * c01 + r02 * c02;
-    return (XYZ_F) {
-        (float)((c00 * dx + c10 * dy + c20 * dz) / det),
-        (float)((c01 * dx + c11 * dy + c21 * dz) / det),
-        (float)((c02 * dx + c12 * dy + c22 * dz) / det),
-    };
 }
 
 XYZ_F Lara_Seam_TransformPos(

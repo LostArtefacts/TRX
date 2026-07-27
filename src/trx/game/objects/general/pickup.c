@@ -93,12 +93,6 @@ typedef struct {
     PICKUP_MODE pickup_mode;
 } M_PRIV;
 
-uint32_t Pickup_GetSecretMask(const ITEM *const item)
-{
-    const M_PRIV *const p = item->priv;
-    return p->secret_mask;
-}
-
 static void M_Initialise(int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
@@ -688,6 +682,12 @@ const OBJECT_BOUNDS *Pickup_Bounds(void)
     } else {
         return &m_PickUpBounds;
     }
+}
+
+uint32_t Pickup_GetSecretMask(const ITEM *const item)
+{
+    const M_PRIV *const p = item->priv;
+    return p->secret_mask;
 }
 
 bool Pickup_Trigger(const int16_t item_num)

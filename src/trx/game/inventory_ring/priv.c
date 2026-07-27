@@ -181,6 +181,16 @@ static void M_MotionItemDeselect(
     motion->item_z_trans_rate = -(inv_item->z_trans_sel / ring->status_frames);
 }
 
+// The crystal's tint follows the save crystal mode, so it cannot be baked into
+// inv_ring.json5.
+static uint32_t M_GetIdleMeshes(const INVENTORY_ITEM *const inv_item)
+{
+    if (inv_item->object_id == O_SAVE_CRYSTAL_OPTION) {
+        return SaveCrystal_GetMeshBits(O_SAVE_CRYSTAL_OPTION, -1);
+    }
+    return inv_item->meshes_sel;
+}
+
 void InvRing_AdjustMusicVolume(const INV_RING *const ring)
 {
     if (ring->mode == INV_TITLE_MODE) {
@@ -276,16 +286,6 @@ void InvRing_InitRing(
     m_ShowUseItemButton = false;
     m_ButtonHintDrawFunc = nullptr;
     m_ButtonHintUserData = nullptr;
-}
-
-// The crystal's tint follows the save crystal mode, so it cannot be baked into
-// inv_ring.json5.
-static uint32_t M_GetIdleMeshes(const INVENTORY_ITEM *const inv_item)
-{
-    if (inv_item->object_id == O_SAVE_CRYSTAL_OPTION) {
-        return SaveCrystal_GetMeshBits(O_SAVE_CRYSTAL_OPTION, -1);
-    }
-    return inv_item->meshes_sel;
 }
 
 void InvRing_InitInvItem(INVENTORY_ITEM *const inv_item)

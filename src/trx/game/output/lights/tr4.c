@@ -1029,37 +1029,6 @@ static void M_PrepareScene(void)
     TRX_GL_CheckError();
 }
 
-// Port of the OG TriggerFXFogBulb (polyinsert.cpp:439).
-void Output_TriggerFXFogBulb(
-    const XYZ_32 pos, const int32_t fx_rad, const int32_t density,
-    const RGB_888 color)
-{
-    if (g_TRVersion != 4) {
-        return;
-    }
-
-    int32_t num = 0;
-    while (m_FXFogBulbs[num].active) {
-        num++;
-        if (num >= M_MAX_FX_FOG_BULBS) {
-            return;
-        }
-    }
-
-    M_FOG_BULB *const bulb = &m_FXFogBulbs[num];
-    *bulb = (M_FOG_BULB) {
-        .world_pos = { (float)pos.x, (float)pos.y, (float)pos.z },
-        .density = density,
-        .color = color,
-        .rad = 0.0f,
-        .sqrad = 0.0f,
-        .inv_sqrad = 0.0f,
-        .timer = 50,
-        .fx_rad = fx_rad,
-        .active = true,
-    };
-}
-
 static void M_Init(void)
 {
     if (m_StagedPool == nullptr) {
@@ -1099,6 +1068,37 @@ static void M_BeginScene(void)
         Vector_Clear(m_StagedPool);
     }
     m_PoolGeneration++;
+}
+
+// Port of the OG TriggerFXFogBulb (polyinsert.cpp:439).
+void Output_TriggerFXFogBulb(
+    const XYZ_32 pos, const int32_t fx_rad, const int32_t density,
+    const RGB_888 color)
+{
+    if (g_TRVersion != 4) {
+        return;
+    }
+
+    int32_t num = 0;
+    while (m_FXFogBulbs[num].active) {
+        num++;
+        if (num >= M_MAX_FX_FOG_BULBS) {
+            return;
+        }
+    }
+
+    M_FOG_BULB *const bulb = &m_FXFogBulbs[num];
+    *bulb = (M_FOG_BULB) {
+        .world_pos = { (float)pos.x, (float)pos.y, (float)pos.z },
+        .density = density,
+        .color = color,
+        .rad = 0.0f,
+        .sqrad = 0.0f,
+        .inv_sqrad = 0.0f,
+        .timer = 50,
+        .fx_rad = fx_rad,
+        .active = true,
+    };
 }
 
 void Output_SetInventoryLightingMode(const bool enabled)

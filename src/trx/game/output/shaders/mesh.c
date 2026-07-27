@@ -43,6 +43,31 @@ static OUTPUT_SHADER *M_GetVariantBase(
     return shader->base[variant_idx];
 }
 
+// TR4 samples the env map out of the atlas, so the variant needs to know which
+// patch of it to use. The rect only changes on level load; the TR1-3 variants
+// don't declare the uniforms at all.
+static void M_UploadEnvMapRect(
+    OUTPUT_MESH_SHADER *const shader, const int32_t variant_idx)
+{
+    const OUTPUT_ATLAS_RECT rect = Output_Textures_GetEnvMapRect();
+    if (memcmp(&shader->env_map_rect[variant_idx], &rect, sizeof(rect)) == 0) {
+        return;
+    }
+    shader->env_map_rect[variant_idx] = rect;
+
+    OUTPUT_SHADER *const base = M_GetVariantBase(shader, variant_idx);
+    GLint loc = -1;
+    if (Output_Shader_TryLookupUniform(base, "uEnvMapUV0", &loc)) {
+        TRX_GL_TRACK_UNIFORM(glUniform2f, loc, rect.uv0[0], rect.uv0[1]);
+    }
+    if (Output_Shader_TryLookupUniform(base, "uEnvMapUV1", &loc)) {
+        TRX_GL_TRACK_UNIFORM(glUniform2f, loc, rect.uv1[0], rect.uv1[1]);
+    }
+    if (Output_Shader_TryLookupUniform(base, "uEnvMapLayer", &loc)) {
+        TRX_GL_TRACK_UNIFORM(glUniform1i, loc, rect.layer);
+    }
+}
+
 OUTPUT_MESH_SHADER *Output_MeshShader_Create(void)
 {
     OUTPUT_MESH_SHADER *const shader = Memory_Alloc(sizeof(*shader));
@@ -71,31 +96,6 @@ OUTPUT_MESH_SHADER *Output_MeshShader_Create(void)
         }
     }
     return shader;
-}
-
-// TR4 samples the env map out of the atlas, so the variant needs to know which
-// patch of it to use. The rect only changes on level load; the TR1-3 variants
-// don't declare the uniforms at all.
-static void M_UploadEnvMapRect(
-    OUTPUT_MESH_SHADER *const shader, const int32_t variant_idx)
-{
-    const OUTPUT_ATLAS_RECT rect = Output_Textures_GetEnvMapRect();
-    if (memcmp(&shader->env_map_rect[variant_idx], &rect, sizeof(rect)) == 0) {
-        return;
-    }
-    shader->env_map_rect[variant_idx] = rect;
-
-    OUTPUT_SHADER *const base = M_GetVariantBase(shader, variant_idx);
-    GLint loc = -1;
-    if (Output_Shader_TryLookupUniform(base, "uEnvMapUV0", &loc)) {
-        TRX_GL_TRACK_UNIFORM(glUniform2f, loc, rect.uv0[0], rect.uv0[1]);
-    }
-    if (Output_Shader_TryLookupUniform(base, "uEnvMapUV1", &loc)) {
-        TRX_GL_TRACK_UNIFORM(glUniform2f, loc, rect.uv1[0], rect.uv1[1]);
-    }
-    if (Output_Shader_TryLookupUniform(base, "uEnvMapLayer", &loc)) {
-        TRX_GL_TRACK_UNIFORM(glUniform1i, loc, rect.layer);
-    }
 }
 
 void Output_MeshShader_Bind(OUTPUT_MESH_SHADER *const shader)

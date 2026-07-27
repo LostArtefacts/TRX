@@ -34,6 +34,29 @@ static bool M_IsFloating(const ITEM *const item)
         && Object_Get(item->object_id)->intelligent && item->hit_points <= 0;
 }
 
+static bool M_ShouldCountKill(
+    const ITEM *const item, const ITEM_DAMAGE_FLAGS flags,
+    const ITEM *const sender)
+{
+    if (!item->include_in_kill_stats) {
+        return false;
+    }
+
+    if (item == Lara_GetItem()) {
+        return false;
+    }
+    if (sender == Lara_GetItem()) {
+        return true;
+    }
+    if (sender != nullptr && Creature_IsAlly(sender)) {
+        return g_Config.gameplay.enable_ally_kill_count;
+    }
+    if (sender != nullptr && Creature_IsHostile(sender)) {
+        return false;
+    }
+    return g_Config.gameplay.enable_environment_kill_count;
+}
+
 // Running, in the world, and not spent: simulated, visible, unfinished. Named
 // apart from Item_IsAlive, which is the looser has-HP-or-simulated damage
 // check.
@@ -120,29 +143,6 @@ bool Item_CanBeProjectileTarget(const ITEM *const item)
     }
 
     return Item_IsTargetable(item);
-}
-
-static bool M_ShouldCountKill(
-    const ITEM *const item, const ITEM_DAMAGE_FLAGS flags,
-    const ITEM *const sender)
-{
-    if (!item->include_in_kill_stats) {
-        return false;
-    }
-
-    if (item == Lara_GetItem()) {
-        return false;
-    }
-    if (sender == Lara_GetItem()) {
-        return true;
-    }
-    if (sender != nullptr && Creature_IsAlly(sender)) {
-        return g_Config.gameplay.enable_ally_kill_count;
-    }
-    if (sender != nullptr && Creature_IsHostile(sender)) {
-        return false;
-    }
-    return g_Config.gameplay.enable_environment_kill_count;
 }
 
 void Item_TakeDamage(

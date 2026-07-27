@@ -56,6 +56,18 @@ static bool M_IsInvalidInterpAnim(const LARA_TRX_ANIMATION anim_idx)
     return false;
 }
 
+static int32_t M_GetStartingHitPoints(void)
+{
+    if (g_Config.gameplay.disable_healing_between_levels) {
+        const GF_LEVEL *const current_level = Game_GetCurrentLevel();
+        RESUME_INFO *const resume = Savegame_GetCurrentInfo(current_level);
+        if (resume != nullptr) {
+            return resume->lara_hitpoints;
+        }
+    }
+    return g_Config.gameplay.start_lara_hitpoints;
+}
+
 LARA_INFO *Lara_GetLaraInfo(void)
 {
     return &m_Lara;
@@ -74,18 +86,6 @@ void Lara_InitialiseLoad(int16_t item_num)
     } else {
         m_LaraItem = Item_Get(item_num);
     }
-}
-
-static int32_t M_GetStartingHitPoints(void)
-{
-    if (g_Config.gameplay.disable_healing_between_levels) {
-        const GF_LEVEL *const current_level = Game_GetCurrentLevel();
-        RESUME_INFO *const resume = Savegame_GetCurrentInfo(current_level);
-        if (resume != nullptr) {
-            return resume->lara_hitpoints;
-        }
-    }
-    return g_Config.gameplay.start_lara_hitpoints;
 }
 
 void Lara_Initialise(const GF_LEVEL *const level)

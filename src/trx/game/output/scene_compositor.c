@@ -180,6 +180,12 @@ static void M_RenderScenePasses(const M_PRIV *const p)
     }
 }
 
+static bool M_IsActive(void)
+{
+    return !Output_IsHeadless() || Shell_GetArgs()->debug_render_performance
+        || TRX_GL_Context_GetScheduledScreenshotPath() != nullptr;
+}
+
 void SceneCompositor_Init(void)
 {
     M_PRIV *const p = &m_Priv;
@@ -203,12 +209,6 @@ void SceneCompositor_Shutdown(void)
         glDeleteSamplers(1, &p->sampler_id);
         p->sampler_id = 0;
     }
-}
-
-bool M_IsActive(void)
-{
-    return !Output_IsHeadless() || Shell_GetArgs()->debug_render_performance
-        || TRX_GL_Context_GetScheduledScreenshotPath() != nullptr;
 }
 
 void SceneCompositor_BeginScene(void)

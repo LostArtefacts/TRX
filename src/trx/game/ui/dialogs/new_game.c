@@ -103,11 +103,6 @@ static M_FEATURES M_CheckFeatures(const bool check_save_features)
     return features;
 }
 
-bool UI_NewGame_HasModChoices(void)
-{
-    return M_HasSwitchModChoice();
-}
-
 static bool M_OptionVisible(
     const M_FEATURES *const features, const M_OPTION *const option)
 {
@@ -122,6 +117,11 @@ static bool M_OptionVisible(
     }
     return Option_Passport_AreGameModesAvailable()
         || option->choice == UI_NEW_GAME_CHOICE_NG;
+}
+
+bool UI_NewGame_HasModChoices(void)
+{
+    return M_HasSwitchModChoice();
 }
 
 UI_NEW_GAME_STATE *UI_NewGame_Init(const bool show_play_prev_levels)

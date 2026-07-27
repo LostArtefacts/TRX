@@ -486,7 +486,7 @@ static void M_Control(const int16_t item_num)
     Creature_Animate(item_num, angle, 0);
 }
 
-bool M_Draw(const ITEM *const item)
+static bool M_Draw(const ITEM *const item)
 {
     M_PRIV *const p = item->priv;
 

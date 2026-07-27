@@ -70,6 +70,11 @@ typedef struct {
     bool found;
 } M_RESOLVE_CACHE_ENTRY;
 
+typedef struct {
+    const M_DYNAMIC_PATH_POLICY *policy;
+    const char *resolved;
+} M_RESOLVE_VISITOR_CONTEXT;
+
 typedef bool (*M_RESOLVE_ATTEMPT_CALLBACK)(
     const char *attempt_path, void *user_data);
 
@@ -696,56 +701,6 @@ static char *M_ReplacePathTokens(
     return result;
 }
 
-char *TRXPath_ExpandVars(const char *const in)
-{
-    if (in == nullptr) {
-        return nullptr;
-    }
-    if (!m_Context.inited) {
-        TRXPath_Init(m_Context.args);
-    }
-
-    char *result = Memory_DupStr(in);
-    const char *const mod_id = M_GetCurrentModID();
-    const char *const base_mod_id = M_GetBaseModID();
-    char *mod_dir = M_GetCurrentModDir();
-    char *levels_dir = M_GetBaseDirForDynamicPath(TRX_DYNAMIC_PATH_LEVEL_FILE);
-    char *images_dir = M_GetBaseDirForDynamicPath(TRX_DYNAMIC_PATH_IMAGE_FILE);
-    char *injections_dir =
-        M_GetBaseDirForDynamicPath(TRX_DYNAMIC_PATH_INJECTION_FILE);
-    char *scripts_dir =
-        M_GetBaseDirForDynamicPath(TRX_DYNAMIC_PATH_SCRIPT_FILE);
-    char *base_mod_dir = M_GetBaseModDir();
-    char *tr_version = String_Format("%d", g_TRVersion);
-
-    const M_PATH_TOKEN tokens[] = {
-#define M_PATH_TOKEN_ITEM(name, field, token) { token, m_Context.field },
-        TRX_PATH_DIR_LIST(M_PATH_TOKEN_ITEM)
-#undef M_PATH_TOKEN_ITEM
-            { "%mod_dir%", mod_dir },
-        { "%mod%", mod_id != nullptr ? mod_id : "" },
-        { "%levels_dir%", levels_dir },
-        { "%images_dir%", images_dir },
-        { "%injections_dir%", injections_dir },
-        { "%scripts_dir%", scripts_dir },
-        { "%base_mod_dir%", base_mod_dir },
-        { "%base_mod%", base_mod_id != nullptr ? base_mod_id : "" },
-        { "%direct_level%", M_GetDirectLevelArg() },
-        { "%tr_version%", tr_version },
-    };
-
-    result = M_ReplacePathTokens(result, tokens, ARRAY_SIZE(tokens));
-
-    Memory_FreePointer(&tr_version);
-    Memory_FreePointer(&base_mod_dir);
-    Memory_FreePointer(&scripts_dir);
-    Memory_FreePointer(&injections_dir);
-    Memory_FreePointer(&images_dir);
-    Memory_FreePointer(&levels_dir);
-    Memory_FreePointer(&mod_dir);
-    return result;
-}
-
 static void M_BuildModChain(const SHELL_ARGS *const args)
 {
     m_Context.mod_chain_count = 0;
@@ -864,76 +819,6 @@ __attribute__((destructor)) static void M_Shutdown(void)
     m_Context.args = nullptr;
     m_Context.mod_chain_count = 0;
     m_Context.inited = false;
-}
-
-void TRXPath_Init(const SHELL_ARGS *const args)
-{
-    M_Shutdown();
-
-    m_Context.args = args;
-    m_ResolveCacheGeneration++;
-
-    if (m_Context.trx_dir == nullptr) {
-        const char *const base = SDL_GetBasePath();
-        if (base != nullptr) {
-            m_Context.trx_dir = Memory_DupStr(base);
-            SDL_free((void *)base);
-        } else {
-            m_Context.trx_dir = Memory_DupStr(".");
-        }
-        M_TrimTrailingSeparators(m_Context.trx_dir);
-    }
-
-    M_SetDirFromEnv(
-        &m_Context.config_dir, getenv("TRX_CONFIG_DIR"), "cfg", false);
-    M_SetDirFromEnv(
-        &m_Context.cache_dir, getenv("TRX_CACHE_DIR"), "cache", false);
-
-    if (!M_SetDirFromEnv(
-            &m_Context.games_dir, getenv("TRX_GAMES_DIR"), "games", true)) {
-        M_SetDirFromEnv(&m_Context.games_dir, nullptr, "cfg", false);
-    }
-
-    M_SetDirFromEnv(
-        &m_Context.screenshots_dir, getenv("TRX_SCREENSHOTS_DIR"),
-        "screenshots", false);
-
-    M_SetDirFromEnv(
-        &m_Context.saves_dir, getenv("TRX_SAVES_DIR"), "saves", false);
-
-    Memory_FreePointer(&m_Context.legacy_saves_dir);
-    m_Context.legacy_saves_dir = String_Format("%s/saves", m_Context.trx_dir);
-
-    M_BuildModChain(args);
-    M_SeedResolverCaches();
-    m_Context.inited = true;
-}
-
-const char *TRXPath_Get(const TRX_PATH path)
-{
-    if (!m_Context.inited) {
-        TRXPath_Init(m_Context.args);
-    }
-
-    switch (path) {
-#define M_GET_CASE(name, field, token)                                         \
-    case TRX_PATH_##name:                                                      \
-        return m_Context.field;
-        TRX_PATH_DIR_LIST(M_GET_CASE)
-#undef M_GET_CASE
-    default:
-        ASSERT_FAIL_FMT("Unknown TRX_PATH %d", path);
-        return nullptr;
-    }
-}
-
-char *TRXPath_Join(const TRX_PATH path, const char *const rel)
-{
-    const char *const root = TRXPath_Get(path);
-    if (root == nullptr || rel == nullptr || String_IsEmpty(rel)) {
-        return root != nullptr ? Memory_DupStr(root) : nullptr;
-    }
-    return M_JoinPath(root, rel);
 }
 
 static char *M_ExpandDynamicPattern(
@@ -1055,11 +940,6 @@ static bool M_ForEachResolveAttempt(
     Memory_FreePointer(&expanded_rel);
     return true;
 }
-
-typedef struct {
-    const M_DYNAMIC_PATH_POLICY *policy;
-    const char *resolved;
-} M_RESOLVE_VISITOR_CONTEXT;
 
 static bool M_ResolveAttemptVisitor(
     const char *const attempt_path, void *const user_data)
@@ -1184,6 +1064,126 @@ static const char *M_PeekResolvedUserPathCandidate(
     const char *const resolved = String_FormatStatic("%s", full_path);
     Memory_FreePointer(&full_path);
     return resolved;
+}
+
+char *TRXPath_ExpandVars(const char *const in)
+{
+    if (in == nullptr) {
+        return nullptr;
+    }
+    if (!m_Context.inited) {
+        TRXPath_Init(m_Context.args);
+    }
+
+    char *result = Memory_DupStr(in);
+    const char *const mod_id = M_GetCurrentModID();
+    const char *const base_mod_id = M_GetBaseModID();
+    char *mod_dir = M_GetCurrentModDir();
+    char *levels_dir = M_GetBaseDirForDynamicPath(TRX_DYNAMIC_PATH_LEVEL_FILE);
+    char *images_dir = M_GetBaseDirForDynamicPath(TRX_DYNAMIC_PATH_IMAGE_FILE);
+    char *injections_dir =
+        M_GetBaseDirForDynamicPath(TRX_DYNAMIC_PATH_INJECTION_FILE);
+    char *scripts_dir =
+        M_GetBaseDirForDynamicPath(TRX_DYNAMIC_PATH_SCRIPT_FILE);
+    char *base_mod_dir = M_GetBaseModDir();
+    char *tr_version = String_Format("%d", g_TRVersion);
+
+    const M_PATH_TOKEN tokens[] = {
+#define M_PATH_TOKEN_ITEM(name, field, token) { token, m_Context.field },
+        TRX_PATH_DIR_LIST(M_PATH_TOKEN_ITEM)
+#undef M_PATH_TOKEN_ITEM
+            { "%mod_dir%", mod_dir },
+        { "%mod%", mod_id != nullptr ? mod_id : "" },
+        { "%levels_dir%", levels_dir },
+        { "%images_dir%", images_dir },
+        { "%injections_dir%", injections_dir },
+        { "%scripts_dir%", scripts_dir },
+        { "%base_mod_dir%", base_mod_dir },
+        { "%base_mod%", base_mod_id != nullptr ? base_mod_id : "" },
+        { "%direct_level%", M_GetDirectLevelArg() },
+        { "%tr_version%", tr_version },
+    };
+
+    result = M_ReplacePathTokens(result, tokens, ARRAY_SIZE(tokens));
+
+    Memory_FreePointer(&tr_version);
+    Memory_FreePointer(&base_mod_dir);
+    Memory_FreePointer(&scripts_dir);
+    Memory_FreePointer(&injections_dir);
+    Memory_FreePointer(&images_dir);
+    Memory_FreePointer(&levels_dir);
+    Memory_FreePointer(&mod_dir);
+    return result;
+}
+
+void TRXPath_Init(const SHELL_ARGS *const args)
+{
+    M_Shutdown();
+
+    m_Context.args = args;
+    m_ResolveCacheGeneration++;
+
+    if (m_Context.trx_dir == nullptr) {
+        const char *const base = SDL_GetBasePath();
+        if (base != nullptr) {
+            m_Context.trx_dir = Memory_DupStr(base);
+            SDL_free((void *)base);
+        } else {
+            m_Context.trx_dir = Memory_DupStr(".");
+        }
+        M_TrimTrailingSeparators(m_Context.trx_dir);
+    }
+
+    M_SetDirFromEnv(
+        &m_Context.config_dir, getenv("TRX_CONFIG_DIR"), "cfg", false);
+    M_SetDirFromEnv(
+        &m_Context.cache_dir, getenv("TRX_CACHE_DIR"), "cache", false);
+
+    if (!M_SetDirFromEnv(
+            &m_Context.games_dir, getenv("TRX_GAMES_DIR"), "games", true)) {
+        M_SetDirFromEnv(&m_Context.games_dir, nullptr, "cfg", false);
+    }
+
+    M_SetDirFromEnv(
+        &m_Context.screenshots_dir, getenv("TRX_SCREENSHOTS_DIR"),
+        "screenshots", false);
+
+    M_SetDirFromEnv(
+        &m_Context.saves_dir, getenv("TRX_SAVES_DIR"), "saves", false);
+
+    Memory_FreePointer(&m_Context.legacy_saves_dir);
+    m_Context.legacy_saves_dir = String_Format("%s/saves", m_Context.trx_dir);
+
+    M_BuildModChain(args);
+    M_SeedResolverCaches();
+    m_Context.inited = true;
+}
+
+const char *TRXPath_Get(const TRX_PATH path)
+{
+    if (!m_Context.inited) {
+        TRXPath_Init(m_Context.args);
+    }
+
+    switch (path) {
+#define M_GET_CASE(name, field, token)                                         \
+    case TRX_PATH_##name:                                                      \
+        return m_Context.field;
+        TRX_PATH_DIR_LIST(M_GET_CASE)
+#undef M_GET_CASE
+    default:
+        ASSERT_FAIL_FMT("Unknown TRX_PATH %d", path);
+        return nullptr;
+    }
+}
+
+char *TRXPath_Join(const TRX_PATH path, const char *const rel)
+{
+    const char *const root = TRXPath_Get(path);
+    if (root == nullptr || rel == nullptr || String_IsEmpty(rel)) {
+        return root != nullptr ? Memory_DupStr(root) : nullptr;
+    }
+    return M_JoinPath(root, rel);
 }
 
 const char *TRXPath_PeekResolve(

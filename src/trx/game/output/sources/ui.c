@@ -56,36 +56,6 @@ static RGBA_F M_ToRGBA_F(const RGBA_8888 color)
     };
 }
 
-VIEWPORT_RECT OutputSource_UI_GetPickupRect(
-    const OUTPUT_UI_PICKUP *const pickup)
-{
-    const VIEWPORT_RECT viewport = Viewport_GetRect(VIEWPORT_UI);
-
-    const float pickup_h = viewport.h * g_Config.ui.pickup_scale / 6;
-    const float pickup_w = pickup_h * 5 / 4;
-    const float window_padding_y = viewport.h / 16;
-    const float window_padding_x = window_padding_y * 4 / 3;
-    const float grid_padding_x = pickup_w / 8;
-    const float grid_padding_y = pickup_h / 8;
-
-    const float src_x = viewport.w + window_padding_x + pickup_w;
-    const float src_y = viewport.h - window_padding_y - pickup_h / 2;
-
-    const float dst_x = viewport.w - window_padding_x - pickup_w / 2
-        - (pickup_w + grid_padding_x) * pickup->grid_x;
-    const float dst_y = viewport.h - window_padding_y - pickup_h / 2
-        - (pickup_h + grid_padding_y) * pickup->grid_y;
-
-    const float x = src_x + (dst_x - src_x) * pickup->ease;
-    const float y = src_y + (dst_y - src_y) * pickup->ease;
-    return (VIEWPORT_RECT) {
-        .x = x - pickup_w / 2,
-        .y = y - pickup_h / 2,
-        .w = pickup_w,
-        .h = pickup_h,
-    };
-}
-
 static float M_Get3DPickupScale(
     const VIEWPORT_RECT pickup_rect, const ANIM_FRAME *const frame)
 {
@@ -359,6 +329,77 @@ static bool M_IsDirty(const SCENE_SOURCE *const source, const SCENE_PASS pass)
             || p->binocular_mask);
 }
 
+// Emit a ring band from r_inner to r_outer with per-edge vertex colors.
+// inner_color is applied to the vertices at r_inner, outer_color to r_outer.
+// Fading inner/outer colors to alpha=0 produces antialiased edges.
+static void M_StageRingBand(
+    M_PRIV *const p, const float cx, const float cy, const float ri,
+    const float ro, const float z, const RGBA_F inner_color,
+    const RGBA_F outer_color)
+{
+    const int32_t n = 32;
+    for (int32_t i = 0; i < n; i++) {
+        const float a0 = (float)(2.0 * M_PI) * i / n;
+        const float a1 = (float)(2.0 * M_PI) * (i + 1) / n;
+        const float cos0 = cosf(a0);
+        const float sin0 = sinf(a0);
+        const float cos1 = cosf(a1);
+        const float sin1 = sinf(a1);
+
+        // v[0]/v[1] = outer edge, v[2]/v[3] = inner edge
+        M_VERTEX v[4] = {};
+        v[0].pos = (XYZW_F) { cx + ro * cos0, cy + ro * sin0, z, 0.0f };
+        v[1].pos = (XYZW_F) { cx + ro * cos1, cy + ro * sin1, z, 0.0f };
+        v[2].pos = (XYZW_F) { cx + ri * cos0, cy + ri * sin0, z, 0.0f };
+        v[3].pos = (XYZW_F) { cx + ri * cos1, cy + ri * sin1, z, 0.0f };
+        v[0].flags = VERT_FLAT_SHADED;
+        v[1].flags = VERT_FLAT_SHADED;
+        v[2].flags = VERT_FLAT_SHADED;
+        v[3].flags = VERT_FLAT_SHADED;
+        v[0].color = outer_color;
+        v[1].color = outer_color;
+        v[2].color = inner_color;
+        v[3].color = inner_color;
+
+        Vector_Add(p->vertices, &v[0]);
+        Vector_Add(p->vertices, &v[1]);
+        Vector_Add(p->vertices, &v[2]);
+        Vector_Add(p->vertices, &v[2]);
+        Vector_Add(p->vertices, &v[1]);
+        Vector_Add(p->vertices, &v[3]);
+    }
+}
+
+VIEWPORT_RECT OutputSource_UI_GetPickupRect(
+    const OUTPUT_UI_PICKUP *const pickup)
+{
+    const VIEWPORT_RECT viewport = Viewport_GetRect(VIEWPORT_UI);
+
+    const float pickup_h = viewport.h * g_Config.ui.pickup_scale / 6;
+    const float pickup_w = pickup_h * 5 / 4;
+    const float window_padding_y = viewport.h / 16;
+    const float window_padding_x = window_padding_y * 4 / 3;
+    const float grid_padding_x = pickup_w / 8;
+    const float grid_padding_y = pickup_h / 8;
+
+    const float src_x = viewport.w + window_padding_x + pickup_w;
+    const float src_y = viewport.h - window_padding_y - pickup_h / 2;
+
+    const float dst_x = viewport.w - window_padding_x - pickup_w / 2
+        - (pickup_w + grid_padding_x) * pickup->grid_x;
+    const float dst_y = viewport.h - window_padding_y - pickup_h / 2
+        - (pickup_h + grid_padding_y) * pickup->grid_y;
+
+    const float x = src_x + (dst_x - src_x) * pickup->ease;
+    const float y = src_y + (dst_y - src_y) * pickup->ease;
+    return (VIEWPORT_RECT) {
+        .x = x - pickup_w / 2,
+        .y = y - pickup_h / 2,
+        .w = pickup_w,
+        .h = pickup_h,
+    };
+}
+
 void OutputSource_UI_Init(void)
 {
     M_PRIV *const p = &m_Priv;
@@ -497,47 +538,6 @@ void OutputSource_UI_StageQuad(const OUTPUT_UI_QUAD quad)
     for (int32_t i = 0; i < OUTPUT_QUAD_VERTICES; i++) {
         const int32_t j = OUTPUT_QUAD_TO_FAN(i);
         Vector_Add(p->vertices, &vertices[j]);
-    }
-}
-
-// Emit a ring band from r_inner to r_outer with per-edge vertex colors.
-// inner_color is applied to the vertices at r_inner, outer_color to r_outer.
-// Fading inner/outer colors to alpha=0 produces antialiased edges.
-static void M_StageRingBand(
-    M_PRIV *const p, const float cx, const float cy, const float ri,
-    const float ro, const float z, const RGBA_F inner_color,
-    const RGBA_F outer_color)
-{
-    const int32_t n = 32;
-    for (int32_t i = 0; i < n; i++) {
-        const float a0 = (float)(2.0 * M_PI) * i / n;
-        const float a1 = (float)(2.0 * M_PI) * (i + 1) / n;
-        const float cos0 = cosf(a0);
-        const float sin0 = sinf(a0);
-        const float cos1 = cosf(a1);
-        const float sin1 = sinf(a1);
-
-        // v[0]/v[1] = outer edge, v[2]/v[3] = inner edge
-        M_VERTEX v[4] = {};
-        v[0].pos = (XYZW_F) { cx + ro * cos0, cy + ro * sin0, z, 0.0f };
-        v[1].pos = (XYZW_F) { cx + ro * cos1, cy + ro * sin1, z, 0.0f };
-        v[2].pos = (XYZW_F) { cx + ri * cos0, cy + ri * sin0, z, 0.0f };
-        v[3].pos = (XYZW_F) { cx + ri * cos1, cy + ri * sin1, z, 0.0f };
-        v[0].flags = VERT_FLAT_SHADED;
-        v[1].flags = VERT_FLAT_SHADED;
-        v[2].flags = VERT_FLAT_SHADED;
-        v[3].flags = VERT_FLAT_SHADED;
-        v[0].color = outer_color;
-        v[1].color = outer_color;
-        v[2].color = inner_color;
-        v[3].color = inner_color;
-
-        Vector_Add(p->vertices, &v[0]);
-        Vector_Add(p->vertices, &v[1]);
-        Vector_Add(p->vertices, &v[2]);
-        Vector_Add(p->vertices, &v[2]);
-        Vector_Add(p->vertices, &v[1]);
-        Vector_Add(p->vertices, &v[3]);
     }
 }
 

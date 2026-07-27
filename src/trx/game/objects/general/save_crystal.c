@@ -100,29 +100,6 @@ static const OBJECT_BOUNDS *M_Bounds(void)
         : &m_UW_Bounds;
 }
 
-// The mesh count guard keeps older crystal injections working.
-uint32_t SaveCrystal_GetMeshBits(const OBJECT_ID object_id, int32_t mesh_index)
-{
-    const SAVE_CRYSTAL_MODE mode = g_Config.gameplay.save_crystal_mode;
-    if (mesh_index < 0) {
-        if (g_TRVersion == 3) {
-            mesh_index =
-                mode == SAVE_CRYSTAL_HEAL ? M_MESH_TR3_HEAL : M_MESH_TR3_SAVE;
-        } else if (mode == SAVE_CRYSTAL_HEAL) {
-            mesh_index = M_MESH_HEAL;
-        } else if (g_Config.visuals.enable_ps1_crystals) {
-            mesh_index = M_MESH_PS1;
-        } else {
-            mesh_index = M_MESH_PC;
-        }
-    }
-
-    if (mesh_index >= Object_Get(object_id)->mesh_count) {
-        mesh_index = 0;
-    }
-    return 1 << mesh_index;
-}
-
 // Every crystal needs this from the start: a crystal that is never simulated
 // would otherwise keep the default mesh_bits and draw all of its tints at once.
 static void M_ApplyMesh(ITEM *const item)
@@ -400,6 +377,29 @@ static void M_Setup(OBJECT *const obj)
         Object_SetReflective(O_SAVE_CRYSTAL_ITEM, true);
         Object_SetReflective(O_SAVE_CRYSTAL_OPTION, true);
     }
+}
+
+// The mesh count guard keeps older crystal injections working.
+uint32_t SaveCrystal_GetMeshBits(const OBJECT_ID object_id, int32_t mesh_index)
+{
+    const SAVE_CRYSTAL_MODE mode = g_Config.gameplay.save_crystal_mode;
+    if (mesh_index < 0) {
+        if (g_TRVersion == 3) {
+            mesh_index =
+                mode == SAVE_CRYSTAL_HEAL ? M_MESH_TR3_HEAL : M_MESH_TR3_SAVE;
+        } else if (mode == SAVE_CRYSTAL_HEAL) {
+            mesh_index = M_MESH_HEAL;
+        } else if (g_Config.visuals.enable_ps1_crystals) {
+            mesh_index = M_MESH_PS1;
+        } else {
+            mesh_index = M_MESH_PC;
+        }
+    }
+
+    if (mesh_index >= Object_Get(object_id)->mesh_count) {
+        mesh_index = 0;
+    }
+    return 1 << mesh_index;
 }
 
 REGISTER_OBJECT(O_SAVE_CRYSTAL_ITEM, M_Setup)

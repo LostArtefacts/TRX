@@ -136,6 +136,15 @@ static void M_Control(const int16_t item_num)
     }
 }
 
+static void M_Setup(OBJECT *const obj)
+{
+    obj->control_func = M_Control;
+    obj->draw_func = nullptr;
+    obj->save_flags = true;
+
+    m_BossTimer = 0;
+}
+
 OBJECT_ID CombatEnd_GetBossType(void)
 {
     return M_BOSS_TYPE;
@@ -154,15 +163,6 @@ bool CombatEnd_IsWaitingForBoss(void)
 bool CombatEnd_IsComplete(void)
 {
     return m_BossTimer >= M_CUTSCENE_DELAY;
-}
-
-static void M_Setup(OBJECT *const obj)
-{
-    obj->control_func = M_Control;
-    obj->draw_func = nullptr;
-    obj->save_flags = true;
-
-    m_BossTimer = 0;
 }
 
 REGISTER_OBJECT(O_COMBAT_END, M_Setup)

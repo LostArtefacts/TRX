@@ -12,29 +12,6 @@
 #include <libavcodec/version.h>
 #include <libavutil/log.h>
 
-void Shell_SetupHiDPI(void)
-{
-#ifdef _WIN32
-    SDL_SetHint(SDL_HINT_WINDOWS_DPI_AWARENESS, "permonitorv2");
-    SDL_SetHint(SDL_HINT_WINDOWS_DPI_SCALING, "0");
-#endif
-}
-
-void Shell_SetupLibAV(void)
-{
-#ifdef _WIN32
-    // necessary for SDL_OpenAudioDevice to work with WASAPI
-    // https://www.mail-archive.com/ffmpeg-trac@avcodec.org/msg43300.html
-    CoInitializeEx(nullptr, COINIT_MULTITHREADED);
-#endif
-
-#if LIBAVCODEC_VERSION_MAJOR <= 57
-    av_register_all();
-#endif
-
-    av_log_set_level(AV_LOG_ERROR);
-}
-
 #ifdef _WIN32
 // NOTE – taken from SDL3:
 // From 8994878767cfb9403f525d12c0770c1e149a4d08 Mon Sep 17 00:00:00 2001
@@ -94,7 +71,32 @@ M_DarkModeWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
     }
     return CallWindowProc(m_OldWndProc, hwnd, msg, wParam, lParam);
 }
+#endif
 
+void Shell_SetupHiDPI(void)
+{
+#ifdef _WIN32
+    SDL_SetHint(SDL_HINT_WINDOWS_DPI_AWARENESS, "permonitorv2");
+    SDL_SetHint(SDL_HINT_WINDOWS_DPI_SCALING, "0");
+#endif
+}
+
+void Shell_SetupLibAV(void)
+{
+#ifdef _WIN32
+    // necessary for SDL_OpenAudioDevice to work with WASAPI
+    // https://www.mail-archive.com/ffmpeg-trac@avcodec.org/msg43300.html
+    CoInitializeEx(nullptr, COINIT_MULTITHREADED);
+#endif
+
+#if LIBAVCODEC_VERSION_MAJOR <= 57
+    av_register_all();
+#endif
+
+    av_log_set_level(AV_LOG_ERROR);
+}
+
+#ifdef _WIN32
 void Shell_EnableThemeSupport(SDL_Window *const window)
 {
     SDL_SysWMinfo info;

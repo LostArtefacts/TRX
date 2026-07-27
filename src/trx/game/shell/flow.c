@@ -136,38 +136,6 @@ static void M_LoadCatalog(
     }
 }
 
-void Shell_RequestModSwitch(const char *const mod_name)
-{
-    Memory_FreePointer(&m_PendingMod);
-    m_PendingMod = Memory_DupStr(mod_name);
-}
-
-const char *Shell_GetPendingMod(void)
-{
-    return m_PendingMod;
-}
-
-void Shell_ClearPendingMod(void)
-{
-    Memory_FreePointer(&m_PendingMod);
-}
-
-bool Shell_GetPrevHeadless(void)
-{
-    return m_PrevHeadless;
-}
-
-bool Shell_GetPrevQuiet(void)
-{
-    return m_PrevQuiet;
-}
-
-const SHELL_ARGS *Shell_GetArgs(void)
-{
-    ASSERT(m_Session != nullptr);
-    return m_Session->args;
-}
-
 static void M_InitModules(void)
 {
     Shell_SetupHiDPI();
@@ -333,6 +301,38 @@ static void M_PrepareSystem(void)
                                                       : Clock_GetCurrentFPS();
         Clock_EnableHeadlessFixedFPS(fps);
     }
+}
+
+void Shell_RequestModSwitch(const char *const mod_name)
+{
+    Memory_FreePointer(&m_PendingMod);
+    m_PendingMod = Memory_DupStr(mod_name);
+}
+
+const char *Shell_GetPendingMod(void)
+{
+    return m_PendingMod;
+}
+
+void Shell_ClearPendingMod(void)
+{
+    Memory_FreePointer(&m_PendingMod);
+}
+
+bool Shell_GetPrevHeadless(void)
+{
+    return m_PrevHeadless;
+}
+
+bool Shell_GetPrevQuiet(void)
+{
+    return m_PrevQuiet;
+}
+
+const SHELL_ARGS *Shell_GetArgs(void)
+{
+    ASSERT(m_Session != nullptr);
+    return m_Session->args;
 }
 
 SDL_Window *Shell_GetWindow(void)

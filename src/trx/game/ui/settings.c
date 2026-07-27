@@ -613,26 +613,6 @@ static bool M_LoadMenuColors(JSON_READ_IO *const io)
     JSON_FINISH();
 }
 
-void UI_Settings_LoadFromFile(const char *const path)
-{
-    JSON_VALUE *const root = JSONFile_ReadEx(path, true);
-    JSON_READ_IO *const io = JSON_ReadIO_Create(root, 0, path);
-
-    M_FreeBarThemes();
-    if (!JSON_PUSH(io, "bars") || !M_LoadBarThemes(io) || !JSON_POP(io)) {
-        M_ExitWithJSONError(path, io);
-    }
-
-    if (!JSON_PUSH(io, "ui") || !M_LoadMenuColors(io) || !JSON_POP(io)) {
-        M_ExitWithJSONError(path, io);
-    }
-
-    M_SeedDynamicEnumValues();
-
-    JSON_ReadIO_Destroy(io);
-    JSON_ValueFree(root);
-}
-
 __attribute__((destructor)) static void M_Shutdown(void)
 {
     M_FreeBarThemes();
@@ -672,6 +652,26 @@ static const UI_BAR_THEME *M_FindThemeByName(
         return &group->colors[entry->index].theme;
     }
     return nullptr;
+}
+
+void UI_Settings_LoadFromFile(const char *const path)
+{
+    JSON_VALUE *const root = JSONFile_ReadEx(path, true);
+    JSON_READ_IO *const io = JSON_ReadIO_Create(root, 0, path);
+
+    M_FreeBarThemes();
+    if (!JSON_PUSH(io, "bars") || !M_LoadBarThemes(io) || !JSON_POP(io)) {
+        M_ExitWithJSONError(path, io);
+    }
+
+    if (!JSON_PUSH(io, "ui") || !M_LoadMenuColors(io) || !JSON_POP(io)) {
+        M_ExitWithJSONError(path, io);
+    }
+
+    M_SeedDynamicEnumValues();
+
+    JSON_ReadIO_Destroy(io);
+    JSON_ValueFree(root);
 }
 
 bool UI_Settings_IsCurrentBarLookPS1(void)

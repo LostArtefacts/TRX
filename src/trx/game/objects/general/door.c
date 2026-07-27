@@ -166,72 +166,6 @@ static void M_InitialisePortal(
     door_pos->old_sector = *door_pos->sector;
 }
 
-void Door_Initialise(const int16_t item_num)
-{
-    ITEM *const item = Item_Get(item_num);
-    M_PRIV *const p = item->priv;
-
-    p->crowbar = false;
-    p->lift = false;
-    TRX_VALUE value = {};
-    if (ObjectProperty_GetItemValue(item, "crowbar", &value)) {
-        p->crowbar = value.as_bool;
-    }
-    if (ObjectProperty_GetItemValue(item, "lift", &value)) {
-        p->lift = value.as_bool;
-    }
-    p->lift_count = 0;
-    p->lift_base_y = item->pos.y;
-
-    int32_t dx = 0;
-    int32_t dz = 0;
-    if (item->rot.y == 0) {
-        dz = -1;
-    } else if (item->rot.y == -DEG_180) {
-        dz = 1;
-    } else if (item->rot.y == DEG_90) {
-        dx = -1;
-    } else {
-        dx = 1;
-    }
-
-    int16_t room_num = item->room_num;
-    const ROOM *room = Room_Get(room_num);
-    M_InitialisePortal(room, item, dx, dz, &p->d1);
-
-    if (room->flipped_room == NO_ROOM) {
-        p->d1flip.sector = nullptr;
-    } else {
-        room = Room_Get(room->flipped_room);
-        M_InitialisePortal(room, item, dx, dz, &p->d1flip);
-    }
-
-    room_num = p->d1.sector->portal_room.wall;
-    M_Shut(&p->d1);
-    M_Shut(&p->d1flip);
-
-    if (room_num == NO_ROOM) {
-        p->d2.sector = nullptr;
-        p->d2flip.sector = nullptr;
-    } else {
-        room = Room_Get(room_num);
-        M_InitialisePortal(room, item, 0, 0, &p->d2);
-        if (room->flipped_room == NO_ROOM) {
-            p->d2flip.sector = nullptr;
-        } else {
-            room = Room_Get(room->flipped_room);
-            M_InitialisePortal(room, item, 0, 0, &p->d2flip);
-        }
-
-        M_Shut(&p->d2);
-        M_Shut(&p->d2flip);
-
-        const int16_t prev_room = item->room_num;
-        Item_UpdateRoom(item_num, room_num);
-        item->room_num = prev_room;
-    }
-}
-
 static void M_ControlLift(ITEM *const item)
 {
     M_PRIV *const p = item->priv;
@@ -376,6 +310,72 @@ static void M_Setup(OBJECT *const obj)
             "lift", false,
             "Whether the door rises vertically while activated instead of "
             "playing its open animation."));
+}
+
+void Door_Initialise(const int16_t item_num)
+{
+    ITEM *const item = Item_Get(item_num);
+    M_PRIV *const p = item->priv;
+
+    p->crowbar = false;
+    p->lift = false;
+    TRX_VALUE value = {};
+    if (ObjectProperty_GetItemValue(item, "crowbar", &value)) {
+        p->crowbar = value.as_bool;
+    }
+    if (ObjectProperty_GetItemValue(item, "lift", &value)) {
+        p->lift = value.as_bool;
+    }
+    p->lift_count = 0;
+    p->lift_base_y = item->pos.y;
+
+    int32_t dx = 0;
+    int32_t dz = 0;
+    if (item->rot.y == 0) {
+        dz = -1;
+    } else if (item->rot.y == -DEG_180) {
+        dz = 1;
+    } else if (item->rot.y == DEG_90) {
+        dx = -1;
+    } else {
+        dx = 1;
+    }
+
+    int16_t room_num = item->room_num;
+    const ROOM *room = Room_Get(room_num);
+    M_InitialisePortal(room, item, dx, dz, &p->d1);
+
+    if (room->flipped_room == NO_ROOM) {
+        p->d1flip.sector = nullptr;
+    } else {
+        room = Room_Get(room->flipped_room);
+        M_InitialisePortal(room, item, dx, dz, &p->d1flip);
+    }
+
+    room_num = p->d1.sector->portal_room.wall;
+    M_Shut(&p->d1);
+    M_Shut(&p->d1flip);
+
+    if (room_num == NO_ROOM) {
+        p->d2.sector = nullptr;
+        p->d2flip.sector = nullptr;
+    } else {
+        room = Room_Get(room_num);
+        M_InitialisePortal(room, item, 0, 0, &p->d2);
+        if (room->flipped_room == NO_ROOM) {
+            p->d2flip.sector = nullptr;
+        } else {
+            room = Room_Get(room->flipped_room);
+            M_InitialisePortal(room, item, 0, 0, &p->d2flip);
+        }
+
+        M_Shut(&p->d2);
+        M_Shut(&p->d2flip);
+
+        const int16_t prev_room = item->room_num;
+        Item_UpdateRoom(item_num, room_num);
+        item->room_num = prev_room;
+    }
 }
 
 void Door_OpenPortals(ITEM *const item)

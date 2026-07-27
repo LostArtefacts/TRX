@@ -190,6 +190,98 @@ static void M_SetPendulumPoint(ROPE *const rope, const int32_t node)
     m_Pendulum.node = node;
 }
 
+static void M_DrawRope(const ROPE *const rope, const int32_t sprite_idx)
+{
+    const double rate = (Interpolation_IsActive() && Game_IsPlaying())
+        ? Interpolation_GetRate()
+        : 1.0;
+    XYZ_F points[ROPE_SEGMENTS];
+    for (int32_t n = 0; n < ROPE_SEGMENTS; n++) {
+        const XYZ_32 *const prev = &rope->prev_mesh_segments[n];
+        const XYZ_32 *const cur = &rope->mesh_segments[n];
+        points[n] = (XYZ_F) {
+            .x = rope->pos.x
+                + (prev->x + (cur->x - prev->x) * rate)
+                    / (1 << (W2V_SHIFT + 2)),
+            .y = rope->pos.y
+                + (prev->y + (cur->y - prev->y) * rate)
+                    / (1 << (W2V_SHIFT + 2)),
+            .z = rope->pos.z
+                + (prev->z + (cur->z - prev->z) * rate)
+                    / (1 << (W2V_SHIFT + 2)),
+        };
+    }
+
+    // Extrude a camera-facing ribbon along the rope nodes. OG builds the
+    // equivalent quad strip in screen space with a constant world width.
+    XYZ_F offsets[ROPE_SEGMENTS];
+    for (int32_t n = 0; n < ROPE_SEGMENTS; n++) {
+        const int32_t seg = MIN(n, ROPE_SEGMENTS - 2);
+        const XYZ_F dir = {
+            .x = points[seg + 1].x - points[seg].x,
+            .y = points[seg + 1].y - points[seg].y,
+            .z = points[seg + 1].z - points[seg].z,
+        };
+        const XYZ_F to_cam = {
+            .x = points[n].x - g_Camera.pos.x,
+            .y = points[n].y - g_Camera.pos.y,
+            .z = points[n].z - g_Camera.pos.z,
+        };
+        // cross(to_cam, dir), not cross(dir, to_cam): OG's DrawRope takes the
+        // screen-space perpendicular (-dy, dx) with Y pointing down, which
+        // ends up on the opposite side of the rope from the world-space
+        // cross. Getting this backwards mirrors the sprite's U axis and the
+        // rope's weave leans the wrong way.
+        XYZ_F perp = {
+            .x = to_cam.y * dir.z - to_cam.z * dir.y,
+            .y = to_cam.z * dir.x - to_cam.x * dir.z,
+            .z = to_cam.x * dir.y - to_cam.y * dir.x,
+        };
+        const float length =
+            sqrtf(SQUARE(perp.x) + SQUARE(perp.y) + SQUARE(perp.z));
+        if (length < 1.0f) {
+            offsets[n] = (XYZ_F) { .x = M_HALF_WIDTH, .y = 0.0f, .z = 0.0f };
+            continue;
+        }
+        offsets[n] = (XYZ_F) {
+            .x = perp.x * M_HALF_WIDTH / length,
+            .y = perp.y * M_HALF_WIDTH / length,
+            .z = perp.z * M_HALF_WIDTH / length,
+        };
+    }
+
+    for (int32_t n = 0; n < ROPE_SEGMENTS - 1; n++) {
+        // The sprite's V axis must run along the rope like in OG's
+        // DrawRope, so the ribbon crosses the rope between corners 0-1.
+        const XYZ_32 quad[4] = {
+            {
+                .x = points[n].x - offsets[n].x,
+                .y = points[n].y - offsets[n].y,
+                .z = points[n].z - offsets[n].z,
+            },
+            {
+                .x = points[n].x + offsets[n].x,
+                .y = points[n].y + offsets[n].y,
+                .z = points[n].z + offsets[n].z,
+            },
+            {
+                .x = points[n + 1].x + offsets[n + 1].x,
+                .y = points[n + 1].y + offsets[n + 1].y,
+                .z = points[n + 1].z + offsets[n + 1].z,
+            },
+            {
+                .x = points[n + 1].x - offsets[n + 1].x,
+                .y = points[n + 1].y - offsets[n + 1].y,
+                .z = points[n + 1].z - offsets[n + 1].z,
+            },
+        };
+        const RGBA_8888 colors[4] = { m_RopeColor, m_RopeColor, m_RopeColor,
+                                      m_RopeColor };
+        OutputSource_PolyFX_StageSpriteQuadWorld(
+            sprite_idx, quad, colors, DRAW_BLEND);
+    }
+}
+
 void Rope_Reset(void)
 {
     memset(m_Ropes, 0, sizeof(m_Ropes));
@@ -589,98 +681,6 @@ void Rope_AlignLara(ITEM *const item)
     item->rot.x = angles[0];
     item->rot.y = angles[1];
     item->rot.z = angles[2];
-}
-
-static void M_DrawRope(const ROPE *const rope, const int32_t sprite_idx)
-{
-    const double rate = (Interpolation_IsActive() && Game_IsPlaying())
-        ? Interpolation_GetRate()
-        : 1.0;
-    XYZ_F points[ROPE_SEGMENTS];
-    for (int32_t n = 0; n < ROPE_SEGMENTS; n++) {
-        const XYZ_32 *const prev = &rope->prev_mesh_segments[n];
-        const XYZ_32 *const cur = &rope->mesh_segments[n];
-        points[n] = (XYZ_F) {
-            .x = rope->pos.x
-                + (prev->x + (cur->x - prev->x) * rate)
-                    / (1 << (W2V_SHIFT + 2)),
-            .y = rope->pos.y
-                + (prev->y + (cur->y - prev->y) * rate)
-                    / (1 << (W2V_SHIFT + 2)),
-            .z = rope->pos.z
-                + (prev->z + (cur->z - prev->z) * rate)
-                    / (1 << (W2V_SHIFT + 2)),
-        };
-    }
-
-    // Extrude a camera-facing ribbon along the rope nodes. OG builds the
-    // equivalent quad strip in screen space with a constant world width.
-    XYZ_F offsets[ROPE_SEGMENTS];
-    for (int32_t n = 0; n < ROPE_SEGMENTS; n++) {
-        const int32_t seg = MIN(n, ROPE_SEGMENTS - 2);
-        const XYZ_F dir = {
-            .x = points[seg + 1].x - points[seg].x,
-            .y = points[seg + 1].y - points[seg].y,
-            .z = points[seg + 1].z - points[seg].z,
-        };
-        const XYZ_F to_cam = {
-            .x = points[n].x - g_Camera.pos.x,
-            .y = points[n].y - g_Camera.pos.y,
-            .z = points[n].z - g_Camera.pos.z,
-        };
-        // cross(to_cam, dir), not cross(dir, to_cam): OG's DrawRope takes the
-        // screen-space perpendicular (-dy, dx) with Y pointing down, which
-        // ends up on the opposite side of the rope from the world-space
-        // cross. Getting this backwards mirrors the sprite's U axis and the
-        // rope's weave leans the wrong way.
-        XYZ_F perp = {
-            .x = to_cam.y * dir.z - to_cam.z * dir.y,
-            .y = to_cam.z * dir.x - to_cam.x * dir.z,
-            .z = to_cam.x * dir.y - to_cam.y * dir.x,
-        };
-        const float length =
-            sqrtf(SQUARE(perp.x) + SQUARE(perp.y) + SQUARE(perp.z));
-        if (length < 1.0f) {
-            offsets[n] = (XYZ_F) { .x = M_HALF_WIDTH, .y = 0.0f, .z = 0.0f };
-            continue;
-        }
-        offsets[n] = (XYZ_F) {
-            .x = perp.x * M_HALF_WIDTH / length,
-            .y = perp.y * M_HALF_WIDTH / length,
-            .z = perp.z * M_HALF_WIDTH / length,
-        };
-    }
-
-    for (int32_t n = 0; n < ROPE_SEGMENTS - 1; n++) {
-        // The sprite's V axis must run along the rope like in OG's
-        // DrawRope, so the ribbon crosses the rope between corners 0-1.
-        const XYZ_32 quad[4] = {
-            {
-                .x = points[n].x - offsets[n].x,
-                .y = points[n].y - offsets[n].y,
-                .z = points[n].z - offsets[n].z,
-            },
-            {
-                .x = points[n].x + offsets[n].x,
-                .y = points[n].y + offsets[n].y,
-                .z = points[n].z + offsets[n].z,
-            },
-            {
-                .x = points[n + 1].x + offsets[n + 1].x,
-                .y = points[n + 1].y + offsets[n + 1].y,
-                .z = points[n + 1].z + offsets[n + 1].z,
-            },
-            {
-                .x = points[n + 1].x - offsets[n + 1].x,
-                .y = points[n + 1].y - offsets[n + 1].y,
-                .z = points[n + 1].z - offsets[n + 1].z,
-            },
-        };
-        const RGBA_8888 colors[4] = { m_RopeColor, m_RopeColor, m_RopeColor,
-                                      m_RopeColor };
-        OutputSource_PolyFX_StageSpriteQuadWorld(
-            sprite_idx, quad, colors, DRAW_BLEND);
-    }
 }
 
 // Like OG's DrawRopeList, ropes draw in a global pass independent of the
