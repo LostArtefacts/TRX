@@ -574,6 +574,11 @@ api.define("events.on_kill", {
 same blow `on_hit` reports, which fires first. A death that does not go through damage - a script
 writing `hit_points`, or `destroy()` - does not report.
 
+Some bosses fall and get back up: Willard is knocked out, Natla plays dead before her second
+stage, and the dragon lies still until Lara takes the dagger. Their hit points reach zero once per
+stage, so they report once per stage rather than once per boss. Watch for what marks the last
+stage - the item leaving play, say - if you need the final death.
+
 `trx.items.Item:on_kill` is this same event, narrowed to one item.]],
   params = {
     {
