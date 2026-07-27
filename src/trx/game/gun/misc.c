@@ -24,6 +24,7 @@
 
 static ITEM *m_TargetList[LOT_SLOT_COUNT] = {};
 static ITEM *m_LastTargetList[LOT_SLOT_COUNT] = {};
+static ITEM *m_BestTarget = nullptr;
 static int16_t m_TargetCount = 0;
 
 static bool M_TargetListContains(const ITEM *const item, const int16_t count)
@@ -604,6 +605,7 @@ void Gun_GetNewTarget(const WEAPON_INFO *const weapon)
     }
 
     m_TargetCount = ctx.num_targets;
+    m_BestTarget = ctx.best_target;
 
     if ((g_Config.gameplay.target_mode == TARGET_LOCK_MODE_FULL
          || g_Config.gameplay.target_mode == TARGET_LOCK_MODE_SEMI)
@@ -662,6 +664,13 @@ void Gun_ChangeTarget(const WEAPON_INFO *const weapon)
             lara->target = m_TargetList[new_target];
             break;
         }
+    }
+
+    // Every target in range has been through the cycle already: start it over
+    // rather than leaving Lara with none, which would unlock her arms.
+    if (lara->target == nullptr) {
+        lara->target = m_BestTarget;
+        m_LastTargetList[0] = nullptr;
     }
 
     if (lara->target != m_LastTargetList[0]) {
