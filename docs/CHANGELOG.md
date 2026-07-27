@@ -20,6 +20,7 @@
 - changed lift collision to be optional (Gameplay → Fixes → Fix lift collision)
 - changed skidoo and quad bike crashes to not kill Lara when she is immune
 - fixed exploding deaths in TR4 showing no flames or explosions
+- fixed Lara's shadow in TR4 being darker than in the original game
 - fixed some console commands being able to target unintended items
 - fixed the `/spawn` and `/kill` console commands not reaching army Winston
 - fixed the `/teatime` console command summoning army Winston rather than Winston himself
