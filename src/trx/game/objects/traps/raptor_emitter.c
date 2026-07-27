@@ -48,11 +48,13 @@ static void M_PopulateSlots(M_PRIV *const p)
     }
 }
 
+// A dead raptor gives its AI slot up at once, well before the body it leaves
+// has finished fading, so the fade is what says the slot is free to reuse.
 static int32_t M_GetEmptySlot(const M_PRIV *const p)
 {
     for (int32_t i = 0; i < M_MAX_SLOTS; i++) {
         const ITEM *const item = Item_Get(p->slots[i]);
-        if (item->creature_data == nullptr) {
+        if (item->creature_data == nullptr && !Item_IsFading(item)) {
             return i;
         }
     }

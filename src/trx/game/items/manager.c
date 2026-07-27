@@ -392,6 +392,11 @@ void Item_StartFade(ITEM *const item)
     item->fade = 255;
 }
 
+bool Item_IsFading(const ITEM *const item)
+{
+    return item->fade > 0;
+}
+
 // A body leaves the active list as it dies, so the fade cannot ride on the
 // loop below. The OG counts it off while drawing the room, which leaves a
 // corpse nobody is looking at hanging around; this runs either way.
@@ -602,8 +607,11 @@ void Item_Respawn(const int16_t item_num, const int16_t room_num)
     }
     // The previous occupant died in this slot, leaving it visible and finished.
     // Clear finished so Item_Activate takes the visible item back into play
-    // rather than reading it as a spent corpse.
+    // rather than reading it as a spent corpse. Any fade it had left goes with
+    // it, or the new occupant is drawn part-transparent and destroyed once the
+    // count reaches zero.
     Item_SetFinished(item, false);
+    item->fade = 0;
     // Force the slot back into the room's item chain: a same-room update alone
     // will not relink a slot Item_Destroy left detached, so bounce it through
     // NO_ROOM. Item_Activate then enables the AI with the room settled.

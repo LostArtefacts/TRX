@@ -39,6 +39,10 @@ void Item_Control(void);
 // Begin fading a body out, if the rules call for bodies to fade at all.
 void Item_StartFade(ITEM *item);
 
+// Whether a body is still on its way out. The item is destroyed once the fade
+// runs out, so anything that reclaims a dead item's slot has to wait for this.
+bool Item_IsFading(const ITEM *item);
+
 // Remove the item from the game; any other handle to it becomes stale. Fires
 // on_destroy during live play, while the item can still be read from the
 // handler.
