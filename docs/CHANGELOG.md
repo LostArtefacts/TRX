@@ -19,6 +19,7 @@
 - changed lift collision to force Lara out of her climbing and vaulting animations if one collides with her (#5899, #5911)
 - changed lift collision to be optional (Gameplay → Fixes → Fix lift collision)
 - changed skidoo and quad bike crashes to not kill Lara when she is immune
+- fixed the sun's glare staying on screen in cutscenes once the camera has looked away from it
 - fixed exploding deaths in TR4 showing no flames or explosions
 - fixed Lara's shadow in TR4 being darker than in the original game
 - fixed some console commands being able to target unintended items
