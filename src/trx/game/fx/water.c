@@ -14,6 +14,7 @@
 #include <trx/game/random.h>
 #include <trx/game/rooms.h>
 #include <trx/game/sound.h>
+#include <trx/version.h>
 
 #include <string.h>
 
@@ -63,16 +64,18 @@ static void M_RememberSplash(FX_WATER_SPLASH *const splash)
 }
 
 static bool M_GetUnderwaterBloodColor(
-    RGBA_8888 *const color, const int32_t life)
+    RGBA_8888 *const color, const int32_t shade)
 {
     switch (g_Config.visuals.blood_effects) {
     case BLOOD_EFFECTS_DISABLED:
         return false;
     case BLOOD_EFFECTS_PINK:
-        *color = (RGBA_8888) { life / 2, 0, life, 255 };
+        *color = (RGBA_8888) { shade / 2, 0, shade, 255 };
         return true;
     case BLOOD_EFFECTS_RED:
-        *color = (RGBA_8888) { life, 0, 0, 255 };
+        *color = g_TRVersion == 4
+            ? (RGBA_8888) { (shade >> 1) << 1, 0, (shade >> 4) << 1, 255 }
+            : (RGBA_8888) { shade, 0, 0, 255 };
         return true;
     case BLOOD_EFFECTS_NUMBER_OF:
         break;
@@ -169,14 +172,15 @@ static void M_DrawRipple(const FX_WATER_RIPPLE *r)
                                    : (int32_t)r->init;
     const int32_t life = do_interp ? (int32_t)LERP(r->prev_life, r->life, ratio)
                                    : (int32_t)r->life;
-    const int32_t n = size << 2;
+    const int32_t n = g_TRVersion == 4 ? size : size << 2;
     int32_t sprite_idx = Sparks_GetSpriteIndex(SPARK_TYPE_RIPPLE);
     RGBA_8888 color;
 
     if ((r->flags & 0x10U) != 0U) {
         if ((r->flags & 0x20U) != 0U) {
             sprite_idx = Sparks_GetSpriteIndex(SPARK_TYPE_EXPLOSION);
-            if (!M_GetUnderwaterBloodColor(&color, life)) {
+            const int32_t shade = g_TRVersion == 4 && init != 0 ? init : life;
+            if (!M_GetUnderwaterBloodColor(&color, shade)) {
                 return;
             }
         } else {
@@ -290,17 +294,20 @@ static void M_Control(void)
 
         M_RememberRipple(ripple);
 
-        if (ripple->size < 254U) {
-            ripple->size += 2U;
+        const bool is_tr4 = g_TRVersion == 4;
+        const bool is_gentle = (ripple->flags & 2U) != 0U;
+
+        if (ripple->size < (is_tr4 ? 252U : 254U)) {
+            ripple->size += is_tr4 && !is_gentle ? 4U : 2U;
         }
 
         if (ripple->init == 0U) {
-            ripple->life -= 2U;
+            ripple->life -= is_tr4 ? 3U : 2U;
             if (ripple->life > 250U) {
                 ripple->flags = 0U;
             }
         } else if (ripple->init < ripple->life) {
-            ripple->init += 4U;
+            ripple->init += is_tr4 && is_gentle ? 8U : 4U;
             if (ripple->init >= ripple->life) {
                 ripple->init = 0U;
             }
@@ -729,7 +736,7 @@ void FX_Water_TriggerUnderwaterBlood(const XYZ_32 pos, const int32_t size)
     }
 
     FX_WATER_RIPPLE *const ripple = &m_Ripples[idx];
-    ripple->flags = 0x33U;
+    ripple->flags = g_TRVersion == 4 ? 0x31U : 0x33U;
     ripple->init = 1U;
     ripple->life = (Random_GetControl() & 7) - 16;
     ripple->size = size;
