@@ -587,7 +587,7 @@ int32_t Gun_FireWeapon(
             Room_GetSector(hit_pos.pos, &hit_pos.room_num);
         }
         if (!object_on_los) {
-            Spawn_RicochetRay(start, hit_pos);
+            Spawn_RicochetRay(start, hit_pos, 8);
         }
         return -1;
     }

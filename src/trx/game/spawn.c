@@ -82,11 +82,16 @@ void Spawn_Splash(const ITEM *const item)
 
 void Spawn_Ricochet(const GAME_VECTOR pos)
 {
-    if (g_TRVersion == 3) {
+    if (g_TRVersion >= 3) {
         const ITEM *const lara_item = Lara_GetItem();
         const int32_t angle16 = Math_Atan(
             lara_item->pos.z - pos.pos.z, lara_item->pos.x - pos.pos.x);
-        Sparks_TriggerRicochet(pos, ((uint16_t)angle16 >> 4) & 0x0FFF, 16);
+        const int32_t angle12 = ((uint16_t)angle16 >> 4) & 0x0FFF;
+        if (g_TRVersion == 4) {
+            Sparks_TriggerRicochetTR4(pos, angle12, 3, 0);
+        } else {
+            Sparks_TriggerRicochetTR3(pos, angle12, 16);
+        }
         Sound_Effect(SFX_LARA_RICOCHET, &pos.pos, SPM_NORMAL);
         return;
     }
@@ -102,8 +107,22 @@ void Spawn_Ricochet(const GAME_VECTOR pos)
     }
 }
 
-void Spawn_RicochetRay(const GAME_VECTOR start, GAME_VECTOR hit_pos)
+void Spawn_RicochetRay(
+    const GAME_VECTOR start, GAME_VECTOR hit_pos, const int32_t count)
 {
+    if (g_TRVersion == 4) {
+        // TR4 pulls the impact point back along the ray and leaves the shot
+        // sound to cover the impact. The fan points wherever the low bits of
+        // Lara's facing land, as in OG.
+        LOS_Check(&start, &hit_pos, true);
+        hit_pos.x -= (hit_pos.x - start.x) >> 5;
+        hit_pos.y -= (hit_pos.y - start.y) >> 5;
+        hit_pos.z -= (hit_pos.z - start.z) >> 5;
+        const ITEM *const lara_item = Lara_GetItem();
+        Sparks_TriggerRicochetTR4(hit_pos, lara_item->rot.y & 0x0FFF, count, 0);
+        return;
+    }
+
     hit_pos.pos = Spawn_GetRayPos(start, hit_pos, STEP_L / 12);
     Spawn_Ricochet(hit_pos);
 }

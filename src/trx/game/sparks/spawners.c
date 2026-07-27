@@ -1345,7 +1345,7 @@ void Sparks_TriggerFlareSparks(
     Sparks_FinishSetup(smoke_spark);
 }
 
-void Sparks_TriggerRicochet(
+void Sparks_TriggerRicochetTR3(
     const GAME_VECTOR pos, const int32_t angle, const int32_t size)
 {
     SPARK *spark = Sparks_GetFreeSpark();
@@ -1420,6 +1420,128 @@ void Sparks_TriggerRicochet(
     spark->dst_size.height = (Random_GetControl() & 1) + 1;
     spark->max_y_vel = 0;
     Sparks_FinishSetup(spark);
+}
+
+void Sparks_TriggerRicochetTR4(
+    const GAME_VECTOR pos, const int32_t angle, const int32_t count,
+    const int32_t smoke_only)
+{
+    if (smoke_only == 0) {
+        for (int32_t i = 0; i < count; i++) {
+            const int32_t rnd = Random_GetControl();
+            SPARK *const spark = Sparks_GetFreeSpark();
+            spark->on = true;
+            spark->src_color.r = 128;
+            spark->src_color.g = (rnd & 0xF) + 16;
+            spark->src_color.b = 0;
+            spark->dst_color.r = 96;
+            spark->dst_color.g = ((rnd >> 4) & 0x1F) + 48;
+            spark->dst_color.b = 0;
+            spark->col_fade_speed = 2;
+            spark->fade_to_black = 4;
+            spark->life = 9;
+            spark->s_life = 9;
+            spark->draw_type = DRAW_BLEND_ADD;
+            spark->extras = 0;
+            spark->dynamic = -1;
+            spark->pos = pos.pos;
+            spark->vel.y = (rnd & 0xFFF) - 2048;
+            spark->gravity = (rnd >> 7) & 0x1F;
+            const int32_t ang = (((rnd >> 3) & 0x7FF) + angle - 1024) & 0xFFF;
+            spark->vel.x = -Math_Sin(ang << 4) >> 4;
+            spark->vel.z = Math_Cos(ang << 4) >> 4;
+            spark->friction = 34;
+            spark->flags = SPARK_F_NONE;
+            spark->max_y_vel = 0;
+            Sparks_FinishSetup(spark);
+        }
+
+        SPARK *const spark = Sparks_InitialiseSpriteSpark(SPARK_TYPE_RICOCHET);
+        if (spark != nullptr) {
+            const int32_t rnd = Random_GetControl();
+            spark->src_color.r = 48;
+            spark->src_color.g = (rnd & 0xF) + 32;
+            spark->src_color.b = 0;
+            spark->dst_color.r = 0;
+            spark->dst_color.g = 0;
+            spark->dst_color.b = 0;
+            spark->col_fade_speed = 4;
+            spark->fade_to_black = 0;
+            spark->life = 4;
+            spark->s_life = 4;
+            spark->draw_type = DRAW_BLEND_ADD;
+            spark->extras = 0;
+            spark->dynamic = -1;
+            spark->pos = pos.pos;
+            spark->vel = (XYZ_32) {};
+            spark->flags = SPARK_F_SCALE | SPARK_F_SPRITE | SPARK_F_ROTATE;
+            spark->rot_angle = (rnd >> 2) & 0xFFF;
+            spark->rot_add = (rnd & 1) != 0 ? -64 - ((rnd >> 1) & 0x3F)
+                                            : ((rnd >> 1) & 0x3F) + 64;
+            spark->scalar = 3;
+            spark->size.width = ((rnd >> 10) & 7) + 8;
+            spark->src_size.width = spark->size.width;
+            spark->dst_size.width = 1;
+            spark->size.height = spark->size.width;
+            spark->src_size.height = spark->size.height;
+            spark->dst_size.height = 1;
+            spark->max_y_vel = 0;
+            spark->gravity = 0;
+            Sparks_FinishSetup(spark);
+        }
+    }
+
+    // OG passes -5 rather than a flag, which both skips the streaks and turns
+    // the single puff into six drifting ones.
+    for (int32_t i = 0; i < 1 - smoke_only; i++) {
+        SPARK *const spark = Sparks_InitialiseSpriteSpark(SPARK_TYPE_EXPLOSION);
+        if (spark == nullptr) {
+            return;
+        }
+
+        const int32_t rnd = Random_GetControl();
+        spark->src_color.r = 0;
+        spark->src_color.g = 0;
+        spark->src_color.b = 0;
+        spark->dst_color.r = 40;
+        spark->dst_color.g = 40;
+        spark->dst_color.b = 48;
+        spark->col_fade_speed = (rnd & 3) + 4;
+        spark->fade_to_black = 8;
+        spark->life = ((rnd >> 2) & 7) + 16;
+        spark->s_life = spark->life;
+        spark->extras = 0;
+        spark->dynamic = -1;
+        spark->pos = pos.pos;
+
+        if (smoke_only != 0) {
+            spark->col_fade_speed >>= 1;
+            spark->fade_to_black = 4;
+            spark->life >>= 1;
+            spark->s_life >>= 1;
+            spark->vel.x = (rnd & 0x1FF) - 256;
+            spark->vel.y = ((rnd >> 2) & 0x1FF) - 256;
+            spark->vel.z = ((rnd >> 4) & 0x1FF) - 256;
+        } else {
+            spark->vel = (XYZ_32) {};
+        }
+
+        spark->draw_type = DRAW_BLEND_ADD;
+        spark->friction = 0;
+        spark->flags = SPARK_F_SCALE | SPARK_F_SPRITE | SPARK_F_ROTATE;
+        spark->rot_angle = (rnd >> 3) & 0xFFF;
+        spark->rot_add = (rnd & 1) != 0 ? -16 - (rnd & 0xF) : (rnd & 0xF) + 16;
+        spark->scalar = 2;
+        spark->gravity = -4 - ((rnd >> 9) & 3);
+        spark->max_y_vel = -4 - ((rnd >> 6) & 3);
+        spark->size.width = ((rnd >> 5) & 7) + 4;
+        spark->src_size.width = spark->size.width;
+        spark->dst_size.width = spark->size.width << 2;
+        spark->size.height = spark->size.width;
+        spark->src_size.height = spark->size.height;
+        spark->dst_size.height = spark->dst_size.width;
+        Sparks_FinishSetup(spark);
+    }
 }
 
 void Sparks_TriggerGunSmoke(
