@@ -8,7 +8,6 @@
 #include <trx/game/objects/common.h>
 #include <trx/game/pathing.h>
 #include <trx/game/savegame.h>
-#include <trx/game/stats.h>
 
 // clang-format off
 #define M_HIT_POINTS 18
@@ -61,13 +60,10 @@ static void M_Control(const int16_t item_num)
     Item_Animate(item);
 
     if (item->is_finished) {
-        // Count kill if Lara touches mummy and it falls.
-        if (item->hit_points > 0) {
-            Stats_AddKill();
-        }
+        // The mummy topples when Lara touches it, rather than taking damage.
+        Item_TakeFatalDamage(item, Lara_GetItem());
         Item_RemoveSimulated(item_num);
         Carrier_TestItemDrops(item_num);
-        item->hit_points = 0;
     }
 }
 
