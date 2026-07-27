@@ -180,7 +180,7 @@ static void M_Control(const int16_t item_num)
 static bool M_Draw(const ITEM *const item)
 {
     M_PRIV *const p = item->priv;
-    if (p->status || item->current_anim_state == LS(LS_DEATH)) {
+    if (p->status || !Item_IsInPlay(item)) {
         return Object_DrawAnimatingItem(item);
     }
 
