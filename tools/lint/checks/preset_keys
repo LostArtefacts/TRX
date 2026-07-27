@@ -55,13 +55,7 @@ def _preset_config_entries(preset_path: Path) -> dict[str, Any]:
 
 def check():
     config_dir = CommonPaths.src_dir / "config"
-    config_map_paths = [
-        config_dir / "map.def",
-        config_dir / "map_tr1.def",
-        config_dir / "map_tr2.def",
-        config_dir / "map_tr3.def",
-    ]
-    known_keys = _known_config_keys(config_map_paths)
+    known_keys = _known_config_keys(sorted(config_dir.glob("map*.def")))
     if not known_keys:
         yield LintWarning(config_dir / "map.def", "unable to parse config keys")
         return
