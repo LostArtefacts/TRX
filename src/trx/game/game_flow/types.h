@@ -200,6 +200,8 @@ typedef struct {
     // global settings
     struct {
         char *main_menu_background_path;
+        // Flyby camera sequence played behind the title menu, or -1.
+        int32_t title_flyby_sequence;
         bool enable_tr2_item_drops;
         bool convert_dropped_guns;
         GF_AMBIENT_DATA ambient_tracks;

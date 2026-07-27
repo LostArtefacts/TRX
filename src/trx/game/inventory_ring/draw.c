@@ -4,6 +4,7 @@
 #include <trx/core/math.h>
 #include <trx/core/utils.h>
 #include <trx/game/game.h>
+#include <trx/game/game/draw.h>
 #include <trx/game/input.h>
 #include <trx/game/interpolation.h>
 #include <trx/game/inventory_ring.h>
@@ -298,10 +299,18 @@ void InvRing_Draw(INV_RING *const ring)
     draw_ring.camera.pos.z = draw_radius + M_CAMERA_2_RING;
 
     if (ring->mode == INV_TITLE_MODE) {
-        if (ring->background_path != nullptr) {
-            Output_Overlay_DrawImageBilinear(ring->background_path);
+        if (ring->live_scene) {
+            // The inventory lighting mode is meant for the ring items; the
+            // level behind them renders with its own in-game lighting.
+            Output_SetInventoryLightingMode(false);
+            Game_Draw(false);
+            Output_SetInventoryLightingMode(true);
+        } else {
+            if (ring->background_path != nullptr) {
+                Output_Overlay_DrawImageBilinear(ring->background_path);
+            }
+            Interpolation_Interpolate();
         }
-        Interpolation_Interpolate();
     } else {
         const float opacity = g_Config.ui.inventory_fade_effects
             ? Fader_GetCurrentValue(&ring->back_fader)

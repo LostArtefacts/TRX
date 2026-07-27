@@ -1,4 +1,5 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.9.3...develop) - ××××-××-××
+- added the flyby of the title level playing behind the TR4 main menu, as in the original game
 - added TR4 camera mode, which is similar to TR3 but more responsive to Lara's actions such as picking up items
 - added the ability to paste commands in the developer console (with Ctrl+V)
 - added autocompletion to the developer console (with Tab and Shift+Tab to cycle the matches)
