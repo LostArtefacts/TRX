@@ -92,6 +92,11 @@ bool Creature_Shoot(
     const ITEM *const lara_item = Lara_GetItem();
     const CREATURE *const creature = item->creature_data;
     ITEM *const target_item = creature->enemy;
+    if (target_item == nullptr) {
+        // Allies lose their target once the last hostile is gone; callers
+        // treat a false return as a cue to stop shooting.
+        return false;
+    }
 
     if (g_TRVersion == 3) {
         M_TriggerTR3GunShell(item, gun);
