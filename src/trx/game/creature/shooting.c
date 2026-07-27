@@ -163,8 +163,10 @@ bool Creature_Shoot(
             XYZ_32 pos = {};
             Collide_GetJointAbsPosition(target_item, &pos, joint);
             Spawn_Blood(
-                pos.x, pos.y, pos.z, target_item->speed, target_item->rot.y,
-                target_item->room_num);
+                pos.x, pos.y, pos.z,
+                g_TRVersion == 4 ? (Random_GetControl() & 3) + 4
+                                 : target_item->speed,
+                target_item->rot.y, target_item->room_num);
         }
     }
 

@@ -28,6 +28,14 @@ static bool M_GetBloodSparkColors(RGB_888 *const src, RGB_888 *const dst)
     return false;
 }
 
+static RGB_888 M_GetBloodShadeColor(const int32_t shade)
+{
+    if (g_Config.visuals.blood_effects == BLOOD_EFFECTS_PINK) {
+        return (RGB_888) { shade >> 1, 0, shade };
+    }
+    return (RGB_888) { shade, 0, 0 };
+}
+
 void Sparks_TriggerBubble(
     const int32_t x, const int32_t y, const int32_t z, const int32_t size,
     const int32_t size_range, const int16_t effect_num)
@@ -607,7 +615,7 @@ void Sparks_TriggerSideFlame(
     Sparks_FinishSetup(spark);
 }
 
-void Sparks_TriggerBlood(
+void Sparks_TriggerBloodTR3(
     const XYZ_32 pos, int32_t angle_12, const int32_t count)
 {
     RGB_888 src_color;
@@ -655,7 +663,7 @@ void Sparks_TriggerBlood(
     }
 }
 
-void Sparks_TriggerBloodD(
+void Sparks_TriggerBloodTR3D(
     const XYZ_32 pos, int32_t angle_12, const int32_t count)
 {
     RGB_888 src_color;
@@ -698,6 +706,60 @@ void Sparks_TriggerBloodD(
         spark->src_size.height = 2;
         spark->dst_size.width = 2 - (Random_GetDraw() & 1);
         spark->dst_size.height = 2 - (Random_GetDraw() & 1);
+        Sparks_FinishSetup(spark);
+    }
+}
+
+void Sparks_TriggerBloodTR4(
+    const XYZ_32 pos, const int32_t angle_12, const int32_t count)
+{
+    if (g_Config.visuals.blood_effects == BLOOD_EFFECTS_DISABLED) {
+        return;
+    }
+
+    for (int32_t i = 0; i < count; i++) {
+        const int32_t shade = (Random_GetControl() & 0x3F) + 48;
+        SPARK *const spark = Sparks_InitialiseSpriteSpark(SPARK_TYPE_BLOOD);
+        if (spark == nullptr) {
+            return;
+        }
+
+        spark->src_color = COLOR_RGB_888_BLACK;
+        spark->dst_color = M_GetBloodShadeColor(shade);
+        spark->col_fade_speed = 4;
+        spark->fade_to_black = 8;
+        spark->life = (Random_GetControl() & 7) + 24;
+        spark->s_life = spark->life;
+        spark->draw_type = DRAW_BLEND_ADD;
+        spark->extras = 0;
+        spark->dynamic = -1;
+        spark->pos.x = pos.x + (Random_GetControl() & 0x1F) - 16;
+        spark->pos.y = pos.y + (Random_GetControl() & 0x1F) - 16;
+        spark->pos.z = pos.z + (Random_GetControl() & 0x1F) - 16;
+        const int32_t dist = Random_GetControl() & 0xF;
+        const int32_t ang = angle_12 == -1
+            ? Random_GetControl() & 0xFFF
+            : (((Random_GetControl() & 0x1F) + angle_12 - 16) & 0xFFF);
+        spark->vel.x = -(dist * Math_Sin(ang << 4)) >> 9;
+        spark->vel.y = -128 - (Random_GetControl() & 0xFF);
+        spark->vel.z = (dist * Math_Cos(ang << 4)) >> 9;
+        spark->friction = 4;
+        spark->flags =
+            SPARK_F_BLOOD | SPARK_F_SCALE | SPARK_F_SPRITE | SPARK_F_ROTATE;
+        spark->rot_angle = Random_GetControl() & 0xFFF;
+        spark->rot_add = (Random_GetControl() & 1) != 0
+            ? -64 - (Random_GetControl() & 0x3F)
+            : (Random_GetControl() & 0x3F) + 64;
+        spark->scalar = 3;
+        spark->max_y_vel = 0;
+        spark->gravity = (Random_GetControl() & 0x1F) + 31;
+        const int32_t size = (Random_GetControl() & 7) + 8;
+        spark->size.width = size;
+        spark->src_size.width = size;
+        spark->dst_size.width = size >> 2;
+        spark->size.height = size;
+        spark->src_size.height = size;
+        spark->dst_size.height = size >> 2;
         Sparks_FinishSetup(spark);
     }
 }
