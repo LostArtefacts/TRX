@@ -61,6 +61,12 @@ repos:
     files: \.c$
     exclude: ^src/tests/
 
+  - id: lint-module-static
+    name: Module functions are static
+    entry: tools/lint/checks/module_static
+    language: python
+    files: \.c$
+
   - id: lint-gameflow-schema
     name: Gameflow files match the schema
     entry: tools/lint/checks/gameflow_schema

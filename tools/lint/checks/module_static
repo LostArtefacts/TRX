@@ -9,19 +9,12 @@ from shared.cfuncs import definitions, is_static, name_of
 
 
 def check(path, text):
-    first_public = None
     for line_num, signature in definitions(text):
-        if not is_static(signature):
-            if first_public is None:
-                first_public = line_num
-            continue
-        if first_public is None:
+        name = name_of(signature)
+        if name is None or not name.startswith("M_") or is_static(signature):
             continue
         yield LintWarning(
-            path,
-            f"{name_of(signature) or 'static function'} belongs above the "
-            f"public function on line {first_public}",
-            line=line_num,
+            path, f"{name} is a module function and belongs static", line=line_num
         )
 
 
