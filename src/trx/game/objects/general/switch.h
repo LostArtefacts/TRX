@@ -9,3 +9,4 @@ typedef enum {
 } SWITCH_STATE;
 
 bool Switch_Trigger(int16_t item_num, int16_t timer);
+int16_t Switch_FindNearbyCrowbarSwitch(void);

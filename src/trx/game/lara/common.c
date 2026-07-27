@@ -15,6 +15,7 @@
 #include <trx/game/matrix.h>
 #include <trx/game/objects.h>
 #include <trx/game/objects/general/door.h>
+#include <trx/game/objects/general/switch.h>
 #include <trx/game/output.h>
 #include <trx/game/pathing.h>
 #include <trx/game/rooms.h>
@@ -40,6 +41,12 @@ static const LARA_TRX_ANIMATION m_InvalidInterpAnims[] = {
     // clang-format on
 };
 
+static int16_t (*const m_CrowbarReceptacleFuncs[])(void) = {
+    Door_FindNearbyCrowbarDoor,
+    Switch_FindNearbyCrowbarSwitch,
+    nullptr, // sentinel
+};
+
 static LARA_INFO m_Lara = {};
 static ITEM *m_LaraItem = nullptr;
 static bool m_Controllable = false;
@@ -54,6 +61,22 @@ static bool M_IsInvalidInterpAnim(const LARA_TRX_ANIMATION anim_idx)
         }
     }
     return false;
+}
+
+static int16_t M_FindCrowbarReceptacle(void)
+{
+    for (int32_t i = 0;; i++) {
+        int16_t (*const find_func)(void) = m_CrowbarReceptacleFuncs[i];
+        if (find_func == nullptr) {
+            break;
+        }
+
+        const int16_t item_num = find_func();
+        if (item_num != NO_ITEM) {
+            return item_num;
+        }
+    }
+    return NO_ITEM;
 }
 
 static int32_t M_GetStartingHitPoints(void)
@@ -472,13 +495,14 @@ void Lara_UseItem(const OBJECT_ID obj_id)
 
     case O_CROWBAR_ITEM:
     case O_CROWBAR_OPTION: {
-        const int16_t door_item_num = Door_FindNearbyCrowbarDoor();
-        if (door_item_num == NO_ITEM || lara_info->interact_target.is_moving) {
+        const int16_t receptacle_item_num = M_FindCrowbarReceptacle();
+        if (receptacle_item_num == NO_ITEM
+            || lara_info->interact_target.is_moving) {
             Sound_Effect(SFX_LARA_NO, nullptr, SPM_NORMAL);
             return;
         }
 
-        lara_info->interact_target.item_num = door_item_num;
+        lara_info->interact_target.item_num = receptacle_item_num;
         lara_info->interact_target.is_moving = true;
         lara_info->interact_target.move_count = 0;
         break;

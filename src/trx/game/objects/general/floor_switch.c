@@ -3,6 +3,7 @@
 #include <trx/game/items.h>
 #include <trx/game/lara.h>
 #include <trx/game/objects.h>
+#include <trx/game/objects/general/switch.h>
 #include <trx/version.h>
 
 typedef enum {
@@ -218,6 +219,39 @@ static void M_Setup(OBJECT *const obj)
     obj->control_func = M_Control;
     obj->save_flags = true;
     obj->save_anim = true;
+}
+
+int16_t Switch_FindNearbyCrowbarSwitch(void)
+{
+    ITEM *const lara_item = Lara_GetItem();
+    for (int16_t item_num = 0; item_num < Item_GetLevelCount(); item_num++) {
+        const ITEM *const item = Item_Get(item_num);
+        if (item->object_id != O_SWITCH_TYPE_CROWBAR
+            || !Lara_IsNearItem(&item->pos, WALL_L)) {
+            continue;
+        }
+
+        const M_INTERACTION *const interaction = M_GetInteraction(item);
+        if (interaction == nullptr) {
+            continue;
+        }
+
+        // Proper bounds testing is required for cases where Lara picks the
+        // crowbar manually from the inventory, but she is facing the wrong
+        // direction.
+        if (interaction->flip_lara) {
+            lara_item->rot.y += DEG_180;
+        }
+        const bool result = Lara_TestPosition(item, &interaction->bounds);
+        if (interaction->flip_lara) {
+            lara_item->rot.y += DEG_180;
+        }
+
+        if (result) {
+            return item_num;
+        }
+    }
+    return NO_ITEM;
 }
 
 REGISTER_OBJECT(O_SWITCH_TYPE_FLOOR, M_Setup)
