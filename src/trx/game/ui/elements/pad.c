@@ -48,10 +48,10 @@ void UI_BeginPadEx(const float l, const float r, const float t, const float d)
         },
         sizeof(M_DATA));
     M_DATA *const data = node->data;
-    data->t = t * g_Config.ui.text_scale;
-    data->r = r * g_Config.ui.text_scale;
-    data->d = d * g_Config.ui.text_scale;
-    data->l = l * g_Config.ui.text_scale;
+    data->t = UI_Pad_GetSize(t);
+    data->r = UI_Pad_GetSize(r);
+    data->d = UI_Pad_GetSize(d);
+    data->l = UI_Pad_GetSize(l);
     UI_AddChild(node);
     UI_PushCurrent(node);
 }
@@ -59,4 +59,9 @@ void UI_BeginPadEx(const float l, const float r, const float t, const float d)
 void UI_EndPad(void)
 {
     UI_PopCurrent();
+}
+
+float UI_Pad_GetSize(const float size)
+{
+    return size * g_Config.ui.text_scale;
 }

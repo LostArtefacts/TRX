@@ -26,6 +26,7 @@
 - fixed console commands treating an item that has been removed from the level as though it were still alive
 - fixed the `/trigger` and `/untrigger` console commands crashing or doing nothing on some objects, so they now act on any item exactly as a level trigger would
 - fixed the `/trigger`, `/untrigger` and `/kill` console commands being usable in demos and cutscenes
+- fixed long messages in the developer console running past the right edge of the screen by 1 character
 - fixed being unable to drop to the secret ledge in Jungle room 76 from the ledge above (#5818)
 - fixed a crash when drawing an animating object that has no frame data (#5869)
 - fixed the glow around gun and flare flashes lagging behind them (#5920)
