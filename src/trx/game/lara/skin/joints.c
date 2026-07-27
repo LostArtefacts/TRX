@@ -141,6 +141,66 @@ __attribute__((destructor)) static void M_Shutdown(void)
     M_Reset();
 }
 
+// Welds the joint sleeve to the two limbs it bridges. The joint is drawn with
+// the child's matrix, so the child-side ring is snapped straight onto the
+// child mesh's own vertices; the parent-side ring lives in a different frame
+// and is transformed across. Both rings track the limbs exactly as the joint
+// bends, closing the gap the static sleeve would otherwise leave.
+static void M_PinSeam(
+    const OBJECT_MESH *const mesh, const M_JOINT *const joint,
+    const MATRIX *const parent, const MATRIX *const child)
+{
+    const bool joint_has_normals = mesh->num_lights > 0;
+    for (int32_t i = 0; i < joint->vertex_count; i++) {
+        joint->positions[i] = (XYZ_F) {
+            mesh->vertices[i].x,
+            mesh->vertices[i].y,
+            mesh->vertices[i].z,
+        };
+        joint->normals[i] = joint_has_normals && i < mesh->num_lights
+            ? (XYZ_F) { mesh->lighting.normals[i].x,
+                        mesh->lighting.normals[i].y,
+                        mesh->lighting.normals[i].z }
+            : (XYZ_F) { 0.0f, 0.0f, 0.0f };
+    }
+
+    const OBJECT_MESH *const child_mesh = Lara_Mesh_Get(joint->child_mesh);
+    const bool child_has_normals = child_mesh->num_lights > 0;
+    for (int32_t i = 0; i < joint->child.count; i++) {
+        const SEAM_VERTEX_PAIR *const pair = &joint->child.pairs[i];
+        if (pair->vertex_a >= child_mesh->num_vertices) {
+            continue;
+        }
+        joint->positions[pair->vertex_b] = (XYZ_F) {
+            child_mesh->vertices[pair->vertex_a].x,
+            child_mesh->vertices[pair->vertex_a].y,
+            child_mesh->vertices[pair->vertex_a].z,
+        };
+        // The joint is drawn in the child's frame, so its child-side normal is
+        // copied straight across.
+        if (child_has_normals && pair->vertex_a < child_mesh->num_lights) {
+            const XYZ_16 n = child_mesh->lighting.normals[pair->vertex_a];
+            joint->normals[pair->vertex_b] = (XYZ_F) { n.x, n.y, n.z };
+        }
+    }
+
+    const OBJECT_MESH *const parent_mesh = Lara_Mesh_Get(joint->parent_mesh);
+    const bool parent_has_normals = parent_mesh->num_lights > 0;
+    for (int32_t i = 0; i < joint->parent.count; i++) {
+        const SEAM_VERTEX_PAIR *const pair = &joint->parent.pairs[i];
+        if (pair->vertex_a >= parent_mesh->num_vertices) {
+            continue;
+        }
+        joint->positions[pair->vertex_b] = Lara_Seam_TransformPos(
+            parent, child,
+            XYZ_32_From16(parent_mesh->vertices[pair->vertex_a]));
+        if (parent_has_normals && pair->vertex_a < parent_mesh->num_lights) {
+            joint->normals[pair->vertex_b] = Lara_Seam_TransformNormal(
+                parent, child, parent_mesh->lighting.normals[pair->vertex_a]);
+        }
+    }
+}
+
 void Lara_Joints_Initialise(const LARA_SKIN_OUTFIT *const outfit)
 {
     M_Reset();
@@ -212,66 +272,6 @@ void Lara_Joints_StashMatrix(const LARA_MESH mesh_idx, const bool interpolated)
         Matrix_Pop();
     } else {
         m_State.mesh_matrices[mesh_idx] = *g_WMatrixPtr;
-    }
-}
-
-// Welds the joint sleeve to the two limbs it bridges. The joint is drawn with
-// the child's matrix, so the child-side ring is snapped straight onto the
-// child mesh's own vertices; the parent-side ring lives in a different frame
-// and is transformed across. Both rings track the limbs exactly as the joint
-// bends, closing the gap the static sleeve would otherwise leave.
-static void M_PinSeam(
-    const OBJECT_MESH *const mesh, const M_JOINT *const joint,
-    const MATRIX *const parent, const MATRIX *const child)
-{
-    const bool joint_has_normals = mesh->num_lights > 0;
-    for (int32_t i = 0; i < joint->vertex_count; i++) {
-        joint->positions[i] = (XYZ_F) {
-            mesh->vertices[i].x,
-            mesh->vertices[i].y,
-            mesh->vertices[i].z,
-        };
-        joint->normals[i] = joint_has_normals && i < mesh->num_lights
-            ? (XYZ_F) { mesh->lighting.normals[i].x,
-                        mesh->lighting.normals[i].y,
-                        mesh->lighting.normals[i].z }
-            : (XYZ_F) { 0.0f, 0.0f, 0.0f };
-    }
-
-    const OBJECT_MESH *const child_mesh = Lara_Mesh_Get(joint->child_mesh);
-    const bool child_has_normals = child_mesh->num_lights > 0;
-    for (int32_t i = 0; i < joint->child.count; i++) {
-        const SEAM_VERTEX_PAIR *const pair = &joint->child.pairs[i];
-        if (pair->vertex_a >= child_mesh->num_vertices) {
-            continue;
-        }
-        joint->positions[pair->vertex_b] = (XYZ_F) {
-            child_mesh->vertices[pair->vertex_a].x,
-            child_mesh->vertices[pair->vertex_a].y,
-            child_mesh->vertices[pair->vertex_a].z,
-        };
-        // The joint is drawn in the child's frame, so its child-side normal is
-        // copied straight across.
-        if (child_has_normals && pair->vertex_a < child_mesh->num_lights) {
-            const XYZ_16 n = child_mesh->lighting.normals[pair->vertex_a];
-            joint->normals[pair->vertex_b] = (XYZ_F) { n.x, n.y, n.z };
-        }
-    }
-
-    const OBJECT_MESH *const parent_mesh = Lara_Mesh_Get(joint->parent_mesh);
-    const bool parent_has_normals = parent_mesh->num_lights > 0;
-    for (int32_t i = 0; i < joint->parent.count; i++) {
-        const SEAM_VERTEX_PAIR *const pair = &joint->parent.pairs[i];
-        if (pair->vertex_a >= parent_mesh->num_vertices) {
-            continue;
-        }
-        joint->positions[pair->vertex_b] = Lara_Seam_TransformPos(
-            parent, child,
-            XYZ_32_From16(parent_mesh->vertices[pair->vertex_a]));
-        if (parent_has_normals && pair->vertex_a < parent_mesh->num_lights) {
-            joint->normals[pair->vertex_b] = Lara_Seam_TransformNormal(
-                parent, child, parent_mesh->lighting.normals[pair->vertex_a]);
-        }
     }
 }
 

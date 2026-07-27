@@ -864,6 +864,27 @@ static void M_Control(int16_t item_num)
     }
 }
 
+static void M_Setup(OBJECT *const obj)
+{
+    obj->priv_size = sizeof(M_PRIV);
+    obj->priv_load_func = M_LoadPriv;
+    obj->priv_save_func = M_SavePriv;
+    obj->initialise_func = M_Initialise;
+    obj->control_func = M_Control;
+    obj->collision_func = M_Collision;
+    obj->draw_func = M_Draw;
+
+    obj->save_position = true;
+    obj->save_flags = true;
+    obj->save_anim = true;
+
+    OBJECT_PROPERTIES(
+        obj,
+        OBJECT_PROPERTY_BOOL(
+            "is_heavy", true,
+            "Whether or not this vehicle can activate heavy triggers."));
+}
+
 bool UPV_Control(void)
 {
     ITEM *const item = Lara_Vehicle_GetItem();
@@ -994,27 +1015,6 @@ bool UPV_Control(void)
     item->speed = 0;
     Item_Animate(item);
     return true;
-}
-
-static void M_Setup(OBJECT *const obj)
-{
-    obj->priv_size = sizeof(M_PRIV);
-    obj->priv_load_func = M_LoadPriv;
-    obj->priv_save_func = M_SavePriv;
-    obj->initialise_func = M_Initialise;
-    obj->control_func = M_Control;
-    obj->collision_func = M_Collision;
-    obj->draw_func = M_Draw;
-
-    obj->save_position = true;
-    obj->save_flags = true;
-    obj->save_anim = true;
-
-    OBJECT_PROPERTIES(
-        obj,
-        OBJECT_PROPERTY_BOOL(
-            "is_heavy", true,
-            "Whether or not this vehicle can activate heavy triggers."));
 }
 
 REGISTER_OBJECT(O_UPV, M_Setup)

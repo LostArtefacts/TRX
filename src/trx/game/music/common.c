@@ -298,6 +298,33 @@ static bool M_GetMainTrackState(MUSIC_STREAM_STATE *const state)
     return false;
 }
 
+// Slot 0 is the main stream; slots 1.. are the overlays.
+static M_MUSIC_STREAM *M_GetStreamBySlot(const int32_t slot)
+{
+    if (slot == 0) {
+        return &m_MainStream;
+    }
+    if (slot >= 1 && slot <= MUSIC_MAX_OVERLAY_TRACKS) {
+        return &m_OverlayStreams[slot - 1];
+    }
+    return nullptr;
+}
+
+static bool M_IsSpeechTrack(const MUSIC_ID track_id)
+{
+    switch (Music_FromGameID(track_id)) {
+    case MX_BALDY_SPEECH:
+    case MX_COWBOY_SPEECH:
+    case MX_LARSON_SPEECH:
+    case MX_NATLA_SPEECH:
+    case MX_PIERRE_SPEECH:
+    case MX_SKATEKID_SPEECH:
+        return true;
+    default:
+        return false;
+    }
+}
+
 bool Music_Init(void)
 {
     m_Initialised = true;
@@ -575,18 +602,6 @@ bool Music_GetStreamState(
     return false;
 }
 
-// Slot 0 is the main stream; slots 1.. are the overlays.
-static M_MUSIC_STREAM *M_GetStreamBySlot(const int32_t slot)
-{
-    if (slot == 0) {
-        return &m_MainStream;
-    }
-    if (slot >= 1 && slot <= MUSIC_MAX_OVERLAY_TRACKS) {
-        return &m_OverlayStreams[slot - 1];
-    }
-    return nullptr;
-}
-
 int32_t Music_GetStreamSlotCount(void)
 {
     return 1 + MUSIC_MAX_OVERLAY_TRACKS;
@@ -718,21 +733,6 @@ void Music_ResetTrackStates(void)
 MUSIC_TRACK_STATE *Music_GetTrackState(const MUSIC_ID track_id)
 {
     return &m_TrackStates[track_id];
-}
-
-static bool M_IsSpeechTrack(const MUSIC_ID track_id)
-{
-    switch (Music_FromGameID(track_id)) {
-    case MX_BALDY_SPEECH:
-    case MX_COWBOY_SPEECH:
-    case MX_LARSON_SPEECH:
-    case MX_NATLA_SPEECH:
-    case MX_PIERRE_SPEECH:
-    case MX_SKATEKID_SPEECH:
-        return true;
-    default:
-        return false;
-    }
 }
 
 void Music_Trigger(MUSIC_ID track_id, const MUSIC_TRIGGER *const trigger)

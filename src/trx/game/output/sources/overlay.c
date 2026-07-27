@@ -825,6 +825,17 @@ static bool M_IsDirty(const SCENE_SOURCE *const src, const SCENE_PASS pass)
     return false;
 }
 
+static void M_FinishSnapshotCapture(M_PRIV *const p)
+{
+    p->snapshot.state.has_content = true;
+
+    // Remove the captured brightness so we can reapply the current multiplier.
+    p->snapshot.state.captured_brightness = g_Config.visuals.ui_brightness;
+    CLAMPL(p->snapshot.state.captured_brightness, 0.001f);
+    Output_Quad_SetBrightnessScale(
+        p->snapshot.renderer, 1.0f / p->snapshot.state.captured_brightness);
+}
+
 bool Output_Overlay_LoadImage(const char *const file_name)
 {
     if (file_name == nullptr || file_name[0] == '\0') {
@@ -854,17 +865,6 @@ void Output_Overlay_DrawImageMono(
     const char *const file_name, const float intensity)
 {
     M_DrawImageImpl(file_name, intensity, TEXTURE_FILTER_POINT);
-}
-
-static void M_FinishSnapshotCapture(M_PRIV *const p)
-{
-    p->snapshot.state.has_content = true;
-
-    // Remove the captured brightness so we can reapply the current multiplier.
-    p->snapshot.state.captured_brightness = g_Config.visuals.ui_brightness;
-    CLAMPL(p->snapshot.state.captured_brightness, 0.001f);
-    Output_Quad_SetBrightnessScale(
-        p->snapshot.renderer, 1.0f / p->snapshot.state.captured_brightness);
 }
 
 void Output_Overlay_CaptureSnapshot(void)

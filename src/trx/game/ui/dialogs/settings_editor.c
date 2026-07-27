@@ -446,33 +446,6 @@ changed:
     return true;
 }
 
-UI_SETTINGS_EDITOR_STATE *UI_SettingsEditor_Init(
-    const UI_SETTINGS_OPTION *const options)
-{
-    UI_SETTINGS_EDITOR_STATE *const s = Memory_Alloc(sizeof(*s));
-    s->options = options;
-    s->scroll = (UI_SCROLLABLE) {
-        .first_item = 0,
-        .sel_item = -1,
-        .max_items = 0,
-        .vis_items = 0,
-    };
-    s->color_editor = UI_ColorEditorDialog_Init();
-    return s;
-}
-
-void UI_SettingsEditor_Free(UI_SETTINGS_EDITOR_STATE *const s)
-{
-    if (s->description.show) {
-        UI_TextDialog_Free(s->description.state);
-        s->description.state = nullptr;
-        s->description.show = false;
-    }
-    UI_ColorEditorDialog_Free(s->color_editor);
-    s->color_editor = nullptr;
-    Memory_Free(s);
-}
-
 static float M_GetMaxLabelWidth(const UI_SETTINGS_EDITOR_STATE *const s)
 {
     float result = -1.0f;
@@ -501,6 +474,53 @@ static float M_GetMaxValueWidth(const UI_SETTINGS_EDITOR_STATE *const s)
     result += UI_Label_MeasureW("\\{button right}");
     result += UI_ROW_ARROWS_TIGHT * 2;
     return result;
+}
+
+static void M_OptionLabel(
+    const UI_SETTINGS_OPTION *const option, const char *const text,
+    const bool star_if_enforced)
+{
+    const bool is_available = option == nullptr
+        || option->custom_handler.is_available == nullptr
+        || option->custom_handler.is_available(option);
+    const bool is_enforced = star_if_enforced && option != nullptr
+        && Config_IsOptionEnforced(option->target);
+    const char *const suffix = is_enforced ? "*" : "";
+
+    if (!is_available) {
+        UI_LabelFmt("\\{dim}%s%s\\{/dim}", text, suffix);
+    } else if (is_enforced) {
+        UI_LabelFmt("%s%s", text, suffix);
+    } else {
+        UI_Label(text);
+    }
+}
+
+UI_SETTINGS_EDITOR_STATE *UI_SettingsEditor_Init(
+    const UI_SETTINGS_OPTION *const options)
+{
+    UI_SETTINGS_EDITOR_STATE *const s = Memory_Alloc(sizeof(*s));
+    s->options = options;
+    s->scroll = (UI_SCROLLABLE) {
+        .first_item = 0,
+        .sel_item = -1,
+        .max_items = 0,
+        .vis_items = 0,
+    };
+    s->color_editor = UI_ColorEditorDialog_Init();
+    return s;
+}
+
+void UI_SettingsEditor_Free(UI_SETTINGS_EDITOR_STATE *const s)
+{
+    if (s->description.show) {
+        UI_TextDialog_Free(s->description.state);
+        s->description.state = nullptr;
+        s->description.show = false;
+    }
+    UI_ColorEditorDialog_Free(s->color_editor);
+    s->color_editor = nullptr;
+    Memory_Free(s);
 }
 
 float UI_SettingsEditor_GetContentWidth(const UI_SETTINGS_EDITOR_STATE *const s)
@@ -726,26 +746,6 @@ void UI_SettingsEditor_DrawOverlay(UI_SETTINGS_EDITOR_STATE *const s)
                 UI_TextDialog(s->description.state, title, text);
             }
         }
-    }
-}
-
-static void M_OptionLabel(
-    const UI_SETTINGS_OPTION *const option, const char *const text,
-    const bool star_if_enforced)
-{
-    const bool is_available = option == nullptr
-        || option->custom_handler.is_available == nullptr
-        || option->custom_handler.is_available(option);
-    const bool is_enforced = star_if_enforced && option != nullptr
-        && Config_IsOptionEnforced(option->target);
-    const char *const suffix = is_enforced ? "*" : "";
-
-    if (!is_available) {
-        UI_LabelFmt("\\{dim}%s%s\\{/dim}", text, suffix);
-    } else if (is_enforced) {
-        UI_LabelFmt("%s%s", text, suffix);
-    } else {
-        UI_Label(text);
     }
 }
 

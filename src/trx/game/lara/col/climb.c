@@ -228,149 +228,6 @@ static bool M_TestHangStop(
         || *height_diff > SLOPE_DIF;
 }
 
-// Returns true when the tested hang position is invalid and Lara was
-// snapped back to where she was.
-bool Lara_Col_HangTest(ITEM *const item, COLL_INFO *const coll)
-{
-    coll->bad_pos = NO_BAD_POS;
-    coll->bad_neg = NO_BAD_NEG;
-    coll->bad_ceiling = 0;
-    Lara_Col_GetInfo(item, coll);
-    const bool flag = coll->side_front.floor < 200;
-
-    item->gravity = false;
-    item->fall_speed = 0;
-    LARA_INFO *const lara = Lara_GetLaraInfo();
-    lara->move_angle = item->rot.y;
-
-    const DIRECTION dir = Math_GetDirection(item->rot.y);
-    switch (dir) {
-    case DIR_NORTH:
-        item->pos.z += M_HANG_SHIFT;
-        break;
-    case DIR_EAST:
-        item->pos.x += M_HANG_SHIFT;
-        break;
-    case DIR_SOUTH:
-        item->pos.z -= M_HANG_SHIFT;
-        break;
-    case DIR_WEST:
-        item->pos.x -= M_HANG_SHIFT;
-        break;
-    default:
-        break;
-    }
-
-    coll->bad_pos = NO_BAD_POS;
-    coll->bad_neg = -STEPUP_HEIGHT;
-    coll->bad_ceiling = 0;
-    Lara_Col_GetInfo(item, coll);
-
-    if (lara->climb_status) {
-        if (!g_Input.action || item->hit_points <= 0) {
-            XYZ_32 pos = {
-                .x = 0,
-                .y = 0,
-                .z = 0,
-            };
-            Collide_GetJointAbsPosition(item, &pos, 0);
-            if (dir == DIR_NORTH || dir == DIR_SOUTH) {
-                item->pos.x = pos.x;
-            } else {
-                item->pos.z = pos.z;
-            }
-
-            item->goal_anim_state = LS(LS_JUMP_FORWARD);
-            item->current_anim_state = LS(LS_JUMP_FORWARD);
-            Item_SwitchToAnim(item, LA(LA_FALL_START), 0);
-            item->pos.y += STEP_L;
-            item->gravity = true;
-            item->speed = 2;
-            item->fall_speed = 1;
-            lara->gun_status = LGS_ARMLESS;
-            return false;
-        }
-
-        if (!Lara_Col_TestLadderHang(item, coll)) {
-            int32_t height_diff = 0;
-            if ((item->current_anim_state != LS(LS_SHIMMY_LEFT)
-                 && item->current_anim_state != LS(LS_SHIMMY_RIGHT))
-                || M_TestHangStop(item, coll, flag, &height_diff)) {
-                item->pos = coll->old_pos;
-                item->goal_anim_state = LS(LS_HANG);
-                item->current_anim_state = LS(LS_HANG);
-                Item_SwitchToAnim(item, LA(LA_REACH_TO_HANG), M_LF_HANG);
-            }
-            return true;
-        }
-
-        if (Item_TestAnimEqual(item, LA(LA_REACH_TO_HANG))
-            && Item_TestFrameEqual(item, M_LF_HANG)
-            && Lara_Col_TestClimbStance(item, coll)) {
-            item->goal_anim_state = LS(LS_CLIMB_STANCE);
-        }
-        return false;
-    }
-
-    if (!g_Input.action || item->hit_points <= 0
-        || coll->side_front.floor > 0) {
-        item->goal_anim_state = LS(LS_JUMP_UP);
-        item->current_anim_state = LS(LS_JUMP_UP);
-        Item_SwitchToAnim(item, LA(LA_JUMP_UP), M_LF_STOP_HANG);
-        const BOUNDS_16 *const bounds = Item_GetBoundsAccurate(item);
-        if (g_Config.gameplay.enable_swing_cancel && item->hit_points > 0) {
-            item->pos.y += bounds->max.y;
-        } else {
-            item->pos.y += coll->side_front.floor - bounds->min.y + 2;
-        }
-        item->pos.x += coll->shift.x;
-        item->pos.z += coll->shift.z;
-        item->gravity = true;
-        item->speed = 2;
-        item->fall_speed = 1;
-        lara->gun_status = LGS_ARMLESS;
-        return false;
-    }
-
-    int32_t height_diff = 0;
-    if (M_TestHangStop(item, coll, flag, &height_diff)) {
-        item->pos = coll->old_pos;
-        if (item->current_anim_state == LS(LS_SHIMMY_LEFT)
-            || item->current_anim_state == LS(LS_SHIMMY_RIGHT)) {
-            item->goal_anim_state = LS(LS_HANG);
-            item->current_anim_state = LS(LS_HANG);
-            Item_SwitchToAnim(item, LA(LA_REACH_TO_HANG), M_LF_HANG);
-        }
-        return true;
-    }
-
-    switch (dir) {
-    case DIR_NORTH:
-    case DIR_SOUTH:
-        item->pos.z += coll->shift.z;
-        break;
-
-    case DIR_EAST:
-    case DIR_WEST:
-        item->pos.x += coll->shift.x;
-        break;
-
-    default:
-        break;
-    }
-
-    if (g_TRVersion >= 2 || (height_diff >= -STEP_L && height_diff <= STEP_L)) {
-        item->pos.y += height_diff;
-    }
-    return false;
-}
-
-bool Lara_Col_IsCornerShimmyActive(void)
-{
-    return g_Config.gameplay.enable_corner_shimmying
-        && LS(LS_SHIMMY_OUTER_LEFT) != LS_INVALID;
-}
-
 static bool M_CanHangSideways(
     ITEM *const item, COLL_INFO *const coll, const int16_t angle)
 {
@@ -1306,6 +1163,161 @@ static void M_DownLadder(ITEM *const item, COLL_INFO *const coll)
     item->pos.y -= yshift;
 }
 
+static void M_ShimmyCorner(ITEM *const item, COLL_INFO *const coll)
+{
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    lara->move_angle = item->rot.y;
+    coll->bad_pos = STEPUP_HEIGHT;
+    coll->bad_neg = -STEPUP_HEIGHT;
+    coll->bad_ceiling = 0;
+    coll->slopes_are_walls = 1;
+    coll->slopes_are_pits = 1;
+    Lara_Col_GetInfo(item, coll);
+}
+
+// Returns true when the tested hang position is invalid and Lara was
+// snapped back to where she was.
+bool Lara_Col_HangTest(ITEM *const item, COLL_INFO *const coll)
+{
+    coll->bad_pos = NO_BAD_POS;
+    coll->bad_neg = NO_BAD_NEG;
+    coll->bad_ceiling = 0;
+    Lara_Col_GetInfo(item, coll);
+    const bool flag = coll->side_front.floor < 200;
+
+    item->gravity = false;
+    item->fall_speed = 0;
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    lara->move_angle = item->rot.y;
+
+    const DIRECTION dir = Math_GetDirection(item->rot.y);
+    switch (dir) {
+    case DIR_NORTH:
+        item->pos.z += M_HANG_SHIFT;
+        break;
+    case DIR_EAST:
+        item->pos.x += M_HANG_SHIFT;
+        break;
+    case DIR_SOUTH:
+        item->pos.z -= M_HANG_SHIFT;
+        break;
+    case DIR_WEST:
+        item->pos.x -= M_HANG_SHIFT;
+        break;
+    default:
+        break;
+    }
+
+    coll->bad_pos = NO_BAD_POS;
+    coll->bad_neg = -STEPUP_HEIGHT;
+    coll->bad_ceiling = 0;
+    Lara_Col_GetInfo(item, coll);
+
+    if (lara->climb_status) {
+        if (!g_Input.action || item->hit_points <= 0) {
+            XYZ_32 pos = {
+                .x = 0,
+                .y = 0,
+                .z = 0,
+            };
+            Collide_GetJointAbsPosition(item, &pos, 0);
+            if (dir == DIR_NORTH || dir == DIR_SOUTH) {
+                item->pos.x = pos.x;
+            } else {
+                item->pos.z = pos.z;
+            }
+
+            item->goal_anim_state = LS(LS_JUMP_FORWARD);
+            item->current_anim_state = LS(LS_JUMP_FORWARD);
+            Item_SwitchToAnim(item, LA(LA_FALL_START), 0);
+            item->pos.y += STEP_L;
+            item->gravity = true;
+            item->speed = 2;
+            item->fall_speed = 1;
+            lara->gun_status = LGS_ARMLESS;
+            return false;
+        }
+
+        if (!Lara_Col_TestLadderHang(item, coll)) {
+            int32_t height_diff = 0;
+            if ((item->current_anim_state != LS(LS_SHIMMY_LEFT)
+                 && item->current_anim_state != LS(LS_SHIMMY_RIGHT))
+                || M_TestHangStop(item, coll, flag, &height_diff)) {
+                item->pos = coll->old_pos;
+                item->goal_anim_state = LS(LS_HANG);
+                item->current_anim_state = LS(LS_HANG);
+                Item_SwitchToAnim(item, LA(LA_REACH_TO_HANG), M_LF_HANG);
+            }
+            return true;
+        }
+
+        if (Item_TestAnimEqual(item, LA(LA_REACH_TO_HANG))
+            && Item_TestFrameEqual(item, M_LF_HANG)
+            && Lara_Col_TestClimbStance(item, coll)) {
+            item->goal_anim_state = LS(LS_CLIMB_STANCE);
+        }
+        return false;
+    }
+
+    if (!g_Input.action || item->hit_points <= 0
+        || coll->side_front.floor > 0) {
+        item->goal_anim_state = LS(LS_JUMP_UP);
+        item->current_anim_state = LS(LS_JUMP_UP);
+        Item_SwitchToAnim(item, LA(LA_JUMP_UP), M_LF_STOP_HANG);
+        const BOUNDS_16 *const bounds = Item_GetBoundsAccurate(item);
+        if (g_Config.gameplay.enable_swing_cancel && item->hit_points > 0) {
+            item->pos.y += bounds->max.y;
+        } else {
+            item->pos.y += coll->side_front.floor - bounds->min.y + 2;
+        }
+        item->pos.x += coll->shift.x;
+        item->pos.z += coll->shift.z;
+        item->gravity = true;
+        item->speed = 2;
+        item->fall_speed = 1;
+        lara->gun_status = LGS_ARMLESS;
+        return false;
+    }
+
+    int32_t height_diff = 0;
+    if (M_TestHangStop(item, coll, flag, &height_diff)) {
+        item->pos = coll->old_pos;
+        if (item->current_anim_state == LS(LS_SHIMMY_LEFT)
+            || item->current_anim_state == LS(LS_SHIMMY_RIGHT)) {
+            item->goal_anim_state = LS(LS_HANG);
+            item->current_anim_state = LS(LS_HANG);
+            Item_SwitchToAnim(item, LA(LA_REACH_TO_HANG), M_LF_HANG);
+        }
+        return true;
+    }
+
+    switch (dir) {
+    case DIR_NORTH:
+    case DIR_SOUTH:
+        item->pos.z += coll->shift.z;
+        break;
+
+    case DIR_EAST:
+    case DIR_WEST:
+        item->pos.x += coll->shift.x;
+        break;
+
+    default:
+        break;
+    }
+
+    if (g_TRVersion >= 2 || (height_diff >= -STEP_L && height_diff <= STEP_L)) {
+        item->pos.y += height_diff;
+    }
+    return false;
+}
+
+bool Lara_Col_IsCornerShimmyActive(void)
+{
+    return g_Config.gameplay.enable_corner_shimmying
+        && LS(LS_SHIMMY_OUTER_LEFT) != LS_INVALID;
+}
+
 bool Lara_Col_TestLadderHang(ITEM *const item, const COLL_INFO *const coll)
 {
     const LARA_INFO *const lara = Lara_GetLaraInfo();
@@ -1392,18 +1404,6 @@ bool Lara_Col_TestClimbStance(ITEM *const item, const COLL_INFO *const coll)
 
     item->pos.y += shift;
     return true;
-}
-
-static void M_ShimmyCorner(ITEM *const item, COLL_INFO *const coll)
-{
-    LARA_INFO *const lara = Lara_GetLaraInfo();
-    lara->move_angle = item->rot.y;
-    coll->bad_pos = STEPUP_HEIGHT;
-    coll->bad_neg = -STEPUP_HEIGHT;
-    coll->bad_ceiling = 0;
-    coll->slopes_are_walls = 1;
-    coll->slopes_are_pits = 1;
-    Lara_Col_GetInfo(item, coll);
 }
 
 // clang-format off

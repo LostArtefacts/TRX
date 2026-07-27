@@ -46,6 +46,100 @@ static const BITE m_NodeOffsets[16] = {
     { .pos = { 0, 0, 0 }, .mesh_num = 0 },
 };
 
+static int32_t M_GetFreeSpark(void)
+{
+    int32_t idx = m_NextSpark;
+    for (int32_t i = 0; i < M_MAX_SPARKS; i++) {
+        if (!m_Sparks[idx].on) {
+            m_NextSpark = (idx + 1) & 0xBF;
+            return idx;
+        }
+        idx = idx == (M_MAX_SPARKS - 1) ? 0 : idx + 1;
+    }
+
+    int32_t free = 0;
+    int32_t min_life = INT32_MAX;
+    for (int32_t i = 0; i < M_MAX_SPARKS; i++) {
+        const SPARK *const spark = &m_Sparks[i];
+        if ((int32_t)spark->life < min_life && spark->dynamic == -1
+            && ((spark->flags & SPARK_F_BLOOD) == 0U || (i & 1) != 0)) {
+            free = i;
+            min_life = (int32_t)spark->life;
+        }
+    }
+
+    m_NextSpark = (free + 1) & 0xBF;
+    return free;
+}
+
+static void M_UpdateWind(void)
+{
+    if (g_Config.visuals.breeze_mode == BREEZE_MODE_OFF) {
+        m_SmokeWind = (XZ_32) {};
+        m_HairWindZ = 0;
+        return;
+    }
+
+    if (g_Config.visuals.breeze_mode == BREEZE_MODE_TR2) {
+        const ITEM *const lara_item = Lara_GetItem();
+        if (lara_item == nullptr) {
+            m_HairWindZ = 0;
+            return;
+        }
+
+        const ROOM *const room = Room_Get(lara_item->room_num);
+        if (room == nullptr || !room->flags.wind) {
+            m_HairWindZ = 0;
+            return;
+        }
+
+        const int32_t random = Random_GetDraw() & 7;
+        if (random != 0) {
+            m_HairWindZ += random - 4;
+            if (m_HairWindZ < 0) {
+                m_HairWindZ = 0;
+            } else if (m_HairWindZ >= 8) {
+                m_HairWindZ--;
+            }
+        }
+        m_SmokeWind = (XZ_32) {
+            .x = 0,
+            .z = m_HairWindZ << 1,
+        };
+        return;
+    }
+
+    // TR3 wind logic: a small random wind magnitude with a slowly-changing
+    // direction, biased to the [90°, 270°] range.
+    m_TR3Wind += (Random_GetControl() & 7) - 3;
+    if (m_TR3Wind <= -2) {
+        m_TR3Wind++;
+    } else if (m_TR3Wind >= 9) {
+        m_TR3Wind--;
+    }
+
+    // Original TR3 uses a 0..4095 angle space; keep the calculations faithful.
+    m_TR3DWindAngle =
+        (m_TR3DWindAngle + (((Random_GetControl() & 0x3F) - 32) * 2)) & 0x1FFE;
+
+    if (m_TR3DWindAngle < 1024) { // DEG_90
+        m_TR3DWindAngle += (1024 - m_TR3DWindAngle) << 1;
+    } else if (m_TR3DWindAngle > 3072) { // DEG_270
+        m_TR3DWindAngle -= (m_TR3DWindAngle - 3072) << 1;
+    }
+    m_TR3DWindAngle &= 0x1FFE;
+    m_TR3WindAngle =
+        (m_TR3WindAngle + ((m_TR3DWindAngle - m_TR3WindAngle) >> 3)) & 0x1FFE;
+
+    // Promote to DEG_360 for Math_Sin/Cos just at the end.
+    m_SmokeWind = (XZ_32) {
+        .x = (m_TR3Wind * Math_Sin(m_TR3WindAngle << 3)) >> W2V_SHIFT,
+        .z = (m_TR3Wind * Math_Cos(m_TR3WindAngle << 3)) >> W2V_SHIFT,
+    };
+
+    m_HairWindZ = 0;
+}
+
 XYZ_32 Sparks_GetWorldPos(const SPARK *const spark)
 {
     if (spark == nullptr) {
@@ -90,32 +184,6 @@ XYZ_32 Sparks_GetWorldPos(const SPARK *const spark)
     }
 
     return spark->pos;
-}
-
-static int32_t M_GetFreeSpark(void)
-{
-    int32_t idx = m_NextSpark;
-    for (int32_t i = 0; i < M_MAX_SPARKS; i++) {
-        if (!m_Sparks[idx].on) {
-            m_NextSpark = (idx + 1) & 0xBF;
-            return idx;
-        }
-        idx = idx == (M_MAX_SPARKS - 1) ? 0 : idx + 1;
-    }
-
-    int32_t free = 0;
-    int32_t min_life = INT32_MAX;
-    for (int32_t i = 0; i < M_MAX_SPARKS; i++) {
-        const SPARK *const spark = &m_Sparks[i];
-        if ((int32_t)spark->life < min_life && spark->dynamic == -1
-            && ((spark->flags & SPARK_F_BLOOD) == 0U || (i & 1) != 0)) {
-            free = i;
-            min_life = (int32_t)spark->life;
-        }
-    }
-
-    m_NextSpark = (free + 1) & 0xBF;
-    return free;
 }
 
 SPARK *Sparks_GetFreeSpark(void)
@@ -231,74 +299,6 @@ void Sparks_SetSmokeWind(const XZ_32 wind)
 int32_t Sparks_GetHairWindZ(void)
 {
     return m_HairWindZ;
-}
-
-static void M_UpdateWind(void)
-{
-    if (g_Config.visuals.breeze_mode == BREEZE_MODE_OFF) {
-        m_SmokeWind = (XZ_32) {};
-        m_HairWindZ = 0;
-        return;
-    }
-
-    if (g_Config.visuals.breeze_mode == BREEZE_MODE_TR2) {
-        const ITEM *const lara_item = Lara_GetItem();
-        if (lara_item == nullptr) {
-            m_HairWindZ = 0;
-            return;
-        }
-
-        const ROOM *const room = Room_Get(lara_item->room_num);
-        if (room == nullptr || !room->flags.wind) {
-            m_HairWindZ = 0;
-            return;
-        }
-
-        const int32_t random = Random_GetDraw() & 7;
-        if (random != 0) {
-            m_HairWindZ += random - 4;
-            if (m_HairWindZ < 0) {
-                m_HairWindZ = 0;
-            } else if (m_HairWindZ >= 8) {
-                m_HairWindZ--;
-            }
-        }
-        m_SmokeWind = (XZ_32) {
-            .x = 0,
-            .z = m_HairWindZ << 1,
-        };
-        return;
-    }
-
-    // TR3 wind logic: a small random wind magnitude with a slowly-changing
-    // direction, biased to the [90°, 270°] range.
-    m_TR3Wind += (Random_GetControl() & 7) - 3;
-    if (m_TR3Wind <= -2) {
-        m_TR3Wind++;
-    } else if (m_TR3Wind >= 9) {
-        m_TR3Wind--;
-    }
-
-    // Original TR3 uses a 0..4095 angle space; keep the calculations faithful.
-    m_TR3DWindAngle =
-        (m_TR3DWindAngle + (((Random_GetControl() & 0x3F) - 32) * 2)) & 0x1FFE;
-
-    if (m_TR3DWindAngle < 1024) { // DEG_90
-        m_TR3DWindAngle += (1024 - m_TR3DWindAngle) << 1;
-    } else if (m_TR3DWindAngle > 3072) { // DEG_270
-        m_TR3DWindAngle -= (m_TR3DWindAngle - 3072) << 1;
-    }
-    m_TR3DWindAngle &= 0x1FFE;
-    m_TR3WindAngle =
-        (m_TR3WindAngle + ((m_TR3DWindAngle - m_TR3WindAngle) >> 3)) & 0x1FFE;
-
-    // Promote to DEG_360 for Math_Sin/Cos just at the end.
-    m_SmokeWind = (XZ_32) {
-        .x = (m_TR3Wind * Math_Sin(m_TR3WindAngle << 3)) >> W2V_SHIFT,
-        .z = (m_TR3Wind * Math_Cos(m_TR3WindAngle << 3)) >> W2V_SHIFT,
-    };
-
-    m_HairWindZ = 0;
 }
 
 void Sparks_Control(void)

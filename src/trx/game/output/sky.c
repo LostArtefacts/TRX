@@ -81,6 +81,108 @@ static void M_UpdateLightning(void)
     }
 }
 
+// TR4 skybox quads flagged in their texture info use a vertical alpha
+// gradient to fade the horizon mesh into the flat sky layers, unless the
+// level requests additive blending for the whole mesh.
+static bool M_IsGradientFace(const FACE *const face)
+{
+    return g_TRVersion == 4 && (face->effects & 0x1u) != 0u && !m_ColorAdd;
+}
+
+static bool M_GetFacePass(const FACE *const face, SCENE_PASS *const pass)
+{
+    if (!M_IsGradientFace(face)) {
+        return false;
+    }
+    *pass = SCENE_PASS_TRANSPARENT;
+    return true;
+}
+
+static bool M_GetVertexColor(
+    const FACE *const face, const int32_t vertex_idx, RGBA_8888 *const color)
+{
+    if (face->vertex_count != 4 || !M_IsGradientFace(face)) {
+        return false;
+    }
+    // Top edge fades out to reveal the flat sky layers.
+    *color = (RGBA_8888) { 0, 0, 0, vertex_idx < 2 ? 0 : 255 };
+    return true;
+}
+
+// The OG engines light the skybox with a flat ambient of 128 and no lights,
+// which the vertex color split then doubles to 255 - i.e. the mesh texture is
+// drawn at full brightness. Model that with a 1.0 ambient and no per-vertex
+// shade dimming.
+static bool M_GetVertexShade(
+    const FACE *const face, const int32_t vertex_idx, int32_t *const shade)
+{
+    // TR1/2 spell "no dimming" as SHADE_NEUTRAL: their shade multiplier is
+    // 2 - shade / SHADE_NEUTRAL, so a 0 shade would double the texture.
+    *shade = g_TRVersion < 3 ? SHADE_NEUTRAL : 0;
+    return true;
+}
+
+// Applies the flat, direction-less skybox lighting (TR3+ only).
+static void M_AdjustLightInfo(OUTPUT_LIGHT_INFO *const info)
+{
+    if (g_TRVersion < 3) {
+        return;
+    }
+    if (g_TRVersion == 4) {
+        // Neutral full brightness (the OG flat ambient of 128), expressed in
+        // the convention of whichever path the mesh data selects: meshes
+        // with normals are object-lit and read the ambient as a 128-neutral
+        // color (1.0 here, scaled by 128/255 on upload); prelit meshes are
+        // own-lit and read it as a multiplier over the vertex prelight.
+        const OBJECT *const skybox = Object_Get(O_SKYBOX);
+        const OBJECT_MESH *const mesh = Object_GetMesh(skybox->mesh_idx);
+        const float ambient = mesh->num_lights > 0 ? 1.0f : 128.0f / 255.0f;
+        info->tr3_ambient = (RGB_F) { ambient, ambient, ambient };
+    } else {
+        info->tr3_ambient = (RGB_F) { 0.5f, 0.5f, 0.5f };
+    }
+    for (int32_t i = 0; i < 3; i++) {
+        info->tr3_light_color[i] = (RGB_F) { 0.0f, 0.0f, 0.0f };
+        info->tr3_light_dir_view[i] = (XYZ_32) { 0, 0, 0 };
+    }
+}
+
+// The scroll advances on the 30 FPS logic tick; interpolate it between ticks
+// so the clouds move smoothly at higher render frame rates.
+static int32_t M_GetInterpolatedLayerPos(const int32_t layer_idx)
+{
+    const int32_t pos = m_LayerPos[layer_idx];
+    int32_t delta = pos - m_LayerPosPrev[layer_idx];
+    if (delta > OUTPUT_SKY_WRAP / 2) {
+        delta -= OUTPUT_SKY_WRAP;
+    } else if (delta < -OUTPUT_SKY_WRAP / 2) {
+        delta += OUTPUT_SKY_WRAP;
+    }
+    return pos - delta + (int32_t)(delta * Interpolation_GetWorldRate());
+}
+
+static void M_StageLayers(void)
+{
+    for (int32_t i = 0; i < OUTPUT_SKY_LAYER_COUNT; i++) {
+        const OUTPUT_SKY_LAYER *const layer = &m_Layers[i];
+        if (!layer->enabled) {
+            continue;
+        }
+        Matrix_PushUnit();
+        Matrix_TranslateAbs32(g_ViewPos);
+        if (m_Layers[0].enabled) {
+            // OG rotates layer 1 by ~180 degrees and never pops that rotation
+            // before drawing layer 2, so with layer 1 enabled both layers face
+            // this way.
+            Matrix_Rot16((XYZ_16) { .y = 32760 });
+        }
+        Matrix_TranslateRel(M_GetInterpolatedLayerPos(i), -1536, 0);
+        OutputSource_Sky_StageLayer(
+            g_WMatrixPtr, Output_Sky_GetLayerDrawColor(i), i == 1);
+        Matrix_Pop();
+    }
+}
+
 void Output_Sky_Reset(void)
 {
     for (int32_t i = 0; i < OUTPUT_SKY_LAYER_COUNT; i++) {
@@ -204,72 +306,6 @@ void Output_Sky_Update(void)
     }
 }
 
-// TR4 skybox quads flagged in their texture info use a vertical alpha
-// gradient to fade the horizon mesh into the flat sky layers, unless the
-// level requests additive blending for the whole mesh.
-static bool M_IsGradientFace(const FACE *const face)
-{
-    return g_TRVersion == 4 && (face->effects & 0x1u) != 0u && !m_ColorAdd;
-}
-
-static bool M_GetFacePass(const FACE *const face, SCENE_PASS *const pass)
-{
-    if (!M_IsGradientFace(face)) {
-        return false;
-    }
-    *pass = SCENE_PASS_TRANSPARENT;
-    return true;
-}
-
-static bool M_GetVertexColor(
-    const FACE *const face, const int32_t vertex_idx, RGBA_8888 *const color)
-{
-    if (face->vertex_count != 4 || !M_IsGradientFace(face)) {
-        return false;
-    }
-    // Top edge fades out to reveal the flat sky layers.
-    *color = (RGBA_8888) { 0, 0, 0, vertex_idx < 2 ? 0 : 255 };
-    return true;
-}
-
-// The OG engines light the skybox with a flat ambient of 128 and no lights,
-// which the vertex color split then doubles to 255 - i.e. the mesh texture is
-// drawn at full brightness. Model that with a 1.0 ambient and no per-vertex
-// shade dimming.
-static bool M_GetVertexShade(
-    const FACE *const face, const int32_t vertex_idx, int32_t *const shade)
-{
-    // TR1/2 spell "no dimming" as SHADE_NEUTRAL: their shade multiplier is
-    // 2 - shade / SHADE_NEUTRAL, so a 0 shade would double the texture.
-    *shade = g_TRVersion < 3 ? SHADE_NEUTRAL : 0;
-    return true;
-}
-
-// Applies the flat, direction-less skybox lighting (TR3+ only).
-static void M_AdjustLightInfo(OUTPUT_LIGHT_INFO *const info)
-{
-    if (g_TRVersion < 3) {
-        return;
-    }
-    if (g_TRVersion == 4) {
-        // Neutral full brightness (the OG flat ambient of 128), expressed in
-        // the convention of whichever path the mesh data selects: meshes
-        // with normals are object-lit and read the ambient as a 128-neutral
-        // color (1.0 here, scaled by 128/255 on upload); prelit meshes are
-        // own-lit and read it as a multiplier over the vertex prelight.
-        const OBJECT *const skybox = Object_Get(O_SKYBOX);
-        const OBJECT_MESH *const mesh = Object_GetMesh(skybox->mesh_idx);
-        const float ambient = mesh->num_lights > 0 ? 1.0f : 128.0f / 255.0f;
-        info->tr3_ambient = (RGB_F) { ambient, ambient, ambient };
-    } else {
-        info->tr3_ambient = (RGB_F) { 0.5f, 0.5f, 0.5f };
-    }
-    for (int32_t i = 0; i < 3; i++) {
-        info->tr3_light_color[i] = (RGB_F) { 0.0f, 0.0f, 0.0f };
-        info->tr3_light_dir_view[i] = (XYZ_32) { 0, 0, 0 };
-    }
-}
-
 static OUTPUT_OBJECT_MESH_POLICY m_SkyboxMeshPolicy = {
     .vertex_flags = 0,
     .get_face_pass = M_GetFacePass,
@@ -298,42 +334,6 @@ void Output_Sky_ObserveLevelLoad(void)
 void Output_Sky_ObserveLevelUnload(void)
 {
     OutputSource_Objects_RemoveMeshPolicy(&m_SkyboxMeshPolicy);
-}
-
-// The scroll advances on the 30 FPS logic tick; interpolate it between ticks
-// so the clouds move smoothly at higher render frame rates.
-static int32_t M_GetInterpolatedLayerPos(const int32_t layer_idx)
-{
-    const int32_t pos = m_LayerPos[layer_idx];
-    int32_t delta = pos - m_LayerPosPrev[layer_idx];
-    if (delta > OUTPUT_SKY_WRAP / 2) {
-        delta -= OUTPUT_SKY_WRAP;
-    } else if (delta < -OUTPUT_SKY_WRAP / 2) {
-        delta += OUTPUT_SKY_WRAP;
-    }
-    return pos - delta + (int32_t)(delta * Interpolation_GetWorldRate());
-}
-
-static void M_StageLayers(void)
-{
-    for (int32_t i = 0; i < OUTPUT_SKY_LAYER_COUNT; i++) {
-        const OUTPUT_SKY_LAYER *const layer = &m_Layers[i];
-        if (!layer->enabled) {
-            continue;
-        }
-        Matrix_PushUnit();
-        Matrix_TranslateAbs32(g_ViewPos);
-        if (m_Layers[0].enabled) {
-            // OG rotates layer 1 by ~180 degrees and never pops that rotation
-            // before drawing layer 2, so with layer 1 enabled both layers face
-            // this way.
-            Matrix_Rot16((XYZ_16) { .y = 32760 });
-        }
-        Matrix_TranslateRel(M_GetInterpolatedLayerPos(i), -1536, 0);
-        OutputSource_Sky_StageLayer(
-            g_WMatrixPtr, Output_Sky_GetLayerDrawColor(i), i == 1);
-        Matrix_Pop();
-    }
 }
 
 bool Output_Sky_Draw(void)

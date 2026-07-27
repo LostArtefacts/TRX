@@ -96,23 +96,6 @@ static bool M_AliasesContain(
     return false;
 }
 
-const CONSOLE_COMMAND *Console_Registry_Get(const char *const cmdline)
-{
-    const size_t word_len = M_WordLen(cmdline);
-    const M_NODE *current = m_List;
-    while (current != nullptr) {
-        const M_NODE *const next = current->next;
-        if (M_RangeEquals(
-                cmdline, word_len, current->cmd.prefix,
-                strlen(current->cmd.prefix))
-            || M_AliasesContain(current->cmd.aliases, cmdline, word_len)) {
-            return &current->cmd;
-        }
-        current = next;
-    }
-    return nullptr;
-}
-
 // Whether the nul-terminated `s` equals `name`'s first `name_len` bytes,
 // case-insensitively, with nothing past them.
 static bool M_NameEqualsN(
@@ -164,6 +147,23 @@ static void M_AddSuggestion(
         }
     }
     Completion_AddN(out, name, name_len);
+}
+
+const CONSOLE_COMMAND *Console_Registry_Get(const char *const cmdline)
+{
+    const size_t word_len = M_WordLen(cmdline);
+    const M_NODE *current = m_List;
+    while (current != nullptr) {
+        const M_NODE *const next = current->next;
+        if (M_RangeEquals(
+                cmdline, word_len, current->cmd.prefix,
+                strlen(current->cmd.prefix))
+            || M_AliasesContain(current->cmd.aliases, cmdline, word_len)) {
+            return &current->cmd;
+        }
+        current = next;
+    }
+    return nullptr;
 }
 
 void Console_Registry_Suggest(

@@ -107,77 +107,6 @@ static void M_TriggerFireBallFlame(
     Sparks_FinishSetup(spark);
 }
 
-void TonyBoss_TriggerFireBall(
-    ITEM *const item, const int32_t type, const XYZ_32 *const pos,
-    const int16_t room_num, int16_t angle, int32_t speed)
-{
-    XYZ_32 effect_pos = {};
-    int32_t fall_speed;
-
-    switch (type) {
-    case 0:
-        Collide_GetJointAbsPosition(item, &effect_pos, 10);
-        angle = item->rot.y;
-        fall_speed = -16;
-        speed = 0;
-        break;
-    case 1:
-        Collide_GetJointAbsPosition(item, &effect_pos, 13);
-        angle = item->rot.y;
-        fall_speed = -16;
-        speed = 0;
-        break;
-    case 2:
-        Collide_GetJointAbsPosition(item, &effect_pos, 13);
-        speed = 160;
-        fall_speed = -32 - (Random_GetControl() & 7);
-        break;
-    case 3:
-        effect_pos = *pos;
-        speed = 0;
-        fall_speed = (Random_GetControl() & 3) + 4;
-        break;
-    case 4:
-        effect_pos = *pos;
-        speed += (Random_GetControl() & 3);
-        angle = Random_GetControl() << 1;
-        fall_speed = (Random_GetControl() & 3) - 2;
-        break;
-    case 5:
-        effect_pos = *pos;
-        speed = (Random_GetControl() & 7) + 48;
-        angle += (Random_GetControl() & 0x1FFF) + 0x7000;
-        fall_speed = -16 - (Random_GetControl() & 0xF);
-        break;
-    default:
-        effect_pos = *pos;
-        speed = (Random_GetControl() & 0x1F) + 32;
-        angle = Random_GetControl() << 1;
-        fall_speed = -32 - (Random_GetControl() & 0x1F);
-        break;
-    }
-
-    const int16_t fx_num = Effect_Create(room_num);
-    if (fx_num == NO_EFFECT) {
-        return;
-    }
-
-    EFFECT *const effect = Effect_Get(fx_num);
-    effect->pos = effect_pos;
-    effect->rot.y = angle;
-    effect->object_id = O_TONY_FIRE_BALL;
-    effect->speed = speed;
-    effect->fall_speed = fall_speed;
-    effect->flag1 = type;
-    effect->flag2 = (Random_GetControl() & 3) + 1;
-
-    if (type == 5) {
-        effect->flag2 <<= 1;
-    } else if (type == 2) {
-        effect->flag2 = 0;
-    }
-}
-
 static void M_Control(const int16_t effect_num)
 {
     const ITEM *const lara_item = Lara_GetItem();
@@ -315,6 +244,77 @@ static void M_Setup(OBJECT *const obj)
 {
     obj->control_func = M_Control;
     obj->draw_func = nullptr;
+}
+
+void TonyBoss_TriggerFireBall(
+    ITEM *const item, const int32_t type, const XYZ_32 *const pos,
+    const int16_t room_num, int16_t angle, int32_t speed)
+{
+    XYZ_32 effect_pos = {};
+    int32_t fall_speed;
+
+    switch (type) {
+    case 0:
+        Collide_GetJointAbsPosition(item, &effect_pos, 10);
+        angle = item->rot.y;
+        fall_speed = -16;
+        speed = 0;
+        break;
+    case 1:
+        Collide_GetJointAbsPosition(item, &effect_pos, 13);
+        angle = item->rot.y;
+        fall_speed = -16;
+        speed = 0;
+        break;
+    case 2:
+        Collide_GetJointAbsPosition(item, &effect_pos, 13);
+        speed = 160;
+        fall_speed = -32 - (Random_GetControl() & 7);
+        break;
+    case 3:
+        effect_pos = *pos;
+        speed = 0;
+        fall_speed = (Random_GetControl() & 3) + 4;
+        break;
+    case 4:
+        effect_pos = *pos;
+        speed += (Random_GetControl() & 3);
+        angle = Random_GetControl() << 1;
+        fall_speed = (Random_GetControl() & 3) - 2;
+        break;
+    case 5:
+        effect_pos = *pos;
+        speed = (Random_GetControl() & 7) + 48;
+        angle += (Random_GetControl() & 0x1FFF) + 0x7000;
+        fall_speed = -16 - (Random_GetControl() & 0xF);
+        break;
+    default:
+        effect_pos = *pos;
+        speed = (Random_GetControl() & 0x1F) + 32;
+        angle = Random_GetControl() << 1;
+        fall_speed = -32 - (Random_GetControl() & 0x1F);
+        break;
+    }
+
+    const int16_t fx_num = Effect_Create(room_num);
+    if (fx_num == NO_EFFECT) {
+        return;
+    }
+
+    EFFECT *const effect = Effect_Get(fx_num);
+    effect->pos = effect_pos;
+    effect->rot.y = angle;
+    effect->object_id = O_TONY_FIRE_BALL;
+    effect->speed = speed;
+    effect->fall_speed = fall_speed;
+    effect->flag1 = type;
+    effect->flag2 = (Random_GetControl() & 3) + 1;
+
+    if (type == 5) {
+        effect->flag2 <<= 1;
+    } else if (type == 2) {
+        effect->flag2 = 0;
+    }
 }
 
 REGISTER_OBJECT(O_TONY_FIRE_BALL, M_Setup)

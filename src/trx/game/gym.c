@@ -131,52 +131,6 @@ static bool M_IsOnQuadBike(void)
     return vehicle != nullptr && vehicle->object_id == O_QUAD_BIKE;
 }
 
-void Gym_SetInventoryOpenEnabled(const bool enabled)
-{
-    M_PRIV *const p = &m_Priv;
-    p->is_inventory_open_enabled = enabled;
-}
-
-bool Gym_IsInventoryOpenEnabled(void)
-{
-    M_PRIV *const p = &m_Priv;
-    if (p->is_inventory_open_enabled == -1) {
-        p->is_inventory_open_enabled = g_TRVersion >= 2;
-    }
-    return p->is_inventory_open_enabled;
-}
-
-void Gym_Control(void)
-{
-    if (g_TRVersion < 3) {
-        return;
-    }
-
-    M_PRIV *const p = &m_Priv;
-
-    if (p->assault_course.pad_lock
-        && !p->assault_course.pad_touched_this_frame) {
-        p->assault_course.pad_lock = false;
-    }
-    p->assault_course.pad_touched_this_frame = false;
-
-    if (p->assault_course.penalty_display_timer > 0) {
-        p->assault_course.penalty_display_timer--;
-    }
-    if (!p->assault_course.timer_active && p->assault_course.timer_display
-        && p->assault_course.timer_auto_hide_timer > 0) {
-        p->assault_course.timer_auto_hide_timer--;
-        if (p->assault_course.timer_auto_hide_timer == 0) {
-            p->assault_course.timer_display = false;
-            p->active_track_type = GYM_TRACK_NONE;
-        }
-    }
-
-    if (p->quad_course.lap_time_display_timer > 0) {
-        p->quad_course.lap_time_display_timer--;
-    }
-}
-
 static void M_Assault_Finish(void)
 {
     M_PRIV *const p = &m_Priv;
@@ -254,6 +208,52 @@ static void M_Racetrack_Finish(void)
     p->quad_course.lap_time_display_timer = 10 * LOGIC_FPS;
     M_StoreCourseTime(&g_Config.profile.racetrack_stats, final_time);
     p->quad_course.timer_active = false;
+}
+
+void Gym_SetInventoryOpenEnabled(const bool enabled)
+{
+    M_PRIV *const p = &m_Priv;
+    p->is_inventory_open_enabled = enabled;
+}
+
+bool Gym_IsInventoryOpenEnabled(void)
+{
+    M_PRIV *const p = &m_Priv;
+    if (p->is_inventory_open_enabled == -1) {
+        p->is_inventory_open_enabled = g_TRVersion >= 2;
+    }
+    return p->is_inventory_open_enabled;
+}
+
+void Gym_Control(void)
+{
+    if (g_TRVersion < 3) {
+        return;
+    }
+
+    M_PRIV *const p = &m_Priv;
+
+    if (p->assault_course.pad_lock
+        && !p->assault_course.pad_touched_this_frame) {
+        p->assault_course.pad_lock = false;
+    }
+    p->assault_course.pad_touched_this_frame = false;
+
+    if (p->assault_course.penalty_display_timer > 0) {
+        p->assault_course.penalty_display_timer--;
+    }
+    if (!p->assault_course.timer_active && p->assault_course.timer_display
+        && p->assault_course.timer_auto_hide_timer > 0) {
+        p->assault_course.timer_auto_hide_timer--;
+        if (p->assault_course.timer_auto_hide_timer == 0) {
+            p->assault_course.timer_display = false;
+            p->active_track_type = GYM_TRACK_NONE;
+        }
+    }
+
+    if (p->quad_course.lap_time_display_timer > 0) {
+        p->quad_course.lap_time_display_timer--;
+    }
 }
 
 GYM_TRACK_TYPE Gym_TrackManager_GetActiveTrackType(void)

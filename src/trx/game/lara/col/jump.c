@@ -23,76 +23,6 @@ static bool M_IsAbyssLanding(
     return Room_IsAbyssHeight(item->pos.y + coll->side_mid.floor);
 }
 
-EDGE_CATCH Lara_Col_TestEdgeCatch(
-    const ITEM *const item, const COLL_INFO *const coll, int32_t *const edge)
-{
-    const BOUNDS_16 *const bounds = Item_GetBoundsAccurate(item);
-    int32_t hdif1 = coll->side_front.floor - bounds->min.y;
-    int32_t hdif2 = hdif1 + item->fall_speed;
-    if ((hdif1 < 0 && hdif2 < 0) || (hdif1 > 0 && hdif2 > 0)) {
-        hdif1 = item->pos.y + bounds->min.y;
-        hdif2 = hdif1 + item->fall_speed;
-        if ((hdif1 >> (WALL_SHIFT - 2)) == (hdif2 >> (WALL_SHIFT - 2))) {
-            return EDGE_CATCH_NONE;
-        }
-        if (item->fall_speed > 0) {
-            *edge = hdif2 & ~(STEP_L - 1);
-        } else {
-            *edge = hdif1 & ~(STEP_L - 1);
-        }
-        return EDGE_CATCH_NEG;
-    }
-
-    return ABS(coll->side_left2.floor - coll->side_right2.floor) < SLOPE_DIF
-        ? EDGE_CATCH_POS
-        : EDGE_CATCH_NONE;
-}
-
-SWING_CATCH Lara_Col_TestHangSwingIn(
-    const ITEM *const item, const int16_t angle)
-{
-    // Tests whether a forward hang grab should transition into thin-ledge
-    // swing ("swinging inwards"). The probe samples one click ahead in the
-    // hang direction and requires:
-    // - valid floor at probe point;
-    // - probe floor above Lara;
-    // - enough overhead clearance for swing-in.
-    // The extra clearance guard follows TR3-5 logic: `y - ceiling - 819 > -72`
-    // but uses a relaxed threshold to preserve the animation on certain slope
-    // edge cases.
-
-    XYZ_32 pos = item->pos;
-    int16_t room_num = item->room_num;
-    switch (angle) {
-    case 0:
-        pos.z += STEP_L;
-        break;
-    case DEG_90:
-        pos.x += STEP_L;
-        break;
-    case -DEG_180:
-        pos.z -= STEP_L;
-        break;
-    case -DEG_90:
-        pos.x -= STEP_L;
-        break;
-    }
-
-    const SECTOR *const sector = Room_GetSector(pos, &room_num);
-    int32_t height = Room_GetHeight(sector, pos);
-    int32_t ceiling = Room_GetCeiling(sector, pos);
-    const bool has_height = height != NO_HEIGHT;
-    const int32_t height_delta = height - pos.y;
-    const int32_t ceiling_delta = ceiling - pos.y;
-    if (!has_height || height_delta <= 0 || ceiling_delta >= -400) {
-        return SWING_CATCH_NONE;
-    }
-    const bool thin_ledge = pos.y - ceiling - 819 > -110;
-    return thin_ledge && g_Config.gameplay.enable_slow_ledge_swing
-        ? SWING_CATCH_SLOW
-        : SWING_CATCH_FAST;
-}
-
 static bool M_TestHangJump(ITEM *const item, COLL_INFO *const coll)
 {
     LARA_INFO *const lara = Lara_GetLaraInfo();
@@ -637,6 +567,76 @@ static void M_FastFall(ITEM *const item, COLL_INFO *const coll)
     item->gravity = false;
     item->fall_speed = 0;
     item->pos.y += coll->side_mid.floor;
+}
+
+EDGE_CATCH Lara_Col_TestEdgeCatch(
+    const ITEM *const item, const COLL_INFO *const coll, int32_t *const edge)
+{
+    const BOUNDS_16 *const bounds = Item_GetBoundsAccurate(item);
+    int32_t hdif1 = coll->side_front.floor - bounds->min.y;
+    int32_t hdif2 = hdif1 + item->fall_speed;
+    if ((hdif1 < 0 && hdif2 < 0) || (hdif1 > 0 && hdif2 > 0)) {
+        hdif1 = item->pos.y + bounds->min.y;
+        hdif2 = hdif1 + item->fall_speed;
+        if ((hdif1 >> (WALL_SHIFT - 2)) == (hdif2 >> (WALL_SHIFT - 2))) {
+            return EDGE_CATCH_NONE;
+        }
+        if (item->fall_speed > 0) {
+            *edge = hdif2 & ~(STEP_L - 1);
+        } else {
+            *edge = hdif1 & ~(STEP_L - 1);
+        }
+        return EDGE_CATCH_NEG;
+    }
+
+    return ABS(coll->side_left2.floor - coll->side_right2.floor) < SLOPE_DIF
+        ? EDGE_CATCH_POS
+        : EDGE_CATCH_NONE;
+}
+
+SWING_CATCH Lara_Col_TestHangSwingIn(
+    const ITEM *const item, const int16_t angle)
+{
+    // Tests whether a forward hang grab should transition into thin-ledge
+    // swing ("swinging inwards"). The probe samples one click ahead in the
+    // hang direction and requires:
+    // - valid floor at probe point;
+    // - probe floor above Lara;
+    // - enough overhead clearance for swing-in.
+    // The extra clearance guard follows TR3-5 logic: `y - ceiling - 819 > -72`
+    // but uses a relaxed threshold to preserve the animation on certain slope
+    // edge cases.
+
+    XYZ_32 pos = item->pos;
+    int16_t room_num = item->room_num;
+    switch (angle) {
+    case 0:
+        pos.z += STEP_L;
+        break;
+    case DEG_90:
+        pos.x += STEP_L;
+        break;
+    case -DEG_180:
+        pos.z -= STEP_L;
+        break;
+    case -DEG_90:
+        pos.x -= STEP_L;
+        break;
+    }
+
+    const SECTOR *const sector = Room_GetSector(pos, &room_num);
+    int32_t height = Room_GetHeight(sector, pos);
+    int32_t ceiling = Room_GetCeiling(sector, pos);
+    const bool has_height = height != NO_HEIGHT;
+    const int32_t height_delta = height - pos.y;
+    const int32_t ceiling_delta = ceiling - pos.y;
+    if (!has_height || height_delta <= 0 || ceiling_delta >= -400) {
+        return SWING_CATCH_NONE;
+    }
+    const bool thin_ledge = pos.y - ceiling - 819 > -110;
+    return thin_ledge && g_Config.gameplay.enable_slow_ledge_swing
+        ? SWING_CATCH_SLOW
+        : SWING_CATCH_FAST;
 }
 
 void Lara_Col_DeflectEdgeJump(ITEM *const item, COLL_INFO *const coll)

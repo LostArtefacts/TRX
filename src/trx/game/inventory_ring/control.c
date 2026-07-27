@@ -48,11 +48,6 @@ static INV_RING *m_ActiveRing = nullptr;
 // InvRing_Open/M_TransitionToRing show is affected.
 static INVENTORY_ITEM *m_VisibleRingItems[RT_NUMBER_OF][INV_RING_MAX_ITEMS];
 
-INV_RING *InvRing_GetActiveRing(void)
-{
-    return m_ActiveRing;
-}
-
 static bool M_IsRuntimeHidden(const OBJECT_ID object_id)
 {
     return object_id == O_BINOCULARS_OPTION
@@ -801,6 +796,11 @@ static GF_COMMAND M_Control(INV_RING *const ring)
 
     Interpolation_Remember();
     return (GF_COMMAND) { .action = GF_NOOP };
+}
+
+INV_RING *InvRing_GetActiveRing(void)
+{
+    return m_ActiveRing;
 }
 
 void InvRing_RemoveAllText(void)

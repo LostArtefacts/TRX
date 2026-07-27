@@ -28,6 +28,30 @@ static void M_Collision(
     }
 }
 
+static void M_Setup(OBJECT *const obj)
+{
+    if (!obj->loaded) {
+        return;
+    }
+
+    obj->collision_func = M_Collision;
+
+    obj->radius = M_ARMED_RADIUS;
+    obj->shadow_size = UNIT_SHADOW / 2;
+    obj->pivot_length = 0;
+    obj->lot_setup = LOT_Setup(LOT_SETUP_JUMPER);
+
+    obj->intelligent = true;
+    obj->save_position = true;
+    obj->save_hitpoints = true;
+    obj->save_flags = true;
+    obj->save_anim = true;
+    OBJECT_PROPERTIES(
+        obj,
+        OBJECT_PROPERTY_INT(
+            "max_hit_points", SKIDOO_DRIVER_HITPOINTS, "Maximum hit points."));
+}
+
 void SkidooArmed_Push(
     const ITEM *const item, ITEM *const lara_item, const int32_t radius)
 {
@@ -68,30 +92,6 @@ void SkidooArmed_Push(
 
     lara_item->pos.x = item->pos.x + ((rz * sy + rx * cy) >> W2V_SHIFT);
     lara_item->pos.z = item->pos.z + ((rz * cy - rx * sy) >> W2V_SHIFT);
-}
-
-static void M_Setup(OBJECT *const obj)
-{
-    if (!obj->loaded) {
-        return;
-    }
-
-    obj->collision_func = M_Collision;
-
-    obj->radius = M_ARMED_RADIUS;
-    obj->shadow_size = UNIT_SHADOW / 2;
-    obj->pivot_length = 0;
-    obj->lot_setup = LOT_Setup(LOT_SETUP_JUMPER);
-
-    obj->intelligent = true;
-    obj->save_position = true;
-    obj->save_hitpoints = true;
-    obj->save_flags = true;
-    obj->save_anim = true;
-    OBJECT_PROPERTIES(
-        obj,
-        OBJECT_PROPERTY_INT(
-            "max_hit_points", SKIDOO_DRIVER_HITPOINTS, "Maximum hit points."));
 }
 
 REGISTER_OBJECT(O_SKIDOO_ARMED, M_Setup)

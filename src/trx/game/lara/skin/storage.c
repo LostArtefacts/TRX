@@ -83,26 +83,6 @@ static void M_ResetOutfits(void)
     m_OutfitLookup = nullptr;
 }
 
-LARA_SKIN_TYPE Lara_Skin_FindOutfitByName(const char *const name)
-{
-    if (name == nullptr) {
-        return LARA_SKIN_TYPE_DEFAULT;
-    }
-
-    M_OUTFIT_LOOKUP *entry = nullptr;
-    HASH_FIND_STR(m_OutfitLookup, name, entry);
-    if (entry == nullptr) {
-        return -1;
-    }
-
-    return entry->index;
-}
-
-LARA_SKIN_TYPE Lara_Skin_GetDefaultType(void)
-{
-    return m_OutfitCount > 0 ? 0 : LARA_SKIN_TYPE_DEFAULT;
-}
-
 static bool M_ReadGunMaps(JSON_READ_IO *const io)
 {
     JSON_MUST(JSON_PUSH(io, "gun_maps"));
@@ -460,6 +440,26 @@ static bool M_LoadFile(JSON_READ_IO *const io)
     JSON_MUST(M_ReadExtraMeshes(io));
     JSON_MUST(M_ReadOutfits(io));
     JSON_FINISH();
+}
+
+LARA_SKIN_TYPE Lara_Skin_FindOutfitByName(const char *const name)
+{
+    if (name == nullptr) {
+        return LARA_SKIN_TYPE_DEFAULT;
+    }
+
+    M_OUTFIT_LOOKUP *entry = nullptr;
+    HASH_FIND_STR(m_OutfitLookup, name, entry);
+    if (entry == nullptr) {
+        return -1;
+    }
+
+    return entry->index;
+}
+
+LARA_SKIN_TYPE Lara_Skin_GetDefaultType(void)
+{
+    return m_OutfitCount > 0 ? 0 : LARA_SKIN_TYPE_DEFAULT;
 }
 
 void Lara_Skin_LoadFromFile(const char *const path)

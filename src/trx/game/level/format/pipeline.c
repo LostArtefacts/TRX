@@ -23,6 +23,19 @@ __attribute__((destructor)) static void M_Shutdown(void)
     }
 }
 
+static int32_t M_GetRegisteredLoaderCount(void)
+{
+    if (m_Loaders == nullptr) {
+        return 0;
+    }
+    return m_Loaders->count;
+}
+
+static const LEVEL_FORMAT_LOADER *M_GetRegisteredLoader(const int32_t index)
+{
+    return ((M_REGISTERED_LOADER *)Vector_Get(m_Loaders, index))->loader;
+}
+
 void Level_Format_RegisterLoader(
     const int32_t priority, const LEVEL_FORMAT_LOADER *const loader)
 {
@@ -44,19 +57,6 @@ void Level_Format_RegisterLoader(
         }
     }
     Vector_Insert(m_Loaders, insert_idx, &registered);
-}
-
-static int32_t M_GetRegisteredLoaderCount(void)
-{
-    if (m_Loaders == nullptr) {
-        return 0;
-    }
-    return m_Loaders->count;
-}
-
-static const LEVEL_FORMAT_LOADER *M_GetRegisteredLoader(const int32_t index)
-{
-    return ((M_REGISTERED_LOADER *)Vector_Get(m_Loaders, index))->loader;
 }
 
 const LEVEL_FORMAT_LOADER *Level_Format_GuessLoader(VFILE *const file)

@@ -105,6 +105,26 @@ static void M_UnlinkChain(const int16_t item_num, const int16_t room_num)
     }
 }
 
+// A body leaves the active list as it dies, so the fade cannot ride on the
+// loop below. The OG counts it off while drawing the room, which leaves a
+// corpse nobody is looking at hanging around; this runs either way.
+static void M_ControlFades(void)
+{
+    // Read every frame, so changing the rule mid-fade changes the slope from
+    // here on.
+    const int32_t speed = g_Rules.corpse.fade_speed;
+    for (int16_t item_num = 0; item_num < m_MaxUsedItemCount; item_num++) {
+        ITEM *const item = &m_Items[item_num];
+        if (item->fade <= 0) {
+            continue;
+        }
+        item->fade -= speed;
+        if (item->fade <= 0) {
+            Item_Destroy(item_num);
+        }
+    }
+}
+
 void Item_InitialiseItems(const int32_t num_items)
 {
     // From here until live play begins, the level's cast and any save overlaid
@@ -395,26 +415,6 @@ void Item_StartFade(ITEM *const item)
 bool Item_IsFading(const ITEM *const item)
 {
     return item->fade > 0;
-}
-
-// A body leaves the active list as it dies, so the fade cannot ride on the
-// loop below. The OG counts it off while drawing the room, which leaves a
-// corpse nobody is looking at hanging around; this runs either way.
-static void M_ControlFades(void)
-{
-    // Read every frame, so changing the rule mid-fade changes the slope from
-    // here on.
-    const int32_t speed = g_Rules.corpse.fade_speed;
-    for (int16_t item_num = 0; item_num < m_MaxUsedItemCount; item_num++) {
-        ITEM *const item = &m_Items[item_num];
-        if (item->fade <= 0) {
-            continue;
-        }
-        item->fade -= speed;
-        if (item->fade <= 0) {
-            Item_Destroy(item_num);
-        }
-    }
 }
 
 void Item_Control(void)

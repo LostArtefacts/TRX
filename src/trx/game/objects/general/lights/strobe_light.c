@@ -38,7 +38,7 @@ static void M_Initialise(const int16_t item_num)
     }
 }
 
-void M_TriggerAlertLight(
+static void M_TriggerAlertLight(
     const XYZ_32 pos, const RGB_888 color, const int16_t angle,
     const int16_t room_num)
 {

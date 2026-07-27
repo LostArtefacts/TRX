@@ -391,6 +391,29 @@ static bool M_GenerateLight_TR4(const XYZ_32 pos, const int32_t flare_age)
     return lit;
 }
 
+static void M_Setup(OBJECT *const obj)
+{
+    obj->collision_func = Pickup_Collision;
+    obj->bounds_func = Pickup_Bounds;
+    obj->control_func = M_Control;
+    obj->draw_func = M_Draw;
+    obj->priv_size = sizeof(M_PRIV);
+    obj->save_position = true;
+    obj->save_flags = true;
+    OBJECT_PROPERTIES(
+        obj,
+        OBJECT_PROPERTY_DOUBLE(
+            "burn_time", M_DEFAULT_FLARE_TIME,
+            "How long the flare burns for, in seconds."));
+
+    if (obj->loaded) {
+        for (int32_t i = 0; i < obj->mesh_count; i++) {
+            OBJECT_MESH *const obj_mesh = Object_GetMesh(obj->mesh_idx + i);
+            obj_mesh->depth_adjustment = -0.5;
+        }
+    }
+}
+
 void Flare_GenerateEffects(
     const XYZ_32 *const sound_pos, const XYZ_32 flare_pos, int16_t room_num)
 {
@@ -441,29 +464,6 @@ void FlareItem_SetAge(
     p->raw_age = flare_age & 0x7FFF;
     if (is_active) {
         p->raw_age |= 0x8000;
-    }
-}
-
-static void M_Setup(OBJECT *const obj)
-{
-    obj->collision_func = Pickup_Collision;
-    obj->bounds_func = Pickup_Bounds;
-    obj->control_func = M_Control;
-    obj->draw_func = M_Draw;
-    obj->priv_size = sizeof(M_PRIV);
-    obj->save_position = true;
-    obj->save_flags = true;
-    OBJECT_PROPERTIES(
-        obj,
-        OBJECT_PROPERTY_DOUBLE(
-            "burn_time", M_DEFAULT_FLARE_TIME,
-            "How long the flare burns for, in seconds."));
-
-    if (obj->loaded) {
-        for (int32_t i = 0; i < obj->mesh_count; i++) {
-            OBJECT_MESH *const obj_mesh = Object_GetMesh(obj->mesh_idx + i);
-            obj_mesh->depth_adjustment = -0.5;
-        }
     }
 }
 

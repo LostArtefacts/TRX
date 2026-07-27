@@ -425,6 +425,12 @@ static void M_DrawSingleRoom(const ROOM *const room)
     bind->bound_bottom = Viewport_GetMinY(VIEWPORT_GAME);
 }
 
+__attribute__((destructor)) static void M_Shutdown(void)
+{
+    Vector_Free(m_RoomsToDraw);
+    m_RoomsToDraw = nullptr;
+}
+
 void Room_DrawReset(void)
 {
     M_EnsureRoomsToDraw();
@@ -540,10 +546,4 @@ void Room_RemoveDrawnItem(const int16_t room_num, const int16_t item_num)
         ROOM *const room = Room_Get(room_num);
         M_DrawSet_Remove(&room->drawn_items, item_num);
     }
-}
-
-__attribute__((destructor)) static void M_Shutdown(void)
-{
-    Vector_Free(m_RoomsToDraw);
-    m_RoomsToDraw = nullptr;
 }

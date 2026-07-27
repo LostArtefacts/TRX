@@ -7,6 +7,23 @@ static void (*m_Routines[ITEM_ACTION_NUMBER_OF])(ITEM *item) = {};
 static int16_t m_FXType = 0;
 static ITEM_ACTION_INTERCEPTOR m_Interceptor = nullptr;
 
+static void M_RunWithFX(
+    const ITEM_TRX_ACTION action_id, ITEM *const item, const int16_t fx_type)
+{
+    m_FXType = fx_type;
+    ItemAction_Run(action_id, item);
+    m_FXType = 0;
+}
+
+// An animation command carries no trigger field, so the timer is 0. The stored
+// floor effect reaches here through RunActive with a null item, but a claimed
+// number is never stored, so that path never intercepts.
+static bool M_InterceptDirect(const ITEM_ACTION action_id, ITEM *const item)
+{
+    const int16_t item_num = item != nullptr ? Item_GetIndex(item) : NO_ITEM;
+    return ItemAction_Intercept(action_id, 0, item_num);
+}
+
 int16_t ItemAction_GetFXType(void)
 {
     return m_FXType;
@@ -26,14 +43,6 @@ void ItemAction_Run(const ITEM_TRX_ACTION action_id, ITEM *const item)
     }
 }
 
-static void M_RunWithFX(
-    const ITEM_TRX_ACTION action_id, ITEM *const item, const int16_t fx_type)
-{
-    m_FXType = fx_type;
-    ItemAction_Run(action_id, item);
-    m_FXType = 0;
-}
-
 void ItemAction_SetInterceptor(const ITEM_ACTION_INTERCEPTOR interceptor)
 {
     m_Interceptor = interceptor;
@@ -44,15 +53,6 @@ bool ItemAction_Intercept(
 {
     return m_Interceptor != nullptr
         && m_Interceptor(effect_num, timer, item_num);
-}
-
-// An animation command carries no trigger field, so the timer is 0. The stored
-// floor effect reaches here through RunActive with a null item, but a claimed
-// number is never stored, so that path never intercepts.
-static bool M_InterceptDirect(const ITEM_ACTION action_id, ITEM *const item)
-{
-    const int16_t item_num = item != nullptr ? Item_GetIndex(item) : NO_ITEM;
-    return ItemAction_Intercept(action_id, 0, item_num);
 }
 
 void ItemAction_RunDirect(const ITEM_ACTION action_id, ITEM *const item)

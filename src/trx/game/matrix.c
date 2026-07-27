@@ -364,37 +364,6 @@ static void M_TranslateSet(MATRIX *const m, const XYZ_32 pos)
     m->_23 = (int64_t)pos.z * scale;
 }
 
-void Matrix_Mul3x3_M(
-    MATRIX *const out, const MATRIX *const lhs, const MATRIX *const rhs)
-{
-#define L_MUL(r_, c_)                                                          \
-    (((lhs->_##r_##0 * rhs->_0##c_) + (lhs->_##r_##1 * rhs->_1##c_)            \
-      + (lhs->_##r_##2 * rhs->_2##c_))                                         \
-     >> W2V_SHIFT)
-
-    const int64_t r00 = L_MUL(0, 0);
-    const int64_t r01 = L_MUL(0, 1);
-    const int64_t r02 = L_MUL(0, 2);
-    const int64_t r10 = L_MUL(1, 0);
-    const int64_t r11 = L_MUL(1, 1);
-    const int64_t r12 = L_MUL(1, 2);
-    const int64_t r20 = L_MUL(2, 0);
-    const int64_t r21 = L_MUL(2, 1);
-    const int64_t r22 = L_MUL(2, 2);
-
-    out->_00 = r00;
-    out->_01 = r01;
-    out->_02 = r02;
-    out->_10 = r10;
-    out->_11 = r11;
-    out->_12 = r12;
-    out->_20 = r20;
-    out->_21 = r21;
-    out->_22 = r22;
-
-#undef L_MUL
-}
-
 static void M_InterpolateArm(MATRIX *const m, const MATRIX *const mi)
 {
     m->_00 = m[-2]._00;
@@ -426,6 +395,37 @@ static void M_Interpolate(
     result->_03 = (int32_t)llround(m1->_03 + (m2->_03 - m1->_03) * rate);
     result->_13 = (int32_t)llround(m1->_13 + (m2->_13 - m1->_13) * rate);
     result->_23 = (int32_t)llround(m1->_23 + (m2->_23 - m1->_23) * rate);
+}
+
+void Matrix_Mul3x3_M(
+    MATRIX *const out, const MATRIX *const lhs, const MATRIX *const rhs)
+{
+#define L_MUL(r_, c_)                                                          \
+    (((lhs->_##r_##0 * rhs->_0##c_) + (lhs->_##r_##1 * rhs->_1##c_)            \
+      + (lhs->_##r_##2 * rhs->_2##c_))                                         \
+     >> W2V_SHIFT)
+
+    const int64_t r00 = L_MUL(0, 0);
+    const int64_t r01 = L_MUL(0, 1);
+    const int64_t r02 = L_MUL(0, 2);
+    const int64_t r10 = L_MUL(1, 0);
+    const int64_t r11 = L_MUL(1, 1);
+    const int64_t r12 = L_MUL(1, 2);
+    const int64_t r20 = L_MUL(2, 0);
+    const int64_t r21 = L_MUL(2, 1);
+    const int64_t r22 = L_MUL(2, 2);
+
+    out->_00 = r00;
+    out->_01 = r01;
+    out->_02 = r02;
+    out->_10 = r10;
+    out->_11 = r11;
+    out->_12 = r12;
+    out->_20 = r20;
+    out->_21 = r21;
+    out->_22 = r22;
+
+#undef L_MUL
 }
 
 void Matrix_ResetStack(void)

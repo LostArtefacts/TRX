@@ -181,22 +181,6 @@ static void M_EmitTorch(const XYZ_32 start, const XYZ_32 end)
     }
 }
 
-void Camera_Binoculars_Reset(void)
-{
-    m_Active = false;
-    m_Pending = false;
-    m_TorchActive = false;
-#define M_RESET_SUPPRESS_FLAG(name, field) m_Suppress##name = false;
-    M_FOR_EACH_EXIT_INPUT(M_RESET_SUPPRESS_FLAG)
-#undef M_RESET_SUPPRESS_FLAG
-    m_Range = M_MIN_RANGE;
-}
-
-void Camera_Binoculars_Request(void)
-{
-    m_Pending = true;
-}
-
 // Swallow the key that closed the binoculars until it is released, so that
 // it does not trigger an immediate action (e.g. drawing a weapon, entering
 // look mode, or opening the inventory ring).
@@ -213,6 +197,22 @@ static void M_SuppressExitInputs(void)
     }
     M_FOR_EACH_EXIT_INPUT(M_SUPPRESS_EXIT_INPUT)
 #undef M_SUPPRESS_EXIT_INPUT
+}
+
+void Camera_Binoculars_Reset(void)
+{
+    m_Active = false;
+    m_Pending = false;
+    m_TorchActive = false;
+#define M_RESET_SUPPRESS_FLAG(name, field) m_Suppress##name = false;
+    M_FOR_EACH_EXIT_INPUT(M_RESET_SUPPRESS_FLAG)
+#undef M_RESET_SUPPRESS_FLAG
+    m_Range = M_MIN_RANGE;
+}
+
+void Camera_Binoculars_Request(void)
+{
+    m_Pending = true;
 }
 
 void Camera_Binoculars_Control(void)

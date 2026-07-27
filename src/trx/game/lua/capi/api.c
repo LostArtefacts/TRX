@@ -31,6 +31,16 @@ static int M_L_SetEntrypoint(lua_State *const L)
     return 0;
 }
 
+static const luaL_Reg m_Module[] = {
+    { "set_entrypoint", M_L_SetEntrypoint },
+    { nullptr, nullptr },
+};
+
+static void M_Create(lua_State *const L)
+{
+    LUA_RegisterModule(L, "api", m_Module);
+}
+
 bool LUA_API_PushEntrypoint(lua_State *const L, const char *const name)
 {
     if (lua_getfield(L, LUA_REGISTRYINDEX, m_EntrypointsKey) != LUA_TTABLE) {
@@ -44,16 +54,6 @@ bool LUA_API_PushEntrypoint(lua_State *const L, const char *const name)
         return false;
     }
     return true;
-}
-
-static const luaL_Reg m_Module[] = {
-    { "set_entrypoint", M_L_SetEntrypoint },
-    { nullptr, nullptr },
-};
-
-static void M_Create(lua_State *const L)
-{
-    LUA_RegisterModule(L, "api", m_Module);
 }
 
 REGISTER_LUA_CAPI(.create = M_Create)

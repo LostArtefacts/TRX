@@ -310,6 +310,20 @@ static void M_DetermineLegacyGunTypes(RESUME_INFO *const resume)
     }
 }
 
+static bool M_IsQuickSlotSortedBefore(
+    const SAVEGAME_SLOT_REF left, const SAVEGAME_SLOT_REF right)
+{
+    const SAVEGAME_INFO *const left_info = Savegame_GetSavegameInfo(left);
+    const SAVEGAME_INFO *const right_info = Savegame_GetSavegameInfo(right);
+    if (left_info == nullptr || right_info == nullptr) {
+        return false;
+    }
+    if (left_info->counter != right_info->counter) {
+        return left_info->counter > right_info->counter;
+    }
+    return left.index < right.index;
+}
+
 SAVEGAME_VERSION Savegame_GetInitialVersion(void)
 {
     return m_InitialVersion;
@@ -494,20 +508,6 @@ SAVEGAME_SLOT_REF Savegame_GetNextQuickSlot(void)
         m_NextQuickSlot = 0;
     }
     return Savegame_QuickSlot(m_NextQuickSlot);
-}
-
-static bool M_IsQuickSlotSortedBefore(
-    const SAVEGAME_SLOT_REF left, const SAVEGAME_SLOT_REF right)
-{
-    const SAVEGAME_INFO *const left_info = Savegame_GetSavegameInfo(left);
-    const SAVEGAME_INFO *const right_info = Savegame_GetSavegameInfo(right);
-    if (left_info == nullptr || right_info == nullptr) {
-        return false;
-    }
-    if (left_info->counter != right_info->counter) {
-        return left_info->counter > right_info->counter;
-    }
-    return left.index < right.index;
 }
 
 int32_t Savegame_GetQuickVisualCount(void)

@@ -1329,6 +1329,43 @@ static bool M_UserControl(ITEM *item, int32_t height, int32_t *pitch)
     return false;
 }
 
+static void M_Setup(OBJECT *const obj)
+{
+    if (!obj->loaded) {
+        return;
+    }
+
+    obj->initialise_func = M_Initialise;
+    obj->priv_size = sizeof(M_PRIV);
+    obj->priv_load_func = M_LoadPriv;
+    obj->priv_save_func = M_SavePriv;
+    obj->collision_func = M_Collision;
+    obj->draw_func = Object_DrawAnimatingItem;
+    obj->event_func = Vehicle_HandleEvent;
+    obj->save_position = true;
+    obj->save_flags = true;
+    obj->save_anim = true;
+
+    M_EnableWheelExtraRotations(obj);
+
+    OBJECT_PROPERTIES(
+        obj,
+        OBJECT_PROPERTY_INT(
+            "track_1", -1, "Random music track pool, slot 1. -1 = disabled."),
+        OBJECT_PROPERTY_INT(
+            "track_2", -1, "Random music track pool, slot 2. -1 = disabled."),
+        OBJECT_PROPERTY_INT(
+            "track_3", -1, "Random music track pool, slot 3. -1 = disabled."),
+        OBJECT_PROPERTY_INT(
+            "track_4", -1, "Random music track pool, slot 4. -1 = disabled."),
+        OBJECT_PROPERTY_BOOL(
+            "is_heavy", true,
+            "Whether or not this vehicle can activate heavy triggers."),
+        OBJECT_PROPERTY_BOOL(
+            "test_static_collision", false,
+            "Whether or not this vehicle can collide with static meshes."));
+}
+
 bool QuadBike_Control(void)
 {
     ITEM *const item = Lara_Vehicle_GetItem();
@@ -1519,43 +1556,6 @@ bool QuadBike_Control(void)
     }
 
     return M_CheckGetOff();
-}
-
-static void M_Setup(OBJECT *const obj)
-{
-    if (!obj->loaded) {
-        return;
-    }
-
-    obj->initialise_func = M_Initialise;
-    obj->priv_size = sizeof(M_PRIV);
-    obj->priv_load_func = M_LoadPriv;
-    obj->priv_save_func = M_SavePriv;
-    obj->collision_func = M_Collision;
-    obj->draw_func = Object_DrawAnimatingItem;
-    obj->event_func = Vehicle_HandleEvent;
-    obj->save_position = true;
-    obj->save_flags = true;
-    obj->save_anim = true;
-
-    M_EnableWheelExtraRotations(obj);
-
-    OBJECT_PROPERTIES(
-        obj,
-        OBJECT_PROPERTY_INT(
-            "track_1", -1, "Random music track pool, slot 1. -1 = disabled."),
-        OBJECT_PROPERTY_INT(
-            "track_2", -1, "Random music track pool, slot 2. -1 = disabled."),
-        OBJECT_PROPERTY_INT(
-            "track_3", -1, "Random music track pool, slot 3. -1 = disabled."),
-        OBJECT_PROPERTY_INT(
-            "track_4", -1, "Random music track pool, slot 4. -1 = disabled."),
-        OBJECT_PROPERTY_BOOL(
-            "is_heavy", true,
-            "Whether or not this vehicle can activate heavy triggers."),
-        OBJECT_PROPERTY_BOOL(
-            "test_static_collision", false,
-            "Whether or not this vehicle can collide with static meshes."));
 }
 
 REGISTER_OBJECT(O_QUAD_BIKE, M_Setup)

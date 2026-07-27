@@ -8,6 +8,22 @@
     #define M_PI 3.14159265358979323846
 #endif
 
+static float M_SRGBToLinear(const float c)
+{
+    if (c <= 0.04045f) {
+        return c / 12.92f;
+    }
+    return powf((c + 0.055f) / 1.055f, 2.4f);
+}
+
+static float M_LinearToSRGB(const float c)
+{
+    if (c <= 0.0031308f) {
+        return c * 12.92f;
+    }
+    return 1.055f * powf(c, 1.0f / 2.4f) - 0.055f;
+}
+
 RGBA_8888 Color_RGB888ToRGBA8888_Impl(const RGB_888 color)
 {
     return Color_RGB888ToRGBA8888Ex_Impl(color, 255);
@@ -171,22 +187,6 @@ void Color_RGBToHSL(
     *out_h = hue;
     *out_s = sat;
     *out_l = light;
-}
-
-static float M_SRGBToLinear(const float c)
-{
-    if (c <= 0.04045f) {
-        return c / 12.92f;
-    }
-    return powf((c + 0.055f) / 1.055f, 2.4f);
-}
-
-static float M_LinearToSRGB(const float c)
-{
-    if (c <= 0.0031308f) {
-        return c * 12.92f;
-    }
-    return 1.055f * powf(c, 1.0f / 2.4f) - 0.055f;
 }
 
 RGB_888 Color_OKLCHToRGB(const float l, const float c, const float h)

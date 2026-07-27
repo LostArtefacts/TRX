@@ -38,6 +38,13 @@ static const RULE m_Rules[] = {
 #undef X_GROUP_BEGIN
 #undef X_GROUP_END
 
+// A rule can ship with a different number from game to game. Rules_Reset runs
+// once a level is loaded, so the version has settled by the time this does.
+static void M_ApplyGameDefaults(void)
+{
+    m_Defaults.corpse.fade_speed = g_TRVersion >= 4 ? 2 : 0;
+}
+
 const RULE *Rules_GetMap(void)
 {
     return m_Rules;
@@ -56,13 +63,6 @@ const RULE *Rules_GetByName(const char *const name)
 void Rules_ResetOne(const RULE *const rule)
 {
     Value_CopyPtr(rule->type, rule->target, rule->default_value);
-}
-
-// A rule can ship with a different number from game to game. Rules_Reset runs
-// once a level is loaded, so the version has settled by the time this does.
-static void M_ApplyGameDefaults(void)
-{
-    m_Defaults.corpse.fade_speed = g_TRVersion >= 4 ? 2 : 0;
 }
 
 void Rules_Reset(void)

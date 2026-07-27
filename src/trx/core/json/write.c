@@ -557,48 +557,6 @@ static char *M_WriteValue_Minified(const JSON_VALUE *value, char *data)
     }
 }
 
-void *JSON_WriteMinified(const JSON_VALUE *value, size_t *out_size)
-{
-    size_t size = 0;
-    char *data = nullptr;
-    char *data_end = nullptr;
-
-    if (nullptr == value) {
-        return nullptr;
-    }
-
-    if (M_GetValueSize_Minified(value, &size)) {
-        /* value was malformed! */
-        return nullptr;
-    }
-
-    size += 1; /* for the '\0' null terminating character. */
-
-    data = (char *)Memory_Alloc(size);
-
-    if (nullptr == data) {
-        /* malloc failed! */
-        return nullptr;
-    }
-
-    data_end = M_WriteValue_Minified(value, data);
-
-    if (nullptr == data_end) {
-        /* bad chi occurred! */
-        Memory_Free(data);
-        return nullptr;
-    }
-
-    /* null terminated the string. */
-    *data_end = '\0';
-
-    if (nullptr != out_size) {
-        *out_size = size;
-    }
-
-    return data;
-}
-
 static int M_GetArraySize_Pretty(
     const JSON_ARRAY *array, size_t depth, size_t indent_size,
     size_t newline_size, size_t *size)
@@ -874,6 +832,48 @@ static char *M_WriteValue_Pretty(
         data[3] = 'l';
         return data + 4;
     }
+}
+
+void *JSON_WriteMinified(const JSON_VALUE *value, size_t *out_size)
+{
+    size_t size = 0;
+    char *data = nullptr;
+    char *data_end = nullptr;
+
+    if (nullptr == value) {
+        return nullptr;
+    }
+
+    if (M_GetValueSize_Minified(value, &size)) {
+        /* value was malformed! */
+        return nullptr;
+    }
+
+    size += 1; /* for the '\0' null terminating character. */
+
+    data = (char *)Memory_Alloc(size);
+
+    if (nullptr == data) {
+        /* malloc failed! */
+        return nullptr;
+    }
+
+    data_end = M_WriteValue_Minified(value, data);
+
+    if (nullptr == data_end) {
+        /* bad chi occurred! */
+        Memory_Free(data);
+        return nullptr;
+    }
+
+    /* null terminated the string. */
+    *data_end = '\0';
+
+    if (nullptr != out_size) {
+        *out_size = size;
+    }
+
+    return data;
 }
 
 void *JSON_WritePretty(
