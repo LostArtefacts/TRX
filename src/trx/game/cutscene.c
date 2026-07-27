@@ -9,6 +9,7 @@
 #include <trx/game/const.h>
 #include <trx/game/effects.h>
 #include <trx/game/fx.h>
+#include <trx/game/game/control.h>
 #include <trx/game/gun/misc.h>
 #include <trx/game/gun/smoke.h>
 #include <trx/game/input.h>
@@ -247,15 +248,12 @@ static void M_DrawGunFlash(const LARA_MESH hand_mesh)
 
 static void M_Control(void)
 {
-    Output_ResetDynamicLights();
-    FX_NewFrame();
+    Game_TickBeginFrame();
     Camera_UpdateCutscene();
     M_ControlGun();
-    Item_Control();
-    Effect_Control();
-    Sparks_Control();
+    Game_TickWorld();
     FX_Control();
-    Output_AnimateTextures(1);
+    Game_TickEndFrame();
     Lara_Hair_Control(true);
 }
 
