@@ -1038,7 +1038,7 @@ void Lara_Control(void)
             return;
         }
     } else if (Room_IsAbyssHeight(item->pos.y)) {
-        item->hit_points = -1;
+        Lara_Kill();
         lara_info->death_timer = 9 * LOGIC_FPS;
     }
 

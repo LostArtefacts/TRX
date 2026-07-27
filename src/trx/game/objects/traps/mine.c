@@ -37,7 +37,7 @@ static void M_DetonateAll(
     if (Lara_Vehicle_GetIndex() == boat_item_num) {
         ITEM *const lara_item = Lara_GetItem();
         Item_Shatter(Item_GetIndex(lara_item), -1, 0);
-        lara_item->hit_points = 0;
+        Lara_Kill();
         lara_item->trigger.spent = true;
     }
 

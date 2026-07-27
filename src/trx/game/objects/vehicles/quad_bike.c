@@ -406,8 +406,8 @@ static bool M_CheckGetOff(void)
             lara_item->fall_speed = item->fall_speed;
             lara_item->rot.x = 0;
             lara_item->rot.z = 0;
-            lara_item->hit_points = 0;
             lara->gun_status = LGS_ARMLESS;
+            Lara_Kill();
             item->trigger.spent = true;
             return false;
         }
@@ -1149,7 +1149,7 @@ static void M_AnimateQuadBike(
     if (Room_Get(item->room_num)->flags.underwater
         || Room_Get(item->room_num)->flags.swamp) {
         lara_item->goal_anim_state = M_STATE_FALL_OFF;
-        lara_item->hit_points = 0;
+        Lara_Kill();
         M_Explode(item);
     }
 }
@@ -1503,7 +1503,7 @@ bool QuadBike_Control(void)
                 Item_SwitchToAnim(lara_item, LA(LA_FREEFALL_LAND), 0);
             } else {
                 Item_Shatter(lara->item_num, -1, 0);
-                lara_item->hit_points = 0;
+                Lara_Kill();
                 lara_item->trigger.spent = true;
             }
             M_Explode(item);

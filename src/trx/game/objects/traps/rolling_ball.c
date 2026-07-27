@@ -223,7 +223,7 @@ static void M_Collision(
     } else {
         lara_item->hit_status = true;
         if (lara_item->hit_points > 0) {
-            lara_item->hit_points = -1;
+            Lara_Kill();
             Item_UpdateRoom(lara->item_num, item->room_num);
 
             lara_item->rot.x = 0;

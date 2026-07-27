@@ -540,7 +540,7 @@ static void M_UserControl(ITEM *const item)
             item->pos = XYZ_32_OffsetYaw(item->pos, item->rot.y, STEP_L / 2);
         } else if (Lara_Vehicle_TestAnimEqual(M_ANIM_TOPPLED)) {
             p->flags.suppress_anim = true;
-            lara_item->hit_points = -1;
+            Lara_Kill();
         }
         break;
     }
@@ -617,7 +617,7 @@ static void M_UserControl(ITEM *const item)
         p->flags.dead = true;
         p->speed = 0;
         item->speed = 0;
-        lara_item->hit_points = -1;
+        Lara_Kill();
         return;
     }
 
