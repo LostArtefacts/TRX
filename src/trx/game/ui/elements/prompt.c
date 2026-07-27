@@ -243,20 +243,21 @@ static void M_HandleTextEdit(const EVENT *const event, void *const user_data)
         return;
     }
     const char *insert_string = filtered;
-    const size_t insert_length = strlen(insert_string);
+    const int32_t insert_length = strlen(insert_string);
 
-    const size_t available_space =
-        s->current_text_capacity - strlen(s->current_text);
-    if (insert_length >= available_space) {
-        s->current_text_capacity *= 2;
+    const int32_t old_length = strlen(s->current_text);
+    const int32_t required_size = old_length + insert_length + 1;
+    if (required_size > s->current_text_capacity) {
+        while (s->current_text_capacity < required_size) {
+            s->current_text_capacity *= 2;
+        }
         s->current_text =
             Memory_Realloc(s->current_text, s->current_text_capacity);
     }
 
     memmove(
         s->current_text + s->caret_pos + insert_length,
-        s->current_text + s->caret_pos,
-        strlen(s->current_text) + 1 - s->caret_pos);
+        s->current_text + s->caret_pos, old_length + 1 - s->caret_pos);
     memcpy(s->current_text + s->caret_pos, insert_string, insert_length);
 
     s->caret_pos += insert_length;
