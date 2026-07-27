@@ -44,6 +44,9 @@
                 {"type": "setup_horizon", "layer": 0, "color": "#A0A0C0", "speed": 7}, // second layer also supported, seemingly unused?
                 {"type": "setup_uv_rotate", "speed": 4},
                 // {"type": "loading_camera", "source_x": 7835, "source_y": -569, "source_Z": 88960, "target_x": 5000, "target_y": -323, "target_z": 88346, "room": 20},
+                {"type": "remove_weapons"},
+                {"type": "give_item", "object_id": "small_medipack", "quantity": 3},
+                {"type": "give_item", "object_id": "large_medipack"},
                 {"type": "play_cutscene", "cutscene_id": 6}, // cutseq.pak, not level files
                 {"type": "loop_game"},
                 {"type": "level_complete"},
@@ -81,6 +84,8 @@
                 // {"type": "setup_inv_item", "obj_id": "puzzle_1_combo_2", "offset_y": 23, "scale": 1280, "rot_x": 0, "rot_y": 0, "rot_z": 0, "flags": 2},
                 // {"type": "loading_camera", "source_x": 87075, "source_y": -14188, "source_Z": 26581, "target_x": 89090, "target_y": -15443, "target_z": 25670, "room": 29},
                 // {"type": "reset_hub", "level_idx": 4},
+                {"type": "give_item", "object_id": "pistols"},
+                {"type": "give_item", "object_id": "flare", "quantity": 3},
                 {"type": "give_item", "object_id": "binoculars"},
                 {"type": "loop_game"},
                 {"type": "level_complete"},

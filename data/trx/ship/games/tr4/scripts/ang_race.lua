@@ -3,3 +3,7 @@ trx.events.before_item_setup(function(level)
   trx.objects.animating_15.properties.collidable = false
   trx.objects.animating_16.properties.collidable = false
 end)
+
+trx.events.on_game_start(function(level, is_save)
+  trx.lara.holsters_visible = trx.lara.has_pistol_weapon
+end)
