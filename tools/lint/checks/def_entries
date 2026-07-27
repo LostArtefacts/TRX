@@ -1,36 +1,73 @@
 #!/usr/bin/env python3
 import re
 import sys
+from collections.abc import Iterator
+from dataclasses import dataclass
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from harness import LintWarning, file_check
 
-ENTRY_RE = re.compile(r"^(GS_DEFINE|X_CFG_\w*)\(")
-# Config maps are kept in order; game strings are grouped by feature instead.
-ORDERED_RE = re.compile(r"(^|/)config/map(_tr\d)?\.def$")
+ENTRY_RE = re.compile(r"^([A-Z][A-Z0-9_]*)\(")
 
 
-def _comma(line):
-    # Keys never contain a comma, so the first one separates the key from the
-    # value.
-    return line.index(",")
+@dataclass(frozen=True)
+class Rule:
+    # Where a shared column starts over: at every blank line, or not at all.
+    per_group: bool
+    # Table files align every argument and give each macro its own columns;
+    # elsewhere one column serves the whole file and only the key is padded.
+    table: bool = False
+    ordered: bool = False
 
 
-def _value(line):
-    return len(line) - len(line[_comma(line) + 1 :].lstrip())
+RULES: list[tuple[str, Rule]] = [
+    (r"config/map(_tr\d)?\.def$", Rule(per_group=True, ordered=True)),
+    (r"game_strings/entries\.def$", Rule(per_group=True)),
+    (r"objects/names\.def$", Rule(per_group=True, table=True)),
+    (r"input/(roles|backends/\w+)\.def$", Rule(per_group=False)),
+    (r"ui/dialogs/setting_tabs/\w+\.def$", Rule(per_group=False)),
+]
 
 
-def _order_key(line):
+def _rule(path: Path) -> Rule | None:
+    for pattern, rule in RULES:
+        if re.search(pattern, path.as_posix()):
+            return rule
+    return None
+
+
+def _commas(line: str) -> list[int]:
+    # Only top-level commas separate arguments; the ones nested in a macro
+    # argument belong to that argument.
+    depth = 0
+    commas = []
+    for i, char in enumerate(line):
+        if char == "(":
+            depth += 1
+        elif char == ")":
+            depth -= 1
+        elif char == "," and depth == 1:
+            commas.append(i)
+    return commas
+
+
+def _gap(line: str, comma: int) -> int:
+    return len(line[comma + 1 :]) - len(line[comma + 1 :].lstrip())
+
+
+def _order_key(line: str) -> str:
     # Entries are padded to a common column, so compare on collapsed
     # whitespace: the order is decided by the macro name and the key.
     return re.sub(r"\s+", " ", line)
 
 
-def _groups(lines):
-    # Groups are blank-line delimited; each one aligns and sorts on its own.
-    group = []
+def _groups(lines: list[str], rule: Rule) -> Iterator[list[int]]:
+    if not rule.per_group:
+        yield list(range(len(lines)))
+        return
+    group: list[int] = []
     for i, line in enumerate(lines):
         if line.strip():
             group.append(i)
@@ -40,58 +77,68 @@ def _groups(lines):
     yield group
 
 
-def _entries(lines, group):
-    return [i for i in group if ENTRY_RE.match(lines[i])]
-
-
-def check(path, text):
-    lines = text.split("\n")
-    ordered = ORDERED_RE.search(path.as_posix()) is not None
-    for group in _groups(lines):
-        entries = _entries(lines, group)
-        if not entries:
+def _blocks(lines: list[str], rule: Rule) -> Iterator[list[int]]:
+    # A block shares one set of columns. Table files split a group by macro and
+    # argument count, since rows of different shapes form separate tables.
+    for group in _groups(lines, rule):
+        entries = [i for i in group if ENTRY_RE.match(lines[i]) and "," in lines[i]]
+        if not rule.table:
+            if entries:
+                yield entries
             continue
-
-        # One space follows the longest key's comma; shorter keys pad to the
-        # same column.
-        target = max(_comma(lines[i]) for i in entries) + 2
+        blocks: dict[tuple[str, int], list[int]] = {}
         for i in entries:
-            actual = _value(lines[i])
-            if actual != target:
-                yield LintWarning(
-                    path,
-                    f"value not aligned to group column {target + 1} "
-                    f"(found {actual + 1})",
-                    line=i + 1,
-                )
-
-        if not ordered:
-            continue
-        for prev, cur in zip(entries, entries[1:]):
-            if _order_key(lines[prev]) > _order_key(lines[cur]):
-                yield LintWarning(
-                    path,
-                    f"entry is out of order (belongs before line {prev + 1})",
-                    line=cur + 1,
-                )
+            key = (ENTRY_RE.match(lines[i])[1], len(_commas(lines[i])))
+            blocks.setdefault(key, []).append(i)
+        yield from (block for block in blocks.values() if len(block) > 1)
 
 
-def fix(path, text):
-    lines = text.split("\n")
-    ordered = ORDERED_RE.search(path.as_posix()) is not None
-    for group in _groups(lines):
-        entries = _entries(lines, group)
-        if not entries:
-            continue
-        if ordered:
-            for i, line in zip(entries, sorted((lines[i] for i in entries), key=_order_key)):
+def _rewrite(lines: list[str], rule: Rule) -> list[str]:
+    # The one description of what the file should look like; the check reports
+    # what this would change, and the fix writes it out.
+    lines = list(lines)
+    for block in _blocks(lines, rule):
+        if rule.ordered:
+            for i, line in zip(block, sorted((lines[i] for i in block), key=_order_key)):
                 lines[i] = line
-        target = max(_comma(lines[i]) for i in entries) + 2
-        for i in entries:
-            line = lines[i]
-            comma = _comma(line)
-            lines[i] = line[: comma + 1] + " " * (target - comma - 1) + line[_value(line) :]
-    return "\n".join(lines)
+        # One space follows the longest argument's comma; the rest pad to the
+        # same column. Columns are done left to right, as padding one moves
+        # the arguments after it along.
+        columns = min(len(_commas(lines[i])) for i in block) if rule.table else 1
+        for column in range(columns):
+            commas = [_commas(lines[i])[column] for i in block]
+            target = max(commas) + 2
+            for i, comma in zip(block, commas):
+                line = lines[i]
+                pad = " " * (target - comma - 1)
+                lines[i] = line[: comma + 1] + pad + line[comma + 1 + _gap(line, comma) :]
+    return lines
+
+
+def check(path: Path, text: str) -> Iterator[LintWarning]:
+    rule = _rule(path)
+    if rule is None:
+        return
+    lines = text.split("\n")
+    for i, (line, wanted) in enumerate(zip(lines, _rewrite(lines, rule)), 1):
+        if line == wanted:
+            continue
+        if _order_key(line) != _order_key(wanted):
+            yield LintWarning(path, "entry is out of order", line=i)
+            continue
+        column = next(
+            comma + _gap(wanted, comma) + 2
+            for comma, was in zip(_commas(wanted), _commas(line))
+            if _gap(wanted, comma) != _gap(line, was)
+        )
+        yield LintWarning(path, f"argument not aligned to column {column}", line=i)
+
+
+def fix(path: Path, text: str) -> str:
+    rule = _rule(path)
+    if rule is None:
+        return text
+    return "\n".join(_rewrite(text.split("\n"), rule))
 
 
 file_check(check, fix)

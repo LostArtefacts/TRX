@@ -1,4 +1,4 @@
-X_UI_CFG_ENUM(ui.stats.style, .misc = UI_Settings_StatsStyleEnumEntries)
+X_UI_CFG_ENUM(ui.stats.style,    .misc = UI_Settings_StatsStyleEnumEntries)
 X_UI_CFG(ui.stats.show_totals)
 X_UI_CFG(ui.stats.show_level_header)
 X_UI_CFG(ui.stats.show_time_taken)
