@@ -97,10 +97,19 @@ bool Field_Get(
 }
 
 const char *Field_Set(
-    const FIELD_DESC *const field, void *const self, const TRX_VALUE *const in)
+    const FIELD_DESC *const field, void *const self, const TRX_VALUE *in)
 {
     if (field->flags & FF_READONLY) {
         return "field is read-only";
+    }
+
+    // A cyclic member has no value outside its width: one is spelled the long
+    // way round, so it comes back in rather than being turned away.
+    TRX_VALUE wrapped;
+    if ((field->flags & FF_MODULAR) != 0) {
+        wrapped = *in;
+        Value_Wrap(field->type, &wrapped);
+        in = &wrapped;
     }
 
     // Whether the value fits is a property of the member's storage, not of the

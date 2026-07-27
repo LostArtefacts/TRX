@@ -5252,7 +5252,7 @@
           "writable": false
         },
         {
-          "description": "Orientation.",
+          "description": "Orientation, in the units `trx.math` counts angles in. An angle counts in cycles, so one past the end of the turn wraps round to name the same direction rather than raising: adding a half turn to a rotation always works.",
           "name": "rot",
           "type": "vec3",
           "writable": true

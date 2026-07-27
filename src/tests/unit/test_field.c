@@ -20,6 +20,8 @@ typedef struct {
     int16_t locked;
     int32_t guarded;
     int16_t narrow;
+    int16_t angle;
+    XYZ_16 rot;
     struct {
         bool nested_flag;
     } group;
@@ -68,6 +70,8 @@ static const FIELD_DESC m_Fields[] = {
     FIELD_FN ("doubled", TVT_S32, M_GetDoubled, nullptr),
     FIELD_SET(SAMPLE, guarded, M_SetRejecting),
     FIELD_SET(SAMPLE, narrow, M_SetNarrow),
+    FIELD_MODULAR(SAMPLE, angle),
+    FIELD_MODULAR(SAMPLE, rot),
 };
 // clang-format on
 
@@ -219,6 +223,37 @@ TEST(field_set_rejects_an_out_of_range_value)
             .as_xyz = { .x = 1, .y = 99999, .z = 3 },
         }));
     CHECK_EQ_INT(v.small_vec.x, 0); // unchanged
+}
+
+TEST(a_modular_member_wraps_rather_than_rejecting)
+{
+    SAMPLE s = {};
+
+    // A half turn past the end of the turn is the same direction spelled the
+    // long way round, so it comes back in rather than being turned away.
+    CHECK_NULL(Field_Set(
+        F("angle"), &s, &(TRX_VALUE) { .type = TVT_S16, .as_int = 49152 }));
+    CHECK_EQ_INT(s.angle, -16384);
+
+    CHECK_NULL(Field_Set(
+        F("angle"), &s, &(TRX_VALUE) { .type = TVT_S16, .as_int = -49152 }));
+    CHECK_EQ_INT(s.angle, 16384);
+
+    // A value already in range is left as it is.
+    CHECK_NULL(Field_Set(
+        F("angle"), &s, &(TRX_VALUE) { .type = TVT_S16, .as_int = -1 }));
+    CHECK_EQ_INT(s.angle, -1);
+
+    // Every component of a vector wraps on its own.
+    CHECK_NULL(Field_Set(
+        F("rot"), &s,
+        &(TRX_VALUE) {
+            .type = TVT_XYZ_16,
+            .as_xyz = { .x = 65536, .y = 40000, .z = -1 },
+        }));
+    CHECK_EQ_INT(s.rot.x, 0);
+    CHECK_EQ_INT(s.rot.y, -25536);
+    CHECK_EQ_INT(s.rot.z, -1);
 }
 
 TEST(computed_member_uses_its_accessor_and_is_readonly)

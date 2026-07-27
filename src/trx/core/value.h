@@ -85,6 +85,11 @@ void Value_ReadPtr(TRX_VALUE_TYPE type, const void *src, TRX_VALUE *out);
 // first, since the fit is a property of the storage, not of the setter.
 const char *Value_CheckRange(TRX_VALUE_TYPE type, const TRX_VALUE *in);
 
+// Brings `in` into the range `type` can hold by wrapping it, for a member that
+// counts in cycles rather than along a line: an angle past the end of the turn
+// names the same direction. Types with no range to speak of are left alone.
+void Value_Wrap(TRX_VALUE_TYPE type, TRX_VALUE *value);
+
 // Narrows `in` into the storage at `dst`. Returns nullptr on success or an
 // error message; the range check runs first. String storage is caller-managed,
 // so a string type reports an error rather than writing a borrowed pointer.

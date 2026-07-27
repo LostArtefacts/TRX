@@ -116,7 +116,13 @@ api.type("items.Item", {
       type = "vec3",
       description = "World position. Updating this also updates `room` and `room_num`.",
     },
-    rot = { from = "rot", type = "vec3", description = "Orientation." },
+    rot = {
+      from = "rot",
+      type = "vec3",
+      description = "Orientation, in the units `trx.math` counts angles in. An angle counts in "
+        .. "cycles, so one past the end of the turn wraps round to name the same direction rather "
+        .. "than raising: adding a half turn to a rotation always works.",
+    },
     anim = {
       from = "anim",
       type = "integer",
