@@ -3408,6 +3408,9 @@
         "switch_type_floor": {
             "name": "Suids Làir",
         },
+        "switch_type_jump": {
+            "name": "Suids Àrd",
+        },
         "switch_type_normal": {
             "name": [
                 "Luaidhe",

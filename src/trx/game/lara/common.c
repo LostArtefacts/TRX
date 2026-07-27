@@ -885,7 +885,7 @@ void Lara_AlignPosition(const ITEM *const item, const XYZ_32 *const vec)
         .z = item->pos.z + shift.z,
     };
 
-    if (g_Config.gameplay.fix_lara_pickup_embed) {
+    if (g_Config.gameplay.fix_lara_pickup_embed && !lara->gravity) {
         int16_t room_num = lara->room_num;
         const SECTOR *const sector = Room_GetSector(new_pos, &room_num);
         const int32_t height = Room_GetHeight(sector, new_pos);

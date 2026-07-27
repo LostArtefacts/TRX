@@ -3386,6 +3386,9 @@
         "switch_type_floor": {
             "name": "\\{review}Przełącznik podłogowy",
         },
+        "switch_type_jump": {
+            "name": "\\{review}Przełącznik skokowy",
+        },
         "switch_type_normal": {
             "name": [
                 "Dźwignia",

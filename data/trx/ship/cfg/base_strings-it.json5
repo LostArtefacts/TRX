@@ -3436,6 +3436,9 @@
         "switch_type_floor": {
             "name": "\\{review}Interruttore a pavimento",
         },
+        "switch_type_jump": {
+            "name": "\\{review}Interruttore da salto",
+        },
         "switch_type_normal": {
             "name": [
                 "Leva",
