@@ -839,6 +839,7 @@
         "enable_poison_vision",
         "enable_3d_pickups", // TR3 has no sprite pickups
         "enable_item_examining",
+        "enable_ps1_sfx",
         "disable_trex_collision",
         "fix_bear_ai",
         "enable_ps1_crystals", // TR3 crystals have no tint variants

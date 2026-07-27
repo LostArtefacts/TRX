@@ -70,6 +70,7 @@
 - fixed Lara, when on fire, not extinguishing at the right water depth compared with OG (regression from 1.1)
 - fixed the waterfall and drowning mist bunching up in one spot instead of spreading out along the water (regression from 1.2)
 - fixed a crash when a level holds fewer raptors than its raptor emitters can send out
+- removed the PS1 SFX replacements option from the Sound menu, which has no relevance in TR3/TR3LA
 
 **TR4**
 - added dead enemies fading away a few seconds after they fall, as in the original TR4
