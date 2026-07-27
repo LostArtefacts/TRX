@@ -42,6 +42,10 @@ bool Item_CanBeProjectileTarget(const ITEM *item);
 void Item_TakeDamage(
     ITEM *item, int16_t damage, ITEM_DAMAGE_FLAGS flags, const ITEM *sender);
 
+// Deal an item everything it has left, for the deaths that a script or a touch
+// decides rather than a weapon. Does nothing to an item already at zero.
+void Item_TakeFatalDamage(ITEM *item, const ITEM *sender);
+
 bool Item_IsMeshVisible(const ITEM *item, int32_t mesh_num);
 void Item_SetMeshVisible(ITEM *item, int32_t mesh_num, bool visible);
 void Item_SetMeshVisibleMask(ITEM *item, uint32_t mesh_mask, bool visible);

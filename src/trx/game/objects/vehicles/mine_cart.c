@@ -324,7 +324,7 @@ static void M_CheckObjectCollision(ITEM *const item, ITEM *const cart)
             cart->rot.y, item->room_num, 3);
     }
     if (item->hit_points > 0) {
-        Item_TakeDamage(item, item->hit_points, IDF_NO_HIT_STATUS, cart);
+        Item_TakeFatalDamage(item, cart);
     }
 }
 

@@ -791,8 +791,7 @@ void Lara_TakeDamage(const int16_t damage, const bool hit_status)
 void Lara_Kill(void)
 {
     ITEM *const lara_item = Lara_GetItem();
-    Item_TakeDamage(
-        lara_item, lara_item->hit_points, IDF_NO_HIT_STATUS, nullptr);
+    Item_TakeFatalDamage(lara_item, nullptr);
     // Item_TakeDamage clamps at zero, while the death paths test for a
     // negative value.
     lara_item->hit_points = -1;
