@@ -229,7 +229,6 @@ GF_COMMAND Game_Control(const bool demo_mode)
     Game_TickPostControl();
     Game_TickEndFrame();
     Overlay_Animate(1);
-    Output_LensFlares_Update();
     return (GF_COMMAND) { .action = GF_NOOP };
 }
 
@@ -259,6 +258,7 @@ void Game_TickEndFrame(void)
 {
     Output_AnimateTextures(1);
     Output_Sky_Update();
+    Output_LensFlares_Update();
 }
 
 void Game_ProcessInput(void)
