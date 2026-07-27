@@ -33,7 +33,9 @@ void Sparks_TriggerPickupAid(XYZ_32 pos, XZ_32 vel);
 
 void Sparks_TriggerFlareSparks(XYZ_32 pos, XYZ_32 vel, bool smoke);
 
-void Sparks_TriggerRicochet(GAME_VECTOR pos, int32_t angle, int32_t size);
+void Sparks_TriggerRicochetTR3(GAME_VECTOR pos, int32_t angle, int32_t size);
+void Sparks_TriggerRicochetTR4(
+    GAME_VECTOR pos, int32_t angle, int32_t count, int32_t smoke_only);
 
 void Sparks_TriggerGunSmoke(
     GAME_VECTOR pos, bool initial, LARA_GUN_TYPE weapon, int32_t shade);

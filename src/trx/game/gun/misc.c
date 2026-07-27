@@ -504,7 +504,7 @@ void Gun_HitTarget(
                 .room_num = item->room_num,
             };
             if (start != nullptr) {
-                Spawn_RicochetRay(*start, pos);
+                Spawn_RicochetRay(*start, pos, 3);
             } else {
                 Spawn_Ricochet(pos);
             }

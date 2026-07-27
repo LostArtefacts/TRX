@@ -70,6 +70,7 @@
 - added fires
 - added Lara catching fire, from fires and other hazards; she stays on fire across level transitions
 - added an option to let fires and other dynamic lights illuminate static meshes (Graphic Options → Visuals → Static mesh lighting)
+- added ricochets, so that shots that hit walls and other hard surfaces throw out sparks and leave a puff of smoke
 - fixed pixel sparks, such as blood and the shell splash, drawing as squares instead of the original streaks
 - fixed the camera snapping to elevation and angle changes in instances such as opening floor trapdoors
 - fixed Lara's braid and pigtails spinning around their own axis (OG bug)

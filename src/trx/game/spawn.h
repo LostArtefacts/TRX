@@ -9,7 +9,8 @@ XYZ_32 Spawn_GetRayPos(GAME_VECTOR start, GAME_VECTOR hit_pos, int32_t dist);
 
 void Spawn_Splash(const ITEM *item);
 void Spawn_Ricochet(GAME_VECTOR pos);
-void Spawn_RicochetRay(GAME_VECTOR start, GAME_VECTOR hit_pos);
+// `count` is the number of streaks to spawn, and only applies to TR4.
+void Spawn_RicochetRay(GAME_VECTOR start, GAME_VECTOR hit_pos, int32_t count);
 
 void Spawn_Bubble(const XYZ_32 *pos, int16_t room_num);
 void Spawn_BubbleEx(
