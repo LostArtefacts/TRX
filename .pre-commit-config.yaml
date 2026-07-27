@@ -81,7 +81,7 @@ repos:
     name: Definition entries are aligned and ordered
     entry: tools/lint/checks/def_entries --fix
     language: python
-    files: (^|/)(game_strings/entries|config/map(_tr\d)?)\.def$
+    files: \.def$
 
   - id: lint-preset-keys
     name: Preset setting keys are known
