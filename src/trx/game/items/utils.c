@@ -178,6 +178,11 @@ void Item_TakeDamage(
     }
 }
 
+void Item_TakeFatalDamage(ITEM *const item, const ITEM *const sender)
+{
+    Item_TakeDamage(item, item->hit_points, IDF_NO_HIT_STATUS, sender);
+}
+
 bool Item_IsMeshVisible(const ITEM *const item, const int32_t mesh_num)
 {
     if (mesh_num < 0 || mesh_num >= 32) {

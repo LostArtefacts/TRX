@@ -148,7 +148,7 @@ static bool M_CheckBaddieCollision(ITEM *const item, ITEM *const skidoo)
                 skidoo->rot.y, item->room_num, 3);
         }
         if (item->hit_points > 0) {
-            Item_TakeDamage(item, item->hit_points, IDF_NO_HIT_STATUS, skidoo);
+            Item_TakeFatalDamage(item, skidoo);
         }
     }
     return true;

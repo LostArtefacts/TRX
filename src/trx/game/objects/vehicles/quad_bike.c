@@ -745,8 +745,7 @@ static void M_SkidooBaddieCollision(ITEM *const quad)
                         quad->speed, quad->rot.y, item->room_num, 3);
                 }
                 if (item->hit_points > 0) {
-                    Item_TakeDamage(
-                        item, item->hit_points, IDF_NO_HIT_STATUS, quad);
+                    Item_TakeFatalDamage(item, quad);
                 }
             }
 

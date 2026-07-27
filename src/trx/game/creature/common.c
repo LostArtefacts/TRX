@@ -1222,7 +1222,7 @@ bool Creature_Animate(
             (XYZ_32) { item->pos.x, item->pos.y - (STEP_L * 2), item->pos.z },
             &room_num);
         if (M_TestDrowned(item, bounds, room_num)) {
-            Item_TakeDamage(item, item->hit_points, IDF_NO_HIT_STATUS, nullptr);
+            Item_TakeFatalDamage(item, nullptr);
         }
     }
 
