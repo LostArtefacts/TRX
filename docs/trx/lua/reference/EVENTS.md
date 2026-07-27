@@ -411,9 +411,9 @@ A handler attached from a level script is detached automatically when the level 
   writing `hit_points`, or `destroy()` - does not report.
 
   Some bosses fall and get back up: Willard is knocked out, Natla plays dead before her second
-  stage, and the dragon lies still until Lara takes the dagger. Their hit points reach zero once per
-  stage, so they report once per stage rather than once per boss. Watch for what marks the last
-  stage - the item leaving play, say - if you need the final death.
+  stage, and the dragon lies still until Lara takes the dagger. Each stage brings their hit points
+  to zero, so they report once per stage rather than once per boss, and the dragon reports once
+  more for the dagger that ends it.
 
   `trx.items.Item:on_kill` is this same event, narrowed to one item.
 

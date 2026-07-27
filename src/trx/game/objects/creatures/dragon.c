@@ -9,6 +9,7 @@
 #include <trx/game/items/carrier.h>
 #include <trx/game/lara.h>
 #include <trx/game/lara/common.h>
+#include <trx/game/lua/events.h>
 #include <trx/game/objects/common.h>
 #include <trx/game/objects/property.h>
 #include <trx/game/output.h>
@@ -191,6 +192,13 @@ static void M_MarkDragonDead(ITEM *const dragon_back_item)
     CREATURE *const creature = dragon_front_item->creature_data;
     creature->flags = -1;
     Stats_AddKill();
+
+    // In one phase the shot that emptied its hit points reported the death. In
+    // two it has lain at zero since the knock-down that let Lara reach the
+    // dagger, so only the dagger can report the end.
+    if (M_IsTwoPhaseMode(dragon_back_item)) {
+        LUA_FireEventInt32(LUA_EVENT_KILL, dragon_front_item_num);
+    }
 
     // Allow drops to occur at the beginning of the cinematic camera for a
     // better window to avoid seeing the items spawn. Carrier_TestItemDrops
