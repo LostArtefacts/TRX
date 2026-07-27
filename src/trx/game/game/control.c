@@ -219,27 +219,46 @@ GF_COMMAND Game_Control(const bool demo_mode)
         }
     }
 
+    Game_TickBeginFrame();
+    Sound_ResetAmbient();
+    Game_TickWorld();
+
+    Lara_Control();
+    Lara_Hair_Control(false);
+
+    Game_TickPostControl();
+    Game_TickEndFrame();
+    Overlay_Animate(1);
+    Output_LensFlares_Update();
+    return (GF_COMMAND) { .action = GF_NOOP };
+}
+
+void Game_TickBeginFrame(void)
+{
     Output_ResetDynamicLights();
     FX_NewFrame();
+}
 
-    Sound_ResetAmbient();
+void Game_TickWorld(void)
+{
     Item_Control();
     Effect_Control();
     Sparks_Control();
+}
 
-    Lara_Control();
+void Game_TickPostControl(void)
+{
     FX_Control();
-    Lara_Hair_Control(false);
-
     FlybyMode_PostControl();
     Camera_Update();
     ItemAction_RunActive();
     Sound_UpdateEffects();
-    Overlay_Animate(1);
+}
+
+void Game_TickEndFrame(void)
+{
     Output_AnimateTextures(1);
     Output_Sky_Update();
-    Output_LensFlares_Update();
-    return (GF_COMMAND) { .action = GF_NOOP };
 }
 
 void Game_ProcessInput(void)
