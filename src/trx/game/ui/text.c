@@ -280,6 +280,22 @@ static const M_GLYPH_INFO *M_GetResolvedGlyph(const M_GLYPH_INFO *glyph)
     return entry != nullptr ? entry->glyph : nullptr;
 }
 
+// Width the glyph occupies when drawn, matching the resolution and font
+// fallback that M_Process applies.
+static float M_GetLayoutWidth(
+    const M_GLYPH_INFO *const glyph, const M_FONT font)
+{
+    const M_GLYPH_INFO *const resolved = M_GetResolvedGlyph(glyph);
+    if (resolved == nullptr) {
+        return 0.0f;
+    }
+    M_FONT glyph_font = font;
+    if (glyph_font == M_FONT_SMALL && !M_HasGlyph(glyph_font, resolved)) {
+        glyph_font = M_FONT_DEFAULT;
+    }
+    return resolved->width[glyph_font];
+}
+
 static int32_t M_DetectBulletIndent(
     const M_GLYPH_INFO **glyphs, const size_t glyph_count, const size_t idx)
 {
@@ -393,14 +409,13 @@ static size_t M_WordWrap(
                 word_len++;
             }
 
-            // Compute width (sum widths + spacing)
+            // Compute width (sum widths + spacing). The spacing after the last
+            // glyph counts too: whatever follows the word is a space, which
+            // M_Process draws after that spacing.
             float word_width = 0.0f;
             for (size_t j = i; j < i + word_len; j++) {
                 word_width += M_LETTER_SPACING;
-                word_width += glyphs[j]->width[current_font];
-            }
-            if (word_width > 0) {
-                word_width -= M_LETTER_SPACING;
+                word_width += M_GetLayoutWidth(glyphs[j], current_font);
             }
             word_width *= scale_f;
 
@@ -416,7 +431,8 @@ static size_t M_WordWrap(
                     for (size_t j = i; j < i + word_len; j++) {
                         const M_GLYPH_INFO *const next_glyph = glyphs[j];
                         const float glyph_width =
-                            (next_glyph->width[current_font] + M_LETTER_SPACING)
+                            (M_GetLayoutWidth(next_glyph, current_font)
+                             + M_LETTER_SPACING)
                             * scale_f;
                         if (cur_width + glyph_width > max_width) {
                             M_EmitNewline(
