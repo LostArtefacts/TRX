@@ -528,6 +528,18 @@ static int M_L_ItemsDie(lua_State *const L)
     return 0;
 }
 
+// item:take_damage(damage)
+static int M_L_ItemsTakeDamage(lua_State *const L)
+{
+    LUA_STRUCT_REF *const ref = LUA_Struct_CheckRef(L, 1, &TYPE_ITEM);
+    ITEM *const item = LUA_Struct_Deref(L, ref);
+    const lua_Integer damage = luaL_checkinteger(L, 2);
+    luaL_argcheck(
+        L, damage >= 0 && damage <= INT16_MAX, 2, "damage out of range");
+    Item_TakeDamage(item, (int16_t)damage, IDF_NONE, nullptr);
+    return 0;
+}
+
 // item:shatter([damage])
 static int M_L_ItemsShatter(lua_State *const L)
 {
@@ -540,6 +552,7 @@ static int M_L_ItemsShatter(lua_State *const L)
 static const luaL_Reg m_Methods[] = {
     { "distance_to", M_L_ItemsDistanceTo },
     { "die", M_L_ItemsDie },
+    { "take_damage", M_L_ItemsTakeDamage },
     { "shatter", M_L_ItemsShatter },
     { "destroy", M_L_ItemsDestroy },
     { "activate", M_L_ItemsActivate },
