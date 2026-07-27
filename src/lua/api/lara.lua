@@ -283,6 +283,27 @@ api.define("lara.set_extra_equipment", {
   impl = raw.set_extra_equipment,
 })
 
+api.define("lara.teleport", {
+  description = "Moves Lara to a world position, putting her down on the floor there. She is "
+    .. "taken off any vehicle, her weapons are put away and the camera follows her over.\n\n"
+    .. "The position is nudged into valid room geometry, so a spot inside a wall lands her beside "
+    .. "it rather than in it. Somewhere with no floor within reach moves nothing.",
+  params = {
+    { name = "pos", type = "vec3", description = "World position." },
+    {
+      name = "room_num",
+      type = "integer",
+      optional = true,
+      description = "0-based room to look in. Without it, the room is found from the position.",
+    },
+  },
+  returns = { type = "boolean", description = "Whether she was moved." },
+  examples = {
+    [[trx.lara.teleport(trx.items.query:of_object("wolf"):first().pos)]],
+  },
+  impl = raw.teleport,
+})
+
 api.define("lara.cure_poison", {
   description = "Cures Lara's poisoning. Not the same as writing `0` to `poison`: the poison has a "
     .. "target as well as a current value, and clearing only the value lets it climb back.",

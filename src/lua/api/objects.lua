@@ -233,6 +233,15 @@ local filters = {
       end
     end,
   },
+  -- A creature that fights Lara rather than for her.
+  enemy = {
+    searchable = true,
+    test = function()
+      return function(id)
+        return raw.is_type(id, "creature") and not raw.is_type(id, "loyal")
+      end
+    end,
+  },
   -- One of Lara's own: the butler, and Lara herself.
   loyal = {
     searchable = true,
@@ -250,6 +259,21 @@ local filters = {
       end
     end,
   },
+  switch = function()
+    return function(id)
+      return raw.is_type(id, "switch")
+    end
+  end,
+  receptacle = function()
+    return function(id)
+      return raw.is_type(id, "receptacle")
+    end
+  end,
+  door = function()
+    return function(id)
+      return raw.is_type(id, "door")
+    end
+  end,
   inventory_item = function()
     return function(id)
       return raw.is_type(id, "inventory")
@@ -286,9 +310,10 @@ api.property("objects.query", {
   description = "The identity query over every object definition. Narrow it and read it - see "
     .. "[Query](../../QUERY.md).\n\n"
     .. "Its own narrowings, beyond the shared `by_name` and the operators: `loaded`, `spawnable`, "
-    .. "`creature`, `loyal`, `pickup`, `inventory_item`, `null_object` and `animation`. Of those, "
-    .. "`creature`, `loyal` and `pickup` are searchable: a `by_name` of the family's own name "
-    .. "matches every member.\n\n"
+    .. "`creature`, `enemy`, `loyal`, `pickup`, `switch`, `receptacle`, `door`, "
+    .. "`inventory_item`, `null_object` and `animation`. Of those, `creature`, `enemy`, `loyal` "
+    .. "and `pickup` are searchable: a `by_name` of the family's own name matches every "
+    .. "member.\n\n"
     .. 'Example: `trx.objects.query:spawnable():by_name("wolf"):ids()`.',
   get = function()
     return object_query

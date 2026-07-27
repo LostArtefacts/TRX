@@ -57,6 +57,24 @@ test("is_flying enters and leaves the fly cheat", function()
   assert(trx.lara.is_flying == false, "she should have landed")
 end)
 
+test("teleport moves Lara, and says when it could not", function()
+  assert(trx.lara.teleport({ x = 2048, y = 0, z = 1024 }, 2) == true)
+  assert(trx.lara.item.pos.x == 2048, "she was left where she was")
+  assert(fake.calls().last_teleport_room == 2)
+
+  -- Without a room, the engine finds one from the position.
+  assert(trx.lara.teleport({ x = 1024, y = 0, z = 0 }) == true)
+  assert(fake.calls().last_teleport_room == -1)
+
+  -- Nowhere to stand: she stays put.
+  assert(trx.lara.teleport({ x = -1, y = 0, z = 0 }) == false)
+  assert(trx.lara.item.pos.x == 1024, "she moved somewhere with no floor")
+
+  raises(function()
+    trx.lara.teleport({ x = 0, y = 0, z = 0 }, 99)
+  end, "unknown room")
+end)
+
 test("a member of LARA_INFO nobody declared is not reachable", function()
   -- The C struct has turn_rate, move_angle, the LOT and both arms. None of them
   -- is declared, so none of them exists as far as a script is concerned.

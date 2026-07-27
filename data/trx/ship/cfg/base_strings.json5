@@ -64,7 +64,6 @@
             "give_item_all_keys": "Surprise! Every key item Lara needs is now in her backpack.",
             "give_item_cheat": "Lara's backpack just got way heavier!",
             "invalid_item": "Unknown item: %s",
-            "invalid_room": "Invalid room: %d. Valid rooms are 0-%d",
             "lighting_contrast_fmt": "Lighting Contrast: %s",
             "load_game": "Loaded game from save slot %d",
             "quick_load": "Quick-loaded slot %d",
@@ -484,6 +483,7 @@
                 "reloaded": "Language files reloaded",
             },
             "teleport": {
+                "invalid_room": "Invalid room: %d. Valid rooms are 0-%d",
                 "item": "Teleported to item: %d",
                 "item_fail": "Failed to teleport to item: %d",
                 "object": "Teleported to object: %s",

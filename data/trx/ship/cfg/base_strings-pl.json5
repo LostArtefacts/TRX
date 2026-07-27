@@ -64,7 +64,6 @@
             "give_item_all_keys": "Niespodzianka! Wszystkie kluczowe przedmioty zmaterializowały się w plecaku Lary.",
             "give_item_cheat": "Plecak Lary stał się znacznie cięższy!",
             "invalid_item": "Nieznany przedmiot: %s",
-            "invalid_room": "Nieprawidłowe pomieszczenie: %d. Prawidłowe pomieszczenia to 0-%d",
             "lighting_contrast_fmt": "Kontrast oświetlenia: %s",
             "load_game": "Wczytano grę ze slotu %d",
             "quick_load": "Wczytano szybki zapis %d",
@@ -484,6 +483,7 @@
                 "reloaded": "Pliki językowe zostały przeładowane",
             },
             "teleport": {
+                "invalid_room": "Nieprawidłowe pomieszczenie: %d. Prawidłowe pomieszczenia to 0-%d",
                 "item": "Teleportowano do obiektu: %d",
                 "item_fail": "Nie udało się teleportować do obiektu: %d",
                 "object": "Teleportowano do obiektu: %s",

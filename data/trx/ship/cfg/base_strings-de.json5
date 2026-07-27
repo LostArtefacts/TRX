@@ -64,7 +64,6 @@
             "give_item_all_keys": "Überraschung! Jedes Schlüsselitem, dass Lara benötigt, ist jetzt in ihrem Inventar.",
             "give_item_cheat": "Laras Rucksack ist schwerer geworden!",
             "invalid_item": "Unbekanntes Item: %s",
-            "invalid_room": "Unzulässiger Raum: %d. Zulässige Räume sind 0-%d",
             "lighting_contrast_fmt": "Beleuchtungs-Kontrast: %s",
             "load_game": "Spiel laden von folgendem Speicher-Slot %d",
             "quick_load": "\\{review}Schnell geladener Slot %d",
@@ -484,6 +483,7 @@
                 "reloaded": "Sprachdateien neu geladen",
             },
             "teleport": {
+                "invalid_room": "Unzulässiger Raum: %d. Zulässige Räume sind 0-%d",
                 "item": "Teleportiert zu Objekt: %d",
                 "item_fail": "Fehlgeschlagene Teleportation zu Objekt: %d",
                 "object": "Teleportiert zu Objekt: %s",

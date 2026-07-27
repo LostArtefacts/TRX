@@ -64,7 +64,6 @@
             "give_item_all_keys": "Ionndrainn! Tha a h-uile iuchair aig Lara a-nis.",
             "give_item_cheat": "Tha baga-droma Lara mòran nas truime a-nis!",
             "invalid_item": "Nì neo-aithnichte: %s",
-            "invalid_room": "Seòmar mì-dhligheach: %d. Seòmraichean dligheach: 0 gu %d",
             "lighting_contrast_fmt": "Coimeas Solais: %s",
             "load_game": "Geama air a luchdadh bho slot %d",
             "quick_load": "Slot luchdaichte gu luath %d",
@@ -484,6 +483,7 @@
                 "reloaded": "Chaidh na faidhlichean cànain ath-luchdachadh",
             },
             "teleport": {
+                "invalid_room": "Seòmar mì-dhligheach: %d. Seòmraichean dligheach: 0 gu %d",
                 "item": "Air a ghluasad gu nì: %d",
                 "item_fail": "Dh'fhàillig gluasad gu nì: %d",
                 "object": "Air a ghluasad gu oibseact: %s",

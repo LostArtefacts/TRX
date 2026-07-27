@@ -127,6 +127,7 @@ The Lua integration was rewritten and existing scripts will need updating; refer
 - added `trx.lara.cure_poison()` and `trx.lara.extinguish()`, to clear Lara's poison and put her out
 - added `trx.lara.dry()` and `trx.lara.is_wet`, to dry Lara off after a swim and to check whether she needs it
 - added `trx.lara.is_flying`, to read and toggle the fly-mode cheat
+- added `trx.lara.teleport()`, to move Lara to a position, as `/tp` does
 - added `trx.camera.is_flyby_active` and `trx.camera.cancel_flyby()`, to see and stop a flyby sequence
 - added `trx.game.LevelType.TITLE`, and a `demo` level type to the game flow, which could not be named before
 - added `trx.game.play_gym()`, to start the gym
@@ -136,8 +137,8 @@ The Lua integration was rewritten and existing scripts will need updating; refer
 - added `trx.game.exit_game()`, to close the game
 - added `trx.items.spawn()`, to place a new item in the level at runtime
 - added `trx.objects.query` and `trx.items.query`, composable filters over a level's objects and items that match names, families and state, and combine with `&`, `|` and `~`
-- added the `creature` and `loyal` narrowings to `trx.objects.query`, searchable like `pickup`, so a family answers to its own name
 - added `trx.items.get()`, `trx.items.count()`, `trx.rooms.get()`, `trx.rooms.count()` and `trx.objects.get()`, replacing the `fn` namespaces- added `trx.rooms.find_valid_pos()`, to nudge a position into valid room geometry
+- added `trx.rooms.floor_height()`, the height of the floor under a position
 - added item methods, `activate()`, `deactivate()`, `trigger()`, `destroy()`, `die()`, `shatter()`, `distance_to()`, `is_valid()`, `get_property()`, `set_property()` and `get_property_names()`, letting a script fire a trigger or antitrigger at an item exactly as a level would
 - added the writable Lua item field `is_one_shot`
 - added object methods, `get_property()`, `set_property()` and `get_property_names()`

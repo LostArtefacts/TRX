@@ -115,6 +115,19 @@ void Room_SetFlipTimer(const int32_t flip_timer)
     g_FakeRoomCalls.flip_timer = flip_timer;
 }
 
+// The fake level's floor is flat at y = 0, and there is none west of the
+// origin: that is how a test says a position has nothing to stand on.
+SECTOR *Room_GetSector(const XYZ_32 pos, int16_t *const room_num)
+{
+    static SECTOR sector;
+    return &sector;
+}
+
+int32_t Room_GetHeight(const SECTOR *const sector, const XYZ_32 pos)
+{
+    return pos.x < 0 ? NO_HEIGHT : 0;
+}
+
 bool Room_FindValidPos(XYZ_32 *const out_pos, int16_t *const out_room_num)
 {
     if (out_pos->x < 0) {

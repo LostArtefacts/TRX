@@ -5,6 +5,8 @@
 
 #include "fake_engine_lara.h"
 
+#include "fake_engine_rooms.h"
+
 #include <trx/game/const.h>
 #include <trx/game/gun/types.h>
 #include <trx/game/items/manager.h>
@@ -167,6 +169,26 @@ bool Lara_IsWet(void)
     return false;
 }
 
+// Lara lands where she was sent, and nowhere west of the origin: that is how
+// the fake says a position has no floor to stand on.
+bool Lara_Cheat_Teleport(const XYZ_32 pos, const int16_t room_num)
+{
+    g_FakeLaraCalls.teleport++;
+    g_FakeLaraCalls.last_teleport_room = room_num;
+    if (pos.x < 0) {
+        return false;
+    }
+    Lara_GetItem()->pos = pos;
+    return true;
+}
+
+// The room count the teleport argument check measures a room against. The same
+// count the room fake has, so the two agree about how big a level is.
+int32_t Room_GetCount(void)
+{
+    return FAKE_ROOM_COUNT;
+}
+
 bool Lara_Cheat_EnterFlyMode(void)
 {
     m_Lara.water_status = LWS_CHEAT;
@@ -197,4 +219,8 @@ void FakeLara_PushCalls(lua_State *const L)
     lua_setfield(L, -2, "catch_fire");
     lua_pushinteger(L, g_FakeLaraCalls.dry);
     lua_setfield(L, -2, "dry");
+    lua_pushinteger(L, g_FakeLaraCalls.teleport);
+    lua_setfield(L, -2, "teleport");
+    lua_pushinteger(L, g_FakeLaraCalls.last_teleport_room);
+    lua_setfield(L, -2, "last_teleport_room");
 }

@@ -151,6 +151,15 @@ end
   trx.rooms.flip_effect(trx.catalog.flip_effects.floor_shake, 10)
   ```
 
+- [lua]`trx.rooms.floor_height(pos, room_num)`  
+  The height of the floor under a world position. `nil` where there is no floor at all: inside solid geometry, or off the edge of the level.
+
+  Parameters:
+  - **`pos`** (vec3). World position.
+  - **`room_num`** (integer). 0-based room to look from. The search crosses portals, so a neighbouring room's floor is found too.
+
+  Returns: integer or `nil`.
+
 - [lua]`trx.rooms.find_valid_pos(pos, room_num)`  
   Nudges a position into valid room geometry, e.g. to find somewhere an item can legally be placed.
 

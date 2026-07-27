@@ -12,7 +12,7 @@ the result.
 A query is immutable. Every method returns a fresh query, so a base can be kept
 and branched from without one narrowing leaking into another.
 
-Three ways to narrow, which mix freely:
+Four ways to narrow, which mix freely:
 
 - Chain methods read left to right and combine with AND:
   `q:spawnable():by_name("wolf")`. Each domain adds its own - see
@@ -25,6 +25,9 @@ Three ways to narrow, which mix freely:
   first. Some of a domain's filters are also searchable groups - `pickup` is
   one - so their name matches every member. Only a domain that has names offers
   `by_name`, `names` and `best`.
+- `where(predicate)` narrows by a test of your own, called with the id and the
+  handle, for what a domain does not name: `q:where(function(id, item) return
+  item.timer > 0 end)`.
 
 Read a query with a terminal:
 
@@ -111,6 +114,13 @@ local function build(domain)
     if type(spec) == "table" and spec.searchable then
       searchable[#searchable + 1] = { key = name, pred = make() }
     end
+  end
+
+  -- A test of the caller's own, for a narrowing the domain does not name.
+  index.where = function(self, pred)
+    return derive(self, function(id, h)
+      return self._pred(id, h) and pred(id, h)
+    end, self._name)
   end
 
   -- The pairs that pass the predicate, in enumeration order, before ranking.

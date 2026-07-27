@@ -176,8 +176,32 @@ static int M_L_RoomsFindValidPos(lua_State *const L)
     return 2;
 }
 
+// trxc.rooms.get_height({x,y,z}, room_num) -> floor height, or nil where there
+// is no floor
+static int M_L_RoomsGetHeight(lua_State *const L)
+{
+    const XYZ_32 pos = LUA_CheckXYZ(L, 1);
+
+    // Room_GetSector walks from the room it is given, and Room_Get gives back
+    // nullptr for a room outside the level.
+    const lua_Integer room_arg = luaL_checkinteger(L, 2);
+    luaL_argcheck(
+        L, room_arg >= 0 && room_arg <= Room_GetCount() - 1, 2, "unknown room");
+
+    int16_t room_num = (int16_t)room_arg;
+    const SECTOR *const sector = Room_GetSector(pos, &room_num);
+    const int32_t height = Room_GetHeight(sector, pos);
+    if (height == NO_HEIGHT) {
+        lua_pushnil(L);
+    } else {
+        lua_pushinteger(L, height);
+    }
+    return 1;
+}
+
 static const luaL_Reg m_Module[] = {
     { "get_flipped_room", M_L_RoomsGetFlippedRoom },
+    { "get_height", M_L_RoomsGetHeight },
     { "count", M_L_RoomsCount },
     { "get", M_L_RoomsGet },
     { "get_bounds", M_L_RoomsGetBounds },

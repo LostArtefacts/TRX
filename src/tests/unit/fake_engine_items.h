@@ -8,6 +8,13 @@
 #define FAKE_OBJ_UNLOADED 3 // declared but not loaded
 #define FAKE_OBJ_KEY 4 // a second pickup, so a group name matches more than one
 
+// Family membership with nothing else to it: these are declared but never
+// loaded, so they say which family they are in without joining the counts the
+// tests take over the level's own objects.
+#define FAKE_OBJ_SWITCH 5
+#define FAKE_OBJ_RECEPTACLE 6
+#define FAKE_OBJ_DOOR 7
+
 // What the surface asked the engine to do, recorded rather than performed.
 typedef struct {
     int32_t swap_mesh;

@@ -3835,6 +3835,30 @@
       "path": "lara.set_extra_equipment"
     },
     {
+      "description": "Moves Lara to a world position, putting her down on the floor there. She is taken off any vehicle, her weapons are put away and the camera follows her over.\n\nThe position is nudged into valid room geometry, so a spot inside a wall lands her beside it rather than in it. Somewhere with no floor within reach moves nothing.",
+      "examples": [
+        "trx.lara.teleport(trx.items.query:of_object(\"wolf\"):first().pos)"
+      ],
+      "params": [
+        {
+          "description": "World position.",
+          "name": "pos",
+          "type": "vec3"
+        },
+        {
+          "description": "0-based room to look in. Without it, the room is found from the position.",
+          "name": "room_num",
+          "optional": true,
+          "type": "integer"
+        }
+      ],
+      "path": "lara.teleport",
+      "returns": {
+        "description": "Whether she was moved.",
+        "type": "boolean"
+      }
+    },
+    {
       "description": "Cures Lara's poisoning. Not the same as writing `0` to `poison`: the poison has a target as well as a current value, and clearing only the value lets it climb back.",
       "path": "lara.cure_poison"
     },
@@ -4236,6 +4260,26 @@
         }
       ],
       "path": "rooms.flip_effect"
+    },
+    {
+      "description": "The height of the floor under a world position. `nil` where there is no floor at all: inside solid geometry, or off the edge of the level.",
+      "params": [
+        {
+          "description": "World position.",
+          "name": "pos",
+          "type": "vec3"
+        },
+        {
+          "description": "0-based room to look from. The search crosses portals, so a neighbouring room's floor is found too.",
+          "name": "room_num",
+          "type": "integer"
+        }
+      ],
+      "path": "rooms.floor_height",
+      "returns": {
+        "nullable": true,
+        "type": "integer"
+      }
     },
     {
       "description": "Nudges a position into valid room geometry, e.g. to find somewhere an item can legally be placed.",
@@ -4666,7 +4710,7 @@
       "title": "Object"
     },
     {
-      "description": "A composable filter over a domain of things - the objects a level is built\nfrom, or the items alive in it. `trx.objects.query` and `trx.items.query` are\neach the identity query, matching everything; you narrow one down and then read\nthe result.\n\nA query is immutable. Every method returns a fresh query, so a base can be kept\nand branched from without one narrowing leaking into another.\n\nThree ways to narrow, which mix freely:\n\n- Chain methods read left to right and combine with AND:\n  `q:spawnable():by_name(\"wolf\")`. Each domain adds its own - see\n  `trx.objects.query` and `trx.items.query` for the ones it has.\n- The operators `&`, `|` and `~` are AND, OR and NOT over whole queries, for\n  what a chain cannot say: `q:pickup() | q:inventory_item()`, `~q:animation()`.\n  Both sides of `&`/`|` must come from the same domain.\n- `by_name(name)` ranks rather than filters: it matches the way a player types\n  a name, forgivingly, and orders what survives the rest of the query best\n  first. Some of a domain's filters are also searchable groups - `pickup` is\n  one - so their name matches every member. Only a domain that has names offers\n  `by_name`, `names` and `best`.\n\nRead a query with a terminal:\n\n- `ids()` - the matching ids, a list. For objects these are object ids; for\n  items, their numbers.\n- `matches()` - the matching handles: `trx.objects.Object`s or\n  `trx.items.Item`s.\n- `first()` - the first matching handle, or `nil`.\n- `count()` - how many match.\n- `names()` - every name the matches answer to, group names included, for\n  offering completions.\n- `best()` - the ids tied for the best `by_name` score: one for a name only one\n  thing answers to, the whole group for a group name.\n",
+      "description": "A composable filter over a domain of things - the objects a level is built\nfrom, or the items alive in it. `trx.objects.query` and `trx.items.query` are\neach the identity query, matching everything; you narrow one down and then read\nthe result.\n\nA query is immutable. Every method returns a fresh query, so a base can be kept\nand branched from without one narrowing leaking into another.\n\nFour ways to narrow, which mix freely:\n\n- Chain methods read left to right and combine with AND:\n  `q:spawnable():by_name(\"wolf\")`. Each domain adds its own - see\n  `trx.objects.query` and `trx.items.query` for the ones it has.\n- The operators `&`, `|` and `~` are AND, OR and NOT over whole queries, for\n  what a chain cannot say: `q:pickup() | q:inventory_item()`, `~q:animation()`.\n  Both sides of `&`/`|` must come from the same domain.\n- `by_name(name)` ranks rather than filters: it matches the way a player types\n  a name, forgivingly, and orders what survives the rest of the query best\n  first. Some of a domain's filters are also searchable groups - `pickup` is\n  one - so their name matches every member. Only a domain that has names offers\n  `by_name`, `names` and `best`.\n- `where(predicate)` narrows by a test of your own, called with the id and the\n  handle, for what a domain does not name: `q:where(function(id, item) return\n  item.timer > 0 end)`.\n\nRead a query with a terminal:\n\n- `ids()` - the matching ids, a list. For objects these are object ids; for\n  items, their numbers.\n- `matches()` - the matching handles: `trx.objects.Object`s or\n  `trx.items.Item`s.\n- `first()` - the first matching handle, or `nil`.\n- `count()` - how many match.\n- `names()` - every name the matches answer to, group names included, for\n  offering completions.\n- `best()` - the ids tied for the best `by_name` score: one for a name only one\n  thing answers to, the whole group for a group name.\n",
       "name": "query",
       "order": 16,
       "title": "Query"
@@ -4923,7 +4967,7 @@
       "writable": false
     },
     {
-      "description": "The identity query over every object definition. Narrow it and read it - see [Query](../../QUERY.md).\n\nIts own narrowings, beyond the shared `by_name` and the operators: `loaded`, `spawnable`, `creature`, `loyal`, `pickup`, `inventory_item`, `null_object` and `animation`. Of those, `creature`, `loyal` and `pickup` are searchable: a `by_name` of the family's own name matches every member.\n\nExample: `trx.objects.query:spawnable():by_name(\"wolf\"):ids()`.",
+      "description": "The identity query over every object definition. Narrow it and read it - see [Query](../../QUERY.md).\n\nIts own narrowings, beyond the shared `by_name` and the operators: `loaded`, `spawnable`, `creature`, `enemy`, `loyal`, `pickup`, `switch`, `receptacle`, `door`, `inventory_item`, `null_object` and `animation`. Of those, `creature`, `enemy`, `loyal` and `pickup` are searchable: a `by_name` of the family's own name matches every member.\n\nExample: `trx.objects.query:spawnable():by_name(\"wolf\"):ids()`.",
       "path": "objects.query",
       "type": "table",
       "writable": false
