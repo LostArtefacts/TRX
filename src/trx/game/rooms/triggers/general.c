@@ -6,14 +6,14 @@
 #include <trx/game/rooms.h>
 #include <trx/game/stats.h>
 
-// Remove intelligent items marked to leave a corpse once dead. Part of the OG
+// Remove the bodies of items marked to be cleared once dead. Part of the OG
 // performance work, generously used in Opera House and Barkhang Monastery.
 static void M_DestroyKilledBodies(void)
 {
     for (int32_t i = 0; i < Item_GetLevelCount(); i++) {
         ITEM *const item = Item_Get(i);
         const OBJECT *const obj = Object_Get(item->object_id);
-        if (obj->intelligent && item->clear_body && item->hit_points <= 0
+        if (obj->leaves_corpse && item->clear_body && item->hit_points <= 0
             && !item->is_destroyed) {
             Item_Destroy(i);
         }
