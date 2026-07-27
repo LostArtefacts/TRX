@@ -421,7 +421,7 @@ Showcase: https://youtu.be/DKpqz_Yum6o
 - Added fires, which burn with visible flames
 - Added Lara catching fire from fires and other hazards; she stays alight across level transitions
 - Added ricochets: a shot that hits a wall or other hard surface throws out sparks and leaves a puff of smoke
-- Added blood, so that shots and blows that land on Lara or her enemies spray a burst of droplets
+- Added blood, so that shots and blows that land on Lara or her enemies spray a burst of droplets, or spread as a cloud under water
 - Added dead enemies fading away a few seconds after they fall, as in the original game
 - Added Lara's outfits, TR4 Classic and TR4 Young, each with a golden form
 - Added seamless body and braid joints to the outfits, as in the original game
