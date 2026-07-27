@@ -77,11 +77,11 @@ repos:
       - pyjson5
       - fastjsonschema
 
-  - id: lint-game-strings-align
-    name: Game string values are aligned within each group
-    entry: tools/lint/checks/game_strings_align --fix
+  - id: lint-def-entries
+    name: Definition entries are aligned and ordered
+    entry: tools/lint/checks/def_entries --fix
     language: python
-    files: (^|/)game_strings/entries\.def$
+    files: (^|/)(game_strings/entries|config/map(_tr\d)?)\.def$
 
   - id: lint-preset-keys
     name: Preset setting keys are known

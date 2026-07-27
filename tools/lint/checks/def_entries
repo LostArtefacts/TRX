@@ -1,0 +1,97 @@
+#!/usr/bin/env python3
+import re
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
+from harness import LintWarning, file_check
+
+ENTRY_RE = re.compile(r"^(GS_DEFINE|X_CFG_\w*)\(")
+# Config maps are kept in order; game strings are grouped by feature instead.
+ORDERED_RE = re.compile(r"(^|/)config/map(_tr\d)?\.def$")
+
+
+def _comma(line):
+    # Keys never contain a comma, so the first one separates the key from the
+    # value.
+    return line.index(",")
+
+
+def _value(line):
+    return len(line) - len(line[_comma(line) + 1 :].lstrip())
+
+
+def _order_key(line):
+    # Entries are padded to a common column, so compare on collapsed
+    # whitespace: the order is decided by the macro name and the key.
+    return re.sub(r"\s+", " ", line)
+
+
+def _groups(lines):
+    # Groups are blank-line delimited; each one aligns and sorts on its own.
+    group = []
+    for i, line in enumerate(lines):
+        if line.strip():
+            group.append(i)
+            continue
+        yield group
+        group = []
+    yield group
+
+
+def _entries(lines, group):
+    return [i for i in group if ENTRY_RE.match(lines[i])]
+
+
+def check(path, text):
+    lines = text.split("\n")
+    ordered = ORDERED_RE.search(path.as_posix()) is not None
+    for group in _groups(lines):
+        entries = _entries(lines, group)
+        if not entries:
+            continue
+
+        # One space follows the longest key's comma; shorter keys pad to the
+        # same column.
+        target = max(_comma(lines[i]) for i in entries) + 2
+        for i in entries:
+            actual = _value(lines[i])
+            if actual != target:
+                yield LintWarning(
+                    path,
+                    f"value not aligned to group column {target + 1} "
+                    f"(found {actual + 1})",
+                    line=i + 1,
+                )
+
+        if not ordered:
+            continue
+        for prev, cur in zip(entries, entries[1:]):
+            if _order_key(lines[prev]) > _order_key(lines[cur]):
+                yield LintWarning(
+                    path,
+                    f"entry is out of order (belongs before line {prev + 1})",
+                    line=cur + 1,
+                )
+
+
+def fix(path, text):
+    lines = text.split("\n")
+    ordered = ORDERED_RE.search(path.as_posix()) is not None
+    for group in _groups(lines):
+        entries = _entries(lines, group)
+        if not entries:
+            continue
+        if ordered:
+            for i, line in zip(entries, sorted((lines[i] for i in entries), key=_order_key)):
+                lines[i] = line
+        target = max(_comma(lines[i]) for i in entries) + 2
+        for i in entries:
+            line = lines[i]
+            comma = _comma(line)
+            lines[i] = line[: comma + 1] + " " * (target - comma - 1) + line[_value(line) :]
+    return "\n".join(lines)
+
+
+file_check(check, fix)
