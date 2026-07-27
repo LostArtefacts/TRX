@@ -30,6 +30,7 @@
 - fixed long messages in the developer console running past the right edge of the screen by 1 character
 - fixed being unable to drop to the secret ledge in Jungle room 76 from the ledge above (#5818)
 - fixed a crash when drawing an animating object that has no frame data (#5869)
+- fixed a crash in custom levels when an armed enemy turned ally shoots the last remaining enemy (#5973)
 - fixed the glow around gun and flare flashes lagging behind them (#5920)
 - fixed trains using extreme tilt angles when they come to a stop at a wall (#5886)
 - fixed Lara attempting to climb ladders from inside lifts (#5890)
