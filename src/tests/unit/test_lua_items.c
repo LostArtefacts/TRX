@@ -62,7 +62,7 @@ static int M_FakeCalls(lua_State *const L)
 }
 
 // fake.fire_trigger(item_num, type, mask, timer, one_shot) - mirrors the
-// Item_NotifyTriggered fire site, argument for argument.
+// Item_Trigger fire site, argument for argument.
 static int M_L_FireTrigger(lua_State *const L)
 {
     const LUA_EVENT_ARG args[] = {
