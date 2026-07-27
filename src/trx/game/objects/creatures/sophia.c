@@ -18,7 +18,6 @@
 #include <trx/game/random.h>
 #include <trx/game/sound.h>
 #include <trx/game/sparks.h>
-#include <trx/game/stats.h>
 
 // clang-format off
 #define M_HIT_POINTS     300
@@ -356,7 +355,8 @@ static void M_Control(const int16_t item_num)
     if (p->death_counter == 0 && p->fuse_box_num != NO_ITEM) {
         const ITEM *const fuse_box = Item_Get(p->fuse_box_num);
         if (!Item_TestAnimEqual(fuse_box, 0)) {
-            Stats_AddKill();
+            // The fuse box kills her; weapon damage never lands.
+            Item_TakeFatalDamage(item, Lara_GetItem());
             p->death_counter = 1;
         }
     }
@@ -371,10 +371,6 @@ static void M_Control(const int16_t item_num)
     int16_t torso_y = 0;
 
     if (p->death_counter != 0) {
-        if (p->death_counter == 1) {
-            item->hit_points = 0;
-        }
-
         RGB_888 color;
         int32_t falloff;
         if (p->death_counter < 12) {
