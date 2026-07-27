@@ -4,7 +4,9 @@
 #include <trx/core/memory.h>
 #include <trx/game/camera.h>
 #include <trx/game/console.h>
+#include <trx/game/flyby_mode.h>
 #include <trx/game/game.h>
+#include <trx/game/game/control.h>
 #include <trx/game/game_flow.h>
 #include <trx/game/game_strings/entries.h>
 #include <trx/game/gun.h>
@@ -405,6 +407,23 @@ static void M_SnapshotFrameState(INV_RING *const ring)
     M_SnapshotRingState(ring);
     for (int32_t i = 0; i < ring->number_of_objects; i++) {
         M_SnapshotItemState(ring->list[i]);
+    }
+}
+
+// A minimal simulation tick keeping the title level alive behind the menu:
+// the world and the flyby camera - no Lara, no player input, no HUD.
+static void M_SimTick(void)
+{
+    Interpolation_Remember();
+    Game_TickBeginFrame();
+    Sound_ResetAmbient();
+    Game_TickWorld();
+    Game_TickPostControl();
+    Game_TickEndFrame();
+
+    // Per the OG DoTitle, the flyby loops for as long as the menu is up.
+    if (!FlybyMode_IsActive() && g_GameFlow.title_flyby_sequence >= 0) {
+        FlybyMode_Activate(g_GameFlow.title_flyby_sequence, false);
     }
 }
 
@@ -896,9 +915,13 @@ INV_RING *InvRing_Open(const INVENTORY_MODE mode)
 
     INV_RING *const ring = Memory_Alloc(sizeof(INV_RING));
     ring->mode = mode;
-    ring->background_style = mode == INV_TITLE_MODE
-        ? BK_IMAGE
-        : g_Config.ui.inventory_background_style;
+    // The title level runs live behind the menu when the gameflow names a
+    // flyby sequence for it, so there is no background image to show.
+    ring->live_scene =
+        mode == INV_TITLE_MODE && g_GameFlow.title_flyby_sequence >= 0;
+    ring->background_style = mode != INV_TITLE_MODE
+        ? g_Config.ui.inventory_background_style
+        : (ring->live_scene ? BK_NONE : BK_IMAGE);
     // main_menu_background_path is the title screen's background image;
     // there is no separate configurable image for in-game inventory modes,
     // so BK_IMAGE outside of INV_TITLE_MODE falls back to no image rather
@@ -955,6 +978,16 @@ INV_RING *InvRing_Open(const INVENTORY_MODE mode)
     }
 
     g_Inv_Mode = mode;
+
+    if (ring->live_scene) {
+        // The OG title hides Lara during the flyby.
+        ITEM *const lara_item = Lara_GetItem();
+        if (lara_item != nullptr) {
+            lara_item->mesh_bits = 0;
+        }
+        FlybyMode_Activate(g_GameFlow.title_flyby_sequence, false);
+    }
+
     Interpolation_Remember();
 
     if (mode == INV_TITLE_MODE) {
@@ -984,6 +1017,9 @@ void InvRing_Close(INV_RING *const ring)
         Music_Stop();
         Sound_StopAll();
     }
+    if (ring->live_scene) {
+        FlybyMode_Deactivate();
+    }
 
     if (g_Config.input.enable_buffering_inventory) {
         g_OldInputDB = (INPUT_STATE) {};
@@ -995,6 +1031,9 @@ void InvRing_Close(INV_RING *const ring)
 
 GF_COMMAND InvRing_Control(INV_RING *const ring)
 {
+    if (ring->live_scene) {
+        M_SimTick();
+    }
     InvRing_AdjustMusicVolume(ring);
     m_ActiveRing = ring;
     INVENTORY_ITEM **const prev_list = ring->list;

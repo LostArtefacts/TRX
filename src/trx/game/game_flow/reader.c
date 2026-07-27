@@ -927,12 +927,15 @@ static bool M_LoadDemos(const M_CONTEXT *const ctx)
 
 static bool M_LoadTitleLevel(const M_CONTEXT *const ctx)
 {
+    ctx->gf->title_flyby_sequence = -1;
     if (!JSON_OPTIONAL(JSON_PUSH(ctx->io, "title"))) {
         return true;
     }
     ctx->gf->title_level = Memory_Alloc(sizeof(GF_LEVEL));
     JSON_MUST(
         M_LoadLevel(ctx, ctx->gf->title_level, 0, (void *)(intptr_t)GFL_TITLE));
+    JSON_OPTIONAL(
+        JSON_READ(ctx->io, "flyby_sequence", &ctx->gf->title_flyby_sequence));
     JSON_MUST(JSON_POP(ctx->io));
     JSON_FINISH();
 }

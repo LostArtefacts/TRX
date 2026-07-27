@@ -133,6 +133,8 @@ typedef struct {
 
     BACKGROUND_TYPE background_style;
     const char *background_path;
+    // The title level keeps running behind the menu, with its flyby camera.
+    bool live_scene;
     struct {
         XYZ_16 rot;
         int32_t selection;

@@ -197,6 +197,10 @@
         "music_track": {
           "type": "integer"
         },
+        "flyby_sequence": {
+          "type": "integer",
+          "description": "Flyby camera sequence of the title level played behind the menu."
+        },
         "inherit_injections": {
           "type": "boolean"
         },

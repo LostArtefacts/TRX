@@ -25,6 +25,9 @@
     "title": {
         "path": "title.tr4",
         "music_track": 104,
+        // title.tr4 numbers its flyby sequences from 1; sequence 0 has no
+        // cameras.
+        "flyby_sequence": 1,
         "sequence": [
             {"type": "play_fmv", "fmv_id": 0},
             {"type": "exit_to_title"},
