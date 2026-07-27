@@ -9,6 +9,7 @@ typedef struct {
     int32_t flip_map;
     int32_t flip_effect;
     int32_t flip_timer;
+    bool fix_tilts;
 } FAKE_ROOM_CALLS;
 
 extern FAKE_ROOM_CALLS g_FakeRoomCalls;

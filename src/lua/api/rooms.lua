@@ -47,6 +47,35 @@ local ROOM_HOOK_PARAMS = {
   },
 }
 
+local FLOOR_HEIGHT_POS = {
+  name = "pos",
+  type = "vec3",
+  description = "World position.",
+}
+
+local FLOOR_HEIGHT_OPTS = {
+  name = "opts",
+  type = "table",
+  optional = true,
+  description = "`fix_tilts`: whether a floor tilt that lies inside a wall is taken into account, "
+    .. "`true` by default. `false` gives the flat height the original games read there, which is "
+    .. "what the geometry glitches of the vanilla levels rest on.",
+}
+
+local FLOOR_HEIGHT_PARAMS = {
+  FLOOR_HEIGHT_POS,
+  {
+    name = "room_num",
+    type = "integer",
+    optional = true,
+    description = "0-based room to look from. The search crosses portals, so a neighbouring "
+      .. "room's floor is found too. Without it, the room is looked up from the position, which "
+      .. "takes the first room that contains it and passes over the flipped-away ones. Where "
+      .. "rooms overlap, name the room, or ask the room itself with `room:floor_height`.",
+  },
+  FLOOR_HEIGHT_OPTS,
+}
+
 local ROOM_LISTENER_ID = {
   type = "integer",
   description = "Listener id. Pass it to `trx.events.detach` to stop listening.",
@@ -147,6 +176,14 @@ trx.events.after_control(function()
 end)]],
       },
     },
+    floor_height = {
+      params = { FLOOR_HEIGHT_POS, FLOOR_HEIGHT_OPTS },
+      returns = { type = "integer", nullable = true },
+      description = "As `trx.rooms.floor_height`, looking from this room.",
+      impl = function(room, pos, opts)
+        return raw.get_height(pos, room.num, opts)
+      end,
+    },
   },
 
   extensions = {
@@ -240,16 +277,11 @@ api.define("rooms.flip_effect", {
 api.define("rooms.floor_height", {
   description = "The height of the floor under a world position. `nil` where there is no floor at "
     .. "all: inside solid geometry, or off the edge of the level.",
-  params = {
-    { name = "pos", type = "vec3", description = "World position." },
-    {
-      name = "room_num",
-      type = "integer",
-      description = "0-based room to look from. The search crosses portals, so a neighbouring "
-        .. "room's floor is found too.",
-    },
-  },
+  params = FLOOR_HEIGHT_PARAMS,
   returns = { type = "integer", nullable = true },
+  examples = {
+    [[local floor = trx.lara.item.room:floor_height(trx.lara.item.pos)]],
+  },
   impl = raw.get_height,
 })
 
