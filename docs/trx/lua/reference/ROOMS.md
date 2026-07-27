@@ -71,6 +71,15 @@ end
 
     Methods:
 
+    - [lua]`room:floor_height(pos, [opts])`  
+      As `trx.rooms.floor_height`, looking from this room.
+
+      Parameters:
+      - **`pos`** (vec3). World position.
+      - **`opts`** (table, optional). `fix_tilts`: whether a floor tilt that lies inside a wall is taken into account, `true` by default. `false` gives the flat height the original games read there, which is what the geometry glitches of the vanilla levels rest on.
+
+      Returns: integer or `nil`.
+
     - [lua]`room:is_valid()`  
       Whether the handle still refers to a room of the level that is loaded. A level change replaces the rooms, so a handle held across one goes stale rather than naming a different room: reading or writing a field on it raises an error. Check this for a handle held across time.
 
@@ -151,14 +160,20 @@ end
   trx.rooms.flip_effect(trx.catalog.flip_effects.floor_shake, 10)
   ```
 
-- [lua]`trx.rooms.floor_height(pos, room_num)`  
+- [lua]`trx.rooms.floor_height(pos, [room_num], [opts])`  
   The height of the floor under a world position. `nil` where there is no floor at all: inside solid geometry, or off the edge of the level.
 
   Parameters:
   - **`pos`** (vec3). World position.
-  - **`room_num`** (integer). 0-based room to look from. The search crosses portals, so a neighbouring room's floor is found too.
+  - **`room_num`** (integer, optional). 0-based room to look from. The search crosses portals, so a neighbouring room's floor is found too. Without it, the room is looked up from the position, which takes the first room that contains it and passes over the flipped-away ones. Where rooms overlap, name the room, or ask the room itself with `room:floor_height`.
+  - **`opts`** (table, optional). `fix_tilts`: whether a floor tilt that lies inside a wall is taken into account, `true` by default. `false` gives the flat height the original games read there, which is what the geometry glitches of the vanilla levels rest on.
 
   Returns: integer or `nil`.
+
+  Example:
+  ```lua
+  local floor = trx.lara.item.room:floor_height(trx.lara.item.pos)
+  ```
 
 - [lua]`trx.rooms.find_valid_pos(pos, room_num)`  
   Nudges a position into valid room geometry, e.g. to find somewhere an item can legally be placed.

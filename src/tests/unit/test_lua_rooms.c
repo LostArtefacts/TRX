@@ -49,6 +49,8 @@ static int M_FakeCalls(lua_State *const L)
     lua_setfield(L, -2, "flip_effect");
     lua_pushinteger(L, g_FakeRoomCalls.flip_timer);
     lua_setfield(L, -2, "flip_timer");
+    lua_pushboolean(L, g_FakeRoomCalls.fix_tilts);
+    lua_setfield(L, -2, "fix_tilts");
     return 1;
 }
 

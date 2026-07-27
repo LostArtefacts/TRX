@@ -127,6 +127,30 @@ test("floor_height gives the floor under a position, or nil", function()
   end, "unknown room")
 end)
 
+test("floor_height finds the room from the position", function()
+  assert(trx.rooms.floor_height({ x = 0, y = 0, z = 0 }) == 0)
+  assert(trx.rooms.floor_height({ x = -1, y = 0, z = 0 }) == nil)
+end)
+
+test("floor_height fixes tilts in walls unless told not to", function()
+  trx.rooms.floor_height({ x = 0, y = 0, z = 0 }, 0)
+  assert(fake.calls().fix_tilts)
+
+  trx.rooms.floor_height({ x = 0, y = 0, z = 0 }, 0, { fix_tilts = false })
+  assert(not fake.calls().fix_tilts)
+
+  trx.rooms.floor_height({ x = 0, y = 0, z = 0 }, nil, { fix_tilts = true })
+  assert(fake.calls().fix_tilts)
+end)
+
+test("a room looks up the floor from itself", function()
+  local room = trx.rooms[0]
+  assert(room:floor_height({ x = 0, y = 0, z = 0 }) == 0)
+
+  room:floor_height({ x = 0, y = 0, z = 0 }, { fix_tilts = false })
+  assert(not fake.calls().fix_tilts)
+end)
+
 -- The rooms of the next level sit where the old ones did, so a bounds check
 -- alone would let a held handle name a different room.
 test("a room handle goes stale at a level change", function()

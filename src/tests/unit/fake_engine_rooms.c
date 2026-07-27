@@ -123,8 +123,11 @@ SECTOR *Room_GetSector(const XYZ_32 pos, int16_t *const room_num)
     return &sector;
 }
 
-int32_t Room_GetHeight(const SECTOR *const sector, const XYZ_32 pos)
+int32_t Room_GetHeightEx(
+    const SECTOR *const sector, const XYZ_32 pos, const bool fix_tilts,
+    const int16_t ignore_item_num)
 {
+    g_FakeRoomCalls.fix_tilts = fix_tilts;
     return pos.x < 0 ? NO_HEIGHT : 0;
 }
 

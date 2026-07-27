@@ -361,7 +361,13 @@ test('lua_assault', test_lua_assault_exe, suite: 'unit')
 # rooms rides along: trx.camera.room hands back a trx.rooms.Room.
 test_lua_camera_exe = executable(
   'test_lua_camera',
-  files('unit/test_lua_camera.c', 'unit/fake_engine_camera.c', 'unit/fake_engine_rooms.c')
+  files(
+    'unit/test_lua_camera.c',
+    'unit/fake_engine_camera.c',
+    'unit/fake_engine_rooms.c',
+    # for Room_GetIndexFromPos, which rooms.c reaches for
+    'unit/fake_engine_items.c',
+  )
     + test_stubs
     + lua_surface_src
     + files('../trx/game/lua/capi/rooms.c', '../trx/game/lua/capi/camera.c'),

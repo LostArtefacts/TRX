@@ -46,7 +46,7 @@ end
 
 local function has_floor(item)
   local room = item.room
-  return room == nil or trx.rooms.floor_height(item.pos, room.num) ~= nil
+  return room == nil or room:floor_height(item.pos) ~= nil
 end
 
 -- Whether Lara can be put where this item stands.

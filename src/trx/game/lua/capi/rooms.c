@@ -1,4 +1,5 @@
 #include <trx/game/items/actions/ids.h>
+#include <trx/game/items/const.h>
 #include <trx/game/lua/common.h>
 #include <trx/game/lua/field.h>
 #include <trx/game/lua/registry.h>
@@ -176,21 +177,40 @@ static int M_L_RoomsFindValidPos(lua_State *const L)
     return 2;
 }
 
-// trxc.rooms.get_height({x,y,z}, room_num) -> floor height, or nil where there
-// is no floor
+// trxc.rooms.get_height({x,y,z}, room_num, opts) -> floor height, or nil where
+// there is no floor
 static int M_L_RoomsGetHeight(lua_State *const L)
 {
     const XYZ_32 pos = LUA_CheckXYZ(L, 1);
 
-    // Room_GetSector walks from the room it is given, and Room_Get gives back
-    // nullptr for a room outside the level.
-    const lua_Integer room_arg = luaL_checkinteger(L, 2);
-    luaL_argcheck(
-        L, room_arg >= 0 && room_arg <= Room_GetCount() - 1, 2, "unknown room");
+    int16_t room_num;
+    if (lua_isnoneornil(L, 2)) {
+        room_num = Room_GetIndexFromPos(pos);
+        if (room_num == NO_ROOM) {
+            lua_pushnil(L);
+            return 1;
+        }
+    } else {
+        // Room_GetSector walks from the room it is given, and Room_Get gives
+        // back nullptr for a room outside the level.
+        const lua_Integer room_arg = luaL_checkinteger(L, 2);
+        luaL_argcheck(
+            L, room_arg >= 0 && room_arg <= Room_GetCount() - 1, 2,
+            "unknown room");
+        room_num = (int16_t)room_arg;
+    }
 
-    int16_t room_num = (int16_t)room_arg;
+    bool fix_tilts = true;
+    if (lua_istable(L, 3)) {
+        lua_getfield(L, 3, "fix_tilts");
+        if (!lua_isnil(L, -1)) {
+            fix_tilts = lua_toboolean(L, -1);
+        }
+        lua_pop(L, 1);
+    }
+
     const SECTOR *const sector = Room_GetSector(pos, &room_num);
-    const int32_t height = Room_GetHeight(sector, pos);
+    const int32_t height = Room_GetHeightEx(sector, pos, fix_tilts, NO_ITEM);
     if (height == NO_HEIGHT) {
         lua_pushnil(L);
     } else {
