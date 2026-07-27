@@ -19,6 +19,8 @@ typedef struct {
     bool enable_baddie_ai_forced;
     int32_t disable_baddie_ai;
     int32_t destroy;
+    int32_t take_damage;
+    int16_t take_damage_amount;
 } FAKE_ITEM_CALLS;
 
 extern FAKE_ITEM_CALLS g_FakeItemCalls;

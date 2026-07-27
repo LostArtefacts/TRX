@@ -408,6 +408,20 @@ end
       Parameters:
       - **`damage`** (integer, optional, default `0`). Splash damage dealt to nearby items.
 
+    - [lua]`item:take_damage(damage)`  
+      Hurts the item the way a weapon does, and reports through `on_hit`, and
+      `on_kill` where the blow takes the last hit point. Writing `hit_points` reports neither. The kill
+      counts as the environment's rather than Lara's.
+
+      Parameters:
+      - **`damage`** (integer). Hit points to take.
+
+      Example:
+      ```lua
+      local lara = trx.lara.item
+      lara:take_damage(lara.hit_points)
+      ```
+
     - [lua]`item:trigger([opts])`  
       Fires a trigger at the item, exactly as a floor trigger in the level would: sets the code bits, and once they are all set, starts the item running.
 

@@ -120,6 +120,7 @@ The Lua integration was rewritten and existing scripts will need updating; refer
 - added `trx.events.on_enter_world()` and `trx.events.on_leave_world()`, with the per-item `item:on_enter_world()` and `item:on_leave_world()`, which happen when an item enters the world as a runtime spawn or leaves it
 - added `trx.events.on_hit()` and the per-item `item:on_hit()`, which happen when an item takes damage, with the amount
 - added `trx.events.on_kill()` and the per-item `item:on_kill()`, which happen when damage takes an item's hit points to zero
+- added `item:take_damage()`, which hurts an item the way a weapon does, and reports through `on_hit` and `on_kill`
 - added `trx.lara.cure_poison()` and `trx.lara.extinguish()`, to clear Lara's poison and put her out
 - added `trx.lara.dry()` and `trx.lara.is_wet`, to dry Lara off after a swim and to check whether she needs it
 - added `trx.lara.is_flying`, to read and toggle the fly-mode cheat

@@ -5763,6 +5763,20 @@
           ]
         },
         {
+          "description": "Hurts the item the way a weapon does, and reports through `on_hit`, and\n`on_kill` where the blow takes the last hit point. Writing `hit_points` reports neither. The kill\ncounts as the environment's rather than Lara's.",
+          "examples": [
+            "local lara = trx.lara.item\nlara:take_damage(lara.hit_points)"
+          ],
+          "name": "take_damage",
+          "params": [
+            {
+              "description": "Hit points to take.",
+              "name": "damage",
+              "type": "integer"
+            }
+          ]
+        },
+        {
           "description": "Fires a trigger at the item, exactly as a floor trigger in the level would: sets the code bits, and once they are all set, starts the item running.\n\nThis is the one to reach for on anything a level would trigger - a door, a switch, an alarm - because those read their trigger before they act, and merely `activate()`-ing one leaves it running but doing nothing. Pass `type = trx.items.TriggerType.ANTITRIGGER` to take the trigger back instead.",
           "examples": [
             "trx.items[12]:trigger()",

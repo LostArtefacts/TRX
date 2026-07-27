@@ -562,6 +562,20 @@ void Creature_Die(const int16_t item_num, const bool explode)
     m_Items[item_num].hit_points = 0;
 }
 
+// Records the blow and takes the hit points; the events the real function
+// fires are driven directly in the item tests.
+void Item_TakeDamage(
+    ITEM *const item, const int16_t damage, const ITEM_DAMAGE_FLAGS flags,
+    const ITEM *const sender)
+{
+    g_FakeItemCalls.take_damage++;
+    g_FakeItemCalls.take_damage_amount = damage;
+    item->hit_points -= damage;
+    if (item->hit_points < 0) {
+        item->hit_points = 0;
+    }
+}
+
 int32_t Item_Shatter(
     const int16_t item_num, const int32_t mesh_bits, const int16_t damage)
 {

@@ -598,6 +598,23 @@ end)]],
         .. "any item from the game.",
     },
 
+    take_damage = {
+      params = {
+        {
+          name = "damage",
+          type = "integer",
+          description = "Hit points to take.",
+        },
+      },
+      description = [[Hurts the item the way a weapon does, and reports through `on_hit`, and
+`on_kill` where the blow takes the last hit point. Writing `hit_points` reports neither. The kill
+counts as the environment's rather than Lara's.]],
+      examples = {
+        [[local lara = trx.lara.item
+lara:take_damage(lara.hit_points)]],
+      },
+    },
+
     shatter = {
       params = {
         {

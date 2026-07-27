@@ -617,6 +617,23 @@ test("die runs the object's death handling; destroy does not", function()
   assert(fake.calls().creature_die == 0, "destroy() just removes the item")
 end)
 
+test("take_damage takes the item's hit points", function()
+  fake.reset()
+  local it = trx.items[0]
+  local before = it.hit_points
+
+  it:take_damage(5)
+  assert(fake.calls().take_damage == 1, "take_damage should reach the engine")
+  assert(
+    fake.calls().take_damage_amount == 5,
+    "the damage should pass through"
+  )
+  assert(it.hit_points == before - 5, "the hit points should come down")
+
+  it:take_damage(it.hit_points)
+  assert(it.hit_points == 0, "the last blow should empty the hit points")
+end)
+
 test("shatter bursts the meshes on their own", function()
   fake.reset()
   trx.items[0]:shatter()
