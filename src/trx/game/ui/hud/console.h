@@ -5,6 +5,9 @@
 
 // Dev console display widget.
 
+// Border around the console contents, in text units.
+#define UI_CONSOLE_PADDING 5.0f
+
 typedef struct {
     UI_CONSOLE_LOGS logs;
     UI_PROMPT_STATE prompt;

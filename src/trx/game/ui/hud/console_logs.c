@@ -5,8 +5,10 @@
 #include <trx/debug.h>
 #include <trx/game/clock.h>
 #include <trx/game/ui/elements/label.h>
+#include <trx/game/ui/elements/pad.h>
 #include <trx/game/ui/elements/stack.h>
 #include <trx/game/ui/events.h>
+#include <trx/game/ui/hud/console.h>
 
 #include <string.h>
 
@@ -14,10 +16,22 @@
 #define M_MAX_LOG_LINES 20
 #define M_DELAY_PER_CHAR 0.2
 
-static void M_ScrollLogs(UI_CONSOLE_LOGS *s);
-static void M_UpdateLogCount(UI_CONSOLE_LOGS *s);
-static void M_HandleLog(const EVENT *event, void *user_data);
-static void M_HandleClear(const EVENT *event, void *user_data);
+static float M_GetWrapWidth(void)
+{
+    // The logs are laid out inside the console's padding.
+    return UI_GetCanvasWidth() - 2.0f * UI_Pad_GetSize(UI_CONSOLE_PADDING);
+}
+
+static void M_UpdateLogCount(UI_CONSOLE_LOGS *const s)
+{
+    s->vis_lines = 0;
+    for (int32_t i = s->max_lines - 1; i >= 0; i--) {
+        if (s->logs[i].expire_at != 0.0) {
+            s->vis_lines = i + 1;
+            break;
+        }
+    }
+}
 
 static void M_ScrollLogs(UI_CONSOLE_LOGS *const s)
 {
@@ -40,17 +54,6 @@ static void M_ScrollLogs(UI_CONSOLE_LOGS *const s)
     }
 }
 
-static void M_UpdateLogCount(UI_CONSOLE_LOGS *const s)
-{
-    s->vis_lines = 0;
-    for (int32_t i = s->max_lines - 1; i >= 0; i--) {
-        if (s->logs[i].expire_at != 0.0) {
-            s->vis_lines = i + 1;
-            break;
-        }
-    }
-}
-
 static void M_HandleLog(const EVENT *const event, void *const user_data)
 {
     const char *text = event->data;
@@ -62,7 +65,7 @@ static void M_HandleLog(const EVENT *const event, void *const user_data)
 
     s->logs[0].expire_at =
         Clock_GetRealTime() + strlen(text) * M_DELAY_PER_CHAR;
-    s->logs[0].text = UI_Text_WordWrap(text, M_LOG_SCALE, UI_GetCanvasWidth());
+    s->logs[0].text = UI_Text_WordWrap(text, M_LOG_SCALE, M_GetWrapWidth());
     M_UpdateLogCount(s);
 }
 

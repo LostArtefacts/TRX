@@ -7,3 +7,6 @@
 void UI_BeginPad(float x, float y);
 void UI_BeginPadEx(float l, float r, float t, float d);
 void UI_EndPad(void);
+
+// The canvas size the given padding occupies.
+float UI_Pad_GetSize(float size);
