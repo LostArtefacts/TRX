@@ -930,8 +930,10 @@ int32_t Savegame_GetCompletedLevelCount(void)
 
 bool Savegame_IsManualSaveAllowed(void)
 {
+    const SAVE_CRYSTAL_MODE crystal_mode = g_Config.gameplay.save_crystal_mode;
     return !g_Config.flow.load_save_disabled
-        && g_Config.gameplay.save_crystal_mode != SAVE_CRYSTAL_SAVE;
+        && crystal_mode != SAVE_CRYSTAL_SAVE
+        && crystal_mode != SAVE_CRYSTAL_SAVE_PICKUP;
 }
 
 void Savegame_ProcessItemsBeforeSave(void)

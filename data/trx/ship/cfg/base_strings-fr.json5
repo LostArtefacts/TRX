@@ -782,6 +782,7 @@
             "SAVE_CRYSTAL_OFF": "\\{review}Désactivé",
             "SAVE_CRYSTAL_PICKUP": "\\{review}Objets",
             "SAVE_CRYSTAL_SAVE": "\\{review}Sauvegarde",
+            "SAVE_CRYSTAL_SAVE_PICKUP": "\\{review}Sauvegarde (objets)",
         },
         "SCREENSHOT_FORMAT": {
             "SCREENSHOT_FORMAT_JPEG": "JPG",
@@ -1340,7 +1341,7 @@
         },
         "gameplay.save_crystal_mode": {
             "title": "\\{review}Mode des cristaux",
-            "description": "\\{review}Détermine ce que font les cristaux disséminés dans les niveaux.\n\n- Désactivé : les cristaux sont absents.\n- Sauvegarde : les cristaux sont à usage unique et permettent à Lara de sauvegarder la partie, comme sur PS1. Sinon, la sauvegarde n'est possible qu'en début de niveau.\n- Soin : les cristaux rendent la moitié de la santé de Lara et soignent l'empoisonnement lorsqu'elle les touche, comme dans la version PC de TR3.\n- Objets : les cristaux sont des collectibles comptabilisés dans les statistiques du niveau, et n'ont aucun autre effet.\n\nModifier cette option nécessite de recommencer le niveau.",
+            "description": "\\{review}Détermine ce que font les cristaux disséminés dans les niveaux.\n\n- Désactivé : les cristaux sont absents.\n- Sauvegarde : les cristaux sont à usage unique et permettent à Lara de sauvegarder la partie sur place, comme dans la version PS1 de TR1. Sinon, la sauvegarde n'est possible qu'en début de niveau.\n- Sauvegarde (objets) : les cristaux se ramassent et permettent à Lara de sauvegarder la partie depuis l'inventaire où qu'elle soit, comme dans la version PS1 de TR3. Sinon, la sauvegarde est impossible.\n- Soin : les cristaux rendent la moitié de la santé de Lara et soignent l'empoisonnement lorsqu'elle les touche, comme dans la version PC de TR3.\n- Objets : les cristaux sont des collectibles comptabilisés dans les statistiques du niveau, et n'ont aucun autre effet.\n\nModifier cette option nécessite de recommencer le niveau.",
         },
         "gameplay.start_lara_hitpoints": {
             "title": "Points de vie de Lara",

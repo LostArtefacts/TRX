@@ -604,9 +604,17 @@ void InvRing_ShowItemName(const INVENTORY_ITEM *const inv_item)
         return;
     }
 
+    OBJECT_ID object_id = inv_item->object_id;
+    // In the save pickup mode the crystal in the inventory is the savegame
+    // crystal Lara picked up, rather than a plain collectible.
+    if (object_id == O_SAVE_CRYSTAL_OPTION
+        && g_Config.gameplay.save_crystal_mode == SAVE_CRYSTAL_SAVE_PICKUP) {
+        object_id = O_SAVE_CRYSTAL_ITEM;
+    }
+
     Overlay_SetBottomText((OVERLAY_TEXT) {
         .kind = UI_OVERLAY_TEXT_OBJECT_NAME,
-        .object_id = inv_item->object_id,
+        .object_id = object_id,
         .fmt_gs_key = GS_ID("general/inventory_ring/object_name_fmt"),
     });
 }

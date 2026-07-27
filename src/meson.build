@@ -720,6 +720,7 @@ common_sources = [
   'trx/game/option/globe_select.c',
   'trx/game/option/graphics.c',
   'trx/game/option/passport.c',
+  'trx/game/option/save_crystal.c',
   'trx/game/option/sound.c',
   'trx/game/option/stats.c',
   'trx/game/output/bind.c',

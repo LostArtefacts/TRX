@@ -295,7 +295,8 @@ static void M_Control(const int16_t item_num)
     M_Animate(item);
 
     const SAVE_CRYSTAL_MODE mode = g_Config.gameplay.save_crystal_mode;
-    if (mode != SAVE_CRYSTAL_HEAL && mode != SAVE_CRYSTAL_PICKUP) {
+    if (mode != SAVE_CRYSTAL_HEAL && mode != SAVE_CRYSTAL_PICKUP
+        && mode != SAVE_CRYSTAL_SAVE_PICKUP) {
         return;
     }
 
