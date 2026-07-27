@@ -3403,6 +3403,9 @@
         "switch_type_floor": {
             "name": "\\{review}Bodenschalter",
         },
+        "switch_type_jump": {
+            "name": "\\{review}Sprungschalter",
+        },
         "switch_type_normal": {
             "name": [
                 "Lever",

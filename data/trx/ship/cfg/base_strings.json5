@@ -3464,6 +3464,9 @@
                 "Floor Switch",
             ]
         },
+        "switch_type_jump": {
+            "name": "Jump Switch",
+        },
         "switch_type_normal": {
             "name": [
                 "Lever",

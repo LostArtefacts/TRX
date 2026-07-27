@@ -46,6 +46,17 @@ static const OBJECT_BOUNDS m_SwitchBoundsUW = {
     },
 };
 
+static const OBJECT_BOUNDS m_SwitchBoundsJump = {
+    .shift = {
+        .min = { .x = -STEP_L / 2, .y = -STEP_L, .z = +STEP_L * 3 / 2, },
+        .max = { .x = +STEP_L / 2, .y = +STEP_L, .z = +STEP_L * 2, },
+    },
+    .rot = {
+        .min = { .x = -10 * DEG_1, .y = -30 * DEG_1, .z = -10 * DEG_1, },
+        .max = { .x = +10 * DEG_1, .y = +30 * DEG_1, .z = +10 * DEG_1, },
+    },
+};
+
 static const XYZ_32 m_SwitchUWPosition = { .x = 0, .y = 0, .z = 108 };
 
 static const M_SWITCH_POS m_SmallSwitchPosition = {
@@ -68,6 +79,11 @@ static const M_SWITCH_POS m_AirlockPosition = {
     .controlled = { .x = 0, .y = 0, .z = 106 },
 };
 
+static const M_SWITCH_POS m_JumpSwitchPosition = {
+    .normal = { .x = 0, .y = -208, .z = 256 },
+    .controlled = {},
+};
+
 static const OBJECT_BOUNDS *M_Bounds(void)
 {
     return g_Config.gameplay.enable_walk_to_items ? &m_SwitchBoundsControlled
@@ -79,12 +95,26 @@ static const OBJECT_BOUNDS *M_BoundsUW(void)
     return &m_SwitchBoundsUW;
 }
 
+static const OBJECT_BOUNDS *M_BoundsJump(void)
+{
+    return &m_SwitchBoundsJump;
+}
+
+static int16_t M_TranslateState(
+    const ITEM *const item, const SWITCH_STATE state)
+{
+    if (item->object_id != O_SWITCH_TYPE_JUMP || state == SWITCH_STATE_LINK) {
+        return state;
+    }
+    return state == SWITCH_STATE_OFF ? SWITCH_STATE_ON : SWITCH_STATE_OFF;
+}
+
 static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
     item->trigger.mask = TRIGGER_MASK_ALL;
     if (!Item_IsTriggerActive(item)) {
-        item->goal_anim_state = SWITCH_STATE_OFF;
+        item->goal_anim_state = M_TranslateState(item, SWITCH_STATE_OFF);
         item->timer = 0;
     }
     Item_Animate(item);
@@ -323,6 +353,41 @@ static void M_CollisionUW(
     Item_Animate(item);
 }
 
+static void M_CollisionJump(
+    const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
+{
+    ITEM *const item = Item_Get(item_num);
+    if (item->current_anim_state != M_TranslateState(item, SWITCH_STATE_OFF)) {
+        return;
+    }
+
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    if (!g_Input.action || lara->gun_status != LGS_ARMLESS
+        || !lara_item->gravity || lara_item->fall_speed <= 0) {
+        return;
+    }
+
+    if (lara_item->current_anim_state != LS(LS_REACH)
+        && lara_item->current_anim_state != LS(LS_JUMP_UP)) {
+        return;
+    }
+
+    const OBJECT *const obj = Object_Get(item->object_id);
+    if (!Lara_TestPosition(item, obj->bounds_func())) {
+        return;
+    }
+
+    Lara_AlignPosition(item, &m_JumpSwitchPosition.normal);
+    Item_SwitchToAnim(lara_item, LA(LA_JUMPSWITCH), 0);
+    lara_item->current_anim_state = LS(LS_SWITCH_ON);
+    lara_item->fall_speed = 0;
+    lara_item->gravity = false;
+    lara->gun_status = LGS_HANDS_BUSY;
+
+    item->goal_anim_state = M_TranslateState(item, SWITCH_STATE_ON);
+    Item_AddSimulated(item_num);
+}
+
 static void M_SetupBase(OBJECT *const obj)
 {
     obj->control_func = M_Control;
@@ -355,6 +420,13 @@ static void M_SetupAirlock(OBJECT *const obj)
 {
     M_SetupCommon(obj);
     obj->draw_func = Object_DrawUnclippedItem;
+}
+
+static void M_SetupJump(OBJECT *const obj)
+{
+    M_SetupCommon(obj);
+    obj->collision_func = M_CollisionJump;
+    obj->bounds_func = M_BoundsJump;
 }
 
 bool Switch_Trigger(const int16_t item_num, const int16_t timer)
@@ -395,7 +467,8 @@ bool Switch_Trigger(const int16_t item_num, const int16_t timer)
         return false;
     }
 
-    if (item->current_anim_state == SWITCH_STATE_ON && timer > 0) {
+    if (item->current_anim_state == M_TranslateState(item, SWITCH_STATE_ON)
+        && timer > 0) {
         item->timer = timer;
         if (timer != 1) {
             item->timer *= LOGIC_FPS;
@@ -414,3 +487,4 @@ REGISTER_OBJECT(O_SWITCH_TYPE_NORMAL, M_SetupCommon)
 REGISTER_OBJECT(O_SWITCH_TYPE_SMALL, M_SetupCommon)
 REGISTER_OBJECT(O_SWITCH_TYPE_UW, M_SetupUW)
 REGISTER_OBJECT(O_SWITCH_TYPE_WHEEL, M_SetupCommon)
+REGISTER_OBJECT(O_SWITCH_TYPE_JUMP, M_SetupJump)
