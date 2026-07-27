@@ -88,7 +88,7 @@ repos:
     entry: tools/lint/checks/preset_keys
     language: python
     pass_filenames: false
-    files: (config/map(_tr[123])?\.def|cfg/presets/.*\.json5)$
+    files: (config/map(_tr\d)?\.def|cfg/presets/.*\.json5)$
     additional_dependencies:
       - pyjson5
 
