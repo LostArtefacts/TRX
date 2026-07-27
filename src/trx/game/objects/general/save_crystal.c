@@ -285,7 +285,9 @@ static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
 
-    if (!item->is_visible || item->clear_body) {
+    // A crystal spent on a save stays simulated, so without this it would keep
+    // casting its light from where it stood.
+    if (!item->is_visible || item->is_finished || item->clear_body) {
         return;
     }
 
