@@ -51,6 +51,12 @@ bool Item_IsInactive(const ITEM *const item)
 
 bool Item_IsAlive(const ITEM *const item)
 {
+    // A removed item is gone whatever its hit points say. An object's own test
+    // reads those, and a destroyed item keeps whatever it had.
+    if (item->is_destroyed) {
+        return false;
+    }
+
     const OBJECT *const obj = Object_Get(item->object_id);
     if (obj->is_alive_func != nullptr) {
         return obj->is_alive_func(item);
