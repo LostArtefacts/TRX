@@ -39,7 +39,7 @@ static bool M_ShouldCountKill(
     const ITEM *const item, const ITEM_DAMAGE_FLAGS flags,
     const ITEM *const sender)
 {
-    if (!item->include_in_kill_stats) {
+    if (!item->include_in_kill_stats || (flags & IDF_NO_KILL_STATS) != 0) {
         return false;
     }
 
