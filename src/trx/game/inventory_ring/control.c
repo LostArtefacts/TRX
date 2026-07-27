@@ -21,6 +21,7 @@
 #include <trx/game/option/examine.h>
 #include <trx/game/option/globe_select.h>
 #include <trx/game/option/passport.h>
+#include <trx/game/option/save_crystal.h>
 #include <trx/game/option/stats.h>
 #include <trx/game/output/overlay.h>
 #include <trx/game/overlay.h>
@@ -313,6 +314,12 @@ static GF_COMMAND M_Finish(INV_RING *const ring, const bool apply_changes)
                 .action = GF_STORY_SO_FAR,
                 .param = Savegame_SlotToParam(g_Passport.select_save_slot),
             };
+        }
+        break;
+
+    case O_SAVE_CRYSTAL_OPTION:
+        if (apply_changes) {
+            Option_SaveCrystal_CommitSave();
         }
         break;
 

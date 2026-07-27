@@ -7,6 +7,6 @@
         "ui.ammo_counter_location": "bottom-right",
         "audio.enable_ps1_sfx": true,
         "gameplay.restore_ps1_enemies": true,
-        "gameplay.save_crystal_mode": "save",
+        "gameplay.save_crystal_mode": "save_pickup",
     },
 }

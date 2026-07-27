@@ -782,6 +782,7 @@
             "SAVE_CRYSTAL_OFF": "\\{review}Wyłączone",
             "SAVE_CRYSTAL_PICKUP": "\\{review}Znajdźki",
             "SAVE_CRYSTAL_SAVE": "\\{review}Zapisywanie",
+            "SAVE_CRYSTAL_SAVE_PICKUP": "\\{review}Zapisywanie (znajdźki)",
         },
         "SCREENSHOT_FORMAT": {
             "SCREENSHOT_FORMAT_JPEG": "JPG",
@@ -1340,7 +1341,7 @@
         },
         "gameplay.save_crystal_mode": {
             "title": "\\{review}Tryb kryształów",
-            "description": "\\{review}Określa, co robią kryształy rozmieszczone na poziomach.\n\n- Wyłączone: kryształy nie występują.\n- Zapisywanie: kryształy są jednorazowe i pozwalają Larze zapisać grę, jak w wersji PS1. Poza tym zapis jest możliwy tylko na początku poziomów.\n- Leczenie: kryształy przywracają połowę zdrowia Lary i leczą zatrucie, gdy ich dotknie, jak w wersji PC TR3.\n- Znajdźki: kryształy są przedmiotami do zebrania, liczonymi w statystykach poziomu, i nie robią nic więcej.\n\nZmiana tej opcji wymaga ponownego uruchomienia poziomu.",
+            "description": "\\{review}Określa, co robią kryształy rozmieszczone na poziomach.\n\n- Wyłączone: kryształy nie występują.\n- Zapisywanie: kryształy są jednorazowe i pozwalają Larze zapisać grę w miejscu, w którym stoją, jak w wersji PS1 TR1. Poza tym zapis jest możliwy tylko na początku poziomów.\n- Zapisywanie (znajdźki): kryształy można zebrać i użyć z ekwipunku, aby zapisać grę w dowolnym miejscu, jak w wersji PS1 TR3. Poza tym zapis jest niedostępny.\n- Leczenie: kryształy przywracają połowę zdrowia Lary i leczą zatrucie, gdy ich dotknie, jak w wersji PC TR3.\n- Znajdźki: kryształy są przedmiotami do zebrania, liczonymi w statystykach poziomu, i nie robią nic więcej.\n\nZmiana tej opcji wymaga ponownego uruchomienia poziomu.",
         },
         "gameplay.start_lara_hitpoints": {
             "title": "Startowe zdrowie Lary",

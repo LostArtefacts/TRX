@@ -37,11 +37,14 @@ const UI_SETTINGS_ENUM_ENTRY UI_Settings_JumpLockModeEnumEntries[] = {
 };
 
 const UI_SETTINGS_ENUM_ENTRY UI_Settings_SaveCrystalModeEnumEntries[] = {
+    // clang-format off
     { SAVE_CRYSTAL_OFF },
     { SAVE_CRYSTAL_SAVE },
+    { SAVE_CRYSTAL_SAVE_PICKUP },
     { SAVE_CRYSTAL_HEAL },
     { SAVE_CRYSTAL_PICKUP },
     { -1 },
+    // clang-format on
 };
 
 const UI_SETTINGS_ENUM_ENTRY UI_Settings_WallGlitchEnumEntries[] = {

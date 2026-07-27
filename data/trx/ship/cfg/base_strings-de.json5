@@ -782,6 +782,7 @@
             "SAVE_CRYSTAL_OFF": "\\{review}Aus",
             "SAVE_CRYSTAL_PICKUP": "\\{review}Fundstücke",
             "SAVE_CRYSTAL_SAVE": "\\{review}Speichern",
+            "SAVE_CRYSTAL_SAVE_PICKUP": "\\{review}Speichern (Fundstücke)",
         },
         "SCREENSHOT_FORMAT": {
             "SCREENSHOT_FORMAT_JPEG": "JPG",
@@ -1340,7 +1341,7 @@
         },
         "gameplay.save_crystal_mode": {
             "title": "\\{review}Kristallmodus",
-            "description": "\\{review}Legt fest, was die in den Leveln verteilten Kristalle bewirken.\n\n- Aus: Es sind keine Kristalle vorhanden.\n- Speichern: Kristalle sind einmalig verwendbar und erlauben Lara, das Spiel zu speichern, so wie auf der PS1. Ansonsten kann nur am Anfang eines Levels gespeichert werden.\n- Heilung: Kristalle stellen die Hälfte von Laras Gesundheit wieder her und heilen Vergiftungen, sobald sie sie berührt, wie in der PC-Version von TR3.\n- Fundstücke: Kristalle sind Sammelobjekte, die in der Levelstatistik gezählt werden, und bewirken sonst nichts.\n\nEine Änderung dieser Option erfordert einen Neustart des Levels.",
+            "description": "\\{review}Legt fest, was die in den Leveln verteilten Kristalle bewirken.\n\n- Aus: Es sind keine Kristalle vorhanden.\n- Speichern: Kristalle sind einmalig verwendbar und erlauben Lara, das Spiel an Ort und Stelle zu speichern, wie in der PS1-Fassung von TR1. Ansonsten kann nur am Anfang eines Levels gespeichert werden.\n- Speichern (Fundstücke): Kristalle werden eingesammelt und erlauben Lara, das Spiel überall aus dem Inventar heraus zu speichern, wie in der PS1-Fassung von TR3. Ansonsten kann nicht gespeichert werden.\n- Heilung: Kristalle stellen die Hälfte von Laras Gesundheit wieder her und heilen Vergiftungen, sobald sie sie berührt, wie in der PC-Version von TR3.\n- Fundstücke: Kristalle sind Sammelobjekte, die in der Levelstatistik gezählt werden, und bewirken sonst nichts.\n\nEine Änderung dieser Option erfordert einen Neustart des Levels.",
         },
         "gameplay.start_lara_hitpoints": {
             "title": "Laras Lebensenergie beim Starten eines Levels",
