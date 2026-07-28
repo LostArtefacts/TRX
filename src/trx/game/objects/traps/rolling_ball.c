@@ -15,6 +15,10 @@
 #define M_SHAKE_RANGE (WALL_L * 10) // = 10240
 #define M_CLEARANCE_UNIT (STEP_L * 3) // = 768
 
+typedef struct {
+    int32_t air_damage;
+} M_PRIV;
+
 static void M_Roll(ITEM *const item)
 {
     item->gravity = false;
@@ -41,16 +45,6 @@ static void M_Roll(ITEM *const item)
             g_Camera.bounce = 40 * (dist - M_SHAKE_RANGE) / M_SHAKE_RANGE;
         }
     }
-}
-
-static int32_t M_GetAirDamage(const ITEM *const item)
-{
-    TRX_VALUE damage = {};
-    if (ObjectProperty_GetItemValue(item, "air_damage", &damage)) {
-        return damage.as_int;
-    }
-
-    return M_DEFAULT_AIR_DAMAGE;
 }
 
 static bool M_TestStop(const ITEM *const item)
@@ -185,6 +179,7 @@ static void M_Collision(
     const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
 {
     ITEM *const item = Item_Get(item_num);
+    const M_PRIV *const p = item->priv;
     const LARA_INFO *const lara = Lara_GetLaraInfo();
 
     if (!Item_IsInPlay(item)) {
@@ -205,7 +200,7 @@ static void M_Collision(
         if (coll->enable_baddie_push) {
             Lara_Col_ItemPush(item, coll, coll->enable_hit, true);
         }
-        Lara_TakeDamage(M_GetAirDamage(item), false);
+        Lara_TakeDamage(p->air_damage, false);
 
         // TODO: handle overflows
         const int32_t dx = lara_item->pos.x - item->pos.x;
@@ -254,6 +249,7 @@ static void M_Collision(
 
 static void M_Setup(OBJECT *const obj)
 {
+    obj->priv_size = sizeof(M_PRIV);
     obj->initialise_func = Trap_Initialise;
     obj->control_func = M_Control;
     obj->collision_func = M_Collision;
@@ -263,8 +259,8 @@ static void M_Setup(OBJECT *const obj)
     obj->load_floor = true;
     OBJECT_PROPERTIES(
         obj,
-        OBJECT_PROPERTY_INT(
-            "air_damage", M_DEFAULT_AIR_DAMAGE,
+        OBJECT_PROPERTY(
+            M_PRIV, air_damage, M_DEFAULT_AIR_DAMAGE,
             "Damage dealt when Lara is clipped by a moving boulder without "
             "being crushed."));
 }

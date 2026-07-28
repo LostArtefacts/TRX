@@ -45,17 +45,11 @@ typedef enum {
     M_ANIM_VAULT = 19,
 } M_ANIM;
 
+typedef struct {
+    int32_t damage;
+} M_PRIV;
+
 static BITE m_ApeBite = { .pos = { 0, -19, 75 }, .mesh_num = 15 };
-
-static int32_t M_GetAttackDamage(const ITEM *const item)
-{
-    TRX_VALUE damage = {};
-    if (ObjectProperty_GetItemValue(item, "damage", &damage)) {
-        return damage.as_int;
-    }
-
-    return M_DAMAGE;
-}
 
 static bool M_Vault(int16_t item_num, int16_t angle)
 {
@@ -120,6 +114,7 @@ static void M_Control(const int16_t item_num)
     }
 
     ITEM *const item = Item_Get(item_num);
+    const M_PRIV *const p = item->priv;
     CREATURE *const ape = item->creature_data;
     int16_t head = 0;
     int16_t angle = 0;
@@ -225,7 +220,7 @@ static void M_Control(const int16_t item_num)
         case M_STATE_ATTACK:
             if (!item->required_anim_state && (item->touch_bits & M_TOUCH)) {
                 Creature_Effect(item, &m_ApeBite, Spawn_Blood);
-                Lara_TakeDamage(M_GetAttackDamage(item), true);
+                Lara_TakeDamage(p->damage, true);
                 item->required_anim_state = M_STATE_STOP;
             }
             break;
@@ -248,6 +243,8 @@ static void M_Setup(OBJECT *const obj)
     if (!obj->loaded) {
         return;
     }
+
+    obj->priv_size = sizeof(M_PRIV);
     obj->initialise_func = Creature_Initialise;
     obj->control_func = M_Control;
     obj->collision_func = Creature_Collision;
@@ -266,10 +263,10 @@ static void M_Setup(OBJECT *const obj)
     Object_GetBone(obj, 13)->rot.y = true;
     OBJECT_PROPERTIES(
         obj,
-        OBJECT_PROPERTY_INT(
+        OBJECT_PROPERTY_STORED(
             "max_hit_points", M_HIT_POINTS, "Maximum hit points."),
-        OBJECT_PROPERTY_INT(
-            "damage", M_DAMAGE, "Damage dealt by the ape bite."));
+        OBJECT_PROPERTY(
+            M_PRIV, damage, M_DAMAGE, "Damage dealt by the ape bite."));
 }
 
 REGISTER_OBJECT(O_APE, M_Setup)

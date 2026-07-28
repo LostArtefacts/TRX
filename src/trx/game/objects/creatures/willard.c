@@ -73,6 +73,9 @@ typedef struct {
 } M_AI_POINT;
 
 typedef struct {
+    int32_t touch_damage;
+    int32_t lunge_damage;
+    int32_t bite_damage;
     bool puzzle_ready;
     uint8_t ring_count;
     int16_t explode_count;
@@ -103,17 +106,6 @@ static const int32_t m_DHeights1[5] = { -7680, -4224, -768, 2688, 6144 };
 static const int32_t m_DHeights2[5] = { -1536, -1152, -768, -384, 0 };
 static int32_t m_DeathDist[5] = {};
 static int32_t m_DeathHeights[5] = {};
-
-static int32_t M_GetDamage(
-    const ITEM *const item, const char *const key, const int32_t default_value)
-{
-    TRX_VALUE damage = {};
-    if (ObjectProperty_GetItemValue(item, key, &damage)) {
-        return damage.as_int;
-    }
-
-    return default_value;
-}
 
 static void M_ResetPriv(M_PRIV *const p)
 {
@@ -659,8 +651,7 @@ static void M_Control(const int16_t item_num)
         Creature_AIInfo(item, &info);
 
         if (item->touch_bits) {
-            Lara_TakeDamage(
-                M_GetDamage(item, "touch_damage", M_TOUCH_DAMAGE), false);
+            Lara_TakeDamage(p->touch_damage, false);
         }
 
         const int32_t index = p->lara_ai_path - p->closest_ai_path;
@@ -720,8 +711,7 @@ static void M_Control(const int16_t item_num)
             creature->maximum_turn = M_ATTACK_TURN;
 
             if (!creature->flags && item->touch_bits & M_TOUCH_BITS) {
-                Lara_TakeDamage(
-                    M_GetDamage(item, "lunge_damage", M_LUNGE_DAMAGE), true);
+                Lara_TakeDamage(p->lunge_damage, true);
                 Creature_Effect(item, &m_BiteLeft, Spawn_Blood);
                 Creature_Effect(item, &m_BiteRight, Spawn_Blood);
                 creature->flags = 1;
@@ -748,8 +738,7 @@ static void M_Control(const int16_t item_num)
         case M_STATE_WALK_ATTACK_1:
         case M_STATE_WALK_ATTACK_2:
             if (!creature->flags && (item->touch_bits & M_TOUCH_BITS) != 0) {
-                Lara_TakeDamage(
-                    M_GetDamage(item, "bite_damage", M_BITE_DAMAGE), true);
+                Lara_TakeDamage(p->bite_damage, true);
                 Creature_Effect(item, &m_BiteLeft, Spawn_Blood);
                 Creature_Effect(item, &m_BiteRight, Spawn_Blood);
                 creature->flags = 1;
@@ -972,16 +961,18 @@ static void M_Setup(OBJECT *const obj)
     obj->save_anim = true;
     OBJECT_PROPERTIES(
         obj,
-        OBJECT_PROPERTY_INT(
+        OBJECT_PROPERTY_STORED(
             "max_hit_points", M_HIT_POINTS, "Maximum hit points."),
-        OBJECT_PROPERTY_INT(
-            "touch_damage", M_TOUCH_DAMAGE, "Damage dealt by body contact."),
-        OBJECT_PROPERTY_INT(
-            "bite_damage", M_BITE_DAMAGE, "Damage dealt by bite attacks."),
-        OBJECT_PROPERTY_INT(
-            "lunge_damage", M_LUNGE_DAMAGE,
+        OBJECT_PROPERTY(
+            M_PRIV, touch_damage, M_TOUCH_DAMAGE,
+            "Damage dealt by body contact."),
+        OBJECT_PROPERTY(
+            M_PRIV, bite_damage, M_BITE_DAMAGE,
+            "Damage dealt by bite attacks."),
+        OBJECT_PROPERTY(
+            M_PRIV, lunge_damage, M_LUNGE_DAMAGE,
             "Damage dealt by the lunge attack."),
-        OBJECT_PROPERTY_INT(
+        OBJECT_PROPERTY_STORED(
             "plasma_ball_damage", WILLARD_PLASMA_BALL_DAMAGE,
             "Damage dealt by direct plasma ball hits."));
 }

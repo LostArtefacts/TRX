@@ -42,21 +42,15 @@ typedef enum {
     M_ANIM_DEATH = 20,
 } M_ANIM;
 
+typedef struct {
+    int32_t damage;
+    int32_t enemy_damage;
+} M_PRIV;
+
 static const BITE m_MonkHit = {
     .pos = { .x = -23, .y = 16, .z = 265 },
     .mesh_num = 14,
 };
-
-static int32_t M_GetDamage(
-    const ITEM *const item, const char *const key, const int32_t default_value)
-{
-    TRX_VALUE damage = {};
-    if (ObjectProperty_GetItemValue(item, key, &damage)) {
-        return damage.as_int;
-    }
-
-    return default_value;
-}
 
 static void M_Control(const int16_t item_num)
 {
@@ -65,6 +59,7 @@ static void M_Control(const int16_t item_num)
     }
 
     ITEM *const item = Item_Get(item_num);
+    const M_PRIV *const p = item->priv;
     CREATURE *const creature = item->creature_data;
 
     int16_t head = 0;
@@ -199,8 +194,7 @@ static void M_Control(const int16_t item_num)
             if (creature->enemy == Lara_GetItem()) {
                 if ((creature->flags & 0xF000) == 0
                     && (item->touch_bits & M_TOUCH_BITS) != 0) {
-                    Lara_TakeDamage(
-                        M_GetDamage(item, "damage", M_BIFF_DAMAGE), true);
+                    Lara_TakeDamage(p->damage, true);
                     Sound_Effect(SFX_MONK_CRUNCH, &item->pos, SPM_NORMAL);
                     Creature_Effect(item, &m_MonkHit, Spawn_Blood);
                     creature->flags |= 0x1000;
@@ -212,9 +206,7 @@ static void M_Control(const int16_t item_num)
                 const int32_t dz = ABS(creature->enemy->pos.z - item->pos.z);
                 if (dx < M_HIT_RANGE && dy < M_HIT_RANGE && dz < M_HIT_RANGE) {
                     Item_TakeDamage(
-                        creature->enemy,
-                        M_GetDamage(item, "enemy_damage", M_BIFF_ENEMY_DAMAGE),
-                        IDF_NONE, item);
+                        creature->enemy, p->enemy_damage, IDF_NONE, item);
                     Sound_Effect(SFX_MONK_CRUNCH, &item->pos, SPM_NORMAL);
                     creature->flags |= 0x1000;
                 }
@@ -233,6 +225,7 @@ static void M_Control(const int16_t item_num)
 
 static void M_SetupBase(OBJECT *const obj)
 {
+    obj->priv_size = sizeof(M_PRIV);
     obj->control_func = M_Control;
     obj->collision_func = Creature_Collision;
 
@@ -248,12 +241,12 @@ static void M_SetupBase(OBJECT *const obj)
     Object_GetBone(obj, 6)->rot.y = true;
     OBJECT_PROPERTIES(
         obj,
-        OBJECT_PROPERTY_INT(
+        OBJECT_PROPERTY_STORED(
             "max_hit_points", M_HIT_POINTS, "Maximum hit points."),
-        OBJECT_PROPERTY_INT(
-            "damage", M_BIFF_DAMAGE, "Damage dealt by melee attacks."),
-        OBJECT_PROPERTY_INT(
-            "enemy_damage", M_BIFF_ENEMY_DAMAGE,
+        OBJECT_PROPERTY(
+            M_PRIV, damage, M_BIFF_DAMAGE, "Damage dealt by melee attacks."),
+        OBJECT_PROPERTY(
+            M_PRIV, enemy_damage, M_BIFF_ENEMY_DAMAGE,
             "Damage dealt by melee attacks against non-player targets."));
 }
 

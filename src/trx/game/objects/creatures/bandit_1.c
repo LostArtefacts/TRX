@@ -40,19 +40,13 @@ typedef enum {
     M_ANIM_DEATH = 14,
 } M_ANIM;
 
+typedef struct {
+    int32_t damage;
+} M_PRIV;
+
 static const CREATURE_GUN m_Bandit1Gun = {
     .muzzle = { .pos = { .x = -2, .y = 150, .z = 19 }, .mesh_num = 17 },
 };
-
-static int32_t M_GetShootDamage(const ITEM *const item)
-{
-    TRX_VALUE damage = {};
-    if (ObjectProperty_GetItemValue(item, "damage", &damage)) {
-        return damage.as_int;
-    }
-
-    return M_DAMAGE;
-}
 
 static void M_Control(const int16_t item_num)
 {
@@ -61,6 +55,7 @@ static void M_Control(const int16_t item_num)
     }
 
     ITEM *const item = Item_Get(item_num);
+    const M_PRIV *const p = item->priv;
     CREATURE *const creature = item->creature_data;
 
     int16_t head = 0;
@@ -159,8 +154,7 @@ static void M_Control(const int16_t item_num)
             if (info.ahead) {
                 head = info.angle;
             }
-            if (!Creature_Shoot(
-                    item, &info, &m_Bandit1Gun, head, M_GetShootDamage(item))) {
+            if (!Creature_Shoot(item, &info, &m_Bandit1Gun, head, p->damage)) {
                 item->goal_anim_state = M_STATE_WAIT;
             }
             break;
@@ -170,8 +164,7 @@ static void M_Control(const int16_t item_num)
             if (info.ahead) {
                 head = info.angle;
             }
-            if (!Creature_Shoot(
-                    item, &info, &m_Bandit1Gun, head, M_GetShootDamage(item))) {
+            if (!Creature_Shoot(item, &info, &m_Bandit1Gun, head, p->damage)) {
                 item->goal_anim_state = M_STATE_WALK;
             }
             if (info.distance < M_WALK_RANGE) {
@@ -196,6 +189,7 @@ static void M_Setup(OBJECT *const obj)
         return;
     }
 
+    obj->priv_size = sizeof(M_PRIV);
     obj->control_func = M_Control;
     obj->collision_func = Creature_Collision;
 
@@ -213,10 +207,10 @@ static void M_Setup(OBJECT *const obj)
     Object_GetBone(obj, 8)->rot.y = true;
     OBJECT_PROPERTIES(
         obj,
-        OBJECT_PROPERTY_INT(
+        OBJECT_PROPERTY_STORED(
             "max_hit_points", M_HIT_POINTS, "Maximum hit points."),
-        OBJECT_PROPERTY_INT(
-            "damage", M_DAMAGE, "Damage dealt by the bandit's shot."));
+        OBJECT_PROPERTY(
+            M_PRIV, damage, M_DAMAGE, "Damage dealt by the bandit's shot."));
 }
 
 REGISTER_OBJECT(O_BANDIT_1, M_Setup)

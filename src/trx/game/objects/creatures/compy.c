@@ -44,6 +44,7 @@ typedef struct {
 } M_SHARED_PRIV;
 
 typedef struct {
+    int32_t damage;
     bool attack_lara;
     int32_t scared_timer;
     int32_t carcass_item_num;
@@ -55,16 +56,6 @@ static BITE m_Bite = {
     .pos = { .x = 0, .y = 0, .z = 0 },
     .mesh_num = 2,
 };
-
-static int32_t M_GetDamage(const ITEM *const item)
-{
-    TRX_VALUE damage = {};
-    if (ObjectProperty_GetItemValue(item, "damage", &damage)) {
-        return damage.as_int;
-    }
-
-    return M_DAMAGE;
-}
 
 static bool M_FindCarcass(ITEM *const item)
 {
@@ -255,7 +246,7 @@ static void M_Control(const int16_t item_num)
         if (!(creature->flags & M_HIT_FLAG)) {
             if ((item->touch_bits & M_TOUCH_BITS) && p->shared->attack_lara) {
                 creature->flags |= M_HIT_FLAG;
-                Lara_TakeDamage(M_GetDamage(item), true);
+                Lara_TakeDamage(p->damage, true);
                 Creature_Effect(item, &m_Bite, Spawn_Blood);
             } else if (
                 info.distance < M_HIT_RANGE && info.ahead
@@ -303,10 +294,10 @@ static void M_Setup(OBJECT *const obj)
     Object_GetBone(obj, 2)->rot.y = true;
     OBJECT_PROPERTIES(
         obj,
-        OBJECT_PROPERTY_INT(
+        OBJECT_PROPERTY_STORED(
             "max_hit_points", M_HIT_POINTS, "Maximum hit points."),
-        OBJECT_PROPERTY_INT(
-            "damage", M_DAMAGE, "Damage dealt by the compy attack."));
+        OBJECT_PROPERTY(
+            M_PRIV, damage, M_DAMAGE, "Damage dealt by the compy attack."));
 }
 
 REGISTER_OBJECT(O_COMPY, M_Setup)

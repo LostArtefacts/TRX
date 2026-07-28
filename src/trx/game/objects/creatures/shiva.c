@@ -44,6 +44,8 @@ typedef enum {
 } M_ANIM;
 
 typedef struct {
+    int32_t pincer_damage;
+    int32_t chopper_damage;
     int32_t effect_mesh;
 } M_PRIV;
 
@@ -55,17 +57,6 @@ static BITE m_LeftBlade = {
     .pos = { 0, 0, 920 },
     .mesh_num = 13,
 };
-
-static int32_t M_GetDamage(
-    const ITEM *const item, const char *const key, const int32_t default_value)
-{
-    TRX_VALUE damage = {};
-    if (ObjectProperty_GetItemValue(item, key, &damage)) {
-        return damage.as_int;
-    }
-
-    return default_value;
-}
 
 static bool M_ShouldSpawnBlood(const ITEM *const item)
 {
@@ -425,9 +416,7 @@ static void M_Control(const int16_t item_num)
                 head_y = info.angle;
             }
             creature->maximum_turn = M_WALK_TURN;
-            M_Damage(
-                item, creature,
-                M_GetDamage(item, "pincer_damage", M_PINCER_DAMAGE));
+            M_Damage(item, creature, p->pincer_damage);
             break;
 
         case M_STATE_KILL: {
@@ -450,9 +439,7 @@ static void M_Control(const int16_t item_num)
                 torso_x = info.x_angle;
             }
             creature->maximum_turn = M_WALK_TURN;
-            M_Damage(
-                item, creature,
-                M_GetDamage(item, "chopper_damage", M_CHOPPER_DAMAGE));
+            M_Damage(item, creature, p->chopper_damage);
             break;
 
         case M_STATE_WALK_BACK:
@@ -537,13 +524,13 @@ static void M_Setup(OBJECT *const obj)
     Object_GetBone(obj, 25)->rot.y = true;
     OBJECT_PROPERTIES(
         obj,
-        OBJECT_PROPERTY_INT(
+        OBJECT_PROPERTY_STORED(
             "max_hit_points", M_HIT_POINTS, "Maximum hit points."),
-        OBJECT_PROPERTY_INT(
-            "pincer_damage", M_PINCER_DAMAGE,
+        OBJECT_PROPERTY(
+            M_PRIV, pincer_damage, M_PINCER_DAMAGE,
             "Damage dealt by the pincer attack."),
-        OBJECT_PROPERTY_INT(
-            "chopper_damage", M_CHOPPER_DAMAGE,
+        OBJECT_PROPERTY(
+            M_PRIV, chopper_damage, M_CHOPPER_DAMAGE,
             "Damage dealt by the chopper attack."));
 }
 

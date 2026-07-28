@@ -53,16 +53,11 @@ typedef enum {
     // clang-format on
 } M_ANIM;
 
-static int32_t M_GetDamage(
-    const ITEM *const item, const char *const key, const int32_t default_value)
-{
-    TRX_VALUE damage = {};
-    if (ObjectProperty_GetItemValue(item, key, &damage)) {
-        return damage.as_int;
-    }
-
-    return default_value;
-}
+typedef struct {
+    int32_t touch_damage;
+    int32_t attack_damage;
+    int32_t part_damage;
+} M_PRIV;
 
 static void M_KillLara(ITEM *const item)
 {
@@ -78,6 +73,7 @@ static void M_Control(const int16_t item_num)
     }
 
     ITEM *const item = Item_Get(item_num);
+    const M_PRIV *const p = item->priv;
     CREATURE *const torso = item->creature_data;
     int16_t head = 0;
     ITEM *const lara_item = Lara_GetItem();
@@ -103,8 +99,7 @@ static void M_Control(const int16_t item_num)
             - item->rot.y;
 
         if (item->touch_bits) {
-            Lara_TakeDamage(
-                M_GetDamage(item, "touch_damage", M_TOUCH_DAMAGE), true);
+            Lara_TakeDamage(p->touch_damage, true);
         }
 
         switch (item->current_anim_state) {
@@ -125,9 +120,7 @@ static void M_Control(const int16_t item_num)
                 item->goal_anim_state = M_STATE_TURN_L;
             } else if (info.distance >= M_ATTACK_RANGE) {
                 item->goal_anim_state = M_STATE_FORWARD;
-            } else if (
-                lara_item->hit_points
-                > M_GetDamage(item, "attack_damage", M_ATTACK_DAMAGE)) {
+            } else if (lara_item->hit_points > p->attack_damage) {
                 if (Random_GetControl() < 0x4000) {
                     item->goal_anim_state = M_STATE_ATTACK_1;
                 } else {
@@ -188,16 +181,14 @@ static void M_Control(const int16_t item_num)
 
         case M_STATE_ATTACK_1:
             if (!torso->flags && (item->touch_bits & M_TOUCH_RIGHT)) {
-                Lara_TakeDamage(
-                    M_GetDamage(item, "attack_damage", M_ATTACK_DAMAGE), true);
+                Lara_TakeDamage(p->attack_damage, true);
                 torso->flags = 1;
             }
             break;
 
         case M_STATE_ATTACK_2:
             if (!torso->flags && (item->touch_bits & M_TOUCH)) {
-                Lara_TakeDamage(
-                    M_GetDamage(item, "attack_damage", M_ATTACK_DAMAGE), true);
+                Lara_TakeDamage(p->attack_damage, true);
                 torso->flags = 1;
             }
             break;
@@ -233,8 +224,7 @@ static void M_Control(const int16_t item_num)
 
     if (item->is_finished) {
         Sound_Effect(SFX_ATLANTEAN_DEATH, &item->pos, SPM_NORMAL);
-        Item_Shatter(
-            item_num, -1, M_GetDamage(item, "part_damage", M_PART_DAMAGE));
+        Item_Shatter(item_num, -1, p->part_damage);
         Room_TestTriggers(item);
 
         Item_Destroy(item_num);
@@ -247,6 +237,8 @@ static void M_Setup(OBJECT *const obj)
     if (!obj->loaded) {
         return;
     }
+
+    obj->priv_size = sizeof(M_PRIV);
     obj->initialise_func = Creature_Initialise;
     obj->control_func = M_Control;
     obj->collision_func = Creature_Collision;
@@ -263,14 +255,16 @@ static void M_Setup(OBJECT *const obj)
     Object_GetBone(obj, 1)->rot.y = true;
     OBJECT_PROPERTIES(
         obj,
-        OBJECT_PROPERTY_INT(
+        OBJECT_PROPERTY_STORED(
             "max_hit_points", M_HIT_POINTS, "Maximum hit points."),
-        OBJECT_PROPERTY_INT(
-            "touch_damage", M_TOUCH_DAMAGE, "Damage dealt by body contact."),
-        OBJECT_PROPERTY_INT(
-            "attack_damage", M_ATTACK_DAMAGE, "Damage dealt by swipe attacks."),
-        OBJECT_PROPERTY_INT(
-            "part_damage", M_PART_DAMAGE,
+        OBJECT_PROPERTY(
+            M_PRIV, touch_damage, M_TOUCH_DAMAGE,
+            "Damage dealt by body contact."),
+        OBJECT_PROPERTY(
+            M_PRIV, attack_damage, M_ATTACK_DAMAGE,
+            "Damage dealt by swipe attacks."),
+        OBJECT_PROPERTY(
+            M_PRIV, part_damage, M_PART_DAMAGE,
             "Damage dealt by the death explosion."));
 }
 

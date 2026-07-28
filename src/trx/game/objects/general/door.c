@@ -303,11 +303,11 @@ static void M_Setup(OBJECT *const obj)
     obj->save_position = true;
     OBJECT_PROPERTIES(
         obj,
-        OBJECT_PROPERTY_BOOL(
-            "crowbar", false,
+        OBJECT_PROPERTY(
+            M_PRIV, crowbar, false,
             "Whether the door must be pried open with the crowbar."),
-        OBJECT_PROPERTY_BOOL(
-            "lift", false,
+        OBJECT_PROPERTY(
+            M_PRIV, lift, false,
             "Whether the door rises vertically while activated instead of "
             "playing its open animation."));
 }
@@ -317,15 +317,6 @@ void Door_Initialise(const int16_t item_num)
     ITEM *const item = Item_Get(item_num);
     M_PRIV *const p = item->priv;
 
-    p->crowbar = false;
-    p->lift = false;
-    TRX_VALUE value = {};
-    if (ObjectProperty_GetItemValue(item, "crowbar", &value)) {
-        p->crowbar = value.as_bool;
-    }
-    if (ObjectProperty_GetItemValue(item, "lift", &value)) {
-        p->lift = value.as_bool;
-    }
     p->lift_count = 0;
     p->lift_base_y = item->pos.y;
 

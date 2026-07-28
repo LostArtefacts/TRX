@@ -37,6 +37,10 @@ typedef enum {
     // clang-format on
 } M_ANIM;
 
+typedef struct {
+    int32_t damage;
+} M_PRIV;
+
 static const CREATURE_GUN m_Cultist3LeftGun = {
     .muzzle = { .pos = { .x = -2, .y = 275, .z = 23 }, .mesh_num = 6 },
 };
@@ -44,16 +48,6 @@ static const CREATURE_GUN m_Cultist3LeftGun = {
 static const CREATURE_GUN m_Cultist3RightGun = {
     .muzzle = { .pos = { .x = 2, .y = 275, .z = 23 }, .mesh_num = 10 },
 };
-
-static int32_t M_GetShootDamage(const ITEM *const item)
-{
-    TRX_VALUE damage = {};
-    if (ObjectProperty_GetItemValue(item, "damage", &damage)) {
-        return damage.as_int;
-    }
-
-    return M_DAMAGE;
-}
 
 static void M_Initialise(const int16_t item_num)
 {
@@ -71,6 +65,7 @@ static void M_Control(const int16_t item_num)
     }
 
     ITEM *const item = Item_Get(item_num);
+    const M_PRIV *const p = item->priv;
     CREATURE *const creature = item->creature_data;
 
     int16_t head = 0;
@@ -218,8 +213,7 @@ static void M_Control(const int16_t item_num)
             }
             if (creature->flags == 0) {
                 Creature_Shoot(
-                    item, &info, &m_Cultist3LeftGun, head,
-                    M_GetShootDamage(item));
+                    item, &info, &m_Cultist3LeftGun, head, p->damage);
                 creature->flags = 1;
             }
             break;
@@ -231,8 +225,7 @@ static void M_Control(const int16_t item_num)
             }
             if (creature->flags == 0) {
                 Creature_Shoot(
-                    item, &info, &m_Cultist3RightGun, head,
-                    M_GetShootDamage(item));
+                    item, &info, &m_Cultist3RightGun, head, p->damage);
                 creature->flags = 1;
             }
             break;
@@ -242,11 +235,8 @@ static void M_Control(const int16_t item_num)
                 body = info.angle;
             }
             if (creature->flags == 0) {
-                Creature_Shoot(
-                    item, &info, &m_Cultist3LeftGun, 0, M_GetShootDamage(item));
-                Creature_Shoot(
-                    item, &info, &m_Cultist3RightGun, 0,
-                    M_GetShootDamage(item));
+                Creature_Shoot(item, &info, &m_Cultist3LeftGun, 0, p->damage);
+                Creature_Shoot(item, &info, &m_Cultist3RightGun, 0, p->damage);
                 creature->flags = 1;
             }
             break;
@@ -285,6 +275,7 @@ static void M_Setup(OBJECT *const obj)
         return;
     }
 
+    obj->priv_size = sizeof(M_PRIV);
     obj->initialise_func = M_Initialise;
     obj->control_func = M_Control;
     obj->collision_func = Creature_Collision;
@@ -300,10 +291,10 @@ static void M_Setup(OBJECT *const obj)
     obj->save_anim = true;
     OBJECT_PROPERTIES(
         obj,
-        OBJECT_PROPERTY_INT(
+        OBJECT_PROPERTY_STORED(
             "max_hit_points", M_HIT_POINTS, "Maximum hit points."),
-        OBJECT_PROPERTY_INT(
-            "damage", M_DAMAGE, "Damage dealt by the cultist's shot."));
+        OBJECT_PROPERTY(
+            M_PRIV, damage, M_DAMAGE, "Damage dealt by the cultist's shot."));
 }
 
 REGISTER_OBJECT(O_CULT_3, M_Setup)

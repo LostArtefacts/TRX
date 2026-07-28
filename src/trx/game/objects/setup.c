@@ -21,7 +21,7 @@ static void M_SetupLara(OBJECT *const obj)
     obj->save_anim = true;
     OBJECT_PROPERTIES(
         obj,
-        OBJECT_PROPERTY_INT(
+        OBJECT_PROPERTY_STORED(
             "max_hit_points", LARA_MAX_HITPOINTS, "Maximum hit points."));
     ObjectProperty_SetObjectValueRaw(
         obj, "max_hit_points",
@@ -75,7 +75,8 @@ void Object_SetupAllObjects(void)
 
         // TODO: this is poor design
         OBJECT_PROPERTIES(
-            obj, OBJECT_PROPERTY_INT("ocb", 0, "Object configuration value."));
+            obj,
+            OBJECT_PROPERTY_STORED("ocb", 0, "Object configuration value."));
     }
 
     Lara_Hair_Initialise();

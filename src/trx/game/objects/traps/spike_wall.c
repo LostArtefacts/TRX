@@ -13,36 +13,9 @@
 #define M_DEFAULT_SPEED 16
 
 typedef struct {
+    int32_t damage;
     int32_t speed;
 } M_PRIV;
-
-static int32_t M_GetDamage(const ITEM *const item)
-{
-    TRX_VALUE damage = {};
-    if (ObjectProperty_GetItemValue(item, "damage", &damage)) {
-        return damage.as_int;
-    }
-
-    return M_DEFAULT_DAMAGE;
-}
-
-static int32_t M_GetSpeed(const ITEM *const item)
-{
-    TRX_VALUE speed = {};
-    if (ObjectProperty_GetItemValue(item, "speed", &speed)) {
-        return speed.as_int;
-    }
-
-    return M_DEFAULT_SPEED;
-}
-
-static void M_Initialise(const int16_t item_num)
-{
-    Trap_Initialise(item_num);
-    ITEM *const item = Item_Get(item_num);
-    M_PRIV *const p = item->priv;
-    p->speed = M_GetSpeed(item);
-}
 
 static void M_Move(const int16_t item_num)
 {
@@ -66,7 +39,8 @@ static void M_Move(const int16_t item_num)
 
 static void M_HitLara(ITEM *const item)
 {
-    Lara_TakeDamage(M_GetDamage(item), true);
+    const M_PRIV *const p = item->priv;
+    Lara_TakeDamage(p->damage, true);
 
     const ITEM *const lara_item = Lara_GetItem();
     Spawn_BloodBath(
@@ -94,7 +68,7 @@ static void M_Control(const int16_t item_num)
 
 static void M_Setup(OBJECT *const obj)
 {
-    obj->initialise_func = M_Initialise;
+    obj->initialise_func = Trap_Initialise;
     obj->control_func = M_Control;
     obj->collision_func = Object_Collision;
     obj->priv_size = sizeof(M_PRIV);
@@ -102,11 +76,11 @@ static void M_Setup(OBJECT *const obj)
     obj->save_flags = true;
     OBJECT_PROPERTIES(
         obj,
-        OBJECT_PROPERTY_INT(
-            "speed", M_DEFAULT_SPEED,
+        OBJECT_PROPERTY(
+            M_PRIV, speed, M_DEFAULT_SPEED,
             "Offset applied each frame while the spike wall advances."),
-        OBJECT_PROPERTY_INT(
-            "damage", M_DEFAULT_DAMAGE,
+        OBJECT_PROPERTY(
+            M_PRIV, damage, M_DEFAULT_DAMAGE,
             "Damage dealt while Lara is touching the spike wall."));
 }
 

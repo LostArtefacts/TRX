@@ -34,6 +34,10 @@ typedef enum {
     M_ANIM_DEATH = 19,
 } M_ANIM;
 
+typedef struct {
+    int32_t damage;
+} M_PRIV;
+
 static const CREATURE_GUN m_Worker2Gun = {
     .muzzle = {
         .pos = { .x = 0, .y = 308, .z = 32 },
@@ -41,25 +45,16 @@ static const CREATURE_GUN m_Worker2Gun = {
     },
 };
 
-static int32_t M_GetDamage(const ITEM *const item)
-{
-    TRX_VALUE damage = {};
-    if (ObjectProperty_GetItemValue(item, "damage", &damage)) {
-        return damage.as_int;
-    }
-
-    return M_DAMAGE;
-}
-
 static void M_ShootAtLara(
     ITEM *const item, CREATURE *const creature, const AI_INFO *const info,
     const int16_t head)
 {
+    const M_PRIV *const p = item->priv;
     if (item->object_id == O_WORKER_2) {
         if (creature->flags != 0) {
             creature->flags--;
         } else {
-            Creature_Shoot(item, info, &m_Worker2Gun, head, M_GetDamage(item));
+            Creature_Shoot(item, info, &m_Worker2Gun, head, p->damage);
             creature->flags = 5;
         }
     } else {
@@ -236,6 +231,7 @@ static void M_Setup(OBJECT *const obj)
         return;
     }
 
+    obj->priv_size = sizeof(M_PRIV);
     obj->control_func = M_Control;
     obj->collision_func = Creature_Collision;
 
@@ -253,9 +249,10 @@ static void M_Setup(OBJECT *const obj)
     Object_GetBone(obj, 13)->rot.y = true;
     OBJECT_PROPERTIES(
         obj,
-        OBJECT_PROPERTY_INT(
+        OBJECT_PROPERTY_STORED(
             "max_hit_points", M_HIT_POINTS, "Maximum hit points."),
-        OBJECT_PROPERTY_INT("damage", M_DAMAGE, "Damage dealt by gun shots."));
+        OBJECT_PROPERTY(
+            M_PRIV, damage, M_DAMAGE, "Damage dealt by gun shots."));
 }
 
 REGISTER_OBJECT(O_WORKER_2, M_Setup)

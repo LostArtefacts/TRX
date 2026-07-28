@@ -26,6 +26,10 @@ typedef enum {
     // clang-format on
 } M_ANIM;
 
+typedef struct {
+    int32_t damage;
+} M_PRIV;
+
 static void M_Initialise(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
@@ -34,19 +38,10 @@ static void M_Initialise(const int16_t item_num)
     item->current_anim_state = M_STATE_STOP;
 }
 
-static int32_t M_GetDamage(const ITEM *const item)
-{
-    TRX_VALUE damage = {};
-    if (ObjectProperty_GetItemValue(item, "damage", &damage)) {
-        return damage.as_int;
-    }
-
-    return M_DEFAULT_DAMAGE;
-}
-
 static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
+    const M_PRIV *const p = item->priv;
     bool flip = false;
 
     if (item->current_anim_state == M_STATE_SPIN) {
@@ -63,7 +58,7 @@ static void M_Control(const int16_t item_num)
 
         flip = true;
         if (item->touch_bits != 0) {
-            Lara_TakeDamage(M_GetDamage(item), true);
+            Lara_TakeDamage(p->damage, true);
 
             const ITEM *const lara_item = Lara_GetItem();
             Spawn_BloodBath(
@@ -96,6 +91,7 @@ static void M_Control(const int16_t item_num)
 
 static void M_Setup(OBJECT *const obj)
 {
+    obj->priv_size = sizeof(M_PRIV);
     obj->initialise_func = M_Initialise;
     obj->control_func = M_Control;
     obj->collision_func = Object_Collision;
@@ -104,8 +100,8 @@ static void M_Setup(OBJECT *const obj)
     obj->save_anim = true;
     OBJECT_PROPERTIES(
         obj,
-        OBJECT_PROPERTY_INT(
-            "damage", M_DEFAULT_DAMAGE,
+        OBJECT_PROPERTY(
+            M_PRIV, damage, M_DEFAULT_DAMAGE,
             "Damage dealt while Lara is touching the spinning blade."));
 }
 

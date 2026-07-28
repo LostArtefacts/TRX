@@ -13,6 +13,7 @@
 
 typedef struct {
     int16_t effect_num;
+    double interval;
 } M_PRIV;
 
 typedef void (*FLAME_INIT_FUNC)(EFFECT *const effect, const ITEM *const item);
@@ -68,14 +69,21 @@ static void M_Initialise(const int16_t item_num)
     p->effect_num = NO_EFFECT;
 }
 
+// An interval of nothing would burst every frame.
+static const char *M_SetInterval(ITEM *const item, const TRX_VALUE *const in)
+{
+    if (in->as_num <= 0.0) {
+        return "interval must be longer than nothing";
+    }
+    M_PRIV *const p = item->priv;
+    p->interval = in->as_num;
+    return nullptr;
+}
+
 static int32_t M_GetSideDuration(const ITEM *const item)
 {
-    TRX_VALUE value = {};
-    if (!ObjectProperty_GetItemValue(item, "interval", &value)
-        || value.type != TVT_DOUBLE || value.as_num <= 0.0) {
-        return M_DEFAULT_SIDE_INTERVAL * LOGIC_FPS;
-    }
-    return value.as_num * LOGIC_FPS;
+    const M_PRIV *const p = item->priv;
+    return p->interval * LOGIC_FPS;
 }
 
 static void M_ControlCommon(
@@ -184,8 +192,8 @@ static void M_SetupSide(OBJECT *const obj)
     M_SetupCommon(obj, M_ControlSide);
     OBJECT_PROPERTIES(
         obj,
-        OBJECT_PROPERTY_DOUBLE(
-            "interval", M_DEFAULT_SIDE_INTERVAL,
+        OBJECT_PROPERTY_SET(
+            M_PRIV, interval, M_DEFAULT_SIDE_INTERVAL, M_SetInterval,
             "Interval between flame bursts, in seconds."));
 }
 

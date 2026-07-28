@@ -60,6 +60,11 @@ typedef enum {
     // clang-format on
 } M_ANIM;
 
+typedef struct {
+    int32_t final_shot_damage;
+    int32_t damage;
+} M_PRIV;
+
 static const CREATURE_GUN m_GuardGun = {
     .muzzle = { .pos = { 0, 160, 40 }, .mesh_num = 13 },
     .tr3_enemy_flash = true,
@@ -69,20 +74,10 @@ static const CREATURE_GUN m_GuardGun = {
     .tr3_flash_rot_x = -DEG_90,
 };
 
-static int32_t M_GetDamage(
-    const ITEM *const item, const char *const key, const int32_t default_value)
-{
-    TRX_VALUE damage = {};
-    if (ObjectProperty_GetItemValue(item, key, &damage)) {
-        return damage.as_int;
-    }
-
-    return default_value;
-}
-
 static void M_FireFinalShot(
     ITEM *const item, int16_t *const head, int16_t *const torso_y)
 {
+    const M_PRIV *const p = item->priv;
     const int16_t frame_idx = Item_GetRelativeFrame(item);
     if (frame_idx != 3 && frame_idx != 28) {
         return;
@@ -97,9 +92,7 @@ static void M_FireFinalShot(
 
     *head = info.angle;
     *torso_y = info.angle;
-    Creature_Shoot(
-        item, &info, &m_GuardGun, info.angle,
-        M_GetDamage(item, "final_shot_damage", M_FINAL_SHOT_DAMAGE));
+    Creature_Shoot(item, &info, &m_GuardGun, info.angle, p->final_shot_damage);
     Sound_Effect(SFX_SECURITY_GUARD_FIRE, &item->pos, SPM_NORMAL);
 }
 
@@ -128,6 +121,7 @@ static void M_Control(const int16_t item_num)
     }
 
     ITEM *const item = Item_Get(item_num);
+    const M_PRIV *const p = item->priv;
     CREATURE *const creature = item->creature_data;
 
     int16_t angle = 0;
@@ -309,9 +303,7 @@ static void M_Control(const int16_t item_num)
 
         if (anim_idx == M_ANIM_AIM_1
             || (anim_idx == M_ANIM_SHOOT_1 && frame_idx == 10)) {
-            if (!Creature_Shoot(
-                    item, &info, &m_GuardGun, torso_y,
-                    M_GetDamage(item, "damage", M_DAMAGE))) {
+            if (!Creature_Shoot(item, &info, &m_GuardGun, torso_y, p->damage)) {
                 item->required_anim_state = M_STATE_WAIT;
             }
         } else if (M_ShouldDuck(item, near_cover)) {
@@ -338,9 +330,7 @@ static void M_Control(const int16_t item_num)
         }
 
         if (frame_idx == 0) {
-            if (!Creature_Shoot(
-                    item, &info, &m_GuardGun, torso_y,
-                    M_GetDamage(item, "damage", M_DAMAGE))) {
+            if (!Creature_Shoot(item, &info, &m_GuardGun, torso_y, p->damage)) {
                 item->goal_anim_state = M_STATE_WAIT;
             }
         } else if (M_ShouldDuck(item, near_cover)) {
@@ -357,9 +347,7 @@ static void M_Control(const int16_t item_num)
         }
 
         if (frame_idx == 0 || frame_idx == 11) {
-            if (!Creature_Shoot(
-                    item, &info, &m_GuardGun, torso_y,
-                    M_GetDamage(item, "damage", M_DAMAGE))) {
+            if (!Creature_Shoot(item, &info, &m_GuardGun, torso_y, p->damage)) {
                 item->goal_anim_state = M_STATE_WAIT;
             }
         } else if (M_ShouldDuck(item, near_cover)) {
@@ -376,9 +364,7 @@ static void M_Control(const int16_t item_num)
 
         if ((anim_idx == M_ANIM_AIM_4A && frame_idx == 16)
             || (anim_idx == M_ANIM_AIM_4B && frame_idx == 6)) {
-            if (!Creature_Shoot(
-                    item, &info, &m_GuardGun, torso_y,
-                    M_GetDamage(item, "damage", M_DAMAGE))) {
+            if (!Creature_Shoot(item, &info, &m_GuardGun, torso_y, p->damage)) {
                 item->goal_anim_state = M_STATE_WALK;
             }
         } else if (M_ShouldDuck(item, near_cover)) {
@@ -403,9 +389,7 @@ static void M_Control(const int16_t item_num)
         }
 
         if (frame_idx == 16
-            && !Creature_Shoot(
-                item, &info, &m_GuardGun, torso_y,
-                M_GetDamage(item, "damage", M_DAMAGE))) {
+            && !Creature_Shoot(item, &info, &m_GuardGun, torso_y, p->damage)) {
             item->goal_anim_state = M_STATE_WALK;
         }
 
@@ -453,9 +437,7 @@ static void M_Control(const int16_t item_num)
             break;
         }
 
-        if (!Creature_Shoot(
-                item, &info, &m_GuardGun, torso_y,
-                M_GetDamage(item, "damage", M_DAMAGE))
+        if (!Creature_Shoot(item, &info, &m_GuardGun, torso_y, p->damage)
             || (Random_GetControl() & 7) == 0) {
             item->goal_anim_state = M_STATE_DUCKED;
         }
@@ -492,6 +474,7 @@ static void M_Setup(OBJECT *const obj)
         return;
     }
 
+    obj->priv_size = sizeof(M_PRIV);
     obj->control_func = M_Control;
     obj->collision_func = Creature_Collision;
 
@@ -509,11 +492,11 @@ static void M_Setup(OBJECT *const obj)
     Object_GetBone(obj, 13)->rot.y = true;
     OBJECT_PROPERTIES(
         obj,
-        OBJECT_PROPERTY_INT(
+        OBJECT_PROPERTY_STORED(
             "max_hit_points", M_HIT_POINTS, "Maximum hit points."),
-        OBJECT_PROPERTY_INT("damage", M_DAMAGE, "Damage dealt by shots."),
-        OBJECT_PROPERTY_INT(
-            "final_shot_damage", M_FINAL_SHOT_DAMAGE,
+        OBJECT_PROPERTY(M_PRIV, damage, M_DAMAGE, "Damage dealt by shots."),
+        OBJECT_PROPERTY(
+            M_PRIV, final_shot_damage, M_FINAL_SHOT_DAMAGE,
             "Damage dealt by the death-state final shot."));
 }
 

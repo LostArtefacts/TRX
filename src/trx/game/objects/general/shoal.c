@@ -47,6 +47,7 @@ typedef struct {
 typedef struct {
     M_FISH fish[M_FISH_PER_SHOAL + 1];
     M_LEADER leader;
+    XYZ_32 range;
     bool use_room_lighting;
     int32_t piranha_hit_wait;
     int16_t carcass_item_num;
@@ -677,27 +678,10 @@ static void M_Initialise(const int16_t item_num)
     p->anchor.pos = item->pos;
     p->anchor.room_num = item->room_num;
 
-    TRX_VALUE range_val = {};
-    if (ObjectProperty_GetItemValue(item, "range", &range_val)) {
-        p->leader.range = range_val.as_xyz;
-    } else {
-        p->leader.range = M_DEFAULT_RANGE;
-    }
-
-    p->leader.range.x = MAX(1, p->leader.range.x) * STEP_L;
-    p->leader.range.y = MAX(1, p->leader.range.y) * STEP_L;
-    p->leader.range.z = MAX(1, p->leader.range.z) * STEP_L;
-
-    TRX_VALUE sprite_val = {};
-    if (ObjectProperty_GetItemValue(item, "sprite_offset", &sprite_val)) {
-        p->sprite_offset = sprite_val.as_int;
-    }
-
-    TRX_VALUE use_room_lighting_val = {};
-    if (ObjectProperty_GetItemValue(
-            item, "use_room_lighting", &use_room_lighting_val)) {
-        p->use_room_lighting = use_room_lighting_val.as_bool;
-    }
+    // The range is stated in quarter tiles and swum in world units.
+    p->leader.range.x = MAX(1, p->range.x) * STEP_L;
+    p->leader.range.y = MAX(1, p->range.y) * STEP_L;
+    p->leader.range.z = MAX(1, p->range.z) * STEP_L;
 }
 
 static void M_SetupCommon(OBJECT *const obj)
@@ -718,10 +702,10 @@ static void M_SetupCommon(OBJECT *const obj)
 
     OBJECT_PROPERTIES(
         obj,
-        OBJECT_PROPERTY_XYZ(
-            "range", M_DEFAULT_RANGE, "Swim range, in quarter tiles."),
-        OBJECT_PROPERTY_BOOL(
-            "use_room_lighting", (g_TRVersion < 3),
+        OBJECT_PROPERTY(
+            M_PRIV, range, (M_DEFAULT_RANGE), "Swim range, in quarter tiles."),
+        OBJECT_PROPERTY(
+            M_PRIV, use_room_lighting, (bool)(g_TRVersion < 3),
             "Whether the shoal uses the surrounding room lighting."));
 }
 
@@ -730,8 +714,9 @@ static void M_SetupTropicalFish(OBJECT *const obj)
     M_SetupCommon(obj);
     OBJECT_PROPERTIES(
         obj,
-        OBJECT_PROPERTY_INT(
-            "sprite_offset", 0, "Texture offset in `O_TROPICAL_FISH_GFX`."));
+        OBJECT_PROPERTY(
+            M_PRIV, sprite_offset, 0,
+            "Texture offset in `O_TROPICAL_FISH_GFX`."));
 }
 
 static void M_SetupPiranhas(OBJECT *const obj)

@@ -348,7 +348,7 @@ static void M_Setup(OBJECT *const obj)
     Object_GetBone(obj, 2)->rot.z = true;
     OBJECT_PROPERTIES(
         obj,
-        OBJECT_PROPERTY_INT(
+        OBJECT_PROPERTY_STORED(
             "max_hit_points", M_HIT_POINTS, "Maximum hit points."));
 }
 

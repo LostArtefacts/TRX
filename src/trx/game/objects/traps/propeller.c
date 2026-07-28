@@ -17,6 +17,10 @@ typedef enum {
     // clang-format on
 } M_STATE;
 
+typedef struct {
+    int32_t damage;
+} M_PRIV;
+
 static void M_Collision(
     const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
 {
@@ -31,14 +35,15 @@ static void M_Collision(
 
 static void M_Setup(OBJECT *const obj)
 {
+    obj->priv_size = sizeof(M_PRIV);
     obj->control_func = Propeller_Control;
     obj->collision_func = M_Collision;
     obj->save_flags = true;
     obj->save_anim = true;
     OBJECT_PROPERTIES(
         obj,
-        OBJECT_PROPERTY_INT(
-            "damage", M_DEFAULT_DAMAGE,
+        OBJECT_PROPERTY(
+            M_PRIV, damage, M_DEFAULT_DAMAGE,
             "Damage dealt while Lara is touching the propeller."));
 }
 
@@ -51,26 +56,17 @@ static void M_SpawnBlood(const ITEM *const item, const int32_t count)
         item->rot.y + DEG_90, lara_item->room_num, count);
 }
 
-static int32_t M_GetDamage(const ITEM *const item)
-{
-    TRX_VALUE damage = {};
-    if (ObjectProperty_GetItemValue(item, "damage", &damage)) {
-        return damage.as_int;
-    }
-
-    return M_DEFAULT_DAMAGE;
-}
-
 void Propeller_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
+    const M_PRIV *const p = item->priv;
 
     if (Item_IsTriggerActive(item) && !item->trigger.spent) {
         item->goal_anim_state = M_STATE_ON;
 
         if ((item->touch_bits & 6) != 0) {
             const ITEM *const lara_item = Lara_GetItem();
-            Lara_TakeDamage(M_GetDamage(item), true);
+            Lara_TakeDamage(p->damage, true);
             if (lara_item->hit_points <= 0) {
                 M_SpawnBlood(item, 5);
             }

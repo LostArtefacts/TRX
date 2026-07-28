@@ -880,7 +880,7 @@ static void M_Setup(OBJECT *const obj)
 
     OBJECT_PROPERTIES(
         obj,
-        OBJECT_PROPERTY_BOOL(
+        OBJECT_PROPERTY_STORED(
             "is_heavy", true,
             "Whether or not this vehicle can activate heavy triggers."));
 }

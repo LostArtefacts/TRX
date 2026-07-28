@@ -16,19 +16,14 @@ typedef struct {
     int32_t flip_slot;
 } M_PRIV;
 
-static void M_Initialise(const int16_t item_num)
+static const char *M_SetFlipSlot(ITEM *const item, const TRX_VALUE *const in)
 {
-    ITEM *const item = Item_Get(item_num);
-    M_PRIV *const p = item->priv;
-    p->flip_slot = M_DEFAULT_FLIP_SLOT;
-
-    TRX_VALUE value = {};
-    if (ObjectProperty_GetItemValue(item, "flip_slot", &value)
-        && value.as_int < MAX_FLIP_MAPS) {
-        p->flip_slot = value.as_int;
+    if (in->as_int >= MAX_FLIP_MAPS) {
+        return "no such flip map";
     }
-
-    CLAMPL(p->flip_slot, -1);
+    M_PRIV *const p = item->priv;
+    p->flip_slot = MAX(-1, in->as_int);
+    return nullptr;
 }
 
 static bool M_ShouldFlipMap(const ITEM *const item)
@@ -77,7 +72,6 @@ static void M_Control(const int16_t item_num)
 
 static void M_Setup(OBJECT *const obj)
 {
-    obj->initialise_func = M_Initialise;
     obj->control_func = M_Control;
     obj->draw_func = Object_DrawUnclippedItem;
     obj->collision_func = Object_Collision;
@@ -86,8 +80,8 @@ static void M_Setup(OBJECT *const obj)
     obj->priv_size = sizeof(M_PRIV);
     OBJECT_PROPERTIES(
         obj,
-        OBJECT_PROPERTY_INT(
-            "flip_slot", M_DEFAULT_FLIP_SLOT,
+        OBJECT_PROPERTY_SET(
+            M_PRIV, flip_slot, M_DEFAULT_FLIP_SLOT, M_SetFlipSlot,
             "The flip map slot to alter once the cabin has landed. -1 = "
             "no flipmap is performed. Value range: minimum -1; maximum 10."));
 }

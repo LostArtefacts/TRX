@@ -5,18 +5,6 @@ typedef struct {
     bool collidable;
 } M_PRIV;
 
-static void M_Initialise(const int16_t item_num)
-{
-    ITEM *const item = Item_Get(item_num);
-    M_PRIV *const p = item->priv;
-    p->collidable = true;
-
-    TRX_VALUE value = {};
-    if (ObjectProperty_GetItemValue(item, "collidable", &value)) {
-        p->collidable = value.as_bool;
-    }
-}
-
 static void M_Collision(
     const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
 {
@@ -44,7 +32,6 @@ static void M_Control(const int16_t item_num)
 
 static void M_Setup(OBJECT *const obj)
 {
-    obj->initialise_func = M_Initialise;
     obj->control_func = M_Control;
     obj->collision_func = M_Collision;
     obj->save_flags = true;
@@ -52,8 +39,8 @@ static void M_Setup(OBJECT *const obj)
     obj->priv_size = sizeof(M_PRIV);
     OBJECT_PROPERTIES(
         obj,
-        OBJECT_PROPERTY_BOOL(
-            "collidable", true,
+        OBJECT_PROPERTY(
+            M_PRIV, collidable, true,
             "Whether or not Lara can collide with the animating."));
 }
 

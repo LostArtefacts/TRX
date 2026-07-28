@@ -31,20 +31,14 @@ typedef enum {
     M_ANIM_DEATH = 9,
 } M_ANIM;
 
+typedef struct {
+    int32_t damage;
+} M_PRIV;
+
 static const BITE m_MouseBite = {
     .pos = { .x = 0, .y = 0, .z = 57 },
     .mesh_num = 2,
 };
-
-static int32_t M_GetDamage(const ITEM *const item)
-{
-    TRX_VALUE damage = {};
-    if (ObjectProperty_GetItemValue(item, "damage", &damage)) {
-        return damage.as_int;
-    }
-
-    return M_BITE_DAMAGE;
-}
 
 static void M_Control(const int16_t item_num)
 {
@@ -53,6 +47,7 @@ static void M_Control(const int16_t item_num)
     }
 
     ITEM *const item = Item_Get(item_num);
+    const M_PRIV *const p = item->priv;
     CREATURE *const creature = item->creature_data;
 
     int16_t head = 0;
@@ -124,7 +119,7 @@ static void M_Control(const int16_t item_num)
         case M_STATE_ATTACK:
             if (item->required_anim_state == M_STATE_NULL
                 && (item->touch_bits & M_TOUCH_BITS) != 0) {
-                Lara_TakeDamage(M_GetDamage(item), true);
+                Lara_TakeDamage(p->damage, true);
                 Creature_Effect(item, &m_MouseBite, Spawn_Blood);
                 item->required_anim_state = M_STATE_STOP;
             }
@@ -145,6 +140,7 @@ static void M_Setup(OBJECT *const obj)
         return;
     }
 
+    obj->priv_size = sizeof(M_PRIV);
     obj->control_func = M_Control;
     obj->collision_func = Creature_Collision;
 
@@ -161,10 +157,10 @@ static void M_Setup(OBJECT *const obj)
     Object_GetBone(obj, 3)->rot.y = true;
     OBJECT_PROPERTIES(
         obj,
-        OBJECT_PROPERTY_INT(
+        OBJECT_PROPERTY_STORED(
             "max_hit_points", M_HIT_POINTS, "Maximum hit points."),
-        OBJECT_PROPERTY_INT(
-            "damage", M_BITE_DAMAGE, "Damage dealt by the bite attack."));
+        OBJECT_PROPERTY(
+            M_PRIV, damage, M_BITE_DAMAGE, "Damage dealt by the bite attack."));
 }
 
 REGISTER_OBJECT(O_MOUSE, M_Setup)

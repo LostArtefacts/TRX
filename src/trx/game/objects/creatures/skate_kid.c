@@ -39,6 +39,8 @@ typedef enum {
 } M_ANIM;
 
 typedef struct {
+    int32_t stop_shot_damage;
+    int32_t skate_shot_damage;
     int16_t skateboard_item_num;
     bool speech_started;
 } M_PRIV;
@@ -61,17 +63,6 @@ static const CREATURE_GUN m_KidGun1 = {
 static const CREATURE_GUN m_KidGun2 = {
     .muzzle = { .pos = { 0, 150, 37 }, .mesh_num = 4 },
 };
-
-static int32_t M_GetDamage(
-    const ITEM *const item, const char *const key, const int32_t default_value)
-{
-    TRX_VALUE damage = {};
-    if (ObjectProperty_GetItemValue(item, key, &damage)) {
-        return damage.as_int;
-    }
-
-    return default_value;
-}
 
 static void M_Initialise(const int16_t item_num)
 {
@@ -181,9 +172,8 @@ static void M_Control(const int16_t item_num)
             if (!kid->flags && Creature_CanTargetEnemy(item, &info)) {
                 const int32_t damage =
                     item->current_anim_state == M_STATE_SHOOT_1
-                    ? M_GetDamage(item, "stop_shot_damage", M_STOP_SHOT_DAMAGE)
-                    : M_GetDamage(
-                          item, "skate_shot_damage", M_SKATE_SHOT_DAMAGE);
+                    ? p->stop_shot_damage
+                    : p->skate_shot_damage;
                 Creature_Shoot(item, &info, &m_KidGun1, head, damage);
 
                 Creature_Shoot(item, &info, &m_KidGun2, head, damage);
@@ -245,13 +235,13 @@ static void M_Setup(OBJECT *const obj)
     }
     OBJECT_PROPERTIES(
         obj,
-        OBJECT_PROPERTY_INT(
+        OBJECT_PROPERTY_STORED(
             "max_hit_points", M_HIT_POINTS, "Maximum hit points."),
-        OBJECT_PROPERTY_INT(
-            "stop_shot_damage", M_STOP_SHOT_DAMAGE,
+        OBJECT_PROPERTY(
+            M_PRIV, stop_shot_damage, M_STOP_SHOT_DAMAGE,
             "Damage dealt by shots while stopped."),
-        OBJECT_PROPERTY_INT(
-            "skate_shot_damage", M_SKATE_SHOT_DAMAGE,
+        OBJECT_PROPERTY(
+            M_PRIV, skate_shot_damage, M_SKATE_SHOT_DAMAGE,
             "Damage dealt by shots while skating."));
 }
 

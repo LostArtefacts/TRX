@@ -39,6 +39,10 @@ typedef enum {
     // clang-format on
 } M_ANIM;
 
+typedef struct {
+    int32_t damage;
+} M_PRIV;
+
 static const CREATURE_GUN m_Gun = {
     .muzzle = { .pos = { 0, 400, 64 }, .mesh_num = 7 },
     .tr3_enemy_flash = true,
@@ -47,16 +51,6 @@ static const CREATURE_GUN m_Gun = {
     .tr3_flash_shade = 600,
     .tr3_flash_rot_x = -DEG_90,
 };
-
-static int32_t M_GetDamage(const ITEM *const item)
-{
-    TRX_VALUE damage = {};
-    if (ObjectProperty_GetItemValue(item, "damage", &damage)) {
-        return damage.as_int;
-    }
-
-    return M_DAMAGE;
-}
 
 static void M_Initialise(const int16_t item_num)
 {
@@ -91,6 +85,7 @@ static void M_Control(const int16_t item_num)
     }
 
     ITEM *const item = Item_Get(item_num);
+    const M_PRIV *const p = item->priv;
     CREATURE *const creature = item->creature_data;
     int16_t tilt = 0;
     int16_t angle = 0;
@@ -294,7 +289,7 @@ static void M_Control(const int16_t item_num)
         if (creature->flags != 0) {
             creature->flags--;
         } else {
-            Creature_Shoot(item, &info, &m_Gun, torso_y, M_GetDamage(item));
+            Creature_Shoot(item, &info, &m_Gun, torso_y, p->damage);
             creature->flags = 5;
         }
         break;
@@ -347,6 +342,7 @@ static void M_Setup(OBJECT *const obj)
         return;
     }
 
+    obj->priv_size = sizeof(M_PRIV);
     obj->initialise_func = M_Initialise;
     obj->collision_func = Creature_Collision;
     obj->control_func = M_Control;
@@ -365,9 +361,9 @@ static void M_Setup(OBJECT *const obj)
     Object_GetBone(obj, 7)->rot.y = true;
     OBJECT_PROPERTIES(
         obj,
-        OBJECT_PROPERTY_INT(
+        OBJECT_PROPERTY_STORED(
             "max_hit_points", M_HIT_POINTS, "Maximum hit points."),
-        OBJECT_PROPERTY_INT("damage", M_DAMAGE, "Damage dealt by shots."));
+        OBJECT_PROPERTY(M_PRIV, damage, M_DAMAGE, "Damage dealt by shots."));
 }
 
 REGISTER_OBJECT(O_RX_WORKER_2, M_Setup)

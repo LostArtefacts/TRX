@@ -108,13 +108,16 @@ static void M_Initialise(int16_t item_num)
     if (item->is_visible) {
         Item_AddSimulated(item_num);
     }
+}
 
-    p->pickup_mode = PICKUP_MODE_NORMAL;
-    TRX_VALUE value = {};
-    if (ObjectProperty_GetItemValue(item, "pickup_mode", &value)
-        && value.as_int >= 0 && value.as_int < PICKUP_MODE_NUMBER_OF) {
-        p->pickup_mode = value.as_int;
+static const char *M_SetPickupMode(ITEM *const item, const TRX_VALUE *const in)
+{
+    if (in->as_int < 0 || in->as_int >= PICKUP_MODE_NUMBER_OF) {
+        return "no such pickup mode";
     }
+    M_PRIV *const p = item->priv;
+    p->pickup_mode = in->as_int;
+    return nullptr;
 }
 
 static void M_HandleSave(ITEM *const item, const SAVEGAME_STAGE stage)
@@ -665,8 +668,8 @@ static void M_Setup(OBJECT *const obj)
 
     OBJECT_PROPERTIES(
         obj,
-        OBJECT_PROPERTY_INT(
-            "pickup_mode", 0,
+        OBJECT_PROPERTY_SET(
+            M_PRIV, pickup_mode, PICKUP_MODE_NORMAL, M_SetPickupMode,
             "Pickup animation mode - 0: normal; 1: low pedestal; 2: high "
             "pedestal."));
 }

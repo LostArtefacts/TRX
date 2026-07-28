@@ -11,6 +11,10 @@ typedef enum {
     TEETH_TRAP_STATE_NASTY = 1,
 } TEETH_TRAP_STATE;
 
+typedef struct {
+    int32_t damage;
+} M_PRIV;
+
 static const BITE m_Teeth[M_NUM_TEETH] = {
     // clang-format off
     { .pos = { .x = -23, .y = 0,   .z = -1718 }, .mesh_num = 0 },
@@ -22,16 +26,6 @@ static const BITE m_Teeth[M_NUM_TEETH] = {
     // clang-format on
 };
 
-static int32_t M_GetDamage(const ITEM *const item)
-{
-    TRX_VALUE damage = {};
-    if (ObjectProperty_GetItemValue(item, "damage", &damage)) {
-        return damage.as_int;
-    }
-
-    return M_DEFAULT_DAMAGE;
-}
-
 static void M_Bite(ITEM *const item, const BITE *const bite)
 {
     XYZ_32 pos = bite->pos;
@@ -42,12 +36,13 @@ static void M_Bite(ITEM *const item, const BITE *const bite)
 static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
+    const M_PRIV *const p = item->priv;
 
     if (Item_IsTriggerActive(item)) {
         item->goal_anim_state = TEETH_TRAP_STATE_NASTY;
         if (item->touch_bits != 0
             && item->current_anim_state == TEETH_TRAP_STATE_NASTY) {
-            Lara_TakeDamage(M_GetDamage(item), true);
+            Lara_TakeDamage(p->damage, true);
             for (int32_t i = 0; i < M_NUM_TEETH; i++) {
                 M_Bite(item, &m_Teeth[i]);
             }
@@ -61,14 +56,15 @@ static void M_Control(const int16_t item_num)
 
 static void M_Setup(OBJECT *const obj)
 {
+    obj->priv_size = sizeof(M_PRIV);
     obj->control_func = M_Control;
     obj->collision_func = Object_Collision_Trap;
     obj->save_flags = true;
     obj->save_anim = true;
     OBJECT_PROPERTIES(
         obj,
-        OBJECT_PROPERTY_INT(
-            "damage", M_DEFAULT_DAMAGE,
+        OBJECT_PROPERTY(
+            M_PRIV, damage, M_DEFAULT_DAMAGE,
             "Damage dealt while Lara is caught in the teeth trap."));
 }
 

@@ -389,6 +389,9 @@ void Item_Initialise(const int16_t item_num)
         }
     }
 
+    // Before the object's own initialiser, so it reads what it declared.
+    ObjectProperty_ApplyToItem(item);
+
     if (obj->initialise_func != nullptr) {
         obj->initialise_func(item_num);
     }

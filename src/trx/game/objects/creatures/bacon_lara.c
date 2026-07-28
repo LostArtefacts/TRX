@@ -14,6 +14,7 @@
 typedef struct {
     bool status;
     bool anchored;
+    int32_t anchor_room;
     int32_t anchor_x;
     int32_t anchor_z;
     int32_t death_count;
@@ -24,13 +25,9 @@ static void M_InitialiseAnchor(ITEM *const item)
     M_PRIV *const p = item->priv;
     p->anchored = false;
 
-    TRX_VALUE value = {};
-    int32_t room_num = item->room_num;
-    if (ObjectProperty_GetItemValue(item, "anchor_room", &value)
-        && value.as_int >= 0) {
-        room_num = value.as_int;
-    }
-
+    // The room she is placed in, unless the level names another.
+    const int32_t room_num =
+        p->anchor_room >= 0 ? p->anchor_room : item->room_num;
     if (room_num >= Room_GetCount()) {
         LOG_ERROR("Could not anchor Bacon Lara to room %d", room_num);
         return;
@@ -223,10 +220,10 @@ static void M_Setup(OBJECT *const obj)
     obj->save_anim = true;
     OBJECT_PROPERTIES(
         obj,
-        OBJECT_PROPERTY_INT(
+        OBJECT_PROPERTY_STORED(
             "max_hit_points", LARA_MAX_HITPOINTS, "Maximum hit points."),
-        OBJECT_PROPERTY_INT(
-            "anchor_room", -1,
+        OBJECT_PROPERTY(
+            M_PRIV, anchor_room, -1,
             "Room whose center Bacon Lara mirrors Lara's movement about. "
             "-1 uses the room she is placed in. Value range: minimum -1."));
 }

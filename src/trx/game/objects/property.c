@@ -14,6 +14,11 @@ struct OBJECT_PROPERTY_ENTRY {
     const char *name;
     const char *description;
     TRX_VALUE value;
+    // How an item's live copy is reached; see OBJECT_PROPERTY_DECL.
+    size_t field_offset;
+    TRX_VALUE_TYPE field_type;
+    size_t field_size;
+    const char *(*set)(ITEM *item, const TRX_VALUE *value);
 };
 
 // Object properties are numeric: the declaration macros produce only S32, BOOL,
@@ -63,6 +68,48 @@ static const OBJECT_PROPERTY_ENTRY *M_GetObjectEntry(
     return M_GetEntry(&obj->properties, name);
 }
 
+// Writes an item's live copy of a property: the member the object declared, or
+// the setter standing in for one. A property with neither keeps no copy.
+static void M_WriteLiveValue(
+    ITEM *const item, const OBJECT_PROPERTY_ENTRY *const decl,
+    const TRX_VALUE *const value)
+{
+    if (item == nullptr || (decl->set == nullptr && decl->field_size == 0)) {
+        return;
+    }
+    // An item whose priv the level has not allocated yet keeps nothing: its
+    // copy is written as it is initialised.
+    if (item->priv == nullptr) {
+        return;
+    }
+
+    const char *const err = decl->set != nullptr
+        ? decl->set(item, value)
+        : Value_WritePtr(
+              decl->field_type, (char *)item->priv + decl->field_offset, value);
+    if (err != nullptr) {
+        LOG_ERROR("%s: %s", decl->name, err);
+    }
+}
+
+// Every item of an object holds its own copy of what the object declared, so a
+// change to the object's value reaches the items that have not overridden it.
+static void M_WriteLiveValueToItems(
+    const OBJECT *const obj, const OBJECT_PROPERTY_ENTRY *const decl)
+{
+    if (decl->set == nullptr && decl->field_size == 0) {
+        return;
+    }
+    for (int32_t i = 0; i < Item_GetLevelCount(); i++) {
+        ITEM *const item = Item_Get(i);
+        if (Object_TryGet(item->object_id) != obj
+            || M_GetEntry(&item->properties, decl->name) != nullptr) {
+            continue;
+        }
+        M_WriteLiveValue(item, decl, &decl->value);
+    }
+}
+
 static OBJECT_PROPERTY_ENTRY *M_AddEntry(
     OBJECT_PROPERTY_SET *const properties, const char *const name,
     const char *const description, const TRX_VALUE *const value)
@@ -97,6 +144,7 @@ static void M_ApplyObjectValue(
         return;
     }
     entry->value = *value;
+    M_WriteLiveValueToItems(obj, entry);
 }
 
 static void M_ApplyItemValue(
@@ -108,6 +156,7 @@ static void M_ApplyItemValue(
         return;
     }
     M_AddEntry(&item->properties, name, object_entry->description, value);
+    M_WriteLiveValue(item, object_entry, value);
 }
 
 void ObjectProperty_ResetObject(OBJECT *const obj)
@@ -126,10 +175,42 @@ void ObjectProperty_ApplyDeclarations(
 {
     for (size_t i = 0; i < count; i++) {
         const OBJECT_PROPERTY_DECL *const declaration = &declarations[i];
-        M_AddEntry(
+        OBJECT_PROPERTY_ENTRY *const entry = M_AddEntry(
             &obj->properties, declaration->name, declaration->description,
             &declaration->value);
-        M_ApplyObjectValue(obj, declaration->name, &declaration->value);
+        entry->field_offset = declaration->field_offset;
+        entry->field_type = declaration->field_type;
+        entry->field_size = declaration->field_size;
+        entry->set = declaration->set;
+        // A bound property is the view of its member: it carries the member's
+        // type, so what the member cannot hold is turned away at the write
+        // rather than dropped silently on the way to it. A default of another
+        // numeric type - an integer written for a double member - is converted
+        // once, here.
+        TRX_VALUE value = entry->value;
+        if (entry->field_size != 0 && entry->field_type != value.type) {
+            const bool converted =
+                Value_Coerce(entry->field_type, &entry->value, &value);
+            ASSERT(converted);
+        }
+        M_ApplyObjectValue(obj, declaration->name, &value);
+    }
+}
+
+void ObjectProperty_ApplyToItem(ITEM *const item)
+{
+    const OBJECT *const obj =
+        item == nullptr ? nullptr : Object_TryGet(item->object_id);
+    if (obj == nullptr) {
+        return;
+    }
+
+    for (int32_t i = 0; i < obj->properties.count; i++) {
+        const OBJECT_PROPERTY_ENTRY *const decl = &obj->properties.entries[i];
+        const OBJECT_PROPERTY_ENTRY *const own =
+            M_GetEntry(&item->properties, decl->name);
+        M_WriteLiveValue(
+            item, decl, own != nullptr ? &own->value : &decl->value);
     }
 }
 
