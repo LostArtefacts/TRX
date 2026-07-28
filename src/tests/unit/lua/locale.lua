@@ -16,12 +16,17 @@ test("a declared key reads back the text declared for it", function()
   assert(trx.locale.format("test/declared_formatted", 7) == "Declared 7")
 end)
 
-test("declaring a key again replaces the text behind it", function()
-  -- A mod ships its own wording for a key the base game declares, and what the
-  -- player reads is the mod's.
+test("declaring a key again leaves the text behind it alone", function()
   trx.locale.declare({ ["test/redeclared"] = "First" })
   trx.locale.declare({ ["test/redeclared"] = "Second" })
-  assert(trx.locale.get("test/redeclared") == "Second")
+  assert(trx.locale.get("test/redeclared") == "First")
+end)
+
+test("declaring a key the strings files have keeps their text", function()
+  -- A level script runs after its translations are applied, so a declaration
+  -- that took the key would put English over what the player reads.
+  trx.locale.declare({ ["test/plain"] = "Declared text" })
+  assert(trx.locale.get("test/plain") == "Plain text")
 end)
 
 test("declare takes strings and nothing else", function()

@@ -27,7 +27,14 @@ static int M_L_LocaleGet(lua_State *const L)
 // trxc.locale.declare(key, text)
 static int M_L_LocaleDeclare(lua_State *const L)
 {
-    GameString_Define(luaL_checkstring(L, 1), luaL_checkstring(L, 2));
+    // A declaration is a fallback, and the strings files run before the level
+    // scripts do: taking a key the table already holds would put English over
+    // the player's own language.
+    const char *const key = luaL_checkstring(L, 1);
+    const char *const text = luaL_checkstring(L, 2);
+    if (!GameString_IsKnown(key)) {
+        GameString_Define(key, text);
+    }
     return 0;
 }
 
