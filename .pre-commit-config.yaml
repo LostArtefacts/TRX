@@ -67,6 +67,12 @@ repos:
     language: python
     files: \.c$
 
+  - id: lint-object-property-binding
+    name: Bound object properties have somewhere to land
+    entry: tools/lint/checks/object_property_binding
+    language: python
+    files: \.c$
+
   - id: lint-gameflow-schema
     name: Gameflow files match the schema
     entry: tools/lint/checks/gameflow_schema
