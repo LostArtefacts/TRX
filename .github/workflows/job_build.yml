@@ -73,6 +73,19 @@ jobs:
             just trx-package-${{ inputs.platform }} "${{ inputs.target }}" -o "${{ steps.vars.outputs.trx_dir }}" --no-zip
           fi
 
+      # The dump needs a binary to query, so it rides along with the Linux build
+      # rather than paying for one of its own. The engine boots SDL before it
+      # prints the API, hence the dummy video driver and libGL. Release builds
+      # skip it: a stale dump is not a reason to stop a release.
+      - name: Check the Lua API docs
+        if: ${{ inputs.platform == 'linux' && inputs.target == 'debug' }}
+        env:
+          SDL_VIDEODRIVER: dummy
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libgl1
+          just lua-api-check
+
       - name: Upload artifacts (combined)
         uses: actions/upload-artifact@v4
         with:
