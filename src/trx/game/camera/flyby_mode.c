@@ -516,7 +516,7 @@ void Camera_FlybyMode_Update(void)
         m_State.current.camera_idx++;
 
         if (m_State.current.camera_idx > M_GetLastCamera(sequence)) {
-            if (current_camera->flags.loop) {
+            if (first_camera->flags.loop) {
                 m_State.current.camera_idx = sequence->camera_idx;
             } else if (
                 first_camera->flags.snap_to_game
