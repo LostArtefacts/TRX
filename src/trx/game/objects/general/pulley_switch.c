@@ -50,20 +50,18 @@ static void M_SavePriv(const ITEM *const item, JSON_WRITE_IO *const io)
     JSONW_WRITE(io, "remaining_pulls", p->remaining_pulls);
 }
 
+// Fewer pulls than the minimum would leave the pulley unusable.
+static const char *M_CheckRequiredPulls(const TRX_VALUE *const in)
+{
+    return in->as_int < M_MIN_PULLS
+        ? "fewer pulls than that would leave the pulley unusable"
+        : nullptr;
+}
+
 static void M_Initialise(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
     M_PRIV *const p = item->priv;
-
-    TRX_VALUE value = {};
-    if (ObjectProperty_GetItemValue(item, "required_pulls", &value)) {
-        p->required_pulls = value.as_int;
-    }
-    if (ObjectProperty_GetItemValue(item, "is_single_use", &value)) {
-        p->is_single_use = value.as_bool;
-    }
-
-    p->required_pulls = MAX(M_MIN_PULLS, p->required_pulls);
     p->remaining_pulls = p->required_pulls;
 
     // The visibility initialisation flag is temporarily used to indicate that
@@ -194,12 +192,12 @@ static void M_Setup(OBJECT *const obj)
     obj->save_anim = true;
     OBJECT_PROPERTIES(
         obj,
-        OBJECT_PROPERTY_INT(
-            "required_pulls", M_MIN_PULLS,
+        OBJECT_PROPERTY_CHECKED(
+            M_PRIV, required_pulls, M_MIN_PULLS, M_CheckRequiredPulls,
             "The number of pulls required before activating the trigger under "
             "the pulley. Value range: minimum 1"),
-        OBJECT_PROPERTY_BOOL(
-            "is_single_use", false,
+        OBJECT_PROPERTY(
+            M_PRIV, is_single_use, false,
             "Whether or not the pulley can only be used once."));
 }
 

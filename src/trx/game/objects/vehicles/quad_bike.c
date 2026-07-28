@@ -225,11 +225,6 @@ static void M_Initialise(const int16_t item_num)
     }
 
     item->extra_rotations = p->extra_rotation;
-
-    TRX_VALUE value = {};
-    if (ObjectProperty_GetItemValue(item, "test_static_collision", &value)) {
-        p->test_static_collision = value.as_bool;
-    }
 }
 
 static int32_t M_GetOnQuadBike(
@@ -1349,19 +1344,19 @@ static void M_Setup(OBJECT *const obj)
 
     OBJECT_PROPERTIES(
         obj,
-        OBJECT_PROPERTY_INT(
+        OBJECT_PROPERTY_STORED(
             "track_1", -1, "Random music track pool, slot 1. -1 = disabled."),
-        OBJECT_PROPERTY_INT(
+        OBJECT_PROPERTY_STORED(
             "track_2", -1, "Random music track pool, slot 2. -1 = disabled."),
-        OBJECT_PROPERTY_INT(
+        OBJECT_PROPERTY_STORED(
             "track_3", -1, "Random music track pool, slot 3. -1 = disabled."),
-        OBJECT_PROPERTY_INT(
+        OBJECT_PROPERTY_STORED(
             "track_4", -1, "Random music track pool, slot 4. -1 = disabled."),
-        OBJECT_PROPERTY_BOOL(
+        OBJECT_PROPERTY_STORED(
             "is_heavy", true,
             "Whether or not this vehicle can activate heavy triggers."),
-        OBJECT_PROPERTY_BOOL(
-            "test_static_collision", false,
+        OBJECT_PROPERTY(
+            M_PRIV, test_static_collision, false,
             "Whether or not this vehicle can collide with static meshes."));
 }
 

@@ -163,7 +163,7 @@
         <property category="TRX" defaultValue="5" description="Maximum hit points." displayName="Max Hit Points" internalName="max_hit_points" minValue="0" type="Int" />
     </moveable>
     <moveable id="162">
-        <property category="TRX" defaultValue="3" description="The flip map slot to alter once the cabin has landed. -1 = no flipmap is performed." displayName="Flip Slot" internalName="flip_slot" maxValue="10" minValue="-1" type="Int" />
+        <property category="TRX" defaultValue="3" description="The flip map slot to alter once the cabin has landed. -1 = no flipmap is performed." displayName="Flip Slot" internalName="flip_slot" maxValue="9" minValue="-1" type="Int" />
     </moveable>
     <moveable id="180">
         <property category="TRX" defaultValue="25" description="Offset applied each frame while the lava wedge advances." displayName="Speed" internalName="speed" minValue="0" type="Int" />

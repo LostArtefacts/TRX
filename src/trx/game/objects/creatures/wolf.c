@@ -46,18 +46,12 @@ typedef enum {
     M_ANIM_DEATH = 20,
 } M_ANIM;
 
+typedef struct {
+    int32_t pounce_damage;
+    int32_t bite_damage;
+} M_PRIV;
+
 static BITE m_WolfJawBite = { .pos = { 0, -14, 174 }, .mesh_num = 6 };
-
-static int32_t M_GetDamage(
-    const ITEM *const item, const char *const key, const int32_t default_value)
-{
-    TRX_VALUE damage = {};
-    if (ObjectProperty_GetItemValue(item, key, &damage)) {
-        return damage.as_int;
-    }
-
-    return default_value;
-}
 
 static void M_Initialise(const int16_t item_num)
 {
@@ -72,6 +66,7 @@ static void M_Control(const int16_t item_num)
     }
 
     ITEM *const item = Item_Get(item_num);
+    const M_PRIV *const p = item->priv;
     CREATURE *const wolf = item->creature_data;
     int16_t head = 0;
     int16_t angle = 0;
@@ -192,8 +187,7 @@ static void M_Control(const int16_t item_num)
             if (item->required_anim_state == M_STATE_EMPTY
                 && (item->touch_bits & M_TOUCH)) {
                 Creature_Effect(item, &m_WolfJawBite, Spawn_Blood);
-                Lara_TakeDamage(
-                    M_GetDamage(item, "pounce_damage", M_POUNCE_DAMAGE), true);
+                Lara_TakeDamage(p->pounce_damage, true);
                 item->required_anim_state = M_STATE_RUN;
             }
             item->goal_anim_state = M_STATE_RUN;
@@ -203,8 +197,7 @@ static void M_Control(const int16_t item_num)
             if (item->required_anim_state == M_STATE_EMPTY
                 && (item->touch_bits & M_TOUCH) && info.ahead) {
                 Creature_Effect(item, &m_WolfJawBite, Spawn_Blood);
-                Lara_TakeDamage(
-                    M_GetDamage(item, "bite_damage", M_BITE_DAMAGE), true);
+                Lara_TakeDamage(p->bite_damage, true);
                 item->required_anim_state = M_STATE_CROUCH;
             }
             break;
@@ -221,6 +214,8 @@ static void M_Setup(OBJECT *const obj)
     if (!obj->loaded) {
         return;
     }
+
+    obj->priv_size = sizeof(M_PRIV);
     obj->initialise_func = M_Initialise;
     obj->control_func = M_Control;
     obj->collision_func = Creature_Collision;
@@ -239,13 +234,14 @@ static void M_Setup(OBJECT *const obj)
     Object_GetBone(obj, 2)->rot.y = true;
     OBJECT_PROPERTIES(
         obj,
-        OBJECT_PROPERTY_INT(
+        OBJECT_PROPERTY_STORED(
             "max_hit_points", M_HIT_POINTS, "Maximum hit points."),
-        OBJECT_PROPERTY_INT(
-            "pounce_damage", M_POUNCE_DAMAGE,
+        OBJECT_PROPERTY(
+            M_PRIV, pounce_damage, M_POUNCE_DAMAGE,
             "Damage dealt by the pounce attack."),
-        OBJECT_PROPERTY_INT(
-            "bite_damage", M_BITE_DAMAGE, "Damage dealt by the bite attack."));
+        OBJECT_PROPERTY(
+            M_PRIV, bite_damage, M_BITE_DAMAGE,
+            "Damage dealt by the bite attack."));
 }
 
 REGISTER_OBJECT(O_WOLF, M_Setup)

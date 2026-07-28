@@ -44,6 +44,11 @@ typedef enum {
     // clang-format on
 } M_ANIM;
 
+typedef struct {
+    int32_t final_shot_damage;
+    int32_t damage;
+} M_PRIV;
+
 static const CREATURE_GUN m_SwatGun = {
     .muzzle = { .pos = { 0, 300, 64 }, .mesh_num = 7 },
     .tr3_enemy_flash = true,
@@ -60,17 +65,6 @@ static const CREATURE_GUN m_SwatGun = {
         .width = 2.0f,
     },
 };
-
-static int32_t M_GetDamage(
-    const ITEM *const item, const char *const key, const int32_t default_value)
-{
-    TRX_VALUE damage = {};
-    if (ObjectProperty_GetItemValue(item, key, &damage)) {
-        return damage.as_int;
-    }
-
-    return default_value;
-}
 
 static void M_Initialise(const int16_t item_num)
 {
@@ -91,6 +85,7 @@ static void M_TriggerLaser(const ITEM *const item)
 static void M_FireFinalShot(
     ITEM *const item, int16_t *const head, int16_t *const torso_y)
 {
+    const M_PRIV *const p = item->priv;
     const int16_t frame_idx = Item_GetRelativeFrame(item);
     if (frame_idx <= 44 || frame_idx >= 52 || (item->frame_num & 3) != 0) {
         return;
@@ -105,9 +100,7 @@ static void M_FireFinalShot(
 
     *head = info.angle;
     *torso_y = info.angle;
-    Creature_Shoot(
-        item, &info, &m_SwatGun, info.angle,
-        M_GetDamage(item, "final_shot_damage", M_FINAL_SHOT_DAMAGE));
+    Creature_Shoot(item, &info, &m_SwatGun, info.angle, p->final_shot_damage);
     const SAMPLE_TRX_ID fire_sfx = item->object_id == O_SWAT_3
         ? SFX_AMERICAN_SWAT_FIRE
         : SFX_LONDON_SWAT_FIRE;
@@ -121,6 +114,7 @@ static void M_Control(const int16_t item_num)
     }
 
     ITEM *const item = Item_Get(item_num);
+    const M_PRIV *const p = item->priv;
     CREATURE *const creature = item->creature_data;
 
     int16_t angle = 0;
@@ -345,9 +339,7 @@ static void M_Control(const int16_t item_num)
         }
 
         if (creature->flags == 0) {
-            Creature_Shoot(
-                item, &info, &m_SwatGun, torso_y,
-                M_GetDamage(item, "damage", M_DAMAGE));
+            Creature_Shoot(item, &info, &m_SwatGun, torso_y, p->damage);
             creature->flags = 5;
         } else {
             creature->flags--;
@@ -374,6 +366,7 @@ static void M_Setup(OBJECT *const obj)
         return;
     }
 
+    obj->priv_size = sizeof(M_PRIV);
     obj->initialise_func = M_Initialise;
     obj->collision_func = Creature_Collision;
     obj->control_func = M_Control;
@@ -392,11 +385,11 @@ static void M_Setup(OBJECT *const obj)
     Object_GetBone(obj, 7)->rot.y = true;
     OBJECT_PROPERTIES(
         obj,
-        OBJECT_PROPERTY_INT(
+        OBJECT_PROPERTY_STORED(
             "max_hit_points", M_HIT_POINTS, "Maximum hit points."),
-        OBJECT_PROPERTY_INT("damage", M_DAMAGE, "Damage dealt by shots."),
-        OBJECT_PROPERTY_INT(
-            "final_shot_damage", M_FINAL_SHOT_DAMAGE,
+        OBJECT_PROPERTY(M_PRIV, damage, M_DAMAGE, "Damage dealt by shots."),
+        OBJECT_PROPERTY(
+            M_PRIV, final_shot_damage, M_FINAL_SHOT_DAMAGE,
             "Damage dealt by the death-state final shot."));
 }
 

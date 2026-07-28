@@ -228,6 +228,9 @@
         <property category="TRX" defaultValue="22" description="The vertical distance the lift will travel, in clicks." displayName="Travel Distance" internalName="travel_distance" minValue="1" type="Int" />
         <property category="TRX" defaultValue="16" description="The speed at which the lift moves, in world units." displayName="Speed" internalName="speed" maxValue="64" minValue="1" type="Int" />
     </moveable>
+    <moveable id="105">
+        <property category="TRX" defaultValue="200" description="Damage dealt while Lara is touching the power saw." displayName="Damage" internalName="damage" minValue="0" type="Int" />
+    </moveable>
     <moveable id="106">
         <property category="TRX" defaultValue="50" description="Damage dealt while Lara is touching the hook." displayName="Damage" internalName="damage" minValue="0" type="Int" />
     </moveable>
@@ -295,12 +298,12 @@
         <property category="TRX" defaultValue="2" description="Interval between flame bursts, in seconds." displayName="Interval" internalName="interval" minValue="0" type="Float" />
     </moveable>
     <moveable id="338">
-        <property category="TRX" defaultValue="TEN.Vec3(1, 1, 1)" description="Swim range, in quarter tiles." displayName="Range" internalName="range" type="Vec3" />
+        <property category="TRX" defaultValue="TEN.Vec3(1, 1, 1)" description="Swim range, in quarter tiles. Value range: minimum 1 on each axis." displayName="Range" internalName="range" type="Vec3" />
         <property category="TRX" defaultValue="false" description="Whether the shoal uses the surrounding room lighting." displayName="Use Room Lighting" internalName="use_room_lighting" type="Bool" />
     </moveable>
     <moveable id="339">
         <property category="TRX" defaultValue="0" description="Texture offset in `O_TROPICAL_FISH_GFX`." displayName="Sprite Offset" internalName="sprite_offset" minValue="0" type="Int" />
-        <property category="TRX" defaultValue="TEN.Vec3(1, 1, 1)" description="Swim range, in quarter tiles." displayName="Range" internalName="range" type="Vec3" />
+        <property category="TRX" defaultValue="TEN.Vec3(1, 1, 1)" description="Swim range, in quarter tiles. Value range: minimum 1 on each axis." displayName="Range" internalName="range" type="Vec3" />
         <property category="TRX" defaultValue="false" description="Whether the shoal uses the surrounding room lighting." displayName="Use Room Lighting" internalName="use_room_lighting" type="Bool" />
     </moveable>
     <moveable id="349-354">

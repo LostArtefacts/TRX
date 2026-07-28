@@ -282,11 +282,13 @@ class RegisteredPropertyCatalog:
         result: dict[str, PropertyMap] = {}
         object_categories: dict[str, str] = {}
         global_constants = read_global_constants()
+        global_structs = read_global_structs()
         for path, category in read_source_files():
             source = strip_comments(path.read_text())
             source = expand_pickup_includes(source)
             constants = global_constants | read_local_constants(source)
             function_bodies = read_function_bodies(source)
+            structs = global_structs | read_struct_members(source)
             registrations: list[tuple[str, list[PropertyInfo]]] = []
 
             func_to_objects: dict[str, list[str]] = {}
@@ -301,7 +303,7 @@ class RegisteredPropertyCatalog:
                 if func_name not in function_bodies:
                     continue
                 declarations = collect_object_property_declarations(
-                    func_name, function_bodies
+                    func_name, function_bodies, structs, constants
                 )
                 for object_id in object_ids:
                     registrations.append((object_id, declarations))
@@ -341,7 +343,47 @@ def read_local_constants(source: str) -> dict[str, str]:
     )
     for name, value in const_pattern.findall(source):
         constants[name] = value.strip()
+
+    constants.update(read_enum_constants(source))
     return constants
+
+
+def read_enum_constants(source: str) -> dict[str, str]:
+    """Enumerators and the numbers they stand for.
+
+    A property bound to an enum member states its default as an enumerator, so
+    the docs have to resolve one the way the compiler does: counting up from the
+    last stated value.
+    """
+    constants: dict[str, str] = {}
+    enum_re = re.compile(r"enum\s*\{(?P<body>[^{}]*)\}", re.MULTILINE)
+    for match in enum_re.finditer(source):
+        next_value = 0
+        for entry in match.group("body").split(","):
+            entry = entry.strip()
+            if not entry:
+                continue
+            name, _, value = (part.strip() for part in entry.partition("="))
+            if not re.fullmatch(r"[A-Za-z_]\w*", name):
+                continue
+            if value:
+                try:
+                    next_value = int(value, 0)
+                except ValueError:
+                    # A value this cannot read leaves the run of implicit ones
+                    # after it unknowable, so the enum is left alone.
+                    break
+            constants[name] = str(next_value)
+            next_value += 1
+    return constants
+
+
+def read_global_structs() -> dict[str, dict[str, str]]:
+    """Struct members from the headers, for a priv struct an object shares."""
+    structs: dict[str, dict[str, str]] = {}
+    for path in HEADER_SOURCE.rglob("*.h"):
+        structs.update(read_struct_members(strip_comments(path.read_text())))
+    return structs
 
 
 def read_global_constants() -> dict[str, str]:
@@ -457,29 +499,127 @@ def iter_macro_calls(source: str, macro_name: str) -> list[str]:
     return [args for _, args in iter_balanced_calls(source, pattern)]
 
 
-def iter_object_property_declarations(source: str) -> list[PropertyInfo]:
+# C member type -> the type name the docs and the Tomb Editor catalogs use.
+# An enum member rides in its integer storage, as it did when the declaration
+# named its own type.
+MEMBER_TYPES = {
+    "bool": "BOOL",
+    "int8_t": "INT",
+    "uint8_t": "INT",
+    "int16_t": "INT",
+    "uint16_t": "INT",
+    "int32_t": "INT",
+    "uint32_t": "INT",
+    "float": "FLOAT",
+    "double": "DOUBLE",
+    "XYZ_32": "XYZ",
+    "RGB_888": "RGB",
+}
+
+MEMBER_RE = re.compile(r"^\s*(?P<type>[A-Za-z_]\w*)\s+(?P<name>\w+)\s*;")
+
+
+def read_struct_members(source: str) -> dict[str, dict[str, str]]:
+    """struct name -> member name -> the C type of that member.
+
+    Only the members the struct itself declares: one nested a level down is not
+    addressable as a property, and the braces around it are what a plain regex
+    cannot see past.
+    """
+    structs: dict[str, dict[str, str]] = {}
+    for match in re.finditer(r"typedef struct \{", source):
+        depth, index = 1, match.end()
+        members: dict[str, str] = {}
+        line_start = index
+        while depth and index < len(source):
+            char = source[index]
+            if char == "{":
+                depth += 1
+            elif char == "}":
+                depth -= 1
+            elif char == "\n":
+                if depth == 1:
+                    member = MEMBER_RE.match(source[line_start:index])
+                    if member:
+                        members[member.group("name")] = member.group("type")
+                line_start = index + 1
+            index += 1
+        name = re.match(r"\s*(\w+)\s*;", source[index:])
+        if name:
+            structs[name.group(1)] = members
+    return structs
+
+
+def infer_stored_type(value_expr: str, constants: dict[str, str]) -> str:
+    """The type a stored property carries, read off the value it declares.
+
+    A stored property has no member to take its type from, so the value states
+    it - the same way the compiler reads it through Value_Of. The value may be
+    written as a constant, so resolve one before looking.
+    """
+    expr = resolve_identifiers(value_expr, constants, 1).strip()
+    if expr.startswith("(bool)") or expr in ("true", "false"):
+        return "BOOL"
+    if "XYZ_32" in expr:
+        return "XYZ"
+    if "RGB_888" in expr:
+        return "RGB"
+    if re.search(r"\d\.\d", expr):
+        return "DOUBLE"
+    return "INT"
+
+
+def iter_object_property_declarations(
+    source: str,
+    structs: dict[str, dict[str, str]],
+    constants: dict[str, str],
+) -> list[PropertyInfo]:
     declarations: list[PropertyInfo] = []
     pattern = re.compile(
-        r"\bOBJECT_PROPERTY_(INT|FLOAT|DOUBLE|BOOL|XYZ|RGB)\(",
+        r"\bOBJECT_PROPERTY"
+        r"(?P<variant>_STORED_SETTER|_STORED|_SETTER|_CHECKED)?\(",
         re.MULTILINE,
     )
+    # How many hooks sit between the default and the description.
+    HOOK_COUNTS = {"_CHECKED": 1, "_SETTER": 2, "_STORED_SETTER": 2}
     for match, args in iter_balanced_calls(source, pattern):
-        macro_type = match.group(1)
-        parts = split_args(args)
-        # RGB takes its channels as separate arguments.
-        if macro_type == "RGB" and len(parts) == 5:
-            parts = [parts[0], ", ".join(parts[1:4]), parts[4]]
-        if len(parts) == 3:
+        variant = match.group("variant") or ""
+        parts = [" ".join(part.split()) for part in split_args(args)]
+        stored = variant.startswith("_STORED")
+        hooks = HOOK_COUNTS.get(variant, 0)
+        if hooks:
+            parts = parts[: -hooks - 1] + parts[-1:]
+        if stored:
+            if len(parts) != 3:
+                continue
             internal_name, value, description = parts
             internal_name = parse_c_string(internal_name)
-            declaration = PropertyInfo(
+            macro_type = infer_stored_type(value, constants)
+        else:
+            if len(parts) != 4:
+                continue
+            struct_name, internal_name, value, description = parts
+            member_type = structs.get(struct_name, {}).get(internal_name)
+            # An unknown member type means the two have drifted apart, which
+            # the compiler catches; the docs report what they can read.
+            macro_type = MEMBER_TYPES.get(member_type, "INT")
+        # An RGB default reads as its channels, not as the literal carrying
+        # them.
+        if macro_type == "RGB":
+            channels = re.search(r"\{(?P<channels>[^{}]*)\}", value)
+            if channels:
+                value = ", ".join(
+                    part.strip() for part in channels.group("channels").split(",")
+                )
+        declarations.append(
+            PropertyInfo(
                 internal_name=internal_name,
                 macro_type=macro_type,
-                value_expr=" ".join(value.split()),
+                value_expr=value,
                 description=parse_c_string(description),
                 constants={},
             )
-            declarations.append(declaration)
+        )
     return declarations
 
 
@@ -533,6 +673,8 @@ def read_function_bodies(source: str) -> dict[str, str]:
 def collect_object_property_declarations(
     func_name: str,
     function_bodies: dict[str, str],
+    structs: dict[str, dict[str, str]],
+    constants: dict[str, str],
     visited: set[str] | None = None,
 ) -> list[PropertyInfo]:
     if visited is None:
@@ -550,7 +692,9 @@ def collect_object_property_declarations(
         if len(props_parts) < 2:
             continue
         decl_text = "{" + ", ".join(props_parts[1:]) + "}"
-        declarations.extend(iter_object_property_declarations(decl_text))
+        declarations.extend(
+            iter_object_property_declarations(decl_text, structs, constants)
+        )
 
     call_pattern = re.compile(r"\b([A-Za-z_]\w*)\s*\(")
     for match in call_pattern.finditer(body):
@@ -558,7 +702,7 @@ def collect_object_property_declarations(
         if callee in function_bodies:
             declarations.extend(
                 collect_object_property_declarations(
-                    callee, function_bodies, visited
+                    callee, function_bodies, structs, constants, visited
                 )
             )
 
@@ -636,6 +780,25 @@ class MusicToGameIDTransformer(ast.NodeTransformer):
         return ast.copy_location(ast.Constant(value=value), node)
 
 
+def strip_redundant_parens(expr: str) -> str:
+    """Drop the parens a resolved constant leaves around a compound literal.
+
+    Only literals: everything else may need the parens it was written with, and
+    a value that resolves to a number is left for the evaluator to fold.
+    """
+    expr = expr.strip()
+    while "{" in expr and expr.startswith("((") and expr.endswith("))"):
+        depth = 0
+        for index, char in enumerate(expr):
+            depth += (char == "(") - (char == ")")
+            if depth == 0:
+                break
+        if index != len(expr) - 1:
+            break
+        expr = expr[1:-1].strip()
+    return expr
+
+
 def evaluate_expression(
     expr: str,
     constants: dict[str, str],
@@ -643,6 +806,8 @@ def evaluate_expression(
     music_catalog: dict[str, str],
 ) -> str:
     expr = convert_ternary(resolve_identifiers(expr, constants, game_version))
+    expr = expr.replace("(bool)", "")
+    expr = strip_redundant_parens(expr)
     try:
         tree = ast.parse(expr, mode="eval")
     except SyntaxError:
@@ -1012,7 +1177,8 @@ class XmlExporter:
 
         if prop_type == "XYZ":
             match = re.fullmatch(
-                r"\(\(\s*XYZ_32\s*\)\s*\{\s*(-?\d+)\s*,\s*(-?\d+)\s*,\s*(-?\d+)\s*\}\s*\)",
+                r"\(*\(\s*XYZ_32\s*\)\s*"
+                r"\{\s*(-?\d+)\s*,\s*(-?\d+)\s*,\s*(-?\d+)\s*\}\s*\)*",
                 value,
             )
             if match:

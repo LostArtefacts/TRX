@@ -117,7 +117,8 @@ static void M_Setup(OBJECT *const obj)
     obj->save_flags = true;
     obj->save_anim = true;
     OBJECT_PROPERTIES(
-        obj, OBJECT_PROPERTY_INT("max_hit_points", 1, "Maximum hit points."));
+        obj,
+        OBJECT_PROPERTY_STORED("max_hit_points", 1, "Maximum hit points."));
 }
 
 REGISTER_OBJECT(O_WINSTON, M_Setup)

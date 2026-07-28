@@ -185,12 +185,6 @@ static void M_Initialise(const int16_t item_num)
     ITEM *const item = Item_Get(item_num);
     M_PRIV *const p = item->priv;
 
-    p->auto_open = true;
-    TRX_VALUE value = {};
-    if (ObjectProperty_GetItemValue(item, "auto_open", &value)) {
-        p->auto_open = value.as_bool;
-    }
-
     VECTOR *const positions = Vector_Create(sizeof(XYZ_32));
     M_GetSectorPositions(item, positions);
     Walkable_AllocateNodes(item, positions->count);
@@ -328,8 +322,8 @@ static void M_SetupBase(OBJECT *const obj)
     obj->add_walkable_func = M_AddWalkable;
     OBJECT_PROPERTIES(
         obj,
-        OBJECT_PROPERTY_BOOL(
-            "auto_open", true,
+        OBJECT_PROPERTY(
+            M_PRIV, auto_open, true,
             "Whether the trapdoor opens automatically when triggered."));
 }
 

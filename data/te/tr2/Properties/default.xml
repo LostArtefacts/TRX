@@ -163,11 +163,14 @@
         <property category="TRX" defaultValue="16" description="The speed at which the lift moves, in world units." displayName="Speed" internalName="speed" maxValue="64" minValue="1" type="Int" />
     </moveable>
     <moveable id="71">
-        <property category="TRX" defaultValue="7" description="The amount of time hot liquid is poured from the bowl, in seconds." displayName="Pour Time" internalName="pour_time" minValue="0" type="Int" />
-        <property category="TRX" defaultValue="4" description="The flip map slot to alter once liquid has finished pouring. -1 = no flipmap is performed." displayName="Flip Slot" internalName="flip_slot" maxValue="10" minValue="-1" type="Int" />
+        <property category="TRX" defaultValue="7" description="The amount of time hot liquid is poured from the bowl, in seconds." displayName="Pour Time" internalName="pour_time" minValue="3" type="Int" />
+        <property category="TRX" defaultValue="4" description="The flip map slot to alter once liquid has finished pouring. -1 = no flipmap is performed." displayName="Flip Slot" internalName="flip_slot" maxValue="9" minValue="-1" type="Int" />
     </moveable>
     <moveable id="76,94,95">
         <property category="TRX" defaultValue="200" description="Damage dealt while Lara is touching the propeller." displayName="Damage" internalName="damage" minValue="0" type="Int" />
+    </moveable>
+    <moveable id="77">
+        <property category="TRX" defaultValue="200" description="Damage dealt while Lara is touching the power saw." displayName="Damage" internalName="damage" minValue="0" type="Int" />
     </moveable>
     <moveable id="78">
         <property category="TRX" defaultValue="50" description="Damage dealt while Lara is touching the hook." displayName="Damage" internalName="damage" minValue="0" type="Int" />

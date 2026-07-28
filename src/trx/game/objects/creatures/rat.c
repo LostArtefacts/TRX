@@ -39,6 +39,11 @@ typedef enum {
     M_VOLE_STATE_DEATH = 3,
 } M_VOLE_STATE;
 
+typedef struct {
+    int32_t bite_damage;
+    int32_t charge_damage;
+} M_PRIV;
+
 static BITE m_RatBite = { .pos = { 0, -11, 108 }, .mesh_num = 3 };
 
 static const HYBRID_INFO m_RatInfo = {
@@ -51,17 +56,6 @@ static const HYBRID_INFO m_RatInfo = {
     .water.death_anim = M_VOLE_DIE_ANIM,
     .water.death_state = M_VOLE_STATE_DEATH,
 };
-
-static int32_t M_GetDamage(
-    const ITEM *const item, const char *const key, const int32_t default_value)
-{
-    TRX_VALUE damage = {};
-    if (ObjectProperty_GetItemValue(item, key, &damage)) {
-        return damage.as_int;
-    }
-
-    return default_value;
-}
 
 static void M_HandleSave(ITEM *const item, const SAVEGAME_STAGE stage)
 {
@@ -77,6 +71,7 @@ static void M_ControlRat(const int16_t item_num)
     }
 
     ITEM *const item = Item_Get(item_num);
+    const M_PRIV *const p = item->priv;
     CREATURE *const rat = item->creature_data;
     int16_t head = 0;
     int16_t angle = 0;
@@ -124,8 +119,7 @@ static void M_ControlRat(const int16_t item_num)
             if (item->required_anim_state == M_RAT_STATE_EMPTY && info.ahead
                 && (item->touch_bits & M_RAT_TOUCH)) {
                 Creature_Effect(item, &m_RatBite, Spawn_Blood);
-                Lara_TakeDamage(
-                    M_GetDamage(item, "bite_damage", M_RAT_BITE_DAMAGE), true);
+                Lara_TakeDamage(p->bite_damage, true);
                 item->required_anim_state = M_RAT_STATE_STOP;
             }
             break;
@@ -134,9 +128,7 @@ static void M_ControlRat(const int16_t item_num)
             if (item->required_anim_state == M_RAT_STATE_EMPTY && info.ahead
                 && (item->touch_bits & M_RAT_TOUCH)) {
                 Creature_Effect(item, &m_RatBite, Spawn_Blood);
-                Lara_TakeDamage(
-                    M_GetDamage(item, "charge_damage", M_RAT_CHARGE_DAMAGE),
-                    true);
+                Lara_TakeDamage(p->charge_damage, true);
                 item->required_anim_state = M_RAT_STATE_RUN;
             }
             break;
@@ -164,6 +156,7 @@ static void M_ControlVole(const int16_t item_num)
     }
 
     ITEM *const item = Item_Get(item_num);
+    const M_PRIV *const p = item->priv;
     int16_t head = 0;
     int16_t angle = 0;
 
@@ -202,8 +195,7 @@ static void M_ControlVole(const int16_t item_num)
             if (item->required_anim_state == M_VOLE_STATE_EMPTY && info.ahead
                 && (item->touch_bits & M_RAT_TOUCH)) {
                 Creature_Effect(item, &m_RatBite, Spawn_Blood);
-                Lara_TakeDamage(
-                    M_GetDamage(item, "bite_damage", M_RAT_BITE_DAMAGE), true);
+                Lara_TakeDamage(p->bite_damage, true);
                 item->required_anim_state = M_VOLE_STATE_SWIM;
             }
             item->goal_anim_state = M_VOLE_STATE_EMPTY;
@@ -234,6 +226,7 @@ static void M_ControlVole(const int16_t item_num)
 
 static void M_SetupBase(OBJECT *const obj)
 {
+    obj->priv_size = sizeof(M_PRIV);
     obj->initialise_func = Creature_Initialise;
     obj->collision_func = Creature_Collision;
     obj->shadow_size = UNIT_SHADOW / 2;
@@ -251,13 +244,13 @@ static void M_SetupBase(OBJECT *const obj)
     Object_GetBone(obj, 1)->rot.y = true;
     OBJECT_PROPERTIES(
         obj,
-        OBJECT_PROPERTY_INT(
+        OBJECT_PROPERTY_STORED(
             "max_hit_points", M_RAT_HITPOINTS, "Maximum hit points."),
-        OBJECT_PROPERTY_INT(
-            "bite_damage", M_RAT_BITE_DAMAGE,
+        OBJECT_PROPERTY(
+            M_PRIV, bite_damage, M_RAT_BITE_DAMAGE,
             "Damage dealt by the bite attack."),
-        OBJECT_PROPERTY_INT(
-            "charge_damage", M_RAT_CHARGE_DAMAGE,
+        OBJECT_PROPERTY(
+            M_PRIV, charge_damage, M_RAT_CHARGE_DAMAGE,
             "Damage dealt by the charge attack."));
 }
 

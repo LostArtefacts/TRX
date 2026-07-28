@@ -1039,7 +1039,7 @@ This page lists documented moveable object properties.
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
 <tr><td><code>touch_mask</code></td><td colspan="3" align="center">-1</td><td>A bitmask of damaging mesh numbers. The default value indicates all meshes are damaging.</td></tr>
-<tr><td><code>damage</code></td><td colspan="3" align="center">50</td><td>Damage dealt when Lara touches the trap.</td></tr>
+<tr><td><code>damage</code></td><td colspan="3" align="center">50</td><td>Damage dealt when Lara touches the trap. Value range: minimum 0.</td></tr>
 <tr><td><code>blood_intensity</code></td><td colspan="3" align="center">3</td><td>The intensity of blood to spawn when Lara is damaged. Value range: minimum 0; maximum 10.</td></tr>
 <tr><td><code>push_lara</code></td><td colspan="3" align="center">true</td><td>Whether or not Lara should be pushed when colliding with the trap.</td></tr>
 </tbody>
@@ -1050,7 +1050,7 @@ This page lists documented moveable object properties.
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
 <tr><td><code>touch_mask</code></td><td colspan="3" align="center">-1</td><td>A bitmask of damaging mesh numbers. The default value indicates all meshes are damaging.</td></tr>
-<tr><td><code>damage</code></td><td colspan="3" align="center">50</td><td>Damage dealt when Lara touches the trap.</td></tr>
+<tr><td><code>damage</code></td><td colspan="3" align="center">50</td><td>Damage dealt when Lara touches the trap. Value range: minimum 0.</td></tr>
 <tr><td><code>blood_intensity</code></td><td colspan="3" align="center">3</td><td>The intensity of blood to spawn when Lara is damaged. Value range: minimum 0; maximum 10.</td></tr>
 <tr><td><code>push_lara</code></td><td colspan="3" align="center">true</td><td>Whether or not Lara should be pushed when colliding with the trap.</td></tr>
 </tbody>
@@ -1061,7 +1061,7 @@ This page lists documented moveable object properties.
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
 <tr><td><code>touch_mask</code></td><td colspan="3" align="center">-1</td><td>A bitmask of damaging mesh numbers. The default value indicates all meshes are damaging.</td></tr>
-<tr><td><code>damage</code></td><td colspan="3" align="center">50</td><td>Damage dealt when Lara touches the trap.</td></tr>
+<tr><td><code>damage</code></td><td colspan="3" align="center">50</td><td>Damage dealt when Lara touches the trap. Value range: minimum 0.</td></tr>
 <tr><td><code>blood_intensity</code></td><td colspan="3" align="center">3</td><td>The intensity of blood to spawn when Lara is damaged. Value range: minimum 0; maximum 10.</td></tr>
 <tr><td><code>push_lara</code></td><td colspan="3" align="center">true</td><td>Whether or not Lara should be pushed when colliding with the trap.</td></tr>
 </tbody>
@@ -1072,7 +1072,7 @@ This page lists documented moveable object properties.
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
 <tr><td><code>touch_mask</code></td><td colspan="3" align="center">-1</td><td>A bitmask of damaging mesh numbers. The default value indicates all meshes are damaging.</td></tr>
-<tr><td><code>damage</code></td><td colspan="3" align="center">50</td><td>Damage dealt when Lara touches the trap.</td></tr>
+<tr><td><code>damage</code></td><td colspan="3" align="center">50</td><td>Damage dealt when Lara touches the trap. Value range: minimum 0.</td></tr>
 <tr><td><code>blood_intensity</code></td><td colspan="3" align="center">3</td><td>The intensity of blood to spawn when Lara is damaged. Value range: minimum 0; maximum 10.</td></tr>
 <tr><td><code>push_lara</code></td><td colspan="3" align="center">true</td><td>Whether or not Lara should be pushed when colliding with the trap.</td></tr>
 </tbody>
@@ -1083,7 +1083,7 @@ This page lists documented moveable object properties.
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
 <tr><td><code>touch_mask</code></td><td colspan="3" align="center">-1</td><td>A bitmask of damaging mesh numbers. The default value indicates all meshes are damaging.</td></tr>
-<tr><td><code>damage</code></td><td colspan="3" align="center">50</td><td>Damage dealt when Lara touches the trap.</td></tr>
+<tr><td><code>damage</code></td><td colspan="3" align="center">50</td><td>Damage dealt when Lara touches the trap. Value range: minimum 0.</td></tr>
 <tr><td><code>blood_intensity</code></td><td colspan="3" align="center">3</td><td>The intensity of blood to spawn when Lara is damaged. Value range: minimum 0; maximum 10.</td></tr>
 <tr><td><code>push_lara</code></td><td colspan="3" align="center">true</td><td>Whether or not Lara should be pushed when colliding with the trap.</td></tr>
 </tbody>
@@ -1094,7 +1094,7 @@ This page lists documented moveable object properties.
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
 <tr><td><code>touch_mask</code></td><td colspan="3" align="center">-1</td><td>A bitmask of damaging mesh numbers. The default value indicates all meshes are damaging.</td></tr>
-<tr><td><code>damage</code></td><td colspan="3" align="center">50</td><td>Damage dealt when Lara touches the trap.</td></tr>
+<tr><td><code>damage</code></td><td colspan="3" align="center">50</td><td>Damage dealt when Lara touches the trap. Value range: minimum 0.</td></tr>
 <tr><td><code>blood_intensity</code></td><td colspan="3" align="center">3</td><td>The intensity of blood to spawn when Lara is damaged. Value range: minimum 0; maximum 10.</td></tr>
 <tr><td><code>push_lara</code></td><td colspan="3" align="center">true</td><td>Whether or not Lara should be pushed when colliding with the trap.</td></tr>
 </tbody>
@@ -1105,7 +1105,7 @@ This page lists documented moveable object properties.
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
 <tr><td><code>touch_mask</code></td><td colspan="3" align="center">-1</td><td>A bitmask of damaging mesh numbers. The default value indicates all meshes are damaging.</td></tr>
-<tr><td><code>damage</code></td><td colspan="3" align="center">50</td><td>Damage dealt when Lara touches the trap.</td></tr>
+<tr><td><code>damage</code></td><td colspan="3" align="center">50</td><td>Damage dealt when Lara touches the trap. Value range: minimum 0.</td></tr>
 <tr><td><code>blood_intensity</code></td><td colspan="3" align="center">3</td><td>The intensity of blood to spawn when Lara is damaged. Value range: minimum 0; maximum 10.</td></tr>
 <tr><td><code>push_lara</code></td><td colspan="3" align="center">true</td><td>Whether or not Lara should be pushed when colliding with the trap.</td></tr>
 </tbody>
@@ -1116,7 +1116,7 @@ This page lists documented moveable object properties.
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
 <tr><td><code>touch_mask</code></td><td colspan="3" align="center">-1</td><td>A bitmask of damaging mesh numbers. The default value indicates all meshes are damaging.</td></tr>
-<tr><td><code>damage</code></td><td colspan="3" align="center">50</td><td>Damage dealt when Lara touches the trap.</td></tr>
+<tr><td><code>damage</code></td><td colspan="3" align="center">50</td><td>Damage dealt when Lara touches the trap. Value range: minimum 0.</td></tr>
 <tr><td><code>blood_intensity</code></td><td colspan="3" align="center">3</td><td>The intensity of blood to spawn when Lara is damaged. Value range: minimum 0; maximum 10.</td></tr>
 <tr><td><code>push_lara</code></td><td colspan="3" align="center">true</td><td>Whether or not Lara should be pushed when colliding with the trap.</td></tr>
 </tbody>
@@ -1127,7 +1127,7 @@ This page lists documented moveable object properties.
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
 <tr><td><code>touch_mask</code></td><td colspan="3" align="center">-1</td><td>A bitmask of damaging mesh numbers. The default value indicates all meshes are damaging.</td></tr>
-<tr><td><code>damage</code></td><td colspan="3" align="center">50</td><td>Damage dealt when Lara touches the trap.</td></tr>
+<tr><td><code>damage</code></td><td colspan="3" align="center">50</td><td>Damage dealt when Lara touches the trap. Value range: minimum 0.</td></tr>
 <tr><td><code>blood_intensity</code></td><td colspan="3" align="center">3</td><td>The intensity of blood to spawn when Lara is damaged. Value range: minimum 0; maximum 10.</td></tr>
 <tr><td><code>push_lara</code></td><td colspan="3" align="center">true</td><td>Whether or not Lara should be pushed when colliding with the trap.</td></tr>
 </tbody>
@@ -1138,7 +1138,7 @@ This page lists documented moveable object properties.
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
 <tr><td><code>touch_mask</code></td><td colspan="3" align="center">-1</td><td>A bitmask of damaging mesh numbers. The default value indicates all meshes are damaging.</td></tr>
-<tr><td><code>damage</code></td><td colspan="3" align="center">50</td><td>Damage dealt when Lara touches the trap.</td></tr>
+<tr><td><code>damage</code></td><td colspan="3" align="center">50</td><td>Damage dealt when Lara touches the trap. Value range: minimum 0.</td></tr>
 <tr><td><code>blood_intensity</code></td><td colspan="3" align="center">3</td><td>The intensity of blood to spawn when Lara is damaged. Value range: minimum 0; maximum 10.</td></tr>
 <tr><td><code>push_lara</code></td><td colspan="3" align="center">true</td><td>Whether or not Lara should be pushed when colliding with the trap.</td></tr>
 </tbody>
@@ -1206,6 +1206,14 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>damage</code></td><td colspan="3" align="center">25</td><td>Damage dealt on hit.</td></tr>
 <tr><td><code>poison</code></td><td colspan="3" align="center">true</td><td>Apply poison buildup in addition to hit damage.</td></tr>
+</tbody>
+</table>
+
+#### O_POWER_SAW
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (77)</th><th align="center">TR3 (105)</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>damage</code></td><td colspan="3" align="center">200</td><td>Damage dealt while Lara is touching the power saw.</td></tr>
 </tbody>
 </table>
 
@@ -1658,8 +1666,8 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (71)</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>pour_time</code></td><td colspan="3" align="center">7</td><td>The amount of time hot liquid is poured from the bowl, in seconds.</td></tr>
-<tr><td><code>flip_slot</code></td><td colspan="3" align="center">4</td><td>The flip map slot to alter once liquid has finished pouring. -1 = no flipmap is performed. Value range: minimum -1; maximum 10.</td></tr>
+<tr><td><code>pour_time</code></td><td colspan="3" align="center">7</td><td>The amount of time hot liquid is poured from the bowl, in seconds. Value range: minimum 3.</td></tr>
+<tr><td><code>flip_slot</code></td><td colspan="3" align="center">4</td><td>The flip map slot to alter once liquid has finished pouring. -1 = no flipmap is performed. Value range: minimum -1; maximum 9.</td></tr>
 </tbody>
 </table>
 
@@ -2368,7 +2376,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (338)</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>range</code></td><td colspan="3" align="center">((XYZ_32) { 1, 1, 1 })</td><td>Swim range, in quarter tiles.</td></tr>
+<tr><td><code>range</code></td><td colspan="3" align="center">((XYZ_32) { 1, 1, 1 })</td><td>Swim range, in quarter tiles. Value range: minimum 1 on each axis.</td></tr>
 <tr><td><code>use_room_lighting</code></td><td colspan="2" align="center">true</td><td align="center">false</td><td>Whether the shoal uses the surrounding room lighting.</td></tr>
 </tbody>
 </table>
@@ -2473,7 +2481,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (162)</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>flip_slot</code></td><td colspan="3" align="center">3</td><td>The flip map slot to alter once the cabin has landed. -1 = no flipmap is performed. Value range: minimum -1; maximum 10.</td></tr>
+<tr><td><code>flip_slot</code></td><td colspan="3" align="center">3</td><td>The flip map slot to alter once the cabin has landed. -1 = no flipmap is performed. Value range: minimum -1; maximum 9.</td></tr>
 </tbody>
 </table>
 
@@ -2960,7 +2968,7 @@ This page lists documented moveable object properties.
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (339)</th><th>Description</th></tr></thead>
 <tbody>
 <tr><td><code>sprite_offset</code></td><td colspan="3" align="center">0</td><td>Texture offset in `O_TROPICAL_FISH_GFX`.</td></tr>
-<tr><td><code>range</code></td><td colspan="3" align="center">((XYZ_32) { 1, 1, 1 })</td><td>Swim range, in quarter tiles.</td></tr>
+<tr><td><code>range</code></td><td colspan="3" align="center">((XYZ_32) { 1, 1, 1 })</td><td>Swim range, in quarter tiles. Value range: minimum 1 on each axis.</td></tr>
 <tr><td><code>use_room_lighting</code></td><td colspan="2" align="center">true</td><td align="center">false</td><td>Whether the shoal uses the surrounding room lighting.</td></tr>
 </tbody>
 </table>

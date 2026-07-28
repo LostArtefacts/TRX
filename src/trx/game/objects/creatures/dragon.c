@@ -75,23 +75,14 @@ typedef enum {
 typedef struct {
     int16_t dragon_front_item_num;
     M_MODE mode;
+    int32_t touch_damage;
+    int32_t swipe_damage;
 } M_PRIV;
 
 static const BITE m_DragonMouth = {
     .pos = { .x = 35, .y = 171, .z = 1168 },
     .mesh_num = 12,
 };
-
-static int32_t M_GetDamage(
-    const ITEM *const item, const char *const key, const int32_t default_value)
-{
-    TRX_VALUE damage = {};
-    if (ObjectProperty_GetItemValue(item, key, &damage)) {
-        return damage.as_int;
-    }
-
-    return default_value;
-}
 
 static void M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
 {
@@ -418,9 +409,8 @@ static void M_ControlBack(const int16_t item_num)
         const bool is_ahead = info.ahead && info.distance > M_CLOSE_RANGE
             && info.distance < M_STOP_RANGE;
         if (dragon_front_item->touch_bits) {
-            Lara_TakeDamage(
-                M_GetDamage(dragon_front_item, "touch_damage", M_TOUCH_DAMAGE),
-                true);
+            const M_PRIV *const front = dragon_front_item->priv;
+            Lara_TakeDamage(front->touch_damage, true);
         }
 
         switch (dragon_front_item->current_anim_state) {
@@ -523,20 +513,16 @@ static void M_ControlBack(const int16_t item_num)
 
         case M_STATE_SWIPE_LEFT:
             if ((dragon_front_item->touch_bits & M_TOUCH_L) != 0) {
-                Lara_TakeDamage(
-                    M_GetDamage(
-                        dragon_front_item, "swipe_damage", M_SWIPE_DAMAGE),
-                    true);
+                const M_PRIV *const front = dragon_front_item->priv;
+                Lara_TakeDamage(front->swipe_damage, true);
                 creature->flags = 0;
             }
             break;
 
         case M_STATE_SWIPE_RIGHT:
             if ((dragon_front_item->touch_bits & M_TOUCH_R) != 0) {
-                Lara_TakeDamage(
-                    M_GetDamage(
-                        dragon_front_item, "swipe_damage", M_SWIPE_DAMAGE),
-                    true);
+                const M_PRIV *const front = dragon_front_item->priv;
+                Lara_TakeDamage(front->swipe_damage, true);
                 creature->flags = 0;
             }
             break;
@@ -564,6 +550,7 @@ static void M_SetupFront(OBJECT *const obj)
         return;
     }
 
+    obj->priv_size = sizeof(M_PRIV);
     SOFT_ASSERT(
         Object_Get(O_DRAGON_BACK)->loaded, "Dragon back object missing");
     obj->initialise_func = M_InitialiseFront;
@@ -582,13 +569,13 @@ static void M_SetupFront(OBJECT *const obj)
     Object_GetBone(obj, 10)->rot.z = true;
     OBJECT_PROPERTIES(
         obj,
-        OBJECT_PROPERTY_INT(
+        OBJECT_PROPERTY_STORED(
             "max_hit_points", M_HIT_POINTS, "Maximum hit points."),
-        OBJECT_PROPERTY_INT(
-            "touch_damage", M_TOUCH_DAMAGE,
+        OBJECT_PROPERTY(
+            M_PRIV, touch_damage, M_TOUCH_DAMAGE,
             "Damage dealt while Lara is touching the dragon."),
-        OBJECT_PROPERTY_INT(
-            "swipe_damage", M_SWIPE_DAMAGE,
+        OBJECT_PROPERTY(
+            M_PRIV, swipe_damage, M_SWIPE_DAMAGE,
             "Damage dealt by the dragon swipe attack."));
 }
 

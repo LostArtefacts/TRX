@@ -42,21 +42,16 @@ typedef enum {
     M_ANIM_DEATH = 9,
 } M_ANIM;
 
+typedef struct {
+    int32_t lunge_damage;
+    int32_t charge_damage;
+    int32_t bite_damage;
+} M_PRIV;
+
 static BITE m_RaptorBite = {
     .pos = { 0, 66, 318 },
     .mesh_num = 22,
 };
-
-static int32_t M_GetDamage(
-    const ITEM *const item, const char *const key, const int32_t default_value)
-{
-    TRX_VALUE damage = {};
-    if (ObjectProperty_GetItemValue(item, key, &damage)) {
-        return damage.as_int;
-    }
-
-    return default_value;
-}
 
 static void M_CalculateTarget(const ITEM *const item)
 {
@@ -103,19 +98,20 @@ static void M_CalculateTarget(const ITEM *const item)
 
 static void M_Attack(ITEM *const item, const AI_INFO *const info)
 {
+    const M_PRIV *const p = item->priv;
     int32_t damage = 0;
     int16_t next_state = M_STATE_EMPTY;
     switch (item->current_anim_state) {
     case M_STATE_ATTACK_1:
-        damage = M_GetDamage(item, "lunge_damage", M_LUNGE_DAMAGE);
+        damage = p->lunge_damage;
         next_state = M_STATE_STOP;
         break;
     case M_STATE_ATTACK_2:
-        damage = M_GetDamage(item, "charge_damage", M_CHARGE_DAMAGE);
+        damage = p->charge_damage;
         next_state = M_STATE_RUN;
         break;
     case M_STATE_ATTACK_3:
-        damage = M_GetDamage(item, "bite_damage", M_BITE_DAMAGE);
+        damage = p->bite_damage;
         next_state = M_STATE_STOP;
         break;
     default:
@@ -321,6 +317,8 @@ static void M_Setup(OBJECT *const obj)
     if (!obj->loaded) {
         return;
     }
+
+    obj->priv_size = sizeof(M_PRIV);
     obj->initialise_func = Creature_Initialise;
     obj->control_func = M_Control;
     obj->collision_func = Creature_Collision;
@@ -343,16 +341,17 @@ static void M_Setup(OBJECT *const obj)
     }
     OBJECT_PROPERTIES(
         obj,
-        OBJECT_PROPERTY_INT(
+        OBJECT_PROPERTY_STORED(
             "max_hit_points", M_HIT_POINTS, "Maximum hit points."),
-        OBJECT_PROPERTY_INT(
-            "lunge_damage", M_LUNGE_DAMAGE,
+        OBJECT_PROPERTY(
+            M_PRIV, lunge_damage, M_LUNGE_DAMAGE,
             "Damage dealt by the lunge attack."),
-        OBJECT_PROPERTY_INT(
-            "charge_damage", M_CHARGE_DAMAGE,
+        OBJECT_PROPERTY(
+            M_PRIV, charge_damage, M_CHARGE_DAMAGE,
             "Damage dealt by the charge attack."),
-        OBJECT_PROPERTY_INT(
-            "bite_damage", M_BITE_DAMAGE, "Damage dealt by the bite attack."));
+        OBJECT_PROPERTY(
+            M_PRIV, bite_damage, M_BITE_DAMAGE,
+            "Damage dealt by the bite attack."));
 }
 
 REGISTER_OBJECT(O_RAPTOR, M_Setup)

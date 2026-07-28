@@ -27,17 +27,6 @@ static void M_SavePriv(const ITEM *const item, JSON_WRITE_IO *const io)
     JSONW_WRITE(io, "alarm_active", p->alarm_active);
 }
 
-static void M_Initialise(const int16_t item_num)
-{
-    ITEM *const item = Item_Get(item_num);
-    M_PRIV *const p = item->priv;
-    TRX_VALUE requires_alarm_active = {};
-    if (ObjectProperty_GetItemValue(
-            item, "requires_alarm_active", &requires_alarm_active)) {
-        p->requires_alarm_active = requires_alarm_active.as_bool;
-    }
-}
-
 static void M_TriggerAlertLight(
     const XYZ_32 pos, const RGB_888 color, const int16_t angle,
     const int16_t room_num)
@@ -116,14 +105,13 @@ static void M_Setup(OBJECT *const obj)
     obj->priv_size = sizeof(M_PRIV);
     obj->priv_load_func = M_LoadPriv;
     obj->priv_save_func = M_SavePriv;
-    obj->initialise_func = M_Initialise;
     obj->control_func = M_Control;
     obj->event_func = M_HandleEvent;
     obj->save_flags = true;
     OBJECT_PROPERTIES(
         obj,
-        OBJECT_PROPERTY_BOOL(
-            "requires_alarm_active", false,
+        OBJECT_PROPERTY(
+            M_PRIV, requires_alarm_active, false,
             "Require an alert event before the light activates."));
 }
 
