@@ -18,72 +18,14 @@ A handler attached from a level script is detached automatically when the level 
 
 ### Functions
 
-- [lua]`trx.events.before_level_file(callback)`  
-  Happens prior to loading the level file.
-
-  Parameters:
-  - **`callback`** (function).
-    Called with:
-    - **`level_num`** (integer). Number of the level the event fired for.
-
-  Returns: integer. Listener id. Pass it to `trx.events.detach` to stop listening.
-
-  Example:
-  ```lua
-  trx.events.before_level_file(function(level_num)
-    -- handle pre-file-load setup
-  end)
-  ```
-
-- [lua]`trx.events.after_level_file(callback)`  
-  Happens after the level finishes loading, prior to loading information from a savegame.
-
-  Parameters:
-  - **`callback`** (function).
-    Called with:
-    - **`level_num`** (integer). Number of the level the event fired for.
-
-  Returns: integer. Listener id. Pass it to `trx.events.detach` to stop listening.
-
-- [lua]`trx.events.before_item_setup(callback)`  
-  Happens after level items exist, before they are initialized. Use this to set object or item properties that item initialization reads.
-
-  Parameters:
-  - **`callback`** (function).
-    Called with:
-    - **`level_num`** (integer). Number of the level the event fired for.
-
-  Returns: integer. Listener id. Pass it to `trx.events.detach` to stop listening.
-
-- [lua]`trx.events.after_item_setup(callback)`  
-  Happens after level items exist, after they are initialized.
-
-  Parameters:
-  - **`callback`** (function).
-    Called with:
-    - **`level_num`** (integer). Number of the level the event fired for.
-
-  Returns: integer. Listener id. Pass it to `trx.events.detach` to stop listening.
-
-- [lua]`trx.events.after_level_state(callback)`  
-  Happens after the level finishes loading, after loading information from a savegame. If the game is started normally, this duplicates `after_level_file`.
-
-  Parameters:
-  - **`callback`** (function).
-    Called with:
-    - **`level_num`** (integer). Number of the level the event fired for.
-
-  Returns: integer. Listener id. Pass it to `trx.events.detach` to stop listening.
-
-  Example:
-  ```lua
-  trx.events.after_level_state(function(level_num)
-    -- handle post-savegame state restore
-  end)
-  ```
-
 - [lua]`trx.events.on_game_start(callback)`  
-  Happens after the level finishes loading and the game is about to start. Unlike `after_level_file` and `after_level_state`, this waits for the fade-to-black / cross-fade effects to finish, so it is the place to play sound effects and run game logic.
+      Happens as a level starts running, before its first frame is drawn. By then
+      the level file is loaded, its items are set up and any savegame state has
+      been applied, so this is where a script sets object properties, declares
+      allies, changes room state and plays sound effects. Every kind of level
+      fires it: a played level, a cutscene and the attract demo alike. The title
+      screen has `on_title_start` instead.
+
 
   Parameters:
   - **`callback`** (function).
@@ -92,6 +34,24 @@ A handler attached from a level script is detached automatically when the level 
     - **`is_save`** (boolean). Whether the level is being resumed from a savegame rather than started fresh.
 
   Returns: integer. Listener id. Pass it to `trx.events.detach` to stop listening.
+
+- [lua]`trx.events.on_title_start(callback)`  
+      Happens when the title screen's scene starts playing behind the menu, once
+      its level is loaded and its items are set up. The handler takes no
+      arguments. `on_game_start` does not fire for the title level.
+
+
+  Parameters:
+  - **`callback`** (function).
+
+  Returns: integer. Listener id. Pass it to `trx.events.detach` to stop listening.
+
+  Example:
+  ```lua
+  trx.events.on_title_start(function()
+    trx.log.info("the menu is up")
+  end)
+  ```
 
 - [lua]`trx.events.on_pickup(callback)`  
   Happens just after Lara picks up an item.

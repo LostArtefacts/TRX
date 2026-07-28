@@ -124,12 +124,8 @@ static __attribute__((constructor)) void M_Init(void)
     ENUM_MAP(ITEM_TRIGGER_KIND, ITEM_TRIGGER_ANTI, "antitrigger");
 
     // LUA_EVENT_NUMBER_OF is a sentinel, not an event.
-    ENUM_MAP(LUA_EVENT_TYPE, LUA_EVENT_BEFORE_LEVEL_FILE, "before_level_file");
-    ENUM_MAP(LUA_EVENT_TYPE, LUA_EVENT_AFTER_LEVEL_FILE, "after_level_file");
-    ENUM_MAP(LUA_EVENT_TYPE, LUA_EVENT_BEFORE_ITEM_SETUP, "before_item_setup");
-    ENUM_MAP(LUA_EVENT_TYPE, LUA_EVENT_AFTER_ITEM_SETUP, "after_item_setup");
-    ENUM_MAP(LUA_EVENT_TYPE, LUA_EVENT_AFTER_LEVEL_STATE, "after_level_state");
     ENUM_MAP(LUA_EVENT_TYPE, LUA_EVENT_GAME_START, "game_start");
+    ENUM_MAP(LUA_EVENT_TYPE, LUA_EVENT_TITLE_START, "title_start");
     ENUM_MAP(LUA_EVENT_TYPE, LUA_EVENT_PICKUP, "pickup");
     ENUM_MAP(LUA_EVENT_TYPE, LUA_EVENT_BEFORE_CONTROL, "before_control");
     ENUM_MAP(LUA_EVENT_TYPE, LUA_EVENT_AFTER_CONTROL, "after_control");

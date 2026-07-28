@@ -142,8 +142,6 @@ M_GF_HANDLER(M_HandlePlayLevel)
         Music_Stop();
     }
 
-    LUA_FireEventInt32(LUA_EVENT_AFTER_LEVEL_FILE, level->num);
-
     // post load
     switch (seq_ctx) {
     case GFSC_SAVED: {
@@ -170,8 +168,6 @@ M_GF_HANDLER(M_HandlePlayLevel)
         break;
     }
     GF_DisableObjectsIfNeeded();
-
-    LUA_FireEventInt32(LUA_EVENT_AFTER_LEVEL_STATE, level->num);
 
     g_Passport.ask_for_save =
         g_Config.gameplay.save_crystal_mode == SAVE_CRYSTAL_SAVE

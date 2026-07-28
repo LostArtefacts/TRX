@@ -228,14 +228,37 @@ order: 3
 22. **Update game flows that anchor Bacon Lara**
    The `setup_bacon_lara` sequence event was removed. The anchor room is an
    `anchor_room` object property now, which a level editor can set on the object
-   or on a single item, and a script can set in `before_item_setup`:
+   or on a single item, and a script can set in `on_game_start`:
    ```lua
-   trx.events.before_item_setup(function()
+   trx.events.on_game_start(function()
      trx.objects.bacon_lara.properties.anchor_room = 10
    end)
    ```
    The property is optional: at its default of -1, the room Bacon Lara is placed
    in is the anchor. Refer to the Atlantis level in the default game flow.
+
+23. **Update scripts that use the level lifecycle events**
+   `before_level_file`, `after_level_file`, `before_item_setup`,
+   `after_item_setup` and `after_level_state` were removed. `on_game_start` is
+   the one moment a level script gets before play: the level file is loaded, its
+   items are set up, any savegame state has been applied, and nothing has been
+   drawn yet. A handler moves across as it stands:
+   ```lua
+   trx.events.on_game_start(function(level_num, is_save)
+     trx.creatures.add_ally(trx.catalog.objects.monkey)
+     trx.items[65].properties.range = { x = 14, y = 6, z = 14 }
+   end)
+   ```
+   An object property no longer has to be written before its item is
+   initialised, which is what the earlier moments were for. `on_game_start`
+   fires for cutscene and demo levels too, and the title screen has
+   `on_title_start`.
+
+24. **Update scripts that raise an item's maximum hit points**
+   Writing `max_hit_points` carries the item's current hit points with it, by
+   the difference: an item that has taken no damage comes out at full health,
+   and one that is already hurt stays hurt by as much. It no longer needs a
+   companion write to `hit_points`.
 
 ### Version 1.8 to 1.9
 

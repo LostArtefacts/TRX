@@ -3135,118 +3135,7 @@
       "path": "creatures.add_ally_target"
     },
     {
-      "description": "Happens prior to loading the level file.",
-      "examples": [
-        "trx.events.before_level_file(function(level_num)\n  -- handle pre-file-load setup\nend)"
-      ],
-      "params": [
-        {
-          "name": "callback",
-          "params": [
-            {
-              "description": "Number of the level the event fired for.",
-              "name": "level_num",
-              "type": "integer"
-            }
-          ],
-          "type": "function"
-        }
-      ],
-      "path": "events.before_level_file",
-      "returns": {
-        "description": "Listener id. Pass it to `trx.events.detach` to stop listening.",
-        "type": "integer"
-      }
-    },
-    {
-      "description": "Happens after the level finishes loading, prior to loading information from a savegame.",
-      "params": [
-        {
-          "name": "callback",
-          "params": [
-            {
-              "description": "Number of the level the event fired for.",
-              "name": "level_num",
-              "type": "integer"
-            }
-          ],
-          "type": "function"
-        }
-      ],
-      "path": "events.after_level_file",
-      "returns": {
-        "description": "Listener id. Pass it to `trx.events.detach` to stop listening.",
-        "type": "integer"
-      }
-    },
-    {
-      "description": "Happens after level items exist, before they are initialized. Use this to set object or item properties that item initialization reads.",
-      "params": [
-        {
-          "name": "callback",
-          "params": [
-            {
-              "description": "Number of the level the event fired for.",
-              "name": "level_num",
-              "type": "integer"
-            }
-          ],
-          "type": "function"
-        }
-      ],
-      "path": "events.before_item_setup",
-      "returns": {
-        "description": "Listener id. Pass it to `trx.events.detach` to stop listening.",
-        "type": "integer"
-      }
-    },
-    {
-      "description": "Happens after level items exist, after they are initialized.",
-      "params": [
-        {
-          "name": "callback",
-          "params": [
-            {
-              "description": "Number of the level the event fired for.",
-              "name": "level_num",
-              "type": "integer"
-            }
-          ],
-          "type": "function"
-        }
-      ],
-      "path": "events.after_item_setup",
-      "returns": {
-        "description": "Listener id. Pass it to `trx.events.detach` to stop listening.",
-        "type": "integer"
-      }
-    },
-    {
-      "description": "Happens after the level finishes loading, after loading information from a savegame. If the game is started normally, this duplicates `after_level_file`.",
-      "examples": [
-        "trx.events.after_level_state(function(level_num)\n  -- handle post-savegame state restore\nend)"
-      ],
-      "params": [
-        {
-          "name": "callback",
-          "params": [
-            {
-              "description": "Number of the level the event fired for.",
-              "name": "level_num",
-              "type": "integer"
-            }
-          ],
-          "type": "function"
-        }
-      ],
-      "path": "events.after_level_state",
-      "returns": {
-        "description": "Listener id. Pass it to `trx.events.detach` to stop listening.",
-        "type": "integer"
-      }
-    },
-    {
-      "description": "Happens after the level finishes loading and the game is about to start. Unlike `after_level_file` and `after_level_state`, this waits for the fade-to-black / cross-fade effects to finish, so it is the place to play sound effects and run game logic.",
+      "description": "    Happens as a level starts running, before its first frame is drawn. By then\n    the level file is loaded, its items are set up and any savegame state has\n    been applied, so this is where a script sets object properties, declares\n    allies, changes room state and plays sound effects. Every kind of level\n    fires it: a played level, a cutscene and the attract demo alike. The title\n    screen has `on_title_start` instead.\n  ",
       "params": [
         {
           "name": "callback",
@@ -3266,6 +3155,23 @@
         }
       ],
       "path": "events.on_game_start",
+      "returns": {
+        "description": "Listener id. Pass it to `trx.events.detach` to stop listening.",
+        "type": "integer"
+      }
+    },
+    {
+      "description": "    Happens when the title screen's scene starts playing behind the menu, once\n    its level is loaded and its items are set up. The handler takes no\n    arguments. `on_game_start` does not fire for the title level.\n  ",
+      "examples": [
+        "trx.events.on_title_start(function()\n  trx.log.info(\"the menu is up\")\nend)"
+      ],
+      "params": [
+        {
+          "name": "callback",
+          "type": "function"
+        }
+      ],
+      "path": "events.on_title_start",
       "returns": {
         "description": "Listener id. Pass it to `trx.events.detach` to stop listening.",
         "type": "integer"

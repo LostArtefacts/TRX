@@ -30,85 +30,15 @@ local LISTENER_ID = {
   description = "Listener id. Pass it to `trx.events.detach` to stop listening.",
 }
 
--- The five level-lifecycle events share a signature; only the moment differs.
-local function level_hook(event_type, description, examples)
-  return {
-    description = description,
-    params = {
-      {
-        name = "callback",
-        type = "function",
-        params = {
-          {
-            name = "level_num",
-            type = "integer",
-            description = "Number of the level the event fired for.",
-          },
-        },
-      },
-    },
-    returns = LISTENER_ID,
-    examples = examples,
-    impl = hook(event_type),
-  }
-end
-
-api.define(
-  "events.before_level_file",
-  level_hook(
-    types.BEFORE_LEVEL_FILE,
-    "Happens prior to loading the level file.",
-    {
-      [[trx.events.before_level_file(function(level_num)
-  -- handle pre-file-load setup
-end)]],
-    }
-  )
-)
-
-api.define(
-  "events.after_level_file",
-  level_hook(
-    types.AFTER_LEVEL_FILE,
-    "Happens after the level finishes loading, prior to loading information from a savegame."
-  )
-)
-
-api.define(
-  "events.before_item_setup",
-  level_hook(
-    types.BEFORE_ITEM_SETUP,
-    "Happens after level items exist, before they are initialized. Use this to set object or "
-      .. "item properties that item initialization reads."
-  )
-)
-
-api.define(
-  "events.after_item_setup",
-  level_hook(
-    types.AFTER_ITEM_SETUP,
-    "Happens after level items exist, after they are initialized."
-  )
-)
-
-api.define(
-  "events.after_level_state",
-  level_hook(
-    types.AFTER_LEVEL_STATE,
-    "Happens after the level finishes loading, after loading information from a savegame. If the "
-      .. "game is started normally, this duplicates `after_level_file`.",
-    {
-      [[trx.events.after_level_state(function(level_num)
-  -- handle post-savegame state restore
-end)]],
-    }
-  )
-)
-
 api.define("events.on_game_start", {
-  description = "Happens after the level finishes loading and the game is about to start. Unlike "
-    .. "`after_level_file` and `after_level_state`, this waits for the fade-to-black / cross-fade "
-    .. "effects to finish, so it is the place to play sound effects and run game logic.",
+  description = [[
+    Happens as a level starts running, before its first frame is drawn. By then
+    the level file is loaded, its items are set up and any savegame state has
+    been applied, so this is where a script sets object properties, declares
+    allies, changes room state and plays sound effects. Every kind of level
+    fires it: a played level, a cutscene and the attract demo alike. The title
+    screen has `on_title_start` instead.
+  ]],
   params = {
     {
       name = "callback",
@@ -129,6 +59,22 @@ api.define("events.on_game_start", {
   },
   returns = LISTENER_ID,
   impl = hook(types.GAME_START),
+})
+
+api.define("events.on_title_start", {
+  description = [[
+    Happens when the title screen's scene starts playing behind the menu, once
+    its level is loaded and its items are set up. The handler takes no
+    arguments. `on_game_start` does not fire for the title level.
+  ]],
+  params = { { name = "callback", type = "function" } },
+  returns = LISTENER_ID,
+  examples = {
+    [[trx.events.on_title_start(function()
+  trx.log.info("the menu is up")
+end)]],
+  },
+  impl = hook(types.TITLE_START),
 })
 
 api.define("events.on_pickup", {

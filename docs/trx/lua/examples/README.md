@@ -13,7 +13,7 @@ section](../../OBJECTS.md) as a reference for original values.
 
 ```lua
 -- Adjust HP of certain enemies
-trx.events.before_item_setup(function(level)
+trx.events.on_game_start(function(level)
   -- Randomize bats HP
   for _, item in pairs(trx.items) do
     if item.object_id == trx.catalog.objects.bat then

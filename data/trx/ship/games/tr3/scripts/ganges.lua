@@ -1,4 +1,4 @@
-trx.events.before_item_setup(function(level)
+trx.events.on_game_start(function(level)
   local props = trx.objects.quad_bike.properties
   props.track_1 = 9
   props.track_2 = 12

@@ -1,4 +1,4 @@
-trx.events.before_item_setup(function(level)
+trx.events.on_game_start(function(level)
   -- Setup shoals
   trx.items[55].properties.range = { x = 22, y = 2, z = 10 }
   trx.items[56].properties.range = { x = 18, y = 1, z = 10 }

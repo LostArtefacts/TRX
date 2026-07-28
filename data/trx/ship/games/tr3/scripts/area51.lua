@@ -1,9 +1,6 @@
-trx.events.before_item_setup(function(level)
+trx.events.on_game_start(function(level)
   local props = trx.objects.strobe_light.properties
   props.requires_alarm_active = true
-end)
-
-trx.events.before_level_file(function(level)
   trx.creatures.add_ally(trx.catalog.objects.prisoner)
 end)
 

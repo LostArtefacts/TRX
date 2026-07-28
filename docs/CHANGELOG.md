@@ -12,6 +12,7 @@
 - added a `damage` property to the `O_POWER_SAW` object
 - improved error messages related to bad command invocations
 - changed reflections UV mapping to be more correct
+- changed the Lua level events to a single `on_game_start`, which every kind of level fires, with `on_title_start` for the title screen; refer to migration notes
 - changed object properties to take effect as soon as they change, rather than only when the item is first set up
 - changed outfits to support joints, up to two braids per outfit, and to allow positional offset adjustments for equipment meshes; refer to migration notes
 - changed the `/music` console command to list the available tracks when given no argument, as `/sfx` does; `/music status` now reports what is playing
