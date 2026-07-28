@@ -405,6 +405,11 @@
         <property category="TRX" defaultValue="28" description="Damage dealt by shots." displayName="Damage" internalName="damage" minValue="0" type="Int" />
         <property category="TRX" defaultValue="84" description="Damage dealt by the death-state final shot." displayName="Final Shot Damage" internalName="final_shot_damage" minValue="0" type="Int" />
     </moveable>
+    <!--placeholder for O_SWITCH_TYPE_PULLEY-->
+    <moveable id="-1">
+        <property category="TRX" defaultValue="1" description="The number of pulls required before activating the trigger under the pulley." displayName="Required Pulls" internalName="required_pulls" minValue="1" type="Int" />
+        <property category="TRX" defaultValue="false" description="Whether or not the pulley can only be used once." displayName="Is Single Use" internalName="is_single_use" type="Bool" />
+    </moveable>
     <!--placeholder for O_TIGER-->
     <moveable id="-1">
         <property category="TRX" defaultValue="20" description="Maximum hit points." displayName="Max Hit Points" internalName="max_hit_points" minValue="0" type="Int" />

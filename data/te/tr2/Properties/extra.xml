@@ -376,6 +376,11 @@
     <moveable id="-1">
         <property category="TRX" defaultValue="100" description="Damage dealt while Lara is touching the swinging axe." displayName="Damage" internalName="damage" minValue="0" type="Int" />
     </moveable>
+    <!--placeholder for O_SWITCH_TYPE_PULLEY-->
+    <moveable id="-1">
+        <property category="TRX" defaultValue="1" description="The number of pulls required before activating the trigger under the pulley." displayName="Required Pulls" internalName="required_pulls" minValue="1" type="Int" />
+        <property category="TRX" defaultValue="false" description="Whether or not the pulley can only be used once." displayName="Is Single Use" internalName="is_single_use" type="Bool" />
+    </moveable>
     <!--placeholder for O_TONY-->
     <moveable id="-1">
         <property category="TRX" defaultValue="100" description="Maximum hit points." displayName="Max Hit Points" internalName="max_hit_points" minValue="0" type="Int" />

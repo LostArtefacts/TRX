@@ -3412,6 +3412,9 @@
                 "Switch",
             ]
         },
+        "switch_type_pulley": {
+            "name": "\\{review}Zugschalter",
+        },
         "switch_type_small": {
             "name": "Small Switch",
         },

@@ -2922,6 +2922,15 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
+#### O_SWITCH_TYPE_PULLEY
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>required_pulls</code></td><td colspan="3" align="center">1</td><td>The number of pulls required before activating the trigger under the pulley. Value range: minimum 1</td></tr>
+<tr><td><code>is_single_use</code></td><td colspan="3" align="center">false</td><td>Whether or not the pulley can only be used once.</td></tr>
+</tbody>
+</table>
+
 #### O_TRAPDOOR_TYPE_1
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (65)</th><th align="center">TR2 (114)</th><th align="center">TR3 (139)</th><th>Description</th></tr></thead>

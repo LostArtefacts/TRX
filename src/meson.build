@@ -639,6 +639,7 @@ common_sources = [
   'trx/game/objects/general/mini_copter.c',
   'trx/game/objects/general/moving_bar.c',
   'trx/game/objects/general/pickup.c',
+  'trx/game/objects/general/pulley_switch.c',
   'trx/game/objects/general/puzzle_hole.c',
   'trx/game/objects/general/rocket.c',
   'trx/game/objects/general/rope.c',
