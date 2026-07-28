@@ -922,6 +922,13 @@ bool Lara_IsNearItem(const XYZ_32 *const pos, const int32_t distance)
 
 bool Lara_MovePosition(const ITEM *const ref_item, const XYZ_32 *const vec)
 {
+    return Lara_MovePositionEx(ref_item, vec, 0);
+}
+
+bool Lara_MovePositionEx(
+    const ITEM *const ref_item, const XYZ_32 *const vec,
+    const int16_t extra_y_rot)
+{
     LARA_INFO *const lara_info = Lara_GetLaraInfo();
     const bool walk_to_items = g_Config.gameplay.enable_walk_to_items
         && ref_item->object_id != O_FLARE_ITEM;
@@ -995,7 +1002,7 @@ bool Lara_MovePosition(const ITEM *const ref_item, const XYZ_32 *const vec)
             const int32_t angle = (DEG_360 - Math_Atan(dx, dz)) % DEG_360;
             const uint32_t src_quadrant = (uint32_t)(angle + DEG_45) / DEG_90;
             const uint32_t dst_quadrant =
-                (uint32_t)(new_rot.y + DEG_45) / DEG_90;
+                (uint32_t)(new_rot.y + DEG_45 + extra_y_rot) / DEG_90;
             const DIRECTION quadrant = (src_quadrant - dst_quadrant) % 4;
 
             Item_SwitchToAnim(lara_item, step_to_anim_num[quadrant], 0);
