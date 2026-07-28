@@ -1,0 +1,56 @@
+#!/usr/bin/env python3
+import re
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
+from harness import LintWarning, file_check
+
+BOUND_RE = re.compile(r"\bOBJECT_PROPERTY(?:_SET)?\(\s*(?P<struct>\w+),")
+CALL_RE = re.compile(r"\b([A-Za-z_]\w*)\s*\(")
+
+
+def function_bodies(text):
+    """Every function in the file, by name, with the line it starts on."""
+    bodies = {}
+    for match in re.finditer(r"\b([A-Za-z_]\w*)\s*\([^;{}]*\)\s*\{", text):
+        depth, index = 1, match.end()
+        while depth and index < len(text):
+            depth += (text[index] == "{") - (text[index] == "}")
+            index += 1
+        line = text.count("\n", 0, match.start()) + 1
+        bodies[match.group(1)] = (text[match.end() : index - 1], line)
+    return bodies
+
+
+def sizes_priv(name, bodies, seen=None):
+    """Whether the function, or anything it calls, sizes the object's priv."""
+    if seen is None:
+        seen = set()
+    if name in seen or name not in bodies:
+        return False
+    seen.add(name)
+    body, _ = bodies[name]
+    if "priv_size" in body:
+        return True
+    return any(sizes_priv(callee, bodies, seen) for callee in CALL_RE.findall(body))
+
+
+def check(path, text):
+    bodies = function_bodies(text)
+    for name, (body, line) in bodies.items():
+        bound = BOUND_RE.search(body)
+        if bound is None or sizes_priv(name, bodies):
+            continue
+        # Without priv, an item has nowhere to keep the value: the engine
+        # writes nothing and the member reads as zero, silently.
+        yield LintWarning(
+            path,
+            f"{name} binds a property to {bound.group('struct')} but never sets "
+            f"obj->priv_size",
+            line=line,
+        )
+
+
+file_check(check)
