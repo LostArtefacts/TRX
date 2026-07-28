@@ -39,22 +39,13 @@ test("the control events pass no arguments", function()
   assert(seen == 0, "before_control handed the handler an argument")
 end)
 
-test("the level events pass the level number", function()
-  local events = {
-    "before_level_file",
-    "after_level_file",
-    "before_item_setup",
-    "after_item_setup",
-    "after_level_state",
-  }
-  for _, name in ipairs(events) do
-    local seen = nil
-    trx.events[name](function(level_num)
-      seen = level_num
-    end)
-    fake.fire(name, 7)
-    assert(seen == 7, name .. " did not receive the level number")
-  end
+test("on_title_start passes no arguments", function()
+  local seen = "unset"
+  trx.events.on_title_start(function(...)
+    seen = select("#", ...)
+  end)
+  fake.fire("on_title_start")
+  assert(seen == 0, "on_title_start handed the handler an argument")
 end)
 
 test("on_pickup passes the item number", function()

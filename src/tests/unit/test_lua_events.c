@@ -48,19 +48,8 @@ static int M_FakeFire(lua_State *const L)
               .value = { .b = lua_toboolean(L, 3) } },
         };
         LUA_FireEventEx(LUA_EVENT_GAME_START, args, 2);
-    } else if (strcmp(name, "before_level_file") == 0) {
-        LUA_FireEventInt32(
-            LUA_EVENT_BEFORE_LEVEL_FILE, luaL_checkinteger(L, 2));
-    } else if (strcmp(name, "after_level_file") == 0) {
-        LUA_FireEventInt32(LUA_EVENT_AFTER_LEVEL_FILE, luaL_checkinteger(L, 2));
-    } else if (strcmp(name, "before_item_setup") == 0) {
-        LUA_FireEventInt32(
-            LUA_EVENT_BEFORE_ITEM_SETUP, luaL_checkinteger(L, 2));
-    } else if (strcmp(name, "after_item_setup") == 0) {
-        LUA_FireEventInt32(LUA_EVENT_AFTER_ITEM_SETUP, luaL_checkinteger(L, 2));
-    } else if (strcmp(name, "after_level_state") == 0) {
-        LUA_FireEventInt32(
-            LUA_EVENT_AFTER_LEVEL_STATE, luaL_checkinteger(L, 2));
+    } else if (strcmp(name, "on_title_start") == 0) {
+        LUA_FireEvent(LUA_EVENT_TITLE_START);
     } else if (strcmp(name, "on_flip_effect") == 0) {
         // The seam floor_data.c and the animation-command paths fire through.
         // The result - whether a script took the effect - is handed back, so

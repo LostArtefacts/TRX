@@ -338,7 +338,6 @@ void Stats_CalculateMaxStats(void)
             Rules_Reset();
 
             LUA_RunLevelScript(level);
-            LUA_FireEventInt32(LUA_EVENT_BEFORE_LEVEL_FILE, level->num);
 
             Inject_InitLevel(level, INJECTION_MODE_STATS);
             if (loader->probe(loader, file, LEVEL_FORMAT_PROBE_STATS)) {
@@ -351,7 +350,6 @@ void Stats_CalculateMaxStats(void)
                 }
 
                 Inject_ApplyProperties();
-                LUA_FireEventInt32(LUA_EVENT_BEFORE_ITEM_SETUP, level->num);
 
                 const int32_t item_count = Item_GetLevelCount();
                 for (int32_t item_num = 0; item_num < item_count; item_num++) {
@@ -364,8 +362,6 @@ void Stats_CalculateMaxStats(void)
                         room->item_num = item_num;
                     }
                 }
-
-                LUA_FireEventInt32(LUA_EVENT_AFTER_ITEM_SETUP, level->num);
 
                 Carrier_InitialiseLevel(level);
                 Stats_ScanLevel(level);

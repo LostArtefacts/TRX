@@ -6,12 +6,8 @@
 // Event types for Lua listeners. Named in ENUM_MAP (see trx/game/enum.c), which
 // is what the hooks in src/lua/api/events.lua reflect.
 typedef enum {
-    LUA_EVENT_BEFORE_LEVEL_FILE,
-    LUA_EVENT_AFTER_LEVEL_FILE,
-    LUA_EVENT_BEFORE_ITEM_SETUP,
-    LUA_EVENT_AFTER_ITEM_SETUP,
-    LUA_EVENT_AFTER_LEVEL_STATE,
     LUA_EVENT_GAME_START,
+    LUA_EVENT_TITLE_START,
     LUA_EVENT_PICKUP,
     LUA_EVENT_BEFORE_CONTROL,
     LUA_EVENT_AFTER_CONTROL,

@@ -1,4 +1,4 @@
-trx.events.before_level_file(function(level)
+trx.events.on_game_start(function(level)
   trx.creatures.add_ally(trx.catalog.objects.monk_1)
   trx.creatures.add_ally(trx.catalog.objects.monk_2)
   trx.creatures.add_ally_target(trx.catalog.objects.bandit_1)

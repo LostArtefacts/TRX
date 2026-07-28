@@ -32,7 +32,7 @@ Create a file `data/scripts/level1.lua` folder in your project and put the
 following content:
 
 ```lua
-trx.events.after_level_state(function(level)
+trx.events.on_game_start(function(level)
   trx.log.info("hello from level 1!")
 end)
 ```

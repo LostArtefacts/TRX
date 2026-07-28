@@ -17,6 +17,7 @@
 #include <trx/game/inventory_ring/priv.h>
 #include <trx/game/inventory_ring/vars.h>
 #include <trx/game/lara.h>
+#include <trx/game/lua/events.h>
 #include <trx/game/music.h>
 #include <trx/game/objects.h>
 #include <trx/game/option.h>
@@ -986,6 +987,7 @@ INV_RING *InvRing_Open(const INVENTORY_MODE mode)
             lara_item->mesh_bits = 0;
         }
         FlybyMode_Activate(g_GameFlow.title_flyby_sequence, false);
+        LUA_FireEvent(LUA_EVENT_TITLE_START);
     }
 
     Interpolation_Remember();
