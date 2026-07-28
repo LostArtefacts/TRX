@@ -8,6 +8,40 @@ api.module("locale", {
   description = "The text the player reads, in the player's own language.",
 })
 
+api.define("locale.declare", {
+  description = [[
+Declares game string keys and the text behind them.
+
+A key belongs with the script that shows it, so a command carries its own
+wording. What is declared here is the fallback: the strings files and their
+translations are read over it, and a declaration shows only for a key they have
+nothing for.]],
+  params = {
+    {
+      name = "strings",
+      type = "table",
+      description = "Keys to their English text.",
+    },
+  },
+  examples = {
+    [[trx.locale.declare({
+  ["console/cmd/heal/help"] = "Heals Lara back to full health.",
+  ["console/cmd/heal/success"] = "Healed Lara back to full health",
+})]],
+  },
+  impl = function(strings)
+    assert(type(strings) == "table", "trx.locale.declare expects a table")
+    for key, text in pairs(strings) do
+      assert(type(key) == "string", "trx.locale.declare: key must be a string")
+      assert(
+        type(text) == "string",
+        "trx.locale.declare: text must be a string"
+      )
+      raw.declare(key, text)
+    end
+  end,
+})
+
 api.define("locale.get", {
   description = "The text behind a game string key.",
   params = {

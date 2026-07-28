@@ -3940,6 +3940,20 @@
       "path": "lara.clear_equipment"
     },
     {
+      "description": "Declares game string keys and the text behind them.\n\nA key belongs with the script that shows it, so a command carries its own\nwording. What is declared here is the fallback: the strings files and their\ntranslations are read over it, and a declaration shows only for a key they have\nnothing for.",
+      "examples": [
+        "trx.locale.declare({\n  [\"console/cmd/heal/help\"] = \"Heals Lara back to full health.\",\n  [\"console/cmd/heal/success\"] = \"Healed Lara back to full health\",\n})"
+      ],
+      "params": [
+        {
+          "description": "Keys to their English text.",
+          "name": "strings",
+          "type": "table"
+        }
+      ],
+      "path": "locale.declare"
+    },
+    {
       "description": "The text behind a game string key.",
       "examples": [
         "trx.console.log(trx.locale.get(\"general/misc/off\"))"

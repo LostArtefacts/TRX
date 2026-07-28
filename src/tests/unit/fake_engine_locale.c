@@ -1,13 +1,26 @@
-// The game string table, reduced to a handful of entries: one plain, one with a
-// placeholder, one with two, and one a translator wrote a bare percent sign
-// into. The real one is loaded from cfg/base_strings.json5 and its
-// translations; what is under test is what the surface does with these and with
-// a key it does not have.
+// The game string table, reduced to what a surface test needs: the fixtures
+// below - one plain, one with a placeholder, one with two, and one a translator
+// wrote a bare percent sign into - plus whatever the scripts under test declare
+// through trx.locale.declare(). The real one starts from
+// game_strings/entries.def and has cfg/base_strings.json5 and its translations
+// layered over it.
 
 #include <trx/game/game_strings/entries.h>
 #include <trx/game/game_strings/manager.h>
 
+#include <assert.h>
+#include <stdint.h>
+#include <stdlib.h>
 #include <string.h>
+
+typedef struct {
+    char *key;
+    char *value;
+} M_ENTRY;
+
+// Enough for every module and command one test loads.
+static M_ENTRY m_Entries[256];
+static int32_t m_EntryCount = 0;
 
 // trx.locale.reload() reloads the language files from disk. There is no disk
 // here, so report success without doing anything.
@@ -16,8 +29,28 @@ bool GameStringManager_ReloadLanguage(const char *const lang)
     return true;
 }
 
+void GameString_Define(const char *const key, const char *const value)
+{
+    for (int32_t i = 0; i < m_EntryCount; i++) {
+        if (strcmp(m_Entries[i].key, key) == 0) {
+            free(m_Entries[i].value);
+            m_Entries[i].value = strdup(value);
+            return;
+        }
+    }
+    assert(m_EntryCount < (int32_t)(sizeof(m_Entries) / sizeof(m_Entries[0])));
+    m_Entries[m_EntryCount].key = strdup(key);
+    m_Entries[m_EntryCount].value = strdup(value);
+    m_EntryCount++;
+}
+
 const char *GameString_Get(const char *const key)
 {
+    for (int32_t i = 0; i < m_EntryCount; i++) {
+        if (strcmp(m_Entries[i].key, key) == 0) {
+            return m_Entries[i].value;
+        }
+    }
     if (strcmp(key, "test/plain") == 0) {
         return "Plain text";
     }
@@ -29,17 +62,6 @@ const char *GameString_Get(const char *const key)
     }
     if (strcmp(key, "test/percent") == 0) {
         return "100% of the text";
-    }
-    // The help command composes its output from these, so its tests need them
-    // resolved rather than left nil.
-    if (strcmp(key, "console/argparse/aliases") == 0) {
-        return "Aliases: %s";
-    }
-    if (strcmp(key, "console/cmd/help/list") == 0) {
-        return "Available commands:";
-    }
-    if (strcmp(key, "console/cmd/help/unknown_command") == 0) {
-        return "Unknown command: %s";
     }
     return nullptr;
 }
