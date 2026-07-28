@@ -1,8 +1,10 @@
 #pragma once
 
 #include <trx/core/handle.h>
+#include <trx/core/utils.h>
 #include <trx/game/anims.h>
 #include <trx/game/items/types.h>
+#include <trx/game/objects/property.h>
 
 void Item_Reset(void);
 void Item_InitialiseItems(int32_t num_items);
@@ -34,6 +36,24 @@ int16_t Item_CreateLevelItem(void);
 int16_t Item_Spawn(const ITEM *item, OBJECT_ID obj_id);
 
 void Item_Initialise(int16_t item_num);
+
+// The starting hit points an object gives its items, declared once for every
+// object that has any. Moving the ceiling carries the current hit points with
+// it, so a level states the maximum alone and an item that has already been
+// hurt stays hurt by as much.
+static inline void Item_Property_SetMaxHitPoints(
+    ITEM *item, const TRX_VALUE *value)
+{
+    item->hit_points += value->as_int - item->max_hit_points;
+    item->max_hit_points = value->as_int;
+    CLAMP(item->hit_points, 0, item->max_hit_points);
+}
+
+#define ITEM_PROPERTY_MAX_HIT_POINTS(value_)                                   \
+    OBJECT_PROPERTY_ITEM(                                                      \
+        max_hit_points, value_, nullptr, Item_Property_SetMaxHitPoints,        \
+        "Maximum hit points.")
+
 void Item_Control(void);
 
 // Begin fading a body out, if the rules call for bodies to fade at all.

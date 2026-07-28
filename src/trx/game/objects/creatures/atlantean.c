@@ -326,9 +326,7 @@ static void M_SetupProperties(OBJECT *const obj)
 {
     obj->priv_size = sizeof(M_PRIV);
     OBJECT_PROPERTIES(
-        obj,
-        OBJECT_PROPERTY_STORED(
-            "max_hit_points", M_HIT_POINTS, "Maximum hit points."),
+        obj, ITEM_PROPERTY_MAX_HIT_POINTS(M_HIT_POINTS),
         OBJECT_PROPERTY(
             M_PRIV, charge_damage, M_CHARGE_DAMAGE,
             "Damage dealt by the atlantean's charge attack."),

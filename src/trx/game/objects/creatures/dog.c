@@ -229,9 +229,7 @@ static void M_Setup(OBJECT *const obj)
 
     Object_GetBone(obj, 19)->rot.y = true;
     OBJECT_PROPERTIES(
-        obj,
-        OBJECT_PROPERTY_STORED(
-            "max_hit_points", M_HIT_POINTS, "Maximum hit points."),
+        obj, ITEM_PROPERTY_MAX_HIT_POINTS(M_HIT_POINTS),
         OBJECT_PROPERTY(
             M_PRIV, bite_damage, M_BITE_DAMAGE,
             "Damage dealt by the dog bite."),

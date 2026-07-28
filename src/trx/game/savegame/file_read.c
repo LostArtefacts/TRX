@@ -558,14 +558,17 @@ static bool M_ReadItem(JSON_READ_IO *const io, const int16_t read_index)
     }
 
     if (obj->save_hitpoints) {
-        M_MUST(JSON_READ(io, "hitpoints", &item->hit_points));
-        M_MUST(JSON_READ(io, "max_hitpoints", &item->max_hit_points));
+        int16_t hit_points = 0;
+        int16_t max_hit_points = 0;
+        M_MUST(JSON_READ(io, "hitpoints", &hit_points));
+        M_MUST(JSON_READ(io, "max_hitpoints", &max_hit_points));
         ObjectProperty_SetItemValueRaw(
             item, "max_hit_points",
             (TRX_VALUE) {
                 .type = TVT_S32,
-                .as_int = item->max_hit_points,
+                .as_int = max_hit_points,
             });
+        item->hit_points = hit_points;
     }
     M_MUST(ObjectProperty_ReadItemOverrides(io, item));
 

@@ -244,7 +244,7 @@ static void M_Setup(OBJECT *const obj)
         OBJECT_PROPERTY(
             M_PRIV, damage, M_DEFAULT_DAMAGE,
             "Damage dealt when the sentry gun hits Lara."),
-        OBJECT_PROPERTY_STORED("max_hit_points", 100, "Maximum hit points."));
+        ITEM_PROPERTY_MAX_HIT_POINTS(100));
 }
 
 REGISTER_OBJECT(O_SENTRY_GUN, M_Setup)

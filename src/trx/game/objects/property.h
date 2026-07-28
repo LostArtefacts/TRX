@@ -28,6 +28,9 @@ typedef struct {
     size_t field_offset;
     TRX_VALUE_TYPE field_type;
     size_t field_size;
+    // Whether the member belongs to the item itself rather than to the priv
+    // struct its object declares.
+    bool on_item;
     // Whether the property will take the value at all. It is asked without an
     // item, so it runs wherever a value is stated - including before the level
     // has items to write it to. Returns nullptr once the value is accepted, or
@@ -86,6 +89,22 @@ typedef OBJECT_PROPERTY_SET ITEM_PROPERTY_SET;
         .field_offset = offsetof(struct_, member_),                            \
         .field_type = Value_TypeOf(((struct_ *)nullptr)->member_),             \
         .field_size = sizeof(((struct_ *)nullptr)->member_),                   \
+        .check = check_,                                                       \
+        .set = set_,                                                           \
+    }
+
+// A property an item carries in a member of its own rather than in what its
+// object keeps privately: one the engine reads for every object, whatever it
+// is. `set_` may be nullptr.
+#define OBJECT_PROPERTY_ITEM(member_, value_, check_, set_, description_)      \
+    {                                                                          \
+        .name = #member_,                                                      \
+        .description = description_,                                           \
+        .value = Value_Of(value_),                                             \
+        .field_offset = offsetof(ITEM, member_),                               \
+        .field_type = Value_TypeOf(((ITEM *)nullptr)->member_),                \
+        .field_size = sizeof(((ITEM *)nullptr)->member_),                      \
+        .on_item = true,                                                       \
         .check = check_,                                                       \
         .set = set_,                                                           \
     }

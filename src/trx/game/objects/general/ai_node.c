@@ -3,9 +3,7 @@
 static void M_Setup(OBJECT *const obj)
 {
     obj->draw_func = nullptr;
-    OBJECT_PROPERTIES(
-        obj,
-        OBJECT_PROPERTY_STORED("max_hit_points", 0, "Maximum hit points."));
+    OBJECT_PROPERTIES(obj, ITEM_PROPERTY_MAX_HIT_POINTS(0));
 }
 
 REGISTER_OBJECT(O_AI_AMBUSH, M_Setup)

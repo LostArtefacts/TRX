@@ -185,10 +185,7 @@ static void M_SetupLion(OBJECT *const obj)
 
     obj->smartness = 0x7FFF;
 
-    OBJECT_PROPERTIES(
-        obj,
-        OBJECT_PROPERTY_STORED(
-            "max_hit_points", M_LION_HIT_POINTS, "Maximum hit points."));
+    OBJECT_PROPERTIES(obj, ITEM_PROPERTY_MAX_HIT_POINTS(M_LION_HIT_POINTS));
 }
 
 static void M_SetupLioness(OBJECT *const obj)
@@ -200,10 +197,7 @@ static void M_SetupLioness(OBJECT *const obj)
 
     obj->smartness = 0x2000;
 
-    OBJECT_PROPERTIES(
-        obj,
-        OBJECT_PROPERTY_STORED(
-            "max_hit_points", M_LIONESS_HIT_POINTS, "Maximum hit points."));
+    OBJECT_PROPERTIES(obj, ITEM_PROPERTY_MAX_HIT_POINTS(M_LIONESS_HIT_POINTS));
 }
 
 static void M_SetupPuma(OBJECT *const obj)
@@ -215,10 +209,7 @@ static void M_SetupPuma(OBJECT *const obj)
 
     obj->smartness = 0x2000;
 
-    OBJECT_PROPERTIES(
-        obj,
-        OBJECT_PROPERTY_STORED(
-            "max_hit_points", M_PUMA_HIT_POINTS, "Maximum hit points."));
+    OBJECT_PROPERTIES(obj, ITEM_PROPERTY_MAX_HIT_POINTS(M_PUMA_HIT_POINTS));
 }
 
 REGISTER_OBJECT(O_LION, M_SetupLion)

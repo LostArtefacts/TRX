@@ -483,10 +483,7 @@ static void M_SetupCrawler(OBJECT *const obj)
     Object_GetBone(obj, 8)->rot.x = true;
     Object_GetBone(obj, 8)->rot.z = true;
     Object_GetBone(obj, 9)->rot.y = true;
-    OBJECT_PROPERTIES(
-        obj,
-        OBJECT_PROPERTY_STORED(
-            "max_hit_points", M_HIT_POINTS, "Maximum hit points."));
+    OBJECT_PROPERTIES(obj, ITEM_PROPERTY_MAX_HIT_POINTS(M_HIT_POINTS));
 }
 
 static void M_SetupDying(OBJECT *const obj)

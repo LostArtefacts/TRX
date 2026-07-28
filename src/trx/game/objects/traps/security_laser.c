@@ -330,10 +330,7 @@ static void M_SetupCommon(OBJECT *const obj)
 static void M_SetupAlarm(OBJECT *const obj)
 {
     M_SetupCommon(obj);
-    OBJECT_PROPERTIES(
-        obj,
-        OBJECT_PROPERTY_STORED(
-            "max_hit_points", m_DefaultBeamCount, "Maximum hit points."));
+    OBJECT_PROPERTIES(obj, ITEM_PROPERTY_MAX_HIT_POINTS(m_DefaultBeamCount));
 }
 
 static void M_SetupDeadly(OBJECT *const obj)
@@ -344,17 +341,13 @@ static void M_SetupDeadly(OBJECT *const obj)
         OBJECT_PROPERTY(
             M_PRIV, damage, M_DEFAULT_DAMAGE,
             "Damage dealt when Lara crosses the security laser."),
-        OBJECT_PROPERTY_STORED(
-            "max_hit_points", m_DefaultBeamCount, "Maximum hit points."));
+        ITEM_PROPERTY_MAX_HIT_POINTS(m_DefaultBeamCount));
 }
 
 static void M_SetupKiller(OBJECT *const obj)
 {
     M_SetupCommon(obj);
-    OBJECT_PROPERTIES(
-        obj,
-        OBJECT_PROPERTY_STORED(
-            "max_hit_points", m_DefaultBeamCount, "Maximum hit points."));
+    OBJECT_PROPERTIES(obj, ITEM_PROPERTY_MAX_HIT_POINTS(m_DefaultBeamCount));
 }
 
 REGISTER_OBJECT(O_SECURITY_LASER_ALARM, M_SetupAlarm)

@@ -18,6 +18,7 @@ struct OBJECT_PROPERTY_ENTRY {
     size_t field_offset;
     TRX_VALUE_TYPE field_type;
     size_t field_size;
+    bool on_item;
     const char *(*check)(const TRX_VALUE *value);
     void (*set)(ITEM *item, const TRX_VALUE *value);
 };
@@ -101,19 +102,21 @@ static void M_WriteLiveValue(
     if (item == nullptr || (decl->set == nullptr && decl->field_size == 0)) {
         return;
     }
-    // A member, and a setter standing in for one, both live in the priv the
-    // level has not allocated yet; that copy is written as the item is
-    // initialised. A setter with no member of its own keeps its value
-    // elsewhere, so it runs either way.
-    if (decl->field_size != 0 && item->priv == nullptr) {
+    // A member of the object's priv, and a setter standing in for one, both
+    // live in what the level has not allocated yet; that copy is written as the
+    // item is initialised. A member of the item itself is there from the start,
+    // and a setter with no member of its own keeps its value elsewhere, so both
+    // run either way.
+    if (decl->field_size != 0 && !decl->on_item && item->priv == nullptr) {
         return;
     }
 
     if (decl->set != nullptr) {
         decl->set(item, value);
     } else {
+        void *const base = decl->on_item ? (void *)item : item->priv;
         Value_WritePtr(
-            decl->field_type, (char *)item->priv + decl->field_offset, value);
+            decl->field_type, (char *)base + decl->field_offset, value);
     }
 }
 
@@ -221,6 +224,7 @@ void ObjectProperty_ApplyDeclarations(
         entry->field_offset = declaration->field_offset;
         entry->field_type = declaration->field_type;
         entry->field_size = declaration->field_size;
+        entry->on_item = declaration->on_item;
         entry->check = declaration->check;
         entry->set = declaration->set;
         // A bound property is the view of its member: it carries the member's

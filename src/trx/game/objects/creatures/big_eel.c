@@ -114,9 +114,7 @@ static void M_Setup(OBJECT *const obj)
     obj->save_anim = true;
 
     OBJECT_PROPERTIES(
-        obj,
-        OBJECT_PROPERTY_STORED(
-            "max_hit_points", M_HIT_POINTS, "Maximum hit points."),
+        obj, ITEM_PROPERTY_MAX_HIT_POINTS(M_HIT_POINTS),
         OBJECT_PROPERTY(
             M_PRIV, damage, M_DAMAGE, "Damage dealt by the big eel bite."));
 }
