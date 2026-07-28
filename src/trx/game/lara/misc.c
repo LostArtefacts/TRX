@@ -489,6 +489,10 @@ bool Lara_HasState(const LARA_TRX_STATE *const test_arr)
     }
 
     const ITEM *const lara_item = Lara_GetItem();
+    if (lara_item == nullptr) {
+        return false;
+    }
+
     for (int32_t i = 0; test_arr[i] != LS_TRX_INVALID; i++) {
         if (test_arr[i] == LS_U(lara_item->current_anim_state)) {
             return true;
