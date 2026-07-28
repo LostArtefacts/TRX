@@ -20,9 +20,9 @@ The text the player reads, in the player's own language.
   Declares game string keys and the text behind them.
 
   A key belongs with the script that shows it, so a command carries its own
-  wording. What is declared here is the fallback: the strings files and their
-  translations are read over it, and a declaration shows only for a key they have
-  nothing for.
+  wording. What is declared here is a fallback, and it takes only for a key
+  nothing else holds: the strings files, their translations, and any earlier
+  declaration keep the text they already carry.
 
   Parameters:
   - **`strings`** (table). Keys to their English text.

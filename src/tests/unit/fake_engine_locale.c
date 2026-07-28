@@ -65,3 +65,8 @@ const char *GameString_Get(const char *const key)
     }
     return nullptr;
 }
+
+bool GameString_IsKnown(const char *const key)
+{
+    return GameString_Get(key) != nullptr;
+}
