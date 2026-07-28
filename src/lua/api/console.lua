@@ -1,6 +1,8 @@
 local raw = trxc.console
 local api = trx.api
 
+require("trx.locale")
+
 -- trx.console.log.generic takes a trx.log.LogLevel, and the log module is what
 -- declares it.
 local LogLevel = trx.log.LogLevel
@@ -10,6 +12,10 @@ api.module("console", {
   description = "Module for interacting with the developer console.\n\n"
     .. "`trx.console.log` writes to the console overlay in-game, where `trx.log` writes only to "
     .. "the terminal and the log file.",
+})
+
+trx.locale.declare({
+  ["console/argparse/aliases"] = "Aliases: %s",
 })
 
 -- Renders any value for the console. Nested strings are quoted so a table reads

@@ -5,6 +5,16 @@
 --   /kill all    every hostile in the level
 --   /kill wolf   every creature matching an object name
 
+trx.locale.declare({
+  ["console/cmd/kill/all"] = "Poof! %d enemies gone!",
+  ["console/cmd/kill/all_fail"] = "Uh-oh, there are no enemies left to kill...",
+  ["console/cmd/kill/help"] = "Kills nearby enemies.",
+  ["console/cmd/kill/invalid_object"] = "Invalid object",
+  ["console/cmd/kill/nearest"] = "Bye-bye!",
+  ["console/cmd/kill/nearest_fail"] = "No enemy nearby...",
+  ["console/cmd/kill/object_not_found"] = "Object not found",
+})
+
 local WALL_L = trx.math.WALL_L
 
 -- What a name may reach: everything that fights, allies included, so

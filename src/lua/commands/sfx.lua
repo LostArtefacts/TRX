@@ -4,6 +4,14 @@
 --   /sfx        list the available sample ids
 --   /sfx 42     play a sample by id
 
+trx.locale.declare({
+  ["console/cmd/sfx/available"] = "Available sounds: %s",
+  ["console/cmd/sfx/help"] = "Plays a sound effect with the given id.",
+  ["console/cmd/sfx/id_help"] = "play the sample with this id",
+  ["console/cmd/sfx/invalid"] = "Invalid sound: %d",
+  ["console/cmd/sfx/playing"] = "Playing sound %d",
+})
+
 local function available_ids()
   local ids = {}
   for id in pairs(trx.sound.samples) do

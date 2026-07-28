@@ -7,6 +7,13 @@
 --   /debug triggers     toggle one, matched by name
 --   /debug triggers on  and force it on or off
 
+trx.locale.declare({
+  ["console/cmd/debug/help"] = "Toggles visual debug information.",
+  ["console/cmd/debug/option_get"] = "%s is currently set to %s",
+  ["console/cmd/debug/option_set"] = "%s changed to %s",
+  ["console/cmd/debug/unknown_option"] = "Unknown option: %s",
+})
+
 -- The overlays this command reaches, each a boolean config option. The console
 -- shows a key with dashes, not underscores.
 local KEYS = {

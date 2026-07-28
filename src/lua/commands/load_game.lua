@@ -7,6 +7,15 @@
 --   /ql           the most recent quick save
 --   /ql 2         the second quick save
 
+trx.locale.declare({
+  ["console/cmd/load/fail_invalid_slot"] = "Invalid save slot %d",
+  ["console/cmd/load/fail_unavailable_slot"] = "Save slot %d is not available",
+  ["console/cmd/load/help"] = "Loads game from the given save slot or from a quick save.",
+  ["console/cmd/load/quick_success"] = "Quick-loaded slot %d",
+  ["console/cmd/load/slot_help"] = "a slot number, q or quick for the most recent quick save, q2 for the second",
+  ["console/cmd/load/success"] = "Loaded game from save slot %d",
+})
+
 local R = trx.console.Result
 local Pool = trx.savegame.Pool
 

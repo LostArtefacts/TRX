@@ -3,6 +3,10 @@
 -- Usages:
 --   /cls
 
+trx.locale.declare({
+  ["console/cmd/clear/help"] = "Clears visible console logs.",
+})
+
 local function run()
   trx.console.clear()
   return trx.console.Result.OK

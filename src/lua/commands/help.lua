@@ -4,6 +4,12 @@
 --   /help          list every command that carries help
 --   /help fly      the help for one, matched by name or alias
 
+trx.locale.declare({
+  ["console/cmd/help/help"] = "Shows help for all commands or detailed help for one.",
+  ["console/cmd/help/list"] = "Available commands:",
+  ["console/cmd/help/unknown_command"] = "Unknown command: %s",
+})
+
 -- The commands that carry help, best listed and completed by name.
 local function documented()
   local out = {}

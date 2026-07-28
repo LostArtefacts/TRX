@@ -6,6 +6,21 @@
 --   /music stop    stop all music
 --   /music 5       play track 5
 
+trx.locale.declare({
+  ["console/cmd/music/available_tracks"] = "Available music tracks: %s",
+  ["console/cmd/music/current"] = "Current track: %d",
+  ["console/cmd/music/current_none"] = "Current track: none",
+  ["console/cmd/music/deferred_ambient"] = "Deferred ambient: %d",
+  ["console/cmd/music/help"] = "Shows the current music state, stops all music, or plays a music track with the given id.",
+  ["console/cmd/music/id_help"] = "play the track with this id",
+  ["console/cmd/music/invalid_track"] = "Invalid music track",
+  ["console/cmd/music/overlay"] = "Overlay track(s): %s",
+  ["console/cmd/music/status_help"] = "report what is playing",
+  ["console/cmd/music/stop_help"] = "stop all music",
+  ["console/cmd/music/stopped"] = "Music stopped",
+  ["console/cmd/music/track"] = "Playing music track %d",
+})
+
 local function available_ids()
   local ids = {}
   for id in pairs(trx.music.tracks) do

@@ -11,23 +11,26 @@ end)
 
 test("an unknown option reports as unknown", function()
   assert(set("nonsense") == trx.console.Result.FAILURE)
-  assert(fake.calls().last_message == "console/cmd/set/unknown_option")
+  assert(fake.calls().last_message == "Unknown option: nonsense")
 end)
 
 test("a name that could be several options reports them", function()
   assert(set("visuals") == trx.console.Result.FAILURE)
-  assert(fake.calls().last_message == "console/cmd/set/ambiguous_3")
+  assert(
+    fake.calls().last_message
+      == "Ambiguous input: visuals.fov, visuals.brightness, ..."
+  )
 end)
 
 test("a bare name reports the current value", function()
   assert(set("fov") == trx.console.Result.OK)
-  assert(fake.calls().last_message == "console/cmd/set/option_get")
+  assert(fake.calls().last_message == "visuals.fov is currently set to 65")
 end)
 
 test("a name and a value change the setting", function()
   assert(set("fov 90") == trx.console.Result.OK)
   assert(trx.config.get("visuals.fov") == 90, "the value did not land")
-  assert(fake.calls().last_message == "console/cmd/set/option_set")
+  assert(fake.calls().last_message == "visuals.fov changed to 90")
 end)
 
 test("a dash puts the default back", function()
@@ -40,7 +43,7 @@ test("a value that will not parse lists what is valid", function()
   assert(set("fov wide") == trx.console.Result.FAILURE)
   assert(trx.config.get("visuals.fov") == 65, "the option must be left alone")
   -- The invalid-value error logs first; the valid values line follows it.
-  assert(fake.calls().last_message == "console/cmd/set/valid_values")
+  assert(fake.calls().last_message == "Valid values: [integer]")
 end)
 
 test("an enum value typed with dashes still lands", function()
@@ -52,7 +55,10 @@ test("a held setting reports as enforced, and -f writes through", function()
   trx.config.override("visuals.fov", 100)
 
   assert(set("fov 90") == trx.console.Result.FAILURE)
-  assert(fake.calls().last_message == "console/cmd/set/option_enforced")
+  assert(
+    fake.calls().last_message
+      == "visuals.fov is enforced and cannot be changed"
+  )
 
   assert(set("-f fov 90") == trx.console.Result.OK)
   assert(trx.config.get("visuals.fov") == 90, "the forced write did not land")

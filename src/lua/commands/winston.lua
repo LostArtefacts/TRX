@@ -1,5 +1,12 @@
 -- Summons Winston next to Lara, teleporting him if he is already about.
 
+trx.locale.declare({
+  ["console/cmd/winston/dead"] = "Your butler is dead. You monster!",
+  ["console/cmd/winston/spawn_failed"] = "Failed to summon Winston",
+  ["console/cmd/winston/spawned"] = "Summoned Winston near Lara",
+  ["console/cmd/winston/teleported"] = "Summoned Winston near Lara",
+})
+
 local STEP_L = trx.math.WALL_L // 4
 
 -- Both butlers: army Winston counts as Winston for every purpose this

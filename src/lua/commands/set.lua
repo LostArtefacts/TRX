@@ -6,6 +6,18 @@
 --   /set fov -        put the default back
 --   /set -f fov 90    write through a setting the game flow enforces
 
+trx.locale.declare({
+  ["console/cmd/set/ambiguous_2"] = "Ambiguous input: %s and %s",
+  ["console/cmd/set/ambiguous_3"] = "Ambiguous input: %s, %s, ...",
+  ["console/cmd/set/bad_invocation"] = "Invalid invocation: %s",
+  ["console/cmd/set/help"] = "Displays or updates the given configuration setting. Use --force to change level-enforced settings for the current session.",
+  ["console/cmd/set/option_enforced"] = "%s is enforced and cannot be changed",
+  ["console/cmd/set/option_get"] = "%s is currently set to %s",
+  ["console/cmd/set/option_set"] = "%s changed to %s",
+  ["console/cmd/set/unknown_option"] = "Unknown option: %s",
+  ["console/cmd/set/valid_values"] = "Valid values: %s",
+})
+
 -- The console shows keys and enum values with dashes, not underscores.
 local function display(text)
   return (text:gsub("_", "-"))

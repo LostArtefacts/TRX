@@ -4,6 +4,12 @@
 --   /hp        report her current health
 --   /hp 500    set it
 
+trx.locale.declare({
+  ["console/cmd/hp/get"] = "Current Lara's health: %d",
+  ["console/cmd/hp/help"] = "Sets Lara's health to the specified value.",
+  ["console/cmd/hp/set"] = "Lara's health set to %d",
+})
+
 trx.console.register({
   name = "hp",
   help = "console/cmd/hp/help",

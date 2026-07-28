@@ -6,6 +6,15 @@
 --   /save q2      the second quick save slot
 --   /qs           the next quick save slot
 
+trx.locale.declare({
+  ["console/cmd/save/fail_invalid_slot"] = "Invalid save slot %d",
+  ["console/cmd/save/help"] = "Saves game to the given save slot or to the next quick save slot.",
+  ["console/cmd/save/quick_fail_no_slots"] = "No quick save slots are configured",
+  ["console/cmd/save/quick_success"] = "Quick-saved",
+  ["console/cmd/save/slot_help"] = "a slot number, q or quick for the next quick save, q2 for the second",
+  ["console/cmd/save/success"] = "Saved game to save slot %d",
+})
+
 local R = trx.console.Result
 local Pool = trx.savegame.Pool
 

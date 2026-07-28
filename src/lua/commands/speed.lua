@@ -4,6 +4,12 @@
 --   /speed        report the current speed
 --   /speed 2      set it
 
+trx.locale.declare({
+  ["console/cmd/speed/get"] = "Current speed: %d",
+  ["console/cmd/speed/help"] = "Changes the game's speed.",
+  ["console/cmd/speed/set"] = "Speed set to %d",
+})
+
 local KEY = "gameplay.turbo_speed"
 
 trx.console.register({

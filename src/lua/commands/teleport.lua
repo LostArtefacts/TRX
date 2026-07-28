@@ -8,6 +8,19 @@
 --   /tp wolf              to the nearest wolf, then to the next one
 --   /tp enemy             to the nearest hostile, and so through the level
 
+trx.locale.declare({
+  ["console/cmd/teleport/invalid_room"] = "Invalid room: %d. Valid rooms are 0-%d",
+  ["console/cmd/teleport/item"] = "Teleported to item: %d",
+  ["console/cmd/teleport/item_fail"] = "Failed to teleport to item: %d",
+  ["console/cmd/teleport/object"] = "Teleported to object: %s",
+  ["console/cmd/teleport/object_fail"] = "Failed to teleport to object: %s",
+  ["console/cmd/teleport/pos"] = "Teleported to position: %.3f %.3f %.3f",
+  ["console/cmd/teleport/pos_fail"] = "Failed to teleport to position: %.3f %.3f %.3f",
+  ["console/cmd/teleport/room"] = "Teleported to room: %d",
+  ["console/cmd/teleport/room_fail"] = "Failed to teleport to room: %d",
+  ["console/cmd/tp/help"] = "Teleports Lara to a given position or room number.",
+})
+
 local WALL_L = trx.math.WALL_L
 local HALF_TURN = 2 * trx.math.DEG_90
 

@@ -10,6 +10,15 @@
 -- added to the engine shows up in the listing and the completion without this
 -- file being touched.
 
+trx.locale.declare({
+  ["console/cmd/rule/ambiguous"] = "Ambiguous input: %s and %s",
+  ["console/cmd/rule/bad_invocation"] = "Invalid invocation: %s",
+  ["console/cmd/rule/help"] = "Displays or updates the given gameplay rule. Use - as the value to put its default back.",
+  ["console/cmd/rule/rule_get"] = "%s is currently set to %s",
+  ["console/cmd/rule/rule_set"] = "%s changed to %s",
+  ["console/cmd/rule/unknown_rule"] = "Unknown rule: %s",
+})
+
 -- The console shows keys with dashes, not underscores.
 local function display(text)
   return (text:gsub("_", "-"))

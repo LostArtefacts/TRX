@@ -6,6 +6,13 @@
 --   /play caves    by name, fuzzy-matched
 --   /play gym      Lara's home
 
+trx.locale.declare({
+  ["console/cmd/play_level/help"] = "Plays a level with the given name or number.",
+  ["console/cmd/play_level/invalid"] = "Invalid level",
+  ["console/cmd/play_level/level_help"] = "a level number, name or gym",
+  ["console/cmd/play_level/loading"] = "Loading %s",
+})
+
 local function start_gym()
   local gym = trx.game.gym
   if gym == nil then

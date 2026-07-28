@@ -6,6 +6,16 @@
 --   /vsync on   change it
 --   /vsync -    put the default back
 
+trx.locale.declare({
+  ["console/cmd/braid/help"] = "Toggles Lara's braid.",
+  ["console/cmd/cheats/help"] = "Toggles in-game cheats on or off.",
+  ["console/cmd/fps/help"] = "Changes the FPS value.",
+  ["console/cmd/lighting/help"] = "Toggles lighting system.",
+  ["console/cmd/textures/help"] = "Toggles textures.",
+  ["console/cmd/vsync/help"] = "Toggles vertical sync.",
+  ["console/cmd/wireframe/help"] = "Toggles wireframe rendering.",
+})
+
 local COMMANDS = {
   {
     name = "braid",

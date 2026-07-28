@@ -15,23 +15,26 @@ end)
 
 test("an unknown rule reports as unknown", function()
   assert(rule("nonsense") == trx.console.Result.FAILURE)
-  assert(fake.calls().last_message == "console/cmd/rule/unknown_rule")
+  assert(fake.calls().last_message == "Unknown rule: nonsense")
 end)
 
 test("a name that could be several rules reports them", function()
   assert(rule("exposure.drain") == trx.console.Result.FAILURE)
-  assert(fake.calls().last_message == "console/cmd/rule/ambiguous")
+  assert(
+    fake.calls().last_message
+      == "Ambiguous input: exposure.drain-land and exposure.drain-water"
+  )
 end)
 
 test("a bare name reports the current value", function()
   assert(rule("exposure.damage") == trx.console.Result.OK)
-  assert(fake.calls().last_message == "console/cmd/rule/rule_get")
+  assert(fake.calls().last_message == "exposure.damage is currently set to 10")
 end)
 
 test("a name and a value change the rule", function()
   assert(rule("exposure.damage 25") == trx.console.Result.OK)
   assert(trx.rules.exposure.damage == 25, "the value did not land")
-  assert(fake.calls().last_message == "console/cmd/rule/rule_set")
+  assert(fake.calls().last_message == "exposure.damage changed to 25")
 end)
 
 test("a dash puts the default back", function()
@@ -43,7 +46,7 @@ end)
 test("a value that will not parse leaves the rule alone", function()
   assert(rule("exposure.damage plenty") == trx.console.Result.FAILURE)
   assert(trx.rules.exposure.damage == 10, "the rule must be left alone")
-  assert(fake.calls().last_message == "console/cmd/rule/bad_invocation")
+  assert(fake.calls().last_message == "Invalid invocation: plenty")
 end)
 
 test("a rule reads back the way the console shows it", function()

@@ -24,7 +24,7 @@ int main(void)
 {
     const LUA_SURFACE_TEST test = {
         .module = "console",
-        .deps = { "log", "strings", "argparse", "locale", nullptr },
+        .deps = { "log", "strings", "locale", "argparse", nullptr },
         .tests = "console",
         .push_fake = FakeConsole_PushLua,
         .fake_reset = M_FakeReset,

@@ -5,6 +5,12 @@
 --   /restless on     force it on
 --   /restless off    force it off
 
+trx.locale.declare({
+  ["console/cmd/inf_sprint/help"] = "Toggles infinite sprint.",
+  ["console/cmd/inf_sprint/off"] = "Lara can no longer sprint forever",
+  ["console/cmd/inf_sprint/on"] = "Lara can now sprint forever",
+})
+
 local KEY = "debug.enable_endless_sprint"
 
 trx.console.register({

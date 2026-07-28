@@ -1,5 +1,14 @@
 -- Reports which level Lara is in and where she stands.
 
+trx.locale.declare({
+  ["console/cmd/pos/help"] = "Shows Lara's position.",
+  ["console/cmd/pos/lara_missing"] = "Lara not present",
+  ["console/cmd/pos/lara_pos_fmt"] = "Room: %d\nPosition: %.3f, %.3f, %.3f\nRotation: %.3f, %.3f, %.3f",
+  ["console/cmd/pos/level_fmt"] = "Level %d",
+  ["console/cmd/pos/level_fmt_cutscene"] = "Cutscene %d",
+  ["console/cmd/pos/level_fmt_demo"] = "Demo %d",
+})
+
 -- A full turn in the engine's angle units.
 local DEG_360 = trx.math.DEG_90 * 4
 
