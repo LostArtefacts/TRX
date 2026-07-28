@@ -13,20 +13,25 @@ void Completion_Init(COMPLETION *const c)
 
 void Completion_Clear(COMPLETION *const c)
 {
+    c->start = 0;
+    c->end = 0;
+    if (c->suggestions == nullptr) {
+        return;
+    }
     for (int32_t i = 0; i < c->suggestions->count; i++) {
         SUGGESTION *const s = Vector_Get(c->suggestions, i);
         Memory_Free(s->text);
     }
     Vector_Clear(c->suggestions);
-    c->start = 0;
-    c->end = 0;
 }
 
 void Completion_Free(COMPLETION *const c)
 {
     Completion_Clear(c);
-    Vector_Free(c->suggestions);
-    c->suggestions = nullptr;
+    if (c->suggestions != nullptr) {
+        Vector_Free(c->suggestions);
+        c->suggestions = nullptr;
+    }
 }
 
 void Completion_Add(COMPLETION *const c, const char *const text)
