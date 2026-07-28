@@ -1,6 +1,5 @@
 #include <trx/core/json/util/read_io.h>
 #include <trx/core/json/util/write_io.h>
-#include <trx/core/log.h>
 #include <trx/game/creature.h>
 #include <trx/game/lara.h>
 #include <trx/game/objects.h>
@@ -20,23 +19,29 @@ typedef struct {
     int32_t death_count;
 } M_PRIV;
 
-static void M_InitialiseAnchor(ITEM *const item)
+static const char *M_CheckAnchorRoom(const TRX_VALUE *const in)
+{
+    // -1 leaves her in the room she is placed in, which is not known yet.
+    return in->as_int >= Room_GetCount() ? "no such room to anchor to"
+                                         : nullptr;
+}
+
+// She mirrors Lara about the centre of a room, which is worked out as the room
+// is named rather than each time she moves.
+static void M_SetAnchorRoom(ITEM *const item, const TRX_VALUE *const in)
 {
     M_PRIV *const p = item->priv;
-    p->anchored = false;
-
+    p->anchor_room = in->as_int;
     // The room she is placed in, unless the level names another.
-    const int32_t room_num =
-        p->anchor_room >= 0 ? p->anchor_room : item->room_num;
-    if (room_num >= Room_GetCount()) {
-        LOG_ERROR("Could not anchor Bacon Lara to room %d", room_num);
+    const int32_t room_num = in->as_int >= 0 ? in->as_int : item->room_num;
+    p->anchored = room_num < Room_GetCount();
+    if (!p->anchored) {
         return;
     }
 
     const ROOM *const room = Room_Get(room_num);
     p->anchor_x = room->pos.x + room->size.x * (WALL_L >> 1);
     p->anchor_z = room->pos.z + room->size.z * (WALL_L >> 1);
-    p->anchored = true;
 }
 
 static void M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
@@ -62,7 +67,6 @@ static void M_Initialise(const int16_t item_num)
     bacon_obj->anim_idx = lara_obj->anim_idx;
     bacon_obj->frame_base = lara_obj->frame_base;
     p->status = false;
-    M_InitialiseAnchor(item);
 }
 
 static void M_SyncToLara(ITEM *const item, const ITEM *const lara_item)
@@ -219,11 +223,9 @@ static void M_Setup(OBJECT *const obj)
     obj->save_flags = true;
     obj->save_anim = true;
     OBJECT_PROPERTIES(
-        obj,
-        OBJECT_PROPERTY_STORED(
-            "max_hit_points", LARA_MAX_HITPOINTS, "Maximum hit points."),
-        OBJECT_PROPERTY(
-            M_PRIV, anchor_room, -1,
+        obj, ITEM_PROPERTY_MAX_HIT_POINTS(LARA_MAX_HITPOINTS),
+        OBJECT_PROPERTY_SETTER(
+            M_PRIV, anchor_room, -1, M_CheckAnchorRoom, M_SetAnchorRoom,
             "Room whose center Bacon Lara mirrors Lara's movement about. "
             "-1 uses the room she is placed in. Value range: minimum -1."));
 }
