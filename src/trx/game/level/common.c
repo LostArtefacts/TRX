@@ -88,7 +88,10 @@ bool Level_Initialise(
 
     Level_Unload();
 
-    LUA_FireEventInt32(LUA_EVENT_BEFORE_LEVEL_FILE, level->num);
+    // After the unload, so what the outgoing level torn down reaches the script
+    // that set it up, and here rather than in the sequencer, so a level loaded
+    // by any other path - the title screen among them - still runs its own.
+    LUA_RunLevelScript(level);
 
     Level_Pipeline_Load(level);
 
