@@ -23,7 +23,7 @@
         {
             "path": "%direct_level%",
             "music_track": -1,
-            "lara_outfit": "tr3_classic",
+            "lara_outfit": "tr4_classic",
             "sequence": [
                 {"type": "loop_game"},
                 {"type": "level_stats"},
