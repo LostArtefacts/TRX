@@ -16,6 +16,10 @@ void Room_RegisterTriggerHandler(
         TRIGGER_STATUS *status));
 bool Room_TestTriggers(const ITEM *item);
 bool Room_TestSectorTrigger(const ITEM *item, const SECTOR *sector);
+// As Room_TestTriggers, with the heaviness stated rather than derived from the
+// item. The flyby camera needs it: on the title level it tests the same point
+// both ways.
+bool Room_TestTriggersEx(const ITEM *item, bool is_heavy);
 bool Room_IsAntiTrigger(TRIGGER_TYPE type);
 
 #define REGISTER_TRIGGER_HANDLER(cmd_type, handle_func)                        \
