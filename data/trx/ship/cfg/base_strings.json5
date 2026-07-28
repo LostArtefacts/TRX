@@ -3485,6 +3485,12 @@
                 "Underwater Switch",
             ]
         },
+        "switch_type_uw_ceiling": {
+            "name": [
+                "Underwater Ceiling Lever",
+                "Underwater Ceiling Switch",
+            ]
+        },
         "switch_type_wheel": {
             "name": [
                 "Wheel Switch",

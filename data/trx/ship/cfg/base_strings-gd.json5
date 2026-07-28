@@ -3429,6 +3429,9 @@
                 "Suids fon-Uisge",
             ]
         },
+        "switch_type_uw_ceiling": {
+            "name": "Suids Mullaich fon-Uisge",
+        },
         "switch_type_wheel": {
             "name": "Suids Cuidhle",
         },

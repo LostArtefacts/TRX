@@ -46,6 +46,17 @@ static const OBJECT_BOUNDS m_SwitchBoundsUW = {
     },
 };
 
+static const OBJECT_BOUNDS m_SwitchBoundsUWCeiling = {
+    .shift = {
+        .min = { .x = -STEP_L, .y = -STEP_L * 5, .z = -STEP_L * 2, },
+        .max = { .x = +STEP_L, .y = -STEP_L * 2, .z = +0, },
+    },
+    .rot = {
+        .min = { .x = -80 * DEG_1, .y = -80 * DEG_1, .z = -80 * DEG_1, },
+        .max = { .x = +80 * DEG_1, .y = +80 * DEG_1, .z = +80 * DEG_1, },
+    },
+};
+
 static const OBJECT_BOUNDS m_SwitchBoundsJump = {
     .shift = {
         .min = { .x = -STEP_L / 2, .y = -STEP_L, .z = +STEP_L * 3 / 2, },
@@ -57,7 +68,16 @@ static const OBJECT_BOUNDS m_SwitchBoundsJump = {
     },
 };
 
-static const XYZ_32 m_SwitchUWPosition = { .x = 0, .y = 0, .z = 108 };
+static const XYZ_32 m_SwitchUWPosition = {
+    .x = 0,
+    .y = 0,
+    .z = 108,
+};
+static const XYZ_32 m_SwitchUWPositionCeiling = {
+    .x = 0,
+    .y = -736,
+    .z = -416,
+};
 
 static const M_SWITCH_POS m_SmallSwitchPosition = {
     .normal = { .x = 0, .y = 0, .z = 362 },
@@ -93,6 +113,11 @@ static const OBJECT_BOUNDS *M_Bounds(void)
 static const OBJECT_BOUNDS *M_BoundsUW(void)
 {
     return &m_SwitchBoundsUW;
+}
+
+static const OBJECT_BOUNDS *M_BoundsUWCeiling(void)
+{
+    return &m_SwitchBoundsUWCeiling;
 }
 
 static const OBJECT_BOUNDS *M_BoundsJump(void)
@@ -353,6 +378,56 @@ static void M_CollisionUW(
     Item_Animate(item);
 }
 
+static void M_CollisionUWCeiling(
+    const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
+{
+    ITEM *const item = Item_Get(item_num);
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    const OBJECT *const obj = Object_Get(item->object_id);
+
+    if (!g_Input.action || !Item_IsInactive(item)
+        || item->current_anim_state != SWITCH_STATE_ON
+        || (lara->water_status != LWS_UNDERWATER
+            && lara->water_status != LWS_CHEAT)
+        || lara->gun_status != LGS_ARMLESS
+        || lara_item->current_anim_state != LS(LS_TREAD)) {
+        return;
+    }
+
+    OBJECT_BOUNDS bounds = *obj->bounds_func();
+    XYZ_32 position = m_SwitchUWPositionCeiling;
+    if (Lara_TestPosition(item, &bounds)) {
+        if (!Lara_MovePosition(item, &position)) {
+            return;
+        }
+    } else {
+        SWAP(bounds.shift.min.z, bounds.shift.max.z);
+        bounds.shift.min.z *= -1;
+        bounds.shift.max.z *= -1;
+        position.z *= -1;
+        lara_item->rot.y -= DEG_180;
+        const bool flip_result = Lara_TestPosition(item, &bounds)
+            && Lara_MovePosition(item, &position);
+        lara_item->rot.y -= DEG_180;
+        if (!flip_result) {
+            return;
+        }
+    }
+
+    Item_SwitchToAnim(lara_item, LA(LA_UNDERWATER_PULLEY), 0);
+    lara_item->current_anim_state = LS(LS_SWITCH_ON);
+    lara_item->fall_speed = 0;
+    lara->gun_status = LGS_HANDS_BUSY;
+
+    if (item->current_anim_state == SWITCH_STATE_OFF) {
+        item->goal_anim_state = SWITCH_STATE_ON;
+    } else {
+        item->goal_anim_state = SWITCH_STATE_OFF;
+    }
+    Item_AddSimulated(item_num);
+    Item_Animate(item);
+}
+
 static void M_CollisionJump(
     const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
 {
@@ -414,6 +489,13 @@ static void M_SetupUW(OBJECT *const obj)
     M_SetupBase(obj);
     obj->collision_func = M_CollisionUW;
     obj->bounds_func = M_BoundsUW;
+}
+
+static void M_SetupUWCeiling(OBJECT *const obj)
+{
+    M_SetupBase(obj);
+    obj->collision_func = M_CollisionUWCeiling;
+    obj->bounds_func = M_BoundsUWCeiling;
 }
 
 static void M_SetupAirlock(OBJECT *const obj)
@@ -488,3 +570,4 @@ REGISTER_OBJECT(O_SWITCH_TYPE_SMALL, M_SetupCommon)
 REGISTER_OBJECT(O_SWITCH_TYPE_UW, M_SetupUW)
 REGISTER_OBJECT(O_SWITCH_TYPE_WHEEL, M_SetupCommon)
 REGISTER_OBJECT(O_SWITCH_TYPE_JUMP, M_SetupJump)
+REGISTER_OBJECT(O_SWITCH_TYPE_UW_CEILING, M_SetupUWCeiling)

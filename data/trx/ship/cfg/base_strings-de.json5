@@ -3424,6 +3424,9 @@
                 "Underwater Switch",
             ]
         },
+        "switch_type_uw_ceiling": {
+            "name": "\\{review}Unterwasser-Deckenhebel",
+        },
         "switch_type_wheel": {
             "name": "\\{review}Radswitch",
         },
