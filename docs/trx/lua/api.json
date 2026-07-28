@@ -130,7 +130,7 @@
     },
     {
       "bulk": true,
-      "count": 795,
+      "count": 798,
       "description": "Every object TRX has a name for.",
       "examples": [
         "if item.object_id == trx.catalog.objects.WOLF then ... end"
@@ -865,6 +865,9 @@
         "SWINGING_AXE",
         "SWITCH_TYPE_AIRLOCK",
         "SWITCH_TYPE_BUTTON",
+        "SWITCH_TYPE_CROWBAR",
+        "SWITCH_TYPE_FLOOR",
+        "SWITCH_TYPE_JUMP",
         "SWITCH_TYPE_NORMAL",
         "SWITCH_TYPE_SMALL",
         "SWITCH_TYPE_UW",
