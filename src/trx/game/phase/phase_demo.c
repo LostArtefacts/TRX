@@ -6,6 +6,7 @@
 #include <trx/game/game.h>
 #include <trx/game/interpolation.h>
 #include <trx/game/inventory_ring.h>
+#include <trx/game/lua/events.h>
 #include <trx/game/output/overlay.h>
 #include <trx/game/shell.h>
 
@@ -41,6 +42,14 @@ static PHASE_CONTROL M_Start(PHASE *const phase)
 
     p->state = STATE_RUN;
     Game_SetIsPlaying(true);
+
+    // The same event a played level fires: whatever the level is, this is the
+    // moment it starts running.
+    const LUA_EVENT_ARG args[] = {
+        { .type = LUA_EVENT_ARG_INT32, .value = { .i32 = p->level_num } },
+        { .type = LUA_EVENT_ARG_BOOL, .value = { .b = false } },
+    };
+    LUA_FireEventEx(LUA_EVENT_GAME_START, args, 2);
 
     return (PHASE_CONTROL) { .action = PHASE_ACTION_CONTINUE };
 }
