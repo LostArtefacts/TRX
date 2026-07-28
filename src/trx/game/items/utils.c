@@ -167,12 +167,17 @@ void Item_TakeDamage(
         Stats_AddKill();
     }
 
-    const LUA_EVENT_ARG args[] = {
-        { .type = LUA_EVENT_ARG_INT32,
-          .value = { .i32 = Item_GetIndex(item) } },
-        { .type = LUA_EVENT_ARG_INT32, .value = { .i32 = damage } },
-    };
-    LUA_FireEventEx(LUA_EVENT_HIT, args, 2);
+    // A kill deals an item whatever it has left, which is nothing once it is
+    // already down, and Lara's death paths leave her below zero. Neither is a
+    // hit worth reporting.
+    if (damage > 0) {
+        const LUA_EVENT_ARG args[] = {
+            { .type = LUA_EVENT_ARG_INT32,
+              .value = { .i32 = Item_GetIndex(item) } },
+            { .type = LUA_EVENT_ARG_INT32, .value = { .i32 = damage } },
+        };
+        LUA_FireEventEx(LUA_EVENT_HIT, args, 2);
+    }
     if (died) {
         LUA_FireEventInt32(LUA_EVENT_KILL, Item_GetIndex(item));
     }
