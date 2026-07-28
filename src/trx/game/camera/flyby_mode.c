@@ -320,6 +320,9 @@ bool Camera_Flybymode_Cancel(void)
 void Camera_FlybyMode_Reset(void)
 {
     m_CurrentSequence = M_NO_SEQUENCE;
+    // Left standing, this would send the next update down the hand-back path
+    // and put the camera on Lara, even though no sequence is running.
+    m_State.flags.pending_trigger_check = false;
 }
 
 void Camera_FlybyMode_Deactivate(void)
