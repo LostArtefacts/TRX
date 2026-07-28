@@ -88,6 +88,7 @@
 - added crowbar switches
 - added jump switches
 - added pulley switches, with properties to configure the number of required pulls, and whether or not they are single use
+- added underwater ceiling switches
 - added Lara catching fire, from fires and other hazards; she stays on fire across level transitions
 - added an option to let fires and other dynamic lights illuminate static meshes (Graphic Options → Visuals → Static mesh lighting)
 - added ricochets, so that shots that hit walls and other hard surfaces throw out sparks and leave a puff of smoke

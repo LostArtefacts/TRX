@@ -3409,6 +3409,9 @@
                 "Podwodny przełącznik",
             ]
         },
+        "switch_type_uw_ceiling": {
+            "name": "\\{review}Podwodna dźwignia sufitowa",
+        },
         "switch_type_wheel": {
             "name": "Koło do obracania",
         },

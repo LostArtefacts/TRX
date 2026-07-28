@@ -3457,6 +3457,9 @@
                 "Interruttore Subacqueo",
             ]
         },
+        "switch_type_uw_ceiling": {
+            "name": "\\{review}Leva subacquea a soffitto",
+        },
         "switch_type_wheel": {
             "name": [
                 "Interruttore Rotante",

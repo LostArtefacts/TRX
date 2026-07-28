@@ -3418,6 +3418,9 @@
                 "\\{review}Interrupteur sous-marin",
             ]
         },
+        "switch_type_uw_ceiling": {
+            "name": "\\{review}Levier de plafond sous-marin",
+        },
         "switch_type_wheel": {
             "name": "\\{review}Interrupteur à Roue",
         },
