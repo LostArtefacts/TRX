@@ -18,7 +18,7 @@ typedef struct {
     bool is_locked;
     bool is_single_use;
     int32_t required_pulls;
-    int32_t remaining_pulls;
+    int32_t pulls_done;
 } M_PRIV;
 
 static const OBJECT_BOUNDS m_Bounds = {
@@ -34,12 +34,19 @@ static const OBJECT_BOUNDS m_Bounds = {
 
 static const XYZ_32 m_Position = { .x = 0, .y = 0, .z = -148 };
 
+// What is left to pull. A requirement raised mid-pull asks for the difference;
+// one lowered past what has already been done leaves nothing to do.
+static int32_t M_RemainingPulls(const M_PRIV *const p)
+{
+    return MAX(0, p->required_pulls - p->pulls_done);
+}
+
 static void M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
 {
     M_PRIV *const p = item->priv;
     JSON_SHOULD(JSON_READ(io, "is_on", &p->is_on));
     JSON_SHOULD(JSON_READ(io, "is_locked", &p->is_locked));
-    JSON_SHOULD(JSON_READ(io, "remaining_pulls", &p->remaining_pulls));
+    JSON_SHOULD(JSON_READ(io, "pulls_done", &p->pulls_done));
 }
 
 static void M_SavePriv(const ITEM *const item, JSON_WRITE_IO *const io)
@@ -47,7 +54,7 @@ static void M_SavePriv(const ITEM *const item, JSON_WRITE_IO *const io)
     const M_PRIV *const p = item->priv;
     JSONW_WRITE(io, "is_on", p->is_on);
     JSONW_WRITE(io, "is_locked", p->is_locked);
-    JSONW_WRITE(io, "remaining_pulls", p->remaining_pulls);
+    JSONW_WRITE(io, "pulls_done", p->pulls_done);
 }
 
 // Fewer pulls than the minimum would leave the pulley unusable.
@@ -62,7 +69,6 @@ static void M_Initialise(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
     M_PRIV *const p = item->priv;
-    p->remaining_pulls = p->required_pulls;
 
     // The visibility initialisation flag is temporarily used to indicate that
     // the pulley cannot be operated until later events take place.
@@ -77,7 +83,7 @@ static void M_ControlWithLara(ITEM *const item)
 {
     ITEM *const lara_item = Lara_GetItem();
     M_PRIV *const p = item->priv;
-    if (g_Input.action && p->remaining_pulls != 0) {
+    if (g_Input.action && M_RemainingPulls(p) != 0) {
         lara_item->goal_anim_state = LS(LS_PULLEY);
     } else {
         lara_item->goal_anim_state = LS(LS_STOP);
@@ -98,7 +104,7 @@ static void M_ControlWithLara(ITEM *const item)
         return;
     }
 
-    if (p->remaining_pulls == 0 || p->is_locked) {
+    if (M_RemainingPulls(p) == 0 || p->is_locked) {
         return;
     }
 
@@ -106,14 +112,15 @@ static void M_ControlWithLara(ITEM *const item)
         return;
     }
 
-    p->remaining_pulls--;
-    if (p->remaining_pulls == 0) {
+    p->pulls_done++;
+    if (M_RemainingPulls(p) == 0) {
         if (p->is_single_use) {
             item->trigger.spent = true;
         } else {
             // Potentially multiple pulls to activate, but one to deactivate.
+            // Turning it back off takes a single pull.
             p->is_on = !p->is_on;
-            p->remaining_pulls = p->is_on ? M_MIN_PULLS : p->required_pulls;
+            p->pulls_done = p->is_on ? p->required_pulls - M_MIN_PULLS : 0;
         }
         Item_SetFinished(item, true);
     }
