@@ -3396,6 +3396,9 @@
                 "Przełącznik",
             ]
         },
+        "switch_type_pulley": {
+            "name": "\\{review}Przełącznik pociągany",
+        },
         "switch_type_small": {
             "name": "Mały przełącznik",
         },

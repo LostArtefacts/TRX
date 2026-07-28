@@ -3417,6 +3417,9 @@
                 "Suids",
             ]
         },
+        "switch_type_pulley": {
+            "name": "Suids Tarraing",
+        },
         "switch_type_small": {
             "name": "Suids Beag",
         },

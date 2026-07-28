@@ -3406,6 +3406,9 @@
                 "\\{review}Interrupteur",
             ]
         },
+        "switch_type_pulley": {
+            "name": "\\{review}Interrupteur à tirer",
+        },
         "switch_type_small": {
             "name": "\\{review}Petit Interrupteur",
         },

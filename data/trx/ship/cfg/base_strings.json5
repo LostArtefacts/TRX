@@ -3473,6 +3473,9 @@
                 "Switch",
             ]
         },
+        "switch_type_pulley": {
+            "name": "Pulley Switch",
+        },
         "switch_type_small": {
             "name": "Small Switch",
         },

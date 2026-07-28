@@ -707,6 +707,15 @@ static void M_UseKey(ITEM *const item, COLL_INFO *const coll)
     g_Camera.target_distance = M_CAM_USE_KEY_DISTANCE;
 }
 
+static void M_UsePulley(ITEM *const item, COLL_INFO *const coll)
+{
+    M_Default(item, coll);
+    if (Item_TestAnimEqual(item, LA(LA_PULLEY_UNGRAB))) {
+        LARA_INFO *const lara = Lara_GetLaraInfo();
+        lara->interact_target.item_num = NO_ITEM;
+    }
+}
+
 static void M_Special(ITEM *const item, COLL_INFO *const coll)
 {
     ITEM *const target_item = Lara_GetDeathCameraTarget();
@@ -822,6 +831,7 @@ REGISTER_LARA_STATE(LS_SWITCH_ON,     M_SwitchOn)
 REGISTER_LARA_STATE(LS_SWITCH_OFF,    M_SwitchOn)
 REGISTER_LARA_STATE(LS_USE_KEY,       M_UseKey)
 REGISTER_LARA_STATE(LS_USE_PUZZLE,    M_UseKey)
+REGISTER_LARA_STATE(LS_PULLEY,        M_UsePulley)
 REGISTER_LARA_STATE(LS_SPECIAL,       M_Special)
 REGISTER_LARA_STATE(LS_LIFT_DEATH,    M_Special)
 REGISTER_LARA_STATE(LS_WADE,          M_Wade)

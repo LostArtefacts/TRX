@@ -3416,6 +3416,9 @@
                 "Переключатель",
             ]
         },
+        "switch_type_pulley": {
+            "name": "\\{review}Выключатель с цепью",
+        },
         "switch_type_small": {
             "name": "\\{review}Маленький выключатель",
         },
