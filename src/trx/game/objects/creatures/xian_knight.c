@@ -40,20 +40,14 @@ typedef enum {
     M_STATE_DEATH,
 } M_STATE;
 
+typedef struct {
+    int32_t damage;
+} M_PRIV;
+
 static const BITE m_XianKnightSword = {
     .pos = { .x = 0, .y = 37, .z = 550 },
     .mesh_num = 15,
 };
-
-static int32_t M_GetDamage(const ITEM *const item)
-{
-    TRX_VALUE damage = {};
-    if (ObjectProperty_GetItemValue(item, "damage", &damage)) {
-        return damage.as_int;
-    }
-
-    return M_HACK_DAMAGE;
-}
 
 static void M_Initialise(const int16_t item_num)
 {
@@ -87,6 +81,7 @@ static void M_Control(const int16_t item_num)
     }
 
     ITEM *const item = Item_Get(item_num);
+    const M_PRIV *const p = item->priv;
     CREATURE *const creature = item->creature_data;
 
     int16_t head = 0;
@@ -230,7 +225,7 @@ static void M_Control(const int16_t item_num)
             head = info.angle;
         }
         if (creature->flags == 0 && (item->touch_bits & M_TOUCH_BITS) != 0) {
-            Lara_TakeDamage(M_GetDamage(item), true);
+            Lara_TakeDamage(p->damage, true);
             Creature_Effect(item, &m_XianKnightSword, Spawn_Blood);
             creature->flags = 1;
         }
@@ -252,6 +247,7 @@ static void M_Setup(OBJECT *const obj)
         return;
     }
 
+    obj->priv_size = sizeof(M_PRIV);
     SOFT_ASSERT(
         Object_Get(O_XIAN_KNIGHT_STATUE)->loaded,
         "Xian swordsman statue object missing");
@@ -275,10 +271,10 @@ static void M_Setup(OBJECT *const obj)
     Object_GetBone(obj, 16)->rot.y = true;
     OBJECT_PROPERTIES(
         obj,
-        OBJECT_PROPERTY_INT(
+        OBJECT_PROPERTY_STORED(
             "max_hit_points", M_HIT_POINTS, "Maximum hit points."),
-        OBJECT_PROPERTY_INT(
-            "damage", M_HACK_DAMAGE, "Damage dealt by sword slashes."));
+        OBJECT_PROPERTY(
+            M_PRIV, damage, M_HACK_DAMAGE, "Damage dealt by sword slashes."));
 }
 
 REGISTER_OBJECT(O_XIAN_KNIGHT, M_Setup)

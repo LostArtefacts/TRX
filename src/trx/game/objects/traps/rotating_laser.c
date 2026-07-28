@@ -13,22 +13,13 @@
 #define M_DEFAULT_DAMAGE 25
 
 typedef struct {
+    int32_t damage;
     XYZ_32 origin;
     XYZ_32 target;
     int16_t direction;
     int16_t velocity;
     int16_t reverse_timer;
 } M_PRIV;
-
-static int32_t M_GetDamage(const ITEM *const item)
-{
-    TRX_VALUE damage = {};
-    if (ObjectProperty_GetItemValue(item, "damage", &damage)) {
-        return damage.as_int;
-    }
-
-    return M_DEFAULT_DAMAGE;
-}
 
 static void M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
 {
@@ -136,7 +127,7 @@ static void M_Control(const int16_t item_num)
 
     ITEM *const lara_item = Lara_GetItem();
     if (Item_TestBoundsCollide(item, lara_item, 64)) {
-        Lara_TakeDamage(M_GetDamage(item), false);
+        Lara_TakeDamage(p->damage, false);
         Spawn_BloodBathD(
             lara_item->pos.x, item->pos.y - (Random_GetControl() & 0xFF) - 32,
             lara_item->pos.z, (Random_GetControl() & 0x7F) + 128,
@@ -160,8 +151,8 @@ static void M_Setup(OBJECT *const obj)
     obj->save_anim = true;
     OBJECT_PROPERTIES(
         obj,
-        OBJECT_PROPERTY_INT(
-            "damage", M_DEFAULT_DAMAGE,
+        OBJECT_PROPERTY(
+            M_PRIV, damage, M_DEFAULT_DAMAGE,
             "Damage dealt while Lara is touching the rotating laser."));
 }
 

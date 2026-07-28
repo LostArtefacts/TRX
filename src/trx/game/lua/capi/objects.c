@@ -51,7 +51,7 @@ static bool M_GetPropertyValue(
     return ObjectProperty_GetObjectValue(self, name, out);
 }
 
-static bool M_SetPropertyValue(
+static const char *M_SetPropertyValue(
     void *const self, const char *const name, const TRX_VALUE value)
 {
     return ObjectProperty_SetObjectValueRaw(self, name, value);

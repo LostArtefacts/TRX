@@ -27,6 +27,11 @@
 #define M_F_PICKUP      12
 // clang-format on
 
+typedef struct {
+    int32_t damage;
+    int32_t jump_damage;
+} M_PRIV;
+
 static BITE m_MonkeyBite = {
     .pos = { 10, 10, 11 },
     .mesh_num = 13,
@@ -66,17 +71,6 @@ typedef enum {
     M_ANIM_DOWN_3 = 21,
     M_ANIM_DOWN_4 = 20,
 } M_ANIM;
-
-static int32_t M_GetDamage(
-    const ITEM *const item, const char *const key, const int32_t default_value)
-{
-    TRX_VALUE damage = {};
-    if (ObjectProperty_GetItemValue(item, key, &damage)) {
-        return damage.as_int;
-    }
-
-    return default_value;
-}
 
 static void M_Bite(ITEM *const item, ITEM *const enemy, const int32_t dmg)
 {
@@ -191,6 +185,7 @@ static void M_Control(const int16_t item_num)
     }
 
     ITEM *const item = Item_Get(item_num);
+    const M_PRIV *const p = item->priv;
     CREATURE *const creature = item->creature_data;
 
     ITEM *const lara_item = Lara_GetItem();
@@ -464,9 +459,7 @@ static void M_Control(const int16_t item_num)
             } else {
                 item->rot.y += M_WALK_TURN;
             }
-            M_Bite(
-                item, creature->enemy,
-                M_GetDamage(item, "damage", M_DAMAGE_NORMAL));
+            M_Bite(item, creature->enemy, p->damage);
             break;
 
 #pragma GCC diagnostic push
@@ -483,9 +476,7 @@ static void M_Control(const int16_t item_num)
             } else {
                 item->rot.y += M_WALK_TURN;
             }
-            M_Bite(
-                item, creature->enemy,
-                M_GetDamage(item, "damage", M_DAMAGE_NORMAL));
+            M_Bite(item, creature->enemy, p->damage);
 
             // OG mistake
             // break;
@@ -502,9 +493,7 @@ static void M_Control(const int16_t item_num)
             } else {
                 item->rot.y += M_WALK_TURN;
             }
-            M_Bite(
-                item, creature->enemy,
-                M_GetDamage(item, "jump_damage", M_DAMAGE_JUMP));
+            M_Bite(item, creature->enemy, p->jump_damage);
             break;
 #pragma GCC diagnostic pop
         }
@@ -574,6 +563,7 @@ static void M_Setup(OBJECT *const obj)
         return;
     }
 
+    obj->priv_size = sizeof(M_PRIV);
     if (!Object_Get(O_MESH_SWAP_2)->loaded) {
         Shell_ExitSystem("Monkey requires O_MESH_SWAP_2 (pickups)");
     }
@@ -600,12 +590,12 @@ static void M_Setup(OBJECT *const obj)
     Object_GetBone(obj, 7)->rot.y = true;
     OBJECT_PROPERTIES(
         obj,
-        OBJECT_PROPERTY_INT(
+        OBJECT_PROPERTY_STORED(
             "max_hit_points", M_HIT_POINTS, "Maximum hit points."),
-        OBJECT_PROPERTY_INT(
-            "damage", M_DAMAGE_NORMAL, "Damage dealt by bite attacks."),
-        OBJECT_PROPERTY_INT(
-            "jump_damage", M_DAMAGE_JUMP,
+        OBJECT_PROPERTY(
+            M_PRIV, damage, M_DAMAGE_NORMAL, "Damage dealt by bite attacks."),
+        OBJECT_PROPERTY(
+            M_PRIV, jump_damage, M_DAMAGE_JUMP,
             "Damage dealt by the jumping bite attack."));
 }
 

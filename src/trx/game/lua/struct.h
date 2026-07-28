@@ -51,10 +51,12 @@ void *LUA_Struct_Deref(lua_State *L, LUA_STRUCT_REF *ref);
 // each type says how to reach its own.
 typedef struct {
     const TYPE_DESC *type;
-    // What an unknown property is called back to the script.
+    // What a property is called back to the script.
     const char *what;
     bool (*get)(const void *self, const char *name, TRX_VALUE *out);
-    bool (*set)(void *self, const char *name, TRX_VALUE value);
+    // Returns nullptr once the value is stored, or why it was refused - an
+    // unknown name, or a value the property will not take. As Field_Set.
+    const char *(*set)(void *self, const char *name, TRX_VALUE value);
     int32_t (*name_count)(const void *self);
     const char *(*name_at)(const void *self, int32_t idx);
 } LUA_PROPERTY_DESC;

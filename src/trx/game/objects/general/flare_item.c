@@ -402,7 +402,7 @@ static void M_Setup(OBJECT *const obj)
     obj->save_flags = true;
     OBJECT_PROPERTIES(
         obj,
-        OBJECT_PROPERTY_DOUBLE(
+        OBJECT_PROPERTY_STORED(
             "burn_time", M_DEFAULT_FLARE_TIME,
             "How long the flare burns for, in seconds."));
 

@@ -30,19 +30,13 @@ typedef enum {
     M_ANIM_DEATH = 14,
 } M_ANIM;
 
+typedef struct {
+    int32_t damage;
+} M_PRIV;
+
 static const CREATURE_GUN m_BaldyGun = {
     .muzzle = { .pos = { -20, 440, 20 }, .mesh_num = 9 },
 };
-
-static int32_t M_GetShotDamage(const ITEM *const item)
-{
-    TRX_VALUE damage = {};
-    if (ObjectProperty_GetItemValue(item, "damage", &damage)) {
-        return damage.as_int;
-    }
-
-    return M_DAMAGE;
-}
 
 static void M_Initialise(const int16_t item_num)
 {
@@ -67,6 +61,7 @@ static void M_Control(const int16_t item_num)
     }
 
     ITEM *const item = Item_Get(item_num);
+    const M_PRIV *const p = item->priv;
     CREATURE *const baldy = item->creature_data;
     int16_t head = 0;
     int16_t angle = 0;
@@ -144,8 +139,7 @@ static void M_Control(const int16_t item_num)
         case M_STATE_SHOOT:
             if (!baldy->flags) {
                 info.distance /= 2;
-                Creature_Shoot(
-                    item, &info, &m_BaldyGun, head, M_GetShotDamage(item));
+                Creature_Shoot(item, &info, &m_BaldyGun, head, p->damage);
                 baldy->flags = 1;
             }
             if (baldy->mood == MOOD_ESCAPE) {
@@ -165,6 +159,8 @@ static void M_Setup(OBJECT *const obj)
     if (!obj->loaded) {
         return;
     }
+
+    obj->priv_size = sizeof(M_PRIV);
     obj->initialise_func = M_Initialise;
     obj->handle_save_func = M_HandleSave;
     obj->control_func = M_Control;
@@ -182,10 +178,10 @@ static void M_Setup(OBJECT *const obj)
     Object_GetBone(obj, 0)->rot.y = true;
     OBJECT_PROPERTIES(
         obj,
-        OBJECT_PROPERTY_INT(
+        OBJECT_PROPERTY_STORED(
             "max_hit_points", M_HIT_POINTS, "Maximum hit points."),
-        OBJECT_PROPERTY_INT(
-            "damage", M_DAMAGE, "Damage dealt by Baldy's shot."));
+        OBJECT_PROPERTY(
+            M_PRIV, damage, M_DAMAGE, "Damage dealt by Baldy's shot."));
 }
 
 REGISTER_OBJECT(O_BALDY, M_Setup)

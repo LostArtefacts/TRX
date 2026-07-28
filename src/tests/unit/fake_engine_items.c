@@ -463,14 +463,14 @@ bool ObjectProperty_GetObjectValue(
     return true;
 }
 
-bool ObjectProperty_SetObjectValueRaw(
+const char *ObjectProperty_SetObjectValueRaw(
     OBJECT *const obj, const char *const name, const TRX_VALUE value)
 {
     if (obj == nullptr || strcmp(name, "max_hit_points") != 0) {
-        return false;
+        return "no such property";
     }
     m_ObjectHP[obj - m_Objects] = value.as_int;
-    return true;
+    return nullptr;
 }
 
 int32_t ObjectProperty_GetObjectNameCount(const OBJECT *const obj)
@@ -519,11 +519,11 @@ bool ObjectProperty_GetItemValue(
     return false;
 }
 
-bool ObjectProperty_SetItemValueRaw(
+const char *ObjectProperty_SetItemValueRaw(
     ITEM *const item, const char *const name, const TRX_VALUE value)
 {
     if (item == nullptr || strcmp(name, "max_hit_points") != 0) {
-        return false;
+        return "no such property";
     }
     const int16_t idx = Item_GetIndex(item);
     for (int32_t i = 0; i < FAKE_PROP_SLOTS; i++) {
@@ -535,10 +535,10 @@ bool ObjectProperty_SetItemValueRaw(
             if (value.type == TVT_S32) {
                 item->max_hit_points = value.as_int;
             }
-            return true;
+            return nullptr;
         }
     }
-    return false;
+    return "no room for another property";
 }
 
 int32_t ObjectProperty_GetItemNameCount(const ITEM *const item)

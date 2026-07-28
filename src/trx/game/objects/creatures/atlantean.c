@@ -56,21 +56,17 @@ typedef enum {
     // clang-format on
 } M_FLAG;
 
+typedef struct {
+    int32_t part_damage;
+    int32_t lunge_damage;
+    int32_t charge_damage;
+    int32_t punch_damage;
+} M_PRIV;
+
 static bool m_EnableExplosions = true;
 static const BITE m_Bite = { .pos = { -27, 98, 0 }, .mesh_num = 10 };
 static const BITE m_Rocket = { .pos = { 51, 213, 0 }, .mesh_num = 14 };
 static const BITE m_Shard = { .pos = { -35, 269, 0 }, .mesh_num = 9 };
-
-static int32_t M_GetDamage(
-    const ITEM *const item, const char *const key, const int32_t default_value)
-{
-    TRX_VALUE damage = {};
-    if (ObjectProperty_GetItemValue(item, key, &damage)) {
-        return damage.as_int;
-    }
-
-    return default_value;
-}
 
 static void M_InitialiseGround(const int16_t item_num)
 {
@@ -85,6 +81,7 @@ static void M_Control(const int16_t item_num)
     }
 
     ITEM *const item = Item_Get(item_num);
+    const M_PRIV *const p = item->priv;
     CREATURE *const creature = item->creature_data;
     int16_t head = 0;
     int16_t angle = 0;
@@ -92,9 +89,7 @@ static void M_Control(const int16_t item_num)
     if (item->hit_points <= 0) {
         Item_Shatter(
             item_num, -1,
-            m_EnableExplosions
-                ? M_GetDamage(item, "part_damage", M_PART_DAMAGE)
-                : -M_GetDamage(item, "part_damage", M_PART_DAMAGE));
+            m_EnableExplosions ? p->part_damage : -p->part_damage);
         Sound_Effect(SFX_ATLANTEAN_DEATH, &item->pos, SPM_NORMAL);
         LOT_DisableBaddieAI(item_num);
         Item_Destroy(item_num);
@@ -252,8 +247,7 @@ static void M_Control(const int16_t item_num)
         if (item->required_anim_state == M_STATE_EMPTY
             && (item->touch_bits & M_TOUCH_BITS) != 0) {
             Creature_Effect(item, &m_Bite, Spawn_Blood);
-            Lara_TakeDamage(
-                M_GetDamage(item, "lunge_damage", M_LUNGE_DAMAGE), true);
+            Lara_TakeDamage(p->lunge_damage, true);
             item->required_anim_state = M_STATE_STOP;
         }
         break;
@@ -262,8 +256,7 @@ static void M_Control(const int16_t item_num)
         if (item->required_anim_state == M_STATE_EMPTY
             && (item->touch_bits & M_TOUCH_BITS) != 0) {
             Creature_Effect(item, &m_Bite, Spawn_Blood);
-            Lara_TakeDamage(
-                M_GetDamage(item, "charge_damage", M_CHARGE_DAMAGE), true);
+            Lara_TakeDamage(p->charge_damage, true);
             item->required_anim_state = M_STATE_RUN;
         }
         break;
@@ -272,8 +265,7 @@ static void M_Control(const int16_t item_num)
         if (item->required_anim_state == M_STATE_EMPTY
             && (item->touch_bits & M_TOUCH_BITS) != 0) {
             Creature_Effect(item, &m_Bite, Spawn_Blood);
-            Lara_TakeDamage(
-                M_GetDamage(item, "punch_damage", M_PUNCH_DAMAGE), true);
+            Lara_TakeDamage(p->punch_damage, true);
             item->required_anim_state = M_STATE_STOP;
         }
         break;
@@ -332,21 +324,22 @@ static void M_Control(const int16_t item_num)
 
 static void M_SetupProperties(OBJECT *const obj)
 {
+    obj->priv_size = sizeof(M_PRIV);
     OBJECT_PROPERTIES(
         obj,
-        OBJECT_PROPERTY_INT(
+        OBJECT_PROPERTY_STORED(
             "max_hit_points", M_HIT_POINTS, "Maximum hit points."),
-        OBJECT_PROPERTY_INT(
-            "charge_damage", M_CHARGE_DAMAGE,
+        OBJECT_PROPERTY(
+            M_PRIV, charge_damage, M_CHARGE_DAMAGE,
             "Damage dealt by the atlantean's charge attack."),
-        OBJECT_PROPERTY_INT(
-            "lunge_damage", M_LUNGE_DAMAGE,
+        OBJECT_PROPERTY(
+            M_PRIV, lunge_damage, M_LUNGE_DAMAGE,
             "Damage dealt by the atlantean's lunge attack."),
-        OBJECT_PROPERTY_INT(
-            "punch_damage", M_PUNCH_DAMAGE,
+        OBJECT_PROPERTY(
+            M_PRIV, punch_damage, M_PUNCH_DAMAGE,
             "Damage dealt by the atlantean's punch attack."),
-        OBJECT_PROPERTY_INT(
-            "part_damage", M_PART_DAMAGE,
+        OBJECT_PROPERTY(
+            M_PRIV, part_damage, M_PART_DAMAGE,
             "Damage dealt by the atlantean's exploding body parts."));
 }
 

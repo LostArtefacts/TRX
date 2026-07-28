@@ -5,26 +5,21 @@
 
 #define M_DEFAULT_DAMAGE 300
 
-static int32_t M_GetDamage(const ITEM *const item)
-{
-    TRX_VALUE damage = {};
-    if (ObjectProperty_GetItemValue(item, "damage", &damage)) {
-        return damage.as_int;
-    }
-
-    return M_DEFAULT_DAMAGE;
-}
+typedef struct {
+    int32_t damage;
+} M_PRIV;
 
 static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
+    const M_PRIV *const p = item->priv;
 
     if (item->current_anim_state == TRAP_SET) {
         item->goal_anim_state = TRAP_ACTIVATE;
         item->gravity = true;
     } else if (
         item->current_anim_state == TRAP_ACTIVATE && item->touch_bits != 0) {
-        Lara_TakeDamage(M_GetDamage(item), true);
+        Lara_TakeDamage(p->damage, true);
     }
 
     Item_Animate(item);
@@ -52,6 +47,7 @@ static void M_Control(const int16_t item_num)
 
 static void M_Setup(OBJECT *const obj)
 {
+    obj->priv_size = sizeof(M_PRIV);
     obj->initialise_func = Trap_Initialise;
     obj->control_func = M_Control;
     obj->collision_func = Object_Collision_Trap;
@@ -60,8 +56,8 @@ static void M_Setup(OBJECT *const obj)
     obj->save_flags = true;
     OBJECT_PROPERTIES(
         obj,
-        OBJECT_PROPERTY_INT(
-            "damage", M_DEFAULT_DAMAGE,
+        OBJECT_PROPERTY(
+            M_PRIV, damage, M_DEFAULT_DAMAGE,
             "Damage dealt while Lara is touching the falling ceiling."));
 }
 

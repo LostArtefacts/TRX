@@ -29,6 +29,12 @@
 // clang-format on
 
 typedef struct {
+    int32_t attack_2_damage;
+    int32_t attack_3_damage;
+    int32_t attack_4_damage;
+    int32_t attack_5_damage;
+    int32_t attack_6_damage;
+    int32_t enemy_damage;
     bool wants_wait_2;
 } M_PRIV;
 
@@ -79,34 +85,24 @@ static M_HIT_FRAME m_HitFrames[13] = {
     { .start_frame = 15, .end_frame = 19 },
 };
 
-static int32_t M_GetDamage(
-    const ITEM *const item, const char *const key, const int32_t default_value)
-{
-    TRX_VALUE damage = {};
-    if (ObjectProperty_GetItemValue(item, key, &damage)) {
-        return damage.as_int;
-    }
-
-    return default_value;
-}
-
 static int32_t M_GetAttackDamage(const ITEM *const item)
 {
+    const M_PRIV *const p = item->priv;
     switch (item->current_anim_state) {
     case M_STATE_ATTACK_2:
-        return M_GetDamage(item, "attack_2_damage", M_ATTACK_2_DAMAGE);
+        return p->attack_2_damage;
 
     case M_STATE_ATTACK_3:
-        return M_GetDamage(item, "attack_3_damage", M_ATTACK_3_DAMAGE);
+        return p->attack_3_damage;
 
     case M_STATE_ATTACK_4:
-        return M_GetDamage(item, "attack_4_damage", M_ATTACK_4_DAMAGE);
+        return p->attack_4_damage;
 
     case M_STATE_ATTACK_5:
-        return M_GetDamage(item, "attack_5_damage", M_ATTACK_5_DAMAGE);
+        return p->attack_5_damage;
 
     case M_STATE_ATTACK_6:
-        return M_GetDamage(item, "attack_6_damage", M_ATTACK_6_DAMAGE);
+        return p->attack_6_damage;
 
     default:
         return 0;
@@ -289,9 +285,7 @@ static void M_Control(const int16_t item_num)
                 if (Item_IsNearby(enemy, item, M_HIT_RANGE)) {
                     if (creature->flags >= hit_frame->start_frame
                         && creature->flags <= hit_frame->end_frame) {
-                        Item_TakeDamage(
-                            enemy, M_GetDamage(item, "enemy_damage", 2),
-                            IDF_NONE, item);
+                        Item_TakeDamage(enemy, p->enemy_damage, IDF_NONE, item);
                         Creature_Effect(item, &m_AxeHit, Spawn_Blood);
                         Sound_Effect(SFX_LARA_THUD, &item->pos, SPM_NORMAL);
                     }
@@ -371,20 +365,25 @@ static void M_Setup(OBJECT *const obj)
     Object_GetBone(obj, 6)->rot.y = true;
     OBJECT_PROPERTIES(
         obj,
-        OBJECT_PROPERTY_INT(
+        OBJECT_PROPERTY_STORED(
             "max_hit_points", M_HIT_POINTS, "Maximum hit points."),
-        OBJECT_PROPERTY_INT(
-            "attack_2_damage", M_ATTACK_2_DAMAGE, "Damage dealt by attack 2."),
-        OBJECT_PROPERTY_INT(
-            "attack_3_damage", M_ATTACK_3_DAMAGE, "Damage dealt by attack 3."),
-        OBJECT_PROPERTY_INT(
-            "attack_4_damage", M_ATTACK_4_DAMAGE, "Damage dealt by attack 4."),
-        OBJECT_PROPERTY_INT(
-            "attack_5_damage", M_ATTACK_5_DAMAGE, "Damage dealt by attack 5."),
-        OBJECT_PROPERTY_INT(
-            "attack_6_damage", M_ATTACK_6_DAMAGE, "Damage dealt by attack 6."),
-        OBJECT_PROPERTY_INT(
-            "enemy_damage", 2, "Damage dealt to non-player targets."));
+        OBJECT_PROPERTY(
+            M_PRIV, attack_2_damage, M_ATTACK_2_DAMAGE,
+            "Damage dealt by attack 2."),
+        OBJECT_PROPERTY(
+            M_PRIV, attack_3_damage, M_ATTACK_3_DAMAGE,
+            "Damage dealt by attack 3."),
+        OBJECT_PROPERTY(
+            M_PRIV, attack_4_damage, M_ATTACK_4_DAMAGE,
+            "Damage dealt by attack 4."),
+        OBJECT_PROPERTY(
+            M_PRIV, attack_5_damage, M_ATTACK_5_DAMAGE,
+            "Damage dealt by attack 5."),
+        OBJECT_PROPERTY(
+            M_PRIV, attack_6_damage, M_ATTACK_6_DAMAGE,
+            "Damage dealt by attack 6."),
+        OBJECT_PROPERTY(
+            M_PRIV, enemy_damage, 2, "Damage dealt to non-player targets."));
 }
 
 REGISTER_OBJECT(O_TRIBE_AXEMAN, M_Setup)

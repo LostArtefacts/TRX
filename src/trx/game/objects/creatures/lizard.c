@@ -55,6 +55,11 @@ typedef enum {
     M_ANIM_SLIDE_2 = 31,
 } M_ANIM;
 
+typedef struct {
+    int32_t bite_damage;
+    int32_t swipe_damage;
+} M_PRIV;
+
 static BITE m_BiteHit = {
     .pos = { .x = 0, .y = -120, .z = 120 },
     .mesh_num = 10,
@@ -67,17 +72,6 @@ static BITE m_GasHit = {
     .pos = { .x = 0, .y = -64, .z = 56 },
     .mesh_num = 9,
 };
-
-static int32_t M_GetDamage(
-    const ITEM *const item, const char *const key, const int32_t default_value)
-{
-    TRX_VALUE damage = {};
-    if (ObjectProperty_GetItemValue(item, key, &damage)) {
-        return damage.as_int;
-    }
-
-    return default_value;
-}
 
 static void M_TriggerGas(
     const XYZ_32 pos, const XYZ_32 vel, const int32_t effect_num)
@@ -249,6 +243,7 @@ static void M_Control(const int16_t item_num)
     }
 
     ITEM *const item = Item_Get(item_num);
+    const M_PRIV *const p = item->priv;
     CREATURE *const creature = item->creature_data;
     int16_t tilt = 0;
     int16_t angle = 0;
@@ -345,8 +340,7 @@ static void M_Control(const int16_t item_num)
                 neck = info.angle;
             }
             if (creature->flags != 2 && item->touch_bits & M_BITE_TOUCH_BITS) {
-                Lara_TakeDamage(
-                    M_GetDamage(item, "bite_damage", M_BITE_DAMAGE), true);
+                Lara_TakeDamage(p->bite_damage, true);
                 Creature_Effect(item, &m_BiteHit, Spawn_Blood);
                 creature->flags = 2;
             }
@@ -419,8 +413,7 @@ static void M_Control(const int16_t item_num)
             }
 
             if (!creature->flags && item->touch_bits & M_SWIPE_TOUCH_BITS) {
-                Lara_TakeDamage(
-                    M_GetDamage(item, "swipe_damage", M_SWIPE_DAMAGE), true);
+                Lara_TakeDamage(p->swipe_damage, true);
                 Creature_Effect(item, &m_SwipeHit, Spawn_Blood);
                 creature->flags = 1;
             }
@@ -532,6 +525,7 @@ static void M_Setup(OBJECT *const obj)
         return;
     }
 
+    obj->priv_size = sizeof(M_PRIV);
     obj->control_func = M_Control;
     obj->collision_func = Creature_Collision;
 
@@ -550,12 +544,13 @@ static void M_Setup(OBJECT *const obj)
     Object_GetBone(obj, 9)->rot.z = true;
     OBJECT_PROPERTIES(
         obj,
-        OBJECT_PROPERTY_INT(
+        OBJECT_PROPERTY_STORED(
             "max_hit_points", M_HIT_POINTS, "Maximum hit points."),
-        OBJECT_PROPERTY_INT(
-            "bite_damage", M_BITE_DAMAGE, "Damage dealt by the lizard bite."),
-        OBJECT_PROPERTY_INT(
-            "swipe_damage", M_SWIPE_DAMAGE,
+        OBJECT_PROPERTY(
+            M_PRIV, bite_damage, M_BITE_DAMAGE,
+            "Damage dealt by the lizard bite."),
+        OBJECT_PROPERTY(
+            M_PRIV, swipe_damage, M_SWIPE_DAMAGE,
             "Damage dealt by the lizard swipe attack."));
 }
 

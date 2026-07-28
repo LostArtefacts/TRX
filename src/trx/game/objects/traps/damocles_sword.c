@@ -10,15 +10,9 @@
 #define M_ACTIVATE_DIST ((WALL_L * 3) / 2)
 #define M_DEFAULT_DAMAGE 100
 
-static int32_t M_GetDamage(const ITEM *const item)
-{
-    TRX_VALUE damage = {};
-    if (ObjectProperty_GetItemValue(item, "damage", &damage)) {
-        return damage.as_int;
-    }
-
-    return M_DEFAULT_DAMAGE;
-}
+typedef struct {
+    int32_t damage;
+} M_PRIV;
 
 static void M_Reset(ITEM *const item)
 {
@@ -90,6 +84,7 @@ static void M_Collision(
     const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
 {
     ITEM *const item = Item_Get(item_num);
+    const M_PRIV *const p = item->priv;
     if (!Lara_TestBoundsCollide(item, coll->radius)) {
         return;
     }
@@ -97,7 +92,7 @@ static void M_Collision(
         Lara_Col_ItemPush(item, coll, false, true);
     }
     if (item->gravity) {
-        Lara_TakeDamage(M_GetDamage(item), false);
+        Lara_TakeDamage(p->damage, false);
         int32_t x = lara_item->pos.x + (Random_GetControl() - 0x4000) / 256;
         int32_t z = lara_item->pos.z + (Random_GetControl() - 0x4000) / 256;
         int32_t y = lara_item->pos.y - Random_GetControl() / 44;
@@ -108,6 +103,7 @@ static void M_Collision(
 
 static void M_Setup(OBJECT *const obj)
 {
+    obj->priv_size = sizeof(M_PRIV);
     obj->initialise_func = M_Initialise;
     obj->control_func = M_Control;
     obj->collision_func = M_Collision;
@@ -117,8 +113,8 @@ static void M_Setup(OBJECT *const obj)
     obj->save_flags = true;
     OBJECT_PROPERTIES(
         obj,
-        OBJECT_PROPERTY_INT(
-            "damage", M_DEFAULT_DAMAGE,
+        OBJECT_PROPERTY(
+            M_PRIV, damage, M_DEFAULT_DAMAGE,
             "Damage dealt when Lara is struck by the falling Damocles sword."));
 }
 

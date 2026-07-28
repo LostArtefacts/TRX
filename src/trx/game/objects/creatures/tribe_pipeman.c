@@ -44,6 +44,11 @@ typedef enum {
     M_STATE_WAIT_2
 } M_STATE;
 
+typedef struct {
+    int32_t damage;
+    int32_t enemy_damage;
+} M_PRIV;
+
 static BITE m_BiffHit = {
     .pos = { .x = 0, .y = 0, .z = -200 },
     .mesh_num = 13,
@@ -52,17 +57,6 @@ static BITE m_ShootHit = {
     .pos = { .x = 8, .y = 40, .z = -248 },
     .mesh_num = 13,
 };
-
-static int32_t M_GetDamage(
-    const ITEM *const item, const char *const key, const int32_t default_value)
-{
-    TRX_VALUE damage = {};
-    if (ObjectProperty_GetItemValue(item, key, &damage)) {
-        return damage.as_int;
-    }
-
-    return default_value;
-}
 
 static void M_SpawnDart(ITEM *const item)
 {
@@ -124,6 +118,7 @@ static void M_Control(const int16_t item_num)
     const LARA_INFO *const lara = Lara_GetLaraInfo();
 
     ITEM *const item = Item_Get(item_num);
+    const M_PRIV *const p = item->priv;
     CREATURE *const creature = item->creature_data;
     int16_t angle = 0;
     int16_t tilt = 0;
@@ -293,18 +288,14 @@ static void M_Control(const int16_t item_num)
             if (enemy == lara_item) {
                 if (!(creature->flags & 0xF000)
                     && item->touch_bits & M_TOUCH_BITS) {
-                    Lara_TakeDamage(
-                        M_GetDamage(item, "damage", M_BIFF_DAMAGE), true);
+                    Lara_TakeDamage(p->damage, true);
                     creature->flags |= 0x1000;
                     Sound_Effect(SFX_LARA_THUD, &item->pos, SPM_NORMAL);
                     Creature_Effect(item, &m_BiffHit, Spawn_Blood);
                 }
             } else if (!(creature->flags & 0xF000) && enemy != nullptr) {
                 if (Item_IsNearby(enemy, item, M_HIT_RANGE)) {
-                    Item_TakeDamage(
-                        enemy,
-                        M_GetDamage(item, "enemy_damage", M_BIFF_ENEMY_DAMAGE),
-                        IDF_NONE, item);
+                    Item_TakeDamage(enemy, p->enemy_damage, IDF_NONE, item);
                     creature->flags |= 0x1000;
                     Sound_Effect(SFX_LARA_THUD, &item->pos, SPM_NORMAL);
                 }
@@ -370,6 +361,7 @@ static void M_Setup(OBJECT *const obj)
         return;
     }
 
+    obj->priv_size = sizeof(M_PRIV);
     obj->control_func = M_Control;
     obj->collision_func = Creature_Collision;
 
@@ -389,12 +381,12 @@ static void M_Setup(OBJECT *const obj)
     Object_GetBone(obj, 13)->rot.x = true;
     OBJECT_PROPERTIES(
         obj,
-        OBJECT_PROPERTY_INT(
+        OBJECT_PROPERTY_STORED(
             "max_hit_points", M_HIT_POINTS, "Maximum hit points."),
-        OBJECT_PROPERTY_INT(
-            "damage", M_BIFF_DAMAGE, "Damage dealt by melee attacks."),
-        OBJECT_PROPERTY_INT(
-            "enemy_damage", M_BIFF_ENEMY_DAMAGE,
+        OBJECT_PROPERTY(
+            M_PRIV, damage, M_BIFF_DAMAGE, "Damage dealt by melee attacks."),
+        OBJECT_PROPERTY(
+            M_PRIV, enemy_damage, M_BIFF_ENEMY_DAMAGE,
             "Damage dealt to non-player targets."));
 }
 

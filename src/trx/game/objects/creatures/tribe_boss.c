@@ -62,6 +62,7 @@ typedef struct {
 } M_LIZARD_SUMMON_COORDS;
 
 typedef struct {
+    int32_t head_beam_damage;
     uint8_t dead;
     int16_t attack_count;
     int16_t death_count;
@@ -106,17 +107,6 @@ static int32_t m_DeathDist[5] = {};
 static int32_t m_DeathHeights[5] = {};
 
 static M_SHARED_PRIV m_SharedPriv = {};
-
-static int32_t M_GetDamage(
-    const ITEM *const item, const char *const key, const int32_t default_value)
-{
-    TRX_VALUE damage = {};
-    if (ObjectProperty_GetItemValue(item, key, &damage)) {
-        return damage.as_int;
-    }
-
-    return default_value;
-}
 
 static int16_t M_FindLizard(const int16_t room_num)
 {
@@ -546,9 +536,7 @@ static void M_TriggerElectricBeam(
             && M_LaraOnLOS(src, &target)
             && !g_Config.debug.enable_invulnerability
             && lara_info->water_status != LWS_CHEAT) {
-            Lara_TakeDamage(
-                M_GetDamage(item, "head_beam_damage", M_HEAD_BEAM_DAMAGE),
-                true);
+            Lara_TakeDamage(p->head_beam_damage, true);
             if (lara_item->hit_points <= 0) {
                 lara_info->electric = 1;
             }
@@ -1473,10 +1461,10 @@ static void M_Setup(OBJECT *const obj)
     Object_GetBone(obj, 7)->rot.x = true;
     OBJECT_PROPERTIES(
         obj,
-        OBJECT_PROPERTY_INT(
+        OBJECT_PROPERTY_STORED(
             "max_hit_points", M_HIT_POINTS, "Maximum hit points."),
-        OBJECT_PROPERTY_INT(
-            "head_beam_damage", M_HEAD_BEAM_DAMAGE,
+        OBJECT_PROPERTY(
+            M_PRIV, head_beam_damage, M_HEAD_BEAM_DAMAGE,
             "Damage dealt by the head electric beam."));
 }
 

@@ -14,6 +14,7 @@
 #define M_SHOOTS 2
 
 typedef struct {
+    int32_t damage;
     bool active;
     int32_t count;
     bool zapped;
@@ -25,16 +26,6 @@ typedef struct {
     XYZ_32 wibble[M_STEPS];
     XYZ_32 shoot[M_SHOOTS][M_STEPS];
 } M_PRIV;
-
-static int32_t M_GetDamage(const ITEM *const item)
-{
-    TRX_VALUE damage = {};
-    if (ObjectProperty_GetItemValue(item, "damage", &damage)) {
-        return damage.as_int;
-    }
-
-    return M_DEFAULT_DAMAGE;
-}
 
 static void M_Initialise(const int16_t item_num)
 {
@@ -100,7 +91,7 @@ static void M_Control(const int16_t item_num)
             p->target.y = lara_item->pos.y;
             p->target.z = lara_item->pos.z;
 
-            Lara_TakeDamage(M_GetDamage(item), true);
+            Lara_TakeDamage(p->damage, true);
 
             p->zapped = true;
         } else if (p->no_target) {
@@ -300,8 +291,8 @@ static void M_Setup(OBJECT *const obj)
     obj->save_flags = true;
     OBJECT_PROPERTIES(
         obj,
-        OBJECT_PROPERTY_INT(
-            "damage", M_DEFAULT_DAMAGE,
+        OBJECT_PROPERTY(
+            M_PRIV, damage, M_DEFAULT_DAMAGE,
             "Damage dealt when Lara is struck by the lightning emitter."));
 }
 

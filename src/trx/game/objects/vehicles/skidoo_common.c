@@ -169,11 +169,6 @@ void Skidoo_Initialise(const int16_t item_num)
     skidoo_data->momentum_angle = item->rot.y;
     skidoo_data->track_mesh = 0;
     skidoo_data->pitch = 0;
-
-    TRX_VALUE value = {};
-    if (ObjectProperty_GetItemValue(item, "test_static_collision", &value)) {
-        skidoo_data->test_static_collision = value.as_bool;
-    }
 }
 
 int32_t Skidoo_CheckGetOn(const int16_t item_num, COLL_INFO *const coll)

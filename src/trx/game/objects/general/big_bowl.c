@@ -18,32 +18,28 @@ typedef enum {
 
 typedef struct {
     int32_t pour_time;
-    int32_t flip_time;
     int32_t flip_slot;
 } M_PRIV;
 
-static void M_Initialise(const int16_t item_num)
+// The pour is stated in seconds and counted in frames, and the bowl tips over
+// a little before it finishes.
+static int32_t M_FlipTime(const M_PRIV *const p)
 {
-    ITEM *const item = Item_Get(item_num);
-    M_PRIV *const p = item->priv;
-    p->pour_time = M_DEFAULT_POUR_TIME;
-    p->flip_slot = M_DEFAULT_FLIP_SLOT;
+    return (p->pour_time - M_FLIP_TIME_OFFSET) * LOGIC_FPS;
+}
 
-    TRX_VALUE value = {};
-    if (ObjectProperty_GetItemValue(item, "pour_time", &value)
-        && value.as_int > 0) {
-        p->pour_time = value.as_int;
-    }
-    if (ObjectProperty_GetItemValue(item, "flip_slot", &value)
-        && value.as_int < MAX_FLIP_MAPS) {
-        p->flip_slot = value.as_int;
-    }
+static const char *M_CheckPourTime(const TRX_VALUE *const in)
+{
+    return in->as_int < M_MIN_POUR_TIME
+        ? "pour time is below what the bowl can animate"
+        : nullptr;
+}
 
-    CLAMPL(p->pour_time, M_MIN_POUR_TIME);
-    CLAMPL(p->flip_slot, -1);
-    p->flip_time = p->pour_time - M_FLIP_TIME_OFFSET;
-    p->pour_time *= LOGIC_FPS;
-    p->flip_time *= LOGIC_FPS;
+// -1 stands for no flip map at all; anything below it names nothing.
+static const char *M_CheckFlipSlot(const TRX_VALUE *const in)
+{
+    return in->as_int < -1 || in->as_int >= MAX_FLIP_MAPS ? "no such flip map"
+                                                          : nullptr;
 }
 
 static void M_CreateHotLiquid(const ITEM *const bowl_item)
@@ -66,7 +62,7 @@ static void M_CreateHotLiquid(const ITEM *const bowl_item)
 static bool M_ShouldFlipMap(const ITEM *const item)
 {
     const M_PRIV *const p = item->priv;
-    return p->flip_slot >= 0 && item->timer == p->flip_time
+    return p->flip_slot >= 0 && item->timer == M_FlipTime(p)
         && !Room_GetFlipStatus();
 }
 
@@ -93,28 +89,27 @@ static void M_Control(const int16_t item_num)
 
     Item_Animate(item);
 
-    if (item->is_finished && item->timer >= p->pour_time) {
+    if (item->is_finished && item->timer >= p->pour_time * LOGIC_FPS) {
         Item_RemoveSimulated(item_num);
     }
 }
 
 static void M_Setup(OBJECT *const obj)
 {
-    obj->initialise_func = M_Initialise;
     obj->control_func = M_Control;
     obj->save_flags = true;
     obj->save_anim = true;
     obj->priv_size = sizeof(M_PRIV);
     OBJECT_PROPERTIES(
         obj,
-        OBJECT_PROPERTY_INT(
-            "pour_time", M_DEFAULT_POUR_TIME,
+        OBJECT_PROPERTY_CHECKED(
+            M_PRIV, pour_time, M_DEFAULT_POUR_TIME, M_CheckPourTime,
             "The amount of time hot liquid is poured from the bowl, in "
-            "seconds."),
-        OBJECT_PROPERTY_INT(
-            "flip_slot", M_DEFAULT_FLIP_SLOT,
+            "seconds. Value range: minimum 3."),
+        OBJECT_PROPERTY_CHECKED(
+            M_PRIV, flip_slot, M_DEFAULT_FLIP_SLOT, M_CheckFlipSlot,
             "The flip map slot to alter once liquid has finished pouring. -1 = "
-            "no flipmap is performed. Value range: minimum -1; maximum 10."));
+            "no flipmap is performed. Value range: minimum -1; maximum 9."));
 }
 
 REGISTER_OBJECT(O_BIG_BOWL, M_Setup)

@@ -120,27 +120,27 @@ static void M_ApplyBatch(const M_PROPERTY_BATCH *const batch)
     for (int32_t i = 0; i < batch->properties->count; i++) {
         const M_PROPERTY *const property = Vector_Get(batch->properties, i);
 
-        bool result;
+        const char *err;
         switch (batch->target_type) {
         case M_TARGET_OBJECT:
-            result = ObjectProperty_SetObjectValueRaw(
+            err = ObjectProperty_SetObjectValueRaw(
                 (OBJECT *)target, property->name, property->value);
             break;
 
         case M_TARGET_ITEM:
-            result = ObjectProperty_SetItemValueRaw(
+            err = ObjectProperty_SetItemValueRaw(
                 (ITEM *)target, property->name, property->value);
             break;
 
         default:
-            result = false;
+            err = "no such target type";
             break;
         }
 
-        if (!result) {
+        if (err != nullptr) {
             LOG_WARNING(
-                "Failed to set property %s on target type %d, id %d",
-                property->name, batch->target_type, batch->target_id);
+                "Failed to set property %s on target type %d, id %d: %s",
+                property->name, batch->target_type, batch->target_id, err);
         }
     }
 }

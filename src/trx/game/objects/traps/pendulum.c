@@ -22,6 +22,7 @@
 // clang-format on
 
 typedef struct {
+    int32_t damage;
     bool initialised;
     bool on_fire;
     int16_t effect_num;
@@ -177,17 +178,6 @@ static void M_KillFireEffect(ITEM *const item)
     }
 }
 
-static int32_t M_GetDamage(const ITEM *const item)
-{
-    TRX_VALUE damage = {};
-    if (ObjectProperty_GetItemValue(item, "damage", &damage)) {
-        return damage.as_int;
-    }
-
-    return item->object_id == O_SWINGING_AXE ? M_DEFAULT_AXE_DAMAGE
-                                             : M_DEFAULT_PENDULUM_DAMAGE;
-}
-
 static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
@@ -225,7 +215,7 @@ static void M_Control(const int16_t item_num)
     }
 
     if (working && item->touch_bits != 0) {
-        Lara_TakeDamage(M_GetDamage(item), true);
+        Lara_TakeDamage(p->damage, true);
 
         if (p->on_fire) {
             Lara_CatchFire();
@@ -284,8 +274,8 @@ static void M_SetupAxe(OBJECT *const obj)
     obj->collision_func = Object_Collision_Trap;
     OBJECT_PROPERTIES(
         obj,
-        OBJECT_PROPERTY_INT(
-            "damage", M_DEFAULT_AXE_DAMAGE,
+        OBJECT_PROPERTY(
+            M_PRIV, damage, M_DEFAULT_AXE_DAMAGE,
             "Damage dealt while Lara is touching the swinging axe."));
 }
 
@@ -295,8 +285,8 @@ static void M_SetupPendulum(OBJECT *const obj)
     obj->collision_func = Object_Collision;
     OBJECT_PROPERTIES(
         obj,
-        OBJECT_PROPERTY_INT(
-            "damage", M_DEFAULT_PENDULUM_DAMAGE,
+        OBJECT_PROPERTY(
+            M_PRIV, damage, M_DEFAULT_PENDULUM_DAMAGE,
             "Damage dealt while Lara is touching the pendulum."));
 }
 

@@ -231,8 +231,16 @@ static int M_PropertySet(lua_State *const L)
     void *const self = LUA_Struct_Deref(L, ref);
     const char *const name = luaL_checkstring(L, 2);
     const TRX_VALUE value = M_CheckPropertyValue(L, 3);
-    if (!desc->set(self, name, value)) {
+    // As in M_NewIndex, a name nobody declared is reported as such rather than
+    // as a value the property would not take.
+    TRX_VALUE existing = {};
+    if (!desc->get(self, name, &existing)) {
         return luaL_error(L, "unknown %s property '%s'", desc->what, name);
+    }
+    const char *const err = desc->set(self, name, value);
+    if (err != nullptr) {
+        return luaL_error(
+            L, "cannot set %s property '%s': %s", desc->what, name, err);
     }
     return 0;
 }

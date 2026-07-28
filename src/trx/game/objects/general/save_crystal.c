@@ -27,6 +27,10 @@
 #define M_MESH_TR3_SAVE 1
 
 typedef struct {
+    int32_t mesh_index;
+    int32_t heal_amount;
+    RGB_888 glow_color;
+    bool bob;
     bool initialised;
     bool counted_for_stats;
     bool used_for_save;
@@ -104,12 +108,8 @@ static const OBJECT_BOUNDS *M_Bounds(void)
 // would otherwise keep the default mesh_bits and draw all of its tints at once.
 static void M_ApplyMesh(ITEM *const item)
 {
-    TRX_VALUE value = {};
-    int32_t mesh_index = -1;
-    if (ObjectProperty_GetItemValue(item, "mesh_index", &value)) {
-        mesh_index = value.as_int;
-    }
-    item->mesh_bits = SaveCrystal_GetMeshBits(item->object_id, mesh_index);
+    const M_PRIV *const p = item->priv;
+    item->mesh_bits = SaveCrystal_GetMeshBits(item->object_id, p->mesh_index);
 }
 
 static void M_Initialise(const int16_t item_num)
@@ -174,12 +174,8 @@ static RGB_888 M_GetModeGlow(void)
 
 static void M_AddGlow(const ITEM *const item, const int32_t intensity)
 {
-    TRX_VALUE value = {};
-    if (!ObjectProperty_GetItemValue(item, "glow_color", &value)) {
-        return;
-    }
-
-    RGB_888 color = value.as_rgb;
+    const M_PRIV *const p = item->priv;
+    RGB_888 color = p->glow_color;
     if (color.r == 0 && color.g == 0 && color.b == 0) {
         color = M_GetModeGlow();
     }
@@ -201,11 +197,7 @@ static void M_AddGlow(const ITEM *const item, const int32_t intensity)
 static void M_Animate(ITEM *const item)
 {
     M_PRIV *const p = item->priv;
-
-    TRX_VALUE value = {};
-    const bool bob =
-        ObjectProperty_GetItemValue(item, "bob", &value) && value.as_bool;
-    if (!bob) {
+    if (!p->bob) {
         Item_Animate(item);
         M_AddGlow(item, 0xFF);
         return;
@@ -238,14 +230,9 @@ static bool M_TestProximity(const ITEM *const item, const ITEM *const lara_item)
 
 static void M_Heal(ITEM *const lara_item, const ITEM *const item)
 {
-    TRX_VALUE value = {};
-    int32_t heal_amount = LARA_MAX_HITPOINTS / 2;
-    if (ObjectProperty_GetItemValue(item, "heal_amount", &value)) {
-        heal_amount = value.as_int;
-    }
-
+    const M_PRIV *const p = item->priv;
     Lara_Poison_Cure();
-    lara_item->hit_points += heal_amount;
+    lara_item->hit_points += p->heal_amount;
     CLAMPG(lara_item->hit_points, LARA_MAX_HITPOINTS);
 
     // PS1: SFX_SAVE_CRYSTAL, PC: SFX_MENU_MEDI
@@ -348,19 +335,19 @@ static void M_Setup(OBJECT *const obj)
 
     OBJECT_PROPERTIES(
         obj,
-        OBJECT_PROPERTY_BOOL(
-            "bob", g_TRVersion == 3,
+        OBJECT_PROPERTY(
+            M_PRIV, bob, (bool)(g_TRVersion == 3),
             "Whether the crystal hovers and bobs in place."),
-        OBJECT_PROPERTY_RGB(
-            "glow_color", 0, 0, 0,
+        OBJECT_PROPERTY(
+            M_PRIV, glow_color, ((RGB_888) { 0, 0, 0 }),
             "Color of the light the crystal casts. Black picks one from the "
             "save crystal mode."),
-        OBJECT_PROPERTY_INT(
-            "mesh_index", -1,
+        OBJECT_PROPERTY(
+            M_PRIV, mesh_index, -1,
             "Mesh the crystal is drawn with. -1 picks one from the save "
             "crystal mode."),
-        OBJECT_PROPERTY_INT(
-            "heal_amount", LARA_MAX_HITPOINTS / 2,
+        OBJECT_PROPERTY(
+            M_PRIV, heal_amount, LARA_MAX_HITPOINTS / 2,
             "Health restored by a healing crystal."));
 
     const SAVE_CRYSTAL_MODE mode = g_Config.gameplay.save_crystal_mode;

@@ -30,6 +30,7 @@ typedef enum {
 } M_ANIM;
 
 typedef struct {
+    int32_t damage;
     int32_t pos;
 } M_PRIV;
 
@@ -37,16 +38,6 @@ static const BITE m_BigEelBite = {
     .pos = { .x = 7, .y = 157, .z = 333 },
     .mesh_num = 7,
 };
-
-static int32_t M_GetDamage(const ITEM *const item)
-{
-    TRX_VALUE damage = {};
-    if (ObjectProperty_GetItemValue(item, "damage", &damage)) {
-        return damage.as_int;
-    }
-
-    return M_DAMAGE;
-}
 
 static bool M_IsTargetable(const ITEM *const item)
 {
@@ -93,7 +84,7 @@ static void M_Control(const int16_t item_num)
             }
             if (item->required_anim_state == M_STATE_EMPTY
                 && (item->touch_bits & M_TOUCH_BITS) != 0) {
-                Lara_TakeDamage(M_GetDamage(item), true);
+                Lara_TakeDamage(p->damage, true);
                 Creature_Effect(item, &m_BigEelBite, Spawn_Blood);
                 item->required_anim_state = M_STATE_STOP;
             }
@@ -118,17 +109,16 @@ static void M_Setup(OBJECT *const obj)
     obj->collision_func = Creature_Collision;
     obj->is_targetable_func = M_IsTargetable;
     obj->priv_size = sizeof(M_PRIV);
-
     obj->save_hitpoints = true;
     obj->save_flags = true;
     obj->save_anim = true;
 
     OBJECT_PROPERTIES(
         obj,
-        OBJECT_PROPERTY_INT(
+        OBJECT_PROPERTY_STORED(
             "max_hit_points", M_HIT_POINTS, "Maximum hit points."),
-        OBJECT_PROPERTY_INT(
-            "damage", M_DAMAGE, "Damage dealt by the big eel bite."));
+        OBJECT_PROPERTY(
+            M_PRIV, damage, M_DAMAGE, "Damage dealt by the big eel bite."));
 }
 
 REGISTER_OBJECT(O_BIG_EEL, M_Setup)

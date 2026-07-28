@@ -33,20 +33,14 @@ typedef enum {
     M_ANIM_LEAP = 2,
 } M_ANIM;
 
+typedef struct {
+    int32_t damage;
+} M_PRIV;
+
 static const BITE m_SpiderBite = {
     .pos = { .x = 0, .y = 0, .z = 41 },
     .mesh_num = 1,
 };
-
-static int32_t M_GetDamage(const ITEM *const item)
-{
-    TRX_VALUE damage = {};
-    if (ObjectProperty_GetItemValue(item, "damage", &damage)) {
-        return damage.as_int;
-    }
-
-    return M_DAMAGE;
-}
 
 static void M_Leap(const int16_t item_num, const int16_t angle)
 {
@@ -74,6 +68,7 @@ static void M_Control(const int16_t item_num)
 
     int16_t angle = 0;
     ITEM *const item = Item_Get(item_num);
+    const M_PRIV *const p = item->priv;
     CREATURE *const creature = item->creature_data;
 
     if (item->hit_points > 0) {
@@ -131,7 +126,7 @@ static void M_Control(const int16_t item_num)
         case M_STATE_ATTACK_3:
             if (creature->flags == 0 && item->touch_bits != 0) {
                 Creature_Effect(item, &m_SpiderBite, Spawn_Blood);
-                Lara_TakeDamage(M_GetDamage(item), true);
+                Lara_TakeDamage(p->damage, true);
                 creature->flags = 1;
             }
             break;
@@ -157,6 +152,7 @@ static void M_Setup(OBJECT *const obj)
         return;
     }
 
+    obj->priv_size = sizeof(M_PRIV);
     obj->control_func = M_Control;
     obj->collision_func = Creature_Collision;
 
@@ -172,10 +168,10 @@ static void M_Setup(OBJECT *const obj)
 
     OBJECT_PROPERTIES(
         obj,
-        OBJECT_PROPERTY_INT(
+        OBJECT_PROPERTY_STORED(
             "max_hit_points", M_HIT_POINTS, "Maximum hit points."),
-        OBJECT_PROPERTY_INT(
-            "damage", M_DAMAGE, "Damage dealt by bite attacks."));
+        OBJECT_PROPERTY(
+            M_PRIV, damage, M_DAMAGE, "Damage dealt by bite attacks."));
 }
 
 REGISTER_OBJECT(O_SPIDER, M_Setup)

@@ -35,18 +35,9 @@ typedef enum {
 
 typedef struct {
     int16_t skidoo_item_num;
+    int32_t shot_damage;
+    int32_t mounted_shot_damage;
 } M_PRIV;
-
-static int32_t M_GetDamage(
-    const ITEM *const item, const char *const key, const int32_t default_value)
-{
-    TRX_VALUE damage = {};
-    if (ObjectProperty_GetItemValue(item, key, &damage)) {
-        return damage.as_int;
-    }
-
-    return default_value;
-}
 
 static void M_KillDriver(ITEM *const driver_item, const ITEM *const skidoo_item)
 {
@@ -161,9 +152,10 @@ static int16_t M_ControlAlive(ITEM *const driver_item, ITEM *const skidoo_item)
         const ITEM *const lara_item = Lara_GetItem();
         if (driver_data->flags == 0 && ABS(info.angle) < M_TARGET_ANGLE
             && lara_item->hit_points > 0) {
+            const M_PRIV *const p = driver_item->priv;
             const int32_t damage = Lara_Vehicle_IsMounted()
-                ? M_GetDamage(driver_item, "mounted_shot_damage", M_SHOT_DAMAGE)
-                : M_GetDamage(driver_item, "shot_damage", M_LARA_DAMAGE);
+                ? p->mounted_shot_damage
+                : p->shot_damage;
 
             const bool left_targetable = Creature_Shoot(
                 skidoo_item, &info,
@@ -312,12 +304,12 @@ static void M_Setup(OBJECT *const obj)
     obj->save_flags = true;
     obj->save_anim = true;
     OBJECT_PROPERTIES(
-        obj, OBJECT_PROPERTY_INT("max_hit_points", 1, "Maximum hit points."),
-        OBJECT_PROPERTY_INT(
-            "shot_damage", M_LARA_DAMAGE,
+        obj, OBJECT_PROPERTY_STORED("max_hit_points", 1, "Maximum hit points."),
+        OBJECT_PROPERTY(
+            M_PRIV, shot_damage, M_LARA_DAMAGE,
             "Damage dealt by shots when Lara is not mounted."),
-        OBJECT_PROPERTY_INT(
-            "mounted_shot_damage", M_SHOT_DAMAGE,
+        OBJECT_PROPERTY(
+            M_PRIV, mounted_shot_damage, M_SHOT_DAMAGE,
             "Damage dealt by shots when Lara is mounted."));
 }
 

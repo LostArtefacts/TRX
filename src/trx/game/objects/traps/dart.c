@@ -16,34 +16,16 @@
 #define M_PITCH (DEG_45 / 2)
 
 typedef struct {
+    int32_t damage;
+    bool poison;
     bool pending_kill;
 } M_PRIV;
 
-static bool M_IsPoison(const ITEM *const item)
-{
-    TRX_VALUE poison = {};
-    if (ObjectProperty_GetItemValue(item, "poison", &poison)) {
-        return poison.as_bool;
-    }
-
-    return item->object_id == O_POISON_DART;
-}
-
-static int32_t M_GetDamage(const ITEM *const item)
-{
-    TRX_VALUE damage = {};
-    if (ObjectProperty_GetItemValue(item, "damage", &damage)) {
-        return damage.as_int;
-    }
-
-    return M_IsPoison(item) ? M_DEFAULT_POISON_DAMAGE : M_DEFAULT_DAMAGE;
-}
-
 static void M_DamageLara(const ITEM *const item)
 {
-    const bool is_poison = M_IsPoison(item);
-    Lara_TakeDamage(M_GetDamage(item), true);
-    if (is_poison) {
+    const M_PRIV *const p = item->priv;
+    Lara_TakeDamage(p->damage, true);
+    if (p->poison) {
         LARA_INFO *const lara = Lara_GetLaraInfo();
         lara->poison.value += M_POISON_AMOUNT;
     }
@@ -159,15 +141,17 @@ static bool M_DrawPoisonDart(const ITEM *const item)
 
 static void M_Setup(OBJECT *const obj)
 {
+    obj->priv_size = sizeof(M_PRIV);
     obj->control_func = M_Control;
     obj->collision_func = Object_Collision;
     obj->shadow_size = UNIT_SHADOW / 2;
     obj->save_flags = true;
     OBJECT_PROPERTIES(
         obj,
-        OBJECT_PROPERTY_INT("damage", M_DEFAULT_DAMAGE, "Damage dealt on hit."),
-        OBJECT_PROPERTY_BOOL(
-            "poison", false,
+        OBJECT_PROPERTY(
+            M_PRIV, damage, M_DEFAULT_DAMAGE, "Damage dealt on hit."),
+        OBJECT_PROPERTY(
+            M_PRIV, poison, false,
             "Apply poison buildup in addition to hit damage."));
 }
 
@@ -181,10 +165,11 @@ static void M_SetupPoisonDart(OBJECT *const obj)
     obj->save_flags = true;
     OBJECT_PROPERTIES(
         obj,
-        OBJECT_PROPERTY_INT(
-            "damage", M_DEFAULT_POISON_DAMAGE, "Damage dealt on hit."),
-        OBJECT_PROPERTY_BOOL(
-            "poison", true, "Apply poison buildup in addition to hit damage."));
+        OBJECT_PROPERTY(
+            M_PRIV, damage, M_DEFAULT_POISON_DAMAGE, "Damage dealt on hit."),
+        OBJECT_PROPERTY(
+            M_PRIV, poison, true,
+            "Apply poison buildup in addition to hit damage."));
 }
 
 REGISTER_OBJECT(O_DART, M_Setup)

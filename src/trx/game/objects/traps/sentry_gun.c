@@ -22,21 +22,12 @@ typedef enum {
 } M_MUZZLE;
 
 typedef struct {
+    int32_t damage;
     int16_t active_muzzle;
     int16_t muzzle_flash_timer;
     bool is_alerted;
     bool has_fired;
 } M_PRIV;
-
-static int32_t M_GetDamage(const ITEM *const item)
-{
-    TRX_VALUE damage = {};
-    if (ObjectProperty_GetItemValue(item, "damage", &damage)) {
-        return damage.as_int;
-    }
-
-    return M_DEFAULT_DAMAGE;
-}
 
 static void M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
 {
@@ -165,11 +156,11 @@ static void M_Control(const int16_t item_num)
             if (p->active_muzzle == M_MUZZLE_RIGHT) {
                 Creature_Shoot(
                     item, &info, &m_FireLeft, creature->joint_rotation[0],
-                    M_GetDamage(item));
+                    p->damage);
             } else {
                 Creature_Shoot(
                     item, &info, &m_FireRight, creature->joint_rotation[0],
-                    M_GetDamage(item));
+                    p->damage);
             }
 
             p->muzzle_flash_timer = 10;
@@ -250,10 +241,10 @@ static void M_Setup(OBJECT *const obj)
     Object_GetBone(obj, 1)->rot.x = true;
     OBJECT_PROPERTIES(
         obj,
-        OBJECT_PROPERTY_INT(
-            "damage", M_DEFAULT_DAMAGE,
+        OBJECT_PROPERTY(
+            M_PRIV, damage, M_DEFAULT_DAMAGE,
             "Damage dealt when the sentry gun hits Lara."),
-        OBJECT_PROPERTY_INT("max_hit_points", 100, "Maximum hit points."));
+        OBJECT_PROPERTY_STORED("max_hit_points", 100, "Maximum hit points."));
 }
 
 REGISTER_OBJECT(O_SENTRY_GUN, M_Setup)

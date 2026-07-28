@@ -43,20 +43,16 @@ typedef enum {
     M_STATE_KILL,
 } M_STATE;
 
-static int32_t M_GetDamage(
-    const ITEM *const item, const char *const key, const int32_t default_value)
-{
-    TRX_VALUE damage = {};
-    if (ObjectProperty_GetItemValue(item, key, &damage)) {
-        return damage.as_int;
-    }
-
-    return default_value;
-}
+typedef struct {
+    int32_t bite_damage;
+    int32_t trample_damage;
+    int32_t touch_damage;
+} M_PRIV;
 
 static void M_KillLara(ITEM *const item)
 {
-    Lara_TakeDamage(M_GetDamage(item, "bite_damage", M_BITE_DAMAGE), true);
+    const M_PRIV *const p = item->priv;
+    Lara_TakeDamage(p->bite_damage, true);
     Creature_SpecialKill(item, M_ANIM_KILL, M_STATE_KILL, LS_EXTRA_TREX_KILL);
     Lara_Skin_SwapAllExtra(LS_EXTRA_TREX_KILL);
 }
@@ -79,6 +75,7 @@ static void M_Control(const int16_t item_num)
     }
 
     ITEM *const item = Item_Get(item_num);
+    const M_PRIV *const p = item->priv;
     CREATURE *const creature = item->creature_data;
 
     int16_t head = 0;
@@ -101,11 +98,9 @@ static void M_Control(const int16_t item_num)
 
     if (item->touch_bits != 0) {
         if (item->current_anim_state == M_STATE_RUN) {
-            Lara_TakeDamage(
-                M_GetDamage(item, "trample_damage", M_TRAMPLE_DAMAGE), false);
+            Lara_TakeDamage(p->trample_damage, false);
         } else {
-            Lara_TakeDamage(
-                M_GetDamage(item, "touch_damage", M_TOUCH_DAMAGE), false);
+            Lara_TakeDamage(p->touch_damage, false);
         }
     }
 
@@ -182,6 +177,7 @@ static void M_Setup(OBJECT *const obj)
         return;
     }
 
+    obj->priv_size = sizeof(M_PRIV);
     if (g_TRVersion == 1) {
         obj->initialise_func = Creature_Initialise;
     }
@@ -204,15 +200,17 @@ static void M_Setup(OBJECT *const obj)
     Object_GetBone(obj, 11)->rot.y = true;
     OBJECT_PROPERTIES(
         obj,
-        OBJECT_PROPERTY_INT(
+        OBJECT_PROPERTY_STORED(
             "max_hit_points", M_HIT_POINTS, "Maximum hit points."),
-        OBJECT_PROPERTY_INT(
-            "touch_damage", M_TOUCH_DAMAGE, "Damage dealt by body contact."),
-        OBJECT_PROPERTY_INT(
-            "trample_damage", M_TRAMPLE_DAMAGE,
+        OBJECT_PROPERTY(
+            M_PRIV, touch_damage, M_TOUCH_DAMAGE,
+            "Damage dealt by body contact."),
+        OBJECT_PROPERTY(
+            M_PRIV, trample_damage, M_TRAMPLE_DAMAGE,
             "Damage dealt while trampling."),
-        OBJECT_PROPERTY_INT(
-            "bite_damage", M_BITE_DAMAGE, "Damage dealt by the bite attack."));
+        OBJECT_PROPERTY(
+            M_PRIV, bite_damage, M_BITE_DAMAGE,
+            "Damage dealt by the bite attack."));
 }
 
 REGISTER_OBJECT(O_TREX, M_Setup)

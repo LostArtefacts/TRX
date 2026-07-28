@@ -48,7 +48,7 @@ static void M_Setup(OBJECT *const obj)
     obj->save_anim = true;
     OBJECT_PROPERTIES(
         obj,
-        OBJECT_PROPERTY_INT(
+        OBJECT_PROPERTY_STORED(
             "max_hit_points", SKIDOO_DRIVER_HITPOINTS, "Maximum hit points."));
 }
 

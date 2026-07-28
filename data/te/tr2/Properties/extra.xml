@@ -228,7 +228,7 @@
     </moveable>
     <!--placeholder for O_PIRAHNAS-->
     <moveable id="-1">
-        <property category="TRX" defaultValue="TEN.Vec3(1, 1, 1)" description="Swim range, in quarter tiles." displayName="Range" internalName="range" type="Vec3" />
+        <property category="TRX" defaultValue="TEN.Vec3(1, 1, 1)" description="Swim range, in quarter tiles. Value range: minimum 1 on each axis." displayName="Range" internalName="range" type="Vec3" />
         <property category="TRX" defaultValue="true" description="Whether the shoal uses the surrounding room lighting." displayName="Use Room Lighting" internalName="use_room_lighting" type="Bool" />
     </moveable>
     <!--placeholder for O_POISON_DART-->
@@ -238,7 +238,7 @@
     </moveable>
     <!--placeholder for O_PORTACABIN-->
     <moveable id="-1">
-        <property category="TRX" defaultValue="3" description="The flip map slot to alter once the cabin has landed. -1 = no flipmap is performed." displayName="Flip Slot" internalName="flip_slot" maxValue="10" minValue="-1" type="Int" />
+        <property category="TRX" defaultValue="3" description="The flip map slot to alter once the cabin has landed. -1 = no flipmap is performed." displayName="Flip Slot" internalName="flip_slot" maxValue="9" minValue="-1" type="Int" />
     </moveable>
     <!--placeholder for O_PRISONER-->
     <moveable id="-1">
@@ -425,7 +425,7 @@
     <!--placeholder for O_TROPICAL_FISH-->
     <moveable id="-1">
         <property category="TRX" defaultValue="0" description="Texture offset in `O_TROPICAL_FISH_GFX`." displayName="Sprite Offset" internalName="sprite_offset" minValue="0" type="Int" />
-        <property category="TRX" defaultValue="TEN.Vec3(1, 1, 1)" description="Swim range, in quarter tiles." displayName="Range" internalName="range" type="Vec3" />
+        <property category="TRX" defaultValue="TEN.Vec3(1, 1, 1)" description="Swim range, in quarter tiles. Value range: minimum 1 on each axis." displayName="Range" internalName="range" type="Vec3" />
         <property category="TRX" defaultValue="true" description="Whether the shoal uses the surrounding room lighting." displayName="Use Room Lighting" internalName="use_room_lighting" type="Bool" />
     </moveable>
     <!--placeholder for O_VULTURE-->

@@ -64,6 +64,8 @@ typedef enum {
 } M_ANIM;
 
 typedef struct {
+    int32_t hit_damage;
+    int32_t swipe_damage;
     struct {
         bool initialised;
         bool on_fire;
@@ -75,17 +77,6 @@ static const BITE m_Bite = {
     .pos = { 16, 48, 320 },
     .mesh_num = 13,
 };
-
-static int32_t M_GetDamage(
-    const ITEM *const item, const char *const key, const int32_t default_value)
-{
-    TRX_VALUE damage = {};
-    if (ObjectProperty_GetItemValue(item, key, &damage)) {
-        return damage.as_int;
-    }
-
-    return default_value;
-}
 
 static void M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
 {
@@ -514,7 +505,7 @@ static void M_Control(const int16_t item_num)
 
         creature->maximum_turn = M_WALK_TURN;
         if (creature->flags == 0 && (item->touch_bits & M_TOUCH_BITS) != 0) {
-            M_HitLara(item, M_GetDamage(item, "hit_damage", M_HIT_DAMAGE));
+            M_HitLara(item, p->hit_damage);
             creature->flags = 1;
         }
 
@@ -533,7 +524,7 @@ static void M_Control(const int16_t item_num)
 
         creature->maximum_turn = M_WALK_TURN;
         if (creature->flags != 2 && (item->touch_bits & M_TOUCH_BITS) != 0) {
-            M_HitLara(item, M_GetDamage(item, "swipe_damage", M_SWIPE_DAMAGE));
+            M_HitLara(item, p->swipe_damage);
             creature->flags = 2;
         }
         break;
@@ -582,12 +573,13 @@ static void M_Setup(OBJECT *const obj)
     Object_GetBone(obj, 13)->rot.y = true;
     OBJECT_PROPERTIES(
         obj,
-        OBJECT_PROPERTY_INT(
+        OBJECT_PROPERTY_STORED(
             "max_hit_points", M_HIT_POINTS, "Maximum hit points."),
-        OBJECT_PROPERTY_INT(
-            "hit_damage", M_HIT_DAMAGE, "Damage dealt by punches 1 and 2."),
-        OBJECT_PROPERTY_INT(
-            "swipe_damage", M_SWIPE_DAMAGE, "Damage dealt by punch 3."));
+        OBJECT_PROPERTY(
+            M_PRIV, hit_damage, M_HIT_DAMAGE,
+            "Damage dealt by punches 1 and 2."),
+        OBJECT_PROPERTY(
+            M_PRIV, swipe_damage, M_SWIPE_DAMAGE, "Damage dealt by punch 3."));
 }
 
 REGISTER_OBJECT(O_PUNK_1, M_Setup)

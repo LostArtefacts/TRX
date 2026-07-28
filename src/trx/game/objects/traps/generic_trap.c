@@ -26,34 +26,25 @@ typedef struct {
     bool push_lara;
 } M_PRIV;
 
-static void M_Initialise(const int16_t item_num)
+// Each of these holds its value to what the trap can use, so a change made
+// while the level runs is held to it too.
+static void M_SetTouchMask(ITEM *const item, const TRX_VALUE *const in)
 {
-    const ITEM *const item = Item_Get(item_num);
     M_PRIV *const p = item->priv;
-    p->touch_mask = M_DEFAULT_TOUCH;
-    p->damage = M_DEFAULT_DAMAGE;
-    p->blood_intensity = M_DEFAULT_BLOOD;
-    p->push_lara = M_DEFAULT_PUSH;
+    // A negative mask means every mesh, which is the whole of the field.
+    p->touch_mask = in->as_int < 0 ? INT32_MAX : in->as_int;
+}
 
-    TRX_VALUE value = {};
-    if (ObjectProperty_GetItemValue(item, "touch_mask", &value)) {
-        p->touch_mask = value.as_int;
-    }
-    if (ObjectProperty_GetItemValue(item, "damage", &value)) {
-        p->damage = value.as_int;
-    }
-    if (ObjectProperty_GetItemValue(item, "blood_intensity", &value)) {
-        p->blood_intensity = value.as_int;
-    }
-    if (ObjectProperty_GetItemValue(item, "push_lara", &value)) {
-        p->push_lara = value.as_bool;
-    }
+static const char *M_CheckDamage(const TRX_VALUE *const in)
+{
+    return in->as_int < 0 ? "damage is below nothing" : nullptr;
+}
 
-    if (p->touch_mask < 0) {
-        p->touch_mask = INT32_MAX;
-    }
-    CLAMPL(p->damage, 0);
-    CLAMP(p->blood_intensity, 0, M_MAX_BLOOD);
+static const char *M_CheckBloodIntensity(const TRX_VALUE *const in)
+{
+    return in->as_int < 0 || in->as_int > M_MAX_BLOOD
+        ? "blood intensity is outside what the trap can spawn"
+        : nullptr;
 }
 
 static void M_Collision(
@@ -123,7 +114,6 @@ static void M_Setup(OBJECT *const obj)
         return;
     }
 
-    obj->initialise_func = M_Initialise;
     obj->collision_func = M_Collision;
     obj->control_func = M_Control;
 
@@ -134,19 +124,20 @@ static void M_Setup(OBJECT *const obj)
 
     OBJECT_PROPERTIES(
         obj,
-        OBJECT_PROPERTY_INT(
-            "touch_mask", M_DEFAULT_TOUCH,
+        OBJECT_PROPERTY_SETTER(
+            M_PRIV, touch_mask, M_DEFAULT_TOUCH, nullptr, M_SetTouchMask,
             "A bitmask of damaging mesh numbers. The default value indicates "
             "all meshes are damaging."),
-        OBJECT_PROPERTY_INT(
-            "damage", M_DEFAULT_DAMAGE,
-            "Damage dealt when Lara touches the trap."),
-        OBJECT_PROPERTY_INT(
-            "blood_intensity", M_DEFAULT_BLOOD,
+        OBJECT_PROPERTY_CHECKED(
+            M_PRIV, damage, M_DEFAULT_DAMAGE, M_CheckDamage,
+            "Damage dealt when Lara touches the trap. Value range: minimum "
+            "0."),
+        OBJECT_PROPERTY_CHECKED(
+            M_PRIV, blood_intensity, M_DEFAULT_BLOOD, M_CheckBloodIntensity,
             "The intensity of blood to spawn when Lara is damaged. Value "
             "range: minimum 0; maximum 10."),
-        OBJECT_PROPERTY_BOOL(
-            "push_lara", true,
+        OBJECT_PROPERTY(
+            M_PRIV, push_lara, true,
             "Whether or not Lara should be pushed when colliding with the "
             "trap."));
 }

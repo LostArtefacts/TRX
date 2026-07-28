@@ -938,24 +938,24 @@ static void M_Setup(OBJECT *const obj)
     Object_GetBone(obj, 13)->rot.y = true;
     OBJECT_PROPERTIES(
         obj,
-        OBJECT_PROPERTY_INT(
+        OBJECT_PROPERTY_STORED(
             "max_hit_points", M_HIT_POINTS, "Maximum hit points."),
-        OBJECT_PROPERTY_INT(
+        OBJECT_PROPERTY_STORED(
             "knockback_damage", SOPHIA_KNOCKBACK_DAMAGE,
             "Damage dealt by the knockback shockwave."),
-        OBJECT_PROPERTY_INT(
+        OBJECT_PROPERTY_STORED(
             "laser_bolt_damage", SOPHIA_LASER_BOLT_DAMAGE,
             "Damage dealt by regular laser bolt direct hits."),
-        OBJECT_PROPERTY_INT(
+        OBJECT_PROPERTY_STORED(
             "big_laser_bolt_damage", SOPHIA_BIG_LASER_BOLT_DAMAGE,
             "Damage dealt by the big laser bolt direct hit."),
-        OBJECT_PROPERTY_INT(
+        OBJECT_PROPERTY_STORED(
             "laser_bolt_splash_damage", SOPHIA_LASER_BOLT_SPLASH_DAMAGE,
             "Maximum splash damage dealt by regular laser bolts."),
-        OBJECT_PROPERTY_INT(
+        OBJECT_PROPERTY_STORED(
             "big_laser_bolt_splash_damage", SOPHIA_BIG_LASER_BOLT_SPLASH_DAMAGE,
             "Maximum splash damage dealt by the big laser bolt."),
-        OBJECT_PROPERTY_INT(
+        OBJECT_PROPERTY_STORED(
             "plasma_ball_damage", SOPHIA_PLASMA_BALL_DAMAGE,
             "Damage dealt by plasma ball direct hits."));
 }

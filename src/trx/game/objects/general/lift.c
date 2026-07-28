@@ -40,8 +40,8 @@ typedef enum {
 
 typedef struct {
     int32_t start_height;
+    int32_t wait_timer;
     int32_t wait_time;
-    int32_t max_wait_time;
     int32_t travel_distance;
     int32_t speed;
     bool is_moving;
@@ -72,7 +72,7 @@ static void M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
 {
     M_PRIV *const p = item->priv;
     JSON_SHOULD(JSON_READ(io, "start_height", &p->start_height));
-    JSON_SHOULD(JSON_READ(io, "wait_time", &p->wait_time));
+    JSON_SHOULD(JSON_READ(io, "wait_time", &p->wait_timer));
     JSON_SHOULD(JSON_READ(io, "is_moving", &p->is_moving));
     for (int32_t i = 0; i < M_NUM_SECTORS; i++) {
         const char *const key = String_FormatStatic("linked_%d", i);
@@ -89,7 +89,7 @@ static void M_SavePriv(const ITEM *const item, JSON_WRITE_IO *const io)
 {
     const M_PRIV *const p = item->priv;
     JSONW_WRITE(io, "start_height", p->start_height);
-    JSONW_WRITE(io, "wait_time", p->wait_time);
+    JSONW_WRITE(io, "wait_time", p->wait_timer);
     JSONW_WRITE(io, "is_moving", p->is_moving);
     for (int32_t i = 0; i < M_NUM_SECTORS; i++) {
         const char *const key = String_FormatStatic("linked_%d", i);
@@ -282,33 +282,28 @@ static void M_SetupInternalWall(ITEM *const item)
     p->wall_bounds.max.y -= STEP_L / 2;
 }
 
+// Each of these is counted in whole units, and none of them can be nothing: a
+// lift that waits, travels or moves for zero never arrives.
+static const char *M_CheckWhole(const TRX_VALUE *const in)
+{
+    return in->as_int < 1 ? "value is below one" : nullptr;
+}
+
+static const char *M_CheckSpeed(const TRX_VALUE *const in)
+{
+    if (in->as_int > M_MAXIMUM_SPEED) {
+        return "speed is above what the lift can travel at";
+    }
+    return M_CheckWhole(in);
+}
+
 static void M_Initialise(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
     M_PRIV *const p = item->priv;
     p->start_height = item->pos.y;
-    p->wait_time = 0;
-    p->max_wait_time = M_DEFAULT_WAIT_TIME;
-    p->travel_distance = M_DEFAULT_TRAVEL_DIST;
-    p->speed = M_DEFAULT_SPEED;
+    p->wait_timer = 0;
     p->is_moving = false;
-
-    TRX_VALUE value = {};
-    if (ObjectProperty_GetItemValue(item, "wait_time", &value)
-        && value.as_int > 0) {
-        p->max_wait_time = value.as_int;
-    }
-    if (ObjectProperty_GetItemValue(item, "travel_distance", &value)
-        && value.as_int > 0) {
-        p->travel_distance = value.as_int;
-    }
-    if (ObjectProperty_GetItemValue(item, "speed", &value)
-        && value.as_int > 0) {
-        p->speed = value.as_int;
-    }
-    p->max_wait_time *= LOGIC_FPS;
-    p->travel_distance *= STEP_L;
-    CLAMPG(p->speed, M_MAXIMUM_SPEED);
 
     VECTOR *const positions = Vector_Create(sizeof(XYZ_32));
     M_GetSectorPositions(item, positions);
@@ -533,19 +528,19 @@ static void M_Control(const int16_t item_num)
     ITEM *const item = Item_Get(item_num);
     M_PRIV *const p = item->priv;
     const int32_t bottom = p->start_height;
-    const int32_t top = bottom + p->travel_distance;
+    const int32_t top = bottom + p->travel_distance * STEP_L;
     const int32_t target = Item_IsTriggerActive(item) ? top : bottom;
 
     if (item->pos.y == target) {
         item->goal_anim_state = M_STATE_DOOR_OPEN;
-        p->wait_time = 0;
+        p->wait_timer = 0;
         if (p->is_moving) {
             M_ShiftStackableItems(item, true);
         }
         p->is_moving = false;
-    } else if (p->wait_time < p->max_wait_time) {
+    } else if (p->wait_timer < p->wait_time * LOGIC_FPS) {
         item->goal_anim_state = M_STATE_DOOR_OPEN;
-        p->wait_time++;
+        p->wait_timer++;
         // Prevent Lara from interacting with blocks about to move.
         M_ShiftStackableItems(item, false);
     } else {
@@ -625,16 +620,16 @@ static void M_Setup(OBJECT *const obj)
     obj->save_anim = true;
     OBJECT_PROPERTIES(
         obj,
-        OBJECT_PROPERTY_INT(
-            "wait_time", M_DEFAULT_WAIT_TIME,
+        OBJECT_PROPERTY_CHECKED(
+            M_PRIV, wait_time, M_DEFAULT_WAIT_TIME, M_CheckWhole,
             "The time to wait before the lift begins moving, in seconds. Value "
             "range: minimum 1."),
-        OBJECT_PROPERTY_INT(
-            "travel_distance", M_DEFAULT_TRAVEL_DIST,
+        OBJECT_PROPERTY_CHECKED(
+            M_PRIV, travel_distance, M_DEFAULT_TRAVEL_DIST, M_CheckWhole,
             "The vertical distance the lift will travel, in clicks. Value "
             "range: minimum 1."),
-        OBJECT_PROPERTY_INT(
-            "speed", M_DEFAULT_SPEED,
+        OBJECT_PROPERTY_CHECKED(
+            M_PRIV, speed, M_DEFAULT_SPEED, M_CheckSpeed,
             "The speed at which the lift moves, in world units. Value range: "
             "minimum 1; maximum 64."));
 }

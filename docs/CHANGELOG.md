@@ -9,8 +9,10 @@
 - added the ability to clear the gym's best times, by holding the key shown below them
 - added an option to turn off controller support, for players who remap their controller with external software (Gameplay → Controls → Controller support)
 - added internal collision to lifts when they are moving, so that Lara cannot exit through the meshes
+- added a `damage` property to the `O_POWER_SAW` object
 - improved error messages related to bad command invocations
 - changed reflections UV mapping to be more correct
+- changed object properties to take effect as soon as they change, rather than only when the item is first set up
 - changed outfits to support joints, up to two braids per outfit, and to allow positional offset adjustments for equipment meshes; refer to migration notes
 - changed the `/music` console command to list the available tracks when given no argument, as `/sfx` does; `/music status` now reports what is playing
 - changed the `/spawn`, `/kill` and `/tp` console commands to accept a family such as `pickup`, `door` or `enemy` in place of a name, and to offer the families each of them can act on in autocompletion

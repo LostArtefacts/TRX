@@ -41,21 +41,17 @@ typedef enum {
     M_STATE_DEATH,
 } M_STATE;
 
+typedef struct {
+    int32_t slam_damage;
+    int32_t charge_damage;
+    int32_t attack_damage;
+    int32_t pat_damage;
+} M_PRIV;
+
 static BITE m_BearHeadBite = {
     .pos = { 0, 96, 335 },
     .mesh_num = 14,
 };
-
-static int32_t M_GetDamage(
-    const ITEM *const item, const char *const key, const int32_t default_value)
-{
-    TRX_VALUE damage = {};
-    if (ObjectProperty_GetItemValue(item, key, &damage)) {
-        return damage.as_int;
-    }
-
-    return default_value;
-}
 
 static void M_Control(const int16_t item_num)
 {
@@ -64,6 +60,7 @@ static void M_Control(const int16_t item_num)
     }
 
     ITEM *const item = Item_Get(item_num);
+    const M_PRIV *const p = item->priv;
     OBJECT *const obj = Object_Get(item->object_id);
     obj->pivot_length = g_Config.gameplay.fix_bear_ai ? 0 : 500;
 
@@ -97,8 +94,7 @@ static void M_Control(const int16_t item_num)
         case M_STATE_DEATH:
             if (bear != nullptr && bear->flags != 0
                 && (item->touch_bits & M_TOUCH) != 0) {
-                Lara_TakeDamage(
-                    M_GetDamage(item, "slam_damage", M_SLAM_DAMAGE), true);
+                Lara_TakeDamage(p->slam_damage, true);
                 bear->flags = 0;
             }
             break;
@@ -155,8 +151,7 @@ static void M_Control(const int16_t item_num)
         case M_STATE_RUN:
             bear->maximum_turn = M_RUN_TURN;
             if (item->touch_bits & M_TOUCH) {
-                Lara_TakeDamage(
-                    M_GetDamage(item, "charge_damage", M_CHARGE_DAMAGE), true);
+                Lara_TakeDamage(p->charge_damage, true);
             }
             if (bear->mood == MOOD_BORED || dead_enemy) {
                 item->goal_anim_state = M_STATE_STOP;
@@ -215,16 +210,14 @@ static void M_Control(const int16_t item_num)
         case M_STATE_ATTACK_1:
             if (!item->required_anim_state && (item->touch_bits & M_TOUCH)) {
                 Creature_Effect(item, &m_BearHeadBite, Spawn_Blood);
-                Lara_TakeDamage(
-                    M_GetDamage(item, "attack_damage", M_ATTACK_DAMAGE), true);
+                Lara_TakeDamage(p->attack_damage, true);
                 item->required_anim_state = M_STATE_STOP;
             }
             break;
 
         case M_STATE_ATTACK_2:
             if (!item->required_anim_state && (item->touch_bits & M_TOUCH)) {
-                Lara_TakeDamage(
-                    M_GetDamage(item, "pat_damage", M_PAT_DAMAGE), true);
+                Lara_TakeDamage(p->pat_damage, true);
                 item->required_anim_state = M_STATE_REAR;
             }
             break;
@@ -240,6 +233,8 @@ static void M_Setup(OBJECT *const obj)
     if (!obj->loaded) {
         return;
     }
+
+    obj->priv_size = sizeof(M_PRIV);
     obj->initialise_func = Creature_Initialise;
     obj->control_func = M_Control;
     obj->collision_func = Creature_Collision;
@@ -256,19 +251,20 @@ static void M_Setup(OBJECT *const obj)
     Object_GetBone(obj, 13)->rot.y = true;
     OBJECT_PROPERTIES(
         obj,
-        OBJECT_PROPERTY_INT(
+        OBJECT_PROPERTY_STORED(
             "max_hit_points", M_HIT_POINTS, "Maximum hit points."),
-        OBJECT_PROPERTY_INT(
-            "charge_damage", M_CHARGE_DAMAGE,
+        OBJECT_PROPERTY(
+            M_PRIV, charge_damage, M_CHARGE_DAMAGE,
             "Damage dealt while the bear charges into Lara."),
-        OBJECT_PROPERTY_INT(
-            "slam_damage", M_SLAM_DAMAGE,
+        OBJECT_PROPERTY(
+            M_PRIV, slam_damage, M_SLAM_DAMAGE,
             "Damage dealt if the falling bear slams into Lara."),
-        OBJECT_PROPERTY_INT(
-            "attack_damage", M_ATTACK_DAMAGE,
+        OBJECT_PROPERTY(
+            M_PRIV, attack_damage, M_ATTACK_DAMAGE,
             "Damage dealt by the bear bite attack."),
-        OBJECT_PROPERTY_INT(
-            "pat_damage", M_PAT_DAMAGE, "Damage dealt by the bear paw swipe."));
+        OBJECT_PROPERTY(
+            M_PRIV, pat_damage, M_PAT_DAMAGE,
+            "Damage dealt by the bear paw swipe."));
 }
 
 REGISTER_OBJECT(O_BEAR, M_Setup)

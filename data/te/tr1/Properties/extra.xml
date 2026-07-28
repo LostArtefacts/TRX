@@ -33,8 +33,8 @@
     </moveable>
     <!--placeholder for O_BIG_BOWL-->
     <moveable id="-1">
-        <property category="TRX" defaultValue="7" description="The amount of time hot liquid is poured from the bowl, in seconds." displayName="Pour Time" internalName="pour_time" minValue="0" type="Int" />
-        <property category="TRX" defaultValue="4" description="The flip map slot to alter once liquid has finished pouring. -1 = no flipmap is performed." displayName="Flip Slot" internalName="flip_slot" maxValue="10" minValue="-1" type="Int" />
+        <property category="TRX" defaultValue="7" description="The amount of time hot liquid is poured from the bowl, in seconds." displayName="Pour Time" internalName="pour_time" minValue="3" type="Int" />
+        <property category="TRX" defaultValue="4" description="The flip map slot to alter once liquid has finished pouring. -1 = no flipmap is performed." displayName="Flip Slot" internalName="flip_slot" maxValue="9" minValue="-1" type="Int" />
     </moveable>
     <!--placeholder for O_BIG_EEL-->
     <moveable id="-1">
@@ -248,7 +248,7 @@
     </moveable>
     <!--placeholder for O_PIRAHNAS-->
     <moveable id="-1">
-        <property category="TRX" defaultValue="TEN.Vec3(1, 1, 1)" description="Swim range, in quarter tiles." displayName="Range" internalName="range" type="Vec3" />
+        <property category="TRX" defaultValue="TEN.Vec3(1, 1, 1)" description="Swim range, in quarter tiles. Value range: minimum 1 on each axis." displayName="Range" internalName="range" type="Vec3" />
         <property category="TRX" defaultValue="true" description="Whether the shoal uses the surrounding room lighting." displayName="Use Room Lighting" internalName="use_room_lighting" type="Bool" />
     </moveable>
     <!--placeholder for O_PLAYER_5..O_SECURITY_LASER_KILLER-->
@@ -259,6 +259,10 @@
     <moveable id="-1">
         <property category="TRX" defaultValue="25" description="Damage dealt on hit." displayName="Damage" internalName="damage" minValue="0" type="Int" />
         <property category="TRX" defaultValue="true" description="Apply poison buildup in addition to hit damage." displayName="Poison" internalName="poison" type="Bool" />
+    </moveable>
+    <!--placeholder for O_POWER_SAW-->
+    <moveable id="-1">
+        <property category="TRX" defaultValue="200" description="Damage dealt while Lara is touching the power saw." displayName="Damage" internalName="damage" minValue="0" type="Int" />
     </moveable>
     <!--placeholder for O_PRISONER-->
     <moveable id="-1">
@@ -452,7 +456,7 @@
     <!--placeholder for O_TROPICAL_FISH-->
     <moveable id="-1">
         <property category="TRX" defaultValue="0" description="Texture offset in `O_TROPICAL_FISH_GFX`." displayName="Sprite Offset" internalName="sprite_offset" minValue="0" type="Int" />
-        <property category="TRX" defaultValue="TEN.Vec3(1, 1, 1)" description="Swim range, in quarter tiles." displayName="Range" internalName="range" type="Vec3" />
+        <property category="TRX" defaultValue="TEN.Vec3(1, 1, 1)" description="Swim range, in quarter tiles. Value range: minimum 1 on each axis." displayName="Range" internalName="range" type="Vec3" />
         <property category="TRX" defaultValue="true" description="Whether the shoal uses the surrounding room lighting." displayName="Use Room Lighting" internalName="use_room_lighting" type="Bool" />
     </moveable>
     <!--placeholder for O_VULTURE-->
