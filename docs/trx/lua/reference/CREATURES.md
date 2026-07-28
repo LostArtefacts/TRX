@@ -1,6 +1,6 @@
 ---
 title: Creatures
-order: 12
+order: 9
 ---
 
 <!--

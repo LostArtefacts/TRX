@@ -1,6 +1,6 @@
 ---
 title: Assault course
-order: 14
+order: 13
 ---
 
 <!--

@@ -1,6 +1,6 @@
 ---
 title: Strings
-order: 19
+order: 24
 ---
 
 <!--

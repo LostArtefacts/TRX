@@ -2,7 +2,7 @@ local raw = trxc.creatures
 local api = trx.api
 
 api.module("creatures", {
-  order = 12,
+  order = 9,
   description = "Module for controlling certain creature behavior.",
 })
 

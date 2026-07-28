@@ -4,7 +4,7 @@ local api = trx.api
 require("trx.query")
 
 api.module("items", {
-  order = 4,
+  order = 2,
   description = "Module for controlling all moveables.",
 })
 

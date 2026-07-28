@@ -1181,7 +1181,7 @@ end
 -- run is what a script can use: strict mode, and the question of whether it is
 -- on. The rest declared the surface and is gone by the time any script runs.
 api.module("api", {
-  order = 20,
+  order = 26,
   title = "API registry",
   description = "Argument checking for the whole of `trx`.",
 })

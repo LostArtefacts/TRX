@@ -4,7 +4,7 @@ local api = trx.api
 require("trx.log")
 
 api.module("locale", {
-  order = 18,
+  order = 16,
   description = "The text the player reads, in the player's own language.",
 })
 

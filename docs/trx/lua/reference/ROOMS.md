@@ -1,6 +1,6 @@
 ---
 title: Rooms
-order: 10
+order: 4
 ---
 
 <!--

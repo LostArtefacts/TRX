@@ -92,6 +92,13 @@ repos:
     additional_dependencies:
       - pyjson5
 
+  - id: lint-lua-module-order
+    name: Lua module order numbers are unique
+    entry: tools/lint/checks/lua_module_order
+    language: python
+    pass_filenames: false
+    files: ^src/lua/api/.*\.lua$
+
   - id: gen-sort-imports
     name: Sort C includes
     entry: tools/lint/gen/sort_imports

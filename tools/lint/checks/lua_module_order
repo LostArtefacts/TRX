@@ -1,0 +1,41 @@
+#!/usr/bin/env python3
+import re
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
+from harness import LintWarning, repo_check
+from shared.paths import SRC_DIR
+
+# api.module("name", { order = N, ... }) - the order the module takes in the
+# generated reference. Two modules sharing one leave their pages in whatever
+# order the sort happens to settle on.
+MODULE_RE = re.compile(
+    r"""api\.module\(\s*"([^"]+)"\s*,\s*\{[^}]*?\border\s*=\s*(\d+)""",
+    re.DOTALL,
+)
+
+
+def check():
+    api_dir = SRC_DIR / "lua/api"
+    seen: dict[int, tuple[Path, str]] = {}
+    for path in sorted(api_dir.glob("*.lua")):
+        text = path.read_text(encoding="utf-8")
+        for match in MODULE_RE.finditer(text):
+            name, order = match.group(1), int(match.group(2))
+            line = text.count("\n", 0, match.start()) + 1
+            if order in seen:
+                other_path, other_name = seen[order]
+                yield LintWarning(
+                    path,
+                    f"module '{name}' takes order {order}, "
+                    f"which '{other_name}' already has "
+                    f"({other_path.relative_to(SRC_DIR.parent)})",
+                    line=line,
+                )
+                continue
+            seen[order] = (path, name)
+
+
+repo_check(check)

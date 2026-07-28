@@ -1,6 +1,6 @@
 ---
 title: Locale
-order: 18
+order: 16
 ---
 
 <!--
