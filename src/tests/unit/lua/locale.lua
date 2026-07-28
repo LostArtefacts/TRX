@@ -7,6 +7,29 @@ test("a key reads back the text behind it", function()
   assert(trx.locale.get("test/plain") == "Plain text")
 end)
 
+test("a declared key reads back the text declared for it", function()
+  trx.locale.declare({
+    ["test/declared"] = "Declared text",
+    ["test/declared_formatted"] = "Declared %d",
+  })
+  assert(trx.locale.get("test/declared") == "Declared text")
+  assert(trx.locale.format("test/declared_formatted", 7) == "Declared 7")
+end)
+
+test("declaring a key again replaces the text behind it", function()
+  -- A mod ships its own wording for a key the base game declares, and what the
+  -- player reads is the mod's.
+  trx.locale.declare({ ["test/redeclared"] = "First" })
+  trx.locale.declare({ ["test/redeclared"] = "Second" })
+  assert(trx.locale.get("test/redeclared") == "Second")
+end)
+
+test("declare takes strings and nothing else", function()
+  assert(not pcall(trx.locale.declare, "test/plain"))
+  assert(not pcall(trx.locale.declare, { ["test/bad"] = 1 }))
+  assert(not pcall(trx.locale.declare, { [1] = "text" }))
+end)
+
 test("a key nobody has reads back as itself", function()
   -- So a typo shows up on the screen, where someone will see it, rather than as
   -- a nil three lines further down.

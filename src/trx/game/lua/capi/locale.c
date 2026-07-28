@@ -24,6 +24,13 @@ static int M_L_LocaleGet(lua_State *const L)
     return 1;
 }
 
+// trxc.locale.declare(key, text)
+static int M_L_LocaleDeclare(lua_State *const L)
+{
+    GameString_Define(luaL_checkstring(L, 1), luaL_checkstring(L, 2));
+    return 0;
+}
+
 // trxc.locale.reload() -> bool
 static int M_L_LocaleReload(lua_State *const L)
 {
@@ -32,6 +39,7 @@ static int M_L_LocaleReload(lua_State *const L)
 }
 
 static const luaL_Reg m_Module[] = {
+    { "declare", M_L_LocaleDeclare },
     { "get", M_L_LocaleGet },
     { "reload", M_L_LocaleReload },
     { nullptr, nullptr },

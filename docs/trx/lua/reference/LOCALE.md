@@ -16,6 +16,25 @@ The text the player reads, in the player's own language.
 
 ### Functions
 
+- [lua]`trx.locale.declare(strings)`  
+  Declares game string keys and the text behind them.
+
+  A key belongs with the script that shows it, so a command carries its own
+  wording. What is declared here is the fallback: the strings files and their
+  translations are read over it, and a declaration shows only for a key they have
+  nothing for.
+
+  Parameters:
+  - **`strings`** (table). Keys to their English text.
+
+  Example:
+  ```lua
+  trx.locale.declare({
+    ["console/cmd/heal/help"] = "Heals Lara back to full health.",
+    ["console/cmd/heal/success"] = "Healed Lara back to full health",
+  })
+  ```
+
 - [lua]`trx.locale.get(key)`  
   The text behind a game string key.
 
