@@ -10,7 +10,7 @@ for _, constant in ipairs(trxc.enum.values("LUA_EVENT_TYPE")) do
 end
 
 api.module("events", {
-  order = 2,
+  order = 1,
   description = "Lua scripts can listen for game events by attaching a handler to one of the hooks "
     .. "below. Attaching returns a listener id, which `trx.events.detach` takes.\n\n"
     .. "A handler attached from a level script is detached automatically when the level ends; one "

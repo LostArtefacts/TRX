@@ -1,6 +1,6 @@
 ---
 title: Rules
-order: 25
+order: 11
 ---
 
 <!--

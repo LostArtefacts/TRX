@@ -2,7 +2,7 @@ local raw = trxc.camera
 local api = trx.api
 
 api.module("camera", {
-  order = 16,
+  order = 10,
   description = "Module for inspecting the active camera state.",
 })
 

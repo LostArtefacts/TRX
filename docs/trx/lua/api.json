@@ -4694,59 +4694,59 @@
     {
       "description": "Argument checking for the whole of `trx`.",
       "name": "api",
-      "order": 20,
+      "order": 26,
       "title": "API registry"
     },
     {
       "description": "A small, declarative argument parser for console commands, in the shape of\nPython's argparse.\n\nA parser both reads a command's arguments and offers completions for them,\nfrom one declaration. Every command written with `trx.console.register` has\none; a command shapes it through the `args` function it hands over, and `run`\nthen receives a table of parsed values. A command that shapes nothing takes no\narguments, and is told so when given one.\n\nEvery parser answers `-h` and `--help` on its own, printing what it accepts.\n\nHow a positional reads a token is its `matcher`, one of:\n\n- `type` - coerce to `\"integer\"`, `\"number\"`, `\"string\"` or `\"boolean\"`.\n- `choices` - the allowed set: a list of values or a `function(parsed)`\n  returning one. The token must match one; the set is shown in errors and\n  completes.\n- `match` - a `function(token, parsed)` returning `value, ok`, for a shape of its own.\n\nThese do not combine on one positional; a value that is a number *or* a name is\ntwo matchers, declared with `any_of`. Separately, `suggest` offers completions\nwithout restricting or being shown in errors - for a free value with a long\nlist behind it, like a setting name.\n\nA parser has these methods, each returning the parser so calls chain:\n\n- `positional(name, opts)` - a positional with one matcher (`opts.type`,\n  `opts.choices` or `opts.match`). `opts.optional` lets it be left out;\n  `opts.greedy` reads the rest of the line as one token, so a value with spaces\n  in it still arrives whole; `opts.suggest` completes it; `opts.help` describes\n  it.\n- `any_of(name, alternatives, opts)` - a positional whose value is the first of\n  several matchers to take the token. Each alternative is a matcher table,\n  `{ type = ... }` or `{ choices = ... }`. Same `opts` as `positional`.\n- `rest(name, opts)` - the rest of the line from here on, verbatim as one\n  string, or nil when an optional one is absent. Always the last argument;\n  `opts.suggest` completes it.\n- `flag(name, opts)` - a boolean that may sit anywhere. `opts.short` and\n  `opts.long` are the spellings, e.g. `\"-f\"` and `\"--force\"`; `opts.help`\n  describes it.\n- `parse(args)` - reads the argument string, returning a table of values, or\n  `nil` and a structured error the console layer turns into localized text. A\n  value carried by a `{ key, value }` choice comes back as its `value`;\n  `-h`/`--help` comes back as `{ help = true }`.\n- `complete(text, caret)` - the candidate completions for the token the caret\n  sits in, and the byte offsets `start, end` of the run they replace (reaching\n  to the end of the line for a greedy argument).\n- `usage()` - a short description of what the command accepts.\n\nA choice is either a bare string, where the key and value are the same, or a\n`{ key, value }` pair, where `key` is matched and shown and `value` is what\n`parse` gives back. Matching is forgiving, through `trx.strings.fuzzy_match`.",
       "name": "argparse",
-      "order": 23
+      "order": 18
     },
     {
       "description": "Module for controlling the Assault Course and Quad Bike timers in gym levels.",
       "name": "assault",
-      "order": 14,
+      "order": 13,
       "title": "Assault course"
     },
     {
       "description": "Module for inspecting the active camera state.",
       "name": "camera",
-      "order": 16
+      "order": 10
     },
     {
       "description": "The names TRX knows things by.\n\nEach catalog is an enum of every object, sample, music track, Lara state, Lara animation or item action the engine has a name for. The names are the C ones with their prefix taken off - `O_WOLF` is `trx.catalog.objects.WOLF` - and a catalog answers to a name in any case, so `trx.catalog.objects.wolf` is the same constant.\n\nThe ids in a catalog are TRX's own, and they are the same in all four games. The number a builder reads off Tomb Editor is not: that is the slot the game's own files use. `to_slot` and `from_slot` convert between the two.",
       "name": "catalog",
-      "order": 13
+      "order": 6
     },
     {
       "description": "Module for reading and changing engine settings.\n\nThese are the player's settings, not the level's. `set` writes to them and keeps the change: it is remembered across saves and relaunches, exactly as if the player had made it themselves. A level that wants to tint the water or pull the fog in wants `override` instead, which lasts as long as the script keeps it and leaves the player's own value untouched underneath.",
       "name": "config",
-      "order": 8
+      "order": 19
     },
     {
       "description": "Module for interacting with the developer console.\n\n`trx.console.log` writes to the console overlay in-game, where `trx.log` writes only to the terminal and the log file.",
       "name": "console",
-      "order": 5
+      "order": 17
     },
     {
       "description": "Module for controlling certain creature behavior.",
       "name": "creatures",
-      "order": 12
+      "order": 9
     },
     {
       "description": "Lua scripts can listen for game events by attaching a handler to one of the hooks below. Attaching returns a listener id, which `trx.events.detach` takes.\n\nA handler attached from a level script is detached automatically when the level ends; one attached from a global script lives for the whole session.",
       "name": "events",
-      "order": 2
+      "order": 1
     },
     {
       "description": "Module for the game flow: which levels there are, and which one is being played.",
       "name": "game",
-      "order": 11
+      "order": 8
     },
     {
       "description": "Module for controlling all moveables.",
       "name": "items",
-      "order": 4
+      "order": 2
     },
     {
       "description": "Module for reading and nudging Lara's own state.\n\nHer position, room and hit points are not here: she is an item like any other and they live on it, as `trx.lara.item`.",
@@ -4756,75 +4756,75 @@
     {
       "description": "The text the player reads, in the player's own language.",
       "name": "locale",
-      "order": 18
+      "order": 16
     },
     {
       "description": "Logs a message to the terminal and to `TRX.log` in the installation directory. Each call records the Lua script's filename, function name and line number.",
       "name": "log",
-      "order": 1,
+      "order": 22,
       "title": "Logging"
     },
     {
       "description": "Evaluating Lua at runtime: a string of code, or a file on disk. Both run in the same state as every other script.",
       "name": "lua",
-      "order": 22
+      "order": 25
     },
     {
       "description": "Fixed-point trigonometry, matching the engine's own tables.\n\nTRX angles are 16-bit units where 65536 is a full turn, not radians. Using these rather than Lua's `math` library guarantees a script places things exactly where the engine would.",
       "name": "math",
-      "order": 17
+      "order": 23
     },
     {
       "description": "The mods the game was built with, and which one is loaded.",
       "name": "mod",
-      "order": 23
+      "order": 21
     },
     {
       "description": "Module for playing and controlling the soundtrack.",
       "name": "music",
-      "order": 6
+      "order": 15
     },
     {
       "description": "Module for the object definitions a level is built from.\n\nAn object is the pattern every item of that type is cut from: a wolf's radius, not this wolf's. Per-item state lives on the item - see `trx.items`.",
       "name": "objects",
-      "order": 15,
+      "order": 5,
       "title": "Object"
     },
     {
       "description": "A composable filter over a domain of things - the objects a level is built\nfrom, or the items alive in it. `trx.objects.query` and `trx.items.query` are\neach the identity query, matching everything; you narrow one down and then read\nthe result.\n\nA query is immutable. Every method returns a fresh query, so a base can be kept\nand branched from without one narrowing leaking into another.\n\nFour ways to narrow, which mix freely:\n\n- Chain methods read left to right and combine with AND:\n  `q:spawnable():by_name(\"wolf\")`. Each domain adds its own - see\n  `trx.objects.query` and `trx.items.query` for the ones it has.\n- The operators `&`, `|` and `~` are AND, OR and NOT over whole queries, for\n  what a chain cannot say: `q:pickup() | q:inventory_item()`, `~q:animation()`.\n  Both sides of `&`/`|` must come from the same domain.\n- `by_name(name)` ranks rather than filters: it matches the way a player types\n  a name, forgivingly, and orders what survives the rest of the query best\n  first. Some of a domain's filters are also searchable groups - `pickup` is\n  one - so their name matches every member. Only a domain that has names offers\n  `by_name`, `names` and `best`.\n- `where(predicate)` narrows by a test of your own, called with the id and the\n  handle, for what a domain does not name: `q:where(function(id, item) return\n  item.timer > 0 end)`.\n\nRead a query with a terminal:\n\n- `ids()` - the matching ids, a list. For objects these are object ids; for\n  items, their numbers.\n- `matches()` - the matching handles: `trx.objects.Object`s or\n  `trx.items.Item`s.\n- `first()` - the first matching handle, or `nil`.\n- `count()` - how many match.\n- `names()` - every name the matches answer to, for offering completions. The\n  group names any match belongs to come first.\n- `best()` - the ids tied for the best `by_name` score: one for a name only one\n  thing answers to, the whole group for a group name.\n",
       "name": "query",
-      "order": 16,
+      "order": 7,
       "title": "Query"
     },
     {
       "description": "Module for inspecting and altering the rooms of the current level.",
       "name": "rooms",
-      "order": 10
+      "order": 4
     },
     {
       "description": "Module for the numbers the engine plays by.\n\nThese are the game's rules: a mechanic that no single item owns. An object's own numbers live on\nthe object, as `trx.objects.<name>.properties`, and the player's own choices live in `trx.config`.\n\nA rule lasts as long as the playthrough: it is saved with the game and restored with it, and a\nnew game starts from the defaults. A level script states what its level wants, and states it\nagain on every entry, so a level that wants the defaults back asks for them.",
       "name": "rules",
-      "order": 25
+      "order": 11
     },
     {
       "description": "The save slots, and starting or reading a saved game.",
       "name": "savegame",
-      "order": 24
+      "order": 20
     },
     {
       "description": "Module for playing sound effects.",
       "name": "sound",
-      "order": 7
+      "order": 14
     },
     {
       "description": "Utilities for working with strings.\n\nNot to be confused with `trx.locale`, which is the text a player reads: this module is about manipulating strings, that one is about which string the player gets.",
       "name": "strings",
-      "order": 19
+      "order": 24
     },
     {
       "description": "The runtime weather effect the current level shows.",
       "name": "weather",
-      "order": 21
+      "order": 12
     }
   ],
   "namespaces": [

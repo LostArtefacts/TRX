@@ -2,7 +2,7 @@ local raw = trxc.math
 local api = trx.api
 
 api.module("math", {
-  order = 17,
+  order = 23,
   description = "Fixed-point trigonometry, matching the engine's own tables.\n\n"
     .. "TRX angles are 16-bit units where 65536 is a full turn, not radians. Using these rather "
     .. "than Lua's `math` library guarantees a script places things exactly where the engine "

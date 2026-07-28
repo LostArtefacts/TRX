@@ -1,6 +1,6 @@
 ---
 title: Events
-order: 2
+order: 1
 ---
 
 <!--
