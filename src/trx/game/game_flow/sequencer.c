@@ -264,8 +264,6 @@ GF_COMMAND GF_InterpretSequence(
         }
     }
 
-    LUA_RunLevelScript(level);
-
     // load the level
     const GF_SEQUENCE *const sequence = &level->sequence;
     for (int32_t i = 0; i < sequence->length; i++) {
