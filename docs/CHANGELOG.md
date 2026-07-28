@@ -23,6 +23,7 @@
 - fixed the sun's glare staying on screen in cutscenes once the camera has looked away from it
 - fixed exploding deaths in TR4 showing no flames or explosions
 - fixed Lara's shadow in TR4 being darker than in the original game
+- fixed Lara's arm swinging while she runs or crouches with a flare in TR4
 - fixed some console commands being able to target unintended items
 - fixed the `/spawn` and `/kill` console commands not reaching army Winston
 - fixed the `/teatime` console command summoning army Winston rather than Winston himself

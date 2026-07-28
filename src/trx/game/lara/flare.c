@@ -63,6 +63,17 @@ static const LARA_TRX_STATE m_HoldStates[] = {
     // clang-format on
 };
 
+// TR4 also keeps the arm on the flare while running and crouching.
+static const LARA_TRX_STATE m_HoldStatesTR4[] = {
+    // clang-format off
+    LS_RUN,
+    LS_CROUCH_IDLE,
+    LS_CROUCH_TURN_LEFT,
+    LS_CROUCH_TURN_RIGHT,
+    LS_TRX_INVALID, // sentinel
+    // clang-format on
+};
+
 static const LARA_TRX_STATE m_ThrowStates[] = {
     // clang-format off
     LS_FAST_FALL,
@@ -221,7 +232,8 @@ static bool M_CanUseFlareControl(void)
         return anim != LA_CROUCH_PICKUP && anim != LA_CRAWL_PICKUP
             && anim != LA_FAST_PICKUP;
     }
-    return Lara_Vehicle_IsMounted() || Lara_HasState(m_HoldStates);
+    return Lara_Vehicle_IsMounted() || Lara_HasState(m_HoldStates)
+        || (g_TRVersion == 4 && Lara_HasState(m_HoldStatesTR4));
 }
 
 static void M_ControlArmless(void)
