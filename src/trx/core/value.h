@@ -46,29 +46,65 @@ typedef struct {
     };
 } TRX_VALUE;
 
+// C type, TAG, carrier member. The plain types a value may have, listed once
+// for everything that has to resolve one from a C expression. TVT_ENUM and
+// TVT_DYNAMIC_ENUM are absent: they share their storage with S32 and STRING, so
+// they are named by a caller, never resolved from a member. So is TVT_XYZ_16,
+// which rides in the carrier widened rather than as itself; see Value_TypeOf.
+#define VALUE_PLAIN_TYPES(_)                                                   \
+    _(bool, TVT_BOOL, as_bool)                                                 \
+    _(int8_t, TVT_S8, as_int)                                                  \
+    _(uint8_t, TVT_U8, as_int)                                                 \
+    _(int16_t, TVT_S16, as_int)                                                \
+    _(uint16_t, TVT_U16, as_int)                                               \
+    _(int32_t, TVT_S32, as_int)                                                \
+    _(uint32_t, TVT_U32, as_int)                                               \
+    _(float, TVT_FLOAT, as_num)                                                \
+    _(double, TVT_DOUBLE, as_num)                                              \
+    _(XYZ_32, TVT_XYZ_32, as_xyz)                                              \
+    _(RGB_888, TVT_RGB_888, as_rgb)
+
 // The TRX_VALUE_TYPE that addresses a member of a plain C type, resolved from
 // the member itself so a plain member cannot be mistagged. Listing the types
 // rather than accepting anything means a member of a type nobody planned for -
 // a pointer, a 64-bit integer - fails to compile instead of being addressed as
 // something it is not. Enum members resolve to their integer storage type;
 // enum-string mapping is a caller concern, not a member's.
+#define M_VALUE_TYPE_OF(ctype_, tag_, member_)                                 \
+    ctype_:                                                                    \
+    tag_,
 #define Value_TypeOf(member_)                                                  \
     _Generic(                                                                  \
         (member_),                                                             \
-        bool: TVT_BOOL,                                                        \
-        int8_t: TVT_S8,                                                        \
-        uint8_t: TVT_U8,                                                       \
-        int16_t: TVT_S16,                                                      \
-        uint16_t: TVT_U16,                                                     \
-        int32_t: TVT_S32,                                                      \
-        uint32_t: TVT_U32,                                                     \
-        float: TVT_FLOAT,                                                      \
-        double: TVT_DOUBLE,                                                    \
-        XYZ_16: TVT_XYZ_16,                                                    \
-        XYZ_32: TVT_XYZ_32,                                                    \
-        RGB_888: TVT_RGB_888,                                                  \
+        VALUE_PLAIN_TYPES(M_VALUE_TYPE_OF) XYZ_16: TVT_XYZ_16,                 \
         char *: TVT_STRING,                                                    \
         const char *: TVT_STRING)
+
+#define M_VALUE_MAKER(ctype_, tag_, member_)                                   \
+    static inline TRX_VALUE Value_Make_##tag_(const ctype_ value)              \
+    {                                                                          \
+        return (TRX_VALUE) { .type = tag_, .member_ = value };                 \
+    }
+VALUE_PLAIN_TYPES(M_VALUE_MAKER)
+#undef M_VALUE_MAKER
+
+// The TRX_VALUE carrying `value_`, tagged by the C type of the expression
+// itself. The counterpart of Value_TypeOf for a value rather than a member: a
+// declared default states the value and nothing else, and cannot be tagged as
+// something it is not.
+//
+// An enumeration constant carries its own type under C23 rather than int, so it
+// matches nothing in the table; the default branch takes it as the integer it
+// is. A type that is not a number at all still fails to compile, on the
+// conversion into the maker.
+#define M_VALUE_MAKER_OF(ctype_, tag_, member_)                                \
+    ctype_:                                                                    \
+    Value_Make_##tag_,
+#define Value_Of(value_)                                                       \
+    (_Generic(                                                                 \
+        (value_),                                                              \
+         VALUE_PLAIN_TYPES(M_VALUE_MAKER_OF) default: Value_Make_TVT_S32)(     \
+        value_))
 
 // Stable machine-readable name, e.g. "S16", "XYZ_32", "ENUM".
 const char *Value_TypeName(TRX_VALUE_TYPE type);
