@@ -87,5 +87,91 @@ class TestGameStrings(unittest.TestCase):
         self.assertEqual(found, [(5, "test/plain")])
 
 
+class TestLuaDeclarations(unittest.TestCase):
+    """trx.locale.declare() is where a Lua script's own text lives.
+
+    The scanner is what carries it into cfg/base_strings.json5, so a declaration
+    it cannot read is a string the game ships without and the translators never
+    see.
+    """
+
+    def setUp(self):
+        self.strings = load("lint/gen/game_strings")
+
+    def scan_lines(self, source: str) -> list[tuple[int, str, str]]:
+        with tempfile.NamedTemporaryFile("w", suffix=".lua", delete=False) as fh:
+            fh.write(source)
+            path = Path(fh.name)
+        try:
+            return list(self.strings.get_declared_lua_strings(path))
+        finally:
+            path.unlink()
+
+    def scan(self, source: str) -> dict[str, str]:
+        return {key: value for _, key, value in self.scan_lines(source)}
+
+    def test_a_declared_key_carries_its_text(self):
+        found = self.scan(
+            'trx.locale.declare({\n  ["test/plain"] = "Plain text",\n})\n'
+        )
+        self.assertEqual(found, {"test/plain": "Plain text"})
+
+    def test_single_quoted_entries_are_found(self):
+        found = self.scan("trx.locale.declare({ ['test/plain'] = 'Plain' })\n")
+        self.assertEqual(found, {"test/plain": "Plain"})
+
+    def test_escapes_are_resolved(self):
+        found = self.scan(
+            r'trx.locale.declare({ ["test/two"] = "a\nb\"c\\d" })' + "\n"
+        )
+        self.assertEqual(found, {"test/two": 'a\nb"c\\d'})
+
+    def test_a_bracket_in_the_text_does_not_end_the_call(self):
+        # "Valid values: [integer]" is real text a command prints, and a scanner
+        # that balanced brackets rather than parentheses would stop inside it.
+        found = self.scan(
+            'trx.locale.declare({\n'
+            '  ["test/a"] = "one) [two]",\n'
+            '  ["test/b"] = "three",\n'
+            "})\n"
+        )
+        self.assertEqual(found, {"test/a": "one) [two]", "test/b": "three"})
+
+    def test_every_call_in_a_file_is_read(self):
+        found = self.scan(
+            'trx.locale.declare({ ["test/a"] = "A" })\n'
+            'trx.locale.declare({ ["test/b"] = "B" })\n'
+        )
+        self.assertEqual(found, {"test/a": "A", "test/b": "B"})
+
+    def test_a_table_that_is_not_a_declaration_is_ignored(self):
+        found = self.scan('local labels = { ["test/plain"] = "Plain" }\n')
+        self.assertEqual(found, {})
+
+    def test_commented_out_declaration_is_ignored(self):
+        found = self.scan(
+            '-- trx.locale.declare({ ["test/dead"] = "Dead" })\n'
+        )
+        self.assertEqual(found, {})
+
+    def test_declaration_in_a_long_string_is_ignored(self):
+        # The api.define example shows what a call looks like; it declares
+        # nothing.
+        found = self.scan(
+            'examples = { [[trx.locale.declare({ ["test/dead"] = "Dead" })]] },\n'
+        )
+        self.assertEqual(found, {})
+
+    def test_the_reported_line_is_the_entry_s_own(self):
+        found = self.scan_lines(
+            "local x = 1\n"
+            "trx.locale.declare({\n"
+            '  ["test/a"] = "A",\n'
+            '  ["test/b"] = "B",\n'
+            "})\n"
+        )
+        self.assertEqual(found, [(3, "test/a", "A"), (4, "test/b", "B")])
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)

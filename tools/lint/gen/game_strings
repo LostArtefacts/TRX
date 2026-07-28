@@ -56,6 +56,12 @@ RE_LUA_HELP_ID_USAGE = re.compile(
     r"\bhelp\s*=\s*"
     r"""(?:"((?:\\.|[^"\\])*)"|'((?:\\.|[^'\\])*)')"""
 )
+RE_LUA_DECLARE_CALL = re.compile(r"\btrx\.locale\.declare\s*\(")
+# One ["key"] = "English" row of a trx.locale.declare{} table.
+RE_LUA_DECLARE_ENTRY = re.compile(
+    r"""\[\s*(?:"((?:\\.|[^"\\])*)"|'((?:\\.|[^'\\])*)')\s*\]\s*=\s*"""
+    r"""(?:"((?:\\.|[^"\\])*)"|'((?:\\.|[^'\\])*)')"""
+)
 ROOT_SECTIONS = ("general", "console", "enums", "dynamic", "settings")
 TOP_LEVEL_SECTION_ORDER = (
     "extends",
@@ -438,6 +444,81 @@ def get_used_lua_strings(path: Path) -> Iterable[tuple[int, str]]:
             yield source.count("\n", 0, match.start()) + 1, unescape(literal)
 
 
+def lua_declare_blocks(source: str) -> Iterable[tuple[int, str]]:
+    """Each trx.locale.declare() argument list, with where in the source it starts.
+
+    Balanced on parentheses, skipping over quoted strings so a bracket a
+    translator wrote into the text does not end the call early.
+    """
+    n = len(source)
+    for match in RE_LUA_DECLARE_CALL.finditer(source):
+        start = match.end()
+        i = start
+        depth = 1
+        while i < n and depth > 0:
+            ch = source[i]
+            if ch in ("'", '"'):
+                i += 1
+                while i < n and source[i] != ch:
+                    i += 2 if source[i] == "\\" else 1
+                i += 1
+                continue
+            if ch == "(":
+                depth += 1
+            elif ch == ")":
+                depth -= 1
+            i += 1
+        yield start, source[start : max(start, i - 1)]
+
+
+def get_declared_lua_strings(path: Path) -> Iterable[tuple[int, str, str]]:
+    """Game string keys a Lua script declares, and the English behind them."""
+    source = strip_lua_noncode(path.read_text())
+    for offset, block in lua_declare_blocks(source):
+        for match in RE_LUA_DECLARE_ENTRY.finditer(block):
+            key = match.group(1) if match.group(1) is not None else match.group(2)
+            value = (
+                match.group(3) if match.group(3) is not None else match.group(4)
+            )
+            line = source.count("\n", 0, offset + match.start()) + 1
+            yield line, unescape(key), unescape(value)
+
+
+def merge_lua_declarations(
+    game_strings: dict[str, str], lua_files: list[Path]
+) -> None:
+    """Fold what the Lua scripts declare into the entries.def strings map.
+
+    A key belongs to one place. Declaring one twice, or declaring one
+    GS_DEFINE() already has, leaves the English text ambiguous, so it is
+    reported rather than resolved.
+    """
+    origins: dict[str, str] = {}
+    errors: list[str] = []
+    for path in lua_files:
+        for line, key, value in get_declared_lua_strings(path):
+            origin = f"{path.relative_to(REPO_DIR)}:{line}"
+            if key in origins:
+                errors.append(
+                    f"{origin}: {key} is already declared in {origins[key]}"
+                )
+            elif key in game_strings:
+                errors.append(f"{origin}: {key} is already a GS_DEFINE()")
+            elif not any(key.startswith(f"{s}/") for s in ROOT_SECTIONS):
+                errors.append(
+                    f"{origin}: {key} must start with one of: "
+                    + ", ".join(ROOT_SECTIONS)
+                )
+            else:
+                origins[key] = origin
+                game_strings[key] = value
+    if errors:
+        sys.exit(
+            "Error: bad trx.locale.declare() entries:\n"
+            + "\n".join(f"  - {error}" for error in errors)
+        )
+
+
 def get_enum_value_types(paths: list[Path]) -> dict[str, str]:
     value_types: dict[str, str] = {}
     for path in paths:
@@ -567,6 +648,7 @@ class RunContext:
             CommonPaths.src_dir / "game/game_strings/entries.def"
         )
         self.game_strings_dict = get_strings_map(self.game_strings_def_path)
+        merge_lua_declarations(self.game_strings_dict, lua_files)
         self.used_game_strings = sum(
             [
                 list(
@@ -970,7 +1052,10 @@ class Mode(Enum):
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Update game strings JSON files to reflect GS_DEFINE() macros."
+        description=(
+            "Update game strings JSON files to reflect the GS_DEFINE() macros "
+            "and the trx.locale.declare() tables."
+        )
     )
     parser.add_argument(
         "--fill",
