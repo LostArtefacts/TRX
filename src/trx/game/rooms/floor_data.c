@@ -187,7 +187,10 @@ static bool M_TestSectorTrigger(
     const ITEM *const item, const SECTOR *const sector, const bool is_heavy)
 {
     LARA_INFO *const lara_info = Lara_GetLaraInfo();
-    if (!is_heavy) {
+    // The non-heavy pass runs for the flyby camera as well, and a level it
+    // plays in need not hold a player for these to read.
+    const ITEM *const lara_item = Lara_GetItem();
+    if (!is_heavy && lara_item != nullptr) {
         if (sector->is_death_sector && M_TestLava(item)) {
             Lara_TouchDeathSector(Level_GetDeathTile());
         }
@@ -241,8 +244,7 @@ static bool M_TestSectorTrigger(
                 return false;
             }
             // A pad answers to the player standing on it, whoever asked.
-            const ITEM *const lara_item = Lara_GetItem();
-            if (lara_item->pos.y != lara_item->floor) {
+            if (lara_item == nullptr || lara_item->pos.y != lara_item->floor) {
                 return false;
             }
             if (item->object_id == O_LARA
