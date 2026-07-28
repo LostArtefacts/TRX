@@ -717,12 +717,14 @@ LANDED_STATE Lara_Col_LandedBad(ITEM *const item)
         return LANDED_OK;
     }
 
-    if (land_speed <= DAMAGE_LENGTH) {
+    if (g_Config.debug.enable_invulnerability) {
+        return LANDED_OK;
+    } else if (land_speed <= DAMAGE_LENGTH) {
         Lara_TakeDamage(
             LARA_MAX_HITPOINTS * SQUARE(land_speed) / SQUARE(DAMAGE_LENGTH),
             false);
     } else {
-        Lara_TakeDamage(item->hit_points, false);
+        Lara_Kill();
     }
 
     // #675: Original bug to keep. Correct operator would be <=
