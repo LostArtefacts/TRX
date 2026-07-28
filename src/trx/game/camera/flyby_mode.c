@@ -1,6 +1,7 @@
 #include <trx/game/camera/flyby_mode.h>
 
 #include <trx/game/camera.h>
+#include <trx/game/game_flow.h>
 #include <trx/game/lara.h>
 #include <trx/game/rooms.h>
 #include <trx/game/viewport.h>
@@ -217,10 +218,23 @@ static void M_TestTriggers(void)
         return;
     }
 
-    // TODO: if current level == 0 (title?), test non-heavy too
     m_TriggerItem.pos = g_Camera.pos.pos;
     m_TriggerItem.room_num = g_Camera.pos.room_num;
-    Room_TestTriggers(&m_TriggerItem);
+
+    // The camera stands in for a heavy object while it tests, so the triggers
+    // it runs do not also reach for a fixed camera.
+    const CAMERA_TYPE camera_type = g_Camera.type;
+    g_Camera.type = CAM_HEAVY;
+
+    // There is no player on the title level to walk onto a pad or a plain
+    // trigger, so the flyby answers for both kinds there.
+    const GF_LEVEL *const level = GF_GetCurrentLevel();
+    if (level != nullptr && level->type == GFL_TITLE) {
+        Room_TestTriggersEx(&m_TriggerItem, false);
+    }
+    Room_TestTriggersEx(&m_TriggerItem, true);
+
+    g_Camera.type = camera_type;
     m_State.flags.test_triggers = false;
 }
 
