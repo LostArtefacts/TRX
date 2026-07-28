@@ -304,7 +304,7 @@ static void M_Setup(OBJECT *const obj)
     obj->save_flags = true;
     obj->save_anim = true;
     OBJECT_PROPERTIES(
-        obj, OBJECT_PROPERTY_STORED("max_hit_points", 1, "Maximum hit points."),
+        obj, ITEM_PROPERTY_MAX_HIT_POINTS(1),
         OBJECT_PROPERTY(
             M_PRIV, shot_damage, M_LARA_DAMAGE,
             "Damage dealt by shots when Lara is not mounted."),

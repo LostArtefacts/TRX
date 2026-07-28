@@ -19,10 +19,7 @@ static void M_SetupLara(OBJECT *const obj)
     obj->save_hitpoints = true;
     obj->save_flags = true;
     obj->save_anim = true;
-    OBJECT_PROPERTIES(
-        obj,
-        OBJECT_PROPERTY_STORED(
-            "max_hit_points", LARA_MAX_HITPOINTS, "Maximum hit points."));
+    OBJECT_PROPERTIES(obj, ITEM_PROPERTY_MAX_HIT_POINTS(LARA_MAX_HITPOINTS));
     ObjectProperty_SetObjectValueRaw(
         obj, "max_hit_points",
         (TRX_VALUE) {

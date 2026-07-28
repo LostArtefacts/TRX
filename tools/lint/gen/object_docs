@@ -527,7 +527,7 @@ def read_struct_members(source: str) -> dict[str, dict[str, str]]:
     cannot see past.
     """
     structs: dict[str, dict[str, str]] = {}
-    for match in re.finditer(r"typedef struct \{", source):
+    for match in re.finditer(r"typedef struct(?:\s+\w+)?\s*\{", source):
         depth, index = 1, match.end()
         members: dict[str, str] = {}
         line_start = index
@@ -569,6 +569,15 @@ def infer_stored_type(value_expr: str, constants: dict[str, str]) -> str:
     return "INT"
 
 
+# Named declarations that stand for a whole property. The tuple is what the
+# macro fills in: the member it binds, the type of that member, and the
+# description it carries.
+NAMED_DECLARATIONS = {
+    "ITEM_PROPERTY_MAX_HIT_POINTS": (
+        "max_hit_points", "ITEM", "Maximum hit points."),
+}
+
+
 def iter_object_property_declarations(
     source: str,
     structs: dict[str, dict[str, str]],
@@ -576,19 +585,38 @@ def iter_object_property_declarations(
 ) -> list[PropertyInfo]:
     declarations: list[PropertyInfo] = []
     pattern = re.compile(
-        r"\bOBJECT_PROPERTY"
-        r"(?P<variant>_STORED_SETTER|_STORED|_SETTER|_CHECKED)?\(",
+        r"\b(?:OBJECT_PROPERTY"
+        r"(?P<variant>_STORED_SETTER|_STORED|_SETTER|_CHECKED|_ITEM)?"
+        r"|(?P<named>" + "|".join(NAMED_DECLARATIONS) + r"))\(",
         re.MULTILINE,
     )
     # How many hooks sit between the default and the description.
-    HOOK_COUNTS = {"_CHECKED": 1, "_SETTER": 2, "_STORED_SETTER": 2}
+    HOOK_COUNTS = {"_CHECKED": 1, "_SETTER": 2, "_STORED_SETTER": 2, "_ITEM": 2}
     for match, args in iter_balanced_calls(source, pattern):
+        named = match.group("named")
+        if named is not None:
+            name, struct, description = NAMED_DECLARATIONS[named]
+            declarations.append(
+                PropertyInfo(
+                    internal_name=name,
+                    macro_type=MEMBER_TYPES.get(
+                        structs.get(struct, {}).get(name), "INT"),
+                    value_expr=" ".join(args.split()),
+                    description=description,
+                    constants={},
+                )
+            )
+            continue
         variant = match.group("variant") or ""
         parts = [" ".join(part.split()) for part in split_args(args)]
         stored = variant.startswith("_STORED")
         hooks = HOOK_COUNTS.get(variant, 0)
         if hooks:
             parts = parts[: -hooks - 1] + parts[-1:]
+        # An item-bound property names a member of ITEM rather than of a priv
+        # struct, so the struct is not written out.
+        if variant == "_ITEM":
+            parts = ["ITEM"] + parts
         if stored:
             if len(parts) != 3:
                 continue

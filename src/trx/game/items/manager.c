@@ -308,10 +308,10 @@ void Item_Initialise(const int16_t item_num)
     item->rot.z = 0;
     item->speed = 0;
     item->fall_speed = 0;
-    TRX_VALUE max_hit_points = {};
-    ObjectProperty_GetItemValue(item, "max_hit_points", &max_hit_points);
-    item->hit_points = max_hit_points.as_int;
-    item->max_hit_points = max_hit_points.as_int;
+    // Both are written by the max_hit_points property, once the item is far
+    // enough along to hold it.
+    item->hit_points = 0;
+    item->max_hit_points = 0;
     item->timer = 0;
     item->mesh_bits = 0xFFFFFFFF;
     item->touch_bits = 0;
@@ -375,12 +375,6 @@ void Item_Initialise(const int16_t item_num)
         Room_GetWorldSector(room, item->pos.x, item->pos.z);
     item->floor = sector->floor.height;
 
-    // TODO: remove GF check once demo config reset is run before level load
-    if (Game_IsBonusFlagSet(GBF_NGPLUS)
-        && GF_GetCurrentLevel()->type != GFL_DEMO) {
-        item->hit_points *= 2;
-    }
-
     if (obj->priv_size != 0) {
         if (item->priv != nullptr) {
             memset(item->priv, 0, obj->priv_size);
@@ -391,6 +385,12 @@ void Item_Initialise(const int16_t item_num)
 
     // Before the object's own initialiser, so it reads what it declared.
     ObjectProperty_ApplyToItem(item);
+
+    // TODO: remove GF check once demo config reset is run before level load
+    if (Game_IsBonusFlagSet(GBF_NGPLUS)
+        && GF_GetCurrentLevel()->type != GFL_DEMO) {
+        item->hit_points *= 2;
+    }
 
     if (obj->initialise_func != nullptr) {
         obj->initialise_func(item_num);

@@ -247,9 +247,7 @@ static void M_Setup(OBJECT *const obj)
     obj->shadow_size = 128;
     obj->radius = 102;
     obj->intelligent = false;
-    OBJECT_PROPERTIES(
-        obj,
-        OBJECT_PROPERTY_STORED("max_hit_points", 8, "Maximum hit points."));
+    OBJECT_PROPERTIES(obj, ITEM_PROPERTY_MAX_HIT_POINTS(8));
 }
 
 REGISTER_OBJECT(O_ASSAULT_TARGET, M_Setup)

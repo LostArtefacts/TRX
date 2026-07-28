@@ -243,9 +243,7 @@ static void M_SetupBase(OBJECT *const obj)
 
     Object_GetBone(obj, 1)->rot.y = true;
     OBJECT_PROPERTIES(
-        obj,
-        OBJECT_PROPERTY_STORED(
-            "max_hit_points", M_RAT_HITPOINTS, "Maximum hit points."),
+        obj, ITEM_PROPERTY_MAX_HIT_POINTS(M_RAT_HITPOINTS),
         OBJECT_PROPERTY(
             M_PRIV, bite_damage, M_RAT_BITE_DAMAGE,
             "Damage dealt by the bite attack."),

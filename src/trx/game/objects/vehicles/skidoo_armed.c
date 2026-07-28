@@ -47,9 +47,7 @@ static void M_Setup(OBJECT *const obj)
     obj->save_flags = true;
     obj->save_anim = true;
     OBJECT_PROPERTIES(
-        obj,
-        OBJECT_PROPERTY_STORED(
-            "max_hit_points", SKIDOO_DRIVER_HITPOINTS, "Maximum hit points."));
+        obj, ITEM_PROPERTY_MAX_HIT_POINTS(SKIDOO_DRIVER_HITPOINTS));
 }
 
 void SkidooArmed_Push(

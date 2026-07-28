@@ -335,9 +335,7 @@ static void M_SetupCrocodile(OBJECT *const obj)
     obj->radius = M_CROCODILE_RADIUS;
     obj->smartness = M_CROCODILE_SMARTNESS;
     OBJECT_PROPERTIES(
-        obj,
-        OBJECT_PROPERTY_STORED(
-            "max_hit_points", M_CROCODILE_HITPOINTS, "Maximum hit points."),
+        obj, ITEM_PROPERTY_MAX_HIT_POINTS(M_CROCODILE_HITPOINTS),
         OBJECT_PROPERTY(
             M_PRIV, damage, M_CROCODILE_BITE_DAMAGE,
             "Damage dealt by the crocodile bite."));
@@ -355,9 +353,7 @@ static void M_SetupAlligator(OBJECT *const obj)
     obj->smartness = M_ALLIGATOR_SMARTNESS;
     obj->lot_setup = LOT_Setup(LOT_SETUP_FLYER);
     OBJECT_PROPERTIES(
-        obj,
-        OBJECT_PROPERTY_STORED(
-            "max_hit_points", M_ALLIGATOR_HITPOINTS, "Maximum hit points."),
+        obj, ITEM_PROPERTY_MAX_HIT_POINTS(M_ALLIGATOR_HITPOINTS),
         OBJECT_PROPERTY(
             M_PRIV, damage, M_ALLIGATOR_BITE_DAMAGE,
             "Damage dealt by the alligator bite."));

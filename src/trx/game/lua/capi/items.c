@@ -205,16 +205,10 @@ static const char *M_SetPos(void *const self, const TRX_VALUE *const in)
 static const char *M_SetHitPoints(void *const self, const TRX_VALUE *const in)
 {
     ITEM *const item = self;
-    item->hit_points = in->as_int;
-    if (item->hit_points > item->max_hit_points) {
-        ObjectProperty_SetItemValueRaw(
-            item, "max_hit_points",
-            (TRX_VALUE) {
-                .type = TVT_S32,
-                .as_int = item->hit_points,
-            });
-        item->max_hit_points = item->hit_points;
+    if (in->as_int > item->max_hit_points) {
+        ObjectProperty_SetItemValueRaw(item, "max_hit_points", *in);
     }
+    item->hit_points = in->as_int;
     return nullptr;
 }
 
