@@ -37,7 +37,7 @@ The ids in a catalog are TRX's own, and they are the same in all four games. The
     - `trx.catalog.Context.ITEM_ACTIONS` = `5`  
         Item actions, which the flip effects trigger.
 
-- [lua]`trx.catalog.objects` - 795 names
+- [lua]`trx.catalog.objects` - 798 names
 
     Every object TRX has a name for.
 
@@ -233,7 +233,8 @@ The ids in a catalog are TRX's own, and they are the same in all four games. The
     `SPIKES`, `SPIKE_WALL`, `SPINNING_BLADE`, `SPLASH_1`, `SPLASH_2`,
     `SPRINGBOARD`, `STEAM_EMITTER`, `STHPAC_MERCENARY`, `STOPWATCH_OPTION`,
     `STROBE_LIGHT`, `SWAT_1`, `SWAT_2`, `SWAT_3`, `SWINGING_AXE`,
-    `SWITCH_TYPE_AIRLOCK`, `SWITCH_TYPE_BUTTON`, `SWITCH_TYPE_NORMAL`,
+    `SWITCH_TYPE_AIRLOCK`, `SWITCH_TYPE_BUTTON`, `SWITCH_TYPE_CROWBAR`,
+    `SWITCH_TYPE_FLOOR`, `SWITCH_TYPE_JUMP`, `SWITCH_TYPE_NORMAL`,
     `SWITCH_TYPE_SMALL`, `SWITCH_TYPE_UW`, `SWITCH_TYPE_WHEEL`, `TEETH_TRAP`,
     `TEXT_BOX`, `THORS_HANDLE`, `THORS_HEAD`, `TIGER`, `TONY`, `TONY_FIRE_BALL`,
     `TORSO`, `TRAIN`, `TRAPDOOR_TYPE_1`, `TRAPDOOR_TYPE_2`, `TRAPDOOR_TYPE_3`,
