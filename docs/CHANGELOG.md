@@ -97,6 +97,7 @@
 - fixed animated textures, such as water surfaces, cycling at half their original speed
 - fixed flares burning red and trailing sparks and bubbles, so they now burn green and cast only their light, as in the original TR4
 - fixed Lara being able to light a flare while crawling; she now refuses, as in the original TR4
+- fixed Lara sidestepping in the wrong direction when turning off floor/crowbar switches
 
 **Lua**
 

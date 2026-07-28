@@ -35,6 +35,8 @@ bool Lara_TestBoundsCollide(const ITEM *item, int32_t radius);
 bool Lara_TestPosition(const ITEM *item, const OBJECT_BOUNDS *bounds);
 void Lara_AlignPosition(const ITEM *item, const XYZ_32 *vec);
 bool Lara_MovePosition(const ITEM *item, const XYZ_32 *vec);
+bool Lara_MovePositionEx(
+    const ITEM *item, const XYZ_32 *vec, int16_t extra_y_rot);
 bool Lara_IsNearItem(const XYZ_32 *pos, int32_t distance);
 
 LARA_ANIMATION Lara_AnimToGameID(LARA_TRX_ANIMATION anim);

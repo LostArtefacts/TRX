@@ -16,7 +16,7 @@ typedef struct {
     XYZ_32 position;
     M_STATE item_goal_state;
     LARA_TRX_ANIMATION lara_animation;
-    bool flip_lara;
+    int16_t lara_y_rot;
     bool requires_crowbar;
 } M_INTERACTION;
 
@@ -34,7 +34,7 @@ static const M_INTERACTION m_InteractFloorOff = {
     .position = { .x = 0, .y = 0, .z = -550 },
     .item_goal_state = M_STATE_ON,
     .lara_animation = LA_LEVERSWITCH_PUSH,
-    .flip_lara = false,
+    .lara_y_rot = 0,
     .requires_crowbar = false,
 };
 
@@ -52,7 +52,7 @@ static const M_INTERACTION m_InteractFloorOn = {
     .position = { .x = 0, .y = 0, .z = 550 },
     .item_goal_state = M_STATE_OFF,
     .lara_animation = LA_LEVERSWITCH_PUSH,
-    .flip_lara = true,
+    .lara_y_rot = -DEG_180,
     .requires_crowbar = false,
 };
 
@@ -70,7 +70,7 @@ static const M_INTERACTION m_InteractCrowbarOff = {
     .position = { .x = -89, .y = 0, .z = -328 },
     .item_goal_state = M_STATE_ON,
     .lara_animation = LA_CROWBAR_USE_ON_FLOOR,
-    .flip_lara = false,
+    .lara_y_rot = 0,
     .requires_crowbar = true,
 };
 
@@ -88,7 +88,7 @@ static const M_INTERACTION m_InteractCrowbarOn = {
     .position = { .x = 89, .y = 0, .z = 328 },
     .item_goal_state = M_STATE_OFF,
     .lara_animation = LA_CROWBAR_USE_ON_FLOOR,
-    .flip_lara = true,
+    .lara_y_rot = -DEG_180,
     .requires_crowbar = true,
 };
 
@@ -129,20 +129,14 @@ static bool M_Interact(ITEM *const item, ITEM *const lara_item)
     const int16_t item_num = Item_GetIndex(item);
     LARA_INFO *const lara = Lara_GetLaraInfo();
 
-    if (interaction->flip_lara) {
-        lara_item->rot.y += DEG_180;
-    }
+    lara_item->rot.y += interaction->lara_y_rot;
 
     bool result = false;
     if (Lara_TestPosition(item, &interaction->bounds)) {
         if (!lara->interact_target.is_moving && interaction->requires_crowbar) {
-            if (interaction->flip_lara) {
-                lara_item->rot.y += DEG_180;
-            }
+            lara_item->rot.y += interaction->lara_y_rot;
             const bool inv_result = M_ShowCrowbarInventory();
-            if (interaction->flip_lara) {
-                lara_item->rot.y += DEG_180;
-            }
+            lara_item->rot.y += interaction->lara_y_rot;
 
             if (!inv_result) {
                 Lara_RefuseInteraction();
@@ -157,7 +151,8 @@ static bool M_Interact(ITEM *const item, ITEM *const lara_item)
             lara->interact_target.is_moving = false;
         }
 
-        if (Lara_MovePosition(item, &interaction->position)) {
+        if (Lara_MovePositionEx(
+                item, &interaction->position, interaction->lara_y_rot)) {
             Item_SwitchToAnim(lara_item, LA(interaction->lara_animation), 0);
             const ANIM *const anim = Item_GetAnim(lara_item);
             lara_item->current_anim_state = anim->current_anim_state;
@@ -173,9 +168,7 @@ static bool M_Interact(ITEM *const item, ITEM *const lara_item)
     }
 
 finish:
-    if (interaction->flip_lara) {
-        lara_item->rot.y += DEG_180;
-    }
+    lara_item->rot.y += interaction->lara_y_rot;
 
     return result;
 }
@@ -239,13 +232,9 @@ int16_t Switch_FindNearbyCrowbarSwitch(void)
         // Proper bounds testing is required for cases where Lara picks the
         // crowbar manually from the inventory, but she is facing the wrong
         // direction.
-        if (interaction->flip_lara) {
-            lara_item->rot.y += DEG_180;
-        }
+        lara_item->rot.y += interaction->lara_y_rot;
         const bool result = Lara_TestPosition(item, &interaction->bounds);
-        if (interaction->flip_lara) {
-            lara_item->rot.y += DEG_180;
-        }
+        lara_item->rot.y += interaction->lara_y_rot;
 
         if (result) {
             return item_num;
