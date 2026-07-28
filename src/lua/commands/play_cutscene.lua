@@ -3,6 +3,13 @@
 -- Usages:
 --   /cut 1
 
+trx.locale.declare({
+  ["console/cmd/play_cutscene/help"] = "Plays a cutscene with the given number.",
+  ["console/cmd/play_cutscene/invalid"] = "Invalid cutscene",
+  ["console/cmd/play_cutscene/loading"] = "Loading cutscene %d",
+  ["console/cmd/play_cutscene/none"] = "This game has no cutscenes",
+})
+
 local function run(args)
   local cutscenes = trx.game.cutscenes
   if #cutscenes == 0 then

@@ -1,5 +1,7 @@
 local api = trx.api
 
+require("trx.locale")
+
 api.module("argparse", {
   order = 23,
   description = [[
@@ -55,6 +57,19 @@ A parser has these methods, each returning the parser so calls chain:
 A choice is either a bare string, where the key and value are the same, or a
 `{ key, value }` pair, where `key` is matched and shown and `value` is what
 `parse` gives back. Matching is forgiving, through `trx.strings.fuzzy_match`.]],
+})
+
+trx.locale.declare({
+  ["console/argparse/expected"] = "Expected %s.",
+  ["console/argparse/hint_boolean"] = "on or off",
+  ["console/argparse/hint_integer"] = "a whole number",
+  ["console/argparse/hint_number"] = "a number",
+  ["console/argparse/hint_or"] = "%s, or %s",
+  ["console/argparse/hint_values"] = "one of: %s",
+  ["console/argparse/invalid"] = "Invalid %s: %s.",
+  ["console/argparse/missing"] = "Missing %s.",
+  ["console/argparse/unexpected"] = "Unexpected argument: %s.",
+  ["console/argparse/usage"] = "Usage: %s",
 })
 
 -- A choice is a bare string (key == value) or a { key, value } pair.

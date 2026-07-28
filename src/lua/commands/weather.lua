@@ -5,6 +5,13 @@
 --   /weather rain
 --   /weather none
 
+trx.locale.declare({
+  ["console/cmd/weather/current"] = "Current weather: %s",
+  ["console/cmd/weather/help"] = "Changes the current weather type.",
+  ["console/cmd/weather/invalid"] = "Invalid weather: %s (valid: %s)",
+  ["console/cmd/weather/set"] = "Weather set to %s",
+})
+
 local function type_names()
   local names = {}
   for name in pairs(trx.weather.Type) do

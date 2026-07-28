@@ -5,6 +5,12 @@
 --   /immune on     force it on
 --   /immune off    force it off
 
+trx.locale.declare({
+  ["console/cmd/immune/help"] = "Toggles invulnerability. (Lara can still be killed in some circumstances.)",
+  ["console/cmd/immune/off"] = "Lara is now vulnerable",
+  ["console/cmd/immune/on"] = "Lara is now impervious to damage",
+})
+
 local KEY = "debug.enable_invulnerability"
 
 local function run(args)

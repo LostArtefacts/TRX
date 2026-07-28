@@ -3,6 +3,13 @@
 -- Usages:
 --   /dry
 
+trx.locale.declare({
+  ["console/cmd/dry/already_dry"] = "Lara's already bone dry",
+  ["console/cmd/dry/help"] = "Dries Lara off, stopping her dripping after a swim.",
+  ["console/cmd/dry/success"] = "Lara's been toweled off - no more dripping",
+  ["console/cmd/dry/underwater"] = "Lara's a bit busy being underwater right now",
+})
+
 trx.console.register({
   name = "dry",
   help = "console/cmd/dry/help",

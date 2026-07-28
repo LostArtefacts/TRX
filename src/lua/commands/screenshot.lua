@@ -4,6 +4,10 @@
 --   /screenshot          save one to the screenshots folder
 --   /screenshot foo.png  save to a path
 
+trx.locale.declare({
+  ["console/cmd/screenshot/help"] = "Saves a screenshot to disk at optional location.",
+})
+
 trx.console.register({
   name = "screenshot",
   help = "console/cmd/screenshot/help",

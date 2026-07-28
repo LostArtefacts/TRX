@@ -5,6 +5,14 @@
 --   /burn on     force it on
 --   /burn off    force it off
 
+trx.locale.declare({
+  ["console/cmd/burn/already_off"] = "Lara's not currently on fire",
+  ["console/cmd/burn/already_on"] = "Lara's already on fire",
+  ["console/cmd/burn/help"] = "Toggles Lara being on fire.",
+  ["console/cmd/burn/off"] = "Lara's been extinguished - phew!",
+  ["console/cmd/burn/on"] = "Lara's now on fire - ouch!",
+})
+
 trx.console.register({
   name = "burn",
   help = "console/cmd/burn/help",

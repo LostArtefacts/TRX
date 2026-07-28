@@ -207,24 +207,12 @@ test("format_value spells a value the way the console prints it", function()
 end)
 
 test("accepted_values says what a setting takes", function()
-  -- The locale fake answers a key it does not have with the key itself, so the
-  -- type markers read back as their keys.
-  assert(
-    trx.config.accepted_values("audio.enable_music")
-      == "console/config/accepted_bool"
-  )
-  assert(
-    trx.config.accepted_values("visuals.fov")
-      == "console/config/accepted_integer"
-  )
-  assert(
-    trx.config.accepted_values("visuals.brightness")
-      == "console/config/accepted_decimal"
-  )
-  assert(
-    trx.config.accepted_values("audio.master_volume")
-      == "console/config/accepted_percent"
-  )
+  -- The type markers are the text the module declares for them. A percentage
+  -- and a plain integer read alike, because that is what they say.
+  assert(trx.config.accepted_values("audio.enable_music") == "on, off")
+  assert(trx.config.accepted_values("visuals.fov") == "[integer]")
+  assert(trx.config.accepted_values("visuals.brightness") == "[decimal]")
+  assert(trx.config.accepted_values("audio.master_volume") == "[integer]")
   assert(trx.config.accepted_values("visuals.water_color") == nil)
 
   local values = trx.config.accepted_values("visuals.shadow_type")

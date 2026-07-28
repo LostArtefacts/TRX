@@ -1,5 +1,11 @@
 -- Reports the loaded mod, or switches to another and restarts the game.
 
+trx.locale.declare({
+  ["console/cmd/mod/current"] = "Currently loaded mod: %s",
+  ["console/cmd/mod/help"] = "Switches to the specified mod and restarts the game.",
+  ["console/cmd/mod/invalid"] = "Invalid mod: %s",
+})
+
 trx.console.register({
   name = "mod",
   help = "console/cmd/mod/help",

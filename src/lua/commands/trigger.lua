@@ -5,6 +5,15 @@
 --   /trigger door     by object name, hitting every item of that kind
 --   /untrigger door   and the same, taking the trigger back
 
+trx.locale.declare({
+  ["console/cmd/trigger/help"] = "Triggers or untriggers an item by id, item name, or object name.",
+  ["console/cmd/trigger/invalid_item"] = "Invalid item: %s",
+  ["console/cmd/trigger/no_match"] = "Unknown target: %s",
+  ["console/cmd/trigger/not_found"] = "No matching items found for: %s",
+  ["console/cmd/trigger/triggered"] = "Triggered item(s): %s",
+  ["console/cmd/trigger/untriggered"] = "Untriggered item(s): %s",
+})
+
 -- One rule about what may be triggered, asked the same way whichever path found
 -- the item.
 local function is_targetable(item)

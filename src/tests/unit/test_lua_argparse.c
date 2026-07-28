@@ -25,7 +25,7 @@ int main(void)
 {
     const LUA_SURFACE_TEST test = {
         .module = "argparse",
-        .deps = { "strings", nullptr },
+        .deps = { "strings", "locale", nullptr },
         .tests = "argparse",
         .push_fake = M_PushFake,
         .fake_reset = M_FakeReset,

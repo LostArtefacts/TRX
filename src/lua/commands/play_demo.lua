@@ -4,6 +4,13 @@
 --   /demo        the next demo in rotation
 --   /demo 2      a demo by number
 
+trx.locale.declare({
+  ["console/cmd/play_demo/help"] = "Plays a demo with the given number.",
+  ["console/cmd/play_demo/invalid"] = "Invalid demo",
+  ["console/cmd/play_demo/loading"] = "Loading demo %d",
+  ["console/cmd/play_demo/none"] = "This game has no demos",
+})
+
 local function run(args)
   local demos = trx.game.demos
   if #demos == 0 then

@@ -4,6 +4,10 @@
 --   /endlevel
 --   /nextlevel
 
+trx.locale.declare({
+  ["console/cmd/end_level/help"] = "Ends the current level.",
+})
+
 local function run()
   local level = trx.game.current_level
   if level == nil or level.type == trx.game.LevelType.TITLE then

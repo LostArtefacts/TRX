@@ -5,6 +5,13 @@
 --   /poison 100     set the poison level
 --   /poison -t 100  set the target reservoir instead (TR4 only)
 
+trx.locale.declare({
+  ["console/cmd/poison/get"] = "Current Lara's poison: %d (target: %d)",
+  ["console/cmd/poison/help"] = "Sets Lara's poison level to the specified value. Use -t to set the target level instead (TR4 only).",
+  ["console/cmd/poison/set"] = "Lara's poison set to %d",
+  ["console/cmd/poison/target_set"] = "Lara's poison target set to %d",
+})
+
 trx.console.register({
   name = "poison",
   help = "console/cmd/poison/help",

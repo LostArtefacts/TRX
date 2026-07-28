@@ -412,12 +412,13 @@ test('lua_strings', test_lua_strings_exe, suite: 'unit')
 # trx.strings, so the two are stood up together.
 test_lua_argparse_exe = executable(
   'test_lua_argparse',
-  files('unit/test_lua_argparse.c') + test_stubs
+  files('unit/test_lua_argparse.c', 'unit/fake_engine_locale.c') + test_stubs
     + lua_surface_src
     + files(
       '../trx/core/strings/common.c',
       '../trx/core/strings/case_funcs.c',
       '../trx/core/strings/fuzzy_match.c',
+      '../trx/game/lua/capi/locale.c',
       '../trx/game/lua/capi/strings.c',
     ),
   include_directories: [src_inc, test_inc],

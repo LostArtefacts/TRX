@@ -3,6 +3,12 @@
 -- Usages:
 --   /heal
 
+trx.locale.declare({
+  ["console/cmd/heal/already_full_hp"] = "Lara's already at full health",
+  ["console/cmd/heal/help"] = "Heals Lara back to full health.",
+  ["console/cmd/heal/success"] = "Healed Lara back to full health",
+})
+
 trx.console.register({
   name = "heal",
   help = "console/cmd/heal/help",

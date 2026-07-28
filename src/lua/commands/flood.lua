@@ -5,6 +5,15 @@
 --   /flood 12     flood a room by number, as the console counts them, from zero
 --   /drain        and the same, taking the water back
 
+trx.locale.declare({
+  ["console/cmd/drain/already"] = "Room %d is already drained",
+  ["console/cmd/drain/done"] = "Drained room %d",
+  ["console/cmd/drain/help"] = "Dries the current room, removing the water.",
+  ["console/cmd/flood/already"] = "Room %d is already flooded",
+  ["console/cmd/flood/done"] = "Flooded room %d",
+  ["console/cmd/flood/help"] = "Submerges the current room with water.",
+})
+
 -- The console counts rooms from zero, as the engine does; Lua counts from one.
 local function room_for(num)
   if num == nil then

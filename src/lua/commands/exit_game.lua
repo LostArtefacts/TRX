@@ -1,5 +1,9 @@
 -- Exits the game.
 
+trx.locale.declare({
+  ["console/cmd/exit/help"] = "Exits the game.",
+})
+
 trx.console.register({
   name = "exit",
   aliases = { "quit" },

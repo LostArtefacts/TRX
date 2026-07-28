@@ -5,6 +5,14 @@
 --   /flip on     force it on
 --   /flip off    force it off
 
+trx.locale.declare({
+  ["console/cmd/flipmap/already_off"] = "Flipmap is already OFF",
+  ["console/cmd/flipmap/already_on"] = "Flipmap is already ON",
+  ["console/cmd/flipmap/help"] = "Toggles the flip map.",
+  ["console/cmd/flipmap/off"] = "Flipmap set to OFF",
+  ["console/cmd/flipmap/on"] = "Flipmap set to ON",
+})
+
 local function run(args)
   if not trx.game.is_playable then
     return trx.console.Result.UNAVAILABLE

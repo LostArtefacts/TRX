@@ -13,6 +13,13 @@ api.module("config", {
     .. "untouched underneath.",
 })
 
+trx.locale.declare({
+  ["console/config/accepted_bool"] = "on, off",
+  ["console/config/accepted_decimal"] = "[decimal]",
+  ["console/config/accepted_integer"] = "[integer]",
+  ["console/config/accepted_percent"] = "[integer]",
+})
+
 api.define("config.get", {
   description = "Reads a setting. The value comes back as the type the option is declared with, so "
     .. "a boolean option reads as a boolean. Colors and enums read as strings.",

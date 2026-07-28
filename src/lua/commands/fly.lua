@@ -5,6 +5,12 @@
 --   /fly on     force it on
 --   /fly off    force it off
 
+trx.locale.declare({
+  ["console/cmd/fly/already_off"] = "Lara is not flying",
+  ["console/cmd/fly/already_on"] = "Lara is already flying",
+  ["console/cmd/fly/help"] = "Toggles the fly-mode cheat.",
+})
+
 trx.console.register({
   name = "fly",
   help = "console/cmd/fly/help",

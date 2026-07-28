@@ -3,6 +3,12 @@
 -- Usages:
 --   /lua trx.lara.item.hit_points = 100
 
+trx.locale.declare({
+  ["console/cmd/lua/help"] = "Executes the given Lua code string.",
+  ["console/cmd/lua/runtime_error"] = "Lua runtime error: %s",
+  ["console/cmd/lua/syntax_error"] = "Lua syntax error: %s",
+})
+
 trx.console.register({
   name = "lua",
   help = "console/cmd/lua/help",

@@ -22,7 +22,7 @@ int main(void)
 {
     const LUA_SURFACE_TEST test = {
         .module = "console",
-        .deps = { "log", "strings", "argparse", "locale", nullptr },
+        .deps = { "log", "strings", "locale", "argparse", nullptr },
         .script = "help",
         .tests = "cmd_help",
         .push_fake = FakeConsole_PushLua,

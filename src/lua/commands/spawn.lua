@@ -2,6 +2,14 @@
 --
 --   /spawn wolf   spawn an object by name, one sector in front of Lara
 
+trx.locale.declare({
+  ["console/cmd/spawn/fail"] = "Failed to spawn requested object",
+  ["console/cmd/spawn/help"] = "Spawns an object by name in front of Lara.",
+  ["console/cmd/spawn/invalid"] = "Unknown object: %s",
+  ["console/cmd/spawn/name_help"] = "the object to spawn, by name",
+  ["console/cmd/spawn/success"] = "Requested object spawned near Lara",
+})
+
 -- Tries straight ahead first, then 45 degrees either side, and returns the
 -- first spot that lands in valid room geometry.
 local function find_target_pos(lara)
