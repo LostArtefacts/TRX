@@ -36,6 +36,12 @@ void FlybyMode_Deactivate(void)
     Camera_FlybyMode_Deactivate();
 }
 
+void FlybyMode_Stop(void)
+{
+    Camera_FlybyMode_Reset();
+    Lara_SetControllable(true);
+}
+
 bool FlybyMode_IsActive(void)
 {
     return Camera_FlybyMode_IsActive();

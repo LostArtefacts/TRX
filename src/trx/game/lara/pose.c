@@ -18,6 +18,8 @@
 
 static VECTOR *m_Poses = nullptr;
 static int32_t m_ActivePose = M_NO_POSE;
+static LARA_POSE m_Override = {};
+static bool m_OverrideActive = false;
 
 static void M_WarnWithJSONError(const JSON_READ_IO *const io)
 {
@@ -144,8 +146,19 @@ void Lara_Pose_Cycle(const int32_t dir)
 
 const LARA_POSE *Lara_Pose_Get(void)
 {
+    if (m_OverrideActive) {
+        return &m_Override;
+    }
     if (m_ActivePose == M_NO_POSE) {
         return nullptr;
     }
     return Vector_Get(m_Poses, m_ActivePose);
+}
+
+void Lara_Pose_SetOverride(const LARA_POSE *const pose)
+{
+    m_OverrideActive = pose != nullptr;
+    if (pose != nullptr) {
+        m_Override = *pose;
+    }
 }

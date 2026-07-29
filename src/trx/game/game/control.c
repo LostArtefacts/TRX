@@ -3,6 +3,7 @@
 #include <trx/game/clock.h>
 #include <trx/game/console.h>
 #include <trx/game/creature.h>
+#include <trx/game/cutseq.h>
 #include <trx/game/demo.h>
 #include <trx/game/effects.h>
 #include <trx/game/flyby_mode.h>
@@ -189,7 +190,7 @@ GF_COMMAND Game_Control(const bool demo_mode)
 
     if ((g_InputDB.option || g_InputDB.load || g_InputDB.save
          || g_OverlayFlag <= 0)
-        && lara->death_timer == 0 && !lara->extra_anim) {
+        && lara->death_timer == 0 && !lara->extra_anim && !CutSeq_IsActive()) {
         if (g_TRVersion == 1 && g_Camera.type == CAM_CINEMATIC) {
             g_OverlayFlag = 0;
         } else if (g_OverlayFlag > 0) {
@@ -223,8 +224,12 @@ GF_COMMAND Game_Control(const bool demo_mode)
     Sound_ResetAmbient();
     Game_TickWorld();
 
-    Lara_Control();
-    Lara_Hair_Control(false);
+    // A cutscene poses her and steps her hair itself, so neither runs here
+    // while one plays.
+    if (!CutSeq_IsPlaying()) {
+        Lara_Control();
+        Lara_Hair_Control(false);
+    }
 
     Game_TickPostControl();
     Game_TickEndFrame();
@@ -249,6 +254,8 @@ void Game_TickPostControl(void)
 {
     FX_Control();
     FlybyMode_PostControl();
+    CutSeq_Control();
+    CutSeq_PostControl();
     Camera_Update();
     ItemAction_RunActive();
     Sound_UpdateEffects();

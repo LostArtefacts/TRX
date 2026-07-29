@@ -5,6 +5,7 @@
 #include <trx/core/strings.h>
 #include <trx/debug.h>
 #include <trx/game/creature.h>
+#include <trx/game/cutseq.h>
 #include <trx/game/game.h>
 #include <trx/game/game_flow.h>
 #include <trx/game/gun.h>
@@ -634,6 +635,10 @@ void Savegame_InitCurrentInfo(void)
     // The rules last as long as the playthrough too; a load restores the saved
     // ones over these once the file is read.
     Rules_Reset();
+
+    // Which cutscenes have run lasts as long as the playthrough as well, so a
+    // fresh one sees all of them again.
+    CutSeq_SetPlayedMask(0);
 }
 
 void Savegame_ResetCurrentInfo(const GF_LEVEL *const level)

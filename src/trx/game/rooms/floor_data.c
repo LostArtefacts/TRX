@@ -322,7 +322,7 @@ static bool M_TestSectorTrigger(
     for (const TRIGGER_CMD *cmd = trigger->command; cmd != nullptr;
          cmd = cmd->next_cmd) {
         // The command type is a 5-bit field, so it can name a type this
-        // engine has no handler for, TR4's cutscene trigger among them.
+        // engine has no handler for.
         if (cmd->type < TO_NUMBER_OF && m_Handlers[cmd->type] != nullptr) {
             m_Handlers[cmd->type](trigger, cmd, &status);
         }

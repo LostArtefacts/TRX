@@ -3,6 +3,7 @@
 #include <trx/core/json/util/write_io.h>
 #include <trx/debug.h>
 #include <trx/game/camera.h>
+#include <trx/game/cutseq.h>
 #include <trx/game/effects.h>
 #include <trx/game/fx/common.h>
 #include <trx/game/fx/weather.h>
@@ -741,6 +742,7 @@ void SG_File_DumpMisc(JSON_WRITE_IO *const io)
     JSONW_WRITE(io, "rng_control_seed", Random_GetControlSeed());
     JSONW_WRITE(io, "rng_draw_seed", Random_GetDrawSeed());
     JSONW_WRITE(io, "weather_type", FX_Weather_GetWeather());
+    JSONW_WRITE(io, "cutscenes_played", CutSeq_GetPlayedMask());
     JSONW_POP_AND_SET(io, "misc");
 
     JSONW_WRITE(io, "level_title", level->title != nullptr ? level->title : "");
