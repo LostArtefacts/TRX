@@ -22,11 +22,13 @@ static void M_RestoreLaraInfo(void)
     Lara_GetLaraInfo()->air = m_Priv.lara_air;
 }
 
-void FlybyMode_Activate(const int32_t sequence_idx, const bool one_shot)
+bool FlybyMode_Activate(const int32_t sequence_idx, const bool one_shot)
 {
-    if (Camera_FlybyMode_Activate(sequence_idx, one_shot)) {
-        M_CacheLaraInfo();
+    if (!Camera_FlybyMode_Activate(sequence_idx, one_shot)) {
+        return false;
     }
+    M_CacheLaraInfo();
+    return true;
 }
 
 void FlybyMode_Deactivate(void)

@@ -22,11 +22,15 @@ bool FlybyMode_IsActive(void)
     return m_FlybyActive;
 }
 
-void FlybyMode_Activate(const int32_t sequence_idx, const bool one_shot)
+bool FlybyMode_Activate(const int32_t sequence_idx, const bool one_shot)
 {
     g_FakeCameraCalls.play_flyby++;
     g_FakeCameraCalls.last_flyby_sequence = sequence_idx;
+    // A sequence already holding the camera is what the real one turns away;
+    // the fake answers the same way so a test can see the refusal.
+    const bool was_active = m_FlybyActive;
     m_FlybyActive = true;
+    return !was_active;
 }
 
 bool FlybyMode_Cancel(void)

@@ -69,6 +69,10 @@ api.define("camera.play_flyby", {
       description = "0-based sequence number.",
     },
   },
+  returns = {
+    type = "boolean",
+    description = "Whether the sequence took the camera.",
+  },
   examples = { [[trx.camera.play_flyby(1)]] },
   impl = raw.play_flyby,
 })

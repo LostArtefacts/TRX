@@ -2,7 +2,8 @@
 
 #include <trx/game/phase/executor.h>
 
-void FlybyMode_Activate(int32_t sequence_idx, bool one_shot);
+// Answers whether the sequence took the camera.
+bool FlybyMode_Activate(int32_t sequence_idx, bool one_shot);
 void FlybyMode_Deactivate(void);
 bool FlybyMode_IsActive(void);
 bool FlybyMode_Cancel(void);
