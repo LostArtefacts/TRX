@@ -3192,6 +3192,77 @@
       "path": "creatures.add_ally_target"
     },
     {
+      "description": "Plays a cutscene, fading the scene out first. Does nothing if one is already playing or the game has no cutscene data.",
+      "examples": [
+        "trx.cutscenes.play(28)"
+      ],
+      "params": [
+        {
+          "description": "Cutscene number.",
+          "name": "num",
+          "type": "integer"
+        }
+      ],
+      "path": "cutscenes.play"
+    },
+    {
+      "description": "Whether a cutscene trigger naming this number has already been answered.",
+      "params": [
+        {
+          "description": "Cutscene number.",
+          "name": "num",
+          "type": "integer"
+        }
+      ],
+      "path": "cutscenes.is_played",
+      "returns": {
+        "type": "boolean"
+      }
+    },
+    {
+      "description": "    Marks a cutscene as played or unplayed. Marking one as played keeps its\n    trigger from firing; unmarking one lets it run again.\n\n    A trigger may name a number the game has no cutscene for - TR4 uses 32 to\n    ask for a full-motion video - and the engine remembers those the same way,\n    so `on_cutscene_trigger` hears about each of them once. This is what clears\n    that memory, and it takes any number a trigger may carry, not only the ones\n    `play` accepts.\n  ",
+      "examples": [
+        "trx.cutscenes.set_played(7, true)"
+      ],
+      "params": [
+        {
+          "description": "Cutscene number.",
+          "name": "num",
+          "type": "integer"
+        },
+        {
+          "description": "Whether it counts as played.",
+          "name": "played",
+          "type": "boolean"
+        }
+      ],
+      "path": "cutscenes.set_played"
+    },
+    {
+      "description": "Forgets every cutscene, so all of them may run again.",
+      "path": "cutscenes.forget_played"
+    },
+    {
+      "description": "    Places Lara where the next cutscene to end leaves her. A cutscene stands\n    her at its own origin while it plays and puts her back where it found her\n    afterwards; this says to put her somewhere else instead, as the original\n    game does for the scenes that carry her along.\n\n    It holds for one cutscene, whether named before `play` or while the scene\n    runs, and is forgotten once she has been placed.\n  ",
+      "examples": [
+        "trx.events.on_cutscene_start(function(num)\n  if num == 12 then\n    trx.cutscenes.set_lara_return({ x = 38912, y = 2048, z = 51200 })\n  end\nend)"
+      ],
+      "params": [
+        {
+          "description": "World position.",
+          "name": "pos",
+          "type": "vec3"
+        },
+        {
+          "description": "Facing angle, in the engine's own angle units. Defaults to `0`.",
+          "name": "rot",
+          "optional": true,
+          "type": "integer"
+        }
+      ],
+      "path": "cutscenes.set_lara_return"
+    },
+    {
       "description": "    Happens as a level starts running, before its first frame is drawn. By then\n    the level file is loaded, its items are set up and any savegame state has\n    been applied, so this is where a script sets object properties, declares\n    allies, changes room state and plays sound effects. Every kind of level\n    fires it: a played level, a cutscene and the attract demo alike. The title\n    screen has `on_title_start` instead.\n  ",
       "params": [
         {
@@ -3671,6 +3742,75 @@
         }
       ],
       "path": "events.on_kill",
+      "returns": {
+        "description": "Listener id. Pass it to `trx.events.detach` to stop listening.",
+        "type": "integer"
+      }
+    },
+    {
+      "description": "    Happens when a cutscene trigger fires, before the engine acts on it. A\n    handler answers the trigger by returning true - having played a cutscene of\n    its own, run something else, or decided nothing should run. If no handler\n    answers, the engine plays the cutscene the trigger names.\n\n    A trigger Lara stands on fires every frame, so this happens only for a\n    cutscene that has not run yet and while none is playing. Asking counts as\n    running it, whatever came of it, so the same handler is not asked again on\n    the next frame. Clear the mark with `trx.cutscenes.set_played` to hear\n    about one again.\n\n    The number a trigger names need not be one the game has a cutscene for -\n    TR4 uses 32 to ask for a full-motion video. Those reach a handler too, and\n    the engine has nothing of its own to do about them.\n  ",
+      "examples": [
+        "-- only in the throne room; a flyby stands in for it elsewhere\ntrx.events.on_cutscene_trigger(function(num)\n  if num ~= 27 then\n    return false\n  end\n  if trx.lara.item.room_num == 55 then\n    trx.cutscenes.play(27)\n  else\n    trx.camera.play_flyby(3)\n  end\n  return true\nend)"
+      ],
+      "params": [
+        {
+          "name": "callback",
+          "params": [
+            {
+              "description": "Number the trigger names.",
+              "name": "num",
+              "type": "integer"
+            }
+          ],
+          "type": "function"
+        }
+      ],
+      "path": "events.on_cutscene_trigger",
+      "returns": {
+        "description": "Listener id. Pass it to `trx.events.detach` to stop listening.",
+        "type": "integer"
+      }
+    },
+    {
+      "description": "Happens when a TR4 cutscene's first frame is about to show, after the fade out.",
+      "params": [
+        {
+          "name": "callback",
+          "params": [
+            {
+              "description": "Number of the cutscene starting.",
+              "name": "num",
+              "type": "integer"
+            }
+          ],
+          "type": "function"
+        }
+      ],
+      "path": "events.on_cutscene_start",
+      "returns": {
+        "description": "Listener id. Pass it to `trx.events.detach` to stop listening.",
+        "type": "integer"
+      }
+    },
+    {
+      "description": "Happens once a TR4 cutscene has finished and the scene it interrupted is back. This is where a script decides what follows.",
+      "examples": [
+        "trx.events.on_cutscene_end(function(num)\n  trx.log.info(\"cutscene \" .. num .. \" finished\")\nend)"
+      ],
+      "params": [
+        {
+          "name": "callback",
+          "params": [
+            {
+              "description": "Number of the cutscene that ended.",
+              "name": "num",
+              "type": "integer"
+            }
+          ],
+          "type": "function"
+        }
+      ],
+      "path": "events.on_cutscene_end",
       "returns": {
         "description": "Listener id. Pass it to `trx.events.detach` to stop listening.",
         "type": "integer"
@@ -4699,18 +4839,18 @@
     {
       "description": "Argument checking for the whole of `trx`.",
       "name": "api",
-      "order": 26,
+      "order": 27,
       "title": "API registry"
     },
     {
       "description": "A small, declarative argument parser for console commands, in the shape of\nPython's argparse.\n\nA parser both reads a command's arguments and offers completions for them,\nfrom one declaration. Every command written with `trx.console.register` has\none; a command shapes it through the `args` function it hands over, and `run`\nthen receives a table of parsed values. A command that shapes nothing takes no\narguments, and is told so when given one.\n\nEvery parser answers `-h` and `--help` on its own, printing what it accepts.\n\nHow a positional reads a token is its `matcher`, one of:\n\n- `type` - coerce to `\"integer\"`, `\"number\"`, `\"string\"` or `\"boolean\"`.\n- `choices` - the allowed set: a list of values or a `function(parsed)`\n  returning one. The token must match one; the set is shown in errors and\n  completes.\n- `match` - a `function(token, parsed)` returning `value, ok`, for a shape of its own.\n\nThese do not combine on one positional; a value that is a number *or* a name is\ntwo matchers, declared with `any_of`. Separately, `suggest` offers completions\nwithout restricting or being shown in errors - for a free value with a long\nlist behind it, like a setting name.\n\nA parser has these methods, each returning the parser so calls chain:\n\n- `positional(name, opts)` - a positional with one matcher (`opts.type`,\n  `opts.choices` or `opts.match`). `opts.optional` lets it be left out;\n  `opts.greedy` reads the rest of the line as one token, so a value with spaces\n  in it still arrives whole; `opts.suggest` completes it; `opts.help` describes\n  it.\n- `any_of(name, alternatives, opts)` - a positional whose value is the first of\n  several matchers to take the token. Each alternative is a matcher table,\n  `{ type = ... }` or `{ choices = ... }`. Same `opts` as `positional`.\n- `rest(name, opts)` - the rest of the line from here on, verbatim as one\n  string, or nil when an optional one is absent. Always the last argument;\n  `opts.suggest` completes it.\n- `flag(name, opts)` - a boolean that may sit anywhere. `opts.short` and\n  `opts.long` are the spellings, e.g. `\"-f\"` and `\"--force\"`; `opts.help`\n  describes it.\n- `parse(args)` - reads the argument string, returning a table of values, or\n  `nil` and a structured error the console layer turns into localized text. A\n  value carried by a `{ key, value }` choice comes back as its `value`;\n  `-h`/`--help` comes back as `{ help = true }`.\n- `complete(text, caret)` - the candidate completions for the token the caret\n  sits in, and the byte offsets `start, end` of the run they replace (reaching\n  to the end of the line for a greedy argument).\n- `usage()` - a short description of what the command accepts.\n\nA choice is either a bare string, where the key and value are the same, or a\n`{ key, value }` pair, where `key` is matched and shown and `value` is what\n`parse` gives back. Matching is forgiving, through `trx.strings.fuzzy_match`.",
       "name": "argparse",
-      "order": 18
+      "order": 19
     },
     {
       "description": "Module for controlling the Assault Course and Quad Bike timers in gym levels.",
       "name": "assault",
-      "order": 13,
+      "order": 14,
       "title": "Assault course"
     },
     {
@@ -4726,17 +4866,22 @@
     {
       "description": "Module for reading and changing engine settings.\n\nThese are the player's settings, not the level's. `set` writes to them and keeps the change: it is remembered across saves and relaunches, exactly as if the player had made it themselves. A level that wants to tint the water or pull the fog in wants `override` instead, which lasts as long as the script keeps it and leaves the player's own value untouched underneath.",
       "name": "config",
-      "order": 19
+      "order": 20
     },
     {
       "description": "Module for interacting with the developer console.\n\n`trx.console.log` writes to the console overlay in-game, where `trx.log` writes only to the terminal and the log file.",
       "name": "console",
-      "order": 17
+      "order": 18
     },
     {
       "description": "Module for controlling certain creature behavior.",
       "name": "creatures",
       "order": 9
+    },
+    {
+      "description": "    Module for TR4's in-game cutscenes, the animated scenes stored in\n    `cutseq.pak` and started by a cutscene trigger. A cutscene plays once:\n    the engine remembers which ones have run, and a script may consult or\n    rewrite that memory. The cutscene levels of TR1-TR3, which the game flow\n    lists and `/cut` plays, are a different thing: see `trx.game.cutscenes`.\n  ",
+      "name": "cutscenes",
+      "order": 11
     },
     {
       "description": "Lua scripts can listen for game events by attaching a handler to one of the hooks below. Attaching returns a listener id, which `trx.events.detach` takes.\n\nA handler attached from a level script is detached automatically when the level ends; one attached from a global script lives for the whole session.\n\nAn event that carries a default the script may take over says so in its description; a handler answers such an event by returning true, and the default then stands down. Every other event ignores what its handlers return.",
@@ -4761,33 +4906,33 @@
     {
       "description": "The text the player reads, in the player's own language.",
       "name": "locale",
-      "order": 16
+      "order": 17
     },
     {
       "description": "Logs a message to the terminal and to `TRX.log` in the installation directory. Each call records the Lua script's filename, function name and line number.",
       "name": "log",
-      "order": 22,
+      "order": 23,
       "title": "Logging"
     },
     {
       "description": "Evaluating Lua at runtime: a string of code, or a file on disk. Both run in the same state as every other script.",
       "name": "lua",
-      "order": 25
+      "order": 26
     },
     {
       "description": "Fixed-point trigonometry, matching the engine's own tables.\n\nTRX angles are 16-bit units where 65536 is a full turn, not radians. Using these rather than Lua's `math` library guarantees a script places things exactly where the engine would.",
       "name": "math",
-      "order": 23
+      "order": 24
     },
     {
       "description": "The mods the game was built with, and which one is loaded.",
       "name": "mod",
-      "order": 21
+      "order": 22
     },
     {
       "description": "Module for playing and controlling the soundtrack.",
       "name": "music",
-      "order": 15
+      "order": 16
     },
     {
       "description": "Module for the object definitions a level is built from.\n\nAn object is the pattern every item of that type is cut from: a wolf's radius, not this wolf's. Per-item state lives on the item - see `trx.items`.",
@@ -4809,27 +4954,27 @@
     {
       "description": "Module for the numbers the engine plays by.\n\nThese are the game's rules: a mechanic that no single item owns. An object's own numbers live on\nthe object, as `trx.objects.<name>.properties`, and the player's own choices live in `trx.config`.\n\nA rule lasts as long as the playthrough: it is saved with the game and restored with it, and a\nnew game starts from the defaults. A level script states what its level wants, and states it\nagain on every entry, so a level that wants the defaults back asks for them.",
       "name": "rules",
-      "order": 11
+      "order": 12
     },
     {
       "description": "The save slots, and starting or reading a saved game.",
       "name": "savegame",
-      "order": 20
+      "order": 21
     },
     {
       "description": "Module for playing sound effects.",
       "name": "sound",
-      "order": 14
+      "order": 15
     },
     {
       "description": "Utilities for working with strings.\n\nNot to be confused with `trx.locale`, which is the text a player reads: this module is about manipulating strings, that one is about which string the player gets.",
       "name": "strings",
-      "order": 24
+      "order": 25
     },
     {
       "description": "The runtime weather effect the current level shows.",
       "name": "weather",
-      "order": 12
+      "order": 13
     }
   ],
   "namespaces": [
@@ -4915,13 +5060,37 @@
       "writable": true
     },
     {
+      "description": "Number of the cutscene playing, or `nil` if none is.",
+      "path": "cutscenes.current",
+      "type": "integer",
+      "writable": false
+    },
+    {
+      "description": "Whether a cutscene is on screen.",
+      "path": "cutscenes.is_playing",
+      "type": "boolean",
+      "writable": false
+    },
+    {
+      "description": "Field of view a cutscene plays at, in the engine's own angle units. TR4 uses 11488, against 14560 for ordinary play.",
+      "path": "cutscenes.fov",
+      "type": "integer",
+      "writable": true
+    },
+    {
+      "description": "Depth of each cinematic bar, as a fraction of the screen height. `0` removes them.",
+      "path": "cutscenes.letterbox",
+      "type": "number",
+      "writable": true
+    },
+    {
       "description": "The levels of the game, in order, as a list of `trx.game.Level` counted from one.",
       "path": "game.levels",
       "type": "table",
       "writable": false
     },
     {
-      "description": "The cutscenes, as a list of `trx.game.Level` counted from one.",
+      "description": "The cutscene levels, as a list of `trx.game.Level` counted from one. TR4's in-game cutscenes are a different thing, and live in `trx.cutscenes`.",
       "path": "game.cutscenes",
       "type": "table",
       "writable": false

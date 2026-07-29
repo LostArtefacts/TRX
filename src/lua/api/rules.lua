@@ -2,7 +2,7 @@ local raw = trxc.rules
 local api = trx.api
 
 api.module("rules", {
-  order = 11,
+  order = 12,
   description = [[Module for the numbers the engine plays by.
 
 These are the game's rules: a mechanic that no single item owns. An object's own numbers live on

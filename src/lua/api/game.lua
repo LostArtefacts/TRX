@@ -135,7 +135,8 @@ api.property("game.levels", {
 
 api.property("game.cutscenes", {
   type = "table",
-  description = "The cutscenes, as a list of `trx.game.Level` counted from one.",
+  description = "The cutscene levels, as a list of `trx.game.Level` counted from one. TR4's "
+    .. "in-game cutscenes are a different thing, and live in `trx.cutscenes`.",
   get = function()
     return level_list(LevelTable.CUTSCENES)
   end,

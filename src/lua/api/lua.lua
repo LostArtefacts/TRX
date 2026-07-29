@@ -2,7 +2,7 @@ local raw = trxc.lua
 local api = trx.api
 
 api.module("lua", {
-  order = 25,
+  order = 26,
   description = "Evaluating Lua at runtime: a string of code, or a file on disk. "
     .. "Both run in the same state as every other script.",
 })

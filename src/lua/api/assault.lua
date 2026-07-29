@@ -2,7 +2,7 @@ local raw = trxc.assault
 local api = trx.api
 
 api.module("assault", {
-  order = 13,
+  order = 14,
   title = "Assault course",
   description = "Module for controlling the Assault Course and Quad Bike timers in gym levels.",
 })
