@@ -50,12 +50,16 @@ typedef struct {
 // Clear all listeners declared during the current level script
 void LUA_ClearLevelListeners(void);
 
+// Fire a Lua event. Answers whether a handler returned a true value, which is
+// how a script takes over an event that carries a default; an event without
+// one ignores the answer.
+
 // Fire a Lua event of given type with arbitrary arguments
-void LUA_FireEventEx(
+bool LUA_FireEventEx(
     LUA_EVENT_TYPE ev, const LUA_EVENT_ARG *args, int32_t arg_count);
 
 // Fire a Lua event of given type with no arguments
-void LUA_FireEvent(LUA_EVENT_TYPE ev);
+bool LUA_FireEvent(LUA_EVENT_TYPE ev);
 
 // Fire a Lua event of given type with int32 argument
-void LUA_FireEventInt32(LUA_EVENT_TYPE ev, int32_t arg);
+bool LUA_FireEventInt32(LUA_EVENT_TYPE ev, int32_t arg);

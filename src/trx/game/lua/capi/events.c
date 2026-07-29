@@ -34,6 +34,9 @@ typedef struct {
     int32_t ref;
     const LUA_EVENT_ARG *args;
     int32_t arg_count;
+    // What the handler returned, as a yes or no. An event that carries a
+    // default the script may take over reads it; the rest ignore it.
+    bool answered;
 } M_DISPATCH;
 
 // A key that has been attached for an event at least once, per M_IsKeyClaimed.
@@ -53,7 +56,7 @@ static int32_t m_DispatchDepth = 0;
 // which M_RemoveListener decides for both its branches.
 static int32_t m_ListenerCount[LUA_EVENT_NUMBER_OF] = { 0 };
 
-static void M_FireEvent(
+static bool M_FireEvent(
     LUA_EVENT_TYPE ev, int32_t key, const LUA_EVENT_ARG *args,
     int32_t arg_count);
 
@@ -149,7 +152,7 @@ static void M_PushArg(lua_State *const L, const LUA_EVENT_ARG arg)
 
 static int M_CallListener(lua_State *const L)
 {
-    const M_DISPATCH *const dispatch = lua_touserdata(L, 1);
+    M_DISPATCH *const dispatch = lua_touserdata(L, 1);
     if (lua_checkstack(L, dispatch->arg_count + 1) == 0) {
         return luaL_error(L, "no room for the handler and its arguments");
     }
@@ -157,7 +160,9 @@ static int M_CallListener(lua_State *const L)
     for (int32_t i = 0; i < dispatch->arg_count; i++) {
         M_PushArg(L, dispatch->args[i]);
     }
-    lua_call(L, dispatch->arg_count, 0);
+    lua_call(L, dispatch->arg_count, 1);
+    dispatch->answered = lua_toboolean(L, -1);
+    lua_pop(L, 1);
     return 0;
 }
 
@@ -284,13 +289,13 @@ static void M_Create(lua_State *const L)
     ItemAction_SetInterceptor(M_InterceptFlipEffect);
 }
 
-static void M_FireEvent(
+static bool M_FireEvent(
     const LUA_EVENT_TYPE ev, const int32_t key, const LUA_EVENT_ARG *const args,
     const int32_t arg_count)
 {
     lua_State *const L = m_L;
     if (L == nullptr || m_Listeners == nullptr || m_ListenerCount[ev] == 0) {
-        return;
+        return false;
     }
 
     // Room for the protected call and its argument. Taken before the depth goes
@@ -298,7 +303,7 @@ static void M_FireEvent(
     // listeners would never be compacted again.
     if (lua_checkstack(L, 2) == 0) {
         LOG_ERROR("Lua stack exhausted; event %d not dispatched", (int32_t)ev);
-        return;
+        return false;
     }
 
     // A handler may attach while the event is in flight. Anything it adds lands
@@ -306,29 +311,32 @@ static void M_FireEvent(
     const int32_t count = m_Listeners->count;
     m_DispatchDepth++;
 
+    bool answered = false;
     for (int32_t i = 0; i < count; i++) {
         // Re-read each time: an attach can move the vector.
         const M_LISTENER *const lst = Vector_Get(m_Listeners, i);
         if (lst->type != ev || lst->key != key || lst->dead) {
             continue;
         }
-        const M_DISPATCH dispatch = {
+        M_DISPATCH dispatch = {
             .ref = lst->ref,
             .args = args,
             .arg_count = arg_count,
         };
         lua_pushcfunction(L, M_CallListener);
-        lua_pushlightuserdata(L, (void *)&dispatch);
+        lua_pushlightuserdata(L, &dispatch);
         if (lua_pcall(L, 1, 0, 0) != LUA_OK) {
             LOG_ERROR("Lua event handler error: %s", lua_tostring(L, -1));
             lua_pop(L, 1);
         }
+        answered = answered || dispatch.answered;
     }
 
     m_DispatchDepth--;
     if (m_DispatchDepth == 0) {
         M_CompactListeners();
     }
+    return answered;
 }
 
 void LUA_ClearLevelListeners(void)
@@ -365,24 +373,24 @@ void LUA_ClearLevelListeners(void)
     }
 }
 
-void LUA_FireEventEx(
+bool LUA_FireEventEx(
     const LUA_EVENT_TYPE ev, const LUA_EVENT_ARG *const args,
     const int32_t arg_count)
 {
-    M_FireEvent(ev, M_NO_KEY, args, arg_count);
+    return M_FireEvent(ev, M_NO_KEY, args, arg_count);
 }
 
-void LUA_FireEvent(const LUA_EVENT_TYPE ev)
+bool LUA_FireEvent(const LUA_EVENT_TYPE ev)
 {
-    LUA_FireEventEx(ev, nullptr, 0);
+    return LUA_FireEventEx(ev, nullptr, 0);
 }
 
-void LUA_FireEventInt32(const LUA_EVENT_TYPE ev, const int32_t arg)
+bool LUA_FireEventInt32(const LUA_EVENT_TYPE ev, const int32_t arg)
 {
     const LUA_EVENT_ARG args[] = {
         { .type = LUA_EVENT_ARG_INT32, .value = { .i32 = arg } },
     };
-    LUA_FireEventEx(ev, args, 1);
+    return LUA_FireEventEx(ev, args, 1);
 }
 
 REGISTER_LUA_CAPI(.create = M_Create, .shutdown = M_Shutdown)

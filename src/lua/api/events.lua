@@ -14,7 +14,10 @@ api.module("events", {
   description = "Lua scripts can listen for game events by attaching a handler to one of the hooks "
     .. "below. Attaching returns a listener id, which `trx.events.detach` takes.\n\n"
     .. "A handler attached from a level script is detached automatically when the level ends; one "
-    .. "attached from a global script lives for the whole session.",
+    .. "attached from a global script lives for the whole session.\n\n"
+    .. "An event that carries a default the script may take over says so in its description; a "
+    .. "handler answers such an event by returning true, and the default then stands down. Every "
+    .. "other event ignores what its handlers return.",
 })
 
 -- Each hook is a plain function closing over its event type.
