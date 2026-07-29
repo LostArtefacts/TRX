@@ -12,4 +12,8 @@ trx.events.on_game_start(function(level)
   trx.items[122].properties.switch_mode = trx.items.SwitchMode.HIDDEN_PICKUP
   trx.items[126].properties.switch_mode = trx.items.SwitchMode.HIDDEN_REACH
   trx.items[130].properties.switch_mode = trx.items.SwitchMode.HIDDEN_REACH
+  trx.items[113].properties.pickup_mode = trx.items.PickupMode.HIDDEN
+  trx.items[121].properties.pickup_mode = trx.items.PickupMode.HIDDEN
+  trx.items[125].properties.pickup_mode = trx.items.PickupMode.HIDDEN
+  trx.items[129].properties.pickup_mode = trx.items.PickupMode.HIDDEN
 end)
