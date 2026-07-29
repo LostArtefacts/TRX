@@ -393,6 +393,24 @@ An event that carries a default the script may take over says so in its descript
   end)
   ```
 
+- [lua]`trx.events.on_flyby_end(callback)`  
+  Happens when a flyby sequence reaches its last camera and hands the view back.
+  A sequence that a cutscene or the player interrupts does not fire it.
+
+  Parameters:
+  - **`callback`** (function).
+    Called with:
+    - **`sequence`** (integer). Number of the sequence that ended.
+
+  Returns: integer. Listener id. Pass it to `trx.events.detach` to stop listening.
+
+  Example:
+  ```lua
+  trx.events.on_flyby_end(function(sequence)
+    trx.camera.play_flyby(sequence)
+  end)
+  ```
+
 - [lua]`trx.events.detach(listener_id)`  
   Removes a previously attached handler, which stops firing immediately.
 

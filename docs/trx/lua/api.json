@@ -2750,6 +2750,20 @@
       "path": "camera.reset"
     },
     {
+      "description": "Starts a flyby camera sequence. Does nothing if another one is already playing.",
+      "examples": [
+        "trx.camera.play_flyby(1)"
+      ],
+      "params": [
+        {
+          "description": "0-based sequence number.",
+          "name": "sequence_num",
+          "type": "integer"
+        }
+      ],
+      "path": "camera.play_flyby"
+    },
+    {
       "description": "Cancels the flyby camera sequence, if one is playing.",
       "path": "camera.cancel_flyby"
     },
@@ -3614,6 +3628,30 @@
         }
       ],
       "path": "events.on_kill",
+      "returns": {
+        "description": "Listener id. Pass it to `trx.events.detach` to stop listening.",
+        "type": "integer"
+      }
+    },
+    {
+      "description": "Happens when a flyby sequence reaches its last camera and hands the view back.\nA sequence that a cutscene or the player interrupts does not fire it.",
+      "examples": [
+        "trx.events.on_flyby_end(function(sequence)\n  trx.camera.play_flyby(sequence)\nend)"
+      ],
+      "params": [
+        {
+          "name": "callback",
+          "params": [
+            {
+              "description": "Number of the sequence that ended.",
+              "name": "sequence",
+              "type": "integer"
+            }
+          ],
+          "type": "function"
+        }
+      ],
+      "path": "events.on_flyby_end",
       "returns": {
         "description": "Listener id. Pass it to `trx.events.detach` to stop listening.",
         "type": "integer"

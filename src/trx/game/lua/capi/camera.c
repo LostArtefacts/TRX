@@ -56,6 +56,13 @@ static int M_L_CameraIsFlybyActive(lua_State *const L)
     return 1;
 }
 
+// trxc.camera.play_flyby(sequence_num)
+static int M_L_CameraPlayFlyby(lua_State *const L)
+{
+    FlybyMode_Activate((int32_t)luaL_checkinteger(L, 1), false);
+    return 0;
+}
+
 // trxc.camera.cancel_flyby()
 static int M_L_CameraCancelFlyby(lua_State *const L)
 {
@@ -71,6 +78,7 @@ static const luaL_Reg m_Module[] = {
     { "shake", M_L_CameraShake },
     { "reset", M_L_CameraReset },
     { "is_flyby_active", M_L_CameraIsFlybyActive },
+    { "play_flyby", M_L_CameraPlayFlyby },
     { "cancel_flyby", M_L_CameraCancelFlyby },
     { nullptr, nullptr },
 };
