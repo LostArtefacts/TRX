@@ -17,6 +17,7 @@
 #include <trx/game/game_strings/entries.h>
 #include <trx/game/game_strings/manager.h>
 #include <trx/game/gun.h>
+#include <trx/game/gym.h>
 #include <trx/game/input.h>
 #include <trx/game/input/backends/touch.h>
 #include <trx/game/inventory_ring.h>
@@ -176,6 +177,7 @@ static void M_ShutdownModules(void)
 
     Console_Shutdown();
     Savegame_Shutdown();
+    Gym_Shutdown();
 
     GF_Shutdown();
     LUA_Shutdown();

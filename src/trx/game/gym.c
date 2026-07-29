@@ -42,9 +42,12 @@ typedef struct {
     } quad_course;
 } M_PRIV;
 
-static M_PRIV m_Priv = {
-    .is_inventory_open_enabled = -1,
-};
+#define M_PRIV_INITIAL                                                         \
+    {                                                                          \
+        .is_inventory_open_enabled = -1,                                       \
+    }
+
+static M_PRIV m_Priv = M_PRIV_INITIAL;
 
 static int32_t M_CountAssaultTargets(void)
 {
@@ -210,6 +213,11 @@ static void M_Racetrack_Finish(void)
     p->quad_course.timer_active = false;
 }
 
+void Gym_Shutdown(void)
+{
+    m_Priv = (M_PRIV)M_PRIV_INITIAL;
+}
+
 void Gym_SetInventoryOpenEnabled(const bool enabled)
 {
     M_PRIV *const p = &m_Priv;
@@ -218,9 +226,11 @@ void Gym_SetInventoryOpenEnabled(const bool enabled)
 
 bool Gym_IsInventoryOpenEnabled(void)
 {
-    M_PRIV *const p = &m_Priv;
+    const M_PRIV *const p = &m_Priv;
+    // Until the game says otherwise, the answer follows the engine version,
+    // which changes under us when the player switches mods.
     if (p->is_inventory_open_enabled == -1) {
-        p->is_inventory_open_enabled = g_TRVersion >= 2;
+        return g_TRVersion >= 2;
     }
     return p->is_inventory_open_enabled;
 }
