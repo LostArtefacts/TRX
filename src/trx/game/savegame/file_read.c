@@ -4,6 +4,7 @@
 #include <trx/core/utils.h>
 #include <trx/debug.h>
 #include <trx/game/camera.h>
+#include <trx/game/cutseq.h>
 #include <trx/game/effects.h>
 #include <trx/game/fx/common.h>
 #include <trx/game/fx/weather.h>
@@ -1280,6 +1281,14 @@ bool SG_File_LoadMisc(JSON_READ_IO *const io)
         int32_t rng_draw_seed = 0;
         if (M_OPTIONAL(JSON_READ(io, "rng_draw_seed", &rng_draw_seed))) {
             Random_SeedDraw(rng_draw_seed);
+        }
+    }
+
+    {
+        // Introduced in TRX 1.10
+        uint64_t cutscenes_played = 0;
+        if (M_OPTIONAL(JSON_READ(io, "cutscenes_played", &cutscenes_played))) {
+            CutSeq_SetPlayedMask(cutscenes_played);
         }
     }
 

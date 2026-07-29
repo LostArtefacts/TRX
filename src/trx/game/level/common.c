@@ -2,6 +2,7 @@
 #include <trx/core/benchmark.h>
 #include <trx/core/log.h>
 #include <trx/game/camera.h>
+#include <trx/game/cutseq/playback.h>
 #include <trx/game/effects.h>
 #include <trx/game/fx.h>
 #include <trx/game/game.h>
@@ -25,6 +26,10 @@
 
 void Level_Unload(void)
 {
+    // First, so the end event a dropped cutscene fires reaches a script that
+    // can still read the world it played in.
+    CutSeq_Reset();
+
     Music_ResetTrackStates();
     Sound_ResetSamples();
 
@@ -87,6 +92,10 @@ bool Level_Initialise(
     }
 
     Level_Unload();
+
+    // Read here rather than at the first cutscene trigger, so a scene starts
+    // without waiting on the file.
+    CutSeq_Load();
 
     // After the unload, so what the outgoing level torn down reaches the script
     // that set it up, and here rather than in the sequencer, so a level loaded

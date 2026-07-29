@@ -76,6 +76,7 @@ typedef enum {
     TO_SECRET,
     TO_BODY_BAG,
     TO_FLYBY,
+    TO_CUTSCENE,
     TO_NUMBER_OF,
 } TRIGGER_OBJECT;
 

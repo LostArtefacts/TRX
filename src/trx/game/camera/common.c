@@ -2,6 +2,7 @@
 
 #include <trx/config.h>
 #include <trx/game/camera.h>
+#include <trx/game/cutseq.h>
 #include <trx/game/game.h>
 #include <trx/game/input.h>
 #include <trx/game/lara.h>
@@ -180,7 +181,11 @@ void Camera_Update(void)
     }
 
     if (g_Camera.type == CAM_CINEMATIC) {
-        Camera_LoadCutsceneFrame();
+        if (CutSeq_IsPlaying()) {
+            CutSeq_UpdateCamera();
+        } else {
+            Camera_LoadCutsceneFrame();
+        }
         Camera_EnsureEnvironment();
         return;
     }

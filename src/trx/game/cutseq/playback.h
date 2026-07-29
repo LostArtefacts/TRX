@@ -1,0 +1,68 @@
+// TR4 in-game cutscene ("cutseq") playback: drives the camera and actors
+// from the delta-compressed tracks in cutseq.pak while the level keeps
+// running underneath.
+#pragma once
+
+#include <trx/game/objects/ids.h>
+#include <trx/game/types.h>
+
+#include <stdint.h>
+
+// The original engine addresses its cutscenes with a 32-bit mask, so no more
+// than this are playable. Retail cutseq.pak holds 31.
+#define CUTSEQ_MAX_CUTSCENES 32
+
+// A cutscene trigger names a number the pak need not hold a scene for - TR4
+// uses 32 to ask for an FMV. The played-once memory covers every number a
+// trigger may carry, so one the engine cannot play is still answered once
+// rather than asked again on the next frame.
+#define CUTSEQ_MAX_TRIGGERS 64
+
+// Reads cutseq.pak, if this game has one. Called once per level load, so the
+// first cutscene of a level does not pay for the read.
+void CutSeq_Load(void);
+
+bool CutSeq_IsAvailable(void);
+// How many cutscenes this game can play; 0 when it has none. Every number a
+// caller passes below is a valid one only while it is under this.
+int32_t CutSeq_GetCount(void);
+bool CutSeq_IsActive(void);
+bool CutSeq_IsPlaying(void);
+int32_t CutSeq_GetCurrent(void);
+
+// Fades out, then plays the cutscene.
+void CutSeq_Request(int32_t num);
+
+// Whether a cutscene trigger naming this number has already been answered.
+// The number need not be one the pak can play; see CUTSEQ_MAX_TRIGGERS.
+bool CutSeq_IsPlayed(int32_t num);
+void CutSeq_SetPlayed(int32_t num, bool played);
+// The whole played-once bitmask, for the paths that carry it as one value:
+// the savegame, and the start of a playthrough.
+uint64_t CutSeq_GetPlayedMask(void);
+void CutSeq_SetPlayedMask(uint64_t mask);
+
+// Where Lara stands once the running cutscene ends. It starts as where she
+// was when the cutscene was requested; a script may place her elsewhere, as
+// the original engine does for the scenes that move her.
+void CutSeq_SetLaraReturn(XYZ_32 pos, int16_t rot);
+
+// Handles a TO_CUTSCENE floor trigger: plays the cutscene once, unless a
+// script answers the trigger itself.
+void CutSeq_HandleTrigger(int32_t num);
+
+// How a cutscene is framed: the field of view it plays at, and the depth of
+// each cinematic bar as a fraction of the screen height.
+int32_t CutSeq_GetFOV(void);
+void CutSeq_SetFOV(int32_t fov);
+float CutSeq_GetLetterbox(void);
+void CutSeq_SetLetterbox(float ratio);
+
+// Engine hooks.
+void CutSeq_Reset(void); // drops all runtime state (level end)
+void CutSeq_Control(void); // state machine and per-tick decode
+void CutSeq_PostControl(void); // reasserts the cinematic camera
+void CutSeq_UpdateCamera(void); // places the camera (Camera_Update)
+void CutSeq_PreDraw(void); // interpolates poses for rendering (Game_Draw)
+void CutSeq_DrawActors(void); // draws actors 1..N (Room_DrawAllRooms)
+void CutSeq_DrawOverlay(void); // fade + letterbox bars (Game_Draw)

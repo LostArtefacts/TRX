@@ -9,6 +9,7 @@
 #include <trx/game/catalog/manager.h>
 #include <trx/game/clock.h>
 #include <trx/game/console.h>
+#include <trx/game/cutseq.h>
 #include <trx/game/demo.h>
 #include <trx/game/events.h>
 #include <trx/game/fmv.h>
@@ -176,6 +177,7 @@ static void M_ShutdownModules(void)
     Lara_Pose_Shutdown();
     Lara_Skin_Shutdown();
 
+    CutSeq_Pak_Unload();
     Console_Shutdown();
     Savegame_Shutdown();
     Gym_Shutdown();

@@ -1,5 +1,6 @@
 #include <trx/config.h>
 #include <trx/game/camera.h>
+#include <trx/game/cutseq.h>
 #include <trx/game/game_strings/entries.h>
 #include <trx/game/input/backends/base.h>
 #include <trx/game/input/backends/controller.h>
@@ -89,7 +90,9 @@ void Input_Update(void)
     g_Input.menu_left |= g_Input.left;
     g_Input.menu_right |= g_Input.right;
     g_Input.menu_back |= g_Input.option;
-    g_Input.option &= g_Camera.type != CAM_CINEMATIC;
+    // A cutscene holds the option ring shut from the moment it is requested,
+    // which is before it takes the camera.
+    g_Input.option &= g_Camera.type != CAM_CINEMATIC && !CutSeq_IsActive();
     g_Input.roll |= g_Input.forward && g_Input.back;
     if (g_Input.left && g_Input.right) {
         g_Input.left = 0;

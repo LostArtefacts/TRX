@@ -2,6 +2,7 @@
 #include <trx/core/utils.h>
 #include <trx/core/vector.h>
 #include <trx/game/camera.h>
+#include <trx/game/cutseq.h>
 #include <trx/game/effects.h>
 #include <trx/game/fx.h>
 #include <trx/game/lara.h>
@@ -519,6 +520,8 @@ void Room_DrawAllRooms(const int16_t current_room, const int16_t target_room)
         Output_SetCurrentRoom(lara_room);
         Lara_Draw(lara_item);
     }
+
+    CutSeq_DrawActors();
 
     Output_SetupAboveWater(false);
     FX_Draw();
