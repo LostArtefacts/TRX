@@ -58,17 +58,18 @@ bool Game_IsSettingUpItems(void)
     return false;
 }
 
-void LUA_FireEventEx(
+bool LUA_FireEventEx(
     const LUA_EVENT_TYPE ev, const LUA_EVENT_ARG *const args,
     const int32_t arg_count)
 {
     if (ev != LUA_EVENT_TRIGGER) {
-        return;
+        return false;
     }
     m_NotifyCount++;
     m_NotifyKind = args[1].value.i32;
     m_NotifyMask = args[2].value.i32;
     m_NotifyOneShot = args[4].value.b;
+    return false;
 }
 
 // Mirrors the objects that read the trigger (falling_block reads the kind):
