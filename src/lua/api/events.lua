@@ -555,6 +555,98 @@ end)]],
   end,
 })
 
+api.define("events.on_cutscene_trigger", {
+  description = [[
+    Happens when a cutscene trigger fires, before the engine acts on it. A
+    handler answers the trigger by returning true - having played a cutscene of
+    its own, run something else, or decided nothing should run. If no handler
+    answers, the engine plays the cutscene the trigger names.
+
+    A trigger Lara stands on fires every frame, so this happens only for a
+    cutscene that has not run yet and while none is playing. Asking counts as
+    running it, whatever came of it, so the same handler is not asked again on
+    the next frame. Clear the mark with `trx.cutscenes.set_played` to hear
+    about one again.
+
+    The number a trigger names need not be one the game has a cutscene for -
+    TR4 uses 32 to ask for a full-motion video. Those reach a handler too, and
+    the engine has nothing of its own to do about them.
+  ]],
+  params = {
+    {
+      name = "callback",
+      type = "function",
+      params = {
+        {
+          name = "num",
+          type = "integer",
+          description = "Number the trigger names.",
+        },
+      },
+    },
+  },
+  returns = LISTENER_ID,
+  examples = {
+    [[-- only in the throne room; a flyby stands in for it elsewhere
+trx.events.on_cutscene_trigger(function(num)
+  if num ~= 27 then
+    return false
+  end
+  if trx.lara.item.room_num == 55 then
+    trx.cutscenes.play(27)
+  else
+    trx.camera.play_flyby(3)
+  end
+  return true
+end)]],
+  },
+  impl = hook(types.CUTSCENE_TRIGGER),
+})
+
+api.define("events.on_cutscene_start", {
+  description = "Happens when a TR4 cutscene's first frame is about to show, after the fade out.",
+  params = {
+    {
+      name = "callback",
+      type = "function",
+      params = {
+        {
+          name = "num",
+          type = "integer",
+          description = "Number of the cutscene starting.",
+        },
+      },
+    },
+  },
+  returns = LISTENER_ID,
+  impl = hook(types.CUTSCENE_START),
+})
+
+api.define("events.on_cutscene_end", {
+  description = "Happens once a TR4 cutscene has finished and the scene it interrupted is back. "
+    .. "This is where a script decides what follows.",
+  params = {
+    {
+      name = "callback",
+      type = "function",
+      params = {
+        {
+          name = "num",
+          type = "integer",
+          description = "Number of the cutscene that ended.",
+        },
+      },
+    },
+  },
+  returns = LISTENER_ID,
+  examples = {
+    [[trx.events.on_cutscene_end(function(num)
+  trx.log.info("cutscene " .. num .. " finished")
+end)]],
+  },
+  impl = hook(types.CUTSCENE_END),
+})
+
 api.define("events.on_flyby_end", {
   description = [[
 Happens when a flyby sequence reaches its last camera and hands the view back.

@@ -2,7 +2,7 @@ local raw = trxc.mod
 local api = trx.api
 
 api.module("mod", {
-  order = 21,
+  order = 22,
   description = "The mods the game was built with, and which one is loaded.",
 })
 

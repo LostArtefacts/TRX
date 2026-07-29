@@ -2,7 +2,7 @@ local raw = trxc.weather
 local api = trx.api
 
 api.module("weather", {
-  order = 12,
+  order = 13,
   description = "The runtime weather effect the current level shows.",
 })
 

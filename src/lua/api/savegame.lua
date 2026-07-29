@@ -2,7 +2,7 @@ local raw = trxc.savegame
 local api = trx.api
 
 api.module("savegame", {
-  order = 20,
+  order = 21,
   description = "The save slots, and starting or reading a saved game.",
 })
 
