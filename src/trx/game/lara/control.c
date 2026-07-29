@@ -373,7 +373,7 @@ static void M_UpdateEnvironment(void)
     lara_info->water_surface_dist = -water_height_diff;
 
     if (g_TRVersion >= 3) {
-        FX_Water_WadeSplash(item, water_height, water_depth);
+        FX_Water_WadeSplash(item, water_depth);
     } else if (
         g_Config.gameplay.enable_wading
         && lara_info->water_status != LWS_CHEAT) {

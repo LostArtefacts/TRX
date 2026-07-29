@@ -470,11 +470,12 @@ int32_t Room_GetCeilingEx(
 
 int32_t Room_GetWaterHeight(const XYZ_32 pos, const int16_t room_num)
 {
-    return Room_GetWaterHeightEx(pos, room_num, true);
+    return Room_GetWaterHeightEx(
+        pos, room_num, (ROOM_WATER_HEIGHT_ARGS) { .fix_tilts = true });
 }
 
 int32_t Room_GetWaterHeightEx(
-    const XYZ_32 pos, int16_t room_num, const bool fix_tilts)
+    const XYZ_32 pos, int16_t room_num, const ROOM_WATER_HEIGHT_ARGS args)
 {
     const int32_t x = pos.x;
     const int32_t y = pos.y;
@@ -516,23 +517,27 @@ int32_t Room_GetWaterHeightEx(
                && !M_IsPortalSolid(sector->ceiling, x, z)) {
             room = Room_Get(sector->portal_room.sky);
             if (!room->flags.underwater && !room->flags.swamp) {
-                if (fix_tilts) {
-                    break;
-                } else {
-                    return room->min_floor;
-                }
+                return args.fix_tilts
+                    ? M_GetSurfaceHeight(sector->ceiling, x, z, true)
+                    : room->min_floor;
             }
             sector = Room_GetWorldSector(room, x, z);
         }
-        return fix_tilts ? M_GetSurfaceHeight(sector->ceiling, x, z, true)
-                         : room->max_ceiling;
+
+        // Nothing but solid ceiling above the water here.
+        if (args.require_air_above) {
+            return NO_HEIGHT;
+        }
+        return args.fix_tilts ? M_GetSurfaceHeight(sector->ceiling, x, z, true)
+                              : room->max_ceiling;
     } else {
         while (sector->portal_room.pit != NO_ROOM
                && !M_IsPortalSolid(sector->floor, x, z)) {
             room = Room_Get(sector->portal_room.pit);
             if (room->flags.underwater || room->flags.swamp) {
-                return fix_tilts ? M_GetSurfaceHeight(sector->floor, x, z, true)
-                                 : room->max_ceiling;
+                return args.fix_tilts
+                    ? M_GetSurfaceHeight(sector->floor, x, z, true)
+                    : room->max_ceiling;
             }
             sector = Room_GetWorldSector(room, x, z);
         }

@@ -73,7 +73,7 @@ FX_WATER_RIPPLE *FX_Water_SetupRipple(
     int32_t x, int32_t y, int32_t z, int32_t size, bool is_still);
 void FX_Water_SetupSplash(const FX_WATER_SPLASH_SETUP *setup);
 void FX_Water_Splash(const ITEM *item);
-void FX_Water_WadeSplash(const ITEM *item, int32_t water_height, int32_t depth);
+void FX_Water_WadeSplash(const ITEM *item, int32_t depth);
 
 void FX_Water_TriggerUnderwaterBlood(XYZ_32 pos, int32_t size);
 void FX_Water_TriggerUnderwaterBloodD(XYZ_32 pos, int32_t size);

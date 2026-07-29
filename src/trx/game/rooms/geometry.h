@@ -25,8 +25,17 @@ int32_t Room_GetCeilingEx(const SECTOR *sector, XYZ_32 pos, bool fix_tilts);
 int32_t Room_GetFloorHeightForSector(
     const SECTOR *sector, int32_t x, int32_t z, bool fix_tilts);
 
+typedef struct {
+    // Read the surface at (x,z) rather than the room's own plane.
+    bool fix_tilts;
+    // Report NO_HEIGHT where a solid ceiling caps the water. Without it, that
+    // ceiling is reported as the surface, which is what the OG does.
+    bool require_air_above;
+} ROOM_WATER_HEIGHT_ARGS;
+
 int32_t Room_GetWaterHeight(XYZ_32 pos, int16_t room_num);
-int32_t Room_GetWaterHeightEx(XYZ_32 pos, int16_t room_num, bool fix_tilts);
+int32_t Room_GetWaterHeightEx(
+    XYZ_32 pos, int16_t room_num, ROOM_WATER_HEIGHT_ARGS args);
 
 int32_t Room_FindGridShift(int32_t src, int32_t dst);
 
