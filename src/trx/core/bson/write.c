@@ -63,6 +63,26 @@ static bool M_GetInt32WrappedSize(size_t *size, const char *key)
     return true;
 }
 
+static bool M_GetInt64Size(size_t *size)
+{
+    ASSERT(size != nullptr);
+    *size += sizeof(int64_t);
+    return true;
+}
+
+static bool M_GetInt64WrappedSize(size_t *size, const char *key)
+{
+    ASSERT(size != nullptr);
+    ASSERT(key != nullptr);
+    if (!M_GetMarkerSize(size, key)) {
+        return false;
+    }
+    if (!M_GetInt64Size(size)) {
+        return false;
+    }
+    return true;
+}
+
 static bool M_GetDoubleSize(size_t *size)
 {
     ASSERT(size != nullptr);
@@ -83,39 +103,71 @@ static bool M_GetDoubleWrappedSize(size_t *size, const char *key)
     return true;
 }
 
+typedef enum {
+    M_NUMBER_INT32,
+    M_NUMBER_INT64,
+    M_NUMBER_DOUBLE,
+} M_NUMBER_KIND;
+
+// A JSON number is a literal, and BSON has three forms to put one in. The
+// sizing pass and the writing pass have to land on the same one, so both ask
+// here rather than each reading the literal their own way.
+static M_NUMBER_KIND M_ClassifyNumber(
+    const JSON_NUMBER *const number, int64_t *const int_value,
+    double *const dbl_value)
+{
+    ASSERT(number != nullptr);
+    const char *str = number->number;
+    ASSERT(str != nullptr);
+
+    // hexadecimal numbers
+    if (number->number_size >= 2 && (str[1] == 'x' || str[1] == 'X')) {
+        *int_value = (int64_t)json_strtoumax(str, nullptr, 0);
+    } else {
+        // skip leading sign
+        const char *digits = str;
+        if (digits[0] == '+' || digits[0] == '-') {
+            digits++;
+        }
+        ASSERT(digits[0] != '\0');
+
+        if (strcmp(digits, "Infinity") == 0) {
+            // BSON does not support Infinity.
+            *dbl_value = DBL_MAX;
+            return M_NUMBER_DOUBLE;
+        }
+        if (strcmp(digits, "NaN") == 0) {
+            // BSON does not support NaN.
+            *int_value = 0;
+            return M_NUMBER_INT32;
+        }
+        if (strchr(digits, '.') != nullptr) {
+            *dbl_value = atof(str);
+            return M_NUMBER_DOUBLE;
+        }
+        *int_value = strtoll(str, nullptr, 10);
+    }
+
+    return *int_value < INT32_MIN || *int_value > INT32_MAX ? M_NUMBER_INT64
+                                                            : M_NUMBER_INT32;
+}
+
 static bool M_GetNumberWrappedSize(
     size_t *size, const char *key, const JSON_NUMBER *number)
 {
     ASSERT(size != nullptr);
     ASSERT(key != nullptr);
 
-    char *str = number->number;
-    ASSERT(str != nullptr);
-
-    // hexadecimal numbers
-    if (number->number_size >= 2 && (str[1] == 'x' || str[1] == 'X')) {
-        return M_GetInt32WrappedSize(size, key);
-    }
-
-    // skip leading sign
-    if (str[0] == '+' || str[0] == '-') {
-        str += 1;
-    }
-    ASSERT(str[0] != '\0');
-
-    if (!strcmp(str, "Infinity")) {
-        // BSON does not support Infinity.
+    int64_t int_value = 0;
+    double dbl_value = 0.0;
+    switch (M_ClassifyNumber(number, &int_value, &dbl_value)) {
+    case M_NUMBER_INT64:
+        return M_GetInt64WrappedSize(size, key);
+    case M_NUMBER_DOUBLE:
         return M_GetDoubleWrappedSize(size, key);
-    } else if (!strcmp(str, "NaN")) {
-        // BSON does not support NaN.
-        return M_GetInt32WrappedSize(size, key);
-    } else if (strchr(str, '.')) {
-        return M_GetDoubleWrappedSize(size, key);
-    } else {
+    default:
         return M_GetInt32WrappedSize(size, key);
     }
-
-    return false;
 }
 
 static bool M_GetStringSize(size_t *size, const JSON_STRING *string)
@@ -294,6 +346,23 @@ static char *M_WriteInt32Wrapped(
     return M_WriteInt32(data, value);
 }
 
+static char *M_WriteInt64(char *data, const int64_t value)
+{
+    ASSERT(data != nullptr);
+    memcpy(data, &value, sizeof(value));
+    data += sizeof(int64_t);
+    return data;
+}
+
+static char *M_WriteInt64Wrapped(
+    char *data, const char *key, const int64_t value)
+{
+    ASSERT(data != nullptr);
+    ASSERT(key != nullptr);
+    data = M_WriteMarker(data, key, '\x12');
+    return M_WriteInt64(data, value);
+}
+
 static char *M_WriteDouble(char *data, const double value)
 {
     ASSERT(data != nullptr);
@@ -317,33 +386,17 @@ static char *M_WriteNumberWrapped(
     ASSERT(data != nullptr);
     ASSERT(key != nullptr);
     ASSERT(number != nullptr);
-    char *str = number->number;
 
-    // hexadecimal numbers
-    if (number->number_size >= 2 && (str[1] == 'x' || str[1] == 'X')) {
-        return M_WriteInt32Wrapped(
-            data, key, json_strtoumax(number->number, nullptr, 0));
+    int64_t int_value = 0;
+    double dbl_value = 0.0;
+    switch (M_ClassifyNumber(number, &int_value, &dbl_value)) {
+    case M_NUMBER_INT64:
+        return M_WriteInt64Wrapped(data, key, int_value);
+    case M_NUMBER_DOUBLE:
+        return M_WriteDoubleWrapped(data, key, dbl_value);
+    default:
+        return M_WriteInt32Wrapped(data, key, (int32_t)int_value);
     }
-
-    // skip leading sign
-    if (str[0] == '+' || str[0] == '-') {
-        str++;
-    }
-    ASSERT(str[0] != '\0');
-
-    if (!strcmp(str, "Infinity")) {
-        // BSON does not support Infinity.
-        return M_WriteDoubleWrapped(data, key, DBL_MAX);
-    } else if (!strcmp(str, "NaN")) {
-        // BSON does not support NaN.
-        return M_WriteInt32Wrapped(data, key, 0);
-    } else if (strchr(str, '.')) {
-        return M_WriteDoubleWrapped(data, key, atof(number->number));
-    } else {
-        return M_WriteInt32Wrapped(data, key, atoi(number->number));
-    }
-
-    return data;
 }
 
 static char *M_WriteString(char *data, const JSON_STRING *string)

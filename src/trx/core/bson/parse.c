@@ -4,6 +4,7 @@
 #include <trx/core/memory.h>
 #include <trx/debug.h>
 
+#include <inttypes.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <string.h>
@@ -27,6 +28,13 @@ static void M_HandleValue(M_STATE *state, JSON_VALUE *value, uint8_t marker);
 static int32_t M_ReadI32(const char *const src)
 {
     int32_t value = 0;
+    memcpy(&value, src, sizeof(value));
+    return value;
+}
+
+static int64_t M_ReadI64(const char *const src)
+{
+    int64_t value = 0;
     memcpy(&value, src, sizeof(value));
     return value;
 }
@@ -90,6 +98,21 @@ static bool M_GetInt32ValueSize(M_STATE *state)
 
     state->dom_size += sizeof(JSON_NUMBER);
     state->data_size += snprintf(nullptr, 0, "%d", num) + 1;
+    return true;
+}
+
+static bool M_GetInt64ValueSize(M_STATE *state)
+{
+    ASSERT(state != nullptr);
+    if (state->offset + sizeof(int64_t) > state->size) {
+        state->error = BSON_PARSE_ERROR_PREMATURE_END_OF_BUFFER;
+        return false;
+    }
+    int64_t num = M_ReadI64(&state->src[state->offset]);
+    state->offset += sizeof(int64_t);
+
+    state->dom_size += sizeof(JSON_NUMBER);
+    state->data_size += snprintf(nullptr, 0, "%" PRId64, num) + 1;
     return true;
 }
 
@@ -266,6 +289,8 @@ static bool M_GetValueSize(M_STATE *state, uint8_t marker)
         return M_GetBoolValueSize(state);
     case 0x10:
         return M_GetInt32ValueSize(state);
+    case 0x12:
+        return M_GetInt64ValueSize(state);
     default:
         state->error = BSON_PARSE_ERROR_INVALID_VALUE;
         return false;
@@ -337,6 +362,28 @@ static void M_HandleInt32Value(M_STATE *state, JSON_VALUE *value)
 
     number->number = state->data;
     sprintf(state->data, "%d", num);
+    number->number_size = strlen(number->number);
+    state->data += number->number_size + 1;
+
+    value->type = JSON_TYPE_NUMBER;
+    value->payload = number;
+}
+
+static void M_HandleInt64Value(M_STATE *state, JSON_VALUE *value)
+{
+    ASSERT(state != nullptr);
+    ASSERT(value != nullptr);
+
+    ASSERT(state->offset + sizeof(int64_t) <= state->size);
+    int64_t num = M_ReadI64(&state->src[state->offset]);
+    state->offset += sizeof(int64_t);
+
+    JSON_NUMBER *number = (JSON_NUMBER *)state->dom;
+    number->ref_count = 1;
+    state->dom += sizeof(JSON_NUMBER);
+
+    number->number = state->data;
+    sprintf(state->data, "%" PRId64, num);
     number->number_size = strlen(number->number);
     state->data += number->number_size + 1;
 
@@ -580,6 +627,9 @@ static void M_HandleValue(M_STATE *state, JSON_VALUE *value, uint8_t marker)
         break;
     case 0x10:
         M_HandleInt32Value(state, value);
+        break;
+    case 0x12:
+        M_HandleInt64Value(state, value);
         break;
     default:
         ASSERT_FAIL();

@@ -98,6 +98,11 @@ void JSON_WriteIO_PushInt(JSON_WRITE_IO *const io, const int32_t value)
     M_PushValue(io, JSON_ValueFromInt(value));
 }
 
+void JSON_WriteIO_PushInt64(JSON_WRITE_IO *const io, const int64_t value)
+{
+    M_PushValue(io, JSON_ValueFromInt64(value));
+}
+
 void JSON_WriteIO_PushDouble(JSON_WRITE_IO *const io, const double value)
 {
     M_PushValue(io, JSON_ValueFromDouble(value));

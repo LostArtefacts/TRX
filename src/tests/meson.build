@@ -69,6 +69,20 @@ test_hash_exe = executable(
 )
 test('hash', test_hash_exe, suite: 'unit')
 
+test_bson_exe = executable(
+  'test_bson',
+  files('unit/test_bson.c') + test_stubs
+    + files(
+      '../trx/core/bson/parse.c',
+      '../trx/core/bson/write.c',
+      '../trx/core/json/base.c',
+      '../trx/core/memory.c',
+    ),
+  include_directories: [src_inc, test_inc],
+  build_by_default: false,
+)
+test('bson', test_bson_exe, suite: 'unit')
+
 test_handle_exe = executable(
   'test_handle',
   files('unit/test_handle.c') + test_stubs + files('../trx/core/handle.c'),
