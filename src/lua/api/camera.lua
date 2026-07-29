@@ -60,6 +60,19 @@ api.property("camera.is_flyby_active", {
   get = raw.is_flyby_active,
 })
 
+api.define("camera.play_flyby", {
+  description = "Starts a flyby camera sequence. Does nothing if another one is already playing.",
+  params = {
+    {
+      name = "sequence_num",
+      type = "integer",
+      description = "0-based sequence number.",
+    },
+  },
+  examples = { [[trx.camera.play_flyby(1)]] },
+  impl = raw.play_flyby,
+})
+
 api.define("camera.cancel_flyby", {
   description = "Cancels the flyby camera sequence, if one is playing.",
   impl = raw.cancel_flyby,

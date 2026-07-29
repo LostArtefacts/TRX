@@ -3,6 +3,7 @@
 #include <trx/game/camera.h>
 #include <trx/game/game_flow.h>
 #include <trx/game/lara.h>
+#include <trx/game/lua/events.h>
 #include <trx/game/rooms.h>
 #include <trx/game/viewport.h>
 
@@ -522,7 +523,9 @@ void Camera_FlybyMode_Update(void)
                 first_camera->flags.snap_to_game
                 || m_State.flags.spline_to_game) {
                 M_TestTriggers();
+                const int32_t finished = m_CurrentSequence;
                 Camera_FlybyMode_Deactivate();
+                LUA_FireEventInt32(LUA_EVENT_FLYBY_END, finished);
             } else {
                 M_PrepareSplineToGame();
             }

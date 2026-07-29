@@ -39,5 +39,16 @@ Module for inspecting the active camera state.
 - [lua]`trx.camera.reset()`  
   Resets the camera to Lara's current position.
 
+- [lua]`trx.camera.play_flyby(sequence_num)`  
+  Starts a flyby camera sequence. Does nothing if another one is already playing.
+
+  Parameters:
+  - **`sequence_num`** (integer). 0-based sequence number.
+
+  Example:
+  ```lua
+  trx.camera.play_flyby(1)
+  ```
+
 - [lua]`trx.camera.cancel_flyby()`  
   Cancels the flyby camera sequence, if one is playing.

@@ -606,6 +606,32 @@ end)]],
   end,
 })
 
+api.define("events.on_flyby_end", {
+  description = [[
+Happens when a flyby sequence reaches its last camera and hands the view back.
+A sequence that a cutscene or the player interrupts does not fire it.]],
+  params = {
+    {
+      name = "callback",
+      type = "function",
+      params = {
+        {
+          name = "sequence",
+          type = "integer",
+          description = "Number of the sequence that ended.",
+        },
+      },
+    },
+  },
+  returns = LISTENER_ID,
+  examples = {
+    [[trx.events.on_flyby_end(function(sequence)
+  trx.camera.play_flyby(sequence)
+end)]],
+  },
+  impl = hook(types.FLYBY_END),
+})
+
 api.define("events.detach", {
   description = "Removes a previously attached handler, which stops firing immediately.",
   params = {

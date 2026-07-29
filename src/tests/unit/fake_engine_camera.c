@@ -22,6 +22,13 @@ bool FlybyMode_IsActive(void)
     return m_FlybyActive;
 }
 
+void FlybyMode_Activate(const int32_t sequence_idx, const bool one_shot)
+{
+    g_FakeCameraCalls.play_flyby++;
+    g_FakeCameraCalls.last_flyby_sequence = sequence_idx;
+    m_FlybyActive = true;
+}
+
 bool FlybyMode_Cancel(void)
 {
     g_FakeCameraCalls.cancel_flyby++;
