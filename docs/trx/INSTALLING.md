@@ -1273,6 +1273,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── semer.lua
 │   │   │   ├── settomb1.lua
 │   │   │   ├── settomb2.lua
+│   │   │   ├── title.lua
 │   │   │   └── train.lua
 │   │   ├── catalog_item_actions.csv
 │   │   ├── catalog_lara_anims.csv
@@ -2598,6 +2599,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── semer.lua
     │   │   │   │   ├── settomb1.lua
     │   │   │   │   ├── settomb2.lua
+    │   │   │   │   ├── title.lua
     │   │   │   │   └── train.lua
     │   │   │   ├── catalog_item_actions.csv
     │   │   │   ├── catalog_lara_anims.csv
