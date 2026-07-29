@@ -9,6 +9,7 @@
 #include <trx/game/catalog/manager.h>
 #include <trx/game/clock.h>
 #include <trx/game/console.h>
+#include <trx/game/demo.h>
 #include <trx/game/events.h>
 #include <trx/game/fmv.h>
 #include <trx/game/game.h>
@@ -178,6 +179,7 @@ static void M_ShutdownModules(void)
     Console_Shutdown();
     Savegame_Shutdown();
     Gym_Shutdown();
+    Demo_Shutdown();
 
     GF_Shutdown();
     LUA_Shutdown();
