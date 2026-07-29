@@ -54,7 +54,7 @@ void LUA_ClearLevelListeners(void);
 // Fire a Lua event. Answers whether a handler returned a true value, which is
 // how a script takes over an event that carries a default; an event without
 // one ignores the answer.
-
+//
 // Fire a Lua event of given type with arbitrary arguments
 bool LUA_FireEventEx(
     LUA_EVENT_TYPE ev, const LUA_EVENT_ARG *args, int32_t arg_count);
