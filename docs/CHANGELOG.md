@@ -1,5 +1,5 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.9.3...develop) - ××××-××-××
-- added the flyby of the title level playing behind the TR4 main menu, as in the original game
+- added the TR4 main menu playing the title level behind it, alternating its flybys with the cutscenes their triggers start, as in the original game
 - added `trx.camera.play_flyby()`, to start a flyby camera sequence, and `trx.events.on_flyby_end()`, which happens when one reaches its last camera
 - added partial support for TR4's in-game cutscenes
 - added a new Lua module, `trx.cutscenes`, for playing TR4's cutscenes and reading or rewriting which of them have run, with the `on_cutscene_trigger`, `on_cutscene_start` and `on_cutscene_end` events; a script can answer a cutscene trigger itself, set how a cutscene is framed, and say where one leaves Lara

@@ -250,8 +250,12 @@ remains distinct for each game.
   </tr>
   <tr valign="top">
     <td><code>main_menu_picture</code></td>
-    <td>String<strong>*</strong></td>
-    <td>Path to the main menu background image.</td>
+    <td>String</td>
+    <td>
+      Path to the main menu background image. Omit it to show the title level
+      itself behind the menu, in which case what plays there is up to the
+      title's own script.
+    </td>
   </tr>
   <tr valign="top">
     <td><code>savegame_file_fmt</code></td>
@@ -371,8 +375,12 @@ remains distinct for each game.
   </tr>
   <tr valign="top">
     <td><code>main_menu_picture</code></td>
-    <td>String<strong>*</strong></td>
-    <td>Path to the main menu background image.</td>
+    <td>String</td>
+    <td>
+      Path to the main menu background image. Omit it to show the title level
+      itself behind the menu, in which case what plays there is up to the
+      title's own script.
+    </td>
   </tr>
   <tr valign="top">
     <td><code>savegame_file_fmt</code></td>

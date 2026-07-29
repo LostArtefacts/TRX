@@ -34,7 +34,7 @@
     },
     "main_menu_picture": {
       "type": "string",
-      "description": "Path to the main menu background image."
+      "description": "Path to the main menu background image. Omit it to run the title level live behind the menu instead."
     },
     "main_script": {
       "type": "string",
@@ -164,7 +164,6 @@
   },
   "required": [
     "engine",
-    "main_menu_picture",
     "savegame_file_fmt",
     "levels"
   ],
@@ -197,9 +196,13 @@
         "music_track": {
           "type": "integer"
         },
-        "flyby_sequence": {
-          "type": "integer",
-          "description": "Flyby camera sequence of the title level played behind the menu."
+        "lara_outfit": {
+          "type": "string",
+          "description": "Outfit Lara wears in the title level's cutscenes. Only outfits whose meshes the title level holds can be worn."
+        },
+        "script": {
+          "type": "string",
+          "description": "Path to a Lua script executed after loading this level."
         },
         "inherit_injections": {
           "type": "boolean"
