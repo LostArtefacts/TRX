@@ -209,6 +209,12 @@ void Camera_Update(void)
     const bool fixed_camera = g_Camera.item != nullptr
         && (g_Camera.type == CAM_FIXED || g_Camera.type == CAM_HEAVY);
     const ITEM *const item = fixed_camera ? g_Camera.item : Lara_GetItem();
+    // A title level running behind the menu need not hold Lara, and there is
+    // nothing for the camera to follow without her. It stays where it is.
+    if (item == nullptr) {
+        Camera_EnsureEnvironment();
+        return;
+    }
 
     const BOUNDS_16 *const bounds = Item_GetBoundsAccurate(item);
     int32_t y = item->pos.y;
