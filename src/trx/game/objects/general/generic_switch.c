@@ -85,6 +85,7 @@ static void M_Collision(
 
     const M_PRIV *const p = item->priv;
     if (p->switch_mode == SWITCH_MODE_HIDDEN_PICKUP) {
+        Object_Collision(item_num, lara_item, coll);
         return;
     }
 
