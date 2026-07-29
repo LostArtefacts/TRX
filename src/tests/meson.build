@@ -35,7 +35,7 @@ dep_lua = dependency('lua5.4', 'lua-5.4', 'lua54', 'lua')
 dep_pcre2 = dependency('libpcre2-8')
 
 # The injection files the UI layout test reads its font metrics from are zlib
-# compressed, the same as the game finds them.
+# compressed, the same as the game finds them, and so is the cutseq pak.
 dep_zlib = dependency('zlib')
 
 # enum_map.c hashes with uthash, which is headers only.
@@ -64,6 +64,25 @@ test_math_func_exe = executable(
   build_by_default: false,
 )
 test('math_func', test_math_func_exe, suite: 'unit')
+
+test_cutseq_decoder_exe = executable(
+  'test_cutseq_decoder',
+  files('unit/test_cutseq_decoder.c') + test_stubs
+    + files('../trx/game/cutseq/decoder.c'),
+  include_directories: [src_inc, test_inc],
+  build_by_default: false,
+)
+test('cutseq_decoder', test_cutseq_decoder_exe, suite: 'unit')
+
+test_cutseq_pak_exe = executable(
+  'test_cutseq_pak',
+  files('unit/test_cutseq_pak.c') + test_stubs
+    + files('../trx/game/cutseq/pak.c', '../trx/core/memory.c'),
+  include_directories: [src_inc, test_inc],
+  dependencies: [dep_zlib],
+  build_by_default: false,
+)
+test('cutseq_pak', test_cutseq_pak_exe, suite: 'unit')
 
 test_hash_exe = executable(
   'test_hash',

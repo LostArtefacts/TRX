@@ -283,6 +283,8 @@ common_sources = [
   'trx/game/creature/common.c',
   'trx/game/creature/shooting.c',
   'trx/game/cutscene.c',
+  'trx/game/cutseq/decoder.c',
+  'trx/game/cutseq/pak.c',
   'trx/game/demo.c',
   'trx/game/effects/draw.c',
   'trx/game/effects/manager.c',
