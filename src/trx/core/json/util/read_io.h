@@ -22,6 +22,8 @@ typedef struct {
     X(U16, uint16_t)                                                           \
     X(S32, int32_t)                                                            \
     X(U32, uint32_t)                                                           \
+    X(S64, int64_t)                                                            \
+    X(U64, uint64_t)                                                           \
     X(Float, float)                                                            \
     X(Double, double)                                                          \
     X(XYZ16, XYZ_16)                                                           \

@@ -219,6 +219,22 @@ L_DEFINE_M_READ_NUM_CURRENT(uint16_t, U16, 0, UINT16_MAX)
 L_DEFINE_M_READ_NUM_CURRENT(uint32_t, U32, 0, UINT32_MAX)
 #undef L_DEFINE_M_READ_NUM_CURRENT
 
+#define L_DEFINE_M_READ_NUM64_CURRENT(type_, name)                             \
+    static bool M_ReadNumCurrent_##name(                                       \
+        JSON_READ_IO *const io, void *const target)                            \
+    {                                                                          \
+        if (io->current->type != JSON_TYPE_NUMBER) {                           \
+            M_SetError(io, "not a number");                                    \
+            return false;                                                      \
+        }                                                                      \
+        const type_ parsed = (type_)JSON_ValueGetInt64(io->current, 0);        \
+        memcpy(target, &parsed, sizeof(parsed));                               \
+        return true;                                                           \
+    }
+L_DEFINE_M_READ_NUM64_CURRENT(int64_t, S64)
+L_DEFINE_M_READ_NUM64_CURRENT(uint64_t, U64)
+#undef L_DEFINE_M_READ_NUM64_CURRENT
+
 static bool M_ReadNumCurrent_Double(
     JSON_READ_IO *const io, double *const target)
 {
@@ -355,6 +371,8 @@ L_DEFINE_JSON_READ_IO_TYPE(S16, int16_t, M_ReadNumCurrent_S16)
 L_DEFINE_JSON_READ_IO_TYPE(U16, uint16_t, M_ReadNumCurrent_U16)
 L_DEFINE_JSON_READ_IO_TYPE(S32, int32_t, M_ReadNumCurrent_S32)
 L_DEFINE_JSON_READ_IO_TYPE(U32, uint32_t, M_ReadNumCurrent_U32)
+L_DEFINE_JSON_READ_IO_TYPE(S64, int64_t, M_ReadNumCurrent_S64)
+L_DEFINE_JSON_READ_IO_TYPE(U64, uint64_t, M_ReadNumCurrent_U64)
 L_DEFINE_JSON_READ_IO_TYPE(Float, float, M_ReadNumCurrent_Float)
 L_DEFINE_JSON_READ_IO_TYPE(Double, double, M_ReadNumCurrent_Double)
 L_DEFINE_JSON_READ_IO_TYPE(String, const char *, M_ReadStringCurrent)
