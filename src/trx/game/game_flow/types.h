@@ -199,9 +199,13 @@ typedef struct {
 
     // global settings
     struct {
+        // The title screen's picture, or nullptr when the gameflow named none
+        // or the file it named is missing.
         char *main_menu_background_path;
-        // Flyby camera sequence played behind the title menu, or -1.
-        int32_t title_flyby_sequence;
+        // Whether the title runs its level live behind the menu instead of
+        // showing a picture. Set from the gameflow naming no picture at all,
+        // which a picture it named and could not find is not.
+        bool main_menu_use_live_scene;
         bool enable_tr2_item_drops;
         bool convert_dropped_guns;
         GF_AMBIENT_DATA ambient_tracks;

@@ -102,6 +102,11 @@ void GF_Shutdown(void)
     Memory_FreePointer(&gf->meta.name);
     Memory_FreePointer(&gf->meta.extends);
     Memory_FreePointer(&gf->path);
+
+    // A mod switch loads the next gameflow into this same struct, and the
+    // reader only writes the fields its gameflow names. Anything left here
+    // would be read as the new mod's setting.
+    *gf = (GAME_FLOW) {};
 }
 
 void GF_OverrideCommand(const GF_COMMAND command)

@@ -351,9 +351,15 @@ static bool M_LoadRoot(const M_CONTEXT *const ctx)
 
     M_ReadModMeta(io, &ctx->gf->meta);
 
-    JSON_MUST(JSON_READ(io, "main_menu_picture", &tmp_s));
-    ctx->gf->main_menu_background_path =
-        Memory_DupStr(TRXPath_TryResolve(TRX_DYNAMIC_PATH_IMAGE_FILE, tmp_s));
+    // A title that names no picture shows its own level behind the menu. One
+    // that names a picture and cannot find it is a broken install, not that.
+    tmp_s = nullptr;
+    if (JSON_OPTIONAL(JSON_READ(io, "main_menu_picture", &tmp_s))
+        && tmp_s != nullptr) {
+        ctx->gf->main_menu_background_path = Memory_DupStr(
+            TRXPath_TryResolve(TRX_DYNAMIC_PATH_IMAGE_FILE, tmp_s));
+    }
+    ctx->gf->main_menu_use_live_scene = tmp_s == nullptr;
 
     JSON_MUST(JSON_READ(io, "savegame_file_fmt", &tmp_s));
     ctx->gf->savegame_file_fmt = Memory_DupStr(tmp_s);
@@ -931,15 +937,12 @@ static bool M_LoadDemos(const M_CONTEXT *const ctx)
 
 static bool M_LoadTitleLevel(const M_CONTEXT *const ctx)
 {
-    ctx->gf->title_flyby_sequence = -1;
     if (!JSON_OPTIONAL(JSON_PUSH(ctx->io, "title"))) {
         return true;
     }
     ctx->gf->title_level = Memory_Alloc(sizeof(GF_LEVEL));
     JSON_MUST(
         M_LoadLevel(ctx, ctx->gf->title_level, 0, (void *)(intptr_t)GFL_TITLE));
-    JSON_OPTIONAL(
-        JSON_READ(ctx->io, "flyby_sequence", &ctx->gf->title_flyby_sequence));
     JSON_MUST(JSON_POP(ctx->io));
     JSON_FINISH();
 }

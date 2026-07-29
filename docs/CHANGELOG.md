@@ -18,6 +18,7 @@
 - changed the Lua level events to a single `on_game_start`, which every kind of level fires, with `on_title_start` for the title screen; refer to migration notes
 - changed object properties to take effect as soon as they change, rather than only when the item is first set up
 - changed outfits to support joints, up to two braids per outfit, and to allow positional offset adjustments for equipment meshes; refer to migration notes
+- changed the gameflow's `main_menu_picture` to be optional: a game that names no picture shows its title level behind the menu, and its title script says what plays there
 - changed the `/music` console command to list the available tracks when given no argument, as `/sfx` does; `/music status` now reports what is playing
 - changed the `/spawn`, `/kill` and `/tp` console commands to accept a family such as `pickup`, `door` or `enemy` in place of a name, and to offer the families each of them can act on in autocompletion
 - changed the Breeze option to allow selecting TR2 or TR3 behavior (Graphic Options → Visuals → Breeze)
