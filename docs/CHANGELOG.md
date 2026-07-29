@@ -102,6 +102,7 @@
 - added underwater ceiling switches
 - added reach/receptacle switches
 - added shove button switches
+- added support for hidden reach-in pickups
 - added Lara catching fire, from fires and other hazards; she stays on fire across level transitions
 - added an option to let fires and other dynamic lights illuminate static meshes (Graphic Options → Visuals → Static mesh lighting)
 - added ricochets, so that shots that hit walls and other hard surfaces throw out sparks and leave a puff of smoke

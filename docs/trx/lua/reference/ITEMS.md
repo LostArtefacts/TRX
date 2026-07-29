@@ -48,6 +48,8 @@ end
         Picked up from a low pedestal.
     - `trx.items.PickupMode.PLINTH_HIGH` = `2`  
         Picked up from a high pedestal.
+    - `trx.items.PickupMode.HIDDEN` = `3`  
+        Hidden behind an object Lara can reach into.
 
 - [lua]`trx.items.SwitchMode`
 

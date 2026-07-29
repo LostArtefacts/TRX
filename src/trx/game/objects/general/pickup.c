@@ -32,6 +32,7 @@
 #define M_LF_PICKUP_CRAWL        20
 #define M_LF_PICKUP_PLINTH_LOW   29
 #define M_LF_PICKUP_PLINTH_HIGH  45
+#define M_LF_PICKUP_HIDDEN       42
 #define M_AID_DIST_MIN           (STEP_L * 5)      // 1280
 #define M_AID_DIST_MAX           (WALL_L * 8)      // 8192
 #define M_AID_WAIT_MIN           (LOGIC_FPS * 2.5) // 75
@@ -83,9 +84,21 @@ static const OBJECT_BOUNDS m_PlinthBounds = {
     },
 };
 
+static const OBJECT_BOUNDS m_HiddenPickupBounds = {
+    .shift = {
+        .min = { .x = -STEP_L, .y = -100, .z = -800, },
+        .max = { .x = +STEP_L, .y = +100, .z = STEP_L, },
+    },
+    .rot = {
+        .min = { .x = -10 * DEG_1, .y = -30 * DEG_1, .z = 0, },
+        .max = { .x = +10 * DEG_1, .y = +30 * DEG_1, .z = 0, },
+    },
+};
+
 static const XYZ_32 m_PickupPosition = { .x = 0, .y = 0, .z = -100 };
 static const XYZ_32 m_PickupPositionUW = { .x = 0, .y = -200, .z = -350 };
 static const XYZ_32 m_PickupPositionPlinth = { .x = 0, .y = 0, .z = -380 };
+static const XYZ_32 m_PickupPositionHidden = { .x = 0, .y = 0, .z = -690 };
 
 typedef struct {
     int32_t aid_timer;
@@ -285,6 +298,8 @@ static bool M_IsPickupEraseFrame(const ITEM *const lara_item)
         return frame == M_LF_PICKUP_PLINTH_LOW;
     case LA_PLINTH_HIGH_PICKUP:
         return frame == M_LF_PICKUP_PLINTH_HIGH;
+    case LA_HOLE_GRAB:
+        return frame == M_LF_PICKUP_HIDDEN;
     default:
         return false;
     }
@@ -341,6 +356,7 @@ static void M_GetAllAtLaraPos(const ITEM *const item)
 static void M_BeginPickupAnimation(const ITEM *const item, const bool is_ducked)
 {
     LARA_TRX_STATE goal_state;
+    LARA_TRX_STATE required_state = LS_PICKUP;
     if (is_ducked) {
         goal_state = LS_PICKUP;
     } else {
@@ -351,6 +367,10 @@ static void M_BeginPickupAnimation(const ITEM *const item, const bool is_ducked)
             break;
         case PICKUP_MODE_PLINTH_HIGH:
             goal_state = LS_PLINTH_HIGH_PICKUP;
+            break;
+        case PICKUP_MODE_HIDDEN:
+            goal_state = LS_HIDDEN_PICKUP;
+            required_state = LS_HIDDEN_PICKUP;
             break;
         default:
             goal_state = g_Config.gameplay.enable_fast_pickups ? LS_FAST_PICKUP
@@ -367,7 +387,7 @@ static void M_BeginPickupAnimation(const ITEM *const item, const bool is_ducked)
     lara_item->goal_anim_state = LS(goal_state);
     do {
         Lara_Animate(lara_item);
-    } while (lara_item->current_anim_state != LS(LS_PICKUP));
+    } while (lara_item->current_anim_state != LS(required_state));
 }
 
 static const BOUNDS_16 *M_FindPlinthBounds(const ITEM *const item)
@@ -424,6 +444,11 @@ static bool M_TestLaraPosition(const ITEM *const item)
         goto finish;
     }
 
+    if (p->pickup_mode == PICKUP_MODE_HIDDEN) {
+        test_bounds = m_HiddenPickupBounds;
+        goto finish;
+    }
+
     const ITEM *const lara_item = Lara_GetItem();
     const int32_t delta = lara_item->pos.y - item->pos.y;
     const int32_t offset =
@@ -458,6 +483,9 @@ static XYZ_32 M_GetAlignmentPosition(const ITEM *const item)
             pos.z = -200 - plinth_bounds->max.z;
         }
         break;
+    case PICKUP_MODE_HIDDEN:
+        pos = m_PickupPositionHidden;
+        break;
     default:
         pos = m_PickupPosition;
         break;
@@ -467,14 +495,40 @@ static XYZ_32 M_GetAlignmentPosition(const ITEM *const item)
     return pos;
 }
 
+static bool M_LaraHasPickupState(const ITEM *const lara_item)
+{
+    return lara_item->current_anim_state == LS(LS_PICKUP)
+        || lara_item->current_anim_state == LS(LS_HIDDEN_PICKUP);
+}
+
+static XYZ_16 M_PrepareAndCacheRot(
+    ITEM *const item, const ITEM *const lara_item, const bool controlled)
+{
+    // Items are rotated to match Lara before performing alignment tests.
+    // Non-controlled mode accounts for Lara being tilted e.g. in crawl state,
+    // and particular pickup modes expect Y snapping.
+    const XYZ_16 old_rot = item->rot;
+
+    if (controlled) {
+        item->rot.x = 0;
+        item->rot.z = 0;
+    } else {
+        item->rot.x = lara_item->rot.x;
+        item->rot.z = lara_item->rot.z;
+    }
+
+    const M_PRIV *const p = item->priv;
+    if (p->pickup_mode != PICKUP_MODE_HIDDEN) {
+        item->rot.y = lara_item->rot.y;
+    }
+
+    return old_rot;
+}
+
 static void M_DoControlled(const int16_t item_num, ITEM *const lara_item)
 {
     ITEM *const item = Item_Get(item_num);
-    const XYZ_16 old_rot = item->rot;
-
-    item->rot.x = 0;
-    item->rot.y = lara_item->rot.y;
-    item->rot.z = 0;
+    const XYZ_16 old_rot = M_PrepareAndCacheRot(item, lara_item, true);
 
     LARA_INFO *const lara = Lara_GetLaraInfo();
     if (Lara_Interact_CanControl(LARA_INTERACT_PICKUP, item_num)) {
@@ -493,8 +547,7 @@ static void M_DoControlled(const int16_t item_num, ITEM *const lara_item)
 
         goto cleanup;
     } else if (
-        lara_item->current_anim_state != LS(LS_PICKUP)
-        && !lara->interact_target.is_moving
+        !M_LaraHasPickupState(lara_item) && !lara->interact_target.is_moving
         && lara->interact_target.item_num == item_num) {
         lara->interact_target.item_num = NO_ITEM;
     }
@@ -503,7 +556,7 @@ static void M_DoControlled(const int16_t item_num, ITEM *const lara_item)
         goto cleanup;
     }
 
-    if (lara_item->current_anim_state == LS(LS_PICKUP)) {
+    if (M_LaraHasPickupState(lara_item)) {
         if (M_IsPickupEraseFrame(lara_item)) {
             M_GetAllAtLaraPos(item);
             lara->interact_target.item_num = NO_ITEM;
@@ -535,14 +588,13 @@ static void M_DoAboveWater(const int16_t item_num, ITEM *const lara_item)
         return;
     }
 
-    const XYZ_16 old_rot = item->rot;
-    item->rot = lara_item->rot;
+    const XYZ_16 old_rot = M_PrepareAndCacheRot(item, lara_item, false);
 
     if (!M_TestLaraPosition(item)) {
         goto cleanup;
     }
 
-    if (lara_item->current_anim_state == LS(LS_PICKUP)) {
+    if (M_LaraHasPickupState(lara_item)) {
         if (M_IsPickupEraseFrame(lara_item)) {
             M_DoPickup(item_num);
         }
@@ -668,7 +720,7 @@ static void M_Setup(OBJECT *const obj)
         OBJECT_PROPERTY_CHECKED(
             M_PRIV, pickup_mode, PICKUP_MODE_NORMAL, M_CheckPickupMode,
             "Pickup animation mode - 0: normal; 1: low pedestal; 2: high "
-            "pedestal."));
+            "pedestal; 3: hidden reach-in."));
 }
 
 const OBJECT_BOUNDS *Pickup_Bounds(void)
