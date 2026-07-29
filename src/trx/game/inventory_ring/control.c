@@ -4,6 +4,7 @@
 #include <trx/core/memory.h>
 #include <trx/game/camera.h>
 #include <trx/game/console.h>
+#include <trx/game/cutseq/playback.h>
 #include <trx/game/flyby_mode.h>
 #include <trx/game/game.h>
 #include <trx/game/game/control.h>
@@ -412,7 +413,8 @@ static void M_SnapshotFrameState(INV_RING *const ring)
 }
 
 // A minimal simulation tick keeping the title level alive behind the menu:
-// the world and the flyby camera - no Lara, no player input, no HUD.
+// the world, the camera it plays through and its actors - no player input,
+// no HUD.
 static void M_SimTick(void)
 {
     Interpolation_Remember();
@@ -421,11 +423,6 @@ static void M_SimTick(void)
     Game_TickWorld();
     Game_TickPostControl();
     Game_TickEndFrame();
-
-    // Per the OG DoTitle, the flyby loops for as long as the menu is up.
-    if (!FlybyMode_IsActive() && g_GameFlow.title_flyby_sequence >= 0) {
-        FlybyMode_Activate(g_GameFlow.title_flyby_sequence, false);
-    }
 }
 
 static GF_COMMAND M_Control(INV_RING *const ring)
@@ -916,10 +913,10 @@ INV_RING *InvRing_Open(const INVENTORY_MODE mode)
 
     INV_RING *const ring = Memory_Alloc(sizeof(INV_RING));
     ring->mode = mode;
-    // The title level runs live behind the menu when the gameflow names a
-    // flyby sequence for it, so there is no background image to show.
+    // A title with no picture to show runs its level live behind the menu
+    // instead. What plays there is the title script's business.
     ring->live_scene =
-        mode == INV_TITLE_MODE && g_GameFlow.title_flyby_sequence >= 0;
+        mode == INV_TITLE_MODE && g_GameFlow.main_menu_use_live_scene;
     ring->background_style = mode != INV_TITLE_MODE
         ? g_Config.ui.inventory_background_style
         : (ring->live_scene ? BK_NONE : BK_IMAGE);
@@ -981,12 +978,6 @@ INV_RING *InvRing_Open(const INVENTORY_MODE mode)
     g_Inv_Mode = mode;
 
     if (ring->live_scene) {
-        // The OG title hides Lara during the flyby.
-        ITEM *const lara_item = Lara_GetItem();
-        if (lara_item != nullptr) {
-            lara_item->mesh_bits = 0;
-        }
-        FlybyMode_Activate(g_GameFlow.title_flyby_sequence, false);
         LUA_FireEvent(LUA_EVENT_TITLE_START);
     }
 
@@ -1019,8 +1010,15 @@ void InvRing_Close(INV_RING *const ring)
         Music_Stop();
         Sound_StopAll();
     }
+    // Neither a cutscene nor a flyby may outlive the menu they played behind.
+    // In this order: dropping the cutscene fires its end event, and a script
+    // that answers one by starting a flyby - as the TR4 title does - would
+    // otherwise leave that sequence holding the camera.
     if (ring->live_scene) {
-        FlybyMode_Deactivate();
+        CutSeq_Reset();
+        if (FlybyMode_IsActive()) {
+            FlybyMode_Deactivate();
+        }
     }
 
     if (g_Config.input.enable_buffering_inventory) {
