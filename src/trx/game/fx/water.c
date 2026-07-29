@@ -527,12 +527,23 @@ void FX_Water_Splash(const ITEM *const item)
     FX_Water_SetupSplash(&setup);
 }
 
-void FX_Water_WadeSplash(
-    const ITEM *const item, const int32_t water_height, const int32_t depth)
+void FX_Water_WadeSplash(const ITEM *const item, const int32_t depth)
 {
     int16_t room_num = item->room_num;
     Room_GetSector(item->pos, &room_num);
     if (!M_IsRoomUnderwater(room_num)) {
+        return;
+    }
+
+    // Lara swimming below a submerged ceiling has no surface to break, so she
+    // leaves nothing behind on it.
+    const int32_t water_height = Room_GetWaterHeightEx(
+        item->pos, item->room_num,
+        (ROOM_WATER_HEIGHT_ARGS) {
+            .fix_tilts = true,
+            .require_air_above = true,
+        });
+    if (water_height == NO_HEIGHT) {
         return;
     }
 

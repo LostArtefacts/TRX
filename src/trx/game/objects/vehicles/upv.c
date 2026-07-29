@@ -919,8 +919,8 @@ bool UPV_Control(void)
     item->floor = Room_GetHeight(sector, item->pos);
 
     if (p->flags.control && !p->flags.dead) {
-        const int32_t water_height =
-            Room_GetWaterHeightEx(item->pos, room_num, false);
+        const int32_t water_height = Room_GetWaterHeightEx(
+            item->pos, room_num, (ROOM_WATER_HEIGHT_ARGS) {});
 
         if (water_height != NO_HEIGHT
             && !Room_Get(item->room_num)->flags.underwater) {
