@@ -2795,7 +2795,11 @@
           "type": "integer"
         }
       ],
-      "path": "camera.play_flyby"
+      "path": "camera.play_flyby",
+      "returns": {
+        "description": "Whether the sequence took the camera.",
+        "type": "boolean"
+      }
     },
     {
       "description": "Cancels the flyby camera sequence, if one is playing.",

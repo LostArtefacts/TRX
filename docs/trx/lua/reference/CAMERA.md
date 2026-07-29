@@ -45,6 +45,8 @@ Module for inspecting the active camera state.
   Parameters:
   - **`sequence_num`** (integer). 0-based sequence number.
 
+  Returns: boolean. Whether the sequence took the camera.
+
   Example:
   ```lua
   trx.camera.play_flyby(1)

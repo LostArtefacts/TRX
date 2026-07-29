@@ -59,8 +59,9 @@ static int M_L_CameraIsFlybyActive(lua_State *const L)
 // trxc.camera.play_flyby(sequence_num)
 static int M_L_CameraPlayFlyby(lua_State *const L)
 {
-    FlybyMode_Activate((int32_t)luaL_checkinteger(L, 1), false);
-    return 0;
+    lua_pushboolean(
+        L, FlybyMode_Activate((int32_t)luaL_checkinteger(L, 1), false));
+    return 1;
 }
 
 // trxc.camera.cancel_flyby()
