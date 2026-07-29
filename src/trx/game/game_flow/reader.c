@@ -854,9 +854,13 @@ static bool M_LoadLevel(
     {
         const bool outfit_optional = level->type == GFL_TITLE
             || level->type == GFL_DUMMY || level->type == GFL_CURRENT;
-        if (!outfit_optional) {
-            const char *tmp = nullptr;
+        const char *tmp = nullptr;
+        if (outfit_optional) {
+            JSON_OPTIONAL(JSON_READ(io, "lara_outfit", &tmp));
+        } else {
             JSON_MUST(JSON_READ(io, "lara_outfit", &tmp));
+        }
+        if (tmp != nullptr) {
             if (!ctx->validation_mode
                 && !Lara_Skin_IsOutfitAvailable(
                     Lara_Skin_FindOutfitByName(tmp))) {

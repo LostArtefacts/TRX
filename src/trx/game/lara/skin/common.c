@@ -5,7 +5,9 @@
 #include <trx/core/memory.h>
 #include <trx/core/strings.h>
 #include <trx/debug.h>
+#include <trx/game/fmv.h>
 #include <trx/game/game.h>
+#include <trx/game/game_flow.h>
 #include <trx/game/game_strings/entries.h>
 #include <trx/game/gun.h>
 #include <trx/game/lara.h>
@@ -319,14 +321,21 @@ static void M_UpdateSunglasses(void)
     Lara_Skin_SetExtraEquipment(LM_HEAD, mesh);
 }
 
+// Whether an outfit has this level's meshes to bind to. A title level running
+// behind the menu is dressed like any other, so this asks what is loaded
+// rather than whether a game is under way.
+static bool M_CanDress(void)
+{
+    return GF_GetCurrentLevel() != nullptr && !FMV_IsPlaying()
+        && Object_Get(O_LARA)->loaded
+        && Object_Get(O_LARA_SKIN_SWAP_EXTRA)->loaded
+        && Object_Get(O_LARA_SKIN_SWAP_GUNS)->loaded;
+}
+
 void Lara_Skin_Initialise(void)
 {
-    const OBJECT *const extra_obj = Object_Get(O_LARA_SKIN_SWAP_EXTRA);
-    ASSERT(extra_obj->loaded);
-
-    const OBJECT *const gun_swap_obj = Object_Get(O_LARA_SKIN_SWAP_GUNS);
-    ASSERT(gun_swap_obj->loaded);
-
+    // Before the bail below, so a level that cannot dress her does not inherit
+    // the outgoing level's outfit - the meshes it names are not loaded here.
     m_SkinType = M_NO_OUTFIT;
     m_HolsterType_L = LGT_UNARMED;
     m_HolsterType_R = LGT_UNARMED;
@@ -337,6 +346,19 @@ void Lara_Skin_Initialise(void)
         m_Equipment[i].visible = true;
         Lara_Skin_ClearEquipment(i);
     }
+
+    // A level need not carry the swap objects: a title that never shows her
+    // has no use for them. No outfit is applied then, and she keeps whatever
+    // meshes the level loaded for her. A level that does hold her and not them
+    // used to fail an assertion here, and is still an incomplete install.
+    if (!M_CanDress()) {
+        if (GF_GetCurrentLevel() != nullptr && Object_Get(O_LARA)->loaded) {
+            LOG_WARNING("No skin swap objects here; no outfit applied");
+        }
+        return;
+    }
+    const OBJECT *const extra_obj = Object_Get(O_LARA_SKIN_SWAP_EXTRA);
+    const OBJECT *const gun_swap_obj = Object_Get(O_LARA_SKIN_SWAP_GUNS);
 
     const int32_t hair_segment_count = Lara_Hair_GetSegmentCount();
     const int32_t outfit_count = Lara_Skin_GetOutfitCount();
@@ -401,7 +423,7 @@ void Lara_Skin_Initialise(void)
 
 void Lara_Skin_ApplyOutfitFromConfig(void)
 {
-    if (!Game_IsLoaded()) {
+    if (!M_CanDress()) {
         return;
     }
 
@@ -630,7 +652,9 @@ void Lara_Skin_SetExtraEquipment(
 void Lara_Skin_SetGunEquipment(
     const LARA_MESH mesh, const LARA_GUN_TYPE gun_type)
 {
-    if (gun_type < 0 || gun_type >= NUM_WEAPONS) {
+    // The armed meshes live in the swap object, and a level need not carry it.
+    if (gun_type < 0 || gun_type >= NUM_WEAPONS
+        || !Object_Get(O_LARA_SKIN_SWAP_GUNS)->loaded) {
         return;
     }
     M_SetGunEquipment(mesh, gun_type, M_GetCurrentOutfit());
