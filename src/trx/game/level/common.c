@@ -10,6 +10,8 @@
 #include <trx/game/gym.h>
 #include <trx/game/items.h>
 #include <trx/game/lara.h>
+#include <trx/game/lara/mesh.h>
+#include <trx/game/lara/skin/common.h>
 #include <trx/game/level.h>
 #include <trx/game/lua.h>
 #include <trx/game/music.h>
@@ -119,6 +121,21 @@ bool Level_Initialise(
     Option_Reset();
     Overlay_Reset();
     Overlay_SetHealthBarTimer(100);
+
+    // Every other level type reaches Lara_Initialise through the sequencer;
+    // the title is loaded on its own, and still has to dress her for the
+    // cutscenes it plays behind the menu.
+    if (level->type == GFL_TITLE && Lara_GetItem() != nullptr) {
+        Lara_Skin_Initialise();
+        Lara_Mesh_Initialise(level);
+    }
+
+    // A title runs behind the menu rather than reaching live play, so nothing
+    // else would ever say its item setup is over and let the events flow. It
+    // has no save to overlay either, which is what the quiet period is for.
+    if (level->type == GFL_TITLE) {
+        Game_SetIsSettingUpItems(false);
+    }
 
     Benchmark_End(&benchmark, nullptr);
     return true;

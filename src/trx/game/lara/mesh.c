@@ -110,10 +110,16 @@ void Lara_Mesh_Initialise(const GF_LEVEL *const level)
         lara_obj->mesh_idx = skin_obj->mesh_idx;
     }
 
-    if (level->type == GFL_CUTSCENE) {
+    switch (level->type) {
+    // A title has no save to read a holster gun out of, and the scenes it
+    // plays behind the menu want her armed as any other cutscene does.
+    case GFL_CUTSCENE:
+    case GFL_TITLE:
         M_InitialiseCutsceneLevel();
-    } else {
+        break;
+    default:
         M_InitialiseNormalLevel(level);
+        break;
     }
 }
 
