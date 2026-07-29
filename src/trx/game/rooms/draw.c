@@ -463,6 +463,11 @@ int16_t Room_DrawGetRoom(const int16_t idx)
 void Room_DrawAllRooms(const int16_t current_room, const int16_t target_room)
 {
     const ROOM *const room = Room_Get(current_room);
+    // The camera may name a room this level does not have, which the bindings
+    // below would index out of bounds. There is nothing to draw from there.
+    if (room == nullptr) {
+        return;
+    }
     Output_Bind_ResetRooms();
     OUTPUT_ROOM_BIND *const bind = Output_Bind_GetRoom(room);
     bind->test_left = Viewport_GetMinX(VIEWPORT_GAME);
@@ -513,8 +518,10 @@ void Room_DrawAllRooms(const int16_t current_room, const int16_t target_room)
         draw_bind->drawn = false;
     }
 
+    // A title level running behind the menu may hold her object without ever
+    // placing her.
     const ITEM *const lara_item = Lara_GetItem();
-    if (Object_Get(O_LARA)->loaded) {
+    if (lara_item != nullptr && Object_Get(O_LARA)->loaded) {
         const ROOM *const lara_room = Room_Get(lara_item->room_num);
         M_SetupWaterStatus(lara_room);
         Output_SetCurrentRoom(lara_room);
