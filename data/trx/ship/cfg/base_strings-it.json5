@@ -3436,6 +3436,24 @@
         "switch_type_floor": {
             "name": "\\{review}Interruttore a pavimento",
         },
+        "switch_type_generic_1": {
+            "name": "\\{review}Interruttore generico 1",
+        },
+        "switch_type_generic_2": {
+            "name": "\\{review}Interruttore generico 2",
+        },
+        "switch_type_generic_3": {
+            "name": "\\{review}Interruttore generico 3",
+        },
+        "switch_type_generic_4": {
+            "name": "\\{review}Interruttore generico 4",
+        },
+        "switch_type_generic_5": {
+            "name": "\\{review}Interruttore generico 5",
+        },
+        "switch_type_generic_6": {
+            "name": "\\{review}Interruttore generico 6",
+        },
         "switch_type_jump": {
             "name": "\\{review}Interruttore da salto",
         },

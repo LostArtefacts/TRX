@@ -3464,6 +3464,48 @@
                 "Floor Switch",
             ]
         },
+        "switch_type_generic_1": {
+            "name": [
+                "Generic Switch 1",
+                "Lever",
+                "Switch",
+            ]
+        },
+        "switch_type_generic_2": {
+            "name": [
+                "Generic Switch 2",
+                "Lever",
+                "Switch",
+            ]
+        },
+        "switch_type_generic_3": {
+            "name": [
+                "Generic Switch 3",
+                "Lever",
+                "Switch",
+            ]
+        },
+        "switch_type_generic_4": {
+            "name": [
+                "Generic Switch 4",
+                "Lever",
+                "Switch",
+            ]
+        },
+        "switch_type_generic_5": {
+            "name": [
+                "Generic Switch 5",
+                "Lever",
+                "Switch",
+            ]
+        },
+        "switch_type_generic_6": {
+            "name": [
+                "Generic Switch 6",
+                "Lever",
+                "Switch",
+            ]
+        },
         "switch_type_jump": {
             "name": "Jump Switch",
         },

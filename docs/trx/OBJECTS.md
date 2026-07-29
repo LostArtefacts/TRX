@@ -2930,6 +2930,54 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
+#### O_SWITCH_TYPE_GENERIC_1
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>switch_mode</code></td><td colspan="3" align="center">0</td><td>Switch animation mode - 0: normal; 1: hidden reach; 2: hidden pickup; 3: single-use shove</td></tr>
+</tbody>
+</table>
+
+#### O_SWITCH_TYPE_GENERIC_2
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>switch_mode</code></td><td colspan="3" align="center">0</td><td>Switch animation mode - 0: normal; 1: hidden reach; 2: hidden pickup; 3: single-use shove</td></tr>
+</tbody>
+</table>
+
+#### O_SWITCH_TYPE_GENERIC_3
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>switch_mode</code></td><td colspan="3" align="center">0</td><td>Switch animation mode - 0: normal; 1: hidden reach; 2: hidden pickup; 3: single-use shove</td></tr>
+</tbody>
+</table>
+
+#### O_SWITCH_TYPE_GENERIC_4
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>switch_mode</code></td><td colspan="3" align="center">0</td><td>Switch animation mode - 0: normal; 1: hidden reach; 2: hidden pickup; 3: single-use shove</td></tr>
+</tbody>
+</table>
+
+#### O_SWITCH_TYPE_GENERIC_5
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>switch_mode</code></td><td colspan="3" align="center">0</td><td>Switch animation mode - 0: normal; 1: hidden reach; 2: hidden pickup; 3: single-use shove</td></tr>
+</tbody>
+</table>
+
+#### O_SWITCH_TYPE_GENERIC_6
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>switch_mode</code></td><td colspan="3" align="center">0</td><td>Switch animation mode - 0: normal; 1: hidden reach; 2: hidden pickup; 3: single-use shove</td></tr>
+</tbody>
+</table>
+
 #### O_SWITCH_TYPE_PULLEY
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>

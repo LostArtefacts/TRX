@@ -19,6 +19,18 @@ api.enum("items.PickupMode", {
   },
 })
 
+api.enum("items.SwitchMode", {
+  backing = "SWITCH_MODE",
+  description = "The values the `switch_mode` item property can take. It selects the animation Lara "
+    .. "plays when interacting with the item.",
+  values = {
+    NORMAL = "A regular/classic wall lever.",
+    HIDDEN_REACH = "Lara reaches in to activate.",
+    HIDDEN_PICKUP = "Lara reaches in to collect a pickup.",
+    SHOVE = "A single-use button that requires a shove to activate.",
+  },
+})
+
 api.enum("items.TriggerType", {
   backing = "ITEM_TRIGGER_KIND",
   description = "The kind of trigger `item:trigger` fires, matching the trigger types a level editor "

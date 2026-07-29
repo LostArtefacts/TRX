@@ -130,7 +130,7 @@
     },
     {
       "bulk": true,
-      "count": 800,
+      "count": 806,
       "description": "Every object TRX has a name for.",
       "examples": [
         "if item.object_id == trx.catalog.objects.WOLF then ... end"
@@ -867,6 +867,12 @@
         "SWITCH_TYPE_BUTTON",
         "SWITCH_TYPE_CROWBAR",
         "SWITCH_TYPE_FLOOR",
+        "SWITCH_TYPE_GENERIC_1",
+        "SWITCH_TYPE_GENERIC_2",
+        "SWITCH_TYPE_GENERIC_3",
+        "SWITCH_TYPE_GENERIC_4",
+        "SWITCH_TYPE_GENERIC_5",
+        "SWITCH_TYPE_GENERIC_6",
         "SWITCH_TYPE_JUMP",
         "SWITCH_TYPE_NORMAL",
         "SWITCH_TYPE_PULLEY",
@@ -2073,6 +2079,34 @@
           "description": "Picked up from a high pedestal.",
           "name": "PLINTH_HIGH",
           "value": 2
+        }
+      ]
+    },
+    {
+      "bulk": false,
+      "count": 4,
+      "description": "The values the `switch_mode` item property can take. It selects the animation Lara plays when interacting with the item.",
+      "path": "items.SwitchMode",
+      "values": [
+        {
+          "description": "A regular/classic wall lever.",
+          "name": "NORMAL",
+          "value": 0
+        },
+        {
+          "description": "Lara reaches in to activate.",
+          "name": "HIDDEN_REACH",
+          "value": 1
+        },
+        {
+          "description": "Lara reaches in to collect a pickup.",
+          "name": "HIDDEN_PICKUP",
+          "value": 2
+        },
+        {
+          "description": "A single-use button that requires a shove to activate.",
+          "name": "SHOVE",
+          "value": 3
         }
       ]
     },
