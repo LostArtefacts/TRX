@@ -3397,6 +3397,24 @@
         "switch_type_floor": {
             "name": "\\{review}Interrupteur au sol",
         },
+        "switch_type_generic_1": {
+            "name": "\\{review}Interrupteur standard 1",
+        },
+        "switch_type_generic_2": {
+            "name": "\\{review}Interrupteur standard 2",
+        },
+        "switch_type_generic_3": {
+            "name": "\\{review}Interrupteur standard 3",
+        },
+        "switch_type_generic_4": {
+            "name": "\\{review}Interrupteur standard 4",
+        },
+        "switch_type_generic_5": {
+            "name": "\\{review}Interrupteur standard 5",
+        },
+        "switch_type_generic_6": {
+            "name": "\\{review}Interrupteur standard 6",
+        },
         "switch_type_jump": {
             "name": "\\{review}Interrupteur en hauteur",
         },

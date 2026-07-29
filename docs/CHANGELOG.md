@@ -97,6 +97,8 @@
 - added jump switches
 - added pulley switches, with properties to configure the number of required pulls, and whether or not they are single use
 - added underwater ceiling switches
+- added reach/receptacle switches
+- added shove button switches
 - added Lara catching fire, from fires and other hazards; she stays on fire across level transitions
 - added an option to let fires and other dynamic lights illuminate static meshes (Graphic Options → Visuals → Static mesh lighting)
 - added ricochets, so that shots that hit walls and other hard surfaces throw out sparks and leave a puff of smoke
@@ -113,6 +115,8 @@
 - fixed Lara sidestepping in the wrong direction when turning off floor/crowbar switches
 - fixed Lara attempting to interact with one-shot pulley switches
 - fixed pulley switch animations not synchronizing with Lara if she continues to pull one indefinitely
+- fixed the camera not reacting to Lara using a shove button switch (OG bug)
+- fixed Lara using the wrong animation on switch item 2 in The Sphinx Complex (OG bug)
 
 **Lua**
 

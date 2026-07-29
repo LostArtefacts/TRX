@@ -3407,6 +3407,24 @@
         "switch_type_floor": {
             "name": "\\{review}Напольный переключатель",
         },
+        "switch_type_generic_1": {
+            "name": "\\{review}Обычный переключатель 1",
+        },
+        "switch_type_generic_2": {
+            "name": "\\{review}Обычный переключатель 2",
+        },
+        "switch_type_generic_3": {
+            "name": "\\{review}Обычный переключатель 3",
+        },
+        "switch_type_generic_4": {
+            "name": "\\{review}Обычный переключатель 4",
+        },
+        "switch_type_generic_5": {
+            "name": "\\{review}Обычный переключатель 5",
+        },
+        "switch_type_generic_6": {
+            "name": "\\{review}Обычный переключатель 6",
+        },
         "switch_type_jump": {
             "name": "\\{review}Прыжковый переключатель",
         },

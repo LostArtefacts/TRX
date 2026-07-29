@@ -409,6 +409,10 @@
         <property category="TRX" defaultValue="28" description="Damage dealt by shots." displayName="Damage" internalName="damage" minValue="0" type="Int" />
         <property category="TRX" defaultValue="84" description="Damage dealt by the death-state final shot." displayName="Final Shot Damage" internalName="final_shot_damage" minValue="0" type="Int" />
     </moveable>
+    <!--placeholder for O_SWITCH_TYPE_GENERIC_1..O_SWITCH_TYPE_GENERIC_6-->
+    <moveable id="-1">
+        <property category="TRX" defaultValue="Normal" description="Switch animation mode." displayName="Switch Mode" entries="Normal, Hidden Reach, Hidden Pickup, Single-use Shove" internalName="switch_mode" type="Enum" />
+    </moveable>
     <!--placeholder for O_SWITCH_TYPE_PULLEY-->
     <moveable id="-1">
         <property category="TRX" defaultValue="1" description="The number of pulls required before activating the trigger under the pulley." displayName="Required Pulls" internalName="required_pulls" minValue="1" type="Int" />

@@ -49,6 +49,19 @@ end
     - `trx.items.PickupMode.PLINTH_HIGH` = `2`  
         Picked up from a high pedestal.
 
+- [lua]`trx.items.SwitchMode`
+
+    The values the `switch_mode` item property can take. It selects the animation Lara plays when interacting with the item.
+
+    - `trx.items.SwitchMode.NORMAL` = `0`  
+        A regular/classic wall lever.
+    - `trx.items.SwitchMode.HIDDEN_REACH` = `1`  
+        Lara reaches in to activate.
+    - `trx.items.SwitchMode.HIDDEN_PICKUP` = `2`  
+        Lara reaches in to collect a pickup.
+    - `trx.items.SwitchMode.SHOVE` = `3`  
+        A single-use button that requires a shove to activate.
+
 - [lua]`trx.items.TriggerType`
 
     The kind of trigger `item:trigger` fires, matching the trigger types a level editor offers. Most are forward triggers that differ only in what trips them in a level; from a script they behave alike, and `TRIGGER` is the one to reach for.

@@ -1251,8 +1251,11 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── bikebit.lua
 │   │   │   ├── cortyard.lua
 │   │   │   ├── csplit1.lua
+│   │   │   ├── csplit2.lua
 │   │   │   ├── highstrt.lua
+│   │   │   ├── joby1a.lua
 │   │   │   ├── joby2.lua
+│   │   │   ├── joby3b.lua
 │   │   │   ├── joby4a.lua
 │   │   │   ├── joby4b.lua
 │   │   │   ├── joby4c.lua
@@ -2573,8 +2576,11 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── bikebit.lua
     │   │   │   │   ├── cortyard.lua
     │   │   │   │   ├── csplit1.lua
+    │   │   │   │   ├── csplit2.lua
     │   │   │   │   ├── highstrt.lua
+    │   │   │   │   ├── joby1a.lua
     │   │   │   │   ├── joby2.lua
+    │   │   │   │   ├── joby3b.lua
     │   │   │   │   ├── joby4a.lua
     │   │   │   │   ├── joby4b.lua
     │   │   │   │   ├── joby4c.lua
