@@ -3,6 +3,10 @@
 #include <trx/core/virtual_file.h>
 #include <trx/game/game_flow/types.h>
 
+// Forgets which demo comes next, and the level data behind the last one.
+// Switching mods restarts the shell in place, so neither can be carried over.
+void Demo_Shutdown(void);
+
 void Demo_LoadData(VFILE *file, size_t size);
 uint32_t *Demo_GetData(void);
 

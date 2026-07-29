@@ -72,6 +72,12 @@ static void M_RestoreConfig(M_PRIV *const p)
     Config_Update();
 }
 
+void Demo_Shutdown(void)
+{
+    m_Priv = (M_PRIV) {};
+    m_LastDemoNum = 0;
+}
+
 void Demo_LoadData(VFILE *const file, const size_t size)
 {
     M_PRIV *const p = &m_Priv;
