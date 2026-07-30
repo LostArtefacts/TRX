@@ -1,6 +1,5 @@
 #include <trx/game/ui/elements/modal.h>
 
-#include <trx/game/output.h>
 #include <trx/game/ui/draw.h>
 #include <trx/game/ui/elements/anchor.h>
 #include <trx/game/ui/helpers.h>

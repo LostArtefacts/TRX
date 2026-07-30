@@ -9,7 +9,7 @@
 #include <trx/debug.h>
 #include <trx/game/input/common.h>
 #include <trx/game/objects.h>
-#include <trx/game/output.h>
+#include <trx/game/output/textures.h>
 #include <trx/game/ui/common.h>
 #include <trx/game/ui/draw.h>
 #include <trx/game/ui/scaler.h>

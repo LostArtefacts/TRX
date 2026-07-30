@@ -11,6 +11,7 @@
 #include <trx/game/level/cache.h>
 #include <trx/game/objects/common.h>
 #include <trx/game/output.h>
+#include <trx/game/output/textures_gl.h>
 #include <trx/game/output/vertex_range.h>
 #include <trx/game/sparks/enum.h>
 #include <trx/gl/utils.h>

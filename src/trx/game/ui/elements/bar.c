@@ -6,7 +6,7 @@
 #include <trx/core/memory.h>
 #include <trx/core/strings.h>
 #include <trx/core/utils.h>
-#include <trx/game/output.h>
+#include <trx/game/output/draw.h>
 #include <trx/game/ui/draw.h>
 #include <trx/game/ui/helpers.h>
 #include <trx/game/ui/scaler.h>

@@ -3,8 +3,6 @@
 #include <trx/game/output/scene_source.h>
 #include <trx/game/output/types.h>
 
-#include <GL/glew.h>
-
 #pragma pack(push, 1)
 typedef struct {
     float x0;
@@ -33,8 +31,6 @@ void Output_Textures_ObserveLevelLoad(void);
 void Output_Textures_UpdateEnvironmentMap(void);
 void Output_Textures_CycleAnimations(void);
 void Output_Textures_ApplyRenderSettings(void);
-GLuint Output_Textures_GetAtlasTexture(void);
-GLuint Output_Textures_GetEnvMapTexture(void);
 
 // TR4 reflections sample the env map straight out of the atlas, from the
 // sprite the OG uses for it (spriteinfo[objects[DEFAULT_SPRITES].mesh_index +
