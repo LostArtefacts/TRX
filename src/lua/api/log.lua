@@ -2,7 +2,7 @@ local raw = trxc.log
 local api = trx.api
 
 api.module("log", {
-  order = 23,
+  order = 24,
   title = "Logging",
   description = "Logs a message to the terminal and to `TRX.log` in the installation directory. "
     .. "Each call records the Lua script's filename, function name and line number.",

@@ -4733,6 +4733,39 @@
       "path": "sound.stop_all"
     },
     {
+      "description": "Marks a secret as found, as walking into its trigger would.",
+      "examples": [
+        "trx.stats.give_secret(1)"
+      ],
+      "params": [
+        {
+          "description": "The secret's number, counted from one.",
+          "name": "num",
+          "type": "integer"
+        }
+      ],
+      "path": "stats.give_secret",
+      "returns": {
+        "description": "`false` if the level has no such secret, or Lara already has it.",
+        "type": "boolean"
+      }
+    },
+    {
+      "description": "Takes a secret back, leaving it to be found again.",
+      "params": [
+        {
+          "description": "The secret's number, counted from one.",
+          "name": "num",
+          "type": "integer"
+        }
+      ],
+      "path": "stats.take_secret",
+      "returns": {
+        "description": "`false` if the level has no such secret, or Lara does not have it.",
+        "type": "boolean"
+      }
+    },
+    {
       "description": "Matches what someone typed against a list of candidates, forgivingly: `big medi` finds `large medipack`.\n\nCandidates are ranked, best first. Each carries a `value` of the caller's choosing, which comes back untouched on the match - hang an id off it and read it back.",
       "examples": [
         "local matches = trx.strings.fuzzy_match(\"wolf\", {\n  { key = \"wolf\", value = trx.catalog.objects.WOLF },\n  { key = \"bear\", value = trx.catalog.objects.BEAR },\n})\nlocal best = matches[1]"
@@ -4839,7 +4872,7 @@
     {
       "description": "Argument checking for the whole of `trx`.",
       "name": "api",
-      "order": 27,
+      "order": 28,
       "title": "API registry"
     },
     {
@@ -4911,23 +4944,23 @@
     {
       "description": "Logs a message to the terminal and to `TRX.log` in the installation directory. Each call records the Lua script's filename, function name and line number.",
       "name": "log",
-      "order": 23,
+      "order": 24,
       "title": "Logging"
     },
     {
       "description": "Evaluating Lua at runtime: a string of code, or a file on disk. Both run in the same state as every other script.",
       "name": "lua",
-      "order": 26
+      "order": 27
     },
     {
       "description": "Fixed-point trigonometry, matching the engine's own tables.\n\nTRX angles are 16-bit units where 65536 is a full turn, not radians. Using these rather than Lua's `math` library guarantees a script places things exactly where the engine would.",
       "name": "math",
-      "order": 24
+      "order": 25
     },
     {
       "description": "The mods the game was built with, and which one is loaded.",
       "name": "mod",
-      "order": 22
+      "order": 23
     },
     {
       "description": "Module for playing and controlling the soundtrack.",
@@ -4967,9 +5000,14 @@
       "order": 15
     },
     {
+      "description": "Module for what the level being played keeps count of: what Lara has found in\nit, and how much there was to find.\n\nThe counts belong to the level, not to the session. Nothing here reads outside\none, so a script that runs at the title screen sees an empty list and zero\ncounts.",
+      "name": "stats",
+      "order": 22
+    },
+    {
       "description": "Utilities for working with strings.\n\nNot to be confused with `trx.locale`, which is the text a player reads: this module is about manipulating strings, that one is about which string the player gets.",
       "name": "strings",
-      "order": 25
+      "order": 26
     },
     {
       "description": "The runtime weather effect the current level shows.",
@@ -5279,6 +5317,24 @@
       "description": "The sound effects playing now, as `trx.sound.Stream` handles. A slot that is silent still answers, with a stale handle. Indexing and iterating reach one handle at a time.",
       "path": "sound.streams",
       "type": "table",
+      "writable": false
+    },
+    {
+      "description": "The secrets the level holds, in order, as a list of `{ num, found }`. `num` is\nthe number the player says, counted from one, and `found` is whether Lara has\nit.",
+      "path": "stats.secrets",
+      "type": "table",
+      "writable": false
+    },
+    {
+      "description": "How many secrets Lara has found in this level.",
+      "path": "stats.secret_count",
+      "type": "integer",
+      "writable": false
+    },
+    {
+      "description": "How many secrets the level counts towards completion. Not the length of\n`secrets`: the game flow can declare some of a level's secrets unobtainable,\nand those are left out of this count while still standing in the list.",
+      "path": "stats.max_secret_count",
+      "type": "integer",
       "writable": false
     },
     {

@@ -63,6 +63,7 @@ trx_lua_api_sources = files(
   'lua/api/rules.lua',
   'lua/api/savegame.lua',
   'lua/api/sound.lua',
+  'lua/api/stats.lua',
   'lua/api/strings.lua',
   'lua/api/weather.lua',
 )
@@ -468,6 +469,7 @@ common_sources = [
   'trx/game/lua/capi/rules.c',
   'trx/game/lua/capi/savegame.c',
   'trx/game/lua/capi/sound.c',
+  'trx/game/lua/capi/stats.c',
   'trx/game/lua/capi/strings.c',
   'trx/game/lua/capi/struct.c',
   'trx/game/lua/capi/weather.c',
