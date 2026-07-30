@@ -490,7 +490,7 @@ unit_tests += {
 # matching goes through fake_engine_strings, a pcre2-free stand-in, so these
 # stay light: the real matcher is covered by lua_strings and lua_argparse.
 unit_tests += {
-  'name': 'lua/commands/play',
+  'name': 'lua/commands/play_level',
   'bundles': [b_lua_surface, b_console],
   'src': ['fakes/game.c', 'fakes/strings.c'],
   'engine': ['game/lua/capi/game.c'],
@@ -504,7 +504,7 @@ unit_tests += {
 }
 
 unit_tests += {
-  'name': 'lua/commands/load',
+  'name': 'lua/commands/load_game',
   'bundles': [b_lua_surface, b_console],
   'src': ['fakes/savegame.c'],
 }
@@ -516,7 +516,7 @@ unit_tests += {
 }
 
 unit_tests += {
-  'name': 'lua/commands/save',
+  'name': 'lua/commands/save_game',
   'bundles': [b_lua_surface, b_console],
   'src': ['fakes/game.c', 'fakes/savegame.c'],
   'engine': ['game/lua/capi/game.c'],

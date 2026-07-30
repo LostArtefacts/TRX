@@ -22,9 +22,16 @@ static int m_TestTotalFails = 0;
 
 static void Test_Register(const char *name, void (*func)(void))
 {
-    if (m_TestCaseCount < TEST_MAX_CASES) {
-        m_TestCases[m_TestCaseCount++] = (TEST_CASE) { name, func };
+    // A case that did not fit used to be dropped here, and a suite missing its
+    // last case reads exactly like one that ran it. Registration happens in a
+    // constructor, with nowhere to return a failure to, so say so and stop.
+    if (m_TestCaseCount >= TEST_MAX_CASES) {
+        fprintf(
+            stderr, "%s does not fit: raise TEST_MAX_CASES above %d\n", name,
+            TEST_MAX_CASES);
+        abort();
     }
+    m_TestCases[m_TestCaseCount++] = (TEST_CASE) { name, func };
 }
 
 #define TEST(name_)                                                            \
