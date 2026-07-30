@@ -36,3 +36,8 @@
 #define FAKE_OBJ_WATERSKIN O_WATERSKIN_1_1
 // Not a pickup: an inventory icon with a control routine of its own.
 #define FAKE_OBJ_CRYSTAL O_SAVE_CRYSTAL_ITEM
+
+// Puts a savegame crystal in the level, far from the other pickups, and a scion
+// further out still.
+void FakeItems_PlaceCrystal(void);
+void FakeItems_PlaceScion(void);
