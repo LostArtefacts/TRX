@@ -81,18 +81,25 @@ CLIP Output_CheckBoundsClip(const BOUNDS_16 *const bounds)
     y_min += vp.h / 2;
     y_max += vp.h / 2;
 
+    // The corners left out above are the ones that would have widened the
+    // rectangle, so what remains is smaller than the box really covers and
+    // cannot be rejected on. It can sit off to one side while the box still
+    // crosses the view.
+    if (num_z < 8) {
+        return CLIP_PARTIALLY_VISIBLE;
+    }
+
     // clang-format off
     if (x_min > g_PhdRight
         || y_min > g_PhdBottom
         || x_max < g_PhdLeft
         || y_max < g_PhdTop) {
-        return CLIP_NOT_VISIBLE; // out of screen
+        return CLIP_NOT_VISIBLE; // outside the room's clip window
     }
     // clang-format on
 
     // clang-format off
-    if (num_z < 8 ||
-        x_min < 0 ||
+    if (x_min < 0 ||
         y_min < 0 ||
         x_max >= vp.w ||
         y_max >= vp.h) {
