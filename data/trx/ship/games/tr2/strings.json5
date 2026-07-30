@@ -11,7 +11,10 @@
     },
     "objects": {
         "large_medipack": {
-            "name": "Large Medipack",
+            "name": [
+                "Large Medipack",
+                "Big Medipack",
+            ]
         },
         "small_medipack": {
             "name": "Small Medipack",

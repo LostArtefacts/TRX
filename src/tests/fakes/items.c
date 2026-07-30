@@ -417,7 +417,12 @@ OBJECT *Object_Get(const OBJECT_ID object_id)
 // The names an object answers to. The lookup that fuzzy-matches them is Lua
 // now, so all the engine has to do is say what they are.
 static const char *const m_WolfNames[] = { "wolf", nullptr };
-static const char *const m_VaseNames[] = { "vase", "large vase", nullptr };
+static const char *const m_VaseNames[] = { "vase", "large vase",
+                                           // A name with none of its own
+                                           // words in it, the way a large
+                                           // medipack answers to "big
+                                           // medipack".
+                                           "big urn", nullptr };
 static const char *const m_KeyNames[] = { "key", nullptr };
 
 const VECTOR *Object_GetNames(const OBJECT_ID obj_id)
