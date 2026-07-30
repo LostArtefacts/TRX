@@ -335,6 +335,17 @@ api.type("items.Item", {
       end,
     },
 
+    bounds = {
+      type = "table",
+      description = "The item's bounding box for the frame it is on: `min_x`, `min_y`, `min_z`, "
+        .. "`max_x`, `max_y`, `max_z`. The numbers are in the item's own frame, so they say how far "
+        .. "the model reaches around `pos` before `rot` turns it, and they change as the item "
+        .. "animates.",
+      impl = function(item)
+        return raw.get_bounds(item)
+      end,
+    },
+
     properties = {
       type = "table",
       description = "Typed, object-specific item properties. Writing here overrides the object's "

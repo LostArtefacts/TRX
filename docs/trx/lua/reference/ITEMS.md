@@ -129,6 +129,7 @@ end
     - **`was_hit`**: boolean. Whether the item was hit during the current frame. *(read-only)*
 
     Computed properties (derived, not stored on the object):
+    - **`bounds`**: table. The item's bounding box for the frame it is on: `min_x`, `min_y`, `min_z`, `max_x`, `max_y`, `max_z`. The numbers are in the item's own frame, so they say how far the model reaches around `pos` before `rot` turns it, and they change as the item animates.
     - **`properties`**: table. Typed, object-specific item properties. Writing here overrides the object's default for this item only; reads fall back to the object. Iterable with `pairs()`. See [Objects](../../OBJECTS.md).
     - **`room`**: Room. The `trx.rooms.Room` containing this item.
 

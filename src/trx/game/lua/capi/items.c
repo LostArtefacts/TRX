@@ -513,6 +513,33 @@ static int M_L_ItemsDistanceTo(lua_State *const L)
     return 1;
 }
 
+// trxc.items.get_bounds(item) -> { min_x=, min_y=, min_z=, max_x=, max_y=,
+// max_z= }
+//
+// A table, not a scalar, so it cannot be a reflected field. Lua wraps this as a
+// computed property.
+static int M_L_ItemsGetBounds(lua_State *const L)
+{
+    LUA_STRUCT_REF *const ref = LUA_Struct_CheckRef(L, 1, &TYPE_ITEM);
+    const ITEM *const item = LUA_Struct_Deref(L, ref);
+    const BOUNDS_16 *const bounds = Item_GetBoundsAccurate(item);
+
+    lua_newtable(L);
+    lua_pushinteger(L, bounds->min.x);
+    lua_setfield(L, -2, "min_x");
+    lua_pushinteger(L, bounds->min.y);
+    lua_setfield(L, -2, "min_y");
+    lua_pushinteger(L, bounds->min.z);
+    lua_setfield(L, -2, "min_z");
+    lua_pushinteger(L, bounds->max.x);
+    lua_setfield(L, -2, "max_x");
+    lua_pushinteger(L, bounds->max.y);
+    lua_setfield(L, -2, "max_y");
+    lua_pushinteger(L, bounds->max.z);
+    lua_setfield(L, -2, "max_z");
+    return 1;
+}
+
 // item:die([explode])
 static int M_L_ItemsDie(lua_State *const L)
 {
@@ -558,6 +585,7 @@ static const luaL_Reg m_Methods[] = {
 static const luaL_Reg m_Module[] = {
     { "count", M_L_ItemsCount },
     { "get", M_L_ItemsGet },
+    { "get_bounds", M_L_ItemsGetBounds },
     { "spawn", M_L_ItemsSpawn },
     { nullptr, nullptr },
 };

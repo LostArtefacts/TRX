@@ -27,6 +27,7 @@
 
 #define FAKE_OBJ_COUNT O_NUMBER_OF // reaches the real ids a family names
 #define FAKE_ANIM_COUNT 2
+#define FAKE_FRAME_COUNT 64
 #define FAKE_PROP_SLOTS 4
 
 static ITEM m_Items[FAKE_ITEM_POOL];
@@ -38,7 +39,7 @@ static HANDLE_REGISTRY m_Handles;
 
 static OBJECT m_Objects[FAKE_OBJ_COUNT];
 static ANIM m_Anims[FAKE_ANIM_COUNT];
-static ANIM_FRAME m_Frames[64];
+static ANIM_FRAME m_Frames[FAKE_FRAME_COUNT];
 
 // Only max_hit_points is modelled: it is the one property the field table
 // itself writes through.
@@ -111,6 +112,15 @@ static void M_Reset(void)
             .frame_base = 0,
             .frame_end = 10,
             .frame_ptr = m_Frames,
+        };
+    }
+
+    // A box that widens frame by frame, so a test can tell the bounds it reads
+    // are the current frame's rather than the object's.
+    for (int32_t i = 0; i < FAKE_FRAME_COUNT; i++) {
+        m_Frames[i].bounds = (BOUNDS_16) {
+            .min = { .x = -100 - i, .y = -200, .z = -300 },
+            .max = { .x = +100 + i, .y = 0, .z = +300 },
         };
     }
 
@@ -461,6 +471,11 @@ int16_t Item_GetRelativeAnim(const ITEM *const item)
 int16_t Item_GetRelativeFrame(const ITEM *const item)
 {
     return item->frame_num - Item_GetAnim(item)->frame_base;
+}
+
+const BOUNDS_16 *Item_GetBoundsAccurate(const ITEM *const item)
+{
+    return &m_Frames[item->frame_num % FAKE_FRAME_COUNT].bounds;
 }
 
 ANIM *Anim_GetAnim(const int32_t anim_idx)
