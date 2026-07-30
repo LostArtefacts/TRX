@@ -36,6 +36,13 @@ two matchers, declared with `any_of`. Separately, `suggest` offers completions
 without restricting or being shown in errors - for a free value with a long
 list behind it, like a setting name.
 
+Positionals are read in order, and an optional one a token does not fit is
+passed over: the token goes to the next positional, and the one skipped stays
+nil. That is what lets a command take a leading argument it can also be used
+without - a verb before a value, a count before a name. Completion follows the
+same path, so a slot offers what every argument reachable from it takes. A
+token nothing takes is reported against the first argument that refused it.
+
 A parser has these methods, each returning the parser so calls chain:
 
 - `positional(name, opts)` - a positional with one matcher (`opts.type`,

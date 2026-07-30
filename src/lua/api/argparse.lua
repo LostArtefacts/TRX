@@ -29,6 +29,13 @@ two matchers, declared with `any_of`. Separately, `suggest` offers completions
 without restricting or being shown in errors - for a free value with a long
 list behind it, like a setting name.
 
+Positionals are read in order, and an optional one a token does not fit is
+passed over: the token goes to the next positional, and the one skipped stays
+nil. That is what lets a command take a leading argument it can also be used
+without - a verb before a value, a count before a name. Completion follows the
+same path, so a slot offers what every argument reachable from it takes. A
+token nothing takes is reported against the first argument that refused it.
+
 A parser has these methods, each returning the parser so calls chain:
 
 - `positional(name, opts)` - a positional with one matcher (`opts.type`,
@@ -377,6 +384,42 @@ local function missing(arg, values)
   }
 end
 
+-- Which positional a token fills, starting at `pos_idx`: that one, or - when it
+-- is optional and no matcher of its takes the token - the first one after it
+-- that does. An argument passed over this way is left unfilled, which is what
+-- lets a command take a leading argument it can also be given without.
+--
+-- Returns the positional's index, the argument, and the value it read. A token
+-- nothing takes returns nil and the error from the first argument that refused
+-- it, since that is the one the player meant to fill.
+local function take(parser, pos_idx, tok, args, values)
+  local first_err = nil
+  for idx = pos_idx, #parser.positionals do
+    local arg = parser.positionals[idx]
+    -- A greedy argument reads the rest of the line as one token; the plain
+    -- token otherwise.
+    local token = arg.greedy and args:sub(tok.start) or tok.text
+    local value, ok = resolve(arg, token, values)
+    if ok then
+      return idx, arg, value
+    end
+    if first_err == nil then
+      first_err = {
+        kind = "invalid",
+        metavar = arg.metavar,
+        token = token,
+        hint = hint_of(arg, values),
+      }
+    end
+    -- A required argument has to take this token, so there is nothing to pass
+    -- it on to.
+    if not arg.optional then
+      break
+    end
+  end
+  return nil, nil, nil, first_err
+end
+
 function Parser:parse(args)
   args = args or ""
   local values = {}
@@ -401,25 +444,15 @@ function Parser:parse(args)
       values[flag.name] = true
       i = i + 1
     else
-      local arg = self.positionals[pos_idx]
-      if arg == nil then
+      if self.positionals[pos_idx] == nil then
         return nil, { kind = "unexpected", token = tok.text }
       end
-      -- A greedy argument reads the rest of the line as one token; the plain
-      -- token otherwise.
-      local token = arg.greedy and args:sub(tok.start) or tok.text
-      local value, ok = resolve(arg, token, values)
-      if not ok then
-        return nil,
-          {
-            kind = "invalid",
-            metavar = arg.metavar,
-            token = token,
-            hint = hint_of(arg, values),
-          }
+      local idx, arg, value, err = take(self, pos_idx, tok, args, values)
+      if arg == nil then
+        return nil, err
       end
       values[arg.name] = value
-      pos_idx = pos_idx + 1
+      pos_idx = idx + 1
       i = arg.greedy and #toks + 1 or i + 1
     end
   end
@@ -560,7 +593,23 @@ function Parser:complete(text, caret)
       end
     end
   end
-  local slot = #consumed + 1
+
+  -- Where those tokens landed, walking as parse walks, so an optional argument
+  -- one of them passed over does not shift the slots behind it. `slot` is the
+  -- positional the active token fills, and `values` what the earlier ones read.
+  local values = {}
+  local slot = 1
+  for _, tok in ipairs(consumed) do
+    local idx, arg, value = take(self, slot, tok, text, values)
+    if arg == nil then
+      -- A token nothing takes is one the player is still fixing. Move on, so
+      -- what follows it still completes.
+      slot = slot + 1
+    else
+      values[arg.name] = value
+      slot = idx + 1
+    end
+  end
 
   -- A greedy argument, always last, owns everything from its slot to the end of
   -- the line.
@@ -570,10 +619,7 @@ function Parser:complete(text, caret)
     greedy_idx = #self.positionals
   end
 
-  local arg, prior_count
   if greedy_idx ~= nil and slot >= greedy_idx then
-    arg = last
-    prior_count = greedy_idx - 1
     -- The run reaches from the greedy slot's first token - or the caret, if none
     -- has been typed there yet - to the end of the line.
     if consumed[greedy_idx] ~= nil then
@@ -583,21 +629,31 @@ function Parser:complete(text, caret)
     end
     rend = #text
     prefix = text:sub(rstart + 1, caret)
-  else
-    arg = self.positionals[slot]
-    prior_count = slot - 1
+    return candidates_for(last, values, prefix), rstart, rend
   end
-  if arg == nil then
-    return {}, rstart, rend
-  end
-  local values = {}
-  for j = 1, prior_count do
-    local prior = self.positionals[j]
-    if prior ~= nil and consumed[j] ~= nil then
-      values[prior.name] = resolve(prior, consumed[j].text, values)
+
+  -- What the slot takes: the argument sitting there, and - while that one is
+  -- optional - the ones a token could pass over to. A greedy argument ends the
+  -- run, since it replaces the whole tail rather than one token and has the
+  -- branch above for that.
+  local out = {}
+  local seen = {}
+  for idx = slot, #self.positionals do
+    local arg = self.positionals[idx]
+    if arg.greedy then
+      break
+    end
+    for _, candidate in ipairs(candidates_for(arg, values, prefix)) do
+      if not seen[candidate] then
+        seen[candidate] = true
+        out[#out + 1] = candidate
+      end
+    end
+    if not arg.optional then
+      break
     end
   end
-  return candidates_for(arg, values, prefix), rstart, rend
+  return out, rstart, rend
 end
 
 -- The metavar an argument shows in the synopsis: its alternatives joined with
