@@ -1,0 +1,112 @@
+#!/usr/bin/env python3
+# The unit tests are a project of their own so that they need none of the
+# engine's heavy dependencies - see the comment atop src/tests/meson.build. That
+# holds only as long as no header they include drags one in, and a developer
+# machine with SDL2 or GLEW installed will not notice when one does: it compiles
+# there and fails on a runner that has neither.
+#
+# This walks the includes of every source the test project compiles - its own,
+# and the engine sources the targets list - and reports any that reaches a
+# dependency the tests are not meant to have. The walk is textual rather than a
+# compiler pass, which is both quicker and enough: what it looks for is always
+# included outright, never behind a condition.
+
+import re
+import sys
+from functools import lru_cache
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
+from harness import LintWarning, repo_check
+from shared.paths import REPO_DIR, SRC_DIR
+
+TEST_DIR = SRC_DIR / "tests"
+TEST_UNIT_DIR = TEST_DIR / "unit"
+
+# What the tests are allowed to reach: uthash, PCRE2, zlib and Lua are declared
+# in src/tests/meson.build. Anything else the engine links is out of bounds.
+FORBIDDEN = {
+    "SDL2/": "SDL2",
+    "GL/": "GLEW or OpenGL",
+    "libavcodec/": "ffmpeg",
+    "libavformat/": "ffmpeg",
+    "libavutil/": "ffmpeg",
+    "libswscale/": "ffmpeg",
+    "libswresample/": "ffmpeg",
+    "dwarfstack": "dwarfstack",
+}
+
+INCLUDE_RE = re.compile(r'^\s*#\s*include\s+[<"]([^>"]+)[>"]', re.MULTILINE)
+
+# Any quoted path ending in .c that the test project's meson.build names, be it
+# a test source or an engine one compiled into a target.
+MESON_SOURCE_RE = re.compile(r"'([^']+\.c)'")
+
+
+@lru_cache(maxsize=None)
+def includes_of(path: Path) -> tuple[str, ...]:
+    try:
+        return tuple(INCLUDE_RE.findall(path.read_text(encoding="utf-8")))
+    except (OSError, UnicodeDecodeError):
+        return ()
+
+
+def resolve(name: str, parent: Path) -> Path | None:
+    for candidate in (
+        SRC_DIR / name,
+        parent.parent / name,
+        TEST_UNIT_DIR / name,
+    ):
+        if candidate.is_file():
+            return candidate
+    return None
+
+
+def reached_by(path: Path) -> dict[str, list[str]]:
+    # Every forbidden dependency the includes under `path` lead to, following
+    # the ones that resolve inside the tree. The value is the chain of includes
+    # that got there, so the report names the one to cut.
+    found: dict[str, list[str]] = {}
+    trail: dict[Path, list[str]] = {path: []}
+    queue = [path]
+    while queue:
+        current = queue.pop()
+        for name in includes_of(current):
+            chain = trail[current] + [name]
+            for needle, dep_name in FORBIDDEN.items():
+                if needle in name:
+                    found.setdefault(dep_name, chain)
+            target = resolve(name, current)
+            if target is not None and target not in trail:
+                trail[target] = chain
+                queue.append(target)
+    return found
+
+
+def compiled_sources() -> list[Path]:
+    # Everything the test project builds: its own sources and the engine ones
+    # its targets list, both spelled relative to src/tests.
+    names = MESON_SOURCE_RE.findall(
+        (TEST_DIR / "meson.build").read_text(encoding="utf-8")
+    )
+    paths = {(TEST_DIR / name).resolve() for name in names}
+    paths |= set(TEST_UNIT_DIR.glob("*.c"))
+    return sorted(path for path in paths if path.is_file())
+
+
+def check() -> list[LintWarning]:
+    warnings: list[LintWarning] = []
+    for path in compiled_sources():
+        for dep_name, chain in sorted(reached_by(path).items()):
+            warnings.append(
+                LintWarning(
+                    path.relative_to(REPO_DIR),
+                    f"reaches {dep_name} through {' -> '.join(chain)}; "
+                    f"the unit tests are built without it",
+                )
+            )
+    return warnings
+
+
+repo_check(check)
