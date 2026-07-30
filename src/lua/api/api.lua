@@ -715,13 +715,9 @@ function api.type(path, spec)
   local _, type_name = split_path(path)
   checkers[type_name] = handle_checker(backing)
 
-  local declared = {}
-
   for name, field in pairs(spec.fields or {}) do
     local from = field.from or name
-    local writable = field.writable ~= false
-    struct.expose_field(backing, name, from, writable)
-    declared[from] = true
+    struct.expose_field(backing, name, from, field.writable ~= false)
   end
 
   for name, computed in pairs(spec.extensions or {}) do
@@ -730,25 +726,6 @@ function api.type(path, spec)
       "api.type: extension '" .. name .. "' needs an impl"
     )
     struct.expose_computed(backing, name, computed.impl)
-  end
-
-  -- Opt-in exposure is silent by nature: forgetting to declare a member means
-  -- it quietly does not exist. Say so, rather than let it vanish unnoticed.
-  local undeclared = {}
-  for _, member in ipairs(struct.members(backing)) do
-    if not declared[member.name] then
-      table.insert(undeclared, member.name)
-    end
-  end
-  if #undeclared > 0 then
-    table.sort(undeclared)
-    trx.log.debug(
-      backing
-        .. ": "
-        .. #undeclared
-        .. " member(s) not exposed to scripts: "
-        .. table.concat(undeclared, ", ")
-    )
   end
 
   record(types, path, spec)
