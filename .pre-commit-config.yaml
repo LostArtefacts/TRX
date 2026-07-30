@@ -105,6 +105,13 @@ repos:
     pass_filenames: false
     files: \.[ch]$
 
+  - id: lint-test-mirror
+    name: Unit tests mirror what they test
+    entry: tools/lint/checks/test_mirror
+    language: python
+    pass_filenames: false
+    files: (^src/tests/|^src/(trx|lua)/.*\.(c|h|lua)$)
+
   - id: lint-lua-module-order
     name: Lua module order numbers are unique
     entry: tools/lint/checks/lua_module_order

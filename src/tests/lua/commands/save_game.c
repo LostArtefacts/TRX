@@ -35,7 +35,7 @@ int main(void)
         .module = "console",
         .deps = { "log", "savegame", "game", "locale", "argparse", nullptr },
         .script = "save_game",
-        .tests = "commands/save",
+        .tests = "commands/save_game",
         .push_fake = M_PushFake,
         .fake_reset = M_FakeReset,
         .fake_calls = M_FakeCalls,

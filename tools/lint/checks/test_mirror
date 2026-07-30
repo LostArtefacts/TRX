@@ -1,0 +1,119 @@
+#!/usr/bin/env python3
+# src/tests mirrors the tree it tests: src/tests/trx/core/vector.c exercises
+# src/trx/core/vector.c, and src/tests/lua/api/music.c stands trx.music up out of
+# src/lua/api/music.lua. That is the whole convention, and it is worth only as
+# much as it is kept - a test filed under the wrong path is a test nobody looking
+# in the right place will find.
+#
+# This checks the mirror both ways: that every test source answers to something
+# real, and that every test source is registered in src/tests/meson.build. A file
+# that is not registered never runs, and nothing else would say so.
+
+import re
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
+from harness import LintWarning, repo_check
+from shared.paths import REPO_DIR, SRC_DIR
+
+TEST_DIR = SRC_DIR / "tests"
+
+# The mirrored trees, and where each one mirrors from. Everything else under
+# src/tests - the harness, the fakes, the checks over tools/ - mirrors nothing.
+MIRRORS = {
+    "trx": SRC_DIR / "trx",
+    "lua": SRC_DIR / "lua",
+}
+
+# Tests of the surface as a whole rather than of one module, so there is no
+# single file for them to mirror.
+EXEMPT = {
+    Path("lua/boot.c"),
+    Path("lua/seal.c"),
+}
+
+# A test source names its own target by expression, so read the declared names
+# instead: one 'name': '<path>' per stanza.
+MESON_NAME_RE = re.compile(r"^  'name': '([^']+)',$", re.MULTILINE)
+
+
+def declared_names() -> set[str]:
+    return set(
+        MESON_NAME_RE.findall(
+            (TEST_DIR / "meson.build").read_text(encoding="utf-8")
+        )
+    )
+
+
+def mirrors_something(rel: Path, root: Path) -> bool:
+    # The engine spells a module either as one file or as a directory beside a
+    # header of the same name, and a test may cover either.
+    stem = root / rel.with_suffix("")
+    return (
+        stem.with_suffix(".c").is_file()
+        or stem.with_suffix(".h").is_file()
+        or stem.with_suffix(".lua").is_file()
+        or stem.is_dir()
+    )
+
+
+def check() -> list[LintWarning]:
+    warnings: list[LintWarning] = []
+    names = declared_names()
+    found: set[str] = set()
+
+    for tree, root in sorted(MIRRORS.items()):
+        for path in sorted((TEST_DIR / tree).rglob("*")):
+            rel = path.relative_to(TEST_DIR)
+            if path.is_dir():
+                continue
+
+            # <harness/...> and <fakes/...> resolve against src/tests, so a
+            # header here would shadow the engine's own by the same path.
+            if path.suffix == ".h":
+                warnings.append(
+                    LintWarning(
+                        path.relative_to(REPO_DIR),
+                        "is a header inside the mirror, where it would shadow "
+                        "the engine header of the same path; put it under "
+                        "harness/ or fakes/",
+                    )
+                )
+                continue
+
+            if path.suffix != ".c":
+                continue
+
+            found.add(str(rel.with_suffix("")))
+            if rel in EXEMPT:
+                continue
+            if not mirrors_something(rel.relative_to(tree), root):
+                warnings.append(
+                    LintWarning(
+                        path.relative_to(REPO_DIR),
+                        f"mirrors nothing under "
+                        f"{root.relative_to(REPO_DIR)}; name it after what it "
+                        f"tests, or exempt it here",
+                    )
+                )
+
+    for name in sorted(found - names):
+        warnings.append(
+            LintWarning(
+                (TEST_DIR / name).with_suffix(".c").relative_to(REPO_DIR),
+                "is not declared in src/tests/meson.build, so it never runs",
+            )
+        )
+    for name in sorted(names - found):
+        warnings.append(
+            LintWarning(
+                (TEST_DIR / "meson.build").relative_to(REPO_DIR),
+                f"declares {name}, which has no source",
+            )
+        )
+    return warnings
+
+
+repo_check(check)
