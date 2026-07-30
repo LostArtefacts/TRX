@@ -1227,7 +1227,7 @@
     },
     {
       "bulk": true,
-      "count": 131,
+      "count": 132,
       "description": "Every state Lara can be in.",
       "examples": [
         "if trx.lara.item.anim_state == trx.catalog.lara_states.RUN then ... end"
@@ -1255,6 +1255,7 @@
         "CROUCH_ROLL",
         "CROUCH_TURN_LEFT",
         "CROUCH_TURN_RIGHT",
+        "CROWBAR_PICKUP",
         "DEATH",
         "DIE_MIDAS",
         "DIVE",
@@ -2061,7 +2062,7 @@
     },
     {
       "bulk": false,
-      "count": 4,
+      "count": 5,
       "description": "The values the `pickup_mode` item property can take. It selects the animation Lara plays when collecting the item.",
       "path": "items.PickupMode",
       "values": [
@@ -2084,6 +2085,11 @@
           "description": "Hidden behind an object Lara can reach into.",
           "name": "HIDDEN",
           "value": 3
+        },
+        {
+          "description": "Pried off the wall using a crowbar.",
+          "name": "CROWBAR",
+          "value": 4
         }
       ]
     },

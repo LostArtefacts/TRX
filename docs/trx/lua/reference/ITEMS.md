@@ -50,6 +50,8 @@ end
         Picked up from a high pedestal.
     - `trx.items.PickupMode.HIDDEN` = `3`  
         Hidden behind an object Lara can reach into.
+    - `trx.items.PickupMode.CROWBAR` = `4`  
+        Pried off the wall using a crowbar.
 
 - [lua]`trx.items.SwitchMode`
 

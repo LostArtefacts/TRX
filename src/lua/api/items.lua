@@ -17,6 +17,7 @@ api.enum("items.PickupMode", {
     PLINTH_LOW = "Picked up from a low pedestal.",
     PLINTH_HIGH = "Picked up from a high pedestal.",
     HIDDEN = "Hidden behind an object Lara can reach into.",
+    CROWBAR = "Pried off the wall using a crowbar.",
   },
 })
 

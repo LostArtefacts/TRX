@@ -1650,7 +1650,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (249)</th><th align="center">TR2 (144)</th><th align="center">TR3 (387)</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in.</td></tr>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar.</td></tr>
 </tbody>
 </table>
 
@@ -1658,7 +1658,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (248)</th><th align="center">TR2 (137)</th><th align="center">TR3 (386)</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in.</td></tr>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar.</td></tr>
 </tbody>
 </table>
 
@@ -1675,7 +1675,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in.</td></tr>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar.</td></tr>
 </tbody>
 </table>
 
@@ -1707,7 +1707,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in.</td></tr>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar.</td></tr>
 </tbody>
 </table>
 
@@ -1715,7 +1715,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in.</td></tr>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar.</td></tr>
 </tbody>
 </table>
 
@@ -1723,7 +1723,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in.</td></tr>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar.</td></tr>
 </tbody>
 </table>
 
@@ -1731,7 +1731,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in.</td></tr>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar.</td></tr>
 </tbody>
 </table>
 
@@ -1739,7 +1739,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in.</td></tr>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar.</td></tr>
 </tbody>
 </table>
 
@@ -1747,7 +1747,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (252)</th><th align="center">TR2 (289)</th><th align="center">TR3 (170)</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in.</td></tr>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar.</td></tr>
 </tbody>
 </table>
 
@@ -1755,7 +1755,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (251)</th><th align="center">TR2 (288)</th><th align="center">TR3 (162)</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in.</td></tr>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar.</td></tr>
 </tbody>
 </table>
 
@@ -1835,7 +1835,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in.</td></tr>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar.</td></tr>
 </tbody>
 </table>
 
@@ -1843,7 +1843,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in.</td></tr>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar.</td></tr>
 </tbody>
 </table>
 
@@ -1851,7 +1851,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in.</td></tr>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar.</td></tr>
 </tbody>
 </table>
 
@@ -1859,7 +1859,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (92)</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in.</td></tr>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar.</td></tr>
 </tbody>
 </table>
 
@@ -1867,7 +1867,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (187)</th><th align="center">TR2 (151)</th><th align="center">TR3 (178)</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in.</td></tr>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar.</td></tr>
 </tbody>
 </table>
 
@@ -1899,7 +1899,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in.</td></tr>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar.</td></tr>
 </tbody>
 </table>
 
@@ -1907,7 +1907,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in.</td></tr>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar.</td></tr>
 </tbody>
 </table>
 
@@ -1915,7 +1915,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (245)</th><th align="center">TR2 (148)</th><th align="center">TR3 (175)</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in.</td></tr>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar.</td></tr>
 </tbody>
 </table>
 
@@ -1923,7 +1923,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (242)</th><th align="center">TR2 (141)</th><th align="center">TR3 (167)</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in.</td></tr>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar.</td></tr>
 </tbody>
 </table>
 
@@ -1931,7 +1931,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (246)</th><th align="center">TR2 (146)</th><th align="center">TR3 (172)</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in.</td></tr>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar.</td></tr>
 </tbody>
 </table>
 
@@ -1939,7 +1939,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (243)</th><th align="center">TR2 (139)</th><th align="center">TR3 (164)</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in.</td></tr>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar.</td></tr>
 </tbody>
 </table>
 
@@ -1955,7 +1955,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (129)</th><th align="center">TR2 (193)</th><th align="center">TR3 (224)</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in.</td></tr>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar.</td></tr>
 </tbody>
 </table>
 
@@ -1963,7 +1963,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in.</td></tr>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar.</td></tr>
 </tbody>
 </table>
 
@@ -1971,7 +1971,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in.</td></tr>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar.</td></tr>
 </tbody>
 </table>
 
@@ -1979,7 +1979,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (130)</th><th align="center">TR2 (194)</th><th align="center">TR3 (225)</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in.</td></tr>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar.</td></tr>
 </tbody>
 </table>
 
@@ -1987,7 +1987,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in.</td></tr>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar.</td></tr>
 </tbody>
 </table>
 
@@ -1995,7 +1995,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in.</td></tr>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar.</td></tr>
 </tbody>
 </table>
 
@@ -2003,7 +2003,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (131)</th><th align="center">TR2 (195)</th><th align="center">TR3 (226)</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in.</td></tr>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar.</td></tr>
 </tbody>
 </table>
 
@@ -2011,7 +2011,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in.</td></tr>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar.</td></tr>
 </tbody>
 </table>
 
@@ -2019,7 +2019,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in.</td></tr>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar.</td></tr>
 </tbody>
 </table>
 
@@ -2027,7 +2027,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (132)</th><th align="center">TR2 (196)</th><th align="center">TR3 (227)</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in.</td></tr>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar.</td></tr>
 </tbody>
 </table>
 
@@ -2035,7 +2035,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in.</td></tr>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar.</td></tr>
 </tbody>
 </table>
 
@@ -2043,7 +2043,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in.</td></tr>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar.</td></tr>
 </tbody>
 </table>
 
@@ -2051,7 +2051,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in.</td></tr>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar.</td></tr>
 </tbody>
 </table>
 
@@ -2059,7 +2059,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in.</td></tr>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar.</td></tr>
 </tbody>
 </table>
 
@@ -2067,7 +2067,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in.</td></tr>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar.</td></tr>
 </tbody>
 </table>
 
@@ -2075,7 +2075,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in.</td></tr>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar.</td></tr>
 </tbody>
 </table>
 
@@ -2083,7 +2083,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in.</td></tr>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar.</td></tr>
 </tbody>
 </table>
 
@@ -2091,7 +2091,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in.</td></tr>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar.</td></tr>
 </tbody>
 </table>
 
@@ -2099,7 +2099,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in.</td></tr>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar.</td></tr>
 </tbody>
 </table>
 
@@ -2107,7 +2107,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in.</td></tr>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar.</td></tr>
 </tbody>
 </table>
 
@@ -2115,7 +2115,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in.</td></tr>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar.</td></tr>
 </tbody>
 </table>
 
@@ -2123,7 +2123,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in.</td></tr>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar.</td></tr>
 </tbody>
 </table>
 
@@ -2131,7 +2131,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in.</td></tr>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar.</td></tr>
 </tbody>
 </table>
 
@@ -2139,7 +2139,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in.</td></tr>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar.</td></tr>
 </tbody>
 </table>
 
@@ -2147,7 +2147,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in.</td></tr>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar.</td></tr>
 </tbody>
 </table>
 
@@ -2155,7 +2155,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in.</td></tr>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar.</td></tr>
 </tbody>
 </table>
 
@@ -2163,7 +2163,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in.</td></tr>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar.</td></tr>
 </tbody>
 </table>
 
@@ -2171,7 +2171,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in.</td></tr>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar.</td></tr>
 </tbody>
 </table>
 
@@ -2187,7 +2187,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (94)</th><th align="center">TR2 (150)</th><th align="center">TR3 (177)</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in.</td></tr>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar.</td></tr>
 </tbody>
 </table>
 
@@ -2195,7 +2195,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in.</td></tr>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar.</td></tr>
 </tbody>
 </table>
 
@@ -2203,7 +2203,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (126)</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in.</td></tr>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar.</td></tr>
 </tbody>
 </table>
 
@@ -2221,7 +2221,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (244)</th><th align="center">TR2 (147)</th><th align="center">TR3 (392)</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in.</td></tr>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar.</td></tr>
 </tbody>
 </table>
 
@@ -2229,7 +2229,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (241)</th><th align="center">TR2 (140)</th><th align="center">TR3 (391)</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in.</td></tr>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar.</td></tr>
 </tbody>
 </table>
 
@@ -2237,7 +2237,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (90)</th><th align="center">TR2 (283)</th><th align="center">TR3 (382)</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in.</td></tr>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar.</td></tr>
 </tbody>
 </table>
 
@@ -2245,7 +2245,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (86)</th><th align="center">TR2 (282)</th><th align="center">TR3 (381)</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in.</td></tr>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar.</td></tr>
 </tbody>
 </table>
 
@@ -2264,7 +2264,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (254)</th><th align="center">TR2 (294)</th><th align="center">TR3 (173)</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in.</td></tr>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar.</td></tr>
 </tbody>
 </table>
 
@@ -2272,7 +2272,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (253)</th><th align="center">TR2 (293)</th><th align="center">TR3 (165)</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in.</td></tr>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar.</td></tr>
 </tbody>
 </table>
 
@@ -2280,7 +2280,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (141)</th><th align="center">TR2 (205)</th><th align="center">TR3 (236)</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in.</td></tr>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar.</td></tr>
 </tbody>
 </table>
 
@@ -2288,7 +2288,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in.</td></tr>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar.</td></tr>
 </tbody>
 </table>
 
@@ -2296,7 +2296,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in.</td></tr>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar.</td></tr>
 </tbody>
 </table>
 
@@ -2304,7 +2304,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (142)</th><th align="center">TR2 (206)</th><th align="center">TR3 (237)</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in.</td></tr>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar.</td></tr>
 </tbody>
 </table>
 
@@ -2312,7 +2312,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in.</td></tr>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar.</td></tr>
 </tbody>
 </table>
 
@@ -2320,7 +2320,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in.</td></tr>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar.</td></tr>
 </tbody>
 </table>
 
@@ -2328,7 +2328,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in.</td></tr>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar.</td></tr>
 </tbody>
 </table>
 
@@ -2336,7 +2336,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in.</td></tr>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar.</td></tr>
 </tbody>
 </table>
 
@@ -2344,7 +2344,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in.</td></tr>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar.</td></tr>
 </tbody>
 </table>
 
@@ -2352,7 +2352,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in.</td></tr>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar.</td></tr>
 </tbody>
 </table>
 
@@ -2360,7 +2360,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in.</td></tr>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar.</td></tr>
 </tbody>
 </table>
 
@@ -2368,7 +2368,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in.</td></tr>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar.</td></tr>
 </tbody>
 </table>
 
@@ -2385,7 +2385,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (88)</th><th align="center">TR2 (142)</th><th align="center">TR3 (168)</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in.</td></tr>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar.</td></tr>
 </tbody>
 </table>
 
@@ -2393,7 +2393,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (84)</th><th align="center">TR2 (135)</th><th align="center">TR3 (160)</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in.</td></tr>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar.</td></tr>
 </tbody>
 </table>
 
@@ -2489,7 +2489,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (110)</th><th align="center">TR2 (174)</th><th align="center">TR3 (205)</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in.</td></tr>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar.</td></tr>
 </tbody>
 </table>
 
@@ -2497,7 +2497,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in.</td></tr>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar.</td></tr>
 </tbody>
 </table>
 
@@ -2505,7 +2505,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in.</td></tr>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar.</td></tr>
 </tbody>
 </table>
 
@@ -2513,7 +2513,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (111)</th><th align="center">TR2 (175)</th><th align="center">TR3 (206)</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in.</td></tr>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar.</td></tr>
 </tbody>
 </table>
 
@@ -2521,7 +2521,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in.</td></tr>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar.</td></tr>
 </tbody>
 </table>
 
@@ -2529,7 +2529,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in.</td></tr>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar.</td></tr>
 </tbody>
 </table>
 
@@ -2537,7 +2537,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (112)</th><th align="center">TR2 (176)</th><th align="center">TR3 (207)</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in.</td></tr>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar.</td></tr>
 </tbody>
 </table>
 
@@ -2545,7 +2545,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in.</td></tr>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar.</td></tr>
 </tbody>
 </table>
 
@@ -2553,7 +2553,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in.</td></tr>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar.</td></tr>
 </tbody>
 </table>
 
@@ -2561,7 +2561,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (113)</th><th align="center">TR2 (177)</th><th align="center">TR3 (208)</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in.</td></tr>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar.</td></tr>
 </tbody>
 </table>
 
@@ -2569,7 +2569,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in.</td></tr>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar.</td></tr>
 </tbody>
 </table>
 
@@ -2577,7 +2577,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in.</td></tr>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar.</td></tr>
 </tbody>
 </table>
 
@@ -2585,7 +2585,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in.</td></tr>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar.</td></tr>
 </tbody>
 </table>
 
@@ -2593,7 +2593,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in.</td></tr>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar.</td></tr>
 </tbody>
 </table>
 
@@ -2601,7 +2601,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in.</td></tr>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar.</td></tr>
 </tbody>
 </table>
 
@@ -2609,7 +2609,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in.</td></tr>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar.</td></tr>
 </tbody>
 </table>
 
@@ -2617,7 +2617,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in.</td></tr>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar.</td></tr>
 </tbody>
 </table>
 
@@ -2625,7 +2625,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in.</td></tr>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar.</td></tr>
 </tbody>
 </table>
 
@@ -2633,7 +2633,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in.</td></tr>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar.</td></tr>
 </tbody>
 </table>
 
@@ -2641,7 +2641,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in.</td></tr>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar.</td></tr>
 </tbody>
 </table>
 
@@ -2649,7 +2649,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in.</td></tr>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar.</td></tr>
 </tbody>
 </table>
 
@@ -2657,7 +2657,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in.</td></tr>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar.</td></tr>
 </tbody>
 </table>
 
@@ -2665,7 +2665,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in.</td></tr>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar.</td></tr>
 </tbody>
 </table>
 
@@ -2673,7 +2673,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in.</td></tr>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar.</td></tr>
 </tbody>
 </table>
 
@@ -2681,7 +2681,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in.</td></tr>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar.</td></tr>
 </tbody>
 </table>
 
@@ -2689,7 +2689,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in.</td></tr>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar.</td></tr>
 </tbody>
 </table>
 
@@ -2697,7 +2697,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in.</td></tr>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar.</td></tr>
 </tbody>
 </table>
 
@@ -2705,7 +2705,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in.</td></tr>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar.</td></tr>
 </tbody>
 </table>
 
@@ -2726,7 +2726,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (240)</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in.</td></tr>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar.</td></tr>
 </tbody>
 </table>
 
@@ -2734,7 +2734,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (241)</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in.</td></tr>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar.</td></tr>
 </tbody>
 </table>
 
@@ -2742,7 +2742,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (242)</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in.</td></tr>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar.</td></tr>
 </tbody>
 </table>
 
@@ -2750,7 +2750,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (243)</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in.</td></tr>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar.</td></tr>
 </tbody>
 </table>
 
@@ -2758,7 +2758,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in.</td></tr>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar.</td></tr>
 </tbody>
 </table>
 
@@ -2766,7 +2766,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in.</td></tr>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar.</td></tr>
 </tbody>
 </table>
 
@@ -2774,7 +2774,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in.</td></tr>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar.</td></tr>
 </tbody>
 </table>
 
@@ -2782,7 +2782,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in.</td></tr>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar.</td></tr>
 </tbody>
 </table>
 
@@ -2802,7 +2802,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (256)</th><th align="center">TR2 (300)</th><th align="center">TR3 (174)</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in.</td></tr>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar.</td></tr>
 </tbody>
 </table>
 
@@ -2810,7 +2810,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (255)</th><th align="center">TR2 (299)</th><th align="center">TR3 (166)</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in.</td></tr>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar.</td></tr>
 </tbody>
 </table>
 
@@ -2829,7 +2829,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (144)</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in.</td></tr>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar.</td></tr>
 </tbody>
 </table>
 
@@ -2845,7 +2845,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (190)</th><th align="center">TR3 (221)</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in.</td></tr>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar.</td></tr>
 </tbody>
 </table>
 
@@ -2853,7 +2853,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (191)</th><th align="center">TR3 (222)</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in.</td></tr>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar.</td></tr>
 </tbody>
 </table>
 
@@ -2861,7 +2861,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (192)</th><th align="center">TR3 (223)</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in.</td></tr>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar.</td></tr>
 </tbody>
 </table>
 
@@ -2869,7 +2869,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in.</td></tr>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar.</td></tr>
 </tbody>
 </table>
 
@@ -2877,7 +2877,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (89)</th><th align="center">TR2 (143)</th><th align="center">TR3 (169)</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in.</td></tr>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar.</td></tr>
 </tbody>
 </table>
 
@@ -2885,7 +2885,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (85)</th><th align="center">TR2 (136)</th><th align="center">TR3 (161)</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in.</td></tr>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar.</td></tr>
 </tbody>
 </table>
 
@@ -2918,7 +2918,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (93)</th><th align="center">TR2 (149)</th><th align="center">TR3 (176)</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in.</td></tr>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar.</td></tr>
 </tbody>
 </table>
 
@@ -3033,7 +3033,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (91)</th><th align="center">TR2 (145)</th><th align="center">TR3 (171)</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in.</td></tr>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar.</td></tr>
 </tbody>
 </table>
 
@@ -3041,7 +3041,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (87)</th><th align="center">TR2 (138)</th><th align="center">TR3 (163)</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in.</td></tr>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar.</td></tr>
 </tbody>
 </table>
 
@@ -3049,7 +3049,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in.</td></tr>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar.</td></tr>
 </tbody>
 </table>
 
@@ -3057,7 +3057,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in.</td></tr>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar.</td></tr>
 </tbody>
 </table>
 
@@ -3065,7 +3065,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in.</td></tr>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar.</td></tr>
 </tbody>
 </table>
 
@@ -3073,7 +3073,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in.</td></tr>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar.</td></tr>
 </tbody>
 </table>
 
@@ -3081,7 +3081,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in.</td></tr>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar.</td></tr>
 </tbody>
 </table>
 
@@ -3089,7 +3089,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in.</td></tr>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar.</td></tr>
 </tbody>
 </table>
 
@@ -3097,7 +3097,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in.</td></tr>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar.</td></tr>
 </tbody>
 </table>
 
@@ -3105,7 +3105,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in.</td></tr>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar.</td></tr>
 </tbody>
 </table>
 
@@ -3113,7 +3113,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in.</td></tr>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar.</td></tr>
 </tbody>
 </table>
 
@@ -3121,6 +3121,6 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in.</td></tr>
+<tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar.</td></tr>
 </tbody>
 </table>

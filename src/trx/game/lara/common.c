@@ -15,6 +15,7 @@
 #include <trx/game/matrix.h>
 #include <trx/game/objects.h>
 #include <trx/game/objects/general/door.h>
+#include <trx/game/objects/general/pickup.h>
 #include <trx/game/objects/general/switch.h>
 #include <trx/game/output.h>
 #include <trx/game/pathing.h>
@@ -44,6 +45,7 @@ static const LARA_TRX_ANIMATION m_InvalidInterpAnims[] = {
 static int16_t (*const m_CrowbarReceptacleFuncs[])(void) = {
     Door_FindNearbyCrowbarDoor,
     Switch_FindNearbyCrowbarSwitch,
+    Pickup_FindNearbyCrowbarPryPickup,
     nullptr, // sentinel
 };
 

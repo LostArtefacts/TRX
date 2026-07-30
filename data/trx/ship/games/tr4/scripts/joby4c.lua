@@ -21,4 +21,5 @@ trx.events.on_game_start(function(level)
   trx.items[68].properties.pickup_mode = trx.items.PickupMode.HIDDEN
   trx.items[127].properties.pickup_mode = trx.items.PickupMode.HIDDEN
   trx.items[154].properties.pickup_mode = trx.items.PickupMode.HIDDEN
+  trx.items[137].properties.pickup_mode = trx.items.PickupMode.CROWBAR
 end)
