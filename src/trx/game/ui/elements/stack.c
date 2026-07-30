@@ -4,6 +4,7 @@
 #include <trx/core/utils.h>
 #include <trx/debug.h>
 #include <trx/game/ui/helpers.h>
+#include <trx/game/ui/scaler.h>
 
 #include <math.h>
 #include <stdint.h>
@@ -70,7 +71,7 @@ static void M_Measure(UI_NODE *const node)
     node->measure_h = 0.0f;
     UI_NODE *child = node->first_child;
     M_DATA *const data = node->data;
-    const float scale = g_Config.ui.text_scale;
+    const float scale = UI_Scaler_GetTextScale();
     while (child != nullptr) {
         if (data->settings.orientation == UI_STACK_VERTICAL) {
             node->measure_w = MAX(node->measure_w, child->measure_w);
@@ -118,7 +119,7 @@ static void M_Layout(
     // (configured) total spacing on the main axis. If only 1 child or 0
     // children, there's no gap to distribute leftover space into.
     const int32_t gaps = (child_count > 1) ? (child_count - 1) : 0;
-    const float scale = g_Config.ui.text_scale;
+    const float scale = UI_Scaler_GetTextScale();
     float base_spacing = 0.0f;
     switch (data->settings.orientation) {
     case UI_STACK_HORIZONTAL:

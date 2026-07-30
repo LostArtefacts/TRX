@@ -142,7 +142,7 @@ static float M_ScaleScreen(const float value)
 
 static float M_ScaleNeutral(const float value)
 {
-    return value * g_Config.ui.text_scale;
+    return value * UI_Scaler_GetTextScale();
 }
 
 static RGBA_F M_ToRGBA_F(const RGB_888 color)
@@ -487,9 +487,9 @@ static void M_Process(
 
     const float scale = scale_func(UI_TEXT_BASE_SCALE * settings.scale);
 
-    float x = scale_func(base_x / g_Config.ui.text_scale);
+    float x = scale_func(base_x / UI_Scaler_GetTextScale());
     float y = scale_func(
-        base_y / g_Config.ui.text_scale + settings.scale * UI_TEXT_HEIGHT);
+        base_y / UI_Scaler_GetTextScale() + settings.scale * UI_TEXT_HEIGHT);
     int32_t z = settings.z;
 
     float max_width = 0.0f;
@@ -718,7 +718,7 @@ void UI_Text_Draw(
 {
     M_Process(
         text, nullptr, nullptr, settings, base_x,
-        base_y - g_Config.ui.text_scale, M_ScaleScreen,
+        base_y - UI_Scaler_GetTextScale(), M_ScaleScreen,
         UI_ScheduleDrawScreenSprite);
 }
 
@@ -732,7 +732,7 @@ char *UI_Text_WordWrap(
     size_t glyph_count = 0;
     const M_GLYPH_INFO **glyphs = M_DecomposeWithCache(text, &glyph_count);
 
-    const float scale_f = scale * g_Config.ui.text_scale;
+    const float scale_f = scale * UI_Scaler_GetTextScale();
     size_t len = M_WordWrap(glyphs, glyph_count, scale_f, max_width, nullptr);
     char *const wrapped_text = Memory_Alloc(len);
     M_WordWrap(glyphs, glyph_count, scale_f, max_width, wrapped_text);

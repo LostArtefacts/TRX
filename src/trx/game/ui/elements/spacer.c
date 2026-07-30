@@ -2,6 +2,7 @@
 
 #include <trx/config.h>
 #include <trx/game/ui/helpers.h>
+#include <trx/game/ui/scaler.h>
 
 static void M_Measure(UI_NODE *const node)
 {
@@ -17,7 +18,7 @@ void UI_Spacer(const float w, const float h)
             .draw = UI_DrawWrapper,
         },
         0);
-    node->measure_w = w * g_Config.ui.text_scale;
-    node->measure_h = h * g_Config.ui.text_scale;
+    node->measure_w = w * UI_Scaler_GetTextScale();
+    node->measure_h = h * UI_Scaler_GetTextScale();
     UI_AddChild(node);
 }

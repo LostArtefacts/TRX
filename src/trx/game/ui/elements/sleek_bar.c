@@ -4,6 +4,7 @@
 #include <trx/core/utils.h>
 #include <trx/game/ui/draw.h>
 #include <trx/game/ui/helpers.h>
+#include <trx/game/ui/scaler.h>
 #include <trx/version.h>
 
 typedef struct {
@@ -26,7 +27,7 @@ static RGBA_8888 m_FillColors[TR_VERSION_COUNT] = {
 static void M_Measure(UI_NODE *const node)
 {
     node->measure_w = 0.0f;
-    node->measure_h = 4.0f * g_Config.ui.text_scale;
+    node->measure_h = 4.0f * UI_Scaler_GetTextScale();
 }
 
 static void M_Draw(const UI_NODE *const node)

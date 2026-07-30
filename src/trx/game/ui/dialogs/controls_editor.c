@@ -590,7 +590,7 @@ void UI_ControlsEditor_Init(
     for (int32_t i = 0; i < INPUT_ROLE_NUMBER_OF; i++) {
         float w;
         UI_Label_Measure(Input_GetRoleName(i), &w, nullptr);
-        s->label_size = MAX(s->label_size, w / g_Config.ui.text_scale);
+        s->label_size = MAX(s->label_size, w / UI_Scaler_GetTextScale());
     }
     s->input_size = 80;
 }
