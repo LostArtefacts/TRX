@@ -24,6 +24,8 @@
 #define FAKE_OBJ_REAL_KEY O_KEY_ITEM_1
 #define FAKE_OBJ_PUZZLE O_PUZZLE_ITEM_1
 #define FAKE_OBJ_TOOL O_CROWBAR_ITEM
+// A tool a level sends Lara to find, rather than one she carries and uses.
+#define FAKE_OBJ_LEADBAR O_LEADBAR_ITEM
 #define FAKE_OBJ_MEDIPACK O_SMALL_MEDIPACK_ITEM
 // A pickup a family names but no cheat hands over.
 #define FAKE_OBJ_TRINKET O_SECRET_1

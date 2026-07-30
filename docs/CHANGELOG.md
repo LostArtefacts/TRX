@@ -26,6 +26,7 @@
 - changed the `/music` console command to list the available tracks when given no argument, as `/sfx` does; `/music status` now reports what is playing
 - changed the large medipack to answer to "big medipack" as well, so `/give big medi` reaches it
 - changed the `/secret` console command to take a secret number on its own, to offer the numbers it can act on in autocompletion, and to say what it expected when given something else
+- changed the `/give` console command to autocomplete what it can hand over and to reach the savegame crystal by name; `/give keys` now covers the plot items alone, and `/keys`, `/guns` and `/moreguns` are commands of their own
 - changed the `/spawn`, `/kill` and `/tp` console commands to accept a family such as `pickup`, `door` or `enemy` in place of a name, and to offer the families each of them can act on in autocompletion
 - changed the Breeze option to allow selecting TR2 or TR3 behavior (Graphic Options → Visuals → Breeze)
 - changed the save crystals option to a mode: crystals can save on the spot, be collected to save from the inventory as on PS1 TR3, heal, or be collectibles (Gameplay → General → Crystal mode) (#5939)

@@ -65,7 +65,7 @@ whichever key you have bound, and not include it as part of the command itself.
   `/give guns` or `/guns`  
   `/give moreguns` or `/moreguns`  
   `/give keys` or `/keys`  
-  Gives Lara an item. Try `/give guns` to arm her to the teeth, and `/give keys` to get her all important puzzle items. Ain't nobody got time for searching!
+  Gives Lara an item. Try `/give guns` to arm her to the teeth, and `/give keys` to get her all important puzzle items. Ain't nobody got time for searching! `/give all` hands over one of everything, ammunition and medipacks included.
 
 - `/secret`  
   `/secret {num}`  
