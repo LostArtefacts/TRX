@@ -35,6 +35,20 @@ local function rewind_doors()
   end
 end
 
+-- A trigger a flyby crosses antitriggers one of the ground flames, and the
+-- level holds none that lights it again, so every pass after the first is
+-- missing it. Putting the trigger back as it fires leaves the flame burning,
+-- which is what dropping the trigger from the level data would do.
+local FLAMES = trx.catalog.objects.flame_emitter_tr4_ground
+trx.events.on_trigger(function(item, trigger)
+  if
+    item.object_id == FLAMES
+    and trigger.type == trx.items.TriggerType.ANTITRIGGER
+  then
+    item.is_reversed = true
+  end
+end)
+
 -- Lara is one of a cutscene's actors, and has no business being on screen
 -- between them. The level script runs before the level exists, so she is only
 -- ever reached from a handler.
