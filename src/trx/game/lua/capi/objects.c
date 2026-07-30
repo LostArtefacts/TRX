@@ -210,25 +210,26 @@ static const struct {
     const char *name;
     const OBJECT_ID *objects;
 } m_Families[] = {
-    { "creature", g_CreatureObjects }, //
-    { "loyal", g_LoyalObjects }, //
-    { "pickup", g_PickupObjects }, //
-    { "gun", g_GunObjects }, //
-    { "ammo", g_GunAmmoObjects }, //
-    { "supply", m_SupplyObjects }, //
-    { "tool", m_ToolObjects }, //
-    { "key", m_KeyObjects }, //
-    { "puzzle", m_PuzzleObjects }, //
-    { "quest", m_QuestObjects }, //
-    { "examine", m_ExamineObjects }, //
-    { "collectible", m_CollectibleObjects }, //
-    { "secret", g_SecretObjects }, //
-    { "switch", g_SwitchObjects }, //
-    { "receptacle", g_ReceptacleObjects }, //
-    { "door", g_DoorObjects }, //
-    { "null", g_NullObjects }, //
-    { "anim", g_AnimObjects }, //
-    { "inventory", g_InvObjects }, //
+    { "creature", g_CreatureObjects },
+    { "loyal", g_LoyalObjects },
+    { "pickup", g_PickupObjects },
+    { "gun", g_GunObjects },
+    { "ammo", g_GunAmmoObjects },
+    { "supply", m_SupplyObjects },
+    { "tool", m_ToolObjects },
+    { "key", m_KeyObjects },
+    { "puzzle", m_PuzzleObjects },
+    { "quest", m_QuestObjects },
+    { "examine", m_ExamineObjects },
+    { "collectible", m_CollectibleObjects },
+    { "secret", g_SecretObjects },
+    { "switch", g_SwitchObjects },
+    { "receptacle", g_ReceptacleObjects },
+    { "pushable", g_MovableBlockObjects },
+    { "door", g_DoorObjects },
+    { "null", g_NullObjects },
+    { "anim", g_AnimObjects },
+    { "inventory", g_InvObjects },
     { nullptr, nullptr },
 };
 

@@ -88,6 +88,7 @@ const OBJECT_ID g_SecretObjects[] = {
 
 const OBJECT_ID g_SwitchObjects[] = { FAKE_OBJ_SWITCH, NO_OBJECT };
 const OBJECT_ID g_ReceptacleObjects[] = { FAKE_OBJ_RECEPTACLE, NO_OBJECT };
+const OBJECT_ID g_MovableBlockObjects[] = { NO_OBJECT };
 const OBJECT_ID g_DoorObjects[] = { FAKE_OBJ_DOOR, NO_OBJECT };
 const OBJECT_ID g_NullObjects[] = { NO_OBJECT };
 const OBJECT_ID g_AnimObjects[] = { NO_OBJECT };
