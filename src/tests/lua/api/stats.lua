@@ -99,4 +99,19 @@ test("nothing is counted outside a level", function()
   assert(not trx.stats.take_secret(1))
 end)
 
+-- The title screen is a level the game flow is on and the game is not, so the
+-- counts have to be guarded by the one they are read against.
+test(
+  "nor at the title screen, which the game flow counts as a level",
+  function()
+    level_with({ 1, 2 })
+    fake.set_current_title()
+
+    assert(#trx.stats.secrets == 0)
+    assert(trx.stats.secret_count == 0)
+    assert(trx.stats.max_secret_count == 0)
+    assert(not trx.stats.give_secret(1))
+  end
+)
+
 return h.report()

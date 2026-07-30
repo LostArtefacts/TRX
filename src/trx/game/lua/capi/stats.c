@@ -1,4 +1,4 @@
-#include <trx/game/game_flow.h>
+#include <trx/game/game/state.h>
 #include <trx/game/lua/common.h>
 #include <trx/game/lua/registry.h>
 #include <trx/game/lua/utils.h>
@@ -10,10 +10,12 @@
 // bit index behind it stays in the engine.
 
 // The statistics belong to the level being played, and the engine has none to
-// read without one.
+// read without one. This is the level the statistics themselves are read
+// against, not the one the game flow is on: the title screen has the second
+// without the first.
 static bool M_HasLevel(void)
 {
-    return GF_GetCurrentLevel() != nullptr;
+    return Game_GetCurrentLevel() != nullptr;
 }
 
 // The secret a number names, as an index, or -1 when the number is outside the
