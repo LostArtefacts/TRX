@@ -2692,7 +2692,10 @@
             "name": "Uzis Animation",
         },
         "large_medipack": {
-            "name": "Large Medipack",
+            "name": [
+                "Large Medipack",
+                "Big Medipack",
+            ]
         },
         "larson": {
             "name": "Larson",

@@ -21,6 +21,7 @@
 - changed outfits to support joints, up to two braids per outfit, and to allow positional offset adjustments for equipment meshes; refer to migration notes
 - changed the gameflow's `main_menu_picture` to be optional: a game that names no picture shows its title level behind the menu, and its title script says what plays there
 - changed the `/music` console command to list the available tracks when given no argument, as `/sfx` does; `/music status` now reports what is playing
+- changed the large medipack to answer to "big medipack" as well, so `/give big medi` reaches it
 - changed the `/secret` console command to take a secret number on its own, to offer the numbers it can act on in autocompletion, and to say what it expected when given something else
 - changed the `/spawn`, `/kill` and `/tp` console commands to accept a family such as `pickup`, `door` or `enemy` in place of a name, and to offer the families each of them can act on in autocompletion
 - changed the Breeze option to allow selecting TR2 or TR3 behavior (Graphic Options → Visuals → Breeze)

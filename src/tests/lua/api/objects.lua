@@ -95,11 +95,13 @@ test("a property nobody declared reads nil and cannot be written", function()
 end)
 
 test("an object knows the names it answers to", function()
-  -- More than one: a vase is also a large vase.
+  -- More than one, and not all of them sharing a word: a vase is also a large
+  -- vase and a big urn, the way a large medipack is also a big medipack.
   local names = trx.objects[fake.VASE].default_names
-  assert(#names == 2, "the vase should answer to two names")
+  assert(#names == 3, "the vase should answer to three names")
   assert(names[1] == "vase")
   assert(names[2] == "large vase")
+  assert(names[3] == "big urn")
 end)
 
 test("by_name matches the way a player types it", function()
