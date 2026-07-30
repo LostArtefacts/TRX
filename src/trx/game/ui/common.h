@@ -54,6 +54,10 @@ void UI_PushCurrent(UI_NODE *child);
 void UI_PopCurrent(void);
 const UI_NODE *UI_GetCurrent(void);
 
+// The tree the last UI_EndScene measured and laid out. Its nodes stay valid
+// until the next UI_BeginScene resets the arena they live in.
+const UI_NODE *UI_GetSceneRoot(void);
+
 void UI_Init(void);
 void UI_Shutdown(void);
 void UI_ToggleState(bool *config_setting);

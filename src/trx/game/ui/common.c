@@ -18,6 +18,7 @@ static struct {
     MEMORY_ARENA_ALLOCATOR alloc;
     UI_NODE *root; // The top-level container
     UI_NODE *current; // The current container into which we attach nodes
+    UI_NODE *scene_root; // The tree the last UI_EndScene laid out
 } m_Priv = {
     .alloc = {
         .default_chunk_size = 1024 * 4,
@@ -121,6 +122,11 @@ const UI_NODE *UI_GetCurrent(void)
     return m_Priv.current;
 }
 
+const UI_NODE *UI_GetSceneRoot(void)
+{
+    return m_Priv.scene_root;
+}
+
 // Scene management
 void UI_BeginScene(void)
 {
@@ -131,6 +137,7 @@ void UI_BeginScene(void)
 
 void UI_EndScene(void)
 {
+    m_Priv.scene_root = m_Priv.root;
     M_MeasureNode(m_Priv.root);
     M_LayoutNode(m_Priv.root, 0, 0, UI_GetCanvasWidth(), UI_GetCanvasHeight());
     M_DrawNode(m_Priv.root);
