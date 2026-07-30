@@ -21,7 +21,9 @@ typedef struct {
     TRX_VALUE value;
 } FAKE_ARG;
 
-// One argument of a recorded call.
+// One argument of a recorded call. `count` and `name` belong to the log, so an
+// argument spelled either way stops the run rather than answering in place of
+// one.
 #define FV(expr_) ((FAKE_ARG) { .name = #expr_, .value = Value_Of(expr_) })
 
 // A string argument. A char array does not decay in _Generic, so it cannot go
