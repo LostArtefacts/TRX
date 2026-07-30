@@ -95,6 +95,14 @@ const GF_LEVEL *GF_GetCurrentLevel(void)
     return m_CurrentLevel;
 }
 
+// The game flow's level and the game's are not the same one. The title screen
+// is a level the flow is on and the game is not, which is where a caller that
+// reads the game's and guards on the flow's comes apart.
+const GF_LEVEL *Game_GetCurrentLevel(void)
+{
+    return m_CurrentLevel == &m_TitleLevel ? nullptr : m_CurrentLevel;
+}
+
 GF_LEVEL_TABLE_TYPE GF_GetLevelTableType(const GF_LEVEL_TYPE level_type)
 {
     switch (level_type) {
