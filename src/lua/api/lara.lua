@@ -333,3 +333,147 @@ api.define("lara.clear_equipment", {
   },
   impl = raw.clear_equipment,
 })
+
+api.namespace("lara.inventory", {
+  description = [[
+Lara's backpack: what she is carrying, and what goes into it.
+
+Every function here takes either the pickup lying in the world or the
+inventory icon it goes into. The engine maps one to the other, so a script
+names whichever it has.]],
+})
+
+local inv_object_param = {
+  name = "object",
+  type = "integer",
+  enum = "catalog.objects",
+  description = "The pickup, or the inventory icon it goes into.",
+}
+
+local inv_count_param = {
+  name = "count",
+  type = "integer",
+  optional = true,
+  description = "How many. Defaults to 1; below 1 raises.",
+}
+
+api.define("lara.inventory.add", {
+  description = [[
+Puts a pickup into the backpack, as walking over it would. A weapon arrives
+with its usual clip, and a flare box with its flares.]],
+  params = { inv_object_param, inv_count_param },
+  returns = {
+    type = "integer",
+    description = "How many went in. 0 means the level does not carry the icon for it - see `can_add`.",
+  },
+  examples = { [[trx.lara.inventory.add(trx.catalog.objects.uzi_item, 2)]] },
+  impl = raw.inventory.add,
+})
+
+api.define("lara.inventory.remove", {
+  description = [[
+Takes items back out, stopping when Lara runs out.
+
+This is not the exact opposite of `add`: adding a clip puts rounds in the gun
+as well as an entry in the ring, and removing one takes only the entry, leaving
+the rounds where they are.]],
+  params = { inv_object_param, inv_count_param },
+  returns = { type = "integer", description = "How many came out." },
+  impl = raw.inventory.remove,
+})
+
+api.define("lara.inventory.count", {
+  description = "How many of something Lara is carrying.",
+  params = { inv_object_param },
+  returns = { type = "integer", description = "The count, and 0 for none." },
+  impl = raw.inventory.count,
+})
+
+api.define("lara.inventory.has", {
+  description = "Whether Lara is carrying any of something.",
+  params = { inv_object_param },
+  returns = { type = "boolean" },
+  impl = function(object)
+    return raw.inventory.count(object) > 0
+  end,
+})
+
+api.define("lara.inventory.entry_of", {
+  description = [[
+The backpack entry a pickup goes into. Several pickups can share one - the
+scion whether or not Lara is carrying it, a waterskin at each fill level - so
+this is what tells two spellings of one thing from two things.]],
+  params = { inv_object_param },
+  returns = {
+    type = "integer",
+    enum = "catalog.objects",
+    description = "The entry's object id.",
+  },
+  impl = raw.inventory.entry_of,
+})
+
+api.define("lara.inventory.can_add", {
+  description = [[
+Whether `add` would do anything here. The level has to carry the inventory
+model, which is not the same as the pickup being in it: a level with no shotgun
+lying about still draws one in the ring, which is what lets a cheat hand one
+over.]],
+  params = { inv_object_param },
+  returns = { type = "boolean" },
+  impl = raw.inventory.can_add,
+})
+
+api.namespace("lara.weapons", {
+  description = "The weapons Lara can hold: whether the level allows one, and how much ammunition "
+    .. "she has for it.",
+})
+
+local weapon_param = {
+  name = "weapon",
+  type = "integer",
+  enum = "catalog.weapons",
+  description = "Which weapon. `UNKNOWN` and `UNARMED` raise, and so does anything outside the "
+    .. "table; `FLARE` and `SKIDOO` are taken, being held the way a weapon is.",
+}
+
+api.define("lara.weapons.is_available", {
+  description = [[
+Whether the level allows this weapon at all. The game flow can keep one out of
+a level, and a cheat that hands it over anyway leaves Lara with a gun the level
+was built without.]],
+  params = { weapon_param },
+  returns = { type = "boolean" },
+  impl = raw.weapons.is_available,
+})
+
+api.define("lara.weapons.object", {
+  description = "The pickup the weapon is, for handing it to `trx.lara.inventory.add`.",
+  params = { weapon_param },
+  returns = {
+    type = "integer",
+    enum = "catalog.objects",
+    description = "The object id, or `nil` if this game has no such weapon.",
+  },
+  impl = raw.weapons.get_object,
+})
+
+api.define("lara.weapons.ammo", {
+  description = "How many rounds Lara has for the weapon. The pistols never run out and read 0.",
+  params = { weapon_param },
+  returns = { type = "integer" },
+  impl = raw.weapons.get_ammo,
+})
+
+api.define("lara.weapons.set_ammo", {
+  description = "Sets how many rounds she has for it.",
+  params = {
+    weapon_param,
+    {
+      name = "count",
+      type = "integer",
+      description = "Rounds. Below 0 raises.",
+    },
+  },
+  examples = { [[trx.lara.weapons.set_ammo(trx.catalog.weapons.UZIS, 2000)]] },
+  impl = raw.weapons.set_ammo,
+})

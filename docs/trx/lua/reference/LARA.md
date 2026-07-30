@@ -176,6 +176,16 @@ Her position, room and hit points are not here: she is an item like any other an
 
 ### Functions
 
+- [lua]`trx.lara.inventory`  
+  Lara's backpack: what she is carrying, and what goes into it.
+
+  Every function here takes either the pickup lying in the world or the
+  inventory icon it goes into. The engine maps one to the other, so a script
+  names whichever it has.
+
+- [lua]`trx.lara.weapons`  
+  The weapons Lara can hold: whether the level allows one, and how much ammunition she has for it.
+
 - [lua]`trx.lara.set_extra_equipment(mesh, extra_mesh)`  
   Hangs an extra mesh on one of Lara's own, replacing whatever is there.
 
@@ -218,3 +228,106 @@ Her position, room and hit points are not here: she is an item like any other an
 
   Parameters:
   - **`mesh`** (integer). Which of Lara's meshes. Compare against `trx.lara.Mesh`.
+
+- [lua]`trx.lara.inventory.add(object, [count])`  
+  Puts a pickup into the backpack, as walking over it would. A weapon arrives
+  with its usual clip, and a flare box with its flares.
+
+  Parameters:
+  - **`object`** (integer). The pickup, or the inventory icon it goes into. Compare against `trx.catalog.objects`.
+  - **`count`** (integer, optional). How many. Defaults to 1; below 1 raises.
+
+  Returns: integer. How many went in. 0 means the level does not carry the icon for it - see `can_add`.
+
+  Example:
+  ```lua
+  trx.lara.inventory.add(trx.catalog.objects.uzi_item, 2)
+  ```
+
+- [lua]`trx.lara.inventory.remove(object, [count])`  
+  Takes items back out, stopping when Lara runs out.
+
+  This is not the exact opposite of `add`: adding a clip puts rounds in the gun
+  as well as an entry in the ring, and removing one takes only the entry, leaving
+  the rounds where they are.
+
+  Parameters:
+  - **`object`** (integer). The pickup, or the inventory icon it goes into. Compare against `trx.catalog.objects`.
+  - **`count`** (integer, optional). How many. Defaults to 1; below 1 raises.
+
+  Returns: integer. How many came out.
+
+- [lua]`trx.lara.inventory.count(object)`  
+  How many of something Lara is carrying.
+
+  Parameters:
+  - **`object`** (integer). The pickup, or the inventory icon it goes into. Compare against `trx.catalog.objects`.
+
+  Returns: integer. The count, and 0 for none.
+
+- [lua]`trx.lara.inventory.has(object)`  
+  Whether Lara is carrying any of something.
+
+  Parameters:
+  - **`object`** (integer). The pickup, or the inventory icon it goes into. Compare against `trx.catalog.objects`.
+
+  Returns: boolean.
+
+- [lua]`trx.lara.inventory.entry_of(object)`  
+  The backpack entry a pickup goes into. Several pickups can share one - the
+  scion whether or not Lara is carrying it, a waterskin at each fill level - so
+  this is what tells two spellings of one thing from two things.
+
+  Parameters:
+  - **`object`** (integer). The pickup, or the inventory icon it goes into. Compare against `trx.catalog.objects`.
+
+  Returns: integer. The entry's object id. Compare against `trx.catalog.objects`.
+
+- [lua]`trx.lara.inventory.can_add(object)`  
+  Whether `add` would do anything here. The level has to carry the inventory
+  model, which is not the same as the pickup being in it: a level with no shotgun
+  lying about still draws one in the ring, which is what lets a cheat hand one
+  over.
+
+  Parameters:
+  - **`object`** (integer). The pickup, or the inventory icon it goes into. Compare against `trx.catalog.objects`.
+
+  Returns: boolean.
+
+- [lua]`trx.lara.weapons.is_available(weapon)`  
+  Whether the level allows this weapon at all. The game flow can keep one out of
+  a level, and a cheat that hands it over anyway leaves Lara with a gun the level
+  was built without.
+
+  Parameters:
+  - **`weapon`** (integer). Which weapon. `UNKNOWN` and `UNARMED` raise, and so does anything outside the table; `FLARE` and `SKIDOO` are taken, being held the way a weapon is. Compare against `trx.catalog.weapons`.
+
+  Returns: boolean.
+
+- [lua]`trx.lara.weapons.object(weapon)`  
+  The pickup the weapon is, for handing it to `trx.lara.inventory.add`.
+
+  Parameters:
+  - **`weapon`** (integer). Which weapon. `UNKNOWN` and `UNARMED` raise, and so does anything outside the table; `FLARE` and `SKIDOO` are taken, being held the way a weapon is. Compare against `trx.catalog.weapons`.
+
+  Returns: integer. The object id, or `nil` if this game has no such weapon. Compare against `trx.catalog.objects`.
+
+- [lua]`trx.lara.weapons.ammo(weapon)`  
+  How many rounds Lara has for the weapon. The pistols never run out and read 0.
+
+  Parameters:
+  - **`weapon`** (integer). Which weapon. `UNKNOWN` and `UNARMED` raise, and so does anything outside the table; `FLARE` and `SKIDOO` are taken, being held the way a weapon is. Compare against `trx.catalog.weapons`.
+
+  Returns: integer.
+
+- [lua]`trx.lara.weapons.set_ammo(weapon, count)`  
+  Sets how many rounds she has for it.
+
+  Parameters:
+  - **`weapon`** (integer). Which weapon. `UNKNOWN` and `UNARMED` raise, and so does anything outside the table; `FLARE` and `SKIDOO` are taken, being held the way a weapon is. Compare against `trx.catalog.weapons`.
+  - **`count`** (integer). Rounds. Below 0 raises.
+
+  Example:
+  ```lua
+  trx.lara.weapons.set_ammo(trx.catalog.weapons.UZIS, 2000)
+  ```

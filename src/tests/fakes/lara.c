@@ -22,6 +22,13 @@ static LARA_INFO m_Lara;
 static bool m_HolstersVisible;
 static bool m_HasPistols;
 static LARA_SKIN_TYPE m_Skin;
+static AMMO_INFO m_Ammo[NUM_WEAPONS];
+
+// Which pickups share a backpack entry with another, as the scion's states do.
+static struct {
+    OBJECT_ID variant;
+    OBJECT_ID base;
+} m_InvShared[FAKE_INV_SHARED];
 
 // The weapon table the bridge walks to decide whether Lara has a pistol at all.
 WEAPON_INFO g_Weapons[NUM_WEAPONS] = {
@@ -46,14 +53,137 @@ int16_t Item_GetRelativeObjAnim(const ITEM *const item, const OBJECT_ID obj_id)
     return -1;
 }
 
-OBJECT_ID Gun_GetGunObject(const LARA_GUN_TYPE gun_type)
+// The backpack, as a count per object. The engine maps a pickup to the icon it
+// goes into before it counts; the fake takes whichever id it is given, so a
+// test has to name one of them consistently.
+static int32_t m_InvCounts[FAKE_INV_SLOTS];
+static OBJECT_ID m_InvObjects[FAKE_INV_SLOTS];
+static bool m_CanAdd = true;
+
+// The engine holds one backpack entry per inventory icon, and several pickups
+// can share one - the scion in each of its states, a waterskin at each fill
+// level. The fake keeps that split, so a test can tell a command that works in
+// the wrong id space from one that does not.
+OBJECT_ID Inv_GetItemOption(const OBJECT_ID object_id)
 {
-    return 0;
+    for (int32_t i = 0; i < FAKE_INV_SHARED; i++) {
+        if (m_InvShared[i].variant == object_id) {
+            return m_InvShared[i].base;
+        }
+    }
+    return object_id;
 }
 
-bool Inv_RequestItem(const OBJECT_ID obj_id)
+static int32_t *M_InvSlot(const OBJECT_ID raw_object_id)
 {
-    return m_HasPistols;
+    const OBJECT_ID object_id = Inv_GetItemOption(raw_object_id);
+    for (int32_t i = 0; i < FAKE_INV_SLOTS; i++) {
+        if (m_InvObjects[i] == object_id) {
+            return &m_InvCounts[i];
+        }
+        if (m_InvCounts[i] == 0 && m_InvObjects[i] == NO_OBJECT) {
+            m_InvObjects[i] = object_id;
+            return &m_InvCounts[i];
+        }
+    }
+    return nullptr;
+}
+
+// The same pairing gun/common.c makes, which is what keeps a bridge that hands
+// an object id on reachable from a test.
+// clang-format off
+OBJECT_ID FakeLara_GunObject(const LARA_GUN_TYPE gun_type)
+{
+    switch (gun_type) {
+    case LGT_PISTOLS:      return O_PISTOL_ITEM;
+    case LGT_MAGNUMS:      return O_MAGNUM_ITEM;
+    case LGT_AUTOS:        return O_AUTOS_ITEM;
+    case LGT_DESERT_EAGLE: return O_DESERT_EAGLE_ITEM;
+    case LGT_UZIS:         return O_UZI_ITEM;
+    case LGT_SHOTGUN:      return O_SHOTGUN_ITEM;
+    case LGT_HARPOON:      return O_HARPOON_ITEM;
+    case LGT_M16:          return O_M16_ITEM;
+    case LGT_MP5:          return O_MP5_ITEM;
+    case LGT_GRENADE:      return O_GRENADE_GUN_ITEM;
+    case LGT_ROCKET:       return O_ROCKET_GUN_ITEM;
+    case LGT_CROSSBOW:     return O_CROSSBOW_ITEM;
+    case LGT_REVOLVER:     return O_REVOLVER_ITEM;
+    default:               return NO_OBJECT;
+    }
+}
+
+OBJECT_ID FakeLara_AmmoObject(const LARA_GUN_TYPE gun_type)
+{
+    switch (gun_type) {
+    case LGT_PISTOLS:      return O_PISTOL_AMMO_ITEM;
+    case LGT_MAGNUMS:      return O_MAGNUM_AMMO_ITEM;
+    case LGT_AUTOS:        return O_AUTOS_AMMO_ITEM;
+    case LGT_DESERT_EAGLE: return O_DESERT_EAGLE_AMMO_ITEM;
+    case LGT_UZIS:         return O_UZI_AMMO_ITEM;
+    case LGT_SHOTGUN:      return O_SHOTGUN_AMMO_ITEM;
+    case LGT_HARPOON:      return O_HARPOON_AMMO_ITEM;
+    case LGT_M16:          return O_M16_AMMO_ITEM;
+    case LGT_MP5:          return O_MP5_AMMO_ITEM;
+    case LGT_GRENADE:      return O_GRENADE_AMMO_ITEM;
+    case LGT_ROCKET:       return O_ROCKET_AMMO_ITEM;
+    case LGT_CROSSBOW:     return O_CROSSBOW_AMMO_1_ITEM;
+    case LGT_REVOLVER:     return O_REVOLVER_AMMO_ITEM;
+    default:               return NO_OBJECT;
+    }
+}
+// clang-format on
+
+OBJECT_ID Gun_GetGunObject(const LARA_GUN_TYPE gun_type)
+{
+    return FakeLara_GunObject(gun_type);
+}
+
+OBJECT_ID Gun_GetAmmoObject(const LARA_GUN_TYPE gun_type)
+{
+    return FakeLara_AmmoObject(gun_type);
+}
+
+AMMO_INFO *Gun_GetAmmoInfo(const LARA_GUN_TYPE gun_type)
+{
+    return gun_type == LGT_UNARMED ? nullptr : &m_Ammo[gun_type];
+}
+
+bool Inv_CanAddItem(const OBJECT_ID object_id)
+{
+    return m_CanAdd;
+}
+
+bool Inv_AddItem(const OBJECT_ID object_id)
+{
+    FAKE_RECORD("inv_add", FV(object_id));
+    int32_t *const slot = M_InvSlot(object_id);
+    if (!m_CanAdd || slot == nullptr) {
+        return false;
+    }
+    (*slot)++;
+    return true;
+}
+
+bool Inv_RemoveItem(const OBJECT_ID object_id)
+{
+    FAKE_RECORD("inv_remove", FV(object_id));
+    int32_t *const slot = M_InvSlot(object_id);
+    if (slot == nullptr || *slot == 0) {
+        return false;
+    }
+    (*slot)--;
+    return true;
+}
+
+int32_t Inv_RequestItem(const OBJECT_ID object_id)
+{
+    // Lara's pistols are not in the backpack the fake models; the surface asks
+    // for them by way of has_pistol_weapon, which is what m_HasPistols answers.
+    if (object_id == FakeLara_GunObject(LGT_PISTOLS)) {
+        return m_HasPistols ? 1 : 0;
+    }
+    const int32_t *const slot = M_InvSlot(object_id);
+    return slot == nullptr ? 0 : *slot;
 }
 
 LARA_SKIN_TYPE Lara_Skin_GetType(void)
@@ -124,6 +254,15 @@ static void M_Reset(void)
     m_HolstersVisible = true;
     m_HasPistols = true;
     m_Skin = 0;
+    m_CanAdd = true;
+    for (int32_t i = 0; i < FAKE_INV_SHARED; i++) {
+        m_InvShared[i] = (typeof(m_InvShared[0])) { NO_OBJECT, NO_OBJECT };
+    }
+    memset(m_Ammo, 0, sizeof(m_Ammo));
+    memset(m_InvCounts, 0, sizeof(m_InvCounts));
+    for (int32_t i = 0; i < FAKE_INV_SLOTS; i++) {
+        m_InvObjects[i] = NO_OBJECT;
+    }
 }
 
 FAKE_ON_RESET(M_Reset)
@@ -178,9 +317,10 @@ bool Lara_Cheat_Teleport(const XYZ_32 pos, const int16_t room_num)
     return true;
 }
 
-// The room count the teleport argument check measures a room against. The same
-// count the room fake has, so the two agree about how big a level is.
-int32_t Room_GetCount(void)
+// The room count a teleport measures a room against, for a test that stands
+// Lara up without the rooms she stands in. fakes/rooms.c owns the real one, so
+// this is weak: linking both leaves the room fake's answer.
+__attribute__((weak)) int32_t Room_GetCount(void)
 {
     return FAKE_ROOM_COUNT;
 }
@@ -195,4 +335,25 @@ bool Lara_Cheat_ExitFlyMode(void)
 {
     m_Lara.water_status = LWS_ABOVE_WATER;
     return true;
+}
+
+void FakeLara_SetCanAdd(const bool can_add)
+{
+    m_CanAdd = can_add;
+}
+
+void FakeLara_SetWeaponAvailable(
+    const LARA_GUN_TYPE gun_type, const bool available)
+{
+    g_Weapons[gun_type].is_available = available;
+}
+
+void FakeLara_ShareInvEntry(const OBJECT_ID variant, const OBJECT_ID base)
+{
+    for (int32_t i = 0; i < FAKE_INV_SHARED; i++) {
+        if (m_InvShared[i].variant == NO_OBJECT) {
+            m_InvShared[i] = (typeof(m_InvShared[0])) { variant, base };
+            return;
+        }
+    }
 }

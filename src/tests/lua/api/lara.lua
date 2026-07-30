@@ -173,4 +173,87 @@ test("dry clears the wetness that is_wet reads", function()
   assert(fake.calls().dry.count == 1)
 end)
 
+-- The backpack. The fake counts what it is given without mapping a pickup to
+-- its icon, so these name one id throughout.
+local KEY = 42
+local UZIS = trx.catalog.weapons.UZIS
+
+test("add puts things in and count reads them back", function()
+  assert(trx.lara.inventory.count(KEY) == 0, "she starts with nothing")
+  assert(not trx.lara.inventory.has(KEY))
+
+  assert(trx.lara.inventory.add(KEY) == 1, "one went in")
+  assert(trx.lara.inventory.add(KEY, 3) == 3)
+  assert(trx.lara.inventory.count(KEY) == 4)
+  assert(trx.lara.inventory.has(KEY))
+end)
+
+test("remove takes them back out and stops when she runs out", function()
+  trx.lara.inventory.add(KEY, 2)
+
+  assert(trx.lara.inventory.remove(KEY) == 1)
+  assert(trx.lara.inventory.count(KEY) == 1)
+  assert(trx.lara.inventory.remove(KEY, 5) == 1, "only what she had came out")
+  assert(trx.lara.inventory.count(KEY) == 0)
+  assert(trx.lara.inventory.remove(KEY) == 0, "nothing left to take")
+end)
+
+test("a count below one is refused, and neither adds nor removes", function()
+  for _, count in ipairs({ 0, -1 }) do
+    raises(function()
+      trx.lara.inventory.add(KEY, count)
+    end)
+    raises(function()
+      trx.lara.inventory.remove(KEY, count)
+    end)
+  end
+  assert(trx.lara.inventory.count(KEY) == 0)
+end)
+
+-- Inv_AddItem reaches the object table with whatever it is handed, so the
+-- bridge turns an id the engine does not know into a raise of its own.
+test("an object the engine does not know is refused", function()
+  for _, name in ipairs({ "add", "remove", "count", "entry_of", "can_add" }) do
+    raises(function()
+      trx.lara.inventory[name](999999)
+    end)
+  end
+end)
+
+test("a level that does not carry the icon takes nothing", function()
+  fake.set_can_add(false)
+
+  assert(not trx.lara.inventory.can_add(KEY))
+  assert(trx.lara.inventory.add(KEY, 3) == 0, "the add did nothing")
+  assert(trx.lara.inventory.count(KEY) == 0)
+
+  fake.set_can_add(true)
+  assert(trx.lara.inventory.can_add(KEY))
+end)
+
+test("a weapon knows its pickup and its ammo", function()
+  assert(trx.lara.weapons.object(UZIS) ~= nil)
+
+  assert(trx.lara.weapons.ammo(UZIS) == 0)
+  trx.lara.weapons.set_ammo(UZIS, 2000)
+  assert(trx.lara.weapons.ammo(UZIS) == 2000)
+end)
+
+test("the level says which weapons it allows", function()
+  assert(not trx.lara.weapons.is_available(UZIS), "off unless the level says")
+  fake.set_weapon_available(UZIS, true)
+  assert(trx.lara.weapons.is_available(UZIS))
+end)
+
+test("anything that is not a weapon is refused", function()
+  for _, value in ipairs({ 0, -1, 999 }) do
+    raises(function()
+      trx.lara.weapons.ammo(value)
+    end)
+  end
+  raises(function()
+    trx.lara.weapons.set_ammo(UZIS, -1)
+  end)
+end)
+
 return h.report()

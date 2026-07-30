@@ -226,13 +226,22 @@ void Inv_RemoveAllItems(void)
     Inv_ClearSelection();
 }
 
+// What Inv_AddItem needs before it can take anything: the level has to carry
+// the inventory model, which is not the same as carrying the pickup. A level
+// with no shotgun lying in it still draws one in the ring.
+bool Inv_CanAddItem(const OBJECT_ID object_id)
+{
+    const OBJECT_ID inv_object_id = Inv_GetItemOption(object_id);
+    const OBJECT *const object =
+        Object_Get(inv_object_id == NO_OBJECT ? object_id : inv_object_id);
+    return object->loaded;
+}
+
 bool Inv_AddItem(const OBJECT_ID object_id)
 {
     const OBJECT_ID inv_object_id = Inv_GetItemOption(object_id);
     const OBJECT_ID pickup_object_id = Inv_GetItemPickup(object_id);
-    const OBJECT *const object =
-        Object_Get(inv_object_id == NO_OBJECT ? object_id : inv_object_id);
-    if (!object->loaded) {
+    if (!Inv_CanAddItem(object_id)) {
         return false;
     }
 
