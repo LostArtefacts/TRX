@@ -9,21 +9,21 @@ local test, raises = h.test, h.raises
 test("a verb with no track means the assault course", function()
   trx.assault.start()
   local calls = fake.calls()
-  assert(calls.start == 1, "start did not reach the track manager")
+  assert(calls.start.count == 1, "start did not reach the track manager")
   assert(
-    calls.last_track == trx.assault.Track.COURSE,
+    calls.start.track == trx.assault.Track.COURSE,
     "the default track must be the course"
   )
 end)
 
 test("a verb takes the track it is given", function()
   trx.assault.start(trx.assault.Track.QUAD)
-  assert(fake.calls().last_track == trx.assault.Track.QUAD)
+  assert(fake.calls().start.track == trx.assault.Track.QUAD)
 
   trx.assault.stop(trx.assault.Track.COURSE)
   local calls = fake.calls()
-  assert(calls.stop == 1)
-  assert(calls.last_track == trx.assault.Track.COURSE)
+  assert(calls.stop.count == 1)
+  assert(calls.stop.track == trx.assault.Track.COURSE)
 end)
 
 test("finish is not stop", function()
@@ -31,13 +31,13 @@ test("finish is not stop", function()
   -- could reach only the second one.
   trx.assault.finish()
   local calls = fake.calls()
-  assert(calls.finish == 1, "finish did not reach the track manager")
-  assert(calls.stop == 0, "finish must not be a stop")
+  assert(calls.finish.count == 1, "finish did not reach the track manager")
+  assert(calls.stop.count == 0, "finish must not be a stop")
 end)
 
 test("reset clears the timer", function()
   trx.assault.reset()
-  assert(fake.calls().reset == 1)
+  assert(fake.calls().reset.count == 1)
 end)
 
 test("the timers do not exist outside a gym level", function()
@@ -48,7 +48,7 @@ test("the timers do not exist outside a gym level", function()
     end)
   end
   assert(
-    fake.calls().start == 0,
+    fake.calls().start.count == 0,
     "a verb outside the gym must not reach the engine"
   )
 end)
@@ -122,7 +122,7 @@ test(
 
 test("a record is written through to the player's profile", function()
   trx.assault.stats.add_record(30.0)
-  assert(fake.calls().config_writes == 1, "the record was not persisted")
+  assert(fake.calls().config_write.count == 1, "the record was not persisted")
 end)
 
 test("removing a record closes the gap behind it", function()

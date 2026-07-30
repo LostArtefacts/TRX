@@ -3,6 +3,7 @@
 // The shell scans the mods once and hands out const pointers into a fixed list;
 // the fake below is that list, plus the startup mod the args carry.
 
+#include <harness/fake_calls.h>
 #include <harness/lua_surface.h>
 
 #include <trx/game/game_flow.h>
@@ -81,24 +82,18 @@ void GF_OverrideCommand(const GF_COMMAND command)
 
 static int M_FakeReset(lua_State *const L)
 {
+    FakeCalls_Reset();
     m_RequestedMod = nullptr;
     return 0;
-}
-
-static int M_FakeCalls(lua_State *const L)
-{
-    lua_newtable(L);
-    return 1;
 }
 
 int main(void)
 {
     const LUA_SURFACE_TEST test = {
+        .fake_reset = M_FakeReset,
         .module = "mod",
         .tests = "api/mod",
         .seal = true,
-        .fake_reset = M_FakeReset,
-        .fake_calls = M_FakeCalls,
     };
     return LuaSurface_Run(&test);
 }

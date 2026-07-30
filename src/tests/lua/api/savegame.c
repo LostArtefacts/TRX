@@ -4,6 +4,7 @@
 // The fake below stands in for the save store: a normal pool of three slots
 // with the first one taken, and two quick saves on disk.
 
+#include <harness/fake_calls.h>
 #include <harness/lua_surface.h>
 
 #include <trx/game/game_flow.h>
@@ -67,8 +68,10 @@ void GF_OverrideCommand(const GF_COMMAND command)
     m_LoadedParam = command.param;
 }
 
+// The slot the fake ended up holding is state, not a call, so it is read here.
 static int M_FakeReset(lua_State *const L)
 {
+    FakeCalls_Reset();
     m_LoadedParam = -1;
     m_SavedSlot = (SAVEGAME_SLOT_REF) { .index = -1 };
     return 0;
@@ -76,7 +79,7 @@ static int M_FakeReset(lua_State *const L)
 
 static int M_FakeCalls(lua_State *const L)
 {
-    lua_newtable(L);
+    FakeCalls_Push(L);
     lua_pushinteger(L, m_LoadedParam);
     lua_setfield(L, -2, "loaded_param");
     lua_pushinteger(L, m_SavedSlot.index);
@@ -89,10 +92,10 @@ static int M_FakeCalls(lua_State *const L)
 int main(void)
 {
     const LUA_SURFACE_TEST test = {
+        .fake_reset = M_FakeReset,
         .module = "savegame",
         .tests = "api/savegame",
         .seal = true,
-        .fake_reset = M_FakeReset,
         .fake_calls = M_FakeCalls,
     };
     return LuaSurface_Run(&test);

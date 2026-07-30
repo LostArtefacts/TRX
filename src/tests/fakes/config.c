@@ -5,14 +5,14 @@
 
 #include <fakes/config.h>
 
+#include <harness/fake_calls.h>
+
 #include <trx/config/override.h>
 #include <trx/core/enum_map.h>
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
-FAKE_CONFIG_CALLS g_FakeConfigCalls;
 
 static bool m_EnableMusic;
 static int32_t m_Fov;
@@ -96,7 +96,7 @@ bool Config_IsOptionEnforced(const void *const target)
 
 bool Config_Update(void)
 {
-    g_FakeConfigCalls.config_writes++;
+    FAKE_RECORD("config_write");
     return true;
 }
 
@@ -219,11 +219,10 @@ bool Config_RestoreOptionDefault(const void *const target)
     return Config_RestoreOptionDefaultForce(target);
 }
 
-void FakeConfig_Reset(void)
+static void M_Reset(void)
 {
     M_DefineEnums();
     ConfigOverride_Clear();
-    g_FakeConfigCalls = (FAKE_CONFIG_CALLS) {};
     m_Enforced = false;
     m_EnableMusic = true;
     m_Fov = 65;
@@ -233,6 +232,8 @@ void FakeConfig_Reset(void)
     m_WaterColor = strdup("ff0000");
     m_ShadowType = 0;
 }
+
+FAKE_ON_RESET(M_Reset)
 
 void FakeConfig_SetEnforced(const bool enforced)
 {

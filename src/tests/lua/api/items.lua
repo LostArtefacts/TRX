@@ -144,9 +144,12 @@ end)
 -- AI it stands there and ignores Lara, which is not what activate() promises.
 test("activating a creature enables its AI, by force", function()
   trx.items[0]:activate()
-  assert(fake.calls().enable_baddie_ai == 1, "a creature needs its AI enabled")
   assert(
-    fake.calls().enable_baddie_ai_forced == true,
+    fake.calls().enable_baddie_ai.count == 1,
+    "a creature needs its AI enabled"
+  )
+  assert(
+    fake.calls().enable_baddie_ai.always == true,
     "a named activation takes a slot by force"
   )
 end)
@@ -155,7 +158,10 @@ test("activating an inert object does not touch AI", function()
   local vase = trx.items[1]
   vase:activate()
   assert(vase.is_simulated == true)
-  assert(fake.calls().enable_baddie_ai == 0, "a vase has no AI to enable")
+  assert(
+    fake.calls().enable_baddie_ai.count == 0,
+    "a vase has no AI to enable"
+  )
 end)
 
 test("deactivate stops the item and takes a creature's AI away", function()
@@ -168,7 +174,7 @@ test("deactivate stops the item and takes a creature's AI away", function()
   )
   assert(not wolf.is_finished, "it goes back to inactive, not finished")
   assert(
-    fake.calls().disable_baddie_ai == 1,
+    fake.calls().disable_baddie_ai.count == 1,
     "the creature's AI was left running"
   )
 end)
@@ -506,7 +512,7 @@ test("a handle to a destroyed item goes stale", function()
 
   it:destroy()
   assert(not it:is_valid(), "the handle should be stale after destroy()")
-  assert(fake.calls().destroy == 1)
+  assert(fake.calls().destroy.count == 1)
 
   -- Reading a stale handle raises rather than addressing whatever took over.
   raises(function()
@@ -572,7 +578,10 @@ test("spawn creates an item and validates its arguments", function()
   )
   assert(live.is_simulated == true, "the activate option was ignored")
   assert(live.is_in_play == true)
-  assert(fake.calls().enable_baddie_ai == 1, "a creature needs its AI enabled")
+  assert(
+    fake.calls().enable_baddie_ai.count == 1,
+    "a creature needs its AI enabled"
+  )
 end)
 
 test("a spawn that raises does not leave an item behind", function()
@@ -603,22 +612,28 @@ end)
 
 test("die runs the object's death handling; destroy does not", function()
   trx.items[0]:die()
-  assert(fake.calls().creature_die == 1, "die() should reach Creature_Die")
   assert(
-    not fake.calls().creature_die_explode,
+    fake.calls().creature_die.count == 1,
+    "die() should reach Creature_Die"
+  )
+  assert(
+    not fake.calls().creature_die.explode,
     "die() does not burst by default"
   )
 
   fake.reset()
   trx.items[0]:die(true)
   assert(
-    fake.calls().creature_die_explode,
+    fake.calls().creature_die.explode,
     "die(true) should burst the meshes"
   )
 
   fake.reset()
   trx.items[0]:destroy()
-  assert(fake.calls().creature_die == 0, "destroy() just removes the item")
+  assert(
+    fake.calls().creature_die.count == 0,
+    "destroy() just removes the item"
+  )
 end)
 
 test("take_damage takes the item's hit points", function()
@@ -627,9 +642,12 @@ test("take_damage takes the item's hit points", function()
   local before = it.hit_points
 
   it:take_damage(5)
-  assert(fake.calls().take_damage == 1, "take_damage should reach the engine")
   assert(
-    fake.calls().take_damage_amount == 5,
+    fake.calls().take_damage.count == 1,
+    "take_damage should reach the engine"
+  )
+  assert(
+    fake.calls().take_damage.damage == 5,
     "the damage should pass through"
   )
   assert(it.hit_points == before - 5, "the hit points should come down")
@@ -641,12 +659,15 @@ end)
 test("shatter bursts the meshes on their own", function()
   fake.reset()
   trx.items[0]:shatter()
-  assert(fake.calls().shatter == 1, "shatter() should reach Item_Shatter")
-  assert(fake.calls().shatter_damage == 0, "no splash damage by default")
-  assert(fake.calls().creature_die == 0, "shatter() is not a death")
+  assert(
+    fake.calls().shatter.count == 1,
+    "shatter() should reach Item_Shatter"
+  )
+  assert(fake.calls().shatter.damage == 0, "no splash damage by default")
+  assert(fake.calls().creature_die.count == 0, "shatter() is not a death")
 
   trx.items[0]:shatter(5)
-  assert(fake.calls().shatter_damage == 5, "the damage should pass through")
+  assert(fake.calls().shatter.damage == 5, "the damage should pass through")
 end)
 
 test("is_one_shot reads and sets the trigger flag", function()

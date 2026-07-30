@@ -6,6 +6,7 @@
 // floor_data.c and the animation-command paths fire through. That is the point:
 // it pins the declared callback arguments against what C actually pushes.
 
+#include <harness/fake_calls.h>
 #include <harness/lua_surface.h>
 
 #include <trx/game/items/actions.h>
@@ -30,6 +31,17 @@ void LUA_SetScriptContext(const LUA_CONTEXT context)
 
 // fake.fire(name, ...) - mirrors the engine's own fire sites, argument for
 // argument.
+// Drops every listener, then stands the module back up: the shutdown clears
+// m_L, and the next fire would be a no-op without it.
+static int M_FakeReset(lua_State *const L)
+{
+    FakeCalls_Reset();
+    LUA_Registry_ShutdownAll();
+    LUA_Registry_CreateAll(L);
+    m_Context = LUA_CONTEXT_GLOBAL;
+    return 0;
+}
+
 static int M_FakeFire(lua_State *const L)
 {
     const char *const name = luaL_checkstring(L, 1);
@@ -87,22 +99,6 @@ static int M_FakeEndLevel(lua_State *const L)
     return 0;
 }
 
-static int M_FakeReset(lua_State *const L)
-{
-    // Drops every listener, then stands the module back up: the shutdown clears
-    // m_L, and the next fire would be a no-op without it.
-    LUA_Registry_ShutdownAll();
-    LUA_Registry_CreateAll(L);
-    m_Context = LUA_CONTEXT_GLOBAL;
-    return 0;
-}
-
-static int M_FakeCalls(lua_State *const L)
-{
-    lua_newtable(L);
-    return 1;
-}
-
 static void M_PushFake(lua_State *const L)
 {
     lua_pushcfunction(L, M_FakeFire);
@@ -116,11 +112,10 @@ static void M_PushFake(lua_State *const L)
 int main(void)
 {
     const LUA_SURFACE_TEST test = {
+        .fake_reset = M_FakeReset,
         .module = "events",
         .tests = "api/events",
         .push_fake = M_PushFake,
-        .fake_reset = M_FakeReset,
-        .fake_calls = M_FakeCalls,
     };
     return LuaSurface_Run(&test);
 }

@@ -7,19 +7,6 @@
 #include <fakes/console.h>
 #include <harness/lua_surface.h>
 
-static int M_FakeReset(lua_State *const L)
-{
-    FakeConsole_Reset();
-    return 0;
-}
-
-static int M_FakeCalls(lua_State *const L)
-{
-    lua_newtable(L);
-    FakeConsole_PushCalls(L);
-    return 1;
-}
-
 int main(void)
 {
     const LUA_SURFACE_TEST test = {
@@ -27,8 +14,6 @@ int main(void)
         .deps = { "log", "strings", "locale", "argparse", nullptr },
         .tests = "api/console",
         .push_fake = FakeConsole_PushLua,
-        .fake_reset = M_FakeReset,
-        .fake_calls = M_FakeCalls,
     };
     return LuaSurface_Run(&test);
 }

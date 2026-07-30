@@ -70,9 +70,9 @@ test("shake sets the camera bounce", function()
 end)
 
 test("reset asks the engine to reset", function()
-  assert(fake.calls().reset == 0)
+  assert(fake.calls().reset.count == 0)
   trx.camera.reset()
-  assert(fake.calls().reset == 1, "reset did not reach the engine")
+  assert(fake.calls().reset.count == 1, "reset did not reach the engine")
 end)
 
 test("a flyby can be seen and cancelled", function()
@@ -82,7 +82,10 @@ test("a flyby can be seen and cancelled", function()
   assert(trx.camera.is_flyby_active == true, "the flyby should be seen")
 
   trx.camera.cancel_flyby()
-  assert(fake.calls().cancel_flyby == 1, "cancel did not reach the engine")
+  assert(
+    fake.calls().cancel_flyby.count == 1,
+    "cancel did not reach the engine"
+  )
   assert(trx.camera.is_flyby_active == false, "the flyby should be over")
 end)
 

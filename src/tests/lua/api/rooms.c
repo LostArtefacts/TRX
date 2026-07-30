@@ -17,13 +17,6 @@ LUA_CONTEXT LUA_GetScriptContext(void)
     return LUA_CONTEXT_GLOBAL;
 }
 
-static int M_FakeReset(lua_State *const L)
-{
-    FakeRooms_Reset();
-    FakeItems_Reset();
-    return 0;
-}
-
 // fake.fire_room_change(item_num, old_room, new_room) - mirrors the
 // Item_UpdateRoom fire site, argument for argument.
 static int M_L_FireRoomChange(lua_State *const L)
@@ -38,20 +31,6 @@ static int M_L_FireRoomChange(lua_State *const L)
     };
     LUA_FireEventEx(LUA_EVENT_ROOM_CHANGE, args, 3);
     return 0;
-}
-
-static int M_FakeCalls(lua_State *const L)
-{
-    lua_newtable(L);
-    lua_pushinteger(L, g_FakeRoomCalls.flip_map);
-    lua_setfield(L, -2, "flip_map");
-    lua_pushinteger(L, g_FakeRoomCalls.flip_effect);
-    lua_setfield(L, -2, "flip_effect");
-    lua_pushinteger(L, g_FakeRoomCalls.flip_timer);
-    lua_setfield(L, -2, "flip_timer");
-    lua_pushboolean(L, g_FakeRoomCalls.fix_tilts);
-    lua_setfield(L, -2, "fix_tilts");
-    return 1;
 }
 
 // fake.load_next_level() - the rooms are replaced, as they are at a level
@@ -79,8 +58,6 @@ int main(void)
         .tests = "api/rooms",
         .deps = { "query", "items", "events" },
         .push_fake = M_PushFake,
-        .fake_reset = M_FakeReset,
-        .fake_calls = M_FakeCalls,
     };
     return LuaSurface_Run(&test);
 }

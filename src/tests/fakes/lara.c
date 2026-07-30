@@ -5,6 +5,8 @@
 
 #include <fakes/lara.h>
 
+#include <harness/fake_calls.h>
+
 #include <fakes/rooms.h>
 
 #include <trx/game/const.h>
@@ -15,8 +17,6 @@
 
 #include <lauxlib.h>
 #include <string.h>
-
-FAKE_LARA_CALLS g_FakeLaraCalls;
 
 static LARA_INFO m_Lara;
 static bool m_HolstersVisible;
@@ -78,16 +78,13 @@ void Lara_Skin_SetHolstersVisible(const bool visible)
 
 void Lara_Skin_ClearEquipment(const LARA_MESH mesh)
 {
-    g_FakeLaraCalls.clear_equipment++;
-    g_FakeLaraCalls.last_mesh = mesh;
+    FAKE_RECORD("clear_equipment", FV(mesh));
 }
 
 void Lara_Skin_SetExtraEquipment(
     const LARA_MESH mesh, const LARA_SKIN_EXTRA_MESH extra_mesh)
 {
-    g_FakeLaraCalls.set_equipment++;
-    g_FakeLaraCalls.last_mesh = mesh;
-    g_FakeLaraCalls.last_extra_mesh = extra_mesh;
+    FAKE_RECORD("set_equipment", FV(mesh), FV(extra_mesh));
 }
 
 bool Lara_Skin_IsOutfitAvailable(const LARA_SKIN_TYPE skin_type)
@@ -111,7 +108,7 @@ LARA_SKIN_TYPE Lara_Skin_FindOutfitByName(const char *const name)
     return -1;
 }
 
-void FakeLara_Reset(void)
+static void M_Reset(void)
 {
     memset(&m_Lara, 0, sizeof(m_Lara));
 
@@ -124,36 +121,36 @@ void FakeLara_Reset(void)
     m_Lara.hit_direction = -1;
     // One damp mesh, so a test can watch is_wet flip when Lara is dried.
     m_Lara.wet[LM_HEAD] = 1;
-
-    g_FakeLaraCalls = (FAKE_LARA_CALLS) {};
     m_HolstersVisible = true;
     m_HasPistols = true;
     m_Skin = 0;
 }
 
+FAKE_ON_RESET(M_Reset)
+
 void Lara_Poison_Cure(void)
 {
-    g_FakeLaraCalls.cure_poison++;
+    FAKE_RECORD("cure_poison");
     m_Lara.poison.value = 0;
     m_Lara.poison.target = 0;
 }
 
 void Lara_CatchFire(void)
 {
-    g_FakeLaraCalls.catch_fire++;
+    FAKE_RECORD("catch_fire");
     m_Lara.burn = true;
 }
 
 void Lara_Extinguish(void)
 {
-    g_FakeLaraCalls.extinguish++;
+    FAKE_RECORD("extinguish");
     m_Lara.burn = false;
     m_Lara.electric = 0;
 }
 
 void Lara_Dry(void)
 {
-    g_FakeLaraCalls.dry++;
+    FAKE_RECORD("dry");
     for (LARA_MESH mesh = LM_FIRST; mesh < LM_NUMBER_OF; mesh++) {
         m_Lara.wet[mesh] = 0;
     }
@@ -173,8 +170,7 @@ bool Lara_IsWet(void)
 // the fake says a position has no floor to stand on.
 bool Lara_Cheat_Teleport(const XYZ_32 pos, const int16_t room_num)
 {
-    g_FakeLaraCalls.teleport++;
-    g_FakeLaraCalls.last_teleport_room = room_num;
+    FAKE_RECORD("teleport", FV(room_num));
     if (pos.x < 0) {
         return false;
     }
@@ -199,28 +195,4 @@ bool Lara_Cheat_ExitFlyMode(void)
 {
     m_Lara.water_status = LWS_ABOVE_WATER;
     return true;
-}
-
-void FakeLara_PushCalls(lua_State *const L)
-{
-    lua_pushinteger(L, g_FakeLaraCalls.set_equipment);
-    lua_setfield(L, -2, "set_equipment");
-    lua_pushinteger(L, g_FakeLaraCalls.clear_equipment);
-    lua_setfield(L, -2, "clear_equipment");
-    lua_pushinteger(L, g_FakeLaraCalls.last_mesh);
-    lua_setfield(L, -2, "last_mesh");
-    lua_pushinteger(L, g_FakeLaraCalls.last_extra_mesh);
-    lua_setfield(L, -2, "last_extra_mesh");
-    lua_pushinteger(L, g_FakeLaraCalls.cure_poison);
-    lua_setfield(L, -2, "cure_poison");
-    lua_pushinteger(L, g_FakeLaraCalls.extinguish);
-    lua_setfield(L, -2, "extinguish");
-    lua_pushinteger(L, g_FakeLaraCalls.catch_fire);
-    lua_setfield(L, -2, "catch_fire");
-    lua_pushinteger(L, g_FakeLaraCalls.dry);
-    lua_setfield(L, -2, "dry");
-    lua_pushinteger(L, g_FakeLaraCalls.teleport);
-    lua_setfield(L, -2, "teleport");
-    lua_pushinteger(L, g_FakeLaraCalls.last_teleport_room);
-    lua_setfield(L, -2, "last_teleport_room");
 }

@@ -26,20 +26,20 @@ end)
 test("add_ally names the object it was given", function()
   trx.creatures.add_ally(42)
   local calls = fake.calls()
-  assert(calls.add_ally == 1, "add_ally did not reach the engine")
-  assert(calls.last_ally_object_id == 42, "the wrong object was made an ally")
-  assert(calls.add_ally_target == 0, "add_ally must not target anything")
+  assert(calls.add_ally.count == 1, "add_ally did not reach the engine")
+  assert(calls.add_ally.obj_id == 42, "the wrong object was made an ally")
+  assert(calls.add_ally_target.count == 0, "add_ally must not target anything")
 end)
 
 test("add_ally_target names the object it was given", function()
   trx.creatures.add_ally_target(7)
   local calls = fake.calls()
   assert(
-    calls.add_ally_target == 1,
+    calls.add_ally_target.count == 1,
     "add_ally_target did not reach the engine"
   )
-  assert(calls.last_ally_target_object_id == 7)
-  assert(calls.add_ally == 0, "add_ally_target must not make an ally")
+  assert(calls.add_ally_target.obj_id == 7)
+  assert(calls.add_ally.count == 0, "add_ally_target must not make an ally")
 end)
 
 -- Creature_AddAlly indexes the object table with what it is given.
@@ -55,7 +55,7 @@ test("an object the game has no such id for is refused", function()
     trx.creatures.add_ally_target(4294967338)
   end)
   local calls = fake.calls()
-  assert(calls.add_ally == 0 and calls.add_ally_target == 0)
+  assert(calls.add_ally.count == 0 and calls.add_ally_target.count == 0)
 end)
 
 test("the raw bridge is not part of the surface", function()

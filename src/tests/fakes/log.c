@@ -5,31 +5,20 @@
 
 #include <fakes/log.h>
 
+#include <harness/fake_calls.h>
+
 #include <stdarg.h>
 #include <stdio.h>
-
-FAKE_LOG_CALLS g_FakeLogCalls;
 
 void Log_Message(
     const LOG_LEVEL level, const char *const file, const int32_t line,
     const char *const func, const char *const fmt, ...)
 {
-    g_FakeLogCalls.count++;
-    g_FakeLogCalls.last_level = level;
-    g_FakeLogCalls.last_line = line;
-    snprintf(
-        g_FakeLogCalls.last_func, sizeof(g_FakeLogCalls.last_func), "%s",
-        func != nullptr ? func : "?");
-
+    char message[256];
     va_list args;
     va_start(args, fmt);
-    vsnprintf(
-        g_FakeLogCalls.last_message, sizeof(g_FakeLogCalls.last_message), fmt,
-        args);
+    vsnprintf(message, sizeof(message), fmt, args);
     va_end(args);
-}
-
-void FakeLog_Reset(void)
-{
-    g_FakeLogCalls = (FAKE_LOG_CALLS) {};
+    const char *const source = func != nullptr ? func : "?";
+    FAKE_RECORD("log", FV(level), FV_STR(message), FV(line), FV_STR(source));
 }

@@ -6,17 +6,11 @@
 
 #include <fakes/camera.h>
 #include <fakes/rooms.h>
+#include <harness/fake_calls.h>
 #include <harness/lua_surface.h>
 
 #include <trx/game/camera/types.h>
 #include <trx/game/camera/vars.h>
-
-static int M_FakeReset(lua_State *const L)
-{
-    FakeCamera_Reset();
-    FakeRooms_Reset();
-    return 0;
-}
 
 static int M_FakeNoRoom(lua_State *const L)
 {
@@ -30,15 +24,13 @@ static int M_FakeStartFlyby(lua_State *const L)
     return 0;
 }
 
+// The bounce is camera state rather than something the camera was asked to do,
+// so it is read here rather than recorded.
 static int M_FakeCalls(lua_State *const L)
 {
-    lua_newtable(L);
-    lua_pushinteger(L, g_FakeCameraCalls.reset);
-    lua_setfield(L, -2, "reset");
+    FakeCalls_Push(L);
     lua_pushinteger(L, g_Camera.bounce);
     lua_setfield(L, -2, "bounce");
-    lua_pushinteger(L, g_FakeCameraCalls.cancel_flyby);
-    lua_setfield(L, -2, "cancel_flyby");
     return 1;
 }
 
@@ -61,7 +53,6 @@ int main(void)
         .deps = { "rooms", nullptr },
         .tests = "api/camera",
         .push_fake = M_PushFake,
-        .fake_reset = M_FakeReset,
         .fake_calls = M_FakeCalls,
     };
     return LuaSurface_Run(&test);

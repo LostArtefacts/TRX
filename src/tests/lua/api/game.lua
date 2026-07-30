@@ -116,9 +116,9 @@ test("play_level queues the level the list named", function()
   -- gym sits ahead of them. What reaches the game flow is the level's own num.
   trx.game.play_level(2)
   local calls = fake.calls()
-  assert(calls.play_level == 1, "play_level did not reach the game flow")
-  assert(calls.last_num == trx.game.levels[2].num)
-  assert(calls.last_num == 2)
+  assert(calls.play_level.count == 1, "play_level did not reach the game flow")
+  assert(calls.play_level.num == trx.game.levels[2].num)
+  assert(calls.play_level.num == 2)
 end)
 
 test("play_level rejects a level that is not there", function()
@@ -133,7 +133,7 @@ test("play_level rejects a level that is not there", function()
   raises(function()
     trx.game.play_level(4294967297)
   end)
-  assert(fake.calls().play_level == 0)
+  assert(fake.calls().play_level.count == 0)
 end)
 
 -- The gym has no ordinal, so play_level cannot name it; play_gym is the only
@@ -141,9 +141,12 @@ end)
 test("play_gym queues the gym", function()
   trx.game.play_gym()
   local calls = fake.calls()
-  assert(calls.play_gym == 1, "play_gym did not reach the game flow")
-  assert(calls.last_num == 0, "the gym's own num reaches the game flow")
-  assert(calls.play_level == 0, "the gym is not one of the numbered levels")
+  assert(calls.play_gym.count == 1, "play_gym did not reach the game flow")
+  assert(calls.play_gym.num == 0, "the gym's own num reaches the game flow")
+  assert(
+    calls.play_level.count == 0,
+    "the gym is not one of the numbered levels"
+  )
 end)
 
 test("play_gym raises when the game has no gym", function()
@@ -151,7 +154,7 @@ test("play_gym raises when the game has no gym", function()
   raises(function()
     trx.game.play_gym()
   end)
-  assert(fake.calls().play_gym == 0)
+  assert(fake.calls().play_gym.count == 0)
 end)
 
 test("is_loaded says whether a level is up", function()
@@ -187,7 +190,7 @@ end)
 
 test("end_level reaches the engine", function()
   trx.game.end_level()
-  assert(fake.calls().end_level == 1)
+  assert(fake.calls().end_level.count == 1)
 end)
 
 return h.report()

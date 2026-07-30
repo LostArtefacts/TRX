@@ -6,12 +6,6 @@
 
 #include <lauxlib.h>
 
-static int M_FakeReset(lua_State *const L)
-{
-    FakeAssault_Reset();
-    return 0;
-}
-
 static int M_FakeSetInGym(lua_State *const L)
 {
     FakeAssault_SetInGym(lua_toboolean(L, 1));
@@ -47,24 +41,6 @@ static int M_FakeSetActiveTrack(lua_State *const L)
     return 0;
 }
 
-static int M_FakeCalls(lua_State *const L)
-{
-    lua_newtable(L);
-    lua_pushinteger(L, g_FakeAssaultCalls.start);
-    lua_setfield(L, -2, "start");
-    lua_pushinteger(L, g_FakeAssaultCalls.stop);
-    lua_setfield(L, -2, "stop");
-    lua_pushinteger(L, g_FakeAssaultCalls.reset);
-    lua_setfield(L, -2, "reset");
-    lua_pushinteger(L, g_FakeAssaultCalls.finish);
-    lua_setfield(L, -2, "finish");
-    lua_pushinteger(L, g_FakeAssaultCalls.last_track);
-    lua_setfield(L, -2, "last_track");
-    lua_pushinteger(L, g_FakeAssaultCalls.config_writes);
-    lua_setfield(L, -2, "config_writes");
-    return 1;
-}
-
 static void M_PushFake(lua_State *const L)
 {
     lua_pushcfunction(L, M_FakeSetInGym);
@@ -85,8 +61,6 @@ int main(void)
         .module = "assault",
         .tests = "api/assault",
         .push_fake = M_PushFake,
-        .fake_reset = M_FakeReset,
-        .fake_calls = M_FakeCalls,
     };
     return LuaSurface_Run(&test);
 }

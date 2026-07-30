@@ -4,9 +4,10 @@
 
 #include <fakes/creatures.h>
 
+#include <harness/fake_calls.h>
+
 #include <trx/game/objects/ids.h>
 
-FAKE_CREATURE_CALLS g_FakeCreatureCalls;
 static bool m_AlliesHostile;
 
 bool Creature_AreAlliesHostile(void)
@@ -21,18 +22,17 @@ void Creature_SetAlliesHostile(const bool enable)
 
 void Creature_AddAlly(const OBJECT_ID obj_id)
 {
-    g_FakeCreatureCalls.add_ally++;
-    g_FakeCreatureCalls.last_ally_object_id = obj_id;
+    FAKE_RECORD("add_ally", FV(obj_id));
 }
 
 void Creature_AddAllyTargetingEnemy(const OBJECT_ID obj_id)
 {
-    g_FakeCreatureCalls.add_ally_target++;
-    g_FakeCreatureCalls.last_ally_target_object_id = obj_id;
+    FAKE_RECORD("add_ally_target", FV(obj_id));
 }
 
-void FakeCreatures_Reset(void)
+static void M_Reset(void)
 {
     m_AlliesHostile = false;
-    g_FakeCreatureCalls = (FAKE_CREATURE_CALLS) {};
 }
+
+FAKE_ON_RESET(M_Reset)

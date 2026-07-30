@@ -3,10 +3,10 @@
 
 #include <fakes/assault.h>
 
+#include <harness/fake_calls.h>
+
 #include <trx/config/types.h>
 #include <trx/config/vars.h>
-
-FAKE_ASSAULT_CALLS g_FakeAssaultCalls;
 
 static bool m_InGym;
 static bool m_HasStats[GYM_TRACK_NUMBER_OF];
@@ -21,7 +21,7 @@ bool Game_IsInGym(void)
 
 bool Config_Update(void)
 {
-    g_FakeAssaultCalls.config_writes++;
+    FAKE_RECORD("config_write");
     return true;
 }
 
@@ -61,32 +61,27 @@ bool Gym_TrackManager_IsTimerDisplay(const GYM_TRACK_TYPE track)
 
 void Gym_TrackManager_Start(const GYM_TRACK_TYPE track)
 {
-    g_FakeAssaultCalls.start++;
-    g_FakeAssaultCalls.last_track = track;
+    FAKE_RECORD("start", FV(track));
 }
 
 void Gym_TrackManager_Stop(const GYM_TRACK_TYPE track)
 {
-    g_FakeAssaultCalls.stop++;
-    g_FakeAssaultCalls.last_track = track;
+    FAKE_RECORD("stop", FV(track));
 }
 
 void Gym_TrackManager_Reset(const GYM_TRACK_TYPE track)
 {
-    g_FakeAssaultCalls.reset++;
-    g_FakeAssaultCalls.last_track = track;
+    FAKE_RECORD("reset", FV(track));
 }
 
 void Gym_TrackManager_Finish(const GYM_TRACK_TYPE track)
 {
-    g_FakeAssaultCalls.finish++;
-    g_FakeAssaultCalls.last_track = track;
+    FAKE_RECORD("finish", FV(track));
 }
 
-void FakeAssault_Reset(void)
+static void M_Reset(void)
 {
     g_Config = (CONFIG) {};
-    g_FakeAssaultCalls = (FAKE_ASSAULT_CALLS) {};
     m_InGym = true;
     m_ActiveTrack = GYM_TRACK_NONE;
     for (int32_t i = 0; i < GYM_TRACK_NUMBER_OF; i++) {
@@ -95,6 +90,8 @@ void FakeAssault_Reset(void)
         m_Visible[i] = false;
     }
 }
+
+FAKE_ON_RESET(M_Reset)
 
 void FakeAssault_SetHasStats(const GYM_TRACK_TYPE track, const bool has_stats)
 {
