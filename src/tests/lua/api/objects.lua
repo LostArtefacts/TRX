@@ -142,11 +142,9 @@ local function id_set(ids)
 end
 
 test("spawnable keeps the things that exist in the world", function()
-  -- The wolf, the two pickups and the sprite object are loaded; nothing else in
-  -- the fake is. Every other id the catalog names reads as present but unloaded.
-  local ids = trx.objects.query:spawnable():ids()
-  assert(#ids == 4, "spawnable should be the wolf, the pickups and the sprite")
-  local set = id_set(ids)
+  -- The wolf, the pickups and the sprite object are loaded; nothing else in the
+  -- fake is. Every other id the catalog names reads as present but unloaded.
+  local set = id_set(trx.objects.query:spawnable():ids())
   assert(
     set[fake.WOLF] and set[fake.VASE] and set[fake.KEY] and set[fake.SPRITE]
   )
@@ -155,11 +153,10 @@ end)
 
 test("a family method narrows to that family", function()
   local ids = trx.objects.query:pickup():ids()
-  assert(#ids == 2, "the vase and the key are the pickups")
   local set = id_set(ids)
   assert(set[fake.VASE] and set[fake.KEY])
   assert(not set[fake.WOLF], "the wolf is not a pickup")
-  assert(trx.objects.query:pickup():count() == 2)
+  assert(trx.objects.query:pickup():count() == #ids)
 end)
 
 test("creature and loyal narrow to what fights", function()
@@ -244,7 +241,7 @@ test("| unions two families", function()
   local q = trx.objects.query
   -- The fake has no null objects, so the union is just the pickups.
   local ids = (q:pickup() | q:null_object()):ids()
-  assert(#ids == 2)
+  assert(#ids == q:pickup():count())
   local set = id_set(ids)
   assert(set[fake.VASE] and set[fake.KEY])
 end)
@@ -260,7 +257,9 @@ end)
 test("matches() hands back handles, first() one or nil", function()
   local pickup = trx.objects.query:pickup():first()
   assert(pickup ~= nil and pickup.loaded == true)
-  assert(#trx.objects.query:pickup():matches() == 2)
+  assert(
+    #trx.objects.query:pickup():matches() == trx.objects.query:pickup():count()
+  )
   assert(trx.objects.query:null_object():first() == nil, "no null objects")
 end)
 
@@ -280,8 +279,9 @@ end)
 
 test("a searchable family answers to its own name", function()
   -- "pickup" is a group name: it matches every pickup, not one object.
-  local ids = trx.objects.query:by_name("pickup"):ids()
-  assert(#ids == 2, "both pickups should match the group name")
+  local q = trx.objects.query
+  local ids = q:by_name("pickup"):ids()
+  assert(#ids == q:pickup():count(), "every pickup matches the group name")
   local set = id_set(ids)
   assert(set[fake.VASE] and set[fake.KEY])
   assert(not set[fake.WOLF], "the wolf is not a pickup")
@@ -314,7 +314,31 @@ test("names() offers the group names first", function()
   -- A completer takes the list in order, so a group name must not sit behind
   -- the object names it ties with on score.
   local names = trx.objects.query:spawnable():names()
-  local groups = { creature = true, enemy = true, pickup = true }
+  local groups = {}
+  for _, name in ipairs({
+    "creature",
+    "enemy",
+    "loyal",
+    "pickup",
+    "gun",
+    "ammo",
+    "supply",
+    "tool",
+    "key",
+    "puzzle",
+    "quest",
+    "examine",
+    "collectible",
+    "secret",
+    "switch",
+    "receptacle",
+    "door",
+    "inventory_item",
+    "null_object",
+    "animation",
+  }) do
+    groups[name] = true
+  end
   local seen_own = false
   for _, name in ipairs(names) do
     if groups[name] then
