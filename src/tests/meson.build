@@ -8,6 +8,11 @@
 #
 # `meson test` needs only an exit code, so the harness is a header, not a
 # dependency.
+#
+# Each test is one entry in `unit_tests` at the bottom of this file, naming the
+# engine sources it needs and nothing more. A link error is the signal that a
+# leaf module stopped being one, so the closures are listed by hand rather than
+# taken from a library of everything.
 
 project(
   'TRX unit tests',
@@ -46,999 +51,648 @@ src_inc = include_directories('..')
 test_inc = include_directories('unit')
 test_stubs = files('unit/stubs.c')
 
-test_vector_exe = executable(
-  'test_vector',
-  files('unit/test_vector.c') + test_stubs
-    + files('../trx/core/vector.c', '../trx/core/memory.c'),
-  include_directories: [src_inc, test_inc],
-  build_by_default: false,
-)
-test('vector', test_vector_exe, suite: 'unit')
-
-test_math_func_exe = executable(
-  'test_math_func',
-  files('unit/test_math_func.c') + test_stubs
-    + files('../trx/core/math/func.c', '../trx/core/math/geom.c', '../trx/core/math/trig.c'),
-  include_directories: [src_inc, test_inc],
-  dependencies: [dep_mathlibrary],
-  build_by_default: false,
-)
-test('math_func', test_math_func_exe, suite: 'unit')
-
-test_cutseq_decoder_exe = executable(
-  'test_cutseq_decoder',
-  files('unit/test_cutseq_decoder.c') + test_stubs
-    + files('../trx/game/cutseq/decoder.c'),
-  include_directories: [src_inc, test_inc],
-  build_by_default: false,
-)
-test('cutseq_decoder', test_cutseq_decoder_exe, suite: 'unit')
-
-test_cutseq_pak_exe = executable(
-  'test_cutseq_pak',
-  files('unit/test_cutseq_pak.c') + test_stubs
-    + files('../trx/game/cutseq/pak.c', '../trx/core/memory.c'),
-  include_directories: [src_inc, test_inc],
-  dependencies: [dep_zlib],
-  build_by_default: false,
-)
-test('cutseq_pak', test_cutseq_pak_exe, suite: 'unit')
-
-test_hash_exe = executable(
-  'test_hash',
-  files('unit/test_hash.c') + test_stubs + files('../trx/core/hash.c'),
-  include_directories: [src_inc, test_inc],
-  build_by_default: false,
-)
-test('hash', test_hash_exe, suite: 'unit')
-
-test_bson_exe = executable(
-  'test_bson',
-  files('unit/test_bson.c') + test_stubs
-    + files(
-      '../trx/core/bson/parse.c',
-      '../trx/core/bson/write.c',
-      '../trx/core/json/base.c',
-      '../trx/core/memory.c',
-    ),
-  include_directories: [src_inc, test_inc],
-  build_by_default: false,
-)
-test('bson', test_bson_exe, suite: 'unit')
-
-test_handle_exe = executable(
-  'test_handle',
-  files('unit/test_handle.c') + test_stubs + files('../trx/core/handle.c'),
-  include_directories: [src_inc, test_inc],
-  build_by_default: false,
-)
-test('handle', test_handle_exe, suite: 'unit')
-
-test_item_actions_exe = executable(
-  'test_item_actions',
-  files('unit/test_item_actions.c') + test_stubs
-    + files('../trx/game/items/actions/common.c'),
-  include_directories: [src_inc, test_inc],
-  build_by_default: false,
-)
-test('item_actions', test_item_actions_exe, suite: 'unit')
-
-test_trigger_exe = executable(
-  'test_trigger',
-  files('unit/test_trigger.c') + test_stubs
-    + files('../trx/game/items/trigger.c', '../trx/version.c'),
-  include_directories: [src_inc, test_inc],
-  dependencies: [dep_mathlibrary],
-  build_by_default: false,
-)
-test('trigger', test_trigger_exe, suite: 'unit')
-
-test_console_complete_exe = executable(
-  'test_console_complete',
-  files('unit/test_console_complete.c') + test_stubs
-    + files(
-      '../trx/core/completion.c',
-      '../trx/game/console/completion.c',
-      '../trx/game/console/registry.c',
-      '../trx/core/memory.c',
-      '../trx/core/vector.c',
-    ),
-  include_directories: [src_inc, test_inc],
-  build_by_default: false,
-)
-test('console_complete', test_console_complete_exe, suite: 'unit')
-
-test_completion_exe = executable(
-  'test_completion',
-  files('unit/test_completion.c') + test_stubs
-    + files(
-      '../trx/core/completion.c',
-      '../trx/core/memory.c',
-      '../trx/core/vector.c',
-    ),
-  include_directories: [src_inc, test_inc],
-  build_by_default: false,
-)
-test('completion', test_completion_exe, suite: 'unit')
-
-test_field_exe = executable(
-  'test_field',
-  files('unit/test_field.c') + test_stubs
-    + files(
-      '../trx/game/lua/field.c',
-      '../trx/core/value.c',
-      '../trx/core/dynamic_enum.c',
-      '../trx/core/enum_map.c',
-      '../trx/core/memory.c',
-      '../trx/core/vector.c',
-    )
-    + files('unit/stubs_enum_map.c'),
-  include_directories: [src_inc, test_inc],
-  build_by_default: false,
-)
-test('field', test_field_exe, suite: 'unit')
-
-# The runtime override stack. The test answers the config layer for it, so no
-# option map, no settings file, no game.
-test_config_override_exe = executable(
-  'test_config_override',
-  files('unit/test_config_override.c') + test_stubs
-    + files(
-      '../trx/config/override.c',
-      '../trx/config/value.c',
-      '../trx/core/dynamic_enum.c',
-      '../trx/core/enum_map.c',
-      '../trx/core/memory.c',
-      '../trx/core/value.c',
-      '../trx/core/vector.c',
-    )
-    + files('unit/stubs_enum_map.c'),
-  include_directories: [src_inc, test_inc],
-  build_by_default: false,
-)
-test('config_override', test_config_override_exe, suite: 'unit')
-
-# The name<->value registry the Lua enum bridge reflects. Its two dependencies
-# outside core - the formatting helper and the localized game strings - are
-# stubbed: the real ones live in translation units that want PCRE2 and the game
-# string table, and neither is what the enum map is being tested for.
-enum_map_src = files(
-  '../trx/core/enum_map.c',
-  '../trx/core/memory.c',
-  '../trx/core/vector.c',
-) + files('unit/stubs_enum_map.c')
-
-test_enum_map_exe = executable(
-  'test_enum_map',
-  files('unit/test_enum_map.c') + test_stubs + enum_map_src,
-  include_directories: [src_inc, test_inc],
-  build_by_default: false,
-)
-test('enum_map', test_enum_map_exe, suite: 'unit')
-
-# The dynamic enum registry, keyed on an opaque token. Its only dependency
-# outside core is the localized game strings behind labels, which are stubbed.
-test_dynamic_enum_exe = executable(
-  'test_dynamic_enum',
-  files('unit/test_dynamic_enum.c') + test_stubs
-    + files(
-      '../trx/core/dynamic_enum.c',
-      '../trx/core/memory.c',
-      '../trx/core/vector.c',
-    )
-    + files('unit/stubs_enum_map.c'),
-  include_directories: [src_inc, test_inc],
-  build_by_default: false,
-)
-test('dynamic_enum', test_dynamic_enum_exe, suite: 'unit')
-
-# The primitive value taxonomy. It leans on the enum map and dynamic enum
-# registry; its formatting helper and the localized game strings behind enum
-# labels are stubbed, the same way the enum map test stands them up.
-test_value_exe = executable(
-  'test_value',
-  files('unit/test_value.c') + test_stubs
-    + files(
-      '../trx/core/value.c',
-      '../trx/core/dynamic_enum.c',
-      '../trx/core/enum_map.c',
-      '../trx/core/memory.c',
-      '../trx/core/vector.c',
-    )
-    + files('unit/stubs_enum_map.c'),
-  include_directories: [src_inc, test_inc],
-  build_by_default: false,
-)
-test('value', test_value_exe, suite: 'unit')
-
-test_lua_enum_exe = executable(
-  'test_lua_enum',
-  files('unit/test_lua_enum.c') + test_stubs + enum_map_src
-    + files(
-      '../trx/core/dynamic_enum.c',
-      '../trx/core/value.c',
-      '../trx/game/lua/capi/enum.c',
-      '../trx/game/lua/registry.c',
-      '../trx/game/lua/utils.c',
-    ),
-  include_directories: [src_inc, test_inc],
-  dependencies: [dep_lua],
-  build_by_default: false,
-)
-test('lua_enum', test_lua_enum_exe, suite: 'unit')
-
-# The sandbox depends on nothing but Lua, so the wall the engine stands up at
-# boot stands up here against a bare state - no modules, no engine.
-test_lua_sandbox_exe = executable(
-  'test_lua_sandbox',
-  files('unit/test_lua_sandbox.c') + test_stubs + files('../trx/game/lua/sandbox.c'),
-  include_directories: [src_inc, test_inc],
-  dependencies: [dep_lua],
-  build_by_default: false,
-)
-test('lua_sandbox', test_lua_sandbox_exe, suite: 'unit')
-
-# The guard reads nothing but Lua and the clock, and the test supplies the
-# clock itself, stepped by hand, so the budget runs out deterministically.
-test_lua_guard_exe = executable(
-  'test_lua_guard',
-  files('unit/test_lua_guard.c') + test_stubs + files('../trx/game/lua/guard.c'),
-  include_directories: [src_inc, test_inc],
-  dependencies: [dep_lua],
-  build_by_default: false,
-)
-test('lua_guard', test_lua_guard_exe, suite: 'unit')
+# The tests that read from the tree - the Lua declarations, the shipped config -
+# are two levels up from this project.
+repo_root = meson.current_source_dir() / '../..'
 
 # The public Lua surface, driven the way a level script drives it. Everything
 # below the assertions is real - the FIELD_DESC tables, the struct and enum
-# bridges, the trxc modules, and src/lua/api/*.lua read from the tree - and
-# only the engine underneath is faked. The modules are read from
-# disk rather than from the embedded copy, so the tests need to know where the
-# tree is.
-lua_surface_src = files(
-  '../trx/core/dynamic_enum.c',
-  '../trx/core/enum_map.c',
-  '../trx/core/handle.c',
-  '../trx/core/memory.c',
-  '../trx/core/value.c',
-  '../trx/core/vector.c',
-  '../trx/game/enum.c',
-  '../trx/game/lua/capi/api.c',
-  '../trx/game/lua/capi/enum.c',
-  '../trx/game/lua/capi/struct.c',
-  '../trx/game/lua/field.c',
-  '../trx/game/lua/registry.c',
-  '../trx/game/lua/sandbox.c',
-  '../trx/game/lua/utils.c',
-) + files('unit/lua_surface.c', 'unit/stubs_enum_map.c')
-
-lua_surface_args = ['-DREPO_ROOT="' + meson.current_source_dir() / '../..' + '"']
-
-test_lua_rooms_exe = executable(
-  'test_lua_rooms',
-  files('unit/test_lua_rooms.c', 'unit/fake_engine_rooms.c', 'unit/fake_engine_items.c')
-    + test_stubs
-    + lua_surface_src
-    + files(
-      '../trx/game/lua/capi/events.c',
-      '../trx/game/lua/capi/items.c',
-      '../trx/game/lua/capi/rooms.c',
-    ),
-  include_directories: [src_inc, test_inc],
-  dependencies: [dep_lua],
-  c_args: lua_surface_args,
-  build_by_default: false,
-)
-test('lua_rooms', test_lua_rooms_exe, suite: 'unit')
-
-test_lua_items_exe = executable(
-  'test_lua_items',
-  files(
-    'unit/test_lua_items.c',
-    'unit/fake_engine_items.c',
-    'unit/fake_engine_catalog.c',
-  ) + test_stubs
-    + lua_surface_src
-    + files(
-      '../trx/core/strings/case_funcs.c',
-      '../trx/core/strings/common.c',
-      '../trx/core/strings/fuzzy_match.c',
-      '../trx/game/lua/capi/events.c',
-      '../trx/game/lua/capi/items.c',
-      '../trx/game/lua/capi/objects.c',
-      '../trx/game/lua/capi/catalog.c',
-      '../trx/game/lua/capi/strings.c',
-    ),
-  include_directories: [src_inc, test_inc],
-  dependencies: [dep_lua, dep_pcre2],
-  c_args: lua_surface_args + ['-DPCRE2_CODE_UNIT_WIDTH=8'],
-  build_by_default: false,
-)
-test('lua_items', test_lua_items_exe, suite: 'unit')
-
-# The same surface, taken through the two boot steps the other suites stop short
-# of: the seal, and hardening the globals.
-test_lua_boot_exe = executable(
-  'test_lua_boot',
-  files('unit/test_lua_boot.c', 'unit/fake_engine_items.c') + test_stubs
-    + lua_surface_src
-    + files('../trx/game/lua/capi/items.c'),
-  include_directories: [src_inc, test_inc],
-  dependencies: [dep_lua],
-  c_args: lua_surface_args,
-  build_by_default: false,
-)
-test('lua_boot', test_lua_boot_exe, suite: 'unit')
-
-# No fake engine: the real trig tables are the thing under test.
-test_lua_math_exe = executable(
-  'test_lua_math',
-  files('unit/test_lua_math.c') + test_stubs
-    + lua_surface_src
-    + files('../trx/game/lua/capi/math.c', '../trx/core/math/trig.c'),
-  include_directories: [src_inc, test_inc],
-  dependencies: [dep_lua, dep_mathlibrary],
-  c_args: lua_surface_args,
-  build_by_default: false,
-)
-test('lua_math', test_lua_math_exe, suite: 'unit')
-
-test_lua_assault_exe = executable(
-  'test_lua_assault',
-  files('unit/test_lua_assault.c', 'unit/fake_engine_assault.c') + test_stubs
-    + lua_surface_src
-    + files('../trx/game/lua/capi/assault.c'),
-  include_directories: [src_inc, test_inc],
-  dependencies: [dep_lua],
-  c_args: lua_surface_args,
-  build_by_default: false,
-)
-test('lua_assault', test_lua_assault_exe, suite: 'unit')
-
-# rooms rides along: trx.camera.room hands back a trx.rooms.Room.
-test_lua_camera_exe = executable(
-  'test_lua_camera',
-  files(
-    'unit/test_lua_camera.c',
-    'unit/fake_engine_camera.c',
-    'unit/fake_engine_rooms.c',
-    # for Room_GetIndexFromPos, which rooms.c reaches for
-    'unit/fake_engine_items.c',
-  )
-    + test_stubs
-    + lua_surface_src
-    + files('../trx/game/lua/capi/rooms.c', '../trx/game/lua/capi/camera.c'),
-  include_directories: [src_inc, test_inc],
-  dependencies: [dep_lua],
-  c_args: lua_surface_args,
-  build_by_default: false,
-)
-test('lua_camera', test_lua_camera_exe, suite: 'unit')
-
-test_lua_music_exe = executable(
-  'test_lua_music',
-  files('unit/test_lua_music.c', 'unit/fake_engine_music.c') + test_stubs
-    + lua_surface_src
-    + files('../trx/game/lua/capi/music.c'),
-  include_directories: [src_inc, test_inc],
-  dependencies: [dep_lua],
-  c_args: lua_surface_args,
-  build_by_default: false,
-)
-test('lua_music', test_lua_music_exe, suite: 'unit')
-
-# The fuzzy matcher and the regex are the real ones out of trx/core/strings.
-test_lua_strings_exe = executable(
-  'test_lua_strings',
-  files('unit/test_lua_strings.c') + test_stubs
-    + lua_surface_src
-    + files(
-      '../trx/core/strings/common.c',
-      '../trx/core/strings/case_funcs.c',
-      '../trx/core/strings/fuzzy_match.c',
-      '../trx/game/lua/capi/strings.c',
-    ),
-  include_directories: [src_inc, test_inc],
-  dependencies: [dep_lua, dep_pcre2],
-  c_args: lua_surface_args + ['-DPCRE2_CODE_UNIT_WIDTH=8'],
-  build_by_default: false,
-)
-test('lua_strings', test_lua_strings_exe, suite: 'unit')
-
-# The parser is pure Lua, but it leans on the real fuzzy matcher out of
-# trx.strings, so the two are stood up together.
-test_lua_argparse_exe = executable(
-  'test_lua_argparse',
-  files('unit/test_lua_argparse.c', 'unit/fake_engine_locale.c') + test_stubs
-    + lua_surface_src
-    + files(
-      '../trx/core/strings/common.c',
-      '../trx/core/strings/case_funcs.c',
-      '../trx/core/strings/fuzzy_match.c',
-      '../trx/game/lua/capi/locale.c',
-      '../trx/game/lua/capi/strings.c',
-    ),
-  include_directories: [src_inc, test_inc],
-  dependencies: [dep_lua, dep_pcre2],
-  c_args: lua_surface_args + ['-DPCRE2_CODE_UNIT_WIDTH=8'],
-  build_by_default: false,
-)
-test('lua_argparse', test_lua_argparse_exe, suite: 'unit')
-
-test_lua_sound_exe = executable(
-  'test_lua_sound',
-  files('unit/test_lua_sound.c', 'unit/fake_engine_sound.c') + test_stubs
-    + lua_surface_src
-    + files('../trx/game/lua/capi/sound.c'),
-  include_directories: [src_inc, test_inc],
-  dependencies: [dep_lua],
-  c_args: lua_surface_args,
-  build_by_default: false,
-)
-test('lua_sound', test_lua_sound_exe, suite: 'unit')
-
-test_lua_locale_exe = executable(
-  'test_lua_locale',
-  files('unit/test_lua_locale.c', 'unit/fake_engine_locale.c') + test_stubs
-    + lua_surface_src
-    + files('../trx/game/lua/capi/locale.c'),
-  include_directories: [src_inc, test_inc],
-  dependencies: [dep_lua],
-  c_args: lua_surface_args,
-  build_by_default: false,
-)
-test('lua_locale', test_lua_locale_exe, suite: 'unit')
-
-test_lua_lua_exe = executable(
-  'test_lua_lua',
-  files('unit/test_lua_lua.c', 'unit/fake_engine_lua.c') + test_stubs
-    + lua_surface_src
-    + files('../trx/game/lua/capi/lua.c'),
-  include_directories: [src_inc, test_inc],
-  dependencies: [dep_lua],
-  c_args: lua_surface_args,
-  build_by_default: false,
-)
-test('lua_lua', test_lua_lua_exe, suite: 'unit')
-
-test_lua_weather_exe = executable(
-  'test_lua_weather',
-  files('unit/test_lua_weather.c') + test_stubs
-    + lua_surface_src
-    + files('../trx/game/lua/capi/weather.c'),
-  include_directories: [src_inc, test_inc],
-  dependencies: [dep_lua],
-  c_args: lua_surface_args,
-  build_by_default: false,
-)
-test('lua_weather', test_lua_weather_exe, suite: 'unit')
-
-test_lua_mod_exe = executable(
-  'test_lua_mod',
-  files('unit/test_lua_mod.c') + test_stubs
-    + lua_surface_src
-    + files('../trx/game/lua/capi/mod.c'),
-  include_directories: [src_inc, test_inc],
-  dependencies: [dep_lua],
-  c_args: lua_surface_args,
-  build_by_default: false,
-)
-test('lua_mod', test_lua_mod_exe, suite: 'unit')
-
-test_lua_savegame_exe = executable(
-  'test_lua_savegame',
-  files('unit/test_lua_savegame.c') + test_stubs
-    + lua_surface_src
-    + files('../trx/game/lua/capi/savegame.c'),
-  include_directories: [src_inc, test_inc],
-  dependencies: [dep_lua],
-  c_args: lua_surface_args,
-  build_by_default: false,
-)
-test('lua_savegame', test_lua_savegame_exe, suite: 'unit')
-
-# No test_stubs: fake_engine_log.c provides Log_Message itself, because which
-# line the log blames is the thing under test.
-test_lua_log_exe = executable(
-  'test_lua_log',
-  files('unit/test_lua_log.c', 'unit/fake_engine_log.c')
-    + lua_surface_src
-    + files('../trx/game/lua/capi/log.c'),
-  include_directories: [src_inc, test_inc],
-  dependencies: [dep_lua],
-  c_args: lua_surface_args,
-  build_by_default: false,
-)
-test('lua_log', test_lua_log_exe, suite: 'unit')
-
-test_lua_game_exe = executable(
-  'test_lua_game',
-  files('unit/test_lua_game.c', 'unit/fake_engine_game.c') + test_stubs
-    + lua_surface_src
-    + files(
-      '../trx/game/lua/capi/game.c',
-    ),
-  include_directories: [src_inc, test_inc],
-  dependencies: [dep_lua],
-  c_args: lua_surface_args,
-  build_by_default: false,
-)
-test('lua_game', test_lua_game_exe, suite: 'unit')
-
-test_lua_objects_exe = executable(
-  'test_lua_objects',
-  files('unit/test_lua_objects.c', 'unit/fake_engine_items.c', 'unit/fake_engine_catalog.c')
-    + test_stubs
-    + lua_surface_src
-    + files(
-      '../trx/core/strings/case_funcs.c',
-      '../trx/core/strings/common.c',
-      '../trx/core/strings/fuzzy_match.c',
-      '../trx/game/lua/capi/catalog.c',
-      '../trx/game/lua/capi/objects.c',
-      '../trx/game/lua/capi/strings.c',
-    ),
-  include_directories: [src_inc, test_inc],
-  dependencies: [dep_lua, dep_pcre2],
-  c_args: lua_surface_args + ['-DPCRE2_CODE_UNIT_WIDTH=8'],
-  build_by_default: false,
-)
-test('lua_objects', test_lua_objects_exe, suite: 'unit')
-
-test_lua_lara_exe = executable(
-  'test_lua_lara',
-  files('unit/test_lua_lara.c', 'unit/fake_engine_lara.c', 'unit/fake_engine_items.c')
-    + test_stubs
-    + lua_surface_src
-    + files(
-      '../trx/game/lua/capi/items.c',
-      '../trx/game/lua/capi/lara.c',
-    ),
-  include_directories: [src_inc, test_inc],
-  dependencies: [dep_lua],
-  c_args: lua_surface_args,
-  build_by_default: false,
-)
-test('lua_lara', test_lua_lara_exe, suite: 'unit')
-
-# The catalogs are real ENUM_MAP enums out of the real trx/game/enum.c. Only the
-# slot mapping, which a game loads from a CSV, is faked.
-test_lua_catalog_exe = executable(
-  'test_lua_catalog',
-  files('unit/test_lua_catalog.c', 'unit/fake_engine_catalog.c') + test_stubs
-    + lua_surface_src
-    + files('../trx/game/lua/capi/catalog.c'),
-  include_directories: [src_inc, test_inc],
-  dependencies: [dep_lua],
-  c_args: lua_surface_args,
-  build_by_default: false,
-)
-test('lua_catalog', test_lua_catalog_exe, suite: 'unit')
-
-test_lua_config_exe = executable(
-  'test_lua_config',
-  files(
-    'unit/test_lua_config.c',
-    'unit/fake_engine_config.c',
-    'unit/fake_engine_locale.c',
-  ) + test_stubs
-    + lua_surface_src
-    + files(
-      '../trx/config/override.c',
-      '../trx/config/value.c',
-      '../trx/game/lua/capi/config.c',
-      '../trx/game/lua/capi/locale.c',
-    ),
-  include_directories: [src_inc, test_inc],
-  dependencies: [dep_lua],
-  c_args: lua_surface_args,
-  build_by_default: false,
-)
-test('lua_config', test_lua_config_exe, suite: 'unit')
-
-test_lua_console_exe = executable(
-  'test_lua_console',
-  files(
-    'unit/test_lua_console.c',
-    'unit/fake_engine_console.c',
-    'unit/fake_engine_locale.c',
-  ) + test_stubs
-    + lua_surface_src
-    + files(
-      '../trx/core/strings/common.c',
-      '../trx/core/strings/case_funcs.c',
-      '../trx/core/strings/fuzzy_match.c',
-      '../trx/core/completion.c',
-      '../trx/game/lua/capi/console.c',
-      '../trx/game/lua/capi/locale.c',
-      '../trx/game/lua/capi/log.c',
-      '../trx/game/lua/capi/strings.c',
-    ),
-  include_directories: [src_inc, test_inc],
-  dependencies: [dep_lua, dep_pcre2],
-  c_args: lua_surface_args + ['-DPCRE2_CODE_UNIT_WIDTH=8'],
-  build_by_default: false,
-)
-test('lua_console', test_lua_console_exe, suite: 'unit')
-
-# The help command, which the console module registers and composes from the
-# same parser a command answers --help from.
-test_lua_cmd_help_exe = executable(
-  'test_lua_cmd_help',
-  files(
-    'unit/test_lua_cmd_help.c',
-    'unit/fake_engine_console.c',
-    'unit/fake_engine_locale.c',
-  ) + test_stubs
-    + lua_surface_src
-    + files(
-      '../trx/core/strings/common.c',
-      '../trx/core/strings/case_funcs.c',
-      '../trx/core/strings/fuzzy_match.c',
-      '../trx/core/completion.c',
-      '../trx/game/lua/capi/console.c',
-      '../trx/game/lua/capi/locale.c',
-      '../trx/game/lua/capi/log.c',
-      '../trx/game/lua/capi/strings.c',
-    ),
-  include_directories: [src_inc, test_inc],
-  dependencies: [dep_lua, dep_pcre2],
-  c_args: lua_surface_args + ['-DPCRE2_CODE_UNIT_WIDTH=8'],
-  build_by_default: false,
-)
-test('lua_cmd_help', test_lua_cmd_help_exe, suite: 'unit')
-
-# A console command written in Lua, exercised through the console that dispatches
-# it. Everything the command touches is a real bridge, so the test says whether
-# the command works, not whether it was written the way we expected.
-test_lua_cmd_heal_exe = executable(
-  'test_lua_cmd_heal',
-  files(
-    'unit/test_lua_cmd_heal.c',
-    'unit/fake_engine_console.c',
-    'unit/fake_engine_game.c',
-    'unit/fake_engine_items.c',
-    'unit/fake_engine_lara.c',
-    'unit/fake_engine_locale.c',
-  ) + test_stubs
-    + lua_surface_src
-    + files(
-      '../trx/core/completion.c',
-      '../trx/game/lua/capi/console.c',
-      '../trx/game/lua/capi/game.c',
-      '../trx/game/lua/capi/items.c',
-      '../trx/game/lua/capi/lara.c',
-      '../trx/game/lua/capi/locale.c',
-      '../trx/game/lua/capi/log.c',
-    ),
-  include_directories: [src_inc, test_inc],
-  dependencies: [dep_lua],
-  c_args: lua_surface_args,
-  build_by_default: false,
-)
-test('lua_cmd_heal', test_lua_cmd_heal_exe, suite: 'unit')
-
-# The commands with non-trivial arguments, exercised through the console. Name
-# matching goes through fake_engine_strings, a pcre2-free stand-in, so these stay
-# light: the real matcher is covered by lua_strings and lua_argparse.
-test_lua_cmd_play_exe = executable(
-  'test_lua_cmd_play',
-  files(
-    'unit/test_lua_cmd_play.c',
-    'unit/fake_engine_console.c',
-    'unit/fake_engine_game.c',
-    'unit/fake_engine_locale.c',
-    'unit/fake_engine_strings.c',
-  ) + test_stubs
-    + lua_surface_src
-    + files(
-      '../trx/core/completion.c',
-      '../trx/game/lua/capi/console.c',
-      '../trx/game/lua/capi/game.c',
-      '../trx/game/lua/capi/locale.c',
-      '../trx/game/lua/capi/log.c',
-    ),
-  include_directories: [src_inc, test_inc],
-  dependencies: [dep_lua],
-  c_args: lua_surface_args,
-  build_by_default: false,
-)
-test('lua_cmd_play', test_lua_cmd_play_exe, suite: 'unit')
-
-test_lua_cmd_music_exe = executable(
-  'test_lua_cmd_music',
-  files(
-    'unit/test_lua_cmd_music.c',
-    'unit/fake_engine_console.c',
-    'unit/fake_engine_music.c',
-    'unit/fake_engine_locale.c',
-    'unit/fake_engine_strings.c',
-  ) + test_stubs
-    + lua_surface_src
-    + files(
-      '../trx/core/completion.c',
-      '../trx/game/lua/capi/console.c',
-      '../trx/game/lua/capi/music.c',
-      '../trx/game/lua/capi/locale.c',
-      '../trx/game/lua/capi/log.c',
-    ),
-  include_directories: [src_inc, test_inc],
-  dependencies: [dep_lua],
-  c_args: lua_surface_args,
-  build_by_default: false,
-)
-test('lua_cmd_music', test_lua_cmd_music_exe, suite: 'unit')
-
-test_lua_cmd_load_exe = executable(
-  'test_lua_cmd_load',
-  files(
-    'unit/test_lua_cmd_load.c',
-    'unit/fake_engine_console.c',
-    'unit/fake_engine_savegame.c',
-    'unit/fake_engine_locale.c',
-  ) + test_stubs
-    + lua_surface_src
-    + files(
-      '../trx/core/completion.c',
-      '../trx/game/lua/capi/console.c',
-      '../trx/game/lua/capi/locale.c',
-      '../trx/game/lua/capi/log.c',
-    ),
-  include_directories: [src_inc, test_inc],
-  dependencies: [dep_lua],
-  c_args: lua_surface_args,
-  build_by_default: false,
-)
-test('lua_cmd_load', test_lua_cmd_load_exe, suite: 'unit')
-
-test_lua_cmd_rule_exe = executable(
-  'test_lua_cmd_rule',
-  files(
-    'unit/test_lua_cmd_rule.c',
-    'unit/fake_engine_console.c',
-    'unit/fake_engine_locale.c',
-  ) + test_stubs
-    + lua_surface_src
-    + files(
-      '../trx/core/completion.c',
-      '../trx/core/strings/case_funcs.c',
-      '../trx/core/strings/common.c',
-      '../trx/core/strings/fuzzy_match.c',
-      '../trx/game/lua/capi/console.c',
-      '../trx/game/lua/capi/locale.c',
-      '../trx/game/lua/capi/log.c',
-      '../trx/game/lua/capi/rules.c',
-      '../trx/game/lua/capi/strings.c',
-      '../trx/game/rules.c',
-    ),
-  include_directories: [src_inc, test_inc],
-  dependencies: [dep_lua, dep_pcre2],
-  c_args: lua_surface_args + ['-DPCRE2_CODE_UNIT_WIDTH=8'],
-  build_by_default: false,
-)
-test('lua_cmd_rule', test_lua_cmd_rule_exe, suite: 'unit')
-
-test_lua_cmd_save_exe = executable(
-  'test_lua_cmd_save',
-  files(
-    'unit/test_lua_cmd_save.c',
-    'unit/fake_engine_console.c',
-    'unit/fake_engine_game.c',
-    'unit/fake_engine_savegame.c',
-    'unit/fake_engine_locale.c',
-  ) + test_stubs
-    + lua_surface_src
-    + files(
-      '../trx/core/completion.c',
-      '../trx/game/lua/capi/console.c',
-      '../trx/game/lua/capi/game.c',
-      '../trx/game/lua/capi/locale.c',
-      '../trx/game/lua/capi/log.c',
-    ),
-  include_directories: [src_inc, test_inc],
-  dependencies: [dep_lua],
-  c_args: lua_surface_args,
-  build_by_default: false,
-)
-test('lua_cmd_save', test_lua_cmd_save_exe, suite: 'unit')
-
-test_lua_cmd_set_exe = executable(
-  'test_lua_cmd_set',
-  files(
-    'unit/test_lua_cmd_set.c',
-    'unit/fake_engine_config.c',
-    'unit/fake_engine_console.c',
-    'unit/fake_engine_locale.c',
-  ) + test_stubs
-    + lua_surface_src
-    + files(
-      '../trx/config/override.c',
-      '../trx/config/value.c',
-      '../trx/core/strings/case_funcs.c',
-      '../trx/core/strings/common.c',
-      '../trx/core/strings/fuzzy_match.c',
-      '../trx/game/lua/capi/config.c',
-      '../trx/core/completion.c',
-      '../trx/game/lua/capi/console.c',
-      '../trx/game/lua/capi/locale.c',
-      '../trx/game/lua/capi/log.c',
-      '../trx/game/lua/capi/strings.c',
-    ),
-  include_directories: [src_inc, test_inc],
-  dependencies: [dep_lua, dep_pcre2],
-  c_args: lua_surface_args + ['-DPCRE2_CODE_UNIT_WIDTH=8'],
-  build_by_default: false,
-)
-test('lua_cmd_set', test_lua_cmd_set_exe, suite: 'unit')
-
-test_lua_creatures_exe = executable(
-  'test_lua_creatures',
-  files('unit/test_lua_creatures.c', 'unit/fake_engine_creatures.c') + test_stubs
-    + lua_surface_src
-    + files('../trx/game/lua/capi/creatures.c'),
-  include_directories: [src_inc, test_inc],
-  dependencies: [dep_lua],
-  c_args: lua_surface_args,
-  build_by_default: false,
-)
-test('lua_creatures', test_lua_creatures_exe, suite: 'unit')
-
-test_lua_events_exe = executable(
-  'test_lua_events',
-  files('unit/test_lua_events.c', 'unit/fake_engine_rooms.c') + test_stubs
-    + lua_surface_src
-    + files('../trx/game/lua/capi/events.c'),
-  include_directories: [src_inc, test_inc],
-  dependencies: [dep_lua],
-  c_args: lua_surface_args,
-  build_by_default: false,
-)
-test('lua_events', test_lua_events_exe, suite: 'unit')
-
-test_lua_api_seal_exe = executable(
-  'test_lua_api_seal',
-  files('unit/test_lua_api_seal.c', 'unit/fake_engine_items.c') + test_stubs
-    + lua_surface_src
-    + files('../trx/game/lua/capi/items.c'),
-  include_directories: [src_inc, test_inc],
-  dependencies: [dep_lua],
-  c_args: lua_surface_args,
-  build_by_default: false,
-)
-test('lua_api_seal', test_lua_api_seal_exe, suite: 'unit')
-
-# field.c and lua/struct.c are leaf modules, so the reflection layer and the Lua
-# bridge can be exercised against a synthetic struct type.
-test_lua_struct_exe = executable(
-  'test_lua_struct',
-  files('unit/test_lua_struct.c') + test_stubs
-    + files(
-      '../trx/core/dynamic_enum.c',
-      '../trx/core/enum_map.c',
-      '../trx/core/handle.c',
-      '../trx/core/memory.c',
-      '../trx/core/value.c',
-      '../trx/core/vector.c',
-      '../trx/game/lua/capi/struct.c',
-      '../trx/game/lua/field.c',
-      '../trx/game/lua/registry.c',
-      '../trx/game/lua/utils.c',
-    )
-    + files('unit/stubs_enum_map.c'),
-  include_directories: [src_inc, test_inc],
-  dependencies: [dep_lua],
-  build_by_default: false,
-)
-test('lua_struct', test_lua_struct_exe, suite: 'unit')
-
-# api.lua is read from the repository root, two levels up from this project.
-repo_root = meson.current_source_dir() / '../..'
-
-# The UI layout test is the widest of the unit tests: it stands up the settings
-# dialogs and runs the real measure and layout passes over them. It reads the
-# shipped font.bin for glyph metrics and the shipped config for the strings -
-# both versioned in this repository - so it still needs no window and no build
-# of the game.
-test_ui_layout_exe = executable(
-  'test_ui_layout',
-  files('unit/test_ui_layout.c') + test_stubs
-    + files(
-      'unit/fake_engine_settings.c',
-      'unit/fake_engine_ui.c',
-      'unit/fake_engine_ui_draw.c',
-      'unit/font_bin.c',
-      '../trx/config/common.c',
-      '../trx/config/enum.c',
-      '../trx/config/map.c',
-      '../trx/config/override.c',
-      '../trx/config/presets.c',
-      '../trx/config/value.c',
-      '../trx/core/colors.c',
-      '../trx/core/completion.c',
-      '../trx/core/dynamic_enum.c',
-      '../trx/core/enum_map.c',
-      '../trx/core/event_manager.c',
-      '../trx/core/handle.c',
-      '../trx/core/json/base.c',
-      '../trx/core/json/parse.c',
-      '../trx/core/json/util/file.c',
-      '../trx/core/json/util/read_io.c',
-      '../trx/core/json/write.c',
-      '../trx/core/memory.c',
-      '../trx/core/strings/case_funcs.c',
-      '../trx/core/strings/common.c',
-      '../trx/core/value.c',
-      '../trx/core/vector.c',
-      '../trx/game/enum.c',
-      '../trx/game/game_strings/entries.c',
-      '../trx/game/gun/vars.c',
-      '../trx/game/objects/vars.c',
-      '../trx/game/rules.c',
-      '../trx/game/ui/common.c',
-      '../trx/game/ui/dialogs/color_editor.c',
-      '../trx/game/ui/dialogs/config_presets.c',
-      '../trx/game/ui/dialogs/gameplay_settings.c',
-      '../trx/game/ui/dialogs/graphic_settings.c',
-      '../trx/game/ui/dialogs/setting_helpers/enums.c',
-      '../trx/game/ui/dialogs/setting_helpers/handlers.c',
-      '../trx/game/ui/dialogs/setting_helpers/handlers_language.c',
-      '../trx/game/ui/dialogs/settings.c',
-      '../trx/game/ui/dialogs/settings_editor.c',
-      '../trx/game/ui/dialogs/settings_tabs.c',
-      '../trx/game/ui/dialogs/sound_settings.c',
-      '../trx/game/ui/dialogs/text.c',
-      '../trx/game/ui/events.c',
-      '../trx/game/ui/helpers.c',
-      '../trx/game/ui/scaler.c',
-      '../trx/game/ui/scrollable.c',
-      '../trx/game/ui/settings.c',
-      '../trx/game/ui/text.c',
-      '../trx/version.c',
-      '../trx/gl/enum.c',
-    )
-    + files(
-      '../trx/game/ui/elements/ammo_label.c',
-      '../trx/game/ui/elements/anchor.c',
-      '../trx/game/ui/elements/bar.c',
-      '../trx/game/ui/elements/bar_enemy_hp.c',
-      '../trx/game/ui/elements/bar_lara_air.c',
-      '../trx/game/ui/elements/bar_lara_exposure.c',
-      '../trx/game/ui/elements/bar_lara_hp.c',
-      '../trx/game/ui/elements/bar_lara_sprint.c',
-      '../trx/game/ui/elements/color_swatch.c',
-      '../trx/game/ui/elements/flash.c',
-      '../trx/game/ui/elements/fps_counter.c',
-      '../trx/game/ui/elements/frame.c',
-      '../trx/game/ui/elements/gradient_slider.c',
-      '../trx/game/ui/elements/hide.c',
-      '../trx/game/ui/elements/horizontal_line.c',
-      '../trx/game/ui/elements/label.c',
-      '../trx/game/ui/elements/modal.c',
-      '../trx/game/ui/elements/offset.c',
-      '../trx/game/ui/elements/pad.c',
-      '../trx/game/ui/elements/progress_button.c',
-      '../trx/game/ui/elements/prompt.c',
-      '../trx/game/ui/elements/requester.c',
-      '../trx/game/ui/elements/resize.c',
-      '../trx/game/ui/elements/row_arrows.c',
-      '../trx/game/ui/elements/scrollable_stack.c',
-      '../trx/game/ui/elements/sleek_bar.c',
-      '../trx/game/ui/elements/spacer.c',
-      '../trx/game/ui/elements/span.c',
-      '../trx/game/ui/elements/stack.c',
-      '../trx/game/ui/elements/tab_switch.c',
-      '../trx/game/ui/elements/window.c',
-    ),
-  include_directories: [src_inc, test_inc],
-  c_args: [
-    '-DPCRE2_CODE_UNIT_WIDTH=8',
-    '-DTEST_SHIP_CFG_DIR="' + repo_root / 'data/trx/ship/cfg' + '"',
-    '-DTEST_SHIP_GAMES_DIR="' + repo_root / 'data/trx/ship/games' + '"',
+# bridges, the trxc modules, and src/lua/api/*.lua read from the tree - and only
+# the engine underneath is faked. The modules are read from disk rather than from
+# the embedded copy, so the tests need to know where the tree is.
+b_lua_surface = {
+  'engine': [
+    'core/dynamic_enum.c',
+    'core/enum_map.c',
+    'core/handle.c',
+    'core/memory.c',
+    'core/value.c',
+    'core/vector.c',
+    'game/enum.c',
+    'game/lua/capi/api.c',
+    'game/lua/capi/enum.c',
+    'game/lua/capi/struct.c',
+    'game/lua/field.c',
+    'game/lua/registry.c',
+    'game/lua/sandbox.c',
+    'game/lua/utils.c',
   ],
-  dependencies: [dep_mathlibrary, dep_pcre2, dep_zlib],
-  build_by_default: false,
-)
-test('ui_layout', test_ui_layout_exe, suite: 'unit')
+  'src': ['lua_surface.c', 'stubs_enum_map.c'],
+  'deps': [dep_lua],
+  'args': ['-DREPO_ROOT="' + repo_root + '"'],
+}
+
+# One entry per test. The key names both the test and unit/test_<key>.c; the
+# value says what that test needs on top of the harness:
+#
+#   bundles - shared source groups, unioned into the target
+#   src     - further test-side sources, relative to unit/
+#   engine  - engine sources under test, relative to ../trx/
+#   deps    - dependencies beyond the ones a bundle brings
+#   args    - c_args beyond the ones a bundle brings
+#   stubs   - false to leave unit/stubs.c out
+unit_tests = {
+  'vector': {'engine': ['core/vector.c', 'core/memory.c']},
+  'math_func': {
+    'engine': ['core/math/func.c', 'core/math/geom.c', 'core/math/trig.c'],
+    'deps': [dep_mathlibrary],
+  },
+  'cutseq_decoder': {'engine': ['game/cutseq/decoder.c']},
+  'cutseq_pak': {
+    'engine': ['game/cutseq/pak.c', 'core/memory.c'],
+    'deps': [dep_zlib],
+  },
+  'hash': {'engine': ['core/hash.c']},
+  'bson': {
+    'engine': [
+      'core/bson/parse.c',
+      'core/bson/write.c',
+      'core/json/base.c',
+      'core/memory.c',
+    ],
+  },
+  'handle': {'engine': ['core/handle.c']},
+  'item_actions': {'engine': ['game/items/actions/common.c']},
+  'trigger': {
+    'engine': ['game/items/trigger.c', 'version.c'],
+    'deps': [dep_mathlibrary],
+  },
+  'console_complete': {
+    'engine': [
+      'core/completion.c',
+      'game/console/completion.c',
+      'game/console/registry.c',
+      'core/memory.c',
+      'core/vector.c',
+    ],
+  },
+  'completion': {
+    'engine': ['core/completion.c', 'core/memory.c', 'core/vector.c'],
+  },
+  'field': {
+    'engine': [
+      'game/lua/field.c',
+      'core/value.c',
+      'core/dynamic_enum.c',
+      'core/enum_map.c',
+      'core/memory.c',
+      'core/vector.c',
+    ],
+    'src': ['stubs_enum_map.c'],
+  },
+  # The runtime override stack. The test answers the config layer for it, so no
+  # option map, no settings file, no game.
+  'config_override': {
+    'engine': [
+      'config/override.c',
+      'config/value.c',
+      'core/dynamic_enum.c',
+      'core/enum_map.c',
+      'core/memory.c',
+      'core/value.c',
+      'core/vector.c',
+    ],
+    'src': ['stubs_enum_map.c'],
+  },
+  # The name<->value registry the Lua enum bridge reflects. Its two dependencies
+  # outside core - the formatting helper and the localized game strings - are
+  # stubbed: the real ones live in translation units that want PCRE2 and the
+  # game string table, and neither is what the enum map is being tested for.
+  'enum_map': {
+    'engine': ['core/enum_map.c', 'core/memory.c', 'core/vector.c'],
+    'src': ['stubs_enum_map.c'],
+  },
+  # The dynamic enum registry, keyed on an opaque token. Its only dependency
+  # outside core is the localized game strings behind labels, which are stubbed.
+  'dynamic_enum': {
+    'engine': ['core/dynamic_enum.c', 'core/memory.c', 'core/vector.c'],
+    'src': ['stubs_enum_map.c'],
+  },
+  # The primitive value taxonomy. It leans on the enum map and dynamic enum
+  # registry; its formatting helper and the localized game strings behind enum
+  # labels are stubbed, the same way the enum map test stands them up.
+  'value': {
+    'engine': [
+      'core/value.c',
+      'core/dynamic_enum.c',
+      'core/enum_map.c',
+      'core/memory.c',
+      'core/vector.c',
+    ],
+    'src': ['stubs_enum_map.c'],
+  },
+  'lua_enum': {
+    'engine': [
+      'core/enum_map.c',
+      'core/memory.c',
+      'core/vector.c',
+      'core/dynamic_enum.c',
+      'core/value.c',
+      'game/lua/capi/enum.c',
+      'game/lua/registry.c',
+      'game/lua/utils.c',
+    ],
+    'src': ['stubs_enum_map.c'],
+    'deps': [dep_lua],
+  },
+  # The sandbox depends on nothing but Lua, so the wall the engine stands up at
+  # boot stands up here against a bare state - no modules, no engine.
+  'lua_sandbox': {'engine': ['game/lua/sandbox.c'], 'deps': [dep_lua]},
+  # The guard reads nothing but Lua and the clock, and the test supplies the
+  # clock itself, stepped by hand, so the budget runs out deterministically.
+  'lua_guard': {'engine': ['game/lua/guard.c'], 'deps': [dep_lua]},
+  # field.c and lua/struct.c are leaf modules, so the reflection layer and the
+  # Lua bridge can be exercised against a synthetic struct type.
+  'lua_struct': {
+    'engine': [
+      'core/dynamic_enum.c',
+      'core/enum_map.c',
+      'core/handle.c',
+      'core/memory.c',
+      'core/value.c',
+      'core/vector.c',
+      'game/lua/capi/struct.c',
+      'game/lua/field.c',
+      'game/lua/registry.c',
+      'game/lua/utils.c',
+    ],
+    'src': ['stubs_enum_map.c'],
+    'deps': [dep_lua],
+  },
+  'lua_rooms': {
+    'bundles': [b_lua_surface],
+    'src': ['fake_engine_rooms.c', 'fake_engine_items.c'],
+    'engine': [
+      'game/lua/capi/events.c',
+      'game/lua/capi/items.c',
+      'game/lua/capi/rooms.c',
+    ],
+  },
+  'lua_items': {
+    'bundles': [b_lua_surface],
+    'src': ['fake_engine_items.c', 'fake_engine_catalog.c'],
+    'engine': [
+      'core/strings/case_funcs.c',
+      'core/strings/common.c',
+      'core/strings/fuzzy_match.c',
+      'game/lua/capi/events.c',
+      'game/lua/capi/items.c',
+      'game/lua/capi/objects.c',
+      'game/lua/capi/catalog.c',
+      'game/lua/capi/strings.c',
+    ],
+    'deps': [dep_pcre2],
+    'args': ['-DPCRE2_CODE_UNIT_WIDTH=8'],
+  },
+  # The same surface, taken through the two boot steps the other suites stop
+  # short of: the seal, and hardening the globals.
+  'lua_boot': {
+    'bundles': [b_lua_surface],
+    'src': ['fake_engine_items.c'],
+    'engine': ['game/lua/capi/items.c'],
+  },
+  # No fake engine: the real trig tables are the thing under test.
+  'lua_math': {
+    'bundles': [b_lua_surface],
+    'engine': ['game/lua/capi/math.c', 'core/math/trig.c'],
+    'deps': [dep_mathlibrary],
+  },
+  'lua_assault': {
+    'bundles': [b_lua_surface],
+    'src': ['fake_engine_assault.c'],
+    'engine': ['game/lua/capi/assault.c'],
+  },
+  # rooms rides along: trx.camera.room hands back a trx.rooms.Room.
+  'lua_camera': {
+    'bundles': [b_lua_surface],
+    'src': [
+      'fake_engine_camera.c',
+      'fake_engine_rooms.c',
+      # for Room_GetIndexFromPos, which rooms.c reaches for
+      'fake_engine_items.c',
+    ],
+    'engine': ['game/lua/capi/rooms.c', 'game/lua/capi/camera.c'],
+  },
+  'lua_music': {
+    'bundles': [b_lua_surface],
+    'src': ['fake_engine_music.c'],
+    'engine': ['game/lua/capi/music.c'],
+  },
+  # The fuzzy matcher and the regex are the real ones out of trx/core/strings.
+  'lua_strings': {
+    'bundles': [b_lua_surface],
+    'engine': [
+      'core/strings/common.c',
+      'core/strings/case_funcs.c',
+      'core/strings/fuzzy_match.c',
+      'game/lua/capi/strings.c',
+    ],
+    'deps': [dep_pcre2],
+    'args': ['-DPCRE2_CODE_UNIT_WIDTH=8'],
+  },
+  # The parser is pure Lua, but it leans on the real fuzzy matcher out of
+  # trx.strings, so the two are stood up together.
+  'lua_argparse': {
+    'bundles': [b_lua_surface],
+    'src': ['fake_engine_locale.c'],
+    'engine': [
+      'core/strings/common.c',
+      'core/strings/case_funcs.c',
+      'core/strings/fuzzy_match.c',
+      'game/lua/capi/locale.c',
+      'game/lua/capi/strings.c',
+    ],
+    'deps': [dep_pcre2],
+    'args': ['-DPCRE2_CODE_UNIT_WIDTH=8'],
+  },
+  'lua_sound': {
+    'bundles': [b_lua_surface],
+    'src': ['fake_engine_sound.c'],
+    'engine': ['game/lua/capi/sound.c'],
+  },
+  'lua_locale': {
+    'bundles': [b_lua_surface],
+    'src': ['fake_engine_locale.c'],
+    'engine': ['game/lua/capi/locale.c'],
+  },
+  'lua_lua': {
+    'bundles': [b_lua_surface],
+    'src': ['fake_engine_lua.c'],
+    'engine': ['game/lua/capi/lua.c'],
+  },
+  'lua_weather': {
+    'bundles': [b_lua_surface],
+    'engine': ['game/lua/capi/weather.c'],
+  },
+  'lua_mod': {'bundles': [b_lua_surface], 'engine': ['game/lua/capi/mod.c']},
+  'lua_savegame': {
+    'bundles': [b_lua_surface],
+    'engine': ['game/lua/capi/savegame.c'],
+  },
+  # No stubs: fake_engine_log.c provides Log_Message itself, because which line
+  # the log blames is the thing under test.
+  'lua_log': {
+    'bundles': [b_lua_surface],
+    'src': ['fake_engine_log.c'],
+    'engine': ['game/lua/capi/log.c'],
+    'stubs': false,
+  },
+  'lua_game': {
+    'bundles': [b_lua_surface],
+    'src': ['fake_engine_game.c'],
+    'engine': ['game/lua/capi/game.c'],
+  },
+  'lua_objects': {
+    'bundles': [b_lua_surface],
+    'src': ['fake_engine_items.c', 'fake_engine_catalog.c'],
+    'engine': [
+      'core/strings/case_funcs.c',
+      'core/strings/common.c',
+      'core/strings/fuzzy_match.c',
+      'game/lua/capi/catalog.c',
+      'game/lua/capi/objects.c',
+      'game/lua/capi/strings.c',
+    ],
+    'deps': [dep_pcre2],
+    'args': ['-DPCRE2_CODE_UNIT_WIDTH=8'],
+  },
+  'lua_lara': {
+    'bundles': [b_lua_surface],
+    'src': ['fake_engine_lara.c', 'fake_engine_items.c'],
+    'engine': ['game/lua/capi/items.c', 'game/lua/capi/lara.c'],
+  },
+  # The catalogs are real ENUM_MAP enums out of the real trx/game/enum.c. Only
+  # the slot mapping, which a game loads from a CSV, is faked.
+  'lua_catalog': {
+    'bundles': [b_lua_surface],
+    'src': ['fake_engine_catalog.c'],
+    'engine': ['game/lua/capi/catalog.c'],
+  },
+  'lua_config': {
+    'bundles': [b_lua_surface],
+    'src': ['fake_engine_config.c', 'fake_engine_locale.c'],
+    'engine': [
+      'config/override.c',
+      'config/value.c',
+      'game/lua/capi/config.c',
+      'game/lua/capi/locale.c',
+    ],
+  },
+  'lua_console': {
+    'bundles': [b_lua_surface],
+    'src': ['fake_engine_console.c', 'fake_engine_locale.c'],
+    'engine': [
+      'core/strings/common.c',
+      'core/strings/case_funcs.c',
+      'core/strings/fuzzy_match.c',
+      'core/completion.c',
+      'game/lua/capi/console.c',
+      'game/lua/capi/locale.c',
+      'game/lua/capi/log.c',
+      'game/lua/capi/strings.c',
+    ],
+    'deps': [dep_pcre2],
+    'args': ['-DPCRE2_CODE_UNIT_WIDTH=8'],
+  },
+  # The help command, which the console module registers and composes from the
+  # same parser a command answers --help from.
+  'lua_cmd_help': {
+    'bundles': [b_lua_surface],
+    'src': ['fake_engine_console.c', 'fake_engine_locale.c'],
+    'engine': [
+      'core/strings/common.c',
+      'core/strings/case_funcs.c',
+      'core/strings/fuzzy_match.c',
+      'core/completion.c',
+      'game/lua/capi/console.c',
+      'game/lua/capi/locale.c',
+      'game/lua/capi/log.c',
+      'game/lua/capi/strings.c',
+    ],
+    'deps': [dep_pcre2],
+    'args': ['-DPCRE2_CODE_UNIT_WIDTH=8'],
+  },
+  # A console command written in Lua, exercised through the console that
+  # dispatches it. Everything the command touches is a real bridge, so the test
+  # says whether the command works, not whether it was written the way we
+  # expected.
+  'lua_cmd_heal': {
+    'bundles': [b_lua_surface],
+    'src': [
+      'fake_engine_console.c',
+      'fake_engine_game.c',
+      'fake_engine_items.c',
+      'fake_engine_lara.c',
+      'fake_engine_locale.c',
+    ],
+    'engine': [
+      'core/completion.c',
+      'game/lua/capi/console.c',
+      'game/lua/capi/game.c',
+      'game/lua/capi/items.c',
+      'game/lua/capi/lara.c',
+      'game/lua/capi/locale.c',
+      'game/lua/capi/log.c',
+    ],
+  },
+  # The commands with non-trivial arguments, exercised through the console. Name
+  # matching goes through fake_engine_strings, a pcre2-free stand-in, so these
+  # stay light: the real matcher is covered by lua_strings and lua_argparse.
+  'lua_cmd_play': {
+    'bundles': [b_lua_surface],
+    'src': [
+      'fake_engine_console.c',
+      'fake_engine_game.c',
+      'fake_engine_locale.c',
+      'fake_engine_strings.c',
+    ],
+    'engine': [
+      'core/completion.c',
+      'game/lua/capi/console.c',
+      'game/lua/capi/game.c',
+      'game/lua/capi/locale.c',
+      'game/lua/capi/log.c',
+    ],
+  },
+  'lua_cmd_music': {
+    'bundles': [b_lua_surface],
+    'src': [
+      'fake_engine_console.c',
+      'fake_engine_music.c',
+      'fake_engine_locale.c',
+      'fake_engine_strings.c',
+    ],
+    'engine': [
+      'core/completion.c',
+      'game/lua/capi/console.c',
+      'game/lua/capi/music.c',
+      'game/lua/capi/locale.c',
+      'game/lua/capi/log.c',
+    ],
+  },
+  'lua_cmd_load': {
+    'bundles': [b_lua_surface],
+    'src': [
+      'fake_engine_console.c',
+      'fake_engine_savegame.c',
+      'fake_engine_locale.c',
+    ],
+    'engine': [
+      'core/completion.c',
+      'game/lua/capi/console.c',
+      'game/lua/capi/locale.c',
+      'game/lua/capi/log.c',
+    ],
+  },
+  'lua_cmd_rule': {
+    'bundles': [b_lua_surface],
+    'src': ['fake_engine_console.c', 'fake_engine_locale.c'],
+    'engine': [
+      'core/completion.c',
+      'core/strings/case_funcs.c',
+      'core/strings/common.c',
+      'core/strings/fuzzy_match.c',
+      'game/lua/capi/console.c',
+      'game/lua/capi/locale.c',
+      'game/lua/capi/log.c',
+      'game/lua/capi/rules.c',
+      'game/lua/capi/strings.c',
+      'game/rules.c',
+    ],
+    'deps': [dep_pcre2],
+    'args': ['-DPCRE2_CODE_UNIT_WIDTH=8'],
+  },
+  'lua_cmd_save': {
+    'bundles': [b_lua_surface],
+    'src': [
+      'fake_engine_console.c',
+      'fake_engine_game.c',
+      'fake_engine_savegame.c',
+      'fake_engine_locale.c',
+    ],
+    'engine': [
+      'core/completion.c',
+      'game/lua/capi/console.c',
+      'game/lua/capi/game.c',
+      'game/lua/capi/locale.c',
+      'game/lua/capi/log.c',
+    ],
+  },
+  'lua_cmd_set': {
+    'bundles': [b_lua_surface],
+    'src': [
+      'fake_engine_config.c',
+      'fake_engine_console.c',
+      'fake_engine_locale.c',
+    ],
+    'engine': [
+      'config/override.c',
+      'config/value.c',
+      'core/strings/case_funcs.c',
+      'core/strings/common.c',
+      'core/strings/fuzzy_match.c',
+      'game/lua/capi/config.c',
+      'core/completion.c',
+      'game/lua/capi/console.c',
+      'game/lua/capi/locale.c',
+      'game/lua/capi/log.c',
+      'game/lua/capi/strings.c',
+    ],
+    'deps': [dep_pcre2],
+    'args': ['-DPCRE2_CODE_UNIT_WIDTH=8'],
+  },
+  'lua_creatures': {
+    'bundles': [b_lua_surface],
+    'src': ['fake_engine_creatures.c'],
+    'engine': ['game/lua/capi/creatures.c'],
+  },
+  'lua_events': {
+    'bundles': [b_lua_surface],
+    'src': ['fake_engine_rooms.c'],
+    'engine': ['game/lua/capi/events.c'],
+  },
+  'lua_api_seal': {
+    'bundles': [b_lua_surface],
+    'src': ['fake_engine_items.c'],
+    'engine': ['game/lua/capi/items.c'],
+  },
+  # The UI layout test is the widest of the unit tests: it stands up the settings
+  # dialogs and runs the real measure and layout passes over them. It reads the
+  # shipped font.bin for glyph metrics and the shipped config for the strings -
+  # both versioned in this repository - so it still needs no window and no build
+  # of the game.
+  'ui_layout': {
+    'src': [
+      'fake_engine_settings.c',
+      'fake_engine_ui.c',
+      'fake_engine_ui_draw.c',
+      'font_bin.c',
+    ],
+    'engine': [
+      'config/common.c',
+      'config/enum.c',
+      'config/map.c',
+      'config/override.c',
+      'config/presets.c',
+      'config/value.c',
+      'core/colors.c',
+      'core/completion.c',
+      'core/dynamic_enum.c',
+      'core/enum_map.c',
+      'core/event_manager.c',
+      'core/handle.c',
+      'core/json/base.c',
+      'core/json/parse.c',
+      'core/json/util/file.c',
+      'core/json/util/read_io.c',
+      'core/json/write.c',
+      'core/memory.c',
+      'core/strings/case_funcs.c',
+      'core/strings/common.c',
+      'core/value.c',
+      'core/vector.c',
+      'game/enum.c',
+      'game/game_strings/entries.c',
+      'game/gun/vars.c',
+      'game/objects/vars.c',
+      'game/rules.c',
+      'game/ui/common.c',
+      'game/ui/dialogs/color_editor.c',
+      'game/ui/dialogs/config_presets.c',
+      'game/ui/dialogs/gameplay_settings.c',
+      'game/ui/dialogs/graphic_settings.c',
+      'game/ui/dialogs/setting_helpers/enums.c',
+      'game/ui/dialogs/setting_helpers/handlers.c',
+      'game/ui/dialogs/setting_helpers/handlers_language.c',
+      'game/ui/dialogs/settings.c',
+      'game/ui/dialogs/settings_editor.c',
+      'game/ui/dialogs/settings_tabs.c',
+      'game/ui/dialogs/sound_settings.c',
+      'game/ui/dialogs/text.c',
+      'game/ui/events.c',
+      'game/ui/helpers.c',
+      'game/ui/scaler.c',
+      'game/ui/scrollable.c',
+      'game/ui/settings.c',
+      'game/ui/text.c',
+      'version.c',
+      'gl/enum.c',
+      'game/ui/elements/ammo_label.c',
+      'game/ui/elements/anchor.c',
+      'game/ui/elements/bar.c',
+      'game/ui/elements/bar_enemy_hp.c',
+      'game/ui/elements/bar_lara_air.c',
+      'game/ui/elements/bar_lara_exposure.c',
+      'game/ui/elements/bar_lara_hp.c',
+      'game/ui/elements/bar_lara_sprint.c',
+      'game/ui/elements/color_swatch.c',
+      'game/ui/elements/flash.c',
+      'game/ui/elements/fps_counter.c',
+      'game/ui/elements/frame.c',
+      'game/ui/elements/gradient_slider.c',
+      'game/ui/elements/hide.c',
+      'game/ui/elements/horizontal_line.c',
+      'game/ui/elements/label.c',
+      'game/ui/elements/modal.c',
+      'game/ui/elements/offset.c',
+      'game/ui/elements/pad.c',
+      'game/ui/elements/progress_button.c',
+      'game/ui/elements/prompt.c',
+      'game/ui/elements/requester.c',
+      'game/ui/elements/resize.c',
+      'game/ui/elements/row_arrows.c',
+      'game/ui/elements/scrollable_stack.c',
+      'game/ui/elements/sleek_bar.c',
+      'game/ui/elements/spacer.c',
+      'game/ui/elements/span.c',
+      'game/ui/elements/stack.c',
+      'game/ui/elements/tab_switch.c',
+      'game/ui/elements/window.c',
+    ],
+    'deps': [dep_mathlibrary, dep_pcre2, dep_zlib],
+    'args': [
+      '-DPCRE2_CODE_UNIT_WIDTH=8',
+      '-DTEST_SHIP_CFG_DIR="' + repo_root / 'data/trx/ship/cfg' + '"',
+      '-DTEST_SHIP_GAMES_DIR="' + repo_root / 'data/trx/ship/games' + '"',
+    ],
+  },
+}
+
+foreach name, spec : unit_tests
+  test_src = spec.get('src', [])
+  test_engine = []
+  test_deps = spec.get('deps', [])
+  test_args = spec.get('args', [])
+
+  foreach bundle : spec.get('bundles', [])
+    test_src += bundle.get('src', [])
+    test_engine += bundle.get('engine', [])
+    test_deps += bundle.get('deps', [])
+    test_args += bundle.get('args', [])
+  endforeach
+  test_engine += spec.get('engine', [])
+
+  sources = files('unit/test_' + name + '.c')
+  if spec.get('stubs', true)
+    sources += test_stubs
+  endif
+  foreach source : test_src
+    sources += files('unit' / source)
+  endforeach
+  foreach source : test_engine
+    sources += files('..' / 'trx' / source)
+  endforeach
+
+  exe = executable(
+    'test_' + name,
+    sources,
+    include_directories: [src_inc, test_inc],
+    dependencies: test_deps,
+    c_args: test_args,
+    build_by_default: false,
+  )
+  test(name, exe, suite: 'unit')
+endforeach
 
 lua_exe = find_program('lua', 'lua5.4', 'lua5.5', required: false)
 if lua_exe.found()
