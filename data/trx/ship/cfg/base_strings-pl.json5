@@ -313,14 +313,6 @@
             },
             "give": {
                 "help": "Dodaje dany przedmiot do ekwipunku Lary.",
-                "invalid_secret": "Nieprawidłowy sekret: %s (prawidłowe sekrety: %s)",
-                "secret_given": "Dodano sekret %s",
-                "secret_list": "Zebrane sekrety: %d z %d (%s)",
-                "secret_none": "Zebrane sekrety: %d z %d",
-                "secret_taken": "Usunięto sekret %s",
-            },
-            "give_secret": {
-                "help": "Wyświetla sekrety Lary lub zabiera/daje sekret według numeru.",
             },
             "heal": {
                 "already_full_hp": "Lara jest już w pełni zdrowa",
@@ -446,6 +438,15 @@
             },
             "screenshot": {
                 "help": "Zapisuje zrzut ekranu na dysku w opcjonalnej lokalizacji.",
+            },
+            "secret": {
+                "action_help": "\\{review}czy dać sekret, czy go zabrać",
+                "given": "Dodano sekret %s",
+                "help": "Wyświetla sekrety Lary lub zabiera/daje sekret według numeru.",
+                "list": "Zebrane sekrety: %d z %d (%s)",
+                "none": "Zebrane sekrety: %d z %d",
+                "secret_help": "\\{review}który sekret lub wszystkie",
+                "taken": "Usunięto sekret %s",
             },
             "set": {
                 "ambiguous_2": "Niejednoznaczne wywołanie: %s i %s",

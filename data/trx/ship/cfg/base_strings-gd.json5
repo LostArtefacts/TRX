@@ -313,14 +313,6 @@
             },
             "give": {
                 "help": "Cuireas nì sònraichte anns clàr-seilbhe Lara.",
-                "invalid_secret": "Dìomhaireachd mì-dhligheach: %s (dìomhaireachdan dligheach: %s)",
-                "secret_given": "Chaidh dìomhaireachd %s air a chur ris",
-                "secret_list": "Dìomhaireachdan air an cruinneachadh: %d de %d (%s)",
-                "secret_none": "Dìomhaireachdan air an cruinneachadh: %d de %d",
-                "secret_taken": "Chaidh dìomhaireachd %s air a thoirt air falbh",
-            },
-            "give_secret": {
-                "help": "Seall liosta de dhìomhaireachdan Lara, neo cuir/thoir air falbh fear a rèir àireamh.",
             },
             "heal": {
                 "already_full_hp": "Tha slàinte làn aig Lara mu thràth",
@@ -446,6 +438,15 @@
             },
             "screenshot": {
                 "help": "Sàbhail glacadh-sgrìn gu diosc, le slighe fhaidhle roghainneil.",
+            },
+            "secret": {
+                "action_help": "\\{review}an toirear an dìomhaireachd seachad no an toirear air ais i",
+                "given": "Chaidh dìomhaireachd %s air a chur ris",
+                "help": "Seall liosta de dhìomhaireachdan Lara, neo cuir/thoir air falbh fear a rèir àireamh.",
+                "list": "Dìomhaireachdan air an cruinneachadh: %d de %d (%s)",
+                "none": "Dìomhaireachdan air an cruinneachadh: %d de %d",
+                "secret_help": "\\{review}dè an dìomhaireachd, no na h-uile",
+                "taken": "Chaidh dìomhaireachd %s air a thoirt air falbh",
             },
             "set": {
                 "ambiguous_2": "Cur-a-steach neo-shoilleir: %s agus %s",

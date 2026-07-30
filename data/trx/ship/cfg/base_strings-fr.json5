@@ -313,14 +313,6 @@
             },
             "give": {
                 "help": "Ajoute un élément à l'inventaire de Lara.",
-                "invalid_secret": "\\{review}Secret invalide : %s (secrets valides : %s)",
-                "secret_given": "\\{review}Secret ajouté %s",
-                "secret_list": "\\{review}Secrets collectés : %d sur %d (%s)",
-                "secret_none": "\\{review}Secrets collectés : %d sur %d",
-                "secret_taken": "\\{review}Secret retiré %s",
-            },
-            "give_secret": {
-                "help": "\\{review}Liste les secrets de Lara, ou prend/donne un secret par numéro.",
             },
             "heal": {
                 "already_full_hp": "Lara est déjà en pleine forme",
@@ -446,6 +438,15 @@
             },
             "screenshot": {
                 "help": "\\{review}Enregistre une capture d'écran sur le disque, avec un chemin optionnel.",
+            },
+            "secret": {
+                "action_help": "\\{review}donner le secret ou le reprendre",
+                "given": "\\{review}Secret ajouté %s",
+                "help": "\\{review}Liste les secrets de Lara, ou prend/donne un secret par numéro.",
+                "list": "\\{review}Secrets collectés : %d sur %d (%s)",
+                "none": "\\{review}Secrets collectés : %d sur %d",
+                "secret_help": "\\{review}quel secret, ou tous",
+                "taken": "\\{review}Secret retiré %s",
             },
             "set": {
                 "ambiguous_2": "Entrée ambiguë : %s et %s",

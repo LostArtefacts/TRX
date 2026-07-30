@@ -68,11 +68,12 @@ whichever key you have bound, and not include it as part of the command itself.
   Gives Lara an item. Try `/give guns` to arm her to the teeth, and `/give keys` to get her all important puzzle items. Ain't nobody got time for searching!
 
 - `/secret`  
+  `/secret {num}`  
   `/secret take`  
   `/secret take {num}`  
   `/secret give`  
   `/secret give {num}`  
-  Uncovers Lara's secret stash: list discovered secrets, pilfer one or all with `take`, or gift one or all back with `give`.
+  Uncovers Lara's secret stash: list discovered secrets, pilfer one or all with `take`, or gift one or all back with `give`. A number on its own is a gift.
 
 - `/kill`  
   `/kill all`  

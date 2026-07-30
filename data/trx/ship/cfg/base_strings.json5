@@ -313,14 +313,6 @@
             },
             "give": {
                 "help": "Adds a given item to Lara's inventory.",
-                "invalid_secret": "Invalid secret: %s (valid secrets: %s)",
-                "secret_given": "Added secret %s",
-                "secret_list": "Secrets collected: %d of %d (%s)",
-                "secret_none": "Secrets collected: %d of %d",
-                "secret_taken": "Removed secret %s",
-            },
-            "give_secret": {
-                "help": "Lists Lara's secrets, or takes/gives a secret by number.",
             },
             "heal": {
                 "already_full_hp": "Lara's already at full health",
@@ -446,6 +438,15 @@
             },
             "screenshot": {
                 "help": "Saves a screenshot to disk at optional location.",
+            },
+            "secret": {
+                "action_help": "whether to give the secret or take it back",
+                "given": "Added secret %s",
+                "help": "Lists Lara's secrets, or takes/gives a secret by number.",
+                "list": "Secrets collected: %d of %d (%s)",
+                "none": "Secrets collected: %d of %d",
+                "secret_help": "which secret, or all of them",
+                "taken": "Removed secret %s",
             },
             "set": {
                 "ambiguous_2": "Ambiguous input: %s and %s",
