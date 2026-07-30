@@ -140,12 +140,14 @@ local function id_set(ids)
 end
 
 test("spawnable keeps the things that exist in the world", function()
-  -- The wolf and the two pickups are loaded; nothing else in the fake is. Every
-  -- other id the catalog names reads as present but unloaded.
+  -- The wolf, the two pickups and the sprite object are loaded; nothing else in
+  -- the fake is. Every other id the catalog names reads as present but unloaded.
   local ids = trx.objects.query:spawnable():ids()
-  assert(#ids == 3, "spawnable should be the wolf, the vase and the key")
+  assert(#ids == 4, "spawnable should be the wolf, the pickups and the sprite")
   local set = id_set(ids)
-  assert(set[fake.WOLF] and set[fake.VASE] and set[fake.KEY])
+  assert(
+    set[fake.WOLF] and set[fake.VASE] and set[fake.KEY] and set[fake.SPRITE]
+  )
   assert(not set[fake.UNLOADED], "an unloaded object is not spawnable")
 end)
 
@@ -185,10 +187,11 @@ test("where narrows by a test of the caller's own", function()
 end)
 
 test("~ excludes a family", function()
-  -- Loaded, and not a pickup: the wolf, neither pickup.
+  -- Loaded, and not a pickup: the wolf and the sprite object, neither pickup.
   local q = trx.objects.query
-  local ids = (q:loaded() & ~q:pickup()):ids()
-  assert(#ids == 1 and ids[1] == fake.WOLF)
+  local set = id_set((q:loaded() & ~q:pickup()):ids())
+  assert(set[fake.WOLF] and set[fake.SPRITE])
+  assert(not set[fake.VASE] and not set[fake.KEY])
 end)
 
 test("| unions two families", function()
@@ -328,6 +331,26 @@ test("swap_mesh takes both mesh numbers or neither", function()
   raises(function()
     trx.objects.swap_mesh(fake.WOLF, fake.VASE, 1)
   end)
+end)
+
+test("swap_sprite reaches the engine", function()
+  trx.objects.swap_sprite(fake.KEY, fake.SPRITE)
+  assert(fake.calls().swap_sprite == 1, "the sprite swap did not land")
+end)
+
+test("swap_sprite refuses an object drawn from meshes", function()
+  raises(function()
+    trx.objects.swap_sprite(fake.SPRITE, fake.WOLF)
+  end)
+  assert(
+    fake.calls().swap_sprite == 0,
+    "a rejected swap must not reach the engine"
+  )
+end)
+
+test("swap_sprite passes over an object the level did not load", function()
+  trx.objects.swap_sprite(fake.SPRITE, fake.UNLOADED)
+  assert(fake.calls().swap_sprite == 0, "there is nothing to swap")
 end)
 
 test("an object id outside the table is refused", function()

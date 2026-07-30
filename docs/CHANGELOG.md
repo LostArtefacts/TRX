@@ -76,6 +76,7 @@
 - changed weather to be affected by the breeze
 - fixed Lara being able to use a detonator box or a gong a second time by selecting its key in the inventory
 - fixed Lara's braid floating or being aligned to the water height when vaulting out of wading depth water (#5900)
+- fixed the Silver and Jade Dragon secrets being listed in the wrong order in the Floating Islands statistics (OG bug); saves made before this version have the two swapped
 
 **TR3**
 - fixed Willard being visible outside the hut at the beginning of the cutscene following Antarctica (resolves #5929)
@@ -159,6 +160,7 @@ The Lua integration was rewritten and existing scripts will need updating; refer
 - added `trx.game.exit_to_title()`, to leave the current game for the title screen
 - added `trx.game.exit_game()`, to close the game
 - added `trx.items.spawn()`, to place a new item in the level at runtime
+- added `trx.objects.swap_sprite()`, to exchange the sprites two objects are drawn from
 - added `trx.objects.query` and `trx.items.query`, composable filters over a level's objects and items that match names, families and state, and combine with `&`, `|` and `~`
 - added `trx.items.get()`, `trx.items.count()`, `trx.rooms.get()`, `trx.rooms.count()` and `trx.objects.get()`, replacing the `fn` namespaces- added `trx.rooms.find_valid_pos()`, to nudge a position into valid room geometry
 - added `trx.rooms.floor_height()` and the room method `floor_height()`, the height of the floor under a position

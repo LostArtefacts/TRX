@@ -23,7 +23,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#define FAKE_OBJ_COUNT 8
+#define FAKE_OBJ_COUNT 9
 #define FAKE_ANIM_COUNT 2
 #define FAKE_PROP_SLOTS 4
 
@@ -104,11 +104,19 @@ void FakeItems_Reset(void)
         .mesh_count = 3,
     };
     m_Objects[FAKE_OBJ_UNLOADED] = (OBJECT) { .loaded = false };
+    // An object drawn from a sprite keeps it where a modelled one keeps its
+    // meshes, and says so by counting them the other way. A pickup is one of
+    // those whenever the player turns 3D pickups off.
     m_Objects[FAKE_OBJ_KEY] = (OBJECT) {
         .loaded = true,
         .anim_idx = 0,
         .anim_count = 1,
-        .mesh_count = 1,
+        .mesh_count = -1,
+    };
+    m_Objects[FAKE_OBJ_SPRITE] = (OBJECT) {
+        .loaded = true,
+        .anim_idx = NO_ANIM,
+        .mesh_count = -1,
     };
 
     m_ObjectHP[FAKE_OBJ_WOLF] = 20;
@@ -447,6 +455,11 @@ void Object_SwapMeshEx(
     const int32_t mesh2_num)
 {
     g_FakeItemCalls.swap_mesh++;
+}
+
+void Object_SwapSprite(const OBJECT_ID obj1_id, const OBJECT_ID obj2_id)
+{
+    g_FakeItemCalls.swap_sprite++;
 }
 
 // The object's own properties, which every item of the type inherits.

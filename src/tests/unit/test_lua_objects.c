@@ -18,6 +18,8 @@ static int M_FakeCalls(lua_State *const L)
     lua_newtable(L);
     lua_pushinteger(L, g_FakeItemCalls.swap_mesh);
     lua_setfield(L, -2, "swap_mesh");
+    lua_pushinteger(L, g_FakeItemCalls.swap_sprite);
+    lua_setfield(L, -2, "swap_sprite");
     return 1;
 }
 
@@ -37,6 +39,8 @@ static void M_PushFake(lua_State *const L)
     lua_setfield(L, -2, "RECEPTACLE");
     lua_pushinteger(L, FAKE_OBJ_DOOR);
     lua_setfield(L, -2, "DOOR");
+    lua_pushinteger(L, FAKE_OBJ_SPRITE);
+    lua_setfield(L, -2, "SPRITE");
 }
 
 int main(void)

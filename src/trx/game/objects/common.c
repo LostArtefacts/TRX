@@ -273,6 +273,21 @@ void Object_SwapMeshEx(
     Output_DispatchObjectMeshSwap(mesh_idx1, mesh_idx2);
 }
 
+void Object_SwapSprite(const OBJECT_ID object1_id, const OBJECT_ID object2_id)
+{
+    OBJECT *const obj1 = Object_Get(object1_id);
+    OBJECT *const obj2 = Object_Get(object2_id);
+    if (!obj1->loaded || !obj2->loaded) {
+        return;
+    }
+
+    // A sprite object keeps its sprite where a modelled one keeps its meshes:
+    // the first frame and how many there are. Nothing is dispatched, as the
+    // sprite is looked up by index as it is drawn.
+    SWAP(obj1->mesh_idx, obj2->mesh_idx);
+    SWAP(obj1->mesh_count, obj2->mesh_count);
+}
+
 ANIM *Object_GetAnim(const OBJECT *const obj, const int32_t anim_idx)
 {
     return Anim_GetAnim(obj->anim_idx + anim_idx);

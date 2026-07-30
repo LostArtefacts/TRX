@@ -321,6 +321,18 @@ api.define("objects.swap_mesh", {
   impl = raw.swap_mesh,
 })
 
+api.define("objects.swap_sprite", {
+  description = [[
+Swaps the sprites of two objects, which is how a pickup looks when 3D pickups
+are turned off. Raises if either object is drawn from meshes rather than a
+sprite.]],
+  params = {
+    { name = "object_id1", type = "integer", enum = "catalog.objects" },
+    { name = "object_id2", type = "integer", enum = "catalog.objects" },
+  },
+  impl = raw.swap_sprite,
+})
+
 api.container("objects", {
   description = "Indexing the module reaches an object definition, so `trx.objects.wolf` is the wolf. "
     .. "Keyed by object id or catalog name, not by position.",

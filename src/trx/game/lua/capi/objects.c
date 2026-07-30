@@ -112,6 +112,27 @@ static int M_L_ObjectsSwapMesh(lua_State *const L)
     return 0;
 }
 
+// trxc.objects.swap_sprite(obj1_id, obj2_id)
+static int M_L_ObjectsSwapSprite(lua_State *const L)
+{
+    const OBJECT_ID obj1_id = LUA_CheckObjectID(L, 1);
+    const OBJECT_ID obj2_id = LUA_CheckObjectID(L, 2);
+    const OBJECT *const obj1 = Object_Get(obj1_id);
+    const OBJECT *const obj2 = Object_Get(obj2_id);
+    if (!obj1->loaded || !obj2->loaded) {
+        return 0;
+    }
+
+    // A modelled object holds meshes in the slots this writes, so moving a
+    // sprite into one would draw it from mesh data.
+    if (obj1->mesh_count >= 0 || obj2->mesh_count >= 0) {
+        return luaL_error(L, "both objects must be drawn as sprites");
+    }
+
+    Object_SwapSprite(obj1_id, obj2_id);
+    return 0;
+}
+
 // The families an object can belong to. A script names one; C knows which array
 // it is in.
 static const struct {
@@ -199,6 +220,7 @@ static const luaL_Reg m_Module[] = {
     { "get", M_L_ObjectsGet },
     { "is_type", M_L_ObjectsIsType },
     { "swap_mesh", M_L_ObjectsSwapMesh },
+    { "swap_sprite", M_L_ObjectsSwapSprite },
     { nullptr, nullptr },
 };
 

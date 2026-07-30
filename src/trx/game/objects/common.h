@@ -63,6 +63,7 @@ void Object_SwapAllMeshes(OBJECT_ID object1_id, OBJECT_ID object2_id);
 void Object_SwapMeshEx(
     OBJECT_ID object1_id, OBJECT_ID object2_id, int32_t mesh_num1,
     int32_t mesh_num2);
+void Object_SwapSprite(OBJECT_ID object1_id, OBJECT_ID object2_id);
 
 ANIM *Object_GetAnim(const OBJECT *obj, int32_t anim_idx);
 ANIM_BONE *Object_GetBone(const OBJECT *obj, int32_t bone_idx);
