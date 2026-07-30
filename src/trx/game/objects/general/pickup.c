@@ -278,9 +278,14 @@ static void M_Control(const int16_t item_num)
         return;
     }
 
-    const M_PRIV *const p = item->priv;
+    M_PRIV *const p = item->priv;
     if (p->animate) {
-        Item_Animate(item);
+        if (Lara_GetLaraInfo()->interact_target.item_num == item_num) {
+            Item_Animate(item);
+        } else {
+            Item_SwitchToAnim(item, 0, 0);
+            p->animate = false;
+        }
     }
 
     if (Object_IsType(item->object_id, g_QuestObjects)) {
