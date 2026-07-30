@@ -11,6 +11,7 @@
 #include <stdio.h>
 
 CONFIG g_Config = {};
+CONFIG g_SavedConfig = {};
 
 void Log_Message(
     const LOG_LEVEL level, const char *const file, const int32_t line,

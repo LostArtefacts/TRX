@@ -34,6 +34,10 @@ dep_lua = dependency('lua5.4', 'lua-5.4', 'lua54', 'lua')
 # core/strings does its regex with PCRE2.
 dep_pcre2 = dependency('libpcre2-8')
 
+# The injection files the UI layout test reads its font metrics from are zlib
+# compressed, the same as the game finds them.
+dep_zlib = dependency('zlib')
+
 # enum_map.c hashes with uthash, which is headers only.
 c_compiler.check_header('uthash.h', required: true)
 
@@ -910,6 +914,112 @@ test('lua_struct', test_lua_struct_exe, suite: 'unit')
 
 # api.lua is read from the repository root, two levels up from this project.
 repo_root = meson.current_source_dir() / '../..'
+
+# The UI layout test is the widest of the unit tests: it stands up the settings
+# dialogs and runs the real measure and layout passes over them. It reads the
+# shipped font.bin for glyph metrics and the shipped config for the strings -
+# both versioned in this repository - so it still needs no window and no build
+# of the game.
+test_ui_layout_exe = executable(
+  'test_ui_layout',
+  files('unit/test_ui_layout.c') + test_stubs
+    + files(
+      'unit/fake_engine_settings.c',
+      'unit/fake_engine_ui.c',
+      'unit/fake_engine_ui_draw.c',
+      'unit/font_bin.c',
+      '../trx/config/common.c',
+      '../trx/config/enum.c',
+      '../trx/config/map.c',
+      '../trx/config/override.c',
+      '../trx/config/presets.c',
+      '../trx/config/value.c',
+      '../trx/core/colors.c',
+      '../trx/core/completion.c',
+      '../trx/core/dynamic_enum.c',
+      '../trx/core/enum_map.c',
+      '../trx/core/event_manager.c',
+      '../trx/core/handle.c',
+      '../trx/core/json/base.c',
+      '../trx/core/json/parse.c',
+      '../trx/core/json/util/file.c',
+      '../trx/core/json/util/read_io.c',
+      '../trx/core/json/write.c',
+      '../trx/core/memory.c',
+      '../trx/core/strings/case_funcs.c',
+      '../trx/core/strings/common.c',
+      '../trx/core/value.c',
+      '../trx/core/vector.c',
+      '../trx/game/enum.c',
+      '../trx/game/game_strings/entries.c',
+      '../trx/game/gun/vars.c',
+      '../trx/game/objects/vars.c',
+      '../trx/game/rules.c',
+      '../trx/game/ui/common.c',
+      '../trx/game/ui/dialogs/color_editor.c',
+      '../trx/game/ui/dialogs/config_presets.c',
+      '../trx/game/ui/dialogs/gameplay_settings.c',
+      '../trx/game/ui/dialogs/graphic_settings.c',
+      '../trx/game/ui/dialogs/setting_helpers/enums.c',
+      '../trx/game/ui/dialogs/setting_helpers/handlers.c',
+      '../trx/game/ui/dialogs/setting_helpers/handlers_language.c',
+      '../trx/game/ui/dialogs/settings.c',
+      '../trx/game/ui/dialogs/settings_editor.c',
+      '../trx/game/ui/dialogs/settings_tabs.c',
+      '../trx/game/ui/dialogs/sound_settings.c',
+      '../trx/game/ui/dialogs/text.c',
+      '../trx/game/ui/events.c',
+      '../trx/game/ui/helpers.c',
+      '../trx/game/ui/scaler.c',
+      '../trx/game/ui/scrollable.c',
+      '../trx/game/ui/settings.c',
+      '../trx/game/ui/text.c',
+      '../trx/version.c',
+      '../trx/gl/enum.c',
+    )
+    + files(
+      '../trx/game/ui/elements/ammo_label.c',
+      '../trx/game/ui/elements/anchor.c',
+      '../trx/game/ui/elements/bar.c',
+      '../trx/game/ui/elements/bar_enemy_hp.c',
+      '../trx/game/ui/elements/bar_lara_air.c',
+      '../trx/game/ui/elements/bar_lara_exposure.c',
+      '../trx/game/ui/elements/bar_lara_hp.c',
+      '../trx/game/ui/elements/bar_lara_sprint.c',
+      '../trx/game/ui/elements/color_swatch.c',
+      '../trx/game/ui/elements/flash.c',
+      '../trx/game/ui/elements/fps_counter.c',
+      '../trx/game/ui/elements/frame.c',
+      '../trx/game/ui/elements/gradient_slider.c',
+      '../trx/game/ui/elements/hide.c',
+      '../trx/game/ui/elements/horizontal_line.c',
+      '../trx/game/ui/elements/label.c',
+      '../trx/game/ui/elements/modal.c',
+      '../trx/game/ui/elements/offset.c',
+      '../trx/game/ui/elements/pad.c',
+      '../trx/game/ui/elements/progress_button.c',
+      '../trx/game/ui/elements/prompt.c',
+      '../trx/game/ui/elements/requester.c',
+      '../trx/game/ui/elements/resize.c',
+      '../trx/game/ui/elements/row_arrows.c',
+      '../trx/game/ui/elements/scrollable_stack.c',
+      '../trx/game/ui/elements/sleek_bar.c',
+      '../trx/game/ui/elements/spacer.c',
+      '../trx/game/ui/elements/span.c',
+      '../trx/game/ui/elements/stack.c',
+      '../trx/game/ui/elements/tab_switch.c',
+      '../trx/game/ui/elements/window.c',
+    ),
+  include_directories: [src_inc, test_inc],
+  c_args: [
+    '-DPCRE2_CODE_UNIT_WIDTH=8',
+    '-DTEST_SHIP_CFG_DIR="' + repo_root / 'data/trx/ship/cfg' + '"',
+    '-DTEST_SHIP_GAMES_DIR="' + repo_root / 'data/trx/ship/games' + '"',
+  ],
+  dependencies: [dep_mathlibrary, dep_pcre2, dep_zlib],
+  build_by_default: false,
+)
+test('ui_layout', test_ui_layout_exe, suite: 'unit')
 
 lua_exe = find_program('lua', 'lua5.4', 'lua5.5', required: false)
 if lua_exe.found()
