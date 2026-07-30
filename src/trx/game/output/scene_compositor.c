@@ -8,6 +8,7 @@
 #include <trx/game/output/shaders/mesh.h>
 #include <trx/game/output/shaders/ui.h>
 #include <trx/game/output/textures.h>
+#include <trx/game/output/textures_gl.h>
 #include <trx/game/output/uniforms.h>
 #include <trx/game/shell.h>
 #include <trx/gl/context.h>

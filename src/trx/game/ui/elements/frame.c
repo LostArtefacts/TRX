@@ -1,7 +1,6 @@
 #include <trx/game/ui/elements/frame.h>
 
 #include <trx/config.h>
-#include <trx/game/output.h>
 #include <trx/game/ui/draw.h>
 #include <trx/game/ui/helpers.h>
 
