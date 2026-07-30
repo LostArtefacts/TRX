@@ -5,6 +5,7 @@
 #include <trx/config/presets.h>
 #include <trx/core/memory.h>
 #include <trx/core/strings.h>
+#include <trx/core/utils.h>
 #include <trx/game/game_strings/entries.h>
 #include <trx/game/input.h>
 #include <trx/game/ui.h>
@@ -19,12 +20,17 @@
 #include <trx/game/ui/elements/spacer.h>
 #include <trx/game/ui/elements/stack.h>
 #include <trx/game/ui/elements/window.h>
+#include <trx/game/ui/scaler.h>
 #include <trx/game/ui/scrollable.h>
+#include <trx/game/ui/text.h>
 
 #include <string.h>
 
 #define M_CONFIRM_VISIBLE_ROWS 10
-#define M_CONFIRM_DIALOG_W 72.0f
+// A narrow list of changes should stay narrow; this is the floor, not the
+// width.
+#define M_CONFIRM_MIN_W 72.0f
+#define M_CONFIRM_PAD 6.0f
 #define M_LIST_ROW_SPACING 5.0f
 
 typedef enum {
@@ -76,12 +82,92 @@ static int32_t M_GetChangedSettingCount(const int32_t preset_idx)
     return changed_count;
 }
 
-static int32_t M_GetConfirmRowCount(const int32_t preset_idx)
+// The value line of a row, reading "was \{button right} becomes". The result is
+// the caller's to free: one row is measured for every changed setting, and the
+// rotating format buffer is eight deep, so a preset that changes more than that
+// would overwrite strings the caller still holds.
+static char *M_FormatValueChange(
+    const CONFIG_OPTION *const opt, const char *const target_raw)
 {
-    return M_GetChangedSettingCount(preset_idx) * 2;
+    const char *const current_value = Config_GetOptionValueAsString(opt, true);
+    char *const target_value =
+        Config_NormalizeOptionValueString(opt, target_raw, true);
+    char *const result =
+        String_Format("  %s \\{button right} %s", current_value, target_value);
+    Memory_Free(target_value);
+    return result;
 }
 
-static void M_DrawConfirmRows(UI_CONFIG_PRESETS_STATE *const s)
+// Draw text wrapped to the given width, one label per line. The confirm list
+// scrolls by line, so each line has to be a child of its own; a single label
+// holding newlines would scroll as one item and outgrow the screen.
+static void M_WrappedLines(const char *const text, const float max_width)
+{
+    char *const wrapped = UI_Text_WordWrap(text, 1.0f, max_width);
+    if (wrapped == nullptr) {
+        UI_Label(text);
+        return;
+    }
+    // Each label copies the text it is given, so cutting the buffer up in place
+    // is enough.
+    char *line = wrapped;
+    while (line != nullptr) {
+        char *const end = strchr(line, '\n');
+        if (end != nullptr) {
+            *end = '\0';
+        }
+        UI_Label(line);
+        line = end != nullptr ? end + 1 : nullptr;
+    }
+    Memory_Free(wrapped);
+}
+
+// Text wrapped to the given width as a single label. Labels render newlines, so
+// anything that does not scroll can stay one node.
+static void M_WrappedLabel(const char *const text, const float max_width)
+{
+    char *const wrapped = UI_Text_WordWrap(text, 1.0f, max_width);
+    UI_Label(wrapped != nullptr ? wrapped : text);
+    Memory_Free(wrapped);
+}
+
+// The width the dialog's text may occupy, in the units the layout sizes in. The
+// modal's padding and the window's chrome come off what the screen allows, and
+// a list of short rows keeps the dialog narrow rather than stretching it.
+static float M_GetConfirmContentWidth(UI_CONFIG_PRESETS_STATE *const s)
+{
+    const float scale = UI_Scaler_GetTextScale();
+    const float budget = UI_GetSafeCanvasWidth()
+        - (2.0f * M_CONFIRM_PAD + UI_Window_GetChromeWidth()) * scale;
+
+    const CONFIG_PRESET *const preset = Config_Presets_Get(s->selected_idx);
+    float natural = M_CONFIRM_MIN_W * scale;
+    if (preset != nullptr) {
+        for (int32_t i = 0; i < preset->setting_count; i++) {
+            const CONFIG_OPTION *const opt =
+                Config_GetOptionByPath(preset->keys[i]);
+            if (opt == nullptr
+                || strcmp(
+                       Config_GetOptionValueAsString(opt, false),
+                       preset->values[i])
+                    == 0) {
+                continue;
+            }
+            char *const value_change =
+                M_FormatValueChange(opt, preset->values[i]);
+            natural =
+                MAX(natural,
+                    UI_Label_MeasureW(M_GetPresetKeyLabel(preset->keys[i])));
+            natural = MAX(natural, UI_Label_MeasureW(value_change));
+            Memory_Free(value_change);
+        }
+    }
+
+    return MIN(natural, MAX(budget, M_CONFIRM_MIN_W * scale));
+}
+
+static void M_DrawConfirmRows(
+    UI_CONFIG_PRESETS_STATE *const s, const float content_width)
 {
     const CONFIG_PRESET *const preset = Config_Presets_Get(s->selected_idx);
     if (preset == nullptr) {
@@ -99,13 +185,10 @@ static void M_DrawConfirmRows(UI_CONFIG_PRESETS_STATE *const s)
         if (strcmp(current_value_raw, preset->values[i]) == 0) {
             continue;
         }
-        const char *const current_value =
-            Config_GetOptionValueAsString(opt, true);
-        char *const target_value =
-            Config_NormalizeOptionValueString(opt, preset->values[i], true);
-        UI_LabelFmt("%s", M_GetPresetKeyLabel(preset->keys[i]));
-        UI_LabelFmt("  %s \\{button right} %s", current_value, target_value);
-        Memory_Free(target_value);
+        char *const value_change = M_FormatValueChange(opt, preset->values[i]);
+        M_WrappedLines(M_GetPresetKeyLabel(preset->keys[i]), content_width);
+        M_WrappedLines(value_change, content_width);
+        Memory_Free(value_change);
     }
 }
 
@@ -113,7 +196,9 @@ static void M_Header(void *const user_data)
 {
     UI_CONFIG_PRESETS_STATE *const s = user_data;
     if (s->phase == M_PHASE_CONFIRM) {
-        UI_Label(GS("general/config_presets/confirm_description"));
+        M_WrappedLabel(
+            GS("general/config_presets/confirm_description"),
+            M_GetConfirmContentWidth(s));
         UI_Spacer(0.0f, UI_TEXT_HEIGHT);
     }
 }
@@ -123,7 +208,9 @@ static void M_Footer(void *const user_data)
     UI_CONFIG_PRESETS_STATE *const s = user_data;
     if (s->phase == M_PHASE_CONFIRM) {
         UI_Spacer(0.0f, UI_TEXT_HEIGHT);
-        UI_Label(GS("general/config_presets/confirm_restart_note"));
+        M_WrappedLabel(
+            GS("general/config_presets/confirm_restart_note"),
+            M_GetConfirmContentWidth(s));
     }
 }
 
@@ -241,11 +328,12 @@ bool UI_ConfigPresets_Control(UI_CONFIG_PRESETS_STATE *const s)
     }
     if (choice >= 0 && choice < count) {
         s->selected_idx = choice;
-        const int32_t row_count = M_GetConfirmRowCount(choice);
-        if (row_count > 0) {
+        if (M_GetChangedSettingCount(choice) > 0) {
             s->confirm_scroll.first_item = 0;
             s->confirm_scroll.sel_item = -1;
-            s->confirm_scroll.max_items = row_count;
+            // The stack counts its own lines once it has them; wrapping decides
+            // how many a row takes.
+            s->confirm_scroll.max_items = 0;
             s->phase = M_PHASE_CONFIRM;
         } else {
             s->phase = M_PHASE_NO_CHANGES;
@@ -298,16 +386,19 @@ void UI_ConfigPresetsApplyModal(UI_CONFIG_PRESETS_STATE *const s)
         return;
     }
 
+    const float content_width = M_GetConfirmContentWidth(s);
+
     const CONFIG_PRESET *const preset = Config_Presets_Get(s->selected_idx);
     const char *const preset_name =
         preset != nullptr ? GameString_Get(preset->name_gs) : "";
-    const char *const title = String_FormatStatic(
-        GS("general/config_presets/title_fmt"), preset_name);
+    char *const title =
+        String_Format(GS("general/config_presets/title_fmt"), preset_name);
+    char *const wrapped_title = UI_Text_WordWrap(title, 1.0f, content_width);
 
     UI_BeginModal(0.5f, 0.5f);
-    UI_BeginPad(6.0f, 6.0f);
+    UI_BeginPad(M_CONFIRM_PAD, M_CONFIRM_PAD);
     UI_BeginWindow((UI_WINDOW_SETTINGS) {
-        .title = title,
+        .title = wrapped_title != nullptr ? wrapped_title : title,
         .scrollable =
             s->phase == M_PHASE_CONFIRM ? &s->confirm_scroll : nullptr,
         .title_spacing = -1.0f,
@@ -319,28 +410,27 @@ void UI_ConfigPresetsApplyModal(UI_CONFIG_PRESETS_STATE *const s)
     });
 
     if (s->phase == M_PHASE_APPLIED) {
-        UI_BeginPad(6.0f, 6.0f);
-        UI_LabelFmt("%s", GS("general/config_presets/applied"));
+        UI_BeginPad(M_CONFIRM_PAD, M_CONFIRM_PAD);
+        M_WrappedLabel(GS("general/config_presets/applied"), content_width);
         UI_EndPad();
     } else if (s->phase == M_PHASE_NO_CHANGES) {
-        UI_BeginPad(6.0f, 6.0f);
-        UI_LabelFmt("%s", GS("general/config_presets/no_changes"));
+        UI_BeginPad(M_CONFIRM_PAD, M_CONFIRM_PAD);
+        M_WrappedLabel(GS("general/config_presets/no_changes"), content_width);
         UI_EndPad();
     } else if (s->phase == M_PHASE_CONFIRM) {
-        UI_BeginResize(M_CONFIRM_DIALOG_W, -1.0f);
-
         UI_BeginScrollableStack(
             &s->confirm_scroll,
             (UI_SCROLLABLE_STACK_SETTINGS) {
                 .orientation = UI_STACK_VERTICAL,
                 .spacing = 2.0f,
             });
-        M_DrawConfirmRows(s);
+        M_DrawConfirmRows(s, content_width);
         UI_EndScrollableStack();
-        UI_EndResize();
     }
 
     UI_EndWindow();
     UI_EndPad();
     UI_EndModal();
+    Memory_Free(wrapped_title);
+    Memory_Free(title);
 }
