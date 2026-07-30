@@ -2,16 +2,26 @@
 """Fail the commit if its message breaks the 50/72 rule.
 
 Subject line <= 50 chars, a blank line, then body wrapped at <= 72 chars.
-Wired in as a prek/pre-commit commit-msg hook so it is enforced mechanically
-instead of by memory.
+The subject also has to open with a module prefix. Wired in as a
+prek/pre-commit commit-msg hook so it is enforced mechanically instead of by
+memory.
 """
 
+import re
 import sys
 from collections.abc import Sequence
 from pathlib import Path
 
 MAX_SUBJECT = 50
 MAX_BODY = 72
+
+# `module-prefix: description`, the prefix at the very start of the subject.
+# A prefix names a file, so it spells the name as the file does: underscores
+# within a name, `/` between folders, `+` between two modules.
+SUBJECT_RE = re.compile(r"^[a-z0-9][a-z0-9_+./]*: \S")
+
+# Subjects git or a rebase writes itself, which the rule is not about.
+EXEMPT_PREFIXES = ("Merge ", "Revert ", "fixup! ", "squash! ", "amend! ")
 
 
 def main(argv: Sequence[str]) -> int:
@@ -45,6 +55,25 @@ def main(argv: Sequence[str]) -> int:
     subject = lines[0]
     if len(subject) > MAX_SUBJECT:
         errors.append(f"subject is {len(subject)} chars (max {MAX_SUBJECT})")
+    if not subject.startswith(EXEMPT_PREFIXES) and not SUBJECT_RE.match(
+        subject
+    ):
+        head = subject.split(":")[0]
+        if "," in head:
+            errors.append(
+                f"prefix `{head}` separates modules with a comma; join them"
+                " with `+`"
+            )
+        elif "-" in head:
+            errors.append(
+                f"prefix `{head}` uses a dash; spell the module as its file"
+                f" does (`{head.replace('-', '_')}`)"
+            )
+        else:
+            errors.append(
+                "subject must open with a lowercase module prefix, as in"
+                " `camera: keep the target on Lara`"
+            )
     if len(lines) > 1 and lines[1].strip():
         errors.append("second line must be blank (subject, blank, body)")
     for number, line in enumerate(lines[2:], start=3):

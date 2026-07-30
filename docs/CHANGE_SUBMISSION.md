@@ -42,8 +42,10 @@ aim to respect the 50/72 rule and have the following form:
 
 The prefix should describe the module that the pull request touches the most.
 In general this is the name of the `.c` or `.h` file with the most changes.
-Note that this includes the folder names which are separated with `/`. Avoid
-underscores (`_`) in favor of dashes (`-`).
+Note that this includes the folder names which are separated with `/`. Spell
+the name as the file spells it, underscores and all (`game_flow`,
+`objects/save_crystal`). A change that belongs to two modules equally names
+both, joined with `+` (`camera+rooms: ...`).
 
 The description should be as concise as possible; any details should be given
 in the commit message body. Use simple, to the point words like `add`, `fix`,
