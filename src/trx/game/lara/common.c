@@ -336,6 +336,7 @@ void Lara_InitialiseInventory(const GF_LEVEL *const level)
         Inv_AddItemNTimes(O_QUEST_ITEM_4, resume->num_quest_item_4);
         Inv_AddItemNTimes(O_QUEST_ITEM_5, resume->num_quest_item_5);
         Inv_AddItemNTimes(O_QUEST_ITEM_6, resume->num_quest_item_6);
+        Inv_AddItemNTimes(O_SAVE_CRYSTAL_ITEM, resume->num_save_crystals);
 
         if (g_Config.gameplay.remember_gun_status) {
             lara_info->gun_status = resume->gun_status;
