@@ -27,6 +27,7 @@ static void (*m_Resets[FAKE_MAX_RESETS])(void);
 static int32_t m_ResetCount;
 
 static void M_Fail(const char *what, int32_t limit);
+static void M_CheckArgName(const char *name);
 static void M_PushValue(lua_State *L, const char *name, const TRX_VALUE *value);
 static void M_PushArgs(lua_State *L, const FAKE_CALL *call);
 
@@ -34,6 +35,22 @@ static void M_Fail(const char *const what, const int32_t limit)
 {
     fprintf(stderr, "more than %d %s recorded; raise the limit\n", limit, what);
     abort();
+}
+
+// An argument lands on the group table beside the log's own `count` and `name`,
+// so one spelled either way would answer in place of them: a `count` argument
+// would read as the number of calls. Stopping here beats a test asserting
+// against the wrong number and passing.
+static void M_CheckArgName(const char *const name)
+{
+    if (strcmp(name, "count") == 0 || strcmp(name, "name") == 0) {
+        fprintf(
+            stderr,
+            "'%s' is the log's own key; record the argument under "
+            "another name\n",
+            name);
+        abort();
+    }
 }
 
 static void M_PushValue(
@@ -82,6 +99,7 @@ void FakeCalls_Record(const char *const name, const FAKE_ARG *args)
         if (call->arg_count >= FAKE_MAX_ARGS) {
             M_Fail("arguments to one call", FAKE_MAX_ARGS);
         }
+        M_CheckArgName(args->name);
         const int32_t idx = call->arg_count++;
         call->args[idx] = *args;
         if (args->value.type == TVT_STRING && args->value.as_str != nullptr) {
