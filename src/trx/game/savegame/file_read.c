@@ -947,6 +947,9 @@ static bool M_ReadResumeInfo(JSON_READ_IO *const io, RESUME_INFO *const resume)
     M_SHOULD(JSON_READ(io, "num_quest_item_5", &resume->num_quest_item_5));
     M_SHOULD(JSON_READ(io, "num_quest_item_6", &resume->num_quest_item_6));
 
+    // Introduced in TRX 1.10
+    M_SHOULD(JSON_READ(io, "num_save_crystals", &resume->num_save_crystals));
+
     M_MUST(JSON_READ(io, "available", &resume->flags.available));
 
     // Introduced in TRX 1.2

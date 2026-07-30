@@ -351,6 +351,7 @@ static void M_WriteResumeInfo(
     JSONW_WRITE(io, "num_quest_item_4", resume->num_quest_item_4);
     JSONW_WRITE(io, "num_quest_item_5", resume->num_quest_item_5);
     JSONW_WRITE(io, "num_quest_item_6", resume->num_quest_item_6);
+    JSONW_WRITE(io, "num_save_crystals", resume->num_save_crystals);
     JSONW_WRITE(io, "gun_status", resume->gun_status);
     JSONW_WRITE(io, "gun_type", resume->equipped_gun_type);
     JSONW_WRITE(io, "holsters_gun_type", resume->holsters_gun_type);

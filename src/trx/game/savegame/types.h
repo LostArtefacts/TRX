@@ -40,6 +40,7 @@ typedef struct {
     uint16_t flares;
     uint8_t num_quest_item_5;
     uint8_t num_quest_item_6;
+    uint8_t num_save_crystals;
 
     struct {
         bool available;

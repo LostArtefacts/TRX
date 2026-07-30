@@ -731,6 +731,7 @@ void Savegame_PersistGameToCurrentInfo(const GF_LEVEL *const level)
     resume->num_quest_item_4 = Inv_RequestItem(O_QUEST_ITEM_4);
     resume->num_quest_item_5 = Inv_RequestItem(O_QUEST_ITEM_5);
     resume->num_quest_item_6 = Inv_RequestItem(O_QUEST_ITEM_6);
+    resume->num_save_crystals = Inv_RequestItem(O_SAVE_CRYSTAL_ITEM);
 
     resume->equipped_gun_type = lara->last_gun_type;
     resume->holsters_gun_type = lara->holsters_gun_type;
@@ -804,6 +805,7 @@ void Savegame_ApplyLogicToCurrentInfo(const GF_LEVEL *const level)
         resume->num_quest_item_4 = 0;
         resume->num_quest_item_5 = 0;
         resume->num_quest_item_6 = 0;
+        resume->num_save_crystals = 0;
         resume->flares = 0;
 
         resume->equipped_gun_type = LGT_UNARMED;
@@ -839,6 +841,7 @@ void Savegame_ApplyLogicToCurrentInfo(const GF_LEVEL *const level)
         resume->num_quest_item_4 = 0;
         resume->num_quest_item_5 = 0;
         resume->num_quest_item_6 = 0;
+        resume->num_save_crystals = 0;
         resume->flags.has_harpoon = false;
         resume->flags.has_m16 = false;
         resume->flags.has_mp5 = false;
