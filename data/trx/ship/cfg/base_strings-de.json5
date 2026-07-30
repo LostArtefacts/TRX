@@ -313,14 +313,6 @@
             },
             "give": {
                 "help": "Fügt ein angegebenes Item zu Laras Inventar hinzu.",
-                "invalid_secret": "Unzulässiges Geheimnis: #%d (zulässige Geheimnisse: %s)",
-                "secret_given": "Geheimnis hinzugefügt %s",
-                "secret_list": "Gesammelte Geheimnisse: %d von %d (%s)",
-                "secret_none": "Gesammelte Geheimnisse: %d von %d",
-                "secret_taken": "Geheimnis enfernt %s",
-            },
-            "give_secret": {
-                "help": "Listet Laras Geheimnisse auf oder nimmt/gibt ein nach Nummern sortiertes Geheimnis.",
             },
             "heal": {
                 "already_full_hp": "Laras Gesundheit ist schon vollständig gefüllt.",
@@ -446,6 +438,15 @@
             },
             "screenshot": {
                 "help": "\\{review}Speichert einen Screenshot auf der Festplatte, mit optionalem Pfad.",
+            },
+            "secret": {
+                "action_help": "\\{review}ob das Geheimnis gegeben oder zurückgenommen wird",
+                "given": "Geheimnis hinzugefügt %s",
+                "help": "Listet Laras Geheimnisse auf oder nimmt/gibt ein nach Nummern sortiertes Geheimnis.",
+                "list": "Gesammelte Geheimnisse: %d von %d (%s)",
+                "none": "Gesammelte Geheimnisse: %d von %d",
+                "secret_help": "\\{review}welches Geheimnis, oder alle",
+                "taken": "Geheimnis enfernt %s",
             },
             "set": {
                 "ambiguous_2": "Mehrdeutige Eingabe: %s und %s",

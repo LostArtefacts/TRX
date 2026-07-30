@@ -527,6 +527,13 @@ unit_tests += {
 }
 
 unit_tests += {
+  'name': 'lua/commands/secret',
+  'bundles': [b_lua_surface, b_console, b_lua_strings],
+  'src': ['fakes/game.c', 'fakes/stats.c'],
+  'engine': ['game/lua/capi/game.c', 'game/lua/capi/stats.c'],
+}
+
+unit_tests += {
   'name': 'lua/commands/save_game',
   'bundles': [b_lua_surface, b_console],
   'src': ['fakes/game.c', 'fakes/savegame.c'],

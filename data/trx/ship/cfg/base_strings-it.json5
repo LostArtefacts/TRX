@@ -313,14 +313,6 @@
             },
             "give": {
                 "help": "Aggiunge un determinato oggetto all'inventario di Lara.",
-                "invalid_secret": "Segreto non valido: %s (segreti validi: %s)",
-                "secret_given": "Segreto %s aggiunto",
-                "secret_list": "Segreti raccolti: %d di %d (%s)",
-                "secret_none": "Segreti raccolti: %d di %d",
-                "secret_taken": "Segreto %s rimosso",
-            },
-            "give_secret": {
-                "help": "Mostra i segreti ottenuti da Lara, oppure aggiunge/rimuove un segreto in base al numero specificato.",
             },
             "heal": {
                 "already_full_hp": "Lara è già in piena salute",
@@ -446,6 +438,15 @@
             },
             "screenshot": {
                 "help": "Salva un'istantanea dello schermo su disco in un percorso facoltativo.",
+            },
+            "secret": {
+                "action_help": "\\{review}se dare il segreto o riprenderlo",
+                "given": "Segreto %s aggiunto",
+                "help": "Mostra i segreti ottenuti da Lara, oppure aggiunge/rimuove un segreto in base al numero specificato.",
+                "list": "Segreti raccolti: %d di %d (%s)",
+                "none": "Segreti raccolti: %d di %d",
+                "secret_help": "\\{review}quale segreto, o tutti",
+                "taken": "Segreto %s rimosso",
             },
             "set": {
                 "ambiguous_2": "Immissione ambigua: %s e %s",
