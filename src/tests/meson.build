@@ -82,10 +82,52 @@ b_lua_surface = {
   'args': ['-DREPO_ROOT="' + repo_root + '"'],
 }
 
+# The primitive value taxonomy and the two registries it reads names out of.
+# Its formatting helper and the localized game strings behind enum labels are
+# stubbed: the real ones live in translation units that want PCRE2 and the game
+# string table, and neither is what a value is being tested for.
+b_value = {
+  'engine': [
+    'core/dynamic_enum.c',
+    'core/enum_map.c',
+    'core/memory.c',
+    'core/value.c',
+    'core/vector.c',
+  ],
+  'src': ['stubs_enum_map.c'],
+}
+
+# The string bridge, with the real fuzzy matcher and the real regex underneath
+# it. PCRE2 comes with them, so a test cannot take the sources and forget the
+# code unit width the headers insist on.
+b_lua_strings = {
+  'engine': [
+    'core/strings/case_funcs.c',
+    'core/strings/common.c',
+    'core/strings/fuzzy_match.c',
+    'game/lua/capi/strings.c',
+  ],
+  'deps': [dep_pcre2],
+  'args': ['-DPCRE2_CODE_UNIT_WIDTH=8'],
+}
+
+# What it takes to dispatch a console command, on top of b_lua_surface: the
+# console itself, the strings it prints and the log it prints them through.
+b_console = {
+  'engine': [
+    'core/completion.c',
+    'game/lua/capi/console.c',
+    'game/lua/capi/locale.c',
+    'game/lua/capi/log.c',
+  ],
+  'src': ['fake_engine_console.c', 'fake_engine_locale.c'],
+}
+
 # One entry per test. The key names both the test and unit/test_<key>.c; the
 # value says what that test needs on top of the harness:
 #
-#   bundles - shared source groups, unioned into the target
+#   bundles - shared source groups, unioned into the target. They do not nest,
+#             so a test that wants the console names the surface as well
 #   src     - further test-side sources, relative to unit/
 #   engine  - engine sources under test, relative to ../trx/
 #   deps    - dependencies beyond the ones a bundle brings
@@ -129,70 +171,32 @@ unit_tests = {
   'completion': {
     'engine': ['core/completion.c', 'core/memory.c', 'core/vector.c'],
   },
-  'field': {
-    'engine': [
-      'game/lua/field.c',
-      'core/value.c',
-      'core/dynamic_enum.c',
-      'core/enum_map.c',
-      'core/memory.c',
-      'core/vector.c',
-    ],
-    'src': ['stubs_enum_map.c'],
-  },
+  'field': {'bundles': [b_value], 'engine': ['game/lua/field.c']},
   # The runtime override stack. The test answers the config layer for it, so no
   # option map, no settings file, no game.
   'config_override': {
-    'engine': [
-      'config/override.c',
-      'config/value.c',
-      'core/dynamic_enum.c',
-      'core/enum_map.c',
-      'core/memory.c',
-      'core/value.c',
-      'core/vector.c',
-    ],
-    'src': ['stubs_enum_map.c'],
+    'bundles': [b_value],
+    'engine': ['config/override.c', 'config/value.c'],
   },
-  # The name<->value registry the Lua enum bridge reflects. Its two dependencies
-  # outside core - the formatting helper and the localized game strings - are
-  # stubbed: the real ones live in translation units that want PCRE2 and the
-  # game string table, and neither is what the enum map is being tested for.
+  # The name<->value registry the Lua enum bridge reflects, and the dynamic
+  # registry keyed on an opaque token. Both are narrower than b_value, so they
+  # stand up only the half they are named for.
   'enum_map': {
     'engine': ['core/enum_map.c', 'core/memory.c', 'core/vector.c'],
     'src': ['stubs_enum_map.c'],
   },
-  # The dynamic enum registry, keyed on an opaque token. Its only dependency
-  # outside core is the localized game strings behind labels, which are stubbed.
   'dynamic_enum': {
     'engine': ['core/dynamic_enum.c', 'core/memory.c', 'core/vector.c'],
     'src': ['stubs_enum_map.c'],
   },
-  # The primitive value taxonomy. It leans on the enum map and dynamic enum
-  # registry; its formatting helper and the localized game strings behind enum
-  # labels are stubbed, the same way the enum map test stands them up.
-  'value': {
-    'engine': [
-      'core/value.c',
-      'core/dynamic_enum.c',
-      'core/enum_map.c',
-      'core/memory.c',
-      'core/vector.c',
-    ],
-    'src': ['stubs_enum_map.c'],
-  },
+  'value': {'bundles': [b_value]},
   'lua_enum': {
+    'bundles': [b_value],
     'engine': [
-      'core/enum_map.c',
-      'core/memory.c',
-      'core/vector.c',
-      'core/dynamic_enum.c',
-      'core/value.c',
       'game/lua/capi/enum.c',
       'game/lua/registry.c',
       'game/lua/utils.c',
     ],
-    'src': ['stubs_enum_map.c'],
     'deps': [dep_lua],
   },
   # The sandbox depends on nothing but Lua, so the wall the engine stands up at
@@ -204,19 +208,14 @@ unit_tests = {
   # field.c and lua/struct.c are leaf modules, so the reflection layer and the
   # Lua bridge can be exercised against a synthetic struct type.
   'lua_struct': {
+    'bundles': [b_value],
     'engine': [
-      'core/dynamic_enum.c',
-      'core/enum_map.c',
       'core/handle.c',
-      'core/memory.c',
-      'core/value.c',
-      'core/vector.c',
       'game/lua/capi/struct.c',
       'game/lua/field.c',
       'game/lua/registry.c',
       'game/lua/utils.c',
     ],
-    'src': ['stubs_enum_map.c'],
     'deps': [dep_lua],
   },
   'lua_rooms': {
@@ -229,20 +228,14 @@ unit_tests = {
     ],
   },
   'lua_items': {
-    'bundles': [b_lua_surface],
+    'bundles': [b_lua_surface, b_lua_strings],
     'src': ['fake_engine_items.c', 'fake_engine_catalog.c'],
     'engine': [
-      'core/strings/case_funcs.c',
-      'core/strings/common.c',
-      'core/strings/fuzzy_match.c',
       'game/lua/capi/events.c',
       'game/lua/capi/items.c',
       'game/lua/capi/objects.c',
       'game/lua/capi/catalog.c',
-      'game/lua/capi/strings.c',
     ],
-    'deps': [dep_pcre2],
-    'args': ['-DPCRE2_CODE_UNIT_WIDTH=8'],
   },
   # The same surface, taken through the two boot steps the other suites stop
   # short of: the seal, and hardening the globals.
@@ -278,32 +271,13 @@ unit_tests = {
     'src': ['fake_engine_music.c'],
     'engine': ['game/lua/capi/music.c'],
   },
-  # The fuzzy matcher and the regex are the real ones out of trx/core/strings.
-  'lua_strings': {
-    'bundles': [b_lua_surface],
-    'engine': [
-      'core/strings/common.c',
-      'core/strings/case_funcs.c',
-      'core/strings/fuzzy_match.c',
-      'game/lua/capi/strings.c',
-    ],
-    'deps': [dep_pcre2],
-    'args': ['-DPCRE2_CODE_UNIT_WIDTH=8'],
-  },
+  'lua_strings': {'bundles': [b_lua_surface, b_lua_strings]},
   # The parser is pure Lua, but it leans on the real fuzzy matcher out of
   # trx.strings, so the two are stood up together.
   'lua_argparse': {
-    'bundles': [b_lua_surface],
+    'bundles': [b_lua_surface, b_lua_strings],
     'src': ['fake_engine_locale.c'],
-    'engine': [
-      'core/strings/common.c',
-      'core/strings/case_funcs.c',
-      'core/strings/fuzzy_match.c',
-      'game/lua/capi/locale.c',
-      'game/lua/capi/strings.c',
-    ],
-    'deps': [dep_pcre2],
-    'args': ['-DPCRE2_CODE_UNIT_WIDTH=8'],
+    'engine': ['game/lua/capi/locale.c'],
   },
   'lua_sound': {
     'bundles': [b_lua_surface],
@@ -343,18 +317,9 @@ unit_tests = {
     'engine': ['game/lua/capi/game.c'],
   },
   'lua_objects': {
-    'bundles': [b_lua_surface],
+    'bundles': [b_lua_surface, b_lua_strings],
     'src': ['fake_engine_items.c', 'fake_engine_catalog.c'],
-    'engine': [
-      'core/strings/case_funcs.c',
-      'core/strings/common.c',
-      'core/strings/fuzzy_match.c',
-      'game/lua/capi/catalog.c',
-      'game/lua/capi/objects.c',
-      'game/lua/capi/strings.c',
-    ],
-    'deps': [dep_pcre2],
-    'args': ['-DPCRE2_CODE_UNIT_WIDTH=8'],
+    'engine': ['game/lua/capi/catalog.c', 'game/lua/capi/objects.c'],
   },
   'lua_lara': {
     'bundles': [b_lua_surface],
@@ -378,168 +343,58 @@ unit_tests = {
       'game/lua/capi/locale.c',
     ],
   },
-  'lua_console': {
-    'bundles': [b_lua_surface],
-    'src': ['fake_engine_console.c', 'fake_engine_locale.c'],
-    'engine': [
-      'core/strings/common.c',
-      'core/strings/case_funcs.c',
-      'core/strings/fuzzy_match.c',
-      'core/completion.c',
-      'game/lua/capi/console.c',
-      'game/lua/capi/locale.c',
-      'game/lua/capi/log.c',
-      'game/lua/capi/strings.c',
-    ],
-    'deps': [dep_pcre2],
-    'args': ['-DPCRE2_CODE_UNIT_WIDTH=8'],
-  },
+  'lua_console': {'bundles': [b_lua_surface, b_console, b_lua_strings]},
   # The help command, which the console module registers and composes from the
-  # same parser a command answers --help from.
-  'lua_cmd_help': {
-    'bundles': [b_lua_surface],
-    'src': ['fake_engine_console.c', 'fake_engine_locale.c'],
-    'engine': [
-      'core/strings/common.c',
-      'core/strings/case_funcs.c',
-      'core/strings/fuzzy_match.c',
-      'core/completion.c',
-      'game/lua/capi/console.c',
-      'game/lua/capi/locale.c',
-      'game/lua/capi/log.c',
-      'game/lua/capi/strings.c',
-    ],
-    'deps': [dep_pcre2],
-    'args': ['-DPCRE2_CODE_UNIT_WIDTH=8'],
-  },
+  # same parser a command answers --help from. It needs nothing the console
+  # itself does not.
+  'lua_cmd_help': {'bundles': [b_lua_surface, b_console, b_lua_strings]},
   # A console command written in Lua, exercised through the console that
   # dispatches it. Everything the command touches is a real bridge, so the test
   # says whether the command works, not whether it was written the way we
   # expected.
   'lua_cmd_heal': {
-    'bundles': [b_lua_surface],
-    'src': [
-      'fake_engine_console.c',
-      'fake_engine_game.c',
-      'fake_engine_items.c',
-      'fake_engine_lara.c',
-      'fake_engine_locale.c',
-    ],
+    'bundles': [b_lua_surface, b_console],
+    'src': ['fake_engine_game.c', 'fake_engine_items.c', 'fake_engine_lara.c'],
     'engine': [
-      'core/completion.c',
-      'game/lua/capi/console.c',
       'game/lua/capi/game.c',
       'game/lua/capi/items.c',
       'game/lua/capi/lara.c',
-      'game/lua/capi/locale.c',
-      'game/lua/capi/log.c',
     ],
   },
   # The commands with non-trivial arguments, exercised through the console. Name
   # matching goes through fake_engine_strings, a pcre2-free stand-in, so these
   # stay light: the real matcher is covered by lua_strings and lua_argparse.
   'lua_cmd_play': {
-    'bundles': [b_lua_surface],
-    'src': [
-      'fake_engine_console.c',
-      'fake_engine_game.c',
-      'fake_engine_locale.c',
-      'fake_engine_strings.c',
-    ],
-    'engine': [
-      'core/completion.c',
-      'game/lua/capi/console.c',
-      'game/lua/capi/game.c',
-      'game/lua/capi/locale.c',
-      'game/lua/capi/log.c',
-    ],
+    'bundles': [b_lua_surface, b_console],
+    'src': ['fake_engine_game.c', 'fake_engine_strings.c'],
+    'engine': ['game/lua/capi/game.c'],
   },
   'lua_cmd_music': {
-    'bundles': [b_lua_surface],
-    'src': [
-      'fake_engine_console.c',
-      'fake_engine_music.c',
-      'fake_engine_locale.c',
-      'fake_engine_strings.c',
-    ],
-    'engine': [
-      'core/completion.c',
-      'game/lua/capi/console.c',
-      'game/lua/capi/music.c',
-      'game/lua/capi/locale.c',
-      'game/lua/capi/log.c',
-    ],
+    'bundles': [b_lua_surface, b_console],
+    'src': ['fake_engine_music.c', 'fake_engine_strings.c'],
+    'engine': ['game/lua/capi/music.c'],
   },
   'lua_cmd_load': {
-    'bundles': [b_lua_surface],
-    'src': [
-      'fake_engine_console.c',
-      'fake_engine_savegame.c',
-      'fake_engine_locale.c',
-    ],
-    'engine': [
-      'core/completion.c',
-      'game/lua/capi/console.c',
-      'game/lua/capi/locale.c',
-      'game/lua/capi/log.c',
-    ],
+    'bundles': [b_lua_surface, b_console],
+    'src': ['fake_engine_savegame.c'],
   },
   'lua_cmd_rule': {
-    'bundles': [b_lua_surface],
-    'src': ['fake_engine_console.c', 'fake_engine_locale.c'],
-    'engine': [
-      'core/completion.c',
-      'core/strings/case_funcs.c',
-      'core/strings/common.c',
-      'core/strings/fuzzy_match.c',
-      'game/lua/capi/console.c',
-      'game/lua/capi/locale.c',
-      'game/lua/capi/log.c',
-      'game/lua/capi/rules.c',
-      'game/lua/capi/strings.c',
-      'game/rules.c',
-    ],
-    'deps': [dep_pcre2],
-    'args': ['-DPCRE2_CODE_UNIT_WIDTH=8'],
+    'bundles': [b_lua_surface, b_console, b_lua_strings],
+    'engine': ['game/lua/capi/rules.c', 'game/rules.c'],
   },
   'lua_cmd_save': {
-    'bundles': [b_lua_surface],
-    'src': [
-      'fake_engine_console.c',
-      'fake_engine_game.c',
-      'fake_engine_savegame.c',
-      'fake_engine_locale.c',
-    ],
-    'engine': [
-      'core/completion.c',
-      'game/lua/capi/console.c',
-      'game/lua/capi/game.c',
-      'game/lua/capi/locale.c',
-      'game/lua/capi/log.c',
-    ],
+    'bundles': [b_lua_surface, b_console],
+    'src': ['fake_engine_game.c', 'fake_engine_savegame.c'],
+    'engine': ['game/lua/capi/game.c'],
   },
   'lua_cmd_set': {
-    'bundles': [b_lua_surface],
-    'src': [
-      'fake_engine_config.c',
-      'fake_engine_console.c',
-      'fake_engine_locale.c',
-    ],
+    'bundles': [b_lua_surface, b_console, b_lua_strings],
+    'src': ['fake_engine_config.c'],
     'engine': [
       'config/override.c',
       'config/value.c',
-      'core/strings/case_funcs.c',
-      'core/strings/common.c',
-      'core/strings/fuzzy_match.c',
       'game/lua/capi/config.c',
-      'core/completion.c',
-      'game/lua/capi/console.c',
-      'game/lua/capi/locale.c',
-      'game/lua/capi/log.c',
-      'game/lua/capi/strings.c',
     ],
-    'deps': [dep_pcre2],
-    'args': ['-DPCRE2_CODE_UNIT_WIDTH=8'],
   },
   'lua_creatures': {
     'bundles': [b_lua_surface],
@@ -676,11 +531,22 @@ foreach name, spec : unit_tests
   if spec.get('stubs', true)
     sources += test_stubs
   endif
+  # Bundles are listed side by side rather than nested, so two of them may name
+  # the same source. Take it once: a target that lists one bundle too many
+  # should be no harder to fix than deleting the bundle again.
+  seen = []
   foreach source : test_src
-    sources += files('unit' / source)
+    if source not in seen
+      seen += source
+      sources += files('unit' / source)
+    endif
   endforeach
+  seen = []
   foreach source : test_engine
-    sources += files('..' / 'trx' / source)
+    if source not in seen
+      seen += source
+      sources += files('..' / 'trx' / source)
+    endif
   endforeach
 
   exe = executable(
