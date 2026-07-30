@@ -216,6 +216,20 @@ local FAMILIES = {
   -- One of Lara's own: the butler, and Lara herself.
   loyal = "loyal",
   pickup = "pickup",
+  -- What a pickup is. A weapon, its clips, and what Lara spends.
+  gun = "gun",
+  ammo = "ammo",
+  supply = "supply",
+  -- The pickups named for themselves rather than filling a numbered slot:
+  -- the crowbar, the lasersight, the binoculars, the waterskins, the leadbar.
+  tool = "tool",
+  -- The slot-numbered ones, by the slot they fill. `quest` carries the scion.
+  key = "key",
+  puzzle = "puzzle",
+  quest = "quest",
+  examine = "examine",
+  collectible = "collectible",
+  secret = "secret",
   switch = "switch",
   receptacle = "receptacle",
   door = "door",
@@ -288,7 +302,17 @@ The identity query over every object definition. Narrow it and read it - see
 Its own narrowings, beyond the shared `by_name` and the operators: the states
 `loaded` and `spawnable`, and the families `creature`, `enemy`, `loyal`,
 `pickup`, `switch`, `receptacle`, `door`, `inventory_item`, `null_object` and
-`animation`. Every family is searchable: a `by_name` of the family's own name
+`animation`.
+
+`pickup` narrows further, by what the thing is: `gun`, `ammo` for its clips,
+`supply` for what Lara spends, `tool` for what she carries and uses, and
+`key`, `puzzle`, `quest`, `examine` and `collectible` for the slot-numbered
+items, by the slot each fills. `quest` carries the scion. `secret` is the
+trinket a secret trigger sits under. These do not cover `pickup` between them:
+a second state of something Lara already carries, such as a part-full
+waterskin, is in none of them.
+
+Every family is searchable: a `by_name` of the family's own name
 matches every member, and `names` offers it for completion. Which families a
 query answers to follows from what it kept, so one narrowed to what fights
 offers no `pickup`.

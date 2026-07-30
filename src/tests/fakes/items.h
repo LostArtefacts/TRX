@@ -1,5 +1,7 @@
 #pragma once
 
+#include <trx/game/objects/ids.h>
+
 #include <stdint.h>
 
 #define FAKE_ITEM_POOL 8 // small, so pool exhaustion is reachable

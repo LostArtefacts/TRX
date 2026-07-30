@@ -25,7 +25,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#define FAKE_OBJ_COUNT 9
+#define FAKE_OBJ_COUNT O_NUMBER_OF // reaches the real ids a family names
 #define FAKE_ANIM_COUNT 2
 #define FAKE_PROP_SLOTS 4
 
@@ -54,6 +54,29 @@ static int32_t m_ObjectHP[FAKE_OBJ_COUNT];
 const OBJECT_ID g_CreatureObjects[] = { FAKE_OBJ_WOLF, NO_OBJECT };
 const OBJECT_ID g_LoyalObjects[] = { NO_OBJECT };
 const OBJECT_ID g_PickupObjects[] = { FAKE_OBJ_VASE, FAKE_OBJ_KEY, NO_OBJECT };
+// Built from pickups.def as the engine builds them: the pickup families are
+// read straight off it now, so a test of them sees the real taxonomy. The
+// umbrella above stays the fake's own two, which is what the rest of the suite
+// counts.
+const OBJECT_ID g_GunObjects[] = {
+#define X_PICKUP_GUN(item, option) item,
+#include <trx/game/objects/pickups.def>
+#undef X_PICKUP_GUN
+    NO_OBJECT,
+};
+const OBJECT_ID g_GunAmmoObjects[] = {
+#define X_PICKUP_GUN_AMMO(gun_item, item, option) item,
+#include <trx/game/objects/pickups.def>
+#undef X_PICKUP_GUN_AMMO
+    NO_OBJECT,
+};
+const OBJECT_ID g_SecretObjects[] = {
+    O_SECRET_1,
+    O_SECRET_2,
+    O_SECRET_3,
+    NO_OBJECT,
+};
+
 const OBJECT_ID g_SwitchObjects[] = { FAKE_OBJ_SWITCH, NO_OBJECT };
 const OBJECT_ID g_ReceptacleObjects[] = { FAKE_OBJ_RECEPTACLE, NO_OBJECT };
 const OBJECT_ID g_DoorObjects[] = { FAKE_OBJ_DOOR, NO_OBJECT };
