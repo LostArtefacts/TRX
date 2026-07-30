@@ -66,6 +66,7 @@
 - fixed quick saves bypassing the save crystals mode
 - fixed the game displaying a GUI error dialog when it fails to start in headless mode
 - fixed the body bag trigger to also collect Bacon Lara, Qualopec Mummy and Skidoo Driver's corpses
+- fixed settings text running off both sides of the screen in the longer languages, most visibly at 4:3 (#6000)
 
 **TR1**
 - changed weather to be affected by the breeze

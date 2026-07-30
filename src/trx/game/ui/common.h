@@ -36,10 +36,17 @@ typedef struct UI_NODE {
     void *data;
 } UI_NODE;
 
+// How far a dialog stays clear of the screen edges, in canvas units.
+#define UI_SCREEN_MARGIN 5.0f
+
 // Dimensions in virtual pixels of the screen area
 // (640x480 for any 4:3 resolution on 1.00 text scaling)
 int32_t UI_GetCanvasWidth(void);
 int32_t UI_GetCanvasHeight(void);
+
+// The width a dialog may occupy: the canvas less the screen margin at either
+// edge. What sizes itself to fit the screen fits to this.
+float UI_GetSafeCanvasWidth(void);
 float UI_ScaleX(float x);
 float UI_ScaleY(float y);
 
