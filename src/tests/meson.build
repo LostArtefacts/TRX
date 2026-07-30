@@ -9,7 +9,7 @@
 # `meson test` needs only an exit code, so the harness is a header, not a
 # dependency.
 #
-# Each test is one entry in `unit_tests` at the bottom of this file, naming the
+# Each test is one `unit_tests +=` stanza at the bottom of this file, naming the
 # engine sources it needs and nothing more. A link error is the signal that a
 # leaf module stopped being one, so the closures are listed by hand rather than
 # taken from a library of everything.
@@ -125,12 +125,12 @@ b_console = {
   'src': ['fakes/console.c', 'fakes/locale.c'],
 }
 
-# One entry per test. The key is the test source, minus its .c, and mirrors what
-# it exercises: src/tests/trx/core/vector.c tests src/trx/core/vector.c, and
-# src/tests/lua/api/music.c stands up trx.music out of src/lua/api/music.lua. The
-# same key with dots for slashes is what `meson test` calls it.
+# One stanza per test. `name` is the test source, minus its .c, and mirrors what
+# the test exercises: src/tests/trx/core/vector.c tests src/trx/core/vector.c,
+# and src/tests/lua/api/music.c stands trx.music up out of src/lua/api/music.lua.
+# The same name with dots for slashes is what `meson test` calls it.
 #
-# The value says what the test needs on top of the harness:
+# The rest says what the test needs on top of the harness:
 #
 #   bundles - shared source groups, unioned into the target. They do not nest,
 #             so a test that wants the console names the surface as well
@@ -139,387 +139,525 @@ b_console = {
 #   deps    - dependencies beyond the ones a bundle brings
 #   args    - c_args beyond the ones a bundle brings
 #   stubs   - false to leave harness/stubs.c out
-unit_tests = {
-  'trx/core/vector': {'engine': ['core/vector.c', 'core/memory.c']},
-  'trx/core/math/func': {
-    'engine': ['core/math/func.c', 'core/math/geom.c', 'core/math/trig.c'],
-    'deps': [dep_mathlibrary],
-  },
-  'trx/game/cutseq/decoder': {'engine': ['game/cutseq/decoder.c']},
-  'trx/game/cutseq/pak': {
-    'engine': ['game/cutseq/pak.c', 'core/memory.c'],
-    'deps': [dep_zlib],
-  },
-  'trx/core/hash': {'engine': ['core/hash.c']},
-  'trx/core/bson': {
-    'engine': [
-      'core/bson/parse.c',
-      'core/bson/write.c',
-      'core/json/base.c',
-      'core/memory.c',
-    ],
-  },
-  'trx/core/handle': {'engine': ['core/handle.c']},
-  'trx/game/items/actions': {'engine': ['game/items/actions/common.c']},
-  'trx/game/items/trigger': {
-    'engine': ['game/items/trigger.c', 'version.c'],
-    'deps': [dep_mathlibrary],
-  },
-  'trx/game/console/completion': {
-    'engine': [
-      'core/completion.c',
-      'game/console/completion.c',
-      'game/console/registry.c',
-      'core/memory.c',
-      'core/vector.c',
-    ],
-  },
-  'trx/core/completion': {
-    'engine': ['core/completion.c', 'core/memory.c', 'core/vector.c'],
-  },
-  'trx/game/lua/field': {'bundles': [b_value], 'engine': ['game/lua/field.c']},
-  # The runtime override stack. The test answers the config layer for it, so no
-  # option map, no settings file, no game.
-  'trx/config/override': {
-    'bundles': [b_value],
-    'engine': ['config/override.c', 'config/value.c'],
-  },
-  # The name<->value registry the Lua enum bridge reflects, and the dynamic
-  # registry keyed on an opaque token. Both are narrower than b_value, so they
-  # stand up only the half they are named for.
-  'trx/core/enum_map': {
-    'engine': ['core/enum_map.c', 'core/memory.c', 'core/vector.c'],
-    'src': ['harness/stubs_enum_map.c'],
-  },
-  'trx/core/dynamic_enum': {
-    'engine': ['core/dynamic_enum.c', 'core/memory.c', 'core/vector.c'],
-    'src': ['harness/stubs_enum_map.c'],
-  },
-  'trx/core/value': {'bundles': [b_value]},
-  'trx/game/lua/capi/enum': {
-    'bundles': [b_value],
-    'engine': [
-      'game/lua/capi/enum.c',
-      'game/lua/registry.c',
-      'game/lua/utils.c',
-    ],
-    'deps': [dep_lua],
-  },
-  # The sandbox depends on nothing but Lua, so the wall the engine stands up at
-  # boot stands up here against a bare state - no modules, no engine.
-  'trx/game/lua/sandbox': {'engine': ['game/lua/sandbox.c'], 'deps': [dep_lua]},
-  # The guard reads nothing but Lua and the clock, and the test supplies the
-  # clock itself, stepped by hand, so the budget runs out deterministically.
-  'trx/game/lua/guard': {'engine': ['game/lua/guard.c'], 'deps': [dep_lua]},
-  # field.c and lua/struct.c are leaf modules, so the reflection layer and the
-  # Lua bridge can be exercised against a synthetic struct type.
-  'trx/game/lua/capi/struct': {
-    'bundles': [b_value],
-    'engine': [
-      'core/handle.c',
-      'game/lua/capi/struct.c',
-      'game/lua/field.c',
-      'game/lua/registry.c',
-      'game/lua/utils.c',
-    ],
-    'deps': [dep_lua],
-  },
-  'lua/api/rooms': {
-    'bundles': [b_lua_surface],
-    'src': ['fakes/rooms.c', 'fakes/items.c'],
-    'engine': [
-      'game/lua/capi/events.c',
-      'game/lua/capi/items.c',
-      'game/lua/capi/rooms.c',
-    ],
-  },
-  'lua/api/items': {
-    'bundles': [b_lua_surface, b_lua_strings],
-    'src': ['fakes/items.c', 'fakes/catalog.c'],
-    'engine': [
-      'game/lua/capi/events.c',
-      'game/lua/capi/items.c',
-      'game/lua/capi/objects.c',
-      'game/lua/capi/catalog.c',
-    ],
-  },
-  # The same surface, taken through the two boot steps the other suites stop
-  # short of: the seal, and hardening the globals.
-  'lua/boot': {
-    'bundles': [b_lua_surface],
-    'src': ['fakes/items.c'],
-    'engine': ['game/lua/capi/items.c'],
-  },
-  # No fake engine: the real trig tables are the thing under test.
-  'lua/api/math': {
-    'bundles': [b_lua_surface],
-    'engine': ['game/lua/capi/math.c', 'core/math/trig.c'],
-    'deps': [dep_mathlibrary],
-  },
-  'lua/api/assault': {
-    'bundles': [b_lua_surface],
-    'src': ['fakes/assault.c'],
-    'engine': ['game/lua/capi/assault.c'],
-  },
-  # rooms rides along: trx.camera.room hands back a trx.rooms.Room.
-  'lua/api/camera': {
-    'bundles': [b_lua_surface],
-    'src': [
-      'fakes/camera.c',
-      'fakes/rooms.c',
-      # for Room_GetIndexFromPos, which rooms.c reaches for
-      'fakes/items.c',
-    ],
-    'engine': ['game/lua/capi/rooms.c', 'game/lua/capi/camera.c'],
-  },
-  'lua/api/music': {
-    'bundles': [b_lua_surface],
-    'src': ['fakes/music.c'],
-    'engine': ['game/lua/capi/music.c'],
-  },
-  'lua/api/strings': {'bundles': [b_lua_surface, b_lua_strings]},
-  # The parser is pure Lua, but it leans on the real fuzzy matcher out of
-  # trx.strings, so the two are stood up together.
-  'lua/api/argparse': {
-    'bundles': [b_lua_surface, b_lua_strings],
-    'src': ['fakes/locale.c'],
-    'engine': ['game/lua/capi/locale.c'],
-  },
-  'lua/api/sound': {
-    'bundles': [b_lua_surface],
-    'src': ['fakes/sound.c'],
-    'engine': ['game/lua/capi/sound.c'],
-  },
-  'lua/api/locale': {
-    'bundles': [b_lua_surface],
-    'src': ['fakes/locale.c'],
-    'engine': ['game/lua/capi/locale.c'],
-  },
-  'lua/api/lua': {
-    'bundles': [b_lua_surface],
-    'src': ['fakes/lua.c'],
-    'engine': ['game/lua/capi/lua.c'],
-  },
-  'lua/api/weather': {
-    'bundles': [b_lua_surface],
-    'engine': ['game/lua/capi/weather.c'],
-  },
-  'lua/api/mod': {'bundles': [b_lua_surface], 'engine': ['game/lua/capi/mod.c']},
-  'lua/api/savegame': {
-    'bundles': [b_lua_surface],
-    'engine': ['game/lua/capi/savegame.c'],
-  },
-  # No stubs: fake_engine_log.c provides Log_Message itself, because which line
-  # the log blames is the thing under test.
-  'lua/api/log': {
-    'bundles': [b_lua_surface],
-    'src': ['fakes/log.c'],
-    'engine': ['game/lua/capi/log.c'],
-    'stubs': false,
-  },
-  'lua/api/game': {
-    'bundles': [b_lua_surface],
-    'src': ['fakes/game.c'],
-    'engine': ['game/lua/capi/game.c'],
-  },
-  'lua/api/objects': {
-    'bundles': [b_lua_surface, b_lua_strings],
-    'src': ['fakes/items.c', 'fakes/catalog.c'],
-    'engine': ['game/lua/capi/catalog.c', 'game/lua/capi/objects.c'],
-  },
-  'lua/api/lara': {
-    'bundles': [b_lua_surface],
-    'src': ['fakes/lara.c', 'fakes/items.c'],
-    'engine': ['game/lua/capi/items.c', 'game/lua/capi/lara.c'],
-  },
-  # The catalogs are real ENUM_MAP enums out of the real trx/game/enum.c. Only
-  # the slot mapping, which a game loads from a CSV, is faked.
-  'lua/api/catalog': {
-    'bundles': [b_lua_surface],
-    'src': ['fakes/catalog.c'],
-    'engine': ['game/lua/capi/catalog.c'],
-  },
-  'lua/api/config': {
-    'bundles': [b_lua_surface],
-    'src': ['fakes/config.c', 'fakes/locale.c'],
-    'engine': [
-      'config/override.c',
-      'config/value.c',
-      'game/lua/capi/config.c',
-      'game/lua/capi/locale.c',
-    ],
-  },
-  'lua/api/console': {'bundles': [b_lua_surface, b_console, b_lua_strings]},
-  # The help command, which the console module registers and composes from the
-  # same parser a command answers --help from. It needs nothing the console
-  # itself does not.
-  'lua/commands/help': {'bundles': [b_lua_surface, b_console, b_lua_strings]},
-  # A console command written in Lua, exercised through the console that
-  # dispatches it. Everything the command touches is a real bridge, so the test
-  # says whether the command works, not whether it was written the way we
-  # expected.
-  'lua/commands/heal': {
-    'bundles': [b_lua_surface, b_console],
-    'src': ['fakes/game.c', 'fakes/items.c', 'fakes/lara.c'],
-    'engine': [
-      'game/lua/capi/game.c',
-      'game/lua/capi/items.c',
-      'game/lua/capi/lara.c',
-    ],
-  },
-  # The commands with non-trivial arguments, exercised through the console. Name
-  # matching goes through fake_engine_strings, a pcre2-free stand-in, so these
-  # stay light: the real matcher is covered by lua_strings and lua_argparse.
-  'lua/commands/play': {
-    'bundles': [b_lua_surface, b_console],
-    'src': ['fakes/game.c', 'fakes/strings.c'],
-    'engine': ['game/lua/capi/game.c'],
-  },
-  'lua/commands/music': {
-    'bundles': [b_lua_surface, b_console],
-    'src': ['fakes/music.c', 'fakes/strings.c'],
-    'engine': ['game/lua/capi/music.c'],
-  },
-  'lua/commands/load': {
-    'bundles': [b_lua_surface, b_console],
-    'src': ['fakes/savegame.c'],
-  },
-  'lua/commands/rule': {
-    'bundles': [b_lua_surface, b_console, b_lua_strings],
-    'engine': ['game/lua/capi/rules.c', 'game/rules.c'],
-  },
-  'lua/commands/save': {
-    'bundles': [b_lua_surface, b_console],
-    'src': ['fakes/game.c', 'fakes/savegame.c'],
-    'engine': ['game/lua/capi/game.c'],
-  },
-  'lua/commands/set': {
-    'bundles': [b_lua_surface, b_console, b_lua_strings],
-    'src': ['fakes/config.c'],
-    'engine': [
-      'config/override.c',
-      'config/value.c',
-      'game/lua/capi/config.c',
-    ],
-  },
-  'lua/api/creatures': {
-    'bundles': [b_lua_surface],
-    'src': ['fakes/creatures.c'],
-    'engine': ['game/lua/capi/creatures.c'],
-  },
-  'lua/api/events': {
-    'bundles': [b_lua_surface],
-    'src': ['fakes/rooms.c'],
-    'engine': ['game/lua/capi/events.c'],
-  },
-  'lua/seal': {
-    'bundles': [b_lua_surface],
-    'src': ['fakes/items.c'],
-    'engine': ['game/lua/capi/items.c'],
-  },
-  # The UI layout test is the widest of the unit tests: it stands up the settings
-  # dialogs and runs the real measure and layout passes over them. It reads the
-  # shipped font.bin for glyph metrics and the shipped config for the strings -
-  # both versioned in this repository - so it still needs no window and no build
-  # of the game.
-  'trx/game/ui': {
-    'src': [
-      'fakes/settings.c',
-      'fakes/ui.c',
-      'fakes/ui_draw.c',
-      'harness/font_bin.c',
-    ],
-    'engine': [
-      'config/common.c',
-      'config/enum.c',
-      'config/map.c',
-      'config/override.c',
-      'config/presets.c',
-      'config/value.c',
-      'core/colors.c',
-      'core/completion.c',
-      'core/dynamic_enum.c',
-      'core/enum_map.c',
-      'core/event_manager.c',
-      'core/handle.c',
-      'core/json/base.c',
-      'core/json/parse.c',
-      'core/json/util/file.c',
-      'core/json/util/read_io.c',
-      'core/json/write.c',
-      'core/memory.c',
-      'core/strings/case_funcs.c',
-      'core/strings/common.c',
-      'core/value.c',
-      'core/vector.c',
-      'game/enum.c',
-      'game/game_strings/entries.c',
-      'game/gun/vars.c',
-      'game/objects/vars.c',
-      'game/rules.c',
-      'game/ui/common.c',
-      'game/ui/dialogs/color_editor.c',
-      'game/ui/dialogs/config_presets.c',
-      'game/ui/dialogs/gameplay_settings.c',
-      'game/ui/dialogs/graphic_settings.c',
-      'game/ui/dialogs/setting_helpers/enums.c',
-      'game/ui/dialogs/setting_helpers/handlers.c',
-      'game/ui/dialogs/setting_helpers/handlers_language.c',
-      'game/ui/dialogs/settings.c',
-      'game/ui/dialogs/settings_editor.c',
-      'game/ui/dialogs/settings_tabs.c',
-      'game/ui/dialogs/sound_settings.c',
-      'game/ui/dialogs/text.c',
-      'game/ui/events.c',
-      'game/ui/helpers.c',
-      'game/ui/scaler.c',
-      'game/ui/scrollable.c',
-      'game/ui/settings.c',
-      'game/ui/text.c',
-      'version.c',
-      'gl/enum.c',
-      'game/ui/elements/ammo_label.c',
-      'game/ui/elements/anchor.c',
-      'game/ui/elements/bar.c',
-      'game/ui/elements/bar_enemy_hp.c',
-      'game/ui/elements/bar_lara_air.c',
-      'game/ui/elements/bar_lara_exposure.c',
-      'game/ui/elements/bar_lara_hp.c',
-      'game/ui/elements/bar_lara_sprint.c',
-      'game/ui/elements/color_swatch.c',
-      'game/ui/elements/flash.c',
-      'game/ui/elements/fps_counter.c',
-      'game/ui/elements/frame.c',
-      'game/ui/elements/gradient_slider.c',
-      'game/ui/elements/hide.c',
-      'game/ui/elements/horizontal_line.c',
-      'game/ui/elements/label.c',
-      'game/ui/elements/modal.c',
-      'game/ui/elements/offset.c',
-      'game/ui/elements/pad.c',
-      'game/ui/elements/progress_button.c',
-      'game/ui/elements/prompt.c',
-      'game/ui/elements/requester.c',
-      'game/ui/elements/resize.c',
-      'game/ui/elements/row_arrows.c',
-      'game/ui/elements/scrollable_stack.c',
-      'game/ui/elements/sleek_bar.c',
-      'game/ui/elements/spacer.c',
-      'game/ui/elements/span.c',
-      'game/ui/elements/stack.c',
-      'game/ui/elements/tab_switch.c',
-      'game/ui/elements/window.c',
-    ],
-    'deps': [dep_mathlibrary, dep_pcre2, dep_zlib],
-    'args': [
-      '-DPCRE2_CODE_UNIT_WIDTH=8',
-      '-DTEST_SHIP_CFG_DIR="' + repo_root / 'data/trx/ship/cfg' + '"',
-      '-DTEST_SHIP_GAMES_DIR="' + repo_root / 'data/trx/ship/games' + '"',
-    ],
-  },
+unit_tests = []
+
+unit_tests += {
+  'name': 'trx/core/vector',
+  'engine': ['core/vector.c', 'core/memory.c'],
 }
 
-foreach name, spec : unit_tests
+unit_tests += {
+  'name': 'trx/core/math/func',
+  'engine': ['core/math/func.c', 'core/math/geom.c', 'core/math/trig.c'],
+  'deps': [dep_mathlibrary],
+}
+
+unit_tests += {
+  'name': 'trx/game/cutseq/decoder',
+  'engine': ['game/cutseq/decoder.c'],
+}
+
+unit_tests += {
+  'name': 'trx/game/cutseq/pak',
+  'engine': ['game/cutseq/pak.c', 'core/memory.c'],
+  'deps': [dep_zlib],
+}
+
+unit_tests += {
+  'name': 'trx/core/hash',
+  'engine': ['core/hash.c'],
+}
+
+unit_tests += {
+  'name': 'trx/core/bson',
+  'engine': [
+    'core/bson/parse.c',
+    'core/bson/write.c',
+    'core/json/base.c',
+    'core/memory.c',
+  ],
+}
+
+unit_tests += {
+  'name': 'trx/core/handle',
+  'engine': ['core/handle.c'],
+}
+
+unit_tests += {
+  'name': 'trx/game/items/actions',
+  'engine': ['game/items/actions/common.c'],
+}
+
+unit_tests += {
+  'name': 'trx/game/items/trigger',
+  'engine': ['game/items/trigger.c', 'version.c'],
+  'deps': [dep_mathlibrary],
+}
+
+unit_tests += {
+  'name': 'trx/game/console/completion',
+  'engine': [
+    'core/completion.c',
+    'game/console/completion.c',
+    'game/console/registry.c',
+    'core/memory.c',
+    'core/vector.c',
+  ],
+}
+
+unit_tests += {
+  'name': 'trx/core/completion',
+  'engine': ['core/completion.c', 'core/memory.c', 'core/vector.c'],
+}
+
+unit_tests += {
+  'name': 'trx/game/lua/field',
+  'bundles': [b_value],
+  'engine': ['game/lua/field.c'],
+}
+
+# The runtime override stack. The test answers the config layer for it, so no
+# option map, no settings file, no game.
+unit_tests += {
+  'name': 'trx/config/override',
+  'bundles': [b_value],
+  'engine': ['config/override.c', 'config/value.c'],
+}
+
+# The name<->value registry the Lua enum bridge reflects, and the dynamic
+# registry keyed on an opaque token. Both are narrower than b_value, so they
+# stand up only the half they are named for.
+unit_tests += {
+  'name': 'trx/core/enum_map',
+  'engine': ['core/enum_map.c', 'core/memory.c', 'core/vector.c'],
+  'src': ['harness/stubs_enum_map.c'],
+}
+
+unit_tests += {
+  'name': 'trx/core/dynamic_enum',
+  'engine': ['core/dynamic_enum.c', 'core/memory.c', 'core/vector.c'],
+  'src': ['harness/stubs_enum_map.c'],
+}
+
+unit_tests += {
+  'name': 'trx/core/value',
+  'bundles': [b_value],
+}
+
+unit_tests += {
+  'name': 'trx/game/lua/capi/enum',
+  'bundles': [b_value],
+  'engine': [
+    'game/lua/capi/enum.c',
+    'game/lua/registry.c',
+    'game/lua/utils.c',
+  ],
+  'deps': [dep_lua],
+}
+
+# The sandbox depends on nothing but Lua, so the wall the engine stands up at
+# boot stands up here against a bare state - no modules, no engine.
+unit_tests += {
+  'name': 'trx/game/lua/sandbox',
+  'engine': ['game/lua/sandbox.c'],
+  'deps': [dep_lua],
+}
+
+# The guard reads nothing but Lua and the clock, and the test supplies the
+# clock itself, stepped by hand, so the budget runs out deterministically.
+unit_tests += {
+  'name': 'trx/game/lua/guard',
+  'engine': ['game/lua/guard.c'],
+  'deps': [dep_lua],
+}
+
+# field.c and lua/struct.c are leaf modules, so the reflection layer and the
+# Lua bridge can be exercised against a synthetic struct type.
+unit_tests += {
+  'name': 'trx/game/lua/capi/struct',
+  'bundles': [b_value],
+  'engine': [
+    'core/handle.c',
+    'game/lua/capi/struct.c',
+    'game/lua/field.c',
+    'game/lua/registry.c',
+    'game/lua/utils.c',
+  ],
+  'deps': [dep_lua],
+}
+
+unit_tests += {
+  'name': 'lua/api/rooms',
+  'bundles': [b_lua_surface],
+  'src': ['fakes/rooms.c', 'fakes/items.c'],
+  'engine': [
+    'game/lua/capi/events.c',
+    'game/lua/capi/items.c',
+    'game/lua/capi/rooms.c',
+  ],
+}
+
+unit_tests += {
+  'name': 'lua/api/items',
+  'bundles': [b_lua_surface, b_lua_strings],
+  'src': ['fakes/items.c', 'fakes/catalog.c'],
+  'engine': [
+    'game/lua/capi/events.c',
+    'game/lua/capi/items.c',
+    'game/lua/capi/objects.c',
+    'game/lua/capi/catalog.c',
+  ],
+}
+
+# The same surface, taken through the two boot steps the other suites stop
+# short of: the seal, and hardening the globals.
+unit_tests += {
+  'name': 'lua/boot',
+  'bundles': [b_lua_surface],
+  'src': ['fakes/items.c'],
+  'engine': ['game/lua/capi/items.c'],
+}
+
+# No fake engine: the real trig tables are the thing under test.
+unit_tests += {
+  'name': 'lua/api/math',
+  'bundles': [b_lua_surface],
+  'engine': ['game/lua/capi/math.c', 'core/math/trig.c'],
+  'deps': [dep_mathlibrary],
+}
+
+unit_tests += {
+  'name': 'lua/api/assault',
+  'bundles': [b_lua_surface],
+  'src': ['fakes/assault.c'],
+  'engine': ['game/lua/capi/assault.c'],
+}
+
+# rooms rides along: trx.camera.room hands back a trx.rooms.Room.
+unit_tests += {
+  'name': 'lua/api/camera',
+  'bundles': [b_lua_surface],
+  'src': [
+    'fakes/camera.c',
+    'fakes/rooms.c',
+    # for Room_GetIndexFromPos, which rooms.c reaches for
+    'fakes/items.c',
+  ],
+  'engine': ['game/lua/capi/rooms.c', 'game/lua/capi/camera.c'],
+}
+
+unit_tests += {
+  'name': 'lua/api/music',
+  'bundles': [b_lua_surface],
+  'src': ['fakes/music.c'],
+  'engine': ['game/lua/capi/music.c'],
+}
+
+unit_tests += {
+  'name': 'lua/api/strings',
+  'bundles': [b_lua_surface, b_lua_strings],
+}
+
+# The parser is pure Lua, but it leans on the real fuzzy matcher out of
+# trx.strings, so the two are stood up together.
+unit_tests += {
+  'name': 'lua/api/argparse',
+  'bundles': [b_lua_surface, b_lua_strings],
+  'src': ['fakes/locale.c'],
+  'engine': ['game/lua/capi/locale.c'],
+}
+
+unit_tests += {
+  'name': 'lua/api/sound',
+  'bundles': [b_lua_surface],
+  'src': ['fakes/sound.c'],
+  'engine': ['game/lua/capi/sound.c'],
+}
+
+unit_tests += {
+  'name': 'lua/api/locale',
+  'bundles': [b_lua_surface],
+  'src': ['fakes/locale.c'],
+  'engine': ['game/lua/capi/locale.c'],
+}
+
+unit_tests += {
+  'name': 'lua/api/lua',
+  'bundles': [b_lua_surface],
+  'src': ['fakes/lua.c'],
+  'engine': ['game/lua/capi/lua.c'],
+}
+
+unit_tests += {
+  'name': 'lua/api/weather',
+  'bundles': [b_lua_surface],
+  'engine': ['game/lua/capi/weather.c'],
+}
+
+unit_tests += {
+  'name': 'lua/api/mod',
+  'bundles': [b_lua_surface],
+  'engine': ['game/lua/capi/mod.c'],
+}
+
+unit_tests += {
+  'name': 'lua/api/savegame',
+  'bundles': [b_lua_surface],
+  'engine': ['game/lua/capi/savegame.c'],
+}
+
+# No stubs: fake_engine_log.c provides Log_Message itself, because which line
+# the log blames is the thing under test.
+unit_tests += {
+  'name': 'lua/api/log',
+  'bundles': [b_lua_surface],
+  'src': ['fakes/log.c'],
+  'engine': ['game/lua/capi/log.c'],
+  'stubs': false,
+}
+
+unit_tests += {
+  'name': 'lua/api/game',
+  'bundles': [b_lua_surface],
+  'src': ['fakes/game.c'],
+  'engine': ['game/lua/capi/game.c'],
+}
+
+unit_tests += {
+  'name': 'lua/api/objects',
+  'bundles': [b_lua_surface, b_lua_strings],
+  'src': ['fakes/items.c', 'fakes/catalog.c'],
+  'engine': ['game/lua/capi/catalog.c', 'game/lua/capi/objects.c'],
+}
+
+unit_tests += {
+  'name': 'lua/api/lara',
+  'bundles': [b_lua_surface],
+  'src': ['fakes/lara.c', 'fakes/items.c'],
+  'engine': ['game/lua/capi/items.c', 'game/lua/capi/lara.c'],
+}
+
+# The catalogs are real ENUM_MAP enums out of the real trx/game/enum.c. Only
+# the slot mapping, which a game loads from a CSV, is faked.
+unit_tests += {
+  'name': 'lua/api/catalog',
+  'bundles': [b_lua_surface],
+  'src': ['fakes/catalog.c'],
+  'engine': ['game/lua/capi/catalog.c'],
+}
+
+unit_tests += {
+  'name': 'lua/api/config',
+  'bundles': [b_lua_surface],
+  'src': ['fakes/config.c', 'fakes/locale.c'],
+  'engine': [
+    'config/override.c',
+    'config/value.c',
+    'game/lua/capi/config.c',
+    'game/lua/capi/locale.c',
+  ],
+}
+
+unit_tests += {
+  'name': 'lua/api/console',
+  'bundles': [b_lua_surface, b_console, b_lua_strings],
+}
+
+# The help command, which the console module registers and composes from the
+# same parser a command answers --help from. It needs nothing the console
+# itself does not.
+unit_tests += {
+  'name': 'lua/commands/help',
+  'bundles': [b_lua_surface, b_console, b_lua_strings],
+}
+
+# A console command written in Lua, exercised through the console that
+# dispatches it. Everything the command touches is a real bridge, so the test
+# says whether the command works, not whether it was written the way we
+# expected.
+unit_tests += {
+  'name': 'lua/commands/heal',
+  'bundles': [b_lua_surface, b_console],
+  'src': ['fakes/game.c', 'fakes/items.c', 'fakes/lara.c'],
+  'engine': [
+    'game/lua/capi/game.c',
+    'game/lua/capi/items.c',
+    'game/lua/capi/lara.c',
+  ],
+}
+
+# The commands with non-trivial arguments, exercised through the console. Name
+# matching goes through fake_engine_strings, a pcre2-free stand-in, so these
+# stay light: the real matcher is covered by lua_strings and lua_argparse.
+unit_tests += {
+  'name': 'lua/commands/play',
+  'bundles': [b_lua_surface, b_console],
+  'src': ['fakes/game.c', 'fakes/strings.c'],
+  'engine': ['game/lua/capi/game.c'],
+}
+
+unit_tests += {
+  'name': 'lua/commands/music',
+  'bundles': [b_lua_surface, b_console],
+  'src': ['fakes/music.c', 'fakes/strings.c'],
+  'engine': ['game/lua/capi/music.c'],
+}
+
+unit_tests += {
+  'name': 'lua/commands/load',
+  'bundles': [b_lua_surface, b_console],
+  'src': ['fakes/savegame.c'],
+}
+
+unit_tests += {
+  'name': 'lua/commands/rule',
+  'bundles': [b_lua_surface, b_console, b_lua_strings],
+  'engine': ['game/lua/capi/rules.c', 'game/rules.c'],
+}
+
+unit_tests += {
+  'name': 'lua/commands/save',
+  'bundles': [b_lua_surface, b_console],
+  'src': ['fakes/game.c', 'fakes/savegame.c'],
+  'engine': ['game/lua/capi/game.c'],
+}
+
+unit_tests += {
+  'name': 'lua/commands/set',
+  'bundles': [b_lua_surface, b_console, b_lua_strings],
+  'src': ['fakes/config.c'],
+  'engine': [
+    'config/override.c',
+    'config/value.c',
+    'game/lua/capi/config.c',
+  ],
+}
+
+unit_tests += {
+  'name': 'lua/api/creatures',
+  'bundles': [b_lua_surface],
+  'src': ['fakes/creatures.c'],
+  'engine': ['game/lua/capi/creatures.c'],
+}
+
+unit_tests += {
+  'name': 'lua/api/events',
+  'bundles': [b_lua_surface],
+  'src': ['fakes/rooms.c'],
+  'engine': ['game/lua/capi/events.c'],
+}
+
+unit_tests += {
+  'name': 'lua/seal',
+  'bundles': [b_lua_surface],
+  'src': ['fakes/items.c'],
+  'engine': ['game/lua/capi/items.c'],
+}
+
+# The UI layout test is the widest of the unit tests: it stands up the settings
+# dialogs and runs the real measure and layout passes over them. It reads the
+# shipped font.bin for glyph metrics and the shipped config for the strings -
+# both versioned in this repository - so it still needs no window and no build
+# of the game.
+unit_tests += {
+  'name': 'trx/game/ui',
+  'src': [
+    'fakes/settings.c',
+    'fakes/ui.c',
+    'fakes/ui_draw.c',
+    'harness/font_bin.c',
+  ],
+  'engine': [
+    'config/common.c',
+    'config/enum.c',
+    'config/map.c',
+    'config/override.c',
+    'config/presets.c',
+    'config/value.c',
+    'core/colors.c',
+    'core/completion.c',
+    'core/dynamic_enum.c',
+    'core/enum_map.c',
+    'core/event_manager.c',
+    'core/handle.c',
+    'core/json/base.c',
+    'core/json/parse.c',
+    'core/json/util/file.c',
+    'core/json/util/read_io.c',
+    'core/json/write.c',
+    'core/memory.c',
+    'core/strings/case_funcs.c',
+    'core/strings/common.c',
+    'core/value.c',
+    'core/vector.c',
+    'game/enum.c',
+    'game/game_strings/entries.c',
+    'game/gun/vars.c',
+    'game/objects/vars.c',
+    'game/rules.c',
+    'game/ui/common.c',
+    'game/ui/dialogs/color_editor.c',
+    'game/ui/dialogs/config_presets.c',
+    'game/ui/dialogs/gameplay_settings.c',
+    'game/ui/dialogs/graphic_settings.c',
+    'game/ui/dialogs/setting_helpers/enums.c',
+    'game/ui/dialogs/setting_helpers/handlers.c',
+    'game/ui/dialogs/setting_helpers/handlers_language.c',
+    'game/ui/dialogs/settings.c',
+    'game/ui/dialogs/settings_editor.c',
+    'game/ui/dialogs/settings_tabs.c',
+    'game/ui/dialogs/sound_settings.c',
+    'game/ui/dialogs/text.c',
+    'game/ui/events.c',
+    'game/ui/helpers.c',
+    'game/ui/scaler.c',
+    'game/ui/scrollable.c',
+    'game/ui/settings.c',
+    'game/ui/text.c',
+    'version.c',
+    'gl/enum.c',
+    'game/ui/elements/ammo_label.c',
+    'game/ui/elements/anchor.c',
+    'game/ui/elements/bar.c',
+    'game/ui/elements/bar_enemy_hp.c',
+    'game/ui/elements/bar_lara_air.c',
+    'game/ui/elements/bar_lara_exposure.c',
+    'game/ui/elements/bar_lara_hp.c',
+    'game/ui/elements/bar_lara_sprint.c',
+    'game/ui/elements/color_swatch.c',
+    'game/ui/elements/flash.c',
+    'game/ui/elements/fps_counter.c',
+    'game/ui/elements/frame.c',
+    'game/ui/elements/gradient_slider.c',
+    'game/ui/elements/hide.c',
+    'game/ui/elements/horizontal_line.c',
+    'game/ui/elements/label.c',
+    'game/ui/elements/modal.c',
+    'game/ui/elements/offset.c',
+    'game/ui/elements/pad.c',
+    'game/ui/elements/progress_button.c',
+    'game/ui/elements/prompt.c',
+    'game/ui/elements/requester.c',
+    'game/ui/elements/resize.c',
+    'game/ui/elements/row_arrows.c',
+    'game/ui/elements/scrollable_stack.c',
+    'game/ui/elements/sleek_bar.c',
+    'game/ui/elements/spacer.c',
+    'game/ui/elements/span.c',
+    'game/ui/elements/stack.c',
+    'game/ui/elements/tab_switch.c',
+    'game/ui/elements/window.c',
+  ],
+  'deps': [dep_mathlibrary, dep_pcre2, dep_zlib],
+  'args': [
+    '-DPCRE2_CODE_UNIT_WIDTH=8',
+    '-DTEST_SHIP_CFG_DIR="' + repo_root / 'data/trx/ship/cfg' + '"',
+    '-DTEST_SHIP_GAMES_DIR="' + repo_root / 'data/trx/ship/games' + '"',
+  ],
+}
+
+foreach spec : unit_tests
+  name = spec['name']
   test_src = spec.get('src', [])
   test_engine = []
   test_deps = spec.get('deps', [])
@@ -537,9 +675,9 @@ foreach name, spec : unit_tests
   if spec.get('stubs', true)
     sources += test_stubs
   endif
-  # Bundles are listed side by side rather than nested, so two of them may name
-  # the same source. Take it once: a target that lists one bundle too many
-  # should be no harder to fix than deleting the bundle again.
+# Bundles are listed side by side rather than nested, so two of them may name
+# the same source. Take it once: a target that lists one bundle too many
+# should be no harder to fix than deleting the bundle again.
   seen = []
   foreach source : test_src
     if source not in seen
