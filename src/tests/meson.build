@@ -441,11 +441,16 @@ unit_tests += {
   'engine': ['game/lua/capi/catalog.c', 'game/lua/capi/objects.c'],
 }
 
+# The catalog rides along: the weapons a script names are its enum.
 unit_tests += {
   'name': 'lua/api/lara',
   'bundles': [b_lua_surface],
-  'src': ['fakes/lara.c', 'fakes/items.c'],
-  'engine': ['game/lua/capi/items.c', 'game/lua/capi/lara.c'],
+  'src': ['fakes/lara.c', 'fakes/items.c', 'fakes/catalog.c'],
+  'engine': [
+    'game/lua/capi/catalog.c',
+    'game/lua/capi/items.c',
+    'game/lua/capi/lara.c',
+  ],
 }
 
 # The catalogs are real ENUM_MAP enums out of the real trx/game/enum.c. Only

@@ -4069,6 +4069,183 @@
       "path": "lara.clear_equipment"
     },
     {
+      "description": "Puts a pickup into the backpack, as walking over it would. A weapon arrives\nwith its usual clip, and a flare box with its flares.",
+      "examples": [
+        "trx.lara.inventory.add(trx.catalog.objects.uzi_item, 2)"
+      ],
+      "params": [
+        {
+          "description": "The pickup, or the inventory icon it goes into.",
+          "enum": "catalog.objects",
+          "name": "object",
+          "type": "integer"
+        },
+        {
+          "description": "How many. Defaults to 1; below 1 raises.",
+          "name": "count",
+          "optional": true,
+          "type": "integer"
+        }
+      ],
+      "path": "lara.inventory.add",
+      "returns": {
+        "description": "How many went in. 0 means the level does not carry the icon for it - see `can_add`.",
+        "type": "integer"
+      }
+    },
+    {
+      "description": "Takes items back out, stopping when Lara runs out.\n\nThis is not the exact opposite of `add`: adding a clip puts rounds in the gun\nas well as an entry in the ring, and removing one takes only the entry, leaving\nthe rounds where they are.",
+      "params": [
+        {
+          "description": "The pickup, or the inventory icon it goes into.",
+          "enum": "catalog.objects",
+          "name": "object",
+          "type": "integer"
+        },
+        {
+          "description": "How many. Defaults to 1; below 1 raises.",
+          "name": "count",
+          "optional": true,
+          "type": "integer"
+        }
+      ],
+      "path": "lara.inventory.remove",
+      "returns": {
+        "description": "How many came out.",
+        "type": "integer"
+      }
+    },
+    {
+      "description": "How many of something Lara is carrying.",
+      "params": [
+        {
+          "description": "The pickup, or the inventory icon it goes into.",
+          "enum": "catalog.objects",
+          "name": "object",
+          "type": "integer"
+        }
+      ],
+      "path": "lara.inventory.count",
+      "returns": {
+        "description": "The count, and 0 for none.",
+        "type": "integer"
+      }
+    },
+    {
+      "description": "Whether Lara is carrying any of something.",
+      "params": [
+        {
+          "description": "The pickup, or the inventory icon it goes into.",
+          "enum": "catalog.objects",
+          "name": "object",
+          "type": "integer"
+        }
+      ],
+      "path": "lara.inventory.has",
+      "returns": {
+        "type": "boolean"
+      }
+    },
+    {
+      "description": "The backpack entry a pickup goes into. Several pickups can share one - the\nscion whether or not Lara is carrying it, a waterskin at each fill level - so\nthis is what tells two spellings of one thing from two things.",
+      "params": [
+        {
+          "description": "The pickup, or the inventory icon it goes into.",
+          "enum": "catalog.objects",
+          "name": "object",
+          "type": "integer"
+        }
+      ],
+      "path": "lara.inventory.entry_of",
+      "returns": {
+        "description": "The entry's object id.",
+        "enum": "catalog.objects",
+        "type": "integer"
+      }
+    },
+    {
+      "description": "Whether `add` would do anything here. The level has to carry the inventory\nmodel, which is not the same as the pickup being in it: a level with no shotgun\nlying about still draws one in the ring, which is what lets a cheat hand one\nover.",
+      "params": [
+        {
+          "description": "The pickup, or the inventory icon it goes into.",
+          "enum": "catalog.objects",
+          "name": "object",
+          "type": "integer"
+        }
+      ],
+      "path": "lara.inventory.can_add",
+      "returns": {
+        "type": "boolean"
+      }
+    },
+    {
+      "description": "Whether the level allows this weapon at all. The game flow can keep one out of\na level, and a cheat that hands it over anyway leaves Lara with a gun the level\nwas built without.",
+      "params": [
+        {
+          "description": "Which weapon. `UNKNOWN` and `UNARMED` raise, and so does anything outside the table; `FLARE` and `SKIDOO` are taken, being held the way a weapon is.",
+          "enum": "catalog.weapons",
+          "name": "weapon",
+          "type": "integer"
+        }
+      ],
+      "path": "lara.weapons.is_available",
+      "returns": {
+        "type": "boolean"
+      }
+    },
+    {
+      "description": "The pickup the weapon is, for handing it to `trx.lara.inventory.add`.",
+      "params": [
+        {
+          "description": "Which weapon. `UNKNOWN` and `UNARMED` raise, and so does anything outside the table; `FLARE` and `SKIDOO` are taken, being held the way a weapon is.",
+          "enum": "catalog.weapons",
+          "name": "weapon",
+          "type": "integer"
+        }
+      ],
+      "path": "lara.weapons.object",
+      "returns": {
+        "description": "The object id, or `nil` if this game has no such weapon.",
+        "enum": "catalog.objects",
+        "type": "integer"
+      }
+    },
+    {
+      "description": "How many rounds Lara has for the weapon. The pistols never run out and read 0.",
+      "params": [
+        {
+          "description": "Which weapon. `UNKNOWN` and `UNARMED` raise, and so does anything outside the table; `FLARE` and `SKIDOO` are taken, being held the way a weapon is.",
+          "enum": "catalog.weapons",
+          "name": "weapon",
+          "type": "integer"
+        }
+      ],
+      "path": "lara.weapons.ammo",
+      "returns": {
+        "type": "integer"
+      }
+    },
+    {
+      "description": "Sets how many rounds she has for it.",
+      "examples": [
+        "trx.lara.weapons.set_ammo(trx.catalog.weapons.UZIS, 2000)"
+      ],
+      "params": [
+        {
+          "description": "Which weapon. `UNKNOWN` and `UNARMED` raise, and so does anything outside the table; `FLARE` and `SKIDOO` are taken, being held the way a weapon is.",
+          "enum": "catalog.weapons",
+          "name": "weapon",
+          "type": "integer"
+        },
+        {
+          "description": "Rounds. Below 0 raises.",
+          "name": "count",
+          "type": "integer"
+        }
+      ],
+      "path": "lara.weapons.set_ammo"
+    },
+    {
       "description": "Declares game string keys and the text behind them.\n\nA key belongs with the script that shows it, so a command carries its own\nwording. What is declared here is a fallback, and it takes only for a key\nnothing else holds: the strings files, their translations, and any earlier\ndeclaration keep the text they already carry.",
       "examples": [
         "trx.locale.declare({\n  [\"console/cmd/heal/help\"] = \"Heals Lara back to full health.\",\n  [\"console/cmd/heal/success\"] = \"Healed Lara back to full health\",\n})"
@@ -5035,6 +5212,16 @@
         }
       ],
       "path": "console.log"
+    },
+    {
+      "callable": false,
+      "description": "Lara's backpack: what she is carrying, and what goes into it.\n\nEvery function here takes either the pickup lying in the world or the\ninventory icon it goes into. The engine maps one to the other, so a script\nnames whichever it has.",
+      "path": "lara.inventory"
+    },
+    {
+      "callable": false,
+      "description": "The weapons Lara can hold: whether the level allows one, and how much ammunition she has for it.",
+      "path": "lara.weapons"
     },
     {
       "callable": false,
