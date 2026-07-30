@@ -71,6 +71,11 @@ static void M_Title(const char *const title)
     UI_EndFrame();
 }
 
+float UI_Window_GetChromeWidth(void)
+{
+    return 2.0f * (M_GetOuterPad() + M_GetBodyPadX());
+}
+
 void UI_BeginWindow(UI_WINDOW_SETTINGS settings)
 {
     const bool show_scroll_hints = M_ShouldShowScrollHints(&settings);
