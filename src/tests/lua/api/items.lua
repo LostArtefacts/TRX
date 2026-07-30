@@ -65,6 +65,18 @@ test("fields read and write through to the struct", function()
   assert(it.room_num == 0)
 end)
 
+test("bounds measure the frame the item is on", function()
+  local it = trx.items[0]
+
+  local at_rest = it.bounds
+  assert(at_rest.min_x == -100 and at_rest.max_x == 100)
+  assert(at_rest.min_y == -200 and at_rest.max_y == 0)
+  assert(at_rest.min_z == -300 and at_rest.max_z == 300)
+
+  it.frame = 4
+  assert(it.bounds.min_x == -104, "the bounds did not follow the animation")
+end)
+
 -- These encode an engine invariant. Writing them directly would let a script
 -- wedge the item, so the declaration withholds them even though the C member is
 -- plain and the struct would happily take the write.
