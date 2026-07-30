@@ -232,6 +232,7 @@ local FAMILIES = {
   secret = "secret",
   switch = "switch",
   receptacle = "receptacle",
+  pushable = "pushable",
   door = "door",
   inventory_item = "inventory",
   null_object = "null",
@@ -301,8 +302,8 @@ The identity query over every object definition. Narrow it and read it - see
 
 Its own narrowings, beyond the shared `by_name` and the operators: the states
 `loaded` and `spawnable`, and the families `creature`, `enemy`, `loyal`,
-`pickup`, `switch`, `receptacle`, `door`, `inventory_item`, `null_object` and
-`animation`.
+`pickup`, `switch`, `receptacle`, `pushable`, `door`, `inventory_item`,
+`null_object` and `animation`.
 
 `pickup` narrows further, by what the thing is: `gun`, `ammo` for its clips,
 `supply` for what Lara spends, `tool` for what she carries and uses, and

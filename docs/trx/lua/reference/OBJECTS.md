@@ -34,8 +34,8 @@ trx.objects.wolf.properties.max_hit_points = 30
 
   Its own narrowings, beyond the shared `by_name` and the operators: the states
   `loaded` and `spawnable`, and the families `creature`, `enemy`, `loyal`,
-  `pickup`, `switch`, `receptacle`, `door`, `inventory_item`, `null_object` and
-  `animation`.
+  `pickup`, `switch`, `receptacle`, `pushable`, `door`, `inventory_item`,
+  `null_object` and `animation`.
 
   `pickup` narrows further, by what the thing is: `gun`, `ammo` for its clips,
   `supply` for what Lara spends, `tool` for what she carries and uses, and
