@@ -4,6 +4,7 @@
 #include <trx/core/utils.h>
 #include <trx/game/input.h>
 #include <trx/game/ui/helpers.h>
+#include <trx/game/ui/scaler.h>
 
 typedef struct {
     UI_SCROLLABLE *scroll;
@@ -40,7 +41,7 @@ static void M_Measure(UI_NODE *const node)
 
     const int32_t first = s->first_item;
     const int32_t last = MIN(first + s->vis_items, s->max_items);
-    const float scale = g_Config.ui.text_scale;
+    const float scale = UI_Scaler_GetTextScale();
 
     int32_t visible_count = 0;
     int32_t i = 0;
@@ -78,7 +79,7 @@ static void M_Layout(
     const UI_SCROLLABLE *const s = data->scroll;
     const int32_t first = s->first_item;
     const int32_t last = MIN(first + s->vis_items, s->max_items);
-    const float scale = g_Config.ui.text_scale;
+    const float scale = UI_Scaler_GetTextScale();
 
     float cx = x;
     float cy = y;

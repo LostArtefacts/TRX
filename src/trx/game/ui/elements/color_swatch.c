@@ -5,6 +5,7 @@
 #include <trx/debug.h>
 #include <trx/game/ui/draw.h>
 #include <trx/game/ui/helpers.h>
+#include <trx/game/ui/scaler.h>
 
 typedef struct {
     float w;
@@ -15,8 +16,8 @@ typedef struct {
 static void M_Measure(UI_NODE *const node)
 {
     const M_DATA *const data = node->data;
-    node->measure_w = data->w * g_Config.ui.text_scale;
-    node->measure_h = data->h * g_Config.ui.text_scale;
+    node->measure_w = data->w * UI_Scaler_GetTextScale();
+    node->measure_h = data->h * UI_Scaler_GetTextScale();
 }
 
 static void M_Draw(const UI_NODE *const node)

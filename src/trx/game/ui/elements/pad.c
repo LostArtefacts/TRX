@@ -2,6 +2,7 @@
 
 #include <trx/config.h>
 #include <trx/game/ui/helpers.h>
+#include <trx/game/ui/scaler.h>
 
 typedef struct {
     float t;
@@ -63,5 +64,5 @@ void UI_EndPad(void)
 
 float UI_Pad_GetSize(const float size)
 {
-    return size * g_Config.ui.text_scale;
+    return size * UI_Scaler_GetTextScale();
 }

@@ -12,6 +12,7 @@
 #include <trx/game/ui/dialogs/color_editor.h>
 #include <trx/game/ui/dialogs/setting_helpers/enums.h>
 #include <trx/game/ui/dialogs/text.h>
+#include <trx/game/ui/scaler.h>
 #include <trx/version.h>
 
 #include <math.h>
@@ -250,7 +251,7 @@ static float M_MeasureMaxValueWidth(const UI_SETTINGS_OPTION *const option)
     }
 
     if (M_IsBarColorEnum(option)) {
-        return M_BAR_WIDTH * g_Config.ui.text_scale;
+        return M_BAR_WIDTH * UI_Scaler_GetTextScale();
     }
 
     switch (M_GetConfigOption(option)->type) {
@@ -290,8 +291,8 @@ static float M_MeasureMaxValueWidth(const UI_SETTINGS_OPTION *const option)
     }
 
     case TVT_RGB_888:
-        return UI_Label_MeasureW("#FFFFFF") + 8.0f * g_Config.ui.text_scale
-            + 32.0f * g_Config.ui.text_scale;
+        return UI_Label_MeasureW("#FFFFFF") + 8.0f * UI_Scaler_GetTextScale()
+            + 32.0f * UI_Scaler_GetTextScale();
 
     case TVT_STRING:
         return UI_Label_MeasureW(*(char **)option->target);
@@ -525,7 +526,7 @@ void UI_SettingsEditor_Free(UI_SETTINGS_EDITOR_STATE *const s)
 
 float UI_SettingsEditor_GetContentWidth(const UI_SETTINGS_EDITOR_STATE *const s)
 {
-    return M_GetMaxLabelWidth(s) + 20.0f * g_Config.ui.text_scale
+    return M_GetMaxLabelWidth(s) + 20.0f * UI_Scaler_GetTextScale()
         + M_GetMaxValueWidth(s);
 }
 
@@ -753,8 +754,8 @@ void UI_SettingsEditor_Draw(
     UI_SETTINGS_EDITOR_STATE *const s, const UI_SCROLLABLE *const dialog_scroll,
     const UI_SETTINGS_PHASE dialog_phase, const float row_width)
 {
-    const float max_label_w = M_GetMaxLabelWidth(s) / g_Config.ui.text_scale;
-    const float max_value_w = M_GetMaxValueWidth(s) / g_Config.ui.text_scale;
+    const float max_label_w = M_GetMaxLabelWidth(s) / UI_Scaler_GetTextScale();
+    const float max_value_w = M_GetMaxValueWidth(s) / UI_Scaler_GetTextScale();
     float label_w = max_label_w;
     const float total_w = max_label_w + 20.0f + max_value_w;
     if (row_width > total_w) {

@@ -6,6 +6,7 @@
 #include <trx/debug.h>
 #include <trx/game/ui/draw.h>
 #include <trx/game/ui/helpers.h>
+#include <trx/game/ui/scaler.h>
 #include <trx/game/ui/text.h>
 
 #include <math.h>
@@ -94,7 +95,7 @@ static void M_Measure(UI_NODE *const node)
 {
     const M_DATA *const data = node->data;
     node->measure_w = data->width;
-    node->measure_h = UI_TEXT_HEIGHT * 0.5f * g_Config.ui.text_scale;
+    node->measure_h = UI_TEXT_HEIGHT * 0.5f * UI_Scaler_GetTextScale();
 }
 
 void UI_GradientSlider(const UI_GRADIENT_SLIDER_SETTINGS settings)

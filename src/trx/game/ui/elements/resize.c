@@ -3,6 +3,7 @@
 #include <trx/config.h>
 #include <trx/core/utils.h>
 #include <trx/game/ui/helpers.h>
+#include <trx/game/ui/scaler.h>
 
 typedef struct {
     float w;
@@ -67,8 +68,8 @@ void UI_BeginResizeEx(const UI_RESIZE_SETTINGS settings)
         },
         sizeof(M_DATA));
     M_DATA *const data = node->data;
-    data->w = settings.w * g_Config.ui.text_scale;
-    data->h = settings.h * g_Config.ui.text_scale;
+    data->w = settings.w * UI_Scaler_GetTextScale();
+    data->h = settings.h * UI_Scaler_GetTextScale();
     data->align_h = settings.align_h;
     data->align_v = settings.align_v;
     UI_AddChild(node);

@@ -3,6 +3,7 @@
 #include <trx/config.h>
 #include <trx/core/strings.h>
 #include <trx/game/ui/helpers.h>
+#include <trx/game/ui/scaler.h>
 #include <trx/game/ui/text.h>
 
 #include <stdarg.h>
@@ -59,6 +60,9 @@ void UI_LabelEx(const char *text, const UI_LABEL_SETTINGS settings)
         sizeof(M_DATA) + (text != nullptr ? strlen(text) + 1 : 1));
     M_DATA *const data = node->data;
     data->settings = settings;
+    // Measuring happens once the tree is built, by which point no fit factor is
+    // pushed any more, so the label has to carry it.
+    data->settings.scale *= UI_Scaler_GetContentScale();
     data->text = (char *)node->data + sizeof(M_DATA);
     strcpy(data->text, text != nullptr ? text : "");
     UI_AddChild(node);
