@@ -1,4 +1,6 @@
 #include <trx/core/log.h>
+#include <trx/core/math/const.h>
+#include <trx/core/math/trig.h>
 #include <trx/core/memory.h>
 #include <trx/core/utils.h>
 #include <trx/core/vector.h>
@@ -15,18 +17,41 @@ static inline bool M_BoundsIntersectsPortal(
     const PORTAL *const portal)
 {
     const STATIC_OBJECT_3D *const obj = Object_Get3DStatic(mesh->static_num);
-    const BOUNDS_32 bounds = {
+
+    // The draw bounds are the object's own, and the mesh is drawn turned by
+    // its Y rotation (see M_DrawSingleRoom). A box taken without that turn
+    // sits askew of the mesh it stands for, and one at an angle the axes do
+    // not share misses the portal it leans through.
+    const int32_t cos_y = Math_Cos(mesh->rot.y);
+    const int32_t sin_y = Math_Sin(mesh->rot.y);
+    const int32_t xs[2] = { obj->draw_bounds.min.x, obj->draw_bounds.max.x };
+    const int32_t zs[2] = { obj->draw_bounds.min.z, obj->draw_bounds.max.z };
+
+    BOUNDS_32 bounds = {
         .min = {
-            .x = mesh->pos.x + obj->draw_bounds.min.x,
+            .x = INT32_MAX,
             .y = mesh->pos.y + obj->draw_bounds.min.y,
-            .z = mesh->pos.z + obj->draw_bounds.min.z,
+            .z = INT32_MAX,
         },
         .max = {
-            .x = mesh->pos.x + obj->draw_bounds.max.x,
+            .x = INT32_MIN,
             .y = mesh->pos.y + obj->draw_bounds.max.y,
-            .z = mesh->pos.z + obj->draw_bounds.max.z,
+            .z = INT32_MIN,
         },
     };
+    for (int32_t i = 0; i < 2; i++) {
+        for (int32_t j = 0; j < 2; j++) {
+            const int32_t x =
+                mesh->pos.x + ((xs[i] * cos_y + zs[j] * sin_y) >> W2V_SHIFT);
+            const int32_t z =
+                mesh->pos.z + ((zs[j] * cos_y - xs[i] * sin_y) >> W2V_SHIFT);
+            bounds.min.x = MIN(bounds.min.x, x);
+            bounds.max.x = MAX(bounds.max.x, x);
+            bounds.min.z = MIN(bounds.min.z, z);
+            bounds.max.z = MAX(bounds.max.z, z);
+        }
+    }
+
     return Bounds32_Intersect(&bounds, &portal->bounds);
 }
 
