@@ -539,6 +539,26 @@ unit_tests += {
 }
 
 unit_tests += {
+  'name': 'lua/commands/give',
+  'bundles': [b_lua_surface, b_console, b_lua_strings],
+  'src': [
+    'fakes/game.c',
+    'fakes/items.c',
+    'fakes/lara.c',
+    'fakes/catalog.c',
+    'fakes/sound.c',
+  ],
+  'engine': [
+    'game/lua/capi/catalog.c',
+    'game/lua/capi/game.c',
+    'game/lua/capi/items.c',
+    'game/lua/capi/lara.c',
+    'game/lua/capi/objects.c',
+    'game/lua/capi/sound.c',
+  ],
+}
+
+unit_tests += {
   'name': 'lua/commands/save_game',
   'bundles': [b_lua_surface, b_console],
   'src': ['fakes/game.c', 'fakes/savegame.c'],

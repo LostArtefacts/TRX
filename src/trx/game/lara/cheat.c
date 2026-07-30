@@ -15,19 +15,8 @@
 #include <trx/game/objects.h>
 #include <trx/game/rooms.h>
 #include <trx/game/rope.h>
-#include <trx/game/sound.h>
 #include <trx/game/viewport.h>
 #include <trx/version.h>
-
-static void M_GiveAllKeysImpl(void)
-{
-    // Inv_AddItem ignores objects the current level does not have.
-#define X_PICKUP_NUMBERED(item, option) Inv_AddItem(item);
-#define X_PICKUP_MISC(item, option) Inv_AddItem(item);
-#include <trx/game/objects/pickups.def>
-#undef X_PICKUP_MISC
-#undef X_PICKUP_NUMBERED
-}
 
 static void M_GiveAllGunsImpl(const bool ignore_exclusions)
 {
@@ -151,32 +140,6 @@ static bool M_CanEnterFlyMode(void)
     }
 }
 
-bool Lara_Cheat_GiveAllKeys(void)
-{
-    if (Lara_GetItem() == nullptr) {
-        return false;
-    }
-
-    M_GiveAllKeysImpl();
-
-    Sound_Effect(SFX_LARA_KEY, nullptr, SPM_ALWAYS);
-    Console_Log(GS("general/osd/give_item_all_keys"));
-    return true;
-}
-
-bool Lara_Cheat_GiveAllGuns(const bool ignore_exclusions)
-{
-    if (Lara_GetItem() == nullptr) {
-        return false;
-    }
-
-    M_GiveAllGunsImpl(ignore_exclusions);
-
-    Sound_Effect(SFX_LARA_RELOAD, nullptr, SPM_ALWAYS);
-    Console_Log(GS("general/osd/give_item_all_guns"));
-    return true;
-}
-
 bool Lara_Cheat_GiveGun(
     const LARA_GUN_TYPE gun_type, const bool ignore_exclusions)
 {
@@ -190,21 +153,6 @@ bool Lara_Cheat_GiveGun(
     }
 
     return Inv_AddItem(gun_object_id);
-}
-
-bool Lara_Cheat_GiveAllItems(void)
-{
-    if (Lara_GetItem() == nullptr) {
-        return false;
-    }
-
-    M_GiveAllGunsImpl(false);
-    M_GiveAllKeysImpl();
-    M_GiveAllMedpacksImpl();
-
-    Sound_Effect(SFX_LARA_HOLSTER, nullptr, SPM_NORMAL);
-    Console_Log(GS("general/osd/give_item_cheat"));
-    return true;
 }
 
 void Lara_Cheat_GetStuff(void)

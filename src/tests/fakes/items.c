@@ -58,9 +58,9 @@ const OBJECT_ID g_LoyalObjects[] = { NO_OBJECT };
 // not among them: it has an inventory icon and nothing else in common with a
 // pickup.
 const OBJECT_ID g_PickupObjects[] = {
-    FAKE_OBJ_VASE,    FAKE_OBJ_KEY,       FAKE_OBJ_REAL_KEY, FAKE_OBJ_PUZZLE,
-    FAKE_OBJ_TOOL,    FAKE_OBJ_MEDIPACK,  FAKE_OBJ_TRINKET,  FAKE_OBJ_SCION,
-    FAKE_OBJ_SCION_2, FAKE_OBJ_WATERSKIN, NO_OBJECT,
+    FAKE_OBJ_VASE,  FAKE_OBJ_KEY,     FAKE_OBJ_REAL_KEY,  FAKE_OBJ_PUZZLE,
+    FAKE_OBJ_TOOL,  FAKE_OBJ_LEADBAR, FAKE_OBJ_MEDIPACK,  FAKE_OBJ_TRINKET,
+    FAKE_OBJ_SCION, FAKE_OBJ_SCION_2, FAKE_OBJ_WATERSKIN, NO_OBJECT,
 };
 // Built from pickups.def as the engine builds them: the pickup families are
 // read straight off it now, so a test of them sees the real taxonomy. The
@@ -151,9 +151,9 @@ static void M_Reset(void)
 
     // The real pickups, loaded so the level can hand them over.
     const OBJECT_ID borrowed[] = {
-        FAKE_OBJ_REAL_KEY, FAKE_OBJ_PUZZLE,    FAKE_OBJ_TOOL,
-        FAKE_OBJ_MEDIPACK, FAKE_OBJ_TRINKET,   FAKE_OBJ_SCION,
-        FAKE_OBJ_SCION_2,  FAKE_OBJ_WATERSKIN, FAKE_OBJ_CRYSTAL,
+        FAKE_OBJ_REAL_KEY,  FAKE_OBJ_PUZZLE,  FAKE_OBJ_TOOL,  FAKE_OBJ_LEADBAR,
+        FAKE_OBJ_MEDIPACK,  FAKE_OBJ_TRINKET, FAKE_OBJ_SCION, FAKE_OBJ_SCION_2,
+        FAKE_OBJ_WATERSKIN, FAKE_OBJ_CRYSTAL,
     };
     for (int32_t i = 0; i < (int32_t)(sizeof(borrowed) / sizeof(borrowed[0]));
          i++) {
@@ -471,6 +471,15 @@ static const char *const m_VaseNames[] = { "vase", "large vase",
                                            // medipack".
                                            "big urn", nullptr };
 static const char *const m_KeyNames[] = { "key", nullptr };
+// The real pickups answer to names of their own. None shares a word with
+// another, so a name reaches exactly one of them.
+static const char *const m_LatchNames[] = { "latch", nullptr };
+static const char *const m_CogNames[] = { "cog", nullptr };
+static const char *const m_CrowbarNames[] = { "crowbar", nullptr };
+static const char *const m_LeadbarNames[] = { "ingot", nullptr };
+static const char *const m_TrinketNames[] = { "trinket", nullptr };
+static const char *const m_ScionNames[] = { "scion", nullptr };
+static const char *const m_CrystalNames[] = { "crystal", nullptr };
 
 const VECTOR *Object_GetNames(const OBJECT_ID obj_id)
 {
@@ -481,16 +490,24 @@ const VECTOR *Object_GetNames(const OBJECT_ID obj_id)
 
 const char *const *Object_GetDefaultNames(const OBJECT_ID obj_id)
 {
-    if (obj_id == FAKE_OBJ_WOLF) {
-        return m_WolfNames;
+    // clang-format off
+    switch (obj_id) {
+    case FAKE_OBJ_WOLF:     return m_WolfNames;
+    case FAKE_OBJ_VASE:     return m_VaseNames;
+    case FAKE_OBJ_KEY:      return m_KeyNames;
+    case FAKE_OBJ_REAL_KEY: return m_LatchNames;
+    case FAKE_OBJ_PUZZLE:   return m_CogNames;
+    case FAKE_OBJ_TOOL:     return m_CrowbarNames;
+    case FAKE_OBJ_LEADBAR:  return m_LeadbarNames;
+    case FAKE_OBJ_TRINKET:  return m_TrinketNames;
+    // Both states of the scion answer to the one name, as the alias in
+    // names.def has them do.
+    case FAKE_OBJ_SCION:
+    case FAKE_OBJ_SCION_2:  return m_ScionNames;
+    case FAKE_OBJ_CRYSTAL:  return m_CrystalNames;
+    default:                return nullptr;
     }
-    if (obj_id == FAKE_OBJ_VASE) {
-        return m_VaseNames;
-    }
-    if (obj_id == FAKE_OBJ_KEY) {
-        return m_KeyNames;
-    }
-    return nullptr;
+    // clang-format on
 }
 
 OBJECT *Object_TryGet(const OBJECT_ID object_id)

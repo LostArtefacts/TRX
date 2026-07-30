@@ -2,6 +2,7 @@
 
 #include <trx/config.h>
 #include <trx/game/camera.h>
+#include <trx/game/console.h>
 #include <trx/game/fx/water.h>
 #include <trx/game/game.h>
 #include <trx/game/gun.h>
@@ -67,7 +68,9 @@ static void M_Cheat(void)
     }
 
     if (g_InputDB.item_cheat) {
-        Lara_Cheat_GiveAllItems();
+        // The cheat is the console command, so the key and the command cannot
+        // drift apart.
+        Console_Eval("give all");
     }
 
     if (g_InputDB.fly_cheat) {
