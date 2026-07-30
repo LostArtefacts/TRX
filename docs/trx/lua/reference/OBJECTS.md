@@ -124,3 +124,12 @@ trx.objects.wolf.properties.max_hit_points = 30
   - **`object_id2`** (integer). Compare against `trx.catalog.objects`.
   - **`mesh_num1`** (integer, optional). Mesh of the first.
   - **`mesh_num2`** (integer, optional). Mesh of the second.
+
+- [lua]`trx.objects.swap_sprite(object_id1, object_id2)`  
+  Swaps the sprites of two objects, which is how a pickup looks when 3D pickups
+  are turned off. Raises if either object is drawn from meshes rather than a
+  sprite.
+
+  Parameters:
+  - **`object_id1`** (integer). Compare against `trx.catalog.objects`.
+  - **`object_id2`** (integer). Compare against `trx.catalog.objects`.
