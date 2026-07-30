@@ -427,4 +427,42 @@ test("a choices function sees the arguments a token passed over", function()
   assert(p:parse("take 2") == nil, "2 is not one of take's")
 end)
 
+-- /give is a count and then a name: the name is the tail, and the count in
+-- front of it is optional, so an empty line has to offer what the tail takes.
+test(
+  "completion reaches a greedy argument a token would pass over to",
+  function()
+    local p = trx.argparse.new()
+    p:positional("count", { type = "integer", optional = true })
+    p:rest("what", { suggest = { "uzi", "shotgun" } })
+
+    local out, rstart, rend = p:complete("")
+    assert(
+      #out == 2 and out[1] == "uzi",
+      "the tail is what an empty line takes"
+    )
+    assert(rstart == 0 and rend == 0)
+
+    -- With the count in, the tail owns the rest of the line as it did before.
+    out = p:complete("5 sho")
+    assert(#out == 1 and out[1] == "shotgun")
+  end
+)
+
+-- The run a suggestion replaces begins where the tail does, which is at the
+-- token that landed on it and not at the one the caret sits in: a passed-over
+-- argument leaves the two at different places.
+test("a greedy run reaches back over the words already typed", function()
+  local p = trx.argparse.new()
+  p:positional("count", { type = "integer", optional = true })
+  p:rest("what", { suggest = { "big medipack" } })
+
+  local out, rstart, rend = p:complete("5 big med")
+  assert(#out == 1 and rstart == 2 and rend == 9)
+
+  out, rstart, rend = p:complete("big med")
+  assert(#out == 1 and out[1] == "big medipack")
+  assert(rstart == 0 and rend == 7, "the whole tail, not the last word alone")
+end)
+
 return h.report()

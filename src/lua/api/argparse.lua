@@ -599,6 +599,10 @@ function Parser:complete(text, caret)
   -- positional the active token fills, and `values` what the earlier ones read.
   local values = {}
   local slot = 1
+  -- The first token to land on the greedy argument, which is where the run it
+  -- owns begins. Read off the walk rather than counted, since a token that
+  -- passed an argument over fills a slot its own position does not name.
+  local greedy_tok = nil
   for _, tok in ipairs(consumed) do
     local idx, arg, value = take(self, slot, tok, text, values)
     if arg == nil then
@@ -606,6 +610,9 @@ function Parser:complete(text, caret)
       -- what follows it still completes.
       slot = slot + 1
     else
+      if arg.greedy and greedy_tok == nil then
+        greedy_tok = tok
+      end
       values[arg.name] = value
       slot = idx + 1
     end
@@ -622,8 +629,8 @@ function Parser:complete(text, caret)
   if greedy_idx ~= nil and slot >= greedy_idx then
     -- The run reaches from the greedy slot's first token - or the caret, if none
     -- has been typed there yet - to the end of the line.
-    if consumed[greedy_idx] ~= nil then
-      rstart = consumed[greedy_idx].start - 1
+    if greedy_tok ~= nil then
+      rstart = greedy_tok.start - 1
     elseif active == nil then
       rstart = caret
     end
@@ -633,21 +640,21 @@ function Parser:complete(text, caret)
   end
 
   -- What the slot takes: the argument sitting there, and - while that one is
-  -- optional - the ones a token could pass over to. A greedy argument ends the
-  -- run, since it replaces the whole tail rather than one token and has the
-  -- branch above for that.
+  -- optional - the ones a token could pass over to. Reaching a greedy one that
+  -- way makes the run the whole tail, since that is what it would swallow.
   local out = {}
   local seen = {}
   for idx = slot, #self.positionals do
     local arg = self.positionals[idx]
-    if arg.greedy then
-      break
-    end
     for _, candidate in ipairs(candidates_for(arg, values, prefix)) do
       if not seen[candidate] then
         seen[candidate] = true
         out[#out + 1] = candidate
       end
+    end
+    if arg.greedy then
+      rend = #text
+      break
     end
     if not arg.optional then
       break
