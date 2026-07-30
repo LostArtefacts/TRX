@@ -2,6 +2,7 @@
 
 #include <trx/config.h>
 #include <trx/core/memory.h>
+#include <trx/core/utils.h>
 #include <trx/debug.h>
 #include <trx/game/console/common.h>
 #include <trx/game/game_strings/entries.h>
@@ -178,6 +179,11 @@ int32_t UI_GetCanvasHeight(void)
 {
     return UI_Scaler_CalcInverse(
         Viewport_GetHeight(VIEWPORT_UI), UI_SCALER_TARGET_GENERIC);
+}
+
+float UI_GetSafeCanvasWidth(void)
+{
+    return MAX(0.0f, UI_GetCanvasWidth() - 2.0f * UI_SCREEN_MARGIN);
 }
 
 float UI_ScaleX(const float x)

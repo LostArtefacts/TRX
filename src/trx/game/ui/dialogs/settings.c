@@ -10,12 +10,18 @@
 #include <trx/game/ui/scaler.h>
 #include <trx/game/viewport.h>
 
+// How small the dialog may be scaled before a long string counts as too long.
+// The widest shipped translation needs 0.87; the room below that is headroom,
+// not licence to keep growing.
+#define M_MIN_FIT_SCALE 0.85f
+
 typedef struct UI_SETTINGS_DIALOG_STATE {
     UI_SETTINGS_PHASE phase;
     int32_t visible_rows;
 
     float max_content_width;
     float max_content_height;
+    float fit_scale;
 
     int32_t tab_count;
     UI_SETTINGS_TAB *tabs;
@@ -51,6 +57,25 @@ static float M_GetVisibleContentHeight(void)
         return 0.0f;
     }
     return visible_rows * UI_TEXT_HEIGHT;
+}
+
+// The dialog is as wide as its widest tab, and it is centred, so a tab wider
+// than the canvas loses text off both edges. Where that happens, the dialog is
+// drawn smaller until it fits. M_MIN_FIT_SCALE bounds how far that goes:
+// wording that still does not fit is a string to shorten, and the layout test
+// says so rather than the dialog shrinking away to nothing.
+static float M_GetFitScale(const float content_width)
+{
+    const float natural_width = content_width + UI_Window_GetChromeWidth();
+    if (natural_width <= 0.0f) {
+        return 1.0f;
+    }
+    const float available_width =
+        UI_GetSafeCanvasWidth() / UI_Scaler_GetTextScale();
+    if (natural_width <= available_width) {
+        return 1.0f;
+    }
+    return MAX(M_MIN_FIT_SCALE, available_width / natural_width);
 }
 
 static UI_SETTINGS_TAB *M_GetActiveTab(UI_SETTINGS_DIALOG_STATE *const s)
@@ -116,8 +141,9 @@ static void M_RecomputeSizes(UI_SETTINGS_DIALOG_STATE *const s)
     }
 
     s->visible_rows = M_GetVisibleRows();
-    s->max_content_width = max_content_width / g_Config.ui.text_scale;
+    s->max_content_width = max_content_width / UI_Scaler_GetTextScale();
     s->max_content_height = max_content_height;
+    s->fit_scale = M_GetFitScale(s->max_content_width);
 }
 
 static void M_WindowHeader(void *const user_data)
@@ -319,6 +345,7 @@ void UI_SettingsDialog(UI_SETTINGS_DIALOG_STATE *const s)
     const UI_SETTINGS_TAB *const tab = M_GetActiveTabConst(s);
     UI_SCROLLABLE *const active_scroll = M_GetTabScrollable(M_GetActiveTab(s));
 
+    UI_Scaler_PushTextScale(s->fit_scale);
     UI_BeginModal(0.5f, 0.6f);
     UI_BeginStackEx((UI_STACK_SETTINGS) {
         .orientation = UI_STACK_VERTICAL,
@@ -367,6 +394,7 @@ void UI_SettingsDialog(UI_SETTINGS_DIALOG_STATE *const s)
 
     UI_EndStack();
     UI_EndModal();
+    UI_Scaler_PopTextScale();
 
     if (tab != nullptr && tab->ops != nullptr
         && tab->ops->draw_overlay != nullptr) {
