@@ -73,6 +73,7 @@
 - fixed the body bag trigger to also collect Bacon Lara, Qualopec Mummy and Skidoo Driver's corpses
 - fixed settings text running off both sides of the screen in the longer languages, most visibly at 4:3 (#6000)
 - fixed the list of settings a preset would change spilling outside its dialog, and its text now wraps (#6000)
+- fixed Lara getting stuck on ropes if she enters the fly cheat while still using one (regression from 1.9)
 
 **TR1**
 - changed weather to be affected by the breeze

@@ -14,6 +14,7 @@
 #include <trx/game/lara.h>
 #include <trx/game/objects.h>
 #include <trx/game/rooms.h>
+#include <trx/game/rope.h>
 #include <trx/game/sound.h>
 #include <trx/game/viewport.h>
 #include <trx/version.h>
@@ -332,6 +333,7 @@ bool Lara_Cheat_EnterFlyMode(void)
     lara_info->interact_target.item_num = NO_ITEM;
     lara_info->interact_target.is_moving = false;
     lara_info->interact_target.move_count = 0;
+    lara_info->rope.index = NO_ROPE;
 
     Lara_Extinguish();
     M_ReinitialiseGunMeshes();
