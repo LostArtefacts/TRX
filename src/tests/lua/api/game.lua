@@ -193,4 +193,10 @@ test("end_level reaches the engine", function()
   assert(fake.calls().end_level.count == 1)
 end)
 
+test("a plain run is not a new game plus one", function()
+  assert(trx.game.is_ngplus == false)
+  fake.set_ngplus(true)
+  assert(trx.game.is_ngplus == true)
+end)
+
 return h.report()

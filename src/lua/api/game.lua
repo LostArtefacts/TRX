@@ -192,6 +192,13 @@ api.property("game.is_playable", {
   get = raw.is_playable,
 })
 
+api.property("game.is_ngplus", {
+  type = "boolean",
+  description = "Whether this is a new game plus run, which is what the passport's bonus start "
+    .. "sets. Lara keeps her weapons between levels and her ammunition does not run down.",
+  get = raw.is_ngplus,
+})
+
 api.define("game.play_level", {
   description = "Starts a level from `trx.game.levels`.",
   params = {

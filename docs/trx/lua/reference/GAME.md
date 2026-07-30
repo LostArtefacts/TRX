@@ -25,6 +25,7 @@ Module for the game flow: which levels there are, and which one is being played.
 - **`trx.game.trx_version`** (string). The TRX version string. *(read-only)*
 - **`trx.game.is_loaded`** (boolean). Whether a level is loaded. *(read-only)*
 - **`trx.game.is_playable`** (boolean). Whether the game is loaded and taking input - not in a menu, and not in a cutscene. *(read-only)*
+- **`trx.game.is_ngplus`** (boolean). Whether this is a new game plus run, which is what the passport's bonus start sets. Lara keeps her weapons between levels and her ammunition does not run down. *(read-only)*
 
 ### Enums
 
