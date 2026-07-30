@@ -98,6 +98,13 @@ repos:
     additional_dependencies:
       - pyjson5
 
+  - id: lint-test-deps
+    name: Unit tests reach no engine dependency
+    entry: tools/lint/checks/test_deps
+    language: python
+    pass_filenames: false
+    files: \.[ch]$
+
   - id: lint-lua-module-order
     name: Lua module order numbers are unique
     entry: tools/lint/checks/lua_module_order
