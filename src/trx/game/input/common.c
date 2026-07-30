@@ -8,6 +8,7 @@
 #include <trx/game/input/backends/controller.h>
 #include <trx/game/input/backends/keyboard.h>
 #include <trx/game/input/backends/touch.h>
+#include <trx/game/input/sdl.h>
 #include <trx/version.h>
 
 #include <SDL2/SDL_keyboard.h>

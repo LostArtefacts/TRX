@@ -3,12 +3,14 @@
 #include <trx/debug.h>
 #include <trx/game/console/common.h>
 #include <trx/game/input/common.h>
+#include <trx/game/input/sdl.h>
 #include <trx/game/lua/guard.h>
 #include <trx/game/replay/test_recorder.h>
 #include <trx/game/replay/test_replay.h>
 #include <trx/game/screenshot.h>
 #include <trx/game/shell.h>
 #include <trx/game/ui.h>
+#include <trx/game/ui/keys.h>
 
 // If true, next SDL_TEXT* event should be zeroed out.
 static bool m_ConsoleJustOpened = false;

@@ -13,6 +13,7 @@
 #include <trx/game/ui/events.h>
 #include <trx/game/ui/helpers.h>
 #include <trx/game/ui/hud/console_logs.h>
+#include <trx/game/ui/keys.h>
 #include <trx/game/ui/scaler.h>
 #include <trx/game/ui/text.h>
 

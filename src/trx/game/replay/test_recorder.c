@@ -11,6 +11,7 @@
 #include <trx/game/input/backends/controller.h>
 #include <trx/game/input/backends/keyboard.h>
 #include <trx/game/input/common.h>
+#include <trx/game/input/sdl.h>
 #include <trx/game/lara.h>
 #include <trx/game/random.h>
 #include <trx/game/shell/common.h>

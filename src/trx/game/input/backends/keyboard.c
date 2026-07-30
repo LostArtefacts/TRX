@@ -5,6 +5,7 @@
 #include <trx/game/input/combo.h>
 #include <trx/version.h>
 
+#include <SDL2/SDL_events.h>
 #include <SDL2/SDL_keyboard.h>
 #include <string.h>
 

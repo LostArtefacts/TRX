@@ -5,7 +5,7 @@
 #include <trx/core/log.h>
 #include <trx/game/catalog/manager.h>
 #include <trx/game/const.h>
-#include <trx/game/shell.h>
+#include <trx/game/shell/common.h>
 
 WEAPON_INFO g_Weapons[NUM_WEAPONS] = {};
 

@@ -11,6 +11,7 @@
 #include <trx/game/ui/elements/label.h>
 #include <trx/game/ui/events.h>
 #include <trx/game/ui/helpers.h>
+#include <trx/game/ui/keys.h>
 #include <trx/game/ui/text.h>
 
 #include <string.h>
