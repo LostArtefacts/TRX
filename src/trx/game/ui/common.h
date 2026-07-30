@@ -3,20 +3,6 @@
 #include <stddef.h>
 #include <stdint.h>
 
-typedef enum {
-    UI_KEY_UP,
-    UI_KEY_DOWN,
-    UI_KEY_LEFT,
-    UI_KEY_RIGHT,
-    UI_KEY_HOME,
-    UI_KEY_END,
-    UI_KEY_BACK,
-    UI_KEY_RETURN,
-    UI_KEY_ESCAPE,
-    UI_KEY_TAB,
-    UI_KEY_SHIFT_TAB,
-} UI_INPUT;
-
 // Forward declaration of the node and its vtable.
 struct UI_NODE;
 typedef struct {

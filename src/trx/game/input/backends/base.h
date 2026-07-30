@@ -2,7 +2,10 @@
 
 #include <trx/game/input/common.h>
 
-#include <SDL2/SDL_events.h>
+// Only the backends themselves look inside an event, and this header is what
+// anything asking a backend a question has to include - so keep the type
+// opaque here rather than pulling SDL2 in with it.
+typedef union SDL_Event SDL_Event;
 
 typedef struct {
     void (*init)(void);

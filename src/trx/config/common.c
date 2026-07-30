@@ -12,7 +12,6 @@
 #include <trx/debug.h>
 #include <trx/game/game_flow/vars.h>
 #include <trx/game/game_strings/entries.h>
-#include <trx/game/shell.h>
 
 #include <stdio.h>
 #include <string.h>

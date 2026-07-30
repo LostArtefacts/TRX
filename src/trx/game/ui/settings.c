@@ -7,7 +7,6 @@
 #include <trx/core/memory.h>
 #include <trx/core/strings.h>
 #include <trx/game/game_strings/entries.h>
-#include <trx/game/shell.h>
 #include <trx/version.h>
 
 #include <uthash.h>

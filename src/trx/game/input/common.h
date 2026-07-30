@@ -4,7 +4,6 @@
 #include <trx/core/json.h>
 #include <trx/game/input/enum.h>
 
-#include <SDL2/SDL_events.h>
 #include <stdint.h>
 
 #define INPUT_COMBO_MAX_KEYS 3
@@ -33,10 +32,6 @@ void Input_Update(void);
 // backends acquire whatever hardware is present, disabled ones release it.
 void Input_Discover(void);
 void Input_Reset(void);
-
-// Processes a SDL event to update global input state before polling.
-// @param event     Event to process.
-void Input_ProcessEvent(const SDL_Event *event);
 
 // Checks whether the given backend is available. A disabled backend is not
 // polled, not offered in the controls dialog, and holds no OS resources.
@@ -128,16 +123,6 @@ INPUT_STATE Input_GetDebounced(const INPUT_STATE input);
 
 // Get the human-readable name of the given role.
 const char *Input_GetRoleName(INPUT_ROLE role);
-
-// Serialize a scancode and modifier mask into a human-readable key
-// description, e.g. "ctrl+shift+up". The returned string must not be held onto.
-const char *Input_KeyDescFromSDL(SDL_Scancode scancode, SDL_Keymod mod);
-
-// Parse a human-readable key description into scancode and modifier mask.
-// e.g. "ctrl+shift+up" → scancode SDL_SCANCODE_UP, mod KMOD_CTRL|KMOD_SHIFT.
-// Returns true if parsing succeeded, false otherwise.
-bool Input_ParseKeyDesc(
-    const char *desc, SDL_Scancode *scancode, SDL_Keymod *mod);
 
 // Reset all roles in the input state to inactive.
 void InputState_Clear(INPUT_STATE *state);
