@@ -22,7 +22,6 @@ from harness import LintWarning, repo_check
 from shared.paths import REPO_DIR, SRC_DIR
 
 TEST_DIR = SRC_DIR / "tests"
-TEST_UNIT_DIR = TEST_DIR / "unit"
 
 # What the tests are allowed to reach: uthash, PCRE2, zlib and Lua are declared
 # in src/tests/meson.build. Anything else the engine links is out of bounds.
@@ -56,7 +55,7 @@ def resolve(name: str, parent: Path) -> Path | None:
     for candidate in (
         SRC_DIR / name,
         parent.parent / name,
-        TEST_UNIT_DIR / name,
+        TEST_DIR / name,
     ):
         if candidate.is_file():
             return candidate
@@ -86,13 +85,12 @@ def reached_by(path: Path) -> dict[str, list[str]]:
 
 def compiled_sources() -> tuple[list[Path], list[str]]:
     # Everything the test project builds: its own sources and the engine ones
-    # its targets list. A test source is spelled relative to src/tests/unit and
-    # an engine one relative to src/trx, so try both roots, and src/tests itself
-    # for a path spelled in full.
+    # its targets list. A test source is spelled relative to src/tests and an
+    # engine one relative to src/trx, so try both roots.
     names = MESON_SOURCE_RE.findall(
         (TEST_DIR / "meson.build").read_text(encoding="utf-8")
     )
-    roots = (TEST_UNIT_DIR, SRC_DIR / "trx", TEST_DIR)
+    roots = (TEST_DIR, SRC_DIR / "trx")
     paths: set[Path] = set()
     unresolved: list[str] = []
     for name in names:
@@ -103,7 +101,9 @@ def compiled_sources() -> tuple[list[Path], list[str]]:
                 break
         else:
             unresolved.append(name)
-    paths |= {path for path in TEST_UNIT_DIR.glob("*.c")}
+    # A target names its own source by expression rather than as a literal, so
+    # the pattern above cannot see it. Take every test source in the tree.
+    paths |= set(TEST_DIR.rglob("*.c"))
     return sorted(paths), unresolved
 
 
