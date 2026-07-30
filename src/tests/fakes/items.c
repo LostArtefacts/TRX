@@ -53,7 +53,15 @@ static int32_t m_ObjectHP[FAKE_OBJ_COUNT];
 
 const OBJECT_ID g_CreatureObjects[] = { FAKE_OBJ_WOLF, NO_OBJECT };
 const OBJECT_ID g_LoyalObjects[] = { NO_OBJECT };
-const OBJECT_ID g_PickupObjects[] = { FAKE_OBJ_VASE, FAKE_OBJ_KEY, NO_OBJECT };
+// The fake's own two, and then the real ones a pickup family names, so a
+// command that selects on a family has something here to select. The crystal is
+// not among them: it has an inventory icon and nothing else in common with a
+// pickup.
+const OBJECT_ID g_PickupObjects[] = {
+    FAKE_OBJ_VASE,    FAKE_OBJ_KEY,       FAKE_OBJ_REAL_KEY, FAKE_OBJ_PUZZLE,
+    FAKE_OBJ_TOOL,    FAKE_OBJ_MEDIPACK,  FAKE_OBJ_TRINKET,  FAKE_OBJ_SCION,
+    FAKE_OBJ_SCION_2, FAKE_OBJ_WATERSKIN, NO_OBJECT,
+};
 // Built from pickups.def as the engine builds them: the pickup families are
 // read straight off it now, so a test of them sees the real taxonomy. The
 // umbrella above stays the fake's own two, which is what the rest of the suite
@@ -140,6 +148,22 @@ static void M_Reset(void)
         .anim_idx = NO_ANIM,
         .mesh_count = -1,
     };
+
+    // The real pickups, loaded so the level can hand them over.
+    const OBJECT_ID borrowed[] = {
+        FAKE_OBJ_REAL_KEY, FAKE_OBJ_PUZZLE,    FAKE_OBJ_TOOL,
+        FAKE_OBJ_MEDIPACK, FAKE_OBJ_TRINKET,   FAKE_OBJ_SCION,
+        FAKE_OBJ_SCION_2,  FAKE_OBJ_WATERSKIN, FAKE_OBJ_CRYSTAL,
+    };
+    for (int32_t i = 0; i < (int32_t)(sizeof(borrowed) / sizeof(borrowed[0]));
+         i++) {
+        m_Objects[borrowed[i]] = (OBJECT) {
+            .loaded = true,
+            .anim_idx = 0,
+            .anim_count = 1,
+            .mesh_count = 1,
+        };
+    }
 
     m_ObjectHP[FAKE_OBJ_WOLF] = 20;
     m_ObjectHP[FAKE_OBJ_VASE] = 0;
