@@ -3,6 +3,8 @@
 
 #include <fakes/rooms.h>
 
+#include <harness/fake_calls.h>
+
 #include <trx/core/handle.h>
 #include <trx/game/items/actions.h>
 #include <trx/game/rooms.h>
@@ -12,8 +14,6 @@ static HANDLE_EPOCH m_RoomEpoch;
 static bool m_FlipStatus;
 static ITEM_ACTION_INTERCEPTOR m_Interceptor;
 
-FAKE_ROOM_CALLS g_FakeRoomCalls;
-
 // What loading the next level does to the room table: the rooms are replaced,
 // so every handle to one of the old ones is stale.
 void FakeRooms_LoadNextLevel(void)
@@ -21,9 +21,8 @@ void FakeRooms_LoadNextLevel(void)
     Handle_EpochBump(&m_RoomEpoch);
 }
 
-void FakeRooms_Reset(void)
+static void M_Reset(void)
 {
-    g_FakeRoomCalls = (FAKE_ROOM_CALLS) { 0 };
     Handle_EpochBump(&m_RoomEpoch);
     m_FlipStatus = false;
 
@@ -43,6 +42,8 @@ void FakeRooms_Reset(void)
     m_Rooms[0].flip_status = RFS_UNFLIPPED;
     m_Rooms[1].flip_status = RFS_FLIPPED;
 }
+
+FAKE_ON_RESET(M_Reset)
 
 int32_t Room_GetCount(void)
 {
@@ -84,7 +85,7 @@ BOUNDS_32 Room_GetRoomBounds(const ROOM *const room)
 
 void Room_FlipMap(void)
 {
-    g_FakeRoomCalls.flip_map++;
+    FAKE_RECORD("flip_map");
     m_FlipStatus = !m_FlipStatus;
 }
 
@@ -95,7 +96,7 @@ bool Room_GetFlipStatus(void)
 
 void Room_SetFlipEffect(const int32_t flip_effect)
 {
-    g_FakeRoomCalls.flip_effect = flip_effect;
+    FAKE_RECORD("set_flip_effect", FV(flip_effect));
 }
 
 void ItemAction_SetInterceptor(const ITEM_ACTION_INTERCEPTOR interceptor)
@@ -112,7 +113,7 @@ bool ItemAction_Intercept(
 
 void Room_SetFlipTimer(const int32_t flip_timer)
 {
-    g_FakeRoomCalls.flip_timer = flip_timer;
+    FAKE_RECORD("set_flip_timer", FV(flip_timer));
 }
 
 // The fake level's floor is flat at y = 0, and there is none west of the
@@ -127,7 +128,7 @@ int32_t Room_GetHeightEx(
     const SECTOR *const sector, const XYZ_32 pos, const bool fix_tilts,
     const int16_t ignore_item_num)
 {
-    g_FakeRoomCalls.fix_tilts = fix_tilts;
+    FAKE_RECORD("get_height", FV(fix_tilts));
     return pos.x < 0 ? NO_HEIGHT : 0;
 }
 

@@ -38,11 +38,11 @@ end)
 
 test("is_burning lights Lara and puts her out", function()
   trx.lara.is_burning = true
-  assert(fake.calls().catch_fire == 1, "did not reach Lara_CatchFire")
+  assert(fake.calls().catch_fire.count == 1, "did not reach Lara_CatchFire")
   assert(trx.lara.is_burning == true, "she should be on fire")
 
   trx.lara.is_burning = false
-  assert(fake.calls().extinguish == 1, "did not reach Lara_Extinguish")
+  assert(fake.calls().extinguish.count == 1, "did not reach Lara_Extinguish")
   assert(trx.lara.is_burning == false, "she should be out")
 end)
 
@@ -60,11 +60,11 @@ end)
 test("teleport moves Lara, and says when it could not", function()
   assert(trx.lara.teleport({ x = 2048, y = 0, z = 1024 }, 2) == true)
   assert(trx.lara.item.pos.x == 2048, "she was left where she was")
-  assert(fake.calls().last_teleport_room == 2)
+  assert(fake.calls().teleport.room_num == 2)
 
   -- Without a room, the engine finds one from the position.
   assert(trx.lara.teleport({ x = 1024, y = 0, z = 0 }) == true)
-  assert(fake.calls().last_teleport_room == -1)
+  assert(fake.calls().teleport.room_num == -1)
 
   -- Nowhere to stand: she stays put.
   assert(trx.lara.teleport({ x = -1, y = 0, z = 0 }) == false)
@@ -121,12 +121,15 @@ end)
 test("equipment names the meshes it was given", function()
   trx.lara.set_extra_equipment(trx.lara.Mesh.HAND_R, trx.lara.ExtraMesh.OAR)
   local calls = fake.calls()
-  assert(calls.set_equipment == 1, "the equipment did not reach the engine")
-  assert(calls.last_mesh == trx.lara.Mesh.HAND_R)
-  assert(calls.last_extra_mesh == trx.lara.ExtraMesh.OAR)
+  assert(
+    calls.set_equipment.count == 1,
+    "the equipment did not reach the engine"
+  )
+  assert(calls.set_equipment.mesh == trx.lara.Mesh.HAND_R)
+  assert(calls.set_equipment.extra_mesh == trx.lara.ExtraMesh.OAR)
 
   trx.lara.clear_equipment(trx.lara.Mesh.HAND_R)
-  assert(fake.calls().clear_equipment == 1)
+  assert(fake.calls().clear_equipment.count == 1)
 end)
 
 test("an undeclared name cannot be written onto the module", function()
@@ -142,7 +145,7 @@ test("cure_poison clears the poison outright", function()
 
   assert(trx.lara.poison == 0)
   assert(
-    fake.calls().cure_poison == 1,
+    fake.calls().cure_poison.count == 1,
     "the engine verb must be the one that runs"
   )
 end)
@@ -158,7 +161,7 @@ test(
       trx.lara.electric == 0,
       "extinguishing must clear the electrocution too"
     )
-    assert(fake.calls().extinguish == 1)
+    assert(fake.calls().extinguish.count == 1)
   end
 )
 
@@ -167,7 +170,7 @@ test("dry clears the wetness that is_wet reads", function()
   trx.lara.dry()
 
   assert(trx.lara.is_wet == false)
-  assert(fake.calls().dry == 1)
+  assert(fake.calls().dry.count == 1)
 end)
 
 return h.report()

@@ -4,12 +4,12 @@
 
 #include <fakes/savegame.h>
 
+#include <harness/fake_calls.h>
+
 #include <trx/game/lua/registry.h>
 #include <trx/game/lua/utils.h>
 
 #include <lauxlib.h>
-
-FAKE_SAVEGAME_CALLS g_FakeSavegameCalls;
 
 #define M_DEFAULT_SLOT_COUNT 10
 #define M_MAX_POOLS 4
@@ -33,14 +33,15 @@ static int32_t M_SlotCount(const int32_t pool)
     return M_DEFAULT_SLOT_COUNT;
 }
 
-void FakeSavegame_Reset(void)
+static void M_Reset(void)
 {
-    g_FakeSavegameCalls = (FAKE_SAVEGAME_CALLS) {};
     m_FreeIndex = -1;
     m_FreePool = -1;
     m_SaveFails = false;
     m_PoolN = 0;
 }
+
+FAKE_ON_RESET(M_Reset)
 
 // trxc.savegame.slot_count(pool) -> int
 static int M_L_SlotCount(lua_State *const L)
@@ -61,19 +62,19 @@ static int M_L_IsFree(lua_State *const L)
 // trxc.savegame.load(index, pool)
 static int M_L_Load(lua_State *const L)
 {
-    g_FakeSavegameCalls.load_index = (int32_t)luaL_checkinteger(L, 1);
-    g_FakeSavegameCalls.load_pool = (int32_t)luaL_checkinteger(L, 2);
-    g_FakeSavegameCalls.load_count++;
+    const int32_t index = (int32_t)luaL_checkinteger(L, 1);
+    const int32_t pool = (int32_t)luaL_checkinteger(L, 2);
+    FAKE_RECORD("load", FV(index), FV(pool));
     return 0;
 }
 
 // trxc.savegame.save(index, pool) -> bool
 static int M_L_Save(lua_State *const L)
 {
-    g_FakeSavegameCalls.save_index =
+    const int32_t index =
         lua_isnoneornil(L, 1) ? -1 : (int32_t)luaL_checkinteger(L, 1);
-    g_FakeSavegameCalls.save_pool = (int32_t)luaL_checkinteger(L, 2);
-    g_FakeSavegameCalls.save_count++;
+    const int32_t pool = (int32_t)luaL_checkinteger(L, 2);
+    FAKE_RECORD("save", FV(index), FV(pool));
     lua_pushboolean(L, !m_SaveFails);
     return 1;
 }
@@ -126,22 +127,6 @@ static void M_Create(lua_State *const L)
 }
 
 REGISTER_LUA_CAPI(.create = M_Create)
-
-void FakeSavegame_PushCalls(lua_State *const L)
-{
-    lua_pushinteger(L, g_FakeSavegameCalls.save_count);
-    lua_setfield(L, -2, "save_count");
-    lua_pushinteger(L, g_FakeSavegameCalls.save_index);
-    lua_setfield(L, -2, "save_index");
-    lua_pushinteger(L, g_FakeSavegameCalls.save_pool);
-    lua_setfield(L, -2, "save_pool");
-    lua_pushinteger(L, g_FakeSavegameCalls.load_count);
-    lua_setfield(L, -2, "load_count");
-    lua_pushinteger(L, g_FakeSavegameCalls.load_index);
-    lua_setfield(L, -2, "load_index");
-    lua_pushinteger(L, g_FakeSavegameCalls.load_pool);
-    lua_setfield(L, -2, "load_pool");
-}
 
 void FakeSavegame_PushLua(lua_State *const L)
 {

@@ -308,10 +308,16 @@ end)
 
 test("swap_mesh reaches the engine", function()
   trx.objects.swap_mesh(fake.WOLF, fake.VASE)
-  assert(fake.calls().swap_mesh == 1, "the whole-object swap did not land")
+  assert(
+    fake.calls().swap_mesh.count == 1,
+    "the whole-object swap did not land"
+  )
 
   trx.objects.swap_mesh(fake.WOLF, fake.VASE, 1, 2)
-  assert(fake.calls().swap_mesh == 2, "the single-mesh swap did not land")
+  assert(
+    fake.calls().swap_mesh.count == 2,
+    "the single-mesh swap did not land"
+  )
 end)
 
 test("swap_mesh will not reach past an object's meshes", function()
@@ -322,7 +328,7 @@ test("swap_mesh will not reach past an object's meshes", function()
     trx.objects.swap_mesh(fake.WOLF, fake.VASE, -1, 0)
   end)
   assert(
-    fake.calls().swap_mesh == 0,
+    fake.calls().swap_mesh.count == 0,
     "a rejected swap must not reach the engine"
   )
 end)
@@ -335,7 +341,7 @@ end)
 
 test("swap_sprite reaches the engine", function()
   trx.objects.swap_sprite(fake.KEY, fake.SPRITE)
-  assert(fake.calls().swap_sprite == 1, "the sprite swap did not land")
+  assert(fake.calls().swap_sprite.count == 1, "the sprite swap did not land")
 end)
 
 test("swap_sprite refuses an object drawn from meshes", function()
@@ -343,14 +349,14 @@ test("swap_sprite refuses an object drawn from meshes", function()
     trx.objects.swap_sprite(fake.SPRITE, fake.WOLF)
   end)
   assert(
-    fake.calls().swap_sprite == 0,
+    fake.calls().swap_sprite.count == 0,
     "a rejected swap must not reach the engine"
   )
 end)
 
 test("swap_sprite passes over an object the level did not load", function()
   trx.objects.swap_sprite(fake.SPRITE, fake.UNLOADED)
-  assert(fake.calls().swap_sprite == 0, "there is nothing to swap")
+  assert(fake.calls().swap_sprite.count == 0, "there is nothing to swap")
 end)
 
 test("an object id outside the table is refused", function()

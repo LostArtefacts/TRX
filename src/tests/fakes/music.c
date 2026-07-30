@@ -3,11 +3,12 @@
 
 #include <fakes/music.h>
 
+#include <harness/fake_calls.h>
+
 #include <trx/core/memory.h>
 #include <trx/game/music/common.h>
 #include <trx/game/music/ids.h>
 
-FAKE_MUSIC_CALLS g_FakeMusicCalls;
 static MUSIC_ID m_Playing = MX_INACTIVE;
 static MUSIC_ID m_Looped = MX_INACTIVE;
 
@@ -22,9 +23,7 @@ static FAKE_SLOT m_Slots[FAKE_MUSIC_SLOT_COUNT];
 
 int32_t Music_Play_Direct(const MUSIC_ID track, const MUSIC_PLAY_MODE mode)
 {
-    g_FakeMusicCalls.play_count++;
-    g_FakeMusicCalls.last_track = track;
-    g_FakeMusicCalls.last_mode = mode;
+    FAKE_RECORD("play", FV(track), FV(mode));
     if (track != FAKE_MUSIC_TRACK) {
         return -1;
     }
@@ -88,8 +87,7 @@ bool Music_GetStreamSlotState(
 
 void Music_StopStream(const int32_t slot)
 {
-    g_FakeMusicCalls.stream_stop_count++;
-    g_FakeMusicCalls.stream_stop_slot = slot;
+    FAKE_RECORD("stream_stop", FV(slot));
     if (slot >= 0 && slot < FAKE_MUSIC_SLOT_COUNT) {
         m_Slots[slot].active = false;
     }
@@ -97,21 +95,17 @@ void Music_StopStream(const int32_t slot)
 
 void Music_PauseStream(const int32_t slot)
 {
-    g_FakeMusicCalls.stream_pause_count++;
-    g_FakeMusicCalls.stream_pause_slot = slot;
+    FAKE_RECORD("stream_pause", FV(slot));
 }
 
 void Music_UnpauseStream(const int32_t slot)
 {
-    g_FakeMusicCalls.stream_unpause_count++;
-    g_FakeMusicCalls.stream_unpause_slot = slot;
+    FAKE_RECORD("stream_unpause", FV(slot));
 }
 
 bool Music_SeekStream(const int32_t slot, const double timestamp)
 {
-    g_FakeMusicCalls.stream_seek_count++;
-    g_FakeMusicCalls.stream_seek_slot = slot;
-    g_FakeMusicCalls.stream_seek_ts = timestamp;
+    FAKE_RECORD("stream_seek", FV(slot), FV(timestamp));
     if (slot < 0 || slot >= FAKE_MUSIC_SLOT_COUNT || !m_Slots[slot].active) {
         return false;
     }
@@ -120,29 +114,30 @@ bool Music_SeekStream(const int32_t slot, const double timestamp)
 
 void Music_Pause(void)
 {
-    g_FakeMusicCalls.pause_count++;
+    FAKE_RECORD("pause");
 }
 
 void Music_Unpause(void)
 {
-    g_FakeMusicCalls.unpause_count++;
+    FAKE_RECORD("unpause");
 }
 
 void Music_Stop(void)
 {
-    g_FakeMusicCalls.stop_count++;
+    FAKE_RECORD("stop");
     m_Playing = MX_INACTIVE;
 }
 
-void FakeMusic_Reset(void)
+static void M_Reset(void)
 {
-    g_FakeMusicCalls = (FAKE_MUSIC_CALLS) {};
     m_Playing = MX_INACTIVE;
     m_Looped = MX_INACTIVE;
     for (int32_t i = 0; i < FAKE_MUSIC_SLOT_COUNT; i++) {
         m_Slots[i] = (FAKE_SLOT) {};
     }
 }
+
+FAKE_ON_RESET(M_Reset)
 
 void FakeMusic_SetStream(
     const int32_t slot, const int32_t track, const int32_t mode,

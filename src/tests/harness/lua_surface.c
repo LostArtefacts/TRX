@@ -1,11 +1,20 @@
 #include <harness/lua_surface.h>
 
+#include <harness/fake_calls.h>
 #include <trx/game/lua/registry.h>
 #include <trx/game/lua/sandbox.h>
 #include <trx/game/lua/utils.h>
 
 #include <stdio.h>
 #include <stdlib.h>
+
+// The shared fake.reset(), for a fake that records through FAKE_RECORD and
+// registers what else it holds with FAKE_ON_RESET.
+static int M_Reset(lua_State *const L)
+{
+    FakeCalls_Reset();
+    return 0;
+}
 
 static void M_Fail(lua_State *const L, const char *const what)
 {
@@ -69,9 +78,11 @@ int LuaSurface_Run(const LUA_SURFACE_TEST *const test)
     }
 
     lua_newtable(L);
-    lua_pushcfunction(L, test->fake_reset);
+    lua_pushcfunction(
+        L, test->fake_reset != nullptr ? test->fake_reset : M_Reset);
     lua_setfield(L, -2, "reset");
-    lua_pushcfunction(L, test->fake_calls);
+    lua_pushcfunction(
+        L, test->fake_calls != nullptr ? test->fake_calls : FakeCalls_Push);
     lua_setfield(L, -2, "calls");
     if (test->push_fake != nullptr) {
         test->push_fake(L);

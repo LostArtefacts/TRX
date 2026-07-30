@@ -79,7 +79,11 @@ b_lua_surface = {
     'game/lua/sandbox.c',
     'game/lua/utils.c',
   ],
-  'src': ['harness/lua_surface.c', 'harness/stubs_enum_map.c'],
+  'src': [
+    'harness/fake_calls.c',
+    'harness/lua_surface.c',
+    'harness/stubs_enum_map.c',
+  ],
   'deps': [dep_lua],
   'args': ['-DREPO_ROOT="' + repo_root + '"'],
 }

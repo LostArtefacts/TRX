@@ -15,23 +15,3 @@
 #define FAKE_OBJ_SWITCH 5
 #define FAKE_OBJ_RECEPTACLE 6
 #define FAKE_OBJ_DOOR 7
-
-// What the surface asked the engine to do, recorded rather than performed.
-typedef struct {
-    int32_t swap_mesh;
-    int32_t swap_sprite;
-    int32_t creature_die;
-    bool creature_die_explode;
-    int32_t shatter;
-    int16_t shatter_damage;
-    int32_t enable_baddie_ai;
-    bool enable_baddie_ai_forced;
-    int32_t disable_baddie_ai;
-    int32_t destroy;
-    int32_t take_damage;
-    int16_t take_damage_amount;
-} FAKE_ITEM_CALLS;
-
-extern FAKE_ITEM_CALLS g_FakeItemCalls;
-
-void FakeItems_Reset(void);

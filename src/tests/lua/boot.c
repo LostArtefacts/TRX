@@ -17,18 +17,6 @@ static void M_SetUpExtra(lua_State *const L)
         "  __index = function(_, n) return { num = n } end })\n");
 }
 
-static int M_FakeReset(lua_State *const L)
-{
-    FakeItems_Reset();
-    return 0;
-}
-
-static int M_FakeCalls(lua_State *const L)
-{
-    lua_newtable(L);
-    return 1;
-}
-
 int main(void)
 {
     const LUA_SURFACE_TEST test = {
@@ -38,8 +26,6 @@ int main(void)
         .seal = true,
         .harden = true,
         .setup_extra = M_SetUpExtra,
-        .fake_reset = M_FakeReset,
-        .fake_calls = M_FakeCalls,
     };
     return LuaSurface_Run(&test);
 }

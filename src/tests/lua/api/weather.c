@@ -3,6 +3,7 @@
 // FX_Weather keeps the active weather in a single variable; the fake below is
 // that variable and nothing more.
 
+#include <harness/fake_calls.h>
 #include <harness/lua_surface.h>
 
 #include <trx/game/fx/weather.h>
@@ -21,24 +22,18 @@ WEATHER_TYPE FX_Weather_GetWeather(void)
 
 static int M_FakeReset(lua_State *const L)
 {
+    FakeCalls_Reset();
     m_Weather = WEATHER_NONE;
     return 0;
-}
-
-static int M_FakeCalls(lua_State *const L)
-{
-    lua_newtable(L);
-    return 1;
 }
 
 int main(void)
 {
     const LUA_SURFACE_TEST test = {
+        .fake_reset = M_FakeReset,
         .module = "weather",
         .tests = "api/weather",
         .seal = true,
-        .fake_reset = M_FakeReset,
-        .fake_calls = M_FakeCalls,
     };
     return LuaSurface_Run(&test);
 }

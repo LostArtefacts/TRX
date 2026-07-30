@@ -56,10 +56,10 @@ end)
 
 test("reset brings the default back and keeps it", function()
   trx.config.set("visuals.fov", 90)
-  local writes = fake.calls().config_writes
+  local writes = fake.calls().config_write.count
   assert(trx.config.reset("visuals.fov") == true)
   assert(trx.config.get("visuals.fov") == 65, "the default did not come back")
-  assert(fake.calls().config_writes == writes + 1, "reset must persist")
+  assert(fake.calls().config_write.count == writes + 1, "reset must persist")
 end)
 
 test("a setting the game flow enforces cannot be reset", function()
@@ -88,11 +88,11 @@ end)
 
 test("set writes the player's settings; override does not", function()
   trx.config.set("visuals.fov", 90)
-  assert(fake.calls().config_writes == 1, "set must persist")
+  assert(fake.calls().config_write.count == 1, "set must persist")
 
   trx.config.override("visuals.fov", 100)
   assert(
-    fake.calls().config_writes == 1,
+    fake.calls().config_write.count == 1,
     "an override must never reach the settings file"
   )
 end)

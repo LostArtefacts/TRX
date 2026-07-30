@@ -33,7 +33,8 @@ typedef struct {
     void (*setup_extra)(lua_State *L);
     // Adds the fake engine's constants to the `fake` table.
     void (*push_fake)(lua_State *L);
-    // fake.reset() and fake.calls().
+    // fake.reset() and fake.calls(). Leave both null for a fake that records
+    // through FAKE_RECORD: the shared log answers them.
     lua_CFunction fake_reset;
     lua_CFunction fake_calls;
 } LUA_SURFACE_TEST;

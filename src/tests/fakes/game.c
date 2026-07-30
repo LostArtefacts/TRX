@@ -4,6 +4,8 @@
 
 #include <fakes/game.h>
 
+#include <harness/fake_calls.h>
+
 #include <trx/game/demo.h>
 #include <trx/game/game_flow/common.h>
 #include <trx/game/savegame.h>
@@ -21,11 +23,9 @@ void Screenshot_MakeToPath(const char *const path)
 
 void Lara_Cheat_EndLevel(void)
 {
-    g_FakeGameCalls.end_level++;
+    FAKE_RECORD("end_level");
 }
 #include <string.h>
-
-FAKE_GAME_CALLS g_FakeGameCalls;
 
 static GF_LEVEL m_Levels[FAKE_LEVEL_COUNT];
 static GF_LEVEL m_Cutscenes[FAKE_CUTSCENE_COUNT];
@@ -155,23 +155,23 @@ GF_LEVEL *GF_GetLevelByOrdinalNumber(
 // they do on the way. Recorded, not performed.
 void GF_OverrideCommand(const GF_COMMAND command)
 {
+    const int32_t num = command.param;
     switch (command.action) {
     case GF_START_GAME:
-        g_FakeGameCalls.play_level++;
+        FAKE_RECORD("play_level", FV(num));
         break;
     case GF_START_CINE:
-        g_FakeGameCalls.play_cutscene++;
+        FAKE_RECORD("play_cutscene", FV(num));
         break;
     case GF_START_DEMO:
-        g_FakeGameCalls.play_demo++;
+        FAKE_RECORD("play_demo", FV(num));
         break;
     case GF_SELECT_GAME:
-        g_FakeGameCalls.play_gym++;
+        FAKE_RECORD("play_gym", FV(num));
         break;
     default:
         break;
     }
-    g_FakeGameCalls.last_num = command.param;
 }
 
 void Savegame_PersistGameToCurrentInfo(const GF_LEVEL *const level)
@@ -201,7 +201,7 @@ void FakeGame_SetInCutscene(const bool in_cutscene)
     m_InCutscene = in_cutscene;
 }
 
-void FakeGame_Reset(void)
+static void M_Reset(void)
 {
     memset(m_Levels, 0, sizeof(m_Levels));
     memset(m_Cutscenes, 0, sizeof(m_Cutscenes));
@@ -258,8 +258,9 @@ void FakeGame_Reset(void)
     m_CurrentLevel = nullptr;
     m_HasGym = true;
     m_InCutscene = false;
-    g_FakeGameCalls = (FAKE_GAME_CALLS) {};
 }
+
+FAKE_ON_RESET(M_Reset)
 
 void FakeGame_SetGymPresent(const bool present)
 {
@@ -315,20 +316,4 @@ void FakeGame_PushLua(lua_State *const L)
     // The levels the game numbers: the gym is in the table but is not one.
     lua_pushinteger(L, FAKE_LEVEL_COUNT - 1);
     lua_setfield(L, -2, "NUMBERED_LEVEL_COUNT");
-}
-
-void FakeGame_PushCalls(lua_State *const L)
-{
-    lua_pushinteger(L, g_FakeGameCalls.play_level);
-    lua_setfield(L, -2, "play_level");
-    lua_pushinteger(L, g_FakeGameCalls.play_cutscene);
-    lua_setfield(L, -2, "play_cutscene");
-    lua_pushinteger(L, g_FakeGameCalls.play_demo);
-    lua_setfield(L, -2, "play_demo");
-    lua_pushinteger(L, g_FakeGameCalls.play_gym);
-    lua_setfield(L, -2, "play_gym");
-    lua_pushinteger(L, g_FakeGameCalls.end_level);
-    lua_setfield(L, -2, "end_level");
-    lua_pushinteger(L, g_FakeGameCalls.last_num);
-    lua_setfield(L, -2, "last_num");
 }

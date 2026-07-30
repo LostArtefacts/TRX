@@ -103,11 +103,11 @@ end)
 
 test("module functions reach the engine", function()
   trx.rooms.flip()
-  assert(fake.calls().flip_map == 1, "flip() should reach Room_FlipMap")
+  assert(fake.calls().flip_map.count == 1, "flip() should reach Room_FlipMap")
 
   trx.rooms.flip_effect(3, 10)
-  assert(fake.calls().flip_effect == 3)
-  assert(fake.calls().flip_timer == 10)
+  assert(fake.calls().set_flip_effect.flip_effect == 3)
+  assert(fake.calls().set_flip_timer.flip_timer == 10)
 end)
 
 test("find_valid_pos nudges a position, or gives nil", function()
@@ -134,13 +134,13 @@ end)
 
 test("floor_height fixes tilts in walls unless told not to", function()
   trx.rooms.floor_height({ x = 0, y = 0, z = 0 }, 0)
-  assert(fake.calls().fix_tilts)
+  assert(fake.calls().get_height.fix_tilts)
 
   trx.rooms.floor_height({ x = 0, y = 0, z = 0 }, 0, { fix_tilts = false })
-  assert(not fake.calls().fix_tilts)
+  assert(not fake.calls().get_height.fix_tilts)
 
   trx.rooms.floor_height({ x = 0, y = 0, z = 0 }, nil, { fix_tilts = true })
-  assert(fake.calls().fix_tilts)
+  assert(fake.calls().get_height.fix_tilts)
 end)
 
 test("a room looks up the floor from itself", function()
@@ -148,7 +148,7 @@ test("a room looks up the floor from itself", function()
   assert(room:floor_height({ x = 0, y = 0, z = 0 }) == 0)
 
   room:floor_height({ x = 0, y = 0, z = 0 }, { fix_tilts = false })
-  assert(not fake.calls().fix_tilts)
+  assert(not fake.calls().get_height.fix_tilts)
 end)
 
 -- The rooms of the next level sit where the old ones did, so a bounds check

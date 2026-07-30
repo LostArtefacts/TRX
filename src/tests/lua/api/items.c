@@ -29,38 +29,6 @@ static void M_SetUpExtra(lua_State *const L)
         "  __index = function(_, n) return { num = n } end })\n");
 }
 
-static int M_FakeReset(lua_State *const L)
-{
-    FakeItems_Reset();
-    return 0;
-}
-
-static int M_FakeCalls(lua_State *const L)
-{
-    lua_newtable(L);
-    lua_pushinteger(L, g_FakeItemCalls.destroy);
-    lua_setfield(L, -2, "destroy");
-    lua_pushinteger(L, g_FakeItemCalls.take_damage);
-    lua_setfield(L, -2, "take_damage");
-    lua_pushinteger(L, g_FakeItemCalls.take_damage_amount);
-    lua_setfield(L, -2, "take_damage_amount");
-    lua_pushinteger(L, g_FakeItemCalls.creature_die);
-    lua_setfield(L, -2, "creature_die");
-    lua_pushboolean(L, g_FakeItemCalls.creature_die_explode);
-    lua_setfield(L, -2, "creature_die_explode");
-    lua_pushinteger(L, g_FakeItemCalls.shatter);
-    lua_setfield(L, -2, "shatter");
-    lua_pushinteger(L, g_FakeItemCalls.shatter_damage);
-    lua_setfield(L, -2, "shatter_damage");
-    lua_pushinteger(L, g_FakeItemCalls.enable_baddie_ai);
-    lua_setfield(L, -2, "enable_baddie_ai");
-    lua_pushboolean(L, g_FakeItemCalls.enable_baddie_ai_forced);
-    lua_setfield(L, -2, "enable_baddie_ai_forced");
-    lua_pushinteger(L, g_FakeItemCalls.disable_baddie_ai);
-    lua_setfield(L, -2, "disable_baddie_ai");
-    return 1;
-}
-
 // fake.fire_trigger(item_num, type, mask, timer, one_shot) - mirrors the
 // Item_Trigger fire site, argument for argument.
 static int M_L_FireTrigger(lua_State *const L)
@@ -197,8 +165,6 @@ int main(void)
         .tests = "api/items",
         .setup_extra = M_SetUpExtra,
         .push_fake = M_PushFake,
-        .fake_reset = M_FakeReset,
-        .fake_calls = M_FakeCalls,
     };
     return LuaSurface_Run(&test);
 }

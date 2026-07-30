@@ -7,22 +7,6 @@
 #include <fakes/items.h>
 #include <harness/lua_surface.h>
 
-static int M_FakeReset(lua_State *const L)
-{
-    FakeItems_Reset();
-    return 0;
-}
-
-static int M_FakeCalls(lua_State *const L)
-{
-    lua_newtable(L);
-    lua_pushinteger(L, g_FakeItemCalls.swap_mesh);
-    lua_setfield(L, -2, "swap_mesh");
-    lua_pushinteger(L, g_FakeItemCalls.swap_sprite);
-    lua_setfield(L, -2, "swap_sprite");
-    return 1;
-}
-
 static void M_PushFake(lua_State *const L)
 {
     lua_pushinteger(L, FAKE_OBJ_WOLF);
@@ -52,8 +36,6 @@ int main(void)
         .deps = { "strings", "catalog", "query", nullptr },
         .tests = "api/objects",
         .push_fake = M_PushFake,
-        .fake_reset = M_FakeReset,
-        .fake_calls = M_FakeCalls,
     };
     return LuaSurface_Run(&test);
 }

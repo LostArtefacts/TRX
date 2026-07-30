@@ -17,9 +17,9 @@ test("help for a command matches that command's --help", function()
   })
 
   assert(fake.run("documented", "--help") == trx.console.Result.OK)
-  local via_flag = fake.calls().last_message
+  local via_flag = fake.calls().log.message
   assert(fake.run("help", "documented") == trx.console.Result.OK)
-  local via_help = fake.calls().last_message
+  local via_help = fake.calls().log.message
 
   assert(via_help == via_flag, "help must print what --help prints")
   assert(via_help:find("Plain text", 1, true), "the description is shown")
@@ -34,9 +34,9 @@ test("an alias reaches the same help as the command", function()
     run = function() end,
   })
   assert(fake.run("aliased", "--help") == trx.console.Result.OK)
-  local direct = fake.calls().last_message
+  local direct = fake.calls().log.message
   assert(fake.run("help", "al") == trx.console.Result.OK)
-  assert(fake.calls().last_message == direct, "an alias reaches the same help")
+  assert(fake.calls().log.message == direct, "an alias reaches the same help")
 end)
 
 test("help lists the documented commands", function()
@@ -46,7 +46,7 @@ test("help lists the documented commands", function()
     run = function() end,
   })
   assert(fake.run("help", "") == trx.console.Result.OK)
-  local names = fake.calls().last_message
+  local names = fake.calls().log.message
   assert(names:find("listed", 1, true), "a documented command is listed")
   assert(names:find("help", 1, true), "help lists itself")
 end)
@@ -55,7 +55,7 @@ test("a command with no help stays out of the listing", function()
   trx.console.register({ name = "secret_cmd", run = function() end })
   fake.run("help", "")
   assert(
-    not fake.calls().last_message:find("secret_cmd", 1, true),
+    not fake.calls().log.message:find("secret_cmd", 1, true),
     "a command with no help is not listed"
   )
 end)
@@ -66,22 +66,22 @@ test("help falls back to the description of a command written in C", function()
   trxc.console.register("c_style", "test/plain", function() end)
   assert(fake.run("help", "c_style") == trx.console.Result.OK)
   assert(
-    fake.calls().last_message == "Plain text",
+    fake.calls().log.message == "Plain text",
     "the fallback prints the registry's description"
   )
 end)
 
 test("help rejects an unknown command", function()
   assert(fake.run("help", "nope") == trx.console.Result.FAILURE)
-  assert(fake.calls().last_message == "Unknown command: nope")
-  assert(fake.calls().last_level == trx.log.LogLevel.ERROR)
+  assert(fake.calls().log.message == "Unknown command: nope")
+  assert(fake.calls().log.level == trx.log.LogLevel.ERROR)
 end)
 
 test("help has no help for a command with none", function()
   -- die carries no help id, so the console cannot describe it.
   trx.console.register({ name = "undocumented", run = function() end })
   assert(fake.run("help", "undocumented") == trx.console.Result.FAILURE)
-  assert(fake.calls().last_message == "Unknown command: undocumented")
+  assert(fake.calls().log.message == "Unknown command: undocumented")
 end)
 
 return h.report()

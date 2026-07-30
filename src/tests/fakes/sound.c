@@ -2,13 +2,13 @@
 
 #include <fakes/sound.h>
 
+#include <harness/fake_calls.h>
+
 #include <trx/core/handle.h>
 #include <trx/core/math/types.h>
 #include <trx/game/sound/common.h>
 #include <trx/game/sound/ids.h>
 #include <trx/game/sound/types.h>
-
-FAKE_SOUND_CALLS g_FakeSoundCalls;
 
 typedef struct {
     bool active;
@@ -76,8 +76,7 @@ bool Sound_ResolveActiveSlot(
 
 void Sound_StopActiveSlot(const int32_t slot)
 {
-    g_FakeSoundCalls.slot_stop_count++;
-    g_FakeSoundCalls.slot_stop_slot = slot;
+    FAKE_RECORD("slot_stop", FV(slot));
     if (slot >= 0 && slot < FAKE_SOUND_SLOT_COUNT) {
         m_Slots[slot].active = false;
     }
@@ -85,27 +84,22 @@ void Sound_StopActiveSlot(const int32_t slot)
 
 void Sound_PauseActiveSlot(const int32_t slot)
 {
-    g_FakeSoundCalls.slot_pause_count++;
-    g_FakeSoundCalls.slot_pause_slot = slot;
+    FAKE_RECORD("slot_pause", FV(slot));
 }
 
 void Sound_UnpauseActiveSlot(const int32_t slot)
 {
-    g_FakeSoundCalls.slot_unpause_count++;
-    g_FakeSoundCalls.slot_unpause_slot = slot;
+    FAKE_RECORD("slot_unpause", FV(slot));
 }
 
 int32_t Sound_Effect_Direct(
     const SAMPLE_ID sfx_num, const XYZ_32 *const pos, const uint32_t flags)
 {
-    g_FakeSoundCalls.play_count++;
-    g_FakeSoundCalls.last_sample = sfx_num;
-    g_FakeSoundCalls.had_pos = pos != nullptr;
-    if (pos != nullptr) {
-        g_FakeSoundCalls.last_x = pos->x;
-        g_FakeSoundCalls.last_y = pos->y;
-        g_FakeSoundCalls.last_z = pos->z;
-    }
+    const bool had_pos = pos != nullptr;
+    const int32_t x = had_pos ? pos->x : 0;
+    const int32_t y = had_pos ? pos->y : 0;
+    const int32_t z = had_pos ? pos->z : 0;
+    FAKE_RECORD("play", FV(sfx_num), FV(had_pos), FV(x), FV(y), FV(z));
     if (sfx_num != FAKE_SAMPLE) {
         return -1;
     }
@@ -123,18 +117,16 @@ int32_t Sound_Effect_Direct(
 
 void Sound_StopEffect_Direct(const SAMPLE_ID sfx_num)
 {
-    g_FakeSoundCalls.stop_count++;
-    g_FakeSoundCalls.last_stopped_sample = sfx_num;
+    FAKE_RECORD("stop", FV(sfx_num));
 }
 
 void Sound_StopAll(void)
 {
-    g_FakeSoundCalls.stop_all_count++;
+    FAKE_RECORD("stop_all");
 }
 
-void FakeSound_Reset(void)
+static void M_Reset(void)
 {
-    g_FakeSoundCalls = (FAKE_SOUND_CALLS) {};
     for (int32_t i = 0; i < FAKE_SOUND_SLOT_COUNT; i++) {
         m_Slots[i] = (FAKE_SLOT) {};
     }
@@ -144,6 +136,8 @@ void FakeSound_Reset(void)
         Handle_RegistryInit(&m_Handles, m_SlotGens, FAKE_SOUND_SLOT_COUNT);
     }
 }
+
+FAKE_ON_RESET(M_Reset)
 
 void FakeSound_SetStream(const int32_t slot, const int32_t sample_id)
 {

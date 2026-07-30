@@ -6,21 +6,6 @@
 #include <fakes/savegame.h>
 #include <harness/lua_surface.h>
 
-static int M_FakeReset(lua_State *const L)
-{
-    FakeConsole_Reset();
-    FakeSavegame_Reset();
-    return 0;
-}
-
-static int M_FakeCalls(lua_State *const L)
-{
-    lua_newtable(L);
-    FakeConsole_PushCalls(L);
-    FakeSavegame_PushCalls(L);
-    return 1;
-}
-
 static void M_PushFake(lua_State *const L)
 {
     FakeConsole_PushLua(L);
@@ -35,8 +20,6 @@ int main(void)
         .script = "load_game",
         .tests = "commands/load_game",
         .push_fake = M_PushFake,
-        .fake_reset = M_FakeReset,
-        .fake_calls = M_FakeCalls,
     };
     return LuaSurface_Run(&test);
 }

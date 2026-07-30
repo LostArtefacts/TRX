@@ -9,10 +9,10 @@ local test, raises = h.test, h.raises
 test("the log group is callable, and logs at INFO", function()
   trx.console.log("hello")
   local calls = fake.calls()
-  assert(calls.log_count == 1, "calling the group did not reach the console")
-  assert(calls.last_message == "hello")
+  assert(calls.log.count == 1, "calling the group did not reach the console")
+  assert(calls.log.message == "hello")
   assert(
-    calls.last_level == trx.log.LogLevel.INFO,
+    calls.log.level == trx.log.LogLevel.INFO,
     "calling the group must log at INFO"
   )
 end)
@@ -27,10 +27,10 @@ test("each level logs at its own level", function()
   }
   for _, case in ipairs(cases) do
     case.fn("msg")
-    assert(fake.calls().last_level == case.level, "wrong level")
+    assert(fake.calls().log.level == case.level, "wrong level")
   end
   assert(
-    fake.calls().log_count == #cases,
+    fake.calls().log.count == #cases,
     "not every level reached the console"
   )
 end)
@@ -38,8 +38,8 @@ end)
 test("generic logs at the level it is handed", function()
   trx.console.log.generic(trx.log.LogLevel.ERROR, "boom")
   local calls = fake.calls()
-  assert(calls.last_level == trx.log.LogLevel.ERROR)
-  assert(calls.last_message == "boom")
+  assert(calls.log.level == trx.log.LogLevel.ERROR)
+  assert(calls.log.message == "boom")
 end)
 
 test("the log group carries no level enum of its own", function()
@@ -51,27 +51,24 @@ end)
 test("eval runs the command", function()
   trx.console.eval("play 1")
   local calls = fake.calls()
-  assert(calls.eval_count == 1, "eval did not reach the console")
-  assert(calls.last_command == "play 1")
+  assert(calls.eval.count == 1, "eval did not reach the console")
+  assert(calls.eval.cmdline == "play 1")
 end)
 
 test("eval is quiet unless asked to be verbose", function()
   trx.console.eval("play 1")
-  assert(
-    fake.calls().verbose_during_eval == false,
-    "eval must be quiet by default"
-  )
+  assert(fake.calls().eval.verbose == false, "eval must be quiet by default")
 
   trx.console.eval("play 1", { verbose = true })
   assert(
-    fake.calls().verbose_during_eval == true,
+    fake.calls().eval.verbose == true,
     "verbose did not reach the console"
   )
 end)
 
 test("eval puts the verbose flag back the way it found it", function()
   trx.console.eval("play 1", { verbose = true })
-  assert(fake.calls().verbose_now == false, "eval left the console verbose")
+  assert(fake.is_verbose() == false, "eval left the console verbose")
 end)
 
 test("a command that fails raises, and says why", function()
@@ -93,7 +90,7 @@ end)
 
 test("clear clears the console", function()
   trx.console.clear()
-  assert(fake.calls().clear_count == 1)
+  assert(fake.calls().clear.count == 1)
 end)
 
 local function echo_arg(parser)
@@ -176,8 +173,8 @@ test("a command says how it went", function()
   })
 
   assert(fake.run("picky", "") == trx.console.Result.BAD_INVOCATION)
-  assert(fake.calls().last_message == "picky what?")
-  assert(fake.calls().last_level == trx.log.LogLevel.ERROR)
+  assert(fake.calls().log.message == "picky what?")
+  assert(fake.calls().log.level == trx.log.LogLevel.ERROR)
 
   assert(fake.run("picky", "x") == trx.console.Result.FAILURE)
 end)
@@ -202,11 +199,8 @@ test("a message from a command that worked is not an error", function()
     end,
   })
   fake.run("chatty", "")
-  assert(fake.calls().last_message == "did it")
-  assert(
-    fake.calls().last_level == trx.log.LogLevel.INFO,
-    "OK is not an error"
-  )
+  assert(fake.calls().log.message == "did it")
+  assert(fake.calls().log.level == trx.log.LogLevel.INFO, "OK is not an error")
 end)
 
 test("a command that raises is a failure, not a crash", function()
@@ -324,15 +318,15 @@ end)
 
 test("logging a non-string coerces it", function()
   trx.console.log(1000)
-  assert(fake.calls().last_message == "1000")
+  assert(fake.calls().log.message == "1000")
 
   trx.console.log(true)
-  assert(fake.calls().last_message == "true")
+  assert(fake.calls().log.message == "true")
 end)
 
 test("logging a table pretty-prints it", function()
   trx.console.log({ hp = 1000, name = "lara" })
-  local message = fake.calls().last_message
+  local message = fake.calls().log.message
   assert(message:find("hp = 1000"), "a field is shown: " .. message)
   assert(message:find('name = "lara"'), "a string value is quoted")
   assert(message:find("{"), "a table prints as a table")
@@ -342,13 +336,13 @@ test("a self-referential table does not loop forever", function()
   local t = {}
   t.self = t
   trx.console.log(t)
-  assert(fake.calls().last_message:find("<cycle>"), "a cycle is marked")
+  assert(fake.calls().log.message:find("<cycle>"), "a cycle is marked")
 end)
 
 test("p is a global alias of trx.console.log", function()
   assert(p == trx.console.log, "p must resolve to the log group")
   p("via p")
-  assert(fake.calls().last_message == "via p")
+  assert(fake.calls().log.message == "via p")
 end)
 
 test("run receives its arguments already read", function()
@@ -450,7 +444,7 @@ test("a command shows its aliases in its --help", function()
   })
   assert(fake.run("aliased_help", "--help") == trx.console.Result.OK)
   assert(
-    fake.calls().last_message:find("Aliases: ah, a_h", 1, true),
+    fake.calls().log.message:find("Aliases: ah, a_h", 1, true),
     "the aliases are shown"
   )
 end)

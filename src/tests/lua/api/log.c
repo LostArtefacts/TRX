@@ -4,26 +4,6 @@
 #include <fakes/log.h>
 #include <harness/lua_surface.h>
 
-static int M_FakeReset(lua_State *const L)
-{
-    FakeLog_Reset();
-    return 0;
-}
-
-static int M_FakeCalls(lua_State *const L)
-{
-    lua_newtable(L);
-    lua_pushinteger(L, g_FakeLogCalls.count);
-    lua_setfield(L, -2, "count");
-    lua_pushinteger(L, g_FakeLogCalls.last_level);
-    lua_setfield(L, -2, "last_level");
-    lua_pushstring(L, g_FakeLogCalls.last_message);
-    lua_setfield(L, -2, "last_message");
-    lua_pushinteger(L, g_FakeLogCalls.last_line);
-    lua_setfield(L, -2, "last_line");
-    return 1;
-}
-
 static void M_PushFake(lua_State *const L)
 {
 }
@@ -34,8 +14,6 @@ int main(void)
         .module = "log",
         .tests = "api/log",
         .push_fake = M_PushFake,
-        .fake_reset = M_FakeReset,
-        .fake_calls = M_FakeCalls,
     };
     return LuaSurface_Run(&test);
 }

@@ -4,29 +4,10 @@
 
 #include <fakes/console.h>
 #include <fakes/music.h>
+#include <harness/fake_calls.h>
 #include <harness/lua_surface.h>
 
 #include <lauxlib.h>
-
-static int M_FakeReset(lua_State *const L)
-{
-    FakeConsole_Reset();
-    FakeMusic_Reset();
-    return 0;
-}
-
-static int M_FakeCalls(lua_State *const L)
-{
-    lua_newtable(L);
-    FakeConsole_PushCalls(L);
-    lua_pushinteger(L, g_FakeMusicCalls.play_count);
-    lua_setfield(L, -2, "play_count");
-    lua_pushinteger(L, g_FakeMusicCalls.last_track);
-    lua_setfield(L, -2, "last_track");
-    lua_pushinteger(L, g_FakeMusicCalls.stop_count);
-    lua_setfield(L, -2, "stop_count");
-    return 1;
-}
 
 static void M_PushFake(lua_State *const L)
 {
@@ -45,8 +26,6 @@ int main(void)
         .script = "music",
         .tests = "commands/music",
         .push_fake = M_PushFake,
-        .fake_reset = M_FakeReset,
-        .fake_calls = M_FakeCalls,
     };
     return LuaSurface_Run(&test);
 }

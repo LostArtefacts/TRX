@@ -13,16 +13,16 @@ test("each function logs at its own level", function()
   }
   for _, case in ipairs(cases) do
     case.fn("msg")
-    assert(fake.calls().last_level == case.level, "wrong level")
+    assert(fake.calls().log.level == case.level, "wrong level")
   end
-  assert(fake.calls().count == #cases, "not every level reached the log")
+  assert(fake.calls().log.count == #cases, "not every level reached the log")
 end)
 
 test("generic logs at the level it is handed", function()
   trx.log.generic(trx.log.LogLevel.ERROR, "boom")
   local calls = fake.calls()
-  assert(calls.last_level == trx.log.LogLevel.ERROR)
-  assert(calls.last_message == "boom")
+  assert(calls.log.level == trx.log.LogLevel.ERROR)
+  assert(calls.log.message == "boom")
 end)
 
 test("the level values come from C", function()
@@ -37,15 +37,15 @@ test("the log blames the line that called it, not the wrapper", function()
   local expected = debug.getinfo(1, "l").currentline + 1
   trx.log.info("who called me")
   assert(
-    fake.calls().last_line == expected,
-    ("blamed line %d, called from %d"):format(fake.calls().last_line, expected)
+    fake.calls().log.line == expected,
+    ("blamed line %d, called from %d"):format(fake.calls().log.line, expected)
   )
 end)
 
 test("generic blames its caller too", function()
   local expected = debug.getinfo(1, "l").currentline + 1
   trx.log.generic(trx.log.LogLevel.INFO, "and me")
-  assert(fake.calls().last_line == expected, "generic blamed the wrong line")
+  assert(fake.calls().log.line == expected, "generic blamed the wrong line")
 end)
 
 return h.report()

@@ -3,6 +3,8 @@
 
 #include <fakes/console.h>
 
+#include <harness/fake_calls.h>
+
 #include <trx/core/memory.h>
 #include <trx/core/vector.h>
 #include <trx/game/console/common.h>
@@ -18,7 +20,6 @@
 #include <string.h>
 #include <strings.h>
 
-FAKE_CONSOLE_CALLS g_FakeConsoleCalls;
 static bool m_Verbose;
 static COMMAND_RESULT m_EvalResult;
 static LUA_CONTEXT m_Context = LUA_CONTEXT_GLOBAL;
@@ -37,31 +38,25 @@ void Console_LogEx(
     const LOG_LEVEL level, const char *const file, const int line,
     const char *const func, const char *const fmt, ...)
 {
-    g_FakeConsoleCalls.log_count++;
-    g_FakeConsoleCalls.last_level = level;
-
+    char message[256];
     va_list args;
     va_start(args, fmt);
-    vsnprintf(
-        g_FakeConsoleCalls.last_message,
-        sizeof(g_FakeConsoleCalls.last_message), fmt, args);
+    vsnprintf(message, sizeof(message), fmt, args);
     va_end(args);
+    FAKE_RECORD("log", FV(level), FV_STR(message));
 }
 
 void Console_Clear(void)
 {
-    g_FakeConsoleCalls.clear_count++;
+    FAKE_RECORD("clear");
 }
 
 COMMAND_RESULT Console_Eval(const char *const cmdline)
 {
-    g_FakeConsoleCalls.eval_count++;
-    snprintf(
-        g_FakeConsoleCalls.last_command,
-        sizeof(g_FakeConsoleCalls.last_command), "%s", cmdline);
     // The bridge sets verbose around the call and restores it afterwards, so
     // the value that matters is the one visible from in here.
-    g_FakeConsoleCalls.verbose_during_eval = m_Verbose;
+    const bool verbose = m_Verbose;
+    FAKE_RECORD("eval", FV_STR(cmdline), FV(verbose));
     return m_EvalResult;
 }
 
@@ -188,14 +183,15 @@ const char *FakeConsole_HelpId(const char *const prefix)
     return command != nullptr ? command->help_id : nullptr;
 }
 
-void FakeConsole_Reset(void)
+static void M_Reset(void)
 {
-    g_FakeConsoleCalls = (FAKE_CONSOLE_CALLS) {};
     m_Verbose = false;
     m_EvalResult = CR_SUCCESS;
     m_Context = LUA_CONTEXT_GLOBAL;
     // The commands stay: a command is registered once, at load time.
 }
+
+FAKE_ON_RESET(M_Reset)
 
 void FakeConsole_SetEvalResult(const COMMAND_RESULT result)
 {
@@ -289,6 +285,14 @@ static int M_L_HelpId(lua_State *const L)
     return 1;
 }
 
+// fake.is_verbose() - the console's own flag, which is state rather than
+// something the console was asked to do.
+static int M_L_IsVerbose(lua_State *const L)
+{
+    lua_pushboolean(L, Console_IsVerbose());
+    return 1;
+}
+
 void FakeConsole_PushLua(lua_State *const L)
 {
     lua_pushcfunction(L, M_L_SetEvalResult);
@@ -305,6 +309,8 @@ void FakeConsole_PushLua(lua_State *const L)
     lua_setfield(L, -2, "as_level_script");
     lua_pushcfunction(L, M_L_Reload);
     lua_setfield(L, -2, "reload");
+    lua_pushcfunction(L, M_L_IsVerbose);
+    lua_setfield(L, -2, "is_verbose");
 
     lua_newtable(L);
     lua_pushinteger(L, CR_SUCCESS);
@@ -316,24 +322,4 @@ void FakeConsole_PushLua(lua_State *const L)
     lua_pushinteger(L, CR_BAD_INVOCATION);
     lua_setfield(L, -2, "BAD_INVOCATION");
     lua_setfield(L, -2, "CommandResult");
-}
-
-void FakeConsole_PushCalls(lua_State *const L)
-{
-    lua_pushinteger(L, g_FakeConsoleCalls.log_count);
-    lua_setfield(L, -2, "log_count");
-    lua_pushinteger(L, g_FakeConsoleCalls.last_level);
-    lua_setfield(L, -2, "last_level");
-    lua_pushstring(L, g_FakeConsoleCalls.last_message);
-    lua_setfield(L, -2, "last_message");
-    lua_pushinteger(L, g_FakeConsoleCalls.clear_count);
-    lua_setfield(L, -2, "clear_count");
-    lua_pushinteger(L, g_FakeConsoleCalls.eval_count);
-    lua_setfield(L, -2, "eval_count");
-    lua_pushstring(L, g_FakeConsoleCalls.last_command);
-    lua_setfield(L, -2, "last_command");
-    lua_pushboolean(L, g_FakeConsoleCalls.verbose_during_eval);
-    lua_setfield(L, -2, "verbose_during_eval");
-    lua_pushboolean(L, Console_IsVerbose());
-    lua_setfield(L, -2, "verbose_now");
 }

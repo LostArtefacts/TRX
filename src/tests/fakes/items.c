@@ -8,6 +8,8 @@
 
 #include <fakes/items.h>
 
+#include <harness/fake_calls.h>
+
 #include <trx/game/const.h>
 #include <trx/core/handle.h>
 #include <trx/game/anims.h>
@@ -26,8 +28,6 @@
 #define FAKE_OBJ_COUNT 9
 #define FAKE_ANIM_COUNT 2
 #define FAKE_PROP_SLOTS 4
-
-FAKE_ITEM_CALLS g_FakeItemCalls;
 
 static ITEM m_Items[FAKE_ITEM_POOL];
 static bool m_Used[FAKE_ITEM_POOL];
@@ -61,9 +61,8 @@ const OBJECT_ID g_NullObjects[] = { NO_OBJECT };
 const OBJECT_ID g_AnimObjects[] = { NO_OBJECT };
 const OBJECT_ID g_InvObjects[] = { NO_OBJECT };
 
-void FakeItems_Reset(void)
+static void M_Reset(void)
 {
-    g_FakeItemCalls = (FAKE_ITEM_CALLS) { 0 };
     memset(m_Items, 0, sizeof(m_Items));
     memset(m_Used, 0, sizeof(m_Used));
     memset(m_Names, 0, sizeof(m_Names));
@@ -139,6 +138,8 @@ void FakeItems_Reset(void)
     m_Items[1].room_num = 1;
 }
 
+FAKE_ON_RESET(M_Reset)
+
 // --- items ---
 
 ITEM *Item_Get(const int16_t num)
@@ -189,7 +190,7 @@ void Item_Initialise(const int16_t item_num)
 
 void Item_Destroy(const int16_t item_num)
 {
-    g_FakeItemCalls.destroy++;
+    FAKE_RECORD("destroy");
     ITEM *const item = &m_Items[item_num];
     item->is_destroyed = true;
     item->is_finished = true;
@@ -447,19 +448,19 @@ OBJECT *Object_TryGet(const OBJECT_ID object_id)
 
 void Object_SwapAllMeshes(const OBJECT_ID obj1_id, const OBJECT_ID obj2_id)
 {
-    g_FakeItemCalls.swap_mesh++;
+    FAKE_RECORD("swap_mesh");
 }
 
 void Object_SwapMeshEx(
     const OBJECT_ID obj1_id, const OBJECT_ID obj2_id, const int32_t mesh1_num,
     const int32_t mesh2_num)
 {
-    g_FakeItemCalls.swap_mesh++;
+    FAKE_RECORD("swap_mesh");
 }
 
 void Object_SwapSprite(const OBJECT_ID obj1_id, const OBJECT_ID obj2_id)
 {
-    g_FakeItemCalls.swap_sprite++;
+    FAKE_RECORD("swap_sprite");
 }
 
 // The object's own properties, which every item of the type inherits.
@@ -573,8 +574,7 @@ bool Creature_IsHostile(const ITEM *const item)
 
 void Creature_Die(const int16_t item_num, const bool explode)
 {
-    g_FakeItemCalls.creature_die++;
-    g_FakeItemCalls.creature_die_explode = explode;
+    FAKE_RECORD("creature_die", FV(explode));
     m_Items[item_num].hit_points = 0;
 }
 
@@ -584,8 +584,7 @@ void Item_TakeDamage(
     ITEM *const item, const int16_t damage, const ITEM_DAMAGE_FLAGS flags,
     const ITEM *const sender)
 {
-    g_FakeItemCalls.take_damage++;
-    g_FakeItemCalls.take_damage_amount = damage;
+    FAKE_RECORD("take_damage", FV(damage));
     item->hit_points -= damage;
     if (item->hit_points < 0) {
         item->hit_points = 0;
@@ -595,21 +594,19 @@ void Item_TakeDamage(
 int32_t Item_Shatter(
     const int16_t item_num, const int32_t mesh_bits, const int16_t damage)
 {
-    g_FakeItemCalls.shatter++;
-    g_FakeItemCalls.shatter_damage = damage;
+    FAKE_RECORD("shatter", FV(damage));
     return 0;
 }
 
 bool LOT_EnableBaddieAI(const int16_t item_num, const bool always)
 {
-    g_FakeItemCalls.enable_baddie_ai++;
-    g_FakeItemCalls.enable_baddie_ai_forced = always;
+    FAKE_RECORD("enable_baddie_ai", FV(always));
     return true;
 }
 
 void LOT_DisableBaddieAI(const int16_t item_num)
 {
-    g_FakeItemCalls.disable_baddie_ai++;
+    FAKE_RECORD("disable_baddie_ai");
 }
 
 // A negative x is outside the level; everything else is room 0.
