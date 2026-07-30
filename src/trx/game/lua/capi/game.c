@@ -183,6 +183,13 @@ static int M_L_GameIsPlayable(lua_State *const L)
     return 1;
 }
 
+// trxc.game.is_ngplus() -> bool
+static int M_L_GameIsNGPlus(lua_State *const L)
+{
+    lua_pushboolean(L, Game_IsBonusFlagSet(GBF_NGPLUS));
+    return 1;
+}
+
 // trxc.game.play_level(num) → nil
 // What the game flow's commands carry is the level's place in its table, which
 // is GF_LEVEL.num - the same number the `play` console command hands them.
@@ -319,6 +326,7 @@ static const luaL_Reg m_Module[] = {
     { "get_current_level", M_L_GameGetCurrentLevel },
     { "is_loaded", M_L_GameIsLoaded },
     { "is_playable", M_L_GameIsPlayable },
+    { "is_ngplus", M_L_GameIsNGPlus },
     { "play_level", M_L_GamePlayLevel },
     { "play_cutscene", M_L_GamePlayCutscene },
     { "play_demo", M_L_GamePlayDemo },

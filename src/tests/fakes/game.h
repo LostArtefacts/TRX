@@ -17,6 +17,9 @@ void FakeGame_SetGymPresent(bool present);
 
 void FakeGame_SetInCutscene(bool in_cutscene);
 
+// Whether this run started from the passport's bonus entry.
+void FakeGame_SetNGPlus(bool ngplus);
+
 // The game flow as a test script sees it: fake.set_current_level(),
 // fake.set_current_title(), fake.set_in_cutscene(), fake.LEVEL_COUNT and
 // fake.NUMBERED_LEVEL_COUNT.

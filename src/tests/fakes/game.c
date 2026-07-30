@@ -7,6 +7,7 @@
 #include <harness/fake_calls.h>
 
 #include <trx/game/demo.h>
+#include <trx/game/game/enum.h>
 #include <trx/game/game_flow/common.h>
 #include <trx/game/savegame.h>
 #include <trx/game/screenshot.h>
@@ -199,6 +200,19 @@ bool Game_IsLoaded(void)
     return m_CurrentLevel != nullptr;
 }
 
+// The bonus start is a passport choice, so a test says whether this run is one.
+static bool m_IsNGPlus;
+
+bool Game_IsBonusFlagSet(const GAME_BONUS_FLAG flag)
+{
+    return flag == GBF_NGPLUS && m_IsNGPlus;
+}
+
+void FakeGame_SetNGPlus(const bool ngplus)
+{
+    m_IsNGPlus = ngplus;
+}
+
 bool Game_IsPlayable(void)
 {
     return m_CurrentLevel != nullptr && !m_InCutscene;
@@ -264,6 +278,7 @@ static void M_Reset(void)
     m_Tables[GFLT_TITLE] = (GF_LEVEL_TABLE) { .count = 0, .levels = nullptr };
 
     m_CurrentLevel = nullptr;
+    m_IsNGPlus = false;
     m_HasGym = true;
     m_InCutscene = false;
 }
@@ -309,8 +324,17 @@ static int M_L_SetGymPresent(lua_State *const L)
     return 0;
 }
 
+// fake.set_ngplus(bool) - whether this run started from the bonus entry.
+static int M_L_SetNGPlus(lua_State *const L)
+{
+    FakeGame_SetNGPlus(lua_toboolean(L, 1));
+    return 0;
+}
+
 void FakeGame_PushLua(lua_State *const L)
 {
+    lua_pushcfunction(L, M_L_SetNGPlus);
+    lua_setfield(L, -2, "set_ngplus");
     lua_pushcfunction(L, M_L_SetCurrentLevel);
     lua_setfield(L, -2, "set_current_level");
     lua_pushcfunction(L, M_L_SetCurrentTitle);
