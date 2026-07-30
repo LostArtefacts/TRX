@@ -406,7 +406,7 @@ unit_tests += {
   'engine': ['game/lua/capi/savegame.c'],
 }
 
-# No stubs: fake_engine_log.c provides Log_Message itself, because which line
+# No stubs: fakes/log.c provides Log_Message itself, because which line
 # the log blames is the thing under test.
 unit_tests += {
   'name': 'lua/api/log',
@@ -487,7 +487,7 @@ unit_tests += {
 }
 
 # The commands with non-trivial arguments, exercised through the console. Name
-# matching goes through fake_engine_strings, a pcre2-free stand-in, so these
+# matching goes through fakes/strings.c, a pcre2-free stand-in, so these
 # stay light: the real matcher is covered by lua_strings and lua_argparse.
 unit_tests += {
   'name': 'lua/commands/play_level',
