@@ -157,7 +157,7 @@
         <property category="TRX" defaultValue="500" description="Health restored by a healing crystal." displayName="Heal Amount" internalName="heal_amount" minValue="0" type="Int" />
     </moveable>
     <moveable id="84-94,110-113,126,129-132,141,142,144,187,241-246,248,249,251-256">
-        <property category="TRX" defaultValue="Normal" description="Pickup animation mode." displayName="Pickup Mode" entries="Normal, Low Pedestal, High Pedestal, Hidden Reach-in" internalName="pickup_mode" type="Enum" />
+        <property category="TRX" defaultValue="Normal" description="Pickup animation mode." displayName="Pickup Mode" entries="Normal, Low Pedestal, High Pedestal, Hidden Reach-in, Crowbar" internalName="pickup_mode" type="Enum" />
     </moveable>
     <moveable id="145">
         <property category="TRX" defaultValue="5" description="Maximum hit points." displayName="Max Hit Points" internalName="max_hit_points" minValue="0" type="Int" />

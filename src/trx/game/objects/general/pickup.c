@@ -7,6 +7,7 @@
 #include <trx/game/gun.h>
 #include <trx/game/input.h>
 #include <trx/game/inventory.h>
+#include <trx/game/inventory_ring/control.h>
 #include <trx/game/items/anim.h>
 #include <trx/game/lara.h>
 #include <trx/game/lua.h>
@@ -33,6 +34,7 @@
 #define M_LF_PICKUP_PLINTH_LOW   29
 #define M_LF_PICKUP_PLINTH_HIGH  45
 #define M_LF_PICKUP_HIDDEN       42
+#define M_LF_PICKUP_CROWBAR      123
 #define M_AID_DIST_MIN           (STEP_L * 5)      // 1280
 #define M_AID_DIST_MAX           (WALL_L * 8)      // 8192
 #define M_AID_WAIT_MIN           (LOGIC_FPS * 2.5) // 75
@@ -95,15 +97,28 @@ static const OBJECT_BOUNDS m_HiddenPickupBounds = {
     },
 };
 
+static const OBJECT_BOUNDS m_CrowbarPickupBounds = {
+    .shift = {
+        .min = { .x = -STEP_L, .y = -100, .z = 200, },
+        .max = { .x = +STEP_L, .y = +100, .z = STEP_L * 2, },
+    },
+    .rot = {
+        .min = { .x = -10 * DEG_1, .y = -30 * DEG_1, .z = 0, },
+        .max = { .x = +10 * DEG_1, .y = +30 * DEG_1, .z = 0, },
+    },
+};
+
 static const XYZ_32 m_PickupPosition = { .x = 0, .y = 0, .z = -100 };
 static const XYZ_32 m_PickupPositionUW = { .x = 0, .y = -200, .z = -350 };
 static const XYZ_32 m_PickupPositionPlinth = { .x = 0, .y = 0, .z = -380 };
 static const XYZ_32 m_PickupPositionHidden = { .x = 0, .y = 0, .z = -690 };
+static const XYZ_32 m_PickupPositionCrowbar = { .x = 0, .y = 0, .z = 225 };
 
 typedef struct {
     int32_t aid_timer;
     uint32_t secret_mask;
     PICKUP_MODE pickup_mode;
+    bool animate;
 } M_PRIV;
 
 static void M_Initialise(int16_t item_num)
@@ -263,6 +278,11 @@ static void M_Control(const int16_t item_num)
         return;
     }
 
+    const M_PRIV *const p = item->priv;
+    if (p->animate) {
+        Item_Animate(item);
+    }
+
     if (Object_IsType(item->object_id, g_QuestObjects)) {
         if (!Item_IsInactive(item)) {
             item->rot.y += 1024;
@@ -300,6 +320,8 @@ static bool M_IsPickupEraseFrame(const ITEM *const lara_item)
         return frame == M_LF_PICKUP_PLINTH_HIGH;
     case LA_HOLE_GRAB:
         return frame == M_LF_PICKUP_HIDDEN;
+    case LA_CROWBAR_USE_ON_WALL:
+        return frame == M_LF_PICKUP_CROWBAR;
     default:
         return false;
     }
@@ -360,7 +382,7 @@ static void M_BeginPickupAnimation(const ITEM *const item, const bool is_ducked)
     if (is_ducked) {
         goal_state = LS_PICKUP;
     } else {
-        const M_PRIV *const p = item->priv;
+        M_PRIV *const p = item->priv;
         switch (p->pickup_mode) {
         case PICKUP_MODE_PLINTH_LOW:
             goal_state = LS_PLINTH_LOW_PICKUP;
@@ -371,6 +393,10 @@ static void M_BeginPickupAnimation(const ITEM *const item, const bool is_ducked)
         case PICKUP_MODE_HIDDEN:
             goal_state = LS_HIDDEN_PICKUP;
             required_state = LS_HIDDEN_PICKUP;
+            break;
+        case PICKUP_MODE_CROWBAR:
+            goal_state = LS_CROWBAR_PICKUP;
+            p->animate = true;
             break;
         default:
             goal_state = g_Config.gameplay.enable_fast_pickups ? LS_FAST_PICKUP
@@ -449,6 +475,11 @@ static bool M_TestLaraPosition(const ITEM *const item)
         goto finish;
     }
 
+    if (p->pickup_mode == PICKUP_MODE_CROWBAR) {
+        test_bounds = m_CrowbarPickupBounds;
+        goto finish;
+    }
+
     const ITEM *const lara_item = Lara_GetItem();
     const int32_t delta = lara_item->pos.y - item->pos.y;
     const int32_t offset =
@@ -486,6 +517,9 @@ static XYZ_32 M_GetAlignmentPosition(const ITEM *const item)
     case PICKUP_MODE_HIDDEN:
         pos = m_PickupPositionHidden;
         break;
+    case PICKUP_MODE_CROWBAR:
+        pos = m_PickupPositionCrowbar;
+        break;
     default:
         pos = m_PickupPosition;
         break;
@@ -518,11 +552,39 @@ static XYZ_16 M_PrepareAndCacheRot(
     }
 
     const M_PRIV *const p = item->priv;
-    if (p->pickup_mode != PICKUP_MODE_HIDDEN) {
+    if (p->pickup_mode != PICKUP_MODE_HIDDEN
+        && p->pickup_mode != PICKUP_MODE_CROWBAR) {
         item->rot.y = lara_item->rot.y;
     }
 
     return old_rot;
+}
+
+static bool M_ShowCrowbarInventory(void)
+{
+    if (Inv_RequestItem(O_CROWBAR_ITEM) == 0) {
+        return false;
+    }
+
+    InvRing_SetRequestedObjectID(O_CROWBAR_OPTION);
+    const GF_COMMAND gf_cmd = GF_ShowInventory(INV_KEYS_MODE);
+    if (gf_cmd.action != GF_NOOP) {
+        GF_OverrideCommand(gf_cmd);
+    }
+    return true;
+}
+
+static bool M_CanBeginPickup(const ITEM *const item)
+{
+    const M_PRIV *const p = item->priv;
+    const LARA_INFO *const lara = Lara_GetLaraInfo();
+    if (p->pickup_mode != PICKUP_MODE_CROWBAR
+        || lara->interact_target.is_moving) {
+        return true;
+    }
+
+    return M_ShowCrowbarInventory()
+        && Lara_Interact_HasActiveTarget(Item_GetIndex(item));
 }
 
 static void M_DoControlled(const int16_t item_num, ITEM *const lara_item)
@@ -533,6 +595,15 @@ static void M_DoControlled(const int16_t item_num, ITEM *const lara_item)
     LARA_INFO *const lara = Lara_GetLaraInfo();
     if (Lara_Interact_CanControl(LARA_INTERACT_PICKUP, item_num)) {
         if (M_TestLaraPosition(item)) {
+            const M_PRIV *const p = item->priv;
+            if (!M_CanBeginPickup(item)) {
+                goto cleanup;
+            }
+
+            if (lara_item->current_anim_state == LS(LS_STOP)) {
+                lara->interact_target.is_moving = false;
+            }
+
             const XYZ_32 pos = M_GetAlignmentPosition(item);
             if (Lara_MovePosition(item, &pos)) {
                 M_BeginPickupAnimation(item, false);
@@ -588,6 +659,13 @@ static void M_DoAboveWater(const int16_t item_num, ITEM *const lara_item)
         return;
     }
 
+    const M_PRIV *const p = item->priv;
+    if (is_ducked
+        && (p->pickup_mode == PICKUP_MODE_HIDDEN
+            || p->pickup_mode == PICKUP_MODE_CROWBAR)) {
+        return;
+    }
+
     const XYZ_16 old_rot = M_PrepareAndCacheRot(item, lara_item, false);
 
     if (!M_TestLaraPosition(item)) {
@@ -617,12 +695,15 @@ static void M_DoAboveWater(const int16_t item_num, ITEM *const lara_item)
         goto cleanup;
     }
 
-    if (g_Input.action && !lara_item->gravity
+    if ((g_Input.action || Lara_Interact_HasActiveTarget(item_num))
+        && !lara_item->gravity
         && (lara->gun_status == LGS_ARMLESS || anim == LA_CRAWL_IDLE)
         && (lara->gun_type != LGT_FLARE || !is_flare_item)
         && Lara_Interact_CanBegin(LARA_INTERACT_PICKUP)) {
         if (is_flare_item) {
             Lara_AnimateUntil(lara_item, LS(LS_FLARE_PICKUP));
+        } else if (!M_CanBeginPickup(item)) {
+            goto cleanup;
         } else {
             const XYZ_32 pos = M_GetAlignmentPosition(item);
             Lara_AlignPosition(item, &pos);
@@ -634,11 +715,7 @@ static void M_DoAboveWater(const int16_t item_num, ITEM *const lara_item)
         } else {
             lara_item->goal_anim_state = LS(LS_STOP);
         }
-        lara->gun_status = LGS_HANDS_BUSY;
-        lara->head_rot.y = 0;
-        lara->head_rot.x = 0;
-        lara->torso_rot.y = 0;
-        lara->torso_rot.x = 0;
+        Lara_Interact_FinishControl(LARA_INTERACT_PICKUP);
         goto cleanup;
     }
 
@@ -702,13 +779,22 @@ cleanup:
     item->rot = old_rot;
 }
 
+static bool M_Draw(const ITEM *const item)
+{
+    const M_PRIV *const p = item->priv;
+    if (p->pickup_mode == PICKUP_MODE_CROWBAR) {
+        return Object_DrawAnimatingItem(item);
+    }
+    return Object_DrawPickupItem(item);
+}
+
 static void M_Setup(OBJECT *const obj)
 {
     obj->trigger_func = M_Trigger;
     obj->control_func = M_Control;
     obj->collision_func = Pickup_Collision;
     obj->bounds_func = Pickup_Bounds;
-    obj->draw_func = Object_DrawPickupItem;
+    obj->draw_func = M_Draw;
     obj->initialise_func = M_Initialise;
     obj->handle_save_func = M_HandleSave;
     obj->priv_size = sizeof(M_PRIV);
@@ -720,7 +806,7 @@ static void M_Setup(OBJECT *const obj)
         OBJECT_PROPERTY_CHECKED(
             M_PRIV, pickup_mode, PICKUP_MODE_NORMAL, M_CheckPickupMode,
             "Pickup animation mode - 0: normal; 1: low pedestal; 2: high "
-            "pedestal; 3: hidden reach-in."));
+            "pedestal; 3: hidden reach-in; 4: crowbar."));
 }
 
 const OBJECT_BOUNDS *Pickup_Bounds(void)
@@ -770,6 +856,24 @@ void Pickup_Collision(
         || lara->water_status == LWS_CHEAT) {
         M_DoUnderwater(item_num, lara_item);
     }
+}
+
+int16_t Pickup_FindNearbyCrowbarPryPickup(void)
+{
+    for (int16_t item_num = 0; item_num < Item_GetLevelCount(); item_num++) {
+        const ITEM *const item = Item_Get(item_num);
+        if (Object_Get(item->object_id)->collision_func != Pickup_Collision
+            || item->object_id == O_FLARE_ITEM
+            || !Lara_IsNearItem(&item->pos, WALL_L) || !Item_IsInPlay(item)) {
+            continue;
+        }
+
+        const M_PRIV *const p = item->priv;
+        if (p->pickup_mode == PICKUP_MODE_CROWBAR && M_TestLaraPosition(item)) {
+            return item_num;
+        }
+    }
+    return NO_ITEM;
 }
 
 // O_SCION_ITEM_1 and O_FLARE_ITEM register their own specialized setups.
