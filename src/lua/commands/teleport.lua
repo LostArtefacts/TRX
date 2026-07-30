@@ -57,7 +57,81 @@ local function matchable_objects()
   return trx.objects.query:spawnable():where(still_placed)
 end
 
+-- How far Lara stands from the face of something she operates: her own radius,
+-- so she comes to a stop beside it rather than inside it.
+local FRONT_GAP = 100
+
+-- Which way Lara ends up facing: the same way as something she operates from
+-- the front, and away from a pickup or a door, which is where she stands once
+-- she has taken it or opened it. A block is pushed and pulled from all four of
+-- its sides, so it names none of them and takes whichever one is free.
+local FACE_ITEM = 0
+local FACE_AWAY = HALF_TURN
+local FACE_ANY_SIDE = "any_side"
+
+local function facing_turn(item)
+  local object_id = item.object_id
+  if in_family("pickup", object_id) or in_family("door", object_id) then
+    return FACE_AWAY
+  elseif in_family("pushable", object_id) then
+    return FACE_ANY_SIDE
+  elseif
+    in_family("switch", object_id)
+    or in_family("receptacle", object_id)
+    or object_id == trx.catalog.objects.zipline_handle
+  then
+    return FACE_ITEM
+  else
+    return nil
+  end
+end
+
+-- Which quarter turns off the item's own rotation Lara may be met from: the one
+-- front face, or every side.
+local function approach_quarters(item)
+  local turn = facing_turn(item)
+  if turn == FACE_ANY_SIDE then
+    return { 0, 1, 2, 3 }
+  elseif turn == FACE_ITEM then
+    return { 0 }
+  end
+  return {}
+end
+
+-- Where Lara stands to reach a side of an item, and which way she looks from
+-- there. A switch set into a wall has its item inside the solid block behind,
+-- with only the model reaching through into the room, so the spot comes from
+-- the model's own bounding box rather than from the sector the item sits in.
+local function beside(item, quarter)
+  local bounds = item.bounds
+  local reach = ({
+    -bounds.min_z,
+    -bounds.min_x,
+    bounds.max_z,
+    bounds.max_x,
+  })[quarter + 1] + FRONT_GAP
+  local angle = item.rot.y + quarter * trx.math.DEG_90
+  return {
+    x = math.floor(item.pos.x - reach * trx.math.sin(angle)),
+    y = item.pos.y - LIFT,
+    z = math.floor(item.pos.z - reach * trx.math.cos(angle)),
+  },
+    angle
+end
+
+-- Somewhere to put Lara down: beside one of the item's faces, or the sector the
+-- item stands in for the ones with no side to approach from. A block fills its
+-- own sector, so its sides are all it has.
 local function has_floor(item)
+  for _, quarter in ipairs(approach_quarters(item)) do
+    local pos = beside(item, quarter)
+    if trx.rooms.floor_height(pos) ~= nil then
+      return true
+    end
+  end
+  if facing_turn(item) == FACE_ANY_SIDE then
+    return false
+  end
   local room = item.room
   return room == nil or room:floor_height(item.pos) ~= nil
 end
@@ -78,59 +152,29 @@ local function can_teleport_to(item)
   return has_floor(item)
 end
 
--- How far Lara stands from the face of something she operates: her own radius,
--- so she comes to a stop beside it rather than inside it.
-local FRONT_GAP = 100
-
--- Which way Lara ends up facing: the same way as something she operates from
--- the front, and away from a pickup or a door, which is where she stands once
--- she has taken it or opened it.
-local FACE_ITEM = 0
-local FACE_AWAY = HALF_TURN
-
-local function facing_turn(item)
-  local object_id = item.object_id
-  if in_family("pickup", object_id) or in_family("door", object_id) then
-    return FACE_AWAY
-  end
-  if
-    in_family("switch", object_id)
-    or in_family("receptacle", object_id)
-    or object_id == trx.catalog.objects.zipline_handle
-  then
-    return FACE_ITEM
-  end
-  return nil
-end
-
--- Where Lara stands to reach an item: off the near face of its model, looking
--- at it. A switch set into a wall has its item inside the solid block behind,
--- with only the model reaching through into the room, so the spot comes from
--- the model's own bounding box rather than from the sector the item sits in.
-local function front_of(item)
-  local dist = item.bounds.min_z - FRONT_GAP
-  return {
-    x = math.floor(item.pos.x + dist * trx.math.sin(item.rot.y)),
-    y = item.pos.y - LIFT,
-    z = math.floor(item.pos.z + dist * trx.math.cos(item.rot.y)),
-  }
-end
-
--- Lara is put down in front of the item, or where it stands for the ones she
--- has no side to approach from, facing whichever way it asks for. The front is
--- looked up without naming a room, since it often lies in the room next door;
--- somewhere with no floor moves nothing, and falls back to the item itself.
+-- Lara is put down beside the item, or where it stands for the ones she has no
+-- side to approach from, facing whichever way it asks for. A side is looked up
+-- without naming a room, since it often lies in the room next door; somewhere
+-- with no floor moves nothing, and falls back to the item itself.
 local function teleport_to_item(item)
+  for _, quarter in ipairs(approach_quarters(item)) do
+    local pos, angle = beside(item, quarter)
+    if trx.lara.teleport(pos) then
+      trx.lara.item.rot = { x = 0, y = angle, z = 0 }
+      return true
+    end
+  end
+
+  local turn = facing_turn(item)
+  if turn == FACE_ANY_SIDE then
+    return false
+  end
+
   local room = item.room
   local room_num = room ~= nil and room.num or nil
-  local turn = facing_turn(item)
-
-  local placed = turn == FACE_ITEM and trx.lara.teleport(front_of(item))
-  if not placed then
-    local pos = { x = item.pos.x, y = item.pos.y - LIFT, z = item.pos.z }
-    if not trx.lara.teleport(pos, room_num) then
-      return false
-    end
+  local pos = { x = item.pos.x, y = item.pos.y - LIFT, z = item.pos.z }
+  if not trx.lara.teleport(pos, room_num) then
+    return false
   end
 
   if turn ~= nil then
