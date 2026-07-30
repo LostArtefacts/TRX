@@ -185,6 +185,35 @@ static void M_Reset(void)
     m_Items[1].room_num = 1;
 }
 
+// A crystal standing four sectors out, for a test that has to see which pickup
+// a command went to: it can be made the nearest one without being the only one.
+// Placed on demand, so the level a test reads its counts off is the one above.
+void FakeItems_PlaceCrystal(void)
+{
+    m_Used[m_Count] = true;
+    m_Items[m_Count] = (ITEM) {
+        .object_id = FAKE_OBJ_CRYSTAL,
+        .room_num = 1,
+        .pos = { .x = 4 * 1024, .y = 0, .z = 0 },
+        .is_visible = true,
+    };
+    m_Count++;
+}
+
+// A scion standing eight sectors out, so a group name can be seen reaching a
+// pickup whose collection is its own control routine's business.
+void FakeItems_PlaceScion(void)
+{
+    m_Used[m_Count] = true;
+    m_Items[m_Count] = (ITEM) {
+        .object_id = FAKE_OBJ_SCION,
+        .room_num = 1,
+        .pos = { .x = 8 * 1024, .y = 0, .z = 0 },
+        .is_visible = true,
+    };
+    m_Count++;
+}
+
 FAKE_ON_RESET(M_Reset)
 
 // --- items ---
