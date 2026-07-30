@@ -117,7 +117,7 @@
                     "mode": "BRAID_MODE_TR1_HEAD_ONLY",
                     "mesh_offset": 10,
                     "gold_offset": 16,
-                    "positions": {
+                    "position": {
                         "x": 0,
                         "y": 20,
                         "z": -45,
