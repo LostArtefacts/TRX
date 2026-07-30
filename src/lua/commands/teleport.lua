@@ -78,37 +78,64 @@ local function can_teleport_to(item)
   return has_floor(item)
 end
 
+-- How far Lara stands from the face of something she operates: her own radius,
+-- so she comes to a stop beside it rather than inside it.
+local FRONT_GAP = 100
+
 -- Which way Lara ends up facing: the same way as something she operates from
 -- the front, and away from a pickup or a door, which is where she stands once
 -- she has taken it or opened it.
-local function align_to(item)
+local FACE_ITEM = 0
+local FACE_AWAY = HALF_TURN
+
+local function facing_turn(item)
   local object_id = item.object_id
-  local turn
   if in_family("pickup", object_id) or in_family("door", object_id) then
-    turn = HALF_TURN
-  elseif
+    return FACE_AWAY
+  end
+  if
     in_family("switch", object_id)
     or in_family("receptacle", object_id)
     or object_id == trx.catalog.objects.zipline_handle
   then
-    turn = 0
+    return FACE_ITEM
   end
-  if turn == nil then
-    return
-  end
-
-  local lara = trx.lara.item
-  lara.rot = { x = 0, y = item.rot.y + turn, z = 0 }
+  return nil
 end
 
--- Lara is put down where the item stands, facing whichever way it asks for.
+-- Where Lara stands to reach an item: off the near face of its model, looking
+-- at it. A switch set into a wall has its item inside the solid block behind,
+-- with only the model reaching through into the room, so the spot comes from
+-- the model's own bounding box rather than from the sector the item sits in.
+local function front_of(item)
+  local dist = item.bounds.min_z - FRONT_GAP
+  return {
+    x = math.floor(item.pos.x + dist * trx.math.sin(item.rot.y)),
+    y = item.pos.y - LIFT,
+    z = math.floor(item.pos.z + dist * trx.math.cos(item.rot.y)),
+  }
+end
+
+-- Lara is put down in front of the item, or where it stands for the ones she
+-- has no side to approach from, facing whichever way it asks for. The front is
+-- looked up without naming a room, since it often lies in the room next door;
+-- somewhere with no floor moves nothing, and falls back to the item itself.
 local function teleport_to_item(item)
   local room = item.room
-  local pos = { x = item.pos.x, y = item.pos.y - LIFT, z = item.pos.z }
-  if not trx.lara.teleport(pos, room ~= nil and room.num or nil) then
-    return false
+  local room_num = room ~= nil and room.num or nil
+  local turn = facing_turn(item)
+
+  local placed = turn == FACE_ITEM and trx.lara.teleport(front_of(item))
+  if not placed then
+    local pos = { x = item.pos.x, y = item.pos.y - LIFT, z = item.pos.z }
+    if not trx.lara.teleport(pos, room_num) then
+      return false
+    end
   end
-  align_to(item)
+
+  if turn ~= nil then
+    trx.lara.item.rot = { x = 0, y = item.rot.y + turn, z = 0 }
+  end
   return true
 end
 
