@@ -17,3 +17,7 @@ typedef struct {
 
 void UI_BeginWindow(UI_WINDOW_SETTINGS settings);
 void UI_EndWindow(void);
+
+// The horizontal space a window spends on its own frame and padding, in the
+// units a caller sizes its content in.
+float UI_Window_GetChromeWidth(void);
