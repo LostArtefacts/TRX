@@ -4,6 +4,11 @@
 #include <trx/game/game_flow/types.h>
 #include <trx/game/stats/types.h>
 
+int32_t Stats_GetSecretCount(void);
+// How many secrets the level counts towards completion, which is what the mask
+// holds less the ones the game flow marks unobtainable.
+int32_t Stats_GetMaxSecretCount(void);
+
 bool Stats_HasSecret(int16_t secret_idx);
 bool Stats_RemoveSecret(int16_t secret_idx);
 bool Stats_AddSecret(int16_t secret_idx);

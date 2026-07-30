@@ -7,6 +7,20 @@
 #include <trx/game/savegame.h>
 #include <trx/game/stats.h>
 
+int32_t Stats_GetSecretCount(void)
+{
+    const GF_LEVEL *const level = Game_GetCurrentLevel();
+    const RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
+    return resume->stats.secret_count;
+}
+
+int32_t Stats_GetMaxSecretCount(void)
+{
+    const GF_LEVEL *const level = Game_GetCurrentLevel();
+    const LEVEL_MAX_STATS *const max_stats = Stats_GetLevelMaxStats(level);
+    return max_stats->max_secret_count;
+}
+
 bool Stats_IsSecretValid(const int16_t secret_idx)
 {
     const GF_LEVEL *const level = Game_GetCurrentLevel();
