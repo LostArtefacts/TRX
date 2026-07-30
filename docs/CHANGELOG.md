@@ -124,6 +124,7 @@
 - fixed pulley switch animations not synchronizing with Lara if she continues to pull one indefinitely
 - fixed the camera not reacting to Lara using a shove button switch (OG bug)
 - fixed Lara using the wrong animation on switch item 2 in The Sphinx Complex (OG bug)
+- fixed one of the braziers on the title screen going out for good once the menu's flybys had passed it (OG bug)
 
 **Lua**
 
