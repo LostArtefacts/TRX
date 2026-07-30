@@ -341,4 +341,90 @@ test("format_error turns a structured error into text", function()
   assert(msg:find("state") and msg:find("hail") and msg:find("snow"), msg)
 end)
 
+-- A command whose first argument is optional - a verb before a value, a count
+-- before a name - only works if a token that does not fit it can move on.
+test("a token passes over an optional positional it does not fit", function()
+  local p = trx.argparse.new()
+  p:positional("action", { choices = { "give", "take" }, optional = true })
+  p:positional("num", { type = "integer", optional = true })
+
+  local parsed = p:parse("3")
+  assert(parsed ~= nil, "3 is not a verb, but it is a number")
+  assert(parsed.action == nil, "the verb was left out")
+  assert(parsed.num == 3)
+
+  parsed = p:parse("take 3")
+  assert(
+    parsed.action == "take" and parsed.num == 3,
+    "both still fill in turn"
+  )
+end)
+
+test("a required positional does not pass a token on", function()
+  local p = trx.argparse.new()
+  p:positional("action", { choices = { "give", "take" } })
+  p:positional("num", { type = "integer", optional = true })
+
+  local parsed, err = p:parse("3")
+  assert(parsed == nil, "the verb has to be there")
+  assert(err.kind == "invalid" and err.metavar == "action")
+end)
+
+-- The error names the argument the player was filling, not the last one that
+-- happened to refuse the token.
+test("a token nothing takes is refused by the first that could", function()
+  local p = trx.argparse.new()
+  p:positional("action", { choices = { "give", "take" }, optional = true })
+  p:positional("num", { type = "integer", optional = true })
+
+  local parsed, err = p:parse("hail")
+  assert(parsed == nil)
+  assert(
+    err.kind == "invalid" and err.metavar == "action" and err.token == "hail"
+  )
+end)
+
+test("passing over one argument does not shift the ones behind it", function()
+  local p = trx.argparse.new()
+  p:positional("count", { type = "integer", optional = true })
+  p:positional("name", { choices = { "uzi", "shotgun" } })
+
+  local parsed = p:parse("uzi")
+  assert(parsed.count == nil and parsed.name == "uzi")
+
+  parsed = p:parse("2 uzi")
+  assert(parsed.count == 2 and parsed.name == "uzi")
+end)
+
+test(
+  "completion offers what the slot takes, passed-over arguments included",
+  function()
+    local p = trx.argparse.new()
+    p:positional("action", { choices = { "give", "take" }, optional = true })
+    p:positional("num", { choices = { "1", "3" }, optional = true })
+
+    local out = p:complete("")
+    assert(#out == 4, "both arguments are reachable from the first slot")
+
+    -- Once the verb is in, only what follows it is offered.
+    out = p:complete("give ")
+    assert(#out == 2 and out[1] == "1" and out[2] == "3")
+  end
+)
+
+test("a choices function sees the arguments a token passed over", function()
+  local p = trx.argparse.new()
+  p:positional("action", { choices = { "give", "take" }, optional = true })
+  p:positional("num", {
+    choices = function(parsed)
+      return parsed.action == "take" and { "1" } or { "2" }
+    end,
+    optional = true,
+  })
+
+  assert(p:parse("take 1").num == "1")
+  assert(p:parse("2").num == "2", "no verb means the other set")
+  assert(p:parse("take 2") == nil, "2 is not one of take's")
+end)
+
 return h.report()
