@@ -4,6 +4,7 @@
 - added partial support for TR4's in-game cutscenes
 - added a new Lua module, `trx.cutscenes`, for playing TR4's cutscenes and reading or rewriting which of them have run, with the `on_cutscene_trigger`, `on_cutscene_start` and `on_cutscene_end` events; a script can answer a cutscene trigger itself, set how a cutscene is framed, and say where one leaves Lara
 - added a new Lua module, `trx.stats`, for reading which of the level's secrets Lara has found, and for giving one to her or taking it back
+- added pickup families to `trx.objects.query` - `gun`, `ammo`, `supply`, `tool`, `key`, `puzzle`, `quest`, `examine`, `collectible` and `secret` - so a script can ask what a pickup is
 - added TR4 camera mode, which is similar to TR3 but more responsive to Lara's actions such as picking up items
 - added the ability to paste commands in the developer console (with Ctrl+V)
 - added autocompletion to the developer console (with Tab and Shift+Tab to cycle the matches)
