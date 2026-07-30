@@ -142,20 +142,14 @@ VECTOR *Console_Registry_GetAll(void)
     return vec;
 }
 
-void Console_Registry_RemoveByProc(
-    COMMAND_RESULT (*const proc)(const COMMAND_CONTEXT *ctx))
+void Console_Registry_Clear(void)
 {
-    int32_t kept = 0;
     for (int32_t i = 0; i < m_CommandCount; i++) {
-        if (m_Commands[i].proc == proc) {
-            free((char *)m_Commands[i].prefix);
-            free((char *)m_Commands[i].help_id);
-            free((char *)m_Commands[i].aliases);
-            continue;
-        }
-        m_Commands[kept++] = m_Commands[i];
+        free((char *)m_Commands[i].prefix);
+        free((char *)m_Commands[i].help_id);
+        free((char *)m_Commands[i].aliases);
     }
-    m_CommandCount = kept;
+    m_CommandCount = 0;
 }
 
 COMMAND_RESULT FakeConsole_Run(const char *const prefix, const char *const args)
@@ -233,14 +227,10 @@ static int M_L_IsRegistered(lua_State *const L)
 }
 
 // fake.reload() - the state that registered the commands shuts down, as it does
-// on a mod switch, and takes its commands with it. Every command a test
-// registers dispatches through the one Lua proc, which is what the engine
-// drops.
+// on a mod switch, and takes its commands with it.
 static int M_L_Reload(lua_State *const L)
 {
-    if (m_CommandCount > 0) {
-        Console_Registry_RemoveByProc(m_Commands[0].proc);
-    }
+    Console_Registry_Clear();
     return 0;
 }
 

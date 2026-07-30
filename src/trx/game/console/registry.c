@@ -13,20 +13,11 @@ typedef struct M_NODE {
 
 static M_NODE *m_List = nullptr;
 
+// A run that ends without the Lua state shutting down first still leaves the
+// list behind, so the process drops it on the way out.
 __attribute__((destructor)) static void M_Shutdown(void)
 {
-    M_NODE *current = m_List;
-
-    while (current != nullptr) {
-        M_NODE *const next = current->next;
-        Memory_Free((char *)current->cmd.prefix);
-        Memory_Free((char *)current->cmd.help_id);
-        Memory_Free((char *)current->cmd.aliases);
-        Memory_Free(current);
-        current = next;
-    }
-
-    m_List = nullptr;
+    Console_Registry_Clear();
 }
 
 // The command word is the first run of non-space characters.
@@ -203,22 +194,18 @@ void Console_Registry_Add(CONSOLE_COMMAND cmd)
     m_List = node;
 }
 
-void Console_Registry_RemoveByProc(
-    COMMAND_RESULT (*const proc)(const COMMAND_CONTEXT *ctx))
+void Console_Registry_Clear(void)
 {
-    M_NODE **link = &m_List;
-    while (*link != nullptr) {
-        M_NODE *const node = *link;
-        if (node->cmd.proc != proc) {
-            link = &node->next;
-            continue;
-        }
-        *link = node->next;
+    M_NODE *node = m_List;
+    while (node != nullptr) {
+        M_NODE *const next = node->next;
         Memory_Free((char *)node->cmd.prefix);
         Memory_Free((char *)node->cmd.help_id);
         Memory_Free((char *)node->cmd.aliases);
         Memory_Free(node);
+        node = next;
     }
+    m_List = nullptr;
 }
 
 VECTOR *Console_Registry_GetAll(void)
