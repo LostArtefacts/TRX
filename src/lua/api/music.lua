@@ -2,7 +2,7 @@ local raw = trxc.music
 local api = trx.api
 
 api.module("music", {
-  order = 16,
+  order = 18,
   description = "Module for playing and controlling the soundtrack.",
 })
 

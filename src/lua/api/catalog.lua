@@ -2,7 +2,7 @@ local raw = trxc.catalog
 local api = trx.api
 
 api.module("catalog", {
-  order = 6,
+  order = 8,
   description = "The names TRX knows things by.\n\n"
     .. "Each catalog is an enum of every object, sample, music track, Lara state, Lara animation "
     .. "or item action the engine has a name for. The names are the C ones with their prefix "

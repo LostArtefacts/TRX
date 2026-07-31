@@ -82,7 +82,7 @@ local ROOM_LISTENER_ID = {
 }
 
 api.module("rooms", {
-  order = 4,
+  order = 6,
   description = "Module for inspecting and altering the rooms of the current level.",
 })
 
