@@ -99,8 +99,7 @@ static LARA_GUN_TYPE M_NeedToQuickDraw(void)
     LARA_INFO *const lara = Lara_GetLaraInfo();
     for (int32_t i = 0; m_QuicDrawKeys[i].gun_type != LGT_UNKNOWN; i++) {
         if (Input_IsPressedDB(m_QuicDrawKeys[i].input_role)
-            && Inv_GetItemCount(Gun_GetGunObject(m_QuicDrawKeys[i].gun_type))
-                > 0) {
+            && Inv_HasItem(Gun_GetGunObject(m_QuicDrawKeys[i].gun_type)) > 0) {
             return m_QuicDrawKeys[i].gun_type;
         }
     }
@@ -130,7 +129,7 @@ static bool M_CanEquip(void)
     if (Lara_Vehicle_IsMounted()) {
         return false;
     }
-    if (!Inv_GetItemCount(Gun_GetGunObject(lara->request_gun_type))) {
+    if (!Inv_HasItem(Gun_GetGunObject(lara->request_gun_type))) {
         return false;
     }
     switch (lara->water_status) {
@@ -228,15 +227,15 @@ static void M_DecideRequestedWeapon(void)
         LARA_GUN_TYPE requested_gun = lara->last_gun_type != LGT_UNARMED
             ? lara->last_gun_type
             : LGT_PISTOLS;
-        if (Inv_GetItemCount(Gun_GetGunObject(requested_gun)) == 0) {
+        if (!Inv_HasItem(Gun_GetGunObject(requested_gun))) {
             for (LARA_GUN_TYPE gun = 0; gun < NUM_WEAPONS; gun++) {
-                if (Inv_GetItemCount(Gun_GetGunObject(gun)) > 0) {
+                if (Inv_HasItem(Gun_GetGunObject(gun))) {
                     requested_gun = gun;
                     break;
                 }
             }
         }
-        if (Inv_GetItemCount(Gun_GetGunObject(requested_gun)) != 0) {
+        if (Inv_HasItem(Gun_GetGunObject(requested_gun))) {
             lara->request_gun_type = requested_gun;
         }
         return;
@@ -250,7 +249,7 @@ static void M_DecideRequestedWeapon(void)
         if (lara->gun_type == LGT_FLARE) {
             lara->gun_status = LGS_UNDRAW;
         } else if (
-            Inv_GetItemCount(O_FLAREBOX_ITEM)
+            Inv_HasItem(O_FLAREBOX_ITEM)
             && (!g_Config.gameplay.fix_free_flare_glitch
                 || lara_item->current_anim_state != LS(LS_PICKUP))) {
             lara->request_gun_type = LGT_FLARE;
@@ -294,7 +293,7 @@ static void M_DrawRequestedWeapon(void)
 static void M_TryUndrawWeapon(void)
 {
     LARA_INFO *const lara = Lara_GetLaraInfo();
-    if (g_Input.use_flare && Inv_GetItemCount(O_FLAREBOX_ITEM)) {
+    if (g_Input.use_flare && Inv_HasItem(O_FLAREBOX_ITEM)) {
         lara->request_gun_type = LGT_FLARE;
     }
     if (M_NeedToUndraw()) {
@@ -448,7 +447,7 @@ void Gun_Control(void)
                     Sound_Effect(SFX_CLICK, &lara_item->pos, SPM_NORMAL);
                 }
                 lara->request_gun_type =
-                    Inv_GetItemCount(O_PISTOL_ITEM) ? LGT_PISTOLS : LGT_UNARMED;
+                    Inv_HasItem(O_PISTOL_ITEM) ? LGT_PISTOLS : LGT_UNARMED;
                 break;
             }
         }
@@ -514,7 +513,7 @@ int32_t Gun_FireWeapon(
         Inv_SetAmmo(weapon_type, 0);
         if (g_TRVersion == 1) {
             Sound_Effect(SFX_LARA_EMPTY, &src->pos, SPM_NORMAL);
-            if (Inv_GetItemCount(O_PISTOL_ITEM)) {
+            if (Inv_HasItem(O_PISTOL_ITEM)) {
                 lara->request_gun_type = LGT_PISTOLS;
             } else {
                 lara->gun_status = LGS_UNDRAW;

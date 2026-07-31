@@ -37,6 +37,7 @@ OBJECT_ID Inv_GetItemPickup(OBJECT_ID obj_id);
 
 bool Inv_CanAddItem(OBJECT_ID obj_id);
 int32_t Inv_GetItemCount(OBJECT_ID obj_id);
+bool Inv_HasItem(OBJECT_ID obj_id);
 void Inv_SetItemCount(OBJECT_ID obj_id, int32_t qty);
 bool Inv_AddItem(OBJECT_ID obj_id);
 bool Inv_AddItemNTimes(OBJECT_ID obj_id, int32_t qty);

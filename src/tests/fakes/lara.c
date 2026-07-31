@@ -193,6 +193,11 @@ int32_t Inv_GetItemCount(const OBJECT_ID object_id)
     return slot == nullptr ? 0 : *slot;
 }
 
+bool Inv_HasItem(const OBJECT_ID object_id)
+{
+    return Inv_GetItemCount(object_id) > 0;
+}
+
 LARA_SKIN_TYPE Lara_Skin_GetType(void)
 {
     return m_Skin;

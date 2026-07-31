@@ -567,10 +567,9 @@ static void M_Control(const int16_t item_num)
     const int32_t dist = SQUARE(x) + SQUARE(z);
 
     if (item->hit_points <= 0) {
-        const bool puzzle_complete = Inv_GetItemCount(O_QUEST_ITEM_1) > 0
-            && Inv_GetItemCount(O_QUEST_ITEM_2) > 0
-            && Inv_GetItemCount(O_QUEST_ITEM_3) > 0
-            && Inv_GetItemCount(O_QUEST_ITEM_4) > 0;
+        const bool puzzle_complete = Inv_HasItem(O_QUEST_ITEM_1)
+            && Inv_HasItem(O_QUEST_ITEM_2) && Inv_HasItem(O_QUEST_ITEM_3)
+            && Inv_HasItem(O_QUEST_ITEM_4);
 
         if (puzzle_complete && p->puzzle_ready) {
             if (item->current_anim_state != M_STATE_STUNNED) {

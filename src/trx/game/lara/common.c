@@ -360,8 +360,7 @@ void Lara_InitialiseInventory(const GF_LEVEL *const level)
 
 void Lara_RevertToPistolsIfNeeded(void)
 {
-    if (g_Config.gameplay.remember_gun_status
-        || !Inv_GetItemCount(O_PISTOL_ITEM)) {
+    if (g_Config.gameplay.remember_gun_status || !Inv_HasItem(O_PISTOL_ITEM)) {
         return;
     }
 
@@ -374,7 +373,7 @@ void Lara_RevertToPistolsIfNeeded(void)
         lara_info->request_gun_type = LGT_PISTOLS;
         lara_info->gun_type = LGT_PISTOLS;
     }
-    if (Inv_GetItemCount(O_SHOTGUN_ITEM)) {
+    if (Inv_HasItem(O_SHOTGUN_ITEM)) {
         lara_info->back_gun_type = LGT_SHOTGUN;
     } else {
         lara_info->back_gun_type = LGT_UNARMED;

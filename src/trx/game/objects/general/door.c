@@ -42,7 +42,7 @@ static const XYZ_32 m_CrowbarDoorPosition = { .x = -412, .y = 0, .z = 140 };
 
 static bool M_ShowCrowbarInventory(void)
 {
-    if (Inv_GetItemCount(O_CROWBAR_ITEM) == 0) {
+    if (!Inv_HasItem(O_CROWBAR_ITEM)) {
         return false;
     }
 
