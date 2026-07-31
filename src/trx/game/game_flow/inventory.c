@@ -287,19 +287,12 @@ void GF_InventoryModifier_ApplyToResumeInfo(const GF_LEVEL *const level)
         M_ModifyResumeInfo_Item(resume, O_BINOCULARS_ITEM);
     }
 
-    M_ModifyResumeInfo_GunOrAmmo(resume, LGT_PISTOLS);
-    M_ModifyResumeInfo_GunOrAmmo(resume, LGT_MAGNUMS);
-    M_ModifyResumeInfo_GunOrAmmo(resume, LGT_AUTOS);
-    M_ModifyResumeInfo_GunOrAmmo(resume, LGT_DESERT_EAGLE);
-    M_ModifyResumeInfo_GunOrAmmo(resume, LGT_UZIS);
-    M_ModifyResumeInfo_GunOrAmmo(resume, LGT_SHOTGUN);
-    M_ModifyResumeInfo_GunOrAmmo(resume, LGT_HARPOON);
-    M_ModifyResumeInfo_GunOrAmmo(resume, LGT_M16);
-    M_ModifyResumeInfo_GunOrAmmo(resume, LGT_MP5);
-    M_ModifyResumeInfo_GunOrAmmo(resume, LGT_GRENADE);
-    M_ModifyResumeInfo_GunOrAmmo(resume, LGT_ROCKET);
-    M_ModifyResumeInfo_GunOrAmmo(resume, LGT_CROSSBOW);
-    M_ModifyResumeInfo_GunOrAmmo(resume, LGT_REVOLVER);
+    for (LARA_GUN_TYPE gun_type = LGT_UNARMED + 1; gun_type < NUM_WEAPONS;
+         gun_type++) {
+        if (Gun_GetGunObject(gun_type) != NO_OBJECT) {
+            M_ModifyResumeInfo_GunOrAmmo(resume, gun_type);
+        }
+    }
 
     M_ModifyResumeInfo_Item(resume, O_SMALL_MEDIPACK_ITEM);
     M_ModifyResumeInfo_Item(resume, O_LARGE_MEDIPACK_ITEM);
@@ -323,18 +316,14 @@ void GF_InventoryModifier_Apply(
             }
         }
 
-        M_ModifyInventory_GunOrAmmo(type, LGT_MAGNUMS);
-        M_ModifyInventory_GunOrAmmo(type, LGT_AUTOS);
-        M_ModifyInventory_GunOrAmmo(type, LGT_DESERT_EAGLE);
-        M_ModifyInventory_GunOrAmmo(type, LGT_UZIS);
-        M_ModifyInventory_GunOrAmmo(type, LGT_SHOTGUN);
-        M_ModifyInventory_GunOrAmmo(type, LGT_HARPOON);
-        M_ModifyInventory_GunOrAmmo(type, LGT_M16);
-        M_ModifyInventory_GunOrAmmo(type, LGT_MP5);
-        M_ModifyInventory_GunOrAmmo(type, LGT_GRENADE);
-        M_ModifyInventory_GunOrAmmo(type, LGT_ROCKET);
-        M_ModifyInventory_GunOrAmmo(type, LGT_CROSSBOW);
-        M_ModifyInventory_GunOrAmmo(type, LGT_REVOLVER);
+        // The pistols are handled above: they arrive without ammunition of
+        // their own to convert.
+        for (LARA_GUN_TYPE gun_type = LGT_PISTOLS + 1; gun_type < NUM_WEAPONS;
+             gun_type++) {
+            if (Gun_GetGunObject(gun_type) != NO_OBJECT) {
+                M_ModifyInventory_GunOrAmmo(type, gun_type);
+            }
+        }
     }
 
 #define X_PICKUP_NUMBERED(item, option) M_ModifyInventory_Item(type, item);
