@@ -37,14 +37,6 @@ static const M_OPTION m_Options[] = {
         .choice = UI_NEW_GAME_CHOICE_NGPLUS,
     },
     {
-        .label_id = GS_ID("general/passport/mode_new_game_jp"),
-        .choice = UI_NEW_GAME_CHOICE_JP_NG,
-    },
-    {
-        .label_id = GS_ID("general/passport/mode_new_game_jp_plus"),
-        .choice = UI_NEW_GAME_CHOICE_JP_NGPLUS,
-    },
-    {
         .label_id = GS_ID("general/passport/play_previous_levels"),
         .choice = UI_NEW_GAME_CHOICE_PLAY_PREV_LEVELS,
     },

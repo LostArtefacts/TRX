@@ -102,8 +102,6 @@
             "exit_to_title": "Till gu Tiotal",
             "load_game": "Luchdaich Geama",
             "mode_new_game": "Geama Ùr",
-            "mode_new_game_jp": "GÙ Iapanach",
-            "mode_new_game_jp_plus": "GÙ+ Iapanach",
             "mode_new_game_plus": "Geama Ùr+",
             "new_game": "Geama Ùr",
             "play_previous_levels": "Cluich ìrean roimhe",
@@ -1300,7 +1298,7 @@
         },
         "gameplay.game_modes_policy": {
             "title": "Taghadh modh geama",
-            "description": "\\{review}Leigeas le roghainnean Geama Ùr+ a bhith rim faotainn sa phasport aig toiseach a' gheama.\n\n- Geama Ùr+: fuasgladh nan armachd air fad le peilearan gun chrìoch; bidh HP dùbailte aig na nàimhdean.\n- GÙ Iapanach: bidh na h-armachd ag adhbhrachadh milleadh dùbailte, agus bheir togail lòchrain 8 seach 6.\n- GÙ+ Iapanach: measgachadh de GÙ+ is GÙ Iapanach.\n\nRoghainnean rim faighinn:\n\n- An-còmhnaidh: bidh uinneag taghadh nam modhan-geama ri fhaighinn an-còmhnaidh.\n- A-riamh: cha bhi uinneag taghadh nam modhan-geama ri fhaighinn idir, agus bidh gach geama ùr na gheama àbhaisteach.\n- Air chrìoch: cha bhi uinneag taghadh nam modhan-geama ri fhaighinn gus am bi an geama air a chrìochnachadh.",
+            "description": "\\{review}Leigeas le roghainnean Geama Ùr+ a bhith rim faotainn sa phasport aig toiseach a' gheama.\n\n- Geama Ùr+: fuasgladh nan armachd air fad le peilearan gun chrìoch; bidh HP dùbailte aig na nàimhdean.\n\nRoghainnean rim faighinn:\n\n- An-còmhnaidh: bidh uinneag taghadh nam modhan-geama ri fhaighinn an-còmhnaidh.\n- A-riamh: cha bhi uinneag taghadh nam modhan-geama ri fhaighinn idir, agus bidh gach geama ùr na gheama àbhaisteach.\n- Air chrìoch: cha bhi uinneag taghadh nam modhan-geama ri fhaighinn gus am bi an geama air a chrìochnachadh.",
         },
         "gameplay.harpoon_recoil": {
             "title": "Ath-luchdadh harpùn",

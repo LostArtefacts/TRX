@@ -1257,7 +1257,8 @@ bool SG_File_LoadMisc(JSON_READ_IO *const io)
     {
         int32_t bonus_flag = false;
         M_MUST(JSON_READ(io, "bonus_flag", &bonus_flag));
-        Game_SetBonusFlag(bonus_flag);
+        // saves made before Japanese mode was retired may carry its bit
+        Game_SetBonusFlag(bonus_flag & GBF_NGPLUS);
     }
 
     {
