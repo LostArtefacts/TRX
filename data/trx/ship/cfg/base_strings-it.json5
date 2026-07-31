@@ -1118,6 +1118,10 @@
             "title": "Telecamera manuale",
             "description": "Usa i tasti della telecamera (\\{input camera_forward}\\{input camera_back}\\{input camera_left}\\{input camera_right}) utilizzati nella Modalità Foto, anche per ruotare la telecamera di gioco.",
         },
+        "gameplay.enable_multiple_pickups": {
+            "title": "\\{review}Raccolta multipla",
+            "description": "\\{review}Permette a Lara di raccogliere tutti gli oggetti da raccogliere che si trovano nella stessa posizione con la stessa animazione (TR1–3). Se disabilitata, Lara deve ripetere l’animazione per ogni oggetto (TR4+).",
+        },
         "gameplay.enable_neutral_twists": {
             "title": "Rotazione da fermo",
             "description": "Permette a Lara di ruotare in aria mentre esegue un salto da fermo. Mentre sei fermo, premi contemporaneamente i tasti Salta e Capriola.",

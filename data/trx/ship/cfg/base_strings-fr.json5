@@ -1118,6 +1118,10 @@
             "title": "\\{review}Caméra manuelle",
             "description": "\\{review}Active les touches de la caméra (\\{input camera_forward}\\{input camera_back}\\{input camera_left}\\{input camera_right}) utilisées pour contrôler la caméra du mode photo, pour également faire pivoter la caméra en jeu.",
         },
+        "gameplay.enable_multiple_pickups": {
+            "title": "\\{review}Ramassage multiple",
+            "description": "\\{review}Permet à Lara de ramasser tous les objets situés au même endroit au cours de la même animation (TR1–3). Si cette option est désactivée, Lara doit répéter l’animation pour chaque objet (TR4+).",
+        },
         "gameplay.enable_neutral_twists": {
             "title": "\\{review}Pirouettes sur place",
             "description": "\\{review}Permet à Lara d'effectuer une rotation en l'air lors d'un saut sur place. Appuyez simultanément sur les touches de saut et de roulade en étant immobile.",

@@ -683,10 +683,12 @@ static void M_Pickup(ITEM *const item, COLL_INFO *const coll)
     g_Camera.target_elevation = M_CAM_PICKUP_ELEVATION;
     g_Camera.target_distance = M_CAM_PICKUP_DISTANCE;
 
-    if (item->current_anim_state == LS(LS_FLARE_PICKUP)
-        && Item_TestFrameEqual(item, -1)) {
+    if (Item_TestFrameEqual(item, -1)) {
         LARA_INFO *const lara = Lara_GetLaraInfo();
-        lara->gun_status = LGS_ARMLESS;
+        lara->interact_target.item_num = NO_ITEM;
+        if (item->current_anim_state == LS(LS_FLARE_PICKUP)) {
+            lara->gun_status = LGS_ARMLESS;
+        }
     }
 }
 
