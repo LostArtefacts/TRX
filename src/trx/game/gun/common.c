@@ -39,6 +39,33 @@ static const struct {
 };
 // clang-format on
 
+// Which weapon Lara wears where, when she carries more than one that could
+// hang there. The weapon type says which of the two slots a weapon can use -
+// the rifles go on her back and the rest into her holsters - but not which of
+// them wins, so the order is here.
+// clang-format off
+static const LARA_GUN_TYPE m_HolsterGuns[] = {
+    LGT_PISTOLS, LGT_MAGNUMS, LGT_AUTOS, LGT_DESERT_EAGLE, LGT_UZIS,
+    LGT_REVOLVER, LGT_UNARMED,
+};
+
+static const LARA_GUN_TYPE m_BackGuns[] = {
+    LGT_SHOTGUN, LGT_M16, LGT_MP5, LGT_GRENADE, LGT_ROCKET, LGT_HARPOON,
+    LGT_CROSSBOW, LGT_UNARMED,
+};
+// clang-format on
+
+static LARA_GUN_TYPE M_GetFirstCarried(
+    const INVENTORY_STATE *const inv, const LARA_GUN_TYPE *const gun_types)
+{
+    for (int32_t i = 0; gun_types[i] != LGT_UNARMED; i++) {
+        if (Inv_State_Has(inv, Gun_GetGunObject(gun_types[i]))) {
+            return gun_types[i];
+        }
+    }
+    return LGT_UNARMED;
+}
+
 // Whether the type addresses a row of the table above. A legacy save can hold
 // LGT_UNKNOWN, which is below the first row.
 static bool M_IsWeapon(const LARA_GUN_TYPE gun_type)
@@ -139,6 +166,16 @@ int32_t Gun_GetAmmoInventoryQuantity(const LARA_GUN_TYPE gun_type)
 int32_t Gun_GetRoundsPerShot(const LARA_GUN_TYPE gun_type)
 {
     return gun_type == LGT_SHOTGUN ? M_SHOTGUN_PELLETS_PER_SHOT : 1;
+}
+
+LARA_GUN_TYPE Gun_GetHolsterChoice(const INVENTORY_STATE *const inv)
+{
+    return M_GetFirstCarried(inv, m_HolsterGuns);
+}
+
+LARA_GUN_TYPE Gun_GetBackChoice(const INVENTORY_STATE *const inv)
+{
+    return M_GetFirstCarried(inv, m_BackGuns);
 }
 
 bool Gun_IsRifleType(const LARA_GUN_TYPE gun_type)

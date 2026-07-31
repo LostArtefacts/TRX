@@ -32,6 +32,15 @@ typedef struct {
 INVENTORY_STATE *Inv_GetState(void);
 void Inv_SetState(const INVENTORY_STATE *state);
 
+// Reading and writing an inventory Lara is not carrying: the one a level
+// keeps for when she arrives in it.
+int32_t Inv_State_GetCount(const INVENTORY_STATE *state, OBJECT_ID obj_id);
+bool Inv_State_Has(const INVENTORY_STATE *state, OBJECT_ID obj_id);
+void Inv_State_SetCount(INVENTORY_STATE *state, OBJECT_ID obj_id, int32_t qty);
+void Inv_State_AddCount(INVENTORY_STATE *state, OBJECT_ID obj_id, int32_t qty);
+void Inv_State_AddAmmo(
+    INVENTORY_STATE *state, LARA_GUN_TYPE gun_type, int32_t rounds);
+
 OBJECT_ID Inv_GetItemOption(OBJECT_ID obj_id);
 OBJECT_ID Inv_GetItemPickup(OBJECT_ID obj_id);
 
@@ -43,6 +52,9 @@ int32_t Inv_GetDrawnEntries(INVENTORY_ENTRY *entries, int32_t max_count);
 bool Inv_HasItem(OBJECT_ID obj_id);
 void Inv_SetItemCount(OBJECT_ID obj_id, int32_t qty);
 bool Inv_AddItem(OBJECT_ID obj_id);
+// Puts one of something in, and no more than one however often it is asked
+// for.
+void Inv_EnsureItem(OBJECT_ID obj_id);
 bool Inv_AddItemNTimes(OBJECT_ID obj_id, int32_t qty);
 bool Inv_RemoveItem(OBJECT_ID obj_id);
 void Inv_RemoveAllItems(void);

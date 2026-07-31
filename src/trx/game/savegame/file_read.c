@@ -919,32 +919,38 @@ static bool M_ReadResumeInfo(JSON_READ_IO *const io, RESUME_INFO *const resume)
         JSON_READ(io, "back_gun_type", &resume->back_gun_type)); // LGT_UNKNOWN
     M_MUST(JSON_READ(io, "costume", &resume->flags.costume));
 
-    M_MUST(JSON_READ(io, "pistol_ammo", &resume->pistol_ammo));
-    M_MUST(JSON_READ(io, "uzi_ammo", &resume->uzi_ammo));
-    M_MUST(JSON_READ(io, "shotgun_ammo", &resume->shotgun_ammo));
-    M_MUST(JSON_READ(io, "magnum_ammo", &resume->magnum_ammo));
-    // Introduced in TRX 1.1
-    M_SHOULD(JSON_READ(io, "autos_ammo", &resume->autos_ammo));
-    M_SHOULD(JSON_READ(io, "desert_eagle_ammo", &resume->desert_eagle_ammo));
+    for (const SAVEGAME_RESUME_WEAPON *entry = g_Savegame_ResumeWeapons;
+         entry->has_key != nullptr; entry++) {
+        int32_t ammo = 0;
+        bool has_weapon = false;
+        if (entry->required) {
+            M_MUST(JSON_READ(io, entry->ammo_key, &ammo));
+            M_MUST(JSON_READ(io, entry->has_key, &has_weapon));
+        } else {
+            M_SHOULD(JSON_READ(io, entry->ammo_key, &ammo));
+            M_SHOULD(JSON_READ(io, entry->has_key, &has_weapon));
+        }
+        resume->inv.ammo[entry->gun_type] = ammo;
+        Inv_State_SetCount(
+            &resume->inv, Gun_GetGunObject(entry->gun_type),
+            has_weapon ? 1 : 0);
+    }
 
-    M_MUST(JSON_READ(io, "m16_ammo", &resume->m16_ammo));
-    M_MUST(JSON_READ(io, "grenade_ammo", &resume->grenade_ammo));
-    M_MUST(JSON_READ(io, "harpoon_ammo", &resume->harpoon_ammo));
-    M_MUST(JSON_READ(io, "num_medis", &resume->small_medipacks));
-    M_MUST(JSON_READ(io, "num_big_medis", &resume->large_medipacks));
-    M_MUST(JSON_READ(io, "num_flares", &resume->flares));
-    M_MUST(JSON_READ(io, "num_scions", &resume->num_scions));
+    // Introduced in TRX 1.9
+    bool has_binoculars = false;
+    M_SHOULD(JSON_READ(io, "has_binoculars", &has_binoculars));
+    Inv_State_SetCount(&resume->inv, O_BINOCULARS_ITEM, has_binoculars ? 1 : 0);
 
-    // Introduced in TRX 1.2
-    M_SHOULD(JSON_READ(io, "num_quest_item_1", &resume->num_quest_item_1));
-    M_SHOULD(JSON_READ(io, "num_quest_item_2", &resume->num_quest_item_2));
-    M_SHOULD(JSON_READ(io, "num_quest_item_3", &resume->num_quest_item_3));
-    M_SHOULD(JSON_READ(io, "num_quest_item_4", &resume->num_quest_item_4));
-    M_SHOULD(JSON_READ(io, "num_quest_item_5", &resume->num_quest_item_5));
-    M_SHOULD(JSON_READ(io, "num_quest_item_6", &resume->num_quest_item_6));
-
-    // Introduced in TRX 1.10
-    M_SHOULD(JSON_READ(io, "num_save_crystals", &resume->num_save_crystals));
+    for (const SAVEGAME_RESUME_ITEM *entry = g_Savegame_ResumeItems;
+         entry->key != nullptr; entry++) {
+        int32_t qty = 0;
+        if (entry->required) {
+            M_MUST(JSON_READ(io, entry->key, &qty));
+        } else {
+            M_SHOULD(JSON_READ(io, entry->key, &qty));
+        }
+        Inv_State_SetCount(&resume->inv, entry->object_id, qty);
+    }
 
     M_MUST(JSON_READ(io, "available", &resume->flags.available));
 
@@ -959,30 +965,6 @@ static bool M_ReadResumeInfo(JSON_READ_IO *const io, RESUME_INFO *const resume)
     // Introduced in TRX 1.10
     resume->burning = false;
     M_SHOULD(JSON_READ(io, "burning", &resume->burning));
-
-    M_MUST(JSON_READ(io, "has_pistols", &resume->flags.has_pistols));
-    M_MUST(JSON_READ(io, "has_shotgun", &resume->flags.has_shotgun));
-    M_MUST(JSON_READ(io, "has_uzis", &resume->flags.has_uzis));
-    M_MUST(JSON_READ(io, "has_m16", &resume->flags.has_m16));
-    M_MUST(JSON_READ(io, "has_grenade", &resume->flags.has_grenade));
-    M_MUST(JSON_READ(io, "has_harpoon", &resume->flags.has_harpoon));
-
-    // Introduced in TRX 1.1
-    M_MUST(JSON_READ(io, "has_magnums", &resume->flags.has_magnums));
-    M_SHOULD(JSON_READ(io, "has_autos", &resume->flags.has_autos));
-    M_SHOULD(
-        JSON_READ(io, "has_desert_eagle", &resume->flags.has_desert_eagle));
-    M_SHOULD(JSON_READ(io, "has_mp5", &resume->flags.has_mp5));
-    M_SHOULD(JSON_READ(io, "mp5_ammo", &resume->mp5_ammo));
-    M_SHOULD(JSON_READ(io, "has_rocket", &resume->flags.has_rocket));
-    M_SHOULD(JSON_READ(io, "rocket_ammo", &resume->rocket_ammo));
-
-    // Introduced in TRX 1.9
-    M_SHOULD(JSON_READ(io, "has_crossbow", &resume->flags.has_crossbow));
-    M_SHOULD(JSON_READ(io, "crossbow_ammo", &resume->crossbow_ammo));
-    M_SHOULD(JSON_READ(io, "has_revolver", &resume->flags.has_revolver));
-    M_SHOULD(JSON_READ(io, "revolver_ammo", &resume->revolver_ammo));
-    M_SHOULD(JSON_READ(io, "has_binoculars", &resume->flags.has_binoculars));
 
     M_MUST(JSON_READ(io, "timer", &resume->stats.timer));
     M_MUST(JSON_READ(io, "ammo_hits", &resume->stats.ammo_hits));

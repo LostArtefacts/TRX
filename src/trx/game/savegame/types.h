@@ -1,6 +1,7 @@
 #pragma once
 
 #include <trx/core/filesystem.h>
+#include <trx/game/inventory.h>
 #include <trx/game/lara/enum.h>
 #include <trx/game/objects/ids.h>
 #include <trx/game/savegame/enum.h>
@@ -18,54 +19,35 @@ typedef struct {
     bool required;
 } SAVEGAME_AMMO_ENTRY;
 
+// What a level's resume info holds of one weapon, under the names savegames
+// have always given them. They are not the names Lara's own ammunition goes
+// by, so they are written down rather than built from them.
 typedef struct {
-    uint8_t small_medipacks;
-    uint8_t large_medipacks;
-    uint16_t pistol_ammo;
-    uint16_t magnum_ammo;
-    uint16_t autos_ammo;
-    uint16_t desert_eagle_ammo;
-    uint16_t uzi_ammo;
-    uint16_t shotgun_ammo;
+    LARA_GUN_TYPE gun_type;
+    const char *has_key;
+    const char *ammo_key;
+    bool required;
+} SAVEGAME_RESUME_WEAPON;
+
+typedef struct {
+    OBJECT_ID object_id;
+    const char *key;
+    bool required;
+} SAVEGAME_RESUME_ITEM;
+
+typedef struct {
     int32_t lara_hitpoints;
     LARA_GUN_STATE gun_status;
     LARA_GUN_TYPE equipped_gun_type;
     LARA_GUN_TYPE holsters_gun_type;
     LARA_GUN_TYPE back_gun_type;
-    uint8_t num_scions;
-    uint8_t num_quest_item_1;
-    uint8_t num_quest_item_2;
-    uint8_t num_quest_item_3;
-    uint8_t num_quest_item_4;
-    uint16_t m16_ammo;
-    uint16_t mp5_ammo;
-    uint16_t grenade_ammo;
-    uint16_t rocket_ammo;
-    uint16_t harpoon_ammo;
-    uint16_t crossbow_ammo;
-    uint16_t revolver_ammo;
-    uint16_t flares;
-    uint8_t num_quest_item_5;
-    uint8_t num_quest_item_6;
-    uint8_t num_save_crystals;
+
+    // What Lara arrives in the level carrying.
+    INVENTORY_STATE inv;
 
     struct {
         bool available;
         bool costume;
-        bool has_pistols;
-        bool has_magnums;
-        bool has_autos;
-        bool has_desert_eagle;
-        bool has_uzis;
-        bool has_shotgun;
-        bool has_m16;
-        bool has_mp5;
-        bool has_grenade;
-        bool has_rocket;
-        bool has_harpoon;
-        bool has_crossbow;
-        bool has_revolver;
-        bool has_binoculars;
     } flags;
 
     bool level_completed;

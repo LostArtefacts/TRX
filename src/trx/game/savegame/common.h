@@ -12,6 +12,8 @@
 
 extern const SAVEGAME_INVENTORY_ENTRY g_Savegame_InventoryItems[];
 extern const SAVEGAME_AMMO_ENTRY g_Savegame_WeaponAmmo[];
+extern const SAVEGAME_RESUME_WEAPON g_Savegame_ResumeWeapons[];
+extern const SAVEGAME_RESUME_ITEM g_Savegame_ResumeItems[];
 
 void Savegame_Init(void);
 void Savegame_Shutdown(void);

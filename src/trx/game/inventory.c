@@ -17,48 +17,57 @@ static OBJECT_ID M_GetEntryID(const OBJECT_ID object_id)
     return option_id == NO_OBJECT ? object_id : option_id;
 }
 
-static INVENTORY_ENTRY *M_FindEntry(const OBJECT_ID object_id)
+// Where a thing sits in the state, and -1 for one she is not carrying.
+static int32_t M_FindEntryIndex(
+    const INVENTORY_STATE *const state, const OBJECT_ID object_id)
 {
-    for (int32_t i = 0; i < m_State.count; i++) {
-        if (m_State.entries[i].object_id == object_id) {
-            return &m_State.entries[i];
+    for (int32_t i = 0; i < state->count; i++) {
+        if (state->entries[i].object_id == object_id) {
+            return i;
         }
     }
-    return nullptr;
+    return -1;
+}
+
+static const INVENTORY_ENTRY *M_FindEntry(
+    const INVENTORY_STATE *const state, const OBJECT_ID object_id)
+{
+    const int32_t idx = M_FindEntryIndex(state, object_id);
+    return idx < 0 ? nullptr : &state->entries[idx];
 }
 
 // Writes what Lara has of one thing, without touching the rings: every caller
 // here rebuilds them once it is done.
-static void M_SetCount(const OBJECT_ID object_id, const int32_t qty)
+static void M_SetCount(
+    INVENTORY_STATE *const state, const OBJECT_ID object_id, const int32_t qty)
 {
     // The pistols' rounds are the supply that never runs out, so they follow
     // the gun rather than anything she picked up. Left behind, they would draw
     // boxes of clips she never found.
     if (object_id == O_PISTOL_OPTION) {
-        Inv_SetAmmo(LGT_PISTOLS, qty > 0 ? 1000 : 0);
+        state->ammo[LGT_PISTOLS] = qty > 0 ? 1000 : 0;
     }
 
-    INVENTORY_ENTRY *const entry = M_FindEntry(object_id);
+    const int32_t idx = M_FindEntryIndex(state, object_id);
     if (qty <= 0) {
-        if (entry != nullptr) {
-            const int32_t idx = entry - m_State.entries;
-            m_State.count--;
-            for (int32_t i = idx; i < m_State.count; i++) {
-                m_State.entries[i] = m_State.entries[i + 1];
+        if (idx >= 0) {
+            state->count--;
+            for (int32_t i = idx; i < state->count; i++) {
+                state->entries[i] = state->entries[i + 1];
             }
         }
         return;
     }
 
-    if (entry != nullptr) {
-        entry->qty = MIN(qty, MAX_QTY);
+    if (idx >= 0) {
+        state->entries[idx].qty = MIN(qty, MAX_QTY);
         return;
     }
-    if (m_State.count >= INV_MAX_ENTRIES) {
+    if (state->count >= INV_MAX_ENTRIES) {
         LOG_WARNING("no room in the inventory for object %d", object_id);
         return;
     }
-    m_State.entries[m_State.count++] = (INVENTORY_ENTRY) {
+    state->entries[state->count++] = (INVENTORY_ENTRY) {
         .object_id = object_id,
         .qty = MIN(qty, MAX_QTY),
     };
@@ -73,7 +82,7 @@ static void M_AddGun(const LARA_GUN_TYPE gun_type)
     // rounds in them are hers either way, and now she has the gun to spend
     // them from.
     Inv_AddAmmo(gun_type, Gun_GetInitialRounds(gun_type));
-    M_SetCount(M_GetEntryID(gun_object), 1);
+    M_SetCount(&m_State, M_GetEntryID(gun_object), 1);
     if (lara->last_gun_type == LGT_UNARMED) {
         lara->last_gun_type = gun_type;
     }
@@ -100,32 +109,33 @@ static int32_t M_GetAmmoBoxCount(const LARA_GUN_TYPE gun_type)
 
 // Where a weapon's rounds are kept, or nullptr for one that spends none. The
 // skidoo shoots from the pistols' endless supply.
-static int32_t *M_GetAmmoSlot(const LARA_GUN_TYPE gun_type)
+static int32_t *M_GetAmmoSlot(
+    INVENTORY_STATE *const state, const LARA_GUN_TYPE gun_type)
 {
     if (gun_type == LGT_SKIDOO) {
-        return &m_State.ammo[LGT_PISTOLS];
+        return &state->ammo[LGT_PISTOLS];
     }
     if (gun_type <= LGT_UNARMED || gun_type >= NUM_WEAPONS
         || gun_type == LGT_FLARE) {
         return nullptr;
     }
-    return &m_State.ammo[gun_type];
+    return &state->ammo[gun_type];
 }
 
 bool Inv_HasAmmoSlot(const LARA_GUN_TYPE gun_type)
 {
-    return M_GetAmmoSlot(gun_type) != nullptr;
+    return M_GetAmmoSlot(&m_State, gun_type) != nullptr;
 }
 
 int32_t Inv_GetAmmo(const LARA_GUN_TYPE gun_type)
 {
-    const int32_t *const slot = M_GetAmmoSlot(gun_type);
+    const int32_t *const slot = M_GetAmmoSlot(&m_State, gun_type);
     return slot == nullptr ? 0 : *slot;
 }
 
 void Inv_SetAmmo(const LARA_GUN_TYPE gun_type, const int32_t rounds)
 {
-    int32_t *const slot = M_GetAmmoSlot(gun_type);
+    int32_t *const slot = M_GetAmmoSlot(&m_State, gun_type);
     if (slot == nullptr) {
         return;
     }
@@ -143,9 +153,54 @@ void Inv_AddAmmo(const LARA_GUN_TYPE gun_type, const int32_t rounds)
     Inv_SetAmmo(gun_type, Inv_GetAmmo(gun_type) + rounds);
 }
 
+int32_t Inv_State_GetCount(
+    const INVENTORY_STATE *const state, const OBJECT_ID object_id)
+{
+    const INVENTORY_ENTRY *const entry =
+        M_FindEntry(state, M_GetEntryID(object_id));
+    return entry == nullptr ? 0 : entry->qty;
+}
+
+bool Inv_State_Has(
+    const INVENTORY_STATE *const state, const OBJECT_ID object_id)
+{
+    return Inv_State_GetCount(state, object_id) > 0;
+}
+
+void Inv_State_SetCount(
+    INVENTORY_STATE *const state, const OBJECT_ID object_id, const int32_t qty)
+{
+    M_SetCount(state, M_GetEntryID(object_id), qty);
+}
+
+void Inv_State_AddAmmo(
+    INVENTORY_STATE *const state, const LARA_GUN_TYPE gun_type,
+    const int32_t rounds)
+{
+    int32_t *const slot = M_GetAmmoSlot(state, gun_type);
+    if (slot != nullptr) {
+        *slot += rounds;
+        CLAMPG(*slot, MAX_QTY);
+    }
+}
+
+void Inv_State_AddCount(
+    INVENTORY_STATE *const state, const OBJECT_ID object_id, const int32_t qty)
+{
+    Inv_State_SetCount(
+        state, object_id, Inv_State_GetCount(state, object_id) + qty);
+}
+
 INVENTORY_STATE *Inv_GetState(void)
 {
     return &m_State;
+}
+
+void Inv_EnsureItem(const OBJECT_ID object_id)
+{
+    if (!Inv_HasItem(object_id)) {
+        Inv_AddItem(object_id);
+    }
 }
 
 void Inv_SetState(const INVENTORY_STATE *const state)
@@ -159,6 +214,11 @@ void Inv_SetState(const INVENTORY_STATE *const state)
             m_State.entries[m_State.count++] = state->entries[i];
         }
     }
+    // The compass and the stopwatch are not carried so much as always to hand,
+    // so they are put back whatever the state says.
+    Inv_EnsureItem(O_STOPWATCH_OPTION);
+    Inv_EnsureItem(O_COMPASS_OPTION);
+    Inv_EnsureItem(O_GLOBE_SELECT_OPTION);
     InvRing_Rebuild();
 }
 
@@ -185,7 +245,7 @@ int32_t Inv_GetItemCount(const OBJECT_ID object_id)
     if (gun_type != LGT_UNARMED) {
         return M_GetAmmoBoxCount(gun_type);
     }
-    const INVENTORY_ENTRY *const entry = M_FindEntry(entry_id);
+    const INVENTORY_ENTRY *const entry = M_FindEntry(&m_State, entry_id);
     return entry == nullptr ? 0 : entry->qty;
 }
 
@@ -222,7 +282,7 @@ bool Inv_HasItem(const OBJECT_ID object_id)
 
 void Inv_SetItemCount(const OBJECT_ID object_id, const int32_t qty)
 {
-    M_SetCount(M_GetEntryID(object_id), qty);
+    M_SetCount(&m_State, M_GetEntryID(object_id), qty);
     InvRing_Rebuild();
 }
 
@@ -239,7 +299,7 @@ bool Inv_RemoveItem(const OBJECT_ID object_id)
 {
     const OBJECT_ID entry_id = M_GetEntryID(object_id);
     const LARA_GUN_TYPE gun_type = M_GetAmmoGunType(entry_id);
-    const INVENTORY_ENTRY *const entry = M_FindEntry(entry_id);
+    const INVENTORY_ENTRY *const entry = M_FindEntry(&m_State, entry_id);
     if (gun_type == LGT_UNARMED && entry == nullptr) {
         return false;
     }
@@ -257,7 +317,7 @@ bool Inv_RemoveItem(const OBJECT_ID object_id)
         Inv_SetAmmo(
             gun_type, Inv_GetAmmo(gun_type) - Gun_GetRoundsPerBox(gun_type));
     } else {
-        M_SetCount(entry_id, entry->qty - 1);
+        M_SetCount(&m_State, entry_id, entry->qty - 1);
     }
     InvRing_Rebuild();
     return true;
@@ -265,13 +325,7 @@ bool Inv_RemoveItem(const OBJECT_ID object_id)
 
 void Inv_RemoveAllItems(void)
 {
-    m_State.count = 0;
-
-    Inv_AddItem(O_STOPWATCH_OPTION);
-    Inv_AddItem(O_COMPASS_OPTION);
-    Inv_AddItem(O_GLOBE_SELECT_OPTION);
-
-    InvRing_Rebuild();
+    Inv_SetState(&(INVENTORY_STATE) {});
     InvRing_ClearSelection();
 }
 
@@ -326,16 +380,18 @@ bool Inv_AddItem(const OBJECT_ID object_id)
         return true;
     }
 
-    const INVENTORY_ENTRY *const entry = M_FindEntry(entry_id);
+    const INVENTORY_ENTRY *const entry = M_FindEntry(&m_State, entry_id);
     if (entry != nullptr) {
-        M_SetCount(entry_id, entry->qty + qty);
+        M_SetCount(&m_State, entry_id, entry->qty + qty);
         InvRing_Rebuild();
         return true;
     }
 
-    // Pistols
+    // The pistols come with the supply that never runs out, as every other
+    // weapon comes with its first clip.
     if (inv_object_id == O_PISTOL_OPTION) {
-        M_SetCount(O_PISTOL_OPTION, 1);
+        M_SetCount(&m_State, O_PISTOL_OPTION, 1);
+        Inv_SetAmmo(LGT_PISTOLS, 1000);
         if (lara->last_gun_type == LGT_UNARMED) {
             lara->last_gun_type = LGT_PISTOLS;
         }
@@ -352,7 +408,7 @@ bool Inv_AddItem(const OBJECT_ID object_id)
 
     // Other cases
     if (InvRing_GetByObjectID(entry_id) != nullptr) {
-        M_SetCount(entry_id, qty);
+        M_SetCount(&m_State, entry_id, qty);
         InvRing_Rebuild();
         return true;
     }

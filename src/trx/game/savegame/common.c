@@ -77,6 +77,47 @@ const SAVEGAME_AMMO_ENTRY g_Savegame_WeaponAmmo[] = {
     // clang-format on
 };
 
+// What a level keeps for Lara's return, under the names savegames give them.
+const SAVEGAME_RESUME_WEAPON g_Savegame_ResumeWeapons[] = {
+    // clang-format off
+    { LGT_PISTOLS,      "has_pistols",      "pistol_ammo",       true  },
+    { LGT_SHOTGUN,      "has_shotgun",      "shotgun_ammo",      true  },
+    { LGT_UZIS,         "has_uzis",         "uzi_ammo",          true  },
+    { LGT_M16,          "has_m16",          "m16_ammo",          true  },
+    { LGT_GRENADE,      "has_grenade",      "grenade_ammo",      true  },
+    { LGT_HARPOON,      "has_harpoon",      "harpoon_ammo",      true  },
+    { LGT_MAGNUMS,      "has_magnums",      "magnum_ammo",       true  },
+    // Introduced in TRX 1.1
+    { LGT_AUTOS,        "has_autos",        "autos_ammo",        false },
+    { LGT_DESERT_EAGLE, "has_desert_eagle", "desert_eagle_ammo", false },
+    { LGT_MP5,          "has_mp5",          "mp5_ammo",          false },
+    { LGT_ROCKET,       "has_rocket",       "rocket_ammo",       false },
+    // Introduced in TRX 1.9
+    { LGT_CROSSBOW,     "has_crossbow",     "crossbow_ammo",     false },
+    { LGT_REVOLVER,     "has_revolver",     "revolver_ammo",     false },
+    { LGT_UNARMED,      nullptr,            nullptr,             false },
+    // clang-format on
+};
+
+const SAVEGAME_RESUME_ITEM g_Savegame_ResumeItems[] = {
+    // clang-format off
+    { O_SMALL_MEDIPACK_ITEM, "num_medis",         true  },
+    { O_LARGE_MEDIPACK_ITEM, "num_big_medis",     true  },
+    { O_FLARE_ITEM,          "num_flares",        true  },
+    { O_SCION_ITEM_1,        "num_scions",        true  },
+    // Introduced in TRX 1.2
+    { O_QUEST_ITEM_1,        "num_quest_item_1",  false },
+    { O_QUEST_ITEM_2,        "num_quest_item_2",  false },
+    { O_QUEST_ITEM_3,        "num_quest_item_3",  false },
+    { O_QUEST_ITEM_4,        "num_quest_item_4",  false },
+    { O_QUEST_ITEM_5,        "num_quest_item_5",  false },
+    { O_QUEST_ITEM_6,        "num_quest_item_6",  false },
+    // Introduced in TRX 1.10
+    { O_SAVE_CRYSTAL_ITEM,   "num_save_crystals", false },
+    { NO_OBJECT,             nullptr,             false },
+    // clang-format on
+};
+
 static SAVEGAME_VERSION m_InitialVersion = SG_VERSION_LEGACY;
 static SAVEGAME_INFO *m_NormalSavegameInfo = nullptr;
 static SAVEGAME_INFO *m_QuickSavegameInfo = nullptr;
@@ -143,6 +184,33 @@ static void M_CopyResumeInfo(
     RESUME_INFO *const target, const RESUME_INFO *const source)
 {
     memcpy(target, source, sizeof(RESUME_INFO));
+}
+
+// What a level keeps for Lara's return is what the savegame names: her
+// weapons and their ammunition, her supplies and her plot items. A key, a
+// puzzle piece or a waterskin belongs to the level she found it in, and is
+// left behind at its end.
+static void M_PersistInventory(RESUME_INFO *const resume)
+{
+    const INVENTORY_STATE *const live = Inv_GetState();
+    resume->inv = (INVENTORY_STATE) {};
+    memcpy(resume->inv.ammo, live->ammo, sizeof(resume->inv.ammo));
+    resume->inv.ammo[LGT_PISTOLS] = Inv_HasItem(O_PISTOL_ITEM) ? 1000 : 0;
+
+    for (const SAVEGAME_RESUME_WEAPON *entry = g_Savegame_ResumeWeapons;
+         entry->has_key != nullptr; entry++) {
+        const OBJECT_ID gun_object = Gun_GetGunObject(entry->gun_type);
+        Inv_State_SetCount(
+            &resume->inv, gun_object, Inv_HasItem(gun_object) ? 1 : 0);
+    }
+    for (const SAVEGAME_RESUME_ITEM *entry = g_Savegame_ResumeItems;
+         entry->key != nullptr; entry++) {
+        Inv_State_SetCount(
+            &resume->inv, entry->object_id, Inv_GetItemCount(entry->object_id));
+    }
+    Inv_State_SetCount(
+        &resume->inv, O_BINOCULARS_ITEM,
+        Inv_HasItem(O_BINOCULARS_ITEM) ? 1 : 0);
 }
 
 static void M_ClearSlot(SAVEGAME_INFO *const savegame_info)
@@ -292,19 +360,7 @@ static void M_DetermineLegacyGunTypes(RESUME_INFO *const resume)
         case LGT_ROCKET:
         case LGT_HARPOON:
         case LGT_CROSSBOW:
-            if (resume->flags.has_pistols) {
-                resume->holsters_gun_type = LGT_PISTOLS;
-            } else if (resume->flags.has_magnums) {
-                resume->holsters_gun_type = LGT_MAGNUMS;
-            } else if (resume->flags.has_autos) {
-                resume->holsters_gun_type = LGT_AUTOS;
-            } else if (resume->flags.has_desert_eagle) {
-                resume->holsters_gun_type = LGT_DESERT_EAGLE;
-            } else if (resume->flags.has_uzis) {
-                resume->holsters_gun_type = LGT_UZIS;
-            } else {
-                resume->holsters_gun_type = LGT_UNARMED;
-            }
+            resume->holsters_gun_type = Gun_GetHolsterChoice(&resume->inv);
             break;
         default:
             resume->holsters_gun_type = LGT_UNARMED;
@@ -312,22 +368,7 @@ static void M_DetermineLegacyGunTypes(RESUME_INFO *const resume)
         }
     }
     if (resume->back_gun_type == LGT_UNKNOWN) {
-        resume->back_gun_type = LGT_UNARMED;
-        if (resume->flags.has_shotgun) {
-            resume->back_gun_type = LGT_SHOTGUN;
-        } else if (resume->flags.has_m16) {
-            resume->back_gun_type = LGT_M16;
-        } else if (resume->flags.has_mp5) {
-            resume->back_gun_type = LGT_MP5;
-        } else if (resume->flags.has_grenade) {
-            resume->back_gun_type = LGT_GRENADE;
-        } else if (resume->flags.has_rocket) {
-            resume->back_gun_type = LGT_ROCKET;
-        } else if (resume->flags.has_harpoon) {
-            resume->back_gun_type = LGT_HARPOON;
-        } else if (resume->flags.has_crossbow) {
-            resume->back_gun_type = LGT_CROSSBOW;
-        }
+        resume->back_gun_type = Gun_GetBackChoice(&resume->inv);
     }
 }
 
@@ -484,8 +525,8 @@ void Savegame_Init(void)
             Savegame_GetCurrentInfo(&level_table->levels[i]);
         resume_info->lara_hitpoints = LARA_MAX_HITPOINTS;
         resume_info->flags.available = true;
-        resume_info->flags.has_pistols = true;
-        resume_info->pistol_ammo = 1000;
+        Inv_State_SetCount(&resume_info->inv, O_PISTOL_ITEM, 1);
+        resume_info->inv.ammo[LGT_PISTOLS] = 1000;
         resume_info->gun_status = LGS_ARMLESS;
         resume_info->equipped_gun_type = LGT_PISTOLS;
         resume_info->holsters_gun_type = LGT_PISTOLS;
@@ -700,58 +741,7 @@ void Savegame_PersistGameToCurrentInfo(const GF_LEVEL *const level)
         resume->lara_hitpoints = lara_item->hit_points;
     }
     resume->burning = g_TRVersion >= 4 && lara->burn;
-    resume->small_medipacks = Inv_GetItemCount(O_SMALL_MEDIPACK_ITEM);
-    resume->large_medipacks = Inv_GetItemCount(O_LARGE_MEDIPACK_ITEM);
-
-    resume->pistol_ammo = 1000;
-    resume->flags.has_pistols = Inv_HasItem(O_PISTOL_ITEM);
-
-    resume->flags.has_shotgun = Inv_HasItem(O_SHOTGUN_ITEM);
-    resume->shotgun_ammo = Inv_GetAmmo(LGT_SHOTGUN);
-
-    resume->flags.has_magnums = Inv_HasItem(O_MAGNUM_ITEM);
-    resume->magnum_ammo = Inv_GetAmmo(LGT_MAGNUMS);
-
-    resume->flags.has_autos = Inv_HasItem(O_AUTOS_ITEM);
-    resume->autos_ammo = Inv_GetAmmo(LGT_AUTOS);
-
-    resume->flags.has_desert_eagle = Inv_HasItem(O_DESERT_EAGLE_ITEM);
-    resume->desert_eagle_ammo = Inv_GetAmmo(LGT_DESERT_EAGLE);
-
-    resume->flags.has_uzis = Inv_HasItem(O_UZI_ITEM);
-    resume->uzi_ammo = Inv_GetAmmo(LGT_UZIS);
-
-    resume->flags.has_m16 = Inv_HasItem(O_M16_ITEM);
-    resume->m16_ammo = Inv_GetAmmo(LGT_M16);
-
-    resume->flags.has_mp5 = Inv_HasItem(O_MP5_ITEM);
-    resume->mp5_ammo = Inv_GetAmmo(LGT_MP5);
-
-    resume->flags.has_harpoon = Inv_HasItem(O_HARPOON_ITEM);
-    resume->harpoon_ammo = Inv_GetAmmo(LGT_HARPOON);
-
-    resume->flags.has_grenade = Inv_HasItem(O_GRENADE_GUN_ITEM);
-    resume->grenade_ammo = Inv_GetAmmo(LGT_GRENADE);
-
-    resume->flags.has_rocket = Inv_HasItem(O_ROCKET_GUN_ITEM);
-    resume->rocket_ammo = Inv_GetAmmo(LGT_ROCKET);
-
-    resume->flags.has_crossbow = Inv_HasItem(O_CROSSBOW_ITEM);
-    resume->crossbow_ammo = Inv_GetAmmo(LGT_CROSSBOW);
-
-    resume->flags.has_revolver = Inv_HasItem(O_REVOLVER_ITEM);
-    resume->revolver_ammo = Inv_GetAmmo(LGT_REVOLVER);
-
-    resume->flags.has_binoculars = Inv_HasItem(O_BINOCULARS_ITEM);
-    resume->flares = Inv_GetItemCount(O_FLARE_ITEM);
-    resume->num_scions = Inv_GetItemCount(O_SCION_ITEM_1);
-    resume->num_quest_item_1 = Inv_GetItemCount(O_QUEST_ITEM_1);
-    resume->num_quest_item_2 = Inv_GetItemCount(O_QUEST_ITEM_2);
-    resume->num_quest_item_3 = Inv_GetItemCount(O_QUEST_ITEM_3);
-    resume->num_quest_item_4 = Inv_GetItemCount(O_QUEST_ITEM_4);
-    resume->num_quest_item_5 = Inv_GetItemCount(O_QUEST_ITEM_5);
-    resume->num_quest_item_6 = Inv_GetItemCount(O_QUEST_ITEM_6);
-    resume->num_save_crystals = Inv_GetItemCount(O_SAVE_CRYSTAL_ITEM);
+    M_PersistInventory(resume);
 
     resume->equipped_gun_type = lara->last_gun_type;
     resume->holsters_gun_type = lara->holsters_gun_type;
@@ -788,45 +778,8 @@ void Savegame_ApplyLogicToCurrentInfo(const GF_LEVEL *const level)
         resume->flags.available = true;
         resume->flags.costume = g_TRVersion == 1;
 
-        resume->flags.has_pistols = false;
-        resume->flags.has_shotgun = false;
-        resume->flags.has_magnums = false;
-        resume->flags.has_autos = false;
-        resume->flags.has_desert_eagle = false;
-        resume->flags.has_uzis = false;
-        resume->flags.has_harpoon = false;
-        resume->flags.has_m16 = false;
-        resume->flags.has_mp5 = false;
-        resume->flags.has_grenade = false;
-        resume->flags.has_rocket = false;
-        resume->flags.has_crossbow = false;
-        resume->flags.has_revolver = false;
-
-        resume->pistol_ammo = 0;
-        resume->shotgun_ammo = 0;
-        resume->magnum_ammo = 0;
-        resume->autos_ammo = 0;
-        resume->desert_eagle_ammo = 0;
-        resume->uzi_ammo = 0;
-        resume->harpoon_ammo = 0;
-        resume->m16_ammo = 0;
-        resume->mp5_ammo = 0;
-        resume->grenade_ammo = 0;
-        resume->rocket_ammo = 0;
-        resume->crossbow_ammo = 0;
-        resume->revolver_ammo = 0;
-
-        resume->small_medipacks = 0;
-        resume->large_medipacks = 0;
-        resume->num_scions = 0;
-        resume->num_quest_item_1 = 0;
-        resume->num_quest_item_2 = 0;
-        resume->num_quest_item_3 = 0;
-        resume->num_quest_item_4 = 0;
-        resume->num_quest_item_5 = 0;
-        resume->num_quest_item_6 = 0;
-        resume->num_save_crystals = 0;
-        resume->flares = 0;
+        // The gym is a house tour: she arrives with nothing.
+        resume->inv = (INVENTORY_STATE) {};
 
         resume->equipped_gun_type = LGT_UNARMED;
         resume->holsters_gun_type = LGT_UNARMED;
@@ -838,44 +791,11 @@ void Savegame_ApplyLogicToCurrentInfo(const GF_LEVEL *const level)
         resume->flags.available = true;
         resume->flags.costume = false;
 
-        resume->flags.has_pistols = true;
-        resume->flags.has_shotgun = false;
-        resume->flags.has_magnums = false;
-        resume->flags.has_autos = false;
-        resume->flags.has_desert_eagle = false;
-        resume->flags.has_uzis = false;
+        // She starts the game with her pistols and nothing else.
+        resume->inv = (INVENTORY_STATE) {};
+        Inv_State_SetCount(&resume->inv, O_PISTOL_ITEM, 1);
+        resume->inv.ammo[LGT_PISTOLS] = 1000;
 
-        resume->small_medipacks = 0;
-        resume->large_medipacks = 0;
-        resume->flares = 0;
-        resume->pistol_ammo = 1000;
-        resume->shotgun_ammo = 0;
-        resume->magnum_ammo = 0;
-        resume->autos_ammo = 0;
-        resume->desert_eagle_ammo = 0;
-        resume->uzi_ammo = 0;
-        resume->num_scions = 0;
-        resume->num_quest_item_1 = 0;
-        resume->num_quest_item_2 = 0;
-        resume->num_quest_item_3 = 0;
-        resume->num_quest_item_4 = 0;
-        resume->num_quest_item_5 = 0;
-        resume->num_quest_item_6 = 0;
-        resume->num_save_crystals = 0;
-        resume->flags.has_harpoon = false;
-        resume->flags.has_m16 = false;
-        resume->flags.has_mp5 = false;
-        resume->flags.has_grenade = false;
-        resume->flags.has_rocket = false;
-        resume->flags.has_crossbow = false;
-        resume->flags.has_revolver = false;
-        resume->harpoon_ammo = 0;
-        resume->m16_ammo = 0;
-        resume->mp5_ammo = 0;
-        resume->grenade_ammo = 0;
-        resume->rocket_ammo = 0;
-        resume->crossbow_ammo = 0;
-        resume->revolver_ammo = 0;
         resume->equipped_gun_type = LGT_PISTOLS;
         resume->holsters_gun_type = LGT_PISTOLS;
         resume->back_gun_type = LGT_UNARMED;
@@ -883,35 +803,19 @@ void Savegame_ApplyLogicToCurrentInfo(const GF_LEVEL *const level)
     }
 
     if (Game_IsBonusFlagSet(GBF_NGPLUS) && level != GF_GetGymLevel()) {
-        resume->flags.has_pistols = true;
-        resume->flags.has_shotgun = true;
-        resume->flags.has_magnums = g_Weapons[LGT_MAGNUMS].is_available;
-        resume->flags.has_autos = g_Weapons[LGT_AUTOS].is_available;
-        resume->flags.has_desert_eagle =
-            g_Weapons[LGT_DESERT_EAGLE].is_available;
-        resume->flags.has_uzis = true;
-        resume->flags.has_m16 = g_Weapons[LGT_M16].is_available;
-        resume->flags.has_mp5 = g_Weapons[LGT_MP5].is_available;
-        resume->flags.has_grenade = g_Weapons[LGT_GRENADE].is_available;
-        resume->flags.has_rocket = g_Weapons[LGT_ROCKET].is_available;
-        resume->flags.has_harpoon = g_Weapons[LGT_HARPOON].is_available;
-        resume->flags.has_crossbow = g_Weapons[LGT_CROSSBOW].is_available;
-        resume->flags.has_revolver = g_Weapons[LGT_REVOLVER].is_available;
-
-        resume->shotgun_ammo = 10000;
-        resume->magnum_ammo = resume->flags.has_magnums ? 10000 : 0;
-        resume->autos_ammo = resume->flags.has_autos ? 10000 : 0;
-        resume->desert_eagle_ammo = resume->flags.has_desert_eagle ? 10000 : 0;
-        resume->uzi_ammo = 10000;
-        resume->flares = g_TRVersion == 1 ? 0 : -1;
-
-        resume->m16_ammo = resume->flags.has_m16 ? 10000 : 0;
-        resume->mp5_ammo = resume->flags.has_mp5 ? 10000 : 0;
-        resume->grenade_ammo = resume->flags.has_grenade ? 10000 : 0;
-        resume->rocket_ammo = resume->flags.has_rocket ? 10000 : 0;
-        resume->harpoon_ammo = resume->flags.has_harpoon ? 10000 : 0;
-        resume->crossbow_ammo = resume->flags.has_crossbow ? 10000 : 0;
-        resume->revolver_ammo = resume->flags.has_revolver ? 10000 : 0;
+        // A bonus game hands her every weapon the game has, loaded.
+        for (LARA_GUN_TYPE gun_type = LGT_UNARMED + 1; gun_type < NUM_WEAPONS;
+             gun_type++) {
+            const OBJECT_ID gun_object = Gun_GetGunObject(gun_type);
+            if (gun_object == NO_OBJECT || !g_Weapons[gun_type].is_available) {
+                continue;
+            }
+            Inv_State_SetCount(&resume->inv, gun_object, 1);
+            resume->inv.ammo[gun_type] = gun_type == LGT_PISTOLS ? 1000 : 10000;
+        }
+        if (g_TRVersion > 1) {
+            Inv_State_SetCount(&resume->inv, O_FLARE_ITEM, MAX_QTY);
+        }
 
         const bool should_force_ngplus_gun_setup =
             !g_Config.gameplay.remember_gun_status || resume->prev_level == -1;

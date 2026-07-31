@@ -196,98 +196,22 @@ void Lara_InitialiseInventory(const GF_LEVEL *const level)
     RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
 
     if (resume != nullptr) {
-        if (resume->flags.has_binoculars) {
-            Inv_AddItem(O_BINOCULARS_ITEM);
-        }
+        Inv_SetState(&resume->inv);
+        // The pistols never run out, whatever the level she is arriving from
+        // left in the resume info, and what she has none of she carries no
+        // rounds for.
+        Inv_SetAmmo(LGT_PISTOLS, Inv_HasItem(O_PISTOL_ITEM) ? 1000 : 0);
 
-        if (resume->flags.has_pistols) {
-            Inv_AddItem(O_PISTOL_ITEM);
+        // A weapon she already carries turns the ones lying in the level into
+        // boxes of ammunition for it. The pistols are left alone: a level that
+        // is not meant to hold them says so through the game flow.
+        for (LARA_GUN_TYPE gun_type = LGT_PISTOLS + 1; gun_type < NUM_WEAPONS;
+             gun_type++) {
+            const OBJECT_ID gun_object = Gun_GetGunObject(gun_type);
+            if (gun_object != NO_OBJECT && Inv_HasItem(gun_object)) {
+                Item_GlobalReplace(gun_object, Gun_GetAmmoObject(gun_type));
+            }
         }
-        Inv_SetAmmo(LGT_PISTOLS, 1000);
-
-        if (resume->flags.has_magnums) {
-            Inv_AddItem(O_MAGNUM_ITEM);
-            Item_GlobalReplace(O_MAGNUM_ITEM, O_MAGNUM_AMMO_ITEM);
-        }
-        Inv_SetAmmo(LGT_MAGNUMS, resume->magnum_ammo);
-
-        if (resume->flags.has_autos) {
-            Inv_AddItem(O_AUTOS_ITEM);
-            Item_GlobalReplace(O_AUTOS_ITEM, O_AUTOS_AMMO_ITEM);
-        }
-        Inv_SetAmmo(LGT_AUTOS, resume->autos_ammo);
-
-        if (resume->flags.has_desert_eagle) {
-            Inv_AddItem(O_DESERT_EAGLE_ITEM);
-            Item_GlobalReplace(O_DESERT_EAGLE_ITEM, O_DESERT_EAGLE_AMMO_ITEM);
-        }
-        Inv_SetAmmo(LGT_DESERT_EAGLE, resume->desert_eagle_ammo);
-
-        if (resume->flags.has_uzis) {
-            Inv_AddItem(O_UZI_ITEM);
-            Item_GlobalReplace(O_UZI_ITEM, O_UZI_AMMO_ITEM);
-        }
-        Inv_SetAmmo(LGT_UZIS, resume->uzi_ammo);
-
-        if (resume->flags.has_shotgun) {
-            Inv_AddItem(O_SHOTGUN_ITEM);
-            Item_GlobalReplace(O_SHOTGUN_ITEM, O_SHOTGUN_AMMO_ITEM);
-        }
-        Inv_SetAmmo(LGT_SHOTGUN, resume->shotgun_ammo);
-
-        if (resume->flags.has_m16) {
-            Inv_AddItem(O_M16_ITEM);
-            Item_GlobalReplace(O_M16_ITEM, O_M16_AMMO_ITEM);
-        }
-        Inv_SetAmmo(LGT_M16, resume->m16_ammo);
-
-        if (resume->flags.has_mp5) {
-            Inv_AddItem(O_MP5_ITEM);
-            Item_GlobalReplace(O_MP5_ITEM, O_MP5_AMMO_ITEM);
-        }
-        Inv_SetAmmo(LGT_MP5, resume->mp5_ammo);
-
-        if (resume->flags.has_grenade) {
-            Inv_AddItem(O_GRENADE_GUN_ITEM);
-            Item_GlobalReplace(O_GRENADE_GUN_ITEM, O_GRENADE_AMMO_ITEM);
-        }
-        Inv_SetAmmo(LGT_GRENADE, resume->grenade_ammo);
-
-        if (resume->flags.has_rocket) {
-            Inv_AddItem(O_ROCKET_GUN_ITEM);
-            Item_GlobalReplace(O_ROCKET_GUN_ITEM, O_ROCKET_AMMO_ITEM);
-        }
-        Inv_SetAmmo(LGT_ROCKET, resume->rocket_ammo);
-
-        if (resume->flags.has_harpoon) {
-            Inv_AddItem(O_HARPOON_ITEM);
-            Item_GlobalReplace(O_HARPOON_ITEM, O_HARPOON_AMMO_ITEM);
-        }
-        Inv_SetAmmo(LGT_HARPOON, resume->harpoon_ammo);
-
-        if (resume->flags.has_crossbow) {
-            Inv_AddItem(O_CROSSBOW_ITEM);
-            Item_GlobalReplace(O_CROSSBOW_ITEM, O_CROSSBOW_AMMO_1_ITEM);
-        }
-        Inv_SetAmmo(LGT_CROSSBOW, resume->crossbow_ammo);
-
-        if (resume->flags.has_revolver) {
-            Inv_AddItem(O_REVOLVER_ITEM);
-            Item_GlobalReplace(O_REVOLVER_ITEM, O_REVOLVER_AMMO_ITEM);
-        }
-        Inv_SetAmmo(LGT_REVOLVER, resume->revolver_ammo);
-
-        Inv_AddItemNTimes(O_SMALL_MEDIPACK_ITEM, resume->small_medipacks);
-        Inv_AddItemNTimes(O_LARGE_MEDIPACK_ITEM, resume->large_medipacks);
-        Inv_AddItemNTimes(O_FLARE_ITEM, resume->flares);
-        Inv_AddItemNTimes(O_SCION_ITEM_1, resume->num_scions);
-        Inv_AddItemNTimes(O_QUEST_ITEM_1, resume->num_quest_item_1);
-        Inv_AddItemNTimes(O_QUEST_ITEM_2, resume->num_quest_item_2);
-        Inv_AddItemNTimes(O_QUEST_ITEM_3, resume->num_quest_item_3);
-        Inv_AddItemNTimes(O_QUEST_ITEM_4, resume->num_quest_item_4);
-        Inv_AddItemNTimes(O_QUEST_ITEM_5, resume->num_quest_item_5);
-        Inv_AddItemNTimes(O_QUEST_ITEM_6, resume->num_quest_item_6);
-        Inv_AddItemNTimes(O_SAVE_CRYSTAL_ITEM, resume->num_save_crystals);
 
         if (g_Config.gameplay.remember_gun_status) {
             lara_info->gun_status = resume->gun_status;
