@@ -1296,7 +1296,7 @@
         },
         "gameplay.game_modes_policy": {
             "title": "Spielmodi-Auswahl",
-            "description": "\\{review}Erlaubt die Auswahl der 'Neues Spiel Plus'-Optionen im 'Neues Spiel' Ausweis-Menü.\n\n- Neues Spiel+: schaltet alle Waffen mit unendlich Munition frei; Feinde haben verdoppelte Lebenserenergie.\n- Japanisch NS: Waffen verursachen doppelten Schaden und Fackel-Pickups enhalten 8 statt 6 Fackeln.\n- Japanisch NS+: eine Kombination aus Neus Spiel+ und Japanisch NS.\n\nVerfügbare Optionen:\n\n- Immer: Der Dialog zur Auswahl der Spielmodi ist immer verfügbar.\n- Nie: Der Dialog zur Auswahl der Spielmodi ist nie verfügbar.\n- Nach Abschluss: Der Dialog zur Auswahl der Spielmodi ist erst verfügbar, nachdem das Spiel abgeschlossen wurde.",
+            "description": "\\{review}Erlaubt die Auswahl der 'Neues Spiel Plus'-Optionen im 'Neues Spiel' Ausweis-Menü.\n\n- Neues Spiel+: schaltet alle Waffen mit unendlich Munition frei; Feinde haben verdoppelte Lebenserenergie.\n- Japanisch NS: Waffen verursachen doppelten Schaden und Fackel-Pickups enhalten 8 statt 6 Fackeln.\n- Japanisch NS+: eine Kombination aus Neus Spiel+ und Japanisch NS.\n\nVerfügbare Optionen:\n\n- Immer: Der Dialog zur Auswahl der Spielmodi ist immer verfügbar.\n- Nie: Der Dialog zur Auswahl der Spielmodi ist nie verfügbar, und jedes neue Spiel ist ein reguläres Spiel.\n- Nach Abschluss: Der Dialog zur Auswahl der Spielmodi ist erst verfügbar, nachdem das Spiel abgeschlossen wurde.",
         },
         "gameplay.harpoon_recoil": {
             "title": "Harpunenrückstoß",

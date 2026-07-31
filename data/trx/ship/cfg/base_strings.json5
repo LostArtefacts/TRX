@@ -1296,7 +1296,7 @@
         },
         "gameplay.game_modes_policy": {
             "title": "Game mode selection",
-            "description": "Allows new game plus options to be selected from the new game passport menu.\n\n- New Game+: unlocks all weapons with infinite ammo; enemies have double the HP.\n- Japanese NG: weapons do double damage and flare pickups contain 8 rather than 6.\n- Japanese NG+: combination of New Game+ and Japanese NG.\n\nAvailable options:\n\n- Always: the game modes dialog will always be available.\n- Never: the game modes dialog will never be available.\n- On completion: the game modes dialog will only be available after the game has been beaten.",
+            "description": "Allows new game plus options to be selected from the new game passport menu.\n\n- New Game+: unlocks all weapons with infinite ammo; enemies have double the HP.\n- Japanese NG: weapons do double damage and flare pickups contain 8 rather than 6.\n- Japanese NG+: combination of New Game+ and Japanese NG.\n\nAvailable options:\n\n- Always: the game modes dialog will always be available.\n- Never: the game modes dialog will never be available, and every new game is a regular one.\n- On completion: the game modes dialog will only be available after the game has been beaten.",
         },
         "gameplay.harpoon_recoil": {
             "title": "Harpoon recoil",

@@ -1296,7 +1296,7 @@
         },
         "gameplay.game_modes_policy": {
             "title": "Autres modes de jeu",
-            "description": "\\{review}Permet de sélectionner de nouveaux modes de jeu dans le menu nouvelle partie du passeport au menu principal.\n- Nouvelle partie+ : Déverrouille toutes les armes avec munitions infinies ; les ennemis ont le double de points de vie.\n- Version Japonaise : Les armes font le double de dégâts.\n- Version Japonaise+ : Combine le mode Version Japonaise et le mode Nouvelle partie+.\n\nOptions disponibles :\n\n- Toujours : la boîte de dialogue de sélection des modes de jeu sera toujours disponible.\n- Jamais : la boîte de dialogue de sélection des modes de jeu ne sera jamais disponible.\n- Après le jeu : la boîte de dialogue de sélection des modes de jeu ne sera disponible qu'après avoir terminé le jeu.",
+            "description": "\\{review}Permet de sélectionner de nouveaux modes de jeu dans le menu nouvelle partie du passeport au menu principal.\n- Nouvelle partie+ : Déverrouille toutes les armes avec munitions infinies ; les ennemis ont le double de points de vie.\n- Version Japonaise : Les armes font le double de dégâts.\n- Version Japonaise+ : Combine le mode Version Japonaise et le mode Nouvelle partie+.\n\nOptions disponibles :\n\n- Toujours : la boîte de dialogue de sélection des modes de jeu sera toujours disponible.\n- Jamais : la boîte de dialogue de sélection des modes de jeu ne sera jamais disponible, et chaque nouvelle partie sera une partie normale.\n- Après le jeu : la boîte de dialogue de sélection des modes de jeu ne sera disponible qu'après avoir terminé le jeu.",
         },
         "gameplay.harpoon_recoil": {
             "title": "\\{review}Recul du harpon",

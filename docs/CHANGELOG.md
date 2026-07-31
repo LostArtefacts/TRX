@@ -12,6 +12,7 @@
 - added internal collision to lifts when they are moving, so that Lara cannot exit through the meshes
 - added a `damage` property to the `O_POWER_SAW` object
 - improved error messages related to bad command invocations
+- changed the game mode selection option so that Never starts every new game as a regular one (Gameplay → General → Game mode selection)
 - changed reflections UV mapping to be more correct
 - changed object properties to take effect as soon as they change, rather than only when the item is first set up
 - changed outfits to support joints, up to two braids per outfit, and to allow positional offset adjustments for equipment meshes; refer to migration notes
@@ -75,6 +76,7 @@
 - fixed Lara getting stuck on ropes if she enters the fly cheat while still using one (regression from 1.9)
 - fixed the inventory hint for using an item showing Enter rather than the key bound to Action (regression from 1.8.1)
 - fixed the black surround of the binoculars turning grey when looking in certain directions (regression from 1.9)
+- fixed a new game, or a level started from Play Any Level, running in the game mode the previous game was started in
 
 **TR1**
 - changed weather to be affected by the breeze

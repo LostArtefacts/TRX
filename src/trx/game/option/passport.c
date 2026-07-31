@@ -527,6 +527,7 @@ static bool M_HandleNewGame(INVENTORY_ITEM *const inv_item)
         // But only if in title mode
         if (g_InputDB.menu_confirm
             || (!M_IMMEDIATE && g_Inv_Mode == INV_TITLE_MODE)) {
+            Game_SetBonusFlag(GBF_NONE);
             M_Confirm(PASSPORT_ACTION_NEW_GAME, GF_GetFirstLevel()->num);
             g_InputDB.menu_confirm = true;
             M_Close(inv_item);
@@ -551,14 +552,7 @@ static bool M_HandleNewGame(INVENTORY_ITEM *const inv_item)
             return true;
 
         case UI_NEW_GAME_CHOICE_NG:
-            // Handle the scenario where game_modes_policy is disabled, and
-            // enable_play_previous_levels is on. In this scenario the dialog
-            // adds a "New Game" row just to let the player start the game. It
-            // shouldn't touch the NG+ flag.
-            if (g_Config.gameplay.game_modes_policy
-                == GAME_MODES_POLICY_ALWAYS) {
-                Game_SetBonusFlag(GBF_NONE);
-            }
+            Game_SetBonusFlag(GBF_NONE);
             M_Confirm(PASSPORT_ACTION_NEW_GAME, GF_GetFirstLevel()->num);
             return true;
         case UI_NEW_GAME_CHOICE_NGPLUS:
@@ -609,6 +603,7 @@ static bool M_HandlePlayAnyLevel(INVENTORY_ITEM *const inv_item)
         M_NavigateInto(M_ROLE_PLAY_ANY_LEVEL_SELECT_MODE, choice);
         return true;
     } else {
+        Game_SetBonusFlag(GBF_NONE);
         Savegame_UnbindSlot();
         M_Confirm(PASSPORT_ACTION_SELECT_LEVEL, choice);
         return true;
