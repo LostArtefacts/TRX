@@ -196,24 +196,23 @@ static bool M_HasHurtAlliesEver(const bool include_bonus_levels)
     return false;
 }
 
-static void M_FormatIconSecrets(
-    char *const out, const LEVEL_STATS *const level_stats)
+static void M_FormatIconSecrets(char *const out, const GF_LEVEL *const level)
 {
     char *ptr = out;
     int32_t num_secrets = 0;
     for (int32_t i = 0; i < STATS_MAX_SECRETS; i++) {
-        if (!Stats_IsSecretValid(i)) {
+        if (!Stats_IsSecretValid(level, i)) {
             continue;
         }
 
-        const bool has_secret = Stats_HasSecret(i);
+        const bool has_secret = Stats_HasSecret(level, i);
         if (!has_secret && out == ptr) {
             // Do not reserve space pointlessly.
             // Good: [secret][ ][ ]
             // Bad:  [ ][ ][secret] – should be just [secret]
             continue;
         }
-        const OBJECT_ID obj_id = Stats_GetSecretObject(i);
+        const OBJECT_ID obj_id = Stats_GetSecretObject(level, i);
         if (obj_id != NO_OBJECT) {
             int32_t secret_num = 0;
             for (int32_t j = 0; g_SecretObjects[j] != NO_OBJECT; j++) {
@@ -312,7 +311,7 @@ static void M_RowFromRole(
 
     case M_ROW_ICON_SECRETS: {
         char buf[256];
-        M_FormatIconSecrets(buf, (LEVEL_STATS *)s->stats);
+        M_FormatIconSecrets(buf, GF_GetLevel(GFLT_MAIN, s->args.level_num));
         M_Row(s, GS("general/stats/secrets"), buf);
         break;
     }

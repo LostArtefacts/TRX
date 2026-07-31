@@ -4,86 +4,102 @@
 
 #include <trx/game/stats.h>
 
-static bool m_Valid[STATS_MAX_SECRETS];
-static bool m_Found[STATS_MAX_SECRETS];
-static int32_t m_MaxSecretCount;
+static LEVEL_STATS m_Stats;
+static LEVEL_MAX_STATS m_MaxStats;
 
-static bool M_InRange(const int16_t secret_idx)
+// The bit a secret number stands for, or 0 when the level holds no such
+// secret. The real module reads the same mask off the level's scan.
+static uint32_t M_GetSecretMask(
+    const GF_LEVEL *const level, const int16_t secret_idx)
 {
-    return secret_idx >= 0 && secret_idx < STATS_MAX_SECRETS;
+    if (level == nullptr || secret_idx < 0 || secret_idx >= STATS_MAX_SECRETS) {
+        return 0;
+    }
+    const uint32_t secret_mask = 1 << secret_idx;
+    return (secret_mask & m_MaxStats.all_secrets_mask) != 0 ? secret_mask : 0;
 }
 
-bool Stats_IsSecretValid(const int16_t secret_idx)
+LEVEL_STATS *Stats_GetLevelStats(const GF_LEVEL *const level)
 {
-    return M_InRange(secret_idx) && m_Valid[secret_idx];
+    return level == nullptr ? nullptr : &m_Stats;
 }
 
-bool Stats_HasSecret(const int16_t secret_idx)
+bool Stats_HasLevelMaxStats(const GF_LEVEL *const level)
 {
-    return Stats_IsSecretValid(secret_idx) && m_Found[secret_idx];
+    return level != nullptr;
 }
 
-bool Stats_AddSecret(const int16_t secret_idx)
+LEVEL_MAX_STATS *Stats_GetLevelMaxStats(const GF_LEVEL *const level)
 {
-    if (!Stats_IsSecretValid(secret_idx) || m_Found[secret_idx]) {
+    return &m_MaxStats;
+}
+
+bool Stats_IsSecretValid(const GF_LEVEL *const level, const int16_t secret_idx)
+{
+    return M_GetSecretMask(level, secret_idx) != 0;
+}
+
+bool Stats_HasSecret(const GF_LEVEL *const level, const int16_t secret_idx)
+{
+    const uint32_t secret_mask = M_GetSecretMask(level, secret_idx);
+    return secret_mask != 0 && (m_Stats.secret_flags & secret_mask) != 0;
+}
+
+bool Stats_AddSecret(const GF_LEVEL *const level, const int16_t secret_idx)
+{
+    if (Stats_HasSecret(level, secret_idx)
+        || !Stats_IsSecretValid(level, secret_idx)) {
         return false;
     }
-    m_Found[secret_idx] = true;
+    m_Stats.secret_flags |= M_GetSecretMask(level, secret_idx);
+    m_Stats.secret_count++;
     return true;
 }
 
-bool Stats_RemoveSecret(const int16_t secret_idx)
+bool Stats_RemoveSecret(const GF_LEVEL *const level, const int16_t secret_idx)
 {
-    if (!Stats_HasSecret(secret_idx)) {
+    if (!Stats_HasSecret(level, secret_idx)) {
         return false;
     }
-    m_Found[secret_idx] = false;
+    m_Stats.secret_flags &= ~M_GetSecretMask(level, secret_idx);
+    m_Stats.secret_count--;
     return true;
-}
-
-int32_t Stats_GetSecretCount(void)
-{
-    int32_t count = 0;
-    for (int16_t i = 0; i < STATS_MAX_SECRETS; i++) {
-        count += Stats_HasSecret(i) ? 1 : 0;
-    }
-    return count;
-}
-
-int32_t Stats_GetMaxSecretCount(void)
-{
-    return m_MaxSecretCount;
 }
 
 static void M_Reset(void)
 {
-    for (int32_t i = 0; i < STATS_MAX_SECRETS; i++) {
-        m_Valid[i] = false;
-        m_Found[i] = false;
-    }
-    m_MaxSecretCount = 0;
+    m_Stats = (LEVEL_STATS) {};
+    m_MaxStats = (LEVEL_MAX_STATS) {};
 }
 
 FAKE_ON_RESET(M_Reset)
 
 void FakeStats_SetSecrets(const int32_t *const nums, const int32_t count)
 {
-    for (int32_t i = 0; i < STATS_MAX_SECRETS; i++) {
-        m_Valid[i] = false;
-        m_Found[i] = false;
-    }
+    m_Stats.secret_flags = 0;
+    m_Stats.secret_count = 0;
+    m_MaxStats.all_secrets_mask = 0;
     for (int32_t i = 0; i < count; i++) {
-        m_Valid[nums[i] - 1] = true;
+        m_MaxStats.all_secrets_mask |= 1 << (nums[i] - 1);
     }
-    m_MaxSecretCount = count;
+    m_MaxStats.max_secret_count = count;
 }
 
 void FakeStats_SetFound(const int32_t num, const bool found)
 {
-    m_Found[num - 1] = found;
+    const uint32_t secret_mask = 1 << (num - 1);
+    if (found) {
+        m_Stats.secret_flags |= secret_mask;
+    } else {
+        m_Stats.secret_flags &= ~secret_mask;
+    }
+    m_Stats.secret_count = 0;
+    for (int32_t i = 0; i < STATS_MAX_SECRETS; i++) {
+        m_Stats.secret_count += (m_Stats.secret_flags & (1 << i)) != 0 ? 1 : 0;
+    }
 }
 
 void FakeStats_SetMaxSecretCount(const int32_t count)
 {
-    m_MaxSecretCount = count;
+    m_MaxStats.max_secret_count = count;
 }

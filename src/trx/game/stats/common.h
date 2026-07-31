@@ -13,17 +13,11 @@ LEVEL_STATS *Stats_GetLevelStats(const GF_LEVEL *level);
 // however many times the level is entered.
 void Stats_ResetLevel(const GF_LEVEL *level);
 
-int32_t Stats_GetSecretCount(void);
-
-// How many secrets the level counts towards completion, which is what the mask
-// holds less the ones the game flow marks unobtainable.
-int32_t Stats_GetMaxSecretCount(void);
-
-bool Stats_HasSecret(int16_t secret_idx);
-bool Stats_RemoveSecret(int16_t secret_idx);
-bool Stats_AddSecret(int16_t secret_idx);
-bool Stats_IsSecretValid(int16_t secret_idx);
-OBJECT_ID Stats_GetSecretObject(int32_t secret_idx);
+bool Stats_HasSecret(const GF_LEVEL *level, int16_t secret_idx);
+bool Stats_RemoveSecret(const GF_LEVEL *level, int16_t secret_idx);
+bool Stats_AddSecret(const GF_LEVEL *level, int16_t secret_idx);
+bool Stats_IsSecretValid(const GF_LEVEL *level, int16_t secret_idx);
+OBJECT_ID Stats_GetSecretObject(const GF_LEVEL *level, int32_t secret_idx);
 uint32_t Stats_GetSecretMaskForItem(const GF_LEVEL *level, int16_t item_num);
 
 void Stats_UpdateSecrets(LEVEL_STATS *stats);
