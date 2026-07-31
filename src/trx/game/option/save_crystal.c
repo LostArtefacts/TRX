@@ -4,6 +4,7 @@
 #include <trx/game/game_strings/entries.h>
 #include <trx/game/input.h>
 #include <trx/game/inventory.h>
+#include <trx/game/inventory_ring/vars.h>
 #include <trx/game/objects/ids.h>
 #include <trx/game/savegame.h>
 #include <trx/game/ui.h>
@@ -17,7 +18,7 @@ static struct {
 static bool M_IsUsable(void)
 {
     return g_Config.gameplay.save_crystal_mode == SAVE_CRYSTAL_SAVE_PICKUP
-        && g_Inv_Mode == INV_GAME_MODE;
+        && g_InvRing_Mode == INV_GAME_MODE;
 }
 
 static SAVEGAME_SLOT_REF M_GetInitialSlot(void)

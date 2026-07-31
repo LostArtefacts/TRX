@@ -1,6 +1,7 @@
 #include <trx/game/ui/dialogs/base_passport.h>
 
 #include <trx/game/inventory.h>
+#include <trx/game/inventory_ring/vars.h>
 #include <trx/game/ui/elements/modal.h>
 #include <trx/game/ui/elements/requester.h>
 #include <trx/game/ui/elements/resize.h>
@@ -44,7 +45,7 @@ void UI_BasePassportDialog_Control(UI_REQUESTER_STATE *const req)
 
 void UI_BeginBasePassportDialog(void)
 {
-    const float modal_y = g_Inv_Mode == INV_TITLE_MODE ? 0.81f : 0.62f;
+    const float modal_y = g_InvRing_Mode == INV_TITLE_MODE ? 0.81f : 0.62f;
     UI_BeginModal(0.5f, modal_y);
     UI_BeginResizeEx((UI_RESIZE_SETTINGS) {
         .w = 300.0f,
