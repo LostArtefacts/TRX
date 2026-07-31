@@ -11,28 +11,45 @@
 
 static OBJECT_MESH *m_Meshes[LM_NUMBER_OF] = {};
 
+// Which weapon Lara wears where, when she carries more than one that could
+// hang there. The weapon type says which of the two a weapon can use - the
+// rifles go on her back and the rest into her holsters - but not which of them
+// wins, so the order is here.
+// clang-format off
+static const LARA_GUN_TYPE m_HolsterGuns[] = {
+    LGT_PISTOLS, LGT_MAGNUMS, LGT_AUTOS, LGT_DESERT_EAGLE, LGT_UZIS,
+    LGT_REVOLVER, LGT_UNARMED,
+};
+
+static const LARA_GUN_TYPE m_BackGuns[] = {
+    LGT_SHOTGUN, LGT_M16, LGT_MP5, LGT_GRENADE, LGT_ROCKET, LGT_HARPOON,
+    LGT_CROSSBOW, LGT_UNARMED,
+};
+// clang-format on
+
+static LARA_GUN_TYPE M_GetFirstCarried(const LARA_GUN_TYPE *const gun_types)
+{
+    for (int32_t i = 0; gun_types[i] != LGT_UNARMED; i++) {
+        if (Inv_HasItem(Gun_GetGunObject(gun_types[i]))) {
+            return gun_types[i];
+        }
+    }
+    return LGT_UNARMED;
+}
+
 static LARA_GUN_TYPE M_DetermineHolsterGun(void)
 {
     const LARA_INFO *const lara_info = Lara_GetLaraInfo();
-    if (lara_info->holsters_gun_type == LGT_UNARMED) {
-        if (lara_info->gun_type != LGT_UNARMED
-            && !Gun_IsRifleType(lara_info->gun_type)) {
-            return lara_info->gun_type;
-        } else if (Inv_HasItem(O_PISTOL_ITEM)) {
-            return LGT_PISTOLS;
-        } else if (Inv_HasItem(O_MAGNUM_ITEM)) {
-            return LGT_MAGNUMS;
-        } else if (Inv_HasItem(O_AUTOS_ITEM)) {
-            return LGT_AUTOS;
-        } else if (Inv_HasItem(O_DESERT_EAGLE_ITEM)) {
-            return LGT_DESERT_EAGLE;
-        } else if (Inv_HasItem(O_UZI_ITEM)) {
-            return LGT_UZIS;
-        } else if (Inv_HasItem(O_REVOLVER_ITEM)) {
-            return LGT_REVOLVER;
-        }
+    if (lara_info->holsters_gun_type != LGT_UNARMED) {
+        return lara_info->holsters_gun_type;
     }
-    return lara_info->holsters_gun_type;
+    // What she is holding goes back into her holsters ahead of anything else,
+    // so long as it is small enough to fit in them.
+    if (lara_info->gun_type != LGT_UNARMED
+        && !Gun_IsRifleType(lara_info->gun_type)) {
+        return lara_info->gun_type;
+    }
+    return M_GetFirstCarried(m_HolsterGuns);
 }
 
 static LARA_GUN_TYPE M_DetermineBackGun(void)
@@ -41,23 +58,7 @@ static LARA_GUN_TYPE M_DetermineBackGun(void)
     if (lara_info->back_gun_type != LGT_UNARMED) {
         return lara_info->back_gun_type;
     }
-
-    if (Inv_HasItem(O_SHOTGUN_ITEM)) {
-        return LGT_SHOTGUN;
-    } else if (Inv_HasItem(O_M16_ITEM)) {
-        return LGT_M16;
-    } else if (Inv_HasItem(O_MP5_ITEM)) {
-        return LGT_MP5;
-    } else if (Inv_HasItem(O_GRENADE_GUN_ITEM)) {
-        return LGT_GRENADE;
-    } else if (Inv_HasItem(O_ROCKET_GUN_ITEM)) {
-        return LGT_ROCKET;
-    } else if (Inv_HasItem(O_HARPOON_ITEM)) {
-        return LGT_HARPOON;
-    } else if (Inv_HasItem(O_CROSSBOW_ITEM)) {
-        return LGT_CROSSBOW;
-    }
-    return LGT_UNARMED;
+    return M_GetFirstCarried(m_BackGuns);
 }
 
 static void M_EnsureDefaultDualPistolMesh(const LARA_GUN_TYPE holster_gun)
