@@ -22,23 +22,28 @@ static uint32_t M_GetSecretMask(
         : 0;
 }
 
-// What the level holds of a category, less what the game flow writes off.
-static uint32_t M_GetCategoryMax(
-    const LEVEL_MAX_STATS *const max_stats, const STATS_CATEGORY_ID id)
+static void M_SumStats(STATS_COMMON *const dst, const STATS_COMMON *const src)
 {
-    switch (id) {
-    case STATS_CAT_PICKUPS:
-        return max_stats->max_pickup_count;
-    case STATS_CAT_KILLS:
-        return max_stats->max_kill_count;
-    case STATS_CAT_SECRETS:
-        return max_stats->max_secret_count;
-    case STATS_CAT_CRYSTALS:
-        return max_stats->max_crystal_count;
-    case STATS_CAT_NUMBER_OF:
-        break;
+    for (int32_t i = 0; i < STATS_CAT_NUMBER_OF; i++) {
+        dst->counts[i] += src->counts[i];
     }
-    return 0;
+    dst->timer += src->timer;
+    dst->ammo_hits += src->ammo_hits;
+    dst->ammo_used += src->ammo_used;
+    dst->medipacks_used += src->medipacks_used;
+    dst->distance_travelled += src->distance_travelled;
+    dst->death_count += src->death_count;
+}
+
+static void M_SumMaxStats(
+    LEVEL_MAX_STATS *const dst, const LEVEL_MAX_STATS *const src)
+{
+    for (int32_t i = 0; i < STATS_CAT_NUMBER_OF; i++) {
+        dst->maxes[i] += src->maxes[i];
+    }
+    dst->max_kill_ally_count += src->max_kill_ally_count;
+    dst->max_kill_non_ally_count += src->max_kill_non_ally_count;
+    dst->max_pickup_secret_count += src->max_pickup_secret_count;
 }
 
 // What the game flow declares out of reach. Crystals have no such declaration.
@@ -53,24 +58,6 @@ static uint32_t M_GetCategoryUnobtainable(
     case STATS_CAT_SECRETS:
         return level->unobtainable.secrets;
     case STATS_CAT_CRYSTALS:
-    case STATS_CAT_NUMBER_OF:
-        break;
-    }
-    return 0;
-}
-
-static uint32_t M_GetCategoryCount(
-    const LEVEL_STATS *const stats, const STATS_CATEGORY_ID id)
-{
-    switch (id) {
-    case STATS_CAT_PICKUPS:
-        return stats->pickup_count;
-    case STATS_CAT_KILLS:
-        return stats->kill_count;
-    case STATS_CAT_SECRETS:
-        return stats->secret_count;
-    case STATS_CAT_CRYSTALS:
-        return stats->crystal_count;
     case STATS_CAT_NUMBER_OF:
         break;
     }
@@ -105,11 +92,11 @@ bool Stats_GetCategory(
     }
 
     const uint32_t unobtainable = M_GetCategoryUnobtainable(level, id);
-    const uint32_t max = M_GetCategoryMax(Stats_GetLevelMaxStats(level), id);
+    const uint32_t max = Stats_GetLevelMaxStats(level)->maxes[id];
     *out = (STATS_CATEGORY) {
         .level = level,
         .id = id,
-        .count = M_GetCategoryCount(stats, id),
+        .count = stats->counts[id],
         .max = max,
         .raw = max + unobtainable,
         .unobtainable = unobtainable,
@@ -122,24 +109,12 @@ bool Stats_SetCategoryCount(
     const uint32_t count)
 {
     LEVEL_STATS *const stats = Stats_GetLevelStats(level);
-    if (stats == nullptr) {
+    if (stats == nullptr || id >= STATS_CAT_NUMBER_OF
+        || id == STATS_CAT_SECRETS) {
         return false;
     }
-    switch (id) {
-    case STATS_CAT_PICKUPS:
-        stats->pickup_count = count;
-        return true;
-    case STATS_CAT_KILLS:
-        stats->kill_count = count;
-        return true;
-    case STATS_CAT_CRYSTALS:
-        stats->crystal_count = count;
-        return true;
-    case STATS_CAT_SECRETS:
-    case STATS_CAT_NUMBER_OF:
-        break;
-    }
-    return false;
+    stats->counts[id] = count;
+    return true;
 }
 
 bool Stats_IsSecretValid(const GF_LEVEL *const level, const int16_t secret_idx)
@@ -167,7 +142,7 @@ bool Stats_RemoveSecret(const GF_LEVEL *const level, const int16_t secret_idx)
     }
     LOG_INFO("Removing secret %d", secret_idx);
     stats->secret_flags &= ~secret_mask;
-    stats->secret_count--;
+    stats->counts[STATS_CAT_SECRETS]--;
     return true;
 }
 
@@ -181,15 +156,16 @@ bool Stats_AddSecret(const GF_LEVEL *const level, const int16_t secret_idx)
     }
     LOG_INFO("Adding secret %d", secret_idx);
     stats->secret_flags |= secret_mask;
-    stats->secret_count++;
+    stats->counts[STATS_CAT_SECRETS]++;
     return true;
 }
 
 void Stats_UpdateSecrets(LEVEL_STATS *const stats)
 {
-    stats->secret_count = 0;
+    stats->counts[STATS_CAT_SECRETS] = 0;
     for (int32_t i = 0; i < STATS_MAX_SECRETS; i++) {
-        stats->secret_count += (stats->secret_flags & (1 << i)) ? 1 : 0;
+        stats->counts[STATS_CAT_SECRETS] +=
+            (stats->secret_flags & (1 << i)) ? 1 : 0;
     }
 }
 
@@ -217,8 +193,8 @@ bool Stats_CheckAllLevelSecretsPickedUp(void)
 bool Stats_CheckAllSecretsCollected(void)
 {
     const FINAL_STATS final_stats = Stats_ComputeFinalStats(false);
-    return final_stats.stats.secret_count
-        >= final_stats.max_stats.max_secret_count;
+    return final_stats.stats.counts[STATS_CAT_SECRETS]
+        >= final_stats.max_stats.maxes[STATS_CAT_SECRETS];
 }
 
 void Stats_AddMedipacksUsed(const double medipack_value)
@@ -254,7 +230,7 @@ void Stats_AddKill(void)
 {
     LEVEL_STATS *const stats = Stats_GetLevelStats(Game_GetCurrentLevel());
     if (stats != nullptr) {
-        stats->kill_count++;
+        stats->counts[STATS_CAT_KILLS]++;
     }
 }
 
@@ -262,7 +238,7 @@ void Stats_AddCrystal(void)
 {
     LEVEL_STATS *const stats = Stats_GetLevelStats(Game_GetCurrentLevel());
     if (stats != nullptr) {
-        stats->crystal_count++;
+        stats->counts[STATS_CAT_CRYSTALS]++;
     }
 }
 
@@ -270,7 +246,7 @@ void Stats_AddPickup(void)
 {
     LEVEL_STATS *const stats = Stats_GetLevelStats(Game_GetCurrentLevel());
     if (stats != nullptr) {
-        stats->pickup_count++;
+        stats->counts[STATS_CAT_PICKUPS]++;
     }
 }
 
@@ -309,33 +285,12 @@ FINAL_STATS Stats_ComputeFinalStats(const bool include_bonus_levels)
             continue;
         }
 
-        const RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
-        if (resume != nullptr) {
-#define L_ADD(prop) result.stats.prop += resume->stats.prop;
-            L_ADD(kill_count);
-            L_ADD(crystal_count);
-            L_ADD(pickup_count);
-            L_ADD(secret_count);
-            L_ADD(timer);
-            L_ADD(ammo_hits);
-            L_ADD(ammo_used);
-            L_ADD(medipacks_used);
-            L_ADD(distance_travelled);
-            L_ADD(death_count);
-#undef L_ADD
+        const LEVEL_STATS *const stats = Stats_GetLevelStats(level);
+        if (stats != nullptr) {
+            M_SumStats(&result.stats, (const STATS_COMMON *)stats);
         }
-
-        const LEVEL_MAX_STATS *const max_stats = Stats_GetLevelMaxStats(level);
-        if (max_stats != nullptr) {
-#define L_ADD(prop) result.max_stats.prop += max_stats->prop;
-            L_ADD(max_kill_count);
-            L_ADD(max_kill_ally_count);
-            L_ADD(max_kill_non_ally_count);
-            L_ADD(max_crystal_count);
-            L_ADD(max_pickup_count);
-            L_ADD(max_secret_count);
-            L_ADD(max_pickup_secret_count);
-#undef L_ADD
+        if (Stats_HasLevelMaxStats(level)) {
+            M_SumMaxStats(&result.max_stats, Stats_GetLevelMaxStats(level));
         }
     }
 

@@ -52,7 +52,7 @@ bool Stats_AddSecret(const GF_LEVEL *const level, const int16_t secret_idx)
         return false;
     }
     m_Stats.secret_flags |= M_GetSecretMask(level, secret_idx);
-    m_Stats.secret_count++;
+    m_Stats.counts[STATS_CAT_SECRETS]++;
     return true;
 }
 
@@ -62,7 +62,7 @@ bool Stats_RemoveSecret(const GF_LEVEL *const level, const int16_t secret_idx)
         return false;
     }
     m_Stats.secret_flags &= ~M_GetSecretMask(level, secret_idx);
-    m_Stats.secret_count--;
+    m_Stats.counts[STATS_CAT_SECRETS]--;
     return true;
 }
 
@@ -77,12 +77,12 @@ FAKE_ON_RESET(M_Reset)
 void FakeStats_SetSecrets(const int32_t *const nums, const int32_t count)
 {
     m_Stats.secret_flags = 0;
-    m_Stats.secret_count = 0;
+    m_Stats.counts[STATS_CAT_SECRETS] = 0;
     m_MaxStats.all_secrets_mask = 0;
     for (int32_t i = 0; i < count; i++) {
         m_MaxStats.all_secrets_mask |= 1 << (nums[i] - 1);
     }
-    m_MaxStats.max_secret_count = count;
+    m_MaxStats.maxes[STATS_CAT_SECRETS] = count;
 }
 
 void FakeStats_SetFound(const int32_t num, const bool found)
@@ -93,13 +93,14 @@ void FakeStats_SetFound(const int32_t num, const bool found)
     } else {
         m_Stats.secret_flags &= ~secret_mask;
     }
-    m_Stats.secret_count = 0;
+    m_Stats.counts[STATS_CAT_SECRETS] = 0;
     for (int32_t i = 0; i < STATS_MAX_SECRETS; i++) {
-        m_Stats.secret_count += (m_Stats.secret_flags & (1 << i)) != 0 ? 1 : 0;
+        m_Stats.counts[STATS_CAT_SECRETS] +=
+            (m_Stats.secret_flags & (1 << i)) != 0 ? 1 : 0;
     }
 }
 
 void FakeStats_SetMaxSecretCount(const int32_t count)
 {
-    m_MaxStats.max_secret_count = count;
+    m_MaxStats.maxes[STATS_CAT_SECRETS] = count;
 }

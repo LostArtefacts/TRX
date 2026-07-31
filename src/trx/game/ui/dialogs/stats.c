@@ -150,10 +150,10 @@ static void M_AdjustMaxKills(
         return;
     }
     s->adjusted_max_stats = *s->max_stats;
-    s->adjusted_max_stats.max_kill_count =
+    s->adjusted_max_stats.maxes[STATS_CAT_KILLS] =
         s->adjusted_max_stats.max_kill_non_ally_count;
     if (include_allies) {
-        s->adjusted_max_stats.max_kill_count +=
+        s->adjusted_max_stats.maxes[STATS_CAT_KILLS] +=
             s->adjusted_max_stats.max_kill_ally_count;
     }
     s->max_stats = &s->adjusted_max_stats;
@@ -320,31 +320,33 @@ static void M_RowFromRole(
         M_Row(
             s, GS("general/stats/secrets"),
             String_FormatStatic(
-                GS("general/stats/detail_fmt"), s->stats->secret_count,
-                s->max_stats->max_secret_count));
+                GS("general/stats/detail_fmt"),
+                s->stats->counts[STATS_CAT_SECRETS],
+                s->max_stats->maxes[STATS_CAT_SECRETS]));
         break;
 
     case M_ROW_CRYSTALS:
         M_Row(
             s, GS("general/stats/crystals"),
             String_FormatStatic(
-                num_fmt, s->stats->crystal_count,
-                s->max_stats->max_crystal_count));
+                num_fmt, s->stats->counts[STATS_CAT_CRYSTALS],
+                s->max_stats->maxes[STATS_CAT_CRYSTALS]));
         break;
 
     case M_ROW_PICKUPS:
         M_Row(
             s, GS("general/stats/pickups"),
             String_FormatStatic(
-                num_fmt, s->stats->pickup_count,
-                s->max_stats->max_pickup_count));
+                num_fmt, s->stats->counts[STATS_CAT_PICKUPS],
+                s->max_stats->maxes[STATS_CAT_PICKUPS]));
         break;
 
     case M_ROW_KILLS:
         M_Row(
             s, GS("general/stats/kills"),
             String_FormatStatic(
-                num_fmt, s->stats->kill_count, s->max_stats->max_kill_count));
+                num_fmt, s->stats->counts[STATS_CAT_KILLS],
+                s->max_stats->maxes[STATS_CAT_KILLS]));
         break;
 
     case M_ROW_DEATHS:
@@ -465,11 +467,11 @@ static bool M_EmitConfiguredStatsRows(
         if (g_Config.ui.stats.show_pickups) {
             has_rows |= emit_row_func(s, M_ROW_PICKUPS, 0);
         }
-        if (M_ShowCrystals() && s->max_stats->max_crystal_count != 0) {
+        if (M_ShowCrystals() && s->max_stats->maxes[STATS_CAT_CRYSTALS] != 0) {
             has_rows |= emit_row_func(s, M_ROW_CRYSTALS, 0);
         }
         if (g_Config.ui.stats.show_secrets
-            && s->max_stats->max_secret_count != 0) {
+            && s->max_stats->maxes[STATS_CAT_SECRETS] != 0) {
             has_rows |= emit_row_func(s, M_ROW_AUTO_SECRETS, 0);
         }
         if (g_Config.ui.stats.show_time_taken) {
@@ -480,10 +482,10 @@ static bool M_EmitConfiguredStatsRows(
             has_rows |= emit_row_func(s, M_ROW_TIMER, 0);
         }
         if (g_Config.ui.stats.show_secrets
-            && s->max_stats->max_secret_count != 0) {
+            && s->max_stats->maxes[STATS_CAT_SECRETS] != 0) {
             has_rows |= emit_row_func(s, M_ROW_AUTO_SECRETS, 0);
         }
-        if (M_ShowCrystals() && s->max_stats->max_crystal_count != 0) {
+        if (M_ShowCrystals() && s->max_stats->maxes[STATS_CAT_CRYSTALS] != 0) {
             has_rows |= emit_row_func(s, M_ROW_CRYSTALS, 0);
         }
         if (g_Config.ui.stats.show_pickups) {
