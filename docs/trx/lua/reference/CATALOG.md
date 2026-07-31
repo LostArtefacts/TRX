@@ -1,6 +1,6 @@
 ---
 title: Catalog
-order: 6
+order: 8
 ---
 
 <!--

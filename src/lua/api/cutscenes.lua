@@ -2,7 +2,7 @@ local raw = trxc.cutscenes
 local api = trx.api
 
 api.module("cutscenes", {
-  order = 11,
+  order = 13,
   description = [[
     Module for TR4's in-game cutscenes, the animated scenes stored in
     `cutseq.pak` and started by a cutscene trigger. A cutscene plays once:

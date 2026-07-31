@@ -1,7 +1,7 @@
 local api = trx.api
 
 api.module("query", {
-  order = 7,
+  order = 9,
   title = "Query",
   description = [[
 A composable filter over a domain of things - the objects a level is built

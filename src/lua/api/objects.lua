@@ -6,7 +6,7 @@ require("trx.catalog")
 require("trx.query")
 
 api.module("objects", {
-  order = 5,
+  order = 7,
   title = "Object",
   description = "Module for the object definitions a level is built from.\n\n"
     .. "An object is the pattern every item of that type is cut from: a wolf's radius, not this "

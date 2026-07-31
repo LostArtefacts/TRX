@@ -1,6 +1,6 @@
 ---
 title: API registry
-order: 28
+order: 30
 ---
 
 <!--
