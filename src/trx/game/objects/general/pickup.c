@@ -403,12 +403,19 @@ static void M_CollectAllAtPos(
     }
 }
 
+static bool M_UseMultiplePickups(const ITEM *const item)
+{
+    const M_PRIV *const p = item->priv;
+    return g_Config.gameplay.enable_multiple_pickups
+        || p->pickup_mode == PICKUP_MODE_HIDDEN;
+}
+
 static void M_Collect(const ITEM *const item, const bool controlled)
 {
     const int16_t item_num = Item_GetIndex(item);
     if (item->object_id == O_FLARE_ITEM) {
         M_DoFlarePickup(item_num);
-    } else if (g_Config.gameplay.enable_multiple_pickups && controlled) {
+    } else if (M_UseMultiplePickups(item) && controlled) {
         const M_PRIV *const p = item->priv;
         M_CollectAllAtPos(item->pos, item->room_num, p->pickup_mode);
     } else {
@@ -440,14 +447,15 @@ static bool M_CanCollect(
     }
 
     if (item->object_id == O_FLARE_ITEM) {
-        return lara->gun_type != LGT_FLARE;
+        return lara->interact_target.item_num == NO_ITEM
+            && lara->gun_type != LGT_FLARE;
     }
 
     if (lara_item->current_anim_state == LS(LS_FLARE_PICKUP)) {
         return false;
     }
 
-    if (!g_Config.gameplay.enable_multiple_pickups || controlled) {
+    if (controlled || !M_UseMultiplePickups(item)) {
         return false;
     }
 
