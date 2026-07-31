@@ -336,3 +336,9 @@ void Stats_MarkAlliesHostile(void)
     RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
     resume->hurt_allies = true;
 }
+
+bool Stats_HaveAlliesBeenHurt(const GF_LEVEL *const level)
+{
+    const RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
+    return resume != nullptr && resume->hurt_allies;
+}

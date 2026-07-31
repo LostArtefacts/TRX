@@ -382,7 +382,7 @@ unit_tests += {
   'name': 'lua/api/stats',
   'bundles': [b_lua_surface],
   'src': ['fakes/game.c', 'fakes/stats.c'],
-  'engine': ['game/lua/capi/stats.c'],
+  'engine': ['game/lua/capi/game.c', 'game/lua/capi/stats.c'],
 }
 
 unit_tests += {

@@ -46,4 +46,8 @@ void Stats_AddMedipacksUsed(double medipack_value);
 void Stats_AddDistanceTravelled(XYZ_32 pos, XYZ_32 last_pos);
 void Stats_MarkAlliesHostile(void);
 
+// Whether Lara has hurt an ally in this level. The kill maximum only holds the
+// allies against her once she has.
+bool Stats_HaveAlliesBeenHurt(const GF_LEVEL *level);
+
 FINAL_STATS Stats_ComputeFinalStats(bool include_bonus_levels);

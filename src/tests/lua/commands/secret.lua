@@ -11,7 +11,7 @@ end
 
 local function found_nums()
   local out = {}
-  for _, entry in ipairs(trx.stats.secrets) do
+  for _, entry in ipairs(trx.stats.secret_list()) do
     if entry.found then
       out[#out + 1] = entry.num
     end

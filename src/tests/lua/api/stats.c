@@ -39,6 +39,49 @@ static int M_FakeSetMaxSecretCount(lua_State *const L)
     return 0;
 }
 
+// fake.set_count(level_num, category, n) - what Lara has of one thing in a
+// level, which need not be the one being played.
+static int M_FakeSetCount(lua_State *const L)
+{
+    FakeStats_SetCount(
+        (int32_t)luaL_checkinteger(L, 1), (int32_t)luaL_checkinteger(L, 2),
+        (int32_t)luaL_checkinteger(L, 3));
+    return 0;
+}
+
+static int M_FakeSetMax(lua_State *const L)
+{
+    FakeStats_SetMax(
+        (int32_t)luaL_checkinteger(L, 1), (int32_t)luaL_checkinteger(L, 2),
+        (int32_t)luaL_checkinteger(L, 3));
+    return 0;
+}
+
+static int M_FakeSetUnobtainable(lua_State *const L)
+{
+    FakeStats_SetUnobtainable(
+        (int32_t)luaL_checkinteger(L, 1), (int32_t)luaL_checkinteger(L, 2),
+        (int32_t)luaL_checkinteger(L, 3));
+    return 0;
+}
+
+// fake.set_kill_split(level_num, allies, enemies) - how the level's kill
+// maximum divides, which is what the statistics screen adjusts.
+static int M_FakeSetKillSplit(lua_State *const L)
+{
+    FakeStats_SetKillSplit(
+        (int32_t)luaL_checkinteger(L, 1), (int32_t)luaL_checkinteger(L, 2),
+        (int32_t)luaL_checkinteger(L, 3));
+    return 0;
+}
+
+static int M_FakeSetAlliesHurt(lua_State *const L)
+{
+    FakeStats_SetAlliesHurt(
+        (int32_t)luaL_checkinteger(L, 1), lua_toboolean(L, 2));
+    return 0;
+}
+
 static void M_PushFake(lua_State *const L)
 {
     FakeGame_PushLua(L);
@@ -48,12 +91,25 @@ static void M_PushFake(lua_State *const L)
     lua_setfield(L, -2, "set_found");
     lua_pushcfunction(L, M_FakeSetMaxSecretCount);
     lua_setfield(L, -2, "set_max_secret_count");
+    lua_pushcfunction(L, M_FakeSetCount);
+    lua_setfield(L, -2, "set_count");
+    lua_pushcfunction(L, M_FakeSetMax);
+    lua_setfield(L, -2, "set_max");
+    lua_pushcfunction(L, M_FakeSetUnobtainable);
+    lua_setfield(L, -2, "set_unobtainable");
+    lua_pushcfunction(L, M_FakeSetKillSplit);
+    lua_setfield(L, -2, "set_kill_split");
+    lua_pushcfunction(L, M_FakeSetAlliesHurt);
+    lua_setfield(L, -2, "set_allies_hurt");
 }
 
 int main(void)
 {
     const LUA_SURFACE_TEST test = {
         .module = "stats",
+        // A level hands back its statistics, which is how a script reaches a
+        // level other than the one being played.
+        .deps = { "game" },
         .tests = "api/stats",
         .push_fake = M_PushFake,
     };

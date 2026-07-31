@@ -3,7 +3,7 @@
 - added `trx.camera.play_flyby()`, to start a flyby camera sequence, and `trx.events.on_flyby_end()`, which happens when one reaches its last camera
 - added partial support for TR4's in-game cutscenes
 - added a new Lua module, `trx.cutscenes`, for playing TR4's cutscenes and reading or rewriting which of them have run, with the `on_cutscene_trigger`, `on_cutscene_start` and `on_cutscene_end` events; a script can answer a cutscene trigger itself, set how a cutscene is framed, and say where one leaves Lara
-- added a new Lua module, `trx.stats`, for reading which of the level's secrets Lara has found, and for giving one to her or taking it back
+- added a new Lua module, `trx.stats`, for what a level keeps count of: its secrets, pickups, kills and save crystals, each alongside how many count towards completing the level and how many the level holds, plus the timer, the deaths, the ammunition and the distance travelled; secrets can be given to Lara or taken back, and every level's counters are readable, so a script can total up whichever levels it likes
 - added pickup families to `trx.objects.query` - `gun`, `ammo`, `supply`, `tool`, `key`, `puzzle`, `quest`, `examine`, `collectible` and `secret` - so a script can ask what a pickup is
 - added `trx.lara.inventory`, for reading what Lara carries and putting things into her backpack or taking them out, and `trx.lara.weapons`, for what the level allows her and how much ammunition she has
 - added `trx.game.is_ngplus`, which tells whether the run started from the passport's bonus entry

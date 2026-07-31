@@ -4,61 +4,184 @@ local api = trx.api
 api.module("stats", {
   order = 22,
   description = [[
-Module for what the level being played keeps count of: what Lara has found in
-it, and how much there was to find.
+Module for what a level keeps count of: what Lara has found in it, and how much
+there was to find.
 
-The counts belong to the level, not to the session. Nothing here reads outside
-one, so a script that runs at the title screen sees an empty list and zero
-counts.]],
+The module is the level being played, so `trx.stats.pickups.count` is what she
+has picked up in it. Any other level's counters are reached the same way through
+`trx.game.Level.stats`. At the title screen there is no level, and everything
+here reads `nil`.]],
+  instance = raw.get_current,
 })
 
-api.property("stats.secrets", {
-  type = "table",
-  description = [[
-The secrets the level holds, in order, as a list of `{ num, found }`. `num` is
-the number the player says, counted from one, and `found` is whether Lara has
-it.]],
-  get = raw.secrets,
+-- The categories are ordered as the engine keeps them, so a name here stands
+-- for the number the C side addresses one by.
+local CATEGORY = {
+  pickups = 0,
+  kills = 1,
+  secrets = 2,
+  crystals = 3,
+}
+
+api.type("stats.Category", {
+  backing = "STATS_CATEGORY",
+  description = "One thing a level is counted on, which is one row of the statistics screen. `raw` "
+    .. "is `max` plus `unobtainable`: the game flow can declare part of a level out of reach, and "
+    .. "what it writes off is left out of what counts towards completion while still being in the "
+    .. "level.",
+
+  fields = {
+    count = {
+      from = "count",
+      type = "integer",
+      description = "How many of them Lara has. The secrets cannot be set this way: they are held "
+        .. "one by one, so `give_secret` and `take_secret` are how they change.",
+    },
+    max = {
+      from = "max",
+      type = "integer",
+      writable = false,
+      description = "How many of them count towards completing the level.",
+    },
+    raw = {
+      from = "raw",
+      type = "integer",
+      writable = false,
+      description = "How many of them the level holds, obtainable or not.",
+    },
+    unobtainable = {
+      from = "unobtainable",
+      type = "integer",
+      writable = false,
+      description = "How many of them the game flow declares out of reach, and so must not be held "
+        .. "against the player.",
+    },
+  },
 })
 
-api.property("stats.secret_count", {
-  type = "integer",
-  description = "How many secrets Lara has found in this level.",
-  get = raw.secret_count,
-})
+local function category(name, description)
+  return {
+    type = "Category",
+    description = description,
+    impl = function(stats)
+      return raw.category(stats, CATEGORY[name])
+    end,
+  }
+end
 
-api.property("stats.max_secret_count", {
-  type = "integer",
-  description = [[
-How many secrets the level counts towards completion. Not the length of
-`secrets`: the game flow can declare some of a level's secrets unobtainable,
-and those are left out of this count while still standing in the list.]],
-  get = raw.max_secret_count,
-})
-
-local num_param = {
+local secret_num_param = {
   name = "num",
   type = "integer",
   description = "The secret's number, counted from one.",
 }
 
-api.define("stats.give_secret", {
-  description = "Marks a secret as found, as walking into its trigger would.",
-  params = { num_param },
-  returns = {
-    type = "boolean",
-    description = "`false` if the level has no such secret, or Lara already has it.",
-  },
-  examples = { [[trx.stats.give_secret(1)]] },
-  impl = raw.give_secret,
-})
+api.type("stats.Stats", {
+  backing = "LEVEL_STATS",
+  description = "What one level keeps count of. The counters are the level's own and can be "
+    .. "written, which is what a script correcting or seeding them wants.",
 
-api.define("stats.take_secret", {
-  description = "Takes a secret back, leaving it to be found again.",
-  params = { num_param },
-  returns = {
-    type = "boolean",
-    description = "`false` if the level has no such secret, or Lara does not have it.",
+  fields = {
+    timer = {
+      from = "timer",
+      type = "integer",
+      description = "How long the level has been played, in game frames.",
+    },
+    deaths = {
+      from = "death_count",
+      type = "integer",
+      description = "How many times Lara has died. Unlike the rest, this is not cleared when the "
+        .. "level is entered again: a death stays with the level it happened on.",
+    },
+    ammo_used = {
+      from = "ammo_used",
+      type = "integer",
+      description = "How many rounds Lara has fired.",
+    },
+    ammo_hits = {
+      from = "ammo_hits",
+      type = "integer",
+      description = "How many of them hit something.",
+    },
+    distance_travelled = {
+      from = "distance_travelled",
+      type = "integer",
+      description = "How far Lara has travelled, in world units.",
+    },
+    medipacks_used = {
+      from = "medipacks_used",
+      type = "number",
+      description = "How many medipacks Lara has used, a small one counting as half of one.",
+    },
   },
-  impl = raw.take_secret,
+
+  extensions = {
+    pickups = category(
+      "pickups",
+      "The items lying in the level for Lara to take."
+    ),
+    kills = category(
+      "kills",
+      "The enemies the level counts, allies among them."
+    ),
+    secrets = category(
+      "secrets",
+      "The level's secrets. Which ones Lara holds is `secret_list`."
+    ),
+    crystals = category(
+      "crystals",
+      "The save crystals, where the game has them."
+    ),
+
+    max_ally_kills = {
+      type = "integer",
+      description = "How many of `kills.max` are allies. The statistics screen holds them against "
+        .. "the player only once `allies_hurt`, so a screen of your own wants to do the same: "
+        .. "`max_enemy_kills`, and these as well once she has turned on one.",
+      impl = function(stats)
+        return (raw.kill_split(stats))
+      end,
+    },
+    max_enemy_kills = {
+      type = "integer",
+      description = "How many of `kills.max` are enemies rather than allies.",
+      impl = function(stats)
+        return select(2, raw.kill_split(stats))
+      end,
+    },
+    allies_hurt = {
+      type = "boolean",
+      description = "Whether Lara has turned on an ally in this level.",
+      impl = raw.allies_hurt,
+    },
+  },
+
+  methods = {
+    secret_list = {
+      description = "The level's secrets, in order, as a list of `{ num, found }`. `num` is the "
+        .. "number the player says, counted from one, and `found` is whether Lara has it.",
+      returns = { type = "table", description = "The secrets, one by one." },
+      examples = {
+        [[for _, secret in ipairs(trx.stats.secret_list()) do
+  trx.log.info(secret.num .. ": " .. tostring(secret.found))
+end]],
+      },
+    },
+    give_secret = {
+      description = "Marks a secret as found, as walking into its trigger would.",
+      params = { secret_num_param },
+      returns = {
+        type = "boolean",
+        description = "`false` if the level has no such secret, or Lara already has it.",
+      },
+      examples = { [[trx.stats.give_secret(1)]] },
+    },
+    take_secret = {
+      description = "Takes a secret back, leaving it to be found again.",
+      params = { secret_num_param },
+      returns = {
+        type = "boolean",
+        description = "`false` if the level has no such secret, or Lara does not have it.",
+      },
+    },
+  },
 })
