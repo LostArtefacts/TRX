@@ -124,20 +124,20 @@ described in the table below.
   <tr valign="top">
     <td><code>ammo</code></td>
     <td>Object</td>
-    <td>Configures how much ammo a weapon gives when acquired and when its matching ammo pickup is collected.</td>
+    <td>Configures how much ammo a weapon gives when acquired and when its matching ammo pickup is collected. The counts are in shots, a shot being one pull of the trigger; the shotgun spends six rounds on each of them, and the flare counts flares.</td>
   </tr>
   <tr valign="top">
-    <td><code>ammo.initial_qty</code></td>
+    <td><code>ammo.initial_shots</code></td>
     <td>Integer</td>
     <td>The amount of ammo given when the weapon itself is collected.</td>
   </tr>
   <tr valign="top">
-    <td><code>ammo.pickup_qty</code></td>
+    <td><code>ammo.box_shots</code></td>
     <td>Integer</td>
     <td>The amount of ammo given when the equivalent ammo object is picked up.</td>
   </tr>
   <tr valign="top">
-    <td><code>ammo.inventory_alt</code></td>
+    <td><code>ammo.box_label_qty</code></td>
     <td>Integer</td>
     <td>Multiplier used in the inventory ring for each loose ammo pickup.</td>
   </tr>

@@ -12,10 +12,15 @@ typedef enum {
     NUM_WEAPON_TYPES,
 } WEAPON_TYPE;
 
+// A shot is one pull of the trigger, which for the shotgun spends six rounds.
+// The flare counts a flare where a weapon counts a shot.
 typedef struct {
-    int32_t initial_qty;
-    int32_t pickup_qty;
-    int32_t inventory_qty;
+    // What the weapon arrives with the first time Lara picks it up.
+    int32_t initial_shots;
+    // What one box of ammunition is worth.
+    int32_t box_shots;
+    // What a box shows on its inventory icon, which follows nothing else.
+    int32_t box_label_qty;
 } WEAPON_AMMO_INFO;
 
 typedef struct {

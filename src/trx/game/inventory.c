@@ -221,7 +221,7 @@ bool Inv_AddItem(const OBJECT_ID object_id)
     }
 
     const int32_t qty =
-        object_id == O_FLAREBOX_ITEM ? g_Weapons[LGT_FLARE].ammo.pickup_qty : 1;
+        object_id == O_FLAREBOX_ITEM ? g_Weapons[LGT_FLARE].ammo.box_shots : 1;
     for (RING_TYPE ring_type = 0; ring_type < RT_NUMBER_OF; ring_type++) {
         INV_RING_SOURCE *const source = &g_InvRing_Source[ring_type];
         for (int32_t i = 0; i < source->count; i++) {

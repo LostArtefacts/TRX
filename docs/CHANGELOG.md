@@ -17,6 +17,7 @@
 - changed reflections UV mapping to be more correct
 - changed object properties to take effect as soon as they change, rather than only when the item is first set up
 - changed outfits to support joints, up to two braids per outfit, and to allow positional offset adjustments for equipment meshes; refer to migration notes
+- changed the ammunition keys in `weapons.json5` to say what they count; refer to migration notes
 - changed the gameflow's `main_menu_picture` to be optional: a game that names no picture shows its title level behind the menu, and its title script says what plays there
 - changed the `/music` console command to list the available tracks when given no argument, as `/sfx` does; `/music status` now reports what is playing
 - changed the large medipack to answer to "big medipack" as well, so `/give big medi` reaches it

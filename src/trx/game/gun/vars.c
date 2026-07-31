@@ -57,6 +57,18 @@ static void M_ReadXYZ32(JSON_VALUE *const value, XYZ_32 *const target)
     }
 }
 
+// The ammunition keys were renamed to say what they count. The names they had
+// are still read, so a weapons.json5 written for an earlier version goes on
+// working.
+// TODO: remove after 1.14
+static int32_t M_ReadAmmoValue(
+    JSON_OBJECT *const ammo_obj, const char *const key,
+    const char *const legacy_key, const int32_t fallback)
+{
+    return JSON_ObjectGetInt(
+        ammo_obj, key, JSON_ObjectGetInt(ammo_obj, legacy_key, fallback));
+}
+
 static void M_ReadAmmoInfo(JSON_OBJECT *const obj, const int32_t type)
 {
     JSON_OBJECT *const ammo_obj = JSON_ObjectGetObject(obj, "ammo");
@@ -64,12 +76,13 @@ static void M_ReadAmmoInfo(JSON_OBJECT *const obj, const int32_t type)
         return;
     }
 
-    g_Weapons[type].ammo.initial_qty = JSON_ObjectGetInt(
-        ammo_obj, "initial_qty", g_Weapons[type].ammo.initial_qty);
-    g_Weapons[type].ammo.pickup_qty = JSON_ObjectGetInt(
-        ammo_obj, "pickup_qty", g_Weapons[type].ammo.pickup_qty);
-    g_Weapons[type].ammo.inventory_qty = JSON_ObjectGetInt(
-        ammo_obj, "inventory_qty", g_Weapons[type].ammo.inventory_qty);
+    WEAPON_AMMO_INFO *const ammo = &g_Weapons[type].ammo;
+    ammo->initial_shots = M_ReadAmmoValue(
+        ammo_obj, "initial_shots", "initial_qty", ammo->initial_shots);
+    ammo->box_shots =
+        M_ReadAmmoValue(ammo_obj, "box_shots", "pickup_qty", ammo->box_shots);
+    ammo->box_label_qty = M_ReadAmmoValue(
+        ammo_obj, "box_label_qty", "inventory_qty", ammo->box_label_qty);
 }
 
 void Gun_LoadVars(const char *const path)
