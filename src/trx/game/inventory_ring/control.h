@@ -22,3 +22,15 @@ void InvRing_ClearButtonHint(void);
 void InvRing_RemoveAllText(void);
 
 INVENTORY_ITEM *InvRing_GetByObjectID(OBJECT_ID object_id);
+
+// Fills the rings with what Lara is carrying, in the order the entries
+// declare. The option ring is left alone: it holds the menu rather than
+// anything of hers, and InvRing_Open puts it together itself.
+void InvRing_Rebuild(void);
+// Puts one entry in a ring without Lara carrying it, which is what the menu
+// is made of.
+void InvRing_InsertItem(INVENTORY_ITEM *inv_item);
+// Called as something leaves the inventory, while the rings still hold it, so
+// that the cursor does not stay on the position it is about to vacate.
+void InvRing_NotifyRemoved(OBJECT_ID object_id);
+void InvRing_ClearSelection(void);

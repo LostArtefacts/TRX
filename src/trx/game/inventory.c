@@ -1,7 +1,6 @@
 #include <trx/game/inventory.h>
 
-#include <trx/config.h>
-#include <trx/debug.h>
+#include <trx/core/log.h>
 #include <trx/game/game.h>
 #include <trx/game/gun.h>
 #include <trx/game/inventory_ring.h>
@@ -10,32 +9,54 @@
 
 INVENTORY_MODE g_Inv_Mode = INV_TITLE_MODE;
 
-// The ring entry a pickup goes into. pickups.def pairs every gun and every
-// ammunition box with the icon that stands for it, so the weapon needs no
-// table of its own.
-static INVENTORY_ITEM *M_GetInvItem(const OBJECT_ID object_id)
+static INVENTORY_STATE m_State = {};
+
+// The entry a pickup goes into. An object with no icon of its own stands for
+// itself, which is how the stopwatch and the compass are addressed.
+static OBJECT_ID M_GetEntryID(const OBJECT_ID object_id)
 {
-    return InvRing_GetByObjectID(Inv_GetItemOption(object_id));
+    const OBJECT_ID option_id = Inv_GetItemOption(object_id);
+    return option_id == NO_OBJECT ? object_id : option_id;
 }
 
-static void M_IncreaseAmmo(const LARA_GUN_TYPE gun_type, const int32_t qty)
+static INVENTORY_ENTRY *M_FindEntry(const OBJECT_ID object_id)
 {
-    AMMO_INFO *const ammo = Gun_GetAmmoInfo(gun_type);
-    ammo->ammo += qty;
-    CLAMPG(ammo->ammo, MAX_QTY);
-}
-
-static RING_TYPE M_GetRingType(const INVENTORY_ITEM *const inv_item)
-{
-    if (inv_item->inv_pos < 100) {
-        return RT_MAIN;
-    } else if (inv_item->inv_pos < 200) {
-        return RT_KEYS;
-    } else if (inv_item->inv_pos < 300) {
-        return RT_OPTION;
-    } else {
-        return RT_GLOBE_SELECT;
+    for (int32_t i = 0; i < m_State.count; i++) {
+        if (m_State.entries[i].object_id == object_id) {
+            return &m_State.entries[i];
+        }
     }
+    return nullptr;
+}
+
+// Writes what Lara has of one thing, without touching the rings: every caller
+// here rebuilds them once it is done.
+static void M_SetCount(const OBJECT_ID object_id, const int32_t qty)
+{
+    INVENTORY_ENTRY *const entry = M_FindEntry(object_id);
+    if (qty <= 0) {
+        if (entry != nullptr) {
+            const int32_t idx = entry - m_State.entries;
+            m_State.count--;
+            for (int32_t i = idx; i < m_State.count; i++) {
+                m_State.entries[i] = m_State.entries[i + 1];
+            }
+        }
+        return;
+    }
+
+    if (entry != nullptr) {
+        entry->qty = MIN(qty, MAX_QTY);
+        return;
+    }
+    if (m_State.count >= INV_MAX_ENTRIES) {
+        LOG_WARNING("no room in the inventory for object %d", object_id);
+        return;
+    }
+    m_State.entries[m_State.count++] = (INVENTORY_ENTRY) {
+        .object_id = object_id,
+        .qty = MIN(qty, MAX_QTY),
+    };
 }
 
 static void M_AddGun(const LARA_GUN_TYPE gun_type)
@@ -43,11 +64,10 @@ static void M_AddGun(const LARA_GUN_TYPE gun_type)
     const OBJECT_ID gun_object = Gun_GetGunObject(gun_type);
     const OBJECT_ID ammo_object = Gun_GetAmmoObject(gun_type);
     LARA_INFO *const lara = Lara_GetLaraInfo();
-    for (int32_t i = Inv_RequestItem(ammo_object); i > 0; i--) {
-        Inv_RemoveItem(ammo_object);
-    }
-    M_IncreaseAmmo(gun_type, Gun_GetInitialRounds(gun_type));
-    Inv_InsertItem(M_GetInvItem(gun_object));
+    InvRing_NotifyRemoved(M_GetEntryID(ammo_object));
+    M_SetCount(M_GetEntryID(ammo_object), 0);
+    Gun_AddAmmo(gun_type, Gun_GetInitialRounds(gun_type));
+    M_SetCount(M_GetEntryID(gun_object), 1);
     if (lara->last_gun_type == LGT_UNARMED) {
         lara->last_gun_type = gun_type;
     }
@@ -57,19 +77,29 @@ static void M_AddGun(const LARA_GUN_TYPE gun_type)
 static void M_AddAmmo(const LARA_GUN_TYPE gun_type)
 {
     const OBJECT_ID gun_object = Gun_GetGunObject(gun_type);
-    M_IncreaseAmmo(gun_type, Gun_GetRoundsPerBox(gun_type));
+    Gun_AddAmmo(gun_type, Gun_GetRoundsPerBox(gun_type));
     if (!Inv_RequestItem(gun_object)) {
-        Inv_InsertItem(M_GetInvItem(Gun_GetAmmoObject(gun_type)));
+        M_SetCount(M_GetEntryID(Gun_GetAmmoObject(gun_type)), 1);
     }
 }
 
-bool Inv_AddItemNTimes(const OBJECT_ID object_id, const int32_t qty)
+INVENTORY_STATE *Inv_GetState(void)
 {
-    bool result = false;
-    for (int32_t i = 0; i < qty; i++) {
-        result |= Inv_AddItem(object_id);
+    return &m_State;
+}
+
+void Inv_SetState(const INVENTORY_STATE *const state)
+{
+    m_State = *state;
+    // A level that has not loaded the model has nothing to draw the entry
+    // with, and what the rings cannot show she is not given to carry.
+    m_State.count = 0;
+    for (int32_t i = 0; i < state->count; i++) {
+        if (Inv_CanAddItem(state->entries[i].object_id)) {
+            m_State.entries[m_State.count++] = state->entries[i];
+        }
     }
-    return result;
+    InvRing_Rebuild();
 }
 
 OBJECT_ID Inv_GetItemOption(const OBJECT_ID object_id)
@@ -88,98 +118,53 @@ OBJECT_ID Inv_GetItemPickup(const OBJECT_ID object_id)
     return object_id;
 }
 
-void Inv_InsertItem(INVENTORY_ITEM *const inv_item)
+int32_t Inv_RequestItem(const OBJECT_ID object_id)
 {
-    Inv_InsertItemEx(inv_item, 1);
+    const INVENTORY_ENTRY *const entry = M_FindEntry(M_GetEntryID(object_id));
+    return entry == nullptr ? 0 : entry->qty;
 }
 
-void Inv_InsertItemEx(INVENTORY_ITEM *const inv_item, const int32_t qty)
+void Inv_SetItemCount(const OBJECT_ID object_id, const int32_t qty)
 {
-    ASSERT(inv_item != nullptr);
-    INV_RING_SOURCE *const source = &g_InvRing_Source[M_GetRingType(inv_item)];
+    M_SetCount(M_GetEntryID(object_id), qty);
+    InvRing_Rebuild();
+}
 
-    int32_t n;
-    for (n = 0; n < source->count; n++) {
-        if (source->items[n]->inv_pos > inv_item->inv_pos) {
-            break;
-        }
+bool Inv_AddItemNTimes(const OBJECT_ID object_id, const int32_t qty)
+{
+    bool result = false;
+    for (int32_t i = 0; i < qty; i++) {
+        result |= Inv_AddItem(object_id);
     }
-
-    for (int32_t i = source->count; i > n - 1; i--) {
-        source->items[i + 1] = source->items[i];
-        source->qtys[i + 1] = source->qtys[i];
-    }
-    source->items[n] = inv_item;
-    source->qtys[n] = MIN(qty, MAX_QTY);
-    source->count++;
+    return result;
 }
 
 bool Inv_RemoveItem(const OBJECT_ID object_id)
 {
-    const OBJECT_ID inv_object_id = Inv_GetItemOption(object_id);
-    for (RING_TYPE ring_type = 0; ring_type < RT_NUMBER_OF; ring_type++) {
-        INV_RING_SOURCE *const source = &g_InvRing_Source[ring_type];
-        for (int32_t i = 0; i < source->count; i++) {
-            if (source->items[i]->object_id != inv_object_id) {
-                continue;
-            }
-
-            source->qtys[i]--;
-
-            if (g_Config.gameplay.fix_item_duplication_glitch) {
-                for (int32_t j = i; j < source->count; j++) {
-                    if (j == source->current) {
-                        source->current = 0;
-                    }
-                }
-            }
-
-            if (source->qtys[i] == 0) {
-                source->count--;
-                for (int32_t j = i; j < source->count; j++) {
-                    source->items[j] = source->items[j + 1];
-                    source->qtys[j] = source->qtys[j + 1];
-                }
-            }
-            return true;
-        }
+    const OBJECT_ID entry_id = M_GetEntryID(object_id);
+    const INVENTORY_ENTRY *const entry = M_FindEntry(entry_id);
+    if (entry == nullptr) {
+        return false;
     }
-    return false;
-}
 
-int32_t Inv_RequestItem(const OBJECT_ID object_id)
-{
-    const OBJECT_ID inv_object_id = Inv_GetItemOption(object_id);
-    for (RING_TYPE ring_type = 0; ring_type < RT_NUMBER_OF; ring_type++) {
-        INV_RING_SOURCE *const source = &g_InvRing_Source[ring_type];
-        for (int32_t i = 0; i < source->count; i++) {
-            if (source->items[i] != nullptr
-                && source->items[i]->object_id == inv_object_id) {
-                return source->qtys[i];
-            }
-        }
-    }
-    return 0;
-}
-
-void Inv_ClearSelection(void)
-{
-    g_InvRing_Source[RT_MAIN].current = 0;
-    g_InvRing_Source[RT_KEYS].current = 0;
+    // While the rings still hold it, so that the cursor can be moved off the
+    // position that is about to close up.
+    InvRing_NotifyRemoved(entry_id);
+    M_SetCount(entry_id, entry->qty - 1);
+    InvRing_Rebuild();
+    return true;
 }
 
 void Inv_RemoveAllItems(void)
 {
-    g_InvRing_Source[RT_MAIN].count = 0;
-    g_InvRing_Source[RT_KEYS].count = 0;
-    g_InvRing_Source[RT_GLOBE_SELECT].count = 0;
+    m_State.count = 0;
 
-    // Reset main ring
     Inv_AddItem(O_STOPWATCH_OPTION);
     Inv_AddItem(O_COMPASS_OPTION);
     Inv_AddItem(O_GLOBE_SELECT_OPTION);
 
-    Inv_ClearSelection();
+    InvRing_Rebuild();
+    InvRing_ClearSelection();
 }
 
 // What Inv_AddItem needs before it can take anything: the level has to carry
@@ -222,52 +207,47 @@ bool Inv_AddItem(const OBJECT_ID object_id)
 
     const int32_t qty =
         object_id == O_FLAREBOX_ITEM ? g_Weapons[LGT_FLARE].ammo.box_shots : 1;
-    for (RING_TYPE ring_type = 0; ring_type < RT_NUMBER_OF; ring_type++) {
-        INV_RING_SOURCE *const source = &g_InvRing_Source[ring_type];
-        for (int32_t i = 0; i < source->count; i++) {
-            if (source->items[i]->object_id == inv_object_id) {
-                if (Object_IsType(pickup_object_id, g_GunAmmoObjects)) {
-                    const LARA_GUN_TYPE gun_type =
-                        Gun_GetType(Object_GetCognateInverse(
-                            pickup_object_id, g_GunAmmoObjectMap));
-                    M_IncreaseAmmo(gun_type, Gun_GetRoundsPerBox(gun_type));
-                }
-                source->qtys[i] += qty;
-                CLAMPG(source->qtys[i], MAX_QTY);
-                return true;
-            }
+    const OBJECT_ID entry_id = M_GetEntryID(object_id);
+    const INVENTORY_ENTRY *const entry = M_FindEntry(entry_id);
+    if (entry != nullptr) {
+        if (Object_IsType(pickup_object_id, g_GunAmmoObjects)) {
+            const LARA_GUN_TYPE gun_type = Gun_GetType(
+                Object_GetCognateInverse(pickup_object_id, g_GunAmmoObjectMap));
+            Gun_AddAmmo(gun_type, Gun_GetRoundsPerBox(gun_type));
         }
+        M_SetCount(entry_id, entry->qty + qty);
+        InvRing_Rebuild();
+        return true;
     }
 
     // Pistols
     if (inv_object_id == O_PISTOL_OPTION) {
-        Inv_InsertItem(InvRing_GetByObjectID(O_PISTOL_OPTION));
+        M_SetCount(O_PISTOL_OPTION, 1);
         if (lara->last_gun_type == LGT_UNARMED) {
             lara->last_gun_type = LGT_PISTOLS;
         }
+        InvRing_Rebuild();
         return true;
     }
 
     // Other guns
     if (Object_IsType(pickup_object_id, g_GunObjects)) {
         M_AddGun(Gun_GetType(pickup_object_id));
+        InvRing_Rebuild();
         return true;
     }
     if (Object_IsType(pickup_object_id, g_GunAmmoObjects)) {
         M_AddAmmo(Gun_GetType(
             Object_GetCognateInverse(pickup_object_id, g_GunAmmoObjectMap)));
+        InvRing_Rebuild();
         return true;
     }
 
     // Other cases
-    for (int32_t i = 0; i < g_InvRing_Items->count; i++) {
-        INVENTORY_ITEM *const inv_item =
-            *(INVENTORY_ITEM **)Vector_Get(g_InvRing_Items, i);
-        if (inv_item->object_id == object_id
-            || inv_item->object_id == inv_object_id) {
-            Inv_InsertItemEx(inv_item, qty);
-            return true;
-        }
+    if (InvRing_GetByObjectID(entry_id) != nullptr) {
+        M_SetCount(entry_id, qty);
+        InvRing_Rebuild();
+        return true;
     }
     return false;
 }
