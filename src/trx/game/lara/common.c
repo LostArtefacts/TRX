@@ -208,121 +208,72 @@ void Lara_InitialiseInventory(const GF_LEVEL *const level)
         if (resume->flags.has_magnums) {
             Inv_AddItem(O_MAGNUM_ITEM);
             Item_GlobalReplace(O_MAGNUM_ITEM, O_MAGNUM_AMMO_ITEM);
-        } else {
-            Inv_AddItemNTimes(
-                O_MAGNUM_AMMO_ITEM,
-                resume->magnum_ammo / Gun_GetRoundsPerBox(LGT_MAGNUMS));
         }
         Inv_SetAmmo(LGT_MAGNUMS, resume->magnum_ammo);
 
         if (resume->flags.has_autos) {
             Inv_AddItem(O_AUTOS_ITEM);
             Item_GlobalReplace(O_AUTOS_ITEM, O_AUTOS_AMMO_ITEM);
-        } else {
-            Inv_AddItemNTimes(
-                O_AUTOS_AMMO_ITEM,
-                resume->autos_ammo / Gun_GetRoundsPerBox(LGT_AUTOS));
         }
         Inv_SetAmmo(LGT_AUTOS, resume->autos_ammo);
 
         if (resume->flags.has_desert_eagle) {
             Inv_AddItem(O_DESERT_EAGLE_ITEM);
             Item_GlobalReplace(O_DESERT_EAGLE_ITEM, O_DESERT_EAGLE_AMMO_ITEM);
-        } else {
-            Inv_AddItemNTimes(
-                O_DESERT_EAGLE_AMMO_ITEM,
-                resume->desert_eagle_ammo
-                    / Gun_GetRoundsPerBox(LGT_DESERT_EAGLE));
         }
         Inv_SetAmmo(LGT_DESERT_EAGLE, resume->desert_eagle_ammo);
 
         if (resume->flags.has_uzis) {
             Inv_AddItem(O_UZI_ITEM);
             Item_GlobalReplace(O_UZI_ITEM, O_UZI_AMMO_ITEM);
-        } else {
-            Inv_AddItemNTimes(
-                O_UZI_AMMO_ITEM,
-                resume->uzi_ammo / Gun_GetRoundsPerBox(LGT_UZIS));
         }
         Inv_SetAmmo(LGT_UZIS, resume->uzi_ammo);
 
         if (resume->flags.has_shotgun) {
             Inv_AddItem(O_SHOTGUN_ITEM);
             Item_GlobalReplace(O_SHOTGUN_ITEM, O_SHOTGUN_AMMO_ITEM);
-        } else {
-            Inv_AddItemNTimes(
-                O_SHOTGUN_AMMO_ITEM,
-                resume->shotgun_ammo / Gun_GetRoundsPerBox(LGT_SHOTGUN));
         }
         Inv_SetAmmo(LGT_SHOTGUN, resume->shotgun_ammo);
 
         if (resume->flags.has_m16) {
             Inv_AddItem(O_M16_ITEM);
             Item_GlobalReplace(O_M16_ITEM, O_M16_AMMO_ITEM);
-        } else {
-            Inv_AddItemNTimes(
-                O_M16_AMMO_ITEM,
-                resume->m16_ammo / Gun_GetRoundsPerBox(LGT_M16));
         }
         Inv_SetAmmo(LGT_M16, resume->m16_ammo);
 
         if (resume->flags.has_mp5) {
             Inv_AddItem(O_MP5_ITEM);
             Item_GlobalReplace(O_MP5_ITEM, O_MP5_AMMO_ITEM);
-        } else {
-            Inv_AddItemNTimes(
-                O_MP5_AMMO_ITEM,
-                resume->mp5_ammo / Gun_GetRoundsPerBox(LGT_MP5));
         }
         Inv_SetAmmo(LGT_MP5, resume->mp5_ammo);
 
         if (resume->flags.has_grenade) {
             Inv_AddItem(O_GRENADE_GUN_ITEM);
             Item_GlobalReplace(O_GRENADE_GUN_ITEM, O_GRENADE_AMMO_ITEM);
-        } else {
-            Inv_AddItemNTimes(
-                O_GRENADE_AMMO_ITEM,
-                resume->grenade_ammo / Gun_GetRoundsPerBox(LGT_GRENADE));
         }
         Inv_SetAmmo(LGT_GRENADE, resume->grenade_ammo);
 
         if (resume->flags.has_rocket) {
             Inv_AddItem(O_ROCKET_GUN_ITEM);
             Item_GlobalReplace(O_ROCKET_GUN_ITEM, O_ROCKET_AMMO_ITEM);
-        } else {
-            Inv_AddItemNTimes(
-                O_ROCKET_AMMO_ITEM,
-                resume->rocket_ammo / Gun_GetRoundsPerBox(LGT_ROCKET));
         }
         Inv_SetAmmo(LGT_ROCKET, resume->rocket_ammo);
 
         if (resume->flags.has_harpoon) {
             Inv_AddItem(O_HARPOON_ITEM);
             Item_GlobalReplace(O_HARPOON_ITEM, O_HARPOON_AMMO_ITEM);
-        } else {
-            Inv_AddItemNTimes(
-                O_HARPOON_AMMO_ITEM,
-                resume->harpoon_ammo / Gun_GetRoundsPerBox(LGT_HARPOON));
         }
         Inv_SetAmmo(LGT_HARPOON, resume->harpoon_ammo);
 
         if (resume->flags.has_crossbow) {
             Inv_AddItem(O_CROSSBOW_ITEM);
             Item_GlobalReplace(O_CROSSBOW_ITEM, O_CROSSBOW_AMMO_1_ITEM);
-        } else {
-            Inv_AddItemNTimes(
-                O_CROSSBOW_AMMO_1_ITEM,
-                resume->crossbow_ammo / Gun_GetRoundsPerBox(LGT_CROSSBOW));
         }
         Inv_SetAmmo(LGT_CROSSBOW, resume->crossbow_ammo);
 
         if (resume->flags.has_revolver) {
             Inv_AddItem(O_REVOLVER_ITEM);
             Item_GlobalReplace(O_REVOLVER_ITEM, O_REVOLVER_AMMO_ITEM);
-        } else {
-            Inv_AddItemNTimes(
-                O_REVOLVER_AMMO_ITEM,
-                resume->revolver_ammo / Gun_GetRoundsPerBox(LGT_REVOLVER));
         }
         Inv_SetAmmo(LGT_REVOLVER, resume->revolver_ammo);
 
