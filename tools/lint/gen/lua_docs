@@ -32,6 +32,14 @@ DOCS_DIR = ROOT / "docs/trx/lua/reference"
 
 INDENT = "    "
 
+# How a declared operator reads in a script, by the metamethod it is declared
+# under. The name of the type stands in for either operand.
+OPERATORS = {
+    "band": "{0} & {0}",
+    "bor": "{0} | {0}",
+    "bnot": "~{0}",
+}
+
 
 def signature(path: str, params: list[dict] | None) -> str:
     parts = [
@@ -275,14 +283,15 @@ def render_type(spec: dict) -> list[str]:
     if spec.get("description"):
         out.extend(render_prose(spec["description"], INDENT))
         out.append("")
-    out.append(
-        f"{INDENT}Handles are live references: if the underlying object is destroyed,"
-    )
-    out.append(
-        f"{INDENT}using the handle raises an error rather than silently reading an"
-    )
-    out.append(f"{INDENT}unrelated one.")
-    out.append("")
+    if spec.get("handle"):
+        out.append(
+            f"{INDENT}Handles are live references: if the underlying object is destroyed,"
+        )
+        out.append(
+            f"{INDENT}using the handle raises an error rather than silently reading an"
+        )
+        out.append(f"{INDENT}unrelated one.")
+        out.append("")
 
     if spec.get("fields"):
         out.append(f"{INDENT}Properties:")
@@ -304,6 +313,19 @@ def render_type(spec: dict) -> list[str]:
                 render_lead(
                     f"{INDENT}- **`{ext['name']}`**: {ext['type']}. ",
                     ext.get("description") or "",
+                    f"{INDENT}  ",
+                )
+            )
+        out.append("")
+
+    if spec.get("operators"):
+        name = spec["path"].rsplit(".", 1)[-1].lower()
+        out.append(f"{INDENT}Operators:")
+        for operator in spec["operators"]:
+            out.extend(
+                render_lead(
+                    f"{INDENT}- **`{OPERATORS[operator['name']].format(name)}`**. ",
+                    operator.get("description") or "",
                     f"{INDENT}  ",
                 )
             )
@@ -451,7 +473,7 @@ def undocumented(api: dict) -> list[str]:
             if not value.get("description"):
                 out.append(f"{enum['path']}.{value['name']}")
     for spec in api.get("types", []):
-        for kind in ("fields", "methods", "extensions"):
+        for kind in ("fields", "methods", "extensions", "operators"):
             for member in spec.get(kind) or []:
                 if not member.get("description"):
                     out.append(f"{spec['path']}.{member['name']}")

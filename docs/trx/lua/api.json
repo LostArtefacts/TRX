@@ -5473,7 +5473,9 @@
           "writable": false
         }
       ],
+      "handle": true,
       "methods": [],
+      "operators": [],
       "path": "game.Level"
     },
     {
@@ -5494,13 +5496,16 @@
           "writable": false
         }
       ],
+      "handle": true,
       "methods": [],
+      "operators": [],
       "path": "inventory.Entry"
     },
     {
       "description": "An inventory: what is in it, and how much ammunition goes with it.\n\n`trx.inventory` is the one Lara is carrying. A level's, reached as\n`trx.game.Level.inventory`, is what she will arrive there with, and holds only\nwhat travels between levels - a key or a puzzle piece belongs to the level it\nwas found in.\n\nGiving something to Lara's does what walking over it would: a weapon arrives\nwith its rounds, her meshes change, and the level's own guns turn into\nammunition for it. Giving it to a level's only says what she will arrive\ncarrying.",
       "extensions": [],
       "fields": [],
+      "handle": true,
       "methods": [
         {
           "description": "Whether `give` would do anything in the level being played. The level has to\ncarry the inventory model, which is not the same as the pickup being in it: a\nlevel with no shotgun lying about still draws one in the ring, which is what\nlets a cheat hand one over.\n\nThis asks about the level being played whichever inventory it is called on.",
@@ -5718,6 +5723,7 @@
           }
         }
       ],
+      "operators": [],
       "path": "inventory.Inventory"
     },
     {
@@ -5940,6 +5946,7 @@
           "writable": false
         }
       ],
+      "handle": true,
       "methods": [
         {
           "description": "Brings the item to life, exactly as tripping a trigger on it would: its control routine starts running, and a creature also gets its AI, without which it would stand there and ignore Lara.\n\nObjects with no control routine cannot be activated, and an item that is already active is left alone.",
@@ -6392,6 +6399,7 @@
           ]
         }
       ],
+      "operators": [],
       "path": "items.Item"
     },
     {
@@ -6511,7 +6519,9 @@
           "writable": false
         }
       ],
+      "handle": true,
       "methods": [],
+      "operators": [],
       "path": "lara.Lara"
     },
     {
@@ -6562,7 +6572,9 @@
           "writable": false
         }
       ],
+      "handle": true,
       "methods": [],
+      "operators": [],
       "path": "mod.Mod"
     },
     {
@@ -6589,6 +6601,7 @@
           "writable": false
         }
       ],
+      "handle": true,
       "methods": [
         {
           "description": "Whether the slot is still playing. A stream that has finished, or been stopped, leaves its handle stale.",
@@ -6625,6 +6638,7 @@
           "name": "unpause"
         }
       ],
+      "operators": [],
       "path": "music.Stream"
     },
     {
@@ -6638,6 +6652,7 @@
           "writable": false
         }
       ],
+      "handle": true,
       "methods": [
         {
           "description": "Whether the loaded level still carries this track.",
@@ -6673,6 +6688,7 @@
           }
         }
       ],
+      "operators": [],
       "path": "music.Track"
     },
     {
@@ -6750,6 +6766,7 @@
           "writable": true
         }
       ],
+      "handle": true,
       "methods": [
         {
           "description": "The compile-time English names, which a lookup falls back on before a language file is loaded. Prefer `object.default_names`.",
@@ -6801,6 +6818,7 @@
           ]
         }
       ],
+      "operators": [],
       "path": "objects.Object"
     },
     {
@@ -6861,6 +6879,7 @@
           "writable": true
         }
       ],
+      "handle": true,
       "methods": [
         {
           "description": "As `trx.rooms.floor_height`, looking from this room.",
@@ -6951,6 +6970,7 @@
           }
         }
       ],
+      "operators": [],
       "path": "rooms.Room"
     },
     {
@@ -6988,6 +7008,7 @@
           "writable": false
         }
       ],
+      "handle": true,
       "methods": [
         {
           "description": "Whether the loaded level still carries this sample.",
@@ -7018,6 +7039,7 @@
           "name": "stop"
         }
       ],
+      "operators": [],
       "path": "sound.Sample"
     },
     {
@@ -7031,6 +7053,7 @@
           "writable": false
         }
       ],
+      "handle": true,
       "methods": [
         {
           "description": "Whether this voice is still playing.",
@@ -7052,6 +7075,7 @@
           "name": "unpause"
         }
       ],
+      "operators": [],
       "path": "sound.Stream"
     },
     {
@@ -7083,7 +7107,9 @@
           "writable": false
         }
       ],
+      "handle": true,
       "methods": [],
+      "operators": [],
       "path": "stats.Category"
     },
     {
@@ -7163,6 +7189,7 @@
           "writable": true
         }
       ],
+      "handle": true,
       "methods": [
         {
           "description": "Marks a secret as found, as walking into its trigger would.",
@@ -7209,6 +7236,7 @@
           }
         }
       ],
+      "operators": [],
       "path": "stats.Stats"
     }
   ]
