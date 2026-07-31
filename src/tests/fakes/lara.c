@@ -182,7 +182,7 @@ bool Inv_RemoveItem(const OBJECT_ID object_id)
     return true;
 }
 
-int32_t Inv_RequestItem(const OBJECT_ID object_id)
+int32_t Inv_GetItemCount(const OBJECT_ID object_id)
 {
     // Lara's pistols are not in the backpack the fake models; the surface asks
     // for them by way of has_pistol_weapon, which is what m_HasPistols answers.

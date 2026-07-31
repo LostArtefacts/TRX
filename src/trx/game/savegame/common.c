@@ -700,65 +700,65 @@ void Savegame_PersistGameToCurrentInfo(const GF_LEVEL *const level)
         resume->lara_hitpoints = lara_item->hit_points;
     }
     resume->burning = g_TRVersion >= 4 && lara->burn;
-    resume->small_medipacks = Inv_RequestItem(O_SMALL_MEDIPACK_ITEM);
-    resume->large_medipacks = Inv_RequestItem(O_LARGE_MEDIPACK_ITEM);
+    resume->small_medipacks = Inv_GetItemCount(O_SMALL_MEDIPACK_ITEM);
+    resume->large_medipacks = Inv_GetItemCount(O_LARGE_MEDIPACK_ITEM);
 
     resume->pistol_ammo = 1000;
-    resume->flags.has_pistols = Inv_RequestItem(O_PISTOL_ITEM) > 0;
+    resume->flags.has_pistols = Inv_GetItemCount(O_PISTOL_ITEM) > 0;
 
-    resume->flags.has_shotgun = Inv_RequestItem(O_SHOTGUN_ITEM) > 0;
+    resume->flags.has_shotgun = Inv_GetItemCount(O_SHOTGUN_ITEM) > 0;
     resume->shotgun_ammo = Inv_GetAmmo(LGT_SHOTGUN);
 
-    resume->flags.has_magnums = Inv_RequestItem(O_MAGNUM_ITEM) > 0;
+    resume->flags.has_magnums = Inv_GetItemCount(O_MAGNUM_ITEM) > 0;
     resume->magnum_ammo = Inv_GetAmmo(LGT_MAGNUMS);
 
-    resume->flags.has_autos = Inv_RequestItem(O_AUTOS_ITEM) > 0;
+    resume->flags.has_autos = Inv_GetItemCount(O_AUTOS_ITEM) > 0;
     resume->autos_ammo = Inv_GetAmmo(LGT_AUTOS);
 
-    resume->flags.has_desert_eagle = Inv_RequestItem(O_DESERT_EAGLE_ITEM) > 0;
+    resume->flags.has_desert_eagle = Inv_GetItemCount(O_DESERT_EAGLE_ITEM) > 0;
     resume->desert_eagle_ammo = Inv_GetAmmo(LGT_DESERT_EAGLE);
 
-    resume->flags.has_uzis = Inv_RequestItem(O_UZI_ITEM) > 0;
+    resume->flags.has_uzis = Inv_GetItemCount(O_UZI_ITEM) > 0;
     resume->uzi_ammo = Inv_GetAmmo(LGT_UZIS);
 
-    resume->flags.has_m16 = Inv_RequestItem(O_M16_ITEM) > 0;
+    resume->flags.has_m16 = Inv_GetItemCount(O_M16_ITEM) > 0;
     resume->m16_ammo = Inv_GetAmmo(LGT_M16);
 
-    resume->flags.has_mp5 = Inv_RequestItem(O_MP5_ITEM) > 0;
+    resume->flags.has_mp5 = Inv_GetItemCount(O_MP5_ITEM) > 0;
     resume->mp5_ammo = Inv_GetAmmo(LGT_MP5);
 
-    resume->flags.has_harpoon = Inv_RequestItem(O_HARPOON_ITEM) > 0;
+    resume->flags.has_harpoon = Inv_GetItemCount(O_HARPOON_ITEM) > 0;
     resume->harpoon_ammo = Inv_GetAmmo(LGT_HARPOON);
 
-    resume->flags.has_grenade = Inv_RequestItem(O_GRENADE_GUN_ITEM) > 0;
+    resume->flags.has_grenade = Inv_GetItemCount(O_GRENADE_GUN_ITEM) > 0;
     resume->grenade_ammo = Inv_GetAmmo(LGT_GRENADE);
 
-    resume->flags.has_rocket = Inv_RequestItem(O_ROCKET_GUN_ITEM) > 0;
+    resume->flags.has_rocket = Inv_GetItemCount(O_ROCKET_GUN_ITEM) > 0;
     resume->rocket_ammo = Inv_GetAmmo(LGT_ROCKET);
 
-    resume->flags.has_crossbow = Inv_RequestItem(O_CROSSBOW_ITEM) > 0;
+    resume->flags.has_crossbow = Inv_GetItemCount(O_CROSSBOW_ITEM) > 0;
     resume->crossbow_ammo = Inv_GetAmmo(LGT_CROSSBOW);
 
-    resume->flags.has_revolver = Inv_RequestItem(O_REVOLVER_ITEM) > 0;
+    resume->flags.has_revolver = Inv_GetItemCount(O_REVOLVER_ITEM) > 0;
     resume->revolver_ammo = Inv_GetAmmo(LGT_REVOLVER);
 
-    resume->flags.has_binoculars = Inv_RequestItem(O_BINOCULARS_ITEM) > 0;
-    resume->flares = Inv_RequestItem(O_FLARE_ITEM);
-    resume->num_scions = Inv_RequestItem(O_SCION_ITEM_1);
-    resume->num_quest_item_1 = Inv_RequestItem(O_QUEST_ITEM_1);
-    resume->num_quest_item_2 = Inv_RequestItem(O_QUEST_ITEM_2);
-    resume->num_quest_item_3 = Inv_RequestItem(O_QUEST_ITEM_3);
-    resume->num_quest_item_4 = Inv_RequestItem(O_QUEST_ITEM_4);
-    resume->num_quest_item_5 = Inv_RequestItem(O_QUEST_ITEM_5);
-    resume->num_quest_item_6 = Inv_RequestItem(O_QUEST_ITEM_6);
-    resume->num_save_crystals = Inv_RequestItem(O_SAVE_CRYSTAL_ITEM);
+    resume->flags.has_binoculars = Inv_GetItemCount(O_BINOCULARS_ITEM) > 0;
+    resume->flares = Inv_GetItemCount(O_FLARE_ITEM);
+    resume->num_scions = Inv_GetItemCount(O_SCION_ITEM_1);
+    resume->num_quest_item_1 = Inv_GetItemCount(O_QUEST_ITEM_1);
+    resume->num_quest_item_2 = Inv_GetItemCount(O_QUEST_ITEM_2);
+    resume->num_quest_item_3 = Inv_GetItemCount(O_QUEST_ITEM_3);
+    resume->num_quest_item_4 = Inv_GetItemCount(O_QUEST_ITEM_4);
+    resume->num_quest_item_5 = Inv_GetItemCount(O_QUEST_ITEM_5);
+    resume->num_quest_item_6 = Inv_GetItemCount(O_QUEST_ITEM_6);
+    resume->num_save_crystals = Inv_GetItemCount(O_SAVE_CRYSTAL_ITEM);
 
     resume->equipped_gun_type = lara->last_gun_type;
     resume->holsters_gun_type = lara->holsters_gun_type;
     resume->back_gun_type = lara->back_gun_type;
     if (resume->back_gun_type == LGT_UNARMED
         && Gun_IsRifleType(resume->equipped_gun_type)
-        && Inv_RequestItem(Gun_GetGunObject(resume->equipped_gun_type)) != 0) {
+        && Inv_GetItemCount(Gun_GetGunObject(resume->equipped_gun_type)) != 0) {
         // If a rifle is currently drawn, Lara's back mesh is temporarily
         // unarmed. Preserve the preferred rifle for next-level mesh restore.
         resume->back_gun_type = resume->equipped_gun_type;

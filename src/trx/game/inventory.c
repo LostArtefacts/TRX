@@ -76,7 +76,7 @@ static void M_AddAmmo(const LARA_GUN_TYPE gun_type)
 {
     const OBJECT_ID gun_object = Gun_GetGunObject(gun_type);
     Inv_AddAmmo(gun_type, Gun_GetRoundsPerBox(gun_type));
-    if (!Inv_RequestItem(gun_object)) {
+    if (!Inv_GetItemCount(gun_object)) {
         M_SetCount(M_GetEntryID(Gun_GetAmmoObject(gun_type)), 1);
     }
 }
@@ -158,7 +158,7 @@ OBJECT_ID Inv_GetItemPickup(const OBJECT_ID object_id)
     return object_id;
 }
 
-int32_t Inv_RequestItem(const OBJECT_ID object_id)
+int32_t Inv_GetItemCount(const OBJECT_ID object_id)
 {
     const INVENTORY_ENTRY *const entry = M_FindEntry(M_GetEntryID(object_id));
     return entry == nullptr ? 0 : entry->qty;
@@ -227,7 +227,7 @@ bool Inv_AddItem(const OBJECT_ID object_id)
     }
 
     if (inv_object_id == O_BINOCULARS_OPTION
-        && Inv_RequestItem(O_BINOCULARS_ITEM) > 0) {
+        && Inv_GetItemCount(O_BINOCULARS_ITEM) > 0) {
         return false;
     }
 

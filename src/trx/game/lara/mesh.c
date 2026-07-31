@@ -18,17 +18,17 @@ static LARA_GUN_TYPE M_DetermineHolsterGun(void)
         if (lara_info->gun_type != LGT_UNARMED
             && !Gun_IsRifleType(lara_info->gun_type)) {
             return lara_info->gun_type;
-        } else if (Inv_RequestItem(O_PISTOL_ITEM)) {
+        } else if (Inv_GetItemCount(O_PISTOL_ITEM)) {
             return LGT_PISTOLS;
-        } else if (Inv_RequestItem(O_MAGNUM_ITEM)) {
+        } else if (Inv_GetItemCount(O_MAGNUM_ITEM)) {
             return LGT_MAGNUMS;
-        } else if (Inv_RequestItem(O_AUTOS_ITEM)) {
+        } else if (Inv_GetItemCount(O_AUTOS_ITEM)) {
             return LGT_AUTOS;
-        } else if (Inv_RequestItem(O_DESERT_EAGLE_ITEM)) {
+        } else if (Inv_GetItemCount(O_DESERT_EAGLE_ITEM)) {
             return LGT_DESERT_EAGLE;
-        } else if (Inv_RequestItem(O_UZI_ITEM)) {
+        } else if (Inv_GetItemCount(O_UZI_ITEM)) {
             return LGT_UZIS;
-        } else if (Inv_RequestItem(O_REVOLVER_ITEM)) {
+        } else if (Inv_GetItemCount(O_REVOLVER_ITEM)) {
             return LGT_REVOLVER;
         }
     }
@@ -42,19 +42,19 @@ static LARA_GUN_TYPE M_DetermineBackGun(void)
         return lara_info->back_gun_type;
     }
 
-    if (Inv_RequestItem(O_SHOTGUN_ITEM)) {
+    if (Inv_GetItemCount(O_SHOTGUN_ITEM)) {
         return LGT_SHOTGUN;
-    } else if (Inv_RequestItem(O_M16_ITEM)) {
+    } else if (Inv_GetItemCount(O_M16_ITEM)) {
         return LGT_M16;
-    } else if (Inv_RequestItem(O_MP5_ITEM)) {
+    } else if (Inv_GetItemCount(O_MP5_ITEM)) {
         return LGT_MP5;
-    } else if (Inv_RequestItem(O_GRENADE_GUN_ITEM)) {
+    } else if (Inv_GetItemCount(O_GRENADE_GUN_ITEM)) {
         return LGT_GRENADE;
-    } else if (Inv_RequestItem(O_ROCKET_GUN_ITEM)) {
+    } else if (Inv_GetItemCount(O_ROCKET_GUN_ITEM)) {
         return LGT_ROCKET;
-    } else if (Inv_RequestItem(O_HARPOON_ITEM)) {
+    } else if (Inv_GetItemCount(O_HARPOON_ITEM)) {
         return LGT_HARPOON;
-    } else if (Inv_RequestItem(O_CROSSBOW_ITEM)) {
+    } else if (Inv_GetItemCount(O_CROSSBOW_ITEM)) {
         return LGT_CROSSBOW;
     }
     return LGT_UNARMED;
@@ -68,7 +68,7 @@ static void M_EnsureDefaultDualPistolMesh(const LARA_GUN_TYPE holster_gun)
 
     for (LARA_GUN_TYPE gun = 0; gun < NUM_WEAPONS; gun++) {
         if (g_Weapons[gun].type == WEAPON_TYPE_DUAL_PISTOLS
-            && Inv_RequestItem(Gun_GetGunObject(gun)) > 0) {
+            && Inv_GetItemCount(Gun_GetGunObject(gun)) > 0) {
             Lara_Skin_SetGunEquipment(LM_THIGH_L, gun);
             break;
         }
