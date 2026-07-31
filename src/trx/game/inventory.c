@@ -388,7 +388,7 @@ bool Inv_AddItem(const OBJECT_ID object_id)
     }
 
     // The pistols come with the supply that never runs out, as every other
-    // weapon comes with its first clip.
+    // weapon arrives with the rounds it is picked up with.
     if (inv_object_id == O_PISTOL_OPTION) {
         M_SetCount(&m_State, O_PISTOL_OPTION, 1);
         Inv_SetAmmo(LGT_PISTOLS, 1000);
