@@ -239,7 +239,7 @@ def render_enum(spec: dict) -> list[str]:
             head += f" - {count} names"
         out = [head, ""]
         if spec.get("description"):
-            out.append(f"{INDENT}{spec['description']}")
+            out.extend(render_prose(spec["description"], INDENT))
             out.append("")
         out.extend(render_examples(spec.get("examples"), INDENT))
         out.extend(render_enum_names(spec.get("names"), INDENT))
@@ -248,7 +248,7 @@ def render_enum(spec: dict) -> list[str]:
 
     out = [f"- [lua]`trx.{spec['path']}`", ""]
     if spec.get("description"):
-        out.append(f"{INDENT}{spec['description']}")
+        out.extend(render_prose(spec["description"], INDENT))
         out.append("")
     for value in spec.get("values") or []:
         out.append(f"{INDENT}- `trx.{spec['path']}.{value['name']}` = `{value['value']}`  ")
@@ -273,7 +273,7 @@ def render_property(spec: dict) -> list[str]:
 def render_type(spec: dict) -> list[str]:
     out = [f"- [lua]`trx.{spec['path']}`", ""]
     if spec.get("description"):
-        out.append(f"{INDENT}{spec['description']}")
+        out.extend(render_prose(spec["description"], INDENT))
         out.append("")
     out.append(
         f"{INDENT}Handles are live references: if the underlying object is destroyed,"
