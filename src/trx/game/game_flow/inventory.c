@@ -131,8 +131,8 @@ static void M_ModifyResumeInfo_GunOrAmmo(
 {
     const OBJECT_ID gun_object_id = Gun_GetGunObject(gun_type);
     const OBJECT_ID ammo_object_id = Gun_GetAmmoObject(gun_type);
-    const int32_t ammo_pickup_qty = Gun_GetAmmoPickupQuantity(gun_type);
-    const int32_t ammo_initial_qty = Gun_GetAmmoInitialQuantity(gun_type);
+    const int32_t ammo_pickup_qty = Gun_GetRoundsPerBox(gun_type);
+    const int32_t ammo_initial_qty = Gun_GetInitialRounds(gun_type);
 
     if (!M_CanHaveItem(gun_object_id) || !M_CanHaveItem(ammo_object_id)) {
         return;
@@ -168,8 +168,8 @@ static void M_ModifyInventory_GunOrAmmo(
 {
     const OBJECT_ID gun_object_id = Gun_GetGunObject(gun_type);
     const OBJECT_ID ammo_object_id = Gun_GetAmmoObject(gun_type);
-    const int32_t ammo_pickup_qty = Gun_GetAmmoPickupQuantity(gun_type);
-    const int32_t ammo_initial_qty = Gun_GetAmmoInitialQuantity(gun_type);
+    const int32_t ammo_pickup_qty = Gun_GetRoundsPerBox(gun_type);
+    const int32_t ammo_initial_qty = Gun_GetInitialRounds(gun_type);
     AMMO_INFO *const ammo_info = Gun_GetAmmoInfo(gun_type);
 
     if (!M_CanHaveItem(gun_object_id) || !M_CanHaveItem(ammo_object_id)) {

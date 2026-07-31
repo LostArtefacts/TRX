@@ -101,7 +101,7 @@ static void M_RingNotActive(
     case O_SHOTGUN_OPTION:
         M_ShowAmmoQuantity(
             g_TRVersion == 1 ? "%5d \\{ammo shotgun}" : "%5d",
-            lara->shotgun_ammo.ammo / Gun_GetAmmoClipCount(LGT_SHOTGUN));
+            lara->shotgun_ammo.ammo / Gun_GetRoundsPerShot(LGT_SHOTGUN));
         break;
     case O_MAGNUM_OPTION:
         M_ShowAmmoQuantity(

@@ -16,10 +16,12 @@ OBJECT_ID Gun_GetWeaponAnim(LARA_GUN_TYPE gun_type);
 LARA_GUN_TYPE Gun_GetType(OBJECT_ID obj_id);
 OBJECT_ID Gun_GetGunObject(LARA_GUN_TYPE gun_type);
 OBJECT_ID Gun_GetAmmoObject(LARA_GUN_TYPE gun_type);
-int32_t Gun_GetAmmoInitialQuantity(LARA_GUN_TYPE gun_type);
-int32_t Gun_GetAmmoPickupQuantity(LARA_GUN_TYPE gun_type);
+// Ammunition is counted in rounds, one of which is what a single shot at a
+// target spends. The shotgun fires six of them at once.
+int32_t Gun_GetInitialRounds(LARA_GUN_TYPE gun_type);
+int32_t Gun_GetRoundsPerBox(LARA_GUN_TYPE gun_type);
+int32_t Gun_GetRoundsPerShot(LARA_GUN_TYPE gun_type);
 int32_t Gun_GetAmmoInventoryQuantity(LARA_GUN_TYPE gun_type);
-int32_t Gun_GetAmmoClipCount(LARA_GUN_TYPE gun_type);
 AMMO_INFO *Gun_GetAmmoInfo(LARA_GUN_TYPE gun_type);
 bool Gun_IsRifleType(LARA_GUN_TYPE gun_type);
 bool Gun_IsSinglePistolType(LARA_GUN_TYPE gun_type);

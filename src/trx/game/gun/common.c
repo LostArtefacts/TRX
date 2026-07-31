@@ -7,7 +7,7 @@
 #include <trx/game/output.h>
 #include <trx/version.h>
 
-#define M_SHOTGUN_AMMO_CLIP 6
+#define M_SHOTGUN_PELLETS_PER_SHOT 6
 
 // What a weapon is made of outside the numbers weapons.json5 carries: the
 // pickup lying in the world, the box of ammunition for it, and the animation
@@ -52,10 +52,12 @@ static bool M_IsGunType(
     return g_Weapons[gun_type].type == weapon_type;
 }
 
-static int32_t M_GetAmmoQuantity(
-    const LARA_GUN_TYPE gun_type, const int32_t shell_count)
+// weapons.json5 counts a box in what the player would call a round, which for
+// the shotgun is a shell holding several pellets. The engine spends a pellet
+// at a time, so the quantities there are scaled into what it spends.
+static int32_t M_GetRounds(const LARA_GUN_TYPE gun_type, const int32_t box_qty)
 {
-    return MAX(1, shell_count) * Gun_GetAmmoClipCount(gun_type);
+    return MAX(1, box_qty) * Gun_GetRoundsPerShot(gun_type);
 }
 
 void Gun_AddDynamicLight(void)
@@ -119,14 +121,14 @@ OBJECT_ID Gun_GetAmmoObject(const LARA_GUN_TYPE gun_type)
     return M_IsWeapon(gun_type) ? m_WeaponObjects[gun_type].ammo : NO_OBJECT;
 }
 
-int32_t Gun_GetAmmoInitialQuantity(const LARA_GUN_TYPE gun_type)
+int32_t Gun_GetInitialRounds(const LARA_GUN_TYPE gun_type)
 {
-    return M_GetAmmoQuantity(gun_type, g_Weapons[gun_type].ammo.initial_qty);
+    return M_GetRounds(gun_type, g_Weapons[gun_type].ammo.initial_qty);
 }
 
-int32_t Gun_GetAmmoPickupQuantity(const LARA_GUN_TYPE gun_type)
+int32_t Gun_GetRoundsPerBox(const LARA_GUN_TYPE gun_type)
 {
-    return M_GetAmmoQuantity(gun_type, g_Weapons[gun_type].ammo.pickup_qty);
+    return M_GetRounds(gun_type, g_Weapons[gun_type].ammo.pickup_qty);
 }
 
 int32_t Gun_GetAmmoInventoryQuantity(const LARA_GUN_TYPE gun_type)
@@ -134,9 +136,9 @@ int32_t Gun_GetAmmoInventoryQuantity(const LARA_GUN_TYPE gun_type)
     return g_Weapons[gun_type].ammo.inventory_qty;
 }
 
-int32_t Gun_GetAmmoClipCount(const LARA_GUN_TYPE gun_type)
+int32_t Gun_GetRoundsPerShot(const LARA_GUN_TYPE gun_type)
 {
-    return gun_type == LGT_SHOTGUN ? M_SHOTGUN_AMMO_CLIP : 1;
+    return gun_type == LGT_SHOTGUN ? M_SHOTGUN_PELLETS_PER_SHOT : 1;
 }
 
 AMMO_INFO *Gun_GetAmmoInfo(const LARA_GUN_TYPE gun_type)
