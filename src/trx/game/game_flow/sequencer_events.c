@@ -169,8 +169,9 @@ M_GF_HANDLER(M_HandlePlayLevel)
     }
     GF_DisableObjectsIfNeeded();
 
-    g_Passport.ask_for_save =
-        g_Config.gameplay.save_crystal_mode == SAVE_CRYSTAL_SAVE
+    const SAVE_CRYSTAL_MODE crystal_mode = g_Config.gameplay.save_crystal_mode;
+    g_Passport.ask_for_save = (crystal_mode == SAVE_CRYSTAL_SAVE
+                               || crystal_mode == SAVE_CRYSTAL_SAVE_PICKUP)
         && seq_ctx == GFSC_NORMAL
         && GF_GetLevelTableType(level->type) == GFLT_MAIN
         && level != GF_GetFirstLevel() && level != GF_GetGymLevel();
