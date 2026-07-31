@@ -22,10 +22,6 @@ int32_t Gun_GetInitialRounds(LARA_GUN_TYPE gun_type);
 int32_t Gun_GetRoundsPerBox(LARA_GUN_TYPE gun_type);
 int32_t Gun_GetRoundsPerShot(LARA_GUN_TYPE gun_type);
 int32_t Gun_GetAmmoInventoryQuantity(LARA_GUN_TYPE gun_type);
-AMMO_INFO *Gun_GetAmmoInfo(LARA_GUN_TYPE gun_type);
-int32_t Gun_GetAmmo(LARA_GUN_TYPE gun_type);
-void Gun_SetAmmo(LARA_GUN_TYPE gun_type, int32_t rounds);
-void Gun_AddAmmo(LARA_GUN_TYPE gun_type, int32_t rounds);
 bool Gun_IsRifleType(LARA_GUN_TYPE gun_type);
 bool Gun_IsSinglePistolType(LARA_GUN_TYPE gun_type);
 

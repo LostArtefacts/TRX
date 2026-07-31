@@ -64,7 +64,7 @@ static void M_AddGun(const LARA_GUN_TYPE gun_type)
     LARA_INFO *const lara = Lara_GetLaraInfo();
     InvRing_NotifyRemoved(M_GetEntryID(ammo_object));
     M_SetCount(M_GetEntryID(ammo_object), 0);
-    Gun_AddAmmo(gun_type, Gun_GetInitialRounds(gun_type));
+    Inv_AddAmmo(gun_type, Gun_GetInitialRounds(gun_type));
     M_SetCount(M_GetEntryID(gun_object), 1);
     if (lara->last_gun_type == LGT_UNARMED) {
         lara->last_gun_type = gun_type;
@@ -75,9 +75,51 @@ static void M_AddGun(const LARA_GUN_TYPE gun_type)
 static void M_AddAmmo(const LARA_GUN_TYPE gun_type)
 {
     const OBJECT_ID gun_object = Gun_GetGunObject(gun_type);
-    Gun_AddAmmo(gun_type, Gun_GetRoundsPerBox(gun_type));
+    Inv_AddAmmo(gun_type, Gun_GetRoundsPerBox(gun_type));
     if (!Inv_RequestItem(gun_object)) {
         M_SetCount(M_GetEntryID(Gun_GetAmmoObject(gun_type)), 1);
+    }
+}
+
+// Where a weapon's rounds are kept, or nullptr for one that spends none. The
+// skidoo shoots from the pistols' endless supply.
+static int32_t *M_GetAmmoSlot(const LARA_GUN_TYPE gun_type)
+{
+    if (gun_type == LGT_SKIDOO) {
+        return &m_State.ammo[LGT_PISTOLS];
+    }
+    if (gun_type <= LGT_UNARMED || gun_type >= NUM_WEAPONS
+        || gun_type == LGT_FLARE) {
+        return nullptr;
+    }
+    return &m_State.ammo[gun_type];
+}
+
+bool Inv_HasAmmoSlot(const LARA_GUN_TYPE gun_type)
+{
+    return M_GetAmmoSlot(gun_type) != nullptr;
+}
+
+int32_t Inv_GetAmmo(const LARA_GUN_TYPE gun_type)
+{
+    const int32_t *const slot = M_GetAmmoSlot(gun_type);
+    return slot == nullptr ? 0 : *slot;
+}
+
+void Inv_SetAmmo(const LARA_GUN_TYPE gun_type, const int32_t rounds)
+{
+    int32_t *const slot = M_GetAmmoSlot(gun_type);
+    if (slot != nullptr) {
+        *slot = MIN(rounds, MAX_QTY);
+    }
+}
+
+void Inv_AddAmmo(const LARA_GUN_TYPE gun_type, const int32_t rounds)
+{
+    int32_t *const slot = M_GetAmmoSlot(gun_type);
+    if (slot != nullptr) {
+        *slot += rounds;
+        CLAMPG(*slot, MAX_QTY);
     }
 }
 
@@ -211,7 +253,7 @@ bool Inv_AddItem(const OBJECT_ID object_id)
         if (Object_IsType(pickup_object_id, g_GunAmmoObjects)) {
             const LARA_GUN_TYPE gun_type = Gun_GetType(
                 Object_GetCognateInverse(pickup_object_id, g_GunAmmoObjectMap));
-            Gun_AddAmmo(gun_type, Gun_GetRoundsPerBox(gun_type));
+            Inv_AddAmmo(gun_type, Gun_GetRoundsPerBox(gun_type));
         }
         M_SetCount(entry_id, entry->qty + qty);
         InvRing_Rebuild();

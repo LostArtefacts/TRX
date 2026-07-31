@@ -24,40 +24,40 @@ static void M_GiveAllGunsImpl(const bool ignore_exclusions)
     const bool bonus_flag = Game_IsBonusFlagSet(GBF_NGPLUS);
     Inv_AddItem(O_PISTOL_ITEM);
     if (Lara_Cheat_GiveGun(LGT_SHOTGUN, ignore_exclusions)) {
-        lara_info->ammo[LGT_SHOTGUN].ammo = bonus_flag ? 10001 : 300;
+        Inv_SetAmmo(LGT_SHOTGUN, bonus_flag ? 10001 : 300);
     }
     if (Lara_Cheat_GiveGun(LGT_MAGNUMS, ignore_exclusions)) {
-        lara_info->ammo[LGT_MAGNUMS].ammo = bonus_flag ? 10001 : 1000;
+        Inv_SetAmmo(LGT_MAGNUMS, bonus_flag ? 10001 : 1000);
     }
     if (Lara_Cheat_GiveGun(LGT_AUTOS, ignore_exclusions)) {
-        lara_info->ammo[LGT_AUTOS].ammo = bonus_flag ? 10001 : 1000;
+        Inv_SetAmmo(LGT_AUTOS, bonus_flag ? 10001 : 1000);
     }
     if (Lara_Cheat_GiveGun(LGT_DESERT_EAGLE, ignore_exclusions)) {
-        lara_info->ammo[LGT_DESERT_EAGLE].ammo = bonus_flag ? 10001 : 1000;
+        Inv_SetAmmo(LGT_DESERT_EAGLE, bonus_flag ? 10001 : 1000);
     }
     if (Lara_Cheat_GiveGun(LGT_UZIS, ignore_exclusions)) {
-        lara_info->ammo[LGT_UZIS].ammo = bonus_flag ? 10001 : 2000;
+        Inv_SetAmmo(LGT_UZIS, bonus_flag ? 10001 : 2000);
     }
     if (Lara_Cheat_GiveGun(LGT_HARPOON, ignore_exclusions)) {
-        lara_info->ammo[LGT_HARPOON].ammo = bonus_flag ? 10001 : 300;
+        Inv_SetAmmo(LGT_HARPOON, bonus_flag ? 10001 : 300);
     }
     if (Lara_Cheat_GiveGun(LGT_M16, ignore_exclusions)) {
-        lara_info->ammo[LGT_M16].ammo = bonus_flag ? 10001 : 300;
+        Inv_SetAmmo(LGT_M16, bonus_flag ? 10001 : 300);
     }
     if (Lara_Cheat_GiveGun(LGT_MP5, ignore_exclusions)) {
-        lara_info->ammo[LGT_MP5].ammo = bonus_flag ? 10001 : 300;
+        Inv_SetAmmo(LGT_MP5, bonus_flag ? 10001 : 300);
     }
     if (Lara_Cheat_GiveGun(LGT_GRENADE, ignore_exclusions)) {
-        lara_info->ammo[LGT_GRENADE].ammo = bonus_flag ? 10001 : 300;
+        Inv_SetAmmo(LGT_GRENADE, bonus_flag ? 10001 : 300);
     }
     if (Lara_Cheat_GiveGun(LGT_ROCKET, ignore_exclusions)) {
-        lara_info->ammo[LGT_ROCKET].ammo = bonus_flag ? 10001 : 300;
+        Inv_SetAmmo(LGT_ROCKET, bonus_flag ? 10001 : 300);
     }
     if (Lara_Cheat_GiveGun(LGT_CROSSBOW, ignore_exclusions)) {
-        lara_info->ammo[LGT_CROSSBOW].ammo = bonus_flag ? 10001 : 300;
+        Inv_SetAmmo(LGT_CROSSBOW, bonus_flag ? 10001 : 300);
     }
     if (Lara_Cheat_GiveGun(LGT_REVOLVER, ignore_exclusions)) {
-        lara_info->ammo[LGT_REVOLVER].ammo = bonus_flag ? 10001 : 1000;
+        Inv_SetAmmo(LGT_REVOLVER, bonus_flag ? 10001 : 1000);
     }
 }
 

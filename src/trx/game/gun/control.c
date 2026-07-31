@@ -437,17 +437,13 @@ void Gun_Control(void)
         break;
 
     case LGS_READY:
-        const bool is_firing =
-            lara->ammo[LGT_PISTOLS].ammo != 0 && g_Input.action;
+        const bool is_firing = Inv_GetAmmo(LGT_PISTOLS) != 0 && g_Input.action;
         Lara_Skin_SetCombatFace(is_firing);
         M_RequestCombatCamera();
 
         if (g_Input.action) {
-            AMMO_INFO *const ammo = Gun_GetAmmoInfo(lara->gun_type);
-            ASSERT(ammo != nullptr);
-
-            if (ammo->ammo <= 0) {
-                ammo->ammo = 0;
+            if (Inv_GetAmmo(lara->gun_type) <= 0) {
+                Inv_SetAmmo(lara->gun_type, 0);
                 if (g_TRVersion >= 2) {
                     Sound_Effect(SFX_CLICK, &lara_item->pos, SPM_NORMAL);
                 }
@@ -506,14 +502,16 @@ int32_t Gun_FireWeapon(
     const WEAPON_INFO *const weapon = &g_Weapons[weapon_type];
     LARA_INFO *const lara = Lara_GetLaraInfo();
 
-    AMMO_INFO *const ammo = Gun_GetAmmoInfo(weapon_type);
-    ASSERT(ammo != nullptr);
+    ASSERT(Inv_HasAmmoSlot(weapon_type));
 
-    if (ammo == &lara->ammo[LGT_PISTOLS] || Game_IsBonusFlagSet(GBF_NGPLUS)) {
-        ammo->ammo = 1000;
+    // The pistols and what shoots from their supply never run down, and
+    // neither does anything in a bonus game.
+    if (weapon_type == LGT_PISTOLS || weapon_type == LGT_SKIDOO
+        || Game_IsBonusFlagSet(GBF_NGPLUS)) {
+        Inv_SetAmmo(weapon_type, 1000);
     }
-    if (ammo->ammo <= 0) {
-        ammo->ammo = 0;
+    if (Inv_GetAmmo(weapon_type) <= 0) {
+        Inv_SetAmmo(weapon_type, 0);
         if (g_TRVersion == 1) {
             Sound_Effect(SFX_LARA_EMPTY, &src->pos, SPM_NORMAL);
             if (Inv_RequestItem(O_PISTOL_ITEM)) {
@@ -524,7 +522,7 @@ int32_t Gun_FireWeapon(
         }
         return 0;
     }
-    ammo->ammo--;
+    Inv_AddAmmo(weapon_type, -1);
     Stats_AddAmmoUsed();
     lara->has_fired = true;
 

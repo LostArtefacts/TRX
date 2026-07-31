@@ -25,10 +25,6 @@ typedef struct {
 } LARA_ARM;
 
 typedef struct {
-    int32_t ammo;
-} AMMO_INFO;
-
-typedef struct {
     int16_t item_num;
     LARA_GUN_STATE gun_status;
     LARA_GUN_TYPE gun_type;
@@ -72,8 +68,6 @@ typedef struct {
 
     LARA_ARM left_arm;
     LARA_ARM right_arm;
-    // What Lara has for each weapon, addressed by LARA_GUN_TYPE.
-    AMMO_INFO ammo[NUM_WEAPONS];
 
     struct {
         struct {
