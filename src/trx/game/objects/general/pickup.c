@@ -403,10 +403,58 @@ static void M_CollectAllAtPos(
     }
 }
 
-static void M_Collect(const ITEM *const item)
+static void M_Collect(const ITEM *const item, const bool controlled)
 {
-    const M_PRIV *const p = item->priv;
-    M_CollectAllAtPos(item->pos, item->room_num, p->pickup_mode);
+    const int16_t item_num = Item_GetIndex(item);
+    if (item->object_id == O_FLARE_ITEM) {
+        M_DoFlarePickup(item_num);
+    } else if (g_Config.gameplay.enable_multiple_pickups && controlled) {
+        const M_PRIV *const p = item->priv;
+        M_CollectAllAtPos(item->pos, item->room_num, p->pickup_mode);
+    } else {
+        M_DoPickup(item_num);
+    }
+
+    const LARA_INFO *const lara = Lara_GetLaraInfo();
+    if (item->object_id == O_FLARE_ITEM
+        && (lara->water_status == LWS_UNDERWATER
+            || lara->water_status == LWS_CHEAT)) {
+        Lara_Flare_DrawMeshes();
+    }
+}
+
+static bool M_CanCollect(
+    const ITEM *const item, const ITEM *const lara_item, const bool controlled)
+{
+    const LARA_INFO *const lara = Lara_GetLaraInfo();
+    if (!M_IsPickupEraseFrame(lara_item)) {
+        return false;
+    }
+
+    if (lara->interact_target.item_num == Item_GetIndex(item)) {
+        return true;
+    }
+
+    if (lara->interact_target.item_num == NO_ITEM) {
+        return false;
+    }
+
+    if (item->object_id == O_FLARE_ITEM) {
+        return lara->gun_type != LGT_FLARE;
+    }
+
+    if (lara_item->current_anim_state == LS(LS_FLARE_PICKUP)) {
+        return false;
+    }
+
+    if (!g_Config.gameplay.enable_multiple_pickups || controlled) {
+        return false;
+    }
+
+    const ITEM *const current_item = Item_Get(lara->interact_target.item_num);
+    const M_PRIV *const p1 = current_item->priv;
+    const M_PRIV *const p2 = item->priv;
+    return p1->pickup_mode == p2->pickup_mode;
 }
 
 static void M_BeginPickupAnimation(const ITEM *const item, const bool is_ducked)
@@ -566,7 +614,8 @@ static XYZ_32 M_GetAlignmentPosition(const ITEM *const item)
 static bool M_LaraHasPickupState(const ITEM *const lara_item)
 {
     return lara_item->current_anim_state == LS(LS_PICKUP)
-        || lara_item->current_anim_state == LS(LS_HIDDEN_PICKUP);
+        || lara_item->current_anim_state == LS(LS_HIDDEN_PICKUP)
+        || lara_item->current_anim_state == LS(LS_FLARE_PICKUP);
 }
 
 static XYZ_16 M_PrepareAndCacheRot(
@@ -657,14 +706,9 @@ static void M_DoControlled(const int16_t item_num, ITEM *const lara_item)
         lara->interact_target.item_num = NO_ITEM;
     }
 
-    if (lara->interact_target.item_num != item_num) {
-        goto cleanup;
-    }
-
     if (M_LaraHasPickupState(lara_item)) {
-        if (M_IsPickupEraseFrame(lara_item)) {
-            M_Collect(item);
-            lara->interact_target.item_num = NO_ITEM;
+        if (M_CanCollect(item, lara_item, true)) {
+            M_Collect(item, true);
         }
         goto cleanup;
     }
@@ -707,17 +751,8 @@ static void M_DoAboveWater(const int16_t item_num, ITEM *const lara_item)
     }
 
     if (M_LaraHasPickupState(lara_item)) {
-        if (M_IsPickupEraseFrame(lara_item)) {
-            M_DoPickup(item_num);
-        }
-        goto cleanup;
-    }
-
-    LARA_INFO *const lara = Lara_GetLaraInfo();
-    if (lara_item->current_anim_state == LS(LS_FLARE_PICKUP)) {
-        if (M_IsPickupEraseFrame(lara_item) && item->object_id == O_FLARE_ITEM
-            && lara->gun_type != LGT_FLARE) {
-            M_DoFlarePickup(item_num);
+        if (M_CanCollect(item, lara_item, false)) {
+            M_Collect(item, false);
         }
         goto cleanup;
     }
@@ -729,6 +764,7 @@ static void M_DoAboveWater(const int16_t item_num, ITEM *const lara_item)
         goto cleanup;
     }
 
+    LARA_INFO *const lara = Lara_GetLaraInfo();
     if ((g_Input.action || Lara_Interact_HasActiveTarget(item_num))
         && !lara_item->gravity
         && (lara->gun_status == LGS_ARMLESS || anim == LA_CRAWL_IDLE)
@@ -750,6 +786,7 @@ static void M_DoAboveWater(const int16_t item_num, ITEM *const lara_item)
             lara_item->goal_anim_state = LS(LS_STOP);
         }
         Lara_Interact_FinishControl(LARA_INTERACT_PICKUP);
+        lara->interact_target.item_num = item_num;
         goto cleanup;
     }
 
@@ -771,23 +808,14 @@ static void M_DoUnderwater(const int16_t item_num, ITEM *const lara_item)
         goto cleanup;
     }
 
-    if (lara_item->current_anim_state == LS(LS_PICKUP)) {
-        if (M_IsPickupEraseFrame(lara_item)) {
-            M_DoPickup(item_num);
+    if (M_LaraHasPickupState(lara_item)) {
+        if (M_CanCollect(item, lara_item, false)) {
+            M_Collect(item, false);
         }
         goto cleanup;
     }
 
-    const LARA_INFO *const lara = Lara_GetLaraInfo();
-    if (lara_item->current_anim_state == LS(LS_FLARE_PICKUP)) {
-        if (M_IsPickupEraseFrame(lara_item) && item->object_id == O_FLARE_ITEM
-            && lara->gun_type != LGT_FLARE) {
-            M_DoFlarePickup(item_num);
-            Lara_Flare_DrawMeshes();
-        }
-        goto cleanup;
-    }
-
+    LARA_INFO *const lara = Lara_GetLaraInfo();
     if (g_Input.action && lara_item->current_anim_state == LS(LS_TREAD)
         && lara->gun_status == LGS_ARMLESS
         && (lara->gun_type != LGT_FLARE || item->object_id != O_FLARE_ITEM)) {
@@ -806,6 +834,7 @@ static void M_DoUnderwater(const int16_t item_num, ITEM *const lara_item)
             Lara_AnimateUntil(lara_item, LS(LS_PICKUP));
         }
         lara_item->goal_anim_state = LS(LS_TREAD);
+        lara->interact_target.item_num = item_num;
         goto cleanup;
     }
 

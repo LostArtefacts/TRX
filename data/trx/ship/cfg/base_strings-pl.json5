@@ -1118,6 +1118,10 @@
             "title": "Manualna kamera",
             "description": "Umożliwia klawiszom kamery obracanie jej także podczas gry, nie tylko w trybie zdjęć.",
         },
+        "gameplay.enable_multiple_pickups": {
+            "title": "\\{review}Podnoszenie wielu przedmiotów",
+            "description": "\\{review}Pozwala Larze podnieść wszystkie przedmioty znajdujące się w tym samym miejscu w ramach jednej animacji (TR1–3). Po wyłączeniu tej opcji Lara musi powtórzyć animację dla każdego przedmiotu (TR4+).",
+        },
         "gameplay.enable_neutral_twists": {
             "title": "Salta w miejscu",
             "description": "Pozwala Larze obracać się w powietrzu podczas neutralnego skoku. Aby wykonać salto w miejscu, należy przytrzymać jednocześnie przyciski skoku i przewrotu.",

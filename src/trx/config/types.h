@@ -272,6 +272,7 @@ typedef struct {
         bool enable_walk_to_items;
         bool enable_snap_interactions;
         bool enable_fast_pickups;
+        bool enable_multiple_pickups;
         bool enable_continuous_pushblocks;
         bool restore_ps1_enemies;
         bool enable_ally_targeting;

@@ -1118,6 +1118,10 @@
             "title": "Camara làimhe",
             "description": "Cuir comas air putanan a' chamara (\\{input camera_forward}\\{input camera_back}\\{input camera_left}\\{input camera_right}) a thathas a' cleachdadh gus smachd a chumail air camara Modh Dealbh, gus cuideachd camara a' gheama a chuairteachadh.",
         },
+        "gameplay.enable_multiple_pickups": {
+            "title": "Togail iomadh nì",
+            "description": "Leigidh seo le Lara na nithean togail uile a tha san aon àite a thogail san aon bheothachadh (TR1–3). Ma tha seo à comas, feumaidh Lara am beothachadh ath-aithris airson gach nì (TR4+).",
+        },
         "gameplay.enable_neutral_twists": {
             "title": "Snìomh neodrach",
             "description": "Leigidh seo le Lara tionndadh san adhar fhad 's a tha i a' leum gu neodrach. Brùth air na putanan leum is rola còmhla ri chèile nuair a tha i na seasamh.",
