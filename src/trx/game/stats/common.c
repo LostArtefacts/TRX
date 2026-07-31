@@ -22,6 +22,61 @@ static uint32_t M_GetSecretMask(
         : 0;
 }
 
+// What the level holds of a category, less what the game flow writes off.
+static uint32_t M_GetCategoryMax(
+    const LEVEL_MAX_STATS *const max_stats, const STATS_CATEGORY_ID id)
+{
+    switch (id) {
+    case STATS_CAT_PICKUPS:
+        return max_stats->max_pickup_count;
+    case STATS_CAT_KILLS:
+        return max_stats->max_kill_count;
+    case STATS_CAT_SECRETS:
+        return max_stats->max_secret_count;
+    case STATS_CAT_CRYSTALS:
+        return max_stats->max_crystal_count;
+    case STATS_CAT_NUMBER_OF:
+        break;
+    }
+    return 0;
+}
+
+// What the game flow declares out of reach. Crystals have no such declaration.
+static uint32_t M_GetCategoryUnobtainable(
+    const GF_LEVEL *const level, const STATS_CATEGORY_ID id)
+{
+    switch (id) {
+    case STATS_CAT_PICKUPS:
+        return level->unobtainable.pickups;
+    case STATS_CAT_KILLS:
+        return level->unobtainable.kills + level->unobtainable.ally_kills;
+    case STATS_CAT_SECRETS:
+        return level->unobtainable.secrets;
+    case STATS_CAT_CRYSTALS:
+    case STATS_CAT_NUMBER_OF:
+        break;
+    }
+    return 0;
+}
+
+static uint32_t M_GetCategoryCount(
+    const LEVEL_STATS *const stats, const STATS_CATEGORY_ID id)
+{
+    switch (id) {
+    case STATS_CAT_PICKUPS:
+        return stats->pickup_count;
+    case STATS_CAT_KILLS:
+        return stats->kill_count;
+    case STATS_CAT_SECRETS:
+        return stats->secret_count;
+    case STATS_CAT_CRYSTALS:
+        return stats->crystal_count;
+    case STATS_CAT_NUMBER_OF:
+        break;
+    }
+    return 0;
+}
+
 LEVEL_STATS *Stats_GetLevelStats(const GF_LEVEL *const level)
 {
     RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
@@ -37,6 +92,54 @@ void Stats_ResetLevel(const GF_LEVEL *const level)
     const int32_t death_count = stats->death_count;
     *stats = (LEVEL_STATS) {};
     stats->death_count = death_count;
+}
+
+bool Stats_GetCategory(
+    const GF_LEVEL *const level, const STATS_CATEGORY_ID id,
+    STATS_CATEGORY *const out)
+{
+    const LEVEL_STATS *const stats = Stats_GetLevelStats(level);
+    if (stats == nullptr || !Stats_HasLevelMaxStats(level)
+        || id >= STATS_CAT_NUMBER_OF) {
+        return false;
+    }
+
+    const uint32_t unobtainable = M_GetCategoryUnobtainable(level, id);
+    const uint32_t max = M_GetCategoryMax(Stats_GetLevelMaxStats(level), id);
+    *out = (STATS_CATEGORY) {
+        .level = level,
+        .id = id,
+        .count = M_GetCategoryCount(stats, id),
+        .max = max,
+        .raw = max + unobtainable,
+        .unobtainable = unobtainable,
+    };
+    return true;
+}
+
+bool Stats_SetCategoryCount(
+    const GF_LEVEL *const level, const STATS_CATEGORY_ID id,
+    const uint32_t count)
+{
+    LEVEL_STATS *const stats = Stats_GetLevelStats(level);
+    if (stats == nullptr) {
+        return false;
+    }
+    switch (id) {
+    case STATS_CAT_PICKUPS:
+        stats->pickup_count = count;
+        return true;
+    case STATS_CAT_KILLS:
+        stats->kill_count = count;
+        return true;
+    case STATS_CAT_CRYSTALS:
+        stats->crystal_count = count;
+        return true;
+    case STATS_CAT_SECRETS:
+    case STATS_CAT_NUMBER_OF:
+        break;
+    }
+    return false;
 }
 
 bool Stats_IsSecretValid(const GF_LEVEL *const level, const int16_t secret_idx)

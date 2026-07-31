@@ -1,5 +1,6 @@
 #pragma once
 
+#include <trx/game/game_flow/types.h>
 #include <trx/game/objects/ids.h>
 #include <trx/game/stats/const.h>
 
@@ -51,3 +52,26 @@ typedef struct {
     STATS_COMMON stats;
     LEVEL_MAX_STATS max_stats;
 } FINAL_STATS;
+
+// One thing a level is counted on, which is one row of the statistics screen.
+typedef enum {
+    STATS_CAT_PICKUPS,
+    STATS_CAT_KILLS,
+    STATS_CAT_SECRETS,
+    STATS_CAT_CRYSTALS,
+    STATS_CAT_NUMBER_OF,
+} STATS_CATEGORY_ID;
+
+// What a level holds of one kind of thing, and how much of it Lara has. The
+// count is read at the moment the view is filled; the level and the id say
+// where it came from, so a writer can put a new one back.
+typedef struct {
+    const GF_LEVEL *level;
+    STATS_CATEGORY_ID id;
+    uint32_t count;
+    // What counts towards completion, which is what the level holds less the
+    // unobtainable part.
+    uint32_t max;
+    uint32_t raw;
+    uint32_t unobtainable;
+} STATS_CATEGORY;
