@@ -22,7 +22,7 @@ static LARA_INFO m_Lara;
 static bool m_HolstersVisible;
 static bool m_HasPistols;
 static LARA_SKIN_TYPE m_Skin;
-static AMMO_INFO m_Ammo[NUM_WEAPONS];
+static int32_t m_Ammo[NUM_WEAPONS];
 
 // Which pickups share a backpack entry with another, as the scion's states do.
 static struct {
@@ -143,9 +143,16 @@ OBJECT_ID Gun_GetAmmoObject(const LARA_GUN_TYPE gun_type)
     return FakeLara_AmmoObject(gun_type);
 }
 
-AMMO_INFO *Gun_GetAmmoInfo(const LARA_GUN_TYPE gun_type)
+int32_t Inv_GetAmmo(const LARA_GUN_TYPE gun_type)
 {
-    return gun_type == LGT_UNARMED ? nullptr : &m_Ammo[gun_type];
+    return gun_type == LGT_UNARMED ? 0 : m_Ammo[gun_type];
+}
+
+void Inv_SetAmmo(const LARA_GUN_TYPE gun_type, const int32_t rounds)
+{
+    if (gun_type != LGT_UNARMED) {
+        m_Ammo[gun_type] = rounds;
+    }
 }
 
 bool Inv_CanAddItem(const OBJECT_ID object_id)

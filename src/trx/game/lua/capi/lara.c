@@ -364,22 +364,19 @@ static int M_L_LaraWeaponGetObject(lua_State *const L)
 // trxc.lara.weapons.get_ammo(weapon) -> int
 static int M_L_LaraWeaponGetAmmo(lua_State *const L)
 {
-    const AMMO_INFO *const ammo = Gun_GetAmmoInfo(M_GetWeapon(L, 1));
-    lua_pushinteger(L, ammo == nullptr ? 0 : ammo->ammo);
+    lua_pushinteger(L, Inv_GetAmmo(M_GetWeapon(L, 1)));
     return 1;
 }
 
 // trxc.lara.weapons.set_ammo(weapon, count)
 static int M_L_LaraWeaponSetAmmo(lua_State *const L)
 {
-    AMMO_INFO *const ammo = Gun_GetAmmoInfo(M_GetWeapon(L, 1));
+    const LARA_GUN_TYPE gun_type = M_GetWeapon(L, 1);
     const lua_Integer count = luaL_checkinteger(L, 2);
     if (count < 0) {
         luaL_argerror(L, 2, "ammo must be 0 or more");
     }
-    if (ammo != nullptr) {
-        ammo->ammo = (int32_t)MIN(count, MAX_QTY);
-    }
+    Inv_SetAmmo(gun_type, (int32_t)MIN(count, MAX_QTY));
     return 0;
 }
 

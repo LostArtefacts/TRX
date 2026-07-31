@@ -707,40 +707,40 @@ void Savegame_PersistGameToCurrentInfo(const GF_LEVEL *const level)
     resume->flags.has_pistols = Inv_RequestItem(O_PISTOL_ITEM) > 0;
 
     resume->flags.has_shotgun = Inv_RequestItem(O_SHOTGUN_ITEM) > 0;
-    resume->shotgun_ammo = lara->ammo[LGT_SHOTGUN].ammo;
+    resume->shotgun_ammo = Inv_GetAmmo(LGT_SHOTGUN);
 
     resume->flags.has_magnums = Inv_RequestItem(O_MAGNUM_ITEM) > 0;
-    resume->magnum_ammo = lara->ammo[LGT_MAGNUMS].ammo;
+    resume->magnum_ammo = Inv_GetAmmo(LGT_MAGNUMS);
 
     resume->flags.has_autos = Inv_RequestItem(O_AUTOS_ITEM) > 0;
-    resume->autos_ammo = lara->ammo[LGT_AUTOS].ammo;
+    resume->autos_ammo = Inv_GetAmmo(LGT_AUTOS);
 
     resume->flags.has_desert_eagle = Inv_RequestItem(O_DESERT_EAGLE_ITEM) > 0;
-    resume->desert_eagle_ammo = lara->ammo[LGT_DESERT_EAGLE].ammo;
+    resume->desert_eagle_ammo = Inv_GetAmmo(LGT_DESERT_EAGLE);
 
     resume->flags.has_uzis = Inv_RequestItem(O_UZI_ITEM) > 0;
-    resume->uzi_ammo = lara->ammo[LGT_UZIS].ammo;
+    resume->uzi_ammo = Inv_GetAmmo(LGT_UZIS);
 
     resume->flags.has_m16 = Inv_RequestItem(O_M16_ITEM) > 0;
-    resume->m16_ammo = lara->ammo[LGT_M16].ammo;
+    resume->m16_ammo = Inv_GetAmmo(LGT_M16);
 
     resume->flags.has_mp5 = Inv_RequestItem(O_MP5_ITEM) > 0;
-    resume->mp5_ammo = lara->ammo[LGT_MP5].ammo;
+    resume->mp5_ammo = Inv_GetAmmo(LGT_MP5);
 
     resume->flags.has_harpoon = Inv_RequestItem(O_HARPOON_ITEM) > 0;
-    resume->harpoon_ammo = lara->ammo[LGT_HARPOON].ammo;
+    resume->harpoon_ammo = Inv_GetAmmo(LGT_HARPOON);
 
     resume->flags.has_grenade = Inv_RequestItem(O_GRENADE_GUN_ITEM) > 0;
-    resume->grenade_ammo = lara->ammo[LGT_GRENADE].ammo;
+    resume->grenade_ammo = Inv_GetAmmo(LGT_GRENADE);
 
     resume->flags.has_rocket = Inv_RequestItem(O_ROCKET_GUN_ITEM) > 0;
-    resume->rocket_ammo = lara->ammo[LGT_ROCKET].ammo;
+    resume->rocket_ammo = Inv_GetAmmo(LGT_ROCKET);
 
     resume->flags.has_crossbow = Inv_RequestItem(O_CROSSBOW_ITEM) > 0;
-    resume->crossbow_ammo = lara->ammo[LGT_CROSSBOW].ammo;
+    resume->crossbow_ammo = Inv_GetAmmo(LGT_CROSSBOW);
 
     resume->flags.has_revolver = Inv_RequestItem(O_REVOLVER_ITEM) > 0;
-    resume->revolver_ammo = lara->ammo[LGT_REVOLVER].ammo;
+    resume->revolver_ammo = Inv_GetAmmo(LGT_REVOLVER);
 
     resume->flags.has_binoculars = Inv_RequestItem(O_BINOCULARS_ITEM) > 0;
     resume->flares = Inv_RequestItem(O_FLARE_ITEM);

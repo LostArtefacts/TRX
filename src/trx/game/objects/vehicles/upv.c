@@ -6,6 +6,7 @@
 #include <trx/game/game.h>
 #include <trx/game/gun.h>
 #include <trx/game/input.h>
+#include <trx/game/inventory.h>
 #include <trx/game/lara.h>
 #include <trx/game/los.h>
 #include <trx/game/objects/vehicles/common.h>
@@ -628,8 +629,7 @@ static void M_DoCurrent(ITEM *const item)
 static void M_FireHarpoon(ITEM *const item)
 {
     M_PRIV *const p = item->priv;
-    AMMO_INFO *const ammo = Gun_GetAmmoInfo(LGT_HARPOON);
-    if (ammo->ammo <= 0) {
+    if (Inv_GetAmmo(LGT_HARPOON) <= 0) {
         return;
     }
 
@@ -661,7 +661,7 @@ static void M_FireHarpoon(ITEM *const item)
     Sound_Effect(SFX_UPV_HARPOON, &Lara_GetItem()->pos, SPM_ALWAYS);
 
     if (!Game_IsBonusFlagSet(GBF_NGPLUS)) {
-        ammo->ammo--;
+        Inv_AddAmmo(LGT_HARPOON, -1);
     }
 
     Stats_AddAmmoUsed();

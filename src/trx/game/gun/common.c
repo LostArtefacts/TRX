@@ -141,46 +141,6 @@ int32_t Gun_GetRoundsPerShot(const LARA_GUN_TYPE gun_type)
     return gun_type == LGT_SHOTGUN ? M_SHOTGUN_PELLETS_PER_SHOT : 1;
 }
 
-AMMO_INFO *Gun_GetAmmoInfo(const LARA_GUN_TYPE gun_type)
-{
-    LARA_INFO *const lara_info = Lara_GetLaraInfo();
-    if (lara_info == nullptr) {
-        return nullptr;
-    }
-    // The skidoo shoots from the pistols' endless supply.
-    if (gun_type == LGT_SKIDOO) {
-        return &lara_info->ammo[LGT_PISTOLS];
-    }
-    if (gun_type <= LGT_UNARMED || gun_type >= NUM_WEAPONS
-        || gun_type == LGT_FLARE) {
-        return nullptr;
-    }
-    return &lara_info->ammo[gun_type];
-}
-
-int32_t Gun_GetAmmo(const LARA_GUN_TYPE gun_type)
-{
-    const AMMO_INFO *const ammo = Gun_GetAmmoInfo(gun_type);
-    return ammo == nullptr ? 0 : ammo->ammo;
-}
-
-void Gun_SetAmmo(const LARA_GUN_TYPE gun_type, const int32_t rounds)
-{
-    AMMO_INFO *const ammo = Gun_GetAmmoInfo(gun_type);
-    if (ammo != nullptr) {
-        ammo->ammo = MIN(rounds, MAX_QTY);
-    }
-}
-
-void Gun_AddAmmo(const LARA_GUN_TYPE gun_type, const int32_t rounds)
-{
-    AMMO_INFO *const ammo = Gun_GetAmmoInfo(gun_type);
-    if (ammo != nullptr) {
-        ammo->ammo += rounds;
-        CLAMPG(ammo->ammo, MAX_QTY);
-    }
-}
-
 bool Gun_IsRifleType(const LARA_GUN_TYPE gun_type)
 {
     return M_IsGunType(gun_type, WEAPON_TYPE_RIFLE);

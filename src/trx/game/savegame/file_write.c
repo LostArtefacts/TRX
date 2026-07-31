@@ -291,11 +291,10 @@ static void M_WriteArm(
 }
 
 static void M_WriteAmmo(
-    JSON_WRITE_IO *const io, const char *const key, const AMMO_INFO *const ammo)
+    JSON_WRITE_IO *const io, const char *const key, const int32_t ammo)
 {
-    ASSERT(ammo != nullptr);
     JSONW_PUSH_OBJECT(io);
-    JSONW_WRITE(io, "ammo", ammo->ammo);
+    JSONW_WRITE(io, "ammo", ammo);
     JSONW_POP_AND_SET(io, key);
 }
 
@@ -648,7 +647,7 @@ void SG_File_DumpLara(JSON_WRITE_IO *const io)
     M_WriteArm(io, "right_arm", &lara->right_arm);
     for (const SAVEGAME_AMMO_ENTRY *entry = g_Savegame_WeaponAmmo;
          entry->key != nullptr; entry++) {
-        M_WriteAmmo(io, entry->key, &lara->ammo[entry->gun_type]);
+        M_WriteAmmo(io, entry->key, Inv_GetAmmo(entry->gun_type));
     }
 
     if (lara->gun_item_num != NO_ITEM) {

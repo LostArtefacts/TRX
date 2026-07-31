@@ -38,40 +38,40 @@ static void M_GiveItems(void)
 {
     LARA_INFO *const lara_info = Lara_GetLaraInfo();
     if (Lara_Cheat_GiveGun(LGT_SHOTGUN, false)) {
-        lara_info->ammo[LGT_SHOTGUN].ammo = 500;
+        Inv_SetAmmo(LGT_SHOTGUN, 500);
     }
     if (Lara_Cheat_GiveGun(LGT_MAGNUMS, false)) {
-        lara_info->ammo[LGT_MAGNUMS].ammo = 500;
+        Inv_SetAmmo(LGT_MAGNUMS, 500);
     }
     if (Lara_Cheat_GiveGun(LGT_AUTOS, false)) {
-        lara_info->ammo[LGT_AUTOS].ammo = 500;
+        Inv_SetAmmo(LGT_AUTOS, 500);
     }
     if (Lara_Cheat_GiveGun(LGT_DESERT_EAGLE, false)) {
-        lara_info->ammo[LGT_DESERT_EAGLE].ammo = 500;
+        Inv_SetAmmo(LGT_DESERT_EAGLE, 500);
     }
     if (Lara_Cheat_GiveGun(LGT_UZIS, false)) {
-        lara_info->ammo[LGT_UZIS].ammo = 5000;
+        Inv_SetAmmo(LGT_UZIS, 5000);
     }
     if (Lara_Cheat_GiveGun(LGT_HARPOON, false)) {
-        lara_info->ammo[LGT_HARPOON].ammo = 5000;
+        Inv_SetAmmo(LGT_HARPOON, 5000);
     }
     if (Lara_Cheat_GiveGun(LGT_GRENADE, false)) {
-        lara_info->ammo[LGT_GRENADE].ammo = 5000;
+        Inv_SetAmmo(LGT_GRENADE, 5000);
     }
     if (Lara_Cheat_GiveGun(LGT_ROCKET, false)) {
-        lara_info->ammo[LGT_ROCKET].ammo = 5000;
+        Inv_SetAmmo(LGT_ROCKET, 5000);
     }
     if (Lara_Cheat_GiveGun(LGT_M16, false)) {
-        lara_info->ammo[LGT_M16].ammo = 5000;
+        Inv_SetAmmo(LGT_M16, 5000);
     }
     if (Lara_Cheat_GiveGun(LGT_MP5, false)) {
-        lara_info->ammo[LGT_MP5].ammo = 5000;
+        Inv_SetAmmo(LGT_MP5, 5000);
     }
     if (Lara_Cheat_GiveGun(LGT_CROSSBOW, false)) {
-        lara_info->ammo[LGT_CROSSBOW].ammo = 5000;
+        Inv_SetAmmo(LGT_CROSSBOW, 5000);
     }
     if (Lara_Cheat_GiveGun(LGT_REVOLVER, false)) {
-        lara_info->ammo[LGT_REVOLVER].ammo = 500;
+        Inv_SetAmmo(LGT_REVOLVER, 500);
     }
     Inv_AddItemNTimes(O_SMALL_MEDIPACK_ITEM, 50);
     Inv_AddItemNTimes(O_LARGE_MEDIPACK_ITEM, 50);

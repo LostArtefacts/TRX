@@ -143,11 +143,12 @@ static bool M_ReadArm(
 }
 
 static bool M_ReadAmmo(
-    JSON_READ_IO *const io, const char *const key, AMMO_INFO *const ammo)
+    JSON_READ_IO *const io, const char *const key, const LARA_GUN_TYPE gun_type)
 {
-    ASSERT(ammo != nullptr);
+    int32_t ammo = 0;
     M_MUST(JSON_PUSH(io, key));
-    M_MUST(JSON_READ(io, "ammo", &ammo->ammo));
+    M_MUST(JSON_READ(io, "ammo", &ammo));
+    Inv_SetAmmo(gun_type, ammo);
     M_MUST(JSON_POP(io));
     M_FINISH();
 }
@@ -345,11 +346,10 @@ static bool M_ReadLara(JSON_READ_IO *const io)
     M_MUST(M_ReadArm(io, "right_arm", &lara->right_arm));
     for (const SAVEGAME_AMMO_ENTRY *entry = g_Savegame_WeaponAmmo;
          entry->key != nullptr; entry++) {
-        AMMO_INFO *const ammo = &lara->ammo[entry->gun_type];
         if (entry->required) {
-            M_MUST(M_ReadAmmo(io, entry->key, ammo));
+            M_MUST(M_ReadAmmo(io, entry->key, entry->gun_type));
         } else {
-            M_SHOULD(M_ReadAmmo(io, entry->key, ammo));
+            M_SHOULD(M_ReadAmmo(io, entry->key, entry->gun_type));
         }
     }
 

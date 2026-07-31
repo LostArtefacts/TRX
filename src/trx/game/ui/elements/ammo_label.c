@@ -5,6 +5,7 @@
 #include <trx/game/game.h>
 #include <trx/game/game_strings/entries.h>
 #include <trx/game/gun.h>
+#include <trx/game/inventory.h>
 #include <trx/game/lara/common.h>
 #include <trx/game/lara/vehicle.h>
 #include <trx/game/ui/elements/label.h>
@@ -22,7 +23,7 @@ bool UI_AmmoLabel(void)
 
     const ITEM *const vehicle_item = Lara_Vehicle_GetItem();
     if (vehicle_item != nullptr && vehicle_item->object_id == O_UPV) {
-        ammo = lara->ammo[LGT_HARPOON].ammo;
+        ammo = Inv_GetAmmo(LGT_HARPOON);
     } else {
         if (lara->gun_status != LGS_READY || Game_IsBonusFlagSet(GBF_NGPLUS)) {
             return false;
@@ -38,7 +39,7 @@ bool UI_AmmoLabel(void)
         // What the label counts is shots, which for the shotgun is fewer than
         // the rounds behind them.
         ammo =
-            Gun_GetAmmo(lara->gun_type) / Gun_GetRoundsPerShot(lara->gun_type);
+            Inv_GetAmmo(lara->gun_type) / Gun_GetRoundsPerShot(lara->gun_type);
 
         if (use_icon) {
             switch (lara->gun_type) {
