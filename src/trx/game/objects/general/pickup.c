@@ -379,19 +379,34 @@ static void M_DoFlarePickup(const int16_t item_num)
     lara->interact_target.is_moving = false;
 }
 
-static void M_GetAllAtLaraPos(const ITEM *const item)
+static void M_CollectAllAtPos(
+    const XYZ_32 pos, const int16_t room_num, const PICKUP_MODE mode)
 {
-    int16_t pickup_num = Room_Get(item->room_num)->item_num;
+    int16_t pickup_num = Room_Get(room_num)->item_num;
     while (pickup_num != NO_ITEM) {
-        ITEM *const check_item = Item_Get(pickup_num);
+        const ITEM *const check_item = Item_Get(pickup_num);
         const int16_t next_item_num = check_item->next_item;
-        if (check_item->pos.x == item->pos.x && check_item->pos.z == item->pos.z
-            && Object_Get(check_item->object_id)->collision_func
-                == Pickup_Collision) {
+        if (Object_Get(check_item->object_id)->collision_func
+                != Pickup_Collision
+            || check_item->object_id == O_FLARE_ITEM
+            || check_item->pos.x != pos.x || check_item->pos.z != pos.z) {
+            goto loop_end;
+        }
+
+        const M_PRIV *const p = check_item->priv;
+        if (p->pickup_mode == mode) {
             M_DoPickup(pickup_num);
         }
+
+    loop_end:
         pickup_num = next_item_num;
     }
+}
+
+static void M_Collect(const ITEM *const item)
+{
+    const M_PRIV *const p = item->priv;
+    M_CollectAllAtPos(item->pos, item->room_num, p->pickup_mode);
 }
 
 static void M_BeginPickupAnimation(const ITEM *const item, const bool is_ducked)
@@ -648,7 +663,7 @@ static void M_DoControlled(const int16_t item_num, ITEM *const lara_item)
 
     if (M_LaraHasPickupState(lara_item)) {
         if (M_IsPickupEraseFrame(lara_item)) {
-            M_GetAllAtLaraPos(item);
+            M_Collect(item);
             lara->interact_target.item_num = NO_ITEM;
         }
         goto cleanup;
