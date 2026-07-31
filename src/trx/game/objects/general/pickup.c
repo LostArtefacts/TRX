@@ -678,11 +678,11 @@ static void M_DoAboveWater(const int16_t item_num, ITEM *const lara_item)
         return;
     }
 
-    const M_PRIV *const p = item->priv;
-    if (is_ducked
-        && (p->pickup_mode == PICKUP_MODE_HIDDEN
-            || p->pickup_mode == PICKUP_MODE_CROWBAR)) {
-        return;
+    if (item->object_id != O_FLARE_ITEM) {
+        const M_PRIV *const p = item->priv;
+        if (is_ducked && p->pickup_mode != PICKUP_MODE_NORMAL) {
+            return;
+        }
     }
 
     const XYZ_16 old_rot = M_PrepareAndCacheRot(item, lara_item, false);

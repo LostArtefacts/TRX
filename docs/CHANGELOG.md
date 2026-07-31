@@ -78,6 +78,7 @@
 - fixed the black surround of the binoculars turning grey when looking in certain directions (regression from 1.9)
 - fixed a new game, or a level started from Play Any Level, running in the game mode the previous game was started in
 - fixed a shaky start to the QWOP animation if the option to fix the step glitch is enabled (regression from TR2X 0.8)
+- fixed Lara being able to collect plinth pickups while ducked (regression from 1.9)
 
 **TR1**
 - changed weather to be affected by the breeze
