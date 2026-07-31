@@ -75,7 +75,7 @@ bool GF_ShowInventoryKeys(const OBJECT_ID receptacle_type_id)
             receptacle_type_id, g_KeyItemToReceptacleMap);
         InvRing_SetRequestedObjectID(obj_id);
     } else {
-        Inv_ClearSelection();
+        InvRing_ClearSelection();
     }
     const GF_COMMAND gf_cmd = GF_ShowInventory(INV_KEYS_MODE);
     if (gf_cmd.action != GF_NOOP) {

@@ -2,6 +2,7 @@
 
 #include <trx/config.h>
 #include <trx/core/memory.h>
+#include <trx/debug.h>
 #include <trx/game/camera.h>
 #include <trx/game/console.h>
 #include <trx/game/cutseq/playback.h>
@@ -51,6 +52,45 @@ static INV_RING *m_ActiveRing = nullptr;
 // logic, Inv_RequestItem callers) ever sees them as missing. Only what
 // InvRing_Open/M_TransitionToRing show is affected.
 static INVENTORY_ITEM *m_VisibleRingItems[RT_NUMBER_OF][INV_RING_MAX_ITEMS];
+
+// Which ring an entry belongs to, which its position says: the main ring
+// counts from zero, the keys from a hundred, the menu from two hundred and the
+// globe from three.
+static RING_TYPE M_GetRingType(const INVENTORY_ITEM *const inv_item)
+{
+    if (inv_item->inv_pos < 100) {
+        return RT_MAIN;
+    } else if (inv_item->inv_pos < 200) {
+        return RT_KEYS;
+    } else if (inv_item->inv_pos < 300) {
+        return RT_OPTION;
+    } else {
+        return RT_GLOBE_SELECT;
+    }
+}
+
+static void M_InsertIntoRing(INVENTORY_ITEM *const inv_item, const int32_t qty)
+{
+    INV_RING_SOURCE *const source = &g_InvRing_Source[M_GetRingType(inv_item)];
+    if (source->count >= INV_RING_MAX_ITEMS) {
+        LOG_WARNING("no room in the ring for object %d", inv_item->object_id);
+        return;
+    }
+
+    int32_t n;
+    for (n = 0; n < source->count; n++) {
+        if (source->items[n]->inv_pos > inv_item->inv_pos) {
+            break;
+        }
+    }
+    for (int32_t i = source->count; i > n; i--) {
+        source->items[i] = source->items[i - 1];
+        source->qtys[i] = source->qtys[i - 1];
+    }
+    source->items[n] = inv_item;
+    source->qtys[n] = MIN(qty, MAX_QTY);
+    source->count++;
+}
 
 static bool M_IsRuntimeHidden(const OBJECT_ID object_id)
 {
@@ -849,28 +889,28 @@ INV_RING *InvRing_Open(const INVENTORY_MODE mode)
     if (mode != INV_GLOBE_SELECT_MODE) {
         // Reset option ring
         g_InvRing_Source[RT_OPTION].count = 0;
-        Inv_InsertItem(
+        InvRing_InsertItem(
             InvRing_GetByObjectID(O_PASSPORT_CLOSED) != nullptr
                 ? InvRing_GetByObjectID(O_PASSPORT_CLOSED)
                 : InvRing_GetByObjectID(O_PASSPORT_OPTION));
         if (g_TRVersion == 1) {
-            Inv_InsertItem(InvRing_GetByObjectID(O_CONTROL_OPTION));
-            Inv_InsertItem(InvRing_GetByObjectID(O_SOUND_OPTION));
-            Inv_InsertItem(InvRing_GetByObjectID(O_DETAIL_OPTION));
+            InvRing_InsertItem(InvRing_GetByObjectID(O_CONTROL_OPTION));
+            InvRing_InsertItem(InvRing_GetByObjectID(O_SOUND_OPTION));
+            InvRing_InsertItem(InvRing_GetByObjectID(O_DETAIL_OPTION));
         } else {
-            Inv_InsertItem(InvRing_GetByObjectID(O_DETAIL_OPTION));
-            Inv_InsertItem(InvRing_GetByObjectID(O_CONTROL_OPTION));
-            Inv_InsertItem(InvRing_GetByObjectID(O_SOUND_OPTION));
+            InvRing_InsertItem(InvRing_GetByObjectID(O_DETAIL_OPTION));
+            InvRing_InsertItem(InvRing_GetByObjectID(O_CONTROL_OPTION));
+            InvRing_InsertItem(InvRing_GetByObjectID(O_SOUND_OPTION));
         }
-        Inv_InsertItem(InvRing_GetByObjectID(O_PDA_OPTION));
+        InvRing_InsertItem(InvRing_GetByObjectID(O_PDA_OPTION));
         if (mode == INV_TITLE_MODE && GF_GetGymLevel() != nullptr) {
-            Inv_InsertItem(InvRing_GetByObjectID(O_PHOTO_OPTION));
+            InvRing_InsertItem(InvRing_GetByObjectID(O_PHOTO_OPTION));
         }
     } else if (g_InvRing_Source[RT_GLOBE_SELECT].count == 0) {
         INVENTORY_ITEM *const globe =
             InvRing_GetByObjectID(O_GLOBE_SELECT_OPTION);
         if (globe != nullptr) {
-            Inv_InsertItem(globe);
+            InvRing_InsertItem(globe);
         }
     }
 
@@ -1098,4 +1138,54 @@ INVENTORY_ITEM *InvRing_GetByObjectID(const OBJECT_ID object_id)
         }
     }
     return nullptr;
+}
+
+void InvRing_Rebuild(void)
+{
+    const INVENTORY_STATE *const state = Inv_GetState();
+
+    for (RING_TYPE ring_type = 0; ring_type < RT_NUMBER_OF; ring_type++) {
+        if (ring_type != RT_OPTION) {
+            g_InvRing_Source[ring_type].count = 0;
+        }
+    }
+
+    for (int32_t i = 0; i < state->count; i++) {
+        INVENTORY_ITEM *const inv_item =
+            InvRing_GetByObjectID(state->entries[i].object_id);
+        if (inv_item != nullptr && M_GetRingType(inv_item) != RT_OPTION) {
+            M_InsertIntoRing(inv_item, state->entries[i].qty);
+        }
+    }
+}
+
+void InvRing_InsertItem(INVENTORY_ITEM *const inv_item)
+{
+    ASSERT(inv_item != nullptr);
+    M_InsertIntoRing(inv_item, 1);
+}
+
+void InvRing_NotifyRemoved(const OBJECT_ID object_id)
+{
+    if (!g_Config.gameplay.fix_item_duplication_glitch) {
+        return;
+    }
+    for (RING_TYPE ring_type = 0; ring_type < RT_NUMBER_OF; ring_type++) {
+        INV_RING_SOURCE *const source = &g_InvRing_Source[ring_type];
+        for (int32_t i = 0; i < source->count; i++) {
+            if (source->items[i]->object_id != object_id) {
+                continue;
+            }
+            if (source->current >= i) {
+                source->current = 0;
+            }
+            return;
+        }
+    }
+}
+
+void InvRing_ClearSelection(void)
+{
+    g_InvRing_Source[RT_MAIN].current = 0;
+    g_InvRing_Source[RT_KEYS].current = 0;
 }
