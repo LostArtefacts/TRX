@@ -7,11 +7,28 @@
 #include <trx/game/savegame.h>
 #include <trx/game/stats.h>
 
+LEVEL_STATS *Stats_GetLevelStats(const GF_LEVEL *const level)
+{
+    RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
+    return resume == nullptr ? nullptr : &resume->stats;
+}
+
+void Stats_ResetLevel(const GF_LEVEL *const level)
+{
+    LEVEL_STATS *const stats = Stats_GetLevelStats(level);
+    if (stats == nullptr) {
+        return;
+    }
+    const int32_t death_count = stats->death_count;
+    *stats = (LEVEL_STATS) {};
+    stats->death_count = death_count;
+}
+
 int32_t Stats_GetSecretCount(void)
 {
-    const GF_LEVEL *const level = Game_GetCurrentLevel();
-    const RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
-    return resume->stats.secret_count;
+    const LEVEL_STATS *const stats =
+        Stats_GetLevelStats(Game_GetCurrentLevel());
+    return stats->secret_count;
 }
 
 int32_t Stats_GetMaxSecretCount(void)
@@ -36,7 +53,7 @@ bool Stats_HasSecret(const int16_t secret_idx)
 {
     const GF_LEVEL *const level = Game_GetCurrentLevel();
     const LEVEL_MAX_STATS *const max_stats = Stats_GetLevelMaxStats(level);
-    RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
+    const LEVEL_STATS *const stats = Stats_GetLevelStats(level);
     if (secret_idx < 0 || secret_idx >= STATS_MAX_SECRETS) {
         return false;
     }
@@ -44,14 +61,14 @@ bool Stats_HasSecret(const int16_t secret_idx)
     if ((secret_mask & max_stats->all_secrets_mask) == 0) {
         return false;
     }
-    return (resume->stats.secret_flags & secret_mask) != 0;
+    return (stats->secret_flags & secret_mask) != 0;
 }
 
 bool Stats_RemoveSecret(const int16_t secret_idx)
 {
     const GF_LEVEL *const level = Game_GetCurrentLevel();
     const LEVEL_MAX_STATS *const max_stats = Stats_GetLevelMaxStats(level);
-    RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
+    LEVEL_STATS *const stats = Stats_GetLevelStats(level);
     if (secret_idx < 0 || secret_idx >= STATS_MAX_SECRETS) {
         return false;
     }
@@ -59,12 +76,12 @@ bool Stats_RemoveSecret(const int16_t secret_idx)
     if ((secret_mask & max_stats->all_secrets_mask) == 0) {
         return false;
     }
-    if (!(resume->stats.secret_flags & secret_mask)) {
+    if (!(stats->secret_flags & secret_mask)) {
         return false;
     }
     LOG_INFO("Removing secret %d", secret_idx);
-    resume->stats.secret_flags &= ~secret_mask;
-    resume->stats.secret_count--;
+    stats->secret_flags &= ~secret_mask;
+    stats->secret_count--;
     return true;
 }
 
@@ -72,7 +89,7 @@ bool Stats_AddSecret(const int16_t secret_idx)
 {
     const GF_LEVEL *const level = Game_GetCurrentLevel();
     const LEVEL_MAX_STATS *const max_stats = Stats_GetLevelMaxStats(level);
-    RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
+    LEVEL_STATS *const stats = Stats_GetLevelStats(level);
     if (secret_idx < 0 || secret_idx >= STATS_MAX_SECRETS) {
         return false;
     }
@@ -80,12 +97,12 @@ bool Stats_AddSecret(const int16_t secret_idx)
     if ((secret_mask & max_stats->all_secrets_mask) == 0) {
         return false;
     }
-    if (resume->stats.secret_flags & secret_mask) {
+    if (stats->secret_flags & secret_mask) {
         return false;
     }
     LOG_INFO("Adding secret %d", secret_idx);
-    resume->stats.secret_flags |= secret_mask;
-    resume->stats.secret_count++;
+    stats->secret_flags |= secret_mask;
+    stats->secret_count++;
     return true;
 }
 
@@ -99,17 +116,17 @@ void Stats_UpdateSecrets(LEVEL_STATS *const stats)
 
 void Stats_MarkSecretCollected(const ITEM *const item)
 {
-    RESUME_INFO *const resume = Savegame_GetCurrentInfo(Game_GetCurrentLevel());
-    resume->stats.secret_flags |= Pickup_GetSecretMask(item);
-    Stats_UpdateSecrets(&resume->stats);
+    LEVEL_STATS *const stats = Stats_GetLevelStats(Game_GetCurrentLevel());
+    stats->secret_flags |= Pickup_GetSecretMask(item);
+    Stats_UpdateSecrets(stats);
 }
 
 bool Stats_CheckAllLevelSecretsPickedUp(void)
 {
     const GF_LEVEL *const level = Game_GetCurrentLevel();
     const LEVEL_MAX_STATS *const max_stats = Stats_GetLevelMaxStats(level);
-    const RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
-    int32_t flags = resume->stats.secret_flags;
+    const LEVEL_STATS *const stats = Stats_GetLevelStats(level);
+    int32_t flags = stats->secret_flags;
     size_t count = 0;
     while (flags != 0) {
         count += flags & 1;
@@ -127,81 +144,78 @@ bool Stats_CheckAllSecretsCollected(void)
 
 void Stats_AddMedipacksUsed(const double medipack_value)
 {
-    RESUME_INFO *const resume = Savegame_GetCurrentInfo(Game_GetCurrentLevel());
-    resume->stats.medipacks_used += medipack_value;
+    LEVEL_STATS *const stats = Stats_GetLevelStats(Game_GetCurrentLevel());
+    if (stats != nullptr) {
+        stats->medipacks_used += medipack_value;
+    }
 }
 
 void Stats_AddDeath(void)
 {
-    const GF_LEVEL *const current_level = Game_GetCurrentLevel();
-    RESUME_INFO *const resume = Savegame_GetCurrentInfo(current_level);
-    resume->stats.death_count++;
+    LEVEL_STATS *const stats = Stats_GetLevelStats(Game_GetCurrentLevel());
+    if (stats == nullptr) {
+        return;
+    }
+    stats->death_count++;
     const SAVEGAME_SLOT_REF save_slot = Savegame_GetBoundSlot();
     if (Savegame_IsValidSlotRef(save_slot)) {
-        Savegame_UpdateDeathCounters(save_slot, resume->stats.death_count);
+        Savegame_UpdateDeathCounters(save_slot, stats->death_count);
     }
 }
 
 void Stats_UpdateTimer(void)
 {
-    const GF_LEVEL *const level = Game_GetCurrentLevel();
-    if (level != nullptr) {
-        RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
-        resume->stats.timer++;
+    LEVEL_STATS *const stats = Stats_GetLevelStats(Game_GetCurrentLevel());
+    if (stats != nullptr) {
+        stats->timer++;
     }
 }
 
 void Stats_AddKill(void)
 {
-    const GF_LEVEL *const level = Game_GetCurrentLevel();
-    if (level != nullptr) {
-        RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
-        resume->stats.kill_count++;
+    LEVEL_STATS *const stats = Stats_GetLevelStats(Game_GetCurrentLevel());
+    if (stats != nullptr) {
+        stats->kill_count++;
     }
 }
 
 void Stats_AddCrystal(void)
 {
-    const GF_LEVEL *const level = Game_GetCurrentLevel();
-    if (level != nullptr) {
-        RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
-        resume->stats.crystal_count++;
+    LEVEL_STATS *const stats = Stats_GetLevelStats(Game_GetCurrentLevel());
+    if (stats != nullptr) {
+        stats->crystal_count++;
     }
 }
 
 void Stats_AddPickup(void)
 {
-    const GF_LEVEL *const level = Game_GetCurrentLevel();
-    if (level != nullptr) {
-        RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
-        resume->stats.pickup_count++;
+    LEVEL_STATS *const stats = Stats_GetLevelStats(Game_GetCurrentLevel());
+    if (stats != nullptr) {
+        stats->pickup_count++;
     }
 }
 
 void Stats_AddAmmoHits(void)
 {
-    const GF_LEVEL *const level = Game_GetCurrentLevel();
-    if (level != nullptr) {
-        RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
-        resume->stats.ammo_hits++;
+    LEVEL_STATS *const stats = Stats_GetLevelStats(Game_GetCurrentLevel());
+    if (stats != nullptr) {
+        stats->ammo_hits++;
     }
 }
 
 void Stats_AddAmmoUsed(void)
 {
-    const GF_LEVEL *const level = Game_GetCurrentLevel();
-    if (level != nullptr) {
-        RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
-        resume->stats.ammo_used++;
+    LEVEL_STATS *const stats = Stats_GetLevelStats(Game_GetCurrentLevel());
+    if (stats != nullptr) {
+        stats->ammo_used++;
     }
 }
 
 void Stats_AddDistanceTravelled(const XYZ_32 pos, const XYZ_32 last_pos)
 {
-    const GF_LEVEL *const level = Game_GetCurrentLevel();
-    if (level != nullptr) {
-        RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
-        resume->stats.distance_travelled += XYZ_32_GetDistance(pos, last_pos);
+    LEVEL_STATS *const stats = Stats_GetLevelStats(Game_GetCurrentLevel());
+    if (stats != nullptr) {
+        stats->distance_travelled += XYZ_32_GetDistance(pos, last_pos);
     }
 }
 
