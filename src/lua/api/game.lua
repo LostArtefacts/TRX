@@ -115,6 +115,18 @@ api.type("game.Level", {
       description = "Secrets the stats screen must not hold against the player.",
     },
   },
+
+  extensions = {
+    stats = {
+      type = "Stats",
+      description = "What the level keeps count of, as a `trx.stats.Stats`, or `nil` for a level "
+        .. "that counts nothing: the title screen and the cutscenes. The level being played is "
+        .. "also `trx.stats` itself.",
+      impl = function(level)
+        return trxc.stats.get(level.num)
+      end,
+    },
+  },
 })
 
 local function level_list(table_type)

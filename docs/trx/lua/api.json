@@ -4910,39 +4910,6 @@
       "path": "sound.stop_all"
     },
     {
-      "description": "Marks a secret as found, as walking into its trigger would.",
-      "examples": [
-        "trx.stats.give_secret(1)"
-      ],
-      "params": [
-        {
-          "description": "The secret's number, counted from one.",
-          "name": "num",
-          "type": "integer"
-        }
-      ],
-      "path": "stats.give_secret",
-      "returns": {
-        "description": "`false` if the level has no such secret, or Lara already has it.",
-        "type": "boolean"
-      }
-    },
-    {
-      "description": "Takes a secret back, leaving it to be found again.",
-      "params": [
-        {
-          "description": "The secret's number, counted from one.",
-          "name": "num",
-          "type": "integer"
-        }
-      ],
-      "path": "stats.take_secret",
-      "returns": {
-        "description": "`false` if the level has no such secret, or Lara does not have it.",
-        "type": "boolean"
-      }
-    },
-    {
       "description": "Matches what someone typed against a list of candidates, forgivingly: `big medi` finds `large medipack`.\n\nCandidates are ranked, best first. Each carries a `value` of the caller's choosing, which comes back untouched on the match - hang an id off it and read it back.",
       "examples": [
         "local matches = trx.strings.fuzzy_match(\"wolf\", {\n  { key = \"wolf\", value = trx.catalog.objects.WOLF },\n  { key = \"bear\", value = trx.catalog.objects.BEAR },\n})\nlocal best = matches[1]"
@@ -5177,7 +5144,7 @@
       "order": 15
     },
     {
-      "description": "Module for what the level being played keeps count of: what Lara has found in\nit, and how much there was to find.\n\nThe counts belong to the level, not to the session. Nothing here reads outside\none, so a script that runs at the title screen sees an empty list and zero\ncounts.",
+      "description": "Module for what a level keeps count of: what Lara has found in it, and how much\nthere was to find.\n\nThe module is the level being played, so `trx.stats.pickups.count` is what she\nhas picked up in it. Any other level's counters are reached the same way through\n`trx.game.Level.stats`. At the title screen there is no level, and everything\nhere reads `nil`.",
       "name": "stats",
       "order": 22
     },
@@ -5513,24 +5480,6 @@
       "writable": false
     },
     {
-      "description": "The secrets the level holds, in order, as a list of `{ num, found }`. `num` is\nthe number the player says, counted from one, and `found` is whether Lara has\nit.",
-      "path": "stats.secrets",
-      "type": "table",
-      "writable": false
-    },
-    {
-      "description": "How many secrets Lara has found in this level.",
-      "path": "stats.secret_count",
-      "type": "integer",
-      "writable": false
-    },
-    {
-      "description": "How many secrets the level counts towards completion. Not the length of\n`secrets`: the game flow can declare some of a level's secrets unobtainable,\nand those are left out of this count while still standing in the list.",
-      "path": "stats.max_secret_count",
-      "type": "integer",
-      "writable": false
-    },
-    {
       "description": "The active weather.",
       "enum": "weather.Type",
       "path": "weather.current",
@@ -5541,7 +5490,13 @@
   "types": [
     {
       "description": "A level, as the game flow file declares it. Everything on it is read-only: a level is what the game flow says it is.",
-      "extensions": [],
+      "extensions": [
+        {
+          "description": "What the level keeps count of, as a `trx.stats.Stats`, or `nil` for a level that counts nothing: the title screen and the cutscenes. The level being played is also `trx.stats` itself.",
+          "name": "stats",
+          "type": "Stats"
+        }
+      ],
       "fields": [
         {
           "description": "The outfit Lara starts the level in.",
@@ -6949,6 +6904,163 @@
         }
       ],
       "path": "sound.Stream"
+    },
+    {
+      "description": "One thing a level is counted on, which is one row of the statistics screen. `raw` is `max` plus `unobtainable`: the game flow can declare part of a level out of reach, and what it writes off is left out of what counts towards completion while still being in the level.",
+      "extensions": [],
+      "fields": [
+        {
+          "description": "How many of them Lara has. The secrets cannot be set this way: they are held one by one, so `give_secret` and `take_secret` are how they change.",
+          "name": "count",
+          "type": "integer",
+          "writable": true
+        },
+        {
+          "description": "How many of them count towards completing the level.",
+          "name": "max",
+          "type": "integer",
+          "writable": false
+        },
+        {
+          "description": "How many of them the level holds, obtainable or not.",
+          "name": "raw",
+          "type": "integer",
+          "writable": false
+        },
+        {
+          "description": "How many of them the game flow declares out of reach, and so must not be held against the player.",
+          "name": "unobtainable",
+          "type": "integer",
+          "writable": false
+        }
+      ],
+      "methods": [],
+      "path": "stats.Category"
+    },
+    {
+      "description": "What one level keeps count of. The counters are the level's own and can be written, which is what a script correcting or seeding them wants.",
+      "extensions": [
+        {
+          "description": "Whether Lara has turned on an ally in this level.",
+          "name": "allies_hurt",
+          "type": "boolean"
+        },
+        {
+          "description": "The save crystals, where the game has them.",
+          "name": "crystals",
+          "type": "Category"
+        },
+        {
+          "description": "The enemies the level counts, allies among them.",
+          "name": "kills",
+          "type": "Category"
+        },
+        {
+          "description": "How many of `kills.max` are allies. The statistics screen holds them against the player only once `allies_hurt`, so a screen of your own wants to do the same: `max_enemy_kills`, and these as well once she has turned on one.",
+          "name": "max_ally_kills",
+          "type": "integer"
+        },
+        {
+          "description": "How many of `kills.max` are enemies rather than allies.",
+          "name": "max_enemy_kills",
+          "type": "integer"
+        },
+        {
+          "description": "The items lying in the level for Lara to take.",
+          "name": "pickups",
+          "type": "Category"
+        },
+        {
+          "description": "The level's secrets. Which ones Lara holds is `secret_list`.",
+          "name": "secrets",
+          "type": "Category"
+        }
+      ],
+      "fields": [
+        {
+          "description": "How many of them hit something.",
+          "name": "ammo_hits",
+          "type": "integer",
+          "writable": true
+        },
+        {
+          "description": "How many rounds Lara has fired.",
+          "name": "ammo_used",
+          "type": "integer",
+          "writable": true
+        },
+        {
+          "description": "How many times Lara has died. Unlike the rest, this is not cleared when the level is entered again: a death stays with the level it happened on.",
+          "name": "deaths",
+          "type": "integer",
+          "writable": true
+        },
+        {
+          "description": "How far Lara has travelled, in world units.",
+          "name": "distance_travelled",
+          "type": "integer",
+          "writable": true
+        },
+        {
+          "description": "How many medipacks Lara has used, a small one counting as half of one.",
+          "name": "medipacks_used",
+          "type": "number",
+          "writable": true
+        },
+        {
+          "description": "How long the level has been played, in game frames.",
+          "name": "timer",
+          "type": "integer",
+          "writable": true
+        }
+      ],
+      "methods": [
+        {
+          "description": "Marks a secret as found, as walking into its trigger would.",
+          "examples": [
+            "trx.stats.give_secret(1)"
+          ],
+          "name": "give_secret",
+          "params": [
+            {
+              "description": "The secret's number, counted from one.",
+              "name": "num",
+              "type": "integer"
+            }
+          ],
+          "returns": {
+            "description": "`false` if the level has no such secret, or Lara already has it.",
+            "type": "boolean"
+          }
+        },
+        {
+          "description": "The level's secrets, in order, as a list of `{ num, found }`. `num` is the number the player says, counted from one, and `found` is whether Lara has it.",
+          "examples": [
+            "for _, secret in ipairs(trx.stats.secret_list()) do\n  trx.log.info(secret.num .. \": \" .. tostring(secret.found))\nend"
+          ],
+          "name": "secret_list",
+          "returns": {
+            "description": "The secrets, one by one.",
+            "type": "table"
+          }
+        },
+        {
+          "description": "Takes a secret back, leaving it to be found again.",
+          "name": "take_secret",
+          "params": [
+            {
+              "description": "The secret's number, counted from one.",
+              "name": "num",
+              "type": "integer"
+            }
+          ],
+          "returns": {
+            "description": "`false` if the level has no such secret, or Lara does not have it.",
+            "type": "boolean"
+          }
+        }
+      ],
+      "path": "stats.Stats"
     }
   ]
 }

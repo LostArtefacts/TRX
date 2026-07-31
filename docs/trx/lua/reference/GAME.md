@@ -87,6 +87,9 @@ Module for the game flow: which levels there are, and which one is being played.
     - **`unobtainable_secrets`**: integer. Secrets the stats screen must not hold against the player. *(read-only)*
     - **`water_particles`**: boolean. Whether water particles are visible in the level's water. *(read-only)*
 
+    Computed properties (derived, not stored on the object):
+    - **`stats`**: Stats. What the level keeps count of, as a `trx.stats.Stats`, or `nil` for a level that counts nothing: the title screen and the cutscenes. The level being played is also `trx.stats` itself.
+
 ### Functions
 
 - [lua]`trx.game.play_level(num, [opts])`  

@@ -26,7 +26,7 @@ end
 -- holds for take, and everything the level has when no verb was typed.
 local function targets(action)
   local out = {}
-  for _, secret in ipairs(trx.stats.secrets) do
+  for _, secret in ipairs(trx.stats.secret_list()) do
     if action == nil or secret.found == (action == "take") then
       out[#out + 1] = { key = tostring(secret.num), value = secret.num }
     end
@@ -36,14 +36,14 @@ end
 
 local function report()
   local held = {}
-  for _, secret in ipairs(trx.stats.secrets) do
+  for _, secret in ipairs(trx.stats.secret_list()) do
     if secret.found then
       held[#held + 1] = display(secret.num)
     end
   end
 
-  local count = trx.stats.secret_count
-  local max_count = trx.stats.max_secret_count
+  local count = trx.stats.secrets.count
+  local max_count = trx.stats.secrets.max
   if #held == 0 then
     return trx.locale.format("console/cmd/secret/none", count, max_count)
   end
@@ -74,7 +74,7 @@ local function change_one(action, num)
 end
 
 local function change_all(action)
-  for _, secret in ipairs(trx.stats.secrets) do
+  for _, secret in ipairs(trx.stats.secret_list()) do
     change(action, secret.num)
   end
   return trx.console.Result.OK, report()

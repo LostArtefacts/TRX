@@ -176,7 +176,20 @@ local function install_meta(owner, tbl)
       if instance ~= nil then
         local handle = instance()
         if handle ~= nil then
-          return handle[key]
+          local member = handle[key]
+          -- A method wants the handle as its self, and the module is not one,
+          -- so the handle stands in. A colon call hands the module over as
+          -- self and a dot call hands over nothing, so the module table itself
+          -- is what tells the two apart - no argument of a script's can be it.
+          if type(member) == "function" then
+            return function(first, ...)
+              if first == tbl then
+                return member(handle, ...)
+              end
+              return member(handle, first, ...)
+            end
+          end
+          return member
         end
       end
       return nil
