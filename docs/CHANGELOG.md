@@ -1,12 +1,6 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.9.3...develop) - ××××-××-××
 - added the TR4 main menu playing the title level behind it, alternating its flybys with the cutscenes their triggers start, as in the original game
-- added `trx.camera.play_flyby()`, to start a flyby camera sequence, and `trx.events.on_flyby_end()`, which happens when one reaches its last camera
 - added partial support for TR4's in-game cutscenes
-- added a new Lua module, `trx.cutscenes`, for playing TR4's cutscenes and reading or rewriting which of them have run, with the `on_cutscene_trigger`, `on_cutscene_start` and `on_cutscene_end` events; a script can answer a cutscene trigger itself, set how a cutscene is framed, and say where one leaves Lara
-- added a new Lua module, `trx.stats`, for what a level keeps count of: its secrets, pickups, kills and save crystals, each alongside how many count towards completing the level and how many the level holds, plus the timer, the deaths, the ammunition and the distance travelled; secrets can be given to Lara or taken back, and every level's counters are readable, so a script can total up whichever levels it likes
-- added pickup families to `trx.objects.query` - `gun`, `ammo`, `supply`, `tool`, `key`, `puzzle`, `quest`, `examine`, `collectible` and `secret` - so a script can ask what a pickup is
-- added `trx.lara.inventory`, for reading what Lara carries and putting things into her backpack or taking them out, and `trx.lara.weapons`, for what the level allows her and how much ammunition she has
-- added `trx.game.is_ngplus`, which tells whether the run started from the passport's bonus entry
 - added TR4 camera mode, which is similar to TR3 but more responsive to Lara's actions such as picking up items
 - added the ability to paste commands in the developer console (with Ctrl+V)
 - added autocompletion to the developer console (with Tab and Shift+Tab to cycle the matches)
@@ -19,7 +13,6 @@
 - added a `damage` property to the `O_POWER_SAW` object
 - improved error messages related to bad command invocations
 - changed reflections UV mapping to be more correct
-- changed the Lua level events to a single `on_game_start`, which every kind of level fires, with `on_title_start` for the title screen; refer to migration notes
 - changed object properties to take effect as soon as they change, rather than only when the item is first set up
 - changed outfits to support joints, up to two braids per outfit, and to allow positional offset adjustments for equipment meshes; refer to migration notes
 - changed the gameflow's `main_menu_picture` to be optional: a game that names no picture shows its title level behind the menu, and its title script says what plays there
@@ -148,15 +141,18 @@ The Lua integration was rewritten and existing scripts will need updating; refer
 - added a new Lua module, `trx.mod`, to list the game's mods and read the loaded one
 - added a new Lua module, `trx.savegame`, to read the save slots and start a saved game
 - added a new Lua module, `trx.lua`, with `eval_expr()` and `eval_file()`, to evaluate Lua code at runtime
+- added a new Lua module, `trx.cutscenes`, for playing TR4's cutscenes, reading or rewriting which of them have run, and framing one, with the `on_cutscene_trigger`, `on_cutscene_start` and `on_cutscene_end` events
+- added a new Lua module, `trx.stats`, for what a level keeps count of – its secrets, pickups, kills, crystals, timer and deaths – alongside how much of each there was to find, for any level rather than only the one being played
 - added `trx.config.reset()`, to put a setting back to its default
 - added `trx.config.describe()`, to read a setting's shape and accepted values
 - added `trx.config.format_value()`, the current value spelled the way the console prints it
 - added `trx.config.accepted_values()`, what a setting takes, as text for an error message
 - added new Lua game state, `trx.game.is_loaded` and `trx.game.is_playable`
+- added `trx.game.is_ngplus`, which tells whether the run started from the passport's bonus entry
 - added `trx.console.register()`, for a script to add its own console command
 - added `trx.events.on_flip_effect()`, letting a script handle a flipeffect run by a trigger or an animation command (#4108)
 - added `trx.events.on_room_change()`, which happens whenever an item changes rooms
-- added `room:on_enter()` and `room:on_exit()`, which happen when Lara - or, with `watch = "all"`, any item - changes rooms
+- added `room:on_enter()` and `room:on_exit()`, which happen when Lara – or, with `watch = "all"`, any item – changes rooms
 - added `trx.events.on_trigger()` and the per-item `item:on_trigger()`, to react to a trigger of any kind being aimed at an item, with the trigger's type, mask, timer and one-shot flag
 - added `trx.events.on_show()` and `trx.events.on_hide()`, with the per-item `item:on_show()` and `item:on_hide()`, which happen when an item becomes visible or hidden
 - added `trx.events.on_finish()` and the per-item `item:on_finish()`, which happen when an item finishes its run, such as a sprung trap or a thrown switch
@@ -171,6 +167,8 @@ The Lua integration was rewritten and existing scripts will need updating; refer
 - added `trx.lara.dry()` and `trx.lara.is_wet`, to dry Lara off after a swim and to check whether she needs it
 - added `trx.lara.is_flying`, to read and toggle the fly-mode cheat
 - added `trx.lara.teleport()`, to move Lara to a position, as `/tp` does
+- added `trx.lara.inventory`, for reading what Lara carries and putting things into her backpack or taking them out, and `trx.lara.weapons`, for what the level allows her and how much ammunition she has
+- added `trx.camera.play_flyby()`, to start a flyby camera sequence, and `trx.events.on_flyby_end()`, which happens when one reaches its last camera
 - added `trx.camera.is_flyby_active` and `trx.camera.cancel_flyby()`, to see and stop a flyby sequence
 - added `trx.game.LevelType.TITLE`, and a `demo` level type to the game flow, which could not be named before
 - added `trx.game.play_gym()`, to start the gym
@@ -181,6 +179,7 @@ The Lua integration was rewritten and existing scripts will need updating; refer
 - added `trx.items.spawn()`, to place a new item in the level at runtime
 - added `trx.objects.swap_sprite()`, to exchange the sprites two objects are drawn from
 - added `trx.objects.query` and `trx.items.query`, composable filters over a level's objects and items that match names, families and state, and combine with `&`, `|` and `~`
+- added pickup families to `trx.objects.query` – `gun`, `ammo`, `supply`, `tool`, `key`, `puzzle`, `quest`, `examine`, `collectible` and `secret` – so a script can ask what a pickup is
 - added `trx.items.get()`, `trx.items.count()`, `trx.rooms.get()`, `trx.rooms.count()` and `trx.objects.get()`, replacing the `fn` namespaces- added `trx.rooms.find_valid_pos()`, to nudge a position into valid room geometry
 - added `trx.rooms.floor_height()` and the room method `floor_height()`, the height of the floor under a position
 - added item methods, `activate()`, `deactivate()`, `trigger()`, `destroy()`, `die()`, `shatter()`, `distance_to()`, `is_valid()`, `get_property()`, `set_property()` and `get_property_names()`, letting a script fire a trigger or antitrigger at an item exactly as a level would
@@ -198,7 +197,7 @@ The Lua integration was rewritten and existing scripts will need updating; refer
 - added `trx.log.generic()` and the `trx.log.LogLevel` enum, to log at a level chosen at runtime
 - added the braid and crowbar constants to `trx.lara.ExtraMesh`, which the engine had but never exposed
 - added indexing and the length operator to `trx.items`, `trx.rooms` and `trx.objects`, so `trx.items[0]` is the first item and `#trx.items` is how many the level has
-- added `trx.api.strict()`, which checks a script's arguments against the API's own declarations - worth turning on while writing a level, and leaving off in play
+- added `trx.api.strict()`, which checks a script's arguments against the API's own declarations – worth turning on while writing a level, and leaving off in play
 - added `room:is_valid()`, so a room handle held across a level change can be checked the way an item handle can
 - added the track to the assault course record functions, so the quad bike's records can be read and written at last
 - added a new Lua string function, `trx.strings.collapse_ranges()`
@@ -226,6 +225,7 @@ The Lua integration was rewritten and existing scripts will need updating; refer
 - changed `trx.config.get()` to return the option's own type rather than always a string
 - changed `trx.events.detach()` to return whether a handler was removed
 - changed `trx.events` handlers to no longer receive a dummy argument in `before_control` and `after_control`
+- changed the Lua level events to a single `on_game_start`, which every kind of level fires, with `on_title_start` for the title screen; refer to migration notes
 - changed the Lua logging functions to take a single message rather than a list of strings
 - changed Lua enums to answer to a constant's name in any case, so `trx.catalog.objects.wolf` and `trx.catalog.objects.WOLF` are the same constant
 - changed Lua enums to be read-only, including the table `pairs()` used to hand out; writing to one used to break every later lookup
