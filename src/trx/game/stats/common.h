@@ -13,6 +13,16 @@ LEVEL_STATS *Stats_GetLevelStats(const GF_LEVEL *level);
 // however many times the level is entered.
 void Stats_ResetLevel(const GF_LEVEL *level);
 
+// What the level is counted on in one category, or false where there is
+// nothing to count: a level with no scan behind it.
+bool Stats_GetCategory(
+    const GF_LEVEL *level, STATS_CATEGORY_ID id, STATS_CATEGORY *out);
+
+// Puts a count back. False where the category cannot take one: the secrets are
+// held as a mask and go through the secret verbs, so that the two agree.
+bool Stats_SetCategoryCount(
+    const GF_LEVEL *level, STATS_CATEGORY_ID id, uint32_t count);
+
 bool Stats_HasSecret(const GF_LEVEL *level, int16_t secret_idx);
 bool Stats_RemoveSecret(const GF_LEVEL *level, int16_t secret_idx);
 bool Stats_AddSecret(const GF_LEVEL *level, int16_t secret_idx);
