@@ -69,6 +69,12 @@ local module_containers = {}
 local container_properties = {}
 -- module -> function returning the handle it stands for.
 local module_instances = {}
+-- type path -> the class table of a type written in Lua, which is both what a
+-- value of that type carries as its metatable and where its methods live.
+local lua_classes = {}
+-- class -> the class it extends, for the checker to walk. Held apart from the
+-- class table, which a value indexes through.
+local class_parents = {}
 local strict_enabled = false
 local sealed = false
 
@@ -413,6 +419,22 @@ local function handle_checker(backing)
   end
 end
 
+-- A value of a type written in Lua carries its class as its metatable, and a
+-- derived class carries the one it extends. Walking that chain is what lets an
+-- ItemQuery satisfy a parameter declared as a Query.
+local function class_checker(class)
+  return function(v)
+    local candidate = getmetatable(v)
+    while candidate ~= nil do
+      if candidate == class then
+        return true
+      end
+      candidate = class_parents[candidate]
+    end
+    return false
+  end
+end
+
 -- Called once, from C, after the trx.* modules have loaded. Declarations are
 -- the engine's to make; a level script re-opening the surface would defeat the
 -- point of declaring it.
@@ -681,6 +703,30 @@ local function bind_type_methods(path)
   local spec = types.by_path[path]
   local backing = spec.backing
   local _, type_name = split_path(path)
+  local class = lua_classes[path]
+
+  -- A type written in Lua keeps its methods in the class table, so binding one
+  -- is an assignment and strict mode swaps the wrapper in the same way it does
+  -- for a module's functions.
+  if class ~= nil then
+    for name, method in pairs(spec.methods or {}) do
+      assert(
+        type(method.impl) == "function",
+        "api.type: " .. path .. "." .. name .. " needs an impl"
+      )
+      rawset(
+        class,
+        name,
+        bound(
+          method.impl,
+          path .. "." .. name,
+          method_params(method.params, type_name)
+        )
+      )
+    end
+    return
+  end
+
   for name, method in pairs(spec.methods or {}) do
     -- The wrapper goes in front of the C function, which struct.method hands
     -- back; without strict mode the name reaches C to bind directly.
@@ -725,6 +771,52 @@ end
 -- called. A member C can reach but nobody declares simply does not exist.
 function api.type(path, spec)
   opening("api.type", spec)
+  local _, type_name = split_path(path)
+
+  -- A type written in Lua names no C struct. The declaration owns its class
+  -- table and hands it back: the module gives a value that class as its
+  -- metatable, and every method a script can call is one declared here.
+  -- `extends` names a type whose methods this one inherits, for a domain that
+  -- adds its own to a shared base.
+  if spec.backing == nil then
+    local class = {}
+    class.__index = class
+    if spec.extends ~= nil then
+      local parent = lua_classes[spec.extends]
+      assert(
+        parent ~= nil,
+        "api.type: " .. path .. " extends an undeclared type"
+      )
+      -- The link is held here rather than on the class, which a value indexes
+      -- through: what a script reaches on one is its declared methods and
+      -- nothing else.
+      class_parents[class] = parent
+      setmetatable(class, { __index = parent })
+      -- Lua looks a metamethod up raw, so `__index` on the class is not what
+      -- reaches one: a derived class carries its own copy of the operators it
+      -- inherits.
+      for key, value in pairs(parent) do
+        if key:sub(1, 2) == "__" and key ~= "__index" then
+          rawset(class, key, value)
+        end
+      end
+    end
+
+    for name, operator in pairs(spec.operators or {}) do
+      assert(
+        type(operator.impl) == "function",
+        "api.type: operator '" .. name .. "' needs an impl"
+      )
+      rawset(class, "__" .. name, operator.impl)
+    end
+
+    lua_classes[path] = class
+    checkers[type_name] = class_checker(class)
+    record(types, path, spec)
+    bind_type_methods(path)
+    return class
+  end
+
   assert(
     type(spec.backing) == "string",
     "api.type: backing must be a C type name"
@@ -732,7 +824,6 @@ function api.type(path, spec)
   local backing = spec.backing
 
   -- Declaring the type is what makes its name checkable in a params list.
-  local _, type_name = split_path(path)
   checkers[type_name] = handle_checker(backing)
 
   for name, field in pairs(spec.fields or {}) do
@@ -966,10 +1057,21 @@ function api.describe()
     local entry = {
       path = path,
       description = spec.description,
+      -- A handle stands for something the engine owns and can outlive it; a
+      -- type written in Lua is the value itself, so the docs say so only of
+      -- the first.
+      handle = spec.backing ~= nil,
       fields = {},
       methods = {},
       extensions = {},
+      operators = {},
     }
+    for name, operator in pairs(spec.operators or {}) do
+      table.insert(entry.operators, {
+        name = name,
+        description = operator.description,
+      })
+    end
     for name, field in pairs(spec.fields or {}) do
       table.insert(entry.fields, {
         name = name,
@@ -1001,6 +1103,7 @@ function api.describe()
     table.sort(entry.fields, by_name)
     table.sort(entry.methods, by_name)
     table.sort(entry.extensions, by_name)
+    table.sort(entry.operators, by_name)
     table.insert(out.types, entry)
   end
   for _, path in ipairs(enums.order) do

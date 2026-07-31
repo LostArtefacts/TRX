@@ -521,6 +521,152 @@ test(
   end
 )
 
+-- A type written in Lua: the declaration hands back the class a value carries
+-- as its metatable, and every method a script can call is one declared here.
+local function widget_class(api, spec)
+  return api.type("things.Widget", spec)
+end
+
+test("type() written in Lua binds its methods to the class", function()
+  local api, exposed = fresh_env()
+  local Widget = widget_class(api, {
+    description = "A widget.",
+    methods = {
+      poke = {
+        description = "...",
+        impl = function(self)
+          return self.name .. " poked"
+        end,
+      },
+    },
+  })
+
+  local widget = setmetatable({ name = "hinge" }, Widget)
+  assert(widget:poke() == "hinge poked")
+  assert(
+    exposed.methods.poke == nil,
+    "a type with no backing must ask C for nothing"
+  )
+end)
+
+test("a Lua type's methods must carry an impl", function()
+  local api = fresh_env()
+  assert(not pcall(widget_class, api, { methods = { poke = {} } }))
+end)
+
+test("a derived Lua type inherits methods and operators", function()
+  local api = fresh_env()
+  local Widget = api.type("things.Widget", {
+    operators = {
+      band = {
+        description = "...",
+        impl = function(a, b)
+          return a.name .. "+" .. b.name
+        end,
+      },
+    },
+    methods = {
+      poke = {
+        description = "...",
+        impl = function(self)
+          return self.name
+        end,
+      },
+    },
+  })
+  local Lever = api.type("things.Lever", {
+    extends = "things.Widget",
+    methods = {
+      pull = {
+        description = "...",
+        impl = function(self)
+          return self.name .. " pulled"
+        end,
+      },
+    },
+  })
+
+  local lever = setmetatable({ name = "lever" }, Lever)
+  assert(lever:pull() == "lever pulled")
+  assert(lever:poke() == "lever", "an inherited method is unreachable")
+  -- Lua looks a metamethod up raw, so the derived class needs its own copy.
+  assert(
+    (lever & setmetatable({ name = "other" }, Lever)) == "lever+other",
+    "an inherited operator is unreachable"
+  )
+  assert(getmetatable(Widget) == nil, "the base class gained a metatable")
+end)
+
+test("extending a type nobody declared raises", function()
+  local api = fresh_env()
+  assert(not pcall(api.type, "things.Lever", { extends = "things.Widget" }))
+end)
+
+test("a Lua type checks its own values, derived ones included", function()
+  local api = fresh_env()
+  local Widget = api.type("things.Widget", {
+    methods = {
+      poke = {
+        description = "...",
+        impl = function()
+          return true
+        end,
+      },
+    },
+  })
+  local Lever = api.type("things.Lever", { extends = "things.Widget" })
+  api.define("things.press", {
+    params = { { name = "widget", type = "Widget" } },
+    impl = function()
+      return true
+    end,
+  })
+
+  api.strict(true)
+  assert(pcall(trx.things.press, setmetatable({}, Widget)))
+  assert(
+    pcall(trx.things.press, setmetatable({}, Lever)),
+    "a derived value must satisfy the type it extends"
+  )
+  assert(not pcall(trx.things.press, {}), "a plain table passed as a Widget")
+  assert(not pcall(trx.things.press, 7))
+
+  -- Strict mode rebinds a Lua type's methods the same way it rebinds a
+  -- module's functions, and the handle it checks first is the value itself.
+  assert(pcall(function()
+    return setmetatable({}, Widget):poke()
+  end))
+  assert(not pcall(Widget.poke, {}), "self went unchecked")
+  api.strict(false)
+end)
+
+test("describe() marks which types are handles", function()
+  local api = fresh_env()
+  api.module("things", { description = "..." })
+  api.type("things.Widget", { backing = "WIDGET", description = "..." })
+  api.type("things.Lever", {
+    description = "...",
+    operators = {
+      bnot = {
+        description = "Everything it does not match.",
+        impl = function() end,
+      },
+    },
+  })
+
+  local by_path = {}
+  for _, entry in ipairs(api.describe().types) do
+    by_path[entry.path] = entry
+  end
+  assert(by_path["things.Widget"].handle == true)
+  assert(
+    by_path["things.Lever"].handle == false,
+    "a type written in Lua is not a handle"
+  )
+  assert(#by_path["things.Lever"].operators == 1, "operators missing")
+  assert(by_path["things.Lever"].operators[1].name == "bnot")
+end)
+
 test("seal blocks further declarations", function()
   local api = fresh_env()
   api.seal()
