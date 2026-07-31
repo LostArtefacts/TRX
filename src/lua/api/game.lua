@@ -117,6 +117,16 @@ api.type("game.Level", {
   },
 
   extensions = {
+    inventory = {
+      type = "Inventory",
+      description = "What the level keeps for Lara's return, as a `trx.inventory.Inventory`, or "
+        .. "`nil` for a level that keeps nothing: the title screen and the cutscenes. It is what "
+        .. "she will arrive there with rather than what she is carrying now, which is "
+        .. "`trx.inventory` itself.",
+      impl = function(level)
+        return trxc.inventory.get(level.num)
+      end,
+    },
     stats = {
       type = "Stats",
       description = "What the level keeps count of, as a `trx.stats.Stats`, or `nil` for a level "

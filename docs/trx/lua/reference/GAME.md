@@ -88,6 +88,7 @@ Module for the game flow: which levels there are, and which one is being played.
     - **`water_particles`**: boolean. Whether water particles are visible in the level's water. *(read-only)*
 
     Computed properties (derived, not stored on the object):
+    - **`inventory`**: Inventory. What the level keeps for Lara's return, as a `trx.inventory.Inventory`, or `nil` for a level that keeps nothing: the title screen and the cutscenes. It is what she will arrive there with rather than what she is carrying now, which is `trx.inventory` itself.
     - **`stats`**: Stats. What the level keeps count of, as a `trx.stats.Stats`, or `nil` for a level that counts nothing: the title screen and the cutscenes. The level being played is also `trx.stats` itself.
 
 ### Functions
