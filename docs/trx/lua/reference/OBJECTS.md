@@ -29,28 +29,7 @@ trx.objects.wolf.properties.max_hit_points = 30
 
 ### Properties
 
-- **`trx.objects.query`** (table). The identity query over every object definition. Narrow it and read it - see
-  [Query](../../QUERY.md).
-
-  Its own narrowings, beyond the shared `by_name` and the operators: the states
-  `loaded` and `spawnable`, and the families `creature`, `enemy`, `loyal`,
-  `pickup`, `switch`, `receptacle`, `pushable`, `door`, `inventory_item`,
-  `null_object` and `animation`.
-
-  `pickup` narrows further, by what the thing is: `gun`, `ammo` for its clips,
-  `supply` for what Lara spends, `tool` for what she carries and uses, and
-  `key`, `puzzle`, `quest`, `examine` and `collectible` for the slot-numbered
-  items, by the slot each fills. `quest` carries the scion. `secret` is the
-  trinket a secret trigger sits under. These do not cover `pickup` between them:
-  a second state of something Lara already carries, such as a part-full
-  waterskin, is in none of them.
-
-  Every family is searchable: a `by_name` of the family's own name
-  matches every member, and `names` offers it for completion. Which families a
-  query answers to follows from what it kept, so one narrowed to what fights
-  offers no `pickup`.
-
-  Example: `trx.objects.query:spawnable():by_name("wolf"):ids()`. *(read-only)*
+- **`trx.objects.query`** (ObjectQuery). The identity query over every object definition. Narrow it and read it - see `trx.objects.ObjectQuery`. *(read-only)*
 
 ### Structures
 
@@ -109,6 +88,129 @@ trx.objects.wolf.properties.max_hit_points = 30
       Parameters:
       - **`name`** (string).
       - **`value`** (any).
+
+- [lua]`trx.objects.ObjectQuery`
+
+    A `trx.query.Query` over every object the engine knows, with the narrowings below on top of the ones every query has. Objects answer to names, so it carries the name layer too - see `trx.query.NamedQuery`.
+
+    The families do not cover `pickup` between them: a second state of something Lara already carries, such as a part-full waterskin, is in none of them.
+
+    Methods:
+
+    - [lua]`objectquery:ammo()`  
+      Clips for a weapon.
+
+      Returns: Query. The narrowed query.
+
+    - [lua]`objectquery:animation()`  
+      An animation an object borrows rather than a thing of its own.
+
+      Returns: Query. The narrowed query.
+
+    - [lua]`objectquery:collectible()`  
+      A collectible, by the slot it fills.
+
+      Returns: Query. The narrowed query.
+
+    - [lua]`objectquery:creature()`  
+      The object is a creature.
+
+      Returns: Query. The narrowed query.
+
+    - [lua]`objectquery:door()`  
+      A door.
+
+      Returns: Query. The narrowed query.
+
+    - [lua]`objectquery:enemy()`  
+      A creature that fights Lara rather than for her.
+
+      Returns: Query. The narrowed query.
+
+    - [lua]`objectquery:examine()`  
+      An examine item, by the slot it fills.
+
+      Returns: Query. The narrowed query.
+
+    - [lua]`objectquery:gun()`  
+      A weapon.
+
+      Returns: Query. The narrowed query.
+
+    - [lua]`objectquery:inventory_item()`  
+      An icon in the inventory rather than a thing in the world.
+
+      Returns: Query. The narrowed query.
+
+    - [lua]`objectquery:key()`  
+      A key, by the slot it fills.
+
+      Returns: Query. The narrowed query.
+
+    - [lua]`objectquery:loaded()`  
+      The level loaded the object, so items of it exist.
+
+      Returns: Query. The narrowed query.
+
+    - [lua]`objectquery:loyal()`  
+      One of Lara's own: the butler, and Lara herself.
+
+      Returns: Query. The narrowed query.
+
+    - [lua]`objectquery:null_object()`  
+      A placeholder that is never drawn.
+
+      Returns: Query. The narrowed query.
+
+    - [lua]`objectquery:pickup()`  
+      Something Lara can pick up.
+
+      Returns: Query. The narrowed query.
+
+    - [lua]`objectquery:pushable()`  
+      A block Lara pushes and pulls.
+
+      Returns: Query. The narrowed query.
+
+    - [lua]`objectquery:puzzle()`  
+      A puzzle item, by the slot it fills.
+
+      Returns: Query. The narrowed query.
+
+    - [lua]`objectquery:quest()`  
+      A quest item, by the slot it fills. This is what carries the scion.
+
+      Returns: Query. The narrowed query.
+
+    - [lua]`objectquery:receptacle()`  
+      A slot a puzzle item goes into.
+
+      Returns: Query. The narrowed query.
+
+    - [lua]`objectquery:secret()`  
+      The trinket a secret trigger sits under.
+
+      Returns: Query. The narrowed query.
+
+    - [lua]`objectquery:spawnable()`  
+      The object is a thing in the world at all, rather than an inventory icon, an animation, or a null placeholder.
+
+      Returns: Query. The narrowed query.
+
+    - [lua]`objectquery:supply()`  
+      A pickup Lara spends rather than keeps.
+
+      Returns: Query. The narrowed query.
+
+    - [lua]`objectquery:switch()`  
+      A switch Lara throws.
+
+      Returns: Query. The narrowed query.
+
+    - [lua]`objectquery:tool()`  
+      A pickup named for itself rather than filling a numbered slot: the crowbar, the lasersight, the binoculars, the waterskins, the leadbar.
+
+      Returns: Query. The narrowed query.
 
 ### Functions
 

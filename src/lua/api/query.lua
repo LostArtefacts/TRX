@@ -12,51 +12,24 @@ the result.
 A query is immutable. Every method returns a fresh query, so a base can be kept
 and branched from without one narrowing leaking into another.
 
-Four ways to narrow, which mix freely:
-
-- Chain methods read left to right and combine with AND:
-  `q:spawnable():by_name("wolf")`. Each domain adds its own - see
-  `trx.objects.query` and `trx.items.query` for the ones it has.
-- The operators `&`, `|` and `~` are AND, OR and NOT over whole queries, for
-  what a chain cannot say: `q:pickup() | q:inventory_item()`, `~q:animation()`.
-  Both sides of `&`/`|` must come from the same domain.
-- `by_name(name)` ranks rather than filters: it matches the way a player types
-  a name, forgivingly, and orders what survives the rest of the query best
-  first. Some of a domain's filters are also searchable groups - `pickup` is
-  one - so their name matches every member. Only a domain that has names offers
-  `by_name`, `names` and `best`.
-- `where(predicate)` narrows by a test of your own, called with the id and the
-  handle, for what a domain does not name: `q:where(function(id, item) return
-  item.timer > 0 end)`.
-
-Read a query with a terminal:
-
-- `ids()` - the matching ids, a list. For objects these are object ids; for
-  items, their numbers.
-- `matches()` - the matching handles: `trx.objects.Object`s or
-  `trx.items.Item`s.
-- `first()` - the first matching handle, or `nil`.
-- `count()` - how many match.
-- `names()` - every name the matches answer to, for offering completions. The
-  group names any match belongs to come first.
-- `best()` - the ids tied for the best `by_name` score: one for a name only one
-  thing answers to, the whole group for a group name.
+Each domain adds narrowings of its own on top of the ones below - see
+`trx.items.ItemQuery` and `trx.objects.ObjectQuery` - and chained methods read
+left to right, combining with AND: `q:spawnable():by_name("wolf")`.
 ]],
 })
 
 -- A domain is what a query runs against. It supplies:
 --   enumerate() - every candidate as a { id, handle } pair, each id once.
 --   id_of(id, handle) - what ids() yields for a candidate.
---   filters - named narrowings. Each is a function(...) returning a
---     predicate(id, handle), or a table { test = <that function>, searchable =
---     true } for a nullary filter whose own name a by_name also matches.
+--   searchable - the filters whose own name a by_name also matches, as
+--     { key, pred } pairs in the order a completer offers them.
 --   names_of(handle) - optional. The names a thing answers to, best weight. Its
 --     presence is what gives a domain by_name, names and best.
 --   default_names_of(handle) - optional. A fallback set tried when nothing in
 --     names_of matched, for before a language file is loaded.
 
--- A fresh query over the same domain, carrying this one's metatable so the
--- domain's filters ride along.
+-- A fresh query over the same domain, carrying this one's class so the domain's
+-- own narrowings ride along.
 local function derive(self, pred, name)
   return setmetatable(
     { _domain = self._domain, _pred = pred, _name = name },
@@ -71,239 +44,328 @@ local function same_domain(a, b)
   )
 end
 
-local function band(a, b)
-  same_domain(a, b)
-  return derive(a, function(id, h)
-    return a._pred(id, h) and b._pred(id, h)
-  end, a._name or b._name)
+-- The pairs that pass the predicate, in enumeration order, before ranking.
+local function kept_pairs(self)
+  local kept = {}
+  for _, pair in ipairs(self._domain.enumerate()) do
+    if self._pred(pair[1], pair[2]) then
+      kept[#kept + 1] = pair
+    end
+  end
+  return kept
 end
 
-local function bor(a, b)
-  same_domain(a, b)
-  return derive(a, function(id, h)
-    return a._pred(id, h) or b._pred(id, h)
-  end, a._name or b._name)
+-- The names a lookup weighs: everything a thing answers to at full weight, and
+-- the name of every searchable group it belongs to at a weight a real name
+-- beats.
+local function candidates(domain, kept, names_getter)
+  local out = {}
+  for _, pair in ipairs(kept) do
+    for _, name in ipairs(names_getter(pair[2])) do
+      out[#out + 1] = { key = name, value = pair, weight = 2 }
+    end
+    for _, group in ipairs(domain.searchable) do
+      if group.pred(pair[1], pair[2]) then
+        out[#out + 1] = { key = group.key, value = pair, weight = 1 }
+      end
+    end
+  end
+  return out
 end
 
-local function bnot(a)
-  return derive(a, function(id, h)
-    return not a._pred(id, h)
-  end, a._name)
+-- The player's language is tried first; nothing there matching falls back on
+-- the names the engine was built with, present before any language file.
+local function rank(domain, name, kept)
+  local matches =
+    trx.strings.fuzzy_match(name, candidates(domain, kept, domain.names_of))
+  if #matches == 0 and domain.default_names_of ~= nil then
+    matches = trx.strings.fuzzy_match(
+      name,
+      candidates(domain, kept, domain.default_names_of)
+    )
+  end
+  -- One thing answers to several names, so it can match more than once. It
+  -- comes back the once, at its best rank.
+  local out, seen = {}, {}
+  for _, match in ipairs(matches) do
+    if not seen[match.value] then
+      seen[match.value] = true
+      out[#out + 1] = { pair = match.value, score = match.score }
+    end
+  end
+  return out
 end
 
-local function build(domain)
-  local index = {}
-  local meta = {
-    __index = index,
-    __band = band,
-    __bor = bor,
-    __bnot = bnot,
-  }
+-- The matches a terminal reads: ranked by name when one is set, otherwise the
+-- kept pairs in enumeration order.
+local function resolved(self)
+  local kept = kept_pairs(self)
+  if self._name == nil then
+    return kept
+  end
+  local out = {}
+  for _, entry in ipairs(rank(self._domain, self._name, kept)) do
+    out[#out + 1] = entry.pair
+  end
+  return out
+end
 
-  -- Each filter becomes a chain method that ANDs its predicate onto the query.
-  -- A searchable one also joins the name candidates below, under its own key.
-  local searchable = {}
-  for name, spec in pairs(domain.filters) do
-    local make = type(spec) == "function" and spec or spec.test
-    index[name] = function(self, ...)
+local QUERY = { type = "Query", description = "The narrowed query." }
+
+local Query = api.type("query.Query", {
+  description = "A filter over a domain, read with one of the terminals below once it is narrow "
+    .. "enough.",
+
+  operators = {
+    band = {
+      description = "Both queries match. Their domains must agree.",
+      impl = function(a, b)
+        same_domain(a, b)
+        return derive(a, function(id, h)
+          return a._pred(id, h) and b._pred(id, h)
+        end, a._name or b._name)
+      end,
+    },
+    bor = {
+      description = "Either query matches, for what a chain cannot say: "
+        .. "`q:pickup() | q:inventory_item()`. Their domains must agree.",
+      impl = function(a, b)
+        same_domain(a, b)
+        return derive(a, function(id, h)
+          return a._pred(id, h) or b._pred(id, h)
+        end, a._name or b._name)
+      end,
+    },
+    bnot = {
+      description = "Everything the query does not match: `~q:animation()`.",
+      impl = function(a)
+        return derive(a, function(id, h)
+          return not a._pred(id, h)
+        end, a._name)
+      end,
+    },
+  },
+
+  methods = {
+    where = {
+      description = "Narrows by a test of your own, for what the domain does not name.",
+      params = {
+        {
+          name = "predicate",
+          type = "function",
+          params = {
+            {
+              name = "id",
+              type = "integer",
+              description = "The candidate's id.",
+            },
+            {
+              name = "handle",
+              type = "any",
+              description = "The candidate itself, an `Object` or an `Item`.",
+            },
+          },
+        },
+      },
+      returns = QUERY,
+      examples = {
+        [[local hurt = trx.items.query:where(function(id, item)
+  return item.hit_points < 10
+end)]],
+      },
+      impl = function(self, pred)
+        return derive(self, function(id, h)
+          return self._pred(id, h) and pred(id, h)
+        end, self._name)
+      end,
+    },
+
+    ids = {
+      description = "The matching ids. For objects these are object ids; for items, their numbers.",
+      returns = { type = "table", description = "A list of integers." },
+      impl = function(self)
+        local out = {}
+        for _, pair in ipairs(resolved(self)) do
+          out[#out + 1] = self._domain.id_of(pair[1], pair[2])
+        end
+        return out
+      end,
+    },
+
+    matches = {
+      description = "The matching handles.",
+      returns = {
+        type = "table",
+        description = "A list of `trx.objects.Object`s or `trx.items.Item`s.",
+      },
+      impl = function(self)
+        local out = {}
+        for _, pair in ipairs(resolved(self)) do
+          out[#out + 1] = pair[2]
+        end
+        return out
+      end,
+    },
+
+    first = {
+      description = "The first matching handle.",
+      returns = {
+        type = "any",
+        nullable = true,
+        description = "The handle, or `nil`.",
+      },
+      impl = function(self)
+        local pair = resolved(self)[1]
+        return pair ~= nil and pair[2] or nil
+      end,
+    },
+
+    count = {
+      description = "How many candidates match.",
+      returns = { type = "integer" },
+      impl = function(self)
+        return #resolved(self)
+      end,
+    },
+  },
+})
+
+api.type("query.NamedQuery", {
+  extends = "query.Query",
+  description = "A query over a domain whose things answer to names, which adds the name layer to "
+    .. "everything a `Query` has. A domain without names offers none of it.",
+
+  methods = {
+    by_name = {
+      description = "Ranks rather than filters: matches the way a player types a name, forgivingly, "
+        .. "and orders what survives the rest of the query best first. Some of a domain's "
+        .. "narrowings are also searchable groups, so their own name matches every member.",
+      params = {
+        { name = "name", type = "string", description = "What to look for." },
+      },
+      returns = QUERY,
+      examples = { [[trx.objects.query:spawnable():by_name("wolf"):ids()]] },
+      impl = function(self, name)
+        return derive(self, self._pred, name)
+      end,
+    },
+
+    names = {
+      description = "Every name the matches answer to, for offering completions. The group names "
+        .. "any match belongs to come first, because a completer offers the list in order and a "
+        .. "group name that ties on score would otherwise sit behind a thing's own. Which groups "
+        .. "answer follows from what the query kept, so one narrowed to what fights offers no "
+        .. "`pickup`.",
+      returns = { type = "table", description = "A list of names." },
+      impl = function(self)
+        local domain = self._domain
+        local kept = kept_pairs(self)
+        local order, seen = {}, {}
+        local function add(name)
+          if not seen[name] then
+            seen[name] = true
+            order[#order + 1] = name
+          end
+        end
+        for _, group in ipairs(domain.searchable) do
+          for _, pair in ipairs(kept) do
+            if group.pred(pair[1], pair[2]) then
+              add(group.key)
+              break
+            end
+          end
+        end
+        for _, pair in ipairs(kept) do
+          local names = domain.names_of(pair[2])
+          if #names == 0 and domain.default_names_of ~= nil then
+            names = domain.default_names_of(pair[2])
+          end
+          for _, name in ipairs(names) do
+            add(name)
+          end
+        end
+        return order
+      end,
+    },
+
+    best = {
+      description = "The ids tied for the best `by_name` score: one for a name only one thing "
+        .. "answers to, the whole group for a group name. Without a `by_name`, every matching id.",
+      returns = { type = "table", description = "A list of integers." },
+      impl = function(self)
+        if self._name == nil then
+          return self:ids()
+        end
+        local domain = self._domain
+        local ranked = rank(domain, self._name, kept_pairs(self))
+        local out = {}
+        local top = ranked[1] ~= nil and ranked[1].score or nil
+        for _, entry in ipairs(ranked) do
+          if entry.score == top then
+            out[#out + 1] = domain.id_of(entry.pair[1], entry.pair[2])
+          end
+        end
+        return out
+      end,
+    },
+  },
+})
+
+-- A domain's own narrowing, as a method on its query type: the filter's
+-- predicate ANDed onto the query, which is what every one of them does.
+api.define("query.narrowing", {
+  description = "Builds a narrowing method for a domain's query type out of a predicate factory. "
+    .. "`trx.items` and `trx.objects` declare their own filters with it.",
+  params = {
+    {
+      name = "make",
+      type = "function",
+      description = "Called with the method's own arguments, returning a `predicate(id, handle)`.",
+    },
+  },
+  returns = {
+    type = "function",
+    description = "The method to declare as an `impl`.",
+  },
+  impl = function(make)
+    return function(self, ...)
       local pred = make(...)
       return derive(self, function(id, h)
         return self._pred(id, h) and pred(id, h)
       end, self._name)
     end
-    if type(spec) == "table" and spec.searchable then
-      searchable[#searchable + 1] = { key = name, pred = make() }
-    end
-  end
-
-  -- pairs() reaches the filters in whatever order it likes, and the group names
-  -- are offered for completion in this one.
-  table.sort(searchable, function(a, b)
-    return a.key < b.key
-  end)
-
-  -- A test of the caller's own, for a narrowing the domain does not name.
-  index.where = function(self, pred)
-    return derive(self, function(id, h)
-      return self._pred(id, h) and pred(id, h)
-    end, self._name)
-  end
-
-  -- The pairs that pass the predicate, in enumeration order, before ranking.
-  local function kept_pairs(self)
-    local kept = {}
-    for _, pair in ipairs(domain.enumerate()) do
-      if self._pred(pair[1], pair[2]) then
-        kept[#kept + 1] = pair
-      end
-    end
-    return kept
-  end
-
-  -- rank stays nil for a domain without names, and the name terminals go
-  -- undeclared, so a query that has no by_name has no names or best either.
-  local rank
-
-  if domain.names_of ~= nil then
-    -- The names a lookup weighs: everything a thing answers to at full weight,
-    -- and the name of every searchable group it belongs to at a weight a real
-    -- name beats.
-    local function candidates(kept, names_getter)
-      local out = {}
-      for _, pair in ipairs(kept) do
-        for _, name in ipairs(names_getter(pair[2])) do
-          out[#out + 1] = { key = name, value = pair, weight = 2 }
-        end
-        for _, group in ipairs(searchable) do
-          if group.pred(pair[1], pair[2]) then
-            out[#out + 1] = { key = group.key, value = pair, weight = 1 }
-          end
-        end
-      end
-      return out
-    end
-
-    -- The player's language is tried first; nothing there matching falls back
-    -- on the names the engine was built with, present before any language file.
-    rank = function(name, kept)
-      local matches =
-        trx.strings.fuzzy_match(name, candidates(kept, domain.names_of))
-      if #matches == 0 and domain.default_names_of ~= nil then
-        matches = trx.strings.fuzzy_match(
-          name,
-          candidates(kept, domain.default_names_of)
-        )
-      end
-      -- One thing answers to several names, so it can match more than once. It
-      -- comes back the once, at its best rank.
-      local out, seen = {}, {}
-      for _, match in ipairs(matches) do
-        if not seen[match.value] then
-          seen[match.value] = true
-          out[#out + 1] = { pair = match.value, score = match.score }
-        end
-      end
-      return out
-    end
-
-    index.by_name = function(self, name)
-      return derive(self, self._pred, name)
-    end
-
-    -- The names to complete against: a searchable group's name once any match
-    -- belongs to it, then what each match answers to. The groups come first
-    -- because a completer offers the list in order, and a group name that ties
-    -- with an object's on score would otherwise sit behind it. Localized names,
-    -- falling back on the built-in ones before a language is loaded.
-    index.names = function(self)
-      local kept = kept_pairs(self)
-      local order, seen = {}, {}
-      local function add(name)
-        if not seen[name] then
-          seen[name] = true
-          order[#order + 1] = name
-        end
-      end
-      for _, group in ipairs(searchable) do
-        for _, pair in ipairs(kept) do
-          if group.pred(pair[1], pair[2]) then
-            add(group.key)
-            break
-          end
-        end
-      end
-      for _, pair in ipairs(kept) do
-        local names = domain.names_of(pair[2])
-        if #names == 0 and domain.default_names_of ~= nil then
-          names = domain.default_names_of(pair[2])
-        end
-        for _, name in ipairs(names) do
-          add(name)
-        end
-      end
-      return order
-    end
-
-    -- The strongest matches: those tied for the top score. A name only one
-    -- thing answers to yields one; a group name yields the whole group.
-    index.best = function(self)
-      if self._name == nil then
-        return self:ids()
-      end
-      local ranked = rank(self._name, kept_pairs(self))
-      local out = {}
-      local top = ranked[1] ~= nil and ranked[1].score or nil
-      for _, entry in ipairs(ranked) do
-        if entry.score == top then
-          out[#out + 1] = domain.id_of(entry.pair[1], entry.pair[2])
-        end
-      end
-      return out
-    end
-  end
-
-  -- The matches a terminal reads: ranked by name when one is set, otherwise the
-  -- kept pairs in enumeration order.
-  local function resolved(self)
-    local kept = kept_pairs(self)
-    if self._name == nil or rank == nil then
-      return kept
-    end
-    local out = {}
-    for _, entry in ipairs(rank(self._name, kept)) do
-      out[#out + 1] = entry.pair
-    end
-    return out
-  end
-
-  index.ids = function(self)
-    local out = {}
-    for _, pair in ipairs(resolved(self)) do
-      out[#out + 1] = domain.id_of(pair[1], pair[2])
-    end
-    return out
-  end
-
-  index.matches = function(self)
-    local out = {}
-    for _, pair in ipairs(resolved(self)) do
-      out[#out + 1] = pair[2]
-    end
-    return out
-  end
-
-  index.first = function(self)
-    local pair = resolved(self)[1]
-    return pair ~= nil and pair[2] or nil
-  end
-
-  index.count = function(self)
-    return #resolved(self)
-  end
-
-  return setmetatable({
-    _domain = domain,
-    _pred = function()
-      return true
-    end,
-    _name = nil,
-  }, meta)
-end
+  end,
+})
 
 api.define("query.new", {
-  description = "Builds the identity query for a domain. `trx.objects` and `trx.items` call this to "
-    .. "make the query a script reaches through `trx.objects.query` and `trx.items.query`.",
+  description = "Builds the identity query over a domain, as an instance of that domain's query "
+    .. "type. `trx.objects` and `trx.items` call this to make the query a script reaches through "
+    .. "`trx.objects.query` and `trx.items.query`.",
   params = {
     {
       name = "domain",
       type = "table",
-      description = "What the query runs against: `enumerate`, `id_of`, `filters`, and an optional "
-        .. "`names_of`/`default_names_of` name layer. See the module source.",
+      description = "What the query runs against: `enumerate`, `id_of`, `searchable`, and an "
+        .. "optional `names_of`/`default_names_of` name layer. See the module source.",
+    },
+    {
+      name = "class",
+      type = "table",
+      description = "The query type the domain's narrowings were declared on.",
     },
   },
   returns = {
-    type = "table",
+    type = "Query",
     description = "The identity query, matching everything until narrowed.",
   },
-  impl = build,
+  impl = function(domain, class)
+    domain.searchable = domain.searchable or {}
+    return setmetatable({
+      _domain = domain,
+      _pred = function()
+        return true
+      end,
+      _name = nil,
+    }, class or Query)
+  end,
 })

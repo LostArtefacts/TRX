@@ -30,11 +30,7 @@ end
 
 ### Properties
 
-- **`trx.items.query`** (table). The identity query over every item in the level. Narrow it and read it - see [Query](../../QUERY.md).
-
-  Its own narrowings, beyond the operators: `simulated`, `present`, `visible`, `finished`, `in_play`, `alive`, `targetable`, `of_object` (by object id or name) and `in_room`.
-
-  Example: `trx.items.query:of_object("wolf"):simulated():matches()`. *(read-only)*
+- **`trx.items.query`** (ItemQuery). The identity query over every item in the level. Narrow it and read it - see `trx.items.ItemQuery`. *(read-only)*
 
 ### Enums
 
@@ -468,6 +464,68 @@ end
       ```lua
       trx.items[12]:trigger({ type = trx.items.TriggerType.ANTITRIGGER })
       ```
+
+- [lua]`trx.items.ItemQuery`
+
+    A `trx.query.Query` over the items a level holds, with the narrowings below on top of the ones every query has. Items answer to no names of their own, so `of_object` is how a name reaches them.
+
+    Methods:
+
+    - [lua]`itemquery:alive()`  
+      The item still has hit points.
+
+      Returns: Query. The narrowed query.
+
+    - [lua]`itemquery:finished()`  
+      The item has run its course.
+
+      Returns: Query. The narrowed query.
+
+    - [lua]`itemquery:in_play()`  
+      The item is part of the game rather than set aside.
+
+      Returns: Query. The narrowed query.
+
+    - [lua]`itemquery:in_room(room_num)`  
+      The item is in the given room.
+
+      Parameters:
+      - **`room_num`** (integer). 0-based room number.
+
+      Returns: Query. The narrowed query.
+
+    - [lua]`itemquery:of_object(key)`  
+      The item is of the given object, named the way a player would name it or by its id.
+
+      Parameters:
+      - **`key`** (any). Object id, or a name `trx.objects.query` resolves.
+
+      Returns: Query. The narrowed query.
+
+      Example:
+      ```lua
+      trx.items.query:of_object("wolf"):simulated():matches()
+      ```
+
+    - [lua]`itemquery:present()`  
+      The item is in the world, whether or not anything is simulating it.
+
+      Returns: Query. The narrowed query.
+
+    - [lua]`itemquery:simulated()`  
+      The item is being simulated: its control routine runs every frame.
+
+      Returns: Query. The narrowed query.
+
+    - [lua]`itemquery:targetable()`  
+      Lara's guns can lock onto the item.
+
+      Returns: Query. The narrowed query.
+
+    - [lua]`itemquery:visible()`  
+      The item is drawn.
+
+      Returns: Query. The narrowed query.
 
 ### Functions
 
