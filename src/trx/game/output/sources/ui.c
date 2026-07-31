@@ -248,6 +248,7 @@ static void M_DrawBinocularMask(const M_PRIV *const p)
     // Lighting routines need a W2V matrix to work; set up something for it.
     Matrix_LookAt(
         origin.x, origin.y, origin.z - WALL_L, origin.x, origin.y, origin.z, 0);
+    Output_CalculateStaticLight(SHADE_NEUTRAL);
 
     Matrix_PushUnit();
     Matrix_TranslateSet32(origin);
