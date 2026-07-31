@@ -43,9 +43,9 @@ end
 
     One kind of thing an inventory holds, and how many of it.
 
-An entry stands for the icon rather than for where it sits, so it goes on
-naming the same thing as what is drawn around it changes. A box of ammunition
-is an entry like any other, counting what its rounds come to.
+    An entry stands for the icon rather than for where it sits, so it goes on
+    naming the same thing as what is drawn around it changes. A box of ammunition
+    is an entry like any other, counting what its rounds come to.
 
     Handles are live references: if the underlying object is destroyed,
     using the handle raises an error rather than silently reading an
@@ -59,15 +59,15 @@ is an entry like any other, counting what its rounds come to.
 
     An inventory: what is in it, and how much ammunition goes with it.
 
-`trx.inventory` is the one Lara is carrying. A level's, reached as
-`trx.game.Level.inventory`, is what she will arrive there with, and holds only
-what travels between levels - a key or a puzzle piece belongs to the level it
-was found in.
+    `trx.inventory` is the one Lara is carrying. A level's, reached as
+    `trx.game.Level.inventory`, is what she will arrive there with, and holds only
+    what travels between levels - a key or a puzzle piece belongs to the level it
+    was found in.
 
-Giving something to Lara's does what walking over it would: a weapon arrives
-with its rounds, her meshes change, and the level's own guns turn into
-ammunition for it. Giving it to a level's only says what she will arrive
-carrying.
+    Giving something to Lara's does what walking over it would: a weapon arrives
+    with its rounds, her meshes change, and the level's own guns turn into
+    ammunition for it. Giving it to a level's only says what she will arrive
+    carrying.
 
     Handles are live references: if the underlying object is destroyed,
     using the handle raises an error rather than silently reading an
