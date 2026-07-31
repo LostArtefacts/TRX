@@ -175,7 +175,7 @@ static void M_ModifyInventory_GunOrAmmo(
         return;
     }
 
-    if (Inv_RequestItem(gun_object_id)) {
+    if (Inv_GetItemCount(gun_object_id)) {
         if (type == GF_INV_SECRET) {
             // Convert already collected guns into ammo to maintain stats
             // accuracy.

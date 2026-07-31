@@ -53,7 +53,7 @@ static void M_Drop(ITEM *const pickup)
 static OBJECT_ID M_ConvertDroppedGun(const OBJECT_ID obj_id)
 {
     if (g_GameFlow.convert_dropped_guns && Object_IsType(obj_id, g_GunObjects)
-        && Inv_RequestItem(obj_id) && obj_id != O_PISTOL_ITEM) {
+        && Inv_GetItemCount(obj_id) && obj_id != O_PISTOL_ITEM) {
         return Object_GetCognate(obj_id, g_GunAmmoObjectMap);
     }
     return obj_id;

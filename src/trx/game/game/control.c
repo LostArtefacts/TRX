@@ -274,10 +274,10 @@ void Game_ProcessInput(void)
         return;
     }
 
-    if (g_InputDB.use_small_medi && Inv_RequestItem(O_SMALL_MEDIPACK_OPTION)) {
+    if (g_InputDB.use_small_medi && Inv_GetItemCount(O_SMALL_MEDIPACK_OPTION)) {
         Lara_UseItem(O_SMALL_MEDIPACK_OPTION);
     }
-    if (g_InputDB.use_big_medi && Inv_RequestItem(O_LARGE_MEDIPACK_OPTION)) {
+    if (g_InputDB.use_big_medi && Inv_GetItemCount(O_LARGE_MEDIPACK_OPTION)) {
         Lara_UseItem(O_LARGE_MEDIPACK_OPTION);
     }
 

@@ -88,7 +88,7 @@ static void M_HandleRequestedObject(INV_RING *const ring)
     for (int32_t i = 0; i < ring->number_of_objects; i++) {
         const OBJECT_ID object_id = ring->list[i]->object_id;
         if (object_id == m_RequestedObjectID
-            && Inv_RequestItem(object_id) > 0) {
+            && Inv_GetItemCount(object_id) > 0) {
             ring->current_object = i;
             break;
         }

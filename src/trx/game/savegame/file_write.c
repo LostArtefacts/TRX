@@ -467,7 +467,7 @@ void SG_File_DumpInventory(JSON_WRITE_IO *const io)
     JSONW_PUSH_OBJECT(io);
     for (const SAVEGAME_INVENTORY_ENTRY *entry = g_Savegame_InventoryItems;
          entry->object_id != NO_OBJECT; entry++) {
-        JSONW_WRITE(io, entry->key, Inv_RequestItem(entry->object_id));
+        JSONW_WRITE(io, entry->key, Inv_GetItemCount(entry->object_id));
     }
     JSONW_POP_AND_SET(io, "inventory");
 }

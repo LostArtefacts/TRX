@@ -49,7 +49,7 @@ static INV_RING *m_ActiveRing = nullptr;
 
 // Display-only filter for the rings: hidden items stay in the real
 // inventory (g_InvRing_Source) so nothing else in the game (savegames, gun
-// logic, Inv_RequestItem callers) ever sees them as missing. Only what
+// logic, Inv_GetItemCount callers) ever sees them as missing. Only what
 // InvRing_Open/M_TransitionToRing show is affected.
 static INVENTORY_ITEM *m_VisibleRingItems[RT_NUMBER_OF][INV_RING_MAX_ITEMS];
 
@@ -135,7 +135,7 @@ static void M_RingNotActive(
     InvRing_ShowItemName(inv_item);
 
     const LARA_INFO *const lara = Lara_GetLaraInfo();
-    const int32_t qty = Inv_RequestItem(inv_item->object_id);
+    const int32_t qty = Inv_GetItemCount(inv_item->object_id);
 
     switch (inv_item->object_id) {
     case O_SHOTGUN_OPTION:
