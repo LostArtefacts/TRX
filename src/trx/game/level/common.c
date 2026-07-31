@@ -24,6 +24,7 @@
 #include <trx/game/savegame.h>
 #include <trx/game/sound.h>
 #include <trx/game/sparks.h>
+#include <trx/game/stats.h>
 #include <trx/game/ui.h>
 
 void Level_Unload(void)
@@ -73,20 +74,7 @@ bool Level_Initialise(
     GF_SetCurrentLevel(level);
 
     if (level->type != GFL_TITLE) {
-        // TODO: move me elsewhere
-        RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
-        if (resume != nullptr) {
-            resume->stats.timer = 0;
-            resume->stats.secret_flags = 0;
-            resume->stats.secret_count = 0;
-            resume->stats.crystal_count = 0;
-            resume->stats.pickup_count = 0;
-            resume->stats.kill_count = 0;
-            resume->stats.ammo_hits = 0;
-            resume->stats.ammo_used = 0;
-            resume->stats.medipacks_used = 0;
-            resume->stats.distance_travelled = 0;
-        }
+        Stats_ResetLevel(level);
     }
 
     if (level == nullptr) {

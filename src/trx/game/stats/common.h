@@ -4,7 +4,17 @@
 #include <trx/game/game_flow/types.h>
 #include <trx/game/stats/types.h>
 
+// The counters the level keeps, or nullptr where there are none to keep: the
+// title screen and the cutscenes.
+LEVEL_STATS *Stats_GetLevelStats(const GF_LEVEL *level);
+
+// Clears what the level counts, ready for it to be played. The death count
+// stands apart and is left alone: a death belongs to the level it happened on
+// however many times the level is entered.
+void Stats_ResetLevel(const GF_LEVEL *level);
+
 int32_t Stats_GetSecretCount(void);
+
 // How many secrets the level counts towards completion, which is what the mask
 // holds less the ones the game flow marks unobtainable.
 int32_t Stats_GetMaxSecretCount(void);
