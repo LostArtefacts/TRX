@@ -646,19 +646,10 @@ void SG_File_DumpLara(JSON_WRITE_IO *const io)
     M_WriteXYZ32(io, "last_pos", lara->last_pos);
     M_WriteArm(io, "left_arm", &lara->left_arm);
     M_WriteArm(io, "right_arm", &lara->right_arm);
-    M_WriteAmmo(io, "pistols", &lara->pistol_ammo);
-    M_WriteAmmo(io, "shotgun", &lara->shotgun_ammo);
-    M_WriteAmmo(io, "magnums", &lara->magnum_ammo);
-    M_WriteAmmo(io, "autos", &lara->autos_ammo);
-    M_WriteAmmo(io, "desert_eagle", &lara->desert_eagle_ammo);
-    M_WriteAmmo(io, "uzis", &lara->uzi_ammo);
-    M_WriteAmmo(io, "harpoon", &lara->harpoon_ammo);
-    M_WriteAmmo(io, "grenade", &lara->grenade_ammo);
-    M_WriteAmmo(io, "rocket", &lara->rocket_ammo);
-    M_WriteAmmo(io, "m16", &lara->m16_ammo);
-    M_WriteAmmo(io, "mp5", &lara->mp5_ammo);
-    M_WriteAmmo(io, "crossbow", &lara->crossbow_ammo);
-    M_WriteAmmo(io, "revolver", &lara->revolver_ammo);
+    for (const SAVEGAME_AMMO_ENTRY *entry = g_Savegame_WeaponAmmo;
+         entry->key != nullptr; entry++) {
+        M_WriteAmmo(io, entry->key, &lara->ammo[entry->gun_type]);
+    }
 
     if (lara->gun_item_num != NO_ITEM) {
         JSONW_PUSH_OBJECT(io);

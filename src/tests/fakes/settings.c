@@ -182,6 +182,16 @@ int32_t Gun_GetRoundsPerShot(const LARA_GUN_TYPE gun_type)
     return 1;
 }
 
+OBJECT_ID Gun_GetAmmoObject(const LARA_GUN_TYPE gun_type)
+{
+    return NO_OBJECT;
+}
+
+int32_t Gun_GetAmmo(const LARA_GUN_TYPE gun_type)
+{
+    return 0;
+}
+
 ITEM *Lara_GetItem(void)
 {
     return nullptr;

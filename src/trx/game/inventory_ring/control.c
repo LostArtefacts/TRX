@@ -101,38 +101,38 @@ static void M_RingNotActive(
     case O_SHOTGUN_OPTION:
         M_ShowAmmoQuantity(
             g_TRVersion == 1 ? "%5d \\{ammo shotgun}" : "%5d",
-            lara->shotgun_ammo.ammo / Gun_GetRoundsPerShot(LGT_SHOTGUN));
+            lara->ammo[LGT_SHOTGUN].ammo / Gun_GetRoundsPerShot(LGT_SHOTGUN));
         break;
     case O_MAGNUM_OPTION:
         M_ShowAmmoQuantity(
             g_TRVersion == 1 ? "%5d \\{ammo magnums}" : "%5d",
-            lara->magnum_ammo.ammo);
+            lara->ammo[LGT_MAGNUMS].ammo);
         break;
     case O_AUTOS_OPTION:
-        M_ShowAmmoQuantity("%5d", lara->autos_ammo.ammo);
+        M_ShowAmmoQuantity("%5d", lara->ammo[LGT_AUTOS].ammo);
         break;
     case O_DESERT_EAGLE_OPTION:
-        M_ShowAmmoQuantity("%5d", lara->desert_eagle_ammo.ammo);
+        M_ShowAmmoQuantity("%5d", lara->ammo[LGT_DESERT_EAGLE].ammo);
         break;
     case O_UZI_OPTION:
         M_ShowAmmoQuantity(
             g_TRVersion == 1 ? "%5d \\{ammo uzis}" : "%5d",
-            lara->uzi_ammo.ammo);
+            lara->ammo[LGT_UZIS].ammo);
         break;
     case O_HARPOON_OPTION:
-        M_ShowAmmoQuantity("%5d", lara->harpoon_ammo.ammo);
+        M_ShowAmmoQuantity("%5d", lara->ammo[LGT_HARPOON].ammo);
         break;
     case O_M16_OPTION:
-        M_ShowAmmoQuantity("%5d", lara->m16_ammo.ammo);
+        M_ShowAmmoQuantity("%5d", lara->ammo[LGT_M16].ammo);
         break;
     case O_MP5_OPTION:
-        M_ShowAmmoQuantity("%5d", lara->mp5_ammo.ammo);
+        M_ShowAmmoQuantity("%5d", lara->ammo[LGT_MP5].ammo);
         break;
     case O_GRENADE_GUN_OPTION:
-        M_ShowAmmoQuantity("%5d", lara->grenade_ammo.ammo);
+        M_ShowAmmoQuantity("%5d", lara->ammo[LGT_GRENADE].ammo);
         break;
     case O_ROCKET_GUN_OPTION:
-        M_ShowAmmoQuantity("%5d", lara->rocket_ammo.ammo);
+        M_ShowAmmoQuantity("%5d", lara->ammo[LGT_ROCKET].ammo);
         break;
 
     case O_SHOTGUN_AMMO_OPTION:

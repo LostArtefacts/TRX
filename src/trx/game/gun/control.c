@@ -437,7 +437,8 @@ void Gun_Control(void)
         break;
 
     case LGS_READY:
-        const bool is_firing = lara->pistol_ammo.ammo != 0 && g_Input.action;
+        const bool is_firing =
+            lara->ammo[LGT_PISTOLS].ammo != 0 && g_Input.action;
         Lara_Skin_SetCombatFace(is_firing);
         M_RequestCombatCamera();
 
@@ -508,7 +509,7 @@ int32_t Gun_FireWeapon(
     AMMO_INFO *const ammo = Gun_GetAmmoInfo(weapon_type);
     ASSERT(ammo != nullptr);
 
-    if (ammo == &lara->pistol_ammo || Game_IsBonusFlagSet(GBF_NGPLUS)) {
+    if (ammo == &lara->ammo[LGT_PISTOLS] || Game_IsBonusFlagSet(GBF_NGPLUS)) {
         ammo->ammo = 1000;
     }
     if (ammo->ammo <= 0) {

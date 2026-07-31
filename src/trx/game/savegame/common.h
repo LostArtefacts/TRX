@@ -11,6 +11,7 @@
 // what actually sets Lara's health, creatures status, triggers, inventory etc.
 
 extern const SAVEGAME_INVENTORY_ENTRY g_Savegame_InventoryItems[];
+extern const SAVEGAME_AMMO_ENTRY g_Savegame_WeaponAmmo[];
 
 void Savegame_Init(void);
 void Savegame_Shutdown(void);
