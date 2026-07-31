@@ -34,11 +34,12 @@ static HANDLE_REGISTRY m_ItemHandles;
 static inline bool M_ItemBoundsIntersectsPortal(
     const ITEM *item, const ROOM *room, const PORTAL *const portal)
 {
-    // Axis-aligned bound intersection; ignores item rotation.
-    const BOUNDS_16 *const frame_bounds = &Item_GetBestFrame(item)->bounds;
-    if (frame_bounds == nullptr) {
-        return false;
-    }
+    // Axis-aligned bound intersection; ignores item rotation. The object's
+    // whole-animation box stands in for the frame being drawn, so an item
+    // that only reaches the neighbour partway through its animation is
+    // queued there from the start and the queue never has to be redone.
+    const BOUNDS_16 *const frame_bounds =
+        &Object_Get(item->object_id)->anim_bounds;
     const BOUNDS_32 bounds = {
         .min = {
             item->pos.x + frame_bounds->min.x,
@@ -78,6 +79,28 @@ static void M_RemoveFromDrawQueues(
     if (room != nullptr && room->portals != nullptr) {
         for (int32_t i = 0; i < room->portals->count; i++) {
             Room_RemoveDrawnItem(room->portals->portal[i].room_num, item_num);
+        }
+    }
+}
+
+// Put the item into a room's draw queues: the room itself and every portal
+// neighbour its box reaches into. Additive, so a queue an object's initialiser
+// arranged for itself - the far side of a door - is left alone.
+static void M_AddToDrawQueues(const int16_t item_num, const int16_t room_num)
+{
+    if (room_num == NO_ROOM) {
+        return;
+    }
+    Room_AddDrawnItem(room_num, item_num);
+    const ROOM *const room = Room_Get(room_num);
+    if (room == nullptr || room->portals == nullptr) {
+        return;
+    }
+    const ITEM *const item = &m_Items[item_num];
+    for (int32_t i = 0; i < room->portals->count; i++) {
+        const PORTAL *const portal = &room->portals->portal[i];
+        if (M_ItemBoundsIntersectsPortal(item, room, portal)) {
+            Room_AddDrawnItem(portal->room_num, item_num);
         }
     }
 }
@@ -653,18 +676,7 @@ void Item_UpdateRoom(const int16_t item_num, const int16_t room_num)
     const int16_t old_room_num = item->room_num;
 
     M_RemoveFromDrawQueues(item_num, old_room_num);
-    if (room_num != NO_ROOM) {
-        Room_AddDrawnItem(room_num, item_num);
-        const ROOM *const neighbor_room = Room_Get(room_num);
-        if (neighbor_room != nullptr && neighbor_room->portals != nullptr) {
-            for (int32_t i = 0; i < neighbor_room->portals->count; i++) {
-                const PORTAL *const portal = &neighbor_room->portals->portal[i];
-                if (M_ItemBoundsIntersectsPortal(item, neighbor_room, portal)) {
-                    Room_AddDrawnItem(portal->room_num, item_num);
-                }
-            }
-        }
-    }
+    M_AddToDrawQueues(item_num, room_num);
 
     if (old_room_num != room_num) {
         M_UnlinkChain(item_num, old_room_num);
@@ -690,6 +702,16 @@ void Item_UpdateRoom(const int16_t item_num, const int16_t room_num)
             };
             LUA_FireEventEx(LUA_EVENT_ROOM_CHANGE, args, 3);
         }
+    }
+}
+
+// Seed every item's draw queues once the rooms are in place. Item_Initialise
+// runs before the portals have their bounds, so the neighbour test can only be
+// answered here.
+void Item_InitialiseDrawQueues(void)
+{
+    for (int32_t i = 0; i < m_LevelItemCount; i++) {
+        M_AddToDrawQueues(i, m_Items[i].room_num);
     }
 }
 

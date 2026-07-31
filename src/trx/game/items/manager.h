@@ -141,6 +141,7 @@ void Item_SetVisible(ITEM *item, bool value);
 void Item_SetFinished(ITEM *item, bool value);
 
 void Item_UpdateRoom(int16_t item_num, int16_t room_num);
+void Item_InitialiseDrawQueues(void);
 
 int32_t Item_GlobalReplace(OBJECT_ID src_obj_id, OBJECT_ID dst_obj_id);
 

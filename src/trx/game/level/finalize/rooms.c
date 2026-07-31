@@ -6,6 +6,7 @@
 #include <trx/core/vector.h>
 #include <trx/debug.h>
 #include <trx/game/game_buf.h>
+#include <trx/game/items.h>
 #include <trx/game/level/finalize.h>
 #include <trx/game/objects.h>
 #include <trx/game/rooms.h>
@@ -238,4 +239,5 @@ void Level_Finalize_LoadRooms(LEVEL_CONTEXT *const ctx)
     M_ComputePortalBounds();
     M_FixStaticsCollision();
     M_FixStaticsVisibility();
+    Item_InitialiseDrawQueues();
 }

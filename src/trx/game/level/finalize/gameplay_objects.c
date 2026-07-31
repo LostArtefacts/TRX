@@ -1,3 +1,5 @@
+#include <trx/core/utils.h>
+#include <trx/game/anims.h>
 #include <trx/game/inject.h>
 #include <trx/game/items.h>
 #include <trx/game/items/walkable.h>
@@ -145,12 +147,44 @@ static void M_PrepareTR4Items(LEVEL_CONTEXT *const ctx)
     }
 }
 
+static void M_ComputeAnimBounds(void)
+{
+    for (int32_t i = O_FIRST; i < O_NUMBER_OF; i++) {
+        OBJECT *const obj = Object_Get(i);
+        BOUNDS_16 bounds = {
+            .min = { INT16_MAX, INT16_MAX, INT16_MAX },
+            .max = { INT16_MIN, INT16_MIN, INT16_MIN },
+        };
+        for (int32_t j = 0; j < obj->anim_count; j++) {
+            const ANIM *const anim = Anim_GetAnim(obj->anim_idx + j);
+            if (anim->frame_ptr == nullptr || anim->interpolation == 0) {
+                continue;
+            }
+            const int32_t frame_count =
+                (anim->frame_end - anim->frame_base) / anim->interpolation + 1;
+            for (int32_t k = 0; k < frame_count; k++) {
+                const BOUNDS_16 *const frame_bounds =
+                    &anim->frame_ptr[k].bounds;
+                bounds.min.x = MIN(bounds.min.x, frame_bounds->min.x);
+                bounds.min.y = MIN(bounds.min.y, frame_bounds->min.y);
+                bounds.min.z = MIN(bounds.min.z, frame_bounds->min.z);
+                bounds.max.x = MAX(bounds.max.x, frame_bounds->max.x);
+                bounds.max.y = MAX(bounds.max.y, frame_bounds->max.y);
+                bounds.max.z = MAX(bounds.max.z, frame_bounds->max.z);
+            }
+        }
+        obj->anim_bounds =
+            bounds.min.x > bounds.max.x ? (BOUNDS_16) {} : bounds;
+    }
+}
+
 void Level_Finalize_LoadObjectsAndItems(LEVEL_CONTEXT *const ctx)
 {
     // Object and item setup/initialisation must take place after injections
     // have been processed. A cached item count must be used as individual
     // initialisations may increment the total item count.
     Object_SetupAllObjects();
+    M_ComputeAnimBounds();
     Walkable_ResetLevel();
     // Must precede Item_Initialise() below, which creates the ropes.
     Rope_Reset();

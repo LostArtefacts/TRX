@@ -93,6 +93,7 @@
 **TR3**
 - fixed Willard being visible outside the hut at the beginning of the cutscene following Antarctica (resolves #5929)
 - fixed scenery that leans out of its room, such as the streetlight glow in It's a Madhouse!, flickering as the camera turns (OG bug)
+- fixed enemies and objects that reach out of their room, such as the Loch Ness monster in Highland Fling, flickering as the camera turns (OG bug)
 - fixed Lara, when on fire, not extinguishing at the right water depth compared with OG (regression from 1.1)
 - fixed the waterfall and drowning mist bunching up in one spot instead of spreading out along the water (regression from 1.2)
 - fixed a crash when a level holds fewer raptors than its raptor emitters can send out
