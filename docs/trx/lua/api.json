@@ -5387,6 +5387,11 @@
       "description": "A level, as the game flow file declares it. Everything on it is read-only: a level is what the game flow says it is.",
       "extensions": [
         {
+          "description": "What the level keeps for Lara's return, as a `trx.inventory.Inventory`, or `nil` for a level that keeps nothing: the title screen and the cutscenes. It is what she will arrive there with rather than what she is carrying now, which is `trx.inventory` itself.",
+          "name": "inventory",
+          "type": "Inventory"
+        },
+        {
           "description": "What the level keeps count of, as a `trx.stats.Stats`, or `nil` for a level that counts nothing: the title screen and the cutscenes. The level being played is also `trx.stats` itself.",
           "name": "stats",
           "type": "Stats"
