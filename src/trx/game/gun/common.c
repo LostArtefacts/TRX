@@ -7,7 +7,7 @@
 #include <trx/game/output.h>
 #include <trx/version.h>
 
-#define M_SHOTGUN_PELLETS_PER_SHOT 6
+#define M_SHOTGUN_ROUNDS_PER_SHOT 6
 
 // What a weapon is made of outside the numbers weapons.json5 carries: the
 // pickup lying in the world, the box of ammunition for it, and the animation
@@ -79,9 +79,9 @@ static bool M_IsGunType(
     return g_Weapons[gun_type].type == weapon_type;
 }
 
-// weapons.json5 counts a box in what the player would call a round, which for
-// the shotgun is a shell holding several pellets. The engine spends a pellet
-// at a time, so the quantities there are scaled into what it spends.
+// weapons.json5 counts in shots, which is what the player's counter shows. The
+// engine spends a round at a time and the shotgun spends six of them on one
+// shot, so the quantities there are scaled into what it spends.
 static int32_t M_GetRounds(const LARA_GUN_TYPE gun_type, const int32_t box_qty)
 {
     return MAX(1, box_qty) * Gun_GetRoundsPerShot(gun_type);
@@ -165,7 +165,7 @@ int32_t Gun_GetAmmoInventoryQuantity(const LARA_GUN_TYPE gun_type)
 
 int32_t Gun_GetRoundsPerShot(const LARA_GUN_TYPE gun_type)
 {
-    return gun_type == LGT_SHOTGUN ? M_SHOTGUN_PELLETS_PER_SHOT : 1;
+    return gun_type == LGT_SHOTGUN ? M_SHOTGUN_ROUNDS_PER_SHOT : 1;
 }
 
 LARA_GUN_TYPE Gun_GetHolsterChoice(const INVENTORY_STATE *const inv)
