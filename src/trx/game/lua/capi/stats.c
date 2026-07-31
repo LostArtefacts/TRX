@@ -9,13 +9,12 @@
 // Secrets are addressed by the number the player says, counted from one; the
 // bit index behind it stays in the engine.
 
-// The statistics belong to the level being played, and the engine has none to
-// read without one. This is the level the statistics themselves are read
-// against, not the one the game flow is on: the title screen has the second
+// The level the statistics are read against, which is the one being played
+// rather than the one the game flow is on: the title screen has the second
 // without the first.
-static bool M_HasLevel(void)
+static const GF_LEVEL *M_GetLevel(void)
 {
-    return Game_GetCurrentLevel() != nullptr;
+    return Game_GetCurrentLevel();
 }
 
 // The secret a number names, as an index, or -1 when the number is outside the
@@ -32,20 +31,18 @@ static int16_t M_GetSecretIdx(lua_State *const L, const int arg)
 // trxc.stats.secrets() -> { { num=, found= }, ... }
 static int M_L_StatsSecrets(lua_State *const L)
 {
+    const GF_LEVEL *const level = M_GetLevel();
     lua_newtable(L);
-    if (!M_HasLevel()) {
-        return 1;
-    }
 
     int32_t out_idx = 1;
     for (int16_t i = 0; i < STATS_MAX_SECRETS; i++) {
-        if (!Stats_IsSecretValid(i)) {
+        if (!Stats_IsSecretValid(level, i)) {
             continue;
         }
         lua_newtable(L);
         lua_pushinteger(L, i + 1);
         lua_setfield(L, -2, "num");
-        lua_pushboolean(L, Stats_HasSecret(i));
+        lua_pushboolean(L, Stats_HasSecret(level, i));
         lua_setfield(L, -2, "found");
         lua_seti(L, -2, out_idx);
         out_idx++;
@@ -56,14 +53,20 @@ static int M_L_StatsSecrets(lua_State *const L)
 // trxc.stats.secret_count() -> int
 static int M_L_StatsSecretCount(lua_State *const L)
 {
-    lua_pushinteger(L, M_HasLevel() ? Stats_GetSecretCount() : 0);
+    const LEVEL_STATS *const stats = Stats_GetLevelStats(M_GetLevel());
+    lua_pushinteger(L, stats == nullptr ? 0 : stats->secret_count);
     return 1;
 }
 
 // trxc.stats.max_secret_count() -> int
 static int M_L_StatsMaxSecretCount(lua_State *const L)
 {
-    lua_pushinteger(L, M_HasLevel() ? Stats_GetMaxSecretCount() : 0);
+    const GF_LEVEL *const level = M_GetLevel();
+    lua_pushinteger(
+        L,
+        Stats_HasLevelMaxStats(level)
+            ? Stats_GetLevelMaxStats(level)->max_secret_count
+            : 0);
     return 1;
 }
 
@@ -72,7 +75,7 @@ static int M_L_StatsGiveSecret(lua_State *const L)
 {
     const int16_t secret_idx = M_GetSecretIdx(L, 1);
     lua_pushboolean(
-        L, M_HasLevel() && secret_idx >= 0 && Stats_AddSecret(secret_idx));
+        L, secret_idx >= 0 && Stats_AddSecret(M_GetLevel(), secret_idx));
     return 1;
 }
 
@@ -81,7 +84,7 @@ static int M_L_StatsTakeSecret(lua_State *const L)
 {
     const int16_t secret_idx = M_GetSecretIdx(L, 1);
     lua_pushboolean(
-        L, M_HasLevel() && secret_idx >= 0 && Stats_RemoveSecret(secret_idx));
+        L, secret_idx >= 0 && Stats_RemoveSecret(M_GetLevel(), secret_idx));
     return 1;
 }
 

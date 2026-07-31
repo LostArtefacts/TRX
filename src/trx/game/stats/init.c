@@ -293,11 +293,16 @@ __attribute__((destructor)) static void M_Shutdown(void)
     m_StatsCapacity = 0;
 }
 
+bool Stats_HasLevelMaxStats(const GF_LEVEL *const level)
+{
+    return m_Stats != nullptr && level != nullptr
+        && GF_GetLevelTableType(level->type) == GFLT_MAIN && level->num >= 0
+        && level->num < m_StatsCapacity;
+}
+
 LEVEL_MAX_STATS *Stats_GetLevelMaxStats(const GF_LEVEL *const level)
 {
-    ASSERT(m_Stats != nullptr);
-    ASSERT(level != nullptr);
-    ASSERT(level->num >= 0 && level->num < m_StatsCapacity);
+    ASSERT(Stats_HasLevelMaxStats(level));
     return &m_Stats[level->num];
 }
 

@@ -7,6 +7,21 @@
 #include <trx/game/savegame.h>
 #include <trx/game/stats.h>
 
+// The bit a secret number stands for in the level's mask, or 0 when the level
+// holds no such secret.
+static uint32_t M_GetSecretMask(
+    const GF_LEVEL *const level, const int16_t secret_idx)
+{
+    if (secret_idx < 0 || secret_idx >= STATS_MAX_SECRETS
+        || !Stats_HasLevelMaxStats(level)) {
+        return 0;
+    }
+    const uint32_t secret_mask = 1 << secret_idx;
+    return (secret_mask & Stats_GetLevelMaxStats(level)->all_secrets_mask) != 0
+        ? secret_mask
+        : 0;
+}
+
 LEVEL_STATS *Stats_GetLevelStats(const GF_LEVEL *const level)
 {
     RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
@@ -24,59 +39,27 @@ void Stats_ResetLevel(const GF_LEVEL *const level)
     stats->death_count = death_count;
 }
 
-int32_t Stats_GetSecretCount(void)
+bool Stats_IsSecretValid(const GF_LEVEL *const level, const int16_t secret_idx)
 {
-    const LEVEL_STATS *const stats =
-        Stats_GetLevelStats(Game_GetCurrentLevel());
-    return stats->secret_count;
+    return M_GetSecretMask(level, secret_idx) != 0;
 }
 
-int32_t Stats_GetMaxSecretCount(void)
+bool Stats_HasSecret(const GF_LEVEL *const level, const int16_t secret_idx)
 {
-    const GF_LEVEL *const level = Game_GetCurrentLevel();
-    const LEVEL_MAX_STATS *const max_stats = Stats_GetLevelMaxStats(level);
-    return max_stats->max_secret_count;
-}
-
-bool Stats_IsSecretValid(const int16_t secret_idx)
-{
-    const GF_LEVEL *const level = Game_GetCurrentLevel();
-    const LEVEL_MAX_STATS *const max_stats = Stats_GetLevelMaxStats(level);
-    if (secret_idx < 0 || secret_idx >= STATS_MAX_SECRETS) {
-        return false;
-    }
-    const uint32_t secret_mask = 1 << secret_idx;
-    return (secret_mask & max_stats->all_secrets_mask) != 0;
-}
-
-bool Stats_HasSecret(const int16_t secret_idx)
-{
-    const GF_LEVEL *const level = Game_GetCurrentLevel();
-    const LEVEL_MAX_STATS *const max_stats = Stats_GetLevelMaxStats(level);
+    const uint32_t secret_mask = M_GetSecretMask(level, secret_idx);
     const LEVEL_STATS *const stats = Stats_GetLevelStats(level);
-    if (secret_idx < 0 || secret_idx >= STATS_MAX_SECRETS) {
-        return false;
-    }
-    const uint32_t secret_mask = 1 << secret_idx;
-    if ((secret_mask & max_stats->all_secrets_mask) == 0) {
+    if (secret_mask == 0 || stats == nullptr) {
         return false;
     }
     return (stats->secret_flags & secret_mask) != 0;
 }
 
-bool Stats_RemoveSecret(const int16_t secret_idx)
+bool Stats_RemoveSecret(const GF_LEVEL *const level, const int16_t secret_idx)
 {
-    const GF_LEVEL *const level = Game_GetCurrentLevel();
-    const LEVEL_MAX_STATS *const max_stats = Stats_GetLevelMaxStats(level);
+    const uint32_t secret_mask = M_GetSecretMask(level, secret_idx);
     LEVEL_STATS *const stats = Stats_GetLevelStats(level);
-    if (secret_idx < 0 || secret_idx >= STATS_MAX_SECRETS) {
-        return false;
-    }
-    const uint32_t secret_mask = 1 << secret_idx;
-    if ((secret_mask & max_stats->all_secrets_mask) == 0) {
-        return false;
-    }
-    if (!(stats->secret_flags & secret_mask)) {
+    if (secret_mask == 0 || stats == nullptr
+        || (stats->secret_flags & secret_mask) == 0) {
         return false;
     }
     LOG_INFO("Removing secret %d", secret_idx);
@@ -85,19 +68,12 @@ bool Stats_RemoveSecret(const int16_t secret_idx)
     return true;
 }
 
-bool Stats_AddSecret(const int16_t secret_idx)
+bool Stats_AddSecret(const GF_LEVEL *const level, const int16_t secret_idx)
 {
-    const GF_LEVEL *const level = Game_GetCurrentLevel();
-    const LEVEL_MAX_STATS *const max_stats = Stats_GetLevelMaxStats(level);
+    const uint32_t secret_mask = M_GetSecretMask(level, secret_idx);
     LEVEL_STATS *const stats = Stats_GetLevelStats(level);
-    if (secret_idx < 0 || secret_idx >= STATS_MAX_SECRETS) {
-        return false;
-    }
-    const uint32_t secret_mask = 1 << secret_idx;
-    if ((secret_mask & max_stats->all_secrets_mask) == 0) {
-        return false;
-    }
-    if (stats->secret_flags & secret_mask) {
+    if (secret_mask == 0 || stats == nullptr
+        || (stats->secret_flags & secret_mask) != 0) {
         return false;
     }
     LOG_INFO("Adding secret %d", secret_idx);
@@ -263,16 +239,16 @@ FINAL_STATS Stats_ComputeFinalStats(const bool include_bonus_levels)
     return result;
 }
 
-OBJECT_ID Stats_GetSecretObject(const int32_t secret_idx)
+OBJECT_ID Stats_GetSecretObject(
+    const GF_LEVEL *const level, const int32_t secret_idx)
 {
-    const GF_LEVEL *const level = Game_GetCurrentLevel();
-    if (level == nullptr) {
+    if (secret_idx < 0 || secret_idx >= STATS_MAX_SECRETS
+        || !Stats_HasLevelMaxStats(level)) {
         return NO_OBJECT;
     }
-    const LEVEL_MAX_STATS *const stats = Stats_GetLevelMaxStats(level);
-    ASSERT(stats != nullptr);
-    ASSERT(secret_idx >= 0 && secret_idx < STATS_MAX_SECRETS);
-    return stats->secret_objects[secret_idx].assigned_object_id;
+    return Stats_GetLevelMaxStats(level)
+        ->secret_objects[secret_idx]
+        .assigned_object_id;
 }
 
 uint32_t Stats_GetSecretMaskForItem(
