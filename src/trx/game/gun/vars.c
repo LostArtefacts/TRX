@@ -68,8 +68,6 @@ static void M_ReadAmmoInfo(JSON_OBJECT *const obj, const int32_t type)
         ammo_obj, "initial_qty", g_Weapons[type].ammo.initial_qty);
     g_Weapons[type].ammo.pickup_qty = JSON_ObjectGetInt(
         ammo_obj, "pickup_qty", g_Weapons[type].ammo.pickup_qty);
-    g_Weapons[type].ammo.pickup_qty_alt = JSON_ObjectGetInt(
-        ammo_obj, "pickup_qty_alt", g_Weapons[type].ammo.pickup_qty_alt);
     g_Weapons[type].ammo.inventory_qty = JSON_ObjectGetInt(
         ammo_obj, "inventory_qty", g_Weapons[type].ammo.inventory_qty);
 }

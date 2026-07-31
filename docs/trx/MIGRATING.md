@@ -254,7 +254,12 @@ order: 3
    fires for cutscene and demo levels too, and the title screen has
    `on_title_start`.
 
-24. **Update scripts that raise an item's maximum hit points**
+24. **Remove `ammo.pickup_qty_alt` from weapon definitions**
+   The field only applied to flares in Japanese NG, which is no longer a game
+   mode. A flare box now always gives `ammo.pickup_qty` flares. The field is
+   ignored if left in `weapons.json5`.
+
+25. **Update scripts that raise an item's maximum hit points**
    Writing `max_hit_points` carries the item's current hit points with it, by
    the difference: an item that has taken no damage comes out at full health,
    and one that is already hurt stays hurt by as much. It no longer needs a

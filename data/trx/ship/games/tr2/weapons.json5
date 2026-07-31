@@ -7,7 +7,6 @@
         "ammo": {
             "initial_qty": 6,
             "pickup_qty": 6,
-            "pickup_qty_alt": 8,
         },
         "flash_shade": 2048,
         "flash_pos": {
