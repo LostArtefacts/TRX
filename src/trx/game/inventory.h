@@ -20,4 +20,3 @@ void Inv_RemoveAllItems(void);
 
 bool Inv_AddItem(OBJECT_ID obj_id);
 bool Inv_CanAddItem(OBJECT_ID obj_id);
-bool Inv_AddPickup(const ITEM *item);
