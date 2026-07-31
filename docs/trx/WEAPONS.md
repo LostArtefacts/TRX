@@ -34,7 +34,7 @@ described in the table below.
   <tr valign="top">
     <td><code>damage</code></td>
     <td>Integer</td>
-    <td>The HP damage value to subtract from targets when struck by this weapon type. This value is doubled when playing either <code>Japanese</code> or <code>Japanese NG+</code> modes.</td>
+    <td>The HP damage value to subtract from targets when struck by this weapon type.</td>
   </tr>
   <tr valign="top">
     <td><code>draw_frame</code></td>
@@ -135,11 +135,6 @@ described in the table below.
     <td><code>ammo.pickup_qty</code></td>
     <td>Integer</td>
     <td>The amount of ammo given when the equivalent ammo object is picked up.</td>
-  </tr>
-  <tr valign="top">
-    <td><code>ammo.pickup_qty_alt</code></td>
-    <td>Integer</td>
-    <td>As per <code>ammo.pickup_qty</code>, but this applies exclusively to flares when playing Japanese NG.</td>
   </tr>
   <tr valign="top">
     <td><code>ammo.inventory_alt</code></td>

@@ -15,7 +15,6 @@ typedef enum {
 typedef struct {
     int32_t initial_qty;
     int32_t pickup_qty;
-    int32_t pickup_qty_alt;
     int32_t inventory_qty;
 } WEAPON_AMMO_INFO;
 
