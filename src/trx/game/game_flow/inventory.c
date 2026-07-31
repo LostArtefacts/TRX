@@ -8,6 +8,8 @@
 #include <trx/game/savegame.h>
 #include <trx/game/stats.h>
 
+#include <string.h>
+
 static int8_t m_SecretInvItems[O_NUMBER_OF] = {};
 static int8_t m_Add2InvItems[O_NUMBER_OF] = {};
 static bool m_RemoveWeapons = false;
@@ -16,6 +18,13 @@ static bool m_RemoveFlares = false;
 static bool m_RemoveMedipacks = false;
 static bool m_RemoveScions = false;
 static bool m_RemoveBinoculars = false;
+
+// What the scion modifier takes away. The object ids are not consecutive, so
+// they are named one by one.
+static const OBJECT_ID m_ScionObjects[] = {
+    O_SCION_ITEM_1, O_QUEST_ITEM_1, O_QUEST_ITEM_2,
+    O_QUEST_ITEM_3, O_QUEST_ITEM_4, NO_OBJECT,
+};
 
 static bool M_CanHaveItem(const OBJECT_ID object_id)
 {
@@ -31,99 +40,18 @@ static bool M_CanHaveItem(const OBJECT_ID object_id)
     return true;
 }
 
-static bool M_ResumeInfo_HasWeapon(
-    const RESUME_INFO *const resume, const LARA_GUN_TYPE gun_type)
-{
-    switch (gun_type) {
-        // clang-format off
-    case LGT_PISTOLS:      return resume->flags.has_pistols;
-    case LGT_MAGNUMS:      return resume->flags.has_magnums;
-    case LGT_AUTOS:        return resume->flags.has_autos;
-    case LGT_DESERT_EAGLE: return resume->flags.has_desert_eagle;
-    case LGT_UZIS:         return resume->flags.has_uzis;
-    case LGT_SHOTGUN:      return resume->flags.has_shotgun;
-    case LGT_HARPOON:      return resume->flags.has_harpoon;
-    case LGT_M16:          return resume->flags.has_m16;
-    case LGT_MP5:          return resume->flags.has_mp5;
-    case LGT_GRENADE:      return resume->flags.has_grenade;
-    case LGT_ROCKET:       return resume->flags.has_rocket;
-    case LGT_CROSSBOW:     return resume->flags.has_crossbow;
-    case LGT_REVOLVER:     return resume->flags.has_revolver;
-    default: return false;
-        // clang-format on
-    }
-}
-
-static void M_ResumeInfo_SetWeapon(
-    RESUME_INFO *const resume, const LARA_GUN_TYPE gun_type,
-    const bool has_weapon)
-{
-    switch (gun_type) {
-        // clang-format off
-    case LGT_PISTOLS:      resume->flags.has_pistols = has_weapon; break;
-    case LGT_MAGNUMS:      resume->flags.has_magnums = has_weapon; break;
-    case LGT_AUTOS:        resume->flags.has_autos = has_weapon; break;
-    case LGT_DESERT_EAGLE: resume->flags.has_desert_eagle = has_weapon; break;
-    case LGT_UZIS:         resume->flags.has_uzis = has_weapon; break;
-    case LGT_SHOTGUN:      resume->flags.has_shotgun = has_weapon; break;
-    case LGT_HARPOON:      resume->flags.has_harpoon = has_weapon; break;
-    case LGT_M16:          resume->flags.has_m16 = has_weapon; break;
-    case LGT_MP5:          resume->flags.has_mp5 = has_weapon; break;
-    case LGT_GRENADE:      resume->flags.has_grenade = has_weapon; break;
-    case LGT_ROCKET:       resume->flags.has_rocket = has_weapon; break;
-    case LGT_CROSSBOW:     resume->flags.has_crossbow = has_weapon; break;
-    case LGT_REVOLVER:     resume->flags.has_revolver = has_weapon; break;
-    default: break;
-        // clang-format on
-    }
-}
-
-static void M_ResumeInfo_AddAmmo(
-    RESUME_INFO *const resume, const LARA_GUN_TYPE gun_type,
-    const int32_t ammo_qty)
-{
-    switch (gun_type) {
-        // clang-format off
-    case LGT_MAGNUMS:      resume->magnum_ammo += ammo_qty; break;
-    case LGT_AUTOS:        resume->autos_ammo += ammo_qty; break;
-    case LGT_DESERT_EAGLE: resume->desert_eagle_ammo += ammo_qty; break;
-    case LGT_UZIS:         resume->uzi_ammo += ammo_qty; break;
-    case LGT_SHOTGUN:      resume->shotgun_ammo += ammo_qty; break;
-    case LGT_HARPOON:      resume->harpoon_ammo += ammo_qty; break;
-    case LGT_M16:          resume->m16_ammo += ammo_qty; break;
-    case LGT_MP5:          resume->mp5_ammo += ammo_qty; break;
-    case LGT_GRENADE:      resume->grenade_ammo += ammo_qty; break;
-    case LGT_ROCKET:       resume->rocket_ammo += ammo_qty; break;
-    case LGT_CROSSBOW:     resume->crossbow_ammo += ammo_qty; break;
-    case LGT_REVOLVER:     resume->revolver_ammo += ammo_qty; break;
-    default: break;
-        // clang-format on
-    }
-}
-
 static void M_ResumeInfo_AddItem(
     RESUME_INFO *const resume, const OBJECT_ID object_id, const int32_t qty)
 {
-    switch (object_id) {
-    case O_SMALL_MEDIPACK_ITEM:
-    case O_SMALL_MEDIPACK_OPTION:
-        resume->small_medipacks += qty;
-        break;
-    case O_LARGE_MEDIPACK_ITEM:
-    case O_LARGE_MEDIPACK_OPTION:
-        resume->large_medipacks += qty;
-        break;
-    case O_FLAREBOX_ITEM:
-    case O_FLAREBOX_OPTION:
-    case O_FLARE_ITEM:
-        resume->flares += qty;
-        break;
-    case O_BINOCULARS_ITEM:
-        resume->flags.has_binoculars = true;
-        break;
-    default:
-        break;
+    // The binoculars are held rather than counted, so any number of them is
+    // the one pair.
+    if (object_id == O_BINOCULARS_ITEM) {
+        if (qty > 0) {
+            Inv_State_SetCount(&resume->inv, object_id, 1);
+        }
+        return;
     }
+    Inv_State_AddCount(&resume->inv, object_id, qty);
 }
 
 static void M_ModifyResumeInfo_GunOrAmmo(
@@ -138,12 +66,13 @@ static void M_ModifyResumeInfo_GunOrAmmo(
         return;
     }
 
-    M_ResumeInfo_AddAmmo(
-        resume, gun_type, ammo_pickup_qty * m_Add2InvItems[ammo_object_id]);
-    if (!M_ResumeInfo_HasWeapon(resume, gun_type)
+    Inv_State_AddAmmo(
+        &resume->inv, gun_type,
+        ammo_pickup_qty * m_Add2InvItems[ammo_object_id]);
+    if (!Inv_State_Has(&resume->inv, gun_object_id)
         && m_Add2InvItems[gun_object_id] > 0) {
-        M_ResumeInfo_SetWeapon(resume, gun_type, true);
-        M_ResumeInfo_AddAmmo(resume, gun_type, ammo_initial_qty);
+        Inv_State_SetCount(&resume->inv, gun_object_id, 1);
+        Inv_State_AddAmmo(&resume->inv, gun_type, ammo_initial_qty);
     }
 }
 
@@ -312,68 +241,48 @@ void GF_InventoryModifier_ApplyToResumeInfo(const GF_LEVEL *const level)
     RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
 
     if (m_RemoveWeapons) {
-        resume->flags.has_pistols = false;
-        resume->flags.has_magnums = false;
-        resume->flags.has_autos = false;
-        resume->flags.has_desert_eagle = false;
-        resume->flags.has_uzis = false;
-        resume->flags.has_shotgun = false;
-        resume->flags.has_m16 = false;
-        resume->flags.has_mp5 = false;
-        resume->flags.has_grenade = false;
-        resume->flags.has_rocket = false;
-        resume->flags.has_harpoon = false;
+        for (LARA_GUN_TYPE gun_type = LGT_UNARMED + 1; gun_type < NUM_WEAPONS;
+             gun_type++) {
+            Inv_State_SetCount(&resume->inv, Gun_GetGunObject(gun_type), 0);
+        }
         resume->holsters_gun_type = LGT_UNARMED;
         resume->back_gun_type = LGT_UNARMED;
         resume->equipped_gun_type = LGT_UNARMED;
         resume->gun_status = LGS_ARMLESS;
     }
 
-    if (!resume->flags.has_pistols && m_Add2InvItems[O_PISTOL_ITEM]) {
-        resume->flags.has_pistols = true;
+    if (!Inv_State_Has(&resume->inv, O_PISTOL_ITEM)
+        && m_Add2InvItems[O_PISTOL_ITEM]) {
+        Inv_State_SetCount(&resume->inv, O_PISTOL_ITEM, 1);
         if (resume->equipped_gun_type == LGT_UNARMED) {
             resume->equipped_gun_type = LGT_PISTOLS;
         }
     }
 
     if (m_RemoveAmmo) {
-        resume->pistol_ammo = 0;
-        resume->magnum_ammo = 0;
-        resume->autos_ammo = 0;
-        resume->desert_eagle_ammo = 0;
-        resume->uzi_ammo = 0;
-        resume->shotgun_ammo = 0;
-        resume->m16_ammo = 0;
-        resume->mp5_ammo = 0;
-        resume->grenade_ammo = 0;
-        resume->rocket_ammo = 0;
-        resume->harpoon_ammo = 0;
-        resume->crossbow_ammo = 0;
-        resume->revolver_ammo = 0;
+        memset(resume->inv.ammo, 0, sizeof(resume->inv.ammo));
     }
 
     if (m_RemoveScions) {
-        resume->num_scions = 0;
-        resume->num_quest_item_1 = 0;
-        resume->num_quest_item_2 = 0;
-        resume->num_quest_item_3 = 0;
-        resume->num_quest_item_4 = 0;
+        for (int32_t i = 0; m_ScionObjects[i] != NO_OBJECT; i++) {
+            Inv_State_SetCount(&resume->inv, m_ScionObjects[i], 0);
+        }
         m_RemoveScions = false;
     }
 
     if (m_RemoveFlares) {
-        resume->flares = 0;
+        Inv_State_SetCount(&resume->inv, O_FLARE_ITEM, 0);
         m_RemoveFlares = false;
     }
 
     if (m_RemoveMedipacks) {
-        resume->large_medipacks = 0;
-        resume->small_medipacks = 0;
+        Inv_State_SetCount(&resume->inv, O_LARGE_MEDIPACK_ITEM, 0);
+        Inv_State_SetCount(&resume->inv, O_SMALL_MEDIPACK_ITEM, 0);
         m_RemoveMedipacks = false;
     }
 
     if (m_RemoveBinoculars) {
-        resume->flags.has_binoculars = false;
+        Inv_State_SetCount(&resume->inv, O_BINOCULARS_ITEM, 0);
     } else {
         M_ModifyResumeInfo_Item(resume, O_BINOCULARS_ITEM);
     }

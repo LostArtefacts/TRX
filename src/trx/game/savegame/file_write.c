@@ -8,6 +8,7 @@
 #include <trx/game/fx/common.h>
 #include <trx/game/fx/weather.h>
 #include <trx/game/game.h>
+#include <trx/game/gun.h>
 #include <trx/game/inventory.h>
 #include <trx/game/items.h>
 #include <trx/game/items/carrier.h>
@@ -327,49 +328,26 @@ static void M_WriteResumeInfo(
     JSONW_WRITE(io, "burning", resume->burning);
 
     JSONW_WRITE(io, "lara_hitpoints", resume->lara_hitpoints);
-    JSONW_WRITE(io, "pistol_ammo", resume->pistol_ammo);
-    JSONW_WRITE(io, "shotgun_ammo", resume->shotgun_ammo);
-    JSONW_WRITE(io, "magnum_ammo", resume->magnum_ammo);
-    JSONW_WRITE(io, "autos_ammo", resume->autos_ammo);
-    JSONW_WRITE(io, "desert_eagle_ammo", resume->desert_eagle_ammo);
-    JSONW_WRITE(io, "uzi_ammo", resume->uzi_ammo);
-    JSONW_WRITE(io, "m16_ammo", resume->m16_ammo);
-    JSONW_WRITE(io, "mp5_ammo", resume->mp5_ammo);
-    JSONW_WRITE(io, "grenade_ammo", resume->grenade_ammo);
-    JSONW_WRITE(io, "rocket_ammo", resume->rocket_ammo);
-    JSONW_WRITE(io, "harpoon_ammo", resume->harpoon_ammo);
-    JSONW_WRITE(io, "crossbow_ammo", resume->crossbow_ammo);
-    JSONW_WRITE(io, "revolver_ammo", resume->revolver_ammo);
-    JSONW_WRITE(io, "num_medis", resume->small_medipacks);
-    JSONW_WRITE(io, "num_big_medis", resume->large_medipacks);
-    JSONW_WRITE(io, "num_flares", resume->flares);
-    JSONW_WRITE(io, "num_scions", resume->num_scions);
-    JSONW_WRITE(io, "num_quest_item_1", resume->num_quest_item_1);
-    JSONW_WRITE(io, "num_quest_item_2", resume->num_quest_item_2);
-    JSONW_WRITE(io, "num_quest_item_3", resume->num_quest_item_3);
-    JSONW_WRITE(io, "num_quest_item_4", resume->num_quest_item_4);
-    JSONW_WRITE(io, "num_quest_item_5", resume->num_quest_item_5);
-    JSONW_WRITE(io, "num_quest_item_6", resume->num_quest_item_6);
-    JSONW_WRITE(io, "num_save_crystals", resume->num_save_crystals);
     JSONW_WRITE(io, "gun_status", resume->gun_status);
     JSONW_WRITE(io, "gun_type", resume->equipped_gun_type);
     JSONW_WRITE(io, "holsters_gun_type", resume->holsters_gun_type);
     JSONW_WRITE(io, "back_gun_type", resume->back_gun_type);
 
-    JSONW_WRITE(io, "has_pistols", resume->flags.has_pistols);
-    JSONW_WRITE(io, "has_shotgun", resume->flags.has_shotgun);
-    JSONW_WRITE(io, "has_magnums", resume->flags.has_magnums);
-    JSONW_WRITE(io, "has_autos", resume->flags.has_autos);
-    JSONW_WRITE(io, "has_desert_eagle", resume->flags.has_desert_eagle);
-    JSONW_WRITE(io, "has_uzis", resume->flags.has_uzis);
-    JSONW_WRITE(io, "has_m16", resume->flags.has_m16);
-    JSONW_WRITE(io, "has_mp5", resume->flags.has_mp5);
-    JSONW_WRITE(io, "has_grenade", resume->flags.has_grenade);
-    JSONW_WRITE(io, "has_rocket", resume->flags.has_rocket);
-    JSONW_WRITE(io, "has_harpoon", resume->flags.has_harpoon);
-    JSONW_WRITE(io, "has_crossbow", resume->flags.has_crossbow);
-    JSONW_WRITE(io, "has_revolver", resume->flags.has_revolver);
-    JSONW_WRITE(io, "has_binoculars", resume->flags.has_binoculars);
+    for (const SAVEGAME_RESUME_WEAPON *entry = g_Savegame_ResumeWeapons;
+         entry->has_key != nullptr; entry++) {
+        JSONW_WRITE(
+            io, entry->has_key,
+            Inv_State_Has(&resume->inv, Gun_GetGunObject(entry->gun_type)));
+        JSONW_WRITE(io, entry->ammo_key, resume->inv.ammo[entry->gun_type]);
+    }
+    JSONW_WRITE(
+        io, "has_binoculars", Inv_State_Has(&resume->inv, O_BINOCULARS_ITEM));
+
+    for (const SAVEGAME_RESUME_ITEM *entry = g_Savegame_ResumeItems;
+         entry->key != nullptr; entry++) {
+        JSONW_WRITE(
+            io, entry->key, Inv_State_GetCount(&resume->inv, entry->object_id));
+    }
 
     JSONW_WRITE(io, "costume", resume->flags.costume);
     JSONW_WRITE(io, "timer", resume->stats.timer);

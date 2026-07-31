@@ -1,5 +1,6 @@
 #pragma once
 
+#include <trx/game/inventory.h>
 #include <trx/game/lara/types.h>
 
 void Gun_InitialiseNewWeapon(void);
@@ -22,6 +23,11 @@ int32_t Gun_GetInitialRounds(LARA_GUN_TYPE gun_type);
 int32_t Gun_GetRoundsPerBox(LARA_GUN_TYPE gun_type);
 int32_t Gun_GetRoundsPerShot(LARA_GUN_TYPE gun_type);
 int32_t Gun_GetAmmoInventoryQuantity(LARA_GUN_TYPE gun_type);
+// Which weapon hangs in Lara's holsters and which on her back, out of what an
+// inventory holds. More than one can qualify, and these say which wins.
+LARA_GUN_TYPE Gun_GetHolsterChoice(const INVENTORY_STATE *inv);
+LARA_GUN_TYPE Gun_GetBackChoice(const INVENTORY_STATE *inv);
+
 bool Gun_IsRifleType(LARA_GUN_TYPE gun_type);
 bool Gun_IsSinglePistolType(LARA_GUN_TYPE gun_type);
 

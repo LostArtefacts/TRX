@@ -99,7 +99,7 @@ static LARA_GUN_TYPE M_NeedToQuickDraw(void)
     LARA_INFO *const lara = Lara_GetLaraInfo();
     for (int32_t i = 0; m_QuicDrawKeys[i].gun_type != LGT_UNKNOWN; i++) {
         if (Input_IsPressedDB(m_QuicDrawKeys[i].input_role)
-            && Inv_HasItem(Gun_GetGunObject(m_QuicDrawKeys[i].gun_type)) > 0) {
+            && Inv_HasItem(Gun_GetGunObject(m_QuicDrawKeys[i].gun_type))) {
             return m_QuicDrawKeys[i].gun_type;
         }
     }

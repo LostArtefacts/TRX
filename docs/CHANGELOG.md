@@ -17,6 +17,7 @@
 - changed reflections UV mapping to be more correct
 - changed object properties to take effect as soon as they change, rather than only when the item is first set up
 - changed outfits to support joints, up to two braids per outfit, and to allow positional offset adjustments for equipment meshes; refer to migration notes
+- changed New Game+ in TR1 so that flares Lara has collected are kept between levels rather than taken away at the start of each one
 - changed the ammunition keys in `weapons.json5` to say what they count; refer to migration notes
 - changed boxes of ammunition in the inventory to always show what Lara is really carrying, where finishing a level could round them down
 - fixed the alternative ammunition pickups, such as the second kind of shotgun shells, going into the inventory without loading the weapon

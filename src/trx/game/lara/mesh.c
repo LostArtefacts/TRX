@@ -11,32 +11,6 @@
 
 static OBJECT_MESH *m_Meshes[LM_NUMBER_OF] = {};
 
-// Which weapon Lara wears where, when she carries more than one that could
-// hang there. The weapon type says which of the two a weapon can use - the
-// rifles go on her back and the rest into her holsters - but not which of them
-// wins, so the order is here.
-// clang-format off
-static const LARA_GUN_TYPE m_HolsterGuns[] = {
-    LGT_PISTOLS, LGT_MAGNUMS, LGT_AUTOS, LGT_DESERT_EAGLE, LGT_UZIS,
-    LGT_REVOLVER, LGT_UNARMED,
-};
-
-static const LARA_GUN_TYPE m_BackGuns[] = {
-    LGT_SHOTGUN, LGT_M16, LGT_MP5, LGT_GRENADE, LGT_ROCKET, LGT_HARPOON,
-    LGT_CROSSBOW, LGT_UNARMED,
-};
-// clang-format on
-
-static LARA_GUN_TYPE M_GetFirstCarried(const LARA_GUN_TYPE *const gun_types)
-{
-    for (int32_t i = 0; gun_types[i] != LGT_UNARMED; i++) {
-        if (Inv_HasItem(Gun_GetGunObject(gun_types[i]))) {
-            return gun_types[i];
-        }
-    }
-    return LGT_UNARMED;
-}
-
 static LARA_GUN_TYPE M_DetermineHolsterGun(void)
 {
     const LARA_INFO *const lara_info = Lara_GetLaraInfo();
@@ -49,7 +23,7 @@ static LARA_GUN_TYPE M_DetermineHolsterGun(void)
         && !Gun_IsRifleType(lara_info->gun_type)) {
         return lara_info->gun_type;
     }
-    return M_GetFirstCarried(m_HolsterGuns);
+    return Gun_GetHolsterChoice(Inv_GetState());
 }
 
 static LARA_GUN_TYPE M_DetermineBackGun(void)
@@ -58,7 +32,7 @@ static LARA_GUN_TYPE M_DetermineBackGun(void)
     if (lara_info->back_gun_type != LGT_UNARMED) {
         return lara_info->back_gun_type;
     }
-    return M_GetFirstCarried(m_BackGuns);
+    return Gun_GetBackChoice(Inv_GetState());
 }
 
 static void M_EnsureDefaultDualPistolMesh(const LARA_GUN_TYPE holster_gun)
