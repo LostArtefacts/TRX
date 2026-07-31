@@ -12,9 +12,7 @@
 
 #include <string.h>
 
-static inline bool M_BoundsIntersectsPortal(
-    const STATIC_MESH *const mesh, const ROOM *const room,
-    const PORTAL *const portal)
+static inline BOUNDS_32 M_GetStaticBounds(const STATIC_MESH *const mesh)
 {
     const STATIC_OBJECT_3D *const obj = Object_Get3DStatic(mesh->static_num);
 
@@ -52,7 +50,43 @@ static inline bool M_BoundsIntersectsPortal(
         }
     }
 
-    return Bounds32_Intersect(&bounds, &portal->bounds);
+    return bounds;
+}
+
+// Whether the mesh stands in any of the space the room owns. A room's box says
+// little on its own, since two rooms side by side cover much the same ground,
+// so the question is put to the sectors the mesh spans: the room holds that
+// column between its ceiling and its floor there, and a wall sector holds
+// nothing.
+static inline bool M_BoundsReachRoom(
+    const BOUNDS_32 *const bounds, const ROOM *const room)
+{
+    int32_t x_min = (bounds->min.x - room->pos.x) >> WALL_SHIFT;
+    int32_t x_max = (bounds->max.x - room->pos.x) >> WALL_SHIFT;
+    int32_t z_min = (bounds->min.z - room->pos.z) >> WALL_SHIFT;
+    int32_t z_max = (bounds->max.z - room->pos.z) >> WALL_SHIFT;
+    if (x_max < 0 || z_max < 0 || x_min >= room->size.x
+        || z_min >= room->size.z) {
+        return false;
+    }
+    CLAMP(x_min, 0, room->size.x - 1);
+    CLAMP(x_max, 0, room->size.x - 1);
+    CLAMP(z_min, 0, room->size.z - 1);
+    CLAMP(z_max, 0, room->size.z - 1);
+
+    for (int32_t x = x_min; x <= x_max; x++) {
+        for (int32_t z = z_min; z <= z_max; z++) {
+            const SECTOR *const sector = Room_GetUnitSector(room, x, z);
+            if (sector->floor.height <= sector->ceiling.height) {
+                continue;
+            }
+            if (bounds->min.y < sector->floor.height
+                && bounds->max.y > sector->ceiling.height) {
+                return true;
+            }
+        }
+    }
+    return false;
 }
 
 static void M_ComputePortalBounds(void)
@@ -130,7 +164,8 @@ static void M_FixStaticsVisibility(void)
             for (int32_t m = 0; m < orig_count; m++) {
                 const STATIC_MESH *const mesh =
                     Vector_Get(room_stat_vecs[i], m);
-                if (!M_BoundsIntersectsPortal(mesh, room, portal)) {
+                const BOUNDS_32 bounds = M_GetStaticBounds(mesh);
+                if (!M_BoundsReachRoom(&bounds, dest_room)) {
                     continue;
                 }
                 if (Vector_Contains(room_stat_vecs[portal->room_num], mesh)) {
