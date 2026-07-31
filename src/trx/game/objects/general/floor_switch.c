@@ -107,7 +107,7 @@ static const M_INTERACTION *M_GetInteraction(const ITEM *const item)
 
 static bool M_ShowCrowbarInventory(void)
 {
-    if (Inv_GetItemCount(O_CROWBAR_ITEM) == 0) {
+    if (!Inv_HasItem(O_CROWBAR_ITEM)) {
         return false;
     }
 

@@ -419,14 +419,13 @@ void Gun_DrawFlash(
 
 void Gun_UpdateLaraMeshes(const OBJECT_ID obj_id)
 {
-    const bool lara_has_rifle = Inv_GetItemCount(O_SHOTGUN_ITEM)
-        || Inv_GetItemCount(O_HARPOON_ITEM) || Inv_GetItemCount(O_M16_ITEM)
-        || Inv_GetItemCount(O_MP5_ITEM) || Inv_GetItemCount(O_GRENADE_GUN_ITEM)
-        || Inv_GetItemCount(O_ROCKET_GUN_ITEM);
-    const bool lara_has_pistols = Inv_GetItemCount(O_PISTOL_ITEM)
-        || Inv_GetItemCount(O_MAGNUM_ITEM) || Inv_GetItemCount(O_AUTOS_ITEM)
-        || Inv_GetItemCount(O_DESERT_EAGLE_ITEM)
-        || Inv_GetItemCount(O_UZI_ITEM);
+    const bool lara_has_rifle = Inv_HasItem(O_SHOTGUN_ITEM)
+        || Inv_HasItem(O_HARPOON_ITEM) || Inv_HasItem(O_M16_ITEM)
+        || Inv_HasItem(O_MP5_ITEM) || Inv_HasItem(O_GRENADE_GUN_ITEM)
+        || Inv_HasItem(O_ROCKET_GUN_ITEM);
+    const bool lara_has_pistols = Inv_HasItem(O_PISTOL_ITEM)
+        || Inv_HasItem(O_MAGNUM_ITEM) || Inv_HasItem(O_AUTOS_ITEM)
+        || Inv_HasItem(O_DESERT_EAGLE_ITEM) || Inv_HasItem(O_UZI_ITEM);
 
     LARA_GUN_TYPE back_gun_type = LGT_UNARMED;
     LARA_GUN_TYPE holsters_gun_type = LGT_UNARMED;

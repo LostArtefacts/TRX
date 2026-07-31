@@ -76,7 +76,7 @@ static void M_AddAmmo(const LARA_GUN_TYPE gun_type)
 {
     const OBJECT_ID gun_object = Gun_GetGunObject(gun_type);
     Inv_AddAmmo(gun_type, Gun_GetRoundsPerBox(gun_type));
-    if (!Inv_GetItemCount(gun_object)) {
+    if (!Inv_HasItem(gun_object)) {
         M_SetCount(M_GetEntryID(Gun_GetAmmoObject(gun_type)), 1);
     }
 }
@@ -164,6 +164,11 @@ int32_t Inv_GetItemCount(const OBJECT_ID object_id)
     return entry == nullptr ? 0 : entry->qty;
 }
 
+bool Inv_HasItem(const OBJECT_ID object_id)
+{
+    return Inv_GetItemCount(object_id) > 0;
+}
+
 void Inv_SetItemCount(const OBJECT_ID object_id, const int32_t qty)
 {
     M_SetCount(M_GetEntryID(object_id), qty);
@@ -227,7 +232,7 @@ bool Inv_AddItem(const OBJECT_ID object_id)
     }
 
     if (inv_object_id == O_BINOCULARS_OPTION
-        && Inv_GetItemCount(O_BINOCULARS_ITEM) > 0) {
+        && Inv_HasItem(O_BINOCULARS_ITEM)) {
         return false;
     }
 
