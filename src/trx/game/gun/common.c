@@ -123,17 +123,17 @@ OBJECT_ID Gun_GetAmmoObject(const LARA_GUN_TYPE gun_type)
 
 int32_t Gun_GetInitialRounds(const LARA_GUN_TYPE gun_type)
 {
-    return M_GetRounds(gun_type, g_Weapons[gun_type].ammo.initial_qty);
+    return M_GetRounds(gun_type, g_Weapons[gun_type].ammo.initial_shots);
 }
 
 int32_t Gun_GetRoundsPerBox(const LARA_GUN_TYPE gun_type)
 {
-    return M_GetRounds(gun_type, g_Weapons[gun_type].ammo.pickup_qty);
+    return M_GetRounds(gun_type, g_Weapons[gun_type].ammo.box_shots);
 }
 
 int32_t Gun_GetAmmoInventoryQuantity(const LARA_GUN_TYPE gun_type)
 {
-    return g_Weapons[gun_type].ammo.inventory_qty;
+    return g_Weapons[gun_type].ammo.box_label_qty;
 }
 
 int32_t Gun_GetRoundsPerShot(const LARA_GUN_TYPE gun_type)

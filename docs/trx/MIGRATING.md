@@ -265,6 +265,15 @@ order: 3
    and one that is already hurt stays hurt by as much. It no longer needs a
    companion write to `hit_points`.
 
+26. **Update weapon definitions**
+   The ammunition keys in `weapons.json5` were renamed to say what they count.
+   A shot is one pull of the trigger, which for the shotgun spends six rounds;
+   the flare counts a flare where a weapon counts a shot. The old names are
+   still read, so a file that keeps them goes on working.
+   - `initial_qty` is now `initial_shots`
+   - `pickup_qty` is now `box_shots`
+   - `inventory_qty` is now `box_label_qty`
+
 ### Version 1.8 to 1.9
 
 1. **Update Lara pushblock animations**
