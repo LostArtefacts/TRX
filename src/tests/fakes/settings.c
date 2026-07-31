@@ -177,7 +177,7 @@ bool Game_IsBonusFlagSet(const GAME_BONUS_FLAG flag)
     return false;
 }
 
-int32_t Gun_GetAmmoClipCount(const LARA_GUN_TYPE gun_type)
+int32_t Gun_GetRoundsPerShot(const LARA_GUN_TYPE gun_type)
 {
     return 1;
 }

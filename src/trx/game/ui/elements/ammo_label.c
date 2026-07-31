@@ -32,7 +32,7 @@ bool UI_AmmoLabel(void)
         case LGT_PISTOLS:
             return false;
         case LGT_SHOTGUN:
-            ammo = lara->shotgun_ammo.ammo / Gun_GetAmmoClipCount(LGT_SHOTGUN);
+            ammo = lara->shotgun_ammo.ammo / Gun_GetRoundsPerShot(LGT_SHOTGUN);
             if (use_icon) {
                 icon_str = "\\{ammo shotgun}";
             }

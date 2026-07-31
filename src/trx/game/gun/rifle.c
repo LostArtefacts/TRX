@@ -120,7 +120,7 @@ static void M_FireGeneric(const LARA_GUN_TYPE weapon_type)
         angles[1] += lara->torso_rot.x;
     }
 
-    const int32_t clip = Gun_GetAmmoClipCount(weapon_type);
+    const int32_t clip = Gun_GetRoundsPerShot(weapon_type);
     for (int32_t i = 0; i < clip; i++) {
         int16_t dangles[2] = {
             angles[0]
