@@ -205,120 +205,150 @@ local function enumerate()
   return out
 end
 
--- The families an object belongs to. Membership is the engine's; the key is the
--- name a script narrows by and the name a player types, and the value is what
--- the engine calls the same family. Every one of them is searchable, so a
--- by_name of "pickup" matches every pickup and a command reaches a family by
--- name. Which families a command offers is then its own query's doing: /kill
--- narrows to what fights, so "pickup" is not among the names it answers to.
+-- The families an object belongs to. Membership is the engine's: `kind` is what
+-- the engine calls the family, and the name beside it is what a script narrows
+-- by and what a player types.
 local FAMILIES = {
-  creature = "creature",
-  -- One of Lara's own: the butler, and Lara herself.
-  loyal = "loyal",
-  pickup = "pickup",
-  -- What a pickup is. A weapon, its clips, and what Lara spends.
-  gun = "gun",
-  ammo = "ammo",
-  supply = "supply",
-  -- The pickups named for themselves rather than filling a numbered slot:
-  -- the crowbar, the lasersight, the binoculars, the waterskins, the leadbar.
-  tool = "tool",
-  -- The slot-numbered ones, by the slot they fill. `quest` carries the scion.
-  key = "key",
-  puzzle = "puzzle",
-  quest = "quest",
-  examine = "examine",
-  collectible = "collectible",
-  secret = "secret",
-  switch = "switch",
-  receptacle = "receptacle",
-  pushable = "pushable",
-  door = "door",
-  inventory_item = "inventory",
-  null_object = "null",
-  animation = "anim",
-}
-
--- The narrowings a query offers: a state an object is in, and a family it
--- belongs to.
-local filters = {
-  loaded = function()
-    return function(_id, object)
-      return object.loaded
-    end
-  end,
-  -- A thing that exists in the world at all, rather than an inventory icon, an
-  -- animation, or a null placeholder.
-  spawnable = function()
-    return function(id, object)
-      return object.loaded
-        and not raw.is_type(id, "null")
-        and not raw.is_type(id, "anim")
-        and not raw.is_type(id, "inventory")
-    end
-  end,
-  -- A creature that fights Lara rather than for her. The one family that is not
-  -- the engine's own, so it is spelled out here.
-  enemy = {
-    searchable = true,
-    test = function()
-      return function(id)
-        return raw.is_type(id, "creature") and not raw.is_type(id, "loyal")
-      end
-    end,
+  { "creature", "creature", "The object is a creature." },
+  {
+    "loyal",
+    "loyal",
+    "One of Lara's own: the butler, and Lara herself.",
+  },
+  { "pickup", "pickup", "Something Lara can pick up." },
+  { "gun", "gun", "A weapon." },
+  { "ammo", "ammo", "Clips for a weapon." },
+  { "supply", "supply", "A pickup Lara spends rather than keeps." },
+  {
+    "tool",
+    "tool",
+    "A pickup named for itself rather than filling a numbered slot: the crowbar, the lasersight, "
+      .. "the binoculars, the waterskins, the leadbar.",
+  },
+  { "key", "key", "A key, by the slot it fills." },
+  { "puzzle", "puzzle", "A puzzle item, by the slot it fills." },
+  {
+    "quest",
+    "quest",
+    "A quest item, by the slot it fills. This is what carries the scion.",
+  },
+  { "examine", "examine", "An examine item, by the slot it fills." },
+  { "collectible", "collectible", "A collectible, by the slot it fills." },
+  { "secret", "secret", "The trinket a secret trigger sits under." },
+  { "switch", "switch", "A switch Lara throws." },
+  { "receptacle", "receptacle", "A slot a puzzle item goes into." },
+  { "pushable", "pushable", "A block Lara pushes and pulls." },
+  { "door", "door", "A door." },
+  {
+    "inventory_item",
+    "inventory",
+    "An icon in the inventory rather than a thing in the world.",
+  },
+  { "null_object", "null", "A placeholder that is never drawn." },
+  {
+    "animation",
+    "anim",
+    "An animation an object borrows rather than a thing of its own.",
   },
 }
 
-for name, kind in pairs(FAMILIES) do
-  filters[name] = {
-    searchable = true,
-    test = function()
-      return function(id)
-        return raw.is_type(id, kind)
-      end
-    end,
-  }
+local QUERY = { type = "Query", description = "The narrowed query." }
+
+local function family_test(kind)
+  return function()
+    return function(id)
+      return raw.is_type(id, kind)
+    end
+  end
 end
+
+local function enemy_test()
+  return function(id)
+    return raw.is_type(id, "creature") and not raw.is_type(id, "loyal")
+  end
+end
+
+local methods = {
+  loaded = {
+    description = "The level loaded the object, so items of it exist.",
+    returns = QUERY,
+    impl = trx.query.narrowing(function()
+      return function(_id, object)
+        return object.loaded
+      end
+    end),
+  },
+  spawnable = {
+    description = "The object is a thing in the world at all, rather than an inventory icon, an "
+      .. "animation, or a null placeholder.",
+    returns = QUERY,
+    impl = trx.query.narrowing(function()
+      return function(id, object)
+        return object.loaded
+          and not raw.is_type(id, "null")
+          and not raw.is_type(id, "anim")
+          and not raw.is_type(id, "inventory")
+      end
+    end),
+  },
+  -- A creature that fights Lara rather than for her. The one family that is not
+  -- the engine's own, so it is spelled out here.
+  enemy = {
+    description = "A creature that fights Lara rather than for her.",
+    returns = QUERY,
+    impl = trx.query.narrowing(enemy_test),
+  },
+}
+
+-- Every family is searchable, so a `by_name` of the family's own name matches
+-- every member and a command reaches a family by name. Which families a query
+-- answers to follows from what it kept, so one narrowed to what fights offers
+-- no `pickup`.
+local searchable = { { key = "enemy", pred = enemy_test() } }
+for _, family in ipairs(FAMILIES) do
+  local name, kind, description = family[1], family[2], family[3]
+  local test = family_test(kind)
+  methods[name] = {
+    description = description,
+    returns = QUERY,
+    impl = trx.query.narrowing(test),
+  }
+  searchable[#searchable + 1] = { key = name, pred = test() }
+end
+
+-- The group names are offered for completion in this order.
+table.sort(searchable, function(a, b)
+  return a.key < b.key
+end)
+
+local ObjectQuery = api.type("objects.ObjectQuery", {
+  extends = "query.NamedQuery",
+  description = "A `trx.query.Query` over every object the engine knows, with the narrowings below "
+    .. "on top of the ones every query has. Objects answer to names, so it carries the name layer "
+    .. "too - see `trx.query.NamedQuery`.\n\n"
+    .. "The families do not cover `pickup` between them: a second state of something Lara already "
+    .. "carries, such as a part-full waterskin, is in none of them.",
+  methods = methods,
+})
 
 local object_query = trx.query.new({
   enumerate = enumerate,
   id_of = function(id)
     return id
   end,
-  filters = filters,
+  searchable = searchable,
   names_of = function(object)
     return object.names
   end,
   default_names_of = function(object)
     return object.default_names
   end,
-})
+}, ObjectQuery)
 
 api.property("objects.query", {
-  type = "table",
-  description = [[
-The identity query over every object definition. Narrow it and read it - see
-[Query](../../QUERY.md).
-
-Its own narrowings, beyond the shared `by_name` and the operators: the states
-`loaded` and `spawnable`, and the families `creature`, `enemy`, `loyal`,
-`pickup`, `switch`, `receptacle`, `pushable`, `door`, `inventory_item`,
-`null_object` and `animation`.
-
-`pickup` narrows further, by what the thing is: `gun`, `ammo` for its clips,
-`supply` for what Lara spends, `tool` for what she carries and uses, and
-`key`, `puzzle`, `quest`, `examine` and `collectible` for the slot-numbered
-items, by the slot each fills. `quest` carries the scion. `secret` is the
-trinket a secret trigger sits under. These do not cover `pickup` between them:
-a second state of something Lara already carries, such as a part-full
-waterskin, is in none of them.
-
-Every family is searchable: a `by_name` of the family's own name
-matches every member, and `names` offers it for completion. Which families a
-query answers to follows from what it kept, so one narrowed to what fights
-offers no `pickup`.
-
-Example: `trx.objects.query:spawnable():by_name("wolf"):ids()`.]],
+  type = "ObjectQuery",
+  description = "The identity query over every object definition. Narrow it and read it - see "
+    .. "`trx.objects.ObjectQuery`.",
   get = function()
     return object_query
   end,

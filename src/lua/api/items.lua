@@ -779,50 +779,98 @@ local function resolve_object(key)
   return trx.objects.query:by_name(key):ids()[1]
 end
 
-local function axis_filter(field)
-  return function()
-    return function(_i, item)
-      return item[field]
-    end
-  end
+-- One of an item's own true-or-false axes, as a narrowing.
+local function axis_narrowing(field, description)
+  return {
+    description = description,
+    returns = { type = "Query", description = "The narrowed query." },
+    impl = trx.query.narrowing(function()
+      return function(_i, item)
+        return item[field]
+      end
+    end),
+  }
 end
 
-local filters = {
-  simulated = axis_filter("is_simulated"),
-  present = axis_filter("is_present"),
-  visible = axis_filter("is_visible"),
-  finished = axis_filter("is_finished"),
-  in_play = axis_filter("is_in_play"),
-  alive = axis_filter("is_alive"),
-  targetable = axis_filter("is_targetable"),
-  of_object = function(key)
-    local object_id = resolve_object(key)
-    return function(_i, item)
-      return object_id ~= nil and item.object_id == object_id
-    end
-  end,
-  in_room = function(room_num)
-    return function(_i, item)
-      return item.room_num == room_num
-    end
-  end,
-}
+local ItemQuery = api.type("items.ItemQuery", {
+  extends = "query.Query",
+  description = "A `trx.query.Query` over the items a level holds, with the narrowings below on top "
+    .. "of the ones every query has. Items answer to no names of their own, so `of_object` is how a "
+    .. "name reaches them.",
+
+  methods = {
+    simulated = axis_narrowing(
+      "is_simulated",
+      "The item is being simulated: its control routine runs every frame."
+    ),
+    present = axis_narrowing(
+      "is_present",
+      "The item is in the world, whether or not anything is simulating it."
+    ),
+    visible = axis_narrowing("is_visible", "The item is drawn."),
+    finished = axis_narrowing("is_finished", "The item has run its course."),
+    in_play = axis_narrowing(
+      "is_in_play",
+      "The item is part of the game rather than set aside."
+    ),
+    alive = axis_narrowing("is_alive", "The item still has hit points."),
+    targetable = axis_narrowing(
+      "is_targetable",
+      "Lara's guns can lock onto the item."
+    ),
+
+    of_object = {
+      description = "The item is of the given object, named the way a player would name it or by "
+        .. "its id.",
+      params = {
+        {
+          name = "key",
+          type = "any",
+          description = "Object id, or a name `trx.objects.query` resolves.",
+        },
+      },
+      returns = { type = "Query", description = "The narrowed query." },
+      examples = {
+        [[trx.items.query:of_object("wolf"):simulated():matches()]],
+      },
+      impl = trx.query.narrowing(function(key)
+        local object_id = resolve_object(key)
+        return function(_i, item)
+          return object_id ~= nil and item.object_id == object_id
+        end
+      end),
+    },
+
+    in_room = {
+      description = "The item is in the given room.",
+      params = {
+        {
+          name = "room_num",
+          type = "integer",
+          description = "0-based room number.",
+        },
+      },
+      returns = { type = "Query", description = "The narrowed query." },
+      impl = trx.query.narrowing(function(room_num)
+        return function(_i, item)
+          return item.room_num == room_num
+        end
+      end),
+    },
+  },
+})
 
 local item_query = trx.query.new({
   enumerate = enumerate,
   id_of = function(i)
     return i
   end,
-  filters = filters,
-})
+}, ItemQuery)
 
 api.property("items.query", {
-  type = "table",
+  type = "ItemQuery",
   description = "The identity query over every item in the level. Narrow it and read it - see "
-    .. "[Query](../../QUERY.md).\n\n"
-    .. "Its own narrowings, beyond the operators: `simulated`, `present`, `visible`, `finished`, "
-    .. "`in_play`, `alive`, `targetable`, `of_object` (by object id or name) and `in_room`.\n\n"
-    .. 'Example: `trx.items.query:of_object("wolf"):simulated():matches()`.',
+    .. "`trx.items.ItemQuery`.",
   get = function()
     return item_query
   end,

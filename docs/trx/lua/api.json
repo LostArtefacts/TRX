@@ -4435,18 +4435,38 @@
       "path": "objects.swap_sprite"
     },
     {
-      "description": "Builds the identity query for a domain. `trx.objects` and `trx.items` call this to make the query a script reaches through `trx.objects.query` and `trx.items.query`.",
+      "description": "Builds a narrowing method for a domain's query type out of a predicate factory. `trx.items` and `trx.objects` declare their own filters with it.",
       "params": [
         {
-          "description": "What the query runs against: `enumerate`, `id_of`, `filters`, and an optional `names_of`/`default_names_of` name layer. See the module source.",
+          "description": "Called with the method's own arguments, returning a `predicate(id, handle)`.",
+          "name": "make",
+          "type": "function"
+        }
+      ],
+      "path": "query.narrowing",
+      "returns": {
+        "description": "The method to declare as an `impl`.",
+        "type": "function"
+      }
+    },
+    {
+      "description": "Builds the identity query over a domain, as an instance of that domain's query type. `trx.objects` and `trx.items` call this to make the query a script reaches through `trx.objects.query` and `trx.items.query`.",
+      "params": [
+        {
+          "description": "What the query runs against: `enumerate`, `id_of`, `searchable`, and an optional `names_of`/`default_names_of` name layer. See the module source.",
           "name": "domain",
+          "type": "table"
+        },
+        {
+          "description": "The query type the domain's narrowings were declared on.",
+          "name": "class",
           "type": "table"
         }
       ],
       "path": "query.new",
       "returns": {
         "description": "The identity query, matching everything until narrowed.",
-        "type": "table"
+        "type": "Query"
       }
     },
     {
@@ -5018,7 +5038,7 @@
       "title": "Object"
     },
     {
-      "description": "A composable filter over a domain of things - the objects a level is built\nfrom, or the items alive in it. `trx.objects.query` and `trx.items.query` are\neach the identity query, matching everything; you narrow one down and then read\nthe result.\n\nA query is immutable. Every method returns a fresh query, so a base can be kept\nand branched from without one narrowing leaking into another.\n\nFour ways to narrow, which mix freely:\n\n- Chain methods read left to right and combine with AND:\n  `q:spawnable():by_name(\"wolf\")`. Each domain adds its own - see\n  `trx.objects.query` and `trx.items.query` for the ones it has.\n- The operators `&`, `|` and `~` are AND, OR and NOT over whole queries, for\n  what a chain cannot say: `q:pickup() | q:inventory_item()`, `~q:animation()`.\n  Both sides of `&`/`|` must come from the same domain.\n- `by_name(name)` ranks rather than filters: it matches the way a player types\n  a name, forgivingly, and orders what survives the rest of the query best\n  first. Some of a domain's filters are also searchable groups - `pickup` is\n  one - so their name matches every member. Only a domain that has names offers\n  `by_name`, `names` and `best`.\n- `where(predicate)` narrows by a test of your own, called with the id and the\n  handle, for what a domain does not name: `q:where(function(id, item) return\n  item.timer > 0 end)`.\n\nRead a query with a terminal:\n\n- `ids()` - the matching ids, a list. For objects these are object ids; for\n  items, their numbers.\n- `matches()` - the matching handles: `trx.objects.Object`s or\n  `trx.items.Item`s.\n- `first()` - the first matching handle, or `nil`.\n- `count()` - how many match.\n- `names()` - every name the matches answer to, for offering completions. The\n  group names any match belongs to come first.\n- `best()` - the ids tied for the best `by_name` score: one for a name only one\n  thing answers to, the whole group for a group name.\n",
+      "description": "A composable filter over a domain of things - the objects a level is built\nfrom, or the items alive in it. `trx.objects.query` and `trx.items.query` are\neach the identity query, matching everything; you narrow one down and then read\nthe result.\n\nA query is immutable. Every method returns a fresh query, so a base can be kept\nand branched from without one narrowing leaking into another.\n\nEach domain adds narrowings of its own on top of the ones below - see\n`trx.items.ItemQuery` and `trx.objects.ObjectQuery` - and chained methods read\nleft to right, combining with AND: `q:spawnable():by_name(\"wolf\")`.\n",
       "name": "query",
       "order": 9,
       "title": "Query"
@@ -5231,9 +5251,9 @@
       "writable": false
     },
     {
-      "description": "The identity query over every item in the level. Narrow it and read it - see [Query](../../QUERY.md).\n\nIts own narrowings, beyond the operators: `simulated`, `present`, `visible`, `finished`, `in_play`, `alive`, `targetable`, `of_object` (by object id or name) and `in_room`.\n\nExample: `trx.items.query:of_object(\"wolf\"):simulated():matches()`.",
+      "description": "The identity query over every item in the level. Narrow it and read it - see `trx.items.ItemQuery`.",
       "path": "items.query",
-      "type": "table",
+      "type": "ItemQuery",
       "writable": false
     },
     {
@@ -5315,9 +5335,9 @@
       "writable": false
     },
     {
-      "description": "The identity query over every object definition. Narrow it and read it - see\n[Query](../../QUERY.md).\n\nIts own narrowings, beyond the shared `by_name` and the operators: the states\n`loaded` and `spawnable`, and the families `creature`, `enemy`, `loyal`,\n`pickup`, `switch`, `receptacle`, `pushable`, `door`, `inventory_item`,\n`null_object` and `animation`.\n\n`pickup` narrows further, by what the thing is: `gun`, `ammo` for its clips,\n`supply` for what Lara spends, `tool` for what she carries and uses, and\n`key`, `puzzle`, `quest`, `examine` and `collectible` for the slot-numbered\nitems, by the slot each fills. `quest` carries the scion. `secret` is the\ntrinket a secret trigger sits under. These do not cover `pickup` between them:\na second state of something Lara already carries, such as a part-full\nwaterskin, is in none of them.\n\nEvery family is searchable: a `by_name` of the family's own name\nmatches every member, and `names` offers it for completion. Which families a\nquery answers to follows from what it kept, so one narrowed to what fights\noffers no `pickup`.\n\nExample: `trx.objects.query:spawnable():by_name(\"wolf\"):ids()`.",
+      "description": "The identity query over every object definition. Narrow it and read it - see `trx.objects.ObjectQuery`.",
       "path": "objects.query",
-      "type": "table",
+      "type": "ObjectQuery",
       "writable": false
     },
     {
@@ -6403,6 +6423,105 @@
       "path": "items.Item"
     },
     {
+      "description": "A `trx.query.Query` over the items a level holds, with the narrowings below on top of the ones every query has. Items answer to no names of their own, so `of_object` is how a name reaches them.",
+      "extensions": [],
+      "fields": [],
+      "handle": false,
+      "methods": [
+        {
+          "description": "The item still has hit points.",
+          "name": "alive",
+          "returns": {
+            "description": "The narrowed query.",
+            "type": "Query"
+          }
+        },
+        {
+          "description": "The item has run its course.",
+          "name": "finished",
+          "returns": {
+            "description": "The narrowed query.",
+            "type": "Query"
+          }
+        },
+        {
+          "description": "The item is part of the game rather than set aside.",
+          "name": "in_play",
+          "returns": {
+            "description": "The narrowed query.",
+            "type": "Query"
+          }
+        },
+        {
+          "description": "The item is in the given room.",
+          "name": "in_room",
+          "params": [
+            {
+              "description": "0-based room number.",
+              "name": "room_num",
+              "type": "integer"
+            }
+          ],
+          "returns": {
+            "description": "The narrowed query.",
+            "type": "Query"
+          }
+        },
+        {
+          "description": "The item is of the given object, named the way a player would name it or by its id.",
+          "examples": [
+            "trx.items.query:of_object(\"wolf\"):simulated():matches()"
+          ],
+          "name": "of_object",
+          "params": [
+            {
+              "description": "Object id, or a name `trx.objects.query` resolves.",
+              "name": "key",
+              "type": "any"
+            }
+          ],
+          "returns": {
+            "description": "The narrowed query.",
+            "type": "Query"
+          }
+        },
+        {
+          "description": "The item is in the world, whether or not anything is simulating it.",
+          "name": "present",
+          "returns": {
+            "description": "The narrowed query.",
+            "type": "Query"
+          }
+        },
+        {
+          "description": "The item is being simulated: its control routine runs every frame.",
+          "name": "simulated",
+          "returns": {
+            "description": "The narrowed query.",
+            "type": "Query"
+          }
+        },
+        {
+          "description": "Lara's guns can lock onto the item.",
+          "name": "targetable",
+          "returns": {
+            "description": "The narrowed query.",
+            "type": "Query"
+          }
+        },
+        {
+          "description": "The item is drawn.",
+          "name": "visible",
+          "returns": {
+            "description": "The narrowed query.",
+            "type": "Query"
+          }
+        }
+      ],
+      "operators": [],
+      "path": "items.ItemQuery"
+    },
+    {
       "description": "Lara's own state, reachable straight off `trx.lara`.",
       "extensions": [],
       "fields": [
@@ -6820,6 +6939,328 @@
       ],
       "operators": [],
       "path": "objects.Object"
+    },
+    {
+      "description": "A `trx.query.Query` over every object the engine knows, with the narrowings below on top of the ones every query has. Objects answer to names, so it carries the name layer too - see `trx.query.NamedQuery`.\n\nThe families do not cover `pickup` between them: a second state of something Lara already carries, such as a part-full waterskin, is in none of them.",
+      "extensions": [],
+      "fields": [],
+      "handle": false,
+      "methods": [
+        {
+          "description": "Clips for a weapon.",
+          "name": "ammo",
+          "returns": {
+            "description": "The narrowed query.",
+            "type": "Query"
+          }
+        },
+        {
+          "description": "An animation an object borrows rather than a thing of its own.",
+          "name": "animation",
+          "returns": {
+            "description": "The narrowed query.",
+            "type": "Query"
+          }
+        },
+        {
+          "description": "A collectible, by the slot it fills.",
+          "name": "collectible",
+          "returns": {
+            "description": "The narrowed query.",
+            "type": "Query"
+          }
+        },
+        {
+          "description": "The object is a creature.",
+          "name": "creature",
+          "returns": {
+            "description": "The narrowed query.",
+            "type": "Query"
+          }
+        },
+        {
+          "description": "A door.",
+          "name": "door",
+          "returns": {
+            "description": "The narrowed query.",
+            "type": "Query"
+          }
+        },
+        {
+          "description": "A creature that fights Lara rather than for her.",
+          "name": "enemy",
+          "returns": {
+            "description": "The narrowed query.",
+            "type": "Query"
+          }
+        },
+        {
+          "description": "An examine item, by the slot it fills.",
+          "name": "examine",
+          "returns": {
+            "description": "The narrowed query.",
+            "type": "Query"
+          }
+        },
+        {
+          "description": "A weapon.",
+          "name": "gun",
+          "returns": {
+            "description": "The narrowed query.",
+            "type": "Query"
+          }
+        },
+        {
+          "description": "An icon in the inventory rather than a thing in the world.",
+          "name": "inventory_item",
+          "returns": {
+            "description": "The narrowed query.",
+            "type": "Query"
+          }
+        },
+        {
+          "description": "A key, by the slot it fills.",
+          "name": "key",
+          "returns": {
+            "description": "The narrowed query.",
+            "type": "Query"
+          }
+        },
+        {
+          "description": "The level loaded the object, so items of it exist.",
+          "name": "loaded",
+          "returns": {
+            "description": "The narrowed query.",
+            "type": "Query"
+          }
+        },
+        {
+          "description": "One of Lara's own: the butler, and Lara herself.",
+          "name": "loyal",
+          "returns": {
+            "description": "The narrowed query.",
+            "type": "Query"
+          }
+        },
+        {
+          "description": "A placeholder that is never drawn.",
+          "name": "null_object",
+          "returns": {
+            "description": "The narrowed query.",
+            "type": "Query"
+          }
+        },
+        {
+          "description": "Something Lara can pick up.",
+          "name": "pickup",
+          "returns": {
+            "description": "The narrowed query.",
+            "type": "Query"
+          }
+        },
+        {
+          "description": "A block Lara pushes and pulls.",
+          "name": "pushable",
+          "returns": {
+            "description": "The narrowed query.",
+            "type": "Query"
+          }
+        },
+        {
+          "description": "A puzzle item, by the slot it fills.",
+          "name": "puzzle",
+          "returns": {
+            "description": "The narrowed query.",
+            "type": "Query"
+          }
+        },
+        {
+          "description": "A quest item, by the slot it fills. This is what carries the scion.",
+          "name": "quest",
+          "returns": {
+            "description": "The narrowed query.",
+            "type": "Query"
+          }
+        },
+        {
+          "description": "A slot a puzzle item goes into.",
+          "name": "receptacle",
+          "returns": {
+            "description": "The narrowed query.",
+            "type": "Query"
+          }
+        },
+        {
+          "description": "The trinket a secret trigger sits under.",
+          "name": "secret",
+          "returns": {
+            "description": "The narrowed query.",
+            "type": "Query"
+          }
+        },
+        {
+          "description": "The object is a thing in the world at all, rather than an inventory icon, an animation, or a null placeholder.",
+          "name": "spawnable",
+          "returns": {
+            "description": "The narrowed query.",
+            "type": "Query"
+          }
+        },
+        {
+          "description": "A pickup Lara spends rather than keeps.",
+          "name": "supply",
+          "returns": {
+            "description": "The narrowed query.",
+            "type": "Query"
+          }
+        },
+        {
+          "description": "A switch Lara throws.",
+          "name": "switch",
+          "returns": {
+            "description": "The narrowed query.",
+            "type": "Query"
+          }
+        },
+        {
+          "description": "A pickup named for itself rather than filling a numbered slot: the crowbar, the lasersight, the binoculars, the waterskins, the leadbar.",
+          "name": "tool",
+          "returns": {
+            "description": "The narrowed query.",
+            "type": "Query"
+          }
+        }
+      ],
+      "operators": [],
+      "path": "objects.ObjectQuery"
+    },
+    {
+      "description": "A filter over a domain, read with one of the terminals below once it is narrow enough.",
+      "extensions": [],
+      "fields": [],
+      "handle": false,
+      "methods": [
+        {
+          "description": "How many candidates match.",
+          "name": "count",
+          "returns": {
+            "type": "integer"
+          }
+        },
+        {
+          "description": "The first matching handle.",
+          "name": "first",
+          "returns": {
+            "description": "The handle, or `nil`.",
+            "nullable": true,
+            "type": "any"
+          }
+        },
+        {
+          "description": "The matching ids. For objects these are object ids; for items, their numbers.",
+          "name": "ids",
+          "returns": {
+            "description": "A list of integers.",
+            "type": "table"
+          }
+        },
+        {
+          "description": "The matching handles.",
+          "name": "matches",
+          "returns": {
+            "description": "A list of `trx.objects.Object`s or `trx.items.Item`s.",
+            "type": "table"
+          }
+        },
+        {
+          "description": "Narrows by a test of your own, for what the domain does not name.",
+          "examples": [
+            "local hurt = trx.items.query:where(function(id, item)\n  return item.hit_points < 10\nend)"
+          ],
+          "name": "where",
+          "params": [
+            {
+              "name": "predicate",
+              "params": [
+                {
+                  "description": "The candidate's id.",
+                  "name": "id",
+                  "type": "integer"
+                },
+                {
+                  "description": "The candidate itself, an `Object` or an `Item`.",
+                  "name": "handle",
+                  "type": "any"
+                }
+              ],
+              "type": "function"
+            }
+          ],
+          "returns": {
+            "description": "The narrowed query.",
+            "type": "Query"
+          }
+        }
+      ],
+      "operators": [
+        {
+          "description": "Both queries match. Their domains must agree.",
+          "name": "band"
+        },
+        {
+          "description": "Everything the query does not match: `~q:animation()`.",
+          "name": "bnot"
+        },
+        {
+          "description": "Either query matches, for what a chain cannot say: `q:pickup() | q:inventory_item()`. Their domains must agree.",
+          "name": "bor"
+        }
+      ],
+      "path": "query.Query"
+    },
+    {
+      "description": "A query over a domain whose things answer to names, which adds the name layer to everything a `Query` has. A domain without names offers none of it.",
+      "extensions": [],
+      "fields": [],
+      "handle": false,
+      "methods": [
+        {
+          "description": "The ids tied for the best `by_name` score: one for a name only one thing answers to, the whole group for a group name. Without a `by_name`, every matching id.",
+          "name": "best",
+          "returns": {
+            "description": "A list of integers.",
+            "type": "table"
+          }
+        },
+        {
+          "description": "Ranks rather than filters: matches the way a player types a name, forgivingly, and orders what survives the rest of the query best first. Some of a domain's narrowings are also searchable groups, so their own name matches every member.",
+          "examples": [
+            "trx.objects.query:spawnable():by_name(\"wolf\"):ids()"
+          ],
+          "name": "by_name",
+          "params": [
+            {
+              "description": "What to look for.",
+              "name": "name",
+              "type": "string"
+            }
+          ],
+          "returns": {
+            "description": "The narrowed query.",
+            "type": "Query"
+          }
+        },
+        {
+          "description": "Every name the matches answer to, for offering completions. The group names any match belongs to come first, because a completer offers the list in order and a group name that ties on score would otherwise sit behind a thing's own. Which groups answer follows from what the query kept, so one narrowed to what fights offers no `pickup`.",
+          "name": "names",
+          "returns": {
+            "description": "A list of names.",
+            "type": "table"
+          }
+        }
+      ],
+      "operators": [],
+      "path": "query.NamedQuery"
     },
     {
       "description": "A room in the current level.",
