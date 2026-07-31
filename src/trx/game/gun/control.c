@@ -601,9 +601,7 @@ int32_t Gun_FireWeapon(
     };
     Room_GetSector(hit_pos.pos, &hit_pos.room_num);
     Gun_SmashItems(start, hit_pos, nullptr, NO_OBJECT);
-    Gun_HitTarget(
-        target, &start, &hit_pos,
-        weapon->damage * (Game_IsBonusFlagSet(GBF_JAPANESE) ? 2 : 1));
+    Gun_HitTarget(target, &start, &hit_pos, weapon->damage);
     M_CheckSmashablesBehindTarget(target, start, hit_pos, weapon->target_dist);
     return 1;
 }

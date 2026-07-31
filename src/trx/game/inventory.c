@@ -11,13 +11,6 @@
 
 INVENTORY_MODE g_Inv_Mode = INV_TITLE_MODE;
 
-static int32_t M_GetFlareQuantity(void)
-{
-    return Game_IsBonusFlagSet(GBF_JAPANESE)
-        ? g_Weapons[LGT_FLARE].ammo.pickup_qty_alt
-        : g_Weapons[LGT_FLARE].ammo.pickup_qty;
-}
-
 static INVENTORY_ITEM *M_GetGunInvItem(const LARA_GUN_TYPE gun_type)
 {
     // clang-format off
@@ -264,7 +257,8 @@ bool Inv_AddItem(const OBJECT_ID object_id)
         }
     }
 
-    const int32_t qty = object_id == O_FLAREBOX_ITEM ? M_GetFlareQuantity() : 1;
+    const int32_t qty =
+        object_id == O_FLAREBOX_ITEM ? g_Weapons[LGT_FLARE].ammo.pickup_qty : 1;
     for (RING_TYPE ring_type = 0; ring_type < RT_NUMBER_OF; ring_type++) {
         INV_RING_SOURCE *const source = &g_InvRing_Source[ring_type];
         for (int32_t i = 0; i < source->count; i++) {

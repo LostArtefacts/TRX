@@ -559,14 +559,6 @@ static bool M_HandleNewGame(INVENTORY_ITEM *const inv_item)
             Game_SetBonusFlag(GBF_NGPLUS);
             M_Confirm(PASSPORT_ACTION_NEW_GAME, GF_GetFirstLevel()->num);
             return true;
-        case UI_NEW_GAME_CHOICE_JP_NG:
-            Game_SetBonusFlag(GBF_JAPANESE);
-            M_Confirm(PASSPORT_ACTION_NEW_GAME, GF_GetFirstLevel()->num);
-            return true;
-        case UI_NEW_GAME_CHOICE_JP_NGPLUS:
-            Game_SetBonusFlag(GBF_JAPANESE | GBF_NGPLUS);
-            M_Confirm(PASSPORT_ACTION_NEW_GAME, GF_GetFirstLevel()->num);
-            return true;
         case UI_NEW_GAME_CHOICE_SWITCH_MOD:
             M_NavigateInto(M_ROLE_SWITCH_MOD, -1);
             return true;
@@ -635,16 +627,6 @@ static bool M_HandlePlayAnyLevelSelectMode(INVENTORY_ITEM *const inv_item)
             return true;
         case UI_NEW_GAME_CHOICE_NGPLUS:
             Game_SetBonusFlag(GBF_NGPLUS);
-            Savegame_UnbindSlot();
-            M_Confirm(PASSPORT_ACTION_SELECT_LEVEL, level_num);
-            return true;
-        case UI_NEW_GAME_CHOICE_JP_NG:
-            Game_SetBonusFlag(GBF_JAPANESE);
-            Savegame_UnbindSlot();
-            M_Confirm(PASSPORT_ACTION_SELECT_LEVEL, level_num);
-            return true;
-        case UI_NEW_GAME_CHOICE_JP_NGPLUS:
-            Game_SetBonusFlag(GBF_JAPANESE | GBF_NGPLUS);
             Savegame_UnbindSlot();
             M_Confirm(PASSPORT_ACTION_SELECT_LEVEL, level_num);
             return true;

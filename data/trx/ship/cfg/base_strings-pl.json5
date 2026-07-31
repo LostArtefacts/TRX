@@ -102,8 +102,6 @@
             "exit_to_title": "Menu główne",
             "load_game": "Wczytaj grę",
             "mode_new_game": "Nowa gra",
-            "mode_new_game_jp": "Japońska wersja",
-            "mode_new_game_jp_plus": "Japońska wersja, NG+",
             "mode_new_game_plus": "Nowa gra+",
             "new_game": "Nowa gra",
             "play_previous_levels": "Zagraj w poprzednie poziomy",
@@ -1300,7 +1298,7 @@
         },
         "gameplay.game_modes_policy": {
             "title": "Wybór trybu gry",
-            "description": "\\{review}Pozwala na wybór opcji trybu przy rozpoczynaniu nowej gry.\n\n- Nowa Gra+: odblokowuje wszystkie bronie z nieskończoną amunicją; przeciwnicy mają podwójne zdrowie.\n- Japońska NG: bronie zadają podwójne obrażenia; znajdźki z flarami zawierają 8 flar zamiast 6.\n- Japońska NG+: połączenie Nowej Gry+ i Japońskiej NG.\n\nDostępne opcje:\n\n- Zawsze: okno wyboru trybów gry będzie zawsze dostępne.\n- Nigdy: okno wyboru trybów gry nigdy nie będzie dostępne, a każda nowa gra będzie zwykłą grą.\n- Po ukończeniu: okno wyboru trybów gry będzie dostępne dopiero po ukończeniu gry.",
+            "description": "\\{review}Pozwala na wybór opcji trybu przy rozpoczynaniu nowej gry.\n\n- Nowa Gra+: odblokowuje wszystkie bronie z nieskończoną amunicją; przeciwnicy mają podwójne zdrowie.\n\nDostępne opcje:\n\n- Zawsze: okno wyboru trybów gry będzie zawsze dostępne.\n- Nigdy: okno wyboru trybów gry nigdy nie będzie dostępne, a każda nowa gra będzie zwykłą grą.\n- Po ukończeniu: okno wyboru trybów gry będzie dostępne dopiero po ukończeniu gry.",
         },
         "gameplay.harpoon_recoil": {
             "title": "Odrzut harpuna",

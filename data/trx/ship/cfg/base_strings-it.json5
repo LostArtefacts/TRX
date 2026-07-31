@@ -102,8 +102,6 @@
             "exit_to_title": "Torna al Menu",
             "load_game": "Carica Partita",
             "mode_new_game": "Nuova Partita",
-            "mode_new_game_jp": "NP Giapponese",
-            "mode_new_game_jp_plus": "NP Giapponese+",
             "mode_new_game_plus": "Nuova Partita+",
             "new_game": "Nuova Partita",
             "play_previous_levels": "Gioca livelli precedenti",
@@ -1300,7 +1298,7 @@
         },
         "gameplay.game_modes_policy": {
             "title": "Selezione modalità di gioco",
-            "description": "\\{review}Consente di selezionare le modalità di gioco aggiuntive dal menu passaporto.\n\n- Nuova Partita+: sblocca tutte le armi con munizioni infinite; i nemici hanno punti vita doppi.\n- NP giapponese: le armi causano il doppio dei danni; le scatole di razzi contengono 8 razzi di segnalazione anziché 6.\n- NP giapponese+: combinazione di Nuova Partita+ e NP giapponese.\n\nOpzioni disponibili:\n\n- Sempre: la finestra di selezione delle modalità di gioco sarà sempre disponibile.\n- Mai: la finestra di selezione delle modalità di gioco non sarà mai disponibile e ogni nuova partita sarà una partita normale.\n- Al completamento: la finestra di selezione delle modalità di gioco sarà disponibile solo dopo aver completato il gioco.",
+            "description": "\\{review}Consente di selezionare le modalità di gioco aggiuntive dal menu passaporto.\n\n- Nuova Partita+: sblocca tutte le armi con munizioni infinite; i nemici hanno punti vita doppi.\n\nOpzioni disponibili:\n\n- Sempre: la finestra di selezione delle modalità di gioco sarà sempre disponibile.\n- Mai: la finestra di selezione delle modalità di gioco non sarà mai disponibile e ogni nuova partita sarà una partita normale.\n- Al completamento: la finestra di selezione delle modalità di gioco sarà disponibile solo dopo aver completato il gioco.",
         },
         "gameplay.harpoon_recoil": {
             "title": "Ricarica fucile subacqueo",
