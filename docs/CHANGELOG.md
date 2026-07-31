@@ -81,6 +81,7 @@
 - fixed the list of settings a preset would change spilling outside its dialog, and its text now wraps (#6000)
 - fixed Lara getting stuck on ropes if she enters the fly cheat while still using one (regression from 1.9)
 - fixed the inventory hint for using an item showing Enter rather than the key bound to Action (regression from 1.8.1)
+- fixed the black surround of the binoculars turning grey when looking in certain directions (regression from 1.9)
 
 **TR1**
 - changed weather to be affected by the breeze
