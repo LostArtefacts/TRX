@@ -10,48 +10,12 @@
 
 INVENTORY_MODE g_Inv_Mode = INV_TITLE_MODE;
 
-static INVENTORY_ITEM *M_GetGunInvItem(const LARA_GUN_TYPE gun_type)
+// The ring entry a pickup goes into. pickups.def pairs every gun and every
+// ammunition box with the icon that stands for it, so the weapon needs no
+// table of its own.
+static INVENTORY_ITEM *M_GetInvItem(const OBJECT_ID object_id)
 {
-    // clang-format off
-    switch (gun_type) {
-    case LGT_PISTOLS:      return InvRing_GetByObjectID(O_PISTOL_OPTION);
-    case LGT_SHOTGUN:      return InvRing_GetByObjectID(O_SHOTGUN_OPTION);
-    case LGT_MAGNUMS:      return InvRing_GetByObjectID(O_MAGNUM_OPTION);
-    case LGT_AUTOS:        return InvRing_GetByObjectID(O_AUTOS_OPTION);
-    case LGT_DESERT_EAGLE: return InvRing_GetByObjectID(O_DESERT_EAGLE_OPTION);
-    case LGT_UZIS:         return InvRing_GetByObjectID(O_UZI_OPTION);
-    case LGT_HARPOON:      return InvRing_GetByObjectID(O_HARPOON_OPTION);
-    case LGT_M16:          return InvRing_GetByObjectID(O_M16_OPTION);
-    case LGT_MP5:          return InvRing_GetByObjectID(O_MP5_OPTION);
-    case LGT_GRENADE:      return InvRing_GetByObjectID(O_GRENADE_GUN_OPTION);
-    case LGT_ROCKET:       return InvRing_GetByObjectID(O_ROCKET_GUN_OPTION);
-    case LGT_CROSSBOW:     return InvRing_GetByObjectID(O_CROSSBOW_OPTION);
-    case LGT_REVOLVER:     return InvRing_GetByObjectID(O_REVOLVER_OPTION);
-    default:               return nullptr;
-    }
-    // clang-format on
-}
-
-static INVENTORY_ITEM *M_GetAmmoInvItem(const LARA_GUN_TYPE gun_type)
-{
-    // clang-format off
-    switch (gun_type) {
-    case LGT_PISTOLS:      return InvRing_GetByObjectID(O_PISTOL_AMMO_OPTION);
-    case LGT_SHOTGUN:      return InvRing_GetByObjectID(O_SHOTGUN_AMMO_OPTION);
-    case LGT_MAGNUMS:      return InvRing_GetByObjectID(O_MAGNUM_AMMO_OPTION);
-    case LGT_AUTOS:        return InvRing_GetByObjectID(O_AUTOS_AMMO_OPTION);
-    case LGT_DESERT_EAGLE: return InvRing_GetByObjectID(O_DESERT_EAGLE_AMMO_OPTION);
-    case LGT_UZIS:         return InvRing_GetByObjectID(O_UZI_AMMO_OPTION);
-    case LGT_HARPOON:      return InvRing_GetByObjectID(O_HARPOON_AMMO_OPTION);
-    case LGT_M16:          return InvRing_GetByObjectID(O_M16_AMMO_OPTION);
-    case LGT_MP5:          return InvRing_GetByObjectID(O_MP5_AMMO_OPTION);
-    case LGT_GRENADE:      return InvRing_GetByObjectID(O_GRENADE_AMMO_OPTION);
-    case LGT_ROCKET:       return InvRing_GetByObjectID(O_ROCKET_AMMO_OPTION);
-    case LGT_CROSSBOW:     return InvRing_GetByObjectID(O_CROSSBOW_AMMO_OPTION);
-    case LGT_REVOLVER:     return InvRing_GetByObjectID(O_REVOLVER_AMMO_OPTION);
-    default:               return nullptr;
-    }
-    // clang-format on
+    return InvRing_GetByObjectID(Inv_GetItemOption(object_id));
 }
 
 static void M_IncreaseAmmo(const LARA_GUN_TYPE gun_type, const int32_t qty)
@@ -83,7 +47,7 @@ static void M_AddGun(const LARA_GUN_TYPE gun_type)
         Inv_RemoveItem(ammo_object);
     }
     M_IncreaseAmmo(gun_type, Gun_GetAmmoInitialQuantity(gun_type));
-    Inv_InsertItem(M_GetGunInvItem(gun_type));
+    Inv_InsertItem(M_GetInvItem(gun_object));
     if (lara->last_gun_type == LGT_UNARMED) {
         lara->last_gun_type = gun_type;
     }
@@ -95,7 +59,7 @@ static void M_AddAmmo(const LARA_GUN_TYPE gun_type)
     const OBJECT_ID gun_object = Gun_GetGunObject(gun_type);
     M_IncreaseAmmo(gun_type, Gun_GetAmmoPickupQuantity(gun_type));
     if (!Inv_RequestItem(gun_object)) {
-        Inv_InsertItem(M_GetAmmoInvItem(gun_type));
+        Inv_InsertItem(M_GetInvItem(Gun_GetAmmoObject(gun_type)));
     }
 }
 
