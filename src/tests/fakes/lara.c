@@ -11,6 +11,7 @@
 
 #include <trx/game/const.h>
 #include <trx/game/gun/types.h>
+#include <trx/game/inventory.h>
 #include <trx/game/items/manager.h>
 #include <trx/game/items/types.h>
 #include <trx/game/lara/skin/types.h>
@@ -22,7 +23,6 @@ static LARA_INFO m_Lara;
 static bool m_HolstersVisible;
 static bool m_HasPistols;
 static LARA_SKIN_TYPE m_Skin;
-static int32_t m_Ammo[NUM_WEAPONS];
 
 // Which pickups share a backpack entry with another, as the scion's states do.
 static struct {
@@ -53,11 +53,10 @@ int16_t Item_GetRelativeObjAnim(const ITEM *const item, const OBJECT_ID obj_id)
     return -1;
 }
 
-// The backpack, as a count per object. The engine maps a pickup to the icon it
-// goes into before it counts; the fake takes whichever id it is given, so a
-// test has to name one of them consistently.
-static int32_t m_InvCounts[FAKE_INV_SLOTS];
-static OBJECT_ID m_InvObjects[FAKE_INV_SLOTS];
+// The inventory Lara is carrying, which is a state like any other - the same
+// one trx.inventory reaches. The engine maps a pickup to the icon it goes into
+// before it counts; the fake keeps that mapping and nothing else.
+static INVENTORY_STATE m_LiveState;
 static bool m_CanAdd = true;
 
 // The engine holds one backpack entry per inventory icon, and several pickups
@@ -72,21 +71,6 @@ OBJECT_ID Inv_GetItemOption(const OBJECT_ID object_id)
         }
     }
     return object_id;
-}
-
-static int32_t *M_InvSlot(const OBJECT_ID raw_object_id)
-{
-    const OBJECT_ID object_id = Inv_GetItemOption(raw_object_id);
-    for (int32_t i = 0; i < FAKE_INV_SLOTS; i++) {
-        if (m_InvObjects[i] == object_id) {
-            return &m_InvCounts[i];
-        }
-        if (m_InvCounts[i] == 0 && m_InvObjects[i] == NO_OBJECT) {
-            m_InvObjects[i] = object_id;
-            return &m_InvCounts[i];
-        }
-    }
-    return nullptr;
 }
 
 // The same pairing gun/common.c makes, which is what keeps a bridge that hands
@@ -143,16 +127,31 @@ OBJECT_ID Gun_GetAmmoObject(const LARA_GUN_TYPE gun_type)
     return FakeLara_AmmoObject(gun_type);
 }
 
+// The shotgun spends six rounds a shot, as the engine's table says, so a test
+// can tell the two units apart.
+int32_t Gun_GetRoundsPerShot(const LARA_GUN_TYPE gun_type)
+{
+    return gun_type == LGT_SHOTGUN ? 6 : 1;
+}
+
+int32_t Gun_GetRoundsPerBox(const LARA_GUN_TYPE gun_type)
+{
+    return Gun_GetRoundsPerShot(gun_type) * 10;
+}
+
+void Inv_AddAmmo(const LARA_GUN_TYPE gun_type, const int32_t rounds)
+{
+    Inv_SetAmmo(gun_type, Inv_GetAmmo(gun_type) + rounds);
+}
+
 int32_t Inv_GetAmmo(const LARA_GUN_TYPE gun_type)
 {
-    return gun_type == LGT_UNARMED ? 0 : m_Ammo[gun_type];
+    return Inv_State_GetAmmo(&m_LiveState, gun_type);
 }
 
 void Inv_SetAmmo(const LARA_GUN_TYPE gun_type, const int32_t rounds)
 {
-    if (gun_type != LGT_UNARMED) {
-        m_Ammo[gun_type] = rounds;
-    }
+    Inv_State_SetAmmo(&m_LiveState, gun_type, rounds);
 }
 
 bool Inv_CanAddItem(const OBJECT_ID object_id)
@@ -163,22 +162,21 @@ bool Inv_CanAddItem(const OBJECT_ID object_id)
 bool Inv_AddItem(const OBJECT_ID object_id)
 {
     FAKE_RECORD("inv_add", FV(object_id));
-    int32_t *const slot = M_InvSlot(object_id);
-    if (!m_CanAdd || slot == nullptr) {
+    if (!m_CanAdd) {
         return false;
     }
-    (*slot)++;
+    Inv_State_AddCount(&m_LiveState, object_id, 1);
     return true;
 }
 
 bool Inv_RemoveItem(const OBJECT_ID object_id)
 {
     FAKE_RECORD("inv_remove", FV(object_id));
-    int32_t *const slot = M_InvSlot(object_id);
-    if (slot == nullptr || *slot == 0) {
+    const int32_t held = Inv_State_GetCount(&m_LiveState, object_id);
+    if (held == 0) {
         return false;
     }
-    (*slot)--;
+    Inv_State_SetCount(&m_LiveState, object_id, held - 1);
     return true;
 }
 
@@ -189,13 +187,138 @@ int32_t Inv_GetItemCount(const OBJECT_ID object_id)
     if (object_id == FakeLara_GunObject(LGT_PISTOLS)) {
         return m_HasPistols ? 1 : 0;
     }
-    const int32_t *const slot = M_InvSlot(object_id);
-    return slot == nullptr ? 0 : *slot;
+    return Inv_State_GetCount(&m_LiveState, object_id);
 }
 
 bool Inv_HasItem(const OBJECT_ID object_id)
 {
     return Inv_GetItemCount(object_id) > 0;
+}
+
+int32_t Inv_GetDrawnEntries(
+    INVENTORY_ENTRY *const entries, const int32_t max_count)
+{
+    return Inv_State_GetDrawnEntries(&m_LiveState, entries, max_count);
+}
+
+// A stored inventory is a plain struct, so the fake works it as the engine
+// does rather than standing in for it.
+static INVENTORY_ENTRY *M_StateEntry(
+    INVENTORY_STATE *const state, const OBJECT_ID object_id)
+{
+    for (int32_t i = 0; i < state->count; i++) {
+        if (state->entries[i].object_id == object_id) {
+            return &state->entries[i];
+        }
+    }
+    return nullptr;
+}
+
+INVENTORY_STATE *Inv_GetState(void)
+{
+    return &m_LiveState;
+}
+
+OBJECT_ID Inv_GetItemPickup(const OBJECT_ID object_id)
+{
+    return object_id;
+}
+
+int32_t Inv_State_GetAmmo(
+    const INVENTORY_STATE *const state, const LARA_GUN_TYPE gun_type)
+{
+    return gun_type == LGT_UNARMED ? 0 : state->ammo[gun_type];
+}
+
+void Inv_State_SetAmmo(
+    INVENTORY_STATE *const state, const LARA_GUN_TYPE gun_type,
+    const int32_t rounds)
+{
+    if (gun_type != LGT_UNARMED) {
+        state->ammo[gun_type] = rounds;
+    }
+}
+
+// Every slot holding something, in the order it was taken: the fake derives no
+// boxes of ammunition, having no weapons table to derive them from.
+int32_t Inv_State_GetDrawnEntries(
+    const INVENTORY_STATE *const state, INVENTORY_ENTRY *const entries,
+    const int32_t max_count)
+{
+    int32_t count = 0;
+    for (int32_t i = 0; i < state->count && count < max_count; i++) {
+        entries[count++] = state->entries[i];
+    }
+    return count;
+}
+
+LARA_GUN_TYPE Gun_GetType(const OBJECT_ID object_id)
+{
+    for (LARA_GUN_TYPE gun_type = LGT_UNARMED + 1; gun_type < NUM_WEAPONS;
+         gun_type++) {
+        if (FakeLara_GunObject(gun_type) == object_id) {
+            return gun_type;
+        }
+    }
+    return LGT_UNARMED;
+}
+
+void Inv_State_AddCount(
+    INVENTORY_STATE *const state, const OBJECT_ID object_id, const int32_t qty)
+{
+    Inv_State_SetCount(
+        state, object_id, Inv_State_GetCount(state, object_id) + qty);
+}
+
+void Inv_State_AddAmmo(
+    INVENTORY_STATE *const state, const LARA_GUN_TYPE gun_type,
+    const int32_t rounds)
+{
+    Inv_State_SetAmmo(
+        state, gun_type, Inv_State_GetAmmo(state, gun_type) + rounds);
+}
+
+int32_t Gun_GetInitialRounds(const LARA_GUN_TYPE gun_type)
+{
+    return Gun_GetRoundsPerBox(gun_type);
+}
+
+int32_t Inv_State_GetCount(
+    const INVENTORY_STATE *const state, const OBJECT_ID object_id)
+{
+    const INVENTORY_ENTRY *const entry =
+        M_StateEntry((INVENTORY_STATE *)state, Inv_GetItemOption(object_id));
+    return entry == nullptr ? 0 : entry->qty;
+}
+
+bool Inv_State_Has(
+    const INVENTORY_STATE *const state, const OBJECT_ID object_id)
+{
+    return Inv_State_GetCount(state, object_id) > 0;
+}
+
+void Inv_State_SetCount(
+    INVENTORY_STATE *const state, const OBJECT_ID raw_object_id,
+    const int32_t qty)
+{
+    const OBJECT_ID object_id = Inv_GetItemOption(raw_object_id);
+    INVENTORY_ENTRY *const entry = M_StateEntry(state, object_id);
+    if (entry != nullptr) {
+        entry->qty = qty;
+        return;
+    }
+    if (qty > 0 && state->count < INV_MAX_ENTRIES) {
+        state->entries[state->count++] = (INVENTORY_ENTRY) {
+            .object_id = object_id,
+            .qty = qty,
+        };
+    }
+}
+
+void Inv_SetItemCount(const OBJECT_ID object_id, const int32_t qty)
+{
+    FAKE_RECORD("inv_set_count", FV(object_id), FV(qty));
+    Inv_State_SetCount(&m_LiveState, object_id, qty);
 }
 
 LARA_SKIN_TYPE Lara_Skin_GetType(void)
@@ -270,11 +393,7 @@ static void M_Reset(void)
     for (int32_t i = 0; i < FAKE_INV_SHARED; i++) {
         m_InvShared[i] = (typeof(m_InvShared[0])) { NO_OBJECT, NO_OBJECT };
     }
-    memset(m_Ammo, 0, sizeof(m_Ammo));
-    memset(m_InvCounts, 0, sizeof(m_InvCounts));
-    for (int32_t i = 0; i < FAKE_INV_SLOTS; i++) {
-        m_InvObjects[i] = NO_OBJECT;
-    }
+    m_LiveState = (INVENTORY_STATE) {};
 }
 
 FAKE_ON_RESET(M_Reset)

@@ -76,7 +76,7 @@ int main(void)
         // reads a level off without requiring it. What these require comes
         // with them.
         .deps = { "log", "objects", "lara", "game", "sound", "argparse",
-                  nullptr },
+                  "inventory", "weapons", nullptr },
         .script = "give",
         .tests = "commands/give",
         .push_fake = M_PushFake,

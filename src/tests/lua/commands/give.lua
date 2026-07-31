@@ -3,9 +3,9 @@
 -- The fake level holds the two objects of its own - a vase and a key, neither in
 -- any pickup family - and real pickups the families do name: a story key, a
 -- puzzle piece, a crowbar, a lead bar, a medipack, the scion, a part-full
--- waterskin and a secret's trinket. Its weapons carry no inventory models of their own, so the
--- weapon paths are watched through trx.lara.weapons rather than through what
--- lands in the backpack.
+-- waterskin and a secret's trinket. Its weapons carry no inventory models of
+-- their own, so the weapon paths are watched through trx.weapons
+-- rather than through what lands in the backpack.
 
 local h = require("harness")
 local test = h.test
@@ -15,7 +15,7 @@ local function give(args)
 end
 
 local function count(object)
-  return trx.lara.inventory.count(object)
+  return trx.inventory:count(object)
 end
 
 local UZIS = trx.catalog.weapons.UZIS
@@ -105,16 +105,16 @@ end)
 
 test("guns respects what the level allows, moreguns does not", function()
   assert(give("guns") == trx.console.Result.OK)
-  assert(trx.lara.weapons.ammo(UZIS) == 0, "the level leaves the uzis out")
+  assert(trx.inventory:shots(UZIS) == 0, "the level leaves the uzis out")
 
   assert(give("moreguns") == trx.console.Result.OK)
-  assert(trx.lara.weapons.ammo(UZIS) == 2000, "and moreguns hands them over")
+  assert(trx.inventory:shots(UZIS) == 2000, "and moreguns hands them over")
 end)
 
 test("a weapon the level allows comes with its ammunition", function()
   fake.set_weapon_available(UZIS, true)
   assert(give("guns") == trx.console.Result.OK)
-  assert(trx.lara.weapons.ammo(UZIS) == 2000)
+  assert(trx.inventory:shots(UZIS) == 2000)
 end)
 
 test("a new game plus run tops every weapon up", function()
@@ -122,7 +122,7 @@ test("a new game plus run tops every weapon up", function()
   fake.set_weapon_available(UZIS, true)
 
   assert(give("moreguns") == trx.console.Result.OK)
-  assert(trx.lara.weapons.ammo(UZIS) == 10001)
+  assert(trx.inventory:shots(UZIS) == 10001)
 end)
 
 test("all gives one of everything, and the supplies by the ten", function()
@@ -131,7 +131,7 @@ test("all gives one of everything, and the supplies by the ten", function()
 
   assert(count(fake.STORY_KEY) == 1, "the story item")
   assert(count(fake.TOOL) == 1, "and the tool, once")
-  assert(trx.lara.weapons.ammo(UZIS) == 2000, "with the guns loaded")
+  assert(trx.inventory:shots(UZIS) == 2000, "with the guns loaded")
   assert(
     count(trx.catalog.objects.SMALL_MEDIPACK_ITEM) == 10,
     "the supplies come by the ten"
@@ -210,7 +210,7 @@ test("the keyword commands reach the same cheats", function()
 
   fake.set_weapon_available(UZIS, true)
   assert(fake.run("guns", "") == trx.console.Result.OK)
-  assert(trx.lara.weapons.ammo(UZIS) == 2000)
+  assert(trx.inventory:shots(UZIS) == 2000)
 
   assert(fake.run("moreguns", "") == trx.console.Result.OK)
 end)

@@ -78,6 +78,19 @@ typedef struct {
 // Defines a TYPE_DESC and adds it to the global type registry, so consumers
 // that enumerate types (the API binder, the docs dump) need not know which
 // types exist.
+// A type whose whole surface is methods. The fields are what a script reads off
+// the struct itself, and a type that answers everything through calls has none.
+#define TYPE_DEFINE_METHODS_ONLY(struct_)                                      \
+    const TYPE_DESC TYPE_##struct_ = {                                         \
+        .name = #struct_,                                                      \
+        .fields = nullptr,                                                     \
+        .field_count = 0,                                                      \
+    };                                                                         \
+    __attribute__((constructor)) static void M_RegisterType##struct_(void)     \
+    {                                                                          \
+        Type_Register(&TYPE_##struct_);                                        \
+    }
+
 #define TYPE_DEFINE(struct_, fields_)                                          \
     const TYPE_DESC TYPE_##struct_ = {                                         \
         .name = #struct_,                                                      \

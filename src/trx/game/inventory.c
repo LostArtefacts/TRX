@@ -45,7 +45,7 @@ static void M_SetCount(
     // the gun rather than anything she picked up. Left behind, they would draw
     // boxes of clips she never found.
     if (object_id == O_PISTOL_OPTION) {
-        state->ammo[LGT_PISTOLS] = qty > 0 ? 1000 : 0;
+        Inv_State_SetAmmo(state, LGT_PISTOLS, qty > 0 ? 1000 : 0);
     }
 
     const int32_t idx = M_FindEntryIndex(state, object_id);
@@ -100,11 +100,12 @@ static LARA_GUN_TYPE M_GetAmmoGunType(const OBJECT_ID object_id)
     return Gun_GetType(Object_GetCognateInverse(pickup_id, g_GunAmmoObjectMap));
 }
 
-// How many boxes the rounds she holds come to, which is what a box entry
-// counts. Nothing stores that count: the rounds are the whole of it.
-static int32_t M_GetAmmoBoxCount(const LARA_GUN_TYPE gun_type)
+// How many boxes the rounds come to, which is what a box entry counts. Nothing
+// stores that count: the rounds are the whole of it.
+static int32_t M_GetAmmoBoxCount(
+    const INVENTORY_STATE *const state, const LARA_GUN_TYPE gun_type)
 {
-    return Inv_GetAmmo(gun_type) / Gun_GetRoundsPerBox(gun_type);
+    return Inv_State_GetAmmo(state, gun_type) / Gun_GetRoundsPerBox(gun_type);
 }
 
 // Where a weapon's rounds are kept, or nullptr for one that spends none. The
@@ -127,23 +128,36 @@ bool Inv_HasAmmoSlot(const LARA_GUN_TYPE gun_type)
     return M_GetAmmoSlot(&m_State, gun_type) != nullptr;
 }
 
+int32_t Inv_State_GetAmmo(
+    const INVENTORY_STATE *const state, const LARA_GUN_TYPE gun_type)
+{
+    const int32_t *const slot =
+        M_GetAmmoSlot((INVENTORY_STATE *)state, gun_type);
+    return slot == nullptr ? 0 : *slot;
+}
+
+void Inv_State_SetAmmo(
+    INVENTORY_STATE *const state, const LARA_GUN_TYPE gun_type,
+    const int32_t rounds)
+{
+    int32_t *const slot = M_GetAmmoSlot(state, gun_type);
+    if (slot != nullptr) {
+        *slot = MAX(0, MIN(rounds, MAX_QTY));
+    }
+}
+
 int32_t Inv_GetAmmo(const LARA_GUN_TYPE gun_type)
 {
-    const int32_t *const slot = M_GetAmmoSlot(&m_State, gun_type);
-    return slot == nullptr ? 0 : *slot;
+    return Inv_State_GetAmmo(&m_State, gun_type);
 }
 
 void Inv_SetAmmo(const LARA_GUN_TYPE gun_type, const int32_t rounds)
 {
-    int32_t *const slot = M_GetAmmoSlot(&m_State, gun_type);
-    if (slot == nullptr) {
-        return;
-    }
     // A box entry counts nothing of its own, so the rings have to be redrawn
     // whenever the rounds behind it come to a different number of boxes.
-    const int32_t old_box_count = M_GetAmmoBoxCount(gun_type);
-    *slot = MIN(rounds, MAX_QTY);
-    if (M_GetAmmoBoxCount(gun_type) != old_box_count) {
+    const int32_t old_box_count = M_GetAmmoBoxCount(&m_State, gun_type);
+    Inv_State_SetAmmo(&m_State, gun_type, rounds);
+    if (M_GetAmmoBoxCount(&m_State, gun_type) != old_box_count) {
         InvRing_Rebuild();
     }
 }
@@ -156,8 +170,12 @@ void Inv_AddAmmo(const LARA_GUN_TYPE gun_type, const int32_t rounds)
 int32_t Inv_State_GetCount(
     const INVENTORY_STATE *const state, const OBJECT_ID object_id)
 {
-    const INVENTORY_ENTRY *const entry =
-        M_FindEntry(state, M_GetEntryID(object_id));
+    const OBJECT_ID entry_id = M_GetEntryID(object_id);
+    const LARA_GUN_TYPE gun_type = M_GetAmmoGunType(entry_id);
+    if (gun_type != LGT_UNARMED) {
+        return M_GetAmmoBoxCount(state, gun_type);
+    }
+    const INVENTORY_ENTRY *const entry = M_FindEntry(state, entry_id);
     return entry == nullptr ? 0 : entry->qty;
 }
 
@@ -170,7 +188,13 @@ bool Inv_State_Has(
 void Inv_State_SetCount(
     INVENTORY_STATE *const state, const OBJECT_ID object_id, const int32_t qty)
 {
-    M_SetCount(state, M_GetEntryID(object_id), qty);
+    const OBJECT_ID entry_id = M_GetEntryID(object_id);
+    const LARA_GUN_TYPE gun_type = M_GetAmmoGunType(entry_id);
+    if (gun_type != LGT_UNARMED) {
+        Inv_State_SetAmmo(state, gun_type, qty * Gun_GetRoundsPerBox(gun_type));
+        return;
+    }
+    M_SetCount(state, entry_id, qty);
 }
 
 void Inv_State_AddAmmo(
@@ -240,22 +264,17 @@ OBJECT_ID Inv_GetItemPickup(const OBJECT_ID object_id)
 
 int32_t Inv_GetItemCount(const OBJECT_ID object_id)
 {
-    const OBJECT_ID entry_id = M_GetEntryID(object_id);
-    const LARA_GUN_TYPE gun_type = M_GetAmmoGunType(entry_id);
-    if (gun_type != LGT_UNARMED) {
-        return M_GetAmmoBoxCount(gun_type);
-    }
-    const INVENTORY_ENTRY *const entry = M_FindEntry(&m_State, entry_id);
-    return entry == nullptr ? 0 : entry->qty;
+    return Inv_State_GetCount(&m_State, object_id);
 }
 
-int32_t Inv_GetDrawnEntries(
-    INVENTORY_ENTRY *const entries, const int32_t max_count)
+int32_t Inv_State_GetDrawnEntries(
+    const INVENTORY_STATE *const state, INVENTORY_ENTRY *const entries,
+    const int32_t max_count)
 {
     int32_t count = 0;
-    for (int32_t i = 0; i < m_State.count && count < max_count; i++) {
-        if (M_GetAmmoGunType(m_State.entries[i].object_id) == LGT_UNARMED) {
-            entries[count++] = m_State.entries[i];
+    for (int32_t i = 0; i < state->count && count < max_count; i++) {
+        if (M_GetAmmoGunType(state->entries[i].object_id) == LGT_UNARMED) {
+            entries[count++] = state->entries[i];
         }
     }
     // A box of ammunition is drawn for rounds she has no gun to spend, and
@@ -263,16 +282,23 @@ int32_t Inv_GetDrawnEntries(
     for (LARA_GUN_TYPE gun_type = LGT_PISTOLS;
          gun_type < NUM_WEAPONS && count < max_count; gun_type++) {
         const OBJECT_ID ammo_object = Gun_GetAmmoObject(gun_type);
-        if (ammo_object == NO_OBJECT || Inv_HasItem(Gun_GetGunObject(gun_type))
-            || M_GetAmmoBoxCount(gun_type) <= 0) {
+        if (ammo_object == NO_OBJECT
+            || Inv_State_Has(state, Gun_GetGunObject(gun_type))
+            || M_GetAmmoBoxCount(state, gun_type) <= 0) {
             continue;
         }
         entries[count++] = (INVENTORY_ENTRY) {
             .object_id = M_GetEntryID(ammo_object),
-            .qty = M_GetAmmoBoxCount(gun_type),
+            .qty = M_GetAmmoBoxCount(state, gun_type),
         };
     }
     return count;
+}
+
+int32_t Inv_GetDrawnEntries(
+    INVENTORY_ENTRY *const entries, const int32_t max_count)
+{
+    return Inv_State_GetDrawnEntries(&m_State, entries, max_count);
 }
 
 bool Inv_HasItem(const OBJECT_ID object_id)
@@ -282,7 +308,7 @@ bool Inv_HasItem(const OBJECT_ID object_id)
 
 void Inv_SetItemCount(const OBJECT_ID object_id, const int32_t qty)
 {
-    M_SetCount(&m_State, M_GetEntryID(object_id), qty);
+    Inv_State_SetCount(&m_State, object_id, qty);
     InvRing_Rebuild();
 }
 
@@ -303,7 +329,7 @@ bool Inv_RemoveItem(const OBJECT_ID object_id)
     if (gun_type == LGT_UNARMED && entry == nullptr) {
         return false;
     }
-    if (gun_type != LGT_UNARMED && M_GetAmmoBoxCount(gun_type) <= 0) {
+    if (gun_type != LGT_UNARMED && M_GetAmmoBoxCount(&m_State, gun_type) <= 0) {
         return false;
     }
 
