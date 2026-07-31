@@ -39,7 +39,7 @@ static void M_IncludeKillableItem(
         LOG_TRACE(
             "+%d pickups from carrier %d", Carrier_GetItemCount(item_num),
             item_num);
-        stats->max_pickup_count += Carrier_GetItemCount(item_num);
+        stats->maxes[STATS_CAT_PICKUPS] += Carrier_GetItemCount(item_num);
     }
 }
 
@@ -56,7 +56,7 @@ static uint32_t M_ReserveSecretConcreteBit(
     const uint32_t secret_bit = 1 << position;
     if (!(stats->all_secrets_mask & secret_bit)) {
         stats->all_secrets_mask |= secret_bit;
-        stats->max_secret_count++;
+        stats->maxes[STATS_CAT_SECRETS]++;
         if (object_id != NO_OBJECT) {
             stats->max_pickup_secret_count++;
         }
@@ -141,7 +141,7 @@ static void M_CheckTriggers(
                         && (Object_Get(O_PUZZLE_OPTION_2)->loaded
                             || Object_Get(O_PUZZLE_ITEM_2)->loaded)) {
                         LOG_TRACE("+1 pickup from dragon");
-                        stats->max_pickup_count++;
+                        stats->maxes[STATS_CAT_PICKUPS]++;
                     }
                 }
                 break;
@@ -200,12 +200,12 @@ static void M_CalculateStats(LEVEL_MAX_STATS *const stats)
             && !Carrier_IsItemCarried(i)) {
             LOG_TRACE(
                 "+1 pickup from pickup item %d in room %d", i, item->room_num);
-            stats->max_pickup_count++;
+            stats->maxes[STATS_CAT_PICKUPS]++;
         } else if (item->object_id == O_SAVE_CRYSTAL_ITEM) {
             LOG_TRACE(
                 "+1 crystal from save crystal item %d in room %d", i,
                 item->room_num);
-            stats->max_crystal_count++;
+            stats->maxes[STATS_CAT_CRYSTALS]++;
         }
     }
 
@@ -288,12 +288,12 @@ void Stats_ScanLevel(const GF_LEVEL *const level)
     BENCHMARK benchmark = Benchmark_Start();
     LEVEL_MAX_STATS *const max_stats = Stats_GetLevelMaxStats(level);
     M_CalculateStats(max_stats);
-    max_stats->max_pickup_count += GF_GetSecretRewardCount(level);
-    max_stats->max_pickup_count -= level->unobtainable.pickups;
-    max_stats->max_secret_count -= level->unobtainable.secrets;
+    max_stats->maxes[STATS_CAT_PICKUPS] += GF_GetSecretRewardCount(level);
+    max_stats->maxes[STATS_CAT_PICKUPS] -= level->unobtainable.pickups;
+    max_stats->maxes[STATS_CAT_SECRETS] -= level->unobtainable.secrets;
     max_stats->max_kill_ally_count -= level->unobtainable.ally_kills;
     max_stats->max_kill_non_ally_count -= level->unobtainable.kills;
-    max_stats->max_kill_count =
+    max_stats->maxes[STATS_CAT_KILLS] =
         max_stats->max_kill_non_ally_count + max_stats->max_kill_ally_count;
     Benchmark_End(&benchmark, nullptr);
 }

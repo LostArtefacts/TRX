@@ -374,10 +374,10 @@ static void M_WriteResumeInfo(
 
     JSONW_WRITE(io, "costume", resume->flags.costume);
     JSONW_WRITE(io, "timer", resume->stats.timer);
-    JSONW_WRITE(io, "kills", resume->stats.kill_count);
+    JSONW_WRITE(io, "kills", resume->stats.counts[STATS_CAT_KILLS]);
     JSONW_WRITE(io, "secrets", resume->stats.secret_flags);
-    JSONW_WRITE(io, "crystals", resume->stats.crystal_count);
-    JSONW_WRITE(io, "pickups", resume->stats.pickup_count);
+    JSONW_WRITE(io, "crystals", resume->stats.counts[STATS_CAT_CRYSTALS]);
+    JSONW_WRITE(io, "pickups", resume->stats.counts[STATS_CAT_PICKUPS]);
     JSONW_WRITE(io, "ammo_hits", resume->stats.ammo_hits);
     JSONW_WRITE(io, "ammo_used", resume->stats.ammo_used);
     JSONW_WRITE(io, "distance_travelled", resume->stats.distance_travelled);

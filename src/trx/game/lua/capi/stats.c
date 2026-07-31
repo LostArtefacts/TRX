@@ -54,7 +54,7 @@ static int M_L_StatsSecrets(lua_State *const L)
 static int M_L_StatsSecretCount(lua_State *const L)
 {
     const LEVEL_STATS *const stats = Stats_GetLevelStats(M_GetLevel());
-    lua_pushinteger(L, stats == nullptr ? 0 : stats->secret_count);
+    lua_pushinteger(L, stats == nullptr ? 0 : stats->counts[STATS_CAT_SECRETS]);
     return 1;
 }
 
@@ -65,7 +65,7 @@ static int M_L_StatsMaxSecretCount(lua_State *const L)
     lua_pushinteger(
         L,
         Stats_HasLevelMaxStats(level)
-            ? Stats_GetLevelMaxStats(level)->max_secret_count
+            ? Stats_GetLevelMaxStats(level)->maxes[STATS_CAT_SECRETS]
             : 0);
     return 1;
 }

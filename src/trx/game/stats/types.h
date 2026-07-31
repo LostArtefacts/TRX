@@ -7,14 +7,25 @@
 #include <stddef.h>
 #include <stdint.h>
 
+// One thing a level is counted on, which is one row of the statistics screen.
+typedef enum {
+    STATS_CAT_PICKUPS,
+    STATS_CAT_KILLS,
+    STATS_CAT_SECRETS,
+    STATS_CAT_CRYSTALS,
+    STATS_CAT_NUMBER_OF,
+} STATS_CATEGORY_ID;
+
 typedef struct {
-    size_t max_pickup_secret_count;
-    size_t max_kill_count;
-    size_t max_kill_ally_count;
-    size_t max_kill_non_ally_count;
-    size_t max_crystal_count;
-    size_t max_pickup_count;
-    size_t max_secret_count;
+    // What the level holds of each thing it is counted on, addressed by
+    // STATS_CATEGORY_ID, less what the game flow declares unobtainable.
+    uint32_t maxes[STATS_CAT_NUMBER_OF];
+    // How the kills divide, which the statistics screen needs: the allies only
+    // count against the player once she has hurt one.
+    uint32_t max_kill_ally_count;
+    uint32_t max_kill_non_ally_count;
+    // How many of the secrets are items to pick up rather than floor triggers.
+    uint32_t max_pickup_secret_count;
     uint32_t all_secrets_mask;
 
     struct {
@@ -30,17 +41,16 @@ typedef struct {
 } LEVEL_MAX_STATS;
 
 typedef struct STATS_COMMON {
+    // What Lara has of each thing the level is counted on, addressed by
+    // STATS_CATEGORY_ID.
+    uint32_t counts[STATS_CAT_NUMBER_OF];
+    // The rest is counted against nothing, so it stands on its own.
     uint32_t timer;
-    uint32_t kill_count;
     uint32_t ammo_used;
     uint32_t ammo_hits;
     uint32_t distance_travelled;
     double medipacks_used;
-    uint16_t crystal_count;
-    uint16_t pickup_count;
     int32_t death_count;
-    uint16_t secrets_mask;
-    uint16_t secret_count;
 } STATS_COMMON;
 
 typedef struct {
@@ -52,15 +62,6 @@ typedef struct {
     STATS_COMMON stats;
     LEVEL_MAX_STATS max_stats;
 } FINAL_STATS;
-
-// One thing a level is counted on, which is one row of the statistics screen.
-typedef enum {
-    STATS_CAT_PICKUPS,
-    STATS_CAT_KILLS,
-    STATS_CAT_SECRETS,
-    STATS_CAT_CRYSTALS,
-    STATS_CAT_NUMBER_OF,
-} STATS_CATEGORY_ID;
 
 // What a level holds of one kind of thing, and how much of it Lara has. The
 // count is read at the moment the view is filled; the level and the id say

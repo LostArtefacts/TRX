@@ -96,18 +96,18 @@ static JSON_OBJECT *M_SerializeLevelMaxStats(const LEVEL_MAX_STATS *const stats)
         out, "max_pickup_secret_count",
         (int64_t)stats->max_pickup_secret_count);
     JSON_ObjectAppendInt64(
-        out, "max_kill_count", (int64_t)stats->max_kill_count);
+        out, "max_kill_count", (int64_t)stats->maxes[STATS_CAT_KILLS]);
     JSON_ObjectAppendInt64(
         out, "max_kill_ally_count", (int64_t)stats->max_kill_ally_count);
     JSON_ObjectAppendInt64(
         out, "max_kill_non_ally_count",
         (int64_t)stats->max_kill_non_ally_count);
     JSON_ObjectAppendInt64(
-        out, "max_crystal_count", (int64_t)stats->max_crystal_count);
+        out, "max_crystal_count", (int64_t)stats->maxes[STATS_CAT_CRYSTALS]);
     JSON_ObjectAppendInt64(
-        out, "max_pickup_count", (int64_t)stats->max_pickup_count);
+        out, "max_pickup_count", (int64_t)stats->maxes[STATS_CAT_PICKUPS]);
     JSON_ObjectAppendInt64(
-        out, "max_secret_count", (int64_t)stats->max_secret_count);
+        out, "max_secret_count", (int64_t)stats->maxes[STATS_CAT_SECRETS]);
     JSON_ObjectAppendInt64(out, "all_secrets_mask", stats->all_secrets_mask);
 
     JSON_ARRAY *const secret_item_masks = JSON_ArrayNew();
@@ -145,20 +145,20 @@ static bool M_DeserializeLevelMaxStats(
         return false;
     }
 
-    out->max_pickup_secret_count = (size_t)JSON_ObjectGetInt64(
+    out->max_pickup_secret_count = (uint32_t)JSON_ObjectGetInt64(
         obj, "max_pickup_secret_count", (int64_t)out->max_pickup_secret_count);
-    out->max_kill_count = (size_t)JSON_ObjectGetInt64(
-        obj, "max_kill_count", (int64_t)out->max_kill_count);
-    out->max_kill_ally_count = (size_t)JSON_ObjectGetInt64(
+    out->maxes[STATS_CAT_KILLS] = (uint32_t)JSON_ObjectGetInt64(
+        obj, "max_kill_count", (int64_t)out->maxes[STATS_CAT_KILLS]);
+    out->max_kill_ally_count = (uint32_t)JSON_ObjectGetInt64(
         obj, "max_kill_ally_count", (int64_t)out->max_kill_ally_count);
-    out->max_kill_non_ally_count = (size_t)JSON_ObjectGetInt64(
+    out->max_kill_non_ally_count = (uint32_t)JSON_ObjectGetInt64(
         obj, "max_kill_non_ally_count", (int64_t)out->max_kill_non_ally_count);
-    out->max_crystal_count = (size_t)JSON_ObjectGetInt64(
-        obj, "max_crystal_count", (int64_t)out->max_crystal_count);
-    out->max_pickup_count = (size_t)JSON_ObjectGetInt64(
-        obj, "max_pickup_count", (int64_t)out->max_pickup_count);
-    out->max_secret_count = (size_t)JSON_ObjectGetInt64(
-        obj, "max_secret_count", (int64_t)out->max_secret_count);
+    out->maxes[STATS_CAT_CRYSTALS] = (uint32_t)JSON_ObjectGetInt64(
+        obj, "max_crystal_count", (int64_t)out->maxes[STATS_CAT_CRYSTALS]);
+    out->maxes[STATS_CAT_PICKUPS] = (uint32_t)JSON_ObjectGetInt64(
+        obj, "max_pickup_count", (int64_t)out->maxes[STATS_CAT_PICKUPS]);
+    out->maxes[STATS_CAT_SECRETS] = (uint32_t)JSON_ObjectGetInt64(
+        obj, "max_secret_count", (int64_t)out->maxes[STATS_CAT_SECRETS]);
     out->all_secrets_mask = (uint32_t)JSON_ObjectGetInt64(
         obj, "all_secrets_mask", out->all_secrets_mask);
 
@@ -382,12 +382,12 @@ void Stats_CalculateMaxStats(void)
         LOG_INFO(
             "Level %d (%s)", GF_GetLevelOrdinalNumber(GFLT_MAIN, level),
             level->title);
-        LOG_INFO("    pickups:   %d", max_stats->max_pickup_count);
-        LOG_INFO("    kills:     %d", max_stats->max_kill_count);
+        LOG_INFO("    pickups:   %d", max_stats->maxes[STATS_CAT_PICKUPS]);
+        LOG_INFO("    kills:     %d", max_stats->maxes[STATS_CAT_KILLS]);
         LOG_INFO("      allies:  %d", max_stats->max_kill_ally_count);
         LOG_INFO("      enemies: %d", max_stats->max_kill_non_ally_count);
-        LOG_INFO("    crystals:  %d", max_stats->max_crystal_count);
-        LOG_INFO("    secrets:   %d", max_stats->max_secret_count);
+        LOG_INFO("    crystals:  %d", max_stats->maxes[STATS_CAT_CRYSTALS]);
+        LOG_INFO("    secrets:   %d", max_stats->maxes[STATS_CAT_SECRETS]);
 #endif
     }
 
@@ -397,18 +397,19 @@ finish:
     for (int32_t i = 0; i < level_table->count; i++) {
         const GF_LEVEL *const level = GF_GetLevel(GFLT_MAIN, i);
         const LEVEL_MAX_STATS *const max_stats = Stats_GetLevelMaxStats(level);
-        if (max_stats->max_crystal_count != 0) {
+        if (max_stats->maxes[STATS_CAT_CRYSTALS] != 0) {
             m_GameHasCrystals = true;
             break;
         }
     }
 
     const FINAL_STATS final_stats = Stats_ComputeFinalStats(true);
-    LOG_INFO("Max pickups: %d", final_stats.max_stats.max_pickup_count);
-    LOG_INFO("Max kills:   %d", final_stats.max_stats.max_kill_count);
+    LOG_INFO("Max pickups: %d", final_stats.max_stats.maxes[STATS_CAT_PICKUPS]);
+    LOG_INFO("Max kills:   %d", final_stats.max_stats.maxes[STATS_CAT_KILLS]);
     LOG_INFO("  allies:    %d", final_stats.max_stats.max_kill_ally_count);
     LOG_INFO("  enemies:   %d", final_stats.max_stats.max_kill_non_ally_count);
-    LOG_INFO("Max crystals: %d", final_stats.max_stats.max_crystal_count);
-    LOG_INFO("Max secrets: %d", final_stats.max_stats.max_secret_count);
+    LOG_INFO(
+        "Max crystals: %d", final_stats.max_stats.maxes[STATS_CAT_CRYSTALS]);
+    LOG_INFO("Max secrets: %d", final_stats.max_stats.maxes[STATS_CAT_SECRETS]);
     Benchmark_End(&benchmark, nullptr);
 }
