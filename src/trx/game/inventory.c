@@ -7,8 +7,6 @@
 #include <trx/game/lara.h>
 #include <trx/game/objects/vars.h>
 
-INVENTORY_MODE g_Inv_Mode = INV_TITLE_MODE;
-
 static INVENTORY_STATE m_State = {};
 
 // The entry a pickup goes into. An object with no icon of its own stands for

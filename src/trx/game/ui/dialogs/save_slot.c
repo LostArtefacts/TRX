@@ -7,6 +7,7 @@
 #include <trx/game/game_strings/entries.h>
 #include <trx/game/input.h>
 #include <trx/game/inventory.h>
+#include <trx/game/inventory_ring/vars.h>
 #include <trx/game/savegame.h>
 #include <trx/game/ui/common.h>
 #include <trx/game/ui/dialogs/base_passport.h>
@@ -106,7 +107,7 @@ static void M_EmptySlot(
 
 static void M_ConfirmDeleteDialog(const UI_SAVE_SLOT_DIALOG_STATE *const s)
 {
-    UI_BeginModal(0.5f, g_Inv_Mode == INV_TITLE_MODE ? 0.69f : 0.55f);
+    UI_BeginModal(0.5f, g_InvRing_Mode == INV_TITLE_MODE ? 0.69f : 0.55f);
     UI_BeginPad(50.0f, 50.0f);
     UI_BeginWindow((UI_WINDOW_SETTINGS) {
         .title = GS("general/passport/delete_save_confirm"),

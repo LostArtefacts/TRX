@@ -1,6 +1,5 @@
 #pragma once
 
-#include <trx/game/inventory_ring/enum.h>
 #include <trx/game/objects/ids.h>
 
 #include <stdint.h>
@@ -23,8 +22,6 @@ typedef struct {
     INVENTORY_ENTRY entries[INV_MAX_ENTRIES];
     int32_t count;
 } INVENTORY_STATE;
-
-extern INVENTORY_MODE g_Inv_Mode;
 
 // What Lara is carrying, which the rings are drawn from. Writing it puts her
 // in front of a whole inventory at once, as arriving in a level does.

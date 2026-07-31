@@ -8,6 +8,7 @@
 #include <trx/game/input.h>
 #include <trx/game/inventory.h>
 #include <trx/game/inventory_ring.h>
+#include <trx/game/inventory_ring/vars.h>
 #include <trx/game/overlay.h>
 #include <trx/game/savegame.h>
 #include <trx/game/shell/common.h>
@@ -239,7 +240,7 @@ static void M_Close(INVENTORY_ITEM *const inv_item)
 
 static void M_SoftClose(INVENTORY_ITEM *const inv_item)
 {
-    if (g_Inv_Mode == INV_DEATH_MODE) {
+    if (g_InvRing_Mode == INV_DEATH_MODE) {
         if (!M_IMMEDIATE && m_Priv.mode != M_MODE_BROWSE) {
             m_Priv.mode = M_MODE_BROWSE;
         }
@@ -248,7 +249,8 @@ static void M_SoftClose(INVENTORY_ITEM *const inv_item)
         return;
     }
     if (m_Priv.mode == M_MODE_BROWSE || M_IMMEDIATE
-        || (g_Inv_Mode != INV_GAME_MODE && g_Inv_Mode != INV_TITLE_MODE)) {
+        || (g_InvRing_Mode != INV_GAME_MODE
+            && g_InvRing_Mode != INV_TITLE_MODE)) {
         M_Close(inv_item);
     } else {
         m_Priv.mode = M_MODE_BROWSE;
@@ -322,7 +324,7 @@ static void M_DeterminePages(void)
         m_Priv.pages[i].available = false;
     }
 
-    switch (g_Inv_Mode) {
+    switch (g_InvRing_Mode) {
     case INV_TITLE_MODE:
         m_Priv.mode = M_IMMEDIATE ? M_MODE_PICK_OPTION : M_MODE_BROWSE;
         M_SetPage(PAGE_1, M_ROLE_LOAD_GAME, has_saves);
@@ -384,7 +386,7 @@ static void M_DeterminePages(void)
             m_Priv.pages[i].role = M_ROLE_NEW_GAME;
         } else if (
             !Savegame_IsManualSaveAllowed()
-            && g_Inv_Mode != INV_SAVE_CRYSTAL_MODE) {
+            && g_InvRing_Mode != INV_SAVE_CRYSTAL_MODE) {
             if (can_restart) {
                 m_Priv.pages[i].role = M_ROLE_RESTART_LEVEL;
             } else {
@@ -415,8 +417,8 @@ static void M_DeterminePages(void)
     if (m_Priv.active_page == PAGE_UNDETERMINED) {
         M_SetPage(
             PAGE_3,
-            g_Inv_Mode == INV_TITLE_MODE ? M_ROLE_EXIT_GAME
-                                         : M_ROLE_EXIT_TO_TITLE,
+            g_InvRing_Mode == INV_TITLE_MODE ? M_ROLE_EXIT_GAME
+                                             : M_ROLE_EXIT_TO_TITLE,
             true);
         m_Priv.active_page = PAGE_3;
     }
@@ -526,7 +528,7 @@ static bool M_HandleNewGame(INVENTORY_ITEM *const inv_item)
         && !UI_NewGame_HasModChoices()) {
         // But only if in title mode
         if (g_InputDB.menu_confirm
-            || (!M_IMMEDIATE && g_Inv_Mode == INV_TITLE_MODE)) {
+            || (!M_IMMEDIATE && g_InvRing_Mode == INV_TITLE_MODE)) {
             Game_SetBonusFlag(GBF_NONE);
             M_Confirm(PASSPORT_ACTION_NEW_GAME, GF_GetFirstLevel()->num);
             g_InputDB.menu_confirm = true;
@@ -920,7 +922,7 @@ void Option_Passport_Control(INVENTORY_ITEM *const inv_item, const bool is_busy)
         if (g_InputDB.menu_confirm) {
             M_Close(inv_item);
         } else if (g_InputDB.menu_back) {
-            if (g_Inv_Mode == INV_DEATH_MODE) {
+            if (g_InvRing_Mode == INV_DEATH_MODE) {
                 g_Input = (INPUT_STATE) {};
                 g_InputDB = (INPUT_STATE) {};
             } else {
