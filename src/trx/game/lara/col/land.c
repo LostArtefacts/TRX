@@ -197,6 +197,12 @@ static void M_CollideStop(ITEM *const item, const COLL_INFO *const coll)
     Item_SwitchToAnim(item, LA(LA_STAND_STILL), 0);
 }
 
+static bool M_IsQWOPState(const ITEM *const item)
+{
+    return item->current_anim_state == LS(LS_RUN)
+        && (item->gravity || item->fall_speed != 0);
+}
+
 static void M_Default(ITEM *const item, COLL_INFO *const coll)
 {
     LARA_INFO *const lara = Lara_GetLaraInfo();
@@ -438,7 +444,7 @@ static void M_Run(ITEM *const item, COLL_INFO *const coll)
 
     if (coll->side_mid.floor >= -STEPUP_HEIGHT
         && coll->side_mid.floor < -STEP_L / 2) {
-        if (g_Config.gameplay.fix_step_glitch
+        if (g_Config.gameplay.fix_step_glitch && !M_IsQWOPState(item)
             && (coll->side_front.floor < -STEPUP_HEIGHT
                 || coll->side_front.floor >= -STEP_L / 2)) {
             coll->side_mid.floor = 0;
