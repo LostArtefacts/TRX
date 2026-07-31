@@ -536,6 +536,9 @@ static const char *M_GetName(
 {
     INPUT_ROLE actual_role = role;
     switch (role) {
+    case INPUT_ROLE_MENU_CONFIRM:
+        actual_role = INPUT_ROLE_ACTION;
+        break;
     case INPUT_ROLE_MENU_SHOW_INFO:
         actual_role = INPUT_ROLE_LOOK;
         break;
