@@ -40,6 +40,11 @@ void Inv_State_SetCount(INVENTORY_STATE *state, OBJECT_ID obj_id, int32_t qty);
 void Inv_State_AddCount(INVENTORY_STATE *state, OBJECT_ID obj_id, int32_t qty);
 void Inv_State_AddAmmo(
     INVENTORY_STATE *state, LARA_GUN_TYPE gun_type, int32_t rounds);
+int32_t Inv_State_GetAmmo(const INVENTORY_STATE *state, LARA_GUN_TYPE gun_type);
+void Inv_State_SetAmmo(
+    INVENTORY_STATE *state, LARA_GUN_TYPE gun_type, int32_t rounds);
+int32_t Inv_State_GetDrawnEntries(
+    const INVENTORY_STATE *state, INVENTORY_ENTRY *entries, int32_t max_count);
 
 OBJECT_ID Inv_GetItemOption(OBJECT_ID obj_id);
 OBJECT_ID Inv_GetItemPickup(OBJECT_ID obj_id);

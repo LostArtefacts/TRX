@@ -232,20 +232,24 @@ local function install_meta(owner, tbl)
     meta.__len = function()
       return container.count()
     end
-    -- pairs() over the module walks the collection, 0-based, one handle at a
-    -- time, so a script iterates without the #..-1 idiom. seal()'s audit reads
-    -- the module's own members instead, and iterates raw to reach them.
+    -- pairs() over the module walks the collection one handle at a time, so a
+    -- script iterates without the #..-1 idiom. It walks from whichever index
+    -- the collection counts from: the items and the rooms from zero, matching
+    -- the numbers level editors show, and a plain list from one. seal()'s
+    -- audit reads the module's own members instead, and iterates raw to reach
+    -- them.
     meta.__pairs = function(t)
-      local n = container.count()
+      local first = container.base
+      local last = first + container.count() - 1
       return function(_, i)
         i = i + 1
-        if i >= n then
+        if i > last then
           return nil
         end
         return i, container.get(i)
       end,
         t,
-        -1
+        first - 1
     end
   end
   -- A namespace declared callable already carries a metatable, and its call
@@ -629,6 +633,9 @@ function api.container(name, spec)
   module_containers[name] = {
     get = spec.get,
     count = spec.count,
+    -- Where the collection's first entry sits. A list of its own is counted
+    -- from one; what carries an engine number keeps it and counts from zero.
+    base = spec.base or 0,
     accepts = function(key)
       local kind = type(key)
       return kind == "number" or (kind == "string" and not by_number_only)

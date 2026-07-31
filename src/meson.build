@@ -49,6 +49,7 @@ trx_lua_api_sources = files(
   'lua/api/cutscenes.lua',
   'lua/api/events.lua',
   'lua/api/game.lua',
+  'lua/api/inventory.lua',
   'lua/api/items.lua',
   'lua/api/lara.lua',
   'lua/api/locale.lua',
@@ -65,6 +66,7 @@ trx_lua_api_sources = files(
   'lua/api/sound.lua',
   'lua/api/stats.lua',
   'lua/api/strings.lua',
+  'lua/api/weapons.lua',
   'lua/api/weather.lua',
 )
 
@@ -456,6 +458,7 @@ common_sources = [
   'trx/game/lua/capi/enum.c',
   'trx/game/lua/capi/events.c',
   'trx/game/lua/capi/game.c',
+  'trx/game/lua/capi/inventory.c',
   'trx/game/lua/capi/items.c',
   'trx/game/lua/capi/lara.c',
   'trx/game/lua/capi/locale.c',
@@ -472,6 +475,7 @@ common_sources = [
   'trx/game/lua/capi/stats.c',
   'trx/game/lua/capi/strings.c',
   'trx/game/lua/capi/struct.c',
+  'trx/game/lua/capi/weapons.c',
   'trx/game/lua/capi/weather.c',
   'trx/game/lua/common.c',
   'trx/game/lua/field.c',

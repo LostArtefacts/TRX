@@ -443,6 +443,18 @@ unit_tests += {
 
 # The catalog rides along: the weapons a script names are its enum.
 unit_tests += {
+  'name': 'lua/api/inventory',
+  'bundles': [b_lua_surface],
+  'src': ['fakes/game.c', 'fakes/lara.c', 'fakes/items.c', 'fakes/catalog.c'],
+  'engine': [
+    'game/lua/capi/catalog.c',
+    'game/lua/capi/inventory.c',
+    'game/lua/capi/items.c',
+    'game/lua/capi/weapons.c',
+  ],
+}
+
+unit_tests += {
   'name': 'lua/api/lara',
   'bundles': [b_lua_surface],
   'src': ['fakes/lara.c', 'fakes/items.c', 'fakes/catalog.c'],
@@ -551,10 +563,12 @@ unit_tests += {
   'engine': [
     'game/lua/capi/catalog.c',
     'game/lua/capi/game.c',
+    'game/lua/capi/inventory.c',
     'game/lua/capi/items.c',
     'game/lua/capi/lara.c',
     'game/lua/capi/objects.c',
     'game/lua/capi/sound.c',
+    'game/lua/capi/weapons.c',
   ],
 }
 

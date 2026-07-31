@@ -69,16 +69,16 @@ local LEADBAR = trx.catalog.objects.LEADBAR_ITEM
 -- How many went in, so a cheat that found nothing to hand over can say so
 -- rather than announcing a backpack that never got heavier.
 local function add_once(seen, id, count)
-  local entry = trx.lara.inventory.entry_of(id)
-  if seen[entry] then
+  local icon = trx.inventory:icon_of(id)
+  if seen[icon] then
     return 0
   end
-  seen[entry] = true
-  return trx.lara.inventory.add(id, count or 1)
+  seen[icon] = true
+  return trx.inventory:give(id, count or 1)
 end
 
 local function can_add(id)
-  return trx.lara.inventory.can_add(id)
+  return trx.inventory:can_add(id)
 end
 
 -- What can be given at all: a pickup the level carries the inventory model for,
@@ -108,19 +108,19 @@ local function plot_items()
 end
 
 local function give_gun(weapon, ammo, ignore_exclusions)
-  if not ignore_exclusions and not trx.lara.weapons.is_available(weapon) then
+  if not ignore_exclusions and not trx.weapons.is_available(weapon) then
     return 0
   end
-  local object = trx.lara.weapons.object(weapon)
-  if object == nil or trx.lara.inventory.add(object) == 0 then
+  local object = trx.weapons.object(weapon)
+  if object == nil or trx.inventory:give(object) == 0 then
     return 0
   end
-  trx.lara.weapons.set_ammo(weapon, trx.game.is_ngplus and NGPLUS_AMMO or ammo)
+  trx.inventory:set_shots(weapon, trx.game.is_ngplus and NGPLUS_AMMO or ammo)
   return 1
 end
 
 local function give_guns(ignore_exclusions)
-  local given = trx.lara.inventory.add(trx.catalog.objects.PISTOL_ITEM)
+  local given = trx.inventory:give(trx.catalog.objects.PISTOL_ITEM)
   for _, entry in ipairs(ARSENAL) do
     given = given + give_gun(entry[1], entry[2], ignore_exclusions)
   end
@@ -145,17 +145,17 @@ local function give_supplies()
 
   local given = 0
   for _, object in ipairs(SUPPLIES) do
-    given = given + trx.lara.inventory.add(object, SUPPLY_COUNT)
+    given = given + trx.inventory:give(object, SUPPLY_COUNT)
   end
   -- Flares come only where they are Lara's to carry.
-  if trx.lara.weapons.is_available(trx.catalog.weapons.FLARE) then
+  if trx.weapons.is_available(trx.catalog.weapons.FLARE) then
     given = given
-      + trx.lara.inventory.add(trx.catalog.objects.FLAREBOX_ITEM, SUPPLY_COUNT)
+      + trx.inventory:give(trx.catalog.objects.FLAREBOX_ITEM, SUPPLY_COUNT)
   end
   return given
 end
 
--- The tools Lara carries and uses. The weapons and their clips are left to the
+-- The tools Lara carries and uses. The weapons and their ammunition are left to the
 -- weapon path, which sets the ammunition, and the supplies to their counts.
 --
 -- Named rather than reached by subtracting the other groups from the pickups: a
@@ -240,7 +240,7 @@ local function run(what, count)
   end
 
   -- The parser takes any whole number, so the lower bound is answered here
-  -- rather than by trx.lara.inventory.add, which raises.
+  -- rather than by trx.inventory:give, which raises.
   if count < 1 then
     return trx.console.Result.FAILURE,
       trx.locale.get("console/cmd/give/bad_count")
