@@ -104,6 +104,10 @@ typedef struct OBJECT {
 
     int16_t anim_idx;
     int16_t anim_count;
+    // The widest box any of the object's frames reaches. Unlike the box of
+    // the frame being drawn, it does not change as the object animates, so a
+    // decision taken from it holds for the whole level.
+    BOUNDS_16 anim_bounds;
     int16_t pivot_length;
     int16_t radius;
     int16_t shadow_size;
