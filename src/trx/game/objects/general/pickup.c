@@ -6,6 +6,7 @@
 #include <trx/game/const.h>
 #include <trx/game/effects.h>
 #include <trx/game/game.h>
+#include <trx/game/game_flow.h>
 #include <trx/game/gun.h>
 #include <trx/game/input.h>
 #include <trx/game/inventory.h>
@@ -14,6 +15,7 @@
 #include <trx/game/lara.h>
 #include <trx/game/lua.h>
 #include <trx/game/objects/general/flare_item.h>
+#include <trx/game/objects/vars.h>
 #include <trx/game/output.h>
 #include <trx/game/overlay.h>
 #include <trx/game/random.h>
@@ -354,7 +356,14 @@ static void M_DoPickup(const int16_t item_num)
     }
 
     Overlay_AddDisplayPickup(item->object_id);
-    Inv_AddPickup(item);
+    if (Object_IsType(item->object_id, g_SecretObjects)) {
+        Stats_MarkSecretCollected(item);
+        if (Stats_CheckAllLevelSecretsPickedUp()) {
+            GF_InventoryModifier_Apply(Game_GetCurrentLevel(), GF_INV_SECRET);
+        }
+    } else {
+        Inv_AddItem(item->object_id);
+    }
     Stats_AddPickup();
     // Notify Lua pickup listeners
     LUA_FireEventInt32(LUA_EVENT_PICKUP, item_num);

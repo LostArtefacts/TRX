@@ -7,7 +7,6 @@
 #include <trx/game/inventory_ring.h>
 #include <trx/game/lara.h>
 #include <trx/game/objects/vars.h>
-#include <trx/game/stats.h>
 
 INVENTORY_MODE g_Inv_Mode = INV_TITLE_MODE;
 
@@ -308,17 +307,4 @@ bool Inv_AddItem(const OBJECT_ID object_id)
         }
     }
     return false;
-}
-
-bool Inv_AddPickup(const ITEM *const item)
-{
-    if (Object_IsType(item->object_id, g_SecretObjects)) {
-        Stats_MarkSecretCollected(item);
-        if (Stats_CheckAllLevelSecretsPickedUp()) {
-            GF_InventoryModifier_Apply(Game_GetCurrentLevel(), GF_INV_SECRET);
-        }
-        return true;
-    }
-
-    return Inv_AddItem(item->object_id);
 }
