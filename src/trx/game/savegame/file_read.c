@@ -343,19 +343,15 @@ static bool M_ReadLara(JSON_READ_IO *const io)
     // Arms need no repair; the gun control recomputes them every frame.
     M_MUST(M_ReadArm(io, "left_arm", &lara->left_arm));
     M_MUST(M_ReadArm(io, "right_arm", &lara->right_arm));
-    M_MUST(M_ReadAmmo(io, "pistols", &lara->pistol_ammo));
-    M_MUST(M_ReadAmmo(io, "magnums", &lara->magnum_ammo));
-    M_MUST(M_ReadAmmo(io, "uzis", &lara->uzi_ammo));
-    M_MUST(M_ReadAmmo(io, "shotgun", &lara->shotgun_ammo));
-    M_MUST(M_ReadAmmo(io, "harpoon", &lara->harpoon_ammo));
-    M_MUST(M_ReadAmmo(io, "grenade", &lara->grenade_ammo));
-    M_MUST(M_ReadAmmo(io, "m16", &lara->m16_ammo));
-    M_SHOULD(M_ReadAmmo(io, "autos", &lara->autos_ammo));
-    M_SHOULD(M_ReadAmmo(io, "desert_eagle", &lara->desert_eagle_ammo));
-    M_SHOULD(M_ReadAmmo(io, "mp5", &lara->mp5_ammo));
-    M_SHOULD(M_ReadAmmo(io, "rocket", &lara->rocket_ammo));
-    M_SHOULD(M_ReadAmmo(io, "crossbow", &lara->crossbow_ammo));
-    M_SHOULD(M_ReadAmmo(io, "revolver", &lara->revolver_ammo));
+    for (const SAVEGAME_AMMO_ENTRY *entry = g_Savegame_WeaponAmmo;
+         entry->key != nullptr; entry++) {
+        AMMO_INFO *const ammo = &lara->ammo[entry->gun_type];
+        if (entry->required) {
+            M_MUST(M_ReadAmmo(io, entry->key, ammo));
+        } else {
+            M_SHOULD(M_ReadAmmo(io, entry->key, ammo));
+        }
+    }
 
     if (M_OPTIONAL(JSON_PUSH(io, "weapon"))) {
         lara->gun_item_num = Item_Create();

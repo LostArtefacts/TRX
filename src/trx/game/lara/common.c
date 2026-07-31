@@ -203,7 +203,7 @@ void Lara_InitialiseInventory(const GF_LEVEL *const level)
         if (resume->flags.has_pistols) {
             Inv_AddItem(O_PISTOL_ITEM);
         }
-        lara_info->pistol_ammo.ammo = 1000;
+        lara_info->ammo[LGT_PISTOLS].ammo = 1000;
 
         if (resume->flags.has_magnums) {
             Inv_AddItem(O_MAGNUM_ITEM);
@@ -213,7 +213,7 @@ void Lara_InitialiseInventory(const GF_LEVEL *const level)
                 O_MAGNUM_AMMO_ITEM,
                 resume->magnum_ammo / Gun_GetRoundsPerBox(LGT_MAGNUMS));
         }
-        lara_info->magnum_ammo.ammo = resume->magnum_ammo;
+        lara_info->ammo[LGT_MAGNUMS].ammo = resume->magnum_ammo;
 
         if (resume->flags.has_autos) {
             Inv_AddItem(O_AUTOS_ITEM);
@@ -223,7 +223,7 @@ void Lara_InitialiseInventory(const GF_LEVEL *const level)
                 O_AUTOS_AMMO_ITEM,
                 resume->autos_ammo / Gun_GetRoundsPerBox(LGT_AUTOS));
         }
-        lara_info->autos_ammo.ammo = resume->autos_ammo;
+        lara_info->ammo[LGT_AUTOS].ammo = resume->autos_ammo;
 
         if (resume->flags.has_desert_eagle) {
             Inv_AddItem(O_DESERT_EAGLE_ITEM);
@@ -234,7 +234,7 @@ void Lara_InitialiseInventory(const GF_LEVEL *const level)
                 resume->desert_eagle_ammo
                     / Gun_GetRoundsPerBox(LGT_DESERT_EAGLE));
         }
-        lara_info->desert_eagle_ammo.ammo = resume->desert_eagle_ammo;
+        lara_info->ammo[LGT_DESERT_EAGLE].ammo = resume->desert_eagle_ammo;
 
         if (resume->flags.has_uzis) {
             Inv_AddItem(O_UZI_ITEM);
@@ -244,7 +244,7 @@ void Lara_InitialiseInventory(const GF_LEVEL *const level)
                 O_UZI_AMMO_ITEM,
                 resume->uzi_ammo / Gun_GetRoundsPerBox(LGT_UZIS));
         }
-        lara_info->uzi_ammo.ammo = resume->uzi_ammo;
+        lara_info->ammo[LGT_UZIS].ammo = resume->uzi_ammo;
 
         if (resume->flags.has_shotgun) {
             Inv_AddItem(O_SHOTGUN_ITEM);
@@ -254,7 +254,7 @@ void Lara_InitialiseInventory(const GF_LEVEL *const level)
                 O_SHOTGUN_AMMO_ITEM,
                 resume->shotgun_ammo / Gun_GetRoundsPerBox(LGT_SHOTGUN));
         }
-        lara_info->shotgun_ammo.ammo = resume->shotgun_ammo;
+        lara_info->ammo[LGT_SHOTGUN].ammo = resume->shotgun_ammo;
 
         if (resume->flags.has_m16) {
             Inv_AddItem(O_M16_ITEM);
@@ -264,7 +264,7 @@ void Lara_InitialiseInventory(const GF_LEVEL *const level)
                 O_M16_AMMO_ITEM,
                 resume->m16_ammo / Gun_GetRoundsPerBox(LGT_M16));
         }
-        lara_info->m16_ammo.ammo = resume->m16_ammo;
+        lara_info->ammo[LGT_M16].ammo = resume->m16_ammo;
 
         if (resume->flags.has_mp5) {
             Inv_AddItem(O_MP5_ITEM);
@@ -274,7 +274,7 @@ void Lara_InitialiseInventory(const GF_LEVEL *const level)
                 O_MP5_AMMO_ITEM,
                 resume->mp5_ammo / Gun_GetRoundsPerBox(LGT_MP5));
         }
-        lara_info->mp5_ammo.ammo = resume->mp5_ammo;
+        lara_info->ammo[LGT_MP5].ammo = resume->mp5_ammo;
 
         if (resume->flags.has_grenade) {
             Inv_AddItem(O_GRENADE_GUN_ITEM);
@@ -284,7 +284,7 @@ void Lara_InitialiseInventory(const GF_LEVEL *const level)
                 O_GRENADE_AMMO_ITEM,
                 resume->grenade_ammo / Gun_GetRoundsPerBox(LGT_GRENADE));
         }
-        lara_info->grenade_ammo.ammo = resume->grenade_ammo;
+        lara_info->ammo[LGT_GRENADE].ammo = resume->grenade_ammo;
 
         if (resume->flags.has_rocket) {
             Inv_AddItem(O_ROCKET_GUN_ITEM);
@@ -294,7 +294,7 @@ void Lara_InitialiseInventory(const GF_LEVEL *const level)
                 O_ROCKET_AMMO_ITEM,
                 resume->rocket_ammo / Gun_GetRoundsPerBox(LGT_ROCKET));
         }
-        lara_info->rocket_ammo.ammo = resume->rocket_ammo;
+        lara_info->ammo[LGT_ROCKET].ammo = resume->rocket_ammo;
 
         if (resume->flags.has_harpoon) {
             Inv_AddItem(O_HARPOON_ITEM);
@@ -304,7 +304,7 @@ void Lara_InitialiseInventory(const GF_LEVEL *const level)
                 O_HARPOON_AMMO_ITEM,
                 resume->harpoon_ammo / Gun_GetRoundsPerBox(LGT_HARPOON));
         }
-        lara_info->harpoon_ammo.ammo = resume->harpoon_ammo;
+        lara_info->ammo[LGT_HARPOON].ammo = resume->harpoon_ammo;
 
         if (resume->flags.has_crossbow) {
             Inv_AddItem(O_CROSSBOW_ITEM);
@@ -314,7 +314,7 @@ void Lara_InitialiseInventory(const GF_LEVEL *const level)
                 O_CROSSBOW_AMMO_1_ITEM,
                 resume->crossbow_ammo / Gun_GetRoundsPerBox(LGT_CROSSBOW));
         }
-        lara_info->crossbow_ammo.ammo = resume->crossbow_ammo;
+        lara_info->ammo[LGT_CROSSBOW].ammo = resume->crossbow_ammo;
 
         if (resume->flags.has_revolver) {
             Inv_AddItem(O_REVOLVER_ITEM);
@@ -324,7 +324,7 @@ void Lara_InitialiseInventory(const GF_LEVEL *const level)
                 O_REVOLVER_AMMO_ITEM,
                 resume->revolver_ammo / Gun_GetRoundsPerBox(LGT_REVOLVER));
         }
-        lara_info->revolver_ammo.ammo = resume->revolver_ammo;
+        lara_info->ammo[LGT_REVOLVER].ammo = resume->revolver_ammo;
 
         Inv_AddItemNTimes(O_SMALL_MEDIPACK_ITEM, resume->small_medipacks);
         Inv_AddItemNTimes(O_LARGE_MEDIPACK_ITEM, resume->large_medipacks);

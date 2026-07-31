@@ -12,6 +12,13 @@ typedef struct {
 } SAVEGAME_INVENTORY_ENTRY;
 
 typedef struct {
+    LARA_GUN_TYPE gun_type;
+    const char *key;
+    // A save written before the weapon existed carries no key for it.
+    bool required;
+} SAVEGAME_AMMO_ENTRY;
+
+typedef struct {
     uint8_t small_medipacks;
     uint8_t large_medipacks;
     uint16_t pistol_ammo;

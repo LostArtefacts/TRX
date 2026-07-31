@@ -147,25 +147,38 @@ AMMO_INFO *Gun_GetAmmoInfo(const LARA_GUN_TYPE gun_type)
     if (lara_info == nullptr) {
         return nullptr;
     }
-    // clang-format off
-    switch (gun_type) {
-    case LGT_PISTOLS:      return &lara_info->pistol_ammo;
-    case LGT_MAGNUMS:      return &lara_info->magnum_ammo;
-    case LGT_AUTOS:        return &lara_info->autos_ammo;
-    case LGT_DESERT_EAGLE: return &lara_info->desert_eagle_ammo;
-    case LGT_UZIS:         return &lara_info->uzi_ammo;
-    case LGT_SHOTGUN:      return &lara_info->shotgun_ammo;
-    case LGT_HARPOON:      return &lara_info->harpoon_ammo;
-    case LGT_M16:          return &lara_info->m16_ammo;
-    case LGT_MP5:          return &lara_info->mp5_ammo;
-    case LGT_GRENADE:      return &lara_info->grenade_ammo;
-    case LGT_ROCKET:       return &lara_info->rocket_ammo;
-    case LGT_CROSSBOW:     return &lara_info->crossbow_ammo;
-    case LGT_REVOLVER:     return &lara_info->revolver_ammo;
-    case LGT_SKIDOO:       return &lara_info->pistol_ammo;
-    default:               return nullptr;
+    // The skidoo shoots from the pistols' endless supply.
+    if (gun_type == LGT_SKIDOO) {
+        return &lara_info->ammo[LGT_PISTOLS];
     }
-    // clang-format on
+    if (gun_type <= LGT_UNARMED || gun_type >= NUM_WEAPONS
+        || gun_type == LGT_FLARE) {
+        return nullptr;
+    }
+    return &lara_info->ammo[gun_type];
+}
+
+int32_t Gun_GetAmmo(const LARA_GUN_TYPE gun_type)
+{
+    const AMMO_INFO *const ammo = Gun_GetAmmoInfo(gun_type);
+    return ammo == nullptr ? 0 : ammo->ammo;
+}
+
+void Gun_SetAmmo(const LARA_GUN_TYPE gun_type, const int32_t rounds)
+{
+    AMMO_INFO *const ammo = Gun_GetAmmoInfo(gun_type);
+    if (ammo != nullptr) {
+        ammo->ammo = MIN(rounds, MAX_QTY);
+    }
+}
+
+void Gun_AddAmmo(const LARA_GUN_TYPE gun_type, const int32_t rounds)
+{
+    AMMO_INFO *const ammo = Gun_GetAmmoInfo(gun_type);
+    if (ammo != nullptr) {
+        ammo->ammo += rounds;
+        CLAMPG(ammo->ammo, MAX_QTY);
+    }
 }
 
 bool Gun_IsRifleType(const LARA_GUN_TYPE gun_type)

@@ -22,62 +22,38 @@ bool UI_AmmoLabel(void)
 
     const ITEM *const vehicle_item = Lara_Vehicle_GetItem();
     if (vehicle_item != nullptr && vehicle_item->object_id == O_UPV) {
-        ammo = lara->harpoon_ammo.ammo;
+        ammo = lara->ammo[LGT_HARPOON].ammo;
     } else {
         if (lara->gun_status != LGS_READY || Game_IsBonusFlagSet(GBF_NGPLUS)) {
             return false;
         }
 
-        switch (lara->gun_type) {
-        case LGT_PISTOLS:
+        // The pistols never run out, so they carry no label, and neither does
+        // anything with no box of ammunition to draw on.
+        if (lara->gun_type == LGT_PISTOLS
+            || Gun_GetAmmoObject(lara->gun_type) == NO_OBJECT) {
             return false;
-        case LGT_SHOTGUN:
-            ammo = lara->shotgun_ammo.ammo / Gun_GetRoundsPerShot(LGT_SHOTGUN);
-            if (use_icon) {
+        }
+
+        // What the label counts is shots, which for the shotgun is fewer than
+        // the rounds behind them.
+        ammo =
+            Gun_GetAmmo(lara->gun_type) / Gun_GetRoundsPerShot(lara->gun_type);
+
+        if (use_icon) {
+            switch (lara->gun_type) {
+            case LGT_SHOTGUN:
                 icon_str = "\\{ammo shotgun}";
-            }
-            break;
-        case LGT_UZIS:
-            ammo = lara->uzi_ammo.ammo;
-            if (use_icon) {
+                break;
+            case LGT_UZIS:
                 icon_str = "\\{ammo uzis}";
-            }
-            break;
-        case LGT_MAGNUMS:
-            ammo = lara->magnum_ammo.ammo;
-            if (use_icon) {
+                break;
+            case LGT_MAGNUMS:
                 icon_str = "\\{ammo magnums}";
+                break;
+            default:
+                break;
             }
-            break;
-        case LGT_AUTOS:
-            ammo = lara->autos_ammo.ammo;
-            break;
-        case LGT_DESERT_EAGLE:
-            ammo = lara->desert_eagle_ammo.ammo;
-            break;
-        case LGT_M16:
-            ammo = lara->m16_ammo.ammo;
-            break;
-        case LGT_MP5:
-            ammo = lara->mp5_ammo.ammo;
-            break;
-        case LGT_GRENADE:
-            ammo = lara->grenade_ammo.ammo;
-            break;
-        case LGT_ROCKET:
-            ammo = lara->rocket_ammo.ammo;
-            break;
-        case LGT_HARPOON:
-            ammo = lara->harpoon_ammo.ammo;
-            break;
-        case LGT_CROSSBOW:
-            ammo = lara->crossbow_ammo.ammo;
-            break;
-        case LGT_REVOLVER:
-            ammo = lara->revolver_ammo.ammo;
-            break;
-        default:
-            return false;
         }
     }
 

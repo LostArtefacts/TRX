@@ -175,7 +175,7 @@ static void M_FireHarpoon(void)
 {
     const ITEM *const lara_item = Lara_GetItem();
     LARA_INFO *const lara = Lara_GetLaraInfo();
-    if (lara->harpoon_ammo.ammo <= 0) {
+    if (lara->ammo[LGT_HARPOON].ammo <= 0) {
         goto finish;
     }
 
@@ -252,7 +252,7 @@ static void M_FireHarpoon(void)
         },
         nullptr, projectile_item->object_id);
 
-    lara->harpoon_ammo.ammo--;
+    lara->ammo[LGT_HARPOON].ammo--;
     Stats_AddAmmoUsed();
 
 finish:
@@ -260,13 +260,13 @@ finish:
     const bool is_ngplus = Game_IsBonusFlagSet(GBF_NGPLUS);
     if (recoil <= 0) {
         if (is_ngplus) {
-            lara->harpoon_ammo.ammo++;
+            lara->ammo[LGT_HARPOON].ammo++;
         }
-    } else if ((lara->harpoon_ammo.ammo % recoil) == 0) {
+    } else if ((lara->ammo[LGT_HARPOON].ammo % recoil) == 0) {
         if (is_ngplus) {
-            lara->harpoon_ammo.ammo += recoil;
+            lara->ammo[LGT_HARPOON].ammo += recoil;
         }
-        m_ReloadHarpoon = lara->harpoon_ammo.ammo > 0;
+        m_ReloadHarpoon = lara->ammo[LGT_HARPOON].ammo > 0;
     }
 }
 
@@ -274,7 +274,7 @@ static void M_FireGrenade(void)
 {
     LARA_INFO *const lara = Lara_GetLaraInfo();
     const ITEM *const lara_item = Lara_GetItem();
-    if (lara->grenade_ammo.ammo <= 0) {
+    if (lara->ammo[LGT_GRENADE].ammo <= 0) {
         return;
     }
     const WEAPON_INFO *const weapon = &g_Weapons[LGT_GRENADE];
@@ -352,7 +352,7 @@ static void M_FireGrenade(void)
         nullptr, projectile_item->object_id);
 
     if (!Game_IsBonusFlagSet(GBF_NGPLUS)) {
-        lara->grenade_ammo.ammo--;
+        lara->ammo[LGT_GRENADE].ammo--;
     }
     Stats_AddAmmoUsed();
 
@@ -363,7 +363,7 @@ static void M_FireRocket(void)
 {
     LARA_INFO *const lara = Lara_GetLaraInfo();
     const ITEM *const lara_item = Lara_GetItem();
-    if (lara->rocket_ammo.ammo <= 0) {
+    if (lara->ammo[LGT_ROCKET].ammo <= 0) {
         return;
     }
     const WEAPON_INFO *const weapon = &g_Weapons[LGT_ROCKET];
@@ -415,7 +415,7 @@ static void M_FireRocket(void)
         nullptr, projectile_item->object_id);
 
     if (!Game_IsBonusFlagSet(GBF_NGPLUS)) {
-        lara->rocket_ammo.ammo--;
+        lara->ammo[LGT_ROCKET].ammo--;
     }
     Stats_AddAmmoUsed();
 

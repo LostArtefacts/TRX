@@ -57,6 +57,26 @@ const SAVEGAME_INVENTORY_ENTRY g_Savegame_InventoryItems[] = {
     // clang-format on
 };
 
+// Lara's ammunition as savegames name it.
+const SAVEGAME_AMMO_ENTRY g_Savegame_WeaponAmmo[] = {
+    // clang-format off
+    { LGT_PISTOLS,      "pistols",      true  },
+    { LGT_MAGNUMS,      "magnums",      true  },
+    { LGT_UZIS,         "uzis",         true  },
+    { LGT_SHOTGUN,      "shotgun",      true  },
+    { LGT_HARPOON,      "harpoon",      true  },
+    { LGT_GRENADE,      "grenade",      true  },
+    { LGT_M16,          "m16",          true  },
+    { LGT_AUTOS,        "autos",        false },
+    { LGT_DESERT_EAGLE, "desert_eagle", false },
+    { LGT_MP5,          "mp5",          false },
+    { LGT_ROCKET,       "rocket",       false },
+    { LGT_CROSSBOW,     "crossbow",     false },
+    { LGT_REVOLVER,     "revolver",     false },
+    { LGT_UNARMED,      nullptr,        false },
+    // clang-format on
+};
+
 static SAVEGAME_VERSION m_InitialVersion = SG_VERSION_LEGACY;
 static SAVEGAME_INFO *m_NormalSavegameInfo = nullptr;
 static SAVEGAME_INFO *m_QuickSavegameInfo = nullptr;
@@ -687,40 +707,40 @@ void Savegame_PersistGameToCurrentInfo(const GF_LEVEL *const level)
     resume->flags.has_pistols = Inv_RequestItem(O_PISTOL_ITEM) > 0;
 
     resume->flags.has_shotgun = Inv_RequestItem(O_SHOTGUN_ITEM) > 0;
-    resume->shotgun_ammo = lara->shotgun_ammo.ammo;
+    resume->shotgun_ammo = lara->ammo[LGT_SHOTGUN].ammo;
 
     resume->flags.has_magnums = Inv_RequestItem(O_MAGNUM_ITEM) > 0;
-    resume->magnum_ammo = lara->magnum_ammo.ammo;
+    resume->magnum_ammo = lara->ammo[LGT_MAGNUMS].ammo;
 
     resume->flags.has_autos = Inv_RequestItem(O_AUTOS_ITEM) > 0;
-    resume->autos_ammo = lara->autos_ammo.ammo;
+    resume->autos_ammo = lara->ammo[LGT_AUTOS].ammo;
 
     resume->flags.has_desert_eagle = Inv_RequestItem(O_DESERT_EAGLE_ITEM) > 0;
-    resume->desert_eagle_ammo = lara->desert_eagle_ammo.ammo;
+    resume->desert_eagle_ammo = lara->ammo[LGT_DESERT_EAGLE].ammo;
 
     resume->flags.has_uzis = Inv_RequestItem(O_UZI_ITEM) > 0;
-    resume->uzi_ammo = lara->uzi_ammo.ammo;
+    resume->uzi_ammo = lara->ammo[LGT_UZIS].ammo;
 
     resume->flags.has_m16 = Inv_RequestItem(O_M16_ITEM) > 0;
-    resume->m16_ammo = lara->m16_ammo.ammo;
+    resume->m16_ammo = lara->ammo[LGT_M16].ammo;
 
     resume->flags.has_mp5 = Inv_RequestItem(O_MP5_ITEM) > 0;
-    resume->mp5_ammo = lara->mp5_ammo.ammo;
+    resume->mp5_ammo = lara->ammo[LGT_MP5].ammo;
 
     resume->flags.has_harpoon = Inv_RequestItem(O_HARPOON_ITEM) > 0;
-    resume->harpoon_ammo = lara->harpoon_ammo.ammo;
+    resume->harpoon_ammo = lara->ammo[LGT_HARPOON].ammo;
 
     resume->flags.has_grenade = Inv_RequestItem(O_GRENADE_GUN_ITEM) > 0;
-    resume->grenade_ammo = lara->grenade_ammo.ammo;
+    resume->grenade_ammo = lara->ammo[LGT_GRENADE].ammo;
 
     resume->flags.has_rocket = Inv_RequestItem(O_ROCKET_GUN_ITEM) > 0;
-    resume->rocket_ammo = lara->rocket_ammo.ammo;
+    resume->rocket_ammo = lara->ammo[LGT_ROCKET].ammo;
 
     resume->flags.has_crossbow = Inv_RequestItem(O_CROSSBOW_ITEM) > 0;
-    resume->crossbow_ammo = lara->crossbow_ammo.ammo;
+    resume->crossbow_ammo = lara->ammo[LGT_CROSSBOW].ammo;
 
     resume->flags.has_revolver = Inv_RequestItem(O_REVOLVER_ITEM) > 0;
-    resume->revolver_ammo = lara->revolver_ammo.ammo;
+    resume->revolver_ammo = lara->ammo[LGT_REVOLVER].ammo;
 
     resume->flags.has_binoculars = Inv_RequestItem(O_BINOCULARS_ITEM) > 0;
     resume->flares = Inv_RequestItem(O_FLARE_ITEM);
