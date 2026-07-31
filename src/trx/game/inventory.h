@@ -37,6 +37,9 @@ OBJECT_ID Inv_GetItemPickup(OBJECT_ID obj_id);
 
 bool Inv_CanAddItem(OBJECT_ID obj_id);
 int32_t Inv_GetItemCount(OBJECT_ID obj_id);
+// What the rings draw: what Lara carries, and the boxes of ammunition standing
+// for rounds she has no gun to spend. Answers how many were written.
+int32_t Inv_GetDrawnEntries(INVENTORY_ENTRY *entries, int32_t max_count);
 bool Inv_HasItem(OBJECT_ID obj_id);
 void Inv_SetItemCount(OBJECT_ID obj_id, int32_t qty);
 bool Inv_AddItem(OBJECT_ID obj_id);

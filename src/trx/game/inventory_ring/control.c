@@ -1142,7 +1142,8 @@ INVENTORY_ITEM *InvRing_GetByObjectID(const OBJECT_ID object_id)
 
 void InvRing_Rebuild(void)
 {
-    const INVENTORY_STATE *const state = Inv_GetState();
+    INVENTORY_ENTRY entries[INV_MAX_ENTRIES];
+    const int32_t count = Inv_GetDrawnEntries(entries, INV_MAX_ENTRIES);
 
     for (RING_TYPE ring_type = 0; ring_type < RT_NUMBER_OF; ring_type++) {
         if (ring_type != RT_OPTION) {
@@ -1150,11 +1151,11 @@ void InvRing_Rebuild(void)
         }
     }
 
-    for (int32_t i = 0; i < state->count; i++) {
+    for (int32_t i = 0; i < count; i++) {
         INVENTORY_ITEM *const inv_item =
-            InvRing_GetByObjectID(state->entries[i].object_id);
+            InvRing_GetByObjectID(entries[i].object_id);
         if (inv_item != nullptr && M_GetRingType(inv_item) != RT_OPTION) {
-            M_InsertIntoRing(inv_item, state->entries[i].qty);
+            M_InsertIntoRing(inv_item, entries[i].qty);
         }
     }
 }

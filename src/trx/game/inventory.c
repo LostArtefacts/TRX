@@ -31,6 +31,13 @@ static INVENTORY_ENTRY *M_FindEntry(const OBJECT_ID object_id)
 // here rebuilds them once it is done.
 static void M_SetCount(const OBJECT_ID object_id, const int32_t qty)
 {
+    // The pistols' rounds are the supply that never runs out, so they follow
+    // the gun rather than anything she picked up. Left behind, they would draw
+    // boxes of clips she never found.
+    if (object_id == O_PISTOL_OPTION) {
+        Inv_SetAmmo(LGT_PISTOLS, qty > 0 ? 1000 : 0);
+    }
+
     INVENTORY_ENTRY *const entry = M_FindEntry(object_id);
     if (qty <= 0) {
         if (entry != nullptr) {
@@ -62,8 +69,9 @@ static void M_AddGun(const LARA_GUN_TYPE gun_type)
     const OBJECT_ID gun_object = Gun_GetGunObject(gun_type);
     const OBJECT_ID ammo_object = Gun_GetAmmoObject(gun_type);
     LARA_INFO *const lara = Lara_GetLaraInfo();
-    InvRing_NotifyRemoved(M_GetEntryID(ammo_object));
-    M_SetCount(M_GetEntryID(ammo_object), 0);
+    // The boxes she was carrying stop being drawn of their own accord: the
+    // rounds in them are hers either way, and now she has the gun to spend
+    // them from.
     Inv_AddAmmo(gun_type, Gun_GetInitialRounds(gun_type));
     M_SetCount(M_GetEntryID(gun_object), 1);
     if (lara->last_gun_type == LGT_UNARMED) {
@@ -72,13 +80,22 @@ static void M_AddGun(const LARA_GUN_TYPE gun_type)
     Item_GlobalReplace(gun_object, ammo_object);
 }
 
-static void M_AddAmmo(const LARA_GUN_TYPE gun_type)
+// The weapon a box of ammunition belongs to, and LGT_UNARMED for an entry
+// that is not one.
+static LARA_GUN_TYPE M_GetAmmoGunType(const OBJECT_ID object_id)
 {
-    const OBJECT_ID gun_object = Gun_GetGunObject(gun_type);
-    Inv_AddAmmo(gun_type, Gun_GetRoundsPerBox(gun_type));
-    if (!Inv_HasItem(gun_object)) {
-        M_SetCount(M_GetEntryID(Gun_GetAmmoObject(gun_type)), 1);
+    const OBJECT_ID pickup_id = Inv_GetItemPickup(object_id);
+    if (!Object_IsType(pickup_id, g_GunAmmoObjects)) {
+        return LGT_UNARMED;
     }
+    return Gun_GetType(Object_GetCognateInverse(pickup_id, g_GunAmmoObjectMap));
+}
+
+// How many boxes the rounds she holds come to, which is what a box entry
+// counts. Nothing stores that count: the rounds are the whole of it.
+static int32_t M_GetAmmoBoxCount(const LARA_GUN_TYPE gun_type)
+{
+    return Inv_GetAmmo(gun_type) / Gun_GetRoundsPerBox(gun_type);
 }
 
 // Where a weapon's rounds are kept, or nullptr for one that spends none. The
@@ -109,18 +126,21 @@ int32_t Inv_GetAmmo(const LARA_GUN_TYPE gun_type)
 void Inv_SetAmmo(const LARA_GUN_TYPE gun_type, const int32_t rounds)
 {
     int32_t *const slot = M_GetAmmoSlot(gun_type);
-    if (slot != nullptr) {
-        *slot = MIN(rounds, MAX_QTY);
+    if (slot == nullptr) {
+        return;
+    }
+    // A box entry counts nothing of its own, so the rings have to be redrawn
+    // whenever the rounds behind it come to a different number of boxes.
+    const int32_t old_box_count = M_GetAmmoBoxCount(gun_type);
+    *slot = MIN(rounds, MAX_QTY);
+    if (M_GetAmmoBoxCount(gun_type) != old_box_count) {
+        InvRing_Rebuild();
     }
 }
 
 void Inv_AddAmmo(const LARA_GUN_TYPE gun_type, const int32_t rounds)
 {
-    int32_t *const slot = M_GetAmmoSlot(gun_type);
-    if (slot != nullptr) {
-        *slot += rounds;
-        CLAMPG(*slot, MAX_QTY);
-    }
+    Inv_SetAmmo(gun_type, Inv_GetAmmo(gun_type) + rounds);
 }
 
 INVENTORY_STATE *Inv_GetState(void)
@@ -160,8 +180,39 @@ OBJECT_ID Inv_GetItemPickup(const OBJECT_ID object_id)
 
 int32_t Inv_GetItemCount(const OBJECT_ID object_id)
 {
-    const INVENTORY_ENTRY *const entry = M_FindEntry(M_GetEntryID(object_id));
+    const OBJECT_ID entry_id = M_GetEntryID(object_id);
+    const LARA_GUN_TYPE gun_type = M_GetAmmoGunType(entry_id);
+    if (gun_type != LGT_UNARMED) {
+        return M_GetAmmoBoxCount(gun_type);
+    }
+    const INVENTORY_ENTRY *const entry = M_FindEntry(entry_id);
     return entry == nullptr ? 0 : entry->qty;
+}
+
+int32_t Inv_GetDrawnEntries(
+    INVENTORY_ENTRY *const entries, const int32_t max_count)
+{
+    int32_t count = 0;
+    for (int32_t i = 0; i < m_State.count && count < max_count; i++) {
+        if (M_GetAmmoGunType(m_State.entries[i].object_id) == LGT_UNARMED) {
+            entries[count++] = m_State.entries[i];
+        }
+    }
+    // A box of ammunition is drawn for rounds she has no gun to spend, and
+    // stops being drawn the moment she finds one.
+    for (LARA_GUN_TYPE gun_type = LGT_PISTOLS;
+         gun_type < NUM_WEAPONS && count < max_count; gun_type++) {
+        const OBJECT_ID ammo_object = Gun_GetAmmoObject(gun_type);
+        if (ammo_object == NO_OBJECT || Inv_HasItem(Gun_GetGunObject(gun_type))
+            || M_GetAmmoBoxCount(gun_type) <= 0) {
+            continue;
+        }
+        entries[count++] = (INVENTORY_ENTRY) {
+            .object_id = M_GetEntryID(ammo_object),
+            .qty = M_GetAmmoBoxCount(gun_type),
+        };
+    }
+    return count;
 }
 
 bool Inv_HasItem(const OBJECT_ID object_id)
@@ -187,15 +238,27 @@ bool Inv_AddItemNTimes(const OBJECT_ID object_id, const int32_t qty)
 bool Inv_RemoveItem(const OBJECT_ID object_id)
 {
     const OBJECT_ID entry_id = M_GetEntryID(object_id);
+    const LARA_GUN_TYPE gun_type = M_GetAmmoGunType(entry_id);
     const INVENTORY_ENTRY *const entry = M_FindEntry(entry_id);
-    if (entry == nullptr) {
+    if (gun_type == LGT_UNARMED && entry == nullptr) {
+        return false;
+    }
+    if (gun_type != LGT_UNARMED && M_GetAmmoBoxCount(gun_type) <= 0) {
         return false;
     }
 
     // While the rings still hold it, so that the cursor can be moved off the
     // position that is about to close up.
     InvRing_NotifyRemoved(entry_id);
-    M_SetCount(entry_id, entry->qty - 1);
+    if (gun_type != LGT_UNARMED) {
+        // A box is worth its rounds and no more. What is left over once the
+        // last whole one is gone draws nothing until she finds more, but it
+        // is hers all the same.
+        Inv_SetAmmo(
+            gun_type, Inv_GetAmmo(gun_type) - Gun_GetRoundsPerBox(gun_type));
+    } else {
+        M_SetCount(entry_id, entry->qty - 1);
+    }
     InvRing_Rebuild();
     return true;
 }
@@ -253,13 +316,18 @@ bool Inv_AddItem(const OBJECT_ID object_id)
     const int32_t qty =
         object_id == O_FLAREBOX_ITEM ? g_Weapons[LGT_FLARE].ammo.box_shots : 1;
     const OBJECT_ID entry_id = M_GetEntryID(object_id);
+
+    // Every spelling of a box of ammunition goes the same way, including the
+    // variants that share one icon with it: rounds, and nothing stored.
+    const LARA_GUN_TYPE ammo_gun_type = M_GetAmmoGunType(entry_id);
+    if (ammo_gun_type != LGT_UNARMED) {
+        Inv_AddAmmo(ammo_gun_type, Gun_GetRoundsPerBox(ammo_gun_type) * qty);
+        InvRing_Rebuild();
+        return true;
+    }
+
     const INVENTORY_ENTRY *const entry = M_FindEntry(entry_id);
     if (entry != nullptr) {
-        if (Object_IsType(pickup_object_id, g_GunAmmoObjects)) {
-            const LARA_GUN_TYPE gun_type = Gun_GetType(
-                Object_GetCognateInverse(pickup_object_id, g_GunAmmoObjectMap));
-            Inv_AddAmmo(gun_type, Gun_GetRoundsPerBox(gun_type));
-        }
         M_SetCount(entry_id, entry->qty + qty);
         InvRing_Rebuild();
         return true;
@@ -278,12 +346,6 @@ bool Inv_AddItem(const OBJECT_ID object_id)
     // Other guns
     if (Object_IsType(pickup_object_id, g_GunObjects)) {
         M_AddGun(Gun_GetType(pickup_object_id));
-        InvRing_Rebuild();
-        return true;
-    }
-    if (Object_IsType(pickup_object_id, g_GunAmmoObjects)) {
-        M_AddAmmo(Gun_GetType(
-            Object_GetCognateInverse(pickup_object_id, g_GunAmmoObjectMap)));
         InvRing_Rebuild();
         return true;
     }
