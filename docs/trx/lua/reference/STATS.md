@@ -56,7 +56,7 @@ here reads `nil`.
     - **`allies_hurt`**: boolean. Whether Lara has turned on an ally in this level.
     - **`crystals`**: Category. The save crystals, where the game has them.
     - **`kills`**: Category. The enemies the level counts, allies among them.
-    - **`max_ally_kills`**: integer. How many of `kills.max` are allies. The statistics screen holds them against the player only once `allies_hurt`, so a screen of your own wants to do the same: `max_enemy_kills`, and these as well once she has turned on one.
+    - **`max_ally_kills`**: integer. How many of `kills.max` are allies. The statistics screen holds them against the player only once `allies_hurt`, so a screen written in Lua wants to do the same: `max_enemy_kills`, and these as well once she has turned on one.
     - **`max_enemy_kills`**: integer. How many of `kills.max` are enemies rather than allies.
     - **`pickups`**: Category. The items lying in the level for Lara to take.
     - **`secrets`**: Category. The level's secrets. Which ones Lara holds is `secret_list`.

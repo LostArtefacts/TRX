@@ -135,7 +135,7 @@ api.type("stats.Stats", {
     max_ally_kills = {
       type = "integer",
       description = "How many of `kills.max` are allies. The statistics screen holds them against "
-        .. "the player only once `allies_hurt`, so a screen of your own wants to do the same: "
+        .. "the player only once `allies_hurt`, so a screen written in Lua wants to do the same: "
         .. "`max_enemy_kills`, and these as well once she has turned on one.",
       impl = function(stats)
         return (raw.kill_split(stats))

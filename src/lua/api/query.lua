@@ -6,8 +6,8 @@ api.module("query", {
   description = [[
 A composable filter over a domain of things - the objects a level is built
 from, or the items alive in it. `trx.objects.query` and `trx.items.query` are
-each the identity query, matching everything; you narrow one down and then read
-the result.
+each the identity query, matching everything; narrow one down, then read the
+result.
 
 A query is immutable. Every method returns a fresh query, so a base can be kept
 and branched from without one narrowing leaking into another.
@@ -148,7 +148,7 @@ local Query = api.type("query.Query", {
 
   methods = {
     where = {
-      description = "Narrows by a test of your own, for what the domain does not name.",
+      description = "Narrows by a test of the caller's own, for what the domain does not name.",
       params = {
         {
           name = "predicate",

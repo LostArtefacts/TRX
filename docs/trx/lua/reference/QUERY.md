@@ -14,8 +14,8 @@ order: 9
 
 A composable filter over a domain of things - the objects a level is built
 from, or the items alive in it. `trx.objects.query` and `trx.items.query` are
-each the identity query, matching everything; you narrow one down and then read
-the result.
+each the identity query, matching everything; narrow one down, then read the
+result.
 
 A query is immutable. Every method returns a fresh query, so a base can be kept
 and branched from without one narrowing leaking into another.
@@ -59,7 +59,7 @@ left to right, combining with AND: `q:spawnable():by_name("wolf")`.
       Returns: table. A list of `trx.objects.Object`s or `trx.items.Item`s.
 
     - [lua]`query:where(predicate)`  
-      Narrows by a test of your own, for what the domain does not name.
+      Narrows by a test of the caller's own, for what the domain does not name.
 
       Parameters:
       - **`predicate`** (function).
