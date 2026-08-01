@@ -77,7 +77,7 @@ An event that carries a default the script may take over says so in its descript
   Parameters:
   - **`callback`** (function).
     Called with:
-    - **`item_num`** (integer). 0-based index of the item that was picked up.
+    - **`item_num`** (integer). 0-based item number, matching the numbers level editors show. The item that was picked up.
 
   Returns: events.Listener. The attached handler.
 
@@ -116,7 +116,7 @@ An event that carries a default the script may take over says so in its descript
   - **`callback`** (function).
     Called with:
     - **`timer`** (integer). A floor trigger's timer field, free for the level to use as a parameter. 0 for an animation command, which carries no timer.
-    - **`item_num`** (integer). 0-based index of the item that ran the effect: Lara for a pad trigger, the activating object for a heavy trigger, the animating item for an animation command.
+    - **`item_num`** (integer). 0-based item number, matching the numbers level editors show. The item that ran the effect: Lara for a pad trigger, the activating object for a heavy trigger, the animating item for an animation command.
 
   Returns: events.Listener. The attached handler.
 

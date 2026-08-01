@@ -8,6 +8,11 @@ api.module("items", {
   description = "Module for controlling all moveables.",
 })
 
+api.note(
+  "items.index",
+  "0-based item number, matching the numbers level editors show."
+)
+
 api.enum("items.PickupMode", {
   backing = "PICKUP_MODE",
   description = "The values the `pickup_mode` item property can take. It selects the animation Lara "
@@ -859,7 +864,7 @@ local ItemQuery = api.type("items.ItemQuery", {
         {
           name = "room_num",
           type = "integer",
-          description = "0-based room number.",
+          see = "rooms.num",
         },
       },
       returns = { type = "Query", description = "The narrowed query." },

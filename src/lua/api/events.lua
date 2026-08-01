@@ -129,7 +129,8 @@ api.define("events.on_pickup", {
         {
           name = "item_num",
           type = "integer",
-          description = "0-based index of the item that was picked up.",
+          see = "items.index",
+          description = "The item that was picked up.",
         },
       },
     },
@@ -189,7 +190,8 @@ api.define("events.on_flip_effect", {
         {
           name = "item_num",
           type = "integer",
-          description = "0-based index of the item that ran the effect: Lara for a pad trigger, "
+          see = "items.index",
+          description = "The item that ran the effect: Lara for a pad trigger, "
             .. "the activating object for a heavy trigger, the animating item for an animation "
             .. "command.",
         },

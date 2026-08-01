@@ -66,6 +66,11 @@ local checkers
 -- Bare type name -> the path that claimed it, so two modules cannot quietly
 -- declare the same name and have the later one answer for both.
 local checker_paths = {}
+-- Descriptions written once and pointed at from wherever they belong, keyed by
+-- a name of the module's choosing. `see` on a param, a return or a field pulls
+-- one in - what "0-based item number" means is the items module's to say, and
+-- every hook that carries one says it by pointing here.
+local notes = {}
 local containers = ordered()
 -- module -> { get, count, accepts }. What indexing the module table reaches.
 local module_containers = {}
@@ -1092,6 +1097,63 @@ function api.property(path, spec)
   return spec
 end
 
+-- Declares a description other declarations point at with `see`. Doc-only: it
+-- reaches no module table and a script never sees it.
+function api.note(name, text)
+  opening("api.note")
+  assert(type(name) == "string", "api.note: name must be a string")
+  assert(type(text) == "string", "api.note: text must be a string")
+  assert(notes[name] == nil, "api.note: '" .. name .. "' is already written")
+  notes[name] = text
+end
+
+-- A spec as the docs read it: what `see` points at, ahead of anything the spec
+-- adds of its own, and the same done to the arguments a callback takes.
+local function noted(spec)
+  if type(spec) ~= "table" then
+    return spec
+  end
+  local out = {}
+  for key, value in pairs(spec) do
+    out[key] = value
+  end
+  if out.see ~= nil then
+    local note = notes[out.see]
+    assert(note ~= nil, "api: no note called '" .. tostring(out.see) .. "'")
+    out.description = out.description ~= nil
+        and (note .. " " .. out.description)
+      or note
+    out.see = nil
+  end
+  if type(out.params) == "table" then
+    local params = {}
+    for i, param in ipairs(out.params) do
+      params[i] = noted(param)
+    end
+    out.params = params
+  end
+  return out
+end
+
+-- Params are a list; returns is one spec or a list of them.
+local function noted_list(list)
+  if list == nil then
+    return nil
+  end
+  local out = {}
+  for i, spec in ipairs(list) do
+    out[i] = noted(spec)
+  end
+  return out
+end
+
+local function noted_returns(returns)
+  if returns == nil or returns.type ~= nil then
+    return noted(returns)
+  end
+  return noted_list(returns)
+end
+
 -- The whole surface as plain data: what the docs generator consumes.
 function api.describe()
   local out = { types = {}, enums = {} }
@@ -1099,8 +1161,8 @@ function api.describe()
     return {
       module = name,
       description = spec.description,
-      key = spec.key,
-      value = spec.value,
+      key = noted(spec.key),
+      value = noted(spec.value),
       countable = spec.count ~= nil,
       examples = spec.examples,
     }
@@ -1117,8 +1179,8 @@ function api.describe()
     return {
       path = path,
       description = spec.description,
-      params = spec.params,
-      returns = spec.returns,
+      params = noted_list(spec.params),
+      returns = noted_returns(spec.returns),
       examples = spec.examples,
     }
   end)
@@ -1143,20 +1205,21 @@ function api.describe()
       })
     end
     for name, field in pairs(spec.fields or {}) do
+      local noted_field = noted(field)
       table.insert(entry.fields, {
         name = name,
-        type = field.type,
-        writable = field.writable ~= false,
-        description = field.description,
-        enum = field.enum,
+        type = noted_field.type,
+        writable = noted_field.writable ~= false,
+        description = noted_field.description,
+        enum = noted_field.enum,
       })
     end
     for name, method in pairs(spec.methods or {}) do
       table.insert(entry.methods, {
         name = name,
         description = method.description,
-        params = method.params,
-        returns = method.returns,
+        params = noted_list(method.params),
+        returns = noted_returns(method.returns),
         examples = method.examples,
       })
     end

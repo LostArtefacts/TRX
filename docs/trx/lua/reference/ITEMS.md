@@ -509,7 +509,7 @@ end
       The item is in the given room.
 
       Parameters:
-      - **`room_num`** (integer). 0-based room number.
+      - **`room_num`** (integer). 0-based room number, matching the numbers level editors show.
 
       Returns: Query. The narrowed query.
 
