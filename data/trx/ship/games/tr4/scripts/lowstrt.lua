@@ -1,4 +1,4 @@
-trx.events.on_game_start(function(level)
+trx.events.on_game_start(function()
   trx.items[45].properties.pickup_mode = trx.items.PickupMode.PLINTH_LOW
 
   trx.objects.animating_13.properties.collidable = false

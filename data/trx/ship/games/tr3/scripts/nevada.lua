@@ -1,4 +1,4 @@
-trx.events.on_game_start(function(level)
+trx.events.on_game_start(function()
   local props = trx.objects.cobra.properties
   props.alert_radius = 1.25
   props.attack_radius = 0.666667

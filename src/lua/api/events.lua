@@ -80,6 +80,10 @@ api.define("events.on_game_start", {
     allies, changes room state and plays sound effects. Every kind of level
     fires it: a played level, a cutscene and the attract demo alike. The title
     screen has `on_title_start` instead.
+
+    Which level is starting is `trx.game.current_level`, whose `num` and `type`
+    say where it counts and what kind it is. A level script already knows both,
+    which is why the handler is not handed them.
   ]],
   params = {
     {
@@ -87,19 +91,20 @@ api.define("events.on_game_start", {
       type = "function",
       params = {
         {
-          name = "level_num",
-          type = "integer",
-          description = "Number of the level being started.",
-        },
-        {
           name = "is_save",
           type = "boolean",
-          description = "Whether the level is being resumed from a savegame rather than started fresh.",
+          description = "Whether the level is being resumed from a savegame rather than started "
+            .. "fresh. A cutscene and a demo are never resumed, and always report false.",
         },
       },
     },
   },
   returns = LISTENER,
+  examples = {
+    [[trx.events.on_game_start(function(is_save)
+  trx.log.info(trx.game.current_level.title .. " is up")
+end)]],
+  },
   impl = hook(types.GAME_START),
 })
 

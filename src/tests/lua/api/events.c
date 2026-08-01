@@ -53,13 +53,7 @@ static int M_FakeFire(lua_State *const L)
     } else if (strcmp(name, "on_pickup") == 0) {
         LUA_FireEventInt32(LUA_EVENT_PICKUP, luaL_checkinteger(L, 2));
     } else if (strcmp(name, "on_game_start") == 0) {
-        const LUA_EVENT_ARG args[] = {
-            { .type = LUA_EVENT_ARG_INT32,
-              .value = { .i32 = luaL_checkinteger(L, 2) } },
-            { .type = LUA_EVENT_ARG_BOOL,
-              .value = { .b = lua_toboolean(L, 3) } },
-        };
-        LUA_FireEventEx(LUA_EVENT_GAME_START, args, 2);
+        LUA_FireEventBool(LUA_EVENT_GAME_START, lua_toboolean(L, 2));
     } else if (strcmp(name, "on_title_start") == 0) {
         LUA_FireEvent(LUA_EVENT_TITLE_START);
     } else if (strcmp(name, "on_flip_effect") == 0) {

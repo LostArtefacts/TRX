@@ -3285,18 +3285,16 @@
       "path": "cutscenes.set_lara_return"
     },
     {
-      "description": "Happens as a level starts running, before its first frame is drawn. By then\nthe level file is loaded, its items are set up and any savegame state has\nbeen applied, so this is where a script sets object properties, declares\nallies, changes room state and plays sound effects. Every kind of level\nfires it: a played level, a cutscene and the attract demo alike. The title\nscreen has `on_title_start` instead.",
+      "description": "Happens as a level starts running, before its first frame is drawn. By then\nthe level file is loaded, its items are set up and any savegame state has\nbeen applied, so this is where a script sets object properties, declares\nallies, changes room state and plays sound effects. Every kind of level\nfires it: a played level, a cutscene and the attract demo alike. The title\nscreen has `on_title_start` instead.\n\nWhich level is starting is `trx.game.current_level`, whose `num` and `type`\nsay where it counts and what kind it is. A level script already knows both,\nwhich is why the handler is not handed them.",
+      "examples": [
+        "trx.events.on_game_start(function(is_save)\n  trx.log.info(trx.game.current_level.title .. \" is up\")\nend)"
+      ],
       "params": [
         {
           "name": "callback",
           "params": [
             {
-              "description": "Number of the level being started.",
-              "name": "level_num",
-              "type": "integer"
-            },
-            {
-              "description": "Whether the level is being resumed from a savegame rather than started fresh.",
+              "description": "Whether the level is being resumed from a savegame rather than started fresh. A cutscene and a demo are never resumed, and always report false.",
               "name": "is_save",
               "type": "boolean"
             }

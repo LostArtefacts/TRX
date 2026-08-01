@@ -1,4 +1,4 @@
-trx.events.on_game_start(function(level)
+trx.events.on_game_start(function()
   trx.objects.animating_16.properties.collidable = false
   trx.items[116].properties.switch_mode = trx.items.SwitchMode.HIDDEN_REACH
   trx.items[118].properties.switch_mode = trx.items.SwitchMode.HIDDEN_REACH
