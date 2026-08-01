@@ -547,3 +547,43 @@ An event that carries a default the script may take over says so in its descript
   end)
   trx.events.detach(listener)
   ```
+
+- <a id="events.on_zone_enter" name="events.on_zone_enter"></a>[lua]`trx.events.on_zone_enter(callback)`  
+  Happens when something enters a zone. Fires for every zone; [`trx.zones.Zone:on_enter`](ZONES.md#zones.Zone.on_enter) is the same moment narrowed to one of them.
+
+  Parameters:
+  - <a id="events.on_zone_enter.callback" name="events.on_zone_enter.callback"></a>**`callback`** (function). What to run when it happens.
+    Called with:
+    - <a id="events.on_zone_enter.zone" name="events.on_zone_enter.zone"></a>**`zone`** ([trx.zones.Zone](ZONES.md#zones.Zone)). The [`trx.zones.Zone`](ZONES.md#zones.Zone) the moment is about.
+    - <a id="events.on_zone_enter.item" name="events.on_zone_enter.item"></a>**`item`** ([trx.items.Item](ITEMS.md#items.Item)). The [`trx.items.Item`](ITEMS.md#items.Item) that entered, left, or is inside.
+
+  Returns: [trx.events.Listener](#events.Listener). The attached handler.
+
+  Example:
+  ```lua
+  trx.events.on_zone_enter(function(zone, item)
+    trx.log.info("something entered " .. tostring(zone.name))
+  end)
+  ```
+
+- <a id="events.on_zone_exit" name="events.on_zone_exit"></a>[lua]`trx.events.on_zone_exit(callback)`  
+  Happens when something leaves a zone, and when something inside one is destroyed.
+
+  Parameters:
+  - <a id="events.on_zone_exit.callback" name="events.on_zone_exit.callback"></a>**`callback`** (function). What to run when it happens.
+    Called with:
+    - <a id="events.on_zone_exit.zone" name="events.on_zone_exit.zone"></a>**`zone`** ([trx.zones.Zone](ZONES.md#zones.Zone)). The [`trx.zones.Zone`](ZONES.md#zones.Zone) the moment is about.
+    - <a id="events.on_zone_exit.item" name="events.on_zone_exit.item"></a>**`item`** ([trx.items.Item](ITEMS.md#items.Item)). The [`trx.items.Item`](ITEMS.md#items.Item) that entered, left, or is inside.
+
+  Returns: [trx.events.Listener](#events.Listener). The attached handler.
+
+- <a id="events.on_zone_tick" name="events.on_zone_tick"></a>[lua]`trx.events.on_zone_tick(callback)`  
+  Happens on every logical frame something is inside a zone, including the frame it enters.
+
+  Parameters:
+  - <a id="events.on_zone_tick.callback" name="events.on_zone_tick.callback"></a>**`callback`** (function). What to run when it happens.
+    Called with:
+    - <a id="events.on_zone_tick.zone" name="events.on_zone_tick.zone"></a>**`zone`** ([trx.zones.Zone](ZONES.md#zones.Zone)). The [`trx.zones.Zone`](ZONES.md#zones.Zone) the moment is about.
+    - <a id="events.on_zone_tick.item" name="events.on_zone_tick.item"></a>**`item`** ([trx.items.Item](ITEMS.md#items.Item)). The [`trx.items.Item`](ITEMS.md#items.Item) that entered, left, or is inside.
+
+  Returns: [trx.events.Listener](#events.Listener). The attached handler.

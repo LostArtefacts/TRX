@@ -1,6 +1,6 @@
 ---
 title: Stats
-order: 24
+order: 25
 ---
 
 <!--

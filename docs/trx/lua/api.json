@@ -145,6 +145,25 @@
         "nullable": true,
         "type": "sound.Stream"
       }
+    },
+    {
+      "countable": true,
+      "description": "Indexing the module reaches a zone, by the order the zones were made or by the name one was made with. `#trx.zones` is how many there are, and `pairs()` walks them in that order.",
+      "examples": [
+        "trx.log.info(#trx.zones .. \" zones, the first is a \" .. trx.zones[1].type)\nfor _, zone in pairs(trx.zones) do\n  zone:disable()\nend"
+      ],
+      "key": {
+        "description": "Where the zone sits, or the name it was made with. A script holds the zone itself, or the name it gave it, rather than the number.",
+        "type": [
+          "zones.Num",
+          "string"
+        ]
+      },
+      "module": "zones",
+      "value": {
+        "nullable": true,
+        "type": "zones.Zone"
+      }
     }
   ],
   "enums": [
@@ -4024,6 +4043,90 @@
       }
     },
     {
+      "description": "Happens when something enters a zone. Fires for every zone; `trx.zones.Zone:on_enter` is the same moment narrowed to one of them.",
+      "examples": [
+        "trx.events.on_zone_enter(function(zone, item)\n  trx.log.info(\"something entered \" .. tostring(zone.name))\nend)"
+      ],
+      "params": [
+        {
+          "description": "What to run when it happens.",
+          "name": "callback",
+          "params": [
+            {
+              "description": "The `trx.zones.Zone` the moment is about.",
+              "name": "zone",
+              "type": "zones.Zone"
+            },
+            {
+              "description": "The `trx.items.Item` that entered, left, or is inside.",
+              "name": "item",
+              "type": "items.Item"
+            }
+          ],
+          "type": "function"
+        }
+      ],
+      "path": "events.on_zone_enter",
+      "returns": {
+        "description": "The attached handler.",
+        "type": "events.Listener"
+      }
+    },
+    {
+      "description": "Happens when something leaves a zone, and when something inside one is destroyed.",
+      "params": [
+        {
+          "description": "What to run when it happens.",
+          "name": "callback",
+          "params": [
+            {
+              "description": "The `trx.zones.Zone` the moment is about.",
+              "name": "zone",
+              "type": "zones.Zone"
+            },
+            {
+              "description": "The `trx.items.Item` that entered, left, or is inside.",
+              "name": "item",
+              "type": "items.Item"
+            }
+          ],
+          "type": "function"
+        }
+      ],
+      "path": "events.on_zone_exit",
+      "returns": {
+        "description": "The attached handler.",
+        "type": "events.Listener"
+      }
+    },
+    {
+      "description": "Happens on every logical frame something is inside a zone, including the frame it enters.",
+      "params": [
+        {
+          "description": "What to run when it happens.",
+          "name": "callback",
+          "params": [
+            {
+              "description": "The `trx.zones.Zone` the moment is about.",
+              "name": "zone",
+              "type": "zones.Zone"
+            },
+            {
+              "description": "The `trx.items.Item` that entered, left, or is inside.",
+              "name": "item",
+              "type": "items.Item"
+            }
+          ],
+          "type": "function"
+        }
+      ],
+      "path": "events.on_zone_tick",
+      "returns": {
+        "description": "The attached handler.",
+        "type": "events.Listener"
+      }
+    },
+    {
       "description": "Starts a level from `trx.game.levels`.",
       "examples": [
         "trx.game.play_level(1)"
@@ -5208,24 +5311,178 @@
         }
       ],
       "path": "weather.set"
+    },
+    {
+      "description": "Creates a zone from a world-space box. The corners may come in any order. Rooms play no part: what stands inside the box is inside it, whichever room holds it.",
+      "examples": [
+        "local arena = trx.zones.box(\n  { x = 51200, y = -2048, z = 30720 },\n  { x = 53248, y = 0, z = 32768 },\n  { watch = \"items\", name = \"arena\" })"
+      ],
+      "params": [
+        {
+          "description": "One corner of the box.",
+          "name": "min",
+          "type": "math.Vec3"
+        },
+        {
+          "description": "The opposite corner of the box.",
+          "name": "max",
+          "type": "math.Vec3"
+        },
+        {
+          "description": "How the zone is watched, and what it is called.",
+          "fields": [
+            {
+              "default": "lara",
+              "description": "What sets the zone off: `\"lara\"` tests Lara alone, and `\"items\"` tests every item the level holds.",
+              "name": "watch",
+              "optional": true,
+              "type": "string"
+            },
+            {
+              "description": "A name `trx.zones[name]` finds the zone by. Raises where the level already has a zone of that name.",
+              "name": "name",
+              "optional": true,
+              "type": "string"
+            }
+          ],
+          "name": "opts",
+          "optional": true,
+          "type": "table"
+        }
+      ],
+      "path": "zones.box",
+      "returns": {
+        "description": "The zone.",
+        "type": "zones.Zone"
+      }
+    },
+    {
+      "description": "Creates a zone from a point and a radius. Rooms play no part, as they do not for `trx.zones.box`.",
+      "examples": [
+        "local bell = trx.zones.sphere(trx.lara.item.pos, 2048, { watch = \"items\" })"
+      ],
+      "params": [
+        {
+          "description": "Middle of the sphere.",
+          "name": "centre",
+          "type": "math.Vec3"
+        },
+        {
+          "description": "How far out it reaches.",
+          "name": "radius",
+          "type": "math.Distance"
+        },
+        {
+          "description": "How the zone is watched, and what it is called.",
+          "fields": [
+            {
+              "default": "lara",
+              "description": "What sets the zone off: `\"lara\"` tests Lara alone, and `\"items\"` tests every item the level holds.",
+              "name": "watch",
+              "optional": true,
+              "type": "string"
+            },
+            {
+              "description": "A name `trx.zones[name]` finds the zone by. Raises where the level already has a zone of that name.",
+              "name": "name",
+              "optional": true,
+              "type": "string"
+            }
+          ],
+          "name": "opts",
+          "optional": true,
+          "type": "table"
+        }
+      ],
+      "path": "zones.sphere",
+      "returns": {
+        "description": "The zone.",
+        "type": "zones.Zone"
+      }
+    },
+    {
+      "description": "Creates a zone from the sector under a position, in the room holding that position, at any height - the way a floor trigger occupies a sector. The same sector column in the room above or below does not set it off. Where rooms overlap and several of them hold the position, the zone takes the first, which is the lowest-numbered room rather than the nearest floor; `trx.zones.Zone.room_num` says which one it settled on.",
+      "examples": [
+        "local plate = trx.zones.tile(trx.lara.item.pos)\nplate:on_enter(function(item)\n  trx.log.info(\"stepped on the plate\")\nend)"
+      ],
+      "params": [
+        {
+          "description": "A world position inside the sector.",
+          "name": "pos",
+          "type": "math.Vec3"
+        },
+        {
+          "description": "How the zone is watched, and what it is called.",
+          "fields": [
+            {
+              "default": "lara",
+              "description": "What sets the zone off: `\"lara\"` tests Lara alone, and `\"items\"` tests every item the level holds.",
+              "name": "watch",
+              "optional": true,
+              "type": "string"
+            },
+            {
+              "description": "A name `trx.zones[name]` finds the zone by. Raises where the level already has a zone of that name.",
+              "name": "name",
+              "optional": true,
+              "type": "string"
+            }
+          ],
+          "name": "opts",
+          "optional": true,
+          "type": "table"
+        }
+      ],
+      "path": "zones.tile",
+      "returns": {
+        "description": "The zone, or `nil` when the position lies outside the level.",
+        "nullable": true,
+        "type": "zones.Zone"
+      }
+    },
+    {
+      "description": "Retrieves a zone by its place in the module or by the name it was made with. The same as indexing the module.",
+      "params": [
+        {
+          "description": "Where the zone sits, or the name it was made with.",
+          "name": "key",
+          "type": [
+            "zones.Num",
+            "string"
+          ]
+        }
+      ],
+      "path": "zones.get",
+      "returns": {
+        "nullable": true,
+        "type": "zones.Zone"
+      }
+    },
+    {
+      "description": "How many zones the level has. The same as `#trx.zones`.",
+      "path": "zones.count",
+      "returns": {
+        "description": "How many zones the level holds.",
+        "type": "integer"
+      }
     }
   ],
   "modules": [
     {
       "description": "Argument checking for the whole of `trx`.",
       "name": "api",
-      "order": 31,
+      "order": 32,
       "title": "API registry"
     },
     {
       "description": "A small, declarative argument parser for console commands, in the shape of\nPython's argparse.\n\nA parser both reads a command's arguments and offers completions for them,\nfrom one declaration. Every command written with `trx.console.register` has\none; a command shapes it through the `trx.console.register.spec.args` function\nit hands over, and `trx.console.register.spec.run` then receives a table of\nparsed values. A command that shapes nothing takes no arguments, and is told so\nwhen given one.\n\nEvery parser answers `-h` and `--help` on its own, printing what it accepts.\n\nHow a positional reads a token is its matcher: a type to coerce to, a set of\nchoices, or a function of its own. These do not combine on one positional; a\nvalue that is a number *or* a name is two matchers, declared with\n`trx.argparse.Parser:any_of`.\n\nPositionals are read in order, and an optional one a token does not fit is\npassed over: the token goes to the next positional, and the one skipped stays\nnil. That is what lets a command take a leading argument it can also be used\nwithout - a verb before a value, a count before a name. Completion follows the\nsame path, so a slot offers what every argument reachable from it takes. A\ntoken nothing takes is reported against the first argument that refused it.\n\nA choice is either a bare string, where the key and value are the same, or a\n`{ key, value }` pair, where the key is matched and shown and the value is what\n`trx.argparse.Parser:parse` gives back. Matching is forgiving, through\n`trx.strings.fuzzy_match`.",
       "name": "argparse",
-      "order": 21
+      "order": 22
     },
     {
       "description": "Module for controlling the Assault Course and Quad Bike timers in gym levels.",
       "name": "assault",
-      "order": 16,
+      "order": 17,
       "title": "Assault course"
     },
     {
@@ -5241,12 +5498,12 @@
     {
       "description": "Module for reading and changing engine settings.\n\nThese are the player's settings, not the level's. `trx.config.set` writes to them and keeps the change: it is remembered across saves and relaunches, exactly as if the player had made it themselves. A level that wants to tint the water or pull the fog in wants `trx.config.override` instead, which lasts as long as the script keeps it and leaves the player's own value untouched underneath.",
       "name": "config",
-      "order": 22
+      "order": 23
     },
     {
       "description": "Module for interacting with the developer console.\n\n`trx.console.log` writes to the console overlay in-game, where `trx.log` writes only to the terminal and the log file.",
       "name": "console",
-      "order": 20
+      "order": 21
     },
     {
       "description": "Module for controlling certain creature behavior.",
@@ -5282,7 +5539,7 @@
     {
       "description": "Writing Lua values out as JSON. The API dump the reference is generated from goes through this, so what a script writes out is encoded the way the engine's own data is.",
       "name": "json",
-      "order": 29,
+      "order": 30,
       "title": "JSON"
     },
     {
@@ -5294,33 +5551,33 @@
     {
       "description": "The text the player reads, in the player's own language.",
       "name": "locale",
-      "order": 19
+      "order": 20
     },
     {
       "description": "Logs a message to the terminal and to `TRX.log` in the installation directory. <!--noref: TRX.log--> Each call records the Lua script's filename, function name and line number.",
       "name": "log",
-      "order": 26,
+      "order": 27,
       "title": "Logging"
     },
     {
       "description": "Evaluating Lua at runtime: a string of code, or a file on disk. Both run in the same state as every other script.",
       "name": "lua",
-      "order": 30
+      "order": 31
     },
     {
       "description": "Fixed-point trigonometry, matching the engine's own tables. Using these rather than Lua's `math` library guarantees a script places things exactly where the engine would. `trx.math.Angle` says what an angle is here.",
       "name": "math",
-      "order": 27
+      "order": 28
     },
     {
       "description": "The mods the game was built with, and which one is loaded.",
       "name": "mod",
-      "order": 25
+      "order": 26
     },
     {
       "description": "Module for playing and controlling the soundtrack.",
       "name": "music",
-      "order": 18
+      "order": 19
     },
     {
       "description": "Module for the object definitions a level is built from.\n\nAn object is the pattern every item of that type is cut from: a wolf's radius, not this wolf's. Per-item state lives on the item - see `trx.items`.",
@@ -5347,23 +5604,23 @@
     {
       "description": "The save slots, and starting or reading a saved game.",
       "name": "savegame",
-      "order": 23
+      "order": 24
     },
     {
       "description": "Module for playing sound effects.",
       "name": "sound",
-      "order": 17
+      "order": 18
     },
     {
       "description": "Module for what a level keeps count of: what Lara has found in it, and how much\nthere was to find.\n\nThe module is the level being played, so `trx.stats.pickups.count` is what she\nhas picked up in it. Any other level's counters are reached the same way through\n`trx.game.Level.stats`. At the title screen there is no level, and everything\nhere reads `nil`.",
       "instance_type": "stats.Stats",
       "name": "stats",
-      "order": 24
+      "order": 25
     },
     {
       "description": "Utilities for working with strings.\n\nNot to be confused with `trx.locale`, which is the text a player reads: this module is about manipulating strings, that one is about which string the player gets.",
       "name": "strings",
-      "order": 28
+      "order": 29
     },
     {
       "description": "What a weapon is, rather than what Lara has of it.\n\nNone of this differs between the inventory she carries and the one a level\nkeeps for her, so it belongs to neither: what she holds and how many shots she\nhas are `trx.inventory`.",
@@ -5373,6 +5630,11 @@
     {
       "description": "The runtime weather effect the current level shows.",
       "name": "weather",
+      "order": 16
+    },
+    {
+      "description": "A zone is a piece of the level worth keeping an eye on. Mark out a box or a\nsphere in world space, or a single sector the way a floor trigger covers one,\nand the zone reports when something steps into it, when it leaves, and for as\nlong as it stays.\n\nA zone watches Lara and nobody else, unless it is made with `watch = \"items\"`,\nand then it watches everything the level holds - enemies, pickups, anything\nwith a position. Its hooks hand over whatever set it off. To listen in one\nplace rather than zone by zone, `trx.events.on_zone_enter` and its two siblings\nhear about all of them.\n\nEvery frame, each zone settles who is inside before anything goes out, and the\nexits come before the enters - so a script following Lara from one zone into\nthe next hears her leave the first before she enters the second. Something\ndestroyed while it is inside counts as leaving.\n\nA box and a sphere take no notice of rooms, so where two rooms sit one above\nthe other over the same ground, a box tall enough to reach both catches what\nstands in either. Only a tile belongs to a room. A flipmap changes the geometry\nunder a zone but moves nothing and renumbers nothing, so no zone sees anything\ncome or go.\n\nZones belong to the level that made them. A level change clears them, and the\nlevel script makes them again the same way it attaches its handlers. A zone made\noutside a level script - from a global script, or from the console - goes with\nthe next level change as well, and nothing makes it again. A global script that\nwants a zone in every level makes it from a handler that runs once the level has\nloaded. They are not written to savegames either, so Lara standing in a zone when\na game is loaded enters it again.",
+      "name": "zones",
       "order": 15
     }
   ],
@@ -5516,6 +5778,11 @@
       "base": 1,
       "description": "The secret's number, as the player counts them.",
       "path": "stats.SecretNum"
+    },
+    {
+      "base": 1,
+      "description": "Where a zone sits among the level's, counted in the order they were made. An earlier zone being removed shifts the rest along.",
+      "path": "zones.Num"
     }
   ],
   "properties": [
@@ -8905,6 +9172,210 @@
       "methods": [],
       "operators": [],
       "path": "strings.Match"
+    },
+    {
+      "description": "A script-defined trigger region. Reading a field of one that has been removed, or that a level change took away, raises rather than answering for a zone that is no longer there.",
+      "extensions": [],
+      "fields": [
+        {
+          "description": "The middle of a sphere, and `nil` for a box or a tile.",
+          "name": "centre",
+          "type": "math.Vec3",
+          "writable": false
+        },
+        {
+          "description": "Whether the zone is tested. Disabling it suspends the hooks without forgetting who is inside, so an item that leaves while it is off is reported as leaving when it comes back on. One destroyed while it is off is forgotten instead, and nothing is reported for it.",
+          "name": "enabled",
+          "type": "boolean",
+          "writable": true
+        },
+        {
+          "description": "The upper corner of a box or a tile, and `nil` for a sphere.",
+          "name": "max",
+          "type": "math.Vec3",
+          "writable": false
+        },
+        {
+          "description": "The lower corner of a box or a tile, and `nil` for a sphere.",
+          "name": "min",
+          "type": "math.Vec3",
+          "writable": false
+        },
+        {
+          "description": "The name the zone was made with, and `nil` for one made without. `trx.zones[name]` finds it again.",
+          "name": "name",
+          "type": "string",
+          "writable": false
+        },
+        {
+          "description": "Where the zone sits now.",
+          "name": "num",
+          "type": "zones.Num",
+          "writable": false
+        },
+        {
+          "description": "How far a sphere reaches, and `nil` for a box or a tile.",
+          "name": "radius",
+          "type": "math.Distance",
+          "writable": false
+        },
+        {
+          "description": "The room a tile belongs to, which is what keeps the same sector column in the room above or below from setting it off. Settled when the zone is made and fixed from then on, a flipmap included. `nil` for a box or a sphere.",
+          "name": "room_num",
+          "type": "rooms.Num",
+          "writable": false
+        },
+        {
+          "description": "The shape the zone was made with: `\"box\"`, `\"sphere\"` or `\"tile\"`.",
+          "name": "type",
+          "type": "string",
+          "writable": false
+        },
+        {
+          "description": "What sets the zone off: `\"lara\"` or `\"items\"`.",
+          "name": "watch",
+          "type": "string",
+          "writable": false
+        }
+      ],
+      "handle": false,
+      "methods": [
+        {
+          "description": "Forgets who is inside, so anything still there enters again on the next frame. This is how a zone is made to fire a second time for an item that never left it.",
+          "name": "clear_occupants"
+        },
+        {
+          "description": "Whether the item is inside the region: the same test the zone makes every frame, so this answers whether the item counts as an occupant. An item is tested by the point it stands at, and one the world does not hold is nowhere.",
+          "examples": [
+            "if plate:contains_item(trx.lara.item) then\n  trx.log.info(\"she is standing on it\")\nend"
+          ],
+          "name": "contains_item",
+          "params": [
+            {
+              "name": "item",
+              "type": "items.Item"
+            }
+          ],
+          "returns": {
+            "description": "Whether the item counts as an occupant.",
+            "type": "boolean"
+          }
+        },
+        {
+          "description": "Whether a world position lies inside the region. A plain test: no hooks are involved, and a disabled zone answers as readily as any other. A tile answers on position alone, so a point in the room stacked above it counts here where an item standing there would not.",
+          "name": "contains_point",
+          "params": [
+            {
+              "description": "World position.",
+              "name": "pos",
+              "type": "math.Vec3"
+            }
+          ],
+          "returns": {
+            "description": "Whether the point is inside.",
+            "type": "boolean"
+          }
+        },
+        {
+          "description": "Stops testing the zone, without forgetting who is inside, other than an occupant destroyed meanwhile. The same as `zone.enabled = false`.",
+          "name": "disable"
+        },
+        {
+          "description": "Starts testing the zone again. The same as `zone.enabled = true`.",
+          "name": "enable"
+        },
+        {
+          "description": "Whether the zone still exists. `trx.zones.Zone:remove` and a level change both leave a handle stale.",
+          "name": "is_valid",
+          "returns": {
+            "description": "Whether the zone is still there.",
+            "type": "boolean"
+          }
+        },
+        {
+          "description": "The items inside the zone as of the last frame it was tested, in item order. A disabled zone hands back who was inside when it was disabled.",
+          "name": "occupants",
+          "returns": {
+            "list": true,
+            "type": "items.Item"
+          }
+        },
+        {
+          "description": "Happens when something enters the zone.",
+          "examples": [
+            "local door = trx.zones.box(\n  { x = 51200, y = -2048, z = 30720 },\n  { x = 53248, y = 0, z = 32768 })\ndoor:on_enter(function(item)\n  trx.log.info(\"someone stepped in\")\nend)"
+          ],
+          "name": "on_enter",
+          "params": [
+            {
+              "description": "What to run when it happens.",
+              "name": "callback",
+              "params": [
+                {
+                  "description": "The item that entered.",
+                  "name": "item",
+                  "type": "items.Item"
+                }
+              ],
+              "type": "function"
+            }
+          ],
+          "returns": {
+            "description": "The listener. `trx.zones.Zone:remove` detaches what a zone carries as well.",
+            "type": "events.Listener"
+          }
+        },
+        {
+          "description": "Happens when something leaves the zone, and when something inside it is destroyed.",
+          "name": "on_exit",
+          "params": [
+            {
+              "description": "What to run when it happens.",
+              "name": "callback",
+              "params": [
+                {
+                  "description": "The item that left.",
+                  "name": "item",
+                  "type": "items.Item"
+                }
+              ],
+              "type": "function"
+            }
+          ],
+          "returns": {
+            "description": "The listener. `trx.zones.Zone:remove` detaches what a zone carries as well.",
+            "type": "events.Listener"
+          }
+        },
+        {
+          "description": "Happens on every logical frame something is inside the zone, including the frame it enters.",
+          "name": "on_tick",
+          "params": [
+            {
+              "description": "What to run when it happens.",
+              "name": "callback",
+              "params": [
+                {
+                  "description": "The item that is inside.",
+                  "name": "item",
+                  "type": "items.Item"
+                }
+              ],
+              "type": "function"
+            }
+          ],
+          "returns": {
+            "description": "The listener. `trx.zones.Zone:remove` detaches what a zone carries as well.",
+            "type": "events.Listener"
+          }
+        },
+        {
+          "description": "Removes the zone and detaches the hooks attached to it. Its handle goes stale: `trx.zones.Zone:is_valid` says so, and reading a field raises.",
+          "name": "remove"
+        }
+      ],
+      "operators": [],
+      "path": "zones.Zone"
     }
   ],
   "units": [

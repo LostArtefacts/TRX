@@ -430,6 +430,22 @@ unit_tests += {
   'engine': ['game/lua/capi/lua.c'],
 }
 
+# The engine under the bridge is the real spatial query and the real event
+# registry, so the suite says whether the zones work rather than whether the
+# module repeats what we meant.
+unit_tests += {
+  'name': 'lua/api/zones',
+  'bundles': [b_lua_surface, b_lua_math],
+  'src': ['fakes/items.c', 'fakes/rooms.c', 'fakes/lara.c', 'fakes/catalog.c'],
+  'engine': [
+    'game/lua/capi/catalog.c',
+    'game/lua/capi/events.c',
+    'game/lua/capi/items.c',
+    'game/lua/capi/lara.c',
+    'game/lua/capi/rooms.c',
+  ],
+}
+
 unit_tests += {
   'name': 'lua/api/weather',
   'bundles': [b_lua_surface],
