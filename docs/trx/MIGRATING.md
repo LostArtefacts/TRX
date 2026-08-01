@@ -88,13 +88,13 @@ order: 3
    she was in no such animation. `if trx.lara.extra_anim ~= -1` is now always
    true, and comparing it against a number raises. Test the boolean:
    `if trx.lara.extra_anim then`. The animation number itself is no longer
-   exposed; read `trx.lara.item.anim` if you need it.
+   exposed; read `trx.lara.item.anim_num` if you need it.
 
 5. **Update scripts that compensate for `on_pickup`'s item number**
-   The handler passes a 1-based item number, as it is documented to; it used to
-   pass the 0-based engine index. A script that
-   worked around this with `trx.items[item_num + 1]` is now off by one, and
-   picks up the wrong item rather than failing - pass `item_num` straight
+   The handler passes the engine's own item number, counted from 0, as it
+   always did. What changed is `trx.items`, which counts from 0 now as well, so
+   a script that bridged the gap with `trx.items[item_num + 1]` is off by one
+   and reaches the wrong item rather than failing - pass `item_num` straight
    through.
 
 6. **Update scripts that write to a catalog or enum**
@@ -159,11 +159,23 @@ order: 3
    no longer takes a number, and `listener.id` is the number if anything needs
    it.
 
-16. **Update scripts that use `trx.console.log.LogLevel`**
+16. **Update scripts that name a number**
+   The public API now says what kind of number a name stands for: `_num` for a
+   number only the level it came from gives meaning to, `_id` for one TRX ships
+   names for, and a bare noun for the thing itself. The renames are mechanical:
+   - `item.index` is `item.num`
+   - `item.anim` is `item.anim_num`, and `item.frame` is `item.frame_num`
+   - `on_room_change`'s handler takes `old_room_num` and `new_room_num`
+   - `on_flyby_end`'s handler takes `sequence_num`
+   - the `on_cutscene_*` handlers take `cutscene_num`
+   - `trx.savegame`'s slot argument is `slot_num`
+   - `trx.inventory`'s object argument is `object_id`
+
+17. **Update scripts that use `trx.console.log.LogLevel`**
    It was removed. Use `trx.log.LogLevel`, which is the same enum:
    `trx.console.log.generic(trx.log.LogLevel.ERROR, "...")`.
 
-17. **Update scripts that use the music module**
+18. **Update scripts that use the music module**
    The soundtrack is addressed through track and stream handles now.
    - `trx.music.play` now takes a track by catalog id - a `trx.catalog.music`
      value, which maps to the right track per game - rather than the level's own
@@ -183,7 +195,7 @@ order: 3
      main stream, `[2]` onwards the overlays - each of which can be paused,
      resumed, sought and stopped on its own.
 
-18. **Update scripts that address levels by number**
+19. **Update scripts that address levels by number**
    `trx.game.levels` is the levels the game numbers, and a gym is not one of
    them. Where a game flow has a gym, `trx.game.levels[1]` used to be the gym;
    now every entry after it has shifted down by one and the last level -
@@ -192,19 +204,19 @@ order: 3
    it; use `trx.game.play_gym()` and `trx.game.gym` for the gym. The same holds
    for `trx.game.cutscenes`, `trx.game.demos` and their `play_` functions.
 
-19. **Update Lara's outfit definitions**
+20. **Update Lara's outfit definitions**
    The `braid` entries for Lara's outfits were changed to arrays to support up
    to two instances. Additionally, a `joints_object` can now be specified to
    allow using TR4/5 outfits. `outfits.json5` must be updated accordingly; refer
    to the default shipped file and [outfits documentation](OUTFITS.md).
 
-20. **Update scripts that pass an incomplete position**
+21. **Update scripts that pass an incomplete position**
    `{ x = , y = , z = }` needs all three coordinates. A missing one used to read
    as zero in `trx.sound.play`, placing the sound at the edge of the world, and
    raised an unhelpful error elsewhere. It now names the coordinate and the
    argument it came in on.
 
-21. **Update scripts that use `trx.sound.is_available`**
+22. **Update scripts that use `trx.sound.is_available`**
    It was removed. A sample is available when `trx.sound.samples[id]` is not
    `nil`. `trx.sound.samples` is a collection of `trx.sound.Sample` handles keyed
    by id, each of which plays itself and reports its definition, and
@@ -216,7 +228,7 @@ order: 3
    `play` hands back the `trx.sound.Stream` it started. `trx.sound.stop_all` is
    unchanged.
 
-22. **Update scripts that read `item.status`**
+23. **Update scripts that read `item.status`**
    The `item.status` field and the `items.Status` enum were removed in favour of
    separate boolean axes:
    - `item.is_simulated` (read-only): its control routine runs each frame -
@@ -233,7 +245,7 @@ order: 3
    The item query narrows on each: `simulated`, `present`, `visible`, `finished`,
    `in_play`, `alive`, `targetable`.
 
-23. **Update game flows that anchor Bacon Lara**
+24. **Update game flows that anchor Bacon Lara**
    The `setup_bacon_lara` sequence event was removed. The anchor room is an
    `anchor_room` object property now, which a level editor can set on the object
    or on a single item, and a script can set in `on_game_start`:
@@ -245,7 +257,7 @@ order: 3
    The property is optional: at its default of -1, the room Bacon Lara is placed
    in is the anchor. Refer to the Atlantis level in the default game flow.
 
-24. **Update scripts that use the level lifecycle events**
+25. **Update scripts that use the level lifecycle events**
    `before_level_file`, `after_level_file`, `before_item_setup`,
    `after_item_setup` and `after_level_state` were removed. `on_game_start` is
    the one moment a level script gets before play: the level file is loaded, its
@@ -264,18 +276,18 @@ order: 3
    itself is `trx.game.current_level`, which says both what it is and where it
    counts.
 
-25. **Remove `ammo.pickup_qty_alt` from weapon definitions**
+26. **Remove `ammo.pickup_qty_alt` from weapon definitions**
    The field only applied to flares in Japanese NG, which is no longer a game
    mode. A flare box now always gives `ammo.pickup_qty` flares. The field is
    ignored if left in `weapons.json5`.
 
-26. **Update scripts that raise an item's maximum hit points**
+27. **Update scripts that raise an item's maximum hit points**
    Writing `max_hit_points` carries the item's current hit points with it, by
    the difference: an item that has taken no damage comes out at full health,
    and one that is already hurt stays hurt by as much. It no longer needs a
    companion write to `hit_points`.
 
-27. **Update weapon definitions**
+28. **Update weapon definitions**
    The ammunition keys in `weapons.json5` were renamed to say what they count.
    A shot is one pull of the trigger, which for the shotgun spends six rounds;
    the flare counts a flare where a weapon counts a shot. The old names are

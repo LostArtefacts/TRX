@@ -36,21 +36,21 @@ The save slots, and starting or reading a saved game.
   Returns:
   - integer. The number of slots.
 
-- [lua]`trx.savegame.is_free(index, [pool])`  
+- [lua]`trx.savegame.is_free(slot_num, [pool])`  
   Whether a slot holds no save.
 
   Parameters:
-  - **`index`** (integer). 1-based slot number. For the quick pool this is the on-screen order.
+  - **`slot_num`** (integer). 1-based slot number. For the quick pool this is the on-screen order.
   - **`pool`** (integer, optional). Which set of slots to look in. Defaults to `NORMAL`. Compare against `trx.savegame.Pool`.
 
   Returns:
   - boolean. Whether the slot is empty.
 
-- [lua]`trx.savegame.load(index, [pool])`  
+- [lua]`trx.savegame.load(slot_num, [pool])`  
   Starts the saved game in a slot. The load happens once the game flow picks it up, not on the call.
 
   Parameters:
-  - **`index`** (integer). 1-based slot number. For the quick pool this is the on-screen order.
+  - **`slot_num`** (integer). 1-based slot number. For the quick pool this is the on-screen order.
   - **`pool`** (integer, optional). Which set of slots to look in. Defaults to `NORMAL`. Compare against `trx.savegame.Pool`.
 
   Example:
@@ -58,11 +58,11 @@ The save slots, and starting or reading a saved game.
   trx.savegame.load(1)
   ```
 
-- [lua]`trx.savegame.save([index], [pool])`  
-  Writes a saved game to a slot. A quick save with no index goes to the next slot in the rotation; with one, it saves to the slot named.
+- [lua]`trx.savegame.save([slot_num], [pool])`  
+  Writes a saved game to a slot. A quick save with no slot number goes to the next slot in the rotation; with one, it saves to the slot named.
 
   Parameters:
-  - **`index`** (integer, optional). 1-based slot number. The quick pool uses the next slot in its rotation when it is omitted.
+  - **`slot_num`** (integer, optional). 1-based slot number. The quick pool uses the next slot in its rotation when it is omitted.
   - **`pool`** (integer, optional). Which set of slots to look in. Defaults to `NORMAL`. Compare against `trx.savegame.Pool`.
 
   Returns:

@@ -178,7 +178,7 @@ end
 ### Functions
 
 - [lua]`trx.rooms.get(num)`  
-  Retrieves a room by number. Rooms count from zero, matching the room numbers level editors show.
+  Retrieves a room by number.
 
   Parameters:
   - **`num`** (integer). 0-based room number, matching the numbers level editors show.

@@ -73,7 +73,7 @@ test("bounds measure the frame the item is on", function()
   assert(at_rest.min_y == -200 and at_rest.max_y == 0)
   assert(at_rest.min_z == -300 and at_rest.max_z == 300)
 
-  it.frame = 4
+  it.frame_num = 4
   assert(it.bounds.min_x == -104, "the bounds did not follow the animation")
 end)
 
@@ -191,9 +191,9 @@ test("deactivate stops the item and takes a creature's AI away", function()
   )
 end)
 
-test("an item knows its own index, counted from 0", function()
-  assert(trx.items[0].index == 0)
-  assert(trx.items[1].index == 1)
+test("an item knows its own number, counted from 0", function()
+  assert(trx.items[0].num == 0)
+  assert(trx.items[1].num == 1)
 end)
 
 -- A door reads its trigger before it acts, which activate() alone does not set.
@@ -777,8 +777,7 @@ test("undeclared members are unreachable", function()
     "next_item",
     "next_simulated",
     "gen",
-    "anim_num",
-    "frame_num",
+    "prev_frame_num",
     "ai_bits",
     "after_death",
     "shade",
@@ -791,6 +790,13 @@ test("undeclared members are unreachable", function()
   raises(function()
     it.my_own_key = 1
   end)
+end)
+
+test("the names the number fields went by are gone", function()
+  local it = trx.items[0]
+  for _, name in ipairs({ "index", "anim", "frame" }) do
+    assert(it[name] == nil, name .. " must not be reachable")
+  end
 end)
 
 test("query of_object narrows by object, taken by id or by name", function()

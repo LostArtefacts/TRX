@@ -9,7 +9,7 @@ api.module("items", {
 })
 
 api.note(
-  "items.index",
+  "items.num",
   "0-based item number, matching the numbers level editors show."
 )
 
@@ -142,25 +142,26 @@ api.type("items.Item", {
         .. "cycles, so one past the end of the turn wraps round to name the same direction rather "
         .. "than raising: adding a half turn to a rotation always works.",
     },
-    anim = {
-      from = "anim",
+    anim_num = {
+      from = "relative_anim_num",
       type = "integer",
-      description = "Object-relative animation number, 0-indexed.",
+      description = "The animation's number within the object, counted from 0.",
     },
-    frame = {
-      from = "frame",
+    frame_num = {
+      from = "relative_frame_num",
       type = "integer",
-      description = "Object-relative frame number, 0-indexed. Negative values count back from the end.",
+      description = "The frame's number within the animation, counted from 0. Negative values count "
+        .. "back from the end.",
     },
-    index = {
-      from = "index",
+    num = {
+      from = "item_num",
       type = "integer",
       writable = false,
-      description = "The index `trx.items[i]` takes, counted from 0. An item handed over by a query "
-        .. "can say where it lives.",
+      see = "items.num",
+      description = "An item handed over by a query can say where it lives.",
     },
     room_num = {
-      from = "room_index",
+      from = "room_num",
       type = "integer",
       writable = false,
       description = "0-based number of the room containing this item. Set `pos` to move the item between rooms.",
@@ -696,13 +697,13 @@ lara:take_damage(lara.hit_points)]],
 })
 
 api.define("items.get", {
-  description = "Retrieves an item by index or by name. Items count from zero, matching the "
-    .. "item numbers level editors show.",
+  description = "Retrieves an item by number or by name.",
   params = {
     {
       name = "key",
       type = "any",
-      description = "0-based index, or the item's unique name.",
+      see = "items.num",
+      description = "An item's unique name reaches it as well.",
     },
   },
   returns = { type = "Item", nullable = true },
@@ -942,11 +943,11 @@ api.property("items.query", {
 
 api.container("items", {
   description = "Indexing the module reaches an item, and `#trx.items` is how many the level has. "
-    .. "Items count from zero, matching the item numbers level editors show. `pairs()` walks them "
-    .. "in order, keyed by that number.",
+    .. "`pairs()` walks them in order, keyed by the item number.",
   key = {
     type = "any",
-    description = "0-based index, or the item's unique name.",
+    see = "items.num",
+    description = "An item's unique name reaches it as well.",
   },
   value = { type = "Item", nullable = true },
   examples = {

@@ -40,12 +40,12 @@
     },
     {
       "countable": true,
-      "description": "Indexing the module reaches an item, and `#trx.items` is how many the level has. Items count from zero, matching the item numbers level editors show. `pairs()` walks them in order, keyed by that number.",
+      "description": "Indexing the module reaches an item, and `#trx.items` is how many the level has. `pairs()` walks them in order, keyed by the item number.",
       "examples": [
         "for num, item in pairs(trx.items) do\n  trx.log.info(item.object_id)\nend"
       ],
       "key": {
-        "description": "0-based index, or the item's unique name.",
+        "description": "0-based item number, matching the numbers level editors show. An item's unique name reaches it as well.",
         "type": "any"
       },
       "module": "items",
@@ -3414,7 +3414,7 @@
     {
       "description": "Happens when an item changes rooms during play, which a cutscene or the attract demo is not. `trx.rooms.Room:on_enter` and `:on_exit` are this same event, narrowed to one room.",
       "examples": [
-        "trx.events.on_room_change(function(item, old_room, new_room)\n  trx.log.info(item.object_id .. \" moved to room \" .. new_room)\nend)"
+        "trx.events.on_room_change(function(item, old_room_num, new_room_num)\n  trx.log.info(item.object_id .. \" moved to room \" .. new_room_num)\nend)"
       ],
       "params": [
         {
@@ -3426,13 +3426,13 @@
               "type": "Item"
             },
             {
-              "description": "0-based number of the room it left, or -1 if it had none.",
-              "name": "old_room",
+              "description": "0-based room number, matching the numbers level editors show. -1 if it had none.",
+              "name": "old_room_num",
               "type": "integer"
             },
             {
-              "description": "0-based number of the room it entered, or -1 if it left the world.",
-              "name": "new_room",
+              "description": "0-based room number, matching the numbers level editors show. -1 if it left the world.",
+              "name": "new_room_num",
               "type": "integer"
             }
           ],
@@ -3770,7 +3770,7 @@
     {
       "description": "Happens when a cutscene trigger fires, before the engine acts on it. A\nhandler answers the trigger by returning true - having played a cutscene of\nits own, run something else, or decided nothing should run. If no handler\nanswers, the engine plays the cutscene the trigger names.\n\nA trigger Lara stands on fires every frame, so this happens only for a\ncutscene that has not run yet and while none is playing. Asking counts as\nrunning it, whatever came of it, so the same handler is not asked again on\nthe next frame. Clear the mark with `trx.cutscenes.set_played` to hear\nabout one again.\n\nThe number a trigger names need not be one the game has a cutscene for -\nTR4 uses 32 to ask for a full-motion video. Those reach a handler too, and\nthe engine has nothing of its own to do about them.",
       "examples": [
-        "-- only in the throne room; a flyby stands in for it elsewhere\ntrx.events.on_cutscene_trigger(function(num)\n  if num ~= 27 then\n    return false\n  end\n  if trx.lara.item.room_num == 55 then\n    trx.cutscenes.play(27)\n  else\n    trx.camera.play_flyby(3)\n  end\n  return true\nend)"
+        "-- only in the throne room; a flyby stands in for it elsewhere\ntrx.events.on_cutscene_trigger(function(cutscene_num)\n  if cutscene_num ~= 27 then\n    return false\n  end\n  if trx.lara.item.room_num == 55 then\n    trx.cutscenes.play(27)\n  else\n    trx.camera.play_flyby(3)\n  end\n  return true\nend)"
       ],
       "params": [
         {
@@ -3778,7 +3778,7 @@
           "params": [
             {
               "description": "Number the trigger names.",
-              "name": "num",
+              "name": "cutscene_num",
               "type": "integer"
             }
           ],
@@ -3799,7 +3799,7 @@
           "params": [
             {
               "description": "Number of the cutscene starting.",
-              "name": "num",
+              "name": "cutscene_num",
               "type": "integer"
             }
           ],
@@ -3815,7 +3815,7 @@
     {
       "description": "Happens once a TR4 cutscene has finished and the scene it interrupted is back. This is where a script decides what follows.",
       "examples": [
-        "trx.events.on_cutscene_end(function(num)\n  trx.log.info(\"cutscene \" .. num .. \" finished\")\nend)"
+        "trx.events.on_cutscene_end(function(cutscene_num)\n  trx.log.info(\"cutscene \" .. cutscene_num .. \" finished\")\nend)"
       ],
       "params": [
         {
@@ -3823,7 +3823,7 @@
           "params": [
             {
               "description": "Number of the cutscene that ended.",
-              "name": "num",
+              "name": "cutscene_num",
               "type": "integer"
             }
           ],
@@ -3839,15 +3839,15 @@
     {
       "description": "Happens when a flyby sequence reaches its last camera and hands the view back.\nA sequence that a cutscene or the player interrupts does not fire it.",
       "examples": [
-        "trx.events.on_flyby_end(function(sequence)\n  trx.camera.play_flyby(sequence)\nend)"
+        "trx.events.on_flyby_end(function(sequence_num)\n  trx.camera.play_flyby(sequence_num)\nend)"
       ],
       "params": [
         {
           "name": "callback",
           "params": [
             {
-              "description": "Number of the sequence that ended.",
-              "name": "sequence",
+              "description": "Number of the flyby sequence that ended.",
+              "name": "sequence_num",
               "type": "integer"
             }
           ],
@@ -3956,13 +3956,13 @@
       "path": "game.screenshot"
     },
     {
-      "description": "Retrieves an item by index or by name. Items count from zero, matching the item numbers level editors show.",
+      "description": "Retrieves an item by number or by name.",
       "examples": [
         "local item = trx.items[0]\nitem.name = \"lara\"\nlocal lara = trx.items[\"lara\"]"
       ],
       "params": [
         {
-          "description": "0-based index, or the item's unique name.",
+          "description": "0-based item number, matching the numbers level editors show. An item's unique name reaches it as well.",
           "name": "key",
           "type": "any"
         }
@@ -4467,7 +4467,7 @@
       }
     },
     {
-      "description": "Retrieves a room by number. Rooms count from zero, matching the room numbers level editors show.",
+      "description": "Retrieves a room by number.",
       "examples": [
         "local room = trx.rooms[14]\nroom.underwater = true"
       ],
@@ -4661,7 +4661,7 @@
       "params": [
         {
           "description": "1-based slot number. For the quick pool this is the on-screen order.",
-          "name": "index",
+          "name": "slot_num",
           "type": "integer"
         },
         {
@@ -4688,7 +4688,7 @@
       "params": [
         {
           "description": "1-based slot number. For the quick pool this is the on-screen order.",
-          "name": "index",
+          "name": "slot_num",
           "type": "integer"
         },
         {
@@ -4702,14 +4702,14 @@
       "path": "savegame.load"
     },
     {
-      "description": "Writes a saved game to a slot. A quick save with no index goes to the next slot in the rotation; with one, it saves to the slot named.",
+      "description": "Writes a saved game to a slot. A quick save with no slot number goes to the next slot in the rotation; with one, it saves to the slot named.",
       "examples": [
         "trx.savegame.save(1)"
       ],
       "params": [
         {
           "description": "1-based slot number. The quick pool uses the next slot in its rotation when it is omitted.",
-          "name": "index",
+          "name": "slot_num",
           "optional": true,
           "type": "integer"
         },
@@ -5562,7 +5562,7 @@
             {
               "description": "The pickup, or the inventory icon it goes into.",
               "enum": "catalog.objects",
-              "name": "object",
+              "name": "object_id",
               "type": "integer"
             }
           ],
@@ -5577,7 +5577,7 @@
             {
               "description": "The pickup, or the inventory icon it goes into.",
               "enum": "catalog.objects",
-              "name": "object",
+              "name": "object_id",
               "type": "integer"
             }
           ],
@@ -5592,7 +5592,7 @@
             {
               "description": "The pickup, or the inventory icon it goes into.",
               "enum": "catalog.objects",
-              "name": "object",
+              "name": "object_id",
               "type": "integer"
             }
           ],
@@ -5633,7 +5633,7 @@
             {
               "description": "The pickup, or the inventory icon it goes into.",
               "enum": "catalog.objects",
-              "name": "object",
+              "name": "object_id",
               "type": "integer"
             },
             {
@@ -5655,7 +5655,7 @@
             {
               "description": "The pickup, or the inventory icon it goes into.",
               "enum": "catalog.objects",
-              "name": "object",
+              "name": "object_id",
               "type": "integer"
             }
           ],
@@ -5685,7 +5685,7 @@
             {
               "description": "The pickup, or the inventory icon it goes into.",
               "enum": "catalog.objects",
-              "name": "object",
+              "name": "object_id",
               "type": "integer"
             }
           ],
@@ -5703,7 +5703,7 @@
             {
               "description": "The pickup, or the inventory icon it goes into.",
               "enum": "catalog.objects",
-              "name": "object",
+              "name": "object_id",
               "type": "integer"
             },
             {
@@ -5755,7 +5755,7 @@
             {
               "description": "The pickup, or the inventory icon it goes into.",
               "enum": "catalog.objects",
-              "name": "object",
+              "name": "object_id",
               "type": "integer"
             },
             {
@@ -5795,8 +5795,8 @@
       ],
       "fields": [
         {
-          "description": "Object-relative animation number, 0-indexed.",
-          "name": "anim",
+          "description": "The animation's number within the object, counted from 0.",
+          "name": "anim_num",
           "type": "integer",
           "writable": true
         },
@@ -5819,8 +5819,8 @@
           "writable": true
         },
         {
-          "description": "Object-relative frame number, 0-indexed. Negative values count back from the end.",
-          "name": "frame",
+          "description": "The frame's number within the animation, counted from 0. Negative values count back from the end.",
+          "name": "frame_num",
           "type": "integer",
           "writable": true
         },
@@ -5841,12 +5841,6 @@
           "name": "hit_points",
           "type": "integer",
           "writable": true
-        },
-        {
-          "description": "The index `trx.items[i]` takes, counted from 0. An item handed over by a query can say where it lives.",
-          "name": "index",
-          "type": "integer",
-          "writable": false
         },
         {
           "description": "Whether the item is a living creature with hit points remaining.",
@@ -5937,6 +5931,12 @@
           "name": "name",
           "type": "string",
           "writable": true
+        },
+        {
+          "description": "0-based item number, matching the numbers level editors show. An item handed over by a query can say where it lives.",
+          "name": "num",
+          "type": "integer",
+          "writable": false
         },
         {
           "description": "The item's object type.",

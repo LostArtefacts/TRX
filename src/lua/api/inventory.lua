@@ -18,7 +18,7 @@ has.]],
 })
 
 local object_param = {
-  name = "object",
+  name = "object_id",
   type = "integer",
   enum = "catalog.objects",
   description = "The pickup, or the inventory icon it goes into.",

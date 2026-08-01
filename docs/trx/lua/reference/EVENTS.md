@@ -142,15 +142,15 @@ An event that carries a default the script may take over says so in its descript
   - **`callback`** (function).
     Called with:
     - **`item`** (Item). The `trx.items.Item` that changed rooms.
-    - **`old_room`** (integer). 0-based number of the room it left, or -1 if it had none.
-    - **`new_room`** (integer). 0-based number of the room it entered, or -1 if it left the world.
+    - **`old_room_num`** (integer). 0-based room number, matching the numbers level editors show. -1 if it had none.
+    - **`new_room_num`** (integer). 0-based room number, matching the numbers level editors show. -1 if it left the world.
 
   Returns: events.Listener. The attached handler.
 
   Example:
   ```lua
-  trx.events.on_room_change(function(item, old_room, new_room)
-    trx.log.info(item.object_id .. " moved to room " .. new_room)
+  trx.events.on_room_change(function(item, old_room_num, new_room_num)
+    trx.log.info(item.object_id .. " moved to room " .. new_room_num)
   end)
   ```
 
@@ -436,15 +436,15 @@ An event that carries a default the script may take over says so in its descript
   Parameters:
   - **`callback`** (function).
     Called with:
-    - **`num`** (integer). Number the trigger names.
+    - **`cutscene_num`** (integer). Number the trigger names.
 
   Returns: events.Listener. The attached handler.
 
   Example:
   ```lua
   -- only in the throne room; a flyby stands in for it elsewhere
-  trx.events.on_cutscene_trigger(function(num)
-    if num ~= 27 then
+  trx.events.on_cutscene_trigger(function(cutscene_num)
+    if cutscene_num ~= 27 then
       return false
     end
     if trx.lara.item.room_num == 55 then
@@ -462,7 +462,7 @@ An event that carries a default the script may take over says so in its descript
   Parameters:
   - **`callback`** (function).
     Called with:
-    - **`num`** (integer). Number of the cutscene starting.
+    - **`cutscene_num`** (integer). Number of the cutscene starting.
 
   Returns: events.Listener. The attached handler.
 
@@ -472,14 +472,14 @@ An event that carries a default the script may take over says so in its descript
   Parameters:
   - **`callback`** (function).
     Called with:
-    - **`num`** (integer). Number of the cutscene that ended.
+    - **`cutscene_num`** (integer). Number of the cutscene that ended.
 
   Returns: events.Listener. The attached handler.
 
   Example:
   ```lua
-  trx.events.on_cutscene_end(function(num)
-    trx.log.info("cutscene " .. num .. " finished")
+  trx.events.on_cutscene_end(function(cutscene_num)
+    trx.log.info("cutscene " .. cutscene_num .. " finished")
   end)
   ```
 
@@ -490,14 +490,14 @@ An event that carries a default the script may take over says so in its descript
   Parameters:
   - **`callback`** (function).
     Called with:
-    - **`sequence`** (integer). Number of the sequence that ended.
+    - **`sequence_num`** (integer). Number of the flyby sequence that ended.
 
   Returns: events.Listener. The attached handler.
 
   Example:
   ```lua
-  trx.events.on_flyby_end(function(sequence)
-    trx.camera.play_flyby(sequence)
+  trx.events.on_flyby_end(function(sequence_num)
+    trx.camera.play_flyby(sequence_num)
   end)
   ```
 

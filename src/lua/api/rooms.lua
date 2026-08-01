@@ -16,9 +16,9 @@ local function room_hook(pick_room)
       error('watch must be "lara" or "all"', 2)
     end
     local num = room.num
-    return trx.events.on_room_change(function(item, old_room, new_room)
+    return trx.events.on_room_change(function(item, old_room_num, new_room_num)
       if
-        pick_room(old_room, new_room) == num
+        pick_room(old_room_num, new_room_num) == num
         and (watch == "all" or item == trx.lara.item)
       then
         callback(item)
@@ -103,7 +103,7 @@ api.type("rooms.Room", {
 
   fields = {
     num = {
-      from = "room_index",
+      from = "room_num",
       type = "integer",
       writable = false,
       description = "0-based room number, matching the numbers level editors show.",
@@ -156,16 +156,16 @@ api.type("rooms.Room", {
   trx.log.info("entered room 7")
 end)]],
       },
-      impl = room_hook(function(old_room, new_room)
-        return new_room
+      impl = room_hook(function(old_room_num, new_room_num)
+        return new_room_num
       end),
     },
     on_exit = {
       params = ROOM_HOOK_PARAMS,
       returns = ROOM_LISTENER,
       description = "Happens when something changes rooms out of this one.",
-      impl = room_hook(function(old_room, new_room)
-        return old_room
+      impl = room_hook(function(old_room_num, new_room_num)
+        return old_room_num
       end),
     },
     is_valid = {
@@ -234,8 +234,7 @@ api.note(
 )
 
 api.define("rooms.get", {
-  description = "Retrieves a room by number. Rooms count from zero, matching the "
-    .. "room numbers level editors show.",
+  description = "Retrieves a room by number.",
   params = {
     { name = "num", type = "integer", see = "rooms.num" },
   },

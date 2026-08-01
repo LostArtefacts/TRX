@@ -12,9 +12,9 @@ local CYCLE = {
 -- title.tr4 numbers its flyby sequences from 1; sequence 0 has no cameras.
 local FIRST_FLYBY = 1
 
-local function cycle_step(num)
+local function cycle_step(cutscene_num)
   for index, step in ipairs(CYCLE) do
-    if step.cutscene == num then
+    if step.cutscene == cutscene_num then
       return step, index
     end
   end
@@ -29,8 +29,8 @@ local DOORS = trx.catalog.objects.animating_6
 
 local function rewind_doors()
   for _, item in ipairs(trx.items.query:of_object(DOORS):matches()) do
-    item.anim = 0
-    item.frame = 0
+    item.anim_num = 0
+    item.frame_num = 0
     item.trigger_mask = 0
   end
 end
@@ -67,21 +67,21 @@ end)
 
 -- The menu always needs a camera of its own, so a sequence that runs out
 -- without a cutscene to follow it plays again.
-trx.events.on_flyby_end(function(sequence)
-  trx.camera.play_flyby(sequence)
+trx.events.on_flyby_end(function(sequence_num)
+  trx.camera.play_flyby(sequence_num)
 end)
 
-trx.events.on_cutscene_start(function(num)
+trx.events.on_cutscene_start(function(cutscene_num)
   set_lara_visible(true)
-  if num == CYCLE[1].cutscene then
+  if cutscene_num == CYCLE[1].cutscene then
     rewind_doors()
   end
 end)
 
-trx.events.on_cutscene_end(function(num)
+trx.events.on_cutscene_end(function(cutscene_num)
   set_lara_visible(false)
 
-  local step, index = cycle_step(num)
+  local step, index = cycle_step(cutscene_num)
   if step == nil then
     return
   end
