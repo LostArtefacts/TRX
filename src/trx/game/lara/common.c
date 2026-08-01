@@ -817,8 +817,7 @@ bool Lara_MovePositionEx(
     const int16_t extra_y_rot)
 {
     LARA_INFO *const lara_info = Lara_GetLaraInfo();
-    const bool walk_to_items = g_Config.gameplay.enable_walk_to_items
-        && ref_item->object_id != O_FLARE_ITEM;
+    const bool walk_to_items = g_Config.gameplay.enable_walk_to_items;
     const bool lara_on_land = lara_info->water_status != LWS_UNDERWATER
         && lara_info->water_status != LWS_CHEAT;
     const int32_t velocity =
@@ -848,9 +847,14 @@ bool Lara_MovePositionEx(
         const SECTOR *const sector = Room_GetSector(new_pos, &room_num);
         const int32_t height = Room_GetHeight(sector, new_pos);
         if (ABS(height - lara_item->pos.y) > STEP_L * 2) {
+            if (lara_info->interact_target.is_moving) {
+                lara_info->interact_target.is_moving = false;
+                lara_info->gun_status = LGS_ARMLESS;
+            }
             return false;
         }
-        if (XYZ_32_GetDistance(new_pos, lara_item->pos) < STEP_L) {
+        const int32_t max_dist = STEP_L / (walk_to_items ? 2 : 1);
+        if (XYZ_32_GetDistance(new_pos, lara_item->pos) < max_dist) {
             return true;
         }
     }
