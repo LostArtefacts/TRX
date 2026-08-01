@@ -104,7 +104,7 @@ end
         - **`item`** (Item). The `trx.items.Item` that changed rooms.
       - **`opts`** (table, optional). Options. `watch = "lara"` (the default) reacts to Lara alone; `watch = "all"` to every item.
 
-      Returns: integer. Listener id. Pass it to `trx.events.detach` to stop listening.
+      Returns: events.Listener. The attached handler.
 
       Example:
       ```lua
@@ -122,7 +122,7 @@ end
         - **`item`** (Item). The `trx.items.Item` that changed rooms.
       - **`opts`** (table, optional). Options. `watch = "lara"` (the default) reacts to Lara alone; `watch = "all"` to every item.
 
-      Returns: integer. Listener id. Pass it to `trx.events.detach` to stop listening.
+      Returns: events.Listener. The attached handler.
 
 ### Functions
 

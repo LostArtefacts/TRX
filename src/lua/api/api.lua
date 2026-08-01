@@ -59,8 +59,13 @@ local namespaces = ordered()
 -- metatable so api.strict can swap the wrapper in.
 local namespace_dispatch = {}
 -- Type name -> predicate. Private: reachable, a script could hand strict mode a
--- checker that accepts anything.
+-- checker that accepts anything. A type answers to its bare name and to its
+-- full path alike, so a declaration in another module can say which Listener it
+-- means.
 local checkers
+-- Bare type name -> the path that claimed it, so two modules cannot quietly
+-- declare the same name and have the later one answer for both.
+local checker_paths = {}
 local containers = ordered()
 -- module -> { get, count, accepts }. What indexing the module table reaches.
 local module_containers = {}
@@ -422,6 +427,23 @@ end
 -- A value of a type written in Lua carries its class as its metatable, and a
 -- derived class carries the one it extends. Walking that chain is what lets an
 -- ItemQuery satisfy a parameter declared as a Query.
+-- A type answers to its path always, and to its bare name while that name means
+-- one type. Two modules with a type of the same name - music.Stream and
+-- sound.Stream - leave the bare name meaning neither, so a declaration that
+-- used it stops checking rather than checking against whichever module declared
+-- last, and says as much at boot.
+local function register_checker(path, type_name, check)
+  local claimed = checker_paths[type_name]
+  if claimed ~= nil and claimed ~= path then
+    checkers[type_name] = nil
+    checker_paths[type_name] = false
+  elseif claimed == nil then
+    checker_paths[type_name] = path
+    checkers[type_name] = check
+  end
+  checkers[path] = check
+end
+
 local function class_checker(class)
   return function(v)
     local candidate = getmetatable(v)
@@ -859,7 +881,7 @@ function api.type(path, spec)
     end
 
     lua_classes[path] = class
-    checkers[type_name] = class_checker(class)
+    register_checker(path, type_name, class_checker(class))
     record(types, path, spec)
     bind_type_methods(path)
     return class
@@ -872,7 +894,7 @@ function api.type(path, spec)
   local backing = spec.backing
 
   -- Declaring the type is what makes its name checkable in a params list.
-  checkers[type_name] = handle_checker(backing)
+  register_checker(path, type_name, handle_checker(backing))
 
   for name, field in pairs(spec.fields or {}) do
     local from = field.from or name

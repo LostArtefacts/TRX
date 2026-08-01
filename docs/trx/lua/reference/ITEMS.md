@@ -194,7 +194,7 @@ end
         Called with:
         - **`item`** (Item). This item.
 
-      Returns: integer. Listener id. Pass it to `trx.events.detach` to stop listening.
+      Returns: events.Listener. The attached handler.
 
       Example:
       ```lua
@@ -211,7 +211,7 @@ end
         Called with:
         - **`item`** (Item). This item.
 
-      Returns: integer. Listener id. Pass it to `trx.events.detach` to stop listening.
+      Returns: events.Listener. The attached handler.
 
       Example:
       ```lua
@@ -228,7 +228,7 @@ end
         Called with:
         - **`item`** (Item). This item.
 
-      Returns: integer. Listener id. Pass it to `trx.events.detach` to stop listening.
+      Returns: events.Listener. The attached handler.
 
       Example:
       ```lua
@@ -245,7 +245,7 @@ end
         Called with:
         - **`item`** (Item). This item.
 
-      Returns: integer. Listener id. Pass it to `trx.events.detach` to stop listening.
+      Returns: events.Listener. The attached handler.
 
       Example:
       ```lua
@@ -262,7 +262,7 @@ end
         Called with:
         - **`item`** (Item). This item.
 
-      Returns: integer. Listener id. Pass it to `trx.events.detach` to stop listening.
+      Returns: events.Listener. The attached handler.
 
       Example:
       ```lua
@@ -279,7 +279,7 @@ end
         Called with:
         - **`item`** (Item). This item.
 
-      Returns: integer. Listener id. Pass it to `trx.events.detach` to stop listening.
+      Returns: events.Listener. The attached handler.
 
       Example:
       ```lua
@@ -296,7 +296,7 @@ end
         Called with:
         - **`item`** (Item). This item.
 
-      Returns: integer. Listener id. Pass it to `trx.events.detach` to stop listening.
+      Returns: events.Listener. The attached handler.
 
       Example:
       ```lua
@@ -314,7 +314,7 @@ end
         - **`item`** (Item). This item.
         - **`damage`** (integer). Hit points taken, before clamping to zero.
 
-      Returns: integer. Listener id. Pass it to `trx.events.detach` to stop listening.
+      Returns: events.Listener. The attached handler.
 
       Example:
       ```lua
@@ -331,7 +331,7 @@ end
         Called with:
         - **`item`** (Item). This item.
 
-      Returns: integer. Listener id. Pass it to `trx.events.detach` to stop listening.
+      Returns: events.Listener. The attached handler.
 
       Example:
       ```lua
@@ -348,7 +348,7 @@ end
         Called with:
         - **`item`** (Item). This item.
 
-      Returns: integer. Listener id. Pass it to `trx.events.detach` to stop listening.
+      Returns: events.Listener. The attached handler.
 
       Example:
       ```lua
@@ -365,7 +365,7 @@ end
         Called with:
         - **`item`** (Item). This item.
 
-      Returns: integer. Listener id. Pass it to `trx.events.detach` to stop listening.
+      Returns: events.Listener. The attached handler.
 
       Example:
       ```lua
@@ -382,7 +382,7 @@ end
         Called with:
         - **`item`** (Item). This item.
 
-      Returns: integer. Listener id. Pass it to `trx.events.detach` to stop listening.
+      Returns: events.Listener. The attached handler.
 
       Example:
       ```lua
@@ -400,7 +400,7 @@ end
         - **`item`** (Item). This item.
         - **`trigger`** (table). What the trigger carried: `type`, `mask`, `timer` and `one_shot`. See `trx.events.on_trigger`.
 
-      Returns: integer. Listener id. Pass it to `trx.events.detach` to stop listening.
+      Returns: events.Listener. The attached handler.
 
       Example:
       ```lua

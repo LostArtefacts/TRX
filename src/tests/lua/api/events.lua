@@ -10,7 +10,7 @@ local test, raises = h.test, h.raises
 
 test("a handler fires, and stops firing once detached", function()
   local calls = 0
-  local id = trx.events.before_control(function()
+  local listener = trx.events.before_control(function()
     calls = calls + 1
   end)
 
@@ -18,17 +18,49 @@ test("a handler fires, and stops firing once detached", function()
   fake.fire("before_control")
   assert(calls == 2, "handler did not fire twice")
 
-  assert(trx.events.detach(id) == true, "detach must report the removal")
+  assert(trx.events.detach(listener) == true, "detach must report the removal")
   fake.fire("before_control")
   assert(calls == 2, "a detached handler kept firing")
 end)
 
-test("detaching twice reports that there was nothing to remove", function()
-  local id = trx.events.after_control(function() end)
-  assert(trx.events.detach(id) == true)
-  assert(trx.events.detach(id) == false, "the second detach must report false")
-  assert(trx.events.detach(99999) == false, "an id never handed out")
+test("a listener detaches itself as well", function()
+  local calls = 0
+  local listener = trx.events.before_control(function()
+    calls = calls + 1
+  end)
+
+  fake.fire("before_control")
+  assert(listener:detach() == true, "the method must report the removal")
+  fake.fire("before_control")
+  assert(calls == 1, "a detached handler kept firing")
 end)
+
+test("detaching twice reports that there was nothing to remove", function()
+  local listener = trx.events.after_control(function() end)
+  assert(trx.events.detach(listener) == true)
+  assert(
+    trx.events.detach(listener) == false,
+    "the second detach must report false"
+  )
+  assert(listener:detach() == false, "and so must the method")
+end)
+
+test(
+  "a listener says which handler it is, and refuses to be edited",
+  function()
+    local listener = trx.events.after_control(function() end)
+    assert(
+      math.type(listener.id) == "integer",
+      "a listener knows its own number"
+    )
+    raises(function()
+      listener.id = 1
+    end, "read-only")
+    raises(function()
+      listener.whatever = 1
+    end)
+  end
+)
 
 test("the control events pass no arguments", function()
   local seen = "unset"

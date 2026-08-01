@@ -106,7 +106,7 @@ api.type("music.Track", {
         },
       },
       returns = {
-        type = "Stream",
+        type = "music.Stream",
         nullable = true,
         description = "The stream it started, or `nil` if none did.",
       },
@@ -231,7 +231,7 @@ api.define("music.play", {
     },
   },
   returns = {
-    type = "Stream",
+    type = "music.Stream",
     nullable = true,
     description = "The stream it started, or `nil` if none did.",
   },

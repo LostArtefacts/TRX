@@ -18,6 +18,22 @@ A handler attached from a level script is detached automatically when the level 
 
 An event that carries a default the script may take over says so in its description; a handler answers such an event by returning true, and the default then stands down. Every other event ignores what its handlers return.
 
+### Structures
+
+- [lua]`trx.events.Listener`
+
+    An attached handler. Every hook hands one back, and holding it is what makes the handler detachable later. A listener is spent once detached, and a level change spends every one a level script attached.
+
+    Properties:
+    - **`id`**: integer. The number the engine keys the handler by. Two listeners of the same handler carry the same one; it is never handed out twice within a session. *(read-only)*
+
+    Methods:
+
+    - [lua]`listener:detach()`  
+      Stops the handler, which fires no more from here on. `trx.events.detach` does the same to a listener held elsewhere.
+
+      Returns: boolean. Whether the handler was still attached.
+
 ### Functions
 
 - [lua]`trx.events.on_game_start(callback)`  
@@ -35,7 +51,7 @@ An event that carries a default the script may take over says so in its descript
     - **`level_num`** (integer). Number of the level being started.
     - **`is_save`** (boolean). Whether the level is being resumed from a savegame rather than started fresh.
 
-  Returns: integer. Listener id. Pass it to `trx.events.detach` to stop listening.
+  Returns: events.Listener. The attached handler.
 
 - [lua]`trx.events.on_title_start(callback)`  
       Happens when the title screen's scene starts playing behind the menu, once
@@ -46,7 +62,7 @@ An event that carries a default the script may take over says so in its descript
   Parameters:
   - **`callback`** (function).
 
-  Returns: integer. Listener id. Pass it to `trx.events.detach` to stop listening.
+  Returns: events.Listener. The attached handler.
 
   Example:
   ```lua
@@ -63,7 +79,7 @@ An event that carries a default the script may take over says so in its descript
     Called with:
     - **`item_num`** (integer). 0-based index of the item that was picked up.
 
-  Returns: integer. Listener id. Pass it to `trx.events.detach` to stop listening.
+  Returns: events.Listener. The attached handler.
 
   Example:
   ```lua
@@ -78,7 +94,7 @@ An event that carries a default the script may take over says so in its descript
   Parameters:
   - **`callback`** (function).
 
-  Returns: integer. Listener id. Pass it to `trx.events.detach` to stop listening.
+  Returns: events.Listener. The attached handler.
 
 - [lua]`trx.events.after_control(callback)`  
   Happens on every logical game frame, after the main game logic runs. The handler takes no arguments.
@@ -86,7 +102,7 @@ An event that carries a default the script may take over says so in its descript
   Parameters:
   - **`callback`** (function).
 
-  Returns: integer. Listener id. Pass it to `trx.events.detach` to stop listening.
+  Returns: events.Listener. The attached handler.
 
 - [lua]`trx.events.on_flip_effect(effect_num, callback)`  
   Claims a flip effect number and happens whenever a level runs it, whether from a floor trigger or an animation command. Place an ordinary flipeffect trigger in a level editor - pad, heavy, switch and antitrigger all work - pick an unused effect number, and handle it here from the level's script.
@@ -102,7 +118,7 @@ An event that carries a default the script may take over says so in its descript
     - **`timer`** (integer). A floor trigger's timer field, free for the level to use as a parameter. 0 for an animation command, which carries no timer.
     - **`item_num`** (integer). 0-based index of the item that ran the effect: Lara for a pad trigger, the activating object for a heavy trigger, the animating item for an animation command.
 
-  Returns: integer. Listener id. Pass it to `trx.events.detach` to stop listening.
+  Returns: events.Listener. The attached handler.
 
   Example:
   ```lua
@@ -121,7 +137,7 @@ An event that carries a default the script may take over says so in its descript
     - **`old_room`** (integer). 0-based number of the room it left, or -1 if it had none.
     - **`new_room`** (integer). 0-based number of the room it entered, or -1 if it left the world.
 
-  Returns: integer. Listener id. Pass it to `trx.events.detach` to stop listening.
+  Returns: events.Listener. The attached handler.
 
   Example:
   ```lua
@@ -143,7 +159,7 @@ An event that carries a default the script may take over says so in its descript
     - **`item`** (Item). The `trx.items.Item` the trigger was aimed at.
     - **`trigger`** (table). What the trigger carried: `type` (an `items.TriggerType`), `mask` (the code bits it set, `1` to `31`), `timer` (in seconds), and `one_shot`.
 
-  Returns: integer. Listener id. Pass it to `trx.events.detach` to stop listening.
+  Returns: events.Listener. The attached handler.
 
   Example:
   ```lua
@@ -164,7 +180,7 @@ An event that carries a default the script may take over says so in its descript
     Called with:
     - **`item`** (Item). The `trx.items.Item` that became visible.
 
-  Returns: integer. Listener id. Pass it to `trx.events.detach` to stop listening.
+  Returns: events.Listener. The attached handler.
 
   Example:
   ```lua
@@ -183,7 +199,7 @@ An event that carries a default the script may take over says so in its descript
     Called with:
     - **`item`** (Item). The `trx.items.Item` that became hidden.
 
-  Returns: integer. Listener id. Pass it to `trx.events.detach` to stop listening.
+  Returns: events.Listener. The attached handler.
 
   Example:
   ```lua
@@ -202,7 +218,7 @@ An event that carries a default the script may take over says so in its descript
     Called with:
     - **`item`** (Item). The `trx.items.Item` that finished.
 
-  Returns: integer. Listener id. Pass it to `trx.events.detach` to stop listening.
+  Returns: events.Listener. The attached handler.
 
   Example:
   ```lua
@@ -221,7 +237,7 @@ An event that carries a default the script may take over says so in its descript
     Called with:
     - **`item`** (Item). The `trx.items.Item` that started being simulated.
 
-  Returns: integer. Listener id. Pass it to `trx.events.detach` to stop listening.
+  Returns: events.Listener. The attached handler.
 
   Example:
   ```lua
@@ -240,7 +256,7 @@ An event that carries a default the script may take over says so in its descript
     Called with:
     - **`item`** (Item). The `trx.items.Item` that stopped being simulated.
 
-  Returns: integer. Listener id. Pass it to `trx.events.detach` to stop listening.
+  Returns: events.Listener. The attached handler.
 
   Example:
   ```lua
@@ -259,7 +275,7 @@ An event that carries a default the script may take over says so in its descript
     Called with:
     - **`item`** (Item). The `trx.items.Item` that was activated.
 
-  Returns: integer. Listener id. Pass it to `trx.events.detach` to stop listening.
+  Returns: events.Listener. The attached handler.
 
   Example:
   ```lua
@@ -278,7 +294,7 @@ An event that carries a default the script may take over says so in its descript
     Called with:
     - **`item`** (Item). The `trx.items.Item` that was deactivated.
 
-  Returns: integer. Listener id. Pass it to `trx.events.detach` to stop listening.
+  Returns: events.Listener. The attached handler.
 
   Example:
   ```lua
@@ -297,7 +313,7 @@ An event that carries a default the script may take over says so in its descript
     Called with:
     - **`item`** (Item). The `trx.items.Item` being removed. Valid only for the duration of the handler.
 
-  Returns: integer. Listener id. Pass it to `trx.events.detach` to stop listening.
+  Returns: events.Listener. The attached handler.
 
   Example:
   ```lua
@@ -316,7 +332,7 @@ An event that carries a default the script may take over says so in its descript
     Called with:
     - **`item`** (Item). The `trx.items.Item` that entered the world.
 
-  Returns: integer. Listener id. Pass it to `trx.events.detach` to stop listening.
+  Returns: events.Listener. The attached handler.
 
   Example:
   ```lua
@@ -335,7 +351,7 @@ An event that carries a default the script may take over says so in its descript
     Called with:
     - **`item`** (Item). The `trx.items.Item` that left the world.
 
-  Returns: integer. Listener id. Pass it to `trx.events.detach` to stop listening.
+  Returns: events.Listener. The attached handler.
 
   Example:
   ```lua
@@ -358,7 +374,7 @@ An event that carries a default the script may take over says so in its descript
     - **`item`** (Item). The `trx.items.Item` that took the damage.
     - **`damage`** (integer). Hit points taken, before clamping to zero.
 
-  Returns: integer. Listener id. Pass it to `trx.events.detach` to stop listening.
+  Returns: events.Listener. The attached handler.
 
   Example:
   ```lua
@@ -384,7 +400,7 @@ An event that carries a default the script may take over says so in its descript
     Called with:
     - **`item`** (Item). The `trx.items.Item` that was brought down.
 
-  Returns: integer. Listener id. Pass it to `trx.events.detach` to stop listening.
+  Returns: events.Listener. The attached handler.
 
   Example:
   ```lua
@@ -415,7 +431,7 @@ An event that carries a default the script may take over says so in its descript
     Called with:
     - **`num`** (integer). Number the trigger names.
 
-  Returns: integer. Listener id. Pass it to `trx.events.detach` to stop listening.
+  Returns: events.Listener. The attached handler.
 
   Example:
   ```lua
@@ -441,7 +457,7 @@ An event that carries a default the script may take over says so in its descript
     Called with:
     - **`num`** (integer). Number of the cutscene starting.
 
-  Returns: integer. Listener id. Pass it to `trx.events.detach` to stop listening.
+  Returns: events.Listener. The attached handler.
 
 - [lua]`trx.events.on_cutscene_end(callback)`  
   Happens once a TR4 cutscene has finished and the scene it interrupted is back. This is where a script decides what follows.
@@ -451,7 +467,7 @@ An event that carries a default the script may take over says so in its descript
     Called with:
     - **`num`** (integer). Number of the cutscene that ended.
 
-  Returns: integer. Listener id. Pass it to `trx.events.detach` to stop listening.
+  Returns: events.Listener. The attached handler.
 
   Example:
   ```lua
@@ -469,7 +485,7 @@ An event that carries a default the script may take over says so in its descript
     Called with:
     - **`sequence`** (integer). Number of the sequence that ended.
 
-  Returns: integer. Listener id. Pass it to `trx.events.detach` to stop listening.
+  Returns: events.Listener. The attached handler.
 
   Example:
   ```lua
@@ -478,18 +494,18 @@ An event that carries a default the script may take over says so in its descript
   end)
   ```
 
-- [lua]`trx.events.detach(listener_id)`  
-  Removes a previously attached handler, which stops firing immediately.
+- [lua]`trx.events.detach(listener)`  
+  Removes a previously attached handler, which stops firing immediately. `listener:detach()` does the same to one held in hand.
 
   Parameters:
-  - **`listener_id`** (integer). The id attach returned.
+  - **`listener`** (events.Listener).
 
-  Returns: boolean. Whether a handler with that id was attached. `false` means it had already been detached, or the id was never handed out.
+  Returns: boolean. Whether the handler was still attached. `false` means it had already been detached, or the level it belonged to has ended.
 
   Example:
   ```lua
-  local id = trx.events.before_control(function()
+  local listener = trx.events.before_control(function()
     -- handle control loop event
   end)
-  trx.events.detach(id)
+  trx.events.detach(listener)
   ```

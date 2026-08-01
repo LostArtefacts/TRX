@@ -3306,8 +3306,8 @@
       ],
       "path": "events.on_game_start",
       "returns": {
-        "description": "Listener id. Pass it to `trx.events.detach` to stop listening.",
-        "type": "integer"
+        "description": "The attached handler.",
+        "type": "events.Listener"
       }
     },
     {
@@ -3323,8 +3323,8 @@
       ],
       "path": "events.on_title_start",
       "returns": {
-        "description": "Listener id. Pass it to `trx.events.detach` to stop listening.",
-        "type": "integer"
+        "description": "The attached handler.",
+        "type": "events.Listener"
       }
     },
     {
@@ -3347,8 +3347,8 @@
       ],
       "path": "events.on_pickup",
       "returns": {
-        "description": "Listener id. Pass it to `trx.events.detach` to stop listening.",
-        "type": "integer"
+        "description": "The attached handler.",
+        "type": "events.Listener"
       }
     },
     {
@@ -3361,8 +3361,8 @@
       ],
       "path": "events.before_control",
       "returns": {
-        "description": "Listener id. Pass it to `trx.events.detach` to stop listening.",
-        "type": "integer"
+        "description": "The attached handler.",
+        "type": "events.Listener"
       }
     },
     {
@@ -3375,8 +3375,8 @@
       ],
       "path": "events.after_control",
       "returns": {
-        "description": "Listener id. Pass it to `trx.events.detach` to stop listening.",
-        "type": "integer"
+        "description": "The attached handler.",
+        "type": "events.Listener"
       }
     },
     {
@@ -3409,8 +3409,8 @@
       ],
       "path": "events.on_flip_effect",
       "returns": {
-        "description": "Listener id. Pass it to `trx.events.detach` to stop listening.",
-        "type": "integer"
+        "description": "The attached handler.",
+        "type": "events.Listener"
       }
     },
     {
@@ -3443,8 +3443,8 @@
       ],
       "path": "events.on_room_change",
       "returns": {
-        "description": "Listener id. Pass it to `trx.events.detach` to stop listening.",
-        "type": "integer"
+        "description": "The attached handler.",
+        "type": "events.Listener"
       }
     },
     {
@@ -3472,8 +3472,8 @@
       ],
       "path": "events.on_trigger",
       "returns": {
-        "description": "Listener id. Pass it to `trx.events.detach` to stop listening.",
-        "type": "integer"
+        "description": "The attached handler.",
+        "type": "events.Listener"
       }
     },
     {
@@ -3496,8 +3496,8 @@
       ],
       "path": "events.on_show",
       "returns": {
-        "description": "Listener id. Pass it to `trx.events.detach` to stop listening.",
-        "type": "integer"
+        "description": "The attached handler.",
+        "type": "events.Listener"
       }
     },
     {
@@ -3520,8 +3520,8 @@
       ],
       "path": "events.on_hide",
       "returns": {
-        "description": "Listener id. Pass it to `trx.events.detach` to stop listening.",
-        "type": "integer"
+        "description": "The attached handler.",
+        "type": "events.Listener"
       }
     },
     {
@@ -3544,8 +3544,8 @@
       ],
       "path": "events.on_finish",
       "returns": {
-        "description": "Listener id. Pass it to `trx.events.detach` to stop listening.",
-        "type": "integer"
+        "description": "The attached handler.",
+        "type": "events.Listener"
       }
     },
     {
@@ -3568,8 +3568,8 @@
       ],
       "path": "events.on_enter_sim",
       "returns": {
-        "description": "Listener id. Pass it to `trx.events.detach` to stop listening.",
-        "type": "integer"
+        "description": "The attached handler.",
+        "type": "events.Listener"
       }
     },
     {
@@ -3592,8 +3592,8 @@
       ],
       "path": "events.on_leave_sim",
       "returns": {
-        "description": "Listener id. Pass it to `trx.events.detach` to stop listening.",
-        "type": "integer"
+        "description": "The attached handler.",
+        "type": "events.Listener"
       }
     },
     {
@@ -3616,8 +3616,8 @@
       ],
       "path": "events.on_activate",
       "returns": {
-        "description": "Listener id. Pass it to `trx.events.detach` to stop listening.",
-        "type": "integer"
+        "description": "The attached handler.",
+        "type": "events.Listener"
       }
     },
     {
@@ -3640,8 +3640,8 @@
       ],
       "path": "events.on_deactivate",
       "returns": {
-        "description": "Listener id. Pass it to `trx.events.detach` to stop listening.",
-        "type": "integer"
+        "description": "The attached handler.",
+        "type": "events.Listener"
       }
     },
     {
@@ -3664,8 +3664,8 @@
       ],
       "path": "events.on_destroy",
       "returns": {
-        "description": "Listener id. Pass it to `trx.events.detach` to stop listening.",
-        "type": "integer"
+        "description": "The attached handler.",
+        "type": "events.Listener"
       }
     },
     {
@@ -3688,8 +3688,8 @@
       ],
       "path": "events.on_enter_world",
       "returns": {
-        "description": "Listener id. Pass it to `trx.events.detach` to stop listening.",
-        "type": "integer"
+        "description": "The attached handler.",
+        "type": "events.Listener"
       }
     },
     {
@@ -3712,8 +3712,8 @@
       ],
       "path": "events.on_leave_world",
       "returns": {
-        "description": "Listener id. Pass it to `trx.events.detach` to stop listening.",
-        "type": "integer"
+        "description": "The attached handler.",
+        "type": "events.Listener"
       }
     },
     {
@@ -3741,8 +3741,8 @@
       ],
       "path": "events.on_hit",
       "returns": {
-        "description": "Listener id. Pass it to `trx.events.detach` to stop listening.",
-        "type": "integer"
+        "description": "The attached handler.",
+        "type": "events.Listener"
       }
     },
     {
@@ -3765,8 +3765,8 @@
       ],
       "path": "events.on_kill",
       "returns": {
-        "description": "Listener id. Pass it to `trx.events.detach` to stop listening.",
-        "type": "integer"
+        "description": "The attached handler.",
+        "type": "events.Listener"
       }
     },
     {
@@ -3789,8 +3789,8 @@
       ],
       "path": "events.on_cutscene_trigger",
       "returns": {
-        "description": "Listener id. Pass it to `trx.events.detach` to stop listening.",
-        "type": "integer"
+        "description": "The attached handler.",
+        "type": "events.Listener"
       }
     },
     {
@@ -3810,8 +3810,8 @@
       ],
       "path": "events.on_cutscene_start",
       "returns": {
-        "description": "Listener id. Pass it to `trx.events.detach` to stop listening.",
-        "type": "integer"
+        "description": "The attached handler.",
+        "type": "events.Listener"
       }
     },
     {
@@ -3834,8 +3834,8 @@
       ],
       "path": "events.on_cutscene_end",
       "returns": {
-        "description": "Listener id. Pass it to `trx.events.detach` to stop listening.",
-        "type": "integer"
+        "description": "The attached handler.",
+        "type": "events.Listener"
       }
     },
     {
@@ -3858,25 +3858,24 @@
       ],
       "path": "events.on_flyby_end",
       "returns": {
-        "description": "Listener id. Pass it to `trx.events.detach` to stop listening.",
-        "type": "integer"
+        "description": "The attached handler.",
+        "type": "events.Listener"
       }
     },
     {
-      "description": "Removes a previously attached handler, which stops firing immediately.",
+      "description": "Removes a previously attached handler, which stops firing immediately. `listener:detach()` does the same to one held in hand.",
       "examples": [
-        "local id = trx.events.before_control(function()\n  -- handle control loop event\nend)\ntrx.events.detach(id)"
+        "local listener = trx.events.before_control(function()\n  -- handle control loop event\nend)\ntrx.events.detach(listener)"
       ],
       "params": [
         {
-          "description": "The id attach returned.",
-          "name": "listener_id",
-          "type": "integer"
+          "name": "listener",
+          "type": "events.Listener"
         }
       ],
       "path": "events.detach",
       "returns": {
-        "description": "Whether a handler with that id was attached. `false` means it had already been detached, or the id was never handed out.",
+        "description": "Whether the handler was still attached. `false` means it had already been detached, or the level it belonged to has ended.",
         "type": "boolean"
       }
     },
@@ -4355,7 +4354,7 @@
       "returns": {
         "description": "The stream it started, or `nil` if none did.",
         "nullable": true,
-        "type": "Stream"
+        "type": "music.Stream"
       }
     },
     {
@@ -4755,7 +4754,7 @@
       "returns": {
         "description": "The voice it started, or `nil` if none did.",
         "nullable": true,
-        "type": "Stream"
+        "type": "sound.Stream"
       }
     },
     {
@@ -5403,6 +5402,31 @@
     }
   ],
   "types": [
+    {
+      "description": "An attached handler. Every hook hands one back, and holding it is what makes the handler detachable later. A listener is spent once detached, and a level change spends every one a level script attached.",
+      "extensions": [],
+      "fields": [
+        {
+          "description": "The number the engine keys the handler by. Two listeners of the same handler carry the same one; it is never handed out twice within a session.",
+          "name": "id",
+          "type": "integer",
+          "writable": false
+        }
+      ],
+      "handle": false,
+      "methods": [
+        {
+          "description": "Stops the handler, which fires no more from here on. `trx.events.detach` does the same to a listener held elsewhere.",
+          "name": "detach",
+          "returns": {
+            "description": "Whether the handler was still attached.",
+            "type": "boolean"
+          }
+        }
+      ],
+      "operators": [],
+      "path": "events.Listener"
+    },
     {
       "description": "A level, as the game flow file declares it. Everything on it is read-only: a level is what the game flow says it is.",
       "extensions": [
@@ -6058,8 +6082,8 @@
             }
           ],
           "returns": {
-            "description": "Listener id. Pass it to `trx.events.detach` to stop listening.",
-            "type": "integer"
+            "description": "The attached handler.",
+            "type": "events.Listener"
           }
         },
         {
@@ -6082,8 +6106,8 @@
             }
           ],
           "returns": {
-            "description": "Listener id. Pass it to `trx.events.detach` to stop listening.",
-            "type": "integer"
+            "description": "The attached handler.",
+            "type": "events.Listener"
           }
         },
         {
@@ -6106,8 +6130,8 @@
             }
           ],
           "returns": {
-            "description": "Listener id. Pass it to `trx.events.detach` to stop listening.",
-            "type": "integer"
+            "description": "The attached handler.",
+            "type": "events.Listener"
           }
         },
         {
@@ -6130,8 +6154,8 @@
             }
           ],
           "returns": {
-            "description": "Listener id. Pass it to `trx.events.detach` to stop listening.",
-            "type": "integer"
+            "description": "The attached handler.",
+            "type": "events.Listener"
           }
         },
         {
@@ -6154,8 +6178,8 @@
             }
           ],
           "returns": {
-            "description": "Listener id. Pass it to `trx.events.detach` to stop listening.",
-            "type": "integer"
+            "description": "The attached handler.",
+            "type": "events.Listener"
           }
         },
         {
@@ -6178,8 +6202,8 @@
             }
           ],
           "returns": {
-            "description": "Listener id. Pass it to `trx.events.detach` to stop listening.",
-            "type": "integer"
+            "description": "The attached handler.",
+            "type": "events.Listener"
           }
         },
         {
@@ -6202,8 +6226,8 @@
             }
           ],
           "returns": {
-            "description": "Listener id. Pass it to `trx.events.detach` to stop listening.",
-            "type": "integer"
+            "description": "The attached handler.",
+            "type": "events.Listener"
           }
         },
         {
@@ -6231,8 +6255,8 @@
             }
           ],
           "returns": {
-            "description": "Listener id. Pass it to `trx.events.detach` to stop listening.",
-            "type": "integer"
+            "description": "The attached handler.",
+            "type": "events.Listener"
           }
         },
         {
@@ -6255,8 +6279,8 @@
             }
           ],
           "returns": {
-            "description": "Listener id. Pass it to `trx.events.detach` to stop listening.",
-            "type": "integer"
+            "description": "The attached handler.",
+            "type": "events.Listener"
           }
         },
         {
@@ -6279,8 +6303,8 @@
             }
           ],
           "returns": {
-            "description": "Listener id. Pass it to `trx.events.detach` to stop listening.",
-            "type": "integer"
+            "description": "The attached handler.",
+            "type": "events.Listener"
           }
         },
         {
@@ -6303,8 +6327,8 @@
             }
           ],
           "returns": {
-            "description": "Listener id. Pass it to `trx.events.detach` to stop listening.",
-            "type": "integer"
+            "description": "The attached handler.",
+            "type": "events.Listener"
           }
         },
         {
@@ -6327,8 +6351,8 @@
             }
           ],
           "returns": {
-            "description": "Listener id. Pass it to `trx.events.detach` to stop listening.",
-            "type": "integer"
+            "description": "The attached handler.",
+            "type": "events.Listener"
           }
         },
         {
@@ -6356,8 +6380,8 @@
             }
           ],
           "returns": {
-            "description": "Listener id. Pass it to `trx.events.detach` to stop listening.",
-            "type": "integer"
+            "description": "The attached handler.",
+            "type": "events.Listener"
           }
         },
         {
@@ -6803,7 +6827,7 @@
           "returns": {
             "description": "The stream it started, or `nil` if none did.",
             "nullable": true,
-            "type": "Stream"
+            "type": "music.Stream"
           }
         }
       ],
@@ -7379,8 +7403,8 @@
             }
           ],
           "returns": {
-            "description": "Listener id. Pass it to `trx.events.detach` to stop listening.",
-            "type": "integer"
+            "description": "The attached handler.",
+            "type": "events.Listener"
           }
         },
         {
@@ -7406,8 +7430,8 @@
             }
           ],
           "returns": {
-            "description": "Listener id. Pass it to `trx.events.detach` to stop listening.",
-            "type": "integer"
+            "description": "The attached handler.",
+            "type": "events.Listener"
           }
         }
       ],
@@ -7472,7 +7496,7 @@
           "returns": {
             "description": "The voice it started, or `nil` if none did.",
             "nullable": true,
-            "type": "Stream"
+            "type": "sound.Stream"
           }
         },
         {

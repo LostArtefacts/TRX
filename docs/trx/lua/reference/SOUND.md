@@ -49,7 +49,7 @@ Module for playing sound effects.
       Parameters:
       - **`opts`** (table, optional). `pos`: a `{ x =, y =, z = }` world position to play from, which applies pan and volume. Omit to play at full volume.
 
-      Returns: Stream or `nil`. The voice it started, or `nil` if none did.
+      Returns: sound.Stream or `nil`. The voice it started, or `nil` if none did.
 
     - [lua]`sample:stop()`  
       Stops every voice playing this sample.
@@ -90,7 +90,7 @@ Module for playing sound effects.
   - **`id`** (integer). Sample to play. To reach a sample by the level's own slot, play it through a handle: `trx.sound.samples[slot]:play()`. Compare against `trx.catalog.samples`.
   - **`opts`** (table, optional). `pos`: a `{ x =, y =, z = }` world position to play from, which applies pan and volume. Omit to play at full volume.
 
-  Returns: Stream or `nil`. The voice it started, or `nil` if none did.
+  Returns: sound.Stream or `nil`. The voice it started, or `nil` if none did.
 
   Example:
   ```lua

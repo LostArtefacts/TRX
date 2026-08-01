@@ -91,9 +91,9 @@ local function item_hook(event_name)
   end
 end
 
-local ITEM_LISTENER_ID = {
-  type = "integer",
-  description = "Listener id. Pass it to `trx.events.detach` to stop listening.",
+local ITEM_LISTENER = {
+  type = "events.Listener",
+  description = "The attached handler.",
 }
 
 -- The item-lifecycle methods share a shape: a callback taking this item, over
@@ -113,7 +113,7 @@ local function item_lifecycle_method(event_name, description, examples)
         },
       },
     },
-    returns = ITEM_LISTENER_ID,
+    returns = ITEM_LISTENER,
     description = description,
     examples = examples,
     impl = item_hook(event_name),
@@ -419,7 +419,7 @@ api.type("items.Item", {
           },
         },
       },
-      returns = ITEM_LISTENER_ID,
+      returns = ITEM_LISTENER,
       description = "Happens every time a trigger is aimed at this item, of any kind. "
         .. "`trx.events.on_trigger`, narrowed to this item.",
       examples = {
@@ -449,7 +449,7 @@ end)]],
           },
         },
       },
-      returns = ITEM_LISTENER_ID,
+      returns = ITEM_LISTENER,
       description = "Happens when this item takes damage. `trx.events.on_hit`, narrowed to this "
         .. "item.",
       examples = {
@@ -474,7 +474,7 @@ end)]],
           },
         },
       },
-      returns = ITEM_LISTENER_ID,
+      returns = ITEM_LISTENER,
       description = "Happens when damage takes this item's hit points to zero. "
         .. "`trx.events.on_kill`, narrowed to this item.",
       examples = {
