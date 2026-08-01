@@ -436,8 +436,15 @@ unit_tests += {
 unit_tests += {
   'name': 'lua/api/zones',
   'bundles': [b_lua_surface, b_lua_math],
-  'src': ['fakes/items.c', 'fakes/rooms.c', 'fakes/lara.c', 'fakes/catalog.c'],
+  'src': [
+    'fakes/items.c',
+    'fakes/rooms.c',
+    'fakes/lara.c',
+    'fakes/catalog.c',
+    'fakes/camera.c',
+  ],
   'engine': [
+    'game/lua/capi/camera.c',
     'game/lua/capi/catalog.c',
     'game/lua/capi/events.c',
     'game/lua/capi/items.c',

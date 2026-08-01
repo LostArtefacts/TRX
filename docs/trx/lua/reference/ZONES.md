@@ -20,8 +20,15 @@ long as it stays.
 A zone watches Lara and nobody else, unless it is made with `watch = "items"`,
 and then it watches everything the level holds - enemies, pickups, anything
 with a position. Its hooks hand over whatever set it off. To listen in one
-place rather than zone by zone, [`trx.events.on_zone_enter`](EVENTS.md#events.on_zone_enter) and its two siblings
+place rather than zone by zone, [`trx.events.on_zone_enter`](EVENTS.md#events.on_zone_enter) and its siblings
 hear about all of them.
+
+A flyby camera passing through a zone is its own pair of hooks,
+[`trx.zones.Zone:on_flyby_enter`](#zones.Zone.on_flyby_enter) and [`trx.zones.Zone:on_flyby_exit`](#zones.Zone.on_flyby_exit), since a
+camera is not an item and there is nothing to hand a handler but the zone.
+Every zone answers for a flyby, whatever it watches, and a tile answers for one
+in the room the tile belongs to. The camera is checked only while a sequence is
+playing.
 
 Every frame, each zone settles who is inside before anything goes out, and the
 exits come before the enters - so a script following Lara from one zone into
@@ -82,7 +89,7 @@ end
     Methods:
 
     - <a id="zones.Zone.clear_occupants" name="zones.Zone.clear_occupants"></a>[lua]`zone:clear_occupants()`  
-      Forgets who is inside, so anything still there enters again on the next frame. This is how a zone is made to fire a second time for an item that never left it.
+      Forgets who is inside, so anything still there enters again on the next frame. This is how a zone is made to fire a second time for an item that never left it. A flyby passing through is forgotten with the rest.
 
     - <a id="zones.Zone.contains_item" name="zones.Zone.contains_item"></a>[lua]`zone:contains_item(item)`  
       Whether the item is inside the region: the same test the zone makes every frame, so this answers whether the item counts as an occupant. An item is tested by the point it stands at, and one the world does not hold is nowhere.
@@ -150,6 +157,32 @@ end
       - <a id="zones.Zone.on_exit.callback" name="zones.Zone.on_exit.callback"></a>**`callback`** (function). What to run when it happens.
         Called with:
         - <a id="zones.Zone.on_exit.item" name="zones.Zone.on_exit.item"></a>**`item`** ([trx.items.Item](ITEMS.md#items.Item)). The item that left.
+
+      Returns: [trx.events.Listener](EVENTS.md#events.Listener). The listener. [`remove`](#zones.Zone.remove) detaches what a zone carries as well.
+
+    - <a id="zones.Zone.on_flyby_enter" name="zones.Zone.on_flyby_enter"></a>[lua]`zone:on_flyby_enter(callback)`  
+      Happens when a flyby camera enters the zone. A flyby is not an item and sets off no other hook, so a handler takes nothing: the zone is the whole of what happened.
+
+      Parameters:
+      - <a id="zones.Zone.on_flyby_enter.callback" name="zones.Zone.on_flyby_enter.callback"></a>**`callback`** (function). What to run when it happens.
+
+      Returns: [trx.events.Listener](EVENTS.md#events.Listener). The listener. [`remove`](#zones.Zone.remove) detaches what a zone carries as well.
+
+      Example:
+      ```lua
+      local hall = trx.zones.box(
+        { x = 51200, y = -2048, z = 30720 },
+        { x = 53248, y = 0, z = 32768 })
+      hall:on_flyby_enter(function()
+        trx.music.play(trx.catalog.music.main_theme)
+      end)
+      ```
+
+    - <a id="zones.Zone.on_flyby_exit" name="zones.Zone.on_flyby_exit"></a>[lua]`zone:on_flyby_exit(callback)`  
+      Happens when a flyby camera leaves the zone, and when the sequence ends while the camera is still inside one.
+
+      Parameters:
+      - <a id="zones.Zone.on_flyby_exit.callback" name="zones.Zone.on_flyby_exit.callback"></a>**`callback`** (function). What to run when it happens.
 
       Returns: [trx.events.Listener](EVENTS.md#events.Listener). The listener. [`remove`](#zones.Zone.remove) detaches what a zone carries as well.
 

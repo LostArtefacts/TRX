@@ -587,3 +587,23 @@ An event that carries a default the script may take over says so in its descript
     - <a id="events.on_zone_tick.item" name="events.on_zone_tick.item"></a>**`item`** ([trx.items.Item](ITEMS.md#items.Item)). The [`trx.items.Item`](ITEMS.md#items.Item) that entered, left, or is inside.
 
   Returns: [trx.events.Listener](#events.Listener). The attached handler.
+
+- <a id="events.on_zone_flyby_enter" name="events.on_zone_flyby_enter"></a>[lua]`trx.events.on_zone_flyby_enter(callback)`  
+  Happens when a flyby camera enters a zone. Fires for every zone; [`trx.zones.Zone:on_flyby_enter`](ZONES.md#zones.Zone.on_flyby_enter) is the same moment narrowed to one of them.
+
+  Parameters:
+  - <a id="events.on_zone_flyby_enter.callback" name="events.on_zone_flyby_enter.callback"></a>**`callback`** (function). What to run when it happens.
+    Called with:
+    - <a id="events.on_zone_flyby_enter.zone" name="events.on_zone_flyby_enter.zone"></a>**`zone`** ([trx.zones.Zone](ZONES.md#zones.Zone)). The [`trx.zones.Zone`](ZONES.md#zones.Zone) the camera entered or left.
+
+  Returns: [trx.events.Listener](#events.Listener). The attached handler.
+
+- <a id="events.on_zone_flyby_exit" name="events.on_zone_flyby_exit"></a>[lua]`trx.events.on_zone_flyby_exit(callback)`  
+  Happens when a flyby camera leaves a zone, and when the sequence ends while the camera is still inside one.
+
+  Parameters:
+  - <a id="events.on_zone_flyby_exit.callback" name="events.on_zone_flyby_exit.callback"></a>**`callback`** (function). What to run when it happens.
+    Called with:
+    - <a id="events.on_zone_flyby_exit.zone" name="events.on_zone_flyby_exit.zone"></a>**`zone`** ([trx.zones.Zone](ZONES.md#zones.Zone)). The [`trx.zones.Zone`](ZONES.md#zones.Zone) the camera entered or left.
+
+  Returns: [trx.events.Listener](#events.Listener). The attached handler.

@@ -7,14 +7,15 @@ require("trx.math")
 require("trx.events")
 require("trx.items")
 require("trx.rooms")
+require("trx.camera")
 
 -- Script-defined trigger regions, tested once a logical frame.
 --
--- The module is the whole mechanism. C answers what stands inside a region and
--- which room a position is in, while the occupancy, the transitions and the
--- order they are reported in are settled here. Every transition goes out as an
--- engine event, so a handler attaches and detaches the way it does for any
--- other.
+-- The module is the whole mechanism. C answers what stands inside a region,
+-- which room a position is in, and where the flyby camera is, while the
+-- occupancy, the transitions and the order they are reported in are settled
+-- here. Every transition goes out as an engine event, so a handler attaches and
+-- detaches the way it does for any other.
 
 -- The height a tile reaches, which is every height the level has. A coordinate
 -- is 32-bit where the engine reads it, so the span stops there.
@@ -24,7 +25,13 @@ local CEILING_OF_THE_WORLD = 2147483647
 -- The zones raise their own events rather than any the engine knows about, so
 -- the types are declared here and are event types like any other from there on.
 local ZONE_EVENTS = {}
-for _, name in ipairs({ "zone_enter", "zone_exit", "zone_tick" }) do
+for _, name in ipairs({
+  "zone_enter",
+  "zone_exit",
+  "zone_tick",
+  "zone_flyby_enter",
+  "zone_flyby_exit",
+}) do
   ZONE_EVENTS[name] = capi_events.declare(name)
 end
 
@@ -136,10 +143,28 @@ end
 -- entered.
 function control()
   local exits, enters, ticks = {}, {}, {}
+  local flyby_exits, flyby_enters = {}, {}
+
+  -- Where the flyby camera is this frame, and nil when no sequence is playing.
+  -- Read once rather than once per zone, and not at all the rest of the time.
+  local flyby = nil
+  if trx.camera.is_flyby_active then
+    flyby = { pos = trx.camera.pos, room_num = trx.camera.room_num }
+  end
 
   for _, zone in ipairs(zones) do
     local own = state[zone]
     if own.enabled then
+      local flyby_inside = flyby ~= nil
+        and (own.room_num == nil or flyby.room_num == own.room_num)
+        and holds_pos(own, flyby.pos)
+      if flyby_inside and not own.flyby then
+        flyby_enters[#flyby_enters + 1] = { own.id }
+      elseif own.flyby and not flyby_inside then
+        flyby_exits[#flyby_exits + 1] = { own.id }
+      end
+      own.flyby = flyby_inside
+
       local inside = occupants_now(own)
       local now = {}
       for _, num in ipairs(inside) do
@@ -163,7 +188,9 @@ function control()
 
   local phases = {
     { ZONE_EVENTS.zone_exit, exits },
+    { ZONE_EVENTS.zone_flyby_exit, flyby_exits },
     { ZONE_EVENTS.zone_enter, enters },
+    { ZONE_EVENTS.zone_flyby_enter, flyby_enters },
     { ZONE_EVENTS.zone_tick, ticks },
   }
   for _, phase in ipairs(phases) do
@@ -237,8 +264,15 @@ long as it stays.
 A zone watches Lara and nobody else, unless it is made with `watch = "items"`,
 and then it watches everything the level holds - enemies, pickups, anything
 with a position. Its hooks hand over whatever set it off. To listen in one
-place rather than zone by zone, `trx.events.on_zone_enter` and its two siblings
+place rather than zone by zone, `trx.events.on_zone_enter` and its siblings
 hear about all of them.
+
+A flyby camera passing through a zone is its own pair of hooks,
+`trx.zones.Zone:on_flyby_enter` and `trx.zones.Zone:on_flyby_exit`, since a
+camera is not an item and there is nothing to hand a handler but the zone.
+Every zone answers for a flyby, whatever it watches, and a tile answers for one
+in the room the tile belongs to. The camera is checked only while a sequence is
+playing.
 
 Every frame, each zone settles who is inside before anything goes out, and the
 exits come before the enters - so a script following Lara from one zone into
@@ -467,10 +501,11 @@ end]],
 
     clear_occupants = {
       description = "Forgets who is inside, so anything still there enters again on the next frame. "
-        .. "This is how a zone is made to fire a second time for an item that never left it.",
+        .. "This is how a zone is made to fire a second time for an item that never left it. A "
+        .. "flyby passing through is forgotten with the rest.",
       impl = function(self)
         local own = own_of(self)
-        own.occupants, own.order = {}, {}
+        own.occupants, own.order, own.flyby = {}, {}, false
       end,
     },
 
@@ -511,6 +546,46 @@ end)]],
       end,
     },
 
+    on_flyby_enter = {
+      description = "Happens when a flyby camera enters the zone. A flyby is not an item and sets "
+        .. "off no other hook, so a handler takes nothing: the zone is the whole of what happened.",
+      params = {
+        {
+          name = "callback",
+          type = "function",
+          description = "What to run when it happens.",
+        },
+      },
+      returns = LISTENER,
+      examples = {
+        [[local hall = trx.zones.box(
+  { x = 51200, y = -2048, z = 30720 },
+  { x = 53248, y = 0, z = 32768 })
+hall:on_flyby_enter(function()
+  trx.music.play(trx.catalog.music.main_theme)
+end)]],
+      },
+      impl = function(self, callback)
+        return attach_hook(self, "on_zone_flyby_enter", callback)
+      end,
+    },
+
+    on_flyby_exit = {
+      description = "Happens when a flyby camera leaves the zone, and when the sequence ends while "
+        .. "the camera is still inside one.",
+      params = {
+        {
+          name = "callback",
+          type = "function",
+          description = "What to run when it happens.",
+        },
+      },
+      returns = LISTENER,
+      impl = function(self, callback)
+        return attach_hook(self, "on_zone_flyby_exit", callback)
+      end,
+    },
+
     remove = {
       description = "Removes the zone and detaches the hooks attached to it. Its handle goes stale: "
         .. "`trx.zones.Zone:is_valid` says so, and reading a field raises.",
@@ -544,16 +619,45 @@ end)]],
   },
 })
 
+-- What the event carries beyond the zone is what the hook hands over: the item
+-- for the three that name one, and nothing at all for a flyby.
 function attach_hook(zone, event_name, callback)
   local own = own_of(zone)
-  local listener = trx.events[event_name](function(fired, item)
+  local listener = trx.events[event_name](function(fired, ...)
     if fired == zone then
-      callback(item)
+      callback(...)
     end
   end)
   own.listeners[#own.listeners + 1] = listener
   return listener
 end
+
+-- A flyby event names the zone and nothing else.
+local function flyby_event(event_type)
+  return function(callback)
+    return listener_of(capi_events.attach(event_type, function(zone_id)
+      local zone = by_id[zone_id]
+      if zone ~= nil then
+        callback(zone)
+      end
+    end))
+  end
+end
+
+local FLYBY_PARAMS = {
+  {
+    name = "callback",
+    type = "function",
+    description = "What to run when it happens.",
+    params = {
+      {
+        name = "zone",
+        type = "zones.Zone",
+        description = "The `trx.zones.Zone` the camera entered or left.",
+      },
+    },
+  },
+}
 
 -- The zone events are declared here because narrowing one to the zone it is
 -- about is this module's own bookkeeping. They are engine events like any
@@ -623,6 +727,22 @@ api.define("events.on_zone_tick", {
   params = EVENT_PARAMS,
   returns = EVENT_LISTENER,
   impl = zone_event(ZONE_EVENTS.zone_tick),
+})
+
+api.define("events.on_zone_flyby_enter", {
+  description = "Happens when a flyby camera enters a zone. Fires for every zone; "
+    .. "`trx.zones.Zone:on_flyby_enter` is the same moment narrowed to one of them.",
+  params = FLYBY_PARAMS,
+  returns = EVENT_LISTENER,
+  impl = flyby_event(ZONE_EVENTS.zone_flyby_enter),
+})
+
+api.define("events.on_zone_flyby_exit", {
+  description = "Happens when a flyby camera leaves a zone, and when the sequence ends while the "
+    .. "camera is still inside one.",
+  params = FLYBY_PARAMS,
+  returns = EVENT_LISTENER,
+  impl = flyby_event(ZONE_EVENTS.zone_flyby_exit),
 })
 
 local WATCHES = { lara = true, items = true }
