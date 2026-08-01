@@ -151,11 +151,19 @@ order: 3
    hook. The nine hooks are the whole API, and attaching is unchanged:
    `trx.events.before_control(fn)`.
 
-15. **Update scripts that use `trx.console.log.LogLevel`**
+15. **Update scripts that hold a listener id**
+   Attaching a handler hands back a `trx.events.Listener` rather than a plain
+   number. Stopping one is `listener:detach()`, or `trx.events.detach(listener)`
+   as before; both report whether it was still attached. A script that kept the
+   number and passed it around keeps the listener instead - `trx.events.detach`
+   no longer takes a number, and `listener.id` is the number if anything needs
+   it.
+
+16. **Update scripts that use `trx.console.log.LogLevel`**
    It was removed. Use `trx.log.LogLevel`, which is the same enum:
    `trx.console.log.generic(trx.log.LogLevel.ERROR, "...")`.
 
-16. **Update scripts that use the music module**
+17. **Update scripts that use the music module**
    The soundtrack is addressed through track and stream handles now.
    - `trx.music.play` now takes a track by catalog id - a `trx.catalog.music`
      value, which maps to the right track per game - rather than the level's own
@@ -175,7 +183,7 @@ order: 3
      main stream, `[2]` onwards the overlays - each of which can be paused,
      resumed, sought and stopped on its own.
 
-17. **Update scripts that address levels by number**
+18. **Update scripts that address levels by number**
    `trx.game.levels` is the levels the game numbers, and a gym is not one of
    them. Where a game flow has a gym, `trx.game.levels[1]` used to be the gym;
    now every entry after it has shifted down by one and the last level -
@@ -184,19 +192,19 @@ order: 3
    it; use `trx.game.play_gym()` and `trx.game.gym` for the gym. The same holds
    for `trx.game.cutscenes`, `trx.game.demos` and their `play_` functions.
 
-18. **Update Lara's outfit definitions**
+19. **Update Lara's outfit definitions**
    The `braid` entries for Lara's outfits were changed to arrays to support up
    to two instances. Additionally, a `joints_object` can now be specified to
    allow using TR4/5 outfits. `outfits.json5` must be updated accordingly; refer
    to the default shipped file and [outfits documentation](OUTFITS.md).
 
-19. **Update scripts that pass an incomplete position**
+20. **Update scripts that pass an incomplete position**
    `{ x = , y = , z = }` needs all three coordinates. A missing one used to read
    as zero in `trx.sound.play`, placing the sound at the edge of the world, and
    raised an unhelpful error elsewhere. It now names the coordinate and the
    argument it came in on.
 
-20. **Update scripts that use `trx.sound.is_available`**
+21. **Update scripts that use `trx.sound.is_available`**
    It was removed. A sample is available when `trx.sound.samples[id]` is not
    `nil`. `trx.sound.samples` is a collection of `trx.sound.Sample` handles keyed
    by id, each of which plays itself and reports its definition, and
@@ -208,7 +216,7 @@ order: 3
    `play` hands back the `trx.sound.Stream` it started. `trx.sound.stop_all` is
    unchanged.
 
-21. **Update scripts that read `item.status`**
+22. **Update scripts that read `item.status`**
    The `item.status` field and the `items.Status` enum were removed in favour of
    separate boolean axes:
    - `item.is_simulated` (read-only): its control routine runs each frame -
@@ -225,7 +233,7 @@ order: 3
    The item query narrows on each: `simulated`, `present`, `visible`, `finished`,
    `in_play`, `alive`, `targetable`.
 
-22. **Update game flows that anchor Bacon Lara**
+23. **Update game flows that anchor Bacon Lara**
    The `setup_bacon_lara` sequence event was removed. The anchor room is an
    `anchor_room` object property now, which a level editor can set on the object
    or on a single item, and a script can set in `on_game_start`:
@@ -237,7 +245,7 @@ order: 3
    The property is optional: at its default of -1, the room Bacon Lara is placed
    in is the anchor. Refer to the Atlantis level in the default game flow.
 
-23. **Update scripts that use the level lifecycle events**
+24. **Update scripts that use the level lifecycle events**
    `before_level_file`, `after_level_file`, `before_item_setup`,
    `after_item_setup` and `after_level_state` were removed. `on_game_start` is
    the one moment a level script gets before play: the level file is loaded, its
@@ -254,18 +262,18 @@ order: 3
    fires for cutscene and demo levels too, and the title screen has
    `on_title_start`.
 
-24. **Remove `ammo.pickup_qty_alt` from weapon definitions**
+25. **Remove `ammo.pickup_qty_alt` from weapon definitions**
    The field only applied to flares in Japanese NG, which is no longer a game
    mode. A flare box now always gives `ammo.pickup_qty` flares. The field is
    ignored if left in `weapons.json5`.
 
-25. **Update scripts that raise an item's maximum hit points**
+26. **Update scripts that raise an item's maximum hit points**
    Writing `max_hit_points` carries the item's current hit points with it, by
    the difference: an item that has taken no damage comes out at full health,
    and one that is already hurt stays hurt by as much. It no longer needs a
    companion write to `hit_points`.
 
-26. **Update weapon definitions**
+27. **Update weapon definitions**
    The ammunition keys in `weapons.json5` were renamed to say what they count.
    A shot is one pull of the trigger, which for the shotgun spends six rounds;
    the flare counts a flare where a weapon counts a shot. The old names are

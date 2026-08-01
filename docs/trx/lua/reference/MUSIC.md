@@ -106,7 +106,7 @@ Module for playing and controlling the soundtrack.
       Parameters:
       - **`opts`** (table, optional). `mode`: a `trx.music.PlayMode`. Defaults to `ONCE`.
 
-      Returns: Stream or `nil`. The stream it started, or `nil` if none did.
+      Returns: music.Stream or `nil`. The stream it started, or `nil` if none did.
 
 ### Functions
 
@@ -117,7 +117,7 @@ Module for playing and controlling the soundtrack.
   - **`id`** (integer). Track to play. To reach a track by the level's own slot, play it through a handle: `trx.music.tracks[slot]:play()`. Compare against `trx.catalog.music`.
   - **`opts`** (table, optional). `mode`: a `trx.music.PlayMode`. Defaults to `ONCE`.
 
-  Returns: Stream or `nil`. The stream it started, or `nil` if none did.
+  Returns: music.Stream or `nil`. The stream it started, or `nil` if none did.
 
   Example:
   ```lua

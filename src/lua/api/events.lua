@@ -20,17 +20,56 @@ api.module("events", {
     .. "other event ignores what its handlers return.",
 })
 
+-- What every hook hands back. The engine keys a listener by a number, and the
+-- number is the module's business rather than a script's: a listener is worth
+-- holding on to, comparing and detaching, and worth nothing else.
+local Listener = api.type("events.Listener", {
+  description = "An attached handler. Every hook hands one back, and holding it is what makes the "
+    .. "handler detachable later. A listener is spent once detached, and a level change spends "
+    .. "every one a level script attached.",
+
+  fields = {
+    id = {
+      type = "integer",
+      description = "The number the engine keys the handler by. Two listeners of the same handler "
+        .. "carry the same one; it is never handed out twice within a session.",
+      get = function(self)
+        return rawget(self, "_id")
+      end,
+    },
+  },
+
+  methods = {
+    detach = {
+      description = "Stops the handler, which fires no more from here on. `trx.events.detach` does "
+        .. "the same to a listener held elsewhere.",
+      returns = {
+        type = "boolean",
+        description = "Whether the handler was still attached.",
+      },
+      impl = function(self)
+        return raw.detach(rawget(self, "_id"))
+      end,
+    },
+  },
+})
+
+-- A listener carries the engine's number and nothing a script can reach.
+local function listener_of(id)
+  return setmetatable({ _id = id }, Listener)
+end
+
 -- Each hook is a plain function closing over its event type.
 local function hook(event_type)
   assert(event_type ~= nil, "events: the engine has no such event type")
   return function(callback)
-    return raw.attach(event_type, callback)
+    return listener_of(raw.attach(event_type, callback))
   end
 end
 
-local LISTENER_ID = {
-  type = "integer",
-  description = "Listener id. Pass it to `trx.events.detach` to stop listening.",
+local LISTENER = {
+  type = "events.Listener",
+  description = "The attached handler.",
 }
 
 api.define("events.on_game_start", {
@@ -60,7 +99,7 @@ api.define("events.on_game_start", {
       },
     },
   },
-  returns = LISTENER_ID,
+  returns = LISTENER,
   impl = hook(types.GAME_START),
 })
 
@@ -71,7 +110,7 @@ api.define("events.on_title_start", {
     arguments. `on_game_start` does not fire for the title level.
   ]],
   params = { { name = "callback", type = "function" } },
-  returns = LISTENER_ID,
+  returns = LISTENER,
   examples = {
     [[trx.events.on_title_start(function()
   trx.log.info("the menu is up")
@@ -95,7 +134,7 @@ api.define("events.on_pickup", {
       },
     },
   },
-  returns = LISTENER_ID,
+  returns = LISTENER,
   examples = {
     [[trx.events.on_pickup(function(item_num)
   trx.log.info(trx.items[item_num].object_id)
@@ -108,7 +147,7 @@ api.define("events.before_control", {
   description = "Happens on every logical game frame, before the main game logic runs. The handler "
     .. "takes no arguments.",
   params = { { name = "callback", type = "function" } },
-  returns = LISTENER_ID,
+  returns = LISTENER,
   impl = hook(types.BEFORE_CONTROL),
 })
 
@@ -116,7 +155,7 @@ api.define("events.after_control", {
   description = "Happens on every logical game frame, after the main game logic runs. The handler "
     .. "takes no arguments.",
   params = { { name = "callback", type = "function" } },
-  returns = LISTENER_ID,
+  returns = LISTENER,
   impl = hook(types.AFTER_CONTROL),
 })
 
@@ -157,14 +196,14 @@ api.define("events.on_flip_effect", {
       },
     },
   },
-  returns = LISTENER_ID,
+  returns = LISTENER,
   examples = {
     [[trx.events.on_flip_effect(62, function(timer, item_num)
   trx.log.info("flipeffect 62 ran with timer " .. timer)
 end)]],
   },
   impl = function(effect_num, callback)
-    return raw.attach(types.FLIP_EFFECT, callback, effect_num)
+    return listener_of(raw.attach(types.FLIP_EFFECT, callback, effect_num))
   end,
 })
 
@@ -195,16 +234,18 @@ api.define("events.on_room_change", {
       },
     },
   },
-  returns = LISTENER_ID,
+  returns = LISTENER,
   examples = {
     [[trx.events.on_room_change(function(item, old_room, new_room)
   trx.log.info(item.object_id .. " moved to room " .. new_room)
 end)]],
   },
   impl = function(callback)
-    return raw.attach(types.ROOM_CHANGE, function(item_num, old_room, new_room)
-      callback(trx.items[item_num], old_room, new_room)
-    end)
+    return listener_of(
+      raw.attach(types.ROOM_CHANGE, function(item_num, old_room, new_room)
+        callback(trx.items[item_num], old_room, new_room)
+      end)
+    )
   end,
 })
 
@@ -236,7 +277,7 @@ api.define("events.on_trigger", {
       },
     },
   },
-  returns = LISTENER_ID,
+  returns = LISTENER,
   examples = {
     [[trx.events.on_trigger(function(item, trigger)
   if trigger.type == trx.items.TriggerType.ANTITRIGGER then
@@ -245,16 +286,15 @@ api.define("events.on_trigger", {
 end)]],
   },
   impl = function(callback)
-    return raw.attach(
-      types.TRIGGER,
-      function(item_num, kind, mask, timer, one_shot)
+    return listener_of(
+      raw.attach(types.TRIGGER, function(item_num, kind, mask, timer, one_shot)
         callback(trx.items[item_num], {
           type = kind,
           mask = mask,
           timer = timer,
           one_shot = one_shot,
         })
-      end
+      end)
     )
   end,
 })
@@ -285,12 +325,12 @@ local function visibility_hook(event_type, method, verb, examples)
         },
       },
     },
-    returns = LISTENER_ID,
+    returns = LISTENER,
     examples = examples,
     impl = function(callback)
-      return raw.attach(event_type, function(item_num)
+      return listener_of(raw.attach(event_type, function(item_num)
         callback(trx.items[item_num])
-      end)
+      end))
     end,
   }
 end
@@ -318,12 +358,12 @@ local function item_lifecycle_hook(
         },
       },
     },
-    returns = LISTENER_ID,
+    returns = LISTENER,
     examples = examples,
     impl = function(callback)
-      return raw.attach(event_type, function(item_num)
+      return listener_of(raw.attach(event_type, function(item_num)
         callback(trx.items[item_num])
-      end)
+      end))
     end,
   }
 end
@@ -505,16 +545,16 @@ attacker dealt. A death that does not go through damage - a script writing `hit_
       },
     },
   },
-  returns = LISTENER_ID,
+  returns = LISTENER,
   examples = {
     [[trx.events.on_hit(function(item, damage)
   trx.log.info(item.object_id .. " lost " .. damage .. " hit points")
 end)]],
   },
   impl = function(callback)
-    return raw.attach(types.HIT, function(item_num, damage)
+    return listener_of(raw.attach(types.HIT, function(item_num, damage)
       callback(trx.items[item_num], damage)
-    end)
+    end))
   end,
 })
 
@@ -542,16 +582,16 @@ more for the dagger that ends it.
       },
     },
   },
-  returns = LISTENER_ID,
+  returns = LISTENER,
   examples = {
     [[trx.events.on_kill(function(item)
   trx.log.info(item.object_id .. " is down")
 end)]],
   },
   impl = function(callback)
-    return raw.attach(types.KILL, function(item_num)
+    return listener_of(raw.attach(types.KILL, function(item_num)
       callback(trx.items[item_num])
-    end)
+    end))
   end,
 })
 
@@ -585,7 +625,7 @@ api.define("events.on_cutscene_trigger", {
       },
     },
   },
-  returns = LISTENER_ID,
+  returns = LISTENER,
   examples = {
     [[-- only in the throne room; a flyby stands in for it elsewhere
 trx.events.on_cutscene_trigger(function(num)
@@ -618,7 +658,7 @@ api.define("events.on_cutscene_start", {
       },
     },
   },
-  returns = LISTENER_ID,
+  returns = LISTENER,
   impl = hook(types.CUTSCENE_START),
 })
 
@@ -638,7 +678,7 @@ api.define("events.on_cutscene_end", {
       },
     },
   },
-  returns = LISTENER_ID,
+  returns = LISTENER,
   examples = {
     [[trx.events.on_cutscene_end(function(num)
   trx.log.info("cutscene " .. num .. " finished")
@@ -664,7 +704,7 @@ A sequence that a cutscene or the player interrupts does not fire it.]],
       },
     },
   },
-  returns = LISTENER_ID,
+  returns = LISTENER,
   examples = {
     [[trx.events.on_flyby_end(function(sequence)
   trx.camera.play_flyby(sequence)
@@ -674,24 +714,23 @@ end)]],
 })
 
 api.define("events.detach", {
-  description = "Removes a previously attached handler, which stops firing immediately.",
+  description = "Removes a previously attached handler, which stops firing immediately. "
+    .. "`listener:detach()` does the same to one held in hand.",
   params = {
-    {
-      name = "listener_id",
-      type = "integer",
-      description = "The id attach returned.",
-    },
+    { name = "listener", type = "events.Listener" },
   },
   returns = {
     type = "boolean",
-    description = "Whether a handler with that id was attached. `false` means it had already been "
-      .. "detached, or the id was never handed out.",
+    description = "Whether the handler was still attached. `false` means it had already been "
+      .. "detached, or the level it belonged to has ended.",
   },
   examples = {
-    [[local id = trx.events.before_control(function()
+    [[local listener = trx.events.before_control(function()
   -- handle control loop event
 end)
-trx.events.detach(id)]],
+trx.events.detach(listener)]],
   },
-  impl = raw.detach,
+  impl = function(listener)
+    return listener:detach()
+  end,
 })

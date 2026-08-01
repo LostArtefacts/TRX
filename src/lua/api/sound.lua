@@ -61,7 +61,7 @@ api.type("sound.Sample", {
         },
       },
       returns = {
-        type = "Stream",
+        type = "sound.Stream",
         nullable = true,
         description = "The voice it started, or `nil` if none did.",
       },
@@ -194,7 +194,7 @@ api.define("sound.play", {
     },
   },
   returns = {
-    type = "Stream",
+    type = "sound.Stream",
     nullable = true,
     description = "The voice it started, or `nil` if none did.",
   },

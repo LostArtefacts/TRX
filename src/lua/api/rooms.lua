@@ -77,9 +77,9 @@ local FLOOR_HEIGHT_PARAMS = {
   FLOOR_HEIGHT_OPTS,
 }
 
-local ROOM_LISTENER_ID = {
-  type = "integer",
-  description = "Listener id. Pass it to `trx.events.detach` to stop listening.",
+local ROOM_LISTENER = {
+  type = "events.Listener",
+  description = "The attached handler.",
 }
 
 api.module("rooms", {
@@ -149,7 +149,7 @@ api.type("rooms.Room", {
   methods = {
     on_enter = {
       params = ROOM_HOOK_PARAMS,
-      returns = ROOM_LISTENER_ID,
+      returns = ROOM_LISTENER,
       description = "Happens when something changes rooms into this one.",
       examples = {
         [[trx.rooms[7]:on_enter(function(item)
@@ -162,7 +162,7 @@ end)]],
     },
     on_exit = {
       params = ROOM_HOOK_PARAMS,
-      returns = ROOM_LISTENER_ID,
+      returns = ROOM_LISTENER,
       description = "Happens when something changes rooms out of this one.",
       impl = room_hook(function(old_room, new_room)
         return old_room

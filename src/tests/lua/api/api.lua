@@ -927,6 +927,55 @@ test("a Lua type's field must carry a get", function()
   )
 end)
 
+test("a type answers to its bare name and to its path", function()
+  local api = fresh_env()
+  local Widget = api.type("things.Widget", {})
+  api.define("things.press", {
+    params = { { name = "widget", type = "things.Widget" } },
+    impl = function()
+      return true
+    end,
+  })
+
+  api.strict(true)
+  assert(pcall(trx.things.press, setmetatable({}, Widget)))
+  assert(not pcall(trx.things.press, {}))
+  api.strict(false)
+end)
+
+-- Two modules with a type of the same name is allowed - music.Stream and
+-- sound.Stream are one - but the bare name stops naming either, so a
+-- declaration says which by its path instead of checking against whichever
+-- module happened to declare last.
+test("a name two modules claim stops naming either", function()
+  local api = fresh_env()
+  local Widget = api.type("things.Widget", {})
+  local Gadget = api.type("others.Widget", {})
+  api.define("things.press", {
+    params = { { name = "thing", type = "things.Widget" } },
+    impl = function()
+      return true
+    end,
+  })
+
+  api.strict(true)
+  assert(pcall(trx.things.press, setmetatable({}, Widget)))
+  assert(
+    not pcall(trx.things.press, setmetatable({}, Gadget)),
+    "the path must name one type and not the other"
+  )
+  api.strict(false)
+
+  assert(
+    not pcall(api.define, "things.poke", {
+        params = { { name = "thing", type = "Widget" } },
+        impl = function() end,
+      }) or not pcall(api.strict, true),
+    "the bare name must no longer check anything"
+  )
+  api.strict(false)
+end)
+
 test("a container walks from the index it counts from", function()
   local api = fresh_env()
   local zero, one = { [0] = "a", [1] = "b" }, { "a", "b" }
