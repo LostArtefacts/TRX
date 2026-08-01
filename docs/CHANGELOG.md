@@ -34,6 +34,7 @@
 - changed lift collision to force Lara out of her climbing and vaulting animations if one collides with her (#5899, #5911)
 - changed lift collision to be optional (Gameplay → Fixes → Fix lift collision)
 - changed skidoo and quad bike crashes to not kill Lara when she is immune
+- changed Lara to say "No" when attempting to use the binoculars when it is not possible to do so
 - fixed the sun's glare staying on screen in cutscenes once the camera has looked away from it
 - fixed exploding deaths in TR4 showing no flames or explosions
 - fixed Lara's shadow in TR4 being darker than in the original game
@@ -128,6 +129,7 @@
 - added Lara catching fire, from fires and other hazards; she stays on fire across level transitions
 - added an option to let fires and other dynamic lights illuminate static meshes (Graphic Options → Visuals → Static mesh lighting)
 - added ricochets, so that shots that hit walls and other hard surfaces throw out sparks and leave a puff of smoke
+- changed binoculars to not make Lara put her current weapon away
 - improved crouch turning for Lara to allow for more responsive transitions to crouch idle, crouch roll, and crawl idle states
 - fixed pixel sparks, such as blood and the shell splash, drawing as squares instead of the original streaks
 - fixed the camera snapping to elevation and angle changes in instances such as opening floor trapdoors
