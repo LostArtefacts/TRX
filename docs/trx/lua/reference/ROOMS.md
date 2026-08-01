@@ -145,6 +145,11 @@ end
       trx.rooms.query:at(trx.lara.item.pos):first()
       ```
 
+    - [lua]`roomquery:dry()`  
+      The room holds neither water nor swamp water.
+
+      Returns: Query. The narrowed query.
+
     - [lua]`roomquery:swamp()`  
       The room is filled with swamp water.
 

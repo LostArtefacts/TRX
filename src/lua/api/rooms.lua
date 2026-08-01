@@ -350,6 +350,15 @@ local RoomQuery = api.type("rooms.RoomQuery", {
       "The room is filled with water."
     ),
     swamp = flag_narrowing("swamp", "The room is filled with swamp water."),
+    dry = {
+      description = "The room holds neither water nor swamp water.",
+      returns = { type = "Query", description = "The narrowed query." },
+      impl = trx.query.narrowing(function()
+        return function(_num, room)
+          return not room.underwater and not room.swamp
+        end
+      end),
+    },
 
     at = {
       description = "The room contains a world position. Rooms overlap, so a position can be in "
