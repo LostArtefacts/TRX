@@ -12,12 +12,11 @@ order: 13
 
 ## Cutscenes module
 
-    Module for TR4's in-game cutscenes, the animated scenes stored in
-    `cutseq.pak` and started by a cutscene trigger. A cutscene plays once:
-    the engine remembers which ones have run, and a script may consult or
-    rewrite that memory. The cutscene levels of TR1-TR3, which the game flow
-    lists and `/cut` plays, are a different thing: see `trx.game.cutscenes`.
-  
+Module for TR4's in-game cutscenes, the animated scenes stored in
+`cutseq.pak` and started by a cutscene trigger. A cutscene plays once:
+the engine remembers which ones have run, and a script may consult or
+rewrite that memory. The cutscene levels of TR1-TR3, which the game flow
+lists and `/cut` plays, are a different thing: see `trx.game.cutscenes`.
 
 ### Properties
 
@@ -48,15 +47,14 @@ order: 13
   Returns: boolean.
 
 - [lua]`trx.cutscenes.set_played(num, played)`  
-      Marks a cutscene as played or unplayed. Marking one as played keeps its
-      trigger from firing; unmarking one lets it run again.
+  Marks a cutscene as played or unplayed. Marking one as played keeps its
+  trigger from firing; unmarking one lets it run again.
 
-      A trigger may name a number the game has no cutscene for - TR4 uses 32 to
-      ask for a full-motion video - and the engine remembers those the same way,
-      so `on_cutscene_trigger` hears about each of them once. This is what clears
-      that memory, and it takes any number a trigger may carry, not only the ones
-      `play` accepts.
-
+  A trigger may name a number the game has no cutscene for - TR4 uses 32 to
+  ask for a full-motion video - and the engine remembers those the same way,
+  so `on_cutscene_trigger` hears about each of them once. This is what clears
+  that memory, and it takes any number a trigger may carry, not only the ones
+  `play` accepts.
 
   Parameters:
   - **`num`** (integer). Cutscene number.
@@ -71,14 +69,13 @@ order: 13
   Forgets every cutscene, so all of them may run again.
 
 - [lua]`trx.cutscenes.set_lara_return(pos, [rot])`  
-      Places Lara where the next cutscene to end leaves her. A cutscene stands
-      her at its own origin while it plays and puts her back where it found her
-      afterwards; this says to put her somewhere else instead, as the original
-      game does for the scenes that carry her along.
+  Places Lara where the next cutscene to end leaves her. A cutscene stands
+  her at its own origin while it plays and puts her back where it found her
+  afterwards; this says to put her somewhere else instead, as the original
+  game does for the scenes that carry her along.
 
-      It holds for one cutscene, whether named before `play` or while the scene
-      runs, and is forgotten once she has been placed.
-
+  It holds for one cutscene, whether named before `play` or while the scene
+  runs, and is forgotten once she has been placed.
 
   Parameters:
   - **`pos`** (vec3). World position.

@@ -1154,6 +1154,31 @@ local function noted_returns(returns)
   return noted_list(returns)
 end
 
+-- A description written as a long-bracket string carries the indentation it was
+-- written at, and four spaces is a code block in markdown - which is how a
+-- module's own prose came out as one. The text is what the declaration says,
+-- not where it sat in the file, so the shared indent comes off. The deepest
+-- lines keep the rest of theirs, since a description may lay something out.
+local function dedent(text)
+  local shared
+  for line in text:gmatch("[^\n]+") do
+    if line:match("%S") ~= nil then
+      local indent = #line:match("^[ \t]*")
+      if shared == nil or indent < shared then
+        shared = indent
+      end
+    end
+  end
+  if shared == nil or shared == 0 then
+    return (text:gsub("^%s*\n", ""):gsub("%s+$", ""))
+  end
+  local out = {}
+  for line in (text .. "\n"):gmatch("([^\n]*)\n") do
+    out[#out + 1] = line:sub(shared + 1)
+  end
+  return (table.concat(out, "\n"):gsub("^%s*\n", ""):gsub("%s+$", ""))
+end
+
 -- The whole surface as plain data: what the docs generator consumes.
 function api.describe()
   local out = { types = {}, enums = {} }
@@ -1339,6 +1364,23 @@ function api.describe()
   table.sort(out.modules, function(a, b)
     return a.name < b.name
   end)
+
+  -- Every kind of entry carries prose under the same key, so the indentation
+  -- comes off in one pass rather than at each place one is collected. An
+  -- example is left alone: it is code, and its own indentation is the point.
+  local function dedent_prose(node)
+    if type(node) ~= "table" then
+      return
+    end
+    for key, value in pairs(node) do
+      if key == "description" and type(value) == "string" then
+        node[key] = dedent(value)
+      else
+        dedent_prose(value)
+      end
+    end
+  end
+  dedent_prose(out)
   return out
 end
 
