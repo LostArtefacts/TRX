@@ -144,6 +144,11 @@ end
       trx.rooms.query:at(trx.lara.item.pos):first()
       ```
 
+    - [lua]`roomquery:underwater()`  
+      The room is filled with water.
+
+      Returns: Query. The narrowed query.
+
 ### Functions
 
 - [lua]`trx.rooms.get(num)`  
