@@ -4127,6 +4127,50 @@
       }
     },
     {
+      "description": "Happens when a flyby camera enters a zone. Fires for every zone; `trx.zones.Zone:on_flyby_enter` is the same moment narrowed to one of them.",
+      "params": [
+        {
+          "description": "What to run when it happens.",
+          "name": "callback",
+          "params": [
+            {
+              "description": "The `trx.zones.Zone` the camera entered or left.",
+              "name": "zone",
+              "type": "zones.Zone"
+            }
+          ],
+          "type": "function"
+        }
+      ],
+      "path": "events.on_zone_flyby_enter",
+      "returns": {
+        "description": "The attached handler.",
+        "type": "events.Listener"
+      }
+    },
+    {
+      "description": "Happens when a flyby camera leaves a zone, and when the sequence ends while the camera is still inside one.",
+      "params": [
+        {
+          "description": "What to run when it happens.",
+          "name": "callback",
+          "params": [
+            {
+              "description": "The `trx.zones.Zone` the camera entered or left.",
+              "name": "zone",
+              "type": "zones.Zone"
+            }
+          ],
+          "type": "function"
+        }
+      ],
+      "path": "events.on_zone_flyby_exit",
+      "returns": {
+        "description": "The attached handler.",
+        "type": "events.Listener"
+      }
+    },
+    {
       "description": "Starts a level from `trx.game.levels`.",
       "examples": [
         "trx.game.play_level(1)"
@@ -5633,7 +5677,7 @@
       "order": 16
     },
     {
-      "description": "A zone is a piece of the level worth keeping an eye on. Mark out a box or a\nsphere in world space, or a single sector the way a floor trigger covers one,\nand the zone reports when something steps into it, when it leaves, and for as\nlong as it stays.\n\nA zone watches Lara and nobody else, unless it is made with `watch = \"items\"`,\nand then it watches everything the level holds - enemies, pickups, anything\nwith a position. Its hooks hand over whatever set it off. To listen in one\nplace rather than zone by zone, `trx.events.on_zone_enter` and its two siblings\nhear about all of them.\n\nEvery frame, each zone settles who is inside before anything goes out, and the\nexits come before the enters - so a script following Lara from one zone into\nthe next hears her leave the first before she enters the second. Something\ndestroyed while it is inside counts as leaving.\n\nA box and a sphere take no notice of rooms, so where two rooms sit one above\nthe other over the same ground, a box tall enough to reach both catches what\nstands in either. Only a tile belongs to a room. A flipmap changes the geometry\nunder a zone but moves nothing and renumbers nothing, so no zone sees anything\ncome or go.\n\nZones belong to the level that made them. A level change clears them, and the\nlevel script makes them again the same way it attaches its handlers. A zone made\noutside a level script - from a global script, or from the console - goes with\nthe next level change as well, and nothing makes it again. A global script that\nwants a zone in every level makes it from a handler that runs once the level has\nloaded. They are not written to savegames either, so Lara standing in a zone when\na game is loaded enters it again.",
+      "description": "A zone is a piece of the level worth keeping an eye on. Mark out a box or a\nsphere in world space, or a single sector the way a floor trigger covers one,\nand the zone reports when something steps into it, when it leaves, and for as\nlong as it stays.\n\nA zone watches Lara and nobody else, unless it is made with `watch = \"items\"`,\nand then it watches everything the level holds - enemies, pickups, anything\nwith a position. Its hooks hand over whatever set it off. To listen in one\nplace rather than zone by zone, `trx.events.on_zone_enter` and its siblings\nhear about all of them.\n\nA flyby camera passing through a zone is its own pair of hooks,\n`trx.zones.Zone:on_flyby_enter` and `trx.zones.Zone:on_flyby_exit`, since a\ncamera is not an item and there is nothing to hand a handler but the zone.\nEvery zone answers for a flyby, whatever it watches, and a tile answers for one\nin the room the tile belongs to. The camera is checked only while a sequence is\nplaying.\n\nEvery frame, each zone settles who is inside before anything goes out, and the\nexits come before the enters - so a script following Lara from one zone into\nthe next hears her leave the first before she enters the second. Something\ndestroyed while it is inside counts as leaving.\n\nA box and a sphere take no notice of rooms, so where two rooms sit one above\nthe other over the same ground, a box tall enough to reach both catches what\nstands in either. Only a tile belongs to a room. A flipmap changes the geometry\nunder a zone but moves nothing and renumbers nothing, so no zone sees anything\ncome or go.\n\nZones belong to the level that made them. A level change clears them, and the\nlevel script makes them again the same way it attaches its handlers. A zone made\noutside a level script - from a global script, or from the console - goes with\nthe next level change as well, and nothing makes it again. A global script that\nwants a zone in every level makes it from a handler that runs once the level has\nloaded. They are not written to savegames either, so Lara standing in a zone when\na game is loaded enters it again.",
       "name": "zones",
       "order": 15
     }
@@ -9241,7 +9285,7 @@
       "handle": false,
       "methods": [
         {
-          "description": "Forgets who is inside, so anything still there enters again on the next frame. This is how a zone is made to fire a second time for an item that never left it.",
+          "description": "Forgets who is inside, so anything still there enters again on the next frame. This is how a zone is made to fire a second time for an item that never left it. A flyby passing through is forgotten with the rest.",
           "name": "clear_occupants"
         },
         {
@@ -9339,6 +9383,39 @@
                   "type": "items.Item"
                 }
               ],
+              "type": "function"
+            }
+          ],
+          "returns": {
+            "description": "The listener. `trx.zones.Zone:remove` detaches what a zone carries as well.",
+            "type": "events.Listener"
+          }
+        },
+        {
+          "description": "Happens when a flyby camera enters the zone. A flyby is not an item and sets off no other hook, so a handler takes nothing: the zone is the whole of what happened.",
+          "examples": [
+            "local hall = trx.zones.box(\n  { x = 51200, y = -2048, z = 30720 },\n  { x = 53248, y = 0, z = 32768 })\nhall:on_flyby_enter(function()\n  trx.music.play(trx.catalog.music.main_theme)\nend)"
+          ],
+          "name": "on_flyby_enter",
+          "params": [
+            {
+              "description": "What to run when it happens.",
+              "name": "callback",
+              "type": "function"
+            }
+          ],
+          "returns": {
+            "description": "The listener. `trx.zones.Zone:remove` detaches what a zone carries as well.",
+            "type": "events.Listener"
+          }
+        },
+        {
+          "description": "Happens when a flyby camera leaves the zone, and when the sequence ends while the camera is still inside one.",
+          "name": "on_flyby_exit",
+          "params": [
+            {
+              "description": "What to run when it happens.",
+              "name": "callback",
               "type": "function"
             }
           ],

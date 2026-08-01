@@ -495,4 +495,112 @@ test("a level change detaches what a zone carried", function()
   )
 end)
 
+-- A flyby camera is not an item, so it sets off hooks of its own and leaves the
+-- item ones alone. The fake camera stands in room 0, as the box zones do.
+test("a flyby sets off its own hooks, and no others", function()
+  local zone = trx.zones.box(BOX_MIN, BOX_MAX, { watch = "items" })
+  local log = {}
+  zone:on_enter(function()
+    log[#log + 1] = "enter"
+  end)
+  zone:on_tick(function()
+    log[#log + 1] = "tick"
+  end)
+  zone:on_flyby_enter(function()
+    log[#log + 1] = "flyby in"
+  end)
+  zone:on_flyby_exit(function()
+    log[#log + 1] = "flyby out"
+  end)
+
+  fake.flyby(INSIDE)
+  fake.control()
+  assert(
+    table.concat(log, ",") == "flyby in",
+    "a flyby must set off the flyby hooks alone"
+  )
+
+  fake.control()
+  assert(table.concat(log, ",") == "flyby in", "and only as it crosses in")
+
+  fake.flyby({ x = 0, y = 0, z = 0 })
+  fake.control()
+  assert(table.concat(log, ",") == "flyby in,flyby out")
+
+  assert(#zone:occupants() == 0, "a camera is not an occupant")
+end)
+
+test("a sequence ending inside a zone leaves it", function()
+  local zone = trx.zones.box(BOX_MIN, BOX_MAX)
+  local log = {}
+  zone:on_flyby_enter(function()
+    log[#log + 1] = "in"
+  end)
+  zone:on_flyby_exit(function()
+    log[#log + 1] = "out"
+  end)
+
+  fake.flyby(INSIDE)
+  fake.control()
+  fake.flyby()
+  fake.control()
+  assert(
+    table.concat(log, ",") == "in,out",
+    "the camera stopped being anywhere"
+  )
+end)
+
+test(
+  "a flyby hook takes nothing, and the global one takes the zone",
+  function()
+    local zone = trx.zones.box(BOX_MIN, BOX_MAX, { name = "hall" })
+    local handed, named = nil, nil
+    zone:on_flyby_enter(function(...)
+      handed = select("#", ...)
+    end)
+    trx.events.on_zone_flyby_enter(function(fired)
+      named = fired.name
+    end)
+
+    fake.flyby(INSIDE)
+    fake.control()
+    assert(handed == 0, "a flyby hook has nothing to hand over")
+    assert(named == "hall", "the global event names the zone")
+  end
+)
+
+test("a tile answers for a flyby by room, as it does for an item", function()
+  local plate = trx.zones.tile({ x = 3500, y = 0, z = 200 })
+  local enters = 0
+  plate:on_flyby_enter(function()
+    enters = enters + 1
+  end)
+
+  -- The right sector, in another of the rooms that cover it.
+  fake.flyby({ x = 3500, y = 0, z = 200 }, 2)
+  fake.control()
+  assert(enters == 0, "another room must not set off the tile")
+
+  fake.flyby({ x = 3500, y = 0, z = 200 }, 0)
+  fake.control()
+  assert(enters == 1)
+end)
+
+test("a disabled zone ignores a flyby too", function()
+  local zone = trx.zones.box(BOX_MIN, BOX_MAX)
+  local enters = 0
+  zone:on_flyby_enter(function()
+    enters = enters + 1
+  end)
+
+  zone:disable()
+  fake.flyby(INSIDE)
+  fake.control()
+  assert(enters == 0, "a disabled zone must stay quiet")
+
+  zone:enable()
+  fake.control()
+  assert(enters == 1, "and notice the camera once it is back on")
+end)
+
 return h.report()

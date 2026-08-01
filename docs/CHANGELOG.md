@@ -219,7 +219,7 @@ The Lua integration was rewritten and existing scripts will need updating; refer
 - added `trx.items.get()`, `trx.items.count()`, `trx.rooms.get()`, `trx.rooms.count()` and `trx.objects.get()`, replacing the `fn` namespaces
 - added `trx.rooms.find_valid_pos()`, to nudge a position into valid room geometry
 - added `trx.rooms.floor_height()` and the room method `floor_height()`, the height of the floor under a position
-- added a new Lua module, `trx.zones`: script-defined trigger regions, as a world-space box, a sphere or a single sector, with `on_enter`, `on_exit` and `on_tick` hooks per zone and `trx.events.on_zone_enter` and its siblings for all of them
+- added a new Lua module, `trx.zones`: script-defined trigger regions, as a box, a sphere or a single sector, reporting what enters them, what leaves, and what a flyby camera passes through
 - added item methods, `activate()`, `deactivate()`, `trigger()`, `destroy()`, `die()`, `shatter()`, `distance_to()`, `is_valid()`, `get_property()`, `set_property()` and `get_property_names()`, letting a script fire a trigger or antitrigger at an item exactly as a level would
 - added the writable Lua item field `is_one_shot`
 - added object methods, `get_property()`, `set_property()` and `get_property_names()`
