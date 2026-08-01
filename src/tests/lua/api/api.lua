@@ -853,6 +853,49 @@ test(
   end
 )
 
+test("a container walks from the index it counts from", function()
+  local api = fresh_env()
+  local zero, one = { [0] = "a", [1] = "b" }, { "a", "b" }
+
+  api.module("counted", {})
+  api.container("counted", {
+    description = "Indexing.",
+    key = { type = "integer", description = "0-based." },
+    value = { type = "string" },
+    get = function(key)
+      return zero[key]
+    end,
+    count = function()
+      return 2
+    end,
+  })
+
+  api.module("listed", {})
+  api.container("listed", {
+    description = "Indexing.",
+    key = { type = "integer", description = "1-based." },
+    value = { type = "string" },
+    base = 1,
+    get = function(key)
+      return one[key]
+    end,
+    count = function()
+      return #one
+    end,
+  })
+
+  local function walked(module)
+    local keys = {}
+    for key in pairs(module) do
+      keys[#keys + 1] = key
+    end
+    return table.concat(keys, ",")
+  end
+
+  assert(walked(trx.counted) == "0,1", walked(trx.counted))
+  assert(walked(trx.listed) == "1,2", walked(trx.listed))
+end)
+
 -- A suite that registers nothing prints "0 failed" and exits clean, which reads
 -- exactly like a suite that passed.
 assert(passed + failures > 0, "the suite registered no tests")
