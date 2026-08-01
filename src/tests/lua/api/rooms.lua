@@ -189,7 +189,6 @@ test("undeclared members are unreachable", function()
     "flags",
     "outside",
     "inside",
-    "swamp",
   }) do
     assert(r[name] == nil, name .. " must not be reachable")
   end
@@ -319,6 +318,17 @@ test("the query narrows by water", function()
   assert(
     (~trx.rooms.query:underwater()):count() == 2,
     "the rest are what is left"
+  )
+end)
+
+test("the query narrows by swamp", function()
+  trx.rooms[3].swamp = true
+
+  local ids = trx.rooms.query:swamp():ids()
+  assert(#ids == 1 and ids[1] == 3, "the swamp rooms")
+  assert(
+    trx.rooms.query:underwater():count() == 0,
+    "a swamp room is not an underwater one"
   )
 end)
 

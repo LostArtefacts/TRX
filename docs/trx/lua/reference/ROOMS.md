@@ -62,6 +62,7 @@ end
     - **`damaging`**: boolean. Whether the room drains Lara's exposure meter.
     - **`flip_status`**: integer. Current flip status. Compare against `trx.rooms.FlipStatus`. *(read-only)*
     - **`num`**: integer. 0-based room number, matching the numbers level editors show. *(read-only)*
+    - **`swamp`**: boolean. Whether the room is filled with swamp water, which Lara wades through and sinks into rather than swimming.
     - **`underwater`**: boolean. Whether the room is filled with water.
     - **`wind`**: boolean. Whether the room has a breeze. Requires the player to have breeze enabled.
 
@@ -143,6 +144,11 @@ end
       ```lua
       trx.rooms.query:at(trx.lara.item.pos):first()
       ```
+
+    - [lua]`roomquery:swamp()`  
+      The room is filled with swamp water.
+
+      Returns: Query. The narrowed query.
 
     - [lua]`roomquery:underwater()`  
       The room is filled with water.
