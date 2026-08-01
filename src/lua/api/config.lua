@@ -4,7 +4,7 @@ local api = trx.api
 require("trx.locale")
 
 api.module("config", {
-  order = 22,
+  order = 23,
   description = "Module for reading and changing engine settings.\n\n"
     .. "These are the player's settings, not the level's. `trx.config.set` writes to them and keeps the "
     .. "change: it is remembered across saves and relaunches, exactly as if the player had made "

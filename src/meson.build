@@ -70,6 +70,7 @@ trx_lua_api_sources = files(
   'lua/api/strings.lua',
   'lua/api/weapons.lua',
   'lua/api/weather.lua',
+  'lua/api/zones.lua',
 )
 
 trx_lua_script_sources = files(
