@@ -312,15 +312,11 @@ OBJECT_ID Stats_GetSecretObject(
 uint32_t Stats_GetSecretMaskForItem(
     const GF_LEVEL *const level, const int16_t item_num)
 {
-    if (level == nullptr) {
+    if (!Stats_HasLevelMaxStats(level)) {
         return 0;
     }
 
     const LEVEL_MAX_STATS *const max_stats = Stats_GetLevelMaxStats(level);
-    if (max_stats == nullptr) {
-        return 0;
-    }
-
     for (int32_t i = 0; i < STATS_MAX_SECRETS; i++) {
         if (max_stats->secret_item_masks[i].item_num == item_num) {
             return max_stats->secret_item_masks[i].secret_mask;
