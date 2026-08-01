@@ -853,6 +853,80 @@ test(
   end
 )
 
+test("a Lua type's fields read and write through its accessors", function()
+  local api = fresh_env()
+  local state = {}
+  local Widget = api.type("things.Widget", {
+    fields = {
+      name = {
+        type = "string",
+        description = "...",
+        get = function(self)
+          return state[self].name
+        end,
+        set = function(self, value)
+          state[self].name = value
+        end,
+      },
+      size = {
+        type = "integer",
+        description = "...",
+        get = function(self)
+          return #state[self].name
+        end,
+      },
+    },
+    methods = {
+      poke = {
+        description = "...",
+        impl = function(self)
+          return self.name .. "!"
+        end,
+      },
+    },
+  })
+
+  local widget = setmetatable({}, Widget)
+  state[widget] = { name = "hinge" }
+
+  assert(widget.name == "hinge")
+  assert(widget.size == 5, "a field with no set is still readable")
+  assert(widget:poke() == "hinge!", "a method must still be reachable")
+
+  widget.name = "lever"
+  assert(widget.name == "lever")
+
+  -- Declared or absent: what the type does not name is neither readable nor
+  -- writable, so a value cannot grow a member the docs never see.
+  assert(widget.colour == nil)
+  local ok, err = pcall(function()
+    widget.size = 3
+  end)
+  assert(not ok and tostring(err):find("read%-only"), tostring(err))
+  assert(not pcall(function()
+    widget.colour = "red"
+  end))
+
+  local entry = api.describe().types[1]
+  local by_name = {}
+  for _, field in ipairs(entry.fields) do
+    by_name[field.name] = field
+  end
+  assert(by_name.name.writable == true)
+  assert(by_name.size.writable == false, "a field with no set is read-only")
+end)
+
+test("a Lua type's field must carry a get", function()
+  local api = fresh_env()
+  assert(
+    not pcall(
+      api.type,
+      "things.Widget",
+      { fields = { name = { type = "string" } } }
+    )
+  )
+end)
+
 test("a container walks from the index it counts from", function()
   local api = fresh_env()
   local zero, one = { [0] = "a", [1] = "b" }, { "a", "b" }

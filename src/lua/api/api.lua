@@ -810,6 +810,54 @@ function api.type(path, spec)
       rawset(class, "__" .. name, operator.impl)
     end
 
+    -- A field of a type written in Lua is a pair of accessors, since the value
+    -- has no struct behind it to address. Declaring any of them is what puts
+    -- the type's members under the registry's control: reading one the
+    -- declaration does not name comes back nil, and writing one raises, so a
+    -- value cannot quietly grow members the docs never see. A field is
+    -- writable when it declares a `set`, and read-only otherwise.
+    local getters, setters = {}, {}
+    local has_fields = false
+    for name, field in pairs(spec.fields or {}) do
+      assert(
+        type(field.get) == "function",
+        "api.type: field '" .. name .. "' needs a get"
+      )
+      assert(
+        field.set == nil or type(field.set) == "function",
+        "api.type: field '" .. name .. "' has a set that is not a function"
+      )
+      getters[name] = field.get
+      setters[name] = field.set
+      field.writable = field.set ~= nil
+      has_fields = true
+    end
+
+    if has_fields then
+      class.__index = function(self, key)
+        local getter = getters[key]
+        if getter ~= nil then
+          return getter(self)
+        end
+        -- The metamethods sit on the class alongside the methods, and are the
+        -- registry's business rather than a member of the type.
+        if type(key) == "string" and key:sub(1, 2) == "__" then
+          return nil
+        end
+        return class[key]
+      end
+      class.__newindex = function(self, key, value)
+        local setter = setters[key]
+        if setter == nil then
+          if getters[key] ~= nil then
+            error(("%s.%s is read-only"):format(path, tostring(key)), 2)
+          end
+          error(("%s has no member '%s'"):format(path, tostring(key)), 2)
+        end
+        setter(self, value)
+      end
+    end
+
     lua_classes[path] = class
     checkers[type_name] = class_checker(class)
     record(types, path, spec)
