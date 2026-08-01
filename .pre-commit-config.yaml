@@ -119,6 +119,13 @@ repos:
     pass_filenames: false
     files: ^src/lua/api/.*\.lua$
 
+  - id: lint-lua-number-names
+    name: Lua numbers say which kind they are
+    entry: tools/lint/checks/lua_number_names
+    language: python
+    pass_filenames: false
+    files: ^docs/trx/lua/api\.json$
+
   - id: gen-sort-imports
     name: Sort C includes
     entry: tools/lint/gen/sort_imports

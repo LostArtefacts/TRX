@@ -1,0 +1,105 @@
+#!/usr/bin/env python3
+# The public API names a number for the kind of number it is - see the naming
+# rules in docs/CODING_GUIDELINES.md. The rule is worth only as much as it is
+# kept, and a surface this wide drifts a name at a time, so this reads the
+# committed dump and reports what does not follow it:
+#
+#   - `_idx` and `_index` are C's; a public number is `_num`.
+#   - a `_num` says where it counts from, as `base` on the spec or on the
+#     `api.note` it points at. Nothing else in the docs answers whether a
+#     number starts at 0 or at 1, and the reader has no source to check.
+#   - an `_id` reads on its own, so it counts from nothing and carries no base.
+#
+# It reads docs/trx/lua/api.json rather than the declarations, since that is
+# what the reference is built from and `see` is already resolved there.
+
+import json
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
+from harness import LintWarning, repo_check
+from shared.paths import DOCS_DIR
+
+API_JSON = DOCS_DIR / "trx/lua/api.json"
+
+# Where a spec describing a value can sit. Each is walked in turn, so the
+# arguments a callback is called with are reached through its own `params`.
+SPEC_KEYS = ("params", "returns", "fields", "key", "value", "methods")
+
+# The declaration groups that hold them. A property describes a value itself,
+# rather than holding specs, so its own path is the name to read.
+GROUPS = ("functions", "types", "containers", "properties")
+
+
+def specs(node, path):
+    """Every spec that describes a value, with the declaration it belongs to."""
+    if isinstance(node, list):
+        for item in node:
+            yield from specs(item, path)
+        return
+    if not isinstance(node, dict):
+        return
+    here = node.get("path") or node.get("module") or path
+    yield here, node
+    for key in SPEC_KEYS:
+        if key in node:
+            yield from specs(node[key], here)
+
+
+def spec_name(where, spec):
+    """What the spec is called: its own name, or the member's for a property."""
+    return spec.get("name") or where.rsplit(".", 1)[-1]
+
+
+def warnings_for(api):
+    """Every spec in a dump that breaks one of the naming rules."""
+    for container in api.get("containers", []):
+        key = container.get("key") or {}
+        # A container keyed by number is a number the reader indexes with, and
+        # it carries no name of its own to say so. One keyed by id names the
+        # enum its ids come from instead, and counts from nothing.
+        if (
+            key.get("type") in ("integer", "any")
+            and key.get("enum") is None
+            and key.get("base") is None
+        ):
+            yield (
+                f"{container.get('module')}: indexing does not say where it "
+                f"counts from; give the key a `base`, or a `see` note that "
+                f"carries one"
+            )
+    for group in GROUPS:
+        for entry in api.get(group, []):
+            root = entry.get("path") or entry.get("module") or "?"
+            for where, spec in specs(entry, root):
+                name = spec_name(where, spec)
+                base = spec.get("base")
+                if name.endswith(("_idx", "_index")) or name in ("idx", "index"):
+                    yield (
+                        f"{where}: '{name}' is an index; "
+                        f"a number the API names is `_num`"
+                    )
+                if (name == "num" or name.endswith("_num")) and base is None:
+                    yield (
+                        f"{where}: '{name}' does not say where it counts from; "
+                        f"give it a `base`, or a `see` note that carries one"
+                    )
+                if (name == "id" or name.endswith("_id")) and base is not None:
+                    yield (
+                        f"{where}: '{name}' is an id and counts from nothing, "
+                        f"so it takes no `base`"
+                    )
+                if base is not None and base not in (0, 1):
+                    yield f"{where}: '{name}' counts from {base}, not 0 or 1"
+
+
+def check():
+    api = json.loads(API_JSON.read_text(encoding="utf-8"))
+    for message in warnings_for(api):
+        yield LintWarning(API_JSON, message)
+
+
+if __name__ == "__main__":
+    repo_check(check)

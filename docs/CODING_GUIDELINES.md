@@ -96,7 +96,9 @@ A number that stands for something takes a suffix saying what kind it is.
 
 A public `_num` says which of the two it is, as `base = 0` or `base = 1` on the
 param, field, return or container key. The reference states it in the same words
-each time, so it is not written by hand.
+each time, so it is not written by hand, and
+`tools/lint/checks/lua_number_names` reports a number that leaves the base out,
+an `_id` that carries one, and an `_index` or `_idx` on the public surface.
 
 Where a description would be written twice, write it once with `api.note` and
 point at it with `see`. A note about a number carries its `base`, so the one

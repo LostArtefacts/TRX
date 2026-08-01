@@ -803,7 +803,12 @@ endif
 # engine code, so they mirror nothing under trx/.
 python_exe = find_program('python3', required: false)
 if python_exe.found()
-  foreach name : ['lua_sources', 'update_lua_docs', 'game_strings']
+  foreach name : [
+    'lua_sources',
+    'update_lua_docs',
+    'game_strings',
+    'lua_number_names',
+  ]
     test(
       'tools.' + name,
       python_exe,
