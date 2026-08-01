@@ -6445,6 +6445,29 @@
           }
         },
         {
+          "description": "The item stands inside a world-space box. The corners may come in any order.\n\nAn item is tested by its position, the point it stands at, rather than by the box it fills. Position is all this asks after, so the rest of the query says what else the item must be: `trx.items.query:in_box(min, max):present()` asks for the ones that are in the world as well.",
+          "examples": [
+            "local guards = trx.items.query\n  :in_box({ x = 51200, y = -2048, z = 30720 }, { x = 53248, y = 0, z = 32768 })\n  :present()\n  :matches()"
+          ],
+          "name": "in_box",
+          "params": [
+            {
+              "description": "One corner of the box.",
+              "name": "min",
+              "type": "vec3"
+            },
+            {
+              "description": "The opposite corner.",
+              "name": "max",
+              "type": "vec3"
+            }
+          ],
+          "returns": {
+            "description": "The narrowed query.",
+            "type": "Query"
+          }
+        },
+        {
           "description": "The item is part of the game rather than set aside.",
           "name": "in_play",
           "returns": {
@@ -6459,6 +6482,26 @@
             {
               "description": "0-based room number.",
               "name": "room_num",
+              "type": "integer"
+            }
+          ],
+          "returns": {
+            "description": "The narrowed query.",
+            "type": "Query"
+          }
+        },
+        {
+          "description": "The item stands within a radius of a point. As with `in_box`, the item's position is the whole of the test.",
+          "name": "in_sphere",
+          "params": [
+            {
+              "description": "Middle of the sphere.",
+              "name": "centre",
+              "type": "vec3"
+            },
+            {
+              "description": "How far out it reaches. One sector is 1024.",
+              "name": "radius",
               "type": "integer"
             }
           ],

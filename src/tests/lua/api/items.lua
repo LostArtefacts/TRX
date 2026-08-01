@@ -840,4 +840,100 @@ test("a query cannot cross domains", function()
   end)
 end)
 
+-- The fake world stands item 0 at the origin and item 1 one sector along x.
+test("in_box finds what stands inside it, corners either way round", function()
+  local q = trx.items.query
+  local inside = q:in_box(
+    { x = -512, y = -512, z = -512 },
+    { x = 512, y = 512, z = 512 }
+  )
+  assert(
+    inside:count() == 1 and inside:first() == trx.items[0],
+    "the box took the wrong items"
+  )
+
+  local swapped = q:in_box(
+    { x = 512, y = 512, z = 512 },
+    { x = -512, y = -512, z = -512 }
+  )
+  assert(
+    swapped:count() == 1 and swapped:first() == trx.items[0],
+    "swapped corners span the same box"
+  )
+
+  local both = q:in_box(
+    { x = -512, y = -512, z = -512 },
+    { x = 2048, y = 512, z = 512 }
+  )
+  assert(both:count() == 2, "a box over both items must find both")
+end)
+
+test("in_box takes the edges, and nothing outside them", function()
+  trx.items[1].pos = { x = 1024, y = 0, z = 0 }
+  local q = trx.items.query
+
+  local edge = q:in_box({ x = 0, y = 0, z = 0 }, { x = 1024, y = 0, z = 0 })
+  assert(edge:count() == 2, "an item on the boundary is inside")
+
+  local past = q:in_box({ x = 0, y = 0, z = 0 }, { x = 1023, y = 0, z = 0 })
+  assert(past:count() == 1, "an item a unit outside is not")
+end)
+
+test("in_sphere measures from the middle", function()
+  local q = trx.items.query
+  local origin = { x = 0, y = 0, z = 0 }
+
+  trx.items[1].pos = { x = 1024, y = 0, z = 0 }
+  assert(q:in_sphere(origin, 1023):count() == 1)
+  assert(q:in_sphere(origin, 1024):count() == 2)
+
+  -- Radius counts in every direction, not along the axes.
+  trx.items[1].pos = { x = 1024, y = 1024, z = 0 }
+  assert(
+    q:in_sphere(origin, 1024):count() == 1,
+    "a corner is further away than an axis"
+  )
+  assert(q:in_sphere(origin, 1449):count() == 2)
+
+  raises(function()
+    q:in_sphere(origin, -1):count()
+  end)
+end)
+
+-- Position is the only question a spatial narrowing answers. Which of the items
+-- standing there count is the caller's to narrow, exactly as for any other
+-- query, so on its own it holds an item the world no longer does.
+test("a spatial narrowing answers on position alone", function()
+  local near = { x = -512, y = -512, z = -512 }
+  local far = { x = 100000, y = 100000, z = 100000 }
+  assert(trx.items.query:in_box(near, far):count() == 2)
+
+  trx.items[1]:destroy()
+  assert(
+    trx.items.query:in_box(near, far):count() == 2,
+    "the box stopped answering on position"
+  )
+  assert(
+    trx.items.query:in_box(near, far):present():count() == 1,
+    "narrowing to what is in the world is the caller's to ask for"
+  )
+end)
+
+test("a spatial narrowing chains with the rest", function()
+  trx.items[1].pos = { x = 1024, y = 0, z = 0 }
+
+  local q = trx.items.query:in_box(
+    { x = 0, y = 0, z = 0 },
+    { x = 512, y = 0, z = 0 }
+  )
+  assert(q:count() == 1 and q:ids()[1] == 0)
+
+  local sphere = trx.items.query:in_sphere({ x = 0, y = 0, z = 0 }, 1024)
+  assert(sphere:count() == 2)
+  assert(
+    sphere:of_object(fake.VASE):count() == 1,
+    "a spatial narrowing must chain with the rest"
+  )
+end)
+
 return h.report()

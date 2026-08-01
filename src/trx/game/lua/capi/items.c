@@ -1,3 +1,4 @@
+#include <trx/core/utils.h>
 #include <trx/game/anims.h>
 #include <trx/game/const.h>
 #include <trx/game/creature.h>
@@ -433,6 +434,78 @@ static int M_L_ItemsCount(lua_State *const L)
     return 1;
 }
 
+// Every item whose position passes the test, as a list of item numbers. The
+// position is all this looks at; whether an item is in the world, simulated or
+// alive is for the caller to narrow by.
+static int M_PushItemsWhere(
+    lua_State *const L, bool (*const test)(XYZ_32 pos, const void *arg),
+    const void *const arg)
+{
+    lua_newtable(L);
+    int32_t found = 0;
+    for (int32_t i = 0; i < Item_GetTotalCount(); i++) {
+        if (!test(Item_Get(i)->pos, arg)) {
+            continue;
+        }
+        lua_pushinteger(L, i);
+        lua_rawseti(L, -2, ++found);
+    }
+    return 1;
+}
+
+typedef struct {
+    XYZ_32 min;
+    XYZ_32 max;
+} M_BOX;
+
+typedef struct {
+    XYZ_32 centre;
+    int64_t radius_sq;
+} M_SPHERE;
+
+static bool M_InBox(const XYZ_32 pos, const void *const arg)
+{
+    const M_BOX *const box = arg;
+    return pos.x >= box->min.x && pos.x <= box->max.x && pos.y >= box->min.y
+        && pos.y <= box->max.y && pos.z >= box->min.z && pos.z <= box->max.z;
+}
+
+static bool M_InSphere(const XYZ_32 pos, const void *const arg)
+{
+    const M_SPHERE *const sphere = arg;
+    const int64_t dx = pos.x - sphere->centre.x;
+    const int64_t dy = pos.y - sphere->centre.y;
+    const int64_t dz = pos.z - sphere->centre.z;
+    return dx * dx + dy * dy + dz * dz <= sphere->radius_sq;
+}
+
+// trxc.items.in_box({x,y,z}, {x,y,z}) -> list of item numbers
+static int M_L_ItemsInBox(lua_State *const L)
+{
+    const XYZ_32 a = LUA_CheckXYZ(L, 1);
+    const XYZ_32 b = LUA_CheckXYZ(L, 2);
+    const M_BOX box = {
+        .min = { .x = MIN(a.x, b.x), .y = MIN(a.y, b.y), .z = MIN(a.z, b.z) },
+        .max = { .x = MAX(a.x, b.x), .y = MAX(a.y, b.y), .z = MAX(a.z, b.z) },
+    };
+    return M_PushItemsWhere(L, M_InBox, &box);
+}
+
+// trxc.items.in_sphere({x,y,z}, radius) -> list of item numbers
+static int M_L_ItemsInSphere(lua_State *const L)
+{
+    const XYZ_32 centre = LUA_CheckXYZ(L, 1);
+    const int64_t radius = luaL_checkinteger(L, 2);
+    if (radius < 0) {
+        return luaL_argerror(L, 2, "radius must not be negative");
+    }
+    const M_SPHERE sphere = {
+        .centre = centre,
+        .radius_sq = radius * radius,
+    };
+    return M_PushItemsWhere(L, M_InSphere, &sphere);
+}
+
 // trxc.items.get(index | name) -> Item or nil
 static int M_L_ItemsGet(lua_State *const L)
 {
@@ -586,6 +659,8 @@ static const luaL_Reg m_Module[] = {
     { "count", M_L_ItemsCount },
     { "get", M_L_ItemsGet },
     { "get_bounds", M_L_ItemsGetBounds },
+    { "in_box", M_L_ItemsInBox },
+    { "in_sphere", M_L_ItemsInSphere },
     { "spawn", M_L_ItemsSpawn },
     { nullptr, nullptr },
 };

@@ -190,6 +190,7 @@ static void M_Reset(void)
             .hit_points = 20,
             .max_hit_points = 20,
             .is_visible = true,
+            .is_present = true,
         };
     }
     m_Items[1].object_id = FAKE_OBJ_VASE;
@@ -207,6 +208,7 @@ void FakeItems_PlaceCrystal(void)
         .room_num = 1,
         .pos = { .x = 4 * 1024, .y = 0, .z = 0 },
         .is_visible = true,
+        .is_present = true,
     };
     m_Count++;
 }
@@ -221,6 +223,7 @@ void FakeItems_PlaceScion(void)
         .room_num = 1,
         .pos = { .x = 8 * 1024, .y = 0, .z = 0 },
         .is_visible = true,
+        .is_present = true,
     };
     m_Count++;
 }
@@ -282,7 +285,10 @@ void Item_Destroy(const int16_t item_num)
     item->is_destroyed = true;
     item->is_finished = true;
     item->hit_points = 0;
+    // is_destroyed is terminal and dominant: the engine detaches the item from
+    // its room and stops simulating it before setting it, and asserts as much.
     item->is_simulated = false;
+    item->is_present = false;
     Handle_RegistryBump(&m_Handles, item_num);
     m_Used[item_num] = false;
     m_Names[item_num][0] = '\0';
