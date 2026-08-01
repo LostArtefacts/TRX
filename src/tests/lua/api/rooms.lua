@@ -310,6 +310,18 @@ test("the query narrows by height as well", function()
   )
 end)
 
+test("the query narrows by water", function()
+  trx.rooms[2].underwater = true
+  trx.rooms[3].underwater = true
+
+  local ids = trx.rooms.query:underwater():ids()
+  assert(#ids == 2 and ids[1] == 2 and ids[2] == 3, "the flooded rooms")
+  assert(
+    (~trx.rooms.query:underwater()):count() == 2,
+    "the rest are what is left"
+  )
+end)
+
 test("the query composes with the rest of a query", function()
   trx.rooms[2].underwater = true
   local wet = trx.rooms.query

@@ -7443,6 +7443,14 @@
             "description": "The narrowed query.",
             "type": "Query"
           }
+        },
+        {
+          "description": "The room is filled with water.",
+          "name": "underwater",
+          "returns": {
+            "description": "The narrowed query.",
+            "type": "Query"
+          }
         }
       ],
       "operators": [],

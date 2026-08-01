@@ -320,12 +320,30 @@ local function enumerate()
   return out
 end
 
+-- One of a room's own true-or-false flags, as a narrowing.
+local function flag_narrowing(field, description)
+  return {
+    description = description,
+    returns = { type = "Query", description = "The narrowed query." },
+    impl = trx.query.narrowing(function()
+      return function(_num, room)
+        return room[field]
+      end
+    end),
+  }
+end
+
 local RoomQuery = api.type("rooms.RoomQuery", {
   extends = "query.Query",
   description = "A `trx.query.Query` over the rooms of the current level, with the narrowings below "
     .. "on top of the ones every query has. Rooms answer to no names, so the name layer is absent.",
 
   methods = {
+    underwater = flag_narrowing(
+      "underwater",
+      "The room is filled with water."
+    ),
+
     at = {
       description = "The room contains a world position. Rooms overlap, so a position can be in "
         .. "several at once and every one of them matches, in room order. A room claims a point "
