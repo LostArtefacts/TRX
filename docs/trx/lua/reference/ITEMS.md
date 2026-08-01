@@ -481,6 +481,25 @@ end
 
       Returns: Query. The narrowed query.
 
+    - [lua]`itemquery:in_box(min, max)`  
+      The item stands inside a world-space box. The corners may come in any order.
+
+      An item is tested by its position, the point it stands at, rather than by the box it fills. Position is all this asks after, so the rest of the query says what else the item must be: `trx.items.query:in_box(min, max):present()` asks for the ones that are in the world as well.
+
+      Parameters:
+      - **`min`** (vec3). One corner of the box.
+      - **`max`** (vec3). The opposite corner.
+
+      Returns: Query. The narrowed query.
+
+      Example:
+      ```lua
+      local guards = trx.items.query
+        :in_box({ x = 51200, y = -2048, z = 30720 }, { x = 53248, y = 0, z = 32768 })
+        :present()
+        :matches()
+      ```
+
     - [lua]`itemquery:in_play()`  
       The item is part of the game rather than set aside.
 
@@ -491,6 +510,15 @@ end
 
       Parameters:
       - **`room_num`** (integer). 0-based room number.
+
+      Returns: Query. The narrowed query.
+
+    - [lua]`itemquery:in_sphere(centre, radius)`  
+      The item stands within a radius of a point. As with `in_box`, the item's position is the whole of the test.
+
+      Parameters:
+      - **`centre`** (vec3). Middle of the sphere.
+      - **`radius`** (integer). How far out it reaches. One sector is 1024.
 
       Returns: Query. The narrowed query.
 

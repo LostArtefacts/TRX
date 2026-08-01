@@ -779,6 +779,18 @@ local function resolve_object(key)
   return trx.objects.query:by_name(key):ids()[1]
 end
 
+-- A spatial answer as a predicate: the numbers come back as a list, and a
+-- query asks after one item at a time.
+local function found_in(nums)
+  local set = {}
+  for _, num in ipairs(nums) do
+    set[num] = true
+  end
+  return function(num)
+    return set[num] == true
+  end
+end
+
 -- One of an item's own true-or-false axes, as a narrowing.
 local function axis_narrowing(field, description)
   return {
@@ -855,6 +867,53 @@ local ItemQuery = api.type("items.ItemQuery", {
         return function(_i, item)
           return item.room_num == room_num
         end
+      end),
+    },
+
+    in_box = {
+      description = "The item stands inside a world-space box. The corners may come in any order.\n\n"
+        .. "An item is tested by its position, the point it stands at, rather than by the box it "
+        .. "fills. Position is all this asks after, so the rest of the query says what else the "
+        .. "item must be: `trx.items.query:in_box(min, max):present()` asks for the ones that are "
+        .. "in the world as well.",
+      params = {
+        {
+          name = "min",
+          type = "vec3",
+          description = "One corner of the box.",
+        },
+        { name = "max", type = "vec3", description = "The opposite corner." },
+      },
+      returns = { type = "Query", description = "The narrowed query." },
+      examples = {
+        [[local guards = trx.items.query
+  :in_box({ x = 51200, y = -2048, z = 30720 }, { x = 53248, y = 0, z = 32768 })
+  :present()
+  :matches()]],
+      },
+      impl = trx.query.narrowing(function(min, max)
+        return found_in(raw.in_box(min, max))
+      end),
+    },
+
+    in_sphere = {
+      description = "The item stands within a radius of a point. As with `in_box`, the item's "
+        .. "position is the whole of the test.",
+      params = {
+        {
+          name = "centre",
+          type = "vec3",
+          description = "Middle of the sphere.",
+        },
+        {
+          name = "radius",
+          type = "integer",
+          description = "How far out it reaches. One sector is 1024.",
+        },
+      },
+      returns = { type = "Query", description = "The narrowed query." },
+      impl = trx.query.narrowing(function(centre, radius)
+        return found_in(raw.in_sphere(centre, radius))
       end),
     },
   },
