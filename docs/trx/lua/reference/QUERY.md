@@ -24,7 +24,6 @@ Each domain adds narrowings of its own on top of the ones below - see
 `trx.items.ItemQuery` and `trx.objects.ObjectQuery` - and chained methods read
 left to right, combining with AND: `q:spawnable():by_name("wolf")`.
 
-
 ### Structures
 
 - [lua]`trx.query.Query`

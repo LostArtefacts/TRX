@@ -3242,7 +3242,7 @@
       }
     },
     {
-      "description": "    Marks a cutscene as played or unplayed. Marking one as played keeps its\n    trigger from firing; unmarking one lets it run again.\n\n    A trigger may name a number the game has no cutscene for - TR4 uses 32 to\n    ask for a full-motion video - and the engine remembers those the same way,\n    so `on_cutscene_trigger` hears about each of them once. This is what clears\n    that memory, and it takes any number a trigger may carry, not only the ones\n    `play` accepts.\n  ",
+      "description": "Marks a cutscene as played or unplayed. Marking one as played keeps its\ntrigger from firing; unmarking one lets it run again.\n\nA trigger may name a number the game has no cutscene for - TR4 uses 32 to\nask for a full-motion video - and the engine remembers those the same way,\nso `on_cutscene_trigger` hears about each of them once. This is what clears\nthat memory, and it takes any number a trigger may carry, not only the ones\n`play` accepts.",
       "examples": [
         "trx.cutscenes.set_played(7, true)"
       ],
@@ -3265,7 +3265,7 @@
       "path": "cutscenes.forget_played"
     },
     {
-      "description": "    Places Lara where the next cutscene to end leaves her. A cutscene stands\n    her at its own origin while it plays and puts her back where it found her\n    afterwards; this says to put her somewhere else instead, as the original\n    game does for the scenes that carry her along.\n\n    It holds for one cutscene, whether named before `play` or while the scene\n    runs, and is forgotten once she has been placed.\n  ",
+      "description": "Places Lara where the next cutscene to end leaves her. A cutscene stands\nher at its own origin while it plays and puts her back where it found her\nafterwards; this says to put her somewhere else instead, as the original\ngame does for the scenes that carry her along.\n\nIt holds for one cutscene, whether named before `play` or while the scene\nruns, and is forgotten once she has been placed.",
       "examples": [
         "trx.events.on_cutscene_start(function(num)\n  if num == 12 then\n    trx.cutscenes.set_lara_return({ x = 38912, y = 2048, z = 51200 })\n  end\nend)"
       ],
@@ -3285,7 +3285,7 @@
       "path": "cutscenes.set_lara_return"
     },
     {
-      "description": "    Happens as a level starts running, before its first frame is drawn. By then\n    the level file is loaded, its items are set up and any savegame state has\n    been applied, so this is where a script sets object properties, declares\n    allies, changes room state and plays sound effects. Every kind of level\n    fires it: a played level, a cutscene and the attract demo alike. The title\n    screen has `on_title_start` instead.\n  ",
+      "description": "Happens as a level starts running, before its first frame is drawn. By then\nthe level file is loaded, its items are set up and any savegame state has\nbeen applied, so this is where a script sets object properties, declares\nallies, changes room state and plays sound effects. Every kind of level\nfires it: a played level, a cutscene and the attract demo alike. The title\nscreen has `on_title_start` instead.",
       "params": [
         {
           "name": "callback",
@@ -3311,7 +3311,7 @@
       }
     },
     {
-      "description": "    Happens when the title screen's scene starts playing behind the menu, once\n    its level is loaded and its items are set up. The handler takes no\n    arguments. `on_game_start` does not fire for the title level.\n  ",
+      "description": "Happens when the title screen's scene starts playing behind the menu, once\nits level is loaded and its items are set up. The handler takes no\narguments. `on_game_start` does not fire for the title level.",
       "examples": [
         "trx.events.on_title_start(function()\n  trx.log.info(\"the menu is up\")\nend)"
       ],
@@ -3770,7 +3770,7 @@
       }
     },
     {
-      "description": "    Happens when a cutscene trigger fires, before the engine acts on it. A\n    handler answers the trigger by returning true - having played a cutscene of\n    its own, run something else, or decided nothing should run. If no handler\n    answers, the engine plays the cutscene the trigger names.\n\n    A trigger Lara stands on fires every frame, so this happens only for a\n    cutscene that has not run yet and while none is playing. Asking counts as\n    running it, whatever came of it, so the same handler is not asked again on\n    the next frame. Clear the mark with `trx.cutscenes.set_played` to hear\n    about one again.\n\n    The number a trigger names need not be one the game has a cutscene for -\n    TR4 uses 32 to ask for a full-motion video. Those reach a handler too, and\n    the engine has nothing of its own to do about them.\n  ",
+      "description": "Happens when a cutscene trigger fires, before the engine acts on it. A\nhandler answers the trigger by returning true - having played a cutscene of\nits own, run something else, or decided nothing should run. If no handler\nanswers, the engine plays the cutscene the trigger names.\n\nA trigger Lara stands on fires every frame, so this happens only for a\ncutscene that has not run yet and while none is playing. Asking counts as\nrunning it, whatever came of it, so the same handler is not asked again on\nthe next frame. Clear the mark with `trx.cutscenes.set_played` to hear\nabout one again.\n\nThe number a trigger names need not be one the game has a cutscene for -\nTR4 uses 32 to ask for a full-motion video. Those reach a handler too, and\nthe engine has nothing of its own to do about them.",
       "examples": [
         "-- only in the throne room; a flyby stands in for it elsewhere\ntrx.events.on_cutscene_trigger(function(num)\n  if num ~= 27 then\n    return false\n  end\n  if trx.lara.item.room_num == 55 then\n    trx.cutscenes.play(27)\n  else\n    trx.camera.play_flyby(3)\n  end\n  return true\nend)"
       ],
@@ -4970,7 +4970,7 @@
       "order": 11
     },
     {
-      "description": "    Module for TR4's in-game cutscenes, the animated scenes stored in\n    `cutseq.pak` and started by a cutscene trigger. A cutscene plays once:\n    the engine remembers which ones have run, and a script may consult or\n    rewrite that memory. The cutscene levels of TR1-TR3, which the game flow\n    lists and `/cut` plays, are a different thing: see `trx.game.cutscenes`.\n  ",
+      "description": "Module for TR4's in-game cutscenes, the animated scenes stored in\n`cutseq.pak` and started by a cutscene trigger. A cutscene plays once:\nthe engine remembers which ones have run, and a script may consult or\nrewrite that memory. The cutscene levels of TR1-TR3, which the game flow\nlists and `/cut` plays, are a different thing: see `trx.game.cutscenes`.",
       "name": "cutscenes",
       "order": 13
     },
@@ -5037,7 +5037,7 @@
       "title": "Object"
     },
     {
-      "description": "A composable filter over a domain of things - the objects a level is built\nfrom, or the items alive in it. `trx.objects.query` and `trx.items.query` are\neach the identity query, matching everything; narrow one down, then read the\nresult.\n\nA query is immutable. Every method returns a fresh query, so a base can be kept\nand branched from without one narrowing leaking into another.\n\nEach domain adds narrowings of its own on top of the ones below - see\n`trx.items.ItemQuery` and `trx.objects.ObjectQuery` - and chained methods read\nleft to right, combining with AND: `q:spawnable():by_name(\"wolf\")`.\n",
+      "description": "A composable filter over a domain of things - the objects a level is built\nfrom, or the items alive in it. `trx.objects.query` and `trx.items.query` are\neach the identity query, matching everything; narrow one down, then read the\nresult.\n\nA query is immutable. Every method returns a fresh query, so a base can be kept\nand branched from without one narrowing leaking into another.\n\nEach domain adds narrowings of its own on top of the ones below - see\n`trx.items.ItemQuery` and `trx.objects.ObjectQuery` - and chained methods read\nleft to right, combining with AND: `q:spawnable():by_name(\"wolf\")`.",
       "name": "query",
       "order": 9,
       "title": "Query"

@@ -164,6 +164,49 @@ test("type() passes the declaration to the C binder", function()
   assert(exposed.fields.secret == nil, "an undeclared member was exposed")
 end)
 
+-- A long-bracket description is written at the indentation of the declaration
+-- around it, and four spaces of it would read as a code block.
+test("describe() takes the indentation off a description", function()
+  local api = fresh_env()
+  api.module("things", {
+    description = [[
+      A module.
+
+      Written at the indentation the declaration sits at, with a line that
+        lays something out under it.
+    ]],
+  })
+  api.define("things.poke", {
+    description = [[
+      Pokes it.
+    ]],
+    impl = function() end,
+  })
+
+  local dumped = api.describe()
+  local module
+  for _, entry in ipairs(dumped.modules) do
+    if entry.name == "things" then
+      module = entry
+    end
+  end
+  assert(
+    module.description
+      == "A module.\n\nWritten at the indentation the declaration sits at, "
+        .. "with a line that\n  lays something out under it.",
+    "shared indent must go and the deeper line must keep the rest: "
+      .. module.description
+  )
+
+  local poke
+  for _, fn in ipairs(dumped.functions) do
+    if fn.path == "things.poke" then
+      poke = fn
+    end
+  end
+  assert(poke.description == "Pokes it.")
+end)
+
 test("describe() reports fields, methods and extensions", function()
   local api = fresh_env()
   api.module("things", { description = "..." })

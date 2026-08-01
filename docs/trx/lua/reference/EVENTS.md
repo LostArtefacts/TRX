@@ -37,13 +37,12 @@ An event that carries a default the script may take over says so in its descript
 ### Functions
 
 - [lua]`trx.events.on_game_start(callback)`  
-      Happens as a level starts running, before its first frame is drawn. By then
-      the level file is loaded, its items are set up and any savegame state has
-      been applied, so this is where a script sets object properties, declares
-      allies, changes room state and plays sound effects. Every kind of level
-      fires it: a played level, a cutscene and the attract demo alike. The title
-      screen has `on_title_start` instead.
-
+  Happens as a level starts running, before its first frame is drawn. By then
+  the level file is loaded, its items are set up and any savegame state has
+  been applied, so this is where a script sets object properties, declares
+  allies, changes room state and plays sound effects. Every kind of level
+  fires it: a played level, a cutscene and the attract demo alike. The title
+  screen has `on_title_start` instead.
 
   Parameters:
   - **`callback`** (function).
@@ -54,10 +53,9 @@ An event that carries a default the script may take over says so in its descript
   Returns: events.Listener. The attached handler.
 
 - [lua]`trx.events.on_title_start(callback)`  
-      Happens when the title screen's scene starts playing behind the menu, once
-      its level is loaded and its items are set up. The handler takes no
-      arguments. `on_game_start` does not fire for the title level.
-
+  Happens when the title screen's scene starts playing behind the menu, once
+  its level is loaded and its items are set up. The handler takes no
+  arguments. `on_game_start` does not fire for the title level.
 
   Parameters:
   - **`callback`** (function).
@@ -410,21 +408,20 @@ An event that carries a default the script may take over says so in its descript
   ```
 
 - [lua]`trx.events.on_cutscene_trigger(callback)`  
-      Happens when a cutscene trigger fires, before the engine acts on it. A
-      handler answers the trigger by returning true - having played a cutscene of
-      its own, run something else, or decided nothing should run. If no handler
-      answers, the engine plays the cutscene the trigger names.
+  Happens when a cutscene trigger fires, before the engine acts on it. A
+  handler answers the trigger by returning true - having played a cutscene of
+  its own, run something else, or decided nothing should run. If no handler
+  answers, the engine plays the cutscene the trigger names.
 
-      A trigger Lara stands on fires every frame, so this happens only for a
-      cutscene that has not run yet and while none is playing. Asking counts as
-      running it, whatever came of it, so the same handler is not asked again on
-      the next frame. Clear the mark with `trx.cutscenes.set_played` to hear
-      about one again.
+  A trigger Lara stands on fires every frame, so this happens only for a
+  cutscene that has not run yet and while none is playing. Asking counts as
+  running it, whatever came of it, so the same handler is not asked again on
+  the next frame. Clear the mark with `trx.cutscenes.set_played` to hear
+  about one again.
 
-      The number a trigger names need not be one the game has a cutscene for -
-      TR4 uses 32 to ask for a full-motion video. Those reach a handler too, and
-      the engine has nothing of its own to do about them.
-
+  The number a trigger names need not be one the game has a cutscene for -
+  TR4 uses 32 to ask for a full-motion video. Those reach a handler too, and
+  the engine has nothing of its own to do about them.
 
   Parameters:
   - **`callback`** (function).
