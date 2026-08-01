@@ -1,4 +1,5 @@
 #include <trx/core/log.h>
+#include <trx/core/memory.h>
 #include <trx/core/vector.h>
 #include <trx/game/items/actions.h>
 #include <trx/game/lua/common.h>
@@ -8,8 +9,14 @@
 
 #include <lauxlib.h>
 #include <lua.h>
+#include <string.h>
 
 #define M_NO_KEY (-1)
+#define M_MAX_FIRE_ARGS 4
+// How many event types a module of the public surface may declare on top of the
+// engine's own. Reaching it raises rather than dropping the declaration, so a
+// module that needs more says so at boot.
+#define M_MAX_DECLARED 32
 
 typedef struct {
     // What a script detaches by. Its own, and not its Lua ref: luaL_unref hands
@@ -54,7 +61,19 @@ static int32_t m_DispatchDepth = 0;
 // Live listeners per type, so a fire for a type nobody watches returns without
 // walking the vector. A listener counts until it stops being able to fire,
 // which M_RemoveListener decides for both its branches.
-static int32_t m_ListenerCount[LUA_EVENT_NUMBER_OF] = { 0 };
+static int32_t m_ListenerCount[LUA_EVENT_NUMBER_OF + M_MAX_DECLARED] = { 0 };
+
+// The event types declared from Lua, which follow the engine's own. A
+// declaration is the name of an event rather than any state of one, so it
+// outlives a shutdown: the id a module took at load time still names the same
+// event once the listeners have been cleared and remade.
+static char *m_Declared[M_MAX_DECLARED] = { nullptr };
+static int32_t m_DeclaredCount = 0;
+
+static int32_t M_TypeCount(void)
+{
+    return LUA_EVENT_NUMBER_OF + m_DeclaredCount;
+}
 
 static bool M_FireEvent(
     LUA_EVENT_TYPE ev, int32_t key, const LUA_EVENT_ARG *args,
@@ -103,7 +122,7 @@ static void M_ClearAllListeners(const bool unref_from_lua)
 
     Vector_Free(m_Listeners);
     m_Listeners = nullptr;
-    for (int32_t i = 0; i < LUA_EVENT_NUMBER_OF; i++) {
+    for (int32_t i = 0; i < M_TypeCount(); i++) {
         m_ListenerCount[i] = 0;
     }
 }
@@ -119,10 +138,15 @@ static void M_Shutdown(void)
     m_L = nullptr;
 }
 
-// The state is gone by now, so a listener's ref cannot be given back to it.
+// The state is gone by now, so a listener's ref cannot be given back to it. The
+// names go here rather than in M_Shutdown, which a declaration outlives.
 __attribute__((destructor)) static void M_AtExit(void)
 {
     M_Shutdown();
+    for (int32_t i = 0; i < m_DeclaredCount; i++) {
+        Memory_FreePointer(&m_Declared[i]);
+    }
+    m_DeclaredCount = 0;
 }
 
 static void M_PushArg(lua_State *const L, const LUA_EVENT_ARG arg)
@@ -193,7 +217,7 @@ static void M_ClaimKey(const LUA_EVENT_TYPE ev, const int32_t key)
 static int M_L_EventsAttach(lua_State *const L)
 {
     const LUA_EVENT_TYPE ev = (LUA_EVENT_TYPE)LUA_CheckRange(
-        L, 1, LUA_EVENT_NUMBER_OF, "unknown event type");
+        L, 1, M_TypeCount(), "unknown event type");
     luaL_checktype(L, 2, LUA_TFUNCTION);
 
     // A flip effect listener keys on the number it dispatches for, and its
@@ -225,6 +249,99 @@ static int M_L_EventsAttach(lua_State *const L)
     return 1;
 }
 
+// trxc.events.declare(name) -> event_type
+//
+// An event of a module's own. The engine's events are the LUA_EVENT_TYPE enum,
+// which is where an event C raises has to be named; one a module of the public
+// surface raises itself - the zones do - has nothing to do with C and is
+// declared here instead. What comes back is an event type like any other, so
+// attach, fire and detach take it and a level script's listeners are dropped
+// with the level.
+//
+// Declaring the same name twice hands back the same type, so a module can ask
+// for its own events without keeping track of whether it already has.
+static int M_L_EventsDeclare(lua_State *const L)
+{
+    const char *const name = luaL_checkstring(L, 1);
+    for (int32_t i = 0; i < m_DeclaredCount; i++) {
+        if (strcmp(m_Declared[i], name) == 0) {
+            lua_pushinteger(L, LUA_EVENT_NUMBER_OF + i);
+            return 1;
+        }
+    }
+    if (m_DeclaredCount >= M_MAX_DECLARED) {
+        return luaL_error(
+            L, "no room to declare event '%s': the limit is %d", name,
+            M_MAX_DECLARED);
+    }
+    m_Declared[m_DeclaredCount] = Memory_DupStr(name);
+    lua_pushinteger(L, LUA_EVENT_NUMBER_OF + m_DeclaredCount);
+    m_DeclaredCount++;
+    return 1;
+}
+
+// trxc.events.fire(event_type, ...) -> bool
+//
+// For a module of the public surface that is itself an event source: the zones
+// find their transitions in Lua and report them here, so a handler attaches,
+// answers and detaches exactly as it does for an event the engine raises. trxc
+// is off the globals before any script runs, so this stays the surface's own.
+static int M_L_EventsFire(lua_State *const L)
+{
+    const LUA_EVENT_TYPE ev = (LUA_EVENT_TYPE)LUA_CheckRange(
+        L, 1, M_TypeCount(), "unknown event type");
+
+    const int32_t count = lua_gettop(L) - 1;
+    if (count > M_MAX_FIRE_ARGS) {
+        return luaL_error(
+            L, "an event takes at most %d arguments, got %d", M_MAX_FIRE_ARGS,
+            count);
+    }
+
+    LUA_EVENT_ARG args[M_MAX_FIRE_ARGS];
+    for (int32_t i = 0; i < count; i++) {
+        const int arg = i + 2;
+        switch (lua_type(L, arg)) {
+        case LUA_TNIL:
+            args[i] = (LUA_EVENT_ARG) { .type = LUA_EVENT_ARG_NIL };
+            break;
+        case LUA_TBOOLEAN:
+            args[i] = (LUA_EVENT_ARG) {
+                .type = LUA_EVENT_ARG_BOOL,
+                .value = { .b = lua_toboolean(L, arg) },
+            };
+            break;
+        case LUA_TNUMBER:
+            if (lua_isinteger(L, arg)) {
+                args[i] = (LUA_EVENT_ARG) {
+                    .type = LUA_EVENT_ARG_INT32,
+                    .value = { .i32 = (int32_t)lua_tointeger(L, arg) },
+                };
+            } else {
+                args[i] = (LUA_EVENT_ARG) {
+                    .type = LUA_EVENT_ARG_NUMBER,
+                    .value = { .number = lua_tonumber(L, arg) },
+                };
+            }
+            break;
+        case LUA_TSTRING:
+            // The argument stays on the stack for the whole dispatch, so what
+            // this points at outlives the handlers reading it.
+            args[i] = (LUA_EVENT_ARG) {
+                .type = LUA_EVENT_ARG_STRING,
+                .value = { .str = lua_tostring(L, arg) },
+            };
+            break;
+        default:
+            return luaL_argerror(
+                L, arg, "an event carries no value of this type");
+        }
+    }
+
+    lua_pushboolean(L, LUA_FireEventEx(ev, args, count));
+    return 1;
+}
+
 // trxc.events.detach(id) -> bool
 static int M_L_EventsDetach(lua_State *const L)
 {
@@ -246,8 +363,8 @@ static int M_L_EventsDetach(lua_State *const L)
 }
 
 static const luaL_Reg m_Module[] = {
-    { "attach", M_L_EventsAttach },
-    { "detach", M_L_EventsDetach },
+    { "attach", M_L_EventsAttach }, { "declare", M_L_EventsDeclare },
+    { "detach", M_L_EventsDetach }, { "fire", M_L_EventsFire },
     { nullptr, nullptr },
 };
 

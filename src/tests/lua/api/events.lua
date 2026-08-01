@@ -295,4 +295,73 @@ test("the event type is not part of the surface", function()
   end)
 end)
 
+-- An event a module of the surface raises itself, which the zones are the first
+-- of. It is an event type like any other from the declaration on.
+test("a module can declare an event of its own", function()
+  local thing = trxc.events.declare("test_thing")
+  assert(
+    trxc.events.declare("test_thing") == thing,
+    "the same name must name the same event"
+  )
+  local other = trxc.events.declare("test_other")
+  assert(other ~= thing, "two names are two events")
+
+  local heard = {}
+  local id = trxc.events.attach(thing, function(carried)
+    heard[#heard + 1] = carried
+  end)
+
+  trxc.events.fire(thing, 7)
+  trxc.events.fire(other, 8)
+  assert(#heard == 1 and heard[1] == 7, "a listener hears its own event alone")
+
+  assert(trxc.events.detach(id) == true, "detach takes a declared event's id")
+  trxc.events.fire(thing, 9)
+  assert(#heard == 1, "a detached listener kept hearing")
+end)
+
+test("an event type nobody declared is refused", function()
+  raises(function()
+    trxc.events.attach(9999, function() end)
+  end, "unknown event type")
+  raises(function()
+    trxc.events.fire(9999)
+  end, "unknown event type")
+end)
+
+test("a fired event carries the arguments it was given", function()
+  local kind = trxc.events.declare("test_carried")
+  local seen
+  trxc.events.attach(kind, function(...)
+    seen = table.pack(...)
+  end)
+
+  trxc.events.fire(kind, true, "gate", nil)
+  assert(seen.n == 3, "the handler must be given as many as the fire was")
+  assert(seen[1] == true and seen[2] == "gate" and seen[3] == nil)
+
+  -- A whole number stays whole, and a fractional one keeps its fraction.
+  trxc.events.fire(kind, 7, 1.5)
+  assert(seen[1] == 7 and math.type(seen[1]) == "integer")
+  assert(seen[2] == 1.5 and math.type(seen[2]) == "float")
+
+  trxc.events.fire(kind)
+  assert(seen.n == 0, "an event may carry nothing at all")
+end)
+
+test("an event carries four arguments, of the kinds it can hold", function()
+  local kind = trxc.events.declare("test_carried_limits")
+  trxc.events.fire(kind, 1, 2, 3, 4)
+
+  raises(function()
+    trxc.events.fire(kind, 1, 2, 3, 4, 5)
+  end, "at most 4 arguments")
+  raises(function()
+    trxc.events.fire(kind, {})
+  end, "carries no value of this type")
+  raises(function()
+    trxc.events.fire(kind, print)
+  end, "carries no value of this type")
+end)
+
 return h.report()
