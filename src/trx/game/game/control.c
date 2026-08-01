@@ -57,11 +57,9 @@ bool Game_Start(const GF_LEVEL *const level, const GF_SEQUENCE_CONTEXT seq_ctx)
             level->music_track, is_cutscene ? MPM_ONCE : MPM_LOOP);
     }
 
-    const LUA_EVENT_ARG args[] = {
-        { .type = LUA_EVENT_ARG_INT32, .value = { .i32 = level->num } },
-        { .type = LUA_EVENT_ARG_BOOL, .value = { .b = seq_ctx == GFSC_SAVED } },
-    };
-    LUA_FireEventEx(LUA_EVENT_GAME_START, args, 2);
+    // Which level this is, and what kind, is trx.game.current_level's to
+    // answer; the event carries only what the level itself cannot say.
+    LUA_FireEventBool(LUA_EVENT_GAME_START, seq_ctx == GFSC_SAVED);
     return true;
 }
 

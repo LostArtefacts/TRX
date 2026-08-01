@@ -1,4 +1,4 @@
-trx.events.on_game_start(function(level)
+trx.events.on_game_start(function()
   trx.items[1].properties.lift = true
   trx.objects.switch_type_generic_1.properties.switch_mode =
     trx.items.SwitchMode.HIDDEN_PICKUP

@@ -67,3 +67,6 @@ bool LUA_FireEvent(LUA_EVENT_TYPE ev);
 
 // Fire a Lua event of given type with int32 argument
 bool LUA_FireEventInt32(LUA_EVENT_TYPE ev, int32_t arg);
+
+// Fire a Lua event of given type with boolean argument
+bool LUA_FireEventBool(LUA_EVENT_TYPE ev, bool arg);

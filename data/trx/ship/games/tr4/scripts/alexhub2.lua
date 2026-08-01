@@ -1,4 +1,4 @@
-trx.events.on_game_start(function(level)
+trx.events.on_game_start(function()
   trx.objects.animating_14.properties.collidable = false
   trx.objects.animating_15.properties.collidable = false
   trx.objects.animating_16.properties.collidable = false

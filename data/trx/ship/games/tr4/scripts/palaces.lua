@@ -1,4 +1,4 @@
-trx.events.on_game_start(function(level)
+trx.events.on_game_start(function()
   trx.items[63].properties.pickup_mode = trx.items.PickupMode.PLINTH_LOW
   trx.items[104].properties.pickup_mode = trx.items.PickupMode.PLINTH_LOW
   trx.objects.switch_type_generic_2.properties.switch_mode =

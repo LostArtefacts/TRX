@@ -393,4 +393,12 @@ bool LUA_FireEventInt32(const LUA_EVENT_TYPE ev, const int32_t arg)
     return LUA_FireEventEx(ev, args, 1);
 }
 
+bool LUA_FireEventBool(const LUA_EVENT_TYPE ev, const bool arg)
+{
+    const LUA_EVENT_ARG args[] = {
+        { .type = LUA_EVENT_ARG_BOOL, .value = { .b = arg } },
+    };
+    return LUA_FireEventEx(ev, args, 1);
+}
+
 REGISTER_LUA_CAPI(.create = M_Create, .shutdown = M_Shutdown)

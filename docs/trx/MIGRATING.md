@@ -252,7 +252,7 @@ order: 3
    items are set up, any savegame state has been applied, and nothing has been
    drawn yet. A handler moves across as it stands:
    ```lua
-   trx.events.on_game_start(function(level_num, is_save)
+   trx.events.on_game_start(function(is_save)
      trx.creatures.add_ally(trx.catalog.objects.monkey)
      trx.items[65].properties.range = { x = 14, y = 6, z = 14 }
    end)
@@ -260,7 +260,9 @@ order: 3
    An object property no longer has to be written before its item is
    initialised, which is what the earlier moments were for. `on_game_start`
    fires for cutscene and demo levels too, and the title screen has
-   `on_title_start`.
+   `on_title_start`. The handler is not handed the level's number: the level
+   itself is `trx.game.current_level`, which says both what it is and where it
+   counts.
 
 25. **Remove `ammo.pickup_qty_alt` from weapon definitions**
    The field only applied to flares in Japanese NG, which is no longer a game

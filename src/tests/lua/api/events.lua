@@ -89,18 +89,17 @@ test("on_pickup passes the item number", function()
   assert(seen == 42, "on_pickup did not receive the item number")
 end)
 
-test("on_game_start passes the level number and the savegame flag", function()
-  local seen_level, seen_save = nil, nil
-  trx.events.on_game_start(function(level_num, is_save)
-    seen_level, seen_save = level_num, is_save
+test("on_game_start passes the savegame flag", function()
+  local seen = nil
+  trx.events.on_game_start(function(is_save)
+    seen = is_save
   end)
 
-  fake.fire("on_game_start", 3, true)
-  assert(seen_level == 3, "wrong level number")
-  assert(seen_save == true, "is_save must be a boolean, not a truthy number")
+  fake.fire("on_game_start", true)
+  assert(seen == true, "is_save must be a boolean, not a truthy number")
 
-  fake.fire("on_game_start", 3, false)
-  assert(seen_save == false, "a fresh start must report false")
+  fake.fire("on_game_start", false)
+  assert(seen == false, "a fresh start must report false")
 end)
 
 test("every handler attached to an event fires, in order", function()

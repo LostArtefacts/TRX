@@ -44,13 +44,23 @@ An event that carries a default the script may take over says so in its descript
   fires it: a played level, a cutscene and the attract demo alike. The title
   screen has `on_title_start` instead.
 
+  Which level is starting is `trx.game.current_level`, whose `num` and `type`
+  say where it counts and what kind it is. A level script already knows both,
+  which is why the handler is not handed them.
+
   Parameters:
   - **`callback`** (function).
     Called with:
-    - **`level_num`** (integer). Number of the level being started.
-    - **`is_save`** (boolean). Whether the level is being resumed from a savegame rather than started fresh.
+    - **`is_save`** (boolean). Whether the level is being resumed from a savegame rather than started fresh. A cutscene and a demo are never resumed, and always report false.
 
   Returns: events.Listener. The attached handler.
+
+  Example:
+  ```lua
+  trx.events.on_game_start(function(is_save)
+    trx.log.info(trx.game.current_level.title .. " is up")
+  end)
+  ```
 
 - [lua]`trx.events.on_title_start(callback)`  
   Happens when the title screen's scene starts playing behind the menu, once
