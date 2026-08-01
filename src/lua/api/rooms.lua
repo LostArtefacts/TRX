@@ -113,6 +113,12 @@ api.type("rooms.Room", {
       type = "boolean",
       description = "Whether the room is filled with water.",
     },
+    swamp = {
+      from = "flags.swamp",
+      type = "boolean",
+      description = "Whether the room is filled with swamp water, which Lara wades through and "
+        .. "sinks into rather than swimming.",
+    },
     wind = {
       from = "flags.wind",
       type = "boolean",
@@ -343,6 +349,7 @@ local RoomQuery = api.type("rooms.RoomQuery", {
       "underwater",
       "The room is filled with water."
     ),
+    swamp = flag_narrowing("swamp", "The room is filled with swamp water."),
 
     at = {
       description = "The room contains a world position. Rooms overlap, so a position can be in "

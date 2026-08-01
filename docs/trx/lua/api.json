@@ -7314,6 +7314,12 @@
           "writable": false
         },
         {
+          "description": "Whether the room is filled with swamp water, which Lara wades through and sinks into rather than swimming.",
+          "name": "swamp",
+          "type": "boolean",
+          "writable": true
+        },
+        {
           "description": "Whether the room is filled with water.",
           "name": "underwater",
           "type": "boolean",
@@ -7439,6 +7445,14 @@
               "type": "vec3"
             }
           ],
+          "returns": {
+            "description": "The narrowed query.",
+            "type": "Query"
+          }
+        },
+        {
+          "description": "The room is filled with swamp water.",
+          "name": "swamp",
           "returns": {
             "description": "The narrowed query.",
             "type": "Query"
