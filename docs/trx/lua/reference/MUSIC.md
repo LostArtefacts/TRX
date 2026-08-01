@@ -51,7 +51,7 @@ Module for playing and controlling the soundtrack.
     Properties:
     - **`mode`**: integer. How the track is playing. Compare against `trx.music.PlayMode`. *(read-only)*
     - **`timestamp`**: number. How far into the track the stream is, in seconds. *(read-only)*
-    - **`track_id`**: integer. The track this stream is playing, in the level's own numbering. *(read-only)*
+    - **`track_num`**: integer. The track this stream is playing, in the level's own numbering. *(read-only)*
 
     Methods:
 
@@ -86,7 +86,7 @@ Module for playing and controlling the soundtrack.
     unrelated one.
 
     Properties:
-    - **`id`**: integer. The track's id, in the level's own numbering. *(read-only)*
+    - **`num`**: integer. The number the level gives this track. *(read-only)*
 
     Methods:
 

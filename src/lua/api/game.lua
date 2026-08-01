@@ -225,7 +225,7 @@ api.define("game.play_level", {
   description = "Starts a level from `trx.game.levels`.",
   params = {
     {
-      name = "num",
+      name = "level_num",
       type = "integer",
       description = "1-based position in `trx.game.levels`.",
     },
@@ -246,7 +246,7 @@ api.define("game.play_cutscene", {
   description = "Plays a cutscene.",
   params = {
     {
-      name = "num",
+      name = "cutscene_num",
       type = "integer",
       description = "1-based position in `trx.game.cutscenes`.",
     },
@@ -258,7 +258,7 @@ api.define("game.play_demo", {
   description = "Plays a demo, and returns the one that started.",
   params = {
     {
-      name = "num",
+      name = "demo_num",
       type = "integer",
       optional = true,
       description = "1-based position in `trx.game.demos`. Omit to play the next demo in rotation.",

@@ -18,7 +18,7 @@ has.]],
 })
 
 local object_param = {
-  name = "object",
+  name = "object_id",
   type = "integer",
   enum = "catalog.objects",
   description = "The pickup, or the inventory icon it goes into.",
@@ -164,7 +164,11 @@ drawn as.]],
       description = "The entry at a position, counted from one in the order they are drawn, or "
         .. "`nil` past the end.",
       params = {
-        { name = "n", type = "integer", description = "1-based position." },
+        {
+          name = "entry_num",
+          type = "integer",
+          description = "1-based position.",
+        },
       },
       returns = { type = "Entry", nullable = true },
     },

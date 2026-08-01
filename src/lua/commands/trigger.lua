@@ -52,7 +52,7 @@ local function targets_from_id(text)
   if not is_targetable(item) then
     return {}, trx.locale.format("console/cmd/trigger/invalid_item", text)
   end
-  return { item.index }
+  return { item.num }
 end
 
 local function targets_from_item_name(text)
@@ -63,7 +63,7 @@ local function targets_from_item_name(text)
   if not is_targetable(item) then
     return {}, trx.locale.format("console/cmd/trigger/invalid_item", text)
   end
-  return { item.index }
+  return { item.num }
 end
 
 local function targets_from_object_name(text)
@@ -81,7 +81,7 @@ local function targets_from_object_name(text)
   for i = 0, #trx.items - 1 do
     local item = trx.items[i]
     if item ~= nil and wanted[item.object_id] and is_targetable(item) then
-      found[#found + 1] = item.index
+      found[#found + 1] = item.num
     end
   end
 

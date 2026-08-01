@@ -4,7 +4,7 @@ local h = require("harness")
 local test, raises = h.test, h.raises
 
 test("samples is keyed by id, nil for a sample the level lacks", function()
-  assert(trx.sound.samples[fake.SAMPLE].id == fake.SAMPLE)
+  assert(trx.sound.samples[fake.SAMPLE].num == fake.SAMPLE)
   assert(trx.sound.samples[fake.MISSING_SAMPLE] == nil)
   assert(#trx.sound.samples == 1, "the fake level has exactly one sample")
 end)
@@ -18,7 +18,7 @@ test("a sample reports its definition and plays itself", function()
   assert(calls.play.count == 1)
   assert(calls.play.sfx_num == fake.SAMPLE)
   assert(voice ~= nil and voice:is_valid(), "play hands back the voice")
-  assert(voice.sample_id == fake.SAMPLE)
+  assert(voice.sample_num == fake.SAMPLE)
 end)
 
 test("play with no position plays at full volume", function()
@@ -62,7 +62,7 @@ test("streams reaches the playing voices and controls them", function()
   fake.set_stream(1, fake.SAMPLE)
   local voice = trx.sound.streams[2]
   assert(voice:is_valid(), "slot 1 is playing")
-  assert(voice.sample_id == fake.SAMPLE)
+  assert(voice.sample_num == fake.SAMPLE)
 
   voice:pause()
   voice:unpause()
@@ -102,7 +102,7 @@ test("a silent voice is stale, and reading it raises", function()
   local voice = trx.sound.streams[1]
   assert(not voice:is_valid(), "nothing plays on the first slot")
   raises(function()
-    return voice.sample_id
+    return voice.sample_num
   end)
 end)
 

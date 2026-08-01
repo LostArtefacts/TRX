@@ -30,7 +30,7 @@ Module for playing sound effects.
     unrelated one.
 
     Properties:
-    - **`id`**: integer. The sample's id, in the level's own numbering. *(read-only)*
+    - **`num`**: integer. The number the level gives this sample. *(read-only)*
     - **`pitch`**: integer. The sample's base pitch. *(read-only)*
     - **`randomness`**: integer. How much the sample's playback is randomized. *(read-only)*
     - **`range`**: integer. How far the sample carries. *(read-only)*
@@ -63,7 +63,7 @@ Module for playing sound effects.
     unrelated one.
 
     Properties:
-    - **`sample_id`**: integer. The sample this voice is playing, in the level's own numbering. *(read-only)*
+    - **`sample_num`**: integer. The sample this voice is playing, in the level's own numbering. *(read-only)*
 
     Methods:
 

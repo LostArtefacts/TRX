@@ -248,6 +248,7 @@ The Lua integration was rewritten and existing scripts will need updating; refer
 - changed `item.object_id` to be read-only
 - changed `trx.objects[id]` to return `nil` for an unknown id, where it used to return an object that answered to nothing
 - changed `trx.config.get()` to return the option's own type rather than always a string
+- changed the names that stand for a number to say which kind they are - `item.num`, `item.anim_num`, `slot_num`, `object_id` and the like; refer to migration notes
 - changed the event hooks to hand back a `trx.events.Listener` rather than a number, which detaches itself with `listener:detach()` and says whether it was still attached
 - changed `trx.events` handlers to no longer receive a dummy argument in `before_control` and `after_control`
 - changed the Lua level events to a single `on_game_start`, which every kind of level fires, with `on_title_start` for the title screen; refer to migration notes

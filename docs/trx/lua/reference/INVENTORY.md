@@ -75,7 +75,7 @@ end
 
     Methods:
 
-    - [lua]`inventory:can_add(object)`  
+    - [lua]`inventory:can_add(object_id)`  
       Whether `give` would do anything in the level being played. The level has to
       carry the inventory model, which is not the same as the pickup being in it: a
       level with no shotgun lying about still draws one in the ring, which is what
@@ -84,19 +84,19 @@ end
       This asks about the level being played whichever inventory it is called on.
 
       Parameters:
-      - **`object`** (integer). The pickup, or the inventory icon it goes into. Compare against `trx.catalog.objects`.
+      - **`object_id`** (integer). The pickup, or the inventory icon it goes into. Compare against `trx.catalog.objects`.
 
       Returns: boolean.
 
-    - [lua]`inventory:count(object)`  
+    - [lua]`inventory:count(object_id)`  
       How many of something is in it. A box of ammunition counts what its rounds come to.
 
       Parameters:
-      - **`object`** (integer). The pickup, or the inventory icon it goes into. Compare against `trx.catalog.objects`.
+      - **`object_id`** (integer). The pickup, or the inventory icon it goes into. Compare against `trx.catalog.objects`.
 
       Returns: integer.
 
-    - [lua]`inventory:entry(object)`  
+    - [lua]`inventory:entry(object_id)`  
       The entry something is drawn as, or `nil` where there is none of it.
 
       Several pickups share one entry - the scion whether or not she holds it, a
@@ -104,15 +104,15 @@ end
       drawn as.
 
       Parameters:
-      - **`object`** (integer). The pickup, or the inventory icon it goes into. Compare against `trx.catalog.objects`.
+      - **`object_id`** (integer). The pickup, or the inventory icon it goes into. Compare against `trx.catalog.objects`.
 
       Returns: Entry or `nil`.
 
-    - [lua]`inventory:entry_at(n)`  
+    - [lua]`inventory:entry_at(entry_num)`  
       The entry at a position, counted from one in the order they are drawn, or `nil` past the end.
 
       Parameters:
-      - **`n`** (integer). 1-based position.
+      - **`entry_num`** (integer). 1-based position.
 
       Returns: Entry or `nil`.
 
@@ -121,13 +121,13 @@ end
 
       Returns: integer.
 
-    - [lua]`inventory:give(object, [count])`  
+    - [lua]`inventory:give(object_id, [count])`  
       Puts a pickup in. Lara's inventory takes it as walking over it would, so a
       weapon arrives with the rounds a pickup carries and a flare box with its
       flares; a level's simply gains it.
 
       Parameters:
-      - **`object`** (integer). The pickup, or the inventory icon it goes into. Compare against `trx.catalog.objects`.
+      - **`object_id`** (integer). The pickup, or the inventory icon it goes into. Compare against `trx.catalog.objects`.
       - **`count`** (integer, optional). How many. Defaults to 1; below 1 raises.
 
       Returns: integer. How many went in. 0 from Lara's means the level does not carry the icon for it - see `can_add`.
@@ -137,11 +137,11 @@ end
       trx.inventory:give(trx.catalog.objects.uzi_item, 2)
       ```
 
-    - [lua]`inventory:has(object)`  
+    - [lua]`inventory:has(object_id)`  
       Whether there is any of it at all.
 
       Parameters:
-      - **`object`** (integer). The pickup, or the inventory icon it goes into. Compare against `trx.catalog.objects`.
+      - **`object_id`** (integer). The pickup, or the inventory icon it goes into. Compare against `trx.catalog.objects`.
 
       Returns: boolean.
 
@@ -153,7 +153,7 @@ end
 
       Returns: boolean.
 
-    - [lua]`inventory:icon_of(object)`  
+    - [lua]`inventory:icon_of(object_id)`  
       Which inventory icon a pickup is drawn as, whether or not there is any of it.
 
       Several pickups share one icon - the scion whether or not Lara holds it, a
@@ -162,15 +162,15 @@ end
       what hands back the entry itself.
 
       Parameters:
-      - **`object`** (integer). The pickup, or the inventory icon it goes into. Compare against `trx.catalog.objects`.
+      - **`object_id`** (integer). The pickup, or the inventory icon it goes into. Compare against `trx.catalog.objects`.
 
       Returns: integer or `nil`. The icon's object id, or `nil` for a pickup that has none. Compare against `trx.catalog.objects`.
 
-    - [lua]`inventory:set_count(object, count)`  
+    - [lua]`inventory:set_count(object_id, count)`  
       Sets how many of it there are. Zero takes it away.
 
       Parameters:
-      - **`object`** (integer). The pickup, or the inventory icon it goes into. Compare against `trx.catalog.objects`.
+      - **`object_id`** (integer). The pickup, or the inventory icon it goes into. Compare against `trx.catalog.objects`.
       - **`count`** (integer). How many. Below 0 raises.
 
     - [lua]`inventory:set_shots(weapon, count)`  
@@ -193,14 +193,14 @@ end
 
       Returns: integer.
 
-    - [lua]`inventory:take(object, [count])`  
+    - [lua]`inventory:take(object_id, [count])`  
       Takes things back out, stopping when there are none left.
 
       This is not the exact opposite of `give`: a box of ammunition is rounds rather
       than an entry of its own, so taking one back takes the rounds a box is worth.
 
       Parameters:
-      - **`object`** (integer). The pickup, or the inventory icon it goes into. Compare against `trx.catalog.objects`.
+      - **`object_id`** (integer). The pickup, or the inventory icon it goes into. Compare against `trx.catalog.objects`.
       - **`count`** (integer, optional). How many. Defaults to 1; below 1 raises.
 
       Returns: integer. How many came out.
