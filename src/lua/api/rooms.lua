@@ -2,6 +2,7 @@ local raw = trxc.rooms
 local api = trx.api
 
 require("trx.log")
+require("trx.query")
 
 -- on_enter and on_exit narrow trx.events.on_room_change to one room: the two
 -- readings of a room change are that this room is the new one, or the old one.
@@ -305,6 +306,64 @@ api.define("rooms.find_valid_pos", {
     { type = "integer", description = "The 0-based room the position is in." },
   },
   impl = raw.find_valid_pos,
+})
+
+-- Every room of the level, each by its number.
+local function enumerate()
+  local out = {}
+  for i = 0, raw.count() - 1 do
+    local room = raw.get(i)
+    if room ~= nil then
+      out[#out + 1] = { i, room }
+    end
+  end
+  return out
+end
+
+local RoomQuery = api.type("rooms.RoomQuery", {
+  extends = "query.Query",
+  description = "A `trx.query.Query` over the rooms of the current level, with the narrowings below "
+    .. "on top of the ones every query has. Rooms answer to no names, so the name layer is absent.",
+
+  methods = {
+    at = {
+      description = "The room contains a world position. Rooms overlap, so a position can be in "
+        .. "several at once and every one of them matches, in room order. A room claims a point "
+        .. "when the point is within its bounds, the outer ring of solid wall aside, and the "
+        .. "column it stands in has a floor - the test the engine itself puts a position through. "
+        .. "The hidden half of a flip pair is passed over.",
+      params = {
+        { name = "pos", type = "vec3", description = "World position." },
+      },
+      returns = { type = "Query", description = "The narrowed query." },
+      examples = { [[trx.rooms.query:at(trx.lara.item.pos):first()]] },
+      impl = trx.query.narrowing(function(pos)
+        return function(_num, room)
+          -- A flipped room holds the half of a flip pair the level is not
+          -- showing. Its geometry still covers the point, and the engine's own
+          -- lookup passes it over, so this does too.
+          return room.flip_status ~= trx.rooms.FlipStatus.FLIPPED
+            and raw.point_inside(room, pos)
+        end
+      end),
+    },
+  },
+})
+
+local room_query = trx.query.new({
+  enumerate = enumerate,
+  id_of = function(i)
+    return i
+  end,
+}, RoomQuery)
+
+api.property("rooms.query", {
+  type = "RoomQuery",
+  description = "The identity query over every room in the level. Narrow it and read it - see "
+    .. "`trx.rooms.RoomQuery`.",
+  get = function()
+    return room_query
+  end,
 })
 
 api.container("rooms", {

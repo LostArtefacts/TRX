@@ -113,6 +113,15 @@ static int M_L_RoomsGetBounds(lua_State *const L)
     return 1;
 }
 
+// trxc.rooms.point_inside(room, {x,y,z}) -> bool
+static int M_L_RoomsPointInside(lua_State *const L)
+{
+    LUA_STRUCT_REF *const ref = LUA_Struct_CheckRef(L, 1, &TYPE_ROOM);
+    const ROOM *const room = LUA_Struct_Deref(L, ref);
+    lua_pushboolean(L, Room_PointInside(room, LUA_CheckXYZ(L, 2)));
+    return 1;
+}
+
 // trxc.rooms.get_flipped_room(room) -> 0-based room number or nil
 static int M_L_RoomsGetFlippedRoom(lua_State *const L)
 {
@@ -225,6 +234,7 @@ static const luaL_Reg m_Module[] = {
     { "count", M_L_RoomsCount },
     { "get", M_L_RoomsGet },
     { "get_bounds", M_L_RoomsGetBounds },
+    { "point_inside", M_L_RoomsPointInside },
     { "flip", M_L_RoomsFlip },
     { "get_flipped", M_L_RoomsGetFlipped },
     { "flip_effect", M_L_RoomsFlipEffect },

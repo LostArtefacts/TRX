@@ -83,6 +83,24 @@ BOUNDS_32 Room_GetRoomBounds(const ROOM *const room)
     };
 }
 
+// As the engine's own test: the room's bounds, and then a floor in the column
+// the point stands in. The fake rooms are a sector apart and four sectors wide,
+// so a point sits inside several of them at once.
+bool Room_PointInside(const ROOM *const room, const XYZ_32 point)
+{
+    if (room == nullptr) {
+        return false;
+    }
+    const BOUNDS_32 bounds = Room_GetRoomBounds(room);
+    if (point.x < bounds.min.x || point.x >= bounds.max.x
+        || point.y < bounds.min.y || point.y > bounds.max.y
+        || point.z < bounds.min.z || point.z >= bounds.max.z) {
+        return false;
+    }
+    // The fake level's floor rule, as Room_GetHeightEx has it.
+    return point.x >= 0;
+}
+
 void Room_FlipMap(void)
 {
     FAKE_RECORD("flip_map");

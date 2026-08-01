@@ -5347,6 +5347,12 @@
       "writable": false
     },
     {
+      "description": "The identity query over every room in the level. Narrow it and read it - see `trx.rooms.RoomQuery`.",
+      "path": "rooms.query",
+      "type": "RoomQuery",
+      "writable": false
+    },
+    {
       "description": "How much warmth Lara holds, in frames, and what `trx.lara.exposure_bar` fills to. Warmth only moves in a room carrying the `damaging` flag, such as the cold water of Antarctica.",
       "path": "rules.exposure.max",
       "type": "integer",
@@ -7413,6 +7419,34 @@
       ],
       "operators": [],
       "path": "rooms.Room"
+    },
+    {
+      "description": "A `trx.query.Query` over the rooms of the current level, with the narrowings below on top of the ones every query has. Rooms answer to no names, so the name layer is absent.",
+      "extensions": [],
+      "fields": [],
+      "handle": false,
+      "methods": [
+        {
+          "description": "The room contains a world position. Rooms overlap, so a position can be in several at once and every one of them matches, in room order. A room claims a point when the point is within its bounds, the outer ring of solid wall aside, and the column it stands in has a floor - the test the engine itself puts a position through. The hidden half of a flip pair is passed over.",
+          "examples": [
+            "trx.rooms.query:at(trx.lara.item.pos):first()"
+          ],
+          "name": "at",
+          "params": [
+            {
+              "description": "World position.",
+              "name": "pos",
+              "type": "vec3"
+            }
+          ],
+          "returns": {
+            "description": "The narrowed query.",
+            "type": "Query"
+          }
+        }
+      ],
+      "operators": [],
+      "path": "rooms.RoomQuery"
     },
     {
       "description": "A sound sample the current level carries. Reach them through `trx.sound.samples`. A handle to a sample the loaded level does not carry goes stale, so `is_valid()` answers whether it is still there.",

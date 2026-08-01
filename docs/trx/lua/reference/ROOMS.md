@@ -32,6 +32,7 @@ end
 ### Properties
 
 - **`trx.rooms.flipped`** (boolean). Whether the room map is currently flipped. *(read-only)*
+- **`trx.rooms.query`** (RoomQuery). The identity query over every room in the level. Narrow it and read it - see `trx.rooms.RoomQuery`. *(read-only)*
 
 ### Enums
 
@@ -123,6 +124,25 @@ end
       - **`opts`** (table, optional). Options. `watch = "lara"` (the default) reacts to Lara alone; `watch = "all"` to every item.
 
       Returns: integer. Listener id. Pass it to `trx.events.detach` to stop listening.
+
+- [lua]`trx.rooms.RoomQuery`
+
+    A `trx.query.Query` over the rooms of the current level, with the narrowings below on top of the ones every query has. Rooms answer to no names, so the name layer is absent.
+
+    Methods:
+
+    - [lua]`roomquery:at(pos)`  
+      The room contains a world position. Rooms overlap, so a position can be in several at once and every one of them matches, in room order. A room claims a point when the point is within its bounds, the outer ring of solid wall aside, and the column it stands in has a floor - the test the engine itself puts a position through. The hidden half of a flip pair is passed over.
+
+      Parameters:
+      - **`pos`** (vec3). World position.
+
+      Returns: Query. The narrowed query.
+
+      Example:
+      ```lua
+      trx.rooms.query:at(trx.lara.item.pos):first()
+      ```
 
 ### Functions
 

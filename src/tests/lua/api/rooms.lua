@@ -269,4 +269,56 @@ test("a room hook detaches through trx.events", function()
   assert(calls == 0, "a detached room hook kept firing")
 end)
 
+-- The fake rooms are four sectors wide and start a sector apart, so room 0
+-- covers x 0..4096, room 1 x 1024..5120, and so on. Room 1 is the hidden half
+-- of the flip pair.
+test("the query hands back every room a position is in", function()
+  local ids = trx.rooms.query:at({ x = 3500, y = 0, z = 1024 }):ids()
+  assert(#ids == 3, "a position in several rooms must answer for each")
+  assert(ids[1] == 0 and ids[2] == 2 and ids[3] == 3, "in room order")
+
+  assert(
+    trx.rooms.query:at({ x = 3500, y = 0, z = 1024 }):first().num == 0,
+    "first() must be the lowest-numbered room"
+  )
+  assert(
+    trx.rooms.query:at({ x = 500, y = 0, z = 1024 }):count() == 1,
+    "a position only one room covers"
+  )
+end)
+
+test("the query passes over the hidden half of a flip pair", function()
+  local ids = trx.rooms.query:at({ x = 1500, y = 0, z = 1024 }):ids()
+  for _, num in ipairs(ids) do
+    assert(num ~= 1, "the flipped room must not answer")
+  end
+end)
+
+test("a position with nothing to stand on is in no room", function()
+  assert(trx.rooms.query:at({ x = -1, y = 0, z = 0 }):count() == 0)
+  assert(trx.rooms.query:at({ x = -1, y = 0, z = 0 }):first() == nil)
+end)
+
+test("the query narrows by height as well", function()
+  assert(
+    trx.rooms.query:at({ x = 500, y = -1024, z = 1024 }):count() == 1,
+    "between the ceiling and the floor"
+  )
+  assert(
+    trx.rooms.query:at({ x = 500, y = 1024, z = 1024 }):count() == 0,
+    "below the floor is outside the room"
+  )
+end)
+
+test("the query composes with the rest of a query", function()
+  trx.rooms[2].underwater = true
+  local wet = trx.rooms.query
+    :at({ x = 3500, y = 0, z = 1024 })
+    :where(function(_num, room)
+      return room.underwater
+    end)
+    :ids()
+  assert(#wet == 1 and wet[1] == 2, "narrowing must AND with at()")
+end)
+
 return h.report()
