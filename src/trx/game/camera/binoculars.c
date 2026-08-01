@@ -7,6 +7,7 @@
 #include <trx/game/lara.h>
 #include <trx/game/output.h>
 #include <trx/game/rooms.h>
+#include <trx/game/sound.h>
 #include <trx/game/viewport.h>
 
 #define M_MIN_RANGE 128
@@ -63,6 +64,16 @@ static void M_Enter(void)
     m_Active = true;
     lara_info->gun_status = LGS_HANDS_BUSY;
     g_Camera.type = CAM_BINOCULARS;
+}
+
+static void M_RefuseRequest(void)
+{
+    const ITEM *const lara_item = Lara_GetItem();
+    const LARA_INFO *const lara = Lara_GetLaraInfo();
+    if (lara_item->hit_points > 0 && Lara_IsControllable()
+        && !lara->extra_anim) {
+        Sound_Effect(SFX_LARA_NO, &lara_item->pos, SPM_ALWAYS);
+    }
 }
 
 static bool M_ShouldExit(void)
@@ -223,6 +234,8 @@ void Camera_Binoculars_Control(void)
             m_Pending = false;
             if (M_CanEnter()) {
                 M_Enter();
+            } else {
+                M_RefuseRequest();
             }
         }
         return;
