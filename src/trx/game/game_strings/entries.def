@@ -136,6 +136,7 @@ GS_DEFINE(enums/INPUT_ROLE/INPUT_ROLE_TOGGLE_WIREFRAME,                     "Tog
 GS_DEFINE(enums/INPUT_ROLE/INPUT_ROLE_TURBO_CHEAT,                          "Turbo Speed")
 GS_DEFINE(enums/INPUT_ROLE/INPUT_ROLE_UP,                                   "Run")
 GS_DEFINE(enums/INPUT_ROLE/INPUT_ROLE_USE_BIG_MEDI,                         "Large Medi")
+GS_DEFINE(enums/INPUT_ROLE/INPUT_ROLE_USE_BINOCULARS,                       "Binoculars")
 GS_DEFINE(enums/INPUT_ROLE/INPUT_ROLE_USE_FLARE,                            "Flare")
 GS_DEFINE(enums/INPUT_ROLE/INPUT_ROLE_USE_SMALL_MEDI,                       "Small Medi")
 GS_DEFINE(enums/JUMP_LOCK_MODE/JUMP_LOCK_DISABLED,                          "Disabled")

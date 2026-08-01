@@ -742,6 +742,7 @@
             "INPUT_ROLE_TURBO_CHEAT": "Turbo Speed",
             "INPUT_ROLE_UP": "Run",
             "INPUT_ROLE_USE_BIG_MEDI": "Large Medi",
+            "INPUT_ROLE_USE_BINOCULARS": "Binoculars",
             "INPUT_ROLE_USE_FLARE": "Flare",
             "INPUT_ROLE_USE_SMALL_MEDI": "Small Medi",
         },

@@ -12,6 +12,7 @@
 - added internal collision to lifts when they are moving, so that Lara cannot exit through the meshes
 - added an option for Lara to collect stacked pickups individually, as per OG TR4 (Gameplay → Controls → Multiple pickups)
 - added a `damage` property to the `O_POWER_SAW` object
+- added a bindable hotkey for using the binoculars
 - improved error messages related to bad command invocations
 - changed the game mode selection option so that Never starts every new game as a regular one (Gameplay → General → Game mode selection)
 - changed reflections UV mapping to be more correct

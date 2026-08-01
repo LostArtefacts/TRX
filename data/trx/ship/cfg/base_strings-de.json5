@@ -742,6 +742,7 @@
             "INPUT_ROLE_TURBO_CHEAT": "Turbo Geschwindigkeit",
             "INPUT_ROLE_UP": "Laufen",
             "INPUT_ROLE_USE_BIG_MEDI": "Großes Medi-Pack",
+            "INPUT_ROLE_USE_BINOCULARS": "\\{review}Fernglas",
             "INPUT_ROLE_USE_FLARE": "Fackel",
             "INPUT_ROLE_USE_SMALL_MEDI": "Kleines Medi-Pack",
         },
