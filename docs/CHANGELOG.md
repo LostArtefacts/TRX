@@ -74,6 +74,7 @@
 - fixed the body bag trigger to also collect Bacon Lara, Qualopec Mummy and Skidoo Driver's corpses
 - fixed settings text running off both sides of the screen in the longer languages, most visibly at 4:3 (#6000)
 - fixed the list of settings a preset would change spilling outside its dialog, and its text now wraps (#6000)
+- fixed RX Worker 3 in custom levels always looking at Lara when setup with patrol objects, and not properly detecting when she comes into range
 - fixed Lara getting stuck on ropes if she enters the fly cheat while still using one (regression from 1.9)
 - fixed the inventory hint for using an item showing Enter rather than the key bound to Action (regression from 1.8.1)
 - fixed the black surround of the binoculars turning grey when looking in certain directions (regression from 1.9)
