@@ -340,6 +340,17 @@ test("dry is neither water nor swamp", function()
   assert(#ids == 2 and ids[1] == 0 and ids[2] == 1, "the rooms left over")
 end)
 
+-- Room 0 is the half of the flip pair the level is showing, room 1 the hidden
+-- one; rooms 2 and 3 have no pair at all.
+test("the query narrows by what the level is showing", function()
+  local ids = trx.rooms.query:reachable():ids()
+  assert(#ids == 3, "an ordinary room is reachable, and so is the shown half")
+  assert(ids[1] == 0 and ids[2] == 2 and ids[3] == 3)
+
+  local hidden = trx.rooms.query:flipped():ids()
+  assert(#hidden == 1 and hidden[1] == 1, "the half that is not being shown")
+end)
+
 test("the query composes with the rest of a query", function()
   trx.rooms[2].underwater = true
   local wet = trx.rooms.query

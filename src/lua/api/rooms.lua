@@ -360,6 +360,29 @@ local RoomQuery = api.type("rooms.RoomQuery", {
       end),
     },
 
+    reachable = {
+      description = "The room is part of the level as it stands: an ordinary room, or the half of "
+        .. "a flip pair the level is showing. This is what a script asking about the world wants, "
+        .. "and what `at` already applies.",
+      returns = { type = "Query", description = "The narrowed query." },
+      examples = { [[trx.rooms.query:reachable():underwater():count()]] },
+      impl = trx.query.narrowing(function()
+        return function(_num, room)
+          return room.flip_status ~= trx.rooms.FlipStatus.FLIPPED
+        end
+      end),
+    },
+    flipped = {
+      description = "The room is the half of a flip pair the level is not showing. Its geometry is "
+        .. "still there to inspect, but nothing can be in it.",
+      returns = { type = "Query", description = "The narrowed query." },
+      impl = trx.query.narrowing(function()
+        return function(_num, room)
+          return room.flip_status == trx.rooms.FlipStatus.FLIPPED
+        end
+      end),
+    },
+
     at = {
       description = "The room contains a world position. Rooms overlap, so a position can be in "
         .. "several at once and every one of them matches, in room order. A room claims a point "

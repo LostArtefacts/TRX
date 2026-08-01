@@ -150,6 +150,21 @@ end
 
       Returns: Query. The narrowed query.
 
+    - [lua]`roomquery:flipped()`  
+      The room is the half of a flip pair the level is not showing. Its geometry is still there to inspect, but nothing can be in it.
+
+      Returns: Query. The narrowed query.
+
+    - [lua]`roomquery:reachable()`  
+      The room is part of the level as it stands: an ordinary room, or the half of a flip pair the level is showing. This is what a script asking about the world wants, and what `at` already applies.
+
+      Returns: Query. The narrowed query.
+
+      Example:
+      ```lua
+      trx.rooms.query:reachable():underwater():count()
+      ```
+
     - [lua]`roomquery:swamp()`  
       The room is filled with swamp water.
 
