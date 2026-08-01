@@ -7459,6 +7459,25 @@
           }
         },
         {
+          "description": "The room is the half of a flip pair the level is not showing. Its geometry is still there to inspect, but nothing can be in it.",
+          "name": "flipped",
+          "returns": {
+            "description": "The narrowed query.",
+            "type": "Query"
+          }
+        },
+        {
+          "description": "The room is part of the level as it stands: an ordinary room, or the half of a flip pair the level is showing. This is what a script asking about the world wants, and what `at` already applies.",
+          "examples": [
+            "trx.rooms.query:reachable():underwater():count()"
+          ],
+          "name": "reachable",
+          "returns": {
+            "description": "The narrowed query.",
+            "type": "Query"
+          }
+        },
+        {
           "description": "The room is filled with swamp water.",
           "name": "swamp",
           "returns": {
