@@ -976,6 +976,81 @@ test("a name two modules claim stops naming either", function()
   api.strict(false)
 end)
 
+-- The registry declares functions of its own, so a test finds its own by path.
+local function declared(api, path)
+  for _, fn in ipairs(api.describe().functions) do
+    if fn.path == path then
+      return fn
+    end
+  end
+  return nil
+end
+
+test("a note is written once and read wherever it is pointed at", function()
+  local api = fresh_env()
+  api.module("things", { description = "..." })
+  api.note("things.number", "0-based thing number.")
+  api.define("things.get", {
+    params = {
+      { name = "num", type = "integer", see = "things.number" },
+      {
+        name = "callback",
+        type = "function",
+        params = {
+          { name = "num", type = "integer", see = "things.number" },
+        },
+      },
+    },
+    returns = { type = "integer", see = "things.number" },
+    impl = function() end,
+  })
+
+  local fn = declared(api, "things.get")
+  assert(fn.params[1].description == "0-based thing number.")
+  assert(
+    fn.params[2].params[1].description == "0-based thing number.",
+    "a callback's own arguments read it too"
+  )
+  assert(fn.returns.description == "0-based thing number.")
+  assert(fn.params[1].see == nil, "the pointer does not reach the docs")
+end)
+
+test("a note joins what the spec adds of its own", function()
+  local api = fresh_env()
+  api.note("things.number", "0-based thing number.")
+  api.define("things.get", {
+    params = {
+      {
+        name = "num",
+        type = "integer",
+        see = "things.number",
+        description = "The one that broke.",
+      },
+    },
+    impl = function() end,
+  })
+
+  assert(
+    declared(api, "things.get").params[1].description
+      == "0-based thing number. The one that broke."
+  )
+end)
+
+test("pointing at a note nobody wrote raises", function()
+  local api = fresh_env()
+  api.define("things.get", {
+    params = { { name = "num", type = "integer", see = "things.nothing" } },
+    impl = function() end,
+  })
+  assert(not pcall(api.describe))
+end)
+
+test("a note cannot be written twice", function()
+  local api = fresh_env()
+  api.note("things.number", "0-based thing number.")
+  assert(not pcall(api.note, "things.number", "something else"))
+end)
+
 test("a container walks from the index it counts from", function()
   local api = fresh_env()
   local zero, one = { [0] = "a", [1] = "b" }, { "a", "b" }

@@ -228,11 +228,16 @@ end)]],
   },
 })
 
+api.note(
+  "rooms.num",
+  "0-based room number, matching the numbers level editors show."
+)
+
 api.define("rooms.get", {
   description = "Retrieves a room by number. Rooms count from zero, matching the "
     .. "room numbers level editors show.",
   params = {
-    { name = "num", type = "integer", description = "0-based room number." },
+    { name = "num", type = "integer", see = "rooms.num" },
   },
   returns = { type = "Room", nullable = true },
   examples = {
@@ -427,7 +432,7 @@ api.container("rooms", {
   description = "Indexing the module reaches a room, and `#trx.rooms` is how many the level has. "
     .. "Rooms count from zero, matching the room numbers level editors show. `pairs()` walks them "
     .. "in order, keyed by that number.",
-  key = { type = "integer", description = "0-based room number." },
+  key = { type = "integer", see = "rooms.num" },
   value = { type = "Room", nullable = true },
   examples = {
     [[trx.log.info(#trx.rooms .. " rooms, first is " .. trx.rooms[0].num)

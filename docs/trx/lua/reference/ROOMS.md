@@ -18,7 +18,7 @@ Module for inspecting and altering the rooms of the current level.
 
 Indexing the module reaches a room, and `#trx.rooms` is how many the level has. Rooms count from zero, matching the room numbers level editors show. `pairs()` walks them in order, keyed by that number.
 
-- **`trx.rooms[key]`** (Room or `nil`). 0-based room number.
+- **`trx.rooms[key]`** (Room or `nil`). 0-based room number, matching the numbers level editors show.
 - **`#trx.rooms`** (integer). How many there are.
 
 Example:
@@ -181,7 +181,7 @@ end
   Retrieves a room by number. Rooms count from zero, matching the room numbers level editors show.
 
   Parameters:
-  - **`num`** (integer). 0-based room number.
+  - **`num`** (integer). 0-based room number, matching the numbers level editors show.
 
   Returns: Room or `nil`.
 

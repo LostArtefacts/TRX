@@ -77,7 +77,7 @@
         "trx.log.info(#trx.rooms .. \" rooms, first is \" .. trx.rooms[0].num)\nfor num, room in pairs(trx.rooms) do\n  room.cold = true\nend"
       ],
       "key": {
-        "description": "0-based room number.",
+        "description": "0-based room number, matching the numbers level editors show.",
         "type": "integer"
       },
       "module": "rooms",
@@ -3337,7 +3337,7 @@
           "name": "callback",
           "params": [
             {
-              "description": "0-based index of the item that was picked up.",
+              "description": "0-based item number, matching the numbers level editors show. The item that was picked up.",
               "name": "item_num",
               "type": "integer"
             }
@@ -3399,7 +3399,7 @@
               "type": "integer"
             },
             {
-              "description": "0-based index of the item that ran the effect: Lara for a pad trigger, the activating object for a heavy trigger, the animating item for an animation command.",
+              "description": "0-based item number, matching the numbers level editors show. The item that ran the effect: Lara for a pad trigger, the activating object for a heavy trigger, the animating item for an animation command.",
               "name": "item_num",
               "type": "integer"
             }
@@ -4475,7 +4475,7 @@
       ],
       "params": [
         {
-          "description": "0-based room number.",
+          "description": "0-based room number, matching the numbers level editors show.",
           "name": "num",
           "type": "integer"
         }
@@ -6510,7 +6510,7 @@
           "name": "in_room",
           "params": [
             {
-              "description": "0-based room number.",
+              "description": "0-based room number, matching the numbers level editors show.",
               "name": "room_num",
               "type": "integer"
             }
