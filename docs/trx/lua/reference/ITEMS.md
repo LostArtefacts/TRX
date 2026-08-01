@@ -18,7 +18,7 @@ Module for controlling all moveables.
 
 Indexing the module reaches an item, and `#trx.items` is how many the level has. `pairs()` walks them in order, keyed by the item number.
 
-- **`trx.items[key]`** (Item or `nil`). 0-based item number, matching the numbers level editors show. An item's unique name reaches it as well.
+- **`trx.items[key]`** (Item or `nil`). Item number, matching the numbers level editors show. An item's unique name reaches it as well. Counted from 0.
 - **`#trx.items`** (integer). How many there are.
 
 Example:
@@ -88,11 +88,11 @@ end
     unrelated one.
 
     Properties:
-    - **`anim_num`**: integer. The animation's number within the object, counted from 0.
+    - **`anim_num`**: integer. The animation's number within the object. Counted from 0.
     - **`anim_state`**: integer. Current animation state.
     - **`collidable`**: boolean. Whether Lara can collide with this item.
     - **`fall_speed`**: integer. Vertical speed.
-    - **`frame_num`**: integer. The frame's number within the animation, counted from 0. Negative values count back from the end.
+    - **`frame_num`**: integer. The frame's number within the animation. Negative values count back from the end. Counted from 0.
     - **`goal_anim_state`**: integer. Animation state the item is transitioning towards.
     - **`gravity`**: boolean. Whether gravity applies to this item.
     - **`hit_points`**: integer. Current hit points. Raising this above the maximum also raises `properties.max_hit_points`.
@@ -113,10 +113,10 @@ end
     - **`max_hit_points`**: integer. Maximum hit points. Set `properties.max_hit_points` to change it. *(read-only)*
     - **`mesh_bits`**: integer. Bitmask of which of the item's meshes are drawn.
     - **`name`**: string. Unique item name, or `nil`. Assigning a name already in use raises an error.
-    - **`num`**: integer. 0-based item number, matching the numbers level editors show. An item handed over by a query can say where it lives. *(read-only)*
+    - **`num`**: integer. Item number, matching the numbers level editors show. An item handed over by a query can say where it lives. Counted from 0. *(read-only)*
     - **`object_id`**: integer. The item's object type. Compare against `trx.catalog.objects`. *(read-only)*
     - **`pos`**: vec3. World position. Updating this also updates `room` and `room_num`.
-    - **`room_num`**: integer. 0-based number of the room containing this item. Set `pos` to move the item between rooms. *(read-only)*
+    - **`room_num`**: integer. Room number, matching the numbers level editors show. The room containing this item. Set `pos` to move the item between rooms. Counted from 0. *(read-only)*
     - **`rot`**: vec3. Orientation, in the units `trx.math` counts angles in. An angle counts in cycles, so one past the end of the turn wraps round to name the same direction rather than raising: adding a half turn to a rotation always works.
     - **`speed`**: integer. Forward speed.
     - **`timer`**: integer. How long the item's trigger keeps it going, in game frames. `0` runs it until something takes the trigger back; `-1` means it has run out; anything else counts down. This is the raw frame count - `trigger()` takes its timer in seconds instead.
@@ -509,7 +509,7 @@ end
       The item is in the given room.
 
       Parameters:
-      - **`room_num`** (integer). 0-based room number, matching the numbers level editors show.
+      - **`room_num`** (integer). Room number, matching the numbers level editors show. Counted from 0.
 
       Returns: Query. The narrowed query.
 
@@ -561,7 +561,7 @@ end
   Retrieves an item by number or by name.
 
   Parameters:
-  - **`key`** (any). 0-based item number, matching the numbers level editors show. An item's unique name reaches it as well.
+  - **`key`** (any). Item number, matching the numbers level editors show. An item's unique name reaches it as well. Counted from 0.
 
   Returns: Item or `nil`.
 

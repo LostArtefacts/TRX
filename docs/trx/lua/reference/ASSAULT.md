@@ -88,11 +88,11 @@ Module for controlling the Assault Course and Quad Bike timers in gym levels.
   trx.assault.stats.add_record(30.0)
   ```
 
-- [lua]`trx.assault.stats.remove_record(record_id, [track])`  
+- [lua]`trx.assault.stats.remove_record(record_num, [track])`  
   Removes a record, closing the gap behind it.
 
   Parameters:
-  - **`record_id`** (integer). 1-based position in the table.
+  - **`record_num`** (integer). Position in the table. Counted from 1.
   - **`track`** (integer, optional, default `trx.assault.Track.COURSE`). Compare against `trx.assault.Track`.
 
   Returns: boolean. `false` if there is no record at that position.

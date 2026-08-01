@@ -49,15 +49,19 @@ def signature(path: str, params: list[dict] | None) -> str:
 
 
 def describe(spec: dict) -> str:
-    """The description, plus the enum cross-reference if the spec names one.
+    """The description, plus what the spec says about itself in structured form.
 
     `enum` is a fully-qualified path - "items.Status", "catalog.objects" - so a
     field or param points at the constants it accepts instead of spelling them
-    out in prose that has to be kept in sync by hand.
+    out in prose that has to be kept in sync by hand. `base` is where a number
+    starts counting, which every number the API names has to answer and which
+    is worth stating the same way each time.
     """
     desc = spec.get("description") or ""
     if spec.get("enum"):
         desc = f"{desc} Compare against `trx.{spec['enum']}`.".lstrip()
+    if spec.get("base") is not None:
+        desc = f"{desc} Counted from {spec['base']}.".lstrip()
     return desc
 
 
@@ -312,7 +316,7 @@ def render_type(spec: dict) -> list[str]:
             out.extend(
                 render_lead(
                     f"{INDENT}- **`{ext['name']}`**: {ext['type']}. ",
-                    ext.get("description") or "",
+                    describe(ext),
                     f"{INDENT}  ",
                 )
             )

@@ -76,7 +76,7 @@ Module for the game flow: which levels there are, and which one is being played.
     Properties:
     - **`lara_outfit`**: string. The outfit Lara starts the level in. *(read-only)*
     - **`music_track`**: integer. The track that plays when the level starts. Compare against `trx.catalog.music`. *(read-only)*
-    - **`num`**: integer. The number the level goes by. Not its place in the table: levels the game flow skips do not count, and a gym level has no number at all and reads 0. *(read-only)*
+    - **`num`**: integer. The number the level goes by. Not its place in the table: levels the game flow skips do not count, and a gym level has no number at all and reads 0. Counted from 1. *(read-only)*
     - **`path`**: string. Path to the level file. *(read-only)*
     - **`script_path`**: string. Path to the Lua script that runs when the level loads, or `nil` if it has none. *(read-only)*
     - **`title`**: string. The level's name, as shown to the player. *(read-only)*
@@ -97,7 +97,7 @@ Module for the game flow: which levels there are, and which one is being played.
   Starts a level from `trx.game.levels`.
 
   Parameters:
-  - **`num`** (integer). 1-based position in `trx.game.levels`.
+  - **`num`** (integer). Position in `trx.game.levels`. Counted from 1.
   - **`opts`** (table, optional). `select`: start the level as the level-select screen does, rebuilding Lara's inventory to what she would carry on reaching it. Without it the level continues from the one in progress.
 
   Example:
@@ -109,13 +109,13 @@ Module for the game flow: which levels there are, and which one is being played.
   Plays a cutscene.
 
   Parameters:
-  - **`num`** (integer). 1-based position in `trx.game.cutscenes`.
+  - **`num`** (integer). Position in `trx.game.cutscenes`. Counted from 1.
 
 - [lua]`trx.game.play_demo([num])`  
   Plays a demo, and returns the one that started.
 
   Parameters:
-  - **`num`** (integer, optional). 1-based position in `trx.game.demos`. Omit to play the next demo in rotation.
+  - **`num`** (integer, optional). Position in `trx.game.demos`. Omit to play the next demo in rotation. Counted from 1.
 
   Returns:
   - Level or `nil`. The demo that started, or `nil` if the game has no demos.

@@ -42,6 +42,7 @@ api.type("game.Level", {
       from = "num",
       type = "integer",
       writable = false,
+      base = 1,
       description = "The number the level goes by. Not its place in the table: levels the game "
         .. "flow skips do not count, and a gym level has no number at all and reads 0.",
     },
@@ -227,7 +228,8 @@ api.define("game.play_level", {
     {
       name = "num",
       type = "integer",
-      description = "1-based position in `trx.game.levels`.",
+      base = 1,
+      description = "Position in `trx.game.levels`.",
     },
     {
       name = "opts",
@@ -248,7 +250,8 @@ api.define("game.play_cutscene", {
     {
       name = "num",
       type = "integer",
-      description = "1-based position in `trx.game.cutscenes`.",
+      base = 1,
+      description = "Position in `trx.game.cutscenes`.",
     },
   },
   impl = raw.play_cutscene,
@@ -261,7 +264,8 @@ api.define("game.play_demo", {
       name = "num",
       type = "integer",
       optional = true,
-      description = "1-based position in `trx.game.demos`. Omit to play the next demo in rotation.",
+      base = 1,
+      description = "Position in `trx.game.demos`. Omit to play the next demo in rotation.",
     },
   },
   returns = {

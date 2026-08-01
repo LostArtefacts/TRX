@@ -69,10 +69,15 @@ local function category(name, description)
   }
 end
 
+api.note("stats.secret_num", {
+  base = 1,
+  description = "The secret's number, as the player counts them.",
+})
+
 local secret_num_param = {
-  name = "num",
+  name = "secret_num",
   type = "integer",
-  description = "The secret's number, counted from one.",
+  see = "stats.secret_num",
 }
 
 api.type("stats.Stats", {
@@ -158,7 +163,7 @@ api.type("stats.Stats", {
   methods = {
     secret_list = {
       description = "The level's secrets, in order, as a list of `{ num, found }`. `num` is the "
-        .. "number the player says, counted from one, and `found` is whether Lara has it.",
+        .. "number the player says, and `found` is whether Lara has it.",
       returns = { type = "table", description = "The secrets, one by one." },
       examples = {
         [[for _, secret in ipairs(trx.stats.secret_list()) do

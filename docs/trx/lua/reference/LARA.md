@@ -195,7 +195,7 @@ Her position, room and hit points are not here: she is an item like any other an
 
   Parameters:
   - **`pos`** (vec3). World position.
-  - **`room_num`** (integer, optional). 0-based room to look in. Without it, the room is found from the position.
+  - **`room_num`** (integer, optional). Room number, matching the numbers level editors show. Without it, the room is found from the position. Counted from 0.
 
   Returns: boolean. Whether she was moved.
 

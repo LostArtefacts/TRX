@@ -161,10 +161,14 @@ drawn as.]],
       returns = { type = "Entry", nullable = true },
     },
     entry_at = {
-      description = "The entry at a position, counted from one in the order they are drawn, or "
-        .. "`nil` past the end.",
+      description = "The entry at a position in the order they are drawn, or `nil` past the end.",
       params = {
-        { name = "n", type = "integer", description = "1-based position." },
+        {
+          name = "n",
+          type = "integer",
+          base = 1,
+          description = "Position in the ring.",
+        },
       },
       returns = { type = "Entry", nullable = true },
     },
@@ -205,10 +209,9 @@ This asks about the level being played whichever inventory it is called on.]],
 
 api.container("inventory", {
   description = "Indexing the module reaches an entry of Lara's inventory, and `#trx.inventory` "
-    .. "is how many kinds of thing she carries. Entries count from one, in the order they are "
-    .. "drawn, and are built one at a time as they are asked for. `pairs()` walks them.",
-  base = 1,
-  key = { type = "integer", description = "1-based position." },
+    .. "is how many kinds of thing she carries. Entries are keyed by the order they are drawn in, "
+    .. "and are built one at a time as they are asked for. `pairs()` walks them.",
+  key = { type = "integer", base = 1, description = "Position in the ring." },
   value = { type = "Entry", nullable = true },
   examples = {
     [[for _, entry in pairs(trx.inventory) do

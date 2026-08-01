@@ -40,7 +40,7 @@ The save slots, and starting or reading a saved game.
   Whether a slot holds no save.
 
   Parameters:
-  - **`slot_num`** (integer). 1-based slot number. For the quick pool this is the on-screen order.
+  - **`slot_num`** (integer). Slot number within the pool. For the quick pool this is the on-screen order. Counted from 1.
   - **`pool`** (integer, optional). Which set of slots to look in. Defaults to `NORMAL`. Compare against `trx.savegame.Pool`.
 
   Returns:
@@ -50,7 +50,7 @@ The save slots, and starting or reading a saved game.
   Starts the saved game in a slot. The load happens once the game flow picks it up, not on the call.
 
   Parameters:
-  - **`slot_num`** (integer). 1-based slot number. For the quick pool this is the on-screen order.
+  - **`slot_num`** (integer). Slot number within the pool. For the quick pool this is the on-screen order. Counted from 1.
   - **`pool`** (integer, optional). Which set of slots to look in. Defaults to `NORMAL`. Compare against `trx.savegame.Pool`.
 
   Example:
@@ -62,7 +62,7 @@ The save slots, and starting or reading a saved game.
   Writes a saved game to a slot. A quick save with no slot number goes to the next slot in the rotation; with one, it saves to the slot named.
 
   Parameters:
-  - **`slot_num`** (integer, optional). 1-based slot number. The quick pool uses the next slot in its rotation when it is omitted.
+  - **`slot_num`** (integer, optional). Slot number within the pool. For the quick pool this is the on-screen order. The quick pool uses the next slot in its rotation when it is omitted. Counted from 1.
   - **`pool`** (integer, optional). Which set of slots to look in. Defaults to `NORMAL`. Compare against `trx.savegame.Pool`.
 
   Returns:

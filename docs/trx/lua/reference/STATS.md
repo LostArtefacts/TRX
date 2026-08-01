@@ -63,11 +63,11 @@ here reads `nil`.
 
     Methods:
 
-    - [lua]`stats:give_secret(num)`  
+    - [lua]`stats:give_secret(secret_num)`  
       Marks a secret as found, as walking into its trigger would.
 
       Parameters:
-      - **`num`** (integer). The secret's number, counted from one.
+      - **`secret_num`** (integer). The secret's number, as the player counts them. Counted from 1.
 
       Returns: boolean. `false` if the level has no such secret, or Lara already has it.
 
@@ -77,7 +77,7 @@ here reads `nil`.
       ```
 
     - [lua]`stats:secret_list()`  
-      The level's secrets, in order, as a list of `{ num, found }`. `num` is the number the player says, counted from one, and `found` is whether Lara has it.
+      The level's secrets, in order, as a list of `{ num, found }`. `num` is the number the player says, and `found` is whether Lara has it.
 
       Returns: table. The secrets, one by one.
 
@@ -88,10 +88,10 @@ here reads `nil`.
       end
       ```
 
-    - [lua]`stats:take_secret(num)`  
+    - [lua]`stats:take_secret(secret_num)`  
       Takes a secret back, leaving it to be found again.
 
       Parameters:
-      - **`num`** (integer). The secret's number, counted from one.
+      - **`secret_num`** (integer). The secret's number, as the player counts them. Counted from 1.
 
       Returns: boolean. `false` if the level has no such secret, or Lara does not have it.

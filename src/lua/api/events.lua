@@ -178,6 +178,7 @@ api.define("events.on_flip_effect", {
     {
       name = "effect_num",
       type = "integer",
+      base = 0,
       description = "The flip effect number to claim, as the level editor numbers them. This is "
         .. "not the id space of `trx.rooms.flip_effect`, which takes `trx.catalog.flip_effects` "
         .. "names.",
@@ -632,7 +633,9 @@ api.define("events.on_cutscene_trigger", {
         {
           name = "cutscene_num",
           type = "integer",
-          description = "Number the trigger names.",
+          see = "cutscenes.num",
+          description = "The number the trigger names, which the game need not have a cutscene "
+            .. "for.",
         },
       },
     },
@@ -665,7 +668,7 @@ api.define("events.on_cutscene_start", {
         {
           name = "cutscene_num",
           type = "integer",
-          description = "Number of the cutscene starting.",
+          see = "cutscenes.num",
         },
       },
     },
@@ -685,7 +688,7 @@ api.define("events.on_cutscene_end", {
         {
           name = "cutscene_num",
           type = "integer",
-          description = "Number of the cutscene that ended.",
+          see = "cutscenes.num",
         },
       },
     },
@@ -711,7 +714,7 @@ A sequence that a cutscene or the player interrupts does not fire it.]],
         {
           name = "sequence_num",
           type = "integer",
-          description = "Number of the flyby sequence that ended.",
+          see = "camera.sequence_num",
         },
       },
     },

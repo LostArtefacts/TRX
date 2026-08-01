@@ -102,9 +102,10 @@ api.define("assault.stats.remove_record", {
   description = "Removes a record, closing the gap behind it.",
   params = {
     {
-      name = "record_id",
+      name = "record_num",
       type = "integer",
-      description = "1-based position in the table.",
+      base = 1,
+      description = "Position in the table.",
     },
     track_param(),
   },

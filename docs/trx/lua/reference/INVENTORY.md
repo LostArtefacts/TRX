@@ -25,9 +25,9 @@ has.
 
 ### Indexing
 
-Indexing the module reaches an entry of Lara's inventory, and `#trx.inventory` is how many kinds of thing she carries. Entries count from one, in the order they are drawn, and are built one at a time as they are asked for. `pairs()` walks them.
+Indexing the module reaches an entry of Lara's inventory, and `#trx.inventory` is how many kinds of thing she carries. Entries are keyed by the order they are drawn in, and are built one at a time as they are asked for. `pairs()` walks them.
 
-- **`trx.inventory[key]`** (Entry or `nil`). 1-based position.
+- **`trx.inventory[key]`** (Entry or `nil`). Position in the ring. Counted from 1.
 - **`#trx.inventory`** (integer). How many there are.
 
 Example:
@@ -109,10 +109,10 @@ end
       Returns: Entry or `nil`.
 
     - [lua]`inventory:entry_at(n)`  
-      The entry at a position, counted from one in the order they are drawn, or `nil` past the end.
+      The entry at a position in the order they are drawn, or `nil` past the end.
 
       Parameters:
-      - **`n`** (integer). 1-based position.
+      - **`n`** (integer). Position in the ring. Counted from 1.
 
       Returns: Entry or `nil`.
 

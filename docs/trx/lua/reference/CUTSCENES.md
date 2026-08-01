@@ -20,7 +20,7 @@ lists and `/cut` plays, are a different thing: see `trx.game.cutscenes`.
 
 ### Properties
 
-- **`trx.cutscenes.current`** (integer). Number of the cutscene playing, or `nil` if none is. *(read-only)*
+- **`trx.cutscenes.current`** (integer). Number of the cutscene playing, or `nil` if none is. Counted from 0. *(read-only)*
 - **`trx.cutscenes.is_playing`** (boolean). Whether a cutscene is on screen. *(read-only)*
 - **`trx.cutscenes.fov`** (integer). Field of view a cutscene plays at, in the engine's own angle units. TR4 uses 11488, against 14560 for ordinary play.
 - **`trx.cutscenes.letterbox`** (number). Depth of each cinematic bar, as a fraction of the screen height. `0` removes them.
@@ -31,7 +31,7 @@ lists and `/cut` plays, are a different thing: see `trx.game.cutscenes`.
   Plays a cutscene, fading the scene out first. Does nothing if one is already playing or the game has no cutscene data.
 
   Parameters:
-  - **`num`** (integer). Cutscene number.
+  - **`num`** (integer). Cutscene number, as a cutscene trigger names it. Counted from 0.
 
   Example:
   ```lua
@@ -42,7 +42,7 @@ lists and `/cut` plays, are a different thing: see `trx.game.cutscenes`.
   Whether a cutscene trigger naming this number has already been answered.
 
   Parameters:
-  - **`num`** (integer). Cutscene number.
+  - **`num`** (integer). Cutscene number, as a cutscene trigger names it. Counted from 0.
 
   Returns: boolean.
 
@@ -57,7 +57,7 @@ lists and `/cut` plays, are a different thing: see `trx.game.cutscenes`.
   `play` accepts.
 
   Parameters:
-  - **`num`** (integer). Cutscene number.
+  - **`num`** (integer). Cutscene number, as a cutscene trigger names it. Counted from 0.
   - **`played`** (boolean). Whether it counts as played.
 
   Example:

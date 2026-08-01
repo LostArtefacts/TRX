@@ -69,7 +69,8 @@ local FLOOR_HEIGHT_PARAMS = {
     name = "room_num",
     type = "integer",
     optional = true,
-    description = "0-based room to look from. The search crosses portals, so a neighbouring "
+    see = "rooms.num",
+    description = "The room to look from. The search crosses portals, so a neighbouring "
       .. "room's floor is found too. Without it, the room is looked up from the position, which "
       .. "takes the first room that contains it and passes over the flipped-away ones. Where "
       .. "rooms overlap, name the room, or ask the room itself with `room:floor_height`.",
@@ -106,7 +107,7 @@ api.type("rooms.Room", {
       from = "room_num",
       type = "integer",
       writable = false,
-      description = "0-based room number, matching the numbers level editors show.",
+      see = "rooms.num",
     },
     underwater = {
       from = "flags.underwater",
@@ -228,10 +229,10 @@ end)]],
   },
 })
 
-api.note(
-  "rooms.num",
-  "0-based room number, matching the numbers level editors show."
-)
+api.note("rooms.num", {
+  base = 0,
+  description = "Room number, matching the numbers level editors show.",
+})
 
 api.define("rooms.get", {
   description = "Retrieves a room by number.",
@@ -304,7 +305,7 @@ api.define("rooms.find_valid_pos", {
     {
       name = "room_num",
       type = "integer",
-      description = "0-based room to search from.",
+      see = "rooms.num",
     },
   },
   returns = {
@@ -313,7 +314,11 @@ api.define("rooms.find_valid_pos", {
       nullable = true,
       description = "The valid position, or `nil` if none was found nearby.",
     },
-    { type = "integer", description = "The 0-based room the position is in." },
+    {
+      type = "integer",
+      base = 0,
+      description = "The room the position is in.",
+    },
   },
   impl = raw.find_valid_pos,
 })
@@ -429,8 +434,7 @@ api.property("rooms.query", {
 
 api.container("rooms", {
   description = "Indexing the module reaches a room, and `#trx.rooms` is how many the level has. "
-    .. "Rooms count from zero, matching the room numbers level editors show. `pairs()` walks them "
-    .. "in order, keyed by that number.",
+    .. "`pairs()` walks them in order, keyed by the room number.",
   key = { type = "integer", see = "rooms.num" },
   value = { type = "Room", nullable = true },
   examples = {

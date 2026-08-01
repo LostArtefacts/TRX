@@ -1032,7 +1032,7 @@ end
 test("a note is written once and read wherever it is pointed at", function()
   local api = fresh_env()
   api.module("things", { description = "..." })
-  api.note("things.number", "0-based thing number.")
+  api.note("things.number", { base = 0, description = "A thing number." })
   api.define("things.get", {
     params = {
       { name = "num", type = "integer", see = "things.number" },
@@ -1049,23 +1049,25 @@ test("a note is written once and read wherever it is pointed at", function()
   })
 
   local fn = declared(api, "things.get")
-  assert(fn.params[1].description == "0-based thing number.")
+  assert(fn.params[1].description == "A thing number.")
+  assert(fn.params[1].base == 0, "the base comes with the note")
   assert(
-    fn.params[2].params[1].description == "0-based thing number.",
+    fn.params[2].params[1].description == "A thing number.",
     "a callback's own arguments read it too"
   )
-  assert(fn.returns.description == "0-based thing number.")
+  assert(fn.returns.description == "A thing number.")
   assert(fn.params[1].see == nil, "the pointer does not reach the docs")
 end)
 
 test("a note joins what the spec adds of its own", function()
   local api = fresh_env()
-  api.note("things.number", "0-based thing number.")
+  api.note("things.number", { base = 0, description = "A thing number." })
   api.define("things.get", {
     params = {
       {
         name = "num",
         type = "integer",
+        base = 1,
         see = "things.number",
         description = "The one that broke.",
       },
@@ -1073,10 +1075,9 @@ test("a note joins what the spec adds of its own", function()
     impl = function() end,
   })
 
-  assert(
-    declared(api, "things.get").params[1].description
-      == "0-based thing number. The one that broke."
-  )
+  local param = declared(api, "things.get").params[1]
+  assert(param.description == "A thing number. The one that broke.")
+  assert(param.base == 1, "a spec keeps a base of its own")
 end)
 
 test("pointing at a note nobody wrote raises", function()
@@ -1090,8 +1091,10 @@ end)
 
 test("a note cannot be written twice", function()
   local api = fresh_env()
-  api.note("things.number", "0-based thing number.")
-  assert(not pcall(api.note, "things.number", "something else"))
+  api.note("things.number", { base = 0, description = "A thing number." })
+  assert(
+    not pcall(api.note, "things.number", { description = "Something else." })
+  )
 end)
 
 test("a container walks from the index it counts from", function()
@@ -1101,7 +1104,7 @@ test("a container walks from the index it counts from", function()
   api.module("counted", {})
   api.container("counted", {
     description = "Indexing.",
-    key = { type = "integer", description = "0-based." },
+    key = { type = "integer", base = 0, description = "Where it sits." },
     value = { type = "string" },
     get = function(key)
       return zero[key]
@@ -1114,9 +1117,8 @@ test("a container walks from the index it counts from", function()
   api.module("listed", {})
   api.container("listed", {
     description = "Indexing.",
-    key = { type = "integer", description = "1-based." },
+    key = { type = "integer", base = 1, description = "Where it sits." },
     value = { type = "string" },
-    base = 1,
     get = function(key)
       return one[key]
     end,

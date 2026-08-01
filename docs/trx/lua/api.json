@@ -24,12 +24,13 @@
   "containers": [
     {
       "countable": true,
-      "description": "Indexing the module reaches an entry of Lara's inventory, and `#trx.inventory` is how many kinds of thing she carries. Entries count from one, in the order they are drawn, and are built one at a time as they are asked for. `pairs()` walks them.",
+      "description": "Indexing the module reaches an entry of Lara's inventory, and `#trx.inventory` is how many kinds of thing she carries. Entries are keyed by the order they are drawn in, and are built one at a time as they are asked for. `pairs()` walks them.",
       "examples": [
         "for _, entry in pairs(trx.inventory) do\n  trx.log.info((\"%d x %s\"):format(entry.count, trx.catalog.objects[entry.object]))\nend"
       ],
       "key": {
-        "description": "1-based position.",
+        "base": 1,
+        "description": "Position in the ring.",
         "type": "integer"
       },
       "module": "inventory",
@@ -45,7 +46,8 @@
         "for num, item in pairs(trx.items) do\n  trx.log.info(item.object_id)\nend"
       ],
       "key": {
-        "description": "0-based item number, matching the numbers level editors show. An item's unique name reaches it as well.",
+        "base": 0,
+        "description": "Item number, matching the numbers level editors show. An item's unique name reaches it as well.",
         "type": "any"
       },
       "module": "items",
@@ -62,6 +64,7 @@
       ],
       "key": {
         "description": "Object id, or its catalog name.",
+        "enum": "catalog.objects",
         "type": "any"
       },
       "module": "objects",
@@ -72,12 +75,13 @@
     },
     {
       "countable": true,
-      "description": "Indexing the module reaches a room, and `#trx.rooms` is how many the level has. Rooms count from zero, matching the room numbers level editors show. `pairs()` walks them in order, keyed by that number.",
+      "description": "Indexing the module reaches a room, and `#trx.rooms` is how many the level has. `pairs()` walks them in order, keyed by the room number.",
       "examples": [
         "trx.log.info(#trx.rooms .. \" rooms, first is \" .. trx.rooms[0].num)\nfor num, room in pairs(trx.rooms) do\n  room.cold = true\nend"
       ],
       "key": {
-        "description": "0-based room number, matching the numbers level editors show.",
+        "base": 0,
+        "description": "Room number, matching the numbers level editors show.",
         "type": "integer"
       },
       "module": "rooms",
@@ -2754,8 +2758,9 @@
       "description": "Removes a record, closing the gap behind it.",
       "params": [
         {
-          "description": "1-based position in the table.",
-          "name": "record_id",
+          "base": 1,
+          "description": "Position in the table.",
+          "name": "record_num",
           "type": "integer"
         },
         {
@@ -2817,7 +2822,8 @@
       ],
       "params": [
         {
-          "description": "0-based sequence number.",
+          "base": 0,
+          "description": "Flyby sequence number, as the level numbers them.",
           "name": "sequence_num",
           "type": "integer"
         }
@@ -3220,7 +3226,8 @@
       ],
       "params": [
         {
-          "description": "Cutscene number.",
+          "base": 0,
+          "description": "Cutscene number, as a cutscene trigger names it.",
           "name": "num",
           "type": "integer"
         }
@@ -3231,7 +3238,8 @@
       "description": "Whether a cutscene trigger naming this number has already been answered.",
       "params": [
         {
-          "description": "Cutscene number.",
+          "base": 0,
+          "description": "Cutscene number, as a cutscene trigger names it.",
           "name": "num",
           "type": "integer"
         }
@@ -3248,7 +3256,8 @@
       ],
       "params": [
         {
-          "description": "Cutscene number.",
+          "base": 0,
+          "description": "Cutscene number, as a cutscene trigger names it.",
           "name": "num",
           "type": "integer"
         },
@@ -3335,7 +3344,8 @@
           "name": "callback",
           "params": [
             {
-              "description": "0-based item number, matching the numbers level editors show. The item that was picked up.",
+              "base": 0,
+              "description": "Item number, matching the numbers level editors show. The item that was picked up.",
               "name": "item_num",
               "type": "integer"
             }
@@ -3384,6 +3394,7 @@
       ],
       "params": [
         {
+          "base": 0,
           "description": "The flip effect number to claim, as the level editor numbers them. This is not the id space of `trx.rooms.flip_effect`, which takes `trx.catalog.flip_effects` names.",
           "name": "effect_num",
           "type": "integer"
@@ -3397,7 +3408,8 @@
               "type": "integer"
             },
             {
-              "description": "0-based item number, matching the numbers level editors show. The item that ran the effect: Lara for a pad trigger, the activating object for a heavy trigger, the animating item for an animation command.",
+              "base": 0,
+              "description": "Item number, matching the numbers level editors show. The item that ran the effect: Lara for a pad trigger, the activating object for a heavy trigger, the animating item for an animation command.",
               "name": "item_num",
               "type": "integer"
             }
@@ -3426,12 +3438,14 @@
               "type": "Item"
             },
             {
-              "description": "0-based room number, matching the numbers level editors show. -1 if it had none.",
+              "base": 0,
+              "description": "Room number, matching the numbers level editors show. -1 if it had none.",
               "name": "old_room_num",
               "type": "integer"
             },
             {
-              "description": "0-based room number, matching the numbers level editors show. -1 if it left the world.",
+              "base": 0,
+              "description": "Room number, matching the numbers level editors show. -1 if it left the world.",
               "name": "new_room_num",
               "type": "integer"
             }
@@ -3777,7 +3791,8 @@
           "name": "callback",
           "params": [
             {
-              "description": "Number the trigger names.",
+              "base": 0,
+              "description": "Cutscene number, as a cutscene trigger names it. The number the trigger names, which the game need not have a cutscene for.",
               "name": "cutscene_num",
               "type": "integer"
             }
@@ -3798,7 +3813,8 @@
           "name": "callback",
           "params": [
             {
-              "description": "Number of the cutscene starting.",
+              "base": 0,
+              "description": "Cutscene number, as a cutscene trigger names it.",
               "name": "cutscene_num",
               "type": "integer"
             }
@@ -3822,7 +3838,8 @@
           "name": "callback",
           "params": [
             {
-              "description": "Number of the cutscene that ended.",
+              "base": 0,
+              "description": "Cutscene number, as a cutscene trigger names it.",
               "name": "cutscene_num",
               "type": "integer"
             }
@@ -3846,7 +3863,8 @@
           "name": "callback",
           "params": [
             {
-              "description": "Number of the flyby sequence that ended.",
+              "base": 0,
+              "description": "Flyby sequence number, as the level numbers them.",
               "name": "sequence_num",
               "type": "integer"
             }
@@ -3884,7 +3902,8 @@
       ],
       "params": [
         {
-          "description": "1-based position in `trx.game.levels`.",
+          "base": 1,
+          "description": "Position in `trx.game.levels`.",
           "name": "num",
           "type": "integer"
         },
@@ -3901,7 +3920,8 @@
       "description": "Plays a cutscene.",
       "params": [
         {
-          "description": "1-based position in `trx.game.cutscenes`.",
+          "base": 1,
+          "description": "Position in `trx.game.cutscenes`.",
           "name": "num",
           "type": "integer"
         }
@@ -3912,7 +3932,8 @@
       "description": "Plays a demo, and returns the one that started.",
       "params": [
         {
-          "description": "1-based position in `trx.game.demos`. Omit to play the next demo in rotation.",
+          "base": 1,
+          "description": "Position in `trx.game.demos`. Omit to play the next demo in rotation.",
           "name": "num",
           "optional": true,
           "type": "integer"
@@ -3962,7 +3983,8 @@
       ],
       "params": [
         {
-          "description": "0-based item number, matching the numbers level editors show. An item's unique name reaches it as well.",
+          "base": 0,
+          "description": "Item number, matching the numbers level editors show. An item's unique name reaches it as well.",
           "name": "key",
           "type": "any"
         }
@@ -4051,7 +4073,8 @@
           "type": "vec3"
         },
         {
-          "description": "0-based room to look in. Without it, the room is found from the position.",
+          "base": 0,
+          "description": "Room number, matching the numbers level editors show. Without it, the room is found from the position.",
           "name": "room_num",
           "optional": true,
           "type": "integer"
@@ -4473,7 +4496,8 @@
       ],
       "params": [
         {
-          "description": "0-based room number, matching the numbers level editors show.",
+          "base": 0,
+          "description": "Room number, matching the numbers level editors show.",
           "name": "num",
           "type": "integer"
         }
@@ -4528,7 +4552,8 @@
           "type": "vec3"
         },
         {
-          "description": "0-based room to look from. The search crosses portals, so a neighbouring room's floor is found too. Without it, the room is looked up from the position, which takes the first room that contains it and passes over the flipped-away ones. Where rooms overlap, name the room, or ask the room itself with `room:floor_height`.",
+          "base": 0,
+          "description": "Room number, matching the numbers level editors show. The room to look from. The search crosses portals, so a neighbouring room's floor is found too. Without it, the room is looked up from the position, which takes the first room that contains it and passes over the flipped-away ones. Where rooms overlap, name the room, or ask the room itself with `room:floor_height`.",
           "name": "room_num",
           "optional": true,
           "type": "integer"
@@ -4555,7 +4580,8 @@
           "type": "vec3"
         },
         {
-          "description": "0-based room to search from.",
+          "base": 0,
+          "description": "Room number, matching the numbers level editors show.",
           "name": "room_num",
           "type": "integer"
         }
@@ -4568,7 +4594,8 @@
           "type": "vec3"
         },
         {
-          "description": "The 0-based room the position is in.",
+          "base": 0,
+          "description": "The room the position is in.",
           "type": "integer"
         }
       ]
@@ -4660,7 +4687,8 @@
       "description": "Whether a slot holds no save.",
       "params": [
         {
-          "description": "1-based slot number. For the quick pool this is the on-screen order.",
+          "base": 1,
+          "description": "Slot number within the pool. For the quick pool this is the on-screen order.",
           "name": "slot_num",
           "type": "integer"
         },
@@ -4687,7 +4715,8 @@
       ],
       "params": [
         {
-          "description": "1-based slot number. For the quick pool this is the on-screen order.",
+          "base": 1,
+          "description": "Slot number within the pool. For the quick pool this is the on-screen order.",
           "name": "slot_num",
           "type": "integer"
         },
@@ -4708,7 +4737,8 @@
       ],
       "params": [
         {
-          "description": "1-based slot number. The quick pool uses the next slot in its rotation when it is omitted.",
+          "base": 1,
+          "description": "Slot number within the pool. For the quick pool this is the on-screen order. The quick pool uses the next slot in its rotation when it is omitted.",
           "name": "slot_num",
           "optional": true,
           "type": "integer"
@@ -5128,7 +5158,8 @@
       "writable": false
     },
     {
-      "description": "0-based number of the room the camera is in, or `nil` if unknown.",
+      "base": 0,
+      "description": "The room the camera is in, or `nil` if unknown.",
       "path": "camera.room_num",
       "type": "integer",
       "writable": false
@@ -5146,7 +5177,8 @@
       "writable": false
     },
     {
-      "description": "0-based number of the room the camera is looking at, or `nil` if unknown.",
+      "base": 0,
+      "description": "The room the camera is looking at, or `nil` if unknown.",
       "path": "camera.target_room_num",
       "type": "integer",
       "writable": false
@@ -5164,6 +5196,7 @@
       "writable": true
     },
     {
+      "base": 0,
       "description": "Number of the cutscene playing, or `nil` if none is.",
       "path": "cutscenes.current",
       "type": "integer",
@@ -5460,6 +5493,7 @@
           "writable": false
         },
         {
+          "base": 1,
           "description": "The number the level goes by. Not its place in the table: levels the game flow skips do not count, and a gym level has no number at all and reads 0.",
           "name": "num",
           "type": "integer",
@@ -5602,11 +5636,12 @@
           }
         },
         {
-          "description": "The entry at a position, counted from one in the order they are drawn, or `nil` past the end.",
+          "description": "The entry at a position in the order they are drawn, or `nil` past the end.",
           "name": "entry_at",
           "params": [
             {
-              "description": "1-based position.",
+              "base": 1,
+              "description": "Position in the ring.",
               "name": "n",
               "type": "integer"
             }
@@ -5795,7 +5830,8 @@
       ],
       "fields": [
         {
-          "description": "The animation's number within the object, counted from 0.",
+          "base": 0,
+          "description": "The animation's number within the object.",
           "name": "anim_num",
           "type": "integer",
           "writable": true
@@ -5819,7 +5855,8 @@
           "writable": true
         },
         {
-          "description": "The frame's number within the animation, counted from 0. Negative values count back from the end.",
+          "base": 0,
+          "description": "The frame's number within the animation. Negative values count back from the end.",
           "name": "frame_num",
           "type": "integer",
           "writable": true
@@ -5933,7 +5970,8 @@
           "writable": true
         },
         {
-          "description": "0-based item number, matching the numbers level editors show. An item handed over by a query can say where it lives.",
+          "base": 0,
+          "description": "Item number, matching the numbers level editors show. An item handed over by a query can say where it lives.",
           "name": "num",
           "type": "integer",
           "writable": false
@@ -5952,7 +5990,8 @@
           "writable": true
         },
         {
-          "description": "0-based number of the room containing this item. Set `pos` to move the item between rooms.",
+          "base": 0,
+          "description": "Room number, matching the numbers level editors show. The room containing this item. Set `pos` to move the item between rooms.",
           "name": "room_num",
           "type": "integer",
           "writable": false
@@ -6508,7 +6547,8 @@
           "name": "in_room",
           "params": [
             {
-              "description": "0-based room number, matching the numbers level editors show.",
+              "base": 0,
+              "description": "Room number, matching the numbers level editors show.",
               "name": "room_num",
               "type": "integer"
             }
@@ -7373,7 +7413,8 @@
           "writable": false
         },
         {
-          "description": "0-based room number, matching the numbers level editors show.",
+          "base": 0,
+          "description": "Room number, matching the numbers level editors show.",
           "name": "num",
           "type": "integer",
           "writable": false
@@ -7788,8 +7829,9 @@
           "name": "give_secret",
           "params": [
             {
-              "description": "The secret's number, counted from one.",
-              "name": "num",
+              "base": 1,
+              "description": "The secret's number, as the player counts them.",
+              "name": "secret_num",
               "type": "integer"
             }
           ],
@@ -7799,7 +7841,7 @@
           }
         },
         {
-          "description": "The level's secrets, in order, as a list of `{ num, found }`. `num` is the number the player says, counted from one, and `found` is whether Lara has it.",
+          "description": "The level's secrets, in order, as a list of `{ num, found }`. `num` is the number the player says, and `found` is whether Lara has it.",
           "examples": [
             "for _, secret in ipairs(trx.stats.secret_list()) do\n  trx.log.info(secret.num .. \": \" .. tostring(secret.found))\nend"
           ],
@@ -7814,8 +7856,9 @@
           "name": "take_secret",
           "params": [
             {
-              "description": "The secret's number, counted from one.",
-              "name": "num",
+              "base": 1,
+              "description": "The secret's number, as the player counts them.",
+              "name": "secret_num",
               "type": "integer"
             }
           ],

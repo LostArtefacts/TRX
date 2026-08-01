@@ -85,7 +85,7 @@ An event that carries a default the script may take over says so in its descript
   Parameters:
   - **`callback`** (function).
     Called with:
-    - **`item_num`** (integer). 0-based item number, matching the numbers level editors show. The item that was picked up.
+    - **`item_num`** (integer). Item number, matching the numbers level editors show. The item that was picked up. Counted from 0.
 
   Returns: events.Listener. The attached handler.
 
@@ -120,11 +120,11 @@ An event that carries a default the script may take over says so in its descript
   Unlike the other hooks, this happens at effect execution time, in the middle of a game frame.
 
   Parameters:
-  - **`effect_num`** (integer). The flip effect number to claim, as the level editor numbers them. This is not the id space of `trx.rooms.flip_effect`, which takes `trx.catalog.flip_effects` names.
+  - **`effect_num`** (integer). The flip effect number to claim, as the level editor numbers them. This is not the id space of `trx.rooms.flip_effect`, which takes `trx.catalog.flip_effects` names. Counted from 0.
   - **`callback`** (function).
     Called with:
     - **`timer`** (integer). A floor trigger's timer field, free for the level to use as a parameter. 0 for an animation command, which carries no timer.
-    - **`item_num`** (integer). 0-based item number, matching the numbers level editors show. The item that ran the effect: Lara for a pad trigger, the activating object for a heavy trigger, the animating item for an animation command.
+    - **`item_num`** (integer). Item number, matching the numbers level editors show. The item that ran the effect: Lara for a pad trigger, the activating object for a heavy trigger, the animating item for an animation command. Counted from 0.
 
   Returns: events.Listener. The attached handler.
 
@@ -142,8 +142,8 @@ An event that carries a default the script may take over says so in its descript
   - **`callback`** (function).
     Called with:
     - **`item`** (Item). The `trx.items.Item` that changed rooms.
-    - **`old_room_num`** (integer). 0-based room number, matching the numbers level editors show. -1 if it had none.
-    - **`new_room_num`** (integer). 0-based room number, matching the numbers level editors show. -1 if it left the world.
+    - **`old_room_num`** (integer). Room number, matching the numbers level editors show. -1 if it had none. Counted from 0.
+    - **`new_room_num`** (integer). Room number, matching the numbers level editors show. -1 if it left the world. Counted from 0.
 
   Returns: events.Listener. The attached handler.
 
@@ -436,7 +436,7 @@ An event that carries a default the script may take over says so in its descript
   Parameters:
   - **`callback`** (function).
     Called with:
-    - **`cutscene_num`** (integer). Number the trigger names.
+    - **`cutscene_num`** (integer). Cutscene number, as a cutscene trigger names it. The number the trigger names, which the game need not have a cutscene for. Counted from 0.
 
   Returns: events.Listener. The attached handler.
 
@@ -462,7 +462,7 @@ An event that carries a default the script may take over says so in its descript
   Parameters:
   - **`callback`** (function).
     Called with:
-    - **`cutscene_num`** (integer). Number of the cutscene starting.
+    - **`cutscene_num`** (integer). Cutscene number, as a cutscene trigger names it. Counted from 0.
 
   Returns: events.Listener. The attached handler.
 
@@ -472,7 +472,7 @@ An event that carries a default the script may take over says so in its descript
   Parameters:
   - **`callback`** (function).
     Called with:
-    - **`cutscene_num`** (integer). Number of the cutscene that ended.
+    - **`cutscene_num`** (integer). Cutscene number, as a cutscene trigger names it. Counted from 0.
 
   Returns: events.Listener. The attached handler.
 
@@ -490,7 +490,7 @@ An event that carries a default the script may take over says so in its descript
   Parameters:
   - **`callback`** (function).
     Called with:
-    - **`sequence_num`** (integer). Number of the flyby sequence that ended.
+    - **`sequence_num`** (integer). Flyby sequence number, as the level numbers them. Counted from 0.
 
   Returns: events.Listener. The attached handler.
 

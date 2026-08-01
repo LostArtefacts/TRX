@@ -169,6 +169,8 @@ order: 3
    - `on_flyby_end`'s handler takes `sequence_num`
    - the `on_cutscene_*` handlers take `cutscene_num`
    - `trx.savegame`'s slot argument is `slot_num`
+   - `trx.stats`'s secret argument is `secret_num`, and `trx.assault`'s record
+     argument is `record_num`
    - `trx.inventory`'s object argument is `object_id`
 
 17. **Update scripts that use `trx.console.log.LogLevel`**

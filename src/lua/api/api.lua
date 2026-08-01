@@ -68,8 +68,9 @@ local checkers
 local checker_paths = {}
 -- Descriptions written once and pointed at from wherever they belong, keyed by
 -- a name of the module's choosing. `see` on a param, a return or a field pulls
--- one in - what "0-based item number" means is the items module's to say, and
--- every hook that carries one says it by pointing here.
+-- one in, along with the base it counts from - what an item number means is the
+-- items module's to say, and every hook that carries one says it by pointing
+-- here.
 local notes = {}
 local containers = ordered()
 -- module -> { get, count, accepts }. What indexing the module table reaches.
@@ -682,9 +683,10 @@ function api.container(name, spec)
   module_containers[name] = {
     get = spec.get,
     count = spec.count,
-    -- Where the collection's first entry sits. A list of its own is counted
-    -- from one; what carries an engine number keeps it and counts from zero.
-    base = spec.base or 0,
+    -- Where the collection's first entry sits, which is the key's own base: a
+    -- list of its own is counted from one, and what carries an engine number
+    -- keeps it and counts from zero.
+    base = spec.key.base or 0,
     accepts = function(key)
       local kind = type(key)
       return kind == "number" or (kind == "string" and not by_number_only)
@@ -1098,13 +1100,18 @@ function api.property(path, spec)
 end
 
 -- Declares a description other declarations point at with `see`. Doc-only: it
--- reaches no module table and a script never sees it.
-function api.note(name, text)
-  opening("api.note")
+-- reaches no module table and a script never sees it. A note about a number
+-- carries the `base` it counts from, so the one place that describes the number
+-- is also the one place that says where it starts.
+function api.note(name, spec)
+  opening("api.note", spec)
   assert(type(name) == "string", "api.note: name must be a string")
-  assert(type(text) == "string", "api.note: text must be a string")
+  assert(
+    type(spec.description) == "string",
+    "api.note: description must be a string"
+  )
   assert(notes[name] == nil, "api.note: '" .. name .. "' is already written")
-  notes[name] = text
+  notes[name] = spec
 end
 
 -- A spec as the docs read it: what `see` points at, ahead of anything the spec
@@ -1121,8 +1128,9 @@ local function noted(spec)
     local note = notes[out.see]
     assert(note ~= nil, "api: no note called '" .. tostring(out.see) .. "'")
     out.description = out.description ~= nil
-        and (note .. " " .. out.description)
-      or note
+        and (note.description .. " " .. out.description)
+      or note.description
+    out.base = out.base or note.base
     out.see = nil
   end
   if type(out.params) == "table" then
@@ -1237,6 +1245,7 @@ function api.describe()
         writable = noted_field.writable ~= false,
         description = noted_field.description,
         enum = noted_field.enum,
+        base = noted_field.base,
       })
     end
     for name, method in pairs(spec.methods or {}) do
@@ -1325,6 +1334,7 @@ function api.describe()
       type = spec.type,
       description = spec.description,
       enum = spec.enum,
+      base = spec.base,
       writable = spec.set ~= nil,
     }
   end)

@@ -94,8 +94,13 @@ A number that stands for something takes a suffix saying what kind it is.
   1 where TRX made the list and the player sees the position.
 - **`idx` stays in C**, for indices into its own arrays.
 
+A public `_num` says which of the two it is, as `base = 0` or `base = 1` on the
+param, field, return or container key. The reference states it in the same words
+each time, so it is not written by hand.
+
 Where a description would be written twice, write it once with `api.note` and
-point at it with `see`.
+point at it with `see`. A note about a number carries its `base`, so the one
+place that describes the number is the one place that says where it starts.
 
 ## Tooling
 

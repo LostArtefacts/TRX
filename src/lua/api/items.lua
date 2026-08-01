@@ -8,10 +8,10 @@ api.module("items", {
   description = "Module for controlling all moveables.",
 })
 
-api.note(
-  "items.num",
-  "0-based item number, matching the numbers level editors show."
-)
+api.note("items.num", {
+  base = 0,
+  description = "Item number, matching the numbers level editors show.",
+})
 
 api.enum("items.PickupMode", {
   backing = "PICKUP_MODE",
@@ -145,13 +145,15 @@ api.type("items.Item", {
     anim_num = {
       from = "relative_anim_num",
       type = "integer",
-      description = "The animation's number within the object, counted from 0.",
+      base = 0,
+      description = "The animation's number within the object.",
     },
     frame_num = {
       from = "relative_frame_num",
       type = "integer",
-      description = "The frame's number within the animation, counted from 0. Negative values count "
-        .. "back from the end.",
+      base = 0,
+      description = "The frame's number within the animation. Negative values count back from the "
+        .. "end.",
     },
     num = {
       from = "item_num",
@@ -164,7 +166,8 @@ api.type("items.Item", {
       from = "room_num",
       type = "integer",
       writable = false,
-      description = "0-based number of the room containing this item. Set `pos` to move the item between rooms.",
+      see = "rooms.num",
+      description = "The room containing this item. Set `pos` to move the item between rooms.",
     },
     hit_points = {
       from = "hit_points",

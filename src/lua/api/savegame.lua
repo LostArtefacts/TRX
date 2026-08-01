@@ -23,10 +23,15 @@ local pool_param = {
   description = "Which set of slots to look in. Defaults to `NORMAL`.",
 }
 
+api.note("savegame.slot_num", {
+  base = 1,
+  description = "Slot number within the pool. For the quick pool this is the on-screen order.",
+})
+
 local slot_param = {
   name = "slot_num",
   type = "integer",
-  description = "1-based slot number. For the quick pool this is the on-screen order.",
+  see = "savegame.slot_num",
 }
 
 api.define("savegame.slot_count", {
@@ -68,7 +73,8 @@ api.define("savegame.save", {
       name = "slot_num",
       type = "integer",
       optional = true,
-      description = "1-based slot number. The quick pool uses the next slot in its rotation "
+      see = "savegame.slot_num",
+      description = "The quick pool uses the next slot in its rotation "
         .. "when it is omitted.",
     },
     pool_param,

@@ -16,9 +16,9 @@ Module for inspecting and altering the rooms of the current level.
 
 ### Indexing
 
-Indexing the module reaches a room, and `#trx.rooms` is how many the level has. Rooms count from zero, matching the room numbers level editors show. `pairs()` walks them in order, keyed by that number.
+Indexing the module reaches a room, and `#trx.rooms` is how many the level has. `pairs()` walks them in order, keyed by the room number.
 
-- **`trx.rooms[key]`** (Room or `nil`). 0-based room number, matching the numbers level editors show.
+- **`trx.rooms[key]`** (Room or `nil`). Room number, matching the numbers level editors show. Counted from 0.
 - **`#trx.rooms`** (integer). How many there are.
 
 Example:
@@ -61,7 +61,7 @@ end
     - **`cold`**: boolean. Whether Lara's breath is visible in the room.
     - **`damaging`**: boolean. Whether the room drains Lara's exposure meter.
     - **`flip_status`**: integer. Current flip status. Compare against `trx.rooms.FlipStatus`. *(read-only)*
-    - **`num`**: integer. 0-based room number, matching the numbers level editors show. *(read-only)*
+    - **`num`**: integer. Room number, matching the numbers level editors show. Counted from 0. *(read-only)*
     - **`swamp`**: boolean. Whether the room is filled with swamp water, which Lara wades through and sinks into rather than swimming.
     - **`underwater`**: boolean. Whether the room is filled with water.
     - **`wind`**: boolean. Whether the room has a breeze. Requires the player to have breeze enabled.
@@ -181,7 +181,7 @@ end
   Retrieves a room by number.
 
   Parameters:
-  - **`num`** (integer). 0-based room number, matching the numbers level editors show.
+  - **`num`** (integer). Room number, matching the numbers level editors show. Counted from 0.
 
   Returns: Room or `nil`.
 
@@ -216,7 +216,7 @@ end
 
   Parameters:
   - **`pos`** (vec3). World position.
-  - **`room_num`** (integer, optional). 0-based room to look from. The search crosses portals, so a neighbouring room's floor is found too. Without it, the room is looked up from the position, which takes the first room that contains it and passes over the flipped-away ones. Where rooms overlap, name the room, or ask the room itself with `room:floor_height`.
+  - **`room_num`** (integer, optional). Room number, matching the numbers level editors show. The room to look from. The search crosses portals, so a neighbouring room's floor is found too. Without it, the room is looked up from the position, which takes the first room that contains it and passes over the flipped-away ones. Where rooms overlap, name the room, or ask the room itself with `room:floor_height`. Counted from 0.
   - **`opts`** (table, optional). `fix_tilts`: whether a floor tilt that lies inside a wall is taken into account, `true` by default. `false` gives the flat height the original games read there, which is what the geometry glitches of the vanilla levels rest on.
 
   Returns: integer or `nil`.
@@ -231,8 +231,8 @@ end
 
   Parameters:
   - **`pos`** (vec3). Position to search near.
-  - **`room_num`** (integer). 0-based room to search from.
+  - **`room_num`** (integer). Room number, matching the numbers level editors show. Counted from 0.
 
   Returns:
   - vec3 or `nil`. The valid position, or `nil` if none was found nearby.
-  - integer. The 0-based room the position is in.
+  - integer. The room the position is in. Counted from 0.
