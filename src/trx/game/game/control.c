@@ -294,4 +294,10 @@ void Game_ProcessInput(void)
     if (g_InputDB.toggle_ui) {
         UI_ToggleState(&g_Config.ui.enable_game_ui);
     }
+
+    if (g_InputDB.use_binoculars && Game_IsPlaying()
+        && g_Config.gameplay.enable_binoculars
+        && Inv_HasItem(O_BINOCULARS_ITEM)) {
+        Camera_Binoculars_Request();
+    }
 }

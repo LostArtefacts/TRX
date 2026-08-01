@@ -81,7 +81,8 @@ static bool M_ShouldExit(void)
     const ITEM *const lara_item = Lara_GetItem();
     return g_InputDB.draw || g_InputDB.look || g_Input.option || g_Input.save
         || g_Input.load || g_InputDB.quick_save || g_InputDB.quick_load
-        || lara_item->hit_points <= 0 || Lara_Vehicle_GetItem() != nullptr;
+        || g_InputDB.use_binoculars || lara_item->hit_points <= 0
+        || Lara_Vehicle_GetItem() != nullptr;
 }
 
 static void M_HandleLookInput(void)
@@ -321,6 +322,7 @@ void Camera_Binoculars_Exit(void)
     LARA_INFO *const lara_info = Lara_GetLaraInfo();
 
     m_Active = false;
+    m_Pending = false;
     m_TorchActive = false;
     lara_item->mesh_bits = 0xFFFFFFFF;
     lara_info->gun_status = LGS_ARMLESS;
