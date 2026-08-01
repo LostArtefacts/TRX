@@ -93,11 +93,11 @@ Module for the game flow: which levels there are, and which one is being played.
 
 ### Functions
 
-- [lua]`trx.game.play_level(num, [opts])`  
+- [lua]`trx.game.play_level(level_num, [opts])`  
   Starts a level from `trx.game.levels`.
 
   Parameters:
-  - **`num`** (integer). 1-based position in `trx.game.levels`.
+  - **`level_num`** (integer). 1-based position in `trx.game.levels`.
   - **`opts`** (table, optional). `select`: start the level as the level-select screen does, rebuilding Lara's inventory to what she would carry on reaching it. Without it the level continues from the one in progress.
 
   Example:
@@ -105,17 +105,17 @@ Module for the game flow: which levels there are, and which one is being played.
   trx.game.play_level(1)
   ```
 
-- [lua]`trx.game.play_cutscene(num)`  
+- [lua]`trx.game.play_cutscene(cutscene_num)`  
   Plays a cutscene.
 
   Parameters:
-  - **`num`** (integer). 1-based position in `trx.game.cutscenes`.
+  - **`cutscene_num`** (integer). 1-based position in `trx.game.cutscenes`.
 
-- [lua]`trx.game.play_demo([num])`  
+- [lua]`trx.game.play_demo([demo_num])`  
   Plays a demo, and returns the one that started.
 
   Parameters:
-  - **`num`** (integer, optional). 1-based position in `trx.game.demos`. Omit to play the next demo in rotation.
+  - **`demo_num`** (integer, optional). 1-based position in `trx.game.demos`. Omit to play the next demo in rotation.
 
   Returns:
   - Level or `nil`. The demo that started, or `nil` if the game has no demos.

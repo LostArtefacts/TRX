@@ -13,11 +13,11 @@ api.type("sound.Sample", {
     .. "whether it is still there.",
 
   fields = {
-    id = {
+    num = {
       from = "id",
       type = "integer",
       writable = false,
-      description = "The sample's id, in the level's own numbering.",
+      description = "The number the level gives this sample.",
     },
     volume = {
       from = "volume",
@@ -79,7 +79,7 @@ api.type("sound.Stream", {
     .. "handle to a voice that has fallen silent goes stale, so check `is_valid()` first.",
 
   fields = {
-    sample_id = {
+    sample_num = {
       from = "sample_id",
       type = "integer",
       writable = false,

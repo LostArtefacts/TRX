@@ -134,7 +134,7 @@ api.define("events.on_pickup", {
         {
           name = "item_num",
           type = "integer",
-          see = "items.index",
+          see = "items.num",
           description = "The item that was picked up.",
         },
       },
@@ -195,7 +195,7 @@ api.define("events.on_flip_effect", {
         {
           name = "item_num",
           type = "integer",
-          see = "items.index",
+          see = "items.num",
           description = "The item that ran the effect: Lara for a pad trigger, "
             .. "the activating object for a heavy trigger, the animating item for an animation "
             .. "command.",
@@ -229,29 +229,34 @@ api.define("events.on_room_change", {
           description = "The `trx.items.Item` that changed rooms.",
         },
         {
-          name = "old_room",
+          name = "old_room_num",
           type = "integer",
-          description = "0-based number of the room it left, or -1 if it had none.",
+          see = "rooms.num",
+          description = "-1 if it had none.",
         },
         {
-          name = "new_room",
+          name = "new_room_num",
           type = "integer",
-          description = "0-based number of the room it entered, or -1 if it left the world.",
+          see = "rooms.num",
+          description = "-1 if it left the world.",
         },
       },
     },
   },
   returns = LISTENER,
   examples = {
-    [[trx.events.on_room_change(function(item, old_room, new_room)
-  trx.log.info(item.object_id .. " moved to room " .. new_room)
+    [[trx.events.on_room_change(function(item, old_room_num, new_room_num)
+  trx.log.info(item.object_id .. " moved to room " .. new_room_num)
 end)]],
   },
   impl = function(callback)
     return listener_of(
-      raw.attach(types.ROOM_CHANGE, function(item_num, old_room, new_room)
-        callback(trx.items[item_num], old_room, new_room)
-      end)
+      raw.attach(
+        types.ROOM_CHANGE,
+        function(item_num, old_room_num, new_room_num)
+          callback(trx.items[item_num], old_room_num, new_room_num)
+        end
+      )
     )
   end,
 })
@@ -625,7 +630,7 @@ api.define("events.on_cutscene_trigger", {
       type = "function",
       params = {
         {
-          name = "num",
+          name = "cutscene_num",
           type = "integer",
           description = "Number the trigger names.",
         },
@@ -635,8 +640,8 @@ api.define("events.on_cutscene_trigger", {
   returns = LISTENER,
   examples = {
     [[-- only in the throne room; a flyby stands in for it elsewhere
-trx.events.on_cutscene_trigger(function(num)
-  if num ~= 27 then
+trx.events.on_cutscene_trigger(function(cutscene_num)
+  if cutscene_num ~= 27 then
     return false
   end
   if trx.lara.item.room_num == 55 then
@@ -658,7 +663,7 @@ api.define("events.on_cutscene_start", {
       type = "function",
       params = {
         {
-          name = "num",
+          name = "cutscene_num",
           type = "integer",
           description = "Number of the cutscene starting.",
         },
@@ -678,7 +683,7 @@ api.define("events.on_cutscene_end", {
       type = "function",
       params = {
         {
-          name = "num",
+          name = "cutscene_num",
           type = "integer",
           description = "Number of the cutscene that ended.",
         },
@@ -687,8 +692,8 @@ api.define("events.on_cutscene_end", {
   },
   returns = LISTENER,
   examples = {
-    [[trx.events.on_cutscene_end(function(num)
-  trx.log.info("cutscene " .. num .. " finished")
+    [[trx.events.on_cutscene_end(function(cutscene_num)
+  trx.log.info("cutscene " .. cutscene_num .. " finished")
 end)]],
   },
   impl = hook(types.CUTSCENE_END),
@@ -704,17 +709,17 @@ A sequence that a cutscene or the player interrupts does not fire it.]],
       type = "function",
       params = {
         {
-          name = "sequence",
+          name = "sequence_num",
           type = "integer",
-          description = "Number of the sequence that ended.",
+          description = "Number of the flyby sequence that ended.",
         },
       },
     },
   },
   returns = LISTENER,
   examples = {
-    [[trx.events.on_flyby_end(function(sequence)
-  trx.camera.play_flyby(sequence)
+    [[trx.events.on_flyby_end(function(sequence_num)
+  trx.camera.play_flyby(sequence_num)
 end)]],
   },
   impl = hook(types.FLYBY_END),

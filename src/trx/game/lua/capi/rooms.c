@@ -23,7 +23,7 @@ static bool M_GetIndex(const void *const self, TRX_VALUE *const out)
 
 // clang-format off
 static const FIELD_DESC m_Fields[] = {
-    FIELD_FN("room_index", TVT_S16, M_GetIndex, nullptr),
+    FIELD_FN("room_num", TVT_S16, M_GetIndex, nullptr),
 
     FIELD(ROOM, flags.underwater),
     FIELD(ROOM, flags.wind),

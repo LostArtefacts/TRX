@@ -22,30 +22,30 @@ local Pool = trx.savegame.Pool
 -- quick pool, and a number stuck to it (`q2`) is that quick save.
 local function slot(token)
   if token:match("^%d+$") then
-    return { pool = Pool.NORMAL, index = tonumber(token) }, true
+    return { pool = Pool.NORMAL, slot_num = tonumber(token) }, true
   end
-  local index = token:match("^q(%d*)$") or token:match("^quick(%d*)$")
-  if index ~= nil then
+  local slot_num = token:match("^q(%d*)$") or token:match("^quick(%d*)$")
+  if slot_num ~= nil then
     return {
       pool = Pool.QUICK,
-      index = index ~= "" and tonumber(index) or nil,
+      slot_num = slot_num ~= "" and tonumber(slot_num) or nil,
     },
       true
   end
   return nil, false
 end
 
-local function quick_save(index)
+local function quick_save(slot_num)
   -- A named quick slot is range-checked the way a normal slot is; the next-slot
-  -- form (no index) leaves it to the save system.
+  -- form (no slot number) leaves it to the save system.
   if
-    index ~= nil
-    and (index < 1 or index > trx.savegame.slot_count(Pool.QUICK))
+    slot_num ~= nil
+    and (slot_num < 1 or slot_num > trx.savegame.slot_count(Pool.QUICK))
   then
     return R.BAD_INVOCATION,
-      trx.locale.format("console/cmd/save/fail_invalid_slot", index)
+      trx.locale.format("console/cmd/save/fail_invalid_slot", slot_num)
   end
-  if not trx.savegame.save(index, Pool.QUICK) then
+  if not trx.savegame.save(slot_num, Pool.QUICK) then
     return R.FAILURE, trx.locale.get("console/cmd/save/quick_fail_no_slots")
   end
   return R.OK, trx.locale.get("console/cmd/save/quick_success")
@@ -65,15 +65,15 @@ trx.console.register({
       return R.UNAVAILABLE
     end
     if args.slot.pool == Pool.QUICK then
-      return quick_save(args.slot.index)
+      return quick_save(args.slot.slot_num)
     end
-    local index = args.slot.index
-    if index < 1 or index > trx.savegame.slot_count() then
+    local slot_num = args.slot.slot_num
+    if slot_num < 1 or slot_num > trx.savegame.slot_count() then
       return R.BAD_INVOCATION,
-        trx.locale.format("console/cmd/save/fail_invalid_slot", index)
+        trx.locale.format("console/cmd/save/fail_invalid_slot", slot_num)
     end
-    trx.savegame.save(index)
-    return R.OK, trx.locale.format("console/cmd/save/success", index)
+    trx.savegame.save(slot_num)
+    return R.OK, trx.locale.format("console/cmd/save/success", slot_num)
   end,
 })
 

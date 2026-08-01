@@ -25,7 +25,7 @@ api.type("music.Stream", {
     .. "stale, so reading a field or calling a method on it raises; check `is_valid()` first.",
 
   fields = {
-    track_id = {
+    track_num = {
       from = "track_id",
       type = "integer",
       writable = false,
@@ -83,11 +83,11 @@ api.type("music.Track", {
     .. "stale, so `is_valid()` answers whether it is still there.",
 
   fields = {
-    id = {
+    num = {
       from = "id",
       type = "integer",
       writable = false,
-      description = "The track's id, in the level's own numbering.",
+      description = "The number the level gives this track.",
     },
   },
 

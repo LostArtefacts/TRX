@@ -23,44 +23,44 @@ local Pool = trx.savegame.Pool
 -- quick pool, and a number stuck to it (`q2`) is that quick save.
 local function slot(token)
   if token:match("^%d+$") then
-    return { pool = Pool.NORMAL, index = tonumber(token) }, true
+    return { pool = Pool.NORMAL, slot_num = tonumber(token) }, true
   end
-  local index = token:match("^q(%d*)$") or token:match("^quick(%d*)$")
-  if index ~= nil then
+  local slot_num = token:match("^q(%d*)$") or token:match("^quick(%d*)$")
+  if slot_num ~= nil then
     return {
       pool = Pool.QUICK,
-      index = index ~= "" and tonumber(index) or nil,
+      slot_num = slot_num ~= "" and tonumber(slot_num) or nil,
     },
       true
   end
   return nil, false
 end
 
-local function execute(pool, index, has_index)
+local function execute(pool, slot_num, has_slot_num)
   local shown
   if pool == Pool.QUICK then
     -- The quick pool is addressed by its on-screen order, and defaults to the
     -- most recent save.
-    shown = has_index and index or 1
+    shown = has_slot_num and slot_num or 1
     if shown < 1 or shown > trx.savegame.slot_count(Pool.QUICK) then
       return R.FAILURE,
         trx.locale.format("console/cmd/load/fail_invalid_slot", shown)
     end
-    index = shown
+    slot_num = shown
   else
-    if index < 1 or index > trx.savegame.slot_count() then
+    if slot_num < 1 or slot_num > trx.savegame.slot_count() then
       return R.FAILURE,
-        trx.locale.format("console/cmd/load/fail_invalid_slot", index)
+        trx.locale.format("console/cmd/load/fail_invalid_slot", slot_num)
     end
-    shown = index
+    shown = slot_num
   end
 
-  if trx.savegame.is_free(index, pool) then
+  if trx.savegame.is_free(slot_num, pool) then
     return R.FAILURE,
       trx.locale.format("console/cmd/load/fail_unavailable_slot", shown)
   end
 
-  trx.savegame.load(index, pool)
+  trx.savegame.load(slot_num, pool)
   if pool == Pool.QUICK then
     return R.OK, trx.locale.format("console/cmd/load/quick_success", shown)
   end
@@ -77,7 +77,11 @@ trx.console.register({
     )
   end,
   run = function(args)
-    return execute(args.slot.pool, args.slot.index, args.slot.index ~= nil)
+    return execute(
+      args.slot.pool,
+      args.slot.slot_num,
+      args.slot.slot_num ~= nil
+    )
   end,
 })
 
@@ -90,8 +94,9 @@ trx.console.register({
   end,
   run = function(args)
     -- Everything the quickload word takes is a quick save, so the slot's pool
-    -- is ignored and a bare number is read as a quick index (`q2` and `2` alike).
-    local index = args.slot ~= nil and args.slot.index or nil
-    return execute(Pool.QUICK, index, index ~= nil)
+    -- is ignored and a bare number is read as a quick slot number (`q2` and `2`
+    -- alike).
+    local slot_num = args.slot ~= nil and args.slot.slot_num or nil
+    return execute(Pool.QUICK, slot_num, slot_num ~= nil)
   end,
 })

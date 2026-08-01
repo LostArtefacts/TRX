@@ -73,13 +73,6 @@ static const char *M_SetFrame(void *const self, const TRX_VALUE *const in)
     return nullptr;
 }
 
-static bool M_GetRoomIndex(const void *const self, TRX_VALUE *const out)
-{
-    const ITEM *const item = self;
-    *out = (TRX_VALUE) { .type = TVT_S16, .as_int = item->room_num };
-    return true;
-}
-
 static bool M_GetIsAlive(const void *const self, TRX_VALUE *const out)
 {
     *out = (TRX_VALUE) { .type = TVT_BOOL, .as_bool = Item_IsAlive(self) };
@@ -223,16 +216,17 @@ static const char *M_SetName(void *const self, const TRX_VALUE *const in)
 
 // clang-format off
 static const FIELD_DESC m_Fields[] = {
-    // computed / validated
-    FIELD_FN("anim",        TVT_S16,  M_GetAnim,      M_SetAnim),
-    FIELD_FN("frame",       TVT_S16,  M_GetFrame,     M_SetFrame),
-    FIELD_FN("room_index",  TVT_S16,  M_GetRoomIndex, nullptr),
-    FIELD_FN("is_hostile",  TVT_BOOL, M_GetIsHostile, nullptr),
-    FIELD_FN("is_alive",    TVT_BOOL, M_GetIsAlive,   nullptr),
-    FIELD_FN("is_targetable", TVT_BOOL, M_GetIsTargetable, nullptr),
-    FIELD_FN("is_killed",   TVT_BOOL, M_GetIsKilled,  nullptr),
-    FIELD_FN("is_one_shot", TVT_BOOL, M_GetIsOneShot, M_SetIsOneShot),
-    FIELD_FN("index",       TVT_S16,  M_GetIndex,     nullptr),
+    // computed / validated. ITEM counts its animations and frames across the
+    // whole level; these count within the object and within the animation, so
+    // they take names of their own rather than shadowing the members.
+    FIELD_FN("relative_anim_num",  TVT_S16,  M_GetAnim,         M_SetAnim),
+    FIELD_FN("relative_frame_num", TVT_S16,  M_GetFrame,        M_SetFrame),
+    FIELD_FN("item_num",           TVT_S16,  M_GetIndex,        nullptr),
+    FIELD_FN("is_hostile",         TVT_BOOL, M_GetIsHostile,    nullptr),
+    FIELD_FN("is_alive",           TVT_BOOL, M_GetIsAlive,      nullptr),
+    FIELD_FN("is_targetable",      TVT_BOOL, M_GetIsTargetable, nullptr),
+    FIELD_FN("is_killed",          TVT_BOOL, M_GetIsKilled,     nullptr),
+    FIELD_FN("is_one_shot",        TVT_BOOL, M_GetIsOneShot,    M_SetIsOneShot),
 
     // the trigger state a door reads before it acts and a creature ignores
     FIELD_FN("is_triggered", TVT_BOOL, M_GetIsTriggered, nullptr),

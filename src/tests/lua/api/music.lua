@@ -13,7 +13,7 @@ test("a track plays once by default, and hands back its stream", function()
     "the default mode must be ONCE"
   )
   assert(stream ~= nil and stream:is_valid(), "play hands back the stream")
-  assert(stream.track_id == fake.TRACK)
+  assert(stream.track_num == fake.TRACK)
 end)
 
 test("opts.mode selects the play mode", function()
@@ -33,7 +33,7 @@ test("get_track reports what is playing, and nil when nothing is", function()
   assert(trx.music.current_track == nil, "nothing plays to begin with")
 
   trx.music.tracks[fake.TRACK]:play()
-  assert(trx.music.current_track.id == fake.TRACK)
+  assert(trx.music.current_track.num == fake.TRACK)
 
   trx.music.stop()
   assert(
@@ -60,11 +60,11 @@ test("looped_track reports the ambient track, nil when none", function()
   assert(trx.music.looped_track == nil, "no ambient track to begin with")
 
   fake.set_looped(fake.TRACK)
-  assert(trx.music.looped_track.id == fake.TRACK)
+  assert(trx.music.looped_track.num == fake.TRACK)
 end)
 
 test("tracks is keyed by id, nil for a track the level lacks", function()
-  assert(trx.music.tracks[fake.TRACK].id == fake.TRACK)
+  assert(trx.music.tracks[fake.TRACK].num == fake.TRACK)
   assert(trx.music.tracks[fake.MISSING_TRACK] == nil)
   assert(#trx.music.tracks == 1, "the fake soundtrack has exactly one track")
 end)
@@ -72,7 +72,7 @@ end)
 test("iterating tracks walks the available ones by id", function()
   local seen = {}
   for id, track in pairs(trx.music.tracks) do
-    seen[id] = track.id
+    seen[id] = track.num
   end
   assert(seen[fake.TRACK] == fake.TRACK)
   assert(next(seen, next(seen)) == nil, "only one track is available")
@@ -95,7 +95,7 @@ test("a playing stream reports its track, mode and timestamp", function()
   fake.set_stream(0, fake.TRACK, trx.music.PlayMode.LOOP, 12.5)
   local main = trx.music.streams[1]
   assert(main:is_valid(), "slot 0 is playing")
-  assert(main.track_id == fake.TRACK)
+  assert(main.track_num == fake.TRACK)
   assert(main.mode == trx.music.PlayMode.LOOP)
   assert(main.timestamp == 12.5)
 end)
@@ -104,7 +104,7 @@ test("a silent slot is stale, and reading it raises", function()
   local overlay = trx.music.streams[2]
   assert(not overlay:is_valid(), "nothing plays on the first overlay")
   raises(function()
-    return overlay.track_id
+    return overlay.track_num
   end)
 end)
 

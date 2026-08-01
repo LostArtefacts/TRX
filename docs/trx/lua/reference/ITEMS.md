@@ -16,9 +16,9 @@ Module for controlling all moveables.
 
 ### Indexing
 
-Indexing the module reaches an item, and `#trx.items` is how many the level has. Items count from zero, matching the item numbers level editors show. `pairs()` walks them in order, keyed by that number.
+Indexing the module reaches an item, and `#trx.items` is how many the level has. `pairs()` walks them in order, keyed by the item number.
 
-- **`trx.items[key]`** (Item or `nil`). 0-based index, or the item's unique name.
+- **`trx.items[key]`** (Item or `nil`). 0-based item number, matching the numbers level editors show. An item's unique name reaches it as well.
 - **`#trx.items`** (integer). How many there are.
 
 Example:
@@ -88,15 +88,14 @@ end
     unrelated one.
 
     Properties:
-    - **`anim`**: integer. Object-relative animation number, 0-indexed.
+    - **`anim_num`**: integer. The animation's number within the object, counted from 0.
     - **`anim_state`**: integer. Current animation state.
     - **`collidable`**: boolean. Whether Lara can collide with this item.
     - **`fall_speed`**: integer. Vertical speed.
-    - **`frame`**: integer. Object-relative frame number, 0-indexed. Negative values count back from the end.
+    - **`frame_num`**: integer. The frame's number within the animation, counted from 0. Negative values count back from the end.
     - **`goal_anim_state`**: integer. Animation state the item is transitioning towards.
     - **`gravity`**: boolean. Whether gravity applies to this item.
     - **`hit_points`**: integer. Current hit points. Raising this above the maximum also raises `properties.max_hit_points`.
-    - **`index`**: integer. The index `trx.items[i]` takes, counted from 0. An item handed over by a query can say where it lives. *(read-only)*
     - **`is_alive`**: boolean. Whether the item is a living creature with hit points remaining. *(read-only)*
     - **`is_finished`**: boolean. Whether the item has finished its run - a creature that died, or a one-shot trigger that fired. It stays in the level but no longer acts.
     - **`is_hostile`**: boolean. Whether this item is a creature currently hostile to Lara. *(read-only)*
@@ -114,6 +113,7 @@ end
     - **`max_hit_points`**: integer. Maximum hit points. Set `properties.max_hit_points` to change it. *(read-only)*
     - **`mesh_bits`**: integer. Bitmask of which of the item's meshes are drawn.
     - **`name`**: string. Unique item name, or `nil`. Assigning a name already in use raises an error.
+    - **`num`**: integer. 0-based item number, matching the numbers level editors show. An item handed over by a query can say where it lives. *(read-only)*
     - **`object_id`**: integer. The item's object type. Compare against `trx.catalog.objects`. *(read-only)*
     - **`pos`**: vec3. World position. Updating this also updates `room` and `room_num`.
     - **`room_num`**: integer. 0-based number of the room containing this item. Set `pos` to move the item between rooms. *(read-only)*
@@ -558,10 +558,10 @@ end
 ### Functions
 
 - [lua]`trx.items.get(key)`  
-  Retrieves an item by index or by name. Items count from zero, matching the item numbers level editors show.
+  Retrieves an item by number or by name.
 
   Parameters:
-  - **`key`** (any). 0-based index, or the item's unique name.
+  - **`key`** (any). 0-based item number, matching the numbers level editors show. An item's unique name reaches it as well.
 
   Returns: Item or `nil`.
 

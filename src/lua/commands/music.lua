@@ -33,7 +33,7 @@ local function overlay_ids()
   local ids = {}
   for _, stream in ipairs(trx.music.streams) do
     if stream:is_valid() and stream.mode == trx.music.PlayMode.OVERLAY then
-      ids[#ids + 1] = stream.track_id
+      ids[#ids + 1] = stream.track_num
     end
   end
   return ids
@@ -58,14 +58,14 @@ local function show_status()
     trx.console.log.info(trx.locale.get("console/cmd/music/current_none"))
   else
     trx.console.log.info(
-      trx.locale.format("console/cmd/music/current", current.id)
+      trx.locale.format("console/cmd/music/current", current.num)
     )
   end
 
   local looped = trx.music.looped_track
-  if current ~= nil and looped ~= nil and current.id ~= looped.id then
+  if current ~= nil and looped ~= nil and current.num ~= looped.num then
     trx.console.log.info(
-      trx.locale.format("console/cmd/music/deferred_ambient", looped.id)
+      trx.locale.format("console/cmd/music/deferred_ambient", looped.num)
     )
   end
 
