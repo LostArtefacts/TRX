@@ -7451,6 +7451,14 @@
           }
         },
         {
+          "description": "The room holds neither water nor swamp water.",
+          "name": "dry",
+          "returns": {
+            "description": "The narrowed query.",
+            "type": "Query"
+          }
+        },
+        {
           "description": "The room is filled with swamp water.",
           "name": "swamp",
           "returns": {

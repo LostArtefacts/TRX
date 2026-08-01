@@ -332,6 +332,14 @@ test("the query narrows by swamp", function()
   )
 end)
 
+test("dry is neither water nor swamp", function()
+  trx.rooms[2].underwater = true
+  trx.rooms[3].swamp = true
+
+  local ids = trx.rooms.query:dry():ids()
+  assert(#ids == 2 and ids[1] == 0 and ids[2] == 1, "the rooms left over")
+end)
+
 test("the query composes with the rest of a query", function()
   trx.rooms[2].underwater = true
   local wet = trx.rooms.query
