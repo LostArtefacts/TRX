@@ -72,7 +72,7 @@ local FLOOR_HEIGHT_PARAMS = {
     description = "The search crosses portals, so a neighbouring "
       .. "room's floor is found too. Without it, the room is looked up from the position, which "
       .. "takes the first room that contains it and passes over the flipped-away ones. Where "
-      .. "rooms overlap, name the room, or ask the room itself with `room:floor_height`.",
+      .. "rooms overlap, name the room, or ask the room itself with `trx.rooms.Room:floor_height`.",
   },
   FLOOR_HEIGHT_OPTS,
 }
@@ -89,7 +89,7 @@ api.module("rooms", {
 
 api.enum("rooms.FlipStatus", {
   backing = "ROOM_FLIP_STATUS",
-  description = "The values `room.flip_status` can take.",
+  description = "The values `trx.rooms.Room.flip_status` can take.",
   values = {
     NONE = "This is a normal room.",
     UNFLIPPED = "This room is currently reachable by Lara.",
@@ -210,7 +210,7 @@ end)]],
     },
     internal_bounds = {
       type = "table",
-      description = "As `bounds`, but excluding the outer ring of sectors, which is solid wall.",
+      description = "As `trx.rooms.Room.bounds`, but excluding the outer ring of sectors, which is solid wall.",
       impl = function(room)
         local b = raw.get_bounds(room)
         return {
@@ -366,7 +366,7 @@ local RoomQuery = api.type("rooms.RoomQuery", {
     reachable = {
       description = "The room is part of the level as it stands: an ordinary room, or the half of "
         .. "a flip pair the level is showing. This is what a script asking about the world wants, "
-        .. "and what `at` already applies.",
+        .. "and what `trx.rooms.RoomQuery:at` already applies.",
       returns = { type = "query.Query", description = "The narrowed query." },
       examples = { [[trx.rooms.query:reachable():underwater():count()]] },
       impl = trx.query.narrowing(function()

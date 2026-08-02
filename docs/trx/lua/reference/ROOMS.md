@@ -10,7 +10,7 @@ order: 6
   src/lua/api/rooms.lua. Edit it there.
 -->
 
-## Rooms module
+## <a id="rooms" name="rooms"></a>Rooms module
 
 Module for inspecting and altering the rooms of the current level.
 
@@ -18,7 +18,7 @@ Module for inspecting and altering the rooms of the current level.
 
 Indexing the module reaches a room, and `#trx.rooms` is how many the level has. `pairs()` walks them in order, keyed by the room number.
 
-- <a name="rooms[]"></a>**`trx.rooms[key]`** ([trx.rooms.Room](#rooms.Room) or `nil`).
+- <a id="rooms[]" name="rooms[]"></a>**`trx.rooms[key]`** ([trx.rooms.Room](#rooms.Room) or `nil`).
 - **`#trx.rooms`** (integer). How many there are.
 
 Example:
@@ -31,14 +31,14 @@ end
 
 ### Properties
 
-- <a name="rooms.flipped"></a>**`trx.rooms.flipped`** (boolean). Whether the room map is currently flipped. *(read-only)*
-- <a name="rooms.query"></a>**`trx.rooms.query`** ([trx.rooms.RoomQuery](#rooms.RoomQuery)). The identity query over every room in the level. Narrow it and read it. *(read-only)*
+- <a id="rooms.flipped" name="rooms.flipped"></a>**`trx.rooms.flipped`** (boolean). Whether the room map is currently flipped. *(read-only)*
+- <a id="rooms.query" name="rooms.query"></a>**`trx.rooms.query`** ([trx.rooms.RoomQuery](#rooms.RoomQuery)). The identity query over every room in the level. Narrow it and read it. *(read-only)*
 
 ### Enums
 
-- <a name="rooms.FlipStatus"></a>[lua]`trx.rooms.FlipStatus`
+- <a id="rooms.FlipStatus" name="rooms.FlipStatus"></a>[lua]`trx.rooms.FlipStatus`
 
-    The values `room.flip_status` can take.
+    The values [`trx.rooms.Room.flip_status`](#rooms.Room.flip_status) can take.
 
     - `trx.rooms.FlipStatus.NONE` = `0`  
         This is a normal room.
@@ -49,11 +49,11 @@ end
 
 ### Structures
 
-- <a name="rooms.Num"></a>[lua]`trx.rooms.Num`
+- <a id="rooms.Num" name="rooms.Num"></a>[lua]`trx.rooms.Num`
 
     Room number, matching the numbers level editors show. Counted from 0.
 
-- <a name="rooms.Room"></a>[lua]`trx.rooms.Room`
+- <a id="rooms.Room" name="rooms.Room"></a>[lua]`trx.rooms.Room`
 
     A room in the current level.
 
@@ -62,22 +62,22 @@ end
     unrelated one.
 
     Properties:
-    - <a name="rooms.Room.cold"></a>**`cold`**: boolean. Whether Lara's breath is visible in the room.
-    - <a name="rooms.Room.damaging"></a>**`damaging`**: boolean. Whether the room drains Lara's exposure meter.
-    - <a name="rooms.Room.flip_status"></a>**`flip_status`**: [trx.rooms.FlipStatus](#rooms.FlipStatus). Current flip status. *(read-only)*
-    - <a name="rooms.Room.num"></a>**`num`**: [trx.rooms.Num](#rooms.Num). *(read-only)*
-    - <a name="rooms.Room.swamp"></a>**`swamp`**: boolean. Whether the room is filled with swamp water, which Lara wades through and sinks into rather than swimming.
-    - <a name="rooms.Room.underwater"></a>**`underwater`**: boolean. Whether the room is filled with water.
-    - <a name="rooms.Room.wind"></a>**`wind`**: boolean. Whether the room has a breeze. Requires the player to have breeze enabled.
+    - <a id="rooms.Room.cold" name="rooms.Room.cold"></a>**`cold`**: boolean. Whether Lara's breath is visible in the room.
+    - <a id="rooms.Room.damaging" name="rooms.Room.damaging"></a>**`damaging`**: boolean. Whether the room drains Lara's exposure meter.
+    - <a id="rooms.Room.flip_status" name="rooms.Room.flip_status"></a>**`flip_status`**: [trx.rooms.FlipStatus](#rooms.FlipStatus). Current flip status. *(read-only)*
+    - <a id="rooms.Room.num" name="rooms.Room.num"></a>**`num`**: [trx.rooms.Num](#rooms.Num). *(read-only)*
+    - <a id="rooms.Room.swamp" name="rooms.Room.swamp"></a>**`swamp`**: boolean. Whether the room is filled with swamp water, which Lara wades through and sinks into rather than swimming.
+    - <a id="rooms.Room.underwater" name="rooms.Room.underwater"></a>**`underwater`**: boolean. Whether the room is filled with water.
+    - <a id="rooms.Room.wind" name="rooms.Room.wind"></a>**`wind`**: boolean. Whether the room has a breeze. Requires the player to have breeze enabled.
 
     Computed properties (derived, not stored on the object):
-    - <a name="rooms.Room.bounds"></a>**`bounds`**: table. World-coordinate bounds of the room: `min_x`, `min_y`, `min_z`, `max_x`, `max_y`, `max_z`.
-    - <a name="rooms.Room.flipped_room"></a>**`flipped_room`**: [trx.rooms.Room](#rooms.Room). This room's flip pair, or `nil` if it has none.
-    - <a name="rooms.Room.internal_bounds"></a>**`internal_bounds`**: table. As `bounds`, but excluding the outer ring of sectors, which is solid wall.
+    - <a id="rooms.Room.bounds" name="rooms.Room.bounds"></a>**`bounds`**: table. World-coordinate bounds of the room: `min_x`, `min_y`, `min_z`, `max_x`, `max_y`, `max_z`.
+    - <a id="rooms.Room.flipped_room" name="rooms.Room.flipped_room"></a>**`flipped_room`**: [trx.rooms.Room](#rooms.Room). This room's flip pair, or `nil` if it has none.
+    - <a id="rooms.Room.internal_bounds" name="rooms.Room.internal_bounds"></a>**`internal_bounds`**: table. As [`bounds`](#rooms.Room.bounds), but excluding the outer ring of sectors, which is solid wall.
 
     Methods:
 
-    - <a name="rooms.Room.floor_height"></a>[lua]`room:floor_height(pos, [opts])`  
+    - <a id="rooms.Room.floor_height" name="rooms.Room.floor_height"></a>[lua]`room:floor_height(pos, [opts])`  
       As [`trx.rooms.floor_height`](#rooms.floor_height), looking from this room.
 
       Parameters:
@@ -86,7 +86,7 @@ end
 
       Returns: integer or `nil`.
 
-    - <a name="rooms.Room.is_valid"></a>[lua]`room:is_valid()`  
+    - <a id="rooms.Room.is_valid" name="rooms.Room.is_valid"></a>[lua]`room:is_valid()`  
       Whether the handle still refers to a room of the level that is loaded. A level change replaces the rooms, so a handle held across one goes stale rather than naming a different room: reading or writing a field on it raises an error. Check this for a handle held across time.
 
       Returns: boolean.
@@ -101,7 +101,7 @@ end
       end)
       ```
 
-    - <a name="rooms.Room.on_enter"></a>[lua]`room:on_enter(callback, [opts])`  
+    - <a id="rooms.Room.on_enter" name="rooms.Room.on_enter"></a>[lua]`room:on_enter(callback, [opts])`  
       Happens when something changes rooms into this one.
 
       Parameters:
@@ -119,7 +119,7 @@ end
       end)
       ```
 
-    - <a name="rooms.Room.on_exit"></a>[lua]`room:on_exit(callback, [opts])`  
+    - <a id="rooms.Room.on_exit" name="rooms.Room.on_exit"></a>[lua]`room:on_exit(callback, [opts])`  
       Happens when something changes rooms out of this one.
 
       Parameters:
@@ -130,13 +130,13 @@ end
 
       Returns: [trx.events.Listener](EVENTS.md#events.Listener). The attached handler.
 
-- <a name="rooms.RoomQuery"></a>[lua]`trx.rooms.RoomQuery`
+- <a id="rooms.RoomQuery" name="rooms.RoomQuery"></a>[lua]`trx.rooms.RoomQuery`
 
     A [`trx.query.Query`](QUERY.md#query.Query) over the rooms of the current level, with the narrowings below on top of the ones every query has. Rooms answer to no names, so the name layer is absent.
 
     Methods:
 
-    - <a name="rooms.RoomQuery.at"></a>[lua]`roomquery:at(pos)`  
+    - <a id="rooms.RoomQuery.at" name="rooms.RoomQuery.at"></a>[lua]`roomquery:at(pos)`  
       The room contains a world position. Rooms overlap, so a position can be in several at once and every one of them matches, in room order. A room claims a point when the point is within its bounds, the outer ring of solid wall aside, and the column it stands in has a floor - the test the engine itself puts a position through. The hidden half of a flip pair is passed over.
 
       Parameters:
@@ -149,18 +149,18 @@ end
       trx.rooms.query:at(trx.lara.item.pos):first()
       ```
 
-    - <a name="rooms.RoomQuery.dry"></a>[lua]`roomquery:dry()`  
+    - <a id="rooms.RoomQuery.dry" name="rooms.RoomQuery.dry"></a>[lua]`roomquery:dry()`  
       The room holds neither water nor swamp water.
 
       Returns: [trx.query.Query](QUERY.md#query.Query). The narrowed query.
 
-    - <a name="rooms.RoomQuery.flipped"></a>[lua]`roomquery:flipped()`  
+    - <a id="rooms.RoomQuery.flipped" name="rooms.RoomQuery.flipped"></a>[lua]`roomquery:flipped()`  
       The room is the half of a flip pair the level is not showing. Its geometry is still there to inspect, but nothing can be in it.
 
       Returns: [trx.query.Query](QUERY.md#query.Query). The narrowed query.
 
-    - <a name="rooms.RoomQuery.reachable"></a>[lua]`roomquery:reachable()`  
-      The room is part of the level as it stands: an ordinary room, or the half of a flip pair the level is showing. This is what a script asking about the world wants, and what `at` already applies.
+    - <a id="rooms.RoomQuery.reachable" name="rooms.RoomQuery.reachable"></a>[lua]`roomquery:reachable()`  
+      The room is part of the level as it stands: an ordinary room, or the half of a flip pair the level is showing. This is what a script asking about the world wants, and what [`at`](#rooms.RoomQuery.at) already applies.
 
       Returns: [trx.query.Query](QUERY.md#query.Query). The narrowed query.
 
@@ -169,19 +169,19 @@ end
       trx.rooms.query:reachable():underwater():count()
       ```
 
-    - <a name="rooms.RoomQuery.swamp"></a>[lua]`roomquery:swamp()`  
+    - <a id="rooms.RoomQuery.swamp" name="rooms.RoomQuery.swamp"></a>[lua]`roomquery:swamp()`  
       The room is filled with swamp water.
 
       Returns: [trx.query.Query](QUERY.md#query.Query). The narrowed query.
 
-    - <a name="rooms.RoomQuery.underwater"></a>[lua]`roomquery:underwater()`  
+    - <a id="rooms.RoomQuery.underwater" name="rooms.RoomQuery.underwater"></a>[lua]`roomquery:underwater()`  
       The room is filled with water.
 
       Returns: [trx.query.Query](QUERY.md#query.Query). The narrowed query.
 
 ### Functions
 
-- <a name="rooms.get"></a>[lua]`trx.rooms.get(num)`  
+- <a id="rooms.get" name="rooms.get"></a>[lua]`trx.rooms.get(num)`  
   Retrieves a room by number.
 
   Parameters:
@@ -195,15 +195,15 @@ end
   room.underwater = true
   ```
 
-- <a name="rooms.count"></a>[lua]`trx.rooms.count()`  
+- <a id="rooms.count" name="rooms.count"></a>[lua]`trx.rooms.count()`  
   Returns the number of rooms in the level. Same as `#trx.rooms`.
 
   Returns: integer.
 
-- <a name="rooms.flip"></a>[lua]`trx.rooms.flip()`  
+- <a id="rooms.flip" name="rooms.flip"></a>[lua]`trx.rooms.flip()`  
   Flips the current room map, swapping every room with its flip pair.
 
-- <a name="rooms.flip_effect"></a>[lua]`trx.rooms.flip_effect(effect_id, [timer])`  
+- <a id="rooms.flip_effect" name="rooms.flip_effect"></a>[lua]`trx.rooms.flip_effect(effect_id, [timer])`  
   Sets the active flip effect, and optionally its timer.
 
   Parameters:
@@ -215,12 +215,12 @@ end
   trx.rooms.flip_effect(trx.catalog.flip_effects.floor_shake, 10)
   ```
 
-- <a name="rooms.floor_height"></a>[lua]`trx.rooms.floor_height(pos, [room_num], [opts])`  
+- <a id="rooms.floor_height" name="rooms.floor_height"></a>[lua]`trx.rooms.floor_height(pos, [room_num], [opts])`  
   The height of the floor under a world position. `nil` where there is no floor at all: inside solid geometry, or off the edge of the level.
 
   Parameters:
   - **`pos`** (vec3). World position.
-  - **`room_num`** ([trx.rooms.Num](#rooms.Num), optional). The search crosses portals, so a neighbouring room's floor is found too. Without it, the room is looked up from the position, which takes the first room that contains it and passes over the flipped-away ones. Where rooms overlap, name the room, or ask the room itself with `room:floor_height`.
+  - **`room_num`** ([trx.rooms.Num](#rooms.Num), optional). The search crosses portals, so a neighbouring room's floor is found too. Without it, the room is looked up from the position, which takes the first room that contains it and passes over the flipped-away ones. Where rooms overlap, name the room, or ask the room itself with [`trx.rooms.Room:floor_height`](#rooms.Room.floor_height).
   - **`opts`** (table, optional). `fix_tilts`: whether a floor tilt that lies inside a wall is taken into account, `true` by default. `false` gives the flat height the original games read there, which is what the geometry glitches of the vanilla levels rest on.
 
   Returns: integer or `nil`.
@@ -230,7 +230,7 @@ end
   local floor = trx.lara.item.room:floor_height(trx.lara.item.pos)
   ```
 
-- <a name="rooms.find_valid_pos"></a>[lua]`trx.rooms.find_valid_pos(pos, room_num)`  
+- <a id="rooms.find_valid_pos" name="rooms.find_valid_pos"></a>[lua]`trx.rooms.find_valid_pos(pos, room_num)`  
   Nudges a position into valid room geometry, e.g. to find somewhere an item can legally be placed.
 
   Parameters:

@@ -42,7 +42,7 @@ api.define("lua.eval_file", {
   returns = {
     type = "table",
     nullable = true,
-    description = "As in `eval_expr`.",
+    description = "As in `trx.lua.eval_expr`.",
   },
   examples = { [[trx.lua.eval_file("data/ship/scripts/extra.lua")]] },
   impl = function(path)

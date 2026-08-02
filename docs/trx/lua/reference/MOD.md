@@ -10,18 +10,18 @@ order: 25
   src/lua/api/mod.lua. Edit it there.
 -->
 
-## Mod module
+## <a id="mod" name="mod"></a>Mod module
 
 The mods the game was built with, and which one is loaded.
 
 ### Properties
 
-- <a name="mod.list"></a>**`trx.mod.list`** (table). The mods the game was built with, as a list of [`trx.mod.Mod`](#mod.Mod) counted from one. *(read-only)*
-- <a name="mod.current"></a>**`trx.mod.current`** ([trx.mod.Mod](#mod.Mod)). The loaded mod. *(read-only)*
+- <a id="mod.list" name="mod.list"></a>**`trx.mod.list`** (table). The mods the game was built with, as a list of [`trx.mod.Mod`](#mod.Mod) counted from one. *(read-only)*
+- <a id="mod.current" name="mod.current"></a>**`trx.mod.current`** ([trx.mod.Mod](#mod.Mod)). The loaded mod. *(read-only)*
 
 ### Enums
 
-- <a name="mod.Type"></a>[lua]`trx.mod.Type`
+- <a id="mod.Type" name="mod.Type"></a>[lua]`trx.mod.Type`
 
     What kind of mod it is.
 
@@ -38,7 +38,7 @@ The mods the game was built with, and which one is loaded.
 
 ### Structures
 
-- <a name="mod.Mod"></a>[lua]`trx.mod.Mod`
+- <a id="mod.Mod" name="mod.Mod"></a>[lua]`trx.mod.Mod`
 
     A mod the game can run. Everything on it is read-only.
 
@@ -47,17 +47,17 @@ The mods the game was built with, and which one is loaded.
     unrelated one.
 
     Properties:
-    - <a name="mod.Mod.base_mod"></a>**`base_mod`**: string. The mod this one builds on, or `nil` if it stands alone. *(read-only)*
-    - <a name="mod.Mod.engine_version"></a>**`engine_version`**: integer. Which Tomb Raider the mod runs on. *(read-only)*
-    - <a name="mod.Mod.is_available"></a>**`is_available`**: boolean. Whether the mod's files are present. *(read-only)*
-    - <a name="mod.Mod.is_valid"></a>**`is_valid`**: boolean. Whether the mod can be loaded. *(read-only)*
-    - <a name="mod.Mod.name"></a>**`name`**: string. The mod's identifier, as [`trx.mod.switch`](#mod.switch) takes it. *(read-only)*
-    - <a name="mod.Mod.title"></a>**`title`**: string. The mod's name, as shown to the player. *(read-only)*
-    - <a name="mod.Mod.type"></a>**`type`**: [trx.mod.Type](#mod.Type). What kind of mod it is. *(read-only)*
+    - <a id="mod.Mod.base_mod" name="mod.Mod.base_mod"></a>**`base_mod`**: string. The mod this one builds on, or `nil` if it stands alone. *(read-only)*
+    - <a id="mod.Mod.engine_version" name="mod.Mod.engine_version"></a>**`engine_version`**: integer. Which Tomb Raider the mod runs on. *(read-only)*
+    - <a id="mod.Mod.is_available" name="mod.Mod.is_available"></a>**`is_available`**: boolean. Whether the mod's files are present. *(read-only)*
+    - <a id="mod.Mod.is_valid" name="mod.Mod.is_valid"></a>**`is_valid`**: boolean. Whether the mod can be loaded. *(read-only)*
+    - <a id="mod.Mod.name" name="mod.Mod.name"></a>**`name`**: string. The mod's identifier, as [`trx.mod.switch`](#mod.switch) takes it. *(read-only)*
+    - <a id="mod.Mod.title" name="mod.Mod.title"></a>**`title`**: string. The mod's name, as shown to the player. *(read-only)*
+    - <a id="mod.Mod.type" name="mod.Mod.type"></a>**`type`**: [trx.mod.Type](#mod.Type). What kind of mod it is. *(read-only)*
 
 ### Functions
 
-- <a name="mod.switch"></a>[lua]`trx.mod.switch(mod)`  
+- <a id="mod.switch" name="mod.switch"></a>[lua]`trx.mod.switch(mod)`  
   Restarts the game into another mod. The switch happens once the game flow picks it up, not on the call.
 
   Parameters:

@@ -22,7 +22,7 @@ api.type("music.Stream", {
   backing = "MUSIC_STREAM_VIEW",
   description = "One of the soundtrack's playing streams: the main stream, or an overlay. "
     .. "Reach them through `trx.music.streams`. A handle to a slot that is not playing goes "
-    .. "stale, so reading a field or calling a method on it raises; check `is_valid()` first.",
+    .. "stale, so reading a field or calling a method on it raises; check `trx.music.Stream:is_valid` first.",
 
   fields = {
     track_num = {
@@ -79,7 +79,7 @@ api.type("music.Track", {
   backing = "MUSIC_TRACK_VIEW",
   description = "A track the current level carries. Reach them through `trx.music.tracks`, or "
     .. "as `trx.music.current_track`. A handle to a track the loaded level does not carry goes "
-    .. "stale, so `is_valid()` answers whether it is still there.",
+    .. "stale, so `trx.music.Track:is_valid` answers whether it is still there.",
 
   fields = {
     num = {

@@ -10,7 +10,7 @@ order: 9
   src/lua/api/query.lua. Edit it there.
 -->
 
-## Query module
+## <a id="query" name="query"></a>Query module
 
 A composable filter over a domain of things - the objects a level is built
 from, or the items alive in it. [`trx.objects.query`](OBJECTS.md#objects.query) and [`trx.items.query`](ITEMS.md#items.query) are
@@ -26,7 +26,7 @@ left to right, combining with AND: `q:spawnable():by_name("wolf")`.
 
 ### Structures
 
-- <a name="query.Query"></a>[lua]`trx.query.Query`
+- <a id="query.Query" name="query.Query"></a>[lua]`trx.query.Query`
 
     A filter over a domain, read with one of the terminals below once it is narrow enough.
 
@@ -37,34 +37,34 @@ left to right, combining with AND: `q:spawnable():by_name("wolf")`.
 
     Methods:
 
-    - <a name="query.Query.count"></a>[lua]`query:count()`  
+    - <a id="query.Query.count" name="query.Query.count"></a>[lua]`query:count()`  
       How many candidates match.
 
       Returns: integer.
 
-    - <a name="query.Query.first"></a>[lua]`query:first()`  
+    - <a id="query.Query.first" name="query.Query.first"></a>[lua]`query:first()`  
       The first matching handle.
 
       Returns: any or `nil`. The handle, or `nil`.
 
-    - <a name="query.Query.ids"></a>[lua]`query:ids()`  
+    - <a id="query.Query.ids" name="query.Query.ids"></a>[lua]`query:ids()`  
       The matching ids. For objects these are object ids; for items, their numbers.
 
       Returns: table. A list of integers.
 
-    - <a name="query.Query.matches"></a>[lua]`query:matches()`  
+    - <a id="query.Query.matches" name="query.Query.matches"></a>[lua]`query:matches()`  
       The matching handles.
 
       Returns: table. A list of [`trx.objects.Object`](OBJECTS.md#objects.Object)s or [`trx.items.Item`](ITEMS.md#items.Item)s.
 
-    - <a name="query.Query.where"></a>[lua]`query:where(predicate)`  
+    - <a id="query.Query.where" name="query.Query.where"></a>[lua]`query:where(predicate)`  
       Narrows by a test of the caller's own, for what the domain does not name.
 
       Parameters:
       - **`predicate`** (function).
         Called with:
         - **`id`** (integer). The candidate's id.
-        - **`handle`** (any). The candidate itself, an `Object` or an `Item`.
+        - **`handle`** (any). The candidate itself, a [`trx.objects.Object`](OBJECTS.md#objects.Object) or a [`trx.items.Item`](ITEMS.md#items.Item).
 
       Returns: [trx.query.Query](#query.Query). The narrowed query.
 
@@ -75,18 +75,18 @@ left to right, combining with AND: `q:spawnable():by_name("wolf")`.
       end)
       ```
 
-- <a name="query.NamedQuery"></a>[lua]`trx.query.NamedQuery`
+- <a id="query.NamedQuery" name="query.NamedQuery"></a>[lua]`trx.query.NamedQuery`
 
-    A query over a domain whose things answer to names, which adds the name layer to everything a `Query` has. A domain without names offers none of it.
+    A query over a domain whose things answer to names, which adds the name layer to everything a [`trx.query.Query`](#query.Query) has. A domain without names offers none of it.
 
     Methods:
 
-    - <a name="query.NamedQuery.best"></a>[lua]`namedquery:best()`  
-      The ids tied for the best `by_name` score: one for a name only one thing answers to, the whole group for a group name. Without a `by_name`, every matching id.
+    - <a id="query.NamedQuery.best" name="query.NamedQuery.best"></a>[lua]`namedquery:best()`  
+      The ids tied for the best [`by_name`](#query.NamedQuery.by_name) score: one for a name only one thing answers to, the whole group for a group name. Without a [`by_name`](#query.NamedQuery.by_name), every matching id.
 
       Returns: table. A list of integers.
 
-    - <a name="query.NamedQuery.by_name"></a>[lua]`namedquery:by_name(name)`  
+    - <a id="query.NamedQuery.by_name" name="query.NamedQuery.by_name"></a>[lua]`namedquery:by_name(name)`  
       Ranks rather than filters: matches the way a player types a name, forgivingly, and orders what survives the rest of the query best first. Some of a domain's narrowings are also searchable groups, so their own name matches every member.
 
       Parameters:
@@ -99,14 +99,14 @@ left to right, combining with AND: `q:spawnable():by_name("wolf")`.
       trx.objects.query:spawnable():by_name("wolf"):ids()
       ```
 
-    - <a name="query.NamedQuery.names"></a>[lua]`namedquery:names()`  
-      Every name the matches answer to, for offering completions. The group names any match belongs to come first, because a completer offers the list in order and a group name that ties on score would otherwise sit behind a thing's own. Which groups answer follows from what the query kept, so one narrowed to what fights offers no `pickup`.
+    - <a id="query.NamedQuery.names" name="query.NamedQuery.names"></a>[lua]`namedquery:names()`  
+      Every name the matches answer to, for offering completions. The group names any match belongs to come first, because a completer offers the list in order and a group name that ties on score would otherwise sit behind a thing's own. Which groups answer follows from what the query kept, so one narrowed to what fights offers no [`trx.objects.ObjectQuery:pickup`](OBJECTS.md#objects.ObjectQuery.pickup).
 
       Returns: table. A list of names.
 
 ### Functions
 
-- <a name="query.narrowing"></a>[lua]`trx.query.narrowing(make)`  
+- <a id="query.narrowing" name="query.narrowing"></a>[lua]`trx.query.narrowing(make)`  
   Builds a narrowing method for a domain's query type out of a predicate factory. [`trx.items`](ITEMS.md#items) and [`trx.objects`](OBJECTS.md#objects) declare their own filters with it.
 
   Parameters:
@@ -114,7 +114,7 @@ left to right, combining with AND: `q:spawnable():by_name("wolf")`.
 
   Returns: function. The method to declare as an `impl`.
 
-- <a name="query.new"></a>[lua]`trx.query.new(domain, class)`  
+- <a id="query.new" name="query.new"></a>[lua]`trx.query.new(domain, class)`  
   Builds the identity query over a domain, as an instance of that domain's query type. [`trx.objects`](OBJECTS.md#objects) and [`trx.items`](ITEMS.md#items) call this to make the query a script reaches through [`trx.objects.query`](OBJECTS.md#objects.query) and [`trx.items.query`](ITEMS.md#items.query).
 
   Parameters:

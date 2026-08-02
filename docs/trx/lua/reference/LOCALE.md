@@ -10,13 +10,13 @@ order: 19
   src/lua/api/locale.lua. Edit it there.
 -->
 
-## Locale module
+## <a id="locale" name="locale"></a>Locale module
 
 The text the player reads, in the player's own language.
 
 ### Functions
 
-- <a name="locale.declare"></a>[lua]`trx.locale.declare(strings)`  
+- <a id="locale.declare" name="locale.declare"></a>[lua]`trx.locale.declare(strings)`  
   Declares game string keys and the text behind them.
 
   A key belongs with the script that shows it, so a command carries its own
@@ -35,7 +35,7 @@ The text the player reads, in the player's own language.
   })
   ```
 
-- <a name="locale.get"></a>[lua]`trx.locale.get(key)`  
+- <a id="locale.get" name="locale.get"></a>[lua]`trx.locale.get(key)`  
   The text behind a game string key.
 
   Parameters:
@@ -48,7 +48,7 @@ The text the player reads, in the player's own language.
   trx.console.log(trx.locale.get("general/misc/off"))
   ```
 
-- <a name="locale.format"></a>[lua]`trx.locale.format(key, ...)`  
+- <a id="locale.format" name="locale.format"></a>[lua]`trx.locale.format(key, ...)`  
   The text behind a key with its placeholders filled in.
 
   Parameters:
@@ -62,7 +62,7 @@ The text the player reads, in the player's own language.
   trx.console.log(trx.locale.format("general/misc/pagination_nav", 1, 5))
   ```
 
-- <a name="locale.reload"></a>[lua]`trx.locale.reload()`  
+- <a id="locale.reload" name="locale.reload"></a>[lua]`trx.locale.reload()`  
   Reloads the current language's text from disk.
 
   Returns: boolean. Whether the reload succeeded.

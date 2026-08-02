@@ -10,7 +10,7 @@ order: 14
   src/lua/api/rules.lua. Edit it there.
 -->
 
-## Rules module
+## <a id="rules" name="rules"></a>Rules module
 
 Module for the numbers the engine plays by.
 
@@ -23,21 +23,21 @@ again on every entry, so a level that wants the defaults back asks for them.
 
 ### Properties
 
-- <a name="rules.exposure.max"></a>**`trx.rules.exposure.max`** (integer). How much warmth Lara holds, in frames, and what [`trx.lara.exposure_bar`](LARA.md#lara.exposure_bar) fills to. Warmth only moves in a room carrying the `damaging` flag, such as the cold water of Antarctica.
-- <a name="rules.exposure.drain_land"></a>**`trx.rules.exposure.drain_land`** (integer). Warmth lost each frame in the cold, on land or wading.
-- <a name="rules.exposure.drain_water"></a>**`trx.rules.exposure.drain_water`** (integer). Warmth lost each frame in the cold, underwater or at the surface.
-- <a name="rules.exposure.recovery"></a>**`trx.rules.exposure.recovery`** (integer). Warmth regained each frame once out of the cold.
-- <a name="rules.exposure.damage"></a>**`trx.rules.exposure.damage`** (integer). Hit points lost each frame once the warmth has run out.
-- <a name="rules.corpse.fade_speed"></a>**`trx.rules.corpse.fade_speed`** (integer). How much of a body's coverage goes each frame, out of 255. It is taken away once nothing is left. `0` leaves it where it lies.
+- <a id="rules.exposure.max" name="rules.exposure.max"></a>**`trx.rules.exposure.max`** (integer). How much warmth Lara holds, in frames, and what [`trx.lara.exposure_bar`](LARA.md#lara.Lara.exposure_bar) fills to. Warmth only moves in a room carrying the [`trx.rooms.Room.damaging`](ROOMS.md#rooms.Room.damaging) flag, such as the cold water of Antarctica.
+- <a id="rules.exposure.drain_land" name="rules.exposure.drain_land"></a>**`trx.rules.exposure.drain_land`** (integer). Warmth lost each frame in the cold, on land or wading.
+- <a id="rules.exposure.drain_water" name="rules.exposure.drain_water"></a>**`trx.rules.exposure.drain_water`** (integer). Warmth lost each frame in the cold, underwater or at the surface.
+- <a id="rules.exposure.recovery" name="rules.exposure.recovery"></a>**`trx.rules.exposure.recovery`** (integer). Warmth regained each frame once out of the cold.
+- <a id="rules.exposure.damage" name="rules.exposure.damage"></a>**`trx.rules.exposure.damage`** (integer). Hit points lost each frame once the warmth has run out.
+- <a id="rules.corpse.fade_speed" name="rules.corpse.fade_speed"></a>**`trx.rules.corpse.fade_speed`** (integer). How much of a body's coverage goes each frame, out of 255. It is taken away once nothing is left. `0` leaves it where it lies.
 
 ### Functions
 
-- <a name="rules.list"></a>[lua]`trx.rules.list()`  
+- <a id="rules.list" name="rules.list"></a>[lua]`trx.rules.list()`  
   Every rule there is, as dotted `group.field` keys.
 
   Returns: table.
 
-- <a name="rules.get"></a>[lua]`trx.rules.get(key)`  
+- <a id="rules.get" name="rules.get"></a>[lua]`trx.rules.get(key)`  
   Reads a rule by its key, for code that does not know which one it wants.
 
   Parameters:
@@ -45,20 +45,20 @@ again on every entry, so a level that wants the defaults back asks for them.
 
   Returns: any. Raises if no rule has that key.
 
-- <a name="rules.set"></a>[lua]`trx.rules.set(key, value)`  
+- <a id="rules.set" name="rules.set"></a>[lua]`trx.rules.set(key, value)`  
   Changes a rule by its key. A string is read as text, the way the console gives it; any other value is taken as the rule's own type.
 
   Parameters:
   - **`key`** (string). Dotted path, e.g. `exposure.damage`.
   - **`value`** (any).
 
-- <a name="rules.reset"></a>[lua]`trx.rules.reset([key])`  
+- <a id="rules.reset" name="rules.reset"></a>[lua]`trx.rules.reset([key])`  
   Puts a rule back to the value the engine ships with, or every rule when given no key. Happens on its own when a new game starts.
 
   Parameters:
   - **`key`** (string, optional). Dotted path.
 
-- <a name="rules.format_value"></a>[lua]`trx.rules.format_value(key)`  
+- <a id="rules.format_value" name="rules.format_value"></a>[lua]`trx.rules.format_value(key)`  
   How a rule's value reads as text, for showing it to the player.
 
   Parameters:

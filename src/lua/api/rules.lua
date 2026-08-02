@@ -32,7 +32,7 @@ end
 rule("exposure.max", {
   type = "integer",
   description = "How much warmth Lara holds, in frames, and what `trx.lara.exposure_bar` fills "
-    .. "to. Warmth only moves in a room carrying the `damaging` flag, such as the cold water of "
+    .. "to. Warmth only moves in a room carrying the `trx.rooms.Room.damaging` flag, such as the cold water of "
     .. "Antarctica.",
 })
 

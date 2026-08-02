@@ -10,13 +10,13 @@ order: 29
   src/lua/api/lua.lua. Edit it there.
 -->
 
-## Lua module
+## <a id="lua" name="lua"></a>Lua module
 
 Evaluating Lua at runtime: a string of code, or a file on disk. Both run in the same state as every other script.
 
 ### Functions
 
-- <a name="lua.eval_expr"></a>[lua]`trx.lua.eval_expr(code)`  
+- <a id="lua.eval_expr" name="lua.eval_expr"></a>[lua]`trx.lua.eval_expr(code)`  
   Evaluates a string of Lua code, as the `/lua` console command does.
 
   Parameters:
@@ -29,13 +29,13 @@ Evaluating Lua at runtime: a string of code, or a file on disk. Both run in the 
   trx.lua.eval_expr("trx.console.log('hello')")
   ```
 
-- <a name="lua.eval_file"></a>[lua]`trx.lua.eval_file(path)`  
+- <a id="lua.eval_file" name="lua.eval_file"></a>[lua]`trx.lua.eval_file(path)`  
   Runs a Lua file, the way a level script is run. A file that cannot be read reports as a `"runtime"` failure.
 
   Parameters:
   - **`path`** (string). Path of the file.
 
-  Returns: table or `nil`. As in `eval_expr`.
+  Returns: table or `nil`. As in [`trx.lua.eval_expr`](#lua.eval_expr).
 
   Example:
   ```lua

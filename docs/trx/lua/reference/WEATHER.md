@@ -10,17 +10,17 @@ order: 15
   src/lua/api/weather.lua. Edit it there.
 -->
 
-## Weather module
+## <a id="weather" name="weather"></a>Weather module
 
 The runtime weather effect the current level shows.
 
 ### Properties
 
-- <a name="weather.current"></a>**`trx.weather.current`** ([trx.weather.Type](#weather.Type)). The active weather. *(read-only)*
+- <a id="weather.current" name="weather.current"></a>**`trx.weather.current`** ([trx.weather.Type](#weather.Type)). The active weather. *(read-only)*
 
 ### Enums
 
-- <a name="weather.Type"></a>[lua]`trx.weather.Type`
+- <a id="weather.Type" name="weather.Type"></a>[lua]`trx.weather.Type`
 
     The kinds of weather a level can show.
 
@@ -33,7 +33,7 @@ The runtime weather effect the current level shows.
 
 ### Functions
 
-- <a name="weather.set"></a>[lua]`trx.weather.set(type)`  
+- <a id="weather.set" name="weather.set"></a>[lua]`trx.weather.set(type)`  
   Sets the active weather.
 
   Parameters:

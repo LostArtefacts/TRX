@@ -109,7 +109,7 @@ api.type("lara.Lara", {
       from = "exposure_timer",
       type = "integer",
       description = "Warmth remaining in the cold, out of `trx.rules.exposure.max`. Only moves "
-        .. "in a level whose rooms carry the `damaging` flag.",
+        .. "in a level whose rooms carry the `trx.rooms.Room.damaging` flag.",
     },
     poison = {
       from = "poison.value",
@@ -119,7 +119,7 @@ api.type("lara.Lara", {
     poison_target = {
       from = "poison.target",
       type = "integer",
-      description = "The poison reservoir that drains into `poison` over time. TR4 only.",
+      description = "The poison reservoir that drains into `trx.lara.poison` over time. TR4 only.",
     },
     electric = {
       from = "electric",
@@ -247,7 +247,7 @@ api.property("lara.is_flying", {
 
 api.property("lara.is_wet", {
   type = "boolean",
-  description = "Whether Lara is still shedding droplets after a swim. `dry` clears it.",
+  description = "Whether Lara is still shedding droplets after a swim. `trx.lara.dry` clears it.",
   get = raw.is_wet,
 })
 

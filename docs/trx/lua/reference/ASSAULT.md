@@ -10,17 +10,17 @@ order: 16
   src/lua/api/assault.lua. Edit it there.
 -->
 
-## Assault course module
+## <a id="assault" name="assault"></a>Assault course module
 
 Module for controlling the Assault Course and Quad Bike timers in gym levels.
 
 ### Properties
 
-- <a name="assault.active_track"></a>**`trx.assault.active_track`** ([trx.assault.Track](#assault.Track)). The track Lara is currently running, or `nil` if none. *(read-only)*
+- <a id="assault.active_track" name="assault.active_track"></a>**`trx.assault.active_track`** ([trx.assault.Track](#assault.Track)). The track Lara is currently running, or `nil` if none. *(read-only)*
 
 ### Enums
 
-- <a name="assault.Track"></a>[lua]`trx.assault.Track`
+- <a id="assault.Track" name="assault.Track"></a>[lua]`trx.assault.Track`
 
     A timed gym track.
 
@@ -31,34 +31,34 @@ Module for controlling the Assault Course and Quad Bike timers in gym levels.
 
 ### Functions
 
-- <a name="assault.stats"></a>[lua]`trx.assault.stats`  
+- <a id="assault.stats" name="assault.stats"></a>[lua]`trx.assault.stats`  
   A track's record table, as shown on the stats screen. Each track keeps its own. The records are stored in the player's profile, so writing to them outlives the level, and they can be read outside a gym level.
 
-- <a name="assault.start"></a>[lua]`trx.assault.start([track])`  
+- <a id="assault.start" name="assault.start"></a>[lua]`trx.assault.start([track])`  
   Starts the timer and clears its state. Raises outside a gym level.
 
   Parameters:
   - **`track`** ([trx.assault.Track](#assault.Track), optional, default [`trx.assault.Track.COURSE`](#assault.Track)).
 
-- <a name="assault.stop"></a>[lua]`trx.assault.stop([track])`  
+- <a id="assault.stop" name="assault.stop"></a>[lua]`trx.assault.stop([track])`  
   Stops the timer, leaving it on screen. Raises outside a gym level.
 
   Parameters:
   - **`track`** ([trx.assault.Track](#assault.Track), optional, default [`trx.assault.Track.COURSE`](#assault.Track)).
 
-- <a name="assault.finish"></a>[lua]`trx.assault.finish([track])`  
+- <a id="assault.finish" name="assault.finish"></a>[lua]`trx.assault.finish([track])`  
   Stops the timer as completing the track does, rather than as an abort. Raises outside a gym level.
 
   Parameters:
   - **`track`** ([trx.assault.Track](#assault.Track), optional, default [`trx.assault.Track.COURSE`](#assault.Track)).
 
-- <a name="assault.reset"></a>[lua]`trx.assault.reset([track])`  
+- <a id="assault.reset" name="assault.reset"></a>[lua]`trx.assault.reset([track])`  
   Stops the timer and clears its state. Raises outside a gym level.
 
   Parameters:
   - **`track`** ([trx.assault.Track](#assault.Track), optional, default [`trx.assault.Track.COURSE`](#assault.Track)).
 
-- <a name="assault.is_running"></a>[lua]`trx.assault.is_running([track])`  
+- <a id="assault.is_running" name="assault.is_running"></a>[lua]`trx.assault.is_running([track])`  
   Whether the timer is counting. False outside a gym level.
 
   Parameters:
@@ -66,15 +66,15 @@ Module for controlling the Assault Course and Quad Bike timers in gym levels.
 
   Returns: boolean.
 
-- <a name="assault.is_visible"></a>[lua]`trx.assault.is_visible([track])`  
-  Whether the timer is shown on screen. It stays visible after `stop`.
+- <a id="assault.is_visible" name="assault.is_visible"></a>[lua]`trx.assault.is_visible([track])`  
+  Whether the timer is shown on screen. It stays visible after [`trx.assault.stop`](#assault.stop).
 
   Parameters:
   - **`track`** ([trx.assault.Track](#assault.Track), optional, default [`trx.assault.Track.COURSE`](#assault.Track)).
 
   Returns: boolean.
 
-- <a name="assault.stats.add_record"></a>[lua]`trx.assault.stats.add_record(time, [track])`  
+- <a id="assault.stats.add_record" name="assault.stats.add_record"></a>[lua]`trx.assault.stats.add_record(time, [track])`  
   Files a new record, inserting it in time order and bumping the attempt count.
 
   Parameters:
@@ -88,7 +88,7 @@ Module for controlling the Assault Course and Quad Bike timers in gym levels.
   trx.assault.stats.add_record(30.0)
   ```
 
-- <a name="assault.stats.remove_record"></a>[lua]`trx.assault.stats.remove_record(record_num, [track])`  
+- <a id="assault.stats.remove_record" name="assault.stats.remove_record"></a>[lua]`trx.assault.stats.remove_record(record_num, [track])`  
   Removes a record, closing the gap behind it.
 
   Parameters:
@@ -97,7 +97,7 @@ Module for controlling the Assault Course and Quad Bike timers in gym levels.
 
   Returns: boolean. `false` if there is no record at that position.
 
-- <a name="assault.stats.list_records"></a>[lua]`trx.assault.stats.list_records([track])`  
+- <a id="assault.stats.list_records" name="assault.stats.list_records"></a>[lua]`trx.assault.stats.list_records([track])`  
   The records, fastest first.
 
   Parameters:

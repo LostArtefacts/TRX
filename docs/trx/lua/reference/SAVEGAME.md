@@ -10,13 +10,13 @@ order: 23
   src/lua/api/savegame.lua. Edit it there.
 -->
 
-## Savegame module
+## <a id="savegame" name="savegame"></a>Savegame module
 
 The save slots, and starting or reading a saved game.
 
 ### Enums
 
-- <a name="savegame.Pool"></a>[lua]`trx.savegame.Pool`
+- <a id="savegame.Pool" name="savegame.Pool"></a>[lua]`trx.savegame.Pool`
 
     Which set of save slots a slot belongs to.
 
@@ -27,13 +27,13 @@ The save slots, and starting or reading a saved game.
 
 ### Structures
 
-- <a name="savegame.SlotNum"></a>[lua]`trx.savegame.SlotNum`
+- <a id="savegame.SlotNum" name="savegame.SlotNum"></a>[lua]`trx.savegame.SlotNum`
 
     Slot number within the pool. For the quick pool this is the on-screen order. Counted from 1.
 
 ### Functions
 
-- <a name="savegame.slot_count"></a>[lua]`trx.savegame.slot_count([pool])`  
+- <a id="savegame.slot_count" name="savegame.slot_count"></a>[lua]`trx.savegame.slot_count([pool])`  
   How many slots a pool has. The quick pool counts only the slots that hold a save, which is how it is shown and addressed.
 
   Parameters:
@@ -42,7 +42,7 @@ The save slots, and starting or reading a saved game.
   Returns:
   - integer. The number of slots.
 
-- <a name="savegame.is_free"></a>[lua]`trx.savegame.is_free(slot_num, [pool])`  
+- <a id="savegame.is_free" name="savegame.is_free"></a>[lua]`trx.savegame.is_free(slot_num, [pool])`  
   Whether a slot holds no save.
 
   Parameters:
@@ -52,7 +52,7 @@ The save slots, and starting or reading a saved game.
   Returns:
   - boolean. Whether the slot is empty.
 
-- <a name="savegame.load"></a>[lua]`trx.savegame.load(slot_num, [pool])`  
+- <a id="savegame.load" name="savegame.load"></a>[lua]`trx.savegame.load(slot_num, [pool])`  
   Starts the saved game in a slot. The load happens once the game flow picks it up, not on the call.
 
   Parameters:
@@ -64,7 +64,7 @@ The save slots, and starting or reading a saved game.
   trx.savegame.load(1)
   ```
 
-- <a name="savegame.save"></a>[lua]`trx.savegame.save([slot_num], [pool])`  
+- <a id="savegame.save" name="savegame.save"></a>[lua]`trx.savegame.save([slot_num], [pool])`  
   Writes a saved game to a slot. A quick save with no slot number goes to the next slot in the rotation; with one, it saves to the slot named.
 
   Parameters:

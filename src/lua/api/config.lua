@@ -6,9 +6,9 @@ require("trx.locale")
 api.module("config", {
   order = 22,
   description = "Module for reading and changing engine settings.\n\n"
-    .. "These are the player's settings, not the level's. `set` writes to them and keeps the "
+    .. "These are the player's settings, not the level's. `trx.config.set` writes to them and keeps the "
     .. "change: it is remembered across saves and relaunches, exactly as if the player had made "
-    .. "it themselves. A level that wants to tint the water or pull the fog in wants `override` "
+    .. "it themselves. A level that wants to tint the water or pull the fog in wants `trx.config.override` "
     .. "instead, which lasts as long as the script keeps it and leaves the player's own value "
     .. "untouched underneath.",
 })
@@ -41,7 +41,7 @@ end]],
 
 api.define("config.describe", {
   description = "What shape a setting has: how a value is entered and shown, beyond the type "
-    .. "`get` reads back.",
+    .. "`trx.config.get` reads back.",
   params = {
     { name = "key", type = "string", description = "Dotted path." },
   },
@@ -142,7 +142,7 @@ api.define("config.set", {
   description = "Changes the player's setting, and keeps the change. Raises if the key is unknown "
     .. "or the value will not parse.\n\n"
     .. "The old value is not kept anywhere: the new one becomes the active setting as if the "
-    .. "player had chosen it, and is remembered across saves and relaunches. Prefer `override` "
+    .. "player had chosen it, and is remembered across saves and relaunches. Prefer `trx.config.override` "
     .. "for anything a level wants only while it is running.",
   params = {
     { name = "key", type = "string", description = "Dotted path." },
@@ -183,20 +183,20 @@ api.define("config.set", {
 })
 
 api.define("config.reset", {
-  description = "Puts a setting back to its default, and keeps the change, as `set` does.",
+  description = "Puts a setting back to its default, and keeps the change, as `trx.config.set` does.",
   params = {
     { name = "key", type = "string", description = "Dotted path." },
     {
       name = "force",
       type = "boolean",
       optional = true,
-      description = "As for `set`.",
+      description = "As for `trx.config.set`.",
     },
   },
   returns = {
     type = "boolean",
     description = "`false` when a script or the game flow is holding the setting "
-      .. "(see `is_overridden`).",
+      .. "(see `trx.config.is_overridden`).",
   },
   impl = raw.reset,
 })
@@ -204,12 +204,12 @@ api.define("config.reset", {
 api.define("config.override", {
   description = "Changes a setting for as long as the script keeps the override, without touching "
     .. "the player's own value.\n\n"
-    .. "The player's value sits underneath and comes back on `restore`. Nothing is written to "
-    .. "disk. Overrides stack, so one can be pushed over another; each `restore` lifts one off. "
+    .. "The player's value sits underneath and comes back on `trx.config.restore`. Nothing is written to "
+    .. "disk. Overrides stack, so one can be pushed over another; each `trx.config.restore` lifts one off. "
     .. "A setting the game flow enforces cannot be overridden.",
   params = {
     { name = "key", type = "string", description = "Dotted path." },
-    { name = "value", type = "any", description = "As for `set`." },
+    { name = "value", type = "any", description = "As for `trx.config.set`." },
   },
   examples = {
     [[trx.config.override("visuals.water_color", "0080ff")

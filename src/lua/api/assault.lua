@@ -60,7 +60,7 @@ api.define("assault.is_running", {
 })
 
 api.define("assault.is_visible", {
-  description = "Whether the timer is shown on screen. It stays visible after `stop`.",
+  description = "Whether the timer is shown on screen. It stays visible after `trx.assault.stop`.",
   params = { track_param() },
   returns = { type = "boolean" },
   impl = raw.is_visible,

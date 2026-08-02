@@ -57,6 +57,10 @@ NUMBERS: dict[str, dict] = {}
 # The page being written, so a link knows whether it has to cross a file.
 PAGE = ""
 
+# The declaration being written, so a link to something near it can read as
+# near. A description is written against the thing it belongs to.
+CONTEXT = ""
+
 # Every path the dump says can be pointed at, and the subset of them that are
 # types. Both come from the dump: what exists is decided where things are
 # declared, and nothing here guesses at a name.
@@ -70,6 +74,10 @@ KEYED_BY: dict[str, str] = {}
 # enum path -> its constants, upper-cased. A catalog runs to hundreds of them,
 # so they are not anchored one by one and a constant links to its enum.
 CONSTANTS: dict[str, set[str]] = {}
+# A member reached through a module that stands for one thing -
+# `trx.lara.air` - to where the type it stands for declares it. The anchor is
+# written once, at the declaration, so that is where the link has to go.
+ALIASES: dict[str, str] = {}
 # Every declared enum, so a declaration that points at one is typed by it.
 ENUM_PATHS: set[str] = set()
 def anchor(path: str) -> str:
@@ -84,7 +92,7 @@ def anchor(path: str) -> str:
     `name` is what a renderer that predates it looks for, and which of the two
     survives depends on what the markdown is put through.
     """
-    return f'<a name="{path}"></a>'
+    return f'<a id="{path}" name="{path}"></a>'
 
 
 def link(path: str, text: str) -> str:
@@ -94,7 +102,38 @@ def link(path: str, text: str) -> str:
     return f"[{text}]({target}#{path})"
 
 
-REFERENCE_RE = re.compile(r"(?<!\[)`trx\.([A-Za-z0-9_.]+?)`")
+REFERENCE_RE = re.compile(r"(?<!\[)`trx\.([A-Za-z0-9_.:]+?)`")
+
+
+def segments(path: str) -> list[str]:
+    """A written path split into its parts, each carrying the separator before it.
+
+    A method is written the way it is called, with a colon - `trx.items.Item:num`
+    - so the separator is part of what the reader sees and has to survive being
+    taken apart.
+    """
+    return re.findall(r"[.:]?[A-Za-z0-9_]+", path)
+
+def shortened(path: str) -> str:
+    """How a written path reads from where it is written.
+
+    A declaration names what it points at in full, so the link has somewhere to
+    go and the reference survives a rename. What the reader sees is measured
+    against the declaration being described: a member of the same type or group
+    reads as its own name, anything else as the whole path. Sharing a module is
+    not enough - `trx.game.levels` says what `levels` on its own does not.
+    """
+    written = segments(path)
+    here = segments(CONTEXT)
+    shared = 0
+    while (
+        shared < min(len(written) - 1, len(here))
+        and written[shared].lstrip(".:") == here[shared].lstrip(".:")
+    ):
+        shared += 1
+    if shared < 2:
+        return f"trx.{path}"
+    return "".join(written[shared:]).lstrip(".:")
 
 
 def anchors_of(api: dict) -> set[str]:
@@ -134,8 +173,9 @@ def anchored(path: str) -> str:
     lands nowhere has been renamed or was never there, and the engine refuses
     to dump one, so neither side is the lenient one.
     """
+    path = path.replace(":", ".")
     if path in ANCHORS:
-        return path
+        return ALIASES.get(path, path)
     parts = path.split(".")
     at = parts[0]
     if at not in ANCHORS:
@@ -171,7 +211,8 @@ def linked_prose(text: str) -> str:
     """
 
     def one(match: re.Match) -> str:
-        return link(anchored(match.group(1)), match.group(0))
+        written = match.group(1)
+        return link(anchored(written), f"`{shortened(written)}`")
 
     return REFERENCE_RE.sub(one, text)
 
@@ -204,6 +245,12 @@ def type_name(name: str) -> str:
     if "." in name:
         raise SystemExit(f"error: type `{name}` names no declared type")
     return name
+
+
+def at(path: str) -> None:
+    """Name the declaration the descriptions that follow are written against."""
+    global CONTEXT
+    CONTEXT = path
 
 
 def describe(spec: dict) -> str:
@@ -355,6 +402,7 @@ def render_examples(examples: list[str] | None, indent: str) -> list[str]:
 
 
 def render_function(func: dict) -> list[str]:
+    at(func["path"])
     out = [
         f"- {anchor(func['path'])}[lua]"
         f"`trx.{signature(func['path'], func.get('params'))}`  "
@@ -376,6 +424,7 @@ def render_namespace(spec: dict) -> list[str]:
     the group's own description, and, when it is callable, that the group may be
     called directly.
     """
+    at(spec["path"])
     if spec.get("callable"):
         head = (
             f"- {anchor(spec['path'])}[lua]"
@@ -394,6 +443,7 @@ def render_namespace(spec: dict) -> list[str]:
 
 
 def render_const(spec: dict) -> list[str]:
+    at(spec["path"])
     out = [
         f"- {anchor(spec['path'])}[lua]`trx.{spec['path']}` = `{spec['value']}`  "
     ]
@@ -421,6 +471,7 @@ def render_enum_names(names: list[str] | None, indent: str) -> list[str]:
 
 
 def render_enum(spec: dict) -> list[str]:
+    at(spec["path"])
     # A bulk enum is described as a whole: a count and a folded list of names,
     # rather than several hundred bullet points. The values stay out.
     if spec.get("bulk"):
@@ -442,6 +493,7 @@ def render_enum(spec: dict) -> list[str]:
         out.extend(render_prose(spec["description"], INDENT))
         out.append("")
     for value in spec.get("values") or []:
+        at(f"{spec['path']}.{value['name']}")
         out.append(f"{INDENT}- `trx.{spec['path']}.{value['name']}` = `{value['value']}`  ")
         out.extend(render_prose(value.get("description") or "", f"{INDENT}    "))
     out.append("")
@@ -454,6 +506,7 @@ def render_property(spec: dict) -> list[str]:
     Reading it calls into the engine, so it is neither a function nor a constant.
     """
     suffix = "" if spec.get("writable") else " *(read-only)*"
+    at(spec["path"])
     return render_lead(
         f"- {anchor(spec['path'])}**`trx.{spec['path']}`** "
         f"({typed(spec)}). ",
@@ -463,6 +516,7 @@ def render_property(spec: dict) -> list[str]:
 
 
 def render_type(spec: dict) -> list[str]:
+    at(spec["path"])
     out = [f"- {anchor(spec['path'])}[lua]`trx.{spec['path']}`", ""]
     if spec.get("description"):
         out.extend(render_prose(spec["description"], INDENT))
@@ -480,6 +534,7 @@ def render_type(spec: dict) -> list[str]:
     if spec.get("fields"):
         out.append(f"{INDENT}Properties:")
         for field in spec["fields"]:
+            at(f"{spec['path']}.{field['name']}")
             suffix = "" if field.get("writable") else " *(read-only)*"
             out.extend(
                 render_lead(
@@ -494,11 +549,12 @@ def render_type(spec: dict) -> list[str]:
     if spec.get("extensions"):
         out.append(f"{INDENT}Computed properties (derived, not stored on the object):")
         for ext in spec["extensions"]:
+            at(f"{spec['path']}.{ext['name']}")
             out.extend(
                 render_lead(
                     f"{INDENT}- {anchor(spec['path'] + '.' + ext['name'])}"
                     f"**`{ext['name']}`**: {typed(ext)}. ",
-                    ext.get("description") or "",
+                    describe(ext),
                     f"{INDENT}  ",
                 )
             )
@@ -511,7 +567,7 @@ def render_type(spec: dict) -> list[str]:
             out.extend(
                 render_lead(
                     f"{INDENT}- **`{OPERATORS[operator['name']].format(name)}`**. ",
-                    operator.get("description") or "",
+                    describe(operator),
                     f"{INDENT}  ",
                 )
             )
@@ -522,6 +578,7 @@ def render_type(spec: dict) -> list[str]:
         out.append("")
 
     for method in spec.get("methods") or []:
+        at(f"{spec['path']}.{method['name']}")
         name = spec["path"].rsplit(".", 1)[-1].lower()
         out.append(
             f"{INDENT}- {anchor(spec['path'] + '.' + method['name'])}"
@@ -537,6 +594,7 @@ def render_type(spec: dict) -> list[str]:
 
 
 def render_container(name: str, spec: dict) -> list[str]:
+    at(name)
     key, value = spec["key"], spec["value"]
     nullable = " or `nil`" if value.get("nullable") else ""
     out = ["### Indexing", ""]
@@ -575,6 +633,7 @@ def render_page(module: dict, api: dict) -> str:
     global PAGE
     name = module["name"]
     PAGE = name.upper()
+    at(name)
     # Declare a title where capitalizing the module name makes a worse one.
     title = module.get("title") or name.capitalize()
     out = [
@@ -590,7 +649,7 @@ def render_page(module: dict, api: dict) -> str:
         f"  src/lua/api/{name}.lua. Edit it there.",
         "-->",
         "",
-        f"## {title} module",
+        f"## {anchor(name)}{title} module",
         "",
     ]
     if module.get("description"):
@@ -690,6 +749,16 @@ def read(api: dict) -> None:
         for kind in ("fields", "extensions"):
             for member in spec.get(kind) or []:
                 STANDS_FOR[f"{module['name']}.{member['name']}"] = member.get("type")
+    for module in api["modules"]:
+        stands_for = module.get("instance_type")
+        if stands_for is None:
+            continue
+        spec = next(t for t in api["types"] if t["path"] == stands_for)
+        for kind in ("fields", "methods", "extensions"):
+            for member in spec.get(kind) or []:
+                ALIASES[f"{module['name']}.{member['name']}"] = (
+                    f"{stands_for}.{member['name']}"
+                )
     for container in api.get("containers", []):
         accepted = (container.get("key") or {}).get("type")
         if isinstance(accepted, list):

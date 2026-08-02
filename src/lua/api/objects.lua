@@ -121,7 +121,7 @@ api.type("objects.Object", {
     properties = {
       type = "table",
       description = "The object's own typed properties, which every item of the type inherits. "
-        .. "Writing here changes the default for all of them; write to `item.properties` to change "
+        .. "Writing here changes the default for all of them; write to `trx.items.Item.properties` to change "
         .. "one item only. Iterable with `pairs()`. See [Objects](../../OBJECTS.md).",
       impl = make_properties,
     },
@@ -131,12 +131,12 @@ api.type("objects.Object", {
     get_names = {
       returns = { type = "table" },
       description = "Every name the object answers to, in the player's language. Prefer "
-        .. "`object.names`.",
+        .. "`trx.objects.Object.names`.",
     },
     get_default_names = {
       returns = { type = "table" },
       description = "The compile-time English names, which a lookup falls back on before a "
-        .. "language file is loaded. Prefer `object.default_names`.",
+        .. "language file is loaded. Prefer `trx.objects.Object.default_names`.",
     },
     get_property = {
       params = { { name = "name", type = "string" } },
@@ -325,7 +325,7 @@ local ObjectQuery = api.type("objects.ObjectQuery", {
   description = "A `trx.query.Query` over every object the engine knows, with the narrowings below "
     .. "on top of the ones every query has. Objects answer to names, so it carries the name layer "
     .. "too - see `trx.query.NamedQuery`.\n\n"
-    .. "The families do not cover `pickup` between them: a second state of something Lara already "
+    .. "The families do not cover `trx.objects.ObjectQuery:pickup` between them: a second state of something Lara already "
     .. "carries, such as a part-full waterskin, is in none of them.",
   methods = methods,
 })
