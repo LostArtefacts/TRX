@@ -42,6 +42,15 @@ static const LARA_TRX_ANIMATION m_InvalidInterpAnims[] = {
     // clang-format on
 };
 
+static const LARA_TRX_ANIMATION m_InteractionAnims[4] = {
+    // clang-format off
+    LA_SIDE_STEP_LEFT,
+    LA_WALK_FORWARD,
+    LA_SIDE_STEP_RIGHT,
+    LA_WALK_BACK,
+    // clang-format on
+};
+
 static int16_t (*const m_CrowbarReceptacleFuncs[])(void) = {
     Door_FindNearbyCrowbarDoor,
     Switch_FindNearbyCrowbarSwitch,
@@ -832,9 +841,9 @@ bool Lara_MovePositionEx(
     Matrix_Rot16(new_rot);
     const MATRIX *const m = g_MatrixPtr;
     const XYZ_32 shift = {
-        .x = (vec->y * m->_01 + vec->z * m->_02 + vec->x * m->_00) >> W2V_SHIFT,
-        .y = (vec->x * m->_10 + vec->z * m->_12 + vec->y * m->_11) >> W2V_SHIFT,
-        .z = (vec->y * m->_21 + vec->x * m->_20 + vec->z * m->_22) >> W2V_SHIFT,
+        .x = (vec->x * m->_00 + vec->y * m->_01 + vec->z * m->_02) >> W2V_SHIFT,
+        .y = (vec->x * m->_10 + vec->y * m->_11 + vec->z * m->_12) >> W2V_SHIFT,
+        .z = (vec->x * m->_20 + vec->y * m->_21 + vec->z * m->_22) >> W2V_SHIFT,
     };
     Matrix_Pop();
 
@@ -877,19 +886,6 @@ bool Lara_MovePositionEx(
 
     if (walk_to_items && !lara_info->interact_target.is_moving) {
         if (lara_on_land) {
-            const int16_t step_to_anim_num[4] = {
-                LA(LA_SIDE_STEP_LEFT),
-                LA(LA_WALK_FORWARD),
-                LA(LA_SIDE_STEP_RIGHT),
-                LA(LA_WALK_BACK),
-            };
-            const int16_t step_to_anim_state[4] = {
-                LS(LS_STEP_LEFT),
-                LS(LS_WALK),
-                LS(LS_STEP_RIGHT),
-                LS(LS_WALK_BACK),
-            };
-
             const int32_t dx = lara_item->pos.x - new_pos.x;
             const int32_t dz = lara_item->pos.z - new_pos.z;
             const int32_t angle = (DEG_360 - Math_Atan(dx, dz)) % DEG_360;
@@ -898,10 +894,10 @@ bool Lara_MovePositionEx(
                 (uint32_t)(new_rot.y + DEG_45 + extra_y_rot) / DEG_90;
             const DIRECTION quadrant = (src_quadrant - dst_quadrant) % 4;
 
-            Item_SwitchToAnim(lara_item, step_to_anim_num[quadrant], 0);
-            lara_item->goal_anim_state = step_to_anim_state[quadrant];
-            lara_item->current_anim_state = step_to_anim_state[quadrant];
-
+            Item_SwitchToAnim(lara_item, LA(m_InteractionAnims[quadrant]), 0);
+            const ANIM *const anim = Item_GetAnim(lara_item);
+            lara_item->current_anim_state = anim->current_anim_state;
+            lara_item->goal_anim_state = anim->current_anim_state;
             lara_info->gun_status = LGS_HANDS_BUSY;
         }
 
