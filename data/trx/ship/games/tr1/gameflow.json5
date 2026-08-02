@@ -333,6 +333,7 @@
                 "sanctuary_itemrots.bin",
                 "sanctuary_scion.bin",
                 "sanctuary_textures.bin",
+                "sanctuary_meshfixes.bin",
             ],
         },
 
