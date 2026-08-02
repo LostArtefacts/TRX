@@ -154,7 +154,7 @@
     },
     {
       "bulk": true,
-      "count": 806,
+      "count": 807,
       "description": "Every object TRX has a name for.",
       "examples": [
         "if item.object_id == trx.catalog.objects.WOLF then ... end"
@@ -818,6 +818,7 @@
         "RX_WORKER_1",
         "RX_WORKER_2",
         "RX_WORKER_3",
+        "SARCOPHAGUS",
         "SAVE_CRYSTAL_ITEM",
         "SAVE_CRYSTAL_OPTION",
         "SCION_HOLDER",
@@ -2086,7 +2087,7 @@
     },
     {
       "bulk": false,
-      "count": 5,
+      "count": 6,
       "description": "<!--noref: pickup_mode--> The values the `pickup_mode` item property can take. It selects the animation Lara plays when collecting the item.",
       "path": "items.PickupMode",
       "values": [
@@ -2114,6 +2115,11 @@
           "description": "Pried off the wall using a crowbar.",
           "name": "CROWBAR",
           "value": 4
+        },
+        {
+          "description": "Hidden inside a sarcophagus.",
+          "name": "SARCOPHAGUS",
+          "value": 5
         }
       ]
     },

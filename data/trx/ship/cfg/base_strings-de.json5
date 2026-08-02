@@ -3239,6 +3239,9 @@
         "rx_worker_3": {
             "name": "\\{review}RX Arbeiter 3",
         },
+        "sarcophagus": {
+            "name": "\\{review}Sarkophag",
+        },
         "save_crystal": {
             "name": "Speicherkristall",
         },

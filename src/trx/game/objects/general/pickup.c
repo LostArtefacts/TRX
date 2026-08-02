@@ -948,6 +948,13 @@ void Pickup_Collision(
         return;
     }
 
+    if (item->object_id != O_FLARE_ITEM) {
+        const M_PRIV *const p = item->priv;
+        if (p->pickup_mode == PICKUP_MODE_SARCOPHAGUS) {
+            return;
+        }
+    }
+
     const LARA_INFO *const lara = Lara_GetLaraInfo();
     if (lara->water_status == LWS_ABOVE_WATER
         || lara->water_status == LWS_WADE) {
@@ -975,6 +982,11 @@ int16_t Pickup_FindNearbyCrowbarPryPickup(void)
         }
     }
     return NO_ITEM;
+}
+
+void Pickup_Collect(const GAME_VECTOR pos, const PICKUP_MODE mode)
+{
+    M_CollectAllAtPos(pos.pos, pos.room_num, mode);
 }
 
 // O_SCION_ITEM_1 and O_FLARE_ITEM register their own specialized setups.

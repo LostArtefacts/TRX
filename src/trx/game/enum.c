@@ -167,6 +167,7 @@ static __attribute__((constructor)) void M_Init(void)
     ENUM_MAP(PICKUP_MODE, PICKUP_MODE_PLINTH_HIGH, "plinth_high");
     ENUM_MAP(PICKUP_MODE, PICKUP_MODE_HIDDEN, "hidden");
     ENUM_MAP(PICKUP_MODE, PICKUP_MODE_CROWBAR, "crowbar");
+    ENUM_MAP(PICKUP_MODE, PICKUP_MODE_SARCOPHAGUS, "sarcophagus");
 
     ENUM_MAP(ROOM_FLIP_STATUS, RFS_NONE, "none");
     ENUM_MAP(ROOM_FLIP_STATUS, RFS_UNFLIPPED, "unflipped");
