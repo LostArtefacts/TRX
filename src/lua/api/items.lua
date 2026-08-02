@@ -160,8 +160,8 @@ api.type("items.Trigger", {
       description = "The code bits it set, `1` to `31`.",
     },
     timer = {
-      type = "number",
-      description = "How long it keeps the item going, in seconds.",
+      type = "game.Seconds",
+      description = "How long it keeps the item going.",
     },
     one_shot = {
       type = "boolean",
@@ -249,10 +249,10 @@ api.type("items.Item", {
     },
     timer = {
       from = "timer",
-      type = "integer",
-      description = "How long the item's trigger keeps it going, in game frames. `0` runs it until "
-        .. "something takes the trigger back; `-1` means it has run out; anything else counts down. "
-        .. "This is the raw frame count - `trx.items.Item:trigger` takes its timer in seconds instead.",
+      type = "game.Frames",
+      description = "How long the item's trigger keeps it going. `0` runs it until something takes "
+        .. "the trigger back; `-1` means it has run out; anything else counts down. "
+        .. "`trx.items.Item:trigger` takes its own timer as a `trx.game.Seconds`.",
     },
     is_triggered = {
       from = "is_triggered",
@@ -446,12 +446,12 @@ api.type("items.Item", {
             },
             {
               name = "timer",
-              type = "number",
+              type = "game.Seconds",
               optional = true,
               default = 0,
-              description = "How long it should keep the item going, in seconds. `0` means "
-                .. "until something takes the trigger back. A timer of exactly `1` is a single "
-                .. "frame, not a second, matching the level format.",
+              description = "How long it should keep the item going. `0` means until something "
+                .. "takes the trigger back. A timer of exactly `1` is a single frame, not a "
+                .. "second, matching the level format.",
             },
             {
               name = "one_shot",

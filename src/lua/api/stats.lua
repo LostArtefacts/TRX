@@ -88,8 +88,8 @@ api.type("stats.Stats", {
   fields = {
     timer = {
       from = "timer",
-      type = "integer",
-      description = "How long the level has been played, in game frames.",
+      type = "game.Frames",
+      description = "How long the level has been played.",
     },
     deaths = {
       from = "death_count",

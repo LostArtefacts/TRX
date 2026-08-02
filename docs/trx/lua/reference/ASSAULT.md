@@ -84,7 +84,7 @@ Module for controlling the Assault Course and Quad Bike timers in gym levels.
   Files a new record, inserting it in time order and bumping the attempt count.
 
   Parameters:
-  - <a id="assault.stats.add_record.time" name="assault.stats.add_record.time"></a>**`time`** (number). Time in seconds. Must be greater than zero.
+  - <a id="assault.stats.add_record.time" name="assault.stats.add_record.time"></a>**`time`** ([trx.game.Seconds](GAME.md#game.Seconds)). Must be greater than zero.
   - <a id="assault.stats.add_record.track" name="assault.stats.add_record.track"></a>**`track`** ([trx.assault.Track](#assault.Track), optional, default [`trx.assault.Track.COURSE`](#assault.Track)).
 
   Returns: boolean. `false` if the table is full and the time is slower than every record in it.
@@ -112,7 +112,7 @@ Module for controlling the Assault Course and Quad Bike timers in gym levels.
   Returns: table. The records.
 
     Each entry:
-    - <a id="assault.stats.list_records.time" name="assault.stats.list_records.time"></a>**`time`** (number). The time, in seconds.
+    - <a id="assault.stats.list_records.time" name="assault.stats.list_records.time"></a>**`time`** ([trx.game.Seconds](GAME.md#game.Seconds)). The time it took.
     - <a id="assault.stats.list_records.attempt_num" name="assault.stats.list_records.attempt_num"></a>**`attempt_num`** (integer). Which attempt it was. Counted from 1.
 
   Example:

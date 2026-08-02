@@ -73,6 +73,15 @@ Module for the game flow: which levels there are, and which one is being played.
 
     Where a demo sits in the table of demos. Counted from 1.
 
+- <a id="game.Frames" name="game.Frames"></a>[lua]`trx.game.Frames` (integer)
+
+    A length of time counted in the frames the engine runs the world at, which
+    is what the engine measures its own timers in.
+
+- <a id="game.Seconds" name="game.Seconds"></a>[lua]`trx.game.Seconds` (number)
+
+    A length of time in seconds, as a player would read it off a clock.
+
 - <a id="game.Level" name="game.Level"></a>[lua]`trx.game.Level`
 
     A level, as the game flow file declares it. Everything on it is read-only: a level is what the game flow says it is.

@@ -102,7 +102,7 @@ end
     Properties:
     - <a id="items.Trigger.mask" name="items.Trigger.mask"></a>**`mask`**: integer. The code bits it set, `1` to `31`.
     - <a id="items.Trigger.one_shot" name="items.Trigger.one_shot"></a>**`one_shot`**: boolean. Whether it fires only the once.
-    - <a id="items.Trigger.timer" name="items.Trigger.timer"></a>**`timer`**: number. How long it keeps the item going, in seconds.
+    - <a id="items.Trigger.timer" name="items.Trigger.timer"></a>**`timer`**: [trx.game.Seconds](GAME.md#game.Seconds). How long it keeps the item going.
     - <a id="items.Trigger.type" name="items.Trigger.type"></a>**`type`**: [trx.items.TriggerType](#items.TriggerType). The kind of trigger it was.
 
 - <a id="items.Item" name="items.Item"></a>[lua]`trx.items.Item`
@@ -144,7 +144,7 @@ end
     - <a id="items.Item.room_num" name="items.Item.room_num"></a>**`room_num`**: [trx.rooms.Num](ROOMS.md#rooms.Num). The room containing this item. Set [`pos`](#items.Item.pos) to move the item between rooms. *(read-only)*
     - <a id="items.Item.rot" name="items.Item.rot"></a>**`rot`**: vec3. Orientation. Each component is a [`trx.math.Angle`](MATH.md#math.Angle).
     - <a id="items.Item.speed" name="items.Item.speed"></a>**`speed`**: integer. Forward speed.
-    - <a id="items.Item.timer" name="items.Item.timer"></a>**`timer`**: integer. How long the item's trigger keeps it going, in game frames. `0` runs it until something takes the trigger back; `-1` means it has run out; anything else counts down. This is the raw frame count - [`trigger`](#items.Item.trigger) takes its timer in seconds instead.
+    - <a id="items.Item.timer" name="items.Item.timer"></a>**`timer`**: [trx.game.Frames](GAME.md#game.Frames). How long the item's trigger keeps it going. `0` runs it until something takes the trigger back; `-1` means it has run out; anything else counts down. [`trigger`](#items.Item.trigger) takes its own timer as a [`trx.game.Seconds`](GAME.md#game.Seconds).
     - <a id="items.Item.touch_bits" name="items.Item.touch_bits"></a>**`touch_bits`**: integer. Bitmask of which of the item's meshes Lara is touching. *(read-only)*
     - <a id="items.Item.trigger_mask" name="items.Item.trigger_mask"></a>**`trigger_mask`**: integer. The five code bits, counted the way a level editor counts them: `1` to `31`. The trigger only says go once every bit is set, which is how a level makes several triggers agree before anything happens. A lone trigger carries all of them.
     - <a id="items.Item.was_hit" name="items.Item.was_hit"></a>**`was_hit`**: boolean. Whether the item was hit during the current frame. *(read-only)*
@@ -473,7 +473,7 @@ end
         Keys:
         - <a id="items.Item.trigger.opts.type" name="items.Item.trigger.opts.type"></a>**`type`** ([trx.items.TriggerType](#items.TriggerType), optional). A plain `TRIGGER` by default.
         - <a id="items.Item.trigger.opts.mask" name="items.Item.trigger.opts.mask"></a>**`mask`** (integer, optional). Which of the five code bits to set, `1` to `31`, all of them by default. Pass fewer to act as one of several triggers a puzzle is waiting on.
-        - <a id="items.Item.trigger.opts.timer" name="items.Item.trigger.opts.timer"></a>**`timer`** (number, optional, default `0`). How long it should keep the item going, in seconds. `0` means until something takes the trigger back. A timer of exactly `1` is a single frame, not a second, matching the level format.
+        - <a id="items.Item.trigger.opts.timer" name="items.Item.trigger.opts.timer"></a>**`timer`** ([trx.game.Seconds](GAME.md#game.Seconds), optional, default `0`). How long it should keep the item going. `0` means until something takes the trigger back. A timer of exactly `1` is a single frame, not a second, matching the level format.
         - <a id="items.Item.trigger.opts.one_shot" name="items.Item.trigger.opts.one_shot"></a>**`one_shot`** (boolean, optional). Never let it fire again.
 
       Example:

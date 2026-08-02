@@ -94,8 +94,8 @@ api.define("assault.stats.add_record", {
   params = {
     {
       name = "time",
-      type = "number",
-      description = "Time in seconds. Must be greater than zero.",
+      type = "game.Seconds",
+      description = "Must be greater than zero.",
     },
     track_param(),
   },
@@ -133,8 +133,8 @@ api.define("assault.stats.list_records", {
     fields = {
       {
         name = "time",
-        type = "number",
-        description = "The time, in seconds.",
+        type = "game.Seconds",
+        description = "The time it took.",
       },
       {
         name = "attempt_num",
