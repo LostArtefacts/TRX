@@ -35,6 +35,18 @@ Module for controlling the Assault Course and Quad Bike timers in gym levels.
 
     Where a time sits in the table of best times, fastest first. Counted from 1.
 
+- <a id="assault.AttemptNum" name="assault.AttemptNum"></a>[lua]`trx.assault.AttemptNum`
+
+    Which attempt at a track it was, counted in the order they were made. Counted from 1.
+
+- <a id="assault.Record" name="assault.Record"></a>[lua]`trx.assault.Record`
+
+    One of a track's best times.
+
+    Properties:
+    - <a id="assault.Record.attempt_num" name="assault.Record.attempt_num"></a>**`attempt_num`**: [trx.assault.AttemptNum](#assault.AttemptNum).
+    - <a id="assault.Record.time" name="assault.Record.time"></a>**`time`**: [trx.game.Seconds](GAME.md#game.Seconds). The time it took.
+
 ### Functions
 
 - <a id="assault.stats" name="assault.stats"></a>[lua]`trx.assault.stats`  
@@ -109,11 +121,7 @@ Module for controlling the Assault Course and Quad Bike timers in gym levels.
   Parameters:
   - <a id="assault.stats.list_records.track" name="assault.stats.list_records.track"></a>**`track`** ([trx.assault.Track](#assault.Track), optional, default [`trx.assault.Track.COURSE`](#assault.Track)).
 
-  Returns: table. The records.
-
-    Each entry:
-    - <a id="assault.stats.list_records.time" name="assault.stats.list_records.time"></a>**`time`** ([trx.game.Seconds](GAME.md#game.Seconds)). The time it took.
-    - <a id="assault.stats.list_records.attempt_num" name="assault.stats.list_records.attempt_num"></a>**`attempt_num`** (integer). Which attempt it was. Counted from 1.
+  Returns: a list of [trx.assault.Record](#assault.Record). The records.
 
   Example:
   ```lua

@@ -481,7 +481,13 @@ def render_params(params: list[dict] | None, indent: str) -> list[str]:
 
 
 def one_return(spec: dict) -> str:
-    bits = [typed(spec)]
+    """What a call hands back, and whether it hands back one or many of them.
+
+    A row that has a type of its own says `list` and names it; one declared
+    where it is returned spells its keys out below instead.
+    """
+    named = typed(spec)
+    bits = [f"a list of {named}" if spec.get("list") else named]
     if spec.get("nullable"):
         bits.append("or `nil`")
     return f"{' '.join(bits)}. {describe(spec)}".rstrip()

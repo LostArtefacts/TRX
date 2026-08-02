@@ -2811,21 +2811,8 @@
       "path": "assault.stats.list_records",
       "returns": {
         "description": "The records.",
-        "fields": [
-          {
-            "description": "The time it took.",
-            "name": "time",
-            "type": "game.Seconds"
-          },
-          {
-            "base": 1,
-            "description": "Which attempt it was.",
-            "name": "attempt_num",
-            "type": "integer"
-          }
-        ],
         "list": true,
-        "type": "table"
+        "type": "assault.Record"
       }
     },
     {
@@ -2946,24 +2933,7 @@
       "path": "config.describe",
       "returns": {
         "description": "What the setting is and how it is entered.",
-        "fields": [
-          {
-            "description": "One of `boolean`, `integer`, `number`, `color`, `enum`, `dynamic_enum` or `string`. <!--noref: color, enum, dynamic_enum-->",
-            "name": "kind",
-            "type": "string"
-          },
-          {
-            "description": "Marks a number stored 0-1 but entered and shown as a 0-100 percentage.",
-            "name": "percent",
-            "type": "boolean"
-          },
-          {
-            "description": "What the setting accepts, for the enum kinds. `nil` for the rest.",
-            "name": "values",
-            "type": "table"
-          }
-        ],
-        "type": "table"
+        "type": "config.Shape"
       }
     },
     {
@@ -3254,29 +3224,12 @@
       "path": "console.commands",
       "returns": {
         "description": "The commands.",
-        "fields": [
-          {
-            "description": "The word the player types.",
-            "name": "name",
-            "type": "string"
-          },
-          {
-            "description": "The other words that reach it, or `nil` where it answers to one.",
-            "name": "aliases",
-            "type": "table"
-          },
-          {
-            "description": "What the console shows for `--help`, or `nil` where the command carries none.",
-            "name": "help",
-            "type": "string"
-          }
-        ],
         "list": true,
-        "type": "table"
+        "type": "console.Command"
       }
     },
     {
-      "description": "The command a name reaches, by its own name or an alias, matched as the console matches when it dispatches. The same `{ name, aliases, help }` as an entry of `trx.console.commands`, or nil when nothing answers to the name.",
+      "description": "The command a name reaches, by its own name or an alias, matched as the console matches when it dispatches.",
       "params": [
         {
           "description": "The word or alias to look up.",
@@ -3286,8 +3239,9 @@
       ],
       "path": "console.command",
       "returns": {
-        "description": "`{ name, aliases, help }`, or nil.",
-        "type": "table"
+        "description": "`nil` when nothing answers to the name.",
+        "nullable": true,
+        "type": "console.Command"
       }
     },
     {
@@ -4376,20 +4330,8 @@
       "path": "lua.eval_expr",
       "returns": {
         "description": "`nil` when the code ran to completion, and what went wrong otherwise. A failure comes back as a value rather than raising, so the caller decides what it means.",
-        "fields": [
-          {
-            "description": "Either `\"syntax\"` or `\"runtime\"`.",
-            "name": "kind",
-            "type": "string"
-          },
-          {
-            "description": "The error text.",
-            "name": "message",
-            "type": "string"
-          }
-        ],
         "nullable": true,
-        "type": "table"
+        "type": "lua.Error"
       }
     },
     {
@@ -4408,7 +4350,7 @@
       "returns": {
         "description": "As in `trx.lua.eval_expr`.",
         "nullable": true,
-        "type": "table"
+        "type": "lua.Error"
       }
     },
     {
@@ -5006,35 +4948,8 @@
       "path": "strings.fuzzy_match",
       "returns": {
         "description": "The matches, best first.",
-        "fields": [
-          {
-            "description": "The candidate that matched.",
-            "name": "key",
-            "type": "string"
-          },
-          {
-            "description": "What the candidate carried.",
-            "name": "value",
-            "type": "any"
-          },
-          {
-            "description": "How well it matched.",
-            "name": "score",
-            "type": "number"
-          },
-          {
-            "description": "Whether the whole candidate matched.",
-            "name": "is_full",
-            "type": "boolean"
-          },
-          {
-            "description": "Whether a whole word matched.",
-            "name": "is_word",
-            "type": "boolean"
-          }
-        ],
         "list": true,
-        "type": "table"
+        "type": "strings.Match"
       }
     },
     {
@@ -5363,6 +5278,11 @@
       "base": 1,
       "description": "Where a time sits in the table of best times, fastest first.",
       "path": "assault.RecordNum"
+    },
+    {
+      "base": 1,
+      "description": "Which attempt at a track it was, counted in the order they were made.",
+      "path": "assault.AttemptNum"
     },
     {
       "base": 0,
@@ -6086,6 +6006,75 @@
       ],
       "operators": [],
       "path": "argparse.Parser"
+    },
+    {
+      "description": "One of a track's best times.",
+      "extensions": [],
+      "fields": [
+        {
+          "name": "attempt_num",
+          "type": "assault.AttemptNum"
+        },
+        {
+          "description": "The time it took.",
+          "name": "time",
+          "type": "game.Seconds"
+        }
+      ],
+      "handle": false,
+      "methods": [],
+      "operators": [],
+      "path": "assault.Record"
+    },
+    {
+      "description": "How a setting is entered and shown, beyond the type it reads back as.",
+      "extensions": [],
+      "fields": [
+        {
+          "description": "One of `boolean`, `integer`, `number`, `color`, `enum`, `dynamic_enum` or `string`. <!--noref: color, enum, dynamic_enum-->",
+          "name": "kind",
+          "type": "string"
+        },
+        {
+          "description": "Marks a number stored 0-1 but entered and shown as a 0-100 percentage.",
+          "name": "percent",
+          "type": "boolean"
+        },
+        {
+          "description": "What the setting accepts, for the enum kinds. `nil` for the rest.",
+          "name": "values",
+          "type": "table"
+        }
+      ],
+      "handle": false,
+      "methods": [],
+      "operators": [],
+      "path": "config.Shape"
+    },
+    {
+      "description": "A registered console command, as the help command reads one.",
+      "extensions": [],
+      "fields": [
+        {
+          "description": "The other words that reach it, or `nil` where it answers to one.",
+          "name": "aliases",
+          "type": "table"
+        },
+        {
+          "description": "What the console shows for `--help`, or `nil` where the command carries none.",
+          "name": "help",
+          "type": "string"
+        },
+        {
+          "description": "The word the player types.",
+          "name": "name",
+          "type": "string"
+        }
+      ],
+      "handle": false,
+      "methods": [],
+      "operators": [],
+      "path": "console.Command"
     },
     {
       "description": "An attached handler. Every hook hands one back, and holding it is what makes the handler detachable later. A listener is spent once detached, and a level change spends every one a level script attached.",
@@ -7457,6 +7446,26 @@
       "path": "lara.Lara"
     },
     {
+      "description": "What went wrong while running Lua.",
+      "extensions": [],
+      "fields": [
+        {
+          "description": "Either `\"syntax\"` or `\"runtime\"`.",
+          "name": "kind",
+          "type": "string"
+        },
+        {
+          "description": "The error text.",
+          "name": "message",
+          "type": "string"
+        }
+      ],
+      "handle": false,
+      "methods": [],
+      "operators": [],
+      "path": "lua.Error"
+    },
+    {
       "description": "An axis-aligned box. Whether it is placed in the world or in something's own frame is for whatever hands it over to say.",
       "extensions": [],
       "fields": [
@@ -8674,6 +8683,41 @@
       ],
       "operators": [],
       "path": "stats.Stats"
+    },
+    {
+      "description": "A candidate that matched, and how well.",
+      "extensions": [],
+      "fields": [
+        {
+          "description": "Whether the whole candidate matched.",
+          "name": "is_full",
+          "type": "boolean"
+        },
+        {
+          "description": "Whether a whole word matched.",
+          "name": "is_word",
+          "type": "boolean"
+        },
+        {
+          "description": "The candidate that matched.",
+          "name": "key",
+          "type": "string"
+        },
+        {
+          "description": "How well it matched.",
+          "name": "score",
+          "type": "number"
+        },
+        {
+          "description": "What the candidate carried.",
+          "name": "value",
+          "type": "any"
+        }
+      ],
+      "handle": false,
+      "methods": [],
+      "operators": [],
+      "path": "strings.Match"
     }
   ],
   "units": [

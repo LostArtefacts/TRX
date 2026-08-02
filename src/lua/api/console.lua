@@ -138,6 +138,22 @@ api.namespace("console.log", {
   call = at(LogLevel.INFO),
 })
 
+api.type("console.Command", {
+  description = "A registered console command, as the help command reads one.",
+  fields = {
+    name = { type = "string", description = "The word the player types." },
+    aliases = {
+      type = "table",
+      description = "The other words that reach it, or `nil` where it answers to one.",
+    },
+    help = {
+      type = "string",
+      description = "What the console shows for `--help`, or `nil` where the command "
+        .. "carries none.",
+    },
+  },
+})
+
 api.define("console.log.generic", {
   description = "Logs at a level chosen at runtime.",
   params = {
@@ -396,27 +412,9 @@ api.define("console.commands", {
   description = "Every registered console command, in registration order. The help command is "
     .. "built on this.",
   returns = {
-    type = "table",
-    description = "The commands.",
+    type = "console.Command",
     list = true,
-    fields = {
-      {
-        name = "name",
-        type = "string",
-        description = "The word the player types.",
-      },
-      {
-        name = "aliases",
-        type = "table",
-        description = "The other words that reach it, or `nil` where it answers to one.",
-      },
-      {
-        name = "help",
-        type = "string",
-        description = "What the console shows for `--help`, or `nil` where the command "
-          .. "carries none.",
-      },
-    },
+    description = "The commands.",
   },
   impl = function()
     local out = {}
@@ -429,8 +427,7 @@ api.define("console.commands", {
 
 api.define("console.command", {
   description = "The command a name reaches, by its own name or an alias, matched as the console "
-    .. "matches when it dispatches. The same `{ name, aliases, help }` as an entry of "
-    .. "`trx.console.commands`, or nil when nothing answers to the name.",
+    .. "matches when it dispatches.",
   params = {
     {
       name = "name",
@@ -439,8 +436,9 @@ api.define("console.command", {
     },
   },
   returns = {
-    type = "table",
-    description = "`{ name, aliases, help }`, or nil.",
+    type = "console.Command",
+    nullable = true,
+    description = "`nil` when nothing answers to the name.",
   },
   impl = function(name)
     local cmd = raw.command(name)

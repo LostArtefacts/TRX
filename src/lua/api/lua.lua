@@ -15,25 +15,28 @@ local function wrap(kind, message)
   return { kind = kind, message = message }
 end
 
+api.type("lua.Error", {
+  description = "What went wrong while running Lua.",
+  fields = {
+    kind = {
+      type = "string",
+      description = 'Either `"syntax"` or `"runtime"`.',
+    },
+    message = { type = "string", description = "The error text." },
+  },
+})
+
 api.define("lua.eval_expr", {
   description = "Evaluates a string of Lua code, as the `/lua` console command does.",
   params = {
     { name = "code", type = "string", description = "The code." },
   },
   returns = {
-    type = "table",
+    type = "lua.Error",
     nullable = true,
     description = "`nil` when the code ran to completion, and what went wrong otherwise. A "
       .. "failure comes back as a value rather than raising, so the caller decides what it "
       .. "means.",
-    fields = {
-      {
-        name = "kind",
-        type = "string",
-        description = 'Either `"syntax"` or `"runtime"`.',
-      },
-      { name = "message", type = "string", description = "The error text." },
-    },
   },
   examples = { [[trx.lua.eval_expr("trx.console.log('hello')")]] },
   impl = function(code)
@@ -48,7 +51,7 @@ api.define("lua.eval_file", {
     { name = "path", type = "string", description = "Path of the file." },
   },
   returns = {
-    type = "table",
+    type = "lua.Error",
     nullable = true,
     description = "As in `trx.lua.eval_expr`.",
   },

@@ -16,6 +16,19 @@ Utilities for working with strings.
 
 Not to be confused with [`trx.locale`](LOCALE.md#locale), which is the text a player reads: this module is about manipulating strings, that one is about which string the player gets.
 
+### Structures
+
+- <a id="strings.Match" name="strings.Match"></a>[lua]`trx.strings.Match`
+
+    A candidate that matched, and how well.
+
+    Properties:
+    - <a id="strings.Match.is_full" name="strings.Match.is_full"></a>**`is_full`**: boolean. Whether the whole candidate matched.
+    - <a id="strings.Match.is_word" name="strings.Match.is_word"></a>**`is_word`**: boolean. Whether a whole word matched.
+    - <a id="strings.Match.key" name="strings.Match.key"></a>**`key`**: string. The candidate that matched.
+    - <a id="strings.Match.score" name="strings.Match.score"></a>**`score`**: number. How well it matched.
+    - <a id="strings.Match.value" name="strings.Match.value"></a>**`value`**: any. What the candidate carried.
+
 ### Functions
 
 - <a id="strings.fuzzy_match" name="strings.fuzzy_match"></a>[lua]`trx.strings.fuzzy_match(input, sources)`  
@@ -32,14 +45,7 @@ Not to be confused with [`trx.locale`](LOCALE.md#locale), which is the text a pl
     - <a id="strings.fuzzy_match.sources.value" name="strings.fuzzy_match.sources.value"></a>**`value`** (any). Anything of the caller's, handed back on the match.
     - <a id="strings.fuzzy_match.sources.weight" name="strings.fuzzy_match.sources.weight"></a>**`weight`** (integer, optional, default `1`). A heavier candidate wins a tie. Zero or less drops it.
 
-  Returns: table. The matches, best first.
-
-    Each entry:
-    - <a id="strings.fuzzy_match.key" name="strings.fuzzy_match.key"></a>**`key`** (string). The candidate that matched.
-    - <a id="strings.fuzzy_match.value" name="strings.fuzzy_match.value"></a>**`value`** (any). What the candidate carried.
-    - <a id="strings.fuzzy_match.score" name="strings.fuzzy_match.score"></a>**`score`** (number). How well it matched.
-    - <a id="strings.fuzzy_match.is_full" name="strings.fuzzy_match.is_full"></a>**`is_full`** (boolean). Whether the whole candidate matched.
-    - <a id="strings.fuzzy_match.is_word" name="strings.fuzzy_match.is_word"></a>**`is_word`** (boolean). Whether a whole word matched.
+  Returns: a list of [trx.strings.Match](#strings.Match). The matches, best first.
 
   Example:
   ```lua
