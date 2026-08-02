@@ -66,6 +66,9 @@ local checkers
 -- What a number is, written once where it belongs: what an item number is is
 -- the items module's to say, and everything that holds one is typed by it.
 local numbers = ordered()
+-- What a value is measured in, written once where it belongs: a distance is a
+-- distance however many declarations hold one.
+local units = ordered()
 local containers = ordered()
 -- module -> { get, count, accepts }. What indexing the module table reaches.
 local module_containers = {}
@@ -1221,6 +1224,41 @@ function api.number(path, spec)
   register_checker(path, checkers.integer)
 end
 
+-- Declares a unit: what a value is measured in. An angle is measured the same
+-- way wherever one turns up, so it is written here and the declarations that
+-- hold one name it. Doc-only as a number is, and a type like any other.
+--
+-- `type` is what a value of it is: whole where the engine counts in steps of
+-- one, as it does for an angle and a distance, and a real number where it does
+-- not, as for a time in seconds.
+function api.unit(path, spec)
+  opening("api.unit", spec)
+  assert(type(path) == "string", "api.unit: path must be a string")
+  -- A unit belongs to the module that says what it measures, and the docs
+  -- reach it there.
+  split_path(path)
+  assert(
+    type(spec.description) == "string",
+    "api.unit: description must be a string"
+  )
+  local measured = spec.type or "integer"
+  assert(
+    measured == "integer" or measured == "number",
+    "api.unit: a unit measures an integer or a number"
+  )
+  assert(
+    spec.spellings == nil or type(spec.spellings) == "table",
+    "api.unit: spellings must list the words that mean this unit"
+  )
+  assert(
+    units.by_path[path] == nil,
+    "api.unit: '" .. path .. "' is already written"
+  )
+  record(units, path, spec)
+
+  register_checker(path, checkers[measured])
+end
+
 -- A spec as the docs read it. What it is typed by is written out as the path
 -- that names it, so the docs can link to the declaration and a description
 -- several places share is still written once.
@@ -1312,6 +1350,16 @@ function api.describe()
       path = path,
       description = spec.description,
       base = spec.base,
+    }
+  end)
+  out.units = collect(units, function(path, spec)
+    return {
+      path = path,
+      description = spec.description,
+      -- What a value of it is. Written out even where it is the default, so
+      -- the docs need not know what that default is.
+      type = spec.type or "integer",
+      spellings = spec.spellings,
     }
   end)
   out.modules = collect(modules, function(name, spec)
@@ -1431,6 +1479,7 @@ function api.describe()
     return {
       path = path,
       value = spec.value,
+      type = spec.type,
       description = spec.description,
     }
   end)
@@ -1483,6 +1532,8 @@ function api.describe()
   by_module(out.constants)
   by_module(out.namespaces)
   by_module(out.properties)
+  by_module(out.numbers)
+  by_module(out.units)
   -- Keyed by module, not by path, so by_module has nothing to sort on.
   table.sort(out.containers, function(a, b)
     return a.module < b.module
@@ -1520,6 +1571,7 @@ function api.describe()
   end
   for _, group in ipairs({
     out.numbers,
+    out.units,
     out.enums,
     out.functions,
     out.properties,
