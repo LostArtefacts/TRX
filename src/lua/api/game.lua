@@ -165,25 +165,28 @@ local function level_list(table_type)
 end
 
 api.property("game.levels", {
-  type = "table",
-  description = "The levels of the game, in order, as a list of `trx.game.Level` counted from one.",
+  type = "game.Level",
+  list = true,
+  description = "The levels of the game, in order, counted from one.",
   get = function()
     return level_list(LevelTable.MAIN)
   end,
 })
 
 api.property("game.cutscenes", {
-  type = "table",
-  description = "The cutscene levels, as a list of `trx.game.Level` counted from one. TR4's "
-    .. "in-game cutscenes are a different thing, and live in `trx.cutscenes`.",
+  type = "game.Level",
+  list = true,
+  description = "The cutscene levels, counted from one. TR4's in-game cutscenes are a different "
+    .. "thing, and live in `trx.cutscenes`.",
   get = function()
     return level_list(LevelTable.CUTSCENES)
   end,
 })
 
 api.property("game.demos", {
-  type = "table",
-  description = "The demos, as a list of `trx.game.Level` counted from one.",
+  type = "game.Level",
+  list = true,
+  description = "The demos, counted from one.",
   get = function()
     return level_list(LevelTable.DEMOS)
   end,

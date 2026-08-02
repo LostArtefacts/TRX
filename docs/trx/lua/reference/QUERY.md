@@ -50,12 +50,12 @@ left to right, combining with AND: `q:spawnable():by_name("wolf")`.
     - <a id="query.Query.ids" name="query.Query.ids"></a>[lua]`query:ids()`  
       The matching ids. For objects these are object ids; for items, their numbers.
 
-      Returns: table. A list of integers.
+      Returns: a list of integer.
 
     - <a id="query.Query.matches" name="query.Query.matches"></a>[lua]`query:matches()`  
       The matching handles.
 
-      Returns: table. A list of [`trx.objects.Object`](OBJECTS.md#objects.Object)s or [`trx.items.Item`](ITEMS.md#items.Item)s.
+      Returns: a list of [trx.objects.Object](OBJECTS.md#objects.Object) or [trx.items.Item](ITEMS.md#items.Item).
 
     - <a id="query.Query.where" name="query.Query.where"></a>[lua]`query:where(predicate)`  
       Narrows by a test of the caller's own, for what the domain does not name.
@@ -84,7 +84,7 @@ left to right, combining with AND: `q:spawnable():by_name("wolf")`.
     - <a id="query.NamedQuery.best" name="query.NamedQuery.best"></a>[lua]`namedquery:best()`  
       The ids tied for the best [`by_name`](#query.NamedQuery.by_name) score: one for a name only one thing answers to, the whole group for a group name. Without a [`by_name`](#query.NamedQuery.by_name), every matching id.
 
-      Returns: table. A list of integers.
+      Returns: a list of integer.
 
     - <a id="query.NamedQuery.by_name" name="query.NamedQuery.by_name"></a>[lua]`namedquery:by_name(name)`  
       Ranks rather than filters: matches the way a player types a name, forgivingly, and orders what survives the rest of the query best first. Some of a domain's narrowings are also searchable groups, so their own name matches every member.
@@ -102,7 +102,7 @@ left to right, combining with AND: `q:spawnable():by_name("wolf")`.
     - <a id="query.NamedQuery.names" name="query.NamedQuery.names"></a>[lua]`namedquery:names()`  
       Every name the matches answer to, for offering completions. The group names any match belongs to come first, because a completer offers the list in order and a group name that ties on score would otherwise sit behind a thing's own. Which groups answer follows from what the query kept, so one narrowed to what fights offers no [`trx.objects.ObjectQuery:pickup`](OBJECTS.md#objects.ObjectQuery.pickup).
 
-      Returns: table. A list of names.
+      Returns: a list of string.
 
 ### Functions
 

@@ -290,12 +290,14 @@ def linked_prose(text: str) -> str:
 
 
 def typed(spec: dict) -> str:
-    """The type a declaration reads as.
+    """The type a declaration reads as, and whether it holds one or many.
 
     A number that names an enum is that enum: `trx.assault.Track` says what
-    `integer` does not, and the constants are a link away.
+    `integer` does not, and the constants are a link away. `list` says the
+    declaration holds several of them, which a description used to.
     """
-    return type_names(spec["type"])
+    named = type_names(spec["type"])
+    return f"a list of {named}" if spec.get("list") else named
 
 
 def type_names(name) -> str:
@@ -486,8 +488,7 @@ def one_return(spec: dict) -> str:
     A row that has a type of its own says `list` and names it; one declared
     where it is returned spells its keys out below instead.
     """
-    named = typed(spec)
-    bits = [f"a list of {named}" if spec.get("list") else named]
+    bits = [typed(spec)]
     if spec.get("nullable"):
         bits.append("or `nil`")
     return f"{' '.join(bits)}. {describe(spec)}".rstrip()
@@ -973,6 +974,10 @@ def blank_args(spec: dict, path: str) -> list[str]:
     A parameter renders as its name and its type, and a result as its type
     alone, so one with no words leaves the reader to guess what it is for from
     the name. A `ref` counts as words: it says what the number is.
+
+    A result holding several of something is named by the call that hands it
+    back, and the words left to write above get_property_names would be "the
+    names".
     """
     out = []
     for param in spec.get("params") or []:
@@ -983,7 +988,7 @@ def blank_args(spec: dict, path: str) -> list[str]:
                 out.append(f"{path}({param['name']}) -> {arg['name']}")
     returns = spec.get("returns")
     for one in returns if isinstance(returns, list) else [returns] if returns else []:
-        if not documented(one):
+        if not documented(one) and not one.get("list"):
             out.append(f"{path} returns {one['type']}")
     return out
 

@@ -183,7 +183,7 @@ end)]],
 
     ids = {
       description = "The matching ids. For objects these are object ids; for items, their numbers.",
-      returns = { type = "table", description = "A list of integers." },
+      returns = { type = "integer", list = true },
       impl = function(self)
         local out = {}
         for _, pair in ipairs(resolved(self)) do
@@ -195,10 +195,7 @@ end)]],
 
     matches = {
       description = "The matching handles.",
-      returns = {
-        type = "table",
-        description = "A list of `trx.objects.Object`s or `trx.items.Item`s.",
-      },
+      returns = { type = { "objects.Object", "items.Item" }, list = true },
       impl = function(self)
         local out = {}
         for _, pair in ipairs(resolved(self)) do
@@ -260,7 +257,7 @@ api.type("query.NamedQuery", {
         .. "group name that ties on score would otherwise sit behind a thing's own. Which groups "
         .. "answer follows from what the query kept, so one narrowed to what fights offers no "
         .. "`trx.objects.ObjectQuery:pickup`.",
-      returns = { type = "table", description = "A list of names." },
+      returns = { type = "string", list = true },
       impl = function(self)
         local domain = self._domain
         local kept = kept_pairs(self)
@@ -295,7 +292,7 @@ api.type("query.NamedQuery", {
     best = {
       description = "The ids tied for the best `trx.query.NamedQuery:by_name` score: one for a name only one thing "
         .. "answers to, the whole group for a group name. Without a `trx.query.NamedQuery:by_name`, every matching id.",
-      returns = { type = "table", description = "A list of integers." },
+      returns = { type = "integer", list = true },
       impl = function(self)
         if self._name == nil then
           return self:ids()

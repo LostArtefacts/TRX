@@ -143,7 +143,8 @@ api.type("console.Command", {
   fields = {
     name = { type = "string", description = "The word the player types." },
     aliases = {
-      type = "table",
+      type = "string",
+      list = true,
       description = "The other words that reach it, or `nil` where it answers to one.",
     },
     help = {
@@ -267,7 +268,8 @@ api.define("console.register", {
         },
         {
           name = "aliases",
-          type = "table",
+          type = "string",
+          list = true,
           optional = true,
           description = "Other words that reach the same command. They dispatch but stay out "
             .. "of the command listing, and the help for the command shows them.",

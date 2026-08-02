@@ -69,8 +69,9 @@ api.type("mod.Mod", {
 })
 
 api.property("mod.list", {
-  type = "table",
-  description = "The mods the game was built with, as a list of `trx.mod.Mod` counted from one.",
+  type = "mod.Mod",
+  list = true,
+  description = "The mods the game was built with, counted from one.",
   get = function()
     local mods = {}
     for i = 1, raw.count() do

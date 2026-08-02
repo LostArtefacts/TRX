@@ -16,9 +16,9 @@ Module for the game flow: which levels there are, and which one is being played.
 
 ### Properties
 
-- <a id="game.levels" name="game.levels"></a>**`trx.game.levels`** (table). The levels of the game, in order, as a list of [`trx.game.Level`](#game.Level) counted from one. *(read-only)*
-- <a id="game.cutscenes" name="game.cutscenes"></a>**`trx.game.cutscenes`** (table). The cutscene levels, as a list of [`trx.game.Level`](#game.Level) counted from one. TR4's in-game cutscenes are a different thing, and live in [`trx.cutscenes`](CUTSCENES.md#cutscenes). *(read-only)*
-- <a id="game.demos" name="game.demos"></a>**`trx.game.demos`** (table). The demos, as a list of [`trx.game.Level`](#game.Level) counted from one. *(read-only)*
+- <a id="game.levels" name="game.levels"></a>**`trx.game.levels`** (a list of [trx.game.Level](#game.Level)). The levels of the game, in order, counted from one. *(read-only)*
+- <a id="game.cutscenes" name="game.cutscenes"></a>**`trx.game.cutscenes`** (a list of [trx.game.Level](#game.Level)). The cutscene levels, counted from one. TR4's in-game cutscenes are a different thing, and live in [`trx.cutscenes`](CUTSCENES.md#cutscenes). *(read-only)*
+- <a id="game.demos" name="game.demos"></a>**`trx.game.demos`** (a list of [trx.game.Level](#game.Level)). The demos, counted from one. *(read-only)*
 - <a id="game.current_level" name="game.current_level"></a>**`trx.game.current_level`** ([trx.game.Level](#game.Level)). The level being played, or `nil` if none is. *(read-only)*
 - <a id="game.gym" name="game.gym"></a>**`trx.game.gym`** ([trx.game.Level](#game.Level)). The gym level, or `nil` if this game has no gym. *(read-only)*
 - <a id="game.version" name="game.version"></a>**`trx.game.version`** (integer). Which Tomb Raider this build is: 1, 2, 3 or 4. *(read-only)*

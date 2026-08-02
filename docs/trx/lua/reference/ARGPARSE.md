@@ -54,7 +54,7 @@ A choice is either a bare string, where the key and value are the same, or a
 
       Parameters:
       - <a id="argparse.Parser.any_of.name" name="argparse.Parser.any_of.name"></a>**`name`** (string). What the parsed value is keyed by.
-      - <a id="argparse.Parser.any_of.alternatives" name="argparse.Parser.any_of.alternatives"></a>**`alternatives`** (table). The ways the token may read, tried in order.
+      - <a id="argparse.Parser.any_of.alternatives" name="argparse.Parser.any_of.alternatives"></a>**`alternatives`** (a list of table). The ways the token may read, tried in order.
 
         Each entry:
         - <a id="argparse.Parser.any_of.alternatives.type" name="argparse.Parser.any_of.alternatives.type"></a>**`type`** (string, optional). As for [`positional`](#argparse.Parser.positional).
@@ -81,7 +81,7 @@ A choice is either a bare string, where the key and value are the same, or a
       - <a id="argparse.Parser.complete.caret" name="argparse.Parser.complete.caret"></a>**`caret`** (integer, optional). Where the caret sits, as a byte offset. The end of the line by default.
 
       Returns:
-      - table. The candidates, best first.
+      - a list of string. Best first.
       - integer. Where the run they replace starts. The run is the token, or the whole tail a greedy argument swallows; in whitespace it is empty, at the caret.
       - integer. Where that run ends.
 

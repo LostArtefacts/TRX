@@ -16,7 +16,7 @@ The mods the game was built with, and which one is loaded.
 
 ### Properties
 
-- <a id="mod.list" name="mod.list"></a>**`trx.mod.list`** (table). The mods the game was built with, as a list of [`trx.mod.Mod`](#mod.Mod) counted from one. *(read-only)*
+- <a id="mod.list" name="mod.list"></a>**`trx.mod.list`** (a list of [trx.mod.Mod](#mod.Mod)). The mods the game was built with, counted from one. *(read-only)*
 - <a id="mod.current" name="mod.current"></a>**`trx.mod.current`** ([trx.mod.Mod](#mod.Mod)). The loaded mod. *(read-only)*
 
 ### Enums

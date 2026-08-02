@@ -109,7 +109,12 @@ api.define("strings.collapse_ranges", {
     .. "The list is sorted first, and duplicates survive as they are, so the caller need not tidy "
     .. "up before handing it over.",
   params = {
-    { name = "numbers", type = "table", description = "List of integers." },
+    {
+      name = "numbers",
+      type = "integer",
+      list = true,
+      description = "The numbers to write out.",
+    },
     {
       name = "separator",
       type = "string",

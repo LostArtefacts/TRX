@@ -38,7 +38,7 @@ Module for interacting with the developer console.
     A registered console command, as the help command reads one.
 
     Properties:
-    - <a id="console.Command.aliases" name="console.Command.aliases"></a>**`aliases`**: table. The other words that reach it, or `nil` where it answers to one.
+    - <a id="console.Command.aliases" name="console.Command.aliases"></a>**`aliases`**: a list of string. The other words that reach it, or `nil` where it answers to one.
     - <a id="console.Command.help" name="console.Command.help"></a>**`help`**: string. What the console shows for `--help`, or `nil` where the command carries none.
     - <a id="console.Command.name" name="console.Command.name"></a>**`name`**: string. The word the player types.
 
@@ -126,7 +126,7 @@ Module for interacting with the developer console.
     - <a id="console.register.spec.help" name="console.register.spec.help"></a>**`help`** (string, optional). A game string key for the help text.
     - <a id="console.register.spec.args" name="console.register.spec.args"></a>**`args`** (function, optional). Shapes the parser.
     - <a id="console.register.spec.run" name="console.register.spec.run"></a>**`run`** (function). Called with the parsed arguments.
-    - <a id="console.register.spec.aliases" name="console.register.spec.aliases"></a>**`aliases`** (table, optional). Other words that reach the same command. They dispatch but stay out of the command listing, and the help for the command shows them.
+    - <a id="console.register.spec.aliases" name="console.register.spec.aliases"></a>**`aliases`** (a list of string, optional). Other words that reach the same command. They dispatch but stay out of the command listing, and the help for the command shows them.
 
   Example:
   ```lua

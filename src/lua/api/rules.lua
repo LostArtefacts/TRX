@@ -66,8 +66,9 @@ api.define("rules.list", {
   description = "Every rule there is, as dotted `group.field` keys. <!--noref: group.field-->",
   params = {},
   returns = {
-    type = "table",
-    description = "The keys, in no particular order.",
+    type = "string",
+    list = true,
+    description = "In no particular order.",
   },
   impl = raw.list,
 })
