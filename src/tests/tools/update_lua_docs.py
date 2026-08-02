@@ -290,6 +290,23 @@ class TestLuaDocs(unittest.TestCase):
         derived = next(line for line in page.splitlines() if "`derived`" in line)
         self.assertIn("[`shown`](#things.Widget.shown)", derived)
 
+    def test_a_page_of_the_manual_is_named_from_the_root(self):
+        """A description that points at a page names it where it lives.
+
+        Where the link lands is the generated page's business, and a page that
+        is not there is a broken link nobody would notice.
+        """
+        surface = copy.deepcopy(SURFACE)
+        surface["functions"][0]["description"] = (
+            "Spawns it. See [Objects](docs/trx/OBJECTS.md)."
+        )
+        page = rendered(surface)
+        self.assertIn("See [Objects](../../OBJECTS.md).", page)
+
+        surface["functions"][0]["description"] = "See [Nope](docs/trx/NOPE.md)."
+        with self.assertRaises(SystemExit):
+            rendered(surface)
+
     def test_a_number_is_named_rather_than_described_again(self):
         """A declaration that holds a named number names it.
 
@@ -583,6 +600,10 @@ class TestLuaDocs(unittest.TestCase):
             (("types", 0, "methods", 0), "things.Widget.poke"),
             (("types", 0, "extensions", 0), "things.Widget.derived"),
             (("properties", 0), "things.pos"),
+            # An argument and a result are as blank as anything else without
+            # words of their own.
+            (("functions", 0, "params", 1), "things.spawn(angle)"),
+            (("types", 0, "methods", 0, "returns"), "things.Widget.poke returns boolean"),
         ]
         for path, expected in cases:
             with self.subTest(member=expected):
@@ -597,6 +618,54 @@ class TestLuaDocs(unittest.TestCase):
                     target["type"] = "integer"
                 docs.read(surface)
                 self.assertEqual(docs.undocumented(surface), [expected])
+
+    def test_a_backticked_name_that_points_nowhere_is_reported(self):
+        """A name in backticks reads as something to go and look at.
+
+        It is either a path the API declares, written in full, or a literal -
+        a file name, a config key, a value a setting takes - and saying which
+        is what the marker is for.
+        """
+        self.assertEqual(docs.unreferenced(SURFACE), [])
+
+        surface = copy.deepcopy(SURFACE)
+        surface["functions"][0]["description"] = "Spawns it, as `spawn_thing` does."
+        report = docs.unreferenced(surface)
+        self.assertEqual(len(report), 1, report)
+        self.assertIn("things.spawn: `spawn_thing` names nothing.", report[0])
+
+        # Lua's own words and the types a declaration is written in are not
+        # references, and neither is anything that is not identifier-shaped.
+        for text in (
+            "Comes back as `nil`, or a `table` of `integer`.",
+            "Iterable with `pairs()`.",
+            "Answers `-h` and `--help`, e.g. `{ key, value }` or `1`.",
+            "One of `OFF` or `ON`.",
+        ):
+            with self.subTest(text=text):
+                surface = copy.deepcopy(SURFACE)
+                surface["functions"][0]["description"] = text
+                self.assertEqual(docs.unreferenced(surface), [])
+
+    def test_a_literal_is_marked_rather_than_left_loose(self):
+        """The marker waives the names it lists, and only those."""
+        surface = copy.deepcopy(SURFACE)
+        surface["functions"][0]["description"] = (
+            "Reads `visuals.water_color`, and `other_key` too. "
+            "<!--noref: visuals.water_color-->"
+        )
+        report = docs.unreferenced(surface)
+        self.assertEqual(len(report), 1, report)
+        self.assertIn("`other_key` names nothing", report[0])
+
+        # What the marker waives is the author's business, not the reader's,
+        # so it comes off the page along with the space it sat in.
+        surface["functions"][0]["description"] = (
+            "Reads `visuals.water_color`. <!--noref: visuals.water_color--> Once."
+        )
+        page = rendered(surface)
+        self.assertIn("Reads `visuals.water_color`. Once.", page)
+        self.assertNotIn("noref", page)
 
     def test_a_member_that_points_somewhere_is_documented(self):
         """A `ref` says what the member is, so it is not missing prose."""

@@ -85,7 +85,7 @@ A number that stands for something takes a suffix saying what kind it is.
 - **`_num`** - needs a container to mean anything: `room_num` and `item_num`
   need the level, `anim_num` the object, `slot_num` the save pool.
 - **`_id`** - reads on its own: `object_id`, `sample_id`, `track_id`, and a
-  listener's `id`. Point at the constants with `enum = "catalog.objects"`. An
+  listener's `id`. Name the constants it takes: `type = "catalog.objects"`. An
   identity the engine mints is better handed over as a handle than as its
   number, and exposed for reading if at all.
 - **A bare noun is the thing itself**, not a number for it: `item.room` is a
@@ -94,8 +94,10 @@ A number that stands for something takes a suffix saying what kind it is.
   1 where TRX made the list and the player sees the position.
 - **`idx` stays in C**, for indices into its own arrays.
 
-Where a description would be written twice, write it once with `api.note` and
-point at it with `see`.
+A number that several declarations hold is a type of its own: declare it once
+with `api.number` and name it as their type. What it counts, and where it
+counts from, is then written once, and what holds one says only what is its
+own.
 
 ## Tooling
 

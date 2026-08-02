@@ -5,7 +5,7 @@ api.module("cutscenes", {
   order = 13,
   description = [[
     Module for TR4's in-game cutscenes, the animated scenes stored in
-    `cutseq.pak` and started by a cutscene trigger. A cutscene plays once:
+    `cutseq.pak` <!--noref: cutseq.pak--> and started by a cutscene trigger. A cutscene plays once:
     the engine remembers which ones have run, and a script may consult or
     rewrite that memory. The cutscene levels of TR1-TR3, which the game flow
     lists and `/cut` plays, are a different thing: see `trx.game.cutscenes`.

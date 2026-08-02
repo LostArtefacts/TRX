@@ -63,7 +63,7 @@ rule("corpse.fade_speed", {
 })
 
 api.define("rules.list", {
-  description = "Every rule there is, as dotted `group.field` keys.",
+  description = "Every rule there is, as dotted `group.field` keys. <!--noref: group.field-->",
   params = {},
   returns = {
     type = "table",
@@ -78,7 +78,7 @@ api.define("rules.get", {
     {
       name = "key",
       type = "string",
-      description = "Dotted path, e.g. `exposure.damage`.",
+      description = "Dotted path, e.g. `exposure.damage`. <!--noref: exposure.damage-->",
     },
   },
   returns = { type = "any", description = "Raises if no rule has that key." },
@@ -92,7 +92,7 @@ api.define("rules.set", {
     {
       name = "key",
       type = "string",
-      description = "Dotted path, e.g. `exposure.damage`.",
+      description = "Dotted path, e.g. `exposure.damage`. <!--noref: exposure.damage-->",
     },
     {
       name = "value",

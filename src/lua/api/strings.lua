@@ -91,7 +91,7 @@ local best = matches[1]]==],
 api.define("strings.parse_bool", {
   description = "Reads a boolean the way the console does: `1`, `true` or `on` for true, `0`, "
     .. "`false` or `off` for false, in any case. Anything else is not a boolean. "
-    .. "",
+    .. "<!--noref: on, off-->",
   params = {
     { name = "text", type = "string", description = "The text to read." },
   },

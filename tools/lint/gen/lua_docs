@@ -234,6 +234,31 @@ def unknown(path: str) -> str:
     )
 
 
+# A page of the manual, written from the root of the repository so that what it
+# names is checkable, and rewritten to reach it from the page being generated.
+DOC_LINK_RE = re.compile(r"\]\((docs/[\w./-]+\.md)(#[\w.-]+)?\)")
+
+
+def linked_docs(text: str) -> str:
+    """Prose with every page of the manual it names pointed at from here.
+
+    A page is named from the root, which is where it can be looked for; where
+    it lands is this page's business, and depends on which page is being
+    written.
+    """
+
+    def one(match: re.Match) -> str:
+        target = ROOT / match.group(1)
+        if not target.exists():
+            raise SystemExit(
+                f"error: {match.group(1)} names no page of the manual.\n"
+                f"  name it from the root of the repository, as it is on disk"
+            )
+        return f"]({os.path.relpath(target, DOCS_DIR)}{match.group(2) or ''})"
+
+    return DOC_LINK_RE.sub(one, text)
+
+
 def linked_prose(text: str) -> str:
     """Prose with every `trx....` it names turned into a link.
 
@@ -247,7 +272,7 @@ def linked_prose(text: str) -> str:
         written = match.group(1)
         return link(anchored(written), f"`{shortened(written)}`")
 
-    return REFERENCE_RE.sub(one, text)
+    return REFERENCE_RE.sub(one, linked_docs(unmarked(text)))
 
 
 def typed(spec: dict) -> str:
@@ -887,10 +912,155 @@ def undocumented(api: dict) -> list[str]:
     for group in ("functions", "namespaces"):
         for entry in api.get(group, []):
             out.extend(blank_keys(entry, entry["path"]))
+            out.extend(blank_args(entry, entry["path"]))
     for spec in api.get("types", []):
         for method in spec.get("methods") or []:
             path = f"{spec['path']}.{method['name']}"
             out.extend(blank_keys(method, path))
+            out.extend(blank_args(method, path))
+    return out
+
+
+def blank_args(spec: dict, path: str) -> list[str]:
+    """Arguments and results that say nothing.
+
+    A parameter renders as its name and its type, and a result as its type
+    alone, so one with no words leaves the reader to guess what it is for from
+    the name. A `ref` counts as words: it says what the number is.
+    """
+    out = []
+    for param in spec.get("params") or []:
+        if not documented(param):
+            out.append(f"{path}({param['name']})")
+        for arg in param.get("params") or []:
+            if not documented(arg):
+                out.append(f"{path}({param['name']}) -> {arg['name']}")
+    returns = spec.get("returns")
+    for one in returns if isinstance(returns, list) else [returns] if returns else []:
+        if not documented(one):
+            out.append(f"{path} returns {one['type']}")
+    return out
+
+
+# What a description may name in backticks without pointing at a declaration.
+# Everything else identifier-shaped is either a path the API declares, or a
+# literal marked as one - see NOREF.
+LUA_NAMES = {
+    # Lua itself, and the API's own name.
+    "trx",
+    "math",
+    "nil",
+    "true",
+    "false",
+    "pairs()",
+    "ipairs()",
+    "tostring()",
+    "tonumber()",
+    # The types a declaration is written in, which name themselves.
+    "any",
+    "boolean",
+    "function",
+    "integer",
+    "number",
+    "string",
+    "table",
+    "vec3",
+}
+
+# A description says this where a backticked name is not an API path but a
+# literal a player or a file carries: a config key, a file name, a value a
+# setting takes. The marker names them, so what is waived is on the page it is
+# waived from, and it comes off before the text is rendered.
+NOREF_RE = re.compile(r"<!--\s*noref:?\s*(.*?)\s*-->")
+
+# Identifier-shaped, which is what a reference looks like. A number, a quoted
+# string, a flag spelling or anything with a space in it is not one, and an
+# enum constant is reached through the enum rather than by a path of its own.
+NAME_RE = re.compile(r"[A-Za-z_][A-Za-z0-9_.:]*(?:\(\))?")
+BACKTICKED_RE = re.compile(r"`([^`]+)`")
+
+
+def unmarked(text: str) -> str:
+    """A description as the reader sees it, with the noref markers taken off.
+
+    The marker is a note to whoever writes the declaration, so it comes off
+    before the page is written, along with the space it sat in.
+    """
+    out = NOREF_RE.sub("", text)
+    out = re.sub(r"[ \t]{2,}", " ", out)
+    return "\n".join(line.rstrip() for line in out.splitlines()).strip()
+
+
+def waived(text: str) -> set[str]:
+    """The names a description marks as literals, and not references."""
+    out: set[str] = set()
+    for marker in NOREF_RE.findall(text):
+        out.update(name.strip(" `") for name in marker.split(",") if name.strip())
+    return out
+
+
+def descriptions(api: dict) -> list[tuple[str, str]]:
+    """Every description the dump carries, and the declaration it belongs to."""
+    out: list[tuple[str, str]] = []
+
+    def walk(spec: dict, path: str) -> None:
+        if not isinstance(spec, dict):
+            return
+        if spec.get("description"):
+            out.append((path, spec["description"]))
+        for param in spec.get("params") or []:
+            walk(param, path)
+        for field in spec.get("fields") or []:
+            if "name" in field:
+                walk(field, path)
+        returns = spec.get("returns")
+        for one in (
+            returns if isinstance(returns, list) else [returns] if returns else []
+        ):
+            walk(one, path)
+        for kind in ("methods", "extensions", "operators", "values"):
+            for member in spec.get(kind) or []:
+                walk(member, f"{path}.{member['name']}")
+
+    for module in api.get("modules", []):
+        walk(module, module["name"])
+    for group in ("numbers", "enums", "functions", "properties", "namespaces", "constants"):
+        for entry in api.get(group, []):
+            walk(entry, entry["path"])
+    for spec in api.get("types", []):
+        walk(spec, spec["path"])
+    for container in api.get("containers", []):
+        walk(container, container["module"])
+        for side in ("key", "value"):
+            if container.get(side):
+                walk(container[side], container["module"])
+    return out
+
+
+def unreferenced(api: dict) -> list[str]:
+    """Names a description writes in backticks that point at nothing.
+
+    A backticked name reads as something the reader can go and look at, so it
+    is either a path the API declares - written in full, and rendered as a link
+    - or a literal, and saying which is what the noref marker is for. A name
+    that is neither is a reference to something renamed, or one the reader
+    cannot follow.
+    """
+    out = []
+    for path, text in descriptions(api):
+        exempt = waived(text)
+        for span in BACKTICKED_RE.findall(NOREF_RE.sub("", text)):
+            if span.startswith("trx."):
+                continue
+            if not NAME_RE.fullmatch(span):
+                continue
+            if span.isupper() or span in LUA_NAMES or span in exempt:
+                continue
+            out.append(
+                f"{path}: `{span}` names nothing.\n"
+                f"    write the whole path, `trx....`, or mark it a literal with "
+                f"<!--noref: {span}-->"
+            )
     return out
 
 
@@ -1056,6 +1226,12 @@ def main() -> int:
         print("document it in src/lua/api/, next to the declaration", file=sys.stderr)
         return 1
 
+    loose = unreferenced(api)
+    if loose:
+        print("error: a description names something unreachable:", file=sys.stderr)
+        for report in loose:
+            print(f"  {report}", file=sys.stderr)
+        return 1
 
     copied = respelled(api)
     if copied:

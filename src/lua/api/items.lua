@@ -34,7 +34,7 @@ api.number("items.Num", {
 
 api.enum("items.PickupMode", {
   backing = "PICKUP_MODE",
-  description = " The values the `pickup_mode` item property can take. It selects the animation Lara "
+  description = "<!--noref: pickup_mode--> The values the `pickup_mode` item property can take. It selects the animation Lara "
     .. "plays when collecting the item.",
   values = {
     NORMAL = "Picked up off the floor.",
@@ -47,7 +47,7 @@ api.enum("items.PickupMode", {
 
 api.enum("items.SwitchMode", {
   backing = "SWITCH_MODE",
-  description = " The values the `switch_mode` item property can take. It selects the animation Lara "
+  description = "<!--noref: switch_mode--> The values the `switch_mode` item property can take. It selects the animation Lara "
     .. "plays when interacting with the item.",
   values = {
     NORMAL = "A regular/classic wall lever.",
@@ -211,13 +211,13 @@ api.type("items.Item", {
     hit_points = {
       from = "hit_points",
       type = "integer",
-      description = "Current hit points. Raising this above the maximum also raises the `max_hit_points` entry of `trx.items.Item.properties`.",
+      description = "Current hit points. Raising this above the maximum also raises the `max_hit_points` entry of `trx.items.Item.properties`. <!--noref: max_hit_points-->",
     },
     max_hit_points = {
       from = "max_hit_points",
       type = "integer",
       writable = false,
-      description = "Maximum hit points. Set the `max_hit_points` entry of `trx.items.Item.properties` to change it.",
+      description = "Maximum hit points. Set the `max_hit_points` entry of `trx.items.Item.properties` to change it. <!--noref: max_hit_points-->",
     },
     name = {
       from = "name",
@@ -397,7 +397,7 @@ api.type("items.Item", {
       type = "table",
       description = "Typed, object-specific item properties. Writing here overrides the object's "
         .. "default for this item only; reads fall back to the object. Iterable with `pairs()`. "
-        .. "See [Objects](../../OBJECTS.md).",
+        .. "See [Objects](docs/trx/OBJECTS.md).",
       impl = make_properties,
     },
   },
