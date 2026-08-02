@@ -91,6 +91,10 @@ static void M_Walk(ITEM *const item, COLL_INFO *const coll)
     }
 
     LARA_INFO *const lara = Lara_GetLaraInfo();
+    if (lara->interact_target.is_moving) {
+        return;
+    }
+
     if (g_Input.left) {
         lara->turn_rate -= LARA_TURN_RATE;
         CLAMPL(lara->turn_rate, -LARA_SLOW_TURN);
@@ -299,6 +303,10 @@ static void M_WalkBack(ITEM *const item, COLL_INFO *const coll)
     }
 
     LARA_INFO *const lara = Lara_GetLaraInfo();
+    if (lara->interact_target.is_moving) {
+        return;
+    }
+
     if (g_Input.back && (g_Input.slow || lara->water_status == LWS_WADE)) {
         item->goal_anim_state = LS(LS_WALK_BACK);
     } else {
@@ -606,6 +614,10 @@ static void M_SideStep(ITEM *const item, COLL_INFO *const coll)
     LARA_INFO *const lara = Lara_GetLaraInfo();
     if (item->hit_points <= 0) {
         item->goal_anim_state = LS(LS_STOP);
+        return;
+    }
+
+    if (lara->interact_target.is_moving) {
         return;
     }
 

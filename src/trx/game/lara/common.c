@@ -607,8 +607,10 @@ void Lara_Animate(ITEM *const item)
         Rope_AlignLara(item);
     }
 
-    item->pos.x += (item->speed * Math_Sin(lara->move_angle)) >> W2V_SHIFT;
-    item->pos.z += (item->speed * Math_Cos(lara->move_angle)) >> W2V_SHIFT;
+    if (!lara->interact_target.is_moving) {
+        item->pos.x += (item->speed * Math_Sin(lara->move_angle)) >> W2V_SHIFT;
+        item->pos.z += (item->speed * Math_Cos(lara->move_angle)) >> W2V_SHIFT;
+    }
 }
 
 void Lara_AnimateUntil(ITEM *lara_item, int32_t goal)

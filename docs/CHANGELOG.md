@@ -89,6 +89,7 @@
 - fixed a shaky start to the QWOP animation if the option to fix the step glitch is enabled (regression from TR2X 0.8)
 - fixed Lara being able to collect plinth pickups while ducked (regression from 1.9)
 - fixed Lara being able to collect normal and plinth pickups at the same time if they share a common position (regression from 1.9)
+- fixed Lara moving too quickly towards targets when animated interactions are enabled, which could result in sliding in some cases during long transitions, or not being able to interact with the target at all (regression from Tomb1Main 2.7)
 - removed the Japanese NG and Japanese NG+ game modes; a Japanese NG save continues as a regular game, and a Japanese NG+ save as New Game+; refer to migration notes
 
 **TR1**
