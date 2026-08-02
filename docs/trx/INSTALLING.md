@@ -240,6 +240,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── qualopec_textures.bin
 │   │   │   ├── sanctuary_fd.bin
 │   │   │   ├── sanctuary_itemrots.bin
+│   │   │   ├── sanctuary_meshfixes.bin
 │   │   │   ├── sanctuary_scion.bin
 │   │   │   ├── sanctuary_textures.bin
 │   │   │   ├── scion_collision.bin
@@ -1566,6 +1567,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── qualopec_textures.bin
     │   │   │   │   ├── sanctuary_fd.bin
     │   │   │   │   ├── sanctuary_itemrots.bin
+    │   │   │   │   ├── sanctuary_meshfixes.bin
     │   │   │   │   ├── sanctuary_scion.bin
     │   │   │   │   ├── sanctuary_textures.bin
     │   │   │   │   ├── scion_collision.bin

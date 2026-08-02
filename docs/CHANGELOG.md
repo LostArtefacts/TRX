@@ -97,6 +97,7 @@
 - changed weather to be affected by the breeze
 - changed Bacon Lara's anchor room to be an optional object property rather than a game flow event; refer to migration notes
 - fixed Lara's braid floating or being aligned to the water height when vaulting out of wading depth water (#5900)
+- fixed static meshes in Obelisk of Khamoon and Sanctuary of the Scion interfering with animated interaction pickups
 
 **TR2**
 - changed weather to be affected by the breeze
