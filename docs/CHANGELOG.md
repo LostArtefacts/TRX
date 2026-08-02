@@ -131,6 +131,7 @@
 - added shove button switches
 - added support for hidden reach-in pickups
 - added support for pickups that need to be pried with the crowbar
+- added support for Sarcophagi and pickups hidden within
 - added Lara catching fire, from fires and other hazards; she stays on fire across level transitions
 - added an option to let fires and other dynamic lights illuminate static meshes (Graphic Options → Visuals → Static mesh lighting)
 - added ricochets, so that shots that hit walls and other hard surfaces throw out sparks and leave a puff of smoke
@@ -152,6 +153,7 @@
 - fixed Lara using the wrong animation on switch item 2 in The Sphinx Complex (OG bug)
 - fixed one of the braziers on the title screen going out for good once the menu's flybys had passed it (OG bug)
 - fixed pickups that are pried with the crowbar animating indefinitely if the game is saved and loaded during the animation (OG bug)
+- fixed Lara being able to collect Sarcophagi pickups by crouching and glitching through the surrounding casing (OG bug)
 
 **Lua**
 

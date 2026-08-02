@@ -3245,6 +3245,9 @@
         "rx_worker_3": {
             "name": "Neach-obrach RX 3",
         },
+        "sarcophagus": {
+            "name": "Sarcophagus",
+        },
         "save_crystal": {
             "name": "Criostal Geama Sàbhalaidh",
         },

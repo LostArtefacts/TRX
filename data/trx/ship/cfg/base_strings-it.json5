@@ -3269,6 +3269,9 @@
         "rx_worker_3": {
             "name": "Operaio RX 3",
         },
+        "sarcophagus": {
+            "name": "\\{review}Sarcofago",
+        },
         "save_crystal": {
             "name": "Cristallo di Salvataggio",
         },

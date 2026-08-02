@@ -3277,6 +3277,9 @@
                 "Flamethrower",
             ]
         },
+        "sarcophagus": {
+            "name": "Sarcophagus",
+        },
         "save_crystal": {
             "name": "Savegame Crystal",
         },

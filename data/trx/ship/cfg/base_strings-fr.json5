@@ -3233,6 +3233,9 @@
         "rx_worker_3": {
             "name": "\\{review}RX Ouvrier 3",
         },
+        "sarcophagus": {
+            "name": "\\{review}Sarcophage",
+        },
         "save_crystal": {
             "name": "Cristal de Sauvegarde",
         },

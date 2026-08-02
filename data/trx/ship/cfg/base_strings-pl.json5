@@ -3220,6 +3220,9 @@
         "rx_worker_3": {
             "name": "Pracownik RX-Tech 3",
         },
+        "sarcophagus": {
+            "name": "\\{review}Sarkofag",
+        },
         "save_crystal": {
             "name": "Kryształ do zapisu",
         },

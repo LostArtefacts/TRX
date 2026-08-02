@@ -79,6 +79,7 @@ local function facing_turn(item)
     in_family("switch", object_id)
     or in_family("receptacle", object_id)
     or object_id == trx.catalog.objects.zipline_handle
+    or object_id == trx.catalog.objects.sarcophagus
   then
     return FACE_ITEM
   else

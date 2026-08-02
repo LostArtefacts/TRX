@@ -48,6 +48,8 @@ end
         Hidden behind an object Lara can reach into.
     - `trx.items.PickupMode.CROWBAR` = `4`  
         Pried off the wall using a crowbar.
+    - `trx.items.PickupMode.SARCOPHAGUS` = `5`  
+        Hidden inside a sarcophagus.
 
 - <a id="items.SwitchMode" name="items.SwitchMode"></a>[lua]`trx.items.SwitchMode`
 

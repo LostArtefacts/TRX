@@ -3243,6 +3243,9 @@
         "rx_worker_3": {
             "name": "\\{review}RX Рабочий 3",
         },
+        "sarcophagus": {
+            "name": "\\{review}Саркофаг",
+        },
         "save_crystal": {
             "name": "Кристалл сохранения",
         },
