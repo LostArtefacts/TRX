@@ -200,6 +200,7 @@ static void M_DebugPosTopLeft(void)
         UI_Label(GS("general/overlay/debug_position"));
         UI_Label(GS("general/overlay/debug_rotation"));
         UI_Label(GS("general/overlay/debug_speed"));
+        UI_Label(GS("general/overlay/debug_interaction"));
     }
     if (g_Config.debug.enable_debug_anim) {
         UI_Label(GS("general/overlay/debug_animation"));
@@ -225,6 +226,10 @@ static void M_DebugPosTopLeft(void)
             "\\{small}%d, %d",
             vehicle != nullptr ? vehicle->speed : lara->speed,
             vehicle != nullptr ? vehicle->fall_speed : lara->fall_speed));
+        UI_Label(String_FormatStatic(
+            "\\{small}%d / %d / %d", lara_info->interact_target.item_num,
+            lara_info->interact_target.is_moving,
+            lara_info->interact_target.move_count));
     }
     if (g_Config.debug.enable_debug_anim) {
         UI_Label(String_FormatStatic(
