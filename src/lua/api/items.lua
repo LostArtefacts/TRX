@@ -1,11 +1,30 @@
 local raw = trxc.items
 local api = trx.api
 
+require("trx.math")
+
+local Box = api.class("math.Box")
 require("trx.query")
 
 api.module("items", {
   order = 2,
   description = "Module for controlling all moveables.",
+})
+
+api.number("items.AnimNum", {
+  base = 0,
+  description = "The animation's number within the object an item is of.",
+})
+
+api.number("items.FrameNum", {
+  base = 0,
+  description = "The frame's number within the animation it belongs to.",
+})
+
+api.number("items.AnimState", {
+  base = 0,
+  description = "An animation state, as the object's own animations number them. What a state "
+    .. "means is the object's business: the numbers of a wolf are not the numbers of a door.",
 })
 
 api.number("items.Num", {
@@ -15,7 +34,7 @@ api.number("items.Num", {
 
 api.enum("items.PickupMode", {
   backing = "PICKUP_MODE",
-  description = "The values the `pickup_mode` item property can take. It selects the animation Lara "
+  description = " The values the `pickup_mode` item property can take. It selects the animation Lara "
     .. "plays when collecting the item.",
   values = {
     NORMAL = "Picked up off the floor.",
@@ -28,7 +47,7 @@ api.enum("items.PickupMode", {
 
 api.enum("items.SwitchMode", {
   backing = "SWITCH_MODE",
-  description = "The values the `switch_mode` item property can take. It selects the animation Lara "
+  description = " The values the `switch_mode` item property can take. It selects the animation Lara "
     .. "plays when interacting with the item.",
   values = {
     NORMAL = "A regular/classic wall lever.",
@@ -109,6 +128,7 @@ local function item_lifecycle_method(event_name, description, examples)
       {
         name = "callback",
         type = "function",
+        description = "What to run when it happens to this item.",
         params = {
           {
             name = "item",
@@ -124,6 +144,31 @@ local function item_lifecycle_method(event_name, description, examples)
     impl = item_hook(event_name),
   }
 end
+
+-- What a trigger carries, which both the hook and the per-item hook hand over.
+-- A plain table the engine builds, so its keys are entries it holds rather than
+-- accessors.
+api.type("items.Trigger", {
+  description = "What a trigger carried when it fired.",
+  fields = {
+    type = {
+      type = "items.TriggerType",
+      description = "The kind of trigger it was.",
+    },
+    mask = {
+      type = "integer",
+      description = "The code bits it set, `1` to `31`.",
+    },
+    timer = {
+      type = "number",
+      description = "How long it keeps the item going, in seconds.",
+    },
+    one_shot = {
+      type = "boolean",
+      description = "Whether it fires only the once.",
+    },
+  },
+})
 
 api.type("items.Item", {
   backing = "ITEM",
@@ -144,16 +189,12 @@ api.type("items.Item", {
     },
     anim_num = {
       from = "relative_anim_num",
-      type = "integer",
-      base = 0,
-      description = "The animation's number within the object.",
+      type = "items.AnimNum",
     },
     frame_num = {
       from = "relative_frame_num",
-      type = "integer",
-      base = 0,
-      description = "The frame's number within the animation. Negative values count back from the "
-        .. "end.",
+      type = "items.FrameNum",
+      description = "Negative values count back from the end.",
     },
     num = {
       from = "item_num",
@@ -319,13 +360,13 @@ api.type("items.Item", {
     },
     anim_state = {
       from = "current_anim_state",
-      type = "integer",
-      description = "Current animation state.",
+      type = "items.AnimState",
+      description = "The state the item is in.",
     },
     goal_anim_state = {
       from = "goal_anim_state",
-      type = "integer",
-      description = "Animation state the item is transitioning towards.",
+      type = "items.AnimState",
+      description = "The state the item is transitioning towards.",
     },
     -- Deliberately not exposed: box_num, floor, next_item, next_simulated, gen,
     -- anim_num, frame_num, prev_frame_num, ai_bits, ai_tag, after_death and the
@@ -342,13 +383,13 @@ api.type("items.Item", {
     },
 
     bounds = {
-      type = "table",
-      description = "The item's bounding box for the frame it is on: `min_x`, `min_y`, `min_z`, "
-        .. "`max_x`, `max_y`, `max_z`. The numbers are in the item's own frame, so they say how far "
-        .. "the model reaches around `trx.items.Item.pos` before `trx.items.Item.rot` turns it, and they change as the item "
-        .. "animates.",
+      type = "math.Box",
+      description = "The item's bounding box for the frame it is on. The numbers are in the "
+        .. "item's own frame, so they say how far the model reaches around "
+        .. "`trx.items.Item.pos` before `trx.items.Item.rot` turns it, and they change as the "
+        .. "item animates.",
       impl = function(item)
-        return raw.get_bounds(item)
+        return setmetatable(raw.get_bounds(item), Box)
       end,
     },
 
@@ -389,13 +430,38 @@ api.type("items.Item", {
           name = "opts",
           type = "table",
           optional = true,
-          description = "`type`: which `trx.items.TriggerType` to fire; a plain `TRIGGER` by default.\n\n"
-            .. "`mask`: which of the five code bits to set, `1` to `31`, all of them by default. "
-            .. "Pass fewer to act as one of several triggers a puzzle is waiting on.\n\n"
-            .. "`timer`: how long it should keep the item going, in seconds. `0`, the default, means "
-            .. "until something takes the trigger back. A timer of exactly `1` is a single frame, "
-            .. "not a second, matching the level format.\n\n"
-            .. "`one_shot`: never let it fire again.",
+          description = "What the trigger carries.",
+          fields = {
+            {
+              name = "type",
+              type = "items.TriggerType",
+              optional = true,
+              description = "A plain `TRIGGER` by default.",
+            },
+            {
+              name = "mask",
+              type = "integer",
+              optional = true,
+              description = "Which of the five code bits to set, `1` to `31`, all of them by "
+                .. "default. Pass fewer to act as one of several triggers a puzzle is waiting "
+                .. "on.",
+            },
+            {
+              name = "timer",
+              type = "number",
+              optional = true,
+              default = 0,
+              description = "How long it should keep the item going, in seconds. `0` means "
+                .. "until something takes the trigger back. A timer of exactly `1` is a single "
+                .. "frame, not a second, matching the level format.",
+            },
+            {
+              name = "one_shot",
+              type = "boolean",
+              optional = true,
+              description = "Never let it fire again.",
+            },
+          },
         },
       },
       examples = {
@@ -410,6 +476,7 @@ api.type("items.Item", {
         {
           name = "callback",
           type = "function",
+          description = "What to run when it happens to this item.",
           params = {
             {
               name = "item",
@@ -418,8 +485,8 @@ api.type("items.Item", {
             },
             {
               name = "trigger",
-              type = "table",
-              description = "What the trigger carried: `type`, `mask`, `timer` and `one_shot`.",
+              type = "items.Trigger",
+              description = "What the trigger carried.",
             },
           },
         },
@@ -440,6 +507,7 @@ end)]],
         {
           name = "callback",
           type = "function",
+          description = "What to run when it happens to this item.",
           params = {
             {
               name = "item",
@@ -470,6 +538,7 @@ end)]],
         {
           name = "callback",
           type = "function",
+          description = "What to run when it happens to this item.",
           params = {
             {
               name = "item",
@@ -605,7 +674,10 @@ end)]],
     },
 
     is_valid = {
-      returns = { type = "boolean" },
+      returns = {
+        type = "boolean",
+        description = "False once the item it named is gone.",
+      },
       description = "Whether the handle still refers to a live item. Reading or writing a field on a "
         .. "stale handle raises an error rather than silently operating on an unrelated item, so "
         .. "check this for a handle held across time.",
@@ -629,7 +701,7 @@ end)]],
           description = "Whether to burst the meshes as it dies.",
         },
       },
-      description = "Runs the object's creature death handling: the corpse stays, and `explode` "
+      description = "Runs the object's creature death handling: the corpse stays, and `trx.items.Item.die.explode` "
         .. "bursts its meshes as a rocket or grenade would. For creatures; `trx.items.Item:destroy` simply removes "
         .. "any item from the game.",
     },
@@ -662,7 +734,8 @@ lara:take_damage(lara.hit_points)]],
           description = "Splash damage dealt to nearby items.",
         },
       },
-      description = "Bursts the item's meshes into flying debris, the visual `trx.items.Item:die` produces with `explode`, "
+      description = "Bursts the item's meshes into flying debris, the visual `trx.items.Item:die` produces with "
+        .. "`trx.items.Item.die.explode`, "
         .. "on its own. It does not kill or remove the item.",
     },
 
@@ -670,27 +743,51 @@ lara:take_damage(lara.hit_points)]],
       params = {
         { name = "pos", type = "vec3", description = "World position." },
       },
-      returns = { type = "integer" },
+      returns = {
+        type = "integer",
+        description = "In world units, measured between the two positions.",
+      },
       description = "Distance from this item to a world position.",
     },
 
     get_property = {
-      params = { { name = "name", type = "string" } },
-      returns = { type = "any", nullable = true },
+      params = {
+        {
+          name = "name",
+          type = "string",
+          description = "Which property, as the object declares it.",
+        },
+      },
+      returns = {
+        type = "any",
+        nullable = true,
+        description = "The value, of whatever type the property is declared with.",
+      },
       description = "Reads an object property, falling back to the object's default. "
         .. "Prefer `item.properties.<name>`.",
     },
 
     set_property = {
       params = {
-        { name = "name", type = "string" },
-        { name = "value", type = "any" },
+        {
+          name = "name",
+          type = "string",
+          description = "Which property, as the object declares it.",
+        },
+        {
+          name = "value",
+          type = "any",
+          description = "What to write, of the type the property is declared with.",
+        },
       },
       description = "Overrides an object property for this item. Prefer `item.properties.<name> = ...`.",
     },
 
     get_property_names = {
-      returns = { type = "table" },
+      returns = {
+        type = "table",
+        description = "The names, as a list of strings.",
+      },
       description = "Names of every property this item's object declares.",
     },
   },
@@ -705,7 +802,11 @@ api.define("items.get", {
       description = "An item's unique name reaches it as well.",
     },
   },
-  returns = { type = "items.Item", nullable = true },
+  returns = {
+    type = "items.Item",
+    nullable = true,
+    description = "The item, or `nil` where nothing answers to the key.",
+  },
   examples = {
     [==[local item = trx.items[0]
 item.name = "lara"
@@ -738,7 +839,15 @@ api.define("items.spawn", {
       name = "opts",
       type = "table",
       optional = true,
-      description = "`activate`: bring the item to life, enabling AI for creatures.",
+      description = "How to spawn it.",
+      fields = {
+        {
+          name = "activate",
+          type = "boolean",
+          optional = true,
+          description = "Bring the item to life, enabling AI for creatures.",
+        },
+      },
     },
   },
   returns = {
@@ -755,7 +864,10 @@ api.define("items.spawn", {
 
 api.define("items.count", {
   description = "Returns the total number of allocated items. Same as `#trx.items`.",
-  returns = { type = "integer" },
+  returns = {
+    type = "integer",
+    description = "How many slots the level holds, live or not.",
+  },
   impl = raw.count,
 })
 

@@ -71,7 +71,7 @@ here reads `nil`.
       Marks a secret as found, as walking into its trigger would.
 
       Parameters:
-      - **`secret_num`** ([trx.stats.SecretNum](#stats.SecretNum)).
+      - <a id="stats.Stats.give_secret.secret_num" name="stats.Stats.give_secret.secret_num"></a>**`secret_num`** ([trx.stats.SecretNum](#stats.SecretNum)).
 
       Returns: boolean. `false` if the level has no such secret, or Lara already has it.
 
@@ -81,9 +81,13 @@ here reads `nil`.
       ```
 
     - <a id="stats.Stats.secret_list" name="stats.Stats.secret_list"></a>[lua]`stats:secret_list()`  
-      The level's secrets, in order, as a list of `{ num, found }`. `num` is the number the player says, and `found` is whether Lara has it.
+      The level's secrets, in order.
 
       Returns: table. The secrets, one by one.
+
+        Each entry:
+        - <a id="stats.Stats.secret_list.num" name="stats.Stats.secret_list.num"></a>**`num`** ([trx.stats.SecretNum](#stats.SecretNum)). Which secret it is.
+        - <a id="stats.Stats.secret_list.found" name="stats.Stats.secret_list.found"></a>**`found`** (boolean). Whether Lara has it.
 
       Example:
       ```lua
@@ -96,6 +100,6 @@ here reads `nil`.
       Takes a secret back, leaving it to be found again.
 
       Parameters:
-      - **`secret_num`** ([trx.stats.SecretNum](#stats.SecretNum)).
+      - <a id="stats.Stats.take_secret.secret_num" name="stats.Stats.take_secret.secret_num"></a>**`secret_num`** ([trx.stats.SecretNum](#stats.SecretNum)).
 
       Returns: boolean. `false` if the level has no such secret, or Lara does not have it.

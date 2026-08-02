@@ -9,6 +9,20 @@ api.module("math", {
     .. "would.",
 })
 
+api.type("math.Box", {
+  description = "An axis-aligned box, in the units the engine measures the world in. Whether it "
+    .. "is placed in world coordinates or in something's own frame is for whatever hands it "
+    .. "over to say.",
+  fields = {
+    min_x = { type = "integer", description = "West edge." },
+    min_y = { type = "integer", description = "Top edge. Y grows downwards." },
+    min_z = { type = "integer", description = "North edge." },
+    max_x = { type = "integer", description = "East edge." },
+    max_y = { type = "integer", description = "Bottom edge." },
+    max_z = { type = "integer", description = "South edge." },
+  },
+})
+
 api.define("math.sin", {
   description = "Sine of an angle.",
   params = {
@@ -30,10 +44,18 @@ api.define("math.cos", {
 api.define("math.atan", {
   description = "Angle of the vector (x, z), in TRX units.",
   params = {
-    { name = "z", type = "integer" },
-    { name = "x", type = "integer" },
+    {
+      name = "z",
+      type = "integer",
+      description = "How far the vector reaches north.",
+    },
+    {
+      name = "x",
+      type = "integer",
+      description = "How far it reaches east.",
+    },
   },
-  returns = { type = "integer" },
+  returns = { type = "integer", description = "In TRX units." },
   examples = {
     [[-- face an item towards Lara
 local angle = trx.math.atan(lara.pos.z - pos.z, lara.pos.x - pos.x)]],

@@ -20,6 +20,12 @@ api.module("events", {
     .. "other event ignores what its handlers return.",
 })
 
+api.number("events.FlipEffectNum", {
+  base = 0,
+  description = "A flip effect number, as a level editor numbers them. Not the id space of "
+    .. "`trx.rooms.flip_effect`, which takes `trx.catalog.flip_effects` names.",
+})
+
 -- What every hook hands back. The engine keys a listener by a number, and the
 -- number is the module's business rather than a script's: a listener is worth
 -- holding on to, comparing and detaching, and worth nothing else.
@@ -89,6 +95,7 @@ api.define("events.on_game_start", {
     {
       name = "callback",
       type = "function",
+      description = "What to run when it happens.",
       params = {
         {
           name = "is_save",
@@ -114,7 +121,13 @@ api.define("events.on_title_start", {
     its level is loaded and its items are set up. The handler takes no
     arguments. `trx.events.on_game_start` does not fire for the title level.
   ]],
-  params = { { name = "callback", type = "function" } },
+  params = {
+    {
+      name = "callback",
+      type = "function",
+      description = "What to run when it happens.",
+    },
+  },
   returns = LISTENER,
   examples = {
     [[trx.events.on_title_start(function()
@@ -130,6 +143,7 @@ api.define("events.on_pickup", {
     {
       name = "callback",
       type = "function",
+      description = "What to run when it happens.",
       params = {
         {
           name = "item_num",
@@ -151,7 +165,13 @@ end)]],
 api.define("events.before_control", {
   description = "Happens on every logical game frame, before the main game logic runs. The handler "
     .. "takes no arguments.",
-  params = { { name = "callback", type = "function" } },
+  params = {
+    {
+      name = "callback",
+      type = "function",
+      description = "What to run when it happens.",
+    },
+  },
   returns = LISTENER,
   impl = hook(types.BEFORE_CONTROL),
 })
@@ -159,16 +179,22 @@ api.define("events.before_control", {
 api.define("events.after_control", {
   description = "Happens on every logical game frame, after the main game logic runs. The handler "
     .. "takes no arguments.",
-  params = { { name = "callback", type = "function" } },
+  params = {
+    {
+      name = "callback",
+      type = "function",
+      description = "What to run when it happens.",
+    },
+  },
   returns = LISTENER,
   impl = hook(types.AFTER_CONTROL),
 })
 
 api.define("events.on_flip_effect", {
-  description = "Claims a flip effect number and happens whenever a level runs it, whether from a "
-    .. "floor trigger or an animation command. Place an ordinary flipeffect trigger in a level "
-    .. "editor - pad, heavy, switch and antitrigger all work - pick an unused effect number, and "
-    .. "handle it here from the level's script.\n\n"
+  description = "Claims a `trx.events.FlipEffectNum` and happens whenever a level runs it, "
+    .. "whether from a floor trigger or an animation command. Place an ordinary flipeffect "
+    .. "trigger in a level editor - pad, heavy, switch and antitrigger all work - pick one "
+    .. "nothing uses, and handle it here from the level's script.\n\n"
     .. "A claimed number belongs to the script for the rest of the level: its stock engine effect "
     .. "does not run, even if the handler is later detached. Unclaimed numbers are unaffected.\n\n"
     .. "Unlike the other hooks, this happens at effect execution time, in the middle of a game "
@@ -176,15 +202,13 @@ api.define("events.on_flip_effect", {
   params = {
     {
       name = "effect_num",
-      type = "integer",
-      base = 0,
-      description = "The flip effect number to claim, as the level editor numbers them. This is "
-        .. "not the id space of `trx.rooms.flip_effect`, which takes `trx.catalog.flip_effects` "
-        .. "names.",
+      type = "events.FlipEffectNum",
+      description = "The one to claim.",
     },
     {
       name = "callback",
       type = "function",
+      description = "What to run when it happens.",
       params = {
         {
           name = "timer",
@@ -221,6 +245,7 @@ api.define("events.on_room_change", {
     {
       name = "callback",
       type = "function",
+      description = "What to run when it happens.",
       params = {
         {
           name = "item",
@@ -271,6 +296,7 @@ api.define("events.on_trigger", {
     {
       name = "callback",
       type = "function",
+      description = "What to run when it happens.",
       params = {
         {
           name = "item",
@@ -279,9 +305,8 @@ api.define("events.on_trigger", {
         },
         {
           name = "trigger",
-          type = "table",
-          description = "What the trigger carried: `type` (a `trx.items.TriggerType`), `mask` (the "
-            .. "code bits it set, `1` to `31`), `timer` (in seconds), and `one_shot`.",
+          type = "items.Trigger",
+          description = "What the trigger carried.",
         },
       },
     },
@@ -325,6 +350,7 @@ local function visibility_hook(event_type, method, verb, examples)
       {
         name = "callback",
         type = "function",
+        description = "What to run when it happens.",
         params = {
           {
             name = "item",
@@ -358,6 +384,7 @@ local function item_lifecycle_hook(
       {
         name = "callback",
         type = "function",
+        description = "What to run when it happens.",
         params = {
           {
             name = "item",
@@ -540,6 +567,7 @@ attacker dealt. A death that does not go through damage - a script writing
     {
       name = "callback",
       type = "function",
+      description = "What to run when it happens.",
       params = {
         {
           name = "item",
@@ -582,6 +610,7 @@ more for the dagger that ends it.
     {
       name = "callback",
       type = "function",
+      description = "What to run when it happens.",
       params = {
         {
           name = "item",
@@ -625,6 +654,7 @@ api.define("events.on_cutscene_trigger", {
     {
       name = "callback",
       type = "function",
+      description = "What to run when it happens.",
       params = {
         {
           name = "cutscene_num",
@@ -659,6 +689,7 @@ api.define("events.on_cutscene_start", {
     {
       name = "callback",
       type = "function",
+      description = "What to run when it happens.",
       params = {
         {
           name = "cutscene_num",
@@ -678,6 +709,7 @@ api.define("events.on_cutscene_end", {
     {
       name = "callback",
       type = "function",
+      description = "What to run when it happens.",
       params = {
         {
           name = "cutscene_num",
@@ -703,6 +735,7 @@ A sequence that a cutscene or the player interrupts does not fire it.]],
     {
       name = "callback",
       type = "function",
+      description = "What to run when it happens.",
       params = {
         {
           name = "sequence_num",
@@ -724,7 +757,11 @@ api.define("events.detach", {
   description = "Removes a previously attached handler, which stops firing immediately. "
     .. "`trx.events.Listener:detach` does the same to one held in hand.",
   params = {
-    { name = "listener", type = "events.Listener" },
+    {
+      name = "listener",
+      type = "events.Listener",
+      description = "What the hook handed back when the handler was attached.",
+    },
   },
   returns = {
     type = "boolean",

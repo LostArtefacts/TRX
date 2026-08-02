@@ -13,6 +13,16 @@ api.module("catalog", {
     .. "`trx.catalog.to_slot` and `trx.catalog.from_slot` convert between the two.",
 })
 
+api.number("catalog.Id", {
+  description = "A TRX id, in the catalog the context names. It is the same number in every "
+    .. "game TRX ships, which is what lets a script name a thing once.",
+})
+
+api.number("catalog.Slot", {
+  description = "A slot in this game's own files, which is the number a builder reads off Tomb "
+    .. "Editor. It differs from game to game.",
+})
+
 api.enum("catalog.Context", {
   backing = "CATALOG_CONTEXT",
   strip = "CATALOG_",
@@ -89,18 +99,18 @@ api.enum("catalog.weapons", {
 })
 
 api.define("catalog.to_slot", {
-  description = "Converts a TRX id into the slot this game's own files use for it - the number a "
-    .. "builder reads off Tomb Editor.",
+  description = "Converts a `trx.catalog.Id` into the `trx.catalog.Slot` this game's own files "
+    .. "use for it.",
   params = {
     {
       name = "context",
       type = "catalog.Context",
       description = "Which catalog.",
     },
-    { name = "id", type = "integer", description = "The TRX id." },
+    { name = "id", type = "catalog.Id" },
   },
   returns = {
-    type = "integer",
+    type = "catalog.Slot",
     nullable = true,
     description = "`nil` if this game has no slot for it - not every game has every object.",
   },
@@ -111,17 +121,18 @@ api.define("catalog.to_slot", {
 })
 
 api.define("catalog.from_slot", {
-  description = "Converts a slot from this game's own files into the TRX id for it.",
+  description = "Converts a `trx.catalog.Slot` from this game's own files into the "
+    .. "`trx.catalog.Id` for it.",
   params = {
     {
       name = "context",
       type = "catalog.Context",
       description = "Which catalog.",
     },
-    { name = "slot", type = "integer", description = "The game's own id." },
+    { name = "slot", type = "catalog.Slot" },
   },
   returns = {
-    type = "integer",
+    type = "catalog.Id",
     nullable = true,
     description = "`nil` if this game has nothing in that slot.",
   },

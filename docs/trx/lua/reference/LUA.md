@@ -20,9 +20,13 @@ Evaluating Lua at runtime: a string of code, or a file on disk. Both run in the 
   Evaluates a string of Lua code, as the `/lua` console command does.
 
   Parameters:
-  - **`code`** (string). The code.
+  - <a id="lua.eval_expr.code" name="lua.eval_expr.code"></a>**`code`** (string). The code.
 
-  Returns: table or `nil`. `nil` when the code ran to completion. Otherwise a table with `kind` (`"syntax"` or `"runtime"`) and `message`, the error text. A failure comes back as a value rather than raising, so the caller decides what it means.
+  Returns: table or `nil`. `nil` when the code ran to completion, and what went wrong otherwise. A failure comes back as a value rather than raising, so the caller decides what it means.
+
+    Keys:
+    - <a id="lua.eval_expr.kind" name="lua.eval_expr.kind"></a>**`kind`** (string). Either `"syntax"` or `"runtime"`.
+    - <a id="lua.eval_expr.message" name="lua.eval_expr.message"></a>**`message`** (string). The error text.
 
   Example:
   ```lua
@@ -33,7 +37,7 @@ Evaluating Lua at runtime: a string of code, or a file on disk. Both run in the 
   Runs a Lua file, the way a level script is run. A file that cannot be read reports as a `"runtime"` failure.
 
   Parameters:
-  - **`path`** (string). Path of the file.
+  - <a id="lua.eval_file.path" name="lua.eval_file.path"></a>**`path`** (string). Path of the file.
 
   Returns: table or `nil`. As in [`trx.lua.eval_expr`](#lua.eval_expr).
 

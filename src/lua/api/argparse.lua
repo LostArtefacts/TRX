@@ -10,24 +10,17 @@ Python's argparse.
 
 A parser both reads a command's arguments and offers completions for them,
 from one declaration. Every command written with `trx.console.register` has
-one; a command shapes it through the `args` function it hands over, and `run`
-then receives a table of parsed values. A command that shapes nothing takes no
-arguments, and is told so when given one.
+one; a command shapes it through the `trx.console.register.spec.args` function
+it hands over, and `trx.console.register.spec.run` then receives a table of
+parsed values. A command that shapes nothing takes no arguments, and is told so
+when given one.
 
 Every parser answers `-h` and `--help` on its own, printing what it accepts.
 
-How a positional reads a token is its `matcher`, one of:
-
-- `type` - coerce to `"integer"`, `"number"`, `"string"` or `"boolean"`.
-- `choices` - the allowed set: a list of values or a `function(parsed)`
-  returning one. The token must match one; the set is shown in errors and
-  completes.
-- `match` - a `function(token, parsed)` returning `value, ok`, for a shape of its own.
-
-These do not combine on one positional; a value that is a number *or* a name is
-two matchers, declared with `any_of`. Separately, `suggest` offers completions
-without restricting or being shown in errors - for a free value with a long
-list behind it, like a setting name.
+How a positional reads a token is its matcher: a type to coerce to, a set of
+choices, or a function of its own. These do not combine on one positional; a
+value that is a number *or* a name is two matchers, declared with
+`trx.argparse.Parser:any_of`.
 
 Positionals are read in order, and an optional one a token does not fit is
 passed over: the token goes to the next positional, and the one skipped stays
@@ -36,34 +29,10 @@ without - a verb before a value, a count before a name. Completion follows the
 same path, so a slot offers what every argument reachable from it takes. A
 token nothing takes is reported against the first argument that refused it.
 
-A parser has these methods, each returning the parser so calls chain:
-
-- `positional(name, opts)` - a positional with one matcher (`opts.type`,
-  `opts.choices` or `opts.match`). `opts.optional` lets it be left out;
-  `opts.greedy` reads the rest of the line as one token, so a value with spaces
-  in it still arrives whole; `opts.suggest` completes it; `opts.help` describes
-  it.
-- `any_of(name, alternatives, opts)` - a positional whose value is the first of
-  several matchers to take the token. Each alternative is a matcher table,
-  `{ type = ... }` or `{ choices = ... }`. Same `opts` as `positional`.
-- `rest(name, opts)` - the rest of the line from here on, verbatim as one
-  string, or nil when an optional one is absent. Always the last argument;
-  `opts.suggest` completes it.
-- `flag(name, opts)` - a boolean that may sit anywhere. `opts.short` and
-  `opts.long` are the spellings, e.g. `"-f"` and `"--force"`; `opts.help`
-  describes it.
-- `parse(args)` - reads the argument string, returning a table of values, or
-  `nil` and a structured error the console layer turns into localized text. A
-  value carried by a `{ key, value }` choice comes back as its `value`;
-  `-h`/`--help` comes back as `{ help = true }`.
-- `complete(text, caret)` - the candidate completions for the token the caret
-  sits in, and the byte offsets `start, end` of the run they replace (reaching
-  to the end of the line for a greedy argument).
-- `usage()` - a short description of what the command accepts.
-
 A choice is either a bare string, where the key and value are the same, or a
-`{ key, value }` pair, where `key` is matched and shown and `value` is what
-`parse` gives back. Matching is forgiving, through `trx.strings.fuzzy_match`.]],
+`{ key, value }` pair, where the key is matched and shown and the value is what
+`trx.argparse.Parser:parse` gives back. Matching is forgiving, through
+`trx.strings.fuzzy_match`.]],
 })
 
 trx.locale.declare({
@@ -239,10 +208,13 @@ local function format_hint(hint)
   return out
 end
 
-local Parser = {}
-Parser.__index = Parser
+-- The class is the declaration's, further down: what a script may call on a
+-- parser is what api.type names, and these are the bodies behind it. The name
+-- is taken here, because the declaration's own methods hand a parser back.
+local Parser
+local P = {}
 
-function Parser.new(spec)
+function P.new(spec)
   spec = spec or {}
   local self = setmetatable({
     prog = spec.prog,
@@ -287,7 +259,7 @@ local function make_matcher(opts)
   }
 end
 
-function Parser:positional(name, opts)
+function P:positional(name, opts)
   opts = opts or {}
   self.positionals[#self.positionals + 1] = {
     name = name,
@@ -303,7 +275,7 @@ function Parser:positional(name, opts)
   return self
 end
 
-function Parser:any_of(name, alternatives, opts)
+function P:any_of(name, alternatives, opts)
   opts = opts or {}
   local matchers = {}
   for _, alt in ipairs(alternatives) do
@@ -324,7 +296,7 @@ end
 -- The rest of the line, from here on, verbatim as one string. Required unless
 -- `opts.optional`; when it is optional and nothing is left, it comes back as
 -- nil. Always the last argument. A plain-string matcher takes the line whole.
-function Parser:rest(name, opts)
+function P:rest(name, opts)
   opts = opts or {}
   self.positionals[#self.positionals + 1] = {
     name = name,
@@ -338,7 +310,7 @@ function Parser:rest(name, opts)
   return self
 end
 
-function Parser:flag(name, opts)
+function P:flag(name, opts)
   opts = opts or {}
   assert(name ~= "help", "argparse: 'help' is a reserved flag name")
   self.flags[#self.flags + 1] = {
@@ -367,7 +339,7 @@ local function tokenize_offsets(s)
   return out
 end
 
-function Parser:flag_for(token)
+function P:flag_for(token)
   for _, flag in ipairs(self.flags) do
     if token == flag.short or token == flag.long then
       return flag
@@ -420,7 +392,7 @@ local function take(parser, pos_idx, tok, args, values)
   return nil, nil, nil, first_err
 end
 
-function Parser:parse(args)
+function P:parse(args)
   args = args or ""
   local values = {}
   for _, flag in ipairs(self.flags) do
@@ -433,7 +405,7 @@ function Parser:parse(args)
 
   while i <= #toks do
     local tok = toks[i]
-    local flag = self:flag_for(tok.text)
+    local flag = P.flag_for(self, tok.text)
     if flag ~= nil then
       -- Help answers the moment it is seen, ahead of any later token that would
       -- otherwise fail first. A greedy positional swallows a -h that follows it,
@@ -471,7 +443,7 @@ end
 
 -- Turns a parse error into a localized, capitalized line naming what was wrong
 -- and what was expected.
-function Parser:format_error(err)
+function P:format_error(err)
   local msg
   if err.kind == "missing" then
     msg = trx.locale.format("console/argparse/missing", err.metavar)
@@ -534,7 +506,7 @@ end
 -- or the whole tail a greedy argument swallows, reaching to the end of the line;
 -- in whitespace it is empty, at the caret. Matching is against the text before
 -- the caret.
-function Parser:complete(text, caret)
+function P:complete(text, caret)
   text = text or ""
   caret = caret or #text
   if caret < 0 then
@@ -587,7 +559,7 @@ function Parser:complete(text, caret)
   -- them.
   local consumed = {}
   for i, tok in ipairs(toks) do
-    if i ~= active and self:flag_for(tok.text) == nil then
+    if i ~= active and P.flag_for(self, tok.text) == nil then
       if (tok.start - 1) + #tok.text <= caret then
         consumed[#consumed + 1] = tok
       end
@@ -688,7 +660,7 @@ local function is_detailed(arg)
   return false
 end
 
-function Parser:usage()
+function P:usage()
   local parts = { self.prog or "?" }
   for _, flag in ipairs(self.flags) do
     if flag.name ~= "help" then
@@ -749,25 +721,340 @@ function Parser:usage()
   return table.concat(lines, "\n")
 end
 
+-- The options every positional takes, whichever way it reads its token.
+local ARG_OPTS = {
+  {
+    name = "optional",
+    type = "boolean",
+    optional = true,
+    description = "Lets the argument be left out.",
+  },
+  {
+    name = "greedy",
+    type = "boolean",
+    optional = true,
+    description = "Reads the rest of the line as one token, so a value with spaces in it "
+      .. "still arrives whole.",
+  },
+  {
+    name = "metavar",
+    type = "string",
+    optional = true,
+    description = "What the argument is called in messages and in the synopsis. Its own name "
+      .. "by default.",
+  },
+  {
+    name = "suggest",
+    type = "function",
+    optional = true,
+    description = "Completions to offer, without restricting what is accepted or being shown "
+      .. "in errors. For a free value with a long list behind it, like a setting name.",
+  },
+  {
+    name = "help",
+    type = "string",
+    optional = true,
+    description = "What the argument is for, shown in the help.",
+  },
+}
+
+-- A matcher and the options around it, which is what a single-matcher argument
+-- declares in one table.
+local function positional_opts()
+  local out = {
+    {
+      name = "type",
+      type = "string",
+      optional = true,
+      description = 'Coerce the token: `"integer"`, `"number"`, `"string"` or `"boolean"`.',
+    },
+    {
+      name = "choices",
+      type = "any",
+      optional = true,
+      description = "The allowed set: a list of values, or a function of the values parsed so "
+        .. "far returning one. The token must match one; the set is shown in errors and "
+        .. "completes.",
+    },
+    {
+      name = "match",
+      type = "function",
+      optional = true,
+      description = "A function of the token and the values parsed so far, returning the "
+        .. "value and whether it took, for a shape of its own.",
+    },
+  }
+  for _, opt in ipairs(ARG_OPTS) do
+    out[#out + 1] = opt
+  end
+  return out
+end
+
+Parser = api.type("argparse.Parser", {
+  description = "An argument parser, built up a call at a time. Every method hands the parser "
+    .. "back, so the calls chain.",
+
+  methods = {
+    positional = {
+      description = "Adds a positional argument, read one way.",
+      params = {
+        {
+          name = "name",
+          type = "string",
+          description = "What the parsed value is keyed by.",
+        },
+        {
+          name = "opts",
+          type = "table",
+          optional = true,
+          description = "How it reads its token, and how it behaves. It reads a token one "
+            .. "way: name at most one of `trx.argparse.Parser.positional.opts.type`, "
+            .. "`trx.argparse.Parser.positional.opts.choices` and "
+            .. "`trx.argparse.Parser.positional.opts.match`, and use "
+            .. "`trx.argparse.Parser:any_of` for several.",
+          fields = positional_opts(),
+        },
+      },
+      returns = { type = "argparse.Parser", description = "The parser." },
+      impl = P.positional,
+    },
+
+    any_of = {
+      description = "Adds a positional whose value is the first of several matchers to take "
+        .. "the token, for an argument that is a number or a name.",
+      params = {
+        {
+          name = "name",
+          type = "string",
+          description = "What the parsed value is keyed by.",
+        },
+        {
+          name = "alternatives",
+          type = "table",
+          list = true,
+          description = "The ways the token may read, tried in order.",
+          fields = {
+            {
+              name = "type",
+              type = "string",
+              optional = true,
+              description = "As for `trx.argparse.Parser:positional`.",
+            },
+            {
+              name = "choices",
+              type = "any",
+              optional = true,
+              description = "As for `trx.argparse.Parser:positional`.",
+            },
+            {
+              name = "match",
+              type = "function",
+              optional = true,
+              description = "As for `trx.argparse.Parser:positional`.",
+            },
+            {
+              name = "metavar",
+              type = "string",
+              optional = true,
+              description = "Names this alternative, which earns it a line of its own in the "
+                .. "help.",
+            },
+            {
+              name = "help",
+              type = "string",
+              optional = true,
+              description = "What this alternative is for.",
+            },
+          },
+        },
+        {
+          name = "opts",
+          type = "table",
+          optional = true,
+          description = "How the argument behaves.",
+          fields = ARG_OPTS,
+        },
+      },
+      returns = { type = "argparse.Parser", description = "The parser." },
+      impl = P.any_of,
+    },
+
+    rest = {
+      description = "Adds an argument taking the rest of the line from here on, verbatim as "
+        .. "one string, or `nil` where an optional one is absent. Always the last argument.",
+      params = {
+        {
+          name = "name",
+          type = "string",
+          description = "What the parsed value is keyed by.",
+        },
+        {
+          name = "opts",
+          type = "table",
+          optional = true,
+          description = "How the argument behaves.",
+          fields = ARG_OPTS,
+        },
+      },
+      returns = { type = "argparse.Parser", description = "The parser." },
+      impl = P.rest,
+    },
+
+    flag = {
+      description = "Adds a boolean flag, which may sit anywhere in the line.",
+      params = {
+        {
+          name = "name",
+          type = "string",
+          description = "What the parsed value is keyed by. `help` is reserved.",
+        },
+        {
+          name = "opts",
+          type = "table",
+          optional = true,
+          description = "How it is spelled and what it is for.",
+          fields = {
+            {
+              name = "short",
+              type = "string",
+              optional = true,
+              description = 'The short spelling, such as `"-f"`.',
+            },
+            {
+              name = "long",
+              type = "string",
+              optional = true,
+              description = 'The long spelling, such as `"--force"`.',
+            },
+            {
+              name = "help",
+              type = "string",
+              optional = true,
+              description = "What the flag is for, shown in the help.",
+            },
+          },
+        },
+      },
+      returns = { type = "argparse.Parser", description = "The parser." },
+      impl = P.flag,
+    },
+
+    parse = {
+      description = "Reads an argument line. A value carried by a `{ key, value }` choice "
+        .. "comes back as its value, and `-h`/`--help` comes back as `{ help = true }`.",
+      params = {
+        {
+          name = "args",
+          type = "string",
+          optional = true,
+          description = "The line as the player typed it.",
+        },
+      },
+      returns = {
+        {
+          type = "table",
+          nullable = true,
+          description = "The values, keyed by argument name, or `nil` where the line was "
+            .. "refused.",
+        },
+        {
+          type = "table",
+          nullable = true,
+          description = "What was wrong, for `trx.argparse.Parser:format_error` to put into "
+            .. "words.",
+        },
+      },
+      impl = P.parse,
+    },
+
+    format_error = {
+      description = "Turns what a refused line reported into a localized line naming what was "
+        .. "wrong and what was expected.",
+      params = {
+        {
+          name = "err",
+          type = "table",
+          description = "What `trx.argparse.Parser:parse` handed back.",
+        },
+      },
+      returns = { type = "string", description = "The line, ready to print." },
+      impl = P.format_error,
+    },
+
+    complete = {
+      description = "The candidate completions for the token the caret sits in. Matching is "
+        .. "against the text before the caret.",
+      params = {
+        {
+          name = "text",
+          type = "string",
+          optional = true,
+          description = "The line so far.",
+        },
+        {
+          name = "caret",
+          type = "integer",
+          optional = true,
+          description = "Where the caret sits, as a byte offset. The end of the line by "
+            .. "default.",
+        },
+      },
+      returns = {
+        { type = "table", description = "The candidates, best first." },
+        {
+          type = "integer",
+          description = "Where the run they replace starts. The run is the token, or the "
+            .. "whole tail a greedy argument swallows; in whitespace it is empty, at the "
+            .. "caret.",
+        },
+        { type = "integer", description = "Where that run ends." },
+      },
+      impl = P.complete,
+    },
+
+    usage = {
+      description = "A short description of what the command accepts.",
+      returns = {
+        type = "string",
+        description = "The synopsis, and a line per argument.",
+      },
+      impl = P.usage,
+    },
+  },
+})
+
 api.define("argparse.new", {
-  description = "Creates an argument parser. See the module description for the parser's methods.",
+  description = "Creates an argument parser.",
   params = {
     {
       name = "spec",
       type = "table",
       optional = true,
-      description = "`prog`: the command word, for messages. `description`: what the command does.",
+      description = "What the parser calls itself in messages.",
+      fields = {
+        {
+          name = "prog",
+          type = "string",
+          optional = true,
+          description = "The command word.",
+        },
+        {
+          name = "description",
+          type = "string",
+          optional = true,
+          description = "What the command does.",
+        },
+      },
     },
   },
   returns = {
-    type = "table",
-    description = "A parser. Describe its arguments with `positional`, `any_of`, `rest` and "
-      .. "`flag`, then read them with `parse` or offer completions with `complete`.",
+    type = "argparse.Parser",
+    description = "A parser, with no arguments declared on it yet.",
   },
   examples = {
     [[local p = trx.argparse.new({ prog = "weather" })
 p:positional("state", { choices = { "snow", "rain", "none" } })
 local parsed = p:parse("snow")  -- { state = "snow" }]],
   },
-  impl = Parser.new,
+  impl = P.new,
 })

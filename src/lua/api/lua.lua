@@ -23,9 +23,17 @@ api.define("lua.eval_expr", {
   returns = {
     type = "table",
     nullable = true,
-    description = "`nil` when the code ran to completion. Otherwise a table with `kind` "
-      .. '(`"syntax"` or `"runtime"`) and `message`, the error text. A failure comes back '
-      .. "as a value rather than raising, so the caller decides what it means.",
+    description = "`nil` when the code ran to completion, and what went wrong otherwise. A "
+      .. "failure comes back as a value rather than raising, so the caller decides what it "
+      .. "means.",
+    fields = {
+      {
+        name = "kind",
+        type = "string",
+        description = 'Either `"syntax"` or `"runtime"`.',
+      },
+      { name = "message", type = "string", description = "The error text." },
+    },
   },
   examples = { [[trx.lua.eval_expr("trx.console.log('hello')")]] },
   impl = function(code)

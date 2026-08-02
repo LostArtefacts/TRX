@@ -35,13 +35,13 @@ again on every entry, so a level that wants the defaults back asks for them.
 - <a id="rules.list" name="rules.list"></a>[lua]`trx.rules.list()`  
   Every rule there is, as dotted `group.field` keys.
 
-  Returns: table.
+  Returns: table. The keys, in no particular order.
 
 - <a id="rules.get" name="rules.get"></a>[lua]`trx.rules.get(key)`  
   Reads a rule by its key, for code that does not know which one it wants.
 
   Parameters:
-  - **`key`** (string). Dotted path, e.g. `exposure.damage`.
+  - <a id="rules.get.key" name="rules.get.key"></a>**`key`** (string). Dotted path, e.g. `exposure.damage`.
 
   Returns: any. Raises if no rule has that key.
 
@@ -49,19 +49,19 @@ again on every entry, so a level that wants the defaults back asks for them.
   Changes a rule by its key. A string is read as text, the way the console gives it; any other value is taken as the rule's own type.
 
   Parameters:
-  - **`key`** (string). Dotted path, e.g. `exposure.damage`.
-  - **`value`** (any).
+  - <a id="rules.set.key" name="rules.set.key"></a>**`key`** (string). Dotted path, e.g. `exposure.damage`.
+  - <a id="rules.set.value" name="rules.set.value"></a>**`value`** (any). The value to write, of the type the rule declares.
 
 - <a id="rules.reset" name="rules.reset"></a>[lua]`trx.rules.reset([key])`  
   Puts a rule back to the value the engine ships with, or every rule when given no key. Happens on its own when a new game starts.
 
   Parameters:
-  - **`key`** (string, optional). Dotted path.
+  - <a id="rules.reset.key" name="rules.reset.key"></a>**`key`** (string, optional). Dotted path.
 
 - <a id="rules.format_value" name="rules.format_value"></a>[lua]`trx.rules.format_value(key)`  
   How a rule's value reads as text, for showing it to the player.
 
   Parameters:
-  - **`key`** (string). Dotted path.
+  - <a id="rules.format_value.key" name="rules.format_value.key"></a>**`key`** (string). Dotted path.
 
-  Returns: string.
+  Returns: string. The text, ready to print.

@@ -74,12 +74,14 @@ KEYED_BY: dict[str, str] = {}
 # enum path -> its constants, upper-cased. A catalog runs to hundreds of them,
 # so they are not anchored one by one and a constant links to its enum.
 CONSTANTS: dict[str, set[str]] = {}
+# Every declared enum, so a declaration that points at one is typed by it.
+ENUM_PATHS: set[str] = set()
 # A member reached through a module that stands for one thing -
 # `trx.lara.air` - to where the type it stands for declares it. The anchor is
 # written once, at the declaration, so that is where the link has to go.
 ALIASES: dict[str, str] = {}
-# Every declared enum, so a declaration that points at one is typed by it.
-ENUM_PATHS: set[str] = set()
+
+
 def anchor(path: str) -> str:
     """The name a declaration is linked to, and the page it lives on.
 
@@ -114,6 +116,7 @@ def segments(path: str) -> list[str]:
     """
     return re.findall(r"[.:]?[A-Za-z0-9_]+", path)
 
+
 def shortened(path: str) -> str:
     """How a written path reads from where it is written.
 
@@ -136,6 +139,31 @@ def shortened(path: str) -> str:
     return "".join(written[shared:]).lstrip(".:")
 
 
+def keys_of(spec: dict, path: str) -> set[str]:
+    """The keys a call's table argument or result declares.
+
+    A key hangs off the argument that carries it - `opts.mode` under the call
+    it belongs to - and a result's keys off the call itself, since a result has
+    no name of its own.
+    """
+    out = set()
+    for param in spec.get("params") or []:
+        out.add(f"{path}.{param['name']}")
+        for field in param.get("fields") or []:
+            out.add(f"{path}.{param['name']}.{field['name']}")
+        # A hook's callback has one set of arguments, so a table it is handed
+        # hangs off the hook rather than off the callback.
+        for arg in param.get("params") or []:
+            out.add(f"{path}.{arg['name']}")
+            for field in arg.get("fields") or []:
+                out.add(f"{path}.{arg['name']}.{field['name']}")
+    returns = spec.get("returns")
+    for one in returns if isinstance(returns, list) else [returns] if returns else []:
+        for field in one.get("fields") or []:
+            out.add(f"{path}.{field['name']}")
+    return out
+
+
 def anchors_of(api: dict) -> set[str]:
     """Every path a declaration can be pointed at by.
 
@@ -147,6 +175,9 @@ def anchors_of(api: dict) -> set[str]:
     out = {module["name"] for module in api["modules"]}
     for group in ("numbers", "enums", "functions", "properties", "namespaces", "constants"):
         out.update(entry["path"] for entry in api.get(group, []))
+    for group in ("functions", "namespaces"):
+        for entry in api.get(group, []):
+            out.update(keys_of(entry, entry["path"]))
     members: dict[str, list[str]] = {}
     for spec in api.get("types", []):
         out.add(spec["path"])
@@ -156,6 +187,8 @@ def anchors_of(api: dict) -> set[str]:
             for member in spec.get(kind) or []
         ]
         out.update(f"{spec['path']}.{name}" for name in members[spec["path"]])
+        for method in spec.get("methods") or []:
+            out.update(keys_of(method, f"{spec['path']}.{method['name']}"))
     for module in api["modules"]:
         stands_for = module.get("instance_type")
         for name in members.get(stands_for, []):
@@ -278,13 +311,18 @@ def render_callback_args(param: dict, indent: str) -> list[str]:
     if not args:
         return []
     out = [f"{indent}Called with:"]
+    owner = CONTEXT
     for arg in args:
         out.extend(
             render_lead(
-                f"{indent}- **`{arg['name']}`** ({typed(arg)}). ",
+                f"{indent}- {anchor(f'{owner}.{arg['name']}')}"
+                f"**`{arg['name']}`** ({typed(arg)}). ",
                 describe(arg),
                 f"{indent}  ",
             )
+        )
+        out.extend(
+            render_fields(arg, f"{owner}.{arg['name']}", f"{indent}  ")
         )
     return out
 
@@ -354,19 +392,52 @@ def render_bits(spec: dict) -> str:
     return ", ".join(bits)
 
 
+def render_fields(
+    spec: dict, prefix: str, indent: str
+) -> list[str]:
+    """The keys a table argument or result is made of.
+
+    A table declares what it holds where it is declared, so each key has a type
+    and an anchor of its own and is pointed at like anything else. Before this
+    the keys were spelled out in the description, which left them unlinkable
+    and said again in every place that passed the same table. A list says the
+    same of each of its entries.
+    """
+    fields = spec.get("fields")
+    if not fields:
+        return []
+    owner = CONTEXT
+    out = ["", f"{indent}Each entry:" if spec.get("list") else f"{indent}Keys:"]
+    for field in fields:
+        at(f"{prefix}.{field['name']}")
+        out.extend(
+            render_lead(
+                f"{indent}- {anchor(prefix + '.' + field['name'])}"
+                f"**`{field['name']}`** ({render_bits(field)}). ",
+                describe(field),
+                f"{indent}  ",
+            )
+        )
+    at(owner)
+    return out
+
+
 def render_params(params: list[dict] | None, indent: str) -> list[str]:
     if not params:
         return []
     out = ["", f"{indent}Parameters:"]
     for param in params:
+        prefix = f"{CONTEXT}.{param['name']}"
         out.extend(
             render_lead(
-                f"{indent}- **`{param['name']}`** ({render_bits(param)}). ",
+                f"{indent}- {anchor(prefix)}**`{param['name']}`** "
+                f"({render_bits(param)}). ",
                 describe(param),
                 f"{indent}  ",
             )
         )
         out.extend(render_callback_args(param, f"{indent}  "))
+        out.extend(render_fields(param, prefix, f"{indent}  "))
     return out
 
 
@@ -383,10 +454,11 @@ def render_returns(returns: dict | list | None, indent: str) -> list[str]:
         return []
     if isinstance(returns, dict):
         out = ["", *render_lead(f"{indent}Returns: ", one_return(returns), f"{indent}  ")]
-        return out
+        return out + render_fields(returns, CONTEXT, f"{indent}  ")
     out = ["", f"{indent}Returns:"]
     for spec in returns:
         out.extend(render_lead(f"{indent}- ", one_return(spec), f"{indent}  "))
+        out.extend(render_fields(spec, CONTEXT, f"{indent}  "))
     return out
 
 
@@ -505,8 +577,8 @@ def render_property(spec: dict) -> list[str]:
 
     Reading it calls into the engine, so it is neither a function nor a constant.
     """
-    suffix = "" if spec.get("writable") else " *(read-only)*"
     at(spec["path"])
+    suffix = "" if spec.get("writable") else " *(read-only)*"
     return render_lead(
         f"- {anchor(spec['path'])}**`trx.{spec['path']}`** "
         f"({typed(spec)}). ",
@@ -623,6 +695,7 @@ def render_number(number: dict) -> list[str]:
     the thirteen declarations that hold one - so it renders among them, and
     everything that holds one names it and says only what is its own.
     """
+    at(number["path"])
     out = [f"- {anchor(number['path'])}[lua]`trx.{number['path']}`", ""]
     out.extend(render_prose(describe(number), INDENT))
     out.append("")
@@ -749,11 +822,6 @@ def read(api: dict) -> None:
         for kind in ("fields", "extensions"):
             for member in spec.get(kind) or []:
                 STANDS_FOR[f"{module['name']}.{member['name']}"] = member.get("type")
-    for module in api["modules"]:
-        stands_for = module.get("instance_type")
-        if stands_for is None:
-            continue
-        spec = next(t for t in api["types"] if t["path"] == stands_for)
         for kind in ("fields", "methods", "extensions"):
             for member in spec.get(kind) or []:
                 ALIASES[f"{module['name']}.{member['name']}"] = (
@@ -816,6 +884,13 @@ def undocumented(api: dict) -> list[str]:
             for member in spec.get(kind) or []:
                 if not documented(member):
                     out.append(f"{spec['path']}.{member['name']}")
+    for group in ("functions", "namespaces"):
+        for entry in api.get(group, []):
+            out.extend(blank_keys(entry, entry["path"]))
+    for spec in api.get("types", []):
+        for method in spec.get("methods") or []:
+            path = f"{spec['path']}.{method['name']}"
+            out.extend(blank_keys(method, path))
     return out
 
 
@@ -898,6 +973,25 @@ def walk(api: dict) -> list[tuple[str, dict]]:
             if container.get(side):
                 rec(container[side], f"{container['module']}[{side}]")
     return out
+
+
+def blank_keys(spec: dict, path: str) -> list[str]:
+    """Declared keys that say nothing."""
+    return [key for key in sorted(keys_of(spec, path)) if not described_key(spec, key)]
+
+
+def described_key(spec: dict, key: str) -> bool:
+    """Whether the key named by a path carries a description."""
+    name = key.rsplit(".", 1)[-1]
+    everything = []
+    for param in spec.get("params") or []:
+        everything.extend(param.get("fields") or [])
+        for arg in param.get("params") or []:
+            everything.extend(arg.get("fields") or [])
+    returns = spec.get("returns")
+    for one in returns if isinstance(returns, list) else [returns] if returns else []:
+        everything.extend(one.get("fields") or [])
+    return all(documented(f) for f in everything if f["name"] == name)
 
 
 def dump_api(binary: Path) -> str:

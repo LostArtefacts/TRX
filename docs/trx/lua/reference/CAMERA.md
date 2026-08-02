@@ -35,7 +35,7 @@ Module for inspecting the active camera state.
   Shakes the camera by setting its bounce value. Positive values shake it upward, negative values downward.
 
   Parameters:
-  - **`intensity`** (integer). Bounce value.
+  - <a id="camera.shake.intensity" name="camera.shake.intensity"></a>**`intensity`** (integer). Bounce value.
 
   Example:
   ```lua
@@ -49,7 +49,7 @@ Module for inspecting the active camera state.
   Starts a flyby camera sequence. Does nothing if another one is already playing.
 
   Parameters:
-  - **`sequence_num`** ([trx.camera.SequenceNum](#camera.SequenceNum)).
+  - <a id="camera.play_flyby.sequence_num" name="camera.play_flyby.sequence_num"></a>**`sequence_num`** ([trx.camera.SequenceNum](#camera.SequenceNum)).
 
   Returns: boolean. Whether the sequence took the camera.
 

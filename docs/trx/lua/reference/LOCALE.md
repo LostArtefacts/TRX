@@ -25,7 +25,7 @@ The text the player reads, in the player's own language.
   declaration keep the text they already carry.
 
   Parameters:
-  - **`strings`** (table). Keys to their English text.
+  - <a id="locale.declare.strings" name="locale.declare.strings"></a>**`strings`** (table). Keys to their English text.
 
   Example:
   ```lua
@@ -39,7 +39,7 @@ The text the player reads, in the player's own language.
   The text behind a game string key.
 
   Parameters:
-  - **`key`** (string). The key, e.g. `general/misc/off`.
+  - <a id="locale.get.key" name="locale.get.key"></a>**`key`** (string). The key, e.g. `general/misc/off`.
 
   Returns: string. The key itself if nothing is behind it, so a typo shows up on screen rather than as a nil further down.
 
@@ -52,8 +52,8 @@ The text the player reads, in the player's own language.
   The text behind a key with its placeholders filled in.
 
   Parameters:
-  - **`key`** (string). The key.
-  - **`...`** (any). What to fill the placeholders with.
+  - <a id="locale.format.key" name="locale.format.key"></a>**`key`** (string). The key.
+  - <a id="locale.format...." name="locale.format...."></a>**`...`** (any). What to fill the placeholders with.
 
   Returns: string. The text with the arguments in it. A translation whose placeholders do not line up with the arguments comes back unformatted, with a warning in the log: a player is better served by text they can read than by a script that stops.
 

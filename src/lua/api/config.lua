@@ -47,10 +47,26 @@ api.define("config.describe", {
   },
   returns = {
     type = "table",
-    description = "`kind` is one of `boolean`, `integer`, `number`, `color`, `enum`, "
-      .. "`dynamic_enum` or `string`. `percent` marks a number stored 0-1 but entered and "
-      .. "shown as a 0-100 percentage. For the enum kinds, `values` lists what the setting "
-      .. "accepts.",
+    description = "What the setting is and how it is entered.",
+    fields = {
+      {
+        name = "kind",
+        type = "string",
+        description = "One of `boolean`, `integer`, `number`, `color`, `enum`, "
+          .. "`dynamic_enum` or `string`.",
+      },
+      {
+        name = "percent",
+        type = "boolean",
+        description = "Marks a number stored 0-1 but entered and shown as a 0-100 "
+          .. "percentage.",
+      },
+      {
+        name = "values",
+        type = "table",
+        description = "What the setting accepts, for the enum kinds. `nil` for the rest.",
+      },
+    },
   },
   examples = {
     [[for _, value in ipairs(trx.config.describe("visuals.shadow_type").values) do
@@ -72,7 +88,7 @@ api.define("config.format_value", {
   params = {
     { name = "key", type = "string", description = "Dotted path." },
   },
-  returns = { type = "string" },
+  returns = { type = "string", description = "The text, ready to print." },
   examples = { [[trx.console.log(trx.config.format_value("visuals.fov"))]] },
   impl = function(key)
     local desc = raw.describe(key)
@@ -237,7 +253,10 @@ api.define("config.is_overridden", {
   params = {
     { name = "key", type = "string", description = "Dotted path." },
   },
-  returns = { type = "boolean" },
+  returns = {
+    type = "boolean",
+    description = "True while an override stands, and false once the last is lifted.",
+  },
   impl = raw.is_overridden,
 })
 

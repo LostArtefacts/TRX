@@ -921,18 +921,25 @@ function api.type(path, spec)
     local getters, setters = {}, {}
     local has_fields = false
     for name, field in pairs(spec.fields or {}) do
-      assert(
-        type(field.get) == "function",
-        "api.type: field '" .. name .. "' needs a get"
-      )
-      assert(
-        field.set == nil or type(field.set) == "function",
-        "api.type: field '" .. name .. "' has a set that is not a function"
-      )
-      getters[name] = field.get
-      setters[name] = field.set
-      field.writable = field.set ~= nil
-      has_fields = true
+      -- A field with no accessors is an entry the value carries itself, which
+      -- is what a plain table of numbers is: the class says what the keys are
+      -- called and what they hold, and reading one reaches the entry.
+      if field.get == nil then
+        assert(
+          field.set == nil,
+          "api.type: field '" .. name .. "' has a set but no get"
+        )
+        field.writable = field.writable ~= false
+      else
+        assert(
+          field.set == nil or type(field.set) == "function",
+          "api.type: field '" .. name .. "' has a set that is not a function"
+        )
+        getters[name] = field.get
+        setters[name] = field.set
+        field.writable = field.set ~= nil
+        has_fields = true
+      end
     end
 
     if has_fields then
@@ -1229,12 +1236,16 @@ local function noted(spec)
     local accepted = types_of(out.type)
     out.type = #accepted == 1 and accepted[1] or accepted
   end
-  if type(out.params) == "table" then
-    local params = {}
-    for i, param in ipairs(out.params) do
-      params[i] = noted(param)
+  -- A table argument or result declares the keys it is made of, and each of
+  -- them reads like any other spec.
+  for _, key in ipairs({ "params", "fields" }) do
+    if type(out[key]) == "table" then
+      local list = {}
+      for i, nested in ipairs(out[key]) do
+        list[i] = noted(nested)
+      end
+      out[key] = list
     end
-    out.params = params
   end
   return out
 end
@@ -1523,6 +1534,41 @@ function api.describe()
   for _, module in ipairs(out.modules) do
     claim(module.name)
   end
+  -- What a call declares of its own: the arguments it takes, the keys of a
+  -- table among them, and the keys of what it hands back. A result has no name
+  -- of its own, so its keys hang off the call.
+  local function claim_call(entry, path)
+    for _, param in ipairs(entry.params or {}) do
+      claim(path .. "." .. param.name)
+      for _, field in ipairs(param.fields or {}) do
+        claim(path .. "." .. param.name .. "." .. field.name)
+      end
+      -- A hook has one callback, so what it is called with reads as the hook's.
+      for _, arg in ipairs(param.params or {}) do
+        claim(path .. "." .. arg.name)
+        for _, field in ipairs(arg.fields or {}) do
+          claim(path .. "." .. arg.name .. "." .. field.name)
+        end
+      end
+    end
+    local returns = entry.returns
+    for _, one in
+      ipairs(
+        returns ~= nil and returns.type ~= nil and { returns } or returns or {}
+      )
+    do
+      for _, field in ipairs(one.fields or {}) do
+        claim(path .. "." .. field.name)
+      end
+    end
+  end
+
+  for _, group in ipairs({ out.functions, out.namespaces }) do
+    for _, entry in ipairs(group) do
+      claim_call(entry, entry.path)
+    end
+  end
+
   local members = {}
   for _, entry in ipairs(out.types) do
     claim(entry.path)
@@ -1532,6 +1578,9 @@ function api.describe()
         claim(entry.path .. "." .. member.name)
         table.insert(members[entry.path], member.name)
       end
+    end
+    for _, method in ipairs(entry.methods) do
+      claim_call(method, entry.path .. "." .. method.name)
     end
   end
   for module, type_path in pairs(module_instance_types) do

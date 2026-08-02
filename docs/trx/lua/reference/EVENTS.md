@@ -20,6 +20,10 @@ An event that carries a default the script may take over says so in its descript
 
 ### Structures
 
+- <a id="events.FlipEffectNum" name="events.FlipEffectNum"></a>[lua]`trx.events.FlipEffectNum`
+
+    A flip effect number, as a level editor numbers them. Not the id space of [`trx.rooms.flip_effect`](ROOMS.md#rooms.flip_effect), which takes [`trx.catalog.flip_effects`](CATALOG.md#catalog.flip_effects) names. Counted from 0.
+
 - <a id="events.Listener" name="events.Listener"></a>[lua]`trx.events.Listener`
 
     An attached handler. Every hook hands one back, and holding it is what makes the handler detachable later. A listener is spent once detached, and a level change spends every one a level script attached.
@@ -49,9 +53,9 @@ An event that carries a default the script may take over says so in its descript
   which is why the handler is not handed them.
 
   Parameters:
-  - **`callback`** (function).
+  - <a id="events.on_game_start.callback" name="events.on_game_start.callback"></a>**`callback`** (function). What to run when it happens.
     Called with:
-    - **`is_save`** (boolean). Whether the level is being resumed from a savegame rather than started fresh. A cutscene and a demo are never resumed, and always report false.
+    - <a id="events.on_game_start.is_save" name="events.on_game_start.is_save"></a>**`is_save`** (boolean). Whether the level is being resumed from a savegame rather than started fresh. A cutscene and a demo are never resumed, and always report false.
 
   Returns: [trx.events.Listener](#events.Listener). The attached handler.
 
@@ -68,7 +72,7 @@ An event that carries a default the script may take over says so in its descript
   arguments. [`trx.events.on_game_start`](#events.on_game_start) does not fire for the title level.
 
   Parameters:
-  - **`callback`** (function).
+  - <a id="events.on_title_start.callback" name="events.on_title_start.callback"></a>**`callback`** (function). What to run when it happens.
 
   Returns: [trx.events.Listener](#events.Listener). The attached handler.
 
@@ -83,9 +87,9 @@ An event that carries a default the script may take over says so in its descript
   Happens just after Lara picks up an item.
 
   Parameters:
-  - **`callback`** (function).
+  - <a id="events.on_pickup.callback" name="events.on_pickup.callback"></a>**`callback`** (function). What to run when it happens.
     Called with:
-    - **`item_num`** ([trx.items.Num](ITEMS.md#items.Num)). The item that was picked up.
+    - <a id="events.on_pickup.item_num" name="events.on_pickup.item_num"></a>**`item_num`** ([trx.items.Num](ITEMS.md#items.Num)). The item that was picked up.
 
   Returns: [trx.events.Listener](#events.Listener). The attached handler.
 
@@ -100,7 +104,7 @@ An event that carries a default the script may take over says so in its descript
   Happens on every logical game frame, before the main game logic runs. The handler takes no arguments.
 
   Parameters:
-  - **`callback`** (function).
+  - <a id="events.before_control.callback" name="events.before_control.callback"></a>**`callback`** (function). What to run when it happens.
 
   Returns: [trx.events.Listener](#events.Listener). The attached handler.
 
@@ -108,23 +112,23 @@ An event that carries a default the script may take over says so in its descript
   Happens on every logical game frame, after the main game logic runs. The handler takes no arguments.
 
   Parameters:
-  - **`callback`** (function).
+  - <a id="events.after_control.callback" name="events.after_control.callback"></a>**`callback`** (function). What to run when it happens.
 
   Returns: [trx.events.Listener](#events.Listener). The attached handler.
 
 - <a id="events.on_flip_effect" name="events.on_flip_effect"></a>[lua]`trx.events.on_flip_effect(effect_num, callback)`  
-  Claims a flip effect number and happens whenever a level runs it, whether from a floor trigger or an animation command. Place an ordinary flipeffect trigger in a level editor - pad, heavy, switch and antitrigger all work - pick an unused effect number, and handle it here from the level's script.
+  Claims a [`trx.events.FlipEffectNum`](#events.FlipEffectNum) and happens whenever a level runs it, whether from a floor trigger or an animation command. Place an ordinary flipeffect trigger in a level editor - pad, heavy, switch and antitrigger all work - pick one nothing uses, and handle it here from the level's script.
 
   A claimed number belongs to the script for the rest of the level: its stock engine effect does not run, even if the handler is later detached. Unclaimed numbers are unaffected.
 
   Unlike the other hooks, this happens at effect execution time, in the middle of a game frame.
 
   Parameters:
-  - **`effect_num`** (integer). The flip effect number to claim, as the level editor numbers them. This is not the id space of [`trx.rooms.flip_effect`](ROOMS.md#rooms.flip_effect), which takes [`trx.catalog.flip_effects`](CATALOG.md#catalog.flip_effects) names. Counted from 0.
-  - **`callback`** (function).
+  - <a id="events.on_flip_effect.effect_num" name="events.on_flip_effect.effect_num"></a>**`effect_num`** ([trx.events.FlipEffectNum](#events.FlipEffectNum)). The one to claim.
+  - <a id="events.on_flip_effect.callback" name="events.on_flip_effect.callback"></a>**`callback`** (function). What to run when it happens.
     Called with:
-    - **`timer`** (integer). A floor trigger's timer field, free for the level to use as a parameter. 0 for an animation command, which carries no timer.
-    - **`item_num`** ([trx.items.Num](ITEMS.md#items.Num)). The item that ran the effect: Lara for a pad trigger, the activating object for a heavy trigger, the animating item for an animation command.
+    - <a id="events.on_flip_effect.timer" name="events.on_flip_effect.timer"></a>**`timer`** (integer). A floor trigger's timer field, free for the level to use as a parameter. 0 for an animation command, which carries no timer.
+    - <a id="events.on_flip_effect.item_num" name="events.on_flip_effect.item_num"></a>**`item_num`** ([trx.items.Num](ITEMS.md#items.Num)). The item that ran the effect: Lara for a pad trigger, the activating object for a heavy trigger, the animating item for an animation command.
 
   Returns: [trx.events.Listener](#events.Listener). The attached handler.
 
@@ -139,11 +143,11 @@ An event that carries a default the script may take over says so in its descript
   Happens when an item changes rooms during play, which a cutscene or the attract demo is not. [`trx.rooms.Room:on_enter`](ROOMS.md#rooms.Room.on_enter) and [`trx.rooms.Room:on_exit`](ROOMS.md#rooms.Room.on_exit) are this same event, narrowed to one room.
 
   Parameters:
-  - **`callback`** (function).
+  - <a id="events.on_room_change.callback" name="events.on_room_change.callback"></a>**`callback`** (function). What to run when it happens.
     Called with:
-    - **`item`** ([trx.items.Item](ITEMS.md#items.Item)). The item that changed rooms.
-    - **`old_room_num`** ([trx.rooms.Num](ROOMS.md#rooms.Num)). -1 if it had none.
-    - **`new_room_num`** ([trx.rooms.Num](ROOMS.md#rooms.Num)). -1 if it left the world.
+    - <a id="events.on_room_change.item" name="events.on_room_change.item"></a>**`item`** ([trx.items.Item](ITEMS.md#items.Item)). The item that changed rooms.
+    - <a id="events.on_room_change.old_room_num" name="events.on_room_change.old_room_num"></a>**`old_room_num`** ([trx.rooms.Num](ROOMS.md#rooms.Num)). -1 if it had none.
+    - <a id="events.on_room_change.new_room_num" name="events.on_room_change.new_room_num"></a>**`new_room_num`** ([trx.rooms.Num](ROOMS.md#rooms.Num)). -1 if it left the world.
 
   Returns: [trx.events.Listener](#events.Listener). The attached handler.
 
@@ -162,10 +166,10 @@ An event that carries a default the script may take over says so in its descript
   [`trx.items.Item:on_trigger`](ITEMS.md#items.Item.on_trigger) is this same event, narrowed to one item.
 
   Parameters:
-  - **`callback`** (function).
+  - <a id="events.on_trigger.callback" name="events.on_trigger.callback"></a>**`callback`** (function). What to run when it happens.
     Called with:
-    - **`item`** ([trx.items.Item](ITEMS.md#items.Item)). The item the trigger was aimed at.
-    - **`trigger`** (table). What the trigger carried: `type` (a [`trx.items.TriggerType`](ITEMS.md#items.TriggerType)), `mask` (the code bits it set, `1` to `31`), `timer` (in seconds), and `one_shot`.
+    - <a id="events.on_trigger.item" name="events.on_trigger.item"></a>**`item`** ([trx.items.Item](ITEMS.md#items.Item)). The item the trigger was aimed at.
+    - <a id="events.on_trigger.trigger" name="events.on_trigger.trigger"></a>**`trigger`** ([trx.items.Trigger](ITEMS.md#items.Trigger)). What the trigger carried.
 
   Returns: [trx.events.Listener](#events.Listener). The attached handler.
 
@@ -184,9 +188,9 @@ An event that carries a default the script may take over says so in its descript
   [`trx.items.Item:on_show`](ITEMS.md#items.Item.on_show) is this same event, narrowed to one item.
 
   Parameters:
-  - **`callback`** (function).
+  - <a id="events.on_show.callback" name="events.on_show.callback"></a>**`callback`** (function). What to run when it happens.
     Called with:
-    - **`item`** ([trx.items.Item](ITEMS.md#items.Item)). The item that became visible.
+    - <a id="events.on_show.item" name="events.on_show.item"></a>**`item`** ([trx.items.Item](ITEMS.md#items.Item)). The item that became visible.
 
   Returns: [trx.events.Listener](#events.Listener). The attached handler.
 
@@ -203,9 +207,9 @@ An event that carries a default the script may take over says so in its descript
   [`trx.items.Item:on_hide`](ITEMS.md#items.Item.on_hide) is this same event, narrowed to one item.
 
   Parameters:
-  - **`callback`** (function).
+  - <a id="events.on_hide.callback" name="events.on_hide.callback"></a>**`callback`** (function). What to run when it happens.
     Called with:
-    - **`item`** ([trx.items.Item](ITEMS.md#items.Item)). The item that became hidden.
+    - <a id="events.on_hide.item" name="events.on_hide.item"></a>**`item`** ([trx.items.Item](ITEMS.md#items.Item)). The item that became hidden.
 
   Returns: [trx.events.Listener](#events.Listener). The attached handler.
 
@@ -222,9 +226,9 @@ An event that carries a default the script may take over says so in its descript
   [`trx.items.Item:on_finish`](ITEMS.md#items.Item.on_finish) is this same event, narrowed to one item.
 
   Parameters:
-  - **`callback`** (function).
+  - <a id="events.on_finish.callback" name="events.on_finish.callback"></a>**`callback`** (function). What to run when it happens.
     Called with:
-    - **`item`** ([trx.items.Item](ITEMS.md#items.Item)). The item that finished.
+    - <a id="events.on_finish.item" name="events.on_finish.item"></a>**`item`** ([trx.items.Item](ITEMS.md#items.Item)). The item that finished.
 
   Returns: [trx.events.Listener](#events.Listener). The attached handler.
 
@@ -241,9 +245,9 @@ An event that carries a default the script may take over says so in its descript
   [`trx.items.Item:on_enter_sim`](ITEMS.md#items.Item.on_enter_sim) is this same event, narrowed to one item.
 
   Parameters:
-  - **`callback`** (function).
+  - <a id="events.on_enter_sim.callback" name="events.on_enter_sim.callback"></a>**`callback`** (function). What to run when it happens.
     Called with:
-    - **`item`** ([trx.items.Item](ITEMS.md#items.Item)). The item that started being simulated.
+    - <a id="events.on_enter_sim.item" name="events.on_enter_sim.item"></a>**`item`** ([trx.items.Item](ITEMS.md#items.Item)). The item that started being simulated.
 
   Returns: [trx.events.Listener](#events.Listener). The attached handler.
 
@@ -260,9 +264,9 @@ An event that carries a default the script may take over says so in its descript
   [`trx.items.Item:on_leave_sim`](ITEMS.md#items.Item.on_leave_sim) is this same event, narrowed to one item.
 
   Parameters:
-  - **`callback`** (function).
+  - <a id="events.on_leave_sim.callback" name="events.on_leave_sim.callback"></a>**`callback`** (function). What to run when it happens.
     Called with:
-    - **`item`** ([trx.items.Item](ITEMS.md#items.Item)). The item that stopped being simulated.
+    - <a id="events.on_leave_sim.item" name="events.on_leave_sim.item"></a>**`item`** ([trx.items.Item](ITEMS.md#items.Item)). The item that stopped being simulated.
 
   Returns: [trx.events.Listener](#events.Listener). The attached handler.
 
@@ -279,9 +283,9 @@ An event that carries a default the script may take over says so in its descript
   [`trx.items.Item:on_activate`](ITEMS.md#items.Item.on_activate) is this same event, narrowed to one item.
 
   Parameters:
-  - **`callback`** (function).
+  - <a id="events.on_activate.callback" name="events.on_activate.callback"></a>**`callback`** (function). What to run when it happens.
     Called with:
-    - **`item`** ([trx.items.Item](ITEMS.md#items.Item)). The item that was activated.
+    - <a id="events.on_activate.item" name="events.on_activate.item"></a>**`item`** ([trx.items.Item](ITEMS.md#items.Item)). The item that was activated.
 
   Returns: [trx.events.Listener](#events.Listener). The attached handler.
 
@@ -298,9 +302,9 @@ An event that carries a default the script may take over says so in its descript
   [`trx.items.Item:on_deactivate`](ITEMS.md#items.Item.on_deactivate) is this same event, narrowed to one item.
 
   Parameters:
-  - **`callback`** (function).
+  - <a id="events.on_deactivate.callback" name="events.on_deactivate.callback"></a>**`callback`** (function). What to run when it happens.
     Called with:
-    - **`item`** ([trx.items.Item](ITEMS.md#items.Item)). The item that was deactivated.
+    - <a id="events.on_deactivate.item" name="events.on_deactivate.item"></a>**`item`** ([trx.items.Item](ITEMS.md#items.Item)). The item that was deactivated.
 
   Returns: [trx.events.Listener](#events.Listener). The attached handler.
 
@@ -317,9 +321,9 @@ An event that carries a default the script may take over says so in its descript
   [`trx.items.Item:on_destroy`](ITEMS.md#items.Item.on_destroy) is this same event, narrowed to one item.
 
   Parameters:
-  - **`callback`** (function).
+  - <a id="events.on_destroy.callback" name="events.on_destroy.callback"></a>**`callback`** (function). What to run when it happens.
     Called with:
-    - **`item`** ([trx.items.Item](ITEMS.md#items.Item)). The item being removed. Valid only for the duration of the handler.
+    - <a id="events.on_destroy.item" name="events.on_destroy.item"></a>**`item`** ([trx.items.Item](ITEMS.md#items.Item)). The item being removed. Valid only for the duration of the handler.
 
   Returns: [trx.events.Listener](#events.Listener). The attached handler.
 
@@ -336,9 +340,9 @@ An event that carries a default the script may take over says so in its descript
   [`trx.items.Item:on_enter_world`](ITEMS.md#items.Item.on_enter_world) is this same event, narrowed to one item.
 
   Parameters:
-  - **`callback`** (function).
+  - <a id="events.on_enter_world.callback" name="events.on_enter_world.callback"></a>**`callback`** (function). What to run when it happens.
     Called with:
-    - **`item`** ([trx.items.Item](ITEMS.md#items.Item)). The item that entered the world.
+    - <a id="events.on_enter_world.item" name="events.on_enter_world.item"></a>**`item`** ([trx.items.Item](ITEMS.md#items.Item)). The item that entered the world.
 
   Returns: [trx.events.Listener](#events.Listener). The attached handler.
 
@@ -355,9 +359,9 @@ An event that carries a default the script may take over says so in its descript
   [`trx.items.Item:on_leave_world`](ITEMS.md#items.Item.on_leave_world) is this same event, narrowed to one item.
 
   Parameters:
-  - **`callback`** (function).
+  - <a id="events.on_leave_world.callback" name="events.on_leave_world.callback"></a>**`callback`** (function). What to run when it happens.
     Called with:
-    - **`item`** ([trx.items.Item](ITEMS.md#items.Item)). The item that left the world.
+    - <a id="events.on_leave_world.item" name="events.on_leave_world.item"></a>**`item`** ([trx.items.Item](ITEMS.md#items.Item)). The item that left the world.
 
   Returns: [trx.events.Listener](#events.Listener). The attached handler.
 
@@ -377,10 +381,10 @@ An event that carries a default the script may take over says so in its descript
   [`trx.items.Item:on_hit`](ITEMS.md#items.Item.on_hit) is this same event, narrowed to one item.
 
   Parameters:
-  - **`callback`** (function).
+  - <a id="events.on_hit.callback" name="events.on_hit.callback"></a>**`callback`** (function). What to run when it happens.
     Called with:
-    - **`item`** ([trx.items.Item](ITEMS.md#items.Item)). The item that took the damage.
-    - **`damage`** (integer). Hit points taken, before clamping to zero.
+    - <a id="events.on_hit.item" name="events.on_hit.item"></a>**`item`** ([trx.items.Item](ITEMS.md#items.Item)). The item that took the damage.
+    - <a id="events.on_hit.damage" name="events.on_hit.damage"></a>**`damage`** (integer). Hit points taken, before clamping to zero.
 
   Returns: [trx.events.Listener](#events.Listener). The attached handler.
 
@@ -404,9 +408,9 @@ An event that carries a default the script may take over says so in its descript
   [`trx.items.Item:on_kill`](ITEMS.md#items.Item.on_kill) is this same event, narrowed to one item.
 
   Parameters:
-  - **`callback`** (function).
+  - <a id="events.on_kill.callback" name="events.on_kill.callback"></a>**`callback`** (function). What to run when it happens.
     Called with:
-    - **`item`** ([trx.items.Item](ITEMS.md#items.Item)). The item that was brought down.
+    - <a id="events.on_kill.item" name="events.on_kill.item"></a>**`item`** ([trx.items.Item](ITEMS.md#items.Item)). The item that was brought down.
 
   Returns: [trx.events.Listener](#events.Listener). The attached handler.
 
@@ -434,9 +438,9 @@ An event that carries a default the script may take over says so in its descript
   the engine has nothing of its own to do about them.
 
   Parameters:
-  - **`callback`** (function).
+  - <a id="events.on_cutscene_trigger.callback" name="events.on_cutscene_trigger.callback"></a>**`callback`** (function). What to run when it happens.
     Called with:
-    - **`cutscene_num`** ([trx.cutscenes.Num](CUTSCENES.md#cutscenes.Num)). The number the trigger names, which the game need not have a cutscene for.
+    - <a id="events.on_cutscene_trigger.cutscene_num" name="events.on_cutscene_trigger.cutscene_num"></a>**`cutscene_num`** ([trx.cutscenes.Num](CUTSCENES.md#cutscenes.Num)). The number the trigger names, which the game need not have a cutscene for.
 
   Returns: [trx.events.Listener](#events.Listener). The attached handler.
 
@@ -460,9 +464,9 @@ An event that carries a default the script may take over says so in its descript
   Happens when a TR4 cutscene's first frame is about to show, after the fade out.
 
   Parameters:
-  - **`callback`** (function).
+  - <a id="events.on_cutscene_start.callback" name="events.on_cutscene_start.callback"></a>**`callback`** (function). What to run when it happens.
     Called with:
-    - **`cutscene_num`** ([trx.cutscenes.Num](CUTSCENES.md#cutscenes.Num)).
+    - <a id="events.on_cutscene_start.cutscene_num" name="events.on_cutscene_start.cutscene_num"></a>**`cutscene_num`** ([trx.cutscenes.Num](CUTSCENES.md#cutscenes.Num)).
 
   Returns: [trx.events.Listener](#events.Listener). The attached handler.
 
@@ -470,9 +474,9 @@ An event that carries a default the script may take over says so in its descript
   Happens once a TR4 cutscene has finished and the scene it interrupted is back. This is where a script decides what follows.
 
   Parameters:
-  - **`callback`** (function).
+  - <a id="events.on_cutscene_end.callback" name="events.on_cutscene_end.callback"></a>**`callback`** (function). What to run when it happens.
     Called with:
-    - **`cutscene_num`** ([trx.cutscenes.Num](CUTSCENES.md#cutscenes.Num)).
+    - <a id="events.on_cutscene_end.cutscene_num" name="events.on_cutscene_end.cutscene_num"></a>**`cutscene_num`** ([trx.cutscenes.Num](CUTSCENES.md#cutscenes.Num)).
 
   Returns: [trx.events.Listener](#events.Listener). The attached handler.
 
@@ -488,9 +492,9 @@ An event that carries a default the script may take over says so in its descript
   A sequence that a cutscene or the player interrupts does not fire it.
 
   Parameters:
-  - **`callback`** (function).
+  - <a id="events.on_flyby_end.callback" name="events.on_flyby_end.callback"></a>**`callback`** (function). What to run when it happens.
     Called with:
-    - **`sequence_num`** ([trx.camera.SequenceNum](CAMERA.md#camera.SequenceNum)).
+    - <a id="events.on_flyby_end.sequence_num" name="events.on_flyby_end.sequence_num"></a>**`sequence_num`** ([trx.camera.SequenceNum](CAMERA.md#camera.SequenceNum)).
 
   Returns: [trx.events.Listener](#events.Listener). The attached handler.
 
@@ -505,7 +509,7 @@ An event that carries a default the script may take over says so in its descript
   Removes a previously attached handler, which stops firing immediately. [`trx.events.Listener:detach`](#events.Listener.detach) does the same to one held in hand.
 
   Parameters:
-  - **`listener`** ([trx.events.Listener](#events.Listener)).
+  - <a id="events.detach.listener" name="events.detach.listener"></a>**`listener`** ([trx.events.Listener](#events.Listener)). What the hook handed back when the handler was attached.
 
   Returns: boolean. Whether the handler was still attached. `false` means it had already been detached, or the level it belonged to has ended.
 

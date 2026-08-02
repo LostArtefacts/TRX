@@ -12,7 +12,7 @@ order: 26
 
 ## <a id="log" name="log"></a>Logging module
 
-Logs a message to the terminal and to `TRX.log` in the installation directory. Each call records the Lua script's filename, function name and line number.
+Logs a message to the terminal and to `TRX.log` in the installation directory.  Each call records the Lua script's filename, function name and line number.
 
 ### Enums
 
@@ -35,8 +35,8 @@ Logs a message to the terminal and to `TRX.log` in the installation directory. E
   Logs a message at a level chosen at runtime, for when the level is computed rather than written literally.
 
   Parameters:
-  - **`level`** ([trx.log.LogLevel](#log.LogLevel)).
-  - **`message`** (string).
+  - <a id="log.generic.level" name="log.generic.level"></a>**`level`** ([trx.log.LogLevel](#log.LogLevel)).
+  - <a id="log.generic.message" name="log.generic.message"></a>**`message`** (string). The line to log.
 
   Example:
   ```lua
@@ -48,7 +48,7 @@ Logs a message to the terminal and to `TRX.log` in the installation directory. E
   Logs an informational message.
 
   Parameters:
-  - **`message`** (string).
+  - <a id="log.info.message" name="log.info.message"></a>**`message`** (string). The line to log.
 
   Example:
   ```lua
@@ -59,22 +59,22 @@ Logs a message to the terminal and to `TRX.log` in the installation directory. E
   Logs a warning.
 
   Parameters:
-  - **`message`** (string).
+  - <a id="log.warn.message" name="log.warn.message"></a>**`message`** (string). The line to log.
 
 - <a id="log.warning" name="log.warning"></a>[lua]`trx.log.warning(message)`  
   Logs a warning. An alias of [`trx.log.warn`](#log.warn).
 
   Parameters:
-  - **`message`** (string).
+  - <a id="log.warning.message" name="log.warning.message"></a>**`message`** (string). The line to log.
 
 - <a id="log.error" name="log.error"></a>[lua]`trx.log.error(message)`  
   Logs an error.
 
   Parameters:
-  - **`message`** (string).
+  - <a id="log.error.message" name="log.error.message"></a>**`message`** (string). The line to log.
 
 - <a id="log.debug" name="log.debug"></a>[lua]`trx.log.debug(message)`  
   Logs a debug message.
 
   Parameters:
-  - **`message`** (string).
+  - <a id="log.debug.message" name="log.debug.message"></a>**`message`** (string). The line to log.

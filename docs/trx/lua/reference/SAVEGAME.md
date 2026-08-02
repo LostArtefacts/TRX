@@ -37,7 +37,7 @@ The save slots, and starting or reading a saved game.
   How many slots a pool has. The quick pool counts only the slots that hold a save, which is how it is shown and addressed.
 
   Parameters:
-  - **`pool`** ([trx.savegame.Pool](#savegame.Pool), optional). Which set of slots to look in. Defaults to `NORMAL`.
+  - <a id="savegame.slot_count.pool" name="savegame.slot_count.pool"></a>**`pool`** ([trx.savegame.Pool](#savegame.Pool), optional). Which set of slots to look in. Defaults to `NORMAL`.
 
   Returns:
   - integer. The number of slots.
@@ -46,8 +46,8 @@ The save slots, and starting or reading a saved game.
   Whether a slot holds no save.
 
   Parameters:
-  - **`slot_num`** ([trx.savegame.SlotNum](#savegame.SlotNum)).
-  - **`pool`** ([trx.savegame.Pool](#savegame.Pool), optional). Which set of slots to look in. Defaults to `NORMAL`.
+  - <a id="savegame.is_free.slot_num" name="savegame.is_free.slot_num"></a>**`slot_num`** ([trx.savegame.SlotNum](#savegame.SlotNum)).
+  - <a id="savegame.is_free.pool" name="savegame.is_free.pool"></a>**`pool`** ([trx.savegame.Pool](#savegame.Pool), optional). Which set of slots to look in. Defaults to `NORMAL`.
 
   Returns:
   - boolean. Whether the slot is empty.
@@ -56,8 +56,8 @@ The save slots, and starting or reading a saved game.
   Starts the saved game in a slot. The load happens once the game flow picks it up, not on the call.
 
   Parameters:
-  - **`slot_num`** ([trx.savegame.SlotNum](#savegame.SlotNum)).
-  - **`pool`** ([trx.savegame.Pool](#savegame.Pool), optional). Which set of slots to look in. Defaults to `NORMAL`.
+  - <a id="savegame.load.slot_num" name="savegame.load.slot_num"></a>**`slot_num`** ([trx.savegame.SlotNum](#savegame.SlotNum)).
+  - <a id="savegame.load.pool" name="savegame.load.pool"></a>**`pool`** ([trx.savegame.Pool](#savegame.Pool), optional). Which set of slots to look in. Defaults to `NORMAL`.
 
   Example:
   ```lua
@@ -68,8 +68,8 @@ The save slots, and starting or reading a saved game.
   Writes a saved game to a slot. A quick save with no slot number goes to the next slot in the rotation; with one, it saves to the slot named.
 
   Parameters:
-  - **`slot_num`** ([trx.savegame.SlotNum](#savegame.SlotNum), optional). The quick pool uses the next slot in its rotation when it is omitted.
-  - **`pool`** ([trx.savegame.Pool](#savegame.Pool), optional). Which set of slots to look in. Defaults to `NORMAL`.
+  - <a id="savegame.save.slot_num" name="savegame.save.slot_num"></a>**`slot_num`** ([trx.savegame.SlotNum](#savegame.SlotNum), optional). The quick pool uses the next slot in its rotation when it is omitted.
+  - <a id="savegame.save.pool" name="savegame.save.pool"></a>**`pool`** ([trx.savegame.Pool](#savegame.Pool), optional). Which set of slots to look in. Defaults to `NORMAL`.
 
   Returns:
   - boolean. Whether the save was written. `false` means the quick pool had no slot.

@@ -129,6 +129,13 @@ b_console = {
   'src': ['fakes/console.c', 'fakes/locale.c'],
 }
 
+# The trig bridge. A module that hands back a math.Box needs trx.math loaded,
+# and loading it means its own declarations resolve, so the bridge comes along.
+b_lua_math = {
+  'engine': ['core/math/trig.c', 'game/lua/capi/math.c'],
+  'deps': [dep_mathlibrary],
+}
+
 # One stanza per test. `name` is the test source, minus its .c, and mirrors what
 # the test exercises: src/tests/trx/core/vector.c tests src/trx/core/vector.c,
 # and src/tests/lua/api/music.c stands trx.music up out of src/lua/api/music.lua.
@@ -292,7 +299,7 @@ unit_tests += {
 
 unit_tests += {
   'name': 'lua/api/rooms',
-  'bundles': [b_lua_surface],
+  'bundles': [b_lua_surface, b_lua_math],
   'src': ['fakes/rooms.c', 'fakes/items.c'],
   'engine': [
     'game/lua/capi/events.c',
@@ -303,13 +310,13 @@ unit_tests += {
 
 unit_tests += {
   'name': 'lua/api/items',
-  'bundles': [b_lua_surface, b_lua_strings],
+  'bundles': [b_lua_surface, b_lua_strings, b_lua_math],
   'src': ['fakes/items.c', 'fakes/catalog.c'],
   'engine': [
+    'game/lua/capi/catalog.c',
     'game/lua/capi/events.c',
     'game/lua/capi/items.c',
     'game/lua/capi/objects.c',
-    'game/lua/capi/catalog.c',
   ],
 }
 
@@ -317,7 +324,7 @@ unit_tests += {
 # short of: the seal, and hardening the globals.
 unit_tests += {
   'name': 'lua/boot',
-  'bundles': [b_lua_surface],
+  'bundles': [b_lua_surface, b_lua_math],
   'src': ['fakes/items.c'],
   'engine': ['game/lua/capi/items.c'],
 }
@@ -325,9 +332,7 @@ unit_tests += {
 # No fake engine: the real trig tables are the thing under test.
 unit_tests += {
   'name': 'lua/api/math',
-  'bundles': [b_lua_surface],
-  'engine': ['game/lua/capi/math.c', 'core/math/trig.c'],
-  'deps': [dep_mathlibrary],
+  'bundles': [b_lua_surface, b_lua_math],
 }
 
 unit_tests += {
@@ -340,14 +345,17 @@ unit_tests += {
 # rooms rides along: trx.camera.room hands back a trx.rooms.Room.
 unit_tests += {
   'name': 'lua/api/camera',
-  'bundles': [b_lua_surface],
+  'bundles': [b_lua_surface, b_lua_math],
   'src': [
     'fakes/camera.c',
     'fakes/rooms.c',
     # for Room_GetIndexFromPos, which rooms.c reaches for
     'fakes/items.c',
   ],
-  'engine': ['game/lua/capi/rooms.c', 'game/lua/capi/camera.c'],
+  'engine': [
+    'game/lua/capi/camera.c',
+    'game/lua/capi/rooms.c',
+  ],
 }
 
 unit_tests += {
@@ -444,7 +452,7 @@ unit_tests += {
 # The catalog rides along: the weapons a script names are its enum.
 unit_tests += {
   'name': 'lua/api/inventory',
-  'bundles': [b_lua_surface],
+  'bundles': [b_lua_surface, b_lua_math],
   'src': ['fakes/game.c', 'fakes/lara.c', 'fakes/items.c', 'fakes/catalog.c'],
   'engine': [
     'game/lua/capi/catalog.c',
@@ -456,7 +464,7 @@ unit_tests += {
 
 unit_tests += {
   'name': 'lua/api/lara',
-  'bundles': [b_lua_surface],
+  'bundles': [b_lua_surface, b_lua_math],
   'src': ['fakes/lara.c', 'fakes/items.c', 'fakes/catalog.c'],
   'engine': [
     'game/lua/capi/catalog.c',
@@ -505,7 +513,7 @@ unit_tests += {
 # expected.
 unit_tests += {
   'name': 'lua/commands/heal',
-  'bundles': [b_lua_surface, b_console],
+  'bundles': [b_lua_surface, b_console, b_lua_math],
   'src': ['fakes/game.c', 'fakes/items.c', 'fakes/lara.c'],
   'engine': [
     'game/lua/capi/game.c',
@@ -574,7 +582,7 @@ unit_tests += {
 
 unit_tests += {
   'name': 'lua/commands/teleport',
-  'bundles': [b_lua_surface, b_console, b_lua_strings],
+  'bundles': [b_lua_surface, b_console, b_lua_strings, b_lua_math],
   'src': [
     'fakes/camera.c',
     'fakes/catalog.c',
@@ -589,7 +597,6 @@ unit_tests += {
     'game/lua/capi/game.c',
     'game/lua/capi/items.c',
     'game/lua/capi/lara.c',
-    'game/lua/capi/math.c',
     'game/lua/capi/objects.c',
     'game/lua/capi/rooms.c',
     'core/math/trig.c',
@@ -631,7 +638,7 @@ unit_tests += {
 
 unit_tests += {
   'name': 'lua/seal',
-  'bundles': [b_lua_surface],
+  'bundles': [b_lua_surface, b_lua_math],
   'src': ['fakes/items.c'],
   'engine': ['game/lua/capi/items.c'],
 }

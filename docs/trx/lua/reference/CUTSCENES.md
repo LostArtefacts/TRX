@@ -37,7 +37,7 @@ lists and `/cut` plays, are a different thing: see [`trx.game.cutscenes`](GAME.m
   Plays a cutscene, fading the scene out first. Does nothing if one is already playing or the game has no cutscene data.
 
   Parameters:
-  - **`num`** ([trx.cutscenes.Num](#cutscenes.Num)).
+  - <a id="cutscenes.play.num" name="cutscenes.play.num"></a>**`num`** ([trx.cutscenes.Num](#cutscenes.Num)).
 
   Example:
   ```lua
@@ -48,9 +48,9 @@ lists and `/cut` plays, are a different thing: see [`trx.game.cutscenes`](GAME.m
   Whether a cutscene trigger naming this number has already been answered.
 
   Parameters:
-  - **`num`** ([trx.cutscenes.Num](#cutscenes.Num)).
+  - <a id="cutscenes.is_played.num" name="cutscenes.is_played.num"></a>**`num`** ([trx.cutscenes.Num](#cutscenes.Num)).
 
-  Returns: boolean.
+  Returns: boolean. True once it has run, which is what keeps its trigger from firing again.
 
 - <a id="cutscenes.set_played" name="cutscenes.set_played"></a>[lua]`trx.cutscenes.set_played(num, played)`  
   Marks a cutscene as played or unplayed. Marking one as played keeps its
@@ -63,8 +63,8 @@ lists and `/cut` plays, are a different thing: see [`trx.game.cutscenes`](GAME.m
   [`trx.cutscenes.play`](#cutscenes.play) accepts.
 
   Parameters:
-  - **`num`** ([trx.cutscenes.Num](#cutscenes.Num)).
-  - **`played`** (boolean). Whether it counts as played.
+  - <a id="cutscenes.set_played.num" name="cutscenes.set_played.num"></a>**`num`** ([trx.cutscenes.Num](#cutscenes.Num)).
+  - <a id="cutscenes.set_played.played" name="cutscenes.set_played.played"></a>**`played`** (boolean). Whether it counts as played.
 
   Example:
   ```lua
@@ -84,8 +84,8 @@ lists and `/cut` plays, are a different thing: see [`trx.game.cutscenes`](GAME.m
   runs, and is forgotten once she has been placed.
 
   Parameters:
-  - **`pos`** (vec3). World position.
-  - **`rot`** (integer, optional). Facing angle, in the engine's own angle units. Defaults to `0`.
+  - <a id="cutscenes.set_lara_return.pos" name="cutscenes.set_lara_return.pos"></a>**`pos`** (vec3). World position.
+  - <a id="cutscenes.set_lara_return.rot" name="cutscenes.set_lara_return.rot"></a>**`rot`** (integer, optional). Facing angle, in the engine's own angle units. Defaults to `0`.
 
   Example:
   ```lua

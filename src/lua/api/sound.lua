@@ -6,6 +6,11 @@ api.module("sound", {
   description = "Module for playing sound effects.",
 })
 
+api.number("sound.SampleNum", {
+  description = "Sample number, in the numbering the loaded level carries. Not a "
+    .. "`trx.catalog.samples` name, which is the sound bank's own.",
+})
+
 api.type("sound.Sample", {
   backing = "SOUND_SAMPLE_VIEW",
   description = "A sound sample the current level carries. Reach them through `trx.sound.samples`. "
@@ -15,9 +20,8 @@ api.type("sound.Sample", {
   fields = {
     num = {
       from = "id",
-      type = "integer",
+      type = "sound.SampleNum",
       writable = false,
-      description = "The number the level gives this sample.",
     },
     volume = {
       from = "volume",
@@ -47,7 +51,10 @@ api.type("sound.Sample", {
 
   methods = {
     is_valid = {
-      returns = { type = "boolean" },
+      returns = {
+        type = "boolean",
+        description = "False once a level change has replaced the samples.",
+      },
       description = "Whether the loaded level still carries this sample.",
     },
     play = {
@@ -56,8 +63,16 @@ api.type("sound.Sample", {
           name = "opts",
           type = "table",
           optional = true,
-          description = "`pos`: a `{ x =, y =, z = }` world position to play from, which applies "
-            .. "pan and volume. Omit to play at full volume.",
+          description = "How to play it.",
+          fields = {
+            {
+              name = "pos",
+              type = "vec3",
+              optional = true,
+              description = "A world position to play from, which applies pan and volume. Omit to "
+                .. "play at full volume.",
+            },
+          },
         },
       },
       returns = {
@@ -81,15 +96,18 @@ api.type("sound.Stream", {
   fields = {
     sample_num = {
       from = "sample_id",
-      type = "integer",
+      type = "sound.SampleNum",
       writable = false,
-      description = "The sample this voice is playing, in the level's own numbering.",
+      description = "The sample this voice is playing.",
     },
   },
 
   methods = {
     is_valid = {
-      returns = { type = "boolean" },
+      returns = {
+        type = "boolean",
+        description = "False once the voice has fallen silent.",
+      },
       description = "Whether this voice is still playing.",
     },
     pause = {
@@ -188,8 +206,16 @@ api.define("sound.play", {
       name = "opts",
       type = "table",
       optional = true,
-      description = "`pos`: a `{ x =, y =, z = }` world position to play from, which applies pan "
-        .. "and volume. Omit to play at full volume.",
+      description = "How to play it.",
+      fields = {
+        {
+          name = "pos",
+          type = "vec3",
+          optional = true,
+          description = "A world position to play from, which applies pan and volume. Omit to "
+            .. "play at full volume.",
+        },
+      },
     },
   },
   returns = {

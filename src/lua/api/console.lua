@@ -84,7 +84,7 @@ end
 
 local Result = api.enum("console.Result", {
   backing = "COMMAND_RESULT",
-  description = "How a console command went. What a command's `run` gives back.",
+  description = "How a console command went. What a command's `trx.console.register.spec.run` gives back.",
   values = {
     OK = "It worked.",
     FAILURE = "It ran and could not do what was asked.",
@@ -193,7 +193,15 @@ api.define("console.eval", {
       name = "opts",
       type = "table",
       optional = true,
-      description = "`verbose`: show the command's output.",
+      description = "How to run it.",
+      fields = {
+        {
+          name = "verbose",
+          type = "boolean",
+          optional = true,
+          description = "Show the command's output.",
+        },
+      },
     },
   },
   examples = { [[trx.console.eval("play 1", { verbose = true })]] },
@@ -202,25 +210,53 @@ api.define("console.eval", {
 
 api.define("console.register", {
   description = "Registers a console command written in Lua.\n\n"
-    .. "Every command has a `trx.argparse` parser. `args` is an optional function that shapes it - "
+    .. "Every command has a `trx.argparse` parser. `trx.console.register.spec.args` is an optional "
+    .. "function that shapes it - "
     .. "it receives the parser and declares the arguments the command takes. A command that omits "
-    .. "`args` takes none, and reports so when handed one. The console completes the arguments from "
+    .. "`trx.console.register.spec.args` takes none, and reports so when handed one. The console completes the arguments from "
     .. "the parser, and answers `-h`/`--help` from it.\n\n"
-    .. "`run` receives the parsed values, a table keyed by argument name. What it gives back is a "
+    .. "`trx.console.register.spec.run` receives the parsed values, a table keyed by argument name. What it gives back is a "
     .. "`trx.console.Result`, and returning nothing means `OK`. It may return a message after that, "
     .. "which is logged to the console - as an error, for any result but `OK`. A line the parser "
-    .. "rejects is reported with what it expected, without reaching `run`.\n\n"
+    .. "rejects is reported with what it expected, without reaching `trx.console.register.spec.run`.\n\n"
     .. "A command lives for the whole run, so it can only be registered from a global script. A "
     .. "level script raises if it calls this: it runs again every time its level is loaded.",
   params = {
     {
       name = "spec",
       type = "table",
-      description = "`name`: the word the player types. `help`: a game string key for the help "
-        .. "text, optional. `args`: a function that shapes the parser, optional. `run`: the "
-        .. "function, called with the parsed arguments. `aliases`: other words that reach the same "
-        .. "command, optional; they dispatch but stay out of the command listing, and the help for "
-        .. "`name` shows them.",
+      description = "The command.",
+      fields = {
+        {
+          name = "name",
+          type = "string",
+          description = "The word the player types.",
+        },
+        {
+          name = "help",
+          type = "string",
+          optional = true,
+          description = "A game string key for the help text.",
+        },
+        {
+          name = "args",
+          type = "function",
+          optional = true,
+          description = "Shapes the parser.",
+        },
+        {
+          name = "run",
+          type = "function",
+          description = "Called with the parsed arguments.",
+        },
+        {
+          name = "aliases",
+          type = "table",
+          optional = true,
+          description = "Other words that reach the same command. They dispatch but stay out "
+            .. "of the command listing, and the help for the command shows them.",
+        },
+      },
     },
   },
   examples = {
@@ -357,13 +393,30 @@ local function descriptor(cmd)
 end
 
 api.define("console.commands", {
-  description = "Every registered console command, in registration order. Each is "
-    .. "`{ name, aliases, help }`: `name` is the word the player types, `aliases` the other "
-    .. "words that reach it (a list, or absent), and `help` the text the console shows for "
-    .. "`name --help` (absent when the command carries none). The help command is built on this.",
+  description = "Every registered console command, in registration order. The help command is "
+    .. "built on this.",
   returns = {
     type = "table",
-    description = "A list of `{ name, aliases, help }`.",
+    description = "The commands.",
+    list = true,
+    fields = {
+      {
+        name = "name",
+        type = "string",
+        description = "The word the player types.",
+      },
+      {
+        name = "aliases",
+        type = "table",
+        description = "The other words that reach it, or `nil` where it answers to one.",
+      },
+      {
+        name = "help",
+        type = "string",
+        description = "What the console shows for `--help`, or `nil` where the command "
+          .. "carries none.",
+      },
+    },
   },
   impl = function()
     local out = {}

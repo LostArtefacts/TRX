@@ -180,8 +180,8 @@ Her position, room and hit points are not here: she is an item like any other an
   Hangs an extra mesh on one of Lara's own, replacing whatever is there.
 
   Parameters:
-  - **`mesh`** ([trx.lara.Mesh](#lara.Mesh)). Which of Lara's meshes.
-  - **`extra_mesh`** ([trx.lara.ExtraMesh](#lara.ExtraMesh)). The mesh to hang on it.
+  - <a id="lara.set_extra_equipment.mesh" name="lara.set_extra_equipment.mesh"></a>**`mesh`** ([trx.lara.Mesh](#lara.Mesh)). Which of Lara's meshes.
+  - <a id="lara.set_extra_equipment.extra_mesh" name="lara.set_extra_equipment.extra_mesh"></a>**`extra_mesh`** ([trx.lara.ExtraMesh](#lara.ExtraMesh)). The mesh to hang on it.
 
   Example:
   ```lua
@@ -194,8 +194,8 @@ Her position, room and hit points are not here: she is an item like any other an
   The position is nudged into valid room geometry, so a spot inside a wall lands her beside it rather than in it. Somewhere with no floor within reach moves nothing.
 
   Parameters:
-  - **`pos`** (vec3). World position.
-  - **`room_num`** ([trx.rooms.Num](ROOMS.md#rooms.Num), optional). Without it, the room is found from the position.
+  - <a id="lara.teleport.pos" name="lara.teleport.pos"></a>**`pos`** (vec3). World position.
+  - <a id="lara.teleport.room_num" name="lara.teleport.room_num"></a>**`room_num`** ([trx.rooms.Num](ROOMS.md#rooms.Num), optional). Without it, the room is found from the position.
 
   Returns: boolean. Whether she was moved.
 
@@ -205,7 +205,7 @@ Her position, room and hit points are not here: she is an item like any other an
   ```
 
 - <a id="lara.cure_poison" name="lara.cure_poison"></a>[lua]`trx.lara.cure_poison()`  
-  Cures Lara's poisoning. Not the same as writing `0` to `poison`: the poison has a target as well as a current value, and clearing only the value lets it climb back.
+  Cures Lara's poisoning. Not the same as writing `0` to [`trx.lara.poison`](#lara.Lara.poison): the poison has a target as well as a current value, and clearing only the value lets it climb back.
 
 - <a id="lara.extinguish" name="lara.extinguish"></a>[lua]`trx.lara.extinguish()`  
   Puts Lara's fire out, and stops her being electrocuted with it.
@@ -217,4 +217,4 @@ Her position, room and hit points are not here: she is an item like any other an
   Takes the extra mesh back off, leaving Lara's own.
 
   Parameters:
-  - **`mesh`** ([trx.lara.Mesh](#lara.Mesh)). Which of Lara's meshes.
+  - <a id="lara.clear_equipment.mesh" name="lara.clear_equipment.mesh"></a>**`mesh`** ([trx.lara.Mesh](#lara.Mesh)). Which of Lara's meshes.
