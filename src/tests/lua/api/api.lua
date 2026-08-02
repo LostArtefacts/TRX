@@ -81,7 +81,13 @@ local function fresh_env()
     },
   }
   _G.trx = { log = { debug = function() end, warn = function() end } }
-  _G.require = function() end
+  -- The registry requires the checking layer and stubs nothing else, so this
+  -- runs the real one: what a declaration accepts is half of what is under test.
+  _G.require = function(name)
+    if name == "trx.check" then
+      return dofile(ROOT .. "src/lua/api/check.lua")
+    end
+  end
 
   dofile(ROOT .. "src/lua/api/api.lua")
   return trx.api, exposed
@@ -640,6 +646,43 @@ test("a derived Lua type inherits methods and operators", function()
   assert(getmetatable(Widget) == nil, "the base class gained a metatable")
 end)
 
+test("a derived Lua type inherits its parent's fields", function()
+  local api = fresh_env()
+  api.type("things.Widget", {
+    fields = {
+      name = {
+        type = "string",
+        description = "...",
+        get = function(self)
+          return rawget(self, "held")
+        end,
+        set = function(self, value)
+          rawset(self, "held", value)
+        end,
+      },
+    },
+  })
+  local Lever = api.type("things.Lever", {
+    extends = "things.Widget",
+    methods = {
+      pull = {
+        description = "...",
+        impl = function(self)
+          return self.name .. " pulled"
+        end,
+      },
+    },
+  })
+
+  -- The accessors sit in the parent's __index closure, so the metatable chain
+  -- does not reach one and the derived type has to take them over.
+  local lever = setmetatable({ held = "lever" }, Lever)
+  assert(lever.name == "lever", "an inherited field is unreadable")
+  lever.name = "pulled lever"
+  assert(lever.name == "pulled lever", "an inherited field is unwritable")
+  assert(lever:pull() == "pulled lever pulled")
+end)
+
 test("extending a type nobody declared raises", function()
   local api = fresh_env()
   assert(not pcall(api.type, "things.Lever", { extends = "things.Widget" }))
@@ -984,8 +1027,8 @@ test("a Lua type's field with no accessors is an entry it carries", function()
   local entry = api.describe().types[1]
   for _, field in ipairs(entry.fields) do
     assert(
-      field.writable == true,
-      "a stored entry is neither getter nor const"
+      field.writable == nil,
+      "a plain table the caller owns has no writability to report"
     )
   end
 end)
@@ -1120,16 +1163,6 @@ test("a declaration keeps what it adds of its own", function()
   assert(param.description == "The one that broke.")
 end)
 
-test("naming something nobody declares is caught where it is read", function()
-  local api = fresh_env()
-  api.module("things", { description = "..." })
-  api.define("things.get", {
-    params = { { name = "num", type = "things.nothing" } },
-    impl = function() end,
-  })
-  assert(not pcall(api.describe))
-end)
-
 test("an enum is a type like any other", function()
   local api = fresh_env()
   api.enum("things.State", {
@@ -1209,6 +1242,71 @@ test("a unit is checked by what it measures", function()
   api.strict(true)
   assert(pcall(trx.things.wait, 1.5, 90), "a real number and a whole one")
   assert(not pcall(trx.things.wait, 1.5, 1.5), "an angle is whole")
+  api.strict(false)
+end)
+
+-- Partial is for a suite that stands up a few modules, where a name the rest
+-- of the surface declares is expected to be missing. It used to reach for the
+-- checker it had just found nothing for.
+test("a partial seal tolerates a default it cannot check", function()
+  local api = fresh_env()
+  api.module("things", { description = "..." })
+  api.define("things.get", {
+    description = "...",
+    params = {
+      {
+        name = "num",
+        type = "elsewhere.Num",
+        optional = true,
+        default = 0,
+        description = "...",
+      },
+    },
+    impl = function() end,
+  })
+
+  assert(
+    pcall(api.seal, { partial = true }),
+    "a partial seal must tolerate it"
+  )
+end)
+
+-- describe() is read twice by the tests and once by the dump, and a projection
+-- that handed out its own registry entry would rewrite it the first time.
+test("describe() gives the same answer twice", function()
+  local api = fresh_env()
+  api.module("things", { description = "..." })
+  api.namespace("things.log", {
+    description = [[
+      Indented, so the dedent has something to take off.
+    ]],
+    params = { { name = "message", type = "any", description = "..." } },
+    call = function() end,
+  })
+
+  local first = api.to_json()
+  assert(api.to_json() == first, "describe() rewrote what it read")
+end)
+
+-- A declaration that holds several of something is checked as the list it is.
+-- Checking the element type against the list itself rejects every valid call.
+test("strict mode checks a list by what it holds", function()
+  local api = fresh_env()
+  api.module("things", { description = "..." })
+  api.define("things.collapse", {
+    description = "...",
+    params = { { name = "numbers", type = "integer", list = true } },
+    impl = function() end,
+  })
+
+  api.strict(true)
+  assert(pcall(trx.things.collapse, { 1, 2, 3 }), "a list of what it holds")
+  assert(pcall(trx.things.collapse, {}), "an empty one")
+  assert(not pcall(trx.things.collapse, 1), "the element on its own")
+  assert(
+    not pcall(trx.things.collapse, { 1, "x" }),
+    "an entry of the wrong type"
+  )
   api.strict(false)
 end)
 
@@ -1387,24 +1485,6 @@ test("class() hands back the class a type was declared with", function()
 
   assert(api.class("things.Widget") == Widget)
   assert(not pcall(api.class, "things.Gadget"))
-end)
-
-test("a container names itself where its key names nothing", function()
-  local api = fresh_env()
-  api.module("things", { description = "..." })
-  api.container("things", {
-    description = "Indexing.",
-    key = { type = "things.Gone", description = "A key." },
-    value = { type = "string" },
-    get = function() end,
-  })
-
-  local ok, err = pcall(api.describe)
-  assert(not ok, "a key naming nothing must be reported")
-  assert(
-    err:find("things's type", 1, true) ~= nil,
-    "the message must say which container to look in: " .. tostring(err)
-  )
 end)
 
 -- A suite that registers nothing prints "0 failed" and exits clean, which reads

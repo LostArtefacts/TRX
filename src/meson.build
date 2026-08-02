@@ -43,6 +43,7 @@ trx_lua_api_sources = files(
   'lua/api/assault.lua',
   'lua/api/camera.lua',
   'lua/api/catalog.lua',
+  'lua/api/check.lua',
   'lua/api/config.lua',
   'lua/api/console.lua',
   'lua/api/creatures.lua',

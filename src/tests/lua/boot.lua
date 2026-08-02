@@ -16,9 +16,10 @@ test("the loader and the globals it feeds are gone", function()
   assert(string.dump == nil, "string.dump feeds the loader")
 end)
 
--- Strict mode compiles its wrappers with load(), which api.lua captures at
--- module scope because hardening nils the global. Every other strict test runs
--- unhardened and would not notice if that capture went.
+-- Strict mode rebinds every registered function, and api.lua reaches the C
+-- bridge to do it through the reference it captured at module scope, because
+-- hardening nils the global. Every other strict test runs unhardened and would
+-- not notice if that capture went.
 test("strict mode still works once the globals are hardened", function()
   trx.api.strict(true)
 

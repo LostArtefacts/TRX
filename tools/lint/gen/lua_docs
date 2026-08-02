@@ -648,7 +648,10 @@ def render_type(spec: dict) -> list[str]:
         out.append(f"{INDENT}Properties:")
         for field in spec["fields"]:
             at(f"{spec['path']}.{field['name']}")
-            suffix = "" if field.get("writable") else " *(read-only)*"
+            # A handle's field addresses a struct member and a Lua class's is a
+            # pair of accessors, so either may be read-only. A record a call
+            # hands back says nothing either way, and carries no key.
+            suffix = "" if field.get("writable") is not False else " *(read-only)*"
             out.extend(
                 render_lead(
                     f"{INDENT}- {anchor(spec['path'] + '.' + field['name'])}"

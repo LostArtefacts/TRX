@@ -2617,7 +2617,7 @@
   ],
   "functions": [
     {
-      "description": "Turns argument checking on or off for every function in `trx`, and for the methods on its handles. Off by default: checking costs about 100ns a call, which a per-frame handler notices. Turn it on while writing a level, and leave it off in play.",
+      "description": "Turns argument checking on or off for every function in `trx`, and for the\nmethods on its handles. Off by default: checking costs a couple of hundred\nnanoseconds a call, which a per-frame handler notices. Turn it on while\nwriting a level, and leave it off in play.",
       "examples": [
         "trx.api.strict(true)"
       ],
@@ -6453,26 +6453,22 @@
         {
           "description": "The code bits it set, `1` to `31`.",
           "name": "mask",
-          "type": "integer",
-          "writable": true
+          "type": "integer"
         },
         {
           "description": "Whether it fires only the once.",
           "name": "one_shot",
-          "type": "boolean",
-          "writable": true
+          "type": "boolean"
         },
         {
           "description": "How long it keeps the item going.",
           "name": "timer",
-          "type": "game.Seconds",
-          "writable": true
+          "type": "game.Seconds"
         },
         {
           "description": "The kind of trigger it was.",
           "name": "type",
-          "type": "items.TriggerType",
-          "writable": true
+          "type": "items.TriggerType"
         }
       ],
       "handle": false,
@@ -7467,38 +7463,32 @@
         {
           "description": "East edge.",
           "name": "max_x",
-          "type": "math.Distance",
-          "writable": true
+          "type": "math.Distance"
         },
         {
           "description": "Bottom edge.",
           "name": "max_y",
-          "type": "math.Distance",
-          "writable": true
+          "type": "math.Distance"
         },
         {
           "description": "South edge.",
           "name": "max_z",
-          "type": "math.Distance",
-          "writable": true
+          "type": "math.Distance"
         },
         {
           "description": "West edge.",
           "name": "min_x",
-          "type": "math.Distance",
-          "writable": true
+          "type": "math.Distance"
         },
         {
           "description": "Top edge.",
           "name": "min_y",
-          "type": "math.Distance",
-          "writable": true
+          "type": "math.Distance"
         },
         {
           "description": "North edge.",
           "name": "min_z",
-          "type": "math.Distance",
-          "writable": true
+          "type": "math.Distance"
         }
       ],
       "handle": false,
