@@ -38,7 +38,7 @@ Not to be confused with [`trx.locale`](LOCALE.md#locale), which is the text a pl
 
   Parameters:
   - <a id="strings.fuzzy_match.input" name="strings.fuzzy_match.input"></a>**`input`** (string). What the player typed.
-  - <a id="strings.fuzzy_match.sources" name="strings.fuzzy_match.sources"></a>**`sources`** (table). The candidates.
+  - <a id="strings.fuzzy_match.sources" name="strings.fuzzy_match.sources"></a>**`sources`** (a list of table). The candidates.
 
     Each entry:
     - <a id="strings.fuzzy_match.sources.key" name="strings.fuzzy_match.sources.key"></a>**`key`** (string). The name to match against. Non-empty.
@@ -75,7 +75,7 @@ Not to be confused with [`trx.locale`](LOCALE.md#locale), which is the text a pl
   The list is sorted first, and duplicates survive as they are, so the caller need not tidy up before handing it over.
 
   Parameters:
-  - <a id="strings.collapse_ranges.numbers" name="strings.collapse_ranges.numbers"></a>**`numbers`** (table). List of integers.
+  - <a id="strings.collapse_ranges.numbers" name="strings.collapse_ranges.numbers"></a>**`numbers`** (a list of integer). The numbers to write out.
   - <a id="strings.collapse_ranges.separator" name="strings.collapse_ranges.separator"></a>**`separator`** (string, optional). What to put between the parts. Defaults to `", "`.
 
   Returns: string. Empty when the list is.

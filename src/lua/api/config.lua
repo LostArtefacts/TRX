@@ -34,7 +34,8 @@ api.type("config.Shape", {
         .. "percentage.",
     },
     values = {
-      type = "table",
+      type = "string",
+      list = true,
       description = "What the setting accepts, for the enum kinds. `nil` for the rest.",
     },
   },

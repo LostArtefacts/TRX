@@ -666,6 +666,22 @@ class TestLuaDocs(unittest.TestCase):
                 docs.read(surface)
                 self.assertEqual(docs.undocumented(surface), [expected])
 
+    def test_a_result_holding_several_is_named_by_the_call(self):
+        """A parameter still says what it is for; only a result is let off."""
+        surface = copy.deepcopy(SURFACE)
+        returns = surface["types"][0]["methods"][0]["returns"]
+        del returns["description"]
+        returns["list"] = True
+        docs.read(surface)
+        self.assertEqual(docs.undocumented(surface), [])
+
+        surface = copy.deepcopy(SURFACE)
+        param = surface["functions"][0]["params"][1]
+        del param["description"]
+        param["list"] = True
+        docs.read(surface)
+        self.assertEqual(docs.undocumented(surface), ["things.spawn(angle)"])
+
     def test_a_type_naming_nothing_stops_the_run(self):
         """The engine emits what it was told; resolving it is this tool's job."""
         surface = copy.deepcopy(SURFACE)

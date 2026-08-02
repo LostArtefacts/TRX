@@ -66,12 +66,12 @@ trx.objects.wolf.properties.max_hit_points = 30
     - <a id="objects.Object.get_default_names" name="objects.Object.get_default_names"></a>[lua]`object:get_default_names()`  
       The compile-time English names, which a lookup falls back on before a language file is loaded. Prefer [`default_names`](#objects.Object.default_names).
 
-      Returns: table. The names, as a list of strings.
+      Returns: a list of string.
 
     - <a id="objects.Object.get_names" name="objects.Object.get_names"></a>[lua]`object:get_names()`  
       Every name the object answers to, in the player's language. Prefer [`names`](#objects.Object.names).
 
-      Returns: table. The names, as a list of strings.
+      Returns: a list of string.
 
     - <a id="objects.Object.get_property" name="objects.Object.get_property"></a>[lua]`object:get_property(name)`  
       Reads one of the object's properties. Prefer `object.properties.<name>`.
@@ -84,7 +84,7 @@ trx.objects.wolf.properties.max_hit_points = 30
     - <a id="objects.Object.get_property_names" name="objects.Object.get_property_names"></a>[lua]`object:get_property_names()`  
       Names of every property this object declares.
 
-      Returns: table. The names, as a list of strings.
+      Returns: a list of string.
 
     - <a id="objects.Object.set_property" name="objects.Object.set_property"></a>[lua]`object:set_property(name, value)`  
       Writes one of the object's properties. Prefer `object.properties.<name> = ...`.

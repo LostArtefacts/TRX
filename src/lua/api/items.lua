@@ -784,8 +784,8 @@ lara:take_damage(lara.hit_points)]],
 
     get_property_names = {
       returns = {
-        type = "table",
-        description = "The names, as a list of strings.",
+        type = "string",
+        list = true,
       },
       description = "Names of every property this item's object declares.",
     },

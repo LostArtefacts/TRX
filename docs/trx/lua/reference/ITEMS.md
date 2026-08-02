@@ -196,7 +196,7 @@ end
     - <a id="items.Item.get_property_names" name="items.Item.get_property_names"></a>[lua]`item:get_property_names()`  
       Names of every property this item's object declares.
 
-      Returns: table. The names, as a list of strings.
+      Returns: a list of string.
 
     - <a id="items.Item.is_valid" name="items.Item.is_valid"></a>[lua]`item:is_valid()`  
       Whether the handle still refers to a live item. Reading or writing a field on a stale handle raises an error rather than silently operating on an unrelated item, so check this for a handle held across time.

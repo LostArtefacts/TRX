@@ -3204,9 +3204,10 @@
             },
             {
               "description": "Other words that reach the same command. They dispatch but stay out of the command listing, and the help for the command shows them.",
+              "list": true,
               "name": "aliases",
               "optional": true,
-              "type": "table"
+              "type": "string"
             }
           ],
           "name": "spec",
@@ -4712,8 +4713,9 @@
       "params": [],
       "path": "rules.list",
       "returns": {
-        "description": "The keys, in no particular order.",
-        "type": "table"
+        "description": "In no particular order.",
+        "list": true,
+        "type": "string"
       }
     },
     {
@@ -4978,9 +4980,10 @@
       ],
       "params": [
         {
-          "description": "List of integers.",
+          "description": "The numbers to write out.",
+          "list": true,
           "name": "numbers",
-          "type": "table"
+          "type": "integer"
         },
         {
           "description": "What to put between the parts. Defaults to `\", \"`.",
@@ -5445,21 +5448,24 @@
       "writable": true
     },
     {
-      "description": "The levels of the game, in order, as a list of `trx.game.Level` counted from one.",
+      "description": "The levels of the game, in order, counted from one.",
+      "list": true,
       "path": "game.levels",
-      "type": "table",
+      "type": "game.Level",
       "writable": false
     },
     {
-      "description": "The cutscene levels, as a list of `trx.game.Level` counted from one. TR4's in-game cutscenes are a different thing, and live in `trx.cutscenes`.",
+      "description": "The cutscene levels, counted from one. TR4's in-game cutscenes are a different thing, and live in `trx.cutscenes`.",
+      "list": true,
       "path": "game.cutscenes",
-      "type": "table",
+      "type": "game.Level",
       "writable": false
     },
     {
-      "description": "The demos, as a list of `trx.game.Level` counted from one.",
+      "description": "The demos, counted from one.",
+      "list": true,
       "path": "game.demos",
-      "type": "table",
+      "type": "game.Level",
       "writable": false
     },
     {
@@ -5553,9 +5559,10 @@
       "writable": false
     },
     {
-      "description": "The mods the game was built with, as a list of `trx.mod.Mod` counted from one.",
+      "description": "The mods the game was built with, counted from one.",
+      "list": true,
       "path": "mod.list",
-      "type": "table",
+      "type": "mod.Mod",
       "writable": false
     },
     {
@@ -5778,8 +5785,9 @@
           ],
           "returns": [
             {
-              "description": "The candidates, best first.",
-              "type": "table"
+              "description": "Best first.",
+              "list": true,
+              "type": "string"
             },
             {
               "description": "Where the run they replace starts. The run is the token, or the whole tail a greedy argument swallows; in whitespace it is empty, at the caret.",
@@ -6042,8 +6050,9 @@
         },
         {
           "description": "What the setting accepts, for the enum kinds. `nil` for the rest.",
+          "list": true,
           "name": "values",
-          "type": "table"
+          "type": "string"
         }
       ],
       "handle": false,
@@ -6057,8 +6066,9 @@
       "fields": [
         {
           "description": "The other words that reach it, or `nil` where it answers to one.",
+          "list": true,
           "name": "aliases",
-          "type": "table"
+          "type": "string"
         },
         {
           "description": "What the console shows for `--help`, or `nil` where the command carries none.",
@@ -6745,8 +6755,8 @@
           "description": "Names of every property this item's object declares.",
           "name": "get_property_names",
           "returns": {
-            "description": "The names, as a list of strings.",
-            "type": "table"
+            "list": true,
+            "type": "string"
           }
         },
         {
@@ -7760,16 +7770,16 @@
           "description": "The compile-time English names, which a lookup falls back on before a language file is loaded. Prefer `trx.objects.Object.default_names`.",
           "name": "get_default_names",
           "returns": {
-            "description": "The names, as a list of strings.",
-            "type": "table"
+            "list": true,
+            "type": "string"
           }
         },
         {
           "description": "Every name the object answers to, in the player's language. Prefer `trx.objects.Object.names`.",
           "name": "get_names",
           "returns": {
-            "description": "The names, as a list of strings.",
-            "type": "table"
+            "list": true,
+            "type": "string"
           }
         },
         {
@@ -7792,8 +7802,8 @@
           "description": "Names of every property this object declares.",
           "name": "get_property_names",
           "returns": {
-            "description": "The names, as a list of strings.",
-            "type": "table"
+            "list": true,
+            "type": "string"
           }
         },
         {
@@ -8037,16 +8047,19 @@
           "description": "The matching ids. For objects these are object ids; for items, their numbers.",
           "name": "ids",
           "returns": {
-            "description": "A list of integers.",
-            "type": "table"
+            "list": true,
+            "type": "integer"
           }
         },
         {
           "description": "The matching handles.",
           "name": "matches",
           "returns": {
-            "description": "A list of `trx.objects.Object`s or `trx.items.Item`s.",
-            "type": "table"
+            "list": true,
+            "type": [
+              "objects.Object",
+              "items.Item"
+            ]
           }
         },
         {
@@ -8106,8 +8119,8 @@
           "description": "The ids tied for the best `trx.query.NamedQuery:by_name` score: one for a name only one thing answers to, the whole group for a group name. Without a `trx.query.NamedQuery:by_name`, every matching id.",
           "name": "best",
           "returns": {
-            "description": "A list of integers.",
-            "type": "table"
+            "list": true,
+            "type": "integer"
           }
         },
         {
@@ -8132,8 +8145,8 @@
           "description": "Every name the matches answer to, for offering completions. The group names any match belongs to come first, because a completer offers the list in order and a group name that ties on score would otherwise sit behind a thing's own. Which groups answer follows from what the query kept, so one narrowed to what fights offers no `trx.objects.ObjectQuery:pickup`.",
           "name": "names",
           "returns": {
-            "description": "A list of names.",
-            "type": "table"
+            "list": true,
+            "type": "string"
           }
         }
       ],

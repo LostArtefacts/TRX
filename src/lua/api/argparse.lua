@@ -1000,7 +1000,7 @@ Parser = api.type("argparse.Parser", {
         },
       },
       returns = {
-        { type = "table", description = "The candidates, best first." },
+        { type = "string", list = true, description = "Best first." },
         {
           type = "integer",
           description = "Where the run they replace starts. The run is the token, or the "

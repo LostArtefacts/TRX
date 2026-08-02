@@ -35,7 +35,7 @@ again on every entry, so a level that wants the defaults back asks for them.
 - <a id="rules.list" name="rules.list"></a>[lua]`trx.rules.list()`  
   Every rule there is, as dotted `group.field` keys.
 
-  Returns: table. The keys, in no particular order.
+  Returns: a list of string. In no particular order.
 
 - <a id="rules.get" name="rules.get"></a>[lua]`trx.rules.get(key)`  
   Reads a rule by its key, for code that does not know which one it wants.

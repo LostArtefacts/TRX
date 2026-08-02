@@ -135,16 +135,16 @@ local Object = api.type("objects.Object", {
   methods = {
     get_names = {
       returns = {
-        type = "table",
-        description = "The names, as a list of strings.",
+        type = "string",
+        list = true,
       },
       description = "Every name the object answers to, in the player's language. Prefer "
         .. "`trx.objects.Object.names`.",
     },
     get_default_names = {
       returns = {
-        type = "table",
-        description = "The names, as a list of strings.",
+        type = "string",
+        list = true,
       },
       description = "The compile-time English names, which a lookup falls back on before a "
         .. "language file is loaded. Prefer `trx.objects.Object.default_names`.",
@@ -181,8 +181,8 @@ local Object = api.type("objects.Object", {
     },
     get_property_names = {
       returns = {
-        type = "table",
-        description = "The names, as a list of strings.",
+        type = "string",
+        list = true,
       },
       description = "Names of every property this object declares.",
     },
