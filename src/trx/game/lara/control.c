@@ -162,7 +162,7 @@ static void M_WaterCurrent_TR12(COLL_INFO *const coll)
     }
 
     if (coll->side_mid.floor < 0) {
-        lara_item->pos.y += coll->side_mid.floor;
+        Lara_Col_AlignToFloor(lara_item, coll);
         lara_item->rot.x += LARA_UW_WALL_DEFLECT;
     }
     Lara_Col_Shift(coll);
@@ -263,9 +263,8 @@ static void M_WaterCurrent_TR34(COLL_INFO *const coll)
         break;
     }
 
-    if (coll->side_mid.floor < 0
-        && (g_TRVersion == 3 || coll->side_mid.floor != NO_HEIGHT)) {
-        lara_item->pos.y += coll->side_mid.floor;
+    if (coll->side_mid.floor < 0) {
+        Lara_Col_AlignToFloor(lara_item, coll);
     }
 
     Lara_Col_Shift(coll);

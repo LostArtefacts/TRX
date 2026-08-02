@@ -281,7 +281,7 @@ static void M_NeutralJumpRoll(ITEM *const item, COLL_INFO *const coll)
         item->speed = 0;
         item->pos = coll->old_pos;
     } else if (coll->side_mid.floor <= STEPUP_HEIGHT) {
-        item->pos.y += coll->side_mid.floor;
+        Lara_Col_AlignToFloor(item, coll);
     }
 }
 
@@ -337,7 +337,7 @@ static void M_UpJump(ITEM *const item, COLL_INFO *const coll)
     }
     item->gravity = false;
     item->fall_speed = 0;
-    item->pos.y += coll->side_mid.floor;
+    Lara_Col_AlignToFloor(item, coll);
 }
 
 static void M_ForwardJump(ITEM *const item, COLL_INFO *const coll)
@@ -394,7 +394,7 @@ static void M_ForwardJump(ITEM *const item, COLL_INFO *const coll)
 
     item->gravity = false;
     item->fall_speed = 0;
-    item->pos.y += coll->side_mid.floor;
+    Lara_Col_AlignToFloor(item, coll);
     item->speed = 0;
     if (g_Config.gameplay.wall_glitch_mode != WALL_GLITCH_FIXED
         || coll->side_front.type != COLL_FRONT) {
@@ -448,7 +448,7 @@ static void M_SideBackJump(ITEM *const item, COLL_INFO *const coll)
     }
     item->gravity = false;
     item->fall_speed = 0;
-    item->pos.y += coll->side_mid.floor;
+    Lara_Col_AlignToFloor(item, coll);
 }
 
 static void M_FallBack(ITEM *const item, COLL_INFO *const coll)
@@ -480,7 +480,7 @@ static void M_FallBack(ITEM *const item, COLL_INFO *const coll)
 
     item->gravity = false;
     item->fall_speed = 0;
-    item->pos.y += coll->side_mid.floor;
+    Lara_Col_AlignToFloor(item, coll);
 }
 
 static void M_Reach(ITEM *const item, COLL_INFO *const coll)
@@ -518,7 +518,7 @@ static void M_Reach(ITEM *const item, COLL_INFO *const coll)
 
     item->gravity = false;
     item->fall_speed = 0;
-    item->pos.y += coll->side_mid.floor;
+    Lara_Col_AlignToFloor(item, coll);
 }
 
 static void M_SwanDive(ITEM *const item, COLL_INFO *const coll)
@@ -539,7 +539,7 @@ static void M_SwanDive(ITEM *const item, COLL_INFO *const coll)
     item->goal_anim_state = LS(LS_STOP);
     item->gravity = false;
     item->fall_speed = 0;
-    item->pos.y += coll->side_mid.floor;
+    Lara_Col_AlignToFloor(item, coll);
 }
 
 static void M_FastDive(ITEM *const item, COLL_INFO *const coll)
@@ -565,7 +565,7 @@ static void M_FastDive(ITEM *const item, COLL_INFO *const coll)
     }
     item->gravity = false;
     item->fall_speed = 0;
-    item->pos.y += coll->side_mid.floor;
+    Lara_Col_AlignToFloor(item, coll);
 }
 
 static void M_FastFall(ITEM *const item, COLL_INFO *const coll)
@@ -597,7 +597,7 @@ static void M_FastFall(ITEM *const item, COLL_INFO *const coll)
     Sound_StopEffect(SFX_LARA_FALL);
     item->gravity = false;
     item->fall_speed = 0;
-    item->pos.y += coll->side_mid.floor;
+    Lara_Col_AlignToFloor(item, coll);
 }
 
 EDGE_CATCH Lara_Col_TestEdgeCatch(

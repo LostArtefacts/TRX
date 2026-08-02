@@ -295,7 +295,7 @@ static void M_Swim(ITEM *const item, COLL_INFO *const coll)
 
     if (coll->side_mid.floor < 0) {
         item->rot.x += LARA_UW_WALL_DEFLECT;
-        item->pos.y = coll->side_mid.floor + item->pos.y;
+        Lara_Col_AlignToFloor(item, coll);
     }
 
     if (g_Config.gameplay.enable_wading && lara->water_status != LWS_CHEAT

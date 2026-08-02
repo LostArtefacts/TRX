@@ -96,7 +96,7 @@ static void M_CrouchShift(ITEM *const item, COLL_INFO *const coll)
     }
 
     Lara_Col_Shift(coll);
-    item->pos.y += coll->side_mid.floor;
+    Lara_Col_AlignToFloor(item, coll);
 }
 
 static void M_Crouch(ITEM *const item, COLL_INFO *const coll)
@@ -181,7 +181,7 @@ static void M_CrouchRoll(ITEM *const item, COLL_INFO *const coll)
             item->pos = coll->old_pos;
             item->speed = 0;
         } else {
-            item->pos.y += coll->side_mid.floor;
+            Lara_Col_AlignToFloor(item, coll);
         }
     }
 }
@@ -414,7 +414,7 @@ static void M_CrawlBack(ITEM *const item, COLL_INFO *const coll)
         lara->gun_status = LGS_ARMLESS;
     } else {
         Lara_Col_Shift(coll);
-        item->pos.y += coll->side_mid.floor;
+        Lara_Col_AlignToFloor(item, coll);
         lara->move_angle = item->rot.y;
     }
 }

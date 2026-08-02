@@ -137,6 +137,14 @@ void Lara_Col_Shift(COLL_INFO *const coll)
     Collide_ShiftItem(Lara_GetItem(), coll);
 }
 
+void Lara_Col_AlignToFloor(ITEM *const item, const COLL_INFO *const coll)
+{
+    if (coll->side_mid.floor != NO_HEIGHT
+        || g_Config.gameplay.wall_glitch_mode != WALL_GLITCH_FIXED) {
+        item->pos.y += coll->side_mid.floor;
+    }
+}
+
 void Lara_Col_MonkeySwingSnap(ITEM *const item)
 {
     int16_t room_num = item->room_num;
