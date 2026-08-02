@@ -55,9 +55,9 @@ api.define("cutscenes.set_played", {
 
     A trigger may name a number the game has no cutscene for - TR4 uses 32 to
     ask for a full-motion video - and the engine remembers those the same way,
-    so `on_cutscene_trigger` hears about each of them once. This is what clears
+    so `trx.events.on_cutscene_trigger` hears about each of them once. This is what clears
     that memory, and it takes any number a trigger may carry, not only the ones
-    `play` accepts.
+    `trx.cutscenes.play` accepts.
   ]],
   params = {
     { name = "num", type = "cutscenes.Num" },
@@ -83,7 +83,7 @@ api.define("cutscenes.set_lara_return", {
     afterwards; this says to put her somewhere else instead, as the original
     game does for the scenes that carry her along.
 
-    It holds for one cutscene, whether named before `play` or while the scene
+    It holds for one cutscene, whether named before `trx.cutscenes.play` or while the scene
     runs, and is forgotten once she has been placed.
   ]],
   params = {

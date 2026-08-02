@@ -10,7 +10,7 @@ order: 28
   src/lua/api/strings.lua. Edit it there.
 -->
 
-## Strings module
+## <a id="strings" name="strings"></a>Strings module
 
 Utilities for working with strings.
 
@@ -18,7 +18,7 @@ Not to be confused with [`trx.locale`](LOCALE.md#locale), which is the text a pl
 
 ### Functions
 
-- <a name="strings.fuzzy_match"></a>[lua]`trx.strings.fuzzy_match(input, sources)`  
+- <a id="strings.fuzzy_match" name="strings.fuzzy_match"></a>[lua]`trx.strings.fuzzy_match(input, sources)`  
   Matches what someone typed against a list of candidates, forgivingly: `big medi` finds `large medipack`.
 
   Candidates are ranked, best first. Each carries a `value` of the caller's choosing, which comes back untouched on the match - hang an id off it and read it back.
@@ -38,7 +38,7 @@ Not to be confused with [`trx.locale`](LOCALE.md#locale), which is the text a pl
   local best = matches[1]
   ```
 
-- <a name="strings.parse_bool"></a>[lua]`trx.strings.parse_bool(text)`  
+- <a id="strings.parse_bool" name="strings.parse_bool"></a>[lua]`trx.strings.parse_bool(text)`  
   Reads a boolean the way the console does: `1`, `true` or `on` for true, `0`, `false` or `off` for false, in any case. Anything else is not a boolean.
 
   Parameters:
@@ -51,7 +51,7 @@ Not to be confused with [`trx.locale`](LOCALE.md#locale), which is the text a pl
   local on = trx.strings.parse_bool("on")
   ```
 
-- <a name="strings.collapse_ranges"></a>[lua]`trx.strings.collapse_ranges(numbers, [separator])`  
+- <a id="strings.collapse_ranges" name="strings.collapse_ranges"></a>[lua]`trx.strings.collapse_ranges(numbers, [separator])`  
   Writes a list of whole numbers as ranges, so that a long run reads as one: `{ 0, 2, 3, 4, 9 }` becomes `0, 2-4, 9`.
 
   The list is sorted first, and duplicates survive as they are, so the caller need not tidy up before handing it over.
@@ -67,7 +67,7 @@ Not to be confused with [`trx.locale`](LOCALE.md#locale), which is the text a pl
   trx.strings.collapse_ranges({ 4, 1, 2, 3 }) -- "1-4"
   ```
 
-- <a name="strings.regex_match"></a>[lua]`trx.strings.regex_match(subject, pattern)`  
+- <a id="strings.regex_match" name="strings.regex_match"></a>[lua]`trx.strings.regex_match(subject, pattern)`  
   Whether a subject matches a regular expression. Case-insensitive.
 
   Parameters:

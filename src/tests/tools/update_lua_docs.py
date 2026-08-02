@@ -29,6 +29,7 @@ def rendered(surface, module=None):
     when the next one renders.
     """
     for table in (
+        docs.ALIASES,
         docs.NUMBERS,
         docs.ANCHORS,
         docs.TYPE_PATHS,
@@ -228,6 +229,66 @@ class TestLuaDocs(unittest.TestCase):
         # A member that points nowhere reads as the type it declares.
         locked = next(line for line in page.splitlines() if "`locked`" in line)
         self.assertIn("**`locked`**: integer.", locked)
+
+    def test_a_reference_reads_short_only_among_members_of_one_thing(self):
+        """A path in prose is written in full and reads as far as it has to.
+
+        Between members of one type or group the name alone is enough, and the
+        module and the path it hangs off are noise. Anywhere else the reader
+        needs the whole path to know what is meant.
+        """
+        surface = copy.deepcopy(SURFACE)
+        surface["types"][0]["fields"][1]["description"] = (
+            "Set `trx.things.Widget.shown` instead, and see `trx.things.spawn`."
+        )
+        surface["functions"][0]["description"] = (
+            "Spawns a thing, of the shape `trx.things.Widget`."
+        )
+        docs.ANCHORS.update(docs.anchors_of(surface))
+        page = rendered(surface)
+
+        locked = next(line for line in page.splitlines() if "`locked`" in line)
+        self.assertIn("[`shown`](#things.Widget.shown)", locked)
+        self.assertIn("[`trx.things.spawn`](#things.spawn)", locked)
+
+        spawn = next(line for line in page.splitlines() if "Spawns a thing" in line)
+        self.assertIn("[`trx.things.Widget`](#things.Widget)", spawn)
+
+    def test_a_method_reference_reads_as_a_call(self):
+        """A method is pointed at the way a script writes it, with a colon."""
+        surface = copy.deepcopy(SURFACE)
+        surface["functions"][0]["description"] = "As `trx.things.Widget:poke`."
+        docs.ANCHORS.update(docs.anchors_of(surface))
+        page = rendered(surface)
+        self.assertIn(
+            "[`trx.things.Widget:poke`](#things.Widget.poke)",
+            page,
+        )
+
+    def test_a_member_reached_through_its_module_links_to_its_declaration(self):
+        """A module that stands for one thing answers for its members.
+
+        A script writes `trx.lara.air` rather than the type's own path, and the
+        anchor is written once, where the type declares the member.
+        """
+        surface = copy.deepcopy(SURFACE)
+        surface["modules"][0]["instance_type"] = "things.Widget"
+        surface["functions"][0]["description"] = "As `trx.things.shown`."
+        docs.ANCHORS.update(docs.anchors_of(surface))
+        docs.ALIASES["things.shown"] = "things.Widget.shown"
+        page = rendered(surface)
+        self.assertIn("[`trx.things.shown`](#things.Widget.shown)", page)
+
+    def test_a_computed_property_links_what_it_names(self):
+        """A computed member's description is prose like any other."""
+        surface = copy.deepcopy(SURFACE)
+        surface["types"][0]["extensions"][0]["description"] = (
+            "Computed from `trx.things.Widget.shown`."
+        )
+        docs.ANCHORS.update(docs.anchors_of(surface))
+        page = rendered(surface)
+        derived = next(line for line in page.splitlines() if "`derived`" in line)
+        self.assertIn("[`shown`](#things.Widget.shown)", derived)
 
     def test_a_number_is_named_rather_than_described_again(self):
         """A declaration that holds a named number names it.
@@ -458,7 +519,7 @@ class TestLuaDocs(unittest.TestCase):
         surface["modules"][0]["title"] = "Thingamabobs"
         page = rendered(surface)
         self.assertIn("title: Thingamabobs", page)
-        self.assertIn("## Thingamabobs module", page)
+        self.assertIn("## " + docs.anchor("things") + "Thingamabobs module", page)
 
     def test_a_namespace_reaches_the_page_whether_or_not_it_is_callable(self):
         """A namespace gets its own bullet either way; only a callable one

@@ -162,7 +162,7 @@ local Query = api.type("query.Query", {
             {
               name = "handle",
               type = "any",
-              description = "The candidate itself, an `Object` or an `Item`.",
+              description = "The candidate itself, a `trx.objects.Object` or a `trx.items.Item`.",
             },
           },
         },
@@ -233,7 +233,7 @@ end)]],
 api.type("query.NamedQuery", {
   extends = "query.Query",
   description = "A query over a domain whose things answer to names, which adds the name layer to "
-    .. "everything a `Query` has. A domain without names offers none of it.",
+    .. "everything a `trx.query.Query` has. A domain without names offers none of it.",
 
   methods = {
     by_name = {
@@ -255,7 +255,7 @@ api.type("query.NamedQuery", {
         .. "any match belongs to come first, because a completer offers the list in order and a "
         .. "group name that ties on score would otherwise sit behind a thing's own. Which groups "
         .. "answer follows from what the query kept, so one narrowed to what fights offers no "
-        .. "`pickup`.",
+        .. "`trx.objects.ObjectQuery:pickup`.",
       returns = { type = "table", description = "A list of names." },
       impl = function(self)
         local domain = self._domain
@@ -289,8 +289,8 @@ api.type("query.NamedQuery", {
     },
 
     best = {
-      description = "The ids tied for the best `by_name` score: one for a name only one thing "
-        .. "answers to, the whole group for a group name. Without a `by_name`, every matching id.",
+      description = "The ids tied for the best `trx.query.NamedQuery:by_name` score: one for a name only one thing "
+        .. "answers to, the whole group for a group name. Without a `trx.query.NamedQuery:by_name`, every matching id.",
       returns = { type = "table", description = "A list of integers." },
       impl = function(self)
         if self._name == nil then

@@ -10,13 +10,13 @@ order: 30
   src/lua/api/api.lua. Edit it there.
 -->
 
-## API registry module
+## <a id="api" name="api"></a>API registry module
 
 Argument checking for the whole of `trx`.
 
 ### Functions
 
-- <a name="api.strict"></a>[lua]`trx.api.strict(enabled)`  
+- <a id="api.strict" name="api.strict"></a>[lua]`trx.api.strict(enabled)`  
   Turns argument checking on or off for every function in `trx`, and for the methods on its handles. Off by default: checking costs about 100ns a call, which a per-frame handler notices. Turn it on while writing a level, and leave it off in play.
 
   Parameters:
@@ -27,7 +27,7 @@ Argument checking for the whole of `trx`.
   trx.api.strict(true)
   ```
 
-- <a name="api.is_strict"></a>[lua]`trx.api.is_strict()`  
+- <a id="api.is_strict" name="api.is_strict"></a>[lua]`trx.api.is_strict()`  
   Whether argument checking is on.
 
   Returns: boolean. False as the game starts, and true once something turns it on.

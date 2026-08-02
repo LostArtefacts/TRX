@@ -40,7 +40,7 @@ api.enum("items.SwitchMode", {
 
 api.enum("items.TriggerType", {
   backing = "ITEM_TRIGGER_KIND",
-  description = "The kind of trigger `item:trigger` fires, matching the trigger types a level editor "
+  description = "The kind of trigger `trx.items.Item:trigger` fires, matching the trigger types a level editor "
     .. "offers. Most are forward triggers that differ only in what trips them in a level; from a "
     .. "script they behave alike, and `TRIGGER` is the one to reach for.",
   values = {
@@ -133,7 +133,7 @@ api.type("items.Item", {
     pos = {
       from = "pos",
       type = "vec3",
-      description = "World position. Updating this also updates `room` and `room_num`.",
+      description = "World position. Updating this also updates `trx.items.Item.room` and `trx.items.Item.room_num`.",
     },
     rot = {
       from = "rot",
@@ -165,18 +165,18 @@ api.type("items.Item", {
       from = "room_num",
       type = "rooms.Num",
       writable = false,
-      description = "The room containing this item. Set `pos` to move the item between rooms.",
+      description = "The room containing this item. Set `trx.items.Item.pos` to move the item between rooms.",
     },
     hit_points = {
       from = "hit_points",
       type = "integer",
-      description = "Current hit points. Raising this above the maximum also raises `properties.max_hit_points`.",
+      description = "Current hit points. Raising this above the maximum also raises the `max_hit_points` entry of `trx.items.Item.properties`.",
     },
     max_hit_points = {
       from = "max_hit_points",
       type = "integer",
       writable = false,
-      description = "Maximum hit points. Set `properties.max_hit_points` to change it.",
+      description = "Maximum hit points. Set the `max_hit_points` entry of `trx.items.Item.properties` to change it.",
     },
     name = {
       from = "name",
@@ -213,7 +213,7 @@ api.type("items.Item", {
       type = "integer",
       description = "How long the item's trigger keeps it going, in game frames. `0` runs it until "
         .. "something takes the trigger back; `-1` means it has run out; anything else counts down. "
-        .. "This is the raw frame count - `trigger()` takes its timer in seconds instead.",
+        .. "This is the raw frame count - `trx.items.Item:trigger` takes its timer in seconds instead.",
     },
     is_triggered = {
       from = "is_triggered",
@@ -222,7 +222,7 @@ api.type("items.Item", {
       description = "Whether the item's trigger currently says go. This is what a door, a switch or "
         .. "an alarm reads to decide whether to act; a creature ignores it and goes by whether it "
         .. "is running.\n\n"
-        .. "It is a verdict on `trigger_mask`, `timer` and `is_reversed` together, not a field of "
+        .. "It is a verdict on `trx.items.Item.trigger_mask`, `trx.items.Item.timer` and `trx.items.Item.is_reversed` together, not a field of "
         .. "its own.",
     },
     trigger_mask = {
@@ -291,7 +291,7 @@ api.type("items.Item", {
       from = "is_simulated",
       type = "boolean",
       writable = false,
-      description = "Whether the item's control routine runs each frame. Call `activate()` to start it.",
+      description = "Whether the item's control routine runs each frame. Call `trx.items.Item:activate` to start it.",
     },
     is_in_play = {
       from = "is_in_play",
@@ -345,7 +345,7 @@ api.type("items.Item", {
       type = "table",
       description = "The item's bounding box for the frame it is on: `min_x`, `min_y`, `min_z`, "
         .. "`max_x`, `max_y`, `max_z`. The numbers are in the item's own frame, so they say how far "
-        .. "the model reaches around `pos` before `rot` turns it, and they change as the item "
+        .. "the model reaches around `trx.items.Item.pos` before `trx.items.Item.rot` turns it, and they change as the item "
         .. "animates.",
       impl = function(item)
         return raw.get_bounds(item)
@@ -373,15 +373,15 @@ api.type("items.Item", {
     deactivate = {
       description = "Stops the item: its control routine no longer runs, and a creature loses its AI "
         .. "and stands down. The item stays where it is and keeps its hit points, so this is not a "
-        .. "way of getting rid of it - use `destroy()` for that.\n\n"
-        .. "A trigger can still bring it back, and so can `activate()`.",
+        .. "way of getting rid of it - use `trx.items.Item:destroy` for that.\n\n"
+        .. "A trigger can still bring it back, and so can `trx.items.Item:activate`.",
     },
 
     trigger = {
       description = "Fires a trigger at the item, exactly as a floor trigger in the level would: "
         .. "sets the code bits, and once they are all set, starts the item running.\n\n"
         .. "This is the one to reach for on anything a level would trigger - a door, a switch, an "
-        .. "alarm - because those read their trigger before they act, and merely `activate()`-ing "
+        .. "alarm - because those read their trigger before they act, and merely activating "
         .. "one leaves it running but doing nothing. Pass `type = "
         .. "trx.items.TriggerType.ANTITRIGGER` to take the trigger back instead.",
       params = {
@@ -389,7 +389,7 @@ api.type("items.Item", {
           name = "opts",
           type = "table",
           optional = true,
-          description = "`type`: which `items.TriggerType` to fire; a plain `TRIGGER` by default.\n\n"
+          description = "`type`: which `trx.items.TriggerType` to fire; a plain `TRIGGER` by default.\n\n"
             .. "`mask`: which of the five code bits to set, `1` to `31`, all of them by default. "
             .. "Pass fewer to act as one of several triggers a puzzle is waiting on.\n\n"
             .. "`timer`: how long it should keep the item going, in seconds. `0`, the default, means "
@@ -630,7 +630,7 @@ end)]],
         },
       },
       description = "Runs the object's creature death handling: the corpse stays, and `explode` "
-        .. "bursts its meshes as a rocket or grenade would. For creatures; `destroy()` simply removes "
+        .. "bursts its meshes as a rocket or grenade would. For creatures; `trx.items.Item:destroy` simply removes "
         .. "any item from the game.",
     },
 
@@ -642,9 +642,10 @@ end)]],
           description = "Hit points to take.",
         },
       },
-      description = [[Hurts the item the way a weapon does, and reports through `on_hit`, and
-`on_kill` where the blow takes the last hit point. Writing `hit_points` reports neither. The kill
-counts as the environment's rather than Lara's.]],
+      description = [[Hurts the item the way a weapon does, and reports through `trx.events.on_hit`,
+and `trx.events.on_kill` where the blow takes the last hit point. Writing
+`trx.items.Item.hit_points` reports neither. The kill counts as the
+environment's rather than Lara's.]],
       examples = {
         [[local lara = trx.lara.item
 lara:take_damage(lara.hit_points)]],
@@ -661,7 +662,7 @@ lara:take_damage(lara.hit_points)]],
           description = "Splash damage dealt to nearby items.",
         },
       },
-      description = "Bursts the item's meshes into flying debris, the visual `die(true)` produces, "
+      description = "Bursts the item's meshes into flying debris, the visual `trx.items.Item:die` produces with `explode`, "
         .. "on its own. It does not kill or remove the item.",
     },
 
@@ -810,7 +811,7 @@ end
 local ItemQuery = api.type("items.ItemQuery", {
   extends = "query.Query",
   description = "A `trx.query.Query` over the items a level holds, with the narrowings below on top "
-    .. "of the ones every query has. Items answer to no names of their own, so `of_object` is how a "
+    .. "of the ones every query has. Items answer to no names of their own, so `trx.items.ItemQuery:of_object` is how a "
     .. "name reaches them.",
 
   methods = {
@@ -899,7 +900,7 @@ local ItemQuery = api.type("items.ItemQuery", {
     },
 
     in_sphere = {
-      description = "The item stands within a radius of a point. As with `in_box`, the item's "
+      description = "The item stands within a radius of a point. As with `trx.items.ItemQuery:in_box`, the item's "
         .. "position is the whole of the test.",
       params = {
         {

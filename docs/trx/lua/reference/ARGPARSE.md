@@ -10,7 +10,7 @@ order: 21
   src/lua/api/argparse.lua. Edit it there.
 -->
 
-## Argparse module
+## <a id="argparse" name="argparse"></a>Argparse module
 
 A small, declarative argument parser for console commands, in the shape of
 Python's argparse.
@@ -74,7 +74,7 @@ A choice is either a bare string, where the key and value are the same, or a
 
 ### Functions
 
-- <a name="argparse.new"></a>[lua]`trx.argparse.new([spec])`  
+- <a id="argparse.new" name="argparse.new"></a>[lua]`trx.argparse.new([spec])`  
   Creates an argument parser. See the module description for the parser's methods.
 
   Parameters:

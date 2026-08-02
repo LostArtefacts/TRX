@@ -10,17 +10,17 @@ order: 8
   src/lua/api/catalog.lua. Edit it there.
 -->
 
-## Catalog module
+## <a id="catalog" name="catalog"></a>Catalog module
 
 The names TRX knows things by.
 
 Each catalog is an enum of every object, sample, music track, Lara state, Lara animation or item action the engine has a name for. The names are the C ones with their prefix taken off - `O_WOLF` is [`trx.catalog.objects.WOLF`](#catalog.objects) - and a catalog answers to a name in any case, so [`trx.catalog.objects.wolf`](#catalog.objects) is the same constant.
 
-The ids in a catalog are TRX's own, and they are the same in all four games. The number a builder reads off Tomb Editor is not: that is the slot the game's own files use. `to_slot` and `from_slot` convert between the two.
+The ids in a catalog are TRX's own, and they are the same in all four games. The number a builder reads off Tomb Editor is not: that is the slot the game's own files use. [`trx.catalog.to_slot`](#catalog.to_slot) and [`trx.catalog.from_slot`](#catalog.from_slot) convert between the two.
 
 ### Enums
 
-- <a name="catalog.Context"></a>[lua]`trx.catalog.Context`
+- <a id="catalog.Context" name="catalog.Context"></a>[lua]`trx.catalog.Context`
 
     Which catalog a slot belongs to.
 
@@ -37,7 +37,7 @@ The ids in a catalog are TRX's own, and they are the same in all four games. The
     - `trx.catalog.Context.ITEM_ACTIONS` = `5`  
         Item actions, which the flip effects trigger.
 
-- <a name="catalog.objects"></a>[lua]`trx.catalog.objects` - 806 names
+- <a id="catalog.objects" name="catalog.objects"></a>[lua]`trx.catalog.objects` - 806 names
 
     Every object TRX has a name for.
 
@@ -255,7 +255,7 @@ The ids in a catalog are TRX's own, and they are the same in all four games. The
 
     </details>
 
-- <a name="catalog.samples"></a>[lua]`trx.catalog.samples` - 203 names
+- <a id="catalog.samples" name="catalog.samples"></a>[lua]`trx.catalog.samples` - 203 names
 
     Every sound sample TRX has a name for.
 
@@ -319,7 +319,7 @@ The ids in a catalog are TRX's own, and they are the same in all four games. The
 
     </details>
 
-- <a name="catalog.music"></a>[lua]`trx.catalog.music` - 52 names
+- <a id="catalog.music" name="catalog.music"></a>[lua]`trx.catalog.music` - 52 names
 
     Every music track TRX has a name for.
 
@@ -349,7 +349,7 @@ The ids in a catalog are TRX's own, and they are the same in all four games. The
 
     </details>
 
-- <a name="catalog.lara_states"></a>[lua]`trx.catalog.lara_states` - 132 names
+- <a id="catalog.lara_states" name="catalog.lara_states"></a>[lua]`trx.catalog.lara_states` - 132 names
 
     Every state Lara can be in.
 
@@ -391,7 +391,7 @@ The ids in a catalog are TRX's own, and they are the same in all four games. The
 
     </details>
 
-- <a name="catalog.lara_anims"></a>[lua]`trx.catalog.lara_anims` - 467 names
+- <a id="catalog.lara_anims" name="catalog.lara_anims"></a>[lua]`trx.catalog.lara_anims` - 467 names
 
     Every animation Lara has.
 
@@ -565,7 +565,7 @@ The ids in a catalog are TRX's own, and they are the same in all four games. The
 
     </details>
 
-- <a name="catalog.flip_effects"></a>[lua]`trx.catalog.flip_effects` - 71 names
+- <a id="catalog.flip_effects" name="catalog.flip_effects"></a>[lua]`trx.catalog.flip_effects` - 71 names
 
     Every item action a flip effect can trigger.
 
@@ -597,7 +597,7 @@ The ids in a catalog are TRX's own, and they are the same in all four games. The
 
     </details>
 
-- <a name="catalog.weapons"></a>[lua]`trx.catalog.weapons` - 16 names
+- <a id="catalog.weapons" name="catalog.weapons"></a>[lua]`trx.catalog.weapons` - 16 names
 
     Every weapon Lara can hold.
 
@@ -617,7 +617,7 @@ The ids in a catalog are TRX's own, and they are the same in all four games. The
 
 ### Functions
 
-- <a name="catalog.to_slot"></a>[lua]`trx.catalog.to_slot(context, id)`  
+- <a id="catalog.to_slot" name="catalog.to_slot"></a>[lua]`trx.catalog.to_slot(context, id)`  
   Converts a TRX id into the slot this game's own files use for it - the number a builder reads off Tomb Editor.
 
   Parameters:
@@ -631,7 +631,7 @@ The ids in a catalog are TRX's own, and they are the same in all four games. The
   local slot = trx.catalog.to_slot(trx.catalog.Context.OBJECTS, trx.catalog.objects.WOLF)
   ```
 
-- <a name="catalog.from_slot"></a>[lua]`trx.catalog.from_slot(context, slot)`  
+- <a id="catalog.from_slot" name="catalog.from_slot"></a>[lua]`trx.catalog.from_slot(context, slot)`  
   Converts a slot from this game's own files into the TRX id for it.
 
   Parameters:

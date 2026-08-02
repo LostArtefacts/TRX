@@ -109,7 +109,7 @@ flares; a level's simply gains it.]],
       returns = {
         type = "integer",
         description = "How many went in. 0 from Lara's means the level does not carry the icon "
-          .. "for it - see `can_add`.",
+          .. "for it - see `trx.inventory.Inventory:can_add`.",
       },
       examples = { [[trx.inventory:give(trx.catalog.objects.uzi_item, 2)]] },
     },
@@ -117,7 +117,7 @@ flares; a level's simply gains it.]],
       description = [[
 Takes things back out, stopping when there are none left.
 
-This is not the exact opposite of `give`: a box of ammunition is rounds rather
+This is not the exact opposite of `trx.inventory.Inventory:give`: a box of ammunition is rounds rather
 than an entry of its own, so taking one back takes the rounds a box is worth.]],
       params = { object_param, count_param },
       returns = { type = "integer", description = "How many came out." },
@@ -181,7 +181,7 @@ Which inventory icon a pickup is drawn as, whether or not there is any of it.
 
 Several pickups share one icon - the scion whether or not Lara holds it, a
 waterskin at each fill level - so this is what tells two spellings of one thing
-from two things. It answers with an object id rather than an entry; `entry` is
+from two things. It answers with an object id rather than an entry; `trx.inventory.Inventory:entry` is
 what hands back the entry itself.]],
       params = { object_param },
       returns = {
@@ -192,7 +192,7 @@ what hands back the entry itself.]],
     },
     can_add = {
       description = [[
-Whether `give` would do anything in the level being played. The level has to
+Whether `trx.inventory.Inventory:give` would do anything in the level being played. The level has to
 carry the inventory model, which is not the same as the pickup being in it: a
 level with no shotgun lying about still draws one in the ring, which is what
 lets a cheat hand one over.

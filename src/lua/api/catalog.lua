@@ -10,7 +10,7 @@ api.module("catalog", {
     .. "any case, so `trx.catalog.objects.wolf` is the same constant.\n\n"
     .. "The ids in a catalog are TRX's own, and they are the same in all four games. The number a "
     .. "builder reads off Tomb Editor is not: that is the slot the game's own files use. "
-    .. "`to_slot` and `from_slot` convert between the two.",
+    .. "`trx.catalog.to_slot` and `trx.catalog.from_slot` convert between the two.",
 })
 
 api.enum("catalog.Context", {

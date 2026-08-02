@@ -79,9 +79,9 @@ api.define("events.on_game_start", {
     been applied, so this is where a script sets object properties, declares
     allies, changes room state and plays sound effects. Every kind of level
     fires it: a played level, a cutscene and the attract demo alike. The title
-    screen has `on_title_start` instead.
+    screen has `trx.events.on_title_start` instead.
 
-    Which level is starting is `trx.game.current_level`, whose `num` and `type`
+    Which level is starting is `trx.game.current_level`, whose `trx.game.Level.num` and `trx.game.Level.type`
     say where it counts and what kind it is. A level script already knows both,
     which is why the handler is not handed them.
   ]],
@@ -112,7 +112,7 @@ api.define("events.on_title_start", {
   description = [[
     Happens when the title screen's scene starts playing behind the menu, once
     its level is loaded and its items are set up. The handler takes no
-    arguments. `on_game_start` does not fire for the title level.
+    arguments. `trx.events.on_game_start` does not fire for the title level.
   ]],
   params = { { name = "callback", type = "function" } },
   returns = LISTENER,
@@ -215,7 +215,7 @@ end)]],
 
 api.define("events.on_room_change", {
   description = "Happens when an item changes rooms during play, which a cutscene or the attract "
-    .. "demo is not. `trx.rooms.Room:on_enter` and `:on_exit` are this same event, narrowed to "
+    .. "demo is not. `trx.rooms.Room:on_enter` and `trx.rooms.Room:on_exit` are this same event, narrowed to "
     .. "one room.",
   params = {
     {
@@ -260,7 +260,7 @@ end)]],
 
 api.define("events.on_trigger", {
   description = "Happens every time a trigger is aimed at an item - a floor trigger in the level, "
-    .. "the `/trigger` console command, or `item:trigger` from a script - of any kind, an "
+    .. "the `/trigger` console command, or `trx.items.Item:trigger` from a script - of any kind, an "
     .. "antitrigger included. It is the raw trigger, not a state change: a floor pad fires it every "
     .. "frame Lara stands on it, and a partial trigger fires it too. A cutscene or the attract demo "
     .. "does not.\n\n"
@@ -280,7 +280,7 @@ api.define("events.on_trigger", {
         {
           name = "trigger",
           type = "table",
-          description = "What the trigger carried: `type` (an `items.TriggerType`), `mask` (the "
+          description = "What the trigger carried: `type` (a `trx.items.TriggerType`), `mask` (the "
             .. "code bits it set, `1` to `31`), `timer` (in seconds), and `one_shot`.",
         },
       },
@@ -418,7 +418,7 @@ api.define(
     types.ENTER_SIM,
     "Happens when an item starts being simulated during play - its control routine begins running "
       .. "each frame. Every path that starts an item fires it: a trigger, a switch, a respawn, a "
-      .. "cheat. A trigger also fires `on_activate`, which this does not.\n\n"
+      .. "cheat. A trigger also fires `trx.events.on_activate`, which this does not.\n\n"
       .. "`trx.items.Item:on_enter_sim` is this same event, narrowed to one item.",
     "The item that started being simulated.",
     {
@@ -451,7 +451,7 @@ api.define(
     types.ACTIVATE,
     "Happens when an item is activated through the lifecycle front door during play - the path a "
       .. "level trigger takes. Switches, respawns and cheats start an item without it, firing only "
-      .. "`on_enter_sim`; watch that one for a start of any cause.\n\n"
+      .. "`trx.events.on_enter_sim`; watch that one for a start of any cause.\n\n"
       .. "`trx.items.Item:on_activate` is this same event, narrowed to one item.",
     "The item that was activated.",
     {
@@ -532,8 +532,8 @@ end)]],
 api.define("events.on_hit", {
   description = [[Happens when an item takes damage, Lara included. It is the raw damage that
 fires, before the item's hit points are clamped, so a fatal blow reports the whole amount the
-attacker dealt. A death that does not go through damage - a script writing `hit_points`, or
-`destroy()` - does not report.
+attacker dealt. A death that does not go through damage - a script writing
+`trx.items.Item.hit_points`, or `trx.items.Item:destroy` - does not report.
 
 `trx.items.Item:on_hit` is this same event, narrowed to one item.]],
   params = {
@@ -569,8 +569,8 @@ end)]],
 
 api.define("events.on_kill", {
   description = [[Happens when damage takes an item's hit points to zero, Lara included. It is the
-same blow `on_hit` reports, which fires first. A death that does not go through damage - a script
-writing `hit_points`, or `destroy()` - does not report.
+same blow `trx.events.on_hit` reports, which fires first. A death that does not go through damage
+- a script writing `trx.items.Item.hit_points`, or `trx.items.Item:destroy` - does not report.
 
 Some bosses fall and get back up: Willard is knocked out, Natla plays dead before her second
 stage, and the dragon lies still until Lara takes the dagger. Each stage brings their hit points
@@ -722,7 +722,7 @@ end)]],
 
 api.define("events.detach", {
   description = "Removes a previously attached handler, which stops firing immediately. "
-    .. "`listener:detach()` does the same to one held in hand.",
+    .. "`trx.events.Listener:detach` does the same to one held in hand.",
   params = {
     { name = "listener", type = "events.Listener" },
   },

@@ -26,8 +26,8 @@ local CATEGORY = {
 
 api.type("stats.Category", {
   backing = "STATS_CATEGORY",
-  description = "One thing a level is counted on, which is one row of the statistics screen. `raw` "
-    .. "is `max` plus `unobtainable`: the game flow can declare part of a level out of reach, and "
+  description = "One thing a level is counted on, which is one row of the statistics screen. `trx.stats.Category.raw` "
+    .. "is `trx.stats.Category.max` plus `trx.stats.Category.unobtainable`: the game flow can declare part of a level out of reach, and "
     .. "what it writes off is left out of what counts towards completion while still being in the "
     .. "level.",
 
@@ -36,7 +36,7 @@ api.type("stats.Category", {
       from = "count",
       type = "integer",
       description = "How many of them Lara has. The secrets cannot be set this way: they are held "
-        .. "one by one, so `give_secret` and `take_secret` are how they change.",
+        .. "one by one, so `trx.stats.give_secret` and `trx.stats.take_secret` are how they change.",
     },
     max = {
       from = "max",
@@ -130,7 +130,7 @@ api.type("stats.Stats", {
     ),
     secrets = category(
       "secrets",
-      "The level's secrets. Which ones Lara holds is `secret_list`."
+      "The level's secrets. Which ones Lara holds is `trx.stats.Stats.secret_list`."
     ),
     crystals = category(
       "crystals",
@@ -139,16 +139,16 @@ api.type("stats.Stats", {
 
     max_ally_kills = {
       type = "integer",
-      description = "How many of `kills.max` are allies. The statistics screen holds them against "
-        .. "the player only once `allies_hurt`, so a screen written in Lua wants to do the same: "
-        .. "`max_enemy_kills`, and these as well once she has turned on one.",
+      description = "How many of `trx.stats.Stats.kills.max` are allies. The statistics screen holds them against "
+        .. "the player only once `trx.stats.Stats.allies_hurt`, so a screen written in Lua wants to do the "
+        .. "same: `trx.stats.Stats.max_enemy_kills`, and these as well once she has turned on one.",
       impl = function(stats)
         return (raw.kill_split(stats))
       end,
     },
     max_enemy_kills = {
       type = "integer",
-      description = "How many of `kills.max` are enemies rather than allies.",
+      description = "How many of `trx.stats.Stats.kills.max` are enemies rather than allies.",
       impl = function(stats)
         return select(2, raw.kill_split(stats))
       end,

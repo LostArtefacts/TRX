@@ -10,7 +10,7 @@ order: 5
   src/lua/api/weapons.lua. Edit it there.
 -->
 
-## Weapons module
+## <a id="weapons" name="weapons"></a>Weapons module
 
 What a weapon is, rather than what Lara has of it.
 
@@ -20,7 +20,7 @@ has are [`trx.inventory`](INVENTORY.md#inventory).
 
 ### Functions
 
-- <a name="weapons.is_available"></a>[lua]`trx.weapons.is_available(weapon)`  
+- <a id="weapons.is_available" name="weapons.is_available"></a>[lua]`trx.weapons.is_available(weapon)`  
   Whether the game allows this weapon at all. The game flow can keep one out, and
   a cheat that hands it over anyway leaves Lara with a gun the level was built
   without.
@@ -30,8 +30,8 @@ has are [`trx.inventory`](INVENTORY.md#inventory).
 
   Returns: boolean.
 
-- <a name="weapons.object"></a>[lua]`trx.weapons.object(weapon)`  
-  The pickup the weapon is, for handing it to `trx.inventory:give`.
+- <a id="weapons.object" name="weapons.object"></a>[lua]`trx.weapons.object(weapon)`  
+  The pickup the weapon is, for handing it to [`trx.inventory:give`](INVENTORY.md#inventory.Inventory.give).
 
   Parameters:
   - **`weapon`** ([trx.catalog.weapons](CATALOG.md#catalog.weapons)). Which weapon. `UNKNOWN` and `UNARMED` raise, and so does anything outside the table; `FLARE` and `SKIDOO` are taken, being held the way a weapon is.
@@ -43,7 +43,7 @@ has are [`trx.inventory`](INVENTORY.md#inventory).
   trx.inventory:give(trx.weapons.object(trx.catalog.weapons.SHOTGUN))
   ```
 
-- <a name="weapons.shots_per_box"></a>[lua]`trx.weapons.shots_per_box(weapon)`  
+- <a id="weapons.shots_per_box" name="weapons.shots_per_box"></a>[lua]`trx.weapons.shots_per_box(weapon)`  
   How many shots one box of ammunition for it is worth.
 
   Parameters:

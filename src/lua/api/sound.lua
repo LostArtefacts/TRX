@@ -9,7 +9,7 @@ api.module("sound", {
 api.type("sound.Sample", {
   backing = "SOUND_SAMPLE_VIEW",
   description = "A sound sample the current level carries. Reach them through `trx.sound.samples`. "
-    .. "A handle to a sample the loaded level does not carry goes stale, so `is_valid()` answers "
+    .. "A handle to a sample the loaded level does not carry goes stale, so `trx.sound.Sample:is_valid` answers "
     .. "whether it is still there.",
 
   fields = {
@@ -76,7 +76,7 @@ api.type("sound.Sample", {
 api.type("sound.Stream", {
   backing = "SOUND_STREAM_VIEW",
   description = "One of the sound effects playing now. Reach them through `trx.sound.streams`. A "
-    .. "handle to a voice that has fallen silent goes stale, so check `is_valid()` first.",
+    .. "handle to a voice that has fallen silent goes stale, so check `trx.sound.Stream:is_valid` first.",
 
   fields = {
     sample_num = {
