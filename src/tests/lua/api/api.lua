@@ -1144,6 +1144,74 @@ test("an enum is a type like any other", function()
   assert(declared(api, "things.get").params[1].type == "things.State")
 end)
 
+-- A unit is what a value is measured in, and it answers the same question a
+-- number does: what this is, said once, wherever one turns up.
+test("a unit is written once and named from wherever it is meant", function()
+  local api = fresh_env()
+  api.module("things", { description = "..." })
+  api.unit("things.Angle", {
+    description = "An angle in the engine's own units.",
+    spellings = { "engine's own units" },
+  })
+  api.unit("things.Seconds", { type = "number", description = "Seconds." })
+  api.define("things.turn", {
+    params = { { name = "angle", type = "things.Angle" } },
+    returns = { type = "things.Seconds" },
+    impl = function() end,
+  })
+
+  local dumped = api.describe()
+  assert(#dumped.units == 2, "the units must reach the docs to be linked to")
+  assert(dumped.units[1].path == "things.Angle")
+  assert(dumped.units[1].type == "integer", "a unit is whole unless it says")
+  assert(dumped.units[1].spellings[1] == "engine's own units")
+  assert(dumped.units[2].type == "number")
+
+  local fn = declared(api, "things.turn")
+  assert(fn.params[1].type == "things.Angle")
+  assert(fn.returns.type == "things.Seconds")
+end)
+
+test("a unit measures a whole or a real number, and nothing else", function()
+  local api = fresh_env()
+  assert(
+    not pcall(
+      api.unit,
+      "things.Angle",
+      { type = "string", description = "Not a measurement." }
+    )
+  )
+end)
+
+test("a unit cannot be written twice", function()
+  local api = fresh_env()
+  api.unit("things.Angle", { description = "An angle." })
+  assert(
+    not pcall(api.unit, "things.Angle", { description = "Something else." })
+  )
+end)
+
+-- Strict mode checks a unit as it checks anything else: what a value of it is
+-- is what the unit says it is.
+test("a unit is checked by what it measures", function()
+  local api = fresh_env()
+  api.module("things", { description = "..." })
+  api.unit("things.Seconds", { type = "number", description = "Seconds." })
+  api.unit("things.Angle", { description = "An angle." })
+  api.define("things.wait", {
+    params = {
+      { name = "time", type = "things.Seconds" },
+      { name = "angle", type = "things.Angle" },
+    },
+    impl = function() end,
+  })
+
+  api.strict(true)
+  assert(pcall(trx.things.wait, 1.5, 90), "a real number and a whole one")
+  assert(not pcall(trx.things.wait, 1.5, 1.5), "an angle is whole")
+  api.strict(false)
+end)
+
 test("a number cannot be written twice", function()
   local api = fresh_env()
   api.number("things.Num", { base = 0, description = "A thing number." })

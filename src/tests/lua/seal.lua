@@ -19,27 +19,14 @@ end)
 -- The declaring half of the registry goes the way trxc goes: a script cannot
 -- reach api.type to re-expose a member the declarations withheld, because there
 -- is nothing left to reach.
+-- Named rather than listed: a list of what goes has to be kept in step with
+-- every declarator added, and one left off it is one nobody notices survived.
 test("sealing takes the declaring half off trx.api", function()
   seal()
 
-  for _, name in ipairs({
-    "seal",
-    "module",
-    "define",
-    "type",
-    "enum",
-    "enum_name",
-    "const",
-    "property",
-    "namespace",
-    "container",
-    "describe",
-    "to_json",
-  }) do
-    assert(
-      trx.api[name] == nil,
-      "trx.api." .. name .. " must not survive the seal"
-    )
+  local kept = { strict = true, is_strict = true }
+  for name in pairs(trx.api) do
+    assert(kept[name], "trx.api." .. name .. " must not survive the seal")
   end
 
   assert(trx.items[0].box_num == nil, "box_num must still be unreachable")

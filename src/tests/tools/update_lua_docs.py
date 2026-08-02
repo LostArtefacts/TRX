@@ -30,6 +30,7 @@ def rendered(surface, module=None):
     """
     for table in (
         docs.NUMBERS,
+        docs.UNITS,
         docs.ANCHORS,
         docs.TYPE_PATHS,
         docs.STANDS_FOR,
@@ -386,6 +387,52 @@ class TestLuaDocs(unittest.TestCase):
         unheld = copy.deepcopy(surface)
         unheld["functions"][0]["params"][0]["type"] = "integer"
         self.assertIn("a number nothing holds", docs.respelled(unheld)[-1])
+
+    def test_a_unit_written_out_instead_of_named_is_reported(self):
+        """A unit says what a value of it is measured in, once."""
+        surface = copy.deepcopy(SURFACE)
+        surface["units"] = [
+            {
+                "path": "things.Distance",
+                "description": "A length in the units the engine measures the world in.",
+                "type": "integer",
+                "spellings": ["world units"],
+            }
+        ]
+        surface["functions"][0]["params"] = [
+            {"name": "reach", "type": "things.Distance"},
+        ]
+        docs.read(surface)
+        self.assertEqual(docs.respelled(surface), [])
+
+        # The words, written somewhere that does not name the unit.
+        said_again = copy.deepcopy(surface)
+        said_again["functions"][1]["description"] = "How far it reaches, in world units."
+        report = docs.respelled(said_again)
+        self.assertEqual(len(report), 1, report)
+        self.assertIn("writes out what `trx.things.Distance` is", report[0])
+
+        # And a unit nothing is measured in.
+        unheld = copy.deepcopy(surface)
+        unheld["functions"][0]["params"][0]["type"] = "integer"
+        self.assertIn("a unit nothing is measured in", docs.respelled(unheld)[-1])
+
+    def test_a_declaration_typed_by_a_unit_needs_no_words(self):
+        """What it is, and what it is measured in, is what the type says."""
+        self.assertFalse(docs.documented({"name": "reach", "type": "integer"}))
+        docs.read(
+            {
+                **copy.deepcopy(SURFACE),
+                "units": [
+                    {
+                        "path": "things.Distance",
+                        "description": "A length.",
+                        "type": "integer",
+                    }
+                ],
+            }
+        )
+        self.assertTrue(docs.documented({"name": "reach", "type": "things.Distance"}))
 
     def test_a_return_value_cross_references_its_enum(self):
         """A function that hands back an id is as worth cross-referencing as a
