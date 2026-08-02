@@ -308,7 +308,8 @@ static void M_WalkBack(ITEM *const item, COLL_INFO *const coll)
     lara->move_angle = item->rot.y + DEG_180;
     item->gravity = false;
     item->fall_speed = 0;
-    if (lara->water_status == LWS_WADE) {
+    if (lara->water_status == LWS_WADE
+        || Lara_Interact_HasActiveType(LARA_INTERACT_PICKUP)) {
         coll->bad_pos = NO_BAD_POS;
     } else {
         coll->bad_pos = STEPUP_HEIGHT;
@@ -368,7 +369,8 @@ static void M_SideStep(ITEM *const item, COLL_INFO *const coll)
 
     item->gravity = false;
     item->fall_speed = 0;
-    if (lara->water_status == LWS_WADE) {
+    if (lara->water_status == LWS_WADE
+        || Lara_Interact_HasActiveType(LARA_INTERACT_PICKUP)) {
         coll->bad_pos = NO_BAD_POS;
     } else {
         coll->bad_pos = STEP_L / 2;
