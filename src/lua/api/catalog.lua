@@ -94,8 +94,7 @@ api.define("catalog.to_slot", {
   params = {
     {
       name = "context",
-      type = "integer",
-      enum = "catalog.Context",
+      type = "catalog.Context",
       description = "Which catalog.",
     },
     { name = "id", type = "integer", description = "The TRX id." },
@@ -116,8 +115,7 @@ api.define("catalog.from_slot", {
   params = {
     {
       name = "context",
-      type = "integer",
-      enum = "catalog.Context",
+      type = "catalog.Context",
       description = "Which catalog.",
     },
     { name = "slot", type = "integer", description = "The game's own id." },

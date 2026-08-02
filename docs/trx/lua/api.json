@@ -24,18 +24,19 @@
   "containers": [
     {
       "countable": true,
-      "description": "Indexing the module reaches an entry of Lara's inventory, and `#trx.inventory` is how many kinds of thing she carries. Entries count from one, in the order they are drawn, and are built one at a time as they are asked for. `pairs()` walks them.",
+      "description": "Indexing the module reaches an entry of Lara's inventory, and `#trx.inventory` is how many kinds of thing she carries. Entries are keyed by the order they are drawn in, and are built one at a time as they are asked for. `pairs()` walks them.",
       "examples": [
         "for _, entry in pairs(trx.inventory) do\n  trx.log.info((\"%d x %s\"):format(entry.count, trx.catalog.objects[entry.object]))\nend"
       ],
       "key": {
-        "description": "1-based position.",
+        "base": 1,
+        "description": "Position in the ring.",
         "type": "integer"
       },
       "module": "inventory",
       "value": {
         "nullable": true,
-        "type": "Entry"
+        "type": "inventory.Entry"
       }
     },
     {
@@ -45,13 +46,16 @@
         "for num, item in pairs(trx.items) do\n  trx.log.info(item.object_id)\nend"
       ],
       "key": {
-        "description": "0-based item number, matching the numbers level editors show. An item's unique name reaches it as well.",
-        "type": "any"
+        "description": "An item's unique name reaches it as well.",
+        "type": [
+          "items.Num",
+          "string"
+        ]
       },
       "module": "items",
       "value": {
         "nullable": true,
-        "type": "Item"
+        "type": "items.Item"
       }
     },
     {
@@ -62,28 +66,30 @@
       ],
       "key": {
         "description": "Object id, or its catalog name.",
-        "type": "any"
+        "type": [
+          "catalog.objects",
+          "string"
+        ]
       },
       "module": "objects",
       "value": {
         "nullable": true,
-        "type": "Object"
+        "type": "objects.Object"
       }
     },
     {
       "countable": true,
-      "description": "Indexing the module reaches a room, and `#trx.rooms` is how many the level has. Rooms count from zero, matching the room numbers level editors show. `pairs()` walks them in order, keyed by that number.",
+      "description": "Indexing the module reaches a room, and `#trx.rooms` is how many the level has. `pairs()` walks them in order, keyed by the room number.",
       "examples": [
         "trx.log.info(#trx.rooms .. \" rooms, first is \" .. trx.rooms[0].num)\nfor num, room in pairs(trx.rooms) do\n  room.cold = true\nend"
       ],
       "key": {
-        "description": "0-based room number, matching the numbers level editors show.",
-        "type": "integer"
+        "type": "rooms.Num"
       },
       "module": "rooms",
       "value": {
         "nullable": true,
-        "type": "Room"
+        "type": "rooms.Room"
       }
     }
   ],
@@ -2609,6 +2615,7 @@
       ],
       "params": [
         {
+          "description": "Whether to check.",
           "name": "enabled",
           "type": "boolean"
         }
@@ -2619,6 +2626,7 @@
       "description": "Whether argument checking is on.",
       "path": "api.is_strict",
       "returns": {
+        "description": "False as the game starts, and true once something turns it on.",
         "type": "boolean"
       }
     },
@@ -2646,10 +2654,9 @@
       "params": [
         {
           "default": 1,
-          "enum": "assault.Track",
           "name": "track",
           "optional": true,
-          "type": "integer"
+          "type": "assault.Track"
         }
       ],
       "path": "assault.start"
@@ -2659,10 +2666,9 @@
       "params": [
         {
           "default": 1,
-          "enum": "assault.Track",
           "name": "track",
           "optional": true,
-          "type": "integer"
+          "type": "assault.Track"
         }
       ],
       "path": "assault.stop"
@@ -2672,10 +2678,9 @@
       "params": [
         {
           "default": 1,
-          "enum": "assault.Track",
           "name": "track",
           "optional": true,
-          "type": "integer"
+          "type": "assault.Track"
         }
       ],
       "path": "assault.finish"
@@ -2685,10 +2690,9 @@
       "params": [
         {
           "default": 1,
-          "enum": "assault.Track",
           "name": "track",
           "optional": true,
-          "type": "integer"
+          "type": "assault.Track"
         }
       ],
       "path": "assault.reset"
@@ -2698,10 +2702,9 @@
       "params": [
         {
           "default": 1,
-          "enum": "assault.Track",
           "name": "track",
           "optional": true,
-          "type": "integer"
+          "type": "assault.Track"
         }
       ],
       "path": "assault.is_running",
@@ -2714,10 +2717,9 @@
       "params": [
         {
           "default": 1,
-          "enum": "assault.Track",
           "name": "track",
           "optional": true,
-          "type": "integer"
+          "type": "assault.Track"
         }
       ],
       "path": "assault.is_visible",
@@ -2738,10 +2740,9 @@
         },
         {
           "default": 1,
-          "enum": "assault.Track",
           "name": "track",
           "optional": true,
-          "type": "integer"
+          "type": "assault.Track"
         }
       ],
       "path": "assault.stats.add_record",
@@ -2754,16 +2755,16 @@
       "description": "Removes a record, closing the gap behind it.",
       "params": [
         {
-          "description": "1-based position in the table.",
-          "name": "record_id",
+          "base": 1,
+          "description": "Position in the table.",
+          "name": "record_num",
           "type": "integer"
         },
         {
           "default": 1,
-          "enum": "assault.Track",
           "name": "track",
           "optional": true,
-          "type": "integer"
+          "type": "assault.Track"
         }
       ],
       "path": "assault.stats.remove_record",
@@ -2780,15 +2781,14 @@
       "params": [
         {
           "default": 1,
-          "enum": "assault.Track",
           "name": "track",
           "optional": true,
-          "type": "integer"
+          "type": "assault.Track"
         }
       ],
       "path": "assault.stats.list_records",
       "returns": {
-        "description": "List, counted from one, of `{ time = seconds, attempt_num = which attempt it was }`.",
+        "description": "List of `{ time = seconds, attempt_num = which attempt it was }`.",
         "type": "table"
       }
     },
@@ -2817,9 +2817,8 @@
       ],
       "params": [
         {
-          "description": "0-based sequence number.",
           "name": "sequence_num",
-          "type": "integer"
+          "type": "camera.SequenceNum"
         }
       ],
       "path": "camera.play_flyby",
@@ -2840,9 +2839,8 @@
       "params": [
         {
           "description": "Which catalog.",
-          "enum": "catalog.Context",
           "name": "context",
-          "type": "integer"
+          "type": "catalog.Context"
         },
         {
           "description": "The TRX id.",
@@ -2865,9 +2863,8 @@
       "params": [
         {
           "description": "Which catalog.",
-          "enum": "catalog.Context",
           "name": "context",
-          "type": "integer"
+          "type": "catalog.Context"
         },
         {
           "description": "The game's own id.",
@@ -3057,9 +3054,8 @@
       "description": "Logs at a level chosen at runtime.",
       "params": [
         {
-          "enum": "log.LogLevel",
           "name": "level",
-          "type": "integer"
+          "type": "log.LogLevel"
         },
         {
           "description": "Any value; a table is pretty-printed.",
@@ -3192,9 +3188,8 @@
       ],
       "params": [
         {
-          "enum": "catalog.objects",
           "name": "object_id",
-          "type": "integer"
+          "type": "catalog.objects"
         }
       ],
       "path": "creatures.add_ally"
@@ -3206,9 +3201,8 @@
       ],
       "params": [
         {
-          "enum": "catalog.objects",
           "name": "object_id",
-          "type": "integer"
+          "type": "catalog.objects"
         }
       ],
       "path": "creatures.add_ally_target"
@@ -3220,9 +3214,8 @@
       ],
       "params": [
         {
-          "description": "Cutscene number.",
           "name": "num",
-          "type": "integer"
+          "type": "cutscenes.Num"
         }
       ],
       "path": "cutscenes.play"
@@ -3231,9 +3224,8 @@
       "description": "Whether a cutscene trigger naming this number has already been answered.",
       "params": [
         {
-          "description": "Cutscene number.",
           "name": "num",
-          "type": "integer"
+          "type": "cutscenes.Num"
         }
       ],
       "path": "cutscenes.is_played",
@@ -3248,9 +3240,8 @@
       ],
       "params": [
         {
-          "description": "Cutscene number.",
           "name": "num",
-          "type": "integer"
+          "type": "cutscenes.Num"
         },
         {
           "description": "Whether it counts as played.",
@@ -3335,9 +3326,9 @@
           "name": "callback",
           "params": [
             {
-              "description": "0-based item number, matching the numbers level editors show. The item that was picked up.",
+              "description": "The item that was picked up.",
               "name": "item_num",
-              "type": "integer"
+              "type": "items.Num"
             }
           ],
           "type": "function"
@@ -3384,6 +3375,7 @@
       ],
       "params": [
         {
+          "base": 0,
           "description": "The flip effect number to claim, as the level editor numbers them. This is not the id space of `trx.rooms.flip_effect`, which takes `trx.catalog.flip_effects` names.",
           "name": "effect_num",
           "type": "integer"
@@ -3397,9 +3389,9 @@
               "type": "integer"
             },
             {
-              "description": "0-based item number, matching the numbers level editors show. The item that ran the effect: Lara for a pad trigger, the activating object for a heavy trigger, the animating item for an animation command.",
+              "description": "The item that ran the effect: Lara for a pad trigger, the activating object for a heavy trigger, the animating item for an animation command.",
               "name": "item_num",
-              "type": "integer"
+              "type": "items.Num"
             }
           ],
           "type": "function"
@@ -3421,19 +3413,19 @@
           "name": "callback",
           "params": [
             {
-              "description": "The `trx.items.Item` that changed rooms.",
+              "description": "The item that changed rooms.",
               "name": "item",
-              "type": "Item"
+              "type": "items.Item"
             },
             {
-              "description": "0-based room number, matching the numbers level editors show. -1 if it had none.",
+              "description": "-1 if it had none.",
               "name": "old_room_num",
-              "type": "integer"
+              "type": "rooms.Num"
             },
             {
-              "description": "0-based room number, matching the numbers level editors show. -1 if it left the world.",
+              "description": "-1 if it left the world.",
               "name": "new_room_num",
-              "type": "integer"
+              "type": "rooms.Num"
             }
           ],
           "type": "function"
@@ -3455,9 +3447,9 @@
           "name": "callback",
           "params": [
             {
-              "description": "The `trx.items.Item` the trigger was aimed at.",
+              "description": "The item the trigger was aimed at.",
               "name": "item",
-              "type": "Item"
+              "type": "items.Item"
             },
             {
               "description": "What the trigger carried: `type` (an `items.TriggerType`), `mask` (the code bits it set, `1` to `31`), `timer` (in seconds), and `one_shot`.",
@@ -3484,9 +3476,9 @@
           "name": "callback",
           "params": [
             {
-              "description": "The `trx.items.Item` that became visible.",
+              "description": "The item that became visible.",
               "name": "item",
-              "type": "Item"
+              "type": "items.Item"
             }
           ],
           "type": "function"
@@ -3508,9 +3500,9 @@
           "name": "callback",
           "params": [
             {
-              "description": "The `trx.items.Item` that became hidden.",
+              "description": "The item that became hidden.",
               "name": "item",
-              "type": "Item"
+              "type": "items.Item"
             }
           ],
           "type": "function"
@@ -3532,9 +3524,9 @@
           "name": "callback",
           "params": [
             {
-              "description": "The `trx.items.Item` that finished.",
+              "description": "The item that finished.",
               "name": "item",
-              "type": "Item"
+              "type": "items.Item"
             }
           ],
           "type": "function"
@@ -3556,9 +3548,9 @@
           "name": "callback",
           "params": [
             {
-              "description": "The `trx.items.Item` that started being simulated.",
+              "description": "The item that started being simulated.",
               "name": "item",
-              "type": "Item"
+              "type": "items.Item"
             }
           ],
           "type": "function"
@@ -3580,9 +3572,9 @@
           "name": "callback",
           "params": [
             {
-              "description": "The `trx.items.Item` that stopped being simulated.",
+              "description": "The item that stopped being simulated.",
               "name": "item",
-              "type": "Item"
+              "type": "items.Item"
             }
           ],
           "type": "function"
@@ -3604,9 +3596,9 @@
           "name": "callback",
           "params": [
             {
-              "description": "The `trx.items.Item` that was activated.",
+              "description": "The item that was activated.",
               "name": "item",
-              "type": "Item"
+              "type": "items.Item"
             }
           ],
           "type": "function"
@@ -3628,9 +3620,9 @@
           "name": "callback",
           "params": [
             {
-              "description": "The `trx.items.Item` that was deactivated.",
+              "description": "The item that was deactivated.",
               "name": "item",
-              "type": "Item"
+              "type": "items.Item"
             }
           ],
           "type": "function"
@@ -3652,9 +3644,9 @@
           "name": "callback",
           "params": [
             {
-              "description": "The `trx.items.Item` being removed. Valid only for the duration of the handler.",
+              "description": "The item being removed. Valid only for the duration of the handler.",
               "name": "item",
-              "type": "Item"
+              "type": "items.Item"
             }
           ],
           "type": "function"
@@ -3676,9 +3668,9 @@
           "name": "callback",
           "params": [
             {
-              "description": "The `trx.items.Item` that entered the world.",
+              "description": "The item that entered the world.",
               "name": "item",
-              "type": "Item"
+              "type": "items.Item"
             }
           ],
           "type": "function"
@@ -3700,9 +3692,9 @@
           "name": "callback",
           "params": [
             {
-              "description": "The `trx.items.Item` that left the world.",
+              "description": "The item that left the world.",
               "name": "item",
-              "type": "Item"
+              "type": "items.Item"
             }
           ],
           "type": "function"
@@ -3724,9 +3716,9 @@
           "name": "callback",
           "params": [
             {
-              "description": "The `trx.items.Item` that took the damage.",
+              "description": "The item that took the damage.",
               "name": "item",
-              "type": "Item"
+              "type": "items.Item"
             },
             {
               "description": "Hit points taken, before clamping to zero.",
@@ -3753,9 +3745,9 @@
           "name": "callback",
           "params": [
             {
-              "description": "The `trx.items.Item` that was brought down.",
+              "description": "The item that was brought down.",
               "name": "item",
-              "type": "Item"
+              "type": "items.Item"
             }
           ],
           "type": "function"
@@ -3777,9 +3769,9 @@
           "name": "callback",
           "params": [
             {
-              "description": "Number the trigger names.",
+              "description": "The number the trigger names, which the game need not have a cutscene for.",
               "name": "cutscene_num",
-              "type": "integer"
+              "type": "cutscenes.Num"
             }
           ],
           "type": "function"
@@ -3798,9 +3790,8 @@
           "name": "callback",
           "params": [
             {
-              "description": "Number of the cutscene starting.",
               "name": "cutscene_num",
-              "type": "integer"
+              "type": "cutscenes.Num"
             }
           ],
           "type": "function"
@@ -3822,9 +3813,8 @@
           "name": "callback",
           "params": [
             {
-              "description": "Number of the cutscene that ended.",
               "name": "cutscene_num",
-              "type": "integer"
+              "type": "cutscenes.Num"
             }
           ],
           "type": "function"
@@ -3846,9 +3836,8 @@
           "name": "callback",
           "params": [
             {
-              "description": "Number of the flyby sequence that ended.",
               "name": "sequence_num",
-              "type": "integer"
+              "type": "camera.SequenceNum"
             }
           ],
           "type": "function"
@@ -3884,7 +3873,8 @@
       ],
       "params": [
         {
-          "description": "1-based position in `trx.game.levels`.",
+          "base": 1,
+          "description": "Position in `trx.game.levels`.",
           "name": "level_num",
           "type": "integer"
         },
@@ -3901,7 +3891,8 @@
       "description": "Plays a cutscene.",
       "params": [
         {
-          "description": "1-based position in `trx.game.cutscenes`.",
+          "base": 1,
+          "description": "Position in `trx.game.cutscenes`.",
           "name": "cutscene_num",
           "type": "integer"
         }
@@ -3912,7 +3903,8 @@
       "description": "Plays a demo, and returns the one that started.",
       "params": [
         {
-          "description": "1-based position in `trx.game.demos`. Omit to play the next demo in rotation.",
+          "base": 1,
+          "description": "Position in `trx.game.demos`. Omit to play the next demo in rotation.",
           "name": "demo_num",
           "optional": true,
           "type": "integer"
@@ -3923,7 +3915,7 @@
         {
           "description": "The demo that started, or `nil` if the game has no demos.",
           "nullable": true,
-          "type": "Level"
+          "type": "game.Level"
         }
       ]
     },
@@ -3962,15 +3954,15 @@
       ],
       "params": [
         {
-          "description": "0-based item number, matching the numbers level editors show. An item's unique name reaches it as well.",
+          "description": "An item's unique name reaches it as well.",
           "name": "key",
-          "type": "any"
+          "type": "items.Num"
         }
       ],
       "path": "items.get",
       "returns": {
         "nullable": true,
-        "type": "Item"
+        "type": "items.Item"
       }
     },
     {
@@ -3981,9 +3973,8 @@
       "params": [
         {
           "description": "Object type to spawn.",
-          "enum": "catalog.objects",
           "name": "object_id",
-          "type": "integer"
+          "type": "catalog.objects"
         },
         {
           "description": "World position. Must lie inside the level.",
@@ -4008,7 +3999,7 @@
       "returns": {
         "description": "`nil` if the item pool is exhausted.",
         "nullable": true,
-        "type": "Item"
+        "type": "items.Item"
       }
     },
     {
@@ -4026,15 +4017,13 @@
       "params": [
         {
           "description": "Which of Lara's meshes.",
-          "enum": "lara.Mesh",
           "name": "mesh",
-          "type": "integer"
+          "type": "lara.Mesh"
         },
         {
           "description": "The mesh to hang on it.",
-          "enum": "lara.ExtraMesh",
           "name": "extra_mesh",
-          "type": "integer"
+          "type": "lara.ExtraMesh"
         }
       ],
       "path": "lara.set_extra_equipment"
@@ -4051,10 +4040,10 @@
           "type": "vec3"
         },
         {
-          "description": "0-based room to look in. Without it, the room is found from the position.",
+          "description": "Without it, the room is found from the position.",
           "name": "room_num",
           "optional": true,
-          "type": "integer"
+          "type": "rooms.Num"
         }
       ],
       "path": "lara.teleport",
@@ -4080,9 +4069,8 @@
       "params": [
         {
           "description": "Which of Lara's meshes.",
-          "enum": "lara.Mesh",
           "name": "mesh",
-          "type": "integer"
+          "type": "lara.Mesh"
         }
       ],
       "path": "lara.clear_equipment"
@@ -4157,9 +4145,8 @@
       ],
       "params": [
         {
-          "enum": "log.LogLevel",
           "name": "level",
-          "type": "integer"
+          "type": "log.LogLevel"
         },
         {
           "name": "message",
@@ -4337,9 +4324,8 @@
       "params": [
         {
           "description": "Track to play. To reach a track by the level's own slot, play it through a handle: `trx.music.tracks[slot]:play()`.",
-          "enum": "catalog.music",
           "name": "id",
-          "type": "integer"
+          "type": "catalog.music"
         },
         {
           "description": "`mode`: a `trx.music.PlayMode`. Defaults to `ONCE`.",
@@ -4375,30 +4361,27 @@
       "params": [
         {
           "description": "Object id, or its catalog name: `trx.objects[\"wolf\"]`.",
-          "enum": "catalog.objects",
           "name": "key",
-          "type": "any"
+          "type": "catalog.objects"
         }
       ],
       "path": "objects.get",
       "returns": {
         "description": "`nil` if no such object exists.",
         "nullable": true,
-        "type": "Object"
+        "type": "objects.Object"
       }
     },
     {
       "description": "Swaps meshes between two objects. With no mesh numbers, swaps all of them; with both, swaps just those two. One without the other raises.",
       "params": [
         {
-          "enum": "catalog.objects",
           "name": "object_id1",
-          "type": "integer"
+          "type": "catalog.objects"
         },
         {
-          "enum": "catalog.objects",
           "name": "object_id2",
-          "type": "integer"
+          "type": "catalog.objects"
         },
         {
           "description": "Mesh of the first.",
@@ -4419,14 +4402,12 @@
       "description": "Swaps the sprites of two objects, which is how a pickup looks when 3D pickups\nare turned off. Raises if either object is drawn from meshes rather than a\nsprite.",
       "params": [
         {
-          "enum": "catalog.objects",
           "name": "object_id1",
-          "type": "integer"
+          "type": "catalog.objects"
         },
         {
-          "enum": "catalog.objects",
           "name": "object_id2",
-          "type": "integer"
+          "type": "catalog.objects"
         }
       ],
       "path": "objects.swap_sprite"
@@ -4463,7 +4444,7 @@
       "path": "query.new",
       "returns": {
         "description": "The identity query, matching everything until narrowed.",
-        "type": "Query"
+        "type": "query.Query"
       }
     },
     {
@@ -4473,15 +4454,14 @@
       ],
       "params": [
         {
-          "description": "0-based room number, matching the numbers level editors show.",
           "name": "num",
-          "type": "integer"
+          "type": "rooms.Num"
         }
       ],
       "path": "rooms.get",
       "returns": {
         "nullable": true,
-        "type": "Room"
+        "type": "rooms.Room"
       }
     },
     {
@@ -4503,9 +4483,8 @@
       "params": [
         {
           "description": "Use `-1` to clear the current effect.",
-          "enum": "catalog.flip_effects",
           "name": "effect_id",
-          "type": "integer"
+          "type": "catalog.flip_effects"
         },
         {
           "description": "Flip timer value.",
@@ -4528,10 +4507,10 @@
           "type": "vec3"
         },
         {
-          "description": "0-based room to look from. The search crosses portals, so a neighbouring room's floor is found too. Without it, the room is looked up from the position, which takes the first room that contains it and passes over the flipped-away ones. Where rooms overlap, name the room, or ask the room itself with `room:floor_height`.",
+          "description": "The search crosses portals, so a neighbouring room's floor is found too. Without it, the room is looked up from the position, which takes the first room that contains it and passes over the flipped-away ones. Where rooms overlap, name the room, or ask the room itself with `room:floor_height`.",
           "name": "room_num",
           "optional": true,
-          "type": "integer"
+          "type": "rooms.Num"
         },
         {
           "description": "`fix_tilts`: whether a floor tilt that lies inside a wall is taken into account, `true` by default. `false` gives the flat height the original games read there, which is what the geometry glitches of the vanilla levels rest on.",
@@ -4555,9 +4534,8 @@
           "type": "vec3"
         },
         {
-          "description": "0-based room to search from.",
           "name": "room_num",
-          "type": "integer"
+          "type": "rooms.Num"
         }
       ],
       "path": "rooms.find_valid_pos",
@@ -4568,8 +4546,8 @@
           "type": "vec3"
         },
         {
-          "description": "The 0-based room the position is in.",
-          "type": "integer"
+          "description": "The room the position is in.",
+          "type": "rooms.Num"
         }
       ]
     },
@@ -4642,10 +4620,9 @@
       "params": [
         {
           "description": "Which set of slots to look in. Defaults to `NORMAL`.",
-          "enum": "savegame.Pool",
           "name": "pool",
           "optional": true,
-          "type": "integer"
+          "type": "savegame.Pool"
         }
       ],
       "path": "savegame.slot_count",
@@ -4660,16 +4637,14 @@
       "description": "Whether a slot holds no save.",
       "params": [
         {
-          "description": "1-based slot number. For the quick pool this is the on-screen order.",
           "name": "slot_num",
-          "type": "integer"
+          "type": "savegame.SlotNum"
         },
         {
           "description": "Which set of slots to look in. Defaults to `NORMAL`.",
-          "enum": "savegame.Pool",
           "name": "pool",
           "optional": true,
-          "type": "integer"
+          "type": "savegame.Pool"
         }
       ],
       "path": "savegame.is_free",
@@ -4687,16 +4662,14 @@
       ],
       "params": [
         {
-          "description": "1-based slot number. For the quick pool this is the on-screen order.",
           "name": "slot_num",
-          "type": "integer"
+          "type": "savegame.SlotNum"
         },
         {
           "description": "Which set of slots to look in. Defaults to `NORMAL`.",
-          "enum": "savegame.Pool",
           "name": "pool",
           "optional": true,
-          "type": "integer"
+          "type": "savegame.Pool"
         }
       ],
       "path": "savegame.load"
@@ -4708,17 +4681,16 @@
       ],
       "params": [
         {
-          "description": "1-based slot number. The quick pool uses the next slot in its rotation when it is omitted.",
+          "description": "The quick pool uses the next slot in its rotation when it is omitted.",
           "name": "slot_num",
           "optional": true,
-          "type": "integer"
+          "type": "savegame.SlotNum"
         },
         {
           "description": "Which set of slots to look in. Defaults to `NORMAL`.",
-          "enum": "savegame.Pool",
           "name": "pool",
           "optional": true,
-          "type": "integer"
+          "type": "savegame.Pool"
         }
       ],
       "path": "savegame.save",
@@ -4737,9 +4709,8 @@
       "params": [
         {
           "description": "Sample to play. To reach a sample by the level's own slot, play it through a handle: `trx.sound.samples[slot]:play()`.",
-          "enum": "catalog.samples",
           "name": "id",
-          "type": "integer"
+          "type": "catalog.samples"
         },
         {
           "description": "`pos`: a `{ x =, y =, z = }` world position to play from, which applies pan and volume. Omit to play at full volume.",
@@ -4760,9 +4731,8 @@
       "params": [
         {
           "description": "Sample to stop. To reach a sample by the level's own slot, stop it through a handle: `trx.sound.samples[slot]:stop()`.",
-          "enum": "catalog.samples",
           "name": "id",
-          "type": "integer"
+          "type": "catalog.samples"
         }
       ],
       "path": "sound.stop"
@@ -4863,9 +4833,8 @@
       "params": [
         {
           "description": "Which weapon. `UNKNOWN` and `UNARMED` raise, and so does anything outside the table; `FLARE` and `SKIDOO` are taken, being held the way a weapon is.",
-          "enum": "catalog.weapons",
           "name": "weapon",
-          "type": "integer"
+          "type": "catalog.weapons"
         }
       ],
       "path": "weapons.is_available",
@@ -4881,16 +4850,14 @@
       "params": [
         {
           "description": "Which weapon. `UNKNOWN` and `UNARMED` raise, and so does anything outside the table; `FLARE` and `SKIDOO` are taken, being held the way a weapon is.",
-          "enum": "catalog.weapons",
           "name": "weapon",
-          "type": "integer"
+          "type": "catalog.weapons"
         }
       ],
       "path": "weapons.object",
       "returns": {
         "description": "The object id, or `nil` if this game has no such weapon.",
-        "enum": "catalog.objects",
-        "type": "integer"
+        "type": "catalog.objects"
       }
     },
     {
@@ -4898,9 +4865,8 @@
       "params": [
         {
           "description": "Which weapon. `UNKNOWN` and `UNARMED` raise, and so does anything outside the table; `FLARE` and `SKIDOO` are taken, being held the way a weapon is.",
-          "enum": "catalog.weapons",
           "name": "weapon",
-          "type": "integer"
+          "type": "catalog.weapons"
         }
       ],
       "path": "weapons.shots_per_box",
@@ -4916,9 +4882,8 @@
       "params": [
         {
           "description": "The weather to show.",
-          "enum": "weather.Type",
           "name": "type",
-          "type": "integer"
+          "type": "weather.Type"
         }
       ],
       "path": "weather.set"
@@ -4984,6 +4949,7 @@
     },
     {
       "description": "What Lara is carrying, and what goes into it.\n\nThe module is the inventory she holds now, so `trx.inventory:count(object)`\nasks about her. Any level's is reached the same way through\n`trx.game.Level.inventory`, which is what it will hand her when she arrives\nthere rather than what she has this second.\n\nEvery function takes either the pickup lying in the world or the inventory icon\nit goes into. The engine maps one to the other, so a script names whichever it\nhas.",
+      "instance_type": "inventory.Inventory",
       "name": "inventory",
       "order": 4
     },
@@ -4994,6 +4960,7 @@
     },
     {
       "description": "Module for reading and nudging Lara's own state.\n\nHer position, room and hit points are not here: she is an item like any other and they live on it, as `trx.lara.item`.",
+      "instance_type": "lara.Lara",
       "name": "lara",
       "order": 3
     },
@@ -5062,6 +5029,7 @@
     },
     {
       "description": "Module for what a level keeps count of: what Lara has found in it, and how much\nthere was to find.\n\nThe module is the level being played, so `trx.stats.pickups.count` is what she\nhas picked up in it. Any other level's counters are reached the same way through\n`trx.game.Level.stats`. At the title screen there is no level, and everything\nhere reads `nil`.",
+      "instance_type": "stats.Stats",
       "name": "stats",
       "order": 24
     },
@@ -5113,12 +5081,43 @@
       "path": "rules.corpse"
     }
   ],
+  "numbers": [
+    {
+      "base": 0,
+      "description": "Flyby sequence number, as the level numbers them.",
+      "path": "camera.SequenceNum"
+    },
+    {
+      "base": 0,
+      "description": "Cutscene number, as a cutscene trigger names it.",
+      "path": "cutscenes.Num"
+    },
+    {
+      "base": 0,
+      "description": "Item number, matching the numbers level editors show.",
+      "path": "items.Num"
+    },
+    {
+      "base": 0,
+      "description": "Room number, matching the numbers level editors show.",
+      "path": "rooms.Num"
+    },
+    {
+      "base": 1,
+      "description": "Slot number within the pool. For the quick pool this is the on-screen order.",
+      "path": "savegame.SlotNum"
+    },
+    {
+      "base": 1,
+      "description": "The secret's number, as the player counts them.",
+      "path": "stats.SecretNum"
+    }
+  ],
   "properties": [
     {
       "description": "The track Lara is currently running, or `nil` if none.",
-      "enum": "assault.Track",
       "path": "assault.active_track",
-      "type": "integer",
+      "type": "assault.Track",
       "writable": false
     },
     {
@@ -5128,15 +5127,15 @@
       "writable": false
     },
     {
-      "description": "0-based number of the room the camera is in, or `nil` if unknown.",
+      "description": "The room the camera is in, or `nil` if unknown.",
       "path": "camera.room_num",
-      "type": "integer",
+      "type": "rooms.Num",
       "writable": false
     },
     {
-      "description": "The `trx.rooms.Room` the camera is in, or `nil` if unknown.",
+      "description": "The room the camera is in, or `nil` if unknown.",
       "path": "camera.room",
-      "type": "Room",
+      "type": "rooms.Room",
       "writable": false
     },
     {
@@ -5146,9 +5145,9 @@
       "writable": false
     },
     {
-      "description": "0-based number of the room the camera is looking at, or `nil` if unknown.",
+      "description": "The room the camera is looking at, or `nil` if unknown.",
       "path": "camera.target_room_num",
-      "type": "integer",
+      "type": "rooms.Num",
       "writable": false
     },
     {
@@ -5166,7 +5165,7 @@
     {
       "description": "Number of the cutscene playing, or `nil` if none is.",
       "path": "cutscenes.current",
-      "type": "integer",
+      "type": "cutscenes.Num",
       "writable": false
     },
     {
@@ -5208,13 +5207,13 @@
     {
       "description": "The level being played, or `nil` if none is.",
       "path": "game.current_level",
-      "type": "Level",
+      "type": "game.Level",
       "writable": false
     },
     {
       "description": "The gym level, or `nil` if this game has no gym.",
       "path": "game.gym",
-      "type": "Level",
+      "type": "game.Level",
       "writable": false
     },
     {
@@ -5248,21 +5247,21 @@
       "writable": false
     },
     {
-      "description": "The identity query over every item in the level. Narrow it and read it - see `trx.items.ItemQuery`.",
+      "description": "The identity query over every item in the level. Narrow it and read it.",
       "path": "items.query",
-      "type": "ItemQuery",
+      "type": "items.ItemQuery",
       "writable": false
     },
     {
-      "description": "Lara's own `trx.items.Item`, or `nil` outside a level. Her position, room and hit points are read and written there.",
+      "description": "Lara's own item, or `nil` outside a level. Her position, room and hit points are read and written there.",
       "path": "lara.item",
-      "type": "Item",
+      "type": "items.Item",
       "writable": false
     },
     {
       "description": "The item Lara's guns are locked onto, or `nil` if she has none.",
       "path": "lara.target",
-      "type": "Item",
+      "type": "items.Item",
       "writable": false
     },
     {
@@ -5302,9 +5301,9 @@
       "writable": false
     },
     {
-      "description": "The loaded mod, as a `trx.mod.Mod`.",
+      "description": "The loaded mod.",
       "path": "mod.current",
-      "type": "Mod",
+      "type": "mod.Mod",
       "writable": false
     },
     {
@@ -5320,21 +5319,21 @@
       "writable": false
     },
     {
-      "description": "The track playing now, as a `trx.music.Track`, or `nil` when nothing plays.",
+      "description": "The track playing now, or `nil` when nothing plays.",
       "path": "music.current_track",
-      "type": "Track",
+      "type": "music.Track",
       "writable": false
     },
     {
-      "description": "The ambient track that resumes once the current one-shot finishes, as a `trx.music.Track`, or `nil` when none is set.",
+      "description": "The ambient track that resumes once the current one-shot finishes, or `nil` when none is set.",
       "path": "music.looped_track",
-      "type": "Track",
+      "type": "music.Track",
       "writable": false
     },
     {
-      "description": "The identity query over every object definition. Narrow it and read it - see `trx.objects.ObjectQuery`.",
+      "description": "The identity query over every object definition. Narrow it and read it.",
       "path": "objects.query",
-      "type": "ObjectQuery",
+      "type": "objects.ObjectQuery",
       "writable": false
     },
     {
@@ -5344,9 +5343,9 @@
       "writable": false
     },
     {
-      "description": "The identity query over every room in the level. Narrow it and read it - see `trx.rooms.RoomQuery`.",
+      "description": "The identity query over every room in the level. Narrow it and read it.",
       "path": "rooms.query",
-      "type": "RoomQuery",
+      "type": "rooms.RoomQuery",
       "writable": false
     },
     {
@@ -5399,9 +5398,8 @@
     },
     {
       "description": "The active weather.",
-      "enum": "weather.Type",
       "path": "weather.current",
-      "type": "integer",
+      "type": "weather.Type",
       "writable": false
     }
   ],
@@ -5435,14 +5433,14 @@
       "description": "A level, as the game flow file declares it. Everything on it is read-only: a level is what the game flow says it is.",
       "extensions": [
         {
-          "description": "What the level keeps for Lara's return, as a `trx.inventory.Inventory`, or `nil` for a level that keeps nothing: the title screen and the cutscenes. It is what she will arrive there with rather than what she is carrying now, which is `trx.inventory` itself.",
+          "description": "What the level keeps for Lara's return, or `nil` for a level that keeps nothing: the title screen and the cutscenes. It is what she will arrive there with rather than what she is carrying now, which is `trx.inventory` itself.",
           "name": "inventory",
-          "type": "Inventory"
+          "type": "inventory.Inventory"
         },
         {
-          "description": "What the level keeps count of, as a `trx.stats.Stats`, or `nil` for a level that counts nothing: the title screen and the cutscenes. The level being played is also `trx.stats` itself.",
+          "description": "What the level keeps count of, or `nil` for a level that counts nothing: the title screen and the cutscenes. The level being played is also `trx.stats` itself.",
           "name": "stats",
-          "type": "Stats"
+          "type": "stats.Stats"
         }
       ],
       "fields": [
@@ -5454,12 +5452,12 @@
         },
         {
           "description": "The track that plays when the level starts.",
-          "enum": "catalog.music",
           "name": "music_track",
-          "type": "integer",
+          "type": "catalog.music",
           "writable": false
         },
         {
+          "base": 1,
           "description": "The number the level goes by. Not its place in the table: levels the game flow skips do not count, and a gym level has no number at all and reads 0.",
           "name": "num",
           "type": "integer",
@@ -5485,9 +5483,8 @@
         },
         {
           "description": "What kind of level it is.",
-          "enum": "game.LevelType",
           "name": "type",
-          "type": "integer",
+          "type": "game.LevelType",
           "writable": false
         },
         {
@@ -5538,9 +5535,8 @@
         },
         {
           "description": "The inventory icon this entry is drawn as.",
-          "enum": "catalog.objects",
           "name": "object",
-          "type": "integer",
+          "type": "catalog.objects",
           "writable": false
         }
       ],
@@ -5561,9 +5557,8 @@
           "params": [
             {
               "description": "The pickup, or the inventory icon it goes into.",
-              "enum": "catalog.objects",
               "name": "object_id",
-              "type": "integer"
+              "type": "catalog.objects"
             }
           ],
           "returns": {
@@ -5576,9 +5571,8 @@
           "params": [
             {
               "description": "The pickup, or the inventory icon it goes into.",
-              "enum": "catalog.objects",
               "name": "object_id",
-              "type": "integer"
+              "type": "catalog.objects"
             }
           ],
           "returns": {
@@ -5591,29 +5585,29 @@
           "params": [
             {
               "description": "The pickup, or the inventory icon it goes into.",
-              "enum": "catalog.objects",
               "name": "object_id",
-              "type": "integer"
+              "type": "catalog.objects"
             }
           ],
           "returns": {
             "nullable": true,
-            "type": "Entry"
+            "type": "inventory.Entry"
           }
         },
         {
-          "description": "The entry at a position, counted from one in the order they are drawn, or `nil` past the end.",
+          "description": "The entry at a position in the order they are drawn, or `nil` past the end.",
           "name": "entry_at",
           "params": [
             {
-              "description": "1-based position.",
+              "base": 1,
+              "description": "Position in the ring.",
               "name": "entry_num",
               "type": "integer"
             }
           ],
           "returns": {
             "nullable": true,
-            "type": "Entry"
+            "type": "inventory.Entry"
           }
         },
         {
@@ -5632,9 +5626,8 @@
           "params": [
             {
               "description": "The pickup, or the inventory icon it goes into.",
-              "enum": "catalog.objects",
               "name": "object_id",
-              "type": "integer"
+              "type": "catalog.objects"
             },
             {
               "description": "How many. Defaults to 1; below 1 raises.",
@@ -5654,9 +5647,8 @@
           "params": [
             {
               "description": "The pickup, or the inventory icon it goes into.",
-              "enum": "catalog.objects",
               "name": "object_id",
-              "type": "integer"
+              "type": "catalog.objects"
             }
           ],
           "returns": {
@@ -5669,9 +5661,8 @@
           "params": [
             {
               "description": "Which weapon. `UNKNOWN` and `UNARMED` raise, and so does anything outside the table; `FLARE` and `SKIDOO` are taken, being held the way a weapon is.",
-              "enum": "catalog.weapons",
               "name": "weapon",
-              "type": "integer"
+              "type": "catalog.weapons"
             }
           ],
           "returns": {
@@ -5684,16 +5675,14 @@
           "params": [
             {
               "description": "The pickup, or the inventory icon it goes into.",
-              "enum": "catalog.objects",
               "name": "object_id",
-              "type": "integer"
+              "type": "catalog.objects"
             }
           ],
           "returns": {
             "description": "The icon's object id, or `nil` for a pickup that has none.",
-            "enum": "catalog.objects",
             "nullable": true,
-            "type": "integer"
+            "type": "catalog.objects"
           }
         },
         {
@@ -5702,9 +5691,8 @@
           "params": [
             {
               "description": "The pickup, or the inventory icon it goes into.",
-              "enum": "catalog.objects",
               "name": "object_id",
-              "type": "integer"
+              "type": "catalog.objects"
             },
             {
               "description": "How many. Below 0 raises.",
@@ -5722,9 +5710,8 @@
           "params": [
             {
               "description": "Which weapon. `UNKNOWN` and `UNARMED` raise, and so does anything outside the table; `FLARE` and `SKIDOO` are taken, being held the way a weapon is.",
-              "enum": "catalog.weapons",
               "name": "weapon",
-              "type": "integer"
+              "type": "catalog.weapons"
             },
             {
               "description": "Shots. Below 0 raises.",
@@ -5739,9 +5726,8 @@
           "params": [
             {
               "description": "Which weapon. `UNKNOWN` and `UNARMED` raise, and so does anything outside the table; `FLARE` and `SKIDOO` are taken, being held the way a weapon is.",
-              "enum": "catalog.weapons",
               "name": "weapon",
-              "type": "integer"
+              "type": "catalog.weapons"
             }
           ],
           "returns": {
@@ -5754,9 +5740,8 @@
           "params": [
             {
               "description": "The pickup, or the inventory icon it goes into.",
-              "enum": "catalog.objects",
               "name": "object_id",
-              "type": "integer"
+              "type": "catalog.objects"
             },
             {
               "description": "How many. Defaults to 1; below 1 raises.",
@@ -5788,14 +5773,15 @@
           "type": "table"
         },
         {
-          "description": "The `trx.rooms.Room` containing this item.",
+          "description": "The room containing this item.",
           "name": "room",
-          "type": "Room"
+          "type": "rooms.Room"
         }
       ],
       "fields": [
         {
-          "description": "The animation's number within the object, counted from 0.",
+          "base": 0,
+          "description": "The animation's number within the object.",
           "name": "anim_num",
           "type": "integer",
           "writable": true
@@ -5819,7 +5805,8 @@
           "writable": true
         },
         {
-          "description": "The frame's number within the animation, counted from 0. Negative values count back from the end.",
+          "base": 0,
+          "description": "The frame's number within the animation. Negative values count back from the end.",
           "name": "frame_num",
           "type": "integer",
           "writable": true
@@ -5933,16 +5920,15 @@
           "writable": true
         },
         {
-          "description": "0-based item number, matching the numbers level editors show. An item handed over by a query can say where it lives.",
+          "description": "An item handed over by a query can say where it lives.",
           "name": "num",
-          "type": "integer",
+          "type": "items.Num",
           "writable": false
         },
         {
           "description": "The item's object type.",
-          "enum": "catalog.objects",
           "name": "object_id",
-          "type": "integer",
+          "type": "catalog.objects",
           "writable": false
         },
         {
@@ -5952,9 +5938,9 @@
           "writable": true
         },
         {
-          "description": "0-based number of the room containing this item. Set `pos` to move the item between rooms.",
+          "description": "The room containing this item. Set `pos` to move the item between rooms.",
           "name": "room_num",
-          "type": "integer",
+          "type": "rooms.Num",
           "writable": false
         },
         {
@@ -6079,7 +6065,7 @@
                 {
                   "description": "This item.",
                   "name": "item",
-                  "type": "Item"
+                  "type": "items.Item"
                 }
               ],
               "type": "function"
@@ -6103,7 +6089,7 @@
                 {
                   "description": "This item.",
                   "name": "item",
-                  "type": "Item"
+                  "type": "items.Item"
                 }
               ],
               "type": "function"
@@ -6127,7 +6113,7 @@
                 {
                   "description": "This item.",
                   "name": "item",
-                  "type": "Item"
+                  "type": "items.Item"
                 }
               ],
               "type": "function"
@@ -6151,7 +6137,7 @@
                 {
                   "description": "This item.",
                   "name": "item",
-                  "type": "Item"
+                  "type": "items.Item"
                 }
               ],
               "type": "function"
@@ -6175,7 +6161,7 @@
                 {
                   "description": "This item.",
                   "name": "item",
-                  "type": "Item"
+                  "type": "items.Item"
                 }
               ],
               "type": "function"
@@ -6199,7 +6185,7 @@
                 {
                   "description": "This item.",
                   "name": "item",
-                  "type": "Item"
+                  "type": "items.Item"
                 }
               ],
               "type": "function"
@@ -6223,7 +6209,7 @@
                 {
                   "description": "This item.",
                   "name": "item",
-                  "type": "Item"
+                  "type": "items.Item"
                 }
               ],
               "type": "function"
@@ -6247,7 +6233,7 @@
                 {
                   "description": "This item.",
                   "name": "item",
-                  "type": "Item"
+                  "type": "items.Item"
                 },
                 {
                   "description": "Hit points taken, before clamping to zero.",
@@ -6276,7 +6262,7 @@
                 {
                   "description": "This item.",
                   "name": "item",
-                  "type": "Item"
+                  "type": "items.Item"
                 }
               ],
               "type": "function"
@@ -6300,7 +6286,7 @@
                 {
                   "description": "This item.",
                   "name": "item",
-                  "type": "Item"
+                  "type": "items.Item"
                 }
               ],
               "type": "function"
@@ -6324,7 +6310,7 @@
                 {
                   "description": "This item.",
                   "name": "item",
-                  "type": "Item"
+                  "type": "items.Item"
                 }
               ],
               "type": "function"
@@ -6348,7 +6334,7 @@
                 {
                   "description": "This item.",
                   "name": "item",
-                  "type": "Item"
+                  "type": "items.Item"
                 }
               ],
               "type": "function"
@@ -6372,10 +6358,10 @@
                 {
                   "description": "This item.",
                   "name": "item",
-                  "type": "Item"
+                  "type": "items.Item"
                 },
                 {
-                  "description": "What the trigger carried: `type`, `mask`, `timer` and `one_shot`. See `trx.events.on_trigger`.",
+                  "description": "What the trigger carried: `type`, `mask`, `timer` and `one_shot`.",
                   "name": "trigger",
                   "type": "table"
                 }
@@ -6461,7 +6447,7 @@
           "name": "alive",
           "returns": {
             "description": "The narrowed query.",
-            "type": "Query"
+            "type": "query.Query"
           }
         },
         {
@@ -6469,7 +6455,7 @@
           "name": "finished",
           "returns": {
             "description": "The narrowed query.",
-            "type": "Query"
+            "type": "query.Query"
           }
         },
         {
@@ -6492,7 +6478,7 @@
           ],
           "returns": {
             "description": "The narrowed query.",
-            "type": "Query"
+            "type": "query.Query"
           }
         },
         {
@@ -6500,7 +6486,7 @@
           "name": "in_play",
           "returns": {
             "description": "The narrowed query.",
-            "type": "Query"
+            "type": "query.Query"
           }
         },
         {
@@ -6508,14 +6494,13 @@
           "name": "in_room",
           "params": [
             {
-              "description": "0-based room number, matching the numbers level editors show.",
               "name": "room_num",
-              "type": "integer"
+              "type": "rooms.Num"
             }
           ],
           "returns": {
             "description": "The narrowed query.",
-            "type": "Query"
+            "type": "query.Query"
           }
         },
         {
@@ -6535,7 +6520,7 @@
           ],
           "returns": {
             "description": "The narrowed query.",
-            "type": "Query"
+            "type": "query.Query"
           }
         },
         {
@@ -6553,7 +6538,7 @@
           ],
           "returns": {
             "description": "The narrowed query.",
-            "type": "Query"
+            "type": "query.Query"
           }
         },
         {
@@ -6561,7 +6546,7 @@
           "name": "present",
           "returns": {
             "description": "The narrowed query.",
-            "type": "Query"
+            "type": "query.Query"
           }
         },
         {
@@ -6569,7 +6554,7 @@
           "name": "simulated",
           "returns": {
             "description": "The narrowed query.",
-            "type": "Query"
+            "type": "query.Query"
           }
         },
         {
@@ -6577,7 +6562,7 @@
           "name": "targetable",
           "returns": {
             "description": "The narrowed query.",
-            "type": "Query"
+            "type": "query.Query"
           }
         },
         {
@@ -6585,7 +6570,7 @@
           "name": "visible",
           "returns": {
             "description": "The narrowed query.",
-            "type": "Query"
+            "type": "query.Query"
           }
         }
       ],
@@ -6622,9 +6607,8 @@
         },
         {
           "description": "The weapon Lara is holding.",
-          "enum": "catalog.weapons",
           "name": "equipped_gun",
-          "type": "integer",
+          "type": "catalog.weapons",
           "writable": false
         },
         {
@@ -6641,9 +6625,8 @@
         },
         {
           "description": "What Lara's hands are doing.",
-          "enum": "lara.GunState",
           "name": "gun_status",
-          "type": "integer",
+          "type": "lara.GunState",
           "writable": false
         },
         {
@@ -6690,9 +6673,8 @@
         },
         {
           "description": "The weapon Lara is drawing, while she is drawing it.",
-          "enum": "catalog.weapons",
           "name": "requested_gun",
-          "type": "integer",
+          "type": "catalog.weapons",
           "writable": false
         },
         {
@@ -6703,9 +6685,8 @@
         },
         {
           "description": "Where Lara is with respect to water.",
-          "enum": "lara.WaterState",
           "name": "water_status",
-          "type": "integer",
+          "type": "lara.WaterState",
           "writable": false
         }
       ],
@@ -6756,9 +6737,8 @@
         },
         {
           "description": "What kind of mod it is.",
-          "enum": "mod.Type",
           "name": "type",
-          "type": "integer",
+          "type": "mod.Type",
           "writable": false
         }
       ],
@@ -6773,9 +6753,8 @@
       "fields": [
         {
           "description": "How the track is playing.",
-          "enum": "music.PlayMode",
           "name": "mode",
-          "type": "integer",
+          "type": "music.PlayMode",
           "writable": false
         },
         {
@@ -7022,7 +7001,7 @@
           "name": "ammo",
           "returns": {
             "description": "The narrowed query.",
-            "type": "Query"
+            "type": "query.Query"
           }
         },
         {
@@ -7030,7 +7009,7 @@
           "name": "animation",
           "returns": {
             "description": "The narrowed query.",
-            "type": "Query"
+            "type": "query.Query"
           }
         },
         {
@@ -7038,7 +7017,7 @@
           "name": "collectible",
           "returns": {
             "description": "The narrowed query.",
-            "type": "Query"
+            "type": "query.Query"
           }
         },
         {
@@ -7046,7 +7025,7 @@
           "name": "creature",
           "returns": {
             "description": "The narrowed query.",
-            "type": "Query"
+            "type": "query.Query"
           }
         },
         {
@@ -7054,7 +7033,7 @@
           "name": "door",
           "returns": {
             "description": "The narrowed query.",
-            "type": "Query"
+            "type": "query.Query"
           }
         },
         {
@@ -7062,7 +7041,7 @@
           "name": "enemy",
           "returns": {
             "description": "The narrowed query.",
-            "type": "Query"
+            "type": "query.Query"
           }
         },
         {
@@ -7070,7 +7049,7 @@
           "name": "examine",
           "returns": {
             "description": "The narrowed query.",
-            "type": "Query"
+            "type": "query.Query"
           }
         },
         {
@@ -7078,7 +7057,7 @@
           "name": "gun",
           "returns": {
             "description": "The narrowed query.",
-            "type": "Query"
+            "type": "query.Query"
           }
         },
         {
@@ -7086,7 +7065,7 @@
           "name": "inventory_item",
           "returns": {
             "description": "The narrowed query.",
-            "type": "Query"
+            "type": "query.Query"
           }
         },
         {
@@ -7094,7 +7073,7 @@
           "name": "key",
           "returns": {
             "description": "The narrowed query.",
-            "type": "Query"
+            "type": "query.Query"
           }
         },
         {
@@ -7102,7 +7081,7 @@
           "name": "loaded",
           "returns": {
             "description": "The narrowed query.",
-            "type": "Query"
+            "type": "query.Query"
           }
         },
         {
@@ -7110,7 +7089,7 @@
           "name": "loyal",
           "returns": {
             "description": "The narrowed query.",
-            "type": "Query"
+            "type": "query.Query"
           }
         },
         {
@@ -7118,7 +7097,7 @@
           "name": "null_object",
           "returns": {
             "description": "The narrowed query.",
-            "type": "Query"
+            "type": "query.Query"
           }
         },
         {
@@ -7126,7 +7105,7 @@
           "name": "pickup",
           "returns": {
             "description": "The narrowed query.",
-            "type": "Query"
+            "type": "query.Query"
           }
         },
         {
@@ -7134,7 +7113,7 @@
           "name": "pushable",
           "returns": {
             "description": "The narrowed query.",
-            "type": "Query"
+            "type": "query.Query"
           }
         },
         {
@@ -7142,7 +7121,7 @@
           "name": "puzzle",
           "returns": {
             "description": "The narrowed query.",
-            "type": "Query"
+            "type": "query.Query"
           }
         },
         {
@@ -7150,7 +7129,7 @@
           "name": "quest",
           "returns": {
             "description": "The narrowed query.",
-            "type": "Query"
+            "type": "query.Query"
           }
         },
         {
@@ -7158,7 +7137,7 @@
           "name": "receptacle",
           "returns": {
             "description": "The narrowed query.",
-            "type": "Query"
+            "type": "query.Query"
           }
         },
         {
@@ -7166,7 +7145,7 @@
           "name": "secret",
           "returns": {
             "description": "The narrowed query.",
-            "type": "Query"
+            "type": "query.Query"
           }
         },
         {
@@ -7174,7 +7153,7 @@
           "name": "spawnable",
           "returns": {
             "description": "The narrowed query.",
-            "type": "Query"
+            "type": "query.Query"
           }
         },
         {
@@ -7182,7 +7161,7 @@
           "name": "supply",
           "returns": {
             "description": "The narrowed query.",
-            "type": "Query"
+            "type": "query.Query"
           }
         },
         {
@@ -7190,7 +7169,7 @@
           "name": "switch",
           "returns": {
             "description": "The narrowed query.",
-            "type": "Query"
+            "type": "query.Query"
           }
         },
         {
@@ -7198,7 +7177,7 @@
           "name": "tool",
           "returns": {
             "description": "The narrowed query.",
-            "type": "Query"
+            "type": "query.Query"
           }
         }
       ],
@@ -7269,7 +7248,7 @@
           ],
           "returns": {
             "description": "The narrowed query.",
-            "type": "Query"
+            "type": "query.Query"
           }
         }
       ],
@@ -7318,7 +7297,7 @@
           ],
           "returns": {
             "description": "The narrowed query.",
-            "type": "Query"
+            "type": "query.Query"
           }
         },
         {
@@ -7344,7 +7323,7 @@
         {
           "description": "This room's flip pair, or `nil` if it has none.",
           "name": "flipped_room",
-          "type": "Room"
+          "type": "rooms.Room"
         },
         {
           "description": "As `bounds`, but excluding the outer ring of sectors, which is solid wall.",
@@ -7367,15 +7346,13 @@
         },
         {
           "description": "Current flip status.",
-          "enum": "rooms.FlipStatus",
           "name": "flip_status",
-          "type": "integer",
+          "type": "rooms.FlipStatus",
           "writable": false
         },
         {
-          "description": "0-based room number, matching the numbers level editors show.",
           "name": "num",
-          "type": "integer",
+          "type": "rooms.Num",
           "writable": false
         },
         {
@@ -7441,9 +7418,9 @@
               "name": "callback",
               "params": [
                 {
-                  "description": "The `trx.items.Item` that changed rooms.",
+                  "description": "The item that changed rooms.",
                   "name": "item",
-                  "type": "Item"
+                  "type": "items.Item"
                 }
               ],
               "type": "function"
@@ -7468,9 +7445,9 @@
               "name": "callback",
               "params": [
                 {
-                  "description": "The `trx.items.Item` that changed rooms.",
+                  "description": "The item that changed rooms.",
                   "name": "item",
-                  "type": "Item"
+                  "type": "items.Item"
                 }
               ],
               "type": "function"
@@ -7512,7 +7489,7 @@
           ],
           "returns": {
             "description": "The narrowed query.",
-            "type": "Query"
+            "type": "query.Query"
           }
         },
         {
@@ -7520,7 +7497,7 @@
           "name": "dry",
           "returns": {
             "description": "The narrowed query.",
-            "type": "Query"
+            "type": "query.Query"
           }
         },
         {
@@ -7528,7 +7505,7 @@
           "name": "flipped",
           "returns": {
             "description": "The narrowed query.",
-            "type": "Query"
+            "type": "query.Query"
           }
         },
         {
@@ -7539,7 +7516,7 @@
           "name": "reachable",
           "returns": {
             "description": "The narrowed query.",
-            "type": "Query"
+            "type": "query.Query"
           }
         },
         {
@@ -7547,7 +7524,7 @@
           "name": "swamp",
           "returns": {
             "description": "The narrowed query.",
-            "type": "Query"
+            "type": "query.Query"
           }
         },
         {
@@ -7555,7 +7532,7 @@
           "name": "underwater",
           "returns": {
             "description": "The narrowed query.",
-            "type": "Query"
+            "type": "query.Query"
           }
         }
       ],
@@ -7712,12 +7689,12 @@
         {
           "description": "The save crystals, where the game has them.",
           "name": "crystals",
-          "type": "Category"
+          "type": "stats.Category"
         },
         {
           "description": "The enemies the level counts, allies among them.",
           "name": "kills",
-          "type": "Category"
+          "type": "stats.Category"
         },
         {
           "description": "How many of `kills.max` are allies. The statistics screen holds them against the player only once `allies_hurt`, so a screen written in Lua wants to do the same: `max_enemy_kills`, and these as well once she has turned on one.",
@@ -7732,12 +7709,12 @@
         {
           "description": "The items lying in the level for Lara to take.",
           "name": "pickups",
-          "type": "Category"
+          "type": "stats.Category"
         },
         {
           "description": "The level's secrets. Which ones Lara holds is `secret_list`.",
           "name": "secrets",
-          "type": "Category"
+          "type": "stats.Category"
         }
       ],
       "fields": [
@@ -7788,9 +7765,8 @@
           "name": "give_secret",
           "params": [
             {
-              "description": "The secret's number, counted from one.",
-              "name": "num",
-              "type": "integer"
+              "name": "secret_num",
+              "type": "stats.SecretNum"
             }
           ],
           "returns": {
@@ -7799,7 +7775,7 @@
           }
         },
         {
-          "description": "The level's secrets, in order, as a list of `{ num, found }`. `num` is the number the player says, counted from one, and `found` is whether Lara has it.",
+          "description": "The level's secrets, in order, as a list of `{ num, found }`. `num` is the number the player says, and `found` is whether Lara has it.",
           "examples": [
             "for _, secret in ipairs(trx.stats.secret_list()) do\n  trx.log.info(secret.num .. \": \" .. tostring(secret.found))\nend"
           ],
@@ -7814,9 +7790,8 @@
           "name": "take_secret",
           "params": [
             {
-              "description": "The secret's number, counted from one.",
-              "name": "num",
-              "type": "integer"
+              "name": "secret_num",
+              "type": "stats.SecretNum"
             }
           ],
           "returns": {

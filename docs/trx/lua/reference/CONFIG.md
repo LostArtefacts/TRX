@@ -18,7 +18,7 @@ These are the player's settings, not the level's. `set` writes to them and keeps
 
 ### Functions
 
-- [lua]`trx.config.get(key)`  
+- <a name="config.get"></a>[lua]`trx.config.get(key)`  
   Reads a setting. The value comes back as the type the option is declared with, so a boolean option reads as a boolean. Colors and enums read as strings.
 
   Parameters:
@@ -33,7 +33,7 @@ These are the player's settings, not the level's. `set` writes to them and keeps
   end
   ```
 
-- [lua]`trx.config.describe(key)`  
+- <a name="config.describe"></a>[lua]`trx.config.describe(key)`  
   What shape a setting has: how a value is entered and shown, beyond the type `get` reads back.
 
   Parameters:
@@ -48,7 +48,7 @@ These are the player's settings, not the level's. `set` writes to them and keeps
   end
   ```
 
-- [lua]`trx.config.format_value(key)`  
+- <a name="config.format_value"></a>[lua]`trx.config.format_value(key)`  
   The current value as the console prints it: `1` or `0` for a boolean, two decimals for a plain number, a 0-100 percentage where the option is one, and enum values with dashes for underscores.
 
   Parameters:
@@ -61,7 +61,7 @@ These are the player's settings, not the level's. `set` writes to them and keeps
   trx.console.log(trx.config.format_value("visuals.fov"))
   ```
 
-- [lua]`trx.config.accepted_values(key)`  
+- <a name="config.accepted_values"></a>[lua]`trx.config.accepted_values(key)`  
   What a setting accepts, as text for an error message: `on, off` for a boolean, a marker like `[integer]` for the number kinds, or the value names for the enum kinds, with dashes for underscores.
 
   Parameters:
@@ -69,7 +69,7 @@ These are the player's settings, not the level's. `set` writes to them and keeps
 
   Returns: string or `nil`. `nil` for the kinds with nothing to list, such as a color.
 
-- [lua]`trx.config.set(key, value, [force])`  
+- <a name="config.set"></a>[lua]`trx.config.set(key, value, [force])`  
   Changes the player's setting, and keeps the change. Raises if the key is unknown or the value will not parse.
 
   The old value is not kept anywhere: the new one becomes the active setting as if the player had chosen it, and is remembered across saves and relaunches. Prefer `override` for anything a level wants only while it is running.
@@ -79,7 +79,7 @@ These are the player's settings, not the level's. `set` writes to them and keeps
   - **`value`** (any). A boolean, a number, or a string, matching the option's type. A color is a 6-digit hex string. An enum value is taken in either spelling: underscores or the dashes the console shows.
   - **`force`** (boolean, optional). Write through a setting the game flow enforces.
 
-- [lua]`trx.config.reset(key, [force])`  
+- <a name="config.reset"></a>[lua]`trx.config.reset(key, [force])`  
   Puts a setting back to its default, and keeps the change, as `set` does.
 
   Parameters:
@@ -88,7 +88,7 @@ These are the player's settings, not the level's. `set` writes to them and keeps
 
   Returns: boolean. `false` when a script or the game flow is holding the setting (see `is_overridden`).
 
-- [lua]`trx.config.override(key, value)`  
+- <a name="config.override"></a>[lua]`trx.config.override(key, value)`  
   Changes a setting for as long as the script keeps the override, without touching the player's own value.
 
   The player's value sits underneath and comes back on `restore`. Nothing is written to disk. Overrides stack, so one can be pushed over another; each `restore` lifts one off. A setting the game flow enforces cannot be overridden.
@@ -104,7 +104,7 @@ These are the player's settings, not the level's. `set` writes to them and keeps
   trx.config.restore("visuals.water_color")
   ```
 
-- [lua]`trx.config.restore(key)`  
+- <a name="config.restore"></a>[lua]`trx.config.restore(key)`  
   Lifts one override off a setting, putting back whatever was underneath it.
 
   Parameters:
@@ -112,7 +112,7 @@ These are the player's settings, not the level's. `set` writes to them and keeps
 
   Returns: boolean. `false` if the setting was not overridden.
 
-- [lua]`trx.config.is_overridden(key)`  
+- <a name="config.is_overridden"></a>[lua]`trx.config.is_overridden(key)`  
   Whether a script or the game flow is currently holding this setting away from the player's own value.
 
   Parameters:
@@ -120,7 +120,7 @@ These are the player's settings, not the level's. `set` writes to them and keeps
 
   Returns: boolean.
 
-- [lua]`trx.config.list()`  
+- <a name="config.list"></a>[lua]`trx.config.list()`  
   Every setting and its current value.
 
   Returns: table. Maps each option's key to its value.

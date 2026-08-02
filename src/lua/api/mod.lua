@@ -37,9 +37,8 @@ api.type("mod.Mod", {
     },
     type = {
       from = "mod_type",
-      type = "integer",
+      type = "mod.Type",
       writable = false,
-      enum = "mod.Type",
       description = "What kind of mod it is.",
     },
     engine_version = {
@@ -82,8 +81,8 @@ api.property("mod.list", {
 })
 
 api.property("mod.current", {
-  type = "Mod",
-  description = "The loaded mod, as a `trx.mod.Mod`.",
+  type = "mod.Mod",
+  description = "The loaded mod.",
   get = raw.get_current,
 })
 

@@ -16,11 +16,11 @@ The runtime weather effect the current level shows.
 
 ### Properties
 
-- **`trx.weather.current`** (integer). The active weather. Compare against `trx.weather.Type`. *(read-only)*
+- <a name="weather.current"></a>**`trx.weather.current`** ([trx.weather.Type](#weather.Type)). The active weather. *(read-only)*
 
 ### Enums
 
-- [lua]`trx.weather.Type`
+- <a name="weather.Type"></a>[lua]`trx.weather.Type`
 
     The kinds of weather a level can show.
 
@@ -33,11 +33,11 @@ The runtime weather effect the current level shows.
 
 ### Functions
 
-- [lua]`trx.weather.set(type)`  
+- <a name="weather.set"></a>[lua]`trx.weather.set(type)`  
   Sets the active weather.
 
   Parameters:
-  - **`type`** (integer). The weather to show. Compare against `trx.weather.Type`.
+  - **`type`** ([trx.weather.Type](#weather.Type)). The weather to show.
 
   Example:
   ```lua

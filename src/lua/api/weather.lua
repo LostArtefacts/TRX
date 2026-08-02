@@ -21,8 +21,7 @@ api.define("weather.set", {
   params = {
     {
       name = "type",
-      type = "integer",
-      enum = "weather.Type",
+      type = "weather.Type",
       description = "The weather to show.",
     },
   },
@@ -31,8 +30,7 @@ api.define("weather.set", {
 })
 
 api.property("weather.current", {
-  type = "integer",
-  enum = "weather.Type",
+  type = "weather.Type",
   description = "The active weather.",
   get = raw.get,
 })

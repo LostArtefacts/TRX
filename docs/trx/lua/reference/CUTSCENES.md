@@ -16,37 +16,43 @@ Module for TR4's in-game cutscenes, the animated scenes stored in
 `cutseq.pak` and started by a cutscene trigger. A cutscene plays once:
 the engine remembers which ones have run, and a script may consult or
 rewrite that memory. The cutscene levels of TR1-TR3, which the game flow
-lists and `/cut` plays, are a different thing: see `trx.game.cutscenes`.
+lists and `/cut` plays, are a different thing: see [`trx.game.cutscenes`](GAME.md#game.cutscenes).
 
 ### Properties
 
-- **`trx.cutscenes.current`** (integer). Number of the cutscene playing, or `nil` if none is. *(read-only)*
-- **`trx.cutscenes.is_playing`** (boolean). Whether a cutscene is on screen. *(read-only)*
-- **`trx.cutscenes.fov`** (integer). Field of view a cutscene plays at, in the engine's own angle units. TR4 uses 11488, against 14560 for ordinary play.
-- **`trx.cutscenes.letterbox`** (number). Depth of each cinematic bar, as a fraction of the screen height. `0` removes them.
+- <a name="cutscenes.current"></a>**`trx.cutscenes.current`** ([trx.cutscenes.Num](#cutscenes.Num)). Number of the cutscene playing, or `nil` if none is. *(read-only)*
+- <a name="cutscenes.is_playing"></a>**`trx.cutscenes.is_playing`** (boolean). Whether a cutscene is on screen. *(read-only)*
+- <a name="cutscenes.fov"></a>**`trx.cutscenes.fov`** (integer). Field of view a cutscene plays at, in the engine's own angle units. TR4 uses 11488, against 14560 for ordinary play.
+- <a name="cutscenes.letterbox"></a>**`trx.cutscenes.letterbox`** (number). Depth of each cinematic bar, as a fraction of the screen height. `0` removes them.
+
+### Structures
+
+- <a name="cutscenes.Num"></a>[lua]`trx.cutscenes.Num`
+
+    Cutscene number, as a cutscene trigger names it. Counted from 0.
 
 ### Functions
 
-- [lua]`trx.cutscenes.play(num)`  
+- <a name="cutscenes.play"></a>[lua]`trx.cutscenes.play(num)`  
   Plays a cutscene, fading the scene out first. Does nothing if one is already playing or the game has no cutscene data.
 
   Parameters:
-  - **`num`** (integer). Cutscene number.
+  - **`num`** ([trx.cutscenes.Num](#cutscenes.Num)).
 
   Example:
   ```lua
   trx.cutscenes.play(28)
   ```
 
-- [lua]`trx.cutscenes.is_played(num)`  
+- <a name="cutscenes.is_played"></a>[lua]`trx.cutscenes.is_played(num)`  
   Whether a cutscene trigger naming this number has already been answered.
 
   Parameters:
-  - **`num`** (integer). Cutscene number.
+  - **`num`** ([trx.cutscenes.Num](#cutscenes.Num)).
 
   Returns: boolean.
 
-- [lua]`trx.cutscenes.set_played(num, played)`  
+- <a name="cutscenes.set_played"></a>[lua]`trx.cutscenes.set_played(num, played)`  
   Marks a cutscene as played or unplayed. Marking one as played keeps its
   trigger from firing; unmarking one lets it run again.
 
@@ -57,7 +63,7 @@ lists and `/cut` plays, are a different thing: see `trx.game.cutscenes`.
   `play` accepts.
 
   Parameters:
-  - **`num`** (integer). Cutscene number.
+  - **`num`** ([trx.cutscenes.Num](#cutscenes.Num)).
   - **`played`** (boolean). Whether it counts as played.
 
   Example:
@@ -65,10 +71,10 @@ lists and `/cut` plays, are a different thing: see `trx.game.cutscenes`.
   trx.cutscenes.set_played(7, true)
   ```
 
-- [lua]`trx.cutscenes.forget_played()`  
+- <a name="cutscenes.forget_played"></a>[lua]`trx.cutscenes.forget_played()`  
   Forgets every cutscene, so all of them may run again.
 
-- [lua]`trx.cutscenes.set_lara_return(pos, [rot])`  
+- <a name="cutscenes.set_lara_return"></a>[lua]`trx.cutscenes.set_lara_return(pos, [rot])`  
   Places Lara where the next cutscene to end leaves her. A cutscene stands
   her at its own origin while it plays and puts her back where it found her
   afterwards; this says to put her somewhere else instead, as the original

@@ -265,7 +265,7 @@ int LuaSurface_Run(const LUA_SURFACE_TEST *const test)
     // From here to the tests, the order is LUA_Init's: seal, then the runtime
     // scripts, then harden.
     if (test->seal) {
-        if (luaL_dostring(L, "trx.api.seal()") != LUA_OK) {
+        if (luaL_dostring(L, "trx.api.seal({ partial = true })") != LUA_OK) {
             M_Fail(L, "sealing");
         }
         lua_pushnil(L);

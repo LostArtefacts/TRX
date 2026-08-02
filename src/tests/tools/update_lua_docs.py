@@ -11,6 +11,37 @@ from helper import load
 
 docs = load("lint/gen/lua_docs")
 
+
+# A catalog as the dump carries one: an enum of names, declared elsewhere.
+CATALOG = {
+    "path": "catalog.objects",
+    "description": "Every object the engine knows.",
+    "bulk": True,
+    "count": 2,
+    "names": ["WOLF", "BEAR"],
+}
+
+
+def rendered(surface, module=None):
+    """A page, rendered the way the tool renders one: dump read in first.
+
+    The tables are cleared first, so one test's surface is not still standing
+    when the next one renders.
+    """
+    for table in (
+        docs.NUMBERS,
+        docs.ANCHORS,
+        docs.TYPE_PATHS,
+        docs.STANDS_FOR,
+        docs.KEYED_BY,
+        docs.CONSTANTS,
+        docs.ENUM_PATHS,
+        docs.ENUM_CONSTANTS,
+    ):
+        table.clear()
+    docs.read(surface)
+    return docs.render_page(module or surface["modules"][0], surface)
+
 # A surface with one of everything, so the renderer has to handle each kind.
 SURFACE = {
     "modules": [{"name": "things", "order": 4, "description": "Things module."}],
@@ -21,10 +52,9 @@ SURFACE = {
             "fields": [
                 {
                     "name": "shown",
-                    "type": "integer",
+                    "type": "things.State",
                     "writable": True,
                     "description": "Visible value.",
-                    "enum": "things.State",
                 },
                 {
                     "name": "locked",
@@ -37,8 +67,14 @@ SURFACE = {
                 {
                     "name": "poke",
                     "description": "Pokes it.",
-                    "params": [{"name": "force", "type": "integer"}],
-                    "returns": {"type": "boolean"},
+                    "params": [
+                        {
+                            "name": "force",
+                            "type": "integer",
+                            "description": "How hard.",
+                        }
+                    ],
+                    "returns": {"type": "boolean", "description": "Whether it gave."},
                 }
             ],
             "extensions": [
@@ -47,6 +83,13 @@ SURFACE = {
         }
     ],
     "enums": [
+        {
+            "path": "catalog.objects",
+            "description": "Every object the engine knows.",
+            "bulk": True,
+            "count": 2,
+            "names": ["WOLF", "BEAR"],
+        },
         {
             "path": "things.State",
             "description": "A state.",
@@ -69,10 +112,9 @@ SURFACE = {
         },
         {
             "path": "things.power",
-            "type": "integer",
+            "type": "things.State",
             "writable": True,
             "description": "How strong it is.",
-            "enum": "things.State",
         },
     ],
     "functions": [
@@ -80,7 +122,7 @@ SURFACE = {
             "path": "things.spawn",
             "description": "Spawns a thing.",
             "params": [
-                {"name": "id", "type": "integer", "enum": "catalog.objects"},
+                {"name": "id", "type": "catalog.objects"},
                 {
                     "name": "angle",
                     "type": "integer",
@@ -89,7 +131,11 @@ SURFACE = {
                     "description": "Facing.",
                 },
             ],
-            "returns": {"type": "Widget", "nullable": True},
+            "returns": {
+                "type": "Widget",
+                "nullable": True,
+                "description": "The thing, or `nil` where none was free.",
+            },
             "examples": ["local w = trx.things.spawn(1)"],
         },
         {
@@ -108,14 +154,13 @@ SURFACE = {
                         },
                         {
                             "name": "id",
-                            "type": "integer",
-                            "enum": "catalog.objects",
+                            "type": "catalog.objects",
                             "description": "What was poked.",
                         },
                     ],
                 }
             ],
-            "returns": {"type": "integer"},
+            "returns": {"type": "integer", "description": "The handler's id."},
         },
     ],
 }
@@ -128,7 +173,7 @@ class TestLuaDocs(unittest.TestCase):
         Fields, computed members and methods all render, so nothing declared in
         the registry can go missing from the reference.
         """
-        page = docs.render_page(SURFACE["modules"][0], SURFACE)
+        page = rendered(SURFACE)
 
         for spec in SURFACE["types"]:
             for kind in ("fields", "methods", "extensions"):
@@ -141,7 +186,7 @@ class TestLuaDocs(unittest.TestCase):
         for func in SURFACE["functions"]:
             self.assertIn(func["path"], page)
         for spec in SURFACE["enums"]:
-            for value in spec["values"]:
+            for value in spec.get("values") or []:
                 self.assertIn(
                     value["name"],
                     page,
@@ -154,7 +199,7 @@ class TestLuaDocs(unittest.TestCase):
         An enum reaches the docs only through the registry: the dump cannot see
         one pushed straight onto a module table.
         """
-        page = docs.render_page(SURFACE["modules"][0], SURFACE)
+        page = rendered(SURFACE)
         self.assertIn("### Enums", page)
         self.assertIn("`trx.things.State.OFF` = `0`", page)
         self.assertIn("`trx.things.State.ON` = `1`", page)
@@ -162,39 +207,130 @@ class TestLuaDocs(unittest.TestCase):
         self.assertIn("`trx.things.State.BROKEN` = `7`", page)
         self.assertIn("It is broken.", page)
 
-    def test_enum_cross_references_are_rendered(self):
-        """A field names the enum it accepts by path."""
-        page = docs.render_page(SURFACE["modules"][0], SURFACE)
-        shown = next(line for line in page.splitlines() if "`shown`" in line)
-        self.assertIn("Compare against `trx.things.State`.", shown)
-        # Params too, and the target need not be a registry enum: the catalog
-        # tables are CSV-driven, and a pointer at them is still worth rendering.
-        param = next(line for line in page.splitlines() if "**`id`**" in line)
-        self.assertIn("Compare against `trx.catalog.objects`.", param)
+    def test_a_number_that_names_an_enum_reads_as_that_enum(self):
+        """The enum a declaration points at is the type it reads as.
 
-        # A member with no enum must not grow the sentence.
+        `integer` says what the engine passes; the enum says what the value
+        means and lists what it can be, a link away.
+        """
+        surface = copy.deepcopy(SURFACE)
+        surface["enums"].append(CATALOG)
+        page = rendered(surface)
+        shown = next(line for line in page.splitlines() if "`shown`" in line)
+        self.assertIn("**`shown`**: [trx.things.State](#things.State).", shown)
+        # A catalog is an enum too, and the pages it links to sit elsewhere.
+        param = next(line for line in page.splitlines() if "**`id`**" in line)
+        self.assertIn(
+            "**`id`** ([trx.catalog.objects](CATALOG.md#catalog.objects))",
+            param,
+        )
+
+        # A member that points nowhere reads as the type it declares.
         locked = next(line for line in page.splitlines() if "`locked`" in line)
-        self.assertNotIn("Compare against", locked)
+        self.assertIn("**`locked`**: integer.", locked)
+
+    def test_a_number_is_named_rather_than_described_again(self):
+        """A declaration that holds a named number names it.
+
+        What a room number is, and where it counts from, is the number's own
+        business. What holds one says only what is its own, so the sentence is
+        written once however many places mean it.
+        """
+        surface = copy.deepcopy(SURFACE)
+        surface["numbers"] = [
+            {
+                "path": "things.Num",
+                "description": "Thing number, as the level numbers them.",
+                "base": 0,
+            }
+        ]
+        surface["functions"][0]["params"] = [
+            {"name": "num", "type": "things.Num"},
+            {
+                "name": "other",
+                "type": "things.Num",
+                "description": "The one that broke.",
+            },
+        ]
+        page = rendered(surface)
+
+        # The number renders among the structures, and says what it is once.
+        self.assertIn("### Structures", page)
+        self.assertIn(docs.anchor("things.Num"), page)
+        definition = next(
+            line
+            for line in page.splitlines()
+            if "Thing number, as the level numbers them." in line
+        )
+        self.assertIn("Counted from 0.", definition)
+
+        # What holds one names it as its type, and carries neither the
+        # sentence nor the base.
+        num = next(line for line in page.splitlines() if "**`num`**" in line)
+        self.assertIn("**`num`** ([trx.things.Num](#things.Num))", num)
+        self.assertNotIn("Thing number", num)
+        self.assertNotIn("Counted from", num)
+
+        other = next(line for line in page.splitlines() if "**`other`**" in line)
+        self.assertIn("([trx.things.Num](#things.Num)). The one that broke.", other)
+
+    def test_a_number_described_away_from_itself_is_reported(self):
+        """The three ways a named number gets copied instead of named."""
+        surface = copy.deepcopy(SURFACE)
+        surface["numbers"] = [
+            {
+                "path": "things.Num",
+                "description": "Thing number, as the level numbers them.",
+                "base": 0,
+            }
+        ]
+        surface["functions"][0]["params"] = [
+            {"name": "num", "type": "things.Num"},
+        ]
+        docs.read(surface)
+        self.assertEqual(docs.respelled(surface), [])
+
+        # Its words, written somewhere that does not name it.
+        said_again = copy.deepcopy(surface)
+        said_again["functions"][1]["description"] = (
+            "Takes a thing number, as the level numbers them."
+        )
+        report = docs.respelled(said_again)
+        self.assertEqual(len(report), 1, report)
+        self.assertIn("says what `trx.things.Num` says", report[0])
+
+        # A base of its own, beside a number that declares one.
+        rebased = copy.deepcopy(surface)
+        rebased["functions"][0]["params"][0]["base"] = 1
+        self.assertIn("counts from its own base", docs.respelled(rebased)[0])
+
+        # And a number nothing holds at all.
+        unheld = copy.deepcopy(surface)
+        unheld["functions"][0]["params"][0]["type"] = "integer"
+        self.assertIn("a number nothing holds", docs.respelled(unheld)[-1])
 
     def test_a_return_value_cross_references_its_enum(self):
         """A function that hands back an id is as worth cross-referencing as a
         param that takes one."""
         surface = copy.deepcopy(SURFACE)
         surface["functions"][0]["returns"] = {
-            "type": "integer",
-            "enum": "catalog.music",
+            "type": "catalog.music",
             "description": "The track.",
         }
-        page = docs.render_page(surface["modules"][0], surface)
+        surface["enums"].append({**CATALOG, "path": "catalog.music"})
+        page = rendered(surface)
         returns = next(
             line
             for line in page.splitlines()
             if "Returns:" in line and "The track." in line
         )
-        self.assertIn("Compare against `trx.catalog.music`.", returns)
+        self.assertIn(
+            "Returns: [trx.catalog.music](CATALOG.md#catalog.music).",
+            returns,
+        )
 
     def test_read_only_members_are_marked(self):
-        page = docs.render_page(SURFACE["modules"][0], SURFACE)
+        page = rendered(SURFACE)
         locked = next(
             line for line in page.splitlines() if "`locked`" in line
         )
@@ -203,7 +339,7 @@ class TestLuaDocs(unittest.TestCase):
         self.assertNotIn("read-only", shown)
 
     def test_optional_params_are_bracketed_with_their_default(self):
-        page = docs.render_page(SURFACE["modules"][0], SURFACE)
+        page = rendered(SURFACE)
         self.assertIn("things.spawn(id, [angle])", page)
         self.assertIn("default `0`", page)
 
@@ -212,13 +348,13 @@ class TestLuaDocs(unittest.TestCase):
         the wrapper substitutes. It has to read as the constant."""
         surface = copy.deepcopy(SURFACE)
         surface["functions"][0]["params"][1].update(
-            {"default": 1, "enum": "things.State"}
+            {"default": 1, "type": "things.State"}
         )
         docs.ENUM_CONSTANTS.clear()
         docs.ENUM_CONSTANTS["things.State"] = {0: "OFF", 1: "ON", 7: "BROKEN"}
 
-        page = docs.render_page(surface["modules"][0], surface)
-        self.assertIn("default `trx.things.State.ON`", page)
+        page = rendered(surface)
+        self.assertIn("default [`trx.things.State.ON`](#things.State)", page)
         self.assertNotIn("default `1`", page)
         docs.ENUM_CONSTANTS.clear()
 
@@ -231,7 +367,7 @@ class TestLuaDocs(unittest.TestCase):
             {"type": "integer", "description": "Which room."},
         ]
 
-        page = docs.render_page(surface["modules"][0], surface)
+        page = rendered(surface)
         self.assertIn("vec3 or `nil`. Where.", page)
         self.assertIn("integer. Which room.", page)
 
@@ -249,19 +385,21 @@ class TestLuaDocs(unittest.TestCase):
             }
         ]
 
-        page = docs.render_page(surface["modules"][0], surface)
+        page = rendered(surface)
         self.assertIn("### Indexing", page)
         self.assertIn("**`trx.things[key]`** (Widget or `nil`). 1-based.", page)
         self.assertIn("**`#trx.things`** (integer).", page)
 
     def test_a_module_with_no_container_gets_no_indexing_section(self):
-        page = docs.render_page(SURFACE["modules"][0], SURFACE)
+        page = rendered(SURFACE)
         self.assertNotIn("### Indexing", page)
 
     def test_a_callbacks_own_arguments_are_rendered(self):
         """A function-typed parameter renders the arguments it is called with,
         indented under the parameter itself."""
-        page = docs.render_page(SURFACE["modules"][0], SURFACE)
+        surface = copy.deepcopy(SURFACE)
+        surface["enums"].append(CATALOG)
+        page = rendered(surface)
         self.assertIn("Called with:", page)
         strength = next(
             line for line in page.splitlines() if "**`strength`**" in line
@@ -275,28 +413,31 @@ class TestLuaDocs(unittest.TestCase):
             len(strength) - len(strength.lstrip()),
             len(callback) - len(callback.lstrip()),
         )
-        # A callback argument gets the same enum cross-reference a param does.
+        # A callback argument is typed by the enum it names, as a param is.
         arg = next(line for line in page.splitlines() if "**`id`**" in line)
-        self.assertIn("Compare against `trx.catalog.objects`.", arg)
+        self.assertIn(
+            "**`id`** ([trx.catalog.objects](CATALOG.md#catalog.objects))",
+            arg,
+        )
 
     def test_a_param_with_no_callback_args_stays_flat(self):
-        page = docs.render_page(SURFACE["modules"][0], SURFACE)
+        page = rendered(SURFACE)
         angle = next(line for line in page.splitlines() if "**`angle`**" in line)
         self.assertNotIn("Called with:", angle)
 
     def test_nullable_returns_say_so(self):
-        page = docs.render_page(SURFACE["modules"][0], SURFACE)
+        page = rendered(SURFACE)
         self.assertIn("Widget or `nil`", page)
 
     def test_examples_are_rendered_as_lua_blocks(self):
-        page = docs.render_page(SURFACE["modules"][0], SURFACE)
+        page = rendered(SURFACE)
         self.assertIn("```lua", page)
         self.assertIn("trx.things.spawn(1)", page)
 
     def test_module_properties_are_rendered(self):
         """A module property reaches the page, marked read-only when it has no
         setter."""
-        page = docs.render_page(SURFACE["modules"][0], SURFACE)
+        page = rendered(SURFACE)
         self.assertIn("### Properties", page)
 
         pos = next(line for line in page.splitlines() if "`trx.things.pos`" in line)
@@ -305,17 +446,17 @@ class TestLuaDocs(unittest.TestCase):
 
         power = next(line for line in page.splitlines() if "`trx.things.power`" in line)
         self.assertNotIn("read-only", power)
-        self.assertIn("Compare against `trx.things.State`.", power)
+        self.assertIn("([trx.things.State](#things.State))", power)
 
     def test_a_module_may_override_its_title(self):
         """Capitalizing the module name gives "Log" and "Assault"; the pages are
         Logging and Assault course."""
-        page = docs.render_page(SURFACE["modules"][0], SURFACE)
+        page = rendered(SURFACE)
         self.assertIn("title: Things", page)
 
         surface = copy.deepcopy(SURFACE)
         surface["modules"][0]["title"] = "Thingamabobs"
-        page = docs.render_page(surface["modules"][0], surface)
+        page = rendered(surface)
         self.assertIn("title: Thingamabobs", page)
         self.assertIn("## Thingamabobs module", page)
 
@@ -327,7 +468,7 @@ class TestLuaDocs(unittest.TestCase):
             {"path": "things.log", "description": "Logs it.", "callable": True},
             {"path": "things.stats", "description": "Counts it.", "callable": False},
         ]
-        page = docs.render_page(surface["modules"][0], surface)
+        page = rendered(surface)
         self.assertIn("Logs it.", page)
         self.assertIn("Counts it.", page)
 
@@ -340,7 +481,7 @@ class TestLuaDocs(unittest.TestCase):
         """Every paragraph of a description stays indented inside its list item."""
         surface = copy.deepcopy(SURFACE)
         surface["functions"][0]["description"] = "First para.\n\nSecond para."
-        page = docs.render_page(surface["modules"][0], surface)
+        page = rendered(surface)
         second = next(line for line in page.splitlines() if "Second para." in line)
         self.assertTrue(
             second.startswith("  "), f"paragraph escaped its list item: {second!r}"
@@ -349,10 +490,10 @@ class TestLuaDocs(unittest.TestCase):
     def test_a_bulk_enum_lists_its_names_but_not_its_numbers(self):
         """A bulk enum renders a count and a folded name list, and no values."""
         surface = copy.deepcopy(SURFACE)
-        surface["enums"][0].update(
+        surface["enums"][1].update(
             {"bulk": True, "count": 3, "values": [], "names": ["BROKEN", "OFF", "ON"]}
         )
-        page = docs.render_page(surface["modules"][0], surface)
+        page = rendered(surface)
 
         self.assertIn("`trx.things.State` - 3 names", page)
         self.assertIn("`BROKEN`, `OFF`, `ON`", page)
@@ -363,19 +504,20 @@ class TestLuaDocs(unittest.TestCase):
 
     def test_rendering_is_stable(self):
         """Two runs must agree, or --check would flag spurious drift forever."""
-        a = docs.render_page(SURFACE["modules"][0], SURFACE)
-        b = docs.render_page(SURFACE["modules"][0], SURFACE)
+        a = rendered(SURFACE)
+        b = rendered(SURFACE)
         self.assertEqual(a, b)
 
     def test_a_declared_member_with_no_description_is_reported(self):
         """A member with no description still reaches scripts; it just renders
         blank."""
+        docs.read(SURFACE)
         self.assertEqual(docs.undocumented(SURFACE), [])
 
         cases = [
             (("functions", 0), "things.spawn"),
             (("constants", 0), "things.WALL_L"),
-            (("enums", 0, "values", 1), "things.State.ON"),
+            (("enums", 1, "values", 1), "things.State.ON"),
             (("types", 0, "fields", 0), "things.Widget.shown"),
             (("types", 0, "methods", 0), "things.Widget.poke"),
             (("types", 0, "extensions", 0), "things.Widget.derived"),
@@ -388,7 +530,20 @@ class TestLuaDocs(unittest.TestCase):
                 for key in path:
                     target = target[key]
                 del target["description"]
+                # A member that points somewhere is documented by what it
+                # points at, so only one with nothing at all is reported.
+                if target.get("type") in ("things.State", "catalog.objects"):
+                    target["type"] = "integer"
+                docs.read(surface)
                 self.assertEqual(docs.undocumented(surface), [expected])
+
+    def test_a_member_that_points_somewhere_is_documented(self):
+        """A `ref` says what the member is, so it is not missing prose."""
+        surface = copy.deepcopy(SURFACE)
+        del surface["properties"][0]["description"]
+        surface["properties"][0]["type"] = "things.State"
+        docs.read(surface)
+        self.assertEqual(docs.undocumented(surface), [])
 
     def test_dump_extracts_the_json_from_a_noisy_stream(self):
         """The JSON payload is picked out of a stream that also carries logs."""

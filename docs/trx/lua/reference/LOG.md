@@ -16,9 +16,9 @@ Logs a message to the terminal and to `TRX.log` in the installation directory. E
 
 ### Enums
 
-- [lua]`trx.log.LogLevel`
+- <a name="log.LogLevel"></a>[lua]`trx.log.LogLevel`
 
-    Severity of a log message. Pass one to `trx.log.generic`.
+    Severity of a log message. Pass one to [`trx.log.generic`](#log.generic).
 
     - `trx.log.LogLevel.DEBUG` = `0`  
         Diagnostic detail, of interest while writing a script.
@@ -31,11 +31,11 @@ Logs a message to the terminal and to `TRX.log` in the installation directory. E
 
 ### Functions
 
-- [lua]`trx.log.generic(level, message)`  
+- <a name="log.generic"></a>[lua]`trx.log.generic(level, message)`  
   Logs a message at a level chosen at runtime, for when the level is computed rather than written literally.
 
   Parameters:
-  - **`level`** (integer). Compare against `trx.log.LogLevel`.
+  - **`level`** ([trx.log.LogLevel](#log.LogLevel)).
   - **`message`** (string).
 
   Example:
@@ -44,7 +44,7 @@ Logs a message to the terminal and to `TRX.log` in the installation directory. E
   trx.log.generic(level, "finished")
   ```
 
-- [lua]`trx.log.info(message)`  
+- <a name="log.info"></a>[lua]`trx.log.info(message)`  
   Logs an informational message.
 
   Parameters:
@@ -55,25 +55,25 @@ Logs a message to the terminal and to `TRX.log` in the installation directory. E
   trx.log.info("hello from lua")
   ```
 
-- [lua]`trx.log.warn(message)`  
+- <a name="log.warn"></a>[lua]`trx.log.warn(message)`  
   Logs a warning.
 
   Parameters:
   - **`message`** (string).
 
-- [lua]`trx.log.warning(message)`  
-  Logs a warning. An alias of `trx.log.warn`.
+- <a name="log.warning"></a>[lua]`trx.log.warning(message)`  
+  Logs a warning. An alias of [`trx.log.warn`](#log.warn).
 
   Parameters:
   - **`message`** (string).
 
-- [lua]`trx.log.error(message)`  
+- <a name="log.error"></a>[lua]`trx.log.error(message)`  
   Logs an error.
 
   Parameters:
   - **`message`** (string).
 
-- [lua]`trx.log.debug(message)`  
+- <a name="log.debug"></a>[lua]`trx.log.debug(message)`  
   Logs a debug message.
 
   Parameters:

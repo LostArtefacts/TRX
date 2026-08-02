@@ -21,6 +21,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import re
 import subprocess
 import sys
 import textwrap
@@ -48,16 +49,174 @@ def signature(path: str, params: list[dict] | None) -> str:
     return f"{path}({', '.join(parts)})"
 
 
-def describe(spec: dict) -> str:
-    """The description, plus the enum cross-reference if the spec names one.
+# path -> the number it declares, filled in from the dump before any page is
+# rendered. What holds one is typed by it, and says only what is its own.
+NUMBERS: dict[str, dict] = {}
 
-    `enum` is a fully-qualified path - "items.Status", "catalog.objects" - so a
-    field or param points at the constants it accepts instead of spelling them
-    out in prose that has to be kept in sync by hand.
+
+# The page being written, so a link knows whether it has to cross a file.
+PAGE = ""
+
+# Every path the dump says can be pointed at, and the subset of them that are
+# types. Both come from the dump: what exists is decided where things are
+# declared, and nothing here guesses at a name.
+ANCHORS: set[str] = set()
+TYPE_PATHS: set[str] = set()
+# path -> the declared type it hands back, and module -> the enum its container
+# is keyed by. Both come from the declarations, and both are what lets a written
+# path be walked rather than guessed at.
+STANDS_FOR: dict[str, str] = {}
+KEYED_BY: dict[str, str] = {}
+# enum path -> its constants, upper-cased. A catalog runs to hundreds of them,
+# so they are not anchored one by one and a constant links to its enum.
+CONSTANTS: dict[str, set[str]] = {}
+# Every declared enum, so a declaration that points at one is typed by it.
+ENUM_PATHS: set[str] = set()
+def anchor(path: str) -> str:
+    """The name a declaration is linked to, and the page it lives on.
+
+    A path is 'module.rest', and a module owns one page, so the module names
+    the file and the whole path names the anchor within it. Anchors are written
+    out rather than left to the renderer's heading ids: those move when a
+    heading is reworded, and a link into another page would move with it.
+
+    Both spellings are written. A fragment matches an `id` in HTML5, while
+    `name` is what a renderer that predates it looks for, and which of the two
+    survives depends on what the markdown is put through.
     """
-    desc = spec.get("description") or ""
-    if spec.get("enum"):
-        desc = f"{desc} Compare against `trx.{spec['enum']}`.".lstrip()
+    return f'<a name="{path}"></a>'
+
+
+def link(path: str, text: str) -> str:
+    """A link to a declaration, from a page that may or may not be its own."""
+    module = path.split(".", 1)[0]
+    target = "" if module.upper() == PAGE else f"{module.upper()}.md"
+    return f"[{text}]({target}#{path})"
+
+
+REFERENCE_RE = re.compile(r"(?<!\[)`trx\.([A-Za-z0-9_.]+?)`")
+
+
+def anchors_of(api: dict) -> set[str]:
+    """Every path a declaration can be pointed at by.
+
+    Read off the declarations themselves rather than a list beside them: what
+    exists is what was declared, and a second copy of that is a second thing to
+    keep in step. A module that stands for one thing answers for its members
+    too, since a script writes `trx.lara.air` and not the type's own path.
+    """
+    out = {module["name"] for module in api["modules"]}
+    for group in ("numbers", "enums", "functions", "properties", "namespaces", "constants"):
+        out.update(entry["path"] for entry in api.get(group, []))
+    members: dict[str, list[str]] = {}
+    for spec in api.get("types", []):
+        out.add(spec["path"])
+        members[spec["path"]] = [
+            member["name"]
+            for kind in ("fields", "methods", "extensions")
+            for member in spec.get(kind) or []
+        ]
+        out.update(f"{spec['path']}.{name}" for name in members[spec["path"]])
+    for module in api["modules"]:
+        stands_for = module.get("instance_type")
+        for name in members.get(stands_for, []):
+            out.add(f"{module['name']}.{name}")
+    return out
+
+
+def anchored(path: str) -> str:
+    """Where a written path lands, walked a segment at a time.
+
+    Through the thing itself where it is anchored, through what it hands back
+    where that is a type of its own - `trx.stats.pickups.count` - and through
+    the constants of an enum, whether they are its own or the ones its
+    container is keyed by: `trx.objects.wolf`. Nothing is guessed. A path that
+    lands nowhere has been renamed or was never there, and the engine refuses
+    to dump one, so neither side is the lenient one.
+    """
+    if path in ANCHORS:
+        return path
+    parts = path.split(".")
+    at = parts[0]
+    if at not in ANCHORS:
+        raise SystemExit(unknown(path))
+    for step in parts[1:]:
+        if f"{at}.{step}" in ANCHORS:
+            at = f"{at}.{step}"
+        elif f"{STANDS_FOR.get(at, '')}.{step}" in ANCHORS:
+            at = f"{STANDS_FOR[at]}.{step}"
+        elif step.upper() in CONSTANTS.get(KEYED_BY.get(at, ""), set()):
+            return at
+        elif step.upper() in CONSTANTS.get(at, set()):
+            return at
+        else:
+            raise SystemExit(unknown(path))
+    return at
+
+
+def unknown(path: str) -> str:
+    return (
+        f"error: `trx.{path}` names nothing the API declares.\n"
+        f"  fix the reference in src/lua/api/, or declare what it names"
+    )
+
+
+def linked_prose(text: str) -> str:
+    """Prose with every `trx....` it names turned into a link.
+
+    A description names the thing it is talking about, so the link is already
+    written; it is only missing its destination. Descriptions carry no fenced
+    code, and an example is a field of its own, so nothing inside sample code
+    is reached from here.
+    """
+
+    def one(match: re.Match) -> str:
+        return link(anchored(match.group(1)), match.group(0))
+
+    return REFERENCE_RE.sub(one, text)
+
+
+def typed(spec: dict) -> str:
+    """The type a declaration reads as.
+
+    A number that names an enum is that enum: `trx.assault.Track` says what
+    `integer` does not, and the constants are a link away.
+    """
+    return type_names(spec["type"])
+
+
+def type_names(name) -> str:
+    """What a declaration accepts: one type, or the several a key answers to."""
+    if isinstance(name, list):
+        return " or ".join(type_name(one) for one in name)
+    return type_name(name)
+
+
+def type_name(name: str) -> str:
+    """A type as the reader would write it, linked to where it is declared.
+
+    A declared type is named by its path, and reads as `trx.items.Item`. So is
+    an enum and a number: what a declaration is typed by is what it means. A
+    primitive - integer, table, vec3 - has no declaration and stays as it is.
+    """
+    if name in TYPE_PATHS or name in ENUM_PATHS or name in NUMBERS:
+        return link(name, f"trx.{name}")
+    if "." in name:
+        raise SystemExit(f"error: type `{name}` names no declared type")
+    return name
+
+
+def describe(spec: dict) -> str:
+    """What the spec says, and what it says by what it is typed by.
+
+    A number says what it counts and where it counts from, once, where it is
+    declared. What holds one is typed by it and says only what is its own, so
+    nothing here reaches for someone else's words.
+    """
+    desc = linked_prose(spec.get("description") or "")
+    base = spec.get("base")
+    if base is not None:
+        desc = f"{desc} Counted from {base}.".lstrip()
     return desc
 
 
@@ -75,7 +234,7 @@ def render_callback_args(param: dict, indent: str) -> list[str]:
     for arg in args:
         out.extend(
             render_lead(
-                f"{indent}- **`{arg['name']}`** ({arg['type']}). ",
+                f"{indent}- **`{arg['name']}`** ({typed(arg)}). ",
                 describe(arg),
                 f"{indent}  ",
             )
@@ -90,7 +249,9 @@ def render_prose(text: str, indent: str) -> list[str]:
     would end the list at the blank line and dump the rest at the page's top
     level.
     """
-    return [f"{indent}{line}".rstrip() for line in text.splitlines()]
+    return [
+        f"{indent}{line}".rstrip() for line in linked_prose(text).splitlines()
+    ]
 
 
 def render_lead(head: str, text: str, indent: str) -> list[str]:
@@ -111,18 +272,39 @@ def render_lead(head: str, text: str, indent: str) -> list[str]:
 ENUM_CONSTANTS: dict[str, dict[int, str]] = {}
 
 
-def render_default(param: dict) -> str:
+def render_default(spec: dict) -> str:
     """The default as a script would write it.
 
     A default that names an enum constant is stored as the constant's value,
     since that is what the wrapper substitutes when the argument is omitted. It
-    reads as the constant.
+    reads as the constant, and links to the enum, which is where the constants
+    are listed.
     """
-    default = param.get("default")
-    constants = ENUM_CONSTANTS.get(param.get("enum", ""), {})
-    if default in constants:
-        return f"trx.{param['enum']}.{constants[default]}"
-    return str(default)
+    default = spec.get("default")
+    named = spec.get("type", "")
+    if isinstance(named, list):
+        named = ""
+    constants = ENUM_CONSTANTS.get(named, {})
+    if default in constants and not isinstance(default, bool):
+        return link(named, f"`trx.{named}.{constants[default]}`")
+    if isinstance(default, bool):
+        return "`true`" if default else "`false`"
+    if isinstance(default, str):
+        return f'`"{default}"`'
+    return f"`{default}`"
+
+
+def render_bits(spec: dict) -> str:
+    """The type a member takes, and whether it may be left out."""
+    bits = [typed(spec)]
+    if spec.get("optional"):
+        default = spec.get("default")
+        bits.append(
+            "optional"
+            if default is None
+            else f"optional, default {render_default(spec)}"
+        )
+    return ", ".join(bits)
 
 
 def render_params(params: list[dict] | None, indent: str) -> list[str]:
@@ -130,17 +312,9 @@ def render_params(params: list[dict] | None, indent: str) -> list[str]:
         return []
     out = ["", f"{indent}Parameters:"]
     for param in params:
-        bits = [param["type"]]
-        if param.get("optional"):
-            default = param.get("default")
-            bits.append(
-                "optional"
-                if default is None
-                else f"optional, default `{render_default(param)}`"
-            )
         out.extend(
             render_lead(
-                f"{indent}- **`{param['name']}`** ({', '.join(bits)}). ",
+                f"{indent}- **`{param['name']}`** ({render_bits(param)}). ",
                 describe(param),
                 f"{indent}  ",
             )
@@ -150,7 +324,7 @@ def render_params(params: list[dict] | None, indent: str) -> list[str]:
 
 
 def one_return(spec: dict) -> str:
-    bits = [spec["type"]]
+    bits = [typed(spec)]
     if spec.get("nullable"):
         bits.append("or `nil`")
     return f"{' '.join(bits)}. {describe(spec)}".rstrip()
@@ -161,7 +335,8 @@ def render_returns(returns: dict | list | None, indent: str) -> list[str]:
     if not returns:
         return []
     if isinstance(returns, dict):
-        return ["", *render_lead(f"{indent}Returns: ", one_return(returns), f"{indent}  ")]
+        out = ["", *render_lead(f"{indent}Returns: ", one_return(returns), f"{indent}  ")]
+        return out
     out = ["", f"{indent}Returns:"]
     for spec in returns:
         out.extend(render_lead(f"{indent}- ", one_return(spec), f"{indent}  "))
@@ -180,7 +355,10 @@ def render_examples(examples: list[str] | None, indent: str) -> list[str]:
 
 
 def render_function(func: dict) -> list[str]:
-    out = [f"- [lua]`trx.{signature(func['path'], func.get('params'))}`  "]
+    out = [
+        f"- {anchor(func['path'])}[lua]"
+        f"`trx.{signature(func['path'], func.get('params'))}`  "
+    ]
     if func.get("description"):
         out.extend(render_prose(func["description"], "  "))
     out.extend(render_params(func.get("params"), "  "))
@@ -199,9 +377,12 @@ def render_namespace(spec: dict) -> list[str]:
     called directly.
     """
     if spec.get("callable"):
-        head = f"- [lua]`trx.{signature(spec['path'], spec.get('params'))}`  "
+        head = (
+            f"- {anchor(spec['path'])}[lua]"
+            f"`trx.{signature(spec['path'], spec.get('params'))}`  "
+        )
     else:
-        head = f"- [lua]`trx.{spec['path']}`  "
+        head = f"- {anchor(spec['path'])}[lua]`trx.{spec['path']}`  "
     out = [head]
     if spec.get("description"):
         out.extend(render_prose(spec["description"], "  "))
@@ -213,7 +394,9 @@ def render_namespace(spec: dict) -> list[str]:
 
 
 def render_const(spec: dict) -> list[str]:
-    out = [f"- [lua]`trx.{spec['path']}` = `{spec['value']}`  "]
+    out = [
+        f"- {anchor(spec['path'])}[lua]`trx.{spec['path']}` = `{spec['value']}`  "
+    ]
     if spec.get("description"):
         out.extend(render_prose(spec["description"], "  "))
     out.append("")
@@ -241,7 +424,7 @@ def render_enum(spec: dict) -> list[str]:
     # A bulk enum is described as a whole: a count and a folded list of names,
     # rather than several hundred bullet points. The values stay out.
     if spec.get("bulk"):
-        head = f"- [lua]`trx.{spec['path']}`"
+        head = f"- {anchor(spec['path'])}[lua]`trx.{spec['path']}`"
         count = spec.get("count")
         if count:
             head += f" - {count} names"
@@ -254,7 +437,7 @@ def render_enum(spec: dict) -> list[str]:
         out.append("")
         return out
 
-    out = [f"- [lua]`trx.{spec['path']}`", ""]
+    out = [f"- {anchor(spec['path'])}[lua]`trx.{spec['path']}`", ""]
     if spec.get("description"):
         out.extend(render_prose(spec["description"], INDENT))
         out.append("")
@@ -272,14 +455,15 @@ def render_property(spec: dict) -> list[str]:
     """
     suffix = "" if spec.get("writable") else " *(read-only)*"
     return render_lead(
-        f"- **`trx.{spec['path']}`** ({spec['type']}). ",
-        f"{describe(spec)}{suffix}",
+        f"- {anchor(spec['path'])}**`trx.{spec['path']}`** "
+        f"({typed(spec)}). ",
+        f"{describe(spec)}{suffix}".lstrip(),
         "  ",
     )
 
 
 def render_type(spec: dict) -> list[str]:
-    out = [f"- [lua]`trx.{spec['path']}`", ""]
+    out = [f"- {anchor(spec['path'])}[lua]`trx.{spec['path']}`", ""]
     if spec.get("description"):
         out.extend(render_prose(spec["description"], INDENT))
         out.append("")
@@ -299,8 +483,9 @@ def render_type(spec: dict) -> list[str]:
             suffix = "" if field.get("writable") else " *(read-only)*"
             out.extend(
                 render_lead(
-                    f"{INDENT}- **`{field['name']}`**: {field['type']}. ",
-                    f"{describe(field)}{suffix}",
+                    f"{INDENT}- {anchor(spec['path'] + '.' + field['name'])}"
+                    f"**`{field['name']}`**: {typed(field)}. ",
+                    f"{describe(field)}{suffix}".lstrip(),
                     f"{INDENT}  ",
                 )
             )
@@ -311,7 +496,8 @@ def render_type(spec: dict) -> list[str]:
         for ext in spec["extensions"]:
             out.extend(
                 render_lead(
-                    f"{INDENT}- **`{ext['name']}`**: {ext['type']}. ",
+                    f"{INDENT}- {anchor(spec['path'] + '.' + ext['name'])}"
+                    f"**`{ext['name']}`**: {typed(ext)}. ",
                     ext.get("description") or "",
                     f"{INDENT}  ",
                 )
@@ -338,7 +524,8 @@ def render_type(spec: dict) -> list[str]:
     for method in spec.get("methods") or []:
         name = spec["path"].rsplit(".", 1)[-1].lower()
         out.append(
-            f"{INDENT}- [lua]`{name}:{signature(method['name'], method.get('params'))}`  "
+            f"{INDENT}- {anchor(spec['path'] + '.' + method['name'])}"
+            f"[lua]`{name}:{signature(method['name'], method.get('params'))}`  "
         )
         if method.get("description"):
             out.extend(render_prose(method["description"], f"{INDENT}  "))
@@ -358,7 +545,8 @@ def render_container(name: str, spec: dict) -> list[str]:
         out.append("")
     out.extend(
         render_lead(
-            f"- **`trx.{name}[key]`** ({value['type']}{nullable}). ",
+            f"- {anchor(name + '[]')}**`trx.{name}[key]`** "
+            f"({typed(value)}{nullable}). ",
             describe(key),
             "  ",
         )
@@ -370,8 +558,23 @@ def render_container(name: str, spec: dict) -> list[str]:
     return out
 
 
+def render_number(number: dict) -> list[str]:
+    """A named number: what it counts and where it counts from.
+
+    It is a type like any other - what a room number is is not the business of
+    the thirteen declarations that hold one - so it renders among them, and
+    everything that holds one names it and says only what is its own.
+    """
+    out = [f"- {anchor(number['path'])}[lua]`trx.{number['path']}`", ""]
+    out.extend(render_prose(describe(number), INDENT))
+    out.append("")
+    return out
+
+
 def render_page(module: dict, api: dict) -> str:
+    global PAGE
     name = module["name"]
+    PAGE = name.upper()
     # Declare a title where capitalizing the module name makes a worse one.
     title = module.get("title") or name.capitalize()
     out = [
@@ -391,8 +594,12 @@ def render_page(module: dict, api: dict) -> str:
         "",
     ]
     if module.get("description"):
-        out.append(module["description"])
+        out.extend(render_prose(module["description"], ""))
         out.append("")
+
+    numbers = [
+        n for n in api.get("numbers", []) if n["path"].startswith(f"{name}.")
+    ]
 
     container = next(
         (c for c in api.get("containers", []) if c["module"] == name), None
@@ -431,9 +638,11 @@ def render_page(module: dict, api: dict) -> str:
             out.extend(render_enum(spec))
 
     types = [t for t in api["types"] if t["path"].startswith(f"{name}.")]
-    if types:
+    if types or numbers:
         out.append("### Structures")
         out.append("")
+        for number in numbers:
+            out.extend(render_number(number))
         for spec in types:
             out.extend(render_type(spec))
 
@@ -449,17 +658,78 @@ def render_page(module: dict, api: dict) -> str:
     return "\n".join(out).rstrip() + "\n"
 
 
+def read(api: dict) -> None:
+    """Fill the tables a page is rendered against, from the dump.
+
+    Everything the renderer needs beyond the entry in front of it - what
+    exists, what stands for what, what an enum holds - is read off the dump
+    once, here, so a caller that renders a page renders what the tool does.
+    """
+    ENUM_PATHS.update(enum["path"] for enum in api.get("enums", []))
+    for enum in api.get("enums", []):
+        ENUM_CONSTANTS[enum["path"]] = {
+            value["value"]: value["name"] for value in enum.get("values", [])
+        }
+    for number in api.get("numbers", []):
+        NUMBERS[number["path"]] = number
+    for spec in api.get("types", []):
+        TYPE_PATHS.add(spec["path"])
+        for kind in ("fields", "extensions"):
+            for member in spec.get(kind) or []:
+                STANDS_FOR[f"{spec['path']}.{member['name']}"] = member.get("type")
+    ANCHORS.update(anchors_of(api))
+    for prop in api.get("properties", []):
+        STANDS_FOR[prop["path"]] = prop["type"]
+    for module in api["modules"]:
+        # A module standing for one thing answers for its members, so a path
+        # walked through the module walks on through the type it stands for.
+        stands_for = module.get("instance_type")
+        if stands_for is None:
+            continue
+        spec = next(s for s in api["types"] if s["path"] == stands_for)
+        for kind in ("fields", "extensions"):
+            for member in spec.get(kind) or []:
+                STANDS_FOR[f"{module['name']}.{member['name']}"] = member.get("type")
+    for container in api.get("containers", []):
+        accepted = (container.get("key") or {}).get("type")
+        if isinstance(accepted, list):
+            accepted = next((one for one in accepted if one in ENUM_PATHS), None)
+        if accepted:
+            KEYED_BY[container["module"]] = accepted
+    for enum in api.get("enums", []):
+        ENUM_PATHS.add(enum["path"])
+        CONSTANTS[enum["path"]] = {
+            name.upper()
+            for name in (enum.get("names") or [])
+            + [v["name"] for v in enum.get("values") or []]
+        }
+
+
+def documented(spec: dict) -> bool:
+    """Whether the reader is told anything: its own words, or the type it holds.
+
+    A declaration typed by an enum or a number needs no words of its own: what
+    it is, and what it may be, is what the type says.
+    """
+    if spec.get("description"):
+        return True
+    named = spec.get("type")
+    if isinstance(named, list):
+        return True
+    return named in ENUM_PATHS or named in NUMBERS
+
+
 def undocumented(api: dict) -> list[str]:
-    """Declared names carrying no description - they render as a blank line."""
+    """Declared names that say nothing - they render as a blank line."""
     out = []
     for func in api.get("functions", []):
-        if not func.get("description"):
+        if not documented(func):
             out.append(func["path"])
     for const in api.get("constants", []):
-        if not const.get("description"):
+        if not documented(const):
             out.append(const["path"])
     for prop in api.get("properties", []):
-        if not prop.get("description"):
+        if not documented(prop):
             out.append(prop["path"])
     for space in api.get("namespaces", []):
         # A property group renders as its members, so it has no prose of its own.
@@ -475,8 +745,89 @@ def undocumented(api: dict) -> list[str]:
     for spec in api.get("types", []):
         for kind in ("fields", "methods", "extensions", "operators"):
             for member in spec.get(kind) or []:
-                if not member.get("description"):
+                if not documented(member):
                     out.append(f"{spec['path']}.{member['name']}")
+    return out
+
+
+def respelled(api: dict) -> list[str]:
+    """Where a number's own words are written somewhere other than the number.
+
+    A named number says what it counts and where it counts from, once. A
+    declaration that holds one names it and says only what is its own, so the
+    same sentence written again is a copy that will drift, and a base written
+    again is one that can disagree.
+    """
+    numbers = {number["path"]: number for number in api.get("numbers", [])}
+    # The first clause is the sentence's claim: "Room number", "Cutscene
+    # number". What follows it is detail nobody would repeat by accident.
+    claims = {
+        path: re.split(r"[,.]", number["description"])[0].strip().lower()
+        for path, number in numbers.items()
+    }
+    pointed = set()
+    out = []
+
+    def check(spec: dict, where: str) -> None:
+        if not isinstance(spec, dict):
+            return
+        named = spec.get("type")
+        if isinstance(named, list):
+            named = None
+        if named in numbers:
+            pointed.add(named)
+            if spec.get("base") is not None:
+                out.append(
+                    f"{where}: counts from its own base while naming "
+                    f"`trx.{named}`, which declares one"
+                )
+        text = (spec.get("description") or "").lower()
+        for path, claim in claims.items():
+            if claim and claim in text and named != path:
+                out.append(
+                    f"{where}: says what `trx.{path}` says.\n"
+                    f"    name the number - type it `trx.{path}` - and say only "
+                    f"what is this one's own"
+                )
+
+    for where, spec in walk(api):
+        check(spec, where)
+    for path in numbers:
+        if path not in pointed:
+            out.append(f"{path}: a number nothing holds. Delete it, or type what holds one")
+    return out
+
+
+def walk(api: dict) -> list[tuple[str, dict]]:
+    """Every spec the dump carries, and the declaration it belongs to."""
+    out: list[tuple[str, dict]] = []
+
+    def rec(spec: dict, where: str) -> None:
+        if not isinstance(spec, dict):
+            return
+        out.append((where, spec))
+        for param in spec.get("params") or []:
+            rec(param, f"{where}({param.get('name')})")
+        for field in spec.get("fields") or []:
+            if isinstance(field, dict) and "name" in field:
+                rec(field, f"{where}.{field['name']}")
+        returns = spec.get("returns")
+        for one in (
+            returns if isinstance(returns, list) else [returns] if returns else []
+        ):
+            rec(one, f"{where} returns")
+        for kind in ("methods", "extensions", "values"):
+            for member in spec.get(kind) or []:
+                if isinstance(member, dict):
+                    rec(member, f"{where}.{member.get('name')}")
+
+    for group in ("modules", "functions", "properties", "namespaces", "constants", "enums", "types"):
+        for entry in api.get(group, []):
+            rec(entry, entry.get("path") or entry.get("name"))
+    for container in api.get("containers", []):
+        for side in ("key", "value"):
+            if container.get(side):
+                rec(container[side], f"{container['module']}[{side}]")
     return out
 
 
@@ -532,10 +883,7 @@ def main() -> int:
         )
     api = json.loads(API_JSON.read_text())
 
-    for enum in api.get("enums", []):
-        ENUM_CONSTANTS[enum["path"]] = {
-            value["value"]: value["name"] for value in enum.get("values", [])
-        }
+    read(api)
 
     blank = undocumented(api)
     if blank:
@@ -543,6 +891,14 @@ def main() -> int:
         for path in blank:
             print(f"  {path}", file=sys.stderr)
         print("document it in src/lua/api/, next to the declaration", file=sys.stderr)
+        return 1
+
+
+    copied = respelled(api)
+    if copied:
+        print("error: a number is described away from itself:", file=sys.stderr)
+        for report in copied:
+            print(f"  {report}", file=sys.stderr)
         return 1
 
     stale = []

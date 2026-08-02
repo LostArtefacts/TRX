@@ -180,8 +180,7 @@ api.define("sound.play", {
   params = {
     {
       name = "id",
-      type = "integer",
-      enum = "catalog.samples",
+      type = "catalog.samples",
       description = "Sample to play. To reach a sample by the level's own slot, play it through a "
         .. "handle: `trx.sound.samples[slot]:play()`.",
     },
@@ -214,8 +213,7 @@ api.define("sound.stop", {
   params = {
     {
       name = "id",
-      type = "integer",
-      enum = "catalog.samples",
+      type = "catalog.samples",
       description = "Sample to stop. To reach a sample by the level's own slot, stop it through a "
         .. "handle: `trx.sound.samples[slot]:stop()`.",
     },

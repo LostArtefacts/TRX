@@ -16,37 +16,37 @@ What a weapon is, rather than what Lara has of it.
 
 None of this differs between the inventory she carries and the one a level
 keeps for her, so it belongs to neither: what she holds and how many shots she
-has are `trx.inventory`.
+has are [`trx.inventory`](INVENTORY.md#inventory).
 
 ### Functions
 
-- [lua]`trx.weapons.is_available(weapon)`  
+- <a name="weapons.is_available"></a>[lua]`trx.weapons.is_available(weapon)`  
   Whether the game allows this weapon at all. The game flow can keep one out, and
   a cheat that hands it over anyway leaves Lara with a gun the level was built
   without.
 
   Parameters:
-  - **`weapon`** (integer). Which weapon. `UNKNOWN` and `UNARMED` raise, and so does anything outside the table; `FLARE` and `SKIDOO` are taken, being held the way a weapon is. Compare against `trx.catalog.weapons`.
+  - **`weapon`** ([trx.catalog.weapons](CATALOG.md#catalog.weapons)). Which weapon. `UNKNOWN` and `UNARMED` raise, and so does anything outside the table; `FLARE` and `SKIDOO` are taken, being held the way a weapon is.
 
   Returns: boolean.
 
-- [lua]`trx.weapons.object(weapon)`  
+- <a name="weapons.object"></a>[lua]`trx.weapons.object(weapon)`  
   The pickup the weapon is, for handing it to `trx.inventory:give`.
 
   Parameters:
-  - **`weapon`** (integer). Which weapon. `UNKNOWN` and `UNARMED` raise, and so does anything outside the table; `FLARE` and `SKIDOO` are taken, being held the way a weapon is. Compare against `trx.catalog.weapons`.
+  - **`weapon`** ([trx.catalog.weapons](CATALOG.md#catalog.weapons)). Which weapon. `UNKNOWN` and `UNARMED` raise, and so does anything outside the table; `FLARE` and `SKIDOO` are taken, being held the way a weapon is.
 
-  Returns: integer. The object id, or `nil` if this game has no such weapon. Compare against `trx.catalog.objects`.
+  Returns: [trx.catalog.objects](CATALOG.md#catalog.objects). The object id, or `nil` if this game has no such weapon.
 
   Example:
   ```lua
   trx.inventory:give(trx.weapons.object(trx.catalog.weapons.SHOTGUN))
   ```
 
-- [lua]`trx.weapons.shots_per_box(weapon)`  
+- <a name="weapons.shots_per_box"></a>[lua]`trx.weapons.shots_per_box(weapon)`  
   How many shots one box of ammunition for it is worth.
 
   Parameters:
-  - **`weapon`** (integer). Which weapon. `UNKNOWN` and `UNARMED` raise, and so does anything outside the table; `FLARE` and `SKIDOO` are taken, being held the way a weapon is. Compare against `trx.catalog.weapons`.
+  - **`weapon`** ([trx.catalog.weapons](CATALOG.md#catalog.weapons)). Which weapon. `UNKNOWN` and `UNARMED` raise, and so does anything outside the table; `FLARE` and `SKIDOO` are taken, being held the way a weapon is.
 
   Returns: integer.

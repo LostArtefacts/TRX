@@ -162,13 +162,12 @@ local get = api.define("objects.get", {
   params = {
     {
       name = "key",
-      type = "any",
-      enum = "catalog.objects",
+      type = "catalog.objects",
       description = 'Object id, or its catalog name: `trx.objects["wolf"]`.',
     },
   },
   returns = {
-    type = "Object",
+    type = "objects.Object",
     nullable = true,
     description = "`nil` if no such object exists.",
   },
@@ -252,7 +251,7 @@ local FAMILIES = {
   },
 }
 
-local QUERY = { type = "Query", description = "The narrowed query." }
+local QUERY = { type = "query.Query", description = "The narrowed query." }
 
 local function family_test(kind)
   return function()
@@ -346,9 +345,8 @@ local object_query = trx.query.new({
 }, ObjectQuery)
 
 api.property("objects.query", {
-  type = "ObjectQuery",
-  description = "The identity query over every object definition. Narrow it and read it - see "
-    .. "`trx.objects.ObjectQuery`.",
+  type = "objects.ObjectQuery",
+  description = "The identity query over every object definition. Narrow it and read it.",
   get = function()
     return object_query
   end,
@@ -358,8 +356,8 @@ api.define("objects.swap_mesh", {
   description = "Swaps meshes between two objects. With no mesh numbers, swaps all of them; with "
     .. "both, swaps just those two. One without the other raises.",
   params = {
-    { name = "object_id1", type = "integer", enum = "catalog.objects" },
-    { name = "object_id2", type = "integer", enum = "catalog.objects" },
+    { name = "object_id1", type = "catalog.objects" },
+    { name = "object_id2", type = "catalog.objects" },
     {
       name = "mesh_num1",
       type = "integer",
@@ -382,8 +380,8 @@ Swaps the sprites of two objects, which is how a pickup looks when 3D pickups
 are turned off. Raises if either object is drawn from meshes rather than a
 sprite.]],
   params = {
-    { name = "object_id1", type = "integer", enum = "catalog.objects" },
-    { name = "object_id2", type = "integer", enum = "catalog.objects" },
+    { name = "object_id1", type = "catalog.objects" },
+    { name = "object_id2", type = "catalog.objects" },
   },
   impl = raw.swap_sprite,
 })
@@ -391,8 +389,11 @@ sprite.]],
 api.container("objects", {
   description = "Indexing the module reaches an object definition, so `trx.objects.wolf` is the wolf. "
     .. "Keyed by object id or catalog name, not by position.",
-  key = { type = "any", description = "Object id, or its catalog name." },
-  value = { type = "Object", nullable = true },
+  key = {
+    type = { "catalog.objects", "string" },
+    description = "Object id, or its catalog name.",
+  },
+  value = { type = "objects.Object", nullable = true },
   examples = { [[trx.objects.wolf.properties.max_hit_points = 30]] },
   get = get,
 })

@@ -8,7 +8,7 @@ local test, raises = h.test, h.raises
 -- something any of them can ask for. It happens once, as it does at boot.
 local function seal()
   if trx.api.seal ~= nil then
-    trx.api.seal()
+    trx.api.seal({ partial = true })
   end
 end
 

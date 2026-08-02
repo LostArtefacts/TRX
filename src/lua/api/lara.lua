@@ -9,6 +9,7 @@ api.module("lara", {
     .. "Her position, room and hit points are not here: she is an item like any other and they "
     .. "live on it, as `trx.lara.item`.",
   instance = raw.state,
+  instance_type = "lara.Lara",
 })
 
 api.enum("lara.Mesh", {
@@ -144,30 +145,26 @@ api.type("lara.Lara", {
     },
     water_status = {
       from = "water_status",
-      type = "integer",
+      type = "lara.WaterState",
       writable = false,
-      enum = "lara.WaterState",
       description = "Where Lara is with respect to water.",
     },
     gun_status = {
       from = "gun_status",
-      type = "integer",
+      type = "lara.GunState",
       writable = false,
-      enum = "lara.GunState",
       description = "What Lara's hands are doing.",
     },
     equipped_gun = {
       from = "gun_type",
-      type = "integer",
+      type = "catalog.weapons",
       writable = false,
-      enum = "catalog.weapons",
       description = "The weapon Lara is holding.",
     },
     requested_gun = {
       from = "request_gun_type",
-      type = "integer",
+      type = "catalog.weapons",
       writable = false,
-      enum = "catalog.weapons",
       description = "The weapon Lara is drawing, while she is drawing it.",
     },
     extra_anim = {
@@ -210,8 +207,8 @@ api.type("lara.Lara", {
 })
 
 api.property("lara.item", {
-  type = "Item",
-  description = "Lara's own `trx.items.Item`, or `nil` outside a level. Her position, room and hit "
+  type = "items.Item",
+  description = "Lara's own item, or `nil` outside a level. Her position, room and hit "
     .. "points are read and written there.",
   get = function()
     return trx.items[raw.get_item()]
@@ -219,7 +216,7 @@ api.property("lara.item", {
 })
 
 api.property("lara.target", {
-  type = "Item",
+  type = "items.Item",
   description = "The item Lara's guns are locked onto, or `nil` if she has none.",
   get = function()
     local target = raw.get_target()
@@ -266,14 +263,12 @@ api.define("lara.set_extra_equipment", {
   params = {
     {
       name = "mesh",
-      type = "integer",
-      enum = "lara.Mesh",
+      type = "lara.Mesh",
       description = "Which of Lara's meshes.",
     },
     {
       name = "extra_mesh",
-      type = "integer",
-      enum = "lara.ExtraMesh",
+      type = "lara.ExtraMesh",
       description = "The mesh to hang on it.",
     },
   },
@@ -292,9 +287,9 @@ api.define("lara.teleport", {
     { name = "pos", type = "vec3", description = "World position." },
     {
       name = "room_num",
-      type = "integer",
+      type = "rooms.Num",
       optional = true,
-      description = "0-based room to look in. Without it, the room is found from the position.",
+      description = "Without it, the room is found from the position.",
     },
   },
   returns = { type = "boolean", description = "Whether she was moved." },
@@ -326,8 +321,7 @@ api.define("lara.clear_equipment", {
   params = {
     {
       name = "mesh",
-      type = "integer",
-      enum = "lara.Mesh",
+      type = "lara.Mesh",
       description = "Which of Lara's meshes.",
     },
   },

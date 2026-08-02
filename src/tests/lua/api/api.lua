@@ -659,7 +659,7 @@ test("a Lua type checks its own values, derived ones included", function()
   })
   local Lever = api.type("things.Lever", { extends = "things.Widget" })
   api.define("things.press", {
-    params = { { name = "widget", type = "Widget" } },
+    params = { { name = "widget", type = "things.Widget" } },
     impl = function()
       return true
     end,
@@ -970,7 +970,7 @@ test("a Lua type's field must carry a get", function()
   )
 end)
 
-test("a type answers to its bare name and to its path", function()
+test("a type is named by the path it was declared under", function()
   local api = fresh_env()
   local Widget = api.type("things.Widget", {})
   api.define("things.press", {
@@ -986,11 +986,25 @@ test("a type answers to its bare name and to its path", function()
   api.strict(false)
 end)
 
--- Two modules with a type of the same name is allowed - music.Stream and
--- sound.Stream are one - but the bare name stops naming either, so a
--- declaration says which by its path instead of checking against whichever
--- module happened to declare last.
-test("a name two modules claim stops naming either", function()
+-- The path is the only name a type has. A bare one used to answer as well,
+-- which meant a declaration could name a type the declaration never chose and
+-- go on meaning it until another module claimed the name.
+test("a bare type name names nothing", function()
+  local api = fresh_env()
+  api.type("things.Widget", {})
+  api.define("things.press", {
+    params = { { name = "thing", type = "Widget" } },
+    impl = function() end,
+  })
+  assert(
+    not pcall(api.seal),
+    "a type nothing declares must be reported, not waved through"
+  )
+end)
+
+-- Two modules may declare a type of the same name - music.Stream and
+-- sound.Stream are one - and each is named by its own path.
+test("two modules may name a type the same", function()
   local api = fresh_env()
   local Widget = api.type("things.Widget", {})
   local Gadget = api.type("others.Widget", {})
@@ -1008,15 +1022,6 @@ test("a name two modules claim stops naming either", function()
     "the path must name one type and not the other"
   )
   api.strict(false)
-
-  assert(
-    not pcall(api.define, "things.poke", {
-        params = { { name = "thing", type = "Widget" } },
-        impl = function() end,
-      }) or not pcall(api.strict, true),
-    "the bare name must no longer check anything"
-  )
-  api.strict(false)
 end)
 
 -- The registry declares functions of its own, so a test finds its own by path.
@@ -1029,69 +1034,95 @@ local function declared(api, path)
   return nil
 end
 
-test("a note is written once and read wherever it is pointed at", function()
+test("a number is written once and named from wherever it is meant", function()
   local api = fresh_env()
   api.module("things", { description = "..." })
-  api.note("things.number", "0-based thing number.")
+  api.number("things.Num", {
+    base = 0,
+    description = "A thing number.",
+  })
   api.define("things.get", {
     params = {
-      { name = "num", type = "integer", see = "things.number" },
+      { name = "num", type = "things.Num" },
       {
         name = "callback",
         type = "function",
-        params = {
-          { name = "num", type = "integer", see = "things.number" },
-        },
+        params = { { name = "num", type = "things.Num" } },
       },
     },
-    returns = { type = "integer", see = "things.number" },
+    returns = { type = "things.Num" },
     impl = function() end,
   })
 
-  local fn = declared(api, "things.get")
-  assert(fn.params[1].description == "0-based thing number.")
+  local dumped = api.describe()
   assert(
-    fn.params[2].params[1].description == "0-based thing number.",
-    "a callback's own arguments read it too"
+    #dumped.numbers == 1,
+    "the number must reach the docs to be linked to"
   )
-  assert(fn.returns.description == "0-based thing number.")
-  assert(fn.params[1].see == nil, "the pointer does not reach the docs")
+  assert(dumped.numbers[1].path == "things.Num")
+  assert(dumped.numbers[1].base == 0)
+
+  -- What a declaration holds is written out as the path it names, so what the
+  -- number says is read from one place.
+  local fn = declared(api, "things.get")
+  assert(fn.params[1].type == "things.Num")
+  assert(fn.params[1].description == nil, "the description is not copied")
+  assert(
+    fn.params[2].params[1].type == "things.Num",
+    "a callback's own arguments name it too"
+  )
+  assert(fn.returns.type == "things.Num")
 end)
 
-test("a note joins what the spec adds of its own", function()
+test("a declaration keeps what it adds of its own", function()
   local api = fresh_env()
-  api.note("things.number", "0-based thing number.")
+  api.number("things.Num", { base = 0, description = "A number." })
   api.define("things.get", {
     params = {
       {
         name = "num",
-        type = "integer",
-        see = "things.number",
+        type = "things.Num",
         description = "The one that broke.",
       },
     },
     impl = function() end,
   })
 
-  assert(
-    declared(api, "things.get").params[1].description
-      == "0-based thing number. The one that broke."
-  )
+  local param = declared(api, "things.get").params[1]
+  assert(param.type == "things.Num")
+  assert(param.description == "The one that broke.")
 end)
 
-test("pointing at a note nobody wrote raises", function()
+test("naming something nobody declares is caught where it is read", function()
   local api = fresh_env()
+  api.module("things", { description = "..." })
   api.define("things.get", {
-    params = { { name = "num", type = "integer", see = "things.nothing" } },
+    params = { { name = "num", type = "things.nothing" } },
     impl = function() end,
   })
   assert(not pcall(api.describe))
 end)
 
-test("a note cannot be written twice", function()
+test("an enum is a type like any other", function()
   local api = fresh_env()
-  api.note("things.number", "0-based thing number.")
-  assert(not pcall(api.note, "things.number", "something else"))
+  api.enum("things.State", {
+    backing = "WIDGET_STATE",
+    description = "A state.",
+    values = { OFF = "off.", ON = "on.", BROKEN = "broken." },
+  })
+  api.define("things.get", {
+    params = { { name = "state", type = "things.State" } },
+    impl = function() end,
+  })
+  assert(declared(api, "things.get").params[1].type == "things.State")
+end)
+
+test("a number cannot be written twice", function()
+  local api = fresh_env()
+  api.number("things.Num", { base = 0, description = "A thing number." })
+  assert(
+    not pcall(api.number, "things.Num", { description = "Something else." })
+  )
 end)
 
 test("a container walks from the index it counts from", function()
@@ -1101,7 +1132,7 @@ test("a container walks from the index it counts from", function()
   api.module("counted", {})
   api.container("counted", {
     description = "Indexing.",
-    key = { type = "integer", description = "0-based." },
+    key = { type = "integer", base = 0, description = "Where it sits." },
     value = { type = "string" },
     get = function(key)
       return zero[key]
@@ -1114,9 +1145,8 @@ test("a container walks from the index it counts from", function()
   api.module("listed", {})
   api.container("listed", {
     description = "Indexing.",
-    key = { type = "integer", description = "1-based." },
+    key = { type = "integer", base = 1, description = "Where it sits." },
     value = { type = "string" },
-    base = 1,
     get = function(key)
       return one[key]
     end,
@@ -1135,6 +1165,151 @@ test("a container walks from the index it counts from", function()
 
   assert(walked(trx.counted) == "0,1", walked(trx.counted))
   assert(walked(trx.listed) == "1,2", walked(trx.listed))
+end)
+
+-- Where a collection counts from is the key's to say, so a container that says
+-- it itself is a declaration left behind by the move.
+test("a container cannot say where it counts from", function()
+  local api = fresh_env()
+  api.module("things", {})
+  assert(not pcall(api.container, "things", {
+    description = "Indexing.",
+    base = 1,
+    key = { type = "integer", description = "Where it sits." },
+    value = { type = "string" },
+    get = function() end,
+  }))
+end)
+
+-- A number need not count from anywhere - a sample number is an identifier and
+-- nothing more - and a key that names one goes on to the next.
+test("a key counts from the first of its numbers that says", function()
+  local api = fresh_env()
+  api.module("things", {})
+  api.number("things.Name", { description = "What it is called." })
+  api.number("things.Num", { base = 1, description = "Where it sits." })
+  api.container("things", {
+    description = "Indexing.",
+    key = { type = { "things.Name", "things.Num" }, description = "Either." },
+    value = { type = "string" },
+    get = function(key)
+      return tostring(key)
+    end,
+    count = function()
+      return 2
+    end,
+  })
+
+  local keys = {}
+  for key in pairs(trx.things) do
+    keys[#keys + 1] = key
+  end
+  assert(table.concat(keys, ",") == "1,2", table.concat(keys, ","))
+end)
+
+test("a declaration naming several types is checked against each", function()
+  local api = fresh_env()
+  api.number("things.Num", { base = 0, description = "A thing number." })
+  api.define("things.get", {
+    params = { { name = "which", type = { "things.Num", "string" } } },
+    impl = function()
+      return true
+    end,
+  })
+
+  api.strict(true)
+  assert(pcall(trx.things.get, 3))
+  assert(pcall(trx.things.get, "hammer"))
+  assert(
+    not pcall(trx.things.get, {}),
+    "a type the declaration does not name must be refused"
+  )
+  api.strict(false)
+end)
+
+test("a property naming several types is checked on write", function()
+  local api = fresh_env()
+  local held
+  api.property("things.size", {
+    type = { "integer", "string" },
+    description = "How big.",
+    get = function()
+      return held
+    end,
+    set = function(value)
+      held = value
+    end,
+  })
+
+  api.strict(true)
+  trx.things.size = "large"
+  assert(held == "large")
+  assert(not pcall(function()
+    trx.things.size = {}
+  end))
+  api.strict(false)
+end)
+
+test("seal names the several types a declaration accepts", function()
+  local api = fresh_env()
+  api.define("things.get", {
+    params = { { name = "which", type = { "things.Gone", "string" } } },
+    impl = function() end,
+  })
+
+  local ok, err = pcall(api.seal)
+  assert(not ok, "a type nothing declares must be reported")
+  assert(
+    err:find("things.Gone or string", 1, true) ~= nil,
+    "the message must name what the declaration wrote: " .. tostring(err)
+  )
+end)
+
+test("a number cannot take the path a type holds", function()
+  local api = fresh_env()
+  api.type("things.Widget", {})
+  assert(
+    not pcall(
+      api.number,
+      "things.Widget",
+      { base = 0, description = "A widget number." }
+    )
+  )
+end)
+
+test("a number belongs to a module", function()
+  local api = fresh_env()
+  assert(not pcall(api.number, "nonsense", { description = "A number." }))
+end)
+
+-- The class is what a module gives a value it hands out, and a module that
+-- hands out another's values has no other way to reach it.
+test("class() hands back the class a type was declared with", function()
+  local api = fresh_env()
+  local Widget = api.type("things.Widget", {
+    methods = { press = { impl = function() end } },
+  })
+
+  assert(api.class("things.Widget") == Widget)
+  assert(not pcall(api.class, "things.Gadget"))
+end)
+
+test("a container names itself where its key names nothing", function()
+  local api = fresh_env()
+  api.module("things", { description = "..." })
+  api.container("things", {
+    description = "Indexing.",
+    key = { type = "things.Gone", description = "A key." },
+    value = { type = "string" },
+    get = function() end,
+  })
+
+  local ok, err = pcall(api.describe)
+  assert(not ok, "a key naming nothing must be reported")
+  assert(
+    err:find("things's type", 1, true) ~= nil,
+    "the message must say which container to look in: " .. tostring(err)
+  )
 end)
 
 -- A suite that registers nothing prints "0 failed" and exits clean, which reads

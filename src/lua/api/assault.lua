@@ -21,10 +21,9 @@ local Track = api.enum("assault.Track", {
 local function track_param()
   return {
     name = "track",
-    type = "integer",
+    type = "assault.Track",
     optional = true,
     default = Track.COURSE,
-    enum = "assault.Track",
   }
 end
 
@@ -68,8 +67,7 @@ api.define("assault.is_visible", {
 })
 
 api.property("assault.active_track", {
-  type = "integer",
-  enum = "assault.Track",
+  type = "assault.Track",
   description = "The track Lara is currently running, or `nil` if none.",
   get = raw.get_active_track,
 })
@@ -102,9 +100,10 @@ api.define("assault.stats.remove_record", {
   description = "Removes a record, closing the gap behind it.",
   params = {
     {
-      name = "record_id",
+      name = "record_num",
       type = "integer",
-      description = "1-based position in the table.",
+      base = 1,
+      description = "Position in the table.",
     },
     track_param(),
   },
@@ -120,7 +119,7 @@ api.define("assault.stats.list_records", {
   params = { track_param() },
   returns = {
     type = "table",
-    description = "List, counted from one, of `{ time = seconds, attempt_num = which attempt it "
+    description = "List of `{ time = seconds, attempt_num = which attempt it "
       .. "was }`.",
   },
   examples = {

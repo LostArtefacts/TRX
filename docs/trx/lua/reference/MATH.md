@@ -18,21 +18,21 @@ TRX angles are 16-bit units where 65536 is a full turn, not radians. Using these
 
 ### Constants
 
-- [lua]`trx.math.DEG_1` = `182`  
+- <a name="math.DEG_1"></a>[lua]`trx.math.DEG_1` = `182`  
   One degree in TRX units. Multiply by it to say an angle in degrees: `45 * trx.math.DEG_1`.
 
-- [lua]`trx.math.DEG_45` = `8192`  
+- <a name="math.DEG_45"></a>[lua]`trx.math.DEG_45` = `8192`  
   A 45-degree turn, in TRX units.
 
-- [lua]`trx.math.DEG_90` = `16384`  
+- <a name="math.DEG_90"></a>[lua]`trx.math.DEG_90` = `16384`  
   A quarter turn, in TRX units. A full turn is four of these, and wraps to zero.
 
-- [lua]`trx.math.WALL_L` = `1024`  
+- <a name="math.WALL_L"></a>[lua]`trx.math.WALL_L` = `1024`  
   The size of one sector in world units. Level geometry is laid out on this grid, so it is the step to take to move an item a sector over.
 
 ### Functions
 
-- [lua]`trx.math.sin(angle)`  
+- <a name="math.sin"></a>[lua]`trx.math.sin(angle)`  
   Sine of an angle.
 
   Parameters:
@@ -40,7 +40,7 @@ TRX angles are 16-bit units where 65536 is a full turn, not radians. Using these
 
   Returns: number. A value in [-1, 1].
 
-- [lua]`trx.math.cos(angle)`  
+- <a name="math.cos"></a>[lua]`trx.math.cos(angle)`  
   Cosine of an angle.
 
   Parameters:
@@ -48,7 +48,7 @@ TRX angles are 16-bit units where 65536 is a full turn, not radians. Using these
 
   Returns: number. A value in [-1, 1].
 
-- [lua]`trx.math.atan(z, x)`  
+- <a name="math.atan"></a>[lua]`trx.math.atan(z, x)`  
   Angle of the vector (x, z), in TRX units.
 
   Parameters:

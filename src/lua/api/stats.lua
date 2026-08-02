@@ -12,6 +12,7 @@ has picked up in it. Any other level's counters are reached the same way through
 `trx.game.Level.stats`. At the title screen there is no level, and everything
 here reads `nil`.]],
   instance = raw.get_current,
+  instance_type = "stats.Stats",
 })
 
 -- The categories are ordered as the engine keeps them, so a name here stands
@@ -61,7 +62,7 @@ api.type("stats.Category", {
 
 local function category(name, description)
   return {
-    type = "Category",
+    type = "stats.Category",
     description = description,
     impl = function(stats)
       return raw.category(stats, CATEGORY[name])
@@ -69,10 +70,14 @@ local function category(name, description)
   }
 end
 
+api.number("stats.SecretNum", {
+  base = 1,
+  description = "The secret's number, as the player counts them.",
+})
+
 local secret_num_param = {
-  name = "num",
-  type = "integer",
-  description = "The secret's number, counted from one.",
+  name = "secret_num",
+  type = "stats.SecretNum",
 }
 
 api.type("stats.Stats", {
@@ -158,7 +163,7 @@ api.type("stats.Stats", {
   methods = {
     secret_list = {
       description = "The level's secrets, in order, as a list of `{ num, found }`. `num` is the "
-        .. "number the player says, counted from one, and `found` is whether Lara has it.",
+        .. "number the player says, and `found` is whether Lara has it.",
       returns = { type = "table", description = "The secrets, one by one." },
       examples = {
         [[for _, secret in ipairs(trx.stats.secret_list()) do

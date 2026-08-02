@@ -29,7 +29,7 @@ api.define("log.generic", {
   description = "Logs a message at a level chosen at runtime, for when the level is computed "
     .. "rather than written literally.",
   params = {
-    { name = "level", type = "integer", enum = "log.LogLevel" },
+    { name = "level", type = "log.LogLevel" },
     { name = "message", type = "string" },
   },
   examples = {
