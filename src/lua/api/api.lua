@@ -4,159 +4,314 @@
 -- registry is what the docs are generated from, so the reference cannot drift
 -- from the code.
 --
--- On performance: the spec is metadata, not a dispatch layer.
--- `trx.items.spawn` is the raw implementation - calling it costs exactly what
--- calling any Lua function costs. A generic spec-driven wrapper that validated
--- arguments on every call measured 26x slower (416ns vs 16ns), which is
--- untenable for anything a script calls per frame. Argument validation is
--- therefore opt-in: trx.api.strict(true) rebinds every registered function to
--- a code-generated checking wrapper (~108ns overhead), which builders can
--- enable while developing and leave off in play.
+-- The spec is metadata, not a dispatch layer. `trx.items.spawn` is the raw
+-- implementation, and calling it costs what calling any Lua function costs,
+-- because with checking off nothing wraps it at all. Checking is opt-in
+-- instead: api.strict rebinds every registered function to a closure that
+-- checks what it was handed, and its own description says what that costs.
 
 -- Captured at module scope: the raw C bridge is removed from the globals once
 -- the trx.* modules have loaded, so builders cannot reach past the public API.
 local struct = trxc.struct
+
 local enum = trxc.enum
+
 local capi = trxc.api
--- Hardening nils this out of the globals, and api.strict runs long after that.
-local load = load
+
+-- What a declaration accepts, and the predicate that answers for it. The
+-- registry says what is declared where; check.lua says what satisfies one, and
+-- reads the declarations back through the lookup below.
+local check = require("trx.check")
 
 local api = {}
 
--- A registry keyed by path, keeping the paths in declaration order alongside so
--- the docs come out the way the files declare, not the way pairs() happens to
--- iterate. record() is the only writer.
-local function ordered()
-  return { by_path = {}, order = {} }
-end
+-- The module's own state, in one place rather than scattered among the
+-- functions that read it.
 
-local function record(reg, path, spec)
-  if reg.by_path[path] == nil then
-    reg.order[#reg.order + 1] = path
+-- One registry, keyed by the path a declaration was made under and keeping the
+-- paths in declaration order alongside, so the docs come out the way the files
+-- declare rather than the way pairs() happens to iterate.
+--
+-- An entry says what kind of thing was declared and what the declaration said.
+-- What the declaration went on to build is added to the same entry - the
+-- predicate strict mode calls, the class a value carries, the table a module
+-- stands for - so "what is at this path" is one lookup rather than a search
+-- across a table per question.
+local declarations = { by_path = {}, order = {} }
+
+-- Every kind of declaration there is, in the order they were made, and the
+-- same kinds keyed by the declarator that makes one. The dump walks the first;
+-- each() reaches a kind through the second. A kind is the table itself
+-- wherever one is named, so there is nothing to keep a spelling of it in step
+-- with.
+local KINDS = {}
+local KIND_OF = {}
+
+-- Whether declarations are still being made, and whether what a script
+-- calls is the checking wrapper. Both are read by the declarators below.
+local strict_enabled = false
+
+local sealed = false
+
+-- The registry, and what makes a declarator.
+
+-- What a caller of this module got wrong, named by the entry point that caught
+-- it and formatted only where there is something to say. Every complaint the
+-- module makes goes through one of these, so none of them spells its own name
+-- out for itself.
+local function complain(called)
+  return function(ok, fmt, ...)
+    if not ok then
+      error(called .. ": " .. fmt:format(...), 0)
+    end
   end
-  reg.by_path[path] = spec
-  return spec
 end
 
--- Every registry projects to a doc entry the same way: walk it in declaration
--- order, turn each spec into a plain table. Only the projection differs.
-local function collect(reg, project)
+-- The entry for a path, opened on first mention. A table can be reached before
+-- anything declares it - a property names the table it hangs off, and a group
+-- of properties needs no declaration of its own - so an entry may hold what was
+-- built at a path before it holds what was declared there. Until a declarator
+-- claims it, it has no kind, and each() passes it by.
+local function open(path)
+  local entry = declarations.by_path[path]
+  if entry == nil then
+    entry = { path = path }
+    declarations.by_path[path] = entry
+    declarations.order[#declarations.order + 1] = path
+  end
+  return entry
+end
+
+local function at(path)
+  return declarations.by_path[path]
+end
+
+-- What checking asks of the registry: the predicate the declaration at a path
+-- built, and nothing else.
+check.reads_from(function(path)
+  local entry = declarations.by_path[path]
+  return entry ~= nil and entry.check or nil
+end)
+
+-- Which module a declaration lands under is the surface talking; which module
+-- loaded first is not - that is the source list in meson.build, and a module
+-- that requires another pulls it forward. The dump is committed and diffed, so
+-- it groups by module and cannot move when a load order does, the way a type's
+-- members and an enum's values already cannot.
+--
+-- Within a module the order is the order the file declares in, which is a
+-- choice someone made: trx.music reads play, pause, unpause, stop.
+--
+-- The field the module is read out of is named rather than assumed, so a kind
+-- that carries its path under some other name says so.
+local function by_module(field)
+  return function(list)
+    local declared_at = {}
+    for i, entry in ipairs(list) do
+      declared_at[entry] = i
+    end
+    table.sort(list, function(a, b)
+      local mod_a = a[field]:match("^[^.]+")
+      local mod_b = b[field]:match("^[^.]+")
+      if mod_a ~= mod_b then
+        return mod_a < mod_b
+      end
+      return declared_at[a] < declared_at[b]
+    end)
+  end
+end
+
+-- A module and its container carry no path to group on, one of each being all
+-- there is per module, so they read alphabetically.
+local function alphabetically(field)
+  return function(list)
+    table.sort(list, function(a, b)
+      return a[field] < b[field]
+    end)
+  end
+end
+
+-- Every public declarator is made here, so what they share is written once:
+-- declarations are the engine's to make at load time, a spec is a table, and
+-- every one of them opens an entry under the path it was given. What is left
+-- is the part that differs, which the kind supplies as `declare`.
+--
+-- A kind also says where it lands in the dump, how one entry reads there, and
+-- how that list is ordered, so everything about a kind of declaration is in
+-- one call.
+local function declarator(name, key, spec)
+  local kind = {
+    key = key,
+    describe = spec.describe,
+    sort = spec.sort or by_module("path"),
+  }
+  local need = complain("api." .. name)
+
+  -- What a second declaration at one path is told, settled here so nothing is
+  -- built for the declarations that are fine.
+  local taken = "%s is already declared."
+    .. (spec.taken ~= nil and (" " .. spec.taken) or "")
+
+  local function declare(path, declaration)
+    need(
+      not sealed,
+      "the registry is sealed; declarations happen at load time"
+    )
+    need(type(path) == "string", "path must be a string")
+    declaration = declaration or {}
+    need(type(declaration) == "table", "spec must be a table")
+    -- A container is declared as the module it indexes and sits under the name
+    -- the reference gives it, so a kind may name its own path.
+    local entry = open(spec.path and spec.path(path) or path)
+    need(entry.kind == nil, taken, path)
+    entry.kind = kind
+    entry.spec = declaration
+    return spec.declare(entry, path, declaration, need)
+  end
+  KINDS[#KINDS + 1] = kind
+  KIND_OF[declare] = kind
+  return declare
+end
+
+-- Every declaration of one kind, in the order the files made them.
+local function entries_of(kind)
   local list = {}
-  for _, key in ipairs(reg.order) do
-    list[#list + 1] = project(key, reg.by_path[key])
+  for _, path in ipairs(declarations.order) do
+    local entry = declarations.by_path[path]
+    if entry.kind == kind then
+      list[#list + 1] = entry
+    end
   end
   return list
 end
 
-local registry = ordered()
-local modules = ordered()
-local types = ordered()
-local enums = ordered()
-local consts = ordered()
-local properties = ordered()
-local namespaces = ordered()
--- path -> { fn = what calling the namespace runs }. Held apart from the
--- metatable so api.strict can swap the wrapper in.
-local namespace_dispatch = {}
--- Type name -> predicate. Private: reachable, a script could hand strict mode a
--- checker that accepts anything. A declared type answers to the path it was
--- declared under and to nothing else, so nothing names it by a spelling the
--- declaration never chose.
-local checkers
--- What a number is, written once where it belongs: what an item number is is
--- the items module's to say, and everything that holds one is typed by it.
-local numbers = ordered()
--- What a value is measured in, written once where it belongs: a distance is a
--- distance however many declarations hold one.
-local units = ordered()
-local containers = ordered()
--- module -> { get, count, accepts }. What indexing the module table reaches.
-local module_containers = {}
--- container path -> { name -> spec }. What the container's __index dispatches
--- on. A module's path is its name; a namespace's is 'module.namespace'.
-local container_properties = {}
--- module -> function returning the handle it stands for, and the path of the
--- type that handle has: trx.lara.air is a member of lara.Lara, so the docs can
--- say where a script writing trx.lara.<member> lands.
-local module_instances = {}
-local module_instance_types = {}
--- type path -> the class table of a type written in Lua, which is both what a
--- value of that type carries as its metatable and where its methods live.
-local lua_classes = {}
--- class -> the class it extends, for the checker to walk. Held apart from the
--- class table, which a value indexes through.
-local class_parents = {}
-local strict_enabled = false
-local sealed = false
-
--- Every type a spec accepts, in the order it declared them: one, or the
--- several a container key answers to - a number, and the name that reaches the
--- same thing.
-local function types_of(value)
-  return type(value) == "table" and value or { value }
+-- The same, reached by the declarator that makes one rather than by the kind
+-- itself, which is the module's own and not something a caller here holds. The
+-- dump walks KINDS and already has one.
+local function each(maker)
+  return entries_of(KIND_OF[maker])
 end
 
--- What a declaration accepts, as the reader writes it: one type, or the
--- several it answers to. What the errors below name.
-local function type_label(declared)
-  local names = {}
-  for i, one in ipairs(types_of(declared)) do
-    names[i] = tostring(one)
-  end
-  return #names == 0 and tostring(declared) or table.concat(names, " or ")
+-- Whether one entry is of a kind, named the same way.
+local function made_by(entry, maker)
+  return entry ~= nil and entry.kind == KIND_OF[maker]
 end
 
--- The predicate a declaration is checked by, or nil where this surface has no
--- type of that name. One that names several passes on any of them.
-local function checker_for(declared)
-  if type(declared) ~= "table" then
-    return checkers[declared]
+-- What a declaration reads like once it is doc-facing.
+
+-- A spec as the docs read it: a copy, with what it is typed by written out as
+-- the path that names it, so the docs can link to the declaration and a
+-- description several places share is still written once.
+local function as_doc(spec)
+  if type(spec) ~= "table" then
+    return spec
   end
-  local each = {}
-  for i, one in ipairs(declared) do
-    each[i] = checkers[one]
-    if each[i] == nil then
-      return nil
+  local out = {}
+  for key, value in pairs(spec) do
+    out[key] = value
+  end
+  if out.type ~= nil then
+    local accepted = check.types_of(out.type)
+    out.type = #accepted == 1 and accepted[1] or accepted
+  end
+  -- A table argument or result declares the keys it is made of, and each of
+  -- them reads like any other spec.
+  for _, key in ipairs({ "params", "fields" }) do
+    if type(out[key]) == "table" then
+      local list = {}
+      for i, nested in ipairs(out[key]) do
+        list[i] = as_doc(nested)
+      end
+      out[key] = list
     end
   end
-  return function(value)
-    for _, check in ipairs(each) do
-      if check(value) then
-        return true
+  return out
+end
+
+-- A type's members are declared in a table keyed by name, which pairs() walks
+-- in whatever order it likes, so each kind of member comes out sorted by name.
+local function members(declared, read)
+  local list = {}
+  for name, member in pairs(declared or {}) do
+    local one = read(member)
+    one.name = name
+    list[#list + 1] = one
+  end
+  table.sort(list, function(a, b)
+    return a.name < b.name
+  end)
+  return list
+end
+
+-- Params are always a list; what a call hands back is one spec or a list of
+-- them, and a lone one is told apart by carrying a type of its own.
+local function as_doc_list(list)
+  if list == nil or list.type ~= nil then
+    return as_doc(list)
+  end
+  local out = {}
+  for i, spec in ipairs(list) do
+    out[i] = as_doc(spec)
+  end
+  return out
+end
+
+-- A description written as a long-bracket string carries the indentation it was
+-- written at, and four spaces is a code block in markdown - which is how a
+-- module's own prose came out as one. The text is what the declaration says,
+-- not where it sat in the file, so the shared indent comes off. The deepest
+-- lines keep the rest of theirs, since a description may lay something out.
+local function dedent(text)
+  local shared
+  for line in text:gmatch("[^\n]+") do
+    if line:match("%S") ~= nil then
+      local indent = #line:match("^[ \t]*")
+      if shared == nil or indent < shared then
+        shared = indent
       end
     end
-    return false
   end
+  if shared == nil or shared == 0 then
+    return (text:gsub("^%s*\n", ""):gsub("%s+$", ""))
+  end
+  local out = {}
+  for line in (text .. "\n"):gmatch("([^\n]*)\n") do
+    out[#out + 1] = line:sub(shared + 1)
+  end
+  return (table.concat(out, "\n"):gsub("^%s*\n", ""):gsub("%s+$", ""))
 end
 
-local function split_path(path)
-  local module, name = path:match("^([%w_]+)%.([%w_]+)$")
-  assert(
-    module ~= nil,
-    "api path must be 'module.name', got: " .. tostring(path)
-  )
-  return module, name
-end
+-- Where a path lands, which every declaration asks in one of two ways: what a
+-- path is made of, and what table it names.
 
--- A path is 'module.name', or 'module.namespace.name' one level deeper.
--- Anything deeper is a sign the module wants splitting.
-local function path_parts(path)
+local function segments(path)
   local parts = {}
   for segment in tostring(path):gmatch("[^.]+") do
     parts[#parts + 1] = segment
   end
-  assert(
-    #parts == 2 or #parts == 3,
-    "api path must be 'module.name' or 'module.namespace.name', got: "
-      .. tostring(path)
-  )
   return parts
 end
 
--- The path of the table a member hangs off: the module, or the namespace
--- inside it.
-local function owner_path(parts)
-  return #parts == 3 and (parts[1] .. "." .. parts[2]) or parts[1]
+-- A path taken apart, which every declarator keeps on its entry as `where`.
+-- `module` is the module it belongs to, `name` the member's own name, and
+-- `owner` the path of the table that member hangs off - the module, or the
+-- namespace inside it. A path is 'module.name', or 'module.namespace.name' where
+-- `deep` allows one; anything further is a sign the module wants splitting.
+local function placed(path, need, deep)
+  local parts = segments(path)
+  local count = #parts
+  need(
+    count == 2 or (deep and count == 3),
+    deep and "path must be 'module.name' or 'module.namespace.name', got: %s"
+      or "path must be 'module.name', got: %s",
+    path
+  )
+  return {
+    module = parts[1],
+    namespace = count == 3 and parts[2] or nil,
+    name = parts[count],
+    owner = count == 3 and (parts[1] .. "." .. parts[2]) or parts[1],
+  }
 end
 
 -- The trx.<module> table, created on first mention. Every declaration hangs its
@@ -166,38 +321,120 @@ local function module_table(module)
   return trx[module]
 end
 
--- The guard every declarator opens with: declarations are the engine's to make
--- at load time, and a spec is a table. `fn` names the caller for the message.
-local function opening(fn, spec)
-  assert(
-    not sealed,
-    "the trx.api registry is sealed; declarations happen at load time"
+-- The table a member hangs off: the module's own, or a namespace's inside it.
+local function table_of(where, need)
+  local tbl = module_table(where.module)
+  if where.namespace == nil then
+    return tbl
+  end
+  local namespace = rawget(tbl, where.namespace)
+  need(
+    type(namespace) == "table",
+    "%s.%s.%s needs api.namespace('%s.%s') declared first",
+    where.module,
+    where.namespace,
+    where.name,
+    where.module,
+    where.namespace
   )
-  if spec ~= nil then
-    assert(type(spec) == "table", fn .. ": spec must be a table")
+  return namespace
+end
+
+-- What a declaration puts on the table a script reaches.
+
+-- What a declaration is worth asking once and keeping, kept on the entry that
+-- was asked about. Asked the first time something needs the answer rather than
+-- as the declaration is made: a declaration may name a type its own file
+-- declares further down, and reading it while the file is still being read
+-- would answer nil.
+local function once(holder, slot, answer, declared)
+  local held = holder[slot]
+  if held == nil then
+    held = answer(declared)
+    holder[slot] = held
+  end
+  return held
+end
+
+-- What checks a value against a declaration, waving it through where nothing
+-- can: a type this surface does not declare is caught by the seal and by the
+-- dump rather than here.
+local function checker(declared)
+  return check.of(declared) or check.anything
+end
+
+-- What indexing counts from: the key's own base, or the base of what it points
+-- at, since a container keyed by an item number counts as items do. A key that
+-- says nothing, and names nothing that does, counts from zero.
+local function base_of(key)
+  if key.base ~= nil then
+    return key.base
+  end
+  for _, one in ipairs(check.types_of(key.type)) do
+    local entry = at(one)
+    if made_by(entry, api.number) and entry.spec.base ~= nil then
+      return entry.spec.base
+    end
+  end
+  return 0
+end
+
+-- What a module standing for a handle reaches on it. A method wants the handle
+-- as its self, and the module is not one, so the handle stands in. A colon call
+-- hands the module over as self and a dot call hands over nothing, so the module
+-- table itself is what tells the two apart - no argument of a script's can be it.
+local function member_of(handle, tbl, key)
+  if handle == nil then
+    return nil
+  end
+  local member = handle[key]
+  if type(member) ~= "function" then
+    return member
+  end
+  return function(first, ...)
+    if first == tbl then
+      return member(handle, ...)
+    end
+    return member(handle, first, ...)
   end
 end
 
--- The module, the table the member hangs off, and the member's own name.
-local function resolve(path)
-  local parts = path_parts(path)
-  local module = parts[1]
-  module_table(module)
-  if #parts == 2 then
-    return module, trx[module], parts[2]
+-- A property is written, not called, so make_checked never sees it. Strict mode
+-- still has to. Three frames up is whoever wrote it.
+--
+-- What checks a write is worked out the first time one is made, as what checks
+-- a collection's key is, and for the same reason: a property may name a type
+-- the same file declares further down.
+local function write_property(where, prop, value)
+  local spec = prop.spec
+  if spec.set == nil then
+    error(where .. " is read-only", 3)
   end
-  local namespace = rawget(trx[module], parts[2])
-  assert(
-    type(namespace) == "table",
-    "api: "
-      .. path
-      .. " needs api.namespace('"
-      .. module
-      .. "."
-      .. parts[2]
-      .. "') declared first"
-  )
-  return module, namespace, parts[3]
+  if strict_enabled then
+    if not once(prop, "write_check", checker, spec)(value) then
+      error(("%s: expected %s"):format(where, check.label_of(spec)), 3)
+    end
+  end
+  spec.set(value)
+end
+
+-- pairs() over the module walks the collection one handle at a time, so a
+-- script iterates without the #..-1 idiom. It walks from whichever index the
+-- collection counts from: the items and the rooms from zero, matching the
+-- numbers level editors show, and a plain list from one. seal()'s audit reads
+-- the module's own members instead, and iterates raw to reach them.
+local function walk(container, tbl)
+  local first = once(container, "base", base_of, container.spec.key)
+  local last = first + container.count() - 1
+  return function(_, i)
+    i = i + 1
+    if i > last then
+      return nil
+    end
+    return i, container.get(i)
+  end,
+    tbl,
+    first - 1
 end
 
 -- A module is a plain table, and api.define rawsets its functions straight into
@@ -209,72 +446,44 @@ end
 -- rather than merely undocumented. That matters most here: neither a metatable
 -- getter nor a struct field ever shows up in pairs(), so seal()'s audit cannot
 -- see one.
--- `owner` is what the errors name, and `tbl` is the table the metatable goes
--- on. For a module the two are the module and trx.<module>; for a namespace,
--- the dotted path and the namespace's own table. Only a module can carry an
--- instance or be a container, so those lookups come back nil for a namespace.
-local function install_meta(owner, tbl)
-  local props = container_properties[owner]
-  local instance = module_instances[owner]
-  local container = module_containers[owner]
-  if props == nil and instance == nil and container == nil then
-    return
-  end
+--
+-- Everything the metatable serves is on the entry: the properties hung off it,
+-- the handle it stands for, the collection it is indexed as. Its path is what
+-- the errors name, and `entry.table` is what the metatable goes on - trx.<name>
+-- for a module, the namespace's own table for a namespace. Only a module can
+-- carry an instance or be a container, so a namespace's entry has neither.
+--
+-- Called by whichever declaration adds one of the three, and again by the next,
+-- so the metatable it leaves serves everything the entry holds by then.
+local NO_PROPERTIES = {}
+
+local function install_meta(entry)
+  local owner, tbl = entry.path, entry.table
+  local props = entry.properties or NO_PROPERTIES
+  local instance, container = entry.instance, entry.container
 
   local meta = {
     __index = function(_, key)
-      local prop = props ~= nil and props[key] or nil
+      local prop = props[key]
       if prop ~= nil then
-        return prop.get()
+        return prop.spec.get()
       end
       if container ~= nil and container.accepts(key) then
         return container.get(key)
       end
       if instance ~= nil then
-        local handle = instance()
-        if handle ~= nil then
-          local member = handle[key]
-          -- A method wants the handle as its self, and the module is not one,
-          -- so the handle stands in. A colon call hands the module over as
-          -- self and a dot call hands over nothing, so the module table itself
-          -- is what tells the two apart - no argument of a script's can be it.
-          if type(member) == "function" then
-            return function(first, ...)
-              if first == tbl then
-                return member(handle, ...)
-              end
-              return member(handle, first, ...)
-            end
-          end
-          return member
-        end
+        return member_of(instance(), tbl, key)
       end
       return nil
     end,
     __newindex = function(_, key, value)
-      local prop = props ~= nil and props[key] or nil
+      local prop = props[key]
       if prop ~= nil then
-        if prop.set == nil then
-          error("trx." .. owner .. "." .. tostring(key) .. " is read-only", 2)
-        end
-        -- A property is written, not called, so make_checked never sees it.
-        -- Strict mode still has to.
-        if strict_enabled then
-          local check = checker_for(prop.type)
-          if check ~= nil and not check(value) then
-            error(
-              "trx."
-                .. owner
-                .. "."
-                .. tostring(key)
-                .. ": expected a "
-                .. type_label(prop.type),
-              2
-            )
-          end
-        end
-        prop.set(value)
-        return
+        return write_property(
+          ("trx.%s.%s"):format(owner, tostring(key)),
+          prop,
+          value
+        )
       end
       if instance ~= nil then
         local handle = instance()
@@ -285,31 +494,18 @@ local function install_meta(owner, tbl)
           return
         end
       end
-      error("Cannot set field '" .. tostring(key) .. "' on trx." .. owner, 2)
+      error(
+        ("Cannot set field '%s' on trx.%s"):format(tostring(key), owner),
+        2
+      )
     end,
   }
   if container ~= nil and container.count ~= nil then
     meta.__len = function()
       return container.count()
     end
-    -- pairs() over the module walks the collection one handle at a time, so a
-    -- script iterates without the #..-1 idiom. It walks from whichever index
-    -- the collection counts from: the items and the rooms from zero, matching
-    -- the numbers level editors show, and a plain list from one. seal()'s
-    -- audit reads the module's own members instead, and iterates raw to reach
-    -- them.
     meta.__pairs = function(t)
-      local first = container.base
-      local last = first + container.count() - 1
-      return function(_, i)
-        i = i + 1
-        if i > last then
-          return nil
-        end
-        return i, container.get(i)
-      end,
-        t,
-        first - 1
+      return walk(container, t)
     end
   end
   -- A namespace declared callable already carries a metatable, and its call
@@ -321,31 +517,13 @@ local function install_meta(owner, tbl)
   setmetatable(tbl, meta)
 end
 
-function api.module(name, spec)
-  opening("api.module", spec)
-  assert(type(name) == "string", "api.module: name must be a string")
-  spec = record(modules, name, spec or {})
+-- Argument checking, which is off until something turns it on.
 
-  -- A module that stands for one C struct reads and writes that struct's fields
-  -- directly: trx.lara.air is Lara's air. `instance` hands back the handle.
-  if spec.instance ~= nil then
-    assert(
-      type(spec.instance) == "function",
-      "api.module: instance must be a function"
-    )
-    assert(
-      type(spec.instance_type) == "string",
-      "api.module: instance_type must name the type the module stands for"
-    )
-    module_instances[name] = spec.instance
-    module_instance_types[name] = spec.instance_type
-    install_meta(name, module_table(name))
-  end
-end
-
--- Builds a specialized validating wrapper by generating Lua source for this
--- exact parameter list. Avoids the per-call table.pack/unpack and spec loop
--- that made the generic approach 26x slower.
+-- Strict mode wraps the implementation in a closure that checks what it was
+-- handed. `select` reads the arguments without copying them, and handing `...`
+-- straight on keeps the count the caller gave: several bridges read
+-- lua_gettop() to tell "not given" from "given nil", so an optional argument
+-- nobody passed has to stay absent rather than arrive as nil.
 local function make_checked(fn, path, params)
   if params == nil or #params == 0 then
     return fn
@@ -354,440 +532,61 @@ local function make_checked(fn, path, params)
   local variadic = params[#params].name == "..."
   local fixed = variadic and #params - 1 or #params
 
-  local names, checks = {}, {}
+  local names, optional, predicates, defaults = {}, {}, {}, {}
+  local fills_a_default = false
   for i = 1, fixed do
     local p = params[i]
-    names[i] = "a" .. i
-    local fail = ("E(%q,%q)"):format(path, p.name)
-    if p.optional then
-      checks[#checks + 1] = ("if a%d==nil then a%d=D[%d] elseif not C[%d](a%d) then %s end"):format(
-        i,
-        i,
-        i,
-        i,
-        i,
-        fail
-      )
-    else
-      checks[#checks + 1] = ("if not C[%d](a%d) then %s end"):format(
-        i,
-        i,
-        fail
-      )
-    end
-  end
-
-  local sig = table.concat(names, ",")
-  if variadic then
-    sig = sig == "" and "..." or (sig .. ",...")
-  end
-
-  -- Several bridges read lua_gettop() to tell "not given" from "given nil", so
-  -- an optional parameter with no default has to stay absent rather than
-  -- arrive as nil. A variadic call carries its own count and needs none of
-  -- this.
-  local body = {}
-  if not variadic then
-    for i = fixed, 1, -1 do
-      local p = params[i]
-      if not (p.optional and p.default == nil) then
-        break
-      end
-      table.insert(
-        body,
-        1,
-        ("if a%d==nil then return fn(%s) end"):format(
-          i,
-          table.concat(names, ",", 1, i - 1)
-        )
-      )
-    end
-  end
-  body[#body + 1] = ("return fn(%s)"):format(sig)
-
-  local src = ("local fn,C,D,E=... return function(%s) %s %s end"):format(
-    sig,
-    table.concat(checks, " "),
-    table.concat(body, " ")
-  )
-
-  local param_checkers, defaults = {}, {}
-  for i = 1, fixed do
-    local p = params[i]
-    -- Strict mode checks what it can. A type this surface does not declare -
-    -- a test standing up a few modules names one - has nothing to check
-    -- against, and is caught where every other name is: the seal, and the dump.
-    local check = checker_for(p.type) or function()
-      return true
-    end
-    param_checkers[i] = check
+    names[i] = p.name
+    optional[i] = p.optional == true
+    predicates[i] = checker(p)
     defaults[i] = p.default
+    if p.default ~= nil then
+      fills_a_default = true
+    end
   end
 
-  local function on_fail(where, arg)
-    error(("%s: invalid argument '%s'"):format(where, arg), 3)
+  -- Three frames down to the caller: here, the wrapper, and whoever called it.
+  local function checked(i, value)
+    if value == nil and optional[i] then
+      return
+    end
+    if not predicates[i](value) then
+      error(("%s: invalid argument '%s'"):format(path, names[i]), 3)
+    end
   end
-  -- Named as an API module is, so LUA_GetCallerInfo walks past this frame too.
-  return load(src, "@trx/api/" .. path .. " (checked)")(
-    fn,
-    param_checkers,
-    defaults,
-    on_fail
-  )
+
+  if not fills_a_default then
+    return function(...)
+      for i = 1, fixed do
+        checked(i, (select(i, ...)))
+      end
+      return fn(...)
+    end
+  end
+
+  -- Substituting a default hands the implementation a different argument list
+  -- than the caller wrote, so this one has to build one. Twelve of the
+  -- surface's parameters declare a default; the rest take the path above.
+  return function(...)
+    local args = table.pack(...)
+    for i = 1, fixed do
+      if args[i] == nil and defaults[i] ~= nil then
+        args[i] = defaults[i]
+        if args.n < i then
+          args.n = i
+        end
+      else
+        checked(i, args[i])
+      end
+    end
+    return fn(table.unpack(args, 1, args.n))
+  end
 end
 
 -- The function a caller reaches: the checking wrapper under strict mode, the
 -- raw one otherwise. api.strict flips every binding through here.
 local function bound(fn, path, params)
   return strict_enabled and make_checked(fn, path, params) or fn
-end
-
--- Doc-facing type names, not Lua type names.
-checkers = {
-  integer = function(v)
-    return math.type(v) == "integer"
-  end,
-  number = function(v)
-    return type(v) == "number"
-  end,
-  string = function(v)
-    return type(v) == "string"
-  end,
-  boolean = function(v)
-    return type(v) == "boolean"
-  end,
-  table = function(v)
-    return type(v) == "table"
-  end,
-  ["function"] = function(v)
-    return type(v) == "function"
-  end,
-  vec3 = function(v)
-    return type(v) == "table" and v.x ~= nil and v.y ~= nil and v.z ~= nil
-  end,
-  any = function()
-    return true
-  end,
-}
-
--- A handle's metatable is its C type name - see LUA_Struct_Register - so one
--- type of handle is told from another. api.type registers one of these per
--- type, which is why Item and Room are absent above.
-local function handle_checker(backing)
-  return function(v)
-    return getmetatable(v) == backing
-  end
-end
-
--- A value of a type written in Lua carries its class as its metatable, and a
--- derived class carries the one it extends. Walking that chain is what lets an
--- ItemQuery satisfy a parameter declared as a Query.
--- A type answers to the path it was declared under. There is no second name to
--- keep in step with it: a declaration that means items.Item says items.Item,
--- and one that means something nobody declared fails the audit rather than
--- waving values through under a name that once meant something else.
---
--- One path, one declaration: a number written over a type's path would leave
--- the type checked for the number instead, and strict mode would report a
--- clean run while a handle's own values went unrecognized.
-local function register_checker(path, check)
-  assert(
-    checkers[path] == nil,
-    "api: '" .. path .. "' is declared twice, and a name answers to one thing"
-  )
-  checkers[path] = check
-end
-
-local function class_checker(class)
-  return function(v)
-    local candidate = getmetatable(v)
-    while candidate ~= nil do
-      if candidate == class then
-        return true
-      end
-      candidate = class_parents[candidate]
-    end
-    return false
-  end
-end
-
--- Called once, from C, after the trx.* modules have loaded. Declarations are
--- the engine's to make; a level script re-opening the surface would defeat the
--- point of declaring it.
---
--- Also audits the finished surface: an assignment straight onto a module table
--- works for scripts, but the docs never see it. Refuse to boot instead.
-function api.seal(spec)
-  local partial = spec ~= nil and spec.partial == true
-  -- The declaring half has done its job, and every one of those functions
-  -- raises from here on. It goes the way trxc goes at this same moment: what a
-  -- script cannot successfully call, it should not be able to reach. Done
-  -- before the audit, so the audit sees the surface a script is left with. C
-  -- keeps the two entrypoints it still needs - see lua/capi/api.c.
-  trx.api = {
-    strict = api.strict,
-    is_strict = api.is_strict,
-  }
-
-  -- container path ("items", or "console.log") -> set of declared member
-  -- names.
-  local declared = {}
-  local function mark(path)
-    local parts = path_parts(path)
-    local container = owner_path(parts)
-    local name = parts[#parts]
-    declared[container] = declared[container] or {}
-    declared[container][name] = true
-  end
-  for _, path in ipairs(registry.order) do
-    mark(path)
-  end
-  for _, path in ipairs(enums.order) do
-    mark(path)
-  end
-  for _, path in ipairs(consts.order) do
-    mark(path)
-  end
-  -- The namespace table itself is a member of its module.
-  for _, path in ipairs(namespaces.order) do
-    mark(path)
-  end
-
-  local undeclared = {}
-  local function audit(container_path, tbl)
-    -- next, not pairs: a container overrides __pairs to walk its collection, so
-    -- the module's own members are only reachable through a raw iteration.
-    for name in next, tbl or {} do
-      if not (declared[container_path] or {})[name] then
-        table.insert(undeclared, "trx." .. container_path .. "." .. name)
-      end
-    end
-  end
-
-  for _, module in ipairs(modules.order) do
-    audit(module, trx[module])
-  end
-  -- A namespace hides its members one level down, where the module audit above
-  -- cannot see them. Audit it as its own container.
-  for _, path in ipairs(namespaces.order) do
-    local module, name = split_path(path)
-    audit(path, rawget(trx[module] or {}, name))
-  end
-
-  if #undeclared > 0 then
-    table.sort(undeclared)
-    error(
-      table.concat(undeclared, ", ")
-        .. ": reachable from scripts but not declared, so the reference cannot describe it. "
-        .. "Declare it with api.define, api.enum, api.const, api.property or api.namespace."
-    )
-  end
-
-  -- A type nothing can check prints a name that means nothing, and waves every
-  -- value through while strict mode reports a clean run over it.
-  local bad = {}
-  local function audit_type(where, what, type_name)
-    if checker_for(type_name) == nil and not partial then
-      table.insert(
-        bad,
-        where
-          .. ": "
-          .. what
-          .. " has an unknown type '"
-          .. type_label(type_name)
-          .. "'"
-      )
-      return false
-    end
-    return true
-  end
-
-  local function audit_params(where, params)
-    local optional_seen = false
-    for _, p in ipairs(params or {}) do
-      if p.name ~= "..." then
-        if
-          audit_type(where, "'" .. tostring(p.name) .. "'", p.type)
-          and p.default ~= nil
-        then
-          if not checker_for(p.type)(p.default) then
-            table.insert(
-              bad,
-              where
-                .. ": the default for '"
-                .. p.name
-                .. "' is not a "
-                .. type_label(p.type)
-            )
-          end
-        end
-        -- Nothing can reach it without passing the optional one too.
-        if p.optional then
-          optional_seen = true
-        elseif optional_seen then
-          table.insert(
-            bad,
-            where
-              .. ": '"
-              .. p.name
-              .. "' is required but follows an optional parameter"
-          )
-        end
-      end
-    end
-  end
-
-  for _, path in ipairs(registry.order) do
-    audit_params(path, registry.by_path[path].params)
-  end
-  for _, path in ipairs(namespaces.order) do
-    audit_params(path, namespaces.by_path[path].params)
-  end
-  -- Strict mode checks a method's arguments too, and make_checked needs a
-  -- checker for each. Without this, a type nobody can check would only surface
-  -- the day a builder turned strict mode on.
-  for _, path in ipairs(types.order) do
-    for name, method in pairs(types.by_path[path].methods or {}) do
-      audit_params(path .. "." .. name, method.params)
-    end
-  end
-  for _, path in ipairs(properties.order) do
-    audit_type(path, "the property", properties.by_path[path].type)
-  end
-
-  if #bad > 0 then
-    table.sort(bad)
-    error(table.concat(bad, "\n"))
-  end
-
-  sealed = true
-end
-
--- Declares a grouping table on a module, holding related members under one
--- name. `call` makes the group itself callable, so calling the group works
--- alongside calling the members inside it.
---
--- A namespace has to be declared before anything inside it: it is the table
--- the members hang off, and seal() audits its contents just as it audits a
--- module's.
-function api.namespace(path, spec)
-  opening("api.namespace", spec)
-  local module, name = split_path(path)
-  -- The table below replaces whatever stands there now, and with it the
-  -- metatable serving any property already declared inside. Those properties
-  -- would go on reading as nil, which seal() cannot see: it audits the members
-  -- a table holds, and a property is never one of them.
-  assert(
-    namespaces.by_path[path] == nil,
-    "api.namespace: "
-      .. path
-      .. " is already declared. Declare it before "
-      .. "anything inside it."
-  )
-
-  local namespace = {}
-  if spec.call ~= nil then
-    assert(
-      type(spec.call) == "function",
-      "api.namespace: call must be a function"
-    )
-    -- Through a holder, so api.strict can swap the wrapper in as it does for
-    -- the members.
-    local dispatch = { fn = bound(spec.call, path, spec.params) }
-    namespace_dispatch[path] = dispatch
-    setmetatable(namespace, {
-      __call = function(_, ...)
-        return dispatch.fn(...)
-      end,
-    })
-  end
-
-  rawset(module_table(module), name, namespace)
-
-  record(namespaces, path, spec)
-  return namespace
-end
-
--- Declares that a module table can be indexed - trx.items[3], trx.objects.wolf
--- - and, if it can be counted, that #trx.items is its length.
---
--- The registry owns the module's metatable, so a module that set its own would
--- lose it to the first property declared on it. And pairs() never sees a
--- metatable, so only a declaration puts the indexing in the reference.
--- What indexing counts from: the key's own base, or the base of whatever it
--- points at, since a container keyed by an item number counts as items do.
-local function key_base(key)
-  if key.base ~= nil then
-    return key.base
-  end
-  for _, one in ipairs(types_of(key.type)) do
-    local number = numbers.by_path[one]
-    if number ~= nil and number.base ~= nil then
-      return number.base
-    end
-  end
-  return nil
-end
-
-function api.container(name, spec)
-  opening("api.container", spec)
-  assert(type(spec.get) == "function", "api.container: get must be a function")
-  assert(
-    spec.count == nil or type(spec.count) == "function",
-    "api.container: count must be a function"
-  )
-  assert(
-    type(spec.key) == "table",
-    "api.container: key must describe what the module is indexed by"
-  )
-  -- Where a collection counts from is the key's, so that a container keyed by
-  -- an item number counts as items do without saying so twice.
-  assert(
-    spec.base == nil,
-    "api.container: where it counts from belongs to the key"
-  )
-
-  -- What the key accepts: one type, or several where a thing answers to a name
-  -- as well as to its number. A module keyed only by number leaves a string key
-  -- to the rest of the metatable, so trx.rooms.nonsense is nil rather than an
-  -- error out of C.
-  local accepted = types_of(spec.key.type)
-  local by_number_only = true
-  for _, one in ipairs(accepted) do
-    if one == "string" or one == "any" then
-      by_number_only = false
-    end
-  end
-  module_containers[name] = {
-    get = spec.get,
-    count = spec.count,
-    -- Where the collection's first entry sits, which is the key's own base: a
-    -- list of its own is counted from one, and what carries an engine number
-    -- keeps it and counts from zero.
-    base = key_base(spec.key) or 0,
-    accepts = function(key)
-      local kind = type(key)
-      return kind == "number" or (kind == "string" and not by_number_only)
-    end,
-  }
-
-  record(containers, name, spec)
-
-  install_meta(name, module_table(name))
-end
-
-function api.define(path, spec)
-  opening("api.define", spec)
-  assert(type(spec.impl) == "function", "api.define: impl must be a function")
-  local _, container, name = resolve(path)
-
-  record(registry, path, spec)
-
-  -- The raw implementation is the public function. No wrapper, no overhead.
-  -- rawset: some module tables guard __newindex, and a declaration is not a
-  -- caller poking at the module.
-  rawset(container, name, bound(spec.impl, path, spec.params))
-  return spec.impl
 end
 
 -- A method is called with the handle as its first argument, which the
@@ -806,20 +605,20 @@ end
 -- `impl`, a Lua function taking the handle first, and is exposed as it stands.
 -- Extensions take nothing but the handle __index hands them, so there is
 -- nothing of the script's to check.
-local function bind_type_methods(path)
-  local spec = types.by_path[path]
+--
+-- What a declaration has to carry is settled where it is made, so this only
+-- binds. api.strict comes back through here every time it is flipped.
+local function bind_type_methods(entry)
+  local path = entry.path
+  local spec = entry.spec
   local backing = spec.backing
-  local class = lua_classes[path]
+  local class = entry.class
 
   -- A type written in Lua keeps its methods in the class table, so binding one
   -- is an assignment and strict mode swaps the wrapper in the same way it does
   -- for a module's functions.
   if class ~= nil then
     for name, method in pairs(spec.methods or {}) do
-      assert(
-        type(method.impl) == "function",
-        "api.type: " .. path .. "." .. name .. " needs an impl"
-      )
       rawset(
         class,
         name,
@@ -848,26 +647,189 @@ local function bind_type_methods(path)
   end
 end
 
--- Rebinds every registered function to (or away from) its checking wrapper.
-function api.strict(enabled)
-  strict_enabled = enabled and true or false
-  for _, path in ipairs(registry.order) do
-    local _, container, name = resolve(path)
-    local spec = registry.by_path[path]
-    rawset(container, name, bound(spec.impl, path, spec.params))
-  end
-  for path, dispatch in pairs(namespace_dispatch) do
-    local spec = namespaces.by_path[path]
-    dispatch.fn = bound(spec.call, path, spec.params)
-  end
-  for _, path in ipairs(types.order) do
-    bind_type_methods(path)
-  end
-end
+-- The public surface. Everything above is written once; everything below
+-- declares one kind of thing and says how it reads in the reference.
 
-function api.is_strict()
-  return strict_enabled
-end
+api.module = declarator("module", "modules", {
+  sort = alphabetically("name"),
+  declare = function(entry, name, spec, need)
+    entry.table = module_table(name)
+
+    -- A module that stands for one C struct reads and writes that struct's fields
+    -- directly: trx.lara.air is Lara's air. `instance` hands back the handle.
+    if spec.instance ~= nil then
+      need(type(spec.instance) == "function", "instance must be a function")
+      need(
+        type(spec.instance_type) == "string",
+        "instance_type must name the type the module stands for"
+      )
+      entry.instance = spec.instance
+      entry.instance_type = spec.instance_type
+      install_meta(entry)
+    end
+  end,
+
+  describe = function(entry)
+    return {
+      name = entry.path,
+      title = entry.spec.title,
+      description = entry.spec.description,
+      order = entry.spec.order,
+      -- What indexing the module reaches, where it stands for one thing:
+      -- trx.lara.air is a member of lara.Lara, and a reference written the way
+      -- a script writes it lands there.
+      instance_type = entry.instance_type,
+    }
+  end,
+})
+
+-- Declares a grouping table on a module, holding related members under one
+-- name. `call` makes the group itself callable, so calling the group works
+-- alongside calling the members inside it.
+--
+-- A namespace has to be declared before anything inside it: it is the table
+-- the members hang off, and seal() audits its contents just as it audits a
+-- module's.
+api.namespace = declarator("namespace", "namespaces", {
+  taken = "Declare it before anything inside it.",
+  declare = function(entry, path, spec, need)
+    local where = placed(path, need)
+    entry.where = where
+    -- The table below stands for the namespace from here on, and replaces
+    -- whatever stands at its path. A property declared inside one is served by
+    -- the metatable on that table, so it would go on reading as nil - which
+    -- seal() cannot see, since it audits the members a table holds and a
+    -- property is never one of them. Declaring the group first is what the
+    -- message above asks for.
+    local namespace = {}
+    entry.table = namespace
+    if spec.call ~= nil then
+      need(type(spec.call) == "function", "call must be a function")
+      -- Read off the entry rather than closed over, so api.strict can swap the
+      -- wrapper in as it does for the members.
+      entry.call = bound(spec.call, path, spec.params)
+      setmetatable(namespace, {
+        __call = function(_, ...)
+          return entry.call(...)
+        end,
+      })
+    end
+
+    rawset(module_table(where.module), where.name, namespace)
+
+    return namespace
+  end,
+
+  describe = function(entry)
+    local spec = entry.spec
+    return {
+      path = entry.path,
+      description = spec.description,
+      params = as_doc_list(spec.params),
+      returns = as_doc_list(spec.returns),
+      examples = spec.examples,
+      callable = spec.call ~= nil,
+      implicit = spec.implicit,
+    }
+  end,
+})
+
+-- Declares that a module table can be indexed - trx.items[3], trx.objects.wolf
+-- - and, if it can be counted, that #trx.items is its length.
+--
+-- The registry owns the module's metatable, so a module that set its own would
+-- lose it to the first property declared on it. And pairs() never sees a
+-- metatable, so only a declaration puts the indexing in the reference.
+api.container = declarator("container", "containers", {
+  path = function(name)
+    return name .. "[]"
+  end,
+  sort = alphabetically("module"),
+  declare = function(entry, name, spec, need)
+    need(type(spec.get) == "function", "get must be a function")
+    need(
+      spec.count == nil or type(spec.count) == "function",
+      "count must be a function"
+    )
+    need(
+      type(spec.key) == "table",
+      "key must describe what the module is indexed by"
+    )
+    -- Where a collection counts from is the key's, so that a container keyed by
+    -- an item number counts as items do without saying so twice.
+    need(spec.base == nil, "where it counts from belongs to the key")
+
+    -- What the key accepts: one type, or several where a thing answers to a name
+    -- as well as to its number. A module keyed only by number leaves a string key
+    -- to the rest of the metatable, so trx.rooms.nonsense is nil rather than an
+    -- error out of C.
+    local accepted = check.types_of(spec.key.type)
+    local by_number_only = true
+    for _, one in ipairs(accepted) do
+      if one == "string" or one == "any" then
+        by_number_only = false
+      end
+    end
+    -- Declared under the name the reference already gives it - `trx.items[]` is
+    -- what the page anchors - so being indexable is a declaration like any
+    -- other, and the module it sits on points at it.
+    local container = entry
+    container.module = name
+    container.get = spec.get
+    container.count = spec.count
+    container.accepts = function(key)
+      local kind = type(key)
+      return kind == "number" or (kind == "string" and not by_number_only)
+    end
+
+    local module = open(name)
+    module.table = module_table(name)
+    module.container = container
+
+    install_meta(module)
+  end,
+
+  describe = function(entry)
+    return {
+      module = entry.module,
+      description = entry.spec.description,
+      key = as_doc(entry.spec.key),
+      value = as_doc(entry.spec.value),
+      countable = entry.spec.count ~= nil,
+      examples = entry.spec.examples,
+    }
+  end,
+})
+
+api.define = declarator("define", "functions", {
+  declare = function(entry, path, spec, need)
+    need(type(spec.impl) == "function", "impl must be a function")
+    local where = placed(path, need, true)
+    entry.where = where
+    local tbl, name = table_of(where, need), where.name
+
+    -- Where the function was put, so strict mode swaps the wrapper in without
+    -- working the path out a second time. rawset: some module tables guard
+    -- __newindex, and a declaration is not a caller poking at the module.
+    entry.expose = function(fn)
+      rawset(tbl, name, fn)
+    end
+
+    -- The raw implementation is the public function. No wrapper, no overhead.
+    entry.expose(bound(spec.impl, path, spec.params))
+    return spec.impl
+  end,
+
+  describe = function(entry)
+    return {
+      path = entry.path,
+      description = entry.spec.description,
+      params = as_doc_list(entry.spec.params),
+      returns = as_doc_list(entry.spec.returns),
+      examples = entry.spec.examples,
+    }
+  end,
+})
 
 -- Declares a handle type: which C members are public, under what name, plus the
 -- methods and computed members that complete the type.
@@ -875,141 +837,239 @@ end
 -- Nothing is reachable from a handle until it is named here. The C table says
 -- how to reach a member; this says whether it is part of the API and what it is
 -- called. A member C can reach but nobody declares simply does not exist.
-function api.type(path, spec)
-  opening("api.type", spec)
+-- A derived class carries the one it extends as its own metatable's __index.
+-- That is what the checker walks to let an ItemQuery satisfy a Query, and what
+-- makes an inherited method reachable. Lua looks a metamethod up raw, so
+-- `__index` on the class is not what reaches one: a derived class carries its
+-- own copy of the operators it inherits.
+local function inherit(class, path, extends, need)
+  local parent = at(extends)
+  local parent_class = parent ~= nil and parent.class or nil
+  need(parent_class ~= nil, "%s extends an undeclared type", path)
+  setmetatable(class, { __index = parent_class })
+  for key, value in pairs(parent_class) do
+    if key:sub(1, 2) == "__" and key ~= "__index" then
+      rawset(class, key, value)
+    end
+  end
+  return parent
+end
 
-  -- A type written in Lua names no C struct. The declaration owns its class
-  -- table and hands it back: the module gives a value that class as its
-  -- metatable, and every method a script can call is one declared here.
-  -- `extends` names a type whose methods this one inherits, for a domain that
-  -- adds its own to a shared base.
-  if spec.backing == nil then
-    local class = {}
-    class.__index = class
-    if spec.extends ~= nil then
-      local parent = lua_classes[spec.extends]
-      assert(
-        parent ~= nil,
-        "api.type: " .. path .. " extends an undeclared type"
+-- A field of a type written in Lua is a pair of accessors, since the value has
+-- no struct behind it to address. A field is writable when it declares a `set`,
+-- and read-only otherwise.
+--
+-- A field with no accessors is an entry the value carries itself, which is what
+-- a plain table of numbers is: the class says what the keys are called and what
+-- they hold, and reading one reaches the entry.
+local function accessors(fields, need)
+  local getters, setters = {}, {}
+  for name, field in pairs(fields or {}) do
+    if field.get == nil then
+      need(field.set == nil, "field '%s' has a set but no get", name)
+    else
+      need(
+        field.set == nil or type(field.set) == "function",
+        "field '%s' has a set that is not a function",
+        name
       )
-      -- The link is held here rather than on the class, which a value indexes
-      -- through: what a script reaches on one is its declared methods and
-      -- nothing else.
-      class_parents[class] = parent
-      setmetatable(class, { __index = parent })
-      -- Lua looks a metamethod up raw, so `__index` on the class is not what
-      -- reaches one: a derived class carries its own copy of the operators it
-      -- inherits.
-      for key, value in pairs(parent) do
-        if key:sub(1, 2) == "__" and key ~= "__index" then
-          rawset(class, key, value)
-        end
+      getters[name], setters[name] = field.get, field.set
+    end
+  end
+  return getters, setters
+end
+
+-- Whether the docs say a field can be written. A handle's field addresses a
+-- struct member and a Lua class's is a pair of accessors, so either may be
+-- read-only. A record a call hands back is a plain table the caller owns, and
+-- has nothing to say either way.
+local function field_writable(spec, field)
+  if spec.backing ~= nil then
+    return field.writable ~= false
+  end
+  if field.get ~= nil then
+    return field.set ~= nil
+  end
+  return nil
+end
+
+-- Declaring an accessor is what puts the type's members under the registry's
+-- control: reading one the declaration does not name comes back nil, and
+-- writing one raises, so a value cannot quietly grow members the docs never
+-- see.
+local function reach_fields(class, path, getters, setters)
+  class.__index = function(self, key)
+    local getter = getters[key]
+    if getter ~= nil then
+      return getter(self)
+    end
+    -- The metamethods sit on the class alongside the methods, and are the
+    -- registry's business rather than a member of the type.
+    if type(key) == "string" and key:sub(1, 2) == "__" then
+      return nil
+    end
+    return class[key]
+  end
+  class.__newindex = function(self, key, value)
+    local setter = setters[key]
+    if setter == nil then
+      if getters[key] ~= nil then
+        error(("%s.%s is read-only"):format(path, tostring(key)), 2)
+      end
+      error(("%s has no member '%s'"):format(path, tostring(key)), 2)
+    end
+    setter(self, value)
+  end
+end
+
+-- A type written in Lua names no C struct. The declaration owns its class table
+-- and hands it back: the module gives a value that class as its metatable, and
+-- every method a script can call is one declared here. `extends` names a type
+-- whose methods this one inherits, for a domain that adds its own to a shared
+-- base.
+local function declare_lua_class(entry, path, spec, need)
+  -- The docs read an extension off the declaration either way, so a class that
+  -- named one would document a member nothing installs.
+  need(
+    next(spec.extensions or {}) == nil,
+    "an extension is computed on a handle; a type written in Lua has none"
+  )
+
+  local class = {}
+  class.__index = class
+
+  local getters, setters = accessors(spec.fields, need)
+  if spec.extends ~= nil then
+    local parent = inherit(class, path, spec.extends, need)
+    -- A field the parent declares reads on this type too. Its accessors sit in
+    -- the parent's __index closure rather than in the class table, so walking
+    -- the metatable chain does not reach one and they are taken over here.
+    for name, getter in pairs(parent.getters) do
+      if getters[name] == nil then
+        getters[name], setters[name] = getter, parent.setters[name]
       end
     end
-
-    for name, operator in pairs(spec.operators or {}) do
-      assert(
-        type(operator.impl) == "function",
-        "api.type: operator '" .. name .. "' needs an impl"
-      )
-      rawset(class, "__" .. name, operator.impl)
-    end
-
-    -- A field of a type written in Lua is a pair of accessors, since the value
-    -- has no struct behind it to address. Declaring any of them is what puts
-    -- the type's members under the registry's control: reading one the
-    -- declaration does not name comes back nil, and writing one raises, so a
-    -- value cannot quietly grow members the docs never see. A field is
-    -- writable when it declares a `set`, and read-only otherwise.
-    local getters, setters = {}, {}
-    local has_fields = false
-    for name, field in pairs(spec.fields or {}) do
-      -- A field with no accessors is an entry the value carries itself, which
-      -- is what a plain table of numbers is: the class says what the keys are
-      -- called and what they hold, and reading one reaches the entry.
-      if field.get == nil then
-        assert(
-          field.set == nil,
-          "api.type: field '" .. name .. "' has a set but no get"
-        )
-        field.writable = field.writable ~= false
-      else
-        assert(
-          field.set == nil or type(field.set) == "function",
-          "api.type: field '" .. name .. "' has a set that is not a function"
-        )
-        getters[name] = field.get
-        setters[name] = field.set
-        field.writable = field.set ~= nil
-        has_fields = true
-      end
-    end
-
-    if has_fields then
-      class.__index = function(self, key)
-        local getter = getters[key]
-        if getter ~= nil then
-          return getter(self)
-        end
-        -- The metamethods sit on the class alongside the methods, and are the
-        -- registry's business rather than a member of the type.
-        if type(key) == "string" and key:sub(1, 2) == "__" then
-          return nil
-        end
-        return class[key]
-      end
-      class.__newindex = function(self, key, value)
-        local setter = setters[key]
-        if setter == nil then
-          if getters[key] ~= nil then
-            error(("%s.%s is read-only"):format(path, tostring(key)), 2)
-          end
-          error(("%s has no member '%s'"):format(path, tostring(key)), 2)
-        end
-        setter(self, value)
-      end
-    end
-
-    lua_classes[path] = class
-    register_checker(path, class_checker(class))
-    record(types, path, spec)
-    bind_type_methods(path)
-    return class
   end
 
-  assert(
-    type(spec.backing) == "string",
-    "api.type: backing must be a C type name"
-  )
-  local backing = spec.backing
+  for name, operator in pairs(spec.operators or {}) do
+    need(
+      type(operator.impl) == "function",
+      "operator '%s' needs an impl",
+      name
+    )
+    rawset(class, "__" .. name, operator.impl)
+  end
 
-  -- Declaring the type is what makes its name checkable in a params list.
-  register_checker(path, handle_checker(backing))
+  entry.getters, entry.setters = getters, setters
+  if next(getters) ~= nil then
+    reach_fields(class, path, getters, setters)
+  end
+
+  entry.class = class
+  entry.check = check.by_identity(class)
+  -- A method of a type written in Lua is the Lua function it declares, and
+  -- nothing stands behind it where the declaration names none.
+  for name, method in pairs(spec.methods or {}) do
+    need(type(method.impl) == "function", "%s.%s needs an impl", path, name)
+  end
+  bind_type_methods(entry)
+  return class
+end
+
+-- A handle stands for something the engine owns and can outlive it. C says how
+-- to reach a member; the declaration says whether it is part of the API and
+-- what it is called, and declaring the type is what makes its name checkable
+-- in a params list.
+local function declare_handle(entry, spec, need)
+  local backing = spec.backing
+  need(type(backing) == "string", "backing must be a C type name")
+  -- A handle carries its C type name as its metatable, and has no class table
+  -- for an operator to go on.
+  need(
+    next(spec.operators or {}) == nil,
+    "an operator goes on a class table; a handle has none"
+  )
+  entry.check = check.by_metatable(backing)
 
   for name, field in pairs(spec.fields or {}) do
-    local from = field.from or name
-    struct.expose_field(backing, name, from, field.writable ~= false)
+    struct.expose_field(
+      backing,
+      name,
+      field.from or name,
+      field.writable ~= false
+    )
   end
 
   for name, computed in pairs(spec.extensions or {}) do
-    assert(
+    need(
       type(computed.impl) == "function",
-      "api.type: extension '" .. name .. "' needs an impl"
+      "extension '%s' needs an impl",
+      name
     )
     struct.expose_computed(backing, name, computed.impl)
   end
 
-  record(types, path, spec)
-
-  bind_type_methods(path)
+  bind_type_methods(entry)
 end
+
+api.type = declarator("type", "types", {
+  declare = function(entry, path, spec, need)
+    -- A type, a number and a unit each belong to the module that hands one out,
+    -- and the name a params list writes is that path.
+    entry.where = placed(path, need)
+    if spec.backing == nil then
+      return declare_lua_class(entry, path, spec, need)
+    end
+    return declare_handle(entry, spec, need)
+  end,
+
+  describe = function(entry)
+    local spec = entry.spec
+    return {
+      path = entry.path,
+      description = spec.description,
+      handle = spec.backing ~= nil,
+      operators = members(spec.operators, function(operator)
+        return { description = operator.description }
+      end),
+      fields = members(spec.fields, function(field)
+        local doc = as_doc(field)
+        return {
+          type = doc.type,
+          list = doc.list,
+          writable = field_writable(spec, field),
+          description = doc.description,
+          base = doc.base,
+        }
+      end),
+      methods = members(spec.methods, function(method)
+        return {
+          description = method.description,
+          params = as_doc_list(method.params),
+          returns = as_doc_list(method.returns),
+          examples = method.examples,
+        }
+      end),
+      extensions = members(spec.extensions, function(computed)
+        return {
+          type = computed.type,
+          description = computed.description,
+          base = computed.base,
+        }
+      end),
+    }
+  end,
+})
 
 -- The class of a type written in Lua, for a module that hands one of its values
 -- out but is not where it is declared: trx.items hands back a math.Box, and a
 -- box carries that class. Everything else names a type by its path.
+local class_needs = complain("api.class")
+
 function api.class(path)
-  local class = lua_classes[path]
-  assert(class ~= nil, "api.class: '" .. path .. "' is not a declared type")
+  local entry = at(path)
+  local class = entry ~= nil and entry.class or nil
+  class_needs(class ~= nil, "'%s' is not a declared type", path)
   return class
 end
 
@@ -1032,197 +1092,245 @@ function api.enum_name(spec, reflected_name)
   return reflected_name
 end
 
-function api.enum(path, spec)
-  opening("api.enum", spec)
-  assert(
-    type(spec.backing) == "string",
-    "api.enum: backing must be a C enum name"
-  )
-  local module, name = split_path(path)
+api.enum = declarator("enum", "enums", {
+  declare = function(entry, path, spec, need)
+    need(type(spec.backing) == "string", "backing must be a C enum name")
+    local where = placed(path, need)
+    entry.where = where
 
-  -- `bulk` is for a catalog-sized enum - every object in the game, say. It is
-  -- described as a whole, and its constants carry no description apiece.
-  local bulk = spec.bulk == true
-  assert(
-    bulk or type(spec.values) == "table",
-    "api.enum: values must be a table"
-  )
+    -- `bulk` is for a catalog-sized enum - every object in the game, say. It is
+    -- described as a whole, and its constants carry no description apiece.
+    local bulk = spec.bulk == true
+    need(bulk or type(spec.values) == "table", "values must be a table")
 
-  local public = {}
-  local reflected = {}
-  for _, constant in ipairs(enum.values(spec.backing)) do
-    local value_name = api.enum_name(spec, constant.name)
-    -- Stripping a prefix can collide two C constants onto one Lua name, and the
-    -- second would quietly take the first one's place.
-    assert(
-      public[value_name] == nil,
-      "api.enum: "
-        .. path
-        .. "."
-        .. value_name
-        .. " is the name of two constants of "
-        .. spec.backing
-    )
-    if not bulk then
-      assert(
-        spec.values[value_name] ~= nil,
-        "api.enum: " .. path .. "." .. value_name .. " is not documented"
+    local public = {}
+    local reflected = {}
+    for _, constant in ipairs(enum.values(spec.backing)) do
+      local value_name = api.enum_name(spec, constant.name)
+      -- Stripping a prefix can collide two C constants onto one Lua name, and the
+      -- second would quietly take the first one's place.
+      need(
+        public[value_name] == nil,
+        "%s.%s is the name of two constants of %s",
+        path,
+        value_name,
+        spec.backing
+      )
+      if not bulk then
+        need(
+          spec.values[value_name] ~= nil,
+          "%s.%s is not documented",
+          path,
+          value_name
+        )
+      end
+      public[value_name] = constant.value
+      reflected[value_name] = true
+    end
+
+    for value_name in pairs(spec.values or {}) do
+      need(
+        reflected[value_name],
+        "%s.%s is not a constant of %s",
+        path,
+        value_name,
+        spec.backing
       )
     end
-    public[value_name] = constant.value
-    reflected[value_name] = true
-  end
 
-  for value_name in pairs(spec.values or {}) do
-    assert(
-      reflected[value_name],
-      "api.enum: "
-        .. path
-        .. "."
-        .. value_name
-        .. " is not a constant of "
-        .. spec.backing
-    )
-  end
+    -- How many constants the enum has, which the declaration did not say and
+    -- the dump reads back off the entry.
+    entry.count = 0
+    for _ in pairs(public) do
+      entry.count = entry.count + 1
+    end
 
-  spec.count = 0
-  for _ in pairs(public) do
-    spec.count = spec.count + 1
-  end
-
-  -- The constants are held behind an empty table rather than in one. Lua only
-  -- calls __newindex for a key the table does not have, so a value sitting in
-  -- the table itself could be overwritten without the metatable seeing it, and
-  -- an enum mirrors C: it is read-only.
-  --
-  -- __index also folds the case, so trx.catalog.objects.wolf and
-  -- trx.catalog.objects.WOLF are the same constant. Upper case is canonical: it
-  -- is what pairs() yields and what the docs list.
-  local face = {}
-  setmetatable(face, {
-    __index = function(_, key)
-      if type(key) ~= "string" then
-        return nil
-      end
-      return public[key] ~= nil and public[key] or public[key:upper()]
-    end,
-    __newindex = function(_, key)
-      error(
-        "trx."
-          .. path
-          .. "."
-          .. tostring(key)
-          .. ": an enum cannot be written to",
-        2
-      )
-    end,
-    -- pairs() hands the caller every value __pairs returns, so returning
-    -- `next, public` would hand out the very table the face is there to keep
-    -- behind __newindex. The iterator closes over it instead.
-    __pairs = function(self)
-      local key
-      return function()
-        local value
-        key, value = next(public, key)
-        return key, value
+    -- The constants are held behind an empty table rather than in one. Lua only
+    -- calls __newindex for a key the table does not have, so a value sitting in
+    -- the table itself could be overwritten without the metatable seeing it, and
+    -- an enum mirrors C: it is read-only.
+    --
+    -- __index also folds the case, so trx.catalog.objects.wolf and
+    -- trx.catalog.objects.WOLF are the same constant. Upper case is canonical: it
+    -- is what pairs() yields and what the docs list.
+    local face = {}
+    setmetatable(face, {
+      __index = function(_, key)
+        if type(key) ~= "string" then
+          return nil
+        end
+        return public[key] or public[key:upper()]
       end,
-        self,
-        nil
-    end,
-  })
+      __newindex = function(_, key)
+        error(
+          ("trx.%s.%s: an enum cannot be written to"):format(
+            path,
+            tostring(key)
+          ),
+          2
+        )
+      end,
+      -- pairs() hands the caller every value __pairs returns, so returning
+      -- `next, public` would hand out the very table the face is there to keep
+      -- behind __newindex. The iterator closes over it instead.
+      __pairs = function(self)
+        local key
+        return function()
+          local value
+          key, value = next(public, key)
+          return key, value
+        end,
+          self,
+          nil
+      end,
+    })
 
-  rawset(module_table(module), name, face)
+    rawset(module_table(where.module), where.name, face)
 
-  -- What the engine passes is a number. Which numbers have names is the
-  -- catalog's business - a bulk enum runs to hundreds, and carries ids no
-  -- constant names - so a declaration typed by an enum checks for the number.
-  register_checker(path, checkers.integer)
+    -- What the engine passes is a number. Which numbers have names is the
+    -- catalog's business - a bulk enum runs to hundreds, and carries ids no
+    -- constant names - so a declaration typed by an enum checks for the number.
+    entry.check = check.primitive("integer")
 
-  record(enums, path, spec)
-  return face
-end
+    return face
+  end,
+
+  describe = function(entry)
+    local path, spec = entry.path, entry.spec
+    local out = {
+      path = path,
+      description = spec.description,
+      examples = spec.examples,
+      bulk = spec.bulk == true,
+      count = entry.count,
+      values = {},
+    }
+    -- A bulk enum reads as names only, and no values: the ids are TRX's own, and
+    -- a script refers to them by name.
+    if out.bulk then
+      out.names = {}
+      for _, constant in ipairs(enum.values(spec.backing)) do
+        table.insert(out.names, api.enum_name(spec, constant.name))
+      end
+      table.sort(out.names)
+    else
+      for _, constant in ipairs(enum.values(spec.backing)) do
+        local value_name = api.enum_name(spec, constant.name)
+        table.insert(out.values, {
+          name = value_name,
+          value = constant.value,
+          description = spec.values[value_name],
+        })
+      end
+      -- Numeric order: the order the constants are meant to be read in, and
+      -- stable across dumps, which the reflected order is not.
+      table.sort(out.values, function(a, b)
+        return a.value < b.value
+      end)
+    end
+    return out
+  end,
+})
 
 -- Declares a lone constant sitting on the module table - an angle unit is a
 -- macro, not a C enum, so api.enum has nothing to reflect. The value still
 -- comes from C, so naming one C does not export fails here rather than quietly
 -- being nil.
-function api.const(path, spec)
-  opening("api.const", spec)
-  assert(
-    spec.value ~= nil,
-    "api.const: " .. path .. " has no value; is it exported from C?"
-  )
-  local module, name = split_path(path)
+api.const = declarator("const", "constants", {
+  declare = function(entry, path, spec, need)
+    need(spec.value ~= nil, "%s has no value; is it exported from C?", path)
+    local where = placed(path, need)
+    entry.where = where
 
-  record(consts, path, spec)
+    rawset(module_table(where.module), where.name, spec.value)
+    return spec.value
+  end,
 
-  rawset(module_table(module), name, spec.value)
-  return spec.value
-end
+  describe = function(entry)
+    local doc = as_doc(entry.spec)
+    return {
+      path = entry.path,
+      value = doc.value,
+      type = doc.type,
+      description = doc.description,
+    }
+  end,
+})
 
 -- Declares a computed member on a module table, or on a namespace inside it.
 -- It is not a function and not a stored field: reading it calls into C, and
 -- writing it calls a setter, or fails if there is none. The registry owns the
 -- container's metatable - see install_meta - so a hand-rolled getter table
 -- would sail past seal().
-function api.property(path, spec)
-  opening("api.property", spec)
-  assert(type(spec.get) == "function", "api.property: get must be a function")
-  assert(
-    spec.set == nil or type(spec.set) == "function",
-    "api.property: set must be a function"
-  )
-  local parts = path_parts(path)
-  local owner = owner_path(parts)
-  -- A group of properties is only the table its members hang off, so it need
-  -- not be declared: trx.rules.exposure.max asks for trx.rules.exposure and
-  -- gets it. api.namespace is for a group that has something of its own to
-  -- say, which is why api.define still insists on one.
-  if #parts == 3 and rawget(module_table(parts[1]), parts[2]) == nil then
-    api.namespace(owner, { implicit = true })
-  end
-  local _, container, name = resolve(path)
+api.property = declarator("property", "properties", {
+  declare = function(entry, path, spec, need)
+    need(type(spec.get) == "function", "get must be a function")
+    need(
+      spec.set == nil or type(spec.set) == "function",
+      "set must be a function"
+    )
+    local where = placed(path, need, true)
+    entry.where = where
+    -- A group of properties is only the table its members hang off, so it need
+    -- not be declared: trx.rules.exposure.max asks for trx.rules.exposure and
+    -- gets it. api.namespace is for a group that has something of its own to
+    -- say, which is why api.define still insists on one.
+    if
+      where.namespace ~= nil
+      and rawget(module_table(where.module), where.namespace) == nil
+    then
+      api.namespace(where.owner, { implicit = true })
+    end
 
-  record(properties, path, spec)
+    -- A property has an entry of its own, and the table it hangs off gathers the
+    -- ones declared on it: what its __index dispatches on is the owner's, not
+    -- each property's.
+    local owner_entry = open(where.owner)
+    owner_entry.table = table_of(where, need)
+    owner_entry.properties = owner_entry.properties or {}
+    owner_entry.properties[where.name] = entry
 
-  local props = container_properties[owner]
-  if props == nil then
-    props = {}
-    container_properties[owner] = props
-  end
-  props[name] = spec
+    install_meta(owner_entry)
+    return spec
+  end,
 
-  install_meta(owner, container)
-  return spec
-end
+  describe = function(entry)
+    local doc = as_doc(entry.spec)
+    return {
+      path = entry.path,
+      type = doc.type,
+      list = doc.list,
+      description = doc.description,
+      base = doc.base,
+      writable = entry.spec.set ~= nil,
+    }
+  end,
+})
 
 -- Declares a number: what it counts, and where it counts from. A room number
 -- is one thing however many declarations hold one, so it is written here and
 -- they name it. Doc-only in the sense that no member of it reaches a script -
 -- what a script gets is the number itself - but it is a type like any other,
 -- and a declaration that holds one says so.
-function api.number(path, spec)
-  opening("api.number", spec)
-  assert(type(path) == "string", "api.number: path must be a string")
-  -- A number belongs to the module that says what it counts, and the docs
-  -- reach it there.
-  split_path(path)
-  assert(
-    type(spec.description) == "string",
-    "api.number: description must be a string"
-  )
-  assert(
-    spec.base == nil or spec.base == 0 or spec.base == 1,
-    "api.number: base counts from 0 or from 1"
-  )
-  assert(
-    numbers.by_path[path] == nil,
-    "api.number: '" .. path .. "' is already written"
-  )
-  record(numbers, path, spec)
+api.number = declarator("number", "numbers", {
+  declare = function(entry, path, spec, need)
+    entry.where = placed(path, need)
+    need(type(spec.description) == "string", "description must be a string")
+    need(
+      spec.base == nil or spec.base == 0 or spec.base == 1,
+      "base counts from 0 or from 1"
+    )
+    entry.check = check.primitive("integer")
+  end,
 
-  register_checker(path, checkers.integer)
-end
+  describe = function(entry)
+    return {
+      path = entry.path,
+      description = entry.spec.description,
+      base = entry.spec.base,
+    }
+  end,
+})
 
 -- Declares a unit: what a value is measured in. An angle is measured the same
 -- way wherever one turns up, so it is written here and the declarations that
@@ -1231,316 +1339,236 @@ end
 -- `type` is what a value of it is: whole where the engine counts in steps of
 -- one, as it does for an angle and a distance, and a real number where it does
 -- not, as for a time in seconds.
-function api.unit(path, spec)
-  opening("api.unit", spec)
-  assert(type(path) == "string", "api.unit: path must be a string")
-  -- A unit belongs to the module that says what it measures, and the docs
-  -- reach it there.
-  split_path(path)
-  assert(
-    type(spec.description) == "string",
-    "api.unit: description must be a string"
-  )
-  local measured = spec.type or "integer"
-  assert(
-    measured == "integer" or measured == "number",
-    "api.unit: a unit measures an integer or a number"
-  )
-  assert(
-    spec.spellings == nil or type(spec.spellings) == "table",
-    "api.unit: spellings must list the words that mean this unit"
-  )
-  assert(
-    units.by_path[path] == nil,
-    "api.unit: '" .. path .. "' is already written"
-  )
-  record(units, path, spec)
+api.unit = declarator("unit", "units", {
+  declare = function(entry, path, spec, need)
+    entry.where = placed(path, need)
+    need(type(spec.description) == "string", "description must be a string")
+    local measured = spec.type or "integer"
+    need(
+      measured == "integer" or measured == "number",
+      "a unit measures an integer or a number"
+    )
+    need(
+      spec.spellings == nil or type(spec.spellings) == "table",
+      "spellings must list the words that mean this unit"
+    )
+    entry.check = check.primitive(measured)
+  end,
 
-  register_checker(path, checkers[measured])
-end
-
--- A spec as the docs read it. What it is typed by is written out as the path
--- that names it, so the docs can link to the declaration and a description
--- several places share is still written once.
-local function noted(spec)
-  if type(spec) ~= "table" then
-    return spec
-  end
-  local out = {}
-  for key, value in pairs(spec) do
-    out[key] = value
-  end
-  if out.type ~= nil then
-    local accepted = types_of(out.type)
-    out.type = #accepted == 1 and accepted[1] or accepted
-  end
-  -- A table argument or result declares the keys it is made of, and each of
-  -- them reads like any other spec.
-  for _, key in ipairs({ "params", "fields" }) do
-    if type(out[key]) == "table" then
-      local list = {}
-      for i, nested in ipairs(out[key]) do
-        list[i] = noted(nested)
-      end
-      out[key] = list
-    end
-  end
-  return out
-end
-
--- Params are a list; returns is one spec or a list of them.
-local function noted_list(list)
-  if list == nil then
-    return nil
-  end
-  local out = {}
-  for i, spec in ipairs(list) do
-    out[i] = noted(spec)
-  end
-  return out
-end
-
-local function noted_returns(returns)
-  if returns == nil or returns.type ~= nil then
-    return noted(returns)
-  end
-  return noted_list(returns)
-end
-
--- A description written as a long-bracket string carries the indentation it was
--- written at, and four spaces is a code block in markdown - which is how a
--- module's own prose came out as one. The text is what the declaration says,
--- not where it sat in the file, so the shared indent comes off. The deepest
--- lines keep the rest of theirs, since a description may lay something out.
-local function dedent(text)
-  local shared
-  for line in text:gmatch("[^\n]+") do
-    if line:match("%S") ~= nil then
-      local indent = #line:match("^[ \t]*")
-      if shared == nil or indent < shared then
-        shared = indent
-      end
-    end
-  end
-  if shared == nil or shared == 0 then
-    return (text:gsub("^%s*\n", ""):gsub("%s+$", ""))
-  end
-  local out = {}
-  for line in (text .. "\n"):gmatch("([^\n]*)\n") do
-    out[#out + 1] = line:sub(shared + 1)
-  end
-  return (table.concat(out, "\n"):gsub("^%s*\n", ""):gsub("%s+$", ""))
-end
-
--- The whole surface as plain data: what the docs generator consumes.
-function api.describe()
-  local out = { types = {}, enums = {} }
-  out.containers = collect(containers, function(name, spec)
+  describe = function(entry)
+    local spec = entry.spec
     return {
-      module = name,
-      description = spec.description,
-      key = noted(spec.key),
-      value = noted(spec.value),
-      countable = spec.count ~= nil,
-      examples = spec.examples,
-    }
-  end)
-  out.numbers = collect(numbers, function(path, spec)
-    return {
-      path = path,
-      description = spec.description,
-      base = spec.base,
-    }
-  end)
-  out.units = collect(units, function(path, spec)
-    return {
-      path = path,
+      path = entry.path,
       description = spec.description,
       -- What a value of it is. Written out even where it is the default, so
       -- the docs need not know what that default is.
       type = spec.type or "integer",
       spellings = spec.spellings,
     }
-  end)
-  out.modules = collect(modules, function(name, spec)
-    return {
-      name = name,
-      title = spec.title,
-      description = spec.description,
-      order = spec.order,
-      -- What indexing the module reaches, where it stands for one thing:
-      -- trx.lara.air is a member of lara.Lara, and a reference written the way
-      -- a script writes it lands there.
-      instance_type = module_instance_types[name],
-    }
-  end)
-  out.functions = collect(registry, function(path, spec)
-    return {
-      path = path,
-      description = spec.description,
-      params = noted_list(spec.params),
-      returns = noted_returns(spec.returns),
-      examples = spec.examples,
-    }
-  end)
-  for _, path in ipairs(types.order) do
-    local spec = types.by_path[path]
-    local entry = {
-      path = path,
-      description = spec.description,
-      -- A handle stands for something the engine owns and can outlive it; a
-      -- type written in Lua is the value itself, so the docs say so only of
-      -- the first.
-      handle = spec.backing ~= nil,
-      fields = {},
-      methods = {},
-      extensions = {},
-      operators = {},
-    }
-    for name, operator in pairs(spec.operators or {}) do
-      table.insert(entry.operators, {
-        name = name,
-        description = operator.description,
-      })
-    end
-    for name, field in pairs(spec.fields or {}) do
-      local noted_field = noted(field)
-      table.insert(entry.fields, {
-        name = name,
-        type = noted_field.type,
-        writable = noted_field.writable ~= false,
-        description = noted_field.description,
-        base = noted_field.base,
-      })
-    end
-    for name, method in pairs(spec.methods or {}) do
-      table.insert(entry.methods, {
-        name = name,
-        description = method.description,
-        params = noted_list(method.params),
-        returns = noted_returns(method.returns),
-        examples = method.examples,
-      })
-    end
-    for name, computed in pairs(spec.extensions or {}) do
-      table.insert(entry.extensions, {
-        name = name,
-        type = computed.type,
-        description = computed.description,
-        base = computed.base,
-      })
-    end
-    local by_name = function(a, b)
-      return a.name < b.name
-    end
-    table.sort(entry.fields, by_name)
-    table.sort(entry.methods, by_name)
-    table.sort(entry.extensions, by_name)
-    table.sort(entry.operators, by_name)
-    table.insert(out.types, entry)
-  end
-  for _, path in ipairs(enums.order) do
-    local spec = enums.by_path[path]
-    local entry = {
-      path = path,
-      description = spec.description,
-      examples = spec.examples,
-      bulk = spec.bulk == true,
-      count = spec.count,
-      values = {},
-    }
-    -- Names only, and no values: the ids are TRX's own, and a script refers to
-    -- them by name.
-    if entry.bulk then
-      entry.names = {}
-      for _, constant in ipairs(enum.values(spec.backing)) do
-        table.insert(entry.names, api.enum_name(spec, constant.name))
-      end
-      table.sort(entry.names)
-    end
-    if not entry.bulk then
-      for _, constant in ipairs(enum.values(spec.backing)) do
-        local value_name = api.enum_name(spec, constant.name)
-        table.insert(entry.values, {
-          name = value_name,
-          value = constant.value,
-          description = spec.values[value_name],
-        })
-      end
-      -- Numeric order: the order the constants are meant to be read in, and
-      -- stable across dumps, which the reflected order is not.
-      table.sort(entry.values, function(a, b)
-        return a.value < b.value
-      end)
-    end
-    table.insert(out.enums, entry)
-  end
-  out.constants = collect(consts, function(path, spec)
-    return {
-      path = path,
-      value = spec.value,
-      type = spec.type,
-      description = spec.description,
-    }
-  end)
-  out.namespaces = collect(namespaces, function(path, spec)
-    return {
-      path = path,
-      description = spec.description,
-      params = spec.params,
-      returns = spec.returns,
-      examples = spec.examples,
-      callable = spec.call ~= nil,
-      implicit = spec.implicit,
-    }
-  end)
-  out.properties = collect(properties, function(path, spec)
-    return {
-      path = path,
-      type = spec.type,
-      description = spec.description,
-      base = spec.base,
-      writable = spec.set ~= nil,
-    }
-  end)
+  end,
+})
 
-  -- Which module a declaration lands under is the surface talking; which module
-  -- loaded first is not - that is the source list in meson.build, and a module
-  -- that requires another pulls it forward. The dump is committed and diffed,
-  -- so it groups by module and cannot move when a load order does, the way a
-  -- type's members and an enum's values already cannot.
-  --
-  -- Within a module the order is the order the file declares in, which is a
-  -- choice someone made: trx.music reads play, pause, unpause, stop.
-  local function by_module(list)
-    local declared_at = {}
-    for i, entry in ipairs(list) do
-      declared_at[entry] = i
-    end
-    table.sort(list, function(a, b)
-      local mod_a = a.path:match("^[^.]+")
-      local mod_b = b.path:match("^[^.]+")
-      if mod_a ~= mod_b then
-        return mod_a < mod_b
-      end
-      return declared_at[a] < declared_at[b]
-    end)
+-- Turning checking on, and closing the registry.
+
+-- Rebinds every registered function to (or away from) its checking wrapper.
+function api.strict(enabled)
+  strict_enabled = enabled and true or false
+  for _, entry in ipairs(each(api.define)) do
+    entry.expose(bound(entry.spec.impl, entry.path, entry.spec.params))
   end
-  by_module(out.functions)
-  by_module(out.types)
-  by_module(out.enums)
-  by_module(out.constants)
-  by_module(out.namespaces)
-  by_module(out.properties)
-  by_module(out.numbers)
-  by_module(out.units)
-  -- Keyed by module, not by path, so by_module has nothing to sort on.
-  table.sort(out.containers, function(a, b)
-    return a.module < b.module
-  end)
-  table.sort(out.modules, function(a, b)
-    return a.name < b.name
-  end)
+  for _, entry in ipairs(each(api.namespace)) do
+    if entry.call ~= nil then
+      entry.call = bound(entry.spec.call, entry.path, entry.spec.params)
+    end
+  end
+  for _, entry in ipairs(each(api.type)) do
+    bind_type_methods(entry)
+  end
+end
+
+function api.is_strict()
+  return strict_enabled
+end
+
+-- Anything a script can reach on a module or a namespace table has to be
+-- declared, or the reference cannot describe it. Neither a metatable getter
+-- nor a struct field ever shows up in pairs(), so this is what catches one.
+local function audit_reachable()
+  -- What a declaration puts on a table a script can index, named by the
+  -- declarator that makes one. A type, a number and a unit put nothing there,
+  -- and a property is served by the metatable rather than held in the table, so
+  -- neither shows up below. The namespace table itself is a member of its
+  -- module.
+  local ON_A_TABLE = {}
+  for _, maker in ipairs({ api.define, api.enum, api.const, api.namespace }) do
+    ON_A_TABLE[KIND_OF[maker]] = true
+  end
+
+  -- table path ("items", or "console.log") -> set of declared member names.
+  local declared = {}
+  for _, path in ipairs(declarations.order) do
+    local entry = declarations.by_path[path]
+    if ON_A_TABLE[entry.kind] then
+      local owner = entry.where.owner
+      declared[owner] = declared[owner] or {}
+      declared[owner][entry.where.name] = true
+    end
+  end
+
+  local undeclared = {}
+  local function audit(table_path, tbl)
+    -- next, not pairs: a container overrides __pairs to walk its collection, so
+    -- the module's own members are only reachable through a raw iteration.
+    for name in next, tbl or {} do
+      if not (declared[table_path] or {})[name] then
+        undeclared[#undeclared + 1] = "trx." .. table_path .. "." .. name
+      end
+    end
+  end
+
+  -- A module is read live rather than off its entry: sealing has just replaced
+  -- trx.api with what survives it, and the audit is of the surface a script is
+  -- left with. A namespace hides its members one level down, where a module's
+  -- own audit cannot see them, so each is audited as the table it is.
+  for _, entry in ipairs(each(api.module)) do
+    audit(entry.path, trx[entry.path])
+  end
+  for _, entry in ipairs(each(api.namespace)) do
+    audit(entry.path, entry.table)
+  end
+
+  if #undeclared > 0 then
+    table.sort(undeclared)
+    error(
+      table.concat(undeclared, ", ")
+        .. ": reachable from scripts but not declared, so the reference "
+        .. "cannot describe it. Declare it with api.define, api.enum, "
+        .. "api.const, api.property, api.namespace or api.container."
+    )
+  end
+end
+
+-- A type nothing can check prints a name that means nothing, and waves every
+-- value through while strict mode reports a clean run over it. `partial` is for
+-- a test that stands up part of the surface, where a name the rest of it
+-- declares is expected to be missing.
+--
+-- What is audited is what checking will call: the arguments of a function, of a
+-- callable namespace and of a method, and a property written through. A name in
+-- a doc-only position - what a call hands back, what a constant is measured in -
+-- is resolved by the docs tool, which walks the dump for exactly that.
+local function audit_types(partial)
+  local bad = {}
+  local function report(fmt, ...)
+    bad[#bad + 1] = fmt:format(...)
+  end
+
+  -- The predicate a declaration is checked by, or nil where nothing can check
+  -- it, which is itself worth reporting.
+  local function checked_by(where, what, spec)
+    local predicate = check.of(spec)
+    if predicate == nil and not partial then
+      report(
+        "%s: %s has an unknown type '%s'",
+        where,
+        what,
+        check.label_of(spec)
+      )
+    end
+    return predicate
+  end
+
+  local function audit_params(where, params)
+    local optional_seen = false
+    for _, p in ipairs(params or {}) do
+      if p.name ~= "..." then
+        local predicate = checked_by(where, ("'%s'"):format(p.name), p)
+        if
+          predicate ~= nil
+          and p.default ~= nil
+          and not predicate(p.default)
+        then
+          report(
+            "%s: the default for '%s' is not %s",
+            where,
+            p.name,
+            check.label_of(p)
+          )
+        end
+        -- Nothing can reach it without passing the optional one too.
+        if p.optional then
+          optional_seen = true
+        elseif optional_seen then
+          report(
+            "%s: '%s' is required but follows an optional parameter",
+            where,
+            p.name
+          )
+        end
+      end
+    end
+  end
+
+  -- The two that take arguments a script writes.
+  for _, maker in ipairs({ api.define, api.namespace }) do
+    for _, entry in ipairs(each(maker)) do
+      audit_params(entry.path, entry.spec.params)
+    end
+  end
+  -- Strict mode checks a method's arguments too, and make_checked needs a
+  -- checker for each. Without this, a type nobody can check would only surface
+  -- the day a builder turned strict mode on.
+  for _, entry in ipairs(each(api.type)) do
+    for name, method in pairs(entry.spec.methods or {}) do
+      audit_params(entry.path .. "." .. name, method.params)
+    end
+  end
+  for _, entry in ipairs(each(api.property)) do
+    checked_by(entry.path, "the property", entry.spec)
+  end
+
+  if #bad > 0 then
+    table.sort(bad)
+    error(table.concat(bad, "\n"))
+  end
+end
+
+-- Called once, from C, after the trx.* modules have loaded. Declarations are
+-- the engine's to make; a level script re-opening the surface would defeat the
+-- point of declaring it.
+function api.seal(spec)
+  -- The declaring half has done its job, and every one of those functions
+  -- raises from here on. It goes the way trxc goes at this same moment: what a
+  -- script cannot successfully call, it should not be able to reach. Done
+  -- before the audits, so they see the surface a script is left with. C keeps
+  -- the two entrypoints it still needs - see lua/capi/api.c.
+  trx.api = {
+    strict = api.strict,
+    is_strict = api.is_strict,
+  }
+  -- The checking layer goes the same way. Nothing declares it, so the audit
+  -- below never sees it, and reads_from is a way into what strict mode holds a
+  -- script to.
+  trx.check = nil
+
+  audit_reachable()
+  audit_types(spec ~= nil and spec.partial == true)
+
+  sealed = true
+end
+
+-- The whole surface as plain data, and as JSON.
+
+function api.describe()
+  local out = {}
+  for _, kind in ipairs(KINDS) do
+    local list = {}
+    for i, entry in ipairs(entries_of(kind)) do
+      list[i] = kind.describe(entry)
+    end
+    kind.sort(list)
+    out[kind.key] = list
+  end
 
   -- Every kind of entry carries prose under the same key, so the indentation
   -- comes off in one pass rather than at each place one is collected. An
@@ -1559,254 +1587,8 @@ function api.describe()
   end
   dedent_prose(out)
 
-  -- Everything a declaration can be pointed at by, which is the path it was
-  -- declared under and nothing else. A member is reachable as its type's path
-  -- and its own name; a module standing for an instance also answers for that
-  -- type's members, since a script writes trx.lara.air rather than the type.
-  local anchors = {}
-  local function claim(path)
-    if type(path) == "string" then
-      anchors[path] = true
-    end
-  end
-  for _, group in ipairs({
-    out.numbers,
-    out.units,
-    out.enums,
-    out.functions,
-    out.properties,
-    out.namespaces,
-    out.constants,
-  }) do
-    for _, entry in ipairs(group) do
-      claim(entry.path)
-    end
-  end
-  for _, module in ipairs(out.modules) do
-    claim(module.name)
-  end
-  -- What a call declares of its own: the arguments it takes, the keys of a
-  -- table among them, and the keys of what it hands back. A result has no name
-  -- of its own, so its keys hang off the call.
-  local function claim_call(entry, path)
-    for _, param in ipairs(entry.params or {}) do
-      claim(path .. "." .. param.name)
-      for _, field in ipairs(param.fields or {}) do
-        claim(path .. "." .. param.name .. "." .. field.name)
-      end
-      -- A hook has one callback, so what it is called with reads as the hook's.
-      for _, arg in ipairs(param.params or {}) do
-        claim(path .. "." .. arg.name)
-        for _, field in ipairs(arg.fields or {}) do
-          claim(path .. "." .. arg.name .. "." .. field.name)
-        end
-      end
-    end
-    local returns = entry.returns
-    for _, one in
-      ipairs(
-        returns ~= nil and returns.type ~= nil and { returns } or returns or {}
-      )
-    do
-      for _, field in ipairs(one.fields or {}) do
-        claim(path .. "." .. field.name)
-      end
-    end
-  end
-
-  for _, group in ipairs({ out.functions, out.namespaces }) do
-    for _, entry in ipairs(group) do
-      claim_call(entry, entry.path)
-    end
-  end
-
-  local members = {}
-  for _, entry in ipairs(out.types) do
-    claim(entry.path)
-    members[entry.path] = {}
-    for _, kind in ipairs({ entry.fields, entry.methods, entry.extensions }) do
-      for _, member in ipairs(kind) do
-        claim(entry.path .. "." .. member.name)
-        table.insert(members[entry.path], member.name)
-      end
-    end
-    for _, method in ipairs(entry.methods) do
-      claim_call(method, entry.path .. "." .. method.name)
-    end
-  end
-  for module, type_path in pairs(module_instance_types) do
-    assert(
-      members[type_path] ~= nil,
-      "api: module '"
-        .. module
-        .. "' stands for '"
-        .. type_path
-        .. "', which nothing declares"
-    )
-    for _, name in ipairs(members[type_path]) do
-      claim(module .. "." .. name)
-    end
-  end
-
-  -- What a declared member hands back, where that is a declared type too, so
-  -- a path can be walked through it: stats.pickups is a stats.Category, and
-  -- its count is that type's own member.
-  -- A container keyed by an enum is indexed by its constants, which is how
-  -- trx.objects.wolf is written; the key says which enum, so the constant is
-  -- checked against it rather than waved through.
-  local constants = {}
-  for _, entry in ipairs(out.enums) do
-    constants[entry.path] = {}
-    for _, value in ipairs(entry.values or {}) do
-      constants[entry.path][value.name:upper()] = true
-    end
-    for _, name in ipairs(entry.names or {}) do
-      constants[entry.path][name:upper()] = true
-    end
-  end
-
-  local keyed_by = {}
-  for _, entry in ipairs(out.containers) do
-    -- What a key accepts may be several things; the enum among them is what a
-    -- name indexes through.
-    local accepted = entry.key ~= nil and entry.key.type or nil
-    if type(accepted) == "table" then
-      for _, one in ipairs(accepted) do
-        if constants[one] ~= nil then
-          accepted = one
-          break
-        end
-      end
-    end
-    keyed_by[entry.module] = type(accepted) == "string" and accepted or nil
-  end
-
-  local stands_for = {}
-  for _, entry in ipairs(out.types) do
-    for _, member in ipairs(entry.fields) do
-      stands_for[entry.path .. "." .. member.name] = member.type
-    end
-    for _, member in ipairs(entry.extensions) do
-      stands_for[entry.path .. "." .. member.name] = member.type
-    end
-  end
-  for _, entry in ipairs(out.properties) do
-    stands_for[entry.path] = entry.type
-  end
-  for module, type_path in pairs(module_instance_types) do
-    for _, name in ipairs(members[type_path] or {}) do
-      stands_for[module .. "." .. name] = stands_for[type_path .. "." .. name]
-    end
-  end
-
-  -- The path a reference names, walked a segment at a time: through the thing
-  -- itself where it is anchored, and through what it hands back where that is
-  -- a type of its own. Nothing is guessed - a name one segment off used to
-  -- resolve to the module it sat under, which is how a reference to something
-  -- renamed went on looking fine.
-  local function resolve(path)
-    if anchors[path] then
-      return path
-    end
-    local parts = {}
-    for part in path:gmatch("[^.]+") do
-      parts[#parts + 1] = part
-    end
-    local at = parts[1]
-    if not anchors[at] then
-      return nil
-    end
-    for i = 2, #parts do
-      local step = parts[i]
-      if anchors[at .. "." .. step] then
-        at = at .. "." .. step
-      elseif
-        stands_for[at] ~= nil and anchors[stands_for[at] .. "." .. step]
-      then
-        at = stands_for[at] .. "." .. step
-      elseif
-        keyed_by[at] ~= nil
-        and constants[keyed_by[at]] ~= nil
-        and constants[keyed_by[at]][step:upper()]
-      then
-        -- Indexing a container by one of the names its key accepts.
-        return at
-      elseif constants[at] ~= nil and constants[at][step:upper()] then
-        -- An enum's constants are not anchored one by one - a catalog runs to
-        -- hundreds - so the enum that holds it is where the link lands.
-        return at
-      else
-        return nil
-      end
-    end
-    return at
-  end
-
-  -- A path that resolves to nothing is a reference to something that has been
-  -- renamed or was never there: a silent broken link in the reference, and a
-  -- description that quietly goes missing. It stops the dump instead.
-  local function must_resolve(where, what, path, exact)
-    local hit = resolve(path)
-    assert(
-      hit ~= nil and (not exact or hit == path),
-      "api: "
-        .. tostring(where)
-        .. "'s "
-        .. what
-        .. " names '"
-        .. path
-        .. "', which nothing declares"
-    )
-  end
-
-  local function check_refs(node, where)
-    if type(node) ~= "table" then
-      return
-    end
-    -- A container is named by the module it is indexed on, which is what a
-    -- reader has to be told to find the declaration.
-    local here = node.path or node.name or node.module or where
-    for _, one in ipairs(types_of(node.type)) do
-      if type(one) == "string" then
-        if numbers.by_path[one] ~= nil then
-          assert(
-            node.base == nil,
-            "api: "
-              .. tostring(here)
-              .. " is a '"
-              .. one
-              .. "' and declares a base of its own"
-          )
-        end
-        if one:find("%.") ~= nil then
-          must_resolve(here, "type", one, true)
-        end
-      end
-    end
-    -- Prose names things the same way a script does, and the reference links
-    -- every one of them, so a name that has moved has to be caught here too.
-    for path in (node.description or ""):gmatch("`trx%.([%w_.]+)`") do
-      must_resolve(here, "description", path, false)
-    end
-    for _, value in pairs(node) do
-      check_refs(value, here)
-    end
-  end
-  check_refs(out, "api")
-
   return out
 end
-
-trx.api = api
-
--- api.type reports members nobody exposed, so the logger must exist by the time
--- any module declares one, and modules load in source-list order, which puts
--- log after items. Force it here rather than depend on that ordering.
---
--- It has to come after `trx.api` is set, not before: log.lua declares itself
--- through the registry, so requiring it any earlier would hand it a half-built
--- api table.
-require("trx.log")
 
 -- Minimal JSON encoder. The dump is consumed by tools/update_lua_docs; keeping
 -- the encoding here means the whole API surface - C field tables included - is
@@ -1875,9 +1657,12 @@ api.module("api", {
 })
 
 api.define("api.strict", {
-  description = "Turns argument checking on or off for every function in `trx`, and for the methods "
-    .. "on its handles. Off by default: checking costs about 100ns a call, which a per-frame handler "
-    .. "notices. Turn it on while writing a level, and leave it off in play.",
+  description = [[
+    Turns argument checking on or off for every function in `trx`, and for the
+    methods on its handles. Off by default: checking costs a couple of hundred
+    nanoseconds a call, which a per-frame handler notices. Turn it on while
+    writing a level, and leave it off in play.
+  ]],
   params = {
     {
       name = "enabled",
@@ -1897,6 +1682,19 @@ api.define("api.is_strict", {
   },
   impl = api.is_strict,
 })
+
+-- The registry, handed to scripts and to C, declaring itself last of all.
+
+trx.api = api
+
+-- api.type reports members nobody exposed, so the logger must exist by the time
+-- any module declares one, and modules load in source-list order, which puts
+-- log after items. Force it here rather than depend on that ordering.
+--
+-- It has to come after `trx.api` is set, not before: log.lua declares itself
+-- through the registry, so requiring it any earlier would hand it a half-built
+-- api table.
+require("trx.log")
 
 -- Sealing and dumping the surface stay C's to call, and the dump runs after the
 -- seal has taken them off trx.api. Hand them over while they are still here.
