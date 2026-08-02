@@ -235,7 +235,7 @@ static void M_FlarePickup(ITEM *const item, COLL_INFO *const coll)
     M_Default(item, coll);
     if (coll->side_mid.floor <= STEPUP_HEIGHT
         && Item_TestAnimEqual(item, LA(LA_FLARE_PICKUP))) {
-        item->pos.y += coll->side_mid.floor;
+        Lara_Col_AlignToFloor(item, coll);
     }
 }
 
@@ -308,7 +308,7 @@ static void M_Walk(ITEM *const item, COLL_INFO *const coll)
         return;
     }
 
-    item->pos.y += coll->side_mid.floor;
+    Lara_Col_AlignToFloor(item, coll);
 }
 
 static void M_WalkBack(ITEM *const item, COLL_INFO *const coll)
@@ -366,7 +366,7 @@ static void M_WalkBack(ITEM *const item, COLL_INFO *const coll)
         && !stepping_down) {
         item->pos.y += 50;
     } else {
-        item->pos.y += coll->side_mid.floor;
+        Lara_Col_AlignToFloor(item, coll);
     }
 }
 
@@ -415,7 +415,7 @@ static void M_SideStep(ITEM *const item, COLL_INFO *const coll)
     if (coll->side_mid.floor >= 0 && room->flags.swamp) {
         item->pos.y += M_SWAMP_SINK_RATE;
     } else {
-        item->pos.y += coll->side_mid.floor;
+        Lara_Col_AlignToFloor(item, coll);
     }
 }
 
@@ -483,7 +483,11 @@ static void M_Run(ITEM *const item, COLL_INFO *const coll)
         return;
     }
 
-    item->pos.y += MIN(coll->side_mid.floor, 50);
+    if (coll->side_mid.floor < 50) {
+        Lara_Col_AlignToFloor(item, coll);
+    } else {
+        item->pos.y += 50;
+    }
 }
 
 static void M_Stop(ITEM *const item, COLL_INFO *const coll)
@@ -513,7 +517,7 @@ static void M_Stop(ITEM *const item, COLL_INFO *const coll)
         item->pos.y += M_SWAMP_SINK_RATE;
         CLAMPG(item->pos.y, item->floor);
     } else {
-        item->pos.y += coll->side_mid.floor;
+        Lara_Col_AlignToFloor(item, coll);
     }
 }
 
@@ -540,7 +544,7 @@ static void M_FastBack(ITEM *const item, COLL_INFO *const coll)
             if (M_DeflectEdge(item, coll)) {
                 M_CollideStop(item, coll);
             }
-            item->pos.y += coll->side_mid.floor;
+            Lara_Col_AlignToFloor(item, coll);
         }
     } else {
         Item_SwitchToAnim(item, LA(LA_FALL_BACK), 0);
@@ -572,7 +576,7 @@ static void M_Turn(ITEM *const item, COLL_INFO *const coll)
     }
 
     if (coll->side_mid.floor < 0 || !room->flags.swamp) {
-        item->pos.y += coll->side_mid.floor;
+        Lara_Col_AlignToFloor(item, coll);
     } else {
         item->pos.y += M_SWAMP_SINK_RATE;
     }
@@ -593,7 +597,7 @@ static void M_Death(ITEM *const item, COLL_INFO *const coll)
     Lara_Col_GetInfo(item, coll);
     Lara_Col_Shift(coll);
 
-    item->pos.y += coll->side_mid.floor;
+    Lara_Col_AlignToFloor(item, coll);
     item->hit_points = -1;
     lara->air = -1;
 
@@ -606,7 +610,7 @@ static void M_Death(ITEM *const item, COLL_INFO *const coll)
 static void M_LiftDeath(ITEM *const item, COLL_INFO *const coll)
 {
     Lara_Col_GetInfo(item, coll);
-    item->pos.y += coll->side_mid.floor;
+    Lara_Col_AlignToFloor(item, coll);
 }
 
 static void M_Splat(ITEM *const item, COLL_INFO *const coll)
@@ -614,7 +618,7 @@ static void M_Splat(ITEM *const item, COLL_INFO *const coll)
     M_Default(item, coll);
     Lara_Col_Shift(coll);
     if (coll->side_mid.floor > -STEP_L && coll->side_mid.floor < STEP_L) {
-        item->pos.y += coll->side_mid.floor;
+        Lara_Col_AlignToFloor(item, coll);
     }
 }
 
@@ -661,7 +665,7 @@ static void M_Slide(ITEM *const item, COLL_INFO *const coll)
     }
 
     Lara_Col_TestSlide(item, coll);
-    item->pos.y += coll->side_mid.floor;
+    Lara_Col_AlignToFloor(item, coll);
     if (ABS(coll->tilt.x) <= MAX_SLOPE && ABS(coll->tilt.z) <= MAX_SLOPE) {
         item->goal_anim_state = LS(LS_STOP);
         Lara_StopSlidingSFX();
@@ -698,7 +702,7 @@ static void M_Roll(ITEM *const item, COLL_INFO *const coll)
     }
 
     Lara_Col_Shift(coll);
-    item->pos.y += coll->side_mid.floor;
+    Lara_Col_AlignToFloor(item, coll);
 }
 
 static void M_RollContinue(ITEM *const item, COLL_INFO *const coll)
@@ -725,7 +729,7 @@ static void M_RollContinue(ITEM *const item, COLL_INFO *const coll)
         item->fall_speed = 0;
     } else {
         Lara_Col_Shift(coll);
-        item->pos.y += coll->side_mid.floor;
+        Lara_Col_AlignToFloor(item, coll);
     }
 }
 
@@ -786,7 +790,7 @@ static void M_Wade(ITEM *const item, COLL_INFO *const coll)
     if (coll->side_mid.floor >= 50 && !room->flags.swamp) {
         item->pos.y += 50;
     } else if (coll->side_mid.floor < 0 || !room->flags.swamp) {
-        item->pos.y += coll->side_mid.floor;
+        Lara_Col_AlignToFloor(item, coll);
     } else {
         item->pos.y += M_SWAMP_SINK_RATE;
     }
@@ -881,12 +885,12 @@ static void M_SprintRoll(ITEM *const item, COLL_INFO *const coll)
         item->fall_speed = 0;
         item->gravity = false;
         item->speed = 0;
-        item->pos.y += coll->side_mid.floor;
+        Lara_Col_AlignToFloor(item, coll);
         Lara_Animate(item);
     }
 
     Lara_Col_Shift(coll);
-    item->pos.y += coll->side_mid.floor;
+    Lara_Col_AlignToFloor(item, coll);
 }
 
 bool Lara_Col_Fallen(ITEM *const item, const COLL_INFO *const coll)
