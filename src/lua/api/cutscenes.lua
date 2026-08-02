@@ -93,9 +93,9 @@ api.define("cutscenes.set_lara_return", {
     { name = "pos", type = "vec3", description = "World position." },
     {
       name = "rot",
-      type = "integer",
+      type = "math.Angle",
       optional = true,
-      description = "Facing angle, in the engine's own angle units. Defaults to `0`.",
+      description = "Facing angle. Defaults to `0`.",
     },
   },
   examples = {
@@ -109,9 +109,9 @@ end)]],
 })
 
 api.property("cutscenes.fov", {
-  type = "integer",
-  description = "Field of view a cutscene plays at, in the engine's own angle units. TR4 uses "
-    .. "11488, against 14560 for ordinary play.",
+  type = "math.Angle",
+  description = "Field of view a cutscene plays at. TR4 uses 11488, against 14560 for ordinary "
+    .. "play.",
   get = raw.get_fov,
   set = raw.set_fov,
 })

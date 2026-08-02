@@ -1,23 +1,27 @@
 {
   "constants": [
     {
-      "description": "One degree in TRX units. Multiply by it to say an angle in degrees: `45 * trx.math.DEG_1`.",
+      "description": "One degree. Multiply by it to say an angle in degrees: `45 * trx.math.DEG_1`.",
       "path": "math.DEG_1",
+      "type": "math.Angle",
       "value": 182
     },
     {
-      "description": "A 45-degree turn, in TRX units.",
+      "description": "A 45-degree turn.",
       "path": "math.DEG_45",
+      "type": "math.Angle",
       "value": 8192
     },
     {
-      "description": "A quarter turn, in TRX units. A full turn is four of these, and wraps to zero.",
+      "description": "A quarter turn. A full turn is four of these.",
       "path": "math.DEG_90",
+      "type": "math.Angle",
       "value": 16384
     },
     {
-      "description": "The size of one sector in world units. Level geometry is laid out on this grid, so it is the step to take to move an item a sector over.",
+      "description": "The size of one sector. Level geometry is laid out on this grid, so it is the step to take to move an item a sector over.",
       "path": "math.WALL_L",
+      "type": "math.Distance",
       "value": 1024
     }
   ],
@@ -3367,10 +3371,10 @@
           "type": "vec3"
         },
         {
-          "description": "Facing angle, in the engine's own angle units. Defaults to `0`.",
+          "description": "Facing angle. Defaults to `0`.",
           "name": "rot",
           "optional": true,
-          "type": "integer"
+          "type": "math.Angle"
         }
       ],
       "path": "cutscenes.set_lara_return"
@@ -4114,7 +4118,7 @@
           "description": "Facing angle.",
           "name": "angle_y",
           "optional": true,
-          "type": "integer"
+          "type": "math.Angle"
         },
         {
           "description": "How to spawn it.",
@@ -4405,9 +4409,8 @@
       "description": "Sine of an angle.",
       "params": [
         {
-          "description": "Angle in TRX units.",
           "name": "angle",
-          "type": "integer"
+          "type": "math.Angle"
         }
       ],
       "path": "math.sin",
@@ -4420,9 +4423,8 @@
       "description": "Cosine of an angle.",
       "params": [
         {
-          "description": "Angle in TRX units.",
           "name": "angle",
-          "type": "integer"
+          "type": "math.Angle"
         }
       ],
       "path": "math.cos",
@@ -4432,7 +4434,7 @@
       }
     },
     {
-      "description": "Angle of the vector (x, z), in TRX units.",
+      "description": "Angle of the vector (x, z).",
       "examples": [
         "-- face an item towards Lara\nlocal angle = trx.math.atan(lara.pos.z - pos.z, lara.pos.x - pos.x)"
       ],
@@ -4440,18 +4442,17 @@
         {
           "description": "How far the vector reaches north.",
           "name": "z",
-          "type": "integer"
+          "type": "math.Distance"
         },
         {
           "description": "How far it reaches east.",
           "name": "x",
-          "type": "integer"
+          "type": "math.Distance"
         }
       ],
       "path": "math.atan",
       "returns": {
-        "description": "In TRX units.",
-        "type": "integer"
+        "type": "math.Angle"
       }
     },
     {
@@ -4727,9 +4728,9 @@
       ],
       "path": "rooms.floor_height",
       "returns": {
-        "description": "The height, in world units, with `nil` where there is no floor.",
+        "description": "The height, with `nil` where there is no floor.",
         "nullable": true,
-        "type": "integer"
+        "type": "math.Distance"
       }
     },
     {
@@ -5251,7 +5252,7 @@
       "order": 29
     },
     {
-      "description": "Fixed-point trigonometry, matching the engine's own tables.\n\nTRX angles are 16-bit units where 65536 is a full turn, not radians. Using these rather than Lua's `math` library guarantees a script places things exactly where the engine would.",
+      "description": "Fixed-point trigonometry, matching the engine's own tables. Using these rather than Lua's `math` library guarantees a script places things exactly where the engine would. `trx.math.Angle` says what an angle is here.",
       "name": "math",
       "order": 27
     },
@@ -5506,9 +5507,9 @@
       "writable": false
     },
     {
-      "description": "Field of view a cutscene plays at, in the engine's own angle units. TR4 uses 11488, against 14560 for ordinary play.",
+      "description": "Field of view a cutscene plays at. TR4 uses 11488, against 14560 for ordinary play.",
       "path": "cutscenes.fov",
-      "type": "integer",
+      "type": "math.Angle",
       "writable": true
     },
     {
@@ -6655,7 +6656,7 @@
           "writable": false
         },
         {
-          "description": "Orientation, in the units `trx.math` counts angles in. An angle counts in cycles, so one past the end of the turn wraps round to name the same direction rather than raising: adding a half turn to a rotation always works.",
+          "description": "Orientation. Each component is a `trx.math.Angle`.",
           "name": "rot",
           "type": "vec3",
           "writable": true
@@ -6729,8 +6730,8 @@
             }
           ],
           "returns": {
-            "description": "In world units, measured between the two positions.",
-            "type": "integer"
+            "description": "Measured between the two positions.",
+            "type": "math.Distance"
           }
         },
         {
@@ -7271,9 +7272,9 @@
               "type": "vec3"
             },
             {
-              "description": "How far out it reaches. One sector is 1024.",
+              "description": "How far out it reaches.",
               "name": "radius",
-              "type": "integer"
+              "type": "math.Distance"
             }
           ],
           "returns": {
@@ -7454,43 +7455,43 @@
       "path": "lara.Lara"
     },
     {
-      "description": "An axis-aligned box, in the units the engine measures the world in. Whether it is placed in world coordinates or in something's own frame is for whatever hands it over to say.",
+      "description": "An axis-aligned box. Whether it is placed in the world or in something's own frame is for whatever hands it over to say.",
       "extensions": [],
       "fields": [
         {
           "description": "East edge.",
           "name": "max_x",
-          "type": "integer",
+          "type": "math.Distance",
           "writable": true
         },
         {
           "description": "Bottom edge.",
           "name": "max_y",
-          "type": "integer",
+          "type": "math.Distance",
           "writable": true
         },
         {
           "description": "South edge.",
           "name": "max_z",
-          "type": "integer",
+          "type": "math.Distance",
           "writable": true
         },
         {
           "description": "West edge.",
           "name": "min_x",
-          "type": "integer",
+          "type": "math.Distance",
           "writable": true
         },
         {
-          "description": "Top edge. Y grows downwards.",
+          "description": "Top edge.",
           "name": "min_y",
-          "type": "integer",
+          "type": "math.Distance",
           "writable": true
         },
         {
           "description": "North edge.",
           "name": "min_z",
-          "type": "integer",
+          "type": "math.Distance",
           "writable": true
         }
       ],
@@ -8138,7 +8139,7 @@
       "description": "A room in the current level.",
       "extensions": [
         {
-          "description": "Where the room sits, in world coordinates.",
+          "description": "Where the room sits in the world.",
           "name": "bounds",
           "type": "math.Box"
         },
@@ -8224,9 +8225,9 @@
             }
           ],
           "returns": {
-            "description": "The height, in world units, with `nil` where there is no floor.",
+            "description": "The height, with `nil` where there is no floor.",
             "nullable": true,
-            "type": "integer"
+            "type": "math.Distance"
           }
         },
         {
@@ -8599,9 +8600,9 @@
           "writable": true
         },
         {
-          "description": "How far Lara has travelled, in world units.",
+          "description": "How far Lara has travelled.",
           "name": "distance_travelled",
-          "type": "integer",
+          "type": "math.Distance",
           "writable": true
         },
         {
@@ -8679,5 +8680,24 @@
       "path": "stats.Stats"
     }
   ],
-  "units": []
+  "units": [
+    {
+      "description": "An angle in the engine's own units, where 65536 is a full turn rather than\n2 pi. An angle counts in cycles, so one past the end of a turn wraps round\nto name the same direction: adding a half turn to a rotation always works.\n`trx.math.DEG_1` converts from degrees.",
+      "path": "math.Angle",
+      "spellings": [
+        "TRX units",
+        "angle units"
+      ],
+      "type": "integer"
+    },
+    {
+      "description": "A length in the units the engine measures the world in, where one sector is\n`trx.math.WALL_L`. Y grows downwards, so a greater Y is further down.",
+      "path": "math.Distance",
+      "spellings": [
+        "world units",
+        "world coordinates"
+      ],
+      "type": "integer"
+    }
+  ]
 }

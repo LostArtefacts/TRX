@@ -109,8 +109,8 @@ api.type("stats.Stats", {
     },
     distance_travelled = {
       from = "distance_travelled",
-      type = "integer",
-      description = "How far Lara has travelled, in world units.",
+      type = "math.Distance",
+      description = "How far Lara has travelled.",
     },
     medipacks_used = {
       from = "medipacks_used",

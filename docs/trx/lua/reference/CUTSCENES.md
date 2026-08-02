@@ -22,7 +22,7 @@ lists and `/cut` plays, are a different thing: see [`trx.game.cutscenes`](GAME.m
 
 - <a id="cutscenes.current" name="cutscenes.current"></a>**`trx.cutscenes.current`** ([trx.cutscenes.Num](#cutscenes.Num)). Number of the cutscene playing, or `nil` if none is. *(read-only)*
 - <a id="cutscenes.is_playing" name="cutscenes.is_playing"></a>**`trx.cutscenes.is_playing`** (boolean). Whether a cutscene is on screen. *(read-only)*
-- <a id="cutscenes.fov" name="cutscenes.fov"></a>**`trx.cutscenes.fov`** (integer). Field of view a cutscene plays at, in the engine's own angle units. TR4 uses 11488, against 14560 for ordinary play.
+- <a id="cutscenes.fov" name="cutscenes.fov"></a>**`trx.cutscenes.fov`** ([trx.math.Angle](MATH.md#math.Angle)). Field of view a cutscene plays at. TR4 uses 11488, against 14560 for ordinary play.
 - <a id="cutscenes.letterbox" name="cutscenes.letterbox"></a>**`trx.cutscenes.letterbox`** (number). Depth of each cinematic bar, as a fraction of the screen height. `0` removes them.
 
 ### Structures
@@ -85,7 +85,7 @@ lists and `/cut` plays, are a different thing: see [`trx.game.cutscenes`](GAME.m
 
   Parameters:
   - <a id="cutscenes.set_lara_return.pos" name="cutscenes.set_lara_return.pos"></a>**`pos`** (vec3). World position.
-  - <a id="cutscenes.set_lara_return.rot" name="cutscenes.set_lara_return.rot"></a>**`rot`** (integer, optional). Facing angle, in the engine's own angle units. Defaults to `0`.
+  - <a id="cutscenes.set_lara_return.rot" name="cutscenes.set_lara_return.rot"></a>**`rot`** ([trx.math.Angle](MATH.md#math.Angle), optional). Facing angle. Defaults to `0`.
 
   Example:
   ```lua
