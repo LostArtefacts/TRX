@@ -666,6 +666,32 @@ class TestLuaDocs(unittest.TestCase):
                 docs.read(surface)
                 self.assertEqual(docs.undocumented(surface), [expected])
 
+    def test_a_type_naming_nothing_stops_the_run(self):
+        """The engine emits what it was told; resolving it is this tool's job."""
+        surface = copy.deepcopy(SURFACE)
+        surface["functions"][0]["params"] = [
+            {"name": "num", "type": "things.nothing", "description": "A number."}
+        ]
+        docs.read(surface)
+        with self.assertRaises(SystemExit) as caught:
+            for module in surface["modules"]:
+                docs.render_page(module, surface)
+        report = str(caught.exception)
+        self.assertIn("things.nothing", report)
+        self.assertIn(surface["functions"][0]["path"], report)
+
+    def test_a_reference_says_which_declaration_it_was_read_from(self):
+        """The same path is written in a dozen places; only one has to move."""
+        surface = copy.deepcopy(SURFACE)
+        surface["functions"][1]["description"] = "See `trx.things.gone`."
+        docs.read(surface)
+        with self.assertRaises(SystemExit) as caught:
+            for module in surface["modules"]:
+                docs.render_page(module, surface)
+        report = str(caught.exception)
+        self.assertIn("`trx.things.gone`", report)
+        self.assertIn(surface["functions"][1]["path"], report)
+
     def test_a_backticked_name_that_points_nowhere_is_reported(self):
         """A name in backticks reads as something to go and look at.
 

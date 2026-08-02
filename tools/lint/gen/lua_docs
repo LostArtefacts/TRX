@@ -231,9 +231,19 @@ def anchored(path: str) -> str:
     return at
 
 
+def where() -> str:
+    """The declaration whatever is being read sits in.
+
+    Most of what the writer needs: the same name can be written in a dozen
+    places, and only one of them has to move.
+    """
+    return f" in `trx.{CONTEXT}`" if CONTEXT else ""
+
+
 def unknown(path: str) -> str:
+    """A name that lands nowhere, and the declaration it was read from."""
     return (
-        f"error: `trx.{path}` names nothing the API declares.\n"
+        f"error: `trx.{path}`{where()} names nothing the API declares.\n"
         f"  fix the reference in src/lua/api/, or declare what it names"
     )
 
@@ -305,7 +315,7 @@ def type_name(name: str) -> str:
     if name in TYPE_PATHS or name in ENUM_PATHS or name in NUMBERS or name in UNITS:
         return link(name, f"trx.{name}")
     if "." in name:
-        raise SystemExit(f"error: type `{name}` names no declared type")
+        raise SystemExit(f"error: type `{name}`{where()} names no declared type")
     return name
 
 
