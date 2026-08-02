@@ -14,6 +14,16 @@ order: 29
 
 Evaluating Lua at runtime: a string of code, or a file on disk. Both run in the same state as every other script.
 
+### Structures
+
+- <a id="lua.Error" name="lua.Error"></a>[lua]`trx.lua.Error`
+
+    What went wrong while running Lua.
+
+    Properties:
+    - <a id="lua.Error.kind" name="lua.Error.kind"></a>**`kind`**: string. Either `"syntax"` or `"runtime"`.
+    - <a id="lua.Error.message" name="lua.Error.message"></a>**`message`**: string. The error text.
+
 ### Functions
 
 - <a id="lua.eval_expr" name="lua.eval_expr"></a>[lua]`trx.lua.eval_expr(code)`  
@@ -22,11 +32,7 @@ Evaluating Lua at runtime: a string of code, or a file on disk. Both run in the 
   Parameters:
   - <a id="lua.eval_expr.code" name="lua.eval_expr.code"></a>**`code`** (string). The code.
 
-  Returns: table or `nil`. `nil` when the code ran to completion, and what went wrong otherwise. A failure comes back as a value rather than raising, so the caller decides what it means.
-
-    Keys:
-    - <a id="lua.eval_expr.kind" name="lua.eval_expr.kind"></a>**`kind`** (string). Either `"syntax"` or `"runtime"`.
-    - <a id="lua.eval_expr.message" name="lua.eval_expr.message"></a>**`message`** (string). The error text.
+  Returns: [trx.lua.Error](#lua.Error) or `nil`. `nil` when the code ran to completion, and what went wrong otherwise. A failure comes back as a value rather than raising, so the caller decides what it means.
 
   Example:
   ```lua
@@ -39,7 +45,7 @@ Evaluating Lua at runtime: a string of code, or a file on disk. Both run in the 
   Parameters:
   - <a id="lua.eval_file.path" name="lua.eval_file.path"></a>**`path`** (string). Path of the file.
 
-  Returns: table or `nil`. As in [`trx.lua.eval_expr`](#lua.eval_expr).
+  Returns: [trx.lua.Error](#lua.Error) or `nil`. As in [`trx.lua.eval_expr`](#lua.eval_expr).
 
   Example:
   ```lua

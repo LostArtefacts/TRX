@@ -83,7 +83,7 @@ here reads `nil`.
     - <a id="stats.Stats.secret_list" name="stats.Stats.secret_list"></a>[lua]`stats:secret_list()`  
       The level's secrets, in order.
 
-      Returns: table. The secrets, one by one.
+      Returns: a list of table. The secrets, one by one.
 
         Each entry:
         - <a id="stats.Stats.secret_list.num" name="stats.Stats.secret_list.num"></a>**`num`** ([trx.stats.SecretNum](#stats.SecretNum)). Which secret it is.

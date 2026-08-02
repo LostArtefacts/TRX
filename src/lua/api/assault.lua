@@ -12,6 +12,19 @@ api.number("assault.RecordNum", {
   description = "Where a time sits in the table of best times, fastest first.",
 })
 
+api.number("assault.AttemptNum", {
+  base = 1,
+  description = "Which attempt at a track it was, counted in the order they were made.",
+})
+
+api.type("assault.Record", {
+  description = "One of a track's best times.",
+  fields = {
+    time = { type = "game.Seconds", description = "The time it took." },
+    attempt_num = { type = "assault.AttemptNum" },
+  },
+})
+
 local Track = api.enum("assault.Track", {
   backing = "GYM_TRACK_TYPE",
   description = "A timed gym track.",
@@ -127,22 +140,9 @@ api.define("assault.stats.list_records", {
   description = "The records, fastest first.",
   params = { track_param() },
   returns = {
-    type = "table",
-    description = "The records.",
+    type = "assault.Record",
     list = true,
-    fields = {
-      {
-        name = "time",
-        type = "game.Seconds",
-        description = "The time it took.",
-      },
-      {
-        name = "attempt_num",
-        type = "integer",
-        base = 1,
-        description = "Which attempt it was.",
-      },
-    },
+    description = "The records.",
   },
   examples = {
     [[for _, record in ipairs(trx.assault.stats.list_records(trx.assault.Track.QUAD)) do

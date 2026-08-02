@@ -16,6 +16,17 @@ Module for reading and changing engine settings.
 
 These are the player's settings, not the level's. [`trx.config.set`](#config.set) writes to them and keeps the change: it is remembered across saves and relaunches, exactly as if the player had made it themselves. A level that wants to tint the water or pull the fog in wants [`trx.config.override`](#config.override) instead, which lasts as long as the script keeps it and leaves the player's own value untouched underneath.
 
+### Structures
+
+- <a id="config.Shape" name="config.Shape"></a>[lua]`trx.config.Shape`
+
+    How a setting is entered and shown, beyond the type it reads back as.
+
+    Properties:
+    - <a id="config.Shape.kind" name="config.Shape.kind"></a>**`kind`**: string. One of `boolean`, `integer`, `number`, `color`, `enum`, `dynamic_enum` or `string`.
+    - <a id="config.Shape.percent" name="config.Shape.percent"></a>**`percent`**: boolean. Marks a number stored 0-1 but entered and shown as a 0-100 percentage.
+    - <a id="config.Shape.values" name="config.Shape.values"></a>**`values`**: table. What the setting accepts, for the enum kinds. `nil` for the rest.
+
 ### Functions
 
 - <a id="config.get" name="config.get"></a>[lua]`trx.config.get(key)`  
@@ -39,12 +50,7 @@ These are the player's settings, not the level's. [`trx.config.set`](#config.set
   Parameters:
   - <a id="config.describe.key" name="config.describe.key"></a>**`key`** (string). Dotted path.
 
-  Returns: table. What the setting is and how it is entered.
-
-    Keys:
-    - <a id="config.describe.kind" name="config.describe.kind"></a>**`kind`** (string). One of `boolean`, `integer`, `number`, `color`, `enum`, `dynamic_enum` or `string`.
-    - <a id="config.describe.percent" name="config.describe.percent"></a>**`percent`** (boolean). Marks a number stored 0-1 but entered and shown as a 0-100 percentage.
-    - <a id="config.describe.values" name="config.describe.values"></a>**`values`** (table). What the setting accepts, for the enum kinds. `nil` for the rest.
+  Returns: [trx.config.Shape](#config.Shape). What the setting is and how it is entered.
 
   Example:
   ```lua

@@ -8,6 +8,23 @@ api.module("strings", {
     .. "about manipulating strings, that one is about which string the player gets.",
 })
 
+api.type("strings.Match", {
+  description = "A candidate that matched, and how well.",
+  fields = {
+    key = { type = "string", description = "The candidate that matched." },
+    value = { type = "any", description = "What the candidate carried." },
+    score = { type = "number", description = "How well it matched." },
+    is_full = {
+      type = "boolean",
+      description = "Whether the whole candidate matched.",
+    },
+    is_word = {
+      type = "boolean",
+      description = "Whether a whole word matched.",
+    },
+  },
+})
+
 api.define("strings.fuzzy_match", {
   description = "Matches what someone typed against a list of candidates, forgivingly: `big medi` "
     .. "finds `large medipack`.\n\n"
@@ -47,36 +64,9 @@ api.define("strings.fuzzy_match", {
     },
   },
   returns = {
-    type = "table",
-    description = "The matches, best first.",
+    type = "strings.Match",
     list = true,
-    fields = {
-      {
-        name = "key",
-        type = "string",
-        description = "The candidate that matched.",
-      },
-      {
-        name = "value",
-        type = "any",
-        description = "What the candidate carried.",
-      },
-      {
-        name = "score",
-        type = "number",
-        description = "How well it matched.",
-      },
-      {
-        name = "is_full",
-        type = "boolean",
-        description = "Whether the whole candidate matched.",
-      },
-      {
-        name = "is_word",
-        type = "boolean",
-        description = "Whether a whole word matched.",
-      },
-    },
+    description = "The matches, best first.",
   },
   examples = {
     [==[local matches = trx.strings.fuzzy_match("wolf", {

@@ -31,6 +31,17 @@ Module for interacting with the developer console.
     - `trx.console.Result.BAD_INVOCATION` = `3`  
         The player typed it wrong.
 
+### Structures
+
+- <a id="console.Command" name="console.Command"></a>[lua]`trx.console.Command`
+
+    A registered console command, as the help command reads one.
+
+    Properties:
+    - <a id="console.Command.aliases" name="console.Command.aliases"></a>**`aliases`**: table. The other words that reach it, or `nil` where it answers to one.
+    - <a id="console.Command.help" name="console.Command.help"></a>**`help`**: string. What the console shows for `--help`, or `nil` where the command carries none.
+    - <a id="console.Command.name" name="console.Command.name"></a>**`name`**: string. The word the player types.
+
 ### Functions
 
 - <a id="console.log" name="console.log"></a>[lua]`trx.console.log(message)`  
@@ -137,17 +148,12 @@ Module for interacting with the developer console.
 - <a id="console.commands" name="console.commands"></a>[lua]`trx.console.commands()`  
   Every registered console command, in registration order. The help command is built on this.
 
-  Returns: table. The commands.
-
-    Each entry:
-    - <a id="console.commands.name" name="console.commands.name"></a>**`name`** (string). The word the player types.
-    - <a id="console.commands.aliases" name="console.commands.aliases"></a>**`aliases`** (table). The other words that reach it, or `nil` where it answers to one.
-    - <a id="console.commands.help" name="console.commands.help"></a>**`help`** (string). What the console shows for `--help`, or `nil` where the command carries none.
+  Returns: a list of [trx.console.Command](#console.Command). The commands.
 
 - <a id="console.command" name="console.command"></a>[lua]`trx.console.command(name)`  
-  The command a name reaches, by its own name or an alias, matched as the console matches when it dispatches. The same `{ name, aliases, help }` as an entry of [`trx.console.commands`](#console.commands), or nil when nothing answers to the name.
+  The command a name reaches, by its own name or an alias, matched as the console matches when it dispatches.
 
   Parameters:
   - <a id="console.command.name" name="console.command.name"></a>**`name`** (string). The word or alias to look up.
 
-  Returns: table. `{ name, aliases, help }`, or nil.
+  Returns: [trx.console.Command](#console.Command) or `nil`. `nil` when nothing answers to the name.

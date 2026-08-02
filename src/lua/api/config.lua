@@ -20,6 +20,26 @@ trx.locale.declare({
   ["console/config/accepted_percent"] = "[integer]",
 })
 
+api.type("config.Shape", {
+  description = "How a setting is entered and shown, beyond the type it reads back as.",
+  fields = {
+    kind = {
+      type = "string",
+      description = "One of `boolean`, `integer`, `number`, `color`, `enum`, "
+        .. "`dynamic_enum` or `string`. <!--noref: color, enum, dynamic_enum-->",
+    },
+    percent = {
+      type = "boolean",
+      description = "Marks a number stored 0-1 but entered and shown as a 0-100 "
+        .. "percentage.",
+    },
+    values = {
+      type = "table",
+      description = "What the setting accepts, for the enum kinds. `nil` for the rest.",
+    },
+  },
+})
+
 api.define("config.get", {
   description = "Reads a setting. The value comes back as the type the option is declared with, so "
     .. "a boolean option reads as a boolean. Colors and enums read as strings.",
@@ -46,27 +66,8 @@ api.define("config.describe", {
     { name = "key", type = "string", description = "Dotted path." },
   },
   returns = {
-    type = "table",
+    type = "config.Shape",
     description = "What the setting is and how it is entered.",
-    fields = {
-      {
-        name = "kind",
-        type = "string",
-        description = "One of `boolean`, `integer`, `number`, `color`, `enum`, "
-          .. "`dynamic_enum` or `string`. <!--noref: color, enum, dynamic_enum-->",
-      },
-      {
-        name = "percent",
-        type = "boolean",
-        description = "Marks a number stored 0-1 but entered and shown as a 0-100 "
-          .. "percentage.",
-      },
-      {
-        name = "values",
-        type = "table",
-        description = "What the setting accepts, for the enum kinds. `nil` for the rest.",
-      },
-    },
   },
   examples = {
     [[for _, value in ipairs(trx.config.describe("visuals.shadow_type").values) do
