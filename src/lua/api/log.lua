@@ -5,7 +5,7 @@ api.module("log", {
   order = 26,
   title = "Logging",
   description = "Logs a message to the terminal and to `TRX.log` in the installation directory. "
-    .. " "
+    .. "<!--noref: TRX.log--> "
     .. "Each call records the Lua script's filename, function name and line number.",
 })
 

@@ -329,7 +329,7 @@ api.define("query.narrowing", {
   },
   returns = {
     type = "function",
-    description = "The method to declare as an `impl`.",
+    description = "The method to declare as an `impl`. <!--noref: impl-->",
   },
   impl = function(make)
     return function(self, ...)

@@ -906,7 +906,7 @@ Parser = api.type("argparse.Parser", {
         {
           name = "name",
           type = "string",
-          description = "What the parsed value is keyed by. `help` is reserved.",
+          description = "What the parsed value is keyed by. `help` is reserved. <!--noref: help-->",
         },
         {
           name = "opts",

@@ -27,7 +27,7 @@ api.define("config.get", {
     {
       name = "key",
       type = "string",
-      description = "Dotted path, e.g. `visuals.water_color`.",
+      description = "Dotted path, e.g. `visuals.water_color`. <!--noref: visuals.water_color-->",
     },
   },
   returns = { type = "any", description = "Raises if no option has that key." },
@@ -53,7 +53,7 @@ api.define("config.describe", {
         name = "kind",
         type = "string",
         description = "One of `boolean`, `integer`, `number`, `color`, `enum`, "
-          .. "`dynamic_enum` or `string`.",
+          .. "`dynamic_enum` or `string`. <!--noref: color, enum, dynamic_enum-->",
       },
       {
         name = "percent",

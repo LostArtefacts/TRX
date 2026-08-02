@@ -12,7 +12,7 @@ order: 26
 
 ## <a id="log" name="log"></a>Logging module
 
-Logs a message to the terminal and to `TRX.log` in the installation directory.  Each call records the Lua script's filename, function name and line number.
+Logs a message to the terminal and to `TRX.log` in the installation directory. Each call records the Lua script's filename, function name and line number.
 
 ### Enums
 

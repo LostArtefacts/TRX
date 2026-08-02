@@ -109,7 +109,7 @@ local Object = api.type("objects.Object", {
     names = {
       type = "table",
       description = "Every name the object answers to, in the player's language. An object has "
-        .. "more than one: a large medipack is also a `medipack` and a `big medi`.",
+        .. "more than one: a large medipack is also a `medipack` and a `big medi`. <!--noref: medipack-->",
       impl = function(object)
         return object:get_names()
       end,
@@ -127,7 +127,7 @@ local Object = api.type("objects.Object", {
       type = "table",
       description = "The object's own typed properties, which every item of the type inherits. "
         .. "Writing here changes the default for all of them; write to `trx.items.Item.properties` to change "
-        .. "one item only. Iterable with `pairs()`. See [Objects](../../OBJECTS.md).",
+        .. "one item only. Iterable with `pairs()`. See [Objects](docs/trx/OBJECTS.md).",
       impl = make_properties,
     },
   },

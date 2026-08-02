@@ -133,7 +133,6 @@ end
     - <a id="items.Item.is_simulated" name="items.Item.is_simulated"></a>**`is_simulated`**: boolean. Whether the item's control routine runs each frame. Call [`activate`](#items.Item.activate) to start it. *(read-only)*
     - <a id="items.Item.is_targetable" name="items.Item.is_targetable"></a>**`is_targetable`**: boolean. Whether Lara's auto-aim can lock onto the item right now. *(read-only)*
     - <a id="items.Item.is_triggered" name="items.Item.is_triggered"></a>**`is_triggered`**: boolean. Whether the item's trigger currently says go. This is what a door, a switch or an alarm reads to decide whether to act; a creature ignores it and goes by whether it is running.
-
       It is a verdict on [`trigger_mask`](#items.Item.trigger_mask), [`timer`](#items.Item.timer) and [`is_reversed`](#items.Item.is_reversed) together, not a field of its own. *(read-only)*
     - <a id="items.Item.is_visible" name="items.Item.is_visible"></a>**`is_visible`**: boolean. Whether the item is drawn. It can be present in the world but not visible, like an ambush enemy waiting to appear.
     - <a id="items.Item.max_hit_points" name="items.Item.max_hit_points"></a>**`max_hit_points`**: integer. Maximum hit points. Set the `max_hit_points` entry of [`properties`](#items.Item.properties) to change it. *(read-only)*
