@@ -1399,7 +1399,6 @@ function api.describe()
       examples = spec.examples,
       bulk = spec.bulk == true,
       count = spec.count,
-      source = spec.source,
       values = {},
     }
     -- Names only, and no values: the ids are TRX's own, and a script refers to
