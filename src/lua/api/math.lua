@@ -3,30 +3,46 @@ local api = trx.api
 
 api.module("math", {
   order = 27,
-  description = "Fixed-point trigonometry, matching the engine's own tables.\n\n"
-    .. "TRX angles are 16-bit units where 65536 is a full turn, not radians. Using these rather "
+  description = "Fixed-point trigonometry, matching the engine's own tables. Using these rather "
     .. "than Lua's `math` library guarantees a script places things exactly where the engine "
-    .. "would.",
+    .. "would. `trx.math.Angle` says what an angle is here.",
+})
+
+api.unit("math.Angle", {
+  description = [[
+    An angle in the engine's own units, where 65536 is a full turn rather than
+    2 pi. An angle counts in cycles, so one past the end of a turn wraps round
+    to name the same direction: adding a half turn to a rotation always works.
+    `trx.math.DEG_1` converts from degrees.
+  ]],
+  spellings = { "TRX units", "angle units" },
+})
+
+api.unit("math.Distance", {
+  description = [[
+    A length in the units the engine measures the world in, where one sector is
+    `trx.math.WALL_L`. Y grows downwards, so a greater Y is further down.
+  ]],
+  spellings = { "world units", "world coordinates" },
 })
 
 api.type("math.Box", {
-  description = "An axis-aligned box, in the units the engine measures the world in. Whether it "
-    .. "is placed in world coordinates or in something's own frame is for whatever hands it "
-    .. "over to say.",
+  description = "An axis-aligned box. Whether it is placed in the world or in something's own "
+    .. "frame is for whatever hands it over to say.",
   fields = {
-    min_x = { type = "integer", description = "West edge." },
-    min_y = { type = "integer", description = "Top edge. Y grows downwards." },
-    min_z = { type = "integer", description = "North edge." },
-    max_x = { type = "integer", description = "East edge." },
-    max_y = { type = "integer", description = "Bottom edge." },
-    max_z = { type = "integer", description = "South edge." },
+    min_x = { type = "math.Distance", description = "West edge." },
+    min_y = { type = "math.Distance", description = "Top edge." },
+    min_z = { type = "math.Distance", description = "North edge." },
+    max_x = { type = "math.Distance", description = "East edge." },
+    max_y = { type = "math.Distance", description = "Bottom edge." },
+    max_z = { type = "math.Distance", description = "South edge." },
   },
 })
 
 api.define("math.sin", {
   description = "Sine of an angle.",
   params = {
-    { name = "angle", type = "integer", description = "Angle in TRX units." },
+    { name = "angle", type = "math.Angle" },
   },
   returns = { type = "number", description = "A value in [-1, 1]." },
   impl = raw.sin,
@@ -35,27 +51,27 @@ api.define("math.sin", {
 api.define("math.cos", {
   description = "Cosine of an angle.",
   params = {
-    { name = "angle", type = "integer", description = "Angle in TRX units." },
+    { name = "angle", type = "math.Angle" },
   },
   returns = { type = "number", description = "A value in [-1, 1]." },
   impl = raw.cos,
 })
 
 api.define("math.atan", {
-  description = "Angle of the vector (x, z), in TRX units.",
+  description = "Angle of the vector (x, z).",
   params = {
     {
       name = "z",
-      type = "integer",
+      type = "math.Distance",
       description = "How far the vector reaches north.",
     },
     {
       name = "x",
-      type = "integer",
+      type = "math.Distance",
       description = "How far it reaches east.",
     },
   },
-  returns = { type = "integer", description = "In TRX units." },
+  returns = { type = "math.Angle" },
   examples = {
     [[-- face an item towards Lara
 local angle = trx.math.atan(lara.pos.z - pos.z, lara.pos.x - pos.x)]],
@@ -65,21 +81,25 @@ local angle = trx.math.atan(lara.pos.z - pos.z, lara.pos.x - pos.x)]],
 
 api.const("math.DEG_1", {
   value = raw.DEG_1,
-  description = "One degree in TRX units. Multiply by it to say an angle in degrees: `45 * trx.math.DEG_1`.",
+  type = "math.Angle",
+  description = "One degree. Multiply by it to say an angle in degrees: `45 * trx.math.DEG_1`.",
 })
 
 api.const("math.DEG_45", {
   value = raw.DEG_45,
-  description = "A 45-degree turn, in TRX units.",
+  type = "math.Angle",
+  description = "A 45-degree turn.",
 })
 
 api.const("math.DEG_90", {
   value = raw.DEG_90,
-  description = "A quarter turn, in TRX units. A full turn is four of these, and wraps to zero.",
+  type = "math.Angle",
+  description = "A quarter turn. A full turn is four of these.",
 })
 
 api.const("math.WALL_L", {
   value = raw.WALL_L,
-  description = "The size of one sector in world units. Level geometry is laid out on this grid, "
-    .. "so it is the step to take to move an item a sector over.",
+  type = "math.Distance",
+  description = "The size of one sector. Level geometry is laid out on this grid, so it is the "
+    .. "step to take to move an item a sector over.",
 })

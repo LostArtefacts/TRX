@@ -183,9 +183,7 @@ api.type("items.Item", {
     rot = {
       from = "rot",
       type = "vec3",
-      description = "Orientation, in the units `trx.math` counts angles in. An angle counts in "
-        .. "cycles, so one past the end of the turn wraps round to name the same direction rather "
-        .. "than raising: adding a half turn to a rotation always works.",
+      description = "Orientation. Each component is a `trx.math.Angle`.",
     },
     anim_num = {
       from = "relative_anim_num",
@@ -744,8 +742,8 @@ lara:take_damage(lara.hit_points)]],
         { name = "pos", type = "vec3", description = "World position." },
       },
       returns = {
-        type = "integer",
-        description = "In world units, measured between the two positions.",
+        type = "math.Distance",
+        description = "Measured between the two positions.",
       },
       description = "Distance from this item to a world position.",
     },
@@ -830,7 +828,7 @@ api.define("items.spawn", {
     },
     {
       name = "angle_y",
-      type = "integer",
+      type = "math.Angle",
       optional = true,
       default = 0,
       description = "Facing angle.",
@@ -1022,8 +1020,8 @@ local ItemQuery = api.type("items.ItemQuery", {
         },
         {
           name = "radius",
-          type = "integer",
-          description = "How far out it reaches. One sector is 1024.",
+          type = "math.Distance",
+          description = "How far out it reaches.",
         },
       },
       returns = { type = "query.Query", description = "The narrowed query." },

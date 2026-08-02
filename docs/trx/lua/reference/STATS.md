@@ -52,7 +52,7 @@ here reads `nil`.
     - <a id="stats.Stats.ammo_hits" name="stats.Stats.ammo_hits"></a>**`ammo_hits`**: integer. How many of them hit something.
     - <a id="stats.Stats.ammo_used" name="stats.Stats.ammo_used"></a>**`ammo_used`**: integer. How many rounds Lara has fired.
     - <a id="stats.Stats.deaths" name="stats.Stats.deaths"></a>**`deaths`**: integer. How many times Lara has died. Unlike the rest, this is not cleared when the level is entered again: a death stays with the level it happened on.
-    - <a id="stats.Stats.distance_travelled" name="stats.Stats.distance_travelled"></a>**`distance_travelled`**: integer. How far Lara has travelled, in world units.
+    - <a id="stats.Stats.distance_travelled" name="stats.Stats.distance_travelled"></a>**`distance_travelled`**: [trx.math.Distance](MATH.md#math.Distance). How far Lara has travelled.
     - <a id="stats.Stats.medipacks_used" name="stats.Stats.medipacks_used"></a>**`medipacks_used`**: number. How many medipacks Lara has used, a small one counting as half of one.
     - <a id="stats.Stats.timer" name="stats.Stats.timer"></a>**`timer`**: integer. How long the level has been played, in game frames.
 

@@ -210,9 +210,9 @@ end)]],
     floor_height = {
       params = { FLOOR_HEIGHT_POS, FLOOR_HEIGHT_OPTS },
       returns = {
-        type = "integer",
+        type = "math.Distance",
         nullable = true,
-        description = "The height, in world units, with `nil` where there is no floor.",
+        description = "The height, with `nil` where there is no floor.",
       },
       description = "As `trx.rooms.floor_height`, looking from this room.",
       impl = function(room, pos, opts)
@@ -232,7 +232,7 @@ end)]],
     },
     bounds = {
       type = "math.Box",
-      description = "Where the room sits, in world coordinates.",
+      description = "Where the room sits in the world.",
       impl = function(room)
         return setmetatable(raw.get_bounds(room), Box)
       end,
@@ -324,9 +324,9 @@ api.define("rooms.floor_height", {
     .. "all: inside solid geometry, or off the edge of the level.",
   params = FLOOR_HEIGHT_PARAMS,
   returns = {
-    type = "integer",
+    type = "math.Distance",
     nullable = true,
-    description = "The height, in world units, with `nil` where there is no floor.",
+    description = "The height, with `nil` where there is no floor.",
   },
   examples = {
     [[local floor = trx.lara.item.room:floor_height(trx.lara.item.pos)]],

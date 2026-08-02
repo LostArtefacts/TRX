@@ -142,7 +142,7 @@ end
     - <a id="items.Item.object_id" name="items.Item.object_id"></a>**`object_id`**: [trx.catalog.objects](CATALOG.md#catalog.objects). The item's object type. *(read-only)*
     - <a id="items.Item.pos" name="items.Item.pos"></a>**`pos`**: vec3. World position. Updating this also updates [`room`](#items.Item.room) and [`room_num`](#items.Item.room_num).
     - <a id="items.Item.room_num" name="items.Item.room_num"></a>**`room_num`**: [trx.rooms.Num](ROOMS.md#rooms.Num). The room containing this item. Set [`pos`](#items.Item.pos) to move the item between rooms. *(read-only)*
-    - <a id="items.Item.rot" name="items.Item.rot"></a>**`rot`**: vec3. Orientation, in the units [`trx.math`](MATH.md#math) counts angles in. An angle counts in cycles, so one past the end of the turn wraps round to name the same direction rather than raising: adding a half turn to a rotation always works.
+    - <a id="items.Item.rot" name="items.Item.rot"></a>**`rot`**: vec3. Orientation. Each component is a [`trx.math.Angle`](MATH.md#math.Angle).
     - <a id="items.Item.speed" name="items.Item.speed"></a>**`speed`**: integer. Forward speed.
     - <a id="items.Item.timer" name="items.Item.timer"></a>**`timer`**: integer. How long the item's trigger keeps it going, in game frames. `0` runs it until something takes the trigger back; `-1` means it has run out; anything else counts down. This is the raw frame count - [`trigger`](#items.Item.trigger) takes its timer in seconds instead.
     - <a id="items.Item.touch_bits" name="items.Item.touch_bits"></a>**`touch_bits`**: integer. Bitmask of which of the item's meshes Lara is touching. *(read-only)*
@@ -181,7 +181,7 @@ end
       Parameters:
       - <a id="items.Item.distance_to.pos" name="items.Item.distance_to.pos"></a>**`pos`** (vec3). World position.
 
-      Returns: integer. In world units, measured between the two positions.
+      Returns: [trx.math.Distance](MATH.md#math.Distance). Measured between the two positions.
 
     - <a id="items.Item.get_property" name="items.Item.get_property"></a>[lua]`item:get_property(name)`  
       Reads an object property, falling back to the object's default. Prefer `item.properties.<name>`.
@@ -544,7 +544,7 @@ end
 
       Parameters:
       - <a id="items.ItemQuery.in_sphere.centre" name="items.ItemQuery.in_sphere.centre"></a>**`centre`** (vec3). Middle of the sphere.
-      - <a id="items.ItemQuery.in_sphere.radius" name="items.ItemQuery.in_sphere.radius"></a>**`radius`** (integer). How far out it reaches. One sector is 1024.
+      - <a id="items.ItemQuery.in_sphere.radius" name="items.ItemQuery.in_sphere.radius"></a>**`radius`** ([trx.math.Distance](MATH.md#math.Distance)). How far out it reaches.
 
       Returns: [trx.query.Query](QUERY.md#query.Query). The narrowed query.
 
@@ -604,7 +604,7 @@ end
   Parameters:
   - <a id="items.spawn.object_id" name="items.spawn.object_id"></a>**`object_id`** ([trx.catalog.objects](CATALOG.md#catalog.objects)). Object type to spawn.
   - <a id="items.spawn.pos" name="items.spawn.pos"></a>**`pos`** (vec3). World position. Must lie inside the level.
-  - <a id="items.spawn.angle_y" name="items.spawn.angle_y"></a>**`angle_y`** (integer, optional, default `0`). Facing angle.
+  - <a id="items.spawn.angle_y" name="items.spawn.angle_y"></a>**`angle_y`** ([trx.math.Angle](MATH.md#math.Angle), optional, default `0`). Facing angle.
   - <a id="items.spawn.opts" name="items.spawn.opts"></a>**`opts`** (table, optional). How to spawn it.
 
     Keys:

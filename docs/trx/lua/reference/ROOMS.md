@@ -71,7 +71,7 @@ end
     - <a id="rooms.Room.wind" name="rooms.Room.wind"></a>**`wind`**: boolean. Whether the room has a breeze. Requires the player to have breeze enabled.
 
     Computed properties (derived, not stored on the object):
-    - <a id="rooms.Room.bounds" name="rooms.Room.bounds"></a>**`bounds`**: [trx.math.Box](MATH.md#math.Box). Where the room sits, in world coordinates.
+    - <a id="rooms.Room.bounds" name="rooms.Room.bounds"></a>**`bounds`**: [trx.math.Box](MATH.md#math.Box). Where the room sits in the world.
     - <a id="rooms.Room.flipped_room" name="rooms.Room.flipped_room"></a>**`flipped_room`**: [trx.rooms.Room](#rooms.Room). This room's flip pair, or `nil` if it has none.
     - <a id="rooms.Room.internal_bounds" name="rooms.Room.internal_bounds"></a>**`internal_bounds`**: [trx.math.Box](MATH.md#math.Box). As [`bounds`](#rooms.Room.bounds), but excluding the outer ring of sectors, which is solid wall.
 
@@ -87,7 +87,7 @@ end
         Keys:
         - <a id="rooms.Room.floor_height.opts.fix_tilts" name="rooms.Room.floor_height.opts.fix_tilts"></a>**`fix_tilts`** (boolean, optional, default `true`). Whether a floor tilt that lies inside a wall is taken into account. `false` gives the flat height the original games read there, which is what the geometry glitches of the vanilla levels rest on.
 
-      Returns: integer or `nil`. The height, in world units, with `nil` where there is no floor.
+      Returns: [trx.math.Distance](MATH.md#math.Distance) or `nil`. The height, with `nil` where there is no floor.
 
     - <a id="rooms.Room.is_valid" name="rooms.Room.is_valid"></a>[lua]`room:is_valid()`  
       Whether the handle still refers to a room of the level that is loaded. A level change replaces the rooms, so a handle held across one goes stale rather than naming a different room: reading or writing a field on it raises an error. Check this for a handle held across time.
@@ -235,7 +235,7 @@ end
     Keys:
     - <a id="rooms.floor_height.opts.fix_tilts" name="rooms.floor_height.opts.fix_tilts"></a>**`fix_tilts`** (boolean, optional, default `true`). Whether a floor tilt that lies inside a wall is taken into account. `false` gives the flat height the original games read there, which is what the geometry glitches of the vanilla levels rest on.
 
-  Returns: integer or `nil`. The height, in world units, with `nil` where there is no floor.
+  Returns: [trx.math.Distance](MATH.md#math.Distance) or `nil`. The height, with `nil` where there is no floor.
 
   Example:
   ```lua
