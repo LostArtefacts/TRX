@@ -20,7 +20,7 @@ Argument checking for the whole of `trx`.
   Turns argument checking on or off for every function in `trx`, and for the methods on its handles. Off by default: checking costs about 100ns a call, which a per-frame handler notices. Turn it on while writing a level, and leave it off in play.
 
   Parameters:
-  - **`enabled`** (boolean). Whether to check.
+  - <a id="api.strict.enabled" name="api.strict.enabled"></a>**`enabled`** (boolean). Whether to check.
 
   Example:
   ```lua

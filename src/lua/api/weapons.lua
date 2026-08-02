@@ -24,7 +24,10 @@ Whether the game allows this weapon at all. The game flow can keep one out, and
 a cheat that hands it over anyway leaves Lara with a gun the level was built
 without.]],
   params = { weapon_param },
-  returns = { type = "boolean" },
+  returns = {
+    type = "boolean",
+    description = "True where this game has the weapon at all.",
+  },
   impl = raw.is_available,
 })
 
@@ -44,6 +47,6 @@ api.define("weapons.object", {
 api.define("weapons.shots_per_box", {
   description = "How many shots one box of ammunition for it is worth.",
   params = { weapon_param },
-  returns = { type = "integer" },
+  returns = { type = "integer", description = "Shots, not rounds." },
   impl = raw.shots_per_box,
 })

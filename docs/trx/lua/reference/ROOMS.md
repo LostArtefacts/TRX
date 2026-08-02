@@ -71,9 +71,9 @@ end
     - <a id="rooms.Room.wind" name="rooms.Room.wind"></a>**`wind`**: boolean. Whether the room has a breeze. Requires the player to have breeze enabled.
 
     Computed properties (derived, not stored on the object):
-    - <a id="rooms.Room.bounds" name="rooms.Room.bounds"></a>**`bounds`**: table. World-coordinate bounds of the room: `min_x`, `min_y`, `min_z`, `max_x`, `max_y`, `max_z`.
+    - <a id="rooms.Room.bounds" name="rooms.Room.bounds"></a>**`bounds`**: [trx.math.Box](MATH.md#math.Box). Where the room sits, in world coordinates.
     - <a id="rooms.Room.flipped_room" name="rooms.Room.flipped_room"></a>**`flipped_room`**: [trx.rooms.Room](#rooms.Room). This room's flip pair, or `nil` if it has none.
-    - <a id="rooms.Room.internal_bounds" name="rooms.Room.internal_bounds"></a>**`internal_bounds`**: table. As [`bounds`](#rooms.Room.bounds), but excluding the outer ring of sectors, which is solid wall.
+    - <a id="rooms.Room.internal_bounds" name="rooms.Room.internal_bounds"></a>**`internal_bounds`**: [trx.math.Box](MATH.md#math.Box). As [`bounds`](#rooms.Room.bounds), but excluding the outer ring of sectors, which is solid wall.
 
     Methods:
 
@@ -81,15 +81,18 @@ end
       As [`trx.rooms.floor_height`](#rooms.floor_height), looking from this room.
 
       Parameters:
-      - **`pos`** (vec3). World position.
-      - **`opts`** (table, optional). `fix_tilts`: whether a floor tilt that lies inside a wall is taken into account, `true` by default. `false` gives the flat height the original games read there, which is what the geometry glitches of the vanilla levels rest on.
+      - <a id="rooms.Room.floor_height.pos" name="rooms.Room.floor_height.pos"></a>**`pos`** (vec3). World position.
+      - <a id="rooms.Room.floor_height.opts" name="rooms.Room.floor_height.opts"></a>**`opts`** (table, optional). How to read the floor.
 
-      Returns: integer or `nil`.
+        Keys:
+        - <a id="rooms.Room.floor_height.opts.fix_tilts" name="rooms.Room.floor_height.opts.fix_tilts"></a>**`fix_tilts`** (boolean, optional, default `true`). Whether a floor tilt that lies inside a wall is taken into account. `false` gives the flat height the original games read there, which is what the geometry glitches of the vanilla levels rest on.
+
+      Returns: integer or `nil`. The height, in world units, with `nil` where there is no floor.
 
     - <a id="rooms.Room.is_valid" name="rooms.Room.is_valid"></a>[lua]`room:is_valid()`  
       Whether the handle still refers to a room of the level that is loaded. A level change replaces the rooms, so a handle held across one goes stale rather than naming a different room: reading or writing a field on it raises an error. Check this for a handle held across time.
 
-      Returns: boolean.
+      Returns: boolean. False once the level that held the room has been left.
 
       Example:
       ```lua
@@ -105,10 +108,13 @@ end
       Happens when something changes rooms into this one.
 
       Parameters:
-      - **`callback`** (function).
+      - <a id="rooms.Room.on_enter.callback" name="rooms.Room.on_enter.callback"></a>**`callback`** (function). What to run when it happens.
         Called with:
-        - **`item`** ([trx.items.Item](ITEMS.md#items.Item)). The item that changed rooms.
-      - **`opts`** (table, optional). Options. `watch = "lara"` (the default) reacts to Lara alone; `watch = "all"` to every item.
+        - <a id="rooms.Room.on_enter.item" name="rooms.Room.on_enter.item"></a>**`item`** ([trx.items.Item](ITEMS.md#items.Item)). The item that changed rooms.
+      - <a id="rooms.Room.on_enter.opts" name="rooms.Room.on_enter.opts"></a>**`opts`** (table, optional). What to watch for.
+
+        Keys:
+        - <a id="rooms.Room.on_enter.opts.watch" name="rooms.Room.on_enter.opts.watch"></a>**`watch`** (string, optional, default `"lara"`). Either `"lara"`, which reacts to Lara alone, or `"all"`, which reacts to every item.
 
       Returns: [trx.events.Listener](EVENTS.md#events.Listener). The attached handler.
 
@@ -123,10 +129,13 @@ end
       Happens when something changes rooms out of this one.
 
       Parameters:
-      - **`callback`** (function).
+      - <a id="rooms.Room.on_exit.callback" name="rooms.Room.on_exit.callback"></a>**`callback`** (function). What to run when it happens.
         Called with:
-        - **`item`** ([trx.items.Item](ITEMS.md#items.Item)). The item that changed rooms.
-      - **`opts`** (table, optional). Options. `watch = "lara"` (the default) reacts to Lara alone; `watch = "all"` to every item.
+        - <a id="rooms.Room.on_exit.item" name="rooms.Room.on_exit.item"></a>**`item`** ([trx.items.Item](ITEMS.md#items.Item)). The item that changed rooms.
+      - <a id="rooms.Room.on_exit.opts" name="rooms.Room.on_exit.opts"></a>**`opts`** (table, optional). What to watch for.
+
+        Keys:
+        - <a id="rooms.Room.on_exit.opts.watch" name="rooms.Room.on_exit.opts.watch"></a>**`watch`** (string, optional, default `"lara"`). Either `"lara"`, which reacts to Lara alone, or `"all"`, which reacts to every item.
 
       Returns: [trx.events.Listener](EVENTS.md#events.Listener). The attached handler.
 
@@ -140,7 +149,7 @@ end
       The room contains a world position. Rooms overlap, so a position can be in several at once and every one of them matches, in room order. A room claims a point when the point is within its bounds, the outer ring of solid wall aside, and the column it stands in has a floor - the test the engine itself puts a position through. The hidden half of a flip pair is passed over.
 
       Parameters:
-      - **`pos`** (vec3). World position.
+      - <a id="rooms.RoomQuery.at.pos" name="rooms.RoomQuery.at.pos"></a>**`pos`** (vec3). World position.
 
       Returns: [trx.query.Query](QUERY.md#query.Query). The narrowed query.
 
@@ -185,9 +194,9 @@ end
   Retrieves a room by number.
 
   Parameters:
-  - **`num`** ([trx.rooms.Num](#rooms.Num)).
+  - <a id="rooms.get.num" name="rooms.get.num"></a>**`num`** ([trx.rooms.Num](#rooms.Num)).
 
-  Returns: [trx.rooms.Room](#rooms.Room) or `nil`.
+  Returns: [trx.rooms.Room](#rooms.Room) or `nil`. The room, or `nil` where the level has no such number.
 
   Example:
   ```lua
@@ -198,7 +207,7 @@ end
 - <a id="rooms.count" name="rooms.count"></a>[lua]`trx.rooms.count()`  
   Returns the number of rooms in the level. Same as `#trx.rooms`.
 
-  Returns: integer.
+  Returns: integer. How many rooms the loaded level holds.
 
 - <a id="rooms.flip" name="rooms.flip"></a>[lua]`trx.rooms.flip()`  
   Flips the current room map, swapping every room with its flip pair.
@@ -207,8 +216,8 @@ end
   Sets the active flip effect, and optionally its timer.
 
   Parameters:
-  - **`effect_id`** ([trx.catalog.flip_effects](CATALOG.md#catalog.flip_effects)). Use `-1` to clear the current effect.
-  - **`timer`** (integer, optional). Flip timer value.
+  - <a id="rooms.flip_effect.effect_id" name="rooms.flip_effect.effect_id"></a>**`effect_id`** ([trx.catalog.flip_effects](CATALOG.md#catalog.flip_effects)). Use `-1` to clear the current effect.
+  - <a id="rooms.flip_effect.timer" name="rooms.flip_effect.timer"></a>**`timer`** (integer, optional). Flip timer value.
 
   Example:
   ```lua
@@ -219,11 +228,14 @@ end
   The height of the floor under a world position. `nil` where there is no floor at all: inside solid geometry, or off the edge of the level.
 
   Parameters:
-  - **`pos`** (vec3). World position.
-  - **`room_num`** ([trx.rooms.Num](#rooms.Num), optional). The search crosses portals, so a neighbouring room's floor is found too. Without it, the room is looked up from the position, which takes the first room that contains it and passes over the flipped-away ones. Where rooms overlap, name the room, or ask the room itself with [`trx.rooms.Room:floor_height`](#rooms.Room.floor_height).
-  - **`opts`** (table, optional). `fix_tilts`: whether a floor tilt that lies inside a wall is taken into account, `true` by default. `false` gives the flat height the original games read there, which is what the geometry glitches of the vanilla levels rest on.
+  - <a id="rooms.floor_height.pos" name="rooms.floor_height.pos"></a>**`pos`** (vec3). World position.
+  - <a id="rooms.floor_height.room_num" name="rooms.floor_height.room_num"></a>**`room_num`** ([trx.rooms.Num](#rooms.Num), optional). The search crosses portals, so a neighbouring room's floor is found too. Without it, the room is looked up from the position, which takes the first room that contains it and passes over the flipped-away ones. Where rooms overlap, name the room, or ask the room itself with [`trx.rooms.Room:floor_height`](#rooms.Room.floor_height).
+  - <a id="rooms.floor_height.opts" name="rooms.floor_height.opts"></a>**`opts`** (table, optional). How to read the floor.
 
-  Returns: integer or `nil`.
+    Keys:
+    - <a id="rooms.floor_height.opts.fix_tilts" name="rooms.floor_height.opts.fix_tilts"></a>**`fix_tilts`** (boolean, optional, default `true`). Whether a floor tilt that lies inside a wall is taken into account. `false` gives the flat height the original games read there, which is what the geometry glitches of the vanilla levels rest on.
+
+  Returns: integer or `nil`. The height, in world units, with `nil` where there is no floor.
 
   Example:
   ```lua
@@ -234,8 +246,8 @@ end
   Nudges a position into valid room geometry, e.g. to find somewhere an item can legally be placed.
 
   Parameters:
-  - **`pos`** (vec3). Position to search near.
-  - **`room_num`** ([trx.rooms.Num](#rooms.Num)).
+  - <a id="rooms.find_valid_pos.pos" name="rooms.find_valid_pos.pos"></a>**`pos`** (vec3). Position to search near.
+  - <a id="rooms.find_valid_pos.room_num" name="rooms.find_valid_pos.room_num"></a>**`room_num`** ([trx.rooms.Num](#rooms.Num)).
 
   Returns:
   - vec3 or `nil`. The valid position, or `nil` if none was found nearby.

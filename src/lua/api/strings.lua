@@ -11,8 +11,9 @@ api.module("strings", {
 api.define("strings.fuzzy_match", {
   description = "Matches what someone typed against a list of candidates, forgivingly: `big medi` "
     .. "finds `large medipack`.\n\n"
-    .. "Candidates are ranked, best first. Each carries a `value` of the caller's choosing, which "
-    .. "comes back untouched on the match - hang an id off it and read it back.",
+    .. "Candidates are ranked, best first. Each carries a "
+    .. "`trx.strings.fuzzy_match.sources.value` of the caller's choosing, which comes back "
+    .. "untouched on the match - hang an id off it and read it back.",
   params = {
     {
       name = "input",
@@ -22,15 +23,60 @@ api.define("strings.fuzzy_match", {
     {
       name = "sources",
       type = "table",
-      description = "List of `{ key = <the name>, value = <anything>, weight = <integer> }`. "
-        .. "The key is a non-empty string. A heavier candidate wins a tie; weight defaults to 1, "
-        .. "and a weight of zero or less drops the candidate.",
+      description = "The candidates.",
+      list = true,
+      fields = {
+        {
+          name = "key",
+          type = "string",
+          description = "The name to match against. Non-empty.",
+        },
+        {
+          name = "value",
+          type = "any",
+          description = "Anything of the caller's, handed back on the match.",
+        },
+        {
+          name = "weight",
+          type = "integer",
+          optional = true,
+          default = 1,
+          description = "A heavier candidate wins a tie. Zero or less drops it.",
+        },
+      },
     },
   },
   returns = {
     type = "table",
-    description = "The matches, best first: `{ key, value, score, is_full, is_word }`. `is_full` "
-      .. "means the whole candidate matched, `is_word` that a whole word did.",
+    description = "The matches, best first.",
+    list = true,
+    fields = {
+      {
+        name = "key",
+        type = "string",
+        description = "The candidate that matched.",
+      },
+      {
+        name = "value",
+        type = "any",
+        description = "What the candidate carried.",
+      },
+      {
+        name = "score",
+        type = "number",
+        description = "How well it matched.",
+      },
+      {
+        name = "is_full",
+        type = "boolean",
+        description = "Whether the whole candidate matched.",
+      },
+      {
+        name = "is_word",
+        type = "boolean",
+        description = "Whether a whole word matched.",
+      },
+    },
   },
   examples = {
     [==[local matches = trx.strings.fuzzy_match("wolf", {
@@ -44,7 +90,8 @@ local best = matches[1]]==],
 
 api.define("strings.parse_bool", {
   description = "Reads a boolean the way the console does: `1`, `true` or `on` for true, `0`, "
-    .. "`false` or `off` for false, in any case. Anything else is not a boolean.",
+    .. "`false` or `off` for false, in any case. Anything else is not a boolean. "
+    .. "",
   params = {
     { name = "text", type = "string", description = "The text to read." },
   },
@@ -108,14 +155,21 @@ api.define("strings.collapse_ranges", {
 api.define("strings.regex_match", {
   description = "Whether a subject matches a regular expression. Case-insensitive.",
   params = {
-    { name = "subject", type = "string" },
+    {
+      name = "subject",
+      type = "string",
+      description = "The text to search.",
+    },
     {
       name = "pattern",
       type = "string",
       description = "A PCRE regular expression.",
     },
   },
-  returns = { type = "boolean" },
+  returns = {
+    type = "boolean",
+    description = "True where the pattern matches anywhere in the subject.",
+  },
   examples = { [[if trx.strings.regex_match(args, "^\\d+$") then ... end]] },
   impl = raw.regex_match,
 })

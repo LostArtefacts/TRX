@@ -37,7 +37,7 @@ The runtime weather effect the current level shows.
   Sets the active weather.
 
   Parameters:
-  - **`type`** ([trx.weather.Type](#weather.Type)). The weather to show.
+  - <a id="weather.set.type" name="weather.set.type"></a>**`type`** ([trx.weather.Type](#weather.Type)). The weather to show.
 
   Example:
   ```lua

@@ -6,9 +6,14 @@ api.module("music", {
   description = "Module for playing and controlling the soundtrack.",
 })
 
+api.number("music.TrackNum", {
+  description = "Track number, in the numbering the loaded level carries. Not a "
+    .. "`trx.catalog.music` name, which is the soundtrack's own.",
+})
+
 local PlayMode = api.enum("music.PlayMode", {
   backing = "MUSIC_PLAY_MODE",
-  description = "How a track is played. Pass one as `opts.mode` to `trx.music.play`.",
+  description = "How a track is played. Pass one as `trx.music.play.opts.mode`.",
   values = {
     ONCE = "Plays the track once. When it finishes, any active looped track resumes from its start.",
     LOOP = "Plays the track continuously. It becomes the ambient track.",
@@ -27,9 +32,9 @@ api.type("music.Stream", {
   fields = {
     track_num = {
       from = "track_id",
-      type = "integer",
+      type = "music.TrackNum",
       writable = false,
-      description = "The track this stream is playing, in the level's own numbering.",
+      description = "The track this stream is playing.",
     },
     mode = {
       from = "mode",
@@ -47,7 +52,10 @@ api.type("music.Stream", {
 
   methods = {
     is_valid = {
-      returns = { type = "boolean" },
+      returns = {
+        type = "boolean",
+        description = "False once the slot has gone quiet.",
+      },
       description = "Whether the slot is still playing. A stream that has finished, or been "
         .. "stopped, leaves its handle stale.",
     },
@@ -84,15 +92,17 @@ api.type("music.Track", {
   fields = {
     num = {
       from = "id",
-      type = "integer",
+      type = "music.TrackNum",
       writable = false,
-      description = "The number the level gives this track.",
     },
   },
 
   methods = {
     is_valid = {
-      returns = { type = "boolean" },
+      returns = {
+        type = "boolean",
+        description = "False once a level change has replaced the tracks.",
+      },
       description = "Whether the loaded level still carries this track.",
     },
     play = {
@@ -101,7 +111,15 @@ api.type("music.Track", {
           name = "opts",
           type = "table",
           optional = true,
-          description = "`mode`: a `trx.music.PlayMode`. Defaults to `ONCE`.",
+          description = "How to play it.",
+          fields = {
+            {
+              name = "mode",
+              type = "music.PlayMode",
+              optional = true,
+              description = "Plays once by default.",
+            },
+          },
         },
       },
       returns = {
@@ -225,7 +243,15 @@ api.define("music.play", {
       name = "opts",
       type = "table",
       optional = true,
-      description = "`mode`: a `trx.music.PlayMode`. Defaults to `ONCE`.",
+      description = "How to play it.",
+      fields = {
+        {
+          name = "mode",
+          type = "music.PlayMode",
+          optional = true,
+          description = "Plays once by default.",
+        },
+      },
     },
   },
   returns = {

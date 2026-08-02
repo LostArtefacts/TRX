@@ -20,7 +20,7 @@ Module for interacting with the developer console.
 
 - <a id="console.Result" name="console.Result"></a>[lua]`trx.console.Result`
 
-    How a console command went. What a command's `run` gives back.
+    How a console command went. What a command's [`trx.console.register.spec.run`](#console.register.spec.run) gives back.
 
     - `trx.console.Result.OK` = `0`  
         It worked.
@@ -37,7 +37,7 @@ Module for interacting with the developer console.
   Logs a line to the developer console. Calling the group itself logs at `INFO`. Takes any value: a table is pretty-printed, anything else coerced to a string.
 
   Parameters:
-  - **`message`** (any). Any value; a table is pretty-printed.
+  - <a id="console.log.message" name="console.log.message"></a>**`message`** (any). Any value; a table is pretty-printed.
 
   Example:
   ```lua
@@ -48,38 +48,38 @@ Module for interacting with the developer console.
   Logs at a level chosen at runtime.
 
   Parameters:
-  - **`level`** ([trx.log.LogLevel](LOG.md#log.LogLevel)).
-  - **`message`** (any). Any value; a table is pretty-printed.
+  - <a id="console.log.generic.level" name="console.log.generic.level"></a>**`level`** ([trx.log.LogLevel](LOG.md#log.LogLevel)).
+  - <a id="console.log.generic.message" name="console.log.generic.message"></a>**`message`** (any). Any value; a table is pretty-printed.
 
 - <a id="console.log.info" name="console.log.info"></a>[lua]`trx.console.log.info(message)`  
   Logs an informational message.
 
   Parameters:
-  - **`message`** (any). Any value; a table is pretty-printed.
+  - <a id="console.log.info.message" name="console.log.info.message"></a>**`message`** (any). Any value; a table is pretty-printed.
 
 - <a id="console.log.warn" name="console.log.warn"></a>[lua]`trx.console.log.warn(message)`  
   Logs a warning.
 
   Parameters:
-  - **`message`** (any). Any value; a table is pretty-printed.
+  - <a id="console.log.warn.message" name="console.log.warn.message"></a>**`message`** (any). Any value; a table is pretty-printed.
 
 - <a id="console.log.warning" name="console.log.warning"></a>[lua]`trx.console.log.warning(message)`  
   Logs a warning. An alias of [`warn`](#console.log.warn).
 
   Parameters:
-  - **`message`** (any). Any value; a table is pretty-printed.
+  - <a id="console.log.warning.message" name="console.log.warning.message"></a>**`message`** (any). Any value; a table is pretty-printed.
 
 - <a id="console.log.error" name="console.log.error"></a>[lua]`trx.console.log.error(message)`  
   Logs an error.
 
   Parameters:
-  - **`message`** (any). Any value; a table is pretty-printed.
+  - <a id="console.log.error.message" name="console.log.error.message"></a>**`message`** (any). Any value; a table is pretty-printed.
 
 - <a id="console.log.debug" name="console.log.debug"></a>[lua]`trx.console.log.debug(message)`  
   Logs a debug message.
 
   Parameters:
-  - **`message`** (any). Any value; a table is pretty-printed.
+  - <a id="console.log.debug.message" name="console.log.debug.message"></a>**`message`** (any). Any value; a table is pretty-printed.
 
 - <a id="console.eval" name="console.eval"></a>[lua]`trx.console.eval(command, [opts])`  
   Runs a string as a developer console command. Raises if the command fails.
@@ -87,8 +87,11 @@ Module for interacting with the developer console.
   Output is silenced by default and appears only in the terminal and the log file. Pass `{ verbose = true }` to show it in the console as a command typed by the player would.
 
   Parameters:
-  - **`command`** (string). Command to run, as the player would type it.
-  - **`opts`** (table, optional). `verbose`: show the command's output.
+  - <a id="console.eval.command" name="console.eval.command"></a>**`command`** (string). Command to run, as the player would type it.
+  - <a id="console.eval.opts" name="console.eval.opts"></a>**`opts`** (table, optional). How to run it.
+
+    Keys:
+    - <a id="console.eval.opts.verbose" name="console.eval.opts.verbose"></a>**`verbose`** (boolean, optional). Show the command's output.
 
   Example:
   ```lua
@@ -98,14 +101,21 @@ Module for interacting with the developer console.
 - <a id="console.register" name="console.register"></a>[lua]`trx.console.register(spec)`  
   Registers a console command written in Lua.
 
-  Every command has a [`trx.argparse`](ARGPARSE.md#argparse) parser. `args` is an optional function that shapes it - it receives the parser and declares the arguments the command takes. A command that omits `args` takes none, and reports so when handed one. The console completes the arguments from the parser, and answers `-h`/`--help` from it.
+  Every command has a [`trx.argparse`](ARGPARSE.md#argparse) parser. [`spec.args`](#console.register.spec.args) is an optional function that shapes it - it receives the parser and declares the arguments the command takes. A command that omits [`spec.args`](#console.register.spec.args) takes none, and reports so when handed one. The console completes the arguments from the parser, and answers `-h`/`--help` from it.
 
-  `run` receives the parsed values, a table keyed by argument name. What it gives back is a [`trx.console.Result`](#console.Result), and returning nothing means `OK`. It may return a message after that, which is logged to the console - as an error, for any result but `OK`. A line the parser rejects is reported with what it expected, without reaching `run`.
+  [`spec.run`](#console.register.spec.run) receives the parsed values, a table keyed by argument name. What it gives back is a [`trx.console.Result`](#console.Result), and returning nothing means `OK`. It may return a message after that, which is logged to the console - as an error, for any result but `OK`. A line the parser rejects is reported with what it expected, without reaching [`spec.run`](#console.register.spec.run).
 
   A command lives for the whole run, so it can only be registered from a global script. A level script raises if it calls this: it runs again every time its level is loaded.
 
   Parameters:
-  - **`spec`** (table). `name`: the word the player types. `help`: a game string key for the help text, optional. `args`: a function that shapes the parser, optional. `run`: the function, called with the parsed arguments. `aliases`: other words that reach the same command, optional; they dispatch but stay out of the command listing, and the help for `name` shows them.
+  - <a id="console.register.spec" name="console.register.spec"></a>**`spec`** (table). The command.
+
+    Keys:
+    - <a id="console.register.spec.name" name="console.register.spec.name"></a>**`name`** (string). The word the player types.
+    - <a id="console.register.spec.help" name="console.register.spec.help"></a>**`help`** (string, optional). A game string key for the help text.
+    - <a id="console.register.spec.args" name="console.register.spec.args"></a>**`args`** (function, optional). Shapes the parser.
+    - <a id="console.register.spec.run" name="console.register.spec.run"></a>**`run`** (function). Called with the parsed arguments.
+    - <a id="console.register.spec.aliases" name="console.register.spec.aliases"></a>**`aliases`** (table, optional). Other words that reach the same command. They dispatch but stay out of the command listing, and the help for the command shows them.
 
   Example:
   ```lua
@@ -125,14 +135,19 @@ Module for interacting with the developer console.
   Clears the console.
 
 - <a id="console.commands" name="console.commands"></a>[lua]`trx.console.commands()`  
-  Every registered console command, in registration order. Each is `{ name, aliases, help }`: `name` is the word the player types, `aliases` the other words that reach it (a list, or absent), and `help` the text the console shows for `name --help` (absent when the command carries none). The help command is built on this.
+  Every registered console command, in registration order. The help command is built on this.
 
-  Returns: table. A list of `{ name, aliases, help }`.
+  Returns: table. The commands.
+
+    Each entry:
+    - <a id="console.commands.name" name="console.commands.name"></a>**`name`** (string). The word the player types.
+    - <a id="console.commands.aliases" name="console.commands.aliases"></a>**`aliases`** (table). The other words that reach it, or `nil` where it answers to one.
+    - <a id="console.commands.help" name="console.commands.help"></a>**`help`** (string). What the console shows for `--help`, or `nil` where the command carries none.
 
 - <a id="console.command" name="console.command"></a>[lua]`trx.console.command(name)`  
   The command a name reaches, by its own name or an alias, matched as the console matches when it dispatches. The same `{ name, aliases, help }` as an entry of [`trx.console.commands`](#console.commands), or nil when nothing answers to the name.
 
   Parameters:
-  - **`name`** (string). The word or alias to look up.
+  - <a id="console.command.name" name="console.command.name"></a>**`name`** (string). The word or alias to look up.
 
   Returns: table. `{ name, aliases, help }`, or nil.

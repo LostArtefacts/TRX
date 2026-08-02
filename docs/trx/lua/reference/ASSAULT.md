@@ -29,6 +29,12 @@ Module for controlling the Assault Course and Quad Bike timers in gym levels.
     - `trx.assault.Track.COURSE` = `1`  
         Lara's assault course.
 
+### Structures
+
+- <a id="assault.RecordNum" name="assault.RecordNum"></a>[lua]`trx.assault.RecordNum`
+
+    Where a time sits in the table of best times, fastest first. Counted from 1.
+
 ### Functions
 
 - <a id="assault.stats" name="assault.stats"></a>[lua]`trx.assault.stats`  
@@ -38,48 +44,48 @@ Module for controlling the Assault Course and Quad Bike timers in gym levels.
   Starts the timer and clears its state. Raises outside a gym level.
 
   Parameters:
-  - **`track`** ([trx.assault.Track](#assault.Track), optional, default [`trx.assault.Track.COURSE`](#assault.Track)).
+  - <a id="assault.start.track" name="assault.start.track"></a>**`track`** ([trx.assault.Track](#assault.Track), optional, default [`trx.assault.Track.COURSE`](#assault.Track)).
 
 - <a id="assault.stop" name="assault.stop"></a>[lua]`trx.assault.stop([track])`  
   Stops the timer, leaving it on screen. Raises outside a gym level.
 
   Parameters:
-  - **`track`** ([trx.assault.Track](#assault.Track), optional, default [`trx.assault.Track.COURSE`](#assault.Track)).
+  - <a id="assault.stop.track" name="assault.stop.track"></a>**`track`** ([trx.assault.Track](#assault.Track), optional, default [`trx.assault.Track.COURSE`](#assault.Track)).
 
 - <a id="assault.finish" name="assault.finish"></a>[lua]`trx.assault.finish([track])`  
   Stops the timer as completing the track does, rather than as an abort. Raises outside a gym level.
 
   Parameters:
-  - **`track`** ([trx.assault.Track](#assault.Track), optional, default [`trx.assault.Track.COURSE`](#assault.Track)).
+  - <a id="assault.finish.track" name="assault.finish.track"></a>**`track`** ([trx.assault.Track](#assault.Track), optional, default [`trx.assault.Track.COURSE`](#assault.Track)).
 
 - <a id="assault.reset" name="assault.reset"></a>[lua]`trx.assault.reset([track])`  
   Stops the timer and clears its state. Raises outside a gym level.
 
   Parameters:
-  - **`track`** ([trx.assault.Track](#assault.Track), optional, default [`trx.assault.Track.COURSE`](#assault.Track)).
+  - <a id="assault.reset.track" name="assault.reset.track"></a>**`track`** ([trx.assault.Track](#assault.Track), optional, default [`trx.assault.Track.COURSE`](#assault.Track)).
 
 - <a id="assault.is_running" name="assault.is_running"></a>[lua]`trx.assault.is_running([track])`  
   Whether the timer is counting. False outside a gym level.
 
   Parameters:
-  - **`track`** ([trx.assault.Track](#assault.Track), optional, default [`trx.assault.Track.COURSE`](#assault.Track)).
+  - <a id="assault.is_running.track" name="assault.is_running.track"></a>**`track`** ([trx.assault.Track](#assault.Track), optional, default [`trx.assault.Track.COURSE`](#assault.Track)).
 
-  Returns: boolean.
+  Returns: boolean. True from the start of a run until it is finished or stopped.
 
 - <a id="assault.is_visible" name="assault.is_visible"></a>[lua]`trx.assault.is_visible([track])`  
   Whether the timer is shown on screen. It stays visible after [`trx.assault.stop`](#assault.stop).
 
   Parameters:
-  - **`track`** ([trx.assault.Track](#assault.Track), optional, default [`trx.assault.Track.COURSE`](#assault.Track)).
+  - <a id="assault.is_visible.track" name="assault.is_visible.track"></a>**`track`** ([trx.assault.Track](#assault.Track), optional, default [`trx.assault.Track.COURSE`](#assault.Track)).
 
-  Returns: boolean.
+  Returns: boolean. True while the timer is drawn, counting or not.
 
 - <a id="assault.stats.add_record" name="assault.stats.add_record"></a>[lua]`trx.assault.stats.add_record(time, [track])`  
   Files a new record, inserting it in time order and bumping the attempt count.
 
   Parameters:
-  - **`time`** (number). Time in seconds. Must be greater than zero.
-  - **`track`** ([trx.assault.Track](#assault.Track), optional, default [`trx.assault.Track.COURSE`](#assault.Track)).
+  - <a id="assault.stats.add_record.time" name="assault.stats.add_record.time"></a>**`time`** (number). Time in seconds. Must be greater than zero.
+  - <a id="assault.stats.add_record.track" name="assault.stats.add_record.track"></a>**`track`** ([trx.assault.Track](#assault.Track), optional, default [`trx.assault.Track.COURSE`](#assault.Track)).
 
   Returns: boolean. `false` if the table is full and the time is slower than every record in it.
 
@@ -92,8 +98,8 @@ Module for controlling the Assault Course and Quad Bike timers in gym levels.
   Removes a record, closing the gap behind it.
 
   Parameters:
-  - **`record_num`** (integer). Position in the table. Counted from 1.
-  - **`track`** ([trx.assault.Track](#assault.Track), optional, default [`trx.assault.Track.COURSE`](#assault.Track)).
+  - <a id="assault.stats.remove_record.record_num" name="assault.stats.remove_record.record_num"></a>**`record_num`** ([trx.assault.RecordNum](#assault.RecordNum)).
+  - <a id="assault.stats.remove_record.track" name="assault.stats.remove_record.track"></a>**`track`** ([trx.assault.Track](#assault.Track), optional, default [`trx.assault.Track.COURSE`](#assault.Track)).
 
   Returns: boolean. `false` if there is no record at that position.
 
@@ -101,9 +107,13 @@ Module for controlling the Assault Course and Quad Bike timers in gym levels.
   The records, fastest first.
 
   Parameters:
-  - **`track`** ([trx.assault.Track](#assault.Track), optional, default [`trx.assault.Track.COURSE`](#assault.Track)).
+  - <a id="assault.stats.list_records.track" name="assault.stats.list_records.track"></a>**`track`** ([trx.assault.Track](#assault.Track), optional, default [`trx.assault.Track.COURSE`](#assault.Track)).
 
-  Returns: table. List of `{ time = seconds, attempt_num = which attempt it was }`.
+  Returns: table. The records.
+
+    Each entry:
+    - <a id="assault.stats.list_records.time" name="assault.stats.list_records.time"></a>**`time`** (number). The time, in seconds.
+    - <a id="assault.stats.list_records.attempt_num" name="assault.stats.list_records.attempt_num"></a>**`attempt_num`** (integer). Which attempt it was. Counted from 1.
 
   Example:
   ```lua

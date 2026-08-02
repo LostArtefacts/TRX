@@ -25,7 +25,7 @@ Module for playing and controlling the soundtrack.
 
 - <a id="music.PlayMode" name="music.PlayMode"></a>[lua]`trx.music.PlayMode`
 
-    How a track is played. Pass one as `opts.mode` to [`trx.music.play`](#music.play).
+    How a track is played. Pass one as [`trx.music.play.opts.mode`](#music.play.opts.mode).
 
     - `trx.music.PlayMode.ONCE` = `0`  
         Plays the track once. When it finishes, any active looped track resumes from its start.
@@ -40,6 +40,10 @@ Module for playing and controlling the soundtrack.
 
 ### Structures
 
+- <a id="music.TrackNum" name="music.TrackNum"></a>[lua]`trx.music.TrackNum`
+
+    Track number, in the numbering the loaded level carries. Not a [`trx.catalog.music`](CATALOG.md#catalog.music) name, which is the soundtrack's own.
+
 - <a id="music.Stream" name="music.Stream"></a>[lua]`trx.music.Stream`
 
     One of the soundtrack's playing streams: the main stream, or an overlay. Reach them through [`trx.music.streams`](#music.streams). A handle to a slot that is not playing goes stale, so reading a field or calling a method on it raises; check [`is_valid`](#music.Stream.is_valid) first.
@@ -51,14 +55,14 @@ Module for playing and controlling the soundtrack.
     Properties:
     - <a id="music.Stream.mode" name="music.Stream.mode"></a>**`mode`**: [trx.music.PlayMode](#music.PlayMode). How the track is playing. *(read-only)*
     - <a id="music.Stream.timestamp" name="music.Stream.timestamp"></a>**`timestamp`**: number. How far into the track the stream is, in seconds. *(read-only)*
-    - <a id="music.Stream.track_num" name="music.Stream.track_num"></a>**`track_num`**: integer. The track this stream is playing, in the level's own numbering. *(read-only)*
+    - <a id="music.Stream.track_num" name="music.Stream.track_num"></a>**`track_num`**: [trx.music.TrackNum](#music.TrackNum). The track this stream is playing. *(read-only)*
 
     Methods:
 
     - <a id="music.Stream.is_valid" name="music.Stream.is_valid"></a>[lua]`stream:is_valid()`  
       Whether the slot is still playing. A stream that has finished, or been stopped, leaves its handle stale.
 
-      Returns: boolean.
+      Returns: boolean. False once the slot has gone quiet.
 
     - <a id="music.Stream.pause" name="music.Stream.pause"></a>[lua]`stream:pause()`  
       Pauses this stream.
@@ -67,7 +71,7 @@ Module for playing and controlling the soundtrack.
       Seeks this stream to a timestamp.
 
       Parameters:
-      - **`timestamp`** (number). Where to seek to, in seconds.
+      - <a id="music.Stream.seek.timestamp" name="music.Stream.seek.timestamp"></a>**`timestamp`** (number). Where to seek to, in seconds.
 
       Returns: boolean. Whether the seek took.
 
@@ -86,14 +90,14 @@ Module for playing and controlling the soundtrack.
     unrelated one.
 
     Properties:
-    - <a id="music.Track.num" name="music.Track.num"></a>**`num`**: integer. The number the level gives this track. *(read-only)*
+    - <a id="music.Track.num" name="music.Track.num"></a>**`num`**: [trx.music.TrackNum](#music.TrackNum). *(read-only)*
 
     Methods:
 
     - <a id="music.Track.is_valid" name="music.Track.is_valid"></a>[lua]`track:is_valid()`  
       Whether the loaded level still carries this track.
 
-      Returns: boolean.
+      Returns: boolean. False once a level change has replaced the tracks.
 
     - <a id="music.Track.path" name="music.Track.path"></a>[lua]`track:path()`  
       Resolves the track's file path.
@@ -104,7 +108,10 @@ Module for playing and controlling the soundtrack.
       Plays this track.
 
       Parameters:
-      - **`opts`** (table, optional). `mode`: a [`trx.music.PlayMode`](#music.PlayMode). Defaults to `ONCE`.
+      - <a id="music.Track.play.opts" name="music.Track.play.opts"></a>**`opts`** (table, optional). How to play it.
+
+        Keys:
+        - <a id="music.Track.play.opts.mode" name="music.Track.play.opts.mode"></a>**`mode`** ([trx.music.PlayMode](#music.PlayMode), optional). Plays once by default.
 
       Returns: [trx.music.Stream](#music.Stream) or `nil`. The stream it started, or `nil` if none did.
 
@@ -114,8 +121,11 @@ Module for playing and controlling the soundtrack.
   Plays a track by catalog id, mapping it to the level's own track. A game that does not carry the track plays nothing.
 
   Parameters:
-  - **`id`** ([trx.catalog.music](CATALOG.md#catalog.music)). Track to play. To reach a track by the level's own slot, play it through a handle: `trx.music.tracks[slot]:play()`.
-  - **`opts`** (table, optional). `mode`: a [`trx.music.PlayMode`](#music.PlayMode). Defaults to `ONCE`.
+  - <a id="music.play.id" name="music.play.id"></a>**`id`** ([trx.catalog.music](CATALOG.md#catalog.music)). Track to play. To reach a track by the level's own slot, play it through a handle: `trx.music.tracks[slot]:play()`.
+  - <a id="music.play.opts" name="music.play.opts"></a>**`opts`** (table, optional). How to play it.
+
+    Keys:
+    - <a id="music.play.opts.mode" name="music.play.opts.mode"></a>**`mode`** ([trx.music.PlayMode](#music.PlayMode), optional). Plays once by default.
 
   Returns: [trx.music.Stream](#music.Stream) or `nil`. The stream it started, or `nil` if none did.
 

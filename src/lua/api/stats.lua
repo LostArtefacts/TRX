@@ -162,9 +162,24 @@ api.type("stats.Stats", {
 
   methods = {
     secret_list = {
-      description = "The level's secrets, in order, as a list of `{ num, found }`. `num` is the "
-        .. "number the player says, and `found` is whether Lara has it.",
-      returns = { type = "table", description = "The secrets, one by one." },
+      description = "The level's secrets, in order.",
+      returns = {
+        type = "table",
+        description = "The secrets, one by one.",
+        list = true,
+        fields = {
+          {
+            name = "num",
+            type = "stats.SecretNum",
+            description = "Which secret it is.",
+          },
+          {
+            name = "found",
+            type = "boolean",
+            description = "Whether Lara has it.",
+          },
+        },
+      },
       examples = {
         [[for _, secret in ipairs(trx.stats.secret_list()) do
   trx.log.info(secret.num .. ": " .. tostring(secret.found))

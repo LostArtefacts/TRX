@@ -7,6 +7,11 @@ api.module("assault", {
   description = "Module for controlling the Assault Course and Quad Bike timers in gym levels.",
 })
 
+api.number("assault.RecordNum", {
+  base = 1,
+  description = "Where a time sits in the table of best times, fastest first.",
+})
+
 local Track = api.enum("assault.Track", {
   backing = "GYM_TRACK_TYPE",
   description = "A timed gym track.",
@@ -55,14 +60,20 @@ api.define("assault.reset", {
 api.define("assault.is_running", {
   description = "Whether the timer is counting. False outside a gym level.",
   params = { track_param() },
-  returns = { type = "boolean" },
+  returns = {
+    type = "boolean",
+    description = "True from the start of a run until it is finished or stopped.",
+  },
   impl = raw.is_running,
 })
 
 api.define("assault.is_visible", {
   description = "Whether the timer is shown on screen. It stays visible after `trx.assault.stop`.",
   params = { track_param() },
-  returns = { type = "boolean" },
+  returns = {
+    type = "boolean",
+    description = "True while the timer is drawn, counting or not.",
+  },
   impl = raw.is_visible,
 })
 
@@ -101,9 +112,7 @@ api.define("assault.stats.remove_record", {
   params = {
     {
       name = "record_num",
-      type = "integer",
-      base = 1,
-      description = "Position in the table.",
+      type = "assault.RecordNum",
     },
     track_param(),
   },
@@ -119,8 +128,21 @@ api.define("assault.stats.list_records", {
   params = { track_param() },
   returns = {
     type = "table",
-    description = "List of `{ time = seconds, attempt_num = which attempt it "
-      .. "was }`.",
+    description = "The records.",
+    list = true,
+    fields = {
+      {
+        name = "time",
+        type = "number",
+        description = "The time, in seconds.",
+      },
+      {
+        name = "attempt_num",
+        type = "integer",
+        base = 1,
+        description = "Which attempt it was.",
+      },
+    },
   },
   examples = {
     [[for _, record in ipairs(trx.assault.stats.list_records(trx.assault.Track.QUAD)) do

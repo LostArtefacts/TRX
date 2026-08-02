@@ -615,16 +615,26 @@ The ids in a catalog are TRX's own, and they are the same in all four games. The
 
     </details>
 
+### Structures
+
+- <a id="catalog.Id" name="catalog.Id"></a>[lua]`trx.catalog.Id`
+
+    A TRX id, in the catalog the context names. It is the same number in every game TRX ships, which is what lets a script name a thing once.
+
+- <a id="catalog.Slot" name="catalog.Slot"></a>[lua]`trx.catalog.Slot`
+
+    A slot in this game's own files, which is the number a builder reads off Tomb Editor. It differs from game to game.
+
 ### Functions
 
 - <a id="catalog.to_slot" name="catalog.to_slot"></a>[lua]`trx.catalog.to_slot(context, id)`  
-  Converts a TRX id into the slot this game's own files use for it - the number a builder reads off Tomb Editor.
+  Converts a [`trx.catalog.Id`](#catalog.Id) into the [`trx.catalog.Slot`](#catalog.Slot) this game's own files use for it.
 
   Parameters:
-  - **`context`** ([trx.catalog.Context](#catalog.Context)). Which catalog.
-  - **`id`** (integer). The TRX id.
+  - <a id="catalog.to_slot.context" name="catalog.to_slot.context"></a>**`context`** ([trx.catalog.Context](#catalog.Context)). Which catalog.
+  - <a id="catalog.to_slot.id" name="catalog.to_slot.id"></a>**`id`** ([trx.catalog.Id](#catalog.Id)).
 
-  Returns: integer or `nil`. `nil` if this game has no slot for it - not every game has every object.
+  Returns: [trx.catalog.Slot](#catalog.Slot) or `nil`. `nil` if this game has no slot for it - not every game has every object.
 
   Example:
   ```lua
@@ -632,13 +642,13 @@ The ids in a catalog are TRX's own, and they are the same in all four games. The
   ```
 
 - <a id="catalog.from_slot" name="catalog.from_slot"></a>[lua]`trx.catalog.from_slot(context, slot)`  
-  Converts a slot from this game's own files into the TRX id for it.
+  Converts a [`trx.catalog.Slot`](#catalog.Slot) from this game's own files into the [`trx.catalog.Id`](#catalog.Id) for it.
 
   Parameters:
-  - **`context`** ([trx.catalog.Context](#catalog.Context)). Which catalog.
-  - **`slot`** (integer). The game's own id.
+  - <a id="catalog.from_slot.context" name="catalog.from_slot.context"></a>**`context`** ([trx.catalog.Context](#catalog.Context)). Which catalog.
+  - <a id="catalog.from_slot.slot" name="catalog.from_slot.slot"></a>**`slot`** ([trx.catalog.Slot](#catalog.Slot)).
 
-  Returns: integer or `nil`. `nil` if this game has nothing in that slot.
+  Returns: [trx.catalog.Id](#catalog.Id) or `nil`. `nil` if this game has nothing in that slot.
 
   Example:
   ```lua

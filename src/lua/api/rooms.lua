@@ -1,6 +1,10 @@
 local raw = trxc.rooms
 local api = trx.api
 
+require("trx.math")
+
+local Box = api.class("math.Box")
+
 require("trx.log")
 require("trx.query")
 
@@ -31,6 +35,7 @@ local ROOM_HOOK_PARAMS = {
   {
     name = "callback",
     type = "function",
+    description = "What to run when it happens.",
     params = {
       {
         name = "item",
@@ -43,8 +48,17 @@ local ROOM_HOOK_PARAMS = {
     name = "opts",
     type = "table",
     optional = true,
-    description = 'Options. `watch = "lara"` (the default) reacts to Lara alone; `watch = "all"` '
-      .. "to every item.",
+    description = "What to watch for.",
+    fields = {
+      {
+        name = "watch",
+        type = "string",
+        optional = true,
+        default = "lara",
+        description = 'Either `"lara"`, which reacts to Lara alone, or `"all"`, which reacts '
+          .. "to every item.",
+      },
+    },
   },
 }
 
@@ -58,9 +72,18 @@ local FLOOR_HEIGHT_OPTS = {
   name = "opts",
   type = "table",
   optional = true,
-  description = "`fix_tilts`: whether a floor tilt that lies inside a wall is taken into account, "
-    .. "`true` by default. `false` gives the flat height the original games read there, which is "
-    .. "what the geometry glitches of the vanilla levels rest on.",
+  description = "How to read the floor.",
+  fields = {
+    {
+      name = "fix_tilts",
+      type = "boolean",
+      optional = true,
+      default = true,
+      description = "Whether a floor tilt that lies inside a wall is taken into account. "
+        .. "`false` gives the flat height the original games read there, which is what the "
+        .. "geometry glitches of the vanilla levels rest on.",
+    },
+  },
 }
 
 local FLOOR_HEIGHT_PARAMS = {
@@ -167,7 +190,10 @@ end)]],
       end),
     },
     is_valid = {
-      returns = { type = "boolean" },
+      returns = {
+        type = "boolean",
+        description = "False once the level that held the room has been left.",
+      },
       description = "Whether the handle still refers to a room of the level that is loaded. A level "
         .. "change replaces the rooms, so a handle held across one goes stale rather than naming a "
         .. "different room: reading or writing a field on it raises an error. Check this for a "
@@ -183,7 +209,11 @@ end)]],
     },
     floor_height = {
       params = { FLOOR_HEIGHT_POS, FLOOR_HEIGHT_OPTS },
-      returns = { type = "integer", nullable = true },
+      returns = {
+        type = "integer",
+        nullable = true,
+        description = "The height, in world units, with `nil` where there is no floor.",
+      },
       description = "As `trx.rooms.floor_height`, looking from this room.",
       impl = function(room, pos, opts)
         return raw.get_height(pos, room.num, opts)
@@ -201,26 +231,26 @@ end)]],
       end,
     },
     bounds = {
-      type = "table",
-      description = "World-coordinate bounds of the room: `min_x`, `min_y`, `min_z`, `max_x`, "
-        .. "`max_y`, `max_z`.",
+      type = "math.Box",
+      description = "Where the room sits, in world coordinates.",
       impl = function(room)
-        return raw.get_bounds(room)
+        return setmetatable(raw.get_bounds(room), Box)
       end,
     },
     internal_bounds = {
-      type = "table",
-      description = "As `trx.rooms.Room.bounds`, but excluding the outer ring of sectors, which is solid wall.",
+      type = "math.Box",
+      description = "As `trx.rooms.Room.bounds`, but excluding the outer ring of sectors, which "
+        .. "is solid wall.",
       impl = function(room)
         local b = raw.get_bounds(room)
-        return {
+        return setmetatable({
           min_x = b.min_x + 1024,
           min_y = b.min_y,
           min_z = b.min_z + 1024,
           max_x = b.max_x - 1024,
           max_y = b.max_y,
           max_z = b.max_z - 1024,
-        }
+        }, Box)
       end,
     },
   },
@@ -236,7 +266,11 @@ api.define("rooms.get", {
   params = {
     { name = "num", type = "rooms.Num" },
   },
-  returns = { type = "rooms.Room", nullable = true },
+  returns = {
+    type = "rooms.Room",
+    nullable = true,
+    description = "The room, or `nil` where the level has no such number.",
+  },
   examples = {
     [[local room = trx.rooms[14]
 room.underwater = true]],
@@ -246,7 +280,10 @@ room.underwater = true]],
 
 api.define("rooms.count", {
   description = "Returns the number of rooms in the level. Same as `#trx.rooms`.",
-  returns = { type = "integer" },
+  returns = {
+    type = "integer",
+    description = "How many rooms the loaded level holds.",
+  },
   impl = raw.count,
 })
 
@@ -286,7 +323,11 @@ api.define("rooms.floor_height", {
   description = "The height of the floor under a world position. `nil` where there is no floor at "
     .. "all: inside solid geometry, or off the edge of the level.",
   params = FLOOR_HEIGHT_PARAMS,
-  returns = { type = "integer", nullable = true },
+  returns = {
+    type = "integer",
+    nullable = true,
+    description = "The height, in world units, with `nil` where there is no floor.",
+  },
   examples = {
     [[local floor = trx.lara.item.room:floor_height(trx.lara.item.pos)]],
   },

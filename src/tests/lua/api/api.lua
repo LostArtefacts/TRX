@@ -959,15 +959,42 @@ test("a Lua type's fields read and write through its accessors", function()
   assert(by_name.size.writable == false, "a field with no set is read-only")
 end)
 
-test("a Lua type's field must carry a get", function()
+test("a Lua type's field with no accessors is an entry it carries", function()
   local api = fresh_env()
-  assert(
-    not pcall(
-      api.type,
-      "things.Widget",
-      { fields = { name = { type = "string" } } }
+  local Box = api.type("things.Box", {
+    description = "...",
+    fields = {
+      min_x = { type = "integer", description = "..." },
+      max_x = { type = "integer", description = "..." },
+    },
+    methods = {
+      width = {
+        description = "...",
+        impl = function(self)
+          return self.max_x - self.min_x
+        end,
+      },
+    },
+  })
+
+  local box = setmetatable({ min_x = 1, max_x = 5 }, Box)
+  assert(box.min_x == 1)
+  assert(box:width() == 4, "a method must still be reachable")
+
+  local entry = api.describe().types[1]
+  for _, field in ipairs(entry.fields) do
+    assert(
+      field.writable == true,
+      "a stored entry is neither getter nor const"
     )
-  )
+  end
+end)
+
+test("a Lua type's field with a set needs a get as well", function()
+  local api = fresh_env()
+  assert(not pcall(api.type, "things.Widget", {
+    fields = { name = { type = "string", set = function() end } },
+  }))
 end)
 
 test("a type is named by the path it was declared under", function()

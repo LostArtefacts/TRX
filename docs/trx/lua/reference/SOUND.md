@@ -21,6 +21,10 @@ Module for playing sound effects.
 
 ### Structures
 
+- <a id="sound.SampleNum" name="sound.SampleNum"></a>[lua]`trx.sound.SampleNum`
+
+    Sample number, in the numbering the loaded level carries. Not a [`trx.catalog.samples`](CATALOG.md#catalog.samples) name, which is the sound bank's own.
+
 - <a id="sound.Sample" name="sound.Sample"></a>[lua]`trx.sound.Sample`
 
     A sound sample the current level carries. Reach them through [`trx.sound.samples`](#sound.samples). A handle to a sample the loaded level does not carry goes stale, so [`is_valid`](#sound.Sample.is_valid) answers whether it is still there.
@@ -30,7 +34,7 @@ Module for playing sound effects.
     unrelated one.
 
     Properties:
-    - <a id="sound.Sample.num" name="sound.Sample.num"></a>**`num`**: integer. The number the level gives this sample. *(read-only)*
+    - <a id="sound.Sample.num" name="sound.Sample.num"></a>**`num`**: [trx.sound.SampleNum](#sound.SampleNum). *(read-only)*
     - <a id="sound.Sample.pitch" name="sound.Sample.pitch"></a>**`pitch`**: integer. The sample's base pitch. *(read-only)*
     - <a id="sound.Sample.randomness" name="sound.Sample.randomness"></a>**`randomness`**: integer. How much the sample's playback is randomized. *(read-only)*
     - <a id="sound.Sample.range" name="sound.Sample.range"></a>**`range`**: integer. How far the sample carries. *(read-only)*
@@ -41,13 +45,16 @@ Module for playing sound effects.
     - <a id="sound.Sample.is_valid" name="sound.Sample.is_valid"></a>[lua]`sample:is_valid()`  
       Whether the loaded level still carries this sample.
 
-      Returns: boolean.
+      Returns: boolean. False once a level change has replaced the samples.
 
     - <a id="sound.Sample.play" name="sound.Sample.play"></a>[lua]`sample:play([opts])`  
       Plays this sample.
 
       Parameters:
-      - **`opts`** (table, optional). `pos`: a `{ x =, y =, z = }` world position to play from, which applies pan and volume. Omit to play at full volume.
+      - <a id="sound.Sample.play.opts" name="sound.Sample.play.opts"></a>**`opts`** (table, optional). How to play it.
+
+        Keys:
+        - <a id="sound.Sample.play.opts.pos" name="sound.Sample.play.opts.pos"></a>**`pos`** (vec3, optional). A world position to play from, which applies pan and volume. Omit to play at full volume.
 
       Returns: [trx.sound.Stream](#sound.Stream) or `nil`. The voice it started, or `nil` if none did.
 
@@ -63,14 +70,14 @@ Module for playing sound effects.
     unrelated one.
 
     Properties:
-    - <a id="sound.Stream.sample_num" name="sound.Stream.sample_num"></a>**`sample_num`**: integer. The sample this voice is playing, in the level's own numbering. *(read-only)*
+    - <a id="sound.Stream.sample_num" name="sound.Stream.sample_num"></a>**`sample_num`**: [trx.sound.SampleNum](#sound.SampleNum). The sample this voice is playing. *(read-only)*
 
     Methods:
 
     - <a id="sound.Stream.is_valid" name="sound.Stream.is_valid"></a>[lua]`stream:is_valid()`  
       Whether this voice is still playing.
 
-      Returns: boolean.
+      Returns: boolean. False once the voice has fallen silent.
 
     - <a id="sound.Stream.pause" name="sound.Stream.pause"></a>[lua]`stream:pause()`  
       Pauses this voice.
@@ -87,8 +94,11 @@ Module for playing sound effects.
   Plays a sound effect by catalog id, mapping it to the level's own sample. A game that does not carry the sample plays nothing.
 
   Parameters:
-  - **`id`** ([trx.catalog.samples](CATALOG.md#catalog.samples)). Sample to play. To reach a sample by the level's own slot, play it through a handle: `trx.sound.samples[slot]:play()`.
-  - **`opts`** (table, optional). `pos`: a `{ x =, y =, z = }` world position to play from, which applies pan and volume. Omit to play at full volume.
+  - <a id="sound.play.id" name="sound.play.id"></a>**`id`** ([trx.catalog.samples](CATALOG.md#catalog.samples)). Sample to play. To reach a sample by the level's own slot, play it through a handle: `trx.sound.samples[slot]:play()`.
+  - <a id="sound.play.opts" name="sound.play.opts"></a>**`opts`** (table, optional). How to play it.
+
+    Keys:
+    - <a id="sound.play.opts.pos" name="sound.play.opts.pos"></a>**`pos`** (vec3, optional). A world position to play from, which applies pan and volume. Omit to play at full volume.
 
   Returns: [trx.sound.Stream](#sound.Stream) or `nil`. The voice it started, or `nil` if none did.
 
@@ -102,7 +112,7 @@ Module for playing sound effects.
   Stops a sound effect by catalog id.
 
   Parameters:
-  - **`id`** ([trx.catalog.samples](CATALOG.md#catalog.samples)). Sample to stop. To reach a sample by the level's own slot, stop it through a handle: `trx.sound.samples[slot]:stop()`.
+  - <a id="sound.stop.id" name="sound.stop.id"></a>**`id`** ([trx.catalog.samples](CATALOG.md#catalog.samples)). Sample to stop. To reach a sample by the level's own slot, stop it through a handle: `trx.sound.samples[slot]:stop()`.
 
 - <a id="sound.stop_all" name="sound.stop_all"></a>[lua]`trx.sound.stop_all()`  
   Stops every sound effect currently playing.

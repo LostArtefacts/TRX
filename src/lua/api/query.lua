@@ -153,6 +153,7 @@ local Query = api.type("query.Query", {
         {
           name = "predicate",
           type = "function",
+          description = "The test each candidate is put through.",
           params = {
             {
               name = "id",
@@ -222,7 +223,10 @@ end)]],
 
     count = {
       description = "How many candidates match.",
-      returns = { type = "integer" },
+      returns = {
+        type = "integer",
+        description = "The count, without building the list.",
+      },
       impl = function(self)
         return #resolved(self)
       end,
@@ -345,8 +349,36 @@ api.define("query.new", {
     {
       name = "domain",
       type = "table",
-      description = "What the query runs against: `enumerate`, `id_of`, `searchable`, and an "
-        .. "optional `names_of`/`default_names_of` name layer. See the module source.",
+      description = "What the query runs against.",
+      fields = {
+        {
+          name = "enumerate",
+          type = "function",
+          description = "Every id the domain holds.",
+        },
+        {
+          name = "id_of",
+          type = "function",
+          description = "The id of a thing the domain hands out.",
+        },
+        {
+          name = "searchable",
+          type = "function",
+          description = "Whether an id is one a name may reach.",
+        },
+        {
+          name = "names_of",
+          type = "function",
+          optional = true,
+          description = "The names an id answers to, for a domain that has them.",
+        },
+        {
+          name = "default_names_of",
+          type = "function",
+          optional = true,
+          description = "The same names before a language file is loaded.",
+        },
+      },
     },
     {
       name = "class",

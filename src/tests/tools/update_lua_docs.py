@@ -29,7 +29,6 @@ def rendered(surface, module=None):
     when the next one renders.
     """
     for table in (
-        docs.ALIASES,
         docs.NUMBERS,
         docs.ANCHORS,
         docs.TYPE_PATHS,
@@ -38,6 +37,7 @@ def rendered(surface, module=None):
         docs.CONSTANTS,
         docs.ENUM_PATHS,
         docs.ENUM_CONSTANTS,
+        docs.ALIASES,
     ):
         table.clear()
     docs.read(surface)

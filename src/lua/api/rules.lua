@@ -65,7 +65,10 @@ rule("corpse.fade_speed", {
 api.define("rules.list", {
   description = "Every rule there is, as dotted `group.field` keys.",
   params = {},
-  returns = { type = "table" },
+  returns = {
+    type = "table",
+    description = "The keys, in no particular order.",
+  },
   impl = raw.list,
 })
 
@@ -91,7 +94,11 @@ api.define("rules.set", {
       type = "string",
       description = "Dotted path, e.g. `exposure.damage`.",
     },
-    { name = "value", type = "any" },
+    {
+      name = "value",
+      type = "any",
+      description = "The value to write, of the type the rule declares.",
+    },
   },
   impl = raw.set,
 })
@@ -115,7 +122,7 @@ api.define("rules.format_value", {
   params = {
     { name = "key", type = "string", description = "Dotted path." },
   },
-  returns = { type = "string" },
+  returns = { type = "string", description = "The text, ready to print." },
   impl = raw.format_value,
 })
 

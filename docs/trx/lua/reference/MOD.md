@@ -61,7 +61,7 @@ The mods the game was built with, and which one is loaded.
   Restarts the game into another mod. The switch happens once the game flow picks it up, not on the call.
 
   Parameters:
-  - **`mod`** (any). A [`trx.mod.Mod`](#mod.Mod) or a mod name.
+  - <a id="mod.switch.mod" name="mod.switch.mod"></a>**`mod`** (any). A [`trx.mod.Mod`](#mod.Mod) or a mod name.
 
   Returns:
   - boolean. Whether the mod can be switched to. `false` leaves the game where it is.

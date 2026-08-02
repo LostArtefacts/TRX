@@ -5,6 +5,7 @@ api.module("log", {
   order = 26,
   title = "Logging",
   description = "Logs a message to the terminal and to `TRX.log` in the installation directory. "
+    .. " "
     .. "Each call records the Lua script's filename, function name and line number.",
 })
 
@@ -30,7 +31,7 @@ api.define("log.generic", {
     .. "rather than written literally.",
   params = {
     { name = "level", type = "log.LogLevel" },
-    { name = "message", type = "string" },
+    { name = "message", type = "string", description = "The line to log." },
   },
   examples = {
     [[local level = ok and trx.log.LogLevel.INFO or trx.log.LogLevel.ERROR
@@ -43,31 +44,41 @@ trx.log.generic(level, "finished")]],
 
 api.define("log.info", {
   description = "Logs an informational message.",
-  params = { { name = "message", type = "string" } },
+  params = {
+    { name = "message", type = "string", description = "The line to log." },
+  },
   examples = { [[trx.log.info("hello from lua")]] },
   impl = at(LogLevel.INFO),
 })
 
 api.define("log.warn", {
   description = "Logs a warning.",
-  params = { { name = "message", type = "string" } },
+  params = {
+    { name = "message", type = "string", description = "The line to log." },
+  },
   impl = at(LogLevel.WARNING),
 })
 
 api.define("log.warning", {
   description = "Logs a warning. An alias of `trx.log.warn`.",
-  params = { { name = "message", type = "string" } },
+  params = {
+    { name = "message", type = "string", description = "The line to log." },
+  },
   impl = at(LogLevel.WARNING),
 })
 
 api.define("log.error", {
   description = "Logs an error.",
-  params = { { name = "message", type = "string" } },
+  params = {
+    { name = "message", type = "string", description = "The line to log." },
+  },
   impl = at(LogLevel.ERROR),
 })
 
 api.define("log.debug", {
   description = "Logs a debug message.",
-  params = { { name = "message", type = "string" } },
+  params = {
+    { name = "message", type = "string", description = "The line to log." },
+  },
   impl = at(LogLevel.DEBUG),
 })

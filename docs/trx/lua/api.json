@@ -29,9 +29,7 @@
         "for _, entry in pairs(trx.inventory) do\n  trx.log.info((\"%d x %s\"):format(entry.count, trx.catalog.objects[entry.object]))\nend"
       ],
       "key": {
-        "base": 1,
-        "description": "Position in the ring.",
-        "type": "integer"
+        "type": "inventory.EntryNum"
       },
       "module": "inventory",
       "value": {
@@ -1981,7 +1979,7 @@
     {
       "bulk": false,
       "count": 4,
-      "description": "How a console command went. What a command's `run` gives back.",
+      "description": "How a console command went. What a command's `trx.console.register.spec.run` gives back.",
       "path": "console.Result",
       "values": [
         {
@@ -2512,7 +2510,7 @@
     {
       "bulk": false,
       "count": 5,
-      "description": "How a track is played. Pass one as `opts.mode` to `trx.music.play`.",
+      "description": "How a track is played. Pass one as `trx.music.play.opts.mode`.",
       "path": "music.PlayMode",
       "values": [
         {
@@ -2631,13 +2629,27 @@
       }
     },
     {
-      "description": "Creates an argument parser. See the module description for the parser's methods.",
+      "description": "Creates an argument parser.",
       "examples": [
         "local p = trx.argparse.new({ prog = \"weather\" })\np:positional(\"state\", { choices = { \"snow\", \"rain\", \"none\" } })\nlocal parsed = p:parse(\"snow\")  -- { state = \"snow\" }"
       ],
       "params": [
         {
-          "description": "`prog`: the command word, for messages. `description`: what the command does.",
+          "description": "What the parser calls itself in messages.",
+          "fields": [
+            {
+              "description": "The command word.",
+              "name": "prog",
+              "optional": true,
+              "type": "string"
+            },
+            {
+              "description": "What the command does.",
+              "name": "description",
+              "optional": true,
+              "type": "string"
+            }
+          ],
           "name": "spec",
           "optional": true,
           "type": "table"
@@ -2645,8 +2657,8 @@
       ],
       "path": "argparse.new",
       "returns": {
-        "description": "A parser. Describe its arguments with `positional`, `any_of`, `rest` and `flag`, then read them with `parse` or offer completions with `complete`.",
-        "type": "table"
+        "description": "A parser, with no arguments declared on it yet.",
+        "type": "argparse.Parser"
       }
     },
     {
@@ -2709,6 +2721,7 @@
       ],
       "path": "assault.is_running",
       "returns": {
+        "description": "True from the start of a run until it is finished or stopped.",
         "type": "boolean"
       }
     },
@@ -2724,6 +2737,7 @@
       ],
       "path": "assault.is_visible",
       "returns": {
+        "description": "True while the timer is drawn, counting or not.",
         "type": "boolean"
       }
     },
@@ -2755,10 +2769,8 @@
       "description": "Removes a record, closing the gap behind it.",
       "params": [
         {
-          "base": 1,
-          "description": "Position in the table.",
           "name": "record_num",
-          "type": "integer"
+          "type": "assault.RecordNum"
         },
         {
           "default": 1,
@@ -2788,7 +2800,21 @@
       ],
       "path": "assault.stats.list_records",
       "returns": {
-        "description": "List of `{ time = seconds, attempt_num = which attempt it was }`.",
+        "description": "The records.",
+        "fields": [
+          {
+            "description": "The time, in seconds.",
+            "name": "time",
+            "type": "number"
+          },
+          {
+            "base": 1,
+            "description": "Which attempt it was.",
+            "name": "attempt_num",
+            "type": "integer"
+          }
+        ],
+        "list": true,
         "type": "table"
       }
     },
@@ -2832,7 +2858,7 @@
       "path": "camera.cancel_flyby"
     },
     {
-      "description": "Converts a TRX id into the slot this game's own files use for it - the number a builder reads off Tomb Editor.",
+      "description": "Converts a `trx.catalog.Id` into the `trx.catalog.Slot` this game's own files use for it.",
       "examples": [
         "local slot = trx.catalog.to_slot(trx.catalog.Context.OBJECTS, trx.catalog.objects.WOLF)"
       ],
@@ -2843,20 +2869,19 @@
           "type": "catalog.Context"
         },
         {
-          "description": "The TRX id.",
           "name": "id",
-          "type": "integer"
+          "type": "catalog.Id"
         }
       ],
       "path": "catalog.to_slot",
       "returns": {
         "description": "`nil` if this game has no slot for it - not every game has every object.",
         "nullable": true,
-        "type": "integer"
+        "type": "catalog.Slot"
       }
     },
     {
-      "description": "Converts a slot from this game's own files into the TRX id for it.",
+      "description": "Converts a `trx.catalog.Slot` from this game's own files into the `trx.catalog.Id` for it.",
       "examples": [
         "local object_id = trx.catalog.from_slot(trx.catalog.Context.OBJECTS, 7)"
       ],
@@ -2867,16 +2892,15 @@
           "type": "catalog.Context"
         },
         {
-          "description": "The game's own id.",
           "name": "slot",
-          "type": "integer"
+          "type": "catalog.Slot"
         }
       ],
       "path": "catalog.from_slot",
       "returns": {
         "description": "`nil` if this game has nothing in that slot.",
         "nullable": true,
-        "type": "integer"
+        "type": "catalog.Id"
       }
     },
     {
@@ -2911,7 +2935,24 @@
       ],
       "path": "config.describe",
       "returns": {
-        "description": "`kind` is one of `boolean`, `integer`, `number`, `color`, `enum`, `dynamic_enum` or `string`. `percent` marks a number stored 0-1 but entered and shown as a 0-100 percentage. For the enum kinds, `values` lists what the setting accepts.",
+        "description": "What the setting is and how it is entered.",
+        "fields": [
+          {
+            "description": "One of `boolean`, `integer`, `number`, `color`, `enum`, `dynamic_enum` or `string`.",
+            "name": "kind",
+            "type": "string"
+          },
+          {
+            "description": "Marks a number stored 0-1 but entered and shown as a 0-100 percentage.",
+            "name": "percent",
+            "type": "boolean"
+          },
+          {
+            "description": "What the setting accepts, for the enum kinds. `nil` for the rest.",
+            "name": "values",
+            "type": "table"
+          }
+        ],
         "type": "table"
       }
     },
@@ -2929,6 +2970,7 @@
       ],
       "path": "config.format_value",
       "returns": {
+        "description": "The text, ready to print.",
         "type": "string"
       }
     },
@@ -3036,6 +3078,7 @@
       ],
       "path": "config.is_overridden",
       "returns": {
+        "description": "True while an override stands, and false once the last is lifted.",
         "type": "boolean"
       }
     },
@@ -3132,7 +3175,15 @@
           "type": "string"
         },
         {
-          "description": "`verbose`: show the command's output.",
+          "description": "How to run it.",
+          "fields": [
+            {
+              "description": "Show the command's output.",
+              "name": "verbose",
+              "optional": true,
+              "type": "boolean"
+            }
+          ],
           "name": "opts",
           "optional": true,
           "type": "table"
@@ -3141,13 +3192,43 @@
       "path": "console.eval"
     },
     {
-      "description": "Registers a console command written in Lua.\n\nEvery command has a `trx.argparse` parser. `args` is an optional function that shapes it - it receives the parser and declares the arguments the command takes. A command that omits `args` takes none, and reports so when handed one. The console completes the arguments from the parser, and answers `-h`/`--help` from it.\n\n`run` receives the parsed values, a table keyed by argument name. What it gives back is a `trx.console.Result`, and returning nothing means `OK`. It may return a message after that, which is logged to the console - as an error, for any result but `OK`. A line the parser rejects is reported with what it expected, without reaching `run`.\n\nA command lives for the whole run, so it can only be registered from a global script. A level script raises if it calls this: it runs again every time its level is loaded.",
+      "description": "Registers a console command written in Lua.\n\nEvery command has a `trx.argparse` parser. `trx.console.register.spec.args` is an optional function that shapes it - it receives the parser and declares the arguments the command takes. A command that omits `trx.console.register.spec.args` takes none, and reports so when handed one. The console completes the arguments from the parser, and answers `-h`/`--help` from it.\n\n`trx.console.register.spec.run` receives the parsed values, a table keyed by argument name. What it gives back is a `trx.console.Result`, and returning nothing means `OK`. It may return a message after that, which is logged to the console - as an error, for any result but `OK`. A line the parser rejects is reported with what it expected, without reaching `trx.console.register.spec.run`.\n\nA command lives for the whole run, so it can only be registered from a global script. A level script raises if it calls this: it runs again every time its level is loaded.",
       "examples": [
         "trx.console.register({\n  name = \"greet\",\n  aliases = { \"hello\", \"hi\" },\n  args = function(parser)\n    parser:positional(\"who\", { help = \"who to greet\" })\n  end,\n  run = function(args)\n    trx.console.log(\"hello \" .. args.who)\n  end,\n})"
       ],
       "params": [
         {
-          "description": "`name`: the word the player types. `help`: a game string key for the help text, optional. `args`: a function that shapes the parser, optional. `run`: the function, called with the parsed arguments. `aliases`: other words that reach the same command, optional; they dispatch but stay out of the command listing, and the help for `name` shows them.",
+          "description": "The command.",
+          "fields": [
+            {
+              "description": "The word the player types.",
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "description": "A game string key for the help text.",
+              "name": "help",
+              "optional": true,
+              "type": "string"
+            },
+            {
+              "description": "Shapes the parser.",
+              "name": "args",
+              "optional": true,
+              "type": "function"
+            },
+            {
+              "description": "Called with the parsed arguments.",
+              "name": "run",
+              "type": "function"
+            },
+            {
+              "description": "Other words that reach the same command. They dispatch but stay out of the command listing, and the help for the command shows them.",
+              "name": "aliases",
+              "optional": true,
+              "type": "table"
+            }
+          ],
           "name": "spec",
           "type": "table"
         }
@@ -3159,10 +3240,28 @@
       "path": "console.clear"
     },
     {
-      "description": "Every registered console command, in registration order. Each is `{ name, aliases, help }`: `name` is the word the player types, `aliases` the other words that reach it (a list, or absent), and `help` the text the console shows for `name --help` (absent when the command carries none). The help command is built on this.",
+      "description": "Every registered console command, in registration order. The help command is built on this.",
       "path": "console.commands",
       "returns": {
-        "description": "A list of `{ name, aliases, help }`.",
+        "description": "The commands.",
+        "fields": [
+          {
+            "description": "The word the player types.",
+            "name": "name",
+            "type": "string"
+          },
+          {
+            "description": "The other words that reach it, or `nil` where it answers to one.",
+            "name": "aliases",
+            "type": "table"
+          },
+          {
+            "description": "What the console shows for `--help`, or `nil` where the command carries none.",
+            "name": "help",
+            "type": "string"
+          }
+        ],
+        "list": true,
         "type": "table"
       }
     },
@@ -3230,6 +3329,7 @@
       ],
       "path": "cutscenes.is_played",
       "returns": {
+        "description": "True once it has run, which is what keeps its trigger from firing again.",
         "type": "boolean"
       }
     },
@@ -3282,6 +3382,7 @@
       ],
       "params": [
         {
+          "description": "What to run when it happens.",
           "name": "callback",
           "params": [
             {
@@ -3306,6 +3407,7 @@
       ],
       "params": [
         {
+          "description": "What to run when it happens.",
           "name": "callback",
           "type": "function"
         }
@@ -3323,6 +3425,7 @@
       ],
       "params": [
         {
+          "description": "What to run when it happens.",
           "name": "callback",
           "params": [
             {
@@ -3344,6 +3447,7 @@
       "description": "Happens on every logical game frame, before the main game logic runs. The handler takes no arguments.",
       "params": [
         {
+          "description": "What to run when it happens.",
           "name": "callback",
           "type": "function"
         }
@@ -3358,6 +3462,7 @@
       "description": "Happens on every logical game frame, after the main game logic runs. The handler takes no arguments.",
       "params": [
         {
+          "description": "What to run when it happens.",
           "name": "callback",
           "type": "function"
         }
@@ -3369,18 +3474,18 @@
       }
     },
     {
-      "description": "Claims a flip effect number and happens whenever a level runs it, whether from a floor trigger or an animation command. Place an ordinary flipeffect trigger in a level editor - pad, heavy, switch and antitrigger all work - pick an unused effect number, and handle it here from the level's script.\n\nA claimed number belongs to the script for the rest of the level: its stock engine effect does not run, even if the handler is later detached. Unclaimed numbers are unaffected.\n\nUnlike the other hooks, this happens at effect execution time, in the middle of a game frame.",
+      "description": "Claims a `trx.events.FlipEffectNum` and happens whenever a level runs it, whether from a floor trigger or an animation command. Place an ordinary flipeffect trigger in a level editor - pad, heavy, switch and antitrigger all work - pick one nothing uses, and handle it here from the level's script.\n\nA claimed number belongs to the script for the rest of the level: its stock engine effect does not run, even if the handler is later detached. Unclaimed numbers are unaffected.\n\nUnlike the other hooks, this happens at effect execution time, in the middle of a game frame.",
       "examples": [
         "trx.events.on_flip_effect(62, function(timer, item_num)\n  trx.log.info(\"flipeffect 62 ran with timer \" .. timer)\nend)"
       ],
       "params": [
         {
-          "base": 0,
-          "description": "The flip effect number to claim, as the level editor numbers them. This is not the id space of `trx.rooms.flip_effect`, which takes `trx.catalog.flip_effects` names.",
+          "description": "The one to claim.",
           "name": "effect_num",
-          "type": "integer"
+          "type": "events.FlipEffectNum"
         },
         {
+          "description": "What to run when it happens.",
           "name": "callback",
           "params": [
             {
@@ -3410,6 +3515,7 @@
       ],
       "params": [
         {
+          "description": "What to run when it happens.",
           "name": "callback",
           "params": [
             {
@@ -3444,6 +3550,7 @@
       ],
       "params": [
         {
+          "description": "What to run when it happens.",
           "name": "callback",
           "params": [
             {
@@ -3452,9 +3559,9 @@
               "type": "items.Item"
             },
             {
-              "description": "What the trigger carried: `type` (a `trx.items.TriggerType`), `mask` (the code bits it set, `1` to `31`), `timer` (in seconds), and `one_shot`.",
+              "description": "What the trigger carried.",
               "name": "trigger",
-              "type": "table"
+              "type": "items.Trigger"
             }
           ],
           "type": "function"
@@ -3473,6 +3580,7 @@
       ],
       "params": [
         {
+          "description": "What to run when it happens.",
           "name": "callback",
           "params": [
             {
@@ -3497,6 +3605,7 @@
       ],
       "params": [
         {
+          "description": "What to run when it happens.",
           "name": "callback",
           "params": [
             {
@@ -3521,6 +3630,7 @@
       ],
       "params": [
         {
+          "description": "What to run when it happens.",
           "name": "callback",
           "params": [
             {
@@ -3545,6 +3655,7 @@
       ],
       "params": [
         {
+          "description": "What to run when it happens.",
           "name": "callback",
           "params": [
             {
@@ -3569,6 +3680,7 @@
       ],
       "params": [
         {
+          "description": "What to run when it happens.",
           "name": "callback",
           "params": [
             {
@@ -3593,6 +3705,7 @@
       ],
       "params": [
         {
+          "description": "What to run when it happens.",
           "name": "callback",
           "params": [
             {
@@ -3617,6 +3730,7 @@
       ],
       "params": [
         {
+          "description": "What to run when it happens.",
           "name": "callback",
           "params": [
             {
@@ -3641,6 +3755,7 @@
       ],
       "params": [
         {
+          "description": "What to run when it happens.",
           "name": "callback",
           "params": [
             {
@@ -3665,6 +3780,7 @@
       ],
       "params": [
         {
+          "description": "What to run when it happens.",
           "name": "callback",
           "params": [
             {
@@ -3689,6 +3805,7 @@
       ],
       "params": [
         {
+          "description": "What to run when it happens.",
           "name": "callback",
           "params": [
             {
@@ -3713,6 +3830,7 @@
       ],
       "params": [
         {
+          "description": "What to run when it happens.",
           "name": "callback",
           "params": [
             {
@@ -3742,6 +3860,7 @@
       ],
       "params": [
         {
+          "description": "What to run when it happens.",
           "name": "callback",
           "params": [
             {
@@ -3766,6 +3885,7 @@
       ],
       "params": [
         {
+          "description": "What to run when it happens.",
           "name": "callback",
           "params": [
             {
@@ -3787,6 +3907,7 @@
       "description": "Happens when a TR4 cutscene's first frame is about to show, after the fade out.",
       "params": [
         {
+          "description": "What to run when it happens.",
           "name": "callback",
           "params": [
             {
@@ -3810,6 +3931,7 @@
       ],
       "params": [
         {
+          "description": "What to run when it happens.",
           "name": "callback",
           "params": [
             {
@@ -3833,6 +3955,7 @@
       ],
       "params": [
         {
+          "description": "What to run when it happens.",
           "name": "callback",
           "params": [
             {
@@ -3856,6 +3979,7 @@
       ],
       "params": [
         {
+          "description": "What the hook handed back when the handler was attached.",
           "name": "listener",
           "type": "events.Listener"
         }
@@ -3873,13 +3997,19 @@
       ],
       "params": [
         {
-          "base": 1,
-          "description": "Position in `trx.game.levels`.",
           "name": "level_num",
-          "type": "integer"
+          "type": "game.LevelNum"
         },
         {
-          "description": "`select`: start the level as the level-select screen does, rebuilding Lara's inventory to what she would carry on reaching it. Without it the level continues from the one in progress.",
+          "description": "How to start it.",
+          "fields": [
+            {
+              "description": "Start the level as the level-select screen does, rebuilding Lara's inventory to what she would carry on reaching it. Without it the level continues from the one in progress.",
+              "name": "select",
+              "optional": true,
+              "type": "boolean"
+            }
+          ],
           "name": "opts",
           "optional": true,
           "type": "table"
@@ -3891,10 +4021,8 @@
       "description": "Plays a cutscene.",
       "params": [
         {
-          "base": 1,
-          "description": "Position in `trx.game.cutscenes`.",
           "name": "cutscene_num",
-          "type": "integer"
+          "type": "cutscenes.Num"
         }
       ],
       "path": "game.play_cutscene"
@@ -3903,11 +4031,10 @@
       "description": "Plays a demo, and returns the one that started.",
       "params": [
         {
-          "base": 1,
-          "description": "Position in `trx.game.demos`. Omit to play the next demo in rotation.",
+          "description": "Omit to play the next demo in rotation.",
           "name": "demo_num",
           "optional": true,
-          "type": "integer"
+          "type": "game.DemoNum"
         }
       ],
       "path": "game.play_demo",
@@ -3961,6 +4088,7 @@
       ],
       "path": "items.get",
       "returns": {
+        "description": "The item, or `nil` where nothing answers to the key.",
         "nullable": true,
         "type": "items.Item"
       }
@@ -3989,7 +4117,15 @@
           "type": "integer"
         },
         {
-          "description": "`activate`: bring the item to life, enabling AI for creatures.",
+          "description": "How to spawn it.",
+          "fields": [
+            {
+              "description": "Bring the item to life, enabling AI for creatures.",
+              "name": "activate",
+              "optional": true,
+              "type": "boolean"
+            }
+          ],
           "name": "opts",
           "optional": true,
           "type": "table"
@@ -4006,6 +4142,7 @@
       "description": "Returns the total number of allocated items. Same as `#trx.items`.",
       "path": "items.count",
       "returns": {
+        "description": "How many slots the level holds, live or not.",
         "type": "integer"
       }
     },
@@ -4053,7 +4190,7 @@
       }
     },
     {
-      "description": "Cures Lara's poisoning. Not the same as writing `0` to `poison`: the poison has a target as well as a current value, and clearing only the value lets it climb back.",
+      "description": "Cures Lara's poisoning. Not the same as writing `0` to `trx.lara.poison`: the poison has a target as well as a current value, and clearing only the value lets it climb back.",
       "path": "lara.cure_poison"
     },
     {
@@ -4149,6 +4286,7 @@
           "type": "log.LogLevel"
         },
         {
+          "description": "The line to log.",
           "name": "message",
           "type": "string"
         }
@@ -4162,6 +4300,7 @@
       ],
       "params": [
         {
+          "description": "The line to log.",
           "name": "message",
           "type": "string"
         }
@@ -4172,6 +4311,7 @@
       "description": "Logs a warning.",
       "params": [
         {
+          "description": "The line to log.",
           "name": "message",
           "type": "string"
         }
@@ -4182,6 +4322,7 @@
       "description": "Logs a warning. An alias of `trx.log.warn`.",
       "params": [
         {
+          "description": "The line to log.",
           "name": "message",
           "type": "string"
         }
@@ -4192,6 +4333,7 @@
       "description": "Logs an error.",
       "params": [
         {
+          "description": "The line to log.",
           "name": "message",
           "type": "string"
         }
@@ -4202,6 +4344,7 @@
       "description": "Logs a debug message.",
       "params": [
         {
+          "description": "The line to log.",
           "name": "message",
           "type": "string"
         }
@@ -4222,7 +4365,19 @@
       ],
       "path": "lua.eval_expr",
       "returns": {
-        "description": "`nil` when the code ran to completion. Otherwise a table with `kind` (`\"syntax\"` or `\"runtime\"`) and `message`, the error text. A failure comes back as a value rather than raising, so the caller decides what it means.",
+        "description": "`nil` when the code ran to completion, and what went wrong otherwise. A failure comes back as a value rather than raising, so the caller decides what it means.",
+        "fields": [
+          {
+            "description": "Either `\"syntax\"` or `\"runtime\"`.",
+            "name": "kind",
+            "type": "string"
+          },
+          {
+            "description": "The error text.",
+            "name": "message",
+            "type": "string"
+          }
+        ],
         "nullable": true,
         "type": "table"
       }
@@ -4283,16 +4438,19 @@
       ],
       "params": [
         {
+          "description": "How far the vector reaches north.",
           "name": "z",
           "type": "integer"
         },
         {
+          "description": "How far it reaches east.",
           "name": "x",
           "type": "integer"
         }
       ],
       "path": "math.atan",
       "returns": {
+        "description": "In TRX units.",
         "type": "integer"
       }
     },
@@ -4328,7 +4486,15 @@
           "type": "catalog.music"
         },
         {
-          "description": "`mode`: a `trx.music.PlayMode`. Defaults to `ONCE`.",
+          "description": "How to play it.",
+          "fields": [
+            {
+              "description": "Plays once by default.",
+              "name": "mode",
+              "optional": true,
+              "type": "music.PlayMode"
+            }
+          ],
           "name": "opts",
           "optional": true,
           "type": "table"
@@ -4387,13 +4553,13 @@
           "description": "Mesh of the first.",
           "name": "mesh_num1",
           "optional": true,
-          "type": "integer"
+          "type": "objects.MeshNum"
         },
         {
           "description": "Mesh of the second.",
           "name": "mesh_num2",
           "optional": true,
-          "type": "integer"
+          "type": "objects.MeshNum"
         }
       ],
       "path": "objects.swap_mesh"
@@ -4431,7 +4597,36 @@
       "description": "Builds the identity query over a domain, as an instance of that domain's query type. `trx.objects` and `trx.items` call this to make the query a script reaches through `trx.objects.query` and `trx.items.query`.",
       "params": [
         {
-          "description": "What the query runs against: `enumerate`, `id_of`, `searchable`, and an optional `names_of`/`default_names_of` name layer. See the module source.",
+          "description": "What the query runs against.",
+          "fields": [
+            {
+              "description": "Every id the domain holds.",
+              "name": "enumerate",
+              "type": "function"
+            },
+            {
+              "description": "The id of a thing the domain hands out.",
+              "name": "id_of",
+              "type": "function"
+            },
+            {
+              "description": "Whether an id is one a name may reach.",
+              "name": "searchable",
+              "type": "function"
+            },
+            {
+              "description": "The names an id answers to, for a domain that has them.",
+              "name": "names_of",
+              "optional": true,
+              "type": "function"
+            },
+            {
+              "description": "The same names before a language file is loaded.",
+              "name": "default_names_of",
+              "optional": true,
+              "type": "function"
+            }
+          ],
           "name": "domain",
           "type": "table"
         },
@@ -4460,6 +4655,7 @@
       ],
       "path": "rooms.get",
       "returns": {
+        "description": "The room, or `nil` where the level has no such number.",
         "nullable": true,
         "type": "rooms.Room"
       }
@@ -4468,6 +4664,7 @@
       "description": "Returns the number of rooms in the level. Same as `#trx.rooms`.",
       "path": "rooms.count",
       "returns": {
+        "description": "How many rooms the loaded level holds.",
         "type": "integer"
       }
     },
@@ -4513,7 +4710,16 @@
           "type": "rooms.Num"
         },
         {
-          "description": "`fix_tilts`: whether a floor tilt that lies inside a wall is taken into account, `true` by default. `false` gives the flat height the original games read there, which is what the geometry glitches of the vanilla levels rest on.",
+          "description": "How to read the floor.",
+          "fields": [
+            {
+              "default": true,
+              "description": "Whether a floor tilt that lies inside a wall is taken into account. `false` gives the flat height the original games read there, which is what the geometry glitches of the vanilla levels rest on.",
+              "name": "fix_tilts",
+              "optional": true,
+              "type": "boolean"
+            }
+          ],
           "name": "opts",
           "optional": true,
           "type": "table"
@@ -4521,6 +4727,7 @@
       ],
       "path": "rooms.floor_height",
       "returns": {
+        "description": "The height, in world units, with `nil` where there is no floor.",
         "nullable": true,
         "type": "integer"
       }
@@ -4556,6 +4763,7 @@
       "params": [],
       "path": "rules.list",
       "returns": {
+        "description": "The keys, in no particular order.",
         "type": "table"
       }
     },
@@ -4583,6 +4791,7 @@
           "type": "string"
         },
         {
+          "description": "The value to write, of the type the rule declares.",
           "name": "value",
           "type": "any"
         }
@@ -4612,6 +4821,7 @@
       ],
       "path": "rules.format_value",
       "returns": {
+        "description": "The text, ready to print.",
         "type": "string"
       }
     },
@@ -4713,7 +4923,15 @@
           "type": "catalog.samples"
         },
         {
-          "description": "`pos`: a `{ x =, y =, z = }` world position to play from, which applies pan and volume. Omit to play at full volume.",
+          "description": "How to play it.",
+          "fields": [
+            {
+              "description": "A world position to play from, which applies pan and volume. Omit to play at full volume.",
+              "name": "pos",
+              "optional": true,
+              "type": "vec3"
+            }
+          ],
           "name": "opts",
           "optional": true,
           "type": "table"
@@ -4742,7 +4960,7 @@
       "path": "sound.stop_all"
     },
     {
-      "description": "Matches what someone typed against a list of candidates, forgivingly: `big medi` finds `large medipack`.\n\nCandidates are ranked, best first. Each carries a `value` of the caller's choosing, which comes back untouched on the match - hang an id off it and read it back.",
+      "description": "Matches what someone typed against a list of candidates, forgivingly: `big medi` finds `large medipack`.\n\nCandidates are ranked, best first. Each carries a `trx.strings.fuzzy_match.sources.value` of the caller's choosing, which comes back untouched on the match - hang an id off it and read it back.",
       "examples": [
         "local matches = trx.strings.fuzzy_match(\"wolf\", {\n  { key = \"wolf\", value = trx.catalog.objects.WOLF },\n  { key = \"bear\", value = trx.catalog.objects.BEAR },\n})\nlocal best = matches[1]"
       ],
@@ -4753,14 +4971,62 @@
           "type": "string"
         },
         {
-          "description": "List of `{ key = <the name>, value = <anything>, weight = <integer> }`. The key is a non-empty string. A heavier candidate wins a tie; weight defaults to 1, and a weight of zero or less drops the candidate.",
+          "description": "The candidates.",
+          "fields": [
+            {
+              "description": "The name to match against. Non-empty.",
+              "name": "key",
+              "type": "string"
+            },
+            {
+              "description": "Anything of the caller's, handed back on the match.",
+              "name": "value",
+              "type": "any"
+            },
+            {
+              "default": 1,
+              "description": "A heavier candidate wins a tie. Zero or less drops it.",
+              "name": "weight",
+              "optional": true,
+              "type": "integer"
+            }
+          ],
+          "list": true,
           "name": "sources",
           "type": "table"
         }
       ],
       "path": "strings.fuzzy_match",
       "returns": {
-        "description": "The matches, best first: `{ key, value, score, is_full, is_word }`. `is_full` means the whole candidate matched, `is_word` that a whole word did.",
+        "description": "The matches, best first.",
+        "fields": [
+          {
+            "description": "The candidate that matched.",
+            "name": "key",
+            "type": "string"
+          },
+          {
+            "description": "What the candidate carried.",
+            "name": "value",
+            "type": "any"
+          },
+          {
+            "description": "How well it matched.",
+            "name": "score",
+            "type": "number"
+          },
+          {
+            "description": "Whether the whole candidate matched.",
+            "name": "is_full",
+            "type": "boolean"
+          },
+          {
+            "description": "Whether a whole word matched.",
+            "name": "is_word",
+            "type": "boolean"
+          }
+        ],
+        "list": true,
         "type": "table"
       }
     },
@@ -4814,6 +5080,7 @@
       ],
       "params": [
         {
+          "description": "The text to search.",
           "name": "subject",
           "type": "string"
         },
@@ -4825,6 +5092,7 @@
       ],
       "path": "strings.regex_match",
       "returns": {
+        "description": "True where the pattern matches anywhere in the subject.",
         "type": "boolean"
       }
     },
@@ -4839,6 +5107,7 @@
       ],
       "path": "weapons.is_available",
       "returns": {
+        "description": "True where this game has the weapon at all.",
         "type": "boolean"
       }
     },
@@ -4871,6 +5140,7 @@
       ],
       "path": "weapons.shots_per_box",
       "returns": {
+        "description": "Shots, not rounds.",
         "type": "integer"
       }
     },
@@ -4897,7 +5167,7 @@
       "title": "API registry"
     },
     {
-      "description": "A small, declarative argument parser for console commands, in the shape of\nPython's argparse.\n\nA parser both reads a command's arguments and offers completions for them,\nfrom one declaration. Every command written with `trx.console.register` has\none; a command shapes it through the `args` function it hands over, and `run`\nthen receives a table of parsed values. A command that shapes nothing takes no\narguments, and is told so when given one.\n\nEvery parser answers `-h` and `--help` on its own, printing what it accepts.\n\nHow a positional reads a token is its `matcher`, one of:\n\n- `type` - coerce to `\"integer\"`, `\"number\"`, `\"string\"` or `\"boolean\"`.\n- `choices` - the allowed set: a list of values or a `function(parsed)`\n  returning one. The token must match one; the set is shown in errors and\n  completes.\n- `match` - a `function(token, parsed)` returning `value, ok`, for a shape of its own.\n\nThese do not combine on one positional; a value that is a number *or* a name is\ntwo matchers, declared with `any_of`. Separately, `suggest` offers completions\nwithout restricting or being shown in errors - for a free value with a long\nlist behind it, like a setting name.\n\nPositionals are read in order, and an optional one a token does not fit is\npassed over: the token goes to the next positional, and the one skipped stays\nnil. That is what lets a command take a leading argument it can also be used\nwithout - a verb before a value, a count before a name. Completion follows the\nsame path, so a slot offers what every argument reachable from it takes. A\ntoken nothing takes is reported against the first argument that refused it.\n\nA parser has these methods, each returning the parser so calls chain:\n\n- `positional(name, opts)` - a positional with one matcher (`opts.type`,\n  `opts.choices` or `opts.match`). `opts.optional` lets it be left out;\n  `opts.greedy` reads the rest of the line as one token, so a value with spaces\n  in it still arrives whole; `opts.suggest` completes it; `opts.help` describes\n  it.\n- `any_of(name, alternatives, opts)` - a positional whose value is the first of\n  several matchers to take the token. Each alternative is a matcher table,\n  `{ type = ... }` or `{ choices = ... }`. Same `opts` as `positional`.\n- `rest(name, opts)` - the rest of the line from here on, verbatim as one\n  string, or nil when an optional one is absent. Always the last argument;\n  `opts.suggest` completes it.\n- `flag(name, opts)` - a boolean that may sit anywhere. `opts.short` and\n  `opts.long` are the spellings, e.g. `\"-f\"` and `\"--force\"`; `opts.help`\n  describes it.\n- `parse(args)` - reads the argument string, returning a table of values, or\n  `nil` and a structured error the console layer turns into localized text. A\n  value carried by a `{ key, value }` choice comes back as its `value`;\n  `-h`/`--help` comes back as `{ help = true }`.\n- `complete(text, caret)` - the candidate completions for the token the caret\n  sits in, and the byte offsets `start, end` of the run they replace (reaching\n  to the end of the line for a greedy argument).\n- `usage()` - a short description of what the command accepts.\n\nA choice is either a bare string, where the key and value are the same, or a\n`{ key, value }` pair, where `key` is matched and shown and `value` is what\n`parse` gives back. Matching is forgiving, through `trx.strings.fuzzy_match`.",
+      "description": "A small, declarative argument parser for console commands, in the shape of\nPython's argparse.\n\nA parser both reads a command's arguments and offers completions for them,\nfrom one declaration. Every command written with `trx.console.register` has\none; a command shapes it through the `trx.console.register.spec.args` function\nit hands over, and `trx.console.register.spec.run` then receives a table of\nparsed values. A command that shapes nothing takes no arguments, and is told so\nwhen given one.\n\nEvery parser answers `-h` and `--help` on its own, printing what it accepts.\n\nHow a positional reads a token is its matcher: a type to coerce to, a set of\nchoices, or a function of its own. These do not combine on one positional; a\nvalue that is a number *or* a name is two matchers, declared with\n`trx.argparse.Parser:any_of`.\n\nPositionals are read in order, and an optional one a token does not fit is\npassed over: the token goes to the next positional, and the one skipped stays\nnil. That is what lets a command take a leading argument it can also be used\nwithout - a verb before a value, a count before a name. Completion follows the\nsame path, so a slot offers what every argument reachable from it takes. A\ntoken nothing takes is reported against the first argument that refused it.\n\nA choice is either a bare string, where the key and value are the same, or a\n`{ key, value }` pair, where the key is matched and shown and the value is what\n`trx.argparse.Parser:parse` gives back. Matching is forgiving, through\n`trx.strings.fuzzy_match`.",
       "name": "argparse",
       "order": 21
     },
@@ -4970,7 +5240,7 @@
       "order": 19
     },
     {
-      "description": "Logs a message to the terminal and to `TRX.log` in the installation directory. Each call records the Lua script's filename, function name and line number.",
+      "description": "Logs a message to the terminal and to `TRX.log` in the installation directory.  Each call records the Lua script's filename, function name and line number.",
       "name": "log",
       "order": 26,
       "title": "Logging"
@@ -5083,9 +5353,22 @@
   ],
   "numbers": [
     {
+      "base": 1,
+      "description": "Where a time sits in the table of best times, fastest first.",
+      "path": "assault.RecordNum"
+    },
+    {
       "base": 0,
       "description": "Flyby sequence number, as the level numbers them.",
       "path": "camera.SequenceNum"
+    },
+    {
+      "description": "A TRX id, in the catalog the context names. It is the same number in every game TRX ships, which is what lets a script name a thing once.",
+      "path": "catalog.Id"
+    },
+    {
+      "description": "A slot in this game's own files, which is the number a builder reads off Tomb Editor. It differs from game to game.",
+      "path": "catalog.Slot"
     },
     {
       "base": 0,
@@ -5094,8 +5377,52 @@
     },
     {
       "base": 0,
+      "description": "A flip effect number, as a level editor numbers them. Not the id space of `trx.rooms.flip_effect`, which takes `trx.catalog.flip_effects` names.",
+      "path": "events.FlipEffectNum"
+    },
+    {
+      "base": 1,
+      "description": "The number a level goes by, which is what the player is shown and what a gameflow names. Not its place in a table: a level the game flow skips does not count, and a gym level has no number at all and reads 0.",
+      "path": "game.LevelNum"
+    },
+    {
+      "base": 1,
+      "description": "Where a demo sits in the table of demos.",
+      "path": "game.DemoNum"
+    },
+    {
+      "base": 1,
+      "description": "Where an entry sits in the ring, in the order they are drawn.",
+      "path": "inventory.EntryNum"
+    },
+    {
+      "base": 0,
+      "description": "The animation's number within the object an item is of.",
+      "path": "items.AnimNum"
+    },
+    {
+      "base": 0,
+      "description": "The frame's number within the animation it belongs to.",
+      "path": "items.FrameNum"
+    },
+    {
+      "base": 0,
+      "description": "An animation state, as the object's own animations number them. What a state means is the object's business: the numbers of a wolf are not the numbers of a door.",
+      "path": "items.AnimState"
+    },
+    {
+      "base": 0,
       "description": "Item number, matching the numbers level editors show.",
       "path": "items.Num"
+    },
+    {
+      "description": "Track number, in the numbering the loaded level carries. Not a `trx.catalog.music` name, which is the soundtrack's own.",
+      "path": "music.TrackNum"
+    },
+    {
+      "base": 0,
+      "description": "The mesh's number within the object it belongs to.",
+      "path": "objects.MeshNum"
     },
     {
       "base": 0,
@@ -5106,6 +5433,10 @@
       "base": 1,
       "description": "Slot number within the pool. For the quick pool this is the on-screen order.",
       "path": "savegame.SlotNum"
+    },
+    {
+      "description": "Sample number, in the numbering the loaded level carries. Not a `trx.catalog.samples` name, which is the sound bank's own.",
+      "path": "sound.SampleNum"
     },
     {
       "base": 1,
@@ -5405,6 +5736,351 @@
   ],
   "types": [
     {
+      "description": "An argument parser, built up a call at a time. Every method hands the parser back, so the calls chain.",
+      "extensions": [],
+      "fields": [],
+      "handle": false,
+      "methods": [
+        {
+          "description": "Adds a positional whose value is the first of several matchers to take the token, for an argument that is a number or a name.",
+          "name": "any_of",
+          "params": [
+            {
+              "description": "What the parsed value is keyed by.",
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "description": "The ways the token may read, tried in order.",
+              "fields": [
+                {
+                  "description": "As for `trx.argparse.Parser:positional`.",
+                  "name": "type",
+                  "optional": true,
+                  "type": "string"
+                },
+                {
+                  "description": "As for `trx.argparse.Parser:positional`.",
+                  "name": "choices",
+                  "optional": true,
+                  "type": "any"
+                },
+                {
+                  "description": "As for `trx.argparse.Parser:positional`.",
+                  "name": "match",
+                  "optional": true,
+                  "type": "function"
+                },
+                {
+                  "description": "Names this alternative, which earns it a line of its own in the help.",
+                  "name": "metavar",
+                  "optional": true,
+                  "type": "string"
+                },
+                {
+                  "description": "What this alternative is for.",
+                  "name": "help",
+                  "optional": true,
+                  "type": "string"
+                }
+              ],
+              "list": true,
+              "name": "alternatives",
+              "type": "table"
+            },
+            {
+              "description": "How the argument behaves.",
+              "fields": [
+                {
+                  "description": "Lets the argument be left out.",
+                  "name": "optional",
+                  "optional": true,
+                  "type": "boolean"
+                },
+                {
+                  "description": "Reads the rest of the line as one token, so a value with spaces in it still arrives whole.",
+                  "name": "greedy",
+                  "optional": true,
+                  "type": "boolean"
+                },
+                {
+                  "description": "What the argument is called in messages and in the synopsis. Its own name by default.",
+                  "name": "metavar",
+                  "optional": true,
+                  "type": "string"
+                },
+                {
+                  "description": "Completions to offer, without restricting what is accepted or being shown in errors. For a free value with a long list behind it, like a setting name.",
+                  "name": "suggest",
+                  "optional": true,
+                  "type": "function"
+                },
+                {
+                  "description": "What the argument is for, shown in the help.",
+                  "name": "help",
+                  "optional": true,
+                  "type": "string"
+                }
+              ],
+              "name": "opts",
+              "optional": true,
+              "type": "table"
+            }
+          ],
+          "returns": {
+            "description": "The parser.",
+            "type": "argparse.Parser"
+          }
+        },
+        {
+          "description": "The candidate completions for the token the caret sits in. Matching is against the text before the caret.",
+          "name": "complete",
+          "params": [
+            {
+              "description": "The line so far.",
+              "name": "text",
+              "optional": true,
+              "type": "string"
+            },
+            {
+              "description": "Where the caret sits, as a byte offset. The end of the line by default.",
+              "name": "caret",
+              "optional": true,
+              "type": "integer"
+            }
+          ],
+          "returns": [
+            {
+              "description": "The candidates, best first.",
+              "type": "table"
+            },
+            {
+              "description": "Where the run they replace starts. The run is the token, or the whole tail a greedy argument swallows; in whitespace it is empty, at the caret.",
+              "type": "integer"
+            },
+            {
+              "description": "Where that run ends.",
+              "type": "integer"
+            }
+          ]
+        },
+        {
+          "description": "Adds a boolean flag, which may sit anywhere in the line.",
+          "name": "flag",
+          "params": [
+            {
+              "description": "What the parsed value is keyed by. `help` is reserved.",
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "description": "How it is spelled and what it is for.",
+              "fields": [
+                {
+                  "description": "The short spelling, such as `\"-f\"`.",
+                  "name": "short",
+                  "optional": true,
+                  "type": "string"
+                },
+                {
+                  "description": "The long spelling, such as `\"--force\"`.",
+                  "name": "long",
+                  "optional": true,
+                  "type": "string"
+                },
+                {
+                  "description": "What the flag is for, shown in the help.",
+                  "name": "help",
+                  "optional": true,
+                  "type": "string"
+                }
+              ],
+              "name": "opts",
+              "optional": true,
+              "type": "table"
+            }
+          ],
+          "returns": {
+            "description": "The parser.",
+            "type": "argparse.Parser"
+          }
+        },
+        {
+          "description": "Turns what a refused line reported into a localized line naming what was wrong and what was expected.",
+          "name": "format_error",
+          "params": [
+            {
+              "description": "What `trx.argparse.Parser:parse` handed back.",
+              "name": "err",
+              "type": "table"
+            }
+          ],
+          "returns": {
+            "description": "The line, ready to print.",
+            "type": "string"
+          }
+        },
+        {
+          "description": "Reads an argument line. A value carried by a `{ key, value }` choice comes back as its value, and `-h`/`--help` comes back as `{ help = true }`.",
+          "name": "parse",
+          "params": [
+            {
+              "description": "The line as the player typed it.",
+              "name": "args",
+              "optional": true,
+              "type": "string"
+            }
+          ],
+          "returns": [
+            {
+              "description": "The values, keyed by argument name, or `nil` where the line was refused.",
+              "nullable": true,
+              "type": "table"
+            },
+            {
+              "description": "What was wrong, for `trx.argparse.Parser:format_error` to put into words.",
+              "nullable": true,
+              "type": "table"
+            }
+          ]
+        },
+        {
+          "description": "Adds a positional argument, read one way.",
+          "name": "positional",
+          "params": [
+            {
+              "description": "What the parsed value is keyed by.",
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "description": "How it reads its token, and how it behaves. It reads a token one way: name at most one of `trx.argparse.Parser.positional.opts.type`, `trx.argparse.Parser.positional.opts.choices` and `trx.argparse.Parser.positional.opts.match`, and use `trx.argparse.Parser:any_of` for several.",
+              "fields": [
+                {
+                  "description": "Coerce the token: `\"integer\"`, `\"number\"`, `\"string\"` or `\"boolean\"`.",
+                  "name": "type",
+                  "optional": true,
+                  "type": "string"
+                },
+                {
+                  "description": "The allowed set: a list of values, or a function of the values parsed so far returning one. The token must match one; the set is shown in errors and completes.",
+                  "name": "choices",
+                  "optional": true,
+                  "type": "any"
+                },
+                {
+                  "description": "A function of the token and the values parsed so far, returning the value and whether it took, for a shape of its own.",
+                  "name": "match",
+                  "optional": true,
+                  "type": "function"
+                },
+                {
+                  "description": "Lets the argument be left out.",
+                  "name": "optional",
+                  "optional": true,
+                  "type": "boolean"
+                },
+                {
+                  "description": "Reads the rest of the line as one token, so a value with spaces in it still arrives whole.",
+                  "name": "greedy",
+                  "optional": true,
+                  "type": "boolean"
+                },
+                {
+                  "description": "What the argument is called in messages and in the synopsis. Its own name by default.",
+                  "name": "metavar",
+                  "optional": true,
+                  "type": "string"
+                },
+                {
+                  "description": "Completions to offer, without restricting what is accepted or being shown in errors. For a free value with a long list behind it, like a setting name.",
+                  "name": "suggest",
+                  "optional": true,
+                  "type": "function"
+                },
+                {
+                  "description": "What the argument is for, shown in the help.",
+                  "name": "help",
+                  "optional": true,
+                  "type": "string"
+                }
+              ],
+              "name": "opts",
+              "optional": true,
+              "type": "table"
+            }
+          ],
+          "returns": {
+            "description": "The parser.",
+            "type": "argparse.Parser"
+          }
+        },
+        {
+          "description": "Adds an argument taking the rest of the line from here on, verbatim as one string, or `nil` where an optional one is absent. Always the last argument.",
+          "name": "rest",
+          "params": [
+            {
+              "description": "What the parsed value is keyed by.",
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "description": "How the argument behaves.",
+              "fields": [
+                {
+                  "description": "Lets the argument be left out.",
+                  "name": "optional",
+                  "optional": true,
+                  "type": "boolean"
+                },
+                {
+                  "description": "Reads the rest of the line as one token, so a value with spaces in it still arrives whole.",
+                  "name": "greedy",
+                  "optional": true,
+                  "type": "boolean"
+                },
+                {
+                  "description": "What the argument is called in messages and in the synopsis. Its own name by default.",
+                  "name": "metavar",
+                  "optional": true,
+                  "type": "string"
+                },
+                {
+                  "description": "Completions to offer, without restricting what is accepted or being shown in errors. For a free value with a long list behind it, like a setting name.",
+                  "name": "suggest",
+                  "optional": true,
+                  "type": "function"
+                },
+                {
+                  "description": "What the argument is for, shown in the help.",
+                  "name": "help",
+                  "optional": true,
+                  "type": "string"
+                }
+              ],
+              "name": "opts",
+              "optional": true,
+              "type": "table"
+            }
+          ],
+          "returns": {
+            "description": "The parser.",
+            "type": "argparse.Parser"
+          }
+        },
+        {
+          "description": "A short description of what the command accepts.",
+          "name": "usage",
+          "returns": {
+            "description": "The synopsis, and a line per argument.",
+            "type": "string"
+          }
+        }
+      ],
+      "operators": [],
+      "path": "argparse.Parser"
+    },
+    {
       "description": "An attached handler. Every hook hands one back, and holding it is what makes the handler detachable later. A listener is spent once detached, and a level change spends every one a level script attached.",
       "extensions": [],
       "fields": [
@@ -5457,10 +6133,8 @@
           "writable": false
         },
         {
-          "base": 1,
-          "description": "The number the level goes by. Not its place in the table: levels the game flow skips do not count, and a gym level has no number at all and reads 0.",
           "name": "num",
-          "type": "integer",
+          "type": "game.LevelNum",
           "writable": false
         },
         {
@@ -5562,6 +6236,7 @@
             }
           ],
           "returns": {
+            "description": "True where the level carries the model to draw it with.",
             "type": "boolean"
           }
         },
@@ -5576,6 +6251,7 @@
             }
           ],
           "returns": {
+            "description": "0 where there is none.",
             "type": "integer"
           }
         },
@@ -5590,6 +6266,7 @@
             }
           ],
           "returns": {
+            "description": "The entry, or `nil` where there is none of it.",
             "nullable": true,
             "type": "inventory.Entry"
           }
@@ -5599,13 +6276,12 @@
           "name": "entry_at",
           "params": [
             {
-              "base": 1,
-              "description": "Position in the ring.",
               "name": "entry_num",
-              "type": "integer"
+              "type": "inventory.EntryNum"
             }
           ],
           "returns": {
+            "description": "The entry, or `nil` past the last one.",
             "nullable": true,
             "type": "inventory.Entry"
           }
@@ -5614,6 +6290,7 @@
           "description": "How many entries there are. `#trx.inventory` is the same number for the one Lara carries.",
           "name": "entry_count",
           "returns": {
+            "description": "Kinds of thing, not counts.",
             "type": "integer"
           }
         },
@@ -5652,6 +6329,7 @@
             }
           ],
           "returns": {
+            "description": "True for any count above 0.",
             "type": "boolean"
           }
         },
@@ -5666,6 +6344,7 @@
             }
           ],
           "returns": {
+            "description": "True where the weapon itself is in it.",
             "type": "boolean"
           }
         },
@@ -5731,6 +6410,7 @@
             }
           ],
           "returns": {
+            "description": "0 where she carries no ammunition for it.",
             "type": "integer"
           }
         },
@@ -5760,12 +6440,46 @@
       "path": "inventory.Inventory"
     },
     {
+      "description": "What a trigger carried when it fired.",
+      "extensions": [],
+      "fields": [
+        {
+          "description": "The code bits it set, `1` to `31`.",
+          "name": "mask",
+          "type": "integer",
+          "writable": true
+        },
+        {
+          "description": "Whether it fires only the once.",
+          "name": "one_shot",
+          "type": "boolean",
+          "writable": true
+        },
+        {
+          "description": "How long it keeps the item going, in seconds.",
+          "name": "timer",
+          "type": "number",
+          "writable": true
+        },
+        {
+          "description": "The kind of trigger it was.",
+          "name": "type",
+          "type": "items.TriggerType",
+          "writable": true
+        }
+      ],
+      "handle": false,
+      "methods": [],
+      "operators": [],
+      "path": "items.Trigger"
+    },
+    {
       "description": "An item, also known as a moveable.",
       "extensions": [
         {
-          "description": "The item's bounding box for the frame it is on: `min_x`, `min_y`, `min_z`, `max_x`, `max_y`, `max_z`. The numbers are in the item's own frame, so they say how far the model reaches around `trx.items.Item.pos` before `trx.items.Item.rot` turns it, and they change as the item animates.",
+          "description": "The item's bounding box for the frame it is on. The numbers are in the item's own frame, so they say how far the model reaches around `trx.items.Item.pos` before `trx.items.Item.rot` turns it, and they change as the item animates.",
           "name": "bounds",
-          "type": "table"
+          "type": "math.Box"
         },
         {
           "description": "Typed, object-specific item properties. Writing here overrides the object's default for this item only; reads fall back to the object. Iterable with `pairs()`. See [Objects](../../OBJECTS.md).",
@@ -5780,16 +6494,14 @@
       ],
       "fields": [
         {
-          "base": 0,
-          "description": "The animation's number within the object.",
           "name": "anim_num",
-          "type": "integer",
+          "type": "items.AnimNum",
           "writable": true
         },
         {
-          "description": "Current animation state.",
+          "description": "The state the item is in.",
           "name": "anim_state",
-          "type": "integer",
+          "type": "items.AnimState",
           "writable": true
         },
         {
@@ -5805,16 +6517,15 @@
           "writable": true
         },
         {
-          "base": 0,
-          "description": "The frame's number within the animation. Negative values count back from the end.",
+          "description": "Negative values count back from the end.",
           "name": "frame_num",
-          "type": "integer",
+          "type": "items.FrameNum",
           "writable": true
         },
         {
-          "description": "Animation state the item is transitioning towards.",
+          "description": "The state the item is transitioning towards.",
           "name": "goal_anim_state",
-          "type": "integer",
+          "type": "items.AnimState",
           "writable": true
         },
         {
@@ -5995,7 +6706,7 @@
           "name": "destroy"
         },
         {
-          "description": "Runs the object's creature death handling: the corpse stays, and `explode` bursts its meshes as a rocket or grenade would. For creatures; `trx.items.Item:destroy` simply removes any item from the game.",
+          "description": "Runs the object's creature death handling: the corpse stays, and `trx.items.Item.die.explode` bursts its meshes as a rocket or grenade would. For creatures; `trx.items.Item:destroy` simply removes any item from the game.",
           "name": "die",
           "params": [
             {
@@ -6018,6 +6729,7 @@
             }
           ],
           "returns": {
+            "description": "In world units, measured between the two positions.",
             "type": "integer"
           }
         },
@@ -6026,11 +6738,13 @@
           "name": "get_property",
           "params": [
             {
+              "description": "Which property, as the object declares it.",
               "name": "name",
               "type": "string"
             }
           ],
           "returns": {
+            "description": "The value, of whatever type the property is declared with.",
             "nullable": true,
             "type": "any"
           }
@@ -6039,6 +6753,7 @@
           "description": "Names of every property this item's object declares.",
           "name": "get_property_names",
           "returns": {
+            "description": "The names, as a list of strings.",
             "type": "table"
           }
         },
@@ -6049,6 +6764,7 @@
           ],
           "name": "is_valid",
           "returns": {
+            "description": "False once the item it named is gone.",
             "type": "boolean"
           }
         },
@@ -6060,6 +6776,7 @@
           "name": "on_activate",
           "params": [
             {
+              "description": "What to run when it happens to this item.",
               "name": "callback",
               "params": [
                 {
@@ -6084,6 +6801,7 @@
           "name": "on_deactivate",
           "params": [
             {
+              "description": "What to run when it happens to this item.",
               "name": "callback",
               "params": [
                 {
@@ -6108,6 +6826,7 @@
           "name": "on_destroy",
           "params": [
             {
+              "description": "What to run when it happens to this item.",
               "name": "callback",
               "params": [
                 {
@@ -6132,6 +6851,7 @@
           "name": "on_enter_sim",
           "params": [
             {
+              "description": "What to run when it happens to this item.",
               "name": "callback",
               "params": [
                 {
@@ -6156,6 +6876,7 @@
           "name": "on_enter_world",
           "params": [
             {
+              "description": "What to run when it happens to this item.",
               "name": "callback",
               "params": [
                 {
@@ -6180,6 +6901,7 @@
           "name": "on_finish",
           "params": [
             {
+              "description": "What to run when it happens to this item.",
               "name": "callback",
               "params": [
                 {
@@ -6204,6 +6926,7 @@
           "name": "on_hide",
           "params": [
             {
+              "description": "What to run when it happens to this item.",
               "name": "callback",
               "params": [
                 {
@@ -6228,6 +6951,7 @@
           "name": "on_hit",
           "params": [
             {
+              "description": "What to run when it happens to this item.",
               "name": "callback",
               "params": [
                 {
@@ -6257,6 +6981,7 @@
           "name": "on_kill",
           "params": [
             {
+              "description": "What to run when it happens to this item.",
               "name": "callback",
               "params": [
                 {
@@ -6281,6 +7006,7 @@
           "name": "on_leave_sim",
           "params": [
             {
+              "description": "What to run when it happens to this item.",
               "name": "callback",
               "params": [
                 {
@@ -6305,6 +7031,7 @@
           "name": "on_leave_world",
           "params": [
             {
+              "description": "What to run when it happens to this item.",
               "name": "callback",
               "params": [
                 {
@@ -6329,6 +7056,7 @@
           "name": "on_show",
           "params": [
             {
+              "description": "What to run when it happens to this item.",
               "name": "callback",
               "params": [
                 {
@@ -6353,6 +7081,7 @@
           "name": "on_trigger",
           "params": [
             {
+              "description": "What to run when it happens to this item.",
               "name": "callback",
               "params": [
                 {
@@ -6361,9 +7090,9 @@
                   "type": "items.Item"
                 },
                 {
-                  "description": "What the trigger carried: `type`, `mask`, `timer` and `one_shot`.",
+                  "description": "What the trigger carried.",
                   "name": "trigger",
-                  "type": "table"
+                  "type": "items.Trigger"
                 }
               ],
               "type": "function"
@@ -6379,17 +7108,19 @@
           "name": "set_property",
           "params": [
             {
+              "description": "Which property, as the object declares it.",
               "name": "name",
               "type": "string"
             },
             {
+              "description": "What to write, of the type the property is declared with.",
               "name": "value",
               "type": "any"
             }
           ]
         },
         {
-          "description": "Bursts the item's meshes into flying debris, the visual `trx.items.Item:die` produces with `explode`, on its own. It does not kill or remove the item.",
+          "description": "Bursts the item's meshes into flying debris, the visual `trx.items.Item:die` produces with `trx.items.Item.die.explode`, on its own. It does not kill or remove the item.",
           "name": "shatter",
           "params": [
             {
@@ -6425,7 +7156,34 @@
           "name": "trigger",
           "params": [
             {
-              "description": "`type`: which `trx.items.TriggerType` to fire; a plain `TRIGGER` by default.\n\n`mask`: which of the five code bits to set, `1` to `31`, all of them by default. Pass fewer to act as one of several triggers a puzzle is waiting on.\n\n`timer`: how long it should keep the item going, in seconds. `0`, the default, means until something takes the trigger back. A timer of exactly `1` is a single frame, not a second, matching the level format.\n\n`one_shot`: never let it fire again.",
+              "description": "What the trigger carries.",
+              "fields": [
+                {
+                  "description": "A plain `TRIGGER` by default.",
+                  "name": "type",
+                  "optional": true,
+                  "type": "items.TriggerType"
+                },
+                {
+                  "description": "Which of the five code bits to set, `1` to `31`, all of them by default. Pass fewer to act as one of several triggers a puzzle is waiting on.",
+                  "name": "mask",
+                  "optional": true,
+                  "type": "integer"
+                },
+                {
+                  "default": 0,
+                  "description": "How long it should keep the item going, in seconds. `0` means until something takes the trigger back. A timer of exactly `1` is a single frame, not a second, matching the level format.",
+                  "name": "timer",
+                  "optional": true,
+                  "type": "number"
+                },
+                {
+                  "description": "Never let it fire again.",
+                  "name": "one_shot",
+                  "optional": true,
+                  "type": "boolean"
+                }
+              ],
               "name": "opts",
               "optional": true,
               "type": "table"
@@ -6696,6 +7454,52 @@
       "path": "lara.Lara"
     },
     {
+      "description": "An axis-aligned box, in the units the engine measures the world in. Whether it is placed in world coordinates or in something's own frame is for whatever hands it over to say.",
+      "extensions": [],
+      "fields": [
+        {
+          "description": "East edge.",
+          "name": "max_x",
+          "type": "integer",
+          "writable": true
+        },
+        {
+          "description": "Bottom edge.",
+          "name": "max_y",
+          "type": "integer",
+          "writable": true
+        },
+        {
+          "description": "South edge.",
+          "name": "max_z",
+          "type": "integer",
+          "writable": true
+        },
+        {
+          "description": "West edge.",
+          "name": "min_x",
+          "type": "integer",
+          "writable": true
+        },
+        {
+          "description": "Top edge. Y grows downwards.",
+          "name": "min_y",
+          "type": "integer",
+          "writable": true
+        },
+        {
+          "description": "North edge.",
+          "name": "min_z",
+          "type": "integer",
+          "writable": true
+        }
+      ],
+      "handle": false,
+      "methods": [],
+      "operators": [],
+      "path": "math.Box"
+    },
+    {
       "description": "A mod the game can run. Everything on it is read-only.",
       "extensions": [],
       "fields": [
@@ -6764,9 +7568,9 @@
           "writable": false
         },
         {
-          "description": "The track this stream is playing, in the level's own numbering.",
+          "description": "The track this stream is playing.",
           "name": "track_num",
-          "type": "integer",
+          "type": "music.TrackNum",
           "writable": false
         }
       ],
@@ -6776,6 +7580,7 @@
           "description": "Whether the slot is still playing. A stream that has finished, or been stopped, leaves its handle stale.",
           "name": "is_valid",
           "returns": {
+            "description": "False once the slot has gone quiet.",
             "type": "boolean"
           }
         },
@@ -6815,9 +7620,8 @@
       "extensions": [],
       "fields": [
         {
-          "description": "The number the level gives this track.",
           "name": "num",
-          "type": "integer",
+          "type": "music.TrackNum",
           "writable": false
         }
       ],
@@ -6827,6 +7631,7 @@
           "description": "Whether the loaded level still carries this track.",
           "name": "is_valid",
           "returns": {
+            "description": "False once a level change has replaced the tracks.",
             "type": "boolean"
           }
         },
@@ -6844,7 +7649,15 @@
           "name": "play",
           "params": [
             {
-              "description": "`mode`: a `trx.music.PlayMode`. Defaults to `ONCE`.",
+              "description": "How to play it.",
+              "fields": [
+                {
+                  "description": "Plays once by default.",
+                  "name": "mode",
+                  "optional": true,
+                  "type": "music.PlayMode"
+                }
+              ],
               "name": "opts",
               "optional": true,
               "type": "table"
@@ -6941,6 +7754,7 @@
           "description": "The compile-time English names, which a lookup falls back on before a language file is loaded. Prefer `trx.objects.Object.default_names`.",
           "name": "get_default_names",
           "returns": {
+            "description": "The names, as a list of strings.",
             "type": "table"
           }
         },
@@ -6948,6 +7762,7 @@
           "description": "Every name the object answers to, in the player's language. Prefer `trx.objects.Object.names`.",
           "name": "get_names",
           "returns": {
+            "description": "The names, as a list of strings.",
             "type": "table"
           }
         },
@@ -6956,11 +7771,13 @@
           "name": "get_property",
           "params": [
             {
+              "description": "Which property, as the object declares it.",
               "name": "name",
               "type": "string"
             }
           ],
           "returns": {
+            "description": "The value, of whatever type the property is declared with.",
             "nullable": true,
             "type": "any"
           }
@@ -6969,6 +7786,7 @@
           "description": "Names of every property this object declares.",
           "name": "get_property_names",
           "returns": {
+            "description": "The names, as a list of strings.",
             "type": "table"
           }
         },
@@ -6977,10 +7795,12 @@
           "name": "set_property",
           "params": [
             {
+              "description": "Which property, as the object declares it.",
               "name": "name",
               "type": "string"
             },
             {
+              "description": "What to write, of the type the property is declared with.",
               "name": "value",
               "type": "any"
             }
@@ -7194,6 +8014,7 @@
           "description": "How many candidates match.",
           "name": "count",
           "returns": {
+            "description": "The count, without building the list.",
             "type": "integer"
           }
         },
@@ -7230,6 +8051,7 @@
           "name": "where",
           "params": [
             {
+              "description": "The test each candidate is put through.",
               "name": "predicate",
               "params": [
                 {
@@ -7316,9 +8138,9 @@
       "description": "A room in the current level.",
       "extensions": [
         {
-          "description": "World-coordinate bounds of the room: `min_x`, `min_y`, `min_z`, `max_x`, `max_y`, `max_z`.",
+          "description": "Where the room sits, in world coordinates.",
           "name": "bounds",
-          "type": "table"
+          "type": "math.Box"
         },
         {
           "description": "This room's flip pair, or `nil` if it has none.",
@@ -7328,7 +8150,7 @@
         {
           "description": "As `trx.rooms.Room.bounds`, but excluding the outer ring of sectors, which is solid wall.",
           "name": "internal_bounds",
-          "type": "table"
+          "type": "math.Box"
         }
       ],
       "fields": [
@@ -7386,13 +8208,23 @@
               "type": "vec3"
             },
             {
-              "description": "`fix_tilts`: whether a floor tilt that lies inside a wall is taken into account, `true` by default. `false` gives the flat height the original games read there, which is what the geometry glitches of the vanilla levels rest on.",
+              "description": "How to read the floor.",
+              "fields": [
+                {
+                  "default": true,
+                  "description": "Whether a floor tilt that lies inside a wall is taken into account. `false` gives the flat height the original games read there, which is what the geometry glitches of the vanilla levels rest on.",
+                  "name": "fix_tilts",
+                  "optional": true,
+                  "type": "boolean"
+                }
+              ],
               "name": "opts",
               "optional": true,
               "type": "table"
             }
           ],
           "returns": {
+            "description": "The height, in world units, with `nil` where there is no floor.",
             "nullable": true,
             "type": "integer"
           }
@@ -7404,6 +8236,7 @@
           ],
           "name": "is_valid",
           "returns": {
+            "description": "False once the level that held the room has been left.",
             "type": "boolean"
           }
         },
@@ -7415,6 +8248,7 @@
           "name": "on_enter",
           "params": [
             {
+              "description": "What to run when it happens.",
               "name": "callback",
               "params": [
                 {
@@ -7426,7 +8260,16 @@
               "type": "function"
             },
             {
-              "description": "Options. `watch = \"lara\"` (the default) reacts to Lara alone; `watch = \"all\"` to every item.",
+              "description": "What to watch for.",
+              "fields": [
+                {
+                  "default": "lara",
+                  "description": "Either `\"lara\"`, which reacts to Lara alone, or `\"all\"`, which reacts to every item.",
+                  "name": "watch",
+                  "optional": true,
+                  "type": "string"
+                }
+              ],
               "name": "opts",
               "optional": true,
               "type": "table"
@@ -7442,6 +8285,7 @@
           "name": "on_exit",
           "params": [
             {
+              "description": "What to run when it happens.",
               "name": "callback",
               "params": [
                 {
@@ -7453,7 +8297,16 @@
               "type": "function"
             },
             {
-              "description": "Options. `watch = \"lara\"` (the default) reacts to Lara alone; `watch = \"all\"` to every item.",
+              "description": "What to watch for.",
+              "fields": [
+                {
+                  "default": "lara",
+                  "description": "Either `\"lara\"`, which reacts to Lara alone, or `\"all\"`, which reacts to every item.",
+                  "name": "watch",
+                  "optional": true,
+                  "type": "string"
+                }
+              ],
               "name": "opts",
               "optional": true,
               "type": "table"
@@ -7544,9 +8397,8 @@
       "extensions": [],
       "fields": [
         {
-          "description": "The number the level gives this sample.",
           "name": "num",
-          "type": "integer",
+          "type": "sound.SampleNum",
           "writable": false
         },
         {
@@ -7580,6 +8432,7 @@
           "description": "Whether the loaded level still carries this sample.",
           "name": "is_valid",
           "returns": {
+            "description": "False once a level change has replaced the samples.",
             "type": "boolean"
           }
         },
@@ -7588,7 +8441,15 @@
           "name": "play",
           "params": [
             {
-              "description": "`pos`: a `{ x =, y =, z = }` world position to play from, which applies pan and volume. Omit to play at full volume.",
+              "description": "How to play it.",
+              "fields": [
+                {
+                  "description": "A world position to play from, which applies pan and volume. Omit to play at full volume.",
+                  "name": "pos",
+                  "optional": true,
+                  "type": "vec3"
+                }
+              ],
               "name": "opts",
               "optional": true,
               "type": "table"
@@ -7613,9 +8474,9 @@
       "extensions": [],
       "fields": [
         {
-          "description": "The sample this voice is playing, in the level's own numbering.",
+          "description": "The sample this voice is playing.",
           "name": "sample_num",
-          "type": "integer",
+          "type": "sound.SampleNum",
           "writable": false
         }
       ],
@@ -7625,6 +8486,7 @@
           "description": "Whether this voice is still playing.",
           "name": "is_valid",
           "returns": {
+            "description": "False once the voice has fallen silent.",
             "type": "boolean"
           }
         },
@@ -7775,13 +8637,26 @@
           }
         },
         {
-          "description": "The level's secrets, in order, as a list of `{ num, found }`. `num` is the number the player says, and `found` is whether Lara has it.",
+          "description": "The level's secrets, in order.",
           "examples": [
             "for _, secret in ipairs(trx.stats.secret_list()) do\n  trx.log.info(secret.num .. \": \" .. tostring(secret.found))\nend"
           ],
           "name": "secret_list",
           "returns": {
             "description": "The secrets, one by one.",
+            "fields": [
+              {
+                "description": "Which secret it is.",
+                "name": "num",
+                "type": "stats.SecretNum"
+              },
+              {
+                "description": "Whether Lara has it.",
+                "name": "found",
+                "type": "boolean"
+              }
+            ],
+            "list": true,
             "type": "table"
           }
         },

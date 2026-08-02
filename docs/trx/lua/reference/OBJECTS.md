@@ -33,6 +33,10 @@ trx.objects.wolf.properties.max_hit_points = 30
 
 ### Structures
 
+- <a id="objects.MeshNum" name="objects.MeshNum"></a>[lua]`trx.objects.MeshNum`
+
+    The mesh's number within the object it belongs to. Counted from 0.
+
 - <a id="objects.Object" name="objects.Object"></a>[lua]`trx.objects.Object`
 
     An object definition.
@@ -62,32 +66,32 @@ trx.objects.wolf.properties.max_hit_points = 30
     - <a id="objects.Object.get_default_names" name="objects.Object.get_default_names"></a>[lua]`object:get_default_names()`  
       The compile-time English names, which a lookup falls back on before a language file is loaded. Prefer [`default_names`](#objects.Object.default_names).
 
-      Returns: table.
+      Returns: table. The names, as a list of strings.
 
     - <a id="objects.Object.get_names" name="objects.Object.get_names"></a>[lua]`object:get_names()`  
       Every name the object answers to, in the player's language. Prefer [`names`](#objects.Object.names).
 
-      Returns: table.
+      Returns: table. The names, as a list of strings.
 
     - <a id="objects.Object.get_property" name="objects.Object.get_property"></a>[lua]`object:get_property(name)`  
       Reads one of the object's properties. Prefer `object.properties.<name>`.
 
       Parameters:
-      - **`name`** (string).
+      - <a id="objects.Object.get_property.name" name="objects.Object.get_property.name"></a>**`name`** (string). Which property, as the object declares it.
 
-      Returns: any or `nil`.
+      Returns: any or `nil`. The value, of whatever type the property is declared with.
 
     - <a id="objects.Object.get_property_names" name="objects.Object.get_property_names"></a>[lua]`object:get_property_names()`  
       Names of every property this object declares.
 
-      Returns: table.
+      Returns: table. The names, as a list of strings.
 
     - <a id="objects.Object.set_property" name="objects.Object.set_property"></a>[lua]`object:set_property(name, value)`  
       Writes one of the object's properties. Prefer `object.properties.<name> = ...`.
 
       Parameters:
-      - **`name`** (string).
-      - **`value`** (any).
+      - <a id="objects.Object.set_property.name" name="objects.Object.set_property.name"></a>**`name`** (string). Which property, as the object declares it.
+      - <a id="objects.Object.set_property.value" name="objects.Object.set_property.value"></a>**`value`** (any). What to write, of the type the property is declared with.
 
 - <a id="objects.ObjectQuery" name="objects.ObjectQuery"></a>[lua]`trx.objects.ObjectQuery`
 
@@ -218,7 +222,7 @@ trx.objects.wolf.properties.max_hit_points = 30
   Retrieves an object definition by id or by name.
 
   Parameters:
-  - **`key`** ([trx.catalog.objects](CATALOG.md#catalog.objects)). Object id, or its catalog name: `trx.objects["wolf"]`.
+  - <a id="objects.get.key" name="objects.get.key"></a>**`key`** ([trx.catalog.objects](CATALOG.md#catalog.objects)). Object id, or its catalog name: `trx.objects["wolf"]`.
 
   Returns: [trx.objects.Object](#objects.Object) or `nil`. `nil` if no such object exists.
 
@@ -232,10 +236,10 @@ trx.objects.wolf.properties.max_hit_points = 30
   Swaps meshes between two objects. With no mesh numbers, swaps all of them; with both, swaps just those two. One without the other raises.
 
   Parameters:
-  - **`object_id1`** ([trx.catalog.objects](CATALOG.md#catalog.objects)).
-  - **`object_id2`** ([trx.catalog.objects](CATALOG.md#catalog.objects)).
-  - **`mesh_num1`** (integer, optional). Mesh of the first.
-  - **`mesh_num2`** (integer, optional). Mesh of the second.
+  - <a id="objects.swap_mesh.object_id1" name="objects.swap_mesh.object_id1"></a>**`object_id1`** ([trx.catalog.objects](CATALOG.md#catalog.objects)).
+  - <a id="objects.swap_mesh.object_id2" name="objects.swap_mesh.object_id2"></a>**`object_id2`** ([trx.catalog.objects](CATALOG.md#catalog.objects)).
+  - <a id="objects.swap_mesh.mesh_num1" name="objects.swap_mesh.mesh_num1"></a>**`mesh_num1`** ([trx.objects.MeshNum](#objects.MeshNum), optional). Mesh of the first.
+  - <a id="objects.swap_mesh.mesh_num2" name="objects.swap_mesh.mesh_num2"></a>**`mesh_num2`** ([trx.objects.MeshNum](#objects.MeshNum), optional). Mesh of the second.
 
 - <a id="objects.swap_sprite" name="objects.swap_sprite"></a>[lua]`trx.objects.swap_sprite(object_id1, object_id2)`  
   Swaps the sprites of two objects, which is how a pickup looks when 3D pickups
@@ -243,5 +247,5 @@ trx.objects.wolf.properties.max_hit_points = 30
   sprite.
 
   Parameters:
-  - **`object_id1`** ([trx.catalog.objects](CATALOG.md#catalog.objects)).
-  - **`object_id2`** ([trx.catalog.objects](CATALOG.md#catalog.objects)).
+  - <a id="objects.swap_sprite.object_id1" name="objects.swap_sprite.object_id1"></a>**`object_id1`** ([trx.catalog.objects](CATALOG.md#catalog.objects)).
+  - <a id="objects.swap_sprite.object_id2" name="objects.swap_sprite.object_id2"></a>**`object_id2`** ([trx.catalog.objects](CATALOG.md#catalog.objects)).

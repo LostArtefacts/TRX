@@ -24,7 +24,7 @@ Module for controlling certain creature behavior.
   Marks an object as an ally of Lara. Every item of that type becomes an ally.
 
   Parameters:
-  - **`object_id`** ([trx.catalog.objects](CATALOG.md#catalog.objects)).
+  - <a id="creatures.add_ally.object_id" name="creatures.add_ally.object_id"></a>**`object_id`** ([trx.catalog.objects](CATALOG.md#catalog.objects)).
 
   Example:
   ```lua
@@ -35,7 +35,7 @@ Module for controlling certain creature behavior.
   Marks an object as one that will fight any of Lara's allies. Every item of that type will target them.
 
   Parameters:
-  - **`object_id`** ([trx.catalog.objects](CATALOG.md#catalog.objects)).
+  - <a id="creatures.add_ally_target.object_id" name="creatures.add_ally_target.object_id"></a>**`object_id`** ([trx.catalog.objects](CATALOG.md#catalog.objects)).
 
   Example:
   ```lua

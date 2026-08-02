@@ -22,7 +22,7 @@ These are the player's settings, not the level's. [`trx.config.set`](#config.set
   Reads a setting. The value comes back as the type the option is declared with, so a boolean option reads as a boolean. Colors and enums read as strings.
 
   Parameters:
-  - **`key`** (string). Dotted path, e.g. `visuals.water_color`.
+  - <a id="config.get.key" name="config.get.key"></a>**`key`** (string). Dotted path, e.g. `visuals.water_color`.
 
   Returns: any. Raises if no option has that key.
 
@@ -37,9 +37,14 @@ These are the player's settings, not the level's. [`trx.config.set`](#config.set
   What shape a setting has: how a value is entered and shown, beyond the type [`trx.config.get`](#config.get) reads back.
 
   Parameters:
-  - **`key`** (string). Dotted path.
+  - <a id="config.describe.key" name="config.describe.key"></a>**`key`** (string). Dotted path.
 
-  Returns: table. `kind` is one of `boolean`, `integer`, `number`, `color`, `enum`, `dynamic_enum` or `string`. `percent` marks a number stored 0-1 but entered and shown as a 0-100 percentage. For the enum kinds, `values` lists what the setting accepts.
+  Returns: table. What the setting is and how it is entered.
+
+    Keys:
+    - <a id="config.describe.kind" name="config.describe.kind"></a>**`kind`** (string). One of `boolean`, `integer`, `number`, `color`, `enum`, `dynamic_enum` or `string`.
+    - <a id="config.describe.percent" name="config.describe.percent"></a>**`percent`** (boolean). Marks a number stored 0-1 but entered and shown as a 0-100 percentage.
+    - <a id="config.describe.values" name="config.describe.values"></a>**`values`** (table). What the setting accepts, for the enum kinds. `nil` for the rest.
 
   Example:
   ```lua
@@ -52,9 +57,9 @@ These are the player's settings, not the level's. [`trx.config.set`](#config.set
   The current value as the console prints it: `1` or `0` for a boolean, two decimals for a plain number, a 0-100 percentage where the option is one, and enum values with dashes for underscores.
 
   Parameters:
-  - **`key`** (string). Dotted path.
+  - <a id="config.format_value.key" name="config.format_value.key"></a>**`key`** (string). Dotted path.
 
-  Returns: string.
+  Returns: string. The text, ready to print.
 
   Example:
   ```lua
@@ -65,7 +70,7 @@ These are the player's settings, not the level's. [`trx.config.set`](#config.set
   What a setting accepts, as text for an error message: `on, off` for a boolean, a marker like `[integer]` for the number kinds, or the value names for the enum kinds, with dashes for underscores.
 
   Parameters:
-  - **`key`** (string). Dotted path.
+  - <a id="config.accepted_values.key" name="config.accepted_values.key"></a>**`key`** (string). Dotted path.
 
   Returns: string or `nil`. `nil` for the kinds with nothing to list, such as a color.
 
@@ -75,16 +80,16 @@ These are the player's settings, not the level's. [`trx.config.set`](#config.set
   The old value is not kept anywhere: the new one becomes the active setting as if the player had chosen it, and is remembered across saves and relaunches. Prefer [`trx.config.override`](#config.override) for anything a level wants only while it is running.
 
   Parameters:
-  - **`key`** (string). Dotted path.
-  - **`value`** (any). A boolean, a number, or a string, matching the option's type. A color is a 6-digit hex string. An enum value is taken in either spelling: underscores or the dashes the console shows.
-  - **`force`** (boolean, optional). Write through a setting the game flow enforces.
+  - <a id="config.set.key" name="config.set.key"></a>**`key`** (string). Dotted path.
+  - <a id="config.set.value" name="config.set.value"></a>**`value`** (any). A boolean, a number, or a string, matching the option's type. A color is a 6-digit hex string. An enum value is taken in either spelling: underscores or the dashes the console shows.
+  - <a id="config.set.force" name="config.set.force"></a>**`force`** (boolean, optional). Write through a setting the game flow enforces.
 
 - <a id="config.reset" name="config.reset"></a>[lua]`trx.config.reset(key, [force])`  
   Puts a setting back to its default, and keeps the change, as [`trx.config.set`](#config.set) does.
 
   Parameters:
-  - **`key`** (string). Dotted path.
-  - **`force`** (boolean, optional). As for [`trx.config.set`](#config.set).
+  - <a id="config.reset.key" name="config.reset.key"></a>**`key`** (string). Dotted path.
+  - <a id="config.reset.force" name="config.reset.force"></a>**`force`** (boolean, optional). As for [`trx.config.set`](#config.set).
 
   Returns: boolean. `false` when a script or the game flow is holding the setting (see [`trx.config.is_overridden`](#config.is_overridden)).
 
@@ -94,8 +99,8 @@ These are the player's settings, not the level's. [`trx.config.set`](#config.set
   The player's value sits underneath and comes back on [`trx.config.restore`](#config.restore). Nothing is written to disk. Overrides stack, so one can be pushed over another; each [`trx.config.restore`](#config.restore) lifts one off. A setting the game flow enforces cannot be overridden.
 
   Parameters:
-  - **`key`** (string). Dotted path.
-  - **`value`** (any). As for [`trx.config.set`](#config.set).
+  - <a id="config.override.key" name="config.override.key"></a>**`key`** (string). Dotted path.
+  - <a id="config.override.value" name="config.override.value"></a>**`value`** (any). As for [`trx.config.set`](#config.set).
 
   Example:
   ```lua
@@ -108,7 +113,7 @@ These are the player's settings, not the level's. [`trx.config.set`](#config.set
   Lifts one override off a setting, putting back whatever was underneath it.
 
   Parameters:
-  - **`key`** (string). Dotted path.
+  - <a id="config.restore.key" name="config.restore.key"></a>**`key`** (string). Dotted path.
 
   Returns: boolean. `false` if the setting was not overridden.
 
@@ -116,9 +121,9 @@ These are the player's settings, not the level's. [`trx.config.set`](#config.set
   Whether a script or the game flow is currently holding this setting away from the player's own value.
 
   Parameters:
-  - **`key`** (string). Dotted path.
+  - <a id="config.is_overridden.key" name="config.is_overridden.key"></a>**`key`** (string). Dotted path.
 
-  Returns: boolean.
+  Returns: boolean. True while an override stands, and false once the last is lifted.
 
 - <a id="config.list" name="config.list"></a>[lua]`trx.config.list()`  
   Every setting and its current value.

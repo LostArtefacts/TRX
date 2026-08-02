@@ -21,13 +21,25 @@ Not to be confused with [`trx.locale`](LOCALE.md#locale), which is the text a pl
 - <a id="strings.fuzzy_match" name="strings.fuzzy_match"></a>[lua]`trx.strings.fuzzy_match(input, sources)`  
   Matches what someone typed against a list of candidates, forgivingly: `big medi` finds `large medipack`.
 
-  Candidates are ranked, best first. Each carries a `value` of the caller's choosing, which comes back untouched on the match - hang an id off it and read it back.
+  Candidates are ranked, best first. Each carries a [`sources.value`](#strings.fuzzy_match.sources.value) of the caller's choosing, which comes back untouched on the match - hang an id off it and read it back.
 
   Parameters:
-  - **`input`** (string). What the player typed.
-  - **`sources`** (table). List of `{ key = <the name>, value = <anything>, weight = <integer> }`. The key is a non-empty string. A heavier candidate wins a tie; weight defaults to 1, and a weight of zero or less drops the candidate.
+  - <a id="strings.fuzzy_match.input" name="strings.fuzzy_match.input"></a>**`input`** (string). What the player typed.
+  - <a id="strings.fuzzy_match.sources" name="strings.fuzzy_match.sources"></a>**`sources`** (table). The candidates.
 
-  Returns: table. The matches, best first: `{ key, value, score, is_full, is_word }`. `is_full` means the whole candidate matched, `is_word` that a whole word did.
+    Each entry:
+    - <a id="strings.fuzzy_match.sources.key" name="strings.fuzzy_match.sources.key"></a>**`key`** (string). The name to match against. Non-empty.
+    - <a id="strings.fuzzy_match.sources.value" name="strings.fuzzy_match.sources.value"></a>**`value`** (any). Anything of the caller's, handed back on the match.
+    - <a id="strings.fuzzy_match.sources.weight" name="strings.fuzzy_match.sources.weight"></a>**`weight`** (integer, optional, default `1`). A heavier candidate wins a tie. Zero or less drops it.
+
+  Returns: table. The matches, best first.
+
+    Each entry:
+    - <a id="strings.fuzzy_match.key" name="strings.fuzzy_match.key"></a>**`key`** (string). The candidate that matched.
+    - <a id="strings.fuzzy_match.value" name="strings.fuzzy_match.value"></a>**`value`** (any). What the candidate carried.
+    - <a id="strings.fuzzy_match.score" name="strings.fuzzy_match.score"></a>**`score`** (number). How well it matched.
+    - <a id="strings.fuzzy_match.is_full" name="strings.fuzzy_match.is_full"></a>**`is_full`** (boolean). Whether the whole candidate matched.
+    - <a id="strings.fuzzy_match.is_word" name="strings.fuzzy_match.is_word"></a>**`is_word`** (boolean). Whether a whole word matched.
 
   Example:
   ```lua
@@ -42,7 +54,7 @@ Not to be confused with [`trx.locale`](LOCALE.md#locale), which is the text a pl
   Reads a boolean the way the console does: `1`, `true` or `on` for true, `0`, `false` or `off` for false, in any case. Anything else is not a boolean.
 
   Parameters:
-  - **`text`** (string). The text to read.
+  - <a id="strings.parse_bool.text" name="strings.parse_bool.text"></a>**`text`** (string). The text to read.
 
   Returns: boolean or `nil`. `nil` when the text does not name a boolean.
 
@@ -57,8 +69,8 @@ Not to be confused with [`trx.locale`](LOCALE.md#locale), which is the text a pl
   The list is sorted first, and duplicates survive as they are, so the caller need not tidy up before handing it over.
 
   Parameters:
-  - **`numbers`** (table). List of integers.
-  - **`separator`** (string, optional). What to put between the parts. Defaults to `", "`.
+  - <a id="strings.collapse_ranges.numbers" name="strings.collapse_ranges.numbers"></a>**`numbers`** (table). List of integers.
+  - <a id="strings.collapse_ranges.separator" name="strings.collapse_ranges.separator"></a>**`separator`** (string, optional). What to put between the parts. Defaults to `", "`.
 
   Returns: string. Empty when the list is.
 
@@ -71,10 +83,10 @@ Not to be confused with [`trx.locale`](LOCALE.md#locale), which is the text a pl
   Whether a subject matches a regular expression. Case-insensitive.
 
   Parameters:
-  - **`subject`** (string).
-  - **`pattern`** (string). A PCRE regular expression.
+  - <a id="strings.regex_match.subject" name="strings.regex_match.subject"></a>**`subject`** (string). The text to search.
+  - <a id="strings.regex_match.pattern" name="strings.regex_match.pattern"></a>**`pattern`** (string). A PCRE regular expression.
 
-  Returns: boolean.
+  Returns: boolean. True where the pattern matches anywhere in the subject.
 
   Example:
   ```lua

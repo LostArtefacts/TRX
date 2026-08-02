@@ -3,6 +3,7 @@ local api = trx.api
 
 -- trx.lara stands for one C struct, so reading trx.lara.air reads Lara's air.
 -- What is reachable is what lara.Lara declares below, and nothing else.
+
 api.module("lara", {
   order = 3,
   description = "Module for reading and nudging Lara's own state.\n\n"
@@ -300,7 +301,7 @@ api.define("lara.teleport", {
 })
 
 api.define("lara.cure_poison", {
-  description = "Cures Lara's poisoning. Not the same as writing `0` to `poison`: the poison has a "
+  description = "Cures Lara's poisoning. Not the same as writing `0` to `trx.lara.poison`: the poison has a "
     .. "target as well as a current value, and clearing only the value lets it climb back.",
   impl = raw.cure_poison,
 })

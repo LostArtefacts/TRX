@@ -13,6 +13,11 @@ api.module("objects", {
     .. "wolf's. Per-item state lives on the item - see `trx.items`.",
 })
 
+api.number("objects.MeshNum", {
+  base = 0,
+  description = "The mesh's number within the object it belongs to.",
+})
+
 -- Object handles are bare userdata. Their metatable is populated by the
 -- api.type declaration below, and by nothing else: a member of the C OBJECT
 -- struct that is not named here is not reachable from a script at all.
@@ -43,7 +48,7 @@ local function make_properties(object)
   })
 end
 
-api.type("objects.Object", {
+local Object = api.type("objects.Object", {
   backing = "OBJECT",
   description = "An object definition.",
 
@@ -129,29 +134,56 @@ api.type("objects.Object", {
 
   methods = {
     get_names = {
-      returns = { type = "table" },
+      returns = {
+        type = "table",
+        description = "The names, as a list of strings.",
+      },
       description = "Every name the object answers to, in the player's language. Prefer "
         .. "`trx.objects.Object.names`.",
     },
     get_default_names = {
-      returns = { type = "table" },
+      returns = {
+        type = "table",
+        description = "The names, as a list of strings.",
+      },
       description = "The compile-time English names, which a lookup falls back on before a "
         .. "language file is loaded. Prefer `trx.objects.Object.default_names`.",
     },
     get_property = {
-      params = { { name = "name", type = "string" } },
-      returns = { type = "any", nullable = true },
+      params = {
+        {
+          name = "name",
+          type = "string",
+          description = "Which property, as the object declares it.",
+        },
+      },
+      returns = {
+        type = "any",
+        nullable = true,
+        description = "The value, of whatever type the property is declared with.",
+      },
       description = "Reads one of the object's properties. Prefer `object.properties.<name>`.",
     },
     set_property = {
       params = {
-        { name = "name", type = "string" },
-        { name = "value", type = "any" },
+        {
+          name = "name",
+          type = "string",
+          description = "Which property, as the object declares it.",
+        },
+        {
+          name = "value",
+          type = "any",
+          description = "What to write, of the type the property is declared with.",
+        },
       },
       description = "Writes one of the object's properties. Prefer `object.properties.<name> = ...`.",
     },
     get_property_names = {
-      returns = { type = "table" },
+      returns = {
+        type = "table",
+        description = "The names, as a list of strings.",
+      },
       description = "Names of every property this object declares.",
     },
   },
@@ -360,13 +392,13 @@ api.define("objects.swap_mesh", {
     { name = "object_id2", type = "catalog.objects" },
     {
       name = "mesh_num1",
-      type = "integer",
+      type = "objects.MeshNum",
       optional = true,
       description = "Mesh of the first.",
     },
     {
       name = "mesh_num2",
-      type = "integer",
+      type = "objects.MeshNum",
       optional = true,
       description = "Mesh of the second.",
     },

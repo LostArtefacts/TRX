@@ -65,6 +65,14 @@ Module for the game flow: which levels there are, and which one is being played.
 
 ### Structures
 
+- <a id="game.LevelNum" name="game.LevelNum"></a>[lua]`trx.game.LevelNum`
+
+    The number a level goes by, which is what the player is shown and what a gameflow names. Not its place in a table: a level the game flow skips does not count, and a gym level has no number at all and reads 0. Counted from 1.
+
+- <a id="game.DemoNum" name="game.DemoNum"></a>[lua]`trx.game.DemoNum`
+
+    Where a demo sits in the table of demos. Counted from 1.
+
 - <a id="game.Level" name="game.Level"></a>[lua]`trx.game.Level`
 
     A level, as the game flow file declares it. Everything on it is read-only: a level is what the game flow says it is.
@@ -76,7 +84,7 @@ Module for the game flow: which levels there are, and which one is being played.
     Properties:
     - <a id="game.Level.lara_outfit" name="game.Level.lara_outfit"></a>**`lara_outfit`**: string. The outfit Lara starts the level in. *(read-only)*
     - <a id="game.Level.music_track" name="game.Level.music_track"></a>**`music_track`**: [trx.catalog.music](CATALOG.md#catalog.music). The track that plays when the level starts. *(read-only)*
-    - <a id="game.Level.num" name="game.Level.num"></a>**`num`**: integer. The number the level goes by. Not its place in the table: levels the game flow skips do not count, and a gym level has no number at all and reads 0. Counted from 1. *(read-only)*
+    - <a id="game.Level.num" name="game.Level.num"></a>**`num`**: [trx.game.LevelNum](#game.LevelNum). *(read-only)*
     - <a id="game.Level.path" name="game.Level.path"></a>**`path`**: string. Path to the level file. *(read-only)*
     - <a id="game.Level.script_path" name="game.Level.script_path"></a>**`script_path`**: string. Path to the Lua script that runs when the level loads, or `nil` if it has none. *(read-only)*
     - <a id="game.Level.title" name="game.Level.title"></a>**`title`**: string. The level's name, as shown to the player. *(read-only)*
@@ -97,8 +105,11 @@ Module for the game flow: which levels there are, and which one is being played.
   Starts a level from [`trx.game.levels`](#game.levels).
 
   Parameters:
-  - **`level_num`** (integer). Position in [`trx.game.levels`](#game.levels). Counted from 1.
-  - **`opts`** (table, optional). `select`: start the level as the level-select screen does, rebuilding Lara's inventory to what she would carry on reaching it. Without it the level continues from the one in progress.
+  - <a id="game.play_level.level_num" name="game.play_level.level_num"></a>**`level_num`** ([trx.game.LevelNum](#game.LevelNum)).
+  - <a id="game.play_level.opts" name="game.play_level.opts"></a>**`opts`** (table, optional). How to start it.
+
+    Keys:
+    - <a id="game.play_level.opts.select" name="game.play_level.opts.select"></a>**`select`** (boolean, optional). Start the level as the level-select screen does, rebuilding Lara's inventory to what she would carry on reaching it. Without it the level continues from the one in progress.
 
   Example:
   ```lua
@@ -109,13 +120,13 @@ Module for the game flow: which levels there are, and which one is being played.
   Plays a cutscene.
 
   Parameters:
-  - **`cutscene_num`** (integer). Position in [`trx.game.cutscenes`](#game.cutscenes). Counted from 1.
+  - <a id="game.play_cutscene.cutscene_num" name="game.play_cutscene.cutscene_num"></a>**`cutscene_num`** ([trx.cutscenes.Num](CUTSCENES.md#cutscenes.Num)).
 
 - <a id="game.play_demo" name="game.play_demo"></a>[lua]`trx.game.play_demo([demo_num])`  
   Plays a demo, and returns the one that started.
 
   Parameters:
-  - **`demo_num`** (integer, optional). Position in [`trx.game.demos`](#game.demos). Omit to play the next demo in rotation. Counted from 1.
+  - <a id="game.play_demo.demo_num" name="game.play_demo.demo_num"></a>**`demo_num`** ([trx.game.DemoNum](#game.DemoNum), optional). Omit to play the next demo in rotation.
 
   Returns:
   - [trx.game.Level](#game.Level) or `nil`. The demo that started, or `nil` if the game has no demos.
@@ -136,4 +147,4 @@ Module for the game flow: which levels there are, and which one is being played.
   Takes a screenshot. Without a path, writes one to the screenshots folder in the player's configured format; with a path, writes to that file.
 
   Parameters:
-  - **`path`** (string, optional). File to write to.
+  - <a id="game.screenshot.path" name="game.screenshot.path"></a>**`path`** (string, optional). File to write to.

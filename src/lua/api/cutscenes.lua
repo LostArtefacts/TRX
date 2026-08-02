@@ -44,7 +44,10 @@ api.define("cutscenes.is_played", {
   params = {
     { name = "num", type = "cutscenes.Num" },
   },
-  returns = { type = "boolean" },
+  returns = {
+    type = "boolean",
+    description = "True once it has run, which is what keeps its trigger from firing again.",
+  },
   impl = raw.is_played,
 })
 

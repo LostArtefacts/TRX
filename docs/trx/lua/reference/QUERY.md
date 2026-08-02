@@ -40,7 +40,7 @@ left to right, combining with AND: `q:spawnable():by_name("wolf")`.
     - <a id="query.Query.count" name="query.Query.count"></a>[lua]`query:count()`  
       How many candidates match.
 
-      Returns: integer.
+      Returns: integer. The count, without building the list.
 
     - <a id="query.Query.first" name="query.Query.first"></a>[lua]`query:first()`  
       The first matching handle.
@@ -61,10 +61,10 @@ left to right, combining with AND: `q:spawnable():by_name("wolf")`.
       Narrows by a test of the caller's own, for what the domain does not name.
 
       Parameters:
-      - **`predicate`** (function).
+      - <a id="query.Query.where.predicate" name="query.Query.where.predicate"></a>**`predicate`** (function). The test each candidate is put through.
         Called with:
-        - **`id`** (integer). The candidate's id.
-        - **`handle`** (any). The candidate itself, a [`trx.objects.Object`](OBJECTS.md#objects.Object) or a [`trx.items.Item`](ITEMS.md#items.Item).
+        - <a id="query.Query.where.id" name="query.Query.where.id"></a>**`id`** (integer). The candidate's id.
+        - <a id="query.Query.where.handle" name="query.Query.where.handle"></a>**`handle`** (any). The candidate itself, a [`trx.objects.Object`](OBJECTS.md#objects.Object) or a [`trx.items.Item`](ITEMS.md#items.Item).
 
       Returns: [trx.query.Query](#query.Query). The narrowed query.
 
@@ -90,7 +90,7 @@ left to right, combining with AND: `q:spawnable():by_name("wolf")`.
       Ranks rather than filters: matches the way a player types a name, forgivingly, and orders what survives the rest of the query best first. Some of a domain's narrowings are also searchable groups, so their own name matches every member.
 
       Parameters:
-      - **`name`** (string). What to look for.
+      - <a id="query.NamedQuery.by_name.name" name="query.NamedQuery.by_name.name"></a>**`name`** (string). What to look for.
 
       Returns: [trx.query.Query](#query.Query). The narrowed query.
 
@@ -110,7 +110,7 @@ left to right, combining with AND: `q:spawnable():by_name("wolf")`.
   Builds a narrowing method for a domain's query type out of a predicate factory. [`trx.items`](ITEMS.md#items) and [`trx.objects`](OBJECTS.md#objects) declare their own filters with it.
 
   Parameters:
-  - **`make`** (function). Called with the method's own arguments, returning a `predicate(id, handle)`.
+  - <a id="query.narrowing.make" name="query.narrowing.make"></a>**`make`** (function). Called with the method's own arguments, returning a `predicate(id, handle)`.
 
   Returns: function. The method to declare as an `impl`.
 
@@ -118,7 +118,14 @@ left to right, combining with AND: `q:spawnable():by_name("wolf")`.
   Builds the identity query over a domain, as an instance of that domain's query type. [`trx.objects`](OBJECTS.md#objects) and [`trx.items`](ITEMS.md#items) call this to make the query a script reaches through [`trx.objects.query`](OBJECTS.md#objects.query) and [`trx.items.query`](ITEMS.md#items.query).
 
   Parameters:
-  - **`domain`** (table). What the query runs against: `enumerate`, `id_of`, `searchable`, and an optional `names_of`/`default_names_of` name layer. See the module source.
-  - **`class`** (table). The query type the domain's narrowings were declared on.
+  - <a id="query.new.domain" name="query.new.domain"></a>**`domain`** (table). What the query runs against.
+
+    Keys:
+    - <a id="query.new.domain.enumerate" name="query.new.domain.enumerate"></a>**`enumerate`** (function). Every id the domain holds.
+    - <a id="query.new.domain.id_of" name="query.new.domain.id_of"></a>**`id_of`** (function). The id of a thing the domain hands out.
+    - <a id="query.new.domain.searchable" name="query.new.domain.searchable"></a>**`searchable`** (function). Whether an id is one a name may reach.
+    - <a id="query.new.domain.names_of" name="query.new.domain.names_of"></a>**`names_of`** (function, optional). The names an id answers to, for a domain that has them.
+    - <a id="query.new.domain.default_names_of" name="query.new.domain.default_names_of"></a>**`default_names_of`** (function, optional). The same names before a language file is loaded.
+  - <a id="query.new.class" name="query.new.class"></a>**`class`** (table). The query type the domain's narrowings were declared on.
 
   Returns: [trx.query.Query](#query.Query). The identity query, matching everything until narrowed.

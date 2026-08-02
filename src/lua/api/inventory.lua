@@ -38,6 +38,11 @@ local weapon_param = {
     .. "table; `FLARE` and `SKIDOO` are taken, being held the way a weapon is.",
 }
 
+api.number("inventory.EntryNum", {
+  base = 1,
+  description = "Where an entry sits in the ring, in the order they are drawn.",
+})
+
 api.type("inventory.Entry", {
   backing = "INVENTORY_ENTRY",
   description = [[
@@ -82,7 +87,7 @@ carrying.]],
       description = "How many of something is in it. A box of ammunition counts what its rounds "
         .. "come to.",
       params = { object_param },
-      returns = { type = "integer" },
+      returns = { type = "integer", description = "0 where there is none." },
     },
     set_count = {
       description = "Sets how many of it there are. Zero takes it away.",
@@ -98,7 +103,10 @@ carrying.]],
     has = {
       description = "Whether there is any of it at all.",
       params = { object_param },
-      returns = { type = "boolean" },
+      returns = {
+        type = "boolean",
+        description = "True for any count above 0.",
+      },
     },
     give = {
       description = [[
@@ -126,7 +134,10 @@ than an entry of its own, so taking one back takes the rounds a box is worth.]],
       description = "How many shots there are for the weapon. A shot is one pull of the trigger, "
         .. "which is what the counter shows the player; the shotgun spends six rounds on each.",
       params = { weapon_param },
-      returns = { type = "integer" },
+      returns = {
+        type = "integer",
+        description = "0 where she carries no ammunition for it.",
+      },
     },
     set_shots = {
       description = "Sets how many shots there are for it.",
@@ -146,7 +157,10 @@ than an entry of its own, so taking one back takes the rounds a box is worth.]],
       description = "Whether the weapon itself is in it, which is not the same as having "
         .. "ammunition for it.",
       params = { weapon_param },
-      returns = { type = "boolean" },
+      returns = {
+        type = "boolean",
+        description = "True where the weapon itself is in it.",
+      },
     },
     entry = {
       description = [[
@@ -156,24 +170,33 @@ Several pickups share one entry - the scion whether or not she holds it, a
 waterskin at each fill level - so this answers with the one thing they are
 drawn as.]],
       params = { object_param },
-      returns = { type = "inventory.Entry", nullable = true },
+      returns = {
+        type = "inventory.Entry",
+        nullable = true,
+        description = "The entry, or `nil` where there is none of it.",
+      },
     },
     entry_at = {
       description = "The entry at a position in the order they are drawn, or `nil` past the end.",
       params = {
         {
           name = "entry_num",
-          type = "integer",
-          base = 1,
-          description = "Position in the ring.",
+          type = "inventory.EntryNum",
         },
       },
-      returns = { type = "inventory.Entry", nullable = true },
+      returns = {
+        type = "inventory.Entry",
+        nullable = true,
+        description = "The entry, or `nil` past the last one.",
+      },
     },
     entry_count = {
       description = "How many entries there are. `#trx.inventory` is the same number for the "
         .. "one Lara carries.",
-      returns = { type = "integer" },
+      returns = {
+        type = "integer",
+        description = "Kinds of thing, not counts.",
+      },
     },
     icon_of = {
       description = [[
@@ -199,7 +222,10 @@ lets a cheat hand one over.
 
 This asks about the level being played whichever inventory it is called on.]],
       params = { object_param },
-      returns = { type = "boolean" },
+      returns = {
+        type = "boolean",
+        description = "True where the level carries the model to draw it with.",
+      },
     },
   },
 })
@@ -208,7 +234,7 @@ api.container("inventory", {
   description = "Indexing the module reaches an entry of Lara's inventory, and `#trx.inventory` "
     .. "is how many kinds of thing she carries. Entries are keyed by the order they are drawn "
     .. "in, and are built one at a time as they are asked for. `pairs()` walks them.",
-  key = { type = "integer", base = 1, description = "Position in the ring." },
+  key = { type = "inventory.EntryNum" },
   value = { type = "inventory.Entry", nullable = true },
   examples = {
     [[for _, entry in pairs(trx.inventory) do

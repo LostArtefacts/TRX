@@ -6,6 +6,13 @@ api.module("game", {
   description = "Module for the game flow: which levels there are, and which one is being played.",
 })
 
+api.number("game.LevelNum", {
+  base = 1,
+  description = "The number a level goes by, which is what the player is shown and what a "
+    .. "gameflow names. Not its place in a table: a level the game flow skips does not "
+    .. "count, and a gym level has no number at all and reads 0.",
+})
+
 local LevelTable = api.enum("game.LevelTable", {
   backing = "GF_LEVEL_TABLE_TYPE",
   description = "One of the lists of levels the game flow declares.",
@@ -40,11 +47,8 @@ api.type("game.Level", {
   fields = {
     num = {
       from = "num",
-      type = "integer",
+      type = "game.LevelNum",
       writable = false,
-      base = 1,
-      description = "The number the level goes by. Not its place in the table: levels the game "
-        .. "flow skips do not count, and a gym level has no number at all and reads 0.",
     },
     type = {
       from = "type",
@@ -220,22 +224,33 @@ api.property("game.is_ngplus", {
   get = raw.is_ngplus,
 })
 
+api.number("game.DemoNum", {
+  base = 1,
+  description = "Where a demo sits in the table of demos.",
+})
+
 api.define("game.play_level", {
   description = "Starts a level from `trx.game.levels`.",
   params = {
     {
       name = "level_num",
-      type = "integer",
-      base = 1,
-      description = "Position in `trx.game.levels`.",
+      type = "game.LevelNum",
     },
     {
       name = "opts",
       type = "table",
       optional = true,
-      description = "`select`: start the level as the level-select screen does, rebuilding "
-        .. "Lara's inventory to what she would carry on reaching it. Without it the level "
-        .. "continues from the one in progress.",
+      description = "How to start it.",
+      fields = {
+        {
+          name = "select",
+          type = "boolean",
+          optional = true,
+          description = "Start the level as the level-select screen does, rebuilding Lara's "
+            .. "inventory to what she would carry on reaching it. Without it the level "
+            .. "continues from the one in progress.",
+        },
+      },
     },
   },
   examples = { [[trx.game.play_level(1)]] },
@@ -247,9 +262,7 @@ api.define("game.play_cutscene", {
   params = {
     {
       name = "cutscene_num",
-      type = "integer",
-      base = 1,
-      description = "Position in `trx.game.cutscenes`.",
+      type = "cutscenes.Num",
     },
   },
   impl = raw.play_cutscene,
@@ -260,10 +273,9 @@ api.define("game.play_demo", {
   params = {
     {
       name = "demo_num",
-      type = "integer",
+      type = "game.DemoNum",
       optional = true,
-      base = 1,
-      description = "Position in `trx.game.demos`. Omit to play the next demo in rotation.",
+      description = "Omit to play the next demo in rotation.",
     },
   },
   returns = {
