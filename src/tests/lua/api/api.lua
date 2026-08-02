@@ -1362,6 +1362,52 @@ end)
 
 -- Where a collection counts from is the key's to say, so a container that says
 -- it itself is a declaration left behind by the move.
+-- A sparse collection runs its keys further than it has entries: the samples a
+-- level carries are a hundred spread over twice as many numbers.
+test("a sparse container walks its keys and skips the gaps", function()
+  local api = fresh_env()
+  api.module("things", { description = "..." })
+  local held = { [0] = "a", [3] = "b", [4] = "c" }
+  api.container("things", {
+    description = "Indexing.",
+    key = { type = "integer", base = 0, description = "A key." },
+    value = { type = "string", nullable = true },
+    get = function(i)
+      return held[i]
+    end,
+    count = function()
+      return 3
+    end,
+    limit = function()
+      return 5
+    end,
+  })
+
+  assert(#trx.things == 3, "# is how many there are")
+  local seen = {}
+  for i, value in pairs(trx.things) do
+    seen[#seen + 1] = i .. "=" .. value
+  end
+  assert(
+    table.concat(seen, ",") == "0=a,3=b,4=c",
+    "the gaps must not come out as nil: " .. table.concat(seen, ",")
+  )
+end)
+
+test("a limit needs a count beside it", function()
+  local api = fresh_env()
+  api.module("things", { description = "..." })
+  assert(not pcall(api.container, "things", {
+    description = "Indexing.",
+    key = { type = "integer", description = "A key." },
+    value = { type = "string" },
+    get = function() end,
+    limit = function()
+      return 5
+    end,
+  }))
+end)
+
 test("a container cannot say where it counts from", function()
   local api = fresh_env()
   api.module("things", {})
