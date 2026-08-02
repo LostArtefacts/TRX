@@ -141,7 +141,7 @@ api.namespace("console.log", {
 api.define("console.log.generic", {
   description = "Logs at a level chosen at runtime.",
   params = {
-    { name = "level", type = "integer", enum = "log.LogLevel" },
+    { name = "level", type = "log.LogLevel" },
     message_param,
   },
   impl = function(level, value)

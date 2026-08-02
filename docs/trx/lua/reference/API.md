@@ -16,18 +16,18 @@ Argument checking for the whole of `trx`.
 
 ### Functions
 
-- [lua]`trx.api.strict(enabled)`  
+- <a name="api.strict"></a>[lua]`trx.api.strict(enabled)`  
   Turns argument checking on or off for every function in `trx`, and for the methods on its handles. Off by default: checking costs about 100ns a call, which a per-frame handler notices. Turn it on while writing a level, and leave it off in play.
 
   Parameters:
-  - **`enabled`** (boolean).
+  - **`enabled`** (boolean). Whether to check.
 
   Example:
   ```lua
   trx.api.strict(true)
   ```
 
-- [lua]`trx.api.is_strict()`  
+- <a name="api.is_strict"></a>[lua]`trx.api.is_strict()`  
   Whether argument checking is on.
 
-  Returns: boolean.
+  Returns: boolean. False as the game starts, and true once something turns it on.

@@ -13,8 +13,7 @@ has are `trx.inventory`.]],
 
 local weapon_param = {
   name = "weapon",
-  type = "integer",
-  enum = "catalog.weapons",
+  type = "catalog.weapons",
   description = "Which weapon. `UNKNOWN` and `UNARMED` raise, and so does anything outside the "
     .. "table; `FLARE` and `SKIDOO` are taken, being held the way a weapon is.",
 }
@@ -33,8 +32,7 @@ api.define("weapons.object", {
   description = "The pickup the weapon is, for handing it to `trx.inventory:give`.",
   params = { weapon_param },
   returns = {
-    type = "integer",
-    enum = "catalog.objects",
+    type = "catalog.objects",
     description = "The object id, or `nil` if this game has no such weapon.",
   },
   examples = {

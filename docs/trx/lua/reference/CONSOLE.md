@@ -14,11 +14,11 @@ order: 20
 
 Module for interacting with the developer console.
 
-`trx.console.log` writes to the console overlay in-game, where `trx.log` writes only to the terminal and the log file.
+[`trx.console.log`](#console.log) writes to the console overlay in-game, where [`trx.log`](LOG.md#log) writes only to the terminal and the log file.
 
 ### Enums
 
-- [lua]`trx.console.Result`
+- <a name="console.Result"></a>[lua]`trx.console.Result`
 
     How a console command went. What a command's `run` gives back.
 
@@ -33,7 +33,7 @@ Module for interacting with the developer console.
 
 ### Functions
 
-- [lua]`trx.console.log(message)`  
+- <a name="console.log"></a>[lua]`trx.console.log(message)`  
   Logs a line to the developer console. Calling the group itself logs at `INFO`. Takes any value: a table is pretty-printed, anything else coerced to a string.
 
   Parameters:
@@ -44,44 +44,44 @@ Module for interacting with the developer console.
   trx.console.log({ hp = 1000, pos = { x = 1 } })
   ```
 
-- [lua]`trx.console.log.generic(level, message)`  
+- <a name="console.log.generic"></a>[lua]`trx.console.log.generic(level, message)`  
   Logs at a level chosen at runtime.
 
   Parameters:
-  - **`level`** (integer). Compare against `trx.log.LogLevel`.
+  - **`level`** ([trx.log.LogLevel](LOG.md#log.LogLevel)).
   - **`message`** (any). Any value; a table is pretty-printed.
 
-- [lua]`trx.console.log.info(message)`  
+- <a name="console.log.info"></a>[lua]`trx.console.log.info(message)`  
   Logs an informational message.
 
   Parameters:
   - **`message`** (any). Any value; a table is pretty-printed.
 
-- [lua]`trx.console.log.warn(message)`  
+- <a name="console.log.warn"></a>[lua]`trx.console.log.warn(message)`  
   Logs a warning.
 
   Parameters:
   - **`message`** (any). Any value; a table is pretty-printed.
 
-- [lua]`trx.console.log.warning(message)`  
-  Logs a warning. An alias of `trx.console.log.warn`.
+- <a name="console.log.warning"></a>[lua]`trx.console.log.warning(message)`  
+  Logs a warning. An alias of [`trx.console.log.warn`](#console.log.warn).
 
   Parameters:
   - **`message`** (any). Any value; a table is pretty-printed.
 
-- [lua]`trx.console.log.error(message)`  
+- <a name="console.log.error"></a>[lua]`trx.console.log.error(message)`  
   Logs an error.
 
   Parameters:
   - **`message`** (any). Any value; a table is pretty-printed.
 
-- [lua]`trx.console.log.debug(message)`  
+- <a name="console.log.debug"></a>[lua]`trx.console.log.debug(message)`  
   Logs a debug message.
 
   Parameters:
   - **`message`** (any). Any value; a table is pretty-printed.
 
-- [lua]`trx.console.eval(command, [opts])`  
+- <a name="console.eval"></a>[lua]`trx.console.eval(command, [opts])`  
   Runs a string as a developer console command. Raises if the command fails.
 
   Output is silenced by default and appears only in the terminal and the log file. Pass `{ verbose = true }` to show it in the console as a command typed by the player would.
@@ -95,12 +95,12 @@ Module for interacting with the developer console.
   trx.console.eval("play 1", { verbose = true })
   ```
 
-- [lua]`trx.console.register(spec)`  
+- <a name="console.register"></a>[lua]`trx.console.register(spec)`  
   Registers a console command written in Lua.
 
-  Every command has a `trx.argparse` parser. `args` is an optional function that shapes it - it receives the parser and declares the arguments the command takes. A command that omits `args` takes none, and reports so when handed one. The console completes the arguments from the parser, and answers `-h`/`--help` from it.
+  Every command has a [`trx.argparse`](ARGPARSE.md#argparse) parser. `args` is an optional function that shapes it - it receives the parser and declares the arguments the command takes. A command that omits `args` takes none, and reports so when handed one. The console completes the arguments from the parser, and answers `-h`/`--help` from it.
 
-  `run` receives the parsed values, a table keyed by argument name. What it gives back is a `trx.console.Result`, and returning nothing means `OK`. It may return a message after that, which is logged to the console - as an error, for any result but `OK`. A line the parser rejects is reported with what it expected, without reaching `run`.
+  `run` receives the parsed values, a table keyed by argument name. What it gives back is a [`trx.console.Result`](#console.Result), and returning nothing means `OK`. It may return a message after that, which is logged to the console - as an error, for any result but `OK`. A line the parser rejects is reported with what it expected, without reaching `run`.
 
   A command lives for the whole run, so it can only be registered from a global script. A level script raises if it calls this: it runs again every time its level is loaded.
 
@@ -121,16 +121,16 @@ Module for interacting with the developer console.
   })
   ```
 
-- [lua]`trx.console.clear()`  
+- <a name="console.clear"></a>[lua]`trx.console.clear()`  
   Clears the console.
 
-- [lua]`trx.console.commands()`  
+- <a name="console.commands"></a>[lua]`trx.console.commands()`  
   Every registered console command, in registration order. Each is `{ name, aliases, help }`: `name` is the word the player types, `aliases` the other words that reach it (a list, or absent), and `help` the text the console shows for `name --help` (absent when the command carries none). The help command is built on this.
 
   Returns: table. A list of `{ name, aliases, help }`.
 
-- [lua]`trx.console.command(name)`  
-  The command a name reaches, by its own name or an alias, matched as the console matches when it dispatches. The same `{ name, aliases, help }` as an entry of `trx.console.commands`, or nil when nothing answers to the name.
+- <a name="console.command"></a>[lua]`trx.console.command(name)`  
+  The command a name reaches, by its own name or an alias, matched as the console matches when it dispatches. The same `{ name, aliases, help }` as an entry of [`trx.console.commands`](#console.commands), or nil when nothing answers to the name.
 
   Parameters:
   - **`name`** (string). The word or alias to look up.

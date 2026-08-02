@@ -16,7 +16,7 @@ A small, declarative argument parser for console commands, in the shape of
 Python's argparse.
 
 A parser both reads a command's arguments and offers completions for them,
-from one declaration. Every command written with `trx.console.register` has
+from one declaration. Every command written with [`trx.console.register`](CONSOLE.md#console.register) has
 one; a command shapes it through the `args` function it hands over, and `run`
 then receives a table of parsed values. A command that shapes nothing takes no
 arguments, and is told so when given one.
@@ -70,11 +70,11 @@ A parser has these methods, each returning the parser so calls chain:
 
 A choice is either a bare string, where the key and value are the same, or a
 `{ key, value }` pair, where `key` is matched and shown and `value` is what
-`parse` gives back. Matching is forgiving, through `trx.strings.fuzzy_match`.
+`parse` gives back. Matching is forgiving, through [`trx.strings.fuzzy_match`](STRINGS.md#strings.fuzzy_match).
 
 ### Functions
 
-- [lua]`trx.argparse.new([spec])`  
+- <a name="argparse.new"></a>[lua]`trx.argparse.new([spec])`  
   Creates an argument parser. See the module description for the parser's methods.
 
   Parameters:

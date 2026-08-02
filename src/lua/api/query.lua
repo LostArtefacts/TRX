@@ -110,7 +110,7 @@ local function resolved(self)
   return out
 end
 
-local QUERY = { type = "Query", description = "The narrowed query." }
+local QUERY = { type = "query.Query", description = "The narrowed query." }
 
 local Query = api.type("query.Query", {
   description = "A filter over a domain, read with one of the terminals below once it is narrow "
@@ -355,7 +355,7 @@ api.define("query.new", {
     },
   },
   returns = {
-    type = "Query",
+    type = "query.Query",
     description = "The identity query, matching everything until narrowed.",
   },
   impl = function(domain, class)

@@ -33,9 +33,8 @@ api.type("music.Stream", {
     },
     mode = {
       from = "mode",
-      type = "integer",
+      type = "music.PlayMode",
       writable = false,
-      enum = "music.PlayMode",
       description = "How the track is playing.",
     },
     timestamp = {
@@ -194,8 +193,8 @@ api.property("music.tracks", {
 })
 
 api.property("music.current_track", {
-  type = "Track",
-  description = "The track playing now, as a `trx.music.Track`, or `nil` when nothing plays.",
+  type = "music.Track",
+  description = "The track playing now, or `nil` when nothing plays.",
   get = function()
     local id = raw.get_track()
     return id ~= nil and raw.track_get(id) or nil
@@ -203,9 +202,9 @@ api.property("music.current_track", {
 })
 
 api.property("music.looped_track", {
-  type = "Track",
-  description = "The ambient track that resumes once the current one-shot finishes, as a "
-    .. "`trx.music.Track`, or `nil` when none is set.",
+  type = "music.Track",
+  description = "The ambient track that resumes once the current one-shot finishes, or `nil` "
+    .. "when none is set.",
   get = function()
     local id = raw.get_looped_track()
     return id ~= nil and raw.track_get(id) or nil
@@ -218,8 +217,7 @@ api.define("music.play", {
   params = {
     {
       name = "id",
-      type = "integer",
-      enum = "catalog.music",
+      type = "catalog.music",
       description = "Track to play. To reach a track by the level's own slot, play it through a "
         .. "handle: `trx.music.tracks[slot]:play()`.",
     },

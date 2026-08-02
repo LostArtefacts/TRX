@@ -16,7 +16,7 @@ The text the player reads, in the player's own language.
 
 ### Functions
 
-- [lua]`trx.locale.declare(strings)`  
+- <a name="locale.declare"></a>[lua]`trx.locale.declare(strings)`  
   Declares game string keys and the text behind them.
 
   A key belongs with the script that shows it, so a command carries its own
@@ -35,7 +35,7 @@ The text the player reads, in the player's own language.
   })
   ```
 
-- [lua]`trx.locale.get(key)`  
+- <a name="locale.get"></a>[lua]`trx.locale.get(key)`  
   The text behind a game string key.
 
   Parameters:
@@ -48,7 +48,7 @@ The text the player reads, in the player's own language.
   trx.console.log(trx.locale.get("general/misc/off"))
   ```
 
-- [lua]`trx.locale.format(key, ...)`  
+- <a name="locale.format"></a>[lua]`trx.locale.format(key, ...)`  
   The text behind a key with its placeholders filled in.
 
   Parameters:
@@ -62,7 +62,7 @@ The text the player reads, in the player's own language.
   trx.console.log(trx.locale.format("general/misc/pagination_nav", 1, 5))
   ```
 
-- [lua]`trx.locale.reload()`  
+- <a name="locale.reload"></a>[lua]`trx.locale.reload()`  
   Reloads the current language's text from disk.
 
   Returns: boolean. Whether the reload succeeded.

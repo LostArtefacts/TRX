@@ -34,8 +34,8 @@ local ROOM_HOOK_PARAMS = {
     params = {
       {
         name = "item",
-        type = "Item",
-        description = "The `trx.items.Item` that changed rooms.",
+        type = "items.Item",
+        description = "The item that changed rooms.",
       },
     },
   },
@@ -67,9 +67,9 @@ local FLOOR_HEIGHT_PARAMS = {
   FLOOR_HEIGHT_POS,
   {
     name = "room_num",
-    type = "integer",
+    type = "rooms.Num",
     optional = true,
-    description = "0-based room to look from. The search crosses portals, so a neighbouring "
+    description = "The search crosses portals, so a neighbouring "
       .. "room's floor is found too. Without it, the room is looked up from the position, which "
       .. "takes the first room that contains it and passes over the flipped-away ones. Where "
       .. "rooms overlap, name the room, or ask the room itself with `room:floor_height`.",
@@ -104,9 +104,8 @@ api.type("rooms.Room", {
   fields = {
     num = {
       from = "room_num",
-      type = "integer",
+      type = "rooms.Num",
       writable = false,
-      description = "0-based room number, matching the numbers level editors show.",
     },
     underwater = {
       from = "flags.underwater",
@@ -136,9 +135,8 @@ api.type("rooms.Room", {
     },
     flip_status = {
       from = "flip_status",
-      type = "integer",
+      type = "rooms.FlipStatus",
       writable = false,
-      enum = "rooms.FlipStatus",
       description = "Current flip status.",
     },
     -- Deliberately not exposed: pos, size, ambient, light and mesh counts,
@@ -195,7 +193,7 @@ end)]],
 
   extensions = {
     flipped_room = {
-      type = "Room",
+      type = "rooms.Room",
       description = "This room's flip pair, or `nil` if it has none.",
       impl = function(room)
         local num = raw.get_flipped_room(room)
@@ -228,17 +226,17 @@ end)]],
   },
 })
 
-api.note(
-  "rooms.num",
-  "0-based room number, matching the numbers level editors show."
-)
+api.number("rooms.Num", {
+  base = 0,
+  description = "Room number, matching the numbers level editors show.",
+})
 
 api.define("rooms.get", {
   description = "Retrieves a room by number.",
   params = {
-    { name = "num", type = "integer", see = "rooms.num" },
+    { name = "num", type = "rooms.Num" },
   },
-  returns = { type = "Room", nullable = true },
+  returns = { type = "rooms.Room", nullable = true },
   examples = {
     [[local room = trx.rooms[14]
 room.underwater = true]],
@@ -268,8 +266,7 @@ api.define("rooms.flip_effect", {
   params = {
     {
       name = "effect_id",
-      type = "integer",
-      enum = "catalog.flip_effects",
+      type = "catalog.flip_effects",
       description = "Use `-1` to clear the current effect.",
     },
     {
@@ -303,8 +300,7 @@ api.define("rooms.find_valid_pos", {
     { name = "pos", type = "vec3", description = "Position to search near." },
     {
       name = "room_num",
-      type = "integer",
-      description = "0-based room to search from.",
+      type = "rooms.Num",
     },
   },
   returns = {
@@ -313,7 +309,10 @@ api.define("rooms.find_valid_pos", {
       nullable = true,
       description = "The valid position, or `nil` if none was found nearby.",
     },
-    { type = "integer", description = "The 0-based room the position is in." },
+    {
+      type = "rooms.Num",
+      description = "The room the position is in.",
+    },
   },
   impl = raw.find_valid_pos,
 })
@@ -334,7 +333,7 @@ end
 local function flag_narrowing(field, description)
   return {
     description = description,
-    returns = { type = "Query", description = "The narrowed query." },
+    returns = { type = "query.Query", description = "The narrowed query." },
     impl = trx.query.narrowing(function()
       return function(_num, room)
         return room[field]
@@ -356,7 +355,7 @@ local RoomQuery = api.type("rooms.RoomQuery", {
     swamp = flag_narrowing("swamp", "The room is filled with swamp water."),
     dry = {
       description = "The room holds neither water nor swamp water.",
-      returns = { type = "Query", description = "The narrowed query." },
+      returns = { type = "query.Query", description = "The narrowed query." },
       impl = trx.query.narrowing(function()
         return function(_num, room)
           return not room.underwater and not room.swamp
@@ -368,7 +367,7 @@ local RoomQuery = api.type("rooms.RoomQuery", {
       description = "The room is part of the level as it stands: an ordinary room, or the half of "
         .. "a flip pair the level is showing. This is what a script asking about the world wants, "
         .. "and what `at` already applies.",
-      returns = { type = "Query", description = "The narrowed query." },
+      returns = { type = "query.Query", description = "The narrowed query." },
       examples = { [[trx.rooms.query:reachable():underwater():count()]] },
       impl = trx.query.narrowing(function()
         return function(_num, room)
@@ -379,7 +378,7 @@ local RoomQuery = api.type("rooms.RoomQuery", {
     flipped = {
       description = "The room is the half of a flip pair the level is not showing. Its geometry is "
         .. "still there to inspect, but nothing can be in it.",
-      returns = { type = "Query", description = "The narrowed query." },
+      returns = { type = "query.Query", description = "The narrowed query." },
       impl = trx.query.narrowing(function()
         return function(_num, room)
           return room.flip_status == trx.rooms.FlipStatus.FLIPPED
@@ -396,7 +395,7 @@ local RoomQuery = api.type("rooms.RoomQuery", {
       params = {
         { name = "pos", type = "vec3", description = "World position." },
       },
-      returns = { type = "Query", description = "The narrowed query." },
+      returns = { type = "query.Query", description = "The narrowed query." },
       examples = { [[trx.rooms.query:at(trx.lara.item.pos):first()]] },
       impl = trx.query.narrowing(function(pos)
         return function(_num, room)
@@ -419,9 +418,8 @@ local room_query = trx.query.new({
 }, RoomQuery)
 
 api.property("rooms.query", {
-  type = "RoomQuery",
-  description = "The identity query over every room in the level. Narrow it and read it - see "
-    .. "`trx.rooms.RoomQuery`.",
+  type = "rooms.RoomQuery",
+  description = "The identity query over every room in the level. Narrow it and read it.",
   get = function()
     return room_query
   end,
@@ -429,10 +427,9 @@ api.property("rooms.query", {
 
 api.container("rooms", {
   description = "Indexing the module reaches a room, and `#trx.rooms` is how many the level has. "
-    .. "Rooms count from zero, matching the room numbers level editors show. `pairs()` walks them "
-    .. "in order, keyed by that number.",
-  key = { type = "integer", see = "rooms.num" },
-  value = { type = "Room", nullable = true },
+    .. "`pairs()` walks them in order, keyed by the room number.",
+  key = { type = "rooms.Num" },
+  value = { type = "rooms.Room", nullable = true },
   examples = {
     [[trx.log.info(#trx.rooms .. " rooms, first is " .. trx.rooms[0].num)
 for num, room in pairs(trx.rooms) do

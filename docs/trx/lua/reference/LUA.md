@@ -16,7 +16,7 @@ Evaluating Lua at runtime: a string of code, or a file on disk. Both run in the 
 
 ### Functions
 
-- [lua]`trx.lua.eval_expr(code)`  
+- <a name="lua.eval_expr"></a>[lua]`trx.lua.eval_expr(code)`  
   Evaluates a string of Lua code, as the `/lua` console command does.
 
   Parameters:
@@ -29,7 +29,7 @@ Evaluating Lua at runtime: a string of code, or a file on disk. Both run in the 
   trx.lua.eval_expr("trx.console.log('hello')")
   ```
 
-- [lua]`trx.lua.eval_file(path)`  
+- <a name="lua.eval_file"></a>[lua]`trx.lua.eval_file(path)`  
   Runs a Lua file, the way a level script is run. A file that cannot be read reports as a `"runtime"` failure.
 
   Parameters:

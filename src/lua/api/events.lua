@@ -133,8 +133,7 @@ api.define("events.on_pickup", {
       params = {
         {
           name = "item_num",
-          type = "integer",
-          see = "items.num",
+          type = "items.Num",
           description = "The item that was picked up.",
         },
       },
@@ -178,6 +177,7 @@ api.define("events.on_flip_effect", {
     {
       name = "effect_num",
       type = "integer",
+      base = 0,
       description = "The flip effect number to claim, as the level editor numbers them. This is "
         .. "not the id space of `trx.rooms.flip_effect`, which takes `trx.catalog.flip_effects` "
         .. "names.",
@@ -194,8 +194,7 @@ api.define("events.on_flip_effect", {
         },
         {
           name = "item_num",
-          type = "integer",
-          see = "items.num",
+          type = "items.Num",
           description = "The item that ran the effect: Lara for a pad trigger, "
             .. "the activating object for a heavy trigger, the animating item for an animation "
             .. "command.",
@@ -225,19 +224,17 @@ api.define("events.on_room_change", {
       params = {
         {
           name = "item",
-          type = "Item",
-          description = "The `trx.items.Item` that changed rooms.",
+          type = "items.Item",
+          description = "The item that changed rooms.",
         },
         {
           name = "old_room_num",
-          type = "integer",
-          see = "rooms.num",
+          type = "rooms.Num",
           description = "-1 if it had none.",
         },
         {
           name = "new_room_num",
-          type = "integer",
-          see = "rooms.num",
+          type = "rooms.Num",
           description = "-1 if it left the world.",
         },
       },
@@ -277,8 +274,8 @@ api.define("events.on_trigger", {
       params = {
         {
           name = "item",
-          type = "Item",
-          description = "The `trx.items.Item` the trigger was aimed at.",
+          type = "items.Item",
+          description = "The item the trigger was aimed at.",
         },
         {
           name = "trigger",
@@ -331,8 +328,8 @@ local function visibility_hook(event_type, method, verb, examples)
         params = {
           {
             name = "item",
-            type = "Item",
-            description = "The `trx.items.Item` that became " .. verb .. ".",
+            type = "items.Item",
+            description = "The item that became " .. verb .. ".",
           },
         },
       },
@@ -364,7 +361,7 @@ local function item_lifecycle_hook(
         params = {
           {
             name = "item",
-            type = "Item",
+            type = "items.Item",
             description = item_desc,
           },
         },
@@ -406,7 +403,7 @@ api.define(
       .. "a one-shot object spent. It is the change that fires, once, and only a live level does, "
       .. "not a cutscene or the attract demo.\n\n"
       .. "`trx.items.Item:on_finish` is this same event, narrowed to one item.",
-    "The `trx.items.Item` that finished.",
+    "The item that finished.",
     {
       [[trx.events.on_finish(function(item)
   trx.log.info(item.object_id .. " finished its run")
@@ -423,7 +420,7 @@ api.define(
       .. "each frame. Every path that starts an item fires it: a trigger, a switch, a respawn, a "
       .. "cheat. A trigger also fires `on_activate`, which this does not.\n\n"
       .. "`trx.items.Item:on_enter_sim` is this same event, narrowed to one item.",
-    "The `trx.items.Item` that started being simulated.",
+    "The item that started being simulated.",
     {
       [[trx.events.on_enter_sim(function(item)
   trx.log.info(item.object_id .. " started running")
@@ -439,7 +436,7 @@ api.define(
     "Happens when an item stops being simulated during play - its control routine no longer runs. "
       .. "It keeps its place and its state; it merely stops.\n\n"
       .. "`trx.items.Item:on_leave_sim` is this same event, narrowed to one item.",
-    "The `trx.items.Item` that stopped being simulated.",
+    "The item that stopped being simulated.",
     {
       [[trx.events.on_leave_sim(function(item)
   trx.log.info(item.object_id .. " stopped running")
@@ -456,7 +453,7 @@ api.define(
       .. "level trigger takes. Switches, respawns and cheats start an item without it, firing only "
       .. "`on_enter_sim`; watch that one for a start of any cause.\n\n"
       .. "`trx.items.Item:on_activate` is this same event, narrowed to one item.",
-    "The `trx.items.Item` that was activated.",
+    "The item that was activated.",
     {
       [[trx.events.on_activate(function(item)
   trx.log.info(item.object_id .. " was activated")
@@ -472,7 +469,7 @@ api.define(
     "Happens when a running item is deactivated through the lifecycle front door during play - the "
       .. "path an antitrigger takes. It fires only when the item was actually running.\n\n"
       .. "`trx.items.Item:on_deactivate` is this same event, narrowed to one item.",
-    "The `trx.items.Item` that was deactivated.",
+    "The item that was deactivated.",
     {
       [[trx.events.on_deactivate(function(item)
   trx.log.info(item.object_id .. " was deactivated")
@@ -489,7 +486,7 @@ api.define(
       .. "taken, an object that has run its course. The item can still be read from the handler, "
       .. "which runs before the removal completes, but a handle kept past the handler goes stale.\n\n"
       .. "`trx.items.Item:on_destroy` is this same event, narrowed to one item.",
-    "The `trx.items.Item` being removed. Valid only for the duration of the handler.",
+    "The item being removed. Valid only for the duration of the handler.",
     {
       [[trx.events.on_destroy(function(item)
   trx.log.info(item.object_id .. " was removed")
@@ -506,7 +503,7 @@ api.define(
       .. "emitter releases or an item a script creates. The level's own items do not fire it as "
       .. "they load; only an arrival during a live level counts.\n\n"
       .. "`trx.items.Item:on_enter_world` is this same event, narrowed to one item.",
-    "The `trx.items.Item` that entered the world.",
+    "The item that entered the world.",
     {
       [[trx.events.on_enter_world(function(item)
   trx.log.info(item.object_id .. " entered the world")
@@ -523,7 +520,7 @@ api.define(
       .. "or collidable. It need not be destroyed; a destroyed item leaves the world on its way "
       .. "out, and fires this first.\n\n"
       .. "`trx.items.Item:on_leave_world` is this same event, narrowed to one item.",
-    "The `trx.items.Item` that left the world.",
+    "The item that left the world.",
     {
       [[trx.events.on_leave_world(function(item)
   trx.log.info(item.object_id .. " left the world")
@@ -546,8 +543,8 @@ attacker dealt. A death that does not go through damage - a script writing `hit_
       params = {
         {
           name = "item",
-          type = "Item",
-          description = "The `trx.items.Item` that took the damage.",
+          type = "items.Item",
+          description = "The item that took the damage.",
         },
         {
           name = "damage",
@@ -588,8 +585,8 @@ more for the dagger that ends it.
       params = {
         {
           name = "item",
-          type = "Item",
-          description = "The `trx.items.Item` that was brought down.",
+          type = "items.Item",
+          description = "The item that was brought down.",
         },
       },
     },
@@ -631,8 +628,9 @@ api.define("events.on_cutscene_trigger", {
       params = {
         {
           name = "cutscene_num",
-          type = "integer",
-          description = "Number the trigger names.",
+          type = "cutscenes.Num",
+          description = "The number the trigger names, which the game need not have a cutscene "
+            .. "for.",
         },
       },
     },
@@ -664,8 +662,7 @@ api.define("events.on_cutscene_start", {
       params = {
         {
           name = "cutscene_num",
-          type = "integer",
-          description = "Number of the cutscene starting.",
+          type = "cutscenes.Num",
         },
       },
     },
@@ -684,8 +681,7 @@ api.define("events.on_cutscene_end", {
       params = {
         {
           name = "cutscene_num",
-          type = "integer",
-          description = "Number of the cutscene that ended.",
+          type = "cutscenes.Num",
         },
       },
     },
@@ -710,8 +706,7 @@ A sequence that a cutscene or the player interrupts does not fire it.]],
       params = {
         {
           name = "sequence_num",
-          type = "integer",
-          description = "Number of the flyby sequence that ended.",
+          type = "camera.SequenceNum",
         },
       },
     },

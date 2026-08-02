@@ -13,14 +13,14 @@ api.property("camera.pos", {
 })
 
 api.property("camera.room_num", {
-  type = "integer",
-  description = "0-based number of the room the camera is in, or `nil` if unknown.",
+  type = "rooms.Num",
+  description = "The room the camera is in, or `nil` if unknown.",
   get = raw.get_room,
 })
 
 api.property("camera.room", {
-  type = "Room",
-  description = "The `trx.rooms.Room` the camera is in, or `nil` if unknown.",
+  type = "rooms.Room",
+  description = "The room the camera is in, or `nil` if unknown.",
   get = function()
     local room_num = raw.get_room()
     return room_num and trx.rooms[room_num] or nil
@@ -34,8 +34,8 @@ api.property("camera.target_pos", {
 })
 
 api.property("camera.target_room_num", {
-  type = "integer",
-  description = "0-based number of the room the camera is looking at, or `nil` if unknown.",
+  type = "rooms.Num",
+  description = "The room the camera is looking at, or `nil` if unknown.",
   get = raw.get_target_room,
 })
 
@@ -60,13 +60,17 @@ api.property("camera.is_flyby_active", {
   get = raw.is_flyby_active,
 })
 
+api.number("camera.SequenceNum", {
+  base = 0,
+  description = "Flyby sequence number, as the level numbers them.",
+})
+
 api.define("camera.play_flyby", {
   description = "Starts a flyby camera sequence. Does nothing if another one is already playing.",
   params = {
     {
       name = "sequence_num",
-      type = "integer",
-      description = "0-based sequence number.",
+      type = "camera.SequenceNum",
     },
   },
   returns = {

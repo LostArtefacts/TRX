@@ -16,16 +16,16 @@ Module for playing and controlling the soundtrack.
 
 ### Properties
 
-- **`trx.music.streams`** (table). The soundtrack's streams as `trx.music.Stream` handles: `[1]` is the main stream, `[2]` onwards the overlay slots. A slot that is not playing still answers, with a stale handle. Indexing and iterating reach one handle at a time. *(read-only)*
-- **`trx.music.tracks`** (table). The tracks the current level carries, as `trx.music.Track` handles keyed by id: `trx.music.tracks[5]` is track 5, or `nil` if the level has no such track. `#` counts them, iterating walks them, and both reach one handle at a time. *(read-only)*
-- **`trx.music.current_track`** (Track). The track playing now, as a `trx.music.Track`, or `nil` when nothing plays. *(read-only)*
-- **`trx.music.looped_track`** (Track). The ambient track that resumes once the current one-shot finishes, as a `trx.music.Track`, or `nil` when none is set. *(read-only)*
+- <a name="music.streams"></a>**`trx.music.streams`** (table). The soundtrack's streams as [`trx.music.Stream`](#music.Stream) handles: `[1]` is the main stream, `[2]` onwards the overlay slots. A slot that is not playing still answers, with a stale handle. Indexing and iterating reach one handle at a time. *(read-only)*
+- <a name="music.tracks"></a>**`trx.music.tracks`** (table). The tracks the current level carries, as [`trx.music.Track`](#music.Track) handles keyed by id: `trx.music.tracks[5]` is track 5, or `nil` if the level has no such track. `#` counts them, iterating walks them, and both reach one handle at a time. *(read-only)*
+- <a name="music.current_track"></a>**`trx.music.current_track`** ([trx.music.Track](#music.Track)). The track playing now, or `nil` when nothing plays. *(read-only)*
+- <a name="music.looped_track"></a>**`trx.music.looped_track`** ([trx.music.Track](#music.Track)). The ambient track that resumes once the current one-shot finishes, or `nil` when none is set. *(read-only)*
 
 ### Enums
 
-- [lua]`trx.music.PlayMode`
+- <a name="music.PlayMode"></a>[lua]`trx.music.PlayMode`
 
-    How a track is played. Pass one as `opts.mode` to `trx.music.play`.
+    How a track is played. Pass one as `opts.mode` to [`trx.music.play`](#music.play).
 
     - `trx.music.PlayMode.ONCE` = `0`  
         Plays the track once. When it finishes, any active looped track resumes from its start.
@@ -40,30 +40,30 @@ Module for playing and controlling the soundtrack.
 
 ### Structures
 
-- [lua]`trx.music.Stream`
+- <a name="music.Stream"></a>[lua]`trx.music.Stream`
 
-    One of the soundtrack's playing streams: the main stream, or an overlay. Reach them through `trx.music.streams`. A handle to a slot that is not playing goes stale, so reading a field or calling a method on it raises; check `is_valid()` first.
+    One of the soundtrack's playing streams: the main stream, or an overlay. Reach them through [`trx.music.streams`](#music.streams). A handle to a slot that is not playing goes stale, so reading a field or calling a method on it raises; check `is_valid()` first.
 
     Handles are live references: if the underlying object is destroyed,
     using the handle raises an error rather than silently reading an
     unrelated one.
 
     Properties:
-    - **`mode`**: integer. How the track is playing. Compare against `trx.music.PlayMode`. *(read-only)*
-    - **`timestamp`**: number. How far into the track the stream is, in seconds. *(read-only)*
-    - **`track_num`**: integer. The track this stream is playing, in the level's own numbering. *(read-only)*
+    - <a name="music.Stream.mode"></a>**`mode`**: [trx.music.PlayMode](#music.PlayMode). How the track is playing. *(read-only)*
+    - <a name="music.Stream.timestamp"></a>**`timestamp`**: number. How far into the track the stream is, in seconds. *(read-only)*
+    - <a name="music.Stream.track_num"></a>**`track_num`**: integer. The track this stream is playing, in the level's own numbering. *(read-only)*
 
     Methods:
 
-    - [lua]`stream:is_valid()`  
+    - <a name="music.Stream.is_valid"></a>[lua]`stream:is_valid()`  
       Whether the slot is still playing. A stream that has finished, or been stopped, leaves its handle stale.
 
       Returns: boolean.
 
-    - [lua]`stream:pause()`  
+    - <a name="music.Stream.pause"></a>[lua]`stream:pause()`  
       Pauses this stream.
 
-    - [lua]`stream:seek(timestamp)`  
+    - <a name="music.Stream.seek"></a>[lua]`stream:seek(timestamp)`  
       Seeks this stream to a timestamp.
 
       Parameters:
@@ -71,53 +71,53 @@ Module for playing and controlling the soundtrack.
 
       Returns: boolean. Whether the seek took.
 
-    - [lua]`stream:stop()`  
+    - <a name="music.Stream.stop"></a>[lua]`stream:stop()`  
       Stops this stream. Stopping the main stream lets a deferred ambient loop resume; an overlay just ends.
 
-    - [lua]`stream:unpause()`  
+    - <a name="music.Stream.unpause"></a>[lua]`stream:unpause()`  
       Resumes this stream.
 
-- [lua]`trx.music.Track`
+- <a name="music.Track"></a>[lua]`trx.music.Track`
 
-    A track the current level carries. Reach them through `trx.music.tracks`, or as `trx.music.current_track`. A handle to a track the loaded level does not carry goes stale, so `is_valid()` answers whether it is still there.
+    A track the current level carries. Reach them through [`trx.music.tracks`](#music.tracks), or as [`trx.music.current_track`](#music.current_track). A handle to a track the loaded level does not carry goes stale, so `is_valid()` answers whether it is still there.
 
     Handles are live references: if the underlying object is destroyed,
     using the handle raises an error rather than silently reading an
     unrelated one.
 
     Properties:
-    - **`num`**: integer. The number the level gives this track. *(read-only)*
+    - <a name="music.Track.num"></a>**`num`**: integer. The number the level gives this track. *(read-only)*
 
     Methods:
 
-    - [lua]`track:is_valid()`  
+    - <a name="music.Track.is_valid"></a>[lua]`track:is_valid()`  
       Whether the loaded level still carries this track.
 
       Returns: boolean.
 
-    - [lua]`track:path()`  
+    - <a name="music.Track.path"></a>[lua]`track:path()`  
       Resolves the track's file path.
 
       Returns: string or `nil`. `nil` when there is no file, e.g. a CD-audio soundtrack.
 
-    - [lua]`track:play([opts])`  
+    - <a name="music.Track.play"></a>[lua]`track:play([opts])`  
       Plays this track.
 
       Parameters:
-      - **`opts`** (table, optional). `mode`: a `trx.music.PlayMode`. Defaults to `ONCE`.
+      - **`opts`** (table, optional). `mode`: a [`trx.music.PlayMode`](#music.PlayMode). Defaults to `ONCE`.
 
-      Returns: music.Stream or `nil`. The stream it started, or `nil` if none did.
+      Returns: [trx.music.Stream](#music.Stream) or `nil`. The stream it started, or `nil` if none did.
 
 ### Functions
 
-- [lua]`trx.music.play(id, [opts])`  
+- <a name="music.play"></a>[lua]`trx.music.play(id, [opts])`  
   Plays a track by catalog id, mapping it to the level's own track. A game that does not carry the track plays nothing.
 
   Parameters:
-  - **`id`** (integer). Track to play. To reach a track by the level's own slot, play it through a handle: `trx.music.tracks[slot]:play()`. Compare against `trx.catalog.music`.
-  - **`opts`** (table, optional). `mode`: a `trx.music.PlayMode`. Defaults to `ONCE`.
+  - **`id`** ([trx.catalog.music](CATALOG.md#catalog.music)). Track to play. To reach a track by the level's own slot, play it through a handle: `trx.music.tracks[slot]:play()`.
+  - **`opts`** (table, optional). `mode`: a [`trx.music.PlayMode`](#music.PlayMode). Defaults to `ONCE`.
 
-  Returns: music.Stream or `nil`. The stream it started, or `nil` if none did.
+  Returns: [trx.music.Stream](#music.Stream) or `nil`. The stream it started, or `nil` if none did.
 
   Example:
   ```lua
@@ -125,11 +125,11 @@ Module for playing and controlling the soundtrack.
   trx.music.play(trx.catalog.music.SECRET, { mode = trx.music.PlayMode.LOOP })
   ```
 
-- [lua]`trx.music.pause()`  
+- <a name="music.pause"></a>[lua]`trx.music.pause()`  
   Pauses the music.
 
-- [lua]`trx.music.unpause()`  
+- <a name="music.unpause"></a>[lua]`trx.music.unpause()`  
   Resumes paused music.
 
-- [lua]`trx.music.stop()`  
+- <a name="music.stop"></a>[lua]`trx.music.stop()`  
   Stops all music.

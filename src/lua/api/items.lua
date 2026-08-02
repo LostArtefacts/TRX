@@ -8,10 +8,10 @@ api.module("items", {
   description = "Module for controlling all moveables.",
 })
 
-api.note(
-  "items.num",
-  "0-based item number, matching the numbers level editors show."
-)
+api.number("items.Num", {
+  base = 0,
+  description = "Item number, matching the numbers level editors show.",
+})
 
 api.enum("items.PickupMode", {
   backing = "PICKUP_MODE",
@@ -112,7 +112,7 @@ local function item_lifecycle_method(event_name, description, examples)
         params = {
           {
             name = "item",
-            type = "Item",
+            type = "items.Item",
             description = "This item.",
           },
         },
@@ -145,26 +145,27 @@ api.type("items.Item", {
     anim_num = {
       from = "relative_anim_num",
       type = "integer",
-      description = "The animation's number within the object, counted from 0.",
+      base = 0,
+      description = "The animation's number within the object.",
     },
     frame_num = {
       from = "relative_frame_num",
       type = "integer",
-      description = "The frame's number within the animation, counted from 0. Negative values count "
-        .. "back from the end.",
+      base = 0,
+      description = "The frame's number within the animation. Negative values count back from the "
+        .. "end.",
     },
     num = {
       from = "item_num",
-      type = "integer",
+      type = "items.Num",
       writable = false,
-      see = "items.num",
       description = "An item handed over by a query can say where it lives.",
     },
     room_num = {
       from = "room_num",
-      type = "integer",
+      type = "rooms.Num",
       writable = false,
-      description = "0-based number of the room containing this item. Set `pos` to move the item between rooms.",
+      description = "The room containing this item. Set `pos` to move the item between rooms.",
     },
     hit_points = {
       from = "hit_points",
@@ -184,9 +185,8 @@ api.type("items.Item", {
     },
     object_id = {
       from = "object_id",
-      type = "integer",
+      type = "catalog.objects",
       writable = false,
-      enum = "catalog.objects",
       description = "The item's object type.",
     },
     is_visible = {
@@ -334,8 +334,8 @@ api.type("items.Item", {
 
   extensions = {
     room = {
-      type = "Room",
-      description = "The `trx.rooms.Room` containing this item.",
+      type = "rooms.Room",
+      description = "The room containing this item.",
       impl = function(item)
         return trx.rooms[item.room_num]
       end,
@@ -413,14 +413,13 @@ api.type("items.Item", {
           params = {
             {
               name = "item",
-              type = "Item",
+              type = "items.Item",
               description = "This item.",
             },
             {
               name = "trigger",
               type = "table",
-              description = "What the trigger carried: `type`, `mask`, `timer` and `one_shot`. See "
-                .. "`trx.events.on_trigger`.",
+              description = "What the trigger carried: `type`, `mask`, `timer` and `one_shot`.",
             },
           },
         },
@@ -444,7 +443,7 @@ end)]],
           params = {
             {
               name = "item",
-              type = "Item",
+              type = "items.Item",
               description = "This item.",
             },
             {
@@ -474,7 +473,7 @@ end)]],
           params = {
             {
               name = "item",
-              type = "Item",
+              type = "items.Item",
               description = "This item.",
             },
           },
@@ -701,12 +700,11 @@ api.define("items.get", {
   params = {
     {
       name = "key",
-      type = "any",
-      see = "items.num",
+      type = "items.Num",
       description = "An item's unique name reaches it as well.",
     },
   },
-  returns = { type = "Item", nullable = true },
+  returns = { type = "items.Item", nullable = true },
   examples = {
     [==[local item = trx.items[0]
 item.name = "lara"
@@ -720,8 +718,7 @@ api.define("items.spawn", {
   params = {
     {
       name = "object_id",
-      type = "integer",
-      enum = "catalog.objects",
+      type = "catalog.objects",
       description = "Object type to spawn.",
     },
     {
@@ -744,7 +741,7 @@ api.define("items.spawn", {
     },
   },
   returns = {
-    type = "Item",
+    type = "items.Item",
     nullable = true,
     description = "`nil` if the item pool is exhausted.",
   },
@@ -801,7 +798,7 @@ end
 local function axis_narrowing(field, description)
   return {
     description = description,
-    returns = { type = "Query", description = "The narrowed query." },
+    returns = { type = "query.Query", description = "The narrowed query." },
     impl = trx.query.narrowing(function()
       return function(_i, item)
         return item[field]
@@ -847,7 +844,7 @@ local ItemQuery = api.type("items.ItemQuery", {
           description = "Object id, or a name `trx.objects.query` resolves.",
         },
       },
-      returns = { type = "Query", description = "The narrowed query." },
+      returns = { type = "query.Query", description = "The narrowed query." },
       examples = {
         [[trx.items.query:of_object("wolf"):simulated():matches()]],
       },
@@ -864,11 +861,10 @@ local ItemQuery = api.type("items.ItemQuery", {
       params = {
         {
           name = "room_num",
-          type = "integer",
-          see = "rooms.num",
+          type = "rooms.Num",
         },
       },
-      returns = { type = "Query", description = "The narrowed query." },
+      returns = { type = "query.Query", description = "The narrowed query." },
       impl = trx.query.narrowing(function(room_num)
         return function(_i, item)
           return item.room_num == room_num
@@ -890,7 +886,7 @@ local ItemQuery = api.type("items.ItemQuery", {
         },
         { name = "max", type = "vec3", description = "The opposite corner." },
       },
-      returns = { type = "Query", description = "The narrowed query." },
+      returns = { type = "query.Query", description = "The narrowed query." },
       examples = {
         [[local guards = trx.items.query
   :in_box({ x = 51200, y = -2048, z = 30720 }, { x = 53248, y = 0, z = 32768 })
@@ -917,7 +913,7 @@ local ItemQuery = api.type("items.ItemQuery", {
           description = "How far out it reaches. One sector is 1024.",
         },
       },
-      returns = { type = "Query", description = "The narrowed query." },
+      returns = { type = "query.Query", description = "The narrowed query." },
       impl = trx.query.narrowing(function(centre, radius)
         return found_in(raw.in_sphere(centre, radius))
       end),
@@ -933,9 +929,8 @@ local item_query = trx.query.new({
 }, ItemQuery)
 
 api.property("items.query", {
-  type = "ItemQuery",
-  description = "The identity query over every item in the level. Narrow it and read it - see "
-    .. "`trx.items.ItemQuery`.",
+  type = "items.ItemQuery",
+  description = "The identity query over every item in the level. Narrow it and read it.",
   get = function()
     return item_query
   end,
@@ -945,11 +940,10 @@ api.container("items", {
   description = "Indexing the module reaches an item, and `#trx.items` is how many the level has. "
     .. "`pairs()` walks them in order, keyed by the item number.",
   key = {
-    type = "any",
-    see = "items.num",
+    type = { "items.Num", "string" },
     description = "An item's unique name reaches it as well.",
   },
-  value = { type = "Item", nullable = true },
+  value = { type = "items.Item", nullable = true },
   examples = {
     [[for num, item in pairs(trx.items) do
   trx.log.info(item.object_id)

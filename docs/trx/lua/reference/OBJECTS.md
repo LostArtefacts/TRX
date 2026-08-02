@@ -14,13 +14,13 @@ order: 7
 
 Module for the object definitions a level is built from.
 
-An object is the pattern every item of that type is cut from: a wolf's radius, not this wolf's. Per-item state lives on the item - see `trx.items`.
+An object is the pattern every item of that type is cut from: a wolf's radius, not this wolf's. Per-item state lives on the item - see [`trx.items`](ITEMS.md#items).
 
 ### Indexing
 
-Indexing the module reaches an object definition, so `trx.objects.wolf` is the wolf. Keyed by object id or catalog name, not by position.
+Indexing the module reaches an object definition, so [`trx.objects.wolf`](#objects) is the wolf. Keyed by object id or catalog name, not by position.
 
-- **`trx.objects[key]`** (Object or `nil`). Object id, or its catalog name.
+- <a name="objects[]"></a>**`trx.objects[key]`** ([trx.objects.Object](#objects.Object) or `nil`). Object id, or its catalog name.
 
 Example:
 ```lua
@@ -29,11 +29,11 @@ trx.objects.wolf.properties.max_hit_points = 30
 
 ### Properties
 
-- **`trx.objects.query`** (ObjectQuery). The identity query over every object definition. Narrow it and read it - see `trx.objects.ObjectQuery`. *(read-only)*
+- <a name="objects.query"></a>**`trx.objects.query`** ([trx.objects.ObjectQuery](#objects.ObjectQuery)). The identity query over every object definition. Narrow it and read it. *(read-only)*
 
 ### Structures
 
-- [lua]`trx.objects.Object`
+- <a name="objects.Object"></a>[lua]`trx.objects.Object`
 
     An object definition.
 
@@ -42,34 +42,34 @@ trx.objects.wolf.properties.max_hit_points = 30
     unrelated one.
 
     Properties:
-    - **`anim_count`**: integer. How many animations it has. *(read-only)*
-    - **`is_intelligent`**: boolean. Whether the object thinks - a creature rather than a door. *(read-only)*
-    - **`loaded`**: boolean. Whether the current level has this object at all. An object it never loaded still has a definition; this is how a script tells. *(read-only)*
-    - **`mesh_count`**: integer. How many meshes the object is built from. *(read-only)*
-    - **`pivot_length`**: integer. How far in front of itself the object turns about.
-    - **`radius`**: integer. Collision radius.
-    - **`semi_transparent`**: boolean. Whether the object is drawn see-through.
-    - **`shadow_size`**: integer. Size of the blob shadow drawn under it, and 0 for none.
-    - **`smartness`**: integer. How readily a creature of this type finds its way to Lara.
+    - <a name="objects.Object.anim_count"></a>**`anim_count`**: integer. How many animations it has. *(read-only)*
+    - <a name="objects.Object.is_intelligent"></a>**`is_intelligent`**: boolean. Whether the object thinks - a creature rather than a door. *(read-only)*
+    - <a name="objects.Object.loaded"></a>**`loaded`**: boolean. Whether the current level has this object at all. An object it never loaded still has a definition; this is how a script tells. *(read-only)*
+    - <a name="objects.Object.mesh_count"></a>**`mesh_count`**: integer. How many meshes the object is built from. *(read-only)*
+    - <a name="objects.Object.pivot_length"></a>**`pivot_length`**: integer. How far in front of itself the object turns about.
+    - <a name="objects.Object.radius"></a>**`radius`**: integer. Collision radius.
+    - <a name="objects.Object.semi_transparent"></a>**`semi_transparent`**: boolean. Whether the object is drawn see-through.
+    - <a name="objects.Object.shadow_size"></a>**`shadow_size`**: integer. Size of the blob shadow drawn under it, and 0 for none.
+    - <a name="objects.Object.smartness"></a>**`smartness`**: integer. How readily a creature of this type finds its way to Lara.
 
     Computed properties (derived, not stored on the object):
-    - **`default_names`**: table. The compile-time English names. A lookup falls back on these when the player's language has no name to match, which is the case before a language file is loaded at all.
-    - **`names`**: table. Every name the object answers to, in the player's language. An object has more than one: a large medipack is also a `medipack` and a `big medi`.
-    - **`properties`**: table. The object's own typed properties, which every item of the type inherits. Writing here changes the default for all of them; write to `item.properties` to change one item only. Iterable with `pairs()`. See [Objects](../../OBJECTS.md).
+    - <a name="objects.Object.default_names"></a>**`default_names`**: table. The compile-time English names. A lookup falls back on these when the player's language has no name to match, which is the case before a language file is loaded at all.
+    - <a name="objects.Object.names"></a>**`names`**: table. Every name the object answers to, in the player's language. An object has more than one: a large medipack is also a `medipack` and a `big medi`.
+    - <a name="objects.Object.properties"></a>**`properties`**: table. The object's own typed properties, which every item of the type inherits. Writing here changes the default for all of them; write to `item.properties` to change one item only. Iterable with `pairs()`. See [Objects](../../OBJECTS.md).
 
     Methods:
 
-    - [lua]`object:get_default_names()`  
+    - <a name="objects.Object.get_default_names"></a>[lua]`object:get_default_names()`  
       The compile-time English names, which a lookup falls back on before a language file is loaded. Prefer `object.default_names`.
 
       Returns: table.
 
-    - [lua]`object:get_names()`  
+    - <a name="objects.Object.get_names"></a>[lua]`object:get_names()`  
       Every name the object answers to, in the player's language. Prefer `object.names`.
 
       Returns: table.
 
-    - [lua]`object:get_property(name)`  
+    - <a name="objects.Object.get_property"></a>[lua]`object:get_property(name)`  
       Reads one of the object's properties. Prefer `object.properties.<name>`.
 
       Parameters:
@@ -77,150 +77,150 @@ trx.objects.wolf.properties.max_hit_points = 30
 
       Returns: any or `nil`.
 
-    - [lua]`object:get_property_names()`  
+    - <a name="objects.Object.get_property_names"></a>[lua]`object:get_property_names()`  
       Names of every property this object declares.
 
       Returns: table.
 
-    - [lua]`object:set_property(name, value)`  
+    - <a name="objects.Object.set_property"></a>[lua]`object:set_property(name, value)`  
       Writes one of the object's properties. Prefer `object.properties.<name> = ...`.
 
       Parameters:
       - **`name`** (string).
       - **`value`** (any).
 
-- [lua]`trx.objects.ObjectQuery`
+- <a name="objects.ObjectQuery"></a>[lua]`trx.objects.ObjectQuery`
 
-    A `trx.query.Query` over every object the engine knows, with the narrowings below on top of the ones every query has. Objects answer to names, so it carries the name layer too - see `trx.query.NamedQuery`.
+    A [`trx.query.Query`](QUERY.md#query.Query) over every object the engine knows, with the narrowings below on top of the ones every query has. Objects answer to names, so it carries the name layer too - see [`trx.query.NamedQuery`](QUERY.md#query.NamedQuery).
 
     The families do not cover `pickup` between them: a second state of something Lara already carries, such as a part-full waterskin, is in none of them.
 
     Methods:
 
-    - [lua]`objectquery:ammo()`  
+    - <a name="objects.ObjectQuery.ammo"></a>[lua]`objectquery:ammo()`  
       Clips for a weapon.
 
-      Returns: Query. The narrowed query.
+      Returns: [trx.query.Query](QUERY.md#query.Query). The narrowed query.
 
-    - [lua]`objectquery:animation()`  
+    - <a name="objects.ObjectQuery.animation"></a>[lua]`objectquery:animation()`  
       An animation an object borrows rather than a thing of its own.
 
-      Returns: Query. The narrowed query.
+      Returns: [trx.query.Query](QUERY.md#query.Query). The narrowed query.
 
-    - [lua]`objectquery:collectible()`  
+    - <a name="objects.ObjectQuery.collectible"></a>[lua]`objectquery:collectible()`  
       A collectible, by the slot it fills.
 
-      Returns: Query. The narrowed query.
+      Returns: [trx.query.Query](QUERY.md#query.Query). The narrowed query.
 
-    - [lua]`objectquery:creature()`  
+    - <a name="objects.ObjectQuery.creature"></a>[lua]`objectquery:creature()`  
       The object is a creature.
 
-      Returns: Query. The narrowed query.
+      Returns: [trx.query.Query](QUERY.md#query.Query). The narrowed query.
 
-    - [lua]`objectquery:door()`  
+    - <a name="objects.ObjectQuery.door"></a>[lua]`objectquery:door()`  
       A door.
 
-      Returns: Query. The narrowed query.
+      Returns: [trx.query.Query](QUERY.md#query.Query). The narrowed query.
 
-    - [lua]`objectquery:enemy()`  
+    - <a name="objects.ObjectQuery.enemy"></a>[lua]`objectquery:enemy()`  
       A creature that fights Lara rather than for her.
 
-      Returns: Query. The narrowed query.
+      Returns: [trx.query.Query](QUERY.md#query.Query). The narrowed query.
 
-    - [lua]`objectquery:examine()`  
+    - <a name="objects.ObjectQuery.examine"></a>[lua]`objectquery:examine()`  
       An examine item, by the slot it fills.
 
-      Returns: Query. The narrowed query.
+      Returns: [trx.query.Query](QUERY.md#query.Query). The narrowed query.
 
-    - [lua]`objectquery:gun()`  
+    - <a name="objects.ObjectQuery.gun"></a>[lua]`objectquery:gun()`  
       A weapon.
 
-      Returns: Query. The narrowed query.
+      Returns: [trx.query.Query](QUERY.md#query.Query). The narrowed query.
 
-    - [lua]`objectquery:inventory_item()`  
+    - <a name="objects.ObjectQuery.inventory_item"></a>[lua]`objectquery:inventory_item()`  
       An icon in the inventory rather than a thing in the world.
 
-      Returns: Query. The narrowed query.
+      Returns: [trx.query.Query](QUERY.md#query.Query). The narrowed query.
 
-    - [lua]`objectquery:key()`  
+    - <a name="objects.ObjectQuery.key"></a>[lua]`objectquery:key()`  
       A key, by the slot it fills.
 
-      Returns: Query. The narrowed query.
+      Returns: [trx.query.Query](QUERY.md#query.Query). The narrowed query.
 
-    - [lua]`objectquery:loaded()`  
+    - <a name="objects.ObjectQuery.loaded"></a>[lua]`objectquery:loaded()`  
       The level loaded the object, so items of it exist.
 
-      Returns: Query. The narrowed query.
+      Returns: [trx.query.Query](QUERY.md#query.Query). The narrowed query.
 
-    - [lua]`objectquery:loyal()`  
+    - <a name="objects.ObjectQuery.loyal"></a>[lua]`objectquery:loyal()`  
       One of Lara's own: the butler, and Lara herself.
 
-      Returns: Query. The narrowed query.
+      Returns: [trx.query.Query](QUERY.md#query.Query). The narrowed query.
 
-    - [lua]`objectquery:null_object()`  
+    - <a name="objects.ObjectQuery.null_object"></a>[lua]`objectquery:null_object()`  
       A placeholder that is never drawn.
 
-      Returns: Query. The narrowed query.
+      Returns: [trx.query.Query](QUERY.md#query.Query). The narrowed query.
 
-    - [lua]`objectquery:pickup()`  
+    - <a name="objects.ObjectQuery.pickup"></a>[lua]`objectquery:pickup()`  
       Something Lara can pick up.
 
-      Returns: Query. The narrowed query.
+      Returns: [trx.query.Query](QUERY.md#query.Query). The narrowed query.
 
-    - [lua]`objectquery:pushable()`  
+    - <a name="objects.ObjectQuery.pushable"></a>[lua]`objectquery:pushable()`  
       A block Lara pushes and pulls.
 
-      Returns: Query. The narrowed query.
+      Returns: [trx.query.Query](QUERY.md#query.Query). The narrowed query.
 
-    - [lua]`objectquery:puzzle()`  
+    - <a name="objects.ObjectQuery.puzzle"></a>[lua]`objectquery:puzzle()`  
       A puzzle item, by the slot it fills.
 
-      Returns: Query. The narrowed query.
+      Returns: [trx.query.Query](QUERY.md#query.Query). The narrowed query.
 
-    - [lua]`objectquery:quest()`  
+    - <a name="objects.ObjectQuery.quest"></a>[lua]`objectquery:quest()`  
       A quest item, by the slot it fills. This is what carries the scion.
 
-      Returns: Query. The narrowed query.
+      Returns: [trx.query.Query](QUERY.md#query.Query). The narrowed query.
 
-    - [lua]`objectquery:receptacle()`  
+    - <a name="objects.ObjectQuery.receptacle"></a>[lua]`objectquery:receptacle()`  
       A slot a puzzle item goes into.
 
-      Returns: Query. The narrowed query.
+      Returns: [trx.query.Query](QUERY.md#query.Query). The narrowed query.
 
-    - [lua]`objectquery:secret()`  
+    - <a name="objects.ObjectQuery.secret"></a>[lua]`objectquery:secret()`  
       The trinket a secret trigger sits under.
 
-      Returns: Query. The narrowed query.
+      Returns: [trx.query.Query](QUERY.md#query.Query). The narrowed query.
 
-    - [lua]`objectquery:spawnable()`  
+    - <a name="objects.ObjectQuery.spawnable"></a>[lua]`objectquery:spawnable()`  
       The object is a thing in the world at all, rather than an inventory icon, an animation, or a null placeholder.
 
-      Returns: Query. The narrowed query.
+      Returns: [trx.query.Query](QUERY.md#query.Query). The narrowed query.
 
-    - [lua]`objectquery:supply()`  
+    - <a name="objects.ObjectQuery.supply"></a>[lua]`objectquery:supply()`  
       A pickup Lara spends rather than keeps.
 
-      Returns: Query. The narrowed query.
+      Returns: [trx.query.Query](QUERY.md#query.Query). The narrowed query.
 
-    - [lua]`objectquery:switch()`  
+    - <a name="objects.ObjectQuery.switch"></a>[lua]`objectquery:switch()`  
       A switch Lara throws.
 
-      Returns: Query. The narrowed query.
+      Returns: [trx.query.Query](QUERY.md#query.Query). The narrowed query.
 
-    - [lua]`objectquery:tool()`  
+    - <a name="objects.ObjectQuery.tool"></a>[lua]`objectquery:tool()`  
       A pickup named for itself rather than filling a numbered slot: the crowbar, the lasersight, the binoculars, the waterskins, the leadbar.
 
-      Returns: Query. The narrowed query.
+      Returns: [trx.query.Query](QUERY.md#query.Query). The narrowed query.
 
 ### Functions
 
-- [lua]`trx.objects.get(key)`  
+- <a name="objects.get"></a>[lua]`trx.objects.get(key)`  
   Retrieves an object definition by id or by name.
 
   Parameters:
-  - **`key`** (any). Object id, or its catalog name: `trx.objects["wolf"]`. Compare against `trx.catalog.objects`.
+  - **`key`** ([trx.catalog.objects](CATALOG.md#catalog.objects)). Object id, or its catalog name: `trx.objects["wolf"]`.
 
-  Returns: Object or `nil`. `nil` if no such object exists.
+  Returns: [trx.objects.Object](#objects.Object) or `nil`. `nil` if no such object exists.
 
   Example:
   ```lua
@@ -228,20 +228,20 @@ trx.objects.wolf.properties.max_hit_points = 30
   wolf.properties.max_hit_points = 30
   ```
 
-- [lua]`trx.objects.swap_mesh(object_id1, object_id2, [mesh_num1], [mesh_num2])`  
+- <a name="objects.swap_mesh"></a>[lua]`trx.objects.swap_mesh(object_id1, object_id2, [mesh_num1], [mesh_num2])`  
   Swaps meshes between two objects. With no mesh numbers, swaps all of them; with both, swaps just those two. One without the other raises.
 
   Parameters:
-  - **`object_id1`** (integer). Compare against `trx.catalog.objects`.
-  - **`object_id2`** (integer). Compare against `trx.catalog.objects`.
+  - **`object_id1`** ([trx.catalog.objects](CATALOG.md#catalog.objects)).
+  - **`object_id2`** ([trx.catalog.objects](CATALOG.md#catalog.objects)).
   - **`mesh_num1`** (integer, optional). Mesh of the first.
   - **`mesh_num2`** (integer, optional). Mesh of the second.
 
-- [lua]`trx.objects.swap_sprite(object_id1, object_id2)`  
+- <a name="objects.swap_sprite"></a>[lua]`trx.objects.swap_sprite(object_id1, object_id2)`  
   Swaps the sprites of two objects, which is how a pickup looks when 3D pickups
   are turned off. Raises if either object is drawn from meshes rather than a
   sprite.
 
   Parameters:
-  - **`object_id1`** (integer). Compare against `trx.catalog.objects`.
-  - **`object_id2`** (integer). Compare against `trx.catalog.objects`.
+  - **`object_id1`** ([trx.catalog.objects](CATALOG.md#catalog.objects)).
+  - **`object_id2`** ([trx.catalog.objects](CATALOG.md#catalog.objects)).

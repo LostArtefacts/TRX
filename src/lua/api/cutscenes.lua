@@ -12,18 +12,23 @@ api.module("cutscenes", {
   ]],
 })
 
+api.number("cutscenes.Num", {
+  base = 0,
+  description = "Cutscene number, as a cutscene trigger names it.",
+})
+
 api.define("cutscenes.play", {
   description = "Plays a cutscene, fading the scene out first. Does nothing if one is already "
     .. "playing or the game has no cutscene data.",
   params = {
-    { name = "num", type = "integer", description = "Cutscene number." },
+    { name = "num", type = "cutscenes.Num" },
   },
   examples = { [[trx.cutscenes.play(28)]] },
   impl = raw.play,
 })
 
 api.property("cutscenes.current", {
-  type = "integer",
+  type = "cutscenes.Num",
   description = "Number of the cutscene playing, or `nil` if none is.",
   get = raw.get_current,
 })
@@ -37,7 +42,7 @@ api.property("cutscenes.is_playing", {
 api.define("cutscenes.is_played", {
   description = "Whether a cutscene trigger naming this number has already been answered.",
   params = {
-    { name = "num", type = "integer", description = "Cutscene number." },
+    { name = "num", type = "cutscenes.Num" },
   },
   returns = { type = "boolean" },
   impl = raw.is_played,
@@ -55,7 +60,7 @@ api.define("cutscenes.set_played", {
     `play` accepts.
   ]],
   params = {
-    { name = "num", type = "integer", description = "Cutscene number." },
+    { name = "num", type = "cutscenes.Num" },
     {
       name = "played",
       type = "boolean",

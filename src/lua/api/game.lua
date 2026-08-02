@@ -42,14 +42,14 @@ api.type("game.Level", {
       from = "num",
       type = "integer",
       writable = false,
+      base = 1,
       description = "The number the level goes by. Not its place in the table: levels the game "
         .. "flow skips do not count, and a gym level has no number at all and reads 0.",
     },
     type = {
       from = "type",
-      type = "integer",
+      type = "game.LevelType",
       writable = false,
-      enum = "game.LevelType",
       description = "What kind of level it is.",
     },
     title = {
@@ -78,9 +78,8 @@ api.type("game.Level", {
     },
     music_track = {
       from = "music_track",
-      type = "integer",
+      type = "catalog.music",
       writable = false,
-      enum = "catalog.music",
       description = "The track that plays when the level starts.",
     },
     water_particles = {
@@ -118,8 +117,8 @@ api.type("game.Level", {
 
   extensions = {
     inventory = {
-      type = "Inventory",
-      description = "What the level keeps for Lara's return, as a `trx.inventory.Inventory`, or "
+      type = "inventory.Inventory",
+      description = "What the level keeps for Lara's return, or "
         .. "`nil` for a level that keeps nothing: the title screen and the cutscenes. It is what "
         .. "she will arrive there with rather than what she is carrying now, which is "
         .. "`trx.inventory` itself.",
@@ -128,8 +127,8 @@ api.type("game.Level", {
       end,
     },
     stats = {
-      type = "Stats",
-      description = "What the level keeps count of, as a `trx.stats.Stats`, or `nil` for a level "
+      type = "stats.Stats",
+      description = "What the level keeps count of, or `nil` for a level "
         .. "that counts nothing: the title screen and the cutscenes. The level being played is "
         .. "also `trx.stats` itself.",
       impl = function(level)
@@ -173,13 +172,13 @@ api.property("game.demos", {
 })
 
 api.property("game.current_level", {
-  type = "Level",
+  type = "game.Level",
   description = "The level being played, or `nil` if none is.",
   get = raw.get_current_level,
 })
 
 api.property("game.gym", {
-  type = "Level",
+  type = "game.Level",
   description = "The gym level, or `nil` if this game has no gym.",
   get = function()
     local level = raw.get_level(LevelTable.MAIN, 0)
@@ -227,7 +226,8 @@ api.define("game.play_level", {
     {
       name = "level_num",
       type = "integer",
-      description = "1-based position in `trx.game.levels`.",
+      base = 1,
+      description = "Position in `trx.game.levels`.",
     },
     {
       name = "opts",
@@ -248,7 +248,8 @@ api.define("game.play_cutscene", {
     {
       name = "cutscene_num",
       type = "integer",
-      description = "1-based position in `trx.game.cutscenes`.",
+      base = 1,
+      description = "Position in `trx.game.cutscenes`.",
     },
   },
   impl = raw.play_cutscene,
@@ -261,12 +262,13 @@ api.define("game.play_demo", {
       name = "demo_num",
       type = "integer",
       optional = true,
-      description = "1-based position in `trx.game.demos`. Omit to play the next demo in rotation.",
+      base = 1,
+      description = "Position in `trx.game.demos`. Omit to play the next demo in rotation.",
     },
   },
   returns = {
     {
-      type = "Level",
+      type = "game.Level",
       nullable = true,
       description = "The demo that started, or `nil` if the game has no demos.",
     },

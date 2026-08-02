@@ -17,16 +17,20 @@ local Pool = api.enum("savegame.Pool", {
 
 local pool_param = {
   name = "pool",
-  type = "integer",
+  type = "savegame.Pool",
   optional = true,
-  enum = "savegame.Pool",
   description = "Which set of slots to look in. Defaults to `NORMAL`.",
 }
 
+api.number("savegame.SlotNum", {
+  base = 1,
+  description = "Slot number within the pool. For the quick pool this is the "
+    .. "on-screen order.",
+})
+
 local slot_param = {
   name = "slot_num",
-  type = "integer",
-  description = "1-based slot number. For the quick pool this is the on-screen order.",
+  type = "savegame.SlotNum",
 }
 
 api.define("savegame.slot_count", {
@@ -66,9 +70,9 @@ api.define("savegame.save", {
   params = {
     {
       name = "slot_num",
-      type = "integer",
+      type = "savegame.SlotNum",
       optional = true,
-      description = "1-based slot number. The quick pool uses the next slot in its rotation "
+      description = "The quick pool uses the next slot in its rotation "
         .. "when it is omitted.",
     },
     pool_param,

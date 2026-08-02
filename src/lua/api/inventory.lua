@@ -15,12 +15,12 @@ Every function takes either the pickup lying in the world or the inventory icon
 it goes into. The engine maps one to the other, so a script names whichever it
 has.]],
   instance = raw.get_current,
+  instance_type = "inventory.Inventory",
 })
 
 local object_param = {
   name = "object_id",
-  type = "integer",
-  enum = "catalog.objects",
+  type = "catalog.objects",
   description = "The pickup, or the inventory icon it goes into.",
 }
 
@@ -33,8 +33,7 @@ local count_param = {
 
 local weapon_param = {
   name = "weapon",
-  type = "integer",
-  enum = "catalog.weapons",
+  type = "catalog.weapons",
   description = "Which weapon. `UNKNOWN` and `UNARMED` raise, and so does anything outside the "
     .. "table; `FLARE` and `SKIDOO` are taken, being held the way a weapon is.",
 }
@@ -51,8 +50,7 @@ is an entry like any other, counting what its rounds come to.]],
   fields = {
     object = {
       from = "object_id",
-      type = "integer",
-      enum = "catalog.objects",
+      type = "catalog.objects",
       writable = false,
       description = "The inventory icon this entry is drawn as.",
     },
@@ -158,19 +156,19 @@ Several pickups share one entry - the scion whether or not she holds it, a
 waterskin at each fill level - so this answers with the one thing they are
 drawn as.]],
       params = { object_param },
-      returns = { type = "Entry", nullable = true },
+      returns = { type = "inventory.Entry", nullable = true },
     },
     entry_at = {
-      description = "The entry at a position, counted from one in the order they are drawn, or "
-        .. "`nil` past the end.",
+      description = "The entry at a position in the order they are drawn, or `nil` past the end.",
       params = {
         {
           name = "entry_num",
           type = "integer",
-          description = "1-based position.",
+          base = 1,
+          description = "Position in the ring.",
         },
       },
-      returns = { type = "Entry", nullable = true },
+      returns = { type = "inventory.Entry", nullable = true },
     },
     entry_count = {
       description = "How many entries there are. `#trx.inventory` is the same number for the "
@@ -187,8 +185,7 @@ from two things. It answers with an object id rather than an entry; `entry` is
 what hands back the entry itself.]],
       params = { object_param },
       returns = {
-        type = "integer",
-        enum = "catalog.objects",
+        type = "catalog.objects",
         nullable = true,
         description = "The icon's object id, or `nil` for a pickup that has none.",
       },
@@ -209,11 +206,10 @@ This asks about the level being played whichever inventory it is called on.]],
 
 api.container("inventory", {
   description = "Indexing the module reaches an entry of Lara's inventory, and `#trx.inventory` "
-    .. "is how many kinds of thing she carries. Entries count from one, in the order they are "
-    .. "drawn, and are built one at a time as they are asked for. `pairs()` walks them.",
-  base = 1,
-  key = { type = "integer", description = "1-based position." },
-  value = { type = "Entry", nullable = true },
+    .. "is how many kinds of thing she carries. Entries are keyed by the order they are drawn "
+    .. "in, and are built one at a time as they are asked for. `pairs()` walks them.",
+  key = { type = "integer", base = 1, description = "Position in the ring." },
+  value = { type = "inventory.Entry", nullable = true },
   examples = {
     [[for _, entry in pairs(trx.inventory) do
   trx.log.info(("%d x %s"):format(entry.count, trx.catalog.objects[entry.object]))
