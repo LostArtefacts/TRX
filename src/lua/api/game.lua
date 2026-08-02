@@ -6,6 +6,20 @@ api.module("game", {
   description = "Module for the game flow: which levels there are, and which one is being played.",
 })
 
+api.unit("game.Frames", {
+  description = [[
+    A length of time counted in the frames the engine runs the world at, which
+    is what the engine measures its own timers in.
+  ]],
+  spellings = { "game frames", "in frames" },
+})
+
+api.unit("game.Seconds", {
+  type = "number",
+  description = "A length of time in seconds, as a player would read it off a clock.",
+  spellings = { "in seconds" },
+})
+
 api.number("game.LevelNum", {
   base = 1,
   description = "The number a level goes by, which is what the player is shown and what a "

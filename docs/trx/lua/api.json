@@ -2752,9 +2752,9 @@
       ],
       "params": [
         {
-          "description": "Time in seconds. Must be greater than zero.",
+          "description": "Must be greater than zero.",
           "name": "time",
-          "type": "number"
+          "type": "game.Seconds"
         },
         {
           "default": 1,
@@ -2807,9 +2807,9 @@
         "description": "The records.",
         "fields": [
           {
-            "description": "The time, in seconds.",
+            "description": "The time it took.",
             "name": "time",
-            "type": "number"
+            "type": "game.Seconds"
           },
           {
             "base": 1,
@@ -5681,9 +5681,9 @@
       "writable": false
     },
     {
-      "description": "How much warmth Lara holds, in frames, and what `trx.lara.exposure_bar` fills to. Warmth only moves in a room carrying the `trx.rooms.Room.damaging` flag, such as the cold water of Antarctica.",
+      "description": "How much warmth Lara holds, and what `trx.lara.exposure_bar` fills to. Warmth only moves in a room carrying the `trx.rooms.Room.damaging` flag, such as the cold water of Antarctica.",
       "path": "rules.exposure.max",
-      "type": "integer",
+      "type": "game.Frames",
       "writable": true
     },
     {
@@ -6457,9 +6457,9 @@
           "writable": true
         },
         {
-          "description": "How long it keeps the item going, in seconds.",
+          "description": "How long it keeps the item going.",
           "name": "timer",
-          "type": "number",
+          "type": "game.Seconds",
           "writable": true
         },
         {
@@ -6668,9 +6668,9 @@
           "writable": true
         },
         {
-          "description": "How long the item's trigger keeps it going, in game frames. `0` runs it until something takes the trigger back; `-1` means it has run out; anything else counts down. This is the raw frame count - `trx.items.Item:trigger` takes its timer in seconds instead.",
+          "description": "How long the item's trigger keeps it going. `0` runs it until something takes the trigger back; `-1` means it has run out; anything else counts down. `trx.items.Item:trigger` takes its own timer as a `trx.game.Seconds`.",
           "name": "timer",
-          "type": "integer",
+          "type": "game.Frames",
           "writable": true
         },
         {
@@ -7173,10 +7173,10 @@
                 },
                 {
                   "default": 0,
-                  "description": "How long it should keep the item going, in seconds. `0` means until something takes the trigger back. A timer of exactly `1` is a single frame, not a second, matching the level format.",
+                  "description": "How long it should keep the item going. `0` means until something takes the trigger back. A timer of exactly `1` is a single frame, not a second, matching the level format.",
                   "name": "timer",
                   "optional": true,
-                  "type": "number"
+                  "type": "game.Seconds"
                 },
                 {
                   "description": "Never let it fire again.",
@@ -7347,15 +7347,15 @@
           "writable": true
         },
         {
-          "description": "Frames Lara has been dead for.",
+          "description": "How long Lara has been dead.",
           "name": "death_timer",
-          "type": "integer",
+          "type": "game.Frames",
           "writable": false
         },
         {
-          "description": "Frames Lara has been diving for.",
+          "description": "How long Lara has been diving.",
           "name": "dive_timer",
-          "type": "integer",
+          "type": "game.Frames",
           "writable": false
         },
         {
@@ -7425,9 +7425,9 @@
           "writable": true
         },
         {
-          "description": "Frames Lara has stood still for, which is what starts an idle animation.",
+          "description": "How long Lara has stood still, which is what starts an idle animation.",
           "name": "pose_count",
-          "type": "integer",
+          "type": "game.Frames",
           "writable": false
         },
         {
@@ -7563,9 +7563,9 @@
           "writable": false
         },
         {
-          "description": "How far into the track the stream is, in seconds.",
+          "description": "How far into the track the stream is.",
           "name": "timestamp",
-          "type": "number",
+          "type": "game.Seconds",
           "writable": false
         },
         {
@@ -7594,9 +7594,9 @@
           "name": "seek",
           "params": [
             {
-              "description": "Where to seek to, in seconds.",
+              "description": "Where to seek to.",
               "name": "timestamp",
-              "type": "number"
+              "type": "game.Seconds"
             }
           ],
           "returns": {
@@ -8612,9 +8612,9 @@
           "writable": true
         },
         {
-          "description": "How long the level has been played, in game frames.",
+          "description": "How long the level has been played.",
           "name": "timer",
-          "type": "integer",
+          "type": "game.Frames",
           "writable": true
         }
       ],
@@ -8681,6 +8681,23 @@
     }
   ],
   "units": [
+    {
+      "description": "A length of time counted in the frames the engine runs the world at, which\nis what the engine measures its own timers in.",
+      "path": "game.Frames",
+      "spellings": [
+        "game frames",
+        "in frames"
+      ],
+      "type": "integer"
+    },
+    {
+      "description": "A length of time in seconds, as a player would read it off a clock.",
+      "path": "game.Seconds",
+      "spellings": [
+        "in seconds"
+      ],
+      "type": "number"
+    },
     {
       "description": "An angle in the engine's own units, where 65536 is a full turn rather than\n2 pi. An angle counts in cycles, so one past the end of a turn wraps round\nto name the same direction: adding a half turn to a rotation always works.\n`trx.math.DEG_1` converts from degrees.",
       "path": "math.Angle",

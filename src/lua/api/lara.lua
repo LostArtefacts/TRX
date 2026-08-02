@@ -177,15 +177,15 @@ api.type("lara.Lara", {
     },
     dive_timer = {
       from = "dive_timer",
-      type = "integer",
+      type = "game.Frames",
       writable = false,
-      description = "Frames Lara has been diving for.",
+      description = "How long Lara has been diving.",
     },
     death_timer = {
       from = "death_timer",
-      type = "integer",
+      type = "game.Frames",
       writable = false,
-      description = "Frames Lara has been dead for.",
+      description = "How long Lara has been dead.",
     },
     sprint_timer = {
       from = "sprint_timer",
@@ -200,9 +200,9 @@ api.type("lara.Lara", {
     },
     pose_count = {
       from = "pose_count",
-      type = "integer",
+      type = "game.Frames",
       writable = false,
-      description = "Frames Lara has stood still for, which is what starts an idle animation.",
+      description = "How long Lara has stood still, which is what starts an idle animation.",
     },
   },
 })

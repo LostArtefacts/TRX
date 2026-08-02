@@ -54,7 +54,7 @@ Module for playing and controlling the soundtrack.
 
     Properties:
     - <a id="music.Stream.mode" name="music.Stream.mode"></a>**`mode`**: [trx.music.PlayMode](#music.PlayMode). How the track is playing. *(read-only)*
-    - <a id="music.Stream.timestamp" name="music.Stream.timestamp"></a>**`timestamp`**: number. How far into the track the stream is, in seconds. *(read-only)*
+    - <a id="music.Stream.timestamp" name="music.Stream.timestamp"></a>**`timestamp`**: [trx.game.Seconds](GAME.md#game.Seconds). How far into the track the stream is. *(read-only)*
     - <a id="music.Stream.track_num" name="music.Stream.track_num"></a>**`track_num`**: [trx.music.TrackNum](#music.TrackNum). The track this stream is playing. *(read-only)*
 
     Methods:
@@ -71,7 +71,7 @@ Module for playing and controlling the soundtrack.
       Seeks this stream to a timestamp.
 
       Parameters:
-      - <a id="music.Stream.seek.timestamp" name="music.Stream.seek.timestamp"></a>**`timestamp`** (number). Where to seek to, in seconds.
+      - <a id="music.Stream.seek.timestamp" name="music.Stream.seek.timestamp"></a>**`timestamp`** ([trx.game.Seconds](GAME.md#game.Seconds)). Where to seek to.
 
       Returns: boolean. Whether the seek took.
 

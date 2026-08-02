@@ -44,9 +44,9 @@ api.type("music.Stream", {
     },
     timestamp = {
       from = "timestamp",
-      type = "number",
+      type = "game.Seconds",
       writable = false,
-      description = "How far into the track the stream is, in seconds.",
+      description = "How far into the track the stream is.",
     },
   },
 
@@ -69,8 +69,8 @@ api.type("music.Stream", {
       params = {
         {
           name = "timestamp",
-          type = "number",
-          description = "Where to seek to, in seconds.",
+          type = "game.Seconds",
+          description = "Where to seek to.",
         },
       },
       returns = { type = "boolean", description = "Whether the seek took." },

@@ -30,8 +30,8 @@ local function rule(key, spec)
 end
 
 rule("exposure.max", {
-  type = "integer",
-  description = "How much warmth Lara holds, in frames, and what `trx.lara.exposure_bar` fills "
+  type = "game.Frames",
+  description = "How much warmth Lara holds, and what `trx.lara.exposure_bar` fills "
     .. "to. Warmth only moves in a room carrying the `trx.rooms.Room.damaging` flag, such as the cold water of "
     .. "Antarctica.",
 })

@@ -23,7 +23,7 @@ again on every entry, so a level that wants the defaults back asks for them.
 
 ### Properties
 
-- <a id="rules.exposure.max" name="rules.exposure.max"></a>**`trx.rules.exposure.max`** (integer). How much warmth Lara holds, in frames, and what [`trx.lara.exposure_bar`](LARA.md#lara.Lara.exposure_bar) fills to. Warmth only moves in a room carrying the [`trx.rooms.Room.damaging`](ROOMS.md#rooms.Room.damaging) flag, such as the cold water of Antarctica.
+- <a id="rules.exposure.max" name="rules.exposure.max"></a>**`trx.rules.exposure.max`** ([trx.game.Frames](GAME.md#game.Frames)). How much warmth Lara holds, and what [`trx.lara.exposure_bar`](LARA.md#lara.Lara.exposure_bar) fills to. Warmth only moves in a room carrying the [`trx.rooms.Room.damaging`](ROOMS.md#rooms.Room.damaging) flag, such as the cold water of Antarctica.
 - <a id="rules.exposure.drain_land" name="rules.exposure.drain_land"></a>**`trx.rules.exposure.drain_land`** (integer). Warmth lost each frame in the cold, on land or wading.
 - <a id="rules.exposure.drain_water" name="rules.exposure.drain_water"></a>**`trx.rules.exposure.drain_water`** (integer). Warmth lost each frame in the cold, underwater or at the surface.
 - <a id="rules.exposure.recovery" name="rules.exposure.recovery"></a>**`trx.rules.exposure.recovery`** (integer). Warmth regained each frame once out of the cold.

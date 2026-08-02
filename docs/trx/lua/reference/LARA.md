@@ -156,8 +156,8 @@ Her position, room and hit points are not here: she is an item like any other an
 
     Properties:
     - <a id="lara.Lara.air_bar" name="lara.Lara.air_bar"></a>**`air_bar`**: integer. Air remaining underwater, out of 1800. Runs down while she is under.
-    - <a id="lara.Lara.death_timer" name="lara.Lara.death_timer"></a>**`death_timer`**: integer. Frames Lara has been dead for. *(read-only)*
-    - <a id="lara.Lara.dive_timer" name="lara.Lara.dive_timer"></a>**`dive_timer`**: integer. Frames Lara has been diving for. *(read-only)*
+    - <a id="lara.Lara.death_timer" name="lara.Lara.death_timer"></a>**`death_timer`**: [trx.game.Frames](GAME.md#game.Frames). How long Lara has been dead. *(read-only)*
+    - <a id="lara.Lara.dive_timer" name="lara.Lara.dive_timer"></a>**`dive_timer`**: [trx.game.Frames](GAME.md#game.Frames). How long Lara has been diving. *(read-only)*
     - <a id="lara.Lara.electric" name="lara.Lara.electric"></a>**`electric`**: integer. How badly Lara is being electrocuted, and 0 when she is not.
     - <a id="lara.Lara.equipped_gun" name="lara.Lara.equipped_gun"></a>**`equipped_gun`**: [trx.catalog.weapons](CATALOG.md#catalog.weapons). The weapon Lara is holding. *(read-only)*
     - <a id="lara.Lara.exposure_bar" name="lara.Lara.exposure_bar"></a>**`exposure_bar`**: integer. Warmth remaining in the cold, out of [`trx.rules.exposure.max`](RULES.md#rules.exposure.max). Only moves in a level whose rooms carry the [`trx.rooms.Room.damaging`](ROOMS.md#rooms.Room.damaging) flag.
@@ -169,7 +169,7 @@ Her position, room and hit points are not here: she is an item like any other an
     - <a id="lara.Lara.is_crouched" name="lara.Lara.is_crouched"></a>**`is_crouched`**: boolean. Whether Lara is crouching. *(read-only)*
     - <a id="lara.Lara.poison" name="lara.Lara.poison"></a>**`poison`**: integer. How poisoned Lara is, and 0 when she is not.
     - <a id="lara.Lara.poison_target" name="lara.Lara.poison_target"></a>**`poison_target`**: integer. The poison reservoir that drains into [`trx.lara.poison`](#lara.Lara.poison) over time. TR4 only.
-    - <a id="lara.Lara.pose_count" name="lara.Lara.pose_count"></a>**`pose_count`**: integer. Frames Lara has stood still for, which is what starts an idle animation. *(read-only)*
+    - <a id="lara.Lara.pose_count" name="lara.Lara.pose_count"></a>**`pose_count`**: [trx.game.Frames](GAME.md#game.Frames). How long Lara has stood still, which is what starts an idle animation. *(read-only)*
     - <a id="lara.Lara.requested_gun" name="lara.Lara.requested_gun"></a>**`requested_gun`**: [trx.catalog.weapons](CATALOG.md#catalog.weapons). The weapon Lara is drawing, while she is drawing it. *(read-only)*
     - <a id="lara.Lara.sprint_timer" name="lara.Lara.sprint_timer"></a>**`sprint_timer`**: integer. Sprint left in her legs.
     - <a id="lara.Lara.water_status" name="lara.Lara.water_status"></a>**`water_status`**: [trx.lara.WaterState](#lara.WaterState). Where Lara is with respect to water. *(read-only)*
