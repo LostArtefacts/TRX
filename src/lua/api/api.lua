@@ -425,13 +425,19 @@ end
 -- the module's own members instead, and iterates raw to reach them.
 local function walk(container, tbl)
   local first = once(container, "base", base_of, container.spec.key)
-  local last = first + container.count() - 1
+  -- How far the keys run, which is not how many there are where a collection
+  -- is sparse: the samples a level carries are a hundred keys spread over
+  -- twice as many numbers. A dense one says nothing and the two agree.
+  local last = first + (container.limit or container.count)() - 1
   return function(_, i)
-    i = i + 1
-    if i > last then
-      return nil
+    while i < last do
+      i = i + 1
+      local value = container.get(i)
+      if value ~= nil then
+        return i, value
+      end
     end
-    return i, container.get(i)
+    return nil
   end,
     tbl,
     first - 1
@@ -752,6 +758,14 @@ api.container = declarator("container", "containers", {
       "count must be a function"
     )
     need(
+      spec.limit == nil or type(spec.limit) == "function",
+      "limit must be a function"
+    )
+    need(
+      spec.limit == nil or spec.count ~= nil,
+      "a limit says how far the keys run, so it needs a count beside it"
+    )
+    need(
       type(spec.key) == "table",
       "key must describe what the module is indexed by"
     )
@@ -777,6 +791,7 @@ api.container = declarator("container", "containers", {
     container.module = name
     container.get = spec.get
     container.count = spec.count
+    container.limit = spec.limit
     container.accepts = function(key)
       local kind = type(key)
       return kind == "number" or (kind == "string" and not by_number_only)
