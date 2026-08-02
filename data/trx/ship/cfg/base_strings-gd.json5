@@ -86,6 +86,7 @@
             "debug_camera_pos": "Tùs a' chamara: ",
             "debug_camera_target": "Targaid a' chamara: ",
             "debug_immune": "Neo-bhàsmhorachd air",
+            "debug_interaction": "\\{review}Eadar-obrachadh: ",
             "debug_position": "Suidheachadh: ",
             "debug_rotation": "Cuairteachadh: ",
             "debug_speed": "Luas: ",

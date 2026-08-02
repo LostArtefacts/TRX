@@ -86,6 +86,7 @@
             "debug_camera_pos": "\\{review}Положение камеры: ",
             "debug_camera_target": "\\{review}Цель камеры: ",
             "debug_immune": "Неуязвимость вкл.",
+            "debug_interaction": "\\{review}Взаимодействие: ",
             "debug_position": "Позиция: ",
             "debug_rotation": "Поворот: ",
             "debug_speed": "Скорость: ",
