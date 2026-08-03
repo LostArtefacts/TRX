@@ -24,6 +24,12 @@
 typedef struct {
     lua_State *state;
     LUA_CONTEXT context;
+    // Whether a level's script run is outstanding. Level_Unload runs at the top
+    // of every level load, the first one included, where there is nothing to
+    // let go of and nobody to tell about it.
+    bool level_script_live;
+    // Whether the scripts being run are probes rather than levels being played.
+    bool level_script_probing;
 } M_PRIV;
 
 static M_PRIV m_Priv = {
@@ -212,6 +218,7 @@ void LUA_Shutdown(void)
 {
     M_PRIV *const p = &m_Priv;
     LUA_Registry_ShutdownAll();
+    p->level_script_live = false;
     if (p->state != nullptr) {
         lua_close(p->state);
         p->state = nullptr;
@@ -242,9 +249,31 @@ LUA_RESULT LUA_EvalFile(const char *const path)
     return M_LuaLoadAndRun(p->state, M_LoadFile, path);
 }
 
+void LUA_DropLevelScript(void)
+{
+    M_PRIV *const p = &m_Priv;
+    if (p->level_script_live) {
+        p->level_script_live = false;
+
+        // Before the listeners go, so a module holding state the level set up
+        // hears about it while its own handlers still answer and can take them
+        // down itself.
+        LUA_FireEvent(LUA_EVENT_LEVEL_UNLOAD);
+    }
+
+    // A probe leaves listeners behind as readily as a level does, and they go
+    // here whether anything was told about it or not.
+    LUA_ClearLevelListeners();
+}
+
+void LUA_SetLevelScriptProbing(const bool probing)
+{
+    m_Priv.level_script_probing = probing;
+}
+
 void LUA_RunLevelScript(const GF_LEVEL *const level)
 {
-    LUA_ClearLevelListeners();
+    m_Priv.level_script_live = !m_Priv.level_script_probing;
     LUA_SetScriptContext(LUA_CONTEXT_LEVEL);
 
     if (level->script_path != nullptr) {
@@ -264,6 +293,9 @@ void LUA_ReloadLevelScript(void)
     if (level == nullptr) {
         return;
     }
+    // The level stays where it is, so the unload that would otherwise let go of
+    // the last run is not coming.
+    LUA_DropLevelScript();
     LUA_RunLevelScript(level);
 }
 

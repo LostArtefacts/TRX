@@ -83,6 +83,30 @@ An event that carries a default the script may take over says so in its descript
   end)
   ```
 
+- <a id="events.on_level_unload" name="events.on_level_unload"></a>[lua]`trx.events.on_level_unload(callback)`  
+  Happens as the engine lets go of a level, before the handlers a level script
+  attached are detached and before the world the script was written against is
+  taken apart. This is where a script hands back what it set up while the
+  level it set it up in is still there to read. The handler takes no
+  arguments.
+
+  A level change fires it for the outgoing level, and so does leaving the game
+  for the title screen or for the desktop. Re-running a level's script without
+  changing level fires it for the run being replaced. The unload that opens
+  the first level of a session has nothing to let go of and stays quiet.
+
+  Parameters:
+  - <a id="events.on_level_unload.callback" name="events.on_level_unload.callback"></a>**`callback`** (function). What to run when it happens.
+
+  Returns: [trx.events.Listener](#events.Listener). The attached handler.
+
+  Example:
+  ```lua
+  trx.events.on_level_unload(function()
+    trx.log.info("packing up")
+  end)
+  ```
+
 - <a id="events.on_pickup" name="events.on_pickup"></a>[lua]`trx.events.on_pickup(callback)`  
   Happens just after Lara picks up an item.
 
