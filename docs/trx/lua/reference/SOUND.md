@@ -14,10 +14,17 @@ order: 17
 
 Module for playing sound effects.
 
-### Properties
+### Indexing
 
-- <a id="sound.samples" name="sound.samples"></a>**`trx.sound.samples`** (table). The samples the current level carries, as [`trx.sound.Sample`](#sound.Sample) handles keyed by id: `trx.sound.samples[99]` is sample 99, or `nil` if the level has no such sample. `#` counts them, iterating walks them, and both reach one handle at a time. *(read-only)*
-- <a id="sound.streams" name="sound.streams"></a>**`trx.sound.streams`** (table). The sound effects playing now, as [`trx.sound.Stream`](#sound.Stream) handles. A slot that is silent still answers, with a stale handle. Indexing and iterating reach one handle at a time. *(read-only)*
+The samples the current level carries. A level does not carry every number, so indexing one it lacks is `nil` and iterating passes it by.
+
+- <a id="sound.samples[]" name="sound.samples[]"></a>**`trx.sound.samples[key]`** ([trx.sound.Sample](#sound.Sample) or `nil`).
+- **`#trx.sound.samples`** (integer). How many there are.
+
+The sound effects playing now. A slot that is silent still answers, with a stale handle.
+
+- <a id="sound.streams[]" name="sound.streams[]"></a>**`trx.sound.streams[key]`** ([trx.sound.Stream](#sound.Stream) or `nil`). Which voice. Counted from 1.
+- **`#trx.sound.streams`** (integer). How many there are.
 
 ### Structures
 

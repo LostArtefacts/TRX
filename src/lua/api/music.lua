@@ -142,72 +142,25 @@ api.type("music.Track", {
 
 -- One lazy view apiece: indexing and iterating reach into C a handle at a time,
 -- so neither builds a list up front.
-local streams = setmetatable({}, {
-  __index = function(_, n)
-    if type(n) ~= "number" then
-      return nil
-    end
+api.container("music.streams", {
+  description = "The soundtrack's streams: `[1]` is the main stream, `[2]` onwards the overlay "
+    .. "slots. A slot that is not playing still answers, with a stale handle.",
+  key = { type = "integer", base = 1, description = "Which slot." },
+  value = { type = "music.Stream", nullable = true },
+  get = function(n)
     return raw.stream_get(n - 1)
   end,
-  __len = function()
-    return raw.stream_count()
-  end,
-  __pairs = function()
-    local count = raw.stream_count()
-    local i = 0
-    return function()
-      i = i + 1
-      if i <= count then
-        return i, raw.stream_get(i - 1)
-      end
-    end
-  end,
+  count = raw.stream_count,
 })
 
-local tracks = setmetatable({}, {
-  __index = function(_, id)
-    if type(id) ~= "number" then
-      return nil
-    end
-    return raw.track_get(id)
-  end,
-  __len = function()
-    return raw.track_available_count()
-  end,
-  __pairs = function()
-    local limit = raw.track_limit()
-    local id = -1
-    return function()
-      id = id + 1
-      while id < limit do
-        local track = raw.track_get(id)
-        if track ~= nil then
-          return id, track
-        end
-        id = id + 1
-      end
-    end
-  end,
-})
-
-api.property("music.streams", {
-  type = "table",
-  description = "The soundtrack's streams as `trx.music.Stream` handles: `[1]` is the main "
-    .. "stream, `[2]` onwards the overlay slots. A slot that is not playing still answers, with a "
-    .. "stale handle. Indexing and iterating reach one handle at a time.",
-  get = function()
-    return streams
-  end,
-})
-
-api.property("music.tracks", {
-  type = "table",
-  description = "The tracks the current level carries, as `trx.music.Track` handles keyed by id: "
-    .. "`trx.music.tracks[5]` is track 5, or `nil` if the level has no such track. `#` counts them, "
-    .. "iterating walks them, and both reach one handle at a time.",
-  get = function()
-    return tracks
-  end,
+local tracks = api.container("music.tracks", {
+  description = "The tracks the current level carries. A level does not carry every number, so "
+    .. "indexing one it lacks is `nil` and iterating passes it by.",
+  key = { type = "music.TrackNum" },
+  value = { type = "music.Track", nullable = true },
+  get = raw.track_get,
+  count = raw.track_available_count,
+  limit = raw.track_limit,
 })
 
 api.property("music.current_track", {
