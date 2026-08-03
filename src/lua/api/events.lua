@@ -137,6 +137,35 @@ end)]],
   impl = hook(types.TITLE_START),
 })
 
+api.define("events.on_level_unload", {
+  description = [[
+    Happens as the engine lets go of a level, before the handlers a level script
+    attached are detached and before the world the script was written against is
+    taken apart. This is where a script hands back what it set up while the
+    level it set it up in is still there to read. The handler takes no
+    arguments.
+
+    A level change fires it for the outgoing level, and so does leaving the game
+    for the title screen or for the desktop. Re-running a level's script without
+    changing level fires it for the run being replaced. The unload that opens
+    the first level of a session has nothing to let go of and stays quiet.
+  ]],
+  params = {
+    {
+      name = "callback",
+      type = "function",
+      description = "What to run when it happens.",
+    },
+  },
+  returns = LISTENER,
+  examples = {
+    [[trx.events.on_level_unload(function()
+  trx.log.info("packing up")
+end)]],
+  },
+  impl = hook(types.LEVEL_UNLOAD),
+})
+
 api.define("events.on_pickup", {
   description = "Happens just after Lara picks up an item.",
   params = {

@@ -3434,6 +3434,24 @@
       }
     },
     {
+      "description": "Happens as the engine lets go of a level, before the handlers a level script\nattached are detached and before the world the script was written against is\ntaken apart. This is where a script hands back what it set up while the\nlevel it set it up in is still there to read. The handler takes no\narguments.\n\nA level change fires it for the outgoing level, and so does leaving the game\nfor the title screen or for the desktop. Re-running a level's script without\nchanging level fires it for the run being replaced. The unload that opens\nthe first level of a session has nothing to let go of and stays quiet.",
+      "examples": [
+        "trx.events.on_level_unload(function()\n  trx.log.info(\"packing up\")\nend)"
+      ],
+      "params": [
+        {
+          "description": "What to run when it happens.",
+          "name": "callback",
+          "type": "function"
+        }
+      ],
+      "path": "events.on_level_unload",
+      "returns": {
+        "description": "The attached handler.",
+        "type": "events.Listener"
+      }
+    },
+    {
       "description": "Happens just after Lara picks up an item.",
       "examples": [
         "trx.events.on_pickup(function(item_num)\n  trx.log.info(trx.items[item_num].object_id)\nend)"

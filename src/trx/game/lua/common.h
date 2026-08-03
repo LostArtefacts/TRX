@@ -36,7 +36,20 @@ void LUA_FreeResult(LUA_RESULT *result);
 // Evaluate a Lua script file. Caller must free the result with LUA_FreeResult.
 LUA_RESULT LUA_EvalFile(const char *path);
 
-// Run a level's script, having dropped what the last run of one left behind.
+// Let go of the outgoing level's script: what it set up hears about it, and
+// then its listeners go. Level_Unload does this for a level change; a path that
+// re-runs a script without unloading the level does it for itself. The event
+// waits on a level script run being outstanding, so the unload that opens the
+// first level of a session passes in silence.
+void LUA_DropLevelScript(void);
+
+// Whether the level scripts being run are probes rather than levels being
+// played. The stats scan runs every level's script to count what the level
+// holds; a probe's listeners go the way any other level script's do, and
+// nothing is told about it, no level having been played.
+void LUA_SetLevelScriptProbing(bool probing);
+
+// Run a level's script.
 void LUA_RunLevelScript(const GF_LEVEL *level);
 
 // Reload current level script and reset level-scoped listeners.

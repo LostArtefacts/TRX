@@ -266,6 +266,23 @@ unit_tests += {
   'deps': [dep_lua],
 }
 
+unit_tests += {
+  'name': 'trx/game/lua/common',
+  'engine': [
+    'core/dynamic_enum.c',
+    'core/enum_map.c',
+    'core/memory.c',
+    'core/value.c',
+    'core/vector.c',
+    'game/lua/capi/events.c',
+    'game/lua/common.c',
+    'game/lua/registry.c',
+    'game/lua/utils.c',
+  ],
+  'src': ['harness/stubs_enum_map.c'],
+  'deps': [dep_lua],
+}
+
 # The sandbox depends on nothing but Lua, so the wall the engine stands up at
 # boot stands up here against a bare state - no modules, no engine.
 unit_tests += {

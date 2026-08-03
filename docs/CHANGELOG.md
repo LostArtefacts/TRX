@@ -185,6 +185,7 @@ The Lua integration was rewritten and existing scripts will need updating; refer
 - added `trx.console.register()`, for a script to add its own console command
 - added `trx.events.on_flip_effect()`, letting a script handle a flipeffect run by a trigger or an animation command (#4108)
 - added `trx.events.on_room_change()`, which happens whenever an item changes rooms
+- added `trx.events.on_level_unload()`, which happens as the engine lets go of a level, while the world the script was written against is still there to read
 - added `room:on_enter()` and `room:on_exit()`, which happen when Lara – or, with `watch = "all"`, any item – changes rooms
 - added `trx.events.on_trigger()` and the per-item `item:on_trigger()`, to react to a trigger of any kind being aimed at an item, with the trigger's type, mask, timer and one-shot flag
 - added `trx.events.on_show()` and `trx.events.on_hide()`, with the per-item `item:on_show()` and `item:on_hide()`, which happen when an item becomes visible or hidden

@@ -33,6 +33,10 @@ void Level_Unload(void)
     // can still read the world it played in.
     CutSeq_Reset();
 
+    // And then the script itself, before the world it was written against is
+    // taken apart under it.
+    LUA_DropLevelScript();
+
     Music_ResetTrackStates();
     Sound_ResetSamples();
 
@@ -64,6 +68,10 @@ bool Level_Initialise(
         Random_SeedControl(0xD371F947);
     }
 
+    // Before the incoming level takes over as the current one, so a script
+    // hearing the unload still finds the level it was written for.
+    Level_Unload();
+
     Game_SetIsLevelComplete(false);
     if (level->type != GFL_TITLE && level->type != GFL_DEMO) {
         Gym_SetInventoryOpenEnabled(false);
@@ -80,8 +88,6 @@ bool Level_Initialise(
     if (level == nullptr) {
         return false;
     }
-
-    Level_Unload();
 
     // Read here rather than at the first cutscene trigger, so a scene starts
     // without waiting on the file.
