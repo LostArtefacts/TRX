@@ -450,10 +450,10 @@ end
       - <a id="items.Item.shatter.damage" name="items.Item.shatter.damage"></a>**`damage`** (integer, optional, default `0`). Splash damage dealt to nearby items.
 
     - <a id="items.Item.take_damage" name="items.Item.take_damage"></a>[lua]`item:take_damage(damage)`  
-      Hurts the item the way a weapon does, and reports through [`trx.events.on_hit`](EVENTS.md#events.on_hit),
-      and [`trx.events.on_kill`](EVENTS.md#events.on_kill) where the blow takes the last hit point. Writing
-      [`hit_points`](#items.Item.hit_points) reports neither. The kill counts as the
-      environment's rather than Lara's.
+      Hurts the item the way a weapon does, and reports through
+      [`trx.events.on_hit`](EVENTS.md#events.on_hit), and [`trx.events.on_kill`](EVENTS.md#events.on_kill) where the blow takes the
+      last hit point. Writing [`hit_points`](#items.Item.hit_points) reports neither.
+      The kill counts as the environment's rather than Lara's.
 
       Parameters:
       - <a id="items.Item.take_damage.damage" name="items.Item.take_damage.damage"></a>**`damage`** (integer). Hit points to take.

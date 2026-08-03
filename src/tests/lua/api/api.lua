@@ -213,6 +213,34 @@ test("describe() takes the indentation off a description", function()
   assert(poke.description == "Pokes it.")
 end)
 
+-- The other way one is written: the first line against the brackets, and the
+-- rest at the indentation of the declaration. Left to set what the lines share,
+-- that first line would hold the whole description at its own indentation, and
+-- four spaces of it reads as a code block.
+test("describe() dedents a description opened against its brackets", function()
+  local api = fresh_env()
+  api.module("things", {
+    description = [[A module.
+
+    Written against the brackets, with a line that
+      lays something out under it.]],
+  })
+
+  local module
+  for _, entry in ipairs(api.describe().modules) do
+    if entry.name == "things" then
+      module = entry
+    end
+  end
+  assert(
+    module.description
+      == "A module.\n\nWritten against the brackets, with a line that\n"
+        .. "  lays something out under it.",
+    "the opening line must survive and the rest must be dedented: "
+      .. module.description
+  )
+end)
+
 test("describe() reports fields, methods and extensions", function()
   local api = fresh_env()
   api.module("things", { description = "..." })

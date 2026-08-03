@@ -714,10 +714,12 @@ end)]],
           description = "Hit points to take.",
         },
       },
-      description = [[Hurts the item the way a weapon does, and reports through `trx.events.on_hit`,
-and `trx.events.on_kill` where the blow takes the last hit point. Writing
-`trx.items.Item.hit_points` reports neither. The kill counts as the
-environment's rather than Lara's.]],
+      description = [[
+        Hurts the item the way a weapon does, and reports through
+        `trx.events.on_hit`, and `trx.events.on_kill` where the blow takes the
+        last hit point. Writing `trx.items.Item.hit_points` reports neither.
+        The kill counts as the environment's rather than Lara's.
+      ]],
       examples = {
         [[local lara = trx.lara.item
 lara:take_damage(lara.hit_points)]],

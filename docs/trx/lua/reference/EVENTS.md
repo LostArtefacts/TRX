@@ -374,9 +374,10 @@ An event that carries a default the script may take over says so in its descript
 
 - <a id="events.on_hit" name="events.on_hit"></a>[lua]`trx.events.on_hit(callback)`  
   Happens when an item takes damage, Lara included. It is the raw damage that
-  fires, before the item's hit points are clamped, so a fatal blow reports the whole amount the
-  attacker dealt. A death that does not go through damage - a script writing
-  [`trx.items.Item.hit_points`](ITEMS.md#items.Item.hit_points), or [`trx.items.Item:destroy`](ITEMS.md#items.Item.destroy) - does not report.
+  fires, before the item's hit points are clamped, so a fatal blow reports
+  the whole amount the attacker dealt. A death that does not go through
+  damage - a script writing [`trx.items.Item.hit_points`](ITEMS.md#items.Item.hit_points), or
+  [`trx.items.Item:destroy`](ITEMS.md#items.Item.destroy) - does not report.
 
   [`trx.items.Item:on_hit`](ITEMS.md#items.Item.on_hit) is this same event, narrowed to one item.
 
@@ -396,14 +397,16 @@ An event that carries a default the script may take over says so in its descript
   ```
 
 - <a id="events.on_kill" name="events.on_kill"></a>[lua]`trx.events.on_kill(callback)`  
-  Happens when damage takes an item's hit points to zero, Lara included. It is the
-  same blow [`trx.events.on_hit`](#events.on_hit) reports, which fires first. A death that does not go through damage
-  - a script writing [`trx.items.Item.hit_points`](ITEMS.md#items.Item.hit_points), or [`trx.items.Item:destroy`](ITEMS.md#items.Item.destroy) - does not report.
+  Happens when damage takes an item's hit points to zero, Lara included. It
+  is the same blow [`trx.events.on_hit`](#events.on_hit) reports, which fires first. A death
+  that does not go through damage - a script writing
+  [`trx.items.Item.hit_points`](ITEMS.md#items.Item.hit_points), or [`trx.items.Item:destroy`](ITEMS.md#items.Item.destroy) - does not report.
 
-  Some bosses fall and get back up: Willard is knocked out, Natla plays dead before her second
-  stage, and the dragon lies still until Lara takes the dagger. Each stage brings their hit points
-  to zero, so they report once per stage rather than once per boss, and the dragon reports once
-  more for the dagger that ends it.
+  Some bosses fall and get back up: Willard is knocked out, Natla plays dead
+  before her second stage, and the dragon lies still until Lara takes the
+  dagger. Each stage brings their hit points to zero, so they report once per
+  stage rather than once per boss, and the dragon reports once more for the
+  dagger that ends it.
 
   [`trx.items.Item:on_kill`](ITEMS.md#items.Item.on_kill) is this same event, narrowed to one item.
 

@@ -557,12 +557,15 @@ end)]],
 )
 
 api.define("events.on_hit", {
-  description = [[Happens when an item takes damage, Lara included. It is the raw damage that
-fires, before the item's hit points are clamped, so a fatal blow reports the whole amount the
-attacker dealt. A death that does not go through damage - a script writing
-`trx.items.Item.hit_points`, or `trx.items.Item:destroy` - does not report.
+  description = [[
+    Happens when an item takes damage, Lara included. It is the raw damage that
+    fires, before the item's hit points are clamped, so a fatal blow reports
+    the whole amount the attacker dealt. A death that does not go through
+    damage - a script writing `trx.items.Item.hit_points`, or
+    `trx.items.Item:destroy` - does not report.
 
-`trx.items.Item:on_hit` is this same event, narrowed to one item.]],
+    `trx.items.Item:on_hit` is this same event, narrowed to one item.
+  ]],
   params = {
     {
       name = "callback",
@@ -596,16 +599,20 @@ end)]],
 })
 
 api.define("events.on_kill", {
-  description = [[Happens when damage takes an item's hit points to zero, Lara included. It is the
-same blow `trx.events.on_hit` reports, which fires first. A death that does not go through damage
-- a script writing `trx.items.Item.hit_points`, or `trx.items.Item:destroy` - does not report.
+  description = [[
+    Happens when damage takes an item's hit points to zero, Lara included. It
+    is the same blow `trx.events.on_hit` reports, which fires first. A death
+    that does not go through damage - a script writing
+    `trx.items.Item.hit_points`, or `trx.items.Item:destroy` - does not report.
 
-Some bosses fall and get back up: Willard is knocked out, Natla plays dead before her second
-stage, and the dragon lies still until Lara takes the dagger. Each stage brings their hit points
-to zero, so they report once per stage rather than once per boss, and the dragon reports once
-more for the dagger that ends it.
+    Some bosses fall and get back up: Willard is knocked out, Natla plays dead
+    before her second stage, and the dragon lies still until Lara takes the
+    dagger. Each stage brings their hit points to zero, so they report once per
+    stage rather than once per boss, and the dragon reports once more for the
+    dagger that ends it.
 
-`trx.items.Item:on_kill` is this same event, narrowed to one item.]],
+    `trx.items.Item:on_kill` is this same event, narrowed to one item.
+  ]],
   params = {
     {
       name = "callback",
