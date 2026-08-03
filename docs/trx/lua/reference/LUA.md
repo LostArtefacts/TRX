@@ -30,7 +30,7 @@ Evaluating Lua at runtime: a string of code, or a file on disk. Both run in the 
   Evaluates a string of Lua code, as the `/lua` console command does.
 
   Parameters:
-  - <a id="lua.eval_expr.code" name="lua.eval_expr.code"></a>**`code`** (string). The code.
+  - <a id="lua.eval_expr.code" name="lua.eval_expr.code"></a>**`code`** (string). Any chunk of Lua, not only an expression.
 
   Returns: [trx.lua.Error](#lua.Error) or `nil`. `nil` when the code ran to completion, and what went wrong otherwise. A failure comes back as a value rather than raising, so the caller decides what it means.
 
@@ -45,7 +45,7 @@ Evaluating Lua at runtime: a string of code, or a file on disk. Both run in the 
   Parameters:
   - <a id="lua.eval_file.path" name="lua.eval_file.path"></a>**`path`** (string). Path of the file.
 
-  Returns: [trx.lua.Error](#lua.Error) or `nil`. As in [`trx.lua.eval_expr`](#lua.eval_expr).
+  Returns: [trx.lua.Error](#lua.Error) or `nil`.
 
   Example:
   ```lua

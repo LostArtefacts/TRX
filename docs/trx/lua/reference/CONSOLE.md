@@ -148,7 +148,7 @@ Module for interacting with the developer console.
 - <a id="console.commands" name="console.commands"></a>[lua]`trx.console.commands()`  
   Every registered console command, in registration order. The help command is built on this.
 
-  Returns: a list of [trx.console.Command](#console.Command). The commands.
+  Returns: a list of [trx.console.Command](#console.Command).
 
 - <a id="console.command" name="console.command"></a>[lua]`trx.console.command(name)`  
   The command a name reaches, by its own name or an alias, matched as the console matches when it dispatches.

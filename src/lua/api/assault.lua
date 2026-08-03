@@ -143,7 +143,6 @@ api.define("assault.stats.list_records", {
   returns = {
     type = "assault.Record",
     list = true,
-    description = "The records.",
   },
   examples = {
     [[for _, record in ipairs(trx.assault.stats.list_records(trx.assault.Track.QUAD)) do

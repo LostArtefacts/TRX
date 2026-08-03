@@ -2862,7 +2862,6 @@
       ],
       "path": "assault.stats.list_records",
       "returns": {
-        "description": "The records.",
         "list": true,
         "type": "assault.Record"
       }
@@ -3276,7 +3275,6 @@
       "description": "Every registered console command, in registration order. The help command is built on this.",
       "path": "console.commands",
       "returns": {
-        "description": "The commands.",
         "list": true,
         "type": "console.Command"
       }
@@ -4268,7 +4266,7 @@
       ],
       "params": [
         {
-          "description": "The key.",
+          "description": "The key, e.g. `general/misc/off`.",
           "name": "key",
           "type": "string"
         },
@@ -4375,7 +4373,7 @@
       ],
       "params": [
         {
-          "description": "The code.",
+          "description": "Any chunk of Lua, not only an expression.",
           "name": "code",
           "type": "string"
         }
@@ -4401,7 +4399,6 @@
       ],
       "path": "lua.eval_file",
       "returns": {
-        "description": "As in `trx.lua.eval_expr`.",
         "nullable": true,
         "type": "lua.Error"
       }
@@ -4761,11 +4758,10 @@
       ]
     },
     {
-      "description": "Every rule there is, as dotted `group.field` keys. <!--noref: group.field-->",
+      "description": "Every rule there is, as dotted `group.field` keys, in no particular order. <!--noref: group.field-->",
       "params": [],
       "path": "rules.list",
       "returns": {
-        "description": "In no particular order.",
         "list": true,
         "type": "string"
       }
@@ -5001,7 +4997,7 @@
       ],
       "path": "strings.fuzzy_match",
       "returns": {
-        "description": "The matches, best first.",
+        "description": "The best match comes first.",
         "list": true,
         "type": "strings.Match"
       }
@@ -5551,7 +5547,7 @@
       "writable": false
     },
     {
-      "description": "The TRX version string.",
+      "description": "What this build reports as its version: `1.9.3` for a release, and the tag with the commits since it for a development build.",
       "path": "game.trx_version",
       "type": "string",
       "writable": false
@@ -5802,7 +5798,7 @@
             }
           ],
           "returns": {
-            "description": "The parser.",
+            "description": "The same parser, so declarations chain.",
             "type": "argparse.Parser"
           }
         },
@@ -5825,7 +5821,7 @@
           ],
           "returns": [
             {
-              "description": "Best first.",
+              "description": "The best match comes first.",
               "list": true,
               "type": "string"
             },
@@ -5876,7 +5872,7 @@
             }
           ],
           "returns": {
-            "description": "The parser.",
+            "description": "The same parser, so declarations chain.",
             "type": "argparse.Parser"
           }
         },
@@ -5986,7 +5982,7 @@
             }
           ],
           "returns": {
-            "description": "The parser.",
+            "description": "The same parser, so declarations chain.",
             "type": "argparse.Parser"
           }
         },
@@ -6039,7 +6035,7 @@
             }
           ],
           "returns": {
-            "description": "The parser.",
+            "description": "The same parser, so declarations chain.",
             "type": "argparse.Parser"
           }
         },

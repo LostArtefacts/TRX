@@ -65,7 +65,11 @@ api.define("locale.get", {
 api.define("locale.format", {
   description = "The text behind a key with its placeholders filled in.",
   params = {
-    { name = "key", type = "string", description = "The key." },
+    {
+      name = "key",
+      type = "string",
+      description = "The key, e.g. `general/misc/off`.",
+    },
     {
       name = "...",
       type = "any",

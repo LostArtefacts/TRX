@@ -30,7 +30,11 @@ api.type("lua.Error", {
 api.define("lua.eval_expr", {
   description = "Evaluates a string of Lua code, as the `/lua` console command does.",
   params = {
-    { name = "code", type = "string", description = "The code." },
+    {
+      name = "code",
+      type = "string",
+      description = "Any chunk of Lua, not only an expression.",
+    },
   },
   returns = {
     type = "lua.Error",
@@ -54,7 +58,6 @@ api.define("lua.eval_file", {
   returns = {
     type = "lua.Error",
     nullable = true,
-    description = "As in `trx.lua.eval_expr`.",
   },
   examples = { [[trx.lua.eval_file("data/ship/scripts/extra.lua")]] },
   impl = function(path)

@@ -52,7 +52,7 @@ The text the player reads, in the player's own language.
   The text behind a key with its placeholders filled in.
 
   Parameters:
-  - <a id="locale.format.key" name="locale.format.key"></a>**`key`** (string). The key.
+  - <a id="locale.format.key" name="locale.format.key"></a>**`key`** (string). The key, e.g. `general/misc/off`.
   - <a id="locale.format...." name="locale.format...."></a>**`...`** (any). What to fill the placeholders with.
 
   Returns: string. The text with the arguments in it. A translation whose placeholders do not line up with the arguments comes back unformatted, with a warning in the log: a player is better served by text they can read than by a script that stops.
