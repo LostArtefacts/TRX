@@ -71,7 +71,7 @@ api.define("strings.fuzzy_match", {
   returns = {
     type = "strings.Match",
     list = true,
-    description = "The matches, best first.",
+    description = "The best match comes first.",
   },
   examples = {
     [==[local matches = trx.strings.fuzzy_match("wolf", {

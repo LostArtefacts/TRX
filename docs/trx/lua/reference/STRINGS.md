@@ -45,7 +45,7 @@ Not to be confused with [`trx.locale`](LOCALE.md#locale), which is the text a pl
     - <a id="strings.fuzzy_match.sources.value" name="strings.fuzzy_match.sources.value"></a>**`value`** (any). Anything of the caller's, handed back on the match.
     - <a id="strings.fuzzy_match.sources.weight" name="strings.fuzzy_match.sources.weight"></a>**`weight`** (integer, optional, default `1`). A heavier candidate wins a tie. Zero or less drops it.
 
-  Returns: a list of [trx.strings.Match](#strings.Match). The matches, best first.
+  Returns: a list of [trx.strings.Match](#strings.Match). The best match comes first.
 
   Example:
   ```lua

@@ -121,7 +121,7 @@ Module for controlling the Assault Course and Quad Bike timers in gym levels.
   Parameters:
   - <a id="assault.stats.list_records.track" name="assault.stats.list_records.track"></a>**`track`** ([trx.assault.Track](#assault.Track), optional, default [`trx.assault.Track.COURSE`](#assault.Track)).
 
-  Returns: a list of [trx.assault.Record](#assault.Record). The records.
+  Returns: a list of [trx.assault.Record](#assault.Record).
 
   Example:
   ```lua

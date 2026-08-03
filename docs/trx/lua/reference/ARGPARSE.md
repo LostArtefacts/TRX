@@ -71,7 +71,7 @@ A choice is either a bare string, where the key and value are the same, or a
         - <a id="argparse.Parser.any_of.opts.suggest" name="argparse.Parser.any_of.opts.suggest"></a>**`suggest`** (function, optional). Completions to offer, without restricting what is accepted or being shown in errors. For a free value with a long list behind it, like a setting name.
         - <a id="argparse.Parser.any_of.opts.help" name="argparse.Parser.any_of.opts.help"></a>**`help`** (string, optional). What the argument is for, shown in the help.
 
-      Returns: [trx.argparse.Parser](#argparse.Parser). The parser.
+      Returns: [trx.argparse.Parser](#argparse.Parser). The same parser, so declarations chain.
 
     - <a id="argparse.Parser.complete" name="argparse.Parser.complete"></a>[lua]`parser:complete([text], [caret])`  
       The candidate completions for the token the caret sits in. Matching is against the text before the caret.
@@ -81,7 +81,7 @@ A choice is either a bare string, where the key and value are the same, or a
       - <a id="argparse.Parser.complete.caret" name="argparse.Parser.complete.caret"></a>**`caret`** (integer, optional). Where the caret sits, as a byte offset. The end of the line by default.
 
       Returns:
-      - a list of string. Best first.
+      - a list of string. The best match comes first.
       - integer. Where the run they replace starts. The run is the token, or the whole tail a greedy argument swallows; in whitespace it is empty, at the caret.
       - integer. Where that run ends.
 
@@ -97,7 +97,7 @@ A choice is either a bare string, where the key and value are the same, or a
         - <a id="argparse.Parser.flag.opts.long" name="argparse.Parser.flag.opts.long"></a>**`long`** (string, optional). The long spelling, such as `"--force"`.
         - <a id="argparse.Parser.flag.opts.help" name="argparse.Parser.flag.opts.help"></a>**`help`** (string, optional). What the flag is for, shown in the help.
 
-      Returns: [trx.argparse.Parser](#argparse.Parser). The parser.
+      Returns: [trx.argparse.Parser](#argparse.Parser). The same parser, so declarations chain.
 
     - <a id="argparse.Parser.format_error" name="argparse.Parser.format_error"></a>[lua]`parser:format_error(err)`  
       Turns what a refused line reported into a localized line naming what was wrong and what was expected.
@@ -134,7 +134,7 @@ A choice is either a bare string, where the key and value are the same, or a
         - <a id="argparse.Parser.positional.opts.suggest" name="argparse.Parser.positional.opts.suggest"></a>**`suggest`** (function, optional). Completions to offer, without restricting what is accepted or being shown in errors. For a free value with a long list behind it, like a setting name.
         - <a id="argparse.Parser.positional.opts.help" name="argparse.Parser.positional.opts.help"></a>**`help`** (string, optional). What the argument is for, shown in the help.
 
-      Returns: [trx.argparse.Parser](#argparse.Parser). The parser.
+      Returns: [trx.argparse.Parser](#argparse.Parser). The same parser, so declarations chain.
 
     - <a id="argparse.Parser.rest" name="argparse.Parser.rest"></a>[lua]`parser:rest(name, [opts])`  
       Adds an argument taking the rest of the line from here on, verbatim as one string, or `nil` where an optional one is absent. Always the last argument.
@@ -150,7 +150,7 @@ A choice is either a bare string, where the key and value are the same, or a
         - <a id="argparse.Parser.rest.opts.suggest" name="argparse.Parser.rest.opts.suggest"></a>**`suggest`** (function, optional). Completions to offer, without restricting what is accepted or being shown in errors. For a free value with a long list behind it, like a setting name.
         - <a id="argparse.Parser.rest.opts.help" name="argparse.Parser.rest.opts.help"></a>**`help`** (string, optional). What the argument is for, shown in the help.
 
-      Returns: [trx.argparse.Parser](#argparse.Parser). The parser.
+      Returns: [trx.argparse.Parser](#argparse.Parser). The same parser, so declarations chain.
 
     - <a id="argparse.Parser.usage" name="argparse.Parser.usage"></a>[lua]`parser:usage()`  
       A short description of what the command accepts.

@@ -63,13 +63,10 @@ rule("corpse.fade_speed", {
 })
 
 api.define("rules.list", {
-  description = "Every rule there is, as dotted `group.field` keys. <!--noref: group.field-->",
+  description = "Every rule there is, as dotted `group.field` keys, in no particular order. "
+    .. "<!--noref: group.field-->",
   params = {},
-  returns = {
-    type = "string",
-    list = true,
-    description = "In no particular order.",
-  },
+  returns = { type = "string", list = true },
   impl = raw.list,
 })
 

@@ -815,7 +815,10 @@ Parser = api.type("argparse.Parser", {
           fields = positional_opts(),
         },
       },
-      returns = { type = "argparse.Parser", description = "The parser." },
+      returns = {
+        type = "argparse.Parser",
+        description = "The same parser, so declarations chain.",
+      },
       impl = P.positional,
     },
 
@@ -875,7 +878,10 @@ Parser = api.type("argparse.Parser", {
           fields = ARG_OPTS,
         },
       },
-      returns = { type = "argparse.Parser", description = "The parser." },
+      returns = {
+        type = "argparse.Parser",
+        description = "The same parser, so declarations chain.",
+      },
       impl = P.any_of,
     },
 
@@ -896,7 +902,10 @@ Parser = api.type("argparse.Parser", {
           fields = ARG_OPTS,
         },
       },
-      returns = { type = "argparse.Parser", description = "The parser." },
+      returns = {
+        type = "argparse.Parser",
+        description = "The same parser, so declarations chain.",
+      },
       impl = P.rest,
     },
 
@@ -935,7 +944,10 @@ Parser = api.type("argparse.Parser", {
           },
         },
       },
-      returns = { type = "argparse.Parser", description = "The parser." },
+      returns = {
+        type = "argparse.Parser",
+        description = "The same parser, so declarations chain.",
+      },
       impl = P.flag,
     },
 
@@ -1000,7 +1012,11 @@ Parser = api.type("argparse.Parser", {
         },
       },
       returns = {
-        { type = "string", list = true, description = "Best first." },
+        {
+          type = "string",
+          list = true,
+          description = "The best match comes first.",
+        },
         {
           type = "integer",
           description = "Where the run they replace starts. The run is the token, or the "

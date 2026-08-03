@@ -418,7 +418,6 @@ api.define("console.commands", {
   returns = {
     type = "console.Command",
     list = true,
-    description = "The commands.",
   },
   impl = function()
     local out = {}

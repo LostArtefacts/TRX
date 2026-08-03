@@ -218,7 +218,8 @@ api.property("game.version", {
 
 api.property("game.trx_version", {
   type = "string",
-  description = "The TRX version string.",
+  description = "What this build reports as its version: `1.9.3` for a release, and the tag with "
+    .. "the commits since it for a development build.",
   get = raw.get_trx_version,
 })
 

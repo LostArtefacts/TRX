@@ -930,15 +930,22 @@ def read(api: dict) -> None:
 def documented(spec: dict) -> bool:
     """Whether the reader is told anything: its own words, or the type it holds.
 
-    A declaration typed by an enum, a number or a unit needs no words of its
-    own: what it is, and what it may be, is what the type says.
+    A declaration typed by something this surface declares needs no words of
+    its own: what it is, and what it may be, is what the type says, on the page
+    the reader is a link away from. Words that only name the type again read as
+    an afterthought hanging off it.
     """
     if spec.get("description"):
         return True
     named = spec.get("type")
     if isinstance(named, list):
         return True
-    return named in ENUM_PATHS or named in NUMBERS or named in UNITS
+    return (
+        named in TYPE_PATHS
+        or named in ENUM_PATHS
+        or named in NUMBERS
+        or named in UNITS
+    )
 
 
 def undocumented(api: dict) -> list[str]:
