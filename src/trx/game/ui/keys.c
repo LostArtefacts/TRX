@@ -20,6 +20,7 @@ static UI_INPUT M_TranslateInput(const uint32_t system_keycode)
     case SDLK_END:       return UI_KEY_END;
     case SDLK_BACKSPACE: return UI_KEY_BACK;
     case SDLK_RETURN:    return UI_KEY_RETURN;
+    case SDLK_KP_ENTER:  return UI_KEY_RETURN;
     case SDLK_ESCAPE:    return UI_KEY_ESCAPE;
     case SDLK_TAB:
         return (SDL_GetModState() & KMOD_SHIFT) != 0 ? UI_KEY_SHIFT_TAB
