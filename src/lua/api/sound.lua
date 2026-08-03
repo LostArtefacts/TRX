@@ -7,8 +7,14 @@ api.module("sound", {
 })
 
 api.number("sound.SampleNum", {
+  base = 0,
   description = "Sample number, in the numbering the loaded level carries. Not a "
     .. "`trx.catalog.samples` name, which is the sound bank's own.",
+})
+
+api.number("sound.StreamNum", {
+  base = 1,
+  description = "Which of the voices playing now, counted in the order the engine holds them.",
 })
 
 api.type("sound.Sample", {
@@ -135,7 +141,7 @@ local samples = api.container("sound.samples", {
 api.container("sound.streams", {
   description = "The sound effects playing now. A slot that is silent still answers, with a "
     .. "stale handle.",
-  key = { type = "integer", base = 1, description = "Which voice." },
+  key = { type = "sound.StreamNum" },
   value = { type = "sound.Stream", nullable = true },
   get = function(n)
     return raw.stream_get(n - 1)

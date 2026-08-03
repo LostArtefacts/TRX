@@ -7,6 +7,7 @@ api.module("music", {
 })
 
 api.number("music.TrackNum", {
+  base = 0,
   description = "Track number, in the numbering the loaded level carries. Not a "
     .. "`trx.catalog.music` name, which is the soundtrack's own.",
 })
@@ -21,6 +22,11 @@ local PlayMode = api.enum("music.PlayMode", {
     DELAY = "Marks the track for later playback rather than starting it now.",
     OVERLAY = "Plays the track on top of the current one.",
   },
+})
+
+api.number("music.StreamNum", {
+  base = 1,
+  description = "Which of the soundtrack's slots: 1 is the main stream, 2 onwards the overlays.",
 })
 
 api.type("music.Stream", {
@@ -145,7 +151,7 @@ api.type("music.Track", {
 api.container("music.streams", {
   description = "The soundtrack's streams: `[1]` is the main stream, `[2]` onwards the overlay "
     .. "slots. A slot that is not playing still answers, with a stale handle.",
-  key = { type = "integer", base = 1, description = "Which slot." },
+  key = { type = "music.StreamNum" },
   value = { type = "music.Stream", nullable = true },
   get = function(n)
     return raw.stream_get(n - 1)

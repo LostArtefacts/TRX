@@ -1323,9 +1323,10 @@ test("a container walks from the index it counts from", function()
   local zero, one = { [0] = "a", [1] = "b" }, { "a", "b" }
 
   api.module("counted", {})
+  api.number("counted.Num", { base = 0, description = "Where it sits." })
   api.container("counted", {
     description = "Indexing.",
-    key = { type = "integer", base = 0, description = "Where it sits." },
+    key = { type = "counted.Num" },
     value = { type = "string" },
     get = function(key)
       return zero[key]
@@ -1336,9 +1337,10 @@ test("a container walks from the index it counts from", function()
   })
 
   api.module("listed", {})
+  api.number("listed.Num", { base = 1, description = "Where it sits." })
   api.container("listed", {
     description = "Indexing.",
-    key = { type = "integer", base = 1, description = "Where it sits." },
+    key = { type = "listed.Num" },
     value = { type = "string" },
     get = function(key)
       return one[key]
@@ -1365,10 +1367,11 @@ end)
 test("a sparse container walks its keys and skips the gaps", function()
   local api = fresh_env()
   api.module("things", { description = "..." })
+  api.number("things.Num", { base = 0, description = "Where it sits." })
   local held = { [0] = "a", [3] = "b", [4] = "c" }
   api.container("things", {
     description = "Indexing.",
-    key = { type = "integer", base = 0, description = "A key." },
+    key = { type = "things.Num" },
     value = { type = "string", nullable = true },
     get = function(i)
       return held[i]
@@ -1535,6 +1538,17 @@ test("a limit needs a count beside it", function()
     limit = function()
       return 5
     end,
+  }))
+end)
+
+test("a container key cannot say where it counts from either", function()
+  local api = fresh_env()
+  api.module("things", { description = "..." })
+  assert(not pcall(api.container, "things", {
+    description = "Indexing.",
+    key = { type = "integer", base = 1, description = "A key." },
+    value = { type = "string" },
+    get = function() end,
   }))
 end)
 

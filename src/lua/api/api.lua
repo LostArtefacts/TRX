@@ -372,13 +372,10 @@ local function checker(declared)
   return check.of(declared) or check.anything
 end
 
--- What indexing counts from: the key's own base, or the base of what it points
--- at, since a container keyed by an item number counts as items do. A key that
--- says nothing, and names nothing that does, counts from zero.
+-- What indexing counts from, which is the base of the number the key names: a
+-- container keyed by an item number counts as items do. A key that names no
+-- number, or one with nothing to say, counts from zero.
 local function base_of(key)
-  if key.base ~= nil then
-    return key.base
-  end
   for _, one in ipairs(check.types_of(key.type)) do
     local entry = at(one)
     if made_by(entry, api.number) and entry.spec.base ~= nil then
@@ -785,6 +782,10 @@ api.container = declarator("container", "containers", {
     -- Where a collection counts from is the key's, so that a container keyed by
     -- an item number counts as items do without saying so twice.
     need(spec.base == nil, "where it counts from belongs to the key")
+    need(
+      spec.key.base == nil,
+      "where the keys count from belongs to the number they name"
+    )
 
     -- What the key accepts: one type, or several where a thing answers to a name
     -- as well as to its number. A module keyed only by number leaves a string key
@@ -1089,7 +1090,6 @@ api.type = declarator("type", "types", {
           list = doc.list,
           writable = field_writable(spec, field),
           description = doc.description,
-          base = doc.base,
         }
       end),
       methods = members(spec.methods, function(method)
@@ -1104,7 +1104,6 @@ api.type = declarator("type", "types", {
         return {
           type = computed.type,
           description = computed.description,
-          base = computed.base,
         }
       end),
     }
@@ -1351,7 +1350,6 @@ api.property = declarator("property", "properties", {
       type = doc.type,
       list = doc.list,
       description = doc.description,
-      base = doc.base,
       writable = entry.spec.set ~= nil,
     }
   end,
