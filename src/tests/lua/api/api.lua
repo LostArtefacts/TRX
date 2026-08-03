@@ -90,6 +90,12 @@ local function fresh_env()
   end
 
   dofile(ROOT .. "src/lua/api/api.lua")
+
+  -- What to_json() writes the dump out with. It declares itself through the
+  -- registry like anything else, so it loads after, and it is the real one:
+  -- there is no C behind it, and how the dump comes out is under test here.
+  dofile(ROOT .. "src/lua/api/json.lua")
+
   return trx.api, exposed
 end
 
