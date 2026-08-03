@@ -107,14 +107,23 @@ internal class InstallerService
         progress.SetDescription($"Downloading {fileName}...");
         progress.SetSubDescription("Starting download...");
         progress.AppendLog($"Downloading {url}");
-        using HttpResponseMessage response = await HttpClient.GetAsync(
-            url, HttpCompletionOption.ResponseHeadersRead);
-        response.EnsureSuccessStatusCode();
 
-        long? totalBytes = response.Content.Headers.ContentLength;
-        using Stream responseStream = await response.Content.ReadAsStreamAsync();
         using MemoryStream stream = new();
-        await CopyToMemoryStreamAsync(responseStream, stream, totalBytes, progress);
+        try
+        {
+            using HttpResponseMessage response = await HttpClient.GetAsync(
+                url, HttpCompletionOption.ResponseHeadersRead);
+            response.EnsureSuccessStatusCode();
+
+            long? totalBytes = response.Content.Headers.ContentLength;
+            using Stream responseStream = await response.Content.ReadAsStreamAsync();
+            await CopyToMemoryStreamAsync(responseStream, stream, totalBytes, progress);
+        }
+        catch (Exception ex) when (ex is HttpRequestException or IOException or TaskCanceledException)
+        {
+            throw new DownloadFailedException(url, ex);
+        }
+
         stream.Position = 0;
         await ExtractZipAsync(stream, targetDirectory, progress);
     }

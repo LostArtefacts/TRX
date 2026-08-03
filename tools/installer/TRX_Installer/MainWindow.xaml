@@ -159,6 +159,7 @@
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
 
@@ -175,7 +176,13 @@
                              Minimum="0"
                              Maximum="{Binding InnerMaximumProgress}"
                              Value="{Binding InnerCurrentProgress}" />
-                <TextBox x:Name="_logTextBox" Grid.Row="5" IsReadOnly="True" TextWrapping="Wrap" AcceptsReturn="True"
+                <Border Grid.Row="5" Margin="0,0,0,12" Padding="10"
+                        Background="#FFF4F4" BorderThickness="1" BorderBrush="#E0A0A0"
+                        Visibility="{Binding InstallFailed, Mode=OneWay, Converter={StaticResource BoolToVisible}}">
+                    <TextBlock TextWrapping="Wrap" Foreground="#A00000"
+                               Text="{Binding InstallErrorMessage, Mode=OneWay}" />
+                </Border>
+                <TextBox x:Name="_logTextBox" Grid.Row="6" IsReadOnly="True" TextWrapping="Wrap" AcceptsReturn="True"
                          VerticalScrollBarVisibility="Auto"
                          Text="{Binding LogText, Mode=OneWay}" />
             </Grid>
