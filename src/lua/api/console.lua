@@ -139,18 +139,20 @@ api.namespace("console.log", {
 })
 
 api.type("console.Command", {
+  record = true,
   description = "A registered console command, as the help command reads one.",
   fields = {
     name = { type = "string", description = "The word the player types." },
     aliases = {
       type = "string",
       list = true,
-      description = "The other words that reach it, or `nil` where it answers to one.",
+      optional = true,
+      description = "The other words that reach it, where it answers to more than one.",
     },
     help = {
       type = "string",
-      description = "What the console shows for `--help`, or `nil` where the command "
-        .. "carries none.",
+      optional = true,
+      description = "What the console shows for `--help`, where the command carries any.",
     },
   },
 })

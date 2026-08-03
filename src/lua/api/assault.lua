@@ -18,6 +18,7 @@ api.number("assault.AttemptNum", {
 })
 
 api.type("assault.Record", {
+  record = true,
   description = "One of a track's best times.",
   fields = {
     time = { type = "game.Seconds", description = "The time it took." },

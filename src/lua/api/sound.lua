@@ -12,6 +12,22 @@ api.number("sound.SampleNum", {
     .. "`trx.catalog.samples` name, which is the sound bank's own.",
 })
 
+local PLAY_OPTS = {
+  name = "opts",
+  type = "table",
+  optional = true,
+  description = "How to play it.",
+  fields = {
+    {
+      name = "pos",
+      type = "vec3",
+      optional = true,
+      description = "A world position to play from, which applies pan and volume. Omit to "
+        .. "play at full volume.",
+    },
+  },
+}
+
 api.number("sound.StreamNum", {
   base = 1,
   description = "Which of the voices playing now, counted in the order the engine holds them.",
@@ -64,23 +80,7 @@ api.type("sound.Sample", {
       description = "Whether the loaded level still carries this sample.",
     },
     play = {
-      params = {
-        {
-          name = "opts",
-          type = "table",
-          optional = true,
-          description = "How to play it.",
-          fields = {
-            {
-              name = "pos",
-              type = "vec3",
-              optional = true,
-              description = "A world position to play from, which applies pan and volume. Omit to "
-                .. "play at full volume.",
-            },
-          },
-        },
-      },
+      params = { PLAY_OPTS },
       returns = {
         type = "sound.Stream",
         nullable = true,
@@ -159,21 +159,7 @@ api.define("sound.play", {
       description = "Sample to play. To reach a sample by the level's own slot, play it through a "
         .. "handle: `trx.sound.samples[slot]:play()`.",
     },
-    {
-      name = "opts",
-      type = "table",
-      optional = true,
-      description = "How to play it.",
-      fields = {
-        {
-          name = "pos",
-          type = "vec3",
-          optional = true,
-          description = "A world position to play from, which applies pan and volume. Omit to "
-            .. "play at full volume.",
-        },
-      },
-    },
+    PLAY_OPTS,
   },
   returns = {
     type = "sound.Stream",

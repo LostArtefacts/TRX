@@ -674,7 +674,7 @@ def render_type(spec: dict) -> list[str]:
             out.extend(
                 render_lead(
                     f"{INDENT}- {anchor(spec['path'] + '.' + field['name'])}"
-                    f"**`{field['name']}`**: {typed(field)}. ",
+                    f"**`{field['name']}`**: {render_bits(field)}. ",
                     f"{describe(field)}{suffix}".lstrip(),
                     f"{INDENT}  ",
                 )

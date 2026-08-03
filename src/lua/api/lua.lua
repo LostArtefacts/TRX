@@ -16,6 +16,7 @@ local function wrap(kind, message)
 end
 
 api.type("lua.Error", {
+  record = true,
   description = "What went wrong while running Lua.",
   fields = {
     kind = {
