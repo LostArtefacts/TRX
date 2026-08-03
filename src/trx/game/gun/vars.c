@@ -7,6 +7,8 @@
 #include <trx/game/const.h>
 #include <trx/game/shell/common.h>
 
+#include <string.h>
+
 WEAPON_INFO g_Weapons[NUM_WEAPONS] = {};
 
 static void M_ReadAngles(
@@ -100,6 +102,9 @@ void Gun_LoadVars(const char *const path)
         Shell_ExitSystemFmt("invalid weapons vars file: %s", path);
     }
 
+    // Every weapon starts from nothing, so that what the file leaves out is
+    // absent rather than left over from the mod played before this one.
+    memset(g_Weapons, 0, sizeof(g_Weapons));
     for (int32_t i = 0; i < NUM_WEAPONS; i++) {
         g_Weapons[i].glow_scale = 1.0f;
     }
