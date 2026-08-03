@@ -173,3 +173,53 @@ api.define("strings.regex_match", {
   examples = { [[if trx.strings.regex_match(args, "^\\d+$") then ... end]] },
   impl = raw.regex_match,
 })
+
+api.define("strings.dedent", {
+  description = [=[
+    Takes the shared indentation off a block of text, so that a long string
+    written inside `[[ ]]` reads as what it says rather than as where it sat in
+    the file. Leading and trailing blank lines go too.
+
+    The deepest lines keep the rest of their indentation, since a block may lay
+    something out, and four spaces of it is a code block in markdown. Text may
+    open on the line the brackets are on, and that line then sets nothing and
+    keeps what it has, however the ones under it are written.
+  ]=],
+  params = {
+    { name = "text", type = "string", description = "The text to take in." },
+  },
+  returns = { type = "string", description = "The text at the left margin." },
+  examples = {
+    [==[local help = trx.strings.dedent([[
+      Usage: /give <what>
+        keys   every plot item the level has a place for
+    ]])]==],
+  },
+  impl = function(text)
+    local lines = {}
+    for line in (text .. "\n"):gmatch("([^\n]*)\n") do
+      lines[#lines + 1] = line
+    end
+    -- Lua drops the newline that follows `[[`, so what says which of the two
+    -- spellings was written is whether the first line is indented at all: one
+    -- written against the brackets is not.
+    local from = text:match("^[ \t]") == nil and 2 or 1
+
+    local shared
+    for i = from, #lines do
+      if lines[i]:match("%S") ~= nil then
+        local indent = #lines[i]:match("^[ \t]*")
+        if shared == nil or indent < shared then
+          shared = indent
+        end
+      end
+    end
+
+    if shared ~= nil and shared > 0 then
+      for i = from, #lines do
+        lines[i] = lines[i]:sub(shared + 1)
+      end
+    end
+    return (table.concat(lines, "\n"):gsub("^%s*\n", ""):gsub("%s+$", ""))
+  end,
+})

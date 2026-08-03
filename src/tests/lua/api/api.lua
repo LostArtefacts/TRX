@@ -80,9 +80,20 @@ local function fresh_env()
       set_entrypoint = function() end,
     },
   }
-  _G.trx = { log = { debug = function() end, warn = function() end } }
-  -- The registry requires the checking layer and stubs nothing else, so this
-  -- runs the real one: what a declaration accepts is half of what is under test.
+  -- What describe() runs a description through. The real one is declared as
+  -- trx.strings.dedent and tested where it is written, so this stands in as
+  -- the identity; the test that cares which keys reach it swaps in its own.
+  _G.trx = {
+    log = { debug = function() end, warn = function() end },
+    strings = {
+      dedent = function(text)
+        return text
+      end,
+    },
+  }
+  -- The registry requires the checking layer and the logger. This runs the
+  -- real checker, because what a declaration accepts is half of what is under
+  -- test; the logger declares an enum out of C and is left stubbed.
   _G.require = function(name)
     if name == "trx.check" then
       return dofile(ROOT .. "src/lua/api/check.lua")
@@ -185,76 +196,48 @@ test("type() passes the declaration to the C binder", function()
   assert(exposed.fields.secret == nil, "an undeclared member was exposed")
 end)
 
--- A long-bracket description is written at the indentation of the declaration
--- around it, and four spaces of it would read as a code block.
-test("describe() takes the indentation off a description", function()
-  local api = fresh_env()
-  api.module("things", {
-    description = [[
-      A module.
-
-      Written at the indentation the declaration sits at, with a line that
-        lays something out under it.
-    ]],
-  })
-  api.define("things.poke", {
-    description = [[
-      Pokes it.
-    ]],
-    impl = function() end,
-  })
-
-  local dumped = api.describe()
-  local module
-  for _, entry in ipairs(dumped.modules) do
-    if entry.name == "things" then
-      module = entry
+-- Which of the keys describe() collects are prose. The dedenting itself is
+-- trx.strings.dedent's, and is tested where that is written.
+test(
+  "describe() takes the indentation off prose and leaves code alone",
+  function()
+    local api = fresh_env()
+    trx.strings.dedent = function(text)
+      return "dedented: " .. text
     end
-  end
-  assert(
-    module.description
-      == "A module.\n\nWritten at the indentation the declaration sits at, "
-        .. "with a line that\n  lays something out under it.",
-    "shared indent must go and the deeper line must keep the rest: "
-      .. module.description
-  )
+    api.module("things", { description = "A module." })
+    api.define("things.poke", {
+      description = "Pokes it.",
+      params = { { name = "how", type = "string", description = "How hard." } },
+      examples = { "trx.things.poke('gently')" },
+      impl = function() end,
+    })
 
-  local poke
-  for _, fn in ipairs(dumped.functions) do
-    if fn.path == "things.poke" then
-      poke = fn
+    local dumped = api.describe()
+    local module, poke
+    for _, entry in ipairs(dumped.modules) do
+      if entry.name == "things" then
+        module = entry
+      end
     end
-  end
-  assert(poke.description == "Pokes it.")
-end)
-
--- The other way one is written: the first line against the brackets, and the
--- rest at the indentation of the declaration. Left to set what the lines share,
--- that first line would hold the whole description at its own indentation, and
--- four spaces of it reads as a code block.
-test("describe() dedents a description opened against its brackets", function()
-  local api = fresh_env()
-  api.module("things", {
-    description = [[A module.
-
-    Written against the brackets, with a line that
-      lays something out under it.]],
-  })
-
-  local module
-  for _, entry in ipairs(api.describe().modules) do
-    if entry.name == "things" then
-      module = entry
+    for _, entry in ipairs(dumped.functions) do
+      if entry.path == "things.poke" then
+        poke = entry
+      end
     end
+
+    assert(module.description == "dedented: A module.")
+    assert(poke.description == "dedented: Pokes it.")
+    assert(
+      poke.params[1].description == "dedented: How hard.",
+      "a parameter carries prose too"
+    )
+    assert(
+      poke.examples[1] == "trx.things.poke('gently')",
+      "an example is code, and its own indentation is the point"
+    )
   end
-  assert(
-    module.description
-      == "A module.\n\nWritten against the brackets, with a line that\n"
-        .. "  lays something out under it.",
-    "the opening line must survive and the rest must be dedented: "
-      .. module.description
-  )
-end)
+)
 
 test("describe() reports fields, methods and extensions", function()
   local api = fresh_env()

@@ -265,45 +265,6 @@ local function as_doc_list(list)
   return out
 end
 
--- A description written as a long-bracket string carries the indentation it was
--- written at, and four spaces is a code block in markdown - which is how a
--- module's own prose came out as one. The text is what the declaration says,
--- not where it sat in the file, so the shared indent comes off. The deepest
--- lines keep the rest of theirs, since a description may lay something out.
---
--- A description may instead open on the line its brackets are on, and that line
--- then carries no indentation, however the ones under it are written. Left in, it
--- makes the shared indent zero and the rest of the description keeps its own,
--- which is what four of them were written flush against the margin to avoid.
-local function dedent(text)
-  local lines = {}
-  for line in (text .. "\n"):gmatch("([^\n]*)\n") do
-    lines[#lines + 1] = line
-  end
-  -- Lua drops the newline that follows `[[`, so what says which of the two
-  -- spellings was written is whether the first line is indented at all: one
-  -- written against the brackets is not, and it neither sets what the rest share
-  -- nor has any of it taken off.
-  local from = text:match("^[ \t]") == nil and 2 or 1
-
-  local shared
-  for i = from, #lines do
-    if lines[i]:match("%S") ~= nil then
-      local indent = #lines[i]:match("^[ \t]*")
-      if shared == nil or indent < shared then
-        shared = indent
-      end
-    end
-  end
-
-  if shared ~= nil and shared > 0 then
-    for i = from, #lines do
-      lines[i] = lines[i]:sub(shared + 1)
-    end
-  end
-  return (table.concat(lines, "\n"):gsub("^%s*\n", ""):gsub("%s+$", ""))
-end
-
 -- Where a path lands, which every declaration asks in one of two ways: what a
 -- path is made of, and what table it names.
 
@@ -1762,7 +1723,7 @@ function api.describe()
     end
     for key, value in pairs(node) do
       if key == "description" and type(value) == "string" then
-        node[key] = dedent(value)
+        node[key] = trx.strings.dedent(value)
       else
         dedent_prose(value)
       end
