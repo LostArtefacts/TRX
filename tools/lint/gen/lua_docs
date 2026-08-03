@@ -729,6 +729,11 @@ def render_type(spec: dict) -> list[str]:
 
 
 def render_container(name: str, spec: dict) -> list[str]:
+    """A collection, and what a script may index it with.
+
+    The key is named as well as the value: strict mode holds a script to it, so
+    a reader who is handed an error about it has somewhere to have read it.
+    """
     at(name)
     key, value = spec["key"], spec["value"]
     nullable = " or `nil`" if value.get("nullable") else ""
@@ -739,7 +744,7 @@ def render_container(name: str, spec: dict) -> list[str]:
     out.extend(
         render_lead(
             f"- {anchor(name + '[]')}**`trx.{name}[key]`** "
-            f"({typed(value)}{nullable}). ",
+            f"(key: {typed(key)}, value: {typed(value)}{nullable}). ",
             describe(key),
             "  ",
         )

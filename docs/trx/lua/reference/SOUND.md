@@ -18,12 +18,12 @@ Module for playing sound effects.
 
 The samples the current level carries. A level does not carry every number, so indexing one it lacks is `nil` and iterating passes it by.
 
-- <a id="sound.samples[]" name="sound.samples[]"></a>**`trx.sound.samples[key]`** ([trx.sound.Sample](#sound.Sample) or `nil`).
+- <a id="sound.samples[]" name="sound.samples[]"></a>**`trx.sound.samples[key]`** (key: [trx.sound.SampleNum](#sound.SampleNum), value: [trx.sound.Sample](#sound.Sample) or `nil`).
 - **`#trx.sound.samples`** (integer). How many there are.
 
 The sound effects playing now. A slot that is silent still answers, with a stale handle.
 
-- <a id="sound.streams[]" name="sound.streams[]"></a>**`trx.sound.streams[key]`** ([trx.sound.Stream](#sound.Stream) or `nil`).
+- <a id="sound.streams[]" name="sound.streams[]"></a>**`trx.sound.streams[key]`** (key: [trx.sound.StreamNum](#sound.StreamNum), value: [trx.sound.Stream](#sound.Stream) or `nil`).
 - **`#trx.sound.streams`** (integer). How many there are.
 
 ### Structures

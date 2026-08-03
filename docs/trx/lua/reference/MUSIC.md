@@ -18,12 +18,12 @@ Module for playing and controlling the soundtrack.
 
 The soundtrack's streams: `[1]` is the main stream, `[2]` onwards the overlay slots. A slot that is not playing still answers, with a stale handle.
 
-- <a id="music.streams[]" name="music.streams[]"></a>**`trx.music.streams[key]`** ([trx.music.Stream](#music.Stream) or `nil`).
+- <a id="music.streams[]" name="music.streams[]"></a>**`trx.music.streams[key]`** (key: [trx.music.StreamNum](#music.StreamNum), value: [trx.music.Stream](#music.Stream) or `nil`).
 - **`#trx.music.streams`** (integer). How many there are.
 
 The tracks the current level carries. A level does not carry every number, so indexing one it lacks is `nil` and iterating passes it by.
 
-- <a id="music.tracks[]" name="music.tracks[]"></a>**`trx.music.tracks[key]`** ([trx.music.Track](#music.Track) or `nil`).
+- <a id="music.tracks[]" name="music.tracks[]"></a>**`trx.music.tracks[key]`** (key: [trx.music.TrackNum](#music.TrackNum), value: [trx.music.Track](#music.Track) or `nil`).
 - **`#trx.music.tracks`** (integer). How many there are.
 
 ### Properties

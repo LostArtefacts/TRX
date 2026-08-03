@@ -421,10 +421,6 @@ end
 
 -- A property is written, not called, so make_checked never sees it. Strict mode
 -- still has to. Three frames up is whoever wrote it.
---
--- What checks a write is worked out the first time one is made, as what checks
--- a collection's key is, and for the same reason: a property may name a type
--- the same file declares further down.
 local function write_property(where, prop, value)
   local spec = prop.spec
   if spec.set == nil then
@@ -440,6 +436,13 @@ local function write_property(where, prop, value)
     end
   end
   spec.set(value)
+end
+
+-- What a script may index a collection with. The key declares a type and the
+-- reference documents it, so strict mode holds a script to it: `trx.rooms[1.5]`
+-- says so here rather than reaching C with a number no room answers to.
+local function key_accepted(container, key)
+  return once(container, "key_check", checker, container.spec.key)(key)
 end
 
 -- pairs() over the module walks the collection one handle at a time, so a
@@ -499,6 +502,16 @@ local function install_meta(entry)
         return prop.spec.get()
       end
       if container ~= nil and container.accepts(key) then
+        if strict_enabled and not key_accepted(container, key) then
+          error(
+            ("trx.%s[%s]: expected %s"):format(
+              owner,
+              tostring(key),
+              check.label_of(container.spec.key)
+            ),
+            2
+          )
+        end
         return container.get(key)
       end
       if instance ~= nil then
@@ -1683,6 +1696,11 @@ local function audit_types(partial)
   end
   for _, entry in ipairs(each(api.property)) do
     checked_by(entry.path, "the property", entry.spec)
+  end
+  -- Strict mode holds a script to what a collection is indexed with, so the key
+  -- has to answer for the same reason a parameter does.
+  for _, entry in ipairs(each(api.container)) do
+    checked_by(entry.path, "the key", entry.spec.key)
   end
   -- A record is checked by the keys it names wherever one is passed in, so the
   -- names have to answer for the same reason a parameter's does.

@@ -512,7 +512,11 @@ class TestLuaDocs(unittest.TestCase):
 
         page = rendered(surface)
         self.assertIn("### Indexing", page)
-        self.assertIn("**`trx.things[key]`** (Widget or `nil`). 1-based.", page)
+        self.assertIn(
+            "**`trx.things[key]`** (key: integer, value: Widget or `nil`). "
+            "1-based.",
+            page,
+        )
         self.assertIn("**`#trx.things`** (integer).", page)
 
     def test_a_module_with_no_container_gets_no_indexing_section(self):

@@ -27,7 +27,7 @@ has.
 
 Indexing the module reaches an entry of Lara's inventory, and `#trx.inventory` is how many kinds of thing she carries. Entries are keyed by the order they are drawn in, and are built one at a time as they are asked for. `pairs()` walks them.
 
-- <a id="inventory[]" name="inventory[]"></a>**`trx.inventory[key]`** ([trx.inventory.Entry](#inventory.Entry) or `nil`).
+- <a id="inventory[]" name="inventory[]"></a>**`trx.inventory[key]`** (key: [trx.inventory.EntryNum](#inventory.EntryNum), value: [trx.inventory.Entry](#inventory.Entry) or `nil`).
 - **`#trx.inventory`** (integer). How many there are.
 
 Example:

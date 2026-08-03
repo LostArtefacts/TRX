@@ -20,7 +20,7 @@ An object is the pattern every item of that type is cut from: a wolf's radius, n
 
 Indexing the module reaches an object definition, so [`trx.objects.wolf`](#objects) is the wolf. Keyed by object id or catalog name, not by position.
 
-- <a id="objects[]" name="objects[]"></a>**`trx.objects[key]`** ([trx.objects.Object](#objects.Object) or `nil`). Object id, or its catalog name.
+- <a id="objects[]" name="objects[]"></a>**`trx.objects[key]`** (key: [trx.catalog.objects](CATALOG.md#catalog.objects) or string, value: [trx.objects.Object](#objects.Object) or `nil`). Object id, or its catalog name.
 
 Example:
 ```lua

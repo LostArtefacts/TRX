@@ -1397,6 +1397,42 @@ test("a number cannot be written twice", function()
   )
 end)
 
+-- A collection declares what its key is, and the reference says so, so strict
+-- mode holds a script to it rather than handing C a number nothing answers to.
+test("strict mode checks what a collection is indexed with", function()
+  local api = fresh_env()
+  api.module("things", { description = "..." })
+  api.number("things.Num", { base = 0, description = "Where it sits." })
+  api.container("things", {
+    description = "Indexing.",
+    key = { type = "things.Num" },
+    value = { type = "string", nullable = true },
+    get = function(i)
+      return "held " .. i
+    end,
+    count = function()
+      return 2
+    end,
+  })
+
+  assert(trx.things[1.5] == "held 1.5", "unchecked while checking is off")
+
+  api.strict(true)
+  assert(trx.things[1] == "held 1", "a key of the declared type")
+  local ok, err = pcall(function()
+    return trx.things[1.5]
+  end)
+  assert(not ok, "a fractional key must be refused")
+  assert(
+    tostring(err):find("things[1.5]", 1, true),
+    "the message must name what was written: " .. tostring(err)
+  )
+  -- A key of a kind the collection never accepts is left to the rest of the
+  -- metatable, so it is nil rather than an error.
+  assert(trx.things.nonsense == nil, "a string key is not indexing")
+  api.strict(false)
+end)
+
 test("a container walks from the index it counts from", function()
   local api = fresh_env()
   local zero, one = { [0] = "a", [1] = "b" }, { "a", "b" }
@@ -1867,6 +1903,21 @@ test("strict mode says what an argument had to be", function()
     why:find("expected integer", 1, true) ~= nil,
     "the message names the parameter but not what it wanted: " .. why
   )
+end)
+
+test("seal refuses a collection key nothing can check", function()
+  local api = fresh_env()
+  api.module("things", { description = "..." })
+  api.container("things", {
+    description = ".",
+    key = { type = "things.Nothing", description = "." },
+    value = { type = "integer", description = "." },
+    get = function() end,
+  })
+
+  local ok, why = pcall(api.seal)
+  assert(not ok, "strict mode would wave every key through")
+  assert(why:find("things.Nothing", 1, true) ~= nil, why)
 end)
 
 -- A suite that registers nothing prints "0 failed" and exits clean, which reads
