@@ -90,7 +90,7 @@ api.define("cutscenes.set_lara_return", {
     runs, and is forgotten once she has been placed.
   ]],
   params = {
-    { name = "pos", type = "vec3", description = "World position." },
+    { name = "pos", type = "math.Vec3", description = "World position." },
     {
       name = "rot",
       type = "math.Angle",

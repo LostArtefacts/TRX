@@ -16,10 +16,10 @@ Module for inspecting the active camera state.
 
 ### Properties
 
-- <a id="camera.pos" name="camera.pos"></a>**`trx.camera.pos`** (vec3). Current camera position. *(read-only)*
+- <a id="camera.pos" name="camera.pos"></a>**`trx.camera.pos`** ([trx.math.Vec3](MATH.md#math.Vec3)). Current camera position. *(read-only)*
 - <a id="camera.room_num" name="camera.room_num"></a>**`trx.camera.room_num`** ([trx.rooms.Num](ROOMS.md#rooms.Num)). The room the camera is in, or `nil` if unknown. *(read-only)*
 - <a id="camera.room" name="camera.room"></a>**`trx.camera.room`** ([trx.rooms.Room](ROOMS.md#rooms.Room)). The room the camera is in, or `nil` if unknown. *(read-only)*
-- <a id="camera.target_pos" name="camera.target_pos"></a>**`trx.camera.target_pos`** (vec3). Position the camera is looking at. *(read-only)*
+- <a id="camera.target_pos" name="camera.target_pos"></a>**`trx.camera.target_pos`** ([trx.math.Vec3](MATH.md#math.Vec3)). Position the camera is looking at. *(read-only)*
 - <a id="camera.target_room_num" name="camera.target_room_num"></a>**`trx.camera.target_room_num`** ([trx.rooms.Num](ROOMS.md#rooms.Num)). The room the camera is looking at, or `nil` if unknown. *(read-only)*
 - <a id="camera.is_flyby_active" name="camera.is_flyby_active"></a>**`trx.camera.is_flyby_active`** (boolean). Whether a flyby camera sequence is playing. *(read-only)*
 

@@ -194,7 +194,7 @@ Her position, room and hit points are not here: she is an item like any other an
   The position is nudged into valid room geometry, so a spot inside a wall lands her beside it rather than in it. Somewhere with no floor within reach moves nothing.
 
   Parameters:
-  - <a id="lara.teleport.pos" name="lara.teleport.pos"></a>**`pos`** (vec3). World position.
+  - <a id="lara.teleport.pos" name="lara.teleport.pos"></a>**`pos`** ([trx.math.Vec3](MATH.md#math.Vec3)). World position.
   - <a id="lara.teleport.room_num" name="lara.teleport.room_num"></a>**`room_num`** ([trx.rooms.Num](ROOMS.md#rooms.Num), optional). Without it, the room is found from the position.
 
   Returns: boolean. Whether she was moved.

@@ -7,7 +7,7 @@ api.module("camera", {
 })
 
 api.property("camera.pos", {
-  type = "vec3",
+  type = "math.Vec3",
   description = "Current camera position.",
   get = raw.get_pos,
 })
@@ -28,7 +28,7 @@ api.property("camera.room", {
 })
 
 api.property("camera.target_pos", {
-  type = "vec3",
+  type = "math.Vec3",
   description = "Position the camera is looking at.",
   get = raw.get_target_pos,
 })

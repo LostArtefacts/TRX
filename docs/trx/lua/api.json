@@ -3379,7 +3379,7 @@
         {
           "description": "World position.",
           "name": "pos",
-          "type": "vec3"
+          "type": "math.Vec3"
         },
         {
           "description": "Facing angle. Defaults to `0`.",
@@ -4122,7 +4122,7 @@
         {
           "description": "World position. Must lie inside the level.",
           "name": "pos",
-          "type": "vec3"
+          "type": "math.Vec3"
         },
         {
           "default": 0,
@@ -4189,7 +4189,7 @@
         {
           "description": "World position.",
           "name": "pos",
-          "type": "vec3"
+          "type": "math.Vec3"
         },
         {
           "description": "Without it, the room is found from the position.",
@@ -4700,7 +4700,7 @@
         {
           "description": "World position.",
           "name": "pos",
-          "type": "vec3"
+          "type": "math.Vec3"
         },
         {
           "description": "The search crosses portals, so a neighbouring room's floor is found too. Without it, the room is looked up from the position, which takes the first room that contains it and passes over the flipped-away ones. Where rooms overlap, name the room, or ask the room itself with `trx.rooms.Room:floor_height`.",
@@ -4737,7 +4737,7 @@
         {
           "description": "Position to search near.",
           "name": "pos",
-          "type": "vec3"
+          "type": "math.Vec3"
         },
         {
           "name": "room_num",
@@ -4749,7 +4749,7 @@
         {
           "description": "The valid position, or `nil` if none was found nearby.",
           "nullable": true,
-          "type": "vec3"
+          "type": "math.Vec3"
         },
         {
           "description": "The room the position is in.",
@@ -4928,7 +4928,7 @@
               "description": "A world position to play from, which applies pan and volume. Omit to play at full volume.",
               "name": "pos",
               "optional": true,
-              "type": "vec3"
+              "type": "math.Vec3"
             }
           ],
           "name": "opts",
@@ -5444,7 +5444,7 @@
     {
       "description": "Current camera position.",
       "path": "camera.pos",
-      "type": "vec3",
+      "type": "math.Vec3",
       "writable": false
     },
     {
@@ -5462,7 +5462,7 @@
     {
       "description": "Position the camera is looking at.",
       "path": "camera.target_pos",
-      "type": "vec3",
+      "type": "math.Vec3",
       "writable": false
     },
     {
@@ -6686,7 +6686,7 @@
         {
           "description": "World position. Updating this also updates `trx.items.Item.room` and `trx.items.Item.room_num`.",
           "name": "pos",
-          "type": "vec3",
+          "type": "math.Vec3",
           "writable": true
         },
         {
@@ -6696,9 +6696,9 @@
           "writable": false
         },
         {
-          "description": "Orientation. Each component is a `trx.math.Angle`.",
+          "description": "Orientation.",
           "name": "rot",
-          "type": "vec3",
+          "type": "math.Rot",
           "writable": true
         },
         {
@@ -6766,7 +6766,7 @@
             {
               "description": "World position.",
               "name": "pos",
-              "type": "vec3"
+              "type": "math.Vec3"
             }
           ],
           "returns": {
@@ -7267,12 +7267,12 @@
             {
               "description": "One corner of the box.",
               "name": "min",
-              "type": "vec3"
+              "type": "math.Vec3"
             },
             {
               "description": "The opposite corner.",
               "name": "max",
-              "type": "vec3"
+              "type": "math.Vec3"
             }
           ],
           "returns": {
@@ -7309,7 +7309,7 @@
             {
               "description": "Middle of the sphere.",
               "name": "centre",
-              "type": "vec3"
+              "type": "math.Vec3"
             },
             {
               "description": "How far out it reaches.",
@@ -7513,6 +7513,56 @@
       "methods": [],
       "operators": [],
       "path": "lua.Error"
+    },
+    {
+      "description": "A point or a direction in the world.",
+      "extensions": [],
+      "fields": [
+        {
+          "description": "The east-west axis.",
+          "name": "x",
+          "type": "math.Distance"
+        },
+        {
+          "description": "The up-down axis.",
+          "name": "y",
+          "type": "math.Distance"
+        },
+        {
+          "description": "The north-south axis.",
+          "name": "z",
+          "type": "math.Distance"
+        }
+      ],
+      "handle": false,
+      "methods": [],
+      "operators": [],
+      "path": "math.Vec3"
+    },
+    {
+      "description": "An orientation, as three angles about the world axes.",
+      "extensions": [],
+      "fields": [
+        {
+          "description": "Pitch, nose up and down.",
+          "name": "x",
+          "type": "math.Angle"
+        },
+        {
+          "description": "Yaw, the direction it faces.",
+          "name": "y",
+          "type": "math.Angle"
+        },
+        {
+          "description": "Roll, the tilt about its own length.",
+          "name": "z",
+          "type": "math.Angle"
+        }
+      ],
+      "handle": false,
+      "methods": [],
+      "operators": [],
+      "path": "math.Rot"
     },
     {
       "description": "An axis-aligned box. Whether it is placed in the world or in something's own frame is for whatever hands it over to say.",
@@ -8263,7 +8313,7 @@
             {
               "description": "World position.",
               "name": "pos",
-              "type": "vec3"
+              "type": "math.Vec3"
             },
             {
               "description": "How to read the floor.",
@@ -8395,7 +8445,7 @@
             {
               "description": "World position.",
               "name": "pos",
-              "type": "vec3"
+              "type": "math.Vec3"
             }
           ],
           "returns": {
@@ -8505,7 +8555,7 @@
                   "description": "A world position to play from, which applies pan and volume. Omit to play at full volume.",
                   "name": "pos",
                   "optional": true,
-                  "type": "vec3"
+                  "type": "math.Vec3"
                 }
               ],
               "name": "opts",

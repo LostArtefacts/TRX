@@ -285,7 +285,7 @@ api.define("lara.teleport", {
     .. "The position is nudged into valid room geometry, so a spot inside a wall lands her beside "
     .. "it rather than in it. Somewhere with no floor within reach moves nothing.",
   params = {
-    { name = "pos", type = "vec3", description = "World position." },
+    { name = "pos", type = "math.Vec3", description = "World position." },
     {
       name = "room_num",
       type = "rooms.Num",

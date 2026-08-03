@@ -42,6 +42,24 @@ Fixed-point trigonometry, matching the engine's own tables. Using these rather t
     A length in the units the engine measures the world in, where one sector is
     [`trx.math.WALL_L`](#math.WALL_L). Y grows downwards, so a greater Y is further down.
 
+- <a id="math.Vec3" name="math.Vec3"></a>[lua]`trx.math.Vec3`
+
+    A point or a direction in the world.
+
+    Properties:
+    - <a id="math.Vec3.x" name="math.Vec3.x"></a>**`x`**: [trx.math.Distance](#math.Distance). The east-west axis.
+    - <a id="math.Vec3.y" name="math.Vec3.y"></a>**`y`**: [trx.math.Distance](#math.Distance). The up-down axis.
+    - <a id="math.Vec3.z" name="math.Vec3.z"></a>**`z`**: [trx.math.Distance](#math.Distance). The north-south axis.
+
+- <a id="math.Rot" name="math.Rot"></a>[lua]`trx.math.Rot`
+
+    An orientation, as three angles about the world axes.
+
+    Properties:
+    - <a id="math.Rot.x" name="math.Rot.x"></a>**`x`**: [trx.math.Angle](#math.Angle). Pitch, nose up and down.
+    - <a id="math.Rot.y" name="math.Rot.y"></a>**`y`**: [trx.math.Angle](#math.Angle). Yaw, the direction it faces.
+    - <a id="math.Rot.z" name="math.Rot.z"></a>**`z`**: [trx.math.Angle](#math.Angle). Roll, the tilt about its own length.
+
 - <a id="math.Box" name="math.Box"></a>[lua]`trx.math.Box`
 
     An axis-aligned box. Whether it is placed in the world or in something's own frame is for whatever hands it over to say.

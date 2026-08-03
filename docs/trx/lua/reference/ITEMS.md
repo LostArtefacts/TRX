@@ -142,9 +142,9 @@ end
     - <a id="items.Item.name" name="items.Item.name"></a>**`name`**: string. Unique item name, or `nil`. Assigning a name already in use raises an error.
     - <a id="items.Item.num" name="items.Item.num"></a>**`num`**: [trx.items.Num](#items.Num). An item handed over by a query can say where it lives. *(read-only)*
     - <a id="items.Item.object_id" name="items.Item.object_id"></a>**`object_id`**: [trx.catalog.objects](CATALOG.md#catalog.objects). The item's object type. *(read-only)*
-    - <a id="items.Item.pos" name="items.Item.pos"></a>**`pos`**: vec3. World position. Updating this also updates [`room`](#items.Item.room) and [`room_num`](#items.Item.room_num).
+    - <a id="items.Item.pos" name="items.Item.pos"></a>**`pos`**: [trx.math.Vec3](MATH.md#math.Vec3). World position. Updating this also updates [`room`](#items.Item.room) and [`room_num`](#items.Item.room_num).
     - <a id="items.Item.room_num" name="items.Item.room_num"></a>**`room_num`**: [trx.rooms.Num](ROOMS.md#rooms.Num). The room containing this item. Set [`pos`](#items.Item.pos) to move the item between rooms. *(read-only)*
-    - <a id="items.Item.rot" name="items.Item.rot"></a>**`rot`**: vec3. Orientation. Each component is a [`trx.math.Angle`](MATH.md#math.Angle).
+    - <a id="items.Item.rot" name="items.Item.rot"></a>**`rot`**: [trx.math.Rot](MATH.md#math.Rot). Orientation.
     - <a id="items.Item.speed" name="items.Item.speed"></a>**`speed`**: integer. Forward speed.
     - <a id="items.Item.timer" name="items.Item.timer"></a>**`timer`**: [trx.game.Frames](GAME.md#game.Frames). How long the item's trigger keeps it going. `0` runs it until something takes the trigger back; `-1` means it has run out; anything else counts down. [`trigger`](#items.Item.trigger) takes its own timer as a [`trx.game.Seconds`](GAME.md#game.Seconds).
     - <a id="items.Item.touch_bits" name="items.Item.touch_bits"></a>**`touch_bits`**: integer. Bitmask of which of the item's meshes Lara is touching. *(read-only)*
@@ -181,7 +181,7 @@ end
       Distance from this item to a world position.
 
       Parameters:
-      - <a id="items.Item.distance_to.pos" name="items.Item.distance_to.pos"></a>**`pos`** (vec3). World position.
+      - <a id="items.Item.distance_to.pos" name="items.Item.distance_to.pos"></a>**`pos`** ([trx.math.Vec3](MATH.md#math.Vec3)). World position.
 
       Returns: [trx.math.Distance](MATH.md#math.Distance). Measured between the two positions.
 
@@ -515,8 +515,8 @@ end
       An item is tested by its position, the point it stands at, rather than by the box it fills. Position is all this asks after, so the rest of the query says what else the item must be: `trx.items.query:in_box(min, max):present()` asks for the ones that are in the world as well.
 
       Parameters:
-      - <a id="items.ItemQuery.in_box.min" name="items.ItemQuery.in_box.min"></a>**`min`** (vec3). One corner of the box.
-      - <a id="items.ItemQuery.in_box.max" name="items.ItemQuery.in_box.max"></a>**`max`** (vec3). The opposite corner.
+      - <a id="items.ItemQuery.in_box.min" name="items.ItemQuery.in_box.min"></a>**`min`** ([trx.math.Vec3](MATH.md#math.Vec3)). One corner of the box.
+      - <a id="items.ItemQuery.in_box.max" name="items.ItemQuery.in_box.max"></a>**`max`** ([trx.math.Vec3](MATH.md#math.Vec3)). The opposite corner.
 
       Returns: [trx.query.Query](QUERY.md#query.Query). The narrowed query.
 
@@ -545,7 +545,7 @@ end
       The item stands within a radius of a point. As with [`in_box`](#items.ItemQuery.in_box), the item's position is the whole of the test.
 
       Parameters:
-      - <a id="items.ItemQuery.in_sphere.centre" name="items.ItemQuery.in_sphere.centre"></a>**`centre`** (vec3). Middle of the sphere.
+      - <a id="items.ItemQuery.in_sphere.centre" name="items.ItemQuery.in_sphere.centre"></a>**`centre`** ([trx.math.Vec3](MATH.md#math.Vec3)). Middle of the sphere.
       - <a id="items.ItemQuery.in_sphere.radius" name="items.ItemQuery.in_sphere.radius"></a>**`radius`** ([trx.math.Distance](MATH.md#math.Distance)). How far out it reaches.
 
       Returns: [trx.query.Query](QUERY.md#query.Query). The narrowed query.
@@ -605,7 +605,7 @@ end
 
   Parameters:
   - <a id="items.spawn.object_id" name="items.spawn.object_id"></a>**`object_id`** ([trx.catalog.objects](CATALOG.md#catalog.objects)). Object type to spawn.
-  - <a id="items.spawn.pos" name="items.spawn.pos"></a>**`pos`** (vec3). World position. Must lie inside the level.
+  - <a id="items.spawn.pos" name="items.spawn.pos"></a>**`pos`** ([trx.math.Vec3](MATH.md#math.Vec3)). World position. Must lie inside the level.
   - <a id="items.spawn.angle_y" name="items.spawn.angle_y"></a>**`angle_y`** ([trx.math.Angle](MATH.md#math.Angle), optional, default `0`). Facing angle.
   - <a id="items.spawn.opts" name="items.spawn.opts"></a>**`opts`** (table, optional). How to spawn it.
 

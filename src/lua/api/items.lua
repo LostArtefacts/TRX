@@ -179,13 +179,13 @@ api.type("items.Item", {
   fields = {
     pos = {
       from = "pos",
-      type = "vec3",
+      type = "math.Vec3",
       description = "World position. Updating this also updates `trx.items.Item.room` and `trx.items.Item.room_num`.",
     },
     rot = {
       from = "rot",
-      type = "vec3",
-      description = "Orientation. Each component is a `trx.math.Angle`.",
+      type = "math.Rot",
+      description = "Orientation.",
     },
     anim_num = {
       from = "relative_anim_num",
@@ -743,7 +743,7 @@ lara:take_damage(lara.hit_points)]],
 
     distance_to = {
       params = {
-        { name = "pos", type = "vec3", description = "World position." },
+        { name = "pos", type = "math.Vec3", description = "World position." },
       },
       returns = {
         type = "math.Distance",
@@ -827,7 +827,7 @@ api.define("items.spawn", {
     },
     {
       name = "pos",
-      type = "vec3",
+      type = "math.Vec3",
       description = "World position. Must lie inside the level.",
     },
     {
@@ -996,10 +996,14 @@ local ItemQuery = api.type("items.ItemQuery", {
       params = {
         {
           name = "min",
-          type = "vec3",
+          type = "math.Vec3",
           description = "One corner of the box.",
         },
-        { name = "max", type = "vec3", description = "The opposite corner." },
+        {
+          name = "max",
+          type = "math.Vec3",
+          description = "The opposite corner.",
+        },
       },
       returns = { type = "query.Query", description = "The narrowed query." },
       examples = {
@@ -1019,7 +1023,7 @@ local ItemQuery = api.type("items.ItemQuery", {
       params = {
         {
           name = "centre",
-          type = "vec3",
+          type = "math.Vec3",
           description = "Middle of the sphere.",
         },
         {

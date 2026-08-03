@@ -20,7 +20,7 @@ local PLAY_OPTS = {
   fields = {
     {
       name = "pos",
-      type = "vec3",
+      type = "math.Vec3",
       optional = true,
       description = "A world position to play from, which applies pan and volume. Omit to "
         .. "play at full volume.",
