@@ -456,8 +456,7 @@ static bool M_CanCollect(
     }
 
     if (item->object_id == O_FLARE_ITEM) {
-        return lara->interact_target.item_num == NO_ITEM
-            && lara->gun_type != LGT_FLARE;
+        return lara->interact_target.item_num == NO_ITEM;
     }
 
     if (lara_item->current_anim_state == LS(LS_FLARE_PICKUP)) {
@@ -799,7 +798,6 @@ static void M_DoAboveWater(const int16_t item_num, ITEM *const lara_item)
     if ((g_Input.action || Lara_Interact_HasActiveTarget(item_num))
         && !lara_item->gravity
         && (lara->gun_status == LGS_ARMLESS || anim == LA_CRAWL_IDLE)
-        && (lara->gun_type != LGT_FLARE || !is_flare_item)
         && Lara_Interact_CanBegin(LARA_INTERACT_PICKUP)) {
         if (is_flare_item) {
             if (g_TRVersion >= 4) {
@@ -852,8 +850,7 @@ static void M_DoUnderwater(const int16_t item_num, ITEM *const lara_item)
 
     LARA_INFO *const lara = Lara_GetLaraInfo();
     if (g_Input.action && lara_item->current_anim_state == LS(LS_TREAD)
-        && lara->gun_status == LGS_ARMLESS
-        && (lara->gun_type != LGT_FLARE || item->object_id != O_FLARE_ITEM)) {
+        && lara->gun_status == LGS_ARMLESS) {
         if (!Lara_MovePosition(item, &m_PickupPositionUW)) {
             goto cleanup;
         }
@@ -875,6 +872,21 @@ static void M_DoUnderwater(const int16_t item_num, ITEM *const lara_item)
 
 cleanup:
     item->rot = old_rot;
+}
+
+static bool M_CanCollide(const int16_t item_num)
+{
+    const ITEM *const item = Item_Get(item_num);
+    if (item->trigger.spent) {
+        return false;
+    }
+
+    if (item->object_id == O_FLARE_ITEM) {
+        return Lara_GetLaraInfo()->gun_type != LGT_FLARE;
+    }
+
+    const M_PRIV *const p = item->priv;
+    return p->pickup_mode != PICKUP_MODE_SARCOPHAGUS;
 }
 
 static bool M_Draw(const ITEM *const item)
@@ -943,16 +955,8 @@ bool Pickup_Trigger(const int16_t item_num)
 void Pickup_Collision(
     const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
 {
-    const ITEM *const item = Item_Get(item_num);
-    if (item->trigger.spent) {
+    if (!M_CanCollide(item_num)) {
         return;
-    }
-
-    if (item->object_id != O_FLARE_ITEM) {
-        const M_PRIV *const p = item->priv;
-        if (p->pickup_mode == PICKUP_MODE_SARCOPHAGUS) {
-            return;
-        }
     }
 
     const LARA_INFO *const lara = Lara_GetLaraInfo();
