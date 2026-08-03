@@ -18,7 +18,7 @@ Module for controlling all moveables.
 
 Indexing the module reaches an item, and `#trx.items` is how many the level has. `pairs()` walks them in order, keyed by the item number.
 
-- <a id="items[]" name="items[]"></a>**`trx.items[key]`** ([trx.items.Item](#items.Item) or `nil`). An item's unique name reaches it as well.
+- <a id="items[]" name="items[]"></a>**`trx.items[key]`** (key: [trx.items.Num](#items.Num) or string, value: [trx.items.Item](#items.Item) or `nil`). An item's unique name reaches it as well.
 - **`#trx.items`** (integer). How many there are.
 
 Example:

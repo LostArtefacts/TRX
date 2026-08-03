@@ -18,7 +18,7 @@ Module for inspecting and altering the rooms of the current level.
 
 Indexing the module reaches a room, and `#trx.rooms` is how many the level has. `pairs()` walks them in order, keyed by the room number.
 
-- <a id="rooms[]" name="rooms[]"></a>**`trx.rooms[key]`** ([trx.rooms.Room](#rooms.Room) or `nil`).
+- <a id="rooms[]" name="rooms[]"></a>**`trx.rooms[key]`** (key: [trx.rooms.Num](#rooms.Num), value: [trx.rooms.Room](#rooms.Room) or `nil`).
 - **`#trx.rooms`** (integer). How many there are.
 
 Example:
