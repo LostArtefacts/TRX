@@ -187,6 +187,11 @@ OBJECT_ID Gun_GetAmmoObject(const LARA_GUN_TYPE gun_type)
     return NO_OBJECT;
 }
 
+bool Gun_HasInfiniteAmmo(const LARA_GUN_TYPE gun_type)
+{
+    return gun_type == LGT_PISTOLS;
+}
+
 int32_t Inv_GetAmmo(const LARA_GUN_TYPE gun_type)
 {
     return 0;

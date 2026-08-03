@@ -44,6 +44,15 @@ static struct {
     { .gun_type = LGT_UNKNOWN, .input_role = (INPUT_ROLE)-1 },
 };
 
+// What Lara reaches for when the weapon in her hands has run dry: the pistols,
+// so long as she carries them and they have anything left to spend.
+static LARA_GUN_TYPE M_GetFallbackGunType(void)
+{
+    return Inv_HasItem(O_PISTOL_ITEM) && Gun_HasRoundsLeft(LGT_PISTOLS)
+        ? LGT_PISTOLS
+        : LGT_UNARMED;
+}
+
 static void M_CheckSmashablesBehindTarget(
     const ITEM *const target, const GAME_VECTOR start,
     const GAME_VECTOR hit_pos, const int32_t max_dist)
@@ -436,18 +445,17 @@ void Gun_Control(void)
         break;
 
     case LGS_READY:
-        const bool is_firing = Inv_GetAmmo(LGT_PISTOLS) != 0 && g_Input.action;
-        Lara_Skin_SetCombatFace(is_firing);
+        const bool has_rounds = Gun_HasRoundsLeft(lara->gun_type);
+        Lara_Skin_SetCombatFace(has_rounds && g_Input.action);
         M_RequestCombatCamera();
 
         if (g_Input.action) {
-            if (Inv_GetAmmo(lara->gun_type) <= 0) {
+            if (!has_rounds) {
                 Inv_SetAmmo(lara->gun_type, 0);
                 if (g_TRVersion >= 2) {
                     Sound_Effect(SFX_CLICK, &lara_item->pos, SPM_NORMAL);
                 }
-                lara->request_gun_type =
-                    Inv_HasItem(O_PISTOL_ITEM) ? LGT_PISTOLS : LGT_UNARMED;
+                lara->request_gun_type = M_GetFallbackGunType();
                 break;
             }
         }
@@ -503,25 +511,20 @@ int32_t Gun_FireWeapon(
 
     ASSERT(Inv_HasAmmoSlot(weapon_type));
 
-    // The pistols and what shoots from their supply never run down, and
-    // neither does anything in a bonus game.
-    if (weapon_type == LGT_PISTOLS || weapon_type == LGT_SKIDOO
-        || Game_IsBonusFlagSet(GBF_NGPLUS)) {
-        Inv_SetAmmo(weapon_type, 1000);
-    }
-    if (Inv_GetAmmo(weapon_type) <= 0) {
+    if (!Gun_HasRoundsLeft(weapon_type)) {
         Inv_SetAmmo(weapon_type, 0);
         if (g_TRVersion == 1) {
             Sound_Effect(SFX_LARA_EMPTY, &src->pos, SPM_NORMAL);
-            if (Inv_HasItem(O_PISTOL_ITEM)) {
-                lara->request_gun_type = LGT_PISTOLS;
-            } else {
+            const LARA_GUN_TYPE fallback = M_GetFallbackGunType();
+            if (fallback == LGT_UNARMED) {
                 lara->gun_status = LGS_UNDRAW;
+            } else {
+                lara->request_gun_type = fallback;
             }
         }
         return 0;
     }
-    Inv_AddAmmo(weapon_type, -1);
+    Gun_SpendRound(weapon_type);
     Stats_AddAmmoUsed();
     lara->has_fired = true;
 

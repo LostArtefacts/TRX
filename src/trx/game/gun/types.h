@@ -21,6 +21,9 @@ typedef struct {
     int32_t box_shots;
     // What a box shows on its inventory icon, which follows nothing else.
     int32_t box_label_qty;
+    // Whether firing spends nothing, so that the weapon never runs out and
+    // carries no counter.
+    bool infinite;
 } WEAPON_AMMO_INFO;
 
 typedef struct {

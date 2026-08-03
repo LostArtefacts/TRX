@@ -41,11 +41,13 @@ static const INVENTORY_ENTRY *M_FindEntry(
 static void M_SetCount(
     INVENTORY_STATE *const state, const OBJECT_ID object_id, const int32_t qty)
 {
-    // The pistols' rounds are the supply that never runs out, so they follow
-    // the gun rather than anything she picked up. Left behind, they would draw
-    // boxes of clips she never found.
-    if (object_id == O_PISTOL_OPTION) {
-        Inv_State_SetAmmo(state, LGT_PISTOLS, qty > 0 ? 1000 : 0);
+    // While the pistols' supply never runs out, the number behind it stands
+    // for the gun rather than for anything she picked up. Left behind, it
+    // would draw boxes of clips she never found.
+    if (object_id == O_PISTOL_OPTION && Gun_HasInfiniteAmmo(LGT_PISTOLS)) {
+        Inv_State_SetAmmo(
+            state, LGT_PISTOLS,
+            qty > 0 ? Gun_GetInitialRounds(LGT_PISTOLS) : 0);
     }
 
     const int32_t idx = M_FindEntryIndex(state, object_id);
@@ -413,11 +415,12 @@ bool Inv_AddItem(const OBJECT_ID object_id)
         return true;
     }
 
-    // The pistols come with the supply that never runs out, as every other
-    // weapon arrives with the rounds it is picked up with.
+    // The pistols arrive loaded, as every other weapon arrives with the rounds
+    // it is picked up with. They are kept out of Item_GlobalReplace: a level
+    // that is not meant to hold them says so through the game flow.
     if (inv_object_id == O_PISTOL_OPTION) {
+        Inv_AddAmmo(LGT_PISTOLS, Gun_GetInitialRounds(LGT_PISTOLS));
         M_SetCount(&m_State, O_PISTOL_OPTION, 1);
-        Inv_SetAmmo(LGT_PISTOLS, 1000);
         if (lara->last_gun_type == LGT_UNARMED) {
             lara->last_gun_type = LGT_PISTOLS;
         }

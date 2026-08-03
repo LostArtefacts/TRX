@@ -83,6 +83,7 @@ static void M_ReadAmmoInfo(JSON_OBJECT *const obj, const int32_t type)
         M_ReadAmmoValue(ammo_obj, "box_shots", "pickup_qty", ammo->box_shots);
     ammo->box_label_qty = M_ReadAmmoValue(
         ammo_obj, "box_label_qty", "inventory_qty", ammo->box_label_qty);
+    ammo->infinite = JSON_ObjectGetBool(ammo_obj, "infinite", ammo->infinite);
 }
 
 void Gun_LoadVars(const char *const path)

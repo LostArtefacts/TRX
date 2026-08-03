@@ -20,6 +20,7 @@
 - changed object properties to take effect as soon as they change, rather than only when the item is first set up
 - changed outfits to support joints, up to two braids per outfit, and to allow positional offset adjustments for equipment meshes; refer to migration notes
 - changed New Game+ in TR1 so that flares Lara has collected are kept between levels rather than taken away at the start of each one
+- added an `ammo.infinite` key to `weapons.json5`, saying which weapons and flares never run out; a game that takes it away from the pistols makes their clips worth collecting
 - changed the ammunition keys in `weapons.json5` to say what they count; refer to migration notes
 - changed boxes of ammunition in the inventory to always show what Lara is really carrying, where finishing a level could round them down
 - fixed the alternative ammunition pickups, such as the second kind of shotgun ammunition, going into the inventory without loading the weapon
@@ -163,7 +164,7 @@ The Lua integration was rewritten and existing scripts will need updating; refer
 - added `p`, a global shorthand for `trx.console.log`, and made the console log functions take any value, pretty-printing a table
 - added a new Lua module, `trx.math`, with the engine's own fixed-point trigonometry and the `DEG_1`, `DEG_45`, `DEG_90` and `WALL_L` constants
 - added a new Lua module, `trx.strings`, with `fuzzy_match()` and `regex_match()`
-- added a new Lua module, `trx.rules`, holding the numbers the game plays by; the first of them are the cold exposure ceiling, rates and damage, and how fast a dead enemy fades away
+- added a new Lua module, `trx.rules`, holding the numbers the game plays by
 - added a new Lua module, `trx.argparse`, a declarative argument parser inspired by Python's argparse
 - added a new Lua module, `trx.locale`, for the text the player reads, looked up by key
 - added a new Lua module, `trx.weather`, to read and set the runtime weather

@@ -142,6 +142,11 @@ described in the table below.
     <td>Multiplier used in the inventory ring for each loose ammo pickup.</td>
   </tr>
   <tr valign="top">
+    <td><code>ammo.infinite</code></td>
+    <td>Boolean</td>
+    <td>Whether firing spends nothing, so that the weapon never runs out and shows no count in the inventory ring or the overlay. The pistols and the skidoo's guns have it; taking it away from the pistols makes pistol clips worth collecting. The flare answers to it as well, and a bonus game overrides it for everything.</td>
+  </tr>
+  <tr valign="top">
     <td><code>recoil_frame</code></td>
     <td>Integer</td>
     <td>For pistol type weapons, this value determines when Lara should snap back to the aiming frame after the weapon is fired i.e. Uzis have a lower value than Pistols for faster fire rate.</td>

@@ -39,6 +39,7 @@
             "initial_shots": 32,
             "box_shots": 32,
             "box_label_qty": 2,
+            "infinite": true,
         },
         "target_dist": 8.0,
         "recoil_frame": 9,

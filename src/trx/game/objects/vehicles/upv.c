@@ -3,7 +3,6 @@
 #include <trx/core/json/util/read_io.h>
 #include <trx/core/json/util/write_io.h>
 #include <trx/game/camera.h>
-#include <trx/game/game.h>
 #include <trx/game/gun.h>
 #include <trx/game/input.h>
 #include <trx/game/inventory.h>
@@ -629,7 +628,7 @@ static void M_DoCurrent(ITEM *const item)
 static void M_FireHarpoon(ITEM *const item)
 {
     M_PRIV *const p = item->priv;
-    if (Inv_GetAmmo(LGT_HARPOON) <= 0) {
+    if (!Gun_HasRoundsLeft(LGT_HARPOON)) {
         return;
     }
 
@@ -660,10 +659,7 @@ static void M_FireHarpoon(ITEM *const item)
     Item_AddSimulated(item_num);
     Sound_Effect(SFX_UPV_HARPOON, &Lara_GetItem()->pos, SPM_ALWAYS);
 
-    if (!Game_IsBonusFlagSet(GBF_NGPLUS)) {
-        Inv_AddAmmo(LGT_HARPOON, -1);
-    }
-
+    Gun_SpendRound(LGT_HARPOON);
     Stats_AddAmmoUsed();
     p->current_weapon ^= 1;
 }

@@ -251,8 +251,9 @@ void GF_InventoryModifier_ApplyToResumeInfo(const GF_LEVEL *const level)
         resume->gun_status = LGS_ARMLESS;
     }
 
-    if (!Inv_State_Has(&resume->inv, O_PISTOL_ITEM)
-        && m_Add2InvItems[O_PISTOL_ITEM]) {
+    const bool pistols_given = !Inv_State_Has(&resume->inv, O_PISTOL_ITEM)
+        && m_Add2InvItems[O_PISTOL_ITEM] != 0;
+    if (pistols_given) {
         Inv_State_SetCount(&resume->inv, O_PISTOL_ITEM, 1);
         if (resume->equipped_gun_type == LGT_UNARMED) {
             resume->equipped_gun_type = LGT_PISTOLS;
@@ -261,6 +262,14 @@ void GF_InventoryModifier_ApplyToResumeInfo(const GF_LEVEL *const level)
 
     if (m_RemoveAmmo) {
         memset(resume->inv.ammo, 0, sizeof(resume->inv.ammo));
+    }
+
+    // Pistols the game flow hands over come loaded, whatever else the level
+    // took away. An endless supply needs no such rounds: the count follows the
+    // gun, and Inv_State_SetCount has already written it.
+    if (pistols_given && !Gun_HasInfiniteAmmo(LGT_PISTOLS)) {
+        Inv_State_AddAmmo(
+            &resume->inv, LGT_PISTOLS, Gun_GetInitialRounds(LGT_PISTOLS));
     }
 
     if (m_RemoveScions) {

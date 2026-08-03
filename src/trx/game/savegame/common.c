@@ -195,7 +195,6 @@ static void M_PersistInventory(RESUME_INFO *const resume)
     const INVENTORY_STATE *const live = Inv_GetState();
     resume->inv = (INVENTORY_STATE) {};
     memcpy(resume->inv.ammo, live->ammo, sizeof(resume->inv.ammo));
-    resume->inv.ammo[LGT_PISTOLS] = Inv_HasItem(O_PISTOL_ITEM) ? 1000 : 0;
 
     for (const SAVEGAME_RESUME_WEAPON *entry = g_Savegame_ResumeWeapons;
          entry->has_key != nullptr; entry++) {
@@ -526,7 +525,7 @@ void Savegame_Init(void)
         resume_info->lara_hitpoints = LARA_MAX_HITPOINTS;
         resume_info->flags.available = true;
         Inv_State_SetCount(&resume_info->inv, O_PISTOL_ITEM, 1);
-        resume_info->inv.ammo[LGT_PISTOLS] = 1000;
+        resume_info->inv.ammo[LGT_PISTOLS] = Gun_GetInitialRounds(LGT_PISTOLS);
         resume_info->gun_status = LGS_ARMLESS;
         resume_info->equipped_gun_type = LGT_PISTOLS;
         resume_info->holsters_gun_type = LGT_PISTOLS;
@@ -794,7 +793,7 @@ void Savegame_ApplyLogicToCurrentInfo(const GF_LEVEL *const level)
         // She starts the game with her pistols and nothing else.
         resume->inv = (INVENTORY_STATE) {};
         Inv_State_SetCount(&resume->inv, O_PISTOL_ITEM, 1);
-        resume->inv.ammo[LGT_PISTOLS] = 1000;
+        resume->inv.ammo[LGT_PISTOLS] = Gun_GetInitialRounds(LGT_PISTOLS);
 
         resume->equipped_gun_type = LGT_PISTOLS;
         resume->holsters_gun_type = LGT_PISTOLS;
@@ -811,7 +810,9 @@ void Savegame_ApplyLogicToCurrentInfo(const GF_LEVEL *const level)
                 continue;
             }
             Inv_State_SetCount(&resume->inv, gun_object, 1);
-            resume->inv.ammo[gun_type] = gun_type == LGT_PISTOLS ? 1000 : 10000;
+            resume->inv.ammo[gun_type] = gun_type == LGT_PISTOLS
+                ? Gun_GetInitialRounds(LGT_PISTOLS)
+                : 10000;
         }
         if (g_TRVersion > 1) {
             Inv_State_SetCount(&resume->inv, O_FLARE_ITEM, MAX_QTY);
