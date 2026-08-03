@@ -283,6 +283,32 @@ def _read_tr4_items(r: _ByteReader) -> list[TR4LevelItem]:
     return items
 
 
+def _read_tr4_ai_items(r: _ByteReader) -> list[TR4LevelItem]:
+    item_count = r.read_s32()
+    logger.debug("ai items=%d @ %d", item_count, r.tell())
+    items: list[TR4LevelItem] = []
+    for _ in range(item_count):
+            object_id = r.read_s16()
+            room_num = r.read_s16()
+            x = r.read_s32()
+            y = r.read_s32()
+            z = r.read_s32()
+            r.skip(2)  # ocb
+            r.skip(2)  # flags
+            r.skip(2)  # y_rot
+            r.skip(2)  # box_num
+            items.append(
+                TR4LevelItem(
+                    object_id=object_id,
+                    x=x,
+                    y=y,
+                    z=z,
+                    room_num=room_num,
+                )
+            )
+    return items
+
+
 def read_tr4_level(level_path: Path) -> TR4LevelData:
     data = level_path.read_bytes()
     r = _ByteReader(data)
@@ -313,6 +339,7 @@ def read_tr4_level(level_path: Path) -> TR4LevelData:
     _skip_tr4_animated_texture_ranges(lr)
     _skip_tr4_object_textures(lr)
     items = _read_tr4_items(lr)
+    items.extend(_read_tr4_ai_items(lr))
     return TR4LevelData(objects=objects, items=items)
 
 
