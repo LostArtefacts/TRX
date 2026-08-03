@@ -2,7 +2,6 @@
 
 #include <trx/config.h>
 #include <trx/core/strings.h>
-#include <trx/game/game.h>
 #include <trx/game/game_strings/entries.h>
 #include <trx/game/gun.h>
 #include <trx/game/inventory.h>
@@ -23,15 +22,18 @@ bool UI_AmmoLabel(void)
 
     const ITEM *const vehicle_item = Lara_Vehicle_GetItem();
     if (vehicle_item != nullptr && vehicle_item->object_id == O_UPV) {
+        if (Gun_HasInfiniteAmmo(LGT_HARPOON)) {
+            return false;
+        }
         ammo = Inv_GetAmmo(LGT_HARPOON);
     } else {
-        if (lara->gun_status != LGS_READY || Game_IsBonusFlagSet(GBF_NGPLUS)) {
+        if (lara->gun_status != LGS_READY) {
             return false;
         }
 
-        // The pistols never run out, so they carry no label, and neither does
-        // anything with no box of ammunition to draw on.
-        if (lara->gun_type == LGT_PISTOLS
+        // A weapon that spends nothing carries no label, and neither does one
+        // with no box of ammunition to draw on.
+        if (Gun_HasInfiniteAmmo(lara->gun_type)
             || Gun_GetAmmoObject(lara->gun_type) == NO_OBJECT) {
             return false;
         }

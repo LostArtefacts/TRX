@@ -29,6 +29,7 @@
             "initial_shots": 32,
             "box_shots": 32,
             "box_label_qty": 2,
+            "infinite": true,
         },
         "target_dist": 8.0,
         "recoil_frame": 9,
@@ -344,6 +345,9 @@
         "shot_accuracy": 8,
         "gun_height": 400,
         "damage": 3,
+        "ammo": {
+            "infinite": true,
+        },
         "target_dist": 8.0,
         "recoil_frame": 0,
         "flash_time": 2,

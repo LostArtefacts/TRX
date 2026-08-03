@@ -2,6 +2,7 @@
 #include <trx/core/colors.h>
 #include <trx/debug.h>
 #include <trx/game/const.h>
+#include <trx/game/game.h>
 #include <trx/game/gun.h>
 #include <trx/game/lara.h>
 #include <trx/game/output.h>
@@ -176,6 +177,26 @@ LARA_GUN_TYPE Gun_GetHolsterChoice(const INVENTORY_STATE *const inv)
 LARA_GUN_TYPE Gun_GetBackChoice(const INVENTORY_STATE *const inv)
 {
     return M_GetFirstCarried(inv, m_BackGuns);
+}
+
+bool Gun_HasInfiniteAmmo(const LARA_GUN_TYPE gun_type)
+{
+    if (Game_IsBonusFlagSet(GBF_NGPLUS)) {
+        return true;
+    }
+    return M_IsWeapon(gun_type) && g_Weapons[gun_type].ammo.infinite;
+}
+
+bool Gun_HasRoundsLeft(const LARA_GUN_TYPE gun_type)
+{
+    return Gun_HasInfiniteAmmo(gun_type) || Inv_GetAmmo(gun_type) > 0;
+}
+
+void Gun_SpendRound(const LARA_GUN_TYPE gun_type)
+{
+    if (!Gun_HasInfiniteAmmo(gun_type)) {
+        Inv_AddAmmo(gun_type, -1);
+    }
 }
 
 bool Gun_IsRifleType(const LARA_GUN_TYPE gun_type)

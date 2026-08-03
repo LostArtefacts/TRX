@@ -313,7 +313,7 @@ void Lara_Flare_Draw(void)
         frame_num = LF_FL_DRAW;
     } else if (frame_num == LF_FL_DRAW_GOT_IT) {
         Lara_Flare_DrawMeshes();
-        if (!Game_IsBonusFlagSet(GBF_NGPLUS)) {
+        if (!Gun_HasInfiniteAmmo(LGT_FLARE)) {
             Inv_RemoveItem(O_FLAREBOX_ITEM);
         }
     } else if (frame_num >= LF_FL_IGNITE && frame_num <= LF_FL_2_HOLD - 2) {

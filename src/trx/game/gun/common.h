@@ -28,6 +28,15 @@ int32_t Gun_GetAmmoInventoryQuantity(LARA_GUN_TYPE gun_type);
 LARA_GUN_TYPE Gun_GetHolsterChoice(const INVENTORY_STATE *inv);
 LARA_GUN_TYPE Gun_GetBackChoice(const INVENTORY_STATE *inv);
 
+// Whether the weapon spends nothing when it fires, so that its rounds are
+// neither counted down nor shown to the player.
+bool Gun_HasInfiniteAmmo(LARA_GUN_TYPE gun_type);
+// Whether the weapon has anything left to fire. One that never runs out
+// always has.
+bool Gun_HasRoundsLeft(LARA_GUN_TYPE gun_type);
+// Takes the round a shot costs, from a weapon that spends any.
+void Gun_SpendRound(LARA_GUN_TYPE gun_type);
+
 bool Gun_IsRifleType(LARA_GUN_TYPE gun_type);
 bool Gun_IsSinglePistolType(LARA_GUN_TYPE gun_type);
 

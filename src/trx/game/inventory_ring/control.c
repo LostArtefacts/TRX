@@ -111,11 +111,23 @@ static INV_RING_VISIBLE M_GetVisibleRing(const RING_TYPE type)
     return (INV_RING_VISIBLE) { .items = dst, .count = count };
 }
 
-static void M_ShowAmmoQuantity(const char *const fmt, const int32_t qty)
+// What Lara has for one weapon, and nothing at all where the number cannot run
+// down: a weapon that never runs out has none to show.
+static void M_ShowAmmoQuantity(
+    const LARA_GUN_TYPE gun_type, const char *const fmt, const int32_t qty)
 {
-    if (!Game_IsBonusFlagSet(GBF_NGPLUS)) {
+    if (!Gun_HasInfiniteAmmo(gun_type)) {
         InvRing_ShowItemQuantity(fmt, qty);
     }
+}
+
+// What a weapon has left, counted in shots rather than in the rounds behind
+// them: the shotgun spends six of those on one shot.
+static void M_ShowGunAmmoQuantity(
+    const LARA_GUN_TYPE gun_type, const char *const fmt)
+{
+    M_ShowAmmoQuantity(
+        gun_type, fmt, Inv_GetAmmo(gun_type) / Gun_GetRoundsPerShot(gun_type));
 }
 
 static void M_RingIsOpen(INV_RING *const ring)
@@ -138,43 +150,44 @@ static void M_RingNotActive(
     const int32_t qty = Inv_GetItemCount(inv_item->object_id);
 
     switch (inv_item->object_id) {
+    case O_PISTOL_OPTION:
+        M_ShowGunAmmoQuantity(LGT_PISTOLS, "%5d");
+        break;
     case O_SHOTGUN_OPTION:
-        M_ShowAmmoQuantity(
-            g_TRVersion == 1 ? "%5d \\{ammo shotgun}" : "%5d",
-            Inv_GetAmmo(LGT_SHOTGUN) / Gun_GetRoundsPerShot(LGT_SHOTGUN));
+        M_ShowGunAmmoQuantity(
+            LGT_SHOTGUN, g_TRVersion == 1 ? "%5d \\{ammo shotgun}" : "%5d");
         break;
     case O_MAGNUM_OPTION:
-        M_ShowAmmoQuantity(
-            g_TRVersion == 1 ? "%5d \\{ammo magnums}" : "%5d",
-            Inv_GetAmmo(LGT_MAGNUMS));
+        M_ShowGunAmmoQuantity(
+            LGT_MAGNUMS, g_TRVersion == 1 ? "%5d \\{ammo magnums}" : "%5d");
         break;
     case O_AUTOS_OPTION:
-        M_ShowAmmoQuantity("%5d", Inv_GetAmmo(LGT_AUTOS));
+        M_ShowGunAmmoQuantity(LGT_AUTOS, "%5d");
         break;
     case O_DESERT_EAGLE_OPTION:
-        M_ShowAmmoQuantity("%5d", Inv_GetAmmo(LGT_DESERT_EAGLE));
+        M_ShowGunAmmoQuantity(LGT_DESERT_EAGLE, "%5d");
         break;
     case O_UZI_OPTION:
-        M_ShowAmmoQuantity(
-            g_TRVersion == 1 ? "%5d \\{ammo uzis}" : "%5d",
-            Inv_GetAmmo(LGT_UZIS));
+        M_ShowGunAmmoQuantity(
+            LGT_UZIS, g_TRVersion == 1 ? "%5d \\{ammo uzis}" : "%5d");
         break;
     case O_HARPOON_OPTION:
-        M_ShowAmmoQuantity("%5d", Inv_GetAmmo(LGT_HARPOON));
+        M_ShowGunAmmoQuantity(LGT_HARPOON, "%5d");
         break;
     case O_M16_OPTION:
-        M_ShowAmmoQuantity("%5d", Inv_GetAmmo(LGT_M16));
+        M_ShowGunAmmoQuantity(LGT_M16, "%5d");
         break;
     case O_MP5_OPTION:
-        M_ShowAmmoQuantity("%5d", Inv_GetAmmo(LGT_MP5));
+        M_ShowGunAmmoQuantity(LGT_MP5, "%5d");
         break;
     case O_GRENADE_GUN_OPTION:
-        M_ShowAmmoQuantity("%5d", Inv_GetAmmo(LGT_GRENADE));
+        M_ShowGunAmmoQuantity(LGT_GRENADE, "%5d");
         break;
     case O_ROCKET_GUN_OPTION:
-        M_ShowAmmoQuantity("%5d", Inv_GetAmmo(LGT_ROCKET));
+        M_ShowGunAmmoQuantity(LGT_ROCKET, "%5d");
         break;
 
+    case O_PISTOL_AMMO_OPTION:
     case O_SHOTGUN_AMMO_OPTION:
     case O_MAGNUM_AMMO_OPTION:
     case O_AUTOS_AMMO_OPTION:
@@ -188,12 +201,13 @@ static void M_RingNotActive(
         const OBJECT_ID ammo_object_id = Inv_GetItemPickup(inv_item->object_id);
         const LARA_GUN_TYPE gun_type = Gun_GetType(
             Object_GetCognateInverse(ammo_object_id, g_GunAmmoObjectMap));
-        M_ShowAmmoQuantity("%d", qty * Gun_GetAmmoInventoryQuantity(gun_type));
+        M_ShowAmmoQuantity(
+            gun_type, "%d", qty * Gun_GetAmmoInventoryQuantity(gun_type));
         break;
     }
 
     case O_FLAREBOX_OPTION:
-        M_ShowAmmoQuantity("%d", qty);
+        M_ShowAmmoQuantity(LGT_FLARE, "%d", qty);
         break;
 
     case O_SMALL_MEDIPACK_OPTION:
