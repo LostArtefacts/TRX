@@ -9,10 +9,15 @@ api.module("strings", {
 })
 
 api.type("strings.Match", {
+  record = true,
   description = "A candidate that matched, and how well.",
   fields = {
     key = { type = "string", description = "The candidate that matched." },
-    value = { type = "any", description = "What the candidate carried." },
+    value = {
+      type = "any",
+      optional = true,
+      description = "What the candidate carried, where it carried one.",
+    },
     score = { type = "number", description = "How well it matched." },
     is_full = {
       type = "boolean",

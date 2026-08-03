@@ -38,8 +38,8 @@ Module for interacting with the developer console.
     A registered console command, as the help command reads one.
 
     Properties:
-    - <a id="console.Command.aliases" name="console.Command.aliases"></a>**`aliases`**: a list of string. The other words that reach it, or `nil` where it answers to one.
-    - <a id="console.Command.help" name="console.Command.help"></a>**`help`**: string. What the console shows for `--help`, or `nil` where the command carries none.
+    - <a id="console.Command.aliases" name="console.Command.aliases"></a>**`aliases`**: a list of string, optional. The other words that reach it, where it answers to more than one.
+    - <a id="console.Command.help" name="console.Command.help"></a>**`help`**: string, optional. What the console shows for `--help`, where the command carries any.
     - <a id="console.Command.name" name="console.Command.name"></a>**`name`**: string. The word the player types.
 
 ### Functions

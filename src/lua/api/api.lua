@@ -417,8 +417,12 @@ local function write_property(where, prop, value)
     error(where .. " is read-only", 3)
   end
   if strict_enabled then
-    if not once(prop, "write_check", checker, spec)(value) then
-      error(("%s: expected %s"):format(where, check.label_of(spec)), 3)
+    local ok, why = once(prop, "write_check", checker, spec)(value)
+    if not ok then
+      error(
+        ("%s: %s"):format(where, why or "expected " .. check.label_of(spec)),
+        3
+      )
     end
   end
   spec.set(value)
@@ -544,7 +548,7 @@ local function make_checked(fn, path, params)
   local variadic = params[#params].name == "..."
   local fixed = variadic and #params - 1 or #params
 
-  local names, optional, predicates, defaults = {}, {}, {}, {}
+  local names, optional, predicates, defaults, labels = {}, {}, {}, {}, {}
   local fills_a_default = false
   for i = 1, fixed do
     local p = params[i]
@@ -552,6 +556,9 @@ local function make_checked(fn, path, params)
     optional[i] = p.optional == true
     predicates[i] = checker(p)
     defaults[i] = p.default
+    -- What the argument had to be, for a predicate that answers yes or no and
+    -- has nothing of its own to say: a handle, a class, and every primitive.
+    labels[i] = "expected " .. check.label_of(p)
     if p.default ~= nil then
       fills_a_default = true
     end
@@ -562,8 +569,16 @@ local function make_checked(fn, path, params)
     if value == nil and optional[i] then
       return
     end
-    if not predicates[i](value) then
-      error(("%s: invalid argument '%s'"):format(path, names[i]), 3)
+    local ok, why = predicates[i](value)
+    if not ok then
+      error(
+        ("%s: invalid argument '%s' - %s"):format(
+          path,
+          names[i],
+          why or labels[i]
+        ),
+        3
+      )
     end
   end
 
@@ -1017,6 +1032,8 @@ local function declare_lua_class(entry, path, spec, need)
   end
 
   entry.class = class
+  -- A value the registry hands out is checked by identity: it really came from
+  -- us, and an ItemQuery counts as a Query.
   entry.check = check.by_identity(class)
   -- A method of a type written in Lua is the Lua function it declares, and
   -- nothing stands behind it where the declaration names none.
@@ -1025,6 +1042,40 @@ local function declare_lua_class(entry, path, spec, need)
   end
   bind_type_methods(entry)
   return class
+end
+
+-- A record is a plain table with no class on it: one a script writes out as an
+-- options table, or one a call hands back for the caller to own. There is no
+-- identity to check it by, so it is checked by what it holds - every key it
+-- names, no key it does not, and each of the type it was given.
+--
+-- Which of the two a type is, the declaration says. Reading it off the shape -
+-- a type with keys and no methods being a record - is a guess that goes wrong
+-- the moment a record grows a method, or a type the registry hands out has
+-- nothing but keys, as math.Box has.
+local function declare_record(entry, spec, need)
+  need(
+    spec.extends == nil and next(spec.methods or {}) == nil,
+    "a record is a plain table, so it has no methods and no parent"
+  )
+  need(
+    spec.backing == nil
+      and next(spec.operators or {}) == nil
+      and next(spec.extensions or {}) == nil,
+    "a record is a plain table, so it has no C struct, no operators and no extensions"
+  )
+  need(
+    type(spec.fields) == "table" and next(spec.fields) ~= nil,
+    "a record is checked by the keys it names, so it has to name some"
+  )
+  for name, field in pairs(spec.fields) do
+    need(
+      field.get == nil and field.set == nil,
+      "field '%s' has an accessor, which a record has nowhere to keep",
+      name
+    )
+  end
+  entry.check = check.by_keys(spec.fields)
 end
 
 -- A handle stands for something the engine owns and can outlive it. C says how
@@ -1068,6 +1119,9 @@ api.type = declarator("type", "types", {
     -- A type, a number and a unit each belong to the module that hands one out,
     -- and the name a params list writes is that path.
     entry.where = placed(path, need)
+    if spec.record then
+      return declare_record(entry, spec, need)
+    end
     if spec.backing == nil then
       return declare_lua_class(entry, path, spec, need)
     end
@@ -1090,6 +1144,10 @@ api.type = declarator("type", "types", {
           list = doc.list,
           writable = field_writable(spec, field),
           description = doc.description,
+          -- A key of a table a script writes out may be left out, and stand in
+          -- what the declaration says it stands in.
+          optional = doc.optional,
+          default = doc.default,
         }
       end),
       methods = members(spec.methods, function(method)
@@ -1113,12 +1171,15 @@ api.type = declarator("type", "types", {
 -- The class of a type written in Lua, for a module that hands one of its values
 -- out but is not where it is declared: trx.items hands back a math.Box, and a
 -- box carries that class. Everything else names a type by its path.
+--
+-- A record has no class - a plain table is what it is - so asking for one says
+-- so rather than handing back something inert to put on a value.
 local class_needs = complain("api.class")
 
 function api.class(path)
   local entry = at(path)
   local class = entry ~= nil and entry.class or nil
-  class_needs(class ~= nil, "'%s' is not a declared type", path)
+  class_needs(class ~= nil, "'%s' is not a declared type with a class", path)
   return class
 end
 
@@ -1514,9 +1575,10 @@ end
 -- declares is expected to be missing.
 --
 -- What is audited is what checking will call: the arguments of a function, of a
--- callable namespace and of a method, and a property written through. A name in
--- a doc-only position - what a call hands back, what a constant is measured in -
--- is resolved by the docs tool, which walks the dump for exactly that.
+-- callable namespace and of a method, the keys of a table one of those takes,
+-- and a property written through. A name in a doc-only position - what a call
+-- hands back, what a constant is measured in - is resolved by the docs tool,
+-- which walks the dump for exactly that.
 local function audit_types(partial)
   local bad = {}
   local function report(fmt, ...)
@@ -1538,11 +1600,33 @@ local function audit_types(partial)
     return predicate
   end
 
+  -- The keys of a table a script writes out, which are checked as its own
+  -- arguments are and can name a type in the same way.
+  local function audit_keys(where, fields)
+    for key, field in pairs(fields or {}) do
+      local name = field.name or key
+      local predicate = checked_by(where, ("the key '%s'"):format(name), field)
+      if
+        predicate ~= nil
+        and field.default ~= nil
+        and not predicate(field.default)
+      then
+        report(
+          "%s: the default for '%s' is not %s",
+          where,
+          name,
+          check.label_of(field)
+        )
+      end
+    end
+  end
+
   local function audit_params(where, params)
     local optional_seen = false
     for _, p in ipairs(params or {}) do
       if p.name ~= "..." then
         local predicate = checked_by(where, ("'%s'"):format(p.name), p)
+        audit_keys(where .. "." .. p.name, p.fields)
         if
           predicate ~= nil
           and p.default ~= nil
@@ -1585,6 +1669,13 @@ local function audit_types(partial)
   end
   for _, entry in ipairs(each(api.property)) do
     checked_by(entry.path, "the property", entry.spec)
+  end
+  -- A record is checked by the keys it names wherever one is passed in, so the
+  -- names have to answer for the same reason a parameter's does.
+  for _, entry in ipairs(each(api.type)) do
+    if entry.spec.record then
+      audit_keys(entry.path, entry.spec.fields)
+    end
   end
 
   if #bad > 0 then

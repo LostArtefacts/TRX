@@ -150,6 +150,7 @@ end
 -- A plain table the engine builds, so its keys are entries it holds rather than
 -- accessors.
 api.type("items.Trigger", {
+  record = true,
   description = "What a trigger carried when it fired.",
   fields = {
     type = {

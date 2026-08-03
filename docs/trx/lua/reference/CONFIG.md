@@ -25,7 +25,7 @@ These are the player's settings, not the level's. [`trx.config.set`](#config.set
     Properties:
     - <a id="config.Shape.kind" name="config.Shape.kind"></a>**`kind`**: string. One of `boolean`, `integer`, `number`, `color`, `enum`, `dynamic_enum` or `string`.
     - <a id="config.Shape.percent" name="config.Shape.percent"></a>**`percent`**: boolean. Marks a number stored 0-1 but entered and shown as a 0-100 percentage.
-    - <a id="config.Shape.values" name="config.Shape.values"></a>**`values`**: a list of string. What the setting accepts, for the enum kinds. `nil` for the rest.
+    - <a id="config.Shape.values" name="config.Shape.values"></a>**`values`**: a list of string, optional. What the setting accepts, for the enum kinds.
 
 ### Functions
 

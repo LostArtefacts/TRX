@@ -27,7 +27,7 @@ Not to be confused with [`trx.locale`](LOCALE.md#locale), which is the text a pl
     - <a id="strings.Match.is_word" name="strings.Match.is_word"></a>**`is_word`**: boolean. Whether a whole word matched.
     - <a id="strings.Match.key" name="strings.Match.key"></a>**`key`**: string. The candidate that matched.
     - <a id="strings.Match.score" name="strings.Match.score"></a>**`score`**: number. How well it matched.
-    - <a id="strings.Match.value" name="strings.Match.value"></a>**`value`**: any. What the candidate carried.
+    - <a id="strings.Match.value" name="strings.Match.value"></a>**`value`**: any, optional. What the candidate carried, where it carried one.
 
 ### Functions
 

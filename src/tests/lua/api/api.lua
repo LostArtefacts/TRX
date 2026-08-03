@@ -1288,6 +1288,42 @@ test("describe() gives the same answer twice", function()
   assert(api.to_json() == first, "describe() rewrote what it read")
 end)
 
+-- A table a script writes out is checked by what it holds. A key it does not
+-- name reads as nothing at all otherwise, whether checking is on or off.
+test("strict mode checks the keys a table declares", function()
+  local api = fresh_env()
+  api.module("things", { description = "..." })
+  api.type("things.Options", {
+    record = true,
+    description = "How to do it.",
+    fields = {
+      mode = { type = "integer", optional = true, description = "." },
+    },
+  })
+  api.define("things.play", {
+    description = "...",
+    params = {
+      { name = "opts", type = "things.Options", optional = true },
+      {
+        name = "inline",
+        type = "table",
+        optional = true,
+        description = ".",
+        fields = { { name = "pos", type = "integer", description = "." } },
+      },
+    },
+    impl = function() end,
+  })
+
+  api.strict(true)
+  assert(pcall(trx.things.play, { mode = 1 }), "a plain table a script wrote")
+  assert(not pcall(trx.things.play, { moed = 1 }), "a key nothing names")
+  assert(not pcall(trx.things.play, { mode = "x" }), "a key of the wrong type")
+  assert(pcall(trx.things.play, nil, { pos = 1 }), "keys declared inline")
+  assert(not pcall(trx.things.play, nil, {}), "one of them missing")
+  api.strict(false)
+end)
+
 -- A declaration that holds several of something is checked as the list it is.
 -- Checking the element type against the list itself rejects every valid call.
 test("strict mode checks a list by what it holds", function()
@@ -1296,6 +1332,19 @@ test("strict mode checks a list by what it holds", function()
   api.define("things.collapse", {
     description = "...",
     params = { { name = "numbers", type = "integer", list = true } },
+    impl = function() end,
+  })
+  api.define("things.match", {
+    description = "...",
+    params = {
+      {
+        name = "sources",
+        type = "table",
+        list = true,
+        description = ".",
+        fields = { { name = "key", type = "string", description = "." } },
+      },
+    },
     impl = function() end,
   })
 
@@ -1307,6 +1356,8 @@ test("strict mode checks a list by what it holds", function()
     not pcall(trx.things.collapse, { 1, "x" }),
     "an entry of the wrong type"
   )
+  assert(pcall(trx.things.match, { { key = "a" } }), "keys declared inline")
+  assert(not pcall(trx.things.match, { { kye = "a" } }), "a key nothing names")
   api.strict(false)
 end)
 
@@ -1677,6 +1728,117 @@ test("class() hands back the class a type was declared with", function()
 
   assert(api.class("things.Widget") == Widget)
   assert(not pcall(api.class, "things.Gadget"))
+end)
+
+-- Which of the two a type is, the declaration says. Read off the shape, a type
+-- the registry hands out but that carries nothing except keys - math.Box - would
+-- be taken for a table a script writes, and its class would go on a value
+-- nothing checks by it.
+test("a type says whether it is a record or a value with a class", function()
+  local api = fresh_env()
+  api.module("things", { description = "..." })
+  local Box = api.type("things.Box", {
+    description = "...",
+    fields = {
+      min_x = { type = "integer", description = "..." },
+      max_x = { type = "integer", description = "..." },
+    },
+  })
+  api.type("things.Options", {
+    record = true,
+    description = "...",
+    fields = { mode = { type = "integer", description = "." } },
+  })
+  api.define("things.fit", {
+    description = "...",
+    params = {
+      { name = "box", type = "things.Box" },
+      { name = "opts", type = "things.Options" },
+    },
+    impl = function() end,
+  })
+
+  api.strict(true)
+  local written = { min_x = 1, max_x = 5 }
+  assert(
+    not pcall(trx.things.fit, written, { mode = 1 }),
+    "a box the registry did not hand out"
+  )
+  assert(
+    pcall(trx.things.fit, setmetatable(written, Box), { mode = 1 }),
+    "one that carries the class"
+  )
+  api.strict(false)
+
+  -- A record is a plain table, so there is no class to put on one.
+  assert(api.class("things.Box") == Box)
+  assert(
+    not pcall(api.class, "things.Options"),
+    "a record must not hand out a class"
+  )
+end)
+
+test("a record is checked by the keys it names", function()
+  local api = fresh_env()
+  api.module("things", { description = "..." })
+  assert(
+    not pcall(api.type, "things.Empty", { record = true, description = "." }),
+    "a record with no keys has nothing to be checked by"
+  )
+  assert(not pcall(api.type, "things.Method", {
+    record = true,
+    description = ".",
+    fields = { mode = { type = "integer", description = "." } },
+    methods = { poke = { impl = function() end } },
+  }), "a record is a plain table, so it has no methods")
+  assert(not pcall(api.type, "things.Accessor", {
+    record = true,
+    description = ".",
+    fields = {
+      mode = {
+        type = "integer",
+        description = ".",
+        get = function()
+          return 1
+        end,
+      },
+    },
+  }), "a record has nowhere to keep an accessor")
+end)
+
+test("a type declares only what its own shape can hold", function()
+  local api = fresh_env()
+  api.module("things", { description = "..." })
+  local computed = { derived = { description = ".", impl = function() end } }
+  local operators = { band = { description = ".", impl = function() end } }
+
+  assert(not pcall(api.type, "things.Class", { extensions = computed }))
+  assert(not pcall(api.type, "things.Handle", {
+    backing = "WIDGET",
+    operators = operators,
+  }))
+  assert(not pcall(api.type, "things.Record", {
+    record = true,
+    description = ".",
+    fields = { mode = { type = "integer", description = "." } },
+    extensions = computed,
+  }))
+end)
+
+test("strict mode says what an argument had to be", function()
+  local api = fresh_env()
+  api.define("things.spawn", {
+    params = { { name = "id", type = "integer" } },
+    impl = function() end,
+  })
+
+  api.strict(true)
+  local ok, why = pcall(trx.things.spawn, "wolf")
+  assert(not ok)
+  assert(
+    why:find("expected integer", 1, true) ~= nil,
+    "the message names the parameter but not what it wanted: " .. why
+  )
 end)
 
 -- A suite that registers nothing prints "0 failed" and exits clean, which reads

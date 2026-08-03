@@ -6089,9 +6089,10 @@
           "type": "boolean"
         },
         {
-          "description": "What the setting accepts, for the enum kinds. `nil` for the rest.",
+          "description": "What the setting accepts, for the enum kinds.",
           "list": true,
           "name": "values",
+          "optional": true,
           "type": "string"
         }
       ],
@@ -6105,14 +6106,16 @@
       "extensions": [],
       "fields": [
         {
-          "description": "The other words that reach it, or `nil` where it answers to one.",
+          "description": "The other words that reach it, where it answers to more than one.",
           "list": true,
           "name": "aliases",
+          "optional": true,
           "type": "string"
         },
         {
-          "description": "What the console shows for `--help`, or `nil` where the command carries none.",
+          "description": "What the console shows for `--help`, where the command carries any.",
           "name": "help",
+          "optional": true,
           "type": "string"
         },
         {
@@ -8762,8 +8765,9 @@
           "type": "number"
         },
         {
-          "description": "What the candidate carried.",
+          "description": "What the candidate carried, where it carried one.",
           "name": "value",
+          "optional": true,
           "type": "any"
         }
       ],

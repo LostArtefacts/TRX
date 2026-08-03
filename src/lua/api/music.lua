@@ -24,6 +24,21 @@ local PlayMode = api.enum("music.PlayMode", {
   },
 })
 
+local PLAY_OPTS = {
+  name = "opts",
+  type = "table",
+  optional = true,
+  description = "How to play it.",
+  fields = {
+    {
+      name = "mode",
+      type = "music.PlayMode",
+      optional = true,
+      description = "Plays once by default.",
+    },
+  },
+}
+
 api.number("music.StreamNum", {
   base = 1,
   description = "Which of the soundtrack's slots: 1 is the main stream, 2 onwards the overlays.",
@@ -112,22 +127,7 @@ api.type("music.Track", {
       description = "Whether the loaded level still carries this track.",
     },
     play = {
-      params = {
-        {
-          name = "opts",
-          type = "table",
-          optional = true,
-          description = "How to play it.",
-          fields = {
-            {
-              name = "mode",
-              type = "music.PlayMode",
-              optional = true,
-              description = "Plays once by default.",
-            },
-          },
-        },
-      },
+      params = { PLAY_OPTS },
       returns = {
         type = "music.Stream",
         nullable = true,
@@ -198,20 +198,7 @@ api.define("music.play", {
       description = "Track to play. To reach a track by the level's own slot, play it through a "
         .. "handle: `trx.music.tracks[slot]:play()`.",
     },
-    {
-      name = "opts",
-      type = "table",
-      optional = true,
-      description = "How to play it.",
-      fields = {
-        {
-          name = "mode",
-          type = "music.PlayMode",
-          optional = true,
-          description = "Plays once by default.",
-        },
-      },
-    },
+    PLAY_OPTS,
   },
   returns = {
     type = "music.Stream",

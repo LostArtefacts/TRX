@@ -21,6 +21,7 @@ trx.locale.declare({
 })
 
 api.type("config.Shape", {
+  record = true,
   description = "How a setting is entered and shown, beyond the type it reads back as.",
   fields = {
     kind = {
@@ -36,7 +37,8 @@ api.type("config.Shape", {
     values = {
       type = "string",
       list = true,
-      description = "What the setting accepts, for the enum kinds. `nil` for the rest.",
+      optional = true,
+      description = "What the setting accepts, for the enum kinds.",
     },
   },
 })

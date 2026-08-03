@@ -137,11 +137,57 @@ function M.by_identity(class)
   end
 end
 
--- The predicate a whole declaration is checked by. One that holds several of
--- something is checked as the list it is: a list of integers is a table of
--- integers, not an integer.
+-- What a table a script writes out has to hold: every key the declaration
+-- names, no key it does not, and each one of the type it was given. A typo in
+-- an options table reads as nothing at all otherwise, whether checking is on or
+-- off.
+function M.by_keys(fields)
+  local declared = {}
+  for key, field in pairs(fields) do
+    -- Declared as a list where a call writes them out, and keyed by name where
+    -- a type does.
+    declared[field.name or key] = field
+  end
+  -- What checks a key is resolved the first time it is asked for, as the
+  -- registry resolves its own. A name that resolves to nothing is asked again:
+  -- a suite that stands up part of the surface declares the rest of it after.
+  local resolved = {}
+  return function(value)
+    if type(value) ~= "table" then
+      return false, "not a table"
+    end
+    for key in pairs(value) do
+      if declared[key] == nil then
+        return false, ("no such key '%s'"):format(tostring(key))
+      end
+    end
+    for name, field in pairs(declared) do
+      local held = value[name]
+      if held == nil then
+        if not field.optional then
+          return false, ("'%s' is missing"):format(name)
+        end
+      else
+        local one = resolved[name]
+        if one == nil then
+          one = M.of(field)
+          resolved[name] = one
+        end
+        if one ~= nil and not one(held) then
+          return false, ("'%s': expected %s"):format(name, M.label_of(field))
+        end
+      end
+    end
+    return true
+  end
+end
+
+-- The predicate a whole declaration is checked by: the keys it names, or what it
+-- is typed by. One that holds several of something is checked as the list it is:
+-- a list of integers is a table of integers, not an integer.
 function M.of(spec)
-  local one = by_type(spec.type)
+  local one = spec.fields ~= nil and M.by_keys(spec.fields)
+    or by_type(spec.type)
   if one == nil or not spec.list then
     return one
   end
@@ -150,8 +196,10 @@ function M.of(spec)
       return false, "not a list"
     end
     for i, held in ipairs(value) do
-      if not one(held) then
-        return false, ("entry %d: expected %s"):format(i, M.label(spec.type))
+      local ok, why = one(held)
+      if not ok then
+        return false,
+          ("entry %d: %s"):format(i, why or "expected " .. M.label(spec.type))
       end
     end
     return true
