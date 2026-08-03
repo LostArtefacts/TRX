@@ -23,14 +23,18 @@ The samples the current level carries. A level does not carry every number, so i
 
 The sound effects playing now. A slot that is silent still answers, with a stale handle.
 
-- <a id="sound.streams[]" name="sound.streams[]"></a>**`trx.sound.streams[key]`** ([trx.sound.Stream](#sound.Stream) or `nil`). Which voice. Counted from 1.
+- <a id="sound.streams[]" name="sound.streams[]"></a>**`trx.sound.streams[key]`** ([trx.sound.Stream](#sound.Stream) or `nil`).
 - **`#trx.sound.streams`** (integer). How many there are.
 
 ### Structures
 
 - <a id="sound.SampleNum" name="sound.SampleNum"></a>[lua]`trx.sound.SampleNum`
 
-    Sample number, in the numbering the loaded level carries. Not a [`trx.catalog.samples`](CATALOG.md#catalog.samples) name, which is the sound bank's own.
+    Sample number, in the numbering the loaded level carries. Not a [`trx.catalog.samples`](CATALOG.md#catalog.samples) name, which is the sound bank's own. Counted from 0.
+
+- <a id="sound.StreamNum" name="sound.StreamNum"></a>[lua]`trx.sound.StreamNum`
+
+    Which of the voices playing now, counted in the order the engine holds them. Counted from 1.
 
 - <a id="sound.Sample" name="sound.Sample"></a>[lua]`trx.sound.Sample`
 

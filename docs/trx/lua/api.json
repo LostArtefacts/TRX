@@ -64,9 +64,7 @@
       "countable": true,
       "description": "The soundtrack's streams: `[1]` is the main stream, `[2]` onwards the overlay slots. A slot that is not playing still answers, with a stale handle.",
       "key": {
-        "base": 1,
-        "description": "Which slot.",
-        "type": "integer"
+        "type": "music.StreamNum"
       },
       "member": "streams",
       "module": "music",
@@ -139,9 +137,7 @@
       "countable": true,
       "description": "The sound effects playing now. A slot that is silent still answers, with a stale handle.",
       "key": {
-        "base": 1,
-        "description": "Which voice.",
-        "type": "integer"
+        "type": "sound.StreamNum"
       },
       "member": "streams",
       "module": "sound",
@@ -5402,8 +5398,14 @@
       "path": "items.Num"
     },
     {
+      "base": 0,
       "description": "Track number, in the numbering the loaded level carries. Not a `trx.catalog.music` name, which is the soundtrack's own.",
       "path": "music.TrackNum"
+    },
+    {
+      "base": 1,
+      "description": "Which of the soundtrack's slots: 1 is the main stream, 2 onwards the overlays.",
+      "path": "music.StreamNum"
     },
     {
       "base": 0,
@@ -5421,8 +5423,14 @@
       "path": "savegame.SlotNum"
     },
     {
+      "base": 0,
       "description": "Sample number, in the numbering the loaded level carries. Not a `trx.catalog.samples` name, which is the sound bank's own.",
       "path": "sound.SampleNum"
+    },
+    {
+      "base": 1,
+      "description": "Which of the voices playing now, counted in the order the engine holds them.",
+      "path": "sound.StreamNum"
     },
     {
       "base": 1,

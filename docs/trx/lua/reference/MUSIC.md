@@ -18,7 +18,7 @@ Module for playing and controlling the soundtrack.
 
 The soundtrack's streams: `[1]` is the main stream, `[2]` onwards the overlay slots. A slot that is not playing still answers, with a stale handle.
 
-- <a id="music.streams[]" name="music.streams[]"></a>**`trx.music.streams[key]`** ([trx.music.Stream](#music.Stream) or `nil`). Which slot. Counted from 1.
+- <a id="music.streams[]" name="music.streams[]"></a>**`trx.music.streams[key]`** ([trx.music.Stream](#music.Stream) or `nil`).
 - **`#trx.music.streams`** (integer). How many there are.
 
 The tracks the current level carries. A level does not carry every number, so indexing one it lacks is `nil` and iterating passes it by.
@@ -52,7 +52,11 @@ The tracks the current level carries. A level does not carry every number, so in
 
 - <a id="music.TrackNum" name="music.TrackNum"></a>[lua]`trx.music.TrackNum`
 
-    Track number, in the numbering the loaded level carries. Not a [`trx.catalog.music`](CATALOG.md#catalog.music) name, which is the soundtrack's own.
+    Track number, in the numbering the loaded level carries. Not a [`trx.catalog.music`](CATALOG.md#catalog.music) name, which is the soundtrack's own. Counted from 0.
+
+- <a id="music.StreamNum" name="music.StreamNum"></a>[lua]`trx.music.StreamNum`
+
+    Which of the soundtrack's slots: 1 is the main stream, 2 onwards the overlays. Counted from 1.
 
 - <a id="music.Stream" name="music.Stream"></a>[lua]`trx.music.Stream`
 
