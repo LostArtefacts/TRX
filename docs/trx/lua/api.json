@@ -4490,6 +4490,30 @@
       }
     },
     {
+      "description": "Snaps a position back to the corner of the sector it stands in, the way the\nlevel's own geometry is laid out. A whole position keeps its height: a sector\nis a column, and rounding it is about the ground plan rather than how far up\nthe position sits. A single coordinate rounds on its own, which is what an axis\nat a time needs.\n\nThe corner is always the one to the west and the south, on both sides of the\norigin, so two positions in the same sector always answer with the same corner.",
+      "examples": [
+        "-- a zone over the sector Lara stands on, a sector tall.\n-- y grows downwards, so the ceiling of the box is the lesser y.\nlocal corner = trx.math.round_to_sector(trx.lara.item.pos)\ntrx.zones.box(corner, {\n  x = corner.x + trx.math.WALL_L,\n  y = corner.y - trx.math.WALL_L,\n  z = corner.z + trx.math.WALL_L,\n})"
+      ],
+      "params": [
+        {
+          "description": "A world position, or one coordinate of one.",
+          "name": "value",
+          "type": [
+            "math.Vec3",
+            "math.Distance"
+          ]
+        }
+      ],
+      "path": "math.round_to_sector",
+      "returns": {
+        "description": "The corner of the sector, in whichever of the two came in.",
+        "type": [
+          "math.Vec3",
+          "math.Distance"
+        ]
+      }
+    },
+    {
       "description": "Restarts the game into another mod. The switch happens once the game flow picks it up, not on the call.",
       "examples": [
         "trx.mod.switch(\"arabian-nights\")"

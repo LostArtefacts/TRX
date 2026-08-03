@@ -41,6 +41,40 @@ test("atan takes z before x", function()
   assert(trx.math.atan(1024, 1024) == trx.math.DEG_45)
 end)
 
+test("round_to_sector snaps to the corner west and north", function()
+  local corner = trx.math.round_to_sector({ x = 2500, y = -300, z = 1024 })
+  assert(corner.x == 2048 and corner.z == 1024)
+  assert(corner.y == -300, "a sector is a column, so the height is untouched")
+
+  -- The same corner for anywhere in the sector, and the sector boundary belongs
+  -- to the sector it opens.
+  assert(trx.math.round_to_sector({ x = 3071, y = 0, z = 0 }).x == 2048)
+  assert(trx.math.round_to_sector({ x = 3072, y = 0, z = 0 }).x == 3072)
+end)
+
+test("round_to_sector rounds down either side of the origin", function()
+  assert(trx.math.round_to_sector(0) == 0)
+  assert(trx.math.round_to_sector(1023) == 0)
+  assert(
+    trx.math.round_to_sector(-1) == -1024,
+    "west of the origin rounds west"
+  )
+  assert(trx.math.round_to_sector(-1024) == -1024)
+  assert(trx.math.round_to_sector(-1025) == -2048)
+end)
+
+test("round_to_sector takes a coordinate as readily as a position", function()
+  local pos = { x = -2500, y = 0, z = 2500 }
+  local corner = trx.math.round_to_sector(pos)
+  assert(corner.x == trx.math.round_to_sector(pos.x))
+  assert(corner.z == trx.math.round_to_sector(pos.z))
+
+  -- A float position still leaves the corner whole, so it can be read back as a
+  -- world coordinate.
+  assert(trx.math.round_to_sector(2500.5) == 2048)
+  assert(math.type(trx.math.round_to_sector(2500.5)) == "integer")
+end)
+
 test("strict mode holds the angle to an integer", function()
   trx.api.strict(true)
   h.raises(function()
