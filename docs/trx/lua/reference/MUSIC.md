@@ -14,10 +14,20 @@ order: 18
 
 Module for playing and controlling the soundtrack.
 
+### Indexing
+
+The soundtrack's streams: `[1]` is the main stream, `[2]` onwards the overlay slots. A slot that is not playing still answers, with a stale handle.
+
+- <a id="music.streams[]" name="music.streams[]"></a>**`trx.music.streams[key]`** ([trx.music.Stream](#music.Stream) or `nil`). Which slot. Counted from 1.
+- **`#trx.music.streams`** (integer). How many there are.
+
+The tracks the current level carries. A level does not carry every number, so indexing one it lacks is `nil` and iterating passes it by.
+
+- <a id="music.tracks[]" name="music.tracks[]"></a>**`trx.music.tracks[key]`** ([trx.music.Track](#music.Track) or `nil`).
+- **`#trx.music.tracks`** (integer). How many there are.
+
 ### Properties
 
-- <a id="music.streams" name="music.streams"></a>**`trx.music.streams`** (table). The soundtrack's streams as [`trx.music.Stream`](#music.Stream) handles: `[1]` is the main stream, `[2]` onwards the overlay slots. A slot that is not playing still answers, with a stale handle. Indexing and iterating reach one handle at a time. *(read-only)*
-- <a id="music.tracks" name="music.tracks"></a>**`trx.music.tracks`** (table). The tracks the current level carries, as [`trx.music.Track`](#music.Track) handles keyed by id: `trx.music.tracks[5]` is track 5, or `nil` if the level has no such track. `#` counts them, iterating walks them, and both reach one handle at a time. *(read-only)*
 - <a id="music.current_track" name="music.current_track"></a>**`trx.music.current_track`** ([trx.music.Track](#music.Track)). The track playing now, or `nil` when nothing plays. *(read-only)*
 - <a id="music.looped_track" name="music.looped_track"></a>**`trx.music.looped_track`** ([trx.music.Track](#music.Track)). The ambient track that resumes once the current one-shot finishes, or `nil` when none is set. *(read-only)*
 

@@ -61,6 +61,34 @@
       }
     },
     {
+      "countable": true,
+      "description": "The soundtrack's streams: `[1]` is the main stream, `[2]` onwards the overlay slots. A slot that is not playing still answers, with a stale handle.",
+      "key": {
+        "base": 1,
+        "description": "Which slot.",
+        "type": "integer"
+      },
+      "member": "streams",
+      "module": "music",
+      "value": {
+        "nullable": true,
+        "type": "music.Stream"
+      }
+    },
+    {
+      "countable": true,
+      "description": "The tracks the current level carries. A level does not carry every number, so indexing one it lacks is `nil` and iterating passes it by.",
+      "key": {
+        "type": "music.TrackNum"
+      },
+      "member": "tracks",
+      "module": "music",
+      "value": {
+        "nullable": true,
+        "type": "music.Track"
+      }
+    },
+    {
       "countable": false,
       "description": "Indexing the module reaches an object definition, so `trx.objects.wolf` is the wolf. Keyed by object id or catalog name, not by position.",
       "examples": [
@@ -92,6 +120,34 @@
       "value": {
         "nullable": true,
         "type": "rooms.Room"
+      }
+    },
+    {
+      "countable": true,
+      "description": "The samples the current level carries. A level does not carry every number, so indexing one it lacks is `nil` and iterating passes it by.",
+      "key": {
+        "type": "sound.SampleNum"
+      },
+      "member": "samples",
+      "module": "sound",
+      "value": {
+        "nullable": true,
+        "type": "sound.Sample"
+      }
+    },
+    {
+      "countable": true,
+      "description": "The sound effects playing now. A slot that is silent still answers, with a stale handle.",
+      "key": {
+        "base": 1,
+        "description": "Which voice.",
+        "type": "integer"
+      },
+      "member": "streams",
+      "module": "sound",
+      "value": {
+        "nullable": true,
+        "type": "sound.Stream"
       }
     }
   ],
@@ -5572,18 +5628,6 @@
       "writable": false
     },
     {
-      "description": "The soundtrack's streams as `trx.music.Stream` handles: `[1]` is the main stream, `[2]` onwards the overlay slots. A slot that is not playing still answers, with a stale handle. Indexing and iterating reach one handle at a time.",
-      "path": "music.streams",
-      "type": "table",
-      "writable": false
-    },
-    {
-      "description": "The tracks the current level carries, as `trx.music.Track` handles keyed by id: `trx.music.tracks[5]` is track 5, or `nil` if the level has no such track. `#` counts them, iterating walks them, and both reach one handle at a time.",
-      "path": "music.tracks",
-      "type": "table",
-      "writable": false
-    },
-    {
       "description": "The track playing now, or `nil` when nothing plays.",
       "path": "music.current_track",
       "type": "music.Track",
@@ -5648,18 +5692,6 @@
       "path": "rules.corpse.fade_speed",
       "type": "integer",
       "writable": true
-    },
-    {
-      "description": "The samples the current level carries, as `trx.sound.Sample` handles keyed by id: `trx.sound.samples[99]` is sample 99, or `nil` if the level has no such sample. `#` counts them, iterating walks them, and both reach one handle at a time.",
-      "path": "sound.samples",
-      "type": "table",
-      "writable": false
-    },
-    {
-      "description": "The sound effects playing now, as `trx.sound.Stream` handles. A slot that is silent still answers, with a stale handle. Indexing and iterating reach one handle at a time.",
-      "path": "sound.streams",
-      "type": "table",
-      "writable": false
     },
     {
       "description": "The active weather.",

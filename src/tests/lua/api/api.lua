@@ -1360,8 +1360,6 @@ test("a container walks from the index it counts from", function()
   assert(walked(trx.listed) == "1,2", walked(trx.listed))
 end)
 
--- Where a collection counts from is the key's to say, so a container that says
--- it itself is a declaration left behind by the move.
 -- A sparse collection runs its keys further than it has entries: the samples a
 -- level carries are a hundred spread over twice as many numbers.
 test("a sparse container walks its keys and skips the gaps", function()
@@ -1394,6 +1392,138 @@ test("a sparse container walks its keys and skips the gaps", function()
   )
 end)
 
+-- A module may hand out a collection under a name of its own as well as being
+-- indexed itself, and the table that collection sits on is the registry's in
+-- the same way a module's is.
+test("a collection a module hands out is indexed on its own table", function()
+  local api = fresh_env()
+  api.module("things", { description = "..." })
+  local held = { [1] = "a", [2] = "b" }
+  local samples = api.container("things.samples", {
+    description = "Indexing.",
+    key = { type = "integer", description = "A key." },
+    value = { type = "string" },
+    get = function(i)
+      return held[i]
+    end,
+    count = function()
+      return 2
+    end,
+  })
+
+  assert(samples == trx.things.samples, "the table it is indexed on")
+  assert(trx.things.samples[2] == "b")
+  assert(#trx.things.samples == 2)
+
+  -- The collection and anything else declared on it answer off one entry, so
+  -- the property does not arrive with a metatable of its own and take the
+  -- indexing with it.
+  api.property("things.samples.total", {
+    type = "integer",
+    description = "...",
+    get = function()
+      return 2
+    end,
+  })
+  assert(trx.things.samples.total == 2, "the property must answer")
+  assert(trx.things.samples[1] == "a", "and the indexing must survive it")
+end)
+
+-- A namespace declares the table it stands for, and would put it where the
+-- collection is read through. Nothing about the surface afterwards says the
+-- indexing went: it reads as nil, and the audit sees only what a table holds.
+test(
+  "a namespace cannot replace the table a collection is read through",
+  function()
+    local api = fresh_env()
+    api.module("things", { description = "..." })
+    api.container("things.samples", {
+      description = "Indexing.",
+      key = { type = "integer", description = "A key." },
+      value = { type = "string" },
+      get = function()
+        return "a"
+      end,
+    })
+
+    local ok, err =
+      pcall(api.namespace, "things.samples", { description = "Samples." })
+    assert(not ok, "the collection already stands there")
+    assert(
+      tostring(err):find("already stands for a table", 1, true),
+      "the message must say what stands there: " .. tostring(err)
+    )
+    assert(trx.things.samples[1] == "a", "the indexing must survive it")
+  end
+)
+
+-- The table a collection is read through holds whatever was declared inside it,
+-- the way a namespace's does, so the audit has to read it as well.
+test("seal audits the table a collection is read through", function()
+  local api = fresh_env()
+  api.module("things", { description = "..." })
+  api.container("things.samples", {
+    description = "Indexing.",
+    key = { type = "integer", description = "A key." },
+    value = { type = "string" },
+    get = function() end,
+  })
+  rawset(trx.things.samples, "sneaky", function() end)
+
+  local ok, err = pcall(api.seal)
+  assert(not ok, "an undeclared member on the collection must fail the seal")
+  assert(
+    tostring(err):find("trx.things.samples.sneaky", 1, true),
+    "the audit must name it: " .. tostring(err)
+  )
+end)
+
+test("a collection is declared as a module or a member of one", function()
+  local api = fresh_env()
+  api.module("things", { description = "..." })
+  local ok, err = pcall(api.container, "things.a.b", {
+    description = "Indexing.",
+    key = { type = "integer", description = "A key." },
+    value = { type = "string" },
+    get = function() end,
+  })
+  assert(not ok, "three segments deep")
+  -- The path the message names is the one that was written, not one with a
+  -- segment added to borrow another declaration's parser.
+  assert(
+    tostring(err):find("got: things.a.b", 1, true),
+    "the message must name the path as written: " .. tostring(err)
+  )
+end)
+
+-- Several collections on one module tie on the module they sit under, and the
+-- dump is committed and diffed, so the member has to settle the order.
+test("the containers of a module come out in a fixed order", function()
+  local api = fresh_env()
+  local function collection(path)
+    api.container(path, {
+      description = "Indexing.",
+      key = { type = "integer", description = "A key." },
+      value = { type = "string" },
+      get = function() end,
+    })
+  end
+  api.module("things", { description = "..." })
+  api.module("others", { description = "..." })
+  collection("things.tracks")
+  collection("others")
+  collection("things.samples")
+
+  local seen = {}
+  for _, one in ipairs(api.describe().containers) do
+    seen[#seen + 1] = one.module .. (one.member and "." .. one.member or "")
+  end
+  assert(
+    table.concat(seen, ",") == "others,things.samples,things.tracks",
+    "the order must not follow the declarations: " .. table.concat(seen, ",")
+  )
+end)
+
 test("a limit needs a count beside it", function()
   local api = fresh_env()
   api.module("things", { description = "..." })
@@ -1408,6 +1538,8 @@ test("a limit needs a count beside it", function()
   }))
 end)
 
+-- Where a collection counts from is the key's to say, so a container that says
+-- it itself is a declaration left behind by the move.
 test("a container cannot say where it counts from", function()
   local api = fresh_env()
   api.module("things", {})

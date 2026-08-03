@@ -168,6 +168,17 @@ def keys_of(spec: dict, path: str) -> set[str]:
     return out
 
 
+def container_path(container: dict) -> str:
+    """What a container is written as.
+
+    A module is indexed on itself; a collection a module hands out has a name
+    of its own, and `trx.sound.samples` is what a script writes.
+    """
+    if container.get("member"):
+        return f"{container['module']}.{container['member']}"
+    return container["module"]
+
+
 def anchors_of(api: dict) -> set[str]:
     """Every path a declaration can be pointed at by.
 
@@ -177,6 +188,7 @@ def anchors_of(api: dict) -> set[str]:
     too, since a script writes `trx.lara.air` and not the type's own path.
     """
     out = {module["name"] for module in api["modules"]}
+    out.update(container_path(c) for c in api.get("containers", []))
     for group in ("numbers", "units", "enums", "functions", "properties", "namespaces", "constants"):
         out.update(entry["path"] for entry in api.get(group, []))
     for group in ("functions", "namespaces"):
@@ -720,7 +732,7 @@ def render_container(name: str, spec: dict) -> list[str]:
     at(name)
     key, value = spec["key"], spec["value"]
     nullable = " or `nil`" if value.get("nullable") else ""
-    out = ["### Indexing", ""]
+    out = []
     if spec.get("description"):
         out.extend(render_prose(spec["description"], ""))
         out.append("")
@@ -801,11 +813,12 @@ def render_page(module: dict, api: dict) -> str:
     ]
     units = [u for u in api.get("units", []) if u["path"].startswith(f"{name}.")]
 
-    container = next(
-        (c for c in api.get("containers", []) if c["module"] == name), None
-    )
-    if container:
-        out.extend(render_container(name, container))
+    mine = [c for c in api.get("containers", []) if c["module"] == name]
+    if mine:
+        out.append("### Indexing")
+        out.append("")
+        for container in mine:
+            out.extend(render_container(container_path(container), container))
 
     # A group raised by a property declaration has nothing to say that its
     # members do not: the properties carry the full dotted path already.
@@ -904,7 +917,7 @@ def read(api: dict) -> None:
         if isinstance(accepted, list):
             accepted = next((one for one in accepted if one in ENUM_PATHS), None)
         if accepted:
-            KEYED_BY[container["module"]] = accepted
+            KEYED_BY[container_path(container)] = accepted
     for enum in api.get("enums", []):
         ENUM_PATHS.add(enum["path"])
         CONSTANTS[enum["path"]] = {
@@ -946,7 +959,7 @@ def undocumented(api: dict) -> list[str]:
             out.append(space["path"])
     for container in api.get("containers", []):
         if not container.get("description"):
-            out.append(f"{container['module']}[]")
+            out.append(f"{container_path(container)}[]")
     for enum in api.get("enums", []):
         for value in enum.get("values") or []:
             if not value.get("description"):
@@ -1081,10 +1094,10 @@ def descriptions(api: dict) -> list[tuple[str, str]]:
     for spec in api.get("types", []):
         walk(spec, spec["path"])
     for container in api.get("containers", []):
-        walk(container, container["module"])
+        walk(container, container_path(container))
         for side in ("key", "value"):
             if container.get(side):
-                walk(container[side], container["module"])
+                walk(container[side], container_path(container))
     return out
 
 
@@ -1214,7 +1227,7 @@ def walk(api: dict) -> list[tuple[str, dict]]:
     for container in api.get("containers", []):
         for side in ("key", "value"):
             if container.get(side):
-                rec(container[side], f"{container['module']}[{side}]")
+                rec(container[side], f"{container_path(container)}[{side}]")
     return out
 
 

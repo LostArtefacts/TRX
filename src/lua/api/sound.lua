@@ -122,74 +122,25 @@ api.type("sound.Stream", {
   },
 })
 
--- One lazy view apiece: indexing and iterating reach into C a handle at a time,
--- so neither builds a list up front.
-local samples = setmetatable({}, {
-  __index = function(_, id)
-    if type(id) ~= "number" then
-      return nil
-    end
-    return raw.sample_get(id)
-  end,
-  __len = function()
-    return raw.sample_available_count()
-  end,
-  __pairs = function()
-    local limit = raw.sample_limit()
-    local id = -1
-    return function()
-      id = id + 1
-      while id < limit do
-        local sample = raw.sample_get(id)
-        if sample ~= nil then
-          return id, sample
-        end
-        id = id + 1
-      end
-    end
-  end,
+local samples = api.container("sound.samples", {
+  description = "The samples the current level carries. A level does not carry every number, "
+    .. "so indexing one it lacks is `nil` and iterating passes it by.",
+  key = { type = "sound.SampleNum" },
+  value = { type = "sound.Sample", nullable = true },
+  get = raw.sample_get,
+  count = raw.sample_available_count,
+  limit = raw.sample_limit,
 })
 
-local streams = setmetatable({}, {
-  __index = function(_, n)
-    if type(n) ~= "number" then
-      return nil
-    end
+api.container("sound.streams", {
+  description = "The sound effects playing now. A slot that is silent still answers, with a "
+    .. "stale handle.",
+  key = { type = "integer", base = 1, description = "Which voice." },
+  value = { type = "sound.Stream", nullable = true },
+  get = function(n)
     return raw.stream_get(n - 1)
   end,
-  __len = function()
-    return raw.stream_count()
-  end,
-  __pairs = function()
-    local count = raw.stream_count()
-    local i = 0
-    return function()
-      i = i + 1
-      if i <= count then
-        return i, raw.stream_get(i - 1)
-      end
-    end
-  end,
-})
-
-api.property("sound.samples", {
-  type = "table",
-  description = "The samples the current level carries, as `trx.sound.Sample` handles keyed by id: "
-    .. "`trx.sound.samples[99]` is sample 99, or `nil` if the level has no such sample. `#` counts "
-    .. "them, iterating walks them, and both reach one handle at a time.",
-  get = function()
-    return samples
-  end,
-})
-
-api.property("sound.streams", {
-  type = "table",
-  description = "The sound effects playing now, as `trx.sound.Stream` handles. A slot that is "
-    .. "silent still answers, with a stale handle. Indexing and iterating reach one handle at a "
-    .. "time.",
-  get = function()
-    return streams
-  end,
+  count = raw.stream_count,
 })
 
 api.define("sound.play", {

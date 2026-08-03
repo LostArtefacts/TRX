@@ -121,12 +121,21 @@ local function by_module(field)
   end
 end
 
--- A module and its container carry no path to group on, one of each being all
--- there is per module, so they read alphabetically.
-local function alphabetically(field)
+-- A module and a container carry no path to group on, so they read
+-- alphabetically. A module may hand out several collections, so the member
+-- settles the order between them and the dump cannot move when a declaration
+-- somewhere else is added.
+local function alphabetically(...)
+  local fields = { ... }
   return function(list)
     table.sort(list, function(a, b)
-      return a[field] < b[field]
+      for _, field in ipairs(fields) do
+        local x, y = a[field] or "", b[field] or ""
+        if x ~= y then
+          return x < y
+        end
+      end
+      return false
     end)
   end
 end
@@ -701,12 +710,16 @@ api.namespace = declarator("namespace", "namespaces", {
   declare = function(entry, path, spec, need)
     local where = placed(path, need)
     entry.where = where
-    -- The table below stands for the namespace from here on, and replaces
-    -- whatever stands at its path. A property declared inside one is served by
-    -- the metatable on that table, so it would go on reading as nil - which
-    -- seal() cannot see, since it audits the members a table holds and a
-    -- property is never one of them. Declaring the group first is what the
-    -- message above asks for.
+    -- The table below stands for the namespace from here on, and would replace
+    -- whatever stands at its path: the table a collection is read through, or
+    -- the one a group of properties hangs off. Either goes on reading as nil,
+    -- which seal() cannot see - it audits the members a table holds, and
+    -- neither indexing nor a property is ever one of them.
+    need(
+      entry.table == nil,
+      "%s already stands for a table - a collection, or a group of properties.",
+      path
+    )
     local namespace = {}
     entry.table = namespace
     if spec.call ~= nil then
@@ -750,7 +763,7 @@ api.container = declarator("container", "containers", {
   path = function(name)
     return name .. "[]"
   end,
-  sort = alphabetically("module"),
+  sort = alphabetically("module", "member"),
   declare = function(entry, name, spec, need)
     need(type(spec.get) == "function", "get must be a function")
     need(
@@ -788,7 +801,6 @@ api.container = declarator("container", "containers", {
     -- what the page anchors - so being indexable is a declaration like any
     -- other, and the module it sits on points at it.
     local container = entry
-    container.module = name
     container.get = spec.get
     container.count = spec.count
     container.limit = spec.limit
@@ -797,16 +809,39 @@ api.container = declarator("container", "containers", {
       return kind == "number" or (kind == "string" and not by_number_only)
     end
 
-    local module = open(name)
-    module.table = module_table(name)
-    module.container = container
+    -- A collection is declared as the module that is indexed, or as the member
+    -- of it the collection is read through: one segment or two, where every
+    -- other declaration names a member and so has one more.
+    local parts = segments(name)
+    need(
+      #parts == 1 or #parts == 2,
+      "a collection is declared as 'module' or 'module.member', got: %s",
+      name
+    )
+    container.module = parts[1]
+    container.member = parts[2]
 
-    install_meta(module)
+    -- The table the collection is indexed on: the module's own where the module
+    -- is indexed, and a member of it where the module hands a collection out.
+    -- Either way the entry at that path owns the table and its metatable, as it
+    -- does for the properties declared on one, so a later declaration there
+    -- finds the indexing rather than replacing it.
+    local owner = open(name)
+    if container.member == nil then
+      owner.table = module_table(name)
+    else
+      owner.table = owner.table or {}
+      rawset(module_table(container.module), container.member, owner.table)
+    end
+    owner.container = container
+    install_meta(owner)
+    return owner.table
   end,
 
   describe = function(entry)
     return {
       module = entry.module,
+      member = entry.member,
       description = entry.spec.description,
       key = as_doc(entry.spec.key),
       value = as_doc(entry.spec.value),
@@ -1427,6 +1462,10 @@ local function audit_reachable()
       local owner = entry.where.owner
       declared[owner] = declared[owner] or {}
       declared[owner][entry.where.name] = true
+    elseif made_by(entry, api.container) and entry.member ~= nil then
+      -- The table a collection is read through is a member of its module.
+      declared[entry.module] = declared[entry.module] or {}
+      declared[entry.module][entry.member] = true
     end
   end
 
@@ -1444,12 +1483,20 @@ local function audit_reachable()
   -- A module is read live rather than off its entry: sealing has just replaced
   -- trx.api with what survives it, and the audit is of the surface a script is
   -- left with. A namespace hides its members one level down, where a module's
-  -- own audit cannot see them, so each is audited as the table it is.
+  -- own audit cannot see them, so each is audited as the table it is. So is the
+  -- table a collection is read through, which is a member of its module and
+  -- holds whatever was declared inside it.
   for _, entry in ipairs(each(api.module)) do
     audit(entry.path, trx[entry.path])
   end
   for _, entry in ipairs(each(api.namespace)) do
     audit(entry.path, entry.table)
+  end
+  for _, entry in ipairs(each(api.container)) do
+    if entry.member ~= nil then
+      local owner = at(entry.module .. "." .. entry.member)
+      audit(owner.path, owner.table)
+    end
   end
 
   if #undeclared > 0 then
