@@ -177,7 +177,7 @@ Her position, room and hit points are not here: she is an item like any other an
 ### Functions
 
 - <a id="lara.set_extra_equipment" name="lara.set_extra_equipment"></a>[lua]`trx.lara.set_extra_equipment(mesh, extra_mesh)`  
-  Hangs an extra mesh on one of Lara's own, replacing whatever is there.
+  Hangs an extra mesh on one of Lara's own, replacing the mesh there.
 
   Parameters:
   - <a id="lara.set_extra_equipment.mesh" name="lara.set_extra_equipment.mesh"></a>**`mesh`** ([trx.lara.Mesh](#lara.Mesh)). Which of Lara's meshes.

@@ -1584,7 +1584,7 @@ test(
   end
 )
 
--- The table a collection is read through holds whatever was declared inside it,
+-- The table a collection is read through holds what was declared inside it,
 -- the way a namespace's does, so the audit has to read it as well.
 test("seal audits the table a collection is read through", function()
   local api = fresh_env()

@@ -40,7 +40,7 @@ test("a count below one is refused, and neither gives nor takes", function()
   assert(trx.inventory:count(KEY) == 0)
 end)
 
--- Inv_AddItem reaches the object table with whatever it is handed, so the
+-- Inv_AddItem reaches the object table with what it is handed, so the
 -- bridge turns an id the engine does not know into a raise of its own.
 test("an object the engine does not know is refused", function()
   for _, name in ipairs({ "give", "take", "count", "icon_of", "can_add" }) do
@@ -65,7 +65,7 @@ test("a weapon knows its pickup", function()
   assert(trx.weapons.object(UZIS) ~= nil)
 end)
 
-test("ammunition is counted in shots, whatever a shot costs", function()
+test("ammunition is counted in shots, however much a shot costs", function()
   local SHOTGUN = trx.catalog.weapons.SHOTGUN
 
   assert(trx.inventory:shots(UZIS) == 0)
@@ -128,7 +128,7 @@ test("the module counts and walks what she carries", function()
   assert(#trx.inventory == 0, "she starts with nothing")
 
   trx.inventory:give(KEY, 2)
-  assert(#trx.inventory == 1, "one kind of thing, whatever the count")
+  assert(#trx.inventory == 1, "one kind of thing, not one entry per key")
 
   local entry = trx.inventory[1]
   assert(entry.object == KEY)

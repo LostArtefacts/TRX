@@ -5,7 +5,7 @@
 --   /give 5 flare    five of them
 --   /give keys       every plot item the level has a place for
 --   /give guns       every weapon the level allows, with ammunition
---   /give moreguns   every weapon, whatever the level allows
+--   /give moreguns   every weapon, even one the level does not carry
 --   /give all        one of everything, with the counts a cheat gives
 --
 -- /keys, /guns and /moreguns reach the last three on their own.
@@ -31,8 +31,8 @@ local KEYWORDS = { "all", "keys", "guns", "moreguns" }
 
 -- Every weapon a cheat hands over, in the order it hands them over, and how
 -- much ammunition each comes with. A new game plus run tops every one of them
--- up instead. The pistols are not here: they come whatever the level says, and
--- never run down.
+-- up instead. The pistols are not here: they come regardless of what the level
+-- says, and never run down.
 local NGPLUS_AMMO = 10001
 local ARSENAL = {
   { trx.catalog.weapons.SHOTGUN, 300 },

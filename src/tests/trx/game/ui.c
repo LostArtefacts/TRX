@@ -122,7 +122,7 @@ static void M_CheckNode(
     }
 
     // Nothing in this UI clips, so text wider than the box it was given spills
-    // over whatever is beside it - the frame it sits in, or the row below.
+    // over what is beside it - the frame it sits in, or the row below.
     const float outside_box = node->measure_w - node->w;
     if (outside_box > *worst_box) {
         *worst_box = outside_box;

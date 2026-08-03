@@ -160,7 +160,7 @@ local Object = api.type("objects.Object", {
       returns = {
         type = "any",
         nullable = true,
-        description = "The value, of whatever type the property is declared with.",
+        description = "The value, of the type the property is declared with.",
       },
       description = "Reads one of the object's properties. Prefer `object.properties.<name>`.",
     },

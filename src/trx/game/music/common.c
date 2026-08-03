@@ -737,7 +737,7 @@ MUSIC_TRACK_STATE *Music_GetTrackState(const MUSIC_ID track_id)
 
 void Music_Trigger(MUSIC_ID track_id, const MUSIC_TRIGGER *const trigger)
 {
-    // An antitrigger aimed at track 0 silences whatever plays.
+    // An antitrigger aimed at track 0 silences the track that is playing.
     if (track_id == (MUSIC_ID)0 && trigger->kind == MUSIC_TRIGGER_ANTI) {
         Music_Stop();
         return;

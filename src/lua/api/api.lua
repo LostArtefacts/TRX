@@ -238,7 +238,7 @@ local function as_doc(spec)
 end
 
 -- A type's members are declared in a table keyed by name, which pairs() walks
--- in whatever order it likes, so each kind of member comes out sorted by name.
+-- in any order, so each kind of member comes out sorted by name.
 local function members(declared, read)
   local list = {}
   for name, member in pairs(declared or {}) do
@@ -272,7 +272,7 @@ end
 -- lines keep the rest of theirs, since a description may lay something out.
 --
 -- A description may instead open on the line its brackets are on, and that line
--- then carries no indentation whatever the ones under it carry. Left in, it
+-- then carries no indentation, however the ones under it are written. Left in, it
 -- makes the shared indent zero and the rest of the description keeps its own,
 -- which is what four of them were written flush against the margin to avoid.
 local function dedent(text)
@@ -750,7 +750,7 @@ api.namespace = declarator("namespace", "namespaces", {
     local where = placed(path, need)
     entry.where = where
     -- The table below stands for the namespace from here on, and would replace
-    -- whatever stands at its path: the table a collection is read through, or
+    -- what stands at its path: the table a collection is read through, or
     -- the one a group of properties hangs off. Either goes on reading as nil,
     -- which seal() cannot see - it audits the members a table holds, and
     -- neither indexing nor a property is ever one of them.
@@ -1571,7 +1571,7 @@ local function audit_reachable()
   -- left with. A namespace hides its members one level down, where a module's
   -- own audit cannot see them, so each is audited as the table it is. So is the
   -- table a collection is read through, which is a member of its module and
-  -- holds whatever was declared inside it.
+  -- holds what was declared inside it.
   for _, entry in ipairs(each(api.module)) do
     audit(entry.path, trx[entry.path])
   end
@@ -1823,7 +1823,7 @@ local function encode(value, out)
   return out
 end
 
--- The complete public API surface. One registry, one source: whatever is not
+-- The complete public API surface. One registry, one source: what is not
 -- declared here is not reachable from a script, so the dump cannot omit
 -- anything that exists.
 function api.to_json()

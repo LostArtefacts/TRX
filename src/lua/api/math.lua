@@ -51,7 +51,7 @@ api.type("math.Rot", {
 
 api.type("math.Box", {
   description = "An axis-aligned box. Whether it is placed in the world or in something's own "
-    .. "frame is for whatever hands it over to say.",
+    .. "frame is for the call that hands it over to say.",
   fields = {
     min_x = { type = "math.Distance", description = "West edge." },
     min_y = { type = "math.Distance", description = "Top edge." },

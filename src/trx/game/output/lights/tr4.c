@@ -909,7 +909,7 @@ static void M_CreateFogPos(M_FOG_BULB *const bulb)
 }
 
 // Port of the OG ControlFXBulb (polyinsert.cpp:379), sans the smoke spawns
-// (those are the responsibility of whatever triggered the bulb).
+// (those are the responsibility of what triggered the bulb).
 static void M_ControlFXBulb(M_FOG_BULB *const bulb)
 {
     if (bulb->timer > 0) {

@@ -24,7 +24,7 @@ typedef union {
 void ConfigValue_Copy(
     const CONFIG_OPTION *option, CONFIG_VALUE *dst, const void *src);
 
-// Releases whatever the value owns. Only string-typed values own anything.
+// Releases what the value owns. Only string-typed values own anything.
 void ConfigValue_Free(const CONFIG_OPTION *option, CONFIG_VALUE *value);
 
 // The value as a raw pointer of the option's own type, which is what the rest

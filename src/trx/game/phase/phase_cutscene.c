@@ -42,7 +42,7 @@ static PHASE_CONTROL M_Start(PHASE *const phase)
     }
     Game_SetIsPlaying(true);
     Lara_SetControllable(false);
-    // The same event a played level fires: whatever the level is, this is the
+    // The same event a played level fires: for any level, this is the
     // moment it starts running.
     // A cutscene level is never resumed from a save.
     LUA_FireEventBool(LUA_EVENT_GAME_START, false);

@@ -29,7 +29,7 @@ void Input_Shutdown(void);
 void Input_Update(void);
 
 // Reconciles the connected devices with the current configuration: enabled
-// backends acquire whatever hardware is present, disabled ones release it.
+// backends acquire the hardware that is present, disabled ones release it.
 void Input_Discover(void);
 void Input_Reset(void);
 

@@ -62,7 +62,7 @@ Fixed-point trigonometry, matching the engine's own tables. Using these rather t
 
 - <a id="math.Box" name="math.Box"></a>[lua]`trx.math.Box`
 
-    An axis-aligned box. Whether it is placed in the world or in something's own frame is for whatever hands it over to say.
+    An axis-aligned box. Whether it is placed in the world or in something's own frame is for the call that hands it over to say.
 
     Properties:
     - <a id="math.Box.max_x" name="math.Box.max_x"></a>**`max_x`**: [trx.math.Distance](#math.Distance). East edge.

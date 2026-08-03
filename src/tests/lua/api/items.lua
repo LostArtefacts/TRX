@@ -516,7 +516,7 @@ test(
   end
 )
 
--- An index alone would rebind to whatever item recycled the slot; the
+-- An index alone would rebind to the item that recycled the slot; the
 -- generation counter is what makes the handle go stale instead.
 test("a handle to a destroyed item goes stale", function()
   local it = trx.items[0]
@@ -526,7 +526,7 @@ test("a handle to a destroyed item goes stale", function()
   assert(not it:is_valid(), "the handle should be stale after destroy()")
   assert(fake.calls().destroy.count == 1)
 
-  -- Reading a stale handle raises rather than addressing whatever took over.
+  -- Reading a stale handle raises rather than addressing the item that took over.
   raises(function()
     return it.hit_points
   end, "stale")
@@ -552,7 +552,7 @@ test("two handles to the same item are equal", function()
   assert(it ~= fresh, "a stale handle must not equal a live one")
 end)
 
--- pairs() hands the iterator to the script, so it is reachable with whatever
+-- pairs() hands the iterator to the script, so it is reachable with any
 -- the script cares to pass it.
 test("the field iterator refuses a value that is not an item", function()
   local it = trx.items[0]
@@ -757,7 +757,7 @@ test("strict mode checks a method's arguments", function()
 end)
 
 -- The handle is the method's first argument, and a dot where a colon was meant
--- passes whatever came first instead.
+-- passes the one that came first instead.
 test("strict mode catches a method called with a dot", function()
   local it = trx.items[0]
   trx.api.strict(true)

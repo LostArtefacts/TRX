@@ -410,7 +410,7 @@ static size_t M_WordWrap(
             }
 
             // Compute width (sum widths + spacing). The spacing after the last
-            // glyph counts too: whatever follows the word is a space, which
+            // glyph counts too: what follows the word is a space, which
             // M_Process draws after that spacing.
             float word_width = 0.0f;
             for (size_t j = i; j < i + word_len; j++) {

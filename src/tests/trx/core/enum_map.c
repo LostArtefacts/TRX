@@ -49,7 +49,7 @@ TEST(get_name_reports_the_c_identifier)
 }
 
 // This is what trxc.enum.values() reflects. Every constant must come back,
-// whatever its numeric value - M_WIDGET_BROKEN is 7, not 2, so nothing here may
+// however it is numbered - M_WIDGET_BROKEN is 7, not 2, so nothing here may
 // assume the values are contiguous.
 TEST(list_values_returns_every_constant)
 {

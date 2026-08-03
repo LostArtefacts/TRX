@@ -1,6 +1,6 @@
 // The game string table, reduced to what a surface test needs: the fixtures
 // below - one plain, one with a placeholder, one with two, and one a translator
-// wrote a bare percent sign into - plus whatever the scripts under test declare
+// wrote a bare percent sign into - plus the keys the scripts under test declare
 // through trx.locale.declare(). The real one starts from
 // game_strings/entries.def and has cfg/base_strings.json5 and its translations
 // layered over it.

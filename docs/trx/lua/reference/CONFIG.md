@@ -116,7 +116,7 @@ These are the player's settings, not the level's. [`trx.config.set`](#config.set
   ```
 
 - <a id="config.restore" name="config.restore"></a>[lua]`trx.config.restore(key)`  
-  Lifts one override off a setting, putting back whatever was underneath it.
+  Lifts one override off a setting, putting back the value underneath it.
 
   Parameters:
   - <a id="config.restore.key" name="config.restore.key"></a>**`key`** (string). Dotted path.

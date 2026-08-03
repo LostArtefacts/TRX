@@ -10,7 +10,7 @@
 //
 // Overrides are runtime-only: they never reach the settings file.
 
-// Applies `value` to the option, remembering whatever is currently there.
+// Applies `value` to the option, remembering the value currently there.
 bool ConfigOverride_Push(const CONFIG_OPTION *option, const void *value);
 
 // Applies a value parsed from a string. Fails on an option the game flow

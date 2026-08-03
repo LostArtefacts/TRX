@@ -74,7 +74,7 @@ bool Sound_GetActiveSlot(int32_t slot, SAMPLE_ID *out_sample_id);
 
 // A handle to the voice currently in the slot, and the sample a handle still
 // names or false. Each play hands the slot to a new voice; the generation is
-// what keeps a handle from addressing whatever later took its slot.
+// what keeps a handle from addressing the voice that later took its slot.
 TRX_HANDLE Sound_GetActiveSlotHandle(int32_t slot);
 bool Sound_ResolveActiveSlot(TRX_HANDLE handle, SAMPLE_ID *out_sample_id);
 

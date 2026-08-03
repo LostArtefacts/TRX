@@ -21,7 +21,7 @@ typedef struct {
 } COMPLETION;
 
 // A completion source: `fn` fills `out` for the token under the caret in
-// `line`, with an absolute [start, end) span; `ctx` carries whatever the source
+// `line`, with an absolute [start, end) span; `ctx` carries what the source
 // needs to resolve it, or nullptr. A zeroed COMPLETER (fn == nullptr) completes
 // nothing.
 typedef struct {

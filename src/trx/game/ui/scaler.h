@@ -14,7 +14,7 @@ float UI_Scaler_Calc(float unit, UI_SCALER_TARGET target);
 float UI_Scaler_CalcInverse(float unit, UI_SCALER_TARGET target);
 
 // The size everything text-shaped is drawn at: the player's text scale, times
-// whatever fit factor is currently pushed. Widgets size themselves from this
+// the fit factor currently pushed. Widgets size themselves from this
 // rather than from the config, so a subtree can be scaled as a whole.
 float UI_Scaler_GetTextScale(void);
 

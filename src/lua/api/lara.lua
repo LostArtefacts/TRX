@@ -260,7 +260,7 @@ api.property("lara.has_pistol_weapon", {
 })
 
 api.define("lara.set_extra_equipment", {
-  description = "Hangs an extra mesh on one of Lara's own, replacing whatever is there.",
+  description = "Hangs an extra mesh on one of Lara's own, replacing the mesh there.",
   params = {
     {
       name = "mesh",

@@ -348,8 +348,8 @@ void Lara_Skin_Initialise(void)
     }
 
     // A level need not carry the swap objects: a title that never shows her
-    // has no use for them. No outfit is applied then, and she keeps whatever
-    // meshes the level loaded for her. A level that does hold her and not them
+    // has no use for them. No outfit is applied then, and she keeps the meshes
+    // the level loaded for her. A level that does hold her and not them
     // used to fail an assertion here, and is still an incomplete install.
     if (!M_CanDress()) {
         if (GF_GetCurrentLevel() != nullptr && Object_Get(O_LARA)->loaded) {

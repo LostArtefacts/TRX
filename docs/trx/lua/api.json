@@ -3084,7 +3084,7 @@
       "path": "config.override"
     },
     {
-      "description": "Lifts one override off a setting, putting back whatever was underneath it.",
+      "description": "Lifts one override off a setting, putting back the value underneath it.",
       "params": [
         {
           "description": "Dotted path.",
@@ -3894,7 +3894,7 @@
       }
     },
     {
-      "description": "Happens when a cutscene trigger fires, before the engine acts on it. A\nhandler answers the trigger by returning true - having played a cutscene of\nits own, run something else, or decided nothing should run. If no handler\nanswers, the engine plays the cutscene the trigger names.\n\nA trigger Lara stands on fires every frame, so this happens only for a\ncutscene that has not run yet and while none is playing. Asking counts as\nrunning it, whatever came of it, so the same handler is not asked again on\nthe next frame. Clear the mark with `trx.cutscenes.set_played` to hear\nabout one again.\n\nThe number a trigger names need not be one the game has a cutscene for -\nTR4 uses 32 to ask for a full-motion video. Those reach a handler too, and\nthe engine has nothing of its own to do about them.",
+      "description": "Happens when a cutscene trigger fires, before the engine acts on it. A\nhandler answers the trigger by returning true - having played a cutscene of\nits own, run something else, or decided nothing should run. If no handler\nanswers, the engine plays the cutscene the trigger names.\n\nA trigger Lara stands on fires every frame, so this happens only for a\ncutscene that has not run yet and while none is playing. Asking counts as\nrunning it, however it ended, so the same handler is not asked again on\nthe next frame. Clear the mark with `trx.cutscenes.set_played` to hear\nabout one again.\n\nThe number a trigger names need not be one the game has a cutscene for -\nTR4 uses 32 to ask for a full-motion video. Those reach a handler too, and\nthe engine has nothing of its own to do about them.",
       "examples": [
         "-- only in the throne room; a flyby stands in for it elsewhere\ntrx.events.on_cutscene_trigger(function(cutscene_num)\n  if cutscene_num ~= 27 then\n    return false\n  end\n  if trx.lara.item.room_num == 55 then\n    trx.cutscenes.play(27)\n  else\n    trx.camera.play_flyby(3)\n  end\n  return true\nend)"
       ],
@@ -4162,7 +4162,7 @@
       }
     },
     {
-      "description": "Hangs an extra mesh on one of Lara's own, replacing whatever is there.",
+      "description": "Hangs an extra mesh on one of Lara's own, replacing the mesh there.",
       "examples": [
         "trx.lara.set_extra_equipment(trx.lara.Mesh.HAND_R, trx.lara.ExtraMesh.OAR)"
       ],
@@ -6785,7 +6785,7 @@
             }
           ],
           "returns": {
-            "description": "The value, of whatever type the property is declared with.",
+            "description": "The value, of the type the property is declared with.",
             "nullable": true,
             "type": "any"
           }
@@ -7565,7 +7565,7 @@
       "path": "math.Rot"
     },
     {
-      "description": "An axis-aligned box. Whether it is placed in the world or in something's own frame is for whatever hands it over to say.",
+      "description": "An axis-aligned box. Whether it is placed in the world or in something's own frame is for the call that hands it over to say.",
       "extensions": [],
       "fields": [
         {
@@ -7882,7 +7882,7 @@
             }
           ],
           "returns": {
-            "description": "The value, of whatever type the property is declared with.",
+            "description": "The value, of the type the property is declared with.",
             "nullable": true,
             "type": "any"
           }

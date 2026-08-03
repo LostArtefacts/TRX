@@ -146,7 +146,7 @@ test("the arguments are trimmed", function()
   assert(seen == "spaced", "the handler was handed untrimmed arguments")
 end)
 
-test("a command answers to whatever case the player typed", function()
+test("a command answers to any case the player typed", function()
   local seen = nil
   trx.console.register({
     name = "shout",
