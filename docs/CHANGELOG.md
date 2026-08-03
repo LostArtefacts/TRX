@@ -30,6 +30,7 @@
 - changed the `/give` console command to autocomplete what it can hand over and to reach the savegame crystal by name; `/give keys` now covers the plot items alone, and `/keys`, `/guns` and `/moreguns` are commands of their own
 - changed the `/spawn`, `/kill` and `/tp` console commands to accept a family such as `pickup`, `door` or `enemy` in place of a name, and to offer the families each of them can act on in autocompletion
 - changed the `/tp` console command to place Lara better at whatever she is sent to
+- changed the developer console to accept the numpad Enter key for issuing commands (#6056)
 - changed the Breeze option to allow selecting TR2 or TR3 behavior (Graphic Options → Visuals → Breeze)
 - changed the save crystals option to a mode: crystals can save on the spot, be collected to save from the inventory as on PS1 TR3, heal, or be collectibles (Gameplay → General → Crystal mode) (#5939)
 - changed the Target change option to allow selecting TR4 behavior, where tapping Look switches target and holding it looks around (Gameplay → Controls → Target change)
