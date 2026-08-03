@@ -214,7 +214,8 @@ The Lua integration was rewritten and existing scripts will need updating; refer
 - added `trx.objects.swap_sprite()`, to exchange the sprites two objects are drawn from
 - added `trx.objects.query`, `trx.items.query` and `trx.rooms.query`, composable filters over a level's objects, items and rooms that match names, families, state and the rooms a position is in, and combine with `&`, `|` and `~`
 - added pickup families to `trx.objects.query` – `gun`, `ammo`, `supply`, `tool`, `key`, `puzzle`, `quest`, `examine`, `collectible` and `secret` – so a script can ask what a pickup is
-- added `trx.items.get()`, `trx.items.count()`, `trx.rooms.get()`, `trx.rooms.count()` and `trx.objects.get()`, replacing the `fn` namespaces- added `trx.rooms.find_valid_pos()`, to nudge a position into valid room geometry
+- added `trx.items.get()`, `trx.items.count()`, `trx.rooms.get()`, `trx.rooms.count()` and `trx.objects.get()`, replacing the `fn` namespaces
+- added `trx.rooms.find_valid_pos()`, to nudge a position into valid room geometry
 - added `trx.rooms.floor_height()` and the room method `floor_height()`, the height of the floor under a position
 - added item methods, `activate()`, `deactivate()`, `trigger()`, `destroy()`, `die()`, `shatter()`, `distance_to()`, `is_valid()`, `get_property()`, `set_property()` and `get_property_names()`, letting a script fire a trigger or antitrigger at an item exactly as a level would
 - added the writable Lua item field `is_one_shot`
