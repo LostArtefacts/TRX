@@ -250,7 +250,7 @@ The Lua integration was rewritten and existing scripts will need updating; refer
 - changed `trx.sound.play`, `trx.sound.stop` and `trx.music.play` to take a sound or track by catalog name, which works across games, rather than the level's own slot; the slot is reached through the `samples`/`tracks` handles, and `play` hands back the stream it starts
 - changed `trx.game.levels` and `trx.game.play_level` to leave out the gym, so numbering no longer shifts and the last level is reachable
 - changed `trx.api` to hold only `strict` and `is_strict` once sealed, and `trx.api.strict()` to check handle method arguments too
-- changed a position table to require all three coordinates, rather than reading a missing one as zero
+- changed a position table to require all three coordinates, rather than reading a missing one as zero; a position is documented as `trx.math.Vec3` and an orientation as `trx.math.Rot`
 - changed `room.idx` to `room.num`
 - changed the Lua level field `name` to `title`
 - changed `item.object_id` to be read-only

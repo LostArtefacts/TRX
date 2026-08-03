@@ -65,7 +65,7 @@ The sound effects playing now. A slot that is silent still answers, with a stale
       - <a id="sound.Sample.play.opts" name="sound.Sample.play.opts"></a>**`opts`** (table, optional). How to play it.
 
         Keys:
-        - <a id="sound.Sample.play.opts.pos" name="sound.Sample.play.opts.pos"></a>**`pos`** (vec3, optional). A world position to play from, which applies pan and volume. Omit to play at full volume.
+        - <a id="sound.Sample.play.opts.pos" name="sound.Sample.play.opts.pos"></a>**`pos`** ([trx.math.Vec3](MATH.md#math.Vec3), optional). A world position to play from, which applies pan and volume. Omit to play at full volume.
 
       Returns: [trx.sound.Stream](#sound.Stream) or `nil`. The voice it started, or `nil` if none did.
 
@@ -109,7 +109,7 @@ The sound effects playing now. A slot that is silent still answers, with a stale
   - <a id="sound.play.opts" name="sound.play.opts"></a>**`opts`** (table, optional). How to play it.
 
     Keys:
-    - <a id="sound.play.opts.pos" name="sound.play.opts.pos"></a>**`pos`** (vec3, optional). A world position to play from, which applies pan and volume. Omit to play at full volume.
+    - <a id="sound.play.opts.pos" name="sound.play.opts.pos"></a>**`pos`** ([trx.math.Vec3](MATH.md#math.Vec3), optional). A world position to play from, which applies pan and volume. Omit to play at full volume.
 
   Returns: [trx.sound.Stream](#sound.Stream) or `nil`. The voice it started, or `nil` if none did.
 

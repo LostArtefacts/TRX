@@ -81,7 +81,7 @@ end
       As [`trx.rooms.floor_height`](#rooms.floor_height), looking from this room.
 
       Parameters:
-      - <a id="rooms.Room.floor_height.pos" name="rooms.Room.floor_height.pos"></a>**`pos`** (vec3). World position.
+      - <a id="rooms.Room.floor_height.pos" name="rooms.Room.floor_height.pos"></a>**`pos`** ([trx.math.Vec3](MATH.md#math.Vec3)). World position.
       - <a id="rooms.Room.floor_height.opts" name="rooms.Room.floor_height.opts"></a>**`opts`** (table, optional). How to read the floor.
 
         Keys:
@@ -149,7 +149,7 @@ end
       The room contains a world position. Rooms overlap, so a position can be in several at once and every one of them matches, in room order. A room claims a point when the point is within its bounds, the outer ring of solid wall aside, and the column it stands in has a floor - the test the engine itself puts a position through. The hidden half of a flip pair is passed over.
 
       Parameters:
-      - <a id="rooms.RoomQuery.at.pos" name="rooms.RoomQuery.at.pos"></a>**`pos`** (vec3). World position.
+      - <a id="rooms.RoomQuery.at.pos" name="rooms.RoomQuery.at.pos"></a>**`pos`** ([trx.math.Vec3](MATH.md#math.Vec3)). World position.
 
       Returns: [trx.query.Query](QUERY.md#query.Query). The narrowed query.
 
@@ -228,7 +228,7 @@ end
   The height of the floor under a world position. `nil` where there is no floor at all: inside solid geometry, or off the edge of the level.
 
   Parameters:
-  - <a id="rooms.floor_height.pos" name="rooms.floor_height.pos"></a>**`pos`** (vec3). World position.
+  - <a id="rooms.floor_height.pos" name="rooms.floor_height.pos"></a>**`pos`** ([trx.math.Vec3](MATH.md#math.Vec3)). World position.
   - <a id="rooms.floor_height.room_num" name="rooms.floor_height.room_num"></a>**`room_num`** ([trx.rooms.Num](#rooms.Num), optional). The search crosses portals, so a neighbouring room's floor is found too. Without it, the room is looked up from the position, which takes the first room that contains it and passes over the flipped-away ones. Where rooms overlap, name the room, or ask the room itself with [`trx.rooms.Room:floor_height`](#rooms.Room.floor_height).
   - <a id="rooms.floor_height.opts" name="rooms.floor_height.opts"></a>**`opts`** (table, optional). How to read the floor.
 
@@ -246,9 +246,9 @@ end
   Nudges a position into valid room geometry, e.g. to find somewhere an item can legally be placed.
 
   Parameters:
-  - <a id="rooms.find_valid_pos.pos" name="rooms.find_valid_pos.pos"></a>**`pos`** (vec3). Position to search near.
+  - <a id="rooms.find_valid_pos.pos" name="rooms.find_valid_pos.pos"></a>**`pos`** ([trx.math.Vec3](MATH.md#math.Vec3)). Position to search near.
   - <a id="rooms.find_valid_pos.room_num" name="rooms.find_valid_pos.room_num"></a>**`room_num`** ([trx.rooms.Num](#rooms.Num)).
 
   Returns:
-  - vec3 or `nil`. The valid position, or `nil` if none was found nearby.
+  - [trx.math.Vec3](MATH.md#math.Vec3) or `nil`. The valid position, or `nil` if none was found nearby.
   - [trx.rooms.Num](#rooms.Num). The room the position is in.

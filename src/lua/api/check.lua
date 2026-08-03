@@ -23,15 +23,12 @@ function M.reads_from(lookup)
   declared_check = lookup
 end
 
--- The eight names a declaration may write without declaring them. Every other
--- name is a path. Doc-facing names, not Lua ones.
+-- The names a declaration may write without declaring them. Every other name is
+-- a path. Doc-facing names, not Lua ones.
 local PRIMITIVES = {
   -- A whole number, which type() alone does not tell from a fractional one.
   integer = function(v)
     return math.type(v) == "integer"
-  end,
-  vec3 = function(v)
-    return type(v) == "table" and v.x ~= nil and v.y ~= nil and v.z ~= nil
   end,
   any = function()
     return true

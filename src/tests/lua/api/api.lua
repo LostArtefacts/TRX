@@ -110,10 +110,19 @@ end)
 
 test("strict mode rejects bad args and accepts good ones", function()
   local api = fresh_env()
+  api.type("things.Pos", {
+    record = true,
+    description = "Where.",
+    fields = {
+      x = { type = "integer", description = "." },
+      y = { type = "integer", description = "." },
+      z = { type = "integer", description = "." },
+    },
+  })
   api.define("things.spawn", {
     params = {
       { name = "id", type = "integer" },
-      { name = "pos", type = "vec3" },
+      { name = "pos", type = "things.Pos" },
       { name = "angle", type = "integer", optional = true, default = 0 },
     },
     impl = function(id, pos, angle)
@@ -125,7 +134,7 @@ test("strict mode rejects bad args and accepts good ones", function()
   assert(
     not pcall(trx.things.spawn, "not an integer", { x = 1, y = 1, z = 1 })
   )
-  assert(not pcall(trx.things.spawn, 1, "not a vec3"))
+  assert(not pcall(trx.things.spawn, 1, "not a position"))
   assert(pcall(trx.things.spawn, 1, { x = 1, y = 1, z = 1 }))
 
   -- An omitted optional argument takes its declared default.
@@ -378,7 +387,7 @@ test(
       end,
     })
     api.property("things.pos", {
-      type = "vec3",
+      type = "table",
       description = "Where.",
       get = function()
         return { x = 1, y = 2, z = 3 }
@@ -422,7 +431,7 @@ test("properties reach describe()", function()
   })
   api.property(
     "things.pos",
-    { type = "vec3", description = "Where.", get = function() end }
+    { type = "table", description = "Where.", get = function() end }
   )
 
   local out = api.describe()

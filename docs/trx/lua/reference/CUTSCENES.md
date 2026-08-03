@@ -84,7 +84,7 @@ lists and `/cut` plays, are a different thing: see [`trx.game.cutscenes`](GAME.m
   runs, and is forgotten once she has been placed.
 
   Parameters:
-  - <a id="cutscenes.set_lara_return.pos" name="cutscenes.set_lara_return.pos"></a>**`pos`** (vec3). World position.
+  - <a id="cutscenes.set_lara_return.pos" name="cutscenes.set_lara_return.pos"></a>**`pos`** ([trx.math.Vec3](MATH.md#math.Vec3)). World position.
   - <a id="cutscenes.set_lara_return.rot" name="cutscenes.set_lara_return.rot"></a>**`rot`** ([trx.math.Angle](MATH.md#math.Angle), optional). Facing angle. Defaults to `0`.
 
   Example:

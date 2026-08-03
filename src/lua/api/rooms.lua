@@ -64,7 +64,7 @@ local ROOM_HOOK_PARAMS = {
 
 local FLOOR_HEIGHT_POS = {
   name = "pos",
-  type = "vec3",
+  type = "math.Vec3",
   description = "World position.",
 }
 
@@ -338,7 +338,11 @@ api.define("rooms.find_valid_pos", {
   description = "Nudges a position into valid room geometry, e.g. to find somewhere an item can "
     .. "legally be placed.",
   params = {
-    { name = "pos", type = "vec3", description = "Position to search near." },
+    {
+      name = "pos",
+      type = "math.Vec3",
+      description = "Position to search near.",
+    },
     {
       name = "room_num",
       type = "rooms.Num",
@@ -346,7 +350,7 @@ api.define("rooms.find_valid_pos", {
   },
   returns = {
     {
-      type = "vec3",
+      type = "math.Vec3",
       nullable = true,
       description = "The valid position, or `nil` if none was found nearby.",
     },
@@ -434,7 +438,7 @@ local RoomQuery = api.type("rooms.RoomQuery", {
         .. "column it stands in has a floor - the test the engine itself puts a position through. "
         .. "The hidden half of a flip pair is passed over.",
       params = {
-        { name = "pos", type = "vec3", description = "World position." },
+        { name = "pos", type = "math.Vec3", description = "World position." },
       },
       returns = { type = "query.Query", description = "The narrowed query." },
       examples = { [[trx.rooms.query:at(trx.lara.item.pos):first()]] },

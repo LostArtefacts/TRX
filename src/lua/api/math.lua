@@ -26,6 +26,29 @@ api.unit("math.Distance", {
   spellings = { "world units", "world coordinates" },
 })
 
+api.type("math.Vec3", {
+  record = true,
+  description = "A point or a direction in the world.",
+  fields = {
+    x = { type = "math.Distance", description = "The east-west axis." },
+    y = { type = "math.Distance", description = "The up-down axis." },
+    z = { type = "math.Distance", description = "The north-south axis." },
+  },
+})
+
+api.type("math.Rot", {
+  record = true,
+  description = "An orientation, as three angles about the world axes.",
+  fields = {
+    x = { type = "math.Angle", description = "Pitch, nose up and down." },
+    y = { type = "math.Angle", description = "Yaw, the direction it faces." },
+    z = {
+      type = "math.Angle",
+      description = "Roll, the tilt about its own length.",
+    },
+  },
+})
+
 api.type("math.Box", {
   description = "An axis-aligned box. Whether it is placed in the world or in something's own "
     .. "frame is for whatever hands it over to say.",
