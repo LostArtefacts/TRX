@@ -78,6 +78,7 @@
 - fixed differing ladder/hanging behavior when Lara comes to a stop from shimmying when corner shimmying is enabled (regression from 1.9)
 - fixed quick saves bypassing the save crystals mode
 - fixed the game displaying a GUI error dialog when it fails to start in headless mode
+- fixed the mixed mod layout error message running off the edge of the screen, leaving the paths it names unreadable (#6048)
 - fixed the body bag trigger to also collect Bacon Lara, Qualopec Mummy and Skidoo Driver's corpses
 - fixed settings text running off both sides of the screen in the longer languages, most visibly at 4:3 (#6000)
 - fixed the list of settings a preset would change spilling outside its dialog, and its text now wraps (#6000)

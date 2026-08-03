@@ -204,9 +204,19 @@ static void M_ValidateNoMixedModLayouts(void)
         const char *const legacy_gameflow =
             String_FormatStatic("%s/%s/gameflow.json5", config_dir, mod->name);
         if (File_Exists(legacy_gameflow)) {
+            // The paths are long enough that the message box cannot fit them
+            // on one line, and it does not wrap.
             Shell_ExitSystemFmt(
-                "Mixed mod layout detected: found legacy mod data at '%s' "
-                "while '%s' is used for mods. Move '%s' to '%s/%s/'.",
+                "Mixed mod layout detected.\n"
+                "\n"
+                "Legacy mod data found at:\n"
+                "    %s\n"
+                "\n"
+                "Mods are read from:\n"
+                "    %s\n"
+                "\n"
+                "Move the '%s' directory to:\n"
+                "    %s/%s/",
                 legacy_gameflow, games_dir, mod->name, games_dir, mod->name);
         }
     }
