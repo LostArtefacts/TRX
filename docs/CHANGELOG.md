@@ -38,6 +38,7 @@
 - changed lift collision to be optional (Gameplay → Fixes → Fix lift collision)
 - changed skidoo and quad bike crashes to not kill Lara when she is immune
 - changed Lara to say "No" when attempting to use the binoculars when it is not possible to do so
+- changed the installer to explain when it cannot download the files it needs, and to offer to try again (#6052)
 - fixed the sun's glare staying on screen in cutscenes once the camera has looked away from it
 - fixed exploding deaths in TR4 showing no flames or explosions
 - fixed Lara's shadow in TR4 being darker than in the original game

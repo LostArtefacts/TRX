@@ -104,6 +104,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged, IInstallerProg
     public string NextButtonText => CurrentStep switch
     {
         InstallerStep.Setup => "_Install",
+        InstallerStep.Installing when InstallFailed => "_Retry",
         _ => "_Next >",
     };
 
@@ -166,6 +167,37 @@ public partial class MainWindow : Window, INotifyPropertyChanged, IInstallerProg
             }
             _installSubDescription = value;
             OnPropertyChanged();
+        }
+    }
+
+    // What went wrong, in the words of the person who has to fix it. The log
+    // below it keeps the framework's own account.
+    public string InstallErrorMessage
+    {
+        get => _installErrorMessage;
+        set
+        {
+            if (value == _installErrorMessage)
+            {
+                return;
+            }
+            _installErrorMessage = value;
+            OnPropertyChanged();
+        }
+    }
+
+    public bool InstallFailed
+    {
+        get => _installFailed;
+        set
+        {
+            if (value == _installFailed)
+            {
+                return;
+            }
+            _installFailed = value;
+            OnPropertyChanged();
+            OnPropertyChanged(nameof(NextButtonText));
         }
     }
 
@@ -295,6 +327,8 @@ public partial class MainWindow : Window, INotifyPropertyChanged, IInstallerProg
     private bool _createShortcut;
     private string _installDescription = string.Empty;
     private string _installSubDescription = string.Empty;
+    private string _installErrorMessage = string.Empty;
+    private bool _installFailed;
     private int _outerCurrentProgress;
     private int _outerMaximumProgress = 1;
     private int _innerCurrentProgress;
@@ -307,7 +341,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged, IInstallerProg
 
     private async void Next_Click(object sender, RoutedEventArgs e)
     {
-        if (CurrentStep == InstallerStep.Setup)
+        if (CurrentStep == InstallerStep.Setup || InstallFailed)
         {
             await RunInstallAsync();
         }
@@ -433,6 +467,8 @@ public partial class MainWindow : Window, INotifyPropertyChanged, IInstallerProg
 
         CurrentStep = InstallerStep.Installing;
         _installFinished = false;
+        InstallFailed = false;
+        InstallErrorMessage = string.Empty;
         LogText = string.Empty;
         InstallSubDescription = string.Empty;
         OuterCurrentProgress = 0;
@@ -446,8 +482,13 @@ public partial class MainWindow : Window, INotifyPropertyChanged, IInstallerProg
         }
         catch (Exception ex)
         {
+            InstallFailed = true;
             InstallDescription = "Installation failed.";
-            InstallSubDescription = "See the log for details.";
+            InstallSubDescription = string.Empty;
+            InstallErrorMessage = ex is DownloadFailedException
+                ? ex.Message
+                : $"{ex.Message}{Environment.NewLine}{Environment.NewLine}"
+                    + "The log below has the details.";
             ((IInstallerProgress)this).AppendLog(ex.ToString());
         }
         finally
