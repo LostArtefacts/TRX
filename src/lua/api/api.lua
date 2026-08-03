@@ -1773,68 +1773,18 @@ function api.describe()
   return out
 end
 
--- Minimal JSON encoder. The dump is consumed by tools/update_lua_docs; keeping
--- the encoding here means the whole API surface - C field tables included - is
--- serialized from one place.
-local function encode(value, out)
-  local kind = type(value)
-  if value == nil then
-    out[#out + 1] = "null"
-  elseif kind == "boolean" then
-    out[#out + 1] = tostring(value)
-  elseif kind == "number" then
-    out[#out + 1] = tostring(value)
-  elseif kind == "string" then
-    out[#out + 1] = '"'
-      .. value
-        :gsub("\\", "\\\\")
-        :gsub('"', '\\"')
-        :gsub("\n", "\\n")
-        :gsub("\t", "\\t")
-      .. '"'
-  elseif kind == "table" then
-    if value[1] ~= nil or next(value) == nil then
-      out[#out + 1] = "["
-      for i, v in ipairs(value) do
-        if i > 1 then
-          out[#out + 1] = ","
-        end
-        encode(v, out)
-      end
-      out[#out + 1] = "]"
-    else
-      local keys = {}
-      for k in pairs(value) do
-        keys[#keys + 1] = k
-      end
-      table.sort(keys)
-      out[#out + 1] = "{"
-      for i, k in ipairs(keys) do
-        if i > 1 then
-          out[#out + 1] = ","
-        end
-        encode(tostring(k), out)
-        out[#out + 1] = ":"
-        encode(value[k], out)
-      end
-      out[#out + 1] = "}"
-    end
-  end
-  return out
-end
-
 -- The complete public API surface. One registry, one source: what is not
 -- declared here is not reachable from a script, so the dump cannot omit
 -- anything that exists.
 function api.to_json()
-  return table.concat(encode(api.describe(), {}))
+  return trx.json.encode(api.describe())
 end
 
 -- The registry declares itself, last of all. What is left of it once seal() has
 -- run is what a script can use: strict mode, and the question of whether it is
 -- on. The rest declared the surface and is gone by the time any script runs.
 api.module("api", {
-  order = 30,
+  order = 31,
   title = "API registry",
   description = "Argument checking for the whole of `trx`.",
 })

@@ -4162,6 +4162,24 @@
       }
     },
     {
+      "description": "Writes a value out as JSON, on one line. Keys come out in sorted order, so\nthe same value encodes the same way twice and a file that is committed and\ndiffed only moves when what it holds does.\n\nA table is written as a list where it holds entry 1, or holds nothing at\nall, and as an object otherwise. A function, a handle and anything else\nwith no JSON of its own is left out.",
+      "examples": [
+        "trx.json.encode({ name = \"wolf\", ids = { 7, 8 } })\n-- {\"ids\":[7,8],\"name\":\"wolf\"}"
+      ],
+      "params": [
+        {
+          "description": "What to write out.",
+          "name": "value",
+          "type": "any"
+        }
+      ],
+      "path": "json.encode",
+      "returns": {
+        "description": "The JSON text.",
+        "type": "string"
+      }
+    },
+    {
       "description": "Hangs an extra mesh on one of Lara's own, replacing the mesh there.",
       "examples": [
         "trx.lara.set_extra_equipment(trx.lara.Mesh.HAND_R, trx.lara.ExtraMesh.OAR)"
@@ -5136,7 +5154,7 @@
     {
       "description": "Argument checking for the whole of `trx`.",
       "name": "api",
-      "order": 30,
+      "order": 31,
       "title": "API registry"
     },
     {
@@ -5202,6 +5220,12 @@
       "order": 2
     },
     {
+      "description": "Writing Lua values out as JSON. The API dump the reference is generated from goes through this, so what a script writes out is encoded the way the engine's own data is.",
+      "name": "json",
+      "order": 29,
+      "title": "JSON"
+    },
+    {
       "description": "Module for reading and nudging Lara's own state.\n\nHer position, room and hit points are not here: she is an item like any other and they live on it, as `trx.lara.item`.",
       "instance_type": "lara.Lara",
       "name": "lara",
@@ -5221,7 +5245,7 @@
     {
       "description": "Evaluating Lua at runtime: a string of code, or a file on disk. Both run in the same state as every other script.",
       "name": "lua",
-      "order": 29
+      "order": 30
     },
     {
       "description": "Fixed-point trigonometry, matching the engine's own tables. Using these rather than Lua's `math` library guarantees a script places things exactly where the engine would. `trx.math.Angle` says what an angle is here.",

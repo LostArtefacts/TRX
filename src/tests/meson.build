@@ -370,6 +370,12 @@ unit_tests += {
   'bundles': [b_lua_surface, b_lua_strings],
 }
 
+# Pure Lua, with no bridge under it: the encoder is the whole module.
+unit_tests += {
+  'name': 'lua/api/json',
+  'bundles': [b_lua_surface],
+}
+
 # The parser is pure Lua, but it leans on the real fuzzy matcher out of
 # trx.strings, so the two are stood up together.
 unit_tests += {

@@ -52,6 +52,7 @@ trx_lua_api_sources = files(
   'lua/api/game.lua',
   'lua/api/inventory.lua',
   'lua/api/items.lua',
+  'lua/api/json.lua',
   'lua/api/lara.lua',
   'lua/api/locale.lua',
   'lua/api/log.lua',
