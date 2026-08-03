@@ -118,4 +118,44 @@ test("collapse_ranges sorts, and takes a separator", function()
   assert(collapse({ 1, 2, 5 }, " | ") == "1-2 | 5")
 end)
 
+-- A block written at the indentation of the code around it, where four spaces
+-- of it would read as a code block in markdown.
+test("dedent takes off what the lines share", function()
+  local text = trx.strings.dedent([[
+      A block.
+
+      Written at the indentation the code sits at, with a line that
+        lays something out under it.
+    ]])
+  assert(
+    text
+      == "A block.\n\nWritten at the indentation the code sits at, "
+        .. "with a line that\n  lays something out under it.",
+    "the shared indent must go and the deeper line must keep the rest: "
+      .. text
+  )
+end)
+
+-- The other way one is written: the first line against the brackets, and the
+-- rest at the indentation of the code. Left to set what the lines share, that
+-- first line would hold the whole block at its own indentation.
+test("dedent leaves a block opened against its brackets standing", function()
+  local text = trx.strings.dedent([[A block.
+
+    Written against the brackets, with a line that
+      lays something out under it.]])
+  assert(
+    text
+      == "A block.\n\nWritten against the brackets, with a line that\n"
+        .. "  lays something out under it.",
+    "the opening line must survive and the rest must be dedented: " .. text
+  )
+end)
+
+test("dedent leaves a block that shares no indent alone", function()
+  assert(trx.strings.dedent("One line.") == "One line.")
+  assert(trx.strings.dedent("A.\nB.") == "A.\nB.")
+  assert(trx.strings.dedent("\n\n  Padded.\n\n") == "Padded.")
+end)
+
 return h.report()

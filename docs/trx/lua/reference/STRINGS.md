@@ -98,3 +98,26 @@ Not to be confused with [`trx.locale`](LOCALE.md#locale), which is the text a pl
   ```lua
   if trx.strings.regex_match(args, "^\\d+$") then ... end
   ```
+
+- <a id="strings.dedent" name="strings.dedent"></a>[lua]`trx.strings.dedent(text)`  
+  Takes the shared indentation off a block of text, so that a long string
+  written inside `[[ ]]` reads as what it says rather than as where it sat in
+  the file. Leading and trailing blank lines go too.
+
+  The deepest lines keep the rest of their indentation, since a block may lay
+  something out, and four spaces of it is a code block in markdown. Text may
+  open on the line the brackets are on, and that line then sets nothing and
+  keeps what it has, however the ones under it are written.
+
+  Parameters:
+  - <a id="strings.dedent.text" name="strings.dedent.text"></a>**`text`** (string). The text to take in.
+
+  Returns: string. The text at the left margin.
+
+  Example:
+  ```lua
+  local help = trx.strings.dedent([[
+        Usage: /give <what>
+          keys   every plot item the level has a place for
+      ]])
+  ```
