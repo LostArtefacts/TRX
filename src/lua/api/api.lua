@@ -270,24 +270,38 @@ end
 -- module's own prose came out as one. The text is what the declaration says,
 -- not where it sat in the file, so the shared indent comes off. The deepest
 -- lines keep the rest of theirs, since a description may lay something out.
+--
+-- A description may instead open on the line its brackets are on, and that line
+-- then carries no indentation whatever the ones under it carry. Left in, it
+-- makes the shared indent zero and the rest of the description keeps its own,
+-- which is what four of them were written flush against the margin to avoid.
 local function dedent(text)
+  local lines = {}
+  for line in (text .. "\n"):gmatch("([^\n]*)\n") do
+    lines[#lines + 1] = line
+  end
+  -- Lua drops the newline that follows `[[`, so what says which of the two
+  -- spellings was written is whether the first line is indented at all: one
+  -- written against the brackets is not, and it neither sets what the rest share
+  -- nor has any of it taken off.
+  local from = text:match("^[ \t]") == nil and 2 or 1
+
   local shared
-  for line in text:gmatch("[^\n]+") do
-    if line:match("%S") ~= nil then
-      local indent = #line:match("^[ \t]*")
+  for i = from, #lines do
+    if lines[i]:match("%S") ~= nil then
+      local indent = #lines[i]:match("^[ \t]*")
       if shared == nil or indent < shared then
         shared = indent
       end
     end
   end
-  if shared == nil or shared == 0 then
-    return (text:gsub("^%s*\n", ""):gsub("%s+$", ""))
+
+  if shared ~= nil and shared > 0 then
+    for i = from, #lines do
+      lines[i] = lines[i]:sub(shared + 1)
+    end
   end
-  local out = {}
-  for line in (text .. "\n"):gmatch("([^\n]*)\n") do
-    out[#out + 1] = line:sub(shared + 1)
-  end
-  return (table.concat(out, "\n"):gsub("^%s*\n", ""):gsub("%s+$", ""))
+  return (table.concat(lines, "\n"):gsub("^%s*\n", ""):gsub("%s+$", ""))
 end
 
 -- Where a path lands, which every declaration asks in one of two ways: what a

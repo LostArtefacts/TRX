@@ -3839,7 +3839,7 @@
       }
     },
     {
-      "description": "Happens when an item takes damage, Lara included. It is the raw damage that\nfires, before the item's hit points are clamped, so a fatal blow reports the whole amount the\nattacker dealt. A death that does not go through damage - a script writing\n`trx.items.Item.hit_points`, or `trx.items.Item:destroy` - does not report.\n\n`trx.items.Item:on_hit` is this same event, narrowed to one item.",
+      "description": "Happens when an item takes damage, Lara included. It is the raw damage that\nfires, before the item's hit points are clamped, so a fatal blow reports\nthe whole amount the attacker dealt. A death that does not go through\ndamage - a script writing `trx.items.Item.hit_points`, or\n`trx.items.Item:destroy` - does not report.\n\n`trx.items.Item:on_hit` is this same event, narrowed to one item.",
       "examples": [
         "trx.events.on_hit(function(item, damage)\n  trx.log.info(item.object_id .. \" lost \" .. damage .. \" hit points\")\nend)"
       ],
@@ -3869,7 +3869,7 @@
       }
     },
     {
-      "description": "Happens when damage takes an item's hit points to zero, Lara included. It is the\nsame blow `trx.events.on_hit` reports, which fires first. A death that does not go through damage\n- a script writing `trx.items.Item.hit_points`, or `trx.items.Item:destroy` - does not report.\n\nSome bosses fall and get back up: Willard is knocked out, Natla plays dead before her second\nstage, and the dragon lies still until Lara takes the dagger. Each stage brings their hit points\nto zero, so they report once per stage rather than once per boss, and the dragon reports once\nmore for the dagger that ends it.\n\n`trx.items.Item:on_kill` is this same event, narrowed to one item.",
+      "description": "Happens when damage takes an item's hit points to zero, Lara included. It\nis the same blow `trx.events.on_hit` reports, which fires first. A death\nthat does not go through damage - a script writing\n`trx.items.Item.hit_points`, or `trx.items.Item:destroy` - does not report.\n\nSome bosses fall and get back up: Willard is knocked out, Natla plays dead\nbefore her second stage, and the dragon lies still until Lara takes the\ndagger. Each stage brings their hit points to zero, so they report once per\nstage rather than once per boss, and the dragon reports once more for the\ndagger that ends it.\n\n`trx.items.Item:on_kill` is this same event, narrowed to one item.",
       "examples": [
         "trx.events.on_kill(function(item)\n  trx.log.info(item.object_id .. \" is down\")\nend)"
       ],
@@ -5256,7 +5256,7 @@
       "order": 6
     },
     {
-      "description": "Module for the numbers the engine plays by.\n\nThese are the game's rules: a mechanic that no single item owns. An object's own numbers live on\nthe object, as `trx.objects.<name>.properties`, and the player's own choices live in `trx.config`.\n\nA rule lasts as long as the playthrough: it is saved with the game and restored with it, and a\nnew game starts from the defaults. A level script states what its level wants, and states it\nagain on every entry, so a level that wants the defaults back asks for them.",
+      "description": "Module for the numbers the engine plays by.\n\nThese are the game's rules: a mechanic that no single item owns. An\nobject's own numbers live on the object, as\n`trx.objects.<name>.properties`, and the player's own choices live in\n`trx.config`.\n\nA rule lasts as long as the playthrough: it is saved with the game and\nrestored with it, and a new game starts from the defaults. A level script\nstates what its level wants, and states it again on every entry, so a level\nthat wants the defaults back asks for them.",
       "name": "rules",
       "order": 14
     },
@@ -7174,7 +7174,7 @@
           ]
         },
         {
-          "description": "Hurts the item the way a weapon does, and reports through `trx.events.on_hit`,\nand `trx.events.on_kill` where the blow takes the last hit point. Writing\n`trx.items.Item.hit_points` reports neither. The kill counts as the\nenvironment's rather than Lara's.",
+          "description": "Hurts the item the way a weapon does, and reports through\n`trx.events.on_hit`, and `trx.events.on_kill` where the blow takes the\nlast hit point. Writing `trx.items.Item.hit_points` reports neither.\nThe kill counts as the environment's rather than Lara's.",
           "examples": [
             "local lara = trx.lara.item\nlara:take_damage(lara.hit_points)"
           ],

@@ -3,14 +3,19 @@ local api = trx.api
 
 api.module("rules", {
   order = 14,
-  description = [[Module for the numbers the engine plays by.
+  description = [[
+    Module for the numbers the engine plays by.
 
-These are the game's rules: a mechanic that no single item owns. An object's own numbers live on
-the object, as `trx.objects.<name>.properties`, and the player's own choices live in `trx.config`.
+    These are the game's rules: a mechanic that no single item owns. An
+    object's own numbers live on the object, as
+    `trx.objects.<name>.properties`, and the player's own choices live in
+    `trx.config`.
 
-A rule lasts as long as the playthrough: it is saved with the game and restored with it, and a
-new game starts from the defaults. A level script states what its level wants, and states it
-again on every entry, so a level that wants the defaults back asks for them.]],
+    A rule lasts as long as the playthrough: it is saved with the game and
+    restored with it, and a new game starts from the defaults. A level script
+    states what its level wants, and states it again on every entry, so a level
+    that wants the defaults back asks for them.
+  ]],
 })
 
 -- Every rule is reachable two ways: as a member here, and by the dotted key
