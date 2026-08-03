@@ -92,7 +92,7 @@ void Item_DetachFromRoom(int16_t item_num);
 // live play when it goes on.
 void Item_AddSimulated(int16_t item_num);
 
-// Take the item off the simulation list, whatever put it there. Fires
+// Take the item off the simulation list, however it got there. Fires
 // on_leave_sim during live play if it was simulated.
 void Item_RemoveSimulated(int16_t item_num);
 

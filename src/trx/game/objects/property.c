@@ -72,7 +72,7 @@ static const OBJECT_PROPERTY_ENTRY *M_GetObjectEntry(
 
 // Whether the property will take the value at all, asked without an item to
 // take it to: the member's width first, as in Field_Set, since the fit is a
-// property of the storage rather than of what the value means, then whatever
+// property of the storage rather than of what the value means, then what
 // the property itself says. A property with no member has no width to be held
 // to.
 //

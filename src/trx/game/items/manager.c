@@ -165,7 +165,7 @@ void Item_InitialiseItems(const int32_t num_items)
         m_Items[i].properties = (ITEM_PROPERTY_SET) {};
     }
 
-    // A handle retained across a level change must not rebind to whatever now
+    // A handle retained across a level change must not rebind to what now
     // occupies the same slot index, so the whole pool is retired at once.
     if (m_ItemHandles.gens == nullptr) {
         Handle_RegistryInit(&m_ItemHandles, m_ItemGens, MAX_ITEMS);

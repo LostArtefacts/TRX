@@ -57,7 +57,7 @@ test(
       listener.id = 1
     end, "read-only")
     raises(function()
-      listener.whatever = 1
+      listener.nonsense = 1
     end)
   end
 )

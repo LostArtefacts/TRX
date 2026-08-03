@@ -13,7 +13,7 @@ static bool M_VertexMatches(const XYZ_32 a, const XYZ_32 b)
 // Applies the exact inverse of "to"'s rotation to a world-space vector. The
 // entries are quantized to 1/(1<<W2V_SHIFT), so the transpose is only an
 // approximate inverse, and the leftover error reads as a hairline crack
-// between welded meshes; the adjugate stays exact for whatever rotation the
+// between welded meshes; the adjugate stays exact for any rotation the
 // matrix holds.
 static XYZ_F M_UndoRotation(
     const MATRIX *const to, const double dx, const double dy, const double dz)

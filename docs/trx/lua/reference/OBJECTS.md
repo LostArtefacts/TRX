@@ -79,7 +79,7 @@ trx.objects.wolf.properties.max_hit_points = 30
       Parameters:
       - <a id="objects.Object.get_property.name" name="objects.Object.get_property.name"></a>**`name`** (string). Which property, as the object declares it.
 
-      Returns: any or `nil`. The value, of whatever type the property is declared with.
+      Returns: any or `nil`. The value, of the type the property is declared with.
 
     - <a id="objects.Object.get_property_names" name="objects.Object.get_property_names"></a>[lua]`object:get_property_names()`  
       Names of every property this object declares.

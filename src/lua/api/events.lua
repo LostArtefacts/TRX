@@ -649,7 +649,7 @@ api.define("events.on_cutscene_trigger", {
 
     A trigger Lara stands on fires every frame, so this happens only for a
     cutscene that has not run yet and while none is playing. Asking counts as
-    running it, whatever came of it, so the same handler is not asked again on
+    running it, however it ended, so the same handler is not asked again on
     the next frame. Clear the mark with `trx.cutscenes.set_played` to hear
     about one again.
 

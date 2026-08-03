@@ -636,7 +636,7 @@ static void M_DrawBakedGroupRanges(
 // see-through faces. Sorting its faces cannot order a part against another it
 // is buried in, so the depth buffer does it instead: the solid part lays down
 // its depth, and then only the surface that depth kept is blended, once. It
-// happens where the object sorts, so whatever is in front of it still comes
+// happens where the object sorts, so what is in front of it still comes
 // after.
 static void M_DrawBakedGroup(
     MESH_BATCHER *const batcher, const int32_t group_idx)

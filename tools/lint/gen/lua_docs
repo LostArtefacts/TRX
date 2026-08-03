@@ -244,7 +244,7 @@ def anchored(path: str) -> str:
 
 
 def where() -> str:
-    """The declaration whatever is being read sits in.
+    """The declaration the text being read sits in.
 
     Most of what the writer needs: the same name can be written in a dozen
     places, and only one of them has to move.

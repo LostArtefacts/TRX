@@ -129,7 +129,7 @@ test("play_level rejects a level that is not there", function()
     trx.game.play_level(0)
   end)
   -- A number too wide for the engine's would otherwise wrap into range and
-  -- start whatever level it landed on.
+  -- start the level it landed on.
   raises(function()
     trx.game.play_level(4294967297)
   end)

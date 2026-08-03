@@ -262,7 +262,7 @@ TEST(declaring_a_nonexistent_member_raises)
     lua_close(L);
 }
 
-// A handle held across a kill must raise, not silently rebind to whatever
+// A handle held across a kill must raise, not silently rebind to what
 // reused the slot. This is what the generation counter buys.
 TEST(a_stale_handle_raises_rather_than_rebinding)
 {

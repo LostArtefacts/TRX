@@ -3,7 +3,7 @@
 #include <stdint.h>
 
 // A weak reference to a game entity, of the kind a script holds across time. It
-// pairs the entity's id - a pool slot, a room number, whatever the owning
+// pairs the entity's id - a pool slot, a room number, the number the owning
 // module keys on - with a generation that says which occupant of that id is
 // meant. The value is self-contained: copied, compared and dropped freely, with
 // nothing to free. Resolving it back to a live pointer stays with the module

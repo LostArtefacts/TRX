@@ -342,8 +342,9 @@ TEST(build_pose_clears_the_meshes_the_actor_does_not_carry)
     CHECK(CutSeq_Decoder_InitNodes(buf, size, nodes, 2) > 0);
     CutSeq_Decoder_Reset(nodes, 2);
 
-    // Lara is posed to the full LM_NUMBER_OF whatever her actor declares, so
-    // a pose reused across cutscenes may not keep the last one's tail.
+    // Lara is posed to the full LM_NUMBER_OF regardless of how many meshes her
+    // actor declares, so a pose reused across cutscenes may not keep the last
+    // one's tail.
     CUTSEQ_POSE pose;
     for (int32_t i = 0; i < CUTSEQ_MAX_MESHES; i++) {
         pose.rots[i] = (XYZ_16) { .x = 999, .y = 999, .z = 999 };

@@ -295,7 +295,7 @@ TEST(a_missing_file_is_not_a_loaded_pak)
     m_FileExists = true;
 }
 
-// The loader's view of the outside world: a file that is whatever the test
+// The loader's view of the outside world: a file that holds what the test
 // last published, and object ids it does not act on here.
 
 #include <trx/core/memory.h>

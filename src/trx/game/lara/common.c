@@ -207,9 +207,9 @@ void Lara_InitialiseInventory(const GF_LEVEL *const level)
     if (resume != nullptr) {
         Inv_SetState(&resume->inv);
         if (Gun_HasInfiniteAmmo(LGT_PISTOLS)) {
-            // The pistols never run out, whatever the level she is arriving
-            // from left in the resume info, and what she has none of she
-            // carries no rounds for.
+            // The pistols never run out, regardless of what the level she is
+            // arriving from left in the resume info, and what she has none of
+            // she carries no rounds for.
             Inv_SetAmmo(
                 LGT_PISTOLS,
                 Inv_HasItem(O_PISTOL_ITEM) ? Gun_GetInitialRounds(LGT_PISTOLS)

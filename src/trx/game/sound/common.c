@@ -57,7 +57,8 @@ typedef struct M_SAMPLE_ENTRY {
 
 static M_ACTIVE_SOUND m_ActiveSounds[M_MAX_ACTIVE_SOUNDS] = {};
 // One generation per slot, bumped when a slot is handed to a new voice, so a
-// script handle to a finished voice does not address whatever replaced it.
+// script handle to a finished voice does not address the voice that replaced
+// it.
 static uint32_t m_SlotGens[M_MAX_ACTIVE_SOUNDS];
 static HANDLE_REGISTRY m_SlotHandles;
 static bool m_Initialised = false;
@@ -617,7 +618,7 @@ int32_t Sound_Effect_Direct(
         sound->pos_ptr = nullptr;
     }
     M_ClearActiveSoundHandles(sound);
-    // The slot now holds a new voice, so a handle to whatever was here before
+    // The slot now holds a new voice, so a handle to the one here before
     // must stop resolving. The WAIT and LOOPED early returns above keep an
     // existing voice, and its handle, alive.
     const int32_t slot = (int32_t)(sound - m_ActiveSounds);

@@ -94,8 +94,8 @@ typedef OBJECT_PROPERTY_SET ITEM_PROPERTY_SET;
     }
 
 // A property an item carries in a member of its own rather than in what its
-// object keeps privately: one the engine reads for every object, whatever it
-// is. `set_` may be nullptr.
+// object keeps privately: one the engine reads for every object, of any kind.
+// `set_` may be nullptr.
 #define OBJECT_PROPERTY_ITEM(member_, value_, check_, set_, description_)      \
     {                                                                          \
         .name = #member_,                                                      \

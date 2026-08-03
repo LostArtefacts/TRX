@@ -763,7 +763,7 @@ lara:take_damage(lara.hit_points)]],
       returns = {
         type = "any",
         nullable = true,
-        description = "The value, of whatever type the property is declared with.",
+        description = "The value, of the type the property is declared with.",
       },
       description = "Reads an object property, falling back to the object's default. "
         .. "Prefer `item.properties.<name>`.",

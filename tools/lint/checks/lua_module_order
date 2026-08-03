@@ -9,7 +9,7 @@ from harness import LintWarning, repo_check
 from shared.paths import SRC_DIR
 
 # api.module("name", { order = N, ... }) - the order the module takes in the
-# generated reference. Two modules sharing one leave their pages in whatever
+# generated reference. Two modules sharing one leave their pages in the
 # order the sort happens to settle on.
 MODULE_RE = re.compile(
     r"""api\.module\(\s*"([^"]+)"\s*,\s*\{[^}]*?\border\s*=\s*(\d+)""",

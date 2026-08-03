@@ -24,7 +24,7 @@ order: 3
    - `item.idx` no longer exists, and a handle can no longer carry extra keys of
      your own. Pass the handle itself where you used to pass the index.
    - A handle to a killed or recycled item now raises `stale ITEM handle` when
-     read or written, instead of silently addressing whatever item took over the
+     read or written, instead of silently addressing the item that took over the
      slot. Guard handles held across time with `item:is_valid()`.
    - Two handles are equal when they name the same thing, so
      `trx.items[0] == trx.items[0]` is now true where it used to be false - every
@@ -58,7 +58,7 @@ order: 3
      became `trx.rooms.Room`, `trx.rooms.flip` and `trx.rooms.flip_effect`.
    - A room handle now goes stale when the level changes, as an item handle
      already did: reading or writing a field raises `stale ROOM handle` rather
-     than naming whatever room sits at that number in the new level. Guard a
+     than naming the room that sits at that number in the new level. Guard a
      handle held across time with `room:is_valid()`. Handles compare by identity,
      as item handles do.
    - An unset room flag now reads as `false` rather than `nil`, so
@@ -73,7 +73,7 @@ order: 3
 3. **Update scripts that compare `trx.config.get()` against a string**
    It returns the option's own type now: a boolean option reads as a boolean and
    a number as a number. `trx.config.get("flow.cheat_keys") == "true"` is now
-   false whatever the setting says - drop the comparison and test the value:
+   false regardless of the setting - drop the comparison and test the value:
    `if trx.config.get("flow.cheat_keys") then`. Colors and enums are still
    strings.
 

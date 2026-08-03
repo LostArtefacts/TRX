@@ -142,7 +142,7 @@ test("suggest completes but does not restrict or hint", function()
   local p = trx.argparse.new()
   p:positional("option", { suggest = { "fov", "gamma" } })
   -- Any token is taken; suggest never rejects.
-  assert(p:parse("whatever").option == "whatever")
+  assert(p:parse("anything").option == "anything")
   -- It offers completions...
   assert(p:complete("f")[1] == "fov")
   -- ...but stays out of the error: a missing option carries no "expected" hint.

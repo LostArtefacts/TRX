@@ -30,7 +30,7 @@
 - changed the `/secret` console command to take a secret number on its own, to offer the numbers it can act on in autocompletion, and to say what it expected when given something else
 - changed the `/give` console command to autocomplete what it can hand over and to reach the savegame crystal by name; `/give keys` now covers the plot items alone, and `/keys`, `/guns` and `/moreguns` are commands of their own
 - changed the `/spawn`, `/kill` and `/tp` console commands to accept a family such as `pickup`, `door` or `enemy` in place of a name, and to offer the families each of them can act on in autocompletion
-- changed the `/tp` console command to place Lara better at whatever she is sent to
+- changed the `/tp` console command to place Lara better at what she is sent to
 - changed the developer console to accept the numpad Enter key for issuing commands (#6056)
 - changed the Breeze option to allow selecting TR2 or TR3 behavior (Graphic Options → Visuals → Breeze)
 - changed the save crystals option to a mode: crystals can save on the spot, be collected to save from the inventory as on PS1 TR3, heal, or be collectibles (Gameplay → General → Crystal mode) (#5939)
@@ -243,7 +243,7 @@ The Lua integration was rewritten and existing scripts will need updating; refer
 - changed `trx.lara.is_burning` to be writable, so setting it lights Lara or puts her out
 - changed `trx.lara.extra_anim` to a boolean, where it used to be the relative animation number, or -1
 - changed `trx.lara.mesh` and `trx.lara.extra_mesh` to declared enums, `trx.lara.Mesh` and `trx.lara.ExtraMesh`
-- changed `trx.items` and `trx.rooms` to hand out opaque handles rather than `{ idx = ... }` tables, so a handle to a killed item now raises instead of silently addressing whatever took its slot
+- changed `trx.items` and `trx.rooms` to hand out opaque handles rather than `{ idx = ... }` tables, so a handle to a killed item now raises instead of silently addressing the item that took its slot
 - changed handles to compare equal when they name the same thing, so `trx.items[0] == trx.items[0]`
 - changed `trx.items` and `trx.rooms` to count from zero, matching the item and room numbers level editors show, and made `pairs()` walk them keyed by that number
 - changed room handles to go stale at a level change rather than quietly naming a different room

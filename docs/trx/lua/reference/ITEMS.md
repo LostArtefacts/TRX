@@ -191,7 +191,7 @@ end
       Parameters:
       - <a id="items.Item.get_property.name" name="items.Item.get_property.name"></a>**`name`** (string). Which property, as the object declares it.
 
-      Returns: any or `nil`. The value, of whatever type the property is declared with.
+      Returns: any or `nil`. The value, of the type the property is declared with.
 
     - <a id="items.Item.get_property_names" name="items.Item.get_property_names"></a>[lua]`item:get_property_names()`  
       Names of every property this item's object declares.

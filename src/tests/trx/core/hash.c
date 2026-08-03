@@ -3,7 +3,7 @@
 #include <trx/core/hash.h>
 
 // FNV-1a. Savegames and caches key off these, so the values are a wire format:
-// changing them silently invalidates whatever was hashed with the old ones.
+// changing them silently invalidates what was hashed with the old ones.
 
 TEST(the_empty_hash_is_the_fnv_offset_basis)
 {

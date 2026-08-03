@@ -173,7 +173,7 @@ TEST(expanding_reserves_room_the_caller_can_write_into)
 
 TEST(a_vector_of_structs_moves_whole_items_not_bytes)
 {
-    // item_size is whatever the caller says, so a shift that used the wrong
+    // item_size is the caller's to set, so a shift that used the wrong
     // stride would corrupt every element after the one removed.
     typedef struct {
         int32_t id;

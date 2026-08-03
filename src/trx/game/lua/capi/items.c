@@ -284,7 +284,7 @@ static const FIELD_DESC m_Fields[] = {
 TYPE_DEFINE(ITEM, m_Fields)
 
 // The generation carried by the handle is what keeps an index from silently
-// rebinding to whatever item recycled the slot; Item_FromHandle checks it.
+// rebinding to the item that recycled the slot; Item_FromHandle checks it.
 static void *M_Resolve(const LUA_STRUCT_REF *const ref)
 {
     return Item_FromHandle(ref->handle);

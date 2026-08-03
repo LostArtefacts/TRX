@@ -241,7 +241,7 @@ void Inv_SetState(const INVENTORY_STATE *const state)
         }
     }
     // The compass and the stopwatch are not carried so much as always to hand,
-    // so they are put back whatever the state says.
+    // so they are put back regardless of what the state says.
     Inv_EnsureItem(O_STOPWATCH_OPTION);
     Inv_EnsureItem(O_COMPASS_OPTION);
     Inv_EnsureItem(O_GLOBE_SELECT_OPTION);

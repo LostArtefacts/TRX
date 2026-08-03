@@ -75,8 +75,8 @@ bool Item_IsInactive(const ITEM *const item)
 
 bool Item_IsAlive(const ITEM *const item)
 {
-    // A removed item is gone whatever its hit points say. An object's own test
-    // reads those, and a destroyed item keeps whatever it had.
+    // A removed item is gone regardless of its hit points. An object's own test
+    // reads those, and a destroyed item keeps the ones it had.
     if (item->is_destroyed) {
         return false;
     }
@@ -167,9 +167,9 @@ void Item_TakeDamage(
         Stats_AddKill();
     }
 
-    // A kill deals an item whatever it has left, which is nothing once it is
-    // already down, and Lara's death paths leave her below zero. Neither is a
-    // hit worth reporting.
+    // A kill deals an item the hit points it has left, which is nothing once it
+    // is already down, and Lara's death paths leave her below zero. Neither is
+    // a hit worth reporting.
     if (damage > 0) {
         const LUA_EVENT_ARG args[] = {
             { .type = LUA_EVENT_ARG_INT32,

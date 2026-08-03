@@ -240,7 +240,7 @@ trx.config.restore("visuals.water_color")]],
 })
 
 api.define("config.restore", {
-  description = "Lifts one override off a setting, putting back whatever was underneath it.",
+  description = "Lifts one override off a setting, putting back the value underneath it.",
   params = {
     { name = "key", type = "string", description = "Dotted path." },
   },
