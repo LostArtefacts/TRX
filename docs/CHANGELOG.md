@@ -165,6 +165,7 @@ The Lua integration was rewritten and existing scripts will need updating; refer
 
 - added `p`, a global shorthand for `trx.console.log`, and made the console log functions take any value, pretty-printing a table
 - added a new Lua module, `trx.math`, with the engine's own fixed-point trigonometry and the `DEG_1`, `DEG_45`, `DEG_90` and `WALL_L` constants
+- added `trx.math.round_to_sector()`, which snaps a position or a single coordinate back to the corner of the sector it stands in
 - added a new Lua module, `trx.strings`, with `fuzzy_match()`, `regex_match()`, `collapse_ranges()` and `dedent()`
 - added a new Lua module, `trx.json`, to write a value out as JSON
 - added a new Lua module, `trx.rules`, holding the numbers the game plays by

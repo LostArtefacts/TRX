@@ -102,6 +102,53 @@ local angle = trx.math.atan(lara.pos.z - pos.z, lara.pos.x - pos.x)]],
   impl = raw.atan,
 })
 
+api.define("math.round_to_sector", {
+  description = [[
+Snaps a position back to the corner of the sector it stands in, the way the
+level's own geometry is laid out. A whole position keeps its height: a sector
+is a column, and rounding it is about the ground plan rather than how far up
+the position sits. A single coordinate rounds on its own, which is what an axis
+at a time needs.
+
+The corner is always the one to the west and the south, on both sides of the
+origin, so two positions in the same sector always answer with the same corner.
+]],
+  params = {
+    {
+      name = "value",
+      type = { "math.Vec3", "math.Distance" },
+      description = "A world position, or one coordinate of one.",
+    },
+  },
+  returns = {
+    type = { "math.Vec3", "math.Distance" },
+    description = "The corner of the sector, in whichever of the two came in.",
+  },
+  examples = {
+    [[-- a zone over the sector Lara stands on, a sector tall.
+-- y grows downwards, so the ceiling of the box is the lesser y.
+local corner = trx.math.round_to_sector(trx.lara.item.pos)
+trx.zones.box(corner, {
+  x = corner.x + trx.math.WALL_L,
+  y = corner.y - trx.math.WALL_L,
+  z = corner.z + trx.math.WALL_L,
+})]],
+  },
+  impl = function(value)
+    if type(value) == "number" then
+      return math.floor(value / raw.WALL_L) * raw.WALL_L
+    end
+    if type(value) ~= "table" then
+      error("value must be a position or a coordinate", 3)
+    end
+    return {
+      x = math.floor(value.x / raw.WALL_L) * raw.WALL_L,
+      y = value.y,
+      z = math.floor(value.z / raw.WALL_L) * raw.WALL_L,
+    }
+  end,
+})
+
 api.const("math.DEG_1", {
   value = raw.DEG_1,
   type = "math.Angle",

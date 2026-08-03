@@ -104,3 +104,30 @@ Fixed-point trigonometry, matching the engine's own tables. Using these rather t
   -- face an item towards Lara
   local angle = trx.math.atan(lara.pos.z - pos.z, lara.pos.x - pos.x)
   ```
+
+- <a id="math.round_to_sector" name="math.round_to_sector"></a>[lua]`trx.math.round_to_sector(value)`  
+  Snaps a position back to the corner of the sector it stands in, the way the
+  level's own geometry is laid out. A whole position keeps its height: a sector
+  is a column, and rounding it is about the ground plan rather than how far up
+  the position sits. A single coordinate rounds on its own, which is what an axis
+  at a time needs.
+
+  The corner is always the one to the west and the south, on both sides of the
+  origin, so two positions in the same sector always answer with the same corner.
+
+  Parameters:
+  - <a id="math.round_to_sector.value" name="math.round_to_sector.value"></a>**`value`** ([trx.math.Vec3](#math.Vec3) or [trx.math.Distance](#math.Distance)). A world position, or one coordinate of one.
+
+  Returns: [trx.math.Vec3](#math.Vec3) or [trx.math.Distance](#math.Distance). The corner of the sector, in whichever of the two came in.
+
+  Example:
+  ```lua
+  -- a zone over the sector Lara stands on, a sector tall.
+  -- y grows downwards, so the ceiling of the box is the lesser y.
+  local corner = trx.math.round_to_sector(trx.lara.item.pos)
+  trx.zones.box(corner, {
+    x = corner.x + trx.math.WALL_L,
+    y = corner.y - trx.math.WALL_L,
+    z = corner.z + trx.math.WALL_L,
+  })
+  ```
