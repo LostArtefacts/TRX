@@ -1,6 +1,5 @@
 #pragma once
 
-#include <trx/game/game_flow/types.h>
 #include <trx/game/savegame/types.h>
 
 // Loading a saved game is divided into two phases. First, the game reads the
@@ -10,80 +9,20 @@
 // everything finishes loading, e.g. items, creatures, triggers etc., and is
 // what actually sets Lara's health, creatures status, triggers, inventory etc.
 
-extern const SAVEGAME_INVENTORY_ENTRY g_Savegame_InventoryItems[];
-extern const SAVEGAME_AMMO_ENTRY g_Savegame_WeaponAmmo[];
-extern const SAVEGAME_RESUME_WEAPON g_Savegame_ResumeWeapons[];
-extern const SAVEGAME_RESUME_ITEM g_Savegame_ResumeItems[];
-
 void Savegame_Init(void);
 void Savegame_Shutdown(void);
 
-// Rebuilds the slot tables after the configured slot counts change. The
-// playthrough's resume info is not tied to the slot counts and stays as it is;
-// rebuilding it would lose the stats and the loadout gathered so far.
-void Savegame_ResizeSlots(void);
-
-bool Savegame_IsInitialised(void);
-void Savegame_ScanSavedGames(void);
-
 SAVEGAME_VERSION Savegame_GetInitialVersion(void);
 void Savegame_SetInitialVersion(SAVEGAME_VERSION version);
-int32_t Savegame_GetCounter(void);
-int32_t Savegame_GetTotalCount(void);
-int32_t Savegame_GetLevelNumber(SAVEGAME_SLOT_REF slot);
-bool Savegame_IsSlotFree(SAVEGAME_SLOT_REF slot);
-bool Savegame_RestartAvailable(SAVEGAME_SLOT_REF slot);
-
-// Remembers the slot used when the player starts a loaded game.
-// Persists across level reloads.
-void Savegame_BindSlot(SAVEGAME_SLOT_REF slot);
-
-// Removes the binding of the current slot. Used when the player exits to
-// title, issues a command like `/play` etc.
-void Savegame_UnbindSlot(void);
-
-// Returns the currently bound slot. If there is none, returns an invalid slot.
-SAVEGAME_SLOT_REF Savegame_GetBoundSlot(void);
-
-// Returns the most recently created save slot number. If there is none,
-// returns an invalid slot.
-SAVEGAME_SLOT_REF Savegame_GetMostRecentlyCreatedSlot(void);
-
-// Returns the most recently used slot save number. If there is none, returns
-// an invalid slot.
-SAVEGAME_SLOT_REF Savegame_GetMostRecentlyUsedSlot(void);
 
 // Whether the player can save the game at will. Save crystal modes reserve
 // saving for the crystals themselves.
 bool Savegame_IsManualSaveAllowed(void);
+bool Savegame_RestartAvailable(SAVEGAME_SLOT_REF slot);
 
 void Savegame_ProcessItemsBeforeLoad(void);
 void Savegame_ProcessItemsBeforeSave(void);
 bool Savegame_Load(SAVEGAME_SLOT_REF slot);
 bool Savegame_Save(SAVEGAME_SLOT_REF slot);
-bool Savegame_Delete(SAVEGAME_SLOT_REF slot);
 bool Savegame_UpdateDeathCounters(SAVEGAME_SLOT_REF slot, int32_t death_count);
 bool Savegame_LoadOnlyResumeInfo(SAVEGAME_SLOT_REF slot);
-
-void Savegame_InitCurrentInfo(void);
-void Savegame_SetCurrentInfo(int32_t current_slot, int32_t src_slot);
-RESUME_INFO *Savegame_GetCurrentInfo(const GF_LEVEL *level);
-const SAVEGAME_INFO *Savegame_GetSavegameInfo(SAVEGAME_SLOT_REF slot);
-void Savegame_ResetCurrentInfo(const GF_LEVEL *level);
-void Savegame_CarryCurrentInfoToNextLevel(
-    const GF_LEVEL *src_level, const GF_LEVEL *dst_level);
-void Savegame_PersistGameToCurrentInfo(const GF_LEVEL *level);
-void Savegame_ApplyLogicToCurrentInfo(const GF_LEVEL *level);
-int32_t Savegame_GetCompletedLevelCount(void);
-
-int32_t Savegame_GetSlotCount(SAVEGAME_SLOT_POOL pool);
-SAVEGAME_SLOT_REF Savegame_GetNextQuickSlot(void);
-int32_t Savegame_GetQuickVisualCount(void);
-SAVEGAME_SLOT_REF Savegame_QuickFromVisualIndex(int32_t visual_index);
-int32_t Savegame_QuickToVisualIndex(SAVEGAME_SLOT_REF slot);
-bool Savegame_IsValidSlotRef(SAVEGAME_SLOT_REF slot);
-SAVEGAME_SLOT_REF Savegame_NormalSlot(int32_t index);
-SAVEGAME_SLOT_REF Savegame_QuickSlot(int32_t index);
-SAVEGAME_SLOT_REF Savegame_InvalidSlot(void);
-int32_t Savegame_SlotToParam(SAVEGAME_SLOT_REF slot);
-SAVEGAME_SLOT_REF Savegame_SlotFromParam(int32_t param);
