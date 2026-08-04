@@ -55,10 +55,10 @@ api.type("math.Box", {
   fields = {
     min_x = { type = "math.Distance", description = "West edge." },
     min_y = { type = "math.Distance", description = "Top edge." },
-    min_z = { type = "math.Distance", description = "North edge." },
+    min_z = { type = "math.Distance", description = "South edge." },
     max_x = { type = "math.Distance", description = "East edge." },
     max_y = { type = "math.Distance", description = "Bottom edge." },
-    max_z = { type = "math.Distance", description = "South edge." },
+    max_z = { type = "math.Distance", description = "North edge." },
   },
 })
 
