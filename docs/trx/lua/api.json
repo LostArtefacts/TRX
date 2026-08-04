@@ -7974,7 +7974,7 @@
           "type": "math.Distance"
         },
         {
-          "description": "South edge.",
+          "description": "North edge.",
           "name": "max_z",
           "type": "math.Distance"
         },
@@ -7989,7 +7989,7 @@
           "type": "math.Distance"
         },
         {
-          "description": "North edge.",
+          "description": "South edge.",
           "name": "min_z",
           "type": "math.Distance"
         }

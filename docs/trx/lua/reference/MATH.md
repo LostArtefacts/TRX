@@ -67,10 +67,10 @@ Fixed-point trigonometry, matching the engine's own tables. Using these rather t
     Properties:
     - <a id="math.Box.max_x" name="math.Box.max_x"></a>**`max_x`**: [trx.math.Distance](#math.Distance). East edge.
     - <a id="math.Box.max_y" name="math.Box.max_y"></a>**`max_y`**: [trx.math.Distance](#math.Distance). Bottom edge.
-    - <a id="math.Box.max_z" name="math.Box.max_z"></a>**`max_z`**: [trx.math.Distance](#math.Distance). South edge.
+    - <a id="math.Box.max_z" name="math.Box.max_z"></a>**`max_z`**: [trx.math.Distance](#math.Distance). North edge.
     - <a id="math.Box.min_x" name="math.Box.min_x"></a>**`min_x`**: [trx.math.Distance](#math.Distance). West edge.
     - <a id="math.Box.min_y" name="math.Box.min_y"></a>**`min_y`**: [trx.math.Distance](#math.Distance). Top edge.
-    - <a id="math.Box.min_z" name="math.Box.min_z"></a>**`min_z`**: [trx.math.Distance](#math.Distance). North edge.
+    - <a id="math.Box.min_z" name="math.Box.min_z"></a>**`min_z`**: [trx.math.Distance](#math.Distance). South edge.
 
 ### Functions
 
