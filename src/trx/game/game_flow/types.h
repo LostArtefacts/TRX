@@ -125,6 +125,8 @@ typedef struct {
     int32_t num;
     GF_LEVEL_TYPE type;
     char *path;
+    // The stem of path, lower-cased; nullptr for a level that loads no file.
+    char *key;
     char *title;
     // Path to a Lua script executed when this level loads
     char *script_path;

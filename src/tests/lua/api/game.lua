@@ -37,6 +37,12 @@ test("a level carries what the game flow said about it", function()
   assert(caves.unobtainable_secrets == 2)
 end)
 
+test("a level's key reads through", function()
+  assert(trx.game.levels[1].key == "level1")
+  assert(trx.game.levels[2].key == "level2")
+  assert(trx.game.cutscenes[1].key == nil, "a level with no file has no key")
+end)
+
 test("a level is read-only", function()
   raises(function()
     trx.game.levels[1].title = "Nope"

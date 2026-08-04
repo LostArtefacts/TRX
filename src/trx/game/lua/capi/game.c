@@ -36,6 +36,7 @@ static bool M_GetOrdinal(const void *const self, TRX_VALUE *const out)
 // clang-format off
 static const FIELD_DESC m_Fields[] = {
     FIELD_FN("num", TVT_S32, M_GetOrdinal, nullptr),
+    FIELD_RO(GF_LEVEL, key),
     FIELD_RO(GF_LEVEL, type),
     FIELD_RO(GF_LEVEL, path),
     FIELD_RO(GF_LEVEL, title),

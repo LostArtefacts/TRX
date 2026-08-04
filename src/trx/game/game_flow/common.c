@@ -33,6 +33,7 @@ static void M_FreeInjections(INJECTION_DATA *const injections)
 static void M_FreeLevel(GF_LEVEL *const level)
 {
     Memory_FreePointer(&level->path);
+    Memory_FreePointer(&level->key);
     Memory_FreePointer(&level->title);
     Memory_FreePointer(&level->script_path);
     Memory_FreePointer(&level->lara_outfit);

@@ -234,6 +234,7 @@ static void M_Reset(void)
         .type = GFL_GYM,
         .title = "Lara's Home",
         .path = "gym.phd",
+        .key = "gym",
         .lara_outfit = "casual",
         .water_particles = false,
     };
@@ -242,6 +243,7 @@ static void M_Reset(void)
         .type = GFL_NORMAL,
         .title = "Caves",
         .path = "level1.phd",
+        .key = "level1",
         .script_path = "caves.lua",
         .lara_outfit = "default",
         .water_particles = true,
@@ -252,6 +254,7 @@ static void M_Reset(void)
         .type = GFL_NORMAL,
         .title = "Vilcabamba",
         .path = "level2.phd",
+        .key = "level2",
     };
     m_Cutscenes[0] = (GF_LEVEL) {
         .num = 0,

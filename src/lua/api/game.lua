@@ -64,6 +64,18 @@ api.type("game.Level", {
       type = "game.LevelNum",
       writable = false,
     },
+    key = {
+      from = "key",
+      type = "string",
+      writable = false,
+      description = [[What the level is called, taken from the name of the file it loads: `wall.tr2` reads
+back as `wall`. Lower case, regardless of the case on disk, and `nil` for a level that loads no file
+of its own. <!--noref: wall.tr2, wall-->
+
+This is the name to write into a table of per-level data. `trx.game.Level.num` is a position and
+moves as soon as a game flow gains a level, and `trx.game.Level.path` is wherever the file sits on
+this install.]],
+    },
     type = {
       from = "type",
       type = "game.LevelType",

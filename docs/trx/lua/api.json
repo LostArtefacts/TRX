@@ -6561,6 +6561,12 @@
       ],
       "fields": [
         {
+          "description": "What the level is called, taken from the name of the file it loads: `wall.tr2` reads\nback as `wall`. Lower case, regardless of the case on disk, and `nil` for a level that loads no file\nof its own. <!--noref: wall.tr2, wall-->\n\nThis is the name to write into a table of per-level data. `trx.game.Level.num` is a position and\nmoves as soon as a game flow gains a level, and `trx.game.Level.path` is wherever the file sits on\nthis install.",
+          "name": "key",
+          "type": "string",
+          "writable": false
+        },
+        {
           "description": "The outfit Lara starts the level in.",
           "name": "lara_outfit",
           "type": "string",

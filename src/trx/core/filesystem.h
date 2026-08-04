@@ -39,6 +39,10 @@ bool File_Exists(const char *path);
 // Return parent directory component of path (owning string), or nullptr.
 char *File_GetParentDirectory(const char *path);
 
+// Return the name of the file path points at, without its directory and
+// without its extension (owning string), or nullptr when path is nullptr.
+char *File_GetStem(const char *path);
+
 // ============================================================================
 // File handle functions
 
