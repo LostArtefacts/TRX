@@ -1694,6 +1694,10 @@
             "title": "Tresse de Lara",
             "description": "Active la tresse de Lara.",
         },
+        "visuals.enable_lara_combat_face": {
+            "title": "\\{review}",
+            "description": "\\{review}",
+        },        
         "visuals.enable_droplets": {
             "title": "\\{review}Gouttes d'eau",
             "description": "\\{review}Active l'affichage des gouttes d'eau qui tombent de Lara après qu'elle est sortie de l'eau.",

@@ -1694,6 +1694,10 @@
             "title": "Коса Лары",
             "description": "Показывать косу Лары",
         },
+        "visuals.enable_lara_combat_face": {
+            "title": "\\{review}",
+            "description": "\\{review}",
+        },        
         "visuals.enable_droplets": {
             "title": "\\{review}Капли воды",
             "description": "\\{review}Включает отображение капель воды, стекающих с Лары после выхода из воды.",

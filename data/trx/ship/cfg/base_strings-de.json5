@@ -1694,6 +1694,10 @@
             "title": "Laras Zopf",
             "description": "Aktiviert Laras Zopf.",
         },
+        "visuals.enable_lara_combat_face": {
+            "title": "\\{review}",
+            "description": "\\{review}",
+        },        
         "visuals.enable_droplets": {
             "title": "\\{review}Wassertropfen",
             "description": "\\{review}Aktiviert das Anzeigen von Wassertropfen, die von Lara tropfen, nachdem sie das Wasser verlassen hat.",

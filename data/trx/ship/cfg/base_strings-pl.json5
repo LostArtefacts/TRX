@@ -1694,6 +1694,10 @@
             "title": "Warkocz Lary",
             "description": "Włącza warkocz Lary.",
         },
+        "visuals.enable_lara_combat_face": {
+            "title": "\\{review}",
+            "description": "\\{review}",
+        },        
         "visuals.enable_droplets": {
             "title": "\\{review}Krople wody",
             "description": "\\{review}Włącza wyświetlanie kropli wody skapujących z Lary po wyjściu z wody.",

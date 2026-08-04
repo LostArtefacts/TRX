@@ -1694,6 +1694,10 @@
             "title": "Feaman-fuilt Lara",
             "description": "Cuiridh seo feaman-fuilt Lara an comas.",
         },
+        "visuals.enable_lara_combat_face": {
+            "title": "\\{review}",
+            "description": "\\{review}",
+        },
         "visuals.enable_droplets": {
             "title": "Boinnean uisge",
             "description": "Leigeas le boinnean uisge sileadh far Lara às dèidh dhi an t-uisge fhàgail.",
