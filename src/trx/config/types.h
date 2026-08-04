@@ -5,8 +5,6 @@
 #include <trx/core/colors.h>
 #include <trx/gl/enum.h>
 
-#include <stdbool.h>
-
 typedef struct {
     uint32_t time;
     uint32_t attempt_num;
