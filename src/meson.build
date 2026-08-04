@@ -223,6 +223,7 @@ common_sources = [
   'trx/config/common.c',
   'trx/config/enum.c',
   'trx/config/file.c',
+  'trx/config/legacy.c',
   'trx/config/map.c',
   'trx/config/override.c',
   'trx/config/presets.c',
