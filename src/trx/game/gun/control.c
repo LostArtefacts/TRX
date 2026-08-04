@@ -446,7 +446,9 @@ void Gun_Control(void)
 
     case LGS_READY:
         const bool has_rounds = Gun_HasRoundsLeft(lara->gun_type);
-        Lara_Skin_SetCombatFace(has_rounds && g_Input.action);
+        Lara_Skin_SetCombatFace(
+            g_Config.visuals.enable_lara_combat_face && has_rounds
+            && g_Input.action);
         M_RequestCombatCamera();
 
         if (g_Input.action) {

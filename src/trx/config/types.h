@@ -5,6 +5,8 @@
 #include <trx/core/colors.h>
 #include <trx/gl/enum.h>
 
+#include <stdbool.h>
+
 typedef struct {
     uint32_t time;
     uint32_t attempt_num;
@@ -96,6 +98,7 @@ typedef struct {
         bool enable_responsive_mesh_tint;
         char *lara_outfit;
         SUNGLASSES_MODE sunglasses_mode;
+        bool enable_lara_combat_face;
         SHADOW_TYPE shadow_type;
         BLOOD_EFFECTS blood_effects;
         bool enable_skybox;

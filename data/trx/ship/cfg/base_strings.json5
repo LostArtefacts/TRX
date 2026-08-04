@@ -1694,6 +1694,10 @@
             "title": "Lara's braid",
             "description": "Enables Lara's braid.",
         },
+        "visuals.enable_lara_combat_face": {
+            "title": "Lara's combat face",
+            "description": "Enables Lara's combat face.",
+        },
         "visuals.enable_droplets": {
             "title": "Water droplets",
             "description": "Enables rendering of water droplets dripping off Lara after she leaves water.",

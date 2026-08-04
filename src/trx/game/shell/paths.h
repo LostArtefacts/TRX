@@ -19,7 +19,7 @@
     X(GAMES_DIR,        games_dir,        "%games_dir%")                       \
     X(SCREENSHOTS_DIR,  screenshots_dir,  "%screenshots_dir%")                 \
     X(SAVES_DIR,        saves_dir,        "%saves_dir%")                       \
-    X(LEGACY_SAVES_DIR, legacy_saves_dir, "%legacy_saves_dir%")                                                            \
+    X(LEGACY_SAVES_DIR, legacy_saves_dir, "%legacy_saves_dir%")                                                           \
     // clang-format on
 
 typedef enum {

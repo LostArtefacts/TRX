@@ -14,6 +14,7 @@
 - added support for Lara to use animated interactions when picking up thrown flares
 - added a `damage` property to the `O_POWER_SAW` object
 - added a bindable hotkey for using the binoculars
+- added a toggle for disabling Lara's Angry Face
 - improved error messages related to bad command invocations
 - changed the game mode selection option so that Never starts every new game as a regular one (Gameplay → General → Game mode selection)
 - changed reflections UV mapping to be more correct
