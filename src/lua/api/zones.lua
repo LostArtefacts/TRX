@@ -45,7 +45,8 @@ local lookup
 
 -- A copy of the zone list, for a walk that runs script handlers along the way.
 -- One of them may remove a zone, and table.remove would then move the rest out
--- from under the walk.
+-- from under the walk. Every walk that can reach a handler takes one, whether
+-- it calls the handler itself or leaves that to the dispatch below it.
 local function snapshot()
   local out = {}
   for i, zone in ipairs(zones) do
@@ -152,9 +153,9 @@ function control()
     flyby = { pos = trx.camera.pos, room_num = trx.camera.room_num }
   end
 
-  for _, zone in ipairs(zones) do
+  for _, zone in ipairs(snapshot()) do
     local own = state[zone]
-    if own.enabled then
+    if own ~= nil and not own.removed and own.enabled then
       local flyby_inside = flyby ~= nil
         and (own.room_num == nil or flyby.room_num == own.room_num)
         and holds_pos(own, flyby.pos)
@@ -240,7 +241,7 @@ end
 -- the engine lets go of the script that made them, and the next level's script
 -- makes its own, as it does its handlers.
 local function clear()
-  for _, zone in ipairs(zones) do
+  for _, zone in ipairs(snapshot()) do
     local own = state[zone]
     detach_hooks(own)
     own.removed = true
