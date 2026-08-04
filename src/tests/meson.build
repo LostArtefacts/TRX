@@ -244,6 +244,20 @@ unit_tests += {
   'engine': ['config/override.c', 'config/value.c'],
 }
 
+# The migrations that carry an older release's settings file forward. They
+# write to g_Config and to nothing else, so the config layer above them is not
+# here - no option map, no settings file.
+unit_tests += {
+  'name': 'trx/config/legacy',
+  'engine': [
+    'config/legacy.c',
+    'core/json/base.c',
+    'core/json/parse.c',
+    'core/memory.c',
+    'version.c',
+  ],
+}
+
 # The name<->value registry the Lua enum bridge reflects, and the dynamic
 # registry keyed on an opaque token. Both are narrower than b_value, so they
 # stand up only the half they are named for.
