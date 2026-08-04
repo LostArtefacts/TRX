@@ -40,6 +40,8 @@
 - changed skidoo and quad bike crashes to not kill Lara when she is immune
 - changed Lara to say "No" when attempting to use the binoculars when it is not possible to do so
 - changed the installer to explain when it cannot download the files it needs, and to offer to try again (#6052)
+- removed the carrying over of legacy settings from TRX 1.4 and older; a small number of settings from files that old may revert to defaults
+- removed the Japanese NG and Japanese NG+ game modes; a Japanese NG save continues as a regular game, and a Japanese NG+ save as New Game+; refer to migration notes
 - fixed the sun's glare staying on screen in cutscenes once the camera has looked away from it
 - fixed exploding deaths in TR4 showing no flames or explosions
 - fixed Lara's shadow in TR4 being darker than in the original game
@@ -96,7 +98,6 @@
 - fixed Lara moving too quickly towards targets when animated interactions are enabled, which could result in sliding in some cases during long transitions, or not being able to interact with the target at all (regression from Tomb1Main 2.7)
 - fixed Lara being unable to collect some pickups that are very close to edges with a drop when animated interactions are enabled (regression from Tomb1Main 2.7)
 - fixed changing the number of save or quick save slots mid-game discarding the progress of the levels played so far (#6054)
-- removed the Japanese NG and Japanese NG+ game modes; a Japanese NG save continues as a regular game, and a Japanese NG+ save as New Game+; refer to migration notes
 
 **TR1**
 - changed weather to be affected by the breeze
