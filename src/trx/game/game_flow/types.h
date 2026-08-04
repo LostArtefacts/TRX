@@ -128,7 +128,8 @@ typedef struct {
     // The stem of path, lower-cased; nullptr for a level that loads no file.
     char *key;
     char *title;
-    // Path to a Lua script executed when this level loads
+    // Path to the Lua script executed when this level loads: scripts/<key>.lua
+    // where the game ships one, nullptr where it does not.
     char *script_path;
 
     MUSIC_ID music_track;
@@ -222,7 +223,4 @@ typedef struct {
         int32_t count;
         GF_GLOBE_ENTRY *entries;
     } globe;
-
-    // Path to a global Lua script executed after game initialization
-    char *main_script_path;
 } GAME_FLOW;

@@ -348,8 +348,8 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── track59.flac
 │   │   │   └── track60.flac
 │   │   ├── scripts
-│   │   │   ├── atlantis.lua
-│   │   │   └── gym.lua
+│   │   │   ├── gym.lua
+│   │   │   └── level10b.lua
 │   │   ├── catalog_item_actions.csv
 │   │   ├── catalog_lara_anims.csv
 │   │   ├── catalog_lara_states.csv
@@ -774,9 +774,6 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── cut3.lua
 │   │   │   ├── floating.lua
 │   │   │   ├── house.lua
-│   │   │   ├── level1.lua
-│   │   │   ├── level3.lua
-│   │   │   ├── level4.lua
 │   │   │   └── monastry.lua
 │   │   ├── catalog_item_actions.csv
 │   │   ├── catalog_lara_anims.csv
@@ -844,6 +841,10 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── level4.tr2
 │   │   │   ├── level5.tr2
 │   │   │   └── title.tr2
+│   │   ├── scripts
+│   │   │   ├── level1.lua
+│   │   │   ├── level3.lua
+│   │   │   └── level4.lua
 │   │   ├── gameflow.json5
 │   │   ├── main.sfx
 │   │   ├── strings-de.json5
@@ -1108,31 +1109,27 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── tower.tr2
 │   │   │   └── triboss.tr2
 │   │   ├── scripts
-│   │   │   ├── aldwych.lua
 │   │   │   ├── antarc.lua
 │   │   │   ├── area51.lua
 │   │   │   ├── chamber.lua
-│   │   │   ├── chunnel.lua
+│   │   │   ├── city.lua
 │   │   │   ├── compound.lua
 │   │   │   ├── crash.lua
 │   │   │   ├── cut8.lua
-│   │   │   ├── ganges.lua
 │   │   │   ├── house.lua
 │   │   │   ├── jungle.lua
 │   │   │   ├── mines.lua
 │   │   │   ├── nevada.lua
 │   │   │   ├── office.lua
+│   │   │   ├── quadchas.lua
 │   │   │   ├── rapids.lua
+│   │   │   ├── roofs.lua
+│   │   │   ├── sewer.lua
 │   │   │   ├── shore.lua
-│   │   │   ├── slinc.lua
 │   │   │   ├── temple.lua
-│   │   │   ├── thames.lua
-│   │   │   ├── tinnos.lua
 │   │   │   ├── tonyboss.lua
 │   │   │   ├── tower.lua
-│   │   │   ├── triboss.lua
-│   │   │   ├── undersea.lua
-│   │   │   └── zoo.lua
+│   │   │   └── triboss.lua
 │   │   ├── catalog_item_actions.csv
 │   │   ├── catalog_lara_anims.csv
 │   │   ├── catalog_lara_states.csv
@@ -1226,6 +1223,11 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── undersea.tr2
 │   │   │   ├── willsden.tr2
 │   │   │   └── zoo.tr2
+│   │   ├── scripts
+│   │   │   ├── chunnel.lua
+│   │   │   ├── slinc.lua
+│   │   │   ├── undersea.lua
+│   │   │   └── zoo.lua
 │   │   ├── gameflow.json5
 │   │   ├── main.sfx
 │   │   ├── strings-de.json5
@@ -1678,8 +1680,8 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── track59.flac
     │   │   │   │   └── track60.flac
     │   │   │   ├── scripts
-    │   │   │   │   ├── atlantis.lua
-    │   │   │   │   └── gym.lua
+    │   │   │   │   ├── gym.lua
+    │   │   │   │   └── level10b.lua
     │   │   │   ├── catalog_item_actions.csv
     │   │   │   ├── catalog_lara_anims.csv
     │   │   │   ├── catalog_lara_states.csv
@@ -2104,9 +2106,6 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── cut3.lua
     │   │   │   │   ├── floating.lua
     │   │   │   │   ├── house.lua
-    │   │   │   │   ├── level1.lua
-    │   │   │   │   ├── level3.lua
-    │   │   │   │   ├── level4.lua
     │   │   │   │   └── monastry.lua
     │   │   │   ├── catalog_item_actions.csv
     │   │   │   ├── catalog_lara_anims.csv
@@ -2174,6 +2173,10 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── level4.tr2
     │   │   │   │   ├── level5.tr2
     │   │   │   │   └── title.tr2
+    │   │   │   ├── scripts
+    │   │   │   │   ├── level1.lua
+    │   │   │   │   ├── level3.lua
+    │   │   │   │   └── level4.lua
     │   │   │   ├── gameflow.json5
     │   │   │   ├── main.sfx
     │   │   │   ├── strings-de.json5
@@ -2438,31 +2441,27 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── tower.tr2
     │   │   │   │   └── triboss.tr2
     │   │   │   ├── scripts
-    │   │   │   │   ├── aldwych.lua
     │   │   │   │   ├── antarc.lua
     │   │   │   │   ├── area51.lua
     │   │   │   │   ├── chamber.lua
-    │   │   │   │   ├── chunnel.lua
+    │   │   │   │   ├── city.lua
     │   │   │   │   ├── compound.lua
     │   │   │   │   ├── crash.lua
     │   │   │   │   ├── cut8.lua
-    │   │   │   │   ├── ganges.lua
     │   │   │   │   ├── house.lua
     │   │   │   │   ├── jungle.lua
     │   │   │   │   ├── mines.lua
     │   │   │   │   ├── nevada.lua
     │   │   │   │   ├── office.lua
+    │   │   │   │   ├── quadchas.lua
     │   │   │   │   ├── rapids.lua
+    │   │   │   │   ├── roofs.lua
+    │   │   │   │   ├── sewer.lua
     │   │   │   │   ├── shore.lua
-    │   │   │   │   ├── slinc.lua
     │   │   │   │   ├── temple.lua
-    │   │   │   │   ├── thames.lua
-    │   │   │   │   ├── tinnos.lua
     │   │   │   │   ├── tonyboss.lua
     │   │   │   │   ├── tower.lua
-    │   │   │   │   ├── triboss.lua
-    │   │   │   │   ├── undersea.lua
-    │   │   │   │   └── zoo.lua
+    │   │   │   │   └── triboss.lua
     │   │   │   ├── catalog_item_actions.csv
     │   │   │   ├── catalog_lara_anims.csv
     │   │   │   ├── catalog_lara_states.csv
@@ -2556,6 +2555,11 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── undersea.tr2
     │   │   │   │   ├── willsden.tr2
     │   │   │   │   └── zoo.tr2
+    │   │   │   ├── scripts
+    │   │   │   │   ├── chunnel.lua
+    │   │   │   │   ├── slinc.lua
+    │   │   │   │   ├── undersea.lua
+    │   │   │   │   └── zoo.lua
     │   │   │   ├── gameflow.json5
     │   │   │   ├── main.sfx
     │   │   │   ├── strings-de.json5

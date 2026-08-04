@@ -101,7 +101,6 @@
         // 3. Shakespeare Cliff
         {
             "path": "chunnel.tr2",
-            "script": "chunnel.lua",
             "music_track": 74,
             "lara_outfit": "tr3_nevada",
             "sequence": [
@@ -124,7 +123,6 @@
         // 4. Sleeping with the Fishes
         {
             "path": "undersea.tr2",
-            "script": "undersea.lua",
             "music_track": 27,
             "lara_outfit": "tr3_catsuit",
             "sequence": [
@@ -152,7 +150,6 @@
         // 5. It's a Madhouse!
         {
             "path": "zoo.tr2",
-            "script": "zoo.lua",
             "music_track": 34,
             "lara_outfit": "tr3_catsuit",
             "sequence": [
@@ -175,7 +172,6 @@
         // 6. Reunion
         {
             "path": "slinc.tr2",
-            "script": "slinc.lua",
             "music_track": 26,
             "lara_outfit": "tr3_catsuit",
             "sequence": [

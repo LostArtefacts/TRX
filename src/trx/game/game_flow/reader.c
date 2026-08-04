@@ -375,13 +375,6 @@ static bool M_LoadRoot(const M_CONTEXT *const ctx)
     JSON_MUST(JSON_READ(io, "savegame_file_fmt", &tmp_s));
     ctx->gf->savegame_file_fmt = Memory_DupStr(tmp_s);
 
-    tmp_s = nullptr;
-    if (JSON_OPTIONAL(JSON_READ(io, "main_script", &tmp_s))
-        && tmp_s != nullptr) {
-        ctx->gf->main_script_path = Memory_DupStr(
-            TRXPath_TryResolve(TRX_DYNAMIC_PATH_SCRIPT_FILE, tmp_s));
-    }
-
     if (JSON_PUSH(io, "ambient_tracks")) {
         const int32_t count = JSON_ARRAY_LEN(io);
         if (count < 0) {
@@ -850,15 +843,16 @@ static bool M_LoadLevel(
             M_ReadPath(io, "path", false, path_type, &level->path, false));
         level->key = M_MakeLevelKey(level->path);
     }
-    {
-        const char *tmp_script = nullptr;
-        if (JSON_OPTIONAL(JSON_READ(io, "script", &tmp_script))
-            && tmp_script != nullptr) {
-            level->script_path = Memory_DupStr(
-                TRXPath_TryResolve(TRX_DYNAMIC_PATH_SCRIPT_FILE, tmp_script));
-        } else {
-            level->script_path = nullptr;
-        }
+    // A level's script is named after the level: wall.tr2 runs
+    // scripts/wall.lua where the game ships one. Nothing declares it, and a
+    // level without one is the common case, so a miss is silent.
+    if (level->key != nullptr) {
+        // The resolver spells its answer into the same rotating buffers
+        // String_FormatStatic hands out, so what it is asked for is owned here.
+        char *rel = String_Format("%s.lua", level->key);
+        level->script_path = Memory_DupStr(
+            TRXPath_PeekResolve(TRX_DYNAMIC_PATH_LEVEL_SCRIPT_FILE, rel));
+        Memory_FreePointer(&rel);
     }
 
     {
@@ -1014,7 +1008,6 @@ static bool M_LoadGameFlowDoc(
     GF_Shutdown();
 
     M_CONTEXT ctx = { .gf = &g_GameFlow, .validation_mode = validation_mode };
-    ctx.gf->main_script_path = nullptr;
     ctx.gf->path = Memory_DupStr(path);
     ctx.script_path = g_GameFlow.path;
     ctx.io = nullptr;

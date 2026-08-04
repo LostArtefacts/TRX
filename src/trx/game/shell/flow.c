@@ -404,14 +404,7 @@ int32_t Shell_Main(const SHELL_ARGS *const args)
     Savegame_Init();
     SG_Manager_ScanSavedGames();
 
-    // Execute global Lua script if provided
-    if (g_GameFlow.main_script_path != nullptr) {
-        LUA_RESULT res = LUA_EvalFile(g_GameFlow.main_script_path);
-        if (res.code != LUA_OK) {
-            LOG_ERROR("Lua main script error: %s", res.message);
-        }
-        LUA_FreeResult(&res);
-    }
+    LUA_RunGameScript();
 
     Stats_CalculateMaxStats();
     GF_COMMAND gf_cmd = GF_DoFrontendSequence();

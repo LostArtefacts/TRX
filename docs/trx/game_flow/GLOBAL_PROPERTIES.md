@@ -37,8 +37,6 @@ remains distinct for each game.
     "hidden_config": [
         "enable_legal",
     ],
-    // Optional global Lua script file
-    "main_script": "data/scripts/global.lua",
     "levels": [
         {
             "path": "data/gym.phd",
@@ -227,14 +225,6 @@ remains distinct for each game.
     <td>
       This is where the individual level details are defined - see
       <a href="./levels/REGULAR_LEVELS.md">Level properties</a> for full details.
-    </td>
-  </tr>
-  <tr valign="top">
-    <td><code>main_script</code></td>
-    <td>String</td>
-    <td>
-      Path to a global Lua script to execute after game initialization, before
-      the first level loads.
     </td>
   </tr>
   <tr valign="top">

@@ -38,7 +38,15 @@ typedef enum {
     TRX_DYNAMIC_PATH_SHARED_LEVEL_FILE,
     TRX_DYNAMIC_PATH_IMAGE_FILE,
     TRX_DYNAMIC_PATH_INJECTION_FILE,
-    TRX_DYNAMIC_PATH_SCRIPT_FILE,
+    // A level's script, in the scripts/ of the game the level belongs to and
+    // nowhere else. A game that extends another brings its own: a level of the
+    // base game is not the same level once an expansion has changed what is in
+    // it.
+    TRX_DYNAMIC_PATH_LEVEL_SCRIPT_FILE,
+    // A game's _game.lua, falling back to the game it extends: an expansion
+    // with nothing of its own to set up runs the script of the game it sits on
+    // top of.
+    TRX_DYNAMIC_PATH_GAME_SCRIPT_FILE,
     TRX_DYNAMIC_PATH_SFX_FILE,
     TRX_DYNAMIC_PATH_CDAUDIO_FILE,
     TRX_DYNAMIC_PATH_MUSIC_DIR,

@@ -156,12 +156,17 @@ static const M_DYNAMIC_PATH_POLICY m_PathPolicies[TRX_DYNAMIC_PATH_NUMBER_OF] = 
         },
         .check_exists = true,
     },
-    [TRX_DYNAMIC_PATH_SCRIPT_FILE] = {
+    [TRX_DYNAMIC_PATH_LEVEL_SCRIPT_FILE] = {
+        .patterns = {
+            "%mod_dir%/scripts/%rel%",
+            nullptr,
+        },
+        .check_exists = true,
+    },
+    [TRX_DYNAMIC_PATH_GAME_SCRIPT_FILE] = {
         .patterns = {
             "%mod_dir%/scripts/%rel%",
             "%base_mod_dir%/scripts/%rel%",
-            "%trx_dir%/data/scripts/%rel%",
-            "%trx_dir%/%rel%",
             nullptr,
         },
         .check_exists = true,
@@ -580,7 +585,7 @@ static char *M_GetBaseDirForDynamicPath(const TRX_DYNAMIC_PATH path)
         Memory_FreePointer(&legacy_data_dir);
         return result;
     }
-    case TRX_DYNAMIC_PATH_SCRIPT_FILE: {
+    case TRX_DYNAMIC_PATH_LEVEL_SCRIPT_FILE: {
         char *legacy_data_dir = M_GetLegacyDataDir();
         char *result = M_JoinPath(legacy_data_dir, "scripts");
         Memory_FreePointer(&legacy_data_dir);
@@ -1084,7 +1089,7 @@ char *TRXPath_ExpandVars(const char *const in)
     char *injections_dir =
         M_GetBaseDirForDynamicPath(TRX_DYNAMIC_PATH_INJECTION_FILE);
     char *scripts_dir =
-        M_GetBaseDirForDynamicPath(TRX_DYNAMIC_PATH_SCRIPT_FILE);
+        M_GetBaseDirForDynamicPath(TRX_DYNAMIC_PATH_LEVEL_SCRIPT_FILE);
     char *base_mod_dir = M_GetBaseModDir();
     char *tr_version = String_Format("%d", g_TRVersion);
 

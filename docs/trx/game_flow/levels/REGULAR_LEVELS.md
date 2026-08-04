@@ -17,8 +17,6 @@ Following are each of the properties available within a level.
 ```json5
 {
     "path": "data/example.phd",
-    // Optional level Lua script file
-    "script": "data/scripts/level1.lua",
     "music_track": 57,
     "lara_outfit": "tr2_classic",
     "weather_type": "rain",
@@ -58,12 +56,11 @@ Following are each of the properties available within a level.
   <tr valign="top">
     <td><code>path</code></td>
     <td>String<strong>*</strong></td>
-    <td colspan="2">The path to the level's data file.</td>
-  </tr>
-  <tr valign="top">
-    <td><code>script</code></td>
-    <td>String</td>
-    <td colspan="2">Path to a Lua script executed after loading this level.</td>
+    <td colspan="2">
+      The path to the level's data file. Its name is also what the level's Lua
+      script is called: <code>wall.tr2</code> runs
+      <code>scripts/wall.lua</code> where the game ships one.
+    </td>
   </tr>
   <tr valign="top">
     <td rowspan="7">
