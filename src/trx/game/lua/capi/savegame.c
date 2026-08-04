@@ -15,9 +15,9 @@ static SAVEGAME_SLOT_REF M_ResolveSlot(
     if (pool == SAVEGAME_SLOT_POOL_QUICK) {
         // The quick pool is addressed by its on-screen order, which counts only
         // the slots that hold a save.
-        return Savegame_QuickFromVisualIndex(index - 1);
+        return SG_Manager_QuickFromVisualIndex(index - 1);
     }
-    return Savegame_NormalSlot(index - 1);
+    return SG_Manager_NormalSlot(index - 1);
 }
 
 static SAVEGAME_SLOT_POOL M_CheckPool(lua_State *const L, const int arg)
@@ -31,9 +31,9 @@ static int M_L_SavegameSlotCount(lua_State *const L)
 {
     const SAVEGAME_SLOT_POOL pool = M_CheckPool(L, 1);
     if (pool == SAVEGAME_SLOT_POOL_QUICK) {
-        lua_pushinteger(L, Savegame_GetQuickVisualCount());
+        lua_pushinteger(L, SG_Manager_GetQuickVisualCount());
     } else {
-        lua_pushinteger(L, Savegame_GetSlotCount(pool));
+        lua_pushinteger(L, SG_Manager_GetSlotCount(pool));
     }
     return 1;
 }
@@ -43,7 +43,7 @@ static int M_L_SavegameIsFree(lua_State *const L)
 {
     const int32_t index = luaL_checkinteger(L, 1);
     const SAVEGAME_SLOT_POOL pool = M_CheckPool(L, 2);
-    lua_pushboolean(L, Savegame_IsSlotFree(M_ResolveSlot(index, pool)));
+    lua_pushboolean(L, SG_Manager_IsSlotFree(M_ResolveSlot(index, pool)));
     return 1;
 }
 
@@ -54,7 +54,7 @@ static int M_L_SavegameLoad(lua_State *const L)
     const SAVEGAME_SLOT_POOL pool = M_CheckPool(L, 2);
     GF_OverrideCommand((GF_COMMAND) {
         .action = GF_START_SAVED_GAME,
-        .param = Savegame_SlotToParam(M_ResolveSlot(index, pool)),
+        .param = SG_Manager_SlotToParam(M_ResolveSlot(index, pool)),
     });
     return 0;
 }
@@ -66,8 +66,8 @@ static int M_L_SavegameSave(lua_State *const L)
 
     SAVEGAME_SLOT_REF slot;
     if (pool == SAVEGAME_SLOT_POOL_QUICK && lua_isnoneornil(L, 1)) {
-        slot = Savegame_GetNextQuickSlot();
-        if (!Savegame_IsValidSlotRef(slot)) {
+        slot = SG_Manager_GetNextQuickSlot();
+        if (!SG_Manager_IsValidSlotRef(slot)) {
             lua_pushboolean(L, false);
             return 1;
         }

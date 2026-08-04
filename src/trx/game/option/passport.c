@@ -314,11 +314,12 @@ static void M_SetPage(
 
 static void M_DeterminePages(void)
 {
-    const bool can_restart = Savegame_RestartAvailable(Savegame_GetBoundSlot());
+    const bool can_restart =
+        Savegame_RestartAvailable(SG_Manager_GetBoundSlot());
     const bool saving_enabled =
-        Savegame_GetSlotCount(SAVEGAME_SLOT_POOL_NORMAL) > 0
+        SG_Manager_GetSlotCount(SAVEGAME_SLOT_POOL_NORMAL) > 0
         && !g_Config.flow.load_save_disabled;
-    const bool has_saves = Savegame_GetTotalCount() > 0 && saving_enabled;
+    const bool has_saves = SG_Manager_GetTotalCount() > 0 && saving_enabled;
 
     for (M_PAGE_NUMBER i = PAGE_1; i < PAGE_COUNT; i++) {
         m_Priv.pages[i].available = false;
@@ -440,22 +441,22 @@ static bool M_ChooseSaveSlot(
     INVENTORY_ITEM *const inv_item, const UI_SAVE_SLOT_DIALOG_TYPE dialog_type,
     SAVEGAME_SLOT_REF *const selected_slot)
 {
-    *selected_slot = Savegame_InvalidSlot();
+    *selected_slot = SG_Manager_InvalidSlot();
     M_PAGE *const page = M_GetActivePage();
     M_NAV_FRAME *const frame = page->nav.current;
     if (frame->ui.save_slot == nullptr) {
         const int32_t selection = page->nav.stack[page->nav.depth].selection;
         SAVEGAME_SLOT_REF initial_slot = selection != -1
-            ? Savegame_SlotFromParam(selection)
-            : Savegame_InvalidSlot();
-        if (!Savegame_IsValidSlotRef(initial_slot)) {
-            initial_slot = Savegame_GetMostRecentlyUsedSlot();
+            ? SG_Manager_SlotFromParam(selection)
+            : SG_Manager_InvalidSlot();
+        if (!SG_Manager_IsValidSlotRef(initial_slot)) {
+            initial_slot = SG_Manager_GetMostRecentlyUsedSlot();
         }
-        if (!Savegame_IsValidSlotRef(initial_slot)) {
-            initial_slot = Savegame_GetMostRecentlyCreatedSlot();
+        if (!SG_Manager_IsValidSlotRef(initial_slot)) {
+            initial_slot = SG_Manager_GetMostRecentlyCreatedSlot();
         }
-        if (!Savegame_IsValidSlotRef(initial_slot)) {
-            initial_slot = Savegame_NormalSlot(0);
+        if (!SG_Manager_IsValidSlotRef(initial_slot)) {
+            initial_slot = SG_Manager_NormalSlot(0);
         }
         page->nav.current->ui.save_slot =
             UI_SaveSlotDialog_Init(dialog_type, initial_slot);
@@ -497,10 +498,10 @@ static bool M_CheckConfirm(const PASSPORT_ACTION action)
 
 static bool M_HandleLoadGame(INVENTORY_ITEM *const inv_item)
 {
-    SAVEGAME_SLOT_REF selected_slot = Savegame_InvalidSlot();
+    SAVEGAME_SLOT_REF selected_slot = SG_Manager_InvalidSlot();
     const bool result = M_ChooseSaveSlot(
         inv_item, UI_SAVE_SLOT_DIALOG_LOAD_GAME, &selected_slot);
-    if (Savegame_IsValidSlotRef(selected_slot)) {
+    if (SG_Manager_IsValidSlotRef(selected_slot)) {
         M_ConfirmSaveSlot(PASSPORT_ACTION_LOAD_GAME, selected_slot);
     }
     return result;
@@ -508,10 +509,10 @@ static bool M_HandleLoadGame(INVENTORY_ITEM *const inv_item)
 
 static bool M_HandleSaveGame(INVENTORY_ITEM *const inv_item)
 {
-    SAVEGAME_SLOT_REF selected_slot = Savegame_InvalidSlot();
+    SAVEGAME_SLOT_REF selected_slot = SG_Manager_InvalidSlot();
     const bool result = M_ChooseSaveSlot(
         inv_item, UI_SAVE_SLOT_DIALOG_SAVE_GAME, &selected_slot);
-    if (Savegame_IsValidSlotRef(selected_slot)) {
+    if (SG_Manager_IsValidSlotRef(selected_slot)) {
         M_ConfirmSaveSlot(PASSPORT_ACTION_SAVE_GAME, selected_slot);
     }
     return result;
@@ -598,7 +599,7 @@ static bool M_HandlePlayAnyLevel(INVENTORY_ITEM *const inv_item)
         return true;
     } else {
         Game_SetBonusFlag(GBF_NONE);
-        Savegame_UnbindSlot();
+        SG_Manager_UnbindSlot();
         M_Confirm(PASSPORT_ACTION_SELECT_LEVEL, choice);
         return true;
     }
@@ -624,12 +625,12 @@ static bool M_HandlePlayAnyLevelSelectMode(INVENTORY_ITEM *const inv_item)
             return true;
         case UI_NEW_GAME_CHOICE_NG:
             Game_SetBonusFlag(GBF_NONE);
-            Savegame_UnbindSlot();
+            SG_Manager_UnbindSlot();
             M_Confirm(PASSPORT_ACTION_SELECT_LEVEL, level_num);
             return true;
         case UI_NEW_GAME_CHOICE_NGPLUS:
             Game_SetBonusFlag(GBF_NGPLUS);
-            Savegame_UnbindSlot();
+            SG_Manager_UnbindSlot();
             M_Confirm(PASSPORT_ACTION_SELECT_LEVEL, level_num);
             return true;
         default:
@@ -667,13 +668,13 @@ static bool M_HandleSwitchMod(INVENTORY_ITEM *const inv_item)
 
 static bool M_HandlePlayPrevLevelSelectSlot(INVENTORY_ITEM *const inv_item)
 {
-    SAVEGAME_SLOT_REF selected_slot = Savegame_InvalidSlot();
+    SAVEGAME_SLOT_REF selected_slot = SG_Manager_InvalidSlot();
     const bool result =
         M_ChooseSaveSlot(inv_item, UI_SAVE_SLOT_DIALOG_GENERIC, &selected_slot);
-    if (Savegame_IsValidSlotRef(selected_slot)) {
+    if (SG_Manager_IsValidSlotRef(selected_slot)) {
         M_NavigateInto(
             M_ROLE_PLAY_PREV_LEVEL_SELECT_LEVEL,
-            Savegame_SlotToParam(selected_slot));
+            SG_Manager_SlotToParam(selected_slot));
     }
     return result;
 }
@@ -681,13 +682,13 @@ static bool M_HandlePlayPrevLevelSelectSlot(INVENTORY_ITEM *const inv_item)
 static bool M_HandlePlayPrevLevelSelectLevel(INVENTORY_ITEM *const inv_item)
 {
     M_PAGE *const page = M_GetActivePage();
-    const SAVEGAME_SLOT_REF slot =
-        Savegame_SlotFromParam(page->nav.stack[page->nav.depth - 1].selection);
-    if (!Savegame_IsValidSlotRef(slot)) {
+    const SAVEGAME_SLOT_REF slot = SG_Manager_SlotFromParam(
+        page->nav.stack[page->nav.depth - 1].selection);
+    if (!SG_Manager_IsValidSlotRef(slot)) {
         M_NavigateOut(inv_item);
         return true;
     }
-    const SAVEGAME_INFO *const info = Savegame_GetSavegameInfo(slot);
+    const SAVEGAME_INFO *const info = SG_Manager_GetSavegameInfo(slot);
     if (info == nullptr) {
         M_NavigateOut(inv_item);
         return true;
@@ -715,7 +716,7 @@ static bool M_HandlePlayPrevLevelSelectLevel(INVENTORY_ITEM *const inv_item)
         M_NavigateOut(inv_item);
         return true;
     } else {
-        Savegame_BindSlot(slot);
+        SG_Manager_BindSlot(slot);
         M_Confirm(PASSPORT_ACTION_SELECT_LEVEL, choice);
         return true;
     }
@@ -724,12 +725,12 @@ static bool M_HandlePlayPrevLevelSelectLevel(INVENTORY_ITEM *const inv_item)
 
 static bool M_HandleStorySoFar(INVENTORY_ITEM *const inv_item)
 {
-    SAVEGAME_SLOT_REF selected_slot = Savegame_InvalidSlot();
+    SAVEGAME_SLOT_REF selected_slot = SG_Manager_InvalidSlot();
     const bool result =
         M_ChooseSaveSlot(inv_item, UI_SAVE_SLOT_DIALOG_GENERIC, &selected_slot);
-    if (Savegame_IsValidSlotRef(selected_slot)) {
+    if (SG_Manager_IsValidSlotRef(selected_slot)) {
         M_NavigateInto(
-            M_ROLE_STORY_SO_FAR_CONFIRM, Savegame_SlotToParam(selected_slot));
+            M_ROLE_STORY_SO_FAR_CONFIRM, SG_Manager_SlotToParam(selected_slot));
     }
     return result;
 }
@@ -737,8 +738,8 @@ static bool M_HandleStorySoFar(INVENTORY_ITEM *const inv_item)
 static bool M_HandleStorySoFarConfirm(INVENTORY_ITEM *const inv_item)
 {
     M_PAGE *const page = M_GetActivePage();
-    const SAVEGAME_SLOT_REF slot =
-        Savegame_SlotFromParam(page->nav.stack[page->nav.depth - 1].selection);
+    const SAVEGAME_SLOT_REF slot = SG_Manager_SlotFromParam(
+        page->nav.stack[page->nav.depth - 1].selection);
     if (GF_HasAvailableStory(slot)) {
         M_ConfirmSaveSlot(PASSPORT_ACTION_STORY_SO_FAR, slot);
         g_InputDB.menu_confirm = true;

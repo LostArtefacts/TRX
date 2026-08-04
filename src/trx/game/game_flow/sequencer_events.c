@@ -76,7 +76,7 @@ static void M_FinishLevelBasic(void)
         Config_Update();
     }
 
-    RESUME_INFO *const resume = Savegame_GetCurrentInfo(current_level);
+    RESUME_INFO *const resume = SG_Resume_GetEntry(current_level);
     if (resume != nullptr) {
         resume->flags.available = true;
         resume->level_completed = true;
@@ -107,8 +107,8 @@ M_GF_HANDLER(M_HandleLevelComplete)
     if (next_level == nullptr) {
         return (GF_COMMAND) { .action = GF_NOOP };
     }
-    Savegame_PersistGameToCurrentInfo(next_level);
-    RESUME_INFO *const next_resume = Savegame_GetCurrentInfo(next_level);
+    SG_Resume_StoreGameToEntry(next_level);
+    RESUME_INFO *const next_resume = SG_Resume_GetEntry(next_level);
     if (next_resume != nullptr) {
         next_resume->prev_level = current_level->num;
     }
@@ -145,7 +145,7 @@ M_GF_HANDLER(M_HandlePlayLevel)
     // post load
     switch (seq_ctx) {
     case GFSC_SAVED: {
-        const SAVEGAME_SLOT_REF slot = Savegame_GetBoundSlot();
+        const SAVEGAME_SLOT_REF slot = SG_Manager_GetBoundSlot();
         if (!Savegame_Load(slot)) {
             LOG_ERROR("Failed to load save file!");
             Game_SetCurrentLevel(nullptr);
@@ -160,7 +160,7 @@ M_GF_HANDLER(M_HandlePlayLevel)
             Savegame_SetInitialVersion(SG_CURRENT_VERSION);
             GF_InventoryModifier_Scan(Game_GetCurrentLevel());
             GF_InventoryModifier_Apply(Game_GetCurrentLevel(), GF_INV_REGULAR);
-            const RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
+            const RESUME_INFO *const resume = SG_Resume_GetEntry(level);
             if (resume != nullptr && resume->burning) {
                 Lara_CatchFire();
             }
@@ -356,9 +356,8 @@ M_GF_HANDLER(M_HandleGlobeSelect)
         const GF_LEVEL *const current_level = Game_GetCurrentLevel();
         const GF_LEVEL *const next_level = GF_GetLevel(GFLT_MAIN, gf_cmd.param);
         if (next_level != nullptr) {
-            Savegame_PersistGameToCurrentInfo(next_level);
-            RESUME_INFO *const next_resume =
-                Savegame_GetCurrentInfo(next_level);
+            SG_Resume_StoreGameToEntry(next_level);
+            RESUME_INFO *const next_resume = SG_Resume_GetEntry(next_level);
             if (next_resume != nullptr) {
                 next_resume->prev_level =
                     current_level != nullptr ? current_level->num : -1;

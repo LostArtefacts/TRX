@@ -14,7 +14,7 @@ static SAVEGAME_VERSION m_InitialVersion = SG_VERSION_LEGACY;
 
 static void M_LoadPreprocess(void)
 {
-    Savegame_InitCurrentInfo();
+    SG_Resume_ResetAllEntries();
 }
 
 static void M_LoadPostprocess(void)
@@ -60,14 +60,14 @@ void Savegame_SetInitialVersion(const SAVEGAME_VERSION version)
 
 void Savegame_Init(void)
 {
-    Savegame_Resume_Init();
-    Savegame_Manager_Init();
+    SG_Resume_Init();
+    SG_Manager_Init();
 }
 
 void Savegame_Shutdown(void)
 {
-    Savegame_Manager_Shutdown();
-    Savegame_Resume_Shutdown();
+    SG_Manager_Shutdown();
+    SG_Resume_Shutdown();
 }
 
 bool Savegame_IsManualSaveAllowed(void)
@@ -102,28 +102,21 @@ void Savegame_ProcessItemsBeforeLoad(void)
 
 bool Savegame_Save(const SAVEGAME_SLOT_REF slot)
 {
-    if (!Savegame_IsValidSlotRef(slot)) {
+    if (!SG_Manager_IsValidSlotRef(slot)) {
         return false;
     }
-    Savegame_BindSlot(slot);
+    SG_Manager_BindSlot(slot);
 
     const GF_LEVEL *const current_level = Game_GetCurrentLevel();
-    Savegame_PersistGameToCurrentInfo(current_level);
+    SG_Resume_StoreGameToEntry(current_level);
+    SG_Resume_MirrorCurrentEntry(current_level);
 
-    const GF_LEVEL_TABLE *const level_table = GF_GetLevelTable(GFLT_MAIN);
-    for (int32_t i = 0; i < level_table->count; i++) {
-        const GF_LEVEL *const level = &level_table->levels[i];
-        if (level->type == GFL_CURRENT) {
-            Savegame_SetCurrentInfo(i, current_level->num);
-        }
-    }
-
-    return Savegame_Manager_WriteSlot(slot);
+    return SG_Manager_WriteSlot(slot);
 }
 
 bool Savegame_Load(const SAVEGAME_SLOT_REF slot)
 {
-    const SAVEGAME_INFO *const savegame_info = Savegame_GetSavegameInfo(slot);
+    const SAVEGAME_INFO *const savegame_info = SG_Manager_GetSavegameInfo(slot);
     if (savegame_info == nullptr) {
         return false;
     }
@@ -146,7 +139,7 @@ bool Savegame_Load(const SAVEGAME_SLOT_REF slot)
 bool Savegame_UpdateDeathCounters(
     const SAVEGAME_SLOT_REF slot, const int32_t death_count)
 {
-    const SAVEGAME_INFO *const savegame_info = Savegame_GetSavegameInfo(slot);
+    const SAVEGAME_INFO *const savegame_info = SG_Manager_GetSavegameInfo(slot);
     if (savegame_info == nullptr) {
         return false;
     }
@@ -165,7 +158,7 @@ bool Savegame_UpdateDeathCounters(
 
 bool Savegame_LoadOnlyResumeInfo(const SAVEGAME_SLOT_REF slot)
 {
-    const SAVEGAME_INFO *const savegame_info = Savegame_GetSavegameInfo(slot);
+    const SAVEGAME_INFO *const savegame_info = SG_Manager_GetSavegameInfo(slot);
     if (savegame_info == nullptr) {
         return false;
     }
@@ -184,9 +177,9 @@ bool Savegame_LoadOnlyResumeInfo(const SAVEGAME_SLOT_REF slot)
 
 bool Savegame_RestartAvailable(const SAVEGAME_SLOT_REF slot)
 {
-    if (!Savegame_IsValidSlotRef(slot)) {
+    if (!SG_Manager_IsValidSlotRef(slot)) {
         return true;
     }
-    const SAVEGAME_INFO *const savegame_info = Savegame_GetSavegameInfo(slot);
+    const SAVEGAME_INFO *const savegame_info = SG_Manager_GetSavegameInfo(slot);
     return savegame_info->features.restart;
 }

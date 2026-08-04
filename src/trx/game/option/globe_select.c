@@ -47,7 +47,7 @@ static bool M_IsLevelCompleted(const int32_t level_ordinal)
     if (level == nullptr) {
         return false;
     }
-    const RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
+    const RESUME_INFO *const resume = SG_Resume_GetEntry(level);
     return resume != nullptr && resume->level_completed;
 }
 

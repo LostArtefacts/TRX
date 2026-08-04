@@ -207,9 +207,9 @@ void Shell_HandleConfigChange(const CONFIG *const old, const CONFIG *const new)
 
     if ((L_CHANGED(gameplay.maximum_save_slots)
          || L_CHANGED(gameplay.maximum_quick_save_slots))
-        && Savegame_IsInitialised()) {
-        Savegame_ResizeSlots();
-        Savegame_ScanSavedGames();
+        && SG_Manager_IsInitialised()) {
+        SG_Manager_ResizeSlots();
+        SG_Manager_ScanSavedGames();
     }
 
     if (L_CHANGED(input.enable_touch_controls)) {

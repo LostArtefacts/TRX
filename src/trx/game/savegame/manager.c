@@ -94,8 +94,8 @@ static void M_ClearSlots(void)
 
 static void M_AllocSlots(void)
 {
-    m_SaveSlots = Savegame_GetSlotCount(SAVEGAME_SLOT_POOL_NORMAL);
-    m_QuickSaveSlots = Savegame_GetSlotCount(SAVEGAME_SLOT_POOL_QUICK);
+    m_SaveSlots = SG_Manager_GetSlotCount(SAVEGAME_SLOT_POOL_NORMAL);
+    m_QuickSaveSlots = SG_Manager_GetSlotCount(SAVEGAME_SLOT_POOL_QUICK);
     m_NormalSavegameInfo = Memory_Alloc(sizeof(SAVEGAME_INFO) * m_SaveSlots);
     m_QuickSavegameInfo = m_QuickSaveSlots > 0
         ? Memory_Alloc(sizeof(SAVEGAME_INFO) * m_QuickSaveSlots)
@@ -159,7 +159,7 @@ static void M_ScanSavedGamesDir(const char *const dir_path)
             Memory_FreePointer(&pattern_ci);
 
             if (parsed != 1 || slot_idx < 0
-                || slot_idx >= Savegame_GetSlotCount(pool)) {
+                || slot_idx >= SG_Manager_GetSlotCount(pool)) {
                 continue;
             }
 
@@ -179,8 +179,8 @@ static void M_ScanSavedGamesDir(const char *const dir_path)
 static bool M_IsQuickSlotSortedBefore(
     const SAVEGAME_SLOT_REF left, const SAVEGAME_SLOT_REF right)
 {
-    const SAVEGAME_INFO *const left_info = Savegame_GetSavegameInfo(left);
-    const SAVEGAME_INFO *const right_info = Savegame_GetSavegameInfo(right);
+    const SAVEGAME_INFO *const left_info = SG_Manager_GetSavegameInfo(left);
+    const SAVEGAME_INFO *const right_info = SG_Manager_GetSavegameInfo(right);
     if (left_info == nullptr || right_info == nullptr) {
         return false;
     }
@@ -190,10 +190,10 @@ static bool M_IsQuickSlotSortedBefore(
     return left.index < right.index;
 }
 
-void Savegame_BindSlot(const SAVEGAME_SLOT_REF slot)
+void SG_Manager_BindSlot(const SAVEGAME_SLOT_REF slot)
 {
-    if (!Savegame_IsValidSlotRef(slot)) {
-        m_BoundSlot = Savegame_InvalidSlot();
+    if (!SG_Manager_IsValidSlotRef(slot)) {
+        m_BoundSlot = SG_Manager_InvalidSlot();
         return;
     }
     m_BoundSlot = slot;
@@ -201,50 +201,50 @@ void Savegame_BindSlot(const SAVEGAME_SLOT_REF slot)
     LOG_DEBUG("Binding save slot %d:%d", slot.pool, slot.index);
 }
 
-SAVEGAME_SLOT_REF Savegame_GetMostRecentlyUsedSlot(void)
+SAVEGAME_SLOT_REF SG_Manager_GetMostRecentlyUsedSlot(void)
 {
     return m_MostRecentlyUsedSlot;
 }
 
-void Savegame_UnbindSlot(void)
+void SG_Manager_UnbindSlot(void)
 {
     LOG_DEBUG("Resetting the save slot");
-    m_BoundSlot = Savegame_InvalidSlot();
+    m_BoundSlot = SG_Manager_InvalidSlot();
 }
 
-SAVEGAME_SLOT_REF Savegame_GetBoundSlot(void)
+SAVEGAME_SLOT_REF SG_Manager_GetBoundSlot(void)
 {
     return m_BoundSlot;
 }
 
-int32_t Savegame_GetLevelNumber(const SAVEGAME_SLOT_REF slot)
+int32_t SG_Manager_GetLevelNumber(const SAVEGAME_SLOT_REF slot)
 {
-    const SAVEGAME_INFO *const info = Savegame_GetSavegameInfo(slot);
+    const SAVEGAME_INFO *const info = SG_Manager_GetSavegameInfo(slot);
     return info != nullptr ? info->level_num : -1;
 }
 
-bool Savegame_IsSlotFree(const SAVEGAME_SLOT_REF slot)
+bool SG_Manager_IsSlotFree(const SAVEGAME_SLOT_REF slot)
 {
-    const SAVEGAME_INFO *const info = Savegame_GetSavegameInfo(slot);
+    const SAVEGAME_INFO *const info = SG_Manager_GetSavegameInfo(slot);
     return info == nullptr || info->level_num == -1;
 }
 
-int32_t Savegame_GetCounter(void)
+int32_t SG_Manager_GetCounter(void)
 {
     return m_SaveCounter;
 }
 
-int32_t Savegame_GetTotalCount(void)
+int32_t SG_Manager_GetTotalCount(void)
 {
     return m_SavedGames;
 }
 
-SAVEGAME_SLOT_REF Savegame_GetMostRecentlyCreatedSlot(void)
+SAVEGAME_SLOT_REF SG_Manager_GetMostRecentlyCreatedSlot(void)
 {
     return m_MostRecentlyCreatedSlot;
 }
 
-SAVEGAME_SLOT_REF Savegame_NormalSlot(const int32_t index)
+SAVEGAME_SLOT_REF SG_Manager_NormalSlot(const int32_t index)
 {
     return (SAVEGAME_SLOT_REF) {
         .pool = SAVEGAME_SLOT_POOL_NORMAL,
@@ -252,7 +252,7 @@ SAVEGAME_SLOT_REF Savegame_NormalSlot(const int32_t index)
     };
 }
 
-SAVEGAME_SLOT_REF Savegame_QuickSlot(const int32_t index)
+SAVEGAME_SLOT_REF SG_Manager_QuickSlot(const int32_t index)
 {
     return (SAVEGAME_SLOT_REF) {
         .pool = SAVEGAME_SLOT_POOL_QUICK,
@@ -260,7 +260,7 @@ SAVEGAME_SLOT_REF Savegame_QuickSlot(const int32_t index)
     };
 }
 
-SAVEGAME_SLOT_REF Savegame_InvalidSlot(void)
+SAVEGAME_SLOT_REF SG_Manager_InvalidSlot(void)
 {
     return (SAVEGAME_SLOT_REF) {
         .pool = SAVEGAME_SLOT_POOL_NORMAL,
@@ -268,26 +268,26 @@ SAVEGAME_SLOT_REF Savegame_InvalidSlot(void)
     };
 }
 
-bool Savegame_IsValidSlotRef(const SAVEGAME_SLOT_REF slot)
+bool SG_Manager_IsValidSlotRef(const SAVEGAME_SLOT_REF slot)
 {
     return slot.pool >= SAVEGAME_SLOT_POOL_NORMAL
         && slot.pool < SAVEGAME_SLOT_POOL_NUMBER_OF && slot.index >= 0
-        && slot.index < Savegame_GetSlotCount(slot.pool);
+        && slot.index < SG_Manager_GetSlotCount(slot.pool);
 }
 
-int32_t Savegame_SlotToParam(const SAVEGAME_SLOT_REF slot)
+int32_t SG_Manager_SlotToParam(const SAVEGAME_SLOT_REF slot)
 {
-    if (!Savegame_IsValidSlotRef(slot)) {
+    if (!SG_Manager_IsValidSlotRef(slot)) {
         return -1;
     }
     const uint32_t packed = ((uint32_t)slot.pool << 31) | (uint32_t)slot.index;
     return (int32_t)packed;
 }
 
-SAVEGAME_SLOT_REF Savegame_SlotFromParam(const int32_t param)
+SAVEGAME_SLOT_REF SG_Manager_SlotFromParam(const int32_t param)
 {
     if (param == -1) {
-        return Savegame_InvalidSlot();
+        return SG_Manager_InvalidSlot();
     }
 
     const uint32_t packed = (uint32_t)param;
@@ -299,28 +299,28 @@ SAVEGAME_SLOT_REF Savegame_SlotFromParam(const int32_t param)
     };
 }
 
-void Savegame_Manager_Init(void)
+void SG_Manager_Init(void)
 {
     M_AllocSlots();
 }
 
-void Savegame_Manager_Shutdown(void)
+void SG_Manager_Shutdown(void)
 {
     M_FreeSlots();
 }
 
-bool Savegame_IsInitialised(void)
+bool SG_Manager_IsInitialised(void)
 {
     return m_NormalSavegameInfo != nullptr;
 }
 
-void Savegame_ResizeSlots(void)
+void SG_Manager_ResizeSlots(void)
 {
     M_FreeSlots();
     M_AllocSlots();
 }
 
-int32_t Savegame_GetSlotCount(const SAVEGAME_SLOT_POOL pool)
+int32_t SG_Manager_GetSlotCount(const SAVEGAME_SLOT_POOL pool)
 {
     switch (pool) {
     case SAVEGAME_SLOT_POOL_NORMAL:
@@ -333,48 +333,48 @@ int32_t Savegame_GetSlotCount(const SAVEGAME_SLOT_POOL pool)
     return 0;
 }
 
-SAVEGAME_SLOT_REF Savegame_GetNextQuickSlot(void)
+SAVEGAME_SLOT_REF SG_Manager_GetNextQuickSlot(void)
 {
     if (m_QuickSaveSlots <= 0) {
-        return Savegame_InvalidSlot();
+        return SG_Manager_InvalidSlot();
     }
     if (m_NextQuickSlot < 0 || m_NextQuickSlot >= m_QuickSaveSlots) {
         m_NextQuickSlot = 0;
     }
-    return Savegame_QuickSlot(m_NextQuickSlot);
+    return SG_Manager_QuickSlot(m_NextQuickSlot);
 }
 
-int32_t Savegame_GetQuickVisualCount(void)
+int32_t SG_Manager_GetQuickVisualCount(void)
 {
     int32_t count = 0;
     const int32_t quick_slot_count =
-        Savegame_GetSlotCount(SAVEGAME_SLOT_POOL_QUICK);
+        SG_Manager_GetSlotCount(SAVEGAME_SLOT_POOL_QUICK);
     for (int32_t i = 0; i < quick_slot_count; i++) {
-        if (!Savegame_IsSlotFree(Savegame_QuickSlot(i))) {
+        if (!SG_Manager_IsSlotFree(SG_Manager_QuickSlot(i))) {
             count++;
         }
     }
     return count;
 }
 
-SAVEGAME_SLOT_REF Savegame_QuickFromVisualIndex(const int32_t visual_index)
+SAVEGAME_SLOT_REF SG_Manager_QuickFromVisualIndex(const int32_t visual_index)
 {
     if (visual_index < 0) {
-        return Savegame_InvalidSlot();
+        return SG_Manager_InvalidSlot();
     }
 
     const int32_t quick_slot_count =
-        Savegame_GetSlotCount(SAVEGAME_SLOT_POOL_QUICK);
+        SG_Manager_GetSlotCount(SAVEGAME_SLOT_POOL_QUICK);
     for (int32_t i = 0; i < quick_slot_count; i++) {
-        const SAVEGAME_SLOT_REF candidate = Savegame_QuickSlot(i);
-        if (Savegame_IsSlotFree(candidate)) {
+        const SAVEGAME_SLOT_REF candidate = SG_Manager_QuickSlot(i);
+        if (SG_Manager_IsSlotFree(candidate)) {
             continue;
         }
 
         int32_t better_count = 0;
         for (int32_t j = 0; j < quick_slot_count; j++) {
-            const SAVEGAME_SLOT_REF other = Savegame_QuickSlot(j);
-            if (Savegame_IsSlotFree(other)) {
+            const SAVEGAME_SLOT_REF other = SG_Manager_QuickSlot(j);
+            if (SG_Manager_IsSlotFree(other)) {
                 continue;
             }
             if (M_IsQuickSlotSortedBefore(other, candidate)) {
@@ -387,22 +387,23 @@ SAVEGAME_SLOT_REF Savegame_QuickFromVisualIndex(const int32_t visual_index)
         }
     }
 
-    return Savegame_InvalidSlot();
+    return SG_Manager_InvalidSlot();
 }
 
-int32_t Savegame_QuickToVisualIndex(const SAVEGAME_SLOT_REF slot)
+int32_t SG_Manager_QuickToVisualIndex(const SAVEGAME_SLOT_REF slot)
 {
-    if (!Savegame_IsValidSlotRef(slot) || slot.pool != SAVEGAME_SLOT_POOL_QUICK
-        || Savegame_IsSlotFree(slot)) {
+    if (!SG_Manager_IsValidSlotRef(slot)
+        || slot.pool != SAVEGAME_SLOT_POOL_QUICK
+        || SG_Manager_IsSlotFree(slot)) {
         return -1;
     }
 
     const int32_t quick_slot_count =
-        Savegame_GetSlotCount(SAVEGAME_SLOT_POOL_QUICK);
+        SG_Manager_GetSlotCount(SAVEGAME_SLOT_POOL_QUICK);
     int32_t better_count = 0;
     for (int32_t i = 0; i < quick_slot_count; i++) {
-        const SAVEGAME_SLOT_REF other = Savegame_QuickSlot(i);
-        if (Savegame_IsSlotFree(other)) {
+        const SAVEGAME_SLOT_REF other = SG_Manager_QuickSlot(i);
+        if (SG_Manager_IsSlotFree(other)) {
             continue;
         }
         if (M_IsQuickSlotSortedBefore(other, slot)) {
@@ -412,19 +413,19 @@ int32_t Savegame_QuickToVisualIndex(const SAVEGAME_SLOT_REF slot)
     return better_count;
 }
 
-const SAVEGAME_INFO *Savegame_GetSavegameInfo(const SAVEGAME_SLOT_REF slot)
+const SAVEGAME_INFO *SG_Manager_GetSavegameInfo(const SAVEGAME_SLOT_REF slot)
 {
     return M_GetSavegameInfoSlot(slot);
 }
 
-void Savegame_ScanSavedGames(void)
+void SG_Manager_ScanSavedGames(void)
 {
     BENCHMARK benchmark = Benchmark_Start();
     M_ClearSlots();
 
     m_SaveCounter = 0;
     m_SavedGames = 0;
-    m_MostRecentlyCreatedSlot = Savegame_InvalidSlot();
+    m_MostRecentlyCreatedSlot = SG_Manager_InvalidSlot();
     m_NextQuickSlot = 0;
     int32_t newest_quick_counter = -1;
     int32_t newest_quick_slot = -1;
@@ -444,7 +445,7 @@ void Savegame_ScanSavedGames(void)
 
     for (SAVEGAME_SLOT_POOL pool = 0; pool < SAVEGAME_SLOT_POOL_NUMBER_OF;
          pool++) {
-        for (int32_t i = 0; i < Savegame_GetSlotCount(pool); i++) {
+        for (int32_t i = 0; i < SG_Manager_GetSlotCount(pool); i++) {
             SAVEGAME_INFO *const savegame_info = M_GetSavegameInfoSlot(
                 (SAVEGAME_SLOT_REF) { .pool = pool, .index = i });
             if (savegame_info->level_title == nullptr) {
@@ -472,7 +473,7 @@ void Savegame_ScanSavedGames(void)
     Benchmark_End(&benchmark, nullptr);
 }
 
-bool Savegame_Manager_WriteSlot(const SAVEGAME_SLOT_REF slot)
+bool SG_Manager_WriteSlot(const SAVEGAME_SLOT_REF slot)
 {
     SAVEGAME_INFO *const savegame_info = M_GetSavegameInfoSlot(slot);
     if (savegame_info == nullptr) {
@@ -516,9 +517,9 @@ bool Savegame_Manager_WriteSlot(const SAVEGAME_SLOT_REF slot)
     return result;
 }
 
-bool Savegame_Delete(const SAVEGAME_SLOT_REF slot)
+bool SG_Manager_Delete(const SAVEGAME_SLOT_REF slot)
 {
-    if (!Savegame_IsValidSlotRef(slot) || Savegame_IsSlotFree(slot)) {
+    if (!SG_Manager_IsValidSlotRef(slot) || SG_Manager_IsSlotFree(slot)) {
         return false;
     }
 
@@ -537,15 +538,15 @@ bool Savegame_Delete(const SAVEGAME_SLOT_REF slot)
         m_SavedGames--;
     }
     if (m_BoundSlot.pool == slot.pool && m_BoundSlot.index == slot.index) {
-        m_BoundSlot = Savegame_InvalidSlot();
+        m_BoundSlot = SG_Manager_InvalidSlot();
     }
     if (m_MostRecentlyUsedSlot.pool == slot.pool
         && m_MostRecentlyUsedSlot.index == slot.index) {
-        m_MostRecentlyUsedSlot = Savegame_InvalidSlot();
+        m_MostRecentlyUsedSlot = SG_Manager_InvalidSlot();
     }
     if (m_MostRecentlyCreatedSlot.pool == slot.pool
         && m_MostRecentlyCreatedSlot.index == slot.index) {
-        m_MostRecentlyCreatedSlot = Savegame_InvalidSlot();
+        m_MostRecentlyCreatedSlot = SG_Manager_InvalidSlot();
     }
     return true;
 }

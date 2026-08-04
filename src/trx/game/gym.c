@@ -141,7 +141,7 @@ static void M_Assault_Finish(void)
         return;
     }
 
-    RESUME_INFO *const resume = Savegame_GetCurrentInfo(Game_GetCurrentLevel());
+    RESUME_INFO *const resume = SG_Resume_GetEntry(Game_GetCurrentLevel());
 
     uint32_t final_time = resume->stats.timer;
     if (g_TRVersion >= 3) {
@@ -202,7 +202,7 @@ static void M_Racetrack_Finish(void)
         return;
     }
 
-    RESUME_INFO *const resume = Savegame_GetCurrentInfo(Game_GetCurrentLevel());
+    RESUME_INFO *const resume = SG_Resume_GetEntry(Game_GetCurrentLevel());
     uint32_t final_time = resume->stats.timer;
     CLAMPG(final_time, M_MAX_ASSAULT_TIME_FRAMES);
     resume->stats.timer = final_time;
@@ -375,7 +375,7 @@ void Gym_TrackManager_Start(const GYM_TRACK_TYPE track)
     M_PRIV *const p = &m_Priv;
     p->active_track_type = track;
 
-    RESUME_INFO *const resume = Savegame_GetCurrentInfo(Game_GetCurrentLevel());
+    RESUME_INFO *const resume = SG_Resume_GetEntry(Game_GetCurrentLevel());
     resume->stats.timer = 0;
 
     switch (track) {

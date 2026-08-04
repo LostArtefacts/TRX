@@ -97,8 +97,8 @@ static void M_SaveRaw(
     };
     const SAVEGAME_BSON_EXTENDED_HEADER extra_header = {
         .flags = Game_GetBonusFlag() | (is_quick ? SAVEGAME_EXT_FLAG_QUICK : 0),
-        .counter =
-            JSON_ObjectGetInt(root_obj, "save_counter", Savegame_GetCounter()),
+        .counter = JSON_ObjectGetInt(
+            root_obj, "save_counter", SG_Manager_GetCounter()),
         .level_num = level->num,
         .title_size = level->title != nullptr ? strlen(level->title) : 0,
     };

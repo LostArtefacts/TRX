@@ -10,45 +10,45 @@
 #include <trx/game/game_flow.h>
 #include <trx/game/savegame.h>
 
-int32_t Savegame_GetSlotCount(const SAVEGAME_SLOT_POOL pool)
+int32_t SG_Manager_GetSlotCount(const SAVEGAME_SLOT_POOL pool)
 {
     return pool == SAVEGAME_SLOT_POOL_QUICK ? 4 : 3;
 }
 
-int32_t Savegame_GetQuickVisualCount(void)
+int32_t SG_Manager_GetQuickVisualCount(void)
 {
     return 2;
 }
 
-SAVEGAME_SLOT_REF Savegame_NormalSlot(const int32_t index)
+SAVEGAME_SLOT_REF SG_Manager_NormalSlot(const int32_t index)
 {
     return (SAVEGAME_SLOT_REF) { .pool = SAVEGAME_SLOT_POOL_NORMAL,
                                  .index = index };
 }
 
-SAVEGAME_SLOT_REF Savegame_QuickFromVisualIndex(const int32_t visual_index)
+SAVEGAME_SLOT_REF SG_Manager_QuickFromVisualIndex(const int32_t visual_index)
 {
     return (SAVEGAME_SLOT_REF) { .pool = SAVEGAME_SLOT_POOL_QUICK,
                                  .index = visual_index };
 }
 
 // The first normal slot holds a save; every other slot is empty.
-bool Savegame_IsSlotFree(const SAVEGAME_SLOT_REF slot)
+bool SG_Manager_IsSlotFree(const SAVEGAME_SLOT_REF slot)
 {
     return !(slot.pool == SAVEGAME_SLOT_POOL_NORMAL && slot.index == 0);
 }
 
-int32_t Savegame_SlotToParam(const SAVEGAME_SLOT_REF slot)
+int32_t SG_Manager_SlotToParam(const SAVEGAME_SLOT_REF slot)
 {
     return slot.index;
 }
 
-SAVEGAME_SLOT_REF Savegame_GetNextQuickSlot(void)
+SAVEGAME_SLOT_REF SG_Manager_GetNextQuickSlot(void)
 {
     return (SAVEGAME_SLOT_REF) { .pool = SAVEGAME_SLOT_POOL_QUICK, .index = 3 };
 }
 
-bool Savegame_IsValidSlotRef(const SAVEGAME_SLOT_REF slot)
+bool SG_Manager_IsValidSlotRef(const SAVEGAME_SLOT_REF slot)
 {
     return slot.index >= 0;
 }

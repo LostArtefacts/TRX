@@ -94,7 +94,7 @@ static int32_t M_GetStartingHitPoints(void)
 {
     if (g_Config.gameplay.disable_healing_between_levels) {
         const GF_LEVEL *const current_level = Game_GetCurrentLevel();
-        RESUME_INFO *const resume = Savegame_GetCurrentInfo(current_level);
+        RESUME_INFO *const resume = SG_Resume_GetEntry(current_level);
         if (resume != nullptr) {
             return resume->lara_hitpoints;
         }
@@ -202,7 +202,7 @@ void Lara_InitialiseInventory(const GF_LEVEL *const level)
     Inv_RemoveAllItems();
 
     LARA_INFO *const lara_info = Lara_GetLaraInfo();
-    RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
+    RESUME_INFO *const resume = SG_Resume_GetEntry(level);
 
     if (resume != nullptr) {
         Inv_SetState(&resume->inv);

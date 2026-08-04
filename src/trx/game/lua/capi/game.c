@@ -220,8 +220,8 @@ static int M_L_GamePlayLevel(lua_State *const L)
 
     const GF_LEVEL *const current_level = GF_GetCurrentLevel();
     if (current_level != nullptr) {
-        Savegame_PersistGameToCurrentInfo(next_level);
-        RESUME_INFO *const resume = Savegame_GetCurrentInfo(next_level);
+        SG_Resume_StoreGameToEntry(next_level);
+        RESUME_INFO *const resume = SG_Resume_GetEntry(next_level);
         if (resume != nullptr) {
             resume->prev_level = current_level->num;
         }

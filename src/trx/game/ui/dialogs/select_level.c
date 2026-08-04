@@ -36,7 +36,7 @@ UI_SELECT_LEVEL_DIALOG_STATE *UI_SelectLevelDialog_Init(
     s->save_slot = save_slot;
     s->rows = Vector_Create(sizeof(M_ROW));
 
-    const SAVEGAME_INFO *const info = Savegame_GetSavegameInfo(save_slot);
+    const SAVEGAME_INFO *const info = SG_Manager_GetSavegameInfo(save_slot);
     ASSERT(info != nullptr);
     ASSERT(info->features.select_level);
 
@@ -44,7 +44,7 @@ UI_SELECT_LEVEL_DIALOG_STATE *UI_SelectLevelDialog_Init(
     const GF_LEVEL_TABLE *const level_table = GF_GetLevelTable(GFLT_MAIN);
     for (int32_t i = 0; i <= info->level_num && i < level_table->count; i++) {
         const GF_LEVEL *const level = &level_table->levels[i];
-        const RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
+        const RESUME_INFO *const resume = SG_Resume_GetEntry(level);
         if (resume != nullptr && resume->flags.available
             && level->type != GFL_GYM) {
             Vector_Add(
@@ -83,7 +83,7 @@ void UI_SelectLevelDialog(UI_SELECT_LEVEL_DIALOG_STATE *const s)
     UI_BeginBasePassportDialog();
     UI_BeginRequester(&s->req, GS("general/passport/select_level"));
 
-    const SAVEGAME_INFO *info = Savegame_GetSavegameInfo(s->save_slot);
+    const SAVEGAME_INFO *info = SG_Manager_GetSavegameInfo(s->save_slot);
     for (int32_t i = 0; i < s->rows->count; i++) {
         if (UI_Requester_IsRowVisible(&s->req, i)) {
             const M_ROW *const row = Vector_Get(s->rows, i);

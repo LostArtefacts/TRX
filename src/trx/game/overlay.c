@@ -195,7 +195,7 @@ static void M_DrawTrackTimer(const GYM_TRACK_TYPE track_type)
     }
 
     const RESUME_INFO *const resume =
-        Savegame_GetCurrentInfo(Game_GetCurrentLevel());
+        SG_Resume_GetEntry(Game_GetCurrentLevel());
     const char *const buffer =
         M_FormatAssaultTimeText(resume->stats.timer, false);
 

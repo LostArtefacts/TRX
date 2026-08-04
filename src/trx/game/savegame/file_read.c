@@ -1180,7 +1180,7 @@ bool SG_File_LoadResumeInfoList(JSON_READ_IO *const io)
     }
     for (int32_t i = 0; i < length; i++) {
         const GF_LEVEL *const level = GF_GetLevel(GFLT_MAIN, i);
-        RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
+        RESUME_INFO *const resume = SG_Resume_GetEntry(level);
         M_MUST(JSON_PUSH_INDEX(io, i));
         const bool has_prev_level = JSON_ReadIO_HasKey(io, "prev_level");
         M_MUST(M_ReadResumeInfo(io, resume));
@@ -1204,7 +1204,7 @@ bool SG_File_LoadRules(JSON_READ_IO *const io)
     // Introduced in TRX 1.10, only carrying the rules that are off their
     // defaults. Keyed by name over the rules this build has, so a block that
     // names one it dropped, omits one it gained, or is absent entirely still
-    // loads. What the save does not carry stays where Savegame_InitCurrentInfo
+    // loads. What the save does not carry stays where SG_Resume_ResetAllEntries
     // left it.
     if (!M_OPTIONAL(JSON_PUSH(io, "rules"))) {
         return true;
@@ -1277,7 +1277,7 @@ bool SG_File_LoadMisc(JSON_READ_IO *const io)
 
     {
         const GF_LEVEL *const current_level = Game_GetCurrentLevel();
-        RESUME_INFO *const resume = Savegame_GetCurrentInfo(current_level);
+        RESUME_INFO *const resume = SG_Resume_GetEntry(current_level);
         resume->stats.death_count = -1;
         M_MUST(JSON_READ(io, "death_count", &resume->stats.death_count));
     }

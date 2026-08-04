@@ -183,11 +183,11 @@ void GF_OverrideCommand(const GF_COMMAND command)
     }
 }
 
-void Savegame_PersistGameToCurrentInfo(const GF_LEVEL *const level)
+void SG_Resume_StoreGameToEntry(const GF_LEVEL *const level)
 {
 }
 
-RESUME_INFO *Savegame_GetCurrentInfo(const GF_LEVEL *const level)
+RESUME_INFO *SG_Resume_GetEntry(const GF_LEVEL *const level)
 {
     return nullptr;
 }

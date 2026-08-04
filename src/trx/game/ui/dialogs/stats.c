@@ -167,7 +167,7 @@ static bool M_HasHurtAlliesSoFar(const int32_t level_num)
     }
     for (int32_t i = 0; i <= level_num && i < level_table->count; i++) {
         const GF_LEVEL *const level = &level_table->levels[i];
-        const RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
+        const RESUME_INFO *const resume = SG_Resume_GetEntry(level);
         if (resume != nullptr && resume->flags.available
             && resume->hurt_allies) {
             return true;
@@ -188,7 +188,7 @@ static bool M_HasHurtAlliesEver(const bool include_bonus_levels)
               || (level->type == GFL_BONUS && include_bonus_levels))) {
             continue;
         }
-        const RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
+        const RESUME_INFO *const resume = SG_Resume_GetEntry(level);
         if (resume != nullptr && resume->hurt_allies) {
             return true;
         }
@@ -728,7 +728,7 @@ UI_STATS_DIALOG_STATE *UI_StatsDialog_Init(const UI_STATS_DIALOG_ARGS args)
         const GF_LEVEL *const current_level =
             GF_GetLevel(GFLT_MAIN, s->args.level_num);
         const RESUME_INFO *const current_info =
-            Savegame_GetCurrentInfo(current_level);
+            SG_Resume_GetEntry(current_level);
         s->stats = (const STATS_COMMON *)&current_info->stats;
         s->max_stats = Stats_GetLevelMaxStats(current_level);
         const bool include_allies = M_HasHurtAlliesSoFar(s->args.level_num);
