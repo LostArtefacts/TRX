@@ -47,6 +47,13 @@ typedef enum {
     // with nothing of its own to set up runs the script of the game it sits on
     // top of.
     TRX_DYNAMIC_PATH_GAME_SCRIPT_FILE,
+    // The two a script is required from, each naming one modules/ directory
+    // and falling back nowhere. A required name carries the directory it lives
+    // in, so there is nothing to choose between: a game named as it sits in
+    // games/, or the pool beside the engine. Neither reaches scripts/, which
+    // holds what the engine runs.
+    TRX_DYNAMIC_PATH_GAME_MODULE_FILE,
+    TRX_DYNAMIC_PATH_COMMON_MODULE_FILE,
     TRX_DYNAMIC_PATH_SFX_FILE,
     TRX_DYNAMIC_PATH_CDAUDIO_FILE,
     TRX_DYNAMIC_PATH_MUSIC_DIR,

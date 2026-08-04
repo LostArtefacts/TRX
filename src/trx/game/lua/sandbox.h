@@ -10,6 +10,8 @@
 // The standard library, minus the parts a script has no business having.
 void LUA_OpenSafeLibs(lua_State *L);
 
-// Closes the escapes the base library leaves open. Takes require and package
-// with it, so call it once the trx.* modules have loaded.
+// Closes the escapes the base library leaves open. Takes package with it, and
+// the require the standard library ships, so call it once the trx.* modules
+// have loaded; LUA_InstallModRequire puts back one that reaches only the
+// script directories.
 void LUA_HardenGlobals(lua_State *L);

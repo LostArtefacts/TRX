@@ -428,6 +428,7 @@ static bool M_FireEvent(
     const int32_t count = m_Listeners->count;
     m_DispatchDepth++;
 
+    const LUA_CONTEXT outer_context = LUA_GetScriptContext();
     bool answered = false;
     for (int32_t i = 0; i < count; i++) {
         // Re-read each time: an attach can move the vector.
@@ -440,12 +441,19 @@ static bool M_FireEvent(
             .args = args,
             .arg_count = arg_count,
         };
+        // A handler runs as the script that attached it, so what it does while
+        // the event is in flight belongs where the handler does: a listener it
+        // attaches in turn is scoped the same, and a module it requires goes
+        // with the level rather than outliving it.
+        LUA_SetScriptContext(
+            lst->level_scoped ? LUA_CONTEXT_LEVEL : LUA_CONTEXT_GLOBAL);
         lua_pushcfunction(L, M_CallListener);
         lua_pushlightuserdata(L, &dispatch);
         if (lua_pcall(L, 1, 0, 0) != LUA_OK) {
             LOG_ERROR("Lua event handler error: %s", lua_tostring(L, -1));
             lua_pop(L, 1);
         }
+        LUA_SetScriptContext(outer_context);
         answered = answered || dispatch.answered;
     }
 
