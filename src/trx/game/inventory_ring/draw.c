@@ -247,7 +247,7 @@ static void M_DrawItem(
             rate);
     } else if (inv_item->object_id == O_STOPWATCH_OPTION) {
         const RESUME_INFO *const current_info =
-            Savegame_GetCurrentInfo(Game_GetCurrentLevel());
+            SG_Resume_GetEntry(Game_GetCurrentLevel());
         const int32_t total_seconds = current_info->stats.timer / LOGIC_FPS;
         const int32_t hours = (total_seconds % 43200) * DEG_1 * -360 / 43200;
         const int32_t minutes = (total_seconds % 3600) * DEG_1 * -360 / 3600;

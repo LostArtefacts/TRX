@@ -238,7 +238,7 @@ int32_t GF_GetSecretRewardCount(const GF_LEVEL *const level)
 
 void GF_InventoryModifier_ApplyToResumeInfo(const GF_LEVEL *const level)
 {
-    RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
+    RESUME_INFO *const resume = SG_Resume_GetEntry(level);
 
     if (m_RemoveWeapons) {
         for (LARA_GUN_TYPE gun_type = LGT_UNARMED + 1; gun_type < NUM_WEAPONS;
@@ -311,7 +311,7 @@ void GF_InventoryModifier_ApplyToResumeInfo(const GF_LEVEL *const level)
 void GF_InventoryModifier_Apply(
     const GF_LEVEL *const level, const GF_INV_TYPE type)
 {
-    RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
+    RESUME_INFO *const resume = SG_Resume_GetEntry(level);
 
     // For GF_INV_REGULAR, we must ignore weapons, ammo, medpacks and flares,
     // as these are handled by RESUME_INFO and

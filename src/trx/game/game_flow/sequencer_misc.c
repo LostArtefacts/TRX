@@ -32,7 +32,7 @@ static void M_PlayIntroFMVs(void)
 
 GF_COMMAND GF_RunTitle(void)
 {
-    Savegame_UnbindSlot();
+    SG_Manager_UnbindSlot();
     GameStringTable_Apply(nullptr);
     const GF_LEVEL *const title_level = GF_GetTitleLevel();
     if (!Level_Initialise(title_level, GFSC_NORMAL)) {
@@ -129,8 +129,8 @@ GF_COMMAND GF_DoFrontendSequence(void)
         if (args->startup.save_to_load >= 0) {
             return (GF_COMMAND) {
                 .action = GF_START_SAVED_GAME,
-                .param = Savegame_SlotToParam(
-                    Savegame_NormalSlot(args->startup.save_to_load)),
+                .param = SG_Manager_SlotToParam(
+                    SG_Manager_NormalSlot(args->startup.save_to_load)),
             };
         }
 
@@ -235,7 +235,7 @@ GF_COMMAND GF_DoCutsceneSequence(
 
 GF_COMMAND GF_PlayAvailableStory(const SAVEGAME_SLOT_REF slot)
 {
-    const int32_t savegame_level = Savegame_GetLevelNumber(slot);
+    const int32_t savegame_level = SG_Manager_GetLevelNumber(slot);
     const bool prev_enable_legal = g_Config.gameplay.enable_legal;
     g_Config.gameplay.enable_legal = false;
 
@@ -262,10 +262,10 @@ GF_COMMAND GF_PlayAvailableStory(const SAVEGAME_SLOT_REF slot)
 
 bool GF_HasAvailableStory(const SAVEGAME_SLOT_REF slot)
 {
-    if (Savegame_IsSlotFree(slot)) {
+    if (SG_Manager_IsSlotFree(slot)) {
         return false;
     }
-    const int32_t savegame_level = Savegame_GetLevelNumber(slot);
+    const int32_t savegame_level = SG_Manager_GetLevelNumber(slot);
 
     // Check intro FMVs and cutscenes in frontend sequence (skip legal FMVs)
     const GF_LEVEL *const title_level = GF_GetTitleLevel();

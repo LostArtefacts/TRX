@@ -58,7 +58,7 @@ static void M_InitialiseCutsceneLevel(void)
 
 static void M_InitialiseNormalLevel(const GF_LEVEL *const level)
 {
-    const RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
+    const RESUME_INFO *const resume = SG_Resume_GetEntry(level);
 
     const LARA_GUN_TYPE holster_gun = M_DetermineHolsterGun();
     if (holster_gun != LGT_UNARMED && holster_gun != LGT_FLARE) {

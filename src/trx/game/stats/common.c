@@ -66,7 +66,7 @@ static uint32_t M_GetCategoryUnobtainable(
 
 LEVEL_STATS *Stats_GetLevelStats(const GF_LEVEL *const level)
 {
-    RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
+    RESUME_INFO *const resume = SG_Resume_GetEntry(level);
     return resume == nullptr ? nullptr : &resume->stats;
 }
 
@@ -212,8 +212,8 @@ void Stats_AddDeath(void)
         return;
     }
     stats->death_count++;
-    const SAVEGAME_SLOT_REF save_slot = Savegame_GetBoundSlot();
-    if (Savegame_IsValidSlotRef(save_slot)) {
+    const SAVEGAME_SLOT_REF save_slot = SG_Manager_GetBoundSlot();
+    if (SG_Manager_IsValidSlotRef(save_slot)) {
         Savegame_UpdateDeathCounters(save_slot, stats->death_count);
     }
 }
@@ -329,12 +329,12 @@ uint32_t Stats_GetSecretMaskForItem(
 void Stats_MarkAlliesHostile(void)
 {
     const GF_LEVEL *const level = Game_GetCurrentLevel();
-    RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
+    RESUME_INFO *const resume = SG_Resume_GetEntry(level);
     resume->hurt_allies = true;
 }
 
 bool Stats_HaveAlliesBeenHurt(const GF_LEVEL *const level)
 {
-    const RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
+    const RESUME_INFO *const resume = SG_Resume_GetEntry(level);
     return resume != nullptr && resume->hurt_allies;
 }

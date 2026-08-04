@@ -314,15 +314,15 @@ static GF_COMMAND M_Finish(INV_RING *const ring, const bool apply_changes)
             }
             return (GF_COMMAND) {
                 .action = GF_START_SAVED_GAME,
-                .param = Savegame_SlotToParam(g_Passport.select_save_slot),
+                .param = SG_Manager_SlotToParam(g_Passport.select_save_slot),
             };
         }
 
         case PASSPORT_ACTION_NEW_GAME:
             if (apply_changes) {
-                Savegame_InitCurrentInfo();
+                SG_Resume_ResetAllEntries();
             }
-            Savegame_UnbindSlot();
+            SG_Manager_UnbindSlot();
             return (GF_COMMAND) {
                 .action = GF_START_GAME,
                 .param = g_Passport.select_level,
@@ -365,7 +365,7 @@ static GF_COMMAND M_Finish(INV_RING *const ring, const bool apply_changes)
         case PASSPORT_ACTION_STORY_SO_FAR:
             return (GF_COMMAND) {
                 .action = GF_STORY_SO_FAR,
-                .param = Savegame_SlotToParam(g_Passport.select_save_slot),
+                .param = SG_Manager_SlotToParam(g_Passport.select_save_slot),
             };
         }
         break;
@@ -378,7 +378,7 @@ static GF_COMMAND M_Finish(INV_RING *const ring, const bool apply_changes)
 
     case O_PHOTO_OPTION:
         if (apply_changes) {
-            Savegame_UnbindSlot();
+            SG_Manager_UnbindSlot();
         }
         if (GF_GetGymLevel() != nullptr) {
             return (GF_COMMAND) {
@@ -895,7 +895,7 @@ INV_RING *InvRing_Open(const INVENTORY_MODE mode)
 
     if (mode == INV_TITLE_MODE) {
         InvRing_ShowVersionText();
-        Savegame_ScanSavedGames();
+        SG_Manager_ScanSavedGames();
     } else {
         InvRing_RemoveVersionText();
     }

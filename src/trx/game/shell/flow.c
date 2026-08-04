@@ -402,7 +402,7 @@ int32_t Shell_Main(const SHELL_ARGS *const args)
     GameStringManager_ReloadLanguage(g_Config.language);
 
     Savegame_Init();
-    Savegame_ScanSavedGames();
+    SG_Manager_ScanSavedGames();
 
     // Execute global Lua script if provided
     if (g_GameFlow.main_script_path != nullptr) {
@@ -440,13 +440,14 @@ int32_t Shell_Main(const SHELL_ARGS *const args)
             break;
 
         case GF_START_SAVED_GAME: {
-            const SAVEGAME_SLOT_REF slot = Savegame_SlotFromParam(gf_cmd.param);
-            const int32_t level_num = Savegame_GetLevelNumber(slot);
+            const SAVEGAME_SLOT_REF slot =
+                SG_Manager_SlotFromParam(gf_cmd.param);
+            const int32_t level_num = SG_Manager_GetLevelNumber(slot);
             if (level_num < 0) {
                 LOG_ERROR("Corrupt save file!");
                 gf_cmd = (GF_COMMAND) { .action = GF_EXIT_TO_TITLE };
             } else {
-                Savegame_BindSlot(slot);
+                SG_Manager_BindSlot(slot);
                 const GF_LEVEL *const level = GF_GetLevel(GFLT_MAIN, level_num);
                 gf_cmd = GF_DoLevelSequence(level, GFSC_SAVED);
             }
@@ -461,7 +462,7 @@ int32_t Shell_Main(const SHELL_ARGS *const args)
 
         case GF_STORY_SO_FAR:
             gf_cmd =
-                GF_PlayAvailableStory(Savegame_SlotFromParam(gf_cmd.param));
+                GF_PlayAvailableStory(SG_Manager_SlotFromParam(gf_cmd.param));
             break;
 
         case GF_START_CINE:

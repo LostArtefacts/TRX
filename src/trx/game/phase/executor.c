@@ -46,7 +46,7 @@ static GF_COMMAND M_HandleOverride(void)
 
         // A change in the game flow is not natural. Force features like death
         // counter to break from the currently active savegame file.
-        Savegame_UnbindSlot();
+        SG_Manager_UnbindSlot();
         // This flag needs to be cleared as well.
         Game_SetIsPlaying(false);
         // Usually, sequences permit music to flow through - for instance, the

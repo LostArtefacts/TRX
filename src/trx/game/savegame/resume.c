@@ -86,7 +86,7 @@ static void M_DetermineLegacyGunTypes(RESUME_INFO *const resume)
     }
 }
 
-void Savegame_Resume_Init(void)
+void SG_Resume_Init(void)
 {
     m_ResumeInfo = Memory_Alloc(
         sizeof(RESUME_INFO)
@@ -96,7 +96,7 @@ void Savegame_Resume_Init(void)
     const GF_LEVEL_TABLE *const level_table = GF_GetLevelTable(GFLT_DEMOS);
     for (int32_t i = 0; i < level_table->count; i++) {
         RESUME_INFO *const resume_info =
-            Savegame_GetCurrentInfo(&level_table->levels[i]);
+            SG_Resume_GetEntry(&level_table->levels[i]);
         resume_info->lara_hitpoints = LARA_MAX_HITPOINTS;
         resume_info->flags.available = true;
         Inv_State_SetCount(&resume_info->inv, O_PISTOL_ITEM, 1);
@@ -109,12 +109,12 @@ void Savegame_Resume_Init(void)
     }
 }
 
-void Savegame_Resume_Shutdown(void)
+void SG_Resume_Shutdown(void)
 {
     Memory_FreePointer(&m_ResumeInfo);
 }
 
-RESUME_INFO *Savegame_GetCurrentInfo(const GF_LEVEL *const level)
+RESUME_INFO *SG_Resume_GetEntry(const GF_LEVEL *const level)
 {
     ASSERT(m_ResumeInfo != nullptr);
     if (level == nullptr) {
@@ -133,28 +133,33 @@ RESUME_INFO *Savegame_GetCurrentInfo(const GF_LEVEL *const level)
     return nullptr;
 }
 
-void Savegame_SetCurrentInfo(const int32_t current_slot, const int32_t src_slot)
+void SG_Resume_MirrorCurrentEntry(const GF_LEVEL *const level)
 {
-    m_ResumeInfo[current_slot] = m_ResumeInfo[src_slot];
+    const GF_LEVEL_TABLE *const level_table = GF_GetLevelTable(GFLT_MAIN);
+    for (int32_t i = 0; i < level_table->count; i++) {
+        if (level_table->levels[i].type == GFL_CURRENT) {
+            m_ResumeInfo[i] = m_ResumeInfo[level->num];
+        }
+    }
 }
 
-void Savegame_InitCurrentInfo(void)
+void SG_Resume_ResetAllEntries(void)
 {
     const GF_LEVEL_TABLE *const level_table = GF_GetLevelTable(GFLT_MAIN);
     for (int32_t i = 0; i < level_table->count; i++) {
         const GF_LEVEL *const level = &level_table->levels[i];
-        Savegame_ResetCurrentInfo(level);
-        Savegame_ApplyLogicToCurrentInfo(level);
-        RESUME_INFO *const current = Savegame_GetCurrentInfo(level);
+        SG_Resume_ResetEntry(level);
+        SG_Resume_ApplyRulesToEntry(level);
+        RESUME_INFO *const current = SG_Resume_GetEntry(level);
         current->level_completed = false;
         current->flags.available = false;
     }
 
     if (GF_GetGymLevel() != nullptr) {
-        Savegame_GetCurrentInfo(GF_GetGymLevel())->flags.available = true;
+        SG_Resume_GetEntry(GF_GetGymLevel())->flags.available = true;
     }
     if (GF_GetFirstLevel() != nullptr) {
-        Savegame_GetCurrentInfo(GF_GetFirstLevel())->flags.available = true;
+        SG_Resume_GetEntry(GF_GetFirstLevel())->flags.available = true;
     }
 
     // Lara's wetness survives level transitions; a fresh playthrough starts
@@ -171,21 +176,21 @@ void Savegame_InitCurrentInfo(void)
     CutSeq_SetPlayedMask(0);
 }
 
-void Savegame_ResetCurrentInfo(const GF_LEVEL *const level)
+void SG_Resume_ResetEntry(const GF_LEVEL *const level)
 {
     LOG_INFO("Resetting resume info for level #%d", level->num);
-    RESUME_INFO *const current = Savegame_GetCurrentInfo(level);
+    RESUME_INFO *const current = SG_Resume_GetEntry(level);
     *current = (RESUME_INFO) { .prev_level = -1, .level_completed = false };
 }
 
-void Savegame_CarryCurrentInfoToNextLevel(
+void SG_Resume_CarryEntry(
     const GF_LEVEL *const src_level, const GF_LEVEL *const dst_level)
 {
     LOG_INFO(
         "Copying resume info from level #%d to level #%d", src_level->num,
         dst_level->num);
-    RESUME_INFO *const src_resume = Savegame_GetCurrentInfo(src_level);
-    RESUME_INFO *const dst_resume = Savegame_GetCurrentInfo(dst_level);
+    RESUME_INFO *const src_resume = SG_Resume_GetEntry(src_level);
+    RESUME_INFO *const dst_resume = SG_Resume_GetEntry(dst_level);
     if (src_resume != nullptr && dst_resume != nullptr) {
         const bool dst_level_completed = dst_resume->level_completed;
         M_CopyResumeInfo(dst_resume, src_resume);
@@ -194,9 +199,9 @@ void Savegame_CarryCurrentInfoToNextLevel(
     }
 }
 
-void Savegame_PersistGameToCurrentInfo(const GF_LEVEL *const level)
+void SG_Resume_StoreGameToEntry(const GF_LEVEL *const level)
 {
-    RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
+    RESUME_INFO *const resume = SG_Resume_GetEntry(level);
     if (resume == nullptr) {
         return;
     }
@@ -229,9 +234,9 @@ void Savegame_PersistGameToCurrentInfo(const GF_LEVEL *const level)
     }
 }
 
-void Savegame_ApplyLogicToCurrentInfo(const GF_LEVEL *const level)
+void SG_Resume_ApplyRulesToEntry(const GF_LEVEL *const level)
 {
-    RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
+    RESUME_INFO *const resume = SG_Resume_GetEntry(level);
     if (resume == nullptr) {
         return;
     }
@@ -317,13 +322,13 @@ void Savegame_ApplyLogicToCurrentInfo(const GF_LEVEL *const level)
     M_DetermineLegacyGunTypes(resume);
 }
 
-int32_t Savegame_GetCompletedLevelCount(void)
+int32_t SG_Resume_CountCompletedLevels(void)
 {
     int32_t count = 0;
     const GF_LEVEL_TABLE *const level_table = GF_GetLevelTable(GFLT_MAIN);
     for (int32_t i = 0; i < level_table->count; i++) {
         const GF_LEVEL *const level = &level_table->levels[i];
-        const RESUME_INFO *const current = Savegame_GetCurrentInfo(level);
+        const RESUME_INFO *const current = SG_Resume_GetEntry(level);
         if (current != nullptr && current->level_completed) {
             count++;
         }

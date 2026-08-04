@@ -74,15 +74,15 @@ static M_FEATURES M_CheckFeatures(const bool check_save_features)
     }
     for (SAVEGAME_SLOT_POOL pool = 0; pool < SAVEGAME_SLOT_POOL_NUMBER_OF;
          pool++) {
-        for (int32_t slot_num = 0; slot_num < Savegame_GetSlotCount(pool);
+        for (int32_t slot_num = 0; slot_num < SG_Manager_GetSlotCount(pool);
              slot_num++) {
             const SAVEGAME_SLOT_REF slot = { .pool = pool, .index = slot_num };
-            if (Savegame_IsSlotFree(slot)) {
+            if (SG_Manager_IsSlotFree(slot)) {
                 continue;
             }
             if (!features.play_prev_levels) {
                 const SAVEGAME_INFO *const info =
-                    Savegame_GetSavegameInfo(slot);
+                    SG_Manager_GetSavegameInfo(slot);
                 if (info->features.select_level) {
                     features.play_prev_levels = true;
                 }

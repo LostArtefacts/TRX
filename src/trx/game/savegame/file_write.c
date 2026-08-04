@@ -674,7 +674,7 @@ void SG_File_DumpResumeInfoList(JSON_WRITE_IO *const io)
     JSONW_PUSH_ARRAY(io);
     for (int32_t i = 0; i < count; i++) {
         const GF_LEVEL *const level = GF_GetLevel(GFLT_MAIN, i);
-        const RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
+        const RESUME_INFO *const resume = SG_Resume_GetEntry(level);
         JSONW_PUSH_OBJECT(io);
         M_WriteResumeInfo(io, resume);
         JSONW_POP_AND_APPEND(io);
@@ -700,7 +700,7 @@ void SG_File_DumpRules(JSON_WRITE_IO *const io)
 void SG_File_DumpMisc(JSON_WRITE_IO *const io)
 {
     const GF_LEVEL *const level = Game_GetCurrentLevel();
-    const RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
+    const RESUME_INFO *const resume = SG_Resume_GetEntry(level);
 
     JSONW_PUSH_OBJECT(io);
     JSONW_WRITE(io, "game_version", g_TRXVersion);
@@ -715,6 +715,6 @@ void SG_File_DumpMisc(JSON_WRITE_IO *const io)
     JSONW_POP_AND_SET(io, "misc");
 
     JSONW_WRITE(io, "level_title", level->title != nullptr ? level->title : "");
-    JSONW_WRITE(io, "save_counter", Savegame_GetCounter());
+    JSONW_WRITE(io, "save_counter", SG_Manager_GetCounter());
     JSONW_WRITE(io, "level_num", level->num);
 }

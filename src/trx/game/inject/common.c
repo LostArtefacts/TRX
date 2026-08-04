@@ -83,7 +83,7 @@ static bool M_IsRelevant(
             return false;
         }
         const SAVEGAME_INFO *const info =
-            Savegame_GetSavegameInfo(Savegame_GetBoundSlot());
+            SG_Manager_GetSavegameInfo(SG_Manager_GetBoundSlot());
         if (info != nullptr && (info->initial_version == SG_VERSION_LEGACY)) {
             return false;
         }

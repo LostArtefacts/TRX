@@ -76,7 +76,7 @@ static void *M_ResolveInventory(const LUA_STRUCT_REF *const ref)
     const GF_LEVEL *const level = GF_GetLevelByOrdinalNumber(
         (GF_LEVEL_TABLE_TYPE)M_LEVEL_TABLE(ref->handle.id),
         M_LEVEL_NUM(ref->handle.id));
-    RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
+    RESUME_INFO *const resume = SG_Resume_GetEntry(level);
     return resume == nullptr ? nullptr : &resume->inv;
 }
 
@@ -318,7 +318,7 @@ static int M_L_InvGetLevel(lua_State *const L)
         return 1;
     }
     const GF_LEVEL *const level = GF_GetLevelByOrdinalNumber(GFLT_MAIN, num);
-    if (level == nullptr || Savegame_GetCurrentInfo(level) == nullptr) {
+    if (level == nullptr || SG_Resume_GetEntry(level) == nullptr) {
         lua_pushnil(L);
         return 1;
     }

@@ -65,7 +65,7 @@ bool Game_Start(const GF_LEVEL *const level, const GF_SEQUENCE_CONTEXT seq_ctx)
 
 void Game_End(void)
 {
-    Savegame_PersistGameToCurrentInfo(Game_GetCurrentLevel());
+    SG_Resume_StoreGameToEntry(Game_GetCurrentLevel());
     Music_Stop();
 }
 
@@ -127,8 +127,8 @@ GF_COMMAND Game_Control(const bool demo_mode)
         bool quick_handled = false;
         if (g_InputDB.quick_save && !lara->extra_anim && lara->death_timer == 0
             && Savegame_IsManualSaveAllowed()) {
-            const SAVEGAME_SLOT_REF slot = Savegame_GetNextQuickSlot();
-            if (!Savegame_IsValidSlotRef(slot)) {
+            const SAVEGAME_SLOT_REF slot = SG_Manager_GetNextQuickSlot();
+            if (!SG_Manager_IsValidSlotRef(slot)) {
                 Console_LogError(
                     "%s", GS("general/osd/quick_save_fail_no_slots"));
             } else if (Savegame_Save(slot)) {
@@ -136,25 +136,25 @@ GF_COMMAND Game_Control(const bool demo_mode)
             }
             quick_handled = true;
         } else if (g_InputDB.quick_load) {
-            const SAVEGAME_SLOT_REF slot = Savegame_GetBoundSlot();
-            if (!Savegame_IsValidSlotRef(slot)) {
+            const SAVEGAME_SLOT_REF slot = SG_Manager_GetBoundSlot();
+            if (!SG_Manager_IsValidSlotRef(slot)) {
                 Console_LogError(
                     "%s", GS("general/osd/quick_load_fail_no_bound_slot"));
-            } else if (Savegame_IsSlotFree(slot)) {
+            } else if (SG_Manager_IsSlotFree(slot)) {
                 Console_LogError(
                     "%s",
                     GS("general/osd/quick_load_fail_unavailable_bound_slot"));
             } else {
                 if (slot.pool == SAVEGAME_SLOT_POOL_QUICK) {
                     const int32_t visual_index =
-                        Savegame_QuickToVisualIndex(slot);
+                        SG_Manager_QuickToVisualIndex(slot);
                     Console_Log(GS("general/osd/quick_load"), visual_index + 1);
                 } else {
                     Console_Log(GS("general/osd/load_game"), slot.index + 1);
                 }
                 return (GF_COMMAND) {
                     .action = GF_START_SAVED_GAME,
-                    .param = Savegame_SlotToParam(slot),
+                    .param = SG_Manager_SlotToParam(slot),
                 };
             }
             quick_handled = true;

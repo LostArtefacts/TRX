@@ -23,12 +23,12 @@ static bool M_IsUsable(void)
 
 static SAVEGAME_SLOT_REF M_GetInitialSlot(void)
 {
-    SAVEGAME_SLOT_REF slot = Savegame_GetMostRecentlyUsedSlot();
-    if (!Savegame_IsValidSlotRef(slot)) {
-        slot = Savegame_GetMostRecentlyCreatedSlot();
+    SAVEGAME_SLOT_REF slot = SG_Manager_GetMostRecentlyUsedSlot();
+    if (!SG_Manager_IsValidSlotRef(slot)) {
+        slot = SG_Manager_GetMostRecentlyCreatedSlot();
     }
-    if (!Savegame_IsValidSlotRef(slot)) {
-        slot = Savegame_NormalSlot(0);
+    if (!SG_Manager_IsValidSlotRef(slot)) {
+        slot = SG_Manager_NormalSlot(0);
     }
     return slot;
 }
@@ -41,7 +41,7 @@ void Option_SaveCrystal_Control(
     }
 
     if (m_Priv.save_slot == nullptr) {
-        m_Priv.chosen_slot = Savegame_InvalidSlot();
+        m_Priv.chosen_slot = SG_Manager_InvalidSlot();
         m_Priv.save_slot = UI_SaveSlotDialog_Init(
             UI_SAVE_SLOT_DIALOG_SAVE_GAME, M_GetInitialSlot());
     }
@@ -99,13 +99,13 @@ void Option_SaveCrystal_Close(void)
 
 void Option_SaveCrystal_CommitSave(void)
 {
-    if (!M_IsUsable() || !Savegame_IsValidSlotRef(m_Priv.chosen_slot)) {
+    if (!M_IsUsable() || !SG_Manager_IsValidSlotRef(m_Priv.chosen_slot)) {
         return;
     }
 
     // The crystal is spent first so that the save reflects it.
     const SAVEGAME_SLOT_REF slot = m_Priv.chosen_slot;
-    m_Priv.chosen_slot = Savegame_InvalidSlot();
+    m_Priv.chosen_slot = SG_Manager_InvalidSlot();
     Inv_RemoveItem(O_SAVE_CRYSTAL_ITEM);
     if (!Savegame_Save(slot)) {
         Inv_AddItem(O_SAVE_CRYSTAL_ITEM);
