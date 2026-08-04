@@ -171,6 +171,20 @@ static const M_DYNAMIC_PATH_POLICY m_PathPolicies[TRX_DYNAMIC_PATH_NUMBER_OF] = 
         },
         .check_exists = true,
     },
+    [TRX_DYNAMIC_PATH_GAME_MODULE_FILE] = {
+        .patterns = {
+            "%games_dir%/%rel%",
+            nullptr,
+        },
+        .check_exists = true,
+    },
+    [TRX_DYNAMIC_PATH_COMMON_MODULE_FILE] = {
+        .patterns = {
+            "%trx_dir%/modules/%rel%",
+            nullptr,
+        },
+        .check_exists = true,
+    },
     [TRX_DYNAMIC_PATH_FMV_FILE] = {
         .patterns = {
             "%mod_dir%/fmv/%rel%",

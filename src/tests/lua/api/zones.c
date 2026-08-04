@@ -27,6 +27,11 @@ LUA_CONTEXT LUA_GetScriptContext(void)
     return m_Context;
 }
 
+void LUA_SetScriptContext(const LUA_CONTEXT context)
+{
+    m_Context = context;
+}
+
 static int M_L_Control(lua_State *const L)
 {
     LUA_FireEvent(LUA_EVENT_AFTER_CONTROL);

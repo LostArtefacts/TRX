@@ -186,6 +186,28 @@ test("a level script's handlers are dropped when the level ends", function()
   assert(global_calls == 2, "a global handler was dropped with the level")
 end)
 
+-- A handler runs as the script that attached it, so a listener it attaches in
+-- turn belongs where it does and goes when it does.
+test("a level handler attaches as the level, not as the game", function()
+  local nested_calls = 0
+
+  fake.as_level_script(function()
+    trx.events.before_control(function()
+      trx.events.on_pickup(function()
+        nested_calls = nested_calls + 1
+      end)
+    end)
+  end)
+
+  fake.fire("before_control")
+  fake.fire("on_pickup", 0)
+  assert(nested_calls == 1, "the nested handler never fired")
+
+  fake.end_level()
+  fake.fire("on_pickup", 0)
+  assert(nested_calls == 1, "a nested handler outlived the level that made it")
+end)
+
 test("attaching something that is not a function raises", function()
   raises(function()
     trx.events.before_control(42)

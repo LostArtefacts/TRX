@@ -14,6 +14,7 @@ typedef struct {
 typedef enum {
     LUA_CONTEXT_GLOBAL,
     LUA_CONTEXT_LEVEL,
+    LUA_CONTEXT_NUMBER_OF,
 } LUA_CONTEXT;
 
 void LUA_Init(void);
@@ -35,6 +36,26 @@ void LUA_FreeResult(LUA_RESULT *result);
 
 // Evaluate a Lua script file. Caller must free the result with LUA_FreeResult.
 LUA_RESULT LUA_EvalFile(const char *path);
+
+// Gives a game's scripts a require() of their own, in place of the one the
+// standard library ships, which is gone by then along with every other way a
+// script could reach the filesystem. A name carries the directory it lives in,
+// so a call site says which file it means and no two directories compete:
+//
+//     require("tr1.my_module")     games/tr1/modules/my_module.lua
+//     require("common.my_module")  %trx_dir%/modules/my_module.lua
+//
+// The rest of the name spells directories the way Lua does, with dots, so
+// require("tr1.my_group.my_module") reaches tr1/modules/my_group/my_module.lua.
+// The module runs once, every later call handed what the first one returned.
+// "trx" is reserved: the engine's own modules are the global trx table. What
+// the engine runs lives in scripts/ instead, out of reach of a name.
+void LUA_InstallModRequire(lua_State *L);
+
+// Lets go of what a level's scripts required, so the next level runs them
+// again. A module a level required attached its listeners as the level's, and
+// those go with the level; the module has to run for them to come back.
+void LUA_DropLevelModules(lua_State *L);
 
 // Runs the per-game script (scripts/_game.lua), if the game ships one.
 void LUA_RunGameScript(void);

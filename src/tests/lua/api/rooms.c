@@ -17,6 +17,10 @@ LUA_CONTEXT LUA_GetScriptContext(void)
     return LUA_CONTEXT_GLOBAL;
 }
 
+void LUA_SetScriptContext(const LUA_CONTEXT context)
+{
+}
+
 // fake.fire_room_change(item_num, old_room, new_room) - mirrors the
 // Item_UpdateRoom fire site, argument for argument.
 static int M_L_FireRoomChange(lua_State *const L)

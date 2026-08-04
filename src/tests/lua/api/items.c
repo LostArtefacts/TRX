@@ -15,6 +15,10 @@ LUA_CONTEXT LUA_GetScriptContext(void)
     return LUA_CONTEXT_GLOBAL;
 }
 
+void LUA_SetScriptContext(const LUA_CONTEXT context)
+{
+}
+
 void ItemAction_SetInterceptor(const ITEM_ACTION_INTERCEPTOR interceptor)
 {
 }
