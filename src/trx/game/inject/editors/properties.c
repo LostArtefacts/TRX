@@ -45,6 +45,7 @@ typedef enum {
     M_DISK_DOUBLE = 2,
     M_DISK_BOOL = 3,
     M_DISK_XYZ = 4,
+    M_DISK_RGB = 5,
 } M_DISK_PROPERTY_TYPE;
 
 static TRX_VALUE M_ReadValue(const INJECTION *const injection)
@@ -75,6 +76,14 @@ static TRX_VALUE M_ReadValue(const INJECTION *const injection)
             .x = VFile_ReadS32(injection->fp),
             .y = VFile_ReadS32(injection->fp),
             .z = VFile_ReadS32(injection->fp),
+        };
+        break;
+    case M_DISK_RGB:
+        value.type = TVT_RGB_888;
+        value.as_rgb = (RGB_888) {
+            .r = VFile_ReadU8(injection->fp),
+            .g = VFile_ReadU8(injection->fp),
+            .b = VFile_ReadU8(injection->fp),
         };
         break;
     default:
