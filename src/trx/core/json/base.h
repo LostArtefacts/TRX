@@ -13,6 +13,10 @@ JSON_VALUE *JSON_ValueFromArray(JSON_ARRAY *arr);
 JSON_VALUE *JSON_ValueFromObject(JSON_OBJECT *obj);
 void JSON_ValueFree(JSON_VALUE *value);
 
+// A deep copy, owning everything it points at, so freeing either one leaves
+// the other whole.
+JSON_VALUE *JSON_ValueCopy(const JSON_VALUE *value);
+
 bool JSON_ValueIsNull(const JSON_VALUE *value);
 bool JSON_ValueIsTrue(const JSON_VALUE *value);
 bool JSON_ValueIsFalse(const JSON_VALUE *value);

@@ -78,3 +78,23 @@ TEST(the_version_the_file_was_last_written_by_is_brought_up_to_date)
     M_Load("{}");
     CHECK_EQ_INT(g_Config.config_version, -1);
 }
+
+TEST(a_key_a_migration_reads_is_one_the_writer_drops)
+{
+    // The answer stands on the migrations this build has, not on what any file
+    // held or on a load having happened first.
+    CHECK(ConfigLegacy_IsKey("enable_target_change"));
+    CHECK(ConfigLegacy_IsKey("enable_breeze"));
+    CHECK(ConfigLegacy_IsKey("enable_save_crystals"));
+    CHECK(ConfigLegacy_IsKey("enable_game_modes"));
+}
+
+TEST(an_option_a_game_still_writes_is_not_a_legacy_key)
+{
+    // config/file.c asks this about every key it did not write, and a mod's
+    // declared option is the case it must answer no for.
+    CHECK(!ConfigLegacy_IsKey("water_color_mode"));
+    CHECK(!ConfigLegacy_IsKey("target_change_mode"));
+    CHECK(!ConfigLegacy_IsKey("bar_look"));
+    CHECK(!ConfigLegacy_IsKey(nullptr));
+}

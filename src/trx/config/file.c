@@ -1,6 +1,7 @@
 #include <trx/config/file.h>
 
 #include <trx/config/common.h>
+#include <trx/config/legacy.h>
 #include <trx/config/value.h>
 #include <trx/core/colors.h>
 #include <trx/core/filesystem.h>
@@ -128,9 +129,7 @@ static bool M_ReadFromJSON(
         }
     }
 
-    if (cfg_root) {
-        JSON_ValueFree(cfg_root);
-    }
+    JSON_ValueFree(cfg_root);
     if (enf_root) {
         JSON_ValueFree(enf_root);
     }
@@ -195,6 +194,40 @@ static bool M_ProcessOptionValue(
     return action(option, &raw);
 }
 
+// Everything the file already held that this build had nothing to say about.
+//
+// An option is in the map only while the game that declared it is loaded, so a
+// key that belongs to no option this build has is another game's setting rather
+// than one to drop. The gym stat blocks go the same way, and the input section
+// is written on every save, so nothing has to name them here.
+//
+// An option the map does have is left to the writer, whether or not it produced
+// a key for it: a null string is left out so that a reload falls back to its
+// default, and putting the old value back would take that away - the "Default"
+// outfit would never stick. See ConfigFile_DumpOptions.
+//
+// A key a migration replaced goes too: it belongs to no game any more, and
+// carrying it along would let the migration read it again on every launch,
+// putting back the value the player changed away from - see config/legacy.h.
+static void M_CarryOverUnwrittenKeys(
+    JSON_OBJECT *const root_obj, const char *const path)
+{
+    JSON_VALUE *const old_root = JSONFile_Read(path);
+    const JSON_OBJECT *const old_obj = JSON_ValueAsObject(old_root);
+    if (old_obj != nullptr) {
+        for (const JSON_OBJECT_ELEMENT *elem = old_obj->start; elem != nullptr;
+             elem = elem->next) {
+            const char *const name = elem->name->string;
+            if (JSON_ObjectGetValue(root_obj, name) == nullptr
+                && Config_GetOptionByPath(name) == nullptr
+                && !ConfigLegacy_IsKey(name)) {
+                JSON_ObjectAppend(root_obj, name, JSON_ValueCopy(elem->value));
+            }
+        }
+    }
+    JSON_ValueFree(old_root);
+}
+
 bool ConfigFile_Read(const CONFIG_IO_ARGS *const args)
 {
     ASSERT(args->default_path != nullptr);
@@ -208,6 +241,7 @@ bool ConfigFile_Write(const CONFIG_IO_ARGS *const args)
     ASSERT(args->default_path != nullptr);
     JSON_OBJECT *const root_obj = JSON_ObjectNew();
     args->action(root_obj);
+    M_CarryOverUnwrittenKeys(root_obj, args->default_path);
 
     JSON_VALUE *const new_root = JSON_ValueFromObject(root_obj);
     const bool updated = JSONFile_Write(args->default_path, new_root);

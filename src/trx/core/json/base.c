@@ -60,6 +60,17 @@ static JSON_NUMBER *M_NumberNewDouble(const double number)
     return elem;
 }
 
+// A number is held as the text it was written with, so a copy takes that text
+// rather than the value it stands for: one read from a file goes back out
+// spelled the way it came in.
+static JSON_NUMBER *M_NumberNewRaw(const char *const text)
+{
+    JSON_NUMBER *const elem = Memory_Alloc(sizeof(JSON_NUMBER));
+    elem->number = Memory_DupStr(text);
+    elem->number_size = strlen(text);
+    return elem;
+}
+
 static void M_NumberFree(JSON_NUMBER *const num)
 {
     if (num->ref_count == 0) {
@@ -181,6 +192,54 @@ void JSON_ValueFree(JSON_VALUE *const value)
     if (value->ref_count == 0) {
         Memory_Free(value);
     }
+}
+
+JSON_VALUE *JSON_ValueCopy(const JSON_VALUE *const value)
+{
+    if (value == nullptr) {
+        return nullptr;
+    }
+
+    switch (value->type) {
+    case JSON_TYPE_STRING:
+        return JSON_ValueFromString(
+            ((const JSON_STRING *)value->payload)->string);
+
+    case JSON_TYPE_NUMBER:
+        return M_ValueFromNumber(
+            M_NumberNewRaw(((const JSON_NUMBER *)value->payload)->number));
+
+    case JSON_TYPE_ARRAY: {
+        const JSON_ARRAY *const src = value->payload;
+        JSON_ARRAY *const dst = JSON_ArrayNew();
+        for (const JSON_ARRAY_ELEMENT *elem = src->start; elem != nullptr;
+             elem = elem->next) {
+            JSON_ArrayAppend(dst, JSON_ValueCopy(elem->value));
+        }
+        return JSON_ValueFromArray(dst);
+    }
+
+    case JSON_TYPE_OBJECT: {
+        const JSON_OBJECT *const src = value->payload;
+        JSON_OBJECT *const dst = JSON_ObjectNew();
+        for (const JSON_OBJECT_ELEMENT *elem = src->start; elem != nullptr;
+             elem = elem->next) {
+            JSON_ObjectAppend(
+                dst, elem->name->string, JSON_ValueCopy(elem->value));
+        }
+        return JSON_ValueFromObject(dst);
+    }
+
+    case JSON_TYPE_TRUE:
+    case JSON_TYPE_FALSE:
+    case JSON_TYPE_NULL:
+        break;
+    }
+
+    JSON_VALUE *const copy = Memory_Alloc(sizeof(JSON_VALUE));
+    copy->type = value->type;
+    copy->payload = nullptr;
+    return copy;
 }
 
 bool JSON_ValueIsNull(const JSON_VALUE *const value)
