@@ -57,10 +57,11 @@ RE_LUA_HELP_ID_USAGE = re.compile(
     r"""(?:"((?:\\.|[^"\\])*)"|'((?:\\.|[^'\\])*)')"""
 )
 RE_LUA_DECLARE_CALL = re.compile(r"\btrx\.locale\.declare\s*\(")
-# One ["key"] = "English" row of a trx.locale.declare{} table.
-RE_LUA_DECLARE_ENTRY = re.compile(
-    r"""\[\s*(?:"((?:\\.|[^"\\])*)"|'((?:\\.|[^'\\])*)')\s*\]\s*=\s*"""
-    r"""(?:"((?:\\.|[^"\\])*)"|'((?:\\.|[^'\\])*)')"""
+# The ["key"] = part of a trx.locale.declare{} row. What follows it is read by
+# read_lua_string_expr, which a regex cannot do: the text may be a long-bracket
+# string or several pieces joined with `..`.
+RE_LUA_DECLARE_KEY = re.compile(
+    r"""\[\s*(?:"((?:\\.|[^"\\])*)"|'((?:\\.|[^'\\])*)')\s*\]\s*="""
 )
 ROOT_SECTIONS = ("general", "console", "enums", "dynamic", "settings")
 TOP_LEVEL_SECTION_ORDER = (
@@ -378,13 +379,23 @@ def long_bracket_size(source: str, i: int) -> int | None:
     return None
 
 
-def strip_lua_noncode(source: str) -> str:
+def blank(text: str) -> str:
+    """`text` with every character but its newlines turned into a space."""
+    return "".join("\n" if ch == "\n" else " " for ch in text)
+
+
+def strip_lua_noncode(source: str, *, strip_long_strings: bool = True) -> str:
     """Blank out everything in a Lua source that a script does not execute.
 
     Comments go, and so do long-bracket strings: in src/lua those hold
     the api.define examples, and a key named in an example is documentation, not
-    a usage. Quoted strings stay, because that is where a key is written.
-    Newlines are kept so the line numbers still line up.
+    a usage. Quoted strings stay, because that is where a key is written. What
+    goes is replaced space for space, so both the line numbers and the offsets
+    still line up with the source they came from.
+
+    A caller that has already located a genuine call passes
+    ``strip_long_strings=False`` to read the text a long bracket holds, which is
+    how a declaration writes one long line across several.
 
     Scanning rather than substituting, so that a ``--`` inside a string reads as
     two dashes rather than as the start of a comment.
@@ -393,11 +404,14 @@ def strip_lua_noncode(source: str) -> str:
     i = 0
     n = len(source)
 
-    def skip_long_bracket(start: int, size: int) -> int:
+    def long_bracket_end(start: int, size: int) -> int:
         closing = "]" + "=" * (size - 2) + "]"
         end = source.find(closing, start + size)
-        stop = n if end == -1 else end + len(closing)
-        out.append("\n" * source.count("\n", start, stop))
+        return n if end == -1 else end + len(closing)
+
+    def skip_long_bracket(start: int, size: int) -> int:
+        stop = long_bracket_end(start, size)
+        out.append(blank(source[start:stop]))
         return stop
 
     while i < n:
@@ -418,17 +432,24 @@ def strip_lua_noncode(source: str) -> str:
                 i += 1
             continue
         if source.startswith("--", i):
+            start = i
             i += 2
             size = long_bracket_size(source, i) if i < n else None
             if size is not None:
-                i = skip_long_bracket(i, size)
+                i = long_bracket_end(i, size)
             else:
                 while i < n and source[i] != "\n":
                     i += 1
+            out.append(blank(source[start:i]))
             continue
         size = long_bracket_size(source, i)
         if size is not None:
-            i = skip_long_bracket(i, size)
+            if strip_long_strings:
+                i = skip_long_bracket(i, size)
+            else:
+                stop = long_bracket_end(i, size)
+                out.append(source[i:stop])
+                i = stop
             continue
         out.append(ch)
         i += 1
@@ -444,8 +465,8 @@ def get_used_lua_strings(path: Path) -> Iterable[tuple[int, str]]:
             yield source.count("\n", 0, match.start()) + 1, unescape(literal)
 
 
-def lua_declare_blocks(source: str) -> Iterable[tuple[int, str]]:
-    """Each trx.locale.declare() argument list, with where in the source it starts.
+def lua_declare_blocks(source: str) -> Iterable[tuple[int, int]]:
+    """Where each trx.locale.declare() argument list starts and ends.
 
     Balanced on parentheses, skipping over quoted strings so a bracket a
     translator wrote into the text does not end the call early.
@@ -468,20 +489,78 @@ def lua_declare_blocks(source: str) -> Iterable[tuple[int, str]]:
             elif ch == ")":
                 depth -= 1
             i += 1
-        yield start, source[start : max(start, i - 1)]
+        yield start, max(start, i - 1)
+
+
+def read_lua_string(source: str, i: int) -> tuple[str, int] | None:
+    """The one string literal at `i`, and where it ends.
+
+    Quoted or long-bracket. A long bracket takes no escapes, and drops the
+    newline it opens on, the way Lua reads one.
+    """
+    if i >= len(source):
+        return None
+    if source[i] in ("'", '"'):
+        quote = source[i]
+        j = i + 1
+        while j < len(source) and source[j] != quote:
+            j += 2 if source[j] == "\\" else 1
+        return unescape(source[i + 1 : j]), min(j + 1, len(source))
+    size = long_bracket_size(source, i)
+    if size is None:
+        return None
+    closing = "]" + "=" * (size - 2) + "]"
+    end = source.find(closing, i + size)
+    if end == -1:
+        return None
+    text = source[i + size : end]
+    return text.removeprefix("\n"), end + len(closing)
+
+
+def read_lua_string_expr(source: str, i: int) -> tuple[str, int] | None:
+    """The text at `i`, however many literals `..` joins to make it.
+
+    A declaration writes one long line of English across several source lines,
+    so what a key is worth is not always a single literal.
+    """
+    parts: list[str] = []
+    while i < len(source) and source[i] in " \t\r\n":
+        i += 1
+    while True:
+        piece = read_lua_string(source, i)
+        if piece is None:
+            break
+        text, i = piece
+        parts.append(text)
+        j = i
+        while j < len(source) and source[j] in " \t\r\n":
+            j += 1
+        if not source.startswith("..", j):
+            break
+        i = j + 2
+        while i < len(source) and source[i] in " \t\r\n":
+            i += 1
+    if not parts:
+        return None
+    return "".join(parts), i
 
 
 def get_declared_lua_strings(path: Path) -> Iterable[tuple[int, str, str]]:
     """Game string keys a Lua script declares, and the English behind them."""
-    source = strip_lua_noncode(path.read_text())
-    for offset, block in lua_declare_blocks(source):
-        for match in RE_LUA_DECLARE_ENTRY.finditer(block):
+    raw = path.read_text()
+    # The blocks are found in a source with the long strings gone, so a call
+    # inside an api.define example declares nothing; the text is then read from
+    # one that kept them, so a declaration may write its English as one.
+    source = strip_lua_noncode(raw)
+    with_long_strings = strip_lua_noncode(raw, strip_long_strings=False)
+    for start, end in lua_declare_blocks(source):
+        for match in RE_LUA_DECLARE_KEY.finditer(source, start, end):
             key = match.group(1) if match.group(1) is not None else match.group(2)
-            value = (
-                match.group(3) if match.group(3) is not None else match.group(4)
-            )
-            line = source.count("\n", 0, offset + match.start()) + 1
-            yield line, unescape(key), unescape(value)
+            value = read_lua_string_expr(with_long_strings, match.end())
+            if value is None:
+                continue
+            line = source.count("\n", 0, match.start()) + 1
+            yield line, unescape(key), value[0]
 
 
 def merge_lua_declarations(
@@ -493,14 +572,14 @@ def merge_lua_declarations(
     GS_DEFINE() already has, leaves the English text ambiguous, so it is
     reported rather than resolved.
     """
-    origins: dict[str, str] = {}
+    seen: dict[str, str] = {}
     errors: list[str] = []
     for path in lua_files:
         for line, key, value in get_declared_lua_strings(path):
             origin = f"{path.relative_to(REPO_DIR)}:{line}"
-            if key in origins:
+            if key in seen:
                 errors.append(
-                    f"{origin}: {key} is already declared in {origins[key]}"
+                    f"{origin}: {key} is already declared in {seen[key]}"
                 )
             elif key in game_strings:
                 errors.append(f"{origin}: {key} is already a GS_DEFINE()")
@@ -510,7 +589,7 @@ def merge_lua_declarations(
                     + ", ".join(ROOT_SECTIONS)
                 )
             else:
-                origins[key] = origin
+                seen[key] = origin
                 game_strings[key] = value
     if errors:
         sys.exit(

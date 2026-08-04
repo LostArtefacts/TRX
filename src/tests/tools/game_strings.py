@@ -162,6 +162,28 @@ class TestLuaDeclarations(unittest.TestCase):
         )
         self.assertEqual(found, {})
 
+    def test_a_concatenated_value_is_joined(self):
+        found = self.scan(
+            "trx.locale.declare({\n"
+            '  ["test/long"] = "one "\n'
+            '    .. "two "\n'
+            '    .. "three",\n'
+            "})\n"
+        )
+        self.assertEqual(found, {"test/long": "one two three"})
+
+    def test_a_long_bracket_value_is_read(self):
+        found = self.scan(
+            'trx.locale.declare({ ["test/long"] = [[Plain "text"]] })\n'
+        )
+        self.assertEqual(found, {"test/long": 'Plain "text"'})
+
+    def test_a_long_bracket_drops_the_newline_it_opens_on(self):
+        found = self.scan(
+            'trx.locale.declare({\n  ["test/long"] = [[\nA line]],\n})\n'
+        )
+        self.assertEqual(found, {"test/long": "A line"})
+
     def test_the_reported_line_is_the_entry_s_own(self):
         found = self.scan_lines(
             "local x = 1\n"
