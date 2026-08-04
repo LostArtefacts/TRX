@@ -113,6 +113,7 @@
 - fixed the Silver and Jade Dragon secrets being listed in the wrong order in the Floating Islands statistics (OG bug); saves made before this version have the two swapped
 
 **TR3**
+- changed the Hand of Rathmore in Reunion to not show pickup aids, in line with the other artefacts
 - removed the PS1 SFX replacements option from the Sound menu, which has no relevance in TR3/TR3LA
 - removed the hardcoded glow color and rotation speed of artefact pickups, and moved to Lua properties instead; refer to migration guide
 - fixed Willard being visible outside the hut at the beginning of the cutscene following Antarctica (resolves #5929)

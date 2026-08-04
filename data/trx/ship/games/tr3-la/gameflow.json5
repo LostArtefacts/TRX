@@ -175,6 +175,7 @@
         // 6. Reunion
         {
             "path": "slinc.tr2",
+            "script": "slinc.lua",
             "music_track": 26,
             "lara_outfit": "tr3_catsuit",
             "sequence": [
