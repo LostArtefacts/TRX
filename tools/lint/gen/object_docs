@@ -1104,7 +1104,8 @@ class XmlExporter:
                 continue
 
             props = self.property_catalog.properties_for(object_id)
-            # Tomb Editor has no color property type to map RGB onto.
+            # TODO: Tomb Editor supports color properties but its TRX injector
+            # does not. Once TE is updated, write out RGB values as well.
             properties = [
                 self._build_property_dict(name, props[name])
                 for name in props
