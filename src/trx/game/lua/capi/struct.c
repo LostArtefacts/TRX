@@ -172,41 +172,6 @@ static int M_IsValid(lua_State *const L)
     return 1;
 }
 
-static TRX_VALUE M_CheckPropertyValue(lua_State *const L, const int arg)
-{
-    switch (lua_type(L, arg)) {
-    case LUA_TBOOLEAN:
-        return (TRX_VALUE) {
-            .type = TVT_BOOL,
-            .as_bool = lua_toboolean(L, arg),
-        };
-
-    case LUA_TNUMBER:
-        if (lua_isinteger(L, arg)) {
-            return (TRX_VALUE) {
-                .type = TVT_S32,
-                .as_int = lua_tointeger(L, arg),
-            };
-        }
-        return (TRX_VALUE) {
-            .type = TVT_DOUBLE,
-            .as_num = lua_tonumber(L, arg),
-        };
-
-    case LUA_TTABLE:
-        return (TRX_VALUE) {
-            .type = TVT_XYZ_32,
-            .as_xyz = LUA_CheckXYZ(L, arg),
-        };
-
-    default:
-        break;
-    }
-
-    luaL_error(L, "property value must be a number, boolean or table");
-    return (TRX_VALUE) {};
-}
-
 // Each bridge closes over its LUA_PROPERTY_DESC in upvalue 1.
 static int M_PropertyGet(lua_State *const L)
 {
@@ -230,13 +195,13 @@ static int M_PropertySet(lua_State *const L)
     LUA_STRUCT_REF *const ref = LUA_Struct_CheckRef(L, 1, desc->type);
     void *const self = LUA_Struct_Deref(L, ref);
     const char *const name = luaL_checkstring(L, 2);
-    const TRX_VALUE value = M_CheckPropertyValue(L, 3);
     // As in M_NewIndex, a name nobody declared is reported as such rather than
     // as a value the property would not take.
     TRX_VALUE existing = {};
     if (!desc->get(self, name, &existing)) {
         return luaL_error(L, "unknown %s property '%s'", desc->what, name);
     }
+    const TRX_VALUE value = LUA_CheckValue(L, 3, existing.type);
     const char *const err = desc->set(self, name, value);
     if (err != nullptr) {
         return luaL_error(
