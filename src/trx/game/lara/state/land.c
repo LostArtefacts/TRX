@@ -353,14 +353,13 @@ static void M_Stop(ITEM *const item, COLL_INFO *const coll)
             && Item_TestAnimEqual(item, LA(LA_STAND_IDLE))
             && Lara_State_IsResponsive(LA_STAND_TO_JUMP)) {
             item->current_anim_state = LS(LS_NEUTRAL_ROLL);
-            item->goal_anim_state = LS(LS_STOP);
             Item_SwitchToAnim(item, LA(LA_JUMP_NEUTRAL_ROLL), 0);
         } else if (!g_Input.jump || !g_Config.gameplay.enable_neutral_twists) {
             Lara_Col_WadeSplash(item);
             item->current_anim_state = LS(LS_ROLL);
-            item->goal_anim_state = LS(LS_STOP);
             Item_SwitchToAnim(item, LA(LA_ROLL_START), M_LF_ROLL);
         }
+        item->goal_anim_state = LS(LS_STOP);
         return;
     }
 
