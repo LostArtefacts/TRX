@@ -257,9 +257,7 @@ void GameStringManager_DiscoverLanguages(void)
     for (int32_t i = 0; i < m_SourceFiles->count; ++i) {
         const M_FILE_ENTRY *src = Vector_Get(m_SourceFiles, i);
         char *dir = File_GetParentDirectory(src->path);
-        const char *base =
-            MAX(strrchr(src->path, '\\'), strrchr(src->path, '/'));
-        base = (base != nullptr) ? base + 1 : src->path;
+        const char *const base = File_GetBaseName(src->path);
         const char *ext = strrchr(base, '.');
         if (dir == nullptr || ext == nullptr) {
             Memory_Free(dir);

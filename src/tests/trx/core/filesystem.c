@@ -10,6 +10,15 @@ static void M_CheckStem(const char *const path, const char *const expected)
     Memory_FreePointer(&stem);
 }
 
+TEST(a_base_name_is_what_follows_the_last_separator)
+{
+    CHECK_EQ_STR(File_GetBaseName("wall.tr2"), "wall.tr2");
+    CHECK_EQ_STR(File_GetBaseName("data/wall.tr2"), "wall.tr2");
+    CHECK_EQ_STR(File_GetBaseName("data\\wall.tr2"), "wall.tr2");
+    CHECK_EQ_STR(File_GetBaseName("data\\levels/wall.tr2"), "wall.tr2");
+    CHECK_NULL(File_GetBaseName(nullptr));
+}
+
 TEST(a_stem_is_the_file_name_without_its_extension)
 {
     M_CheckStem("wall.tr2", "wall");

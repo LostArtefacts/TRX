@@ -291,22 +291,11 @@ static void M_ImageCandidates_Scan(
     LOG_INFO("Searching for overlay images");
     VECTOR *candidates = nullptr;
 
-    const char *last_slash = strrchr(base_image_path, '/');
-    const char *last_backslash = strrchr(base_image_path, '\\');
-    const char *last_sep =
-        last_slash > last_backslash ? last_slash : last_backslash;
-
-    size_t dir_len = 0;
-    char *dir_path = nullptr;
-    if (last_sep != nullptr) {
-        dir_len = (size_t)(last_sep - base_image_path);
-        dir_path = String_Format("%.*s", (int)dir_len, base_image_path);
-    } else {
+    char *dir_path = File_GetParentDirectory(base_image_path);
+    if (dir_path == nullptr) {
         dir_path = Memory_DupStr(".");
     }
-
-    const char *const file_name =
-        last_sep != nullptr ? last_sep + 1 : base_image_path;
+    const char *const file_name = File_GetBaseName(base_image_path);
 
     void *const dir_handle = File_OpenDirectory(dir_path);
     if (dir_handle == nullptr) {
