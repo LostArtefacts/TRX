@@ -206,6 +206,15 @@ unit_tests += {
 }
 
 unit_tests += {
+  'name': 'trx/game/savegame/resume',
+  'engine': [
+    'game/savegame/resume.c',
+    'game/savegame/vars.c',
+    'core/memory.c',
+  ],
+}
+
+unit_tests += {
   'name': 'trx/game/console/completion',
   'engine': [
     'core/completion.c',
