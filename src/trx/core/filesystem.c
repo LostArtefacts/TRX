@@ -127,14 +127,23 @@ char *File_GetParentDirectory(const char *path)
     return nullptr;
 }
 
-char *File_GetStem(const char *const path)
+const char *File_GetBaseName(const char *const path)
 {
     if (path == nullptr) {
         return nullptr;
     }
 
     const char *const last_delim = MAX(strrchr(path, '/'), strrchr(path, '\\'));
-    const char *const name = last_delim != nullptr ? last_delim + 1 : path;
+    return last_delim != nullptr ? last_delim + 1 : path;
+}
+
+char *File_GetStem(const char *const path)
+{
+    if (path == nullptr) {
+        return nullptr;
+    }
+
+    const char *const name = File_GetBaseName(path);
     const char *const dot = strrchr(name, '.');
     const size_t len = dot != nullptr ? (size_t)(dot - name) : strlen(name);
     return String_Format("%.*s", (int)len, name);
