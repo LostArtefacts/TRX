@@ -17,6 +17,12 @@ extern const SAVEGAME_RESUME_ITEM g_Savegame_ResumeItems[];
 
 void Savegame_Init(void);
 void Savegame_Shutdown(void);
+
+// Rebuilds the slot tables after the configured slot counts change. The
+// playthrough's resume info is not tied to the slot counts and stays as it is;
+// rebuilding it would lose the stats and the loadout gathered so far.
+void Savegame_ResizeSlots(void);
+
 bool Savegame_IsInitialised(void);
 void Savegame_ScanSavedGames(void);
 
