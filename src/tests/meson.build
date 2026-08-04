@@ -190,6 +190,16 @@ unit_tests += {
 }
 
 unit_tests += {
+  'name': 'trx/core/json',
+  'engine': [
+    'core/json/base.c',
+    'core/json/parse.c',
+    'core/json/write.c',
+    'core/memory.c',
+  ],
+}
+
+unit_tests += {
   'name': 'trx/core/handle',
   'engine': ['core/handle.c'],
 }
