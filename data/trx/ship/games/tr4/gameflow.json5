@@ -23,7 +23,6 @@
 
     "title": {
         "path": "title.tr4",
-        "script": "title.lua",
         "music_track": 104,
         "lara_outfit": "tr4_classic",
         "sequence": [
@@ -36,7 +35,6 @@
         // 1. Angkor Wat
         {
             "path": "angkor1.tr4",
-            "script": "angkor1.lua",
             "music_track": 110,
             "lara_outfit": "tr4_young",
             "sequence":[
@@ -57,7 +55,6 @@
         // 2. Race for the Iris
         {
             "path": "ang_race.tr4",
-            "script": "ang_race.lua",
             "music_track": 110,
             "lara_outfit": "tr4_young",
             // "timer": true,
@@ -75,7 +72,6 @@
         // 3. The Tomb of Seth
         {
             "path": "settomb1.tr4",
-            "script": "settomb1.lua",
             "music_track": 107,
             "lara_outfit": "tr4_classic",
             "sequence":[
@@ -96,7 +92,6 @@
         // 4. Burial Chambers
         {
             "path": "settomb2.tr4",
-            "script": "settomb2.lua",
             "music_track": 107,
             "lara_outfit": "tr4_classic",
             "sequence":[
@@ -159,7 +154,6 @@
         // 7. Temple of Karnak
         {
             "path": "karnak1.tr4",
-            "script": "karnak1.lua",
             "music_track": 110,
             "lara_outfit": "tr4_classic",
             "sequence":[
@@ -200,7 +194,6 @@
         // 9. Sacred Lake
         {
             "path": "lake.tr4",
-            "script": "lake.lua",
             "music_track": 110,
             "lara_outfit": "tr4_classic",
             "sequence":[
@@ -234,7 +227,6 @@
         // 11. Tomb of Semerkhet
         {
             "path": "semer.tr4",
-            "script": "semer.lua",
             "music_track": 107,
             "lara_outfit": "tr4_classic",
             "sequence":[
@@ -255,7 +247,6 @@
         // 12. Guardian of Semerkhet
         {
             "path": "semer2.tr4",
-            "script": "semer2.lua",
             "music_track": 107,
             "lara_outfit": "tr4_classic",
             "sequence":[
@@ -272,7 +263,6 @@
         // 13. Desert Railroad
         {
             "path": "train.tr4",
-            "script": "train.lua",
             "music_track": 106,
             "lara_outfit": "tr4_classic",
             // "train": true,
@@ -294,7 +284,6 @@
         // 14. Alexandria
         {
             "path": "alexhub.tr4",
-            "script": "alexhub.lua",
             "music_track": 110,
             "lara_outfit": "tr4_classic",
             "sequence":[
@@ -333,7 +322,6 @@
         // 15. Coastal Ruins
         {
             "path": "alexhub2.tr4",
-            "script": "alexhub2.lua",
             "music_track": 105,
             "lara_outfit": "tr4_classic",
             "sequence":[
@@ -366,7 +354,6 @@
         // 16. Pharos, Temple of Isis
         {
             "path": "palaces.tr4",
-            "script": "palaces.lua",
             "music_track": 107,
             "lara_outfit": "tr4_classic",
             "sequence":[
@@ -395,7 +382,6 @@
         // 17. Cleopatra's Palaces
         {
             "path": "palaces2.tr4",
-            "script": "palaces2.lua",
             "music_track": 107,
             "lara_outfit": "tr4_classic",
             "sequence":[
@@ -417,7 +403,6 @@
         // 18. Catacombs
         {
             "path": "csplit1.tr4",
-            "script": "csplit1.lua",
             "music_track": 108,
             "lara_outfit": "tr4_classic",
             "sequence":[
@@ -444,7 +429,6 @@
         // 19. Temple of Poseidon
         {
             "path": "csplit2.tr4",
-            "script": "csplit2.lua",
             "music_track": 108,
             "lara_outfit": "tr4_classic",
             "sequence":[
@@ -470,7 +454,6 @@
         // 20. The Lost Library
         {
             "path": "library.tr4",
-            "script": "library.lua",
             "music_track": 108,
             "lara_outfit": "tr4_classic",
             "sequence":[
@@ -496,7 +479,6 @@
         // 21. Hall of Demetrius
         {
             "path": "libend.tr4",
-            "script": "libend.lua",
             "music_track": 109,
             "lara_outfit": "tr4_classic",
             "sequence":[
@@ -517,7 +499,6 @@
         // 22. City of the Dead
         {
             "path": "bikebit.tr4",
-            "script": "bikebit.lua",
             "music_track": 102,
             "lara_outfit": "tr4_classic",
             "sequence":[
@@ -542,7 +523,6 @@
         // 23. Trenches
         {
             "path": "nutrench.tr4",
-            "script": "nutrench.lua",
             "music_track": 102,
             "lara_outfit": "tr4_classic",
             "sequence":[
@@ -567,7 +547,6 @@
         // 24. Chambers of Tulun
         {
             "path": "cortyard.tr4",
-            "script": "cortyard.lua",
             "music_track": 102,
             "lara_outfit": "tr4_classic",
             "sequence":[
@@ -592,7 +571,6 @@
         // 25. Street Bazaar
         {
             "path": "lowstrt.tr4",
-            "script": "lowstrt.lua",
             "music_track": 102,
             "lara_outfit": "tr4_classic",
             "sequence":[
@@ -618,7 +596,6 @@
         // 26. Citadel Gate
         {
             "path": "highstrt.tr4",
-            "script": "highstrt.lua",
             "music_track": 102,
             "lara_outfit": "tr4_classic",
             "sequence":[
@@ -658,7 +635,6 @@
         // 28. The Sphinx Complex
         {
             "path": "joby1a.tr4",
-            "script": "joby1a.lua",
             "music_track": 111,
             "lara_outfit": "tr4_classic",
             "sequence":[
@@ -691,7 +667,6 @@
         // 30. Underneath the Sphinx
         {
             "path": "joby2.tr4",
-            "script": "joby2.lua",
             "music_track": 107,
             "lara_outfit": "tr4_classic",
             "sequence":[
@@ -731,7 +706,6 @@
         // 32. Inside Menkaure's Pyramid
         {
             "path": "joby3b.tr4",
-            "script": "joby3b.lua",
             "music_track": 107,
             "lara_outfit": "tr4_classic",
             "sequence":[
@@ -750,7 +724,6 @@
         // 33. The Mastabas
         {
             "path": "joby4a.tr4",
-            "script": "joby4a.lua",
             "music_track": 111,
             "lara_outfit": "tr4_classic",
             "sequence":[
@@ -773,7 +746,6 @@
         // 34. The Great Pyramid
         {
             "path": "joby4b.tr4",
-            "script": "joby4b.lua",
             "music_track": 107,
             "lara_outfit": "tr4_classic",
             "sequence":[
@@ -794,7 +766,6 @@
         // 35. Khufu's Queens Pyramids
         {
             "path": "joby4c.tr4",
-            "script": "joby4c.lua",
             "music_track": 111,
             "lara_outfit": "tr4_classic",
             "sequence":[
@@ -816,7 +787,6 @@
         // 36. Inside the Great Pyramid
         {
             "path": "joby5a.tr4",
-            "script": "joby5a.lua",
             "music_track": 107,
             "lara_outfit": "tr4_classic",
             // "pulse": true,
@@ -840,7 +810,6 @@
         // 37. Temple of Horus
         {
             "path": "joby5b.tr4",
-            "script": "joby5b.lua",
             "music_track": 97,
             "lara_outfit": "tr4_classic",
             "sequence":[

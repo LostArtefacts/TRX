@@ -301,6 +301,23 @@ order: 3
    instead configurable via Lua properties. Refer to the default Lua scripts for
    OG TR3 levels.
 
+30. **Name Lua scripts after what they belong to**
+    A game flow no longer declares its scripts; a script is found by the name
+    of the level or the game it belongs to. Both the global `main_script` key
+    and each level's `script` key were removed.
+    - A level's script is `scripts/<level file>.lua` in the game's own
+      directory: a level loading `wall.tr2` runs `scripts/wall.lua`. Rename any
+      script whose name does not already match its level, and drop the `script`
+      key.
+    - What `main_script` pointed at goes in `scripts/_game.lua`, which the game
+      runs as it starts. A game that extends another and ships no file of its
+      own runs that game's script instead, so an expansion that only inherited
+      its base's setup can drop the file.
+
+    A level's script is looked for in its own game's directory alone. A game
+    that extends another brings its own copy of any level script it wants,
+    rather than reaching into the base game for one.
+
 ### Version 1.8 to 1.9
 
 1. **Update Lara pushblock animations**

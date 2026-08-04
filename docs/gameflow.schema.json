@@ -36,10 +36,6 @@
       "type": "string",
       "description": "Path to the main menu background image. Omit it to run the title level live behind the menu instead."
     },
-    "main_script": {
-      "type": "string",
-      "description": "Path to a global Lua script to execute after game initialization, before the first level loads."
-    },
     "savegame_file_fmt": {
       "type": "string",
       "description": "Path pattern to look for the savegame files."
@@ -200,10 +196,6 @@
           "type": "string",
           "description": "Outfit Lara wears in the title level's cutscenes. Only outfits whose meshes the title level holds can be worn."
         },
-        "script": {
-          "type": "string",
-          "description": "Path to a Lua script executed after loading this level."
-        },
         "inherit_injections": {
           "type": "boolean"
         },
@@ -231,10 +223,6 @@
       "properties": {
         "type": {
           "type": "string"
-        },
-        "script": {
-          "type": "string",
-          "description": "Path to a Lua script executed after loading this level."
         },
         "path": {
           "$ref": "#/$defs/path"

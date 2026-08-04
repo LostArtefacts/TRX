@@ -56,7 +56,6 @@
         // Level 0: Lara's Home
         {
             "path": "gym.phd",
-            "script": "gym.lua",
             "type": "gym",
             "music_track": 0,
             "inherit_injections": false,
@@ -372,7 +371,6 @@
         // Level 14: Atlantis
         {
             "path": "level10b.phd",
-            "script": "atlantis.lua",
             "music_track": 60,
             "lara_outfit": "tr1_classic",
             "sequence": [

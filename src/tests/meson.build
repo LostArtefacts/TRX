@@ -326,7 +326,7 @@ unit_tests += {
     'game/lua/registry.c',
     'game/lua/utils.c',
   ],
-  'src': ['harness/stubs_enum_map.c'],
+  'src': ['harness/stubs_enum_map.c', 'harness/stubs_game_script.c'],
   'deps': [dep_lua],
 }
 

@@ -14,6 +14,7 @@
 #include <trx/game/lua/registry.h>
 #include <trx/game/lua/sandbox.h>
 #include <trx/game/lua/utils.h>
+#include <trx/game/shell/paths.h>
 
 #include <lauxlib.h>
 #include <lua.h>
@@ -247,6 +248,24 @@ LUA_RESULT LUA_EvalFile(const char *const path)
 {
     M_PRIV *const p = &m_Priv;
     return M_LuaLoadAndRun(p->state, M_LoadFile, path);
+}
+
+void LUA_RunGameScript(void)
+{
+    // An expansion with nothing of its own to set up runs the script of the
+    // game it extends, so it ships a file only to replace one.
+    const char *const path =
+        TRXPath_PeekResolve(TRX_DYNAMIC_PATH_GAME_SCRIPT_FILE, "_game.lua");
+    if (path == nullptr) {
+        return;
+    }
+
+    LOG_INFO("Loading game script: %s", path);
+    LUA_RESULT res = LUA_EvalFile(path);
+    if (res.code != LUA_OK) {
+        LOG_ERROR("Lua game script error: %s", res.message);
+    }
+    LUA_FreeResult(&res);
 }
 
 void LUA_DropLevelScript(void)

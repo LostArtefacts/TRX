@@ -253,6 +253,7 @@ The Lua integration was rewritten and existing scripts will need updating; refer
 - added `trx.sound.samples`, the level's samples as `trx.sound.Sample` handles keyed by id, each with `:play()`, `:stop()` and its `volume`, `range`, `randomness` and `pitch`
 - added `trx.sound.streams`, the sound effects playing now as `trx.sound.Stream` handles, each of which can be paused, resumed and stopped on its own
 - added a script watchdog: a script that runs for over 5 seconds without handing control back is stopped with a script error, where it used to freeze the game
+- changed Lua scripts to be found by name rather than declared in the game flow: a level loading `wall.tr2` runs `scripts/wall.lua`, and `scripts/_game.lua` runs as the game starts, for what a game sets up rather than a level – refer to migration notes
 - changed `trx.lara.is_burning` to be writable, so setting it lights Lara or puts her out
 - changed `trx.lara.extra_anim` to a boolean, where it used to be the relative animation number, or -1
 - changed `trx.lara.mesh` and `trx.lara.extra_mesh` to declared enums, `trx.lara.Mesh` and `trx.lara.ExtraMesh`

@@ -12,24 +12,9 @@ Scripting with Lua needs:
 
 ### Quick steps
 
-Add per-level scripts in a level object:
-
-```json5
-{
-    "levels": [
-        // …,
-        {
-            "script": "data/scripts/level1.lua",
-            // …,
-        },
-        // …
-    ],
-    // …
-}
-```
-
-Create a file `data/scripts/level1.lua` in the project and put the following
-content:
+A level's script is named after the level it belongs to. For a level that loads
+`level1.phd`, create `scripts/level1.lua` in the game's directory and put the
+following content in it:
 
 ```lua
 trx.events.on_game_start(function()
@@ -37,23 +22,27 @@ trx.events.on_game_start(function()
 end)
 ```
 
+Nothing declares the file: the game flow names the level, and the script beside
+it under that name runs as the level loads.
+
 Start the game. The logs should show the following:
 
 ```
-INF | 2025-10-04 12:12:23.155 [data/scripts/level1.lua:2:?] hello from level 1!
+INF | 2025-10-04 12:12:23.155 [scripts/level1.lua:2:?] hello from level 1!
 ```
 
 ---
 
-A global script can be loaded as well, by adding a global property to the game
-flow configuration:
+### The game's own script
 
-```json5
-{
-    // Optional global Lua script file
-    "main_script": "data/scripts/global.lua",
-}
-```
+A game can also ship one script that belongs to the game rather than to any of
+its levels. Create `scripts/_game.lua` in the game's directory and it runs once
+as the game starts, with the game flow, the strings and the settings all in
+place. Nothing declares it: the file being there is what runs it.
+
+An expansion that has nothing of its own to set up needs no file: the script of
+the game it extends runs instead. Shipping one replaces that script rather than
+adding to it, so anything worth keeping goes in a module both require.
 
 ### Interactive commands
 

@@ -36,6 +36,9 @@ void LUA_FreeResult(LUA_RESULT *result);
 // Evaluate a Lua script file. Caller must free the result with LUA_FreeResult.
 LUA_RESULT LUA_EvalFile(const char *path);
 
+// Runs the per-game script (scripts/_game.lua), if the game ships one.
+void LUA_RunGameScript(void);
+
 // Let go of the outgoing level's script: what it set up hears about it, and
 // then its listeners go. Level_Unload does this for a level change; a path that
 // re-runs a script without unloading the level does it for itself. The event

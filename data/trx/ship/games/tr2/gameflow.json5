@@ -51,7 +51,6 @@
         {
             "type": "gym",
             "path": "assault.tr2",
-            "script": "assault.lua",
             "music_track": -1,
             "lara_outfit": "tr2_gym",
             "sequence": [
@@ -403,7 +402,6 @@
         // 12. Barkhang Monastery
         {
             "path": "monastry.tr2",
-            "script": "monastry.lua",
             "music_track": -1,
             "lara_outfit": "tr2_bomber_jacket",
             "sequence": [
@@ -519,7 +517,6 @@
         // 16. Floating Islands
         {
             "path": "floating.tr2",
-            "script": "floating.lua",
             "music_track": 55,
             "lara_outfit": "tr2_classic",
             "sequence": [
@@ -570,7 +567,6 @@
         // 18. Home Sweet Home
         {
             "path": "house.tr2",
-            "script": "house.lua",
             "music_track": -1,
             "lara_outfit": "tr2_robe",
             "sequence": [
@@ -712,7 +708,6 @@
         },
         {
             "path": "cut3.tr2",
-            "script": "cut3.lua",
             "music_track": 4,
             "lara_outfit": "tr2_classic",
             "sequence": [{"type": "loop_game"}],
