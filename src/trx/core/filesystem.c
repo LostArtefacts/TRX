@@ -119,12 +119,25 @@ char *File_GetParentDirectory(const char *path)
         return nullptr;
     }
 
-    char *last_delim = MAX(strrchr(path, '/'), strrchr(path, '\\'));
+    const char *const last_delim = MAX(strrchr(path, '/'), strrchr(path, '\\'));
     if (last_delim != nullptr) {
-        return String_Format("%.*s", last_delim - path, path);
+        return String_Format("%.*s", (int32_t)(last_delim - path), path);
     }
 
     return nullptr;
+}
+
+char *File_GetStem(const char *const path)
+{
+    if (path == nullptr) {
+        return nullptr;
+    }
+
+    const char *const last_delim = MAX(strrchr(path, '/'), strrchr(path, '\\'));
+    const char *const name = last_delim != nullptr ? last_delim + 1 : path;
+    const char *const dot = strrchr(name, '.');
+    const size_t len = dot != nullptr ? (size_t)(dot - name) : strlen(name);
+    return String_Format("%.*s", (int)len, name);
 }
 
 MYFILE *File_Open(const char *path, FILE_OPEN_MODE mode)

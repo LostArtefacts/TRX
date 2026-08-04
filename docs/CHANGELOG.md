@@ -185,6 +185,7 @@ The Lua integration was rewritten and existing scripts will need updating; refer
 - added `trx.config.describe()`, to read a setting's shape and accepted values
 - added `trx.config.format_value()`, the current value spelled the way the console prints it
 - added `trx.config.accepted_values()`, what a setting takes, as text for an error message
+- added `trx.game.Level.key`, what a level is called after the file it loads
 - added new Lua game state, `trx.game.is_loaded` and `trx.game.is_playable`
 - added `trx.game.is_ngplus`, which tells whether the run started from the passport's bonus entry
 - added `trx.console.register()`, for a script to add its own console command

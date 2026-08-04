@@ -123,6 +123,17 @@ static M_SEQUENCE_EVENT_HANDLER *M_GetSequenceEventHandlers(void)
     return m_SequenceEventHandlers;
 }
 
+// What a script keys its own data by. The case is lowered here rather than in
+// File_GetStem, which is a path split and holds no case policy.
+static char *M_MakeLevelKey(const char *const path)
+{
+    char *const key = File_GetStem(path);
+    for (char *c = key; c != nullptr && *c != '\0'; c++) {
+        *c = (*c >= 'A' && *c <= 'Z') ? *c + ('a' - 'A') : *c;
+    }
+    return key;
+}
+
 // Read a "path" value that may be either a plain string or an array of
 // candidate strings tried in order.
 // Pass optional=true to allow the key to be absent (out_path is set to nullptr
@@ -837,6 +848,7 @@ static bool M_LoadLevel(
             : TRX_DYNAMIC_PATH_LEVEL_FILE;
         JSON_MUST(
             M_ReadPath(io, "path", false, path_type, &level->path, false));
+        level->key = M_MakeLevelKey(level->path);
     }
     {
         const char *tmp_script = nullptr;

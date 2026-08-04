@@ -91,6 +91,13 @@ Module for the game flow: which levels there are, and which one is being played.
     unrelated one.
 
     Properties:
+    - <a id="game.Level.key" name="game.Level.key"></a>**`key`**: string. What the level is called, taken from the name of the file it loads: `wall.tr2` reads
+      back as `wall`. Lower case, regardless of the case on disk, and `nil` for a level that loads no file
+      of its own.
+
+      This is the name to write into a table of per-level data. [`num`](#game.Level.num) is a position and
+      moves as soon as a game flow gains a level, and [`path`](#game.Level.path) is wherever the file sits on
+      this install. *(read-only)*
     - <a id="game.Level.lara_outfit" name="game.Level.lara_outfit"></a>**`lara_outfit`**: string. The outfit Lara starts the level in. *(read-only)*
     - <a id="game.Level.music_track" name="game.Level.music_track"></a>**`music_track`**: [trx.catalog.music](CATALOG.md#catalog.music). The track that plays when the level starts. *(read-only)*
     - <a id="game.Level.num" name="game.Level.num"></a>**`num`**: [trx.game.LevelNum](#game.LevelNum). *(read-only)*
