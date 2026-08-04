@@ -235,6 +235,25 @@ static void M_ClearSlots(void)
     }
 }
 
+static void M_AllocSlots(void)
+{
+    m_SaveSlots = Savegame_GetSlotCount(SAVEGAME_SLOT_POOL_NORMAL);
+    m_QuickSaveSlots = Savegame_GetSlotCount(SAVEGAME_SLOT_POOL_QUICK);
+    m_NormalSavegameInfo = Memory_Alloc(sizeof(SAVEGAME_INFO) * m_SaveSlots);
+    m_QuickSavegameInfo = m_QuickSaveSlots > 0
+        ? Memory_Alloc(sizeof(SAVEGAME_INFO) * m_QuickSaveSlots)
+        : nullptr;
+}
+
+static void M_FreeSlots(void)
+{
+    M_ClearSlots();
+    Memory_FreePointer(&m_NormalSavegameInfo);
+    Memory_FreePointer(&m_QuickSavegameInfo);
+    m_SaveSlots = 0;
+    m_QuickSaveSlots = 0;
+}
+
 static bool M_FillSlot(const SAVEGAME_SLOT_REF slot, const char *const path)
 {
     SAVEGAME_INFO *const savegame_info = M_GetSavegameInfoSlot(slot);
@@ -511,12 +530,7 @@ void Savegame_Init(void)
         * (GF_GetLevelTable(GFLT_MAIN)->count
            + GF_GetLevelTable(GFLT_DEMOS)->count));
 
-    m_SaveSlots = Savegame_GetSlotCount(SAVEGAME_SLOT_POOL_NORMAL);
-    m_QuickSaveSlots = Savegame_GetSlotCount(SAVEGAME_SLOT_POOL_QUICK);
-    m_NormalSavegameInfo = Memory_Alloc(sizeof(SAVEGAME_INFO) * m_SaveSlots);
-    m_QuickSavegameInfo = m_QuickSaveSlots > 0
-        ? Memory_Alloc(sizeof(SAVEGAME_INFO) * m_QuickSaveSlots)
-        : nullptr;
+    M_AllocSlots();
 
     const GF_LEVEL_TABLE *const level_table = GF_GetLevelTable(GFLT_DEMOS);
     for (int32_t i = 0; i < level_table->count; i++) {
@@ -541,10 +555,14 @@ bool Savegame_IsInitialised(void)
 
 void Savegame_Shutdown(void)
 {
-    M_ClearSlots();
+    M_FreeSlots();
     Memory_FreePointer(&m_ResumeInfo);
-    Memory_FreePointer(&m_NormalSavegameInfo);
-    Memory_FreePointer(&m_QuickSavegameInfo);
+}
+
+void Savegame_ResizeSlots(void)
+{
+    M_FreeSlots();
+    M_AllocSlots();
 }
 
 int32_t Savegame_GetSlotCount(const SAVEGAME_SLOT_POOL pool)
