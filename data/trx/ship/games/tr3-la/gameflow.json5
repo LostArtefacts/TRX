@@ -124,6 +124,7 @@
         // 4. Sleeping with the Fishes
         {
             "path": "undersea.tr2",
+            "script": "undersea.lua",
             "music_track": 27,
             "lara_outfit": "tr3_catsuit",
             "sequence": [

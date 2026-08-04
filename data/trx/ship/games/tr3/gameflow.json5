@@ -554,6 +554,7 @@
         // 19. Meteorite Cavern
         {
             "path": "chamber.tr2",
+            "script": "chamber.lua",
             "music_track": 26,
             "lara_outfit": "tr3_antarctica",
             "weather_type": "snow",
