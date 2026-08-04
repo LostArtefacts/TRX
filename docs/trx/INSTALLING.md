@@ -1111,6 +1111,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── aldwych.lua
 │   │   │   ├── antarc.lua
 │   │   │   ├── area51.lua
+│   │   │   ├── chamber.lua
 │   │   │   ├── chunnel.lua
 │   │   │   ├── compound.lua
 │   │   │   ├── crash.lua
@@ -1129,6 +1130,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── tonyboss.lua
 │   │   │   ├── tower.lua
 │   │   │   ├── triboss.lua
+│   │   │   ├── undersea.lua
 │   │   │   └── zoo.lua
 │   │   ├── catalog_item_actions.csv
 │   │   ├── catalog_lara_anims.csv
@@ -2438,6 +2440,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── aldwych.lua
     │   │   │   │   ├── antarc.lua
     │   │   │   │   ├── area51.lua
+    │   │   │   │   ├── chamber.lua
     │   │   │   │   ├── chunnel.lua
     │   │   │   │   ├── compound.lua
     │   │   │   │   ├── crash.lua
@@ -2456,6 +2459,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── tonyboss.lua
     │   │   │   │   ├── tower.lua
     │   │   │   │   ├── triboss.lua
+    │   │   │   │   ├── undersea.lua
     │   │   │   │   └── zoo.lua
     │   │   │   ├── catalog_item_actions.csv
     │   │   │   ├── catalog_lara_anims.csv

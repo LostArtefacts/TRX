@@ -296,6 +296,11 @@ order: 3
    - `pickup_qty` is now `box_shots`
    - `inventory_qty` is now `box_label_qty`
 
+29. **Update TR3 artefact pickups**
+   The glow color and rotation speed of artefact pickups is no longer hardcoded,
+   instead configurable via Lua properties. Refer to the default Lua scripts for
+   OG TR3 levels.
+
 ### Version 1.8 to 1.9
 
 1. **Update Lara pushblock animations**

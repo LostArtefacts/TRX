@@ -123,6 +123,9 @@ typedef struct {
     uint32_t secret_mask;
     PICKUP_MODE pickup_mode;
     bool animate;
+    bool show_pickup_aid;
+    int16_t rotation;
+    RGB_888 glow_color;
 } M_PRIV;
 
 static void M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
@@ -135,6 +138,12 @@ static void M_SavePriv(const ITEM *const item, JSON_WRITE_IO *const io)
 {
     const M_PRIV *const p = item->priv;
     JSONW_WRITE(io, "animate", p->animate);
+}
+
+static const char *M_CheckRotation(const TRX_VALUE *const in)
+{
+    return ABS(in->as_int) > DEG_90 ? "rotation is beyond a quarter turn"
+                                    : nullptr;
 }
 
 static void M_Initialise(const int16_t item_num)
@@ -274,12 +283,28 @@ static void M_ControlPickupAids(ITEM *const item)
 
 static void M_ControlPickupLights(ITEM *const item)
 {
+    const M_PRIV *const p = item->priv;
+    if (p->glow_color.r == 0 && p->glow_color.g == 0 && p->glow_color.b == 0) {
+        return;
+    }
+
     const int16_t timer = Output_GetTimeInGame();
     const int16_t angle = Math_Cos((timer & 0x3F) << 10);
     int32_t c = ABS(angle >> 9);
     CLAMPG(c, 31);
     c <<= 3;
-    Output_AddDynamicLightRGB(item->pos, 8, (RGB_888) { 0, c, c >> 1 });
+
+    // Using 0xF8 rather than 0xFF allows for achieving the exact curve present
+    // with OG TR3's quest items.
+#define L_GLOW(channel, intensity) (((channel) * (intensity)) / 0xF8)
+    const RGB_888 color = {
+        .r = L_GLOW(p->glow_color.r, c),
+        .g = L_GLOW(p->glow_color.g, c),
+        .b = L_GLOW(p->glow_color.b, c),
+    };
+    Output_AddDynamicLightRGB(item->pos, 8, color);
+
+#undef L_GLOW
 }
 
 static void M_Control(const int16_t item_num)
@@ -304,12 +329,12 @@ static void M_Control(const int16_t item_num)
         }
     }
 
-    if (Object_IsType(item->object_id, g_QuestObjects)) {
-        if (!Item_IsInactive(item)) {
-            item->rot.y += 1024;
-            M_ControlPickupLights(item);
-        }
-    } else if (g_Config.gameplay.enable_pickup_aids) {
+    if (!Item_IsInactive(item)) {
+        item->rot.y += p->rotation;
+        M_ControlPickupLights(item);
+    }
+
+    if (p->show_pickup_aid && g_Config.gameplay.enable_pickup_aids) {
         M_ControlPickupAids(item);
     }
 }
@@ -919,7 +944,19 @@ static void M_Setup(OBJECT *const obj)
         OBJECT_PROPERTY_CHECKED(
             M_PRIV, pickup_mode, PICKUP_MODE_NORMAL, M_CheckPickupMode,
             "Pickup animation mode - 0: normal; 1: low pedestal; 2: high "
-            "pedestal; 3: hidden reach-in; 4: crowbar."));
+            "pedestal; 3: hidden reach-in; 4: crowbar."),
+        OBJECT_PROPERTY(
+            M_PRIV, show_pickup_aid, true,
+            "Show a twinkle effect above the item."),
+        OBJECT_PROPERTY_CHECKED(
+            M_PRIV, rotation, 0, M_CheckRotation,
+            "How much to rotate the item by each frame while it's active, in "
+            "engine angle units. Value range: "
+            "minimum -16384; maximum 16384."),
+        OBJECT_PROPERTY(
+            M_PRIV, glow_color, ((RGB_888) { 0, 0, 0 }),
+            "The color of the item's glow while it's active. Black infers no "
+            "glow."));
 }
 
 const OBJECT_BOUNDS *Pickup_Bounds(void)

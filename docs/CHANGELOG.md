@@ -14,6 +14,7 @@
 - added support for Lara to use animated interactions when picking up thrown flares
 - added a `damage` property to the `O_POWER_SAW` object
 - added a bindable hotkey for using the binoculars
+- added `show_pickup_aid`, `rotation` and `glow_color` properties for all pickup types
 - improved error messages related to bad command invocations
 - changed the game mode selection option so that Never starts every new game as a regular one (Gameplay → General → Game mode selection)
 - changed reflections UV mapping to be more correct
@@ -114,13 +115,14 @@
 - fixed the Silver and Jade Dragon secrets being listed in the wrong order in the Floating Islands statistics (OG bug); saves made before this version have the two swapped
 
 **TR3**
+- removed the PS1 SFX replacements option from the Sound menu, which has no relevance in TR3/TR3LA
+- removed the hardcoded glow color and rotation speed of artefact pickups, and moved to Lua properties instead; refer to migration guide
 - fixed Willard being visible outside the hut at the beginning of the cutscene following Antarctica (resolves #5929)
 - fixed scenery that leans out of its room, such as the streetlight glow in It's a Madhouse!, flickering as the camera turns (OG bug)
 - fixed enemies and objects that reach out of their room, such as the Loch Ness monster in Highland Fling, flickering as the camera turns (OG bug)
 - fixed Lara, when on fire, not extinguishing at the right water depth compared with OG (regression from 1.1)
 - fixed the waterfall and drowning mist bunching up in one spot instead of spreading out along the water (regression from 1.2)
 - fixed a crash when a level holds fewer raptors than its raptor emitters can send out
-- removed the PS1 SFX replacements option from the Sound menu, which has no relevance in TR3/TR3LA
 
 **TR4**
 - added dead enemies fading away a few seconds after they fall, as in the original TR4
