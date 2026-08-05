@@ -12,6 +12,10 @@
 // rather than merely tidy: if any of them regress, a member the declarations
 // deliberately withheld becomes reachable again.
 
+// A tiny pool so handles can be made stale on demand, the way Item_Destroy
+// does.
+#define M_POOL_SIZE 4
+
 typedef struct {
     int32_t visible;
     int32_t secret; // reachable by C, never declared to Lua
@@ -30,12 +34,24 @@ static const FIELD_DESC m_WidgetFields[] = {
 
 TYPE_DEFINE(WIDGET, m_WidgetFields)
 
-// A tiny pool so handles can be made stale on demand, the way Item_Destroy
-// does.
-#define M_POOL_SIZE 4
 static WIDGET m_Pool[M_POOL_SIZE];
 static uint16_t m_Gen[M_POOL_SIZE];
 static bool m_Dead[M_POOL_SIZE];
+
+// The declaration every test starts from: `visible` and `flag` are public,
+// `locked` is public but read-only, `reveal` is a method. `secret` and
+// `backdoor` are deliberately withheld.
+static const char DECL[] =
+    "trxc.struct.expose_field('WIDGET', 'visible', 'visible', true)\n"
+    "trxc.struct.expose_field('WIDGET', 'flag', 'flag', true)\n"
+    "trxc.struct.expose_field('WIDGET', 'locked', 'locked', false)\n"
+    // The same plain C member under two public names, one writable and one not.
+    // Read-only is the declaration's to decide, not the struct's.
+    "trxc.struct.expose_field('WIDGET', 'guarded', 'visible', false)\n"
+    "trxc.struct.expose_method('WIDGET', 'reveal', 'reveal')\n"
+    "trxc.struct.expose_computed('WIDGET', 'doubled', function(w)\n"
+    "  return w.visible * 2\n"
+    "end)\n";
 
 static void *M_Resolve(const LUA_STRUCT_REF *const ref)
 {
@@ -107,21 +123,6 @@ static lua_State *M_NewState(const char *const declaration)
     }
     return L;
 }
-
-// The declaration every test starts from: `visible` and `flag` are public,
-// `locked` is public but read-only, `reveal` is a method. `secret` and
-// `backdoor` are deliberately withheld.
-static const char DECL[] =
-    "trxc.struct.expose_field('WIDGET', 'visible', 'visible', true)\n"
-    "trxc.struct.expose_field('WIDGET', 'flag', 'flag', true)\n"
-    "trxc.struct.expose_field('WIDGET', 'locked', 'locked', false)\n"
-    // The same plain C member under two public names, one writable and one not.
-    // Read-only is the declaration's to decide, not the struct's.
-    "trxc.struct.expose_field('WIDGET', 'guarded', 'visible', false)\n"
-    "trxc.struct.expose_method('WIDGET', 'reveal', 'reveal')\n"
-    "trxc.struct.expose_computed('WIDGET', 'doubled', function(w)\n"
-    "  return w.visible * 2\n"
-    "end)\n";
 
 // Runs a chunk; returns true if it completed without error.
 static bool M_Run(lua_State *const L, const char *const code)

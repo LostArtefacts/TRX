@@ -64,6 +64,20 @@ static void M_DefineEnums(void)
         "extra_dark");
 }
 
+static void M_Reset(void)
+{
+    M_DefineEnums();
+    ConfigOverride_Clear();
+    m_Enforced = false;
+    m_EnableMusic = true;
+    m_Fov = 65;
+    m_Brightness = 1.5;
+    m_MasterVolume = 1.0;
+    free(m_WaterColor);
+    m_WaterColor = strdup("ff0000");
+    m_ShadowType = 0;
+}
+
 const CONFIG_OPTION *Config_GetOptionMap(void)
 {
     return m_Options;
@@ -217,20 +231,6 @@ bool Config_RestoreOptionDefault(const void *const target)
         return false;
     }
     return Config_RestoreOptionDefaultForce(target);
-}
-
-static void M_Reset(void)
-{
-    M_DefineEnums();
-    ConfigOverride_Clear();
-    m_Enforced = false;
-    m_EnableMusic = true;
-    m_Fov = 65;
-    m_Brightness = 1.5;
-    m_MasterVolume = 1.0;
-    free(m_WaterColor);
-    m_WaterColor = strdup("ff0000");
-    m_ShadowType = 0;
 }
 
 FAKE_ON_RESET(M_Reset)

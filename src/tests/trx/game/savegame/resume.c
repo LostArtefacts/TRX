@@ -52,6 +52,20 @@ static LARA_INFO m_Lara;
 static ITEM m_LaraItem;
 static bool m_BonusFlag;
 
+static void M_SetUp(void)
+{
+    g_Config = (CONFIG) {};
+    g_Config.gameplay.start_lara_hitpoints = 1000;
+    g_TRVersion = 1;
+    m_BonusFlag = false;
+    m_LiveInv = (INVENTORY_STATE) {};
+    m_Lara = (LARA_INFO) {};
+    m_LaraItem = (ITEM) {};
+
+    SG_Resume_Shutdown();
+    SG_Resume_Init();
+}
+
 int32_t g_TRVersion = 1;
 WEAPON_INFO g_Weapons[NUM_WEAPONS] = {};
 
@@ -185,20 +199,6 @@ void CutSeq_SetPlayedMask(const uint64_t mask)
 const char *EnumMap_ToString(const char *const enum_name, const int32_t value)
 {
     return "?";
-}
-
-static void M_SetUp(void)
-{
-    g_Config = (CONFIG) {};
-    g_Config.gameplay.start_lara_hitpoints = 1000;
-    g_TRVersion = 1;
-    m_BonusFlag = false;
-    m_LiveInv = (INVENTORY_STATE) {};
-    m_Lara = (LARA_INFO) {};
-    m_LaraItem = (ITEM) {};
-
-    SG_Resume_Shutdown();
-    SG_Resume_Init();
 }
 
 TEST(an_entry_belongs_to_its_level_and_the_demos_share_one)

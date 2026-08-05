@@ -44,6 +44,12 @@ typedef struct {
     void (*free)(UI_SETTINGS_DIALOG_STATE *);
 } M_DIALOG;
 
+// How far the worst node reaches outside the screen, and outside its own box.
+typedef struct {
+    float screen;
+    float box;
+} M_OVERFLOW;
+
 static const M_DIALOG m_Dialogs[] = {
     { "gameplay", UI_GameplaySettings_Init, UI_GameplaySettings,
       UI_GameplaySettings_Free },
@@ -146,12 +152,6 @@ static void M_CheckNode(
         M_CheckNode(child, canvas_w, worst, worst_box);
     }
 }
-
-// How far the worst node reaches outside the screen, and outside its own box.
-typedef struct {
-    float screen;
-    float box;
-} M_OVERFLOW;
 
 static M_OVERFLOW M_MeasureScene(void)
 {

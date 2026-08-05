@@ -20,75 +20,13 @@
 #include <string.h>
 #include <strings.h>
 
-static bool m_Verbose;
-static COMMAND_RESULT m_EvalResult;
-static LUA_CONTEXT m_Context = LUA_CONTEXT_GLOBAL;
-
-LUA_CONTEXT LUA_GetScriptContext(void)
-{
-    return m_Context;
-}
-
-void LUA_SetScriptContext(const LUA_CONTEXT context)
-{
-    m_Context = context;
-}
-
-void Console_LogEx(
-    const LOG_LEVEL level, const char *const file, const int line,
-    const char *const func, const char *const fmt, ...)
-{
-    char message[256];
-    va_list args;
-    va_start(args, fmt);
-    vsnprintf(message, sizeof(message), fmt, args);
-    va_end(args);
-    FAKE_RECORD("log", FV(level), FV_STR(message));
-}
-
-void Console_Clear(void)
-{
-    FAKE_RECORD("clear");
-}
-
-COMMAND_RESULT Console_Eval(const char *const cmdline)
-{
-    // The bridge sets verbose around the call and restores it afterwards, so
-    // the value that matters is the one visible from in here.
-    const bool verbose = m_Verbose;
-    FAKE_RECORD("eval", FV_STR(cmdline), FV(verbose));
-    return m_EvalResult;
-}
-
-void Console_SetVerbose(const bool verbose)
-{
-    m_Verbose = verbose;
-}
-
-bool Console_IsVerbose(void)
-{
-    return m_Verbose;
-}
-
 #define FAKE_MAX_COMMANDS 32
 static CONSOLE_COMMAND m_Commands[FAKE_MAX_COMMANDS];
 static int32_t m_CommandCount;
 
-void Console_Registry_Add(const CONSOLE_COMMAND command)
-{
-    // Dropping one would leave the test that registered it looking at a command
-    // that is not there, and passing.
-    assert(m_CommandCount < FAKE_MAX_COMMANDS);
-    CONSOLE_COMMAND *const slot = &m_Commands[m_CommandCount++];
-    *slot = command;
-    // Copied, as the real registry copies them: a Lua registration's strings
-    // belong to the Lua state.
-    slot->prefix = command.prefix != nullptr ? strdup(command.prefix) : nullptr;
-    slot->help_id =
-        command.help_id != nullptr ? strdup(command.help_id) : nullptr;
-    slot->aliases =
-        command.aliases != nullptr ? strdup(command.aliases) : nullptr;
-}
+static bool m_Verbose;
+static COMMAND_RESULT m_EvalResult;
+static LUA_CONTEXT m_Context = LUA_CONTEXT_GLOBAL;
 
 // The aliases arrive comma-joined ("secondary, third"); each spelling
 // dispatches.
@@ -119,77 +57,12 @@ static bool M_FakeAliasMatch(const char *const aliases, const char *const word)
     return false;
 }
 
-// The real registry matches a command name case-insensitively, so a test that
-// matched exactly would not see what the player typing /HEAL sees.
-const CONSOLE_COMMAND *Console_Registry_Get(const char *const prefix)
-{
-    for (int32_t i = 0; i < m_CommandCount; i++) {
-        if (strcasecmp(m_Commands[i].prefix, prefix) == 0
-            || M_FakeAliasMatch(m_Commands[i].aliases, prefix)) {
-            return &m_Commands[i];
-        }
-    }
-    return nullptr;
-}
-
-VECTOR *Console_Registry_GetAll(void)
-{
-    VECTOR *const vec = Vector_Create(sizeof(const CONSOLE_COMMAND *));
-    for (int32_t i = 0; i < m_CommandCount; i++) {
-        const CONSOLE_COMMAND *const cmd = &m_Commands[i];
-        Vector_Add(vec, &cmd);
-    }
-    return vec;
-}
-
-void Console_Registry_Clear(void)
-{
-    for (int32_t i = 0; i < m_CommandCount; i++) {
-        free((char *)m_Commands[i].prefix);
-        free((char *)m_Commands[i].help_id);
-        free((char *)m_Commands[i].aliases);
-    }
-    m_CommandCount = 0;
-}
-
-COMMAND_RESULT FakeConsole_Run(const char *const prefix, const char *const args)
-{
-    const CONSOLE_COMMAND *const command = Console_Registry_Get(prefix);
-    if (command == nullptr) {
-        return CR_BAD_INVOCATION;
-    }
-    const COMMAND_CONTEXT ctx = {
-        .cmd = command,
-        .prefix = prefix,
-        .args = args,
-    };
-    return command->proc(&ctx);
-}
-
-int32_t FakeConsole_CommandCount(void)
-{
-    return m_CommandCount;
-}
-
-const char *FakeConsole_HelpId(const char *const prefix)
-{
-    const CONSOLE_COMMAND *const command = Console_Registry_Get(prefix);
-    return command != nullptr ? command->help_id : nullptr;
-}
-
 static void M_Reset(void)
 {
     m_Verbose = false;
     m_EvalResult = CR_SUCCESS;
     m_Context = LUA_CONTEXT_GLOBAL;
     // The commands stay: a command is registered once, at load time.
-}
-
-FAKE_ON_RESET(M_Reset)
-
-void FakeConsole_SetEvalResult(const COMMAND_RESULT result)
-{
-    m_EvalResult = result;
 }
 
 // fake.set_eval_result(result) - what the next Console_Eval hands back.
@@ -281,6 +154,133 @@ static int M_L_IsVerbose(lua_State *const L)
 {
     lua_pushboolean(L, Console_IsVerbose());
     return 1;
+}
+
+LUA_CONTEXT LUA_GetScriptContext(void)
+{
+    return m_Context;
+}
+
+void LUA_SetScriptContext(const LUA_CONTEXT context)
+{
+    m_Context = context;
+}
+
+void Console_LogEx(
+    const LOG_LEVEL level, const char *const file, const int line,
+    const char *const func, const char *const fmt, ...)
+{
+    char message[256];
+    va_list args;
+    va_start(args, fmt);
+    vsnprintf(message, sizeof(message), fmt, args);
+    va_end(args);
+    FAKE_RECORD("log", FV(level), FV_STR(message));
+}
+
+void Console_Clear(void)
+{
+    FAKE_RECORD("clear");
+}
+
+COMMAND_RESULT Console_Eval(const char *const cmdline)
+{
+    // The bridge sets verbose around the call and restores it afterwards, so
+    // the value that matters is the one visible from in here.
+    const bool verbose = m_Verbose;
+    FAKE_RECORD("eval", FV_STR(cmdline), FV(verbose));
+    return m_EvalResult;
+}
+
+void Console_SetVerbose(const bool verbose)
+{
+    m_Verbose = verbose;
+}
+
+bool Console_IsVerbose(void)
+{
+    return m_Verbose;
+}
+
+void Console_Registry_Add(const CONSOLE_COMMAND command)
+{
+    // Dropping one would leave the test that registered it looking at a command
+    // that is not there, and passing.
+    assert(m_CommandCount < FAKE_MAX_COMMANDS);
+    CONSOLE_COMMAND *const slot = &m_Commands[m_CommandCount++];
+    *slot = command;
+    // Copied, as the real registry copies them: a Lua registration's strings
+    // belong to the Lua state.
+    slot->prefix = command.prefix != nullptr ? strdup(command.prefix) : nullptr;
+    slot->help_id =
+        command.help_id != nullptr ? strdup(command.help_id) : nullptr;
+    slot->aliases =
+        command.aliases != nullptr ? strdup(command.aliases) : nullptr;
+}
+
+// The real registry matches a command name case-insensitively, so a test that
+// matched exactly would not see what the player typing /HEAL sees.
+const CONSOLE_COMMAND *Console_Registry_Get(const char *const prefix)
+{
+    for (int32_t i = 0; i < m_CommandCount; i++) {
+        if (strcasecmp(m_Commands[i].prefix, prefix) == 0
+            || M_FakeAliasMatch(m_Commands[i].aliases, prefix)) {
+            return &m_Commands[i];
+        }
+    }
+    return nullptr;
+}
+
+VECTOR *Console_Registry_GetAll(void)
+{
+    VECTOR *const vec = Vector_Create(sizeof(const CONSOLE_COMMAND *));
+    for (int32_t i = 0; i < m_CommandCount; i++) {
+        const CONSOLE_COMMAND *const cmd = &m_Commands[i];
+        Vector_Add(vec, &cmd);
+    }
+    return vec;
+}
+
+void Console_Registry_Clear(void)
+{
+    for (int32_t i = 0; i < m_CommandCount; i++) {
+        free((char *)m_Commands[i].prefix);
+        free((char *)m_Commands[i].help_id);
+        free((char *)m_Commands[i].aliases);
+    }
+    m_CommandCount = 0;
+}
+
+COMMAND_RESULT FakeConsole_Run(const char *const prefix, const char *const args)
+{
+    const CONSOLE_COMMAND *const command = Console_Registry_Get(prefix);
+    if (command == nullptr) {
+        return CR_BAD_INVOCATION;
+    }
+    const COMMAND_CONTEXT ctx = {
+        .cmd = command,
+        .prefix = prefix,
+        .args = args,
+    };
+    return command->proc(&ctx);
+}
+
+int32_t FakeConsole_CommandCount(void)
+{
+    return m_CommandCount;
+}
+
+const char *FakeConsole_HelpId(const char *const prefix)
+{
+    const CONSOLE_COMMAND *const command = Console_Registry_Get(prefix);
+    return command != nullptr ? command->help_id : nullptr;
+}
+
+FAKE_ON_RESET(M_Reset)
+
+void FakeConsole_SetEvalResult(const COMMAND_RESULT result)
+{
+    m_EvalResult = result;
 }
 
 void FakeConsole_PushLua(lua_State *const L)

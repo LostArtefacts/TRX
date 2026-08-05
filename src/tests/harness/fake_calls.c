@@ -87,6 +87,27 @@ static void M_PushValue(
     luaL_error(L, "cannot record %s as %s", name, Value_TypeName(value->type));
 }
 
+// The arguments of one call, as a table, with its name under `name`.
+static void M_PushArgs(lua_State *const L, const FAKE_CALL *const call)
+{
+    lua_pushstring(L, call->name);
+    lua_setfield(L, -2, "name");
+    for (int32_t i = 0; i < call->arg_count; i++) {
+        M_PushValue(L, call->args[i].name, &call->args[i].value);
+        lua_setfield(L, -2, call->args[i].name);
+    }
+}
+
+// Answers a count of zero for a call that never happened, so a test can say so
+// without the group having to exist.
+static int M_GroupIndex(lua_State *const L)
+{
+    lua_newtable(L);
+    lua_pushinteger(L, 0);
+    lua_setfield(L, -2, "count");
+    return 1;
+}
+
 void FakeCalls_Record(const char *const name, const FAKE_ARG *args)
 {
     if (m_CallCount >= FAKE_MAX_CALLS) {
@@ -129,27 +150,6 @@ void FakeCalls_OnReset(void (*const func)(void))
         M_Fail("reset hooks", FAKE_MAX_RESETS);
     }
     m_Resets[m_ResetCount++] = func;
-}
-
-// The arguments of one call, as a table, with its name under `name`.
-static void M_PushArgs(lua_State *const L, const FAKE_CALL *const call)
-{
-    lua_pushstring(L, call->name);
-    lua_setfield(L, -2, "name");
-    for (int32_t i = 0; i < call->arg_count; i++) {
-        M_PushValue(L, call->args[i].name, &call->args[i].value);
-        lua_setfield(L, -2, call->args[i].name);
-    }
-}
-
-// Answers a count of zero for a call that never happened, so a test can say so
-// without the group having to exist.
-static int M_GroupIndex(lua_State *const L)
-{
-    lua_newtable(L);
-    lua_pushinteger(L, 0);
-    lua_setfield(L, -2, "count");
-    return 1;
 }
 
 int FakeCalls_Push(lua_State *const L)

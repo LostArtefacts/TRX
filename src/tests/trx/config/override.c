@@ -44,6 +44,16 @@ static const CONFIG_OPTION *M_Option(const char *const name)
     return nullptr;
 }
 
+static void M_SetUp(void)
+{
+    ConfigOverride_Clear();
+    m_Enforced = false;
+    m_MusicOn = true;
+    m_Fov = 65;
+    free(m_WaterColor);
+    m_WaterColor = strdup("ff0000");
+}
+
 // The two things the stack asks the config layer for. The real parser lives in
 // config/common.c, which drags in the game; this one reads the same spellings.
 const CONFIG_OPTION *Config_GetOption(const void *const target)
@@ -99,16 +109,6 @@ bool Config_SetOptionValueFromString(
     default:
         return false;
     }
-}
-
-static void M_SetUp(void)
-{
-    ConfigOverride_Clear();
-    m_Enforced = false;
-    m_MusicOn = true;
-    m_Fov = 65;
-    free(m_WaterColor);
-    m_WaterColor = strdup("ff0000");
 }
 
 TEST(an_override_holds_the_option_and_a_restore_gives_it_back)

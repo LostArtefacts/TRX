@@ -8,15 +8,15 @@
 
 #include <string.h>
 
-static COMMAND_RESULT M_Dummy(const COMMAND_CONTEXT *const ctx)
-{
-    return CR_SUCCESS;
-}
-
 // A stub argument completer reports a fixed region-relative span, so a case can
 // watch where the selector shifts it onto the line.
 static size_t m_StubStart;
 static size_t m_StubEnd;
+
+static COMMAND_RESULT M_Dummy(const COMMAND_CONTEXT *const ctx)
+{
+    return CR_SUCCESS;
+}
 
 static void M_StubComplete(
     const struct CONSOLE_COMMAND *const cmd, const char *const text,

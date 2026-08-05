@@ -19,16 +19,6 @@
 
 static LUA_CONTEXT m_Context = LUA_CONTEXT_GLOBAL;
 
-LUA_CONTEXT LUA_GetScriptContext(void)
-{
-    return m_Context;
-}
-
-void LUA_SetScriptContext(const LUA_CONTEXT context)
-{
-    m_Context = context;
-}
-
 // fake.fire(name, ...) - mirrors the engine's own fire sites, argument for
 // argument.
 // Drops every listener, then stands the module back up: the shutdown clears
@@ -101,6 +91,16 @@ static void M_PushFake(lua_State *const L)
     lua_setfield(L, -2, "as_level_script");
     lua_pushcfunction(L, M_FakeEndLevel);
     lua_setfield(L, -2, "end_level");
+}
+
+LUA_CONTEXT LUA_GetScriptContext(void)
+{
+    return m_Context;
+}
+
+void LUA_SetScriptContext(const LUA_CONTEXT context)
+{
+    m_Context = context;
 }
 
 int main(void)

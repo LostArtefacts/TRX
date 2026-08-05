@@ -55,6 +55,15 @@ static uint32_t M_GetUnobtainable(
     }
 }
 
+static void M_Reset(void)
+{
+    for (int32_t i = 0; i < M_LEVEL_SLOTS; i++) {
+        m_Stats[i] = (LEVEL_STATS) {};
+        m_MaxStats[i] = (LEVEL_MAX_STATS) {};
+        m_AlliesHurt[i] = false;
+    }
+}
+
 LEVEL_STATS *Stats_GetLevelStats(const GF_LEVEL *const level)
 {
     const int32_t slot = M_GetSlot(level);
@@ -151,15 +160,6 @@ bool Stats_HaveAlliesBeenHurt(const GF_LEVEL *const level)
 {
     const int32_t slot = M_GetSlot(level);
     return slot >= 0 && m_AlliesHurt[slot];
-}
-
-static void M_Reset(void)
-{
-    for (int32_t i = 0; i < M_LEVEL_SLOTS; i++) {
-        m_Stats[i] = (LEVEL_STATS) {};
-        m_MaxStats[i] = (LEVEL_MAX_STATS) {};
-        m_AlliesHurt[i] = false;
-    }
 }
 
 FAKE_ON_RESET(M_Reset)

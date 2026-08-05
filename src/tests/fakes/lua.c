@@ -10,11 +10,6 @@
 
 static lua_State *m_State = nullptr;
 
-void FakeLua_SetState(lua_State *const L)
-{
-    m_State = L;
-}
-
 static LUA_RESULT M_Finish(lua_State *const L, int32_t status)
 {
     if (status == LUA_OK) {
@@ -26,6 +21,11 @@ static LUA_RESULT M_Finish(lua_State *const L, int32_t status)
         lua_pop(L, 1);
     }
     return result;
+}
+
+void FakeLua_SetState(lua_State *const L)
+{
+    m_State = L;
 }
 
 LUA_RESULT LUA_Eval(const char *const code)

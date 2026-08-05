@@ -17,21 +17,6 @@ static int32_t m_ClaimedEffect;
 
 static bool m_RoutineRan;
 
-int16_t Item_GetIndex(const ITEM *const item)
-{
-    return m_FakeItemIndex;
-}
-
-ITEM_TRX_ACTION ItemAction_FromGameID(const ITEM_ACTION action)
-{
-    return (ITEM_TRX_ACTION)action;
-}
-
-int32_t Room_GetFlipEffect(void)
-{
-    return -1;
-}
-
 static bool M_Interceptor(
     const int32_t effect_num, const int32_t timer, const int16_t item_num)
 {
@@ -58,6 +43,21 @@ static void M_Reset(const int32_t claimed_effect)
     m_ClaimedEffect = claimed_effect;
     ItemAction_SetInterceptor(M_Interceptor);
     ItemAction_Register(ITEM_ACTION_LARA_NORMAL, M_Routine);
+}
+
+int16_t Item_GetIndex(const ITEM *const item)
+{
+    return m_FakeItemIndex;
+}
+
+ITEM_TRX_ACTION ItemAction_FromGameID(const ITEM_ACTION action)
+{
+    return (ITEM_TRX_ACTION)action;
+}
+
+int32_t Room_GetFlipEffect(void)
+{
+    return -1;
 }
 
 TEST(run_direct_hands_a_claimed_number_to_the_interceptor)

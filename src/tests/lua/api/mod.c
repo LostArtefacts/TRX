@@ -35,6 +35,15 @@ static SHELL_MOD m_Mods[] = {
 
 static SHELL_ARGS m_Args = { .startup = { .mod = &m_Mods[0] } };
 
+static const char *m_RequestedMod;
+
+static int M_FakeReset(lua_State *const L)
+{
+    FakeCalls_Reset();
+    m_RequestedMod = nullptr;
+    return 0;
+}
+
 int32_t Shell_GetModCount(void)
 {
     return 2;
@@ -69,8 +78,6 @@ bool Shell_CanSwitchToMod(const SHELL_MOD *const mod)
     return mod != nullptr && mod->is_valid;
 }
 
-static const char *m_RequestedMod;
-
 void Shell_RequestModSwitch(const char *const mod_name)
 {
     m_RequestedMod = mod_name;
@@ -78,13 +85,6 @@ void Shell_RequestModSwitch(const char *const mod_name)
 
 void GF_OverrideCommand(const GF_COMMAND command)
 {
-}
-
-static int M_FakeReset(lua_State *const L)
-{
-    FakeCalls_Reset();
-    m_RequestedMod = nullptr;
-    return 0;
 }
 
 int main(void)

@@ -29,22 +29,6 @@ static bool m_FuncCalled;
 static ITEM_TRIGGER_KIND m_FuncSawKind;
 static bool m_FuncReturn;
 
-ITEM *Item_Get(const int16_t num)
-{
-    return &m_Items[num];
-}
-
-const OBJECT *Object_Get(const OBJECT_ID id)
-{
-    return &m_Objects[id];
-}
-
-void Item_Activate(const int16_t item_num, const bool force)
-{
-    m_Activated = item_num;
-    m_ActivateCount++;
-}
-
 // Item_Trigger fires on_trigger through LUA_FireEventEx. Record that fire so
 // the matrix can check the notification, argument for argument, against the
 // real LUA_EVENT_ARG layout.
@@ -52,25 +36,6 @@ static int32_t m_NotifyCount;
 static ITEM_TRIGGER_KIND m_NotifyKind;
 static int32_t m_NotifyMask;
 static bool m_NotifyOneShot;
-
-bool Game_IsSettingUpItems(void)
-{
-    return false;
-}
-
-bool LUA_FireEventEx(
-    const LUA_EVENT_TYPE ev, const LUA_EVENT_ARG *const args,
-    const int32_t arg_count)
-{
-    if (ev != LUA_EVENT_TRIGGER) {
-        return false;
-    }
-    m_NotifyCount++;
-    m_NotifyKind = args[1].value.i32;
-    m_NotifyMask = args[2].value.i32;
-    m_NotifyOneShot = args[4].value.b;
-    return false;
-}
 
 // Mirrors the objects that read the trigger (falling_block reads the kind):
 // with the old convention this would dereference a null trigger. It must not
@@ -104,6 +69,41 @@ static ITEM *M_Reset(const int32_t version)
 static void M_Fire(const ITEM_TRIGGER trigger)
 {
     Item_Trigger(M_ITEM, &trigger);
+}
+
+ITEM *Item_Get(const int16_t num)
+{
+    return &m_Items[num];
+}
+
+const OBJECT *Object_Get(const OBJECT_ID id)
+{
+    return &m_Objects[id];
+}
+
+void Item_Activate(const int16_t item_num, const bool force)
+{
+    m_Activated = item_num;
+    m_ActivateCount++;
+}
+
+bool Game_IsSettingUpItems(void)
+{
+    return false;
+}
+
+bool LUA_FireEventEx(
+    const LUA_EVENT_TYPE ev, const LUA_EVENT_ARG *const args,
+    const int32_t arg_count)
+{
+    if (ev != LUA_EVENT_TRIGGER) {
+        return false;
+    }
+    m_NotifyCount++;
+    m_NotifyKind = args[1].value.i32;
+    m_NotifyMask = args[2].value.i32;
+    m_NotifyOneShot = args[4].value.b;
+    return false;
 }
 
 TEST(notify_carries_the_trigger_fundamentals)

@@ -10,6 +10,20 @@
 #include <stdlib.h>
 #include <string.h>
 
+// The modules this run loads, in the order their bodies are run: what a module
+// requires comes before it. The engine registers every module's preload before
+// running any body, so a require during a body hands back a table rather than
+// running a second module mid-flight; the harness does the same.
+#define M_MAX_MODULES 64
+static char *m_Order[M_MAX_MODULES];
+static int32_t m_Count;
+
+// Names the walk has been down, which is not the order they run in: a module is
+// recorded here on the way in and lands in m_Order on the way out, after what
+// it requires.
+static char *m_Visited[M_MAX_MODULES];
+static int32_t m_VisitedCount;
+
 // The shared fake.reset(), for a fake that records through FAKE_RECORD and
 // registers what else it holds with FAKE_ON_RESET.
 static int M_Reset(lua_State *const L)
@@ -63,20 +77,6 @@ static void M_RunFileAs(
     }
     free(source);
 }
-
-// The modules this run loads, in the order their bodies are run: what a module
-// requires comes before it. The engine registers every module's preload before
-// running any body, so a require during a body hands back a table rather than
-// running a second module mid-flight; the harness does the same.
-#define M_MAX_MODULES 64
-static char *m_Order[M_MAX_MODULES];
-static int32_t m_Count;
-
-// Names the walk has been down, which is not the order they run in: a module is
-// recorded here on the way in and lands in m_Order on the way out, after what
-// it requires.
-static char *m_Visited[M_MAX_MODULES];
-static int32_t m_VisitedCount;
 
 static bool M_Visit(const char *const name)
 {
