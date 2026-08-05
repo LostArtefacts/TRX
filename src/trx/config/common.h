@@ -8,6 +8,10 @@
 
 void Config_ApplyDefaultSettings(void);
 bool Config_Read(const char *default_path, const char *enforced_path);
+
+// Whether the settings file has been read. Until it has, what the options hold
+// is their defaults rather than the player's own choices.
+bool Config_IsLoaded(void);
 bool Config_Write(void);
 bool Config_Update(void);
 bool Config_PushOptionOverride(const void *target, const void *value);

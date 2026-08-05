@@ -1,8 +1,10 @@
 #include <trx/game/input/common.h>
 
 #include <trx/config.h>
+#include <trx/config/section.h>
 #include <trx/core/enum_map.h>
 #include <trx/core/strings.h>
+#include <trx/debug.h>
 #include <trx/game/clock.h>
 #include <trx/game/game_strings/entries.h>
 #include <trx/game/input/backends/controller.h>
@@ -148,6 +150,107 @@ static INPUT_STATE M_SetPressed(
         break;
     }
     return input;
+}
+
+// The layouts a player rebound, as the settings file carries them. The config
+// module owns the file and the options in it; how a binding is spelled is this
+// module's own business, so the reading and writing of it lives here.
+
+static void M_LoadLayout(
+    const JSON_OBJECT *const parent_obj, const INPUT_BACKEND backend,
+    const INPUT_LAYOUT layout)
+{
+    char layout_name[20];
+    sprintf(layout_name, "layout_%d", layout);
+    const JSON_ARRAY *const arr = JSON_ObjectGetArray(parent_obj, layout_name);
+    if (arr == nullptr) {
+        return;
+    }
+
+    for (size_t i = 0; i < arr->length; i++) {
+        const JSON_OBJECT *const bind_obj = JSON_ArrayGetObject(arr, i);
+        ASSERT(bind_obj != nullptr);
+        Input_AssignFromJSONObject(backend, layout, bind_obj);
+    }
+}
+
+static void M_DumpLayout(
+    JSON_OBJECT *const parent_obj, const INPUT_BACKEND backend,
+    const INPUT_LAYOUT layout)
+{
+    JSON_ARRAY *const arr = JSON_ArrayNew();
+
+    bool has_elements = false;
+    for (INPUT_ROLE role = 0; role < INPUT_ROLE_NUMBER_OF; role++) {
+        for (int32_t slot = 0; slot < INPUT_BINDING_SLOTS; slot++) {
+            JSON_OBJECT *const bind_obj = JSON_ObjectNew();
+            if (Input_AssignToJSONObject(
+                    backend, layout, bind_obj, role, slot)) {
+                has_elements = true;
+                JSON_ArrayAppendObject(arr, bind_obj);
+            } else {
+                JSON_ObjectFree(bind_obj);
+            }
+        }
+    }
+
+    if (has_elements) {
+        char layout_name[20];
+        sprintf(layout_name, "layout_%d", layout);
+        JSON_ObjectAppendArray(parent_obj, layout_name, arr);
+    } else {
+        JSON_ArrayFree(arr);
+    }
+}
+
+static void M_LoadSection(const JSON_OBJECT *const input_obj)
+{
+    if (input_obj == nullptr) {
+        return;
+    }
+
+    const JSON_OBJECT *const keyboard_obj =
+        JSON_ObjectGetObject(input_obj, "keyboard");
+    const JSON_OBJECT *const controller_obj =
+        JSON_ObjectGetObject(input_obj, "controller");
+    for (INPUT_LAYOUT layout = INPUT_LAYOUT_CUSTOM_1;
+         layout < INPUT_LAYOUT_NUMBER_OF; layout++) {
+        if (keyboard_obj != nullptr) {
+            M_LoadLayout(keyboard_obj, INPUT_BACKEND_KEYBOARD, layout);
+        }
+        if (controller_obj != nullptr) {
+            M_LoadLayout(controller_obj, INPUT_BACKEND_CONTROLLER, layout);
+        }
+    }
+
+    const JSON_OBJECT *const touch_obj =
+        JSON_ObjectGetObject(input_obj, "touch");
+    if (touch_obj != nullptr) {
+        for (INPUT_LAYOUT layout = INPUT_LAYOUT_CUSTOM_1;
+             layout < INPUT_LAYOUT_NUMBER_OF; layout++) {
+            M_LoadLayout(touch_obj, INPUT_BACKEND_TOUCH, layout);
+        }
+    }
+}
+
+static void M_SaveSection(JSON_OBJECT *const input_obj)
+{
+    JSON_OBJECT *const keyboard_obj = JSON_ObjectNew();
+    JSON_OBJECT *const controller_obj = JSON_ObjectNew();
+    JSON_ObjectAppendObject(input_obj, "keyboard", keyboard_obj);
+    JSON_ObjectAppendObject(input_obj, "controller", controller_obj);
+    for (INPUT_LAYOUT layout = INPUT_LAYOUT_CUSTOM_1;
+         layout < INPUT_LAYOUT_NUMBER_OF; layout++) {
+        M_DumpLayout(keyboard_obj, INPUT_BACKEND_KEYBOARD, layout);
+        M_DumpLayout(controller_obj, INPUT_BACKEND_CONTROLLER, layout);
+    }
+
+    JSON_OBJECT *const touch_obj = JSON_ObjectNew();
+    JSON_ObjectAppendObject(input_obj, "touch", touch_obj);
+    for (INPUT_LAYOUT layout = INPUT_LAYOUT_CUSTOM_1;
+         layout < INPUT_LAYOUT_NUMBER_OF; layout++) {
+        M_DumpLayout(touch_obj, INPUT_BACKEND_TOUCH, layout);
+    }
 }
 
 const INPUT_BACKEND_IMPL *Input_GetBackendImpl(const INPUT_BACKEND backend)
@@ -348,7 +451,7 @@ void Input_ProcessEvent(const SDL_Event *event)
 
 bool Input_AssignFromJSONObject(
     const INPUT_BACKEND backend, const INPUT_LAYOUT layout,
-    JSON_OBJECT *const bind_obj)
+    const JSON_OBJECT *const bind_obj)
 {
     INPUT_ROLE role = (INPUT_ROLE)-1;
 
@@ -574,3 +677,6 @@ void InputState_ClearRole(INPUT_STATE *const state, const INPUT_ROLE role)
 {
     *state = M_SetPressed(*state, role, false);
 }
+
+REGISTER_CONFIG_SECTION(
+        .key = "input", .load = M_LoadSection, .save = M_SaveSection)

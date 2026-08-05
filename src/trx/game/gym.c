@@ -1,6 +1,7 @@
 #include <trx/game/gym.h>
 
 #include <trx/config.h>
+#include <trx/config/section.h>
 #include <trx/core/utils.h>
 #include <trx/debug.h>
 #include <trx/game/const.h>
@@ -48,6 +49,12 @@ typedef struct {
 } M_PRIV;
 
 static M_PRIV m_Priv = M_PRIV_INITIAL;
+
+// The player's own records, not the run's: they outlive a level and are read
+// back from the settings file at startup. Kept apart from M_PRIV, which is
+// reset whenever a course starts.
+static GYM_TRACK_STATS m_AssaultStats = {};
+static GYM_TRACK_STATS m_RacetrackStats = {};
 
 static int32_t M_CountAssaultTargets(void)
 {
@@ -98,7 +105,7 @@ static void M_ResetAssaultTargets(void)
 
 static int32_t M_GetBestTime(void)
 {
-    const GYM_TRACK_STATS *const assault = &g_Config.profile.assault_stats;
+    const GYM_TRACK_STATS *const assault = &m_AssaultStats;
     return assault->total_attempts > 0 ? (int32_t)assault->entries[0].time
                                        : M_NO_TIME;
 }
@@ -124,6 +131,8 @@ static bool M_StoreCourseTime(GYM_TRACK_STATS *const stats, const uint32_t time)
     stats->total_attempts++;
     stats->entries[insert_idx].time = time;
     stats->entries[insert_idx].attempt_num = stats->total_attempts;
+    // The records are this module's, so nothing else can see that they moved.
+    Config_SectionChanged();
     Config_Update();
     return true;
 }
@@ -188,7 +197,7 @@ static void M_Assault_Finish(void)
 
     p->assault_course.timer_active = false;
 
-    M_StoreCourseTime(&g_Config.profile.assault_stats, final_time);
+    M_StoreCourseTime(&m_AssaultStats, final_time);
 }
 
 static void M_Racetrack_Finish(void)
@@ -209,8 +218,116 @@ static void M_Racetrack_Finish(void)
 
     p->quad_course.lap_time = (int32_t)final_time;
     p->quad_course.lap_time_display_timer = 10 * LOGIC_FPS;
-    M_StoreCourseTime(&g_Config.profile.racetrack_stats, final_time);
+    M_StoreCourseTime(&m_RacetrackStats, final_time);
     p->quad_course.timer_active = false;
+}
+
+// The records as the settings file carries them. The config module owns the
+// file; what a record is made of is this module's own business.
+
+static void M_NormalizeStats(GYM_TRACK_STATS *const stats)
+{
+    GYM_TRACK_ENTRY sorted_entries[MAX_ASSAULT_TIMES] = {};
+    int32_t count = 0;
+    uint32_t max_attempt_num = 0;
+
+    for (int32_t i = 0; i < MAX_ASSAULT_TIMES; i++) {
+        const GYM_TRACK_ENTRY entry = stats->entries[i];
+        if (entry.time == 0) {
+            continue;
+        }
+
+        if (entry.attempt_num > max_attempt_num) {
+            max_attempt_num = entry.attempt_num;
+        }
+
+        int32_t insert_idx = count;
+        while (insert_idx > 0
+               && sorted_entries[insert_idx - 1].time > entry.time) {
+            sorted_entries[insert_idx] = sorted_entries[insert_idx - 1];
+            insert_idx--;
+        }
+        sorted_entries[insert_idx] = entry;
+        count++;
+    }
+
+    for (int32_t i = 0; i < MAX_ASSAULT_TIMES; i++) {
+        stats->entries[i] = sorted_entries[i];
+    }
+
+    if (stats->total_attempts < max_attempt_num) {
+        stats->total_attempts = max_attempt_num;
+    }
+}
+
+static void M_LoadStats(
+    const JSON_OBJECT *const stats_obj, GYM_TRACK_STATS *const stats)
+{
+    if (stats_obj == nullptr) {
+        return;
+    }
+    const JSON_ARRAY *const entries_arr =
+        JSON_ObjectGetArray(stats_obj, "entries");
+    if (entries_arr != nullptr) {
+        for (size_t i = 0; i < entries_arr->length && i < MAX_ASSAULT_TIMES;
+             i++) {
+            const JSON_OBJECT *const entry_obj =
+                JSON_ArrayGetObject(entries_arr, i);
+            if (entry_obj != nullptr) {
+                stats->entries[i].time = JSON_ObjectGetInt(
+                    entry_obj, "time", stats->entries[i].time);
+                stats->entries[i].attempt_num = JSON_ObjectGetInt(
+                    entry_obj, "attempt_num", stats->entries[i].attempt_num);
+            }
+        }
+    }
+    stats->total_attempts =
+        JSON_ObjectGetInt(stats_obj, "total_attempts", stats->total_attempts);
+    M_NormalizeStats(stats);
+}
+
+static void M_SaveStats(
+    JSON_OBJECT *const stats_obj, const GYM_TRACK_STATS *const stats)
+{
+    JSON_ARRAY *const entries_arr = JSON_ArrayNew();
+    for (int32_t i = 0; i < MAX_ASSAULT_TIMES; i++) {
+        if (stats->entries[i].time == 0) {
+            break;
+        }
+        JSON_OBJECT *const entry_obj = JSON_ObjectNew();
+        JSON_ObjectAppendInt(entry_obj, "time", stats->entries[i].time);
+        JSON_ObjectAppendInt(
+            entry_obj, "attempt_num", stats->entries[i].attempt_num);
+        JSON_ArrayAppendObject(entries_arr, entry_obj);
+    }
+    JSON_ObjectAppendArray(stats_obj, "entries", entries_arr);
+    JSON_ObjectAppendInt(stats_obj, "total_attempts", stats->total_attempts);
+}
+
+static void M_LoadAssaultSection(const JSON_OBJECT *const obj)
+{
+    M_LoadStats(obj, &m_AssaultStats);
+}
+
+static void M_SaveAssaultSection(JSON_OBJECT *const obj)
+{
+    // A game with no assault course has nothing to say here, and saying it
+    // would drop whatever the game that does have one left behind.
+    if (Gym_TrackManager_HasStats(GYM_TRACK_ASSAULT)) {
+        M_SaveStats(obj, &m_AssaultStats);
+    }
+}
+
+static void M_LoadRacetrackSection(const JSON_OBJECT *const obj)
+{
+    M_LoadStats(obj, &m_RacetrackStats);
+}
+
+static void M_SaveRacetrackSection(JSON_OBJECT *const obj)
+{
+    if (Gym_TrackManager_HasStats(GYM_TRACK_QUAD)) {
+        M_SaveStats(obj, &m_RacetrackStats);
+    }
 }
 
 void Gym_Shutdown(void)
@@ -288,9 +405,9 @@ GYM_TRACK_STATS *Gym_TrackManager_GetMutableStats(const GYM_TRACK_TYPE track)
 {
     switch (track) {
     case GYM_TRACK_ASSAULT:
-        return &g_Config.profile.assault_stats;
+        return &m_AssaultStats;
     case GYM_TRACK_QUAD:
-        return &g_Config.profile.racetrack_stats;
+        return &m_RacetrackStats;
     default:
         return nullptr;
     }
@@ -599,3 +716,11 @@ bool Gym_CanPlayMusicTrack(MUSIC_ID *const track_id)
     }
     return true;
 }
+
+REGISTER_CONFIG_SECTION(
+        .key = "assault_stats", .load = M_LoadAssaultSection,
+        .save = M_SaveAssaultSection)
+
+REGISTER_CONFIG_SECTION(
+        .key = "racetrack_stats", .load = M_LoadRacetrackSection,
+        .save = M_SaveRacetrackSection)

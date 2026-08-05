@@ -16,26 +16,11 @@ typedef struct {
 } GYM_TRACK_STATS;
 
 typedef struct {
-    // This signifies whether the config was already read from disk.
-    bool loaded;
-
-    // This holds paths passed to Config_Read(), so that Config_Write() knows
-    // where to save the updates.
-    char *default_path;
-    char *enforced_path;
-
-    // This field is used to force trigger a change event for fields that are
-    // not stored in the CONFIG struct.
-    bool dirty;
-
-    // Start of user fields
     int32_t config_version;
     char *language;
 
     struct {
         bool new_game_plus_unlock;
-        GYM_TRACK_STATS assault_stats;
-        GYM_TRACK_STATS racetrack_stats;
     } profile;
 
     struct {

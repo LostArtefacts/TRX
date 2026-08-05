@@ -1,6 +1,7 @@
 #include <trx/game/option/controls.h>
 
 #include <trx/config.h>
+#include <trx/config/section.h>
 #include <trx/game/ui.h>
 
 typedef struct {
@@ -15,7 +16,7 @@ static M_PRIV m_Priv = {};
 
 static void M_HandleKeyChange(const EVENT *event, void *user_data)
 {
-    g_Config.dirty = true;
+    Config_SectionChanged();
     Config_Update();
 }
 

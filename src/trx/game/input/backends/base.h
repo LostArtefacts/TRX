@@ -19,7 +19,7 @@ typedef struct {
     void (*unassign_role)(INPUT_LAYOUT layout, INPUT_ROLE role, int32_t slot);
     bool (*assign_from_json_object)(
         INPUT_LAYOUT layout, INPUT_ROLE role, int32_t slot,
-        JSON_OBJECT *bind_obj);
+        const JSON_OBJECT *bind_obj);
     bool (*assign_to_json_object)(
         INPUT_LAYOUT layout, INPUT_ROLE role, int32_t slot,
         JSON_OBJECT *bind_obj);

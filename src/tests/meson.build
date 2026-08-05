@@ -763,6 +763,7 @@ unit_tests += {
     'config/map.c',
     'config/override.c',
     'config/presets.c',
+    'config/section.c',
     'config/value.c',
     'core/colors.c',
     'core/completion.c',
