@@ -141,7 +141,7 @@ static void M_FixStaticsVisibility(void)
     // A room lends out the statics it holds, not the ones it was lent. Reading
     // the vector as it grows would pass a mesh on from room to room, into ones
     // it never reaches.
-    int32_t *const own_counts = Memory_Alloc(sizeof(int32_t) * total_rooms);
+    int32_t *own_counts = Memory_Alloc(sizeof(int32_t) * total_rooms);
     for (int32_t i = 0; i < total_rooms; i++) {
         own_counts[i] = room_stat_vecs[i]->count;
     }
