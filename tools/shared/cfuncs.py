@@ -15,10 +15,19 @@ NAME_RE = re.compile(r"([A-Za-z_][A-Za-z0-9_]*)\s*\(")
 
 
 def _head(lines: list[str], brace_idx: int) -> int | None:
-    # Walk back to the start of the paragraph holding the brace, then forward
-    # past any comment lines, which leaves the first line of the signature.
+    # Walk back to the start of the signature holding the brace, then forward
+    # past any comment lines, which leaves its first line. A signature is
+    # continued across lines by an open parenthesis or a comma, so a line that
+    # closes something is where the one above ends: without that stop, a
+    # definition written straight under the closing brace of the one before it
+    # reads as a continuation of that one.
     start = brace_idx
-    while start > 0 and lines[start - 1].strip():
+    while start > 0:
+        above = lines[start - 1]
+        if not above.strip() or above.startswith("#"):
+            break
+        if above.rstrip().endswith(("}", ";")):
+            break
         start -= 1
     while start < brace_idx and lines[start].lstrip().startswith("//"):
         start += 1
