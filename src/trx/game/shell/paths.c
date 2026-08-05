@@ -159,6 +159,7 @@ static const M_DYNAMIC_PATH_POLICY m_PathPolicies[TRX_DYNAMIC_PATH_NUMBER_OF] = 
     [TRX_DYNAMIC_PATH_LEVEL_SCRIPT_FILE] = {
         .patterns = {
             "%mod_dir%/scripts/%rel%",
+            "%trx_dir%/data/scripts/%rel%", // TODO: remove in 1.13
             nullptr,
         },
         .check_exists = true,
