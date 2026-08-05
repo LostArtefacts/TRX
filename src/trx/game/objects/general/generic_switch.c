@@ -80,6 +80,7 @@ static void M_Collision(
 {
     ITEM *const item = Item_Get(item_num);
     if (item->trigger.spent) {
+        Object_Collision(item_num, lara_item, coll);
         return;
     }
 
