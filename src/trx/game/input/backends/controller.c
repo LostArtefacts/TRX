@@ -648,9 +648,9 @@ static void M_UnassignRole(
 
 static bool M_AssignFromJSONObject(
     const INPUT_LAYOUT layout, const INPUT_ROLE role, const int32_t slot,
-    JSON_OBJECT *const bind_obj)
+    const JSON_OBJECT *const bind_obj)
 {
-    JSON_ARRAY *const combo_arr = JSON_ObjectGetArray(bind_obj, "combo");
+    const JSON_ARRAY *const combo_arr = JSON_ObjectGetArray(bind_obj, "combo");
     if (combo_arr != nullptr) {
         // New combo format: "combo": [{button_type, bind, axis_dir}, ...]
         const int32_t count = combo_arr->length < INPUT_COMBO_MAX_KEYS
@@ -658,7 +658,8 @@ static bool M_AssignFromJSONObject(
             : INPUT_COMBO_MAX_KEYS;
         CONTROLLER_BINDING cb = { .key_count = count };
         for (int32_t i = 0; i < count; i++) {
-            JSON_OBJECT *const key_obj = JSON_ArrayGetObject(combo_arr, i);
+            const JSON_OBJECT *const key_obj =
+                JSON_ArrayGetObject(combo_arr, i);
             cb.keys[i].type =
                 JSON_ObjectGetInt(key_obj, "button_type", BT_BUTTON);
             const int16_t b = JSON_ObjectGetInt(

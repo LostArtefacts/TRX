@@ -1,6 +1,7 @@
 #include <trx/game/ui/dialogs/controls_editor.h>
 
 #include <trx/config.h>
+#include <trx/config/section.h>
 #include <trx/core/utils.h>
 #include <trx/game/const.h>
 #include <trx/game/game_strings/entries.h>
@@ -220,7 +221,7 @@ static void M_ResetLayout(void *const arg)
         g_TRVersion == 1 ? SFX_MENU_GAMEBOY : SFX_MENU_SPINOUT, nullptr,
         SPM_NORMAL);
     Input_ResetLayout(s->backend, s->active_layout);
-    g_Config.dirty = true;
+    Config_SectionChanged();
     Config_Update();
 }
 
@@ -232,7 +233,7 @@ static void M_UnbindKey(void *const arg)
         SPM_NORMAL);
     Input_UnassignRole(
         s->backend, s->active_layout, s->active_role, s->active_slot);
-    g_Config.dirty = true;
+    Config_SectionChanged();
     Config_Update();
 }
 

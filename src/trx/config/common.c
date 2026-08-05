@@ -3,6 +3,7 @@
 #include <trx/config/file.h>
 #include <trx/config/override.h>
 #include <trx/config/priv.h>
+#include <trx/config/section.h>
 #include <trx/config/value.h>
 #include <trx/config/vars.h>
 #include <trx/core/dynamic_enum.h>
@@ -20,6 +21,12 @@
 static VECTOR *m_HiddenOptions = nullptr;
 
 static EVENT_MANAGER *m_EventManager = nullptr;
+
+// Where Config_Read() was pointed, so Config_Write() knows where to put it
+// back. The config module's own business, not a setting the player has.
+static char *m_DefaultPath = nullptr;
+static char *m_EnforcedPath = nullptr;
+static bool m_Loaded = false;
 
 static void M_FreeStringOptionValues(void)
 {
@@ -43,8 +50,8 @@ __attribute__((destructor)) static void M_Shutdown(void)
     m_EventManager = nullptr;
 
     M_FreeStringOptionValues();
-    Memory_FreePointer(&g_Config.default_path);
-    Memory_FreePointer(&g_Config.enforced_path);
+    Memory_FreePointer(&m_DefaultPath);
+    Memory_FreePointer(&m_EnforcedPath);
 
     if (m_HiddenOptions != nullptr) {
         Vector_Free(m_HiddenOptions);
@@ -138,24 +145,24 @@ bool Config_Read(
 {
     // Always initialize the config, even if the file is missing, so that
     // the game can interact with these properties.
-    Memory_FreePointer(&g_Config.default_path);
-    Memory_FreePointer(&g_Config.enforced_path);
-    g_Config.default_path = Memory_DupStr(default_path);
-    g_Config.enforced_path = Memory_DupStr(enforced_path);
-    g_Config.loaded = true;
+    Memory_FreePointer(&m_DefaultPath);
+    Memory_FreePointer(&m_EnforcedPath);
+    m_DefaultPath = Memory_DupStr(default_path);
+    m_EnforcedPath = Memory_DupStr(enforced_path);
+    m_Loaded = true;
     ConfigOverride_Clear();
 
     LOG_DEBUG("Reading config");
-    LOG_DEBUG("  default_path=%s", g_Config.default_path);
-    LOG_DEBUG("  enforced_path=%s", g_Config.enforced_path);
+    LOG_DEBUG("  default_path=%s", m_DefaultPath);
+    LOG_DEBUG("  enforced_path=%s", m_EnforcedPath);
     if (m_HiddenOptions == nullptr) {
         m_HiddenOptions = Vector_Create(sizeof(void *));
     } else {
         Vector_ClearRealloc(m_HiddenOptions);
     }
     const CONFIG_IO_ARGS args = {
-        .default_path = g_Config.default_path,
-        .enforced_path = g_Config.enforced_path,
+        .default_path = m_DefaultPath,
+        .enforced_path = m_EnforcedPath,
         .action = &Config_LoadFromJSON,
         .hidden_targets = m_HiddenOptions,
     };
@@ -173,7 +180,11 @@ bool Config_Read(
 bool Config_Update(void)
 {
     Config_Sanitize();
-    if (memcmp(&g_Config, &g_SavedConfig, sizeof(CONFIG)) == 0) {
+    // A section's data is its own module's, so nothing here can see that it
+    // moved; the module that moved it says so, and that report is spent here.
+    const bool section_changed = Config_Section_TakeChanged();
+    if (memcmp(&g_Config, &g_SavedConfig, sizeof(CONFIG)) == 0
+        && !section_changed) {
         return false;
     }
 
@@ -185,17 +196,21 @@ bool Config_Update(void)
         };
         EventManager_Fire(m_EventManager, &event);
     }
-    g_Config.dirty = false;
     g_SavedConfig = g_Config;
     return true;
 }
 
+bool Config_IsLoaded(void)
+{
+    return m_Loaded;
+}
+
 bool Config_Write(void)
 {
-    ASSERT(g_Config.default_path != nullptr);
+    ASSERT(m_DefaultPath != nullptr);
     const CONFIG_IO_ARGS args = {
-        .default_path = g_Config.default_path,
-        .enforced_path = g_Config.enforced_path,
+        .default_path = m_DefaultPath,
+        .enforced_path = m_EnforcedPath,
         .action = &Config_DumpToJSON,
     };
     return ConfigFile_Write(&args);

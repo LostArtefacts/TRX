@@ -14,9 +14,14 @@ static bool m_Running[GYM_TRACK_NUMBER_OF];
 static bool m_Visible[GYM_TRACK_NUMBER_OF];
 static GYM_TRACK_TYPE m_ActiveTrack;
 
+static GYM_TRACK_STATS m_AssaultStats = {};
+static GYM_TRACK_STATS m_RacetrackStats = {};
+
 static void M_Reset(void)
 {
     g_Config = (CONFIG) {};
+    m_AssaultStats = (GYM_TRACK_STATS) {};
+    m_RacetrackStats = (GYM_TRACK_STATS) {};
     m_InGym = true;
     m_ActiveTrack = GYM_TRACK_NONE;
     for (int32_t i = 0; i < GYM_TRACK_NUMBER_OF; i++) {
@@ -48,9 +53,9 @@ GYM_TRACK_STATS *Gym_TrackManager_GetMutableStats(const GYM_TRACK_TYPE track)
 {
     switch (track) {
     case GYM_TRACK_ASSAULT:
-        return &g_Config.profile.assault_stats;
+        return &m_AssaultStats;
     case GYM_TRACK_QUAD:
-        return &g_Config.profile.racetrack_stats;
+        return &m_RacetrackStats;
     default:
         return nullptr;
     }

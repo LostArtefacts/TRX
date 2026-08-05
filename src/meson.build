@@ -229,6 +229,7 @@ common_sources = [
   'trx/config/override.c',
   'trx/config/presets.c',
   'trx/config/priv.c',
+  'trx/config/section.c',
   'trx/config/value.c',
   'trx/config/vars.c',
   'trx/core/benchmark.c',

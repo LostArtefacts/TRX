@@ -127,7 +127,7 @@ void Shell_SyncFromWindow(const bool update_viewport)
             g_Config.window.fs_width = width;
             g_Config.window.fs_height = height;
         }
-        if (g_Config.loaded) {
+        if (Config_IsLoaded()) {
             m_IgnoreConfigChanges = true;
             Config_Update();
             m_IgnoreConfigChanges = false;

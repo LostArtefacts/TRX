@@ -2,6 +2,7 @@
 
 #include <trx/config/common.h>
 #include <trx/config/legacy.h>
+#include <trx/config/section.h>
 #include <trx/config/value.h>
 #include <trx/core/colors.h>
 #include <trx/core/filesystem.h>
@@ -31,41 +32,6 @@ static bool M_ProcessOptionValue(
 static bool M_SetOptionValue(const CONFIG_OPTION *option, const void *value);
 static bool M_PushOptionOverride(
     const CONFIG_OPTION *option, const void *value);
-
-static void M_NormalizeGymTrackStats(GYM_TRACK_STATS *const stats)
-{
-    GYM_TRACK_ENTRY sorted_entries[MAX_ASSAULT_TIMES] = {};
-    int32_t count = 0;
-    uint32_t max_attempt_num = 0;
-
-    for (int32_t i = 0; i < MAX_ASSAULT_TIMES; i++) {
-        const GYM_TRACK_ENTRY entry = stats->entries[i];
-        if (entry.time == 0) {
-            continue;
-        }
-
-        if (entry.attempt_num > max_attempt_num) {
-            max_attempt_num = entry.attempt_num;
-        }
-
-        int32_t insert_idx = count;
-        while (insert_idx > 0
-               && sorted_entries[insert_idx - 1].time > entry.time) {
-            sorted_entries[insert_idx] = sorted_entries[insert_idx - 1];
-            insert_idx--;
-        }
-        sorted_entries[insert_idx] = entry;
-        count++;
-    }
-
-    for (int32_t i = 0; i < MAX_ASSAULT_TIMES; i++) {
-        stats->entries[i] = sorted_entries[i];
-    }
-
-    if (stats->total_attempts < max_attempt_num) {
-        stats->total_attempts = max_attempt_num;
-    }
-}
 
 static bool M_ReadFromJSON(
     const char *const default_path, const char *const enforced_path,
@@ -198,8 +164,8 @@ static bool M_ProcessOptionValue(
 //
 // An option is in the map only while the game that declared it is loaded, so a
 // key that belongs to no option this build has is another game's setting rather
-// than one to drop. The gym stat blocks go the same way, and the input section
-// is written on every save, so nothing has to name them here.
+// than one to drop. A section's key is spoken for the same way an option's is,
+// whether or not the section wrote anything this time.
 //
 // An option the map does have is left to the writer, whether or not it produced
 // a key for it: a null string is left out so that a reload falls back to its
@@ -220,7 +186,7 @@ static void M_CarryOverUnwrittenKeys(
             const char *const name = elem->name->string;
             if (JSON_ObjectGetValue(root_obj, name) == nullptr
                 && Config_GetOptionByPath(name) == nullptr
-                && !ConfigLegacy_IsKey(name)) {
+                && !Config_Section_OwnsKey(name) && !ConfigLegacy_IsKey(name)) {
                 JSON_ObjectAppend(root_obj, name, JSON_ValueCopy(elem->value));
             }
         }
@@ -280,53 +246,4 @@ void ConfigFile_DumpOptions(JSON_OBJECT *root_obj, const CONFIG_OPTION *options)
             opt->param, &parsed);
         opt++;
     }
-}
-
-bool ConfigFile_LoadGymTrackStats(
-    JSON_OBJECT *const root_obj, const char *const key_name,
-    GYM_TRACK_STATS *const stats)
-{
-    JSON_OBJECT *const stats_obj = JSON_ObjectGetObject(root_obj, key_name);
-    if (stats_obj == nullptr) {
-        return false;
-    }
-    JSON_ARRAY *const entries_arr = JSON_ObjectGetArray(stats_obj, "entries");
-    if (entries_arr != nullptr) {
-        for (size_t i = 0; i < entries_arr->length && i < MAX_ASSAULT_TIMES;
-             i++) {
-            JSON_OBJECT *const entry_obj = JSON_ArrayGetObject(entries_arr, i);
-            if (entry_obj != nullptr) {
-                stats->entries[i].time = JSON_ObjectGetInt(
-                    entry_obj, "time", stats->entries[i].time);
-                stats->entries[i].attempt_num = JSON_ObjectGetInt(
-                    entry_obj, "attempt_num", stats->entries[i].attempt_num);
-            }
-        }
-    }
-    stats->total_attempts =
-        JSON_ObjectGetInt(stats_obj, "total_attempts", stats->total_attempts);
-    M_NormalizeGymTrackStats(stats);
-    return true;
-}
-
-bool ConfigFile_DumpGymTrackStats(
-    JSON_OBJECT *const root_obj, const char *const key_name,
-    const GYM_TRACK_STATS *const stats)
-{
-    JSON_OBJECT *const stats_obj = JSON_ObjectNew();
-    JSON_ARRAY *const entries_arr = JSON_ArrayNew();
-    for (int32_t i = 0; i < MAX_ASSAULT_TIMES; i++) {
-        if (stats->entries[i].time == 0) {
-            break;
-        }
-        JSON_OBJECT *const entry_obj = JSON_ObjectNew();
-        JSON_ObjectAppendInt(entry_obj, "time", stats->entries[i].time);
-        JSON_ObjectAppendInt(
-            entry_obj, "attempt_num", stats->entries[i].attempt_num);
-        JSON_ArrayAppendObject(entries_arr, entry_obj);
-    }
-    JSON_ObjectAppendArray(stats_obj, "entries", entries_arr);
-    JSON_ObjectAppendInt(stats_obj, "total_attempts", stats->total_attempts);
-    JSON_ObjectAppendObject(root_obj, key_name, stats_obj);
-    return true;
 }

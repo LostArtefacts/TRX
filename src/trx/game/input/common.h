@@ -110,7 +110,7 @@ bool Input_IsInListenMode(void);
 // Restores the user configuration by converting the JSON object back into the
 // original input layout.
 bool Input_AssignFromJSONObject(
-    INPUT_BACKEND backend, INPUT_LAYOUT layout, JSON_OBJECT *bind_obj);
+    INPUT_BACKEND backend, INPUT_LAYOUT layout, const JSON_OBJECT *bind_obj);
 
 // Converts the original input layout into a JSON object for storing the user
 // configuration.

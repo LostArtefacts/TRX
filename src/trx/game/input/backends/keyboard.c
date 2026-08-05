@@ -617,9 +617,9 @@ static void M_UnassignRole(
 
 static bool M_AssignFromJSONObject(
     const INPUT_LAYOUT layout, const INPUT_ROLE role, const int32_t slot,
-    JSON_OBJECT *const bind_obj)
+    const JSON_OBJECT *const bind_obj)
 {
-    JSON_ARRAY *const combo_arr = JSON_ObjectGetArray(bind_obj, "combo");
+    const JSON_ARRAY *const combo_arr = JSON_ObjectGetArray(bind_obj, "combo");
     if (combo_arr != nullptr) {
         // New combo format: "combo": [scancode1, scancode2, ...]
         const int32_t count = combo_arr->length < INPUT_COMBO_MAX_KEYS

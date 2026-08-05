@@ -4,7 +4,6 @@
 #include <trx/core/enum_map.h>
 #include <trx/core/json.h>
 #include <trx/core/vector.h>
-#include <trx/game/gym.h>
 
 #include <stdint.h>
 
@@ -22,10 +21,3 @@ void ConfigFile_LoadOptions(
     JSON_OBJECT *root_obj, const CONFIG_OPTION *options);
 void ConfigFile_DumpOptions(
     JSON_OBJECT *root_obj, const CONFIG_OPTION *options);
-
-bool ConfigFile_LoadGymTrackStats(
-    JSON_OBJECT *root_obj, const char *key_name,
-    GYM_TRACK_STATS *assault_stats);
-bool ConfigFile_DumpGymTrackStats(
-    JSON_OBJECT *root_obj, const char *key_name,
-    const GYM_TRACK_STATS *assault_stats);
