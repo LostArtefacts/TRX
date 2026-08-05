@@ -7,6 +7,11 @@ trx.events.on_game_start(function()
   props.glow_color = "#00F87C"
   props.rotation = trx.math.DEG_90 // 16
   props.show_pickup_aid = false
+
+  local element115 = trx.items[44]
+  if element115.trigger_mask == 0 then
+    element115:deactivate()
+  end
 end)
 
 trx.events.on_pickup(function(pickup_item)
