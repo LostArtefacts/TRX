@@ -54,40 +54,29 @@ static inline BOUNDS_32 M_GetStaticBounds(const STATIC_MESH *const mesh)
     return bounds;
 }
 
-// Whether the mesh stands in any of the space the room owns. A room's box says
-// little on its own, since two rooms side by side cover much the same ground,
-// so the question is put to the sectors the mesh spans: the room holds that
-// column between its ceiling and its floor there, and a wall sector holds
-// nothing.
-static inline bool M_BoundsReachRoom(
-    const BOUNDS_32 *const bounds, const ROOM *const room)
+// Whether the mesh reaches through the portal into the room behind it. A wall
+// portal stands across the mesh, so meeting its quad is the question there. A
+// floor or ceiling portal lies flat, and a mesh that clears it sits wholly in
+// the room beyond, so what counts is standing over the opening and reaching
+// past its plane.
+static inline bool M_BoundsReachPortal(
+    const BOUNDS_32 *const bounds, const PORTAL *const portal)
 {
-    int32_t x_min = (bounds->min.x - room->pos.x) >> WALL_SHIFT;
-    int32_t x_max = (bounds->max.x - room->pos.x) >> WALL_SHIFT;
-    int32_t z_min = (bounds->min.z - room->pos.z) >> WALL_SHIFT;
-    int32_t z_max = (bounds->max.z - room->pos.z) >> WALL_SHIFT;
-    if (x_max < 0 || z_max < 0 || x_min >= room->size.x
-        || z_min >= room->size.z) {
+    if (portal->normal.y == 0) {
+        return Bounds32_Intersect(bounds, &portal->bounds);
+    }
+
+    if (bounds->min.x > portal->bounds.max.x
+        || bounds->max.x < portal->bounds.min.x
+        || bounds->min.z > portal->bounds.max.z
+        || bounds->max.z < portal->bounds.min.z) {
         return false;
     }
-    CLAMP(x_min, 0, room->size.x - 1);
-    CLAMP(x_max, 0, room->size.x - 1);
-    CLAMP(z_min, 0, room->size.z - 1);
-    CLAMP(z_max, 0, room->size.z - 1);
 
-    for (int32_t x = x_min; x <= x_max; x++) {
-        for (int32_t z = z_min; z <= z_max; z++) {
-            const SECTOR *const sector = Room_GetUnitSector(room, x, z);
-            if (sector->floor.height <= sector->ceiling.height) {
-                continue;
-            }
-            if (bounds->min.y < sector->floor.height
-                && bounds->max.y > sector->ceiling.height) {
-                return true;
-            }
-        }
-    }
-    return false;
+    // A portal's normal points back into the room it belongs to, so a positive
+    // Y puts the room beyond above this one.
+    return portal->normal.y > 0 ? bounds->min.y <= portal->bounds.min.y
+                                : bounds->max.y >= portal->bounds.max.y;
 }
 
 static void M_ComputePortalBounds(void)
@@ -149,6 +138,14 @@ static void M_FixStaticsVisibility(void)
         }
     }
 
+    // A room lends out the statics it holds, not the ones it was lent. Reading
+    // the vector as it grows would pass a mesh on from room to room, into ones
+    // it never reaches.
+    int32_t *const own_counts = Memory_Alloc(sizeof(int32_t) * total_rooms);
+    for (int32_t i = 0; i < total_rooms; i++) {
+        own_counts[i] = room_stat_vecs[i]->count;
+    }
+
     for (int32_t i = 0; i < total_rooms; i++) {
         ROOM *const room = Room_Get(i);
         PORTALS *const portals = room->portals;
@@ -161,12 +158,11 @@ static void M_FixStaticsVisibility(void)
             if (room->flip_status != dest_room->flip_status) {
                 continue;
             }
-            int32_t orig_count = room_stat_vecs[i]->count;
-            for (int32_t m = 0; m < orig_count; m++) {
+            for (int32_t m = 0; m < own_counts[i]; m++) {
                 const STATIC_MESH *const mesh =
                     Vector_Get(room_stat_vecs[i], m);
                 const BOUNDS_32 bounds = M_GetStaticBounds(mesh);
-                if (!M_BoundsReachRoom(&bounds, dest_room)) {
+                if (!M_BoundsReachPortal(&bounds, portal)) {
                     continue;
                 }
                 if (Vector_Contains(room_stat_vecs[portal->room_num], mesh)) {
@@ -179,6 +175,8 @@ static void M_FixStaticsVisibility(void)
             }
         }
     }
+
+    Memory_FreePointer(&own_counts);
 
     int32_t total_needed = 0;
     for (int32_t i = 0; i < total_rooms; i++) {
