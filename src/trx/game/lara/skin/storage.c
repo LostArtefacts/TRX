@@ -1,6 +1,7 @@
 #include <trx/game/lara/skin/storage.h>
 
 #include <trx/config.h>
+#include <trx/config/registry.h>
 #include <trx/core/dynamic_enum.h>
 #include <trx/core/enum_map.h>
 #include <trx/core/json/util/file.h>
@@ -45,19 +46,19 @@ static void M_ExitWithJSONError(
 static void M_SeedDynamicEnumValues(void)
 {
     const CONFIG_OPTION *const option =
-        Config_GetOption(&g_Config.visuals.lara_outfit);
+        Config_FindOptionByMirror(&g_Config.visuals.lara_outfit);
     if (option == nullptr) {
         return;
     }
-    DynamicEnum_ResetValues(option->target);
+    const void *const token = Config_Option_GetEnumKey(option);
+    DynamicEnum_ResetValues(token);
     DynamicEnum_AddValue(
-        option->target, nullptr, GS_ID("dynamic/enums/lara_outfit/default"));
+        token, nullptr, GS_ID("dynamic/enums/lara_outfit/default"));
     for (int32_t i = 0; i < m_OutfitCount; i++) {
         if (!m_Outfits[i].outfit.is_selectable) {
             continue;
         }
-        DynamicEnum_AddValue(
-            option->target, m_Outfits[i].name, m_Outfits[i].name_gs);
+        DynamicEnum_AddValue(token, m_Outfits[i].name, m_Outfits[i].name_gs);
     }
 }
 

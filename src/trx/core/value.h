@@ -88,6 +88,13 @@ typedef struct {
 VALUE_PLAIN_TYPES(M_VALUE_MAKER)
 #undef M_VALUE_MAKER
 
+// Not in the table: a string is borrowed rather than held, so it is spelled out
+// here rather than joining the types that ride in the carrier whole.
+static inline TRX_VALUE Value_Make_TVT_STRING(const char *value)
+{
+    return (TRX_VALUE) { .type = TVT_STRING, .as_str = value };
+}
+
 // The TRX_VALUE carrying `value_`, tagged by the C type of the expression
 // itself. The counterpart of Value_TypeOf for a value rather than a member: a
 // declared default states the value and nothing else, and cannot be tagged as
@@ -103,8 +110,9 @@ VALUE_PLAIN_TYPES(M_VALUE_MAKER)
 #define Value_Of(value_)                                                       \
     (_Generic(                                                                 \
         (value_),                                                              \
-         VALUE_PLAIN_TYPES(M_VALUE_MAKER_OF) default: Value_Make_TVT_S32)(     \
-        value_))
+         VALUE_PLAIN_TYPES(M_VALUE_MAKER_OF) char *: Value_Make_TVT_STRING,    \
+         const char *: Value_Make_TVT_STRING,                                  \
+         default: Value_Make_TVT_S32)(value_))
 
 // Stable machine-readable name, e.g. "S16", "XYZ_32", "ENUM".
 const char *Value_TypeName(TRX_VALUE_TYPE type);
@@ -150,6 +158,11 @@ bool Value_Coerce(TRX_VALUE_TYPE target, const TRX_VALUE *in, TRX_VALUE *out);
 
 // Whether the values stored at `a` and `b` are equal when read as `type`.
 bool Value_EqualPtr(TRX_VALUE_TYPE type, const void *a, const void *b);
+
+// Whether two carriers hold the same value. Values of different types are never
+// equal: the carrier is a union, so what the members happen to share says
+// nothing about what the values mean.
+bool Value_Equal(const TRX_VALUE *a, const TRX_VALUE *b);
 
 // Copies the value at `src` into the storage at `dst`, both addressed as
 // `type`. String storage is owned: `dst` holds a `char *` that is freed and

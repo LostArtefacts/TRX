@@ -19,7 +19,7 @@ static GYM_TRACK_STATS m_RacetrackStats = {};
 
 static void M_Reset(void)
 {
-    g_Config = (CONFIG) {};
+    g_ConfigStorage = (CONFIG) {};
     m_AssaultStats = (GYM_TRACK_STATS) {};
     m_RacetrackStats = (GYM_TRACK_STATS) {};
     m_InGym = true;

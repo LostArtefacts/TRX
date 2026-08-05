@@ -27,9 +27,7 @@ typedef struct UI_SETTINGS_OPTION {
 
     // ...or a convenience default handler options
     struct {
-        void *target;
-        int32_t min_value;
-        int32_t max_value;
+        const void *target;
         int32_t delta_slow;
         int32_t delta_fast;
         const void *misc;
@@ -44,8 +42,7 @@ typedef struct UI_SETTINGS_OPTION {
 #define X_UI_CFG_ENUM(TARGET_, ...)                                            \
     X_UI_CFG(TARGET_, .delta_slow = 1, .delta_fast = 1, ##__VA_ARGS__)
 
-#define X_UI_CFG_RGB888(TARGET_, ...)                                          \
-    X_UI_CFG(TARGET_, .min_value = 0, .max_value = 255, ##__VA_ARGS__)
+#define X_UI_CFG_RGB888(TARGET_, ...) X_UI_CFG(TARGET_, ##__VA_ARGS__)
 
 typedef struct UI_SETTINGS_DIALOG_STATE UI_SETTINGS_DIALOG_STATE;
 

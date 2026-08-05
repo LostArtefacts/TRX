@@ -253,7 +253,7 @@ void PhotoMode_Start(void)
     p->rate = 1.0;
     p->current_mode = PHOTO_MODE_CAMERA;
     p->lara_pos_touched = false;
-    g_Config.ui.enable_fps_counter = false;
+    CONFIG_SET(g_Config.ui.enable_fps_counter, false);
 
     M_RememberLaraPos(p);
     Camera_PhotoMode_Enter();
@@ -268,7 +268,7 @@ void PhotoMode_End(void)
     Camera_PhotoMode_Exit();
     M_RestoreLaraPos(p);
 
-    g_Config.ui.enable_fps_counter = p->show_fps_counter;
+    CONFIG_SET(g_Config.ui.enable_fps_counter, p->show_fps_counter);
     Music_Unpause();
     Sound_UnpauseAll();
     m_Active = false;

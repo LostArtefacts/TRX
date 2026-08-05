@@ -3,6 +3,7 @@
 #include <trx/config.h>
 #include <trx/config/common.h>
 #include <trx/config/presets.h>
+#include <trx/config/registry.h>
 #include <trx/core/memory.h>
 #include <trx/core/strings.h>
 #include <trx/core/utils.h>
@@ -49,9 +50,9 @@ struct UI_CONFIG_PRESETS_STATE {
 
 static const char *M_GetPresetKeyLabel(const char *const key)
 {
-    const CONFIG_OPTION *const opt = Config_GetOptionByPath(key);
+    const CONFIG_OPTION *const opt = Config_FindOption(key);
     if (opt != nullptr) {
-        const char *const label = Config_GetOptionTitle(opt);
+        const char *const label = Config_Option_GetTitle(opt);
         if (label != nullptr) {
             return label;
         }
@@ -68,13 +69,12 @@ static int32_t M_GetChangedSettingCount(const int32_t preset_idx)
 
     int32_t changed_count = 0;
     for (int32_t i = 0; i < preset->setting_count; i++) {
-        const CONFIG_OPTION *const opt =
-            Config_GetOptionByPath(preset->keys[i]);
+        const CONFIG_OPTION *const opt = Config_FindOption(preset->keys[i]);
         if (opt == nullptr) {
             continue;
         }
         const char *const current_value =
-            Config_GetOptionValueAsString(opt, false);
+            Config_Option_GetValueAsString(opt, false);
         if (strcmp(current_value, preset->values[i]) != 0) {
             changed_count++;
         }
@@ -89,9 +89,9 @@ static int32_t M_GetChangedSettingCount(const int32_t preset_idx)
 static char *M_FormatValueChange(
     const CONFIG_OPTION *const opt, const char *const target_raw)
 {
-    const char *const current_value = Config_GetOptionValueAsString(opt, true);
+    const char *const current_value = Config_Option_GetValueAsString(opt, true);
     char *const target_value =
-        Config_NormalizeOptionValueString(opt, target_raw, true);
+        Config_Option_NormalizeValueString(opt, target_raw, true);
     char *const result =
         String_Format("  %s \\{button right} %s", current_value, target_value);
     Memory_Free(target_value);
@@ -144,11 +144,10 @@ static float M_GetConfirmContentWidth(UI_CONFIG_PRESETS_STATE *const s)
     float natural = M_CONFIRM_MIN_W * scale;
     if (preset != nullptr) {
         for (int32_t i = 0; i < preset->setting_count; i++) {
-            const CONFIG_OPTION *const opt =
-                Config_GetOptionByPath(preset->keys[i]);
+            const CONFIG_OPTION *const opt = Config_FindOption(preset->keys[i]);
             if (opt == nullptr
                 || strcmp(
-                       Config_GetOptionValueAsString(opt, false),
+                       Config_Option_GetValueAsString(opt, false),
                        preset->values[i])
                     == 0) {
                 continue;
@@ -175,13 +174,12 @@ static void M_DrawConfirmRows(
     }
 
     for (int32_t i = 0; i < preset->setting_count; i++) {
-        const CONFIG_OPTION *const opt =
-            Config_GetOptionByPath(preset->keys[i]);
+        const CONFIG_OPTION *const opt = Config_FindOption(preset->keys[i]);
         if (opt == nullptr) {
             continue;
         }
         const char *const current_value_raw =
-            Config_GetOptionValueAsString(opt, false);
+            Config_Option_GetValueAsString(opt, false);
         if (strcmp(current_value_raw, preset->values[i]) == 0) {
             continue;
         }

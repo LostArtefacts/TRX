@@ -72,7 +72,7 @@ static void M_FinishLevelBasic(void)
     const GF_LEVEL *const current_level = Game_GetCurrentLevel();
 
     if (current_level == GF_GetLastLevel()) {
-        g_Config.profile.new_game_plus_unlock = true;
+        CONFIG_SET(g_Config.profile.new_game_plus_unlock, true);
         Config_Update();
     }
 

@@ -17,7 +17,7 @@ static void M_EnterEditor(
 {
     s->backend = backend;
     s->phase = M_PHASE_EDITOR;
-    g_Config.input.backend = backend;
+    CONFIG_SET(g_Config.input.backend, backend);
 }
 
 // With a single backend available there is nothing to pick, so the dialog
@@ -91,7 +91,7 @@ bool UI_Controls_Control(UI_CONTROLS_STATE *const s)
 
         // Sync the editor's selected layout tab back to config so
         // Input_Update uses the layout the user is editing.
-        g_Config.input.layout[s->backend] = editor->active_layout;
+        CONFIG_SET(g_Config.input.layout[s->backend], editor->active_layout);
 
         switch (choice) {
         case UI_CONTROLS_CHOICE_NOOP:

@@ -1,6 +1,7 @@
 #include <trx/game/replay/test_replay.h>
 
 #include <trx/config.h>
+#include <trx/config/registry.h>
 #include <trx/core/enum_map.h>
 #include <trx/core/filesystem.h>
 #include <trx/core/log.h>
@@ -875,9 +876,9 @@ static bool M_ParseConfig(const char *const line, M_PARSE_CTX *const ctx)
             valbuf[vlen - 1] = '\0';
             memmove(valbuf, valbuf + 1, vlen - 1);
         }
-        const CONFIG_OPTION *opt = Config_GetOptionByPath(keybuf);
+        CONFIG_OPTION *opt = Config_FindOption(keybuf);
         if (opt) {
-            Config_SetOptionValueFromString(opt, valbuf);
+            Config_Option_SetFromString(opt, valbuf, false);
         } else {
             LOG_WARNING("Unknown option: %s", keybuf);
         }
@@ -1102,7 +1103,9 @@ void TestReplay_Start(void)
             LOG_WARNING("Unknown line: %s", ln);
         }
     }
-    g_SavedConfig = g_Config;
+    // The settings the recording asked for are where this replay starts, not
+    // something that moved while it ran.
+    Config_DiscardPendingChanges();
     Shell_FreeArgs(ctx.args);
     M_FreeStartupSnapshot(&ctx.startup);
 }

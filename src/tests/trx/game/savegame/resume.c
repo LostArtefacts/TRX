@@ -54,8 +54,8 @@ static bool m_BonusFlag;
 
 static void M_SetUp(void)
 {
-    g_Config = (CONFIG) {};
-    g_Config.gameplay.start_lara_hitpoints = 1000;
+    g_ConfigStorage = (CONFIG) {};
+    g_ConfigStorage.gameplay.start_lara_hitpoints = 1000;
     g_TRVersion = 1;
     m_BonusFlag = false;
     m_LiveInv = (INVENTORY_STATE) {};
@@ -324,7 +324,7 @@ TEST(the_gym_is_a_house_tour_so_she_arrives_with_nothing)
 TEST(healing_between_levels_spares_the_level_she_is_arriving_in)
 {
     M_SetUp();
-    g_Config.gameplay.disable_healing_between_levels = true;
+    g_ConfigStorage.gameplay.disable_healing_between_levels = true;
     RESUME_INFO *const entry = SG_Resume_GetEntry(&m_MainLevels[M_SECOND]);
     entry->lara_hitpoints = 320;
 

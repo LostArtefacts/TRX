@@ -260,12 +260,32 @@ unit_tests += {
   'engine': ['game/lua/field.c'],
 }
 
-# The runtime override stack. The test answers the config layer for it, so no
-# option map, no settings file, no game.
+# One option: what it holds, and the stack that holds it away from that. What is
+# not here is everything around it - no registry, no settings file, no game.
 unit_tests += {
-  'name': 'trx/config/override',
+  'name': 'trx/config/option',
   'bundles': [b_value],
-  'engine': ['config/override.c', 'config/value.c'],
+  'engine': ['config/option.c'],
+}
+
+# Writing a setting through the value it is stated as. The registry and the
+# options are real; the settings file and the sections are not reached.
+unit_tests += {
+  'name': 'trx/config/common',
+  'bundles': [b_value],
+  'engine': [
+    'config/common.c',
+    'config/option.c',
+    'config/priv.c',
+    'config/registry.c',
+    'config/legacy.c',
+    'config/section.c',
+    'core/event_manager.c',
+    'core/json/base.c',
+    'core/json/parse.c',
+    'version.c',
+  ],
+  'src': ['harness/stubs_config_file.c'],
 }
 
 # The migrations that carry an older release's settings file forward. They
@@ -588,8 +608,7 @@ unit_tests += {
   'bundles': [b_lua_surface],
   'src': ['fakes/config.c', 'fakes/locale.c'],
   'engine': [
-    'config/override.c',
-    'config/value.c',
+    'config/option.c',
     'game/lua/capi/config.c',
     'game/lua/capi/locale.c',
   ],
@@ -717,8 +736,7 @@ unit_tests += {
   'bundles': [b_lua_surface, b_console, b_lua_strings],
   'src': ['fakes/config.c'],
   'engine': [
-    'config/override.c',
-    'config/value.c',
+    'config/option.c',
     'game/lua/capi/config.c',
   ],
 }
@@ -761,10 +779,11 @@ unit_tests += {
     'config/common.c',
     'config/enum.c',
     'config/map.c',
-    'config/override.c',
+    'config/option.c',
+    'config/option_text.c',
     'config/presets.c',
+    'config/registry.c',
     'config/section.c',
-    'config/value.c',
     'core/colors.c',
     'core/completion.c',
     'core/dynamic_enum.c',

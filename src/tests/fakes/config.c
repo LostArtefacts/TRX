@@ -1,14 +1,16 @@
 // A player's config of a handful of options, one of each shape that behaves
-// differently. The override stack underneath is the real one; only the facade
-// around it - what options exist, how a string becomes a value, what writing to
-// disk means - is faked.
+// differently. The options themselves are the real ones, holds and all; what is
+// faked is everything around them - what options exist, how a value reads and
+// writes as a string, and what saving means.
 
 #include <fakes/config.h>
 
 #include <harness/fake_calls.h>
 
-#include <trx/config/override.h>
+#include <trx/config/priv.h>
+#include <trx/config/registry.h>
 #include <trx/core/enum_map.h>
+#include <trx/core/utils.h>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -20,29 +22,33 @@ static double m_Brightness;
 static double m_MasterVolume;
 static char *m_WaterColor;
 static int32_t m_ShadowType;
-static bool m_Enforced;
 
-static const CONFIG_OPTION m_Options[] = {
+static const CONFIG_OPTION_DESC m_Descs[] = {
     { .name = "audio.enable_music",
-      .type = TVT_BOOL,
-      .target = &m_EnableMusic },
-    { .name = "visuals.fov", .type = TVT_S32, .target = &m_Fov },
+      .default_value = { .type = TVT_BOOL, .as_bool = true },
+      .mirror = &m_EnableMusic },
+    { .name = "visuals.fov",
+      .default_value = { .type = TVT_S32, .as_int = 65 },
+      .mirror = &m_Fov },
     { .name = "visuals.brightness",
-      .type = TVT_DOUBLE,
-      .target = &m_Brightness },
+      .default_value = { .type = TVT_DOUBLE, .as_num = 1.5 },
+      .mirror = &m_Brightness },
     { .name = "audio.master_volume",
-      .type = TVT_DOUBLE,
-      .target = &m_MasterVolume,
+      .default_value = { .type = TVT_DOUBLE, .as_num = 1.0 },
+      .mirror = &m_MasterVolume,
       .percent = true },
     { .name = "visuals.water_color",
-      .type = TVT_STRING,
-      .target = &m_WaterColor },
+      .default_value = { .type = TVT_STRING, .as_str = "ff0000" },
+      .mirror = &m_WaterColor },
     { .name = "visuals.shadow_type",
-      .type = TVT_ENUM,
-      .target = &m_ShadowType,
-      .param = "FAKE_SHADOW" },
-    { nullptr },
+      .default_value = { .type = TVT_ENUM, .as_int = 0 },
+      .mirror = &m_ShadowType,
+      .enum_map = "FAKE_SHADOW" },
 };
+
+static CONFIG_OPTION m_Options[ARRAY_SIZE(m_Descs)];
+// What Config_GetOptions hands out: the same options, null terminated.
+static CONFIG_OPTION *m_View[ARRAY_SIZE(m_Descs) + 1];
 
 // The third value carries an underscore, which is what the console's
 // dash-for-underscore spelling is about.
@@ -67,88 +73,31 @@ static void M_DefineEnums(void)
 static void M_Reset(void)
 {
     M_DefineEnums();
-    ConfigOverride_Clear();
-    m_Enforced = false;
-    m_EnableMusic = true;
-    m_Fov = 65;
-    m_Brightness = 1.5;
-    m_MasterVolume = 1.0;
-    free(m_WaterColor);
-    m_WaterColor = strdup("ff0000");
-    m_ShadowType = 0;
-}
-
-const CONFIG_OPTION *Config_GetOptionMap(void)
-{
-    return m_Options;
-}
-
-const CONFIG_OPTION *Config_GetOptionByPath(const char *const path)
-{
-    for (const CONFIG_OPTION *o = m_Options; o->name != nullptr; o++) {
-        if (strcmp(o->name, path) == 0) {
-            return o;
+    for (size_t i = 0; i < ARRAY_SIZE(m_Descs); i++) {
+        if (m_Options[i].name != nullptr) {
+            Config_Option_Free(&m_Options[i]);
         }
+        m_Options[i] = (CONFIG_OPTION) {};
+        Config_Option_Init(&m_Options[i], &m_Descs[i]);
+        m_View[i] = &m_Options[i];
     }
-    return nullptr;
+    m_View[ARRAY_SIZE(m_Descs)] = nullptr;
 }
 
-const CONFIG_OPTION *Config_GetOption(const void *const target)
+// The value a string spells, borrowing the string for a string-typed option -
+// the option copies what it is given.
+static bool M_Parse(
+    const CONFIG_OPTION *const option, const char *const new_value,
+    TRX_VALUE *const out)
 {
-    for (const CONFIG_OPTION *o = m_Options; o->name != nullptr; o++) {
-        if (o->target == target) {
-            return o;
-        }
-    }
-    return nullptr;
-}
-
-bool Config_IsOptionEnforced(const void *const target)
-{
-    return m_Enforced;
-}
-
-bool Config_Update(void)
-{
-    FAKE_RECORD("config_write");
-    return true;
-}
-
-const char *Config_GetOptionValueAsString(
-    const CONFIG_OPTION *const option, const bool human_readable)
-{
-    static char buf[64];
-    switch (option->type) {
+    TRX_VALUE value = { .type = option->value.type };
+    switch (option->value.type) {
     case TVT_BOOL:
-        return *(const bool *)option->target ? "true" : "false";
-    case TVT_S32:
-        snprintf(buf, sizeof(buf), "%d", *(const int32_t *)option->target);
-        return buf;
-    case TVT_DOUBLE:
-        snprintf(buf, sizeof(buf), "%g", *(const double *)option->target);
-        return buf;
-    case TVT_STRING: {
-        const char *const value = *(const char *const *)option->target;
-        return value != nullptr ? value : "";
-    }
-    case TVT_ENUM:
-        return EnumMap_ToString(
-            (const char *)option->param, *(const int32_t *)option->target);
-    default:
-        return "";
-    }
-}
-
-bool Config_SetOptionValueFromStringForce(
-    const CONFIG_OPTION *const option, const char *const new_value)
-{
-    switch (option->type) {
-    case TVT_BOOL:
-        if (strcmp(new_value, "true") == 0 || strcmp(new_value, "false") == 0) {
-            *(bool *)option->target = strcmp(new_value, "true") == 0;
-            return true;
+        if (strcmp(new_value, "true") != 0 && strcmp(new_value, "false") != 0) {
+            return false;
         }
-        return false;
+        value.as_bool = strcmp(new_value, "true") == 0;
+        break;
 
     case TVT_S32: {
         char *end = nullptr;
@@ -156,8 +105,8 @@ bool Config_SetOptionValueFromStringForce(
         if (end == new_value || *end != '\0') {
             return false;
         }
-        *(int32_t *)option->target = (int32_t)parsed;
-        return true;
+        value.as_int = parsed;
+        break;
     }
 
     case TVT_DOUBLE: {
@@ -166,76 +115,130 @@ bool Config_SetOptionValueFromStringForce(
         if (end == new_value || *end != '\0') {
             return false;
         }
-        *(double *)option->target = parsed;
-        return true;
+        value.as_num = parsed;
+        break;
     }
 
-    case TVT_STRING: {
+    case TVT_STRING:
         if (strlen(new_value) != 6) {
             return false;
         }
-        char **const p = (char **)option->target;
-        free(*p);
-        *p = strdup(new_value);
-        return true;
-    }
+        value.as_str = new_value;
+        break;
 
     case TVT_ENUM: {
-        const int32_t parsed =
-            EnumMap_Get((const char *)option->param, new_value, -1);
+        const int32_t parsed = EnumMap_Get(option->enum_map, new_value, -1);
         if (parsed == -1) {
             return false;
         }
-        *(int32_t *)option->target = parsed;
-        return true;
+        value.as_int = parsed;
+        break;
     }
 
     default:
         return false;
     }
-}
 
-bool Config_SetOptionValueFromString(
-    const CONFIG_OPTION *const option, const char *const new_value)
-{
-    if (m_Enforced) {
-        return false;
-    }
-    return Config_SetOptionValueFromStringForce(option, new_value);
-}
-
-bool Config_RestoreOptionDefaultForce(const void *const target)
-{
-    if (target == &m_EnableMusic) {
-        m_EnableMusic = true;
-    } else if (target == &m_Fov) {
-        m_Fov = 65;
-    } else if (target == &m_Brightness) {
-        m_Brightness = 1.5;
-    } else if (target == &m_MasterVolume) {
-        m_MasterVolume = 1.0;
-    } else if (target == &m_WaterColor) {
-        free(m_WaterColor);
-        m_WaterColor = strdup("ff0000");
-    } else if (target == &m_ShadowType) {
-        m_ShadowType = 0;
-    } else {
-        return false;
-    }
+    *out = value;
     return true;
 }
 
-bool Config_RestoreOptionDefault(const void *const target)
+// Nothing here is listening for what moved: a test that cares about a write
+// looks at the setting it landed on.
+void Config_ReportChange(const CONFIG_OPTION *const option, const bool persist)
 {
-    if (m_Enforced) {
+}
+
+CONFIG_OPTION *const *Config_GetOptions(void)
+{
+    return m_View;
+}
+
+CONFIG_OPTION *Config_FindOption(const char *const path)
+{
+    for (size_t i = 0; i < ARRAY_SIZE(m_Options); i++) {
+        if (strcmp(m_Options[i].name, path) == 0) {
+            return &m_Options[i];
+        }
+    }
+    return nullptr;
+}
+
+CONFIG_OPTION *Config_FindOptionByMirror(const void *const mirror)
+{
+    for (size_t i = 0; i < ARRAY_SIZE(m_Options); i++) {
+        if (m_Options[i].mirror == mirror) {
+            return &m_Options[i];
+        }
+    }
+    return nullptr;
+}
+
+bool Config_Update(void)
+{
+    FAKE_RECORD("config_write");
+    return true;
+}
+
+const char *Config_Option_GetValueAsString(
+    const CONFIG_OPTION *const option, const bool human_readable)
+{
+    static char buf[64];
+    switch (option->value.type) {
+    case TVT_BOOL:
+        return option->value.as_bool ? "true" : "false";
+    case TVT_S32:
+        snprintf(buf, sizeof(buf), "%d", (int32_t)option->value.as_int);
+        return buf;
+    case TVT_DOUBLE:
+        snprintf(buf, sizeof(buf), "%g", option->value.as_num);
+        return buf;
+    case TVT_STRING:
+        return option->value.as_str != nullptr ? option->value.as_str : "";
+    case TVT_ENUM:
+        return EnumMap_ToString(option->enum_map, option->value.as_int);
+    default:
+        return "";
+    }
+}
+
+bool Config_Option_SetFromString(
+    CONFIG_OPTION *const option, const char *const new_value, const bool force)
+{
+    if (!force && Config_Option_IsHeld(option)) {
         return false;
     }
-    return Config_RestoreOptionDefaultForce(target);
+    TRX_VALUE value;
+    if (!M_Parse(option, new_value, &value)) {
+        return false;
+    }
+    Config_Option_Write(option, &value);
+    return true;
+}
+
+bool Config_Option_PushHoldFromString(
+    CONFIG_OPTION *const option, const char *const value,
+    const CONFIG_HOLD_SOURCE source)
+{
+    TRX_VALUE parsed;
+    if (Config_Option_IsEnforced(option) || !M_Parse(option, value, &parsed)) {
+        return false;
+    }
+    return Config_Option_PushHold(option, &parsed, source);
 }
 
 FAKE_ON_RESET(M_Reset)
 
+// The game flow enforcing a setting is a hold like any other, so this puts one
+// on every option rather than standing a flag beside them.
 void FakeConfig_SetEnforced(const bool enforced)
 {
-    m_Enforced = enforced;
+    for (size_t i = 0; i < ARRAY_SIZE(m_Options); i++) {
+        if (enforced) {
+            Config_Option_PushHold(
+                &m_Options[i], &m_Options[i].value, CONFIG_HOLD_GAME_FLOW);
+        } else {
+            Config_Option_PopHold(&m_Options[i]);
+        }
+    }
 }

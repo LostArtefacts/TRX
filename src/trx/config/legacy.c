@@ -1,5 +1,6 @@
 #include <trx/config/legacy.h>
 
+#include <trx/config/common.h>
 #include <trx/config/vars.h>
 #include <trx/version.h>
 
@@ -25,25 +26,28 @@ typedef struct {
 
 static void M_ApplyGameModes(const JSON_VALUE *const value)
 {
-    g_Config.gameplay.game_modes_policy = JSON_ValueIsTrue(value)
-        ? GAME_MODES_POLICY_ALWAYS
-        : GAME_MODES_POLICY_NEVER;
+    CONFIG_SET(
+        g_Config.gameplay.game_modes_policy,
+        JSON_ValueIsTrue(value) ? GAME_MODES_POLICY_ALWAYS
+                                : GAME_MODES_POLICY_NEVER);
 }
 
 static void M_ApplyTargetChange(const JSON_VALUE *const value)
 {
-    g_Config.gameplay.target_change_mode = JSON_ValueIsTrue(value)
-        ? TARGET_CHANGE_MODE_ENHANCED
-        : TARGET_CHANGE_MODE_OFF;
+    CONFIG_SET(
+        g_Config.gameplay.target_change_mode,
+        JSON_ValueIsTrue(value) ? TARGET_CHANGE_MODE_ENHANCED
+                                : TARGET_CHANGE_MODE_OFF);
 }
 
 static void M_ApplyBreeze(const JSON_VALUE *const value)
 {
     if (JSON_ValueIsTrue(value)) {
-        g_Config.visuals.breeze_mode =
-            g_TRVersion <= 2 ? BREEZE_MODE_TR2 : BREEZE_MODE_TR3;
+        CONFIG_SET(
+            g_Config.visuals.breeze_mode,
+            g_TRVersion <= 2 ? BREEZE_MODE_TR2 : BREEZE_MODE_TR3);
     } else {
-        g_Config.visuals.breeze_mode = BREEZE_MODE_OFF;
+        CONFIG_SET(g_Config.visuals.breeze_mode, BREEZE_MODE_OFF);
     }
 }
 
@@ -52,7 +56,7 @@ static void M_ApplySaveCrystals(const JSON_VALUE *const value)
     // Only an explicit opt-in carries over; the per-game default covers the
     // rest, so TR3 keeps healing.
     if (JSON_ValueIsTrue(value)) {
-        g_Config.gameplay.save_crystal_mode = SAVE_CRYSTAL_SAVE;
+        CONFIG_SET(g_Config.gameplay.save_crystal_mode, SAVE_CRYSTAL_SAVE);
     }
 }
 
@@ -92,6 +96,6 @@ void ConfigLegacy_Load(JSON_OBJECT *const parent_obj)
 
     if (g_Config.config_version >= 0
         && g_Config.config_version < M_CONFIG_VERSION_CURRENT) {
-        g_Config.config_version = M_CONFIG_VERSION_CURRENT;
+        CONFIG_SET(g_Config.config_version, M_CONFIG_VERSION_CURRENT);
     }
 }

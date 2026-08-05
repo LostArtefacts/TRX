@@ -23,8 +23,9 @@ static void M_HandleKeyChange(const EVENT *event, void *user_data)
 static void M_HandleLayoutChange(const EVENT *event, void *user_data)
 {
     const M_PRIV *const p = user_data;
-    g_Config.input.layout[p->ui.state.backend] =
-        p->ui.state.editor_state[p->ui.state.backend].active_layout;
+    CONFIG_SET(
+        g_Config.input.layout[p->ui.state.backend],
+        p->ui.state.editor_state[p->ui.state.backend].active_layout);
     Config_Update();
 }
 

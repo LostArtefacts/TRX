@@ -1,6 +1,7 @@
 #include <trx/game/replay/test_recorder.h>
 
 #include <trx/config.h>
+#include <trx/config/registry.h>
 #include <trx/core/enum_map.h>
 #include <trx/core/filesystem.h>
 #include <trx/core/memory.h>
@@ -228,14 +229,12 @@ static void M_DumpArguments(MYFILE *const fp, VECTOR *const original_args)
 static void M_DumpConfig(MYFILE *const fp)
 {
     // Record any non-default config options for later replay
-    const CONFIG_OPTION *const map = Config_GetOptionMap();
     VECTOR *opts = Vector_Create(sizeof(CONFIG_OPTION *));
-
-    for (const CONFIG_OPTION *opt = map; opt->name != nullptr; opt++) {
-        if (Config_IsOptionAtDefault(opt->target)) {
-            continue;
+    for (CONFIG_OPTION *const *opt = Config_GetOptions(); *opt != nullptr;
+         opt++) {
+        if (!Config_Option_IsAtDefault(*opt)) {
+            Vector_Add(opts, opt);
         }
-        Vector_Add(opts, &opt);
     }
 
     CONFIG_OPTION **raw_opts = Vector_GetData(opts);
@@ -243,12 +242,13 @@ static void M_DumpConfig(MYFILE *const fp)
         raw_opts, opts->count, sizeof(CONFIG_OPTION *), M_CompareConfigOption);
     for (int32_t i = 0; i < opts->count; i++) {
         const CONFIG_OPTION *opt = raw_opts[i];
-        const char *const fmt = opt->type == TVT_ENUM || opt->type == TVT_STRING
-                || opt->type == TVT_DYNAMIC_ENUM
+        const TRX_VALUE_TYPE type = opt->value.type;
+        const char *const fmt =
+            type == TVT_ENUM || type == TVT_STRING || type == TVT_DYNAMIC_ENUM
             ? "config %s \"%s\"\n"
             : "config %s %s\n";
         File_WriteString(
-            fp, fmt, opt->name, Config_GetOptionValueAsString(opt, false));
+            fp, fmt, opt->name, Config_Option_GetValueAsString(opt, false));
     }
     Vector_Free(opts);
 }

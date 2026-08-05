@@ -1,5 +1,5 @@
 // Symbols every test needs regardless of which surface it exercises: the logger
-// that ASSERT reaches for, and the config global that several bridges read.
+// that ASSERT reaches for, and the settings several bridges read.
 // Stubbing them here keeps the unit tests free of the platform log backend and
 // gives the config a single definition across the whole test tree.
 
@@ -10,8 +10,7 @@
 #include <stdint.h>
 #include <stdio.h>
 
-CONFIG g_Config = {};
-CONFIG g_SavedConfig = {};
+CONFIG g_ConfigStorage = {};
 
 void Log_Message(
     const LOG_LEVEL level, const char *const file, const int32_t line,

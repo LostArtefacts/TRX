@@ -1,6 +1,6 @@
 #include <trx/config/common.h>
 #include <trx/config/option.h>
-#include <trx/config/override.h>
+#include <trx/config/registry.h>
 #include <trx/core/dynamic_enum.h>
 #include <trx/core/enum_map.h>
 #include <trx/core/vector.h>
@@ -10,10 +10,10 @@
 
 #include <lauxlib.h>
 
-static const CONFIG_OPTION *M_GetOption(lua_State *const L, const int32_t arg)
+static CONFIG_OPTION *M_GetOption(lua_State *const L, const int32_t arg)
 {
     const char *const key = luaL_checkstring(L, arg);
-    const CONFIG_OPTION *const option = Config_GetOptionByPath(key);
+    CONFIG_OPTION *const option = Config_FindOption(key);
     if (option == nullptr) {
         luaL_error(L, "unknown option: %s", key);
     }
@@ -27,14 +27,13 @@ static void M_PushValue(lua_State *const L, const CONFIG_OPTION *const option)
 {
     // Colours, enums, strings and dynamic enums read back as their name or
     // display string, which is also how a script gives them on the way in.
-    if (option->type == TVT_RGB_888 || option->type == TVT_ENUM
-        || option->type == TVT_STRING || option->type == TVT_DYNAMIC_ENUM) {
-        lua_pushstring(L, Config_GetOptionValueAsString(option, false));
+    const TRX_VALUE_TYPE type = option->value.type;
+    if (type == TVT_RGB_888 || type == TVT_ENUM || type == TVT_STRING
+        || type == TVT_DYNAMIC_ENUM) {
+        lua_pushstring(L, Config_Option_GetValueAsString(option, false));
         return;
     }
-    TRX_VALUE value;
-    Value_ReadPtr(option->type, option->target, &value);
-    LUA_PushValue(L, &value);
+    LUA_PushValue(L, &option->value);
 }
 
 // A value is handed to the config string parser, so it is spelled the way that
@@ -94,13 +93,13 @@ static int M_L_ConfigDescribe(lua_State *const L)
 {
     const CONFIG_OPTION *const option = M_GetOption(L, 1);
     lua_newtable(L);
-    lua_pushstring(L, M_KindName(option->type));
+    lua_pushstring(L, M_KindName(option->value.type));
     lua_setfield(L, -2, "kind");
-    lua_pushboolean(L, option->percent);
+    lua_pushboolean(L, (option->flags & CONFIG_OPTION_PERCENT) != 0);
     lua_setfield(L, -2, "percent");
 
-    if (option->type == TVT_ENUM) {
-        VECTOR *const values = EnumMap_ListValues((const char *)option->param);
+    if (option->value.type == TVT_ENUM) {
+        VECTOR *const values = EnumMap_ListValues(option->enum_map);
         lua_createtable(L, values != nullptr ? values->count : 0, 0);
         if (values != nullptr) {
             for (int32_t i = 0; i < values->count; i++) {
@@ -110,12 +109,13 @@ static int M_L_ConfigDescribe(lua_State *const L)
             Vector_Free(values);
         }
         lua_setfield(L, -2, "values");
-    } else if (option->type == TVT_DYNAMIC_ENUM) {
-        const int32_t count = DynamicEnum_GetValueCount(option->target);
+    } else if (option->value.type == TVT_DYNAMIC_ENUM) {
+        const void *const token = Config_Option_GetEnumKey(option);
+        const int32_t count = DynamicEnum_GetValueCount(token);
         lua_createtable(L, count, 0);
         int32_t n = 0;
         for (int32_t i = 0; i < count; i++) {
-            const char *const value = DynamicEnum_GetValueAt(option->target, i);
+            const char *const value = DynamicEnum_GetValueAt(token, i);
             if (value != nullptr) {
                 lua_pushstring(L, value);
                 n++;
@@ -130,11 +130,10 @@ static int M_L_ConfigDescribe(lua_State *const L)
 // trxc.config.set(key, value, force?)
 static int M_L_ConfigSet(lua_State *const L)
 {
-    const CONFIG_OPTION *const option = M_GetOption(L, 1);
+    CONFIG_OPTION *const option = M_GetOption(L, 1);
     const char *const new_value = M_ValueAsString(L, 2);
     const bool force = lua_toboolean(L, 3);
-    if (!(force ? Config_SetOptionValueFromStringForce(option, new_value)
-                : Config_SetOptionValueFromString(option, new_value))) {
+    if (!Config_Option_SetFromString(option, new_value, force)) {
         return luaL_error(
             L, "failed to set option %s to %s", option->name, new_value);
     }
@@ -145,11 +144,9 @@ static int M_L_ConfigSet(lua_State *const L)
 // trxc.config.reset(key, force?) -> bool
 static int M_L_ConfigReset(lua_State *const L)
 {
-    const CONFIG_OPTION *const option = M_GetOption(L, 1);
+    CONFIG_OPTION *const option = M_GetOption(L, 1);
     const bool force = lua_toboolean(L, 2);
-    const bool changed = force
-        ? Config_RestoreOptionDefaultForce(option->target)
-        : Config_RestoreOptionDefault(option->target);
+    const bool changed = Config_Option_RestoreDefault(option, force);
     if (changed) {
         Config_Update();
     }
@@ -160,9 +157,10 @@ static int M_L_ConfigReset(lua_State *const L)
 // trxc.config.override(key, value)
 static int M_L_ConfigOverride(lua_State *const L)
 {
-    const CONFIG_OPTION *const option = M_GetOption(L, 1);
+    CONFIG_OPTION *const option = M_GetOption(L, 1);
     const char *const new_value = M_ValueAsString(L, 2);
-    if (!ConfigOverride_PushFromString(option, new_value)) {
+    if (!Config_Option_PushHoldFromString(
+            option, new_value, CONFIG_HOLD_SCRIPT)) {
         return luaL_error(
             L, "failed to override option %s with %s", option->name, new_value);
     }
@@ -172,8 +170,8 @@ static int M_L_ConfigOverride(lua_State *const L)
 // trxc.config.restore(key) -> bool
 static int M_L_ConfigRestore(lua_State *const L)
 {
-    const CONFIG_OPTION *const option = M_GetOption(L, 1);
-    lua_pushboolean(L, ConfigOverride_Pop(option));
+    CONFIG_OPTION *const option = M_GetOption(L, 1);
+    lua_pushboolean(L, Config_Option_PopHold(option));
     return 1;
 }
 
@@ -181,7 +179,7 @@ static int M_L_ConfigRestore(lua_State *const L)
 static int M_L_ConfigIsOverridden(lua_State *const L)
 {
     const CONFIG_OPTION *const option = M_GetOption(L, 1);
-    lua_pushboolean(L, ConfigOverride_IsOverridden(option));
+    lua_pushboolean(L, Config_Option_IsHeld(option));
     return 1;
 }
 
@@ -189,11 +187,10 @@ static int M_L_ConfigIsOverridden(lua_State *const L)
 static int M_L_ConfigList(lua_State *const L)
 {
     lua_newtable(L);
-    const CONFIG_OPTION *option = Config_GetOptionMap();
-    while (option->name != nullptr) {
-        M_PushValue(L, option);
-        lua_setfield(L, -2, option->name);
-        option++;
+    for (CONFIG_OPTION *const *option = Config_GetOptions(); *option != nullptr;
+         option++) {
+        M_PushValue(L, *option);
+        lua_setfield(L, -2, (*option)->name);
     }
     return 1;
 }

@@ -237,7 +237,7 @@ GF_COMMAND GF_PlayAvailableStory(const SAVEGAME_SLOT_REF slot)
 {
     const int32_t savegame_level = SG_Manager_GetLevelNumber(slot);
     const bool prev_enable_legal = g_Config.gameplay.enable_legal;
-    g_Config.gameplay.enable_legal = false;
+    CONFIG_SET(g_Config.gameplay.enable_legal, false);
 
     // Play intro FMVs and cutscenes
     GF_DoFrontendSequence();
@@ -256,7 +256,7 @@ GF_COMMAND GF_PlayAvailableStory(const SAVEGAME_SLOT_REF slot)
         }
     }
 
-    g_Config.gameplay.enable_legal = prev_enable_legal;
+    CONFIG_SET(g_Config.gameplay.enable_legal, prev_enable_legal);
     return (GF_COMMAND) { .action = GF_EXIT_TO_TITLE };
 }
 

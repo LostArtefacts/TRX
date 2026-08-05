@@ -8,7 +8,7 @@ X_UI_CFG(input.enable_tr3_sidesteps)
 X_UI_CFG_ENUM(input.quick_guns_mode,        .misc = UI_Settings_QuickGunsModeEnumEntries)
 X_UI_CFG_ENUM(gameplay.look_mode,           .misc = UI_Settings_LookModeEnumEntries)
 X_UI_CFG(gameplay.enable_manual_camera)
-X_UI_CFG(gameplay.idle_pose_timeout,        .min_value = 0, .max_value = 1200)
+X_UI_CFG(gameplay.idle_pose_timeout)
 X_UI_CFG(gameplay.enable_idle_pose_camera,  .custom_handler = { .is_available = UI_Settings_IdlePose_IsAvailable })
 
 X_UI_CFG(gameplay.enable_tr2_jumping)
@@ -44,14 +44,14 @@ X_UI_CFG_ENUM(gameplay.target_mode,         .misc = UI_Settings_TargetModeEnumEn
 X_UI_CFG_ENUM(gameplay.target_change_mode,  .misc = UI_Settings_TargetChangeModeEnumEntries)
 
 X_UI_CFG(gameplay.enable_inverted_look)
-X_UI_CFG(gameplay.camera_speed,             .min_value = 1, .max_value = 10)
+X_UI_CFG(gameplay.camera_speed)
 X_UI_CFG(input.enable_buffering_func_keys)
 X_UI_CFG(input.enable_buffering_inventory)
 
 X_UI_CFG(input.enable_controller)
 
 X_UI_CFG(input.enable_touch_controls,       .custom_handler = { .is_available = UI_Settings_TouchControls_IsAvailable, .can_change_value = UI_Settings_TouchControls_CanChange })
-X_UI_CFG(input.touch_opacity,               .min_value = 10, .max_value = 100, .custom_handler = { .is_available = UI_Settings_TouchOption_IsAvailable, .can_change_value = UI_Settings_TouchOption_CanChange })
-X_UI_CFG(input.touch_button_scale,          .min_value = 50, .max_value = 200, .custom_handler = { .is_available = UI_Settings_TouchOption_IsAvailable, .can_change_value = UI_Settings_TouchOption_CanChange })
-X_UI_CFG(input.touch_dpad_scale,            .min_value = 50, .max_value = 200, .custom_handler = { .is_available = UI_Settings_TouchOption_IsAvailable, .can_change_value = UI_Settings_TouchOption_CanChange })
-X_UI_CFG(input.touch_dpad_deadzone,         .min_value = 10, .max_value = 70, .custom_handler = { .is_available = UI_Settings_TouchOption_IsAvailable, .can_change_value = UI_Settings_TouchOption_CanChange })
+X_UI_CFG(input.touch_opacity,               .custom_handler = { .is_available = UI_Settings_TouchOption_IsAvailable, .can_change_value = UI_Settings_TouchOption_CanChange })
+X_UI_CFG(input.touch_button_scale,          .custom_handler = { .is_available = UI_Settings_TouchOption_IsAvailable, .can_change_value = UI_Settings_TouchOption_CanChange })
+X_UI_CFG(input.touch_dpad_scale,            .custom_handler = { .is_available = UI_Settings_TouchOption_IsAvailable, .can_change_value = UI_Settings_TouchOption_CanChange })
+X_UI_CFG(input.touch_dpad_deadzone,         .custom_handler = { .is_available = UI_Settings_TouchOption_IsAvailable, .can_change_value = UI_Settings_TouchOption_CanChange })

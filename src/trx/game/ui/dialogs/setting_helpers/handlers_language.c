@@ -1,4 +1,5 @@
 #include <trx/config.h>
+#include <trx/config/registry.h>
 #include <trx/core/memory.h>
 #include <trx/core/strings.h>
 #include <trx/game/game_strings/manager.h>
@@ -34,7 +35,7 @@ static const VECTOR *M_Language_GetLanguages(void)
 static int32_t M_Language_FindIndex(const UI_SETTINGS_OPTION *const option)
 {
     const VECTOR *const langs = M_Language_GetLanguages();
-    const char *const cur = *(char **)option->target;
+    const char *const cur = *(const char *const *)option->target;
     for (int32_t i = 0; i < langs->count; i++) {
         const char *const lang = *(char **)Vector_Get(langs, i);
         if (String_Equivalent(lang, cur)) {
@@ -47,7 +48,7 @@ static int32_t M_Language_FindIndex(const UI_SETTINGS_OPTION *const option)
 const char *UI_Settings_Language_FormatValue(
     const UI_SETTINGS_OPTION *const option)
 {
-    const char *const code = *(const char **)option->target;
+    const char *const code = *(const char *const *)option->target;
     const char *const name = GameStringManager_GetLanguageName(code);
     return name != nullptr ? name : code;
 }
@@ -84,7 +85,8 @@ bool UI_Settings_Language_RequestChangeValue(
         // (the file was deleted), default to the first entry, which is English
         new_lang = *(char **)Vector_Get(langs, 0);
     }
-    Config_SetOptionValueFromString(Config_GetOption(option->target), new_lang);
+    Config_Option_SetFromString(
+        Config_FindOptionByMirror(option->target), new_lang, false);
     GameStringManager_ReloadLanguage(new_lang);
     return true;
 }

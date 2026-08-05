@@ -1,6 +1,7 @@
 #include <trx/game/ui/dialogs/color_editor.h>
 
 #include <trx/config.h>
+#include <trx/config/registry.h>
 #include <trx/core/memory.h>
 #include <trx/core/utils.h>
 #include <trx/debug.h>
@@ -142,7 +143,9 @@ static void M_SetLocalColorFromRGB(
 static void M_EmitLocalColorAsRGB(UI_COLOR_EDITOR_DIALOG_STATE *const s)
 {
     M_RebuildCache(s);
-    *(RGB_888 *)s->option->target = s->color;
+    CONFIG_OPTION *const cfg_opt = Config_FindOptionByMirror(s->option->target);
+    const TRX_VALUE value = { .type = TVT_RGB_888, .as_rgb = s->color };
+    Config_Option_Write(cfg_opt, &value);
     Config_Update();
 }
 
@@ -203,7 +206,8 @@ void UI_ColorEditorDialog_Open(
 {
     ASSERT(s != nullptr);
     ASSERT(option != nullptr);
-    ASSERT(Config_GetOption(option->target)->type == TVT_RGB_888);
+    ASSERT(
+        Config_FindOptionByMirror(option->target)->value.type == TVT_RGB_888);
     const RGB_888 *const color = option->target;
     s->show = true;
     s->option = option;
@@ -281,8 +285,9 @@ void UI_ColorEditorDialog_Control(UI_COLOR_EDITOR_DIALOG_STATE *const s)
         }
         M_EmitLocalColorAsRGB(s);
     } else if (g_InputDB.unbind_key) {
-        Config_RestoreOptionDefault(option->target);
-        M_SetLocalColorFromRGB(s, *(RGB_888 *)option->target);
+        Config_Option_RestoreDefault(
+            Config_FindOptionByMirror(option->target), false);
+        M_SetLocalColorFromRGB(s, *(const RGB_888 *)option->target);
         Config_Update();
     }
 }
@@ -303,7 +308,7 @@ void UI_ColorEditorDialog(UI_COLOR_EDITOR_DIALOG_STATE *const s)
     });
     UI_BeginAnchor(0.5f, 0.5f);
     const char *const title =
-        Config_GetOptionTitle(Config_GetOption(s->option->target));
+        Config_Option_GetTitle(Config_FindOptionByMirror(s->option->target));
     UI_Label(title != nullptr ? title : "");
     UI_EndAnchor();
     UI_Spacer(M_COLOR_EDITOR_TITLE_MARGIN, M_COLOR_EDITOR_TITLE_MARGIN);

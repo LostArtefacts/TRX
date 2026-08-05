@@ -14,13 +14,13 @@
 
 static void M_ToggleFullscreen(void)
 {
-    TOGGLE(g_Config.window.is_fullscreen);
+    CONFIG_TOGGLE(g_Config.window.is_fullscreen);
     Config_Update();
 }
 
 static void M_ToggleFPSCounter(void)
 {
-    TOGGLE(g_Config.ui.enable_fps_counter);
+    CONFIG_TOGGLE(g_Config.ui.enable_fps_counter);
     Config_Update();
     Console_Log(
         "%s",
@@ -30,7 +30,8 @@ static void M_ToggleFPSCounter(void)
 
 static void M_ToggleBilinearFilter(void)
 {
-    CYCLE(g_Config.rendering.texture_filter, 1, TEXTURE_FILTER_NUMBER_OF);
+    CONFIG_CYCLE(
+        g_Config.rendering.texture_filter, 1, TEXTURE_FILTER_NUMBER_OF);
     Config_Update();
     Console_Log(
         "%s",
@@ -41,7 +42,7 @@ static void M_ToggleBilinearFilter(void)
 
 static void M_ToggleTrapezoidFilter(void)
 {
-    TOGGLE(g_Config.rendering.enable_trapezoid_filter);
+    CONFIG_TOGGLE(g_Config.rendering.enable_trapezoid_filter);
     Config_Update();
     Console_Log(
         "%s",
@@ -52,7 +53,7 @@ static void M_ToggleTrapezoidFilter(void)
 
 static void M_ToggleWireframe(void)
 {
-    TOGGLE(g_Config.rendering.enable_wireframe);
+    CONFIG_TOGGLE(g_Config.rendering.enable_wireframe);
     Config_Update();
     Console_Log(
         "%s",
@@ -63,7 +64,7 @@ static void M_ToggleWireframe(void)
 
 static void M_ToggleTextures(void)
 {
-    TOGGLE(g_Config.rendering.enable_textures);
+    CONFIG_TOGGLE(g_Config.rendering.enable_textures);
     Config_Update();
     Console_Log(
         "%s",
@@ -73,7 +74,7 @@ static void M_ToggleTextures(void)
 
 static void M_CycleLightingContrast(void)
 {
-    CYCLE(
+    CONFIG_CYCLE(
         g_Config.rendering.lighting_contrast, g_Input.slow ? -1 : 1,
         LIGHTING_CONTRAST_NUMBER_OF);
     Config_Update();
@@ -85,7 +86,9 @@ static void M_CycleLightingContrast(void)
 
 static void M_CycleUpscalingFactor(void)
 {
-    g_Config.rendering.upscaling_factor += g_Input.slow ? -1 : 1;
+    CONFIG_SET(
+        g_Config.rendering.upscaling_factor,
+        g_Config.rendering.upscaling_factor + (g_Input.slow ? -1 : 1));
     Config_Update();
     Console_Log(
         GS("general/osd/upscaling_factor"),
@@ -96,14 +99,16 @@ static void M_CycleBorders(void)
 {
     if (g_Input.slow) {
         if (g_Config.rendering.borders > 0.0) {
-            g_Config.rendering.borders -= 0.05;
-            CLAMPL(g_Config.rendering.borders, 0.0);
+            CONFIG_SET(
+                g_Config.rendering.borders,
+                MAX(g_Config.rendering.borders - 0.05, 0.0));
             Viewport_Reset();
         }
     } else {
         if (g_Config.rendering.borders < 0.45) {
-            g_Config.rendering.borders += 0.05;
-            CLAMPG(g_Config.rendering.borders, 0.45);
+            CONFIG_SET(
+                g_Config.rendering.borders,
+                MIN(g_Config.rendering.borders + 0.05, 0.45));
             Viewport_Reset();
         }
     }

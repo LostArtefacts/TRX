@@ -117,15 +117,15 @@ void Shell_SyncFromWindow(const bool update_viewport)
 
     // Update config only when not in debounce window
     if (!skip_config) {
-        g_Config.window.is_maximized = is_maximized;
+        CONFIG_SET(g_Config.window.is_maximized, is_maximized);
         if (!is_maximized && !g_Config.window.is_fullscreen) {
-            g_Config.window.x = x;
-            g_Config.window.y = y;
-            g_Config.window.width = width;
-            g_Config.window.height = height;
+            CONFIG_SET(g_Config.window.x, x);
+            CONFIG_SET(g_Config.window.y, y);
+            CONFIG_SET(g_Config.window.width, width);
+            CONFIG_SET(g_Config.window.height, height);
         } else {
-            g_Config.window.fs_width = width;
-            g_Config.window.fs_height = height;
+            CONFIG_SET(g_Config.window.fs_width, width);
+            CONFIG_SET(g_Config.window.fs_height, height);
         }
         if (Config_IsLoaded()) {
             m_IgnoreConfigChanges = true;
@@ -140,13 +140,15 @@ void Shell_SyncFromWindow(const bool update_viewport)
     }
 }
 
-void Shell_HandleConfigChange(const CONFIG *const old, const CONFIG *const new)
+void Shell_HandleConfigChange(const CONFIG_CHANGE *const change)
 {
-    if (!TestReplay_IsOpened()) {
+    // A hold going on or coming off moves a setting without the player having
+    // chosen anything, so there is nothing new to write down.
+    if (change->persist && !TestReplay_IsOpened()) {
         Config_Write();
     }
 
-#define L_CHANGED(subject) (old->subject != new->subject)
+#define L_CHANGED(subject) Config_Change_HasMirror(change, &g_Config.subject)
 
     if (L_CHANGED(audio.sound_volume)) {
         Sound_SetMasterVolume(g_Config.audio.sound_volume);
@@ -172,10 +174,8 @@ void Shell_HandleConfigChange(const CONFIG *const old, const CONFIG *const new)
     }
 
     if (L_CHANGED(visuals.fog_start) || L_CHANGED(visuals.fog_end)
-        || L_CHANGED(visuals.fog_color.g) || L_CHANGED(visuals.fog_color.b)
-        || L_CHANGED(visuals.fog_color.r) || L_CHANGED(visuals.fog_transparency)
-        || L_CHANGED(visuals.water_color.g) || L_CHANGED(visuals.water_color.b)
-        || L_CHANGED(visuals.water_color.r)) {
+        || L_CHANGED(visuals.fog_color) || L_CHANGED(visuals.fog_transparency)
+        || L_CHANGED(visuals.water_color)) {
         Output_ApplyLevelSettings();
     }
 
@@ -213,7 +213,7 @@ void Shell_HandleConfigChange(const CONFIG *const old, const CONFIG *const new)
     }
 
     if (L_CHANGED(input.enable_touch_controls)) {
-        TouchOverlay_SetVisible(new->input.enable_touch_controls);
+        TouchOverlay_SetVisible(g_Config.input.enable_touch_controls);
         Option_Controls_RefreshBackendPicker();
     }
 

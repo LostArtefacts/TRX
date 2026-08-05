@@ -1,7 +1,7 @@
 X_UI_CFG(language,                           .custom_handler = { .format_value = UI_Settings_Language_FormatValue, .can_change_value = UI_Settings_Language_CanChangeValue, .request_change_value = UI_Settings_Language_RequestChangeValue })
 
-X_UI_CFG(ui.text_scale,                      .min_value = 50, .max_value = 200, .delta_slow = 1, .delta_fast = 5)
-X_UI_CFG(ui.pickup_scale,                    .min_value = 50, .max_value = 200, .delta_slow = 1, .delta_fast = 5)
+X_UI_CFG(ui.text_scale,                      .delta_slow = 1, .delta_fast = 5)
+X_UI_CFG(ui.pickup_scale,                    .delta_slow = 1, .delta_fast = 5)
 X_UI_CFG(ui.show_pickups_overlay)
 X_UI_CFG(ui.show_title_version)
 X_UI_CFG(ui.enable_wraparound)
