@@ -45,6 +45,13 @@ typedef struct {
     bool speech_started;
 } M_PRIV;
 
+static const CREATURE_GUN m_KidGun1 = {
+    .muzzle = { .pos = { 0, 150, 34 }, .mesh_num = 7 },
+};
+static const CREATURE_GUN m_KidGun2 = {
+    .muzzle = { .pos = { 0, 150, 37 }, .mesh_num = 4 },
+};
+
 static void M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
 {
     M_PRIV *const p = item->priv;
@@ -56,13 +63,6 @@ static void M_SavePriv(const ITEM *const item, JSON_WRITE_IO *const io)
     const M_PRIV *const p = item->priv;
     JSONW_WRITE(io, "speech_started", p->speech_started);
 }
-
-static const CREATURE_GUN m_KidGun1 = {
-    .muzzle = { .pos = { 0, 150, 34 }, .mesh_num = 7 },
-};
-static const CREATURE_GUN m_KidGun2 = {
-    .muzzle = { .pos = { 0, 150, 37 }, .mesh_num = 4 },
-};
 
 static void M_Initialise(const int16_t item_num)
 {

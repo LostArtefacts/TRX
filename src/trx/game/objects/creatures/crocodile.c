@@ -60,6 +60,10 @@ typedef enum {
     M_ALLIGATOR_STATE_DEATH = 3,
 } M_ALLIGATOR_STATE;
 
+typedef struct {
+    int32_t damage;
+} M_PRIV;
+
 static BITE m_CrocodileBite = {
     .pos = { 5, -21, 467 },
     .mesh_num = 9,
@@ -75,10 +79,6 @@ static const HYBRID_INFO m_CrocodileInfo = {
     .water.death_anim = M_ALLIGATOR_DIE_ANIM,
     .water.death_state = M_ALLIGATOR_STATE_DEATH,
 };
-
-typedef struct {
-    int32_t damage;
-} M_PRIV;
 
 static void M_UpdateCreatureLOT(const ITEM *const item)
 {

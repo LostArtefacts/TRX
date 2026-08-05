@@ -32,11 +32,6 @@ typedef struct {
     int32_t bite_damage;
 } M_PRIV;
 
-static BITE m_DogBite = {
-    .pos = { .x = 0, .y = 0, .z = 100 },
-    .mesh_num = 3,
-};
-
 typedef enum {
     M_STATE_NULL,
     M_STATE_STOP,
@@ -59,6 +54,11 @@ typedef enum {
     M_ANIM_DEATH_2 = 21,
     M_ANIM_DEATH_3 = 22,
 } M_ANIM;
+
+static BITE m_DogBite = {
+    .pos = { .x = 0, .y = 0, .z = 100 },
+    .mesh_num = 3,
+};
 
 static M_ANIM m_DeathAnimCount = 4;
 static M_ANIM m_DeathAnims[4] = {

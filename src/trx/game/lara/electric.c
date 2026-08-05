@@ -7,6 +7,11 @@
 #include <trx/game/output/sources/poly_fx.h>
 #include <trx/game/random.h>
 
+typedef struct {
+    XYZ_16 pos;
+    XYZ_16 vel;
+} M_ELECTRIC_POINT;
+
 static const uint8_t m_LaraMeshes[28] = {
     0, 1, 1, 2, 2, 3,  0, 4,  4,  5,  5,  6,  0, 7,
     7, 8, 8, 9, 9, 10, 7, 11, 11, 12, 12, 13, 7, 14,
@@ -15,11 +20,6 @@ static const uint8_t m_LaraLastPoints[14] = {
     0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 0, 1, 1,
 };
 static const uint8_t m_LaraLineCounts[6] = { 12, 12, 4, 12, 12, 4 };
-
-typedef struct {
-    XYZ_16 pos;
-    XYZ_16 vel;
-} M_ELECTRIC_POINT;
 
 static M_ELECTRIC_POINT m_ElectricityPoints[32] = {};
 

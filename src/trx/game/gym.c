@@ -18,6 +18,11 @@
 #define M_NO_TIME (-1)
 #define M_MAX_ASSAULT_TIME_FRAMES (60 * 60 * LOGIC_FPS - 3) // 59:59
 
+#define M_PRIV_INITIAL                                                         \
+    {                                                                          \
+        .is_inventory_open_enabled = -1,                                       \
+    }
+
 typedef struct {
     int32_t is_inventory_open_enabled;
     int16_t completion_timer;
@@ -41,11 +46,6 @@ typedef struct {
         int32_t lap_time_display_timer;
     } quad_course;
 } M_PRIV;
-
-#define M_PRIV_INITIAL                                                         \
-    {                                                                          \
-        .is_inventory_open_enabled = -1,                                       \
-    }
 
 static M_PRIV m_Priv = M_PRIV_INITIAL;
 

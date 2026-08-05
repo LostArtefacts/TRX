@@ -5,23 +5,15 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from harness import LintWarning, file_check
-from shared.cfuncs import definitions, is_static, name_of
+from shared.cdecls import out_of_order
 
 
 def check(path, text):
-    first_public = None
-    for line_num, signature in definitions(text):
-        if not is_static(signature):
-            if first_public is None:
-                first_public = line_num
-            continue
-        if first_public is None:
-            continue
+    for decl, above in out_of_order(text):
         yield LintWarning(
             path,
-            f"{name_of(signature) or 'static function'} belongs above the "
-            f"public function on line {first_public}",
-            line=line_num,
+            f"{decl.label} belongs above the {above.kind} on line {above.line}",
+            line=decl.line,
         )
 
 

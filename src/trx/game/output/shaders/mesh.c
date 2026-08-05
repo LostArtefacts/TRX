@@ -13,12 +13,6 @@
 
 #define M_VARIANT_COUNT 3
 
-static const char *const m_VariantPaths[M_VARIANT_COUNT] = {
-    "meshes_tr12.glsl",
-    "meshes_tr3.glsl",
-    "meshes_tr4.glsl",
-};
-
 struct OUTPUT_MESH_SHADER {
     OUTPUT_SHADER *base[M_VARIANT_COUNT];
 
@@ -30,6 +24,12 @@ struct OUTPUT_MESH_SHADER {
     bool is_alpha_discard_enabled[M_VARIANT_COUNT];
     RGBA_F tint[M_VARIANT_COUNT];
     OUTPUT_ATLAS_RECT env_map_rect[M_VARIANT_COUNT];
+};
+
+static const char *const m_VariantPaths[M_VARIANT_COUNT] = {
+    "meshes_tr12.glsl",
+    "meshes_tr3.glsl",
+    "meshes_tr4.glsl",
 };
 
 static int32_t M_GetVariantIndex(void)

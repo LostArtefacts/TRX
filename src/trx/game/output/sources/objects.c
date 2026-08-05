@@ -28,6 +28,15 @@ typedef struct {
     const OUTPUT_OBJECT_MESH_POLICY *policy;
 } M_POLICY_ENTRY;
 
+typedef void (*M_FACE_VERTEX_FUNC)(
+    OUTPUT_MESH_VERTEX *vertex, const FACE *face, int32_t vertex_idx,
+    const void *user);
+
+typedef struct {
+    const XYZ_F *positions;
+    const XYZ_F *normals;
+} M_GEOMETRY_UPDATE;
+
 static M_PRIV m_Priv = {};
 static VECTOR *m_MeshPolicies = nullptr;
 
@@ -255,10 +264,6 @@ static void M_FreeMeshes(M_PRIV *const p)
     Memory_ArenaReset(&p->alloc);
 }
 
-typedef void (*M_FACE_VERTEX_FUNC)(
-    OUTPUT_MESH_VERTEX *vertex, const FACE *face, int32_t vertex_idx,
-    const void *user);
-
 // The GPU buffer stores one vertex per face corner, in the same order the
 // faces were flattened in M_PrepareMeshes (tex faces, then flat faces), so
 // this walk mirrors that layout.
@@ -298,11 +303,6 @@ static void M_UpdateVertexFlags(
         vertex->flags |= VERT_REFLECTIVE;
     }
 }
-
-typedef struct {
-    const XYZ_F *positions;
-    const XYZ_F *normals;
-} M_GEOMETRY_UPDATE;
 
 static void M_ResyncVertexGeometry(
     OUTPUT_MESH_VERTEX *const vertex, const FACE *const face,

@@ -29,16 +29,6 @@
 #define M_MAX_UPDOWN       0x16C0000
 #define M_CAM_ELEVATION    (DEG_1 * -60) // = -10920
 // clang-format on
-
-static const BITE m_UPVBites[6] = {
-    { .pos = { .x = 0, .y = 0, .z = 0 }, .mesh_num = 3 },
-    { .pos = { .x = 0, .y = 96, .z = 256 }, .mesh_num = 0 },
-    { .pos = { .x = -128, .y = 0, .z = -64 }, .mesh_num = 1 },
-    { .pos = { .x = 0, .y = 0, .z = -64 }, .mesh_num = 1 },
-    { .pos = { .x = 128, .y = 0, .z = -64 }, .mesh_num = 2 },
-    { .pos = { .x = 0, .y = 0, .z = -64 }, .mesh_num = 2 },
-};
-
 typedef struct {
     int32_t vel;
     int32_t rot;
@@ -76,6 +66,15 @@ typedef enum {
     M_ANIM_GET_ON           = 13,
     // clang-format on
 } M_ANIM;
+
+static const BITE m_UPVBites[6] = {
+    { .pos = { .x = 0, .y = 0, .z = 0 }, .mesh_num = 3 },
+    { .pos = { .x = 0, .y = 96, .z = 256 }, .mesh_num = 0 },
+    { .pos = { .x = -128, .y = 0, .z = -64 }, .mesh_num = 1 },
+    { .pos = { .x = 0, .y = 0, .z = -64 }, .mesh_num = 1 },
+    { .pos = { .x = 128, .y = 0, .z = -64 }, .mesh_num = 2 },
+    { .pos = { .x = 0, .y = 0, .z = -64 }, .mesh_num = 2 },
+};
 
 static void M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
 {

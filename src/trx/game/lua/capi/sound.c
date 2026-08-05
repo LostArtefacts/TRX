@@ -19,13 +19,13 @@ typedef struct {
     int32_t pitch;
 } SOUND_SAMPLE_VIEW;
 
-static SOUND_SAMPLE_VIEW m_SampleView;
-
 // A stream handle addresses an active-sound slot; when the slot falls silent,
 // the handle goes stale.
 typedef struct {
     int32_t sample_id;
 } SOUND_STREAM_VIEW;
+
+static SOUND_SAMPLE_VIEW m_SampleView;
 
 static SOUND_STREAM_VIEW m_StreamView;
 

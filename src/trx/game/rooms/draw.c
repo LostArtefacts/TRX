@@ -23,6 +23,19 @@ typedef struct {
     int32_t zv;
 } M_PORTAL_VBUF;
 
+static VECTOR *m_RoomsToDraw = nullptr;
+static ROOM_DRAWSET m_DrawnStatics = {};
+
+static int32_t m_Outside;
+static int32_t m_OutsideRight;
+static int32_t m_OutsideLeft;
+static int32_t m_OutsideTop;
+static int32_t m_OutsideBottom;
+
+static int32_t m_BoundStart;
+static int32_t m_BoundEnd;
+static int32_t m_BoundRooms[M_MAX_BOUND_ROOMS] = {};
+
 static inline void M_DrawSet_Init(ROOM_DRAWSET *const s)
 {
     s->count = 0;
@@ -77,19 +90,6 @@ static inline void M_DrawSet_ForEach(
         }
     }
 }
-
-static VECTOR *m_RoomsToDraw = nullptr;
-static ROOM_DRAWSET m_DrawnStatics = {};
-
-static int32_t m_Outside;
-static int32_t m_OutsideRight;
-static int32_t m_OutsideLeft;
-static int32_t m_OutsideTop;
-static int32_t m_OutsideBottom;
-
-static int32_t m_BoundStart;
-static int32_t m_BoundEnd;
-static int32_t m_BoundRooms[M_MAX_BOUND_ROOMS] = {};
 
 static void M_EnsureRoomsToDraw(void)
 {

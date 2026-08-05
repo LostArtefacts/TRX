@@ -13,6 +13,16 @@
 #include <trx/game/pathing/lot.h>
 #include <trx/game/rooms.h>
 
+typedef struct {
+    XYZ_32 min;
+    XYZ_32 max;
+} M_BOX;
+
+typedef struct {
+    XYZ_32 centre;
+    int64_t radius_sq;
+} M_SPHERE;
+
 static bool M_GetAnim(const void *const self, TRX_VALUE *const out)
 {
     *out = (TRX_VALUE) {
@@ -446,16 +456,6 @@ static int M_PushItemsWhere(
     }
     return 1;
 }
-
-typedef struct {
-    XYZ_32 min;
-    XYZ_32 max;
-} M_BOX;
-
-typedef struct {
-    XYZ_32 centre;
-    int64_t radius_sq;
-} M_SPHERE;
 
 static bool M_InBox(const XYZ_32 pos, const void *const arg)
 {

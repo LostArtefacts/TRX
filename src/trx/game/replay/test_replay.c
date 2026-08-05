@@ -36,16 +36,6 @@ typedef struct {
     bool used_deprecated_args;
 } M_PARSE_CTX;
 
-static inline M_PARSE_CTX M_ParseCtxInit(void)
-{
-    return (M_PARSE_CTX) {
-        .startup.settings = {
-            .level_request = { .num = -1 },
-            .save_to_load = -1,
-        },
-    };
-}
-
 typedef struct {
     bool collecting;
     int32_t brace_depth;
@@ -86,10 +76,11 @@ typedef struct {
     } test_mode;
 } M_PRIV;
 
-static M_PRIV m_Priv = {};
-
 typedef bool (*M_EVENT_HANDLER)(const char *token);
+
 typedef bool (*M_HEADER_HANDLER)(const char *line, M_PARSE_CTX *ctx);
+
+static M_PRIV m_Priv = {};
 
 // Event parsers
 static bool M_ParseQuitEvent(const char *event_str);
@@ -125,6 +116,16 @@ static const M_EVENT_HANDLER m_EventHandlers[] = {
     M_ParseNoopEvent,   M_ParseCommandEvent,
     M_ParseLuaEvent,    nullptr,
 };
+
+static inline M_PARSE_CTX M_ParseCtxInit(void)
+{
+    return (M_PARSE_CTX) {
+        .startup.settings = {
+            .level_request = { .num = -1 },
+            .save_to_load = -1,
+        },
+    };
+}
 
 static void M_TestPrint(const char *const fmt, ...)
 {

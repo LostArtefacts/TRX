@@ -32,11 +32,6 @@ typedef struct {
     int32_t jump_damage;
 } M_PRIV;
 
-static BITE m_MonkeyBite = {
-    .pos = { 10, 10, 11 },
-    .mesh_num = 13,
-};
-
 typedef enum {
     M_STATE_EMPTY,
     M_STATE_STOP,
@@ -71,6 +66,11 @@ typedef enum {
     M_ANIM_DOWN_3 = 21,
     M_ANIM_DOWN_4 = 20,
 } M_ANIM;
+
+static BITE m_MonkeyBite = {
+    .pos = { 10, 10, 11 },
+    .mesh_num = 13,
+};
 
 static void M_Bite(ITEM *const item, ITEM *const enemy, const int32_t dmg)
 {

@@ -16,6 +16,13 @@
 
 #include <string.h>
 
+#define M_OUTSIDE_TABLE_STEP_SHIFT 2
+#define M_OUTSIDE_TABLE_STEP (1 << M_OUTSIDE_TABLE_STEP_SHIFT)
+#define M_OUTSIDE_TABLE_BLOCK_SHIFT (WALL_SHIFT + M_OUTSIDE_TABLE_STEP_SHIFT)
+#define M_OUTSIDE_TABLE_MAX_ROOMS_PER_CELL 64
+#define M_OUTSIDE_TABLE_SENTINEL NO_ROOM
+#define M_OUTSIDE_OFFSET_EMPTY 0xFFFF
+
 static int32_t m_RoomCount = 0;
 static ROOM *m_Rooms = nullptr;
 static HANDLE_EPOCH m_RoomEpoch;
@@ -23,13 +30,6 @@ static bool m_FlipStatus = false;
 static int32_t m_FlipEffect = -1;
 static int32_t m_FlipTimer = 0;
 static FLIP_SLOT m_FlipSlots[MAX_FLIP_MAPS] = {};
-
-#define M_OUTSIDE_TABLE_STEP_SHIFT 2
-#define M_OUTSIDE_TABLE_STEP (1 << M_OUTSIDE_TABLE_STEP_SHIFT)
-#define M_OUTSIDE_TABLE_BLOCK_SHIFT (WALL_SHIFT + M_OUTSIDE_TABLE_STEP_SHIFT)
-#define M_OUTSIDE_TABLE_MAX_ROOMS_PER_CELL 64
-#define M_OUTSIDE_TABLE_SENTINEL NO_ROOM
-#define M_OUTSIDE_OFFSET_EMPTY 0xFFFF
 
 static int16_t *m_OutsideRoomTable = nullptr;
 static uint16_t *m_OutsideRoomOffsets = nullptr;

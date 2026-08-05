@@ -20,6 +20,18 @@ typedef struct {
     VECTOR *properties;
 } M_PROPERTY_BATCH;
 
+// On-disk property type tags, fixed by the injection file format.
+// TRX_VALUE_TYPE orders its own constants independently, so the tag read from
+// the file is mapped to a TRX_VALUE_TYPE explicitly rather than cast.
+typedef enum {
+    M_DISK_INT = 0,
+    M_DISK_FLOAT = 1,
+    M_DISK_DOUBLE = 2,
+    M_DISK_BOOL = 3,
+    M_DISK_XYZ = 4,
+    M_DISK_RGB = 5,
+} M_DISK_PROPERTY_TYPE;
+
 static VECTOR *m_Batches = nullptr;
 
 static const char *M_ReadName(const INJECTION *const injection)
@@ -35,18 +47,6 @@ static const char *M_ReadName(const INJECTION *const injection)
 
     return name;
 }
-
-// On-disk property type tags, fixed by the injection file format.
-// TRX_VALUE_TYPE orders its own constants independently, so the tag read from
-// the file is mapped to a TRX_VALUE_TYPE explicitly rather than cast.
-typedef enum {
-    M_DISK_INT = 0,
-    M_DISK_FLOAT = 1,
-    M_DISK_DOUBLE = 2,
-    M_DISK_BOOL = 3,
-    M_DISK_XYZ = 4,
-    M_DISK_RGB = 5,
-} M_DISK_PROPERTY_TYPE;
 
 static TRX_VALUE M_ReadValue(const INJECTION *const injection)
 {

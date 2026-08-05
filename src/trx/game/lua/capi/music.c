@@ -17,15 +17,24 @@ typedef struct {
     double timestamp;
 } MUSIC_STREAM_VIEW;
 
+// A track handle addresses a track by id, and exists only while the track is
+// available: a handle to a track the loaded level does not carry goes stale.
+typedef struct {
+    int32_t id;
+} MUSIC_TRACK_VIEW;
+
 static MUSIC_STREAM_VIEW m_StreamViews[1 + MUSIC_MAX_OVERLAY_TRACKS];
 
-// clang-format off
 static const FIELD_DESC m_StreamFields[] = {
     FIELD_RO(MUSIC_STREAM_VIEW, track_id),
     FIELD_RO(MUSIC_STREAM_VIEW, mode),
     FIELD_RO(MUSIC_STREAM_VIEW, timestamp),
 };
-// clang-format on
+static MUSIC_TRACK_VIEW m_TrackView;
+
+static const FIELD_DESC m_TrackFields[] = {
+    FIELD_RO(MUSIC_TRACK_VIEW, id),
+};
 
 TYPE_DEFINE(MUSIC_STREAM_VIEW, m_StreamFields)
 
@@ -154,20 +163,6 @@ static int M_L_MusicGetLoopedTrack(lua_State *const L)
     }
     return 1;
 }
-
-// A track handle addresses a track by id, and exists only while the track is
-// available: a handle to a track the loaded level does not carry goes stale.
-typedef struct {
-    int32_t id;
-} MUSIC_TRACK_VIEW;
-
-static MUSIC_TRACK_VIEW m_TrackView;
-
-// clang-format off
-static const FIELD_DESC m_TrackFields[] = {
-    FIELD_RO(MUSIC_TRACK_VIEW, id),
-};
-// clang-format on
 
 TYPE_DEFINE(MUSIC_TRACK_VIEW, m_TrackFields)
 

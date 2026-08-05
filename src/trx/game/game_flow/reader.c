@@ -20,17 +20,17 @@
 
 #include <string.h>
 
+#define M_DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(name)                            \
+    int32_t name(                                                              \
+        const M_CONTEXT *ctx, GF_SEQUENCE_EVENT *event, void *extra_data,      \
+        void *user_arg)
+
 typedef struct {
     GAME_FLOW *gf;
     const char *script_path;
     JSON_READ_IO *io;
     bool validation_mode;
 } M_CONTEXT;
-
-#define M_DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(name)                            \
-    int32_t name(                                                              \
-        const M_CONTEXT *ctx, GF_SEQUENCE_EVENT *event, void *extra_data,      \
-        void *user_arg)
 
 typedef int32_t (*M_SEQUENCE_EVENT_HANDLER_FUNC)(
     const M_CONTEXT *ctx, GF_SEQUENCE_EVENT *event, void *extra_data,

@@ -22,6 +22,20 @@ typedef struct {
     const char *name_str;
 } M_ENTRY;
 
+// Internal map from name to CATALOG_ID
+typedef struct {
+    const char *name_str;
+    int32_t enum_value;
+    UT_hash_handle hh;
+} M_NAME_ENTRY;
+
+// Internal map from game ID to CATALOG_ID
+typedef struct {
+    int32_t game_id;
+    int32_t enum_value;
+    UT_hash_handle hh;
+} M_GAME_ID_ENTRY;
+
 static const M_ENTRY m_CatalogEntryDefs[] = {
 #define X_CATALOG_ID(enum_value) { CATALOG_MUSIC, enum_value, #enum_value },
 #include <trx/game/catalog/music.def>
@@ -49,20 +63,8 @@ static const M_ENTRY m_CatalogEntryDefs[] = {
 // Number of catalog entries
 static const size_t m_CatalogEntryCount = ARRAY_SIZE(m_CatalogEntryDefs);
 
-// Internal map from name to CATALOG_ID
-typedef struct {
-    const char *name_str;
-    int32_t enum_value;
-    UT_hash_handle hh;
-} M_NAME_ENTRY;
 static M_NAME_ENTRY *m_Name2EnumMap[CATALOG_CONTEXT_MAX] = { nullptr };
 
-// Internal map from game ID to CATALOG_ID
-typedef struct {
-    int32_t game_id;
-    int32_t enum_value;
-    UT_hash_handle hh;
-} M_GAME_ID_ENTRY;
 static M_GAME_ID_ENTRY *m_GameID2EnumMap[CATALOG_CONTEXT_MAX] = { nullptr };
 
 // Parsed game IDs arrays (dynamically sized)

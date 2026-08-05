@@ -13,15 +13,15 @@
 #include <trx/game/stats.h>
 #include <trx/version.h>
 
-typedef struct {
-    int16_t base_x_rot;
-    bool base_x_rot_valid;
-} M_PRIV;
-
 #define M_TR3_HIT_POINTS 256
 #define M_TR3_WOBBLE_START 192
 #define M_TR3_SPEED_UW 128
 #define M_TR3_SPEED_AIR 256
+
+typedef struct {
+    int16_t base_x_rot;
+    bool base_x_rot_valid;
+} M_PRIV;
 
 static void M_SetTR3ProjectileShade(ITEM *const item)
 {

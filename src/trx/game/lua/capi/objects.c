@@ -34,105 +34,6 @@ static const FIELD_DESC m_Fields[] = {
 
 TYPE_DEFINE(OBJECT, m_Fields)
 
-// An object is addressed by its id, and an id is valid for the whole session -
-// there is no pool to recycle and nothing to go stale. An object the level did
-// not load still exists as a definition; `loaded` is how a script tells.
-static void *M_Resolve(const LUA_STRUCT_REF *const ref)
-{
-    return Object_TryGet((OBJECT_ID)ref->handle.id);
-}
-
-// The object property overlay stays a separate namespace: fields address the
-// OBJECT struct, properties are what the object declares about itself. The
-// bridges themselves are in lua/utils.
-static bool M_GetPropertyValue(
-    const void *const self, const char *const name, TRX_VALUE *const out)
-{
-    return ObjectProperty_GetObjectValue(self, name, out);
-}
-
-static const char *M_SetPropertyValue(
-    void *const self, const char *const name, const TRX_VALUE value)
-{
-    return ObjectProperty_SetObjectValueRaw(self, name, value);
-}
-
-static int32_t M_GetPropertyCount(const void *const self)
-{
-    return ObjectProperty_GetObjectNameCount(self);
-}
-
-static const char *M_GetPropertyName(const void *const self, const int32_t idx)
-{
-    return ObjectProperty_GetObjectName(self, idx);
-}
-
-// trxc.objects.get(object_id) -> OBJECT handle or nil
-static int M_L_ObjectsGet(lua_State *const L)
-{
-    int32_t object_id;
-    if (!LUA_CheckBoundedInt(L, 1, O_FIRST, O_NUMBER_OF - 1, &object_id)) {
-        lua_pushnil(L);
-        return 1;
-    }
-    LUA_Struct_Push(
-        L, &TYPE_OBJECT, M_Resolve,
-        (TRX_HANDLE) { .id = (OBJECT_ID)object_id });
-    return 1;
-}
-
-// trxc.objects.swap_mesh(obj1_id, obj2_id, mesh1_num, mesh2_num)
-static int M_L_ObjectsSwapMesh(lua_State *const L)
-{
-    const int32_t arg_count = lua_gettop(L);
-    const OBJECT_ID obj1_id = LUA_CheckObjectID(L, 1);
-    const OBJECT_ID obj2_id = LUA_CheckObjectID(L, 2);
-    if (arg_count == 2) {
-        Object_SwapAllMeshes(obj1_id, obj2_id);
-        return 0;
-    }
-    if (arg_count != 4) {
-        return luaL_error(L, "swap_mesh takes both mesh numbers, or neither");
-    }
-
-    // An object that did not load has no meshes, and no count to measure a mesh
-    // number against.
-    const OBJECT *const obj1 = Object_Get(obj1_id);
-    const OBJECT *const obj2 = Object_Get(obj2_id);
-    if (!obj1->loaded || !obj2->loaded) {
-        return 0;
-    }
-
-    // Object_SwapMeshEx swaps the two pointers at an offset it does not check.
-    const int32_t mesh1_num =
-        LUA_CheckRange(L, 3, obj1->mesh_count, "no such mesh on this object");
-    const int32_t mesh2_num =
-        LUA_CheckRange(L, 4, obj2->mesh_count, "no such mesh on this object");
-    Object_SwapMeshEx(obj1_id, obj2_id, mesh1_num, mesh2_num);
-    return 0;
-}
-
-// trxc.objects.swap_sprite(obj1_id, obj2_id)
-static int M_L_ObjectsSwapSprite(lua_State *const L)
-{
-    const OBJECT_ID obj1_id = LUA_CheckObjectID(L, 1);
-    const OBJECT_ID obj2_id = LUA_CheckObjectID(L, 2);
-    const OBJECT *const obj1 = Object_Get(obj1_id);
-    const OBJECT *const obj2 = Object_Get(obj2_id);
-    if (!obj1->loaded || !obj2->loaded) {
-        return 0;
-    }
-
-    // A modelled object holds meshes in the slots this writes, so moving a
-    // sprite into one would draw it from mesh data.
-    if (obj1->mesh_count >= 0 || obj2->mesh_count >= 0) {
-        return luaL_error(L, "both objects must be drawn as sprites");
-    }
-
-    Object_SwapSprite(obj1_id, obj2_id);
-    return 0;
-}
-
 // What a pickup is, as pickups.def already divides them. These are a scripting
 // concept and nothing in the engine asks for them, so they stay here rather
 // than joining the global object arrays.
@@ -232,6 +133,105 @@ static const struct {
     { "inventory", g_InvObjects },
     { nullptr, nullptr },
 };
+
+// An object is addressed by its id, and an id is valid for the whole session -
+// there is no pool to recycle and nothing to go stale. An object the level did
+// not load still exists as a definition; `loaded` is how a script tells.
+static void *M_Resolve(const LUA_STRUCT_REF *const ref)
+{
+    return Object_TryGet((OBJECT_ID)ref->handle.id);
+}
+
+// The object property overlay stays a separate namespace: fields address the
+// OBJECT struct, properties are what the object declares about itself. The
+// bridges themselves are in lua/utils.
+static bool M_GetPropertyValue(
+    const void *const self, const char *const name, TRX_VALUE *const out)
+{
+    return ObjectProperty_GetObjectValue(self, name, out);
+}
+
+static const char *M_SetPropertyValue(
+    void *const self, const char *const name, const TRX_VALUE value)
+{
+    return ObjectProperty_SetObjectValueRaw(self, name, value);
+}
+
+static int32_t M_GetPropertyCount(const void *const self)
+{
+    return ObjectProperty_GetObjectNameCount(self);
+}
+
+static const char *M_GetPropertyName(const void *const self, const int32_t idx)
+{
+    return ObjectProperty_GetObjectName(self, idx);
+}
+
+// trxc.objects.get(object_id) -> OBJECT handle or nil
+static int M_L_ObjectsGet(lua_State *const L)
+{
+    int32_t object_id;
+    if (!LUA_CheckBoundedInt(L, 1, O_FIRST, O_NUMBER_OF - 1, &object_id)) {
+        lua_pushnil(L);
+        return 1;
+    }
+    LUA_Struct_Push(
+        L, &TYPE_OBJECT, M_Resolve,
+        (TRX_HANDLE) { .id = (OBJECT_ID)object_id });
+    return 1;
+}
+
+// trxc.objects.swap_mesh(obj1_id, obj2_id, mesh1_num, mesh2_num)
+static int M_L_ObjectsSwapMesh(lua_State *const L)
+{
+    const int32_t arg_count = lua_gettop(L);
+    const OBJECT_ID obj1_id = LUA_CheckObjectID(L, 1);
+    const OBJECT_ID obj2_id = LUA_CheckObjectID(L, 2);
+    if (arg_count == 2) {
+        Object_SwapAllMeshes(obj1_id, obj2_id);
+        return 0;
+    }
+    if (arg_count != 4) {
+        return luaL_error(L, "swap_mesh takes both mesh numbers, or neither");
+    }
+
+    // An object that did not load has no meshes, and no count to measure a mesh
+    // number against.
+    const OBJECT *const obj1 = Object_Get(obj1_id);
+    const OBJECT *const obj2 = Object_Get(obj2_id);
+    if (!obj1->loaded || !obj2->loaded) {
+        return 0;
+    }
+
+    // Object_SwapMeshEx swaps the two pointers at an offset it does not check.
+    const int32_t mesh1_num =
+        LUA_CheckRange(L, 3, obj1->mesh_count, "no such mesh on this object");
+    const int32_t mesh2_num =
+        LUA_CheckRange(L, 4, obj2->mesh_count, "no such mesh on this object");
+    Object_SwapMeshEx(obj1_id, obj2_id, mesh1_num, mesh2_num);
+    return 0;
+}
+
+// trxc.objects.swap_sprite(obj1_id, obj2_id)
+static int M_L_ObjectsSwapSprite(lua_State *const L)
+{
+    const OBJECT_ID obj1_id = LUA_CheckObjectID(L, 1);
+    const OBJECT_ID obj2_id = LUA_CheckObjectID(L, 2);
+    const OBJECT *const obj1 = Object_Get(obj1_id);
+    const OBJECT *const obj2 = Object_Get(obj2_id);
+    if (!obj1->loaded || !obj2->loaded) {
+        return 0;
+    }
+
+    // A modelled object holds meshes in the slots this writes, so moving a
+    // sprite into one would draw it from mesh data.
+    if (obj1->mesh_count >= 0 || obj2->mesh_count >= 0) {
+        return luaL_error(L, "both objects must be drawn as sprites");
+    }
+
+    Object_SwapSprite(obj1_id, obj2_id);
+    return 0;
+}
 
 // trxc.objects.is_type(object_id, kind) -> bool
 static int M_L_ObjectsIsType(lua_State *const L)
