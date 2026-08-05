@@ -65,7 +65,7 @@ JSON_ARRAY *JSON_ArrayGetArray_Impl(const JSON_ARRAY *arr, size_t idx);
 JSON_OBJECT *JSON_ArrayGetObject_Impl(const JSON_ARRAY *arr, size_t idx);
 #define JSON_ArrayGetObject(value, ...)                                        \
     JSON_CONST_DISPATCH(                                                       \
-        value, const JSON_ARRAY *,                                             \
+        value, const JSON_OBJECT *,                                            \
         JSON_ArrayGetObject_Impl(value, __VA_ARGS__))
 
 // objects
