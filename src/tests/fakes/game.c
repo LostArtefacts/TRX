@@ -12,7 +12,120 @@
 #include <trx/game/savegame.h>
 #include <trx/game/screenshot.h>
 
+#include <string.h>
+
 #include <lauxlib.h>
+
+static GF_LEVEL m_Levels[FAKE_LEVEL_COUNT];
+static GF_LEVEL m_Cutscenes[FAKE_CUTSCENE_COUNT];
+static GF_LEVEL m_Demos[FAKE_DEMO_COUNT];
+static GF_LEVEL m_TitleLevel;
+static GF_LEVEL_TABLE m_Tables[GFLT_NUMBER_OF];
+static const GF_LEVEL *m_CurrentLevel;
+static bool m_HasGym;
+static bool m_InCutscene;
+
+// The bonus start is a passport choice, so a test says whether this run is one.
+static bool m_IsNGPlus;
+
+static void M_Reset(void)
+{
+    memset(m_Levels, 0, sizeof(m_Levels));
+    memset(m_Cutscenes, 0, sizeof(m_Cutscenes));
+    memset(m_Demos, 0, sizeof(m_Demos));
+
+    m_Levels[0] = (GF_LEVEL) {
+        .num = 0,
+        .type = GFL_GYM,
+        .title = "Lara's Home",
+        .path = "gym.phd",
+        .key = "gym",
+        .lara_outfit = "casual",
+        .water_particles = false,
+    };
+    m_Levels[1] = (GF_LEVEL) {
+        .num = 1,
+        .type = GFL_NORMAL,
+        .title = "Caves",
+        .path = "level1.phd",
+        .key = "level1",
+        .script_path = "caves.lua",
+        .lara_outfit = "default",
+        .water_particles = true,
+        .unobtainable = { .pickups = 1, .secrets = 2 },
+    };
+    m_Levels[2] = (GF_LEVEL) {
+        .num = 2,
+        .type = GFL_NORMAL,
+        .title = "Vilcabamba",
+        .path = "level2.phd",
+        .key = "level2",
+    };
+    m_Cutscenes[0] = (GF_LEVEL) {
+        .num = 0,
+        .type = GFL_CUTSCENE,
+        .title = "Cutscene 1",
+    };
+    m_Demos[0] = (GF_LEVEL) {
+        .num = 0,
+        .type = GFL_DEMO,
+        .title = "Demo 1",
+    };
+    m_TitleLevel = (GF_LEVEL) {
+        .num = 0,
+        .type = GFL_TITLE,
+        .title = "Title",
+    };
+
+    m_Tables[GFLT_MAIN] =
+        (GF_LEVEL_TABLE) { .count = FAKE_LEVEL_COUNT, .levels = m_Levels };
+    m_Tables[GFLT_CUTSCENES] = (GF_LEVEL_TABLE) { .count = FAKE_CUTSCENE_COUNT,
+                                                  .levels = m_Cutscenes };
+    m_Tables[GFLT_DEMOS] =
+        (GF_LEVEL_TABLE) { .count = FAKE_DEMO_COUNT, .levels = m_Demos };
+    m_Tables[GFLT_TITLE] = (GF_LEVEL_TABLE) { .count = 0, .levels = nullptr };
+
+    m_CurrentLevel = nullptr;
+    m_IsNGPlus = false;
+    m_HasGym = true;
+    m_InCutscene = false;
+}
+
+// fake.set_current_level(n) - nil for a game that is not in a level at all.
+static int M_L_SetCurrentLevel(lua_State *const L)
+{
+    FakeGame_SetCurrentLevel(
+        lua_isnil(L, 1) ? -1 : (int32_t)luaL_checkinteger(L, 1) - 1);
+    return 0;
+}
+
+// fake.set_current_title() - the title level, which is not in any table.
+static int M_L_SetCurrentTitle(lua_State *const L)
+{
+    m_CurrentLevel = &m_TitleLevel;
+    return 0;
+}
+
+// fake.set_in_cutscene(bool) - a level is loaded, but the game takes no input.
+static int M_L_SetInCutscene(lua_State *const L)
+{
+    FakeGame_SetInCutscene(lua_toboolean(L, 1));
+    return 0;
+}
+
+// fake.set_gym_present(bool) - whether the flow has a gym to play.
+static int M_L_SetGymPresent(lua_State *const L)
+{
+    FakeGame_SetGymPresent(lua_toboolean(L, 1));
+    return 0;
+}
+
+// fake.set_ngplus(bool) - whether this run started from the bonus entry.
+static int M_L_SetNGPlus(lua_State *const L)
+{
+    FakeGame_SetNGPlus(lua_toboolean(L, 1));
+    return 0;
+}
 
 void Screenshot_Make(const SCREENSHOT_FORMAT format)
 {
@@ -26,16 +139,6 @@ void Lara_Cheat_EndLevel(void)
 {
     FAKE_RECORD("end_level");
 }
-#include <string.h>
-
-static GF_LEVEL m_Levels[FAKE_LEVEL_COUNT];
-static GF_LEVEL m_Cutscenes[FAKE_CUTSCENE_COUNT];
-static GF_LEVEL m_Demos[FAKE_DEMO_COUNT];
-static GF_LEVEL m_TitleLevel;
-static GF_LEVEL_TABLE m_Tables[GFLT_NUMBER_OF];
-static const GF_LEVEL *m_CurrentLevel;
-static bool m_HasGym;
-static bool m_InCutscene;
 
 const GF_LEVEL_TABLE *GF_GetLevelTable(const GF_LEVEL_TABLE_TYPE table_type)
 {
@@ -200,9 +303,6 @@ bool Game_IsLoaded(void)
     return m_CurrentLevel != nullptr;
 }
 
-// The bonus start is a passport choice, so a test says whether this run is one.
-static bool m_IsNGPlus;
-
 bool Game_IsBonusFlagSet(const GAME_BONUS_FLAG flag)
 {
     return flag == GBF_NGPLUS && m_IsNGPlus;
@@ -223,69 +323,6 @@ void FakeGame_SetInCutscene(const bool in_cutscene)
     m_InCutscene = in_cutscene;
 }
 
-static void M_Reset(void)
-{
-    memset(m_Levels, 0, sizeof(m_Levels));
-    memset(m_Cutscenes, 0, sizeof(m_Cutscenes));
-    memset(m_Demos, 0, sizeof(m_Demos));
-
-    m_Levels[0] = (GF_LEVEL) {
-        .num = 0,
-        .type = GFL_GYM,
-        .title = "Lara's Home",
-        .path = "gym.phd",
-        .key = "gym",
-        .lara_outfit = "casual",
-        .water_particles = false,
-    };
-    m_Levels[1] = (GF_LEVEL) {
-        .num = 1,
-        .type = GFL_NORMAL,
-        .title = "Caves",
-        .path = "level1.phd",
-        .key = "level1",
-        .script_path = "caves.lua",
-        .lara_outfit = "default",
-        .water_particles = true,
-        .unobtainable = { .pickups = 1, .secrets = 2 },
-    };
-    m_Levels[2] = (GF_LEVEL) {
-        .num = 2,
-        .type = GFL_NORMAL,
-        .title = "Vilcabamba",
-        .path = "level2.phd",
-        .key = "level2",
-    };
-    m_Cutscenes[0] = (GF_LEVEL) {
-        .num = 0,
-        .type = GFL_CUTSCENE,
-        .title = "Cutscene 1",
-    };
-    m_Demos[0] = (GF_LEVEL) {
-        .num = 0,
-        .type = GFL_DEMO,
-        .title = "Demo 1",
-    };
-    m_TitleLevel = (GF_LEVEL) {
-        .num = 0,
-        .type = GFL_TITLE,
-        .title = "Title",
-    };
-
-    m_Tables[GFLT_MAIN] =
-        (GF_LEVEL_TABLE) { .count = FAKE_LEVEL_COUNT, .levels = m_Levels };
-    m_Tables[GFLT_CUTSCENES] = (GF_LEVEL_TABLE) { .count = FAKE_CUTSCENE_COUNT,
-                                                  .levels = m_Cutscenes };
-    m_Tables[GFLT_DEMOS] =
-        (GF_LEVEL_TABLE) { .count = FAKE_DEMO_COUNT, .levels = m_Demos };
-    m_Tables[GFLT_TITLE] = (GF_LEVEL_TABLE) { .count = 0, .levels = nullptr };
-
-    m_CurrentLevel = nullptr;
-    m_IsNGPlus = false;
-    m_HasGym = true;
-    m_InCutscene = false;
-}
-
 FAKE_ON_RESET(M_Reset)
 
 void FakeGame_SetGymPresent(const bool present)
@@ -296,42 +333,6 @@ void FakeGame_SetGymPresent(const bool present)
 void FakeGame_SetCurrentLevel(const int32_t idx)
 {
     m_CurrentLevel = idx < 0 ? nullptr : &m_Levels[idx];
-}
-
-// fake.set_current_level(n) - nil for a game that is not in a level at all.
-static int M_L_SetCurrentLevel(lua_State *const L)
-{
-    FakeGame_SetCurrentLevel(
-        lua_isnil(L, 1) ? -1 : (int32_t)luaL_checkinteger(L, 1) - 1);
-    return 0;
-}
-
-// fake.set_current_title() - the title level, which is not in any table.
-static int M_L_SetCurrentTitle(lua_State *const L)
-{
-    m_CurrentLevel = &m_TitleLevel;
-    return 0;
-}
-
-// fake.set_in_cutscene(bool) - a level is loaded, but the game takes no input.
-static int M_L_SetInCutscene(lua_State *const L)
-{
-    FakeGame_SetInCutscene(lua_toboolean(L, 1));
-    return 0;
-}
-
-// fake.set_gym_present(bool) - whether the flow has a gym to play.
-static int M_L_SetGymPresent(lua_State *const L)
-{
-    FakeGame_SetGymPresent(lua_toboolean(L, 1));
-    return 0;
-}
-
-// fake.set_ngplus(bool) - whether this run started from the bonus entry.
-static int M_L_SetNGPlus(lua_State *const L)
-{
-    FakeGame_SetNGPlus(lua_toboolean(L, 1));
-    return 0;
 }
 
 void FakeGame_PushLua(lua_State *const L)

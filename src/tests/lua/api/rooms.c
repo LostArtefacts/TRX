@@ -10,17 +10,6 @@
 
 #include <lauxlib.h>
 
-// The room hooks go through the real listener registry, which asks for the
-// script context to scope a listener.
-LUA_CONTEXT LUA_GetScriptContext(void)
-{
-    return LUA_CONTEXT_GLOBAL;
-}
-
-void LUA_SetScriptContext(const LUA_CONTEXT context)
-{
-}
-
 // fake.fire_room_change(item_num, old_room, new_room) - mirrors the
 // Item_UpdateRoom fire site, argument for argument.
 static int M_L_FireRoomChange(lua_State *const L)
@@ -53,6 +42,17 @@ static void M_PushFake(lua_State *const L)
     lua_setfield(L, -2, "load_next_level");
     lua_pushcfunction(L, M_L_FireRoomChange);
     lua_setfield(L, -2, "fire_room_change");
+}
+
+// The room hooks go through the real listener registry, which asks for the
+// script context to scope a listener.
+LUA_CONTEXT LUA_GetScriptContext(void)
+{
+    return LUA_CONTEXT_GLOBAL;
+}
+
+void LUA_SetScriptContext(const LUA_CONTEXT context)
+{
 }
 
 int main(void)

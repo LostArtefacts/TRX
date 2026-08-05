@@ -30,6 +30,48 @@ static struct {
     OBJECT_ID base;
 } m_InvShared[FAKE_INV_SHARED];
 
+// The inventory Lara is carrying, which is a state like any other - the same
+// one trx.inventory reaches. The engine maps a pickup to the icon it goes into
+// before it counts; the fake keeps that mapping and nothing else.
+static INVENTORY_STATE m_LiveState;
+static bool m_CanAdd = true;
+
+// A stored inventory is a plain struct, so the fake works it as the engine
+// does rather than standing in for it.
+static INVENTORY_ENTRY *M_StateEntry(
+    INVENTORY_STATE *const state, const OBJECT_ID object_id)
+{
+    for (int32_t i = 0; i < state->count; i++) {
+        if (state->entries[i].object_id == object_id) {
+            return &state->entries[i];
+        }
+    }
+    return nullptr;
+}
+
+static void M_Reset(void)
+{
+    memset(&m_Lara, 0, sizeof(m_Lara));
+
+    m_Lara.air = 1800;
+    m_Lara.exposure_timer = 600;
+    m_Lara.water_status = LWS_ABOVE_WATER;
+    m_Lara.gun_status = LGS_ARMLESS;
+    m_Lara.gun_type = LGT_UNARMED;
+    m_Lara.request_gun_type = LGT_UNARMED;
+    m_Lara.hit_direction = -1;
+    // One damp mesh, so a test can watch is_wet flip when Lara is dried.
+    m_Lara.wet[LM_HEAD] = 1;
+    m_HolstersVisible = true;
+    m_HasPistols = true;
+    m_Skin = 0;
+    m_CanAdd = true;
+    for (int32_t i = 0; i < FAKE_INV_SHARED; i++) {
+        m_InvShared[i] = (typeof(m_InvShared[0])) { NO_OBJECT, NO_OBJECT };
+    }
+    m_LiveState = (INVENTORY_STATE) {};
+}
+
 // The weapon table the bridge walks to decide whether Lara has a pistol at all.
 WEAPON_INFO g_Weapons[NUM_WEAPONS] = {
     [LGT_PISTOLS] = { .type = WEAPON_TYPE_DUAL_PISTOLS },
@@ -52,12 +94,6 @@ int16_t Item_GetRelativeObjAnim(const ITEM *const item, const OBJECT_ID obj_id)
 {
     return -1;
 }
-
-// The inventory Lara is carrying, which is a state like any other - the same
-// one trx.inventory reaches. The engine maps a pickup to the icon it goes into
-// before it counts; the fake keeps that mapping and nothing else.
-static INVENTORY_STATE m_LiveState;
-static bool m_CanAdd = true;
 
 // The engine holds one backpack entry per inventory icon, and several pickups
 // can share one - the scion in each of its states, a waterskin at each fill
@@ -199,19 +235,6 @@ int32_t Inv_GetDrawnEntries(
     INVENTORY_ENTRY *const entries, const int32_t max_count)
 {
     return Inv_State_GetDrawnEntries(&m_LiveState, entries, max_count);
-}
-
-// A stored inventory is a plain struct, so the fake works it as the engine
-// does rather than standing in for it.
-static INVENTORY_ENTRY *M_StateEntry(
-    INVENTORY_STATE *const state, const OBJECT_ID object_id)
-{
-    for (int32_t i = 0; i < state->count; i++) {
-        if (state->entries[i].object_id == object_id) {
-            return &state->entries[i];
-        }
-    }
-    return nullptr;
 }
 
 INVENTORY_STATE *Inv_GetState(void)
@@ -371,29 +394,6 @@ LARA_SKIN_TYPE Lara_Skin_FindOutfitByName(const char *const name)
         return 1;
     }
     return -1;
-}
-
-static void M_Reset(void)
-{
-    memset(&m_Lara, 0, sizeof(m_Lara));
-
-    m_Lara.air = 1800;
-    m_Lara.exposure_timer = 600;
-    m_Lara.water_status = LWS_ABOVE_WATER;
-    m_Lara.gun_status = LGS_ARMLESS;
-    m_Lara.gun_type = LGT_UNARMED;
-    m_Lara.request_gun_type = LGT_UNARMED;
-    m_Lara.hit_direction = -1;
-    // One damp mesh, so a test can watch is_wet flip when Lara is dried.
-    m_Lara.wet[LM_HEAD] = 1;
-    m_HolstersVisible = true;
-    m_HasPistols = true;
-    m_Skin = 0;
-    m_CanAdd = true;
-    for (int32_t i = 0; i < FAKE_INV_SHARED; i++) {
-        m_InvShared[i] = (typeof(m_InvShared[0])) { NO_OBJECT, NO_OBJECT };
-    }
-    m_LiveState = (INVENTORY_STATE) {};
 }
 
 FAKE_ON_RESET(M_Reset)

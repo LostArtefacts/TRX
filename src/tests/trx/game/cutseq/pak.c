@@ -1,6 +1,9 @@
 #include <harness/harness.h>
 
 #include <trx/game/cutseq/pak.h>
+#include <trx/core/memory.h>
+#include <trx/game/objects.h>
+#include <trx/game/shell/paths.h>
 
 #include <zlib.h>
 
@@ -297,10 +300,6 @@ TEST(a_missing_file_is_not_a_loaded_pak)
 
 // The loader's view of the outside world: a file that holds what the test
 // last published, and object ids it does not act on here.
-
-#include <trx/core/memory.h>
-#include <trx/game/objects.h>
-#include <trx/game/shell/paths.h>
 
 const char *TRXPath_TryResolve(
     const TRX_DYNAMIC_PATH path, const char *const rel)

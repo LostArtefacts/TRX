@@ -10,6 +10,11 @@
 
 static bool m_AlliesHostile;
 
+static void M_Reset(void)
+{
+    m_AlliesHostile = false;
+}
+
 bool Creature_AreAlliesHostile(void)
 {
     return m_AlliesHostile;
@@ -28,11 +33,6 @@ void Creature_AddAlly(const OBJECT_ID obj_id)
 void Creature_AddAllyTargetingEnemy(const OBJECT_ID obj_id)
 {
     FAKE_RECORD("add_ally_target", FV(obj_id));
-}
-
-static void M_Reset(void)
-{
-    m_AlliesHostile = false;
 }
 
 FAKE_ON_RESET(M_Reset)

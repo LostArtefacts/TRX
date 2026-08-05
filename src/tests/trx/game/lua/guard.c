@@ -11,12 +11,6 @@
 
 static double m_Now = 0.0;
 
-double Clock_GetRealTime(void)
-{
-    m_Now += 1.0;
-    return m_Now;
-}
-
 static lua_State *M_Guarded(void)
 {
     lua_State *const L = luaL_newstate();
@@ -36,6 +30,12 @@ static bool M_Dies(lua_State *const L, const char *const src)
         && strstr(message, "without returning control") != nullptr;
     lua_pop(L, 1);
     return blamed;
+}
+
+double Clock_GetRealTime(void)
+{
+    m_Now += 1.0;
+    return m_Now;
 }
 
 TEST(guard_aborts_a_runaway_script)

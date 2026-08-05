@@ -19,6 +19,18 @@ static FAKE_SLOT m_Slots[FAKE_SOUND_SLOT_COUNT];
 static uint32_t m_SlotGens[FAKE_SOUND_SLOT_COUNT];
 static HANDLE_REGISTRY m_Handles;
 
+static void M_Reset(void)
+{
+    for (int32_t i = 0; i < FAKE_SOUND_SLOT_COUNT; i++) {
+        m_Slots[i] = (FAKE_SLOT) {};
+    }
+    // The generations persist across the reset, as the engine's do, so a handle
+    // from before it cannot match a slot that a later play reuses.
+    if (m_Handles.gens == nullptr) {
+        Handle_RegistryInit(&m_Handles, m_SlotGens, FAKE_SOUND_SLOT_COUNT);
+    }
+}
+
 bool Sound_IsAvailable_Direct(const SAMPLE_ID sample_id)
 {
     return sample_id == FAKE_SAMPLE;
@@ -123,18 +135,6 @@ void Sound_StopEffect_Direct(const SAMPLE_ID sfx_num)
 void Sound_StopAll(void)
 {
     FAKE_RECORD("stop_all");
-}
-
-static void M_Reset(void)
-{
-    for (int32_t i = 0; i < FAKE_SOUND_SLOT_COUNT; i++) {
-        m_Slots[i] = (FAKE_SLOT) {};
-    }
-    // The generations persist across the reset, as the engine's do, so a handle
-    // from before it cannot match a slot that a later play reuses.
-    if (m_Handles.gens == nullptr) {
-        Handle_RegistryInit(&m_Handles, m_SlotGens, FAKE_SOUND_SLOT_COUNT);
-    }
 }
 
 FAKE_ON_RESET(M_Reset)

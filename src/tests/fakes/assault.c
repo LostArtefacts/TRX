@@ -14,6 +14,18 @@ static bool m_Running[GYM_TRACK_NUMBER_OF];
 static bool m_Visible[GYM_TRACK_NUMBER_OF];
 static GYM_TRACK_TYPE m_ActiveTrack;
 
+static void M_Reset(void)
+{
+    g_Config = (CONFIG) {};
+    m_InGym = true;
+    m_ActiveTrack = GYM_TRACK_NONE;
+    for (int32_t i = 0; i < GYM_TRACK_NUMBER_OF; i++) {
+        m_HasStats[i] = true;
+        m_Running[i] = false;
+        m_Visible[i] = false;
+    }
+}
+
 bool Game_IsInGym(void)
 {
     return m_InGym;
@@ -77,18 +89,6 @@ void Gym_TrackManager_Reset(const GYM_TRACK_TYPE track)
 void Gym_TrackManager_Finish(const GYM_TRACK_TYPE track)
 {
     FAKE_RECORD("finish", FV(track));
-}
-
-static void M_Reset(void)
-{
-    g_Config = (CONFIG) {};
-    m_InGym = true;
-    m_ActiveTrack = GYM_TRACK_NONE;
-    for (int32_t i = 0; i < GYM_TRACK_NUMBER_OF; i++) {
-        m_HasStats[i] = true;
-        m_Running[i] = false;
-        m_Visible[i] = false;
-    }
 }
 
 FAKE_ON_RESET(M_Reset)

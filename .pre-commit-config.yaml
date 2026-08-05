@@ -59,7 +59,6 @@ repos:
     entry: tools/lint/checks/static_order
     language: python
     files: \.c$
-    exclude: ^src/tests/
 
   - id: lint-module-static
     name: Module functions are static

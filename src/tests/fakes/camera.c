@@ -13,6 +13,21 @@
 CAMERA_INFO g_Camera;
 static bool m_FlybyActive;
 
+static void M_Reset(void)
+{
+    g_Camera = (CAMERA_INFO) {};
+    g_Camera.pos.x = 1024;
+    g_Camera.pos.y = 2048;
+    g_Camera.pos.z = 3072;
+    // The engine and Lua both count rooms from 0.
+    g_Camera.pos.room_num = FAKE_CAMERA_ROOM;
+    g_Camera.target.x = 4096;
+    g_Camera.target.y = 5120;
+    g_Camera.target.z = 6144;
+    g_Camera.target.room_num = FAKE_CAMERA_TARGET_ROOM;
+    m_FlybyActive = false;
+}
+
 void Camera_ResetPosition(void)
 {
     FAKE_RECORD("reset");
@@ -43,21 +58,6 @@ bool FlybyMode_Cancel(void)
 void FakeCamera_SetFlybyActive(const bool active)
 {
     m_FlybyActive = active;
-}
-
-static void M_Reset(void)
-{
-    g_Camera = (CAMERA_INFO) {};
-    g_Camera.pos.x = 1024;
-    g_Camera.pos.y = 2048;
-    g_Camera.pos.z = 3072;
-    // The engine and Lua both count rooms from 0.
-    g_Camera.pos.room_num = FAKE_CAMERA_ROOM;
-    g_Camera.target.x = 4096;
-    g_Camera.target.y = 5120;
-    g_Camera.target.z = 6144;
-    g_Camera.target.room_num = FAKE_CAMERA_TARGET_ROOM;
-    m_FlybyActive = false;
 }
 
 FAKE_ON_RESET(M_Reset)

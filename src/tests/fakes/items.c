@@ -52,6 +52,27 @@ static struct {
 // is exactly what item.properties overlays, so the default lives here.
 static int32_t m_ObjectHP[FAKE_OBJ_COUNT];
 
+// The names an object answers to. The lookup that fuzzy-matches them is Lua
+// now, so all the engine has to do is say what they are.
+static const char *const m_WolfNames[] = { "wolf", nullptr };
+static const char *const m_VaseNames[] = { "vase", "large vase",
+                                           // A name with none of its own
+                                           // words in it, the way a large
+                                           // medipack answers to "big
+                                           // medipack".
+                                           "big urn", nullptr };
+static const char *const m_KeyNames[] = { "key", nullptr };
+
+// The real pickups answer to names of their own. None shares a word with
+// another, so a name reaches exactly one of them.
+static const char *const m_LatchNames[] = { "latch", nullptr };
+static const char *const m_CogNames[] = { "cog", nullptr };
+static const char *const m_CrowbarNames[] = { "crowbar", nullptr };
+static const char *const m_LeadbarNames[] = { "ingot", nullptr };
+static const char *const m_TrinketNames[] = { "trinket", nullptr };
+static const char *const m_ScionNames[] = { "scion", nullptr };
+static const char *const m_CrystalNames[] = { "crystal", nullptr };
+
 const OBJECT_ID g_CreatureObjects[] = { FAKE_OBJ_WOLF, NO_OBJECT };
 const OBJECT_ID g_LoyalObjects[] = { NO_OBJECT };
 // The fake's own two, and then the real ones a pickup family names, so a
@@ -511,26 +532,6 @@ OBJECT *Object_Get(const OBJECT_ID object_id)
     }
     return &m_Objects[object_id];
 }
-
-// The names an object answers to. The lookup that fuzzy-matches them is Lua
-// now, so all the engine has to do is say what they are.
-static const char *const m_WolfNames[] = { "wolf", nullptr };
-static const char *const m_VaseNames[] = { "vase", "large vase",
-                                           // A name with none of its own
-                                           // words in it, the way a large
-                                           // medipack answers to "big
-                                           // medipack".
-                                           "big urn", nullptr };
-static const char *const m_KeyNames[] = { "key", nullptr };
-// The real pickups answer to names of their own. None shares a word with
-// another, so a name reaches exactly one of them.
-static const char *const m_LatchNames[] = { "latch", nullptr };
-static const char *const m_CogNames[] = { "cog", nullptr };
-static const char *const m_CrowbarNames[] = { "crowbar", nullptr };
-static const char *const m_LeadbarNames[] = { "ingot", nullptr };
-static const char *const m_TrinketNames[] = { "trinket", nullptr };
-static const char *const m_ScionNames[] = { "scion", nullptr };
-static const char *const m_CrystalNames[] = { "crystal", nullptr };
 
 const VECTOR *Object_GetNames(const OBJECT_ID obj_id)
 {

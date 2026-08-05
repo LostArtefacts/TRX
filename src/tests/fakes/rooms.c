@@ -14,13 +14,6 @@ static HANDLE_EPOCH m_RoomEpoch;
 static bool m_FlipStatus;
 static ITEM_ACTION_INTERCEPTOR m_Interceptor;
 
-// What loading the next level does to the room table: the rooms are replaced,
-// so every handle to one of the old ones is stale.
-void FakeRooms_LoadNextLevel(void)
-{
-    Handle_EpochBump(&m_RoomEpoch);
-}
-
 static void M_Reset(void)
 {
     Handle_EpochBump(&m_RoomEpoch);
@@ -41,6 +34,13 @@ static void M_Reset(void)
     m_Rooms[0].flipped_room = 1;
     m_Rooms[0].flip_status = RFS_UNFLIPPED;
     m_Rooms[1].flip_status = RFS_FLIPPED;
+}
+
+// What loading the next level does to the room table: the rooms are replaced,
+// so every handle to one of the old ones is stale.
+void FakeRooms_LoadNextLevel(void)
+{
+    Handle_EpochBump(&m_RoomEpoch);
 }
 
 FAKE_ON_RESET(M_Reset)

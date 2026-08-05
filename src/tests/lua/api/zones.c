@@ -22,16 +22,6 @@
 
 static LUA_CONTEXT m_Context = LUA_CONTEXT_GLOBAL;
 
-LUA_CONTEXT LUA_GetScriptContext(void)
-{
-    return m_Context;
-}
-
-void LUA_SetScriptContext(const LUA_CONTEXT context)
-{
-    m_Context = context;
-}
-
 static int M_L_Control(lua_State *const L)
 {
     LUA_FireEvent(LUA_EVENT_AFTER_CONTROL);
@@ -129,6 +119,16 @@ static void M_PushFake(lua_State *const L)
     lua_setfield(L, -2, "destroy");
     lua_pushcfunction(L, M_L_Flyby);
     lua_setfield(L, -2, "flyby");
+}
+
+LUA_CONTEXT LUA_GetScriptContext(void)
+{
+    return m_Context;
+}
+
+void LUA_SetScriptContext(const LUA_CONTEXT context)
+{
+    m_Context = context;
 }
 
 int main(void)

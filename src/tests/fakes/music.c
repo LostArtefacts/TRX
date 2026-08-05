@@ -9,9 +9,6 @@
 #include <trx/game/music/common.h>
 #include <trx/game/music/ids.h>
 
-static MUSIC_ID m_Playing = MX_INACTIVE;
-static MUSIC_ID m_Looped = MX_INACTIVE;
-
 typedef struct {
     bool active;
     int32_t track_id;
@@ -19,7 +16,19 @@ typedef struct {
     double timestamp;
 } FAKE_SLOT;
 
+static MUSIC_ID m_Playing = MX_INACTIVE;
+static MUSIC_ID m_Looped = MX_INACTIVE;
+
 static FAKE_SLOT m_Slots[FAKE_MUSIC_SLOT_COUNT];
+
+static void M_Reset(void)
+{
+    m_Playing = MX_INACTIVE;
+    m_Looped = MX_INACTIVE;
+    for (int32_t i = 0; i < FAKE_MUSIC_SLOT_COUNT; i++) {
+        m_Slots[i] = (FAKE_SLOT) {};
+    }
+}
 
 int32_t Music_Play_Direct(const MUSIC_ID track, const MUSIC_PLAY_MODE mode)
 {
@@ -126,15 +135,6 @@ void Music_Stop(void)
 {
     FAKE_RECORD("stop");
     m_Playing = MX_INACTIVE;
-}
-
-static void M_Reset(void)
-{
-    m_Playing = MX_INACTIVE;
-    m_Looped = MX_INACTIVE;
-    for (int32_t i = 0; i < FAKE_MUSIC_SLOT_COUNT; i++) {
-        m_Slots[i] = (FAKE_SLOT) {};
-    }
 }
 
 FAKE_ON_RESET(M_Reset)

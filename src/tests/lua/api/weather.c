@@ -10,6 +10,13 @@
 
 static WEATHER_TYPE m_Weather = WEATHER_NONE;
 
+static int M_FakeReset(lua_State *const L)
+{
+    FakeCalls_Reset();
+    m_Weather = WEATHER_NONE;
+    return 0;
+}
+
 void FX_Weather_SetWeather(const WEATHER_TYPE weather_type)
 {
     m_Weather = weather_type;
@@ -18,13 +25,6 @@ void FX_Weather_SetWeather(const WEATHER_TYPE weather_type)
 WEATHER_TYPE FX_Weather_GetWeather(void)
 {
     return m_Weather;
-}
-
-static int M_FakeReset(lua_State *const L)
-{
-    FakeCalls_Reset();
-    m_Weather = WEATHER_NONE;
-    return 0;
 }
 
 int main(void)

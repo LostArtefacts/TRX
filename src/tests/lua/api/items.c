@@ -8,21 +8,6 @@
 #include <trx/game/lua/common.h>
 #include <trx/game/lua/events.h>
 
-// Event listeners attach against a script context; a global one lives for the
-// whole session, which is all these tests need.
-LUA_CONTEXT LUA_GetScriptContext(void)
-{
-    return LUA_CONTEXT_GLOBAL;
-}
-
-void LUA_SetScriptContext(const LUA_CONTEXT context)
-{
-}
-
-void ItemAction_SetInterceptor(const ITEM_ACTION_INTERCEPTOR interceptor)
-{
-}
-
 static void M_SetUpExtra(lua_State *const L)
 {
     // items.lua's `room` extension hands off to trx.rooms, which is not under
@@ -157,6 +142,21 @@ static void M_PushFake(lua_State *const L)
     lua_setfield(L, -2, "fire_hit");
     lua_pushcfunction(L, M_L_FireKill);
     lua_setfield(L, -2, "fire_kill");
+}
+
+// Event listeners attach against a script context; a global one lives for the
+// whole session, which is all these tests need.
+LUA_CONTEXT LUA_GetScriptContext(void)
+{
+    return LUA_CONTEXT_GLOBAL;
+}
+
+void LUA_SetScriptContext(const LUA_CONTEXT context)
+{
+}
+
+void ItemAction_SetInterceptor(const ITEM_ACTION_INTERCEPTOR interceptor)
+{
 }
 
 int main(void)

@@ -14,6 +14,13 @@
 #define M_MAX_NODES 2
 #define M_BUF_SIZE 512
 
+// A track that never moves, for the two axes a test is not looking at.
+#define M_IDLE_AXIS                                                            \
+    (M_AXIS)                                                                   \
+    {                                                                          \
+        .key = 0, .pack_method = 8, .length = 0, .word_count = 0,              \
+    }
+
 typedef struct {
     int16_t key;
     uint8_t pack_method;
@@ -71,13 +78,6 @@ static uint32_t M_Build(
     }
     return offset;
 }
-
-// A track that never moves, for the two axes a test is not looking at.
-#define M_IDLE_AXIS                                                            \
-    (M_AXIS)                                                                   \
-    {                                                                          \
-        .key = 0, .pack_method = 8, .length = 0, .word_count = 0,              \
-    }
 
 TEST(init_nodes_reports_the_size_it_consumed)
 {
