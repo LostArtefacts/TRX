@@ -101,6 +101,7 @@
 - fixed Lara being unable to collect some pickups that are very close to edges with a drop when animated interactions are enabled (regression from Tomb1Main 2.7)
 - fixed changing the number of save or quick save slots mid-game discarding the progress of the levels played so far (#6054)
 - fixed Lara repeating a pickup animation if jump and roll are held during the pickup (regression from TR1X 4.14 / TR2X 1.4)
+- fixed not being able to perform the item duplication glitch (regression from 1.2)
 
 **TR1**
 - changed weather to be affected by the breeze

@@ -928,7 +928,9 @@ INV_RING *InvRing_Open(const INVENTORY_MODE mode)
         }
     }
 
-    g_InvRing_Source[RT_KEYS].current = 0;
+    if (g_Config.gameplay.fix_item_duplication_glitch) {
+        g_InvRing_Source[RT_KEYS].current = 0;
+    }
     for (int32_t i = 0; i < g_InvRing_Source[RT_KEYS].count; i++) {
         InvRing_InitInvItem(g_InvRing_Source[RT_KEYS].items[i]);
     }
