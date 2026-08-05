@@ -195,7 +195,6 @@ bool Keyhole_Trigger(const int16_t item_num)
         return false;
     }
     Item_SetFinished(item, true);
-    Item_RemoveSimulated(item_num);
     return true;
 }
 
