@@ -3,7 +3,7 @@
 #include <trx/core/memory.h>
 #include <trx/core/strings.h>
 #include <trx/game/game_strings/manager.h>
-#include <trx/game/ui/dialogs/setting_helpers/handlers.h>
+#include <trx/game/ui/dialogs/settings_handlers.h>
 
 #include <stdlib.h>
 
@@ -32,10 +32,10 @@ static const VECTOR *M_Language_GetLanguages(void)
     return m_Languages;
 }
 
-static int32_t M_Language_FindIndex(const UI_SETTINGS_OPTION *const option)
+static int32_t M_Language_FindIndex(const CONFIG_OPTION *const option)
 {
     const VECTOR *const langs = M_Language_GetLanguages();
-    const char *const cur = *(const char *const *)option->target;
+    const char *const cur = option->value.as_str;
     for (int32_t i = 0; i < langs->count; i++) {
         const char *const lang = *(char **)Vector_Get(langs, i);
         if (String_Equivalent(lang, cur)) {
@@ -45,16 +45,16 @@ static int32_t M_Language_FindIndex(const UI_SETTINGS_OPTION *const option)
     return -1;
 }
 
-const char *UI_Settings_Language_FormatValue(
-    const UI_SETTINGS_OPTION *const option)
+static const char *M_Language_FormatValue(
+    const CONFIG_OPTION *const option, void *const user_data)
 {
-    const char *const code = *(const char *const *)option->target;
+    const char *const code = option->value.as_str;
     const char *const name = GameStringManager_GetLanguageName(code);
     return name != nullptr ? name : code;
 }
 
-bool UI_Settings_Language_CanChangeValue(
-    const UI_SETTINGS_OPTION *const option, const int32_t dir)
+static bool M_Language_CanChangeValue(
+    const CONFIG_OPTION *const option, const int32_t dir, void *const user_data)
 {
     const VECTOR *const langs = M_Language_GetLanguages();
     const int32_t idx = M_Language_FindIndex(option);
@@ -69,11 +69,11 @@ bool UI_Settings_Language_CanChangeValue(
     return idx + dir >= 0 && idx + dir < langs->count;
 }
 
-bool UI_Settings_Language_RequestChangeValue(
-    const UI_SETTINGS_OPTION *const option, const int32_t dir)
+static bool M_Language_RequestChangeValue(
+    CONFIG_OPTION *const option, const int32_t dir, void *const user_data)
 {
     const VECTOR *const langs = M_Language_GetLanguages();
-    if (!UI_Settings_Language_CanChangeValue(option, dir)) {
+    if (!M_Language_CanChangeValue(option, dir, user_data)) {
         return false;
     }
     const char *new_lang;
@@ -85,8 +85,12 @@ bool UI_Settings_Language_RequestChangeValue(
         // (the file was deleted), default to the first entry, which is English
         new_lang = *(char **)Vector_Get(langs, 0);
     }
-    Config_Option_SetFromString(
-        Config_FindOptionByMirror(option->target), new_lang, false);
+    Config_Option_SetFromString(option, new_lang, false);
     GameStringManager_ReloadLanguage(new_lang);
     return true;
 }
+
+REGISTER_UI_SETTING_HANDLER(
+        .key = "language", .format_value = M_Language_FormatValue,
+        .can_change_value = M_Language_CanChangeValue,
+        .request_change_value = M_Language_RequestChangeValue)

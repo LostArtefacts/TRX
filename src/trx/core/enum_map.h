@@ -55,6 +55,16 @@ const char *EnumMap_ToString(const char *enum_type_name, int32_t enum_value);
 // @return                  Localized label or nullptr if missing.
 const char *EnumMap_GetLabel(const char *enum_type_name, int32_t enum_value);
 
+// How many distinct values the given enum type has.
+// @param enum_type_name    Name of the enum type, such as "WEATHER".
+int32_t EnumMap_GetValueCount(const char *enum_type_name);
+
+// Retrieve an enum value by position, in the order the values were defined in.
+// @param enum_type_name    Name of the enum type, such as "WEATHER".
+// @param index             Position of the value.
+// @return                  Value of the enum, or -1 if there is none there.
+int32_t EnumMap_GetValueAt(const char *enum_type_name, int32_t index);
+
 // Returns a vector of valid string values for the given enum_type_name.
 //
 // The returned vector must be freed via Vector_Free(). The string pointers

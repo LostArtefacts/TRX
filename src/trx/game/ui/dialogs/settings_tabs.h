@@ -4,9 +4,8 @@
 
 #include <trx/core/utils.h>
 #include <trx/game/game_strings/entries.h>
+#include <trx/game/ui/dialogs/settings_rows.h>
 #include <trx/game/ui/scrollable.h>
-
-typedef struct UI_SETTINGS_OPTION UI_SETTINGS_OPTION;
 
 typedef enum {
     UI_SETTINGS_PHASE_NAVIGATE_TABS,
@@ -48,5 +47,5 @@ typedef struct UI_SETTINGS_TAB {
 } UI_SETTINGS_TAB;
 
 UI_SETTINGS_TAB UI_SettingsTab_MakeEditor(
-    GAME_STRING_ID header_gs, const UI_SETTINGS_OPTION *options);
+    GAME_STRING_ID header_gs, CONFIG_TAB tab);
 UI_SETTINGS_TAB UI_SettingsTab_MakePresets(GAME_STRING_ID header_gs);

@@ -124,12 +124,12 @@ static int32_t M_PresetsGetItemCount(void *const user_data)
 }
 
 UI_SETTINGS_TAB UI_SettingsTab_MakeEditor(
-    const GAME_STRING_ID header_gs, const UI_SETTINGS_OPTION *const options)
+    const GAME_STRING_ID header_gs, const CONFIG_TAB tab)
 {
     return (UI_SETTINGS_TAB) {
         .header_gs = header_gs,
         .ops = &m_EditorOps,
-        .user_data = UI_SettingsEditor_Init(options),
+        .user_data = UI_SettingsEditor_Init(tab),
     };
 }
 

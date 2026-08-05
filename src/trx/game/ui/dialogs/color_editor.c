@@ -41,7 +41,11 @@ typedef struct {
 
 struct UI_COLOR_EDITOR_DIALOG_STATE {
     bool show;
-    const UI_SETTINGS_OPTION *option;
+    CONFIG_OPTION *option;
+    // What the option was taken from. An option's address is its identity and
+    // does not move, but a game change ends every option at once, so a dialog
+    // left open across one is holding an address that is no longer an option.
+    int32_t config_generation;
     M_COLOR_ROW component_idx;
     float h;
     float c;
@@ -143,9 +147,8 @@ static void M_SetLocalColorFromRGB(
 static void M_EmitLocalColorAsRGB(UI_COLOR_EDITOR_DIALOG_STATE *const s)
 {
     M_RebuildCache(s);
-    CONFIG_OPTION *const cfg_opt = Config_FindOptionByMirror(s->option->target);
     const TRX_VALUE value = { .type = TVT_RGB_888, .as_rgb = s->color };
-    Config_Option_Write(cfg_opt, &value);
+    Config_Option_Write(s->option, &value);
     Config_Update();
 }
 
@@ -201,18 +204,16 @@ void UI_ColorEditorDialog_Free(UI_COLOR_EDITOR_DIALOG_STATE *const s)
 }
 
 void UI_ColorEditorDialog_Open(
-    UI_COLOR_EDITOR_DIALOG_STATE *const s,
-    const UI_SETTINGS_OPTION *const option)
+    UI_COLOR_EDITOR_DIALOG_STATE *const s, CONFIG_OPTION *const option)
 {
     ASSERT(s != nullptr);
     ASSERT(option != nullptr);
-    ASSERT(
-        Config_FindOptionByMirror(option->target)->value.type == TVT_RGB_888);
-    const RGB_888 *const color = option->target;
+    ASSERT(option->value.type == TVT_RGB_888);
     s->show = true;
     s->option = option;
+    s->config_generation = Config_GetGeneration();
     s->component_idx = 0;
-    M_SetLocalColorFromRGB(s, *color);
+    M_SetLocalColorFromRGB(s, option->value.as_rgb);
 }
 
 void UI_ColorEditorDialog_Close(UI_COLOR_EDITOR_DIALOG_STATE *const s)
@@ -238,8 +239,8 @@ void UI_ColorEditorDialog_Control(UI_COLOR_EDITOR_DIALOG_STATE *const s)
     if (s == nullptr || !s->show) {
         return;
     }
-    const UI_SETTINGS_OPTION *const option = s->option;
-    if (option == nullptr) {
+    CONFIG_OPTION *const option = s->option;
+    if (option == nullptr || s->config_generation != Config_GetGeneration()) {
         UI_ColorEditorDialog_Close(s);
         return;
     }
@@ -260,8 +261,10 @@ void UI_ColorEditorDialog_Control(UI_COLOR_EDITOR_DIALOG_STATE *const s)
         }
         s->component_idx = (M_COLOR_ROW)next_idx;
     } else if (g_InputDB.menu_left || g_InputDB.menu_right) {
-        int32_t delta =
-            g_Input.menu_fine_adjust ? option->delta_slow : option->delta_fast;
+        const UI_SETTING_HANDLER *const handler =
+            UI_Settings_GetHandler(option);
+        int32_t delta = g_Input.menu_fine_adjust ? handler->delta_slow
+                                                 : handler->delta_fast;
         if (delta == 0) {
             delta = 1;
         }
@@ -285,9 +288,8 @@ void UI_ColorEditorDialog_Control(UI_COLOR_EDITOR_DIALOG_STATE *const s)
         }
         M_EmitLocalColorAsRGB(s);
     } else if (g_InputDB.unbind_key) {
-        Config_Option_RestoreDefault(
-            Config_FindOptionByMirror(option->target), false);
-        M_SetLocalColorFromRGB(s, *(const RGB_888 *)option->target);
+        Config_Option_RestoreDefault(option, false);
+        M_SetLocalColorFromRGB(s, option->value.as_rgb);
         Config_Update();
     }
 }
@@ -307,8 +309,7 @@ void UI_ColorEditorDialog(UI_COLOR_EDITOR_DIALOG_STATE *const s)
         .align = { .h = UI_STACK_H_ALIGN_SPAN },
     });
     UI_BeginAnchor(0.5f, 0.5f);
-    const char *const title =
-        Config_Option_GetTitle(Config_FindOptionByMirror(s->option->target));
+    const char *const title = Config_Option_GetTitle(s->option);
     UI_Label(title != nullptr ? title : "");
     UI_EndAnchor();
     UI_Spacer(M_COLOR_EDITOR_TITLE_MARGIN, M_COLOR_EDITOR_TITLE_MARGIN);

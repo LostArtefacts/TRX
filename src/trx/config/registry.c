@@ -16,6 +16,7 @@ static VECTOR *m_Options = nullptr;
 // The null-terminated view handed out by Config_GetOptions, rebuilt whenever
 // the set of options changes.
 static VECTOR *m_View = nullptr;
+static int32_t m_Generation = 0;
 
 static CONFIG_OPTION *M_Get(const int32_t idx)
 {
@@ -24,6 +25,7 @@ static CONFIG_OPTION *M_Get(const int32_t idx)
 
 static void M_RebuildView(void)
 {
+    m_Generation++;
     if (m_View == nullptr) {
         m_View = Vector_Create(sizeof(CONFIG_OPTION *));
     }
@@ -146,6 +148,11 @@ CONFIG_OPTION *Config_FindOptionByMirror(const void *const mirror)
         }
     }
     return nullptr;
+}
+
+int32_t Config_GetGeneration(void)
+{
+    return m_Generation;
 }
 
 void Config_ClearHolds(void)

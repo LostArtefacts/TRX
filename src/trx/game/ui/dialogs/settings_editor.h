@@ -1,11 +1,11 @@
 #pragma once
 
 #include <trx/game/ui/dialogs/settings.h>
+#include <trx/game/ui/dialogs/settings_rows.h>
 
 typedef struct UI_SETTINGS_EDITOR_STATE UI_SETTINGS_EDITOR_STATE;
 
-UI_SETTINGS_EDITOR_STATE *UI_SettingsEditor_Init(
-    const UI_SETTINGS_OPTION *options);
+UI_SETTINGS_EDITOR_STATE *UI_SettingsEditor_Init(CONFIG_TAB tab);
 void UI_SettingsEditor_Free(UI_SETTINGS_EDITOR_STATE *s);
 
 void UI_SettingsEditor_RecomputeSizes(
@@ -24,6 +24,5 @@ void UI_SettingsEditor_DrawFooter(
 
 float UI_SettingsEditor_GetContentWidth(const UI_SETTINGS_EDITOR_STATE *s);
 float UI_SettingsEditor_GetContentHeight(const UI_SETTINGS_EDITOR_STATE *s);
-int32_t UI_SettingsEditor_GetItemCount(const UI_SETTINGS_EDITOR_STATE *s);
-void UI_SettingsEditor_RequestChange(
-    const UI_SETTINGS_OPTION *option, int32_t dir);
+int32_t UI_SettingsEditor_GetItemCount(UI_SETTINGS_EDITOR_STATE *s);
+void UI_SettingsEditor_RequestChange(CONFIG_OPTION *option, int32_t dir);
