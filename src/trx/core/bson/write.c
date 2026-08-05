@@ -15,6 +15,12 @@ static bool M_GetValueWrappedSize(
 static char *M_WriteValueWrapped(
     char *data, const char *key, const JSON_VALUE *value);
 
+typedef enum {
+    M_NUMBER_INT32,
+    M_NUMBER_INT64,
+    M_NUMBER_DOUBLE,
+} M_NUMBER_KIND;
+
 static bool M_GetMarkerSize(size_t *size, const char *key)
 {
     ASSERT(size != nullptr);
@@ -102,12 +108,6 @@ static bool M_GetDoubleWrappedSize(size_t *size, const char *key)
     }
     return true;
 }
-
-typedef enum {
-    M_NUMBER_INT32,
-    M_NUMBER_INT64,
-    M_NUMBER_DOUBLE,
-} M_NUMBER_KIND;
 
 // A JSON number is a literal, and BSON has three forms to put one in. The
 // sizing pass and the writing pass have to land on the same one, so both ask

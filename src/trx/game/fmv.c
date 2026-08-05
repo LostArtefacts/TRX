@@ -26,12 +26,6 @@
 
 #include <string.h>
 
-static bool m_IsPlaying = false;
-
-static const char *const m_FallbackExts[] = {
-    ".mp4", ".mpeg", ".webm", ".avi", ".fmv", ".rpl", nullptr,
-};
-
 #define M_FADE_TIME 0.4f
 #define M_PAUSE_OVERLAY_OPACITY 0.8f
 
@@ -45,6 +39,12 @@ typedef struct {
     bool show_pause_overlay;
     FADER pause_fader;
 } M_RENDER_CONTEXT;
+
+static bool m_IsPlaying = false;
+
+static const char *const m_FallbackExts[] = {
+    ".mp4", ".mpeg", ".webm", ".avi", ".fmv", ".rpl", nullptr,
+};
 
 static OUTPUT_QUAD_SURFACE_DESC M_MakeSurfaceDesc(
     const int32_t width, const int32_t height)

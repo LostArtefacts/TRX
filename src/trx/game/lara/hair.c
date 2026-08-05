@@ -26,11 +26,6 @@
 #define M_BONE_IDX(segment)                                                    \
     (segment == M_HAIR_SEGMENTS ? (segment - 2) : (segment - 1))
 
-static bool m_IsFirstHair[M_MAX_BRAIDS];
-static SPHERE m_HairSpheres[M_HAIR_SPHERES];
-static XYZ_32 m_HairVelocity[M_MAX_BRAIDS][M_HAIR_SEGMENTS + 1];
-static HAIR_SEGMENT m_HairSegments[M_MAX_BRAIDS][M_HAIR_SEGMENTS + 1];
-
 // A ring of vertices two braid meshes share, found once at outfit apply and
 // pinned by the weld each frame. Empty when the meshes share no ring, which
 // leaves that seam drawn exactly as authored.
@@ -38,6 +33,11 @@ typedef struct {
     int32_t count;
     SEAM_VERTEX_PAIR pairs[SEAM_MAX_VERTEX_PAIRS];
 } M_SEGMENT_SEAM;
+
+static bool m_IsFirstHair[M_MAX_BRAIDS];
+static SPHERE m_HairSpheres[M_HAIR_SPHERES];
+static XYZ_32 m_HairVelocity[M_MAX_BRAIDS][M_HAIR_SEGMENTS + 1];
+static HAIR_SEGMENT m_HairSegments[M_MAX_BRAIDS][M_HAIR_SEGMENTS + 1];
 
 // The braid weld state, kept between outfit applies.
 //

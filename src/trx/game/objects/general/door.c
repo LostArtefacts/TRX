@@ -38,6 +38,18 @@ static const OBJECT_BOUNDS m_CrowbarDoorBounds = {
     },
 };
 
+static const SECTOR m_BlockedSector = {
+    .idx = 0,
+    .box = NO_BOX,
+    .ceiling.height = NO_HEIGHT,
+    .floor.height = NO_HEIGHT,
+    .ceiling.tilt = {},
+    .floor.tilt = {},
+    .portal_room.sky = NO_ROOM,
+    .portal_room.pit = NO_ROOM,
+    .portal_room.wall = NO_ROOM,
+};
+
 static const XYZ_32 m_CrowbarDoorPosition = { .x = -412, .y = 0, .z = 140 };
 
 static bool M_ShowCrowbarInventory(void)
@@ -53,18 +65,6 @@ static bool M_ShowCrowbarInventory(void)
     }
     return true;
 }
-
-static const SECTOR m_BlockedSector = {
-    .idx = 0,
-    .box = NO_BOX,
-    .ceiling.height = NO_HEIGHT,
-    .floor.height = NO_HEIGHT,
-    .ceiling.tilt = {},
-    .floor.tilt = {},
-    .portal_room.sky = NO_ROOM,
-    .portal_room.pit = NO_ROOM,
-    .portal_room.wall = NO_ROOM,
-};
 
 static SECTOR *M_GetRoomRelSector(
     const ROOM *const room, const ITEM *item, const int32_t sector_dx,

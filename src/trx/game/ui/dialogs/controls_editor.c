@@ -36,11 +36,6 @@ typedef enum {
     M_PHASE_EXIT,
 } M_PHASE;
 
-static bool M_IsTouch(const UI_CONTROLS_EDITOR_STATE *const s)
-{
-    return s->backend == INPUT_BACKEND_TOUCH;
-}
-
 static const UI_CONTROLS_EDITOR_GROUP m_Groups[] = {
     {
         .header_gs = GS_ID("general/settings/controls/tabs/basics"),
@@ -140,6 +135,11 @@ static const UI_CONTROLS_EDITOR_GROUP m_Groups[] = {
         .rows = nullptr,
     },
 };
+
+static bool M_IsTouch(const UI_CONTROLS_EDITOR_STATE *const s)
+{
+    return s->backend == INPUT_BACKEND_TOUCH;
+}
 
 static int32_t M_GetVisibleRows(void)
 {

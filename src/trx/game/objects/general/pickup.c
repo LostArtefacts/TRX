@@ -44,6 +44,17 @@
 #define M_AID_WAIT_MIN           (LOGIC_FPS * 2.5) // 75
 #define M_AID_WAIT_MAX           (LOGIC_FPS * 5)   // 150
 #define M_AID_WAIT_BREAK_CHANCE  0x1200
+
+typedef struct {
+    int32_t aid_timer;
+    uint32_t secret_mask;
+    PICKUP_MODE pickup_mode;
+    bool animate;
+    bool show_pickup_aid;
+    int16_t rotation;
+    RGB_888 glow_color;
+} M_PRIV;
+
 // clang-format on
 
 static const OBJECT_BOUNDS m_PickUpBounds = {
@@ -117,16 +128,6 @@ static const XYZ_32 m_PickupPositionUW = { .x = 0, .y = -200, .z = -350 };
 static const XYZ_32 m_PickupPositionPlinth = { .x = 0, .y = 0, .z = -380 };
 static const XYZ_32 m_PickupPositionHidden = { .x = 0, .y = 0, .z = -690 };
 static const XYZ_32 m_PickupPositionCrowbar = { .x = 0, .y = 0, .z = 225 };
-
-typedef struct {
-    int32_t aid_timer;
-    uint32_t secret_mask;
-    PICKUP_MODE pickup_mode;
-    bool animate;
-    bool show_pickup_aid;
-    int16_t rotation;
-    RGB_888 glow_color;
-} M_PRIV;
 
 static void M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
 {

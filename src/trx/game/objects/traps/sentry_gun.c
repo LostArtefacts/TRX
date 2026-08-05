@@ -29,24 +29,6 @@ typedef struct {
     bool has_fired;
 } M_PRIV;
 
-static void M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
-{
-    M_PRIV *const p = item->priv;
-    JSON_OPTIONAL(JSON_READ(io, "active_muzzle", &p->active_muzzle));
-    JSON_OPTIONAL(JSON_READ(io, "muzzle_flash_timer", &p->muzzle_flash_timer));
-    JSON_OPTIONAL(JSON_READ(io, "is_alerted", &p->is_alerted));
-    JSON_OPTIONAL(JSON_READ(io, "has_fired", &p->has_fired));
-}
-
-static void M_SavePriv(const ITEM *const item, JSON_WRITE_IO *const io)
-{
-    const M_PRIV *const p = item->priv;
-    JSONW_WRITE(io, "active_muzzle", p->active_muzzle);
-    JSONW_WRITE(io, "muzzle_flash_timer", p->muzzle_flash_timer);
-    JSONW_WRITE(io, "is_alerted", p->is_alerted);
-    JSONW_WRITE(io, "has_fired", p->has_fired);
-}
-
 static const CREATURE_GUN m_FireLeft = {
     .muzzle = {
         .pos = { .x = 110, .y = -30, .z = -530 },
@@ -76,6 +58,24 @@ static const CREATURE_GUN m_FireRight = {
     .tr3_flash_shade = 600,
     .tr3_flash_rot_x = -DEG_180,
 };
+
+static void M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
+{
+    M_PRIV *const p = item->priv;
+    JSON_OPTIONAL(JSON_READ(io, "active_muzzle", &p->active_muzzle));
+    JSON_OPTIONAL(JSON_READ(io, "muzzle_flash_timer", &p->muzzle_flash_timer));
+    JSON_OPTIONAL(JSON_READ(io, "is_alerted", &p->is_alerted));
+    JSON_OPTIONAL(JSON_READ(io, "has_fired", &p->has_fired));
+}
+
+static void M_SavePriv(const ITEM *const item, JSON_WRITE_IO *const io)
+{
+    const M_PRIV *const p = item->priv;
+    JSONW_WRITE(io, "active_muzzle", p->active_muzzle);
+    JSONW_WRITE(io, "muzzle_flash_timer", p->muzzle_flash_timer);
+    JSONW_WRITE(io, "is_alerted", p->is_alerted);
+    JSONW_WRITE(io, "has_fired", p->has_fired);
+}
 
 static void M_Initialise(const int16_t item_num)
 {

@@ -12,6 +12,11 @@
 
 #include <uthash.h>
 
+// Order two values as a sign. The differences here are wider than the int the
+// comparator returns, and a truncated difference orders qsort's input
+// inconsistently rather than merely imprecisely.
+#define M_COMPARE(a_, b_) (((a_) > (b_)) - ((a_) < (b_)))
+
 typedef float M_MESH_SHADE;
 
 typedef struct {
@@ -239,11 +244,6 @@ static bool M_IsGroupEntry(const M_FACE_SORT *const sort_ptr)
 {
     return sort_ptr->face == nullptr;
 }
-
-// Order two values as a sign. The differences here are wider than the int the
-// comparator returns, and a truncated difference orders qsort's input
-// inconsistently rather than merely imprecisely.
-#define M_COMPARE(a_, b_) (((a_) > (b_)) - ((a_) < (b_)))
 
 // Compare two faces by camera-space depth.
 static int M_CompareFaceDepth(const void *const a, const void *const b)

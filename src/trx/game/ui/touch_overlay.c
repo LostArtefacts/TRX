@@ -58,6 +58,12 @@
 #define M_SPRITE_BULLET 792
 #define M_SPRITE_SWIM 793
 
+#define M_NUM_BUTTON_DEFS ((int32_t)ARRAY_SIZE(m_ButtonDefs))
+#define M_MAX_BUTTONS M_NUM_BUTTON_DEFS
+
+// D-pad expands its single def into four positions; all other defs map 1:1.
+#define M_NUM_POSITIONS (M_POS_BUTTON_BASE + M_NUM_BUTTON_DEFS - 1)
+
 typedef enum {
     M_ANCHOR_BOTTOM_LEFT,
     M_ANCHOR_BOTTOM_RIGHT,
@@ -124,12 +130,6 @@ static const M_TOUCH_BUTTON_DEF m_ButtonDefs[] = {
     { .role = INPUT_ROLE_PAUSE,       .anchor = M_ANCHOR_TOP_CENTER,   .offset_x = 0.05f, .offset_y = 0.04f, .radius = 0.03f },
 };
 // clang-format on
-
-#define M_NUM_BUTTON_DEFS ((int32_t)ARRAY_SIZE(m_ButtonDefs))
-#define M_MAX_BUTTONS M_NUM_BUTTON_DEFS
-
-// D-pad expands its single def into four positions; all other defs map 1:1.
-#define M_NUM_POSITIONS (M_POS_BUTTON_BASE + M_NUM_BUTTON_DEFS - 1)
 
 static bool m_Visible = false;
 static M_TOUCH_BUTTON m_Buttons[M_MAX_BUTTONS];

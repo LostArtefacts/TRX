@@ -23,15 +23,6 @@
 
 #define M_STATIC_RADIUS 100
 
-static const BITE m_QuadBites[6] = {
-    { .pos = { .x = -56, .y = -32, .z = -380 }, .mesh_num = 0 },
-    { .pos = { .x = 56, .y = -32, .z = -380 }, .mesh_num = 0 },
-    { .pos = { .x = -8, .y = 180, .z = -48 }, .mesh_num = 3 },
-    { .pos = { .x = 8, .y = 180, .z = -48 }, .mesh_num = 4 },
-    { .pos = { .x = 90, .y = 180, .z = -32 }, .mesh_num = 6 },
-    { .pos = { .x = -90, .y = 180, .z = -32 }, .mesh_num = 7 },
-};
-
 typedef enum {
     M_STATE_EMPTY,
     M_STATE_DRIVE,
@@ -75,11 +66,6 @@ typedef enum {
     // clang-format on
 } M_ANIM;
 
-static bool m_DontExitQuad;
-static bool m_HandbrakeStarting;
-static bool m_CanHandbrakeStart;
-static uint8_t m_ExhaustSmokeVel;
-
 typedef struct {
     int32_t velocity;
     int16_t front_rot;
@@ -104,6 +90,20 @@ typedef struct {
     int32_t front_rot_x_idx[2];
     bool test_static_collision;
 } M_PRIV;
+
+static const BITE m_QuadBites[6] = {
+    { .pos = { .x = -56, .y = -32, .z = -380 }, .mesh_num = 0 },
+    { .pos = { .x = 56, .y = -32, .z = -380 }, .mesh_num = 0 },
+    { .pos = { .x = -8, .y = 180, .z = -48 }, .mesh_num = 3 },
+    { .pos = { .x = 8, .y = 180, .z = -48 }, .mesh_num = 4 },
+    { .pos = { .x = 90, .y = 180, .z = -32 }, .mesh_num = 6 },
+    { .pos = { .x = -90, .y = 180, .z = -32 }, .mesh_num = 7 },
+};
+
+static bool m_DontExitQuad;
+static bool m_HandbrakeStarting;
+static bool m_CanHandbrakeStart;
+static uint8_t m_ExhaustSmokeVel;
 
 static void M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
 {

@@ -22,21 +22,6 @@
 
 #define M_NEAR_ANGLE (DEG_1 * 15) // = 2730
 
-static ITEM *m_TargetList[LOT_SLOT_COUNT] = {};
-static ITEM *m_LastTargetList[LOT_SLOT_COUNT] = {};
-static ITEM *m_BestTarget = nullptr;
-static int16_t m_TargetCount = 0;
-
-static bool M_TargetListContains(const ITEM *const item, const int16_t count)
-{
-    for (int16_t i = 0; i < count; i++) {
-        if (m_TargetList[i] == item) {
-            return true;
-        }
-    }
-    return false;
-}
-
 typedef struct {
     const WEAPON_INFO *weapon;
     const GAME_VECTOR *start;
@@ -52,6 +37,21 @@ typedef struct {
     int16_t old_target_y_rot;
     bool old_target_in_list;
 } M_TARGET_CONTEXT;
+
+static ITEM *m_TargetList[LOT_SLOT_COUNT] = {};
+static ITEM *m_LastTargetList[LOT_SLOT_COUNT] = {};
+static ITEM *m_BestTarget = nullptr;
+static int16_t m_TargetCount = 0;
+
+static bool M_TargetListContains(const ITEM *const item, const int16_t count)
+{
+    for (int16_t i = 0; i < count; i++) {
+        if (m_TargetList[i] == item) {
+            return true;
+        }
+    }
+    return false;
+}
 
 static void M_ConsiderTarget(M_TARGET_CONTEXT *const ctx, ITEM *const item)
 {

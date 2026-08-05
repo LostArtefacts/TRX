@@ -20,6 +20,8 @@
 #include <SDL2/SDL_mutex.h>
 #include <string.h>
 
+#define M_TRANSPARENCY_CACHE_VERSION 1
+
 typedef struct {
     OUTPUT_UVW corners[4];
 } M_UVW_PACK;
@@ -86,7 +88,6 @@ static bool M_IsUVRotateEnabled(void)
     return m_UVRotateRangeCount > 0 && Output_GetUVRotateSpeed() != 0;
 }
 
-#define M_TRANSPARENCY_CACHE_VERSION 1
 static uint64_t M_ComputeTransparencyChecksum(void)
 {
     const GF_LEVEL *const level = GF_GetCurrentLevel();

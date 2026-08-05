@@ -9,9 +9,9 @@
 
 #include <string.h>
 
-static char *m_LastPlayedMod = nullptr;
-
 #define M_LAST_PLAYED_MOD_KEY "last_played_mod"
+
+static char *m_LastPlayedMod = nullptr;
 
 __attribute__((destructor)) static void M_Shutdown(void)
 {

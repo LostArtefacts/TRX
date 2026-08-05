@@ -30,6 +30,9 @@
 #define M_MAX_ITEM_LIGHTS 21 // the OG ITEM_LIGHT current/prev list capacity
 #define M_FADE_FRAMES 8
 #define M_MAX_FOG_BULBS 20
+#define M_MAX_FX_FOG_BULBS 5
+#define M_MAX_ACTIVE_FOG_BULBS 5
+#define M_FOG_BULB_MAX_SQ_DIST 0x19000000 // = 20480^2, the OG CreateFogPos
 
 // Room light baked at level load (the OG PCLIGHT_INFO, drawroom.cpp
 // ProcessRoomData).
@@ -108,10 +111,6 @@ typedef struct {
     float view_dist;
     float sq_cam_dist;
 } M_FOG_BULB;
-
-#define M_MAX_FX_FOG_BULBS 5
-#define M_MAX_ACTIVE_FOG_BULBS 5
-#define M_FOG_BULB_MAX_SQ_DIST 0x19000000 // = 20480^2, the OG CreateFogPos
 
 static M_ROOM_BAKE *m_RoomBake = nullptr;
 static int32_t m_RoomBakeCount = 0;

@@ -17,11 +17,6 @@
 #include <math.h>
 #include <uthash.h>
 
-typedef enum {
-    SF_FLIP = 0x40,
-    SF_UNFLIP = 0x80,
-} SOUND_SOURCE_FLAG;
-
 #define M_DECIBEL_LUT_SIZE 512
 #define M_SOUND_CLOSE_RANGE (1 * WALL_L)
 
@@ -30,6 +25,11 @@ typedef enum {
 #define M_SOUND_MAX_VOLUME 0x8000
 #define M_SOUND_MAX_PITCH_CHANGE 6000
 #define M_SOUND_MAX_VOLUME_CHANGE (g_TRVersion >= 3 ? 0x1000 : 0x2000)
+
+typedef enum {
+    SF_FLIP = 0x40,
+    SF_UNFLIP = 0x80,
+} SOUND_SOURCE_FLAG;
 
 typedef struct {
     SAMPLE_ID sample_id;

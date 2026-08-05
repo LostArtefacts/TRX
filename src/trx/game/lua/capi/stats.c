@@ -23,18 +23,6 @@
 #define M_CAT_LEVEL(packed) ((packed) >> 8)
 #define M_CAT_ID(packed) ((packed) & 0xff)
 
-// The count is the level's, and the view is a copy of it, so a write goes back
-// to where it came from rather than into the copy.
-static const char *M_SetCategoryCount(
-    void *const self, const TRX_VALUE *const in)
-{
-    const STATS_CATEGORY *const category = self;
-    if (!Stats_SetCategoryCount(category->level, category->id, in->as_int)) {
-        return "this count is not the level's to set";
-    }
-    return nullptr;
-}
-
 // clang-format off
 static const FIELD_DESC m_StatsFields[] = {
     FIELD(LEVEL_STATS, timer),
@@ -48,6 +36,18 @@ static const FIELD_DESC m_StatsFields[] = {
     // counts behind it are not members here. The secret mask is not one
     // either: which secrets Lara holds is what the secret verbs answer.
 };
+
+// The count is the level's, and the view is a copy of it, so a write goes back
+// to where it came from rather than into the copy.
+static const char *M_SetCategoryCount(
+    void *const self, const TRX_VALUE *const in)
+{
+    const STATS_CATEGORY *const category = self;
+    if (!Stats_SetCategoryCount(category->level, category->id, in->as_int)) {
+        return "this count is not the level's to set";
+    }
+    return nullptr;
+}
 
 static const FIELD_DESC m_CategoryFields[] = {
     FIELD_SET(STATS_CATEGORY, count, M_SetCategoryCount),

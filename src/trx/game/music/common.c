@@ -17,6 +17,13 @@
 #include <trx/game/shell/paths.h>
 #include <trx/version.h>
 
+typedef struct {
+    int32_t audio_stream_id;
+    MUSIC_ID track_id;
+    MUSIC_PLAY_MODE mode;
+    bool active;
+} M_MUSIC_STREAM;
+
 static bool m_Initialised = false;
 static MUSIC_TRACK_STATE m_TrackStates[MAX_MUSIC_TRACKS] = {};
 static MUSIC_ID m_TrackCurrent = MX_INACTIVE;
@@ -26,13 +33,6 @@ static MUSIC_ID m_TrackLooped = MX_INACTIVE;
 // immediately restarting it if Lara remains on the same trigger.
 static MUSIC_ID m_TrackLastPlayed = MX_INACTIVE;
 static MUSIC_ID m_TrackLastLooped = MX_INACTIVE;
-
-typedef struct {
-    int32_t audio_stream_id;
-    MUSIC_ID track_id;
-    MUSIC_PLAY_MODE mode;
-    bool active;
-} M_MUSIC_STREAM;
 
 static float m_MusicVolume = 0.0f;
 static MUSIC_BACKEND *m_Backend = nullptr;

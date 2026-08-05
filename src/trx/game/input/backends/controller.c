@@ -8,35 +8,6 @@
 #include <SDL2/SDL_gamecontroller.h>
 #include <string.h>
 
-typedef enum {
-    BT_BUTTON = 0,
-    BT_AXIS = 1,
-} BUTTON_TYPE;
-
-typedef struct {
-    BUTTON_TYPE type;
-    union {
-        SDL_GameControllerButton button;
-        SDL_GameControllerAxis axis;
-    } bind;
-    int16_t axis_dir;
-} CONTROLLER_MAP;
-
-typedef struct {
-    INPUT_ROLE role;
-    CONTROLLER_MAP map;
-} BUILTIN_CONTROLLER_LAYOUT;
-
-static BUILTIN_CONTROLLER_LAYOUT m_BuiltinLayout[] = {
-#define INPUT_CONTROLLER_ASSIGN_BUTTON(role, bind)                             \
-    { role, { BT_BUTTON, { .button = bind }, 0 } },
-#define INPUT_CONTROLLER_ASSIGN_AXIS(role, bind, axis_dir)                     \
-    { role, { BT_AXIS, { .axis = bind }, axis_dir } },
-#include <trx/game/input/backends/controller.def>
-    // guard
-    { -1, { 0, { 0 }, 0 } },
-};
-
 // clang-format off
 #define M_ICON_X              "\\{controller button cross}"
 #define M_ICON_CIRCLE         "\\{controller button circle}"
@@ -93,6 +64,30 @@ static BUILTIN_CONTROLLER_LAYOUT m_BuiltinLayout[] = {
 #define M_NAME_Y              "\\{controller button y}"
 // clang-format on
 
+// Per-button/axis tracking for combo prefix deferral.
+// Index: buttons use their enum directly, axes use
+// SDL_CONTROLLER_BUTTON_MAX + axis*2 + (axis_dir == 1 ? 1 : 0).
+#define M_PREFIX_SLOTS (SDL_CONTROLLER_BUTTON_MAX + SDL_CONTROLLER_AXIS_MAX * 2)
+
+typedef enum {
+    BT_BUTTON = 0,
+    BT_AXIS = 1,
+} BUTTON_TYPE;
+
+typedef struct {
+    BUTTON_TYPE type;
+    union {
+        SDL_GameControllerButton button;
+        SDL_GameControllerAxis axis;
+    } bind;
+    int16_t axis_dir;
+} CONTROLLER_MAP;
+
+typedef struct {
+    INPUT_ROLE role;
+    CONTROLLER_MAP map;
+} BUILTIN_CONTROLLER_LAYOUT;
+
 typedef struct {
     int32_t key_count;
     CONTROLLER_MAP keys[INPUT_COMBO_MAX_KEYS];
@@ -101,6 +96,16 @@ typedef struct {
 typedef struct {
     CONTROLLER_BINDING slots[INPUT_BINDING_SLOTS];
 } CONTROLLER_ROLE_BINDING;
+
+static BUILTIN_CONTROLLER_LAYOUT m_BuiltinLayout[] = {
+#define INPUT_CONTROLLER_ASSIGN_BUTTON(role, bind)                             \
+    { role, { BT_BUTTON, { .button = bind }, 0 } },
+#define INPUT_CONTROLLER_ASSIGN_AXIS(role, bind, axis_dir)                     \
+    { role, { BT_AXIS, { .axis = bind }, axis_dir } },
+#include <trx/game/input/backends/controller.def>
+    // guard
+    { -1, { 0, { 0 }, 0 } },
+};
 
 static CONTROLLER_ROLE_BINDING m_Layout[INPUT_LAYOUT_NUMBER_OF]
                                        [INPUT_ROLE_NUMBER_OF];
@@ -114,6 +119,23 @@ static bool m_Conflicts[INPUT_LAYOUT_NUMBER_OF][INPUT_ROLE_NUMBER_OF] = {};
 // Internal controller state tables updated via SDL events
 static bool m_ButtonState[SDL_CONTROLLER_BUTTON_MAX] = {};
 static int16_t m_AxisState[SDL_CONTROLLER_AXIS_MAX] = {};
+
+static bool m_PrefixWasHeld[M_PREFIX_SLOTS];
+static bool m_PrefixComboFired[M_PREFIX_SLOTS];
+
+// Per-input press-tick table, indexed the same way as the prefix arrays.
+static uint32_t m_InputDownTick[M_PREFIX_SLOTS];
+static uint32_t m_Tick;
+
+// Per-role deferral tracking for combo disambiguation.
+static bool m_RoleWasActive[INPUT_ROLE_NUMBER_OF];
+
+static bool m_RoleLongerFired[INPUT_ROLE_NUMBER_OF];
+
+// Combo capture state for listen mode.
+static CONTROLLER_BINDING m_CaptureBuffer = { .key_count = 0 };
+
+static bool m_CaptureActive = false;
 
 static const char *M_GetButtonName(const SDL_GameControllerButton button)
 {
@@ -270,10 +292,39 @@ static bool M_CheckBinding(const CONTROLLER_BINDING *const bind)
     return true;
 }
 
-// Combo adapter forward declarations.
+static const CONTROLLER_BINDING *M_GetBinding(
+    const INPUT_LAYOUT layout, const INPUT_ROLE role, const int32_t slot)
+{
+    return &m_Layout[layout][role].slots[slot];
+}
+
 static INPUT_COMBO_BINDING M_GetComboBinding(
-    INPUT_LAYOUT layout, INPUT_ROLE role, int32_t slot);
-static bool M_ComboKeysEqual(const void *a, const void *b);
+    const INPUT_LAYOUT layout, const INPUT_ROLE role, const int32_t slot)
+{
+    const CONTROLLER_BINDING *b = M_GetBinding(layout, role, slot);
+    return (INPUT_COMBO_BINDING) {
+        .key_count = b->key_count,
+        .keys = b->keys,
+        .key_stride = sizeof(CONTROLLER_MAP),
+    };
+}
+
+static bool M_MapsEqual(
+    const CONTROLLER_MAP *const a, const CONTROLLER_MAP *const b)
+{
+    if (a->type != b->type) {
+        return false;
+    }
+    if (a->type == BT_BUTTON) {
+        return a->bind.button == b->bind.button;
+    }
+    return a->bind.axis == b->bind.axis && a->axis_dir == b->axis_dir;
+}
+
+static bool M_ComboKeysEqual(const void *const a, const void *const b)
+{
+    return M_MapsEqual((const CONTROLLER_MAP *)a, (const CONTROLLER_MAP *)b);
+}
 
 static bool M_GetBindState(const INPUT_LAYOUT layout, const INPUT_ROLE role)
 {
@@ -289,24 +340,6 @@ static bool M_GetBindState(const INPUT_LAYOUT layout, const INPUT_ROLE role)
         }
     }
     return false;
-}
-
-static const CONTROLLER_BINDING *M_GetBinding(
-    const INPUT_LAYOUT layout, const INPUT_ROLE role, const int32_t slot)
-{
-    return &m_Layout[layout][role].slots[slot];
-}
-
-static bool M_MapsEqual(
-    const CONTROLLER_MAP *const a, const CONTROLLER_MAP *const b)
-{
-    if (a->type != b->type) {
-        return false;
-    }
-    if (a->type == BT_BUTTON) {
-        return a->bind.button == b->bind.button;
-    }
-    return a->bind.axis == b->bind.axis && a->axis_dir == b->axis_dir;
 }
 
 static bool M_BindingsEqual(
@@ -703,17 +736,6 @@ static bool M_AssignToJSONObject(
     return true;
 }
 
-// Per-button/axis tracking for combo prefix deferral.
-// Index: buttons use their enum directly, axes use
-// SDL_CONTROLLER_BUTTON_MAX + axis*2 + (axis_dir == 1 ? 1 : 0).
-#define M_PREFIX_SLOTS (SDL_CONTROLLER_BUTTON_MAX + SDL_CONTROLLER_AXIS_MAX * 2)
-static bool m_PrefixWasHeld[M_PREFIX_SLOTS];
-static bool m_PrefixComboFired[M_PREFIX_SLOTS];
-
-// Per-input press-tick table, indexed the same way as the prefix arrays.
-static uint32_t m_InputDownTick[M_PREFIX_SLOTS];
-static uint32_t m_Tick;
-
 static int32_t M_MapToPrefixIdx(const CONTROLLER_MAP *const map)
 {
     if (map->type == BT_BUTTON) {
@@ -731,23 +753,6 @@ static uint32_t M_GetPressTick(const void *const key)
 static bool M_IsInputHeld(const CONTROLLER_MAP *const map)
 {
     return M_CheckMap(map);
-}
-
-// Combo adapter functions for the shared combo layer.
-static INPUT_COMBO_BINDING M_GetComboBinding(
-    const INPUT_LAYOUT layout, const INPUT_ROLE role, const int32_t slot)
-{
-    const CONTROLLER_BINDING *b = M_GetBinding(layout, role, slot);
-    return (INPUT_COMBO_BINDING) {
-        .key_count = b->key_count,
-        .keys = b->keys,
-        .key_stride = sizeof(CONTROLLER_MAP),
-    };
-}
-
-static bool M_ComboKeysEqual(const void *const a, const void *const b)
-{
-    return M_MapsEqual((const CONTROLLER_MAP *)a, (const CONTROLLER_MAP *)b);
 }
 
 static INPUT_COMBO_BINDING M_ToCombo(const CONTROLLER_BINDING *const b)
@@ -798,10 +803,6 @@ static void M_ResolvePrefixDeferral(
 
     m_PrefixWasHeld[idx] = held;
 }
-
-// Per-role deferral tracking for combo disambiguation.
-static bool m_RoleWasActive[INPUT_ROLE_NUMBER_OF];
-static bool m_RoleLongerFired[INPUT_ROLE_NUMBER_OF];
 
 static void M_ResolveCombos(
     const INPUT_LAYOUT layout, INPUT_STATE *const result)
@@ -972,10 +973,6 @@ static void M_ResolveCombos(
         }
     }
 }
-
-// Combo capture state for listen mode.
-static CONTROLLER_BINDING m_CaptureBuffer = { .key_count = 0 };
-static bool m_CaptureActive = false;
 
 static bool M_CaptureHasMap(const CONTROLLER_MAP *const map)
 {

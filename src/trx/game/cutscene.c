@@ -23,13 +23,6 @@
 #include <trx/game/sparks.h>
 #include <trx/version.h>
 
-static CAMERA_INFO m_LocalCamera = {};
-static OBJECT_MESH **m_CapturedObjectMeshes = nullptr;
-static OBJECT_ID *m_CapturedObjectMeshOwners = nullptr;
-static int32_t m_CapturedObjectMeshCount = 0;
-static bool m_DrawLeftGunFlash = false;
-static bool m_DrawRightGunFlash = false;
-
 typedef struct {
     bool is_valid;
     LARA_SKIN_TYPE skin_type;
@@ -39,6 +32,13 @@ typedef struct {
     LARA_GUN_TYPE thigh_r_type;
     bool holsters_visible;
 } M_LARA_CUTSCENE_STATE;
+
+static CAMERA_INFO m_LocalCamera = {};
+static OBJECT_MESH **m_CapturedObjectMeshes = nullptr;
+static OBJECT_ID *m_CapturedObjectMeshOwners = nullptr;
+static int32_t m_CapturedObjectMeshCount = 0;
+static bool m_DrawLeftGunFlash = false;
+static bool m_DrawRightGunFlash = false;
 
 static M_LARA_CUTSCENE_STATE m_LaraCutsceneState = {};
 
