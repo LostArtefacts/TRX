@@ -375,7 +375,7 @@ static void M_ProcessEvent(const SDL_Event *const event)
 {
     if (event->type == SDL_FINGERDOWN
         && !g_Config.input.enable_touch_controls) {
-        g_Config.input.enable_touch_controls = true;
+        CONFIG_SET(g_Config.input.enable_touch_controls, true);
         TouchOverlay_SetVisible(true);
         Config_Write();
     }

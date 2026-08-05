@@ -1,6 +1,7 @@
 #include <trx/game/ui/common.h>
 
 #include <trx/config.h>
+#include <trx/config/registry.h>
 #include <trx/core/memory.h>
 #include <trx/core/utils.h>
 #include <trx/debug.h>
@@ -161,9 +162,14 @@ void UI_Shutdown(void)
     UI_ShutdownEvents();
 }
 
-void UI_ToggleState(bool *const config_setting)
+void UI_ToggleState(const bool *const config_setting)
 {
-    *config_setting ^= true;
+    CONFIG_OPTION *const option = Config_FindOptionByMirror(config_setting);
+    const TRX_VALUE value = {
+        .type = TVT_BOOL,
+        .as_bool = !*config_setting,
+    };
+    Config_Option_Write(option, &value);
     Config_Update();
     Console_Log(
         *config_setting ? GS("general/osd/ui_on") : GS("general/osd/ui_off"));

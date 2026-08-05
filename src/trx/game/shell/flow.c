@@ -1,5 +1,6 @@
 #include <trx/config.h>
 #include <trx/config/presets.h>
+#include <trx/config/registry.h>
 #include <trx/core/enum_map.h>
 #include <trx/core/log.h>
 #include <trx/core/memory.h>
@@ -100,9 +101,7 @@ static void M_ShowWindow(void)
 
 static void M_HandleConfigChange(const EVENT *const event, void *const data)
 {
-    const CONFIG *const old = &g_SavedConfig;
-    const CONFIG *const new = &g_Config;
-    Shell_HandleConfigChange(old, new);
+    Shell_HandleConfigChange(event->data);
 }
 
 static void M_SetupSDL(void)
@@ -243,7 +242,7 @@ static void M_PrepareSystem(void)
         ShellState_RememberLastPlayedMod(s->args->startup.mod->name);
     }
 
-    Config_ApplyDefaultSettings();
+    Config_RegisterBuiltInOptions();
 
     TRXPath_Init(s->args);
 
@@ -287,7 +286,7 @@ static void M_PrepareSystem(void)
 
     // Auto-enable touch controls on first run if touch hardware is present.
     if (!Config_IsLoaded() && Touch_HasHardwareSupport()) {
-        g_Config.input.enable_touch_controls = true;
+        CONFIG_SET(g_Config.input.enable_touch_controls, true);
     }
     TouchOverlay_SetVisible(g_Config.input.enable_touch_controls);
 

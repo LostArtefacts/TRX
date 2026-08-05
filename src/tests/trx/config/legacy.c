@@ -7,12 +7,17 @@
 
 #include <harness/harness.h>
 
+#include <trx/config/common.h>
 #include <trx/config/legacy.h>
 #include <trx/config/vars.h>
 #include <trx/version.h>
 
 #include <string.h>
 
+// A migration writes through the option that owns the setting. Standing one up
+// would mean the registry and the settings file behind it, and neither is what
+// a migration is being tested for, so this puts the value where the option
+// would have put it and nothing else happens.
 static void M_Load(const char *const text)
 {
     JSON_VALUE *const root = JSON_Parse(text, strlen(text));
@@ -20,9 +25,17 @@ static void M_Load(const char *const text)
     JSON_ValueFree(root);
 }
 
+bool Config_SetValue(const void *const mirror, const TRX_VALUE value)
+{
+    // Every setting a migration writes is int32 storage: a mode the file spells
+    // as a name, or the version it was last written by.
+    *(int32_t *)mirror = value.as_int;
+    return true;
+}
+
 TEST(a_legacy_key_is_read_while_the_option_that_replaced_it_is_absent)
 {
-    g_Config.gameplay.target_change_mode = TARGET_CHANGE_MODE_OFF;
+    g_ConfigStorage.gameplay.target_change_mode = TARGET_CHANGE_MODE_OFF;
     M_Load("{\"enable_target_change\":true}");
     CHECK_EQ_INT(
         g_Config.gameplay.target_change_mode, TARGET_CHANGE_MODE_ENHANCED);
@@ -30,7 +43,7 @@ TEST(a_legacy_key_is_read_while_the_option_that_replaced_it_is_absent)
 
 TEST(a_legacy_key_gives_way_to_the_option_that_replaced_it)
 {
-    g_Config.gameplay.target_change_mode = TARGET_CHANGE_MODE_OFF;
+    g_ConfigStorage.gameplay.target_change_mode = TARGET_CHANGE_MODE_OFF;
     M_Load("{\"enable_target_change\":true,\"target_change_mode\":\"off\"}");
     CHECK_EQ_INT(g_Config.gameplay.target_change_mode, TARGET_CHANGE_MODE_OFF);
 }
@@ -39,7 +52,7 @@ TEST(a_migration_that_only_carries_an_opt_in_leaves_the_rest_alone)
 {
     // The per-game default covers a player who never asked for anything, so
     // only the ones who did are carried over.
-    g_Config.gameplay.save_crystal_mode = SAVE_CRYSTAL_HEAL;
+    g_ConfigStorage.gameplay.save_crystal_mode = SAVE_CRYSTAL_HEAL;
     M_Load("{\"enable_save_crystals\":false}");
     CHECK_EQ_INT(g_Config.gameplay.save_crystal_mode, SAVE_CRYSTAL_HEAL);
 
@@ -60,8 +73,8 @@ TEST(a_migration_that_reads_the_game_answers_for_the_game_it_is_run_for)
 
 TEST(a_file_the_migrations_have_nothing_to_say_about_is_left_alone)
 {
-    g_Config.visuals.breeze_mode = BREEZE_MODE_TR2;
-    g_Config.gameplay.save_crystal_mode = SAVE_CRYSTAL_HEAL;
+    g_ConfigStorage.visuals.breeze_mode = BREEZE_MODE_TR2;
+    g_ConfigStorage.gameplay.save_crystal_mode = SAVE_CRYSTAL_HEAL;
     M_Load("{\"breeze_mode\":\"tr3\",\"save_crystal_mode\":\"save\"}");
     CHECK_EQ_INT(g_Config.visuals.breeze_mode, BREEZE_MODE_TR2);
     CHECK_EQ_INT(g_Config.gameplay.save_crystal_mode, SAVE_CRYSTAL_HEAL);
@@ -69,12 +82,12 @@ TEST(a_file_the_migrations_have_nothing_to_say_about_is_left_alone)
 
 TEST(the_version_the_file_was_last_written_by_is_brought_up_to_date)
 {
-    g_Config.config_version = 0;
+    g_ConfigStorage.config_version = 0;
     M_Load("{}");
     CHECK_EQ_INT(g_Config.config_version, 1);
 
     // A file with no version at all is one nothing has written yet.
-    g_Config.config_version = -1;
+    g_ConfigStorage.config_version = -1;
     M_Load("{}");
     CHECK_EQ_INT(g_Config.config_version, -1);
 }

@@ -438,9 +438,17 @@ bool Value_EqualPtr(
     TRX_VALUE vb;
     Value_ReadPtr(type, a, &va);
     Value_ReadPtr(type, b, &vb);
-    switch (type) {
+    return Value_Equal(&va, &vb);
+}
+
+bool Value_Equal(const TRX_VALUE *const a, const TRX_VALUE *const b)
+{
+    if (a->type != b->type) {
+        return false;
+    }
+    switch (a->type) {
     case TVT_BOOL:
-        return va.as_bool == vb.as_bool;
+        return a->as_bool == b->as_bool;
     case TVT_S8:
     case TVT_U8:
     case TVT_S16:
@@ -448,23 +456,23 @@ bool Value_EqualPtr(
     case TVT_S32:
     case TVT_U32:
     case TVT_ENUM:
-        return va.as_int == vb.as_int;
+        return a->as_int == b->as_int;
     case TVT_FLOAT:
     case TVT_DOUBLE:
-        return va.as_num == vb.as_num;
+        return a->as_num == b->as_num;
     case TVT_XYZ_16:
     case TVT_XYZ_32:
-        return va.as_xyz.x == vb.as_xyz.x && va.as_xyz.y == vb.as_xyz.y
-            && va.as_xyz.z == vb.as_xyz.z;
+        return a->as_xyz.x == b->as_xyz.x && a->as_xyz.y == b->as_xyz.y
+            && a->as_xyz.z == b->as_xyz.z;
     case TVT_RGB_888:
-        return va.as_rgb.r == vb.as_rgb.r && va.as_rgb.g == vb.as_rgb.g
-            && va.as_rgb.b == vb.as_rgb.b;
+        return a->as_rgb.r == b->as_rgb.r && a->as_rgb.g == b->as_rgb.g
+            && a->as_rgb.b == b->as_rgb.b;
     case TVT_STRING:
     case TVT_DYNAMIC_ENUM:
-        if (va.as_str == nullptr || vb.as_str == nullptr) {
-            return va.as_str == vb.as_str;
+        if (a->as_str == nullptr || b->as_str == nullptr) {
+            return a->as_str == b->as_str;
         }
-        return strcmp(va.as_str, vb.as_str) == 0;
+        return strcmp(a->as_str, b->as_str) == 0;
     }
     return false;
 }

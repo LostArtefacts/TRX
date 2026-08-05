@@ -1,6 +1,7 @@
 #include <trx/game/lara/skin/common.h>
 
 #include <trx/config.h>
+#include <trx/config/registry.h>
 #include <trx/core/log.h>
 #include <trx/core/memory.h>
 #include <trx/core/strings.h>
@@ -60,11 +61,7 @@ static LARA_SKIN_TYPE M_GetFallbackOutfitType(void)
 static void M_SetConfigOutfit(const char *const outfit_name)
 {
     ASSERT(outfit_name != nullptr);
-    char *const old = g_Config.visuals.lara_outfit;
-    g_Config.visuals.lara_outfit = Memory_DupStr(outfit_name);
-    // Keep the old pointer alive until after the duplication so Config_Update
-    // can reliably detect a string change via pointer identity.
-    Memory_Free(old);
+    CONFIG_SET(g_Config.visuals.lara_outfit, outfit_name);
 }
 
 static LARA_SKIN_TYPE M_GetCurrentLevelOutfitType(void)
@@ -451,7 +448,9 @@ void Lara_Skin_CycleOutfit(const int32_t dir)
         return;
     }
 
-    if (Config_IsOptionEnforced(&g_Config.visuals.lara_outfit)) {
+    const CONFIG_OPTION *const option =
+        Config_FindOptionByMirror(&g_Config.visuals.lara_outfit);
+    if (option != nullptr && Config_Option_IsHeld(option)) {
         return;
     }
 

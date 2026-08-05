@@ -154,7 +154,9 @@ test("a setting the game flow enforces cannot be overridden", function()
     trx.config.override("visuals.fov", 90)
   end)
   assert(trx.config.get("visuals.fov") == 65)
-  assert(trx.config.is_overridden("visuals.fov") == false)
+  -- what the level asked for is still what holds the setting; the script's
+  -- override did not go over the top of it
+  assert(trx.config.is_overridden("visuals.fov") == true)
 end)
 
 test("an enum option reads and writes by value name", function()

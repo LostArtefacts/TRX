@@ -1,6 +1,7 @@
 #include <trx/game/ui/settings.h>
 
 #include <trx/config.h>
+#include <trx/config/registry.h>
 #include <trx/core/dynamic_enum.h>
 #include <trx/core/json/util/file.h>
 #include <trx/core/json/util/read_io.h>
@@ -118,22 +119,22 @@ static void M_FreeThemeGroup(M_THEME_GROUP *const group)
 static void M_ResetDynamicEnumValues(void)
 {
     const CONFIG_OPTION *const bar_look_option =
-        Config_GetOption(&g_Config.ui.bar_look);
+        Config_FindOptionByMirror(&g_Config.ui.bar_look);
     if (bar_look_option != nullptr) {
-        DynamicEnum_ResetValues(bar_look_option->target);
+        DynamicEnum_ResetValues(Config_Option_GetEnumKey(bar_look_option));
     }
 
     for (int32_t i = 0; i < UI_BAR_NUMBER_OF; i++) {
         const M_BAR_COLOR_SELECT *const select = &m_BarColorSelect[i];
         const CONFIG_OPTION *const pc_option =
-            Config_GetOption(select->pc_color);
+            Config_FindOptionByMirror(select->pc_color);
         if (pc_option != nullptr) {
-            DynamicEnum_ResetValues(pc_option->target);
+            DynamicEnum_ResetValues(Config_Option_GetEnumKey(pc_option));
         }
         const CONFIG_OPTION *const ps1_option =
-            Config_GetOption(select->ps1_color);
+            Config_FindOptionByMirror(select->ps1_color);
         if (ps1_option != nullptr) {
-            DynamicEnum_ResetValues(ps1_option->target);
+            DynamicEnum_ResetValues(Config_Option_GetEnumKey(ps1_option));
         }
     }
 }
@@ -162,13 +163,14 @@ static bool M_IsBarColorNameEncountered(
 static void M_SeedDynamicEnumBarColors(
     const CONFIG_OPTION *const option, const UI_BAR_THEME_KIND kind)
 {
-    // The option map is chosen by TR version, so before the version is set
-    // during boot Config_GetOption finds nothing and seeding no-ops - as it did
-    // when the dynamic enum call still absorbed a null option.
+    // The options are registered once the TR version is known, so before that
+    // happens during boot the lookup finds nothing and seeding no-ops - as it
+    // did when the dynamic enum call still absorbed a null option.
     if (option == nullptr) {
         return;
     }
-    DynamicEnum_ResetValues(option->target);
+    const void *const token = Config_Option_GetEnumKey(option);
+    DynamicEnum_ResetValues(token);
     for (int32_t i = 0; i < m_Settings.bar_theme_count; i++) {
         const M_BAR_THEME_ENTRY *const theme = &m_Settings.bar_themes[i];
         if (theme->kind != kind) {
@@ -179,7 +181,7 @@ static void M_SeedDynamicEnumBarColors(
             if (M_IsBarColorNameEncountered(kind, name, i, j)) {
                 continue;
             }
-            DynamicEnum_AddValue(option->target, name, nullptr);
+            DynamicEnum_AddValue(token, name, nullptr);
         }
     }
 }
@@ -187,22 +189,23 @@ static void M_SeedDynamicEnumBarColors(
 static void M_SeedDynamicEnumValues(void)
 {
     const CONFIG_OPTION *const bar_look_option =
-        Config_GetOption(&g_Config.ui.bar_look);
+        Config_FindOptionByMirror(&g_Config.ui.bar_look);
     if (bar_look_option != nullptr) {
-        DynamicEnum_ResetValues(bar_look_option->target);
+        const void *const token = Config_Option_GetEnumKey(bar_look_option);
+        DynamicEnum_ResetValues(token);
         for (int32_t i = 0; i < m_Settings.bar_theme_count; i++) {
             const M_BAR_THEME_ENTRY *const theme = &m_Settings.bar_themes[i];
-            DynamicEnum_AddValue(
-                bar_look_option->target, theme->name, theme->name_gs);
+            DynamicEnum_AddValue(token, theme->name, theme->name_gs);
         }
     }
 
     for (int32_t i = 0; i < UI_BAR_NUMBER_OF; i++) {
         const M_BAR_COLOR_SELECT *const select = &m_BarColorSelect[i];
         M_SeedDynamicEnumBarColors(
-            Config_GetOption(select->pc_color), UI_BAR_THEME_PC_KIND);
+            Config_FindOptionByMirror(select->pc_color), UI_BAR_THEME_PC_KIND);
         M_SeedDynamicEnumBarColors(
-            Config_GetOption(select->ps1_color), UI_BAR_THEME_PS1_KIND);
+            Config_FindOptionByMirror(select->ps1_color),
+            UI_BAR_THEME_PS1_KIND);
     }
 }
 

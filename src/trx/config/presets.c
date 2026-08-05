@@ -1,6 +1,7 @@
 #include <trx/config/presets.h>
 
 #include <trx/config/common.h>
+#include <trx/config/registry.h>
 #include <trx/core/filesystem.h>
 #include <trx/core/json.h>
 #include <trx/core/json/util/file.h>
@@ -104,9 +105,9 @@ static bool M_LoadPreset(const char *const path)
          elem = elem->next, i++) {
         preset.keys[i] = Memory_DupStr(elem->name->string);
         char *const serialized = M_SerializeJSONValue(elem->value);
-        const CONFIG_OPTION *const opt = Config_GetOptionByPath(preset.keys[i]);
+        const CONFIG_OPTION *const opt = Config_FindOption(preset.keys[i]);
         preset.values[i] =
-            Config_NormalizeOptionValueString(opt, serialized, false);
+            Config_Option_NormalizeValueString(opt, serialized, false);
         Memory_Free(serialized);
     }
 
@@ -181,13 +182,12 @@ void Config_Presets_Apply(const int32_t idx)
         return;
     }
     for (int32_t i = 0; i < preset->setting_count; i++) {
-        const CONFIG_OPTION *const opt =
-            Config_GetOptionByPath(preset->keys[i]);
+        CONFIG_OPTION *const opt = Config_FindOption(preset->keys[i]);
         if (opt == nullptr) {
             LOG_WARNING("Preset: unknown config key '%s'", preset->keys[i]);
             continue;
         }
-        Config_SetOptionValueFromString(opt, preset->values[i]);
+        Config_Option_SetFromString(opt, preset->values[i], false);
     }
     Config_Update();
     Config_Write();

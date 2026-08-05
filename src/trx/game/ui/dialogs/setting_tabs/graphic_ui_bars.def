@@ -1,5 +1,5 @@
 X_UI_CFG(ui.show_bars)
-X_UI_CFG(ui.bar_scale,                                  .min_value = 50, .max_value = 200, .delta_slow = 1, .delta_fast = 5, .custom_handler = { .is_available = UI_Settings_Bar_IsAvailable })
+X_UI_CFG(ui.bar_scale,                                  .delta_slow = 1, .delta_fast = 5, .custom_handler = { .is_available = UI_Settings_Bar_IsAvailable })
 X_UI_CFG_DYN_ENUM(ui.bar_look,                          .custom_handler = { .is_available = UI_Settings_Bar_IsAvailable })
 X_UI_CFG(ui.enable_smooth_bars,                         .custom_handler = { .is_available = UI_Settings_Bar_IsAvailable })
 X_UI_CFG(ui.enable_bar_flashing,                        .custom_handler = { .is_available = UI_Settings_Bar_IsAvailable })

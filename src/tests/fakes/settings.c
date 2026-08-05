@@ -97,12 +97,31 @@ void File_CloseDirectory(void *const dir)
     closedir(dir);
 }
 
-bool ConfigFile_Read(const CONFIG_IO_ARGS *const control)
+bool ConfigFile_Read(
+    const char *const default_path, const char *const enforced_path)
 {
     return false;
 }
 
-bool ConfigFile_Write(const CONFIG_IO_ARGS *const control)
+JSON_OBJECT *ConfigFile_GetRoot(void)
+{
+    return nullptr;
+}
+
+void ConfigFile_Forget(void)
+{
+}
+
+void ConfigFile_ApplyFileValueTo(CONFIG_OPTION *const option)
+{
+}
+
+void ConfigFile_ApplyEnforcedTo(CONFIG_OPTION *const option)
+{
+}
+
+bool ConfigFile_Write(
+    const char *const default_path, void (*const action)(JSON_OBJECT *))
 {
     return true;
 }

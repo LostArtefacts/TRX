@@ -181,37 +181,6 @@ void Output_Uniforms_UploadFogDistance(
         &fog_distance);
 }
 
-void Output_Uniforms_UploadGameBrightnessMultiplier(
-    const OUTPUT_UNIFORMS *const uniforms,
-    const float game_brightness_multiplier)
-{
-    ASSERT(uniforms != nullptr);
-
-    float clamped = game_brightness_multiplier;
-    CLAMP(clamped, CONFIG_MIN_BRIGHTNESS, CONFIG_MAX_BRIGHTNESS);
-
-    glBindBuffer(GL_UNIFORM_BUFFER, uniforms->general);
-    TRX_GL_TRACK_SUBDATA(
-        glBufferSubData, GL_UNIFORM_BUFFER,
-        offsetof(M_UNIFORM_GENERAL, brightness_multiplier), sizeof(clamped),
-        &clamped);
-}
-
-void Output_Uniforms_UploadUIBrightnessMultiplier(
-    const OUTPUT_UNIFORMS *const uniforms, const float brightness_multiplier)
-{
-    ASSERT(uniforms != nullptr);
-
-    float clamped = brightness_multiplier;
-    CLAMP(clamped, CONFIG_MIN_BRIGHTNESS, CONFIG_MAX_BRIGHTNESS);
-
-    glBindBuffer(GL_UNIFORM_BUFFER, uniforms->general);
-    TRX_GL_TRACK_SUBDATA(
-        glBufferSubData, GL_UNIFORM_BUFFER,
-        offsetof(M_UNIFORM_GENERAL, ui_brightness_multiplier), sizeof(clamped),
-        &clamped);
-}
-
 void Output_Uniforms_UploadRoomLights(
     const OUTPUT_UNIFORMS *const uniforms, const ROOM *const room)
 {

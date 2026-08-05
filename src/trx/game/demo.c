@@ -56,8 +56,7 @@ static void M_PrepareConfig(M_PRIV *const p)
     p->old_bonus_flag = Game_GetBonusFlag();
     Game_SetBonusFlag(GBF_NONE);
 #define X_PROCESS_CONFIG(var, value)                                           \
-    ASSERT(Config_PushOptionOverride(                                          \
-        &g_Config.var, &(typeof(g_Config.var)) { value }));
+    ASSERT(CONFIG_PUSH_HOLD(g_Config.var, value, CONFIG_HOLD_DEMO));
     L_MODIFY_CONFIG();
 #undef X_PROCESS_CONFIG
 }
@@ -65,8 +64,7 @@ static void M_PrepareConfig(M_PRIV *const p)
 static void M_RestoreConfig(M_PRIV *const p)
 {
     Game_SetBonusFlag(p->old_bonus_flag);
-#define X_PROCESS_CONFIG(var, value)                                           \
-    ASSERT(Config_PopOptionOverride(&g_Config.var));
+#define X_PROCESS_CONFIG(var, value) ASSERT(CONFIG_POP_HOLD(g_Config.var));
     L_MODIFY_CONFIG();
 #undef X_PROCESS_CONFIG
     Config_Update();

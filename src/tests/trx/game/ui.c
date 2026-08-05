@@ -12,6 +12,7 @@
 #include <harness/harness.h>
 
 #include <trx/config.h>
+#include <trx/config/registry.h>
 #include <trx/config/presets.h>
 #include <trx/core/json.h>
 #include <trx/core/memory.h>
@@ -179,7 +180,10 @@ static void M_SetUp(const int32_t tr_version, const char *const lang)
     M_LoadLanguage(lang);
     FakeUI_SetGame(tr_version);
     FakeUI_SetViewport(640, 480);
-    g_Config.ui.text_scale = 1.0f;
+    // The dialogs walk the options this game names, so they have to exist
+    // before a row can be measured.
+    Config_RegisterBuiltInOptions();
+    CONFIG_SET(g_Config.ui.text_scale, 1.0f);
     UI_LoadText();
 }
 
