@@ -36,6 +36,12 @@ CONFIG_OPTION *Config_FindOption(const char *path);
 // setting - names the option that owns it.
 CONFIG_OPTION *Config_FindOptionByMirror(const void *mirror);
 
+// Bumped whenever an option is added or dropped. Anything that resolves a name
+// into an option and keeps the answer has to notice that the answer went stale;
+// an option's address is stable for its lifetime, but a game change ends every
+// lifetime at once.
+int32_t Config_GetGeneration(void);
+
 // Drops every hold and the player's value underneath it, leaving whatever the
 // topmost hold last applied as the value in force. Nothing is put back: this is
 // for a config about to be read, where what the file says is what the option
