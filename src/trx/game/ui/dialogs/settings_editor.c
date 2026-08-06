@@ -548,11 +548,13 @@ static void M_OptionLabel(
 {
     const UI_SETTING_HANDLER *const handler =
         row != nullptr ? row->handler : nullptr;
-    const bool is_available = handler == nullptr
-        || handler->is_available == nullptr
-        || handler->is_available(row->option, handler->user_data);
-    const bool is_enforced =
-        star_if_enforced && row != nullptr && M_IsOptionHeld(row);
+    const bool is_held = M_IsOptionHeld(row);
+    // A held row is not the player's to move, so it reads as one they cannot
+    // move rather than only carrying the star that says who took it.
+    const bool is_available = !is_held
+        && (handler == nullptr || handler->is_available == nullptr
+            || handler->is_available(row->option, handler->user_data));
+    const bool is_enforced = star_if_enforced && is_held;
     const char *const suffix = is_enforced ? "*" : "";
 
     if (!is_available) {
