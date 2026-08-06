@@ -38,7 +38,8 @@ INF | 2025-10-04 12:12:23.155 [scripts/level1.lua:2:?] hello from level 1!
 A game can also ship one script that belongs to the game rather than to any of
 its levels. Create `scripts/_game.lua` in the game's directory and it runs once
 as the game starts, with the game flow, the strings and the settings all in
-place. Nothing declares it: the file being there is what runs it.
+place. Nothing declares it: the file being there is what runs it. It is where a
+game declares settings of its own, with `trx.config.declare`.
 
 An expansion that has nothing of its own to set up needs no file: the script of
 the game it extends runs instead. Shipping one replaces that script rather than

@@ -1821,6 +1821,19 @@
         "visuals.water_color": {
             "title": "Water color",
             "description": "Color of the water.",
+        },
+        "visuals.water_color_mode": {
+            "description": "Which release's underwater tint to use. While a preset is picked it holds the water color below; Custom leaves that color to you.",
+            "title": "Water color preset",
+            "values": {
+                "custom": "Custom",
+                "dos": "DOS",
+                "pc": "PC",
+                "pc_hardware": "PC (hardware)",
+                "pc_software": "PC (software)",
+                "ps1": "PS1",
+                "tombati": "TombATI",
+            }
         }
     },
     "objects": {

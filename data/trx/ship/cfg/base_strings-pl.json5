@@ -1821,6 +1821,19 @@
         "visuals.water_color": {
             "title": "Kolor wody",
             "description": "Kolor wody.",
+        },
+        "visuals.water_color_mode": {
+            "description": "\\{review}Który podwodny odcień ma zostać użyty. Dopóki ustawienie jest wybrane, utrzymuje kolor wody poniżej; Własny pozostawia ten kolor tobie.",
+            "title": "\\{review}Ustawienie koloru wody",
+            "values": {
+                "custom": "\\{review}Własny",
+                "dos": "\\{review}DOS",
+                "pc": "\\{review}PC",
+                "pc_hardware": "\\{review}PC (sprzętowy)",
+                "pc_software": "\\{review}PC (programowy)",
+                "ps1": "\\{review}PS1",
+                "tombati": "\\{review}TombATI",
+            }
         }
     },
     "objects": {

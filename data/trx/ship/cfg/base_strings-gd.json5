@@ -1821,6 +1821,19 @@
         "visuals.water_color": {
             "title": "Dath an uisge",
             "description": "Dath an uisge.",
+        },
+        "visuals.water_color_mode": {
+            "description": "\\{review}Dè an tuar fo-uisge a thèid a chleachdadh. Fhad 's a tha ro-shuidheachadh air a thaghadh, cumaidh e dath an uisge gu h-ìosal; fàgaidh Gnàthaichte an dath sin agad fhèin.",
+            "title": "\\{review}Ro-shuidheachadh dath an uisge",
+            "values": {
+                "custom": "\\{review}Gnàthaichte",
+                "dos": "\\{review}DOS",
+                "pc": "\\{review}PC",
+                "pc_hardware": "\\{review}PC (bathar-cruaidh)",
+                "pc_software": "\\{review}PC (bathar-bog)",
+                "ps1": "\\{review}PS1",
+                "tombati": "\\{review}TombATI",
+            }
         }
     },
     "objects": {

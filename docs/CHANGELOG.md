@@ -7,6 +7,7 @@
 - added a `/dry` console command, to dry Lara off after a swim
 - added a `/rule` console command, to inspect and change the numbers the game plays by, such as how quickly the cold gets to Lara
 - added an option for the wobbly geometry of the PlayStation releases (Graphic Options → Rendering → Vertex snapping)
+- added a water color preset, offering the underwater tint each release shipped with, per level where the PlayStation ones varied it; picking one holds the water color below it, and Custom gives the player's own back (Graphic Options → Visuals → Water color preset) (#1619)
 - added the ability to clear the gym's best times, by holding the key shown below them
 - added an option to turn off controller support, for players who remap their controller with external software (Gameplay → Controls → Controller support)
 - added internal collision to lifts when they are moving, so that Lara cannot exit through the meshes

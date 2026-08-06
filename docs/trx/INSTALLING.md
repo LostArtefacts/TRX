@@ -1306,6 +1306,8 @@ If you install everything correctly, your game directory should look more or les
 │       ├── gameflow.json5
 │       ├── strings-it.json5
 │       └── strings.json5
+├── modules
+│   └── water_color.lua
 └── TRX.exe</code></pre>
 </details>
 
@@ -2646,6 +2648,8 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │       ├── gameflow.json5
     │   │       ├── strings-it.json5
     │   │       └── strings.json5
+    │   ├── modules
+    │   │   └── water_color.lua
     │   └── icon.icns
     ├── _CodeSignature
     ├── Frameworks
