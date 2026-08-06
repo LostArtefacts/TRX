@@ -783,17 +783,12 @@ void Music_Trigger(MUSIC_ID track_id, const MUSIC_TRIGGER *const trigger)
     }
 
     const bool is_ambient = M_IsAmbientTrack(track_id);
-    if (g_TRVersion != 2 || trigger->kind != MUSIC_TRIGGER_SWITCH) {
-        if ((track->mask & trigger->mask) != 0 || track->is_one_shot) {
-            return;
-        }
-        if (trigger->one_shot && !is_ambient) {
-            track->mask |= trigger->mask;
-            track->is_one_shot = true;
-        }
+    if ((track->mask & trigger->mask) != 0 || track->is_one_shot) {
+        return;
     }
 
-    if (g_Rules.music.is_one_shot_default && !is_ambient) {
+    if ((trigger->one_shot || g_Rules.music.is_one_shot_default)
+        && !is_ambient) {
         track->mask |= trigger->mask;
         track->is_one_shot = true;
     }

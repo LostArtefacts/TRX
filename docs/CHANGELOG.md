@@ -114,6 +114,7 @@
 - fixed Lara being able to use a detonator box or a gong a second time by selecting its key in the inventory
 - fixed Lara's braid floating or being aligned to the water height when vaulting out of wading depth water (#5900)
 - fixed the Silver and Jade Dragon secrets being listed in the wrong order in the Floating Islands statistics (OG bug); saves made before this version have the two swapped
+- fixed music triggered from one-shot switches playing more than once (OG bug)
 
 **TR3**
 - changed the Hand of Rathmore in Reunion to not show pickup aids, in line with the other artefacts
