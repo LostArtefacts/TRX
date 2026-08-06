@@ -184,6 +184,12 @@ bool Config_Option_IsHidden(const CONFIG_OPTION *option);
 // Whether a script asked for this option rather than the game's own map*.def.
 bool Config_Option_IsDeclared(const CONFIG_OPTION *option);
 
+// Whether the option can take this value as it is spelled. A setting a game
+// declares takes only the values that game offers, so a caller naming one from
+// elsewhere is asking for something this option has no answer to.
+bool Config_Option_AcceptsString(
+    const CONFIG_OPTION *option, const char *value);
+
 // Updates the value from a string. Refused on a held option unless forced, in
 // which case the value replaces what the topmost hold applies - so releasing
 // the hold still restores the player's own.

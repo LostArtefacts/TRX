@@ -36,6 +36,14 @@ static bool M_ParseValue(
     return Value_CheckRange(option->value.type, out) == nullptr;
 }
 
+bool Config_Option_AcceptsString(
+    const CONFIG_OPTION *const option, const char *const value)
+{
+    ASSERT(option != nullptr);
+    TRX_VALUE parsed;
+    return M_ParseValue(option, value, &parsed);
+}
+
 bool Config_Option_SetFromString(
     CONFIG_OPTION *const option, const char *const new_value, const bool force)
 {
