@@ -14,6 +14,7 @@
 #include <trx/game/music/backend_cdaudio.h>
 #include <trx/game/music/backend_cdaudio_wad.h>
 #include <trx/game/music/backend_files.h>
+#include <trx/game/rules.h>
 #include <trx/game/shell/paths.h>
 #include <trx/version.h>
 
@@ -781,13 +782,20 @@ void Music_Trigger(MUSIC_ID track_id, const MUSIC_TRIGGER *const trigger)
         return;
     }
 
-    if (trigger->kind != MUSIC_TRIGGER_SWITCH) {
-        if ((track->mask & trigger->mask) != 0) {
+    const bool is_ambient = M_IsAmbientTrack(track_id);
+    if (g_TRVersion != 2 || trigger->kind != MUSIC_TRIGGER_SWITCH) {
+        if ((track->mask & trigger->mask) != 0 || track->is_one_shot) {
             return;
         }
-        if (trigger->one_shot) {
+        if (trigger->one_shot && !is_ambient) {
             track->mask |= trigger->mask;
+            track->is_one_shot = true;
         }
+    }
+
+    if (g_Rules.music.is_one_shot_default && !is_ambient) {
+        track->mask |= trigger->mask;
+        track->is_one_shot = true;
     }
 
     if (trigger->timer == 0 || g_TRVersion != 2) {

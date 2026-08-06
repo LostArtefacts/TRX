@@ -67,6 +67,12 @@ rule("corpse.fade_speed", {
     .. "away once nothing is left. `0` leaves it where it lies.",
 })
 
+rule("music.is_one_shot_default", {
+  type = "boolean",
+  description = "Whether non-ambient tracks triggered from floor data default "
+    .. "to being flagged as one-shot.",
+})
+
 api.define("rules.list", {
   description = "Every rule there is, as dotted `group.field` keys, in no particular order. "
     .. "<!--noref: group.field-->",
