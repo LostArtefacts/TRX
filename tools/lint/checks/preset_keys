@@ -17,6 +17,17 @@ CONFIG_KEY_RE = re.compile(
     r"""^X_CFG_[A-Z0-9_]+(?:_EX)?\(\s*(?:"([^"]+)"|([a-zA-Z0-9_.]+))\s*,"""
 )
 
+# A setting a shipped script declares, as trx.config.declare reads it. The key
+# is written either as a string or as a constant the same file spells out:
+#   trx.config.declare({ key = "visuals.water_color_mode", ... })
+#   local MODE_OPTION = "visuals.water_color_mode"
+# A key a script builds from pieces is not one a preset can name either, so
+# nothing is lost by passing over it.
+DECLARED_KEY_RE = re.compile(r"""\bkey\s*=\s*(?:["']([a-zA-Z0-9_.]+)["']|(\w+))""")
+LUA_CONSTANT_RE = re.compile(
+    r"""^\s*local\s+(\w+)\s*=\s*["']([a-zA-Z0-9_.]+)["']\s*$""", re.MULTILINE
+)
+
 
 def _known_config_keys(config_map_paths: list[Path]) -> set[str]:
     known_keys: set[str] = set()
@@ -34,6 +45,20 @@ def _known_config_keys(config_map_paths: list[Path]) -> set[str]:
             if key:
                 known_keys.add(key)
     return known_keys
+
+
+def _declared_config_keys(lua_paths: list[Path]) -> set[str]:
+    declared_keys: set[str] = set()
+    for lua_path in lua_paths:
+        text = lua_path.read_text(encoding="utf-8")
+        if "trx.config.declare" not in text:
+            continue
+        constants = dict(LUA_CONSTANT_RE.findall(text))
+        for literal, name in DECLARED_KEY_RE.findall(text):
+            key = literal or constants.get(name)
+            if key is not None:
+                declared_keys.add(key)
+    return declared_keys
 
 
 def _preset_config_entries(preset_path: Path) -> dict[str, Any]:
@@ -59,6 +84,12 @@ def check():
     if not known_keys:
         yield LintWarning(config_dir / "map.def", "unable to parse config keys")
         return
+
+    # A game adds settings of its own as its script runs, so a preset may name
+    # one that no map*.def knows.
+    known_keys |= _declared_config_keys(
+        sorted(CommonPaths.shipped_data_dir.rglob("*.lua"))
+    )
 
     presets_dir = CommonPaths.shipped_data_dir / "cfg/presets"
     if not presets_dir.exists():
