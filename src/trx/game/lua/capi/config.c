@@ -164,6 +164,7 @@ static int M_L_ConfigOverride(lua_State *const L)
         return luaL_error(
             L, "failed to override option %s with %s", option->name, new_value);
     }
+    Config_Update();
     return 0;
 }
 
@@ -171,7 +172,11 @@ static int M_L_ConfigOverride(lua_State *const L)
 static int M_L_ConfigRestore(lua_State *const L)
 {
     CONFIG_OPTION *const option = M_GetOption(L, 1);
-    lua_pushboolean(L, Config_Option_PopHold(option));
+    const bool restored = Config_Option_PopHold(option);
+    if (restored) {
+        Config_Update();
+    }
+    lua_pushboolean(L, restored);
     return 1;
 }
 

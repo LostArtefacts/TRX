@@ -59,6 +59,7 @@ static void M_PrepareConfig(M_PRIV *const p)
     ASSERT(CONFIG_PUSH_HOLD(g_Config.var, value, CONFIG_HOLD_DEMO));
     L_MODIFY_CONFIG();
 #undef X_PROCESS_CONFIG
+    Config_Update();
 }
 
 static void M_RestoreConfig(M_PRIV *const p)
