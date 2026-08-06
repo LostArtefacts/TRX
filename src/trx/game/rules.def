@@ -25,3 +25,9 @@ X_GROUP_END(exposure)
 X_GROUP_BEGIN(corpse)
 X_RULE(int16_t, corpse, fade_speed, 0)
 X_GROUP_END(corpse)
+
+// Determines how music triggered from floor data is played and the
+// interpretation of their state flags.
+X_GROUP_BEGIN(music)
+X_RULE(bool, music, is_one_shot_default, false)
+X_GROUP_END(music)
