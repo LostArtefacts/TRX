@@ -8,5 +8,6 @@
         "audio.enable_ps1_sfx": false,
         "gameplay.restore_ps1_enemies": false,
         "visuals.enable_gun_glow": false,
+        "visuals.water_color_mode": "pc_hardware",
     },
 }
