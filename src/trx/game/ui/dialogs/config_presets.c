@@ -87,6 +87,17 @@ static char *M_FormatTitle(UI_CONFIG_PRESETS_STATE *const s)
     return String_Format(GS("general/config_presets/title_fmt"), preset_name);
 }
 
+// Whether a preset's entry is one this game answers to. Every preset is
+// offered whichever game is running, and a setting a game declares takes only
+// the values that game offers, so what this one cannot take is passed over
+// rather than shown as a change it would not make.
+static bool M_IsSettingApplicable(
+    const CONFIG_OPTION *const opt, const char *const value)
+{
+    return opt != nullptr && Config_Option_AcceptsString(opt, value)
+        && strcmp(Config_Option_GetValueAsString(opt, false), value) != 0;
+}
+
 static int32_t M_GetChangedSettingCount(const int32_t preset_idx)
 {
     const CONFIG_PRESET *const preset = Config_Presets_Get(preset_idx);
@@ -97,12 +108,7 @@ static int32_t M_GetChangedSettingCount(const int32_t preset_idx)
     int32_t changed_count = 0;
     for (int32_t i = 0; i < preset->setting_count; i++) {
         const CONFIG_OPTION *const opt = Config_FindOption(preset->keys[i]);
-        if (opt == nullptr) {
-            continue;
-        }
-        const char *const current_value =
-            Config_Option_GetValueAsString(opt, false);
-        if (strcmp(current_value, preset->values[i]) != 0) {
+        if (M_IsSettingApplicable(opt, preset->values[i])) {
             changed_count++;
         }
     }
@@ -185,11 +191,7 @@ static float M_GetConfirmContentWidth(UI_CONFIG_PRESETS_STATE *const s)
     if (s->phase == M_PHASE_CONFIRM && preset != nullptr) {
         for (int32_t i = 0; i < preset->setting_count; i++) {
             const CONFIG_OPTION *const opt = Config_FindOption(preset->keys[i]);
-            if (opt == nullptr
-                || strcmp(
-                       Config_Option_GetValueAsString(opt, false),
-                       preset->values[i])
-                    == 0) {
+            if (!M_IsSettingApplicable(opt, preset->values[i])) {
                 continue;
             }
             char *const value_change =
@@ -216,12 +218,7 @@ static void M_DrawConfirmRows(
 
     for (int32_t i = 0; i < preset->setting_count; i++) {
         const CONFIG_OPTION *const opt = Config_FindOption(preset->keys[i]);
-        if (opt == nullptr) {
-            continue;
-        }
-        const char *const current_value_raw =
-            Config_Option_GetValueAsString(opt, false);
-        if (strcmp(current_value_raw, preset->values[i]) == 0) {
+        if (!M_IsSettingApplicable(opt, preset->values[i])) {
             continue;
         }
         char *const value_change = M_FormatValueChange(opt, preset->values[i]);
