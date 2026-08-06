@@ -69,9 +69,13 @@ typedef struct OBJECT {
 
     void (*control_func)(int16_t item_num);
     bool (*draw_func)(const ITEM *item);
-    // NOTE: not to be union'd with draw_func, due to default draw_func impl
-    // being Object_DrawAnimatingItem which takes an ITEM*
-    bool (*effect_draw_func)(const EFFECT *item);
+
+    // Effects are counted in their own pool and drawn from their own struct,
+    // so neither of these can be the item's: the number a control takes would
+    // name another item, and the default draw is Object_DrawAnimatingItem,
+    // which takes an ITEM.
+    void (*effect_control_func)(int16_t effect_num);
+    bool (*effect_draw_func)(const EFFECT *effect);
 
     void (*collision_func)(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
     int32_t (*floor_height_func)(const ITEM *item, XYZ_32 pos, int32_t height);

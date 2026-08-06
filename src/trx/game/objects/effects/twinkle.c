@@ -81,7 +81,7 @@ static void M_Control(const int16_t effect_num)
 
 static void M_Setup(OBJECT *const obj)
 {
-    obj->control_func = M_Control;
+    obj->effect_control_func = M_Control;
 }
 
 void Twinkle_SparkleItem(const ITEM *const item, const uint32_t mesh_mask)

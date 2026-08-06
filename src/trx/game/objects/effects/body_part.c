@@ -257,13 +257,13 @@ static void M_Setup(OBJECT *const obj)
 {
     switch (g_TRVersion) {
     case 4:
-        obj->control_func = M_Control_TR4;
+        obj->effect_control_func = M_Control_TR4;
         break;
     case 3:
-        obj->control_func = M_Control_TR3;
+        obj->effect_control_func = M_Control_TR3;
         break;
     default:
-        obj->control_func = M_Control_TR12;
+        obj->effect_control_func = M_Control_TR12;
         break;
     }
     obj->loaded = true;

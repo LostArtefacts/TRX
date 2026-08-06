@@ -66,8 +66,8 @@ void Effect_Control(void)
         const EFFECT *const effect = Effect_Get(effect_num);
         const OBJECT *const obj = Object_Get(effect->object_id);
         const int16_t next = effect->next_active;
-        if (obj->control_func != nullptr) {
-            obj->control_func(effect_num);
+        if (obj->effect_control_func != nullptr) {
+            obj->effect_control_func(effect_num);
         }
         effect_num = next;
     }

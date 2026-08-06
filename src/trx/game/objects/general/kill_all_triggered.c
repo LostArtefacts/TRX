@@ -46,7 +46,7 @@ static void M_DestroyAllActiveEffects(void)
         const int16_t next_effect_num = effect->next_active;
         const OBJECT *const obj = Object_Get(effect->object_id);
 
-        if (obj->control_func != nullptr
+        if (obj->effect_control_func != nullptr
             && (effect->object_id != O_FLAME || effect->counter >= 0)) {
             Effect_Destroy(effect_num);
         }
