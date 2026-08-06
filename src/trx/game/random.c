@@ -25,7 +25,7 @@ void Random_SeedControl(int32_t seed)
 int32_t Random_GetControl(void)
 {
     m_RandControl = 0x41C64E6DU * m_RandControl + 0x3039U;
-    return (int32_t)((m_RandControl >> 10) & 0x7FFFU);
+    return (int32_t)((m_RandControl >> 10) & (RANDOM_SPAN - 1));
 }
 
 void Random_SeedDraw(int32_t seed)
@@ -42,7 +42,7 @@ int32_t Random_GetDraw(void)
     if (!m_IsDrawFrozen) {
         m_RandDraw = 0x41C64E6DU * m_RandDraw + 0x3039U;
     }
-    return (int32_t)((m_RandDraw >> 10) & 0x7FFFU);
+    return (int32_t)((m_RandDraw >> 10) & (RANDOM_SPAN - 1));
 }
 
 int32_t Random_GetControlSeed(void)

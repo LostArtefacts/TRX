@@ -399,6 +399,14 @@ unit_tests += {
   'bundles': [b_lua_surface, b_lua_math],
 }
 
+# No fake engine either: the real generator is the thing under test. trx.math
+# comes along for the angle unit that trx.random.angle reports in.
+unit_tests += {
+  'name': 'lua/api/random',
+  'bundles': [b_lua_surface, b_lua_math],
+  'engine': ['game/lua/capi/random.c', 'game/random.c'],
+}
+
 unit_tests += {
   'name': 'lua/api/assault',
   'bundles': [b_lua_surface],

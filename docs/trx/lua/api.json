@@ -4849,6 +4849,120 @@
       }
     },
     {
+      "description": "A fraction of one, the whole number itself excepted.",
+      "path": "random.random",
+      "returns": {
+        "description": "A value in [0, 1).",
+        "type": "number"
+      }
+    },
+    {
+      "description": "A whole number between two bounds, both of them included.",
+      "examples": [
+        "local pips = trx.random.randint(1, 6)"
+      ],
+      "params": [
+        {
+          "description": "Lowest value.",
+          "name": "a",
+          "type": "integer"
+        },
+        {
+          "description": "Highest value. Below the lowest raises.",
+          "name": "b",
+          "type": "integer"
+        }
+      ],
+      "path": "random.randint",
+      "returns": {
+        "description": "A value in [a, b].",
+        "type": "integer"
+      }
+    },
+    {
+      "description": "One item out of a list, each as likely as the next.",
+      "examples": [
+        "local sample = trx.random.choice({\n  trx.catalog.samples.LARA_NO,\n  trx.catalog.samples.LARA_YES,\n})"
+      ],
+      "params": [
+        {
+          "description": "What to choose from. An empty list raises.",
+          "list": true,
+          "name": "seq",
+          "type": "any"
+        }
+      ],
+      "path": "random.choice",
+      "returns": {
+        "description": "The item chosen.",
+        "type": "any"
+      }
+    },
+    {
+      "description": "Several items out of a list, drawn one after another so that the same item can come up more than once. Weights give some items a greater share than others.",
+      "examples": [
+        "local drops = trx.random.choices({ \"medipack\", \"ammo\" }, { 1, 3 }, 5)"
+      ],
+      "params": [
+        {
+          "description": "What to choose from. An empty list raises.",
+          "list": true,
+          "name": "seq",
+          "type": "any"
+        },
+        {
+          "description": "One share per item, none of them negative and not all zero. Defaults to an equal share each.",
+          "list": true,
+          "name": "weights",
+          "optional": true,
+          "type": "number"
+        },
+        {
+          "default": 1,
+          "description": "How many to draw. Below 0 raises.",
+          "name": "k",
+          "optional": true,
+          "type": "integer"
+        }
+      ],
+      "path": "random.choices",
+      "returns": {
+        "description": "The items chosen.",
+        "list": true,
+        "type": "any"
+      }
+    },
+    {
+      "description": "A direction, anywhere around the turn.",
+      "examples": [
+        "trx.lara.item.rot = { x = 0, y = trx.random.angle(), z = 0 }"
+      ],
+      "params": [],
+      "path": "random.angle",
+      "returns": {
+        "description": "An angle within one turn.",
+        "type": "math.Angle"
+      }
+    },
+    {
+      "description": "Whether something with the given likelihood happens this time.",
+      "examples": [
+        "if trx.random.chance(0.25) then\n  trx.sound.play(trx.catalog.samples.LARA_NO)\nend"
+      ],
+      "params": [
+        {
+          "description": "How likely, from 0 for never to 1 for always.",
+          "name": "p",
+          "type": "number"
+        }
+      ],
+      "path": "random.chance",
+      "returns": {
+        "description": "Whether it happens.",
+        "type": "boolean"
+      }
+    },
+    {
       "description": "Retrieves a room by number.",
       "examples": [
         "local room = trx.rooms[14]\nroom.underwater = true"
@@ -5515,7 +5629,7 @@
     {
       "description": "Argument checking for the whole of `trx`.",
       "name": "api",
-      "order": 32,
+      "order": 33,
       "title": "API registry"
     },
     {
@@ -5583,7 +5697,7 @@
     {
       "description": "Writing Lua values out as JSON. The API dump the reference is generated from goes through this, so what a script writes out is encoded the way the engine's own data is.",
       "name": "json",
-      "order": 30,
+      "order": 31,
       "title": "JSON"
     },
     {
@@ -5606,7 +5720,7 @@
     {
       "description": "Evaluating Lua at runtime: a string of code, or a file on disk. Both run in the same state as every other script.",
       "name": "lua",
-      "order": 31
+      "order": 32
     },
     {
       "description": "Fixed-point trigonometry, matching the engine's own tables. Using these rather than Lua's `math` library guarantees a script places things exactly where the engine would. `trx.math.Angle` says what an angle is here.",
@@ -5634,6 +5748,11 @@
       "name": "query",
       "order": 9,
       "title": "Query"
+    },
+    {
+      "description": "Random numbers, drawn from the sequence the simulation itself runs on.\n\nThe savegame carries that sequence, so what a script draws comes back the same\nafter a reload, and a script needs no seed of its own. The sequence moves on\nfor the engine as well: a script drawing every frame changes what the creatures\ndecide next.\n\nLua's own `math.random` is a separate generator that nothing saves. It has no\nplace in anything the simulation reads. <!--noref: math.random-->",
+      "name": "random",
+      "order": 29
     },
     {
       "description": "Module for inspecting and altering the rooms of the current level.",
@@ -5664,7 +5783,7 @@
     {
       "description": "Utilities for working with strings.\n\nNot to be confused with `trx.locale`, which is the text a player reads: this module is about manipulating strings, that one is about which string the player gets.",
       "name": "strings",
-      "order": 29
+      "order": 30
     },
     {
       "description": "What a weapon is, rather than what Lara has of it.\n\nNone of this differs between the inventory she carries and the one a level\nkeeps for her, so it belongs to neither: what she holds and how many shots she\nhas are `trx.inventory`.",
