@@ -242,11 +242,15 @@ static void M_DumpConfig(MYFILE *const fp)
         raw_opts, opts->count, sizeof(CONFIG_OPTION *), M_CompareConfigOption);
     for (int32_t i = 0; i < opts->count; i++) {
         const CONFIG_OPTION *opt = raw_opts[i];
+        // A value that is spelled rather than counted is quoted: what the
+        // spelling carries - a hex color, the spaces in a vector - is not for
+        // the parser to read as the next field.
         const TRX_VALUE_TYPE type = opt->value.type;
+        const bool is_spelled = type == TVT_ENUM || type == TVT_STRING
+            || type == TVT_DYNAMIC_ENUM || type == TVT_RGB_888
+            || type == TVT_XYZ_16 || type == TVT_XYZ_32;
         const char *const fmt =
-            type == TVT_ENUM || type == TVT_STRING || type == TVT_DYNAMIC_ENUM
-            ? "config %s \"%s\"\n"
-            : "config %s %s\n";
+            is_spelled ? "config %s \"%s\"\n" : "config %s %s\n";
         File_WriteString(
             fp, fmt, opt->name, Config_Option_GetValueAsString(opt, false));
     }
