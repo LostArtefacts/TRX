@@ -33,6 +33,10 @@
 #define M_CONFIRM_MIN_W 72.0f
 #define M_CONFIRM_PAD 6.0f
 #define M_LIST_ROW_SPACING 5.0f
+// Measuring a text leaves off the spacing after its final glyph, which the
+// wrapper still counts. Without this, a line given exactly its own measured
+// width loses its last word to a second line.
+#define M_MEASURE_SLACK 1.0f
 
 typedef enum {
     M_PHASE_BROWSE,
@@ -58,6 +62,29 @@ static const char *M_GetPresetKeyLabel(const char *const key)
         }
     }
     return key;
+}
+
+// The single line the dialog shows once there is nothing left to confirm, or
+// nullptr in the phases that show a list instead.
+static const char *M_GetPhaseMessage(const M_PHASE phase)
+{
+    switch (phase) {
+    case M_PHASE_APPLIED:
+        return GS("general/config_presets/applied");
+    case M_PHASE_NO_CHANGES:
+        return GS("general/config_presets/no_changes");
+    default:
+        return nullptr;
+    }
+}
+
+// The result is the caller's to free.
+static char *M_FormatTitle(UI_CONFIG_PRESETS_STATE *const s)
+{
+    const CONFIG_PRESET *const preset = Config_Presets_Get(s->selected_idx);
+    const char *const preset_name =
+        preset != nullptr ? GameString_Get(preset->name_gs) : "";
+    return String_Format(GS("general/config_presets/title_fmt"), preset_name);
 }
 
 static int32_t M_GetChangedSettingCount(const int32_t preset_idx)
@@ -133,16 +160,29 @@ static void M_WrappedLabel(const char *const text, const float max_width)
 
 // The width the dialog's text may occupy, in the units the layout sizes in. The
 // modal's padding and the window's chrome come off what the screen allows, and
-// a list of short rows keeps the dialog narrow rather than stretching it.
+// what the phase actually shows sets the width below that, so a narrow list of
+// changes keeps the dialog narrow rather than stretching it.
 static float M_GetConfirmContentWidth(UI_CONFIG_PRESETS_STATE *const s)
 {
     const float scale = UI_Scaler_GetTextScale();
-    const float budget = UI_GetSafeCanvasWidth()
+    float budget = UI_GetSafeCanvasWidth()
         - (2.0f * M_CONFIRM_PAD + UI_Window_GetChromeWidth()) * scale;
 
-    const CONFIG_PRESET *const preset = Config_Presets_Get(s->selected_idx);
     float natural = M_CONFIRM_MIN_W * scale;
-    if (preset != nullptr) {
+
+    char *const title = M_FormatTitle(s);
+    natural = MAX(natural, UI_Label_MeasureW(title));
+    Memory_Free(title);
+
+    const char *const message = M_GetPhaseMessage(s->phase);
+    if (message != nullptr) {
+        // The message carries a pad of its own inside the window.
+        budget -= 2.0f * M_CONFIRM_PAD * scale;
+        natural = MAX(natural, UI_Label_MeasureW(message));
+    }
+
+    const CONFIG_PRESET *const preset = Config_Presets_Get(s->selected_idx);
+    if (s->phase == M_PHASE_CONFIRM && preset != nullptr) {
         for (int32_t i = 0; i < preset->setting_count; i++) {
             const CONFIG_OPTION *const opt = Config_FindOption(preset->keys[i]);
             if (opt == nullptr
@@ -162,6 +202,7 @@ static float M_GetConfirmContentWidth(UI_CONFIG_PRESETS_STATE *const s)
         }
     }
 
+    natural += M_MEASURE_SLACK * scale;
     return MIN(natural, MAX(budget, M_CONFIRM_MIN_W * scale));
 }
 
@@ -386,11 +427,7 @@ void UI_ConfigPresetsApplyModal(UI_CONFIG_PRESETS_STATE *const s)
 
     const float content_width = M_GetConfirmContentWidth(s);
 
-    const CONFIG_PRESET *const preset = Config_Presets_Get(s->selected_idx);
-    const char *const preset_name =
-        preset != nullptr ? GameString_Get(preset->name_gs) : "";
-    char *const title =
-        String_Format(GS("general/config_presets/title_fmt"), preset_name);
+    char *const title = M_FormatTitle(s);
     char *const wrapped_title = UI_Text_WordWrap(title, 1.0f, content_width);
 
     UI_BeginModal(0.5f, 0.5f);
@@ -407,13 +444,10 @@ void UI_ConfigPresetsApplyModal(UI_CONFIG_PRESETS_STATE *const s)
         .reserve_scroll_space = true,
     });
 
-    if (s->phase == M_PHASE_APPLIED) {
+    const char *const message = M_GetPhaseMessage(s->phase);
+    if (message != nullptr) {
         UI_BeginPad(M_CONFIRM_PAD, M_CONFIRM_PAD);
-        M_WrappedLabel(GS("general/config_presets/applied"), content_width);
-        UI_EndPad();
-    } else if (s->phase == M_PHASE_NO_CHANGES) {
-        UI_BeginPad(M_CONFIRM_PAD, M_CONFIRM_PAD);
-        M_WrappedLabel(GS("general/config_presets/no_changes"), content_width);
+        M_WrappedLabel(message, content_width);
         UI_EndPad();
     } else if (s->phase == M_PHASE_CONFIRM) {
         UI_BeginScrollableStack(
