@@ -193,6 +193,7 @@ The Lua integration was rewritten and existing scripts will need updating; refer
 - added a new Lua module, `trx.lua`, with `eval_expr()` and `eval_file()`, to evaluate Lua code at runtime
 - added a new Lua module, `trx.cutscenes`, for playing TR4's cutscenes, reading or rewriting which of them have run, and framing one, with the `on_cutscene_trigger`, `on_cutscene_start` and `on_cutscene_end` events
 - added a new Lua module, `trx.stats`, for what a level keeps count of – its secrets, pickups, kills, crystals, timer and deaths – alongside how much of each there was to find, for any level rather than only the one being played
+- added a new Lua module, `trx.fx`, with `emit_light()` and `emit_fog()`, for a light or a ball of fog put in the world for as long as a script keeps asking for it; the volumetric fog that was TR4's alone now shows in every game
 - added a new Lua module, `trx.random`, with `random()`, `randint()`, `choice()`, `choices()`, `angle()` and `chance()`; it draws from the sequence the game itself runs on, so what a script draws comes back the same after a reload
 - added `trx.config.reset()`, to put a setting back to its default
 - added `trx.config.describe()`, to read a setting's shape and accepted values

@@ -18,6 +18,7 @@
 #include <trx/game/lua.h>
 #include <trx/game/music.h>
 #include <trx/game/output.h>
+#include <trx/game/output/lights.h>
 #include <trx/game/random.h>
 #include <trx/game/shell.h>
 #include <trx/game/sparks.h>
@@ -424,6 +425,7 @@ void Cutscene_Draw(void)
 {
     Interpolation_Interpolate();
     Camera_Apply();
+    Output_FlushPendingLights();
     Room_DrawAllRooms(g_Camera.interp.room_num, g_Camera.target.room_num);
     if (m_DrawLeftGunFlash) {
         M_DrawGunFlash(LM_HAND_L);

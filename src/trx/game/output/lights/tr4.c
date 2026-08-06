@@ -18,6 +18,7 @@
 #include <trx/game/objects/vars.h>
 #include <trx/game/output.h>
 #include <trx/game/output/lights.h>
+#include <trx/game/output/lights/fog_bulbs.h>
 #include <trx/game/output/lights/priv.h>
 #include <trx/game/random.h>
 #include <trx/gl/utils.h>
@@ -29,10 +30,6 @@
 
 #define M_MAX_ITEM_LIGHTS 21 // the OG ITEM_LIGHT current/prev list capacity
 #define M_FADE_FRAMES 8
-#define M_MAX_FOG_BULBS 20
-#define M_MAX_FX_FOG_BULBS 5
-#define M_MAX_ACTIVE_FOG_BULBS 5
-#define M_FOG_BULB_MAX_SQ_DIST 0x19000000 // = 20480^2, the OG CreateFogPos
 
 // Room light baked at level load (the OG PCLIGHT_INFO, drawroom.cpp
 // ProcessRoomData).
@@ -96,27 +93,8 @@ typedef struct {
     } lights[OUTPUT_TR4_MAX_STAGED_LIGHTS];
 } M_STAGED_LIST;
 
-typedef struct {
-    XYZ_F world_pos;
-    float rad, sqrad, inv_sqrad;
-    int32_t density;
-    RGB_888 color; // FX bulbs only; level bulbs use the fog color
-    int32_t timer;
-    int32_t fx_rad;
-    bool active; // FX bulbs only
-    // Per-frame view-space staging (the OG CreateFogPos):
-    bool in_range;
-    XYZ_F pos_view;
-    XYZ_F edge_view;
-    float view_dist;
-    float sq_cam_dist;
-} M_FOG_BULB;
-
 static M_ROOM_BAKE *m_RoomBake = nullptr;
 static int32_t m_RoomBakeCount = 0;
-static M_FOG_BULB m_FogBulbs[M_MAX_FOG_BULBS];
-static int32_t m_NumFogBulbs = 0;
-static M_FOG_BULB m_FXFogBulbs[M_MAX_FX_FOG_BULBS];
 
 static M_ITEM_LIGHT m_ItemLights[MAX_ITEMS] = {};
 static M_ITEM_LIGHT m_ScratchLight = {}; // the OG StaticMeshLightItem
@@ -173,7 +151,7 @@ static void M_FreeRoomBake(void)
         Memory_FreePointer(&m_RoomBake);
     }
     m_RoomBakeCount = 0;
-    m_NumFogBulbs = 0;
+    Output_FogBulbs_ResetStatic();
 }
 
 // Port of the OG ProcessRoomData (drawroom.cpp): converts parsed room lights
@@ -201,25 +179,18 @@ static void M_BakeRoomLights(void)
             }
 
             if (light->type == LIGHT_TYPE_FOG_BULB) {
-                if (m_NumFogBulbs >= M_MAX_FOG_BULBS) {
-                    continue;
-                }
-                M_FOG_BULB *const bulb = &m_FogBulbs[m_NumFogBulbs++];
                 // The OG PC renderer reads the red channel as the density
                 // and discards the bulb color (blending toward the script
                 // fog color instead); the data carries a real per-bulb RGB
                 // which the PSX renderer used — keep it (e.g. the cyan
                 // waterfall mist in Angkor Wat).
-                bulb->density = light->color.r;
-                bulb->color = light->color;
-                bulb->world_pos = (XYZ_F) {
-                    (float)light->pos.x,
-                    (float)light->pos.y,
-                    (float)light->pos.z,
-                };
-                bulb->rad = light->u.tr4.outer_radius;
-                bulb->sqrad = SQUARE(bulb->rad);
-                bulb->inv_sqrad = 1.0f / bulb->sqrad;
+                Output_FogBulbs_AddStatic(
+                    (XYZ_F) {
+                        (float)light->pos.x,
+                        (float)light->pos.y,
+                        (float)light->pos.z,
+                    },
+                    light->u.tr4.outer_radius, light->color, light->color.r);
                 continue;
             }
 
@@ -852,182 +823,6 @@ static void M_AddDynamicLightRGB(
     Vector_Add(Output_GetDynamicLights(), &light);
 }
 
-static XYZ_F M_ViewTransform(const XYZ_F v)
-{
-    const MATRIX *const m = &g_ViewMatrix;
-    const float s = 1.0f / (float)(1 << W2V_SHIFT);
-    return (XYZ_F) {
-        .x = (m->_00 * v.x + m->_01 * v.y + m->_02 * v.z + m->_03) * s,
-        .y = (m->_10 * v.x + m->_11 * v.y + m->_12 * v.z + m->_13) * s,
-        .z = (m->_20 * v.x + m->_21 * v.y + m->_22 * v.z + m->_23) * s,
-    };
-}
-
-// Port of the OG CreateFogPos (polyinsert.cpp:320).
-static void M_CreateFogPos(M_FOG_BULB *const bulb)
-{
-    bulb->in_range = false;
-
-    const XYZ_F cam = {
-        (float)g_Camera.pos.pos.x,
-        (float)g_Camera.pos.pos.y,
-        (float)g_Camera.pos.pos.z,
-    };
-    const XYZ_F d = {
-        bulb->world_pos.x - cam.x,
-        bulb->world_pos.y - cam.y,
-        bulb->world_pos.z - cam.z,
-    };
-    bulb->sq_cam_dist = SQUARE(d.x) + SQUARE(d.y) + SQUARE(d.z);
-    if (bulb->sq_cam_dist > (float)M_FOG_BULB_MAX_SQ_DIST) {
-        return;
-    }
-
-    const XYZ_F pos = M_ViewTransform(bulb->world_pos);
-    // Rough frustum cull (the OG uses S_GetObjectBounds): reject bulbs
-    // entirely behind the camera.
-    if (pos.z < -bulb->rad) {
-        return;
-    }
-
-    bulb->in_range = true;
-    bulb->pos_view = pos;
-    const float len = sqrtf(SQUARE(pos.x) + SQUARE(pos.y) + SQUARE(pos.z));
-    bulb->view_dist = len;
-    XYZ_F dir = pos;
-    if (len > 0.0f) {
-        dir.x /= len;
-        dir.y /= len;
-        dir.z /= len;
-    }
-    bulb->edge_view = (XYZ_F) {
-        bulb->rad * dir.x + pos.x,
-        bulb->rad * dir.y + pos.y,
-        bulb->rad * dir.z + pos.z,
-    };
-}
-
-// Port of the OG ControlFXBulb (polyinsert.cpp:379), sans the smoke spawns
-// (those are the responsibility of what triggered the bulb).
-static void M_ControlFXBulb(M_FOG_BULB *const bulb)
-{
-    if (bulb->timer > 0) {
-        bulb->timer--;
-        bulb->rad += (float)((Random_GetDraw() - 0x100) & 0x1FF);
-        if (bulb->rad > (float)bulb->fx_rad) {
-            bulb->rad = (float)(bulb->fx_rad + (Random_GetDraw() & 0xFF));
-        }
-    } else {
-        bulb->timer--;
-        if (bulb->timer < -30) {
-            bulb->timer = 0;
-        }
-        bulb->rad -= 255.0f;
-        if (bulb->rad < 0.0f) {
-            bulb->rad = 0.0f;
-            bulb->active = false;
-        }
-    }
-
-    bulb->sqrad = SQUARE(bulb->rad);
-    bulb->inv_sqrad = 1.0f / bulb->sqrad;
-}
-
-static void M_Animate(const int32_t num_frames)
-{
-    for (int32_t f = 0; f < num_frames; f++) {
-        for (int32_t i = 0; i < M_MAX_FX_FOG_BULBS; i++) {
-            if (m_FXFogBulbs[i].active) {
-                M_ControlFXBulb(&m_FXFogBulbs[i]);
-            }
-        }
-    }
-}
-
-static int M_CompareBulbDist(const void *const a, const void *const b)
-{
-    const M_FOG_BULB *const bulb_a = a;
-    const M_FOG_BULB *const bulb_b = b;
-    if (bulb_a->sq_cam_dist > bulb_b->sq_cam_dist) {
-        return 1;
-    }
-    if (bulb_a->sq_cam_dist < bulb_b->sq_cam_dist) {
-        return -1;
-    }
-    return 0;
-}
-
-static void M_FillBulbUniform(
-    OUTPUT_UNIFORM_FOG_BULBS *const dst, const M_FOG_BULB *const bulb,
-    const bool is_fx)
-{
-    const int32_t i = dst->count++;
-    dst->bulbs[i].pos[0] = bulb->pos_view.x;
-    dst->bulbs[i].pos[1] = bulb->pos_view.y;
-    dst->bulbs[i].pos[2] = bulb->pos_view.z;
-    dst->bulbs[i].pos[3] = bulb->view_dist;
-    dst->bulbs[i].edge[0] = bulb->edge_view.x;
-    dst->bulbs[i].edge[1] = bulb->edge_view.y;
-    dst->bulbs[i].edge[2] = bulb->edge_view.z;
-    dst->bulbs[i].edge[3] = bulb->sqrad;
-    dst->bulbs[i].color[0] = bulb->color.r / 255.0f;
-    dst->bulbs[i].color[1] = bulb->color.g / 255.0f;
-    dst->bulbs[i].color[2] = bulb->color.b / 255.0f;
-    dst->bulbs[i].color[3] = (float)bulb->density;
-    dst->bulbs[i].params[0] = bulb->inv_sqrad;
-    dst->bulbs[i].params[1] = is_fx ? 1.0f : 0.0f;
-}
-
-// Port of the OG InitialiseFogBulbs + CreateFXBulbs (polyinsert.cpp): sort
-// the level bulbs by camera distance, keep the nearest ones in range, and
-// upload everything for the fragment shader.
-static void M_PrepareScene(void)
-{
-    OUTPUT_UNIFORM_FOG_BULBS fog = {};
-
-    // Some levels disable fog bulbs entirely (the OG GF_TRAIN). The OG also
-    // skips them while the inventory is up, which we deliberately don't.
-    if (Level_AreFogBulbsEnabled()) {
-        for (int32_t i = 0; i < M_MAX_FX_FOG_BULBS; i++) {
-            M_FOG_BULB *const bulb = &m_FXFogBulbs[i];
-            if (!bulb->active || bulb->sqrad <= 0.0f) {
-                continue;
-            }
-            M_CreateFogPos(bulb);
-            if (bulb->in_range) {
-                M_FillBulbUniform(&fog, bulb, true);
-            }
-        }
-
-        for (int32_t i = 0; i < m_NumFogBulbs; i++) {
-            const XYZ_F d = {
-                m_FogBulbs[i].world_pos.x - g_Camera.pos.pos.x,
-                m_FogBulbs[i].world_pos.y - g_Camera.pos.pos.y,
-                m_FogBulbs[i].world_pos.z - g_Camera.pos.pos.z,
-            };
-            m_FogBulbs[i].sq_cam_dist = SQUARE(d.x) + SQUARE(d.y) + SQUARE(d.z);
-        }
-        qsort(m_FogBulbs, m_NumFogBulbs, sizeof(M_FOG_BULB), M_CompareBulbDist);
-
-        int32_t n_active = 0;
-        for (int32_t i = 0;
-             i < m_NumFogBulbs && n_active < M_MAX_ACTIVE_FOG_BULBS; i++) {
-            M_CreateFogPos(&m_FogBulbs[i]);
-            if (m_FogBulbs[i].in_range) {
-                M_FillBulbUniform(&fog, &m_FogBulbs[i], false);
-                n_active++;
-            }
-        }
-    }
-
-    const OUTPUT_UNIFORMS *const uniforms = Output_GetUniforms();
-    glBindBuffer(GL_UNIFORM_BUFFER, uniforms->fog_bulbs);
-    const size_t size = offsetof(OUTPUT_UNIFORM_FOG_BULBS, bulbs)
-        + fog.count * sizeof(fog.bulbs[0]);
-    TRX_GL_TRACK_SUBDATA(glBufferSubData, GL_UNIFORM_BUFFER, 0, size, &fog);
-    TRX_GL_CheckError();
-}
-
 static void M_Init(void)
 {
     if (m_StagedPool == nullptr) {
@@ -1053,7 +848,6 @@ static void M_ObserveLevelLoad(void)
     if (m_StagedPool != nullptr) {
         Vector_Clear(m_StagedPool);
     }
-    memset(m_FXFogBulbs, 0, sizeof(m_FXFogBulbs));
     if (g_TRVersion == 4) {
         M_BakeRoomLights();
     } else {
@@ -1067,37 +861,6 @@ static void M_BeginScene(void)
         Vector_Clear(m_StagedPool);
     }
     m_PoolGeneration++;
-}
-
-// Port of the OG TriggerFXFogBulb (polyinsert.cpp:439).
-void Output_TriggerFXFogBulb(
-    const XYZ_32 pos, const int32_t fx_rad, const int32_t density,
-    const RGB_888 color)
-{
-    if (g_TRVersion != 4) {
-        return;
-    }
-
-    int32_t num = 0;
-    while (m_FXFogBulbs[num].active) {
-        num++;
-        if (num >= M_MAX_FX_FOG_BULBS) {
-            return;
-        }
-    }
-
-    M_FOG_BULB *const bulb = &m_FXFogBulbs[num];
-    *bulb = (M_FOG_BULB) {
-        .world_pos = { (float)pos.x, (float)pos.y, (float)pos.z },
-        .density = density,
-        .color = color,
-        .rad = 0.0f,
-        .sqrad = 0.0f,
-        .inv_sqrad = 0.0f,
-        .timer = 50,
-        .fx_rad = fx_rad,
-        .active = true,
-    };
 }
 
 void Output_SetInventoryLightingMode(const bool enabled)
@@ -1118,8 +881,8 @@ const LIGHTING_MODEL g_LightingModelTR4 = {
     .add_dynamic_light = Output_Lights_TR3_AddDynamicLight,
     .add_dynamic_light_rgb = M_AddDynamicLightRGB,
     .begin_scene = M_BeginScene,
-    .prepare_scene = M_PrepareScene,
-    .animate = M_Animate,
+    .prepare_scene = Output_FogBulbs_PrepareScene,
+    .animate = Output_FogBulbs_Animate,
     .fill_instance_light = M_FillInstanceLight,
     .upload_cpu_light = M_UploadCPULight,
     .upload_own_light = M_UploadOwnLight,
