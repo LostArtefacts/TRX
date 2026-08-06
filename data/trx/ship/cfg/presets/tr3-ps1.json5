@@ -8,5 +8,6 @@
         "audio.enable_ps1_sfx": true,
         "gameplay.restore_ps1_enemies": true,
         "gameplay.save_crystal_mode": "save_pickup",
+        "visuals.water_color_mode": "ps1",
     },
 }
