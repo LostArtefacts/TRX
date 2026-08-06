@@ -296,7 +296,11 @@ static float M_GetLayoutWidth(
     return resolved->width[glyph_font];
 }
 
-static int32_t M_DetectBulletIndent(
+// How far the continuations of a line are indented, so that a line broken in
+// two still reads as one entry rather than as two at different depths. A line
+// indented by spaces keeps that indentation; a bullet adds the width of its
+// dash and the space after it, putting the continuation under the text.
+static int32_t M_DetectHangingIndent(
     const M_GLYPH_INFO **glyphs, const size_t glyph_count, const size_t idx)
 {
     size_t scan = idx;
@@ -310,7 +314,7 @@ static int32_t M_DetectBulletIndent(
         && glyphs[scan + 1]->role == GLYPH_SPACE) {
         return leading_spaces + 2;
     }
-    return 0;
+    return leading_spaces;
 }
 
 static void M_EmitIndent(
@@ -346,7 +350,7 @@ static size_t M_WordWrap(
 {
     size_t out_len = 0;
     float cur_width = 0.0f;
-    int32_t bullet_indent = 0;
+    int32_t hanging_indent = 0;
 
     const float space_width = M_WORD_SPACING * scale_f;
 
@@ -370,8 +374,8 @@ static size_t M_WordWrap(
             continue;
         }
 
-        if (cur_width == 0.0f && bullet_indent == 0) {
-            bullet_indent = M_DetectBulletIndent(glyphs, glyph_count, i);
+        if (cur_width == 0.0f && hanging_indent == 0) {
+            hanging_indent = M_DetectHangingIndent(glyphs, glyph_count, i);
         }
 
         if (glyph->role == GLYPH_FONT_MARKER) {
@@ -379,16 +383,16 @@ static size_t M_WordWrap(
         } else if (glyph->role == GLYPH_NEW_LINE) {
             L_CONCAT_CHAR('\n')
             cur_width = 0.0f;
-            bullet_indent = 0;
+            hanging_indent = 0;
         } else if (glyph->role == GLYPH_NEW_PAGE) {
             L_CONCAT_CHAR('\f')
             cur_width = 0.0f;
-            bullet_indent = 0;
+            hanging_indent = 0;
         } else if (glyph->role == GLYPH_SPACE) {
             const float w = M_WORD_SPACING * scale_f;
             if (cur_width + w > max_width) {
                 M_EmitNewline(
-                    dst, &out_len, bullet_indent, space_width, &cur_width);
+                    dst, &out_len, hanging_indent, space_width, &cur_width);
             } else {
                 L_CONCAT_CHAR(' ')
                 cur_width += w;
@@ -423,7 +427,7 @@ static size_t M_WordWrap(
             if (cur_width + word_width > max_width) {
                 if (cur_width > 0.0f) {
                     M_EmitNewline(
-                        dst, &out_len, bullet_indent, space_width, &cur_width);
+                        dst, &out_len, hanging_indent, space_width, &cur_width);
                 }
 
                 // Break word if longer than line
@@ -436,7 +440,7 @@ static size_t M_WordWrap(
                             * scale_f;
                         if (cur_width + glyph_width > max_width) {
                             M_EmitNewline(
-                                dst, &out_len, bullet_indent, space_width,
+                                dst, &out_len, hanging_indent, space_width,
                                 &cur_width);
                         }
                         L_CONCAT_STR(next_glyph->text)
