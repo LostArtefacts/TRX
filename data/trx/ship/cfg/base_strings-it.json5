@@ -80,13 +80,13 @@
         },
         "overlay": {
             "debug_animation": "Animazione: ",
-            "debug_animation_arm_l": "\\{review}Braccio S",
-            "debug_animation_arm_r": "\\{review}Braccio D",
+            "debug_animation_arm_l": "Braccio S: ",
+            "debug_animation_arm_r": "Braccio D: ",
             "debug_animation_state": "Stato: ",
             "debug_camera_pos": "Origine telecamera: ",
             "debug_camera_target": "Obiettivo telecamera: ",
             "debug_immune": "Invulnerabilità attivata",
-            "debug_interaction": "\\{review}Interazione: ",
+            "debug_interaction": "Interazione: ",
             "debug_position": "Posizione: ",
             "debug_rotation": "Rotazione: ",
             "debug_speed": "Velocità: ",
@@ -211,7 +211,7 @@
             "assault_finish": "Fine",
             "assault_no_times_set": "Nessun tempo impostato",
             "assault_other_times_fmt": "%s",
-            "assault_reset_times": "\\{review}Ripristina",
+            "assault_reset_times": "Ripristina",
             "assault_title": "MIGLIORI TEMPI",
             "basic_fmt": "%d",
             "bonus_statistics": "Statistiche Bonus",
@@ -233,17 +233,17 @@
     },
     "console": {
         "argparse": {
-            "aliases": "\\{review}Aliases: %s",
-            "expected": "\\{review}Atteso %s.",
-            "hint_boolean": "\\{review}on o off",
-            "hint_integer": "\\{review}un numero intero",
-            "hint_number": "\\{review}un numero",
-            "hint_or": "\\{review}%s, oppure %s",
-            "hint_values": "\\{review}uno tra: %s",
-            "invalid": "\\{review}%s non valido: %s.",
-            "missing": "\\{review}%s mancante.",
-            "unexpected": "\\{review}Argomento inatteso: %s.",
-            "usage": "\\{review}Uso: %s",
+            "aliases": "Alias: %s",
+            "expected": "Previsto %s.",
+            "hint_boolean": "on o off",
+            "hint_integer": "numero intero",
+            "hint_number": "numero",
+            "hint_or": "%s, oppure %s",
+            "hint_values": "valori validi: %s",
+            "invalid": "%s non valido: %s.",
+            "missing": "%s mancante.",
+            "unexpected": "Argomento inatteso: %s.",
+            "usage": "Utilizzo: %s",
         },
         "cmd": {
             "braid": {
@@ -269,15 +269,15 @@
                 "unknown_option": "Opzione sconosciuta: %s",
             },
             "drain": {
-                "already": "\\{review}La stanza %d è già drenata",
-                "done": "\\{review}Stanza %d drenata",
-                "help": "Drena la stanza corrente, rimuovendo l'acqua.",
+                "already": "L'acqua nella stanza %d è già stata drenata",
+                "done": "Acqua nella stanza %d drenata",
+                "help": "Rimuove l'acqua dalla stanza corrente.",
             },
             "dry": {
-                "already_dry": "\\{review}Lara è già perfettamente asciutta",
-                "help": "\\{review}Asciuga Lara, che smette di gocciolare dopo una nuotata.",
-                "success": "\\{review}Lara si è asciugata - niente più gocce",
-                "underwater": "\\{review}Lara è un po' impegnata - è sott'acqua",
+                "already_dry": "Lara è già completamente asciutta",
+                "help": "Asciuga Lara in modo che, dopo una nuotata, non goccioli più a terra.",
+                "success": "Lara è ora asciutta - niente più gocce d'acqua a terra",
+                "underwater": "In questo momento Lara è sott'acqua.",
             },
             "end_level": {
                 "help": "Termina il livello attuale.",
@@ -293,13 +293,13 @@
                 "on": "Mappa capovolta attivata",
             },
             "flood": {
-                "already": "\\{review}La stanza %d è già allagata",
-                "done": "\\{review}Stanza %d allagata",
-                "help": "Immerge la stanza corrente nell'acqua.",
+                "already": "La stanza %d è già allagata",
+                "done": "Stanza %d allagata",
+                "help": "Riempie d'acqua la stanza corrente.",
             },
             "fly": {
-                "already_off": "\\{review}Lara is not flying",
-                "already_on": "\\{review}Lara is already flying",
+                "already_off": "Lara non sta volando",
+                "already_on": "Lara sta già volando",
                 "help": "Attiva o disattiva il trucco Volo.",
             },
             "fps": {
@@ -308,16 +308,16 @@
             "give": {
                 "added": "Aggiunto %s all'inventario di Lara",
                 "all_given": "Lo zaino di Lara è diventato molto più pesante!",
-                "bad_count": "\\{review}La quantità deve essere almeno uno",
-                "guns_given": "Preparati - Lara è armata fino ai denti!",
-                "guns_help": "\\{review}Dà a Lara ogni arma consentita dal livello, con munizioni.",
+                "bad_count": "La quantità deve essere almeno uno",
+                "guns_given": "Preparati - Lara è ora armata fino ai denti!",
+                "guns_help": "Fornisce a Lara tutte le armi consentite dal livello, comprese le munizioni.",
                 "help": "Aggiunge un determinato oggetto all'inventario di Lara.",
                 "invalid": "Oggetto sconosciuto: %s",
                 "keys_given": "Sorpresa! Ogni oggetto chiave di cui Lara ha bisogno è ora nel suo zaino.",
-                "keys_help": "\\{review}Dà a Lara ogni oggetto della trama previsto dal livello.",
-                "moreguns_help": "\\{review}Dà a Lara ogni arma, comprese quelle escluse dal livello.",
-                "nothing": "\\{review}Questo livello non contiene nulla che Lara possa ricevere",
-                "what_help": "\\{review}cosa dare: all, keys, guns, moreguns, o un oggetto per nome",
+                "keys_help": "Fornisce a Lara tutti oggetti previsti dal livello, necessari per il proseguimento del gioco.",
+                "moreguns_help": "Fornisce a Lara tutte le armi, comprese quelle escluse dal livello.",
+                "nothing": "Questo livello non contiene nulla che Lara possa ricevere",
+                "what_help": "valori validi: all, keys, guns, moreguns, o il nome di un oggetto",
             },
             "heal": {
                 "already_full_hp": "Lara è già in piena salute",
@@ -361,7 +361,7 @@
                 "fail_unavailable_slot": "Lo slot di salvataggio %d non è disponibile",
                 "help": "Carica la partita dallo slot di salvataggio indicato o da un salvataggio rapido.",
                 "quick_success": "Caricamento rapido dallo slot %d",
-                "slot_help": "\\{review}un numero di slot, q o quick per il salvataggio rapido più recente, q2 per il secondo",
+                "slot_help": "numero slot di salvataggio, q o quick per il salvataggio rapido più recente, q2 per il secondo",
                 "success": "Partita caricata dallo slot di salvataggio %d",
             },
             "lua": {
@@ -370,9 +370,9 @@
                 "syntax_error": "Errore di sintassi Lua: %s",
             },
             "mod": {
-                "current": "\\{review}Mod attualmente caricata: %s",
+                "current": "Mod attualmente caricata: %s",
                 "help": "Passa alla mod specificata e riavvia il gioco.",
-                "invalid": "\\{review}Mod non valida: %s",
+                "invalid": "Mod non valida: %s",
             },
             "music": {
                 "available_tracks": "Tracce musicali disponibili: %s",
@@ -380,11 +380,11 @@
                 "current_none": "Traccia corrente: nessuna",
                 "deferred_ambient": "Traccia ambientale differita: %d",
                 "help": "Mostra lo stato attuale della traccia musicale, ferma la musica o riproduce una traccia in base all'ID fornito.",
-                "id_help": "\\{review}riproduci la traccia con questo id",
+                "id_help": "riproduce la traccia con questo id",
                 "invalid_track": "Traccia musicale non valida",
                 "overlay": "Traccia(e) sovrapposta(e): %s",
-                "status_help": "\\{review}mostra cosa è in riproduzione",
-                "stop_help": "\\{review}ferma tutta la musica",
+                "status_help": "mostra la traccia in riproduzione",
+                "stop_help": "ferma tutta la musica",
                 "stopped": "Musica interrotta",
                 "track": "Riproduzione traccia musicale %d",
             },
@@ -392,13 +392,13 @@
                 "help": "Riproduce la scena di intermezzo con il numero specificato.",
                 "invalid": "Scena di intermezzo non valida",
                 "loading": "Caricamento scena di intermezzo %d",
-                "none": "\\{review}Questo gioco non ha scene di intermezzo",
+                "none": "Questo gioco non ha scene di intermezzo",
             },
             "play_demo": {
                 "help": "Riproduce la demo con il numero specificato.",
                 "invalid": "Demo non valida",
                 "loading": "Caricamento demo %d",
-                "none": "\\{review}Questo gioco non ha demo",
+                "none": "Questo gioco non ha demo",
             },
             "play_gym": {
                 "help": "Gioca al livello di allenamento.",
@@ -408,14 +408,14 @@
             "play_level": {
                 "help": "Gioca un livello con il nome o il numero specificato.",
                 "invalid": "Livello non valido",
-                "level_help": "\\{review}un numero di livello, un nome o gym",
+                "level_help": "numero del livello, nome del livello o gym",
                 "loading": "Caricamento %s",
             },
             "poison": {
-                "get": "\\{review}Veleno attuale di Lara: %d (obiettivo: %d)",
-                "help": "\\{review}Imposta il livello di veleno di Lara al valore specificato. Usa -t per impostare invece il livello obiettivo (solo TR4).",
-                "set": "\\{review}Veleno di Lara impostato a %d",
-                "target_set": "\\{review}Obiettivo veleno di Lara impostato a %d",
+                "get": "Avvelenamento attuale di Lara: %d (obiettivo: %d)",
+                "help": "Imposta il livello di avvelenamento di Lara al valore specificato. Usa -t per impostare invece il livello obiettivo (solo TR4).",
+                "set": "Avvelenamento di Lara impostato a %d",
+                "target_set": "Obiettivo avvelenamento di Lara impostato a %d",
             },
             "pos": {
                 "help": "Mostra la posizione di Lara.",
@@ -428,29 +428,29 @@
             "rule": {
                 "ambiguous": "Immissione ambigua: %s e %s",
                 "bad_invocation": "Invocazione non valida: %s",
-                "help": "\\{review}Mostra o aggiorna la regola di gioco indicata. Usa - come valore per ripristinare il suo valore predefinito.",
+                "help": "Mostra o aggiorna la regola di gioco indicata. Usa - come valore per ripristinare il suo valore predefinito.",
                 "rule_get": "%s è attualmente impostato su %s",
                 "rule_set": "%s è stato modificato in %s",
-                "unknown_rule": "\\{review}Regola sconosciuta: %s",
+                "unknown_rule": "Regola sconosciuta: %s",
             },
             "save": {
                 "fail_invalid_slot": "Slot di salvataggio %d non valido",
                 "help": "Salva la partita nello slot di salvataggio indicato o nello slot di salvataggio rapido successivo.",
                 "quick_fail_no_slots": "Nessuno slot di salvataggio rapido configurato",
                 "quick_success": "Salvataggio rapido",
-                "slot_help": "\\{review}un numero di slot, q o quick per il prossimo salvataggio rapido, q2 per il secondo",
+                "slot_help": "numero slot di salvataggio, q o quick per il prossimo salvataggio rapido, q2 per il secondo",
                 "success": "Partita salvata nello slot di salvataggio %d",
             },
             "screenshot": {
                 "help": "Salva un'istantanea dello schermo su disco in un percorso facoltativo.",
             },
             "secret": {
-                "action_help": "\\{review}se dare il segreto o riprenderlo",
+                "action_help": "give o take, aggiunge o rimuove uno o più segreti",
                 "given": "Segreto %s aggiunto",
                 "help": "Mostra i segreti ottenuti da Lara, oppure aggiunge/rimuove un segreto in base al numero specificato.",
                 "list": "Segreti raccolti: %d di %d (%s)",
                 "none": "Segreti raccolti: %d di %d",
-                "secret_help": "\\{review}quale segreto, o tutti",
+                "secret_help": "specifica un segreto o aggiungili/rimuovili tutti",
                 "taken": "Segreto %s rimosso",
             },
             "set": {
@@ -466,16 +466,16 @@
             },
             "sfx": {
                 "available": "Suoni disponibili: %s",
-                "help": "Riproduce un effetto sonoro con l'ID specificato.",
-                "id_help": "\\{review}riproduci il campione con questo id",
+                "help": "Riproduce un effetto sonoro con l'id specificato.",
+                "id_help": "riproduce il campione con questo id",
                 "invalid": "Suono non valido: %d",
                 "playing": "Riproduzione del suono %d",
             },
             "spawn": {
                 "fail": "Impossibile generare l'oggetto richiesto",
-                "help": "\\{review}Genera un oggetto in base al nome davanti a Lara.",
-                "invalid": "\\{review}Oggetto sconosciuto: %s",
-                "name_help": "\\{review}l'oggetto da generare, in base al nome",
+                "help": "Genera un oggetto di fronte a Lara, in base al nome specificato.",
+                "invalid": "Oggetto sconosciuto: %s",
+                "name_help": "oggetto da generare, in base al nome",
                 "success": "Oggetto richiesto generato vicino a Lara",
             },
             "speed": {
@@ -520,7 +520,7 @@
                 "help": "Attiva o disattiva la sincronizzazione verticale.",
             },
             "weather": {
-                "current": "\\{review}Current weather: %s",
+                "current": "Tempo meteorologico attuale: %s",
                 "help": "Modifica il tempo meteorologico attuale.",
                 "invalid": "Tempo meteorologico non valido: %s (valore valido: %s)",
                 "set": "Tempo meteorologico impostato su %s",
@@ -544,13 +544,13 @@
     },
     "dynamic": {
         "config_presets": {
-            "tr1_moveset": "\\{review}Set di mosse TR1",
+            "tr1_moveset": "Set di mosse TR1",
             "tr1_pc": "TR1 PC",
             "tr1_ps1": "TR1 PS1",
-            "tr2_moveset": "\\{review}Set di mosse TR2",
+            "tr2_moveset": "Set di mosse TR2",
             "tr2_pc": "TR2 PC",
             "tr2_ps1": "TR2 PS1",
-            "tr3_moveset": "\\{review}Set di mosse TR3",
+            "tr3_moveset": "Set di mosse TR3",
             "tr3_pc": "TR3 PC",
             "tr3_ps1": "TR3 PS1",
         },
@@ -571,29 +571,29 @@
                 "tr1_combo": "Combinato TR1",
                 "tr1_golden_bacon_lara": "Sosia di Lara Dorata",
                 "tr1_golden_lara": "Lara Dorata TR1",
-                "tr1_gym": "Allenamento TR1 ",
-                "tr1_mauled": "Lara ferita TR1",
+                "tr1_gym": "Addestramento TR1 ",
+                "tr1_mauled": "Lara Ferita TR1",
                 "tr1_ngage": "TR1 N-Gage",
                 "tr23_golden_lara": "Lara Dorata TR2/3",
-                "tr2_bomber_jacket": "Giubbotto da aviatore 1",
-                "tr2_bomber_jacket_alpha": "Giubbotto da aviatore 2",
+                "tr2_bomber_jacket": "Giubbotto da Aviatore 1",
+                "tr2_bomber_jacket_alpha": "Giubbotto da Aviatore 2",
                 "tr2_classic": "Classico TR2",
-                "tr2_diving_suit": "Muta subacquea 1",
-                "tr2_diving_suit_alpha": "Muta subacquea 2",
-                "tr2_gym": "Allenamento TR2",
+                "tr2_diving_suit": "Muta Subacquea 1",
+                "tr2_diving_suit_alpha": "Muta Subacquea 2",
+                "tr2_gym": "Addestramento TR2",
                 "tr2_robe": "Vestaglia",
                 "tr2_vegas": "Las Vegas",
                 "tr3_antarctica": "Antartide 1",
                 "tr3_antarctica_beta": "Antartide 2",
-                "tr3_catsuit": "Tuta aderente",
+                "tr3_catsuit": "Tuta Aderente",
                 "tr3_classic": "Classico TR3",
-                "tr3_gym": "Allenamento TR3",
+                "tr3_gym": "Addestramento TR3",
                 "tr3_nevada": "Nevada",
                 "tr3_south_pacific": "Sud Pacifico",
-                "tr4_classic": "\\{review}Classico TR4",
-                "tr4_golden_lara": "\\{review}Lara Dorata TR4",
-                "tr4_young": "\\{review}Giovane TR4",
-                "tr4_young_golden_lara": "\\{review}Lara Giovane Dorata TR4",
+                "tr4_classic": "Classico TR4",
+                "tr4_golden_lara": "Lara Dorata TR4",
+                "tr4_young": "Lara Giovane TR4",
+                "tr4_young_golden_lara": "Lara Giovane Dorata TR4",
             }
         },
         "mods": {
@@ -655,20 +655,20 @@
             "BILLBOARD_LOCK_ROLL_PITCH": "Rotaz. e inclinaz.",
         },
         "BLOOD_EFFECTS": {
-            "BLOOD_EFFECTS_DISABLED": "Disabilitato",
+            "BLOOD_EFFECTS_DISABLED": "Disattivato",
             "BLOOD_EFFECTS_PINK": "Rosa",
             "BLOOD_EFFECTS_RED": "Rosso",
         },
         "BREEZE_MODE": {
-            "BREEZE_MODE_OFF": "\\{review}Disattivato",
-            "BREEZE_MODE_TR2": "\\{review}TR2",
-            "BREEZE_MODE_TR3": "\\{review}TR3",
+            "BREEZE_MODE_OFF": "Disattivato",
+            "BREEZE_MODE_TR2": "TR2",
+            "BREEZE_MODE_TR3": "TR3",
         },
         "CAMERA_MODE": {
             "CAMERA_MODE_TR1": "TR1",
             "CAMERA_MODE_TR2": "TR2",
             "CAMERA_MODE_TR3": "TR3",
-            "CAMERA_MODE_TR4": "\\{review}TR4",
+            "CAMERA_MODE_TR4": "TR4",
         },
         "CREATURE_DROWN_POLICY": {
             "CREATURE_DROWN_POLICY_DEFAULT": "Predefinito",
@@ -676,9 +676,9 @@
             "CREATURE_DROWN_POLICY_SUBMERGED": "Sommerso",
         },
         "GAME_MODES_POLICY": {
-            "GAME_MODES_POLICY_ALWAYS": "\\{review}Sempre",
-            "GAME_MODES_POLICY_NEVER": "\\{review}Mai",
-            "GAME_MODES_POLICY_ON_COMPLETION": "\\{review}Al completamento",
+            "GAME_MODES_POLICY_ALWAYS": "Sempre",
+            "GAME_MODES_POLICY_NEVER": "Mai",
+            "GAME_MODES_POLICY_ON_COMPLETION": "Al completamento",
         },
         "INPUT_BACKEND": {
             "INPUT_BACKEND_CONTROLLER": "Controller",
@@ -743,13 +743,13 @@
             "INPUT_ROLE_TURBO_CHEAT": "Velocità Turbo",
             "INPUT_ROLE_UP": "Corri",
             "INPUT_ROLE_USE_BIG_MEDI": "Kit Medico Grande",
-            "INPUT_ROLE_USE_BINOCULARS": "\\{review}Binocolo",
+            "INPUT_ROLE_USE_BINOCULARS": "Binocolo",
             "INPUT_ROLE_USE_FLARE": "Razzo di Segnalazione",
             "INPUT_ROLE_USE_SMALL_MEDI": "Kit Medico Piccolo",
         },
         "INTRO_FMV_MODE": {
-            "INTRO_FMV_LAUNCH": "\\{review}Avvia",
-            "INTRO_FMV_NEW_GAME": "\\{review}Nuova partita",
+            "INTRO_FMV_LAUNCH": "All'avvio",
+            "INTRO_FMV_NEW_GAME": "Nuova partita",
         },
         "JUMP_LOCK_MODE": {
             "JUMP_LOCK_DISABLED": "Disattivato",
@@ -785,11 +785,11 @@
             "QUICK_GUNS_MODE_DRAW_ONLY": "Solo equipaggia",
         },
         "SAVE_CRYSTAL_MODE": {
-            "SAVE_CRYSTAL_HEAL": "\\{review}Cura",
-            "SAVE_CRYSTAL_OFF": "\\{review}Disattivato",
-            "SAVE_CRYSTAL_PICKUP": "\\{review}Oggetti",
-            "SAVE_CRYSTAL_SAVE": "\\{review}Salvataggio",
-            "SAVE_CRYSTAL_SAVE_PICKUP": "\\{review}Salvataggio (oggetti)",
+            "SAVE_CRYSTAL_HEAL": "Curativi",
+            "SAVE_CRYSTAL_OFF": "Disattivato",
+            "SAVE_CRYSTAL_PICKUP": "Oggetti",
+            "SAVE_CRYSTAL_SAVE": "Salvataggio",
+            "SAVE_CRYSTAL_SAVE_PICKUP": "Salvataggio (oggetti)",
         },
         "SCREENSHOT_FORMAT": {
             "SCREENSHOT_FORMAT_JPEG": "JPG",
@@ -810,9 +810,9 @@
             "SUNGLASSES_MODE_TRANSPARENT": "Trasparente",
         },
         "TARGET_CHANGE_MODE": {
-            "TARGET_CHANGE_MODE_ENHANCED": "\\{review}Avanzato",
+            "TARGET_CHANGE_MODE_ENHANCED": "Avanzato",
             "TARGET_CHANGE_MODE_OFF": "Disattivato",
-            "TARGET_CHANGE_MODE_TR4": "\\{review}TR4",
+            "TARGET_CHANGE_MODE_TR4": "TR4",
         },
         "TARGET_LOCK_MODE": {
             "TARGET_LOCK_MODE_FULL": "Completo",
@@ -868,7 +868,7 @@
         },
         "audio.enable_ps1_sfx": {
             "title": "Effetti sonori PS1",
-            "description": "\\{review}Sostituisce alcuni effetti sonori con quelli della versione PS1.\n\n- Suono dello sparo delle Uzi (solo TR1)\n- Spostamento laterale in sospensione (solo TR1)\n- Suono dei passi a piedi nudi di Lara (solo TR2)",
+            "description": "Sostituisce alcuni effetti sonori con quelli della versione PS1.\n\n- Suono dello sparo delle Uzi (solo TR1)\n- Suono movimento laterale quando Lara è appesa (solo TR1)\n- Suono dei passi quando Lara è a piedi nudi (solo TR2)",
         },
         "audio.enable_underwater_anim_sfx": {
             "title": "Effetti sonori sott'acqua",
@@ -987,8 +987,8 @@
             "description": "Fa in modo che Lara inciampi se effettua un salto all'indietro e, alle sue spalle, c'è una pendenza (TR3). Se disabilitato, Lara si fermerà bruscamente contro la pendenza (TR1/2).",
         },
         "gameplay.enable_binoculars": {
-            "title": "\\{review}Binocolo",
-            "description": "\\{review}Rende il binocolo disponibile per la selezione nell'inventario.",
+            "title": "Binocolo",
+            "description": "Consente di selezionare il binocolo dall'inventario.",
         },
         "gameplay.enable_body_bags": {
             "title": "Rimozione cadaveri",
@@ -1007,8 +1007,8 @@
             "description": "Abilita vari trucchi:\n\n- L: termina immediatamente il livello.\n- I: dà a Lara tutte le armi; maggior quantità di munizioni e kit medici; tutti gli oggetti necessari per superare il livello.\n- O: abilita il trucco DOZY (nuotare a mezz'aria).\n  - tasto CAMMINA: disabilita il trucco DOZY.\n  - tasto ESTRAI ARMA: apre la porta più vicina (non funziona in certi casi).",
         },
         "gameplay.enable_cinematic_skips": {
-            "title": "\\{review}Salta le sequenze cinematiche",
-            "description": "\\{review}Consente di saltare le sequenze panoramiche utilizzando il comando Indietro/Menu.",
+            "title": "Salta sequenze",
+            "description": "Consente di passare tra una sequenza con telecamera a scorrimento all'altra utilizzando il tasto Indietro dell'inventario/menu.",
         },
         "gameplay.enable_cinematics": {
             "title": "Scene iniziali",
@@ -1031,8 +1031,8 @@
             "description": "Permette a Lara di girare a mezz'aria e afferrare la sporgenza della superficie da cui è appena scivolata, se durante la caduta viene premuto il tasto Azione.",
         },
         "gameplay.enable_corner_shimmying": {
-            "title": "\\{review}Spostamento sugli angoli",
-            "description": "\\{review}Permette a Lara di attraversare gli angoli mentre è appesa a una sporgenza o si arrampica su una parete (stile TR4).",
+            "title": "Spostamento sugli angoli",
+            "description": "Permette a Lara di superare gli angoli mentre è appesa ad una sporgenza o si arrampica su una parete (come in TR4).",
         },
         "gameplay.enable_crawl_jump": {
             "title": "Salto uscita cunicolo",
@@ -1119,8 +1119,8 @@
             "description": "Usa i tasti della telecamera (\\{input camera_forward}\\{input camera_back}\\{input camera_left}\\{input camera_right}) utilizzati nella Modalità Foto, anche per ruotare la telecamera di gioco.",
         },
         "gameplay.enable_multiple_pickups": {
-            "title": "\\{review}Raccolta multipla",
-            "description": "\\{review}Permette a Lara di raccogliere tutti gli oggetti da raccogliere che si trovano nella stessa posizione con la stessa animazione (TR1–3). Se disabilitata, Lara deve ripetere l’animazione per ogni oggetto (TR4+).",
+            "title": "Raccolta multipla",
+            "description": "Permette a Lara di raccogliere, con la stessa animazione, tutti gli oggetti che condividono la stessa posizione (TR1–3). Se disabilitato, Lara deve ripetere l’animazione di raccolta per ogni oggetto (TR4+).",
         },
         "gameplay.enable_neutral_twists": {
             "title": "Rotazione da fermo",
@@ -1212,7 +1212,7 @@
         },
         "gameplay.enable_walk_to_items": {
             "title": "Interazioni animate",
-            "description": "\\{review}Fa sì che Lara cammini verso oggetti da raccogliere, interruttori, serrature e alloggiamenti per enigmi quando si trovano nelle vicinanze, invece di teletrasportarsi direttamente su di essi.",
+            "description": "Fa in modo che Lara cammini verso gli oggetti da raccogliere, interruttori, serrature e ricettacoli quando si trovano nelle vicinanze, invece di teletrasportarsi direttamente su di essi.",
         },
         "gameplay.fix_alligator_ai": {
             "title": "Correggi IA degli alligatori",
@@ -1256,7 +1256,7 @@
         },
         "gameplay.fix_lift_collision": {
             "title": "Correggi collisione ascensori",
-            "description": "\\{review}Corregge i problemi di collisione con gli ascensori mobili, che possono bloccare Lara o permetterle di attraversarli.",
+            "description": "Risolve i problemi di collisione di Lara con gli ascensori in movimento, che possono bloccarla o permetterle di attraversarli.",
         },
         "gameplay.fix_m16_accuracy": {
             "title": "Correggi precisione M16/MP5",
@@ -1300,7 +1300,7 @@
         },
         "gameplay.game_modes_policy": {
             "title": "Selezione modalità di gioco",
-            "description": "\\{review}Consente di selezionare le modalità di gioco aggiuntive dal menu passaporto.\n\n- Nuova Partita+: sblocca tutte le armi con munizioni infinite; i nemici hanno punti vita doppi.\n\nOpzioni disponibili:\n\n- Sempre: la finestra di selezione delle modalità di gioco sarà sempre disponibile.\n- Mai: la finestra di selezione delle modalità di gioco non sarà mai disponibile e ogni nuova partita sarà una partita normale.\n- Al completamento: la finestra di selezione delle modalità di gioco sarà disponibile solo dopo aver completato il gioco.",
+            "description": "Consente di selezionare la modalità di gioco aggiuntive dal menu passaporto.\n\n- Nuova Partita+: sblocca tutte le armi con munizioni infinite; i nemici hanno punti vita doppi.\n\nOpzioni disponibili:\n\n- Sempre: la finestra di selezione delle modalità di gioco è sempre disponibile.\n- Mai: la finestra di selezione delle modalità di gioco non è disponibile e ogni nuova partita sarà una partita normale.\n- Al completamento: la finestra di selezione delle modalità di gioco sarà disponibile solo dopo aver completato il gioco.",
         },
         "gameplay.harpoon_recoil": {
             "title": "Ricarica fucile subacqueo",
@@ -1311,8 +1311,8 @@
             "description": "Permette a Lara di riprodurre la sua animazione di posa dopo il numero di secondi d'inattività specificato. Impostalo a 0 per disabilitarlo.",
         },
         "gameplay.intro_fmv_mode": {
-            "title": "\\{review}Tempi FMV introduttivi",
-            "description": "\\{review}Controlla quando viene riprodotto il FMV della storia di apertura di ogni gioco.\n\n- Nuova partita: riproducilo all'inizio di una nuova partita.\n- Avvio: riproducilo ogni volta che il gioco viene avviato o riattivato, come nei giochi originali.",
+            "title": "Riproduzione FMV",
+            "description": "Consente di specificare quando riprodurre il filmato introduttivo di ciascun gioco.\n\n- Nuova partita: il filmato viene riprodotto all'inizio di una nuova partita.\n- All'avvio: il filmato viene riprodotto ogni volta che il gioco viene avviato o si cambia gioco, come nelle versioni originali.",
         },
         "gameplay.jump_lock_mode": {
             "title": "Modalità blocco salto",
@@ -1351,8 +1351,8 @@
             "description": "Aggiunge la mummia che appare nella versione PlayStation del livello 'Città di Khamoon', stanza 25.\nLa modifica di questa opzione richiederà il riavvio della partita.",
         },
         "gameplay.save_crystal_mode": {
-            "title": "\\{review}Modalità cristalli",
-            "description": "\\{review}Determina cosa fanno i cristalli sparsi nei livelli.\n\n- Disattivato: i cristalli non sono presenti.\n- Salvataggio: i cristalli sono monouso e permettono a Lara di salvare la partita sul posto, come nella versione PS1 di TR1. Altrimenti è possibile salvare solo all'inizio dei livelli.\n- Salvataggio (oggetti): i cristalli vengono raccolti e permettono a Lara di salvare la partita dall'inventario ovunque si trovi, come nella versione PS1 di TR3. Altrimenti è possibile salvare solo all'inizio dei livelli.\n- Cura: i cristalli ripristinano metà della salute di Lara e curano l'avvelenamento quando li tocca, come nella versione PC di TR3.\n- Oggetti: i cristalli sono collezionabili conteggiati nelle statistiche del livello e non fanno altro.\n\nLa modifica di questa opzione richiederà il riavvio del livello.",
+            "title": "Modalità cristalli",
+            "description": "Determina il comportamento dei cristalli sparsi nei livelli.\n\n- Disattivato: nessun cristallo presente nei livelli.\n- Salvataggio: i cristalli sono monouso e permettono a Lara di salvare la partita sul posto, come nella versione PS1 di TR1. Altrimenti è possibile salvare solo all'inizio dei livelli.\n- Salvataggio (oggetti): i cristalli possono essere raccolti e permettono a Lara di salvare la partita ovunque si trovi, come nella versione PS1 di TR3. Altrimenti è possibile salvare solo all'inizio dei livelli.\n- Curativi: i cristalli ripristinano metà della salute di Lara e curano l'avvelenamento quando li tocca, come nella versione PC di TR3.\n- Oggetti: i cristalli sono oggetti collezionabili che vengono conteggiati nelle statistiche di livello e non hanno altre funzioni.\n\nLa modifica di questa opzione richiederà il riavvio del livello.",
         },
         "gameplay.start_lara_hitpoints": {
             "title": "Salute iniziale di Lara",
@@ -1360,7 +1360,7 @@
         },
         "gameplay.target_change_mode": {
             "title": "Cambio bersaglio",
-            "description": "\\{review}Cambia il modo in cui Lara passa da un bersaglio all'altro mentre mira.\n\n- Disattivato: Lara mantiene il bersaglio corrente.\n- Avanzato: premi il tasto Cambia Bersaglio per cambiare.\n- TR4: premi brevemente il tasto Guarda per cambiare; tenendolo premuto Lara si guarda intorno dopo un breve ritardo.",
+            "description": "Modifica il modo in cui Lara passa da un bersaglio all'altro mentre mira con un arma.\n\n- Disattivato: Lara mantiene il bersaglio corrente.\n- Avanzato: premi il tasto Cambia Bersaglio per passare ad un altro bersaglio.\n- TR4: premi il tasto Guarda per passare ad un altro bersaglio; tenendolo premuto Lara può guardarsi attorno, dopo un breve ritardo.",
         },
         "gameplay.target_mode": {
             "title": "Modalità aggancio bersaglio",
@@ -1379,8 +1379,8 @@
             "description": "Abilita il buffering dell'inventario (2 fotogrammi) per ottenere un controllo preciso dei movimenti di Lara.",
         },
         "input.enable_controller": {
-            "title": "\\{review}Supporto controller",
-            "description": "\\{review}Consente al gioco di leggere i controller collegati. Disattiva questa opzione se usi un software di rimappatura esterno che converte già il controller in input da tastiera.",
+            "title": "Supporto controller",
+            "description": "Consente al gioco di individuare i controller collegati. Disattiva questa opzione se usi un software di rimappatura esterno che converte già il controller in input da tastiera.",
         },
         "input.enable_responsive_passport": {
             "title": "Passaporto reattivo",
@@ -1435,8 +1435,8 @@
             "description": "Corregge la renderizzazione dei quadrilateri.",
         },
         "rendering.enable_vertex_snap": {
-            "title": "\\{review}Aggancio dei vertici",
-            "description": "\\{review}Arrotonda le posizioni dei vertici ai pixel interi di uno schermo 320x240, per la geometria tremolante delle versioni PlayStation.",
+            "title": "Vertici tremolanti",
+            "description": "Arrotonda le posizioni dei vertici ai pixel interi di uno schermo 320x240, per simulare la geometria tremolante delle versioni PlayStation.",
         },
         "rendering.enable_vsync": {
             "title": "Sincronizzazione verticale",
@@ -1676,11 +1676,11 @@
         },
         "visuals.blood_effects": {
             "title": "Effetti sangue",
-            "description": "Permette di modificare il colore degli schizzi di sangue o di disattivarli.\n\n- Disabilitato: gli schizzi di sangue non vengono mostrati.\n- Rosa: impostazione predefinita nelle versioni tedesche per PC di TR3.\n- Rosso: impostazione predefinita in tutte le altre versioni per la vendita al dettaglio.",
+            "description": "Permette di modificare il colore degli schizzi di sangue o di disattivarli.\n\n- Disattivato: gli schizzi di sangue non vengono mostrati.\n- Rosa: impostazione predefinita nelle versioni tedesche per PC di TR3.\n- Rosso: impostazione predefinita in tutte le altre versioni per la vendita al dettaglio.",
         },
         "visuals.breeze_mode": {
             "title": "Effetto brezza",
-            "description": "\\{review}Modifica il modo in cui la brezza influisce sulla treccia di Lara, sulle gocce d'acqua che cadono da Lara e sulla pioggia/neve nelle stanze appropriate.\n\n- Disattivato: disabilita l'effetto della brezza.\n- TR2: la brezza soffia sempre nella stessa direzione.\n- TR3: la direzione della brezza cambia nel tempo.",
+            "description": "Modifica il modo in cui l'effetto brezza influisce sulla treccia di Lara, sulle gocce d'acqua che cadono da Lara e sulla pioggia/neve nelle stanze appropriate.\n\n- Disattivato: disabilita l'effetto brezza.\n- TR2: l'effetto brezza soffia sempre nella stessa direzione.\n- TR3: la direzione dell'effetto brezza cambia nel tempo.",
         },
         "visuals.camera_mode": {
             "title": "Modalità telecamera",
@@ -1695,8 +1695,8 @@
             "description": "Abilita la treccia di Lara.",
         },
         "visuals.enable_droplets": {
-            "title": "\\{review}Gocce d'acqua",
-            "description": "\\{review}Abilita la visualizzazione delle gocce d'acqua che cadono da Lara dopo che è uscita dall'acqua.",
+            "title": "Gocce d'acqua",
+            "description": "Abilita la visualizzazione delle gocce d'acqua che cadono da Lara dopo che è uscita dall'acqua.",
         },
         "visuals.enable_exit_fade_effects": {
             "title": "Dissolvenza in uscita",
@@ -1711,8 +1711,8 @@
             "description": "Abilita l'illuminazione dinamica accanto alle sorgenti di fuoco attive.",
         },
         "visuals.enable_fog_bulbs": {
-            "title": "\\{review}Bolle di nebbia",
-            "description": "\\{review}Abilita gli effetti di nebbia volumetrica presenti nei livelli.",
+            "title": "Nebbia volumetrica",
+            "description": "Abilita gli effetti di nebbia volumetrica presenti nei livelli.",
         },
         "visuals.enable_footprints": {
             "title": "Impronte",
@@ -1723,16 +1723,16 @@
             "description": "Abilita lo spostamento fluido dell'inquadratura delle telecamere fisse che osservano Lara. Se disabilitato, tali telecamere sposteranno immediatamente l'inquadratura su Lara.",
         },
         "visuals.enable_gun_glow": {
-            "title": "\\{review}Bagliore dell'arma",
-            "description": "\\{review}Rende i lampeggiamenti di pistola e bengala semi-trasparenti e aggiunge un bagliore luminoso intorno a essi, come visto nella versione TR2 per PS1.",
+            "title": "Bagliore armi",
+            "description": "Rende i lampi degli spari e la luce dei razzi di segnalazione semitrasparenti e aggiunge un leggero bagliore intorno ad essi, come nella versione PS1 di TR2.",
         },
         "visuals.enable_gun_lighting": {
             "title": "Illuminazione spari",
             "description": "Abilita l'illuminazione dinamica per spari ed esplosioni.",
         },
         "visuals.enable_poison_vision": {
-            "title": "\\{review}Visione avvelenata",
-            "description": "\\{review}Deforma la visuale mentre Lara è avvelenata. Disattiva se soggetto a cinetosi.",
+            "title": "Visione da avvelenamento",
+            "description": "Deforma la visuale mentre Lara è avvelenata. Disattiva se soggetto a cinetosi.",
         },
         "visuals.enable_ps1_crystals": {
             "title": "Tinta cristalli PS1",
@@ -1755,8 +1755,8 @@
             "description": "Abilita il cielo nei livelli supportati.",
         },
         "visuals.enable_static_lighting": {
-            "title": "\\{review}Illuminazione dei mesh statici",
-            "description": "\\{review}Consente alle fiamme e alle altre luci dinamiche di illuminare i mesh statici. Il TR4 originale illumina solo la geometria delle stanze.",
+            "title": "Illuminazione mesh statiche",
+            "description": "Consente alle fiamme e alle altre luci dinamiche di illuminare le maglie poligonali statiche. Il TR4 originale illumina solo la geometria delle stanze.",
         },
         "visuals.enable_weather": {
             "title": "Tempo meteorologico",
@@ -1846,22 +1846,22 @@
             "name": "Oggetto Animato 10",
         },
         "animating_11": {
-            "name": "\\{review}Oggetto Animato 11",
+            "name": "Oggetto Animato 11",
         },
         "animating_12": {
-            "name": "\\{review}Oggetto Animato 12",
+            "name": "Oggetto Animato 12",
         },
         "animating_13": {
-            "name": "\\{review}Oggetto Animato 13",
+            "name": "Oggetto Animato 13",
         },
         "animating_14": {
-            "name": "\\{review}Oggetto Animato 14",
+            "name": "Oggetto Animato 14",
         },
         "animating_15": {
-            "name": "\\{review}Oggetto Animato 15",
+            "name": "Oggetto Animato 15",
         },
         "animating_16": {
-            "name": "\\{review}Oggetto Animato 16",
+            "name": "Oggetto Animato 16",
         },
         "animating_2": {
             "name": "Oggetto Animato 2",
@@ -2008,7 +2008,7 @@
             "name": "Ragno Gigante",
         },
         "binoculars": {
-            "name": "\\{review}Binocolo",
+            "name": "Binocolo",
         },
         "bird_guardian": {
             "name": "Uccello Guardiano",
@@ -2068,10 +2068,10 @@
             "name": "Soffitto con Spuntoni",
         },
         "ceiling_trapdoor_1": {
-            "name": "\\{review}Botola a soffitto 1",
+            "name": "Botola da Soffitto 1",
         },
         "ceiling_trapdoor_2": {
-            "name": "\\{review}Botola a soffitto 2",
+            "name": "Botola da Soffitto 2",
         },
         "centaur": {
             "name": "Centauro",
@@ -2086,7 +2086,7 @@
             "name": "Mutante con Artigli",
         },
         "climbing_pole": {
-            "name": "\\{review}Asta per arrampicata",
+            "name": "Palo da Arrampicata",
         },
         "clock_chimes": {
             "name": "Orologio Covo di Bartoli",
@@ -2101,7 +2101,7 @@
             "name": "Ingranaggio 3",
         },
         "cog_switch": {
-            "name": "\\{review}Interruttore a ingranaggio",
+            "name": "Interruttore a Ingranaggio",
         },
         "combat_end": {
             "name": "Fine Combattimento",
@@ -2128,26 +2128,26 @@
             "name": "Coccodrillo",
         },
         "crossbow": {
-            "name": "\\{review}Balestra",
+            "name": "Balestra",
         },
         "crossbow_ammo": {
-            "name": "\\{review}Dardi per Balestra",
+            "name": "Dardi per Balestra",
         },
         "crossbow_bolt": {
-            "name": "\\{review}Dardo per Balestra",
+            "name": "Dardo per Balestra",
         },
         "crow": {
             "name": "Corvo",
         },
         "crowbar": {
-            "name": "\\{review}Piede di Porco",
+            "name": "Piede di Porco",
         },
         "crowbar_anim": {
-            "name": "\\{review}Animazione del piede di porco",
+            "name": "Animazione Piede di Porco",
         },
         "crystal": {
             "name": [
-                "\\{review}Cristallo",
+                "Cristallo",
                 "Cristallo di Salvataggio",
             ]
         },
@@ -2239,7 +2239,7 @@
             "name": "Porta 8",
         },
         "double_doors": {
-            "name": "\\{review}Porta doppia",
+            "name": "Porta Doppia",
         },
         "dragon_back": {
             "name": "Retro Drago",
@@ -2293,13 +2293,13 @@
             "name": "Emettitore di Brace",
         },
         "examine_1": {
-            "name": "\\{review}Esamina Oggetto 1",
+            "name": "Oggetto da Esaminare 1",
         },
         "examine_2": {
-            "name": "\\{review}Esamina Oggetto 2",
+            "name": "Oggetto da Esaminare 2",
         },
         "examine_3": {
-            "name": "\\{review}Esamina Oggetto 3",
+            "name": "Oggetto da Esaminare 3",
         },
         "explosion_1": {
             "name": "Esplosione 1",
@@ -2378,10 +2378,10 @@
             ]
         },
         "flame_emitter_tr4_ground": {
-            "name": "\\{review}Emettitore di Fiamme (TR4, terra)",
+            "name": "Emettitore di Fiamme (TR4, Terra)",
         },
         "flame_emitter_tr4_wall": {
-            "name": "\\{review}Emettitore di Fiamme (TR4, parete)",
+            "name": "Emettitore di Fiamme (TR4, Parete)",
         },
         "flare": {
             "name": "Razzo di Segnalazione",
@@ -2396,10 +2396,10 @@
             "name": "Luce Tremolante",
         },
         "floor_trapdoor_1": {
-            "name": "\\{review}Botola a pavimento 1",
+            "name": "Botola da Pavimento 1",
         },
         "floor_trapdoor_2": {
-            "name": "\\{review}Botola a pavimento 2",
+            "name": "Botola da Pavimento 2",
         },
         "fuse_box": {
             "name": "Scatola Fusibili",
@@ -2496,97 +2496,97 @@
             "name": "Chiave 1",
         },
         "key_10": {
-            "name": "\\{review}Chiave 10",
+            "name": "Chiave 10",
         },
         "key_11": {
-            "name": "\\{review}Chiave 11",
+            "name": "Chiave 11",
         },
         "key_12": {
-            "name": "\\{review}Chiave 12",
+            "name": "Chiave 12",
         },
         "key_1_combo_1": {
-            "name": "\\{review}Chiave 1 (Combo 1)",
+            "name": "Chiave 1 (Combinato 1)",
         },
         "key_1_combo_2": {
-            "name": "\\{review}Chiave 1 (Combo 2)",
+            "name": "Chiave 1 (Combinato 2)",
         },
         "key_2": {
             "name": "Chiave 2",
         },
         "key_2_combo_1": {
-            "name": "\\{review}Chiave 2 (Combo 1)",
+            "name": "Chiave 2 (Combinato 1)",
         },
         "key_2_combo_2": {
-            "name": "\\{review}Chiave 2 (Combo 2)",
+            "name": "Chiave 2 (Combinato 2)",
         },
         "key_3": {
             "name": "Chiave 3",
         },
         "key_3_combo_1": {
-            "name": "\\{review}Chiave 3 (Combo 1)",
+            "name": "Chiave 3 (Combinato 1)",
         },
         "key_3_combo_2": {
-            "name": "\\{review}Chiave 3 (Combo 2)",
+            "name": "Chiave 3 (Combinato 2)",
         },
         "key_4": {
             "name": "Chiave 4",
         },
         "key_4_combo_1": {
-            "name": "\\{review}Chiave 4 (Combo 1)",
+            "name": "Chiave 4 (Combinato 1)",
         },
         "key_4_combo_2": {
-            "name": "\\{review}Chiave 4 (Combo 2)",
+            "name": "Chiave 4 (Combinato 2)",
         },
         "key_5": {
-            "name": "\\{review}Chiave 5",
+            "name": "Chiave 5",
         },
         "key_5_combo_1": {
-            "name": "\\{review}Chiave 5 (Combo 1)",
+            "name": "Chiave 5 (Combinato 1)",
         },
         "key_5_combo_2": {
-            "name": "\\{review}Chiave 5 (Combo 2)",
+            "name": "Chiave 5 (Combinato 2)",
         },
         "key_6": {
-            "name": "\\{review}Chiave 6",
+            "name": "Chiave 6",
         },
         "key_6_combo_1": {
-            "name": "\\{review}Chiave 6 (Combo 1)",
+            "name": "Chiave 6 (Combinato 1)",
         },
         "key_6_combo_2": {
-            "name": "\\{review}Chiave 6 (Combo 2)",
+            "name": "Chiave 6 (Combinato 2)",
         },
         "key_7": {
-            "name": "\\{review}Chiave 7",
+            "name": "Chiave 7",
         },
         "key_7_combo_1": {
-            "name": "\\{review}Chiave 7 (Combo 1)",
+            "name": "Chiave 7 (Combinato 1)",
         },
         "key_7_combo_2": {
-            "name": "\\{review}Chiave 7 (Combo 2)",
+            "name": "Chiave 7 (Combinato 2)",
         },
         "key_8": {
-            "name": "\\{review}Chiave 8",
+            "name": "Chiave 8",
         },
         "key_8_combo_1": {
-            "name": "\\{review}Chiave 8 (Combo 1)",
+            "name": "Chiave 8 (Combinato 1)",
         },
         "key_8_combo_2": {
-            "name": "\\{review}Chiave 8 (Combo 2)",
+            "name": "Chiave 8 (Combinato 2)",
         },
         "key_9": {
-            "name": "\\{review}Chiave 9",
+            "name": "Chiave 9",
         },
         "key_hole_1": {
             "name": "Serratura 1",
         },
         "key_hole_10": {
-            "name": "\\{review}Serratura 10",
+            "name": "Serratura 10",
         },
         "key_hole_11": {
-            "name": "\\{review}Serratura 11",
+            "name": "Serratura 11",
         },
         "key_hole_12": {
-            "name": "\\{review}Serratura 12",
+            "name": "Serratura 12",
         },
         "key_hole_2": {
             "name": "Serratura 2",
@@ -2598,25 +2598,25 @@
             "name": "Serratura 4",
         },
         "key_hole_5": {
-            "name": "\\{review}Serratura 5",
+            "name": "Serratura 5",
         },
         "key_hole_6": {
-            "name": "\\{review}Serratura 6",
+            "name": "Serratura 6",
         },
         "key_hole_7": {
-            "name": "\\{review}Serratura 7",
+            "name": "Serratura 7",
         },
         "key_hole_8": {
-            "name": "\\{review}Serratura 8",
+            "name": "Serratura 8",
         },
         "key_hole_9": {
-            "name": "\\{review}Serratura 9",
+            "name": "Serratura 9",
         },
         "kick_door_1": {
-            "name": "\\{review}Porta da sfondare 1",
+            "name": "Porta da Sfondare 1",
         },
         "kick_door_2": {
-            "name": "\\{review}Porta da sfondare 2",
+            "name": "Porta da Sfondare 2",
         },
         "kill_all_triggered": {
             "name": "Eliminazione totale attivata",
@@ -2637,7 +2637,7 @@
             "name": "Animazione Barca",
         },
         "lara_crossbow": {
-            "name": "\\{review}Animazione Balestra",
+            "name": "Animazione Balestra",
         },
         "lara_desert_eagle": {
             "name": "Animazione Desert Eagle",
@@ -2682,7 +2682,7 @@
             "name": "Animazione Quad",
         },
         "lara_revolver": {
-            "name": "\\{review}Animazione Revolver",
+            "name": "Animazione Revolver",
         },
         "lara_rib": {
             "name": "Animazione Gommone a Motore",
@@ -2709,7 +2709,7 @@
             "name": "Larson",
         },
         "lasersight": {
-            "name": "\\{review}Mirino Laser",
+            "name": "Mirino Laser",
         },
         "lava_wedge": {
             "name": "Cascata di Lava",
@@ -2719,7 +2719,7 @@
             "name": "Barra di Piombo",
         },
         "lens_flare": {
-            "name": "\\{review}Bagliore dell'obiettivo",
+            "name": "Riflesso dell'Obiettivo",
         },
         "lift": {
             "name": "Ascensore",
@@ -2895,37 +2895,37 @@
             "name": "Oggetto Recuperabile 1",
         },
         "pickup_1_combo_1": {
-            "name": "\\{review}Oggetto da Raccogliere 1 (Combo 1)",
+            "name": "Oggetto Recuperabile 1 (Combinato 1)",
         },
         "pickup_1_combo_2": {
-            "name": "\\{review}Oggetto da Raccogliere 1 (Combo 2)",
+            "name": "Oggetto Recuperabile 1 (Combinato 2)",
         },
         "pickup_2": {
             "name": "Oggetto Recuperabile 2",
         },
         "pickup_2_combo_1": {
-            "name": "\\{review}Oggetto da Raccogliere 2 (Combo 1)",
+            "name": "Oggetto Recuperabile 2 (Combinato 1)",
         },
         "pickup_2_combo_2": {
-            "name": "\\{review}Oggetto da Raccogliere 2 (Combo 2)",
+            "name": "Oggetto Recuperabile 2 (Combinato 2)",
         },
         "pickup_3": {
-            "name": "\\{review}Oggetto da Raccogliere 3",
+            "name": "Oggetto Recuperabile 3",
         },
         "pickup_3_combo_1": {
-            "name": "\\{review}Oggetto da Raccogliere 3 (Combo 1)",
+            "name": "Oggetto Recuperabile 3 (Combinato 1)",
         },
         "pickup_3_combo_2": {
-            "name": "\\{review}Oggetto da Raccogliere 3 (Combo 2)",
+            "name": "Oggetto Recuperabile 3 (Combinato 2)",
         },
         "pickup_4": {
-            "name": "\\{review}Oggetto da Raccogliere 4",
+            "name": "Oggetto Recuperabile 4",
         },
         "pickup_4_combo_1": {
-            "name": "\\{review}Oggetto da Raccogliere 4 (Combo 1)",
+            "name": "Oggetto Recuperabile 4 (Combinato 1)",
         },
         "pickup_4_combo_2": {
-            "name": "\\{review}Oggetto da Raccogliere 4 (Combo 2)",
+            "name": "Oggetto Recuperabile 4 (Combinato 2)",
         },
         "pickup_aid": {
             "name": "Segnalazione Oggetti",
@@ -3012,166 +3012,166 @@
             "name": "Punk 2",
         },
         "pushpull_door_1": {
-            "name": "\\{review}Porta a spinta/trazione 1",
+            "name": "Porta a Spinta/Da Tirare 1",
         },
         "pushpull_door_2": {
-            "name": "\\{review}Porta a spinta/trazione 2",
+            "name": "Porta a Spinta/Da Tirare 2",
         },
         "puzzle_1": {
             "name": "Oggetto Enigma 1",
         },
         "puzzle_10": {
-            "name": "\\{review}Oggetto Enigma 10",
+            "name": "Oggetto Enigma 10",
         },
         "puzzle_11": {
-            "name": "\\{review}Oggetto Enigma 11",
+            "name": "Oggetto Enigma 11",
         },
         "puzzle_12": {
-            "name": "\\{review}Oggetto Enigma 12",
+            "name": "Oggetto Enigma 12",
         },
         "puzzle_1_combo_1": {
-            "name": "\\{review}Oggetto Enigma 1 (Combo 1)",
+            "name": "Oggetto Enigma 1 (Combinato 1)",
         },
         "puzzle_1_combo_2": {
-            "name": "\\{review}Oggetto Enigma 1 (Combo 2)",
+            "name": "Oggetto Enigma 1 (Combinato 2)",
         },
         "puzzle_2": {
             "name": "Oggetto Enigma 2",
         },
         "puzzle_2_combo_1": {
-            "name": "\\{review}Oggetto Enigma 2 (Combo 1)",
+            "name": "Oggetto Enigma 2 (Combinato 1)",
         },
         "puzzle_2_combo_2": {
-            "name": "\\{review}Oggetto Enigma 2 (Combo 2)",
+            "name": "Oggetto Enigma 2 (Combinato 2)",
         },
         "puzzle_3": {
             "name": "Oggetto Enigma 3",
         },
         "puzzle_3_combo_1": {
-            "name": "\\{review}Oggetto Enigma 3 (Combo 1)",
+            "name": "Oggetto Enigma 3 (Combinato 1)",
         },
         "puzzle_3_combo_2": {
-            "name": "\\{review}Oggetto Enigma 3 (Combo 2)",
+            "name": "Oggetto Enigma 3 (Combinato 2)",
         },
         "puzzle_4": {
             "name": "Oggetto Enigma 4",
         },
         "puzzle_4_combo_1": {
-            "name": "\\{review}Oggetto Enigma 4 (Combo 1)",
+            "name": "Oggetto Enigma 4 (Combinato 1)",
         },
         "puzzle_4_combo_2": {
-            "name": "\\{review}Oggetto Enigma 4 (Combo 2)",
+            "name": "Oggetto Enigma 4 (Combinato 2)",
         },
         "puzzle_5": {
-            "name": "\\{review}Oggetto Enigma 5",
+            "name": "Oggetto Enigma 5",
         },
         "puzzle_5_combo_1": {
-            "name": "\\{review}Oggetto Enigma 5 (Combo 1)",
+            "name": "Oggetto Enigma 5 (Combinato 1)",
         },
         "puzzle_5_combo_2": {
-            "name": "\\{review}Oggetto Enigma 5 (Combo 2)",
+            "name": "Oggetto Enigma 5 (Combinato 2)",
         },
         "puzzle_6": {
-            "name": "\\{review}Oggetto Enigma 6",
+            "name": "Oggetto Enigma 6",
         },
         "puzzle_6_combo_1": {
-            "name": "\\{review}Oggetto Enigma 6 (Combo 1)",
+            "name": "Oggetto Enigma 6 (Combinato 1)",
         },
         "puzzle_6_combo_2": {
-            "name": "\\{review}Oggetto Enigma 6 (Combo 2)",
+            "name": "Oggetto Enigma 6 (Combinato 2)",
         },
         "puzzle_7": {
-            "name": "\\{review}Oggetto Enigma 7",
+            "name": "Oggetto Enigma 7",
         },
         "puzzle_7_combo_1": {
-            "name": "\\{review}Oggetto Enigma 7 (Combo 1)",
+            "name": "Oggetto Enigma 7 (Combinato 1)",
         },
         "puzzle_7_combo_2": {
-            "name": "\\{review}Oggetto Enigma 7 (Combo 2)",
+            "name": "Oggetto Enigma 7 (Combinato 2)",
         },
         "puzzle_8": {
-            "name": "\\{review}Oggetto Enigma 8",
+            "name": "Oggetto Enigma 8",
         },
         "puzzle_8_combo_1": {
-            "name": "\\{review}Oggetto Enigma 8 (Combo 1)",
+            "name": "Oggetto Enigma 8 (Combinato 1)",
         },
         "puzzle_8_combo_2": {
-            "name": "\\{review}Oggetto Enigma 8 (Combo 2)",
+            "name": "Oggetto Enigma 8 (Combinato 2)",
         },
         "puzzle_9": {
-            "name": "\\{review}Oggetto Enigma 9",
+            "name": "Oggetto Enigma 9",
         },
         "puzzle_done_1": {
-            "name": "Serratura Enigma 1 (Usato)",
+            "name": "Serratura Enigma 1 (Usata)",
         },
         "puzzle_done_10": {
-            "name": "\\{review}Foro Enigma 10 (Completato)",
+            "name": "Serratura Enigma 10 (Usata)",
         },
         "puzzle_done_11": {
-            "name": "\\{review}Foro Enigma 11 (Completato)",
+            "name": "Serratura Enigma 11 (Usata)",
         },
         "puzzle_done_12": {
-            "name": "\\{review}Foro Enigma 12 (Completato)",
+            "name": "Serratura Enigma 12 (Usata)",
         },
         "puzzle_done_2": {
-            "name": "Serratura Enigma 2 (Usato)",
+            "name": "Serratura Enigma 2 (Usata)",
         },
         "puzzle_done_3": {
-            "name": "Serratura Enigma 3 (Usato)",
+            "name": "Serratura Enigma 3 (Usata)",
         },
         "puzzle_done_4": {
-            "name": "Serratura Enigma 4 (Usato)",
+            "name": "Serratura Enigma 4 (Usata)",
         },
         "puzzle_done_5": {
-            "name": "\\{review}Foro Enigma 5 (Completato)",
+            "name": "Serratura Enigma 5 (Usata)",
         },
         "puzzle_done_6": {
-            "name": "\\{review}Foro Enigma 6 (Completato)",
+            "name": "Serratura Enigma 6 (Usata)",
         },
         "puzzle_done_7": {
-            "name": "\\{review}Foro Enigma 7 (Completato)",
+            "name": "Serratura Enigma 7 (Usata)",
         },
         "puzzle_done_8": {
-            "name": "\\{review}Foro Enigma 8 (Completato)",
+            "name": "Serratura Enigma 8 (Usata)",
         },
         "puzzle_done_9": {
-            "name": "\\{review}Foro Enigma 9 (Completato)",
+            "name": "Serratura Enigma 9 (Usata)",
         },
         "puzzle_hole_1": {
-            "name": "Serratura Enigma 1 (Vuoto)",
+            "name": "Serratura Enigma 1 (Vuota)",
         },
         "puzzle_hole_10": {
-            "name": "\\{review}Foro Enigma 10 (Vuoto)",
+            "name": "Serratura Enigma 10 (Vuota)",
         },
         "puzzle_hole_11": {
-            "name": "\\{review}Foro Enigma 11 (Vuoto)",
+            "name": "Serratura Enigma 11 (Vuota)",
         },
         "puzzle_hole_12": {
-            "name": "\\{review}Foro Enigma 12 (Vuoto)",
+            "name": "Serratura Enigma 12 (Vuota)",
         },
         "puzzle_hole_2": {
-            "name": "Serratura Enigma 2 (Vuoto)",
+            "name": "Serratura Enigma 2 (Vuota)",
         },
         "puzzle_hole_3": {
-            "name": "Serratura Enigma 3 (Vuoto)",
+            "name": "Serratura Enigma 3 (Vuota)",
         },
         "puzzle_hole_4": {
-            "name": "Serratura Enigma 4 (Vuoto)",
+            "name": "Serratura Enigma 4 (Vuota)",
         },
         "puzzle_hole_5": {
-            "name": "\\{review}Foro Enigma 5 (Vuoto)",
+            "name": "Serratura Enigma 5 (Vuota)",
         },
         "puzzle_hole_6": {
-            "name": "\\{review}Foro Enigma 6 (Vuoto)",
+            "name": "Serratura Enigma 6 (Vuota)",
         },
         "puzzle_hole_7": {
-            "name": "\\{review}Foro Enigma 7 (Vuoto)",
+            "name": "Serratura Enigma 7 (Vuota)",
         },
         "puzzle_hole_8": {
-            "name": "\\{review}Foro Enigma 8 (Vuoto)",
+            "name": "Serratura Enigma 8 (Vuota)",
         },
         "puzzle_hole_9": {
-            "name": "\\{review}Foro Enigma 9 (Vuoto)",
+            "name": "Serratura Enigma 9 (Vuota)",
         },
         "quad_bike": {
             "name": "Quad",
@@ -3189,10 +3189,10 @@
             "name": "Oggetto Missione 4",
         },
         "quest_5": {
-            "name": "\\{review}Oggetto Missione 5",
+            "name": "Oggetto Missione 5",
         },
         "quest_6": {
-            "name": "\\{review}Oggetto Missione 6",
+            "name": "Oggetto Missione 6",
         },
         "raptor": {
             "name": "Velociraptor",
@@ -3210,10 +3210,10 @@
             "name": "Luce Rossa",
         },
         "revolver": {
-            "name": "\\{review}Revolver",
+            "name": "Revolver",
         },
         "revolver_ammo": {
-            "name": "\\{review}Munizioni per Revolver",
+            "name": "Caricatori per Revolver",
         },
         "rib": {
             "name": "Gommone a Motore",
@@ -3255,7 +3255,7 @@
             ]
         },
         "rope": {
-            "name": "\\{review}Corda",
+            "name": "Corda",
         },
         "rotating_laser": {
             "name": "Laser rotante",
@@ -3270,7 +3270,7 @@
             "name": "Operaio RX 3",
         },
         "sarcophagus": {
-            "name": "\\{review}Sarcofago",
+            "name": "Sarcofago",
         },
         "save_crystal": {
             "name": "Cristallo di Salvataggio",
@@ -3445,31 +3445,63 @@
             ]
         },
         "switch_type_crowbar": {
-            "name": "\\{review}Interruttore con piede di porco",
+            "name": [
+                "Leva",
+                "Interruttore",
+                "Interruttore con Piede di Porco",
+            ]
         },
         "switch_type_floor": {
-            "name": "\\{review}Interruttore a pavimento",
+            "name": [
+                "Leva",
+                "Interruttore",
+                "Interruttore a Pavimento",
+            ]
         },
         "switch_type_generic_1": {
-            "name": "\\{review}Interruttore generico 1",
+            "name": [
+                "Interruttore Generico 1",
+                "Leva",
+                "Interruttore",
+            ]
         },
         "switch_type_generic_2": {
-            "name": "\\{review}Interruttore generico 2",
+            "name": [
+                "Interruttore Generico 2",
+                "Leva",
+                "Interruttore",
+            ]
         },
         "switch_type_generic_3": {
-            "name": "\\{review}Interruttore generico 3",
+            "name": [
+                "Interruttore Generico 3",
+                "Leva",
+                "Interruttore",
+            ]
         },
         "switch_type_generic_4": {
-            "name": "\\{review}Interruttore generico 4",
+            "name": [
+                "Interruttore Generico 4",
+                "Leva",
+                "Interruttore",
+            ]
         },
         "switch_type_generic_5": {
-            "name": "\\{review}Interruttore generico 5",
+            "name": [
+                "Interruttore Generico 5",
+                "Leva",
+                "Interruttore",
+            ]
         },
         "switch_type_generic_6": {
-            "name": "\\{review}Interruttore generico 6",
+            "name": [
+                "Interruttore Generico 6",
+                "Leva",
+                "Interruttore",
+            ]
         },
         "switch_type_jump": {
-            "name": "\\{review}Interruttore da salto",
+            "name": "Interruttore a Salto",
         },
         "switch_type_normal": {
             "name": [
@@ -3478,7 +3510,7 @@
             ]
         },
         "switch_type_pulley": {
-            "name": "\\{review}Interruttore a tirare",
+            "name": "Interruttore a Puleggia",
         },
         "switch_type_small": {
             "name": "Interruttore Piccolo",
@@ -3490,7 +3522,10 @@
             ]
         },
         "switch_type_uw_ceiling": {
-            "name": "\\{review}Leva subacquea a soffitto",
+            "name": [
+                "Leva a Soffitto Subacquea",
+                "Interruttore a Soffitto Subacqueo",
+            ]
         },
         "switch_type_wheel": {
             "name": [
@@ -3561,7 +3596,7 @@
             "name": "Scintille",
         },
         "underwater_door": {
-            "name": "\\{review}Porta subacquea",
+            "name": "Porta Subacquea",
         },
         "upv": {
             "name": "Mini Sottomarino",
@@ -3594,10 +3629,10 @@
             "name": "Foschia Cascata",
         },
         "waterskin_1": {
-            "name": "\\{review}Otre Piccolo",
+            "name": "Otre Piccolo",
         },
         "waterskin_2": {
-            "name": "\\{review}Otre Grande",
+            "name": "Otre Grande",
         },
         "white_light": {
             "name": "Luce Bianca",
