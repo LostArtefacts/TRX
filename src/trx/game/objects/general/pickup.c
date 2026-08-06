@@ -982,7 +982,9 @@ uint32_t Pickup_GetSecretMask(const ITEM *const item)
 bool Pickup_Trigger(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
-    if (item->is_visible) {
+    // is_visible prevents the trigger activating before the item has been
+    // collected, while is_finished prevents it running more than once.
+    if (item->is_visible || item->is_finished) {
         return false;
     }
 
