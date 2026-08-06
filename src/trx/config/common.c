@@ -134,12 +134,18 @@ bool Config_Update(void)
         return false;
     }
 
+    // The report is taken before it is spent, not after: a listener that moves
+    // a setting of its own comes back through here, and what it moved is a
+    // report of its own rather than this one told again.
+    VECTOR *const taken = m_Pending;
     const CONFIG_CHANGE change = {
         // A rebound key is the player's doing as much as a setting is.
         .persist = m_PendingPersist || section_changed,
-        .options = m_Pending != nullptr ? Vector_GetData(m_Pending) : nullptr,
-        .count = m_Pending != nullptr ? m_Pending->count : 0,
+        .options = taken != nullptr ? Vector_GetData(taken) : nullptr,
+        .count = taken != nullptr ? taken->count : 0,
     };
+    m_Pending = nullptr;
+    m_PendingPersist = false;
 
     if (m_EventManager != nullptr) {
         const EVENT event = {
@@ -149,7 +155,9 @@ bool Config_Update(void)
         };
         EventManager_Fire(m_EventManager, &event);
     }
-    Config_DiscardPendingChanges();
+    if (taken != nullptr) {
+        Vector_Free(taken);
+    }
     return true;
 }
 
