@@ -50,11 +50,19 @@ typedef struct {
     VECTOR *events; // vector of char*
 } M_FRAME;
 
+// A setting the recording asks for that no option answers to yet, kept until
+// the game's script has declared its own.
+typedef struct {
+    char *key;
+    char *value;
+} M_DEFERRED_OPTION;
+
 // Replay private state
 typedef struct {
     char *data; // Replay file data buffer
     size_t size; // Size of data buffer
     VECTOR *headers; // Vector of char* header lines
+    VECTOR *deferred_config; // Vector of M_DEFERRED_OPTION
     VECTOR *frames; // Vector of M_FRAME frames to play
     int32_t frame_idx; // Current playback frame index
     int32_t next_frame_idx; // Next frame to process
@@ -877,11 +885,23 @@ static bool M_ParseConfig(const char *const line, M_PARSE_CTX *const ctx)
             memmove(valbuf, valbuf + 1, vlen - 1);
         }
         CONFIG_OPTION *opt = Config_FindOption(keybuf);
-        if (opt) {
+        if (opt != nullptr) {
             Config_Option_SetFromString(opt, valbuf, false);
-        } else {
-            LOG_WARNING("Unknown option: %s", keybuf);
+            return true;
         }
+        // A game declares its own settings as its script runs, which is after
+        // the header is read. The name is kept rather than refused, and tried
+        // again once those options exist.
+        M_PRIV *const p = &m_Priv;
+        if (p->deferred_config == nullptr) {
+            p->deferred_config = Vector_Create(sizeof(M_DEFERRED_OPTION));
+        }
+        Vector_Add(
+            p->deferred_config,
+            &(M_DEFERRED_OPTION) {
+                .key = Memory_DupStr(keybuf),
+                .value = Memory_DupStr(valbuf),
+            });
         return true;
     }
     return false;
@@ -1084,6 +1104,32 @@ SHELL_ARGS *TestReplay_Open(const char *path)
     }
     M_FreeStartupSnapshot(&ctx.startup);
     return ctx.args;
+}
+
+// The settings the recording named that no option answered to when the header
+// was read. A game's script has run by now, so its own settings are here.
+void TestReplay_ApplyDeferredConfig(void)
+{
+    M_PRIV *const p = &m_Priv;
+    if (p->deferred_config == nullptr) {
+        return;
+    }
+    for (int32_t i = 0; i < p->deferred_config->count; i++) {
+        M_DEFERRED_OPTION *const deferred = Vector_Get(p->deferred_config, i);
+        CONFIG_OPTION *const option = Config_FindOption(deferred->key);
+        if (option == nullptr) {
+            LOG_WARNING("Unknown option: %s", deferred->key);
+        } else {
+            Config_Option_SetFromString(option, deferred->value, false);
+        }
+        Memory_FreePointer(&deferred->key);
+        Memory_FreePointer(&deferred->value);
+    }
+    Vector_Free(p->deferred_config);
+    p->deferred_config = nullptr;
+    // As in TestReplay_Start: this is where the replay starts from, not
+    // something that moved while it ran.
+    Config_DiscardPendingChanges();
 }
 
 void TestReplay_Start(void)

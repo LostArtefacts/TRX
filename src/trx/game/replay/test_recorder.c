@@ -320,8 +320,6 @@ void TestRecorder_Open(const char *path, VECTOR *const original_args)
     M_DumpHeader(p->file);
     M_DumpStartup(p->file);
     M_DumpArguments(p->file, original_args);
-    M_DumpConfig(p->file);
-    M_DumpBindings(p->file);
 
     p->listeners[0] = GameEvent_Subscribe(
         GAME_EVENT_SCREENSHOT, nullptr, M_HandleGameEvent, nullptr);
@@ -329,6 +327,20 @@ void TestRecorder_Open(const char *path, VECTOR *const original_args)
         GAME_EVENT_COMMAND, nullptr, M_HandleGameEvent, nullptr);
 
     LOG_INFO("Starting recording");
+}
+
+// What the settings were as the game started. A game declares settings of its
+// own as its script runs, so this waits for that: an option nothing knows
+// about yet is one the recording would not carry, and its default is not
+// there to compare against either.
+void TestRecorder_WriteConfig(void)
+{
+    M_PRIV *const p = &m_Priv;
+    if (p->file == nullptr) {
+        return;
+    }
+    M_DumpConfig(p->file);
+    M_DumpBindings(p->file);
 }
 
 bool TestRecorder_IsOpened(void)
