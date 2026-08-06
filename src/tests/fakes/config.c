@@ -23,6 +23,9 @@ static double m_MasterVolume;
 static char *m_WaterColor;
 static int32_t m_ShadowType;
 
+// Whether anything the player chose has moved since the last update.
+static bool m_PendingPersist;
+
 static const CONFIG_OPTION_DESC m_Descs[] = {
     { .name = "audio.enable_music",
       .default_value = { .type = TVT_BOOL, .as_bool = true },
@@ -82,6 +85,7 @@ static void M_Reset(void)
         m_View[i] = &m_Options[i];
     }
     m_View[ARRAY_SIZE(m_Descs)] = nullptr;
+    m_PendingPersist = false;
 }
 
 // The value a string spells, borrowing the string for a string-typed option -
@@ -143,10 +147,12 @@ static bool M_Parse(
     return true;
 }
 
-// Nothing here is listening for what moved: a test that cares about a write
-// looks at the setting it landed on.
+// Which option moved is nobody's business here - a test that cares about a
+// write looks at the setting it landed on. Whether any of it was the player's
+// own doing is, because that is what saving the file turns on.
 void Config_ReportChange(const CONFIG_OPTION *const option, const bool persist)
 {
+    m_PendingPersist |= persist;
 }
 
 CONFIG_OPTION *const *Config_GetOptions(void)
@@ -176,7 +182,10 @@ CONFIG_OPTION *Config_FindOptionByMirror(const void *const mirror)
 
 bool Config_Update(void)
 {
-    FAKE_RECORD("config_write");
+    if (m_PendingPersist) {
+        m_PendingPersist = false;
+        FAKE_RECORD("config_write");
+    }
     return true;
 }
 
