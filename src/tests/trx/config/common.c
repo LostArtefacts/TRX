@@ -13,6 +13,8 @@ static bool m_MusicOn;
 static double m_Fov;
 static char *m_Outfit;
 static bool m_LastPersist;
+// How many times the listener below was told that the FOV moved.
+static int32_t m_FovTold;
 
 static void M_SetUp(void)
 {
@@ -78,6 +80,37 @@ TEST(a_write_while_held_is_not_the_players_to_save)
     m_LastPersist = true;
     CHECK(Config_Update());
     CHECK(!m_LastPersist);
+
+    Config_UnsubscribeChanges(listener);
+}
+
+// A listener that moves a setting of its own, as a script's config watcher
+// does. The cap is there because a report told again would tell it again, on
+// and on, and a test that hangs says less than one that counts.
+static void M_MoveAnother(const EVENT *const event, void *const user_data)
+{
+    if (!Config_Change_HasMirror(event->data, &m_Fov)) {
+        return;
+    }
+    m_FovTold++;
+    if (m_FovTold > 4) {
+        return;
+    }
+    CONFIG_SET(m_MusicOn, false);
+    Config_Update();
+}
+
+// The report is spent once. A listener that moves a setting of its own is
+// heard as a report of its own, rather than being told this one over again.
+TEST(a_listener_that_changes_a_setting_is_not_told_the_same_report_twice)
+{
+    M_SetUp();
+    m_FovTold = 0;
+    const int32_t listener = Config_SubscribeChanges(M_MoveAnother, nullptr);
+
+    CHECK(Config_SetValue(&m_Fov, Value_Of(90)));
+    CHECK(Config_Update());
+    CHECK_EQ_INT(m_FovTold, 1);
 
     Config_UnsubscribeChanges(listener);
 }
