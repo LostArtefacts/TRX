@@ -36,6 +36,7 @@
 - changed the `/tp` console command to place Lara better at what she is sent to
 - changed the developer console to accept the numpad Enter key for issuing commands (#6056)
 - changed the Breeze option to allow selecting TR2 or TR3 behavior (Graphic Options → Visuals → Breeze)
+- changed the presets to be listed by name rather than in the order they were found (Gameplay → Presets)
 - changed the save crystals option to a mode: crystals can save on the spot, be collected to save from the inventory as on PS1 TR3, heal, or be collectibles (Gameplay → General → Crystal mode) (#5939)
 - changed the Target change option to allow selecting TR4 behavior, where tapping Look switches target and holding it looks around (Gameplay → Controls → Target change)
 - changed lift collision to force Lara out of her climbing and vaulting animations if one collides with her (#5899, #5911)

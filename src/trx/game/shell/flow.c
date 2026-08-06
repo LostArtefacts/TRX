@@ -65,6 +65,10 @@ static bool m_PrevQuiet = false;
 // the subscription is given back rather than left to gather a copy per switch.
 static int32_t m_ConfigListener = -1;
 
+// The presets are listed by the titles they show, so a new language reorders
+// them. Given back with the config subscription above, and for the same reason.
+static int32_t m_StringsListener = -1;
+
 static void M_CreateGameWindow(void)
 {
     if (m_Window != nullptr) {
@@ -106,6 +110,11 @@ static void M_ShowWindow(void)
 static void M_HandleConfigChange(const EVENT *const event, void *const data)
 {
     Shell_HandleConfigChange(event->data);
+}
+
+static void M_HandleLanguageReload(const EVENT *const event, void *const data)
+{
+    Config_Presets_Sort();
 }
 
 static void M_SetupSDL(void)
@@ -151,6 +160,8 @@ static void M_InitModules(void)
 
     GameString_Init();
     GameStringManager_Init();
+    m_StringsListener =
+        GameStringManager_SubscribeReload(M_HandleLanguageReload, nullptr);
     UI_Init();
     Overlay_Init();
     GameEvent_Init();
@@ -173,6 +184,10 @@ static void M_ShutdownModules(void)
     if (m_ConfigListener >= 0) {
         Config_UnsubscribeChanges(m_ConfigListener);
         m_ConfigListener = -1;
+    }
+    if (m_StringsListener >= 0) {
+        GameStringManager_UnsubscribeReload(m_StringsListener);
+        m_StringsListener = -1;
     }
 
     if (TestReplay_IsOpened()) {

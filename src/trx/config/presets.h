@@ -16,6 +16,12 @@ typedef struct {
 // Load all presets from the game's cfg/presets/ directory.
 void Config_Presets_ScanFiles(void);
 
+// Order the presets by the titles they show, so the list reads the same however
+// the directory hands its files over. A preset whose title has not been loaded
+// yet sorts by its string key, so scanning before the strings are in still
+// gives a settled order; sort again once they are.
+void Config_Presets_Sort(void);
+
 // Number of loaded presets.
 int32_t Config_Presets_GetCount(void);
 

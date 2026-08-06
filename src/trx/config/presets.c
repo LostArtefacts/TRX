@@ -9,7 +9,11 @@
 #include <trx/core/memory.h>
 #include <trx/core/strings.h>
 #include <trx/core/vector.h>
+#include <trx/game/game_strings/entries.h>
 #include <trx/game/shell/paths.h>
+
+#include <stdlib.h>
+#include <string.h>
 
 static VECTOR *m_Presets = nullptr; // CONFIG_PRESET
 
@@ -116,6 +120,17 @@ static bool M_LoadPreset(const char *const path)
     return true;
 }
 
+static const char *M_GetTitle(const CONFIG_PRESET *const preset)
+{
+    const char *const title = GameString_Get(preset->name_gs);
+    return title != nullptr ? title : preset->name_gs;
+}
+
+static int M_CompareByTitle(const void *const a, const void *const b)
+{
+    return strcmp(M_GetTitle(a), M_GetTitle(b));
+}
+
 static void __attribute__((destructor)) M_Shutdown(void)
 {
     M_FreeAllPresets();
@@ -158,8 +173,19 @@ void Config_Presets_ScanFiles(void)
     }
     File_CloseDirectory(dir);
     Memory_FreePointer(&presets_dir);
+    Config_Presets_Sort();
 
     LOG_INFO("Loaded %d config preset(s)", m_Presets->count);
+}
+
+void Config_Presets_Sort(void)
+{
+    if (m_Presets == nullptr || m_Presets->count < 2) {
+        return;
+    }
+    qsort(
+        Vector_GetData(m_Presets), m_Presets->count, m_Presets->item_size,
+        M_CompareByTitle);
 }
 
 int32_t Config_Presets_GetCount(void)
