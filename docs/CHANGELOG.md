@@ -116,6 +116,7 @@
 - fixed Lara's braid floating or being aligned to the water height when vaulting out of wading depth water (#5900)
 - fixed the Silver and Jade Dragon secrets being listed in the wrong order in the Floating Islands statistics (OG bug); saves made before this version have the two swapped
 - fixed music triggered from one-shot switches playing more than once (OG bug)
+- fixed the collapsible tiles in Wreck of the Maria Doria room 68 not triggering if Lara jumps over them, and fixed a missing trigger for barrels item 123
 
 **TR3**
 - changed the Hand of Rathmore in Reunion to not show pickup aids, in line with the other artefacts
