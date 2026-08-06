@@ -2,7 +2,7 @@ local raw = trxc.strings
 local api = trx.api
 
 api.module("strings", {
-  order = 29,
+  order = 30,
   description = "Utilities for working with strings.\n\n"
     .. "Not to be confused with `trx.locale`, which is the text a player reads: this module is "
     .. "about manipulating strings, that one is about which string the player gets.",
