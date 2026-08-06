@@ -348,6 +348,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── track59.flac
 │   │   │   └── track60.flac
 │   │   ├── scripts
+│   │   │   ├── _game.lua
 │   │   │   ├── gym.lua
 │   │   │   └── level10b.lua
 │   │   ├── catalog_item_actions.csv
@@ -396,6 +397,8 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── egypt.phd
 │   │   │   ├── end2.phd
 │   │   │   └── end.phd
+│   │   ├── scripts
+│   │   │   └── _game.lua
 │   │   ├── gameflow.json5
 │   │   ├── strings-de.json5
 │   │   ├── strings-fr.json5
@@ -770,6 +773,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── 60.mp3
 │   │   │   └── 61.mp3
 │   │   ├── scripts
+│   │   │   ├── _game.lua
 │   │   │   ├── assault.lua
 │   │   │   ├── cut3.lua
 │   │   │   ├── floating.lua
@@ -842,6 +846,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── level5.tr2
 │   │   │   └── title.tr2
 │   │   ├── scripts
+│   │   │   ├── _game.lua
 │   │   │   ├── level1.lua
 │   │   │   ├── level3.lua
 │   │   │   └── level4.lua
@@ -1683,6 +1688,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── track59.flac
     │   │   │   │   └── track60.flac
     │   │   │   ├── scripts
+    │   │   │   │   ├── _game.lua
     │   │   │   │   ├── gym.lua
     │   │   │   │   └── level10b.lua
     │   │   │   ├── catalog_item_actions.csv
@@ -1731,6 +1737,8 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── egypt.phd
     │   │   │   │   ├── end2.phd
     │   │   │   │   └── end.phd
+    │   │   │   ├── scripts
+    │   │   │   │   └── _game.lua
     │   │   │   ├── gameflow.json5
     │   │   │   ├── strings-de.json5
     │   │   │   ├── strings-fr.json5
@@ -2105,6 +2113,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── 60.mp3
     │   │   │   │   └── 61.mp3
     │   │   │   ├── scripts
+    │   │   │   │   ├── _game.lua
     │   │   │   │   ├── assault.lua
     │   │   │   │   ├── cut3.lua
     │   │   │   │   ├── floating.lua
@@ -2177,6 +2186,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── level5.tr2
     │   │   │   │   └── title.tr2
     │   │   │   ├── scripts
+    │   │   │   │   ├── _game.lua
     │   │   │   │   ├── level1.lua
     │   │   │   │   ├── level3.lua
     │   │   │   │   └── level4.lua

@@ -750,6 +750,14 @@ void Music_Trigger(MUSIC_ID track_id, const MUSIC_TRIGGER *const trigger)
     }
 
     MUSIC_TRACK_STATE *const track = &m_TrackStates[track_id];
+    if (track->is_one_shot) {
+        return;
+    }
+
+    if (M_IsAmbientTrack(track_id)) {
+        Music_Play_Direct(track_id, MPM_LOOP);
+        return;
+    }
 
     MUSIC_PLAY_MODE play_mode = MPM_NO_REPEAT;
     if (g_Config.audio.fix_speeches_killing_music
@@ -757,43 +765,29 @@ void Music_Trigger(MUSIC_ID track_id, const MUSIC_TRIGGER *const trigger)
         play_mode = MPM_OVERLAY;
     }
 
-    // TODO: consolidate
-    if (g_TRVersion == 1) {
-        if (track->is_one_shot) {
-            return;
-        }
-
+    if (g_Rules.music.accumulate_trigger_masks) {
         if (trigger->kind == MUSIC_TRIGGER_SWITCH) {
             track->mask ^= trigger->mask;
         } else if (trigger->kind == MUSIC_TRIGGER_ANTI) {
             track->mask &= ~trigger->mask;
-        } else if (trigger->mask != 0) {
+        } else {
             track->mask |= trigger->mask;
         }
 
-        if (track->mask == TRIGGER_MASK_ALL) {
-            if (trigger->one_shot) {
-                track->is_one_shot = true;
-            }
-            Music_Play_Direct(track_id, play_mode);
-        } else {
+        if (track->mask != TRIGGER_MASK_ALL) {
             Music_StopTrack_Direct(track_id);
+            return;
         }
+    } else if ((track->mask & trigger->mask) != 0) {
         return;
     }
 
-    const bool is_ambient = M_IsAmbientTrack(track_id);
-    if ((track->mask & trigger->mask) != 0 || track->is_one_shot) {
-        return;
-    }
-
-    if ((trigger->one_shot || g_Rules.music.is_one_shot_default)
-        && !is_ambient) {
+    if (trigger->one_shot || g_Rules.music.is_one_shot_default) {
         track->mask |= trigger->mask;
         track->is_one_shot = true;
     }
 
-    if (trigger->timer == 0 || g_TRVersion != 2) {
+    if (trigger->timer == 0 || !g_Rules.music.supports_delay) {
         Music_Play_Direct(track_id, play_mode);
         return;
     }
