@@ -196,6 +196,8 @@ The Lua integration was rewritten and existing scripts will need updating; refer
 - added `trx.config.describe()`, to read a setting's shape and accepted values
 - added `trx.config.format_value()`, the current value spelled the way the console prints it
 - added `trx.config.accepted_values()`, what a setting takes, as text for an error message
+- added `trx.config.declare()`, for a game to add settings of its own: they are saved and loaded with the player's, translated from the game's own strings, and shown in the settings menu where the declaration asks for
+- added `trx.config.on_change()`, to hear what a setting holds now and whenever it moves
 - added `trx.game.Level.key`, what a level is called after the file it loads
 - added `require()` to a game's scripts, taking a name that carries the directory it lives in: `tr1.my_module` for a script belonging to a game, `common.my_module` for one in the shared pool beside the executable
 - added new Lua game state, `trx.game.is_loaded` and `trx.game.is_playable`

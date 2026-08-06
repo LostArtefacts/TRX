@@ -86,6 +86,24 @@ void Config_DropAllOptions(void)
     M_RebuildView();
 }
 
+void Config_DropDeclaredOptions(void)
+{
+    // As in Config_DropAllOptions: a report names the options that moved by
+    // address, and the options it names are about to go.
+    Config_DiscardPendingChanges();
+    for (int32_t i = m_Options != nullptr ? m_Options->count - 1 : -1; i >= 0;
+         i--) {
+        CONFIG_OPTION *const option = M_Get(i);
+        if (!Config_Option_IsDeclared(option)) {
+            continue;
+        }
+        Config_Option_Free(option);
+        Memory_Free(option);
+        Vector_RemoveAt(m_Options, i);
+    }
+    M_RebuildView();
+}
+
 CONFIG_OPTION *Config_Register(const CONFIG_OPTION_DESC *const desc)
 {
     ASSERT(desc != nullptr);

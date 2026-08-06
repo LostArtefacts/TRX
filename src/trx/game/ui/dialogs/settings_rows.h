@@ -6,6 +6,9 @@
 // arrangement lives here rather than beside the option. A tab is declared as an
 // ordered list of names in a .def; the options themselves are made afresh
 // whenever the game changes, and the arrangement is rebuilt with them.
+//
+// A script's option has no .def to be named in, so it says where it goes as it
+// is declared - see UI_Settings_AddDeclaredRow.
 
 #include <trx/config/option.h>
 #include <trx/game/ui/dialogs/settings_handlers.h>
@@ -40,3 +43,23 @@ int32_t UI_Settings_GetRowCount(CONFIG_TAB tab);
 
 // A tab's row, by position in the order the tab shows them.
 const UI_SETTINGS_ROW *UI_Settings_GetRow(CONFIG_TAB tab, int32_t index);
+
+// The tab a name names, which is the name of the .def its rows are written in.
+// False where no tab answers to it.
+bool UI_Settings_FindTab(const char *name, CONFIG_TAB *out);
+
+// Adds a row for a setting no .def names, showing the option `key` names.
+//
+// The row sits directly before or after the row for the option an anchor
+// names, and at the end of the tab where neither anchor is given or the option
+// named is not one this tab shows. Several rows declared against one anchor
+// read in the order they were declared in.
+//
+// The anchors are read here and not kept: a place is a number from this point
+// on, so a row is never left naming one that has gone, and two rows cannot name
+// each other.
+void UI_Settings_AddDeclaredRow(
+    CONFIG_TAB tab, const char *key, const char *before, const char *after);
+
+// Drops every row a script asked for, leaving the ones the .defs name.
+void UI_Settings_DropDeclaredRows(void);

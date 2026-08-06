@@ -219,6 +219,12 @@ bool LUA_API_PushEntrypoint(lua_State *const L, const char *const name)
     return true;
 }
 
+// The config bridge that keeps the watchers is not linked here; a script
+// lifecycle is what these tests are about, and no config exists to watch.
+void LUA_Config_ClearLevelWatchers(void)
+{
+}
+
 void LUA_Guard_Install(lua_State *const L, const double budget_sec)
 {
 }

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <trx/config/option.h>
 #include <trx/game/game_flow/types.h>
 
 #include <lualib.h>
@@ -59,6 +60,14 @@ void LUA_DropLevelModules(lua_State *L);
 
 // Runs the per-game script (scripts/_game.lua), if the game ships one.
 void LUA_RunGameScript(void);
+
+// Pushes what a setting holds, in the shape a script reads it as: a bool as a
+// bool, a number as a number, and a color, an enum or a string as text.
+void LUA_Config_PushOptionValue(lua_State *L, const CONFIG_OPTION *option);
+
+// Drops the config watchers a level script set up, as the level's listeners
+// are dropped. A watcher a game script set up stays.
+void LUA_Config_ClearLevelWatchers(void);
 
 // Let go of the outgoing level's script: what it set up hears about it, and
 // then its listeners go. Level_Unload does this for a level change; a path that

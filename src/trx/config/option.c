@@ -116,8 +116,11 @@ void Config_Option_Init(
     option->name = Memory_DupStr(desc->name);
     option->mirror = desc->mirror;
     option->enum_map = desc->enum_map;
-    option->bounds = desc->bounds;
-    option->flags = desc->percent ? CONFIG_OPTION_PERCENT : 0;
+    option->bounds = desc->bounds != nullptr
+        ? Memory_Dup(desc->bounds, sizeof(CONFIG_OPTION_BOUNDS))
+        : nullptr;
+    option->flags = (desc->percent ? CONFIG_OPTION_PERCENT : 0)
+        | (desc->declared ? CONFIG_OPTION_DECLARED : 0);
     M_CopyValue(&option->default_value, &desc->default_value);
     M_NarrowValue(&option->default_value);
     // The value starts as the default, written properly so that g_Config comes
@@ -141,6 +144,7 @@ void Config_Option_Free(CONFIG_OPTION *const option)
         && M_IsStringLike(option->default_value.type)) {
         Memory_FreePointer((char **)option->mirror);
     }
+    Memory_Free((CONFIG_OPTION_BOUNDS *)option->bounds);
     Memory_Free((char *)option->name);
 }
 
@@ -310,4 +314,10 @@ bool Config_Option_IsHidden(const CONFIG_OPTION *const option)
 {
     ASSERT(option != nullptr);
     return (option->flags & CONFIG_OPTION_HIDDEN) != 0;
+}
+
+bool Config_Option_IsDeclared(const CONFIG_OPTION *const option)
+{
+    ASSERT(option != nullptr);
+    return (option->flags & CONFIG_OPTION_DECLARED) != 0;
 }

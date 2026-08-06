@@ -1,8 +1,9 @@
 -- The config API as a script actually sees it.
 --
--- The override stack underneath is the real one, so what these assert is the
--- thing that matters: a script can hold a setting away from the player's value
--- and give it back, without ever writing to their settings file.
+-- The registry, the override stack and the settings rows underneath are the
+-- real ones, so what these assert is what matters: a script can add a setting
+-- of its own, hear about the ones that move, and hold one away from the
+-- player's value and give it back without ever writing to their settings file.
 
 local h = require("harness")
 local test, raises = h.test, h.raises
@@ -228,6 +229,190 @@ test("list gives every setting, typed", function()
   assert(all["audio.enable_music"] == true, "a bool must be listed as a bool")
   assert(all["visuals.fov"] == 65)
   assert(all["visuals.water_color"] == "ff0000")
+end)
+
+test("describe hands back the shape a declaration takes", function()
+  local shape = trx.config.describe("visuals.fov")
+  assert(shape.key == "visuals.fov")
+  assert(shape.kind == "integer")
+  assert(shape.default == 65, "the default must come back with the shape")
+
+  local color = trx.config.describe("visuals.water_color")
+  assert(color.default == "ff0000")
+end)
+
+test("a game declares a setting of its own", function()
+  trx.config.declare({
+    key = "mod.scanlines",
+    kind = "boolean",
+    default = true,
+  })
+  assert(trx.config.get("mod.scanlines") == true, "the default did not take")
+
+  trx.config.set("mod.scanlines", false)
+  assert(trx.config.get("mod.scanlines") == false, "the write did not take")
+end)
+
+test("a declared setting takes a row on a tab", function()
+  trx.config.declare({
+    key = "mod.grain",
+    kind = "integer",
+    default = 2,
+    min = 0,
+    max = 4,
+    ui = { tab = "graphic_visuals", after = "visuals.fov" },
+  })
+  assert(trx.config.get("mod.grain") == 2)
+end)
+
+test("a row does what its handlers say", function()
+  local available = false
+  trx.config.declare({
+    key = "mod.bloom",
+    kind = "integer",
+    default = 50,
+    min = 0,
+    max = 100,
+    ui = {
+      tab = "graphic_visuals",
+      delta_fast = 5,
+      delta_slow = 1,
+      format_value = function(value)
+        return value .. "%"
+      end,
+      is_available = function()
+        return available
+      end,
+    },
+  })
+  assert(trx.config.get("mod.bloom") == 50)
+  available = true
+end)
+
+test("a tab no dialog shows raises", function()
+  raises(function()
+    trx.config.declare({
+      key = "mod.vignette",
+      kind = "boolean",
+      default = false,
+      ui = { tab = "nowhere" },
+    })
+  end)
+end)
+
+test("a declaration that could hold nothing it allows raises", function()
+  raises(function()
+    trx.config.declare({
+      key = "mod.outside",
+      kind = "integer",
+      default = 9,
+      min = 0,
+      max = 4,
+    })
+  end)
+  raises(function()
+    trx.config.declare({
+      key = "mod.unlisted",
+      kind = "dynamic_enum",
+      values = { "one", "two" },
+      default = "three",
+    })
+  end)
+  raises(function()
+    trx.config.declare({
+      key = "mod.valueless",
+      kind = "dynamic_enum",
+      values = {},
+      default = "one",
+    })
+  end)
+end)
+
+test("a key already taken raises", function()
+  raises(function()
+    trx.config.declare({
+      key = "visuals.fov",
+      kind = "integer",
+      default = 1,
+    })
+  end)
+end)
+
+-- luaL_checkstring would take a number and rewrite the field into a string,
+-- leaving the declaration reading a value that is no longer there.
+test("a declaration names its fields with strings", function()
+  raises(function()
+    trx.config.declare({ key = 42, kind = "boolean", default = true })
+  end)
+end)
+
+test(
+  "a watcher hears the value it is attached to, and the ones after",
+  function()
+    local heard = {}
+    local watcher = trx.config.on_change("visuals.fov", function(value)
+      heard[#heard + 1] = value
+    end)
+    assert(heard[1] == 65, "a watcher must hear the value already in force")
+
+    trx.config.set("visuals.fov", 90)
+    assert(heard[2] == 90, "a watcher must hear a change")
+
+    -- Another setting moving is not this watcher's business.
+    trx.config.set("audio.enable_music", false)
+    assert(#heard == 2, "a watcher heard a setting it does not watch")
+
+    assert(watcher:detach() == true)
+    trx.config.set("visuals.fov", 100)
+    assert(#heard == 2, "a detached watcher still heard a change")
+    assert(watcher:detach() == false, "a watcher is spent once detached")
+  end
+)
+
+test("an override is a change like any other", function()
+  local heard = {}
+  local watcher = trx.config.on_change("visuals.fov", function(value)
+    heard[#heard + 1] = value
+  end)
+  trx.config.override("visuals.fov", 120)
+  assert(heard[#heard] == 120, "an override did not reach the watcher")
+
+  trx.config.restore("visuals.fov")
+  assert(heard[#heard] == 65, "restoring did not reach the watcher")
+  watcher:detach()
+end)
+
+test("a watcher that raises does not silence the rest", function()
+  local heard = false
+  local angry = trx.config.on_change("visuals.fov", function()
+    error("no")
+  end)
+  local calm = trx.config.on_change("visuals.fov", function()
+    heard = true
+  end)
+  trx.config.set("visuals.fov", 90)
+  assert(heard, "the second watcher did not run")
+  angry:detach()
+  calm:detach()
+end)
+
+test("a level script's watcher goes when the level does", function()
+  local heard = 0
+  fake.as_level_script(true)
+  trx.config.on_change("visuals.fov", function()
+    heard = heard + 1
+  end)
+  fake.as_level_script(false)
+  local kept = trx.config.on_change("visuals.fov", function()
+    heard = heard + 100
+  end)
+
+  fake.end_level()
+  trx.config.set("visuals.fov", 90)
+  -- Each watcher hears the value in force as it is attached, so the count
+  -- starts at 101; only the one that outlived its level would raise it by one.
+  assert(heard == 201, "the level's watcher outlived the level: " .. heard)
+  kept:detach()
 end)
 
 return h.report()

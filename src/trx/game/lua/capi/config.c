@@ -3,12 +3,49 @@
 #include <trx/config/registry.h>
 #include <trx/core/dynamic_enum.h>
 #include <trx/core/enum_map.h>
+#include <trx/core/log.h>
+#include <trx/core/memory.h>
 #include <trx/core/vector.h>
 #include <trx/game/lua/common.h>
 #include <trx/game/lua/registry.h>
 #include <trx/game/lua/utils.h>
 
 #include <lauxlib.h>
+#include <stdio.h>
+#include <string.h>
+
+// How deep a watcher writing a setting may go. Answering a change by changing
+// another setting is the point of a watcher; two watchers answering each other
+// is a fight, and this is where it is called off rather than run out of stack.
+#define M_MAX_DISPATCH_DEPTH 8
+
+// What a declaration says, read out in full before any of it is registered. A
+// declaration half of which was refused would leave an option nobody asked for.
+typedef struct {
+    const char *key;
+    TRX_VALUE default_value;
+    CONFIG_OPTION_BOUNDS bounds;
+    bool has_bounds;
+} M_DECLARATION;
+
+// A script waiting to hear that a setting moved. The key is kept rather than
+// the option: an option is dropped and made again with the game, and a watcher
+// has no business holding an address that dies.
+typedef struct {
+    int32_t id;
+    char *key;
+    int32_t fn_ref;
+    // Set up by a level script, so it goes when the level does, as a
+    // trx.events listener does.
+    bool level_scoped;
+    bool dead;
+} M_WATCHER;
+
+static lua_State *m_L = nullptr;
+static VECTOR *m_Watchers = nullptr;
+static int32_t m_NextWatcherId = 1;
+static int32_t m_ChangeListener = -1;
+static int32_t m_DispatchDepth = 0;
 
 static CONFIG_OPTION *M_GetOption(lua_State *const L, const int32_t arg)
 {
@@ -18,22 +55,6 @@ static CONFIG_OPTION *M_GetOption(lua_State *const L, const int32_t arg)
         luaL_error(L, "unknown option: %s", key);
     }
     return option;
-}
-
-// The option's declared type is what a script gets back: a bool reads as a bool
-// and a number as a number. Colors and enums stay strings, which is what they
-// are on the way in as well.
-static void M_PushValue(lua_State *const L, const CONFIG_OPTION *const option)
-{
-    // Colours, enums, strings and dynamic enums read back as their name or
-    // display string, which is also how a script gives them on the way in.
-    const TRX_VALUE_TYPE type = option->value.type;
-    if (type == TVT_RGB_888 || type == TVT_ENUM || type == TVT_STRING
-        || type == TVT_DYNAMIC_ENUM) {
-        lua_pushstring(L, Config_Option_GetValueAsString(option, false));
-        return;
-    }
-    LUA_PushValue(L, &option->value);
 }
 
 // A value is handed to the config string parser, so it is spelled the way that
@@ -53,7 +74,7 @@ static const char *M_ValueAsString(lua_State *const L, const int32_t arg)
 // trxc.config.get(key)
 static int M_L_ConfigGet(lua_State *const L)
 {
-    M_PushValue(L, M_GetOption(L, 1));
+    LUA_Config_PushOptionValue(L, M_GetOption(L, 1));
     return 1;
 }
 
@@ -88,15 +109,41 @@ static const char *M_KindName(const TRX_VALUE_TYPE type)
     return "";
 }
 
+// The default reads back the way the value does, so what describes a setting
+// is what declares one.
+static void M_PushDefault(lua_State *const L, const CONFIG_OPTION *const option)
+{
+    const TRX_VALUE *const value = &option->default_value;
+    if (value->type == TVT_RGB_888 || value->type == TVT_ENUM
+        || value->type == TVT_STRING || value->type == TVT_DYNAMIC_ENUM) {
+        lua_pushstring(
+            L,
+            Value_Format(
+                value->type, Config_Option_GetEnumKey(option), value, false));
+        return;
+    }
+    LUA_PushValue(L, value);
+}
+
 // trxc.config.describe(key) -> table
 static int M_L_ConfigDescribe(lua_State *const L)
 {
     const CONFIG_OPTION *const option = M_GetOption(L, 1);
     lua_newtable(L);
+    lua_pushstring(L, option->name);
+    lua_setfield(L, -2, "key");
     lua_pushstring(L, M_KindName(option->value.type));
     lua_setfield(L, -2, "kind");
     lua_pushboolean(L, (option->flags & CONFIG_OPTION_PERCENT) != 0);
     lua_setfield(L, -2, "percent");
+    M_PushDefault(L, option);
+    lua_setfield(L, -2, "default");
+    if (option->bounds != nullptr) {
+        lua_pushnumber(L, option->bounds->min);
+        lua_setfield(L, -2, "min");
+        lua_pushnumber(L, option->bounds->max);
+        lua_setfield(L, -2, "max");
+    }
 
     if (option->value.type == TVT_ENUM) {
         VECTOR *const values = EnumMap_ListValues(option->enum_map);
@@ -194,9 +241,292 @@ static int M_L_ConfigList(lua_State *const L)
     lua_newtable(L);
     for (CONFIG_OPTION *const *option = Config_GetOptions(); *option != nullptr;
          option++) {
-        M_PushValue(L, *option);
+        LUA_Config_PushOptionValue(L, *option);
         lua_setfield(L, -2, (*option)->name);
     }
+    return 1;
+}
+
+// A string field of a declaration. A number is refused rather than coerced:
+// luaL_checkstring would rewrite the table's own field into a string and hand
+// back a pointer into the stack slot this pops.
+static const char *M_StrField(
+    lua_State *const L, const int32_t idx, const char *const name,
+    const bool required)
+{
+    lua_getfield(L, idx, name);
+    if (lua_isnil(L, -1) && !required) {
+        lua_pop(L, 1);
+        return nullptr;
+    }
+    if (lua_type(L, -1) != LUA_TSTRING) {
+        luaL_error(L, "option field '%s' must be a string", name);
+    }
+    // Handed back rather than copied: the string belongs to the spec table,
+    // which is an argument of the call being read.
+    const char *const result = lua_tostring(L, -1);
+    lua_pop(L, 1);
+    return result;
+}
+
+// The kinds a script may declare, named the way trxc.config.describe reports
+// them back. The rest of the taxonomy names storage the engine owns.
+static TRX_VALUE_TYPE M_ReadKind(lua_State *const L, const char *const kind)
+{
+    if (strcmp(kind, "boolean") == 0) {
+        return TVT_BOOL;
+    }
+    if (strcmp(kind, "integer") == 0) {
+        return TVT_S32;
+    }
+    if (strcmp(kind, "dynamic_enum") == 0) {
+        return TVT_DYNAMIC_ENUM;
+    }
+    luaL_error(L, "unknown option kind: %s", kind);
+    return TVT_BOOL;
+}
+
+// Whether the values the declaration lists name the one it defaults to. An
+// option defaulting to a value it does not offer has nothing to fall back on.
+static bool M_ListsDefault(
+    lua_State *const L, const int32_t idx, const char *const default_value)
+{
+    bool found = false;
+    const int32_t count = (int32_t)lua_rawlen(L, idx);
+    for (int32_t i = 1; i <= count && !found; i++) {
+        lua_rawgeti(L, idx, i);
+        if (lua_type(L, -1) != LUA_TSTRING) {
+            luaL_error(L, "option values must be strings");
+        }
+        found = strcmp(lua_tostring(L, -1), default_value) == 0;
+        lua_pop(L, 1);
+    }
+    return found;
+}
+
+static M_DECLARATION M_ReadDeclaration(lua_State *const L)
+{
+    luaL_checktype(L, 1, LUA_TTABLE);
+    M_DECLARATION spec = {};
+    spec.key = M_StrField(L, 1, "key", true);
+    const TRX_VALUE_TYPE type = M_ReadKind(L, M_StrField(L, 1, "kind", true));
+
+    lua_getfield(L, 1, "default");
+    switch (type) {
+    case TVT_BOOL:
+        luaL_checktype(L, -1, LUA_TBOOLEAN);
+        spec.default_value =
+            (TRX_VALUE) { .type = TVT_BOOL, .as_bool = lua_toboolean(L, -1) };
+        break;
+    case TVT_S32:
+        spec.default_value =
+            (TRX_VALUE) { .type = TVT_S32, .as_int = luaL_checkinteger(L, -1) };
+        break;
+    default:
+        spec.default_value = (TRX_VALUE) { .type = TVT_DYNAMIC_ENUM };
+        break;
+    }
+    lua_pop(L, 1);
+    if (type == TVT_DYNAMIC_ENUM) {
+        spec.default_value.as_str = M_StrField(L, 1, "default", true);
+    }
+
+    // Each bound stands on its own: naming a floor is not asking for a ceiling
+    // of zero, so what the declaration leaves out is as far as the storage
+    // goes.
+    lua_getfield(L, 1, "min");
+    lua_getfield(L, 1, "max");
+    spec.has_bounds = !lua_isnil(L, -2) || !lua_isnil(L, -1);
+    spec.bounds.min = (double)luaL_optinteger(L, -2, INT32_MIN);
+    spec.bounds.max = (double)luaL_optinteger(L, -1, INT32_MAX);
+    lua_pop(L, 2);
+    if (type != TVT_S32) {
+        spec.has_bounds = false;
+    }
+    if (spec.has_bounds && spec.bounds.min > spec.bounds.max) {
+        luaL_error(
+            L, "option %s takes nothing: min %d is above max %d", spec.key,
+            (int32_t)spec.bounds.min, (int32_t)spec.bounds.max);
+    }
+    if (spec.has_bounds
+        && (spec.default_value.as_int < (int64_t)spec.bounds.min
+            || spec.default_value.as_int > (int64_t)spec.bounds.max)) {
+        luaL_error(
+            L, "option %s defaults to %d, outside %d..%d", spec.key,
+            (int32_t)spec.default_value.as_int, (int32_t)spec.bounds.min,
+            (int32_t)spec.bounds.max);
+    }
+
+    if (type == TVT_DYNAMIC_ENUM) {
+        lua_getfield(L, 1, "values");
+        if (!lua_istable(L, -1) || lua_rawlen(L, -1) == 0) {
+            luaL_error(
+                L, "option %s is an enum but declares no values", spec.key);
+        }
+        if (!M_ListsDefault(L, lua_gettop(L), spec.default_value.as_str)) {
+            luaL_error(
+                L, "option %s defaults to %s, which it does not list", spec.key,
+                spec.default_value.as_str);
+        }
+        lua_pop(L, 1);
+    }
+    return spec;
+}
+
+// Seeds a declared enum's values. Each label is a game string key derived from
+// the option, so a declared value is translated as every other one is.
+static void M_SeedValues(lua_State *const L, const CONFIG_OPTION *const option)
+{
+    const void *const token = Config_Option_GetEnumKey(option);
+    DynamicEnum_ResetValues(token);
+    lua_getfield(L, 1, "values");
+    const int32_t count = (int32_t)lua_rawlen(L, -1);
+    for (int32_t i = 1; i <= count; i++) {
+        lua_rawgeti(L, -1, i);
+        const char *const value = lua_tostring(L, -1);
+        char label[128];
+        snprintf(
+            label, sizeof(label), "settings/%s/values/%s", option->name, value);
+        DynamicEnum_AddValue(token, value, label);
+        lua_pop(L, 1);
+    }
+    lua_pop(L, 1);
+}
+
+// trxc.config.declare(spec)
+static int M_L_ConfigDeclare(lua_State *const L)
+{
+    const M_DECLARATION spec = M_ReadDeclaration(L);
+    CONFIG_OPTION *const option = Config_Register(&(CONFIG_OPTION_DESC) {
+        .name = spec.key,
+        .default_value = spec.default_value,
+        .bounds = spec.has_bounds ? &spec.bounds : nullptr,
+        .declared = true,
+    });
+    if (option == nullptr) {
+        return luaL_error(L, "option already declared: %s", spec.key);
+    }
+    if (option->value.type == TVT_DYNAMIC_ENUM) {
+        M_SeedValues(L, option);
+    }
+    return 0;
+}
+
+// Tells one watcher what a setting holds. A watcher that raises must not take
+// the rest of them with it: the setting has moved either way, and the others
+// still have to hear about it.
+static void M_CallWatcher(
+    lua_State *const L, const M_WATCHER *const watcher,
+    const CONFIG_OPTION *const option)
+{
+    lua_rawgeti(L, LUA_REGISTRYINDEX, watcher->fn_ref);
+    LUA_Config_PushOptionValue(L, option);
+    if (lua_pcall(L, 1, 0, 0) != LUA_OK) {
+        LOG_ERROR(
+            "config watcher for %s failed: %s", option->name,
+            lua_tostring(L, -1));
+        lua_pop(L, 1);
+    }
+}
+
+static void M_FreeWatcher(lua_State *const L, M_WATCHER *const watcher)
+{
+    luaL_unref(L, LUA_REGISTRYINDEX, watcher->fn_ref);
+    Memory_FreePointer(&watcher->key);
+}
+
+// Drops the watchers marked dead. Removing one mid-dispatch would move the
+// ones after it out from under the walk, so a watcher goes as soon as the last
+// dispatch is over and not before.
+static void M_CompactWatchers(lua_State *const L)
+{
+    for (int32_t i = m_Watchers->count - 1; i >= 0; i--) {
+        M_WATCHER *const watcher = Vector_Get(m_Watchers, i);
+        if (watcher->dead) {
+            M_FreeWatcher(L, watcher);
+            Vector_RemoveAt(m_Watchers, i);
+        }
+    }
+}
+
+// Says a setting moved, to whoever asked about that one.
+static void M_HandleChange(const EVENT *const event, void *const user_data)
+{
+    lua_State *const L = m_L;
+    const CONFIG_CHANGE *const change = event->data;
+    if (L == nullptr || m_Watchers == nullptr || change == nullptr) {
+        return;
+    }
+    if (m_DispatchDepth >= M_MAX_DISPATCH_DEPTH) {
+        LOG_ERROR(
+            "config watchers are still changing settings %d calls deep; "
+            "giving up on this change",
+            m_DispatchDepth);
+        return;
+    }
+
+    m_DispatchDepth++;
+    // The watchers as they stand: one attached from inside another has already
+    // been told what the setting holds, and has nothing to hear from this
+    // round.
+    const int32_t count = m_Watchers->count;
+    for (int32_t i = 0; i < change->count; i++) {
+        const CONFIG_OPTION *const option = change->options[i];
+        for (int32_t j = 0; j < count && j < m_Watchers->count; j++) {
+            const M_WATCHER *const watcher = Vector_Get(m_Watchers, j);
+            if (watcher->dead || strcmp(watcher->key, option->name) != 0) {
+                continue;
+            }
+            M_CallWatcher(L, watcher, option);
+        }
+    }
+    m_DispatchDepth--;
+    if (m_DispatchDepth == 0) {
+        M_CompactWatchers(L);
+    }
+}
+
+// trxc.config.on_change(key, fn) -> id
+static int M_L_ConfigOnChange(lua_State *const L)
+{
+    const CONFIG_OPTION *const option = M_GetOption(L, 1);
+    luaL_checktype(L, 2, LUA_TFUNCTION);
+    if (m_Watchers == nullptr) {
+        m_Watchers = Vector_Create(sizeof(M_WATCHER));
+    }
+    lua_pushvalue(L, 2);
+    Vector_Add(
+        m_Watchers,
+        &(M_WATCHER) {
+            .id = m_NextWatcherId++,
+            .key = Memory_DupStr(option->name),
+            .fn_ref = luaL_ref(L, LUA_REGISTRYINDEX),
+            .level_scoped = LUA_GetScriptContext() == LUA_CONTEXT_LEVEL,
+        });
+    // The setting already holds something, and a script asking to hear about it
+    // is asking about the value in force as much as the ones to come.
+    M_CallWatcher(L, Vector_Get(m_Watchers, m_Watchers->count - 1), option);
+    lua_pushinteger(L, m_NextWatcherId - 1);
+    return 1;
+}
+
+// trxc.config.off_change(id) -> bool
+static int M_L_ConfigOffChange(lua_State *const L)
+{
+    const int32_t id = (int32_t)luaL_checkinteger(L, 1);
+    for (int32_t i = 0; m_Watchers != nullptr && i < m_Watchers->count; i++) {
+        M_WATCHER *const watcher = Vector_Get(m_Watchers, i);
+        if (watcher->id != id || watcher->dead) {
+            continue;
+        }
+        watcher->dead = true;
+        if (m_DispatchDepth == 0) {
+            M_CompactWatchers(L);
+        }
+        lua_pushboolean(L, true);
+        return 1;
+    }
+    lua_pushboolean(L, false);
     return 1;
 }
 
@@ -209,12 +539,70 @@ static const luaL_Reg m_Module[] = {
     { "restore", M_L_ConfigRestore },
     { "is_overridden", M_L_ConfigIsOverridden },
     { "list", M_L_ConfigList },
+    { "declare", M_L_ConfigDeclare },
+    { "on_change", M_L_ConfigOnChange },
+    { "off_change", M_L_ConfigOffChange },
     { nullptr, nullptr },
 };
 
 static void M_Create(lua_State *const L)
 {
+    m_L = L;
+    m_ChangeListener = Config_SubscribeChanges(M_HandleChange, nullptr);
     LUA_RegisterModule(L, "config", m_Module);
 }
 
-REGISTER_LUA_CAPI(.create = M_Create)
+// A ref names a slot in the registry of the state that is going, and the next
+// state numbers its own from scratch. Kept, it would name whatever landed
+// there.
+static void M_Shutdown(void)
+{
+    for (int32_t i = 0; m_Watchers != nullptr && i < m_Watchers->count; i++) {
+        M_WATCHER *const watcher = Vector_Get(m_Watchers, i);
+        Memory_FreePointer(&watcher->key);
+    }
+    if (m_Watchers != nullptr) {
+        Vector_Free(m_Watchers);
+        m_Watchers = nullptr;
+    }
+    if (m_ChangeListener >= 0) {
+        Config_UnsubscribeChanges(m_ChangeListener);
+        m_ChangeListener = -1;
+    }
+    m_DispatchDepth = 0;
+    m_L = nullptr;
+}
+
+// The option's declared type is what a script gets back: a bool reads as a bool
+// and a number as a number. Colors and enums stay strings, which is what they
+// are on the way in as well.
+void LUA_Config_PushOptionValue(
+    lua_State *const L, const CONFIG_OPTION *const option)
+{
+    // Colours, enums, strings and dynamic enums read back as their name or
+    // display string, which is also how a script gives them on the way in.
+    const TRX_VALUE_TYPE type = option->value.type;
+    if (type == TVT_RGB_888 || type == TVT_ENUM || type == TVT_STRING
+        || type == TVT_DYNAMIC_ENUM) {
+        lua_pushstring(L, Config_Option_GetValueAsString(option, false));
+        return;
+    }
+    LUA_PushValue(L, &option->value);
+}
+
+void LUA_Config_ClearLevelWatchers(void)
+{
+    lua_State *const L = m_L;
+    if (L == nullptr || m_Watchers == nullptr) {
+        return;
+    }
+    for (int32_t i = 0; i < m_Watchers->count; i++) {
+        M_WATCHER *const watcher = Vector_Get(m_Watchers, i);
+        watcher->dead = watcher->dead || watcher->level_scoped;
+    }
+    if (m_DispatchDepth == 0) {
+        M_CompactWatchers(L);
+    }
+}
+
+REGISTER_LUA_CAPI(.create = M_Create, .shutdown = M_Shutdown)
