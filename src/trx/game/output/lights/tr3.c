@@ -6,6 +6,7 @@
 #include <trx/game/items/manager.h>
 #include <trx/game/output.h>
 #include <trx/game/output/lights.h>
+#include <trx/game/output/lights/fog_bulbs.h>
 #include <trx/game/output/lights/priv.h>
 #include <trx/gl/utils.h>
 #include <trx/version.h>
@@ -564,5 +565,6 @@ const LIGHTING_MODEL g_LightingModelTR3 = {
     .add_dynamic_light = Output_Lights_TR3_AddDynamicLight,
     .upload_cpu_light = M_UploadCPULight,
     .upload_own_light = M_UploadOwnLight,
+    .prepare_scene = Output_FogBulbs_PrepareScene,
     .shader_variant = 1,
 };

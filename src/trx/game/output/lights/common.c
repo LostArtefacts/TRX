@@ -2,10 +2,12 @@
 #include <trx/core/math/geom.h>
 #include <trx/core/utils.h>
 #include <trx/core/vector.h>
+#include <trx/game/camera/vars.h>
 #include <trx/game/const.h>
 #include <trx/game/matrix.h>
 #include <trx/game/output.h>
 #include <trx/game/output/lights.h>
+#include <trx/game/output/lights/fog_bulbs.h>
 #include <trx/game/output/lights/priv.h>
 #include <trx/game/random.h>
 #include <trx/version.h>
@@ -18,17 +20,101 @@ typedef struct {
     int32_t table[OUTPUT_LIGHT_CYCLE];
 } M_ROOM_LIGHT_TABLE;
 
+typedef struct {
+    XYZ_32 pos;
+    RGB_888 color;
+    int32_t intensity;
+    int32_t falloff;
+    int32_t cam_dist;
+    bool is_rgb;
+} M_PENDING_LIGHT;
+
+typedef struct {
+    XYZ_32 pos;
+    RGB_888 color;
+    int32_t radius;
+    int32_t density;
+    int32_t cam_dist;
+} M_PENDING_FOG;
+
 static bool m_IsSunsetEnabled = false;
 static int32_t m_RoomLightShades[RLM_NUMBER_OF] = {};
 static M_ROOM_LIGHT_TABLE m_RoomLightTables[OUTPUT_LIGHT_CYCLE] = {};
 static VECTOR *m_DynamicLights = nullptr;
 static OUTPUT_LS_CACHE m_LSCache = {};
 
+static struct {
+    int32_t count;
+    M_PENDING_LIGHT list[OUTPUT_MAX_PENDING_LIGHTS];
+} m_PendingLights = {};
+
+static struct {
+    int32_t count;
+    M_PENDING_FOG list[OUTPUT_MAX_FOG_BULBS];
+} m_PendingFog = {};
+
 static const LIGHTING_MODEL *const m_Models[] = {
     &g_LightingModelTR12,
     &g_LightingModelTR3,
     &g_LightingModelTR4,
 };
+
+static void M_AddDynamicLight(
+    const XYZ_32 pos, const int32_t intensity, const int32_t falloff)
+{
+    Output_Lights_GetModel()->add_dynamic_light(pos, intensity, falloff);
+}
+
+static void M_AddDynamicLightRGB(
+    const XYZ_32 pos, const int32_t falloff, const RGB_888 color)
+{
+    const LIGHTING_MODEL *const model = Output_Lights_GetModel();
+    if (model->add_dynamic_light_rgb != nullptr) {
+        model->add_dynamic_light_rgb(pos, falloff, color);
+        return;
+    }
+
+    int32_t safe_falloff = falloff;
+    CLAMP(safe_falloff, 0, OUTPUT_DYNAMIC_FALLOFF_MAX);
+
+    const OUTPUT_DYNAMIC_LIGHT light = {
+        .light = {
+            .pos = pos,
+            .color = color,
+            .layout = LIGHT_LAYOUT_LEGACY,
+            .type = LIGHT_TYPE_POINT,
+            .u.legacy =
+                {
+                    .falloff.value_1 = safe_falloff
+                        << OUTPUT_DYNAMIC_FALLOFF_SHIFT,
+                },
+        },
+        .kind = OUTPUT_DYNAMIC_LIGHT_RGB,
+    };
+    Vector_Add(m_DynamicLights, &light);
+}
+
+static void M_AddPendingLight(M_PENDING_LIGHT light)
+{
+    light.cam_dist = XYZ_32_GetDistance(light.pos, g_Camera.pos.pos);
+
+    if (m_PendingLights.count < OUTPUT_MAX_PENDING_LIGHTS) {
+        m_PendingLights.list[m_PendingLights.count++] = light;
+        return;
+    }
+
+    int32_t furthest_idx = -1;
+    int32_t furthest_dist = light.cam_dist;
+    for (int32_t i = 0; i < m_PendingLights.count; i++) {
+        if (m_PendingLights.list[i].cam_dist > furthest_dist) {
+            furthest_dist = m_PendingLights.list[i].cam_dist;
+            furthest_idx = i;
+        }
+    }
+    if (furthest_idx >= 0) {
+        m_PendingLights.list[furthest_idx] = light;
+    }
+}
 
 const LIGHTING_MODEL *Output_Lights_GetModel(void)
 {
@@ -50,6 +136,7 @@ size_t Output_Lights_GetLSBufferSize(void)
 void Output_Lights_ResetUploadCache(void)
 {
     memset(&m_LSCache, 0, sizeof(m_LSCache));
+    Output_FogBulbs_ResetUploadCache();
 }
 
 const LIGHT_LEGACY_DATA *Output_Lights_GetLegacyData(const LIGHT *const light)
@@ -235,6 +322,11 @@ void Output_Lights_Shutdown(void)
 
 void Output_Lights_ObserveLevelLoad(void)
 {
+    // Fog bulbs are shared by every game, so they are cleared here rather than
+    // by the model that happens to fill them. This runs before the models so
+    // that the bulbs a TR4 level carries survive the clear.
+    Output_FogBulbs_Reset();
+
     for (int32_t i = 0; i < (int32_t)ARRAY_SIZE(m_Models); i++) {
         if (i > 0 && m_Models[i] == m_Models[i - 1]) {
             continue;
@@ -283,46 +375,103 @@ void Output_Lights_UploadOwnLight(const OUTPUT_LIGHT_INFO *const info)
 void Output_ResetDynamicLights(void)
 {
     Vector_Clear(m_DynamicLights);
-}
-
-VECTOR *Output_GetDynamicLights(void)
-{
-    return m_DynamicLights;
+    Output_FogBulbs_ResetFrame();
 }
 
 void Output_AddDynamicLight(
     const XYZ_32 pos, const int32_t intensity, const int32_t falloff)
 {
-    Output_Lights_GetModel()->add_dynamic_light(pos, intensity, falloff);
+    M_AddPendingLight((M_PENDING_LIGHT) {
+        .pos = pos,
+        .intensity = intensity,
+        .falloff = falloff,
+    });
 }
 
 void Output_AddDynamicLightRGB(
     const XYZ_32 pos, const int32_t falloff, const RGB_888 color)
 {
-    const LIGHTING_MODEL *const model = Output_Lights_GetModel();
-    if (model->add_dynamic_light_rgb != nullptr) {
-        model->add_dynamic_light_rgb(pos, falloff, color);
+    M_AddPendingLight((M_PENDING_LIGHT) {
+        .pos = pos,
+        .color = color,
+        .falloff = falloff,
+        .is_rgb = true,
+    });
+}
+
+void Output_AddFogBulb(
+    const XYZ_32 pos, const int32_t radius, const int32_t density,
+    const RGB_888 color)
+{
+    const M_PENDING_FOG fog = {
+        .pos = pos,
+        .color = color,
+        .radius = radius,
+        .density = density,
+        .cam_dist = XYZ_32_GetDistance(pos, g_Camera.pos.pos),
+    };
+
+    if (m_PendingFog.count < OUTPUT_MAX_FOG_BULBS) {
+        m_PendingFog.list[m_PendingFog.count++] = fog;
         return;
     }
 
-    int32_t safe_falloff = falloff;
-    CLAMP(safe_falloff, 0, OUTPUT_DYNAMIC_FALLOFF_MAX);
+    // The buffer keeps the nearest bulbs rather than the first ones asked for,
+    // as in M_AddPendingLight.
+    int32_t furthest_idx = -1;
+    int32_t furthest_dist = fog.cam_dist;
+    for (int32_t i = 0; i < m_PendingFog.count; i++) {
+        if (m_PendingFog.list[i].cam_dist > furthest_dist) {
+            furthest_dist = m_PendingFog.list[i].cam_dist;
+            furthest_idx = i;
+        }
+    }
+    if (furthest_idx >= 0) {
+        m_PendingFog.list[furthest_idx] = fog;
+    }
+}
 
-    const OUTPUT_DYNAMIC_LIGHT light = {
-        .light = {
-            .pos = pos,
-            .color = color,
-            .layout = LIGHT_LAYOUT_LEGACY,
-            .type = LIGHT_TYPE_POINT,
-            .u.legacy =
-                {
-                    .falloff.value_1 = safe_falloff
-                        << OUTPUT_DYNAMIC_FALLOFF_SHIFT,
-                },
-        },
-        .kind = OUTPUT_DYNAMIC_LIGHT_RGB,
-    };
-    Vector_Add(m_DynamicLights, &light);
+void Output_DropPendingLights(void)
+{
+    m_PendingLights.count = 0;
+    m_PendingFog.count = 0;
+}
+
+void Output_FlushPendingLights(void)
+{
+    for (int32_t i = 0; i < m_PendingLights.count; i++) {
+        const M_PENDING_LIGHT *const queued = &m_PendingLights.list[i];
+        if (queued->is_rgb) {
+            M_AddDynamicLightRGB(queued->pos, queued->falloff, queued->color);
+        } else {
+            M_AddDynamicLight(queued->pos, queued->intensity, queued->falloff);
+        }
+    }
+    m_PendingLights.count = 0;
+
+    for (int32_t i = 0; i < m_PendingFog.count; i++) {
+        const M_PENDING_FOG *const queued = &m_PendingFog.list[i];
+        Output_FogBulbs_AddFrame(
+            queued->pos, queued->radius, queued->density, queued->color);
+    }
+    m_PendingFog.count = 0;
+}
+
+void Output_TriggerFXFogBulb(
+    const XYZ_32 pos, const int32_t fx_rad, const int32_t density,
+    const RGB_888 color)
+{
+    // The OG triggers these for underwater flares and the like, which no
+    // other game has.
+    if (g_TRVersion != 4) {
+        return;
+    }
+    Output_FogBulbs_AddTimed(pos, fx_rad, density, color);
+}
+
+VECTOR *Output_GetDynamicLights(void)
+{
+    return m_DynamicLights;
 }
 
 int32_t Output_GetRoomLightShade(const ROOM_LIGHT_MODE mode)

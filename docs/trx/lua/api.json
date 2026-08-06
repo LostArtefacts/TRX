@@ -1,6 +1,18 @@
 {
   "constants": [
     {
+      "description": "How many lights a script can put up in one frame.",
+      "path": "fx.MAX_LIGHTS",
+      "type": "integer",
+      "value": 64
+    },
+    {
+      "description": "How many balls of fog can be seen at once. TR4 levels carry fog of their own, which takes its slots first, so fewer than this reach the screen where a level is already using them.",
+      "path": "fx.MAX_FOG",
+      "type": "integer",
+      "value": 10
+    },
+    {
       "description": "One degree. Multiply by it to say an angle in degrees: `45 * trx.math.DEG_1`.",
       "path": "math.DEG_1",
       "type": "math.Angle",
@@ -4208,6 +4220,115 @@
       }
     },
     {
+      "description": "Lights the world around a point for this frame.\n\nTR1 and TR2 light in brightness alone, so there the light is as bright as its\nbrightest channel and comes out white.",
+      "examples": [
+        "trx.events.after_control(function()\n  trx.fx.emit_light({\n    pos = trx.lara.item.pos,\n    radius = 2048,\n    color = { r = 0, g = 255, b = 192 },\n  })\nend)"
+      ],
+      "params": [
+        {
+          "description": "Where the light is and what it looks like.",
+          "fields": [
+            {
+              "description": "World position.",
+              "name": "pos",
+              "type": "math.Vec3"
+            },
+            {
+              "default": 3072,
+              "description": "How far it reaches, at least an eighth of a sector. Rounded down to the eighth of a sector the engine measures a dynamic light in, and carried about a quarter further than asked for in TR4, which falls a light off more gently.",
+              "name": "radius",
+              "optional": true,
+              "type": "math.Distance"
+            },
+            {
+              "description": "Its color, each channel 0 to 255. Defaults to white.",
+              "fields": [
+                {
+                  "description": "Red.",
+                  "name": "r",
+                  "type": "integer"
+                },
+                {
+                  "description": "Green.",
+                  "name": "g",
+                  "type": "integer"
+                },
+                {
+                  "description": "Blue.",
+                  "name": "b",
+                  "type": "integer"
+                }
+              ],
+              "name": "color",
+              "optional": true,
+              "type": "table"
+            }
+          ],
+          "name": "opts",
+          "type": "table"
+        }
+      ],
+      "path": "fx.emit_light"
+    },
+    {
+      "description": "Fills a ball of air with fog for this frame, which the player sees through\nrather than on. Where a light brightens what it falls on, this hangs in the\nspace itself.",
+      "examples": [
+        "trx.events.after_control(function()\n  trx.fx.emit_fog({\n    pos = { x = 32768, y = -1024, z = 45056 },\n    radius = 3072,\n    density = 64,\n    color = { r = 128, g = 160, b = 192 },\n  })\nend)"
+      ],
+      "params": [
+        {
+          "description": "Where the fog is and what it looks like.",
+          "fields": [
+            {
+              "description": "World position.",
+              "name": "pos",
+              "type": "math.Vec3"
+            },
+            {
+              "default": 2048,
+              "description": "How far the fog reaches, at least one unit.",
+              "name": "radius",
+              "optional": true,
+              "type": "math.Distance"
+            },
+            {
+              "default": 128,
+              "description": "How thick it is, from 0 for nothing to 255.",
+              "name": "density",
+              "optional": true,
+              "type": "integer"
+            },
+            {
+              "description": "Its color, each channel 0 to 255. Defaults to white.",
+              "fields": [
+                {
+                  "description": "Red.",
+                  "name": "r",
+                  "type": "integer"
+                },
+                {
+                  "description": "Green.",
+                  "name": "g",
+                  "type": "integer"
+                },
+                {
+                  "description": "Blue.",
+                  "name": "b",
+                  "type": "integer"
+                }
+              ],
+              "name": "color",
+              "optional": true,
+              "type": "table"
+            }
+          ],
+          "name": "opts",
+          "type": "table"
+        }
+      ],
+      "path": "fx.emit_fog"
+    },
+    {
       "description": "Starts a level from `trx.game.levels`.",
       "examples": [
         "trx.game.play_level(1)"
@@ -5666,18 +5787,18 @@
     {
       "description": "Argument checking for the whole of `trx`.",
       "name": "api",
-      "order": 33,
+      "order": 34,
       "title": "API registry"
     },
     {
       "description": "A small, declarative argument parser for console commands, in the shape of\nPython's argparse.\n\nA parser both reads a command's arguments and offers completions for them,\nfrom one declaration. Every command written with `trx.console.register` has\none; a command shapes it through the `trx.console.register.spec.args` function\nit hands over, and `trx.console.register.spec.run` then receives a table of\nparsed values. A command that shapes nothing takes no arguments, and is told so\nwhen given one.\n\nEvery parser answers `-h` and `--help` on its own, printing what it accepts.\n\nHow a positional reads a token is its matcher: a type to coerce to, a set of\nchoices, or a function of its own. These do not combine on one positional; a\nvalue that is a number *or* a name is two matchers, declared with\n`trx.argparse.Parser:any_of`.\n\nPositionals are read in order, and an optional one a token does not fit is\npassed over: the token goes to the next positional, and the one skipped stays\nnil. That is what lets a command take a leading argument it can also be used\nwithout - a verb before a value, a count before a name. Completion follows the\nsame path, so a slot offers what every argument reachable from it takes. A\ntoken nothing takes is reported against the first argument that refused it.\n\nA choice is either a bare string, where the key and value are the same, or a\n`{ key, value }` pair, where the key is matched and shown and the value is what\n`trx.argparse.Parser:parse` gives back. Matching is forgiving, through\n`trx.strings.fuzzy_match`.",
       "name": "argparse",
-      "order": 22
+      "order": 23
     },
     {
       "description": "Module for controlling the Assault Course and Quad Bike timers in gym levels.",
       "name": "assault",
-      "order": 17,
+      "order": 18,
       "title": "Assault course"
     },
     {
@@ -5693,12 +5814,12 @@
     {
       "description": "Module for reading, changing and declaring engine settings.\n\nThese are the player's settings, not the level's. `trx.config.set` writes to them and keeps the\nchange: it is remembered across saves and relaunches, exactly as if the player had made it\nthemselves. A level that wants to tint the water or pull the fog in wants `trx.config.override`\ninstead, which lasts as long as the script keeps it and leaves the player's own value untouched\nunderneath.\n\nA game can also add settings of its own with `trx.config.declare`: they are saved and loaded with\nthe player's own, and shown in the settings menu where the declaration asks for. A setting a\ngame's `scripts/_game.lua` declares belongs to that game and goes when it does.",
       "name": "config",
-      "order": 23
+      "order": 24
     },
     {
       "description": "Module for interacting with the developer console.\n\n`trx.console.log` writes to the console overlay in-game, where `trx.log` writes only to the terminal and the log file.",
       "name": "console",
-      "order": 21
+      "order": 22
     },
     {
       "description": "Module for controlling certain creature behavior.",
@@ -5714,6 +5835,11 @@
       "description": "Lua scripts can listen for game events by attaching a handler to one of the hooks below. Attaching returns a listener id, which `trx.events.detach` takes.\n\nA handler attached from a level script is detached automatically when the level ends; one attached from a global script lives for the whole session.\n\nAn event that carries a default the script may take over says so in its description; a handler answers such an event by returning true, and the default then stands down. Every other event ignores what its handlers return.",
       "name": "events",
       "order": 1
+    },
+    {
+      "description": "What a script puts in front of the player: things seen rather than things the\ngame holds.\n\nNothing here takes a place in a save or has a bearing on what anything decides.\n\nEvery call here lasts the frame it is made in. A light that stays is the same\ncall made every frame, which is also how one follows something that moves;\nthere is nothing to remove.\n\nA frame shows only so much: see `trx.fx.MAX_LIGHTS` and `trx.fx.MAX_FOG`. Once\na frame is full, what is asked for takes the place of the one furthest from the\ncamera, so the nearest are the ones seen. Neither raises an error.",
+      "name": "fx",
+      "order": 17
     },
     {
       "description": "Module for the game flow: which levels there are, and which one is being played.",
@@ -5734,7 +5860,7 @@
     {
       "description": "Writing Lua values out as JSON. The API dump the reference is generated from goes through this, so what a script writes out is encoded the way the engine's own data is.",
       "name": "json",
-      "order": 31,
+      "order": 32,
       "title": "JSON"
     },
     {
@@ -5746,33 +5872,33 @@
     {
       "description": "The text the player reads, in the player's own language.",
       "name": "locale",
-      "order": 20
+      "order": 21
     },
     {
       "description": "Logs a message to the terminal and to `TRX.log` in the installation directory. <!--noref: TRX.log--> Each call records the Lua script's filename, function name and line number.",
       "name": "log",
-      "order": 27,
+      "order": 28,
       "title": "Logging"
     },
     {
       "description": "Evaluating Lua at runtime: a string of code, or a file on disk. Both run in the same state as every other script.",
       "name": "lua",
-      "order": 32
+      "order": 33
     },
     {
       "description": "Fixed-point trigonometry, matching the engine's own tables. Using these rather than Lua's `math` library guarantees a script places things exactly where the engine would. `trx.math.Angle` says what an angle is here.",
       "name": "math",
-      "order": 28
+      "order": 29
     },
     {
       "description": "The mods the game was built with, and which one is loaded.",
       "name": "mod",
-      "order": 26
+      "order": 27
     },
     {
       "description": "Module for playing and controlling the soundtrack.",
       "name": "music",
-      "order": 19
+      "order": 20
     },
     {
       "description": "Module for the object definitions a level is built from.\n\nAn object is the pattern every item of that type is cut from: a wolf's radius, not this wolf's. Per-item state lives on the item - see `trx.items`.",
@@ -5789,7 +5915,7 @@
     {
       "description": "Random numbers, drawn from the sequence the simulation itself runs on.\n\nThe savegame carries that sequence, so what a script draws comes back the same\nafter a reload, and a script needs no seed of its own. The sequence moves on\nfor the engine as well: a script drawing every frame changes what the creatures\ndecide next.\n\nLua's own `math.random` is a separate generator that nothing saves. It has no\nplace in anything the simulation reads. <!--noref: math.random-->",
       "name": "random",
-      "order": 29
+      "order": 30
     },
     {
       "description": "Module for inspecting and altering the rooms of the current level.",
@@ -5804,23 +5930,23 @@
     {
       "description": "The save slots, and starting or reading a saved game.",
       "name": "savegame",
-      "order": 24
+      "order": 25
     },
     {
       "description": "Module for playing sound effects.",
       "name": "sound",
-      "order": 18
+      "order": 19
     },
     {
       "description": "Module for what a level keeps count of: what Lara has found in it, and how much\nthere was to find.\n\nThe module is the level being played, so `trx.stats.pickups.count` is what she\nhas picked up in it. Any other level's counters are reached the same way through\n`trx.game.Level.stats`. At the title screen there is no level, and everything\nhere reads `nil`.",
       "instance_type": "stats.Stats",
       "name": "stats",
-      "order": 25
+      "order": 26
     },
     {
       "description": "Utilities for working with strings.\n\nNot to be confused with `trx.locale`, which is the text a player reads: this module is about manipulating strings, that one is about which string the player gets.",
       "name": "strings",
-      "order": 30
+      "order": 31
     },
     {
       "description": "What a weapon is, rather than what Lara has of it.\n\nNone of this differs between the inventory she carries and the one a level\nkeeps for her, so it belongs to neither: what she holds and how many shots she\nhas are `trx.inventory`.",

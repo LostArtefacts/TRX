@@ -254,11 +254,11 @@ vec4 applyFog(vec4 color, float dist)
     return mix(color, uFogColor, fogFactor);
 }
 
-#if TR_VERSION >= 4
 // Volumetric fog bulbs (port of the OG OmniEffect/OmniFog,
 // polyinsert.cpp:530-688), evaluated per fragment in view space. Level
 // bulbs push the fragment toward the fog color; FX bulbs (e.g. underwater
-// flares) add colored light.
+// flares) add colored light. TR4 levels carry bulbs of their own; the other
+// games see the ones a script asks for.
 #define MAX_FOG_BULBS 10
 
 struct FogBulb {
@@ -325,7 +325,6 @@ vec4 applyFogBulbs(vec4 color)
     color.rgb = mix(color.rgb, fogColor * color.a, clamp(fogAmount, 0.0, 1.0));
     return color;
 }
-#endif
 
 void main(void) {
     vec4 texColor = gColor;
@@ -379,13 +378,11 @@ void main(void) {
     // Fog
     if ((gFlags & VERT_NO_LIGHTING) == 0u && uLightingEnabled != 0) {
         texColor = applyFog(texColor, length(gEyePos.xyz));
-#if TR_VERSION >= 4
         // The OG skips fog bulbs on additive polys (AddTriClippedSorted
         // excludes drawtypes 2 and 5 from OmniFog).
         if ((gFlags & VERT_ADDITIVE) == 0u) {
             texColor = applyFogBulbs(texColor);
         }
-#endif
     }
 
     texColor.rgb *= uBrightnessMultiplier;

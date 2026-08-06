@@ -1,5 +1,6 @@
 #pragma once
 
+#include <trx/game/output/lights.h>
 #include <trx/game/output/uniforms.h>
 #include <trx/game/rooms.h>
 #include <trx/game/types.h>
@@ -108,9 +109,7 @@ typedef struct {
     } lights[OUTPUT_TR4_MAX_STAGED_LIGHTS];
 } OUTPUT_UNIFORM_LS_TR4;
 
-// 5 level bulbs + 5 FX bulbs (TR4 only; binding point 4).
-#define OUTPUT_MAX_FOG_BULBS 10
-
+// Binding point 4; OUTPUT_MAX_FOG_BULBS bulbs at once.
 typedef struct {
     int32_t count;
     int32_t _pad[3];

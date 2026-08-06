@@ -161,6 +161,7 @@ static PHASE_CONTROL M_Control(PHASE *const phase)
     }
 
     if (phase != nullptr && phase->control != nullptr) {
+        Output_DropPendingLights();
         return phase->control(phase);
     }
     return (PHASE_CONTROL) {
