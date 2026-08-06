@@ -19,7 +19,7 @@ static void M_Control(const int16_t effect_num)
 
 static void M_Setup(OBJECT *const obj)
 {
-    obj->control_func = M_Control;
+    obj->effect_control_func = M_Control;
     if (obj->loaded) {
         // The glow is a halo around a light source, so it must always face the
         // camera - the sprite lock modes would let it tilt away from it.

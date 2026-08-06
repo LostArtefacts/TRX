@@ -19,7 +19,7 @@ static void M_Control(const int16_t effect_num)
 
 static void M_Setup(OBJECT *const obj)
 {
-    obj->control_func = M_Control;
+    obj->effect_control_func = M_Control;
     obj->draw_func = Object_DrawSpriteItem;
     obj->semi_transparent = g_TRVersion >= 2;
 }

@@ -523,10 +523,11 @@ static bool M_TR4_Draw(const EFFECT *const effect)
 static void M_Setup(OBJECT *const obj)
 {
     if (g_TRVersion == 4) {
-        obj->control_func = M_TR4_Control;
+        obj->effect_control_func = M_TR4_Control;
         obj->effect_draw_func = M_TR4_Draw;
     } else {
-        obj->control_func = g_TRVersion == 3 ? M_TR3_Control : M_TR12_Control;
+        obj->effect_control_func =
+            g_TRVersion == 3 ? M_TR3_Control : M_TR12_Control;
     }
     obj->semi_transparent = true;
 }

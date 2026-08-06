@@ -245,37 +245,37 @@ static void M_ControlKnife(const int16_t effect_num)
 
 static void M_SetupAtlanteanBomb(OBJECT *const obj)
 {
-    obj->control_func = M_ControlAtlanteanBomb;
+    obj->effect_control_func = M_ControlAtlanteanBomb;
     obj->save_position = true;
 }
 
 static void M_SetupAtlanteanShard(OBJECT *const obj)
 {
-    obj->control_func = M_ControlAtlanteanShard;
+    obj->effect_control_func = M_ControlAtlanteanShard;
     obj->save_position = true;
 }
 
 static void M_SetupFlame(OBJECT *const obj)
 {
-    obj->control_func = M_ControlFlame;
+    obj->effect_control_func = M_ControlFlame;
     obj->save_position = true;
 }
 
 static void M_SetupPoison(OBJECT *const obj)
 {
-    obj->control_func = M_ControlPoison;
+    obj->effect_control_func = M_ControlPoison;
     obj->save_position = true;
 }
 
 static void M_SetupHarpoon(OBJECT *const obj)
 {
-    obj->control_func = M_ControlHarpoon;
+    obj->effect_control_func = M_ControlHarpoon;
     obj->save_position = true;
 }
 
 static void M_SetupKnife(OBJECT *const obj)
 {
-    obj->control_func = M_ControlKnife;
+    obj->effect_control_func = M_ControlKnife;
     obj->save_position = true;
 }
 

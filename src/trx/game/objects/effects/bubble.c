@@ -87,7 +87,8 @@ static void M_Control_TR3(const int16_t effect_num)
 
 static void M_Setup(OBJECT *const obj)
 {
-    obj->control_func = g_TRVersion == 3 ? M_Control_TR3 : M_Control_TR1TR2;
+    obj->effect_control_func =
+        g_TRVersion == 3 ? M_Control_TR3 : M_Control_TR1TR2;
     if (obj->loaded) {
         for (int32_t i = 0; i < -obj->mesh_count; i++) {
             Output_GetSpriteTexture(obj->mesh_idx + i)->flags = VERT_ABS_SPRITE;
