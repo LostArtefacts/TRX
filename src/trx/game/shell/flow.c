@@ -61,6 +61,10 @@ static char *m_PendingMod = nullptr;
 static bool m_PrevHeadless = false;
 static bool m_PrevQuiet = false;
 
+// The config module outlives a mod switch, which restarts the game in place, so
+// the subscription is given back rather than left to gather a copy per switch.
+static int32_t m_ConfigListener = -1;
+
 static void M_CreateGameWindow(void)
 {
     if (m_Window != nullptr) {
@@ -166,6 +170,11 @@ static void M_InitModules(void)
 
 static void M_ShutdownModules(void)
 {
+    if (m_ConfigListener >= 0) {
+        Config_UnsubscribeChanges(m_ConfigListener);
+        m_ConfigListener = -1;
+    }
+
     if (TestReplay_IsOpened()) {
         TestReplay_Close();
     }
@@ -282,7 +291,7 @@ static void M_PrepareSystem(void)
                 s->args->test_record_path, s->args->original_args);
         }
     }
-    Config_SubscribeChanges(M_HandleConfigChange, nullptr);
+    m_ConfigListener = Config_SubscribeChanges(M_HandleConfigChange, nullptr);
 
     // Auto-enable touch controls on first run if touch hardware is present.
     if (!Config_IsLoaded() && Touch_HasHardwareSupport()) {
