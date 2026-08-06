@@ -762,6 +762,31 @@ unit_tests += {
   'engine': ['game/lua/capi/items.c'],
 }
 
+# Word wrapping, over the shipped font.bin of a single game: what the wrapper
+# decides rests on glyph widths, so a stub font would agree with anything.
+unit_tests += {
+  'name': 'trx/game/ui/text',
+  'src': ['fakes/ui.c', 'fakes/ui_draw.c', 'harness/font_bin.c'],
+  'engine': [
+    'core/enum_map.c',
+    'core/memory.c',
+    'core/strings/case_funcs.c',
+    'core/strings/common.c',
+    'core/vector.c',
+    'game/enum.c',
+    'game/game_strings/entries.c',
+    'game/objects/vars.c',
+    'game/ui/scaler.c',
+    'game/ui/text.c',
+    'version.c',
+  ],
+  'deps': [dep_pcre2, dep_zlib],
+  'args': [
+    '-DPCRE2_CODE_UNIT_WIDTH=8',
+    '-DTEST_SHIP_GAMES_DIR="' + repo_root / 'data/trx/ship/games' + '"',
+  ],
+}
+
 # The UI layout test is the widest of the unit tests: it stands up the settings
 # dialogs and runs the real measure and layout passes over them. It reads the
 # shipped font.bin for glyph metrics and the shipped config for the strings -
