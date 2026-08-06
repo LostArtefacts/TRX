@@ -1821,6 +1821,19 @@
         "visuals.water_color": {
             "title": "Couleur de l'eau",
             "description": "\\{review}Couleur de l'eau.",
+        },
+        "visuals.water_color_mode": {
+            "description": "\\{review}Quelle teinte sous-marine utiliser. Tant qu'un préréglage est sélectionné, il maintient la couleur de l'eau ci-dessous ; Personnalisé vous laisse cette couleur.",
+            "title": "\\{review}Préréglage de la couleur de l'eau",
+            "values": {
+                "custom": "\\{review}Personnalisé",
+                "dos": "\\{review}DOS",
+                "pc": "\\{review}PC",
+                "pc_hardware": "\\{review}PC (matériel)",
+                "pc_software": "\\{review}PC (logiciel)",
+                "ps1": "\\{review}PS1",
+                "tombati": "\\{review}TombATI",
+            }
         }
     },
     "objects": {

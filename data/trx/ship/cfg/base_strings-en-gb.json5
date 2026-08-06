@@ -124,6 +124,10 @@
         "visuals.water_color": {
             "title": "Water colour",
             "description": "Colour of the water.",
+        },
+        "visuals.water_color_mode": {
+            "title": "Water colour preset",
+            "description": "Which release's underwater tint to use. While a preset is picked it holds the water colour below; Custom leaves that colour to you.",
         }
     }
 }

@@ -1821,6 +1821,19 @@
         "visuals.water_color": {
             "title": "Цвет воды",
             "description": "Цвет воды.",
+        },
+        "visuals.water_color_mode": {
+            "description": "\\{review}Какой подводный оттенок использовать. Пока выбран пресет, он удерживает цвет воды ниже; «Свой» оставляет этот цвет вам.",
+            "title": "\\{review}Пресет цвета воды",
+            "values": {
+                "custom": "\\{review}Свой",
+                "dos": "\\{review}DOS",
+                "pc": "\\{review}PC",
+                "pc_hardware": "\\{review}PC (аппаратный)",
+                "pc_software": "\\{review}PC (программный)",
+                "ps1": "\\{review}PS1",
+                "tombati": "\\{review}TombATI",
+            }
         }
     },
     "objects": {

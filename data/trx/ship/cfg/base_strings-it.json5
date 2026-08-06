@@ -1821,6 +1821,19 @@
         "visuals.water_color": {
             "title": "Colore acqua",
             "description": "Colore dell'acqua.",
+        },
+        "visuals.water_color_mode": {
+            "description": "\\{review}Quale tonalità subacquea usare. Finché una preimpostazione è selezionata, mantiene il colore dell'acqua qui sotto; Personalizzato lascia quel colore a te.",
+            "title": "\\{review}Preimpostazione del colore dell'acqua",
+            "values": {
+                "custom": "\\{review}Personalizzato",
+                "dos": "\\{review}DOS",
+                "pc": "\\{review}PC",
+                "pc_hardware": "\\{review}PC (hardware)",
+                "pc_software": "\\{review}PC (software)",
+                "ps1": "\\{review}PS1",
+                "tombati": "\\{review}TombATI",
+            }
         }
     },
     "objects": {

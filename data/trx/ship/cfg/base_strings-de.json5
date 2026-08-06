@@ -1821,6 +1821,19 @@
         "visuals.water_color": {
             "title": "Wasser-Farbe",
             "description": "Farbe des Wassers.",
+        },
+        "visuals.water_color_mode": {
+            "description": "\\{review}Welcher Unterwasser-Farbton verwendet wird. Solange eine Vorgabe gewählt ist, hält sie die Wasserfarbe unten fest; Benutzerdefiniert überlässt diese Farbe Ihnen.",
+            "title": "\\{review}Wasserfarbvorgabe",
+            "values": {
+                "custom": "\\{review}Benutzerdefiniert",
+                "dos": "\\{review}DOS",
+                "pc": "\\{review}PC",
+                "pc_hardware": "\\{review}PC (Hardware)",
+                "pc_software": "\\{review}PC (Software)",
+                "ps1": "\\{review}PS1",
+                "tombati": "\\{review}TombATI",
+            }
         }
     },
     "objects": {
