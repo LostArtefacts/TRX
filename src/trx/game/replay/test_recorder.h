@@ -12,6 +12,10 @@
 // @param path  Path to the recording to write to.
 void TestRecorder_Open(const char *path, VECTOR *original_args);
 
+// Write the settings the recording starts from. Called once the game's script
+// has run, so that the settings it declares are carried too.
+void TestRecorder_WriteConfig(void);
+
 // Close the recorder.
 void TestRecorder_Close(void);
 

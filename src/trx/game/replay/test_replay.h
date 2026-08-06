@@ -15,6 +15,11 @@ SHELL_ARGS *TestReplay_Open(const char *path);
 // initializing.
 void TestReplay_Start(void);
 
+// Apply the settings the recording named that no option answered to when its
+// header was read: the ones a game's script declares. Called once that script
+// has run.
+void TestReplay_ApplyDeferredConfig(void);
+
 // Shutdown test replay.
 void TestReplay_Close(void);
 

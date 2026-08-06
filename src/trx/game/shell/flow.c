@@ -434,6 +434,15 @@ int32_t Shell_Main(const SHELL_ARGS *const args)
     UI_SettingsLua_DropDeclaredRows();
     LUA_RunGameScript();
 
+    // The settings a recording carries are the ones that exist by now, the
+    // game's own among them.
+    if (TestReplay_IsOpened()) {
+        TestReplay_ApplyDeferredConfig();
+    }
+    if (TestRecorder_IsOpened()) {
+        TestRecorder_WriteConfig();
+    }
+
     Stats_CalculateMaxStats();
     GF_COMMAND gf_cmd = GF_DoFrontendSequence();
 
