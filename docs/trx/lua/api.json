@@ -6217,8 +6217,20 @@
       "writable": true
     },
     {
+      "description": "Whether non-ambient tracks triggered from floor data should react to trigger masks, requiring all bits to be set for the music to play. Current playing music whose mask becomes unset will stop.",
+      "path": "rules.music.accumulate_trigger_masks",
+      "type": "boolean",
+      "writable": true
+    },
+    {
       "description": "Whether non-ambient tracks triggered from floor data default to being flagged as one-shot.",
       "path": "rules.music.is_one_shot_default",
+      "type": "boolean",
+      "writable": true
+    },
+    {
+      "description": "Whether timers used for non-ambient tracks triggered from floor data should be interpreted as a delay before playing the track.",
+      "path": "rules.music.supports_delay",
       "type": "boolean",
       "writable": true
     },
