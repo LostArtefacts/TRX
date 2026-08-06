@@ -103,6 +103,25 @@ b_value = {
   'src': ['harness/stubs_enum_map.c'],
 }
 
+# The config layer as the game has it: the registry, the options, the change
+# report. The settings file is stubbed - what the file holds is not what a
+# binding is tested for - and fakes/config.c says which options exist.
+b_config = {
+  'engine': [
+    'config/common.c',
+    'config/legacy.c',
+    'config/option.c',
+    'config/priv.c',
+    'config/registry.c',
+    'config/section.c',
+    'core/event_manager.c',
+    'core/json/base.c',
+    'core/json/parse.c',
+    'version.c',
+  ],
+  'src': ['fakes/config.c', 'harness/stubs_config_file.c'],
+}
+
 # The string bridge, with the real fuzzy matcher and the real regex underneath
 # it. PCRE2 comes with them, so a test cannot take the sources and forget the
 # code unit width the headers insist on.
@@ -605,12 +624,14 @@ unit_tests += {
 
 unit_tests += {
   'name': 'lua/api/config',
-  'bundles': [b_lua_surface],
-  'src': ['fakes/config.c', 'fakes/locale.c'],
+  'bundles': [b_lua_surface, b_config],
+  'src': ['fakes/locale.c'],
   'engine': [
-    'config/option.c',
     'game/lua/capi/config.c',
     'game/lua/capi/locale.c',
+    'game/ui/dialogs/settings_handlers.c',
+    'game/ui/dialogs/settings_lua.c',
+    'game/ui/dialogs/settings_rows.c',
   ],
 }
 
@@ -733,12 +754,8 @@ unit_tests += {
 
 unit_tests += {
   'name': 'lua/commands/set',
-  'bundles': [b_lua_surface, b_console, b_lua_strings],
-  'src': ['fakes/config.c'],
-  'engine': [
-    'config/option.c',
-    'game/lua/capi/config.c',
-  ],
+  'bundles': [b_lua_surface, b_console, b_lua_strings, b_config],
+  'engine': ['game/lua/capi/config.c'],
 }
 
 unit_tests += {
@@ -785,6 +802,28 @@ unit_tests += {
     '-DPCRE2_CODE_UNIT_WIDTH=8',
     '-DTEST_SHIP_GAMES_DIR="' + repo_root / 'data/trx/ship/games' + '"',
   ],
+}
+
+# Where a settings row sits: the tab lists and the placement a declared row
+# resolves to. The options are real; nothing draws.
+unit_tests += {
+  'name': 'trx/game/ui/dialogs/settings_rows',
+  'bundles': [b_value],
+  'engine': [
+    'config/common.c',
+    'config/legacy.c',
+    'config/option.c',
+    'config/priv.c',
+    'config/registry.c',
+    'config/section.c',
+    'core/event_manager.c',
+    'core/json/base.c',
+    'core/json/parse.c',
+    'game/ui/dialogs/settings_handlers.c',
+    'game/ui/dialogs/settings_rows.c',
+    'version.c',
+  ],
+  'src': ['harness/stubs_config_file.c'],
 }
 
 # The UI layout test is the widest of the unit tests: it stands up the settings

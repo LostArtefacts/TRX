@@ -21,6 +21,9 @@ typedef enum {
     // The game flow asked for this option to be absent from the settings
     // dialogs. Not the same as being held, which leaves the row in place.
     CONFIG_OPTION_HIDDEN = 1 << 1,
+    // A script asked for this option rather than the game's own map*.def. It
+    // lives for as long as the scripts that declared it, and goes when they do.
+    CONFIG_OPTION_DECLARED = 1 << 2,
 } CONFIG_OPTION_FLAGS;
 
 // What an option accepts, for the numeric types. Held in the units the value is
@@ -71,7 +74,9 @@ typedef struct CONFIG_OPTION {
     // option itself rather than on a map declared up front.
     const char *enum_map;
 
-    // Null where the option takes anything its storage can hold.
+    // Null where the option takes anything its storage can hold. The option's
+    // own copy: what a declaration pointed at is the caller's, and a script's
+    // declaration is read off a Lua table that is gone by the next call.
     const CONFIG_OPTION_BOUNDS *bounds;
 
     // What the player chose, kept while something holds the option away from
@@ -90,6 +95,8 @@ typedef struct {
     const char *enum_map;
     const CONFIG_OPTION_BOUNDS *bounds;
     bool percent;
+    // Whether a script is asking for this option. See CONFIG_OPTION_DECLARED.
+    bool declared;
 } CONFIG_OPTION_DESC;
 
 // What moved, reported to whoever asked to hear about it.
@@ -129,6 +136,14 @@ void Config_Option_Write(CONFIG_OPTION *option, const TRX_VALUE *value);
 // Holds the option to the bounds it declared. A value outside them is brought
 // to the nearest one it accepts. An option with no bounds takes anything its
 // storage can hold.
+//
+// A dynamic enum is left alone, whether or not its values are registered yet.
+// Its values arrive from whoever owns them - the outfits from the skin module,
+// the bar looks from the UI - and a value they do not name is a mod's that is
+// not loaded rather than a value to refuse: the player chose it, the settings
+// file carries it, and it works again the next time that mod is. What reads
+// the setting falls back on its own until then, and cycling the row lands on a
+// value that is registered.
 void Config_Option_Sanitize(CONFIG_OPTION *option);
 
 // Whether the option still holds what it was declared with.
@@ -165,6 +180,9 @@ bool Config_Option_IsEnforced(const CONFIG_OPTION *option);
 
 // Whether the game flow asked for the option to be absent from the dialogs.
 bool Config_Option_IsHidden(const CONFIG_OPTION *option);
+
+// Whether a script asked for this option rather than the game's own map*.def.
+bool Config_Option_IsDeclared(const CONFIG_OPTION *option);
 
 // Updates the value from a string. Refused on a held option unless forced, in
 // which case the value replaces what the topmost hold applies - so releasing

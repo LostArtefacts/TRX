@@ -1,12 +1,13 @@
 // A player's config of a handful of options, one of each shape that behaves
-// differently. The options themselves are the real ones, holds and all; what is
-// faked is everything around them - what options exist, how a value reads and
-// writes as a string, and what saving means.
+// differently. The registry and the options are the real ones, holds and all;
+// what is faked is which options exist, how a value reads and writes as a
+// string, and what saving means.
 
 #include <fakes/config.h>
 
 #include <harness/fake_calls.h>
 
+#include <trx/config/common.h>
 #include <trx/config/priv.h>
 #include <trx/config/registry.h>
 #include <trx/core/enum_map.h>
@@ -22,9 +23,6 @@ static double m_Brightness;
 static double m_MasterVolume;
 static char *m_WaterColor;
 static int32_t m_ShadowType;
-
-// Whether anything the player chose has moved since the last update.
-static bool m_PendingPersist;
 
 static const CONFIG_OPTION_DESC m_Descs[] = {
     { .name = "audio.enable_music",
@@ -49,9 +47,7 @@ static const CONFIG_OPTION_DESC m_Descs[] = {
       .enum_map = "FAKE_SHADOW" },
 };
 
-static CONFIG_OPTION m_Options[ARRAY_SIZE(m_Descs)];
-// What Config_GetOptions hands out: the same options, null terminated.
-static CONFIG_OPTION *m_View[ARRAY_SIZE(m_Descs) + 1];
+static int32_t m_Listener = -1;
 
 // The third value carries an underscore, which is what the console's
 // dash-for-underscore spelling is about.
@@ -73,19 +69,25 @@ static void M_DefineEnums(void)
         "extra_dark");
 }
 
+// What the settings file would have taken. A change a hold applies is nobody's
+// to save, so only the ones the player made are recorded.
+static void M_RecordWrite(const EVENT *const event, void *const user_data)
+{
+    if (((const CONFIG_CHANGE *)event->data)->persist) {
+        FAKE_RECORD("config_write");
+    }
+}
+
 static void M_Reset(void)
 {
     M_DefineEnums();
+    Config_DropAllOptions();
     for (size_t i = 0; i < ARRAY_SIZE(m_Descs); i++) {
-        if (m_Options[i].name != nullptr) {
-            Config_Option_Free(&m_Options[i]);
-        }
-        m_Options[i] = (CONFIG_OPTION) {};
-        Config_Option_Init(&m_Options[i], &m_Descs[i]);
-        m_View[i] = &m_Options[i];
+        Config_Register(&m_Descs[i]);
     }
-    m_View[ARRAY_SIZE(m_Descs)] = nullptr;
-    m_PendingPersist = false;
+    if (m_Listener < 0) {
+        m_Listener = Config_SubscribeChanges(M_RecordWrite, nullptr);
+    }
 }
 
 // The value a string spells, borrowing the string for a string-typed option -
@@ -147,48 +149,6 @@ static bool M_Parse(
     return true;
 }
 
-// Which option moved is nobody's business here - a test that cares about a
-// write looks at the setting it landed on. Whether any of it was the player's
-// own doing is, because that is what saving the file turns on.
-void Config_ReportChange(const CONFIG_OPTION *const option, const bool persist)
-{
-    m_PendingPersist |= persist;
-}
-
-CONFIG_OPTION *const *Config_GetOptions(void)
-{
-    return m_View;
-}
-
-CONFIG_OPTION *Config_FindOption(const char *const path)
-{
-    for (size_t i = 0; i < ARRAY_SIZE(m_Options); i++) {
-        if (strcmp(m_Options[i].name, path) == 0) {
-            return &m_Options[i];
-        }
-    }
-    return nullptr;
-}
-
-CONFIG_OPTION *Config_FindOptionByMirror(const void *const mirror)
-{
-    for (size_t i = 0; i < ARRAY_SIZE(m_Options); i++) {
-        if (m_Options[i].mirror == mirror) {
-            return &m_Options[i];
-        }
-    }
-    return nullptr;
-}
-
-bool Config_Update(void)
-{
-    if (m_PendingPersist) {
-        m_PendingPersist = false;
-        FAKE_RECORD("config_write");
-    }
-    return true;
-}
-
 const char *Config_Option_GetValueAsString(
     const CONFIG_OPTION *const option, const bool human_readable)
 {
@@ -242,12 +202,13 @@ FAKE_ON_RESET(M_Reset)
 // on every option rather than standing a flag beside them.
 void FakeConfig_SetEnforced(const bool enforced)
 {
-    for (size_t i = 0; i < ARRAY_SIZE(m_Options); i++) {
+    for (CONFIG_OPTION *const *option = Config_GetOptions(); *option != nullptr;
+         option++) {
         if (enforced) {
             Config_Option_PushHold(
-                &m_Options[i], &m_Options[i].value, CONFIG_HOLD_GAME_FLOW);
+                *option, &(*option)->value, CONFIG_HOLD_GAME_FLOW);
         } else {
-            Config_Option_PopHold(&m_Options[i]);
+            Config_Option_PopHold(*option);
         }
     }
 }

@@ -500,6 +500,7 @@ void LUA_DropLevelScript(void)
     // A probe leaves listeners behind as readily as a level does, and they go
     // here whether anything was told about it or not.
     LUA_ClearLevelListeners();
+    LUA_Config_ClearLevelWatchers();
     LUA_DropLevelModules(p->state);
 }
 

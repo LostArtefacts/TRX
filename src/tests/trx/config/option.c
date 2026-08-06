@@ -1,4 +1,4 @@
-// The hold stack, against a config of three options and nothing else. No game,
+// The hold stack, against a config of four options and nothing else. No game,
 // no settings file, no registry: an option is made here from the same
 // description map*.def would give.
 //
@@ -7,11 +7,16 @@
 // player's own value is what comes back - never the default, and never the
 // value some other hold applied. And while a hold is on, that is still the
 // value the settings file would carry.
+//
+// The dynamic enum is here for what it keeps rather than for the stack: its
+// values are not known up front, and one it was never told about is still the
+// player's own.
 
 #include <harness/harness.h>
 
 #include <trx/config/option.h>
 #include <trx/config/priv.h>
+#include <trx/core/dynamic_enum.h>
 #include <trx/core/utils.h>
 
 #include <string.h>
@@ -22,8 +27,9 @@
 static bool m_MusicOn;
 static int32_t m_Fov;
 static char *m_WaterColor;
+static char *m_Outfit;
 
-static CONFIG_OPTION m_Options[3];
+static CONFIG_OPTION m_Options[4];
 
 static const CONFIG_OPTION_DESC m_Descs[] = {
     { .name = "audio.music",
@@ -35,6 +41,9 @@ static const CONFIG_OPTION_DESC m_Descs[] = {
     { .name = "visuals.water_color",
       .default_value = { .type = TVT_STRING, .as_str = "ffffff" },
       .mirror = &m_WaterColor },
+    { .name = "visuals.lara_outfit",
+      .default_value = { .type = TVT_DYNAMIC_ENUM, .as_str = "default" },
+      .mirror = &m_Outfit },
 };
 
 static CONFIG_OPTION *M_Option(const char *const name)
@@ -71,6 +80,17 @@ static void M_Hold(
     const CONFIG_HOLD_SOURCE source)
 {
     CHECK(Config_Option_PushHold(option, &value, source));
+}
+
+// Seeds the values a dynamic enum accepts, as the module that owns them would.
+static void M_SeedOutfits(const char *const *const values)
+{
+    const void *const token =
+        Config_Option_GetEnumKey(M_Option("visuals.lara_outfit"));
+    DynamicEnum_ResetValues(token);
+    for (int32_t i = 0; values[i] != nullptr; i++) {
+        DynamicEnum_AddValue(token, values[i], nullptr);
+    }
 }
 
 // Nothing here is listening for what moved; the report is the module's job, and
@@ -182,6 +202,21 @@ TEST(a_string_option_is_restored_by_value_not_by_pointer)
 
     CHECK(Config_Option_PopHold(color));
     CHECK_EQ_STR(m_WaterColor, "ff0000");
+}
+
+// A value the registered set does not name is a mod's that is not loaded, not
+// a value to refuse. The player chose it, the settings file carries it, and it
+// works again the next time that mod does.
+TEST(a_dynamic_enum_keeps_a_value_nobody_registered)
+{
+    M_SetUp();
+    CONFIG_OPTION *const outfit = M_Option("visuals.lara_outfit");
+
+    Config_Option_Write(
+        outfit, &(TRX_VALUE) { .type = TVT_DYNAMIC_ENUM, .as_str = "cowboy" });
+    M_SeedOutfits((const char *[]) { "default", "wetsuit", nullptr });
+    Config_Option_Sanitize(outfit);
+    CHECK_EQ_STR(m_Outfit, "cowboy");
 }
 
 TEST(a_bool_option_round_trips)

@@ -24,6 +24,10 @@ CONFIG_OPTION *Config_Register(const CONFIG_OPTION_DESC *desc);
 // of settings.
 void Config_RegisterBuiltInOptions(void);
 
+// Drops the options a script declared, leaving the game's own in place. The
+// scripts are gone, so what they asked for goes with them.
+void Config_DropDeclaredOptions(void);
+
 // Every option, terminated by a null entry. An option's address does not move,
 // so one taken from here stays good after another is registered.
 CONFIG_OPTION *const *Config_GetOptions(void);

@@ -12,20 +12,69 @@ order: 23
 
 ## <a id="config" name="config"></a>Config module
 
-Module for reading and changing engine settings.
+Module for reading, changing and declaring engine settings.
 
-These are the player's settings, not the level's. [`trx.config.set`](#config.set) writes to them and keeps the change: it is remembered across saves and relaunches, exactly as if the player had made it themselves. A level that wants to tint the water or pull the fog in wants [`trx.config.override`](#config.override) instead, which lasts as long as the script keeps it and leaves the player's own value untouched underneath.
+These are the player's settings, not the level's. [`trx.config.set`](#config.set) writes to them and keeps the
+change: it is remembered across saves and relaunches, exactly as if the player had made it
+themselves. A level that wants to tint the water or pull the fog in wants [`trx.config.override`](#config.override)
+instead, which lasts as long as the script keeps it and leaves the player's own value untouched
+underneath.
+
+A game can also add settings of its own with [`trx.config.declare`](#config.declare): they are saved and loaded with
+the player's own, and shown in the settings menu where the declaration asks for. A setting a
+game's `scripts/_game.lua` declares belongs to that game and goes when it does.
 
 ### Structures
 
 - <a id="config.Shape" name="config.Shape"></a>[lua]`trx.config.Shape`
 
-    How a setting is entered and shown, beyond the type it reads back as.
+    Everything about a setting but the value it holds now.
+
+    [`trx.config.describe`](#config.describe) hands one back and [`trx.config.declare`](#config.declare) takes one, so what a script reads
+    of a setting is what a script writes to make one. The row a declaration asks for is the part
+    [`trx.config.describe`](#config.describe) does not report: see [`trx.config.Row`](#config.Row).
 
     Properties:
-    - <a id="config.Shape.kind" name="config.Shape.kind"></a>**`kind`**: string. One of `boolean`, `integer`, `number`, `color`, `enum`, `dynamic_enum` or `string`.
-    - <a id="config.Shape.percent" name="config.Shape.percent"></a>**`percent`**: boolean. Marks a number stored 0-1 but entered and shown as a 0-100 percentage.
-    - <a id="config.Shape.values" name="config.Shape.values"></a>**`values`**: a list of string, optional. What the setting accepts, for the enum kinds.
+    - <a id="config.Shape.default" name="config.Shape.default"></a>**`default`**: any. What the setting holds until the player changes it, and what [`trx.config.reset`](#config.reset) puts back.
+    - <a id="config.Shape.key" name="config.Shape.key"></a>**`key`**: string. Dotted path the setting answers to. The last segment is what the settings file keys it on, so it has to differ from every other setting's.
+    - <a id="config.Shape.kind" name="config.Shape.kind"></a>**`kind`**: string. One of `boolean`, `integer`, `number`, `color`, `enum`, `dynamic_enum` or `string`. A declaration writes `boolean`, `integer` or `dynamic_enum`; the rest name storage the engine owns.
+    - <a id="config.Shape.max" name="config.Shape.max"></a>**`max`**: integer, optional. Highest value a number takes. Absent, it takes as high a number as it can hold.
+    - <a id="config.Shape.min" name="config.Shape.min"></a>**`min`**: integer, optional. Lowest value a number takes. Absent, it takes as low a number as it can hold.
+    - <a id="config.Shape.percent" name="config.Shape.percent"></a>**`percent`**: boolean, optional. Marks a number stored 0-1 but entered and shown as a 0-100 percentage.
+    - <a id="config.Shape.ui" name="config.Shape.ui"></a>**`ui`**: [trx.config.Row](#config.Row), optional. The row a declared setting takes in the settings menu. Without one the setting has no row, and is the script's to read and write.
+    - <a id="config.Shape.values" name="config.Shape.values"></a>**`values`**: a list of string, optional. What the setting accepts, for the enum kinds. A declared `dynamic_enum` needs them, and they have to list the default.
+
+- <a id="config.Row" name="config.Row"></a>[lua]`trx.config.Row`
+
+    The settings row a declared setting is shown on: where it sits, and what it
+    does that the setting itself cannot say.
+
+    Every callback below is optional, and one that raises is logged and answered as though it were
+    absent. They are read as the setting is declared and are not reported back by
+    [`trx.config.describe`](#config.describe).
+
+    Properties:
+    - <a id="config.Row.after" name="config.Row.after"></a>**`after`**: string, optional. Setting the row sits below. The row lands at the end of the tab where neither anchor is given.
+    - <a id="config.Row.before" name="config.Row.before"></a>**`before`**: string, optional. Setting the row sits above. Steadier than a position: the row stays put when the tab is reordered.
+    - <a id="config.Row.can_change_value" name="config.Row.can_change_value"></a>**`can_change_value`**: function, optional. Called with the value and the direction, `-1` or `1`. Return false to refuse that press.
+    - <a id="config.Row.delta_fast" name="config.Row.delta_fast"></a>**`delta_fast`**: integer, optional. How far one press moves a number. One step where it is absent.
+    - <a id="config.Row.delta_slow" name="config.Row.delta_slow"></a>**`delta_slow`**: integer, optional. How far one press moves a number while fine adjustment is held.
+    - <a id="config.Row.format_value" name="config.Row.format_value"></a>**`format_value`**: function, optional. Called with the value, returning what the row prints in place of it.
+    - <a id="config.Row.is_available" name="config.Row.is_available"></a>**`is_available`**: function, optional. Called with the value. Return false to grey the row out: it stays visible, and the player cannot move it.
+    - <a id="config.Row.is_visible" name="config.Row.is_visible"></a>**`is_visible`**: function, optional. Called with the value. Return false to leave the row out of the tab.
+    - <a id="config.Row.request_change_value" name="config.Row.request_change_value"></a>**`request_change_value`**: function, optional. Called with the value and the direction. Return true to take the press over; the row is left alone, and moving the setting is the script's to do.
+    - <a id="config.Row.tab" name="config.Row.tab"></a>**`tab`**: string. Settings tab the row sits on: `gameplay_general`, `gameplay_controls`, `gameplay_mods`, `gameplay_fixes`, `graphic_visuals`, `graphic_ui`, `graphic_ui_stats`, `graphic_ui_bars`, `graphic_rendering`, `sound_volume` or `sound_misc`.
+
+- <a id="config.Watcher" name="config.Watcher"></a>[lua]`trx.config.Watcher`
+
+    A setting being watched. [`trx.config.on_change`](#config.on_change) hands one back, and holding it is what lets the watcher be dropped later. A watcher is spent once detached, and the end of a level spends every one a level script attached.
+
+    Methods:
+
+    - <a id="config.Watcher.detach" name="config.Watcher.detach"></a>[lua]`watcher:detach()`  
+      Stops the watcher, which hears of no further change.
+
+      Returns: boolean. Whether it was still watching.
 
 ### Functions
 
@@ -45,7 +94,7 @@ These are the player's settings, not the level's. [`trx.config.set`](#config.set
   ```
 
 - <a id="config.describe" name="config.describe"></a>[lua]`trx.config.describe(key)`  
-  What shape a setting has: how a value is entered and shown, beyond the type [`trx.config.get`](#config.get) reads back.
+  Everything about a setting but the value it holds now: what it is, what it accepts, and what it falls back to. This is the shape [`trx.config.declare`](#config.declare) takes, so a script can read one setting and declare another like it.
 
   Parameters:
   - <a id="config.describe.key" name="config.describe.key"></a>**`key`** (string). Dotted path.
@@ -130,6 +179,63 @@ These are the player's settings, not the level's. [`trx.config.set`](#config.set
   - <a id="config.is_overridden.key" name="config.is_overridden.key"></a>**`key`** (string). Dotted path.
 
   Returns: boolean. True while an override stands, and false once the last is lifted.
+
+- <a id="config.declare" name="config.declare"></a>[lua]`trx.config.declare(spec)`  
+  Adds a setting of the game's own.
+
+  The declaration carries no text. The engine derives `settings/<key>/title`,
+  `settings/<key>/description` and, for an enum, `settings/<key>/values/<value>`, and looks each up
+  in the game strings, so a declared setting is translated as every other one is.
+
+  The setting comes up holding the player's saved value for it, whether the declaration runs before
+  the settings file is read or after.
+
+  Raises where the key is taken, or where the declaration describes a setting that could hold
+  nothing it allows: an enum defaulting to a value it does not list, or an integer defaulting
+  outside its own bounds.
+
+  Parameters:
+  - <a id="config.declare.spec" name="config.declare.spec"></a>**`spec`** ([trx.config.Shape](#config.Shape)). The setting's declaration.
+
+  Example:
+  ```lua
+  trx.config.declare({
+    key = "mod.water_color_mode",
+    kind = "dynamic_enum",
+    values = { "tombati", "dos", "custom" },
+    default = "custom",
+    ui = {
+      tab = "graphic_visuals",
+      before = "visuals.water_color",
+    },
+  })
+  ```
+
+- <a id="config.on_change" name="config.on_change"></a>[lua]`trx.config.on_change(key, fn)`  
+  Calls `fn(value)` whenever the setting changes, and once as the watcher is
+  attached with the value it holds now - so a script applies the player's saved value rather than
+  waiting for them to touch it again.
+
+  A watcher that changes a setting itself is heard by that setting's watchers too. One that raises
+  is logged and the rest still run; it is called again on the next change.
+
+  A watcher a level script attaches goes when the level ends, as a [`trx.events`](EVENTS.md#events) listener does. One a
+  game script attaches stays for as long as the game.
+
+  Parameters:
+  - <a id="config.on_change.key" name="config.on_change.key"></a>**`key`** (string). Dotted path to watch.
+  - <a id="config.on_change.fn" name="config.on_change.fn"></a>**`fn`** (function). Called with the setting's value.
+
+  Returns: [trx.config.Watcher](#config.Watcher). The watcher, for dropping it later.
+
+  Example:
+  ```lua
+  local watcher = trx.config.on_change("mod.scanlines", function(value)
+    trx.log.info("scanlines are now " .. tostring(value))
+  end)
+  -- ... and when the script is done with it:
+  watcher:detach()
+  ```
 
 - <a id="config.list" name="config.list"></a>[lua]`trx.config.list()`  
   Every setting and its current value.
