@@ -520,10 +520,10 @@
                 "help": "Tionndaidheas sioncronachadh-inghearach air neo dheth.",
             },
             "weather": {
-                "current": "Aimsir làithreach: %s",
+                "current": "\\{review}Aimsir làithreach: %s, dèine %s",
                 "help": "Atharraichidh seo an aimsir.",
                 "invalid": "Aimsir neo-dhligheach: %s (dligheach: %s)",
-                "set": "Suidhich an aimsir gu %s",
+                "set": "\\{review}Suidhich an aimsir gu %s, dèine %s",
             },
             "winston": {
                 "dead": "Tha am butlar agad marbh. 'S tu nad fuamhaire!",
