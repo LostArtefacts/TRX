@@ -67,7 +67,9 @@ game's `scripts/_game.lua` declares belongs to that game and goes when it does.
 
 - <a id="config.Watcher" name="config.Watcher"></a>[lua]`trx.config.Watcher`
 
-    A setting being watched. [`trx.config.on_change`](#config.on_change) hands one back, and holding it is what lets the watcher be dropped later. A watcher is spent once detached, and the end of a level spends every one a level script attached.
+    A setting being watched. [`trx.config.on_change`](#config.on_change) hands one back, and holding it
+    is what lets the watcher be dropped later. A watcher is spent once detached, and the end of a level
+    spends every one a level script attached.
 
     Methods:
 
