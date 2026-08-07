@@ -119,8 +119,7 @@ void Config_Option_Init(
     option->bounds = desc->bounds != nullptr
         ? Memory_Dup(desc->bounds, sizeof(CONFIG_OPTION_BOUNDS))
         : nullptr;
-    option->flags = (desc->percent ? CONFIG_OPTION_PERCENT : 0)
-        | (desc->declared ? CONFIG_OPTION_DECLARED : 0);
+    option->flags = desc->percent ? CONFIG_OPTION_PERCENT : 0;
     M_CopyValue(&option->default_value, &desc->default_value);
     M_NarrowValue(&option->default_value);
     // The value starts as the default, written properly so that g_Config comes
@@ -314,10 +313,4 @@ bool Config_Option_IsHidden(const CONFIG_OPTION *const option)
 {
     ASSERT(option != nullptr);
     return (option->flags & CONFIG_OPTION_HIDDEN) != 0;
-}
-
-bool Config_Option_IsDeclared(const CONFIG_OPTION *const option)
-{
-    ASSERT(option != nullptr);
-    return (option->flags & CONFIG_OPTION_DECLARED) != 0;
 }

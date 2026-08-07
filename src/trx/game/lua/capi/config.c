@@ -401,7 +401,6 @@ static int M_L_ConfigDeclare(lua_State *const L)
         .name = spec.key,
         .default_value = spec.default_value,
         .bounds = spec.has_bounds ? &spec.bounds : nullptr,
-        .declared = true,
     });
     if (option == nullptr) {
         return luaL_error(L, "option already declared: %s", spec.key);

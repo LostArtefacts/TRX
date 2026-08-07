@@ -21,9 +21,6 @@ typedef enum {
     // The game flow asked for this option to be absent from the settings
     // dialogs. Not the same as being held, which leaves the row in place.
     CONFIG_OPTION_HIDDEN = 1 << 1,
-    // A script asked for this option rather than the game's own map*.def. It
-    // lives for as long as the scripts that declared it, and goes when they do.
-    CONFIG_OPTION_DECLARED = 1 << 2,
 } CONFIG_OPTION_FLAGS;
 
 // What an option accepts, for the numeric types. Held in the units the value is
@@ -95,8 +92,6 @@ typedef struct {
     const char *enum_map;
     const CONFIG_OPTION_BOUNDS *bounds;
     bool percent;
-    // Whether a script is asking for this option. See CONFIG_OPTION_DECLARED.
-    bool declared;
 } CONFIG_OPTION_DESC;
 
 // What moved, reported to whoever asked to hear about it.
@@ -180,9 +175,6 @@ bool Config_Option_IsEnforced(const CONFIG_OPTION *option);
 
 // Whether the game flow asked for the option to be absent from the dialogs.
 bool Config_Option_IsHidden(const CONFIG_OPTION *option);
-
-// Whether a script asked for this option rather than the game's own map*.def.
-bool Config_Option_IsDeclared(const CONFIG_OPTION *option);
 
 // Whether the option can take this value as it is spelled. A setting a game
 // declares takes only the values that game offers, so a caller naming one from
