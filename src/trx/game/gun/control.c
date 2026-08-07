@@ -52,7 +52,7 @@ static const LARA_TRX_STATE m_CrawlStates[] = {
     LS_CRAWL_TURN_LEFT,
     LS_CRAWL_TURN_RIGHT,
     LS_CRAWL_TO_CLIMB,
-    LS_INVALID, // sentinel
+    LS_TRX_INVALID, // sentinel
     // clang-format on
 };
 
