@@ -268,6 +268,13 @@
                 "option_set": "%s è stato modificato in %s",
                 "unknown_option": "Opzione sconosciuta: %s",
             },
+            "disco": {
+                "already_off": "\\{review}Le luci sono già spente",
+                "already_on": "\\{review}Le luci sono già accese",
+                "help": "\\{review}Attiva o disattiva un gioco di luci attorno a Lara.",
+                "off": "\\{review}Le luci si spengono",
+                "on": "\\{review}Le luci si accendono",
+            },
             "drain": {
                 "already": "L'acqua nella stanza %d è già stata drenata",
                 "done": "Acqua nella stanza %d drenata",

@@ -80,6 +80,7 @@ trx_lua_script_sources = files(
   'lua/commands/burn.lua',
   'lua/commands/debug.lua',
   'lua/commands/die.lua',
+  'lua/commands/disco.lua',
   'lua/commands/dry.lua',
   'lua/commands/easy_config.lua',
   'lua/commands/end_level.lua',

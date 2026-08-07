@@ -268,6 +268,13 @@
                 "option_set": "Zmieniono %s na %s",
                 "unknown_option": "Nieznana opcja: %s",
             },
+            "disco": {
+                "already_off": "\\{review}Światła są już wyłączone",
+                "already_on": "\\{review}Światła są już włączone",
+                "help": "\\{review}Przełącza pokaz świateł wokół Lary.",
+                "off": "\\{review}Światła gasną",
+                "on": "\\{review}Światła zapalają się",
+            },
             "drain": {
                 "already": "\\{review}Pokój %d jest już osuszony",
                 "done": "\\{review}Osuszono pokój %d",

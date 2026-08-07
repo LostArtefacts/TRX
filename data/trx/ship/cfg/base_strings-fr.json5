@@ -268,6 +268,13 @@
                 "option_set": "%s réglé sur %s",
                 "unknown_option": "Option inconnue : %s",
             },
+            "disco": {
+                "already_off": "\\{review}Les lumières sont déjà éteintes",
+                "already_on": "\\{review}Les lumières sont déjà allumées",
+                "help": "\\{review}Active ou désactive un jeu de lumières autour de Lara.",
+                "off": "\\{review}Les lumières s'éteignent",
+                "on": "\\{review}Les lumières s'allument",
+            },
             "drain": {
                 "already": "\\{review}La salle %d est déjà asséchée",
                 "done": "\\{review}Salle %d asséchée",
