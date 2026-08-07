@@ -263,6 +263,7 @@ common_sources = [
   'trx/core/strings/case_funcs.c',
   'trx/core/strings/common.c',
   'trx/core/strings/fuzzy_match.c',
+  'trx/core/subsystem.c',
   'trx/core/thread_pool.c',
   'trx/core/value.c',
   'trx/core/vector.c',
