@@ -303,7 +303,7 @@
                 "help": "Attiva o disattiva il trucco Volo.",
             },
             "fps": {
-                "help": "Modifica il valore degli FPS.",
+                "help": "Modifica il valore dei fotogrammi al secondo.",
             },
             "give": {
                 "added": "Aggiunto %s all'inventario di Lara",
@@ -379,7 +379,7 @@
                 "current": "Traccia corrente: %d",
                 "current_none": "Traccia corrente: nessuna",
                 "deferred_ambient": "Traccia ambientale differita: %d",
-                "help": "Mostra lo stato attuale della traccia musicale, ferma la musica o riproduce una traccia in base all'ID fornito.",
+                "help": "Mostra lo stato attuale della traccia musicale, ferma la musica o riproduce una traccia in base all'id fornito.",
                 "id_help": "riproduce la traccia con questo id",
                 "invalid_track": "Traccia musicale non valida",
                 "overlay": "Traccia(e) sovrapposta(e): %s",
@@ -401,7 +401,7 @@
                 "none": "Questo gioco non ha demo",
             },
             "play_gym": {
-                "help": "Gioca al livello di allenamento.",
+                "help": "Gioca al livello di addestramento.",
                 "invalid": "Livello non valido",
                 "loading": "Caricamento %s",
             },
@@ -509,7 +509,7 @@
                 "help": "Teletrasporta Lara in una posizione o in un numero di stanza specifici.",
             },
             "trigger": {
-                "help": "Attiva o disattiva un oggetto tramite ID o nome.",
+                "help": "Attiva o disattiva un oggetto tramite id o nome.",
                 "invalid_item": "Oggetto non valido: %s",
                 "no_match": "Obiettivo sconosciuto: %s",
                 "not_found": "Nessun oggetto corrispondente trovato per: %s",
@@ -520,10 +520,10 @@
                 "help": "Attiva o disattiva la sincronizzazione verticale.",
             },
             "weather": {
-                "current": "\\{review}Tempo meteorologico attuale: %s, intensità %s",
+                "current": "Tempo meteorologico attuale: %s, intensità %s",
                 "help": "Modifica il tempo meteorologico attuale.",
                 "invalid": "Tempo meteorologico non valido: %s (valore valido: %s)",
-                "set": "\\{review}Tempo meteorologico impostato su %s, intensità %s",
+                "set": "Tempo meteorologico impostato su %s, intensità %s",
             },
             "winston": {
                 "dead": "Il tuo maggiordomo è morto. Sei un mostro!",
@@ -1008,7 +1008,7 @@
         },
         "gameplay.enable_cinematic_skips": {
             "title": "Salta sequenze",
-            "description": "Consente di passare tra una sequenza con telecamera a scorrimento all'altra utilizzando il tasto Indietro dell'inventario/menu.",
+            "description": "Consente di passare tra una sequenza panoramica all'altra utilizzando il tasto Indietro dell'inventario/menu.",
         },
         "gameplay.enable_cinematics": {
             "title": "Scene iniziali",
@@ -1300,7 +1300,7 @@
         },
         "gameplay.game_modes_policy": {
             "title": "Selezione modalità di gioco",
-            "description": "Consente di selezionare la modalità di gioco aggiuntive dal menu passaporto.\n\n- Nuova Partita+: sblocca tutte le armi con munizioni infinite; i nemici hanno punti vita doppi.\n\nOpzioni disponibili:\n\n- Sempre: la finestra di selezione delle modalità di gioco è sempre disponibile.\n- Mai: la finestra di selezione delle modalità di gioco non è disponibile e ogni nuova partita sarà una partita normale.\n- Al completamento: la finestra di selezione delle modalità di gioco sarà disponibile solo dopo aver completato il gioco.",
+            "description": "Consente di selezionare le modalità di gioco aggiuntive dal menu passaporto.\n\n- Nuova Partita+: sblocca tutte le armi con munizioni infinite; i nemici hanno punti vita doppi.\n\nOpzioni disponibili:\n\n- Sempre: la finestra di selezione delle modalità di gioco è sempre disponibile.\n- Mai: la finestra di selezione delle modalità di gioco non è disponibile e ogni nuova partita sarà una partita normale.\n- Al completamento: la finestra di selezione delle modalità di gioco sarà disponibile solo dopo aver completato il gioco.",
         },
         "gameplay.harpoon_recoil": {
             "title": "Ricarica fucile subacqueo",
@@ -1360,7 +1360,7 @@
         },
         "gameplay.target_change_mode": {
             "title": "Cambio bersaglio",
-            "description": "Modifica il modo in cui Lara passa da un bersaglio all'altro mentre mira con un arma.\n\n- Disattivato: Lara mantiene il bersaglio corrente.\n- Avanzato: premi il tasto Cambia Bersaglio per passare ad un altro bersaglio.\n- TR4: premi il tasto Guarda per passare ad un altro bersaglio; tenendolo premuto Lara può guardarsi attorno, dopo un breve ritardo.",
+            "description": "Modifica il modo in cui Lara passa da un bersaglio all'altro mentre mira con un'arma.\n\n- Disattivato: Lara mantiene il bersaglio corrente.\n- Avanzato: premi il tasto Cambia Bersaglio per passare ad un altro bersaglio.\n- TR4: premi il tasto Guarda per passare ad un altro bersaglio; tenendolo premuto Lara può guardarsi attorno, dopo un breve ritardo.",
         },
         "gameplay.target_mode": {
             "title": "Modalità aggancio bersaglio",
@@ -1756,7 +1756,7 @@
         },
         "visuals.enable_static_lighting": {
             "title": "Illuminazione mesh statiche",
-            "description": "Consente alle fiamme e alle altre luci dinamiche di illuminare le maglie poligonali statiche. Il TR4 originale illumina solo la geometria delle stanze.",
+            "description": "Consente alle fiamme e alle altre luci dinamiche di illuminare le maglie poligonali statiche. Nella versione originale di TR4, viene illuminata solo la geometria delle stanze.",
         },
         "visuals.enable_weather": {
             "title": "Tempo meteorologico",
@@ -1820,19 +1820,19 @@
         },
         "visuals.water_color": {
             "title": "Colore acqua",
-            "description": "Colore dell'acqua.",
+            "description": "Tonalità dell'acqua.",
         },
         "visuals.water_color_mode": {
-            "description": "\\{review}Quale tonalità subacquea usare. Finché una preimpostazione è selezionata, mantiene il colore dell'acqua qui sotto; Personalizzato lascia quel colore a te.",
-            "title": "\\{review}Preimpostazione del colore dell'acqua",
+            "description": "Specifica la tonalità dell'acqua da utilizzare tra quelle disponibili. Selezionando un profilo, verrà utilizzata la tonalità dell'acqua prefissata indicata sotto; con Personalizzato, è possibile specificare un colore.",
+            "title": "Profilo colore acqua",
             "values": {
-                "custom": "\\{review}Personalizzato",
-                "dos": "\\{review}DOS",
-                "pc": "\\{review}PC",
-                "pc_hardware": "\\{review}PC (hardware)",
-                "pc_software": "\\{review}PC (software)",
-                "ps1": "\\{review}PS1",
-                "tombati": "\\{review}TombATI",
+                "custom": "Personalizzato",
+                "dos": "DOS",
+                "pc": "PC",
+                "pc_hardware": "PC (hardware)",
+                "pc_software": "PC (software)",
+                "ps1": "PS1",
+                "tombati": "TombATI",
             }
         }
     },
