@@ -9,7 +9,7 @@
 #include <trx/game/objects.h>
 #include <trx/game/rooms.h>
 #include <trx/game/rooms/utils.h>
-#include <trx/version.h>
+#include <trx/game/rules.h>
 
 #define M_DROP_FAST_RATE GRAVITY
 #define M_DROP_SLOW_RATE 1
@@ -24,29 +24,20 @@ static const GAME_OBJECT_PAIR m_LegacyMap[] = {
     { NO_OBJECT, NO_OBJECT },
 };
 
-static bool M_ShouldCenterDrop(const OBJECT_ID obj_id)
+static bool M_ShouldSnapDrop(const OBJECT_ID obj_id)
 {
-    switch (obj_id) {
-    case O_QUEST_ITEM_1:
-    case O_QUEST_ITEM_2:
-    case O_QUEST_ITEM_3:
-    case O_QUEST_ITEM_4:
-    case O_QUEST_ITEM_5:
-    case O_QUEST_ITEM_6:
+    if (Object_IsType(obj_id, g_QuestObjects)) {
         return false;
-
-    default:
-        return g_TRVersion == 3;
     }
+
+    return g_Rules.carrier.snap_to_sector;
 }
 
 static void M_Drop(ITEM *const pickup)
 {
+    Item_SetVisible(pickup, true);
     if (Object_IsType(pickup->object_id, g_QuestObjects)) {
-        Item_SetVisible(pickup, true);
         Item_AddSimulated(Item_GetIndex(pickup));
-    } else {
-        Item_SetVisible(pickup, true);
     }
 }
 
@@ -404,14 +395,14 @@ void Carrier_TestItemDrops(const int16_t item_num)
             Item_UpdateRoom(item->spawn_num, carrier->room_num);
             ITEM *const pickup = Item_Get(item->spawn_num);
             pickup->pos = carrier->pos;
-            if (g_TRVersion != 3) {
+            if (g_Rules.carrier.inherit_facing) {
                 pickup->rot = carrier->rot;
             }
             M_Drop(pickup);
         }
 
         ITEM *const pickup = Item_Get(item->spawn_num);
-        if (M_ShouldCenterDrop(pickup->object_id)) {
+        if (M_ShouldSnapDrop(pickup->object_id)) {
             int16_t room_num = carrier->room_num;
             pickup->pos.x = ROUND_TO_SECTOR(carrier->pos.x) + WALL_L / 2;
             pickup->pos.z = ROUND_TO_SECTOR(carrier->pos.z) + WALL_L / 2;

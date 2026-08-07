@@ -26,6 +26,7 @@
 - changed outfits to support joints, up to two braids per outfit, and to allow positional offset adjustments for equipment meshes; refer to migration notes
 - changed New Game+ in TR1 so that flares Lara has collected are kept between levels rather than taken away at the start of each one
 - changed engine-specific music trigger behavior by defining rules settable in Lua; refer to documentation
+- changed where an item a defeated enemy carried lands, and which way it faces, by defining rules settable in Lua; refer to documentation (#5883)
 - added an `ammo.infinite` key to `weapons.json5`, saying which weapons and flares never run out; a game that takes it away from the pistols makes their clips worth collecting
 - changed the ammunition keys in `weapons.json5` to say what they count; refer to migration notes
 - changed boxes of ammunition in the inventory to always show what Lara is really carrying, where finishing a level could round them down
