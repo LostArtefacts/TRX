@@ -14,6 +14,10 @@ GF_COMMAND GF_RunCutscene(int32_t cutscene_num, bool cross_fade_in);
 GF_COMMAND GF_RunGame(const GF_LEVEL *level, GF_SEQUENCE_CONTEXT seq_ctx);
 GF_COMMAND GF_RunGlobeSelect(const char *background_path);
 
+// Act on what the flow asks for, starting from the given command, until it
+// asks to leave the game or switch mod. Leaves no level loaded.
+void GF_RunUntilExit(GF_COMMAND gf_cmd);
+
 GF_COMMAND GF_DoFrontendSequence(void);
 GF_COMMAND GF_DoDemoSequence(int32_t demo_num);
 GF_COMMAND GF_DoCutsceneSequence(int32_t cutscene_num, bool cross_fade_in);
