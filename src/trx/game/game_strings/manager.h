@@ -4,19 +4,12 @@
 
 #include <trx/core/event_manager.h>
 #include <trx/core/vector.h>
+#include <trx/game/shell/mod.h>
 
-// Clear all previously set source strings files.
-// Must be called before GameStringManager_AddSourceFile.
-void GameStringManager_ClearSourceFiles(void);
-
-// Add a source strings file for language discovery and loading.
-// base_path: path to a base strings JSON5 file (e.g. cfg/common_strings.json5).
-// load_levels: true to load level names from this source; false otherwise.
-void GameStringManager_AddSourceFile(const char *base_path, bool load_levels);
-
-// Discover all available languages from the added source files.
-// Must be called after AddSourceFile calls and before ReloadLanguage.
-void GameStringManager_DiscoverLanguages(void);
+// Point the manager at the files the given mod takes its strings from - the
+// common file, the base mod's where it has one, and the mod's own - and load
+// the configured language.
+void GameStringManager_LoadForMod(const SHELL_MOD *mod);
 
 // Returns a vector of char* of available language codes discovered.
 // Caller owns the returned VECTOR and must free it via Vector_Free and free

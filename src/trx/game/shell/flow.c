@@ -293,33 +293,7 @@ int32_t Shell_Main(const SHELL_ARGS *const args)
     GF_Init();
     GF_LoadFromFile(Shell_GetGameFlowPath(s->args->startup.mod));
 
-    GameStringManager_ClearSourceFiles();
-    const char *const common_strings_path = Shell_GetCommonStringsPath();
-    if (common_strings_path == nullptr) {
-        Shell_ExitSystem("Missing common strings file");
-    }
-    GameStringManager_AddSourceFile(common_strings_path, false);
-    if (s->args->startup.mod->base_mod != nullptr) {
-        char *base_strings_path =
-            Shell_GetBaseGameStringsPath(s->args->startup.mod);
-        if (base_strings_path == nullptr) {
-            Shell_ExitSystemFmt(
-                "Missing base mod strings file for '%s'",
-                s->args->startup.mod->name);
-        }
-        GameStringManager_AddSourceFile(base_strings_path, false);
-        Memory_FreePointer(&base_strings_path);
-    }
-    char *mod_strings_path = Shell_GetGameStringsPath(s->args->startup.mod);
-    if (mod_strings_path == nullptr) {
-        Shell_ExitSystemFmt(
-            "Missing strings file for selected mod '%s'",
-            s->args->startup.mod->name);
-    }
-    GameStringManager_AddSourceFile(mod_strings_path, true);
-    Memory_FreePointer(&mod_strings_path);
-    GameStringManager_DiscoverLanguages();
-    GameStringManager_ReloadLanguage(g_Config.language);
+    GameStringManager_LoadForMod(s->args->startup.mod);
 
     Savegame_Init();
     SG_Manager_ScanSavedGames();
