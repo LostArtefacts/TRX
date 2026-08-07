@@ -1778,8 +1778,8 @@
             "description": "Fixes original underwater plant sprites so they animate properly in water areas.",
         },
         "visuals.fix_item_rots": {
-            "title": "Fix item rotation issues",
-            "description": "Fixes original issues with some incorrectly rotated pickups when using the 3D pickups option.",
+            "title": "Fix item placement issues",
+            "description": "Fixes several original-game issues caused by incorrect item placement or configuration, including rotations, positions, and room assignments.",
         },
         "visuals.fix_texture_issues": {
             "title": "Fix texture issues",

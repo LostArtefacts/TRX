@@ -1778,8 +1778,8 @@
             "description": "\\{review}Corrige les sprites originaux des plantes sous-marines pour qu'ils s'animent correctement dans les zones aquatiques.",
         },
         "visuals.fix_item_rots": {
-            "title": "Corriger l'orientation des objets à ramasser",
-            "description": "Corrige les problèmes d'orientation de certains objets, lorsque l'option des objets à ramasser en 3D est utilisée.",
+            "title": "\\{review}Corriger le placement des objets à ramasser",
+            "description": "\\{review}Corrige plusieurs problèmes des jeux d'origine causés par des objets mal placés ou mal orientés.",
         },
         "visuals.fix_texture_issues": {
             "title": "Corriger les problèmes de texture",

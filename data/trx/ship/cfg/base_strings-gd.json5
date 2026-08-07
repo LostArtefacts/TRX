@@ -1778,8 +1778,8 @@
             "description": "Ceartachaidh nan sprìodan lusan fo uisge tùsail gus an gluasad gu ceart ann an raointean uisge.",
         },
         "visuals.fix_item_rots": {
-            "title": "Càraich cuairteachadh nithean",
-            "description": "Càradh bugan far a bheil cuid de thogailtean air an tionndadh gu ceàrr le togailtean 3D air a chomasachadh.",
+            "title": "Càraich suidheachadh nithean",
+            "description": "Ceartaichidh seo grunn dhuilgheadasan anns na geamannan tùsail a tha air an adhbhrachadh le nithean air an cur no air an stiùireadh gu ceàrr.",
         },
         "visuals.fix_texture_issues": {
             "title": "Càraich duilgheadasan inneach",

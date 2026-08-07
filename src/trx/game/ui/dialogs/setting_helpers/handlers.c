@@ -192,12 +192,6 @@ static bool M_ColorEditor_CanChangeValue(
     return false;
 }
 
-static bool M_FixItemRots_IsAvailable(
-    const CONFIG_OPTION *const option, void *const user_data)
-{
-    return g_Config.visuals.enable_3d_pickups;
-}
-
 static bool M_FixStepGlitch_IsAvailable(
     const CONFIG_OPTION *const option, void *const user_data)
 {
@@ -432,10 +426,6 @@ REGISTER_UI_SETTING_HANDLER(
         .key = "input.touch_dpad_deadzone",
         .can_change_value = M_TouchOption_CanChange,
         .is_available = M_TouchOption_IsAvailable)
-
-REGISTER_UI_SETTING_HANDLER(
-        .key = "visuals.fix_item_rots",
-        .is_available = M_FixItemRots_IsAvailable)
 
 REGISTER_UI_SETTING_HANDLER(
         .key = "gameplay.fix_flare_throw_priority",
