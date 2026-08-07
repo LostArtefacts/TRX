@@ -4,6 +4,7 @@
 #include <trx/config/legacy.h>
 #include <trx/config/registry.h>
 #include <trx/config/section.h>
+#include <trx/core/filesystem.h>
 #include <trx/core/json/util/file.h>
 #include <trx/core/json/util/value.h>
 #include <trx/core/log.h>
@@ -19,9 +20,11 @@
 // what they held for it, so they outlive the read itself.
 static JSON_VALUE *m_CfgRoot = nullptr;
 static JSON_VALUE *m_EnfRoot = nullptr;
+static bool m_CfgFound = false;
 
 static void M_FreeRetained(void)
 {
+    m_CfgFound = false;
     if (m_CfgRoot != nullptr) {
         JSON_ValueFree(m_CfgRoot);
         m_CfgRoot = nullptr;
@@ -99,11 +102,17 @@ void ConfigFile_Forget(void)
     M_FreeRetained();
 }
 
+bool ConfigFile_WasFound(void)
+{
+    return m_CfgFound;
+}
+
 bool ConfigFile_Read(
     const char *const default_path, const char *const enforced_path)
 {
     ASSERT(default_path != nullptr);
     M_FreeRetained();
+    m_CfgFound = File_Exists(default_path);
 
     bool result = false;
     m_CfgRoot = JSONFile_Read(default_path);

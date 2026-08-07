@@ -12,6 +12,10 @@
 
 bool ConfigFile_Read(const char *default_path, const char *enforced_path);
 
+// Whether the settings file was there for the last read, apart from whether it
+// parsed.
+bool ConfigFile_WasFound(void);
+
 // Lets go of both documents, for a set of options being dropped: what one
 // game's file said is nothing to the next game's settings.
 void ConfigFile_Forget(void);

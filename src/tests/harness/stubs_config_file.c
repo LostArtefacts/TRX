@@ -15,6 +15,11 @@ bool ConfigFile_Read(
     return true;
 }
 
+bool ConfigFile_WasFound(void)
+{
+    return false;
+}
+
 JSON_OBJECT *ConfigFile_GetRoot(void)
 {
     return nullptr;
