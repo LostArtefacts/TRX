@@ -2,6 +2,7 @@
 
 #include <trx/core/memory.h>
 #include <trx/core/strings.h>
+#include <trx/core/subsystem.h>
 #include <trx/core/vector.h>
 #include <trx/debug.h>
 #include <trx/game/game_flow/vars.h>
@@ -349,3 +350,5 @@ void GF_SetLevelTitle(GF_LEVEL *const level, const char *const title)
     Memory_FreePointer(&level->title);
     level->title = title != nullptr ? Memory_DupStr(title) : nullptr;
 }
+
+REGISTER_SUBSYSTEM(.shutdown = GF_Shutdown)

@@ -1,5 +1,6 @@
 #include <trx/game/option/common.h>
 
+#include <trx/core/subsystem.h>
 #include <trx/game/input.h>
 #include <trx/game/objects.h>
 #include <trx/game/option/controls.h>
@@ -13,18 +14,18 @@
 #include <trx/game/option/stats.h>
 #include <trx/version.h>
 
-void Option_Reset(void)
-{
-    Option_Shutdown();
-}
-
-void Option_Shutdown(void)
+static void M_Shutdown(void)
 {
     Option_Gameplay_Shutdown();
     Option_Graphics_Shutdown();
     Option_Sound_Shutdown();
     Option_Controls_Shutdown();
     Option_GlobeSelect_Shutdown();
+}
+
+void Option_Reset(void)
+{
+    M_Shutdown();
 }
 
 void Option_Control(INVENTORY_ITEM *const inv_item, const bool is_busy)
@@ -179,3 +180,5 @@ void Option_Close(const INVENTORY_ITEM *const inv_item)
         break;
     }
 }
+
+REGISTER_SUBSYSTEM(.shutdown = M_Shutdown)

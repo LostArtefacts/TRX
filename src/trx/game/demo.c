@@ -1,6 +1,7 @@
 #include <trx/game/demo.h>
 
 #include <trx/config.h>
+#include <trx/core/subsystem.h>
 #include <trx/debug.h>
 #include <trx/game/camera.h>
 #include <trx/game/game.h>
@@ -49,6 +50,12 @@ typedef struct {
 static int32_t m_LastDemoNum = 0;
 static M_PRIV m_Priv;
 
+static void M_Shutdown(void)
+{
+    m_Priv = (M_PRIV) {};
+    m_LastDemoNum = 0;
+}
+
 static void M_PrepareConfig(M_PRIV *const p)
 {
     // Changing certains settings affects negatively the original game demo
@@ -69,12 +76,6 @@ static void M_RestoreConfig(M_PRIV *const p)
     L_MODIFY_CONFIG();
 #undef X_PROCESS_CONFIG
     Config_Update();
-}
-
-void Demo_Shutdown(void)
-{
-    m_Priv = (M_PRIV) {};
-    m_LastDemoNum = 0;
 }
 
 void Demo_LoadData(VFILE *const file, const size_t size)
@@ -281,3 +282,5 @@ void Demo_StopFlashing(void)
         .flash_enabled = false,
     });
 }
+
+REGISTER_SUBSYSTEM(.shutdown = M_Shutdown)

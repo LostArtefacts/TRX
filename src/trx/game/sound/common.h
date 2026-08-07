@@ -12,7 +12,6 @@
 #define SOUND_DEFAULT_PITCH 0x10000
 
 bool Sound_Init(void);
-void Sound_Shutdown(void);
 bool Sound_IsInitialised(void);
 
 void Sound_SetMasterVolume(float volume);

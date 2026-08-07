@@ -3,9 +3,11 @@
 #include <trx/core/enum_map.h>
 #include <trx/core/json/util/file.h>
 #include <trx/core/log.h>
+#include <trx/core/subsystem.h>
 #include <trx/game/catalog/manager.h>
 #include <trx/game/const.h>
 #include <trx/game/shell/common.h>
+#include <trx/game/shell/paths.h>
 
 #include <string.h>
 
@@ -88,8 +90,10 @@ static void M_ReadAmmoInfo(JSON_OBJECT *const obj, const int32_t type)
     ammo->infinite = JSON_ObjectGetBool(ammo_obj, "infinite", ammo->infinite);
 }
 
-void Gun_LoadVars(const char *const path)
+static void M_Load(void)
 {
+    const char *const path =
+        TRXPath_Resolve(TRX_DYNAMIC_PATH_COMMON_CONFIG, "weapons.json5");
 #define L_READ_ANGLE(name, target)                                             \
     target = JSON_ObjectGetInt(obj, name, target) * DEG_1;
 #define L_READ_DIST(name, target)                                              \
@@ -211,3 +215,5 @@ void Gun_LoadVars(const char *const path)
 #undef L_READ_DIST
 #undef L_READ_INT
 }
+
+REGISTER_SUBSYSTEM(.load = M_Load)

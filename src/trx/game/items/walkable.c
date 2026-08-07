@@ -1,6 +1,7 @@
 #include <trx/game/items/walkable.h>
 
 #include <trx/core/log.h>
+#include <trx/core/subsystem.h>
 #include <trx/debug.h>
 #include <trx/game/game_buf.h>
 #include <trx/game/items.h>
@@ -24,6 +25,12 @@ typedef struct {
 
 static M_SETUP *m_Setup = nullptr;
 static int32_t m_SetupCount = 0;
+
+static void M_Shutdown(void)
+{
+    m_Setup = nullptr;
+    m_SetupCount = 0;
+}
 
 static SECTOR *M_GetItemPitSector(const XYZ_32 pos, int16_t room_num)
 {
@@ -238,8 +245,4 @@ void Walkable_ResetLevel(void)
     }
 }
 
-void Walkable_Shutdown(void)
-{
-    m_Setup = nullptr;
-    m_SetupCount = 0;
-}
+REGISTER_SUBSYSTEM(.shutdown = M_Shutdown)

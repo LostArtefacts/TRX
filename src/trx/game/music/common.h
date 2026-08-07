@@ -15,7 +15,6 @@ typedef struct {
 } MUSIC_STREAM_STATE;
 
 bool Music_Init(void);
-void Music_Shutdown(void);
 
 // Stops playing current track and plays a single track.
 //

@@ -2,6 +2,7 @@
 
 #include <trx/config.h>
 #include <trx/config/section.h>
+#include <trx/core/subsystem.h>
 #include <trx/core/utils.h>
 #include <trx/debug.h>
 #include <trx/game/const.h>
@@ -55,6 +56,11 @@ static M_PRIV m_Priv = M_PRIV_INITIAL;
 // reset whenever a course starts.
 static GYM_TRACK_STATS m_AssaultStats = {};
 static GYM_TRACK_STATS m_RacetrackStats = {};
+
+static void M_Shutdown(void)
+{
+    m_Priv = (M_PRIV)M_PRIV_INITIAL;
+}
 
 static int32_t M_CountAssaultTargets(void)
 {
@@ -328,11 +334,6 @@ static void M_SaveRacetrackSection(JSON_OBJECT *const obj)
     if (Gym_TrackManager_HasStats(GYM_TRACK_QUAD)) {
         M_SaveStats(obj, &m_RacetrackStats);
     }
-}
-
-void Gym_Shutdown(void)
-{
-    m_Priv = (M_PRIV)M_PRIV_INITIAL;
 }
 
 void Gym_SetInventoryOpenEnabled(const bool enabled)
@@ -724,3 +725,5 @@ REGISTER_CONFIG_SECTION(
 REGISTER_CONFIG_SECTION(
         .key = "racetrack_stats", .load = M_LoadRacetrackSection,
         .save = M_SaveRacetrackSection)
+
+REGISTER_SUBSYSTEM(.shutdown = M_Shutdown)

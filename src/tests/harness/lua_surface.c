@@ -1,6 +1,7 @@
 #include <harness/lua_surface.h>
 
 #include <harness/fake_calls.h>
+#include <trx/core/subsystem.h>
 #include <trx/game/lua/registry.h>
 #include <trx/game/lua/sandbox.h>
 #include <trx/game/lua/utils.h>
@@ -210,6 +211,9 @@ int LuaSurface_Run(const LUA_SURFACE_TEST *const test)
     lua_newtable(L);
     lua_setglobal(L, "trx");
 
+    // The bridges subscribe to the modules they wrap as they are created, so
+    // the modules stand first.
+    Subsystem_InitAll();
     LUA_Registry_CreateAll(L);
     if (test->setup_extra != nullptr) {
         test->setup_extra(L);
@@ -308,5 +312,6 @@ int LuaSurface_Run(const LUA_SURFACE_TEST *const test)
     // closed state.
     LUA_Registry_ShutdownAll();
     lua_close(L);
+    Subsystem_ShutdownAll();
     return failures == 0 ? EXIT_SUCCESS : EXIT_FAILURE;
 }

@@ -1,6 +1,7 @@
 #include <trx/game/output/common.h>
 
 #include <trx/config.h>
+#include <trx/core/subsystem.h>
 #include <trx/game/level.h>
 #include <trx/game/output/binocular_mask.h>
 #include <trx/game/output/func.h>
@@ -31,34 +32,7 @@ static OUTPUT_UNIFORMS *m_Uniforms = nullptr;
 static OUTPUT_MESH_SHADER *m_ShaderWorld = nullptr;
 static OUTPUT_UI_SHADER *m_ShaderUI = nullptr;
 
-void Output_Init(void)
-{
-    SceneCompositor_Init();
-    Output_Textures_Init();
-
-    m_Uniforms = Output_Uniforms_Create();
-    m_ShaderWorld = Output_MeshShader_Create();
-    m_ShaderUI = Output_UIShader_Create();
-    m_Batcher = MeshBatcher_Create();
-    OutputSource_Sky_Init();
-    SceneCompositor_AddSource(MeshBatcher_AsSource(m_Batcher));
-    OutputSource_Rooms_Init(m_Batcher);
-    OutputSource_RoomsDebug_Init();
-    OutputSource_Objects_Init(m_Batcher);
-    OutputSource_Sprites_Init(m_Batcher);
-    OutputSource_Lightnings_Init();
-    OutputSource_PolyFX_Init();
-    OutputSource_Shadows_Init(m_Batcher);
-    OutputSource_Misc_Init();
-    OutputSource_Overlay_Init();
-
-    Output_Lights_Init();
-    OutputSource_UI_Init();
-
-    Output_ApplyRenderSettings();
-}
-
-void Output_Shutdown(void)
+static void M_Shutdown(void)
 {
     SceneCompositor_Shutdown();
     OutputSource_Rooms_Shutdown();
@@ -92,6 +66,33 @@ void Output_Shutdown(void)
 
     Output_Textures_Shutdown();
     Output_Lights_Shutdown();
+}
+
+void Output_Init(void)
+{
+    SceneCompositor_Init();
+    Output_Textures_Init();
+
+    m_Uniforms = Output_Uniforms_Create();
+    m_ShaderWorld = Output_MeshShader_Create();
+    m_ShaderUI = Output_UIShader_Create();
+    m_Batcher = MeshBatcher_Create();
+    OutputSource_Sky_Init();
+    SceneCompositor_AddSource(MeshBatcher_AsSource(m_Batcher));
+    OutputSource_Rooms_Init(m_Batcher);
+    OutputSource_RoomsDebug_Init();
+    OutputSource_Objects_Init(m_Batcher);
+    OutputSource_Sprites_Init(m_Batcher);
+    OutputSource_Lightnings_Init();
+    OutputSource_PolyFX_Init();
+    OutputSource_Shadows_Init(m_Batcher);
+    OutputSource_Misc_Init();
+    OutputSource_Overlay_Init();
+
+    Output_Lights_Init();
+    OutputSource_UI_Init();
+
+    Output_ApplyRenderSettings();
 }
 
 bool Output_IsHeadless(void)
@@ -232,3 +233,5 @@ void Output_DispatchObjectMeshGeometry(
     OutputSource_Objects_ObserveObjectMeshGeometry(
         mesh_idx, positions, normals);
 }
+
+REGISTER_SUBSYSTEM(.shutdown = M_Shutdown)

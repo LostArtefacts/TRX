@@ -4,6 +4,7 @@
 #include <trx/config.h>
 #include <trx/core/log.h>
 #include <trx/core/memory.h>
+#include <trx/core/subsystem.h>
 #include <trx/core/vector.h>
 #include <trx/game/const.h>
 #include <trx/game/game.h>
@@ -15,6 +16,7 @@
 #include <trx/game/music/backend_cdaudio_wad.h>
 #include <trx/game/music/backend_files.h>
 #include <trx/game/rules.h>
+#include <trx/game/shell/common.h>
 #include <trx/game/shell/paths.h>
 #include <trx/version.h>
 
@@ -326,6 +328,28 @@ static bool M_IsSpeechTrack(const MUSIC_ID track_id)
     }
 }
 
+static void M_Shutdown(void)
+{
+    m_Initialised = false;
+    M_StopMainStream();
+    M_StopOverlayStreams();
+    M_ResetStreamState();
+    if (m_Backend != nullptr) {
+        m_Backend->shutdown(m_Backend);
+        m_Backend = nullptr;
+    }
+    Audio_Shutdown();
+}
+
+static void M_ApplyConfig(void)
+{
+    if (Shell_GetArgs()->headless) {
+        return;
+    }
+    Music_Init();
+    Music_SetVolume(g_Config.audio.music_volume);
+}
+
 bool Music_Init(void)
 {
     m_Initialised = true;
@@ -350,19 +374,6 @@ finish:
     m_TrackLastLooped = MX_INACTIVE;
     M_ResetStreamState();
     return Audio_Init();
-}
-
-void Music_Shutdown(void)
-{
-    m_Initialised = false;
-    M_StopMainStream();
-    M_StopOverlayStreams();
-    M_ResetStreamState();
-    if (m_Backend != nullptr) {
-        m_Backend->shutdown(m_Backend);
-        m_Backend = nullptr;
-    }
-    Audio_Shutdown();
 }
 
 // Returns the stream slot the track plays in - the main stream is slot 0, the
@@ -807,3 +818,5 @@ void Music_Trigger(MUSIC_ID track_id, const MUSIC_TRIGGER *const trigger)
         Music_Play_Direct(track_id, play_mode);
     }
 }
+
+REGISTER_SUBSYSTEM(.apply_config = M_ApplyConfig, .shutdown = M_Shutdown)

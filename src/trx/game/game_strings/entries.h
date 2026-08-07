@@ -16,12 +16,9 @@
 
 typedef const char *GAME_STRING_ID;
 
-// Initialize the GameString subsystem.
-// Must be called before any GameString_* functions.
-void GameString_Init(void);
-
-// Shutdown the GameString subsystem and free all associated resources.
-void GameString_Shutdown(void);
+// The strings as the build defines them, dropping anything a language file laid
+// over them.
+void GameString_Reset(void);
 
 // Define a new game string mapping.
 // @param key   Identifier for the string (e.g. "GAME_OVER").

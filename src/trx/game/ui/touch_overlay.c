@@ -2,6 +2,7 @@
 
 #include <trx/config.h>
 #include <trx/core/colors.h>
+#include <trx/core/subsystem.h>
 #include <trx/core/utils.h>
 #include <trx/game/game/state.h>
 #include <trx/game/input/backends/touch.h>
@@ -654,6 +655,14 @@ static void M_HandleFingerUp(const SDL_TouchFingerEvent *const ev)
     M_SyncButtonStates();
 }
 
+static void M_ApplyConfig(void)
+{
+    if (Config_IsFirstRun() && Touch_HasHardwareSupport()) {
+        CONFIG_SET(g_Config.input.enable_touch_controls, true);
+    }
+    TouchOverlay_SetVisible(g_Config.input.enable_touch_controls);
+}
+
 bool TouchOverlay_HasAnyFingerDown(void)
 {
     if (m_SelectionMode) {
@@ -803,3 +812,5 @@ int32_t TouchOverlay_GetSelectedPosition(void)
     m_SelectedPosition = -1;
     return pos;
 }
+
+REGISTER_SUBSYSTEM(.apply_config = M_ApplyConfig)

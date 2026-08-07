@@ -1,6 +1,7 @@
 #include <trx/game/console/registry.h>
 
 #include <trx/core/memory.h>
+#include <trx/core/subsystem.h>
 
 #include <ctype.h>
 #include <stdlib.h>
@@ -13,9 +14,10 @@ typedef struct M_NODE {
 
 static M_NODE *m_List = nullptr;
 
-// A run that ends without the Lua state shutting down first still leaves the
-// list behind, so the process drops it on the way out.
-__attribute__((destructor)) static void M_Shutdown(void)
+// A backstop: the Lua state closes ahead of the subsystems and clears the
+// commands it registered, but a session that never opened it still leaves the
+// list behind.
+static void M_Shutdown(void)
 {
     Console_Registry_Clear();
 }
@@ -219,3 +221,5 @@ VECTOR *Console_Registry_GetAll(void)
     }
     return vec;
 }
+
+REGISTER_SUBSYSTEM(.shutdown = M_Shutdown)

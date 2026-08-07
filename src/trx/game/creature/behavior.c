@@ -1,4 +1,5 @@
 #include <trx/config.h>
+#include <trx/core/subsystem.h>
 #include <trx/core/vector.h>
 #include <trx/game/creature.h>
 #include <trx/game/objects/vars.h>
@@ -10,13 +11,13 @@ static bool m_AlliesHostile = false;
 static VECTOR *m_AllyObjects = nullptr;
 static VECTOR *m_AllyTargetingObjects = nullptr;
 
-__attribute__((constructor)) static void M_Init(void)
+static void M_Init(void)
 {
     m_AllyObjects = Vector_Create(sizeof(OBJECT_ID));
     m_AllyTargetingObjects = Vector_Create(sizeof(OBJECT_ID));
 }
 
-__attribute__((destructor)) static void M_Shutdown(void)
+static void M_Shutdown(void)
 {
 #define L_DELETE_VECTOR(vec)                                                   \
     if (vec != nullptr) {                                                      \
@@ -128,3 +129,5 @@ void Creature_AddAllyTargetingEnemy(const OBJECT_ID obj_id)
 {
     Vector_Add(m_AllyTargetingObjects, (void *)&obj_id);
 }
+
+REGISTER_SUBSYSTEM(.init = M_Init, .shutdown = M_Shutdown)

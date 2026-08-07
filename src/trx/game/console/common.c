@@ -2,6 +2,7 @@
 
 #include <trx/core/memory.h>
 #include <trx/core/strings.h>
+#include <trx/core/subsystem.h>
 #include <trx/debug.h>
 #include <trx/game/console/internal.h>
 #include <trx/game/console/registry.h>
@@ -18,20 +19,20 @@ static UI_CONSOLE_STATE m_UIState = {};
 // Controls whether console commands emit log events to the UI console
 static bool m_Verbose = true;
 
-void Console_Init(void)
-{
-    UI_Console_Init(&m_UIState);
-
-    Console_History_Init();
-}
-
-void Console_Shutdown(void)
+static void M_Shutdown(void)
 {
     UI_Console_Free(&m_UIState);
 
     Console_History_Shutdown();
 
     m_IsOpened = false;
+}
+
+static void M_Load(void)
+{
+    UI_Console_Init(&m_UIState);
+
+    Console_History_Init();
 }
 
 void Console_Open(void)
@@ -168,3 +169,5 @@ void Console_Draw(void)
 {
     UI_Console(&m_UIState);
 }
+
+REGISTER_SUBSYSTEM(.load = M_Load, .shutdown = M_Shutdown)

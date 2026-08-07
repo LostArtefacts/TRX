@@ -6,6 +6,7 @@
 #include <trx/core/json.h>
 #include <trx/core/log.h>
 #include <trx/core/memory.h>
+#include <trx/core/subsystem.h>
 #include <trx/core/virtual_file.h>
 #include <trx/debug.h>
 #include <trx/game/creature.h>
@@ -284,7 +285,7 @@ static void M_WriteCache(
     JSON_ValueFree(root_value);
 }
 
-__attribute__((destructor)) static void M_Shutdown(void)
+static void M_Shutdown(void)
 {
     if (m_Stats != nullptr) {
         Memory_Free(m_Stats);
@@ -417,3 +418,5 @@ finish:
     LOG_INFO("Max secrets: %d", final_stats.max_stats.maxes[STATS_CAT_SECRETS]);
     Benchmark_End(&benchmark, nullptr);
 }
+
+REGISTER_SUBSYSTEM(.shutdown = M_Shutdown)

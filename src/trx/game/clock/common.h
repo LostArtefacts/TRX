@@ -3,8 +3,6 @@
 #include <stddef.h>
 #include <stdint.h>
 
-void Clock_Init(void);
-
 // Disables any kind of waiting in Clock_WaitTick
 void Clock_DisableWait(void);
 

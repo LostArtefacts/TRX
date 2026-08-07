@@ -5,6 +5,7 @@
 #include <trx/config/priv.h>
 #include <trx/core/log.h>
 #include <trx/core/memory.h>
+#include <trx/core/subsystem.h>
 #include <trx/core/vector.h>
 #include <trx/debug.h>
 
@@ -54,7 +55,7 @@ static bool M_IsNameTaken(const char *const name)
     return false;
 }
 
-__attribute__((destructor)) static void M_Shutdown(void)
+static void M_Shutdown(void)
 {
     Config_DropAllOptions();
     if (m_Options != nullptr) {
@@ -161,3 +162,5 @@ void Config_ClearHolds(void)
         Config_Option_ReleaseHolds(M_Get(i));
     }
 }
+
+REGISTER_SUBSYSTEM(.shutdown = M_Shutdown)

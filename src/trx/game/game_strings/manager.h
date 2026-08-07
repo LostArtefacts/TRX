@@ -5,12 +5,6 @@
 #include <trx/core/event_manager.h>
 #include <trx/core/vector.h>
 
-// Initialize the string bundle manager.
-void GameStringManager_Init(void);
-
-// Shutdown the string bundle manager.
-void GameStringManager_Shutdown(void);
-
 // Clear all previously set source strings files.
 // Must be called before GameStringManager_AddSourceFile.
 void GameStringManager_ClearSourceFiles(void);

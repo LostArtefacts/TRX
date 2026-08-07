@@ -1,16 +1,17 @@
 #include <trx/game/events.h>
 
 #include <trx/config/common.h>
+#include <trx/core/subsystem.h>
 #include <trx/debug.h>
 
 static EVENT_MANAGER *m_GameEventManager = nullptr;
 
-void GameEvent_Init(void)
+static void M_Init(void)
 {
     m_GameEventManager = EventManager_Create();
 }
 
-void GameEvent_Shutdown(void)
+static void M_Shutdown(void)
 {
     EventManager_Free(m_GameEventManager);
     m_GameEventManager = nullptr;
@@ -38,3 +39,5 @@ void GameEvent_Fire(const EVENT event)
         EventManager_Fire(m_GameEventManager, &event);
     }
 }
+
+REGISTER_SUBSYSTEM(.init = M_Init, .shutdown = M_Shutdown)

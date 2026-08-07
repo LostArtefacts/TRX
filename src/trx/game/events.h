@@ -8,9 +8,6 @@
 
 typedef void (*GAME_EVENT_LISTENER)(const EVENT *event, void *user_data);
 
-void GameEvent_Init(void);
-void GameEvent_Shutdown(void);
-
 int32_t GameEvent_Subscribe(
     const char *event_name, const void *sender, GAME_EVENT_LISTENER listener,
     void *user_data);

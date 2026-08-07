@@ -1,4 +1,5 @@
 #include <trx/config.h>
+#include <trx/core/subsystem.h>
 #include <trx/debug.h>
 #include <trx/game/game.h>
 #include <trx/game/game_flow.h>
@@ -48,6 +49,12 @@ static void M_LoadPostprocess(void)
     }
 }
 
+static void M_Shutdown(void)
+{
+    SG_Manager_Shutdown();
+    SG_Resume_Shutdown();
+}
+
 SAVEGAME_VERSION Savegame_GetInitialVersion(void)
 {
     return m_InitialVersion;
@@ -62,12 +69,6 @@ void Savegame_Init(void)
 {
     SG_Resume_Init();
     SG_Manager_Init();
-}
-
-void Savegame_Shutdown(void)
-{
-    SG_Manager_Shutdown();
-    SG_Resume_Shutdown();
 }
 
 bool Savegame_IsManualSaveAllowed(void)
@@ -183,3 +184,5 @@ bool Savegame_RestartAvailable(const SAVEGAME_SLOT_REF slot)
     const SAVEGAME_INFO *const savegame_info = SG_Manager_GetSavegameInfo(slot);
     return savegame_info->features.restart;
 }
+
+REGISTER_SUBSYSTEM(.shutdown = M_Shutdown)

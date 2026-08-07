@@ -1,6 +1,7 @@
 #include <trx/game/game_strings/entries.h>
 
 #include <trx/core/memory.h>
+#include <trx/core/subsystem.h>
 
 #include <uthash.h>
 
@@ -17,14 +18,10 @@ typedef struct {
 
 static M_STRING_ENTRY *m_StringTable = nullptr;
 
-void GameString_Init(void)
-{
-#include <trx/game/game_strings/entries.def>
-}
-
-void GameString_Shutdown(void)
+void GameString_Reset(void)
 {
     GameString_Clear();
+#include <trx/game/game_strings/entries.def>
 }
 
 void GameString_Define(const char *const key, const char *value)
@@ -78,3 +75,5 @@ void GameString_Clear(void)
         Memory_Free(entry);
     }
 }
+
+REGISTER_SUBSYSTEM(.init = GameString_Reset, .shutdown = GameString_Clear)

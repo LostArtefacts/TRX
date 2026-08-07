@@ -644,7 +644,7 @@ void Output_Textures_Shutdown(void)
         m_Priv.tex_env_map = 0;
     }
 
-    // These are GameBuf-backed and become invalid once GameBuf_Shutdown runs.
+    // These are GameBuf-backed and become invalid once its arenas are freed.
     m_TexturePageCount = 0;
     m_TexturePages8 = nullptr;
     m_TexturePages32 = nullptr;

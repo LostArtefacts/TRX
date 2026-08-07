@@ -4,6 +4,7 @@
 #include <trx/core/json/util/value.h>
 #include <trx/core/json/util/write_io.h>
 #include <trx/core/memory.h>
+#include <trx/core/subsystem.h>
 #include <trx/debug.h>
 #include <trx/game/items.h>
 #include <trx/game/objects.h>
@@ -38,7 +39,7 @@ static void M_FreeSet(OBJECT_PROPERTY_SET *const set)
     set->count = 0;
 }
 
-__attribute__((destructor)) static void M_Shutdown(void)
+static void M_Shutdown(void)
 {
     for (int32_t i = O_FIRST; i < O_NUMBER_OF; i++) {
         ObjectProperty_ResetObject(Object_Get(i));
@@ -418,3 +419,5 @@ fail:
     JSON_POP(io);
     return false;
 }
+
+REGISTER_SUBSYSTEM(.shutdown = M_Shutdown)

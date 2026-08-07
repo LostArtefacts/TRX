@@ -65,8 +65,6 @@ const UI_NODE *UI_GetCurrent(void);
 // until the next UI_BeginScene resets the arena they live in.
 const UI_NODE *UI_GetSceneRoot(void);
 
-void UI_Init(void);
-void UI_Shutdown(void);
 void UI_ToggleState(const bool *config_setting);
 
 void UI_HandleKeyDown(uint32_t key);

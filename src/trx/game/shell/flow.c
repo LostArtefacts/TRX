@@ -1,52 +1,25 @@
 #include <trx/config.h>
-#include <trx/config/presets.h>
 #include <trx/config/registry.h>
 #include <trx/core/enum_map.h>
 #include <trx/core/log.h>
 #include <trx/core/memory.h>
-#include <trx/core/strings.h>
-#include <trx/core/utils.h>
+#include <trx/core/subsystem.h>
 #include <trx/debug.h>
 #include <trx/game/catalog/manager.h>
-#include <trx/game/clock.h>
-#include <trx/game/console.h>
-#include <trx/game/cutseq.h>
-#include <trx/game/demo.h>
-#include <trx/game/events.h>
-#include <trx/game/fmv.h>
 #include <trx/game/game.h>
-#include <trx/game/game_buf.h>
 #include <trx/game/game_flow.h>
-#include <trx/game/game_strings/entries.h>
 #include <trx/game/game_strings/manager.h>
-#include <trx/game/gun.h>
-#include <trx/game/gym.h>
-#include <trx/game/input.h>
-#include <trx/game/input/backends/touch.h>
-#include <trx/game/inventory_ring.h>
-#include <trx/game/items/walkable.h>
-#include <trx/game/lara/pose.h>
-#include <trx/game/lara/skin.h>
 #include <trx/game/level.h>
 #include <trx/game/lua.h>
-#include <trx/game/music.h>
-#include <trx/game/objects.h>
-#include <trx/game/option.h>
 #include <trx/game/output.h>
-#include <trx/game/overlay.h>
-#include <trx/game/random.h>
 #include <trx/game/replay/test_recorder.h>
 #include <trx/game/replay/test_replay.h>
-#include <trx/game/rooms.h>
 #include <trx/game/savegame.h>
 #include <trx/game/shell.h>
 #include <trx/game/shell/platform.h>
 #include <trx/game/shell/session.h>
 #include <trx/game/shell/state.h>
-#include <trx/game/sound.h>
 #include <trx/game/stats.h>
-#include <trx/game/ui/settings.h>
-#include <trx/game/ui/touch_overlay.h>
 #include <trx/gl/context.h>
 #include <trx/version.h>
 
@@ -61,13 +34,9 @@ static char *m_PendingMod = nullptr;
 static bool m_PrevHeadless = false;
 static bool m_PrevQuiet = false;
 
-// The config module outlives a mod switch, which restarts the game in place, so
-// the subscription is given back rather than left to gather a copy per switch.
+// Given back before the config module goes down, so a mod switch does not
+// leave a copy behind.
 static int32_t m_ConfigListener = -1;
-
-// The presets are listed by the titles they show, so a new language reorders
-// them. Given back with the config subscription above, and for the same reason.
-static int32_t m_StringsListener = -1;
 
 static void M_CreateGameWindow(void)
 {
@@ -112,11 +81,6 @@ static void M_HandleConfigChange(const EVENT *const event, void *const data)
     Shell_HandleConfigChange(event->data);
 }
 
-static void M_HandleLanguageReload(const EVENT *const event, void *const data)
-{
-    Config_Presets_Sort();
-}
-
 static void M_SetupSDL(void)
 {
     SDL_version compiled;
@@ -158,18 +122,10 @@ static void M_InitModules(void)
     M_SetupSDL();
     M_SetupGL();
 
-    GameString_Init();
-    GameStringManager_Init();
-    m_StringsListener =
-        GameStringManager_SubscribeReload(M_HandleLanguageReload, nullptr);
-    UI_Init();
-    Overlay_Init();
-    GameEvent_Init();
+    // Some of the subsystems read the clock or the video state as they come
+    // up, so the platform stands first.
+    Subsystem_InitAll();
 
-    GameBuf_Init();
-    Random_Seed();
-
-    Clock_Init();
     LUA_Init();
 
     const SHELL_ARGS *const args = Shell_GetArgs();
@@ -185,10 +141,6 @@ static void M_ShutdownModules(void)
         Config_UnsubscribeChanges(m_ConfigListener);
         m_ConfigListener = -1;
     }
-    if (m_StringsListener >= 0) {
-        GameStringManager_UnsubscribeReload(m_StringsListener);
-        m_StringsListener = -1;
-    }
 
     if (TestReplay_IsOpened()) {
         TestReplay_Close();
@@ -197,33 +149,11 @@ static void M_ShutdownModules(void)
         TestRecorder_Close();
     }
 
-    Lara_Pose_Shutdown();
-    Lara_Skin_Shutdown();
-
-    CutSeq_Pak_Unload();
-    Console_Shutdown();
-    Savegame_Shutdown();
-    Gym_Shutdown();
-    Demo_Shutdown();
-
-    GF_Shutdown();
+    // The Lua bridges are subscribed to the modules they wrap and unsubscribe
+    // here, so the modules have to still be standing.
     LUA_Shutdown();
-    Overlay_Shutdown();
-    Option_Shutdown();
-    Output_Shutdown();
 
-    Input_Shutdown();
-    Music_Shutdown();
-    Sound_Shutdown();
-    UI_Shutdown();
-    GameEvent_Shutdown();
-
-    GameStringManager_Shutdown();
-    GameString_Shutdown();
-    Walkable_Shutdown();
-    Room_Shutdown();
-    GameBuf_Shutdown();
-    Catalog_Shutdown();
+    Subsystem_ShutdownAll();
 }
 
 static void M_PrepareSystem(void)
@@ -270,24 +200,15 @@ static void M_PrepareSystem(void)
 
     TRXPath_Init(s->args);
 
-    Input_Init();
-    Console_Init();
+    // The catalogs name the objects, samples and music the subsystem loads
+    // look themselves up in.
     M_LoadCatalog(CATALOG_OBJECTS, "catalog_objects.csv", false);
     M_LoadCatalog(CATALOG_MUSIC, "catalog_music.csv", false);
     M_LoadCatalog(CATALOG_SAMPLES, "catalog_samples.csv", true);
     M_LoadCatalog(CATALOG_LARA_STATES, "catalog_lara_states.csv", false);
     M_LoadCatalog(CATALOG_LARA_ANIMS, "catalog_lara_anims.csv", false);
     M_LoadCatalog(CATALOG_ITEM_ACTIONS, "catalog_item_actions.csv", false);
-    Lara_Pose_Init();
-    InvRing_LoadVars(
-        TRXPath_Resolve(TRX_DYNAMIC_PATH_COMMON_CONFIG, "inv_ring.json5"));
-    Gun_LoadVars(
-        TRXPath_Resolve(TRX_DYNAMIC_PATH_COMMON_CONFIG, "weapons.json5"));
-    UI_Settings_LoadFromFile(
-        TRXPath_Resolve(TRX_DYNAMIC_PATH_COMMON_CONFIG, "ui.json5"));
-    Lara_Skin_LoadFromFile(
-        TRXPath_Resolve(TRX_DYNAMIC_PATH_COMMON_CONFIG, "outfits.json5"));
-    Config_Presets_ScanFiles();
+    Subsystem_LoadAll();
 
     if (test_replay_path != nullptr) {
         TestReplay_Start();
@@ -308,28 +229,7 @@ static void M_PrepareSystem(void)
     }
     m_ConfigListener = Config_SubscribeChanges(M_HandleConfigChange, nullptr);
 
-    // Auto-enable touch controls on first run if touch hardware is present.
-    if (Config_IsFirstRun() && Touch_HasHardwareSupport()) {
-        CONFIG_SET(g_Config.input.enable_touch_controls, true);
-    }
-    TouchOverlay_SetVisible(g_Config.input.enable_touch_controls);
-
-    // Devices are acquired only now: Input_Init() runs before the config is
-    // read, so input.enable_controller still holds its default there.
-    Input_Discover();
-
-    Clock_SetSimSpeed(Clock_GetSpeedMultiplier());
-    if (!s->args->headless) {
-        Sound_Init();
-        Music_Init();
-        Sound_SetMasterVolume(g_Config.audio.sound_volume);
-        Music_SetVolume(g_Config.audio.music_volume);
-    } else {
-        Clock_DisableWait();
-        const int32_t fps = s->args->headless_fps > 0 ? s->args->headless_fps
-                                                      : Clock_GetCurrentFPS();
-        Clock_EnableHeadlessFixedFPS(fps);
-    }
+    Subsystem_ApplyConfigAll();
 }
 
 void Shell_RequestModSwitch(const char *const mod_name)

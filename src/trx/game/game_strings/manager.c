@@ -4,6 +4,7 @@
 #include <trx/core/json.h>
 #include <trx/core/memory.h>
 #include <trx/core/strings.h>
+#include <trx/core/subsystem.h>
 #include <trx/core/utils.h>
 #include <trx/core/vector.h>
 #include <trx/debug.h>
@@ -204,14 +205,14 @@ static bool M_ReloadLangRec(const char *const lang, VECTOR *const visited)
     return true;
 }
 
-void GameStringManager_Init(void)
+static void M_Init(void)
 {
     m_EventManager = EventManager_Create();
     M_ClearManager();
     m_SourceFiles = Vector_Create(sizeof(M_FILE_ENTRY));
 }
 
-void GameStringManager_Shutdown(void)
+static void M_Shutdown(void)
 {
     if (m_EventManager != nullptr) {
         EventManager_Free(m_EventManager);
@@ -368,3 +369,5 @@ void GameStringManager_UnsubscribeReload(const int32_t listener_id)
         EventManager_Unsubscribe(m_EventManager, listener_id);
     }
 }
+
+REGISTER_BASE_SUBSYSTEM(.init = M_Init, .shutdown = M_Shutdown)

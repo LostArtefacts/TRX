@@ -1,4 +1,5 @@
 #include <trx/config.h>
+#include <trx/core/subsystem.h>
 #include <trx/core/utils.h>
 #include <trx/core/vector.h>
 #include <trx/game/camera.h>
@@ -426,7 +427,7 @@ static void M_DrawSingleRoom(const ROOM *const room)
     bind->bound_bottom = Viewport_GetMinY(VIEWPORT_GAME);
 }
 
-__attribute__((destructor)) static void M_Shutdown(void)
+static void M_Shutdown(void)
 {
     Vector_Free(m_RoomsToDraw);
     m_RoomsToDraw = nullptr;
@@ -557,3 +558,5 @@ void Room_RemoveDrawnItem(const int16_t room_num, const int16_t item_num)
         M_DrawSet_Remove(&room->drawn_items, item_num);
     }
 }
+
+REGISTER_SUBSYSTEM(.shutdown = M_Shutdown)

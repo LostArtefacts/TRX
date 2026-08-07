@@ -1,6 +1,7 @@
 #include <trx/game/random.h>
 
 #include <trx/core/log.h>
+#include <trx/core/subsystem.h>
 
 #include <time.h>
 
@@ -8,7 +9,7 @@ static uint32_t m_RandControl = 0xD371F947U;
 static uint32_t m_RandDraw = 0xD371F947U;
 static bool m_IsDrawFrozen = false;
 
-void Random_Seed(void)
+static void M_Init(void)
 {
     time_t lt = time(0);
     struct tm *tptr = localtime(&lt);
@@ -59,3 +60,5 @@ void Random_FreezeDraw(bool is_frozen)
 {
     m_IsDrawFrozen = is_frozen;
 }
+
+REGISTER_SUBSYSTEM(.init = M_Init)

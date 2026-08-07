@@ -1,6 +1,7 @@
 #include <trx/game/rooms/common.h>
 
 #include <trx/core/memory.h>
+#include <trx/core/subsystem.h>
 #include <trx/core/utils.h>
 #include <trx/core/vector.h>
 #include <trx/debug.h>
@@ -37,6 +38,23 @@ static int32_t m_OutsideGridX = 0;
 static int32_t m_OutsideGridZ = 0;
 static int32_t m_OutsideOriginCellX = 0;
 static int32_t m_OutsideOriginCellZ = 0;
+
+static void M_Shutdown(void)
+{
+    m_RoomCount = 0;
+    m_Rooms = nullptr;
+    m_FlipStatus = false;
+    m_FlipEffect = -1;
+    m_FlipTimer = 0;
+    memset(m_FlipSlots, 0, sizeof(m_FlipSlots));
+
+    m_OutsideRoomTable = nullptr;
+    m_OutsideRoomOffsets = nullptr;
+    m_OutsideGridX = 0;
+    m_OutsideGridZ = 0;
+    m_OutsideOriginCellX = 0;
+    m_OutsideOriginCellZ = 0;
+}
 
 static void M_AddFlipItems(const ROOM *const room)
 {
@@ -90,23 +108,6 @@ void Room_InitialiseRooms(const int32_t num_rooms)
     m_Rooms = num_rooms == 0
         ? nullptr
         : GameBuf_Alloc(sizeof(ROOM) * num_rooms, GBUF_ROOMS);
-
-    m_OutsideRoomTable = nullptr;
-    m_OutsideRoomOffsets = nullptr;
-    m_OutsideGridX = 0;
-    m_OutsideGridZ = 0;
-    m_OutsideOriginCellX = 0;
-    m_OutsideOriginCellZ = 0;
-}
-
-void Room_Shutdown(void)
-{
-    m_RoomCount = 0;
-    m_Rooms = nullptr;
-    m_FlipStatus = false;
-    m_FlipEffect = -1;
-    m_FlipTimer = 0;
-    memset(m_FlipSlots, 0, sizeof(m_FlipSlots));
 
     m_OutsideRoomTable = nullptr;
     m_OutsideRoomOffsets = nullptr;
@@ -747,3 +748,5 @@ bool Room_FindValidPos(XYZ_32 *const out_pos, int16_t *const out_room_num)
 
     return true;
 }
+
+REGISTER_SUBSYSTEM(.shutdown = M_Shutdown)

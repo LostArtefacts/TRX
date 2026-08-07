@@ -38,8 +38,15 @@
 #include <string.h>
 #include <sys/stat.h>
 
+typedef struct M_RESOLVED_PATH {
+    char *value;
+    struct M_RESOLVED_PATH *next;
+} M_RESOLVED_PATH;
+
 INPUT_STATE g_Input = {};
 INPUT_STATE g_InputDB = {};
+
+static M_RESOLVED_PATH *m_ResolvedPaths = nullptr;
 
 // Every path variable resolves to the shipped config directory, which is where
 // the presets live.
@@ -52,6 +59,26 @@ char *TRXPath_ExpandVars(const char *const path)
         return Memory_DupStr(path);
     }
     return String_Format("%s%s", TEST_SHIP_CFG_DIR, closing + 1);
+}
+
+// Cached and valid for the run, as the engine's is: a caller may hold what it
+// was given.
+const char *TRXPath_Resolve(const TRX_DYNAMIC_PATH path, const char *const rel)
+{
+    char *const resolved = String_Format("%s/%s", TEST_SHIP_CFG_DIR, rel);
+    for (const M_RESOLVED_PATH *entry = m_ResolvedPaths; entry != nullptr;
+         entry = entry->next) {
+        if (strcmp(entry->value, resolved) == 0) {
+            Memory_Free(resolved);
+            return entry->value;
+        }
+    }
+
+    M_RESOLVED_PATH *const entry = Memory_Alloc(sizeof(M_RESOLVED_PATH));
+    entry->value = resolved;
+    entry->next = m_ResolvedPaths;
+    m_ResolvedPaths = entry;
+    return entry->value;
 }
 
 bool File_Load(

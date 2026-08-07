@@ -55,8 +55,6 @@ typedef enum {
     // clang-format on
 } GAME_BUFFER;
 
-void GameBuf_Init(void);
-void GameBuf_Shutdown(void);
 void GameBuf_ResetSingle(GAME_BUFFER buffer);
 void GameBuf_Reset(void);
 

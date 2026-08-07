@@ -2,6 +2,7 @@
 
 #include <trx/core/filesystem.h>
 #include <trx/core/memory.h>
+#include <trx/core/subsystem.h>
 #include <trx/debug.h>
 #include <trx/game/objects.h>
 #include <trx/game/shell/paths.h>
@@ -199,3 +200,5 @@ bool CutSeq_Pak_GetCutscene(const int32_t num, CUTSEQ_INFO *const info)
 
     return true;
 }
+
+REGISTER_SUBSYSTEM(.shutdown = CutSeq_Pak_Unload)
