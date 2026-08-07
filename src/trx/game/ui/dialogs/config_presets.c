@@ -64,8 +64,6 @@ static const char *M_GetPresetKeyLabel(const char *const key)
     return key;
 }
 
-// The single line the dialog shows once there is nothing left to confirm, or
-// nullptr in the phases that show a list instead.
 static const char *M_GetPhaseMessage(const M_PHASE phase)
 {
     switch (phase) {

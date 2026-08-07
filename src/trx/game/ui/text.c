@@ -297,9 +297,7 @@ static float M_GetLayoutWidth(
 }
 
 // How far the continuations of a line are indented, so that a line broken in
-// two still reads as one entry rather than as two at different depths. A line
-// indented by spaces keeps that indentation; a bullet adds the width of its
-// dash and the space after it, putting the continuation under the text.
+// two still reads as one entry rather than as two at different depths.
 static int32_t M_DetectHangingIndent(
     const M_GLYPH_INFO **glyphs, const size_t glyph_count, const size_t idx)
 {

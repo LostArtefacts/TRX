@@ -25,7 +25,6 @@ static void M_SetUp(void)
     UI_LoadText();
 }
 
-// The indentation the given line opens with.
 static int32_t M_GetIndent(const char *const line)
 {
     int32_t indent = 0;
@@ -35,8 +34,6 @@ static int32_t M_GetIndent(const char *const line)
     return indent;
 }
 
-// Wrap the text and check that it broke, and that every line it broke into
-// opens at the indentation the caller expects.
 static void M_CheckWrap(const char *const text, const int32_t expected_indent)
 {
     char *const wrapped = UI_Text_WordWrap(text, 1.0f, M_WRAP_W);
