@@ -1039,6 +1039,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── hiss_sfx.bin
 │   │   │   ├── india_sky.bin
 │   │   │   ├── inv_background.bin
+│   │   │   ├── jungle_fd.bin
 │   │   │   ├── lara_animations.bin
 │   │   │   ├── lara_extra.bin
 │   │   │   ├── lara_guns.bin
@@ -2381,6 +2382,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── hiss_sfx.bin
     │   │   │   │   ├── india_sky.bin
     │   │   │   │   ├── inv_background.bin
+    │   │   │   │   ├── jungle_fd.bin
     │   │   │   │   ├── lara_animations.bin
     │   │   │   │   ├── lara_extra.bin
     │   │   │   │   ├── lara_guns.bin
