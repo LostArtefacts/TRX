@@ -306,7 +306,7 @@ void Output_AddDynamicLightRGB(
     }
 
     int32_t safe_falloff = falloff;
-    CLAMP(safe_falloff, 0, 255);
+    CLAMP(safe_falloff, 0, OUTPUT_DYNAMIC_FALLOFF_MAX);
 
     const OUTPUT_DYNAMIC_LIGHT light = {
         .light = {

@@ -11,6 +11,9 @@
 
 #include <string.h>
 
+// The greatest falloff exponent the shading loop's shift stays sane for.
+#define M_MAX_FALLOFF_EXP 15
+
 typedef struct {
     XYZ_32 pos;
     int32_t shade;
@@ -226,6 +229,36 @@ static void M_AddDynamicLight(
     Vector_Add(Output_GetDynamicLights(), &light);
 }
 
+static int32_t M_Log2(int32_t value)
+{
+    int32_t exponent = 0;
+    while (value > 1) {
+        value >>= 1;
+        exponent++;
+    }
+    return exponent;
+}
+
+// TR1/2 shade in luminance and measure a light by the exponents the OG shading
+// loop shifts by, where the colored entry point gives a radius and a color.
+// This is the conversion Output_Lights_TR3_AddDynamicLight makes, taken the
+// other way: the brightest channel stands for the light, and its color is lost.
+static void M_AddDynamicLightRGB(
+    const XYZ_32 pos, const int32_t falloff, const RGB_888 color)
+{
+    int32_t safe_falloff = falloff;
+    CLAMP(safe_falloff, 1, OUTPUT_DYNAMIC_FALLOFF_MAX);
+    const int32_t radius = safe_falloff << OUTPUT_DYNAMIC_RADIUS_SHIFT;
+
+    int32_t shade = MAX3(color.r, color.g, color.b) << 4;
+    CLAMPL(shade, 1);
+
+    int32_t falloff_exp = M_Log2(radius);
+    CLAMPG(falloff_exp, M_MAX_FALLOFF_EXP);
+
+    M_AddDynamicLight(pos, M_Log2(shade), falloff_exp);
+}
+
 static void M_UploadCPULight(
     const OUTPUT_UNIFORMS *const uniforms, const OUTPUT_LIGHT_INFO *const info)
 {
@@ -277,6 +310,7 @@ const LIGHTING_MODEL g_LightingModelTR12 = {
     .calculate_static_light = M_CalculateStaticLight,
     .calculate_static_mesh_light = M_CalculateStaticMeshLight,
     .add_dynamic_light = M_AddDynamicLight,
+    .add_dynamic_light_rgb = M_AddDynamicLightRGB,
     .upload_cpu_light = M_UploadCPULight,
     .upload_own_light = M_UploadOwnLight,
     .shader_variant = 0,

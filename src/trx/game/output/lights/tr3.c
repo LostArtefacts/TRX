@@ -532,8 +532,8 @@ void Output_Lights_TR3_AddDynamicLight(
     CLAMPG(c, 255);
 
     int32_t radius = 1 << safe_falloff;
-    int32_t falloff_param = radius >> 7;
-    CLAMP(falloff_param, 1, 255);
+    int32_t falloff_param = radius >> OUTPUT_DYNAMIC_RADIUS_SHIFT;
+    CLAMP(falloff_param, 1, OUTPUT_DYNAMIC_FALLOFF_MAX);
 
     const OUTPUT_DYNAMIC_LIGHT light = {
         .light = {
