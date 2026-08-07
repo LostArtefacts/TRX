@@ -131,6 +131,7 @@
 - fixed a crash when a level holds fewer raptors than its raptor emitters can send out
 - fixed jittery train interpolation (regression from 1.4)
 - fixed one-shot music playing more than once (#5312)
+- fixed blood spawning from sentry guns when Lara shoots them (regression from 1.5)
 
 **TR4**
 - added dead enemies fading away a few seconds after they fall, as in the original TR4
