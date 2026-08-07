@@ -991,7 +991,7 @@
         },
         "gameplay.enable_alternative_turns": {
             "title": "\\{review}Alternative Drehungen",
-            "description": "\\{review}Ermöglicht es Lara, alternative Dreh- und Drehsprungbewegungen auszuführen, wenn sie stillsteht.\n\n- Drücke gleichzeitig Rolle und Springen, um eine neutrale Drehung auszuführen.\n- Drücke gleichzeitig Rolle und Gehen, um eine schnelle Drehung auf der Stelle auszuführen.",
+            "description": "\\{review}Ermöglicht es Lara, alternative Dreh- und Drehsprungbewegungen auszuführen, wenn sie stillsteht.\n\n- Drücke gleichzeitig Rolle und Springen, um eine neutrale Drehung auszuführen.\n- Drücke gleichzeitig Rolle und Gehen, um eine schnelle Drehung auf der Stelle auszuführen.\n- Drücke die Rolle-Taste an Affenstangen, um dich auf der Stelle schnell umzudrehen.",
         },
         "gameplay.enable_auto_item_selection": {
             "title": "Vorausgewählte Schlüssel-Items",

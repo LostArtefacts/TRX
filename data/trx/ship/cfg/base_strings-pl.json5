@@ -991,7 +991,7 @@
         },
         "gameplay.enable_alternative_turns": {
             "title": "\\{review}Alternatywne obroty",
-            "description": "\\{review}Pozwala Larze wykonywać alternatywne obroty i skręty, gdy stoi w miejscu.\n\n- Naciśnij jednocześnie przewrót i skok, aby wykonać obrót w miejscu.\n- Naciśnij jednocześnie przewrót i chód, aby szybko obrócić się w miejscu.",
+            "description": "\\{review}Pozwala Larze wykonywać alternatywne obroty i skręty, gdy stoi w miejscu.\n\n- Naciśnij jednocześnie przewrót i skok, aby wykonać obrót w miejscu.\n- Naciśnij jednocześnie przewrót i chód, aby szybko obrócić się w miejscu.\n- Naciśnij przycisk przewrotu na drążkach, aby szybko obrócić się w miejscu.",
         },
         "gameplay.enable_auto_item_selection": {
             "title": "Preselekcja przedmiotów",

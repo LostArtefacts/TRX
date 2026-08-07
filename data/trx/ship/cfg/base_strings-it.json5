@@ -991,7 +991,7 @@
         },
         "gameplay.enable_alternative_turns": {
             "title": "\\{review}Rotazioni alternative",
-            "description": "\\{review}Consente a Lara di eseguire movimenti alternativi di rotazione e torsione quando è ferma.\n\n- Premi contemporaneamente i comandi di capriola e salto per eseguire una torsione sul posto.\n- Premi contemporaneamente i comandi di capriola e camminata per effettuare una rapida inversione sul posto.",
+            "description": "\\{review}Consente a Lara di eseguire movimenti alternativi di rotazione e torsione quando è ferma.\n\n- Premi contemporaneamente i comandi di capriola e salto per eseguire una torsione sul posto.\n- Premi contemporaneamente i comandi di capriola e camminata per effettuare una rapida inversione sul posto.\n- Premi il tasto rotolamento sulle sbarre orizzontali per girarti rapidamente sul posto.",
         },
         "gameplay.enable_auto_item_selection": {
             "title": "Preselezione oggetti chiave",
