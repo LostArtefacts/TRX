@@ -3435,7 +3435,7 @@
       }
     },
     {
-      "description": "Happens when the title screen's scene starts playing behind the menu, once\nits level is loaded and its items are set up. The handler takes no\narguments. `trx.events.on_game_start` does not fire for the title level.",
+      "description": "Happens when the title screen comes up, once its level is loaded and its\nitems are set up. The handler takes no arguments.\n`trx.events.on_game_start` does not fire for the title level.\n\nA title that shows a picture rather than playing its level behind the menu\ndoes not run its logic, so `trx.events.before_control` and\n`trx.events.after_control` handlers attached here never fire there. This\nsays the menu is up; it does not promise a scene playing behind it.",
       "examples": [
         "trx.events.on_title_start(function()\n  trx.log.info(\"the menu is up\")\nend)"
       ],
