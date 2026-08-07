@@ -991,7 +991,7 @@
         },
         "gameplay.enable_alternative_turns": {
             "title": "Alternative turns",
-            "description": "Allows Lara to perform alternative turn/twist movements when she is stationary.\n\n- Press roll and jump inputs together to perform a neutral twist.\n- Press roll and walk inputs together to quick-turn on the spot.",
+            "description": "Allows Lara to perform alternative turn/twist movements when she is stationary.\n\n- Press roll and jump inputs together to perform a neutral twist.\n- Press roll and walk inputs together to quick-turn on the spot.\n- Press roll when on monkeybars to quick-turn on the spot.",
         },
         "gameplay.enable_auto_item_selection": {
             "title": "Key item pre-selection",

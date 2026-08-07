@@ -2,6 +2,7 @@
 #include <trx/core/utils.h>
 #include <trx/game/camera.h>
 #include <trx/game/input.h>
+#include <trx/game/interpolation.h>
 #include <trx/game/lara.h>
 #include <trx/game/lara/util.h>
 #include <trx/game/rooms.h>
@@ -11,6 +12,7 @@
 #define M_CAM_MONKEY_ELEVATION  (10 * DEG_1)  // = 1820
 #define M_CAM_HANG_ANGLE        0
 #define M_CAM_HANG_ELEVATION    (-60 * DEG_1) // = -10920
+#define M_CAM_ROLL_STEP         (DEG_1 * 5 / 2) // = 455
 #define M_MONKEY_TURN           ((DEG_1 * 1) + LARA_TURN_UNDO) // = 546
 // clang-format on
 
@@ -118,6 +120,13 @@ static void M_MonkeyRoll(ITEM *const item, COLL_INFO *const coll)
     coll->enable_hit = 0;
     coll->enable_baddie_push = 0;
     item->goal_anim_state = LS(LS_MONKEY_IDLE);
+    g_Camera.target_elevation = M_CAM_MONKEY_ELEVATION;
+    if (Item_TestFrameEqual(item, -1)) {
+        item->rot.y += DEG_180;
+        Interpolation_RememberItem(item);
+    } else {
+        g_Camera.target_angle = Item_GetRelativeFrame(item) * M_CAM_ROLL_STEP;
+    }
 }
 
 // clang-format off

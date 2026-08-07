@@ -991,7 +991,7 @@
         },
         "gameplay.enable_alternative_turns": {
             "title": "\\{review}Rotations alternatives",
-            "description": "\\{review}Permet à Lara d'effectuer des rotations et vrilles alternatives lorsqu'elle est immobile.\n\n- Appuyez simultanément sur les commandes de roulade et de saut pour effectuer une vrille sur place.\n- Appuyez simultanément sur les commandes de roulade et de marche pour effectuer un demi-tour rapide sur place.",
+            "description": "\\{review}Permet à Lara d'effectuer des rotations et vrilles alternatives lorsqu'elle est immobile.\n\n- Appuyez simultanément sur les commandes de roulade et de saut pour effectuer une vrille sur place.\n- Appuyez simultanément sur les commandes de roulade et de marche pour effectuer un demi-tour rapide sur place.\n - Appuyez sur la touche de roulade sur les barres horizontales pour faire demi-tour sur place rapidement.",
         },
         "gameplay.enable_auto_item_selection": {
             "title": "Présélection des bonnes clés",

@@ -991,7 +991,7 @@
         },
         "gameplay.enable_alternative_turns": {
             "title": "Tionndaidhean eile",
-            "description": "Leigidh seo le Lara tionndaidhean is toinneamhan eile a dhèanamh nuair a tha i na seasamh.\n\n- Brùth na putanan rolaidh is leuma còmhla gus toinneamh air an àite a dhèanamh.\n- Brùth na putanan rolaidh is coiseachd còmhla gus tionndadh luath a dhèanamh air an àite.",
+            "description": "Leigidh seo le Lara tionndaidhean is toinneamhan eile a dhèanamh nuair a tha i na seasamh.\n\n- Brùth na putanan rolaidh is leuma còmhla gus toinneamh air an àite a dhèanamh.\n- Brùth na putanan rolaidh is coiseachd còmhla gus tionndadh luath a dhèanamh air an àite.\n- Brùth am putan rolaidh air na bàraichean muncaidh gus tionndadh luath a dhèanamh air an àite.",
         },
         "gameplay.enable_auto_item_selection": {
             "title": "Roghainn ro-làimh air iuchraichean",

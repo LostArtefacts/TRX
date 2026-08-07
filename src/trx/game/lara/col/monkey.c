@@ -1,3 +1,4 @@
+#include <trx/config.h>
 #include <trx/core/utils.h>
 #include <trx/game/camera.h>
 #include <trx/game/input.h>
@@ -171,6 +172,8 @@ static bool M_HandleIdleState(ITEM *const item, COLL_INFO *const coll)
         item->goal_anim_state = LS(LS_MONKEY_TURN_LEFT);
     } else if (g_Input.right) {
         item->goal_anim_state = LS(LS_MONKEY_TURN_RIGHT);
+    } else if (g_Input.roll && g_Config.gameplay.enable_alternative_turns) {
+        item->goal_anim_state = LS(LS_MONKEY_ROLL);
     }
 
     Lara_Col_MonkeySwingSnap(item);
@@ -224,7 +227,8 @@ static void M_MonkeyIdle(ITEM *const item, COLL_INFO *const coll)
 
 static void M_MonkeyForward(ITEM *const item, COLL_INFO *const coll)
 {
-    if (!g_Input.action || !M_CanMonkeySwing(item)) {
+    if (item->current_anim_state != LS(LS_MONKEY_ROLL)
+        && (!g_Input.action || !M_CanMonkeySwing(item))) {
         M_MonkeySwingFall(item);
         return;
     }
