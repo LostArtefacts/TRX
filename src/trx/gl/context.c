@@ -168,6 +168,11 @@ void TRX_GL_Context_SetDisplayFilter(const TEXTURE_FILTER filter)
     m_Context.config.display_filter = filter;
 }
 
+void TRX_GL_Context_SetDithering(const bool enable)
+{
+    m_Context.config.enable_dithering = enable;
+}
+
 bool TRX_GL_Context_GetWireframeMode(void)
 {
     return m_Context.config.enable_wireframe;

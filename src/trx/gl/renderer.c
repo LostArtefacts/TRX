@@ -29,6 +29,7 @@ typedef struct {
     TRX_GL_BUFFER buffer;
     TRX_GL_SAMPLER sampler;
     TRX_GL_PROGRAM program;
+    GLint loc_dither;
 } M_CONTEXT;
 
 static void M_Blit(const M_CONTEXT *const p, const TRX_GL_FBO *const fbo)
@@ -74,6 +75,9 @@ static void M_Render(TRX_GL_RENDERER *renderer)
     TRX_GL_Sampler_Bind(&p->sampler, 0);
     TRX_GL_Sampler_Parameteri(&p->sampler, GL_TEXTURE_MAG_FILTER, filter);
     TRX_GL_Sampler_Parameteri(&p->sampler, GL_TEXTURE_MIN_FILTER, filter);
+
+    TRX_GL_Program_Uniform1i(
+        &p->program, p->loc_dither, p->config->enable_dithering);
 
     VIEWPORT_RECT rect = Viewport_GetRect(VIEWPORT_TARGET);
     glViewport(rect.x, rect.y, rect.width, rect.height);
@@ -151,6 +155,7 @@ static void M_Init(
     TRX_GL_Program_Bind(&p->program);
     TRX_GL_Program_Uniform1i(
         &p->program, TRX_GL_Program_UniformLocation(&p->program, "uTex0"), 0);
+    p->loc_dither = TRX_GL_Program_UniformLocation(&p->program, "uDither");
 
     VIEWPORT_RECT rect;
     rect = Viewport_GetRect(VIEWPORT_GAME);

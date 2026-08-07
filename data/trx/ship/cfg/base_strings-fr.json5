@@ -1430,6 +1430,10 @@
             "title": "\\{review}Bordures",
             "description": "\\{review}Ajoute des bordures noires autour de la fenêtre du jeu.",
         },
+        "rendering.enable_dithering": {
+            "title": "\\{review}Tramage",
+            "description": "\\{review}Réduit l'image à des couleurs 8 bits avec un motif de tramage ordonné, pour l'aspect des versions au rendu logiciel.",
+        },
         "rendering.enable_trapezoid_filter": {
             "title": "Filtre trapézoïdal",
             "description": "Corrige le rendu des quadrilatères.",

@@ -1430,6 +1430,10 @@
             "title": "Rahmen",
             "description": "Fügt schwarze Rahmen um das Spiel-Fenster herum hinzu.",
         },
+        "rendering.enable_dithering": {
+            "title": "\\{review}Dithering",
+            "description": "\\{review}Reduziert das Bild auf 8-Bit-Farben mit einem geordneten Dither-Muster, für das Aussehen der software-gerenderten Fassungen.",
+        },
         "rendering.enable_trapezoid_filter": {
             "title": "Trapezoid-Filter",
             "description": "Korrigiert das Rendern von Vierecken.",

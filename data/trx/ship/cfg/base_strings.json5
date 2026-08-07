@@ -1430,6 +1430,10 @@
             "title": "Borders",
             "description": "Adds black borders around the game window.",
         },
+        "rendering.enable_dithering": {
+            "title": "Dithering",
+            "description": "Reduces the picture to 8-bit color with an ordered dither pattern, for the look of the software-rendered releases.",
+        },
         "rendering.enable_trapezoid_filter": {
             "title": "Trapezoid filter",
             "description": "Corrects rendering of quadrilaterals.",

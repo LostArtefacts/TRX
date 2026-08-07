@@ -6,6 +6,7 @@
 
 typedef struct {
     TEXTURE_FILTER display_filter;
+    bool enable_dithering;
     bool enable_wireframe;
     int32_t line_width;
 } TRX_GL_CONFIG;
