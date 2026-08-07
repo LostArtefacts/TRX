@@ -1674,6 +1674,10 @@
             "title": "Text scale",
             "description": "Changes the size of UI text.",
         },
+        "visuals.background_brightness": {
+            "title": "Background brightness",
+            "description": "Changes the brightness of background images and patterns.",
+        },
         "visuals.blood_effects": {
             "title": "Blood effects",
             "description": "Controls blood spark colors.\n\n- Disabled: no blood sparks are shown.\n- Pink: the default in German PC releases of TR3.\n- Red: the default in all other retail releases.",

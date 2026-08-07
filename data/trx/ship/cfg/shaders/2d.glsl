@@ -150,7 +150,7 @@ void main(void) {
     }
     outColor.rgb *= uGlobalTint;
 
-    outColor.rgb *= uUIBrightnessMultiplier * uBrightnessScale;
+    outColor.rgb *= uBrightnessScale;
 
     outColor.a *= clamp(uOpacity, 0.0, 1.0);
     // Output premultiplied alpha so callers can use (ONE, ONE_MINUS_SRC_ALPHA).

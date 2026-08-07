@@ -16,6 +16,7 @@
 - added a `damage` property to the `O_POWER_SAW` object
 - added a bindable hotkey for using the binoculars
 - added `show_pickup_aid`, `rotation` and `glow_color` properties for all pickup types
+- added a brightness option for background images and patterns, so that brightening the UI leaves them alone (Graphic Options → Rendering → Background brightness) (#6074)
 - improved error messages related to bad command invocations
 - changed the game mode selection option so that Never starts every new game as a regular one (Gameplay → General → Game mode selection)
 - changed reflections UV mapping to be more correct

@@ -1674,6 +1674,10 @@
             "title": "Textgröße",
             "description": "Ändert die Größe des UI-Textes.",
         },
+        "visuals.background_brightness": {
+            "title": "\\{review}Hintergrundhelligkeit",
+            "description": "\\{review}Ändert die Helligkeit von Hintergrundbildern und -mustern.",
+        },
         "visuals.blood_effects": {
             "title": "\\{review}Bluteffekte",
             "description": "\\{review}Steuert die Farben der Blutspritzer.\n\n- Deaktiviert: Es werden keine Blutspritzer angezeigt.\n- Pink: Standard in den deutschen PC-Versionen von TR3.\n- Rot: Standard in allen anderen Einzelhandelsversionen.",
