@@ -1180,6 +1180,16 @@ void TestReplay_Close(void)
         Vector_Free(p->headers);
         p->headers = nullptr;
     }
+    if (p->deferred_config != nullptr) {
+        for (int32_t i = 0; i < p->deferred_config->count; i++) {
+            M_DEFERRED_OPTION *const deferred =
+                Vector_Get(p->deferred_config, i);
+            Memory_FreePointer(&deferred->key);
+            Memory_FreePointer(&deferred->value);
+        }
+        Vector_Free(p->deferred_config);
+        p->deferred_config = nullptr;
+    }
     if (p->frames) {
         for (int32_t i = 0; i < p->frames->count; i++) {
             M_FRAME *const f = Vector_Get(p->frames, i);
