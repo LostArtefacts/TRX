@@ -1782,8 +1782,8 @@
             "description": "Przywraca glonom efekt animacji w wodnych poziomach.",
         },
         "visuals.fix_item_rots": {
-            "title": "Napraw rotacje przedmiotów",
-            "description": "Naprawia problemy z oryginalnej gry zw. z nieprawidłowo obróconymi przedmiotami podczas korzystania z opcji rysowania znajdziek jako obiekty 3D.",
+            "title": "\\{review}Napraw rozmieszczeniem przedmiotów",
+            "description": "\\{review}Naprawia kilka błędów z oryginalnych gier spowodowanych nieprawidłowym rozmieszczeniem lub orientacją obiektów.",
         },
         "visuals.fix_texture_issues": {
             "title": "Napraw tekstury",

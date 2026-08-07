@@ -1782,8 +1782,8 @@
             "description": "Corregge gli sprite originali delle piante idrofite in modo che si animino correttamente nelle aree acquatiche.",
         },
         "visuals.fix_item_rots": {
-            "title": "Correggi rotazione oggetti",
-            "description": "Risolve i problemi relativi all'orientamento errato di alcuni oggetti quando viene utilizzata l'opzione Oggetti 3D nei livelli originali.",
+            "title": "\\{review}Correggi posizionamento oggetti",
+            "description": "\\{review}Corregge diversi problemi presenti nei giochi originali causati da oggetti posizionati o orientati in modo errato.",
         },
         "visuals.fix_texture_issues": {
             "title": "Correggi problemi texture",

@@ -1782,8 +1782,8 @@
             "description": "\\{review}Behebt die ursprünglichen Unterwasser-Pflanzen-Sprites, sodass sie in Wasserbereichen richtig animiert werden.",
         },
         "visuals.fix_item_rots": {
-            "title": "Fix: Item-Rotations-Fehler",
-            "description": "Fixt originale Fehler mit einigen falsch rotierenden Pickups, wenn man die 3D-Pickups-Option verwendet.",
+            "title": "\\{review}Behebt Probleme mit der Objektplatzierung",
+            "description": "\\{review}Behebt mehrere Probleme aus den Originalspielen, die durch falsch platzierte oder ausgerichtete Objekte verursacht werden.",
         },
         "visuals.fix_texture_issues": {
             "title": "Fix: Textur-Fehler",
