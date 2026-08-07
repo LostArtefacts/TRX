@@ -1251,7 +1251,7 @@
         },
         "gameplay.fix_free_flare_glitch": {
             "title": "Correggi errore dei razzi",
-            "description": "Risolve il problema in cui, se si preme il tasto di estrazione di un razzo di segnalazione mentre si raccoglie un qualsiasi oggetto, ne verrà creato uno dal nulla.",
+            "description": "\\{review}Risolve il problema in cui, se si preme il tasto di estrazione di un razzo di segnalazione mentre si raccoglie un qualsiasi oggetto, ne verrà creato uno dal nulla, o richiedendone una tramite l’inventario mentre striscia.",
         },
         "gameplay.fix_item_duplication_glitch": {
             "title": "Correggi duplicazione oggetti",

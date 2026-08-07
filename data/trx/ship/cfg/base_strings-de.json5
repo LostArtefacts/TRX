@@ -1251,7 +1251,7 @@
         },
         "gameplay.fix_free_flare_glitch": {
             "title": "Fix: gratis Fackel-Glitch",
-            "description": "Fixt die Möglichkeit, eine gratis Fackel zu erschaffen, wenn man während des Aufhebens eines Gegenstandes die Fackel-Taste drückt.",
+            "description": "\\{review}Fixt die Möglichkeit, eine gratis Fackel zu erschaffen, wenn man während des Aufhebens eines Gegenstandes die Fackel-Taste drückt, oder indem sie während des Kriechens eine über das Inventar anfordert.",
         },
         "gameplay.fix_item_duplication_glitch": {
             "title": "Fix: Item-Vervielfältigungs-Glitch",

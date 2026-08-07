@@ -1251,7 +1251,7 @@
         },
         "gameplay.fix_free_flare_glitch": {
             "title": "Corrige le glitch de torche gratuite",
-            "description": "Corrige la possibilité de faire apparaître une torche gratuite en appuyant sur la touche Torche pendant que Lara ramasse un objet.",
+            "description": "\\{review}Corrige la possibilité de faire apparaître une torche gratuite en appuyant sur la touche Torche pendant que Lara ramasse un objet, ou en en demandant une via l’inventaire en rampant.",
         },
         "gameplay.fix_item_duplication_glitch": {
             "title": "Corriger le glitch de duplication d'objet",

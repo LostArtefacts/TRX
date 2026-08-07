@@ -1251,7 +1251,7 @@
         },
         "gameplay.fix_free_flare_glitch": {
             "title": "Fix free flare glitch",
-            "description": "Fixes the ability to spawn a free flare when pressing the flare input while picking up any item.",
+            "description": "Fixes the ability to spawn a free flare when pressing the flare input while picking up any item, or by requesting one via the inventory while crawling.",
         },
         "gameplay.fix_item_duplication_glitch": {
             "title": "Fix item duplication glitch",

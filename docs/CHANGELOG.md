@@ -71,6 +71,7 @@
 - fixed Lara attempting to climb ladders from inside lifts (#5890)
 - fixed Lara not getting killed by lifts if standing on top of one and the ceiling space becomes too low
 - fixed Lara attempting to pull up into gaps that would not allow her to stand, resulting in her being pushed out (#5891)
+- fixed Lara being able to light a free/ghost flare by selecting one from the inventory while crawling (Gameplay → Fixes → Fix free flare glitch)
 - fixed Lara leaving ripples on ceilings that lie below the waterline (regression from 1.1)
 - fixed shoals of fish and piranhas jumping back to their starting spot when loading a save
 - fixed rain and snow starting over when a save is loaded (#5901)
