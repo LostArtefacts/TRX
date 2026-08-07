@@ -45,7 +45,6 @@
 #include <trx/game/shell/state.h>
 #include <trx/game/sound.h>
 #include <trx/game/stats.h>
-#include <trx/game/ui/dialogs/settings_lua.h>
 #include <trx/game/ui/settings.h>
 #include <trx/game/ui/touch_overlay.h>
 #include <trx/gl/context.h>
@@ -428,10 +427,6 @@ int32_t Shell_Main(const SHELL_ARGS *const args)
     Savegame_Init();
     SG_Manager_ScanSavedGames();
 
-    // What the last game's script declared goes before this one's script runs,
-    // so a game never inherits another's settings or the rows that show them.
-    Config_DropDeclaredOptions();
-    UI_SettingsLua_DropDeclaredRows();
     LUA_RunGameScript();
 
     // The settings a recording carries are the ones that exist by now, the

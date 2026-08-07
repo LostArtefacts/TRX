@@ -10,8 +10,6 @@
 // functions by reference. Every callback the dialogs make comes back through
 // here, into the function the declaration named.
 
-#include <trx/game/ui/dialogs/settings_lua.h>
-
 #include <trx/core/log.h>
 #include <trx/core/memory.h>
 #include <trx/core/utils.h>
@@ -273,17 +271,7 @@ static void M_Create(lua_State *const L)
     LUA_RegisterModule(L, "settings", m_Module);
 }
 
-static void M_Shutdown(void)
-{
-    UI_SettingsLua_DropDeclaredRows();
-    if (m_Rows != nullptr) {
-        Vector_Free(m_Rows);
-        m_Rows = nullptr;
-    }
-    m_L = nullptr;
-}
-
-void UI_SettingsLua_DropDeclaredRows(void)
+static void M_DropDeclaredRows(void)
 {
     for (int32_t i = 0; m_Rows != nullptr && i < m_Rows->count; i++) {
         M_FreeRow(m_L, *(M_DECLARED_ROW **)Vector_Get(m_Rows, i));
@@ -292,6 +280,16 @@ void UI_SettingsLua_DropDeclaredRows(void)
         Vector_Clear(m_Rows);
     }
     UI_Settings_DropDeclaredRows();
+}
+
+static void M_Shutdown(void)
+{
+    M_DropDeclaredRows();
+    if (m_Rows != nullptr) {
+        Vector_Free(m_Rows);
+        m_Rows = nullptr;
+    }
+    m_L = nullptr;
 }
 
 REGISTER_LUA_CAPI(.create = M_Create, .shutdown = M_Shutdown)

@@ -12,7 +12,6 @@
 static bool m_MusicOn;
 static double m_Fov;
 static char *m_Outfit;
-static bool m_Scanlines;
 static bool m_LastPersist;
 // How many times the listener below was told that the FOV moved.
 static int32_t m_FovTold;
@@ -114,25 +113,4 @@ TEST(a_listener_that_changes_a_setting_is_not_told_the_same_report_twice)
     CHECK_EQ_INT(m_FovTold, 1);
 
     Config_UnsubscribeChanges(listener);
-}
-
-// A script's options go when the scripts do; the game's own stay, and so do
-// their values.
-TEST(dropping_the_declared_options_leaves_the_games_own)
-{
-    M_SetUp();
-    CHECK(
-        Config_Register(&(CONFIG_OPTION_DESC) {
-            .name = "mod.scanlines",
-            .default_value = { .type = TVT_BOOL, .as_bool = true },
-            .mirror = &m_Scanlines,
-            .declared = true })
-        != nullptr);
-
-    CHECK(Config_SetValue(&m_Fov, Value_Of(90)));
-    Config_DropDeclaredOptions();
-
-    CHECK(Config_FindOption("mod.scanlines") == nullptr);
-    CHECK(Config_FindOption("visuals.fov") != nullptr);
-    CHECK_EQ_INT((int32_t)m_Fov, 90);
 }
