@@ -86,7 +86,7 @@
             "debug_camera_pos": "Tùs a' chamara: ",
             "debug_camera_target": "Targaid a' chamara: ",
             "debug_immune": "Neo-bhàsmhorachd air",
-            "debug_interaction": "\\{review}Eadar-obrachadh: ",
+            "debug_interaction": "Eadar-obrachadh: ",
             "debug_position": "Suidheachadh: ",
             "debug_rotation": "Cuairteachadh: ",
             "debug_speed": "Luas: ",
@@ -269,11 +269,11 @@
                 "unknown_option": "Roghainn neo-aithnichte: %s",
             },
             "disco": {
-                "already_off": "\\{review}Tha na solais dheth mar-thà",
-                "already_on": "\\{review}Tha na solais air mar-thà",
-                "help": "\\{review}Tionndaidheas taisbeanadh sholas timcheall Lara.",
-                "off": "\\{review}Thèid na solais dheth",
-                "on": "\\{review}Thig na solais air",
+                "already_off": "Tha na solais dheth mar-thà",
+                "already_on": "Tha na solais air mar-thà",
+                "help": "Tionndaidheas taisbeanadh sholas timcheall Lara.",
+                "off": "Thèid na solais dheth",
+                "on": "Thig na solais air",
             },
             "drain": {
                 "already": "Tha seòmar %d air a dhrèanadh mar-thà",
@@ -527,10 +527,10 @@
                 "help": "Tionndaidheas sioncronachadh-inghearach air neo dheth.",
             },
             "weather": {
-                "current": "\\{review}Aimsir làithreach: %s, dèine %s",
+                "current": "Aimsir làithreach: %s, dèine %s",
                 "help": "Atharraichidh seo an aimsir.",
                 "invalid": "Aimsir neo-dhligheach: %s (dligheach: %s)",
-                "set": "\\{review}Suidhich an aimsir gu %s, dèine %s",
+                "set": "Suidhich an aimsir gu %s, dèine %s",
             },
             "winston": {
                 "dead": "Tha am butlar agad marbh. 'S tu nad fuamhaire!",
@@ -1682,8 +1682,8 @@
             "description": "Atharraicheas meud an teacsa.",
         },
         "visuals.background_brightness": {
-            "title": "\\{review}Soilleireachd a' chùlaibh",
-            "description": "\\{review}Cuiridh seo atharrachadh air soilleireachd nan dealbhan is nam pàtranan cùlaibh.",
+            "title": "Soilleireachd dealbhan",
+            "description": "Atharraichidh soilleireachd nan dealbhan agus nam pàtranan cùlaibh.",
         },
         "visuals.blood_effects": {
             "title": "Buaidhean fuil",
@@ -1834,16 +1834,16 @@
             "description": "Dath an uisge.",
         },
         "visuals.water_color_mode": {
-            "description": "\\{review}Dè an tuar fo-uisge a thèid a chleachdadh. Fhad 's a tha ro-shuidheachadh air a thaghadh, cumaidh e dath an uisge gu h-ìosal; fàgaidh Gnàthaichte an dath sin agad fhèin.",
-            "title": "\\{review}Ro-shuidheachadh dath an uisge",
+            "description": "Modh dath an uisge a thèid a chleachdadh. Nuair a tha ro-shuidheachadh air a thaghadh, cumaidh e dath an uisge gu h-ìosal; fàgaidh Gnàthaichte an dath sin agad fhèin.",
+            "title": "Ro-shuidheachadh dath an uisge",
             "values": {
-                "custom": "\\{review}Gnàthaichte",
-                "dos": "\\{review}DOS",
-                "pc": "\\{review}PC",
-                "pc_hardware": "\\{review}PC (bathar-cruaidh)",
-                "pc_software": "\\{review}PC (bathar-bog)",
-                "ps1": "\\{review}PS1",
-                "tombati": "\\{review}TombATI",
+                "custom": "Gnàthaichte",
+                "dos": "DOS",
+                "pc": "PC",
+                "pc_hardware": "PC (bathar-cruaidh)",
+                "pc_software": "PC (bathar-bog)",
+                "ps1": "PS1",
+                "tombati": "TombATI",
             }
         }
     },
