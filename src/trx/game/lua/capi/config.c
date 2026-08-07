@@ -5,13 +5,13 @@
 #include <trx/core/enum_map.h>
 #include <trx/core/log.h>
 #include <trx/core/memory.h>
+#include <trx/core/strings.h>
 #include <trx/core/vector.h>
 #include <trx/game/lua/common.h>
 #include <trx/game/lua/registry.h>
 #include <trx/game/lua/utils.h>
 
 #include <lauxlib.h>
-#include <stdio.h>
 #include <string.h>
 
 // How deep a watcher writing a setting may go. Answering a change by changing
@@ -384,10 +384,10 @@ static void M_SeedValues(lua_State *const L, const CONFIG_OPTION *const option)
     for (int32_t i = 1; i <= count; i++) {
         lua_rawgeti(L, -1, i);
         const char *const value = lua_tostring(L, -1);
-        char label[128];
-        snprintf(
-            label, sizeof(label), "settings/%s/values/%s", option->name, value);
+        char *label =
+            String_Format("settings/%s/values/%s", option->name, value);
         DynamicEnum_AddValue(token, value, label);
+        Memory_FreePointer(&label);
         lua_pop(L, 1);
     }
     lua_pop(L, 1);

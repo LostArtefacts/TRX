@@ -625,7 +625,7 @@ unit_tests += {
 
 unit_tests += {
   'name': 'lua/api/config',
-  'bundles': [b_lua_surface, b_config],
+  'bundles': [b_lua_surface, b_config, b_lua_strings],
   'src': ['fakes/locale.c'],
   'engine': [
     'game/lua/capi/config.c',
