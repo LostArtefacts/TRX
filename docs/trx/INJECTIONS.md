@@ -98,9 +98,19 @@ details.
 Custom levels should generally not rely on injections for correctness; instead,
 provide data that is already correct and consistent.
 
-Note however that the injections that relate to Lara can work in custom levels
+Note, however, that the injections that relate to Lara can work in custom levels
 that do not modify Lara's default mesh structure or animations. These injection
 files are based on the original Lara model.
+
+If you remove the `lara_animations.bin` or `lara_extra.bin` injections, import
+the relevant objects into your WAD from the assets list above. If you do not
+wish to use certain animations, enforce and/or hide the corresponding config
+options.
+
+Some of Lara's default animations must be configured in a specific way - for
+example, to enable TR1-style jumping in TR3 levels using the correct state
+changes that the engine expects. It is therefore important that Lara is set up
+correctly, whether you use the injection files or the WAD import approach.
 
 ## Default injection files (reference)
 
