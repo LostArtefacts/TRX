@@ -826,7 +826,7 @@ static void M_AddDynamicLightRGB(
     const XYZ_32 pos, const int32_t falloff, const RGB_888 color)
 {
     int32_t safe_falloff = falloff;
-    CLAMP(safe_falloff, 0, 255);
+    CLAMP(safe_falloff, 0, OUTPUT_DYNAMIC_FALLOFF_MAX);
 
     RGB_888 c = color;
     if (safe_falloff < 8) {

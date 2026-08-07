@@ -7,6 +7,15 @@
 #define OUTPUT_LIGHT_CYCLE 32
 #define OUTPUT_DYNAMIC_FALLOFF_SHIFT 8
 
+// A colored dynamic light's falloff counts in steps of this many world units
+// (the OG's >> 7 in the TR3 CreateDynamicLight). How far the light reaches is
+// then that many steps, give or take what each game makes of it.
+#define OUTPUT_DYNAMIC_RADIUS_SHIFT 7
+// The furthest one can be asked to reach. The falloff is stored shifted up by
+// OUTPUT_DYNAMIC_FALLOFF_SHIFT, and this keeps the result in range; no game
+// looks past eight sectors for a dynamic light in any case.
+#define OUTPUT_DYNAMIC_FALLOFF_MAX 0x7FFF
+
 // How a dynamic light's shade/falloff fields are encoded. Uploaded to the
 // shader as the light's `kind`, where the TR1/2 family picks the lighting
 // formula based on it (TR3+ treats every dynamic light as RGB).
