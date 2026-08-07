@@ -869,6 +869,10 @@
             "title": "Musica menu principale",
             "description": "Riproduce la musica nel menu principale.",
         },
+        "audio.enable_music_on_death": {
+            "title": "\\{review}Musica dopo la morte",
+            "description": "\\{review}Mantiene in riproduzione la traccia musicale attiva quando Lara muore.",
+        },
         "audio.enable_pitched_sounds": {
             "title": "Tonalità suoni",
             "description": "Per una maggiore varietà, consente di modificare in modo leggero e casuale la tonalità degli effetti sonori.",

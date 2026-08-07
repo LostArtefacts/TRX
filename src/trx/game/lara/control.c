@@ -1030,7 +1030,9 @@ void Lara_Control(void)
             Gym_SetInventoryOpenEnabled(true);
         }
         if (lara_info->death_timer == 0) {
-            Music_Stop();
+            if (!g_Config.audio.enable_music_on_death) {
+                Music_Stop();
+            }
             Stats_AddDeath();
         }
         lara_info->death_timer++;

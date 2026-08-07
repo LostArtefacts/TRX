@@ -20,6 +20,7 @@
 - added the ability to change how heavily the rain or snow falls, from Lua and with the `/weather` console command (#6080)
 - added `show_pickup_aid`, `rotation` and `glow_color` properties for all pickup types
 - added a brightness option for background images and patterns, so that brightening the UI leaves them alone (Graphic Options → Rendering → Background brightness) (#6074)
+- added an option to keep the music playing when Lara dies (Sound Options → Misc → Play music after death) (#4221)
 - improved error messages related to bad command invocations
 - changed the brightness options to be given as percentages, as the volume options are
 - changed the game mode selection option so that Never starts every new game as a regular one (Gameplay → General → Game mode selection)

@@ -869,6 +869,10 @@
             "title": "Ceòl sa phrìomh chlàr",
             "description": "Cluichidh ceòl anns a' phrìomh chlàr.",
         },
+        "audio.enable_music_on_death": {
+            "title": "\\{review}Ceòl às dèidh a' bhàis",
+            "description": "\\{review}Cumaidh an t-òran làithreach a' cluich nuair a bhàsaicheas Lara.",
+        },
         "audio.enable_pitched_sounds": {
             "title": "Fuaimean atharraichte",
             "description": "Cuiridh seo cead air buaidhean fuaim le beagan caochlaidhean àirde-fuaim gus iomadachd a thoirt do dh'fhuaimean a' gheama.",

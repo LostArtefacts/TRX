@@ -3,6 +3,7 @@ X_UI_ROW(audio.fix_secrets_killing_music)
 X_UI_ROW(audio.fix_speeches_killing_music)
 
 X_UI_ROW(audio.enable_music_in_inventory)
+X_UI_ROW(audio.enable_music_on_death)
 X_UI_ROW(audio.music_load_condition)
 X_UI_ROW(audio.enable_underwater_anim_sfx)
 X_UI_ROW(audio.mute_out_of_focus)

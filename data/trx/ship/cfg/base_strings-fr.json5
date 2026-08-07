@@ -869,6 +869,10 @@
             "title": "Musique du menu principal",
             "description": "Active ou non la musique dans le menu principal.",
         },
+        "audio.enable_music_on_death": {
+            "title": "\\{review}Musique après la mort",
+            "description": "\\{review}Poursuit la lecture de la piste musicale en cours lorsque Lara meurt.",
+        },
         "audio.enable_pitched_sounds": {
             "title": "Hauteurs aléatoires des sons",
             "description": "Modifie aléatoirement et légèrement la hauteur des effets sonores, afin de leur donner un peu de variation.",

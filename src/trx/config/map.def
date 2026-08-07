@@ -1,6 +1,7 @@
 X_CFG_BOOL(audio.enable_lara_mic,                            false)
 X_CFG_BOOL(audio.enable_music_in_inventory,                  true)
 X_CFG_BOOL(audio.enable_music_in_menu,                       true)
+X_CFG_BOOL(audio.enable_music_on_death,                      false)
 X_CFG_BOOL(audio.enable_pitched_sounds,                      true)
 X_CFG_BOOL(audio.enable_ps1_sfx,                             true)
 X_CFG_BOOL(audio.enable_underwater_anim_sfx,                 true)
