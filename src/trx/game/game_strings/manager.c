@@ -1,5 +1,6 @@
 #include <trx/game/game_strings/manager.h>
 
+#include <trx/config.h>
 #include <trx/core/filesystem.h>
 #include <trx/core/json.h>
 #include <trx/core/memory.h>
@@ -10,6 +11,7 @@
 #include <trx/debug.h>
 #include <trx/game/game_flow/common.h>
 #include <trx/game/game_strings/table.h>
+#include <trx/game/shell.h>
 
 #include <string.h>
 
@@ -223,8 +225,7 @@ static void M_Shutdown(void)
 }
 
 // Clear all previously set source strings files.
-// Must be called before GameStringManager_AddSourceFile.
-void GameStringManager_ClearSourceFiles(void)
+static void M_ClearSourceFiles(void)
 {
     M_ClearManager();
     m_SourceFiles = Vector_Create(sizeof(M_FILE_ENTRY));
@@ -233,8 +234,7 @@ void GameStringManager_ClearSourceFiles(void)
 // Add a source strings file for language discovery and loading.
 // base_path: path to a base strings JSON5 file.
 // load_levels: true to load level entries from this source; false otherwise.
-void GameStringManager_AddSourceFile(
-    const char *const base_path, const bool load_levels)
+static void M_AddSourceFile(const char *const base_path, const bool load_levels)
 {
     ASSERT(m_SourceFiles != nullptr);
     if (base_path == nullptr) {
@@ -247,7 +247,7 @@ void GameStringManager_AddSourceFile(
     Vector_Add(m_SourceFiles, &fe);
 }
 
-void GameStringManager_DiscoverLanguages(void)
+static void M_DiscoverLanguages(void)
 {
     if (m_SourceFiles == nullptr) {
         return;
@@ -303,6 +303,38 @@ void GameStringManager_DiscoverLanguages(void)
 
     M_LoadLanguageNames();
     M_ReorderLanguages();
+}
+
+void GameStringManager_LoadForMod(const SHELL_MOD *const mod)
+{
+    M_ClearSourceFiles();
+
+    const char *const common_strings_path = Shell_GetCommonStringsPath();
+    if (common_strings_path == nullptr) {
+        Shell_ExitSystem("Missing common strings file");
+    }
+    M_AddSourceFile(common_strings_path, false);
+
+    if (mod->base_mod != nullptr) {
+        char *base_strings_path = Shell_GetBaseGameStringsPath(mod);
+        if (base_strings_path == nullptr) {
+            Shell_ExitSystemFmt(
+                "Missing base mod strings file for '%s'", mod->name);
+        }
+        M_AddSourceFile(base_strings_path, false);
+        Memory_FreePointer(&base_strings_path);
+    }
+
+    char *mod_strings_path = Shell_GetGameStringsPath(mod);
+    if (mod_strings_path == nullptr) {
+        Shell_ExitSystemFmt(
+            "Missing strings file for selected mod '%s'", mod->name);
+    }
+    M_AddSourceFile(mod_strings_path, true);
+    Memory_FreePointer(&mod_strings_path);
+
+    M_DiscoverLanguages();
+    GameStringManager_ReloadLanguage(g_Config.language);
 }
 
 VECTOR *GameStringManager_GetAvailableLanguages(void)
