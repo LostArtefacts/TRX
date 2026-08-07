@@ -44,6 +44,18 @@ static struct {
     { .gun_type = LGT_UNKNOWN, .input_role = (INPUT_ROLE)-1 },
 };
 
+static const LARA_TRX_STATE m_CrawlStates[] = {
+    // clang-format off
+    LS_CRAWL_IDLE,
+    LS_CRAWL_FORWARD,
+    LS_CRAWL_BACK,
+    LS_CRAWL_TURN_LEFT,
+    LS_CRAWL_TURN_RIGHT,
+    LS_CRAWL_TO_CLIMB,
+    LS_INVALID, // sentinel
+    // clang-format on
+};
+
 // What Lara reaches for when the weapon in her hands has run dry: the pistols,
 // so long as she carries them and they have anything left to spend.
 static LARA_GUN_TYPE M_GetFallbackGunType(void)
@@ -208,24 +220,16 @@ static bool M_NeedToUndraw(void)
     }
 }
 
-// TR4 refuses the flare outright while Lara is on all fours, and she says so.
-// The other games let her light one from a crawl.
-static bool M_IsFlareRefused(const ITEM *const lara_item)
+static bool M_IsLaraCrawling(void)
 {
-    if (g_TRVersion < 4) {
-        return false;
-    }
-    switch (LS_U(lara_item->current_anim_state)) {
-    case LS_CRAWL_IDLE:
-    case LS_CRAWL_FORWARD:
-    case LS_CRAWL_BACK:
-    case LS_CRAWL_TURN_LEFT:
-    case LS_CRAWL_TURN_RIGHT:
-    case LS_CRAWL_TO_CLIMB:
-        return true;
-    default:
-        return false;
-    }
+    return Lara_HasState(m_CrawlStates);
+}
+
+// All games refuse Lara to light a flare from the hotkey input while on all
+// fours, but only TR4 onwards make her say so.
+static bool M_IsFlareInputBlocked(void)
+{
+    return g_TRVersion >= 4 && M_IsLaraCrawling();
 }
 
 static void M_DecideRequestedWeapon(void)
@@ -250,7 +254,7 @@ static void M_DecideRequestedWeapon(void)
         return;
     }
 
-    if (g_Input.use_flare && M_IsFlareRefused(lara_item)) {
+    if (g_Input.use_flare && M_IsFlareInputBlocked()) {
         return;
     }
 
@@ -361,8 +365,16 @@ void Gun_Control(void)
 
     // Crawling holds the hands busy, so the refusal has to be answered here
     // rather than in M_DecideRequestedWeapon, which armless Lara alone reaches.
-    if (g_InputDB.use_flare && M_IsFlareRefused(lara_item)) {
+    if (g_InputDB.use_flare && M_IsFlareInputBlocked()) {
         Sound_Effect(SFX_LARA_NO, nullptr, SPM_ALWAYS);
+    }
+
+    // Selecting a flare from the inventory while crawling will cache the
+    // requested gun type, resulting in a free ghost flare when she stands up.
+    if (lara->request_gun_type == LGT_FLARE
+        && g_Config.gameplay.fix_free_flare_glitch && M_IsLaraCrawling()) {
+        lara->request_gun_type = LGT_UNARMED;
+        return;
     }
 
     M_UpdateGunState();

@@ -1251,7 +1251,7 @@
         },
         "gameplay.fix_free_flare_glitch": {
             "title": "Napraw darmową flarę",
-            "description": "Naprawia możliwość pojawienia się darmowej flary, jeśli gracz naciśnie przycisk flary podczas zbierania jakiegoś przedmiotu.",
+            "description": "\\{review}Naprawia możliwość pojawienia się darmowej flary, jeśli gracz naciśnie przycisk flary podczas zbierania jakiegoś przedmiotu, lub prosząc o nią przez ekwipunek podczas czołgania się.",
         },
         "gameplay.fix_item_duplication_glitch": {
             "title": "Napraw klonowanie przedmiotów",

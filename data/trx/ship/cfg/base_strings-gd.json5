@@ -1251,7 +1251,7 @@
         },
         "gameplay.fix_free_flare_glitch": {
             "title": "Càraich glitch lòchran an-asgaidh",
-            "description": "Càradh far am faighear lòchran gun chosgais le bhith a' brùthadh am putan fhad 's a thogas Lara rud sam bith an àrd.",
+            "description": "Càradh far am faighear lòchran gun chosgais le bhith a' brùthadh am putan fhad 's a thogas Lara rud sam bith an àrd, no le bhith ag iarraidh tè tron chlàr-seilbhe nuair a tha i a' snàgadh.",
         },
         "gameplay.fix_item_duplication_glitch": {
             "title": "Càraich glitch dùblachaidh nì",
