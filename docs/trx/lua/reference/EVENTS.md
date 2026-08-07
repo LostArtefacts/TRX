@@ -67,9 +67,14 @@ An event that carries a default the script may take over says so in its descript
   ```
 
 - <a id="events.on_title_start" name="events.on_title_start"></a>[lua]`trx.events.on_title_start(callback)`  
-  Happens when the title screen's scene starts playing behind the menu, once
-  its level is loaded and its items are set up. The handler takes no
-  arguments. [`trx.events.on_game_start`](#events.on_game_start) does not fire for the title level.
+  Happens when the title screen comes up, once its level is loaded and its
+  items are set up. The handler takes no arguments.
+  [`trx.events.on_game_start`](#events.on_game_start) does not fire for the title level.
+
+  A title that shows a picture rather than playing its level behind the menu
+  does not run its logic, so [`trx.events.before_control`](#events.before_control) and
+  [`trx.events.after_control`](#events.after_control) handlers attached here never fire there. This
+  says the menu is up; it does not promise a scene playing behind it.
 
   Parameters:
   - <a id="events.on_title_start.callback" name="events.on_title_start.callback"></a>**`callback`** (function). What to run when it happens.

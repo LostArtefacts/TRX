@@ -117,9 +117,14 @@ end)]],
 
 api.define("events.on_title_start", {
   description = [[
-    Happens when the title screen's scene starts playing behind the menu, once
-    its level is loaded and its items are set up. The handler takes no
-    arguments. `trx.events.on_game_start` does not fire for the title level.
+    Happens when the title screen comes up, once its level is loaded and its
+    items are set up. The handler takes no arguments.
+    `trx.events.on_game_start` does not fire for the title level.
+
+    A title that shows a picture rather than playing its level behind the menu
+    does not run its logic, so `trx.events.before_control` and
+    `trx.events.after_control` handlers attached here never fire there. This
+    says the menu is up; it does not promise a scene playing behind it.
   ]],
   params = {
     {

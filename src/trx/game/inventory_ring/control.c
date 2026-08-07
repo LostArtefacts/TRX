@@ -1033,7 +1033,7 @@ INV_RING *InvRing_Open(const INVENTORY_MODE mode)
 
     g_InvRing_Mode = mode;
 
-    if (ring->live_scene) {
+    if (mode == INV_TITLE_MODE) {
         LUA_FireEvent(LUA_EVENT_TITLE_START);
     }
 
