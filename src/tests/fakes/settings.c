@@ -103,6 +103,11 @@ bool ConfigFile_Read(
     return false;
 }
 
+bool ConfigFile_WasFound(void)
+{
+    return false;
+}
+
 JSON_OBJECT *ConfigFile_GetRoot(void)
 {
     return nullptr;

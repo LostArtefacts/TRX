@@ -309,7 +309,7 @@ static void M_PrepareSystem(void)
     m_ConfigListener = Config_SubscribeChanges(M_HandleConfigChange, nullptr);
 
     // Auto-enable touch controls on first run if touch hardware is present.
-    if (!Config_IsLoaded() && Touch_HasHardwareSupport()) {
+    if (Config_IsFirstRun() && Touch_HasHardwareSupport()) {
         CONFIG_SET(g_Config.input.enable_touch_controls, true);
     }
     TouchOverlay_SetVisible(g_Config.input.enable_touch_controls);

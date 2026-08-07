@@ -23,6 +23,7 @@ static bool m_PendingPersist = false;
 static char *m_DefaultPath = nullptr;
 static char *m_EnforcedPath = nullptr;
 static bool m_Loaded = false;
+static bool m_FileFound = false;
 
 __attribute__((constructor)) static void M_Init(void)
 {
@@ -111,6 +112,7 @@ bool Config_Read(
     LOG_DEBUG("  enforced_path=%s", m_EnforcedPath);
 
     const bool result = ConfigFile_Read(m_DefaultPath, m_EnforcedPath);
+    m_FileFound = ConfigFile_WasFound();
     if (result) {
         LOG_DEBUG("Config loaded");
     } else {
@@ -172,6 +174,11 @@ void Config_DiscardPendingChanges(void)
 bool Config_IsLoaded(void)
 {
     return m_Loaded;
+}
+
+bool Config_IsFirstRun(void)
+{
+    return m_Loaded && !m_FileFound;
 }
 
 bool Config_Write(void)

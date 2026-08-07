@@ -38,6 +38,7 @@
 - changed the ammunition keys in `weapons.json5` to say what they count; refer to migration notes
 - changed boxes of ammunition in the inventory to always show what Lara is really carrying, where finishing a level could round them down
 - fixed settings belonging to another game being dropped from the settings file
+- fixed touch controls not turning themselves on the first time the game is launched on a device that has a touchscreen
 - fixed the alternative ammunition pickups, such as the second kind of shotgun ammunition, going into the inventory without loading the weapon
 - changed the gameflow's `main_menu_picture` to be optional: a game that names no picture shows its title level behind the menu, and its title script says what plays there
 - changed the `/music` console command to list the available tracks when given no argument, as `/sfx` does; `/music status` now reports what is playing

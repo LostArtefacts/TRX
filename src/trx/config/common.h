@@ -10,6 +10,11 @@ bool Config_Read(const char *default_path, const char *enforced_path);
 // Whether the settings file has been read. Until it has, what the options hold
 // is their defaults rather than the player's own choices.
 bool Config_IsLoaded(void);
+
+// Whether this is the first the player has launched the game: the settings
+// have been read and there was no file to read them from. False where nothing
+// has been read at all, as in a test replay.
+bool Config_IsFirstRun(void);
 bool Config_Write(void);
 
 // Holds every option to its bounds, then announces which have moved since the
