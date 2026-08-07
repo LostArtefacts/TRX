@@ -213,6 +213,11 @@ static void M_HandleEvent(
     p->is_alerted = true;
 }
 
+static bool M_ShouldSpawnBlood(const ITEM *const item)
+{
+    return false;
+}
+
 static void M_Setup(OBJECT *const obj)
 {
     if (!obj->loaded) {
@@ -226,6 +231,7 @@ static void M_Setup(OBJECT *const obj)
     obj->control_func = M_Control;
     obj->collision_func = Creature_Collision;
     obj->event_func = M_HandleEvent;
+    obj->should_spawn_blood_func = M_ShouldSpawnBlood;
 
     obj->shadow_size = 0;
 
