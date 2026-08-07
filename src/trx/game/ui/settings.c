@@ -7,7 +7,9 @@
 #include <trx/core/json/util/read_io.h>
 #include <trx/core/memory.h>
 #include <trx/core/strings.h>
+#include <trx/core/subsystem.h>
 #include <trx/game/game_strings/entries.h>
+#include <trx/game/shell/paths.h>
 #include <trx/version.h>
 
 #include <uthash.h>
@@ -615,7 +617,7 @@ static bool M_LoadMenuColors(JSON_READ_IO *const io)
     JSON_FINISH();
 }
 
-__attribute__((destructor)) static void M_Shutdown(void)
+static void M_Shutdown(void)
 {
     M_FreeBarThemes();
 }
@@ -656,8 +658,10 @@ static const UI_BAR_THEME *M_FindThemeByName(
     return nullptr;
 }
 
-void UI_Settings_LoadFromFile(const char *const path)
+static void M_Load(void)
 {
+    const char *const path =
+        TRXPath_Resolve(TRX_DYNAMIC_PATH_COMMON_CONFIG, "ui.json5");
     JSON_VALUE *const root = JSONFile_ReadEx(path, true);
     JSON_READ_IO *const io = JSON_ReadIO_Create(root, 0, path);
 
@@ -708,3 +712,5 @@ const UI_MENU_COLORS_PS1 *UI_Settings_GetMenuColorsPS1(void)
 {
     return &m_MenuColorsPS1[g_TRVersion - 1];
 }
+
+REGISTER_SUBSYSTEM(.load = M_Load, .shutdown = M_Shutdown)

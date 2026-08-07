@@ -2,6 +2,7 @@
 
 #include <trx/core/json/util/file.h>
 #include <trx/core/memory.h>
+#include <trx/core/subsystem.h>
 #include <trx/debug.h>
 #include <trx/game/catalog/manager.h>
 #include <trx/game/shell.h>
@@ -11,24 +12,28 @@ CAMERA_INFO g_InvRing_OldCamera = {};
 VECTOR *g_InvRing_Items = nullptr;
 INV_RING_SOURCE g_InvRing_Source[RT_NUMBER_OF] = {};
 
-__attribute__((constructor)) static void M_Init(void)
+static void M_Init(void)
 {
     g_InvRing_Items = Vector_Create(sizeof(INVENTORY_ITEM *));
 }
 
-__attribute__((destructor)) static void M_Shutdown(void)
+static void M_Shutdown(void)
 {
-    for (int32_t i = 0; i < g_InvRing_Items->count; i++) {
-        INVENTORY_ITEM *const item =
-            *(INVENTORY_ITEM **)Vector_Get(g_InvRing_Items, i);
-        Memory_Free(item);
+    if (g_InvRing_Items != nullptr) {
+        for (int32_t i = 0; i < g_InvRing_Items->count; i++) {
+            INVENTORY_ITEM *const item =
+                *(INVENTORY_ITEM **)Vector_Get(g_InvRing_Items, i);
+            Memory_Free(item);
+        }
+        Vector_Free(g_InvRing_Items);
+        g_InvRing_Items = nullptr;
     }
-    Vector_Free(g_InvRing_Items);
-    g_InvRing_Items = nullptr;
 }
 
-void InvRing_LoadVars(const char *const path)
+static void M_Load(void)
 {
+    const char *const path =
+        TRXPath_Resolve(TRX_DYNAMIC_PATH_COMMON_CONFIG, "inv_ring.json5");
 #define L_READ_INT(key, target) target = JSON_ObjectGetInt(obj, key, target);
 
     for (int32_t i = 0; i < g_InvRing_Items->count; i++) {
@@ -85,3 +90,5 @@ void InvRing_LoadVars(const char *const path)
     JSON_ValueFree(root);
 #undef L_READ_INT
 }
+
+REGISTER_SUBSYSTEM(.init = M_Init, .load = M_Load, .shutdown = M_Shutdown)

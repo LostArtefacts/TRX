@@ -68,6 +68,7 @@ b_lua_surface = {
     'core/enum_map.c',
     'core/handle.c',
     'core/memory.c',
+    'core/subsystem.c',
     'core/value.c',
     'core/vector.c',
     'game/enum.c',
@@ -189,7 +190,7 @@ unit_tests += {
 
 unit_tests += {
   'name': 'trx/game/cutseq/pak',
-  'engine': ['game/cutseq/pak.c', 'core/memory.c'],
+  'engine': ['game/cutseq/pak.c', 'core/memory.c', 'core/subsystem.c'],
   'deps': [dep_zlib],
 }
 
@@ -264,6 +265,7 @@ unit_tests += {
     'game/console/completion.c',
     'game/console/registry.c',
     'core/memory.c',
+    'core/subsystem.c',
     'core/vector.c',
   ],
 }
@@ -302,6 +304,7 @@ unit_tests += {
     'core/event_manager.c',
     'core/json/base.c',
     'core/json/parse.c',
+    'core/subsystem.c',
     'version.c',
   ],
   'src': ['harness/stubs_config_file.c'],
@@ -443,7 +446,7 @@ unit_tests += {
 unit_tests += {
   'name': 'lua/api/random',
   'bundles': [b_lua_surface, b_lua_math],
-  'engine': ['game/lua/capi/random.c', 'game/random.c'],
+  'engine': ['core/subsystem.c', 'game/lua/capi/random.c', 'game/random.c'],
 }
 
 unit_tests += {
@@ -797,6 +800,7 @@ unit_tests += {
     'core/memory.c',
     'core/strings/case_funcs.c',
     'core/strings/common.c',
+    'core/subsystem.c',
     'core/vector.c',
     'game/enum.c',
     'game/game_strings/entries.c',
@@ -827,6 +831,7 @@ unit_tests += {
     'core/event_manager.c',
     'core/json/base.c',
     'core/json/parse.c',
+    'core/subsystem.c',
     'game/ui/dialogs/settings_handlers.c',
     'game/ui/dialogs/settings_rows.c',
     'version.c',
@@ -870,6 +875,7 @@ unit_tests += {
     'core/memory.c',
     'core/strings/case_funcs.c',
     'core/strings/common.c',
+    'core/subsystem.c',
     'core/value.c',
     'core/vector.c',
     'game/enum.c',

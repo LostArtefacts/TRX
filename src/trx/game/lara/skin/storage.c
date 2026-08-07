@@ -8,6 +8,7 @@
 #include <trx/core/json/util/read_io.h>
 #include <trx/core/memory.h>
 #include <trx/core/strings.h>
+#include <trx/core/subsystem.h>
 #include <trx/core/vector.h>
 #include <trx/debug.h>
 #include <trx/game/catalog/manager.h>
@@ -443,29 +444,20 @@ static bool M_LoadFile(JSON_READ_IO *const io)
     JSON_FINISH();
 }
 
-LARA_SKIN_TYPE Lara_Skin_FindOutfitByName(const char *const name)
+static void M_Shutdown(void)
 {
-    if (name == nullptr) {
-        return LARA_SKIN_TYPE_DEFAULT;
+    if (m_GunMaps != nullptr) {
+        Vector_Free(m_GunMaps);
+        m_GunMaps = nullptr;
     }
 
-    M_OUTFIT_LOOKUP *entry = nullptr;
-    HASH_FIND_STR(m_OutfitLookup, name, entry);
-    if (entry == nullptr) {
-        return -1;
-    }
-
-    return entry->index;
+    M_ResetOutfits();
 }
 
-LARA_SKIN_TYPE Lara_Skin_GetDefaultType(void)
+static void M_Load(void)
 {
-    return m_OutfitCount > 0 ? 0 : LARA_SKIN_TYPE_DEFAULT;
-}
-
-void Lara_Skin_LoadFromFile(const char *const path)
-{
-    char *source_path = Memory_DupStr(path);
+    char *source_path = Memory_DupStr(
+        TRXPath_Resolve(TRX_DYNAMIC_PATH_COMMON_CONFIG, "outfits.json5"));
     JSON_READ_IO *io = nullptr;
 
     if (m_GunMaps != nullptr) {
@@ -503,14 +495,24 @@ cleanup:
     Memory_FreePointer(&source_path);
 }
 
-void Lara_Skin_Shutdown(void)
+LARA_SKIN_TYPE Lara_Skin_FindOutfitByName(const char *const name)
 {
-    if (m_GunMaps != nullptr) {
-        Vector_Free(m_GunMaps);
-        m_GunMaps = nullptr;
+    if (name == nullptr) {
+        return LARA_SKIN_TYPE_DEFAULT;
     }
 
-    M_ResetOutfits();
+    M_OUTFIT_LOOKUP *entry = nullptr;
+    HASH_FIND_STR(m_OutfitLookup, name, entry);
+    if (entry == nullptr) {
+        return -1;
+    }
+
+    return entry->index;
+}
+
+LARA_SKIN_TYPE Lara_Skin_GetDefaultType(void)
+{
+    return m_OutfitCount > 0 ? 0 : LARA_SKIN_TYPE_DEFAULT;
 }
 
 int32_t Lara_Skin_GetOutfitCount(void)
@@ -543,3 +545,5 @@ int32_t Lara_Skin_GetExtraMeshOffset(const LARA_SKIN_EXTRA_MESH mesh)
     ASSERT(mesh >= 0 && mesh < NUM_EXTRA_MESHES);
     return m_ExtraMeshOffsets[mesh];
 }
+
+REGISTER_SUBSYSTEM(.load = M_Load, .shutdown = M_Shutdown)

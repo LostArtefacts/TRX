@@ -6,6 +6,7 @@
 #include <trx/config/section.h>
 #include <trx/core/log.h>
 #include <trx/core/memory.h>
+#include <trx/core/subsystem.h>
 #include <trx/core/vector.h>
 #include <trx/debug.h>
 
@@ -25,12 +26,12 @@ static char *m_EnforcedPath = nullptr;
 static bool m_Loaded = false;
 static bool m_FileFound = false;
 
-__attribute__((constructor)) static void M_Init(void)
+static void M_Init(void)
 {
     m_EventManager = EventManager_Create();
 }
 
-__attribute__((destructor)) static void M_Shutdown(void)
+static void M_Shutdown(void)
 {
     EventManager_Free(m_EventManager);
     m_EventManager = nullptr;
@@ -40,6 +41,9 @@ __attribute__((destructor)) static void M_Shutdown(void)
     }
     Memory_FreePointer(&m_DefaultPath);
     Memory_FreePointer(&m_EnforcedPath);
+    m_Loaded = false;
+    m_FileFound = false;
+    m_PendingPersist = false;
 }
 
 // What a type converts as. An enum is int32 storage that happens to spell its
@@ -249,3 +253,5 @@ bool Config_PopHold(const void *const mirror)
     CONFIG_OPTION *const option = Config_FindOptionByMirror(mirror);
     return option != nullptr && Config_Option_PopHold(option);
 }
+
+REGISTER_BASE_SUBSYSTEM(.init = M_Init, .shutdown = M_Shutdown)

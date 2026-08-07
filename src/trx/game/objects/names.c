@@ -2,6 +2,7 @@
 
 #include <trx/core/memory.h>
 #include <trx/core/strings/fuzzy_match.h>
+#include <trx/core/subsystem.h>
 #include <trx/core/vector.h>
 #include <trx/debug.h>
 #include <trx/game/game_strings/entries.h>
@@ -92,7 +93,7 @@ static void M_ClearAllNames(void)
     }
 }
 
-__attribute__((destructor)) static void M_Shutdown(void)
+static void M_Shutdown(void)
 {
     M_ClearAllNames();
 }
@@ -282,3 +283,5 @@ OBJECT_ID Object_IdFromKey(const char *const key)
     }
     return NO_OBJECT;
 }
+
+REGISTER_SUBSYSTEM(.shutdown = M_Shutdown)

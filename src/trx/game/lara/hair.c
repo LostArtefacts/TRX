@@ -3,6 +3,7 @@
 #include <trx/config.h>
 #include <trx/core/math/geom.h>
 #include <trx/core/memory.h>
+#include <trx/core/subsystem.h>
 #include <trx/core/utils.h>
 #include <trx/debug.h>
 #include <trx/game/game.h>
@@ -513,7 +514,7 @@ static void M_ResetJoints(void)
     }
 }
 
-__attribute__((destructor)) static void M_Shutdown(void)
+static void M_Shutdown(void)
 {
     Memory_FreePointer(&m_Joints.scratch.pos);
     Memory_FreePointer(&m_Joints.scratch.normal);
@@ -992,3 +993,5 @@ HAIR_SEGMENT *Lara_Hair_GetSegment(
     ASSERT(segment_idx >= 0 && segment_idx < M_HAIR_SEGMENTS);
     return &m_HairSegments[braid_idx][segment_idx];
 }
+
+REGISTER_SUBSYSTEM(.shutdown = M_Shutdown)

@@ -17,6 +17,7 @@
 #include <trx/core/json.h>
 #include <trx/core/memory.h>
 #include <trx/core/strings.h>
+#include <trx/core/subsystem.h>
 #include <trx/game/game_strings/entries.h>
 #include <trx/game/ui.h>
 #include <trx/game/input.h>
@@ -175,8 +176,7 @@ static M_OVERFLOW M_MeasureDialogOverflow(const M_DIALOG *const dialog)
 
 static void M_SetUp(const int32_t tr_version, const char *const lang)
 {
-    GameString_Clear();
-    GameString_Init();
+    GameString_Reset();
     M_LoadLanguage(lang);
     FakeUI_SetGame(tr_version);
     FakeUI_SetViewport(640, 480);
@@ -202,7 +202,7 @@ TEST(ui_font_metrics)
         { 4, 275.0f },
     };
 
-    UI_InitText();
+    Subsystem_InitAll();
     for (size_t i = 0; i < ARRAY_SIZE(expected); i++) {
         M_SetUp(expected[i].tr_version, nullptr);
         float width = 0.0f;
@@ -215,7 +215,7 @@ TEST(ui_font_metrics)
                 expected[i].width, width);
         }
     }
-    UI_ShutdownText();
+    Subsystem_ShutdownAll();
 }
 
 // The list of settings a preset would change is the longest text in any of
@@ -223,7 +223,7 @@ TEST(ui_font_metrics)
 // preset touches. It wraps rather than sizing the dialog to the widest of them.
 TEST(ui_config_presets_confirm_fits_4_3)
 {
-    UI_InitText();
+    Subsystem_InitAll();
     Config_Presets_ScanFiles();
 
     for (int32_t tr_version = 1; tr_version <= TR_VERSION_COUNT; tr_version++) {
@@ -269,12 +269,12 @@ TEST(ui_config_presets_confirm_fits_4_3)
             }
         }
     }
-    UI_ShutdownText();
+    Subsystem_ShutdownAll();
 }
 
 TEST(ui_settings_dialogs_fit_4_3)
 {
-    UI_InitText();
+    Subsystem_InitAll();
     for (int32_t tr_version = 1; tr_version <= TR_VERSION_COUNT; tr_version++) {
         for (size_t i = 0; i < ARRAY_SIZE(m_Languages); i++) {
             M_SetUp(tr_version, m_Languages[i]);
@@ -295,5 +295,5 @@ TEST(ui_settings_dialogs_fit_4_3)
             }
         }
     }
-    UI_ShutdownText();
+    Subsystem_ShutdownAll();
 }

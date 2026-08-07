@@ -10,7 +10,6 @@
 // what actually sets Lara's health, creatures status, triggers, inventory etc.
 
 void Savegame_Init(void);
-void Savegame_Shutdown(void);
 
 SAVEGAME_VERSION Savegame_GetInitialVersion(void);
 void Savegame_SetInitialVersion(SAVEGAME_VERSION version);

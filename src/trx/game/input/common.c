@@ -4,6 +4,7 @@
 #include <trx/config/section.h>
 #include <trx/core/enum_map.h>
 #include <trx/core/strings.h>
+#include <trx/core/subsystem.h>
 #include <trx/debug.h>
 #include <trx/game/clock.h>
 #include <trx/game/game_strings/entries.h>
@@ -253,6 +254,41 @@ static void M_SaveSection(JSON_OBJECT *const input_obj)
     }
 }
 
+static void M_Load(void)
+{
+    for (int32_t i = 0; m_HoldChecks[i].role != (INPUT_ROLE)-1; i++) {
+        m_HoldChecks[i].delay_timer.type = CLOCK_TIMER_REAL;
+        m_HoldChecks[i].repeat_timer.type = CLOCK_TIMER_REAL;
+    }
+    Input_Reset();
+    for (INPUT_BACKEND backend = 0; backend < INPUT_BACKEND_NUMBER_OF;
+         backend++) {
+        const INPUT_BACKEND_IMPL *const impl = Input_GetBackendImpl(backend);
+        if (impl->init != nullptr) {
+            impl->init();
+        }
+    }
+}
+
+static void M_ApplyConfig(void)
+{
+    // Devices are acquired only now: the backends come up before the config is
+    // read, so input.enable_controller still holds its default there.
+    Input_Discover();
+}
+
+static void M_Shutdown(void)
+{
+    Input_Reset();
+    for (INPUT_BACKEND backend = 0; backend < INPUT_BACKEND_NUMBER_OF;
+         backend++) {
+        const INPUT_BACKEND_IMPL *const impl = Input_GetBackendImpl(backend);
+        if (impl->shutdown != nullptr) {
+            impl->shutdown();
+        }
+    }
+}
+
 const INPUT_BACKEND_IMPL *Input_GetBackendImpl(const INPUT_BACKEND backend)
 {
     switch (backend) {
@@ -278,34 +314,6 @@ void Input_Reset(void)
         hold_check->state = HOLD_INACTIVE;
         ClockTimer_Sync(&hold_check->delay_timer);
         ClockTimer_Sync(&hold_check->repeat_timer);
-    }
-}
-
-void Input_Init(void)
-{
-    for (int32_t i = 0; m_HoldChecks[i].role != (INPUT_ROLE)-1; i++) {
-        m_HoldChecks[i].delay_timer.type = CLOCK_TIMER_REAL;
-        m_HoldChecks[i].repeat_timer.type = CLOCK_TIMER_REAL;
-    }
-    Input_Reset();
-    for (INPUT_BACKEND backend = 0; backend < INPUT_BACKEND_NUMBER_OF;
-         backend++) {
-        const INPUT_BACKEND_IMPL *const impl = Input_GetBackendImpl(backend);
-        if (impl->init != nullptr) {
-            impl->init();
-        }
-    }
-}
-
-void Input_Shutdown(void)
-{
-    Input_Reset();
-    for (INPUT_BACKEND backend = 0; backend < INPUT_BACKEND_NUMBER_OF;
-         backend++) {
-        const INPUT_BACKEND_IMPL *const impl = Input_GetBackendImpl(backend);
-        if (impl->shutdown != nullptr) {
-            impl->shutdown();
-        }
     }
 }
 
@@ -680,3 +688,6 @@ void InputState_ClearRole(INPUT_STATE *const state, const INPUT_ROLE role)
 
 REGISTER_CONFIG_SECTION(
         .key = "input", .load = M_LoadSection, .save = M_SaveSection)
+
+REGISTER_SUBSYSTEM(
+        .load = M_Load, .apply_config = M_ApplyConfig, .shutdown = M_Shutdown)

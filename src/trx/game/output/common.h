@@ -8,7 +8,6 @@
 #include <trx/game/viewport.h>
 
 void Output_Init(void);
-void Output_Shutdown(void);
 bool Output_IsHeadless(void);
 
 const OUTPUT_UNIFORMS *Output_GetUniforms(void);

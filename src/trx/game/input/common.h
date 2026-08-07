@@ -24,8 +24,6 @@ extern INPUT_STATE g_Input;
 extern INPUT_STATE g_InputDB;
 extern INPUT_STATE g_OldInputDB;
 
-void Input_Init(void);
-void Input_Shutdown(void);
 void Input_Update(void);
 
 // Reconciles the connected devices with the current configuration: enabled

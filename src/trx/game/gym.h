@@ -14,10 +14,6 @@ typedef enum {
     GYM_TRACK_NUMBER_OF
 } GYM_TRACK_TYPE;
 
-// Drops the state gathered over a play session. The gym holds nothing that
-// should outlive it, and switching mods restarts the shell in place.
-void Gym_Shutdown(void);
-
 void Gym_SetInventoryOpenEnabled(bool enabled);
 bool Gym_IsInventoryOpenEnabled(void);
 

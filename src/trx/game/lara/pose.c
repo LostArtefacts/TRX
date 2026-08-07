@@ -5,6 +5,7 @@
 #include <trx/core/json/util/read_io.h>
 #include <trx/core/memory.h>
 #include <trx/core/strings.h>
+#include <trx/core/subsystem.h>
 #include <trx/core/vector.h>
 #include <trx/debug.h>
 #include <trx/game/game_flow.h>
@@ -76,6 +77,9 @@ static bool M_LoadPosesArray(JSON_READ_IO *const io, VECTOR *const poses)
 
 static void M_LoadPoses(void)
 {
+    if (m_Poses != nullptr) {
+        return;
+    }
     m_Poses = Vector_Create(sizeof(LARA_POSE));
     ASSERT(m_Poses != nullptr);
 
@@ -97,14 +101,7 @@ static void M_LoadPoses(void)
     JSON_ValueFree(doc);
 }
 
-void Lara_Pose_Init(void)
-{
-    if (m_Poses == nullptr) {
-        M_LoadPoses();
-    }
-}
-
-void Lara_Pose_Shutdown(void)
+static void M_Shutdown(void)
 {
     if (m_Poses != nullptr) {
         Vector_Free(m_Poses);
@@ -162,3 +159,5 @@ void Lara_Pose_SetOverride(const LARA_POSE *const pose)
         m_Override = *pose;
     }
 }
+
+REGISTER_SUBSYSTEM(.load = M_LoadPoses, .shutdown = M_Shutdown)

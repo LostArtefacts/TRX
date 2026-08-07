@@ -64,8 +64,6 @@ typedef struct {
     RGBA_8888 heading_outline;
 } UI_MENU_COLORS_PS1;
 
-void UI_Settings_LoadFromFile(const char *path);
-
 const UI_BAR_THEME *UI_Settings_GetBarTheme(UI_BAR_TYPE type);
 bool UI_Settings_IsCurrentBarLookPS1(void);
 

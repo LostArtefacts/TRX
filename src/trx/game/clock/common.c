@@ -1,9 +1,11 @@
 #include <trx/game/clock/common.h>
 
 #include <trx/config.h>
+#include <trx/core/subsystem.h>
 #include <trx/game/clock/const.h>
 #include <trx/game/clock/timer.h>
 #include <trx/game/clock/turbo.h>
+#include <trx/game/shell/common.h>
 
 #include <SDL2/SDL_stdinc.h>
 #include <SDL2/SDL_timer.h>
@@ -37,10 +39,23 @@ static double M_GetHighPrecisionCounter(void)
     return (SDL_GetPerformanceCounter() - m_InitCounter) / (double)m_Frequency;
 }
 
-void Clock_Init(void)
+static void M_Init(void)
 {
     m_Frequency = SDL_GetPerformanceFrequency();
     m_InitCounter = SDL_GetPerformanceCounter();
+}
+
+static void M_ApplyConfig(void)
+{
+    Clock_SetSimSpeed(Clock_GetSpeedMultiplier());
+
+    const SHELL_ARGS *const args = Shell_GetArgs();
+    if (!args->headless) {
+        return;
+    }
+    Clock_DisableWait();
+    Clock_EnableHeadlessFixedFPS(
+        args->headless_fps > 0 ? args->headless_fps : Clock_GetCurrentFPS());
 }
 
 void Clock_DisableWait(void)
@@ -178,3 +193,5 @@ void Clock_SetSimSpeed(const double new_speed)
     m_Priv.sim_time_at_last_change = prev_sim_time;
     m_Priv.sim_speed = new_speed;
 }
+
+REGISTER_SUBSYSTEM(.init = M_Init, .apply_config = M_ApplyConfig)

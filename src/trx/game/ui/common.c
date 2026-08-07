@@ -3,6 +3,7 @@
 #include <trx/config.h>
 #include <trx/config/registry.h>
 #include <trx/core/memory.h>
+#include <trx/core/subsystem.h>
 #include <trx/core/utils.h>
 #include <trx/debug.h>
 #include <trx/game/console/common.h>
@@ -68,6 +69,21 @@ static void M_DrawNode(const UI_NODE *const node)
 
     node->ops.draw(node);
     // Recursing to children is a responsibility of the draw function.
+}
+
+static void M_Init(void)
+{
+    UI_InitEvents();
+    UI_InitText();
+    UI_InitDraw();
+}
+
+static void M_Shutdown(void)
+{
+    UI_ShutdownDraw();
+    UI_ShutdownText();
+    Memory_ArenaFree(&m_Priv.alloc);
+    UI_ShutdownEvents();
 }
 
 // Allocate a new node
@@ -147,21 +163,6 @@ void UI_EndScene(void)
     ASSERT(m_Priv.root == nullptr);
 }
 
-void UI_Init(void)
-{
-    UI_InitEvents();
-    UI_InitText();
-    UI_InitDraw();
-}
-
-void UI_Shutdown(void)
-{
-    UI_ShutdownDraw();
-    UI_ShutdownText();
-    Memory_ArenaFree(&m_Priv.alloc);
-    UI_ShutdownEvents();
-}
-
 void UI_ToggleState(const bool *const config_setting)
 {
     CONFIG_OPTION *const option = Config_FindOptionByMirror(config_setting);
@@ -201,3 +202,5 @@ float UI_ScaleY(const float y)
 {
     return UI_Scaler_Calc(y * 0x10000, UI_SCALER_TARGET_GENERIC) / 0x10000.p0;
 }
+
+REGISTER_SUBSYSTEM(.init = M_Init, .shutdown = M_Shutdown)

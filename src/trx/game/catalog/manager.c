@@ -4,6 +4,7 @@
 #include <trx/core/filesystem.h>
 #include <trx/core/log.h>
 #include <trx/core/memory.h>
+#include <trx/core/subsystem.h>
 #include <trx/core/utils.h>
 #include <trx/game/items/actions/ids.h>
 #include <trx/game/lara/enum.h>
@@ -119,6 +120,21 @@ static void M_Initialize(void)
     m_Initialized = true;
 }
 
+static void M_Shutdown(void)
+{
+    if (!m_Initialized) {
+        return;
+    }
+    for (size_t ctx = 0; ctx < CATALOG_CONTEXT_MAX; ctx++) {
+        M_ClearGameIDMap(&m_GameID2EnumMap[ctx]);
+        M_ClearNameMap(&m_Name2EnumMap[ctx]);
+        Memory_Free(m_CatalogGameIDs[ctx]);
+    }
+    Memory_Free(m_CatalogGameIDs);
+    m_CatalogGameIDs = nullptr;
+    m_Initialized = false;
+}
+
 bool Catalog_Load(
     const CATALOG_CONTEXT context, const char *const csv_path,
     const bool allow_duplicates)
@@ -220,17 +236,4 @@ bool Catalog_GameIDToEnum(
     return false;
 }
 
-void Catalog_Shutdown(void)
-{
-    if (!m_Initialized) {
-        return;
-    }
-    for (size_t ctx = 0; ctx < CATALOG_CONTEXT_MAX; ctx++) {
-        M_ClearGameIDMap(&m_GameID2EnumMap[ctx]);
-        M_ClearNameMap(&m_Name2EnumMap[ctx]);
-        Memory_Free(m_CatalogGameIDs[ctx]);
-    }
-    Memory_Free(m_CatalogGameIDs);
-    m_CatalogGameIDs = nullptr;
-    m_Initialized = false;
-}
+REGISTER_BASE_SUBSYSTEM(.shutdown = M_Shutdown)

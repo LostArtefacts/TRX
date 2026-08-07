@@ -5,6 +5,7 @@
 #include <trx/core/log.h>
 #include <trx/core/math/geom.h>
 #include <trx/core/memory.h>
+#include <trx/core/subsystem.h>
 #include <trx/game/camera.h>
 #include <trx/game/game_buf.h>
 #include <trx/game/lara.h>
@@ -299,6 +300,22 @@ static M_ACTIVE_SOUND *M_GetActiveSlot(const int32_t slot)
     return &m_ActiveSounds[slot];
 }
 
+static void M_Shutdown(void)
+{
+    m_Initialised = false;
+    Audio_Shutdown();
+    M_ClearSampleMaps();
+}
+
+static void M_ApplyConfig(void)
+{
+    if (Shell_GetArgs()->headless) {
+        return;
+    }
+    Sound_Init();
+    Sound_SetMasterVolume(g_Config.audio.sound_volume);
+}
+
 bool Sound_Init(void)
 {
     m_MasterVolume = g_Config.audio.sound_volume;
@@ -330,13 +347,6 @@ bool Sound_Init(void)
     }
     M_ClearAllActiveSounds();
     return true;
-}
-
-void Sound_Shutdown(void)
-{
-    m_Initialised = false;
-    Audio_Shutdown();
-    M_ClearSampleMaps();
 }
 
 bool Sound_IsInitialised(void)
@@ -763,3 +773,5 @@ void Sound_UnpauseActiveSlot(const int32_t slot)
         Audio_Sample_Unpause(sound->handle);
     }
 }
+
+REGISTER_SUBSYSTEM(.apply_config = M_ApplyConfig, .shutdown = M_Shutdown)

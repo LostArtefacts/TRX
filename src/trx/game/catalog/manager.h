@@ -36,6 +36,3 @@ bool Catalog_EnumToGameID(
 // Returns false if not found.
 bool Catalog_GameIDToEnum(
     CATALOG_CONTEXT context, int32_t game_id, CATALOG_ID *out_id);
-
-// Free internal resources.
-void Catalog_Shutdown(void);

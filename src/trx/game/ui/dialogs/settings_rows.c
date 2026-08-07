@@ -3,6 +3,7 @@
 #include <trx/config/common.h>
 #include <trx/config/registry.h>
 #include <trx/core/memory.h>
+#include <trx/core/subsystem.h>
 #include <trx/core/utils.h>
 #include <trx/core/vector.h>
 #include <trx/debug.h>
@@ -254,7 +255,7 @@ static void M_Ensure(void)
     }
 }
 
-__attribute__((destructor)) static void M_Shutdown(void)
+static void M_Shutdown(void)
 {
     UI_Settings_DropDeclaredRows();
     for (int32_t tab = 0; tab < CONFIG_TAB_COUNT; tab++) {
@@ -339,3 +340,5 @@ const UI_SETTINGS_ROW *UI_Settings_GetRow(
     }
     return Vector_Get(m_Rows[tab], index);
 }
+
+REGISTER_SUBSYSTEM(.shutdown = M_Shutdown)

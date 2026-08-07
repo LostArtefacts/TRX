@@ -8,14 +8,17 @@
 #include <trx/core/log.h>
 #include <trx/core/memory.h>
 #include <trx/core/strings.h>
+#include <trx/core/subsystem.h>
 #include <trx/core/vector.h>
 #include <trx/game/game_strings/entries.h>
+#include <trx/game/game_strings/manager.h>
 #include <trx/game/shell/paths.h>
 
 #include <stdlib.h>
 #include <string.h>
 
 static VECTOR *m_Presets = nullptr; // CONFIG_PRESET
+static int32_t m_StringsListener = -1;
 
 static void M_FreePreset(CONFIG_PRESET *const preset)
 {
@@ -131,8 +134,23 @@ static int M_CompareByTitle(const void *const a, const void *const b)
     return strcmp(M_GetTitle(a), M_GetTitle(b));
 }
 
-static void __attribute__((destructor)) M_Shutdown(void)
+static void M_HandleLanguageReload(const EVENT *const event, void *const data)
 {
+    Config_Presets_Sort();
+}
+
+static void M_Init(void)
+{
+    m_StringsListener =
+        GameStringManager_SubscribeReload(M_HandleLanguageReload, nullptr);
+}
+
+static void M_Shutdown(void)
+{
+    if (m_StringsListener >= 0) {
+        GameStringManager_UnsubscribeReload(m_StringsListener);
+        m_StringsListener = -1;
+    }
     M_FreeAllPresets();
 }
 
@@ -218,3 +236,7 @@ void Config_Presets_Apply(const int32_t idx)
     Config_Update();
     Config_Write();
 }
+
+REGISTER_SUBSYSTEM(
+        .init = M_Init, .load = Config_Presets_ScanFiles,
+        .shutdown = M_Shutdown)

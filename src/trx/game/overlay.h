@@ -5,9 +5,6 @@
 
 typedef UI_OVERLAY_TEXT OVERLAY_TEXT;
 
-void Overlay_Init(void);
-void Overlay_Shutdown(void);
-
 void Overlay_Reset(void);
 void Overlay_Control(void);
 void Overlay_Animate(int32_t num_frames);

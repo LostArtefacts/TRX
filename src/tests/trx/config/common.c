@@ -8,6 +8,7 @@
 #include <trx/config/common.h>
 #include <trx/config/priv.h>
 #include <trx/config/registry.h>
+#include <trx/core/subsystem.h>
 
 static bool m_MusicOn;
 static double m_Fov;
@@ -18,9 +19,13 @@ static int32_t m_FovTold;
 
 static void M_SetUp(void)
 {
+    // The config module keeps its change event manager with the session, and
+    // a write reports through it.
+    Subsystem_ShutdownAll();
+    Subsystem_InitAll();
+
     // Each test starts from the same three options, as a game change would
     // leave them.
-    Config_DropAllOptions();
     Config_Register(&(CONFIG_OPTION_DESC) {
         .name = "audio.music",
         .default_value = { .type = TVT_BOOL, .as_bool = true },

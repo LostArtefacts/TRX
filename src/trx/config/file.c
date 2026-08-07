@@ -9,6 +9,7 @@
 #include <trx/core/json/util/value.h>
 #include <trx/core/log.h>
 #include <trx/core/memory.h>
+#include <trx/core/subsystem.h>
 #include <trx/debug.h>
 
 #include <string.h>
@@ -35,7 +36,7 @@ static void M_FreeRetained(void)
     }
 }
 
-__attribute__((destructor)) static void M_Shutdown(void)
+static void M_Shutdown(void)
 {
     M_FreeRetained();
 }
@@ -231,3 +232,5 @@ void ConfigFile_DumpOptions(JSON_OBJECT *const root_obj)
             Config_Option_GetEnumKey(option), value);
     }
 }
+
+REGISTER_SUBSYSTEM(.shutdown = M_Shutdown)

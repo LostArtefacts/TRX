@@ -2,6 +2,7 @@
 
 #include <trx/core/math/geom.h>
 #include <trx/core/memory.h>
+#include <trx/core/subsystem.h>
 #include <trx/debug.h>
 #include <trx/game/lara.h>
 #include <trx/game/lara/skin/seam.h>
@@ -136,7 +137,7 @@ static void M_Reset(void)
     m_State = (M_STATE) {};
 }
 
-__attribute__((destructor)) static void M_Shutdown(void)
+static void M_Shutdown(void)
 {
     M_Reset();
 }
@@ -303,3 +304,5 @@ void Lara_Joints_Draw(
         Output_DrawObjectMesh(mesh, clip);
     }
 }
+
+REGISTER_SUBSYSTEM(.shutdown = M_Shutdown)
