@@ -13,14 +13,14 @@
 #define KEY_DOWN(a) (m_KeyboardState[(a)])
 
 typedef struct {
-    INPUT_ROLE role;
-    SDL_Scancode scancode;
-} BUILTIN_KEYBOARD_LAYOUT;
-
-typedef struct {
     int32_t key_count;
     SDL_Scancode keys[INPUT_COMBO_MAX_KEYS];
 } KEYBOARD_BINDING;
+
+typedef struct {
+    INPUT_ROLE role;
+    KEYBOARD_BINDING bind;
+} BUILTIN_KEYBOARD_LAYOUT;
 
 typedef struct {
     KEYBOARD_BINDING slots[INPUT_BINDING_SLOTS];
@@ -31,9 +31,12 @@ static bool m_Conflicts[INPUT_LAYOUT_NUMBER_OF][INPUT_ROLE_NUMBER_OF] = {};
 
 static const BUILTIN_KEYBOARD_LAYOUT m_BuiltinLayoutBase[] = {
 // clang-format off
-#define INPUT_KEYBOARD_ASSIGN(role, key) { role, key },
+#define INPUT_KEYBOARD_ASSIGN(role, key) \
+    { role, { (key) != SDL_SCANCODE_UNKNOWN ? 1 : 0, { key } } },
+#define INPUT_KEYBOARD_ASSIGN_COMBO(role, key1, key2) \
+    { role, { 2, { key1, key2 } } },
 #include <trx/game/input/backends/keyboard.def>
-    { -1, SDL_SCANCODE_UNKNOWN },
+    { -1, {} },
     // clang-format on
 };
 
@@ -324,12 +327,9 @@ static const char *M_GetScancodeName(SDL_Scancode scancode)
     // clang-format on
 }
 
-static bool M_CheckScancode(const SDL_Scancode scancode)
+static bool M_CheckScancode(const SDL_Scancode scancode, const bool exact)
 {
     if (scancode == SDL_SCANCODE_UNKNOWN) {
-        return false;
-    }
-    if (scancode == SDL_SCANCODE_RETURN && KEY_DOWN(SDL_SCANCODE_LALT)) {
         return false;
     }
 #ifdef _WIN32
@@ -340,6 +340,9 @@ static bool M_CheckScancode(const SDL_Scancode scancode)
 #endif
     if (KEY_DOWN(scancode)) {
         return true;
+    }
+    if (exact) {
+        return false;
     }
     if (scancode == SDL_SCANCODE_LCTRL) {
         return KEY_DOWN(SDL_SCANCODE_RCTRL);
@@ -362,13 +365,16 @@ static bool M_CheckScancode(const SDL_Scancode scancode)
     return false;
 }
 
+// A binding of one key takes either side of a paired modifier, so that Ctrl
+// bound as action answers to both. A combo takes the side it was bound to:
+// Alt+Enter otherwise fires from the Alt a player jumps with.
 static bool M_CheckBinding(const KEYBOARD_BINDING *const bind)
 {
     if (bind->key_count == 0) {
         return false;
     }
     for (int32_t k = 0; k < bind->key_count; k++) {
-        if (!M_CheckScancode(bind->keys[k])) {
+        if (!M_CheckScancode(bind->keys[k], bind->key_count > 1)) {
             return false;
         }
     }
@@ -490,7 +496,10 @@ static void M_HandleBuiltInDefaults(void)
 {
 #define L_BIND(role, code)                                                     \
     do {                                                                       \
-        M_GetBuiltInLayout(role)->scancode = code;                             \
+        M_GetBuiltInLayout(role)->bind = (KEYBOARD_BINDING) {                  \
+            .key_count = (code) != SDL_SCANCODE_UNKNOWN ? 1 : 0,               \
+            .keys = { code },                                                  \
+        };                                                                     \
     } while (0)
 
     if (g_TRVersion == 2) {
@@ -526,11 +535,7 @@ static void M_Init(void)
     // then load actually defined default bindings into slot 0
     for (int32_t i = 0; m_BuiltinLayout[i].role != (INPUT_ROLE)-1; i++) {
         const BUILTIN_KEYBOARD_LAYOUT *const builtin = &m_BuiltinLayout[i];
-        m_Layout[INPUT_LAYOUT_DEFAULT][builtin->role].slots[0] =
-            (KEYBOARD_BINDING) {
-                .key_count = builtin->scancode != SDL_SCANCODE_UNKNOWN ? 1 : 0,
-                .keys = { builtin->scancode },
-            };
+        m_Layout[INPUT_LAYOUT_DEFAULT][builtin->role].slots[0] = builtin->bind;
     }
     M_CheckConflicts(INPUT_LAYOUT_DEFAULT);
 
@@ -547,8 +552,6 @@ static bool M_CustomUpdate(INPUT_STATE *const result, const INPUT_LAYOUT layout)
     result->menu_show_info |= result->look;
     result->menu_fine_adjust |= result->slow;
     result->menu_coarse_adjust |= result->draw;
-    result->toggle_fullscreen =
-        KEY_DOWN(SDL_SCANCODE_RETURN) && KEY_DOWN(SDL_SCANCODE_LALT);
     result->menu_skip = result->menu_confirm || result->menu_back;
     return true;
 }

@@ -17,11 +17,13 @@
 - added support for Lara to use animated interactions when picking up thrown flares
 - added a `damage` property to the `O_POWER_SAW` object
 - added a bindable hotkey for using the binoculars
+- added the ability to rebind switching between fullscreen and windowed mode, which stays Alt+Enter unless changed (#2251)
 - added the ability to change how heavily the rain or snow falls, from Lua and with the `/weather` console command (#6080)
 - added `show_pickup_aid`, `rotation` and `glow_color` properties for all pickup types
 - added a brightness option for background images and patterns, so that brightening the UI leaves them alone (Graphic Options → Rendering → Background brightness) (#6074)
 - added an option to keep the music playing when Lara dies (Sound Options → Misc → Play music after death) (#4221)
 - improved error messages related to bad command invocations
+- changed a multi-key shortcut to answer only to the side of Ctrl, Shift or Alt it was bound to, where a shortcut of a single key still takes either
 - changed the brightness options to be given as percentages, as the volume options are
 - changed the game mode selection option so that Never starts every new game as a regular one (Gameplay → General → Game mode selection)
 - changed reflections UV mapping to be more correct

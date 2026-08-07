@@ -27,6 +27,9 @@
 #include <trx/game/viewport.h>
 #include <trx/version.h>
 
+#define M_MIN_INPUT_SIZE 80.0f
+#define M_INPUT_PADDING 6.0f
+
 typedef enum {
     M_PHASE_NAVIGATE_LAYOUT,
     M_PHASE_NAVIGATE_GROUP,
@@ -115,8 +118,7 @@ static const UI_CONTROLS_EDITOR_GROUP m_Groups[] = {
                 { .role = INPUT_ROLE_PAUSE },
                 // { .role = INPUT_ROLE_SCREENSHOT }, // handled specially
                 { .role = INPUT_ROLE_FPS },
-                // { .role = INPUT_ROLE_TOGGLE_FULLSCREEN }, // handled
-                // specially
+                { .role = INPUT_ROLE_TOGGLE_FULLSCREEN },
                 { .role = INPUT_ROLE_ENTER_CONSOLE },
                 { .role = INPUT_ROLE_TOGGLE_PHOTO_MODE },
                 { .role = INPUT_ROLE_TOGGLE_UI },
@@ -214,9 +216,37 @@ static int32_t M_GetInputRoleCount(const UI_CONTROLS_EDITOR_GROUP *const group)
     return count;
 }
 
+// The key column takes its width from the longest binding any layout holds, so
+// that a combo such as Alt+Return does not run into the column beside it.
+static void M_MeasureColumns(UI_CONTROLS_EDITOR_STATE *const s)
+{
+    s->label_size = 0.0f;
+    s->input_size = M_MIN_INPUT_SIZE;
+    for (INPUT_ROLE role = 0; role < INPUT_ROLE_NUMBER_OF; role++) {
+        float w;
+        UI_Label_Measure(Input_GetRoleName(role), &w, nullptr);
+        s->label_size = MAX(s->label_size, w / UI_Scaler_GetTextScale());
+
+        for (INPUT_LAYOUT layout = 0; layout < INPUT_LAYOUT_NUMBER_OF;
+             layout++) {
+            for (int32_t slot = 0; slot < INPUT_BINDING_SLOTS; slot++) {
+                const char *const key_name =
+                    Input_GetKeyName(s->backend, layout, role, slot);
+                if (key_name == nullptr) {
+                    continue;
+                }
+                UI_Label_Measure(key_name, &w, nullptr);
+                s->input_size =
+                    MAX(s->input_size,
+                        w / UI_Scaler_GetTextScale() + M_INPUT_PADDING);
+            }
+        }
+    }
+}
+
 static void M_ResetLayout(void *const arg)
 {
-    const UI_CONTROLS_EDITOR_STATE *const s = arg;
+    UI_CONTROLS_EDITOR_STATE *const s = arg;
     Sound_Effect(
         g_TRVersion == 1 ? SFX_MENU_GAMEBOY : SFX_MENU_SPINOUT, nullptr,
         SPM_NORMAL);
@@ -227,7 +257,7 @@ static void M_ResetLayout(void *const arg)
 
 static void M_UnbindKey(void *const arg)
 {
-    const UI_CONTROLS_EDITOR_STATE *const s = arg;
+    UI_CONTROLS_EDITOR_STATE *const s = arg;
     Sound_Effect(
         g_TRVersion == 1 ? SFX_MENU_GAMEBOY : SFX_MENU_SPINOUT, nullptr,
         SPM_NORMAL);
@@ -377,6 +407,7 @@ static UI_CONTROLS_CHOICE M_Listen(UI_CONTROLS_EDITOR_STATE *const s)
         TouchOverlay_ExitSelectionMode();
     }
     Input_ExitListenMode();
+    M_MeasureColumns(s);
 
     const EVENT event = {
         .name = "key_change",
@@ -590,13 +621,7 @@ void UI_ControlsEditor_Init(
     s->scroll.max_items = M_GetInputRoleCount(s->active_group);
     s->active_role = s->active_group->rows[s->scroll.sel_item].role;
 
-    s->label_size = 0.0f;
-    for (int32_t i = 0; i < INPUT_ROLE_NUMBER_OF; i++) {
-        float w;
-        UI_Label_Measure(Input_GetRoleName(i), &w, nullptr);
-        s->label_size = MAX(s->label_size, w / UI_Scaler_GetTextScale());
-    }
-    s->input_size = 80;
+    M_MeasureColumns(s);
 }
 
 void UI_ControlsEditor_Free(UI_CONTROLS_EDITOR_STATE *const s)
