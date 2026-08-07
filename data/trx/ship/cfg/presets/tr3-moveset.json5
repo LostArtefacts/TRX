@@ -1,6 +1,7 @@
 {
     "name_gs": "dynamic/config_presets/tr3_moveset",
     "config": {
+        "gameplay.enable_alternative_turns": false,
         "gameplay.enable_back_slope_stumble": true,
         "gameplay.enable_continuous_pushblocks": false,
         "gameplay.enable_controlled_drops": false,
@@ -14,7 +15,6 @@
         "gameplay.enable_jump_twists": true,
         "gameplay.enable_lean_jumping": true,
         "gameplay.enable_ledge_jumps": false,
-        "gameplay.enable_neutral_twists": false,
         "gameplay.enable_responsive_crawl": false,
         "gameplay.enable_responsive_sprint": false,
         "gameplay.enable_slide_to_run": false,

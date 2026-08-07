@@ -1335,7 +1335,7 @@
     },
     {
       "bulk": true,
-      "count": 132,
+      "count": 133,
       "description": "Every state Lara can be in.",
       "examples": [
         "if trx.lara.item.anim_state == trx.catalog.lara_states.RUN then ... end"
@@ -1420,6 +1420,7 @@
         "PULL_UP",
         "PUSH_BLOCK",
         "PUSH_DOORS",
+        "QUICK_TURN",
         "RAIL_SWITCH",
         "REACH",
         "RESPONSIVE",
@@ -1479,7 +1480,7 @@
     },
     {
       "bulk": true,
-      "count": 467,
+      "count": 468,
       "description": "Every animation Lara has.",
       "names": [
         "BEETLE_PUT",
@@ -1753,6 +1754,7 @@
         "PUSHABLE_PUSH_STOP",
         "PUSHABLE_RELEASE",
         "PUT_TRIDENT",
+        "QUICK_TURN",
         "REACH",
         "REACH_TO_FREEFALL",
         "REACH_TO_FREEFALL_2",

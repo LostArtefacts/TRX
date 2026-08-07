@@ -989,6 +989,10 @@
             "title": "\\{review}Autoriser le ciblage des alliés",
             "description": "\\{review}Permet à Lara de cibler des alliés, tels que des moines. Si désactivé, les alliés seront immunisés contre les munitions de Lara.",
         },
+        "gameplay.enable_alternative_turns": {
+            "title": "\\{review}Rotations alternatives",
+            "description": "\\{review}Permet à Lara d'effectuer des rotations et vrilles alternatives lorsqu'elle est immobile.\n\n- Appuyez simultanément sur les commandes de roulade et de saut pour effectuer une vrille sur place.\n- Appuyez simultanément sur les commandes de roulade et de marche pour effectuer un demi-tour rapide sur place.",
+        },
         "gameplay.enable_auto_item_selection": {
             "title": "Présélection des bonnes clés",
             "description": "Lorsque Lara appuie sur Action en face d'une serreure ou un emplacement de puzzle et qu'elle a l'objet correspondant dans son inventaire, cet objet sera présélectionné.",
@@ -1132,10 +1136,6 @@
         "gameplay.enable_multiple_pickups": {
             "title": "\\{review}Ramassage multiple",
             "description": "\\{review}Permet à Lara de ramasser tous les objets situés au même endroit au cours de la même animation (TR1–3). Si cette option est désactivée, Lara doit répéter l’animation pour chaque objet (TR4+).",
-        },
-        "gameplay.enable_neutral_twists": {
-            "title": "\\{review}Pirouettes sur place",
-            "description": "\\{review}Permet à Lara d'effectuer une rotation en l'air lors d'un saut sur place. Appuyez simultanément sur les touches de saut et de roulade en étant immobile.",
         },
         "gameplay.enable_pickup_aids": {
             "title": "Aides objets à ramasser",

@@ -989,6 +989,10 @@
             "title": "Allow targeting allies",
             "description": "Allows Lara to target allies, such as monks. If disabled, allies will be immune to Lara's ammunition.",
         },
+        "gameplay.enable_alternative_turns": {
+            "title": "Alternative turns",
+            "description": "Allows Lara to perform alternative turn/twist movements when she is stationary.\n\n- Press roll and jump inputs together to perform a neutral twist.\n- Press roll and walk inputs together to quick-turn on the spot.",
+        },
         "gameplay.enable_auto_item_selection": {
             "title": "Key item pre-selection",
             "description": "When Lara presses action against a keyhole or puzzle slot, and she has the corresponding item in the inventory, that item will be pre-selected.",
@@ -1132,10 +1136,6 @@
         "gameplay.enable_multiple_pickups": {
             "title": "Multiple pickups",
             "description": "Allows Lara to collect all pickup items that share the same position in the same animation (TR1-3). If disabled, Lara must repeat the animation for each item (TR4+).",
-        },
-        "gameplay.enable_neutral_twists": {
-            "title": "Neutral twists",
-            "description": "Allows Lara to twist in the air while performing a neutral jump. Press jump and roll inputs together while stationary.",
         },
         "gameplay.enable_pickup_aids": {
             "title": "Pickup aids",
