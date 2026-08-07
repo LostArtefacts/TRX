@@ -5872,6 +5872,11 @@
     {
       "callable": false,
       "implicit": true,
+      "path": "rules.carrier"
+    },
+    {
+      "callable": false,
+      "implicit": true,
       "path": "rules.music"
     }
   ],
@@ -6251,6 +6256,18 @@
       "description": "How much of a body's coverage goes each frame, out of 255. It is taken away once nothing is left. `0` leaves it where it lies.",
       "path": "rules.corpse.fade_speed",
       "type": "integer",
+      "writable": true
+    },
+    {
+      "description": "Whether an item a defeated enemy carried lands in the middle of the sector\nthe enemy stood on, rather than at its feet. Quest items are left where\nthey fall either way.",
+      "path": "rules.carrier.snap_to_sector",
+      "type": "boolean",
+      "writable": true
+    },
+    {
+      "description": "Whether an item a defeated enemy carried turns to face the way the enemy\ndid, rather than keeping the rotation the level gave it. This only reaches\ndrops the level data places on the enemy; a drop the gameflow names always\ntakes the enemy's facing.",
+      "path": "rules.carrier.inherit_facing",
+      "type": "boolean",
       "writable": true
     },
     {

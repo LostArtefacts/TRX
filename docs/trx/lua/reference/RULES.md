@@ -32,6 +32,13 @@ that wants the defaults back asks for them.
 - <a id="rules.exposure.recovery" name="rules.exposure.recovery"></a>**`trx.rules.exposure.recovery`** (integer). Warmth regained each frame once out of the cold.
 - <a id="rules.exposure.damage" name="rules.exposure.damage"></a>**`trx.rules.exposure.damage`** (integer). Hit points lost each frame once the warmth has run out.
 - <a id="rules.corpse.fade_speed" name="rules.corpse.fade_speed"></a>**`trx.rules.corpse.fade_speed`** (integer). How much of a body's coverage goes each frame, out of 255. It is taken away once nothing is left. `0` leaves it where it lies.
+- <a id="rules.carrier.snap_to_sector" name="rules.carrier.snap_to_sector"></a>**`trx.rules.carrier.snap_to_sector`** (boolean). Whether an item a defeated enemy carried lands in the middle of the sector
+  the enemy stood on, rather than at its feet. Quest items are left where
+  they fall either way.
+- <a id="rules.carrier.inherit_facing" name="rules.carrier.inherit_facing"></a>**`trx.rules.carrier.inherit_facing`** (boolean). Whether an item a defeated enemy carried turns to face the way the enemy
+  did, rather than keeping the rotation the level gave it. This only reaches
+  drops the level data places on the enemy; a drop the gameflow names always
+  takes the enemy's facing.
 - <a id="rules.music.accumulate_trigger_masks" name="rules.music.accumulate_trigger_masks"></a>**`trx.rules.music.accumulate_trigger_masks`** (boolean). Whether non-ambient tracks triggered from floor data should react to trigger masks, requiring all bits to be set for the music to play. Current playing music whose mask becomes unset will stop.
 - <a id="rules.music.is_one_shot_default" name="rules.music.is_one_shot_default"></a>**`trx.rules.music.is_one_shot_default`** (boolean). Whether non-ambient tracks triggered from floor data default to being flagged as one-shot.
 - <a id="rules.music.supports_delay" name="rules.music.supports_delay"></a>**`trx.rules.music.supports_delay`** (boolean). Whether timers used for non-ambient tracks triggered from floor data should be interpreted as a delay before playing the track.

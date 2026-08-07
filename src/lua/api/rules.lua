@@ -67,6 +67,25 @@ rule("corpse.fade_speed", {
     .. "away once nothing is left. `0` leaves it where it lies.",
 })
 
+rule("carrier.snap_to_sector", {
+  type = "boolean",
+  description = [[
+    Whether an item a defeated enemy carried lands in the middle of the sector
+    the enemy stood on, rather than at its feet. Quest items are left where
+    they fall either way.
+  ]],
+})
+
+rule("carrier.inherit_facing", {
+  type = "boolean",
+  description = [[
+    Whether an item a defeated enemy carried turns to face the way the enemy
+    did, rather than keeping the rotation the level gave it. This only reaches
+    drops the level data places on the enemy; a drop the gameflow names always
+    takes the enemy's facing.
+  ]],
+})
+
 rule("music.accumulate_trigger_masks", {
   type = "boolean",
   description = "Whether non-ambient tracks triggered from floor data should "

@@ -26,6 +26,14 @@ X_GROUP_BEGIN(corpse)
 X_RULE(int16_t, corpse, fade_speed, 0)
 X_GROUP_END(corpse)
 
+// Where an item a defeated enemy carried comes to rest, and which way it
+// faces. The games differ on both, so the shipped values are replaced with the
+// game's own defaults in Rules_Reset.
+X_GROUP_BEGIN(carrier)
+X_RULE(bool, carrier, snap_to_sector, false)
+X_RULE(bool, carrier, inherit_facing, true)
+X_GROUP_END(carrier)
+
 // Determines how music triggered from floor data is played and the
 // interpretation of their state flags.
 X_GROUP_BEGIN(music)
