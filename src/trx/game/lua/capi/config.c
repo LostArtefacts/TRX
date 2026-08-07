@@ -495,10 +495,13 @@ static int M_L_ConfigOnChange(lua_State *const L)
         m_Watchers = Vector_Create(sizeof(M_WATCHER));
     }
     lua_pushvalue(L, 2);
+    // Taken before the call below, which may attach a watcher of its own and
+    // leave the counter naming that one instead.
+    const int32_t id = m_NextWatcherId++;
     Vector_Add(
         m_Watchers,
         &(M_WATCHER) {
-            .id = m_NextWatcherId++,
+            .id = id,
             .key = Memory_DupStr(option->name),
             .fn_ref = luaL_ref(L, LUA_REGISTRYINDEX),
             .level_scoped = LUA_GetScriptContext() == LUA_CONTEXT_LEVEL,
@@ -506,7 +509,7 @@ static int M_L_ConfigOnChange(lua_State *const L)
     // The setting already holds something, and a script asking to hear about it
     // is asking about the value in force as much as the ones to come.
     M_CallWatcher(L, Vector_Get(m_Watchers, m_Watchers->count - 1), option);
-    lua_pushinteger(L, m_NextWatcherId - 1);
+    lua_pushinteger(L, id);
     return 1;
 }
 
