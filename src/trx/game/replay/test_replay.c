@@ -35,6 +35,10 @@ typedef struct {
     SHELL_ARGS *args;
     M_STARTUP_SNAPSHOT startup;
     bool used_deprecated_args;
+    // The headers are read twice: once for the startup settings the shell
+    // needs before it registers any option, and again once the options exist.
+    // Only the second pass has anywhere to put a setting.
+    bool apply_config;
 } M_PARSE_CTX;
 
 typedef struct {
@@ -878,6 +882,9 @@ static bool M_ParseConfig(const char *const line, M_PARSE_CTX *const ctx)
     char keybuf[64];
     char valbuf[128];
     if (sscanf(line, "config %63s %127s", keybuf, valbuf) == 2) {
+        if (!ctx->apply_config) {
+            return true;
+        }
         // Strip surrounding quotes from the value, if present
         size_t vlen = strlen(valbuf);
         if (vlen >= 2 && valbuf[0] == '"' && valbuf[vlen - 1] == '"') {
@@ -1127,14 +1134,16 @@ void TestReplay_ApplyDeferredConfig(void)
     }
     Vector_Free(p->deferred_config);
     p->deferred_config = nullptr;
-    // As in TestReplay_Start: this is where the replay starts from, not
-    // something that moved while it ran.
-    Config_DiscardPendingChanges();
+    // Announced rather than discarded as in TestReplay_Start: the game's script
+    // has run, so a trx.config.on_change watcher is already attached and was
+    // told the option's default. It hears the recorded value from here.
+    Config_Update();
 }
 
 void TestReplay_Start(void)
 {
     M_PARSE_CTX ctx = M_ParseCtxInit();
+    ctx.apply_config = true;
     M_PRIV *const p = &m_Priv;
     for (int32_t i = 0; i < p->headers->count; i++) {
         const char *const ln = *(const char **)Vector_Get(p->headers, i);
