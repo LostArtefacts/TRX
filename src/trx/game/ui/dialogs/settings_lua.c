@@ -23,6 +23,7 @@
 #include <trx/game/ui/dialogs/settings_rows.h>
 
 #include <lauxlib.h>
+#include <string.h>
 
 typedef enum {
     M_CB_FORMAT_VALUE,
@@ -163,18 +164,29 @@ static int32_t M_ReadDelta(
     return result;
 }
 
+// The table is checked in full before a single reference is taken, so a
+// declaration naming something that is not a function leaves nothing behind.
 static void M_ReadCallbacks(
-    lua_State *const L, const int32_t idx, M_DECLARED_ROW *const row)
+    lua_State *const L, const int32_t idx, int32_t *const refs)
 {
+    for (int32_t i = 0; i < M_CB_COUNT; i++) {
+        lua_getfield(L, idx, m_CallbackNames[i]);
+        if (!lua_isnil(L, -1) && !lua_isfunction(L, -1)) {
+            luaL_error(
+                L, "settings row field '%s' must be a function",
+                m_CallbackNames[i]);
+        }
+        lua_pop(L, 1);
+    }
+
     for (int32_t i = 0; i < M_CB_COUNT; i++) {
         lua_getfield(L, idx, m_CallbackNames[i]);
         if (lua_isnil(L, -1)) {
             lua_pop(L, 1);
-            row->refs[i] = LUA_NOREF;
+            refs[i] = LUA_NOREF;
             continue;
         }
-        luaL_checktype(L, -1, LUA_TFUNCTION);
-        row->refs[i] = luaL_ref(L, LUA_REGISTRYINDEX);
+        refs[i] = luaL_ref(L, LUA_REGISTRYINDEX);
     }
 }
 
@@ -205,6 +217,13 @@ static int M_L_SettingsAddRow(lua_State *const L)
     }
     lua_pop(L, 1);
 
+    // The table is read out in full before the row is made, so nothing an
+    // ill-formed declaration raises on is left half built.
+    const int32_t delta_slow = M_ReadDelta(L, 2, "delta_slow");
+    const int32_t delta_fast = M_ReadDelta(L, 2, "delta_fast");
+    int32_t refs[M_CB_COUNT];
+    M_ReadCallbacks(L, 2, refs);
+
     lua_getfield(L, 2, "before");
     lua_getfield(L, 2, "after");
     const char *const before = lua_isnil(L, -2) ? nullptr : lua_tostring(L, -2);
@@ -212,12 +231,12 @@ static int M_L_SettingsAddRow(lua_State *const L)
 
     M_DECLARED_ROW *const row = Memory_Alloc(sizeof(M_DECLARED_ROW));
     row->key = Memory_DupStr(key);
-    M_ReadCallbacks(L, 2, row);
+    memcpy(row->refs, refs, sizeof(refs));
     row->handler = (UI_SETTING_HANDLER) {
         .key = row->key,
         .user_data = row,
-        .delta_slow = M_ReadDelta(L, 2, "delta_slow"),
-        .delta_fast = M_ReadDelta(L, 2, "delta_fast"),
+        .delta_slow = delta_slow,
+        .delta_fast = delta_fast,
         .format_value =
             row->refs[M_CB_FORMAT_VALUE] != LUA_NOREF ? M_FormatValue : nullptr,
         .is_available =
