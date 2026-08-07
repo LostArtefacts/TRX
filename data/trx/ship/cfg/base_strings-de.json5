@@ -869,6 +869,10 @@
             "title": "Hauptmenü-Musik",
             "description": "Spielt Musik im Hauptmenü ab.",
         },
+        "audio.enable_music_on_death": {
+            "title": "\\{review}Musik nach dem Tod",
+            "description": "\\{review}Lässt den aktiven Musiktitel weiterlaufen, wenn Lara stirbt.",
+        },
         "audio.enable_pitched_sounds": {
             "title": "Gepitchte Sounds",
             "description": "Erlaubt die zufällige Wiedergabe von Sound-Effekten, leicht gepitched, um die Spiel-Sounds zu variieren.",

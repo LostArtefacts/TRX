@@ -185,6 +185,7 @@ typedef struct {
         bool enable_lara_mic;
         bool enable_music_in_menu;
         bool enable_music_in_inventory;
+        bool enable_music_on_death;
         bool enable_ps1_sfx;
         bool enable_pitched_sounds;
         bool load_music_triggers;
