@@ -989,6 +989,10 @@
             "title": "Consenti fuoco amico",
             "description": "Permette a Lara di colpire gli alleati, come i monaci. Se disabilitato, gli alleati saranno immuni ai proiettili di Lara.",
         },
+        "gameplay.enable_alternative_turns": {
+            "title": "\\{review}Rotazioni alternative",
+            "description": "\\{review}Consente a Lara di eseguire movimenti alternativi di rotazione e torsione quando è ferma.\n\n- Premi contemporaneamente i comandi di capriola e salto per eseguire una torsione sul posto.\n- Premi contemporaneamente i comandi di capriola e camminata per effettuare una rapida inversione sul posto.",
+        },
         "gameplay.enable_auto_item_selection": {
             "title": "Preselezione oggetti chiave",
             "description": "Quando Lara preme azione contro un buco della serratura o un altro ricettacolo e ha l'oggetto corrispondente nell'inventario, quell'oggetto verrà preselezionato.",
@@ -1132,10 +1136,6 @@
         "gameplay.enable_multiple_pickups": {
             "title": "Raccolta multipla",
             "description": "Permette a Lara di raccogliere, con la stessa animazione, tutti gli oggetti che condividono la stessa posizione (TR1–3). Se disabilitato, Lara deve ripetere l’animazione di raccolta per ogni oggetto (TR4+).",
-        },
-        "gameplay.enable_neutral_twists": {
-            "title": "Rotazione da fermo",
-            "description": "Permette a Lara di ruotare in aria mentre esegue un salto da fermo. Mentre sei fermo, premi contemporaneamente i tasti Salta e Capriola.",
         },
         "gameplay.enable_pickup_aids": {
             "title": "Segnalazione oggetti",

@@ -44,7 +44,7 @@ static void M_Compress(ITEM *const item, COLL_INFO *const coll)
             item->goal_anim_state = LS(LS_JUMP_BACK);
             lara->move_angle = item->rot.y + DEG_180;
         } else if (
-            g_Input.roll && g_Config.gameplay.enable_neutral_twists
+            g_Input.roll && g_Config.gameplay.enable_alternative_turns
             && Lara_State_IsResponsive(LA_STAND_TO_JUMP)) {
             item->goal_anim_state = LS(LS_RESPONSIVE);
         }

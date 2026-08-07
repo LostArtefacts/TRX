@@ -59,6 +59,7 @@ static const LARA_TRX_STATE m_HoldStates[] = {
     LS_PICKUP,
     LS_SWITCH_ON,
     LS_SWITCH_OFF,
+    LS_QUICK_TURN,
     LS_TRX_INVALID, // sentinel
     // clang-format on
 };

@@ -989,6 +989,10 @@
             "title": "Pozwól na celowanie w sojuszników",
             "description": "Pozwala Larze celować w sojuszników, np. mnichów. Jeśli opcja jest wyłączona, sojusznicy będą całkowicie odporni na amunicję Lary.",
         },
+        "gameplay.enable_alternative_turns": {
+            "title": "\\{review}Alternatywne obroty",
+            "description": "\\{review}Pozwala Larze wykonywać alternatywne obroty i skręty, gdy stoi w miejscu.\n\n- Naciśnij jednocześnie przewrót i skok, aby wykonać obrót w miejscu.\n- Naciśnij jednocześnie przewrót i chód, aby szybko obrócić się w miejscu.",
+        },
         "gameplay.enable_auto_item_selection": {
             "title": "Preselekcja przedmiotów",
             "description": "Kiedy Lara spróbuje wejść w interakcję z zamkiem lub slotem na przedmiot i ma odpowiednią rzecz w plecaku, zostanie ona automatycznie wybrana.",
@@ -1132,10 +1136,6 @@
         "gameplay.enable_multiple_pickups": {
             "title": "\\{review}Podnoszenie wielu przedmiotów",
             "description": "\\{review}Pozwala Larze podnieść wszystkie przedmioty znajdujące się w tym samym miejscu w ramach jednej animacji (TR1–3). Po wyłączeniu tej opcji Lara musi powtórzyć animację dla każdego przedmiotu (TR4+).",
-        },
-        "gameplay.enable_neutral_twists": {
-            "title": "Salta w miejscu",
-            "description": "Pozwala Larze obracać się w powietrzu podczas neutralnego skoku. Aby wykonać salto w miejscu, należy przytrzymać jednocześnie przyciski skoku i przewrotu.",
         },
         "gameplay.enable_pickup_aids": {
             "title": "Pomoce do znajdziek",

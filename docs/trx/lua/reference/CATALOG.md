@@ -350,7 +350,7 @@ The ids in a catalog are TRX's own, and they are the same in all four games. The
 
     </details>
 
-- <a id="catalog.lara_states" name="catalog.lara_states"></a>[lua]`trx.catalog.lara_states` - 132 names
+- <a id="catalog.lara_states" name="catalog.lara_states"></a>[lua]`trx.catalog.lara_states` - 133 names
 
     Every state Lara can be in.
 
@@ -378,21 +378,22 @@ The ids in a catalog are TRX's own, and they are the same in all four games. The
     `PLINTH_LOW_PICKUP`, `POLE_DOWN`, `POLE_IDLE`, `POLE_LEFT`, `POLE_RIGHT`,
     `POLE_UP`, `POSE`, `POSE_END`, `POSE_LEFT`, `POSE_RIGHT`, `POSE_START`,
     `PP_READY`, `PULLEY`, `PULL_BLOCK`, `PULL_TRAPDOOR`, `PULL_UP`,
-    `PUSH_BLOCK`, `PUSH_DOORS`, `RAIL_SWITCH`, `REACH`, `RESPONSIVE`, `ROLL`,
-    `ROLL_CONT`, `ROPE_BACK`, `ROPE_CLIMB`, `ROPE_FORWARD`,
-    `ROPE_FORWARD_SOFT_UNUSED`, `ROPE_IDLE`, `ROPE_LEFT`, `ROPE_RIGHT`,
-    `ROPE_SLIDE`, `RUN`, `SHIMMY_INNER_LEFT`, `SHIMMY_INNER_RIGHT`,
-    `SHIMMY_LEFT`, `SHIMMY_OUTER_LEFT`, `SHIMMY_OUTER_RIGHT`, `SHIMMY_RIGHT`,
-    `SLIDE`, `SLIDE_BACK`, `SPECIAL`, `SPLAT`, `SPRINT`, `SPRINT_ROLL`,
-    `STEP_LEFT`, `STEP_RIGHT`, `STOP`, `SURF_BACK`, `SURF_LEFT`, `SURF_RIGHT`,
-    `SURF_SWIM`, `SURF_TREAD`, `SWAN_DIVE`, `SWIM`, `SWITCH_OFF`, `SWITCH_ON`,
-    `TREAD`, `TURN_LEFT`, `TURN_RIGHT`, `TURN_SWITCH`, `TWIST`, `USE_KEY`,
-    `USE_MIDAS`, `USE_PUZZLE`, `UW_DEATH`, `WADE`, `WALK`, `WALK_BACK`,
-    `WATER_OUT`, `WATER_ROLL`, `ZIPLINE`
+    `PUSH_BLOCK`, `PUSH_DOORS`, `QUICK_TURN`, `RAIL_SWITCH`, `REACH`,
+    `RESPONSIVE`, `ROLL`, `ROLL_CONT`, `ROPE_BACK`, `ROPE_CLIMB`,
+    `ROPE_FORWARD`, `ROPE_FORWARD_SOFT_UNUSED`, `ROPE_IDLE`, `ROPE_LEFT`,
+    `ROPE_RIGHT`, `ROPE_SLIDE`, `RUN`, `SHIMMY_INNER_LEFT`,
+    `SHIMMY_INNER_RIGHT`, `SHIMMY_LEFT`, `SHIMMY_OUTER_LEFT`,
+    `SHIMMY_OUTER_RIGHT`, `SHIMMY_RIGHT`, `SLIDE`, `SLIDE_BACK`, `SPECIAL`,
+    `SPLAT`, `SPRINT`, `SPRINT_ROLL`, `STEP_LEFT`, `STEP_RIGHT`, `STOP`,
+    `SURF_BACK`, `SURF_LEFT`, `SURF_RIGHT`, `SURF_SWIM`, `SURF_TREAD`,
+    `SWAN_DIVE`, `SWIM`, `SWITCH_OFF`, `SWITCH_ON`, `TREAD`, `TURN_LEFT`,
+    `TURN_RIGHT`, `TURN_SWITCH`, `TWIST`, `USE_KEY`, `USE_MIDAS`, `USE_PUZZLE`,
+    `UW_DEATH`, `WADE`, `WALK`, `WALK_BACK`, `WATER_OUT`, `WATER_ROLL`,
+    `ZIPLINE`
 
     </details>
 
-- <a id="catalog.lara_anims" name="catalog.lara_anims"></a>[lua]`trx.catalog.lara_anims` - 467 names
+- <a id="catalog.lara_anims" name="catalog.lara_anims"></a>[lua]`trx.catalog.lara_anims` - 468 names
 
     Every animation Lara has.
 
@@ -491,8 +492,8 @@ The ids in a catalog are TRX's own, and they are the same in all four games. The
     `POSE_RIGHT_START`, `POUR_WATERSKIN_HIGH`, `POUR_WATERSKIN_LOW`, `PRY_DOOR`,
     `PULLEY_GRAB`, `PULLEY_PULL`, `PULLEY_UNGRAB`, `PUSHABLE_GRAB`,
     `PUSHABLE_PULL`, `PUSHABLE_PULL_STOP`, `PUSHABLE_PUSH`,
-    `PUSHABLE_PUSH_STOP`, `PUSHABLE_RELEASE`, `PUT_TRIDENT`, `REACH`,
-    `REACH_TO_FREEFALL`, `REACH_TO_FREEFALL_2`, `REACH_TO_HANG`,
+    `PUSHABLE_PUSH_STOP`, `PUSHABLE_RELEASE`, `PUT_TRIDENT`, `QUICK_TURN`,
+    `REACH`, `REACH_TO_FREEFALL`, `REACH_TO_FREEFALL_2`, `REACH_TO_HANG`,
     `REACH_TO_POLE_GRAB`, `ROLL_ALTERNATE`, `ROLL_CONTINUE`, `ROLL_END`,
     `ROLL_END_ALTERNATE`, `ROLL_START`, `ROPE_CHANGE_ROPE_UNUSED`, `ROPE_DOWN`,
     `ROPE_DOWN_END`, `ROPE_DOWN_START`, `ROPE_GRAB_TO_FALL_ALTERNATE_UNUSED`,

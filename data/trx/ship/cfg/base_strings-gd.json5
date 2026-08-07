@@ -989,6 +989,10 @@
             "title": "Targaidich air càirdean",
             "description": "Leigidh seo le Lara a targaidich air càirdean - manaich, 's a leithid. Mura tèid seo a chur an comas, bidh iad dìonach air peilearan Lara.",
         },
+        "gameplay.enable_alternative_turns": {
+            "title": "Tionndaidhean eile",
+            "description": "Leigidh seo le Lara tionndaidhean is toinneamhan eile a dhèanamh nuair a tha i na seasamh.\n\n- Brùth na putanan rolaidh is leuma còmhla gus toinneamh air an àite a dhèanamh.\n- Brùth na putanan rolaidh is coiseachd còmhla gus tionndadh luath a dhèanamh air an àite.",
+        },
         "gameplay.enable_auto_item_selection": {
             "title": "Roghainn ro-làimh air iuchraichean",
             "description": "Ma bhriogas Lara air gnìomh aig toll iuchrach neo àite tòimhseachain, taghaidh i an nì ceart gu fèin-obrachail.",
@@ -1132,10 +1136,6 @@
         "gameplay.enable_multiple_pickups": {
             "title": "Togail iomadh nì",
             "description": "Leigidh seo le Lara na nithean togail uile a tha san aon àite a thogail san aon bheothachadh (TR1–3). Ma tha seo à comas, feumaidh Lara am beothachadh ath-aithris airson gach nì (TR4+).",
-        },
-        "gameplay.enable_neutral_twists": {
-            "title": "Snìomh neodrach",
-            "description": "Leigidh seo le Lara tionndadh san adhar fhad 's a tha i a' leum gu neodrach. Brùth air na putanan leum is rola còmhla ri chèile nuair a tha i na seasamh.",
         },
         "gameplay.enable_pickup_aids": {
             "title": "Taic togail",

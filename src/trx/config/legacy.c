@@ -60,6 +60,13 @@ static void M_ApplySaveCrystals(const JSON_VALUE *const value)
     }
 }
 
+static void M_ApplyTurns(const JSON_VALUE *const value)
+{
+    if (JSON_ValueIsFalse(value)) {
+        CONFIG_SET(g_Config.gameplay.enable_alternative_turns, false);
+    }
+}
+
 // Every key no build writes any more, and what became of it.
 static const M_MIGRATION m_Migrations[] = {
     // TRX ..1.9: game modes changed to policy.
@@ -70,6 +77,8 @@ static const M_MIGRATION m_Migrations[] = {
     { "enable_breeze", "breeze_mode", M_ApplyBreeze },
     // TRX ..1.10: save crystals on/off changed to mode.
     { "enable_save_crystals", "save_crystal_mode", M_ApplySaveCrystals },
+    // TRX ..1.10: neutral twists on/off changed to cover multiple animations.
+    { "enable_neutral_twists", "enable_alternative_turns", M_ApplyTurns },
     {}, // sentinel
 };
 

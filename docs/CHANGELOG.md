@@ -22,6 +22,7 @@
 - added `show_pickup_aid`, `rotation` and `glow_color` properties for all pickup types
 - added a brightness option for background images and patterns, so that brightening the UI leaves them alone (Graphic Options → Rendering → Background brightness) (#6074)
 - added an option to keep the music playing when Lara dies (Sound Options → Misc → Play music after death) (#4221)
+- added the ability for Lara to turn on the spot by pressing walk and roll (Gameplay → Controls → Alternative turns) (#5756)
 - improved error messages related to bad command invocations
 - changed a multi-key shortcut to answer only to the side of Ctrl, Shift or Alt it was bound to, where a shortcut of a single key still takes either
 - changed the brightness options to be given as percentages, as the volume options are

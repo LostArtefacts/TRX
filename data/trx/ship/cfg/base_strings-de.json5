@@ -989,6 +989,10 @@
             "title": "Erlaube das ziehlen auf freundliche Einheiten",
             "description": "Erlaubt Lara, auf freundliche Einheiten zu ziehlen, wie zum Beispiel Mönche. Wenn diese Option deaktiviert ist, sind freundliche Einheiten immun gegen Laras Munition.",
         },
+        "gameplay.enable_alternative_turns": {
+            "title": "\\{review}Alternative Drehungen",
+            "description": "\\{review}Ermöglicht es Lara, alternative Dreh- und Drehsprungbewegungen auszuführen, wenn sie stillsteht.\n\n- Drücke gleichzeitig Rolle und Springen, um eine neutrale Drehung auszuführen.\n- Drücke gleichzeitig Rolle und Gehen, um eine schnelle Drehung auf der Stelle auszuführen.",
+        },
         "gameplay.enable_auto_item_selection": {
             "title": "Vorausgewählte Schlüssel-Items",
             "description": "Wenn Lara ein Schlüsselloch oder einen Rätsel-Slot verwendet und sie das dazu passende Item in ihrem Inventar hat, wird dieses automatisch ausgewählt.",
@@ -1132,10 +1136,6 @@
         "gameplay.enable_multiple_pickups": {
             "title": "\\{review}Mehrere Gegenstände aufnehmen",
             "description": "\\{review}Ermöglicht Lara, alle Gegenstände, die sich an derselben Position befinden, in derselben Animation aufzunehmen (TR1–3). Wenn deaktiviert, muss Lara die Animation für jeden Gegenstand wiederholen (TR4+).",
-        },
-        "gameplay.enable_neutral_twists": {
-            "title": "\\{review}Neutrale Drehung",
-            "description": "\\{review}Ermöglicht Lara eine Drehung in der Luft bei einem Sprung aus dem Stand. Drücke gleichzeitig die Sprung- und Rollentaste, während du stillstehst.",
         },
         "gameplay.enable_pickup_aids": {
             "title": "Gegenstände hervorheben",
