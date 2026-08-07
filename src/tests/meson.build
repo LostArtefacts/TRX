@@ -550,6 +550,7 @@ unit_tests += {
 unit_tests += {
   'name': 'lua/api/weather',
   'bundles': [b_lua_surface],
+  'src': ['fakes/weather.c'],
   'engine': ['game/lua/capi/weather.c'],
 }
 
@@ -750,6 +751,13 @@ unit_tests += {
   'bundles': [b_lua_surface, b_console],
   'src': ['fakes/game.c', 'fakes/savegame.c'],
   'engine': ['game/lua/capi/game.c'],
+}
+
+unit_tests += {
+  'name': 'lua/commands/weather',
+  'bundles': [b_lua_surface, b_console],
+  'src': ['fakes/game.c', 'fakes/strings.c', 'fakes/weather.c'],
+  'engine': ['game/lua/capi/game.c', 'game/lua/capi/weather.c'],
 }
 
 unit_tests += {

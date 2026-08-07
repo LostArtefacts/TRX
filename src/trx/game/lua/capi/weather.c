@@ -23,9 +23,25 @@ static int M_L_WeatherGet(lua_State *const L)
     return 1;
 }
 
+// trxc.weather.set_severity(severity)
+static int M_L_WeatherSetSeverity(lua_State *const L)
+{
+    FX_Weather_SetSeverity((float)luaL_checknumber(L, 1));
+    return 0;
+}
+
+// trxc.weather.get_severity() -> number
+static int M_L_WeatherGetSeverity(lua_State *const L)
+{
+    lua_pushnumber(L, FX_Weather_GetSeverity());
+    return 1;
+}
+
 static const luaL_Reg m_Module[] = {
     { "set", M_L_WeatherSet },
     { "get", M_L_WeatherGet },
+    { "set_severity", M_L_WeatherSetSeverity },
+    { "get_severity", M_L_WeatherGetSeverity },
     { nullptr, nullptr },
 };
 

@@ -520,10 +520,10 @@
                 "help": "Attiva o disattiva la sincronizzazione verticale.",
             },
             "weather": {
-                "current": "Tempo meteorologico attuale: %s",
+                "current": "\\{review}Tempo meteorologico attuale: %s, intensità %s",
                 "help": "Modifica il tempo meteorologico attuale.",
                 "invalid": "Tempo meteorologico non valido: %s (valore valido: %s)",
-                "set": "Tempo meteorologico impostato su %s",
+                "set": "\\{review}Tempo meteorologico impostato su %s, intensità %s",
             },
             "winston": {
                 "dead": "Il tuo maggiordomo è morto. Sei un mostro!",

@@ -520,10 +520,10 @@
                 "help": "Włącza lub wyłącza synchronizację pionową.",
             },
             "weather": {
-                "current": "\\{review}Current weather: %s",
+                "current": "\\{review}Aktualna pogoda: %s, intensywność %s",
                 "help": "Zmienia aktualną pogodę.",
                 "invalid": "Nieprawidłowa wartość: %s (prawidłowe: %s)",
-                "set": "Pogoda ustawiona na %s",
+                "set": "\\{review}Pogoda ustawiona na %s, intensywność %s",
             },
             "winston": {
                 "dead": "Twój lokaj jest martwy. Ty potworze!",

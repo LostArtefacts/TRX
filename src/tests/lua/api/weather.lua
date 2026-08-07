@@ -15,6 +15,21 @@ test("set changes the weather, and current reads it back", function()
   assert(trx.weather.current == trx.weather.Type.NONE)
 end)
 
+test("severity reads back what it was set to", function()
+  assert(trx.weather.severity == 1)
+
+  trx.weather.severity = 2.5
+  assert(trx.weather.severity == 2.5)
+end)
+
+test("a severity outside the range is clamped to it", function()
+  trx.weather.severity = -1
+  assert(trx.weather.severity == 0)
+
+  trx.weather.severity = 100
+  assert(trx.weather.severity == 4)
+end)
+
 test("an out-of-range weather is refused", function()
   local ok = pcall(trx.weather.set, 99)
   assert(not ok, "an unknown weather type must raise")

@@ -15,6 +15,7 @@
 - added support for Lara to use animated interactions when picking up thrown flares
 - added a `damage` property to the `O_POWER_SAW` object
 - added a bindable hotkey for using the binoculars
+- added the ability to change how heavily the rain or snow falls, from Lua and with the `/weather` console command (#6080)
 - added `show_pickup_aid`, `rotation` and `glow_color` properties for all pickup types
 - improved error messages related to bad command invocations
 - changed the game mode selection option so that Never starts every new game as a regular one (Gameplay → General → Game mode selection)

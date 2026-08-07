@@ -21,8 +21,9 @@
 
 #include <string.h>
 
-#define M_MAX_WEATHER 256
-#define M_MAX_WEATHER_ALIVE 16
+#define M_BASE_WEATHER 256
+#define M_BASE_WEATHER_ALIVE 16
+#define M_MAX_WEATHER (M_BASE_WEATHER * WEATHER_SEVERITY_MAX)
 
 #define M_RAIN_MAX_DISTANCE 6000
 #define M_RAIN_BASE_Y_OFF (-WALL_L)
@@ -63,11 +64,24 @@ typedef struct {
 static M_RAINDROP m_Raindrops[M_MAX_WEATHER];
 static M_SNOWFLAKE m_Snowflakes[M_MAX_WEATHER];
 static WEATHER_TYPE m_WeatherType = WEATHER_NONE;
+static float m_Severity = 1.0f;
 
 static void M_ClearWeather(void)
 {
     memset(m_Raindrops, 0, sizeof(m_Raindrops));
     memset(m_Snowflakes, 0, sizeof(m_Snowflakes));
+}
+
+// A slot past the count is left alone rather than emptied, so lowering the
+// severity lets the particles already falling finish their lives.
+static int32_t M_GetParticleCount(void)
+{
+    return (int32_t)(M_BASE_WEATHER * m_Severity);
+}
+
+static int32_t M_GetSpawnCount(void)
+{
+    return (int32_t)(M_BASE_WEATHER_ALIVE * m_Severity);
 }
 
 static int64_t M_GetViewDepth(const XYZ_32 pos)
@@ -133,12 +147,14 @@ static void M_SpawnRainDrop(M_RAINDROP *const drop)
 static void M_UpdateRain(void)
 {
     const XZ_32 wind = Sparks_GetSmokeWind();
+    const int32_t count = M_GetParticleCount();
+    const int32_t spawn_count = M_GetSpawnCount();
 
     int32_t num_alive = 0;
     for (int32_t i = 0; i < M_MAX_WEATHER; i++) {
         M_RAINDROP *const drop = &m_Raindrops[i];
 
-        if (drop->pos.x == 0 && num_alive < M_MAX_WEATHER_ALIVE) {
+        if (drop->pos.x == 0 && i < count && num_alive < spawn_count) {
             num_alive++;
             M_SpawnRainDrop(drop);
         }
@@ -248,11 +264,14 @@ static void M_SpawnSnowflake(M_SNOWFLAKE *const snow)
 
 static void M_UpdateSnow(void)
 {
+    const int32_t count = M_GetParticleCount();
+    const int32_t spawn_count = M_GetSpawnCount();
+
     int32_t num_alive = 0;
     for (int32_t i = 0; i < M_MAX_WEATHER; i++) {
         M_SNOWFLAKE *const snow = &m_Snowflakes[i];
 
-        if (snow->pos.x == 0 && num_alive < M_MAX_WEATHER_ALIVE) {
+        if (snow->pos.x == 0 && i < count && num_alive < spawn_count) {
             num_alive++;
             M_SpawnSnowflake(snow);
         }
@@ -466,6 +485,8 @@ static void M_SaveSnow(JSON_WRITE_IO *const io)
 
 static void M_Save(JSON_WRITE_IO *const io)
 {
+    JSONW_WRITE(io, "severity", m_Severity);
+
     // Particles of the inactive type are neither updated nor drawn.
     if (m_WeatherType == WEATHER_RAIN) {
         M_SaveRain(io);
@@ -528,6 +549,10 @@ static bool M_LoadSnow(JSON_READ_IO *const io)
 
 static bool M_Load(JSON_READ_IO *const io)
 {
+    float severity = 1.0f;
+    JSON_OPTIONAL(JSON_READ_D(io, "severity", &severity, 1.0f));
+    FX_Weather_SetSeverity(severity);
+
     if (JSON_OPTIONAL(JSON_PUSH(io, "rain"))) {
         JSON_MUST(M_LoadRain(io));
         JSON_MUST(JSON_POP(io));
@@ -572,6 +597,7 @@ static void M_Draw(void)
 static void M_Reset(void)
 {
     M_ClearWeather();
+    m_Severity = 1.0f;
 }
 
 WEATHER_TYPE FX_Weather_GetWeather(void)
@@ -582,6 +608,17 @@ WEATHER_TYPE FX_Weather_GetWeather(void)
 void FX_Weather_SetWeather(const WEATHER_TYPE weather_type)
 {
     m_WeatherType = weather_type;
+}
+
+float FX_Weather_GetSeverity(void)
+{
+    return m_Severity;
+}
+
+void FX_Weather_SetSeverity(const float severity)
+{
+    m_Severity = severity;
+    CLAMP(m_Severity, 0.0f, (float)WEATHER_SEVERITY_MAX);
 }
 
 static const FX_MODULE m_Module = {

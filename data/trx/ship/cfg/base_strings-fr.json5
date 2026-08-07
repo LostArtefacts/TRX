@@ -520,10 +520,10 @@
                 "help": "Active/désactive la synchronisation verticale.",
             },
             "weather": {
-                "current": "\\{review}Current weather: %s",
+                "current": "\\{review}Météo actuelle : %s, intensité %s",
                 "help": "\\{review}Change le type de météo actuel.",
                 "invalid": "\\{review}Météo invalide : %s (valide : %s)",
-                "set": "\\{review}Météo réglée sur %s",
+                "set": "\\{review}Météo réglée sur %s, intensité %s",
             },
             "winston": {
                 "dead": "\\{review}Votre majordome est mort. Monstre !",

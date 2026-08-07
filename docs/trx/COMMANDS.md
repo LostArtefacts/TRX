@@ -179,10 +179,13 @@ whichever key you have bound, and not include it as part of the command itself.
   `/fps {num}`  
   Displays or sets the game's frames per second. Higher FPS = smoother Lara.
 
-- `/weather off`  
+- `/weather none`  
   `/weather snow`  
   `/weather rain`  
-  Changes the current level weather. Your game, your forecast.
+  `/weather {type} {severity}`  
+  `/weather {severity}`  
+  Changes the current level weather, and how heavily it falls: 1 is the usual
+  amount, 0 clears the sky and 4 is a downpour. Your game, your forecast.
 
 ## Environmental commands
 
