@@ -1674,6 +1674,10 @@
             "title": "Échelle de texte",
             "description": "Change la taille du texte de l'interface utilisateur.",
         },
+        "visuals.background_brightness": {
+            "title": "\\{review}Luminosité de l'arrière-plan",
+            "description": "\\{review}Modifie la luminosité des images et des motifs d'arrière-plan.",
+        },
         "visuals.blood_effects": {
             "title": "\\{review}Effets de sang",
             "description": "\\{review}Contrôle les couleurs des étincelles de sang.\n\n- Désactivé : aucune étincelle de sang n'est affichée.\n- Rose : la valeur par défaut dans les versions PC allemandes de TR3.\n- Rouge : la valeur par défaut dans toutes les autres versions commerciales.",

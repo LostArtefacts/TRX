@@ -6,6 +6,7 @@ X_UI_ROW(rendering.anisotropy_filter)
 X_UI_ROW(rendering.enable_vsync)
 X_UI_ROW(visuals.game_brightness)
 X_UI_ROW(visuals.ui_brightness)
+X_UI_ROW(visuals.background_brightness)
 X_UI_ROW(visuals.gamma)
 
 X_UI_ROW(rendering.lighting_contrast)

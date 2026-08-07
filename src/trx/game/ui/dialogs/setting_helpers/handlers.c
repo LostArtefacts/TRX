@@ -345,6 +345,10 @@ REGISTER_UI_SETTING_HANDLER(
         .key = "visuals.ui_brightness", .delta_slow = 1, .delta_fast = 5)
 
 REGISTER_UI_SETTING_HANDLER(
+        .key = "visuals.background_brightness", .delta_slow = 1,
+        .delta_fast = 5)
+
+REGISTER_UI_SETTING_HANDLER(
         .key = "visuals.gamma", .delta_slow = 10, .delta_fast = 50)
 
 REGISTER_UI_SETTING_HANDLER(

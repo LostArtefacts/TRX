@@ -1674,6 +1674,10 @@
             "title": "Meud teacsa",
             "description": "Atharraicheas meud an teacsa.",
         },
+        "visuals.background_brightness": {
+            "title": "\\{review}Soilleireachd a' chùlaibh",
+            "description": "\\{review}Cuiridh seo atharrachadh air soilleireachd nan dealbhan is nam pàtranan cùlaibh.",
+        },
         "visuals.blood_effects": {
             "title": "Buaidhean fuil",
             "description": "Smachd air dathan spàirn fola.\n\n- Ciorramh: chan eilear a’ sealltainn spàirn fola sam bith.\n- Pinc: an àbhaist ann an sgaoilidhean PC Gearmailteach de TR3.\n- Dearg: an àbhaist anns a h-uile sgaoileadh reic eile.",

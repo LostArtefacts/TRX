@@ -67,6 +67,7 @@ typedef struct {
         bool enable_glide_cameras;
         float game_brightness;
         float ui_brightness;
+        float background_brightness;
         float gamma;
 
         bool enable_reflections;

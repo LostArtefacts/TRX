@@ -1674,6 +1674,10 @@
             "title": "Skala tekstu",
             "description": "Zmienia rozmiar tekstu interfejsu.",
         },
+        "visuals.background_brightness": {
+            "title": "\\{review}Jasność tła",
+            "description": "\\{review}Zmienia jasność obrazów i wzorów tła.",
+        },
         "visuals.blood_effects": {
             "title": "Efekty krwi",
             "description": "Zmienia kolor efektów krwi.\n\n- Wyłączone: nie pokazuje krwi.\n- Różowe: domyślny kolor w niemieckiej wersji PC TR3.\n- Czerwone: domyślne we wszystkich innych wersjach.",

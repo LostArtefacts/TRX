@@ -1674,6 +1674,10 @@
             "title": "Dimensione testo",
             "description": "Modifica la dimensione del testo dell'interfaccia utente.",
         },
+        "visuals.background_brightness": {
+            "title": "\\{review}Luminosità sfondo",
+            "description": "\\{review}Modifica la luminosità delle immagini e dei motivi di sfondo.",
+        },
         "visuals.blood_effects": {
             "title": "Effetti sangue",
             "description": "Permette di modificare il colore degli schizzi di sangue o di disattivarli.\n\n- Disattivato: gli schizzi di sangue non vengono mostrati.\n- Rosa: impostazione predefinita nelle versioni tedesche per PC di TR3.\n- Rosso: impostazione predefinita in tutte le altre versioni per la vendita al dettaglio.",

@@ -102,7 +102,6 @@ typedef struct {
 
 typedef struct {
     bool has_content;
-    float captured_brightness;
     TRX_GL_TEXTURE texture;
     int32_t width;
     int32_t height;
@@ -554,6 +553,8 @@ static void M_DrawOp_Image(const M_DRAW_OP_IMAGE *const op)
     Output_Quad_SetTextureSize(p->image.renderer, nullptr);
     Output_Quad_SetFilter(p->image.renderer, op->texture_filter);
     Output_Quad_SetDesaturation(p->image.renderer, op->desaturation);
+    Output_Quad_SetBrightnessScale(
+        p->image.renderer, g_Config.visuals.background_brightness);
     if (op->use_fit) {
         Output_Quad_SetFit(
             p->image.renderer, OUTPUT_QUAD_FIT_SMART, (float)op->width,
@@ -600,6 +601,8 @@ static void M_DrawImageImpl(
     }
 }
 
+// A snapshot holds the pixels as they were presented, brightness included, so
+// it is drawn without a scale of its own.
 static void M_DrawOp_Snapshot(const M_DRAW_OP_SNAPSHOT *const op)
 {
     const M_PRIV *const p = &m_Priv;
@@ -721,6 +724,8 @@ static void M_DrawOp_Pattern(const M_DRAW_OP_PATTERN *const op)
         op->wave ? OUTPUT_QUAD_EFFECT_WAVE : OUTPUT_QUAD_EFFECT_VIGNETTE);
     Output_Quad_SetFilter(
         p->pattern.renderer, g_Config.rendering.texture_filter);
+    Output_Quad_SetBrightnessScale(
+        p->pattern.renderer, g_Config.visuals.background_brightness);
     Output_Quad_ClearFit(p->pattern.renderer);
     Output_Quad_SetOpacity(p->pattern.renderer, op->opacity);
     if (op->opacity >= 1.0f) {
@@ -814,17 +819,6 @@ static bool M_IsDirty(const SCENE_SOURCE *const src, const SCENE_PASS pass)
     return false;
 }
 
-static void M_FinishSnapshotCapture(M_PRIV *const p)
-{
-    p->snapshot.state.has_content = true;
-
-    // Remove the captured brightness so we can reapply the current multiplier.
-    p->snapshot.state.captured_brightness = g_Config.visuals.ui_brightness;
-    CLAMPL(p->snapshot.state.captured_brightness, 0.001f);
-    Output_Quad_SetBrightnessScale(
-        p->snapshot.renderer, 1.0f / p->snapshot.state.captured_brightness);
-}
-
 bool Output_Overlay_LoadImage(const char *const file_name)
 {
     if (file_name == nullptr || file_name[0] == '\0') {
@@ -872,7 +866,7 @@ void Output_Overlay_CaptureSnapshot(void)
     M_CopyFboToTexture(
         VIEWPORT_TARGET, 0, true, &p->snapshot.state.texture,
         p->snapshot.state.width, p->snapshot.state.height);
-    M_FinishSnapshotCapture(p);
+    p->snapshot.state.has_content = true;
 }
 
 void Output_Overlay_CaptureGameSnapshot(void)
@@ -902,7 +896,7 @@ void Output_Overlay_CaptureGameSnapshot(void)
         VIEWPORT_GAME, TRX_GL_Renderer_GetGeometryFboId(), false,
         &p->snapshot.state.texture, p->snapshot.state.width,
         p->snapshot.state.height);
-    M_FinishSnapshotCapture(p);
+    p->snapshot.state.has_content = true;
 }
 
 void Output_Overlay_DrawSnapshot(const float opacity)
