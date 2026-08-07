@@ -1437,6 +1437,10 @@
             "title": "Bordi",
             "description": "Aggiunge dei bordi neri attorno alla finestra del gioco.",
         },
+        "rendering.enable_dithering": {
+            "title": "\\{review}Dithering",
+            "description": "\\{review}Riduce l'immagine a colori a 8 bit con un motivo di dithering ordinato, per l'aspetto delle versioni con renderizzazione software.",
+        },
         "rendering.enable_trapezoid_filter": {
             "title": "Filtro trapezoidale",
             "description": "Corregge la renderizzazione dei quadrilateri.",

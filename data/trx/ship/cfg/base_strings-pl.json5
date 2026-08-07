@@ -1437,6 +1437,10 @@
             "title": "Ramka",
             "description": "Dodaje czarną ramkę wokół okna gry.",
         },
+        "rendering.enable_dithering": {
+            "title": "\\{review}Dithering",
+            "description": "\\{review}Redukuje obraz do koloru 8-bitowego, rozpraszając go uporządkowanym wzorem, tak jak w wydaniach renderowanych programowo.",
+        },
         "rendering.enable_trapezoid_filter": {
             "title": "Filtr trapezoidalny",
             "description": "Poprawia rysowanie czworokątów, rozciągając teksturę między wszystkimi wierzchołkami zamiast dzielić je na dwa trójkąty.",

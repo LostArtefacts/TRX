@@ -17,5 +17,6 @@ X_UI_ROW(rendering.upscaling_filter)
 X_UI_ROW(rendering.upscaling_factor)
 X_UI_ROW(rendering.borders)
 X_UI_ROW(rendering.enable_vertex_snap)
+X_UI_ROW(rendering.enable_dithering)
 
 X_UI_ROW(rendering.screenshot_format)

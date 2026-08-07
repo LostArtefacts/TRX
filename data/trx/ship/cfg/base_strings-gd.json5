@@ -1437,6 +1437,10 @@
             "title": "Iomallan",
             "description": "Cuiridh seo iomallan dubha timcheall air uinneag a' gheama.",
         },
+        "rendering.enable_dithering": {
+            "title": "\\{review}Dithering",
+            "description": "\\{review}Lùghdaichidh seo an dealbh gu dathan 8-biod le pàtran dithering òrdaichte, airson coltas nan tionndaidhean le reandaradh bathar-bog.",
+        },
         "rendering.enable_trapezoid_filter": {
             "title": "Criathradh trapeasoid",
             "description": "Cuiridh seo ceartachadh air trapeasoidean (ceàrnan neo-chothromach) airson reandaradh nas fhearr.",

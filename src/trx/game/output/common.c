@@ -162,6 +162,7 @@ void Output_ApplyRenderSettings(void)
 
     TRX_GL_Context_SetVSync(g_Config.rendering.enable_vsync);
     TRX_GL_Context_SetDisplayFilter(g_Config.rendering.upscaling_filter);
+    TRX_GL_Context_SetDithering(g_Config.rendering.enable_dithering);
     TRX_GL_Context_SetWireframeMode(g_Config.rendering.enable_wireframe);
     TRX_GL_Context_SetLineWidth(g_Config.rendering.wireframe_width);
 }
