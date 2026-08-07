@@ -268,6 +268,13 @@
                 "option_set": "%s air atharrachadh gu %s",
                 "unknown_option": "Roghainn neo-aithnichte: %s",
             },
+            "disco": {
+                "already_off": "\\{review}Tha na solais dheth mar-thà",
+                "already_on": "\\{review}Tha na solais air mar-thà",
+                "help": "\\{review}Tionndaidheas taisbeanadh sholas timcheall Lara.",
+                "off": "\\{review}Thèid na solais dheth",
+                "on": "\\{review}Thig na solais air",
+            },
             "drain": {
                 "already": "Tha seòmar %d air a dhrèanadh mar-thà",
                 "done": "Chaidh seòmar %d a dhrèanadh",

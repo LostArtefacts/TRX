@@ -268,6 +268,13 @@
                 "option_set": "%s changed to %s",
                 "unknown_option": "Unknown option: %s",
             },
+            "disco": {
+                "already_off": "The lights are already out",
+                "already_on": "The lights are already on",
+                "help": "Toggles a light show around Lara.",
+                "off": "The lights go out",
+                "on": "The lights come on",
+            },
             "drain": {
                 "already": "Room %d is already drained",
                 "done": "Drained room %d",

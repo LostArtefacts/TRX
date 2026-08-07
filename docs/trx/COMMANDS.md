@@ -206,6 +206,11 @@ whichever key you have bound, and not include it as part of the command itself.
   `/sfx {sound}`  
   Plays a sound effect on demand. Because sometimes you just need Lara to grunt on cue.
 
+- `/disco`  
+  `/disco on`  
+  `/disco off`  
+  Sends colored lights spinning around Lara, with a haze for them to hang in. Tomb raiding, now with a dance floor.
+
 ## Game flow commands
 
 - `/endlevel`  

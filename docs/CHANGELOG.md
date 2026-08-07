@@ -6,6 +6,7 @@
 - added autocompletion to the developer console (with Tab and Shift+Tab to cycle the matches)
 - added a `/dry` console command, to dry Lara off after a swim
 - added a `/rule` console command, to inspect and change the numbers the game plays by, such as how quickly the cold gets to Lara
+- added a `/disco` console command, which sends colored lights spinning around Lara
 - added an option for the wobbly geometry of the PlayStation releases (Graphic Options → Rendering → Vertex snapping)
 - added a water color preset, offering the underwater tint each release shipped with, per level where the PlayStation ones varied it; picking one holds the water color below it, and Custom gives the player's own back (Graphic Options → Visuals → Water color preset) (#1619)
 - added the ability to clear the gym's best times, by holding the key shown below them
