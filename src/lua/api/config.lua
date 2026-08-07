@@ -422,10 +422,9 @@ outside its own bounds.]],
 -- What on_change hands back. The engine keys a watcher by a number, and the
 -- number is the module's business rather than a script's.
 local Watcher = api.type("config.Watcher", {
-  description = "A setting being watched. `trx.config.on_change` hands one back, and "
-    .. "holding it is what lets the watcher be dropped later. A watcher is spent "
-    .. "once detached, and the end of a level spends every one a level script "
-    .. "attached.",
+  description = [[A setting being watched. `trx.config.on_change` hands one back, and holding it
+is what lets the watcher be dropped later. A watcher is spent once detached, and the end of a level
+spends every one a level script attached.]],
   methods = {
     detach = {
       description = "Stops the watcher, which hears of no further change.",
