@@ -1812,11 +1812,11 @@
         },
         "visuals.fog_end": {
             "title": "Fine nebbia",
-            "description": "Imposta la distanza nelle piastrelle in cui la nebbia oscura completamente ogni cosa.",
+            "description": "\\{review}Imposta la distanza nelle piastrelle in cui la nebbia oscura completamente ogni cosa. In TR2 e TR3 originali ciò avviene a 20 piastrelle. Un livello può portare un proprio valore, che viene usato al suo posto.",
         },
         "visuals.fog_start": {
             "title": "Inizio nebbia",
-            "description": "Imposta la distanza nelle piastrelle in cui inizia ad apparire la nebbia.",
+            "description": "\\{review}Imposta la distanza nelle piastrelle in cui inizia ad apparire la nebbia. In TR2 e TR3 originali inizia a 12 piastrelle. Un livello può portare un proprio valore, che viene usato al suo posto.",
         },
         "visuals.fog_transparency": {
             "title": "Trasparenza nebbia",

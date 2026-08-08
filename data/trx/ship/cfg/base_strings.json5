@@ -1812,11 +1812,11 @@
         },
         "visuals.fog_end": {
             "title": "Fog end",
-            "description": "Sets distance in tiles where fog makes everything fully obscured.",
+            "description": "Sets distance in tiles where fog makes everything fully obscured. The original TR2 and TR3 reach that point at 20 tiles. A level can carry its own value, which is used instead.",
         },
         "visuals.fog_start": {
             "title": "Fog start",
-            "description": "Sets distance in tiles where fog begins to appear.",
+            "description": "Sets distance in tiles where fog begins to appear. The original TR2 and TR3 begin at 12 tiles. A level can carry its own value, which is used instead.",
         },
         "visuals.fog_transparency": {
             "title": "Fog transparency",
