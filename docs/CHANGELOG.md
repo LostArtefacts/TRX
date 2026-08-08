@@ -14,7 +14,9 @@
 - added an option to turn off controller support, for players who remap their controller with external software (Gameplay → Controls → Controller support)
 - added internal collision to lifts when they are moving, so that Lara cannot exit through the meshes
 - added an option for Lara to collect stacked pickups individually, as per OG TR4 (Gameplay → Controls → Multiple pickups)
-- added support for Lara to use animated interactions when picking up thrown flares
+- added support for Lara to use animated interactions for the following:
+  - picking up thrown flares
+  - grabbing zipline handles
 - added a `damage` property to the `O_POWER_SAW` object
 - added a bindable hotkey for using the binoculars
 - added the ability to rebind switching between fullscreen and windowed mode, which stays Alt+Enter unless changed (#2251)

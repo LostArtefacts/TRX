@@ -1,3 +1,4 @@
+#include <trx/config.h>
 #include <trx/core/math.h>
 #include <trx/game/input.h>
 #include <trx/game/lara.h>
@@ -17,13 +18,13 @@ typedef enum {
     M_STATE_HANG,
 } M_STATE;
 
-static const XYZ_32 m_ZiplineHandlePosition = {
+static const XYZ_32 m_Position = {
     .x = 0,
     .y = 0,
     .z = WALL_L / 2 - 141,
 };
 
-static const OBJECT_BOUNDS m_ZiplineHandleBounds = {
+static const OBJECT_BOUNDS m_DefaultBounds = {
     .shift = {
         .min = { .x = -WALL_L / 4, .y = -100, .z = +WALL_L / 4, },
         .max = { .x = +WALL_L / 4, .y = +100, .z = +WALL_L / 2, },
@@ -34,9 +35,21 @@ static const OBJECT_BOUNDS m_ZiplineHandleBounds = {
     },
 };
 
+static const OBJECT_BOUNDS m_ControlledBounds = {
+    .shift = {
+        .min = { .x = -WALL_L / 4, .y = -100, .z = +0, },
+        .max = { .x = +WALL_L / 4, .y = +100, .z = +WALL_L / 2, },
+    },
+    .rot = {
+        .min = { .x = +0, .y = -25 * DEG_1, .z = +0, },
+        .max = { .x = +0, .y = +25 * DEG_1, .z = +0, },
+    },
+};
+
 static const OBJECT_BOUNDS *M_Bounds(void)
 {
-    return &m_ZiplineHandleBounds;
+    return g_Config.gameplay.enable_walk_to_items ? &m_ControlledBounds
+                                                  : &m_DefaultBounds;
 }
 
 static void M_Initialise(const int16_t item_num)
@@ -124,17 +137,61 @@ static void M_Control(const int16_t item_num)
     item->trigger.spent = false;
 }
 
-static void M_Collision(
+static void M_Grab(
+    ITEM *const zip_item, ITEM *const lara_item, LARA_INFO *const lara)
+{
+    Item_SwitchToAnim(lara_item, LA(LA_ZIPLINE_GRAB), 0);
+    lara_item->current_anim_state == LS(LS_PULL_UP);
+    lara_item->goal_anim_state = LS(LS_ZIPLINE);
+    lara->gun_status = LGS_HANDS_BUSY;
+
+    Item_AddSimulated(Item_GetIndex(zip_item));
+    zip_item->trigger.spent = true;
+}
+
+static void M_CollisionControlled(
     const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
 {
-    LARA_INFO *const lara = Lara_GetLaraInfo();
-    if (!g_Input.action || lara->gun_status != LGS_ARMLESS || lara_item->gravity
-        || lara_item->current_anim_state != LS(LS_STOP)) {
+    if (!Lara_Interact_CanControl(LARA_INTERACT_SWITCH, item_num)) {
+        Object_Collision(item_num, lara_item, coll);
         return;
     }
 
     ITEM *const item = Item_Get(item_num);
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    const OBJECT *const obj = Object_Get(item->object_id);
+
+    if (Lara_TestPosition(item, obj->bounds_func())) {
+        if (Lara_MovePosition(item, &m_Position)) {
+            Lara_Interact_FinishControl(LARA_INTERACT_SWITCH);
+            M_Grab(item, lara_item, lara);
+        } else {
+            lara->interact_target.item_num = item_num;
+        }
+    } else if (
+        lara->interact_target.is_moving
+        && lara->interact_target.item_num == item_num) {
+        lara->interact_target.is_moving = false;
+        lara->gun_status = LGS_ARMLESS;
+    }
+}
+
+static void M_Collision(
+    const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
+{
+    ITEM *const item = Item_Get(item_num);
     if (!Item_IsInactive(item)) {
+        return;
+    }
+
+    if (g_Config.gameplay.enable_walk_to_items) {
+        M_CollisionControlled(item_num, lara_item, coll);
+        return;
+    }
+
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    if (!g_Input.action || lara->gun_status != LGS_ARMLESS || lara_item->gravity
+        || lara_item->current_anim_state != LS(LS_STOP)) {
         return;
     }
 
@@ -143,19 +200,8 @@ static void M_Collision(
         return;
     }
 
-    Lara_AlignPosition(item, &m_ZiplineHandlePosition);
-    lara->gun_status = LGS_HANDS_BUSY;
-
-    lara_item->goal_anim_state = LS(LS_ZIPLINE);
-    do {
-        Item_Animate(lara_item);
-    } while (lara_item->current_anim_state != LS(LS_PULL_UP));
-
-    if (!item->is_simulated) {
-        Item_AddSimulated(item_num);
-    }
-
-    item->trigger.spent = true;
+    Lara_AlignPosition(item, &m_Position);
+    M_Grab(item, lara_item, lara);
 }
 
 static void M_Setup(OBJECT *const obj)
