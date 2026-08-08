@@ -1024,7 +1024,7 @@
         },
         "gameplay.enable_cheats": {
             "title": "Trucchi",
-            "description": "Abilita vari trucchi:\n\n- L: termina immediatamente il livello.\n- I: dà a Lara tutte le armi; maggior quantità di munizioni e kit medici; tutti gli oggetti necessari per superare il livello.\n- O: abilita il trucco DOZY (nuotare a mezz'aria).\n  - tasto CAMMINA: disabilita il trucco DOZY.\n  - tasto ESTRAI ARMA: apre la porta più vicina (non funziona in certi casi).",
+            "description": "Abilita vari trucchi:\n\n- \\{input level_skip_cheat}: termina immediatamente il livello.\n- \\{input item_cheat}: dà a Lara tutte le armi; maggior quantità di munizioni e kit medici; tutti gli oggetti necessari per superare il livello.\n- \\{input fly_cheat}: abilita il trucco DOZY (nuotare a mezz'aria).\n  - \\{input slow}: disabilita il trucco DOZY.\n  - \\{input draw}: apre la porta più vicina (non funziona in certi casi).",
         },
         "gameplay.enable_cinematic_skips": {
             "title": "Salta sequenze",

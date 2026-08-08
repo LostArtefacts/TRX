@@ -1024,7 +1024,7 @@
         },
         "gameplay.enable_cheats": {
             "title": "Cheats",
-            "description": "Aktiviert verschiedene Cheats:\n\n- L: Beende das Level sofort.\n- I: eine Erhöhung der Anzahl der Munition und Medipacks; und alle plotrelevanten Items des aktuellen Levels.\n- O: Aktiviere Flug-Cheat (in der Luft schwimmen).\n  - GEHEN-Taste: beende Flug-Modus.\n  - WAFFE ZIEHEN-Taste: öffne die nächstgelegene Tür (funktioniert an ein paar Stellen nicht).",
+            "description": "Aktiviert verschiedene Cheats:\n\n- \\{input level_skip_cheat}: Beende das Level sofort.\n- \\{input item_cheat}: eine Erhöhung der Anzahl der Munition und Medipacks; und alle plotrelevanten Items des aktuellen Levels.\n- \\{input fly_cheat}: Aktiviere Flug-Cheat (in der Luft schwimmen).\n  - \\{input slow}: beende Flug-Modus.\n  - \\{input draw}: öffne die nächstgelegene Tür (funktioniert an ein paar Stellen nicht).",
         },
         "gameplay.enable_cinematic_skips": {
             "title": "\\{review}Überspringen von Zwischensequenzen",

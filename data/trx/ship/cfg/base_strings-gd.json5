@@ -1024,7 +1024,7 @@
         },
         "gameplay.enable_cheats": {
             "title": "Cleasan",
-            "description": "Cuiridh seo diofar chleasan an comas:\n\n- L: crìochnaich an ìre sa bhad.\n- I: bheir do Lara na h-armachd uile, pailteas lòin, pasganan slàinte agus stuthan cuilbheart na h-ìre làithreach.\n- O: cuir snàmh tro èadhar an comas.\n  - Coisich: stad a' snàmh tro èadhar.\n  - Uidheamaich: fosgail an doras as fhaisge (chan obraichidh seo an-còmhnaidh).",
+            "description": "Cuiridh seo diofar chleasan an comas:\n\n- \\{input level_skip_cheat}: crìochnaich an ìre sa bhad.\n- \\{input item_cheat}: bheir do Lara na h-armachd uile, pailteas lòin, pasganan slàinte agus stuthan cuilbheart na h-ìre làithreach.\n- \\{input fly_cheat}: cuir snàmh tro èadhar an comas.\n  - \\{input slow}: stad a' snàmh tro èadhar.\n  - \\{input draw}: fosgail an doras as fhaisge (chan obraichidh seo an-còmhnaidh).",
         },
         "gameplay.enable_cinematic_skips": {
             "title": "Leum troimh seallaidhean",
