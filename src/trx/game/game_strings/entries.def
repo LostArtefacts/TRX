@@ -642,7 +642,7 @@ GS_DEFINE(settings/ui.menu_style/description,                           "Changes
 GS_DEFINE(settings/ui.pause_background_style/description,               "Changes the way the background for the pause screen is displayed.\n\n- Dark: TR1 (PC).\n- Very dark: TR1 (PS1).\n- Static: TR2 (PC).\n- Wave: TR2 (PS1).\n- Monochrome: TR3.")
 GS_DEFINE(settings/ui.pause_fade_effects/description,                   "Fine-tunes the fade effects to be enabled or disabled in the pause screen. Needs the Fade Effects option to be enabled to work.")
 GS_DEFINE(settings/ui.pickup_scale/description,                         "Changes size of items animated in the UI when Lara picks something up.")
-GS_DEFINE(settings/ui.show_bars/description,                            "Disables all ingame bars, obscuring information on Lara's health and other resources (for challenge runs).")
+GS_DEFINE(settings/ui.show_bars/description,                            "Shows the ingame bars. Turning them off obscures information on Lara's health and other resources (for challenge runs).")
 GS_DEFINE(settings/ui.show_pickups_overlay/description,                 "Shows items in the bottom-right corner when Lara picks something up.")
 GS_DEFINE(settings/ui.show_title_version/description,                   "Shows the TRX version string in the title inventory ring.")
 GS_DEFINE(settings/ui.sprintbar_color/description,                      "Color of the sprintbar.")
