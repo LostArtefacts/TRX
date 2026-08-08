@@ -392,7 +392,7 @@ void Gun_Control(void)
 
     // Selecting a flare from the inventory while crawling will cache the
     // requested gun type, resulting in a free ghost flare when she stands up.
-    if (lara->request_gun_type == LGT_FLARE
+    if (lara->request_gun_type == LGT_FLARE && lara->gun_type != LGT_FLARE
         && g_Config.gameplay.fix_free_flare_glitch && M_IsLaraCrawling()) {
         lara->request_gun_type = LGT_UNARMED;
         return;
