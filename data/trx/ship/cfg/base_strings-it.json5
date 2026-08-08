@@ -1716,7 +1716,7 @@
         },
         "visuals.camera_mode": {
             "title": "Modalità telecamera",
-            "description": "Regola il comportamento della telecamera durante azioni come l'uso degli oggetti chiave.",
+            "description": "\\{review}Sceglie il comportamento della telecamera di quale gioco usare.\n\n- TR1: la telecamera di inseguimento segue i box di navigazione del livello.\n- TR2: lo stesso, con limiti di inseguimento e di visuale diversi e una diversa gestione delle telecamere fisse.\n- TR3: la telecamera di inseguimento usa la linea di vista invece dei box di navigazione.\n- TR4: come TR3, e la telecamera risponde anche quando un'azione sposta la visuale di Lara, come raccogliere un oggetto o aggirare uno spigolo appesa.",
         },
         "visuals.enable_3d_pickups": {
             "title": "Oggetti 3D",

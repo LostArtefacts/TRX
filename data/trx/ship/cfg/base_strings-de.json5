@@ -1716,7 +1716,7 @@
         },
         "visuals.camera_mode": {
             "title": "Kamera-Modus",
-            "description": "Passt das Kameraverhalten während Aktionen, wie dem Benutzen von Schlüsseln, ausegführt werden.",
+            "description": "\\{review}Legt fest, welchem Spiel das Kameraverhalten folgt.\n\n- TR1: Die Verfolgerkamera richtet sich nach den Wegfindungsboxen des Levels.\n- TR2: Dasselbe, mit anderen Verfolgungs- und Blickgrenzen und einer anderen Behandlung fester Kameras.\n- TR3: Die Verfolgerkamera nutzt die Sichtlinie statt der Wegfindungsboxen.\n- TR4: Wie TR3, zusätzlich reagiert die Kamera, wenn eine Aktion Laras Blick bewegt, etwa beim Aufheben eines Gegenstands oder beim Hangeln um eine Ecke.",
         },
         "visuals.enable_3d_pickups": {
             "title": "3D-Pickups",

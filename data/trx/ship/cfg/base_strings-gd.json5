@@ -1716,7 +1716,7 @@
         },
         "visuals.camera_mode": {
             "title": "Modh camara",
-            "description": "Atharraichidh seo an doigh anns a bhios a' chamara ag obair, m.e. aig àm ghnìomhan shonraichte, mar a bhith a' cleachdadh iuchraichean.",
+            "description": "\\{review}Taghaidh seo giùlan camara dè an geama a thèid a chleachdadh.\n\n- TR1: leanaidh an camara-tòrachd bogsaichean lorg-slighe na h-ìre.\n- TR2: an aon rud, le crìochan tòrachd is seallaidh eadar-dhealaichte agus dòigh eile air camarathan suidhichte a làimhseachadh.\n- TR3: cleachdaidh an camara-tòrachd loidhne-seallaidh an àite nam bogsaichean lorg-slighe.\n- TR4: mar TR3, agus freagraidh an camara cuideachd nuair a ghluaiseas gnìomh sealladh Lara, mar a bhith a' togail nì no a' dol timcheall oisean 'na crochadh.",
         },
         "visuals.enable_3d_pickups": {
             "title": "Togail 3D",

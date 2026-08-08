@@ -1716,7 +1716,7 @@
         },
         "visuals.camera_mode": {
             "title": "Mode caméra",
-            "description": "Ajuste le comportement de la caméra lors d'actions comme l'utilisation de clés.",
+            "description": "\\{review}Choisit le comportement de caméra à utiliser.\n\n- TR1 : la caméra de poursuite suit les boîtes de navigation du niveau.\n- TR2 : la même, avec des limites de poursuite et de regard différentes et une autre gestion des caméras fixes.\n- TR3 : la caméra de poursuite utilise la ligne de vue plutôt que les boîtes de navigation.\n- TR4 : comme TR3, et la caméra réagit aussi quand une action déplace la vue de Lara, par exemple ramasser un objet ou contourner un angle en suspension.",
         },
         "visuals.enable_3d_pickups": {
             "title": "Objets à ramasser 3D",
