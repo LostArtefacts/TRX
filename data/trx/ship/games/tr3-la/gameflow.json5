@@ -134,6 +134,7 @@
             ],
             "injections": [
                 "antarc_airlock.bin",
+                "undersea_wheel_frames.bin",
                 "lara_guns.bin",
                 "undersea_animating_bounds.bin",
                 "undersea_train.bin",

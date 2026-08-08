@@ -142,6 +142,7 @@
 - fixed jittery train interpolation (regression from 1.4)
 - fixed one-shot music playing more than once (#5312)
 - fixed blood spawning from sentry guns when Lara shoots them (regression from 1.5)
+- fixed the wheel switches jumping back to their starting position once Lara has finished turning them (#6055, OG bug)
 
 **TR4**
 - added dead enemies fading away a few seconds after they fall, as in the original TR4

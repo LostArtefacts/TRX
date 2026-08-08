@@ -195,6 +195,7 @@
             ],
             "injections": [
                 "coastal_airlock.bin",
+                "coastal_wheel_frames.bin",
                 "coastal_sky.bin",
                 "coastal_animating_bounds.bin",
                 "lara_guns.bin",
@@ -476,6 +477,7 @@
             ],
             "injections": [
                 "antarc_airlock.bin",
+                "antarc_wheel_frames.bin",
                 "antarc_sky.bin",
                 "lara_guns.bin",
                 "antarc_door134_frames.bin",
