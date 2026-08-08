@@ -256,6 +256,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── tihocan_skybox.bin
 │   │   │   ├── tihocan_textures.bin
 │   │   │   ├── title_textures.bin
+│   │   │   ├── uw_switch_sfx.bin
 │   │   │   ├── uzi_sfx.bin
 │   │   │   ├── valley_fd.bin
 │   │   │   ├── valley_itemrots.bin
@@ -264,6 +265,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── vilcabamba_door_sfx.bin
 │   │   │   ├── vilcabamba_itemrots.bin
 │   │   │   ├── vilcabamba_textures.bin
+│   │   │   ├── wall_switch_sfx.bin
 │   │   │   └── winston_model.bin
 │   │   ├── levels
 │   │   │   ├── cut1.phd
@@ -669,6 +671,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── wall_crystals.bin
 │   │   │   ├── wall_itemrots.bin
 │   │   │   ├── wall_music_tracks.bin
+│   │   │   ├── wall_switch_sfx.bin
 │   │   │   ├── wall_textures.bin
 │   │   │   ├── winston_model.bin
 │   │   │   ├── wreck_cameras.bin
@@ -1604,6 +1607,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── tihocan_skybox.bin
     │   │   │   │   ├── tihocan_textures.bin
     │   │   │   │   ├── title_textures.bin
+    │   │   │   │   ├── uw_switch_sfx.bin
     │   │   │   │   ├── uzi_sfx.bin
     │   │   │   │   ├── valley_fd.bin
     │   │   │   │   ├── valley_itemrots.bin
@@ -1612,6 +1616,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── vilcabamba_door_sfx.bin
     │   │   │   │   ├── vilcabamba_itemrots.bin
     │   │   │   │   ├── vilcabamba_textures.bin
+    │   │   │   │   ├── wall_switch_sfx.bin
     │   │   │   │   └── winston_model.bin
     │   │   │   ├── levels
     │   │   │   │   ├── cut1.phd
@@ -2017,6 +2022,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── wall_crystals.bin
     │   │   │   │   ├── wall_itemrots.bin
     │   │   │   │   ├── wall_music_tracks.bin
+    │   │   │   │   ├── wall_switch_sfx.bin
     │   │   │   │   ├── wall_textures.bin
     │   │   │   │   ├── winston_model.bin
     │   │   │   │   ├── wreck_cameras.bin

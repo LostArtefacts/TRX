@@ -121,6 +121,7 @@
                 "stronghold_itemrots.bin",
                 "stronghold_textures.bin",
                 "stronghold_crystals.bin",
+                "uw_switch_sfx.bin",
             ],
             "unobtainable_kills": 1,
         },
@@ -148,6 +149,7 @@
                 "hive_itemrots.bin",
                 "hive_textures.bin",
                 "hive_crystals.bin",
+                "uw_switch_sfx.bin",
             ],
         },
 
