@@ -135,6 +135,7 @@
 - changed Bacon Lara's anchor room to be an optional object property rather than a game flow event; refer to migration notes
 - fixed Lara's braid floating or being aligned to the water height when vaulting out of wading depth water (#5900)
 - fixed static meshes in Obelisk of Khamoon and Sanctuary of the Scion interfering with animated interaction pickups
+- fixed the lever sound playing twice in Natla's Mines, Atlantis, Atlantean Stronghold and The Hive (OG bug) (#4371)
 
 **TR2**
 - changed weather to be affected by the breeze
@@ -143,6 +144,7 @@
 - fixed the Silver and Jade Dragon secrets being listed in the wrong order in the Floating Islands statistics (OG bug); saves made before this version have the two swapped
 - fixed music triggered from one-shot switches playing more than once (OG bug)
 - fixed the collapsible tiles in Wreck of the Maria Doria room 68 not triggering if Lara jumps over them, and fixed a missing trigger for barrels item 123
+- fixed the lever sound playing twice in 40 Fathoms, Wreck of the Maria Doria, Living Quarters, The Deck, Tibetan Foothills and The Cold War (OG bug) (#4371)
 
 **TR3**
 - changed the Hand of Rathmore in Reunion to not show pickup aids, in line with the other artefacts

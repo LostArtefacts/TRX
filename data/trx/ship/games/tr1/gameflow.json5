@@ -360,6 +360,7 @@
                 "mines_pushblocks.bin",
                 "mines_textures.bin",
                 "skate_kid_sfx.bin",
+                "wall_switch_sfx.bin",
             ],
             "item_drops": [
                 {"enemy_num": 17, "object_ids": [86]},
@@ -388,6 +389,7 @@
                 "atlantis_fd.bin",
                 "atlantis_itemrots.bin",
                 "atlantis_textures.bin",
+                "uw_switch_sfx.bin",
             ],
             "unobtainable_pickups": 3,
         },
