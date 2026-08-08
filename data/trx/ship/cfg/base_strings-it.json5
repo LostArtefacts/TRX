@@ -892,7 +892,7 @@
         },
         "audio.fix_chainblock_secret_sound": {
             "title": "Correggi suono dei segreti",
-            "description": "Impedisce la riproduzione errata del suono dei segreti quando si utilizza la chiave d'oro nella Tomba di Tihocan.",
+            "description": "\\{review}Impedisce la riproduzione errata del suono dei segreti quando si utilizza la chiave d'oro nella Tomba di Tihocan, in TR1.",
         },
         "audio.fix_secrets_killing_music": {
             "title": "Musica segreti in polifonia",
@@ -1368,7 +1368,7 @@
         },
         "gameplay.restore_ps1_enemies": {
             "title": "Ripristina nemici PS1",
-            "description": "Aggiunge la mummia che appare nella versione PlayStation del livello 'Città di Khamoon', stanza 25.\nLa modifica di questa opzione richiederà il riavvio della partita.",
+            "description": "\\{review}Aggiunge la mummia che appare nella versione PlayStation del livello 'Città di Khamoon' di TR1, stanza 25.\nLa modifica di questa opzione richiederà il riavvio della partita.",
         },
         "gameplay.ring_memory_mode": {
             "title": "\\{review}Ricorda la posizione nell'inventario",

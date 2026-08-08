@@ -892,7 +892,7 @@
         },
         "audio.fix_chainblock_secret_sound": {
             "title": "Fix chain block sound",
-            "description": "Prevents the secret sound from incorrectly playing when using the golden key in Tomb of Tihocan.",
+            "description": "Prevents the secret sound from incorrectly playing when using the golden key in TR1's Tomb of Tihocan.",
         },
         "audio.fix_secrets_killing_music": {
             "title": "Layered secret music",
@@ -1368,7 +1368,7 @@
         },
         "gameplay.restore_ps1_enemies": {
             "title": "Restore PS1 enemies",
-            "description": "Adds the mummy that appears in the PlayStation version of City of Khamoon, room 25.\nChanging this option will require restarting the game.",
+            "description": "Adds the mummy that appears in the PlayStation version of TR1's City of Khamoon, room 25.\nChanging this option will require restarting the game.",
         },
         "gameplay.ring_memory_mode": {
             "title": "Remember inventory position",

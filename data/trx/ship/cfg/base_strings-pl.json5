@@ -892,7 +892,7 @@
         },
         "audio.fix_chainblock_secret_sound": {
             "title": "Napraw dźwięku blokady łańcucha",
-            "description": "Zapobiega nieprawidłowemu odtwarzaniu dźwięku sekretu po użyciu złotego klucza w Grobowcu Tihocana.",
+            "description": "\\{review}Zapobiega nieprawidłowemu odtwarzaniu dźwięku sekretu po użyciu złotego klucza w Grobowcu Tihocana w TR1.",
         },
         "audio.fix_secrets_killing_music": {
             "title": "Warstwowe dźwięki sekretów",
@@ -1368,7 +1368,7 @@
         },
         "gameplay.restore_ps1_enemies": {
             "title": "Przywróć przeciwników z PS1",
-            "description": "Dodaje mumię, która pojawia się w wersji na PlayStation w City of Khamoon, pokój 25.\nZmiana tej opcji do poprawnego działania wymaga ponownego uruchomienia gry.",
+            "description": "\\{review}Dodaje mumię, która pojawia się w wersji na PlayStation w City of Khamoon w TR1, pokój 25.\nZmiana tej opcji do poprawnego działania wymaga ponownego uruchomienia gry.",
         },
         "gameplay.ring_memory_mode": {
             "title": "\\{review}Zapamiętaj pozycję w ekwipunku",

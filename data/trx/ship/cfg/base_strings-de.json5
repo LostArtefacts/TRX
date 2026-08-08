@@ -892,7 +892,7 @@
         },
         "audio.fix_chainblock_secret_sound": {
             "title": "Fix: Falsch abspielender Sound",
-            "description": "Verhindert, dass der Geheimnis-Ton inkorrekterweise abgespielt wird, wenn man den Goldenen Schlüssel im Grab von Tihocan benutzt.",
+            "description": "\\{review}Verhindert, dass der Geheimnis-Ton inkorrekterweise abgespielt wird, wenn man den Goldenen Schlüssel im Grab von Tihocan in TR1 benutzt.",
         },
         "audio.fix_secrets_killing_music": {
             "title": "Überlagernde Geheimnis-Musik",
@@ -1368,7 +1368,7 @@
         },
         "gameplay.restore_ps1_enemies": {
             "title": "PS1 Feinde wiederherstellen",
-            "description": "\\{review}Fügt die Mumie hinzu, die in der PlayStation-Version von City of Khamoon, Raum 25, erscheint.\nDas Ändern dieser Option erfordert einen Neustart des Spiels.",
+            "description": "\\{review}Fügt die Mumie hinzu, die in der PlayStation-Version von City of Khamoon in TR1, Raum 25, erscheint.\nDas Ändern dieser Option erfordert einen Neustart des Spiels.",
         },
         "gameplay.ring_memory_mode": {
             "title": "\\{review}Inventar-Position merken",

@@ -892,7 +892,7 @@
         },
         "audio.fix_chainblock_secret_sound": {
             "title": "Càraich fuaim bloca slabhraidh",
-            "description": "Cuiridh seo casg air fuaim dìomhaireachd a chluich gu ceàrr nuair a thèid an iuchair òir a chleachdadh ann an Uaigh Tihocan.",
+            "description": "\\{review}Cuiridh seo casg air fuaim dìomhaireachd a chluich gu ceàrr nuair a thèid an iuchair òir a chleachdadh ann an Uaigh Tihocan ann an TR1.",
         },
         "audio.fix_secrets_killing_music": {
             "title": "Ceòl dìomhaireachd ioma-fhilleadh",
@@ -1368,7 +1368,7 @@
         },
         "gameplay.restore_ps1_enemies": {
             "title": "Aisig nàimhdean PS1",
-            "description": "Cuiridh seo spaoileadan ann an City of Khamoon (PS1), seòmar 25. Feumaidh ath-thòiseachadh a' gheama gu lèir gus obraicheas seo.",
+            "description": "\\{review}Cuiridh seo spaoileadan ann an City of Khamoon (PS1) ann an TR1, seòmar 25. Feumaidh ath-thòiseachadh a' gheama gu lèir gus obraicheas seo.",
         },
         "gameplay.ring_memory_mode": {
             "title": "\\{review}Cuimhnich àite na maoine",
