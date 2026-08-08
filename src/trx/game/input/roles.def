@@ -33,6 +33,8 @@ X_INPUT_ROLE(INPUT_ROLE_FLY_CHEAT,               fly_cheat)
 X_INPUT_ROLE(INPUT_ROLE_ITEM_CHEAT,              item_cheat)
 X_INPUT_ROLE(INPUT_ROLE_LEVEL_SKIP_CHEAT,        level_skip_cheat)
 X_INPUT_ROLE(INPUT_ROLE_TURBO_CHEAT,             turbo_cheat)
+X_INPUT_ROLE(INPUT_ROLE_FAST_FORWARD_CHEAT,      fast_forward_cheat)
+X_INPUT_ROLE(INPUT_ROLE_SLOW_MOTION_CHEAT,       slow_motion_cheat)
 
 X_INPUT_ROLE(INPUT_ROLE_SAVE,                    save)
 X_INPUT_ROLE(INPUT_ROLE_LOAD,                    load)

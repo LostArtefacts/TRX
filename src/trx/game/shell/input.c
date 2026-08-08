@@ -152,6 +152,15 @@ void Shell_ProcessInput(void)
         Clock_CycleTurboSpeed(!g_Input.slow);
     }
 
+    if (g_Config.gameplay.enable_cheats
+        && (g_Input.fast_forward_cheat || g_Input.slow_motion_cheat)) {
+        Clock_HoldTurboSpeed(
+            g_Input.fast_forward_cheat ? CLOCK_TURBO_SPEED_MAX
+                                       : CLOCK_TURBO_SPEED_MIN);
+    } else {
+        Clock_ReleaseTurboSpeed();
+    }
+
     if (g_InputDB.change_outfit) {
         Lara_Skin_CycleOutfit(g_Input.slow ? -1 : 1);
     }

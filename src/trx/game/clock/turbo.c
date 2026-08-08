@@ -9,6 +9,8 @@
 
 #include <math.h>
 
+static bool m_IsHeld = false;
+
 void Clock_CycleTurboSpeed(const bool forward)
 {
     int32_t new_speed = Clock_GetTurboSpeed() + (forward ? 1 : -1);
@@ -34,6 +36,30 @@ void Clock_SetTurboSpeed(int32_t value)
     Config_Update();
     Console_Log(GS("general/osd/speed_set"), value);
     Clock_SetSimSpeed(Clock_GetSpeedMultiplier());
+}
+
+void Clock_HoldTurboSpeed(int32_t value)
+{
+    CLAMP(value, CLOCK_TURBO_SPEED_MIN, CLOCK_TURBO_SPEED_MAX);
+    if (m_IsHeld) {
+        if (value == g_Config.gameplay.turbo_speed) {
+            return;
+        }
+        CONFIG_POP_HOLD(g_Config.gameplay.turbo_speed);
+    }
+    CONFIG_PUSH_HOLD(g_Config.gameplay.turbo_speed, value, CONFIG_HOLD_INPUT);
+    m_IsHeld = true;
+    Config_Update();
+}
+
+void Clock_ReleaseTurboSpeed(void)
+{
+    if (!m_IsHeld) {
+        return;
+    }
+    CONFIG_POP_HOLD(g_Config.gameplay.turbo_speed);
+    m_IsHeld = false;
+    Config_Update();
 }
 
 double Clock_GetSpeedMultiplier(void)

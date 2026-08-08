@@ -22,6 +22,7 @@
   - elevated scion pickups (i.e. Tomb of Qualopec/Sanctuary of the Scion)
 - added a `damage` property to the `O_POWER_SAW` object
 - added a bindable hotkey for using the binoculars
+- added bindable keys for fast forward and slow motion that last only while held, which start out unbound and leave the turbo key as it was (#2699)
 - added the ability to rebind switching between fullscreen and windowed mode, which stays Alt+Enter unless changed (#2251)
 - added the ability to change how heavily the rain or snow falls, from Lua and with the `/weather` console command (#6080)
 - added an option for a ring to open on the entry it was left on, rather than on its first one, for the item ring or for the keys ring as well (Gameplay → General → Remember inventory position) (#3273)
