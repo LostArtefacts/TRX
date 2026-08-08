@@ -36,6 +36,7 @@
 - added the glow around gun flashes to enemies firing, where Lara's weapons alone had it (#6127)
 - improved error messages related to bad command invocations
 - improved state change handling when shimmying is requested while in the slow swing-in state on thin ledges (#5161)
+- improved the option descriptions, which now say which original game a setting matches, give the fog distances the originals used, and show the key each cheat is bound to (#4027)
 - changed a multi-key shortcut to answer only to the side of Ctrl, Shift or Alt it was bound to, where a shortcut of a single key still takes either
 - changed the brightness options to be given as percentages, as the volume options are
 - changed the game mode selection option so that Never starts every new game as a regular one (Gameplay → General → Game mode selection)
