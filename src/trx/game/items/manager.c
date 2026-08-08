@@ -203,7 +203,11 @@ ITEM *Item_Get(const int16_t item_num)
 
 int16_t Item_GetIndex(const ITEM *const item)
 {
-    return item - Item_Get(0);
+    if (item == nullptr || m_Items == nullptr || item < m_Items
+        || item >= m_Items + MAX_ITEMS) {
+        return NO_ITEM;
+    }
+    return item - m_Items;
 }
 
 TRX_HANDLE Item_GetHandle(const int16_t item_num)

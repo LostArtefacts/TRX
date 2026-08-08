@@ -11,6 +11,7 @@ void Item_InitialiseItems(int32_t num_items);
 
 // Resolve a slot index to its item, unchecked. The lookup everything uses.
 ITEM *Item_Get(int16_t num);
+// The item's slot, or NO_ITEM for one the pool does not hold.
 int16_t Item_GetIndex(const ITEM *item);
 
 // A handle to the item currently in the slot, and the item a handle still names
