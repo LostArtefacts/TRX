@@ -1488,6 +1488,10 @@
             "title": "Modalità blocco sprite",
             "description": "Controlla quali assi bloccare durante la visualizzazione degli sprite sullo schermo.\n\n- Nessuno: mostra gli sprite normalmente.\n- Rotazione: blocca l'asse di rotazione – utile solo in modalità foto.\n- Rotazione e inclinazione: fa in modo che gli sprite rimangano in posizione verticale e non si inclinino verso il suolo quando li si guarda dall'alto.\n- Prospettiva: blocca gli assi di rotazione e inclinazione e, inoltre, ruota leggermente gli sprite verso il centro dello schermo.",
         },
+        "rendering.supersampling_factor": {
+            "title": "\\{review}Supercampionamento",
+            "description": "\\{review}Renderizza il gioco a un multiplo della sua risoluzione e lo riduce facendone la media, smussando i bordi frastagliati. I fattori più alti richiedono alla scheda grafica molto più lavoro.",
+        },
         "rendering.texture_filter": {
             "title": "Filtro texture",
             "description": "Passa dalle texture di gioco filtrate a quelle pixelate e viceversa.",

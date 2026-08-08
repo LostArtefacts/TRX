@@ -19,5 +19,7 @@ void TRX_GL_Renderer_BindGeometryFbo(void);
 // Bind the UI framebuffer for rendering the UI overlay.
 void TRX_GL_Renderer_BindUiFbo(void);
 
-// Get the GL object id of the geometry framebuffer (3D scene only, no UI).
-GLuint TRX_GL_Renderer_GetGeometryFboId(void);
+// Resolve the geometry framebuffer down to VIEWPORT_SCENE and return the GL
+// object id holding the result (3D scene only, no UI). Without supersampling
+// the geometry framebuffer already is that result and is returned as is.
+GLuint TRX_GL_Renderer_ResolveSceneFbo(void);

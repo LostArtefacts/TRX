@@ -165,8 +165,9 @@ void Shell_HandleConfigChange(const CONFIG_CHANGE *const change)
     if (L_CHANGED(window.is_fullscreen) || L_CHANGED(window.is_maximized)
         || L_CHANGED(window.width) || L_CHANGED(window.height)
         || L_CHANGED(window.fs_width) || L_CHANGED(window.fs_height)
-        || L_CHANGED(rendering.upscaling_factor) || L_CHANGED(rendering.borders)
-        || L_CHANGED(rendering.aspect_mode)) {
+        || L_CHANGED(rendering.upscaling_factor)
+        || L_CHANGED(rendering.supersampling_factor)
+        || L_CHANGED(rendering.borders) || L_CHANGED(rendering.aspect_mode)) {
         if (!m_IgnoreConfigChanges) {
             Shell_SyncToWindow();
         }

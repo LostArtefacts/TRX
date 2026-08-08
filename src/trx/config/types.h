@@ -336,6 +336,7 @@ typedef struct {
         LIGHTING_CONTRAST lighting_contrast;
         BILLBOARD_LOCK_MODE sprite_lock_mode;
         int32_t upscaling_factor;
+        int32_t supersampling_factor;
         float borders;
     } rendering;
 

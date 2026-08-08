@@ -1488,6 +1488,10 @@
             "title": "Sprite lock mode",
             "description": "Controls which axes to lock when showing sprites on the screen.\n\n- None: show the sprites normally.\n- Roll: lock the roll axis – useful only in photo mode.\n- Roll & pitch: ensure the sprites stand upright and do not lie on the ground when looking at them from above.\n- Perspective: lock roll and pitch axes and additionally, rotate the sprites slightly towards the center of the screen.",
         },
+        "rendering.supersampling_factor": {
+            "title": "Supersampling",
+            "description": "Renders the game at a multiple of its resolution and averages it back down, which smooths jagged edges. Higher factors cost the graphics card several times more work.",
+        },
         "rendering.texture_filter": {
             "title": "Texture filter",
             "description": "Switches between smooth and pixel ingame textures.",

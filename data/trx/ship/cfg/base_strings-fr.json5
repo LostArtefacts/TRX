@@ -1488,6 +1488,10 @@
             "title": "\\{review}Mode verrouillage des sprites",
             "description": "\\{review}Contrôle les axes à verrouiller lors de l'affichage des sprites à l'écran.\n\n- Aucun : afficher les sprites normalement.\n- Roulis : verrouiller l'axe de roulis – utile uniquement en mode photo.\n- Roulis et tangage : garantir que les sprites restent debout et ne reposent pas au sol lorsqu'on les regarde d'en haut.\n- Perspective : verrouiller les axes de roulis et de tangage et, en plus, faire pivoter légèrement les sprites vers le centre de l'écran.",
         },
+        "rendering.supersampling_factor": {
+            "title": "\\{review}Suréchantillonnage",
+            "description": "\\{review}Rend le jeu à un multiple de sa résolution puis le réduit en faisant la moyenne, ce qui lisse les bords crénelés. Les facteurs élevés demandent plusieurs fois plus de travail à la carte graphique.",
+        },
         "rendering.texture_filter": {
             "title": "Filtre des texture",
             "description": "\\{review}Alterne entre des textures ingame lisses et pixelisées.",
