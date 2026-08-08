@@ -1392,7 +1392,7 @@
         },
         "gameplay.wall_glitch_mode": {
             "title": "Modh glitch bhalla",
-            "description": "Cuiridh seo modh glitch bhalla TR1 ann an TR2 agus a chaochladh an comas. Leigidh seo cuideachd le càradh iomlan air na glitchan uile.",
+            "description": "\\{review}Taghaidh seo dè na glitchean balla as urrainn do Lara a dhèanamh.\n\n- TR1: mar a tha e san TR1 thùsail, far an cuir leum air adhart a-steach do bhalla Lara gu a mhullach.\n- TR2: mar a tha e san TR2 is TR3 thùsail, far nach obraich an leum sin tuilleadh, ach far an tèid Lara troimhe fhathast ma bhuaileas i an làr agus am balla aig an aon àm ann an cuid a gheoimeatraidh.\n- Air a chàradh: chan obraich glitch seach a chèile dhiubh, agus chan fhaod Lara a dhol tro roinn dhùinte doras tuilleadh.",
         },
         "input.enable_buffering_func_keys": {
             "title": "Bùthadh (putanan F)",
@@ -1520,7 +1520,7 @@
         },
         "ui.bar_look": {
             "title": "Coltas nam bàraichean",
-            "description": "Atharraichidh seo coltas nam bàraichean EA.",
+            "description": "\\{review}Taghaidh seo am frèam agus na dathan a thèid a chleachdadh airson bàraichean na h-eadar-aghaidh, air an togail bho aon de na sgaoilidhean tùsail. Co-dhùnaidh an taghadh cuideachd dè an seata de roghainnean datha gu h-ìosal a bhios an sàs.",
         },
         "ui.bar_scale": {
             "title": "Meud bàr",
@@ -1560,7 +1560,7 @@
         },
         "ui.enemy_healthbar_show_mode": {
             "title": "Modh bàr-nàmhaid",
-            "description": "Cuiridh seo bàr-shlàinte an nàmhaid gnìomhaich an comas.",
+            "description": "\\{review}Stiùirichidh seo cuin a nochdas bàr-slàinte airson an nàmhaid air a bheil Lara ag amas.\n\n- An-còmhnaidh: seall e airson amas sam bith.\n- A-mhàin ri boss: na seall e ach nuair as e boss an t-amas.\n- Na seall idir: na seall e idir.",
         },
         "ui.exposurebar_color": {
             "title": "Dath bàr-fuachd",

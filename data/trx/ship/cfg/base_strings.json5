@@ -1392,7 +1392,7 @@
         },
         "gameplay.wall_glitch_mode": {
             "title": "Wall glitch mode",
-            "description": "Allows using TR1 wall glitch behavior in TR2 and vice-versa; equally allows fixing all types of wall glitch.",
+            "description": "Chooses which wall glitches Lara can perform.\n\n- TR1: as in the original TR1, which includes jumping forwards into a wall and teleporting to the top of it.\n- TR2: as in the original TR2 and TR3, where that jump no longer works, but Lara can still teleport by hitting the floor and the wall at the same time in certain geometry.\n- Fixed: neither glitch works, and Lara can no longer pass a door's blocked sector.",
         },
         "input.enable_buffering_func_keys": {
             "title": "Buffering (F-keys)",
@@ -1520,7 +1520,7 @@
         },
         "ui.bar_look": {
             "title": "Bars appearance",
-            "description": "Controls the visual appearance of the UI bars.",
+            "description": "Chooses the frame and colors the UI bars are drawn with, taken from one of the original releases. The choice also decides which set of bar color settings below applies.",
         },
         "ui.bar_scale": {
             "title": "Bars scale",
@@ -1560,7 +1560,7 @@
         },
         "ui.enemy_healthbar_show_mode": {
             "title": "Enemy bar mode",
-            "description": "Enables showing a healthbar for the active enemy.",
+            "description": "Controls when a healthbar is shown for the enemy Lara has targeted.\n\n- Always: show it for any target.\n- Boss only: show it only when the target is a boss.\n- Never: never show it.",
         },
         "ui.exposurebar_color": {
             "title": "Exposure bar color",

@@ -1392,7 +1392,7 @@
         },
         "gameplay.wall_glitch_mode": {
             "title": "\\{review}Mode de glitch de mur",
-            "description": "\\{review}Permet d'utiliser le comportement de glitch de mur de TR1 dans TR2 et vice-versa ; permet également de corriger tous les types de glitch de mur.",
+            "description": "\\{review}Choisit les glitchs de mur que Lara peut réaliser.\n\n- TR1 : comme dans le TR1 d'origine, où un saut en avant dans un mur téléporte Lara à son sommet.\n- TR2 : comme dans les TR2 et TR3 d'origine, où ce saut ne fonctionne plus, mais où Lara peut encore se téléporter en touchant le sol et le mur en même temps dans certaines géométries.\n- Réparé : aucun des deux glitchs ne fonctionne, et Lara ne peut plus franchir le secteur bloqué d'une porte.",
         },
         "input.enable_buffering_func_keys": {
             "title": "\\{review}Mise en mémoire tampon (touches F)",
@@ -1520,7 +1520,7 @@
         },
         "ui.bar_look": {
             "title": "\\{review}Apparence des barres",
-            "description": "\\{review}Contrôle l'apparence visuelle des barres de l'interface utilisateur.",
+            "description": "\\{review}Choisit le cadre et les couleurs avec lesquels les barres de l'interface sont dessinées, repris de l'une des versions d'origine. Ce choix détermine aussi quel jeu de réglages de couleur ci-dessous s'applique.",
         },
         "ui.bar_scale": {
             "title": "Échelle des barres",
@@ -1560,7 +1560,7 @@
         },
         "ui.enemy_healthbar_show_mode": {
             "title": "Comportement de la barre des ennemis",
-            "description": "Affiche une barre de santé pour l'ennemi ciblé.",
+            "description": "\\{review}Détermine quand une barre de vie est affichée pour l'ennemi visé par Lara.\n\n- Toujours : l'afficher pour toute cible.\n- Boss uniquement : ne l'afficher que si la cible est un boss.\n- Jamais : ne jamais l'afficher.",
         },
         "ui.exposurebar_color": {
             "title": "\\{review}Couleur de la barre d'exposition",
