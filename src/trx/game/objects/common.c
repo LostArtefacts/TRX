@@ -11,6 +11,11 @@
 #include <trx/game/objects/vars.h>
 #include <trx/game/output/common.h>
 
+typedef struct {
+    int32_t game_id;
+    OBJECT obj;
+} M_UNCATALOGED_SLOT;
+
 static OBJECT m_Objects[O_NUMBER_OF] = {};
 static STATIC_OBJECT_3D *m_StaticObjects3D = nullptr;
 static STATIC_OBJECT_2D *m_StaticObjects2D = nullptr;
@@ -19,6 +24,8 @@ static int32_t m_StaticObjects2DCount = 0;
 static OBJECT_MESH **m_MeshPointers = nullptr;
 static int32_t m_MeshCount = 0;
 static int32_t m_MeshCapacity = 0;
+
+static VECTOR *m_UncatalogedSlots = nullptr;
 
 void Object_Reset(void)
 {
@@ -34,6 +41,11 @@ void Object_Reset(void)
     m_MeshPointers = nullptr;
     m_MeshCount = 0;
     m_MeshCapacity = 0;
+
+    if (m_UncatalogedSlots != nullptr) {
+        Vector_Free(m_UncatalogedSlots);
+        m_UncatalogedSlots = nullptr;
+    }
 }
 
 void Object_InitialiseStaticObjects3D(const int32_t count)
@@ -83,6 +95,30 @@ OBJECT *Object_GetByGameID(const int32_t game_id)
         return nullptr;
     }
     return &m_Objects[object_id];
+}
+
+void Object_StoreUncatalogedSlot(const int32_t game_id, const OBJECT *const obj)
+{
+    if (m_UncatalogedSlots == nullptr) {
+        m_UncatalogedSlots = Vector_Create(sizeof(M_UNCATALOGED_SLOT));
+    }
+    const M_UNCATALOGED_SLOT slot = { .game_id = game_id, .obj = *obj };
+    Vector_Add(m_UncatalogedSlots, &slot);
+}
+
+const OBJECT *Object_GetUncatalogedSlot(const int32_t game_id)
+{
+    if (m_UncatalogedSlots == nullptr) {
+        return nullptr;
+    }
+    for (int32_t i = 0; i < m_UncatalogedSlots->count; i++) {
+        const M_UNCATALOGED_SLOT *const slot =
+            Vector_Get(m_UncatalogedSlots, i);
+        if (slot->game_id == game_id) {
+            return &slot->obj;
+        }
+    }
+    return nullptr;
 }
 
 STATIC_OBJECT_3D *Object_Get3DStatic(const int32_t static_id)
