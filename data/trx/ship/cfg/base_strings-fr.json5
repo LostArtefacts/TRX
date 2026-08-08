@@ -1620,7 +1620,7 @@
         },
         "ui.show_bars": {
             "title": "\\{review}Afficher les barres",
-            "description": "\\{review}Désactive toutes les barres en jeu, masquant les informations sur la santé de Lara et d'autres ressources (pour les défis).",
+            "description": "\\{review}Affiche les barres en jeu. Les désactiver masque les informations sur la santé de Lara et d'autres ressources (pour les défis).",
         },
         "ui.show_pickups_overlay": {
             "title": "Affichage des objets ramassés",

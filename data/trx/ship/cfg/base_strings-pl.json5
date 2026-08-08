@@ -1620,7 +1620,7 @@
         },
         "ui.show_bars": {
             "title": "Pokaż paski",
-            "description": "Wyłącza wszystkie paski w grze, ukrywając informacje o zdrowiu Lary i innych zasobach.",
+            "description": "\\{review}Pokazuje paski w grze. Ich wyłączenie ukrywa informacje o zdrowiu Lary i innych zasobach (dla wyzwań).",
         },
         "ui.show_pickups_overlay": {
             "title": "Powiadomienia o podniesieniu",

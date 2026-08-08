@@ -1620,7 +1620,7 @@
         },
         "ui.show_bars": {
             "title": "Cleachd bàraichean",
-            "description": "Cuiridh seo dheth gach bàr sa gheama, a' falach fiosrachadh mu shlàinte Lara agus goireasan eile (airson ruith dhùbhlanach).",
+            "description": "\\{review}Seallaidh seo na bàraichean sa gheama. Ma chuireas tu dheth iad, thèid fiosrachadh mu shlàinte Lara agus goireasan eile fhalach (airson ruith dhùbhlanach).",
         },
         "ui.show_pickups_overlay": {
             "title": "Taisbeanadh thogailtean",

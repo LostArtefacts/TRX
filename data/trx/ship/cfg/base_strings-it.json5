@@ -1620,7 +1620,7 @@
         },
         "ui.show_bars": {
             "title": "Mostra barre",
-            "description": "Disabilita tutte le barre di gioco, nascondendo le informazioni sulla salute di Lara e altre risorse (per le sfide).",
+            "description": "\\{review}Mostra le barre di gioco. Disattivandole si nascondono le informazioni sulla salute di Lara e altre risorse (per sfide).",
         },
         "ui.show_pickups_overlay": {
             "title": "Notifiche raccolta",

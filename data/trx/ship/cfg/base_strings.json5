@@ -1620,7 +1620,7 @@
         },
         "ui.show_bars": {
             "title": "Show bars",
-            "description": "Disables all ingame bars, obscuring information on Lara's health and other resources (for challenge runs).",
+            "description": "Shows the ingame bars. Turning them off obscures information on Lara's health and other resources (for challenge runs).",
         },
         "ui.show_pickups_overlay": {
             "title": "Pickups overlay",

@@ -1620,7 +1620,7 @@
         },
         "ui.show_bars": {
             "title": "\\{review}Leisten anzeigen",
-            "description": "\\{review}Deaktiviert alle Ingame-Anzeigen und verdeckt Informationen über Laras Gesundheit und andere Ressourcen (für Herausforderungsdurchläufe).",
+            "description": "\\{review}Zeigt die Ingame-Leisten an. Werden sie ausgeschaltet, bleiben Informationen über Laras Gesundheit und andere Ressourcen verborgen (für Herausforderungsdurchläufe).",
         },
         "ui.show_pickups_overlay": {
             "title": "Pickup-Anzeige",
