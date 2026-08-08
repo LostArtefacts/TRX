@@ -12,6 +12,7 @@
 #include <trx/game/lua/registry.h>
 #include <trx/game/lua/struct.h>
 #include <trx/game/lua/utils.h>
+#include <trx/game/objects.h>
 #include <trx/game/rooms.h>
 
 #include <lauxlib.h>
@@ -152,6 +153,30 @@ static int M_L_LaraSetExtraEquipment(lua_State *const L)
     return 0;
 }
 
+// trxc.lara.set_mesh(lara_mesh, object_id, mesh_num)
+static int M_L_LaraSetMesh(lua_State *const L)
+{
+    const LARA_MESH lara_mesh = M_CheckLaraMesh(L, 1);
+    const OBJECT_ID object_id = LUA_CheckObjectID(L, 2);
+    const OBJECT *const obj = Object_Get(object_id);
+    if (!obj->loaded) {
+        return luaL_error(L, "this level does not carry that object");
+    }
+    const int32_t mesh_num =
+        LUA_CheckRange(L, 3, obj->mesh_count, "no such mesh on this object");
+    Lara_Skin_SetMeshOverride(
+        lara_mesh, Object_GetMesh(obj->mesh_idx + mesh_num));
+    return 0;
+}
+
+// trxc.lara.clear_mesh(lara_mesh)
+static int M_L_LaraClearMesh(lua_State *const L)
+{
+    const LARA_MESH lara_mesh = M_CheckLaraMesh(L, 1);
+    Lara_Skin_SetMeshOverride(lara_mesh, nullptr);
+    return 0;
+}
+
 // trxc.lara.clear_equipment(lara_mesh)
 static int M_L_LaraClearEquipment(lua_State *const L)
 {
@@ -276,6 +301,8 @@ static const luaL_Reg m_Module[] = {
     { "set_outfit", M_L_LaraSetOutfit },
     { "set_extra_equipment", M_L_LaraSetExtraEquipment },
     { "clear_equipment", M_L_LaraClearEquipment },
+    { "set_mesh", M_L_LaraSetMesh },
+    { "clear_mesh", M_L_LaraClearMesh },
     { "cure_poison", M_L_LaraCurePoison },
     { "extinguish", M_L_LaraExtinguish },
     { "dry", M_L_LaraDry },

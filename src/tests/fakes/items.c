@@ -533,6 +533,14 @@ OBJECT *Object_Get(const OBJECT_ID object_id)
     return &m_Objects[object_id];
 }
 
+OBJECT_MESH *Object_GetMesh(const int32_t index)
+{
+    // The fake level stages no geometry. Callers hand the result straight back
+    // to another fake, which records that it was asked rather than reading it.
+    static OBJECT_MESH m_Mesh = {};
+    return &m_Mesh;
+}
+
 const VECTOR *Object_GetNames(const OBJECT_ID obj_id)
 {
     // The fake level localizes nothing, so a lookup always takes the

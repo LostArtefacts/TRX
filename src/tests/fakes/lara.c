@@ -375,6 +375,17 @@ void Lara_Skin_SetExtraEquipment(
     FAKE_RECORD("set_equipment", FV(mesh), FV(extra_mesh));
 }
 
+void Lara_Skin_SetMeshOverride(
+    const LARA_MESH mesh, OBJECT_MESH *const mesh_ptr)
+{
+    FAKE_RECORD("set_mesh_override", FV(mesh), FV(mesh_ptr != nullptr));
+}
+
+OBJECT_MESH *Lara_Skin_GetMeshOverride(const LARA_MESH mesh)
+{
+    return nullptr;
+}
+
 bool Lara_Skin_IsOutfitAvailable(const LARA_SKIN_TYPE skin_type)
 {
     return true;

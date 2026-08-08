@@ -252,6 +252,7 @@ The Lua integration was rewritten and existing scripts will need updating; refer
 - added `trx.lara.dry()` and `trx.lara.is_wet`, to dry Lara off after a swim and to check whether she needs it
 - added `trx.lara.is_flying`, to read and toggle the fly-mode cheat
 - added `trx.lara.teleport()`, to move Lara to a position, as `/tp` does
+- added `trx.lara.set_mesh()` and `trx.lara.clear_mesh()`, to put another object's mesh on one of Lara's own and to take it back off, so that a level can dress her from its own geometry
 - added a new Lua module, `trx.inventory`, for reading and changing what Lara carries: it counts and walks her inventory an entry at a time, says what she holds of each weapon and how many shots she has for it, and reaches any level's own inventory the same way through `trx.game.Level.inventory`
 - added a new Lua module, `trx.weapons`, for what a weapon is rather than what Lara has of it: whether the game allows it, which pickup it is, and what a box of its ammunition is worth
 - added `trx.camera.play_flyby()`, to start a flyby camera sequence, and `trx.events.on_flyby_end()`, which happens when one reaches its last camera
