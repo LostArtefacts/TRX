@@ -23,8 +23,9 @@ left to right, combining with AND: `q:spawnable():by_name("wolf")`.
 --   id_of(id, handle) - what ids() yields for a candidate.
 --   searchable - the filters whose own name a by_name also matches, as
 --     { key, pred } pairs in the order a completer offers them.
---   names_of(handle) - optional. The names a thing answers to, best weight. Its
---     presence is what gives a domain by_name, names and best.
+--   names_of(handle) - optional. The names a thing answers to, outranked only
+--     by a group spelled out in full. Its presence is what gives a domain
+--     by_name, names and best.
 --   default_names_of(handle) - optional. A fallback set tried when nothing in
 --     names_of matched, for before a language file is loaded.
 
@@ -55,18 +56,28 @@ local function kept_pairs(self)
   return kept
 end
 
--- The names a lookup weighs: everything a thing answers to at full weight, and
--- the name of every searchable group it belongs to at a weight a real name
--- beats.
-local function candidates(domain, kept, names_getter)
+-- The names a lookup weighs: a group spelled out in full above everything,
+-- since the player naming a group means the group and not whichever of its
+-- members happens to answer to the same word; then everything a thing answers
+-- to; then the groups it belongs to as a partial match.
+local NAME_WEIGHT = 2
+local GROUP_WEIGHT = 1
+local SPELLED_GROUP_WEIGHT = 3
+
+local function candidates(domain, kept, names_getter, spelled)
   local out = {}
   for _, pair in ipairs(kept) do
     for _, name in ipairs(names_getter(pair[2])) do
-      out[#out + 1] = { key = name, value = pair, weight = 2 }
+      out[#out + 1] = { key = name, value = pair, weight = NAME_WEIGHT }
     end
     for _, group in ipairs(domain.searchable) do
       if group.pred(pair[1], pair[2]) then
-        out[#out + 1] = { key = group.key, value = pair, weight = 1 }
+        out[#out + 1] = {
+          key = group.key,
+          value = pair,
+          weight = group.key == spelled and SPELLED_GROUP_WEIGHT
+            or GROUP_WEIGHT,
+        }
       end
     end
   end
@@ -76,12 +87,15 @@ end
 -- The player's language is tried first; nothing there matching falls back on
 -- the names the engine was built with, present before any language file.
 local function rank(domain, name, kept)
-  local matches =
-    trx.strings.fuzzy_match(name, candidates(domain, kept, domain.names_of))
+  local spelled = name:lower():match("^%s*(.-)%s*$")
+  local matches = trx.strings.fuzzy_match(
+    name,
+    candidates(domain, kept, domain.names_of, spelled)
+  )
   if #matches == 0 and domain.default_names_of ~= nil then
     matches = trx.strings.fuzzy_match(
       name,
-      candidates(domain, kept, domain.default_names_of)
+      candidates(domain, kept, domain.default_names_of, spelled)
     )
   end
   -- One thing answers to several names, so it can match more than once. It
@@ -238,9 +252,10 @@ api.type("query.NamedQuery", {
 
   methods = {
     by_name = {
-      description = "Ranks rather than filters: matches the way a player types a name, forgivingly, "
-        .. "and orders what survives the rest of the query best first. Some of a domain's "
-        .. "narrowings are also searchable groups, so their own name matches every member.",
+      description = [[Ranks rather than filters: matches the way a player types a name,
+forgivingly, and orders what survives the rest of the query best first. Some of a domain's
+narrowings are also searchable groups, so their own name matches every member. A group named
+in full comes first, ahead of anything that answers to the same word.]],
       params = {
         { name = "name", type = "string", description = "What to look for." },
       },
@@ -290,8 +305,9 @@ api.type("query.NamedQuery", {
     },
 
     best = {
-      description = "The ids tied for the best `trx.query.NamedQuery:by_name` score: one for a name only one thing "
-        .. "answers to, the whole group for a group name. Without a `trx.query.NamedQuery:by_name`, every matching id.",
+      description = [[The ids tied for the best `trx.query.NamedQuery:by_name` score: one for a
+name only one thing answers to, the whole group for a group named in full. Without a
+`trx.query.NamedQuery:by_name`, every matching id.]],
       returns = { type = "integer", list = true },
       impl = function(self)
         if self._name == nil then

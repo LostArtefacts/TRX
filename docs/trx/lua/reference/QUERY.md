@@ -82,12 +82,17 @@ left to right, combining with AND: `q:spawnable():by_name("wolf")`.
     Methods:
 
     - <a id="query.NamedQuery.best" name="query.NamedQuery.best"></a>[lua]`namedquery:best()`  
-      The ids tied for the best [`by_name`](#query.NamedQuery.by_name) score: one for a name only one thing answers to, the whole group for a group name. Without a [`by_name`](#query.NamedQuery.by_name), every matching id.
+      The ids tied for the best [`by_name`](#query.NamedQuery.by_name) score: one for a
+      name only one thing answers to, the whole group for a group named in full. Without a
+      [`by_name`](#query.NamedQuery.by_name), every matching id.
 
       Returns: a list of integer.
 
     - <a id="query.NamedQuery.by_name" name="query.NamedQuery.by_name"></a>[lua]`namedquery:by_name(name)`  
-      Ranks rather than filters: matches the way a player types a name, forgivingly, and orders what survives the rest of the query best first. Some of a domain's narrowings are also searchable groups, so their own name matches every member.
+      Ranks rather than filters: matches the way a player types a name,
+      forgivingly, and orders what survives the rest of the query best first. Some of a domain's
+      narrowings are also searchable groups, so their own name matches every member. A group named
+      in full comes first, ahead of anything that answers to the same word.
 
       Parameters:
       - <a id="query.NamedQuery.by_name.name" name="query.NamedQuery.by_name.name"></a>**`name`** (string). What to look for.
