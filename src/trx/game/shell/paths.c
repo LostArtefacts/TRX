@@ -16,12 +16,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#if defined(_WIN32)
-    #include <direct.h>
-#else
-    #include <unistd.h>
-#endif
-
 #define M_MAX_MOD_CHAIN 8
 
 typedef struct {
@@ -419,21 +413,6 @@ static char *M_ResolveCasePathCached(const char *const path)
 
     Memory_FreePointer(&path_copy);
     return current_path;
-}
-
-static char *M_GetCurrentDirectory(void)
-{
-#if defined(_WIN32)
-    char *const cwd = _getcwd(nullptr, 0);
-#else
-    char *const cwd = getcwd(nullptr, 0);
-#endif
-    if (cwd == nullptr) {
-        return nullptr;
-    }
-    char *const result = Memory_DupStr(cwd);
-    free(cwd);
-    return result;
 }
 
 static char *M_GuessExtensionCached(
@@ -1332,7 +1311,7 @@ const char *TRXPath_PeekResolveUserPath(
         return M_PeekResolvedUserPathCandidate(policy, input_path);
     }
 
-    char *cwd = M_GetCurrentDirectory();
+    char *cwd = File_GetCurrentDirectory();
     if (cwd != nullptr) {
         char *cwd_path = String_Format("%s/%s", cwd, input_path);
         Memory_FreePointer(&cwd);

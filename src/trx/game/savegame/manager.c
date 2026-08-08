@@ -1,5 +1,6 @@
 #include <trx/config.h>
 #include <trx/core/benchmark.h>
+#include <trx/core/filesystem.h>
 #include <trx/core/memory.h>
 #include <trx/core/strings.h>
 #include <trx/debug.h>
@@ -528,7 +529,7 @@ bool SG_Manager_Delete(const SAVEGAME_SLOT_REF slot)
         return false;
     }
 
-    const bool result = remove(savegame_info->full_path) == 0;
+    const bool result = File_Delete(savegame_info->full_path);
     if (!result) {
         return false;
     }

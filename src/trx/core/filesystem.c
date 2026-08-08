@@ -8,6 +8,7 @@
 
 #include <dirent.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 #if defined(_WIN32)
@@ -32,6 +33,11 @@ struct MYFILE {
     #include <string.h>
     #include <windows.h>
 
+typedef struct {
+    _WDIR *handle;
+    char *name;
+} M_DIR;
+
 static wchar_t *M_UTF8ToWide(const char *const utf8_str)
 {
     if (utf8_str == nullptr) {
@@ -44,6 +50,22 @@ static wchar_t *M_UTF8ToWide(const char *const utf8_str)
     MultiByteToWideChar(CP_UTF8, 0, utf8_str, len, wide_str, wide_len);
     wide_str[wide_len] = L'\0';
     return wide_str;
+}
+
+static char *M_WideToUTF8(const wchar_t *const wide_str)
+{
+    if (wide_str == nullptr) {
+        return nullptr;
+    }
+    const int32_t len = WideCharToMultiByte(
+        CP_UTF8, 0, wide_str, -1, nullptr, 0, nullptr, nullptr);
+    if (len <= 0) {
+        return nullptr;
+    }
+    char *const utf8_str = Memory_Alloc(len);
+    WideCharToMultiByte(
+        CP_UTF8, 0, wide_str, -1, utf8_str, len, nullptr, nullptr);
+    return utf8_str;
 }
 
 static FILE *M_UTF8Fopen(const char *path, const char *mode)
@@ -97,12 +119,20 @@ bool File_DirExists(const char *path)
     if (path == nullptr) {
         return false;
     }
+#if defined(_WIN32)
+    wchar_t *const wide_path = M_UTF8ToWide(path);
+    const DWORD attrs = GetFileAttributesW(wide_path);
+    Memory_Free(wide_path);
+    return attrs != INVALID_FILE_ATTRIBUTES
+        && (attrs & FILE_ATTRIBUTE_DIRECTORY) != 0;
+#else
     DIR *dir = opendir(path);
     if (dir != nullptr) {
         closedir(dir);
         return true;
     }
     return false;
+#endif
 }
 
 bool File_Exists(const char *path)
@@ -111,6 +141,27 @@ bool File_Exists(const char *path)
         return false;
     }
     return M_ExistsRaw(path);
+}
+
+char *File_GetCurrentDirectory(void)
+{
+#if defined(_WIN32)
+    wchar_t *const wide_cwd = _wgetcwd(nullptr, 0);
+    if (wide_cwd == nullptr) {
+        return nullptr;
+    }
+    char *const cwd = M_WideToUTF8(wide_cwd);
+    free(wide_cwd);
+    return cwd;
+#else
+    char *const raw_cwd = getcwd(nullptr, 0);
+    if (raw_cwd == nullptr) {
+        return nullptr;
+    }
+    char *const cwd = Memory_DupStr(raw_cwd);
+    free(raw_cwd);
+    return cwd;
+#endif
 }
 
 char *File_GetParentDirectory(const char *path)
@@ -398,9 +449,26 @@ void File_CreateDirectory(const char *path)
         return;
     }
 #if defined(_WIN32)
-    _mkdir(path);
+    wchar_t *const wide_path = M_UTF8ToWide(path);
+    _wmkdir(wide_path);
+    Memory_Free(wide_path);
 #else
     mkdir(path, 0775);
+#endif
+}
+
+bool File_Delete(const char *const path)
+{
+    if (path == nullptr) {
+        return false;
+    }
+#if defined(_WIN32)
+    wchar_t *const wide_path = M_UTF8ToWide(path);
+    const bool result = _wremove(wide_path) == 0;
+    Memory_Free(wide_path);
+    return result;
+#else
+    return remove(path) == 0;
 #endif
 }
 
@@ -423,21 +491,50 @@ void File_EnsureParentDirectories(const char *path)
 void *File_OpenDirectory(const char *const path)
 {
     ASSERT(path != nullptr);
+#if defined(_WIN32)
+    wchar_t *const wide_path = M_UTF8ToWide(path);
+    _WDIR *const handle = _wopendir(wide_path);
+    Memory_Free(wide_path);
+    if (handle == nullptr) {
+        return nullptr;
+    }
+    M_DIR *const dir = Memory_Alloc(sizeof(M_DIR));
+    dir->handle = handle;
+    return dir;
+#else
     return opendir(path);
+#endif
 }
 
 const char *File_ReadDirectory(void *const dir)
 {
-    DIR *path_dir = (DIR *)dir;
-    struct dirent *cur_file = readdir(dir);
+#if defined(_WIN32)
+    M_DIR *const win_dir = dir;
+    Memory_FreePointer(&win_dir->name);
+    const struct _wdirent *const cur_file = _wreaddir(win_dir->handle);
+    if (cur_file == nullptr) {
+        return nullptr;
+    }
+    win_dir->name = M_WideToUTF8(cur_file->d_name);
+    return win_dir->name;
+#else
+    const struct dirent *const cur_file = readdir(dir);
     if (cur_file == nullptr) {
         return nullptr;
     }
     return cur_file->d_name;
+#endif
 }
 
 void File_CloseDirectory(void *const dir)
 {
     ASSERT(dir != nullptr);
+#if defined(_WIN32)
+    M_DIR *const win_dir = dir;
+    _wclosedir(win_dir->handle);
+    Memory_FreePointer(&win_dir->name);
+    Memory_Free(win_dir);
+#else
     closedir(dir);
+#endif
 }
