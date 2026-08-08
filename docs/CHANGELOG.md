@@ -32,6 +32,7 @@
 - added the ability for Lara to turn on the spot by pressing walk and roll (Gameplay → Controls → Alternative turns) (#5756)
 - added the ability for Lara to turn on the spot on monkeybars by pressing roll (Gameplay → Controls → Alternative turns)
 - added the language being taken from the operating system on the first launch, where the game ships it (#4460)
+- added the glow around gun flashes to enemies firing, where Lara's weapons alone had it (#6127)
 - improved error messages related to bad command invocations
 - improved state change handling when shimmying is requested while in the slow swing-in state on thin ledges (#5161)
 - changed a multi-key shortcut to answer only to the side of Ctrl, Shift or Alt it was bound to, where a shortcut of a single key still takes either
