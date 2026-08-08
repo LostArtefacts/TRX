@@ -350,6 +350,8 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── scripts
 │   │   │   ├── _game.lua
 │   │   │   ├── gym.lua
+│   │   │   ├── level3b.lua
+│   │   │   ├── level8c.lua
 │   │   │   └── level10b.lua
 │   │   ├── catalog_item_actions.csv
 │   │   ├── catalog_lara_anims.csv
@@ -1696,6 +1698,8 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   ├── scripts
     │   │   │   │   ├── _game.lua
     │   │   │   │   ├── gym.lua
+    │   │   │   │   ├── level3b.lua
+    │   │   │   │   ├── level8c.lua
     │   │   │   │   └── level10b.lua
     │   │   │   ├── catalog_item_actions.csv
     │   │   │   ├── catalog_lara_anims.csv

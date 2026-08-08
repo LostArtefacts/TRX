@@ -670,7 +670,6 @@ common_sources = [
   'trx/game/objects/general/rope.c',
   'trx/game/objects/general/sarcophagus.c',
   'trx/game/objects/general/save_crystal.c',
-  'trx/game/objects/general/scion1.c',
   'trx/game/objects/general/scion3.c',
   'trx/game/objects/general/scion4.c',
   'trx/game/objects/general/scion_holder.c',

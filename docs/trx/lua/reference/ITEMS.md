@@ -50,6 +50,8 @@ end
         Pried off the wall using a crowbar.
     - `trx.items.PickupMode.SARCOPHAGUS` = `5`  
         Hidden inside a sarcophagus.
+    - `trx.items.PickupMode.PLINTH_SCION` = `6`  
+        Similar to PLINTH_HIGH; invokes Lara's extra animation as in Tomb of Qualopec.
 
 - <a id="items.SwitchMode" name="items.SwitchMode"></a>[lua]`trx.items.SwitchMode`
 
