@@ -29,6 +29,9 @@
 #include <string.h>
 
 #define M_MAX_ITEM_LIGHTS 21 // the OG ITEM_LIGHT current/prev list capacity
+// Enough for a cutscene's cast, which is what asks to be lit without living
+// in the item pool.
+#define M_MAX_LOOSE_LIGHTS 16
 #define M_FADE_FRAMES 8
 
 // Room light baked at level load (the OG PCLIGHT_INFO, drawroom.cpp
@@ -98,6 +101,8 @@ static int32_t m_RoomBakeCount = 0;
 
 static M_ITEM_LIGHT m_ItemLights[MAX_ITEMS] = {};
 static M_ITEM_LIGHT m_ScratchLight = {}; // the OG StaticMeshLightItem
+static const ITEM *m_LooseLightKeys[M_MAX_LOOSE_LIGHTS] = {};
+static M_ITEM_LIGHT m_LooseLights[M_MAX_LOOSE_LIGHTS] = {};
 static M_ITEM_LIGHT *m_CurrentItemLight = nullptr;
 static bool m_CurrentIsPickup = false; // the OG SetupLight_thing
 static bool m_CurrentHasList = false;
@@ -564,15 +569,41 @@ static void M_StageDynamicLights(
     }
 }
 
-static M_ITEM_LIGHT *M_GetItemLight(const ITEM *const item)
+// An item outside the pool - a cutscene actor is posed from a track rather
+// than living in a room - has no slot of its own, and the scratch it would
+// otherwise fall to is shared with every effect and static drawn that frame.
+// This state fades between frames, so sharing it makes an actor's light jump
+// with whatever else was drawn. The original engine keeps it on the item, so
+// one is handed out per item here instead.
+static M_ITEM_LIGHT *M_GetLooseItemLight(const ITEM *const item)
 {
-    if (item != nullptr) {
-        const int16_t item_num = Item_GetIndex(item);
-        if (item_num >= 0 && item_num < MAX_ITEMS) {
-            return &m_ItemLights[item_num];
+    for (int32_t i = 0; i < M_MAX_LOOSE_LIGHTS; i++) {
+        if (m_LooseLightKeys[i] == item) {
+            return &m_LooseLights[i];
+        }
+    }
+    for (int32_t i = 0; i < M_MAX_LOOSE_LIGHTS; i++) {
+        if (m_LooseLightKeys[i] == nullptr) {
+            m_LooseLightKeys[i] = item;
+            m_LooseLights[i] = (M_ITEM_LIGHT) {};
+            return &m_LooseLights[i];
         }
     }
     return &m_ScratchLight;
+}
+
+static M_ITEM_LIGHT *M_GetItemLight(const ITEM *const item)
+{
+    if (item == nullptr) {
+        return &m_ScratchLight;
+    }
+    // Measured against the pool rather than through Item_GetIndex, whose
+    // int16_t result would wrap a stray pointer into a real item's slot.
+    const ITEM *const pool = Item_Get(0);
+    if (pool != nullptr && item >= pool && item < pool + MAX_ITEMS) {
+        return &m_ItemLights[item - pool];
+    }
+    return M_GetLooseItemLight(item);
 }
 
 static void M_PrepareItemLight(M_ITEM_LIGHT *const il)
@@ -843,6 +874,8 @@ static void M_ObserveLevelLoad(void)
 {
     memset(m_ItemLights, 0, sizeof(m_ItemLights));
     memset(&m_ScratchLight, 0, sizeof(m_ScratchLight));
+    memset(m_LooseLightKeys, 0, sizeof(m_LooseLightKeys));
+    memset(m_LooseLights, 0, sizeof(m_LooseLights));
     m_CurrentItemLight = nullptr;
     m_CurrentHasList = false;
     if (m_StagedPool != nullptr) {

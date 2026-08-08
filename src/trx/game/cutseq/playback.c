@@ -124,6 +124,18 @@ static void M_SetLaraPose(const CUTSEQ_POSE *const pose)
     Lara_Pose_SetOverride(&m_State.lara_pose);
 }
 
+// An actor names its object by the number its level gives it. The catalog
+// answers for the ones TRX has an entry for, and the level's own slots for the
+// rest: a TR4 wad parks cutscene-only geometry wherever it had a slot spare.
+static const OBJECT *M_GetActorObject(const CUTSEQ_ACTOR_INFO *const actor_info)
+{
+    const OBJECT *const obj = Object_TryGet(actor_info->obj_id);
+    if (obj != nullptr && obj->loaded) {
+        return obj;
+    }
+    return Object_GetUncatalogedSlot(actor_info->game_obj_slot);
+}
+
 static float M_GetDefaultLetterbox(void)
 {
     const GF_LEVEL *const level = GF_GetCurrentLevel();
@@ -213,9 +225,7 @@ static bool M_Begin(const int32_t num)
             .pos = info->origin,
         };
 
-        if (i > 0
-            && (actor_info->obj_id == NO_OBJECT
-                || !Object_Get(actor_info->obj_id)->loaded)) {
+        if (i > 0 && M_GetActorObject(actor_info) == nullptr) {
             LOG_WARNING(
                 "Cutscene %d actor %d (TR4 slot %d) has no loaded object", num,
                 i, actor_info->game_obj_slot);
@@ -618,8 +628,8 @@ void CutSeq_DrawActors(void)
     const CUTSEQ_INFO *const info = &m_State.info;
     for (int32_t i = 1; i < info->num_actors; i++) {
         M_ACTOR *const actor = &m_State.actors[i];
-        const OBJECT *const obj = Object_TryGet(info->actors[i].obj_id);
-        if (obj == nullptr || !obj->loaded) {
+        const OBJECT *const obj = M_GetActorObject(&info->actors[i]);
+        if (obj == nullptr) {
             continue;
         }
         const CUTSEQ_POSE *const pose = &actor->pose_draw;
