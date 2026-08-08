@@ -1066,7 +1066,7 @@
         },
         "gameplay.enable_crawling": {
             "title": "Crawling",
-            "description": "Allows Lara to crouch and crawl.",
+            "description": "Allows Lara to crouch and crawl (TR3+ style). The original TR1 and TR2 have neither.",
         },
         "gameplay.enable_credits": {
             "title": "Credit screens",
@@ -1118,7 +1118,7 @@
         },
         "gameplay.enable_jump_twists": {
             "title": "Jump twists",
-            "description": "Enables jump twists and somersaults i.e. press roll during jump and swan dive animations.",
+            "description": "Enables jump twists and somersaults i.e. press roll during jump and swan dive animations (TR2+ style). The original TR1 has neither.",
         },
         "gameplay.enable_killer_pushblocks": {
             "title": "Enable killer pushblocks",
@@ -1126,7 +1126,7 @@
         },
         "gameplay.enable_lean_jumping": {
             "title": "Lean jumping",
-            "description": "Allows Lara to creep forwards or backwards further when performing neutral jumps with the relevant input key pressed.",
+            "description": "Allows Lara to creep forwards or backwards further when performing neutral jumps with the relevant input key pressed (TR2+ style). In the original TR1 she creeps forwards whatever the input, and far more slowly.",
         },
         "gameplay.enable_ledge_jumps": {
             "title": "Ledge jumps",
@@ -1170,11 +1170,11 @@
         },
         "gameplay.enable_smooth_wall_deflect": {
             "title": "Smooth wall deflection",
-            "description": "Allows Lara to recover more quickly after hitting a wall and a direction key is held together with forward.",
+            "description": "Allows Lara to recover more quickly after hitting a wall and a direction key is held together with forward (TR2+ style). If disabled, she recovers at the original TR1 pace.",
         },
         "gameplay.enable_snap_interactions": {
             "title": "Snap interactions",
-            "description": "Allows Lara to snap immediately to interaction targets, such as pickups and switches. If disabled, Lara will need to first be at a standstill before interacting.",
+            "description": "Allows Lara to snap immediately to interaction targets, such as pickups and switches (TR1/2 style). If disabled, Lara will need to first be at a standstill before interacting (TR3+ style).",
         },
         "gameplay.enable_soft_statics": {
             "title": "Soft static collision",
@@ -1186,11 +1186,11 @@
         },
         "gameplay.enable_step_roll_boost": {
             "title": "Step roll boost",
-            "description": "Allows Lara to be boosted off a one-click high step if roll is pressed near the edge.",
+            "description": "Allows Lara to be boosted off a one-click high step if roll is pressed near the edge. Only the original TR1 does this; TR2+ do not.",
         },
         "gameplay.enable_swing_cancel": {
             "title": "Swing cancels",
-            "description": "Allows Lara's ledge-swinging animation to be canceled by letting go and quickly grabbing again.",
+            "description": "Allows Lara's ledge-swinging animation to be canceled by letting go and quickly grabbing again (TR2+ style). The original TR1 does not allow it.",
         },
         "gameplay.enable_timer_in_inventory": {
             "title": "Timer counts in inventory",
@@ -1210,11 +1210,11 @@
         },
         "gameplay.enable_tr2_jumping": {
             "title": "Responsive jumping",
-            "description": "Allows Lara to jump at any point while running.",
+            "description": "Allows Lara to jump at any point while running (TR2+ style). If disabled, she jumps at the set points of the running animation, as in the original TR1.",
         },
         "gameplay.enable_tr2_swim_cancel": {
             "title": "Responsive swim cancel",
-            "description": "Allows Lara to stop more responsively underwater when the swim key is released.",
+            "description": "Allows Lara to stop more responsively underwater when the swim key is released (TR2+ style). If disabled, she comes to a stop as she does in the original TR1.",
         },
         "gameplay.enable_tr2_swimming": {
             "title": "Smooth swimming",
@@ -1226,11 +1226,11 @@
         },
         "gameplay.enable_uw_roll": {
             "title": "Underwater roll",
-            "description": "Allows Lara to roll while underwater.",
+            "description": "Allows Lara to roll while underwater (TR2+ style). The original TR1 has no underwater roll.",
         },
         "gameplay.enable_wading": {
             "title": "Wading",
-            "description": "Allows Lara to wade through shallow water, rather than becoming stuck on the water surface.",
+            "description": "Allows Lara to wade through shallow water, rather than becoming stuck on the water surface (TR2+ style). The original TR1 has no wading.",
         },
         "gameplay.enable_walk_to_items": {
             "title": "Animated interactions",
@@ -1346,7 +1346,7 @@
         },
         "gameplay.look_mode": {
             "title": "Look mode",
-            "description": "Allows controlling when Lara is able to use look.\n\n- Restricted: look is only permitted when Lara is stationary, and never when underwater.\n- Enhanced: look is permitted during most animations, aside from ones such as pushing a block.\n- Unrestricted: look is permitted at any time during normal Lara control.",
+            "description": "Allows controlling when Lara is able to use look.\n\n- Restricted: look is only permitted when Lara is stationary, and never when underwater, as in the original TR1.\n- Enhanced: look is permitted during most animations, aside from ones such as pushing a block, as in the original TR2+.\n- Unrestricted: look is permitted at any time during normal Lara control.",
         },
         "gameplay.maximum_quick_save_slots": {
             "title": "Number of quick save slots",

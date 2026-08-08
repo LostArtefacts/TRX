@@ -1066,7 +1066,7 @@
         },
         "gameplay.enable_crawling": {
             "title": "Kucanie",
-            "description": "Pozwala Larze kucać i chodzić na czwroaka.",
+            "description": "\\{review}Pozwala Larze kucać i chodzić na czwroaka. Występuje od TR3; oryginalne TR1 i TR2 nie mają żadnego z nich.",
         },
         "gameplay.enable_credits": {
             "title": "Napisy końcowe",
@@ -1118,7 +1118,7 @@
         },
         "gameplay.enable_jump_twists": {
             "title": "Przewroty w powietrzu",
-            "description": "Włącza możliwość przewrotu podczas skakania.",
+            "description": "\\{review}Włącza możliwość przewrotu podczas skakania. Występuje od TR2; oryginalny TR1 nie ma żadnego z nich.",
         },
         "gameplay.enable_killer_pushblocks": {
             "title": "Zabójcze bloki",
@@ -1126,7 +1126,7 @@
         },
         "gameplay.enable_lean_jumping": {
             "title": "Dalekie skoki w miejscu",
-            "description": "Pozwala Larze na przesuwanie się do przodu lub do tyłu dalej podczas wykonywania skoków w miejscu z wciśniętym odpowiednim klawiszem (tak jak w TR2+).",
+            "description": "\\{review}Pozwala Larze na przesuwanie się do przodu lub do tyłu dalej podczas wykonywania skoków w miejscu z wciśniętym odpowiednim klawiszem (tak jak w TR2+). W oryginalnym TR1 przesuwa się do przodu niezależnie od wciśniętego klawisza, ale znacznie wolniej.",
         },
         "gameplay.enable_ledge_jumps": {
             "title": "Skoki z krawędzi",
@@ -1170,11 +1170,11 @@
         },
         "gameplay.enable_smooth_wall_deflect": {
             "title": "Gładkie odbicia od ściany",
-            "description": "Pozwala Larze szybciej się odbić po uderzeniu w ścianę, gdy jednocześnie trzymany jest klawisz kierunku oraz do przodu.",
+            "description": "\\{review}Pozwala Larze szybciej się odbić po uderzeniu w ścianę, gdy jednocześnie trzymany jest klawisz kierunku oraz do przodu. Występuje od TR2; po wyłączeniu Lara wraca do tempa oryginalnego TR1.",
         },
         "gameplay.enable_snap_interactions": {
             "title": "\\{review}Przyciąganie do interakcji",
-            "description": "\\{review}Pozwala Larze natychmiast ustawiać się przy obiektach interaktywnych, takich jak przedmioty do podniesienia i przełączniki. Jeśli opcja jest wyłączona, Lara będzie musiała najpierw całkowicie się zatrzymać, zanim będzie mogła wejść w interakcję.",
+            "description": "\\{review}Pozwala Larze natychmiast ustawiać się przy obiektach interaktywnych, takich jak przedmioty do podniesienia i przełączniki. Jeśli opcja jest wyłączona, Lara będzie musiała najpierw całkowicie się zatrzymać, zanim będzie mogła wejść w interakcję. Natychmiastowe ustawianie odpowiada TR1/2, a wcześniejsze zatrzymanie TR3+.",
         },
         "gameplay.enable_soft_statics": {
             "title": "Miękka kolizja ze statycznymi obiektami",
@@ -1186,11 +1186,11 @@
         },
         "gameplay.enable_step_roll_boost": {
             "title": "Przewroty na schodkach",
-            "description": "Pozwala Larze uzyskać dodatkowy skok z małych schodków, jeśli spróbuje wykonać przewrót blisko krawędzi.",
+            "description": "\\{review}Pozwala Larze uzyskać dodatkowy skok z małych schodków, jeśli spróbuje wykonać przewrót blisko krawędzi. Robi tak tylko oryginalny TR1; TR2+ nie.",
         },
         "gameplay.enable_swing_cancel": {
             "title": "Łapanie krawędzi po puszczeniu",
-            "description": "Pozwala na anulowanie animacji huśtania Lary na krawędzi poprzez jej puszczenie i szybkie złapanie ponownie (tak jak w TR2+).",
+            "description": "\\{review}Pozwala na anulowanie animacji huśtania Lary na krawędzi poprzez jej puszczenie i szybkie złapanie ponownie (tak jak w TR2+). Oryginalny TR1 na to nie pozwala.",
         },
         "gameplay.enable_timer_in_inventory": {
             "title": "Upływ czasu w ekwipunku",
@@ -1210,11 +1210,11 @@
         },
         "gameplay.enable_tr2_jumping": {
             "title": "Responsywne skakanie",
-            "description": "Pozwala Larze skakać w dowolnym momencie podczas biegu.",
+            "description": "\\{review}Pozwala Larze skakać w dowolnym momencie podczas biegu. Występuje od TR2; po wyłączeniu Lara skacze w ustalonych punktach animacji biegu, jak w oryginalnym TR1.",
         },
         "gameplay.enable_tr2_swim_cancel": {
             "title": "Mniejszy dryf pod wodą",
-            "description": "Pozwala Larze na bardziej responsywne zatrzymanie się pod wodą po zwolnieniu klawisza pływania.",
+            "description": "\\{review}Pozwala Larze na bardziej responsywne zatrzymanie się pod wodą po zwolnieniu klawisza pływania. Występuje od TR2; po wyłączeniu zatrzymuje się jak w oryginalnym TR1.",
         },
         "gameplay.enable_tr2_swimming": {
             "title": "Zwinniejsze pływanie",
@@ -1226,11 +1226,11 @@
         },
         "gameplay.enable_uw_roll": {
             "title": "Przewroty pod wodą",
-            "description": "Pozwala Larze na przewrót pod wodą.",
+            "description": "\\{review}Pozwala Larze na przewrót pod wodą. Występuje od TR2; oryginalny TR1 nie ma przewrotu pod wodą.",
         },
         "gameplay.enable_wading": {
             "title": "Brodzenie",
-            "description": "Pozwala Larze na brodzenie w płytkiej wodzie. Wyłączenie powoduje utknięcie na powierzchni wody.",
+            "description": "\\{review}Pozwala Larze na brodzenie w płytkiej wodzie. Wyłączenie powoduje utknięcie na powierzchni wody. Występuje od TR2; oryginalny TR1 nie pozwala brodzić.",
         },
         "gameplay.enable_walk_to_items": {
             "title": "Animowane interakcje",
@@ -1346,7 +1346,7 @@
         },
         "gameplay.look_mode": {
             "title": "Tryb rozglądania",
-            "description": "Określa, kiedy Lara może się rozglądać.\n\n- Ograniczony: rozglądanie tylko w bezruchu, nigdy pod wodą.\n- Rozszerzony: rozglądanie dozwolone podczas większości animacji, z wyjątkiem np. pchania bloku.\n- Nieograniczony: rozglądanie zawsze dozwolone przy normalnym sterowaniu Larą.",
+            "description": "\\{review}Określa, kiedy Lara może się rozglądać.\n\n- Ograniczony: rozglądanie tylko w bezruchu, nigdy pod wodą.\n- Rozszerzony: rozglądanie dozwolone podczas większości animacji, z wyjątkiem np. pchania bloku.\n- Nieograniczony: rozglądanie zawsze dozwolone przy normalnym sterowaniu Larą.\n\nOgraniczony odpowiada oryginalnemu TR1, a Rozszerzony oryginalnym TR2+.",
         },
         "gameplay.maximum_quick_save_slots": {
             "title": "Liczba slotów szybkiego zapisu",

@@ -34,7 +34,7 @@
             "title": "Randomise enemy start angle",
         },
         "gameplay.enable_swing_cancel": {
-            "description": "Allows Lara's ledge-swinging animation to be cancelled by letting go and quickly grabbing again.",
+            "description": "Allows Lara's ledge-swinging animation to be cancelled by letting go and quickly grabbing again (TR2+ style). The original TR1 does not allow it.",
         },
         "gameplay.projectile_area_damage": {
             "description": "Controls how the area-of-effect for Rocket Launcher and Grenade Launcher propagates.\n\n- Single-sweep: TR1 & TR2 behaviour.\n- Multi-sweep: TR3 behaviour.\n\nThe multi-sweep option often ends up doing double damage to individual enemies.",

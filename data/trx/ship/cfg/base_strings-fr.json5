@@ -1066,7 +1066,7 @@
         },
         "gameplay.enable_crawling": {
             "title": "\\{review}Ramper",
-            "description": "\\{review}Permet à Lara de s’accroupir et de ramper.",
+            "description": "\\{review}Permet à Lara de s’accroupir et de ramper. Cela existe à partir de TR3 ; les TR1 et TR2 d'origine n'ont ni l'un ni l'autre.",
         },
         "gameplay.enable_credits": {
             "title": "\\{review}Écrans de crédits",
@@ -1118,7 +1118,7 @@
         },
         "gameplay.enable_jump_twists": {
             "title": "Sauts périlleux",
-            "description": "\\{review}Activer les demi-tours en plein saut et les cabrioles.",
+            "description": "\\{review}Activer les demi-tours en plein saut et les cabrioles. Cela existe à partir de TR2 ; le TR1 d'origine n'a ni l'un ni l'autre.",
         },
         "gameplay.enable_killer_pushblocks": {
             "title": "\\{review}Activer les blocs-poussoirs mortels",
@@ -1126,7 +1126,7 @@
         },
         "gameplay.enable_lean_jumping": {
             "title": "Contrôle du saut sur place",
-            "description": "Permet à Lara d'avancer ou de reculer pendant les sauts sur place lorsque la touche correspondante est enfoncée, comme possible depuis TR2.",
+            "description": "\\{review}Permet à Lara d'avancer ou de reculer pendant les sauts sur place lorsque la touche correspondante est enfoncée, comme possible depuis TR2. Dans le TR1 d'origine, elle avance quand même, quelle que soit la touche, mais bien plus lentement.",
         },
         "gameplay.enable_ledge_jumps": {
             "title": "\\{review}Sauts depuis une corniche",
@@ -1170,11 +1170,11 @@
         },
         "gameplay.enable_smooth_wall_deflect": {
             "title": "\\{review}Déviation murale fluide",
-            "description": "\\{review}Permet à Lara de se remettre plus rapidement après avoir heurté un mur et qu'une touche de direction est maintenue avec l'avant.",
+            "description": "\\{review}Permet à Lara de se remettre plus rapidement après avoir heurté un mur et qu'une touche de direction est maintenue avec l'avant. Cela existe à partir de TR2 ; désactivé, elle se remet au rythme du TR1 d'origine.",
         },
         "gameplay.enable_snap_interactions": {
             "title": "\\{review}Interactions instantanées",
-            "description": "\\{review}Permet à Lara de se placer immédiatement sur les cibles d'interaction, comme les objets à ramasser et les interrupteurs. Si cette option est désactivée, Lara devra d'abord être complètement immobile avant de pouvoir interagir.",
+            "description": "\\{review}Permet à Lara de se placer immédiatement sur les cibles d'interaction, comme les objets à ramasser et les interrupteurs. Si cette option est désactivée, Lara devra d'abord être complètement immobile avant de pouvoir interagir. Le placement immédiat correspond à TR1/2, l'arrêt préalable à TR3+.",
         },
         "gameplay.enable_soft_statics": {
             "title": "\\{review}Collision de maillage souple",
@@ -1186,11 +1186,11 @@
         },
         "gameplay.enable_step_roll_boost": {
             "title": "\\{review}Boost de roulade de marche",
-            "description": "\\{review}Permet à Lara d'être propulsée d'un pas haut à un clic si la roulade est pressée près du bord.",
+            "description": "\\{review}Permet à Lara d'être propulsée d'un pas haut à un clic si la roulade est pressée près du bord. Seul le TR1 d'origine fait cela ; TR2+ non.",
         },
         "gameplay.enable_swing_cancel": {
             "title": "Annulation du balancement",
-            "description": "Permet d'annuler l'animation de balancement à un rebord de Lara en relâchant puis en se raccrochant aussitôt, comme possible depuis TR2.",
+            "description": "\\{review}Permet d'annuler l'animation de balancement à un rebord de Lara en relâchant puis en se raccrochant aussitôt, comme possible depuis TR2. Le TR1 d'origine ne le permet pas.",
         },
         "gameplay.enable_timer_in_inventory": {
             "title": "Comptabiliser du temps de jeu dans l'inventaire",
@@ -1210,11 +1210,11 @@
         },
         "gameplay.enable_tr2_jumping": {
             "title": "Saut réactif",
-            "description": "\\{review}Permet à Lara de sauter à tout moment pendant qu'elle court.",
+            "description": "\\{review}Permet à Lara de sauter à tout moment pendant qu'elle court. Cela existe à partir de TR2 ; désactivé, elle saute aux points fixes de l'animation de course, comme dans le TR1 d'origine.",
         },
         "gameplay.enable_tr2_swim_cancel": {
             "title": "Arrêt de nage réactif",
-            "description": "Permet à Lara de s'arrêter de manière plus réactive sous l'eau lorsque la touche de nage est relâchée.",
+            "description": "\\{review}Permet à Lara de s'arrêter de manière plus réactive sous l'eau lorsque la touche de nage est relâchée. Cela existe à partir de TR2 ; désactivé, elle s'arrête comme dans le TR1 d'origine.",
         },
         "gameplay.enable_tr2_swimming": {
             "title": "Nage fluide",
@@ -1226,11 +1226,11 @@
         },
         "gameplay.enable_uw_roll": {
             "title": "Roulade sous-marine",
-            "description": "\\{review}Permet à Lara de faire une roulade pour se retourner sous l'eau.",
+            "description": "\\{review}Permet à Lara de faire une roulade pour se retourner sous l'eau. Cela existe à partir de TR2 ; le TR1 d'origine n'a pas de roulade sous l'eau.",
         },
         "gameplay.enable_wading": {
             "title": "Patauger",
-            "description": "\\{review}Permet à Lara de patauger dans les eaux peu profondes, plutôt que de rester bloquée à la surface.",
+            "description": "\\{review}Permet à Lara de patauger dans les eaux peu profondes, plutôt que de rester bloquée à la surface. Cela existe à partir de TR2 ; le TR1 d'origine ne permet pas de patauger.",
         },
         "gameplay.enable_walk_to_items": {
             "title": "Animées les placements",
@@ -1346,7 +1346,7 @@
         },
         "gameplay.look_mode": {
             "title": "\\{review}Mode regard",
-            "description": "\\{review}Contrôle quand Lara peut utiliser la vue.\n\n- Restreint : le regard est autorisé uniquement à l’arrêt, jamais sous l’eau.\n- Amélioré : le regard est autorisé pendant la plupart des animations, sauf certaines comme pousser un bloc.\n- Illimité : le regard est autorisé à tout moment lorsque Lara est contrôlable.",
+            "description": "\\{review}Contrôle quand Lara peut utiliser la vue.\n\n- Restreint : le regard est autorisé uniquement à l’arrêt, jamais sous l’eau.\n- Amélioré : le regard est autorisé pendant la plupart des animations, sauf certaines comme pousser un bloc.\n- Illimité : le regard est autorisé à tout moment lorsque Lara est contrôlable.\n\nRestreint correspond au TR1 d'origine, Amélioré aux TR2+ d'origine.",
         },
         "gameplay.maximum_quick_save_slots": {
             "title": "\\{review}Nombre d'emplacements de sauvegarde rapide",
