@@ -1064,7 +1064,7 @@
         },
         "gameplay.enable_crawling": {
             "title": "Snàgail",
-            "description": "Leigidh seo le Lara cromadh sìos agus snàgail.",
+            "description": "\\{review}Leigidh seo le Lara cromadh sìos agus snàgail. Tha seo ann bho TR3 a-mach; chan eil gin dhiubh san TR1 no TR2 thùsail.",
         },
         "gameplay.enable_credits": {
             "title": "Sgrìoban creideis",
@@ -1116,7 +1116,7 @@
         },
         "gameplay.enable_jump_twists": {
             "title": "Snìomh leum",
-            "description": "Cuiridh seo snìomh is leth-chasach TR2+ an comas — m.e. brùth rolla rè leum neo dàibheadh.",
+            "description": "\\{review}Cuiridh seo snìomh is leth-chasach TR2+ an comas — m.e. brùth rolla rè leum neo dàibheadh. Chan eil gin dhiubh san TR1 thùsail.",
         },
         "gameplay.enable_killer_pushblocks": {
             "title": "Cleachd blocaichean putadh marbhach",
@@ -1124,7 +1124,7 @@
         },
         "gameplay.enable_lean_jumping": {
             "title": "Leum le claonadh",
-            "description": "Leigidh Lara sleamhnachadh beagan air adhart/air ais le leum neodrach ma bhithear a' cumail iuchair stiùiridh.",
+            "description": "\\{review}Leigidh Lara sleamhnachadh beagan air adhart/air ais le leum neodrach ma bhithear a' cumail iuchair stiùiridh. Tha seo ann bho TR2 a-mach; san TR1 thùsail gluaisidh i air adhart co-dhiù, ge b' e dè an iuchair, ach fada nas slaodaiche.",
         },
         "gameplay.enable_ledge_jumps": {
             "title": "Leum bho oir",
@@ -1168,11 +1168,11 @@
         },
         "gameplay.enable_smooth_wall_deflect": {
             "title": "Ath-bheòthachadh bhalla rèidh",
-            "description": "Cuidichidh Lara le tilleadh nas luaithe às dèidh buille ri balla ma thèid stiùireadh is 'air adhart' a chumail.",
+            "description": "\\{review}Cuidichidh Lara le tilleadh nas luaithe às dèidh buille ri balla ma thèid stiùireadh is 'air adhart' a chumail. Tha seo ann bho TR2 a-mach; ma tha e à comas, tillidh i aig astar an TR1 thùsail.",
         },
         "gameplay.enable_snap_interactions": {
             "title": "Eadar-obrachaidhean snap",
-            "description": "Leigidh seo le Lara greim a ghabhail sa bhad air targaidean eadar-obrachaidh, leithid nithean ri thogail agus suidsichean. Ma tha seo à comas, feumaidh Lara stad gu tur mus urrainn dhi eadar-obrachadh.",
+            "description": "\\{review}Leigidh seo le Lara greim a ghabhail sa bhad air targaidean eadar-obrachaidh, leithid nithean ri thogail agus suidsichean. Ma tha seo à comas, feumaidh Lara stad gu tur mus urrainn dhi eadar-obrachadh. Tha an grèim sa bhad a' freagairt ri TR1/2, agus an stad ro làimh ri TR3+.",
         },
         "gameplay.enable_soft_statics": {
             "title": "Bualadh mogal bog",
@@ -1184,11 +1184,11 @@
         },
         "gameplay.enable_step_roll_boost": {
             "title": "Brùthadh le rolla bho cheum",
-            "description": "Leigidh Lara leum bhon cheum aon-bhriog ma bhriogar rolla faisg air an oir.",
+            "description": "\\{review}Leigidh Lara leum bhon cheum aon-bhriog ma bhriogar rolla faisg air an oir. Chan eil seo ach san TR1 thùsail; chan eil e ann an TR2+.",
         },
         "gameplay.enable_swing_cancel": {
             "title": "Sguir siùdadh",
-            "description": "Leigidh seo le Lara leigeil às nuair a tha i a' siùdadh, agus grèim a ghlacadh sa bhad airson gluasad luath.",
+            "description": "\\{review}Leigidh seo le Lara leigeil às nuair a tha i a' siùdadh, agus grèim a ghlacadh sa bhad airson gluasad luath. Tha seo ann bho TR2 a-mach; chan eil an TR1 thùsail ga cheadachadh.",
         },
         "gameplay.enable_timer_in_inventory": {
             "title": "Gleoc sa chlàr-seilbhe",
@@ -1208,11 +1208,11 @@
         },
         "gameplay.enable_tr2_jumping": {
             "title": "Leum freagairteach",
-            "description": "Leigidh le Lara leum aig àm sam bith nuair a tha i a' ruith.",
+            "description": "\\{review}Leigidh le Lara leum aig àm sam bith nuair a tha i a' ruith. Tha seo ann bho TR2 a-mach; ma tha e à comas, leumaidh i aig puingean suidhichte na beòthalachd ruith, mar san TR1 thùsail.",
         },
         "gameplay.enable_tr2_swim_cancel": {
             "title": "Stad snàmh freagairteach",
-            "description": "Leigidh Lara stad gu sgiobalta fon uisge nuair a thèid am putan snàmh a leigeil às.",
+            "description": "\\{review}Leigidh Lara stad gu sgiobalta fon uisge nuair a thèid am putan snàmh a leigeil às. Tha seo ann bho TR2 a-mach; ma tha e à comas, stadaidh i mar a nì i san TR1 thùsail.",
         },
         "gameplay.enable_tr2_swimming": {
             "title": "Snàmh rèidh",
@@ -1224,11 +1224,11 @@
         },
         "gameplay.enable_uw_roll": {
             "title": "Rolla fon uisge",
-            "description": "Leigidh le Lara rolla a dhèanamh fon uisge.",
+            "description": "\\{review}Leigidh le Lara rolla a dhèanamh fon uisge. Tha seo ann bho TR2 a-mach; chan eil rolla fon uisge san TR1 thùsail.",
         },
         "gameplay.enable_wading": {
             "title": "Coiseachd tro uisge",
-            "description": "Leigidh le Lara coiseachd tro uisge eu-dhomhain seach a bhith air a stad aig uachdar na h-aibhne.",
+            "description": "\\{review}Leigidh le Lara coiseachd tro uisge eu-dhomhain seach a bhith air a stad aig uachdar na h-aibhne. Tha seo ann bho TR2 a-mach; chan eil coiseachd tro uisge san TR1 thùsail.",
         },
         "gameplay.enable_walk_to_items": {
             "title": "Eadar-obrachadh beòthail",
@@ -1344,7 +1344,7 @@
         },
         "gameplay.look_mode": {
             "title": "Modh seallaidh",
-            "description": "Leigidh seo leat smachd a chumail air cuin as urrainn do Lara sealladh a chleachdadh.\n\n- Cuibhrichte: chan eil sealladh comasach ach nuair a tha Lara na stad, agus a-riamh fon uisge.\n- Leasaichte: tha sealladh comasach rè a' mhòr-chuid de bheòthalachd, ach chan ann rè gluasadan mar putadh bloca.\n- Neo-chuibhrichte: tha sealladh comasach aig àm sam bith fo smachd Lara àbhaisteach.",
+            "description": "\\{review}Leigidh seo leat smachd a chumail air cuin as urrainn do Lara sealladh a chleachdadh.\n\n- Cuibhrichte: chan eil sealladh comasach ach nuair a tha Lara na stad, agus a-riamh fon uisge.\n- Leasaichte: tha sealladh comasach rè a' mhòr-chuid de bheòthalachd, ach chan ann rè gluasadan mar putadh bloca.\n- Neo-chuibhrichte: tha sealladh comasach aig àm sam bith fo smachd Lara àbhaisteach.\n\nTha Cuibhrichte a' freagairt ris an TR1 thùsail, agus Leasaichte ris an TR2+ thùsail.",
         },
         "gameplay.maximum_quick_save_slots": {
             "title": "Àireamh nan slotan sàbhalaidh luath",
