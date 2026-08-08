@@ -985,6 +985,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── antarc_door134_frames.bin
 │   │   │   ├── antarc_sky.bin
 │   │   │   ├── antarc_textures.bin
+│   │   │   ├── antarc_wheel_frames.bin
 │   │   │   ├── area51_animating_bounds.bin
 │   │   │   ├── area51_patrol.bin
 │   │   │   ├── area51_sky.bin
@@ -1005,6 +1006,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── coastal_sky.bin
 │   │   │   ├── coastal_spike_sfx.bin
 │   │   │   ├── coastal_textures.bin
+│   │   │   ├── coastal_wheel_frames.bin
 │   │   │   ├── common_pickup_meshes.bin
 │   │   │   ├── compound_animating_bounds.bin
 │   │   │   ├── compound_cine.bin
@@ -1085,6 +1087,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── undersea_pickup_meshes.bin
 │   │   │   ├── undersea_textures.bin
 │   │   │   ├── undersea_train.bin
+│   │   │   ├── undersea_wheel_frames.bin
 │   │   │   ├── water_sfx.bin
 │   │   │   ├── willsden_heli.bin
 │   │   │   ├── willsden_textures.bin
@@ -2328,6 +2331,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── antarc_door134_frames.bin
     │   │   │   │   ├── antarc_sky.bin
     │   │   │   │   ├── antarc_textures.bin
+    │   │   │   │   ├── antarc_wheel_frames.bin
     │   │   │   │   ├── area51_animating_bounds.bin
     │   │   │   │   ├── area51_patrol.bin
     │   │   │   │   ├── area51_sky.bin
@@ -2348,6 +2352,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── coastal_sky.bin
     │   │   │   │   ├── coastal_spike_sfx.bin
     │   │   │   │   ├── coastal_textures.bin
+    │   │   │   │   ├── coastal_wheel_frames.bin
     │   │   │   │   ├── common_pickup_meshes.bin
     │   │   │   │   ├── compound_animating_bounds.bin
     │   │   │   │   ├── compound_cine.bin
@@ -2428,6 +2433,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── undersea_pickup_meshes.bin
     │   │   │   │   ├── undersea_textures.bin
     │   │   │   │   ├── undersea_train.bin
+    │   │   │   │   ├── undersea_wheel_frames.bin
     │   │   │   │   ├── water_sfx.bin
     │   │   │   │   ├── willsden_heli.bin
     │   │   │   │   ├── willsden_textures.bin
