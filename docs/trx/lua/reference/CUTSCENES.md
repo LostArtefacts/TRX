@@ -21,6 +21,10 @@ lists and `/cut` plays, are a different thing: see [`trx.game.cutscenes`](GAME.m
 ### Properties
 
 - <a id="cutscenes.current" name="cutscenes.current"></a>**`trx.cutscenes.current`** ([trx.cutscenes.Num](#cutscenes.Num)). Number of the cutscene playing, or `nil` if none is. *(read-only)*
+- <a id="cutscenes.frame_num" name="cutscenes.frame_num"></a>**`trx.cutscenes.frame_num`** ([trx.cutscenes.FrameNum](#cutscenes.FrameNum)). Which frame of the running cutscene is on screen, or `nil` if none is
+  running. A cutscene's actors are animation tracks rather than items, so
+  nothing in it can be triggered or listened to; naming a frame is how a
+  script acts part-way through one, as the original game does. *(read-only)*
 - <a id="cutscenes.is_playing" name="cutscenes.is_playing"></a>**`trx.cutscenes.is_playing`** (boolean). Whether a cutscene is on screen. *(read-only)*
 - <a id="cutscenes.fov" name="cutscenes.fov"></a>**`trx.cutscenes.fov`** ([trx.math.Angle](MATH.md#math.Angle)). Field of view a cutscene plays at. TR4 uses 11488, against 14560 for ordinary play.
 - <a id="cutscenes.letterbox" name="cutscenes.letterbox"></a>**`trx.cutscenes.letterbox`** (number). Depth of each cinematic bar, as a fraction of the screen height. `0` removes them.
@@ -30,6 +34,10 @@ lists and `/cut` plays, are a different thing: see [`trx.game.cutscenes`](GAME.m
 - <a id="cutscenes.Num" name="cutscenes.Num"></a>[lua]`trx.cutscenes.Num`
 
     Cutscene number, as a cutscene trigger names it. Counted from 0.
+
+- <a id="cutscenes.FrameNum" name="cutscenes.FrameNum"></a>[lua]`trx.cutscenes.FrameNum`
+
+    A frame's number within the cutscene it belongs to. Counted from 0.
 
 ### Functions
 

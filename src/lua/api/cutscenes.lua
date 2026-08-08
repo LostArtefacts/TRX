@@ -17,6 +17,11 @@ api.number("cutscenes.Num", {
   description = "Cutscene number, as a cutscene trigger names it.",
 })
 
+api.number("cutscenes.FrameNum", {
+  base = 0,
+  description = "A frame's number within the cutscene it belongs to.",
+})
+
 api.define("cutscenes.play", {
   description = "Plays a cutscene, fading the scene out first. Does nothing if one is already "
     .. "playing or the game has no cutscene data.",
@@ -31,6 +36,24 @@ api.property("cutscenes.current", {
   type = "cutscenes.Num",
   description = "Number of the cutscene playing, or `nil` if none is.",
   get = raw.get_current,
+})
+
+api.property("cutscenes.frame_num", {
+  type = "cutscenes.FrameNum",
+  description = [[
+    Which frame of the running cutscene is on screen, or `nil` if none is
+    running. A cutscene's actors are animation tracks rather than items, so
+    nothing in it can be triggered or listened to; naming a frame is how a
+    script acts part-way through one, as the original game does.
+  ]],
+  examples = {
+    [[trx.events.after_control(function()
+  if trx.cutscenes.current == 5 and trx.cutscenes.frame_num == 1350 then
+    -- something happens here
+  end
+end)]],
+  },
+  get = raw.get_frame_num,
 })
 
 api.property("cutscenes.is_playing", {
