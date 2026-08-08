@@ -89,6 +89,7 @@
 - fixed Lara being able to light a free/ghost flare by selecting one from the inventory while crawling (Gameplay → Fixes → Fix free flare glitch)
 - fixed Lara leaving ripples on ceilings that lie below the waterline (regression from 1.1)
 - fixed shoals of fish and piranhas jumping back to their starting spot when loading a save
+- fixed flying enemies chasing Lara up into ceilings and back out of solid rock, most visible with the wasps in Lost City of Tinnos (#5563, OG bug)
 - fixed rain and snow starting over when a save is loaded (#5901)
 - fixed Bacon Lara flickering if she dies in a room different to where she fell from
 - fixed Bacon Lara remaining targetable after death
