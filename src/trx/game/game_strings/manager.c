@@ -10,8 +10,11 @@
 #include <trx/core/vector.h>
 #include <trx/debug.h>
 #include <trx/game/game_flow/common.h>
+#include <trx/game/game_strings/lang_match.h>
 #include <trx/game/game_strings/table.h>
+#include <trx/game/replay/test_replay.h>
 #include <trx/game/shell.h>
+#include <trx/game/shell/platform.h>
 
 #include <string.h>
 
@@ -305,6 +308,37 @@ static void M_DiscoverLanguages(void)
     M_ReorderLanguages();
 }
 
+static void M_FreeCodes(VECTOR *const codes)
+{
+    for (int32_t i = 0; i < codes->count; i++) {
+        Memory_Free(*(char **)Vector_Get(codes, i));
+    }
+    Vector_Free(codes);
+}
+
+// A player who has never launched the game has never said what language they
+// want, so the one their system is set to stands in for the answer. A replay
+// is left out of it: what it plays back has to read the same on every machine.
+static void M_ApplySystemLanguage(void)
+{
+    if (!Config_IsFirstRun() || TestReplay_IsOpened()) {
+        return;
+    }
+    VECTOR *const available = GameStringManager_GetAvailableLanguages();
+    if (available == nullptr) {
+        return;
+    }
+    VECTOR *const preferred = Shell_GetPreferredLanguages();
+    const char *const match =
+        GameStringLang_MatchPreferred(available, preferred);
+    if (match != nullptr) {
+        LOG_INFO("selecting language '%s' from system preferences", match);
+        CONFIG_SET(g_Config.language, match);
+    }
+    M_FreeCodes(preferred);
+    M_FreeCodes(available);
+}
+
 void GameStringManager_LoadForMod(const SHELL_MOD *const mod)
 {
     M_ClearSourceFiles();
@@ -334,6 +368,7 @@ void GameStringManager_LoadForMod(const SHELL_MOD *const mod)
     Memory_FreePointer(&mod_strings_path);
 
     M_DiscoverLanguages();
+    M_ApplySystemLanguage();
     GameStringManager_ReloadLanguage(g_Config.language);
 }
 
