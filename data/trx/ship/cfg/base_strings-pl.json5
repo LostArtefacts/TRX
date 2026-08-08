@@ -791,6 +791,11 @@
             "QUICK_GUNS_MODE_DRAW_AND_HOLSTER": "Wyposaż",
             "QUICK_GUNS_MODE_DRAW_ONLY": "Wyposaż lub schowaj",
         },
+        "RING_MEMORY_MODE": {
+            "RING_MEMORY_ALL": "\\{review}Wszystkie pierścienie",
+            "RING_MEMORY_MAIN": "\\{review}Pierścień główny",
+            "RING_MEMORY_OFF": "\\{review}Wył.",
+        },
         "SAVE_CRYSTAL_MODE": {
             "SAVE_CRYSTAL_HEAL": "\\{review}Leczenie",
             "SAVE_CRYSTAL_OFF": "\\{review}Wyłączone",
@@ -1364,6 +1369,10 @@
         "gameplay.restore_ps1_enemies": {
             "title": "Przywróć przeciwników z PS1",
             "description": "Dodaje mumię, która pojawia się w wersji na PlayStation w City of Khamoon, pokój 25.\nZmiana tej opcji do poprawnego działania wymaga ponownego uruchomienia gry.",
+        },
+        "gameplay.ring_memory_mode": {
+            "title": "\\{review}Zapamiętaj pozycję w ekwipunku",
+            "description": "\\{review}Otwiera pierścień na pozycji, na której go zamknięto, zamiast na pierwszej.\n\n- Wył.: każde otwarcie zaczyna się od pierwszej pozycji, jak w oryginalnej grze.\n- Pierścień główny: zapamiętywany jest tylko pierścień przedmiotów.\n- Wszystkie pierścienie: zapamiętywane są pierścienie przedmiotów i kluczy.\n\nPierwsza pozycja wraca, gdy Lara nie ma już zapamiętanej rzeczy, a każdy poziom zaczyna się od niej.",
         },
         "gameplay.save_crystal_mode": {
             "title": "\\{review}Tryb kryształów",

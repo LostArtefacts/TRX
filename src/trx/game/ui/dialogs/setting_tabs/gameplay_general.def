@@ -27,6 +27,7 @@ X_UI_ROW(gameplay.maximum_quick_save_slots)
 X_UI_ROW(gameplay.enable_enhanced_saves)
 X_UI_ROW(gameplay.enable_bouncy_grenades)
 X_UI_ROW(gameplay.remember_gun_status)
+X_UI_ROW(gameplay.ring_memory_mode)
 
 X_UI_ROW(gameplay.restore_ps1_enemies)
 X_UI_ROW(gameplay.change_pierre_spawn)

@@ -277,6 +277,7 @@ typedef struct {
         LOOK_MODE look_mode;
         bool enable_inverted_look;
         bool remember_gun_status;
+        RING_MEMORY_MODE ring_memory_mode;
 
         int32_t turbo_speed;
         int32_t camera_speed;

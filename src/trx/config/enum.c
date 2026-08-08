@@ -81,6 +81,10 @@ static __attribute__((constructor)) void M_Init(void)
     ENUM_MAP(LOOK_MODE, LOOK_MODE_ENHANCED, "enhanced");
     ENUM_MAP(LOOK_MODE, LOOK_MODE_UNRESTRICTED, "unrestricted");
 
+    ENUM_MAP(RING_MEMORY_MODE, RING_MEMORY_OFF, "off");
+    ENUM_MAP(RING_MEMORY_MODE, RING_MEMORY_MAIN, "main-ring");
+    ENUM_MAP(RING_MEMORY_MODE, RING_MEMORY_ALL, "all-rings");
+
     ENUM_MAP(QUICK_GUNS_MODE, QUICK_GUNS_MODE_DRAW_ONLY, "draw-only");
     ENUM_MAP(
         QUICK_GUNS_MODE, QUICK_GUNS_MODE_DRAW_AND_HOLSTER, "draw-and-holster");

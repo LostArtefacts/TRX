@@ -114,6 +114,12 @@ typedef enum {
 } LOOK_MODE;
 
 typedef enum {
+    RING_MEMORY_OFF,
+    RING_MEMORY_MAIN,
+    RING_MEMORY_ALL,
+} RING_MEMORY_MODE;
+
+typedef enum {
     QUICK_GUNS_MODE_DRAW_ONLY,
     QUICK_GUNS_MODE_DRAW_AND_HOLSTER,
 } QUICK_GUNS_MODE;

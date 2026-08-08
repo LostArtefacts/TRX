@@ -791,6 +791,11 @@
             "QUICK_GUNS_MODE_DRAW_AND_HOLSTER": "Equipaggia o riponi",
             "QUICK_GUNS_MODE_DRAW_ONLY": "Solo equipaggia",
         },
+        "RING_MEMORY_MODE": {
+            "RING_MEMORY_ALL": "\\{review}Tutti gli anelli",
+            "RING_MEMORY_MAIN": "\\{review}Anello principale",
+            "RING_MEMORY_OFF": "\\{review}Off",
+        },
         "SAVE_CRYSTAL_MODE": {
             "SAVE_CRYSTAL_HEAL": "Curativi",
             "SAVE_CRYSTAL_OFF": "Disattivato",
@@ -1364,6 +1369,10 @@
         "gameplay.restore_ps1_enemies": {
             "title": "Ripristina nemici PS1",
             "description": "Aggiunge la mummia che appare nella versione PlayStation del livello 'Città di Khamoon', stanza 25.\nLa modifica di questa opzione richiederà il riavvio della partita.",
+        },
+        "gameplay.ring_memory_mode": {
+            "title": "\\{review}Ricorda la posizione nell'inventario",
+            "description": "\\{review}Apre un anello sulla voce su cui era stato lasciato, invece che sulla prima.\n\n- Off: ogni apertura parte dalla prima voce, come nel gioco originale.\n- Anello principale: viene ricordato solo l'anello degli oggetti.\n- Tutti gli anelli: vengono ricordati l'anello degli oggetti e quello delle chiavi.\n\nLa prima voce ritorna se Lara non ha più ciò che era stato ricordato, e ogni livello riparte da lì.",
         },
         "gameplay.save_crystal_mode": {
             "title": "Modalità cristalli",

@@ -791,6 +791,11 @@
             "QUICK_GUNS_MODE_DRAW_AND_HOLSTER": "\\{review}Équiper & ranger",
             "QUICK_GUNS_MODE_DRAW_ONLY": "\\{review}Tirer seulement",
         },
+        "RING_MEMORY_MODE": {
+            "RING_MEMORY_ALL": "\\{review}Tous les anneaux",
+            "RING_MEMORY_MAIN": "\\{review}Anneau principal",
+            "RING_MEMORY_OFF": "\\{review}Désactivé",
+        },
         "SAVE_CRYSTAL_MODE": {
             "SAVE_CRYSTAL_HEAL": "\\{review}Soin",
             "SAVE_CRYSTAL_OFF": "\\{review}Désactivé",
@@ -1364,6 +1369,10 @@
         "gameplay.restore_ps1_enemies": {
             "title": "Restaure les ennemis PS1",
             "description": "\\{review}Ajoute la momie qui apparaît dans la version PlayStation de City of Khamoon, salle 25.\nModifier cette option nécessitera de redémarrer le jeu.",
+        },
+        "gameplay.ring_memory_mode": {
+            "title": "\\{review}Mémoriser la position dans l'inventaire",
+            "description": "\\{review}Ouvre un anneau sur l'entrée où il a été laissé, plutôt que sur la première.\n\n- Désactivé : chaque ouverture commence à la première entrée, comme dans le jeu d'origine.\n- Anneau principal : seul l'anneau des objets est mémorisé.\n- Tous les anneaux : les anneaux des objets et des clés sont mémorisés.\n\nLa première entrée revient si Lara ne porte plus ce qui était mémorisé, et chaque niveau y commence.",
         },
         "gameplay.save_crystal_mode": {
             "title": "\\{review}Mode des cristaux",

@@ -791,6 +791,11 @@
             "QUICK_GUNS_MODE_DRAW_AND_HOLSTER": "Tarraing/falach",
             "QUICK_GUNS_MODE_DRAW_ONLY": "Tarraing a-mhàin",
         },
+        "RING_MEMORY_MODE": {
+            "RING_MEMORY_ALL": "\\{review}Gach fàinne",
+            "RING_MEMORY_MAIN": "\\{review}Prìomh fhàinne",
+            "RING_MEMORY_OFF": "\\{review}Dheth",
+        },
         "SAVE_CRYSTAL_MODE": {
             "SAVE_CRYSTAL_HEAL": "Slànachadh",
             "SAVE_CRYSTAL_OFF": "Dheth",
@@ -1364,6 +1369,10 @@
         "gameplay.restore_ps1_enemies": {
             "title": "Aisig nàimhdean PS1",
             "description": "Cuiridh seo spaoileadan ann an City of Khamoon (PS1), seòmar 25. Feumaidh ath-thòiseachadh a' gheama gu lèir gus obraicheas seo.",
+        },
+        "gameplay.ring_memory_mode": {
+            "title": "\\{review}Cuimhnich àite na maoine",
+            "description": "\\{review}Fosglaidh fàinne air an nì air an do dh'fhàgadh i, seach air a' chiad fhear.\n\n- Dheth: tòisichidh gach fosgladh air a' chiad nì, mar a bha sa gheama thùsail.\n- Prìomh fhàinne: cha chuimhnichear ach fàinne nan nithean.\n- Gach fàinne: cuimhnichear fàinne nan nithean agus fàinne nan iuchraichean.\n\nTillidh a' chiad nì mura h-eil na chaidh a chuimhneachadh aig Lara tuilleadh, agus tòisichidh gach ìre an sin.",
         },
         "gameplay.save_crystal_mode": {
             "title": "Modh nan criostalan",

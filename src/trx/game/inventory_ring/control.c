@@ -45,6 +45,16 @@
 static CLOCK_TIMER m_DemoTimer = { .type = CLOCK_TIMER_SIM };
 static int32_t m_StartLevel;
 static OBJECT_ID m_InvChosen = NO_OBJECT;
+
+// The entry each ring was left on, so that it can open there again. An object
+// id rather than a position: a ring is rebuilt as Lara's belongings change,
+// and a position would come back pointing at something else.
+static OBJECT_ID m_LastRingObject[RT_NUMBER_OF] = {
+    [RT_MAIN] = NO_OBJECT,
+    [RT_OPTION] = NO_OBJECT,
+    [RT_KEYS] = NO_OBJECT,
+    [RT_GLOBE_SELECT] = NO_OBJECT,
+};
 static INV_RING *m_ActiveRing = nullptr;
 
 // Display-only filter for the rings: hidden items stay in the real
@@ -96,6 +106,36 @@ static bool M_IsRuntimeHidden(const OBJECT_ID object_id)
 {
     return object_id == O_BINOCULARS_OPTION
         && !g_Config.gameplay.enable_binoculars;
+}
+
+static bool M_IsRingRemembered(const RING_TYPE type)
+{
+    switch (g_Config.gameplay.ring_memory_mode) {
+    case RING_MEMORY_MAIN:
+        return type == RT_MAIN;
+    case RING_MEMORY_ALL:
+        return type == RT_MAIN || type == RT_KEYS;
+    default:
+        return false;
+    }
+}
+
+// Where a ring opens: the entry it was left on, where the player asked for
+// that and it is still something Lara carries, and the entry the caller had in
+// mind otherwise.
+static int16_t M_GetStartingObject(
+    const RING_TYPE type, const INV_RING_VISIBLE *const visible,
+    const int16_t fallback)
+{
+    if (!M_IsRingRemembered(type) || m_LastRingObject[type] == NO_OBJECT) {
+        return fallback;
+    }
+    for (int16_t i = 0; i < visible->count; i++) {
+        if (visible->items[i]->object_id == m_LastRingObject[type]) {
+            return i;
+        }
+    }
+    return fallback;
 }
 
 static INV_RING_VISIBLE M_GetVisibleRing(const RING_TYPE type)
@@ -928,7 +968,10 @@ INV_RING *InvRing_Open(const INVENTORY_MODE mode)
         }
     }
 
-    if (g_Config.gameplay.fix_item_duplication_glitch) {
+    // Sending the keys ring back to its first entry and opening it where it
+    // was left are at odds, and the memory is the one the player asked for.
+    if (g_Config.gameplay.fix_item_duplication_glitch
+        && !M_IsRingRemembered(RT_KEYS)) {
         g_InvRing_Source[RT_KEYS].current = 0;
     }
     for (int32_t i = 0; i < g_InvRing_Source[RT_KEYS].count; i++) {
@@ -1011,7 +1054,9 @@ INV_RING *InvRing_Open(const INVENTORY_MODE mode)
     case INV_KEYS_MODE: {
         const INV_RING_VISIBLE visible = M_GetVisibleRing(RT_KEYS);
         InvRing_InitRing(
-            ring, RT_KEYS, &visible, g_InvRing_Source[RT_MAIN].current);
+            ring, RT_KEYS, &visible,
+            M_GetStartingObject(
+                RT_KEYS, &visible, g_InvRing_Source[RT_MAIN].current));
         break;
     }
 
@@ -1020,7 +1065,8 @@ INV_RING *InvRing_Open(const INVENTORY_MODE mode)
         if (main_visible.count > 0) {
             InvRing_InitRing(
                 ring, RT_MAIN, &main_visible,
-                g_InvRing_Source[RT_MAIN].current);
+                M_GetStartingObject(
+                    RT_MAIN, &main_visible, g_InvRing_Source[RT_MAIN].current));
         } else {
             const INV_RING_VISIBLE option_visible = M_GetVisibleRing(RT_OPTION);
             InvRing_InitRing(
@@ -1060,6 +1106,9 @@ void InvRing_Close(INV_RING *const ring)
         INVENTORY_ITEM *const inv_item = ring->list[ring->current_object];
         if (inv_item != nullptr) {
             Option_Close(inv_item);
+            if (ring->type < RT_NUMBER_OF) {
+                m_LastRingObject[ring->type] = inv_item->object_id;
+            }
         }
     }
     if (ring->mode == INV_TITLE_MODE) {
@@ -1205,4 +1254,11 @@ void InvRing_ClearSelection(void)
 {
     g_InvRing_Source[RT_MAIN].current = 0;
     g_InvRing_Source[RT_KEYS].current = 0;
+}
+
+void InvRing_ForgetLastEntries(void)
+{
+    for (RING_TYPE type = 0; type < RT_NUMBER_OF; type++) {
+        m_LastRingObject[type] = NO_OBJECT;
+    }
 }

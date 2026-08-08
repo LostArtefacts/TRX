@@ -791,6 +791,11 @@
             "QUICK_GUNS_MODE_DRAW_AND_HOLSTER": "Ziehen oder wegstecken",
             "QUICK_GUNS_MODE_DRAW_ONLY": "Nur ziehen",
         },
+        "RING_MEMORY_MODE": {
+            "RING_MEMORY_ALL": "\\{review}Alle Ringe",
+            "RING_MEMORY_MAIN": "\\{review}Hauptring",
+            "RING_MEMORY_OFF": "\\{review}Aus",
+        },
         "SAVE_CRYSTAL_MODE": {
             "SAVE_CRYSTAL_HEAL": "\\{review}Heilung",
             "SAVE_CRYSTAL_OFF": "\\{review}Aus",
@@ -1364,6 +1369,10 @@
         "gameplay.restore_ps1_enemies": {
             "title": "PS1 Feinde wiederherstellen",
             "description": "\\{review}Fügt die Mumie hinzu, die in der PlayStation-Version von City of Khamoon, Raum 25, erscheint.\nDas Ändern dieser Option erfordert einen Neustart des Spiels.",
+        },
+        "gameplay.ring_memory_mode": {
+            "title": "\\{review}Inventar-Position merken",
+            "description": "\\{review}Öffnet einen Ring bei dem Eintrag, bei dem er verlassen wurde, statt beim ersten.\n\n- Aus: jedes Öffnen beginnt beim ersten Eintrag, wie im Originalspiel.\n- Hauptring: nur der Gegenstandsring wird gemerkt.\n- Alle Ringe: der Gegenstands- und der Schlüsselring werden gemerkt.\n\nDer erste Eintrag kommt zurück, wenn Lara das Gemerkte nicht mehr trägt, und jedes Level beginnt dort.",
         },
         "gameplay.save_crystal_mode": {
             "title": "\\{review}Kristallmodus",
