@@ -791,6 +791,11 @@
             "QUICK_GUNS_MODE_DRAW_AND_HOLSTER": "Draw or holster",
             "QUICK_GUNS_MODE_DRAW_ONLY": "Draw only",
         },
+        "RING_MEMORY_MODE": {
+            "RING_MEMORY_ALL": "All rings",
+            "RING_MEMORY_MAIN": "Main ring",
+            "RING_MEMORY_OFF": "Off",
+        },
         "SAVE_CRYSTAL_MODE": {
             "SAVE_CRYSTAL_HEAL": "Healing",
             "SAVE_CRYSTAL_OFF": "Off",
@@ -1364,6 +1369,10 @@
         "gameplay.restore_ps1_enemies": {
             "title": "Restore PS1 enemies",
             "description": "Adds the mummy that appears in the PlayStation version of City of Khamoon, room 25.\nChanging this option will require restarting the game.",
+        },
+        "gameplay.ring_memory_mode": {
+            "title": "Remember inventory position",
+            "description": "Opens a ring on the entry it was left on, rather than on its first one.\n\n- Off: every opening starts at the first entry, as in the original game.\n- Main ring: only the item ring is remembered.\n- All rings: the item and keys rings are remembered.\n\nThe first entry comes back if Lara no longer carries what was remembered, and each level starts there.",
         },
         "gameplay.save_crystal_mode": {
             "title": "Crystal mode",

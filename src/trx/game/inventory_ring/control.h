@@ -33,4 +33,10 @@ void InvRing_InsertItem(INVENTORY_ITEM *inv_item);
 // Called as something leaves the inventory, while the rings still hold it, so
 // that the cursor does not stay on the position it is about to vacate.
 void InvRing_NotifyRemoved(OBJECT_ID object_id);
+// Puts every ring back to its first entry for the next time it opens, leaving
+// the entry each was left on for whoever asked to be brought back there.
 void InvRing_ClearSelection(void);
+
+// Drops the entry each ring was left on, so that what Lara carried into an
+// inventory she no longer has does not decide where the next one opens.
+void InvRing_ForgetLastEntries(void);

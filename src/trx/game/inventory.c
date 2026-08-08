@@ -355,6 +355,7 @@ void Inv_RemoveAllItems(void)
 {
     Inv_SetState(&(INVENTORY_STATE) {});
     InvRing_ClearSelection();
+    InvRing_ForgetLastEntries();
 }
 
 // What Inv_AddItem needs before it can take anything: the level has to carry
