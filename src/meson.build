@@ -332,6 +332,7 @@ common_sources = [
   'trx/game/game_flow/util.c',
   'trx/game/game_flow/vars.c',
   'trx/game/game_strings/entries.c',
+  'trx/game/game_strings/lang_match.c',
   'trx/game/game_strings/manager.c',
   'trx/game/game_strings/table/common.c',
   'trx/game/game_strings/table/priv.c',
