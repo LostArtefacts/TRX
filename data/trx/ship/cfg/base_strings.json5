@@ -3490,7 +3490,10 @@
             "name": "Swinging Axe",
         },
         "switch_type_airlock": {
-            "name": "Airlock Switch",
+            "name": [
+                "Airlock Switch",
+                "Switch",
+            ]
         },
         "switch_type_button": {
             "name": [
@@ -3556,7 +3559,10 @@
             ]
         },
         "switch_type_jump": {
-            "name": "Jump Switch",
+            "name": [
+                "Jump Switch",
+                "Switch",
+            ]
         },
         "switch_type_normal": {
             "name": [
@@ -3565,21 +3571,31 @@
             ]
         },
         "switch_type_pulley": {
-            "name": "Pulley Switch",
+            "name": [
+                "Pulley Switch",
+                "Switch",
+            ]
         },
         "switch_type_small": {
-            "name": "Small Switch",
+            "name": [
+                "Small Switch",
+                "Switch",
+            ]
         },
         "switch_type_uw": {
             "name": [
                 "Underwater Lever",
                 "Underwater Switch",
+                "Lever",
+                "Switch",
             ]
         },
         "switch_type_uw_ceiling": {
             "name": [
                 "Underwater Ceiling Lever",
                 "Underwater Ceiling Switch",
+                "Lever",
+                "Switch",
             ]
         },
         "switch_type_wheel": {
@@ -3587,6 +3603,7 @@
                 "Wheel Switch",
                 "Pulley Switch",
                 "Valve Switch",
+                "Switch",
             ]
         },
         "teeth_trap": {

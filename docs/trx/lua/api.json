@@ -9052,7 +9052,7 @@
       "handle": false,
       "methods": [
         {
-          "description": "The ids tied for the best `trx.query.NamedQuery:by_name` score: one for a name only one thing answers to, the whole group for a group name. Without a `trx.query.NamedQuery:by_name`, every matching id.",
+          "description": "The ids tied for the best `trx.query.NamedQuery:by_name` score: one for a\nname only one thing answers to, the whole group for a group named in full. Without a\n`trx.query.NamedQuery:by_name`, every matching id.",
           "name": "best",
           "returns": {
             "list": true,
@@ -9060,7 +9060,7 @@
           }
         },
         {
-          "description": "Ranks rather than filters: matches the way a player types a name, forgivingly, and orders what survives the rest of the query best first. Some of a domain's narrowings are also searchable groups, so their own name matches every member.",
+          "description": "Ranks rather than filters: matches the way a player types a name,\nforgivingly, and orders what survives the rest of the query best first. Some of a domain's\nnarrowings are also searchable groups, so their own name matches every member. A group named\nin full comes first, ahead of anything that answers to the same word.",
           "examples": [
             "trx.objects.query:spawnable():by_name(\"wolf\"):ids()"
           ],
