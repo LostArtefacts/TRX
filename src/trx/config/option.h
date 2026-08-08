@@ -39,6 +39,8 @@ typedef enum {
     CONFIG_HOLD_SCRIPT,
     // The demo's own settings, put back when it ends.
     CONFIG_HOLD_DEMO,
+    // A key the player is holding, put back when they let go.
+    CONFIG_HOLD_INPUT,
 } CONFIG_HOLD_SOURCE;
 
 #define CONFIG_HOLD_MAX_DEPTH 3

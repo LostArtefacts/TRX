@@ -102,6 +102,8 @@ static const UI_CONTROLS_EDITOR_GROUP m_Groups[] = {
                 { .role = INPUT_ROLE_ITEM_CHEAT },
                 { .role = INPUT_ROLE_LEVEL_SKIP_CHEAT },
                 { .role = INPUT_ROLE_TURBO_CHEAT },
+                { .role = INPUT_ROLE_FAST_FORWARD_CHEAT },
+                { .role = INPUT_ROLE_SLOW_MOTION_CHEAT },
                 { .role = (INPUT_ROLE)-1 },
             },
     },
@@ -198,6 +200,8 @@ static bool M_IsRoleUsable(const INPUT_ROLE role)
     case INPUT_ROLE_ITEM_CHEAT:
     case INPUT_ROLE_LEVEL_SKIP_CHEAT:
     case INPUT_ROLE_TURBO_CHEAT:
+    case INPUT_ROLE_FAST_FORWARD_CHEAT:
+    case INPUT_ROLE_SLOW_MOTION_CHEAT:
         return g_Config.gameplay.enable_cheats;
     case INPUT_ROLE_USE_BINOCULARS:
         return g_Config.gameplay.enable_binoculars;
