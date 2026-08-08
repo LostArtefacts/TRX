@@ -18,6 +18,7 @@
   - picking up thrown flares
   - grabbing zipline handles
   - using detonators
+  - using gongs
 - added a `damage` property to the `O_POWER_SAW` object
 - added a bindable hotkey for using the binoculars
 - added the ability to rebind switching between fullscreen and windowed mode, which stays Alt+Enter unless changed (#2251)

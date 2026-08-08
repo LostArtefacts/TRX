@@ -1,15 +1,29 @@
-#include <trx/game/game_flow.h>
+#include <trx/config.h>
 #include <trx/game/input.h>
 #include <trx/game/inventory.h>
 #include <trx/game/lara.h>
 #include <trx/game/objects/common.h>
-#include <trx/game/objects/general/pickup.h>
 
-static XYZ_32 m_Position = { .x = 0, .y = 0, .z = 0 };
+static XYZ_32 m_DefaultPosition = {};
+static XYZ_32 m_ControlledPosition = { .x = WALL_L / 2,
+                                       .y = 0,
+                                       .z = -STEP_L * 3 };
 
-static const OBJECT_BOUNDS m_Bounds = {
+static const OBJECT_BOUNDS m_DefaultBounds = {
     .shift = {
         .min = { .x = -WALL_L / 2, .y = -100, .z = -WALL_L / 2 - 300, },
+        .max = { .x = +WALL_L, .y = +100, .z = -WALL_L / 2 + 100, },
+    },
+    .rot = {
+        .min = { .x = -30 * DEG_1, .y = 0, .z = 0, },
+        .max = { .x = +30 * DEG_1, .y = 0, .z = 0, },
+    },
+    .ignore_rot = true,
+};
+
+static const OBJECT_BOUNDS m_ControlledBounds = {
+    .shift = {
+        .min = { .x = -WALL_L / 2, .y = -100, .z = -WALL_L, },
         .max = { .x = +WALL_L, .y = +100, .z = -WALL_L / 2 + 100, },
     },
     .rot = {
@@ -52,7 +66,7 @@ static void M_CreateGongBonger(ITEM *const lara_item)
 
 static void M_Use(ITEM *const lara_item, ITEM *const receptacle_item)
 {
-    Lara_AlignPosition(receptacle_item, &m_Position);
+    Lara_AlignPosition(receptacle_item, &m_DefaultPosition);
     lara_item->rot.y += DEG_180;
 
     Lara_SwitchToExtraState(LS_EXTRA_GONG_BONG);
@@ -72,7 +86,65 @@ static void M_Use(ITEM *const lara_item, ITEM *const receptacle_item)
 
 static const OBJECT_BOUNDS *M_Bounds(void)
 {
-    return &m_Bounds;
+    return g_Config.gameplay.enable_walk_to_items ? &m_ControlledBounds
+                                                  : &m_DefaultBounds;
+}
+
+static bool M_ShowInventory(const ITEM *const item)
+{
+    if (!GF_ShowInventoryKeys(item->object_id)) {
+        Lara_RefuseInteraction();
+        return false;
+    }
+
+    return true;
+}
+
+static void M_CollisionControlled(
+    const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
+{
+    if (!Lara_Interact_CanControl(LARA_INTERACT_RECEPTACLE, item_num)) {
+        Object_Collision(item_num, lara_item, coll);
+        return;
+    }
+
+    ITEM *const item = Item_Get(item_num);
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    const OBJECT *const obj = Object_Get(item->object_id);
+
+    const XYZ_16 old_rot = item->rot;
+    item->rot.x = 0;
+    item->rot.y += DEG_180;
+    item->rot.z = 0;
+
+    if (Lara_TestPosition(item, obj->bounds_func())) {
+        item->rot = old_rot;
+        if (!lara->interact_target.is_moving
+            && (!M_ShowInventory(item)
+                || !Lara_Interact_HasActiveTarget(Item_GetIndex(item)))) {
+            return;
+        }
+
+        if (lara_item->current_anim_state == LS(LS_STOP)) {
+            lara->interact_target.is_moving = false;
+        }
+
+        item->rot.y = old_rot.y + DEG_180;
+        if (Lara_MovePosition(item, &m_ControlledPosition)) {
+            Lara_Interact_FinishControl(LARA_INTERACT_RECEPTACLE);
+            item->rot = old_rot;
+            M_Use(lara_item, item);
+        } else {
+            lara->interact_target.item_num = item_num;
+        }
+    } else if (
+        lara->interact_target.is_moving
+        && lara->interact_target.item_num == item_num) {
+        lara->interact_target.is_moving = false;
+        lara->gun_status = LGS_ARMLESS;
+    }
+
+    item->rot = old_rot;
 }
 
 static void M_Collision(
@@ -84,15 +156,21 @@ static void M_Collision(
     }
 
     ITEM *const item = Item_Get(item_num);
-    const OBJECT *const obj = Object_Get(item->object_id);
+    if (!Item_IsInactive(item)) {
+        goto normal_collision;
+    }
+
+    if (g_Config.gameplay.enable_walk_to_items) {
+        M_CollisionControlled(item_num, lara_item, coll);
+        return;
+    }
 
     if (Lara_Interact_HasActiveTarget(item_num)) {
         M_Use(lara_item, item);
         return;
     }
 
-    if (!Item_IsInactive(item) || !g_Input.action
-        || lara->gun_status != LGS_ARMLESS || lara_item->gravity
+    if (!g_Input.action || lara->gun_status != LGS_ARMLESS || lara_item->gravity
         || !Lara_Interact_CanBegin(LARA_INTERACT_RECEPTACLE)) {
         goto normal_collision;
     }
@@ -102,6 +180,7 @@ static void M_Collision(
     item->rot.y = lara_item->rot.y;
     item->rot.z = 0;
 
+    const OBJECT *const obj = Object_Get(item->object_id);
     if (!Lara_TestPosition(item, obj->bounds_func())) {
         item->rot = old_rot;
         goto normal_collision;
@@ -109,10 +188,7 @@ static void M_Collision(
 
     item->rot = old_rot;
 
-    if (!GF_ShowInventoryKeys(item->object_id)) {
-        Lara_RefuseInteraction();
-    }
-
+    M_ShowInventory(item);
     return;
 
 normal_collision:
