@@ -1814,11 +1814,11 @@
         },
         "visuals.fog_end": {
             "title": "Koniec mgły",
-            "description": "Ustala odległość w sektorach, w której gra przestaje rysować poziom.",
+            "description": "\\{review}Ustala odległość w sektorach, w której gra przestaje rysować poziom. W oryginalnych TR2 i TR3 dzieje się to przy 20 sektorach. Poziom może mieć własną wartość, która jest wtedy używana.",
         },
         "visuals.fog_start": {
             "title": "Początek mgły",
-            "description": "Ustala odległość w sektorach, w której gra zaczyna ograniczać widoczność.",
+            "description": "\\{review}Ustala odległość w sektorach, w której gra zaczyna ograniczać widoczność. W oryginalnych TR2 i TR3 zaczyna się to przy 12 sektorach. Poziom może mieć własną wartość, która jest wtedy używana.",
         },
         "visuals.fog_transparency": {
             "title": "Przezroczystość mgły",

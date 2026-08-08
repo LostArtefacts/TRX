@@ -1814,11 +1814,11 @@
         },
         "visuals.fog_end": {
             "title": "Deireadh ceò",
-            "description": "Suidhichidh seo an astar (ann an leacan) bhon chamara far a dhùnas ceò air a h-uile càil.",
+            "description": "\\{review}Suidhichidh seo an astar (ann an leacan) bhon chamara far a dhùnas ceò air a h-uile càil. Anns an TR2 is TR3 thùsail, tachraidh sin aig 20 leac. Faodaidh ìre luach dhi fhèin a ghiùlan, agus thèid sin a chleachdadh na àite.",
         },
         "visuals.fog_start": {
             "title": "Tòiseachadh ceò",
-            "description": "Suidhichidh seo an astar (ann an leacan) bhon chamara far a thoisicheas ceò.",
+            "description": "\\{review}Suidhichidh seo an astar (ann an leacan) bhon chamara far a thoisicheas ceò. Anns an TR2 is TR3 thùsail, tòisichidh e aig 12 leac. Faodaidh ìre luach dhi fhèin a ghiùlan, agus thèid sin a chleachdadh na àite.",
         },
         "visuals.fog_transparency": {
             "title": "Follaiseachd a' cheòth",

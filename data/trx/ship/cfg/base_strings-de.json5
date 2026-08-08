@@ -1814,11 +1814,11 @@
         },
         "visuals.fog_end": {
             "title": "Ende des Nebels",
-            "description": "Stellt die Distanz in Kacheln ein, in der der Nebel alles völlig verhüllt.",
+            "description": "\\{review}Stellt die Distanz in Kacheln ein, in der der Nebel alles völlig verhüllt. Im originalen TR2 und TR3 ist das bei 20 Kacheln der Fall. Ein Level kann einen eigenen Wert mitbringen, der dann stattdessen gilt.",
         },
         "visuals.fog_start": {
             "title": "Beginn des Nebels",
-            "description": "Stellt die Distanz in Kacheln ein, in der der Nebel zu erscheinen beginnt.",
+            "description": "\\{review}Stellt die Distanz in Kacheln ein, in der der Nebel zu erscheinen beginnt. Im originalen TR2 und TR3 beginnt er bei 12 Kacheln. Ein Level kann einen eigenen Wert mitbringen, der dann stattdessen gilt.",
         },
         "visuals.fog_transparency": {
             "title": "\\{review}Nebel Transparenz",

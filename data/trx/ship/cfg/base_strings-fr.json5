@@ -1814,11 +1814,11 @@
         },
         "visuals.fog_end": {
             "title": "Fin de brouillard",
-            "description": "Définit la distance en secteurs où le brouillard rend tout complètement obscurci.",
+            "description": "\\{review}Définit la distance en secteurs où le brouillard rend tout complètement obscurci. Dans les TR2 et TR3 d'origine, cela se produit à 20 secteurs. Un niveau peut porter sa propre valeur, qui est alors utilisée.",
         },
         "visuals.fog_start": {
             "title": "Début de brouillard",
-            "description": "Définit la distance en secteurs où le brouillard commence à apparaître.",
+            "description": "\\{review}Définit la distance en secteurs où le brouillard commence à apparaître. Dans les TR2 et TR3 d'origine, il commence à 12 secteurs. Un niveau peut porter sa propre valeur, qui est alors utilisée.",
         },
         "visuals.fog_transparency": {
             "title": "\\{review}Transparence du brouillard",
