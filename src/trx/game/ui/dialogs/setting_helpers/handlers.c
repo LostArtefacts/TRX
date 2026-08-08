@@ -108,6 +108,21 @@ static bool M_GunGlow_IsVisible(
     return g_TRVersion == 1 || g_TRVersion == 2;
 }
 
+// The two ways of anti-aliasing the scene are alternatives: one rasterizes
+// more pixels, the other more samples of the same pixel, and asking for both
+// only costs what the one that wins would have.
+static bool M_Supersampling_IsAvailable(
+    const CONFIG_OPTION *const option, void *const user_data)
+{
+    return g_Config.rendering.multisampling_factor <= 1;
+}
+
+static bool M_Multisampling_IsAvailable(
+    const CONFIG_OPTION *const option, void *const user_data)
+{
+    return g_Config.rendering.supersampling_factor <= 1;
+}
+
 static bool M_EnableBreeze_IsAvailable(
     const CONFIG_OPTION *const option, void *const user_data)
 {
@@ -350,7 +365,11 @@ REGISTER_UI_SETTING_HANDLER(
 
 REGISTER_UI_SETTING_HANDLER(
         .key = "rendering.supersampling_factor", .delta_slow = 1,
-        .delta_fast = 1)
+        .delta_fast = 1, .is_available = M_Supersampling_IsAvailable)
+
+REGISTER_UI_SETTING_HANDLER(
+        .key = "rendering.multisampling_factor", .delta_slow = 1,
+        .delta_fast = 1, .is_available = M_Multisampling_IsAvailable)
 
 REGISTER_UI_SETTING_HANDLER(
         .key = "rendering.borders", .delta_slow = 1, .delta_fast = 5)

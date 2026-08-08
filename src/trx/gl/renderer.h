@@ -20,6 +20,8 @@ void TRX_GL_Renderer_BindGeometryFbo(void);
 void TRX_GL_Renderer_BindUiFbo(void);
 
 // Resolve the geometry framebuffer down to VIEWPORT_SCENE and return the GL
-// object id holding the result (3D scene only, no UI). Without supersampling
-// the geometry framebuffer already is that result and is returned as is.
+// object id holding the result (3D scene only, no UI). Multisampling and
+// supersampling both need this before the scene can be sampled or read back;
+// with neither of them on, the geometry framebuffer already is that result and
+// is returned as is. Resolving twice in a frame costs nothing.
 GLuint TRX_GL_Renderer_ResolveSceneFbo(void);

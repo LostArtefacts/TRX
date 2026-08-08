@@ -1488,6 +1488,10 @@
             "title": "Kontrast oświetlenia",
             "description": "Zwiększa kontrast dla dynamicznych źródeł światła, takich jak flary i rozbłyski broni.",
         },
+        "rendering.multisampling_factor": {
+            "title": "\\{review}Wielopróbkowanie",
+            "description": "\\{review}Wygładza krawędzie ścian i obiektów, pobierając kilka próbek każdego piksela wzdłuż nich. Znacznie tańsze niż nadpróbkowanie, ale pozostawia bez zmian krawędzie sprite'ów takich jak roślinność i ogień.",
+        },
         "rendering.screenshot_format": {
             "title": "Format zrzutów ekranu",
             "description": "Format pliku użyty do zapisu zrzutów ekranu.",

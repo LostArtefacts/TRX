@@ -14,6 +14,8 @@
 #include <trx/game/output/textures_gl.h>
 #include <trx/game/output/vertex_range.h>
 #include <trx/game/sparks/enum.h>
+#include <trx/game/viewport.h>
+#include <trx/gl/renderer.h>
 #include <trx/gl/utils.h>
 #include <trx/version.h>
 
@@ -677,23 +679,23 @@ void Output_Textures_UpdateEnvironmentMap(void)
         return;
     }
 
-    GLint viewport[4];
-    glGetIntegerv(GL_VIEWPORT, viewport);
-    TRX_GL_CheckError();
+    // A multisampled framebuffer cannot be copied out of, so the scene has to
+    // be resolved before it can be read back here.
+    const GLuint src_fbo = TRX_GL_Renderer_ResolveSceneFbo();
+    const VIEWPORT_RECT rect = Viewport_GetRect(VIEWPORT_SCENE);
 
-    const GLint vp_x = viewport[0];
-    const GLint vp_y = viewport[1];
-    const GLint vp_w = viewport[2];
-    const GLint vp_h = viewport[3];
+    const int32_t side = MIN(rect.width, rect.height);
+    const int32_t x = (rect.width - side) / 2;
+    const int32_t y = (rect.height - side) / 2;
 
-    const int32_t side = MIN(vp_w, vp_h);
-    const int32_t x = vp_x + (vp_w - side) / 2;
-    const int32_t y = vp_y + (vp_h - side) / 2;
-    const int32_t w = side;
-    const int32_t h = side;
+    GLint prev_read_fbo = 0;
+    glGetIntegerv(GL_READ_FRAMEBUFFER_BINDING, &prev_read_fbo);
+    glBindFramebuffer(GL_READ_FRAMEBUFFER, src_fbo);
 
     glBindTexture(GL_TEXTURE_2D, m_Priv.tex_env_map);
-    glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, x, y, w, h, 0);
+    glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, x, y, side, side, 0);
+
+    glBindFramebuffer(GL_READ_FRAMEBUFFER, (GLuint)prev_read_fbo);
     TRX_GL_CheckError();
 }
 

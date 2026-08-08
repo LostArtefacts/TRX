@@ -6,6 +6,7 @@
 
 typedef struct {
     TEXTURE_FILTER display_filter;
+    int32_t multisampling_factor;
     bool enable_dithering;
     bool enable_wireframe;
     int32_t line_width;

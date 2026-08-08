@@ -1488,6 +1488,10 @@
             "title": "Contrasto",
             "description": "Aumenta il contrasto per fonti di luce dinamiche come razzi di segnalazione e lampi di armi da fuoco.",
         },
+        "rendering.multisampling_factor": {
+            "title": "\\{review}Campionamento multiplo",
+            "description": "\\{review}Smussa i bordi di muri e oggetti prendendo più campioni di ogni pixel lungo di essi. Molto meno costoso del supercampionamento, ma lascia intatti i bordi degli sprite come vegetazione e fuoco.",
+        },
         "rendering.screenshot_format": {
             "title": "Formato cattura schermo",
             "description": "Formato del file da utilizzare per le istantanee dello schermo.",
