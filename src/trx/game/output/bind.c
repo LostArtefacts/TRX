@@ -29,5 +29,5 @@ void Output_Bind_ResetRooms(void)
 
 OUTPUT_ROOM_BIND *Output_Bind_GetRoom(const ROOM *const room)
 {
-    return &m_RoomBindings[Room_GetNumber(room)];
+    return &m_RoomBindings[Room_GetIndex(room)];
 }

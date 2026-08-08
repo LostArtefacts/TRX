@@ -414,7 +414,7 @@ int32_t Room_GetOutsideStatus(
     return -2;
 }
 
-int32_t Room_GetNumber(const ROOM *const room)
+int32_t Room_GetIndex(const ROOM *const room)
 {
     if (room == nullptr) {
         return NO_ROOM;
