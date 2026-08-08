@@ -4,6 +4,11 @@
 #include <trx/game/items/types.h>
 
 ANIM *Item_GetAnim(const ITEM *item);
+
+// Returns the position the item's current animation will re-base it to when it
+// ends, if any. The animation itself does not move the item, so this is where
+// it is committed to landing.
+bool Item_GetPendingOrigin(const ITEM *item, XYZ_32 *out_pos);
 bool Item_TestAnimEqual(const ITEM *item, int16_t anim_idx);
 bool Item_TestObjAnimEqual(
     const ITEM *item, int16_t anim_idx, OBJECT_ID obj_id);
