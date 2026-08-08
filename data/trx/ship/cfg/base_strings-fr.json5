@@ -1026,7 +1026,7 @@
         },
         "gameplay.enable_cheats": {
             "title": "Triche",
-            "description": "Active plusieurs fonctions de triche :\n- L: termine immédiatement le niveau.\n- I: donne toutes les armes à Lara, le maximum en munitions et trousses de soin, et tous les éléments utiles au niveau en cours.\n- O: Fait voler Lara (nager dans les airs).\n  - Touche MARCHER : Revenir au sol.\n  - Touche ESPACE : Ouvre les portes fermées (peut ne pas fonctionner sur certaines).",
+            "description": "Active plusieurs fonctions de triche :\n\n- \\{input level_skip_cheat} : termine immédiatement le niveau.\n- \\{input item_cheat} : donne toutes les armes à Lara, le maximum en munitions et trousses de soin, et tous les éléments utiles au niveau en cours.\n- \\{input fly_cheat} : fait voler Lara (nager dans les airs).\n  - \\{input slow} : revenir au sol.\n  - \\{input draw} : ouvre les portes fermées (peut ne pas fonctionner sur certaines).",
         },
         "gameplay.enable_cinematic_skips": {
             "title": "\\{review}Passer les cinématiques",
