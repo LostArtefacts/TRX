@@ -44,9 +44,6 @@
 - added an `ammo.infinite` key to `weapons.json5`, saying which weapons and flares never run out; a game that takes it away from the pistols makes their clips worth collecting
 - changed the ammunition keys in `weapons.json5` to say what they count; refer to migration notes
 - changed boxes of ammunition in the inventory to always show what Lara is really carrying, where finishing a level could round them down
-- fixed settings belonging to another game being dropped from the settings file
-- fixed touch controls not turning themselves on the first time the game is launched on a device that has a touchscreen
-- fixed the alternative ammunition pickups, such as the second kind of shotgun ammunition, going into the inventory without loading the weapon
 - changed the gameflow's `main_menu_picture` to be optional: a game that names no picture shows its title level behind the menu, and its title script says what plays there
 - changed the `/music` console command to list the available tracks when given no argument, as `/sfx` does; `/music status` now reports what is playing
 - changed the large medipack to answer to "big medipack" as well, so `/give big medi` reaches it
@@ -126,6 +123,10 @@
 - fixed changing the number of save or quick save slots mid-game discarding the progress of the levels played so far (#6054)
 - fixed Lara repeating a pickup animation if jump and roll are held during the pickup (regression from TR1X 4.14 / TR2X 1.4)
 - fixed not being able to perform the item duplication glitch (regression from 1.2)
+- fixed settings belonging to another game being dropped from the settings file
+- fixed touch controls not turning themselves on the first time the game is launched on a device that has a touchscreen
+- fixed the alternative ammunition pickups, such as the second kind of shotgun ammunition, going into the inventory without loading the weapon
+- fixed Lara being able to pull out flares while crawling after picking up an item, and dropping flares when using the draw input to enter crouch state (regression from 1.3)
 
 **TR1**
 - changed weather to be affected by the breeze
