@@ -1484,7 +1484,7 @@
         },
         "rendering.sprite_lock_mode": {
             "title": "Sprite lock mode",
-            "description": "Controls which axes to lock when showing sprites on the screen.\n\n- None: show the sprites normally.\n- Roll: lock the roll axis – useful only in photo mode.\n- Roll & pitch: ensure the sprites stand upright and do not lie on the ground when looking at them from above.\n- Perspective: lock roll and pitch axes and addititonally, rotate the sprites slightly towards the center of the screen.",
+            "description": "Controls which axes to lock when showing sprites on the screen.\n\n- None: show the sprites normally.\n- Roll: lock the roll axis – useful only in photo mode.\n- Roll & pitch: ensure the sprites stand upright and do not lie on the ground when looking at them from above.\n- Perspective: lock roll and pitch axes and additionally, rotate the sprites slightly towards the center of the screen.",
         },
         "rendering.texture_filter": {
             "title": "Texture filter",
@@ -1604,7 +1604,7 @@
         },
         "ui.menu_style": {
             "title": "Menu style",
-            "description": "Changes how menus are displayed.\n\n - PC: UI style matches the PC version.\n - PS1: UI style matches the PS1 version.",
+            "description": "Changes how menus are displayed.\n\n- PC: UI style matches the PC version.\n- PS1: UI style matches the PS1 version.",
         },
         "ui.pause_background_style": {
             "title": "Pause background",

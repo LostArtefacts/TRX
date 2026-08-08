@@ -1604,7 +1604,7 @@
         },
         "ui.menu_style": {
             "title": "Style des menus",
-            "description": "Changer la manière dont les menus sont affichés.\n - PC : Interface de la version PC.\n - PS1 : Interface de la version PlayStation.",
+            "description": "Changer la manière dont les menus sont affichés.\n\n- PC : Interface de la version PC.\n- PS1 : Interface de la version PlayStation.",
         },
         "ui.pause_background_style": {
             "title": "\\{review}Pause en arrière-plan",
