@@ -1,5 +1,6 @@
 #include <trx/game/objects/general/door.h>
 
+#include <trx/config.h>
 #include <trx/game/const.h>
 #include <trx/game/game_flow/common.h>
 #include <trx/game/game_flow/sequencer.h>
@@ -77,17 +78,34 @@ static SECTOR *M_GetRoomRelSector(
     return Room_GetUnitSector(room, sector.x, sector.z);
 }
 
-static bool M_LaraDoorCollision(const SECTOR *const sector)
+static bool M_TestBlockedSector(
+    const M_PRIV *const p, const XYZ_32 pos, int16_t room_num)
 {
-    // Check if Lara is on the same tile as the invisible block.
+    const SECTOR *const sector = Room_GetSector(pos, &room_num);
+    return sector == p->d1.sector || sector == p->d2.sector
+        || sector == p->d1flip.sector || sector == p->d2flip.sector;
+}
+
+static bool M_LaraDoorCollision(const M_PRIV *const p)
+{
+    // Check if Lara is on, or is climbing onto, the same tile as the invisible
+    // block.
     const ITEM *const lara = Lara_GetItem();
     if (lara == nullptr) {
         return false;
     }
 
-    int16_t room_num = lara->room_num;
-    const SECTOR *const lara_sector = Room_GetSector(lara->pos, &room_num);
-    return lara_sector == sector;
+    if (M_TestBlockedSector(p, lara->pos, lara->room_num)) {
+        return true;
+    }
+
+    if (g_Config.gameplay.wall_glitch_mode != WALL_GLITCH_FIXED) {
+        return false;
+    }
+
+    XYZ_32 pending_pos;
+    return Item_GetPendingOrigin(lara, &pending_pos)
+        && M_TestBlockedSector(p, pending_pos, lara->room_num);
 }
 
 static void M_CopySectorProperties(
@@ -118,14 +136,15 @@ static void M_Open(M_DOOR_POS *const d)
     }
 }
 
-static void M_Check(M_DOOR_POS *const d)
+static void M_Check(ITEM *const item)
 {
     // Forcefully remove the invisible block if Lara happens to occupy the same
     // tile. This ensures that Lara doesn't void if a timed door happens to
     // close right on her, or the player loads the game while standing on a
-    // closed door's block tile.
-    if (M_LaraDoorCollision(d->sector)) {
-        M_Open(d);
+    // closed door's block tile. Both sides of the doorway are opened so that
+    // she can cross it in one piece.
+    if (M_LaraDoorCollision(item->priv)) {
+        Door_OpenPortals(item);
     }
 }
 
@@ -190,10 +209,7 @@ static void M_ControlLift(ITEM *const item)
         }
     }
 
-    M_Check(&p->d1);
-    M_Check(&p->d2);
-    M_Check(&p->d1flip);
-    M_Check(&p->d2flip);
+    M_Check(item);
 }
 
 static void M_Control(const int16_t item_num)
@@ -226,10 +242,7 @@ static void M_Control(const int16_t item_num)
         }
     }
 
-    M_Check(&p->d1);
-    M_Check(&p->d2);
-    M_Check(&p->d1flip);
-    M_Check(&p->d2flip);
+    M_Check(item);
     Item_Animate(item);
 }
 
