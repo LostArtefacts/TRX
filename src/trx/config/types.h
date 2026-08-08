@@ -222,6 +222,7 @@ typedef struct {
         bool enable_binoculars;
 
         bool enable_jump_twists;
+        bool enable_underwater_auto_draw;
         bool enable_uw_roll;
         bool enable_crouch_roll;
         bool enable_tr2_swimming;

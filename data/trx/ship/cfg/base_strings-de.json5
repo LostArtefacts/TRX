@@ -1213,6 +1213,10 @@
             "title": "Flüssiges Schwimmverhalten",
             "description": "Verpasst Laras Drehgeschwindigkeit unter Wasser eine Beschleunigungskurve für ein runderes Steuerungsverhalten, ähnlich wie in TR2+.",
         },
+        "gameplay.enable_underwater_auto_draw": {
+            "title": "\\{review}Waffe unter Wasser ziehen",
+            "description": "\\{review}Lässt die Taste zum Ziehen der Waffe zu einer Waffe greifen, die Lara unter Wasser benutzen kann, etwa der Harpune, statt nichts zu tun, wenn die zuletzt gehaltene Waffe dort nicht taugt.",
+        },
         "gameplay.enable_uw_roll": {
             "title": "Rolle unter Wasser",
             "description": "Erlaubt Lara, eine Rolle unter Wasser durchzuführen, ähnlich wie in TR2+.",

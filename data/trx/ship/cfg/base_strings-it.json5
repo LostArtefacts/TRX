@@ -1213,6 +1213,10 @@
             "title": "Nuoto naturale",
             "description": "Fornisce alla velocità di virata subacquea di Lara una curva di accelerazione per movimenti più fluidi, come in TR2+. Disabilitando questa opzione, Lara avrà una velocità di virata più rapida, come in TR1.",
         },
+        "gameplay.enable_underwater_auto_draw": {
+            "title": "\\{review}Estrazione arma sott'acqua",
+            "description": "\\{review}Consente al tasto di estrazione dell'arma di scegliere un'arma utilizzabile sott'acqua, come il fucile arpione, invece di non fare nulla quando l'ultima arma impugnata da Lara non è utilizzabile lì.",
+        },
         "gameplay.enable_uw_roll": {
             "title": "Capriola sott'acqua",
             "description": "Permette a Lara di eseguire capriole mentre è sott'acqua.",

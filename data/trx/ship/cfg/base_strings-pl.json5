@@ -1213,6 +1213,10 @@
             "title": "Zwinniejsze pływanie",
             "description": "Powoduje, że Lara przyspiesza płynniej, ale wolniej podczas obracania pod wodą (tak jak w TR2+). Wyłączenie tej opcji zapewni Larze szybszą prędkość skrętu (tak jak w TR1).",
         },
+        "gameplay.enable_underwater_auto_draw": {
+            "title": "\\{review}Dobywanie broni pod wodą",
+            "description": "\\{review}Sprawia, że klawisz dobycia broni sięga po broń przydatną pod wodą, na przykład harpun, zamiast nie robić nic, gdy ostatnio trzymanej broni nie da się tam użyć.",
+        },
         "gameplay.enable_uw_roll": {
             "title": "Przewroty pod wodą",
             "description": "Pozwala Larze na przewrót pod wodą.",

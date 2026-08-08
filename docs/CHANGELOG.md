@@ -24,6 +24,7 @@
 - added a bindable hotkey for using the binoculars
 - added the ability to rebind switching between fullscreen and windowed mode, which stays Alt+Enter unless changed (#2251)
 - added the ability to change how heavily the rain or snow falls, from Lua and with the `/weather` console command (#6080)
+- added an option for the draw weapon key to pick a weapon Lara can use underwater, such as the harpoon gun (Gameplay → Controls → Underwater weapon draw) (#4119)
 - added `show_pickup_aid`, `rotation` and `glow_color` properties for all pickup types
 - added a brightness option for background images and patterns, so that brightening the UI leaves them alone (Graphic Options → Rendering → Background brightness) (#6074)
 - added an option to keep the music playing when Lara dies (Sound Options → Misc → Play music after death) (#4221)

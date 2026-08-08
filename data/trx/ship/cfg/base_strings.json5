@@ -1213,6 +1213,10 @@
             "title": "Smooth swimming",
             "description": "Gives Lara's underwater turn rate an acceleration curve for smoother movement, as per TR2+ originally. Disabling this option will give Lara a snappier turn rate, per original TR1.",
         },
+        "gameplay.enable_underwater_auto_draw": {
+            "title": "Underwater weapon draw",
+            "description": "Lets the draw weapon key reach for a weapon Lara can use underwater, such as the harpoon gun, rather than doing nothing when the weapon she last held cannot be used there.",
+        },
         "gameplay.enable_uw_roll": {
             "title": "Underwater roll",
             "description": "Allows Lara to roll while underwater.",
