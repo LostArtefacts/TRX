@@ -233,7 +233,7 @@ static void M_RenderPass(
     for (int32_t i = 0; i < p->scheduled->count; i++) {
         const M_INSTANCE *const instance = Vector_Get(p->scheduled, i);
         const M_ROOM_MESH *const mesh =
-            &p->meshes[Room_GetNumber(instance->room)];
+            &p->meshes[Room_GetIndex(instance->room)];
         Output_MeshShader_UploadModelMatrix(p->shader, &instance->matrix);
         if (g_Config.debug.enable_debug_triggers) {
             glDrawArrays(
@@ -329,7 +329,7 @@ void OutputSource_RoomsDebug_ObserveRoomFlip(const ROOM *const room)
 {
     M_PRIV *const p = &m_Priv;
     if (room->flip_status == RFS_UNFLIPPED && room->flipped_room != NO_ROOM) {
-        const int16_t room_1 = Room_GetNumber(room);
+        const int16_t room_1 = Room_GetIndex(room);
         const int16_t room_2 = room->flipped_room;
         SWAP(p->meshes[room_1], p->meshes[room_2]);
     }
