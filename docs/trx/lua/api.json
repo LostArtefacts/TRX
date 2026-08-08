@@ -6044,6 +6044,11 @@
     },
     {
       "base": 0,
+      "description": "A frame's number within the cutscene it belongs to.",
+      "path": "cutscenes.FrameNum"
+    },
+    {
+      "base": 0,
       "description": "A flip effect number, as a level editor numbers them. Not the id space of `trx.rooms.flip_effect`, which takes `trx.catalog.flip_effects` names.",
       "path": "events.FlipEffectNum"
     },
@@ -6181,6 +6186,12 @@
       "description": "Number of the cutscene playing, or `nil` if none is.",
       "path": "cutscenes.current",
       "type": "cutscenes.Num",
+      "writable": false
+    },
+    {
+      "description": "Which frame of the running cutscene is on screen, or `nil` if none is\nrunning. A cutscene's actors are animation tracks rather than items, so\nnothing in it can be triggered or listened to; naming a frame is how a\nscript acts part-way through one, as the original game does.",
+      "path": "cutscenes.frame_num",
+      "type": "cutscenes.FrameNum",
       "writable": false
     },
     {

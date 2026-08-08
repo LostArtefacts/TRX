@@ -24,6 +24,7 @@
 #include <trx/version.h>
 
 #define M_NO_CUTSCENE (-1)
+#define M_NO_FRAME (-1)
 // The OG cutscene FOV; normal gameplay uses 14560.
 #define M_DEFAULT_FOV 11488
 #define M_FADE_DURATION 0.5f
@@ -397,6 +398,11 @@ bool CutSeq_IsPlaying(void)
 int32_t CutSeq_GetCurrent(void)
 {
     return CutSeq_IsPlaying() ? m_State.num : M_NO_CUTSCENE;
+}
+
+int32_t CutSeq_GetFrame(void)
+{
+    return CutSeq_IsPlaying() ? m_State.frame : M_NO_FRAME;
 }
 
 void CutSeq_Request(const int32_t num)

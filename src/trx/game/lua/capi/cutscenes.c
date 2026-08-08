@@ -6,6 +6,7 @@
 #include <lauxlib.h>
 
 #define M_NO_CUTSCENE (-1)
+#define M_NO_FRAME (-1)
 
 // A cutscene a script asks to play has to be one this game can actually play,
 // or the call would do nothing and say nothing about why.
@@ -41,6 +42,13 @@ static int M_L_CutscenesPlay(lua_State *const L)
 static int M_L_CutscenesGetCurrent(lua_State *const L)
 {
     LUA_PushOptIndex(L, CutSeq_GetCurrent(), M_NO_CUTSCENE);
+    return 1;
+}
+
+// trxc.cutscenes.get_frame_num() → int or nil
+static int M_L_CutscenesGetFrameNum(lua_State *const L)
+{
+    LUA_PushOptIndex(L, CutSeq_GetFrame(), M_NO_FRAME);
     return 1;
 }
 
@@ -116,6 +124,7 @@ static int M_L_CutscenesSetLetterbox(lua_State *const L)
 static const luaL_Reg m_Module[] = {
     { "play", M_L_CutscenesPlay },
     { "get_current", M_L_CutscenesGetCurrent },
+    { "get_frame_num", M_L_CutscenesGetFrameNum },
     { "is_playing", M_L_CutscenesIsPlaying },
     { "is_played", M_L_CutscenesIsPlayed },
     { "set_played", M_L_CutscenesSetPlayed },

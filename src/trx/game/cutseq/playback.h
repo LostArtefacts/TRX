@@ -29,6 +29,11 @@ int32_t CutSeq_GetCount(void);
 bool CutSeq_IsActive(void);
 bool CutSeq_IsPlaying(void);
 int32_t CutSeq_GetCurrent(void);
+// Which frame of the running scene is on screen, or -1 when none is. A scene
+// has no other clock: its actors are pose tracks rather than items, so a
+// script with something to do part-way through has only the frame to name it
+// by, as the original engine does.
+int32_t CutSeq_GetFrame(void);
 
 // Fades out, then plays the cutscene.
 void CutSeq_Request(int32_t num);
