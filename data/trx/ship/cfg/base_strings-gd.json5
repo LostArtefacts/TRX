@@ -1213,6 +1213,10 @@
             "title": "Snàmh rèidh",
             "description": "Cuiridh seo lùb luathaidh air tionndadh Lara fon uisge airson gluasad nas rèidh, mar ann an TR2 bho thùs.",
         },
+        "gameplay.enable_underwater_auto_draw": {
+            "title": "\\{review}Tarraing airm fon uisge",
+            "description": "\\{review}Leigidh seo leis an iuchair tarraing airm arm a thaghadh as urrainn dha Lara a chleachdadh fon uisge, mar an gunna mhuirgheadh, seach gun dèan i dad nuair nach gabh an t-arm mu dheireadh a chleachdadh an sin.",
+        },
         "gameplay.enable_uw_roll": {
             "title": "Rolla fon uisge",
             "description": "Leigidh le Lara rolla a dhèanamh fon uisge.",

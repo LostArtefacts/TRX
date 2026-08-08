@@ -109,6 +109,16 @@ static bool M_IsUsableUnderwater(const LARA_GUN_TYPE gun_type)
     return gun_type == LGT_HARPOON;
 }
 
+// Where Lara is deep enough that only an underwater weapon can come out.
+// Wading is not such a place: it takes the rest of them under conditions of
+// its own.
+static bool M_IsOnlyUnderwaterUsable(void)
+{
+    const LARA_INFO *const lara = Lara_GetLaraInfo();
+    return lara->water_status == LWS_UNDERWATER
+        || lara->water_status == LWS_SURFACE;
+}
+
 static bool M_IsTooSubmerged(const LARA_GUN_TYPE gun_type)
 {
     const LARA_INFO *const lara = Lara_GetLaraInfo();
@@ -240,6 +250,17 @@ static void M_DecideRequestedWeapon(void)
         LARA_GUN_TYPE requested_gun = lara->last_gun_type != LGT_UNARMED
             ? lara->last_gun_type
             : LGT_PISTOLS;
+        if (g_Config.gameplay.enable_underwater_auto_draw
+            && M_IsOnlyUnderwaterUsable()
+            && !M_IsUsableUnderwater(requested_gun)) {
+            for (LARA_GUN_TYPE gun = 0; gun < NUM_WEAPONS; gun++) {
+                if (M_IsUsableUnderwater(gun)
+                    && Inv_HasItem(Gun_GetGunObject(gun))) {
+                    requested_gun = gun;
+                    break;
+                }
+            }
+        }
         if (!Inv_HasItem(Gun_GetGunObject(requested_gun))) {
             for (LARA_GUN_TYPE gun = 0; gun < NUM_WEAPONS; gun++) {
                 if (Inv_HasItem(Gun_GetGunObject(gun))) {
