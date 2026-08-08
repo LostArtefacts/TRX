@@ -11,6 +11,7 @@
 static VIEWPORT_RECT m_Rects[VIEWPORT_NUMBER_OF] = {
     [VIEWPORT_WINDOW] = L_DEFAULT_VIEWPORT,
     [VIEWPORT_TARGET] = L_DEFAULT_VIEWPORT,
+    [VIEWPORT_SCENE] = L_DEFAULT_VIEWPORT,
     [VIEWPORT_GAME] = L_DEFAULT_VIEWPORT,
     [VIEWPORT_UI] = L_DEFAULT_VIEWPORT,
 };
@@ -22,6 +23,7 @@ static FOV_MODE m_CurrentFOVMode = FOV_MODE_GAME;
 void Viewport_Init(int32_t x, int32_t y, int32_t width, int32_t height)
 {
     const VIEWPORT_RECT *const target = &m_Rects[VIEWPORT_TARGET];
+    VIEWPORT_RECT *const scene = &m_Rects[VIEWPORT_SCENE];
     VIEWPORT_RECT *const game = &m_Rects[VIEWPORT_GAME];
     VIEWPORT_RECT *const ui = &m_Rects[VIEWPORT_UI];
 
@@ -62,10 +64,15 @@ void Viewport_Init(int32_t x, int32_t y, int32_t width, int32_t height)
     ui->width = width;
     ui->height = height;
 
+    scene->x = x;
+    scene->y = y;
+    scene->width = width / g_Config.rendering.upscaling_factor;
+    scene->height = height / g_Config.rendering.upscaling_factor;
+
     game->x = x;
     game->y = y;
-    game->width = width / g_Config.rendering.upscaling_factor;
-    game->height = height / g_Config.rendering.upscaling_factor;
+    game->width = scene->width * g_Config.rendering.supersampling_factor;
+    game->height = scene->height * g_Config.rendering.supersampling_factor;
 
     g_PhdLeft = Viewport_GetMinX(VIEWPORT_GAME);
     g_PhdTop = Viewport_GetMinY(VIEWPORT_GAME);
@@ -202,6 +209,8 @@ void Viewport_Debug(void)
     LOG_TRACE("Window viewport: %dx%d+%d,%d", r->width, r->height, r->x, r->y);
     r = &m_Rects[VIEWPORT_TARGET];
     LOG_TRACE("Target viewport: %dx%d+%d,%d", r->width, r->height, r->x, r->y);
+    r = &m_Rects[VIEWPORT_SCENE];
+    LOG_TRACE("Scene viewport: %dx%d+%d,%d", r->width, r->height, r->x, r->y);
     r = &m_Rects[VIEWPORT_GAME];
     LOG_TRACE("Game viewport: %dx%d+%d,%d", r->width, r->height, r->x, r->y);
     r = &m_Rects[VIEWPORT_UI];

@@ -1496,6 +1496,10 @@
             "title": "Tryb blokady sprite'ów",
             "description": "Blokuje dane osie podczas wyświetlania sprite'ów na ekranie.\n\n- Brak: wyświetlaj sprite'y normalnie.\n- Obrót: blokuje oś obrotu – przydatne tylko w trybie fotograficznym.\n- Obrót i pochylenie: zapewnia, że sprite'y stoją pionowo i nie kładą się na ziemi przy patrzeniu z góry.\n- Perspektywa: blokuje osie obrotu i pochylenia oraz dodatkowo lekko obraca sprite'y w kierunku środka ekranu.",
         },
+        "rendering.supersampling_factor": {
+            "title": "\\{review}Nadpróbkowanie",
+            "description": "\\{review}Renderuje grę w wielokrotności jej rozdzielczości i uśrednia ją z powrotem, wygładzając poszarpane krawędzie. Wyższe współczynniki wymagają od karty graficznej wielokrotnie więcej pracy.",
+        },
         "rendering.texture_filter": {
             "title": "Filtr tekstur",
             "description": "Przełącza między gładkimi a pikselowymi teksturami w grze.",

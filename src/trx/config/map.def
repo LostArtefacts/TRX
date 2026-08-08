@@ -248,6 +248,7 @@ X_CFG_INT32_RANGE(input.controller_layout,                   INPUT_LAYOUT_DEFAUL
 X_CFG_INT32_RANGE(input.keyboard_layout,                     INPUT_LAYOUT_DEFAULT, 0, INPUT_LAYOUT_NUMBER_OF - 1)
 X_CFG_INT32_RANGE(input.touch_layout,                        INPUT_LAYOUT_DEFAULT, 0, INPUT_LAYOUT_NUMBER_OF - 1)
 X_CFG_INT32_RANGE(rendering.fps,                             60, 30, 60)
+X_CFG_INT32_RANGE(rendering.supersampling_factor,            1, 1, 4)
 X_CFG_INT32_RANGE(rendering.upscaling_factor,                1, 1, 10)
 X_CFG_INT32_RANGE(visuals.fog_end,                           30, 1, 100)
 X_CFG_INT32_RANGE(visuals.fog_start,                         22, 1, 100)

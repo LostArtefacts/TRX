@@ -875,11 +875,11 @@ void Output_Overlay_CaptureGameSnapshot(void)
     p->snapshot.transition_active = false;
     p->snapshot.state.has_content = false;
 
-    // The geometry FBO is rendered at VIEWPORT_GAME's resolution, which is
-    // lower than VIEWPORT_TARGET whenever an upscaling factor is active;
-    // size the snapshot texture to match so the capture isn't clamped into
-    // a corner of an oversized texture.
-    M_EnsureSnapshotTexture(p, VIEWPORT_GAME);
+    // The scene is resolved at VIEWPORT_SCENE's resolution, which is lower
+    // than VIEWPORT_TARGET whenever an upscaling factor is active; size the
+    // snapshot texture to match so the capture isn't clamped into a corner of
+    // an oversized texture.
+    M_EnsureSnapshotTexture(p, VIEWPORT_SCENE);
     if (!p->snapshot.state.texture.initialized) {
         return;
     }
@@ -893,7 +893,7 @@ void Output_Overlay_CaptureGameSnapshot(void)
     Interpolation_Enable();
 
     M_CopyFboToTexture(
-        VIEWPORT_GAME, TRX_GL_Renderer_GetGeometryFboId(), false,
+        VIEWPORT_SCENE, TRX_GL_Renderer_ResolveSceneFbo(), false,
         &p->snapshot.state.texture, p->snapshot.state.width,
         p->snapshot.state.height);
     p->snapshot.state.has_content = true;

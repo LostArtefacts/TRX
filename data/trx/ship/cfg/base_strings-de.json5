@@ -1496,6 +1496,10 @@
             "title": "\\{review}Sprite-Sperrmodus",
             "description": "\\{review}Steuert, welche Achsen beim Anzeigen von Sprites auf dem Bildschirm gesperrt werden.\n\n- Keine: Sprites normal anzeigen.\n- Roll: Rollachse sperren – nur im Fotomodus nützlich.\n- Roll & Neigung: Sicherstellen, dass die Sprites aufrecht stehen und nicht auf dem Boden liegen, wenn man sie von oben betrachtet.\n- Perspektive: Roll- und Neigungsachsen sperren und zusätzlich die Sprites leicht zur Bildschirmmitte hin drehen.",
         },
+        "rendering.supersampling_factor": {
+            "title": "\\{review}Supersampling",
+            "description": "\\{review}Rendert das Spiel mit einem Vielfachen seiner Auflösung und mittelt es wieder herunter, was gezackte Kanten glättet. Höhere Faktoren kosten die Grafikkarte ein Vielfaches an Arbeit.",
+        },
         "rendering.texture_filter": {
             "title": "Textur-Filter",
             "description": "Wechselt zwischen weichgezeichneten und pixeligen Objekt-Texturen.",

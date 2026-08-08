@@ -11,10 +11,19 @@ typedef enum {
     FOV_MODE_PS1,
 } FOV_MODE;
 
+// The rectangles the frame passes through, from the outside in. VIEWPORT_UI
+// and VIEWPORT_SCENE differ by the upscaling factor, VIEWPORT_SCENE and
+// VIEWPORT_GAME by the supersampling factor.
 typedef enum {
+    // The whole window, including any letterboxing.
     VIEWPORT_WINDOW,
+    // The part of the window the frame is presented to.
     VIEWPORT_TARGET,
+    // The pixel grid the player sees the scene as, before magnification.
+    VIEWPORT_SCENE,
+    // The pixel grid the scene is rasterized on.
     VIEWPORT_GAME,
+    // The pixel grid the UI is rasterized on.
     VIEWPORT_UI,
     VIEWPORT_NUMBER_OF,
 } VIEWPORT_SPACE;

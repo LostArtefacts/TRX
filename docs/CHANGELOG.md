@@ -95,6 +95,7 @@
 **Rendering**
 - Added an option for the wobbly geometry of the PlayStation releases (Graphic Options → Rendering → Vertex snapping)
 - Added an option to reduce the picture to 8-bit color with a dither pattern, for the look of the software-rendered releases (Graphic Options → Rendering → Dithering)
+- Added an anti-aliasing option (Graphic Options → Rendering → Supersampling) (#166)
 - Added a water color preset, offering the underwater tint each release shipped with, per level where the PlayStation ones varied it; picking one holds the water color below it, and Custom gives the player's own back (Graphic Options → Visuals → Water color preset) (#1619)
 - Added a brightness option for background images and patterns, so that brightening the UI leaves them alone (Graphic Options → Rendering → Background brightness) (#6074)
 - Changed the brightness options to be given as percentages, as the volume options are

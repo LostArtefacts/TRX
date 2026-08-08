@@ -1496,6 +1496,10 @@
             "title": "Glasadh sprìde",
             "description": "Bheir seo buaidh air na h-aisealean a tha glaiste nuair a thathar a' coimhead air sprìdean air an sgrion.\n\n- Gin sam bith: seall air na sprìdean gu àbhaisteach.\n- Rothladh: glasaich an aiseal rothlaidh – gu feumail a-mhàin ann am modh dealbh.\n- Rothladh is claonadh: bidh na sprìdean nan seasamh dìreach agus cha bhith iad nan laighe air an talamh nuair a thathar gan choimhead bho shuas.\n- Sealladh: glasaich na h-aisealean rothlaidh agus claonadh, 's a bharrachd air sin, rothlaich na sprìdean beagan a dh'ionnsaigh meadhan an sgrion.",
         },
+        "rendering.supersampling_factor": {
+            "title": "\\{review}Os-shamplachadh",
+            "description": "\\{review}Nì seo an geama aig iomadach den dùmhlachd-bhreacaidh aige agus lùghdaichidh e air ais e le cuibheas, a' rèiteachadh oirean fiaclach. Iarraidh factaran nas àirde tòrr a bharrachd obrach air a' chairt-ghrafaigs.",
+        },
         "rendering.texture_filter": {
             "title": "Criathradh inneach",
             "description": "Cuiridh seo atharrachadh eadar inneach rèidh agus piogsaileach.",

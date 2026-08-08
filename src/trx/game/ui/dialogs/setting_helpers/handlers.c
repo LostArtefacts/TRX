@@ -349,6 +349,10 @@ REGISTER_UI_SETTING_HANDLER(
         .key = "rendering.upscaling_factor", .delta_slow = 1, .delta_fast = 1)
 
 REGISTER_UI_SETTING_HANDLER(
+        .key = "rendering.supersampling_factor", .delta_slow = 1,
+        .delta_fast = 1)
+
+REGISTER_UI_SETTING_HANDLER(
         .key = "rendering.borders", .delta_slow = 1, .delta_fast = 5)
 REGISTER_UI_SETTING_HANDLER(
         .key = "rendering.aspect_mode", .enum_order = m_AspectModeOrder)
