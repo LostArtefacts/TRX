@@ -416,7 +416,8 @@ int32_t Room_GetOutsideStatus(
 
 int32_t Room_GetIndex(const ROOM *const room)
 {
-    if (room == nullptr) {
+    if (room == nullptr || m_Rooms == nullptr || room < m_Rooms
+        || room >= m_Rooms + m_RoomCount) {
         return NO_ROOM;
     }
     return room - m_Rooms;

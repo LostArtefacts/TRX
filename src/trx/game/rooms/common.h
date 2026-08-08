@@ -14,6 +14,7 @@ ROOM *Room_Get(int32_t room_num);
 // the change goes stale rather than naming a different room.
 TRX_HANDLE Room_GetHandle(int32_t room_num);
 ROOM *Room_FromHandle(TRX_HANDLE handle);
+// The room's index, or NO_ROOM for one the level does not hold.
 int32_t Room_GetIndex(const ROOM *room);
 
 void Room_InitialiseFlipStatus(void);
