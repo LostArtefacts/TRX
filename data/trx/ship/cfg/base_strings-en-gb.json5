@@ -120,6 +120,9 @@
         "visuals.blood_effects": {
             "description": "Controls blood spark colours.\n\n- Disabled: no blood sparks are shown.\n- Pink: the default in German PC releases of TR3.\n- Red: the default in all other retail releases.",
         },
+        "visuals.camera_mode": {
+            "description": "Chooses which game's camera behaviour to use.\n\n- TR1: the chase camera follows the level's pathfinding boxes.\n- TR2: the same, with different chase and look limits, and different handling of fixed cameras.\n- TR3: the chase camera uses line of sight rather than the pathfinding boxes.\n- TR4: as TR3, and the camera also responds when an action moves Lara's view, such as picking up an item or shimmying around a corner.",
+        },
         "visuals.fog_color": {
             "title": "Fog colour",
             "description": "Colour of the fog.",

@@ -1718,7 +1718,7 @@
         },
         "visuals.camera_mode": {
             "title": "Tryb kamery",
-            "description": "Zmienia zachowanie kamery podczas niektórych akcji, np. kiedy Lara używa kluczy lub dźwigni.",
+            "description": "\\{review}Wybiera, z której gry pochodzi zachowanie kamery.\n\n- TR1: kamera podążająca korzysta z siatki nawigacji poziomu.\n- TR2: to samo, z innymi ograniczeniami podążania i rozglądania się oraz inną obsługą kamer stałych.\n- TR3: kamera podążająca korzysta z linii wzroku zamiast siatki nawigacji.\n- TR4: jak TR3, a kamera reaguje też, gdy jakaś akcja przesuwa widok Lary, na przykład podnoszenie przedmiotu lub obchodzenie narożnika w zwisie.",
         },
         "visuals.enable_3d_pickups": {
             "title": "Znajdźki 3D",
