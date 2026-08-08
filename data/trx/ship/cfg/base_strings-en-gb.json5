@@ -51,6 +51,9 @@
         "rendering.enable_dithering": {
             "description": "Reduces the picture to 8-bit colour with an ordered dither pattern, for the look of the software-rendered releases.",
         },
+        "rendering.sprite_lock_mode": {
+            "description": "Controls which axes to lock when showing sprites on the screen.\n\n- None: show the sprites normally.\n- Roll: lock the roll axis – useful only in photo mode.\n- Roll & pitch: ensure the sprites stand upright and do not lie on the ground when looking at them from above.\n- Perspective: lock roll and pitch axes and additionally, rotate the sprites slightly towards the centre of the screen.",
+        },
         "ui.airbar_color": {
             "title": "Airbar colour",
             "description": "Colour of the airbar.",

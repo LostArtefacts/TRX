@@ -1606,7 +1606,7 @@
         },
         "ui.menu_style": {
             "title": "Menü-Stil",
-            "description": "Ändert, wie Menüs dargestellt werden.\n\n - PC: UI-Stil gleicht der PC-Version.\n - PS1: UI-Stil gleicht der PS1-Version.",
+            "description": "Ändert, wie Menüs dargestellt werden.\n\n- PC: UI-Stil gleicht der PC-Version.\n- PS1: UI-Stil gleicht der PS1-Version.",
         },
         "ui.pause_background_style": {
             "title": "\\{review}Pause-Hintergrund",

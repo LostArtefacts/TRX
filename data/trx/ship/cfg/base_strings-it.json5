@@ -1606,7 +1606,7 @@
         },
         "ui.menu_style": {
             "title": "Stile menu",
-            "description": "Modifica la modalità di visualizzazione dei menu.\n\n - PC: lo stile dell'interfaccia utente corrisponde alla versione PC.\n - PS1: lo stile dell'interfaccia utente corrisponde alla versione PS1.",
+            "description": "Modifica la modalità di visualizzazione dei menu.\n\n- PC: lo stile dell'interfaccia utente corrisponde alla versione PC.\n- PS1: lo stile dell'interfaccia utente corrisponde alla versione PS1.",
         },
         "ui.pause_background_style": {
             "title": "Sfondo di pausa",
