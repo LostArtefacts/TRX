@@ -1488,6 +1488,10 @@
             "title": "Éclairage contrasté",
             "description": "Augmente le contraste pour les sources de lumière dynamiques telles que les torches et les flashs des armes.",
         },
+        "rendering.multisampling_factor": {
+            "title": "\\{review}Multiéchantillonnage",
+            "description": "\\{review}Lisse les bords des murs et des objets en prenant plusieurs échantillons de chaque pixel qui les longe. Bien moins coûteux que le suréchantillonnage, mais il laisse intacts les bords des sprites comme la végétation et le feu.",
+        },
         "rendering.screenshot_format": {
             "title": "Format des captures d'écran",
             "description": "Format de fichier pour les captures d'écran.",

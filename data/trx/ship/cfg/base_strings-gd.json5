@@ -1488,6 +1488,10 @@
             "title": "Iomsgaradh solais",
             "description": "Cuiridh seo atharrachadh air iomsgaradh solais fiùghantach, airson m.e. lasraichean neo losgadh armachd.",
         },
+        "rendering.multisampling_factor": {
+            "title": "\\{review}Ioma-shamplachadh",
+            "description": "\\{review}Rèitichidh seo oirean bhallachan is nithean le bhith a' gabhail grunn shamplaichean de gach piogsail rin taobh. Tòrr nas saoire na os-shamplachadh, ach fàgaidh e oirean sprites mar dhuilleach is teine mar a bha iad.",
+        },
         "rendering.screenshot_format": {
             "title": "Fòrmat glacadh-sgrìn",
             "description": "Fòrmat fhaidhle airson glacadh-sgrìn.",

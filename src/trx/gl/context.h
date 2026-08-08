@@ -10,6 +10,7 @@ bool TRX_GL_Context_Attach(void *window_handle);
 void TRX_GL_Context_Detach(void);
 
 void TRX_GL_Context_SetDisplayFilter(TEXTURE_FILTER filter);
+void TRX_GL_Context_SetMultisamplingFactor(int32_t factor);
 void TRX_GL_Context_SetDithering(bool enable);
 bool TRX_GL_Context_GetWireframeMode(void);
 void TRX_GL_Context_SetWireframeMode(bool enable);

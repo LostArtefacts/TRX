@@ -23,8 +23,16 @@ typedef struct {
 
     TRX_GL_FBO geometry_fbo;
     TRX_GL_FBO ui_fbo;
-    // Only allocated while supersampling is active.
+    // Holds the geometry framebuffer brought down to the scene resolution.
+    // Only allocated while there is something to resolve.
     TRX_GL_FBO resolve_fbo;
+    // The size the geometry framebuffer resolves to, recorded when it was
+    // sized. The viewport moves ahead of the framebuffer, which is only
+    // rebuilt once the frame it belongs to has been presented.
+    int32_t scene_width;
+    int32_t scene_height;
+    // Whether resolve_fbo already holds this frame's scene.
+    bool scene_resolved;
 
     // Full-screen quad resources for blitting FBOs to default framebuffer.
     TRX_GL_VERTEX_ARRAY vertex_array;
@@ -55,58 +63,81 @@ static void M_BindQuadState(M_CONTEXT *const p)
     TRX_GL_CheckError();
 }
 
-// Box-filter the supersampled geometry framebuffer down to the scene
-// resolution, so the composite pass downstream sees the pixel grid the player
-// is meant to see. Returns the geometry framebuffer itself when supersampling
-// is off, leaving that path exactly as it was.
-static const TRX_GL_FBO *M_ResolveScene(M_CONTEXT *const p)
+// Multisampling and supersampling are alternatives, so a scene rasterized at
+// more than the scene resolution is rasterized with one sample per pixel.
+static int32_t M_GetGeometrySamples(const M_CONTEXT *const p)
 {
     const VIEWPORT_RECT game = Viewport_GetRect(VIEWPORT_GAME);
     const VIEWPORT_RECT scene = Viewport_GetRect(VIEWPORT_SCENE);
-    // The geometry framebuffer is resized once the frame has been presented,
-    // so it still holds the previous size on the frame a settings change lands
-    // on. Downsampling it by the factor the new sizes give would misalign the
-    // blocks, so leave that one frame alone.
-    if (p->geometry_fbo.width != game.width
-        || p->geometry_fbo.height != game.height) {
-        return &p->geometry_fbo;
-    }
+    return game.width > scene.width ? 1 : p->config->multisampling_factor;
+}
 
-    const int32_t factor = scene.width > 0 ? game.width / scene.width : 1;
-    if (factor <= 1) {
+static void M_SizeGeometryFbo(M_CONTEXT *const p)
+{
+    const VIEWPORT_RECT game = Viewport_GetRect(VIEWPORT_GAME);
+    const VIEWPORT_RECT scene = Viewport_GetRect(VIEWPORT_SCENE);
+    TRX_GL_FBO_ResizeIfNeeded(
+        &p->geometry_fbo, game.width, game.height, M_GetGeometrySamples(p));
+    p->scene_width = scene.width;
+    p->scene_height = scene.height;
+}
+
+// Bring the geometry framebuffer down to the scene resolution the composite
+// pass expects: averaging the samples of a multisampled buffer, or box-
+// filtering a supersampled one down to the pixel grid the player is meant to
+// see. Returns the geometry framebuffer itself when neither is in play,
+// leaving that path exactly as it was.
+static const TRX_GL_FBO *M_ResolveScene(M_CONTEXT *const p)
+{
+    const int32_t width = p->scene_width;
+    const int32_t height = p->scene_height;
+    const int32_t factor = width > 0 ? p->geometry_fbo.width / width : 1;
+    if (factor <= 1 && p->geometry_fbo.samples <= 1) {
         if (p->resolve_fbo.fbo != 0) {
             TRX_GL_FBO_Close(&p->resolve_fbo);
         }
         return &p->geometry_fbo;
     }
 
-    if (p->resolve_fbo.fbo == 0) {
-        TRX_GL_FBO_Init(
-            &p->resolve_fbo, scene.width, scene.height, GL_RGBA8, GL_RGBA,
-            false);
-    } else {
-        TRX_GL_FBO_ResizeIfNeeded(&p->resolve_fbo, scene.width, scene.height);
+    if (p->scene_resolved) {
+        return &p->resolve_fbo;
     }
 
-    TRX_GL_FBO_Bind(&p->resolve_fbo);
-    glViewport(0, 0, scene.width, scene.height);
-    TRX_GL_Program_Uniform1i(&p->program, p->loc_supersample, factor);
-    TRX_GL_Program_Uniform1i(&p->program, p->loc_dither, false);
-    M_Blit(p, &p->geometry_fbo);
-    TRX_GL_Program_Uniform1i(&p->program, p->loc_supersample, 1);
+    if (p->resolve_fbo.fbo == 0) {
+        TRX_GL_FBO_Init(
+            &p->resolve_fbo, width, height, 1, GL_RGBA8, GL_RGBA, false);
+    } else {
+        TRX_GL_FBO_ResizeIfNeeded(&p->resolve_fbo, width, height, 1);
+    }
+
+    if (p->geometry_fbo.samples > 1) {
+        glBindFramebuffer(GL_READ_FRAMEBUFFER, p->geometry_fbo.fbo);
+        glBindFramebuffer(GL_DRAW_FRAMEBUFFER, p->resolve_fbo.fbo);
+        glBlitFramebuffer(
+            0, 0, width, height, 0, 0, width, height, GL_COLOR_BUFFER_BIT,
+            GL_NEAREST);
+        TRX_GL_CheckError();
+    } else {
+        M_BindQuadState(p);
+        TRX_GL_FBO_Bind(&p->resolve_fbo);
+        glViewport(0, 0, width, height);
+        TRX_GL_Program_Uniform1i(&p->program, p->loc_supersample, factor);
+        TRX_GL_Program_Uniform1i(&p->program, p->loc_dither, false);
+        M_Blit(p, &p->geometry_fbo);
+        TRX_GL_Program_Uniform1i(&p->program, p->loc_supersample, 1);
+    }
+
+    p->scene_resolved = true;
     return &p->resolve_fbo;
 }
 
 static void M_UpdateFBOSizes(TRX_GL_RENDERER *renderer)
 {
     M_CONTEXT *const p = renderer->priv;
-    const TRX_GL_CONFIG *const config = p->config;
 
-    VIEWPORT_RECT rect;
-    rect = Viewport_GetRect(VIEWPORT_GAME);
-    TRX_GL_FBO_ResizeIfNeeded(&p->geometry_fbo, rect.width, rect.height);
-    rect = Viewport_GetRect(VIEWPORT_UI);
-    TRX_GL_FBO_ResizeIfNeeded(&p->ui_fbo, rect.width, rect.height);
+    M_SizeGeometryFbo(p);
+    const VIEWPORT_RECT rect = Viewport_GetRect(VIEWPORT_UI);
+    TRX_GL_FBO_ResizeIfNeeded(&p->ui_fbo, rect.width, rect.height, 1);
 }
 
 static void M_Render(TRX_GL_RENDERER *renderer)
@@ -119,10 +150,9 @@ static void M_Render(TRX_GL_RENDERER *renderer)
         ? GL_LINEAR
         : GL_NEAREST;
 
-    M_BindQuadState(p);
-
     const TRX_GL_FBO *const scene_fbo = M_ResolveScene(p);
 
+    M_BindQuadState(p);
     TRX_GL_FBO_Unbind();
 
     TRX_GL_Sampler_Parameteri(&p->sampler, GL_TEXTURE_MAG_FILTER, filter);
@@ -179,6 +209,9 @@ static void M_Init(
 
     p->config = config;
 
+    glEnable(GL_MULTISAMPLE);
+    TRX_GL_CheckError();
+
     TRX_GL_Buffer_Init(&p->buffer, GL_ARRAY_BUFFER);
     TRX_GL_Buffer_Bind(&p->buffer);
     const GLfloat verts[] = {
@@ -214,11 +247,14 @@ static void M_Init(
     VIEWPORT_RECT rect;
     rect = Viewport_GetRect(VIEWPORT_GAME);
     TRX_GL_FBO_Init(
-        &p->geometry_fbo, rect.width, rect.height, GL_RGBA8, GL_RGBA, true);
+        &p->geometry_fbo, rect.width, rect.height, M_GetGeometrySamples(p),
+        GL_RGBA8, GL_RGBA, true);
+    p->scene_width = Viewport_GetWidth(VIEWPORT_SCENE);
+    p->scene_height = Viewport_GetHeight(VIEWPORT_SCENE);
 
     rect = Viewport_GetRect(VIEWPORT_UI);
     TRX_GL_FBO_Init(
-        &p->ui_fbo, rect.width, rect.height, GL_RGBA8, GL_RGBA, false);
+        &p->ui_fbo, rect.width, rect.height, 1, GL_RGBA8, GL_RGBA, false);
 }
 
 static void M_Shutdown(TRX_GL_RENDERER *renderer)
@@ -249,6 +285,9 @@ TRX_GL_RENDERER g_TRX_GL_Renderer = {
 void TRX_GL_Renderer_BindGeometryFbo(void)
 {
     M_CONTEXT *const p = (M_CONTEXT *)g_TRX_GL_Renderer.priv;
+    // Anything about to draw the scene again invalidates what was resolved
+    // from it.
+    p->scene_resolved = false;
     TRX_GL_FBO_Bind(&p->geometry_fbo);
 }
 
@@ -261,8 +300,9 @@ void TRX_GL_Renderer_BindUiFbo(void)
 GLuint TRX_GL_Renderer_ResolveSceneFbo(void)
 {
     M_CONTEXT *const p = (M_CONTEXT *)g_TRX_GL_Renderer.priv;
-    M_BindQuadState(p);
+    GLint prev_fbo = 0;
+    glGetIntegerv(GL_DRAW_FRAMEBUFFER_BINDING, &prev_fbo);
     const TRX_GL_FBO *const fbo = M_ResolveScene(p);
-    TRX_GL_FBO_Unbind();
+    glBindFramebuffer(GL_FRAMEBUFFER, (GLuint)prev_fbo);
     return fbo->fbo;
 }

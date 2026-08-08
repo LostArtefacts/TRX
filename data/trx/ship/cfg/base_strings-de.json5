@@ -1488,6 +1488,10 @@
             "title": "Beleuchtungs-Kontrast",
             "description": "Erhöht den Kontrast für dynamische Lichtquellen, wie zum Beispiel Fackeln und Mündungsfeuer.",
         },
+        "rendering.multisampling_factor": {
+            "title": "\\{review}Multisampling",
+            "description": "\\{review}Glättet die Kanten von Wänden und Objekten, indem entlang dieser mehrere Abtastungen je Pixel genommen werden. Deutlich günstiger als Supersampling, lässt aber die Kanten von Sprites wie Pflanzen und Feuer unberührt.",
+        },
         "rendering.screenshot_format": {
             "title": "Bildschirmfoto-Format",
             "description": "Dateiformat des Bildschirmfotos.",

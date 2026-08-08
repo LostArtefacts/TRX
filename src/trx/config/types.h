@@ -339,6 +339,7 @@ typedef struct {
         BILLBOARD_LOCK_MODE sprite_lock_mode;
         int32_t upscaling_factor;
         int32_t supersampling_factor;
+        int32_t multisampling_factor;
         float borders;
     } rendering;
 
