@@ -3,19 +3,16 @@
 #include <trx/config.h>
 #include <trx/core/json/util/read_io.h>
 #include <trx/core/json/util/write_io.h>
-#include <trx/game/const.h>
+#include <trx/game/camera.h>
 #include <trx/game/effects.h>
 #include <trx/game/game.h>
-#include <trx/game/game_flow.h>
 #include <trx/game/gun.h>
 #include <trx/game/input.h>
 #include <trx/game/inventory.h>
 #include <trx/game/inventory_ring/control.h>
-#include <trx/game/items/anim.h>
 #include <trx/game/lara.h>
 #include <trx/game/lua.h>
 #include <trx/game/objects/general/flare_item.h>
-#include <trx/game/objects/vars.h>
 #include <trx/game/output.h>
 #include <trx/game/overlay.h>
 #include <trx/game/random.h>
@@ -101,6 +98,17 @@ static const OBJECT_BOUNDS m_PlinthBounds = {
     },
 };
 
+static const OBJECT_BOUNDS m_ScionBounds = {
+    .shift = {
+        .min = { .x = -256, .y = +640 - 100, .z = -350, },
+        .max = { .x = +256, .y = +640 + 100, .z = -200, },
+    },
+    .rot = {
+        .min = { .x = -10 * DEG_1, .y = 0, .z = 0, },
+        .max = { .x = +10 * DEG_1, .y = 0, .z = 0, },
+    },
+};
+
 static const OBJECT_BOUNDS m_HiddenPickupBounds = {
     .shift = {
         .min = { .x = -STEP_L, .y = -100, .z = -800, },
@@ -126,6 +134,7 @@ static const OBJECT_BOUNDS m_CrowbarPickupBounds = {
 static const XYZ_32 m_PickupPosition = { .x = 0, .y = 0, .z = -100 };
 static const XYZ_32 m_PickupPositionUW = { .x = 0, .y = -200, .z = -350 };
 static const XYZ_32 m_PickupPositionPlinth = { .x = 0, .y = 0, .z = -380 };
+static const XYZ_32 m_PickupPositionScion = { .x = 0, .y = 0, .z = -310 };
 static const XYZ_32 m_PickupPositionHidden = { .x = 0, .y = 0, .z = -690 };
 static const XYZ_32 m_PickupPositionCrowbar = { .x = 0, .y = 0, .z = 225 };
 
@@ -499,10 +508,24 @@ static bool M_CanCollect(
     return p1->pickup_mode == p2->pickup_mode;
 }
 
+static void M_BeginScionAnimation(const ITEM *const item, ITEM *const lara_item)
+{
+    // Animated interactions require a more lenient scion position while moving
+    // Lara, but during the cinematic sequence itself she should be aligned as
+    // per non-controlled movement.
+    XYZ_32 pos = m_PickupPositionScion;
+    pos.y = lara_item->pos.y - item->pos.y;
+    Lara_AlignPosition(item, &pos);
+    Lara_SwitchToExtraState(LS_EXTRA_SCION_PICKUP_1);
+    Camera_InvokeCinematic(lara_item, 0, 0);
+}
+
 static void M_BeginPickupAnimation(const ITEM *const item, const bool is_ducked)
 {
     LARA_TRX_STATE goal_state;
     LARA_TRX_STATE required_state = LS_PICKUP;
+    ITEM *const lara_item = Lara_GetItem();
+
     if (item->object_id == O_FLARE_ITEM) {
         goal_state = LS_FLARE_PICKUP;
         required_state = LS_FLARE_PICKUP;
@@ -525,6 +548,9 @@ static void M_BeginPickupAnimation(const ITEM *const item, const bool is_ducked)
             goal_state = LS_CROWBAR_PICKUP;
             p->animate = true;
             break;
+        case PICKUP_MODE_PLINTH_SCION:
+            M_BeginScionAnimation(item, lara_item);
+            return;
         default:
             goal_state = g_Config.gameplay.enable_fast_pickups ? LS_FAST_PICKUP
                                                                : LS_PICKUP;
@@ -532,7 +558,6 @@ static void M_BeginPickupAnimation(const ITEM *const item, const bool is_ducked)
         }
     }
 
-    ITEM *const lara_item = Lara_GetItem();
     if (!is_ducked) {
         Item_SwitchToAnim(lara_item, LA(LA_STAND_STILL), 0);
     }
@@ -585,7 +610,7 @@ static const BOUNDS_16 *M_FindPlinthBounds(const ITEM *const item)
     return nullptr;
 }
 
-static bool M_TestLaraPosition(const ITEM *const item)
+static bool M_TestLaraPosition(const ITEM *const item, const bool controlled)
 {
     OBJECT_BOUNDS test_bounds = *Object_Get(item->object_id)->bounds_func();
     if (item->object_id == O_FLARE_ITEM) {
@@ -593,42 +618,49 @@ static bool M_TestLaraPosition(const ITEM *const item)
     }
 
     const M_PRIV *const p = item->priv;
-    if (p->pickup_mode == PICKUP_MODE_NORMAL) {
-        goto finish;
-    }
-
-    if (p->pickup_mode == PICKUP_MODE_HIDDEN) {
+    switch (p->pickup_mode) {
+    case PICKUP_MODE_HIDDEN:
         test_bounds = m_HiddenPickupBounds;
-        goto finish;
-    }
-
-    if (p->pickup_mode == PICKUP_MODE_CROWBAR) {
+        break;
+    case PICKUP_MODE_CROWBAR:
         test_bounds = m_CrowbarPickupBounds;
-        goto finish;
-    }
+        break;
+    case PICKUP_MODE_PLINTH_LOW:
+    case PICKUP_MODE_PLINTH_HIGH:
+    case PICKUP_MODE_PLINTH_SCION: {
+        if (p->pickup_mode == PICKUP_MODE_PLINTH_SCION && !controlled) {
+            test_bounds = m_ScionBounds;
+            break;
+        }
 
-    const ITEM *const lara_item = Lara_GetItem();
-    const int32_t delta = lara_item->pos.y - item->pos.y;
-    const int32_t offset =
-        STEP_L * (p->pickup_mode == PICKUP_MODE_PLINTH_LOW ? 2 : 3);
-    if (ABS(ABS(delta) - offset) > STEP_L / 2) {
-        return false;
-    }
+        const ITEM *const lara_item = Lara_GetItem();
+        const int32_t delta = lara_item->pos.y - item->pos.y;
+        const int32_t offset =
+            STEP_L * (p->pickup_mode == PICKUP_MODE_PLINTH_LOW ? 2 : 3);
+        if (ABS(ABS(delta) - offset) > STEP_L / 2) {
+            return false;
+        }
 
-    test_bounds = m_PlinthBounds;
-    test_bounds.shift.max.y = delta + 100;
-    const BOUNDS_16 *const plinth_bounds = M_FindPlinthBounds(item);
-    if (plinth_bounds != nullptr) {
-        test_bounds.shift.min.x = plinth_bounds->min.x;
-        test_bounds.shift.max.x = plinth_bounds->max.x;
-        test_bounds.shift.max.z = plinth_bounds->max.z;
+        test_bounds = m_PlinthBounds;
+        test_bounds.shift.max.y = delta + 100;
+        const BOUNDS_16 *const plinth_bounds = M_FindPlinthBounds(item);
+        if (plinth_bounds != nullptr) {
+            test_bounds.shift.min.x = plinth_bounds->min.x;
+            test_bounds.shift.max.x = plinth_bounds->max.x;
+            test_bounds.shift.max.z = plinth_bounds->max.z;
+        }
+        break;
+    }
+    default:
+        break;
     }
 
 finish:
     return Lara_TestPosition(item, &test_bounds);
 }
 
-static XYZ_32 M_GetAlignmentPosition(const ITEM *const item)
+static XYZ_32 M_GetAlignmentPosition(
+    const ITEM *const item, const bool controlled)
 {
     XYZ_32 pos;
     if (item->object_id == O_FLARE_ITEM) {
@@ -640,6 +672,12 @@ static XYZ_32 M_GetAlignmentPosition(const ITEM *const item)
     switch (p->pickup_mode) {
     case PICKUP_MODE_PLINTH_LOW:
     case PICKUP_MODE_PLINTH_HIGH:
+    case PICKUP_MODE_PLINTH_SCION:
+        if (p->pickup_mode == PICKUP_MODE_PLINTH_SCION && !controlled) {
+            pos = m_PickupPositionScion;
+            break;
+        }
+
         pos = m_PickupPositionPlinth;
         const BOUNDS_16 *const plinth_bounds = M_FindPlinthBounds(item);
         if (plinth_bounds != nullptr) {
@@ -735,7 +773,7 @@ static void M_DoControlled(const int16_t item_num, ITEM *const lara_item)
 
     LARA_INFO *const lara = Lara_GetLaraInfo();
     if (Lara_Interact_CanControl(LARA_INTERACT_PICKUP, item_num)) {
-        if (M_TestLaraPosition(item)) {
+        if (M_TestLaraPosition(item, true)) {
             if (!M_CanBeginPickup(item)) {
                 goto cleanup;
             }
@@ -744,7 +782,7 @@ static void M_DoControlled(const int16_t item_num, ITEM *const lara_item)
                 lara->interact_target.is_moving = false;
             }
 
-            const XYZ_32 pos = M_GetAlignmentPosition(item);
+            const XYZ_32 pos = M_GetAlignmentPosition(item, true);
             if (Lara_MovePosition(item, &pos)) {
                 M_BeginPickupAnimation(item, false);
                 Lara_Interact_FinishControl(LARA_INTERACT_PICKUP);
@@ -802,7 +840,7 @@ static void M_DoAboveWater(const int16_t item_num, ITEM *const lara_item)
 
     const XYZ_16 old_rot = M_PrepareAndCacheRot(item, lara_item, false);
 
-    if (!M_TestLaraPosition(item)) {
+    if (!M_TestLaraPosition(item, false)) {
         goto cleanup;
     }
 
@@ -827,14 +865,14 @@ static void M_DoAboveWater(const int16_t item_num, ITEM *const lara_item)
         && Lara_Interact_CanBegin(LARA_INTERACT_PICKUP)) {
         if (is_flare_item) {
             if (g_TRVersion >= 4) {
-                const XYZ_32 pos = M_GetAlignmentPosition(item);
+                const XYZ_32 pos = M_GetAlignmentPosition(item, false);
                 Lara_AlignPosition(item, &pos);
             }
             Lara_AnimateUntil(lara_item, LS(LS_FLARE_PICKUP));
         } else if (!M_CanBeginPickup(item)) {
             goto cleanup;
         } else {
-            const XYZ_32 pos = M_GetAlignmentPosition(item);
+            const XYZ_32 pos = M_GetAlignmentPosition(item, false);
             Lara_AlignPosition(item, &pos);
             M_BeginPickupAnimation(item, is_ducked);
         }
@@ -945,7 +983,8 @@ static void M_Setup(OBJECT *const obj)
         OBJECT_PROPERTY_CHECKED(
             M_PRIV, pickup_mode, PICKUP_MODE_NORMAL, M_CheckPickupMode,
             "Pickup animation mode - 0: normal; 1: low pedestal; 2: high "
-            "pedestal; 3: hidden reach-in; 4: crowbar."),
+            "pedestal; 3: hidden reach-in; 4: crowbar; 5: hidden sarcophagus; "
+            "6: scion pedestal."),
         OBJECT_PROPERTY(
             M_PRIV, show_pickup_aid, true,
             "Show a twinkle effect above the item."),
@@ -1021,7 +1060,8 @@ int16_t Pickup_FindNearbyCrowbarPryPickup(void)
         }
 
         const M_PRIV *const p = item->priv;
-        if (p->pickup_mode == PICKUP_MODE_CROWBAR && M_TestLaraPosition(item)) {
+        if (p->pickup_mode == PICKUP_MODE_CROWBAR
+            && M_TestLaraPosition(item, true)) {
             return item_num;
         }
     }
@@ -1033,9 +1073,9 @@ void Pickup_Collect(const GAME_VECTOR pos, const PICKUP_MODE mode)
     M_CollectAllAtPos(pos.pos, pos.room_num, mode);
 }
 
-// O_SCION_ITEM_1 and O_FLARE_ITEM register their own specialized setups.
+// O_FLARE_ITEM registers its own specialized setup.
 #define X_PICKUP(item, option) REGISTER_OBJECT(item, M_Setup)
-#define X_PICKUP_SPECIAL(item, option)
+#define X_PICKUP_SPECIAL(item, option) REGISTER_OBJECT(item, M_Setup)
 #define X_PICKUP_SUPPLY_VARIANT(item, option)
 #include <trx/game/objects/pickups.def>
 #undef X_PICKUP_SUPPLY_VARIANT

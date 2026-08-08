@@ -61,6 +61,7 @@
 - changed skidoo and quad bike crashes to not kill Lara when she is immune
 - changed Lara to say "No" when attempting to use the binoculars when it is not possible to do so
 - changed the installer to explain when it cannot download the files it needs, and to offer to try again (#6052)
+- changed `O_SCION_ITEM_1` handling to use a pickup mode of `PLINTH_SCION`; refer to migration guide
 - removed the carrying over of legacy settings from TRX 1.4 and older; a small number of settings from files that old may revert to defaults
 - removed the Japanese NG and Japanese NG+ game modes; a Japanese NG save continues as a regular game, and a Japanese NG+ save as New Game+; refer to migration notes
 - fixed the sun's glare staying on screen in cutscenes once the camera has looked away from it
@@ -129,6 +130,7 @@
 - fixed Lara being able to pull out flares while crawling after picking up an item, and dropping flares when using the draw input to enter crouch state (regression from 1.3)
 
 **TR1**
+- added pickup aids to the scions in Tomb of Qualopec and Sanctuary of the Scion
 - changed weather to be affected by the breeze
 - changed Bacon Lara's anchor room to be an optional object property rather than a game flow event; refer to migration notes
 - fixed Lara's braid floating or being aligned to the water height when vaulting out of wading depth water (#5900)

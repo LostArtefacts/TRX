@@ -318,6 +318,10 @@ order: 3
     that extends another brings its own copy of any level script it wants,
     rather than reaching into the base game for one.
 
+31. **Scions on plinths now expect a pickup mode** 
+    `O_SCION_ITEM_1` pickups now require a pickup mode of `PLINTH_SCION` in
+    order to invoke Lara's extra animation. Refer to the OG Lua scripts.
+
 ### Version 1.8 to 1.9
 
 1. **Update Lara pushblock animations**

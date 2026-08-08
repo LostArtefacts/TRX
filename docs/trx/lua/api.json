@@ -2172,7 +2172,7 @@
     },
     {
       "bulk": false,
-      "count": 6,
+      "count": 7,
       "description": "<!--noref: pickup_mode--> The values the `pickup_mode` item property can take. It selects the animation Lara plays when collecting the item.",
       "path": "items.PickupMode",
       "values": [
@@ -2205,6 +2205,11 @@
           "description": "Hidden inside a sarcophagus.",
           "name": "SARCOPHAGUS",
           "value": 5
+        },
+        {
+          "description": "Similar to PLINTH_HIGH; invokes Lara's extra animation as in Tomb of Qualopec.",
+          "name": "PLINTH_SCION",
+          "value": 6
         }
       ]
     },

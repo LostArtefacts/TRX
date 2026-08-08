@@ -43,6 +43,7 @@ api.enum("items.PickupMode", {
     HIDDEN = "Hidden behind an object Lara can reach into.",
     CROWBAR = "Pried off the wall using a crowbar.",
     SARCOPHAGUS = "Hidden inside a sarcophagus.",
+    PLINTH_SCION = "Similar to PLINTH_HIGH; invokes Lara's extra animation as in Tomb of Qualopec.",
   },
 })
 
