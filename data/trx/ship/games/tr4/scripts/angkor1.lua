@@ -7,6 +7,59 @@ trx.events.on_game_start(function(is_save)
 end)
 
 local BACKPACK_CUTSCENE = 5
+local BACKPACK_FRAME = 1350
+local YOUNG_OUTFIT = "tr4_young"
+local BARE_TORSO_MESH = 7
+
+-- Young Lara carries no backpack until she picks one up part-way through the
+-- cutscene the crawlspace triggers. The outfit she wears carries the torso she
+-- ends up with, and the level carries the one she starts in, so the level's is
+-- what she wears until the scene hands the backpack over.
+local has_backpack = false
+
+local function dress(outfit)
+  outfit = outfit or trx.lara.outfit
+  if outfit ~= YOUNG_OUTFIT or has_backpack then
+    trx.lara.clear_mesh(trx.lara.Mesh.TORSO)
+  else
+    trx.lara.set_mesh(
+      trx.lara.Mesh.TORSO,
+      trx.catalog.objects.lara_skin,
+      BARE_TORSO_MESH
+    )
+  end
+end
+
+-- Nothing records whether she is carrying it: the cutscene having run says so,
+-- and that is what a savegame already remembers.
+trx.events.on_game_start(function()
+  has_backpack = trx.cutscenes.is_played(BACKPACK_CUTSCENE)
+  dress()
+end)
+
+-- The trigger marks the scene played before it starts, so the frame is what
+-- answers once it is on screen.
+trx.events.after_control(function()
+  if
+    not has_backpack
+    and trx.cutscenes.current == BACKPACK_CUTSCENE
+    and trx.cutscenes.frame_num >= BACKPACK_FRAME
+  then
+    has_backpack = true
+    dress()
+  end
+end)
+
+-- The outfit being put on, rather than the one still on her: a watcher is told
+-- before the skin is applied, and applying it is what reads the override. The
+-- setting reads as an empty string while the player has chosen nothing, and
+-- the engine dresses her in the one the level asks for.
+trx.config.on_change("visuals.lara_outfit", function(outfit)
+  if outfit == nil or outfit == "" then
+    outfit = trx.game.current_level.lara_outfit
+  end
+  dress(outfit)
+end)
 
 trx.events.on_cutscene_start(function(cutscene_num)
   if cutscene_num == BACKPACK_CUTSCENE then
