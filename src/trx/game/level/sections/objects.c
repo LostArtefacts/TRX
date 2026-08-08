@@ -45,14 +45,15 @@ void Level_Section_ReadObjects(LEVEL_CONTEXT *const ctx, VFILE *const file)
     const int32_t num_objects = VFile_ReadS32(file);
     LOG_INFO("objects: %d", num_objects);
     for (int32_t i = 0; i < num_objects; i++) {
-        OBJECT fallback_obj = {};
+        OBJECT spare_obj = {};
         const int32_t game_obj_id = VFile_ReadS32(file);
         OBJECT *obj = Object_GetByGameID(game_obj_id);
-        if (obj == nullptr) {
+        const bool is_cataloged = obj != nullptr;
+        if (!is_cataloged) {
             if (loader->game_version == 3 || loader->game_version == 4) {
                 // Direct-level support can encounter slots that do not have a
                 // stable TRX catalog entry yet.
-                obj = &fallback_obj;
+                obj = &spare_obj;
             } else {
                 Shell_ExitSystemFmt("Invalid object ID: %d", game_obj_id);
             }
@@ -64,6 +65,9 @@ void Level_Section_ReadObjects(LEVEL_CONTEXT *const ctx, VFILE *const file)
         obj->frame_base = nullptr;
         obj->anim_idx = VFile_ReadS16(file);
         obj->loaded = true;
+        if (!is_cataloged) {
+            Object_StoreUncatalogedSlot(game_obj_id, obj);
+        }
     }
 
     Benchmark_End(&benchmark, nullptr);
