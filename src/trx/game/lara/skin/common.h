@@ -12,6 +12,16 @@ bool Lara_Skin_IsDefaultType(void);
 void Lara_Skin_SetType(LARA_SKIN_TYPE skin_type);
 void Lara_Skin_ApplyOutfit(void);
 
+// Put another mesh on one of Lara's own, in place of whatever her outfit gives
+// her there. It outlives an outfit change, because applying an outfit reads it,
+// which is what lets a level dress her from its own geometry - TR4's Angkor Wat
+// carries the torso young Lara wears before she picks up her backpack. nullptr
+// gives the outfit's mesh back. The head is the exception: a combat or speech
+// face replaces it directly, and takes the head back from an override with it.
+// Dropped at level end, along with the meshes it could name.
+void Lara_Skin_SetMeshOverride(LARA_MESH mesh, OBJECT_MESH *mesh_ptr);
+OBJECT_MESH *Lara_Skin_GetMeshOverride(LARA_MESH mesh);
+
 void Lara_Skin_SetCombatFace(bool enabled);
 void Lara_Skin_SetSpeechFace(int32_t index);
 void Lara_Skin_SwapAllExtra(LARA_EXTRA_STATE state);

@@ -23,6 +23,7 @@ static bool m_UseCombatFace = false;
 static LARA_GUN_TYPE m_HolsterType_L = LGT_UNARMED;
 static LARA_GUN_TYPE m_HolsterType_R = LGT_UNARMED;
 static LARA_SKIN_EQUIPMENT m_Equipment[LM_NUMBER_OF] = {};
+static OBJECT_MESH *m_MeshOverrides[LM_NUMBER_OF] = {};
 
 static inline const LARA_SKIN_OUTFIT *M_GetCurrentOutfit(void)
 {
@@ -182,6 +183,11 @@ static inline int32_t M_GetMeshIdx(
 static inline void M_ApplyMeshIfValid(
     const LARA_MESH mesh, const LARA_SKIN_OUTFIT *const outfit)
 {
+    if (m_MeshOverrides[mesh] != nullptr) {
+        Lara_Mesh_Set(mesh, m_MeshOverrides[mesh]);
+        return;
+    }
+
     const int32_t mesh_idx = M_GetMeshIdx(mesh, outfit);
     if (mesh_idx != M_NO_MESH) {
         Lara_Mesh_Set(mesh, Object_GetMesh(mesh_idx));
@@ -341,6 +347,8 @@ void Lara_Skin_Initialise(void)
     m_HolstersVisible = true;
     for (int32_t i = 0; i < LM_NUMBER_OF; i++) {
         m_Equipment[i].visible = true;
+        // Before the clear, which applies a mesh and would read it.
+        m_MeshOverrides[i] = nullptr;
         Lara_Skin_ClearEquipment(i);
     }
 
@@ -524,6 +532,23 @@ void Lara_Skin_ApplyOutfit(void)
     M_UpdateSunglasses();
     Lara_Joints_Initialise(outfit);
     Lara_Hair_InitJoints(outfit);
+}
+
+void Lara_Skin_SetMeshOverride(
+    const LARA_MESH mesh, OBJECT_MESH *const mesh_ptr)
+{
+    m_MeshOverrides[mesh] = mesh_ptr;
+    // A level script runs before she has been dressed, and an outfit that is
+    // not applied yet names meshes that are not loaded. Applying an outfit
+    // reads the override, so the one set here still reaches her.
+    if (M_CanDress()) {
+        M_ApplyMeshIfValid(mesh, M_GetCurrentOutfit());
+    }
+}
+
+OBJECT_MESH *Lara_Skin_GetMeshOverride(const LARA_MESH mesh)
+{
+    return m_MeshOverrides[mesh];
 }
 
 void Lara_Skin_SetCombatFace(const bool enabled)
