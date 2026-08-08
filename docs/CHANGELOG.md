@@ -129,6 +129,7 @@
 - fixed touch controls not turning themselves on the first time the game is launched on a device that has a touchscreen
 - fixed the alternative ammunition pickups, such as the second kind of shotgun ammunition, going into the inventory without loading the weapon
 - fixed Lara being able to pull out flares while crawling after picking up an item, and dropping flares when using the draw input to enter crouch state (regression from 1.3)
+- fixed the game not running when its folder name contains characters outside the system language, such as Chinese (#573)
 
 **TR1**
 - changed weather to be affected by the breeze
