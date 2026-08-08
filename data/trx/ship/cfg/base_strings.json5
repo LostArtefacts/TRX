@@ -1252,7 +1252,7 @@
         },
         "gameplay.fix_descending_glitch": {
             "title": "Fix breakable floor falls",
-            "description": "Fixes sidestepping and walking backwards on breakable tiles causing Lara to immediately descend to the tile underneath.",
+            "description": "Fixes sidestepping and walking backwards on breakable tiles causing Lara to immediately descend to the tile underneath. The original TR2+ do not have this glitch; TR1 does.",
         },
         "gameplay.fix_flare_throw_priority": {
             "title": "Fix flare throw priority",
@@ -1296,7 +1296,7 @@
         },
         "gameplay.fix_step_glitch": {
             "title": "Fix step glitch",
-            "description": "Fixes Lara sometimes being pushed into walls adjacent to steps when running up them in a specific way.",
+            "description": "Fixes Lara sometimes being pushed into walls adjacent to steps when running up them in a specific way. The original TR1 does not have this glitch; TR2 and TR3 do.",
         },
         "gameplay.fix_underwater_crawl": {
             "title": "Fix underwater crawling",
@@ -1312,7 +1312,7 @@
         },
         "gameplay.fix_wall_geometry": {
             "title": "Fix wall geometry",
-            "description": "Fixes cases in OG level geometry where tilts inside walls can lead to inaccurate height calculations.",
+            "description": "Fixes cases in OG level geometry where tilts inside walls can lead to inaccurate height calculations. The original TR3+ does not have this problem; TR1 and TR2 do.",
         },
         "gameplay.fix_water_exit": {
             "title": "Fix water exit",

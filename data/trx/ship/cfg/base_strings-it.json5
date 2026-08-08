@@ -1252,7 +1252,7 @@
         },
         "gameplay.fix_descending_glitch": {
             "title": "Correggi cadute da pavimenti",
-            "description": "Risolve il problema per cui i passi laterali e il camminare all'indietro su pavimenti fragili fanno sì che Lara scenda immediatamente sul pavimento sottostante.",
+            "description": "\\{review}Risolve il problema per cui i passi laterali e il camminare all'indietro su pavimenti fragili fanno sì che Lara scenda immediatamente sul pavimento sottostante. I TR2+ originali non hanno questo difetto; TR1 sì.",
         },
         "gameplay.fix_flare_throw_priority": {
             "title": "Correggi priorità lancio razzi",
@@ -1296,7 +1296,7 @@
         },
         "gameplay.fix_step_glitch": {
             "title": "Correggi errore gradini",
-            "description": "Risolve il problema per cui a volte Lara viene spinta contro i muri adiacenti ai gradini quando corre su di loro in un certo modo.",
+            "description": "\\{review}Risolve il problema per cui a volte Lara viene spinta contro i muri adiacenti ai gradini quando corre su di loro in un certo modo. Il TR1 originale non ha questo difetto; TR2 e TR3 sì.",
         },
         "gameplay.fix_underwater_crawl": {
             "title": "Correggi strisciare sott’acqua",
@@ -1312,7 +1312,7 @@
         },
         "gameplay.fix_wall_geometry": {
             "title": "Correggi geometria muri",
-            "description": "Risolve il problema per cui, nei livelli originali, le inclinazioni all'interno dei muri possono portare a calcoli di altezza imprecisi.",
+            "description": "\\{review}Risolve il problema per cui, nei livelli originali, le inclinazioni all'interno dei muri possono portare a calcoli di altezza imprecisi. I TR3+ originali non hanno questo problema; TR1 e TR2 sì.",
         },
         "gameplay.fix_water_exit": {
             "title": "Correggi uscita dall'acqua",

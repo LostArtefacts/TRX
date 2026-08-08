@@ -1252,7 +1252,7 @@
         },
         "gameplay.fix_descending_glitch": {
             "title": "Càraich tuiteam air leacan bristeach",
-            "description": "Càradh far am bi Lara a' tuiteam gu sgiobalta tro leacan briste nuair a dhèanas i ceum-taoibh neo coiseachd air ais orra.",
+            "description": "\\{review}Càradh far am bi Lara a' tuiteam gu sgiobalta tro leacan briste nuair a dhèanas i ceum-taoibh neo coiseachd air ais orra. Chan eil an duilgheadas seo san TR2+ thùsail; tha e ann an TR1.",
         },
         "gameplay.fix_flare_throw_priority": {
             "title": "Càraich prìomhachas tilgeadh lòchran",
@@ -1296,7 +1296,7 @@
         },
         "gameplay.fix_step_glitch": {
             "title": "Càraich glitch ceumannan",
-            "description": "Càradh far am bi Lara uaireannan air a putadh tro bhalla ri taobh ceuman nuair a ruitheas i suas orra.",
+            "description": "\\{review}Càradh far am bi Lara uaireannan air a putadh tro bhalla ri taobh ceuman nuair a ruitheas i suas orra. Chan eil an duilgheadas seo san TR1 thùsail; tha e ann an TR2 is TR3.",
         },
         "gameplay.fix_underwater_crawl": {
             "title": "Càraich snàgadh fon uisge",
@@ -1312,7 +1312,7 @@
         },
         "gameplay.fix_wall_geometry": {
             "title": "Càradh geoimeatraidh bhallachan",
-            "description": "Càraichidh seo cùisean ann an geoimeatraidh ìrean OG far am faod claonaidhean taobh a-staigh bhallachan leantainn gu àireamhachadh àirde mearachdach.",
+            "description": "\\{review}Càraichidh seo cùisean ann an geoimeatraidh ìrean OG far am faod claonaidhean taobh a-staigh bhallachan leantainn gu àireamhachadh àirde mearachdach. Chan eil an duilgheadas seo san TR3+ thùsail; tha e ann an TR1 is TR2.",
         },
         "gameplay.fix_water_exit": {
             "title": "Càraich fàgail à seòmar uisge",
