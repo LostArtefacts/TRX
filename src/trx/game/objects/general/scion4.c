@@ -4,11 +4,9 @@
 #include <trx/game/input.h>
 #include <trx/game/lara.h>
 
-#define EXTRA_ANIM_HOLDER_SCION 0
+static XYZ_32 m_Position = { 0, 280, -512 + 105 };
 
-static XYZ_32 m_Scion4_Position = { 0, 280, -512 + 105 };
-
-static const OBJECT_BOUNDS m_Scion4_Bounds = {
+static const OBJECT_BOUNDS m_Bounds = {
     .shift = {
         .min = { .x = -256, .y = +256 - 50, .z = -512 - 350, },
         .max = { .x = +256, .y = +256 + 50, .z = -200, },
@@ -21,7 +19,7 @@ static const OBJECT_BOUNDS m_Scion4_Bounds = {
 
 static const OBJECT_BOUNDS *M_Bounds(void)
 {
-    return &m_Scion4_Bounds;
+    return &m_Bounds;
 }
 
 static void M_Control(const int16_t item_num)
@@ -36,9 +34,7 @@ static void M_Collision(
     LARA_INFO *const lara = Lara_GetLaraInfo();
     const OBJECT *const obj = Object_Get(item->object_id);
 
-    int16_t rotx = item->rot.x;
-    int16_t roty = item->rot.y;
-    int16_t rotz = item->rot.z;
+    const XYZ_16 old_rot = item->rot;
     item->rot.y = lara_item->rot.y;
     item->rot.x = 0;
     item->rot.z = 0;
@@ -49,14 +45,13 @@ static void M_Collision(
 
     if (g_Input.action && lara->gun_status == LGS_ARMLESS && !lara_item->gravity
         && Lara_Interact_CanBegin(LARA_INTERACT_RECEPTACLE)) {
-        Lara_AlignPosition(item, &m_Scion4_Position);
+        Lara_AlignPosition(item, &m_Position);
         Lara_SwitchToExtraState(LS_EXTRA_SCION_PICKUP_2);
         Camera_InvokeCinematic(lara_item, 0, -DEG_90);
     }
+
 cleanup:
-    item->rot.x = rotx;
-    item->rot.y = roty;
-    item->rot.z = rotz;
+    item->rot = old_rot;
 }
 
 static void M_Setup(OBJECT *const obj)
