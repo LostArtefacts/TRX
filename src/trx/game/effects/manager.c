@@ -121,6 +121,7 @@ int16_t Effect_Create(const int16_t room_num)
     effect->shade = SHADE_NEUTRAL;
     effect->flag1 = 0;
     effect->flag2 = 0;
+    effect->interp.is_new = true;
 
     return effect_num;
 }

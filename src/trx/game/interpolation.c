@@ -365,11 +365,22 @@ static void M_RememberEffect(EFFECT *const effect)
     REMEMBER(effect, rot.x);
     REMEMBER(effect, rot.y);
     REMEMBER(effect, rot.z);
+    effect->interp.is_new = false;
 }
 
 static void M_InterpolateEffect(const double ratio, EFFECT *const effect)
 {
     ASSERT(effect != nullptr);
+    if (effect->interp.is_new) {
+        COMMIT(effect, pos.x);
+        COMMIT(effect, pos.y);
+        COMMIT(effect, pos.z);
+        COMMIT(effect, rot.x);
+        COMMIT(effect, rot.y);
+        COMMIT(effect, rot.z);
+        return;
+    }
+
     const XYZ_32 max_delta = M_GetEffectMaxDelta(effect);
     INTERPOLATE(effect, pos.x, ratio, max_delta.x);
     INTERPOLATE(effect, pos.y, ratio, max_delta.y);
