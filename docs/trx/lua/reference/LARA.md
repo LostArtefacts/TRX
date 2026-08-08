@@ -213,6 +213,35 @@ Her position, room and hit points are not here: she is an item like any other an
 - <a id="lara.dry" name="lara.dry"></a>[lua]`trx.lara.dry()`  
   Dries Lara off, clearing the wetness that sheds droplets after she leaves water.
 
+- <a id="lara.set_mesh" name="lara.set_mesh"></a>[lua]`trx.lara.set_mesh(mesh, object, mesh_num)`  
+  Puts another object's mesh on one of Lara's own, in place of whatever her
+  outfit gives her there.
+
+  It outlives an outfit change, because applying an outfit reads it, which is
+  what lets a level dress her from its own geometry rather than from the
+  outfit. Her head is the exception: a combat or speech face replaces it
+  directly, and takes it back from an override with it.
+
+  The override is dropped when the level ends, along with the meshes it could
+  name.
+
+  Parameters:
+  - <a id="lara.set_mesh.mesh" name="lara.set_mesh.mesh"></a>**`mesh`** ([trx.lara.Mesh](#lara.Mesh)). Which of Lara's meshes.
+  - <a id="lara.set_mesh.object" name="lara.set_mesh.object"></a>**`object`** ([trx.catalog.Id](CATALOG.md#catalog.Id)). The object to take a mesh from. Raises if this level does not carry it.
+  - <a id="lara.set_mesh.mesh_num" name="lara.set_mesh.mesh_num"></a>**`mesh_num`** ([trx.objects.MeshNum](OBJECTS.md#objects.MeshNum)). Which of that object's meshes.
+
+  Example:
+  ```lua
+  -- the torso young Lara wears before she picks up her backpack
+  trx.lara.set_mesh(trx.lara.Mesh.TORSO, trx.catalog.objects.lara_skin, 7)
+  ```
+
+- <a id="lara.clear_mesh" name="lara.clear_mesh"></a>[lua]`trx.lara.clear_mesh(mesh)`  
+  Takes the override back off, leaving the mesh Lara's outfit gives her.
+
+  Parameters:
+  - <a id="lara.clear_mesh.mesh" name="lara.clear_mesh.mesh"></a>**`mesh`** ([trx.lara.Mesh](#lara.Mesh)). Which of Lara's meshes.
+
 - <a id="lara.clear_equipment" name="lara.clear_equipment"></a>[lua]`trx.lara.clear_equipment(mesh)`  
   Takes the extra mesh back off, leaving Lara's own.
 

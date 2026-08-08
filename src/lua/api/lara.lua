@@ -317,6 +317,55 @@ api.define("lara.dry", {
   impl = raw.dry,
 })
 
+api.define("lara.set_mesh", {
+  description = [[
+    Puts another object's mesh on one of Lara's own, in place of whatever her
+    outfit gives her there.
+
+    It outlives an outfit change, because applying an outfit reads it, which is
+    what lets a level dress her from its own geometry rather than from the
+    outfit. Her head is the exception: a combat or speech face replaces it
+    directly, and takes it back from an override with it.
+
+    The override is dropped when the level ends, along with the meshes it could
+    name.
+  ]],
+  params = {
+    {
+      name = "mesh",
+      type = "lara.Mesh",
+      description = "Which of Lara's meshes.",
+    },
+    {
+      name = "object",
+      type = "catalog.Id",
+      description = "The object to take a mesh from. Raises if this level does not carry it.",
+    },
+    {
+      name = "mesh_num",
+      type = "objects.MeshNum",
+      description = "Which of that object's meshes.",
+    },
+  },
+  examples = {
+    [[-- the torso young Lara wears before she picks up her backpack
+trx.lara.set_mesh(trx.lara.Mesh.TORSO, trx.catalog.objects.lara_skin, 7)]],
+  },
+  impl = raw.set_mesh,
+})
+
+api.define("lara.clear_mesh", {
+  description = "Takes the override back off, leaving the mesh Lara's outfit gives her.",
+  params = {
+    {
+      name = "mesh",
+      type = "lara.Mesh",
+      description = "Which of Lara's meshes.",
+    },
+  },
+  impl = raw.clear_mesh,
+})
+
 api.define("lara.clear_equipment", {
   description = "Takes the extra mesh back off, leaving Lara's own.",
   params = {

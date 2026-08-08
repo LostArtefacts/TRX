@@ -4560,6 +4560,41 @@
       "path": "lara.dry"
     },
     {
+      "description": "Puts another object's mesh on one of Lara's own, in place of whatever her\noutfit gives her there.\n\nIt outlives an outfit change, because applying an outfit reads it, which is\nwhat lets a level dress her from its own geometry rather than from the\noutfit. Her head is the exception: a combat or speech face replaces it\ndirectly, and takes it back from an override with it.\n\nThe override is dropped when the level ends, along with the meshes it could\nname.",
+      "examples": [
+        "-- the torso young Lara wears before she picks up her backpack\ntrx.lara.set_mesh(trx.lara.Mesh.TORSO, trx.catalog.objects.lara_skin, 7)"
+      ],
+      "params": [
+        {
+          "description": "Which of Lara's meshes.",
+          "name": "mesh",
+          "type": "lara.Mesh"
+        },
+        {
+          "description": "The object to take a mesh from. Raises if this level does not carry it.",
+          "name": "object",
+          "type": "catalog.Id"
+        },
+        {
+          "description": "Which of that object's meshes.",
+          "name": "mesh_num",
+          "type": "objects.MeshNum"
+        }
+      ],
+      "path": "lara.set_mesh"
+    },
+    {
+      "description": "Takes the override back off, leaving the mesh Lara's outfit gives her.",
+      "params": [
+        {
+          "description": "Which of Lara's meshes.",
+          "name": "mesh",
+          "type": "lara.Mesh"
+        }
+      ],
+      "path": "lara.clear_mesh"
+    },
+    {
       "description": "Takes the extra mesh back off, leaving Lara's own.",
       "params": [
         {
