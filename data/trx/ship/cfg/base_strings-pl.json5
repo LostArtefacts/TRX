@@ -1254,7 +1254,7 @@
         },
         "gameplay.fix_descending_glitch": {
             "title": "Napraw glitch z łamliwą podłogą",
-            "description": "Naprawia problem, w którym chodzenie w bok lub do tyłu na łamliwej podłodze powoduje natychmiastowy teleport Lary na podłogę poniżej.",
+            "description": "\\{review}Naprawia problem, w którym chodzenie w bok lub do tyłu na łamliwej podłodze powoduje natychmiastowy teleport Lary na podłogę poniżej. Oryginalne TR2+ nie mają tego błędu; TR1 ma.",
         },
         "gameplay.fix_flare_throw_priority": {
             "title": "Napraw priorytet rzucania flar",
@@ -1298,7 +1298,7 @@
         },
         "gameplay.fix_step_glitch": {
             "title": "Napraw glitch ze schodami",
-            "description": "Naprawia problem, w którym Lara czasami jest popychana w ściany przylegające do małych stopni, kiedy biegnie po nich w określony sposób.",
+            "description": "\\{review}Naprawia problem, w którym Lara czasami jest popychana w ściany przylegające do małych stopni, kiedy biegnie po nich w określony sposób. Oryginalny TR1 nie ma tego błędu; TR2 i TR3 mają.",
         },
         "gameplay.fix_underwater_crawl": {
             "title": "Napraw czołganie pod wodą",
@@ -1314,7 +1314,7 @@
         },
         "gameplay.fix_wall_geometry": {
             "title": "Napraw geometrię ścian",
-            "description": "Naprawia przypadki w geometrii oryginalnych poziomów, w których nachylenia wewnątrz ścian mogą prowadzić do niedokładnych obliczeń wysokości.",
+            "description": "\\{review}Naprawia przypadki w geometrii oryginalnych poziomów, w których nachylenia wewnątrz ścian mogą prowadzić do niedokładnych obliczeń wysokości. Oryginalne TR3+ nie mają tego problemu; TR1 i TR2 mają.",
         },
         "gameplay.fix_water_exit": {
             "title": "Napraw wyjście z wody",

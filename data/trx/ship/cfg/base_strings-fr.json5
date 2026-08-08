@@ -1254,7 +1254,7 @@
         },
         "gameplay.fix_descending_glitch": {
             "title": "Corriger les chutes sur sols fragiles",
-            "description": "Corrige le fait que les pas de côté et la marche arrière sur des sols fragiles font que Lara se téléporte immédiatement au niveau inférieur.",
+            "description": "\\{review}Corrige le fait que les pas de côté et la marche arrière sur des sols fragiles font que Lara se téléporte immédiatement au niveau inférieur. Les TR2+ d'origine n'ont pas ce défaut ; TR1 si.",
         },
         "gameplay.fix_flare_throw_priority": {
             "title": "Corriger la priorité du jet des torches",
@@ -1298,7 +1298,7 @@
         },
         "gameplay.fix_step_glitch": {
             "title": "Corriger le glitch des petites marches",
-            "description": "Corrige le fait que Lara est parfois aspirée dans des murs adjacents à des petites marches lorsqu'elle monte dessus d'une manière spécifique.",
+            "description": "\\{review}Corrige le fait que Lara est parfois aspirée dans des murs adjacents à des petites marches lorsqu'elle monte dessus d'une manière spécifique. Le TR1 d'origine n'a pas ce défaut ; TR2 et TR3 si.",
         },
         "gameplay.fix_underwater_crawl": {
             "title": "\\{review}Corriger le rampement sous l’eau",
@@ -1314,7 +1314,7 @@
         },
         "gameplay.fix_wall_geometry": {
             "title": "\\{review}Corriger la géométrie des murs",
-            "description": "\\{review}Corrige les cas dans la géométrie des niveaux OG où des inclinaisons à l'intérieur des murs peuvent entraîner des calculs de hauteur inexacts.",
+            "description": "\\{review}Corrige les cas dans la géométrie des niveaux OG où des inclinaisons à l'intérieur des murs peuvent entraîner des calculs de hauteur inexacts. Les TR3+ d'origine n'ont pas ce problème ; TR1 et TR2 si.",
         },
         "gameplay.fix_water_exit": {
             "title": "\\{review}Corriger la sortie de l'eau",

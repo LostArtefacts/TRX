@@ -1254,7 +1254,7 @@
         },
         "gameplay.fix_descending_glitch": {
             "title": "Fix: Zerbrechliche Böden-Stürze",
-            "description": "Fixt, dass Seit-Schritte und Vorwärtslaufen auf zerbrechlichen Platten dazu führen, dass Lara sofort herab zur darunter liegenden Platte fällt.",
+            "description": "\\{review}Fixt, dass Seit-Schritte und Vorwärtslaufen auf zerbrechlichen Platten dazu führen, dass Lara sofort herab zur darunter liegenden Platte fällt. Die originalen TR2+ haben diesen Fehler nicht; TR1 schon.",
         },
         "gameplay.fix_flare_throw_priority": {
             "title": "Fix: Fackel-Wurf-Priorität",
@@ -1298,7 +1298,7 @@
         },
         "gameplay.fix_step_glitch": {
             "title": "Fix: Stufen-Glitch",
-            "description": "Fixt, dass Lara manchmal in Wände, die an Treppen angrenzen, gedrückt wird, wenn sie auf eine bestimmte Weise an ihnen entlangläuft.",
+            "description": "\\{review}Fixt, dass Lara manchmal in Wände, die an Treppen angrenzen, gedrückt wird, wenn sie auf eine bestimmte Weise an ihnen entlangläuft. Das originale TR1 hat diesen Fehler nicht; TR2 und TR3 schon.",
         },
         "gameplay.fix_underwater_crawl": {
             "title": "\\{review}Unterwasser-Kriechen korrigieren",
@@ -1314,7 +1314,7 @@
         },
         "gameplay.fix_wall_geometry": {
             "title": "\\{review}Behebt Wandgeometrie",
-            "description": "\\{review}Behebt Fälle in der OG-Levelgeometrie, bei denen Neigungen innerhalb von Wänden zu ungenauen Höhenberechnungen führen können.",
+            "description": "\\{review}Behebt Fälle in der OG-Levelgeometrie, bei denen Neigungen innerhalb von Wänden zu ungenauen Höhenberechnungen führen können. Die originalen TR3+ haben dieses Problem nicht; TR1 und TR2 schon.",
         },
         "gameplay.fix_water_exit": {
             "title": "Wasser Ausstieg",
