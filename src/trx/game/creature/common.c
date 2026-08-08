@@ -263,6 +263,15 @@ static bool M_SameZone(const CREATURE *const creature, ITEM *const target_item)
     return zone[item->box_num] == zone[target_item->box_num];
 }
 
+static bool M_TestWaterBelow(const ITEM *const item, const int32_t y)
+{
+    int16_t room_num = item->room_num;
+    Room_GetSector(
+        (XYZ_32) { item->pos.x, y + STEP_L, item->pos.z }, &room_num);
+    const ROOM *const room = Room_Get(room_num);
+    return room->flags.underwater || room->flags.swamp;
+}
+
 static const ITEM *M_GetBaddieOverlap(const int16_t item_num)
 {
     const ITEM *item = Item_Get(item_num);
@@ -1137,8 +1146,12 @@ bool Creature_Animate(
                 item->pos.x = old.x;
                 item->pos.z = old.z;
             }
-        } else if (
-            fly_check || Object_IsType(item->object_id, g_WaterObjects)) {
+        } else {
+            if (!fly_check && !Object_IsType(item->object_id, g_WaterObjects)
+                && M_TestWaterBelow(item, y)) {
+                dy = -lot->setup.fly;
+            }
+
             const int32_t ceiling = Room_GetCeiling(
                 sector, (XYZ_32) { item->pos.x, y, item->pos.z });
             int32_t min_y = bounds->min.y;
@@ -1162,13 +1175,6 @@ bool Creature_Animate(
                 } else {
                     dy = 0;
                 }
-            }
-        } else {
-            sample_pos = (XYZ_32) { item->pos.x, y + STEP_L, item->pos.z };
-            Room_GetSector(sample_pos, &room_num);
-            const ROOM *const room = Room_Get(room_num);
-            if (room->flags.underwater || room->flags.swamp) {
-                dy = -lot->setup.fly;
             }
         }
 
