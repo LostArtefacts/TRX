@@ -1394,7 +1394,7 @@
         },
         "gameplay.wall_glitch_mode": {
             "title": "Wand-Glitch Ein/Aus",
-            "description": "Erlaubt, das Wand-Glitchverhalten von TR1 zu nutzen und umgekehrt; gleichermaßen erlaubt es, alle Arten von Wand-Glitches zu fixen.",
+            "description": "\\{review}Legt fest, welche Wand-Glitches Lara ausführen kann.\n\n- TR1: wie im originalen TR1, wo ein Sprung vorwärts in eine Wand Lara nach oben auf sie versetzt.\n- TR2: wie im originalen TR2 und TR3, wo dieser Sprung nicht mehr funktioniert, Lara sich aber in bestimmter Geometrie noch versetzen kann, wenn sie Boden und Wand gleichzeitig trifft.\n- Gefixt: keiner der beiden Glitches funktioniert, und Lara kann den blockierten Sektor einer Tür nicht mehr passieren.",
         },
         "input.enable_buffering_func_keys": {
             "title": "\\{review}Pufferung (F-Tasten)",
@@ -1522,7 +1522,7 @@
         },
         "ui.bar_look": {
             "title": "\\{review}Aussehen der Balken",
-            "description": "\\{review}Steuert das visuelle Erscheinungsbild der UI-Leisten.",
+            "description": "\\{review}Wählt Rahmen und Farben, mit denen die UI-Leisten gezeichnet werden, übernommen aus einer der Originalveröffentlichungen. Die Wahl bestimmt außerdem, welcher Satz der Leistenfarben weiter unten gilt.",
         },
         "ui.bar_scale": {
             "title": "Leisten-Größe",
@@ -1562,7 +1562,7 @@
         },
         "ui.enemy_healthbar_show_mode": {
             "title": "Gesundheitleiste der Feinde",
-            "description": "Aktiviert die Anzeige einer Gesundheitleiste für aktive Feinde.",
+            "description": "\\{review}Legt fest, wann eine Lebensleiste für den von Lara anvisierten Gegner erscheint.\n\n- Immer: für jedes Ziel anzeigen.\n- Nur Boss-Gegner: nur anzeigen, wenn das Ziel ein Boss ist.\n- Nie: nie anzeigen.",
         },
         "ui.exposurebar_color": {
             "title": "\\{review}Farbe der Ausdauerleiste",

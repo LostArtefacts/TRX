@@ -42,9 +42,6 @@
         "gameplay.target_mode": {
             "description": "Changes the behaviour of how weapons lock onto targets.\n\n- Full lock: always keep target lock even if the enemy moves out of sight or dies (OG TR1-3).\n- Semi lock: keep target lock if the enemy moves out of sight but lose target lock if the enemy dies.\n- No lock: lose target lock if the enemy goes out of sight or dies (TR4+).",
         },
-        "gameplay.wall_glitch_mode": {
-            "description": "Allows using TR1 wall glitch behaviour in TR2 and vice-versa; equally allows fixing all types of wall glitch.",
-        },
         "input.quick_guns_mode": {
             "description": "Controls the behaviour of the quick gun equip keys.\n\n- Draw only: pressing a key will cause Lara to equip the assigned gun.\n- Draw or holster: same as above, plus Lara will undraw the assigned gun if she's currently carrying it.",
         },
@@ -61,6 +58,9 @@
         "ui.airbar_color_ps1": {
             "title": "Airbar colour",
             "description": "Colour of the airbar.",
+        },
+        "ui.bar_look": {
+            "description": "Chooses the frame and colours the UI bars are drawn with, taken from one of the original releases. The choice also decides which set of bar colour settings below applies.",
         },
         "ui.enable_smooth_bars": {
             "description": "Makes the UI bars use smooth colour transitions.",

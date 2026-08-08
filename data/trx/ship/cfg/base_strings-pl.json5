@@ -1394,7 +1394,7 @@
         },
         "gameplay.wall_glitch_mode": {
             "title": "Tryb glitchy ścian",
-            "description": "Pozwala na używanie glitcha ściany z TR1 w TR2 - i odwrotnie, umożliwia również naprawienie wszystkich typów tego błędu.",
+            "description": "\\{review}Wybiera, które błędy ścian Lara może wykonywać.\n\n- TR1: jak w oryginalnym TR1, gdzie skok w przód w ścianę przenosi Larę na jej szczyt.\n- TR2: jak w oryginalnych TR2 i TR3, gdzie ten skok już nie działa, ale Lara wciąż może się przenieść, uderzając jednocześnie o podłogę i ścianę przy pewnej geometrii.\n- Naprawione: żaden z tych błędów nie działa, a Lara nie przejdzie już przez zablokowany sektor drzwi.",
         },
         "input.enable_buffering_func_keys": {
             "title": "Buforowanie (klawisze funkcyjne)",
@@ -1522,7 +1522,7 @@
         },
         "ui.bar_look": {
             "title": "Wygląd pasków",
-            "description": "Steruje wyglądem pasków życia i tlenu.",
+            "description": "\\{review}Wybiera ramkę i kolory, którymi rysowane są paski interfejsu, zaczerpnięte z jednego z oryginalnych wydań. Wybór decyduje też o tym, który zestaw ustawień kolorów poniżej obowiązuje.",
         },
         "ui.bar_scale": {
             "title": "Skala pasków",
@@ -1562,7 +1562,7 @@
         },
         "ui.enemy_healthbar_show_mode": {
             "title": "Tryb paska wroga",
-            "description": "Zmienia sposób wyświetlania paska zdrowia dla aktywnego przeciwnika.",
+            "description": "\\{review}Określa, kiedy pokazywany jest pasek zdrowia namierzonego przez Larę wroga.\n\n- Zawsze: pokazuj dla każdego celu.\n- Tylko bossowie: pokazuj tylko, gdy celem jest boss.\n- Wyłączony: nigdy nie pokazuj.",
         },
         "ui.exposurebar_color": {
             "title": "Kolor paska wychłodzenia",

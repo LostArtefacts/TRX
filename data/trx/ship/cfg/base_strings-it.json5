@@ -1394,7 +1394,7 @@
         },
         "gameplay.wall_glitch_mode": {
             "title": "Modalità errore muro",
-            "description": "Consente di utilizzare il comportamento dell'errore del muro di TR1 in TR2 e viceversa; consente inoltre di correggere tutti i tipi di errore del muro.",
+            "description": "\\{review}Sceglie quali glitch dei muri Lara può eseguire.\n\n- TR1: come nel TR1 originale, dove un salto in avanti dentro un muro teletrasporta Lara in cima ad esso.\n- TR2: come nei TR2 e TR3 originali, dove quel salto non funziona più, ma Lara può ancora teletrasportarsi colpendo il pavimento e il muro nello stesso momento in certe geometrie.\n- Corretto: nessuno dei due glitch funziona e Lara non può più attraversare il settore bloccato di una porta.",
         },
         "input.enable_buffering_func_keys": {
             "title": "Buffering (tasti funzione)",
@@ -1522,7 +1522,7 @@
         },
         "ui.bar_look": {
             "title": "Aspetto barre",
-            "description": "Controlla l'aspetto visivo delle barre dell'interfaccia utente.",
+            "description": "\\{review}Sceglie la cornice e i colori con cui vengono disegnate le barre dell'interfaccia, presi da una delle versioni originali. La scelta determina anche quale gruppo di impostazioni di colore qui sotto viene applicato.",
         },
         "ui.bar_scale": {
             "title": "Dimensione barre",
@@ -1562,7 +1562,7 @@
         },
         "ui.enemy_healthbar_show_mode": {
             "title": "Modalità barra nemici",
-            "description": "Abilita la visualizzazione della barra della salute per il nemico ingaggiato.",
+            "description": "\\{review}Controlla quando viene mostrata una barra della salute per il nemico preso di mira da Lara.\n\n- Sempre: mostrarla per qualsiasi bersaglio.\n- Solo per i Boss: mostrarla solo quando il bersaglio è un boss.\n- Mai: non mostrarla mai.",
         },
         "ui.exposurebar_color": {
             "title": "Colore barra esposizione",
