@@ -22,6 +22,9 @@ bool Audio_IsMuted(void);
 bool Audio_Stream_Pause(int32_t sound_id);
 bool Audio_Stream_Unpause(int32_t sound_id);
 bool Audio_Stream_SetPaused(int32_t sound_id, bool is_paused);
+// Create a stream. The stream is paused, so that the caller can seek it and
+// set its volume before anything is heard; call Audio_Stream_Unpause to start
+// it.
 int32_t Audio_Stream_CreateFromFile(const char *path);
 int32_t Audio_Stream_CreateFromMemory(uint8_t *data, size_t size);
 bool Audio_Stream_Close(int32_t sound_id);

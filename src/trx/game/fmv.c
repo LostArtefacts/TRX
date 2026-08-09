@@ -96,6 +96,13 @@ static int32_t M_OpenAudioStream(const char *const file_name)
     return AUDIO_NO_SOUND;
 }
 
+static float M_GetAudioVolume(void)
+{
+    return Audio_IsMuted()
+        ? 0.0f
+        : g_Config.audio.master_volume * g_Config.audio.fmv_volume;
+}
+
 static void *M_AllocateSurface(
     const int32_t width, const int32_t height, void *const user_data)
 {
@@ -252,6 +259,10 @@ static bool M_Play(const char *const file_name)
     Fader_InitTo(&render_ctx.pause_fader, 0.0f, 0.0f, 0.0f);
     M_SetPauseText(false);
     Video_Start(video);
+
+    Audio_Stream_SetVolume(audio_id, M_GetAudioVolume());
+    Audio_Stream_Unpause(audio_id);
+
     while (video->is_playing) {
         Shell_ProcessEvents();
 
@@ -271,10 +282,7 @@ static bool M_Play(const char *const file_name)
             paused = should_pause;
         }
 
-        const float volume = Audio_IsMuted()
-            ? 0.0f
-            : g_Config.audio.master_volume * g_Config.audio.fmv_volume;
-        Audio_Stream_SetVolume(audio_id, volume);
+        Audio_Stream_SetVolume(audio_id, M_GetAudioVolume());
         const double audio_ts = Audio_Stream_GetTimestamp(audio_id);
         if (audio_ts >= 0.0) {
             Video_SetExternalAudioClock(video, audio_ts);
