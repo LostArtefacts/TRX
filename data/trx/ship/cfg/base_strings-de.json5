@@ -1100,6 +1100,10 @@
             "title": "\\{review}Schnelles Aufheben",
             "description": "\\{review}Ermöglicht es Lara, Gegenstände schneller aufzuheben, ähnlich wie in TR4+.",
         },
+        "gameplay.enable_fast_shimmying": {
+            "title": "\\{review}Schnelles Hangeln",
+            "description": "\\{review}Ermöglicht es Lara, sich beim Hangeln nach links oder rechts schneller zu bewegen.",
+        },
         "gameplay.enable_fmv": {
             "title": "FMVs",
             "description": "Aktiviert das Abspielen von FMVs.",

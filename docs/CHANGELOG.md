@@ -3,6 +3,7 @@
 **Lara's movement**
 - Added the ability for Lara to turn on the spot by pressing walk and roll (Gameplay → Controls → Alternative turns) (#5756)
 - Added the ability for Lara to turn on the spot on monkeybars by pressing roll (Gameplay → Controls → Alternative turns)
+- Added the ability for Lara to shimmy more quickly (Gameplay → Controls → Fast shimmying) (#5638)
 - Improved state change handling when shimmying is requested while in the slow swing-in state on thin ledges (#5161)
 - Fixed Lara attempting to pull up into gaps that would not allow her to stand, resulting in her being pushed out (#5891)
 - Fixed Lara being teleported into the ceiling if a door shuts on the ledge she is climbing onto (Gameplay → Fixes → Wall glitch mode) (#6047)

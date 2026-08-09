@@ -1100,6 +1100,10 @@
             "title": "Fast pickups",
             "description": "Allows Lara to pick items up more quickly, similar to TR4+.",
         },
+        "gameplay.enable_fast_shimmying": {
+            "title": "Fast shimmying",
+            "description": "Allows Lara to move more quickly when shimmying left or right.",
+        },
         "gameplay.enable_fmv": {
             "title": "FMVs",
             "description": "Enables FMVs playing.",

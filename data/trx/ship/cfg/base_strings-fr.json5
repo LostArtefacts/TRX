@@ -1100,6 +1100,10 @@
             "title": "\\{review}Ramassage rapide",
             "description": "\\{review}Permet à Lara de ramasser les objets plus rapidement, comme dans TR4+.",
         },
+        "gameplay.enable_fast_shimmying": {
+            "title": "\\{review}Déplacement latéral rapide",
+            "description": "\\{review}Permet à Lara de se déplacer plus rapidement lorsqu'elle se déplace latéralement vers la gauche ou la droite en étant suspendue.",
+        },
         "gameplay.enable_fmv": {
             "title": "Activer les FMV",
             "description": "Active les FMV en jeu.",
