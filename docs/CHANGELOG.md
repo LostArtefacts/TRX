@@ -21,6 +21,8 @@
 - Changed a multi-key shortcut to answer only to the side of Ctrl, Shift or Alt it was bound to, where a shortcut of a single key still takes either
 - Changed the Target change option to allow selecting TR4 behavior, where tapping Look switches target and holding it looks around (Gameplay → Controls → Target change)
 - Fixed touch controls not turning themselves on the first time the game is launched on a device that has a touchscreen
+- Fixed the key icons in the controls dialog sitting at slightly different heights, most visibly the left trigger and the shoulder buttons (#6151)
+- Fixed the + joining the two keys of a shortcut sitting lower than the icons beside it (#6151)
 
 **Camera and binoculars**
 - Added TR4 camera mode, which is similar to TR3 but more responsive to Lara's actions such as picking up items

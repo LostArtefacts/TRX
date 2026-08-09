@@ -81,6 +81,9 @@ U+0028:( 0 T manual_sprite("glyphs.png", 71,  5,  7,  18) expand(w=-1)
 U+0029:) 0 T manual_sprite("glyphs.png", 78,  5,  7,  18) translate(x=1) expand(w=1)
 U+002A:* 0 T manual_sprite("glyphs.png", 85,  5,  9,  18)
 U+002B:+ 0 T manual_sprite("glyphs.png", 94,  5,  11, 18, index=72)
+# A copy of U+002B raised onto the vertical center of the key icons, for
+# joining the keys of an input combination.
+"\\{icon plus}" 0 I manual_sprite("glyphs.png", 94, 5, 11, 18, index=794) translate(y=-1)
 U+002C:, 0 T manual_sprite("glyphs.png", 105, 5,  6,  18, index=63)
 U+002D:- 0 T manual_sprite("glyphs.png", 111, 5,  9,  18, index=71)
 U+002E:. 0 T manual_sprite("glyphs.png", 120, 5,  6,  18, index=62)

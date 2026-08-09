@@ -81,6 +81,9 @@ U+0028:( 0 T render("OndineLTProRegular.TTF")
 U+0029:) 0 T render("OndineLTProRegular.TTF")
 U+002A:* 0 T render("OndineLTProRegular.TTF")
 U+002B:+ 0 T render("OndineLTProRegular.TTF", index=72)
+# A copy of U+002B raised onto the vertical center of the key icons, for
+# joining the keys of an input combination.
+"\\{icon plus}" 0 I render("OndineLTProRegular.TTF", text="+", index=794) translate(y=-2)
 U+002C:, 0 T render("OndineLTProRegular.TTF", index=63)
 U+002D:- 0 T render("OndineLTProRegular.TTF", index=71, offset_y=-2)
 U+002E:. 0 T render("OndineLTProRegular.TTF", index=62)

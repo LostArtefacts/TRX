@@ -210,9 +210,10 @@ class RenderSource(BaseSource):
     offset_y: int = 0
     size: int = 18
     baseline: int = -6
+    text: str | None = None
 
     def load(self, glyph: Glyph) -> tuple[np.ndarray, Rect]:
-        text = glyph.text
+        text = glyph.text if self.text is None else self.text
 
         font_size = self.size
         pad = 5

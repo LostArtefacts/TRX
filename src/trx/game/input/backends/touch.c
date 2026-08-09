@@ -430,12 +430,11 @@ static const char *M_GetName(
         }
         return nullptr;
     }
-    // Multi-position combo: join with "+"
     static char buf[256];
     buf[0] = '\0';
     for (int32_t k = 0; k < b->pos_count; k++) {
         if (k > 0) {
-            strcat(buf, "+");
+            strcat(buf, INPUT_COMBO_SEPARATOR);
         }
         const int32_t p = b->positions[k];
         if (p >= 0 && p < (int32_t)ARRAY_SIZE(m_PosGlyphs)) {

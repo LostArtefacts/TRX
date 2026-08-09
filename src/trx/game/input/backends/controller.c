@@ -629,7 +629,7 @@ static const char *M_GetName(
     buf[0] = '\0';
     for (int32_t k = 0; k < bind->key_count; k++) {
         if (k > 0) {
-            strcat(buf, "+");
+            strcat(buf, INPUT_COMBO_SEPARATOR);
         }
         const char *name = M_GetMapName(&bind->keys[k]);
         if (name != nullptr) {
