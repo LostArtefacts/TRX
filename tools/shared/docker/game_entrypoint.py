@@ -110,7 +110,8 @@ def compress_exe(options: BuildOptions, path: Path) -> None:
 
 class BaseCommand:
     name: str = NotImplemented
-    help: str = NotImplemented
+    # argparse reads this as a boolean, which NotImplemented refuses to be
+    help: str | None = None
 
     def decorate_parser(self, parser: argparse.ArgumentParser) -> None:
         pass
