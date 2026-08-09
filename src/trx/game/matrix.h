@@ -48,6 +48,14 @@ void Matrix_RotY_M(MATRIX *m, int16_t ry);
 void Matrix_RotZ_M(MATRIX *m, int16_t rz);
 void Matrix_Mul3x3_M(MATRIX *out, const MATRIX *lhs, const MATRIX *rhs);
 void Matrix_Slerp3x3_M(MATRIX *lhs_out, const MATRIX *rhs, double t);
+
+// Interpolates between two rotations along the arc between them, and gives the
+// result back as angles Matrix_Rot16 takes. Interpolating the three angles
+// apart from each other instead does not follow that arc: near a quarter turn
+// on X, two triples half a turn apart on Y and Z can name the same rotation,
+// and meeting them in the middle points the other way.
+XYZ_16 Matrix_SlerpRot16(XYZ_16 rotation_1, XYZ_16 rotation_2, double t);
+
 void Matrix_Mul3x3(const MATRIX *rhs);
 
 void Matrix_TranslateRel(int32_t x, int32_t y, int32_t z);
