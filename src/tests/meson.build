@@ -184,6 +184,17 @@ unit_tests += {
 }
 
 unit_tests += {
+  'name': 'trx/game/matrix',
+  'engine': [
+    'game/matrix.c',
+    'core/math/func.c',
+    'core/math/geom.c',
+    'core/math/trig.c',
+  ],
+  'deps': [dep_mathlibrary],
+}
+
+unit_tests += {
   'name': 'trx/game/cutseq/decoder',
   'engine': ['game/cutseq/decoder.c'],
 }

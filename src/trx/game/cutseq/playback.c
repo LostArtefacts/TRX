@@ -82,12 +82,6 @@ static struct {
     .letterbox = M_DEFAULT_LETTERBOX,
 };
 
-static int16_t M_LerpAngle(
-    const int16_t from, const int16_t to, const double alpha)
-{
-    return from + (int16_t)((int16_t)(to - from) * alpha);
-}
-
 // Root offsets are truncated to int16 to match the original engine, so a
 // track running past the boundary wraps in a single frame. Interpolating the
 // short way around turns that into a step rather than a sweep back across the
@@ -106,9 +100,7 @@ static void M_LerpPose(
     out->offset.y = M_LerpOffset(from->offset.y, to->offset.y, alpha);
     out->offset.z = M_LerpOffset(from->offset.z, to->offset.z, alpha);
     for (int32_t i = 0; i < mesh_count; i++) {
-        out->rots[i].x = M_LerpAngle(from->rots[i].x, to->rots[i].x, alpha);
-        out->rots[i].y = M_LerpAngle(from->rots[i].y, to->rots[i].y, alpha);
-        out->rots[i].z = M_LerpAngle(from->rots[i].z, to->rots[i].z, alpha);
+        out->rots[i] = Matrix_SlerpRot16(from->rots[i], to->rots[i], alpha);
     }
 }
 

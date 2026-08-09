@@ -349,6 +349,37 @@ static void M_RotYXZ(MATRIX *const m, const XYZ_16 rotation)
     M_RotZ(m, rotation.z);
 }
 
+// Reads a rotation back out of a matrix in the Y, X, Z order M_RotYXZ puts it
+// in. Both remaining pairs are scaled by cos(X), so at a quarter turn on X
+// they say nothing apart: Y and Z describe a single turn between them there,
+// and it reads out as Y alone.
+static XYZ_16 M_ToRot16(const MATRIX *const m)
+{
+    double e[3][3];
+    M_Double3x3FromMatrix(m, e);
+    M_Double3x3RemoveScale(e);
+
+    double sin_x = -e[1][2];
+    CLAMP(sin_x, -1.0, 1.0);
+    const double x = asin(sin_x);
+    double y;
+    double z;
+    if (fabs(sin_x) < 1.0 - 1e-9) {
+        y = atan2(e[0][2], e[2][2]);
+        z = atan2(e[1][0], e[1][1]);
+    } else {
+        y = atan2(-e[2][0], e[0][0]);
+        z = 0.0;
+    }
+
+    const double scale = DEG_360 / (2.0 * M_PI);
+    return (XYZ_16) {
+        .x = (int16_t)(int32_t)lround(x * scale),
+        .y = (int16_t)(int32_t)lround(y * scale),
+        .z = (int16_t)(int32_t)lround(z * scale),
+    };
+}
+
 static void M_TranslateRel(MATRIX *const m, const XYZ_32 offset)
 {
     m->_03 += offset.x * m->_00 + offset.y * m->_01 + offset.z * m->_02;
@@ -585,6 +616,17 @@ void Matrix_RotY_M(MATRIX *const m, const int16_t angle)
 void Matrix_RotZ_M(MATRIX *const m, const int16_t angle)
 {
     M_RotZ(m, angle);
+}
+
+XYZ_16 Matrix_SlerpRot16(
+    const XYZ_16 rotation_1, const XYZ_16 rotation_2, const double t)
+{
+    MATRIX m1 = g_IDMatrix;
+    M_RotYXZ(&m1, rotation_1);
+    MATRIX m2 = g_IDMatrix;
+    M_RotYXZ(&m2, rotation_2);
+    Matrix_Slerp3x3_M(&m1, &m2, t);
+    return M_ToRot16(&m1);
 }
 
 void Matrix_Slerp3x3_M(
