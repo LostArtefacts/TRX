@@ -336,7 +336,7 @@ static bool M_InitialiseFromFormatContext(
 
     stream->is_read_done = false;
     stream->is_used = true;
-    stream->is_playing = true;
+    stream->is_playing = false;
     stream->is_looped = false;
     stream->volume = 1.0f;
     stream->decode_timestamp = 0.0;

@@ -276,6 +276,7 @@ static int32_t M_PlayOverlayTrack(const MUSIC_ID track_id)
     Audio_Stream_SetIsLooped(stream_id, false);
     Audio_Stream_SetFinishCallback(
         stream_id, M_StreamFinished, &m_OverlayStreams[slot]);
+    Audio_Stream_Unpause(stream_id);
     return slot + 1;
 }
 
@@ -441,6 +442,7 @@ int32_t Music_Play_Direct(const MUSIC_ID track_id, const MUSIC_PLAY_MODE mode)
             Audio_Stream_SetIsLooped(stream_id, is_looped);
             Audio_Stream_SetFinishCallback(
                 stream_id, M_StreamFinished, &m_MainStream);
+            Audio_Stream_Unpause(stream_id);
             played = true;
         }
     }
