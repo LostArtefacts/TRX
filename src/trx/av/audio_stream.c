@@ -1,13 +1,11 @@
 #include <trx/av/audio_internal.h>
 
-#include <trx/core/filesystem.h>
 #include <trx/core/log.h>
 #include <trx/core/memory.h>
 #include <trx/core/utils.h>
 #include <trx/debug.h>
 
-#include <SDL2/SDL_audio.h>
-#include <SDL2/SDL_error.h>
+#include <SDL2/SDL_atomic.h>
 #include <errno.h>
 #include <libavcodec/avcodec.h>
 #include <libavcodec/codec.h>
@@ -15,6 +13,7 @@
 #include <libavformat/avformat.h>
 #include <libavformat/avio.h>
 #include <libavutil/avutil.h>
+#include <libavutil/channel_layout.h>
 #include <libavutil/error.h>
 #include <libavutil/frame.h>
 #include <libavutil/mem.h>
@@ -25,8 +24,13 @@
 #include <stdio.h>
 #include <string.h>
 
-#define READ_BUFFER_SIZE                                                       \
-    (AUDIO_SAMPLES * AUDIO_WORKING_CHANNELS * sizeof(AUDIO_WORKING_FORMAT))
+#define AVIO_BUFFER_SIZE 4096
+
+// The mixer must never wait for the decoder, and a seek must never discard
+// audible audio. 0.37 s of stereo sits comfortably between the two.
+#define RING_FLOATS (1 << 15)
+#define RING_MASK (RING_FLOATS - 1)
+#define RING_REFILL_FLOATS (RING_FLOATS / 2)
 
 typedef enum {
     M_STREAM_SRC_NONE,
@@ -38,6 +42,19 @@ typedef struct {
     size_t size;
     size_t pos;
 } M_MEM_SOURCE;
+
+// Written by the worker thread, read by the audio callback, and by nobody
+// else. Reset only while the device is locked.
+typedef struct {
+    float *data;
+    SDL_atomic_t read_pos;
+    SDL_atomic_t write_pos;
+} M_RING;
+
+typedef struct {
+    void (*func)(int32_t sound_id, void *user_data);
+    void *user_data;
+} M_FINISH_NOTIFICATION;
 
 typedef struct {
     bool is_used;
@@ -78,17 +95,77 @@ typedef struct {
         SwrContext *ctx;
     } swr;
 
-    struct {
-        SDL_AudioStream *stream;
-    } sdl;
+    M_RING ring;
+    SDL_atomic_t is_finished;
+    float *convert_buffer;
+    size_t convert_capacity;
 } AUDIO_STREAM_SOUND;
 
 extern SDL_AudioDeviceID g_AudioDeviceID;
 
 static AUDIO_STREAM_SOUND m_Streams[AUDIO_MAX_ACTIVE_STREAMS] = {};
-static float m_MixBuffer[AUDIO_SAMPLES * AUDIO_WORKING_CHANNELS] = {};
-static size_t m_DecodeBufferCapacity = 0;
-static float *m_DecodeBuffer = nullptr;
+
+static uint32_t M_RingUsed(M_RING *const ring)
+{
+    return (uint32_t)SDL_AtomicGet(&ring->write_pos)
+        - (uint32_t)SDL_AtomicGet(&ring->read_pos);
+}
+
+static uint32_t M_RingSpace(M_RING *const ring)
+{
+    return RING_FLOATS - M_RingUsed(ring);
+}
+
+static void M_RingWrite(
+    M_RING *const ring, const float *const src, uint32_t count)
+{
+    ASSERT(count <= M_RingSpace(ring));
+    count = MIN(count, M_RingSpace(ring));
+
+    const uint32_t write_pos = (uint32_t)SDL_AtomicGet(&ring->write_pos);
+    const uint32_t offset = write_pos & RING_MASK;
+    const uint32_t head = MIN(count, RING_FLOATS - offset);
+    memcpy(ring->data + offset, src, head * sizeof(float));
+    memcpy(ring->data, src + head, (count - head) * sizeof(float));
+
+    SDL_MemoryBarrierRelease();
+    SDL_AtomicSet(&ring->write_pos, (int32_t)(write_pos + count));
+}
+
+static uint32_t M_RingMix(
+    M_RING *const ring, float *dst, uint32_t count, const float gain)
+{
+    count = MIN(count, M_RingUsed(ring));
+    SDL_MemoryBarrierAcquire();
+
+    const uint32_t read_pos = (uint32_t)SDL_AtomicGet(&ring->read_pos);
+    const uint32_t offset = read_pos & RING_MASK;
+    const uint32_t head = MIN(count, RING_FLOATS - offset);
+
+    const float *src = ring->data + offset;
+    for (uint32_t i = 0; i < head; i++) {
+        *dst++ += *src++ * gain;
+    }
+    src = ring->data;
+    for (uint32_t i = head; i < count; i++) {
+        *dst++ += *src++ * gain;
+    }
+
+    SDL_AtomicSet(&ring->read_pos, (int32_t)(read_pos + count));
+    return count;
+}
+
+static void M_RingReset(M_RING *const ring)
+{
+    SDL_AtomicSet(&ring->read_pos, 0);
+    SDL_AtomicSet(&ring->write_pos, 0);
+}
+
+static bool M_IsValidID(const int32_t sound_id)
+{
+    return g_AudioDeviceID != 0 && sound_id >= 0
+        && sound_id < AUDIO_MAX_ACTIVE_STREAMS;
+}
 
 static int32_t M_MemoryRead(
     void *const opaque, uint8_t *const buf, const int32_t buf_size)
@@ -154,25 +231,12 @@ static void M_ResetPlaybackState(
     ASSERT(stream != nullptr);
 
     const double clamped = MAX(0.0, relative_timestamp);
+    Audio_LockDevice();
     stream->played_samples = (int64_t)(clamped * (double)AUDIO_WORKING_RATE);
+    Audio_UnlockDevice();
 }
 
-static void M_DiscardSDLStreamData(AUDIO_STREAM_SOUND *const stream)
-{
-    ASSERT(stream != nullptr);
-
-    if (stream->sdl.stream != nullptr) {
-        while (SDL_AudioStreamAvailable(stream->sdl.stream) > 0) {
-            const int32_t bytes_gotten = SDL_AudioStreamGet(
-                stream->sdl.stream, m_MixBuffer, READ_BUFFER_SIZE);
-            if (bytes_gotten <= 0) {
-                break;
-            }
-        }
-    }
-}
-
-static void M_SeekToStart(AUDIO_STREAM_SOUND *stream)
+static void M_SeekToStart(AUDIO_STREAM_SOUND *const stream)
 {
     ASSERT(stream != nullptr);
 
@@ -206,12 +270,11 @@ static void M_SeekToStart(AUDIO_STREAM_SOUND *stream)
             av_err2str(error_code));
     } else {
         avcodec_flush_buffers(stream->av.codec_ctx);
-        M_DiscardSDLStreamData(stream);
         stream->is_read_done = false;
     }
 }
 
-static bool M_DecodeFrame(AUDIO_STREAM_SOUND *stream)
+static bool M_DecodeFrame(AUDIO_STREAM_SOUND *const stream)
 {
     ASSERT(stream != nullptr);
 
@@ -260,18 +323,213 @@ static bool M_DecodeFrame(AUDIO_STREAM_SOUND *stream)
     return true;
 }
 
-static bool M_InitialiseFromFormatContext(
-    int32_t sound_id, AVFormatContext *const fmt_ctx)
+static bool M_InitialiseResampler(AUDIO_STREAM_SOUND *const stream)
 {
-    if (!g_AudioDeviceID || sound_id < 0
-        || sound_id >= AUDIO_MAX_ACTIVE_STREAMS) {
+    ASSERT(stream != nullptr);
+
+    stream->swr.src.sample_rate = stream->av.codec_ctx->sample_rate;
+    stream->swr.src.ch_layout = stream->av.codec_ctx->ch_layout;
+    stream->swr.src.format = stream->av.codec_ctx->sample_fmt;
+    stream->swr.dst.sample_rate = AUDIO_WORKING_RATE;
+    av_channel_layout_default(
+        &stream->swr.dst.ch_layout, AUDIO_WORKING_CHANNELS);
+    stream->swr.dst.format = Audio_GetAVAudioFormat(AUDIO_WORKING_FORMAT);
+
+    swr_alloc_set_opts2(
+        &stream->swr.ctx, &stream->swr.dst.ch_layout, stream->swr.dst.format,
+        stream->swr.dst.sample_rate, &stream->swr.src.ch_layout,
+        stream->swr.src.format, stream->swr.src.sample_rate, 0, 0);
+    if (stream->swr.ctx == nullptr) {
+        LOG_ERROR("Failed to allocate the resampler");
+        return false;
+    }
+
+    const int32_t error_code = swr_init(stream->swr.ctx);
+    if (error_code != 0) {
+        LOG_ERROR(
+            "Failed to initialise the resampler: %s", av_err2str(error_code));
+        swr_free(&stream->swr.ctx);
+        return false;
+    }
+
+    return true;
+}
+
+static float *M_ReserveConvertBuffer(
+    AUDIO_STREAM_SOUND *const stream, const int32_t count)
+{
+    ASSERT(stream != nullptr);
+
+    if ((size_t)count > stream->convert_capacity) {
+        stream->convert_capacity = count;
+        stream->convert_buffer =
+            Memory_Realloc(stream->convert_buffer, count * sizeof(float));
+    }
+    return stream->convert_buffer;
+}
+
+static void M_EnqueueFrame(AUDIO_STREAM_SOUND *const stream)
+{
+    ASSERT(stream != nullptr);
+
+    if (stream->swr.ctx == nullptr && !M_InitialiseResampler(stream)) {
+        av_packet_unref(stream->av.packet);
+        return;
+    }
+
+    while (true) {
+        AVFrame *const frame = stream->av.frame;
+        if (avcodec_receive_frame(stream->av.codec_ctx, frame) < 0) {
+            av_frame_unref(frame);
+            break;
+        }
+
+        const int32_t max_samples =
+            swr_get_out_samples(stream->swr.ctx, frame->nb_samples);
+        uint8_t *out_buffer = (uint8_t *)M_ReserveConvertBuffer(
+            stream, max_samples * AUDIO_WORKING_CHANNELS);
+        const int32_t converted = swr_convert(
+            stream->swr.ctx, &out_buffer, max_samples,
+            (const uint8_t **)frame->data, frame->nb_samples);
+        const uint32_t produced = converted * AUDIO_WORKING_CHANNELS;
+        if (converted > 0 && produced > M_RingSpace(&stream->ring)) {
+            LOG_ERROR("Frame of %d samples does not fit the buffer", converted);
+            av_frame_unref(frame);
+            break;
+        }
+        if (converted > 0) {
+            M_RingWrite(&stream->ring, stream->convert_buffer, produced);
+        }
+
+        const double time_base_sec = av_q2d(stream->av.stream->time_base);
+        stream->decode_timestamp = frame->best_effort_timestamp * time_base_sec;
+        av_frame_unref(frame);
+    }
+
+    av_packet_unref(stream->av.packet);
+}
+
+static void M_Refill(AUDIO_STREAM_SOUND *const stream)
+{
+    ASSERT(stream != nullptr);
+
+    while (!stream->is_read_done
+           && M_RingSpace(&stream->ring) >= RING_REFILL_FLOATS) {
+        if (M_DecodeFrame(stream)) {
+            M_EnqueueFrame(stream);
+        } else {
+            stream->is_read_done = true;
+        }
+    }
+}
+
+static M_FINISH_NOTIFICATION M_TakeFinishNotification(
+    AUDIO_STREAM_SOUND *const stream)
+{
+    ASSERT(stream != nullptr);
+
+    const M_FINISH_NOTIFICATION notification = {
+        .func = stream->finish_callback,
+        .user_data = stream->finish_callback_user_data,
+    };
+    stream->finish_callback = nullptr;
+    stream->finish_callback_user_data = nullptr;
+    return notification;
+}
+
+static void M_Clear(AUDIO_STREAM_SOUND *const stream)
+{
+    ASSERT(stream != nullptr);
+
+    stream->is_used = false;
+    stream->is_playing = false;
+    stream->is_read_done = true;
+    stream->is_looped = false;
+    stream->volume = 0.0f;
+    stream->duration = 0.0;
+    stream->decode_timestamp = 0.0;
+    stream->played_samples = 0;
+    stream->finish_callback = nullptr;
+    stream->finish_callback_user_data = nullptr;
+
+    stream->src_type = M_STREAM_SRC_NONE;
+    stream->src = nullptr;
+    stream->avio_ctx_buffer = nullptr;
+    stream->avio_ctx = nullptr;
+
+    stream->ring.data = nullptr;
+    M_RingReset(&stream->ring);
+    SDL_AtomicSet(&stream->is_finished, 0);
+    stream->convert_buffer = nullptr;
+    stream->convert_capacity = 0;
+}
+
+// Tears a stream down. The worker lock must be held; the device lock is taken
+// to hide the stream from the mixer before anything it reads is freed.
+static void M_Close(AUDIO_STREAM_SOUND *const stream)
+{
+    ASSERT(stream != nullptr);
+
+    Audio_LockDevice();
+    stream->is_used = false;
+    stream->is_playing = false;
+    Audio_UnlockDevice();
+
+    if (stream->av.codec_ctx != nullptr) {
+        // XXX: potential libav bug - avcodec_close should free this info
+        if (stream->av.codec_ctx->extradata != nullptr) {
+            av_freep(&stream->av.codec_ctx->extradata);
+        }
+        avcodec_free_context(&stream->av.codec_ctx);
+    }
+
+    if (stream->av.format_ctx != nullptr) {
+        avformat_close_input(&stream->av.format_ctx);
+    }
+
+    if (stream->avio_ctx != nullptr) {
+        av_freep(&stream->avio_ctx->buffer);
+        avio_context_free(&stream->avio_ctx);
+    } else if (stream->avio_ctx_buffer != nullptr) {
+        av_freep(&stream->avio_ctx_buffer);
+    }
+
+    if (stream->src_type == M_STREAM_SRC_MEMORY && stream->src != nullptr) {
+        M_MEM_SOURCE *const src = stream->src;
+        Memory_FreePointer(&src->data);
+        Memory_FreePointer(&stream->src);
+    }
+
+    if (stream->swr.ctx != nullptr) {
+        swr_free(&stream->swr.ctx);
+    }
+
+    if (stream->av.frame != nullptr) {
+        av_frame_free(&stream->av.frame);
+    }
+
+    if (stream->av.packet != nullptr) {
+        av_packet_free(&stream->av.packet);
+    }
+
+    stream->av.stream = nullptr;
+    stream->av.codec = nullptr;
+
+    Memory_FreePointer(&stream->ring.data);
+    Memory_FreePointer(&stream->convert_buffer);
+
+    M_Clear(stream);
+}
+
+static bool M_InitialiseFromFormatContext(
+    const int32_t sound_id, AVFormatContext *const fmt_ctx)
+{
+    if (!M_IsValidID(sound_id)) {
         return false;
     }
 
     bool ret = false;
-    Audio_LockDevice();
-
-    AUDIO_STREAM_SOUND *stream = &m_Streams[sound_id];
+    AUDIO_STREAM_SOUND *const stream = &m_Streams[sound_id];
     int32_t error_code = 0;
 
     stream->av.format_ctx = fmt_ctx;
@@ -289,20 +547,20 @@ static bool M_InitialiseFromFormatContext(
             break;
         }
     }
-    if (!stream->av.stream) {
+    if (stream->av.stream == nullptr) {
         error_code = AVERROR_STREAM_NOT_FOUND;
         goto cleanup;
     }
 
     stream->av.codec =
         avcodec_find_decoder(stream->av.stream->codecpar->codec_id);
-    if (!stream->av.codec) {
+    if (stream->av.codec == nullptr) {
         error_code = AVERROR_DEMUXER_NOT_FOUND;
         goto cleanup;
     }
 
     stream->av.codec_ctx = avcodec_alloc_context3(stream->av.codec);
-    if (!stream->av.codec_ctx) {
+    if (stream->av.codec_ctx == nullptr) {
         error_code = AVERROR(ENOMEM);
         goto cleanup;
     }
@@ -319,24 +577,22 @@ static bool M_InitialiseFromFormatContext(
     }
 
     stream->av.packet = av_packet_alloc();
-    if (!stream->av.packet) {
+    if (stream->av.packet == nullptr) {
         error_code = AVERROR(ENOMEM);
         goto cleanup;
     }
 
     stream->av.frame = av_frame_alloc();
-    if (!stream->av.frame) {
+    if (stream->av.frame == nullptr) {
         error_code = AVERROR(ENOMEM);
         goto cleanup;
     }
 
-    M_DecodeFrame(stream);
-
-    const int32_t sdl_channels = stream->av.codec_ctx->ch_layout.nb_channels;
+    stream->ring.data = Memory_Alloc(RING_FLOATS * sizeof(float));
+    M_RingReset(&stream->ring);
+    SDL_AtomicSet(&stream->is_finished, 0);
 
     stream->is_read_done = false;
-    stream->is_used = true;
-    stream->is_playing = false;
     stream->is_looped = false;
     stream->volume = 1.0f;
     stream->decode_timestamp = 0.0;
@@ -348,13 +604,10 @@ static bool M_InitialiseFromFormatContext(
     stream->start_at = -1.0; // negative value means unset
     stream->stop_at = -1.0; // negative value means unset
 
-    stream->sdl.stream = SDL_NewAudioStream(
-        AUDIO_WORKING_FORMAT, sdl_channels, AUDIO_WORKING_RATE,
-        AUDIO_WORKING_FORMAT, sdl_channels, AUDIO_WORKING_RATE);
-    if (!stream->sdl.stream) {
-        LOG_ERROR("Failed to create SDL stream: %s", SDL_GetError());
-        goto cleanup;
-    }
+    Audio_LockDevice();
+    stream->is_used = true;
+    stream->is_playing = false;
+    Audio_UnlockDevice();
 
     ret = true;
 
@@ -365,132 +618,24 @@ cleanup:
     }
 
     if (!ret) {
-        Audio_Stream_Close(sound_id);
+        M_Close(stream);
     }
 
-    Audio_UnlockDevice();
     return ret;
 }
 
-static bool M_EnqueueFrame(AUDIO_STREAM_SOUND *stream)
-{
-    ASSERT(stream != nullptr);
-
-    int32_t error_code;
-
-    if (!stream->swr.ctx) {
-        stream->swr.src.sample_rate = stream->av.codec_ctx->sample_rate;
-        stream->swr.src.ch_layout = stream->av.codec_ctx->ch_layout;
-        stream->swr.src.format = stream->av.codec_ctx->sample_fmt;
-        stream->swr.dst.sample_rate = AUDIO_WORKING_RATE;
-        av_channel_layout_default(
-            &stream->swr.dst.ch_layout, AUDIO_WORKING_CHANNELS);
-        stream->swr.dst.format = Audio_GetAVAudioFormat(AUDIO_WORKING_FORMAT);
-        swr_alloc_set_opts2(
-            &stream->swr.ctx, &stream->swr.dst.ch_layout,
-            stream->swr.dst.format, stream->swr.dst.sample_rate,
-            &stream->swr.src.ch_layout, stream->swr.src.format,
-            stream->swr.src.sample_rate, 0, 0);
-        if (!stream->swr.ctx) {
-            av_packet_unref(stream->av.packet);
-            error_code = AVERROR(ENOMEM);
-            goto cleanup;
-        }
-
-        error_code = swr_init(stream->swr.ctx);
-        if (error_code != 0) {
-            av_packet_unref(stream->av.packet);
-            goto cleanup;
-        }
-    }
-
-    while (1) {
-        error_code =
-            avcodec_receive_frame(stream->av.codec_ctx, stream->av.frame);
-        if (error_code == AVERROR(EAGAIN)) {
-            av_frame_unref(stream->av.frame);
-            error_code = 0;
-            break;
-        }
-
-        if (error_code < 0) {
-            av_frame_unref(stream->av.frame);
-            break;
-        }
-
-        uint8_t *out_buffer = nullptr;
-        const int32_t out_samples =
-            swr_get_out_samples(stream->swr.ctx, stream->av.frame->nb_samples);
-        av_samples_alloc(
-            &out_buffer, nullptr, stream->swr.dst.ch_layout.nb_channels,
-            out_samples, stream->swr.dst.format, 1);
-        int32_t resampled_size = swr_convert(
-            stream->swr.ctx, &out_buffer, out_samples,
-            (const uint8_t **)stream->av.frame->data,
-            stream->av.frame->nb_samples);
-
-        size_t out_pos = 0;
-        while (resampled_size > 0) {
-            const size_t out_buffer_size = av_samples_get_buffer_size(
-                nullptr, stream->swr.dst.ch_layout.nb_channels, resampled_size,
-                stream->swr.dst.format, 1);
-
-            if (out_pos + out_buffer_size > m_DecodeBufferCapacity) {
-                m_DecodeBufferCapacity = out_pos + out_buffer_size;
-                m_DecodeBuffer =
-                    Memory_Realloc(m_DecodeBuffer, m_DecodeBufferCapacity);
-            }
-            if (m_DecodeBuffer != nullptr && out_buffer != nullptr) {
-                memcpy(
-                    (uint8_t *)m_DecodeBuffer + out_pos, out_buffer,
-                    out_buffer_size);
-            }
-            out_pos += out_buffer_size;
-
-            resampled_size = swr_convert(
-                stream->swr.ctx, &out_buffer, out_samples, nullptr, 0);
-        }
-
-        if (SDL_AudioStreamPut(stream->sdl.stream, m_DecodeBuffer, out_pos)) {
-            LOG_ERROR("Got an error when decoding frame: %s", SDL_GetError());
-            av_frame_unref(stream->av.frame);
-            break;
-        }
-
-        ASSERT(stream->av.format_ctx != nullptr);
-        ASSERT(stream->av.codec_ctx != nullptr);
-        ASSERT(stream->av.stream != nullptr);
-        double time_base_sec = av_q2d(stream->av.stream->time_base);
-        stream->decode_timestamp =
-            stream->av.frame->best_effort_timestamp * time_base_sec;
-        av_freep(&out_buffer);
-        av_frame_unref(stream->av.frame);
-    }
-
-    av_packet_unref(stream->av.packet);
-
-cleanup:
-    if (error_code > 0) {
-        LOG_ERROR(
-            "Got an error when decoding frame: %d, %s", error_code,
-            av_err2str(error_code));
-    }
-
-    return true;
-}
-
-static bool M_InitialiseFromPath(int32_t sound_id, const char *file_path)
+static bool M_InitialiseFromPath(
+    const int32_t sound_id, const char *const file_path)
 {
     ASSERT(file_path != nullptr);
 
-    if (!g_AudioDeviceID || sound_id < 0
-        || sound_id >= AUDIO_MAX_ACTIVE_STREAMS) {
+    if (!M_IsValidID(sound_id)) {
         return false;
     }
 
-    int32_t error_code = 0;
     AVFormatContext *fmt_ctx = nullptr;
-    error_code = avformat_open_input(&fmt_ctx, file_path, nullptr, nullptr);
+    const int32_t error_code =
+        avformat_open_input(&fmt_ctx, file_path, nullptr, nullptr);
     if (error_code != 0) {
         LOG_ERROR(
             "Error while opening audio %s: %s", file_path,
@@ -500,29 +645,6 @@ static bool M_InitialiseFromPath(int32_t sound_id, const char *file_path)
 
     return M_InitialiseFromFormatContext(sound_id, fmt_ctx);
 }
-
-static void M_Clear(AUDIO_STREAM_SOUND *stream)
-{
-    ASSERT(stream != nullptr);
-
-    stream->is_used = false;
-    stream->is_playing = false;
-    stream->is_read_done = true;
-    stream->is_looped = false;
-    stream->volume = 0.0f;
-    stream->duration = 0.0;
-    stream->decode_timestamp = 0.0;
-    stream->played_samples = 0;
-    stream->sdl.stream = nullptr;
-    stream->finish_callback = nullptr;
-    stream->finish_callback_user_data = nullptr;
-
-    stream->src_type = M_STREAM_SRC_NONE;
-    stream->src = nullptr;
-    stream->avio_ctx_buffer = nullptr;
-    stream->avio_ctx = nullptr;
-}
-
 void Audio_Stream_Init(void)
 {
     for (int32_t sound_id = 0; sound_id < AUDIO_MAX_ACTIVE_STREAMS;
@@ -533,28 +655,44 @@ void Audio_Stream_Init(void)
 
 void Audio_Stream_Shutdown(void)
 {
-    Memory_FreePointer(&m_DecodeBuffer);
-    m_DecodeBufferCapacity = 0;
-    if (!g_AudioDeviceID) {
-        return;
-    }
-
+    Audio_WorkerLock();
     for (int32_t sound_id = 0; sound_id < AUDIO_MAX_ACTIVE_STREAMS;
          sound_id++) {
-        if (m_Streams[sound_id].is_used) {
-            Audio_Stream_Close(sound_id);
+        M_Close(&m_Streams[sound_id]);
+    }
+    Audio_WorkerUnlock();
+}
+
+void Audio_Stream_Pump(void)
+{
+    for (int32_t sound_id = 0; sound_id < AUDIO_MAX_ACTIVE_STREAMS;
+         sound_id++) {
+        M_FINISH_NOTIFICATION notification = {};
+
+        Audio_WorkerLock();
+        AUDIO_STREAM_SOUND *const stream = &m_Streams[sound_id];
+        if (stream->is_used) {
+            if (SDL_AtomicGet(&stream->is_finished) != 0) {
+                notification = M_TakeFinishNotification(stream);
+                M_Close(stream);
+            } else {
+                M_Refill(stream);
+            }
+        }
+        Audio_WorkerUnlock();
+
+        if (notification.func != nullptr) {
+            notification.func(sound_id, notification.user_data);
         }
     }
 }
 
 bool Audio_Stream_SyncTimestamp(const int32_t sound_id, const double timestamp)
 {
-    if (!g_AudioDeviceID || sound_id < 0
-        || sound_id >= AUDIO_MAX_ACTIVE_STREAMS) {
+    if (!M_IsValidID(sound_id)) {
         return false;
     }
 
-    AUDIO_STREAM_SOUND *const stream = &m_Streams[sound_id];
     double drift = Audio_Stream_GetTimestamp(sound_id) - timestamp;
     if (drift < 0) {
         drift = -drift;
@@ -567,10 +705,9 @@ bool Audio_Stream_SyncTimestamp(const int32_t sound_id, const double timestamp)
     return false;
 }
 
-bool Audio_Stream_Pause(int32_t sound_id)
+bool Audio_Stream_Pause(const int32_t sound_id)
 {
-    if (!g_AudioDeviceID || sound_id < 0
-        || sound_id >= AUDIO_MAX_ACTIVE_STREAMS) {
+    if (!M_IsValidID(sound_id)) {
         return false;
     }
 
@@ -584,10 +721,9 @@ bool Audio_Stream_Pause(int32_t sound_id)
     return true;
 }
 
-bool Audio_Stream_Unpause(int32_t sound_id)
+bool Audio_Stream_Unpause(const int32_t sound_id)
 {
-    if (!g_AudioDeviceID || sound_id < 0
-        || sound_id >= AUDIO_MAX_ACTIVE_STREAMS) {
+    if (!M_IsValidID(sound_id)) {
         return false;
     }
 
@@ -607,43 +743,45 @@ bool Audio_Stream_SetPaused(const int32_t sound_id, const bool is_paused)
                      : Audio_Stream_Unpause(sound_id);
 }
 
-int32_t Audio_Stream_CreateFromFile(const char *file_path)
+int32_t Audio_Stream_CreateFromFile(const char *const file_path)
 {
-    if (!g_AudioDeviceID) {
+    if (g_AudioDeviceID == 0) {
         return AUDIO_NO_SOUND;
     }
 
     ASSERT(file_path != nullptr);
 
+    int32_t result = AUDIO_NO_SOUND;
+    Audio_WorkerLock();
     for (int32_t sound_id = 0; sound_id < AUDIO_MAX_ACTIVE_STREAMS;
          sound_id++) {
-        AUDIO_STREAM_SOUND *stream = &m_Streams[sound_id];
-        if (stream->is_used) {
+        if (m_Streams[sound_id].is_used) {
             continue;
         }
-
-        if (!M_InitialiseFromPath(sound_id, file_path)) {
-            return AUDIO_NO_SOUND;
+        if (M_InitialiseFromPath(sound_id, file_path)) {
+            result = sound_id;
         }
-
-        return sound_id;
+        break;
     }
+    Audio_WorkerUnlock();
 
-    return AUDIO_NO_SOUND;
+    return result;
 }
 
 int32_t Audio_Stream_CreateFromMemory(uint8_t *const data, const size_t size)
 {
-    if (!g_AudioDeviceID) {
+    if (g_AudioDeviceID == 0) {
         return AUDIO_NO_SOUND;
     }
 
     ASSERT(data != nullptr);
     ASSERT(size != 0);
 
+    int32_t result = AUDIO_NO_SOUND;
+    Audio_WorkerLock();
     for (int32_t sound_id = 0; sound_id < AUDIO_MAX_ACTIVE_STREAMS;
          sound_id++) {
-        AUDIO_STREAM_SOUND *stream = &m_Streams[sound_id];
+        AUDIO_STREAM_SOUND *const stream = &m_Streams[sound_id];
         if (stream->is_used) {
             continue;
         }
@@ -658,130 +796,70 @@ int32_t Audio_Stream_CreateFromMemory(uint8_t *const data, const size_t size)
         stream->src_type = M_STREAM_SRC_MEMORY;
         stream->src = src;
 
-        stream->avio_ctx_buffer = av_malloc(4096);
+        stream->avio_ctx_buffer = av_malloc(AVIO_BUFFER_SIZE);
         if (stream->avio_ctx_buffer == nullptr) {
-            Audio_Stream_Close(sound_id);
-            return AUDIO_NO_SOUND;
+            M_Close(stream);
+            break;
         }
 
         stream->avio_ctx = avio_alloc_context(
-            stream->avio_ctx_buffer, 4096, 0, src, M_MemoryRead, nullptr,
-            M_MemorySeek);
+            stream->avio_ctx_buffer, AVIO_BUFFER_SIZE, 0, src, M_MemoryRead,
+            nullptr, M_MemorySeek);
         if (stream->avio_ctx == nullptr) {
-            Audio_Stream_Close(sound_id);
-            return AUDIO_NO_SOUND;
+            M_Close(stream);
+            break;
         }
 
         stream->av.format_ctx = avformat_alloc_context();
         if (stream->av.format_ctx == nullptr) {
-            Audio_Stream_Close(sound_id);
-            return AUDIO_NO_SOUND;
+            M_Close(stream);
+            break;
         }
         stream->av.format_ctx->pb = stream->avio_ctx;
         stream->av.format_ctx->flags |= AVFMT_FLAG_CUSTOM_IO;
 
-        int32_t error_code = avformat_open_input(
+        const int32_t error_code = avformat_open_input(
             &stream->av.format_ctx, nullptr, nullptr, nullptr);
         if (error_code != 0) {
             LOG_ERROR(
                 "Error while opening audio memory stream: %s",
                 av_err2str(error_code));
-            Audio_Stream_Close(sound_id);
-            return AUDIO_NO_SOUND;
+            M_Close(stream);
+            break;
         }
 
-        if (!M_InitialiseFromFormatContext(sound_id, stream->av.format_ctx)) {
-            Audio_Stream_Close(sound_id);
-            return AUDIO_NO_SOUND;
+        if (M_InitialiseFromFormatContext(sound_id, stream->av.format_ctx)) {
+            result = sound_id;
         }
-
-        return sound_id;
+        break;
     }
+    Audio_WorkerUnlock();
 
-    return AUDIO_NO_SOUND;
+    return result;
 }
 
-bool Audio_Stream_Close(int32_t sound_id)
+bool Audio_Stream_Close(const int32_t sound_id)
 {
-    if (!g_AudioDeviceID || sound_id < 0
-        || sound_id >= AUDIO_MAX_ACTIVE_STREAMS) {
+    if (!M_IsValidID(sound_id)) {
         return false;
     }
 
-    Audio_LockDevice();
+    Audio_WorkerLock();
+    AUDIO_STREAM_SOUND *const stream = &m_Streams[sound_id];
+    const M_FINISH_NOTIFICATION notification = M_TakeFinishNotification(stream);
+    M_Close(stream);
+    Audio_WorkerUnlock();
 
-    AUDIO_STREAM_SOUND *stream = &m_Streams[sound_id];
-
-    if (stream->av.codec_ctx) {
-        // XXX: potential libav bug - avcodec_close should free this info
-        if (stream->av.codec_ctx->extradata != nullptr) {
-            av_freep(&stream->av.codec_ctx->extradata);
-        }
-
-        avcodec_free_context(&stream->av.codec_ctx);
-        stream->av.codec_ctx = nullptr;
-    }
-
-    if (stream->av.format_ctx) {
-        avformat_close_input(&stream->av.format_ctx);
-        stream->av.format_ctx = nullptr;
-    }
-
-    if (stream->avio_ctx != nullptr) {
-        av_freep(&stream->avio_ctx->buffer);
-        avio_context_free(&stream->avio_ctx);
-        stream->avio_ctx = nullptr;
-    } else if (stream->avio_ctx_buffer != nullptr) {
-        av_freep(&stream->avio_ctx_buffer);
-    }
-    stream->avio_ctx_buffer = nullptr;
-
-    if (stream->src_type == M_STREAM_SRC_MEMORY && stream->src != nullptr) {
-        M_MEM_SOURCE *const src = stream->src;
-        Memory_FreePointer(&src->data);
-        Memory_FreePointer(&stream->src);
-    }
-
-    if (stream->swr.ctx) {
-        swr_free(&stream->swr.ctx);
-    }
-
-    if (stream->av.frame) {
-        av_frame_free(&stream->av.frame);
-        stream->av.frame = nullptr;
-    }
-
-    if (stream->av.packet) {
-        av_packet_free(&stream->av.packet);
-        stream->av.packet = nullptr;
-    }
-
-    stream->av.stream = nullptr;
-    stream->av.codec = nullptr;
-
-    if (stream->sdl.stream) {
-        SDL_FreeAudioStream(stream->sdl.stream);
-        stream->sdl.stream = nullptr;
-    }
-
-    void (*finish_callback)(int32_t, void *) = stream->finish_callback;
-    void *finish_callback_user_data = stream->finish_callback_user_data;
-
-    M_Clear(stream);
-
-    Audio_UnlockDevice();
-
-    if (finish_callback) {
-        finish_callback(sound_id, finish_callback_user_data);
+    if (notification.func != nullptr) {
+        notification.func(sound_id, notification.user_data);
     }
 
     return true;
 }
 
-bool Audio_Stream_SetVolume(int32_t sound_id, float volume)
+bool Audio_Stream_SetVolume(const int32_t sound_id, const float volume)
 {
-    if (!g_AudioDeviceID || sound_id < 0
-        || sound_id >= AUDIO_MAX_ACTIVE_STREAMS) {
+    if (!M_IsValidID(sound_id)) {
         return false;
     }
 
@@ -790,20 +868,18 @@ bool Audio_Stream_SetVolume(int32_t sound_id, float volume)
     return true;
 }
 
-bool Audio_Stream_IsLooped(int32_t sound_id)
+bool Audio_Stream_IsLooped(const int32_t sound_id)
 {
-    if (!g_AudioDeviceID || sound_id < 0
-        || sound_id >= AUDIO_MAX_ACTIVE_STREAMS) {
+    if (!M_IsValidID(sound_id)) {
         return false;
     }
 
     return m_Streams[sound_id].is_looped;
 }
 
-bool Audio_Stream_SetIsLooped(int32_t sound_id, bool is_looped)
+bool Audio_Stream_SetIsLooped(const int32_t sound_id, const bool is_looped)
 {
-    if (!g_AudioDeviceID || sound_id < 0
-        || sound_id >= AUDIO_MAX_ACTIVE_STREAMS) {
+    if (!M_IsValidID(sound_id)) {
         return false;
     }
 
@@ -813,82 +889,53 @@ bool Audio_Stream_SetIsLooped(int32_t sound_id, bool is_looped)
 }
 
 bool Audio_Stream_SetFinishCallback(
-    int32_t sound_id, void (*callback)(int32_t sound_id, void *user_data),
-    void *user_data)
+    const int32_t sound_id,
+    void (*const callback)(int32_t sound_id, void *user_data),
+    void *const user_data)
 {
-    if (!g_AudioDeviceID || sound_id < 0
-        || sound_id >= AUDIO_MAX_ACTIVE_STREAMS) {
+    if (!M_IsValidID(sound_id)) {
         return false;
     }
 
+    Audio_WorkerLock();
     m_Streams[sound_id].finish_callback = callback;
     m_Streams[sound_id].finish_callback_user_data = user_data;
+    Audio_WorkerUnlock();
 
     return true;
 }
 
-void Audio_Stream_Mix(float *dst_buffer, size_t len)
+void Audio_Stream_Mix(float *const dst_buffer, const size_t len)
 {
+    const uint32_t requested = len / sizeof(float);
+
     for (int32_t sound_id = 0; sound_id < AUDIO_MAX_ACTIVE_STREAMS;
          sound_id++) {
         AUDIO_STREAM_SOUND *const stream = &m_Streams[sound_id];
-        if (!stream->is_playing) {
+        if (!stream->is_used || !stream->is_playing) {
             continue;
         }
 
-        while ((SDL_AudioStreamAvailable(stream->sdl.stream) < (int32_t)len)
-               && !stream->is_read_done) {
-            if (M_DecodeFrame(stream)) {
-                M_EnqueueFrame(stream);
-            } else {
-                stream->is_read_done = true;
-            }
-        }
+        const uint32_t mixed =
+            M_RingMix(&stream->ring, dst_buffer, requested, stream->volume);
+        stream->played_samples += mixed / AUDIO_WORKING_CHANNELS;
 
-        memset(m_MixBuffer, 0, READ_BUFFER_SIZE);
-        int32_t bytes_gotten = SDL_AudioStreamGet(
-            stream->sdl.stream, m_MixBuffer, READ_BUFFER_SIZE);
-        if (bytes_gotten < 0) {
-            LOG_ERROR("Error reading from sdl.stream: %s", SDL_GetError());
-            stream->is_playing = false;
-            stream->is_used = false;
-            stream->is_read_done = true;
-        } else if (bytes_gotten == 0) {
-            // legit end of stream. looping is handled in
-            // M_DecodeFrame
-            stream->is_playing = false;
-            stream->is_used = false;
-            stream->is_read_done = true;
-        } else {
-            int32_t samples_gotten = bytes_gotten
-                / (AUDIO_WORKING_CHANNELS * sizeof(AUDIO_WORKING_FORMAT));
-            stream->played_samples += (int64_t)samples_gotten;
-
-            const float *src_ptr = &m_MixBuffer[0];
-            float *dst_ptr = dst_buffer;
-
-            for (int32_t s = 0; s < samples_gotten; s++) {
-                for (int32_t c = 0; c < AUDIO_WORKING_CHANNELS; c++) {
-                    *dst_ptr++ += *src_ptr++ * stream->volume;
-                }
-            }
-        }
-
-        if (!stream->is_used) {
-            Audio_Stream_Close(sound_id);
+        // Looping is handled by the worker, so a dry ring on a stream that has
+        // read everything is a legitimate end of playback.
+        if (mixed < requested && stream->is_read_done) {
+            SDL_AtomicSet(&stream->is_finished, 1);
         }
     }
 }
 
-double Audio_Stream_GetTimestamp(int32_t sound_id)
+double Audio_Stream_GetTimestamp(const int32_t sound_id)
 {
-    if (!g_AudioDeviceID || sound_id < 0
-        || sound_id >= AUDIO_MAX_ACTIVE_STREAMS) {
+    if (!M_IsValidID(sound_id)) {
         return -1.0;
     }
 
     double timestamp = -1.0;
-    AUDIO_STREAM_SOUND *stream = &m_Streams[sound_id];
+    AUDIO_STREAM_SOUND *const stream = &m_Streams[sound_id];
 
     if (stream->duration > 0.0) {
         Audio_LockDevice();
@@ -899,38 +946,36 @@ double Audio_Stream_GetTimestamp(int32_t sound_id)
     return timestamp;
 }
 
-double Audio_Stream_GetDuration(int32_t sound_id)
+double Audio_Stream_GetDuration(const int32_t sound_id)
 {
-    if (!g_AudioDeviceID || sound_id < 0
-        || sound_id >= AUDIO_MAX_ACTIVE_STREAMS) {
+    if (!M_IsValidID(sound_id)) {
         return -1.0;
     }
 
     Audio_LockDevice();
-    AUDIO_STREAM_SOUND *stream = &m_Streams[sound_id];
-    double duration = stream->duration;
+    const double duration = m_Streams[sound_id].duration;
     Audio_UnlockDevice();
     return duration;
 }
 
 bool Audio_Stream_SeekTimestamp(const int32_t sound_id, const double timestamp)
 {
-    if (!g_AudioDeviceID || sound_id < 0
-        || sound_id >= AUDIO_MAX_ACTIVE_STREAMS) {
+    if (!M_IsValidID(sound_id)) {
         return false;
     }
 
+    Audio_WorkerLock();
     AUDIO_STREAM_SOUND *const stream = &m_Streams[sound_id];
     if (!stream->is_used) {
+        Audio_WorkerUnlock();
         return false;
     }
 
-    Audio_LockDevice();
     const double time_base_sec = av_q2d(stream->av.stream->time_base);
     if (time_base_sec <= 0.0) {
         LOG_ERROR(
             "Audio_Stream_SeekTimestamp: invalid time_base %f", time_base_sec);
-        Audio_UnlockDevice();
+        Audio_WorkerUnlock();
         return false;
     }
 
@@ -943,27 +988,28 @@ bool Audio_Stream_SeekTimestamp(const int32_t sound_id, const double timestamp)
         LOG_ERROR(
             "seek failed for timestamp %f: %s", timestamp,
             av_err2str(error_code));
-        Audio_UnlockDevice();
+        Audio_WorkerUnlock();
         return false;
     }
 
     avcodec_flush_buffers(stream->av.codec_ctx);
-    if (stream->sdl.stream != nullptr) {
-        M_DiscardSDLStreamData(stream);
-    }
+
+    Audio_LockDevice();
+    M_RingReset(&stream->ring);
+    Audio_UnlockDevice();
 
     stream->decode_timestamp = timestamp + MAX(stream->start_at, 0.0f);
     M_ResetPlaybackState(stream, timestamp);
     stream->is_read_done = false;
+    Audio_WorkerUnlock();
 
-    Audio_UnlockDevice();
     return true;
 }
 
-bool Audio_Stream_SetStartTimestamp(int32_t sound_id, double timestamp)
+bool Audio_Stream_SetStartTimestamp(
+    const int32_t sound_id, const double timestamp)
 {
-    if (!g_AudioDeviceID || sound_id < 0
-        || sound_id >= AUDIO_MAX_ACTIVE_STREAMS) {
+    if (!M_IsValidID(sound_id)) {
         return false;
     }
 
@@ -971,10 +1017,10 @@ bool Audio_Stream_SetStartTimestamp(int32_t sound_id, double timestamp)
     return true;
 }
 
-bool Audio_Stream_SetStopTimestamp(int32_t sound_id, double timestamp)
+bool Audio_Stream_SetStopTimestamp(
+    const int32_t sound_id, const double timestamp)
 {
-    if (!g_AudioDeviceID || sound_id < 0
-        || sound_id >= AUDIO_MAX_ACTIVE_STREAMS) {
+    if (!M_IsValidID(sound_id)) {
         return false;
     }
 

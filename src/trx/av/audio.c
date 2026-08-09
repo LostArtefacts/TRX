@@ -4,10 +4,18 @@
 #include <trx/core/memory.h>
 
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_atomic.h>
 #include <SDL2/SDL_error.h>
+#include <SDL2/SDL_mutex.h>
 #include <SDL2/SDL_stdinc.h>
+#include <SDL2/SDL_thread.h>
+#include <SDL2/SDL_timer.h>
 #include <stdint.h>
 #include <string.h>
+
+// Every stream buffers far more audio than this, so the tick only decides how
+// promptly freshly started sounds reach the mixer.
+#define WORKER_TICK_MS 2
 
 SDL_AudioDeviceID g_AudioDeviceID = 0;
 static int32_t m_RefCount = 0;
@@ -17,6 +25,38 @@ static Uint8 m_Silence = 0;
 static bool m_Muted = false;
 static bool m_CallbackSeen = false;
 static bool m_ShouldSkipSDLQuitAudio = false;
+static SDL_mutex *m_WorkerMutex = nullptr;
+static SDL_Thread *m_WorkerThread = nullptr;
+static SDL_atomic_t m_WorkerStop = {};
+
+static int32_t M_WorkerThread(void *const user_data)
+{
+    while (SDL_AtomicGet(&m_WorkerStop) == 0) {
+        Audio_Stream_Pump();
+        SDL_Delay(WORKER_TICK_MS);
+    }
+    return 0;
+}
+
+static void M_StartWorker(void)
+{
+    SDL_AtomicSet(&m_WorkerStop, 0);
+    m_WorkerThread = SDL_CreateThread(M_WorkerThread, "audio decoder", nullptr);
+    if (m_WorkerThread == nullptr) {
+        LOG_ERROR(
+            "Failed to start the audio decoder thread: %s", SDL_GetError());
+    }
+}
+
+static void M_StopWorker(void)
+{
+    if (m_WorkerThread == nullptr) {
+        return;
+    }
+    SDL_AtomicSet(&m_WorkerStop, 1);
+    SDL_WaitThread(m_WorkerThread, nullptr);
+    m_WorkerThread = nullptr;
+}
 
 static void M_MixerCallback(void *userdata, Uint8 *stream_data, int32_t len)
 {
@@ -69,12 +109,14 @@ bool Audio_Init(void)
         * SDL_AUDIO_BITSIZE(desired.format) / 8;
 
     m_MixBuffer = Memory_Alloc(m_MixBufferCapacity);
+    m_WorkerMutex = SDL_CreateMutex();
 
     SDL_PauseAudioDevice(g_AudioDeviceID, 0);
 
     Audio_Sample_Init();
     Audio_Stream_Init();
     Audio_Reverb_Init(AUDIO_WORKING_RATE, AUDIO_WORKING_CHANNELS);
+    M_StartWorker();
 
     return true;
 }
@@ -85,6 +127,8 @@ bool Audio_Shutdown(void)
     if (m_RefCount > 0) {
         return false;
     }
+
+    M_StopWorker();
 
     if (g_AudioDeviceID) {
         SDL_PauseAudioDevice(g_AudioDeviceID, 1);
@@ -100,6 +144,11 @@ bool Audio_Shutdown(void)
     Audio_Sample_Shutdown();
     Audio_Stream_Shutdown();
     Audio_Reverb_Shutdown();
+
+    if (m_WorkerMutex != nullptr) {
+        SDL_DestroyMutex(m_WorkerMutex);
+        m_WorkerMutex = nullptr;
+    }
 
     if (!m_ShouldSkipSDLQuitAudio) {
         SDL_QuitSubSystem(SDL_INIT_AUDIO);
@@ -141,6 +190,22 @@ void Audio_UnlockDevice(void)
         return;
     }
     SDL_UnlockAudioDevice(g_AudioDeviceID);
+}
+
+void Audio_WorkerLock(void)
+{
+    if (m_WorkerMutex == nullptr) {
+        return;
+    }
+    SDL_LockMutex(m_WorkerMutex);
+}
+
+void Audio_WorkerUnlock(void)
+{
+    if (m_WorkerMutex == nullptr) {
+        return;
+    }
+    SDL_UnlockMutex(m_WorkerMutex);
 }
 
 void Audio_SetReverbType(const uint8_t reverb_type)
