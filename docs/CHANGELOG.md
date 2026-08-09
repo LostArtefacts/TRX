@@ -136,6 +136,7 @@
 - fixed the game not running when its folder name contains characters outside the system language, such as Chinese (#573)
 - fixed music briefly restarting from its beginning when loading a save (#1265)
 - fixed the installer closing with no window and no message when the .NET runtime it needs is damaged, so it now names what to install (#1088)
+- fixed Lara incorrectly performing a controlled drop when attempting to grab a perpendicular ledge or when running off a diagonal ledge (regression from TR1X 4.14 / TR2X 1.4)
 
 **TR1**
 - added pickup aids to the scions in Tomb of Qualopec and Sanctuary of the Scion
