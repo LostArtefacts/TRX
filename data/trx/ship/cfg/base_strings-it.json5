@@ -1480,6 +1480,10 @@
             "title": "Sincronizzazione verticale",
             "description": "Attiva o disattiva la sincronizzazione verticale.",
         },
+        "rendering.fmv_filter": {
+            "title": "\\{review}Filtro FMV",
+            "description": "\\{review}Passa tra un aspetto morbido e uno pixelato per gli FMV.",
+        },
         "rendering.fps": {
             "title": "FPS",
             "description": "Imposta i fotogrammi al secondo.",

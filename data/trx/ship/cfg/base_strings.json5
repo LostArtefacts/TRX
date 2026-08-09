@@ -1480,6 +1480,10 @@
             "title": "VSync",
             "description": "Turns V-Sync on or off.",
         },
+        "rendering.fmv_filter": {
+            "title": "FMV filter",
+            "description": "Switches between a smooth and a pixelated look for the FMVs.",
+        },
         "rendering.fps": {
             "title": "FPS",
             "description": "Sets game frames per second.",

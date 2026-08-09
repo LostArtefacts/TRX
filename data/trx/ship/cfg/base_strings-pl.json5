@@ -1480,6 +1480,10 @@
             "title": "Synchronizacja pionowa",
             "description": "Włącza lub wyłącza synchronizację pionową.",
         },
+        "rendering.fmv_filter": {
+            "title": "\\{review}Filtr FMV",
+            "description": "\\{review}Przełącza między gładkim a pikselowym wyglądem filmów FMV.",
+        },
         "rendering.fps": {
             "title": "Klatki na sekundę",
             "description": "Ustawia liczbę klatek na sekundę w grze.",

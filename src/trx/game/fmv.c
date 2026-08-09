@@ -188,6 +188,7 @@ static void M_UploadSurface(void *const surface, void *const user_data)
     Output_Quad_SetFit(
         ctx->renderer_2d, OUTPUT_QUAD_FIT_LETTERBOX, surface_->desc.width,
         surface_->desc.height);
+    Output_Quad_SetFilter(ctx->renderer_2d, g_Config.rendering.fmv_filter);
 
     Output_SwitchViewport(VIEWPORT_GAME);
     Output_Quad_Render(ctx->renderer_2d);

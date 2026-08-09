@@ -1480,6 +1480,10 @@
             "title": "VSync",
             "description": "Active ou désactive la synchronistaion verticale.",
         },
+        "rendering.fmv_filter": {
+            "title": "\\{review}Filtre des FMV",
+            "description": "\\{review}Alterne entre un rendu lissé et un rendu pixelisé des FMV.",
+        },
         "rendering.fps": {
             "title": "FPS",
             "description": "Définit le nombre d'images par seconde du jeu.",
