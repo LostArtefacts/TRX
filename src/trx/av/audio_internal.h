@@ -29,6 +29,9 @@ void Audio_Sample_Init(void);
 void Audio_Sample_Shutdown(void);
 void Audio_Sample_Mix(float *dst_buffer, size_t len);
 
+// Decode samples that have started playing. Runs on the worker thread.
+void Audio_Sample_Pump(void);
+
 void Audio_Stream_Init(void);
 void Audio_Stream_Shutdown(void);
 void Audio_Stream_Mix(float *dst_buffer, size_t len);
