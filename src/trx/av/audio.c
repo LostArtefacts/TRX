@@ -62,6 +62,14 @@ static void M_StopWorker(void)
 static void M_MixerCallback(void *userdata, Uint8 *stream_data, int32_t len)
 {
     m_CallbackSeen = true;
+
+    // The length is the device's period rather than the size the device was
+    // opened with, and changes when the system output is switched.
+    if ((size_t)len > m_MixBufferCapacity) {
+        m_MixBuffer = Memory_Realloc(m_MixBuffer, len);
+        m_MixBufferCapacity = len;
+    }
+
     memset(m_MixBuffer, m_Silence, len);
     Audio_Sample_Mix(m_MixBuffer, len);
     Audio_Reverb_Process(m_MixBuffer, len);
