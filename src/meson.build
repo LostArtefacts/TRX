@@ -218,6 +218,7 @@ dependencies = [
 
 common_sources = [
   'trx/av/audio.c',
+  'trx/av/audio_decoder.c',
   'trx/av/audio_reverb.c',
   'trx/av/audio_sample.c',
   'trx/av/audio_stream.c',
