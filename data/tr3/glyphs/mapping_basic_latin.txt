@@ -81,6 +81,9 @@ U+0028:( 0 T render("Timesbd.ttf")
 U+0029:) 0 T render("Timesbd.ttf")
 U+002A:* 0 T render("Timesbd.ttf")
 U+002B:+ 0 T render("Timesbd.ttf", index=72)
+# A copy of U+002B raised onto the vertical center of the key icons, for
+# joining the keys of an input combination.
+"\\{icon plus}" 0 I render("Timesbd.ttf", text="+", index=794) translate(y=-1)
 U+002C:, 0 T render("Timesbd.ttf", index=63)
 U+002D:- 0 T render("Timesbd.ttf", index=71, offset_y=-2)
 U+002E:. 0 T render("Timesbd.ttf", index=62)

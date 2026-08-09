@@ -9,6 +9,10 @@
 #define INPUT_COMBO_MAX_KEYS 3
 #define INPUT_BINDING_SLOTS 2
 
+// Glyph joining the keys of a combination in the name returned by
+// Input_GetKeyName. Unlike the plain "+", it is centered on the key icons.
+#define INPUT_COMBO_SEPARATOR "\\{icon plus}"
+
 #define INPUT_STATE_ANY_WORDS ((INPUT_ROLE_NUMBER_OF + 63) / 64)
 
 typedef union {
