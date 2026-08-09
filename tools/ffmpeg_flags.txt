@@ -1,4 +1,5 @@
 --enable-gpl
+--enable-librubberband
 --enable-decoder=pcx
 --enable-decoder=png
 --enable-decoder=gif
