@@ -386,6 +386,9 @@ REGISTER_UI_SETTING_HANDLER(
         .key = "rendering.upscaling_filter", .enum_order = m_TextureFilterOrder)
 
 REGISTER_UI_SETTING_HANDLER(
+        .key = "rendering.fmv_filter", .enum_order = m_TextureFilterOrder)
+
+REGISTER_UI_SETTING_HANDLER(
         .key = "gameplay.ally_hostility_policy",
         .enum_order = m_AllyHostilityPolicyOrder)
 

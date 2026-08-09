@@ -1480,6 +1480,10 @@
             "title": "V-Sionc",
             "description": "Tionndaidheas sioncronachadh-inghearach air neo dheth.",
         },
+        "rendering.fmv_filter": {
+            "title": "\\{review}Criathradh nam videothan",
+            "description": "\\{review}Cuiridh seo atharrachadh eadar coltas rèidh agus piogsailte air na videothan.",
+        },
         "rendering.fps": {
             "title": "FPS",
             "description": "Suidhichidh an àireamh de frèamaichean a chluicheas gach diog 's a' gheama.",

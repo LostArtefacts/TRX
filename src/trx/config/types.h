@@ -328,6 +328,7 @@ typedef struct {
         TEXTURE_FILTER ui_filter;
         TEXTURE_FILTER texture_filter;
         TEXTURE_FILTER upscaling_filter;
+        TEXTURE_FILTER fmv_filter;
         bool enable_vertex_snap;
         bool enable_dithering;
         bool enable_wireframe;
