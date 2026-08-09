@@ -5,6 +5,7 @@
 #include <trx/core/utils.h>
 #include <trx/debug.h>
 #include <trx/game/camera.h>
+#include <trx/game/clock.h>
 #include <trx/game/collision.h>
 #include <trx/game/const.h>
 #include <trx/game/effects.h>
@@ -382,6 +383,7 @@ void Cutscene_End(void)
 GF_COMMAND Cutscene_Control(void)
 {
     Interpolation_Remember();
+    Music_SetSpeed(Clock_GetSpeedMultiplier());
     Music_SyncTimestamp(Camera_GetCineData()->frame_idx / (double)LOGIC_FPS);
 
     Input_Update();

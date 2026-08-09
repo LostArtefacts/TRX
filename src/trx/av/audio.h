@@ -30,6 +30,10 @@ int32_t Audio_Stream_CreateFromMemory(uint8_t *data, size_t size);
 bool Audio_Stream_Close(int32_t sound_id);
 bool Audio_Stream_IsLooped(int32_t sound_id);
 bool Audio_Stream_SetVolume(int32_t sound_id, float volume);
+
+// Play the stream faster or slower, pitching it with the rate the way a tape
+// does. Timestamps stay in the source timeline.
+bool Audio_Stream_SetSpeed(int32_t sound_id, double speed);
 bool Audio_Stream_SetIsLooped(int32_t sound_id, bool is_looped);
 
 // Sync the audio against specific timestamp (seek if the drift is too large).

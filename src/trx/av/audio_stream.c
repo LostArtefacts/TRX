@@ -35,6 +35,7 @@ typedef struct {
     bool is_read_done;
     bool is_looped;
     float volume;
+    double speed;
     double duration;
     double decode_timestamp;
     int64_t played_samples;
@@ -132,7 +133,8 @@ static void M_ResetPlaybackState(
 
     const double clamped = MAX(0.0, relative_timestamp);
     Audio_LockDevice();
-    stream->played_samples = (int64_t)(clamped * (double)AUDIO_WORKING_RATE);
+    stream->played_samples =
+        (int64_t)(clamped * (double)AUDIO_WORKING_RATE / stream->speed);
     Audio_UnlockDevice();
 }
 
@@ -221,6 +223,7 @@ static void M_Clear(AUDIO_STREAM_SOUND *const stream)
     stream->is_read_done = true;
     stream->is_looped = false;
     stream->volume = 0.0f;
+    stream->speed = 1.0;
     stream->duration = 0.0;
     stream->decode_timestamp = 0.0;
     stream->played_samples = 0;
@@ -274,6 +277,7 @@ static bool M_Initialise(
     stream->is_read_done = false;
     stream->is_looped = false;
     stream->volume = 1.0f;
+    stream->speed = 1.0;
     stream->decode_timestamp = 0.0;
     stream->played_samples = 0;
     stream->finish_callback = nullptr;
@@ -473,6 +477,25 @@ bool Audio_Stream_SetVolume(const int32_t sound_id, const float volume)
     return true;
 }
 
+bool Audio_Stream_SetSpeed(const int32_t sound_id, const double speed)
+{
+    if (!M_IsValidID(sound_id) || speed <= 0.0) {
+        return false;
+    }
+
+    Audio_WorkerLock();
+    AUDIO_STREAM_SOUND *const stream = &m_Streams[sound_id];
+    bool result = false;
+    if (stream->is_used) {
+        result = AudioDecoder_SetSpeed(stream->decoder, speed);
+        // a rate the decoder cannot reach leaves it playing at its own
+        stream->speed = result ? speed : 1.0;
+    }
+    Audio_WorkerUnlock();
+
+    return result;
+}
+
 bool Audio_Stream_IsLooped(const int32_t sound_id)
 {
     if (!M_IsValidID(sound_id)) {
@@ -544,7 +567,8 @@ double Audio_Stream_GetTimestamp(const int32_t sound_id)
 
     if (stream->duration > 0.0) {
         Audio_LockDevice();
-        timestamp = (double)stream->played_samples / (double)AUDIO_WORKING_RATE;
+        timestamp = (double)stream->played_samples * stream->speed
+            / (double)AUDIO_WORKING_RATE;
         Audio_UnlockDevice();
     }
 
