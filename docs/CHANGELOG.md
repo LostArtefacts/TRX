@@ -144,6 +144,7 @@
 - fixed Lara's braid floating or being aligned to the water height when vaulting out of wading depth water (#5900)
 - fixed static meshes in Obelisk of Khamoon and Sanctuary of the Scion interfering with animated interaction pickups
 - fixed the lever sound playing twice in Natla's Mines, Atlantis, Atlantean Stronghold and The Hive (OG bug) (#4371)
+- fixed the Scion that Pierre drops in Tomb of Tihocan being embedded in the floor when 3D pickups are disabled
 
 **TR2**
 - changed weather to be affected by the breeze
