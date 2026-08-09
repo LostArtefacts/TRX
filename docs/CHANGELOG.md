@@ -1,344 +1,404 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.9.3...develop) - ××××-××-××
-- added the TR4 main menu playing the title level behind it, alternating its flybys with the cutscenes their triggers start, as in the original game
-- added partial support for TR4's in-game cutscenes
-- added TR4 camera mode, which is similar to TR3 but more responsive to Lara's actions such as picking up items
-- added the ability to paste commands in the developer console (with Ctrl+V)
-- added autocompletion to the developer console (with Tab and Shift+Tab to cycle the matches)
-- added a `/dry` console command, to dry Lara off after a swim
-- added a `/rule` console command, to inspect and change the numbers the game plays by, such as how quickly the cold gets to Lara
-- added a `/disco` console command, which sends colored lights spinning around Lara
-- added an option for the wobbly geometry of the PlayStation releases (Graphic Options → Rendering → Vertex snapping)
-- added an option to reduce the picture to 8-bit color with a dither pattern, for the look of the software-rendered releases (Graphic Options → Rendering → Dithering)
-- added a water color preset, offering the underwater tint each release shipped with, per level where the PlayStation ones varied it; picking one holds the water color below it, and Custom gives the player's own back (Graphic Options → Visuals → Water color preset) (#1619)
-- added the ability to clear the gym's best times, by holding the key shown below them
-- added an option to turn off controller support, for players who remap their controller with external software (Gameplay → Controls → Controller support)
-- added internal collision to lifts when they are moving, so that Lara cannot exit through the meshes
-- added an option for Lara to collect stacked pickups individually, as per OG TR4 (Gameplay → Controls → Multiple pickups)
-- added support for Lara to use animated interactions for the following:
+
+**Lara's movement**
+- Added the ability for Lara to turn on the spot by pressing walk and roll (Gameplay → Controls → Alternative turns) (#5756)
+- Added the ability for Lara to turn on the spot on monkeybars by pressing roll (Gameplay → Controls → Alternative turns)
+- Improved state change handling when shimmying is requested while in the slow swing-in state on thin ledges (#5161)
+- Fixed Lara attempting to pull up into gaps that would not allow her to stand, resulting in her being pushed out (#5891)
+- Fixed Lara being teleported into the ceiling if a door shuts on the ledge she is climbing onto (Gameplay → Fixes → Wall glitch mode) (#6047)
+- Fixed differing ladder/hanging behavior when Lara comes to a stop from shimmying when corner shimmying is enabled (regression from 1.9)
+- Fixed Lara getting stuck on ropes if she enters the fly cheat while still using one (regression from 1.9)
+- Fixed a shaky start to the QWOP animation if the option to fix the step glitch is enabled (regression from TR2X 0.8)
+- Fixed Lara incorrectly performing a controlled drop when attempting to grab a perpendicular ledge or when running off a diagonal ledge (regression from TR1X 4.14 / TR2X 1.4)
+
+**Controls**
+- Added an option to turn off controller support, for players who remap their controller with external software (Gameplay → Controls → Controller support)
+- Added a bindable hotkey for using the binoculars
+- Added bindable keys for fast forward and slow motion that last only while held, which start out unbound and leave the turbo key as it was (#2699)
+- Added the ability to rebind switching between fullscreen and windowed mode, which stays Alt+Enter unless changed (#2251)
+- Changed a multi-key shortcut to answer only to the side of Ctrl, Shift or Alt it was bound to, where a shortcut of a single key still takes either
+- Changed the Target change option to allow selecting TR4 behavior, where tapping Look switches target and holding it looks around (Gameplay → Controls → Target change)
+- Fixed touch controls not turning themselves on the first time the game is launched on a device that has a touchscreen
+
+**Camera and binoculars**
+- Added TR4 camera mode, which is similar to TR3 but more responsive to Lara's actions such as picking up items
+- Changed Lara to say "No" when attempting to use the binoculars when it is not possible to do so
+- Fixed a crash when advancing through a flyby sequence in photo mode and the sequence reaches its end (regression from 1.9)
+- Fixed the camera snapping aggressively to Lara after some flyby sequences (regression from 1.9)
+- Fixed flyby sequences set to loop playing only once, then swinging the camera back to Lara
+- Fixed a brief field of view flicker when exiting photo mode during Lara's special animations, such as turning to gold (regression from 1.5)
+- Fixed the black surround of the binoculars turning grey when looking in certain directions (regression from 1.9)
+
+**Inventory and pickups**
+- Added an option for Lara to collect stacked pickups individually, as per OG TR4 (Gameplay → Controls → Multiple pickups)
+- Added support for Lara to use animated interactions for the following:
   - picking up thrown flares
   - grabbing zipline handles
   - using detonators
   - using gongs
   - elevated scion pickups (i.e. Tomb of Qualopec/Sanctuary of the Scion)
-- added a `damage` property to the `O_POWER_SAW` object
-- added a bindable hotkey for using the binoculars
-- added bindable keys for fast forward and slow motion that last only while held, which start out unbound and leave the turbo key as it was (#2699)
-- added the ability to rebind switching between fullscreen and windowed mode, which stays Alt+Enter unless changed (#2251)
-- added the ability to change how heavily the rain or snow falls, from Lua and with the `/weather` console command (#6080)
-- added an option for a ring to open on the entry it was left on, rather than on its first one, for the item ring or for the keys ring as well (Gameplay → General → Remember inventory position) (#3273)
-- added an option for the draw weapon key to pick a weapon Lara can use underwater, such as the harpoon gun (Gameplay → Controls → Underwater weapon draw) (#4119)
-- added `show_pickup_aid`, `rotation` and `glow_color` properties for all pickup types
-- added a brightness option for background images and patterns, so that brightening the UI leaves them alone (Graphic Options → Rendering → Background brightness) (#6074)
-- added an option to keep the music playing when Lara dies (Sound Options → Misc → Play music after death) (#4221)
-- added the ability for Lara to turn on the spot by pressing walk and roll (Gameplay → Controls → Alternative turns) (#5756)
-- added the ability for Lara to turn on the spot on monkeybars by pressing roll (Gameplay → Controls → Alternative turns)
-- added the language being taken from the operating system on the first launch, where the game ships it (#4460)
-- added the glow around gun flashes to enemies firing, where Lara's weapons alone had it (#6127)
-- improved error messages related to bad command invocations
-- improved state change handling when shimmying is requested while in the slow swing-in state on thin ledges (#5161)
-- improved the option descriptions, which now say which original game a setting matches, give the fog distances the originals used, and show the key each cheat is bound to (#4027)
-- changed a multi-key shortcut to answer only to the side of Ctrl, Shift or Alt it was bound to, where a shortcut of a single key still takes either
-- changed the brightness options to be given as percentages, as the volume options are
-- changed the game mode selection option so that Never starts every new game as a regular one (Gameplay → General → Game mode selection)
-- changed reflections UV mapping to be more correct
-- changed object properties to take effect as soon as they change, rather than only when the item is first set up
-- changed outfits to support joints, up to two braids per outfit, and to allow positional offset adjustments for equipment meshes; refer to migration notes
-- changed New Game+ in TR1 so that flares Lara has collected are kept between levels rather than taken away at the start of each one
-- changed engine-specific music trigger behavior by defining rules settable in Lua; refer to documentation
-- changed where an item a defeated enemy carried lands, and which way it faces, by defining rules settable in Lua; refer to documentation (#5883)
-- added an `ammo.infinite` key to `weapons.json5`, saying which weapons and flares never run out; a game that takes it away from the pistols makes their clips worth collecting
-- changed the ammunition keys in `weapons.json5` to say what they count; refer to migration notes
-- changed boxes of ammunition in the inventory to always show what Lara is really carrying, where finishing a level could round them down
-- changed the gameflow's `main_menu_picture` to be optional: a game that names no picture shows its title level behind the menu, and its title script says what plays there
-- changed the `/music` console command to list the available tracks when given no argument, as `/sfx` does; `/music status` now reports what is playing
-- changed the large medipack to answer to "big medipack" as well, so `/give big medi` reaches it
-- changed the `/secret` console command to take a secret number on its own, to offer the numbers it can act on in autocompletion, and to say what it expected when given something else
-- changed the `/give` console command to autocomplete what it can hand over and to reach the savegame crystal by name; `/give keys` now covers the plot items alone, and `/keys`, `/guns` and `/moreguns` are commands of their own
-- changed the `/spawn`, `/kill` and `/tp` console commands to accept a family such as `pickup`, `door` or `enemy` in place of a name, and to offer the families each of them can act on in autocompletion
-- changed the `/tp` console command to place Lara better at what she is sent to
-- changed the developer console to accept the numpad Enter key for issuing commands (#6056)
-- changed the Breeze option to allow selecting TR2 or TR3 behavior (Graphic Options → Visuals → Breeze)
-- changed the presets to be listed by name rather than in the order they were found (Gameplay → Presets)
-- changed the save crystals option to a mode: crystals can save on the spot, be collected to save from the inventory as on PS1 TR3, heal, or be collectibles (Gameplay → General → Crystal mode) (#5939)
-- changed the Target change option to allow selecting TR4 behavior, where tapping Look switches target and holding it looks around (Gameplay → Controls → Target change)
-- changed lift collision to force Lara out of her climbing and vaulting animations if one collides with her (#5899, #5911)
-- changed lift collision to be optional (Gameplay → Fixes → Fix lift collision)
-- changed skidoo and quad bike crashes to not kill Lara when she is immune
-- changed Lara to say "No" when attempting to use the binoculars when it is not possible to do so
-- changed the installer to explain when it cannot download the files it needs, and to offer to try again (#6052)
-- changed `O_SCION_ITEM_1` handling to use a pickup mode of `PLINTH_SCION`; refer to migration guide
-- removed the carrying over of legacy settings from TRX 1.4 and older; a small number of settings from files that old may revert to defaults
-- removed the Japanese NG and Japanese NG+ game modes; a Japanese NG save continues as a regular game, and a Japanese NG+ save as New Game+; refer to migration notes
-- fixed the sun's glare staying on screen in cutscenes once the camera has looked away from it
-- fixed exploding deaths in TR4 showing no flames or explosions
-- fixed Lara's shadow in TR4 being darker than in the original game
-- fixed Lara's arm swinging while she runs or crouches with a flare in TR4
-- fixed some console commands being able to target unintended items
-- fixed the `/spawn` and `/kill` console commands not reaching army Winston
-- fixed the `/teatime` console command summoning army Winston rather than Winston himself
-- fixed console commands treating an item that has been removed from the level as though it were still alive
-- fixed the `/trigger` and `/untrigger` console commands crashing or doing nothing on some objects, so they now act on any item exactly as a level trigger would
-- fixed the `/trigger`, `/untrigger` and `/kill` console commands being usable in demos and cutscenes
-- fixed long messages in the developer console running past the right edge of the screen by 1 character
-- fixed being unable to drop to the secret ledge in Jungle room 76 from the ledge above (#5818)
-- fixed a crash when drawing an animating object that has no frame data (#5869)
-- fixed a crash in custom levels when an armed enemy turned ally shoots the last remaining enemy (#5973)
-- fixed the glow around gun and flare flashes lagging behind them (#5920)
-- fixed trains using extreme tilt angles when they come to a stop at a wall (#5886)
-- fixed Lara attempting to climb ladders from inside lifts (#5890)
-- fixed Lara not getting killed by lifts if standing on top of one and the ceiling space becomes too low
-- fixed Lara attempting to pull up into gaps that would not allow her to stand, resulting in her being pushed out (#5891)
-- fixed Lara being teleported into the ceiling if a door shuts on the ledge she is climbing onto (Gameplay → Fixes → Wall glitch mode) (#6047)
-- fixed Lara being able to light a free/ghost flare by selecting one from the inventory while crawling (Gameplay → Fixes → Fix free flare glitch)
-- fixed Lara leaving ripples on ceilings that lie below the waterline (regression from 1.1)
-- fixed shoals of fish and piranhas jumping back to their starting spot when loading a save
-- fixed flying enemies chasing Lara up into ceilings and back out of solid rock, most visible with the wasps in Lost City of Tinnos (#5563, OG bug)
-- fixed rain and snow starting over when a save is loaded (#5901)
-- fixed Bacon Lara flickering if she dies in a room different to where she fell from
-- fixed Bacon Lara remaining targetable after death
-- fixed Bacon Lara dying prematurely in some geometry setups
-- fixed Bacon Lara mimicking some of Lara's movements, such as looking or using weapons, before being triggered
-- fixed jittery interpolation on Bacon Lara when falling from great heights
-- fixed the detonator box returning to its original position after loading a save (OG bug)
-- fixed Lara's arms dropping for a moment when she changes target and there is nothing else to switch to
-- fixed crawler mutants killed by Lara's allies not being included in the stats when the option to include ally kills is enabled (#5691, regression from 1.7)
-- fixed Lara receiving twice the number of flares if given via the game flow (regression from 1.9)
-- fixed a crash when advancing through a flyby sequence in photo mode and the sequence reaches its end (regression from 1.9)
-- fixed the camera snapping aggressively to Lara after some flyby sequences (regression from 1.9)
-- fixed flyby sequences set to loop playing only once, then swinging the camera back to Lara
-- fixed a brief field of view flicker when exiting photo mode during Lara's special animations, such as turning to gold (regression from 1.5)
-- fixed mesh debug spheres not rendering after switching mods (regression from 1.5)
-- fixed the title screen starting on the wrong item after switching mods, such as the home photo in place of the passport (regression from 1.5)
-- fixed the demos not starting from the first one after switching mods (regression from 1.5)
-- fixed differing ladder/hanging behavior when Lara comes to a stop from shimmying when corner shimmying is enabled (regression from 1.9)
-- fixed quick saves bypassing the save crystals mode
-- fixed the game displaying a GUI error dialog when it fails to start in headless mode
-- fixed the mixed mod layout error message running off the edge of the screen, leaving the paths it names unreadable (#6048)
-- fixed the body bag trigger to also collect Bacon Lara, Qualopec Mummy and Skidoo Driver's corpses
-- fixed settings text running off both sides of the screen in the longer languages, most visibly at 4:3 (#6000)
-- fixed the list of settings a preset would change spilling outside its dialog, and its text now wraps (#6000)
-- fixed RX Worker 3 in custom levels always looking at Lara when setup with patrol objects, and not properly detecting when she comes into range
-- fixed Lara getting stuck on ropes if she enters the fly cheat while still using one (regression from 1.9)
-- fixed the inventory hint for using an item showing Enter rather than the key bound to Action (regression from 1.8.1)
-- fixed the black surround of the binoculars turning grey when looking in certain directions (regression from 1.9)
-- fixed a new game, or a level started from Play Any Level, running in the game mode the previous game was started in
-- fixed a shaky start to the QWOP animation if the option to fix the step glitch is enabled (regression from TR2X 0.8)
-- fixed Lara being able to collect plinth pickups while ducked (regression from 1.9)
-- fixed Lara being able to collect normal and plinth pickups at the same time if they share a common position (regression from 1.9)
-- fixed Lara moving too quickly towards targets when animated interactions are enabled, which could result in sliding in some cases during long transitions, or not being able to interact with the target at all (regression from Tomb1Main 2.7)
-- fixed Lara being unable to collect some pickups that are very close to edges with a drop when animated interactions are enabled (regression from Tomb1Main 2.7)
-- fixed changing the number of save or quick save slots mid-game discarding the progress of the levels played so far (#6054)
-- fixed Lara repeating a pickup animation if jump and roll are held during the pickup (regression from TR1X 4.14 / TR2X 1.4)
-- fixed not being able to perform the item duplication glitch (regression from 1.2)
-- fixed settings belonging to another game being dropped from the settings file
-- fixed touch controls not turning themselves on the first time the game is launched on a device that has a touchscreen
-- fixed the alternative ammunition pickups, such as the second kind of shotgun ammunition, going into the inventory without loading the weapon
-- fixed Lara being able to pull out flares while crawling after picking up an item, and dropping flares when using the draw input to enter crouch state (regression from 1.3)
-- fixed the game not running when its folder name contains characters outside the system language, such as Chinese (#573)
-- fixed music briefly restarting from its beginning when loading a save (#1265)
-- fixed the installer closing with no window and no message when the .NET runtime it needs is damaged, so it now names what to install (#1088)
-- fixed Lara incorrectly performing a controlled drop when attempting to grab a perpendicular ledge or when running off a diagonal ledge (regression from TR1X 4.14 / TR2X 1.4)
+- Added an option for a ring to open on the entry it was left on, rather than on its first one, for the item ring or for the keys ring as well (Gameplay → General → Remember inventory position) (#3273)
+- Changed boxes of ammunition in the inventory to always show what Lara is really carrying, where finishing a level could round them down
+- Fixed Lara being able to light a free/ghost flare by selecting one from the inventory while crawling (Gameplay → Fixes → Fix free flare glitch)
+- Fixed Lara receiving twice the number of flares if given via the game flow (regression from 1.9)
+- Fixed the inventory hint for using an item showing Enter rather than the key bound to Action (regression from 1.8.1)
+- Fixed Lara being able to collect plinth pickups while ducked (regression from 1.9)
+- Fixed Lara being able to collect normal and plinth pickups at the same time if they share a common position (regression from 1.9)
+- Fixed Lara moving too quickly towards targets when animated interactions are enabled, which could result in sliding in some cases during long transitions, or not being able to interact with the target at all (regression from Tomb1Main 2.7)
+- Fixed Lara being unable to collect some pickups that are very close to edges with a drop when animated interactions are enabled (regression from Tomb1Main 2.7)
+- Fixed Lara repeating a pickup animation if jump and roll are held during the pickup (regression from TR1X 4.14 / TR2X 1.4)
+- Fixed not being able to perform the item duplication glitch (regression from 1.2)
+- Fixed Lara being able to pull out flares while crawling after picking up an item, and dropping flares when using the draw input to enter crouch state (regression from 1.3)
+
+**Weapons and ammunition**
+- Added an option for the draw weapon key to pick a weapon Lara can use underwater, such as the harpoon gun (Gameplay → Controls → Underwater weapon draw) (#4119)
+- Added an `ammo.infinite` key to `weapons.json5`, saying which weapons and flares never run out (#176)
+- Changed the ammunition keys in `weapons.json5` to say what they count; refer to migration notes
+- Fixed Lara's arms dropping for a moment when she changes target and there is nothing else to switch to
+- Fixed the alternative ammunition pickups, such as the second kind of shotgun ammunition, going into the inventory without loading the weapon
+
+**Enemies**
+- Fixed a crash in custom levels when an armed enemy turned ally shoots the last remaining enemy (#5973)
+- Fixed shoals of fish and piranhas jumping back to their starting spot when loading a save
+- Fixed flying enemies chasing Lara up into ceilings and back out of solid rock, most visible with the wasps in Lost City of Tinnos (#5563, OG bug)
+- Fixed Bacon Lara flickering if she dies in a room different to where she fell from
+- Fixed Bacon Lara remaining targetable after death
+- Fixed Bacon Lara dying prematurely in some geometry setups
+- Fixed Bacon Lara mimicking some of Lara's movements, such as looking or using weapons, before being triggered
+- Fixed jittery interpolation on Bacon Lara when falling from great heights
+- Fixed crawler mutants killed by Lara's allies not being included in the stats when the option to include ally kills is enabled (#5691, regression from 1.7)
+- Fixed the body bag trigger to also collect Bacon Lara, Qualopec Mummy and Skidoo Driver's corpses
+- Fixed RX Worker 3 in custom levels always looking at Lara when setup with patrol objects, and not properly detecting when she comes into range
+
+**Lifts, vehicles and machinery**
+- Added internal collision to lifts when they are moving, so that Lara cannot exit through the meshes
+- Changed lift collision to force Lara out of her climbing and vaulting animations if one collides with her (#5899, #5911)
+- Changed lift collision to be optional (Gameplay → Fixes → Fix lift collision)
+- Changed skidoo and quad bike crashes to not kill Lara when she is immune
+- Fixed trains using extreme tilt angles when they come to a stop at a wall (#5886)
+- Fixed Lara attempting to climb ladders from inside lifts (#5890)
+- Fixed Lara not getting killed by lifts if standing on top of one and the ceiling space becomes too low
+- Fixed the detonator box returning to its original position after loading a save (OG bug)
+
+**Weather and effects**
+- Added the ability to change how heavily the rain or snow falls, from Lua and with the `/weather` console command (#6080)
+- Added the glow around gun flashes to enemies firing, where Lara's weapons alone had it (#6127)
+- Changed the Breeze option to allow selecting TR2 or TR3 behavior (Graphic Options → Visuals → Breeze)
+- Fixed the sun's glare staying on screen in cutscenes once the camera has looked away from it
+- Fixed the glow around gun and flare flashes lagging behind them (#5920)
+- Fixed Lara leaving ripples on ceilings that lie below the waterline (regression from 1.1)
+- Fixed rain and snow starting over when a save is loaded (#5901)
+
+**Rendering**
+- Added an option for the wobbly geometry of the PlayStation releases (Graphic Options → Rendering → Vertex snapping)
+- Added an option to reduce the picture to 8-bit color with a dither pattern, for the look of the software-rendered releases (Graphic Options → Rendering → Dithering)
+- Added a water color preset, offering the underwater tint each release shipped with, per level where the PlayStation ones varied it; picking one holds the water color below it, and Custom gives the player's own back (Graphic Options → Visuals → Water color preset) (#1619)
+- Added a brightness option for background images and patterns, so that brightening the UI leaves them alone (Graphic Options → Rendering → Background brightness) (#6074)
+- Changed the brightness options to be given as percentages, as the volume options are
+- Changed reflections UV mapping to be more correct
+- Fixed a crash when drawing an animating object that has no frame data (#5869)
+
+**Music and sound**
+- Added an option to keep the music playing when Lara dies (Sound Options → Misc → Play music after death) (#4221)
+- Fixed music briefly restarting from its beginning when loading a save (#1265)
+
+**Options and menus**
+- Added the language being taken from the operating system on the first launch, where the game ships it (#4460)
+- Improved the option descriptions, which now say which original game a setting matches, give the fog distances the originals used, and show the key each cheat is bound to (#4027)
+- Changed the Neutral twists option to Alternative turns, which now turns Lara on the spot and on monkeybars as well as twisting her in the air (Gameplay → Controls → Alternative turns)
+- Changed the presets to be listed by name rather than in the order they were found (Gameplay → Presets)
+- Fixed settings text running off both sides of the screen in the longer languages, most visibly at 4:3 (#6000)
+- Fixed the list of settings a preset would change spilling outside its dialog, and its text now wraps (#6000)
+
+**Saves and settings**
+- Changed the save crystals option to a mode: crystals can save on the spot, be collected to save from the inventory as on PS1 TR3, heal, or be collectibles (Gameplay → General → Crystal mode) (#5939, #5940)
+- Removed the carrying over of legacy settings from TRX 1.4 and older; a small number of settings from files that old may revert to defaults
+- Fixed quick saves bypassing the save crystals mode
+- Fixed changing the number of save or quick save slots mid-game discarding the progress of the levels played so far (#6054)
+- Fixed settings belonging to another game being dropped from the settings file
+
+**Game modes**
+- Added the ability to clear the gym's best times, by holding the key shown below them
+- Changed the game mode selection option so that Never starts every new game as a regular one (Gameplay → General → Game mode selection)
+- Removed the Japanese NG and Japanese NG+ game modes; a Japanese NG save continues as a regular game, and a Japanese NG+ save as New Game+; refer to migration notes
+- Fixed a new game, or a level started from Play Any Level, running in the game mode the previous game was started in
+
+**Developer console**
+- Added the ability to paste commands in the developer console (with Ctrl+V)
+- Added autocompletion to the developer console (with Tab and Shift+Tab to cycle the matches)
+- Added a `/dry` console command, to dry Lara off after a swim
+- Added a `/rule` console command, to inspect and change the numbers the game plays by, such as how quickly the cold gets to Lara
+- Added a `/disco` console command, which sends colored lights spinning around Lara
+- Improved error messages related to bad command invocations
+- Changed the `/music` console command to list the available tracks when given no argument, as `/sfx` does; `/music status` now reports what is playing
+- Changed the large medipack to answer to "big medipack" as well, so `/give big medi` reaches it
+- Changed the `/secret` console command to take a secret number on its own, to offer the numbers it can act on in autocompletion, and to say what it expected when given something else
+- Changed the `/give` console command to autocomplete what it can hand over and to reach the savegame crystal by name; `/give keys` now covers the plot items alone, and `/keys`, `/guns` and `/moreguns` are commands of their own
+- Changed the `/spawn`, `/kill` and `/tp` console commands to accept a family such as `pickup`, `door` or `enemy` in place of a name, and to offer the families each of them can act on in autocompletion
+- Changed the `/tp` console command to place Lara better at what she is sent to
+- Changed the developer console to accept the numpad Enter key for issuing commands (#6056)
+- Fixed some console commands being able to target unintended items
+- Fixed the `/spawn` and `/kill` console commands not reaching army Winston
+- Fixed the `/teatime` console command summoning army Winston rather than Winston himself
+- Fixed console commands treating an item that has been removed from the level as though it were still alive
+- Fixed the `/trigger` and `/untrigger` console commands crashing or doing nothing on some objects, so they now act on any item exactly as a level trigger would
+- Fixed the `/trigger`, `/untrigger` and `/kill` console commands being usable in demos and cutscenes
+- Fixed long messages in the developer console running past the right edge of the screen by 1 character
+
+**Installer and mods**
+- Changed the installer to explain when it cannot download the files it needs, and to offer to try again (#6052)
+- Fixed mesh debug spheres not rendering after switching mods (regression from 1.5)
+- Fixed the title screen starting on the wrong item after switching mods, such as the home photo in place of the passport (regression from 1.5)
+- Fixed the demos not starting from the first one after switching mods (regression from 1.5)
+- Fixed the game displaying a GUI error dialog when it fails to start in headless mode
+- Fixed the mixed mod layout error message running off the edge of the screen, leaving the paths it names unreadable (#6048)
+- Fixed the game not running when its folder name contains characters outside the system language, such as Chinese (#573)
+- Fixed the installer closing with no window and no message when the .NET runtime it needs is damaged, so it now names what to install (#1088)
+
+**Level and game data**
+- Added a `damage` property to the `O_POWER_SAW` object
+- Added `show_pickup_aid`, `rotation` and `glow_color` properties for all pickup types
+- Changed object properties to take effect as soon as they change, rather than only when the item is first set up
+- Changed outfits to support joints, up to two braids per outfit, and to allow positional offset adjustments for equipment meshes; refer to migration notes
+- Changed engine-specific music trigger behavior by defining rules settable in Lua; refer to documentation
+- Changed where an item a defeated enemy carried lands, and which way it faces, by defining rules settable in Lua; refer to documentation (#5883)
+- Changed the gameflow's `main_menu_picture` to be optional: a game that names no picture shows its title level behind the menu, and its title script says what plays there
+- Changed `O_SCION_ITEM_1` handling to use a pickup mode of `PLINTH_SCION`; refer to migration guide
 
 **TR1**
-- added pickup aids to the scions in Tomb of Qualopec and Sanctuary of the Scion
-- changed weather to be affected by the breeze
-- changed Bacon Lara's anchor room to be an optional object property rather than a game flow event; refer to migration notes
-- fixed Lara's braid floating or being aligned to the water height when vaulting out of wading depth water (#5900)
-- fixed static meshes in Obelisk of Khamoon and Sanctuary of the Scion interfering with animated interaction pickups
-- fixed the lever sound playing twice in Natla's Mines, Atlantis, Atlantean Stronghold and The Hive (OG bug) (#4371)
-- fixed the Scion that Pierre drops in Tomb of Tihocan being embedded in the floor when 3D pickups are disabled
+- Added pickup aids to the scions in Tomb of Qualopec and Sanctuary of the Scion
+- Changed New Game+ so that flares Lara has collected are kept between levels rather than taken away at the start of each one
+- Changed weather to be affected by the breeze
+- Changed Bacon Lara's anchor room to be an optional object property rather than a game flow event; refer to migration notes
+- Fixed Lara's braid floating or being aligned to the water height when vaulting out of wading depth water (#5900)
+- Fixed static meshes in Obelisk of Khamoon and Sanctuary of the Scion interfering with animated interaction pickups
+- Fixed the lever sound playing twice in Natla's Mines, Atlantis, Atlantean Stronghold and The Hive (OG bug) (#4371)
+- Fixed the Scion that Pierre drops in Tomb of Tihocan being embedded in the floor when 3D pickups are disabled
 
 **TR2**
-- changed weather to be affected by the breeze
-- fixed Lara being able to use a detonator box or a gong a second time by selecting its key in the inventory
-- fixed Lara's braid floating or being aligned to the water height when vaulting out of wading depth water (#5900)
-- fixed the Silver and Jade Dragon secrets being listed in the wrong order in the Floating Islands statistics (OG bug); saves made before this version have the two swapped
-- fixed music triggered from one-shot switches playing more than once (OG bug)
-- fixed the collapsible tiles in Wreck of the Maria Doria room 68 not triggering if Lara jumps over them, and fixed a missing trigger for barrels item 123
-- fixed the lever sound playing twice in 40 Fathoms, Wreck of the Maria Doria, Living Quarters, The Deck, Tibetan Foothills and The Cold War (OG bug) (#4371)
+- Changed weather to be affected by the breeze
+- Fixed Lara being able to use a detonator box or a gong a second time by selecting its key in the inventory
+- Fixed Lara's braid floating or being aligned to the water height when vaulting out of wading depth water (#5900)
+- Fixed the Silver and Jade Dragon secrets being listed in the wrong order in the Floating Islands statistics (OG bug); saves made before this version have the two swapped
+- Fixed music triggered from one-shot switches playing more than once (OG bug)
+- Fixed the collapsible tiles in Wreck of the Maria Doria room 68 not triggering if Lara jumps over them, and fixed a missing trigger for barrels item 123
+- Fixed the lever sound playing twice in 40 Fathoms, Wreck of the Maria Doria, Living Quarters, The Deck, Tibetan Foothills and The Cold War (OG bug) (#4371)
 
 **TR3**
-- changed the Hand of Rathmore in Reunion to not show pickup aids, in line with the other artefacts
-- removed the PS1 SFX replacements option from the Sound menu, which has no relevance in TR3/TR3LA
-- removed the hardcoded glow color and rotation speed of artefact pickups, and moved to Lua properties instead; refer to migration guide
-- fixed Willard being visible outside the hut at the beginning of the cutscene following Antarctica (resolves #5929)
-- fixed scenery that leans out of its room, such as the streetlight glow in It's a Madhouse!, flickering as the camera turns (OG bug)
-- fixed enemies and objects that reach out of their room, such as the Loch Ness monster in Highland Fling, flickering as the camera turns (OG bug)
-- fixed flame emitter 103 in Jungle not triggering when entering the temple from room 0 (#6057)
-- fixed Lara, when on fire, not extinguishing at the right water depth compared with OG (regression from 1.1)
-- fixed the waterfall and drowning mist bunching up in one spot instead of spreading out along the water (regression from 1.2)
-- fixed a crash when a level holds fewer raptors than its raptor emitters can send out
-- fixed jittery train interpolation (regression from 1.4)
-- fixed one-shot music playing more than once (#5312)
-- fixed blood spawning from sentry guns when Lara shoots them (regression from 1.5)
-- fixed the wheel switches jumping back to their starting position once Lara has finished turning them (#6055, OG bug)
+- Changed the Hand of Rathmore in Reunion to not show pickup aids, in line with the other artefacts
+- Removed the PS1 SFX replacements option from the Sound menu, which has no relevance in TR3/TR3LA
+- Removed the hardcoded glow color and rotation speed of artefact pickups, and moved to Lua properties instead; refer to migration guide
+- Fixed being unable to drop to the secret ledge in Jungle room 76 from the ledge above (#5818)
+- Fixed Willard being visible outside the hut at the beginning of the cutscene following Antarctica (resolves #5929)
+- Fixed scenery that leans out of its room, such as the streetlight glow in It's a Madhouse!, flickering as the camera turns (#6082, OG bug)
+- Fixed enemies and objects that reach out of their room, such as the Loch Ness monster in Highland Fling, flickering as the camera turns (OG bug)
+- Fixed flame emitter 103 in Jungle not triggering when entering the temple from room 0 (#6057)
+- Fixed Lara, when on fire, not extinguishing at the right water depth compared with OG (regression from 1.1)
+- Fixed the waterfall and drowning mist bunching up in one spot instead of spreading out along the water (regression from 1.2)
+- Fixed a crash when a level holds fewer raptors than its raptor emitters can send out
+- Fixed jittery train interpolation (regression from 1.4)
+- Fixed one-shot music playing more than once (#5312)
+- Fixed blood spawning from sentry guns when Lara shoots them (regression from 1.5)
+- Fixed the wheel switches jumping back to their starting position once Lara has finished turning them (#6055, OG bug)
 
 **TR4**
-- added dead enemies fading away a few seconds after they fall, as in the original TR4
-- added reflections
-- added TR4 outfits
-- added seamless body and braid joints to the TR4 outfits, as in the original TR4
-- added water droplets dripping off Lara after she leaves water (also enabled in TR3)
-- added a small splash when spent shells land on water (also enabled in TR3)
-- added fires
-- added floor switches
-- added crowbar switches
-- added jump switches
-- added pulley switches, with properties to configure the number of required pulls, and whether or not they are single use
-- added underwater ceiling switches
-- added reach/receptacle switches
-- added shove button switches
-- added support for hidden reach-in pickups
-- added support for pickups that need to be pried with the crowbar
-- added support for Sarcophagi and pickups hidden within
-- added Lara catching fire, from fires and other hazards; she stays on fire across level transitions
-- added an option to let fires and other dynamic lights illuminate static meshes (Graphic Options → Visuals → Static mesh lighting)
-- added ricochets, so that shots that hit walls and other hard surfaces throw out sparks and leave a puff of smoke
-- changed binoculars to not make Lara put her current weapon away
-- improved crouch turning for Lara to allow for more responsive transitions to crouch idle, crouch roll, and crawl idle states
-- fixed pixel sparks, such as blood and the shell splash, drawing as squares instead of the original streaks
-- fixed the camera snapping to elevation and angle changes in instances such as opening floor trapdoors
-- fixed Lara's braid and pigtails spinning around their own axis (OG bug)
-- fixed a missing texture on Young Lara's left hand
-- fixed a misaligned texture on Young Lara's hips
-- fixed the camera getting stuck when Lara traverses around corner ladders (OG bug)
-- fixed animated textures, such as water surfaces, cycling at half their original speed
-- fixed flares burning red and trailing sparks and bubbles, so they now burn green and cast only their light, as in the original TR4
-- fixed Lara being able to light a flare while crawling; she now refuses, as in the original TR4
-- fixed Lara sidestepping in the wrong direction when turning off floor/crowbar switches
-- fixed Lara attempting to interact with one-shot pulley switches
-- fixed pulley switch animations not synchronizing with Lara if she continues to pull one indefinitely
-- fixed the camera not reacting to Lara using a shove button switch (OG bug)
-- fixed Lara using the wrong animation on switch item 2 in The Sphinx Complex (OG bug)
-- fixed one of the braziers on the title screen going out for good once the menu's flybys had passed it (OG bug)
-- fixed pickups that are pried with the crowbar animating indefinitely if the game is saved and loaded during the animation (OG bug)
-- fixed Lara being able to collect Sarcophagi pickups by crouching and glitching through the surrounding casing (OG bug)
+- Added the main menu playing the title level behind it, alternating its flybys with the cutscenes their triggers start, as in the original game
+- Added partial support for in-game cutscenes
+- Added reflections, which give objects a sheen drawn from a reflection texture
+- Added fires, which burn with visible flames
+- Added Lara catching fire from fires and other hazards; she stays alight across level transitions
+- Added ricochets: a shot that hits a wall or other hard surface throws out sparks and leaves a puff of smoke
+- Added dead enemies fading away a few seconds after they fall, as in the original game
+- Added Lara's outfits, TR4 Classic and TR4 Young, each with a golden form
+- Added seamless body and braid joints to the outfits, as in the original game
+- Added water droplets dripping off Lara after she leaves water, also enabled in TR3 (Graphic Options → Visuals → Water droplets)
+- Added a small splash when spent shells land on water (also enabled in TR3)
+- Added floor switches
+- Added crowbar switches
+- Added jump switches
+- Added pulley switches, with properties for the number of pulls they need and whether they are single use
+- Added underwater ceiling switches
+- Added reach/receptacle switches
+- Added shove button switches
+- Added hidden reach-in pickups
+- Added pickups that need to be pried with the crowbar
+- Added Sarcophagi and the pickups hidden inside them
+- Added an option to let fires and other dynamic lights illuminate static meshes (Graphic Options → Visuals → Static mesh lighting)
+- Improved crouch turning, so that Lara moves into crouch idle, crouch roll and crawl idle more responsively
+- Changed binoculars to not make Lara put her current weapon away
+- Fixed pixel sparks, such as blood and the shell splash, drawing as squares instead of the original streaks
+- Fixed the camera snapping to elevation and angle changes in instances such as opening floor trapdoors
+- Fixed the camera getting stuck when Lara traverses around corner ladders (OG bug)
+- Fixed the camera not reacting to Lara using a shove button switch (OG bug)
+- Fixed Lara's braid and pigtails spinning around their own axis (OG bug)
+- Fixed Lara's shadow being darker than in the original game
+- Fixed Lara's arm swinging while she runs or crouches with a flare
+- Fixed a missing texture on Young Lara's left hand
+- Fixed a misaligned texture on Young Lara's hips
+- Fixed animated textures, such as water surfaces, cycling at half their original speed
+- Fixed exploding deaths showing no flames or explosions
+- Fixed flares burning red and trailing sparks and bubbles, so they now burn green and cast only their light, as in the original game
+- Fixed Lara being able to light a flare while crawling; she now refuses, as in the original game
+- Fixed Lara sidestepping in the wrong direction when turning off floor/crowbar switches
+- Fixed Lara attempting to interact with one-shot pulley switches
+- Fixed pulley switch animations not synchronizing with Lara if she continues to pull one indefinitely
+- Fixed Lara using the wrong animation on switch item 2 in The Sphinx Complex (OG bug)
+- Fixed one of the braziers on the title screen going out for good once the menu's flybys had passed it (OG bug)
+- Fixed pickups that are pried with the crowbar animating indefinitely if the game is saved and loaded during the animation (OG bug)
+- Fixed Lara being able to collect Sarcophagi pickups by crouching and glitching through the surrounding casing (OG bug)
 
 **Lua**
 
 The Lua integration was rewritten and existing scripts will need updating; refer to migration notes.
 
-- added `p`, a global shorthand for `trx.console.log`, and made the console log functions take any value, pretty-printing a table
-- added a new Lua module, `trx.math`, with the engine's own fixed-point trigonometry and the `DEG_1`, `DEG_45`, `DEG_90` and `WALL_L` constants
-- added `trx.math.round_to_sector()`, which snaps a position or a single coordinate back to the corner of the sector it stands in
-- added a new Lua module, `trx.strings`, with `fuzzy_match()`, `regex_match()`, `collapse_ranges()` and `dedent()`
-- added a new Lua module, `trx.json`, to write a value out as JSON
-- added a new Lua module, `trx.rules`, holding the numbers the game plays by
-- added a new Lua module, `trx.argparse`, a declarative argument parser inspired by Python's argparse
-- added a new Lua module, `trx.locale`, for the text the player reads, looked up by key
-- added a new Lua module, `trx.weather`, to read and set the runtime weather
-- added a new Lua module, `trx.mod`, to list the game's mods and read the loaded one
-- added a new Lua module, `trx.savegame`, to read the save slots and start a saved game
-- added a new Lua module, `trx.lua`, with `eval_expr()` and `eval_file()`, to evaluate Lua code at runtime
-- added a new Lua module, `trx.cutscenes`, for playing TR4's cutscenes, reading or rewriting which of them have run, and framing one, with the `on_cutscene_trigger`, `on_cutscene_start` and `on_cutscene_end` events
-- added a new Lua module, `trx.stats`, for what a level keeps count of – its secrets, pickups, kills, crystals, timer and deaths – alongside how much of each there was to find, for any level rather than only the one being played
-- added a new Lua module, `trx.fx`, with `emit_light()` and `emit_fog()`, for a light or a ball of fog put in the world for as long as a script keeps asking for it; the volumetric fog that was TR4's alone now shows in every game
-- added a new Lua module, `trx.random`, with `random()`, `randint()`, `choice()`, `choices()`, `angle()` and `chance()`; it draws from the sequence the game itself runs on, so what a script draws comes back the same after a reload
-- added `trx.config.reset()`, to put a setting back to its default
-- added `trx.config.describe()`, to read a setting's shape and accepted values
-- added `trx.config.format_value()`, the current value spelled the way the console prints it
-- added `trx.config.accepted_values()`, what a setting takes, as text for an error message
-- added `trx.config.declare()`, for a game to add settings of its own: they are saved and loaded with the player's, translated from the game's own strings, and shown in the settings menu where the declaration asks for
-- added `trx.config.on_change()`, to hear what a setting holds now and whenever it moves
-- added `trx.game.Level.key`, what a level is called after the file it loads
-- added `require()` to a game's scripts, taking a name that carries the directory it lives in: `tr1.my_module` for a script belonging to a game, `common.my_module` for one in the shared pool beside the executable
-- added new Lua game state, `trx.game.is_loaded` and `trx.game.is_playable`
-- added `trx.game.is_ngplus`, which tells whether the run started from the passport's bonus entry
-- added `trx.console.register()`, for a script to add its own console command
-- added `trx.events.on_flip_effect()`, letting a script handle a flipeffect run by a trigger or an animation command (#4108)
-- added `trx.events.on_room_change()`, which happens whenever an item changes rooms
-- added `trx.events.on_level_unload()`, which happens as the engine lets go of a level, while the world the script was written against is still there to read
-- added `room:on_enter()` and `room:on_exit()`, which happen when Lara – or, with `watch = "all"`, any item – changes rooms
-- added `trx.events.on_trigger()` and the per-item `item:on_trigger()`, to react to a trigger of any kind being aimed at an item, with the trigger's type, mask, timer and one-shot flag
-- added `trx.events.on_show()` and `trx.events.on_hide()`, with the per-item `item:on_show()` and `item:on_hide()`, which happen when an item becomes visible or hidden
-- added `trx.events.on_finish()` and the per-item `item:on_finish()`, which happen when an item finishes its run, such as a sprung trap or a thrown switch
-- added `trx.events.on_enter_sim()` and `trx.events.on_leave_sim()`, with the per-item `item:on_enter_sim()` and `item:on_leave_sim()`, which happen when an item starts or stops being simulated
-- added `trx.events.on_activate()` and `trx.events.on_deactivate()`, with the per-item `item:on_activate()` and `item:on_deactivate()`, which happen when a trigger activates or an antitrigger deactivates an item
-- added `trx.events.on_destroy()` and the per-item `item:on_destroy()`, which happen as an item is removed from the game
-- added `trx.events.on_enter_world()` and `trx.events.on_leave_world()`, with the per-item `item:on_enter_world()` and `item:on_leave_world()`, which happen when an item enters the world as a runtime spawn or leaves it
-- added `trx.events.on_hit()` and the per-item `item:on_hit()`, which happen when an item takes damage, with the amount
-- added `trx.events.on_kill()` and the per-item `item:on_kill()`, which happen when damage takes an item's hit points to zero
-- added `item:take_damage()`, which hurts an item the way a weapon does, and reports through `on_hit` and `on_kill`
-- added `trx.lara.cure_poison()` and `trx.lara.extinguish()`, to clear Lara's poison and put her out
-- added `trx.lara.dry()` and `trx.lara.is_wet`, to dry Lara off after a swim and to check whether she needs it
-- added `trx.lara.is_flying`, to read and toggle the fly-mode cheat
-- added `trx.lara.teleport()`, to move Lara to a position, as `/tp` does
-- added `trx.lara.set_mesh()` and `trx.lara.clear_mesh()`, to put another object's mesh on one of Lara's own and to take it back off, so that a level can dress her from its own geometry
-- added a new Lua module, `trx.inventory`, for reading and changing what Lara carries: it counts and walks her inventory an entry at a time, says what she holds of each weapon and how many shots she has for it, and reaches any level's own inventory the same way through `trx.game.Level.inventory`
-- added a new Lua module, `trx.weapons`, for what a weapon is rather than what Lara has of it: whether the game allows it, which pickup it is, and what a box of its ammunition is worth
-- added `trx.camera.play_flyby()`, to start a flyby camera sequence, and `trx.events.on_flyby_end()`, which happens when one reaches its last camera
-- added `trx.camera.is_flyby_active` and `trx.camera.cancel_flyby()`, to see and stop a flyby sequence
-- added `trx.game.LevelType.TITLE`, and a `demo` level type to the game flow, which could not be named before
-- added `trx.game.play_gym()`, to start the gym
-- added `trx.game.screenshot()`, to save a screenshot
-- added `trx.game.end_level()`, to end the current level
-- added `trx.game.exit_to_title()`, to leave the current game for the title screen
-- added `trx.game.exit_game()`, to close the game
-- added `trx.items.spawn()`, to place a new item in the level at runtime
-- added `trx.objects.swap_sprite()`, to exchange the sprites two objects are drawn from
-- added `trx.objects.query`, `trx.items.query` and `trx.rooms.query`, composable filters over a level's objects, items and rooms that match names, families, state and the rooms a position is in, and combine with `&`, `|` and `~`
-- added pickup families to `trx.objects.query` – `gun`, `ammo`, `supply`, `tool`, `key`, `puzzle`, `quest`, `examine`, `collectible` and `secret` – so a script can ask what a pickup is
-- added `trx.items.get()`, `trx.items.count()`, `trx.rooms.get()`, `trx.rooms.count()` and `trx.objects.get()`, replacing the `fn` namespaces
-- added `trx.rooms.find_valid_pos()`, to nudge a position into valid room geometry
-- added `trx.rooms.floor_height()` and the room method `floor_height()`, the height of the floor under a position
-- added a new Lua module, `trx.zones`: script-defined trigger regions, as a box, a sphere or a single sector, reporting what enters them, what leaves, and what a flyby camera passes through
-- added item methods, `activate()`, `deactivate()`, `trigger()`, `destroy()`, `die()`, `shatter()`, `distance_to()`, `is_valid()`, `get_property()`, `set_property()` and `get_property_names()`, letting a script fire a trigger or antitrigger at an item exactly as a level would
-- added the writable Lua item field `is_one_shot`
-- added object methods, `get_property()`, `set_property()` and `get_property_names()`
-- added new Lua item fields, `anim_state`, `goal_anim_state`, `speed`, `fall_speed`, `gravity`, `collidable`, `mesh_bits`, `touch_bits`, `max_hit_points`, `index`, `is_triggered`, `trigger_mask`, `is_reversed`, `was_hit`, `is_simulated`, `is_present`, `is_visible`, `is_finished`, `is_in_play`, `is_alive`, `is_targetable`, `is_hostile` and `is_killed`, replacing the `item.status` enum, and made `timer` writable
-- removed the raw `item.flags` field; its trigger bits are read through `trigger_mask`, `is_reversed`, `is_triggered`, `is_killed` and `is_one_shot`
-- added new Lua Lara state, `trx.lara.poison`, `trx.lara.electric`, `trx.lara.is_burning`, `trx.lara.is_crouched`, `trx.lara.is_climbing`, `trx.lara.water_status`, `trx.lara.gun_status`, `trx.lara.hit_direction`, `trx.lara.requested_gun` and the dive, death, sprint and pose timers
-- added new Lua assault course functions, `trx.assault.finish()`, `trx.assault.is_running()` and `trx.assault.is_visible()`, and a new property, `trx.assault.active_track`
-- added new Lua config functions, `trx.config.override()`, `trx.config.restore()` and `trx.config.is_overridden()`, to change a setting without overwriting the player's own value
-- added new Lua level fields, `script_path`, `lara_outfit`, `music_track`, `water_particles` and the unobtainable pickup, kill and secret counts
-- added new Lua object fields, `loaded`, `is_intelligent`, `mesh_count`, `anim_count`, `radius`, `shadow_size`, `smartness`, `pivot_length` and `semi_transparent`
-- added new Lua catalog functions, `trx.catalog.to_slot()` and `trx.catalog.from_slot()`, to convert between a TRX id and the slot the current game's own files use for it
-- added new Lua enums, `trx.items.Status`, `trx.lara.WaterState`, `trx.lara.GunState`, `trx.game.LevelTable`, `trx.catalog.Context` and `trx.rooms.FlipStatus`
-- added `trx.log.generic()` and the `trx.log.LogLevel` enum, to log at a level chosen at runtime
-- added the braid and crowbar constants to `trx.lara.ExtraMesh`, which the engine had but never exposed
-- added indexing and the length operator to `trx.items`, `trx.rooms` and `trx.objects`, so `trx.items[0]` is the first item and `#trx.items` is how many the level has
-- added `trx.api.strict()`, which checks a script's arguments against the API's own declarations – worth turning on while writing a level, and leaving off in play
-- added `room:is_valid()`, so a room handle held across a level change can be checked the way an item handle can
-- added the track to the assault course record functions, so the quad bike's records can be read and written at last
-- added a new Lua string function, `trx.strings.collapse_ranges()`
-- added `trx.music.tracks`, the level's tracks as `trx.music.Track` handles keyed by id, each with `:play()` and `:path()`
-- added `trx.music.current_track` and `trx.music.looped_track`, the playing and ambient tracks as `trx.music.Track` handles
-- added `trx.music.streams`, the soundtrack's streams as `trx.music.Stream` handles, each of which can be paused, resumed, sought and stopped on its own
-- added `trx.sound.samples`, the level's samples as `trx.sound.Sample` handles keyed by id, each with `:play()`, `:stop()` and its `volume`, `range`, `randomness` and `pitch`
-- added `trx.sound.streams`, the sound effects playing now as `trx.sound.Stream` handles, each of which can be paused, resumed and stopped on its own
-- added a script watchdog: a script that runs for over 5 seconds without handing control back is stopped with a script error, where it used to freeze the game
-- changed Lua scripts to be found by name rather than declared in the game flow: a level loading `wall.tr2` runs `scripts/wall.lua`, and `scripts/_game.lua` runs as the game starts, for what a game sets up rather than a level – refer to migration notes
-- changed `trx.lara.is_burning` to be writable, so setting it lights Lara or puts her out
-- changed `trx.lara.extra_anim` to a boolean, where it used to be the relative animation number, or -1
-- changed `trx.lara.mesh` and `trx.lara.extra_mesh` to declared enums, `trx.lara.Mesh` and `trx.lara.ExtraMesh`
-- changed `trx.items` and `trx.rooms` to hand out opaque handles rather than `{ idx = ... }` tables, so a handle to a killed item now raises instead of silently addressing the item that took its slot
-- changed handles to compare equal when they name the same thing, so `trx.items[0] == trx.items[0]`
-- changed `trx.items` and `trx.rooms` to count from zero, matching the item and room numbers level editors show, and made `pairs()` walk them keyed by that number
-- changed room handles to go stale at a level change rather than quietly naming a different room
-- changed `trx.sound.play`, `trx.sound.stop` and `trx.music.play` to take a sound or track by catalog name, which works across games, rather than the level's own slot; the slot is reached through the `samples`/`tracks` handles, and `play` hands back the stream it starts
-- changed `trx.game.levels` and `trx.game.play_level` to leave out the gym, so numbering no longer shifts and the last level is reachable
-- changed `trx.api` to hold only `strict` and `is_strict` once sealed, and `trx.api.strict()` to check handle method arguments too
-- changed a position table to require all three coordinates, rather than reading a missing one as zero; a position is documented as `trx.math.Vec3` and an orientation as `trx.math.Rot`
-- changed `room.idx` to `room.num`
-- changed the Lua level field `name` to `title`
-- changed `item.object_id` to be read-only
-- changed `trx.objects[id]` to return `nil` for an unknown id, where it used to return an object that answered to nothing
-- changed `trx.config.get()` to return the option's own type rather than always a string
-- changed the names that stand for a number to say which kind they are - `item.num`, `item.anim_num`, `slot_num`, `object_id` and the like; refer to migration notes
-- changed the event hooks to hand back a `trx.events.Listener` rather than a number, which detaches itself with `listener:detach()` and says whether it was still attached
-- changed `trx.events` handlers to no longer receive a dummy argument in `before_control` and `after_control`
-- changed the Lua level events to a single `on_game_start`, which every kind of level fires, with `on_title_start` for the title screen; refer to migration notes
-- changed the Lua logging functions to take a single message rather than a list of strings
-- changed Lua enums to answer to a constant's name in any case, so `trx.catalog.objects.wolf` and `trx.catalog.objects.WOLF` are the same constant
-- changed Lua enums to be read-only, including the table `pairs()` used to hand out; writing to one used to break every later lookup
-- changed writes that a field cannot hold to raise rather than truncate, so `item.hit_points = 99999` no longer wraps
-- fixed a number too large for the engine wrapping into range rather than being refused, so `trx.items[4294967297]` no longer reads as the first item
-- removed `trx.items.find()` and `trx.items.first()`; `trx.items.query` does both
-- removed `trx.console.log.LogLevel`, a duplicate of `trx.log.LogLevel`
-- removed `trx.events.EventType`
-- removed `trx.game.settings`, which duplicated `trx.config`
-- removed `trx.music.play_track`, an undocumented alias of `trx.music.play`
-- removed the `trx.pickup` module; its enum is now `trx.items.PickupMode`
+*New modules*
+- Added a new Lua module, `trx.math`, with the engine's own fixed-point trigonometry and the `DEG_1`, `DEG_45`, `DEG_90` and `WALL_L` constants
+- Added a new Lua module, `trx.strings`, with `fuzzy_match()`, `regex_match()`, `collapse_ranges()` and `dedent()`
+- Added a new Lua module, `trx.json`, to write a value out as JSON
+- Added a new Lua module, `trx.rules`, holding the numbers the game plays by
+- Added a new Lua module, `trx.argparse`, a declarative argument parser inspired by Python's argparse
+- Added a new Lua module, `trx.locale`, for the text the player reads, looked up by key
+- Added a new Lua module, `trx.weather`, to read and set the runtime weather
+- Added a new Lua module, `trx.mod`, to list the game's mods and read the loaded one
+- Added a new Lua module, `trx.savegame`, to read the save slots and start a saved game
+- Added a new Lua module, `trx.lua`, with `eval_expr()` and `eval_file()`, to evaluate Lua code at runtime
+- Added a new Lua module, `trx.cutscenes`, for playing TR4's cutscenes, reading or rewriting which of them have run, and framing one, with the `on_cutscene_trigger`, `on_cutscene_start` and `on_cutscene_end` events
+- Added a new Lua module, `trx.stats`, for what a level keeps count of – its secrets, pickups, kills, crystals, timer and deaths – alongside how much of each there was to find, for any level rather than only the one being played
+- Added a new Lua module, `trx.fx`, with `emit_light()` and `emit_fog()`, for a light or a ball of fog put in the world for as long as a script keeps asking for it; the volumetric fog that was TR4's alone now shows in every game
+- Added a new Lua module, `trx.random`, with `random()`, `randint()`, `choice()`, `choices()`, `angle()` and `chance()`; it draws from the sequence the game itself runs on, so what a script draws comes back the same after a reload
+- Added a new Lua module, `trx.inventory`, for reading and changing what Lara carries: it counts and walks her inventory an entry at a time, says what she holds of each weapon and how many shots she has for it, and reaches any level's own inventory the same way through `trx.game.Level.inventory`
+- Added a new Lua module, `trx.weapons`, for what a weapon is rather than what Lara has of it: whether the game allows it, which pickup it is, and what a box of its ammunition is worth
+- Added a new Lua module, `trx.zones`: script-defined trigger regions, as a box, a sphere or a single sector, reporting what enters them, what leaves, and what a flyby camera passes through
+
+*Items and rooms*
+- Added `item:take_damage()`, which hurts an item the way a weapon does, and reports through `on_hit` and `on_kill`
+- Added `trx.items.spawn()`, to place a new item in the level at runtime
+- Added `trx.objects.swap_sprite()`, to exchange the sprites two objects are drawn from
+- Added `trx.objects.query`, `trx.items.query` and `trx.rooms.query`, composable filters over a level's objects, items and rooms that match names, families, state and the rooms a position is in, and combine with `&`, `|` and `~`
+- Added pickup families to `trx.objects.query` – `gun`, `ammo`, `supply`, `tool`, `key`, `puzzle`, `quest`, `examine`, `collectible` and `secret` – so a script can ask what a pickup is
+- Added `trx.items.get()`, `trx.items.count()`, `trx.rooms.get()`, `trx.rooms.count()` and `trx.objects.get()`, replacing the `fn` namespaces
+- Added `trx.rooms.find_valid_pos()`, to nudge a position into valid room geometry
+- Added `trx.rooms.floor_height()` and the room method `floor_height()`, the height of the floor under a position
+- Added `trx.rooms.flipped`, whether the room map is currently flipped
+- Added item methods, `activate()`, `deactivate()`, `trigger()`, `destroy()`, `die()`, `shatter()`, `distance_to()`, `is_valid()`, `get_property()`, `set_property()` and `get_property_names()`, letting a script fire a trigger or antitrigger at an item exactly as a level would
+- Added the writable Lua item field `is_one_shot`
+- Added object methods, `get_property()`, `set_property()` and `get_property_names()`
+- Added the object methods `get_names()` and `get_default_names()`, every name an object answers to in the player's language and the English names a lookup falls back on before a language file is loaded
+- Added new Lua item fields, `anim_state`, `goal_anim_state`, `speed`, `fall_speed`, `gravity`, `collidable`, `mesh_bits`, `touch_bits`, `max_hit_points`, `index`, `is_triggered`, `trigger_mask`, `is_reversed`, `was_hit`, `is_simulated`, `is_present`, `is_visible`, `is_finished`, `is_in_play`, `is_alive`, `is_targetable`, `is_hostile` and `is_killed`, replacing the `item.status` enum, and made `timer` writable
+- Added new Lua object fields, `loaded`, `is_intelligent`, `mesh_count`, `anim_count`, `radius`, `shadow_size`, `smartness`, `pivot_length` and `semi_transparent`
+- Added indexing and the length operator to `trx.items`, `trx.rooms` and `trx.objects`, so `trx.items[0]` is the first item and `#trx.items` is how many the level has
+- Added `room:is_valid()`, so a room handle held across a level change can be checked the way an item handle can
+- Changed `trx.items` and `trx.rooms` to hand out opaque handles rather than `{ idx = ... }` tables, so a handle to a killed item now raises instead of silently addressing the item that took its slot
+- Changed handles to compare equal when they name the same thing, so `trx.items[0] == trx.items[0]`
+- Changed `trx.items` and `trx.rooms` to count from zero, matching the item and room numbers level editors show, and made `pairs()` walk them keyed by that number
+- Changed room handles to go stale at a level change rather than quietly naming a different room
+- Changed `room.idx` to `room.num`
+- Changed `item.object_id` to be read-only
+- Changed `trx.objects[id]` to return `nil` for an unknown id, where it used to return an object that answered to nothing
+- Removed the raw `item.flags` field; its trigger bits are read through `trigger_mask`, `is_reversed`, `is_triggered`, `is_killed` and `is_one_shot`
+- Removed `trx.items.find()` and `trx.items.first()`; `trx.items.query` does both
+- Removed the `trx.pickup` module; its enum is now `trx.items.PickupMode`
+
+*Lara*
+- Added `trx.lara.cure_poison()` and `trx.lara.extinguish()`, to clear Lara's poison and put her out
+- Added `trx.lara.dry()` and `trx.lara.is_wet`, to dry Lara off after a swim and to check whether she needs it
+- Added `trx.lara.is_flying`, to read and toggle the fly-mode cheat
+- Added `trx.lara.teleport()`, to move Lara to a position, as `/tp` does
+- Added `trx.lara.set_mesh()` and `trx.lara.clear_mesh()`, to put another object's mesh on one of Lara's own and to take it back off, so that a level can dress her from its own geometry
+- Added new Lua Lara state, `trx.lara.poison`, `trx.lara.electric`, `trx.lara.is_burning`, `trx.lara.is_crouched`, `trx.lara.is_climbing`, `trx.lara.water_status`, `trx.lara.gun_status`, `trx.lara.hit_direction`, `trx.lara.requested_gun` and the dive, death, sprint and pose timers
+- Added the braid and crowbar constants to `trx.lara.ExtraMesh`
+- Changed `trx.lara.is_burning` to be writable, so setting it lights Lara or puts her out
+- Changed `trx.lara.extra_anim` to a boolean, where it used to be the relative animation number, or -1
+- Changed `trx.lara.mesh` and `trx.lara.extra_mesh` to declared enums, `trx.lara.Mesh` and `trx.lara.ExtraMesh`
+
+*Events*
+- Added `trx.events.on_flip_effect()`, letting a script handle a flipeffect run by a trigger or an animation command (#4108)
+- Added `trx.events.on_room_change()`, which happens whenever an item changes rooms
+- Added `trx.events.on_level_unload()`, which happens as the engine lets go of a level, while the world the script was written against is still there to read
+- Added `room:on_enter()` and `room:on_exit()`, which happen when Lara – or, with `watch = "all"`, any item – changes rooms
+- Added `trx.events.on_trigger()` and the per-item `item:on_trigger()`, to react to a trigger of any kind being aimed at an item, with the trigger's type, mask, timer and one-shot flag
+- Added `trx.events.on_show()` and `trx.events.on_hide()`, with the per-item `item:on_show()` and `item:on_hide()`, which happen when an item becomes visible or hidden
+- Added `trx.events.on_finish()` and the per-item `item:on_finish()`, which happen when an item finishes its run, such as a sprung trap or a thrown switch
+- Added `trx.events.on_enter_sim()` and `trx.events.on_leave_sim()`, with the per-item `item:on_enter_sim()` and `item:on_leave_sim()`, which happen when an item starts or stops being simulated
+- Added `trx.events.on_activate()` and `trx.events.on_deactivate()`, with the per-item `item:on_activate()` and `item:on_deactivate()`, which happen when a trigger activates or an antitrigger deactivates an item
+- Added `trx.events.on_destroy()` and the per-item `item:on_destroy()`, which happen as an item is removed from the game
+- Added `trx.events.on_enter_world()` and `trx.events.on_leave_world()`, with the per-item `item:on_enter_world()` and `item:on_leave_world()`, which happen when an item enters the world as a runtime spawn or leaves it
+- Added `trx.events.on_hit()` and the per-item `item:on_hit()`, which happen when an item takes damage, with the amount
+- Added `trx.events.on_kill()` and the per-item `item:on_kill()`, which happen when damage takes an item's hit points to zero
+- Changed the event hooks to hand back a `trx.events.Listener` rather than a number, which detaches itself with `listener:detach()` and says whether it was still attached
+- Changed `trx.events` handlers to no longer receive a dummy argument in `before_control` and `after_control`
+- Changed the Lua level events to a single `on_game_start`, which every kind of level fires, with `on_title_start` for the title screen; refer to migration notes
+- Removed `trx.events.EventType`
+
+*Game and levels*
+- Added `trx.game.gym`, the gym level, or `nil` where a game has none
+- Added `trx.game.Level.key`, what a level is called after the file it loads
+- Added new Lua game state, `trx.game.is_loaded` and `trx.game.is_playable`
+- Added `trx.game.is_ngplus`, which tells whether the run started from the passport's bonus entry
+- Added `trx.game.LevelType.TITLE`, and a `demo` level type to the game flow
+- Added `trx.game.play_gym()`, to start the gym
+- Added `trx.game.screenshot()`, to save a screenshot
+- Added `trx.game.end_level()`, to end the current level
+- Added `trx.game.exit_to_title()`, to leave the current game for the title screen
+- Added `trx.game.exit_game()`, to close the game
+- Added new Lua level fields, `script_path`, `lara_outfit`, `music_track`, `water_particles` and the unobtainable pickup, kill and secret counts
+- Changed `trx.game.levels` and `trx.game.play_level` to leave out the gym, so numbering no longer shifts and the last level is reachable
+- Changed the Lua level field `name` to `title`
+
+*Settings*
+- Added `trx.config.reset()`, to put a setting back to its default
+- Added `trx.config.describe()`, to read a setting's shape and accepted values
+- Added `trx.config.format_value()`, the current value spelled the way the console prints it
+- Added `trx.config.accepted_values()`, what a setting takes, as text for an error message
+- Added `trx.config.declare()`, for a game to add settings of its own: they are saved and loaded with the player's, translated from the game's own strings, and shown in the settings menu where the declaration asks for
+- Added `trx.config.on_change()`, to hear what a setting holds now and whenever it moves
+- Added new Lua config functions, `trx.config.override()`, `trx.config.restore()` and `trx.config.is_overridden()`, to change a setting without overwriting the player's own value
+- Changed `trx.config.get()` to return the option's own type rather than always a string
+- Removed `trx.game.settings`, which duplicated `trx.config`
+
+*Music and sound*
+- Added `trx.music.tracks`, the level's tracks as `trx.music.Track` handles keyed by id, each with `:play()` and `:path()`
+- Added `trx.music.current_track` and `trx.music.looped_track`, the playing and ambient tracks as `trx.music.Track` handles
+- Added `trx.music.streams`, the soundtrack's streams as `trx.music.Stream` handles, each of which can be paused, resumed, sought and stopped on its own
+- Added `trx.sound.samples`, the level's samples as `trx.sound.Sample` handles keyed by id, each with `:play()`, `:stop()` and its `volume`, `range`, `randomness` and `pitch`
+- Added `trx.sound.streams`, the sound effects playing now as `trx.sound.Stream` handles, each of which can be paused, resumed and stopped on its own
+- Changed `trx.sound.play`, `trx.sound.stop` and `trx.music.play` to take a sound or track by catalog name, which works across games, rather than the level's own slot; the slot is reached through the `samples`/`tracks` handles, and `play` hands back the stream it starts
+- Removed `trx.music.play_track`, an undocumented alias of `trx.music.play`
+
+*Camera*
+- Added `trx.camera.pos` and `trx.camera.target_pos`, where the camera is and what it is looking at, with `trx.camera.room_num` and `trx.camera.target_room_num` for the rooms they sit in
+- Added `trx.camera.play_flyby()`, to start a flyby camera sequence, and `trx.events.on_flyby_end()`, which happens when one reaches its last camera
+- Added `trx.camera.is_flyby_active` and `trx.camera.cancel_flyby()`, to see and stop a flyby sequence
+
+*Assault course*
+- Added new Lua assault course functions, `trx.assault.finish()`, `trx.assault.is_running()` and `trx.assault.is_visible()`, and a new property, `trx.assault.active_track`
+- Added the track to the assault course record functions, so the quad bike's records can be read and written
+
+*Console and logging*
+- Added `p`, a global shorthand for `trx.console.log`, and made the console log functions take any value, pretty-printing a table
+- Added `trx.console.register()`, for a script to add its own console command
+- Added `trx.console.commands()`, every registered command in the order they were added, and `trx.console.command()`, the one a name or alias reaches, matched as the console matches when it dispatches
+- Added `trx.log.generic()` and the `trx.log.LogLevel` enum, to log at a level chosen at runtime
+- Added `trx.log.warning()`, an alias of `trx.log.warn()`
+- Changed the Lua logging functions to take a single message rather than a list of strings
+- Removed `trx.console.log.LogLevel`, a duplicate of `trx.log.LogLevel`
+
+*Catalogs and enums*
+- Added new Lua catalog functions, `trx.catalog.to_slot()` and `trx.catalog.from_slot()`, to convert between a TRX id and the slot the current game's own files use for it
+- Added new Lua enums, `trx.items.Status`, `trx.items.SwitchMode`, `trx.lara.WaterState`, `trx.lara.GunState`, `trx.game.LevelTable`, `trx.catalog.Context` and `trx.rooms.FlipStatus`
+- Changed Lua enums to answer to a constant's name in any case, so `trx.catalog.objects.wolf` and `trx.catalog.objects.WOLF` are the same constant
+- Changed Lua enums to be read-only, including the table `pairs()` used to hand out; writing to one used to break every later lookup
+
+*Scripts and the API*
+- Added `require()` to a game's scripts, taking a name that carries the directory it lives in: `tr1.my_module` for a script belonging to a game, `common.my_module` for one in the shared pool beside the executable
+- Added `trx.api.strict()`, which checks a script's arguments against the API's own declarations
+- Added a script watchdog: a script that runs for over 5 seconds without handing control back is stopped with a script error, where it used to freeze the game
+- Changed Lua scripts to be found by name rather than declared in the game flow: a level loading `wall.tr2` runs `scripts/wall.lua`, and `scripts/_game.lua` runs as the game starts, for what a game sets up rather than a level – refer to migration notes
+- Changed `trx.api` to hold only `strict` and `is_strict` once sealed, and `trx.api.strict()` to check handle method arguments too
+- Changed a position table to require all three coordinates, rather than reading a missing one as zero; a position is documented as `trx.math.Vec3` and an orientation as `trx.math.Rot`
+- Changed the names that stand for a number to say which kind they are - `item.num`, `item.anim_num`, `slot_num`, `object_id` and the like; refer to migration notes
+- Changed writes that a field cannot hold to raise rather than truncate, so `item.hit_points = 99999` no longer wraps
+- Fixed a number too large for the engine wrapping into range rather than being refused, so `trx.items[4294967297]` no longer reads as the first item
 
 
 
