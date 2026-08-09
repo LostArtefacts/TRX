@@ -1,7 +1,7 @@
 CWD := `pwd`
 HOST_USER_UID := `id -u`
 HOST_USER_GID := `id -g`
-DOCKER_IMAGE_VERSION := "20260501.dev1"
+DOCKER_IMAGE_VERSION := "20260809.dev1"
 
 default: (trx-build-win "debug")
 

@@ -56,12 +56,49 @@ RUN cd libbacktrace \
 
 
 
+# librubberband
+FROM base AS rubberband
+RUN apt-get install -y \
+    gcc \
+    g++ \
+    pkg-config \
+    python3-pip \
+    && python3 -m pip install --break-system-packages \
+        meson \
+        ninja
+RUN git clone https://github.com/breakfastquay/rubberband --branch v4.0.0
+RUN cd rubberband \
+    && meson setup build \
+        --prefix=/ext/ \
+        --libdir=lib \
+        --default-library=static \
+        -Dfft=builtin \
+        -Dresampler=builtin \
+        -Djni=disabled \
+        -Dladspa=disabled \
+        -Dlv2=disabled \
+        -Dvamp=disabled \
+        -Dcmdline=disabled \
+        -Dtests=disabled \
+    && ninja -C build \
+    && ninja -C build install
+# the generated file names neither the C++ runtime nor libm, which whoever
+# links the static library has to be told about
+RUN sed -i '/^Libs.private:/d' /ext/lib/pkgconfig/rubberband.pc \
+    && echo 'Libs.private: -lstdc++ -lm' >> /ext/lib/pkgconfig/rubberband.pc
+
+
+
 # libav
 FROM base AS libav
 RUN apt-get install -y \
     nasm \
     gcc \
+    g++ \
+    pkg-config \
     zlib1g-dev
+COPY --from=rubberband /ext/ /ext/
+ENV PKG_CONFIG_PATH=/ext/lib/pkgconfig/
 RUN git clone \
     https://github.com/FFmpeg/FFmpeg
 RUN cd FFmpeg && git checkout 066432ebcf
@@ -72,6 +109,9 @@ RUN cd FFmpeg \
         --prefix=/ext/ \
         --enable-static \
         --disable-shared \
+        --pkg-config-flags=--static \
+        --extra-cflags=-I/ext/include \
+        --extra-ldflags=-L/ext/lib \
         $(cat /tmp/ffmpeg_flags.txt) \
     && make -j 4 \
     && make install
@@ -157,7 +197,8 @@ WORKDIR /app
 # package dependencies
 RUN apt-get install -y \
     zlib1g-dev \
-    libgl1-mesa-dev
+    libgl1-mesa-dev \
+    g++
 
 # tooling dependencies
 # configure pkgconfig manually

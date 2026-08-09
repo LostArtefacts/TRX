@@ -83,6 +83,11 @@ runs:
       shell: bash
       run: sudo port -N install uthash +universal
 
+    - name: "Build dependency: rubberband (universal)"
+      if: steps.restore-cache.outputs.cache-hit != 'true'
+      shell: bash
+      run: sudo port -N install rubberband +universal
+
     - name: "Build dependency: ffmpeg (universal)"
       if: steps.restore-cache.outputs.cache-hit != 'true'
       shell: bash
