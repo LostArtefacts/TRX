@@ -814,7 +814,13 @@ static void M_Hang(ITEM *const item, COLL_INFO *const coll)
             && coll->side_left2.floor - coll->side_left2.ceiling >= 0
             && coll->side_right2.floor - coll->side_right2.ceiling >= 0
             && !coll->hit_static) {
-            item->goal_anim_state = LS(g_Input.slow ? LS_GYMNAST : LS_PULL_UP);
+            if (g_Input.slow) {
+                item->goal_anim_state = LS(LS_GYMNAST);
+            } else {
+                item->goal_anim_state =
+                    LS(g_Config.gameplay.enable_fast_pull_up ? LS_FAST_PULL_UP
+                                                             : LS_PULL_UP);
+            }
             return;
         } else if (
             lara->climb_status && Item_TestAnimEqual(item, LA(LA_REACH_TO_HANG))

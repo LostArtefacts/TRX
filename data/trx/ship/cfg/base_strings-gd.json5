@@ -1100,6 +1100,10 @@
             "title": "Togail gu luath",
             "description": "Leigidh seo le Lara nithean a thogail nas luaithe, coltach ri TR4+.",
         },
+        "gameplay.enable_fast_pull_up": {
+            "title": "Togail luath",
+            "description": "Leigidh seo le Lara i fhèin a thogail suas bho oirean nas luaithe.",
+        },
         "gameplay.enable_fast_shimmying": {
             "title": "Crochadh luath",
             "description": "Leigidh seo le Lara gluasad nas luaithe nuair a tha i a' dol gu clì no deas na crochte.",

@@ -1100,6 +1100,10 @@
             "title": "Raccolta oggetti rapida",
             "description": "Permette a Lara di raccogliere gli oggetti più rapidamente, in modo simile a TR4+.",
         },
+        "gameplay.enable_fast_pull_up": {
+            "title": "\\{review}Tirata rapida",
+            "description": "\\{review}Permette a Lara di tirarsi su dai bordi più rapidamente.",
+        },
         "gameplay.enable_fast_shimmying": {
             "title": "\\{review}Spostamento laterale rapido",
             "description": "\\{review}Consente a Lara di muoversi più rapidamente mentre si sposta lateralmente a sinistra o a destra rimanendo appesa.",

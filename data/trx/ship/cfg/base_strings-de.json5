@@ -1100,6 +1100,10 @@
             "title": "\\{review}Schnelles Aufheben",
             "description": "\\{review}Ermöglicht es Lara, Gegenstände schneller aufzuheben, ähnlich wie in TR4+.",
         },
+        "gameplay.enable_fast_pull_up": {
+            "title": "\\{review}Schnelles Hochziehen",
+            "description": "\\{review}Ermöglicht es Lara, sich schneller an Kanten hochzuziehen.",
+        },
         "gameplay.enable_fast_shimmying": {
             "title": "\\{review}Schnelles Hangeln",
             "description": "\\{review}Ermöglicht es Lara, sich beim Hangeln nach links oder rechts schneller zu bewegen.",
