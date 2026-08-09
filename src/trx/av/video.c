@@ -219,14 +219,9 @@ typedef struct {
     int frame_drops_early;
     int frame_drops_late;
 
-    // surface size at the size of the display buffer
+    // surface size, always that of the decoded frames
     int surface_width;
     int surface_height;
-    // target surface coordinates, keeping the video A:R
-    int target_surface_x;
-    int target_surface_y;
-    int target_surface_width;
-    int target_surface_height;
 
     double frame_timer;
     double frame_last_returned_time;
@@ -728,31 +723,14 @@ static void M_ReallocPrimarySurface(
     }
 }
 
-static void M_RecalcSurfaceTargetRect(
-    M_STATE *is, int32_t frame_width, int32_t frame_height)
-{
-    const float source_ratio = frame_width / (float)frame_height;
-    const float target_ratio = is->surface_width / (float)is->surface_height;
-
-    is->target_surface_width = source_ratio < target_ratio
-        ? is->surface_height * source_ratio
-        : is->surface_width;
-    is->target_surface_height = source_ratio < target_ratio
-        ? is->surface_height
-        : is->surface_width / source_ratio;
-    is->target_surface_x = (is->surface_width - is->target_surface_width) / 2;
-    is->target_surface_y = (is->surface_height - is->target_surface_height) / 2;
-}
-
 static int M_UploadTexture(M_STATE *is, AVFrame *frame)
 {
     int ret = 0;
 
     is->img_convert_ctx = sws_getCachedContext(
         is->img_convert_ctx, frame->width, frame->height, frame->format,
-        is->target_surface_width, is->target_surface_height,
-        is->primary_surface_pixel_format, SWS_BILINEAR, nullptr, nullptr,
-        nullptr);
+        is->surface_width, is->surface_height, is->primary_surface_pixel_format,
+        SWS_BILINEAR, nullptr, nullptr, nullptr);
 
     if (is->img_convert_ctx) {
         is->render_begin_func(
@@ -770,10 +748,6 @@ static int M_UploadTexture(M_STATE *is, AVFrame *frame)
                 surf_linesize[0] = av_image_get_linesize(
                     is->primary_surface_pixel_format, is->surface_width, 0);
             }
-
-            surf_planes[0] += is->target_surface_y * surf_linesize[0];
-            surf_planes[0] += av_image_get_linesize(
-                is->primary_surface_pixel_format, is->target_surface_x, 0);
 
             sws_scale(
                 is->img_convert_ctx, (const uint8_t *const *)frame->data,
@@ -798,7 +772,10 @@ static void M_VideoImageDisplay(M_STATE *is)
 {
     M_FRAME *vp = M_FrameQueuePeekLast(&is->pictq);
 
-    M_RecalcSurfaceTargetRect(is, vp->frame->width, vp->frame->height);
+    if (is->surface_width != vp->frame->width
+        || is->surface_height != vp->frame->height) {
+        M_ReallocPrimarySurface(is, vp->frame->width, vp->frame->height, false);
+    }
     M_UploadTexture(is, vp->frame);
 }
 
@@ -2040,19 +2017,6 @@ void Video_Close(VIDEO *const video)
     Memory_Free(video);
 }
 
-void Video_SetSurfaceSize(
-    VIDEO *const video, const int32_t surface_width,
-    const int32_t surface_height)
-{
-    M_STATE *const is = video->priv;
-    if (is->surface_width == surface_width
-        && is->surface_height == surface_height) {
-        return;
-    }
-
-    M_ReallocPrimarySurface(is, surface_width, surface_height, false);
-}
-
 void Video_SetSurfacePixelFormat(VIDEO *video, enum AVPixelFormat pixel_format)
 {
     M_STATE *const is = video->priv;
@@ -2061,7 +2025,10 @@ void Video_SetSurfacePixelFormat(VIDEO *video, enum AVPixelFormat pixel_format)
     }
 
     is->primary_surface_pixel_format = pixel_format;
-    M_ReallocPrimarySurface(is, is->surface_width, is->surface_height, false);
+    if (is->primary_surface != nullptr) {
+        M_ReallocPrimarySurface(
+            is, is->surface_width, is->surface_height, false);
+    }
 }
 
 void Video_SetSurfaceStride(VIDEO *video, const int32_t stride)
@@ -2072,7 +2039,10 @@ void Video_SetSurfaceStride(VIDEO *video, const int32_t stride)
     }
 
     is->primary_surface_stride = stride;
-    M_ReallocPrimarySurface(is, is->surface_width, is->surface_height, false);
+    if (is->primary_surface != nullptr) {
+        M_ReallocPrimarySurface(
+            is, is->surface_width, is->surface_height, false);
+    }
 }
 
 void Video_SetSurfaceAllocatorFunc(

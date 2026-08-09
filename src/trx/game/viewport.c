@@ -19,6 +19,7 @@ static VIEWPORT_RECT m_Rects[VIEWPORT_NUMBER_OF] = {
 
 static int16_t m_CurrentFOV = 65;
 static FOV_MODE m_CurrentFOVMode = FOV_MODE_GAME;
+static bool m_SupersamplingEnabled = true;
 
 void Viewport_Init(int32_t x, int32_t y, int32_t width, int32_t height)
 {
@@ -69,10 +70,13 @@ void Viewport_Init(int32_t x, int32_t y, int32_t width, int32_t height)
     scene->width = width / g_Config.rendering.upscaling_factor;
     scene->height = height / g_Config.rendering.upscaling_factor;
 
+    const int32_t supersampling_factor =
+        m_SupersamplingEnabled ? g_Config.rendering.supersampling_factor : 1;
+
     game->x = x;
     game->y = y;
-    game->width = scene->width * g_Config.rendering.supersampling_factor;
-    game->height = scene->height * g_Config.rendering.supersampling_factor;
+    game->width = scene->width * supersampling_factor;
+    game->height = scene->height * supersampling_factor;
 
     g_PhdLeft = Viewport_GetMinX(VIEWPORT_GAME);
     g_PhdTop = Viewport_GetMinY(VIEWPORT_GAME);
@@ -189,6 +193,15 @@ void Viewport_Reset(void)
     target->y = (window->height - target->height) / 2;
     Viewport_Init(-1, -1, -1, -1);
     Viewport_Debug();
+}
+
+void Viewport_SetSupersamplingEnabled(const bool enabled)
+{
+    if (enabled == m_SupersamplingEnabled) {
+        return;
+    }
+    m_SupersamplingEnabled = enabled;
+    Viewport_Reset();
 }
 
 FOV_MODE Viewport_GetFOVMode(void)

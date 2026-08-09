@@ -21,6 +21,10 @@ void Output_FlipScreen(void);
 
 void Output_SwitchViewport(VIEWPORT_SPACE space);
 
+// Suspends or restores supersampling and resizes the framebuffers to match.
+// Call it between frames only.
+void Output_SetSupersamplingEnabled(bool enabled);
+
 void Output_ApplyRenderSettings(void);
 void Output_ApplyLevelSettings(void);
 

@@ -297,6 +297,11 @@ void TRX_GL_Renderer_BindUiFbo(void)
     TRX_GL_FBO_Bind(&p->ui_fbo);
 }
 
+void TRX_GL_Renderer_SyncFboSizes(void)
+{
+    M_UpdateFBOSizes(&g_TRX_GL_Renderer);
+}
+
 GLuint TRX_GL_Renderer_ResolveSceneFbo(void)
 {
     M_CONTEXT *const p = (M_CONTEXT *)g_TRX_GL_Renderer.priv;

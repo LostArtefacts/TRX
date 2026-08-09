@@ -185,6 +185,9 @@ static void M_UploadSurface(void *const surface, void *const user_data)
     M_SURFACE *const surface_ = surface;
     const float overlay_opacity = M_GetPauseOverlayOpacity(ctx);
     Output_Quad_Upload(ctx->renderer_2d, &surface_->desc, surface_->buffer);
+    Output_Quad_SetFit(
+        ctx->renderer_2d, OUTPUT_QUAD_FIT_LETTERBOX, surface_->desc.width,
+        surface_->desc.height);
 
     Output_SwitchViewport(VIEWPORT_GAME);
     Output_Quad_Render(ctx->renderer_2d);
@@ -249,6 +252,7 @@ static bool M_Play(const char *const file_name)
     Video_SetSurfaceLockFunc(video, M_LockSurface, nullptr);
     Video_SetSurfaceUnlockFunc(video, M_UnlockSurface, nullptr);
     Video_SetSurfaceUploadFunc(video, M_UploadSurface, &render_ctx);
+    Video_SetSurfacePixelFormat(video, AV_PIX_FMT_BGRA);
     Video_SetAudioEnabled(video, false);
 
     const int32_t audio_id = M_OpenAudioStream(file_name);
@@ -287,11 +291,6 @@ static bool M_Play(const char *const file_name)
         if (audio_ts >= 0.0) {
             Video_SetExternalAudioClock(video, audio_ts);
         }
-
-        Video_SetSurfaceSize(
-            video, Viewport_GetWidth(VIEWPORT_GAME),
-            Viewport_GetHeight(VIEWPORT_GAME));
-        Video_SetSurfacePixelFormat(video, AV_PIX_FMT_BGRA);
 
         Video_PumpEvents(video);
 
@@ -336,7 +335,9 @@ bool FMV_Play(const char *const file_path)
     }
 
     m_IsPlaying = true;
+    Output_SetSupersamplingEnabled(false);
     const bool result = M_Play(file_path);
+    Output_SetSupersamplingEnabled(true);
     m_IsPlaying = false;
     return result;
 }
