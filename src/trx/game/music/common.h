@@ -35,6 +35,13 @@ bool Music_Init(void);
 // marked for later (delay) or a deferred ambient.
 int32_t Music_Play_Direct(MUSIC_ID track, MUSIC_PLAY_MODE mode);
 
+// Plays a track from the given timestamp in seconds, as Music_Play_Direct does
+// otherwise. The track is seeked before it becomes audible, so its beginning is
+// never heard. A negative timestamp plays the track from where it would
+// normally start.
+int32_t Music_Play_DirectAt(
+    MUSIC_ID track, MUSIC_PLAY_MODE mode, double timestamp);
+
 // Stops the provided single track and restarts the looped track if applicable.
 void Music_StopTrack_Direct(MUSIC_ID track);
 

@@ -785,13 +785,18 @@ static bool M_ReadFlare(JSON_READ_IO *const io)
     M_FINISH();
 }
 
-static bool M_ShouldLoadMusicTimestamp(
+// Returns the timestamp to resume the track at, or -1.0 to play it from the
+// start.
+static double M_GetMusicSeekTimestamp(
     const MUSIC_ID track_id, const MUSIC_PLAY_MODE mode,
-    const MUSIC_ID ambient_track)
+    const MUSIC_ID ambient_track, const double timestamp)
 {
     const bool is_ambient = mode == MPM_LOOP && track_id == ambient_track;
-    return !is_ambient
-        || g_Config.audio.music_load_condition == MUSIC_LOAD_CONDITION_ALWAYS;
+    if (is_ambient
+        && g_Config.audio.music_load_condition != MUSIC_LOAD_CONDITION_ALWAYS) {
+        return -1.0;
+    }
+    return timestamp;
 }
 
 static bool M_ReadMusicTracks(JSON_READ_IO *const io)
@@ -826,13 +831,9 @@ static bool M_ReadMusicTracks(JSON_READ_IO *const io)
             if (track_id == MX_INACTIVE) {
                 continue;
             }
-            if (Music_Play_Direct(track_id, mode) < 0) {
-                LOG_WARNING("Could not load stream track %d", track_id);
-                continue;
-            }
-
-            if (M_ShouldLoadMusicTimestamp(track_id, mode, ambient_track)
-                && !Music_SeekTrackTimestamp(track_id, mode, timestamp)) {
+            const double seek_to = M_GetMusicSeekTimestamp(
+                track_id, mode, ambient_track, timestamp);
+            if (Music_Play_DirectAt(track_id, mode, seek_to) < 0) {
                 LOG_WARNING(
                     "Could not load stream track %d at timestamp %lf.",
                     track_id, timestamp);
@@ -845,20 +846,12 @@ static bool M_ReadMusicTracks(JSON_READ_IO *const io)
         M_MUST(JSON_READ(io, "current_track", &current_track));
         M_MUST(JSON_READ(io, "timestamp", &timestamp));
 
-        const bool is_ambient =
-            current_track != MX_INACTIVE && current_track == ambient_track;
-        if (!is_ambient && current_track != MX_INACTIVE
-            && Music_Play_Direct(current_track, MPM_ONCE) < 0) {
-            LOG_WARNING("Could not load current track %d.", current_track);
-        }
-
-        const MUSIC_ID track_to_seek =
-            is_ambient ? ambient_track : current_track;
-        const MUSIC_PLAY_MODE mode_to_seek = is_ambient ? MPM_LOOP : MPM_ONCE;
-        if (M_ShouldLoadMusicTimestamp(
-                track_to_seek, mode_to_seek, ambient_track)
-            && !Music_SeekTrackTimestamp(
-                track_to_seek, mode_to_seek, timestamp)) {
+        const bool is_ambient = current_track == ambient_track;
+        const MUSIC_PLAY_MODE mode = is_ambient ? MPM_LOOP : MPM_ONCE;
+        const double seek_to = M_GetMusicSeekTimestamp(
+            current_track, mode, ambient_track, timestamp);
+        if (current_track != MX_INACTIVE
+            && Music_Play_DirectAt(current_track, mode, seek_to) < 0) {
             LOG_WARNING(
                 "Could not load current track %d at timestamp %lf.",
                 current_track, timestamp);
