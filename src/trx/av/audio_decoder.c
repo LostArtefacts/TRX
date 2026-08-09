@@ -3,12 +3,16 @@
 #include <trx/av/audio_internal.h>
 #include <trx/core/log.h>
 #include <trx/core/memory.h>
+#include <trx/core/strings.h>
 #include <trx/core/utils.h>
 #include <trx/debug.h>
 
 #include <errno.h>
 #include <libavcodec/avcodec.h>
 #include <libavcodec/packet.h>
+#include <libavfilter/avfilter.h>
+#include <libavfilter/buffersink.h>
+#include <libavfilter/buffersrc.h>
 #include <libavformat/avformat.h>
 #include <libavformat/avio.h>
 #include <libavutil/avutil.h>
@@ -16,6 +20,7 @@
 #include <libavutil/error.h>
 #include <libavutil/frame.h>
 #include <libavutil/mem.h>
+#include <libavutil/opt.h>
 #include <libavutil/rational.h>
 #include <libavutil/samplefmt.h>
 #include <libswresample/swresample.h>
@@ -44,6 +49,13 @@ struct AUDIO_DECODER {
     AVPacket *packet;
     AVFrame *frame;
     SwrContext *swr_ctx;
+
+    double speed;
+    AVFilterGraph *filter_graph;
+    AVFilterContext *filter_src;
+    AVFilterContext *filter_sink;
+    AVFrame *filter_in;
+    AVFrame *filter_out;
 
     float *buffer;
     int32_t buffer_capacity;
@@ -174,6 +186,105 @@ fail:
     return false;
 }
 
+static void M_FreeFilterGraph(AUDIO_DECODER *const decoder)
+{
+    if (decoder->filter_graph != nullptr) {
+        avfilter_graph_free(&decoder->filter_graph);
+    }
+    if (decoder->filter_in != nullptr) {
+        av_frame_free(&decoder->filter_in);
+    }
+    if (decoder->filter_out != nullptr) {
+        av_frame_free(&decoder->filter_out);
+    }
+    decoder->filter_src = nullptr;
+    decoder->filter_sink = nullptr;
+}
+
+static bool M_BuildFilterGraph(AUDIO_DECODER *const decoder)
+{
+    decoder->filter_graph = avfilter_graph_alloc();
+    decoder->filter_in = av_frame_alloc();
+    decoder->filter_out = av_frame_alloc();
+    if (decoder->filter_graph == nullptr || decoder->filter_in == nullptr
+        || decoder->filter_out == nullptr) {
+        return false;
+    }
+
+    AVChannelLayout layout;
+    av_channel_layout_default(&layout, decoder->channels);
+    char layout_name[64];
+    av_channel_layout_describe(&layout, layout_name, sizeof(layout_name));
+
+    char *const args = String_Format(
+        "time_base=1/%d:sample_rate=%d:sample_fmt=%s:channel_layout=%s",
+        AUDIO_WORKING_RATE, AUDIO_WORKING_RATE,
+        av_get_sample_fmt_name(AV_SAMPLE_FMT_FLT), layout_name);
+    const int32_t error_code = avfilter_graph_create_filter(
+        &decoder->filter_src, avfilter_get_by_name("abuffer"), "in", args,
+        nullptr, decoder->filter_graph);
+    Memory_Free(args);
+    if (error_code < 0) {
+        LOG_ERROR(
+            "Failed to create the filter source: %s", av_err2str(error_code));
+        return false;
+    }
+
+    decoder->filter_sink = avfilter_graph_alloc_filter(
+        decoder->filter_graph, avfilter_get_by_name("abuffersink"), "out");
+    if (decoder->filter_sink == nullptr) {
+        LOG_ERROR("Failed to create the filter sink");
+        return false;
+    }
+
+    // the sink only takes its format before it is initialised
+    static const enum AVSampleFormat sample_fmts[] = {
+        AV_SAMPLE_FMT_FLT,
+        AV_SAMPLE_FMT_NONE,
+    };
+    if (av_opt_set_bin(
+            decoder->filter_sink, "sample_fmts", (const uint8_t *)sample_fmts,
+            sizeof(sample_fmts), AV_OPT_SEARCH_CHILDREN)
+            < 0
+        || avfilter_init_dict(decoder->filter_sink, nullptr) < 0) {
+        LOG_ERROR("Failed to pin the filter output format");
+        return false;
+    }
+
+    char *const tempo_args = String_Format("tempo=%f", decoder->speed);
+    AVFilterContext *stretch = nullptr;
+    const int32_t stretch_result = avfilter_graph_create_filter(
+        &stretch, avfilter_get_by_name("rubberband"), "stretch", tempo_args,
+        nullptr, decoder->filter_graph);
+    Memory_Free(tempo_args);
+    if (stretch_result < 0
+        || avfilter_link(decoder->filter_src, 0, stretch, 0) < 0) {
+        LOG_ERROR("Failed to create the time stretch filter");
+        return false;
+    }
+
+    if (avfilter_link(stretch, 0, decoder->filter_sink, 0) < 0
+        || avfilter_graph_config(decoder->filter_graph, nullptr) < 0) {
+        LOG_ERROR("Failed to configure the filter graph");
+        return false;
+    }
+
+    return true;
+}
+
+// Drops whatever the stretcher holds, which a seek makes stale.
+static void M_RebuildFilterGraph(AUDIO_DECODER *const decoder)
+{
+    if (decoder->filter_graph == nullptr) {
+        return;
+    }
+    M_FreeFilterGraph(decoder);
+    if (!M_BuildFilterGraph(decoder)) {
+        M_FreeFilterGraph(decoder);
+        decoder->speed = 1.0;
+    }
+}
+
 static void M_Append(
     AUDIO_DECODER *const decoder, const float *const data, const int32_t count)
 {
@@ -186,6 +297,45 @@ static void M_Append(
     memcpy(
         decoder->buffer + decoder->buffer_count, data, floats * sizeof(float));
     decoder->buffer_count += floats;
+}
+
+static void M_Filter(
+    AUDIO_DECODER *const decoder, const float *const data, const int32_t count)
+{
+    AVFrame *const in = decoder->filter_in;
+    av_frame_unref(in);
+    in->format = AV_SAMPLE_FMT_FLT;
+    in->sample_rate = AUDIO_WORKING_RATE;
+    in->nb_samples = count;
+    av_channel_layout_default(&in->ch_layout, decoder->channels);
+    if (av_frame_get_buffer(in, 0) < 0) {
+        return;
+    }
+    memcpy(in->data[0], data, count * decoder->channels * sizeof(float));
+    if (av_buffersrc_add_frame(decoder->filter_src, in) < 0) {
+        return;
+    }
+
+    AVFrame *const out = decoder->filter_out;
+    while (av_buffersink_get_frame(decoder->filter_sink, out) >= 0) {
+        M_Append(decoder, (const float *)out->data[0], out->nb_samples);
+        av_frame_unref(out);
+    }
+}
+
+// Pushes whatever the stretcher is still holding through to the sink.
+static void M_FlushFilter(AUDIO_DECODER *const decoder)
+{
+    if (decoder->filter_graph == nullptr) {
+        return;
+    }
+
+    av_buffersrc_add_frame(decoder->filter_src, nullptr);
+    AVFrame *const out = decoder->filter_out;
+    while (av_buffersink_get_frame(decoder->filter_sink, out) >= 0) {
+        M_Append(decoder, (const float *)out->data[0], out->nb_samples);
+        av_frame_unref(out);
+    }
 }
 
 static void M_Convert(AUDIO_DECODER *const decoder, AVFrame *const frame)
@@ -203,7 +353,11 @@ static void M_Convert(AUDIO_DECODER *const decoder, AVFrame *const frame)
         decoder->swr_ctx, &out_buffer, max_samples,
         (const uint8_t **)frame->data, frame->nb_samples);
     if (converted > 0) {
-        M_Append(decoder, scratch, converted);
+        if (decoder->filter_graph != nullptr) {
+            M_Filter(decoder, scratch, converted);
+        } else {
+            M_Append(decoder, scratch, converted);
+        }
     }
     Memory_Free(scratch);
 }
@@ -223,6 +377,7 @@ static AUDIO_DECODER *M_Create(const int32_t channels)
 {
     AUDIO_DECODER *const decoder = Memory_Alloc(sizeof(AUDIO_DECODER));
     decoder->channels = channels;
+    decoder->speed = 1.0;
     return decoder;
 }
 
@@ -301,6 +456,7 @@ void AudioDecoder_Free(AUDIO_DECODER **const decoder_ref)
         return;
     }
 
+    M_FreeFilterGraph(decoder);
     if (decoder->swr_ctx != nullptr) {
         swr_free(&decoder->swr_ctx);
     }
@@ -343,6 +499,28 @@ double AudioDecoder_GetTimestamp(const AUDIO_DECODER *const decoder)
     return decoder->timestamp;
 }
 
+bool AudioDecoder_SetSpeed(AUDIO_DECODER *const decoder, const double speed)
+{
+    ASSERT(decoder != nullptr);
+
+    if (speed <= 0.0 || speed == decoder->speed) {
+        return speed > 0.0;
+    }
+
+    M_FreeFilterGraph(decoder);
+    decoder->speed = speed;
+    if (speed == 1.0) {
+        return true;
+    }
+
+    if (!M_BuildFilterGraph(decoder)) {
+        M_FreeFilterGraph(decoder);
+        decoder->speed = 1.0;
+        return false;
+    }
+    return true;
+}
+
 bool AudioDecoder_Seek(AUDIO_DECODER *const decoder, const double timestamp)
 {
     ASSERT(decoder != nullptr);
@@ -364,6 +542,7 @@ bool AudioDecoder_Seek(AUDIO_DECODER *const decoder, const double timestamp)
     }
 
     avcodec_flush_buffers(decoder->codec_ctx);
+    M_RebuildFilterGraph(decoder);
     decoder->timestamp = timestamp;
     decoder->is_drained = false;
     return true;
@@ -397,6 +576,7 @@ bool AudioDecoder_Rewind(AUDIO_DECODER *const decoder, const double start_at)
     }
 
     avcodec_flush_buffers(decoder->codec_ctx);
+    M_RebuildFilterGraph(decoder);
     decoder->timestamp = start_at;
     decoder->is_drained = false;
     return true;
@@ -424,6 +604,7 @@ int32_t AudioDecoder_Read(AUDIO_DECODER *const decoder, const float **const out)
         // let the codec hand back whatever it was still holding
         avcodec_send_packet(decoder->codec_ctx, nullptr);
         M_Drain(decoder);
+        M_FlushFilter(decoder);
         decoder->is_drained = true;
         *out = decoder->buffer;
         return decoder->buffer_count > 0

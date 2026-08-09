@@ -4,6 +4,7 @@
 #include <trx/core/utils.h>
 #include <trx/debug.h>
 #include <trx/game/camera.h>
+#include <trx/game/clock.h>
 #include <trx/game/const.h>
 #include <trx/game/cutseq/decoder.h>
 #include <trx/game/cutseq/pak.h>
@@ -338,6 +339,7 @@ static void M_Step(void)
 
     if (info->audio_track != -1
         && Music_GetCurrentPlayingTrack() == (MUSIC_ID)info->audio_track) {
+        Music_SetSpeed(Clock_GetSpeedMultiplier());
         Music_SyncTimestamp(m_State.frame / (double)LOGIC_FPS);
     }
 

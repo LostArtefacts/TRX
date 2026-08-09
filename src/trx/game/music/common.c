@@ -589,6 +589,14 @@ bool Music_SeekTimestamp(const double timestamp)
     return Audio_Stream_SeekTimestamp(m_MainStream.audio_stream_id, timestamp);
 }
 
+bool Music_SetSpeed(const double speed)
+{
+    if (!m_MainStream.active || m_MainStream.audio_stream_id < 0) {
+        return false;
+    }
+    return Audio_Stream_SetSpeed(m_MainStream.audio_stream_id, speed);
+}
+
 bool Music_SyncTimestamp(const double timestamp)
 {
     if (!m_MainStream.active || m_MainStream.audio_stream_id < 0) {

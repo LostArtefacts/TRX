@@ -19,6 +19,9 @@ double AudioDecoder_GetDuration(const AUDIO_DECODER *decoder);
 // Where in the source the last decoded frame came from, in seconds.
 double AudioDecoder_GetTimestamp(const AUDIO_DECODER *decoder);
 
+// Decode faster or slower without moving the pitch.
+bool AudioDecoder_SetSpeed(AUDIO_DECODER *decoder, double speed);
+
 bool AudioDecoder_Seek(AUDIO_DECODER *decoder, double timestamp);
 bool AudioDecoder_Rewind(AUDIO_DECODER *decoder, double start_at);
 

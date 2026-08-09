@@ -109,6 +109,7 @@
 
 **Music and sound**
 - Added an option to keep the music playing when Lara dies (Sound Options → Misc → Play music after death) (#4221)
+- Changed cutscenes played at turbo speed to speed their music up to match, rather than skipping through it
 - Fixed the sound stuttering when a piece of music starts playing (#3094)
 - Fixed the game pausing the first time a sound effect is played, which was most noticeable with longer ones (#2286)
 - Fixed the music turning to noise when the system audio output is changed while the game is running (#2489)

@@ -177,6 +177,7 @@ add_project_arguments(build_opts, language: 'c')
 
 null_dep = dependency('', required: false)
 dep_avcodec = dependency('libavcodec', static: staticdeps)
+dep_avfilter = dependency('libavfilter', static: staticdeps)
 dep_avformat = dependency('libavformat', static: staticdeps)
 dep_avutil = dependency('libavutil', static: staticdeps)
 dep_sdl2 = dependency('SDL2', static: staticdeps)
@@ -202,6 +203,7 @@ endif
 
 dependencies = [
   dep_avcodec,
+  dep_avfilter,
   dep_avformat,
   dep_avutil,
   dep_backtrace,

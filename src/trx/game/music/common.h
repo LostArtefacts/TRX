@@ -80,6 +80,10 @@ bool Music_SeekTimestamp(double timestamp);
 // Seeks to the given timestamp if the drift is too big.
 bool Music_SyncTimestamp(double timestamp);
 
+// Play the current track at the given rate, so a sped-up cutscene carries its
+// music with it instead of seeking away from it.
+bool Music_SetSpeed(double speed);
+
 // Returns the number of currently active serializable streams.
 int32_t Music_GetStreamCount(void);
 
