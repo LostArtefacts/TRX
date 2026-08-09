@@ -88,6 +88,7 @@
 - Fixed the glow around gun and flare flashes lagging behind them (#5920)
 - Fixed Lara leaving ripples on ceilings that lie below the waterline (regression from 1.1)
 - Fixed rain and snow starting over when a save is loaded (#5901)
+- Fixed a new effect spending its first frame sliding in from where the last one in its slot ended up
 
 **Rendering**
 - Added an option for the wobbly geometry of the PlayStation releases (Graphic Options → Rendering → Vertex snapping)
@@ -97,6 +98,7 @@
 - Changed the brightness options to be given as percentages, as the volume options are
 - Changed reflections UV mapping to be more correct
 - Fixed a crash when drawing an animating object that has no frame data (#5869)
+- Fixed colored dynamic lights in TR1 and TR2 being drawn at the wrong brightness
 
 **Music and sound**
 - Added an option to keep the music playing when Lara dies (Sound Options → Misc → Play music after death) (#4221)
@@ -107,6 +109,7 @@
 - Improved the option descriptions, which now say which original game a setting matches, give the fog distances the originals used, and show the key each cheat is bound to (#4027)
 - Changed the Neutral twists option to Alternative turns, which now turns Lara on the spot and on monkeybars as well as twisting her in the air (Gameplay → Controls → Alternative turns)
 - Changed the presets to be listed by name rather than in the order they were found (Gameplay → Presets)
+- Changed a setting a script is holding to be greyed out, where the row carried only the star saying who took it
 - Fixed settings text running off both sides of the screen in the longer languages, most visibly at 4:3 (#6000)
 - Fixed the list of settings a preset would change spilling outside its dialog, and its text now wraps (#6000)
 
@@ -137,6 +140,10 @@
 - Changed the `/spawn`, `/kill` and `/tp` console commands to accept a family such as `pickup`, `door` or `enemy` in place of a name, and to offer the families each of them can act on in autocompletion
 - Changed the `/tp` console command to place Lara better at what she is sent to
 - Changed the developer console to accept the numpad Enter key for issuing commands (#6056)
+- Changed console commands to carry aliases, so `/help` lists one line per command and `--help` names the other words that reach it
+- Changed the `/abortion` console command to `/die`, keeping the Natla easter egg under `natlasucks` and `natla-stinks`
+- Changed the `/cutscene` console command to say up front when a game ships none, as `/demo` does
+- Changed the `/flood` and `/drain` console commands to say which room they changed, and to warn when it is already in that state rather than report a silent success
 - Fixed some console commands being able to target unintended items
 - Fixed the `/spawn` and `/kill` console commands not reaching army Winston
 - Fixed the `/teatime` console command summoning army Winston rather than Winston himself
@@ -144,6 +151,8 @@
 - Fixed the `/trigger` and `/untrigger` console commands crashing or doing nothing on some objects, so they now act on any item exactly as a level trigger would
 - Fixed the `/trigger`, `/untrigger` and `/kill` console commands being usable in demos and cutscenes
 - Fixed long messages in the developer console running past the right edge of the screen by 1 character
+- Fixed the `/cutscene` and `/demo` console commands playing the one after the number they were given
+- Fixed the `/play` console command starting the playthrough over only on the gym, so the rules and how wet Lara was carried over from the last run
 
 **Installer and mods**
 - Changed the installer to explain when it cannot download the files it needs, and to offer to try again (#6052)
@@ -238,6 +247,7 @@
 - Fixed animated textures, such as water surfaces, cycling at half their original speed
 - Fixed exploding deaths showing no flames or explosions
 - Fixed flares burning red and trailing sparks and bubbles, so they now burn green and cast only their light, as in the original game
+- Fixed flares playing a sound while they burn; they are silent, as in the original game
 - Fixed Lara being able to light a flare while crawling; she now refuses, as in the original game
 - Fixed Lara sidestepping in the wrong direction when turning off floor/crowbar switches
 - Fixed Lara attempting to interact with one-shot pulley switches
@@ -292,6 +302,7 @@ The Lua integration was rewritten and existing scripts will need updating; refer
 - Changed handles to compare equal when they name the same thing, so `trx.items[0] == trx.items[0]`
 - Changed `trx.items` and `trx.rooms` to count from zero, matching the item and room numbers level editors show, and made `pairs()` walk them keyed by that number
 - Changed room handles to go stale at a level change rather than quietly naming a different room
+- Changed the item, flip slot and music track trigger masks to the editor's own numbering, 0 to 31, where they carried their floordata bit positions
 - Changed `room.idx` to `room.num`
 - Changed `item.object_id` to be read-only
 - Changed `trx.objects[id]` to return `nil` for an unknown id, where it used to return an object that answered to nothing
