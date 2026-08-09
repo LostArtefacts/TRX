@@ -33,6 +33,7 @@ bool Lara_Col_TestVault(ITEM *item, COLL_INFO *coll);
 bool Lara_Col_TestSlide(ITEM *item, COLL_INFO *coll);
 bool Lara_Col_TestLadderHang(ITEM *item, const COLL_INFO *coll);
 bool Lara_Col_TestClimbStance(ITEM *item, const COLL_INFO *coll);
+int16_t Lara_Col_GetShimmyState(LARA_TRX_STATE state);
 bool Lara_Col_TestCeiling(ITEM *item, const COLL_INFO *coll);
 SWING_CATCH Lara_Col_TestHangSwingIn(const ITEM *item, int16_t angle);
 EDGE_CATCH Lara_Col_TestEdgeCatch(

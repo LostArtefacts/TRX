@@ -46,9 +46,9 @@ static void M_Hang(ITEM *const item, COLL_INFO *const coll)
         return;
     }
     if (g_Input.left || g_Input.step_left) {
-        item->goal_anim_state = LS(LS_SHIMMY_LEFT);
+        item->goal_anim_state = Lara_Col_GetShimmyState(LS_SHIMMY_LEFT);
     } else if (g_Input.right || g_Input.step_right) {
-        item->goal_anim_state = LS(LS_SHIMMY_RIGHT);
+        item->goal_anim_state = Lara_Col_GetShimmyState(LS_SHIMMY_RIGHT);
     }
 }
 

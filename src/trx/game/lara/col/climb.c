@@ -570,7 +570,8 @@ static bool M_TryCornerShimmy(ITEM *const item, COLL_INFO *const coll)
     }
 
     if (M_CanHangSideways(item, coll, left ? -DEG_90 : DEG_90)) {
-        item->goal_anim_state = LS(left ? LS_SHIMMY_LEFT : LS_SHIMMY_RIGHT);
+        item->goal_anim_state =
+            Lara_Col_GetShimmyState(left ? LS_SHIMMY_LEFT : LS_SHIMMY_RIGHT);
         return true;
     }
 
@@ -1404,6 +1405,15 @@ bool Lara_Col_TestClimbStance(ITEM *const item, const COLL_INFO *const coll)
 
     item->pos.y += shift;
     return true;
+}
+
+int16_t Lara_Col_GetShimmyState(const LARA_TRX_STATE state)
+{
+    if (!g_Config.gameplay.enable_fast_shimmying) {
+        return LS(state);
+    }
+    return LS(
+        state == LS_SHIMMY_LEFT ? LS_FAST_SHIMMY_LEFT : LS_FAST_SHIMMY_RIGHT);
 }
 
 // clang-format off

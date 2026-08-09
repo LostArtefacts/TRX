@@ -1335,7 +1335,7 @@
     },
     {
       "bulk": true,
-      "count": 133,
+      "count": 135,
       "description": "Every state Lara can be in.",
       "examples": [
         "if trx.lara.item.anim_state == trx.catalog.lara_states.RUN then ... end"
@@ -1374,6 +1374,8 @@
         "FAST_PICKUP",
         "FAST_PULL_BLOCK",
         "FAST_PUSH_BLOCK",
+        "FAST_SHIMMY_LEFT",
+        "FAST_SHIMMY_RIGHT",
         "FAST_TURN",
         "FLARE_PICKUP",
         "GLIDE",
@@ -1480,7 +1482,7 @@
     },
     {
       "bulk": true,
-      "count": 468,
+      "count": 470,
       "description": "Every animation Lara has.",
       "names": [
         "BEETLE_PUT",
@@ -1576,6 +1578,8 @@
         "FAST_PUSHABLE_PULL_STOP",
         "FAST_PUSHABLE_PUSH",
         "FAST_PUSHABLE_PUSH_STOP",
+        "FAST_SHIMMY_LEFT",
+        "FAST_SHIMMY_RIGHT",
         "FILL_WATERSKIN",
         "FLARE_PICKUP",
         "FLARE_THROW",

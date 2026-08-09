@@ -1100,6 +1100,10 @@
             "title": "\\{review}Szybkie podnoszenie",
             "description": "\\{review}Pozwala Larze szybciej podnosić przedmioty, podobnie jak w TR4+.",
         },
+        "gameplay.enable_fast_shimmying": {
+            "title": "\\{review}Szybkie przemieszczanie się w zwisie",
+            "description": "\\{review}Pozwala Larze poruszać się szybciej podczas przemieszczania się w lewo lub w prawo w zwisie.",
+        },
         "gameplay.enable_fmv": {
             "title": "Filmy",
             "description": "Włącza odtwarzanie filmów.",

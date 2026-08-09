@@ -1100,6 +1100,10 @@
             "title": "\\{review}Быстрый подбор",
             "description": "\\{review}Позволяет Ларе подбирать предметы быстрее, как в TR4+.",
         },
+        "gameplay.enable_fast_shimmying": {
+            "title": "\\{review}Быстрое перемещение в висе",
+            "description": "\\{review}Позволяет Ларе быстрее перемещаться влево и вправо, находясь в висе.",
+        },
         "gameplay.enable_fmv": {
             "title": "Видеоролики",
             "description": "Воспроизводить видеоролики.",
