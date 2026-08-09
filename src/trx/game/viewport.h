@@ -62,6 +62,11 @@ int16_t Viewport_GetUserFOV(void);
 // the player choice.
 int16_t Viewport_GetEffectiveFOV(void);
 
+// Suspends the supersampling factor, for pictures that are magnified from a
+// fixed source and so gain nothing from being rasterized above the resolution
+// they are shown at. VIEWPORT_GAME then matches VIEWPORT_SCENE.
+void Viewport_SetSupersamplingEnabled(bool enabled);
+
 // Returns the current FOV formula.
 FOV_MODE Viewport_GetFOVMode(void);
 

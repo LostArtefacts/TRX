@@ -19,6 +19,12 @@ void TRX_GL_Renderer_BindGeometryFbo(void);
 // Bind the UI framebuffer for rendering the UI overlay.
 void TRX_GL_Renderer_BindUiFbo(void);
 
+// Resize the framebuffers to the current viewport sizes. The renderer does
+// this itself once the frame has been presented; call it when the viewports
+// change between frames, so the next frame is not drawn into framebuffers of
+// the old size.
+void TRX_GL_Renderer_SyncFboSizes(void);
+
 // Resolve the geometry framebuffer down to VIEWPORT_SCENE and return the GL
 // object id holding the result (3D scene only, no UI). Multisampling and
 // supersampling both need this before the scene can be sampled or read back;

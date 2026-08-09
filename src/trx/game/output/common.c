@@ -152,6 +152,12 @@ void Output_SwitchViewport(const VIEWPORT_SPACE space)
     glClear(GL_DEPTH_BUFFER_BIT);
 }
 
+void Output_SetSupersamplingEnabled(const bool enabled)
+{
+    Viewport_SetSupersamplingEnabled(enabled);
+    TRX_GL_Renderer_SyncFboSizes();
+}
+
 void Output_ApplyRenderSettings(void)
 {
     Output_Textures_ApplyRenderSettings();
