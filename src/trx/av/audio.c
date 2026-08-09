@@ -33,6 +33,7 @@ static int32_t M_WorkerThread(void *const user_data)
 {
     while (SDL_AtomicGet(&m_WorkerStop) == 0) {
         Audio_Stream_Pump();
+        Audio_Sample_Pump();
         SDL_Delay(WORKER_TICK_MS);
     }
     return 0;

@@ -1,11 +1,12 @@
 #include <trx/av/audio_internal.h>
 
-#include <trx/core/benchmark.h>
 #include <trx/core/log.h>
 #include <trx/core/memory.h>
+#include <trx/core/utils.h>
 #include <trx/debug.h>
 #include <trx/version.h>
 
+#include <SDL2/SDL_atomic.h>
 #include <SDL2/SDL_audio.h>
 #include <errno.h>
 #include <libavcodec/avcodec.h>
@@ -14,8 +15,10 @@
 #include <libavformat/avformat.h>
 #include <libavformat/avio.h>
 #include <libavutil/avutil.h>
+#include <libavutil/channel_layout.h>
 #include <libavutil/error.h>
 #include <libavutil/frame.h>
+#include <libavutil/mathematics.h>
 #include <libavutil/mem.h>
 #include <libavutil/samplefmt.h>
 #include <libswresample/swresample.h>
@@ -24,23 +27,60 @@
 #include <stdio.h>
 #include <string.h>
 
+#define AVIO_BUFFER_SIZE 8192
+
+// Samples are mixed in mono: the game does its own 3D panning.
+#define SAMPLE_CHANNELS 1
+
+// How much new audio a single sample may produce per sweep, so a long sample
+// never holds up the streams sharing the worker.
+#define SAMPLE_CHUNK_SAMPLES (AUDIO_WORKING_RATE / 4)
+
+// Decoding writes a few samples more than the container duration suggests, as
+// the resampler rounds up. Room for a second of it costs nothing.
+#define SAMPLE_LENGTH_SLACK AUDIO_WORKING_RATE
+
 typedef struct {
-    struct {
-        int32_t format;
-        AVChannelLayout ch_layout;
-        int32_t sample_rate;
-    } src, dst;
-    SwrContext *ctx;
-    size_t working_buffer_size;
-    uint8_t *working_buffer;
-} M_SWR_CONTEXT;
+    const uint8_t *data;
+    const uint8_t *ptr;
+    int32_t size;
+    int32_t remaining;
+} AUDIO_AV_BUFFER;
+
+typedef struct {
+    AUDIO_AV_BUFFER buffer;
+    AVIOContext *avio_ctx;
+    AVFormatContext *format_ctx;
+    AVStream *stream;
+    AVCodecContext *codec_ctx;
+    AVPacket *packet;
+    AVFrame *frame;
+    SwrContext *swr_ctx;
+
+    float *pcm;
+    int32_t count;
+    int32_t capacity;
+    // Set when the container did not say how long the sample is. The buffer
+    // then has to grow, so it stays private until the decode finishes.
+    bool can_grow;
+
+    float *convert_buffer;
+    int32_t convert_capacity;
+} AUDIO_SAMPLE_DECODER;
 
 typedef struct {
     char *original_data;
     size_t original_size;
-    float *sample_data;
     int32_t channels;
-    int32_t num_samples;
+
+    // Owned by the decoder until it publishes it. The mixer reads
+    // `sample_data` only up to `ready_samples`, which the worker raises as it
+    // decodes, so the buffer is never reallocated underneath the mixer.
+    float *sample_data;
+    SDL_atomic_t ready_samples;
+    bool is_decoded;
+    bool is_queued;
+    AUDIO_SAMPLE_DECODER *decoder;
 } AUDIO_SAMPLE;
 
 typedef struct {
@@ -76,16 +116,11 @@ typedef struct {
     AUDIO_SAMPLE *sample;
 } AUDIO_SAMPLE_SOUND;
 
-typedef struct {
-    const uint8_t *data;
-    const uint8_t *ptr;
-    int32_t size;
-    int32_t remaining;
-} AUDIO_AV_BUFFER;
-
 static int32_t m_LoadedSamplesCount = 0;
 static AUDIO_SAMPLE m_LoadedSamples[AUDIO_MAX_SAMPLES] = {};
 static AUDIO_SAMPLE_SOUND m_Samples[AUDIO_MAX_ACTIVE_SAMPLES] = {};
+static int32_t m_DecodeQueue[AUDIO_MAX_SAMPLES] = {};
+static int32_t m_DecodeQueueCount = 0;
 
 static double M_DecibelToMultiplier(double db_gain)
 {
@@ -162,324 +197,317 @@ static int64_t M_SeekAVBuffer(void *opaque, int64_t offset, int32_t whence)
     return src->ptr - src->data;
 }
 
-static int32_t M_OutputAudioFrame(
-    M_SWR_CONTEXT *const swr, AVFrame *const frame)
+// Hands the decoder's own buffer over, or frees it when the sample never got
+// it. Everything else the decode needed goes with it.
+static void M_DecoderFree(AUDIO_SAMPLE *const sample)
 {
-    // Determine the maximum number of output samples this call can produce,
-    // based on the current delay already inside the resampler plus the new
-    // input. Using av_rescale_rnd() keeps everything in integer domain and
-    // avoids cumulative rounding errors.
-    const int64_t delay = swr_get_delay(swr->ctx, swr->src.sample_rate);
-    const int32_t out_samples = (int32_t)av_rescale_rnd(
-        delay + frame->nb_samples, swr->dst.sample_rate, swr->src.sample_rate,
-        AV_ROUND_UP);
-    if (out_samples <= 0) {
-        return 0; // nothing to do
+    AUDIO_SAMPLE_DECODER *const decoder = sample->decoder;
+    if (decoder == nullptr) {
+        return;
     }
 
-    uint8_t *out_buffer = nullptr;
-    if (av_samples_alloc(
-            &out_buffer, nullptr, swr->dst.ch_layout.nb_channels, out_samples,
-            swr->dst.format, 1)
-        < 0) {
-        return AVERROR(ENOMEM);
+    if (decoder->pcm != sample->sample_data) {
+        Memory_Free(decoder->pcm);
+    }
+    Memory_FreePointer(&decoder->convert_buffer);
+
+    if (decoder->swr_ctx != nullptr) {
+        swr_free(&decoder->swr_ctx);
+    }
+    if (decoder->frame != nullptr) {
+        av_frame_free(&decoder->frame);
+    }
+    if (decoder->packet != nullptr) {
+        av_packet_free(&decoder->packet);
+    }
+    if (decoder->codec_ctx != nullptr) {
+        avcodec_free_context(&decoder->codec_ctx);
+    }
+    if (decoder->format_ctx != nullptr) {
+        avformat_close_input(&decoder->format_ctx);
+    }
+    if (decoder->avio_ctx != nullptr) {
+        av_freep(&decoder->avio_ctx->buffer);
+        avio_context_free(&decoder->avio_ctx);
     }
 
-    // Convert – we do *not* drain the resampler here.
-    const int32_t converted = swr_convert(
-        swr->ctx, &out_buffer, out_samples, (const uint8_t **)frame->data,
-        frame->nb_samples);
-
-    if (converted < 0) {
-        av_freep(&out_buffer);
-        return converted; // propagate error
-    }
-
-    if (converted > 0) {
-        const int32_t out_buffer_size = av_samples_get_buffer_size(
-            nullptr, swr->dst.ch_layout.nb_channels, converted, swr->dst.format,
-            1);
-        if (out_buffer_size > 0) {
-            swr->working_buffer = Memory_Realloc(
-                swr->working_buffer,
-                swr->working_buffer_size + out_buffer_size);
-            memcpy(
-                swr->working_buffer + swr->working_buffer_size, out_buffer,
-                out_buffer_size);
-            swr->working_buffer_size += out_buffer_size;
-        }
-    }
-
-    av_freep(&out_buffer);
-    return 0;
+    Memory_FreePointer(&sample->decoder);
 }
 
-static int32_t M_DecodePacket(
-    AVCodecContext *const dec, const AVPacket *const pkt, AVFrame *frame,
-    M_SWR_CONTEXT *const swr)
+static bool M_DecoderOpen(AUDIO_SAMPLE *const sample)
 {
-    // Submit the packet to the decoder
-    int32_t ret = avcodec_send_packet(dec, pkt);
-    if (ret < 0) {
-        LOG_ERROR(
-            "Error submitting a packet for decoding (%s)\n", av_err2str(ret));
-        return ret;
-    }
+    ASSERT(sample->decoder == nullptr);
 
-    // Get all the available frames from the decoder
-    while (ret >= 0) {
-        ret = avcodec_receive_frame(dec, frame);
-        if (ret < 0) {
-            // those two return values are special and mean there is no output
-            // frame available, but there were no errors during decoding
-            if (ret == AVERROR_EOF || ret == AVERROR(EAGAIN)) {
-                return 0;
-            }
-            LOG_ERROR(
-                "Error receiving a frame for decoding (%s)\n", av_err2str(ret));
-            return ret;
-        }
+    AUDIO_SAMPLE_DECODER *const decoder =
+        Memory_Alloc(sizeof(AUDIO_SAMPLE_DECODER));
+    sample->decoder = decoder;
 
-        ret = M_OutputAudioFrame(swr, frame);
-        av_frame_unref(frame);
-    }
-
-    return ret;
-}
-
-static bool M_ConvertRawData(
-    const uint8_t *const original_data, const int32_t original_size,
-    const int32_t dst_sample_rate, const int32_t dst_format,
-    const int32_t dst_channel_count, uint8_t **const out_sample_data,
-    size_t *const out_size, size_t *const out_sample_count)
-{
-    bool result = false;
-
-    struct {
-        size_t read_buffer_size;
-        AVIOContext *avio_context;
-        AVStream *stream;
-        AVFormatContext *format_ctx;
-        const AVCodec *codec;
-        AVCodecContext *codec_ctx;
-        AVPacket *packet;
-        AVFrame *frame;
-    } av = {
-        .read_buffer_size = 8192,
-        .avio_context = nullptr,
-        .stream = nullptr,
-        .format_ctx = nullptr,
-        .codec = nullptr,
-        .codec_ctx = nullptr,
-        .packet = nullptr,
-        .frame = nullptr,
+    decoder->buffer = (AUDIO_AV_BUFFER) {
+        .data = (const uint8_t *)sample->original_data,
+        .ptr = (const uint8_t *)sample->original_data,
+        .size = sample->original_size,
+        .remaining = sample->original_size,
     };
 
-    M_SWR_CONTEXT swr = {};
-    int32_t error_code;
-
-    uint8_t *const read_buffer = av_malloc(av.read_buffer_size);
-    if (read_buffer == nullptr) {
+    int32_t error_code = 0;
+    decoder->avio_ctx = avio_alloc_context(
+        av_malloc(AVIO_BUFFER_SIZE), AVIO_BUFFER_SIZE, 0, &decoder->buffer,
+        M_ReadAVBuffer, nullptr, M_SeekAVBuffer);
+    if (decoder->avio_ctx == nullptr) {
         error_code = AVERROR(ENOMEM);
-        goto cleanup;
+        goto fail;
     }
 
-    AUDIO_AV_BUFFER av_buf = {
-        .data = original_data,
-        .ptr = original_data,
-        .size = original_size,
-        .remaining = original_size,
-    };
-
-    av.avio_context = avio_alloc_context(
-        read_buffer, av.read_buffer_size, 0, &av_buf, M_ReadAVBuffer, nullptr,
-        M_SeekAVBuffer);
-
-    av.format_ctx = avformat_alloc_context();
-    av.format_ctx->pb = av.avio_context;
-    error_code = avformat_open_input(&av.format_ctx, "mem:", nullptr, nullptr);
-    if (error_code != 0) {
-        goto cleanup;
-    }
-
-    error_code = avformat_find_stream_info(av.format_ctx, nullptr);
-    if (error_code < 0) {
-        goto cleanup;
-    }
-
-    av.stream = nullptr;
-    for (uint32_t i = 0; i < av.format_ctx->nb_streams; i++) {
-        AVStream *current_stream = av.format_ctx->streams[i];
-        if (current_stream->codecpar->codec_type == AVMEDIA_TYPE_AUDIO) {
-            av.stream = current_stream;
-            break;
-        }
-    }
-    if (av.stream == nullptr) {
-        error_code = AVERROR_STREAM_NOT_FOUND;
-        goto cleanup;
-    }
-
-    av.codec = avcodec_find_decoder(av.stream->codecpar->codec_id);
-    if (av.codec == nullptr) {
-        error_code = AVERROR_DEMUXER_NOT_FOUND;
-        goto cleanup;
-    }
-
-    av.codec_ctx = avcodec_alloc_context3(av.codec);
-    if (av.codec_ctx == nullptr) {
+    decoder->format_ctx = avformat_alloc_context();
+    if (decoder->format_ctx == nullptr) {
         error_code = AVERROR(ENOMEM);
-        goto cleanup;
+        goto fail;
     }
+    decoder->format_ctx->pb = decoder->avio_ctx;
 
     error_code =
-        avcodec_parameters_to_context(av.codec_ctx, av.stream->codecpar);
-    if (error_code) {
-        goto cleanup;
-    }
-
-    error_code = avcodec_open2(av.codec_ctx, av.codec, nullptr);
-    if (error_code < 0) {
-        goto cleanup;
-    }
-
-    av.packet = av_packet_alloc();
-    if (av.packet == nullptr) {
-        error_code = AVERROR(ENOMEM);
-        goto cleanup;
-    }
-
-    av.frame = av_frame_alloc();
-    if (av.frame == nullptr) {
-        error_code = AVERROR(ENOMEM);
-        goto cleanup;
-    }
-
-    swr.src.sample_rate = av.codec_ctx->sample_rate;
-    swr.src.ch_layout = av.codec_ctx->ch_layout;
-    swr.src.format = av.codec_ctx->sample_fmt;
-    swr.dst.sample_rate = AUDIO_WORKING_RATE;
-    av_channel_layout_default(&swr.dst.ch_layout, dst_channel_count);
-    swr.dst.format = Audio_GetAVAudioFormat(AUDIO_WORKING_FORMAT);
-    swr_alloc_set_opts2(
-        &swr.ctx, &swr.dst.ch_layout, swr.dst.format, swr.dst.sample_rate,
-        &swr.src.ch_layout, swr.src.format, swr.src.sample_rate, 0, 0);
-    if (swr.ctx == nullptr) {
-        av_packet_unref(av.packet);
-        error_code = AVERROR(ENOMEM);
-        goto cleanup;
-    }
-
-    error_code = swr_init(swr.ctx);
+        avformat_open_input(&decoder->format_ctx, "mem:", nullptr, nullptr);
     if (error_code != 0) {
-        av_packet_unref(av.packet);
-        goto cleanup;
+        goto fail;
     }
 
-    while ((error_code = av_read_frame(av.format_ctx, av.packet)) >= 0) {
-        M_DecodePacket(av.codec_ctx, av.packet, av.frame, &swr);
-        av_packet_unref(av.packet);
-        if (error_code < 0) {
+    error_code = avformat_find_stream_info(decoder->format_ctx, nullptr);
+    if (error_code < 0) {
+        goto fail;
+    }
+
+    for (uint32_t i = 0; i < decoder->format_ctx->nb_streams; i++) {
+        AVStream *const stream = decoder->format_ctx->streams[i];
+        if (stream->codecpar->codec_type == AVMEDIA_TYPE_AUDIO) {
+            decoder->stream = stream;
             break;
         }
     }
-
-    if (av.codec_ctx != nullptr) {
-        M_DecodePacket(av.codec_ctx, nullptr, av.frame, &swr);
+    if (decoder->stream == nullptr) {
+        error_code = AVERROR_STREAM_NOT_FOUND;
+        goto fail;
     }
 
-    if (error_code == AVERROR_EOF) {
-        error_code = 0;
-    } else if (error_code < 0) {
-        goto cleanup;
+    const AVCodec *const codec =
+        avcodec_find_decoder(decoder->stream->codecpar->codec_id);
+    if (codec == nullptr) {
+        error_code = AVERROR_DEMUXER_NOT_FOUND;
+        goto fail;
     }
 
-    if (out_size != nullptr) {
-        *out_size = swr.working_buffer_size;
+    decoder->codec_ctx = avcodec_alloc_context3(codec);
+    if (decoder->codec_ctx == nullptr) {
+        error_code = AVERROR(ENOMEM);
+        goto fail;
     }
-    if (out_sample_count != nullptr) {
-        *out_sample_count = (int32_t)swr.working_buffer_size
-            / av_get_bytes_per_sample(swr.dst.format)
-            / swr.dst.ch_layout.nb_channels;
-    }
-    if (out_sample_data != nullptr) {
-        *out_sample_data = swr.working_buffer;
-    } else {
-        Memory_FreePointer(&swr.working_buffer);
-    }
-    result = true;
 
-cleanup:
+    error_code = avcodec_parameters_to_context(
+        decoder->codec_ctx, decoder->stream->codecpar);
     if (error_code != 0) {
-        LOG_ERROR("Error while decoding sample: %s", av_err2str(error_code));
+        goto fail;
     }
 
-    if (!result) {
-        if (out_size != nullptr) {
-            *out_size = 0;
-        }
-        if (out_sample_count != nullptr) {
-            *out_sample_count = 0;
-        }
-        if (out_sample_data != nullptr) {
-            *out_sample_data = nullptr;
-        }
-        Memory_FreePointer(&swr.working_buffer);
+    error_code = avcodec_open2(decoder->codec_ctx, codec, nullptr);
+    if (error_code < 0) {
+        goto fail;
     }
 
-    if (swr.ctx) {
-        swr_free(&swr.ctx);
+    decoder->packet = av_packet_alloc();
+    decoder->frame = av_frame_alloc();
+    if (decoder->packet == nullptr || decoder->frame == nullptr) {
+        error_code = AVERROR(ENOMEM);
+        goto fail;
     }
-    if (av.frame) {
-        av_frame_free(&av.frame);
+
+    AVChannelLayout dst_layout;
+    av_channel_layout_default(&dst_layout, SAMPLE_CHANNELS);
+    swr_alloc_set_opts2(
+        &decoder->swr_ctx, &dst_layout,
+        Audio_GetAVAudioFormat(AUDIO_WORKING_FORMAT), AUDIO_WORKING_RATE,
+        &decoder->codec_ctx->ch_layout, decoder->codec_ctx->sample_fmt,
+        decoder->codec_ctx->sample_rate, 0, 0);
+    if (decoder->swr_ctx == nullptr) {
+        error_code = AVERROR(ENOMEM);
+        goto fail;
     }
-    if (av.packet) {
-        av_packet_free(&av.packet);
+    error_code = swr_init(decoder->swr_ctx);
+    if (error_code != 0) {
+        goto fail;
     }
-    av.codec = nullptr;
-    if (av.codec_ctx) {
-        avcodec_free_context(&av.codec_ctx);
+
+    const int64_t duration = decoder->format_ctx->duration;
+    decoder->can_grow = duration <= 0;
+    decoder->capacity = decoder->can_grow
+        ? AUDIO_WORKING_RATE
+        : av_rescale_rnd(
+              duration, AUDIO_WORKING_RATE, AV_TIME_BASE, AV_ROUND_UP)
+            + SAMPLE_LENGTH_SLACK;
+    decoder->pcm = Memory_Alloc(decoder->capacity * sizeof(float));
+
+    sample->channels = SAMPLE_CHANNELS;
+    if (!decoder->can_grow) {
+        sample->sample_data = decoder->pcm;
     }
-    if (av.format_ctx) {
-        avformat_close_input(&av.format_ctx);
-    }
-    if (av.avio_context) {
-        av_freep(&av.avio_context->buffer);
-        avio_context_free(&av.avio_context);
-    }
-    return result;
+    return true;
+
+fail:
+    LOG_ERROR("Error while decoding sample: %s", av_err2str(error_code));
+    M_DecoderFree(sample);
+    return false;
 }
 
-static bool M_ConvertSample(const int32_t sample_id)
+static void M_DecoderAppend(
+    AUDIO_SAMPLE *const sample, const float *const data, const int32_t count)
 {
-    ASSERT(sample_id >= 0 && sample_id < m_LoadedSamplesCount);
+    AUDIO_SAMPLE_DECODER *const decoder = sample->decoder;
+
+    if (decoder->count + count > decoder->capacity) {
+        if (!decoder->can_grow) {
+            LOG_ERROR("Sample runs past the length its container declares");
+            return;
+        }
+        decoder->capacity = MAX(decoder->capacity * 2, decoder->count + count);
+        decoder->pcm =
+            Memory_Realloc(decoder->pcm, decoder->capacity * sizeof(float));
+    }
+
+    memcpy(decoder->pcm + decoder->count, data, count * sizeof(float));
+    decoder->count += count;
+
+    if (!decoder->can_grow) {
+        SDL_AtomicSet(&sample->ready_samples, decoder->count);
+    }
+}
+
+static void M_DecoderConvert(AUDIO_SAMPLE *const sample, AVFrame *const frame)
+{
+    AUDIO_SAMPLE_DECODER *const decoder = sample->decoder;
+
+    const int32_t max_samples =
+        swr_get_out_samples(decoder->swr_ctx, frame->nb_samples);
+    if (max_samples <= 0) {
+        return;
+    }
+
+    if (max_samples > decoder->convert_capacity) {
+        decoder->convert_capacity = max_samples;
+        decoder->convert_buffer = Memory_Realloc(
+            decoder->convert_buffer, max_samples * sizeof(float));
+    }
+
+    uint8_t *out_buffer = (uint8_t *)decoder->convert_buffer;
+    const int32_t converted = swr_convert(
+        decoder->swr_ctx, &out_buffer, max_samples,
+        (const uint8_t **)frame->data, frame->nb_samples);
+    if (converted > 0) {
+        M_DecoderAppend(sample, decoder->convert_buffer, converted);
+    }
+}
+
+static void M_DecoderDrain(AUDIO_SAMPLE *const sample)
+{
+    AUDIO_SAMPLE_DECODER *const decoder = sample->decoder;
+
+    while (avcodec_receive_frame(decoder->codec_ctx, decoder->frame) >= 0) {
+        M_DecoderConvert(sample, decoder->frame);
+        av_frame_unref(decoder->frame);
+    }
+    av_frame_unref(decoder->frame);
+}
+
+static bool M_DecoderStep(AUDIO_SAMPLE *const sample)
+{
+    AUDIO_SAMPLE_DECODER *const decoder = sample->decoder;
+
+    if (av_read_frame(decoder->format_ctx, decoder->packet) < 0) {
+        avcodec_send_packet(decoder->codec_ctx, nullptr);
+        M_DecoderDrain(sample);
+        return false;
+    }
+
+    if (decoder->packet->stream_index == decoder->stream->index
+        && avcodec_send_packet(decoder->codec_ctx, decoder->packet) >= 0) {
+        M_DecoderDrain(sample);
+    }
+    av_packet_unref(decoder->packet);
+    return true;
+}
+
+static void M_DecoderClose(AUDIO_SAMPLE *const sample)
+{
+    AUDIO_SAMPLE_DECODER *const decoder = sample->decoder;
+
+    if (decoder->can_grow) {
+        Audio_LockDevice();
+        sample->sample_data = decoder->pcm;
+        SDL_AtomicSet(&sample->ready_samples, decoder->count);
+        Audio_UnlockDevice();
+    }
+
+    sample->is_decoded = true;
+    M_DecoderFree(sample);
+}
+
+static void M_DequeueDecode(const int32_t queue_idx)
+{
+    m_LoadedSamples[m_DecodeQueue[queue_idx]].is_queued = false;
+    m_DecodeQueue[queue_idx] = m_DecodeQueue[--m_DecodeQueueCount];
+}
+
+static void M_QueueDecode(const int32_t sample_id)
+{
     AUDIO_SAMPLE *const sample = &m_LoadedSamples[sample_id];
-    if (sample->sample_data != nullptr) {
-        return true;
+    if (sample->is_decoded || sample->is_queued) {
+        return;
     }
-
-    size_t num_samples;
-    BENCHMARK benchmark = Benchmark_Start();
-
-    const bool result = M_ConvertRawData(
-        (uint8_t *)sample->original_data, sample->original_size,
-        AUDIO_WORKING_RATE, Audio_GetAVAudioFormat(AUDIO_WORKING_FORMAT), 1,
-        (uint8_t **)&sample->sample_data, nullptr, &num_samples);
-
-    char buffer[80];
-    sprintf(buffer, "sample %d decoded", sample_id);
-    Benchmark_End(&benchmark, buffer);
-
-    sample->channels = 1;
-    sample->num_samples = num_samples;
-    return result;
+    sample->is_queued = true;
+    m_DecodeQueue[m_DecodeQueueCount++] = sample_id;
 }
 
-static bool M_IsOriginalDataDefined(const int32_t sample_id)
+static void M_CancelDecode(AUDIO_SAMPLE *const sample)
 {
-    ASSERT(sample_id >= 0 && sample_id < m_LoadedSamplesCount);
-    const AUDIO_SAMPLE *const sample = &m_LoadedSamples[sample_id];
-    return sample->original_data != nullptr;
+    for (int32_t i = 0; i < m_DecodeQueueCount; i++) {
+        if (&m_LoadedSamples[m_DecodeQueue[i]] == sample) {
+            M_DequeueDecode(i);
+            break;
+        }
+    }
+    M_DecoderFree(sample);
+}
+
+// Drops every sound playing the given sample, so its buffer can be freed. The
+// device lock must be held.
+static void M_DropSoundsOfSample(const AUDIO_SAMPLE *const sample)
+{
+    for (int32_t sound_id = 0; sound_id < AUDIO_MAX_ACTIVE_SAMPLES;
+         sound_id++) {
+        AUDIO_SAMPLE_SOUND *const sound = &m_Samples[sound_id];
+        if (sound->sample == sample) {
+            sound->is_used = false;
+            sound->is_playing = false;
+            sound->sample = nullptr;
+        }
+    }
+}
+
+static void M_UnloadSample(AUDIO_SAMPLE *const sample)
+{
+    if (sample->original_data == nullptr && sample->sample_data == nullptr) {
+        return;
+    }
+
+    M_CancelDecode(sample);
+
+    Audio_LockDevice();
+    M_DropSoundsOfSample(sample);
+    Memory_FreePointer(&sample->sample_data);
+    SDL_AtomicSet(&sample->ready_samples, 0);
+    Audio_UnlockDevice();
+
+    Memory_FreePointer(&sample->original_data);
+    sample->original_size = 0;
+    sample->channels = 0;
+    sample->is_decoded = false;
 }
 
 void Audio_Sample_Init(void)
@@ -503,6 +531,29 @@ void Audio_Sample_Shutdown(void)
     Audio_Sample_UnloadAll();
 }
 
+void Audio_Sample_Pump(void)
+{
+    Audio_WorkerLock();
+    for (int32_t i = 0; i < m_DecodeQueueCount; i++) {
+        AUDIO_SAMPLE *const sample = &m_LoadedSamples[m_DecodeQueue[i]];
+
+        if (sample->decoder == nullptr && !M_DecoderOpen(sample)) {
+            M_DequeueDecode(i--);
+            continue;
+        }
+
+        const int32_t target = sample->decoder->count + SAMPLE_CHUNK_SAMPLES;
+        while (sample->decoder->count < target) {
+            if (!M_DecoderStep(sample)) {
+                M_DecoderClose(sample);
+                M_DequeueDecode(i--);
+                break;
+            }
+        }
+    }
+    Audio_WorkerUnlock();
+}
+
 bool Audio_Sample_Unload(const int32_t sample_id)
 {
     if (sample_id < 0 || sample_id >= AUDIO_MAX_SAMPLES) {
@@ -510,26 +561,27 @@ bool Audio_Sample_Unload(const int32_t sample_id)
         return false;
     }
 
-    bool result = false;
     AUDIO_SAMPLE *const sample = &m_LoadedSamples[sample_id];
-    if (sample->sample_data == nullptr) {
+    if (sample->original_data == nullptr) {
         LOG_ERROR("Sample %d is already unloaded", sample_id);
         return false;
     }
-    Memory_FreePointer(&sample->sample_data);
-    Memory_FreePointer(&sample->original_data);
+
+    Audio_WorkerLock();
+    M_UnloadSample(sample);
+    Audio_WorkerUnlock();
     m_LoadedSamplesCount--;
     return true;
 }
 
 bool Audio_Sample_UnloadAll(void)
 {
+    Audio_WorkerLock();
     m_LoadedSamplesCount = 0;
     for (int32_t i = 0; i < AUDIO_MAX_SAMPLES; i++) {
-        AUDIO_SAMPLE *const sample = &m_LoadedSamples[i];
-        Memory_FreePointer(&sample->sample_data);
-        Memory_FreePointer(&sample->original_data);
+        M_UnloadSample(&m_LoadedSamples[i]);
     }
+    Audio_WorkerUnlock();
     return true;
 }
 
@@ -579,11 +631,14 @@ int32_t Audio_Sample_Play(
         return AUDIO_NO_SOUND;
     }
 
-    if (!M_IsOriginalDataDefined(sample_id)) {
+    if (m_LoadedSamples[sample_id].original_data == nullptr) {
         return AUDIO_NO_SOUND;
     }
 
     int32_t result = AUDIO_NO_SOUND;
+
+    Audio_WorkerLock();
+    M_QueueDecode(sample_id);
 
     Audio_LockDevice();
     for (int32_t sound_id = 0; sound_id < AUDIO_MAX_ACTIVE_SAMPLES;
@@ -592,8 +647,6 @@ int32_t Audio_Sample_Play(
         if (sound->is_used) {
             continue;
         }
-
-        M_ConvertSample(sample_id);
 
         sound->is_used = true;
         sound->is_playing = true;
@@ -610,6 +663,7 @@ int32_t Audio_Sample_Play(
         break;
     }
     Audio_UnlockDevice();
+    Audio_WorkerUnlock();
 
     if (result == AUDIO_NO_SOUND) {
         LOG_ERROR("All sample buffers are used!");
@@ -775,39 +829,45 @@ void Audio_Sample_Mix(float *dst_buffer, size_t len)
             continue;
         }
 
+        AUDIO_SAMPLE *const sample = sound->sample;
+        const int32_t ready = SDL_AtomicGet(&sample->ready_samples);
+        if (ready <= 0) {
+            continue;
+        }
+
         int32_t samples_requested =
             len / sizeof(AUDIO_WORKING_FORMAT) / AUDIO_WORKING_CHANNELS;
         float src_sample_idx = sound->current_sample;
-        const float *src_buffer = sound->sample->sample_data;
+        const float *src_buffer = sample->sample_data;
         float *dst_ptr = dst_buffer;
 
         while ((dst_ptr - dst_buffer) / AUDIO_WORKING_CHANNELS
                < samples_requested) {
 
+            if ((int32_t)src_sample_idx >= ready) {
+                // the decoder has not caught up yet, or the sample ended
+                if (!sample->is_decoded || !sound->is_looped) {
+                    break;
+                }
+                src_sample_idx = 0.0f;
+            }
+
             // because we handle 3d sound ourselves, downmix to mono
             float src_sample = 0.0f;
-            for (int32_t i = 0; i < sound->sample->channels; i++) {
-                src_sample += src_buffer
-                    [(int32_t)src_sample_idx * sound->sample->channels + i];
+            for (int32_t i = 0; i < sample->channels; i++) {
+                src_sample +=
+                    src_buffer[(int32_t)src_sample_idx * sample->channels + i];
             }
-            src_sample /= (float)sound->sample->channels;
+            src_sample /= (float)sample->channels;
 
             *dst_ptr++ += src_sample * sound->volume_l;
             *dst_ptr++ += src_sample * sound->volume_r;
             src_sample_idx += sound->pitch;
-
-            if ((int32_t)src_sample_idx >= sound->sample->num_samples) {
-                if (sound->is_looped) {
-                    src_sample_idx = 0.0f;
-                } else {
-                    break;
-                }
-            }
         }
 
         sound->current_sample = src_sample_idx;
-        if (sound->current_sample >= sound->sample->num_samples
-            && !sound->is_looped) {
+        if (sample->is_decoded && !sound->is_looped
+            && (int32_t)src_sample_idx >= ready) {
             Audio_Sample_Close(sound_id);
         }
     }
