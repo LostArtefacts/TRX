@@ -350,7 +350,7 @@ The ids in a catalog are TRX's own, and they are the same in all four games. The
 
     </details>
 
-- <a id="catalog.lara_states" name="catalog.lara_states"></a>[lua]`trx.catalog.lara_states` - 135 names
+- <a id="catalog.lara_states" name="catalog.lara_states"></a>[lua]`trx.catalog.lara_states` - 136 names
 
     Every state Lara can be in.
 
@@ -368,7 +368,7 @@ The ids in a catalog are TRX's own, and they are the same in all four games. The
     `CRAWL_JUMP_DOWN`, `CRAWL_TO_CLIMB`, `CRAWL_TURN_LEFT`, `CRAWL_TURN_RIGHT`,
     `CROUCH_IDLE`, `CROUCH_ROLL`, `CROUCH_TURN_LEFT`, `CROUCH_TURN_RIGHT`,
     `CROWBAR_PICKUP`, `DEATH`, `DIE_MIDAS`, `DIVE`, `FALL_BACK`, `FAST_BACK`,
-    `FAST_DIVE`, `FAST_FALL`, `FAST_PICKUP`, `FAST_PULL_BLOCK`,
+    `FAST_DIVE`, `FAST_FALL`, `FAST_PICKUP`, `FAST_PULL_BLOCK`, `FAST_PULL_UP`,
     `FAST_PUSH_BLOCK`, `FAST_SHIMMY_LEFT`, `FAST_SHIMMY_RIGHT`, `FAST_TURN`,
     `FLARE_PICKUP`, `GLIDE`, `GYMNAST`, `HANG`, `HIDDEN_PICKUP`, `JUMP_BACK`,
     `JUMP_FORWARD`, `JUMP_LEFT`, `JUMP_RIGHT`, `JUMP_UP`, `KICK`, `LAND`,
@@ -393,7 +393,7 @@ The ids in a catalog are TRX's own, and they are the same in all four games. The
 
     </details>
 
-- <a id="catalog.lara_anims" name="catalog.lara_anims"></a>[lua]`trx.catalog.lara_anims` - 470 names
+- <a id="catalog.lara_anims" name="catalog.lara_anims"></a>[lua]`trx.catalog.lara_anims` - 471 names
 
     Every animation Lara has.
 
@@ -429,13 +429,13 @@ The ids in a catalog are TRX's own, and they are the same in all four games. The
     `DEATH_BIG_SCORPION`, `DEATH_BLOWUP`, `DEATH_JUMP`, `DEATH_MAGIC_UNUSED`,
     `DEATH_SETH`, `DETONATOR_USE`, `DOOR_KICK`, `DOOR_OPEN_BACK`,
     `DOOR_OPEN_FORWARD`, `DOUBLEDOORS_PUSH`, `DRAG_BODY`, `FALL`, `FALL_BACK`,
-    `FALL_CROUCHING_LANDING`, `FALL_START`, `FALL_TO_FREEFALL`, `FAST_PICKUP`,
-    `FAST_PUSHABLE_PULL`, `FAST_PUSHABLE_PULL_STOP`, `FAST_PUSHABLE_PUSH`,
-    `FAST_PUSHABLE_PUSH_STOP`, `FAST_SHIMMY_LEFT`, `FAST_SHIMMY_RIGHT`,
-    `FILL_WATERSKIN`, `FLARE_PICKUP`, `FLARE_THROW`, `FLOOR_TRAPDOOR_OPEN`,
-    `FREEFALL`, `FREEFALL_LAND`, `FREEFALL_LAND_DEATH`, `FREEFALL_SWANDIVE`,
-    `FREEFALL_SWANDIVE_TO_UNDERWATER`, `FREEFALL_TO_UNDERWATER`,
-    `GIANT_BUTTON_PUSH`, `HANG_CORNER_LEFT_INNER_END`,
+    `FALL_CROUCHING_LANDING`, `FALL_START`, `FALL_TO_FREEFALL`, `FAST_CLIMB_ON`,
+    `FAST_PICKUP`, `FAST_PUSHABLE_PULL`, `FAST_PUSHABLE_PULL_STOP`,
+    `FAST_PUSHABLE_PUSH`, `FAST_PUSHABLE_PUSH_STOP`, `FAST_SHIMMY_LEFT`,
+    `FAST_SHIMMY_RIGHT`, `FILL_WATERSKIN`, `FLARE_PICKUP`, `FLARE_THROW`,
+    `FLOOR_TRAPDOOR_OPEN`, `FREEFALL`, `FREEFALL_LAND`, `FREEFALL_LAND_DEATH`,
+    `FREEFALL_SWANDIVE`, `FREEFALL_SWANDIVE_TO_UNDERWATER`,
+    `FREEFALL_TO_UNDERWATER`, `GIANT_BUTTON_PUSH`, `HANG_CORNER_LEFT_INNER_END`,
     `HANG_CORNER_LEFT_INNER_START`, `HANG_CORNER_LEFT_OUTER_END`,
     `HANG_CORNER_LEFT_OUTER_START`, `HANG_CORNER_RIGHT_INNER_END`,
     `HANG_CORNER_RIGHT_INNER_START`, `HANG_CORNER_RIGHT_OUTER_END`,

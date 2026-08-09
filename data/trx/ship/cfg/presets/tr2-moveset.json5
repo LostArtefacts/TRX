@@ -8,6 +8,7 @@
         "gameplay.enable_corner_shimmying": false,
         "gameplay.enable_crawling": false,
         "gameplay.enable_fast_pickups": false,
+        "gameplay.enable_fast_pull_up": false,
         "gameplay.enable_fast_shimmying": false,
         "gameplay.enable_inverted_look": false,
         "gameplay.enable_jump_twists": true,
