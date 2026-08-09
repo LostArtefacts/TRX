@@ -9,285 +9,30 @@ order: 3
 
 ### Version 1.9 to 1.10
 
-1. **Update scripts that use item handles**
-   `trx.items` hands out opaque item handles rather than `{ idx = ... }` tables.
-   - `trx.items.fn` was removed. Replace `trx.items.fn.get(arg)` with
-     `trx.items.get(arg)`, or index the module directly: `trx.items[16]`,
-     `trx.items["lara"]`.
-   - Items count from 0, matching the item numbers level editors show. An item
-     that was `trx.items[13]` under the earlier 1-based numbering is
-     `trx.items[12]` now. `item.room_num` and the item number `on_pickup` passes
-     its handler count from 0 as well.
-   - `pairs(trx.items)` walks the items in order, keyed by that number, so
-     `for i = 1, #trx.items do local item = trx.items[i]` becomes
-     `for num, item in pairs(trx.items) do`.
-   - `item.idx` no longer exists, and a handle can no longer carry extra keys of
-     your own. Pass the handle itself where you used to pass the index.
-   - A handle to a killed or recycled item now raises `stale ITEM handle` when
-     read or written, instead of silently addressing the item that took over the
-     slot. Guard handles held across time with `item:is_valid()`.
-   - Two handles are equal when they name the same thing, so
-     `trx.items[0] == trx.items[0]` is now true where it used to be false - every
-     lookup handed back a fresh handle. A stale handle does not equal a live one.
-   - Writing a value a field cannot hold now raises instead of truncating - e.g.
-     `item.hit_points = 99999`, where the field is 16-bit.
-   - `pairs(item)` iterates the item's public fields; it used to yield `idx`
-     alone.
-   - `trx.items.find(query)` and `trx.items.first(query)` were removed.
-     `trx.items.query` does both: `trx.items.query:of_object(id):matches()` for
-     the list and `:first()` for one, with `:in_room(num)` in place of the
-     `room_num` key. `of_object` also takes a name, not just an id.
-   - `item.flags` was removed. Read the trigger bits it packed through the
-     named properties instead: `item.trigger_mask`, `item.is_reversed`,
-     `item.is_triggered`, `item.is_killed` and `item.is_one_shot`.
+The Lua API was rewritten, and most of what it breaks is a rename. Run your
+scripts with `trx.api.strict()` turned on and fix what it reports, then read
+"Changed behavior" below - those are the changes that leave a script running
+and doing something else.
 
-2. **Update scripts that use room handles**
-   `trx.rooms` hands out opaque room handles rather than `{ idx = ... }` tables.
-   - `room.idx` was replaced by `room.num`.
-   - Rooms count from 0, matching the room numbers level editors show. A room
-     that was `trx.rooms[15]` under the earlier 1-based numbering is
-     `trx.rooms[14]` now. `camera.room_num`, `camera.target_room_num` and the
-     room argument to `trx.rooms.find_valid_pos` count from 0 as well.
-   - `pairs(trx.rooms)` walks the rooms in order, keyed by that number, so
-     `for i = 1, #trx.rooms do local room = trx.rooms[i]` becomes
-     `for num, room in pairs(trx.rooms) do`.
-   - `trx.rooms.fn` was removed. Replace `trx.rooms.fn.get(num)` with
-     `trx.rooms.get(num)`, or index the module directly: `trx.rooms[14]`.
-     `trx.rooms.fn.FlipStatus` is now `trx.rooms.FlipStatus`, and
-     `trx.rooms.fn.Room`, `trx.rooms.fn.flip` and `trx.rooms.fn.flip_effect`
-     became `trx.rooms.Room`, `trx.rooms.flip` and `trx.rooms.flip_effect`.
-   - A room handle now goes stale when the level changes, as an item handle
-     already did: reading or writing a field raises `stale ROOM handle` rather
-     than naming the room that sits at that number in the new level. Guard a
-     handle held across time with `room:is_valid()`. Handles compare by identity,
-     as item handles do.
-   - An unset room flag now reads as `false` rather than `nil`, so
-     `if room.underwater == nil` no longer detects a dry room. Test the flag
-     itself.
-   - Room flags accept booleans only. `room.wind = 1` and `room.cold = nil` used
-     to be silently accepted and now raise.
-   - `trx.rooms["5"]` no longer resolves - index with a number, not a numeric
-     string.
-   - Writing to an out-of-range room raises instead of silently doing nothing.
+#### Game flow and level data
 
-3. **Update scripts that compare `trx.config.get()` against a string**
-   It returns the option's own type now: a boolean option reads as a boolean and
-   a number as a number. `trx.config.get("flow.cheat_keys") == "true"` is now
-   false regardless of the setting - drop the comparison and test the value:
-   `if trx.config.get("flow.cheat_keys") then`. Colors and enums are still
-   strings.
+1. **Name Lua scripts after what they belong to**
+   A game flow no longer declares its scripts; both the global `main_script`
+   key and each level's `script` key were removed. A level loading `wall.tr2`
+   runs `scripts/wall.lua` in its own game's directory, so rename any script
+   whose name does not already match its level. What `main_script` pointed at
+   goes in `scripts/_game.lua`, which the game runs as it starts.
 
-   `trx.config.set()` still writes to the player's settings and keeps the
-   change. Use the new `trx.config.override()` for anything a level wants only
-   while it is running - it leaves the player's own value underneath, and
-   `trx.config.restore()` puts it back.
+   A game that extends another looks in its own directory alone, and brings
+   its own copy of any level script it wants. One that ships no `_game.lua`
+   runs its base game's.
 
-4. **Update scripts that read `trx.lara.extra_anim`**
-   It is a boolean now - whether a scripted animation is driving Lara - where
-   it used to be the relative animation number of `O_LARA_EXTRA`, or `-1` when
-   she was in no such animation. `if trx.lara.extra_anim ~= -1` is now always
-   true, and comparing it against a number raises. Test the boolean:
-   `if trx.lara.extra_anim then`. The animation number itself is no longer
-   exposed; read `trx.lara.item.anim_num` if you need it.
+2. **Update Lara's outfit definitions**
+   The `braid` entries became arrays, to support up to two, and a
+   `joints_object` can be given for TR4/5 outfits. Update `outfits.json5`
+   against the shipped file and the [outfits documentation](OUTFITS.md).
 
-5. **Update scripts that compensate for `on_pickup`'s item number**
-   The handler passes the engine's own item number, counted from 0, as it
-   always did. What changed is `trx.items`, which counts from 0 now as well, so
-   a script that bridged the gap with `trx.items[item_num + 1]` is off by one
-   and reaches the wrong item rather than failing - pass `item_num` straight
-   through.
-
-6. **Update scripts that write to a catalog or enum**
-   The catalogs, and every other enum, are read-only now. Writing to one used to
-   succeed and silently break every later lookup, the engine's own scripts
-   included. Reading is unchanged, and a catalog answers to a name in any case:
-   `trx.catalog.objects.wolf` and `trx.catalog.objects.WOLF` are the same
-   constant. Upper case is the documented spelling. `pairs(trx.items.Status)`
-   yields the constants alone; it used to hand back the writable table behind the
-   enum.
-
-7. **Update scripts that use Lara's mesh tables**
-   `trx.lara.mesh` and `trx.lara.extra_mesh` became declared enums, so their
-   names are upper case: replace `trx.lara.mesh.hand_r` with
-   `trx.lara.Mesh.HAND_R`, and `trx.lara.extra_mesh.oar` with
-   `trx.lara.ExtraMesh.OAR`.
-
-8. **Update scripts that read a level's `name`**
-   The field is called `title` now. It holds what it always did, the name shown
-   to the player. Replace `trx.game.levels[1].name` with
-   `trx.game.levels[1].title`. Every field on a level is read-only.
-
-9. **Update scripts that use `trx.game.settings`**
-   It was removed. It was five aliases over config options, and it wrote through
-   `trx.config.set`, which keeps the change. Use `trx.config` directly, and
-   prefer `trx.config.override` for anything a level wants only while it runs:
-   - Before: `trx.game.settings.play_any_level = true`
-   - After: `trx.config.override("flow.play_any_level", true)`
-
-10. **Update scripts that assign to `item.object_id`**
-   It is read-only now. Writing it swapped the item's type underneath the
-   engine without reinitializing it, which left the item half-built. Spawn the
-   type you want instead: `trx.items.spawn(trx.catalog.objects.WOLF, pos)`.
-
-11. **Update scripts that set `pickup_mode`**
-   The `trx.pickup` module is gone. `pickup_mode` is an item property, so its
-   enum now lives with the items: replace `trx.pickup.Mode.PLINTH_LOW` with
-   `trx.items.PickupMode.PLINTH_LOW`.
-
-12. **Update scripts that index `trx.objects` with an unknown id**
-   `trx.objects[id]` returns `nil` for an id the game does not have, where it
-   used to hand back an object that answered to nothing, so `if trx.objects[id]`
-   now tells a missing object from a present one. Code that went straight on to
-   `trx.objects[id].properties` raises at the lookup rather than further along.
-
-13. **Update scripts that log more than one string per call**
-   The logging functions take a single message. `trx.console.log("a", "b")`
-   used to concatenate its arguments and now raises. Format the message before
-   passing it: `trx.console.log(("a %s"):format(b))`. This applies to `trx.console.log` and
-   its levels, and to `trx.log`.
-
-14. **Update scripts that use event types**
-   `trx.events.EventType` was removed, along with the `._type` field on each
-   hook. The nine hooks are the whole API, and attaching is unchanged:
-   `trx.events.before_control(fn)`.
-
-15. **Update scripts that hold a listener id**
-   Attaching a handler hands back a `trx.events.Listener` rather than a plain
-   number. Stopping one is `listener:detach()`, or `trx.events.detach(listener)`
-   as before; both report whether it was still attached. A script that kept the
-   number and passed it around keeps the listener instead - `trx.events.detach`
-   no longer takes a number, and `listener.id` is the number if anything needs
-   it.
-
-16. **Update scripts that name a number**
-   The public API now says what kind of number a name stands for: `_num` for a
-   number only the level it came from gives meaning to, `_id` for one TRX ships
-   names for, and a bare noun for the thing itself. The renames are mechanical:
-   - `item.index` is `item.num`
-   - `item.anim` is `item.anim_num`, and `item.frame` is `item.frame_num`
-   - `on_room_change`'s handler takes `old_room_num` and `new_room_num`
-   - `on_flyby_end`'s handler takes `sequence_num`
-   - the `on_cutscene_*` handlers take `cutscene_num`
-   - `trx.savegame`'s slot argument is `slot_num`
-   - `trx.inventory`'s object argument is `object_id`
-
-17. **Update scripts that use `trx.console.log.LogLevel`**
-   It was removed. Use `trx.log.LogLevel`, which is the same enum:
-   `trx.console.log.generic(trx.log.LogLevel.ERROR, "...")`.
-
-18. **Update scripts that use the music module**
-   The soundtrack is addressed through track and stream handles now.
-   - `trx.music.play` now takes a track by catalog id - a `trx.catalog.music`
-     value, which maps to the right track per game - rather than the level's own
-     slot. Play a slot through the handle: `trx.music.tracks[slot]:play([opts])`.
-     It hands back the `trx.music.Stream` it started, or `nil`. `trx.music.play_track`,
-     an undocumented alias, was removed.
-   - `trx.music.get_track()` and `trx.music.get_looped_track()` became the
-     properties `trx.music.current_track` and `trx.music.looped_track`. They hand
-     back a `trx.music.Track` rather than an id, so read `.id` for the number, or
-     call `:play()` / `:path()` on it. Both are `nil` when nothing is playing.
-   - `trx.music.is_available(id)` was removed. A track is available when
-     `trx.music.tracks[id]` is not `nil`.
-   - `trx.music.available_tracks()` became `trx.music.tracks`, a collection of
-     `trx.music.Track` handles keyed by id: `trx.music.tracks[5]` is track 5, `#`
-     counts the available ones, and iterating walks them.
-   - `trx.music.streams` is a collection of `trx.music.Stream` handles - `[1]` the
-     main stream, `[2]` onwards the overlays - each of which can be paused,
-     resumed, sought and stopped on its own.
-
-19. **Update scripts that address levels by number**
-   `trx.game.levels` is the levels the game numbers, and a gym is not one of
-   them. Where a game flow has a gym, `trx.game.levels[1]` used to be the gym;
-   now every entry after it has shifted down by one and the last level -
-   previously unreachable - is in the list. `trx.game.play_level(1)` starts the
-   first numbered level rather than the gym, so drop any offset that stepped over
-   it; use `trx.game.play_gym()` and `trx.game.gym` for the gym. The same holds
-   for `trx.game.cutscenes`, `trx.game.demos` and their `play_` functions.
-
-20. **Update Lara's outfit definitions**
-   The `braid` entries for Lara's outfits were changed to arrays to support up
-   to two instances. Additionally, a `joints_object` can now be specified to
-   allow using TR4/5 outfits. `outfits.json5` must be updated accordingly; refer
-   to the default shipped file and [outfits documentation](OUTFITS.md).
-
-21. **Update scripts that pass an incomplete position**
-   `{ x = , y = , z = }` needs all three coordinates. A missing one used to read
-   as zero in `trx.sound.play`, placing the sound at the edge of the world, and
-   raised an unhelpful error elsewhere. It now names the coordinate and the
-   argument it came in on.
-
-22. **Update scripts that use `trx.sound.is_available`**
-   It was removed. A sample is available when `trx.sound.samples[id]` is not
-   `nil`. `trx.sound.samples` is a collection of `trx.sound.Sample` handles keyed
-   by id, each of which plays itself and reports its definition, and
-   `trx.sound.streams` is a collection of `trx.sound.Stream` handles for the
-   effects playing now, each of which can be paused, resumed and stopped on its
-   own. `trx.sound.play` and `trx.sound.stop` now take a sample by catalog id - a
-   `trx.catalog.samples` value - rather than the level's own slot; play or stop a
-   slot through the handle, `trx.sound.samples[slot]:play()` / `:stop()`, and
-   `play` hands back the `trx.sound.Stream` it started. `trx.sound.stop_all` is
-   unchanged.
-
-23. **Update scripts that read `item.status`**
-   The `item.status` field and the `items.Status` enum were removed in favour of
-   separate boolean axes:
-   - `item.is_simulated` (read-only): its control routine runs each frame -
-     `status == items.Status.ACTIVE`. Call `activate()` to start it.
-   - `item.is_visible` (writable): drawn on screen; `status == INVISIBLE` becomes
-     `not item.is_visible`.
-   - `item.is_finished` (writable): a spent one-shot or a dead creature -
-     `status == DEACTIVATED`.
-   - `item.is_present` (read-only): in the world at all, linked in its room.
-   - `item.is_in_play` (read-only): the live composite - simulated, visible and
-     not finished - what `status == ACTIVE` meant for a targetable enemy;
-     `item.is_targetable` reports whether auto-aim can lock on now.
-
-   The item query narrows on each: `simulated`, `present`, `visible`, `finished`,
-   `in_play`, `alive`, `targetable`.
-
-24. **Update game flows that anchor Bacon Lara**
-   The `setup_bacon_lara` sequence event was removed. The anchor room is an
-   `anchor_room` object property now, which a level editor can set on the object
-   or on a single item, and a script can set in `on_game_start`:
-   ```lua
-   trx.events.on_game_start(function()
-     trx.objects.bacon_lara.properties.anchor_room = 10
-   end)
-   ```
-   The property is optional: at its default of -1, the room Bacon Lara is placed
-   in is the anchor. Refer to the Atlantis level in the default game flow.
-
-25. **Update scripts that use the level lifecycle events**
-   `before_level_file`, `after_level_file`, `before_item_setup`,
-   `after_item_setup` and `after_level_state` were removed. `on_game_start` is
-   the one moment a level script gets before play: the level file is loaded, its
-   items are set up, any savegame state has been applied, and nothing has been
-   drawn yet. A handler moves across as it stands:
-   ```lua
-   trx.events.on_game_start(function(is_save)
-     trx.creatures.add_ally(trx.catalog.objects.monkey)
-     trx.items[65].properties.range = { x = 14, y = 6, z = 14 }
-   end)
-   ```
-   An object property no longer has to be written before its item is
-   initialised, which is what the earlier moments were for. `on_game_start`
-   fires for cutscene and demo levels too, and the title screen has
-   `on_title_start`. The handler is not handed the level's number: the level
-   itself is `trx.game.current_level`, which says both what it is and where it
-   counts.
-
-26. **Remove `ammo.pickup_qty_alt` from weapon definitions**
-   The field only applied to flares in Japanese NG, which is no longer a game
-   mode. A flare box now always gives `ammo.pickup_qty` flares. The field is
-   ignored if left in `weapons.json5`.
-
-27. **Update scripts that raise an item's maximum hit points**
-   Writing `max_hit_points` carries the item's current hit points with it, by
-   the difference: an item that has taken no damage comes out at full health,
-   and one that is already hurt stays hurt by as much. It no longer needs a
-   companion write to `hit_points`.
-
-28. **Update weapon definitions**
+3. **Update weapon definitions**
    The ammunition keys in `weapons.json5` were renamed to say what they count.
    A shot is one pull of the trigger, which for the shotgun spends six rounds;
    the flare counts a flare where a weapon counts a shot. The old names are
@@ -296,31 +41,179 @@ order: 3
    - `pickup_qty` is now `box_shots`
    - `inventory_qty` is now `box_label_qty`
 
-29. **Update TR3 artefact pickups**
-   The glow color and rotation speed of artefact pickups is no longer hardcoded,
-   instead configurable via Lua properties. Refer to the default Lua scripts for
-   OG TR3 levels.
+   `ammo.pickup_qty_alt` is ignored. It only applied to flares in Japanese NG,
+   which is no longer a game mode, and a flare box now always gives
+   `ammo.pickup_qty` flares.
 
-30. **Name Lua scripts after what they belong to**
-    A game flow no longer declares its scripts; a script is found by the name
-    of the level or the game it belongs to. Both the global `main_script` key
-    and each level's `script` key were removed.
-    - A level's script is `scripts/<level file>.lua` in the game's own
-      directory: a level loading `wall.tr2` runs `scripts/wall.lua`. Rename any
-      script whose name does not already match its level, and drop the `script`
-      key.
-    - What `main_script` pointed at goes in `scripts/_game.lua`, which the game
-      runs as it starts. A game that extends another and ships no file of its
-      own runs that game's script instead, so an expansion that only inherited
-      its base's setup can drop the file.
+4. **Update game flows that anchor Bacon Lara**
+   The `setup_bacon_lara` sequence event was removed. The anchor room is an
+   `anchor_room` object property now, which a level editor can set on the
+   object or on a single item, and a script can set in `on_game_start`:
+   ```lua
+   trx.objects.bacon_lara.properties.anchor_room = 10
+   ```
+   At its default of -1, the room Bacon Lara is placed in is the anchor. Refer
+   to the Atlantis level in the default game flow.
 
-    A level's script is looked for in its own game's directory alone. A game
-    that extends another brings its own copy of any level script it wants,
-    rather than reaching into the base game for one.
+5. **Update TR3 artefact pickups and plinth scions**
+   The glow color and rotation speed of TR3 artefacts are Lua properties now
+   rather than hardcoded, and an `O_SCION_ITEM_1` pickup needs a pickup mode
+   of `PLINTH_SCION` to invoke Lara's extra animation. Refer to the OG Lua
+   scripts.
 
-31. **Scions on plinths now expect a pickup mode** 
-    `O_SCION_ITEM_1` pickups now require a pickup mode of `PLINTH_SCION` in
-    order to invoke Lara's extra animation. Refer to the OG Lua scripts.
+#### Renamed
+
+Mechanical, one for one:
+
+| 1.9                            | 1.10                      |
+| ------------------------------ | ------------------------- |
+| `trx.items.fn.get()`           | `trx.items.get()`         |
+| `trx.rooms.fn.get()`           | `trx.rooms.get()`         |
+| `trx.rooms.fn.Room`            | `trx.rooms.Room`          |
+| `trx.rooms.fn.FlipStatus`      | `trx.rooms.FlipStatus`    |
+| `trx.rooms.fn.flip()`          | `trx.rooms.flip()`        |
+| `trx.rooms.fn.flip_effect()`   | `trx.rooms.flip_effect()` |
+| `room.idx`                     | `room.num`                |
+| `item.index`                   | `item.num`                |
+| `item.anim`                    | `item.anim_num`           |
+| `item.frame`                   | `item.frame_num`          |
+| `level.name`                   | `level.title`             |
+| `trx.lara.mesh.hand_r`         | `trx.lara.Mesh.HAND_R`    |
+| `trx.lara.extra_mesh.oar`      | `trx.lara.ExtraMesh.OAR`  |
+| `trx.pickup.Mode.X`            | `trx.items.PickupMode.X`  |
+| `trx.console.log.LogLevel`     | `trx.log.LogLevel`        |
+| `trx.music.get_track()`        | `trx.music.current_track` |
+| `trx.music.get_looped_track()` | `trx.music.looped_track`  |
+| `trx.music.available_tracks()` | `trx.music.tracks`        |
+
+The `fn` namespaces are gone: index the module directly, `trx.items[16]`,
+`trx.items["lara"]`, `trx.rooms[14]`. The mesh tables became declared enums,
+so every name in them is upper case, not the two shown above alone.
+
+Handler arguments now say what kind of number they carry: `on_room_change`
+takes `old_room_num` and `new_room_num`, `on_flyby_end` takes `sequence_num`,
+the `on_cutscene_*` handlers take `cutscene_num`, `trx.savegame`'s slot
+argument is `slot_num` and `trx.inventory`'s object argument is `object_id`.
+They are positional, so this only matters to a script's own documentation.
+
+#### Removed
+
+| 1.9                                     | Use instead                              |
+| --------------------------------------- | ---------------------------------------- |
+| `item.idx`                              | the handle itself                        |
+| `item.flags`                            | `trigger_mask`, `is_reversed`, `is_triggered`, `is_killed`, `is_one_shot` |
+| `item.status`, `items.Status`           | the boolean fields - see below            |
+| `trx.items.find()`, `trx.items.first()` | `trx.items.query`, `:of_object()` and `:in_room()`, then `:matches()` or `:first()` |
+| `trx.game.settings.play_any_level = true` | `trx.config.override("flow.play_any_level", true)` |
+| `trx.pickup`                            | `trx.items.PickupMode`                   |
+| `trx.events.EventType`, hook `._type`   | nothing; the nine hooks are the whole API |
+| `trx.music.play_track()`                | `trx.music.play()`                       |
+| `trx.music.is_available(id)`            | `trx.music.tracks[id] ~= nil`            |
+| `trx.sound.is_available(id)`            | `trx.sound.samples[id] ~= nil`           |
+| `before_level_file`, `after_level_file`, `before_item_setup`, `after_item_setup`, `after_level_state` | `on_game_start` - see below |
+
+#### Changed behavior
+
+The first four change what a script does without raising. The rest report
+themselves.
+
+1. **Items and rooms count from 0**
+   The numbering matches what level editors show: `trx.items[13]` is
+   `trx.items[12]` now, and `trx.rooms[15]` is `trx.rooms[14]`.
+   `item.room_num`, `camera.room_num`, `camera.target_room_num` and
+   `find_valid_pos`'s room argument follow, and
+   `for i = 1, #trx.items do local item = trx.items[i]` becomes
+   `for num, item in pairs(trx.items) do`. `on_pickup` always counted from 0,
+   so drop the `item_num + 1` that bridged the gap.
+
+2. **`trx.config.get()` returns the option's own type**
+   `trx.config.get("flow.cheat_keys") == "true"` is false whatever the setting
+   holds; test the value itself. Colors and enums are still strings. `set()`
+   still writes to the player's settings and keeps the change - use the new
+   `override()` and `restore()` for what a level wants only while it runs.
+
+3. **`trx.lara.extra_anim` is a boolean**
+   It says whether a scripted animation is driving Lara, where it used to be
+   the relative animation number of `O_LARA_EXTRA`, or `-1`. `~= -1` is now
+   always true. The number itself is `trx.lara.item.anim_num`.
+
+4. **`max_hit_points` carries `hit_points` with it**
+   Writing it moves the item's current hit points by the same difference, so
+   the companion write is no longer needed.
+
+5. **Handles are opaque, compare by identity, and go stale**
+   An item or room handle is no longer a `{ idx = ... }` table and cannot
+   carry keys of your own; pass the handle where you passed the index.
+   `trx.items[0] == trx.items[0]` is true now, where every lookup used to hand
+   back a fresh table. A handle to a killed item, or any room handle after a
+   level change, raises `stale ITEM handle` rather than addressing whatever
+   took the slot - guard one held across time with `:is_valid()`.
+
+6. **`item.status` became separate boolean fields**
+
+   | `status` in 1.9             | 1.10                                     |
+   | --------------------------- | ---------------------------------------- |
+   | `ACTIVE`, running           | `is_simulated`, started by `activate()`   |
+   | `ACTIVE`, targetable enemy  | `is_in_play`; `is_targetable` for auto-aim |
+   | `INVISIBLE`                 | `not is_visible`                          |
+   | `DEACTIVATED`               | `is_finished`                             |
+
+   `is_present` is new: in the world at all, linked in its room. The item
+   query narrows on each - `simulated`, `present`, `visible`, `finished`,
+   `in_play`, `alive`, `targetable`.
+
+7. **`on_game_start` replaces the level lifecycle events**
+   It is the one moment a level script gets before play: the level file is
+   loaded, its items are set up, savegame state has been applied, and nothing
+   has been drawn. A handler moves across as it stands, and an object property
+   no longer has to be written before its item is initialised, which is what
+   the earlier moments were for.
+   ```lua
+   trx.events.on_game_start(function(is_save)
+     trx.items[65].properties.range = { x = 14, y = 6, z = 14 }
+   end)
+   ```
+   It fires for cutscene and demo levels too, and the title screen has
+   `on_title_start`. The level is `trx.game.current_level` rather than a
+   number handed to the handler.
+
+8. **`trx.game.levels` leaves out the gym**
+   Where a game flow has one, every entry has shifted down by one and the last
+   level - previously unreachable - is in the list. Drop any offset that
+   stepped over the gym; it is `trx.game.gym` and `trx.game.play_gym()`. The
+   same holds for `trx.game.cutscenes`, `trx.game.demos` and their `play_`
+   functions. Every field on a level is read-only.
+
+9. **Music and sound take a catalog id**
+   `trx.music.play`, `trx.sound.play` and `trx.sound.stop` take a
+   `trx.catalog.music` or `trx.catalog.samples` value, which maps to the right
+   track or sample per game, rather than the level's own slot. Reach a slot
+   through its handle - `trx.music.tracks[slot]:play()`,
+   `trx.sound.samples[slot]:play()` - and both `play` functions hand back the
+   stream they started. `trx.sound.stop_all` is unchanged.
+
+10. **These raise where they used to pass**
+
+    | Call                              | Why                                |
+    | --------------------------------- | ---------------------------------- |
+    | `item.hit_points = 99999`         | truncated to the field's width     |
+    | `room.wind = 1`, `room.cold = nil` | room flags take booleans only     |
+    | writing an out-of-range room      | did nothing                        |
+    | `trx.rooms["5"]`                  | index with a number                |
+    | `trx.console.log("a", "b")`       | format the message yourself        |
+    | `item.object_id = ...`            | spawn the type you want instead    |
+    | writing to an enum or catalog     | broke every later lookup           |
+    | `{ x = , y = }`                   | a position needs all three         |
+
+11. **These read differently**
+    - An unset room flag is `false`, not `nil`, so
+      `if room.underwater == nil` no longer detects a dry room
+    - `trx.objects[id]` is `nil` for an id the game does not have, where it
+      used to hand back an object that answered to nothing
+    - An enum answers to a constant's name in any case, and `pairs()` over one
+      yields the constants alone
+    - `trx.events.detach` takes the `Listener` an attach handed back, not a
+      number; `listener.id` is the number
 
 ### Version 1.8 to 1.9
 
