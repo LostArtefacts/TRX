@@ -265,6 +265,7 @@
                 "tihocan_fd.bin",
                 "tihocan_itemrots.bin",
                 "tihocan_textures.bin",
+                "scion_alignment.bin",
             ],
             "item_drops": [
                 {"enemy_num": 82, "object_ids": [86, 144, 129]},
