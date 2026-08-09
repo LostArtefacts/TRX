@@ -134,6 +134,7 @@
 - fixed the alternative ammunition pickups, such as the second kind of shotgun ammunition, going into the inventory without loading the weapon
 - fixed Lara being able to pull out flares while crawling after picking up an item, and dropping flares when using the draw input to enter crouch state (regression from 1.3)
 - fixed the game not running when its folder name contains characters outside the system language, such as Chinese (#573)
+- fixed music briefly restarting from its beginning when loading a save (#1265)
 
 **TR1**
 - added pickup aids to the scions in Tomb of Qualopec and Sanctuary of the Scion

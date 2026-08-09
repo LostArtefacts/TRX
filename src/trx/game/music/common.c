@@ -244,7 +244,8 @@ static int32_t M_GetFreeOverlaySlot(void)
 
 // Returns the stream slot the overlay plays in - an overlay is slots 1.. - or
 // -1 when it does not play.
-static int32_t M_PlayOverlayTrack(const MUSIC_ID track_id)
+static int32_t M_PlayOverlayTrack(
+    const MUSIC_ID track_id, const double timestamp)
 {
     if (m_Backend == nullptr) {
         LOG_WARNING(
@@ -276,6 +277,9 @@ static int32_t M_PlayOverlayTrack(const MUSIC_ID track_id)
     Audio_Stream_SetIsLooped(stream_id, false);
     Audio_Stream_SetFinishCallback(
         stream_id, M_StreamFinished, &m_OverlayStreams[slot]);
+    if (timestamp > 0.0) {
+        Audio_Stream_SeekTimestamp(stream_id, timestamp);
+    }
     Audio_Stream_Unpause(stream_id);
     return slot + 1;
 }
@@ -300,6 +304,13 @@ static bool M_GetMainTrackState(MUSIC_STREAM_STATE *const state)
         return true;
     }
     return false;
+}
+
+static void M_SeekMainStream(const double timestamp)
+{
+    if (timestamp > 0.0) {
+        Music_SeekTimestamp(timestamp);
+    }
 }
 
 // Slot 0 is the main stream; slots 1.. are the overlays.
@@ -351,36 +362,11 @@ static void M_ApplyConfig(void)
     Music_SetVolume(g_Config.audio.music_volume);
 }
 
-bool Music_Init(void)
-{
-    m_Initialised = true;
-    if (m_Backend != nullptr) {
-        m_Backend->shutdown(m_Backend);
-        m_Backend = nullptr;
-    }
-    m_Backend = M_FindBackend();
-    if (m_Backend == nullptr) {
-        LOG_ERROR("No music backend is available");
-        goto finish;
-    }
-
-    LOG_INFO("Chosen music backend: %s", m_Backend->describe(m_Backend));
-    Music_SetVolume(g_Config.audio.music_volume);
-
-finish:
-    m_TrackCurrent = MX_INACTIVE;
-    m_TrackLastPlayed = MX_INACTIVE;
-    m_TrackDelayed = MX_INACTIVE;
-    m_TrackLooped = MX_INACTIVE;
-    m_TrackLastLooped = MX_INACTIVE;
-    M_ResetStreamState();
-    return Audio_Init();
-}
-
 // Returns the stream slot the track plays in - the main stream is slot 0, the
 // overlays are slots 1.. - or -1 when the track does not play, which includes a
 // track marked for later (delay) or a deferred ambient.
-int32_t Music_Play_Direct(const MUSIC_ID track_id, const MUSIC_PLAY_MODE mode)
+static int32_t M_Play(
+    const MUSIC_ID track_id, const MUSIC_PLAY_MODE mode, const double timestamp)
 {
     if (!m_Initialised) {
         return -1;
@@ -392,11 +378,12 @@ int32_t Music_Play_Direct(const MUSIC_ID track_id, const MUSIC_PLAY_MODE mode)
 
     if (mode == MPM_OVERLAY) {
         LOG_INFO("Playing overlay track %d", track_id);
-        return M_PlayOverlayTrack(track_id);
+        return M_PlayOverlayTrack(track_id, timestamp);
     }
 
     // Already on the main stream, so slot 0 carries it.
     if (track_id == m_TrackCurrent) {
+        M_SeekMainStream(timestamp);
         return 0;
     }
 
@@ -406,6 +393,7 @@ int32_t Music_Play_Direct(const MUSIC_ID track_id, const MUSIC_PLAY_MODE mode)
 
     const bool is_looped = mode == MPM_LOOP || M_IsAmbientTrack(track_id);
     if (is_looped && track_id == m_TrackLastLooped) {
+        M_SeekMainStream(timestamp);
         return 0;
     }
 
@@ -442,6 +430,9 @@ int32_t Music_Play_Direct(const MUSIC_ID track_id, const MUSIC_PLAY_MODE mode)
             Audio_Stream_SetIsLooped(stream_id, is_looped);
             Audio_Stream_SetFinishCallback(
                 stream_id, M_StreamFinished, &m_MainStream);
+            if (timestamp > 0.0) {
+                Audio_Stream_SeekTimestamp(stream_id, timestamp);
+            }
             Audio_Stream_Unpause(stream_id);
             played = true;
         }
@@ -460,6 +451,43 @@ int32_t Music_Play_Direct(const MUSIC_ID track_id, const MUSIC_PLAY_MODE mode)
         m_TrackLastPlayed = track_id;
     }
     return played ? 0 : -1;
+}
+
+bool Music_Init(void)
+{
+    m_Initialised = true;
+    if (m_Backend != nullptr) {
+        m_Backend->shutdown(m_Backend);
+        m_Backend = nullptr;
+    }
+    m_Backend = M_FindBackend();
+    if (m_Backend == nullptr) {
+        LOG_ERROR("No music backend is available");
+        goto finish;
+    }
+
+    LOG_INFO("Chosen music backend: %s", m_Backend->describe(m_Backend));
+    Music_SetVolume(g_Config.audio.music_volume);
+
+finish:
+    m_TrackCurrent = MX_INACTIVE;
+    m_TrackLastPlayed = MX_INACTIVE;
+    m_TrackDelayed = MX_INACTIVE;
+    m_TrackLooped = MX_INACTIVE;
+    m_TrackLastLooped = MX_INACTIVE;
+    M_ResetStreamState();
+    return Audio_Init();
+}
+
+int32_t Music_Play_Direct(const MUSIC_ID track_id, const MUSIC_PLAY_MODE mode)
+{
+    return M_Play(track_id, mode, -1.0);
+}
+
+int32_t Music_Play_DirectAt(
+    const MUSIC_ID track_id, const MUSIC_PLAY_MODE mode, const double timestamp)
+{
+    return M_Play(track_id, mode, timestamp);
 }
 
 int32_t Music_Play(const MUSIC_TRX_ID track, const MUSIC_PLAY_MODE mode)
