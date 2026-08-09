@@ -105,15 +105,20 @@ static bool M_CanControlDrop(
 
     COLL_INFO old_coll = {
         .facing = lara->move_angle,
-        .bad_pos = STEPUP_HEIGHT,
+        .bad_pos = NO_BAD_POS,
         .bad_neg = -STEPUP_HEIGHT,
         .slopes_are_pits = 1,
         .slopes_are_walls = 1,
+        .radius = LARA_RADIUS,
     };
     Collide_GetCollisionInfo(
         &old_coll, coll->old_pos, item->room_num, LARA_HEIGHT);
 
     if (old_coll.side_mid.floor != 0) {
+        return false;
+    }
+
+    if (old_coll.side_left2.floor == 0 || old_coll.side_right2.floor == 0) {
         return false;
     }
 
