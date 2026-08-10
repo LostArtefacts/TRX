@@ -178,6 +178,7 @@
 - Fixed the installer closing with no window and no message when the .NET runtime it needs is damaged, so it now names what to install (#1088)
 
 **Level and game data**
+- Added the teleporter object from TR5, which moves Lara to where it is placed when it is triggered
 - Added a `damage` property to the `O_POWER_SAW` object
 - Added `show_pickup_aid`, `rotation` and `glow_color` properties for all pickup types
 - Changed object properties to take effect as soon as they change, rather than only when the item is first set up

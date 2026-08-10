@@ -3521,6 +3521,9 @@
         "teeth_trap": {
             "name": "Zatrzaskujące się drzwi",
         },
+        "teleporter": {
+            "name": "\\{review}Teleporter",
+        },
         "text_box": {
             "name": "Ramka interfejsu",
         },

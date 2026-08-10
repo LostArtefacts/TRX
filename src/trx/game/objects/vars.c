@@ -421,6 +421,7 @@ const OBJECT_ID g_NullObjects[] = {
     O_SPHERE_OF_DOOM_3,
     O_SPLASH_1,
     O_SPLASH_2,
+    O_TELEPORTER,
     O_TEXT_BOX,
     O_TONY_FIRE_BALL,
     O_TROPICAL_FISH_GFX,

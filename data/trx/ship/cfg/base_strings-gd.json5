@@ -3544,6 +3544,9 @@
                 "Doras 'Clang-Clang'",
             ]
         },
+        "teleporter": {
+            "name": "\\{review}Cian-ghiùlanair",
+        },
         "text_box": {
             "name": "Frèam Eadar-aghaidh",
         },
