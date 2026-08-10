@@ -836,7 +836,7 @@ bool Output_Overlay_LoadImage(const char *const file_name)
 
 void Output_Overlay_DrawImage(const char *const file_name)
 {
-    M_DrawImageImpl(file_name, 0.0f, TEXTURE_FILTER_POINT);
+    M_DrawImageImpl(file_name, 0.0f, g_Config.rendering.upscaling_filter);
 }
 
 void Output_Overlay_DrawImageBilinear(const char *const file_name)
@@ -847,7 +847,7 @@ void Output_Overlay_DrawImageBilinear(const char *const file_name)
 void Output_Overlay_DrawImageMono(
     const char *const file_name, const float intensity)
 {
-    M_DrawImageImpl(file_name, intensity, TEXTURE_FILTER_POINT);
+    M_DrawImageImpl(file_name, intensity, g_Config.rendering.upscaling_filter);
 }
 
 void Output_Overlay_CaptureSnapshot(void)

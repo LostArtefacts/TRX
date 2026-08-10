@@ -121,6 +121,7 @@ static void M_Draw(PHASE *const phase)
         Output_Overlay_DrawImage(p->args.file_name);
         Output_Overlay_DrawBlackRectangle(progress, false);
     }
+    Output_Flush();
     p->has_drawn = true;
 }
 
