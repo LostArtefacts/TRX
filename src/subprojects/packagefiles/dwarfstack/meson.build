@@ -10,6 +10,10 @@ project(
 c_compiler = meson.get_compiler('c')
 build_opts = [
   '-Wno-unused',
+  # dwst-exception-dialog.c calls _stprintf with a buffer size, which the mingw
+  # headers declare as the format argument. Upstream's problem, and one that
+  # only bites once the crash dialog is already showing.
+  '-Wno-int-conversion',
   '-DDWST_STATIC',
   '-DNO_DBGHELP',
   '-DLIBDWARF_STATIC',
