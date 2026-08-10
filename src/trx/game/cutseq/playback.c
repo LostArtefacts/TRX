@@ -589,10 +589,10 @@ void CutSeq_UpdateCamera(void)
         .y = info->origin.y + 2 * m_State.camera_nodes[1].y_run,
         .z = info->origin.z + 2 * m_State.camera_nodes[1].z_run,
     };
-    const int16_t room_num = Room_GetIndexFromPos(g_Camera.pos.pos);
-    if (room_num != NO_ROOM) {
-        g_Camera.pos.room_num = room_num;
-    }
+
+    int16_t room_num = g_Camera.pos.room_num;
+    Room_GetSector(g_Camera.pos.pos, &room_num);
+    g_Camera.pos.room_num = room_num;
     g_Camera.roll = 0;
     g_Camera.shift = 0;
     Viewport_AlterFOV(m_State.fov, FOV_MODE_CUTSCENE);
