@@ -111,17 +111,17 @@ static void M_Draw(PHASE *const phase)
 {
     M_PRIV *const p = phase->priv;
     const float progress = Fader_GetCurrentValue(&p->fader);
+    Output_Overlay_DrawImage(p->args.file_name);
+    Output_Flush();
+
     if (p->args.loading_pic
         && (p->state != STATE_FADE_IN || !p->args.block_cross_fade_in)) {
-        Output_Overlay_DrawImage(p->args.file_name);
         if (p->state == STATE_FADE_IN) {
             Output_Overlay_DrawSnapshot(progress);
         }
     } else {
-        Output_Overlay_DrawImage(p->args.file_name);
         Output_Overlay_DrawBlackRectangle(progress, false);
     }
-    Output_Flush();
     p->has_drawn = true;
 }
 

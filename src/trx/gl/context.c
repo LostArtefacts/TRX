@@ -72,6 +72,11 @@ void TRX_GL_Context_SwitchToViewport(const VIEWPORT_SPACE space)
     TRX_GL_CheckError();
 }
 
+VIEWPORT_SPACE TRX_GL_Context_GetViewport(void)
+{
+    return m_Context.space;
+}
+
 bool TRX_GL_Context_Attach(void *window_handle)
 {
     const char *shading_ver;

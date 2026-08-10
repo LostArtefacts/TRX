@@ -21,6 +21,7 @@
 #include <trx/game/output/state.h>
 #include <trx/game/output/textures.h>
 #include <trx/game/viewport.h>
+#include <trx/gl/context.h>
 #include <trx/gl/renderer.h>
 #include <trx/gl/texture.h>
 #include <trx/gl/utils.h>
@@ -767,6 +768,13 @@ static void M_RunQueue(const VECTOR *const queue)
 static void M_DrawTransitionSnapshot(M_PRIV *const p)
 {
     if (!p->snapshot.transition_active || p->snapshot.transition_drawn) {
+        return;
+    }
+
+    // A capture holds the frame at the window's resolution, which only the UI
+    // buffer shares. Drawing it into the scene buffer would send it through
+    // the upscaling factor a second time.
+    if (TRX_GL_Context_GetViewport() != VIEWPORT_UI) {
         return;
     }
 
