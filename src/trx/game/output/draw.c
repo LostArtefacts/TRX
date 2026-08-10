@@ -191,6 +191,15 @@ static bool M_DrawShadow_Sprite(
     const float v_span = v_max - v_min;
     const float denom = (float)(M_SHADOW_LINE_POINTS - 1);
 
+    // The shadow subtracts what it draws, so a colored tint would take an
+    // uneven bite out of the floor and shift its hue rather than darken it.
+    // Only the coverage carries over, which is what an item's fade rides on.
+    RGBA_F tint = Output_GetTint();
+    tint.r = 1.0f;
+    tint.g = 1.0f;
+    tint.b = 1.0f;
+    Output_PushTintOverride(tint);
+
     for (int32_t row = 0; row < M_SHADOW_LINE_POINTS - 1; row++) {
         const float v0 = v_min + v_span * ((float)row / denom);
         const float v1 = v_min + v_span * ((float)(row + 1) / denom);
@@ -221,6 +230,8 @@ static bool M_DrawShadow_Sprite(
                 VERT_NO_LIGHTING | VERT_NO_WIBBLE, DRAW_BLEND_SUB);
         }
     }
+
+    Output_PopTintOverride();
     return true;
 }
 
