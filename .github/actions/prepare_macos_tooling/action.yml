@@ -126,6 +126,7 @@ runs:
           --enable-cross-compile \
           --prefix=${{ inputs.FFMPEG_INSTALL_TMP_X86_64 }} \
           --cc='clang -arch x86_64' \
+          --cxx='clang++ -arch x86_64' \
           $FFMPEG_CONFIG_OPTIONS
 
         # Build and install.
