@@ -4,6 +4,7 @@
 - Changed the `/flip` console command to take a flip group, so `/flip 3` moves that group alone while `/flip` on its own moves them all
 
 **Level and game data**
+- Added Natla as an outfit for Lara, selectable in every game (Graphic Options → Visuals → Lara's outfit)
 - Added injection support for putting a room in a flip group, which only TR4 levels carry themselves (#5336)
 
 **TR4**

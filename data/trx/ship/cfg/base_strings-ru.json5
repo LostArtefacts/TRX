@@ -578,6 +578,7 @@
             "lara_outfit": {
                 "default": "\\{review}По умолчанию",
                 "golden_sophia": "\\{review}Золотая София",
+                "natla": "\\{review}Натла",
                 "sophia": "\\{review}София",
                 "tr1_bacon_lara": "\\{review}Лара Бекон",
                 "tr1_classic": "\\{review}TR1 Классический",
