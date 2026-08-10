@@ -44,6 +44,7 @@
 - Added an option for a ring to open on the entry it was left on, rather than on its first one, for the item ring or for the keys ring as well (Gameplay → General → Remember inventory position) (#3273)
 - Changed boxes of ammunition in the inventory to always show what Lara is really carrying, where finishing a level could round them down
 - Fixed Lara being able to light a free/ghost flare by selecting one from the inventory while crawling (Gameplay → Fixes → Fix free flare glitch)
+- Fixed the inventory ring being cut off at the sides when the game window is taller than it is wide (#4278)
 - Fixed Lara receiving twice the number of flares if given via the game flow (regression from 1.9)
 - Fixed the inventory hint for using an item showing Enter rather than the key bound to Action (regression from 1.8.1)
 - Fixed Lara being able to collect plinth pickups while ducked (regression from 1.9)
