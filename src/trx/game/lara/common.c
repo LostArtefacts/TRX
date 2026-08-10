@@ -181,6 +181,12 @@ void Lara_Initialise(const GF_LEVEL *const level)
     lara_info->tr3_smoke_count_r = 0;
     lara_info->mesh_pos_matrices_valid = false;
 
+    // Wetness carries from level to level within a playthrough, but the gym
+    // and the demos start one of their own.
+    if (level->type == GFL_GYM || level->type == GFL_DEMO) {
+        Lara_Dry();
+    }
+
     LOT_InitialiseLOT(&lara_info->lot);
     lara_info->lot.setup.step = WALL_L * 20;
     lara_info->lot.setup.drop = -WALL_L * 20;
