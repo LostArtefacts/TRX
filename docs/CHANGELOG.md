@@ -203,6 +203,7 @@
 - Fixed music triggered from one-shot switches playing more than once (OG bug)
 - Fixed the collapsible tiles in Wreck of the Maria Doria room 68 not triggering if Lara jumps over them, and fixed a missing trigger for barrels item 123
 - Fixed the lever sound playing twice in 40 Fathoms, Wreck of the Maria Doria, Living Quarters, The Deck, Tibetan Foothills and The Cold War (OG bug) (#4371)
+- Fixed the helicopter at the start of The Great Wall and The Cold War remaining visible after stopping (regression from 1.0)
 
 **TR3**
 - Changed the Hand of Rathmore in Reunion to not show pickup aids, in line with the other artefacts

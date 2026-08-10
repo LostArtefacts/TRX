@@ -19,6 +19,7 @@ static void M_Control(const int16_t item_num)
 
     if (ABS(item->pos.z - lara_item->pos.z) > WALL_L * 30) {
         Item_Destroy(item_num);
+        return;
     }
 
     Item_Animate(item);
