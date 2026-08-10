@@ -103,6 +103,7 @@
 - Added a water color preset, offering the underwater tint each release shipped with, per level where the PlayStation ones varied it; picking one holds the water color below it, and Custom gives the player's own back (Graphic Options → Visuals → Water color preset) (#1619)
 - Added a brightness option for background images and patterns, so that brightening the UI leaves them alone (Graphic Options → Rendering → Background brightness) (#6074)
 - Added an option for the PS1 raindrops, which are pale rather than blue (Graphic Options → Visuals → PS1 raindrops) (#5206)
+- Added a message naming the graphics driver when it is too old to run the game, where the game used to close without any explanation (#5655)
 - Changed the brightness options to be given as percentages, as the volume options are
 - Changed reflections UV mapping to be more correct
 - Fixed a crash when drawing an animating object that has no frame data (#5869)
