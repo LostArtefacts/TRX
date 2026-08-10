@@ -1792,6 +1792,10 @@
             "title": "PS1 crystal tint",
             "description": "Save crystals will be drawn with a purple tint, more similar to the PS1 type.",
         },
+        "visuals.enable_ps1_rain": {
+            "title": "PS1 raindrops",
+            "description": "Raindrops will be added to the scene rather than blended into it, so they appear pale as on the PS1.",
+        },
         "visuals.enable_reflections": {
             "title": "Reflections",
             "description": "Enables reflections on certain objects.",

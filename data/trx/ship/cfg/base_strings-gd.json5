@@ -1792,6 +1792,10 @@
             "title": "Dath criostail PS1",
             "description": "Bidh na criostalan sàbhalaidh purpaidh mar a tha iad anns a' PhS1.",
         },
+        "visuals.enable_ps1_rain": {
+            "title": "\\{review}Boinneagan uisge PS1",
+            "description": "\\{review}Thèid boinneagan uisge a chur ris an t-sealladh seach am measgachadh ann, agus mar sin bidh iad bàn mar a bha iad air a' PS1.",
+        },
         "visuals.enable_reflections": {
             "title": "Meòrachadh",
             "description": "Cuiridh seo meòrachadh air nithean sònraichte an comas.",

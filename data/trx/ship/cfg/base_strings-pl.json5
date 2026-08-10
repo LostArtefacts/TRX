@@ -1792,6 +1792,10 @@
             "title": "Fioletowe kryształy",
             "description": "Kryształy zapisu będą rysowane z fioletowym odcieniem, bardziej podobnym do odcienia z PS1.",
         },
+        "visuals.enable_ps1_rain": {
+            "title": "\\{review}Krople deszczu z PS1",
+            "description": "\\{review}Krople deszczu będą dodawane do sceny zamiast wtapiane w nią, dzięki czemu będą jasne jak na PS1.",
+        },
         "visuals.enable_reflections": {
             "title": "Odbicia",
             "description": "Włącza efekt lustrzanych odbić na niektórych obiektach.",

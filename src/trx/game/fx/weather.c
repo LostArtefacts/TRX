@@ -216,6 +216,15 @@ static void M_DrawRain(void)
     const bool do_interp =
         Interpolation_IsActive() && ratio > 0.0 && ratio < 1.0;
 
+    // The PS1 adds its drops to the scene rather than blending them into it,
+    // which is what makes them read as pale rather than blue.
+    const bool ps1 = g_Config.visuals.enable_ps1_rain;
+    const RGBA_8888 from_color =
+        ps1 ? (RGBA_8888) { 0, 0, 0, 0xFF } : (RGBA_8888) { 0, 0, 0x20, 0x00 };
+    const RGBA_8888 to_color = ps1 ? (RGBA_8888) { 0x30, 0x40, 0x40, 0xFF }
+                                   : (RGBA_8888) { 0x30, 0x40, 0x60, 0x80 };
+    const DRAW_TYPE draw_type = ps1 ? DRAW_BLEND_ADD : DRAW_BLEND;
+
     for (int32_t i = 0; i < M_MAX_WEATHER; i++) {
         const M_RAINDROP *const drop = &m_Raindrops[i];
         if (drop->pos.x == 0) {
@@ -238,10 +247,8 @@ static void M_DrawRain(void)
             to.z - (wind.z * 4),
         };
 
-        const RGBA_8888 from_color = { 0, 0, 0x20, 0x00 };
-        const RGBA_8888 to_color = { 0x30, 0x40, 0x60, 0x80 };
         OutputSource_PolyFX_StageLineSegment(
-            from, from_color, to, to_color, 1.0f, DRAW_BLEND);
+            from, from_color, to, to_color, 1.0f, draw_type);
     }
 }
 

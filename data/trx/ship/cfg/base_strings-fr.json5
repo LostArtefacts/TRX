@@ -1792,6 +1792,10 @@
             "title": "Teinte des cristaux PS1",
             "description": "Les cristaux de sauvegarde seront colorés avec une teinte violette, plus similaires à ceux de la PS1.",
         },
+        "visuals.enable_ps1_rain": {
+            "title": "\\{review}Gouttes de pluie PS1",
+            "description": "\\{review}Les gouttes de pluie seront ajoutées à la scène au lieu d'y être fondues, et paraîtront donc claires comme sur PS1.",
+        },
         "visuals.enable_reflections": {
             "title": "Reflets",
             "description": "Active les reflets sur certains objets.",
