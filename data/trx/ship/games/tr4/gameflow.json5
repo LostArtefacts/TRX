@@ -46,7 +46,6 @@
                 {"type": "remove_weapons"},
                 {"type": "give_item", "object_id": "small_medipack", "quantity": 3},
                 {"type": "give_item", "object_id": "large_medipack"},
-                {"type": "play_cutscene", "cutscene_id": 6}, // cutseq.pak, not level files
                 {"type": "loop_game"},
                 {"type": "level_complete"},
             ],
@@ -165,7 +164,6 @@
                 // {"type": "setup_inv_item", "obj_id": "puzzle_1_combo_1", "offset_y": 0, "scale": 384, "rot_x": 0, "rot_y": 0, "rot_z": 0, "flags": 2},
                 // {"type": "setup_inv_item", "obj_id": "puzzle_1_combo_2", "offset_y": 0, "scale": 1200, "rot_x": 0, "rot_y": 0, "rot_z": 0, "flags": 2},
                 // {"type": "loading_camera", "source_x": 89366, "source_y": -258, "source_Z": 48077, "target_x": 88372, "target_y": -1300, "target_z": 45701, "room": 0},
-                {"type": "play_cutscene", "cutscene_id": 12},
                 {"type": "loop_game"},
                 {"type": "level_complete"},
             ],

@@ -71,6 +71,14 @@ api.property("cutscenes.is_playing", {
   get = raw.is_playing,
 })
 
+api.property("cutscenes.count", {
+  type = "integer",
+  description = "How many cutscenes this game can play. `0` where it has none, which is every "
+    .. "game but TR4 and a TR4 install with no `cutseq.pak` <!--noref: cutseq.pak--> beside its "
+    .. "levels.",
+  get = raw.get_count,
+})
+
 api.number("cutscenes.ActorNum", {
   base = 0,
   description = [[

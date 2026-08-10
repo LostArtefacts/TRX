@@ -54,6 +54,18 @@ function M.hide_items(object)
   end
 end
 
+-- Plays a cutscene as the level opens. Some scenes are named by no floor
+-- trigger at all: the original game starts them from the level's own entry in
+-- the game flow, and a level script is where TRX says so. One that has already
+-- run is left alone, so coming back to the level does not play it again.
+function M.play_on_start(num)
+  trx.events.on_game_start(function()
+    if trx.cutscenes.count > 0 and not trx.cutscenes.is_played(num) then
+      trx.cutscenes.play(num, false)
+    end
+  end)
+end
+
 local function is_speaking(ranges, frame)
   for _, range in ipairs(ranges) do
     if frame > range[1] and frame < range[2] then
