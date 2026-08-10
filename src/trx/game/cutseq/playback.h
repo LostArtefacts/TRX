@@ -52,6 +52,12 @@ void CutSeq_SetPlayedMask(uint64_t mask);
 // the original engine does for the scenes that move her.
 void CutSeq_SetLaraReturn(XYZ_32 pos, int16_t rot);
 
+// Ends the running cutscene early, fading out as it would at its own last
+// frames, so the scene finishes rather than being torn away: Lara is put back
+// where she belongs and the end event still fires. Does nothing when no
+// cutscene is playing or one is already ending.
+void CutSeq_Skip(void);
+
 // Handles a TO_CUTSCENE floor trigger: plays the cutscene once, unless a
 // script answers the trigger itself.
 void CutSeq_HandleTrigger(int32_t num);

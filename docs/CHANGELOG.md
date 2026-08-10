@@ -8,6 +8,7 @@
 - Added injection support for putting a room in a flip group, which only TR4 levels carry themselves (#5336)
 
 **TR4**
+- Added the ability to skip in-game cutscenes
 - Changed a flip to move the group of rooms the trigger names, rather than every flip room in the level
 - Fixed rooms and their contents sometimes disappearing while an in-game cutscene plays
 
