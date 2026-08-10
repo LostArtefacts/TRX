@@ -1131,5 +1131,55 @@
                 "torso": 77,
             },
         },
+
+        // 5. Holsterless
+        {
+            "LGT_PISTOLS": {
+                "hand_r": 56,
+                "hand_l": 57,
+            },
+            "LGT_MAGNUMS": {
+                "hand_r": 58,
+                "hand_l": 59,
+            },
+            "LGT_AUTOS": {
+                "hand_r": 60,
+                "hand_l": 61,
+            },
+            "LGT_DESERT_EAGLE": {
+                "hand_r": 62,
+            },
+            "LGT_UZIS": {
+                "hand_r": 63,
+                "hand_l": 64,
+            },
+            "LGT_SHOTGUN": {
+                "hand_r": 65,
+                "torso": 72,
+            },
+            "LGT_FLARE": {
+                "hand_l": 66,
+            },
+            "LGT_M16": {
+                "hand_r": 67,
+                "torso": 73,
+            },
+            "LGT_MP5": {
+                "hand_r": 68,
+                "torso": 74,
+            },
+            "LGT_GRENADE": {
+                "hand_r": 69,
+                "torso": 75,
+            },
+            "LGT_HARPOON": {
+                "hand_r": 70,
+                "torso": 76,
+            },
+            "LGT_ROCKET": {
+                "hand_r": 71,
+                "torso": 77,
+            },
+        },
     ],
 }
