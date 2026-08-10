@@ -6510,6 +6510,12 @@
       "writable": false
     },
     {
+      "description": "How many cutscenes this game can play. `0` where it has none, which is every game but TR4 and a TR4 install with no `cutseq.pak` <!--noref: cutseq.pak--> beside its levels.",
+      "path": "cutscenes.count",
+      "type": "integer",
+      "writable": false
+    },
+    {
       "description": "How many actors the running cutscene has, or `0` if none is running.",
       "path": "cutscenes.actor_count",
       "type": "integer",

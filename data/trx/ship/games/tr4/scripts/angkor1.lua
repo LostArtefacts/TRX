@@ -81,7 +81,10 @@ trx.events.on_cutscene_start(function(cutscene_num)
   end
 end)
 
--- Lara and Von Croy arrive at the temple entrance and talk it over.
+-- Lara and Von Croy arrive at the temple entrance and talk it over. No floor
+-- trigger names this one; it opens the level.
+cutscenes.play_on_start(ENTRANCE_CUTSCENE)
+
 cutscenes.register(ENTRANCE_CUTSCENE, {
   chat = {
     { lara = true, ranges = { { 257, 345 } } },

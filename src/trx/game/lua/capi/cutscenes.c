@@ -105,6 +105,13 @@ static int M_L_CutscenesForgetPlayed(lua_State *const L)
     return 0;
 }
 
+// trxc.cutscenes.get_count() → int
+static int M_L_CutscenesGetCount(lua_State *const L)
+{
+    lua_pushinteger(L, CutSeq_GetCount());
+    return 1;
+}
+
 // trxc.cutscenes.get_actor_count() → int
 static int M_L_CutscenesGetActorCount(lua_State *const L)
 {
@@ -191,6 +198,7 @@ static const luaL_Reg m_Module[] = {
     { "get_current", M_L_CutscenesGetCurrent },
     { "get_frame_num", M_L_CutscenesGetFrameNum },
     { "is_playing", M_L_CutscenesIsPlaying },
+    { "get_count", M_L_CutscenesGetCount },
     { "get_actor_count", M_L_CutscenesGetActorCount },
     { "set_actor_visible", M_L_CutscenesSetActorVisible },
     { "set_node_mesh", M_L_CutscenesSetNodeMesh },
