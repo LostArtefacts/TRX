@@ -90,6 +90,7 @@ typedef struct {
         bool enable_footprints;
         bool enable_droplets;
         bool enable_ps1_crystals;
+        bool enable_ps1_rain;
 
         bool fix_item_rots;
         bool fix_animated_sprites;

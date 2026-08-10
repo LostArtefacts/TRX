@@ -1792,6 +1792,10 @@
             "title": "PS1-Kristall-Farbton",
             "description": "Der Speicherkristall bekommt einen lila Farbton, ähnlich wie bei der PS1-Variante.",
         },
+        "visuals.enable_ps1_rain": {
+            "title": "\\{review}PS1-Regentropfen",
+            "description": "\\{review}Regentropfen werden der Szene hinzugefügt, statt mit ihr vermischt zu werden, und wirken dadurch hell wie auf der PS1.",
+        },
         "visuals.enable_reflections": {
             "title": "Reflektionen",
             "description": "Aktiviert Reflektionen auf bestimmten Objekten.",

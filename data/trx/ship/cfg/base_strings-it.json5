@@ -1792,6 +1792,10 @@
             "title": "Tinta cristalli PS1",
             "description": "I cristalli di salvataggio saranno di color viola, più simili a quelli della versione PS1.",
         },
+        "visuals.enable_ps1_rain": {
+            "title": "\\{review}Gocce di pioggia PS1",
+            "description": "\\{review}Le gocce di pioggia saranno aggiunte alla scena invece di essere fuse con essa, così appariranno chiare come su PS1.",
+        },
         "visuals.enable_reflections": {
             "title": "Riflessi",
             "description": "Abilita i riflessi su alcuni oggetti.",

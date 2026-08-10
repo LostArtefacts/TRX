@@ -27,6 +27,7 @@ X_UI_ROW(visuals.enable_3d_pickups)
 X_UI_ROW(gameplay.enable_pickup_aids)
 
 X_UI_ROW(visuals.enable_ps1_crystals)
+X_UI_ROW(visuals.enable_ps1_rain)
 
 X_UI_ROW(visuals.shadow_type)
 X_UI_ROW(visuals.enable_gun_lighting)

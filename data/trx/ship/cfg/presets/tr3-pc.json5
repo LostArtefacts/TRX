@@ -8,6 +8,7 @@
         "audio.enable_ps1_sfx": false,
         "gameplay.restore_ps1_enemies": false,
         "gameplay.save_crystal_mode": "heal",
+        "visuals.enable_ps1_rain": false,
         "visuals.water_color_mode": "pc",
     },
 }
