@@ -794,8 +794,10 @@ void Lara_AlignPosition(const ITEM *const item, const XYZ_32 *const vec)
         const int32_t height = Room_GetHeight(sector, new_pos);
         const int32_t ceiling = Room_GetCeiling(sector, new_pos);
 
+        const int32_t lara_height =
+            Lara_GetLaraInfo()->is_crouched ? LARA_HEIGHT_CROUCH : LARA_HEIGHT;
         if (ABS(height - lara->pos.y) > STEP_L
-            || ABS(ceiling - lara->pos.y) < LARA_HEIGHT) {
+            || ABS(ceiling - height) < lara_height) {
             return;
         }
     }
