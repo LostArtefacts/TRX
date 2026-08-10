@@ -182,6 +182,7 @@ static void M_Draw(PHASE *const phase)
         : p->fader.args.target;
     Output_Overlay_DrawBackground(
         g_Config.ui.pause_background_style, progress, nullptr);
+    Output_Flush();
 
     if (p->state == STATE_ASK) {
         UI_Pause(&p->ui.state);

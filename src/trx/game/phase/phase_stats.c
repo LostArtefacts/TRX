@@ -195,6 +195,7 @@ static void M_Draw(PHASE *const phase)
     if (top_opacity > 0.0f) {
         Output_Overlay_DrawSnapshot(1.0f);
         Output_Overlay_DrawBlackRectangle(top_opacity, false);
+        Output_Flush();
         return;
     }
 
@@ -203,6 +204,7 @@ static void M_Draw(PHASE *const phase)
         : p->back_fader.args.target;
     Output_Overlay_DrawBackground(
         p->args.background_type, progress, p->args.background_path);
+    Output_Flush();
 
     if (p->ui_active) {
         UI_StatsDialog(p->ui_state);
