@@ -30,6 +30,7 @@ void TRX_GL_Context_SwapBuffers(void);
 void TRX_GL_Context_SetRendered(void);
 
 void TRX_GL_Context_SwitchToViewport(VIEWPORT_SPACE space);
+VIEWPORT_SPACE TRX_GL_Context_GetViewport(void);
 
 void TRX_GL_Context_ScheduleScreenshot(const char *path);
 const char *TRX_GL_Context_GetScheduledScreenshotPath(void);
