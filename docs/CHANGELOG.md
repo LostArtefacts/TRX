@@ -106,6 +106,7 @@
 - Fixed a crash when drawing an animating object that has no frame data (#5869)
 - Fixed colored dynamic lights in TR1 and TR2 being drawn at the wrong brightness
 - Fixed FMVs costing frame rate at high resolutions, where every frame was resized twice on its way to the screen (#6152, #262)
+- Fixed loading and legal screens ignoring the upscaling factor and filter
 
 **Music and sound**
 - Added an option to keep the music playing when Lara dies (Sound Options → Misc → Play music after death) (#4221)
