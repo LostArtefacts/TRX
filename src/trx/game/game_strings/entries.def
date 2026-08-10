@@ -6,6 +6,7 @@ GS_DEFINE(dynamic/enums/bar_look/tr3_pc,                                    "TR3
 GS_DEFINE(dynamic/enums/bar_look/tr3_ps1,                                   "TR3 PS1")
 GS_DEFINE(dynamic/enums/lara_outfit/default,                                "Default")
 GS_DEFINE(dynamic/enums/lara_outfit/golden_sophia,                          "Golden Sophia")
+GS_DEFINE(dynamic/enums/lara_outfit/natla,                                  "Natla")
 GS_DEFINE(dynamic/enums/lara_outfit/sophia,                                 "Sophia")
 GS_DEFINE(dynamic/enums/lara_outfit/tr1_bacon_lara,                         "Bacon Lara")
 GS_DEFINE(dynamic/enums/lara_outfit/tr1_classic,                            "TR1 Classic")

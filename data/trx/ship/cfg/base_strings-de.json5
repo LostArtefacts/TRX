@@ -578,6 +578,7 @@
             "lara_outfit": {
                 "default": "\\{review}Standard",
                 "golden_sophia": "\\{review}Goldene Sophia",
+                "natla": "\\{review}Natla",
                 "sophia": "\\{review}Sophia",
                 "tr1_bacon_lara": "\\{review}Bacon-Lara",
                 "tr1_classic": "\\{review}TR1 Klassisch",
