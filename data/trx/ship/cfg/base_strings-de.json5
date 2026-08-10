@@ -3532,6 +3532,9 @@
         "teeth_trap": {
             "name": "Zahn-Falle",
         },
+        "teleporter": {
+            "name": "\\{review}Teleporter",
+        },
         "text_box": {
             "name": "UI Frame",
         },

@@ -3526,6 +3526,9 @@
         "teeth_trap": {
             "name": "\\{review}Piège à Dents",
         },
+        "teleporter": {
+            "name": "\\{review}Téléporteur",
+        },
         "text_box": {
             "name": "\\{review}Cadre UI",
         },

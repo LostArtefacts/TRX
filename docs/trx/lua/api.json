@@ -237,7 +237,7 @@
     },
     {
       "bulk": true,
-      "count": 807,
+      "count": 808,
       "description": "Every object TRX has a name for.",
       "examples": [
         "if item.object_id == trx.catalog.objects.WOLF then ... end"
@@ -989,6 +989,7 @@
         "SWITCH_TYPE_UW_CEILING",
         "SWITCH_TYPE_WHEEL",
         "TEETH_TRAP",
+        "TELEPORTER",
         "TEXT_BOX",
         "THORS_HANDLE",
         "THORS_HEAD",

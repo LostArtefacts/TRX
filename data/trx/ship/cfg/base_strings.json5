@@ -3647,6 +3647,9 @@
                 "Clang-clang Door",
             ]
         },
+        "teleporter": {
+            "name": "Teleporter",
+        },
         "text_box": {
             "name": "UI Frame",
         },
