@@ -160,6 +160,22 @@ common_build_opts = [
   '-DDEBUG=' + (get_option('buildtype') == 'debug' ? '1' : '0'),
 ]
 
+# Without this, the mingw headers route printf and scanf to the MSVCRT ones,
+# which lack C99 specifiers such as %zu and %hhX. GCC before 14 still checks the
+# formats against the MSVCRT ones, because it takes the attribute from its own
+# builtin rather than from the header, so those calls have to stop being
+# builtins as well.
+if host_machine.system() == 'windows'
+  common_build_opts += ['-D__USE_MINGW_ANSI_STDIO=1']
+  foreach func : [
+    'printf', 'fprintf', 'sprintf', 'snprintf',
+    'vprintf', 'vfprintf', 'vsprintf', 'vsnprintf',
+    'scanf', 'fscanf', 'sscanf', 'vsscanf',
+  ]
+    common_build_opts += ['-fno-builtin-' + func]
+  endforeach
+endif
+
 # Some warning names are compiler-specific (e.g. Clang-only) and will spam notes
 # on GCC. Only add the ones the current compiler actually supports.
 compiler_specific_warning_opts = [
