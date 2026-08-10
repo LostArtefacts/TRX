@@ -2,6 +2,7 @@
 
 #include <trx/core/log.h>
 #include <trx/core/memory.h>
+#include <trx/core/strings.h>
 #include <trx/game/shell.h>
 #include <trx/game/viewport.h>
 #include <trx/gl/renderer.h>
@@ -141,6 +142,31 @@ bool TRX_GL_Context_Attach(void *window_handle)
     }
 
     return true;
+}
+
+char *TRX_GL_Context_DescribeDriver(void *const window_handle)
+{
+    SDL_GL_ResetAttributes();
+    SDL_GLContext context = SDL_GL_CreateContext(window_handle);
+    if (context == nullptr) {
+        LOG_ERROR("Can't create fallback OpenGL context: %s", SDL_GetError());
+        return nullptr;
+    }
+
+    char *result = nullptr;
+    if (SDL_GL_MakeCurrent(window_handle, context) == 0) {
+        const char *const renderer = (const char *)glGetString(GL_RENDERER);
+        const char *const version = (const char *)glGetString(GL_VERSION);
+        if (renderer != nullptr && version != nullptr) {
+            result = String_Format("%s (OpenGL %s)", renderer, version);
+        } else if (version != nullptr) {
+            result = String_Format("OpenGL %s", version);
+        }
+        SDL_GL_MakeCurrent(window_handle, nullptr);
+    }
+
+    SDL_GL_DeleteContext(context);
+    return result;
 }
 
 void TRX_GL_Context_Detach(void)

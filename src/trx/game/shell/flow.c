@@ -2,6 +2,7 @@
 #include <trx/config/registry.h>
 #include <trx/core/log.h>
 #include <trx/core/memory.h>
+#include <trx/core/strings.h>
 #include <trx/core/subsystem.h>
 #include <trx/debug.h>
 #include <trx/game/catalog/manager.h>
@@ -51,6 +52,33 @@ static void M_CreateGameWindow(void)
     Shell_EnableThemeSupport(m_Window);
 }
 
+static void M_ExitUnsupportedGraphics(void)
+{
+    char *driver = TRX_GL_Context_DescribeDriver(m_Window);
+
+#ifdef _WIN32
+    const char *const hint =
+        " Where the card is too old for that, installing "
+        "Mesa3D lets TRX draw the game without it.";
+#else
+    const char *const hint = "";
+#endif
+
+    char *message = String_Format(
+        "TRX needs OpenGL 3.3 to draw the game, and the graphics driver on "
+        "this computer does not offer it.\n"
+        "\n"
+        "Graphics driver: %s\n"
+        "\n"
+        "Installing the latest drivers for the graphics card usually helps.%s",
+        driver != nullptr ? driver : "unknown", hint);
+
+    Shell_ExitSystem(message);
+
+    Memory_FreePointer(&message);
+    Memory_FreePointer(&driver);
+}
+
 static void M_CreateGLContext(void)
 {
     if (TRX_GL_Context_GetWindowHandle() != nullptr) {
@@ -61,7 +89,7 @@ static void M_CreateGLContext(void)
     SDL_GL_SetAttribute(
         SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
     if (!TRX_GL_Context_Attach(m_Window)) {
-        Shell_ExitSystem("System Error: cannot attach opengl context");
+        M_ExitUnsupportedGraphics();
     }
 }
 
