@@ -141,6 +141,10 @@ void Output_ApplyFOV(void)
     case FOV_MODE_PS1:
         fov_width = sw * ((4.0f / 3.0f) / aspect) * 240 / 200;
         break;
+    case FOV_MODE_PS1_FIT:
+        fov_width =
+            sw * ((4.0f / 3.0f) / MAX(aspect, 16.0f / 10.0f)) * 240 / 200;
+        break;
     default:
         ASSERT_FAIL();
     }

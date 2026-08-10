@@ -9,6 +9,10 @@ typedef enum {
     FOV_MODE_HORIZONTAL,
     FOV_MODE_PC,
     FOV_MODE_PS1,
+    // Like FOV_MODE_PS1, except the horizontal field of view stops narrowing
+    // once the viewport is taller than 16:10, and the vertical one widens
+    // instead.
+    FOV_MODE_PS1_FIT,
 } FOV_MODE;
 
 // The rectangles the frame passes through, from the outside in. VIEWPORT_UI

@@ -235,6 +235,13 @@ void Output_GetPerspProjectionMatrix(GLfloat output[][4])
         f_y = f_x * aspect;
         break;
     }
+    case FOV_MODE_PS1_FIT: {
+        const float persp =
+            ((4.0f / 3.0f) / MAX(aspect, 16.0f / 10.0f)) * (240.0f / 200.0f);
+        f_x = persp / tanf(fov * 0.5f);
+        f_y = f_x * aspect;
+        break;
+    }
     default:
         ASSERT_FAIL();
     }
