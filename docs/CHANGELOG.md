@@ -6,6 +6,7 @@
 - Added the ability for Lara to shimmy more quickly (Gameplay → Controls → Fast shimmying) (#5638)
 - Added the ability for Lara to pull up from ledges more quickly (Gameplay → Controls → Fast pull up) (#4857)
 - Improved state change handling when shimmying is requested while in the slow swing-in state on thin ledges (#5161)
+- Improved the pickup embed fix to prevent Lara becoming clamped when picking up items placed on sloped floors with low ceilings (Gameplay → Fixes → Fix pickup embed glitch) (OG bug)
 - Fixed Lara attempting to pull up into gaps that would not allow her to stand, resulting in her being pushed out (#5891)
 - Fixed Lara being teleported into the ceiling if a door shuts on the ledge she is climbing onto (Gameplay → Fixes → Wall glitch mode) (#6047)
 - Fixed differing ladder/hanging behavior when Lara comes to a stop from shimmying when corner shimmying is enabled (regression from 1.9)
