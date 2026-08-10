@@ -1,12 +1,20 @@
+local cutscenes = require("tr4.cutscenes")
+
 trx.events.on_game_start(function(is_save)
   trx.objects.animating_13.properties.collidable = false
   trx.objects.animating_14.properties.collidable = false
   trx.objects.animating_15.properties.collidable = false
   trx.objects.animating_16.properties.collidable = false
   trx.lara.holsters_visible = trx.lara.has_pistol_weapon
+
+  -- Von Croy walks the level beside Lara in the original game. TRX has no
+  -- port of his guide behavior yet, so his items would stand frozen next to
+  -- the cutscene actor wearing the same face.
+  cutscenes.hide_items(trx.catalog.objects.von_croy)
 end)
 
 local BACKPACK_CUTSCENE = 5
+local ENTRANCE_CUTSCENE = 6
 local BACKPACK_FRAME = 1350
 local YOUNG_OUTFIT = "tr4_young"
 local BARE_TORSO_MESH = 7
@@ -67,5 +75,24 @@ trx.events.on_cutscene_start(function(cutscene_num)
     -- it from is no place to stand up in. The original engine carries her out
     -- to the floor beyond it.
     trx.cutscenes.set_lara_return({ x = 100938, y = 768, z = 58040 }, -32552)
+  elseif cutscene_num == ENTRANCE_CUTSCENE then
+    -- The scene plays at the temple entrance and leaves her facing the way in.
+    trx.cutscenes.set_lara_return({ x = 5632, y = 1280, z = 86528 }, 28987)
   end
 end)
+
+-- Lara and Von Croy arrive at the temple entrance and talk it over.
+cutscenes.register(ENTRANCE_CUTSCENE, {
+  chat = {
+    { lara = true, ranges = { { 257, 345 } } },
+    {
+      actor = 1,
+      node = 21,
+      ranges = { { 6, 209 } },
+      speech_heads = {
+        trx.catalog.objects.actor_1_speech_head_1,
+        trx.catalog.objects.actor_1_speech_head_2,
+      },
+    },
+  },
+})
