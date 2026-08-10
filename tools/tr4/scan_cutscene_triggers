@@ -1,0 +1,192 @@
+#!/usr/bin/env python3
+"""Scan TR4 level files for the floor triggers that start a cutscene.
+
+The floor data walk mirrors src/trx/game/rooms/floor_data.c, so every
+sector's trigger chain is read the way the engine reads it.
+"""
+
+from __future__ import annotations
+
+import argparse
+import struct
+import zlib
+from pathlib import Path
+
+FT_DOOR = 1
+FT_TILT = 2
+FT_ROOF = 3
+FT_TRIGGER = 4
+FT_TRIANGULATION_FIRST = 7
+FT_TRIANGULATION_LAST = 18
+
+TO_CAMERA = 1
+TO_FLYBY = 12
+TO_CUTSCENE = 13
+
+TRIGGER_TYPES = {
+    0: "trigger",
+    1: "pad",
+    2: "switch",
+    3: "key",
+    4: "pickup",
+    5: "heavy",
+    6: "antipad",
+    7: "combat",
+    8: "dummy",
+    9: "antitrigger",
+    10: "heavy_switch",
+    11: "heavy_antitrigger",
+    12: "monkey",
+}
+
+
+class Reader:
+    def __init__(self, data: bytes) -> None:
+        self.data = data
+        self.pos = 0
+
+    def skip(self, count: int) -> None:
+        self.pos += count
+
+    def read(self, fmt: str) -> tuple:
+        result = struct.unpack_from("<" + fmt, self.data, self.pos)
+        self.pos += struct.calcsize("<" + fmt)
+        return result
+
+    def s16(self) -> int:
+        return self.read("h")[0]
+
+    def u16(self) -> int:
+        return self.read("H")[0]
+
+    def s32(self) -> int:
+        return self.read("i")[0]
+
+    def u32(self) -> int:
+        return self.read("I")[0]
+
+
+def read_chunk(reader: Reader) -> bytes:
+    uncompressed_size = reader.u32()
+    compressed_size = reader.u32()
+    blob = reader.data[reader.pos : reader.pos + compressed_size]
+    reader.skip(compressed_size)
+    result = zlib.decompress(blob)
+    assert len(result) == uncompressed_size
+    return result
+
+
+def read_rooms(level: Reader) -> list[tuple[int, int]]:
+    """Returns the room number and floor data index of every sector."""
+    fd_indices: list[tuple[int, int]] = []
+    num_rooms = level.s16()
+    for room_num in range(num_rooms):
+        level.skip(4 * 4)  # x, z, y_bottom, y_top
+        num_data_words = level.u32()
+        level.skip(2 * num_data_words)
+        num_portals = level.s16()
+        level.skip(32 * num_portals)
+        num_z_sectors = level.s16()
+        num_x_sectors = level.s16()
+        for _ in range(num_z_sectors * num_x_sectors):
+            fd_index = level.u16()
+            level.skip(6)  # box, room below, floor, room above, ceiling
+            if fd_index != 0:
+                fd_indices.append((room_num, fd_index))
+        level.skip(4)  # room colour
+        num_lights = level.s16()
+        level.skip(46 * num_lights)
+        num_static_meshes = level.s16()
+        level.skip(20 * num_static_meshes)
+        level.skip(2 + 2)  # flipped room, flags
+        level.skip(3)  # water scheme, reverb, alternate group
+    return fd_indices
+
+
+def scan_sector(
+    floor_data: list[int], start_index: int, room_num: int
+) -> list[tuple[int, int, str]]:
+    results: list[tuple[int, int, str]] = []
+    pos = start_index
+    while True:
+        fd_entry = floor_data[pos]
+        pos += 1
+        entry_type = fd_entry & 0x1F
+
+        if entry_type in (FT_TILT, FT_ROOF, FT_DOOR):
+            pos += 1
+        elif FT_TRIANGULATION_FIRST <= entry_type <= FT_TRIANGULATION_LAST:
+            pos += 1
+        elif entry_type == FT_TRIGGER:
+            trigger_type = (fd_entry & 0x7F00) >> 8
+            pos += 1  # trigger setup
+            while True:
+                command = floor_data[pos]
+                pos += 1
+                cmd_type = (command & 0x7C00) >> 10
+                cmd_arg = command & 0x3FF
+                if cmd_type in (TO_CAMERA, TO_FLYBY):
+                    pos += 1
+                if cmd_type == TO_CUTSCENE:
+                    name = TRIGGER_TYPES.get(trigger_type, str(trigger_type))
+                    results.append((room_num, cmd_arg, name))
+                if command & 0x8000:
+                    break
+
+        if fd_entry & 0x8000:
+            break
+    return results
+
+
+def scan_level(path: Path) -> list[tuple[int, int, str]]:
+    reader = Reader(path.read_bytes())
+    version = reader.u32()
+    assert version == 0x00345254, f"not a TR4 level: {path}"
+
+    reader.skip(3 * 2)  # texture page counts
+    for _ in range(3):
+        read_chunk(reader)  # images32, images16, sky/font
+    level = Reader(read_chunk(reader))
+
+    level.skip(4)  # level number
+    fd_indices = read_rooms(level)
+
+    floor_data_size = level.s32()
+    floor_data = list(level.read(f"{floor_data_size}h"))
+
+    results: list[tuple[int, int, str]] = []
+    for room_num, fd_index in fd_indices:
+        results.extend(scan_sector(floor_data, fd_index, room_num))
+    return results
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "paths", nargs="+", type=Path, help=".tr4 files or directories"
+    )
+    args = parser.parse_args()
+
+    level_paths: list[Path] = []
+    for path in args.paths:
+        if path.is_dir():
+            level_paths.extend(sorted(path.glob("*.tr4")))
+        else:
+            level_paths.append(path)
+
+    for path in level_paths:
+        try:
+            triggers = scan_level(path)
+        except Exception as exc:
+            print(f"{path.name}: FAILED to parse ({exc})")
+            continue
+
+        for room_num, cutscene_num, trigger_type in triggers:
+            print(
+                f"{path.name}: room {room_num} "
+                f"cutscene={cutscene_num} type={trigger_type}"
+            )
+
+
+if __name__ == "__main__":
+    main()
