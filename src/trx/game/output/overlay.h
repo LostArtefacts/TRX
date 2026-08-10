@@ -16,6 +16,9 @@ bool Output_Overlay_LoadImage(const char *file_name);
 void Output_Overlay_DrawImage(const char *file_name);
 void Output_Overlay_DrawImageBilinear(const char *file_name);
 void Output_Overlay_DrawImageMono(const char *file_name, float intensity);
+// Marks the start of a new frame, so that a transition captured before it is
+// drawn once no matter how many times the frame is flushed.
+void Output_Overlay_BeginFrame(void);
 void Output_Overlay_CaptureSnapshot(void);
 void Output_Overlay_CaptureGameSnapshot(void);
 void Output_Overlay_DrawSnapshot(float opacity);
