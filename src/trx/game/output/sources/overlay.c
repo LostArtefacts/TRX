@@ -122,6 +122,7 @@ typedef struct {
         OUTPUT_QUAD *renderer;
         M_SNAPSHOT_STATE state;
         bool transition_active;
+        bool transition_drawn;
         FADER transition_fader;
     } snapshot;
     struct {
@@ -763,45 +764,48 @@ static void M_RunQueue(const VECTOR *const queue)
     }
 }
 
+static void M_DrawTransitionSnapshot(M_PRIV *const p)
+{
+    if (!p->snapshot.transition_active || p->snapshot.transition_drawn) {
+        return;
+    }
+
+    const float opacity = Fader_GetCurrentValue(&p->snapshot.transition_fader);
+    if (opacity <= 0.0f || !p->snapshot.state.has_content
+        || !p->snapshot.state.texture.initialized) {
+        p->snapshot.transition_active = false;
+        p->snapshot.state.has_content = false;
+        return;
+    }
+
+    M_DrawOp_Snapshot(&(M_DRAW_OP_SNAPSHOT) {
+        .texture_id = p->snapshot.state.texture.id,
+        .width = p->snapshot.state.width,
+        .height = p->snapshot.state.height,
+        .opacity = opacity,
+        .tint = COLOR_RGB_F_WHITE,
+    });
+    p->snapshot.transition_drawn = true;
+
+    if (!Fader_IsActive(&p->snapshot.transition_fader)) {
+        p->snapshot.transition_active = false;
+        p->snapshot.state.has_content = false;
+    }
+}
+
 static void M_RenderBegin(const SCENE_SOURCE *const source)
 {
     M_PRIV *const p = &m_Priv;
     Vector_Clear(p->ops[0]);
     Vector_Clear(p->ops[1]);
     Memory_ArenaReset(&p->alloc);
-
-    if (p->snapshot.transition_active) {
-        const float opacity =
-            Fader_GetCurrentValue(&p->snapshot.transition_fader);
-
-        if (opacity <= 0.0f || !p->snapshot.state.has_content
-            || !p->snapshot.state.texture.initialized) {
-            p->snapshot.transition_active = false;
-            p->snapshot.state.has_content = false;
-            return;
-        }
-
-        M_SCHEDULE_OP(
-            false, M_DrawOp_Snapshot,
-            ((M_DRAW_OP_SNAPSHOT) {
-                .texture_id = p->snapshot.state.texture.id,
-                .width = p->snapshot.state.width,
-                .height = p->snapshot.state.height,
-                .opacity = opacity,
-                .tint = COLOR_RGB_F_WHITE,
-            }));
-
-        if (!Fader_IsActive(&p->snapshot.transition_fader)) {
-            p->snapshot.transition_active = false;
-            p->snapshot.state.has_content = false;
-        }
-    }
 }
 
 static void M_RenderPass(const SCENE_SOURCE *const src, const SCENE_PASS pass)
 {
     M_PRIV *const p = &m_Priv;
     if (pass == SCENE_PASS_OVERLAY_PRE_UI) {
+        M_DrawTransitionSnapshot(p);
         M_RunQueue(p->ops[0]);
     } else if (pass == SCENE_PASS_OVERLAY_POST_UI) {
         M_RunQueue(p->ops[1]);
@@ -812,7 +816,8 @@ static bool M_IsDirty(const SCENE_SOURCE *const src, const SCENE_PASS pass)
 {
     M_PRIV *const p = &m_Priv;
     if (pass == SCENE_PASS_OVERLAY_PRE_UI) {
-        return p->ops[0]->count > 0 || p->snapshot.transition_active;
+        return p->ops[0]->count > 0
+            || (p->snapshot.transition_active && !p->snapshot.transition_drawn);
     } else if (pass == SCENE_PASS_OVERLAY_POST_UI) {
         return p->ops[1]->count > 0;
     }
@@ -941,6 +946,11 @@ void Output_Overlay_DrawPatternOpacity(const bool wave, const float opacity)
         ((M_DRAW_OP_PATTERN) { .wave = wave, .opacity = opacity }));
 }
 
+void Output_Overlay_BeginFrame(void)
+{
+    m_Priv.snapshot.transition_drawn = false;
+}
+
 void Output_Overlay_BeginTransitionFadeOut(
     const float duration, const float start)
 {
@@ -951,6 +961,7 @@ void Output_Overlay_BeginTransitionFadeOut(
     }
 
     p->snapshot.transition_active = true;
+    p->snapshot.transition_drawn = false;
     Fader_InitTo(&p->snapshot.transition_fader, start, 0.0f, duration);
 }
 
