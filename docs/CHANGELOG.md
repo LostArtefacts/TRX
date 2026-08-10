@@ -9,6 +9,9 @@
 **TR4**
 - Changed a flip to move the group of rooms the trigger names, rather than every flip room in the level
 
+**Lua**
+- Changed `trx.cutscenes.play()` to take whether to fade out first, so a scene that opens a level begins on the black screen the level loaded behind
+
 ## [1.10](https://github.com/LostArtefacts/TRX/compare/trx-1.9.3...trx-1.10) - 2026-08-12
 Showcase: https://youtu.be/DKpqz_Yum6o
 

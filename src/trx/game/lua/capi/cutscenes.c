@@ -31,10 +31,12 @@ static int32_t M_CheckTriggerNum(lua_State *const L, const int32_t arg)
     return (int32_t)num;
 }
 
-// trxc.cutscenes.play(num)
+// trxc.cutscenes.play(num, fade)
 static int M_L_CutscenesPlay(lua_State *const L)
 {
-    CutSeq_Request(M_CheckPlayableNum(L, 1));
+    const int32_t num = M_CheckPlayableNum(L, 1);
+    const bool fade_out = lua_isnoneornil(L, 2) || lua_toboolean(L, 2);
+    CutSeq_Request(num, fade_out);
     return 0;
 }
 

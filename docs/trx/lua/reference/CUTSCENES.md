@@ -41,11 +41,12 @@ lists and `/cut` plays, are a different thing: see [`trx.game.cutscenes`](GAME.m
 
 ### Functions
 
-- <a id="cutscenes.play" name="cutscenes.play"></a>[lua]`trx.cutscenes.play(num)`  
+- <a id="cutscenes.play" name="cutscenes.play"></a>[lua]`trx.cutscenes.play(num, [fade])`  
   Plays a cutscene, fading the scene out first. Does nothing if one is already playing or the game has no cutscene data.
 
   Parameters:
   - <a id="cutscenes.play.num" name="cutscenes.play.num"></a>**`num`** ([trx.cutscenes.Num](#cutscenes.Num)).
+  - <a id="cutscenes.play.fade" name="cutscenes.play.fade"></a>**`fade`** (boolean, optional). Whether to fade the scene out before the first frame. Defaults to true. A cutscene that opens a level passes false: the original game holds the screen black rather than showing the level for a moment first, and the scene's own fade in follows either way.
 
   Example:
   ```lua
