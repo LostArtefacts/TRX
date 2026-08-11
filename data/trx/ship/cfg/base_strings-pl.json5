@@ -1256,6 +1256,10 @@
             "title": "Napraw AI niedźwiedzi",
             "description": "Naprawia atak niedźwiedzia, aby nie chybiał Lary.",
         },
+        "gameplay.fix_breakable_wall_clip": {
+            "title": "\\{review}Napraw przenikanie kruchych ścian",
+            "description": "\\{review}Naprawia problem, w którym Lara może podciągnąć się lub przeczołgać przez kruche ściany stojące na krawędzi sektora. Po włączeniu Lara zatrzymuje się przed ścianą, dopóki nie zostanie ona zniszczona.",
+        },
         "gameplay.fix_bridge_collision": {
             "title": "Napraw kolizję mostów",
             "description": "Naprawia problem, w którym Lara nie może chwycić części niektórych mostów oraz krawędzi. Naprawia również problemy z kolizją mostów zwodzonych, pułapek i zwykłych mostów, gdy są nałożone na siebie, są przy zboczach lub blisko ziemi.",

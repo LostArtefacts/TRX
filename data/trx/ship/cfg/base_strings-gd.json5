@@ -1256,6 +1256,10 @@
             "title": "Càraich AI mathain",
             "description": "Càraichidh seo ionnsaigh a' mhathain gus nach caill e Lara.",
         },
+        "gameplay.fix_breakable_wall_clip": {
+            "title": "\\{review}Càraich dol tro bhallachan bristeach",
+            "description": "\\{review}Càradh far an urrainn do Lara sreap no snàgail tro bhallachan bristeach a tha air oir ceàrnaidh. Ma tha seo an comas, stadaidh i aig a' bhalla gus an tèid a bhriseadh.",
+        },
         "gameplay.fix_bridge_collision": {
             "title": "Càraich buaidh dhrochaidean",
             "description": "Càradh far nach urrainn do Lara grèim fhaighinn air cuid de dhrochaidean, agus bugan le ballachan neo-fhaicsinneach. Càraidh seo cuideachd duilgheadasan le drochaidean, dorsan-trapa is làr-lùbte nuair a tha iad air an cur thairis air chèile neo ri talamh claon.",

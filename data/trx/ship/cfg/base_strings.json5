@@ -1256,6 +1256,10 @@
             "title": "Fix bear AI",
             "description": "Fixes the bear pat attack so it does not miss Lara.",
         },
+        "gameplay.fix_breakable_wall_clip": {
+            "title": "Fix breakable wall clipping",
+            "description": "Fixes Lara being able to vault or crawl through breakable walls that stand on the edge of a sector. If enabled, she stops at the wall until it is broken.",
+        },
         "gameplay.fix_bridge_collision": {
             "title": "Fix bridge collision",
             "description": "Fixes Lara not being able to grab parts of some bridges and invisible walls at the edge. Also fixes collision issues with drawbridges, trapdoors, and bridges when stacked over each other, over slopes, and near the ground.",

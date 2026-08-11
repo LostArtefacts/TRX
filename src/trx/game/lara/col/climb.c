@@ -3,6 +3,7 @@
 #include <trx/game/lara.h>
 #include <trx/game/lara/util.h>
 #include <trx/game/rooms.h>
+#include <trx/game/rooms/geometry.h>
 #include <trx/version.h>
 
 // clang-format off
@@ -790,6 +791,19 @@ static bool M_TestLedgeJump(const ITEM *const item, const COLL_INFO *const coll)
         || (ceiling - pos.y) >= -M_LEDGE_JUMP_PUSH_HEIGHT;
 }
 
+// The ledge Lara hangs from puts her body below the things standing on it, so
+// the collision info, which describes where she is now, says nothing about
+// what she would pull up into.
+static bool M_IsDestinationBlocked(
+    const ITEM *const item, const COLL_INFO *const coll)
+{
+    XYZ_32 pos = XYZ_32_OffsetYaw(
+        item->pos, Lara_GetLaraInfo()->move_angle, coll->radius);
+    pos.y += coll->side_front.floor;
+    return Room_IsPathBlocked(
+        item->pos, pos, item->room_num, LARA_HEIGHT, LARA_RADIUS);
+}
+
 static void M_Hang(ITEM *const item, COLL_INFO *const coll)
 {
     if (M_TryCornerShimmy(item, coll)) {
@@ -810,6 +824,7 @@ static void M_Hang(ITEM *const item, COLL_INFO *const coll)
     if (g_Input.forward) {
         if (coll->side_front.floor > -850 && coll->side_front.floor < -650
             && M_GetDestinationClearance(item) > LARA_HEIGHT
+            && !M_IsDestinationBlocked(item, coll)
             && coll->side_front.floor - coll->side_front.ceiling >= 0
             && coll->side_left2.floor - coll->side_left2.ceiling >= 0
             && coll->side_right2.floor - coll->side_right2.ceiling >= 0
@@ -835,6 +850,7 @@ static void M_Hang(ITEM *const item, COLL_INFO *const coll)
 
     if (g_Config.gameplay.enable_crawling && (g_Input.forward || g_Input.crouch)
         && coll->side_front.floor > -850 && coll->side_front.floor < -650
+        && !M_IsDestinationBlocked(item, coll)
         && coll->side_front.floor - coll->side_front.ceiling >= -256
         && coll->side_left2.floor - coll->side_left2.ceiling >= -256
         && coll->side_right2.floor - coll->side_right2.ceiling >= -256

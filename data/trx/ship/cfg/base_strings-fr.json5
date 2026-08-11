@@ -1256,6 +1256,10 @@
             "title": "Corriger l'IA des ours",
             "description": "Corrige l'attaque par coup de patte des ours pour qu'ils ne ratent pas Lara.",
         },
+        "gameplay.fix_breakable_wall_clip": {
+            "title": "\\{review}Corriger la traversée des murs fragiles",
+            "description": "\\{review}Corrige le fait que Lara puisse se hisser ou ramper à travers les murs fragiles situés à la bordure d'un secteur. Si activé, elle s'arrête devant le mur jusqu'à ce qu'il soit brisé.",
+        },
         "gameplay.fix_bridge_collision": {
             "title": "Corriger la colision des ponts",
             "description": "Corrige l'impossibilité pour Lara de s'accrocher à des certaines parties de ponts et les murs invisibles à leurs bordures. Corrige également les problèmes de colision pour les ponts-levis, les trappes et les ponts lorsqu'ils sont les uns au-dessus des autres, au-dessus de pentes, ou près du sol.",

@@ -309,6 +309,7 @@ typedef struct {
         bool fix_wade_wall_hit;
         bool fix_underwater_crawl;
         bool fix_lift_collision;
+        bool fix_breakable_wall_clip;
 
         bool fix_floor_data_issues;
         bool fix_bridge_collision;
