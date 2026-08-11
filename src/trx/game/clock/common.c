@@ -63,6 +63,11 @@ void Clock_DisableWait(void)
     m_Disabled = true;
 }
 
+void Clock_EnableWait(void)
+{
+    m_Disabled = false;
+}
+
 void Clock_EnableHeadlessFixedFPS(int32_t fps)
 {
     if (fps <= 0) {

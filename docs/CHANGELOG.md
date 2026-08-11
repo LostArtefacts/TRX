@@ -174,6 +174,9 @@
 - Fixed the `/cutscene` and `/demo` console commands playing the one after the number they were given
 - Fixed the `/play` console command starting the playthrough over only on the gym, so the rules and how wet Lara was carried over from the last run
 
+**Recordings**
+- Added `skip start` and `skip end` events to recordings, which stop the drawing while the frames keep running, so a stretch passes as fast as the machine manages
+
 **Installer and mods**
 - Changed the installer to explain when it cannot download the files it needs, and to offer to try again (#6052)
 - Fixed mesh debug spheres not rendering after switching mods (regression from 1.5)

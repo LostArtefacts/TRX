@@ -71,6 +71,7 @@ typedef struct {
     int32_t frame_idx; // Current playback frame index
     int32_t next_frame_idx; // Next frame to process
     bool replay_quiet;
+    bool skipping; // a skip stretch has the drawing off
     struct {
         bool seen;
         bool quiet_applied;
@@ -105,6 +106,8 @@ static bool M_ParseNoopEvent(const char *event_str);
 static bool M_ParseLuaEvent(const char *event_str);
 static bool M_ParseTestCaseEvent(const char *event_str);
 static bool M_ParseExpectEvent(const char *event_str);
+static bool M_ParseSkipStartEvent(const char *event_str);
+static bool M_ParseSkipEndEvent(const char *event_str);
 
 // Header parsers
 static bool M_ParseSeedControl(const char *line, M_PARSE_CTX *ctx);
@@ -123,11 +126,10 @@ static const M_HEADER_HANDLER m_HeaderHandlers[] = {
 };
 
 static const M_EVENT_HANDLER m_EventHandlers[] = {
-    M_ParseQuitEvent,   M_ParseTestCaseEvent,
-    M_ParseExpectEvent, M_ParseKeyDownEvent,
-    M_ParseKeyUpEvent,  M_ParseTextInputEvent,
-    M_ParseNoopEvent,   M_ParseCommandEvent,
-    M_ParseLuaEvent,    nullptr,
+    M_ParseQuitEvent,      M_ParseTestCaseEvent, M_ParseExpectEvent,
+    M_ParseKeyDownEvent,   M_ParseKeyUpEvent,    M_ParseTextInputEvent,
+    M_ParseNoopEvent,      M_ParseCommandEvent,  M_ParseLuaEvent,
+    M_ParseSkipStartEvent, M_ParseSkipEndEvent,  nullptr,
 };
 
 static inline M_PARSE_CTX M_ParseCtxInit(void)
@@ -525,6 +527,39 @@ static bool M_ParseNoopEvent(const char *const event_str)
     if (strncmp(event_str, "noop", 4) != 0) {
         return false;
     }
+    return true;
+}
+
+static void M_StopSkipping(void)
+{
+    M_PRIV *const p = &m_Priv;
+    if (!p->skipping) {
+        return;
+    }
+    p->skipping = false;
+    Shell_SetHeadless(false);
+}
+
+static bool M_ParseSkipStartEvent(const char *const event_str)
+{
+    if (strcmp(event_str, "skip start") != 0) {
+        return false;
+    }
+    M_PRIV *const p = &m_Priv;
+    // A run already told to draw nothing must not start drawing at skip end.
+    if (!p->skipping && !Shell_GetArgs()->headless) {
+        p->skipping = true;
+        Shell_SetHeadless(true);
+    }
+    return true;
+}
+
+static bool M_ParseSkipEndEvent(const char *const event_str)
+{
+    if (strcmp(event_str, "skip end") != 0) {
+        return false;
+    }
+    M_StopSkipping();
     return true;
 }
 
@@ -1169,6 +1204,7 @@ void TestReplay_Close(void)
 {
     M_PRIV *const p = &m_Priv;
     M_TestReportSummary();
+    M_StopSkipping();
 
     if (p->test_mode.quiet_applied) {
         Log_SetMinLevel(p->test_mode.log_level_before_quiet);
