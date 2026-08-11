@@ -253,6 +253,10 @@ static int32_t M_GetFreeOverlaySlot(void)
 static int32_t M_PlayOverlayTrack(
     const MUSIC_ID track_id, const double timestamp)
 {
+    if (Shell_GetArgs()->headless) {
+        LOG_INFO("Not playing overlay track %d out loud", track_id);
+        return -1;
+    }
     if (m_Backend == nullptr) {
         LOG_WARNING(
             "Not playing overlay track %d because no backend is available",
@@ -362,9 +366,6 @@ static void M_Shutdown(void)
 
 static void M_ApplyConfig(void)
 {
-    if (Shell_GetArgs()->headless) {
-        return;
-    }
     Music_Init();
     Music_SetVolume(g_Config.audio.music_volume);
 }
@@ -420,7 +421,9 @@ static int32_t M_Play(
 
     bool played = false;
     M_StopMainStream();
-    if (m_Backend == nullptr) {
+    if (Shell_GetArgs()->headless) {
+        LOG_INFO("Not playing track %d out loud", track_id);
+    } else if (m_Backend == nullptr) {
         LOG_WARNING(
             "Not playing track %d because no backend is available", track_id);
     } else {
@@ -484,6 +487,12 @@ finish:
     m_TrackLooped = MX_INACTIVE;
     m_TrackLastLooped = MX_INACTIVE;
     M_ResetStreamState();
+    // A run that draws nothing comes up with a backend all the same, so the
+    // game still knows which track is playing and what a track resolves to.
+    // What such a run has no use for is the audio device.
+    if (Shell_GetArgs()->headless) {
+        return true;
+    }
     return Audio_Init();
 }
 

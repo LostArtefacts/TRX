@@ -178,6 +178,7 @@
 - Added `skip start` and `skip end` events to recordings, which stop the drawing while the frames keep running, so a stretch passes as fast as the machine manages
 - Fixed a recording pausing along with the game when the window loses focus, which fires the rest of it into a game that is not running
 - Fixed a recording not playing back the same way twice, where a fade or any other effect measured in seconds lasted however many frames the machine managed to deliver
+- Fixed a headless run having no music at all, so anything waiting on a track behaved differently there than in a run that draws
 
 **Installer and mods**
 - Changed the installer to explain when it cannot download the files it needs, and to offer to try again (#6052)
