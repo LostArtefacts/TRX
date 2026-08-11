@@ -1267,6 +1267,10 @@
             "title": "Correggi IA degli orsi",
             "description": "Risolve il problema per cui gli attacchi con la zampa degli orsi non colpiscono Lara.",
         },
+        "gameplay.fix_breakable_wall_clip": {
+            "title": "\\{review}Correggi attraversamento dei muri fragili",
+            "description": "\\{review}Risolve il problema per cui Lara riesce ad arrampicarsi o a strisciare attraverso i muri fragili posti sul bordo di un settore. Se attivo, Lara si ferma davanti al muro finché non viene distrutto.",
+        },
         "gameplay.fix_bridge_collision": {
             "title": "Correggi collisione ponti",
             "description": "Risolve il problema per cui Lara non è in grado di afferrare parti di alcuni ponti e muri invisibili ai bordi. Corregge anche i problemi di collisione con ponti levatoi, botole e ponti quando sono impilati l'uno sull'altro, su pendii o vicino al suolo.",

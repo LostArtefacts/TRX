@@ -1267,6 +1267,10 @@
             "title": "Fix: Bären-AI",
             "description": "Fixt, dass die aufrecht stehend ausgeführten Prankenhiebe von Bären Lara nicht mehr verfehlen.",
         },
+        "gameplay.fix_breakable_wall_clip": {
+            "title": "\\{review}Fix: Zerbrechliche Wände durchqueren",
+            "description": "\\{review}Fixt, dass Lara sich durch zerbrechliche Wände am Rand eines Sektors hochziehen oder hindurchkriechen kann. Wenn aktiviert, hält sie vor der Wand an, bis diese zerstört ist.",
+        },
         "gameplay.fix_bridge_collision": {
             "title": "Fix: Brückenkollision",
             "description": "Fixt, dass Lara nicht in der Lage ist, sich an einigen Teilen von Brücken festzuhalten und unsichtbare Wände an den Kanten. Fixt auch Kollisions-Fehler mit Zugbrücken, Falltüren, und Brücken, wenn sie übereinander gestapelt sind, über Schrägen, und nahe dem Boden.",
