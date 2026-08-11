@@ -66,6 +66,7 @@ void FlybyMode_PreControl(void)
     if (g_InputDB.option && g_Config.gameplay.enable_cinematic_skips) {
         if (FlybyMode_Cancel()) {
             g_InputDB.option = false;
+            Input_HoldOffSkip();
         }
         return;
     }
