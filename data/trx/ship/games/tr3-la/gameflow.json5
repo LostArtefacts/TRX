@@ -73,6 +73,7 @@
                 "common_pickup_meshes.bin",
                 "scotland_textures.bin",
                 "bat_sprites.bin",
+                "flamethrower_sfx.bin",
             ],
         },
 
@@ -212,7 +213,6 @@
         "enable_poison_vision",
         "enable_3d_pickups", // TR3 has no sprite pickups
         "enable_item_examining",
-        "enable_ps1_sfx",
         "disable_trex_collision",
         "fix_bear_ai",
         // The Lost Artefact ships no crystals in any level.

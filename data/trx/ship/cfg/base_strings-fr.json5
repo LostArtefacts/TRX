@@ -886,7 +886,7 @@
         },
         "audio.enable_ps1_sfx": {
             "title": "\\{review}PS1 remplacements SFX",
-            "description": "\\{review}Active des remplacements spécifiques d'effets sonores en utilisant les équivalents PS1.\n\n- Tir d'Uzi (TR1 uniquement)\n- Déplacement latéral suspendu (TR1 uniquement)\n- Sons de pieds nus de Lara (TR2 uniquement)",
+            "description": "\\{review}Active des remplacements spécifiques d'effets sonores en utilisant les équivalents PS1.\n\n- Tir d'Uzi (TR1 uniquement)\n- Déplacement latéral suspendu (TR1 uniquement)\n- Sons de pieds nus de Lara (TR2 uniquement)\n- Déflagrations du lance-flammes et des têtes de feu (TR3 uniquement).",
         },
         "audio.enable_underwater_anim_sfx": {
             "title": "\\{review}SFX anim. sous l'eau",

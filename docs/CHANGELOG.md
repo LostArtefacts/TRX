@@ -213,8 +213,9 @@
 - Fixed the helicopter at the start of The Great Wall and The Cold War remaining visible after stopping (regression from 1.0)
 
 **TR3**
+- Added flame blast SFX to the fireheads in Lost City of Tinnos and Highland Fling (Sound → Misc → PS1 SFX replacements)
+- Changed the flamethrower blast SFX, which was added in 1.6, to be optional (Sound → Misc → PS1 SFX replacements)
 - Changed the Hand of Rathmore in Reunion to not show pickup aids, in line with the other artefacts
-- Removed the PS1 SFX replacements option from the Sound menu, which has no relevance in TR3/TR3LA
 - Removed the hardcoded glow color and rotation speed of artefact pickups, and moved to Lua properties instead; refer to migration guide
 - Fixed being unable to drop to the secret ledge in Jungle room 76 from the ledge above (#5818)
 - Fixed Willard being visible outside the hut at the beginning of the cutscene following Antarctica (resolves #5929)
