@@ -13,6 +13,7 @@
 #include <trx/game/game.h>
 #include <trx/game/interpolation.h>
 #include <trx/game/objects.h>
+#include <trx/game/output/common.h>
 #include <trx/game/output/const.h>
 #include <trx/game/output/overlay.h>
 #include <trx/game/output/quad.h>
@@ -216,8 +217,7 @@ static bool M_PrepareViewportCopy(
 
 static void M_CopyFboToTexture(
     const VIEWPORT_SPACE viewport, const GLuint src_fbo,
-    const bool src_is_default_fbo, TRX_GL_TEXTURE *const texture,
-    const int32_t width, const int32_t height)
+    TRX_GL_TEXTURE *const texture, const int32_t width, const int32_t height)
 {
     if (texture == nullptr || !texture->initialized || width <= 0
         || height <= 0) {
@@ -234,25 +234,13 @@ static void M_CopyFboToTexture(
 
     GLint prev_read_fbo = 0;
     glGetIntegerv(GL_READ_FRAMEBUFFER_BINDING, &prev_read_fbo);
-    GLint prev_read_buffer = 0;
-    if (src_is_default_fbo) {
-        glGetIntegerv(GL_READ_BUFFER, &prev_read_buffer);
-    }
 
     glBindFramebuffer(GL_READ_FRAMEBUFFER, src_fbo);
-    if (src_is_default_fbo) {
-        // The presented (just-swapped) frame lives in the front buffer.
-        glReadBuffer(GL_FRONT);
-    }
-
     TRX_GL_Texture_Bind(texture);
     glCopyTexSubImage2D(
         GL_TEXTURE_2D, 0, 0, 0, rect.x, rect.y, copy_width, copy_height);
 
     glBindFramebuffer(GL_READ_FRAMEBUFFER, (GLuint)prev_read_fbo);
-    if (src_is_default_fbo) {
-        glReadBuffer(prev_read_buffer);
-    }
     TRX_GL_CheckError();
 }
 
@@ -874,11 +862,13 @@ void Output_Overlay_CaptureSnapshot(void)
         return;
     }
 
-    // The presented frame includes UI/console; this captures everything
-    // that was on screen at the moment of the call.
-    M_CopyFboToTexture(
-        VIEWPORT_TARGET, 0, true, &p->snapshot.state.texture,
-        p->snapshot.state.width, p->snapshot.state.height);
+    // The scene and the UI still hold the frame the player is looking at, so
+    // it is put together a second time rather than read back from the window.
+    // A driver does not have to keep the presented pixels readable, and on
+    // Mesa with Intel graphics it did not.
+    TRX_GL_Renderer_CompositeToTexture(
+        &p->snapshot.state.texture, p->snapshot.state.width,
+        p->snapshot.state.height);
     p->snapshot.state.has_content = true;
 }
 
@@ -898,7 +888,7 @@ void Output_Overlay_CaptureGameSnapshot(void)
     }
 
     Interpolation_Disable();
-    TRX_GL_Renderer_BindGeometryFbo();
+    Output_SwitchViewport(VIEWPORT_GAME);
 
     SceneCompositor_BeginScene();
     Game_Draw(false);
@@ -906,7 +896,7 @@ void Output_Overlay_CaptureGameSnapshot(void)
     Interpolation_Enable();
 
     M_CopyFboToTexture(
-        VIEWPORT_SCENE, TRX_GL_Renderer_ResolveSceneFbo(), false,
+        VIEWPORT_SCENE, TRX_GL_Renderer_ResolveSceneFbo(),
         &p->snapshot.state.texture, p->snapshot.state.width,
         p->snapshot.state.height);
     p->snapshot.state.has_content = true;

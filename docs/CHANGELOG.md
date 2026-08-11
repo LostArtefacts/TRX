@@ -112,6 +112,7 @@
 - Fixed FMVs costing frame rate at high resolutions, where every frame was resized twice on its way to the screen (#6152, #262)
 - Fixed loading and legal screens ignoring the upscaling factor and filter
 - Fixed sprite shadows tinting the ground they lie on with the water color whenever the camera is underwater (Graphic Options → Visuals → Shadows shape)
+- Fixed the picture breaking up into blocks for the length of the first fade after the game is launched, on some graphics drivers (#5506)
 
 **Music and sound**
 - Added an option to keep the music playing when Lara dies (Sound Options → Misc → Play music after death) (#4221)
