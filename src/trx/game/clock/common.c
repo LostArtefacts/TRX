@@ -5,6 +5,8 @@
 #include <trx/game/clock/const.h>
 #include <trx/game/clock/timer.h>
 #include <trx/game/clock/turbo.h>
+#include <trx/game/replay/test_recorder.h>
+#include <trx/game/replay/test_replay.h>
 #include <trx/game/shell/common.h>
 
 #include <SDL2/SDL_stdinc.h>
@@ -24,19 +26,34 @@ static struct {
     double sim_speed;
 } m_Priv;
 
-// Fixed‐FPS simulation in headless mode
-static bool m_HeadlessFixedFPS = false;
-static double m_HeadlessFPS_DT = 0.0;
-static double m_HeadlessOffset = 0.0;
-static double m_HeadlessAnchor = 0.0;
+// A clock that counts frames rather than seconds
+static bool m_IsFixedFPS = false;
+static double m_FixedFrameTime = 0.0;
+static double m_FixedOffset = 0.0;
+static double m_FixedAnchor = 0.0;
 
 static double M_GetHighPrecisionCounter(void)
 {
-    if (m_HeadlessFixedFPS) {
-        // Return virtual time = anchor + offset
-        return m_HeadlessAnchor + m_HeadlessOffset;
+    if (m_IsFixedFPS) {
+        return m_FixedAnchor + m_FixedOffset;
     }
     return (SDL_GetPerformanceCounter() - m_InitCounter) / (double)m_Frequency;
+}
+
+// Holds until the next frame is due by the real clock.
+static void M_WaitForFrame(void)
+{
+    const Uint64 now = SDL_GetPerformanceCounter();
+    if (m_LastCounter != 0) {
+        const double frame_ticks =
+            m_Frequency / (Clock_GetCurrentFPS() * Clock_GetSpeedMultiplier());
+        const double elapsed = (double)(now - m_LastCounter);
+        if (elapsed < frame_ticks) {
+            SDL_Delay(
+                (Uint32)(((frame_ticks - elapsed) / m_Frequency) * 1000.0));
+        }
+    }
+    m_LastCounter = SDL_GetPerformanceCounter();
 }
 
 static void M_Init(void)
@@ -49,13 +66,18 @@ static void M_ApplyConfig(void)
 {
     Clock_SetSimSpeed(Clock_GetSpeedMultiplier());
 
-    const SHELL_ARGS *const args = Shell_GetArgs();
-    if (!args->headless) {
+    // Frames rather than seconds, so a fader lasts the same however fast they
+    // come. Asked of the replay, not of the arguments: the session swaps to
+    // the ones the recording carries, which hold no path.
+    if (!TestReplay_IsOpened() && !TestRecorder_IsOpened()) {
         return;
     }
-    Clock_DisableWait();
-    Clock_EnableHeadlessFixedFPS(
+    const SHELL_ARGS *const args = Shell_GetArgs();
+    Clock_EnableFixedFPS(
         args->headless_fps > 0 ? args->headless_fps : Clock_GetCurrentFPS());
+    if (args->headless) {
+        Clock_DisableWait();
+    }
 }
 
 void Clock_DisableWait(void)
@@ -68,18 +90,24 @@ void Clock_EnableWait(void)
     m_Disabled = false;
 }
 
-void Clock_EnableHeadlessFixedFPS(int32_t fps)
+void Clock_EnableFixedFPS(const int32_t fps)
 {
     if (fps <= 0) {
-        m_HeadlessFixedFPS = false;
+        if (m_IsFixedFPS) {
+            // The real counter picks up where the frame count left off, so a
+            // timer spanning the change does not see the clock jump.
+            const double frame_now = m_FixedAnchor + m_FixedOffset;
+            m_InitCounter = SDL_GetPerformanceCounter()
+                - (Uint64)(frame_now * (double)m_Frequency);
+        }
+        m_IsFixedFPS = false;
         return;
     }
 
-    // Anchor to current real time, reset offset
-    m_HeadlessAnchor = M_GetHighPrecisionCounter();
-    m_HeadlessOffset = 0.0;
-    m_HeadlessFPS_DT = 1.0 / (double)fps;
-    m_HeadlessFixedFPS = true;
+    m_FixedAnchor = M_GetHighPrecisionCounter();
+    m_FixedOffset = 0.0;
+    m_FixedFrameTime = 1.0 / (double)fps;
+    m_IsFixedFPS = true;
 }
 
 size_t Clock_GetDateTime(char *const buffer, const size_t size)
@@ -111,9 +139,11 @@ void Clock_SyncTick(void)
 
 int32_t Clock_WaitTick(void)
 {
-    if (m_Disabled && m_HeadlessFixedFPS) {
-        // Advance virtual time by one fixed frame
-        m_HeadlessOffset += m_HeadlessFPS_DT;
+    if (m_IsFixedFPS) {
+        m_FixedOffset += m_FixedFrameTime;
+        if (!m_Disabled) {
+            M_WaitForFrame();
+        }
         return 1;
     }
     if (m_Disabled) {
