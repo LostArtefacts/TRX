@@ -40,7 +40,7 @@ UI_PLAY_ANY_LEVEL_DIALOG_STATE *UI_PlayAnyLevelDialog_Init(void)
         }
     }
 
-    UI_BasePassportDialog_Init(&s->req, s->rows->count);
+    UI_BasePassportDialog_Init(&s->req, s->rows->count, 0.0f);
     return s;
 }
 
@@ -67,7 +67,7 @@ int32_t UI_PlayAnyLevelDialog_Control(UI_PLAY_ANY_LEVEL_DIALOG_STATE *const s)
 
 void UI_PlayAnyLevelDialog(UI_PLAY_ANY_LEVEL_DIALOG_STATE *const s)
 {
-    UI_BeginBasePassportDialog();
+    UI_BeginBasePassportDialog(&s->req);
     UI_BeginRequester(&s->req, GS("general/passport/select_level"));
 
     for (int32_t i = 0; i < s->rows->count; i++) {
