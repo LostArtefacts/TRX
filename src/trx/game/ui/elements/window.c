@@ -5,6 +5,8 @@
 #include <trx/game/ui.h>
 #include <trx/version.h>
 
+#define M_SCROLL_HINT_HEIGHT 7.0f
+
 typedef struct {
     UI_WINDOW_SETTINGS settings;
     bool show_scroll_hints;
@@ -37,6 +39,11 @@ static float M_GetBodyPadY(void)
     return 4.0f;
 }
 
+static float M_GetTitlePadY(void)
+{
+    return g_TRVersion >= 2 ? 1.0f : 2.0f;
+}
+
 static float M_GetTitleSpacing(const UI_WINDOW_SETTINGS *const settings)
 {
     if (settings->title_spacing >= 0.0f) {
@@ -49,7 +56,7 @@ static void M_ScrollHintRow(
     const UI_WINDOW_SETTINGS *const settings, const bool show_arrow,
     const bool up)
 {
-    UI_BeginResize(-1.0f, 7.0f);
+    UI_BeginResize(-1.0f, M_SCROLL_HINT_HEIGHT);
     UI_BeginAnchor(0.5f, up ? 1.5f : -1.0f);
     if (show_arrow) {
         UI_LabelEx(
@@ -63,7 +70,7 @@ static void M_ScrollHintRow(
 static void M_Title(const char *const title)
 {
     UI_BeginFrame(UI_FRAME_DIALOG_HEADING);
-    UI_BeginPad(10.0f, g_TRVersion >= 2 ? 1.0f : 2.0f);
+    UI_BeginPad(10.0f, M_GetTitlePadY());
     UI_BeginAnchor(0.5f, 0.5f);
     UI_Label(title);
     UI_EndAnchor();
@@ -74,6 +81,19 @@ static void M_Title(const char *const title)
 float UI_Window_GetChromeWidth(void)
 {
     return 2.0f * (M_GetOuterPad() + M_GetBodyPadX());
+}
+
+float UI_Window_GetChromeHeight(const UI_WINDOW_SETTINGS *const settings)
+{
+    float result = 2.0f * (M_GetOuterPad() + M_GetBodyPadY());
+    if (settings->title != nullptr) {
+        result += UI_TEXT_HEIGHT + 2.0f * M_GetTitlePadY()
+            + M_GetTitleSpacing(settings);
+    }
+    if (M_ShouldShowScrollHints(settings)) {
+        result += 2.0f * M_SCROLL_HINT_HEIGHT;
+    }
+    return result;
 }
 
 void UI_BeginWindow(UI_WINDOW_SETTINGS settings)

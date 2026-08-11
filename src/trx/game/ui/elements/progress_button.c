@@ -9,6 +9,10 @@
 #include <trx/game/ui/elements/sleek_bar.h>
 #include <trx/game/ui/elements/stack.h>
 
+#define M_TEXT_SCALE 0.85f
+#define M_PAD_X 6.0f
+#define M_PAD_Y 3.0f
+#define M_SPACING 2.0f
 #define M_HOLD_TIMER_DEBUFF (LOGIC_FPS / 3)
 #define M_HOLD_TIMER_MAX LOGIC_FPS
 
@@ -58,7 +62,6 @@ void UI_ProgressButton_Free(UI_PROGRESS_BUTTON_STATE *s)
 
 void UI_ProgressButton(UI_PROGRESS_BUTTON_STATE *const s)
 {
-    const float scale = 0.85f;
     const char *const key_name =
         Input_GetKeyName(s->backend, INPUT_LAYOUT_DEFAULT, s->role, 0);
     if (key_name == nullptr) {
@@ -69,12 +72,10 @@ void UI_ProgressButton(UI_PROGRESS_BUTTON_STATE *const s)
     const char *const text =
         String_FormatStatic("%s: %s", GameString_Get(s->text), value_label);
 
-    const float pad[2] = { 6.0f, 3.0f };
-    const float spacing = 2.0f;
     const float progress =
         (s->hold_timer - M_HOLD_TIMER_DEBUFF) / (float)M_HOLD_TIMER_MAX;
 
-    UI_BeginPad(pad[0], pad[1]);
+    UI_BeginPad(M_PAD_X, M_PAD_Y);
     UI_BeginStackEx((UI_STACK_SETTINGS) {
         .orientation = UI_STACK_VERTICAL,
         .align = {
@@ -83,13 +84,19 @@ void UI_ProgressButton(UI_PROGRESS_BUTTON_STATE *const s)
         },
         .spacing = {
             .h = 0.0f,
-            .v = spacing,
+            .v = M_SPACING,
         },
     });
-    UI_LabelEx(text, (UI_LABEL_SETTINGS) { .scale = scale });
+    UI_LabelEx(text, (UI_LABEL_SETTINGS) { .scale = M_TEXT_SCALE });
     UI_BeginHide(progress < 0.0f);
     UI_SleekBar(progress);
     UI_EndHide();
     UI_EndStack();
     UI_EndPad();
+}
+
+float UI_ProgressButton_GetHeight(void)
+{
+    return 2.0f * M_PAD_Y + M_TEXT_SCALE * UI_TEXT_HEIGHT + M_SPACING
+        + UI_SLEEK_BAR_HEIGHT;
 }

@@ -129,6 +129,7 @@
 - Changed a setting a script is holding to be greyed out, where the row carried only the star saying who took it
 - Fixed settings text running off both sides of the screen in the longer languages, most visibly at 4:3 (#6000)
 - Fixed the list of settings a preset would change spilling outside its dialog, and its text now wraps (#6000)
+- Fixed the load and save game dialogs covering the rest of the screen at larger text scales, where the list now shows as many slots as there is room for (#6175)
 
 **Saves and settings**
 - Changed the save crystals option to a mode: crystals can save on the spot, be collected to save from the inventory as on PS1 TR3, heal, or be collectibles (Gameplay → General → Crystal mode) (#5939, #5940)

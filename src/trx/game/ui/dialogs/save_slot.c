@@ -27,6 +27,7 @@
 #include <trx/version.h>
 
 #define M_IMMEDIATE (g_TRVersion >= 2)
+#define M_FOOTER_SPACING 3.0f
 
 typedef enum {
     M_PHASE_BROWSE,
@@ -49,6 +50,12 @@ static const GAME_STRING_ID m_DeleteConfirmOptions[2] = {
     GS_ID("general/passport/delete_save_yes"),
     GS_ID("general/passport/delete_save_no"),
 };
+
+// The delete button under the list, and the gap above it.
+static float M_GetFooterHeight(void)
+{
+    return M_FOOTER_SPACING + UI_ProgressButton_GetHeight();
+}
 
 static void M_NonEmptySlot(
     const UI_SAVE_SLOT_DIALOG_STATE *const s, const SAVEGAME_SLOT_REF slot,
@@ -176,7 +183,7 @@ static void M_RebuildRows(
     UI_Requester_Free(&s->req);
     Memory_FreePointer(&s->rows);
     M_BuildRows(s);
-    UI_BasePassportDialog_Init(&s->req, s->row_count);
+    UI_BasePassportDialog_Init(&s->req, s->row_count, M_GetFooterHeight());
     CLAMP(selected_row, 0, s->row_count - 1);
     UI_Requester_SelectRow(&s->req, selected_row);
 }
@@ -236,7 +243,7 @@ UI_SAVE_SLOT_DIALOG_STATE *UI_SaveSlotDialog_Init(
             }
         }
     }
-    UI_BasePassportDialog_Init(&s->req, s->row_count);
+    UI_BasePassportDialog_Init(&s->req, s->row_count, M_GetFooterHeight());
     UI_Requester_SelectRow(&s->req, initial_row);
     s->last_selected_row = initial_row;
     M_ResetDeleteButton(s);
@@ -339,7 +346,7 @@ void UI_SaveSlotDialog(const UI_SAVE_SLOT_DIALOG_STATE *const s)
         M_MapRowToSlot(s, UI_Requester_GetCurrentRow(&s->req));
     const bool can_delete = M_IsSlotDeletable(selected_slot);
 
-    UI_BeginBasePassportDialog();
+    UI_BeginBasePassportDialog(&s->req);
     const char *title = nullptr;
     switch (s->type) {
     case UI_SAVE_SLOT_DIALOG_SAVE_GAME:
@@ -356,7 +363,7 @@ void UI_SaveSlotDialog(const UI_SAVE_SLOT_DIALOG_STATE *const s)
     UI_BeginStackEx((UI_STACK_SETTINGS) {
         .orientation = UI_STACK_VERTICAL,
         .align = { .h = UI_STACK_H_ALIGN_SPAN },
-        .spacing = { .v = 3.0f },
+        .spacing = { .v = M_FOOTER_SPACING },
     });
     UI_BeginRequester(&s->req, title);
 

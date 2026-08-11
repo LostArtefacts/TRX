@@ -27,7 +27,7 @@ static RGBA_8888 m_FillColors[TR_VERSION_COUNT] = {
 static void M_Measure(UI_NODE *const node)
 {
     node->measure_w = 0.0f;
-    node->measure_h = 4.0f * UI_Scaler_GetTextScale();
+    node->measure_h = UI_SLEEK_BAR_HEIGHT * UI_Scaler_GetTextScale();
 }
 
 static void M_Draw(const UI_NODE *const node)
