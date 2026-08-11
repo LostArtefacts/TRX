@@ -9,8 +9,10 @@ void Clock_DisableWait(void);
 // Restores the waiting Clock_DisableWait turned off.
 void Clock_EnableWait(void);
 
-// In headless mode, simulate a fixed FPS (seconds per frame = 1/fps)
-void Clock_EnableHeadlessFixedFPS(int32_t fps);
+// Counts time in frames: every Clock_WaitTick moves the clock on by 1/fps,
+// whatever the frame really took. Zero goes back to real time, carrying on
+// from where the frame count reached.
+void Clock_EnableFixedFPS(int32_t fps);
 
 void Clock_SyncTick(void);
 int32_t Clock_WaitTick(void);
