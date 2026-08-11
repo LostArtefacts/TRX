@@ -41,6 +41,7 @@ typedef struct {
     TRX_GL_PROGRAM program;
     GLint loc_dither;
     GLint loc_supersample;
+    GLuint composite_fbo;
 } M_CONTEXT;
 
 static void M_Blit(const M_CONTEXT *const p, const TRX_GL_FBO *const fbo)
@@ -140,12 +141,12 @@ static void M_UpdateFBOSizes(TRX_GL_RENDERER *renderer)
     TRX_GL_FBO_ResizeIfNeeded(&p->ui_fbo, rect.width, rect.height, 1);
 }
 
-static void M_Render(TRX_GL_RENDERER *renderer)
+// Draws the scene and the UI over it into the given framebuffer. Resolving the
+// scene binds framebuffers of its own, so the destination is bound here rather
+// than by the caller.
+static void M_Composite(
+    M_CONTEXT *const p, const GLuint dst_fbo, const VIEWPORT_RECT rect)
 {
-    ASSERT(renderer != nullptr);
-    M_CONTEXT *const p = renderer->priv;
-    ASSERT(p != nullptr);
-
     const GLuint filter = p->config->display_filter == TEXTURE_FILTER_BILINEAR
         ? GL_LINEAR
         : GL_NEAREST;
@@ -153,7 +154,7 @@ static void M_Render(TRX_GL_RENDERER *renderer)
     const TRX_GL_FBO *const scene_fbo = M_ResolveScene(p);
 
     M_BindQuadState(p);
-    TRX_GL_FBO_Unbind();
+    glBindFramebuffer(GL_FRAMEBUFFER, dst_fbo);
 
     TRX_GL_Sampler_Parameteri(&p->sampler, GL_TEXTURE_MAG_FILTER, filter);
     TRX_GL_Sampler_Parameteri(&p->sampler, GL_TEXTURE_MIN_FILTER, filter);
@@ -161,7 +162,6 @@ static void M_Render(TRX_GL_RENDERER *renderer)
     TRX_GL_Program_Uniform1i(
         &p->program, p->loc_dither, p->config->enable_dithering);
 
-    VIEWPORT_RECT rect = Viewport_GetRect(VIEWPORT_TARGET);
     glViewport(rect.x, rect.y, rect.width, rect.height);
     TRX_GL_CheckError();
 
@@ -173,6 +173,15 @@ static void M_Render(TRX_GL_RENDERER *renderer)
     glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
     M_Blit(p, &p->ui_fbo);
     glDisable(GL_BLEND);
+}
+
+static void M_Render(TRX_GL_RENDERER *renderer)
+{
+    ASSERT(renderer != nullptr);
+    M_CONTEXT *const p = renderer->priv;
+    ASSERT(p != nullptr);
+
+    M_Composite(p, 0, Viewport_GetRect(VIEWPORT_TARGET));
 
     if (TRX_GL_Context_GetScheduledScreenshotPath() != nullptr) {
         TRX_GL_Context_SwitchToViewport(VIEWPORT_TARGET);
@@ -182,20 +191,16 @@ static void M_Render(TRX_GL_RENDERER *renderer)
     }
 }
 
+// The framebuffers keep the frame that was just presented until the next one
+// draws over them, so that frame can be composited a second time for a
+// snapshot. Output_BeginScene is what prepares them for the next frame.
 static void M_SwapBuffers(TRX_GL_RENDERER *const renderer)
 {
-    M_CONTEXT *const p = renderer->priv;
-
     M_Render(renderer);
     SDL_GL_SwapWindow(TRX_GL_Context_GetWindowHandle());
     M_UpdateFBOSizes(renderer);
 
     TRX_GL_Context_SwitchToViewport(VIEWPORT_WINDOW);
-    TRX_GL_Context_Clear();
-
-    // Rebind geometry FBO for the next frame
-    TRX_GL_Renderer_BindGeometryFbo();
-    TRX_GL_Context_SwitchToViewport(VIEWPORT_GAME);
     TRX_GL_Context_Clear();
 }
 
@@ -268,6 +273,10 @@ static void M_Shutdown(TRX_GL_RENDERER *renderer)
     TRX_GL_FBO_Close(&p->geometry_fbo);
     TRX_GL_FBO_Close(&p->ui_fbo);
     TRX_GL_FBO_Close(&p->resolve_fbo);
+    if (p->composite_fbo != 0) {
+        glDeleteFramebuffers(1, &p->composite_fbo);
+        p->composite_fbo = 0;
+    }
     TRX_GL_Program_Close(&p->program);
     TRX_GL_Sampler_Close(&p->sampler);
     TRX_GL_Buffer_Close(&p->buffer);
@@ -300,6 +309,41 @@ void TRX_GL_Renderer_BindUiFbo(void)
 void TRX_GL_Renderer_SyncFboSizes(void)
 {
     M_UpdateFBOSizes(&g_TRX_GL_Renderer);
+}
+
+void TRX_GL_Renderer_CompositeToTexture(
+    const TRX_GL_TEXTURE *const texture, const int32_t width,
+    const int32_t height)
+{
+    M_CONTEXT *const p = (M_CONTEXT *)g_TRX_GL_Renderer.priv;
+    if (texture == nullptr || !texture->initialized || width <= 0
+        || height <= 0) {
+        return;
+    }
+
+    if (p->composite_fbo == 0) {
+        glGenFramebuffers(1, &p->composite_fbo);
+    }
+
+    GLint prev_fbo = 0;
+    glGetIntegerv(GL_DRAW_FRAMEBUFFER_BINDING, &prev_fbo);
+
+    glBindFramebuffer(GL_FRAMEBUFFER, p->composite_fbo);
+    glFramebufferTexture2D(
+        GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture->id, 0);
+    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE) {
+        M_Composite(
+            p, p->composite_fbo,
+            (VIEWPORT_RECT) { .width = width, .height = height });
+    } else {
+        LOG_ERROR("cannot draw into the given texture");
+    }
+    glFramebufferTexture2D(
+        GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, 0, 0);
+
+    glBindFramebuffer(GL_FRAMEBUFFER, (GLuint)prev_fbo);
+    TRX_GL_Context_SwitchToViewport(TRX_GL_Context_GetViewport());
+    TRX_GL_CheckError();
 }
 
 GLuint TRX_GL_Renderer_ResolveSceneFbo(void)

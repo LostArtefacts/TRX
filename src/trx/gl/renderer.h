@@ -1,8 +1,10 @@
 #pragma once
 
 #include <trx/gl/config.h>
+#include <trx/gl/texture.h>
 
 #include <GL/glew.h>
+#include <stdint.h>
 
 typedef struct TRX_GL_Renderer {
     void (*init)(struct TRX_GL_Renderer *renderer, const TRX_GL_CONFIG *config);
@@ -31,3 +33,10 @@ void TRX_GL_Renderer_SyncFboSizes(void);
 // with neither of them on, the geometry framebuffer already is that result and
 // is returned as is. Resolving twice in a frame costs nothing.
 GLuint TRX_GL_Renderer_ResolveSceneFbo(void);
+
+// Draw the scene and the UI over it into the given texture, the same way the
+// frame is put together for the window. Called between frames, before anything
+// has drawn over the framebuffers, this reproduces the frame the player is
+// looking at; the texture is written in full, at its own size.
+void TRX_GL_Renderer_CompositeToTexture(
+    const TRX_GL_TEXTURE *texture, int32_t width, int32_t height);
