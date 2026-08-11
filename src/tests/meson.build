@@ -275,6 +275,11 @@ unit_tests += {
 }
 
 unit_tests += {
+  'name': 'trx/game/game_flow/inventory',
+  'engine': ['game/game_flow/inventory.c'],
+}
+
+unit_tests += {
   'name': 'trx/game/savegame/resume',
   'engine': [
     'game/savegame/resume.c',
