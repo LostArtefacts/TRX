@@ -269,11 +269,11 @@
                 "unknown_option": "Opzione sconosciuta: %s",
             },
             "disco": {
-                "already_off": "\\{review}Le luci sono già spente",
-                "already_on": "\\{review}Le luci sono già accese",
-                "help": "\\{review}Attiva o disattiva un gioco di luci attorno a Lara.",
-                "off": "\\{review}Le luci si spengono",
-                "on": "\\{review}Le luci si accendono",
+                "already_off": "Le luci sono già spente",
+                "already_on": "Le luci sono già accese",
+                "help": "Attiva o disattiva un particolare gioco di luci attorno a Lara.",
+                "off": "Le luci sono spente",
+                "on": "Le luci sono accese",
             },
             "drain": {
                 "already": "L'acqua nella stanza %d è già stata drenata",
@@ -282,7 +282,7 @@
             },
             "dry": {
                 "already_dry": "Lara è già completamente asciutta",
-                "help": "Asciuga Lara in modo che, dopo una nuotata, non goccioli più a terra.",
+                "help": "Asciuga Lara in modo che, dopo una nuotata, non cadano più gocce d'acqua sul suolo.",
                 "success": "Lara è ora asciutta - niente più gocce d'acqua a terra",
                 "underwater": "In questo momento Lara è sott'acqua.",
             },
@@ -718,7 +718,7 @@
             "INPUT_ROLE_EQUIP_ROCKET_LAUNCHER": "Equipaggia Lanciarazzi",
             "INPUT_ROLE_EQUIP_SHOTGUN": "Equipaggia Fucile a Pompa",
             "INPUT_ROLE_EQUIP_UZIS": "Equipaggia Uzi",
-            "INPUT_ROLE_FAST_FORWARD_CHEAT": "\\{review}Avanti Veloce (Tieni Premuto)",
+            "INPUT_ROLE_FAST_FORWARD_CHEAT": "Avanti Veloce (Tieni Premuto)",
             "INPUT_ROLE_FLY_CHEAT": "Trucco Volo",
             "INPUT_ROLE_FPS": "Mostra FPS",
             "INPUT_ROLE_INVENTORY": "Inventario",
@@ -736,7 +736,7 @@
             "INPUT_ROLE_SAVE": "Salva Partita",
             "INPUT_ROLE_SCREENSHOT": "Cattura Schermo",
             "INPUT_ROLE_SLOW": "Cammina",
-            "INPUT_ROLE_SLOW_MOTION_CHEAT": "\\{review}Rallentatore (Tieni Premuto)",
+            "INPUT_ROLE_SLOW_MOTION_CHEAT": "A Rallentatore (Tieni Premuto)",
             "INPUT_ROLE_SPRINT": "Scatto",
             "INPUT_ROLE_STEP_LEFT": "Passo a Sinistra",
             "INPUT_ROLE_STEP_RIGHT": "Passo a Destra",
@@ -794,9 +794,9 @@
             "QUICK_GUNS_MODE_DRAW_ONLY": "Solo equipaggia",
         },
         "RING_MEMORY_MODE": {
-            "RING_MEMORY_ALL": "\\{review}Tutti gli anelli",
-            "RING_MEMORY_MAIN": "\\{review}Anello principale",
-            "RING_MEMORY_OFF": "\\{review}Off",
+            "RING_MEMORY_ALL": "Oggetti e chiavi",
+            "RING_MEMORY_MAIN": "Solo oggetti",
+            "RING_MEMORY_OFF": "Spento",
         },
         "SAVE_CRYSTAL_MODE": {
             "SAVE_CRYSTAL_HEAL": "Curativi",
@@ -877,8 +877,8 @@
             "description": "Riproduce la musica nel menu principale.",
         },
         "audio.enable_music_on_death": {
-            "title": "\\{review}Musica dopo la morte",
-            "description": "\\{review}Mantiene in riproduzione la traccia musicale attiva quando Lara muore.",
+            "title": "Musica dopo la morte",
+            "description": "Mantiene in riproduzione la traccia musicale attiva quando Lara muore.",
         },
         "audio.enable_pitched_sounds": {
             "title": "Tonalità suoni",
@@ -886,7 +886,7 @@
         },
         "audio.enable_ps1_sfx": {
             "title": "Effetti sonori PS1",
-            "description": "\\{review}Sostituisce alcuni effetti sonori con quelli della versione PS1.\n\n- Suono dello sparo delle Uzi (solo TR1)\n- Suono movimento laterale quando Lara è appesa (solo TR1)\n- Suono dei passi quando Lara è a piedi nudi (solo TR2)\n- Esplosioni del lanciafiamme e delle teste di fuoco (solo TR3)",
+            "description": "Sostituisce alcuni effetti sonori con quelli della versione PS1.\n\n- Suono dello sparo delle Uzi (solo TR1)\n- Suono movimento laterale quando Lara è appesa (solo TR1)\n- Suono dei passi quando Lara è a piedi nudi (solo TR2)\n- Getti di fiamme del lanciafiamme e delle teste sputafuoco (solo TR3)",
         },
         "audio.enable_underwater_anim_sfx": {
             "title": "Effetti sonori sott'acqua",
@@ -894,7 +894,7 @@
         },
         "audio.fix_chainblock_secret_sound": {
             "title": "Correggi suono dei segreti",
-            "description": "\\{review}Impedisce la riproduzione errata del suono dei segreti quando si utilizza la chiave d'oro nella Tomba di Tihocan, in TR1.",
+            "description": "Impedisce la riproduzione errata del suono dei segreti quando si utilizza la chiave d'oro nella Tomba di Tihocan, in TR1.",
         },
         "audio.fix_secrets_killing_music": {
             "title": "Musica segreti in polifonia",
@@ -997,8 +997,8 @@
             "description": "Permette a Lara di colpire gli alleati, come i monaci. Se disabilitato, gli alleati saranno immuni ai proiettili di Lara.",
         },
         "gameplay.enable_alternative_turns": {
-            "title": "\\{review}Rotazioni alternative",
-            "description": "\\{review}Consente a Lara di eseguire movimenti alternativi di rotazione e torsione quando è ferma.\n\n- Premi contemporaneamente i comandi di capriola e salto per eseguire una torsione sul posto.\n- Premi contemporaneamente i comandi di capriola e camminata per effettuare una rapida inversione sul posto.\n- Premi il tasto rotolamento sulle sbarre orizzontali per girarti rapidamente sul posto.",
+            "title": "Rotazioni alternative",
+            "description": "Consente a Lara di eseguire movimenti di rotazione/torsione alternativi quando è ferma.\n\n- Premi contemporaneamente i tasti Capriola e Salta per eseguire un salto con torsione sul posto.\n- Premi contemporaneamente i tasti Capriola e Cammina per girarti rapidamente sul posto.\n- Premi il tasto Capriola sulle scale orizzontali per girarti rapidamente sul posto.",
         },
         "gameplay.enable_auto_item_selection": {
             "title": "Preselezione oggetti chiave",
@@ -1066,7 +1066,7 @@
         },
         "gameplay.enable_crawling": {
             "title": "Strisciare",
-            "description": "\\{review}Permette a Lara di accovacciarsi e gattonare. Esiste da TR3 in poi; i TR1 e TR2 originali non hanno né l'uno né l'altro.",
+            "description": "Permette a Lara di accovacciarsi e gattonare (come in TR3+). Non è disponibile nelle versioni originali di TR1 e TR2.",
         },
         "gameplay.enable_credits": {
             "title": "Titoli di coda",
@@ -1101,12 +1101,12 @@
             "description": "Permette a Lara di raccogliere gli oggetti più rapidamente, in modo simile a TR4+.",
         },
         "gameplay.enable_fast_pull_up": {
-            "title": "\\{review}Tirata rapida",
-            "description": "\\{review}Permette a Lara di tirarsi su dai bordi più rapidamente.",
+            "title": "Arrampicata rapida",
+            "description": "Permette a Lara di arrampicarsi dalle sporgenze in modo più rapido.",
         },
         "gameplay.enable_fast_shimmying": {
-            "title": "\\{review}Spostamento laterale rapido",
-            "description": "\\{review}Consente a Lara di muoversi più rapidamente mentre si sposta lateralmente a sinistra o a destra rimanendo appesa.",
+            "title": "Movimento laterale rapido",
+            "description": "Consente a Lara di muoversi più velocemente a sinistra o a destra mentre è appesa.",
         },
         "gameplay.enable_fmv": {
             "title": "FMV",
@@ -1126,7 +1126,7 @@
         },
         "gameplay.enable_jump_twists": {
             "title": "Capriole a mezz’aria",
-            "description": "\\{review}Abilita i salti mortali e le capriole a mezz'aria, ovvero premendo il tasto Capriola durante le animazioni del salto e del tuffo ad angelo. Esiste da TR2 in poi; il TR1 originale non ha né l'uno né l'altro.",
+            "description": "Abilita i salti mortali e le capriole a mezz'aria, ovvero premendo il tasto Capriola durante le animazioni del salto e del tuffo ad angelo (come in TR2+). Non è disponibile nella versione originale di TR1",
         },
         "gameplay.enable_killer_pushblocks": {
             "title": "Blocchi mobili letali",
@@ -1134,7 +1134,7 @@
         },
         "gameplay.enable_lean_jumping": {
             "title": "Salti inclinati",
-            "description": "\\{review}Permette a Lara di spostarsi leggermente in avanti o indietro, tenendo premuto il relativo tasto, quando esegue salti sul posto. Esiste da TR2 in poi; nel TR1 originale si sposta comunque in avanti, qualunque sia il tasto, ma molto più lentamente.",
+            "description": "Permette a Lara di spostarsi leggermente in avanti o indietro, tenendo premuto il relativo tasto, quando esegue salti sul posto (come in TR2+). Nella versione originale di TR1, Lara si sposta in avanti qualunque sia il tasto premuto, ma in modo molto più lento.",
         },
         "gameplay.enable_ledge_jumps": {
             "title": "Salti da sporgenza",
@@ -1178,11 +1178,11 @@
         },
         "gameplay.enable_smooth_wall_deflect": {
             "title": "Deflessione rapida da muro",
-            "description": "\\{review}Permette a Lara di riprendersi più velocemente dopo aver urtato un muro e un tasto direzionale viene premuto insieme con il tasto Corri. Esiste da TR2 in poi; se disabilitata, si riprende al ritmo del TR1 originale.",
+            "description": "Permette a Lara di riprendersi più velocemente dopo aver urtato un muro, in modo tale che non resti bloccata quando si preme il tasto Corri insieme ad un tasto direzionale (come in TR2+). Se disabilitata, si riprenderà lentamente come nella versione originale di TR1.",
         },
         "gameplay.enable_snap_interactions": {
             "title": "Interazioni rapide",
-            "description": "\\{review}Consente a Lara di dirigersi immediatamente verso gli oggetti di interazione, come consumabili o interruttori. Se disabilitata, Lara dovrà rimanere ferma prima di poter interagire. Il posizionamento immediato corrisponde a TR1/2, l'arresto preventivo a TR3+.",
+            "description": "Consente a Lara di dirigersi immediatamente verso gli oggetti di interazione, come consumabili o interruttori (come in TR1/2). Se disabilitata, Lara dovrà essere ferma prima di poter interagire (come in TR3+).",
         },
         "gameplay.enable_soft_statics": {
             "title": "Collisione delicata con mesh",
@@ -1194,11 +1194,11 @@
         },
         "gameplay.enable_step_roll_boost": {
             "title": "Spinta su gradino",
-            "description": "\\{review}Fa in modo che Lara sia spinta giù da un gradino se si preme il tasto Capriola vicino al bordo. Solo il TR1 originale fa questo; TR2+ no.",
+            "description": "Fa in modo che Lara sia spinta giù da un gradino se si preme il tasto Capriola vicino al bordo. Questo è il comportamento della versione originale di TR1; non avviene in TR2+.",
         },
         "gameplay.enable_swing_cancel": {
             "title": "Annulla oscillazione",
-            "description": "\\{review}Consente di annullare l'animazione di oscillazione di Lara dalle sporgenze, lasciandole andare e afferrandole di nuovo rapidamente. Esiste da TR2 in poi; il TR1 originale non lo consente.",
+            "description": "Consente di annullare l'animazione di oscillazione di Lara dalle sporgenze, lasciandole andare e afferrandole di nuovo rapidamente (come in TR2+). La versione originale di TR1 non lo consente.",
         },
         "gameplay.enable_timer_in_inventory": {
             "title": "Cronometro nell'inventario",
@@ -1218,27 +1218,27 @@
         },
         "gameplay.enable_tr2_jumping": {
             "title": "Salti reattivi",
-            "description": "\\{review}Permette a Lara di saltare in qualsiasi momento mentre corre. Esiste da TR2 in poi; se disabilitata, salta nei punti fissi dell'animazione di corsa, come nel TR1 originale.",
+            "description": "Permette a Lara di saltare in qualsiasi momento mentre corre (come in TR2+). Se disabilitata, salta in punti prestabiliti dell'animazione di corsa, come nella versione originale di TR1.",
         },
         "gameplay.enable_tr2_swim_cancel": {
             "title": "Annullamento reattivo nuoto",
-            "description": "\\{review}Permette a Lara di fermarsi in modo più istantaneo sott'acqua quando viene rilasciato il tasto per nuotare. Esiste da TR2 in poi; se disabilitata, si ferma come nel TR1 originale.",
+            "description": "Permette a Lara di fermarsi in modo più rapido sott'acqua quando viene rilasciato il tasto per nuotare (come in TR2+). Se disabilitata, si ferma come nella versione originale di TR1.",
         },
         "gameplay.enable_tr2_swimming": {
             "title": "Nuoto naturale",
             "description": "Fornisce alla velocità di virata subacquea di Lara una curva di accelerazione per movimenti più fluidi, come in TR2+. Disabilitando questa opzione, Lara avrà una velocità di virata più rapida, come in TR1.",
         },
         "gameplay.enable_underwater_auto_draw": {
-            "title": "\\{review}Estrazione arma sott'acqua",
-            "description": "\\{review}Consente al tasto di estrazione dell'arma di scegliere un'arma utilizzabile sott'acqua, come il fucile arpione, invece di non fare nulla quando l'ultima arma impugnata da Lara non è utilizzabile lì.",
+            "title": "Estrazione arma sott'acqua",
+            "description": "Consente al tasto di estrazione dell'arma di scegliere un'arma utilizzabile sott'acqua, come il fucile subacqueo, invece di non fare nulla quando l'ultima arma impugnata da Lara non è utilizzabile in immersione.",
         },
         "gameplay.enable_uw_roll": {
             "title": "Capriola sott'acqua",
-            "description": "\\{review}Permette a Lara di eseguire capriole mentre è sott'acqua. Esiste da TR2 in poi; il TR1 originale non ha la capriola sott'acqua.",
+            "description": "Permette a Lara di eseguire capriole mentre è sott'acqua (come in TR2+). Non è disponibile nella versione originale di TR1.",
         },
         "gameplay.enable_wading": {
             "title": "Guadare",
-            "description": "\\{review}Permette a Lara di guadare acque poco profonde, anziché rimanere bloccata sulla superficie dell'acqua. Esiste da TR2 in poi; il TR1 originale non permette di guadare.",
+            "description": "\\{review}Permette a Lara di guadare acque poco profonde, anziché rimanere bloccata sulla superficie dell'acqua (come in TR2+). Non è disponibile nella versione originale di TR1.",
         },
         "gameplay.enable_walk_to_items": {
             "title": "Interazioni animate",
@@ -1262,7 +1262,7 @@
         },
         "gameplay.fix_descending_glitch": {
             "title": "Correggi cadute da pavimenti",
-            "description": "\\{review}Risolve il problema per cui i passi laterali e il camminare all'indietro su pavimenti fragili fanno sì che Lara scenda immediatamente sul pavimento sottostante. I TR2+ originali non hanno questo difetto; TR1 sì.",
+            "description": "Risolve il problema per cui i passi laterali e il camminare all'indietro su pavimenti fragili fanno sì che Lara cada immediatamente sul pavimento sottostante. Questo problema è presente solo nella versione originale di TR1; TR2+ non ne è affetto.",
         },
         "gameplay.fix_flare_throw_priority": {
             "title": "Correggi priorità lancio razzi",
@@ -1274,7 +1274,7 @@
         },
         "gameplay.fix_free_flare_glitch": {
             "title": "Correggi errore dei razzi",
-            "description": "\\{review}Risolve il problema in cui, se si preme il tasto di estrazione di un razzo di segnalazione mentre si raccoglie un qualsiasi oggetto, ne verrà creato uno dal nulla, o richiedendone una tramite l’inventario mentre striscia.",
+            "description": "Risolve il problema in cui, se si preme il tasto di estrazione di un razzo di segnalazione mentre si raccoglie un qualsiasi oggetto o se ne richiede uno tramite l’inventario mentre Lara sta gattonando, ne verrà creato uno dal nulla.",
         },
         "gameplay.fix_item_duplication_glitch": {
             "title": "Correggi duplicazione oggetti",
@@ -1306,7 +1306,7 @@
         },
         "gameplay.fix_step_glitch": {
             "title": "Correggi errore gradini",
-            "description": "\\{review}Risolve il problema per cui a volte Lara viene spinta contro i muri adiacenti ai gradini quando corre su di loro in un certo modo. Il TR1 originale non ha questo difetto; TR2 e TR3 sì.",
+            "description": "Risolve il problema per cui a volte Lara viene spinta contro i muri adiacenti ai gradini quando corre su di loro in un certo modo. Questo problema è presente nelle versioni originali di TR2 e TR3; TR1 non ne è affetto.",
         },
         "gameplay.fix_underwater_crawl": {
             "title": "Correggi strisciare sott’acqua",
@@ -1322,7 +1322,7 @@
         },
         "gameplay.fix_wall_geometry": {
             "title": "Correggi geometria muri",
-            "description": "\\{review}Risolve il problema per cui, nei livelli originali, le inclinazioni all'interno dei muri possono portare a calcoli di altezza imprecisi. I TR3+ originali non hanno questo problema; TR1 e TR2 sì.",
+            "description": "Risolve il problema per cui, nei livelli originali, le inclinazioni all'interno dei muri possono portare a calcoli di altezza imprecisi. Questo problema è presente nelle versioni originali di TR1 e TR2; TR3+ non ne è affetto.",
         },
         "gameplay.fix_water_exit": {
             "title": "Correggi uscita dall'acqua",
@@ -1354,7 +1354,7 @@
         },
         "gameplay.look_mode": {
             "title": "Modalità osservazione",
-            "description": "\\{review}Permette di gestire in quali situazioni Lara può guardarsi attorno (tasto 'Guarda').\n\n- Limitato: è consentito esaminare l'ambiente solo quando Lara è ferma e mai quando è sott'acqua.\n- Avanzato: è consentito esaminare l'ambiente durante la maggior parte delle situazioni, tranne in alcune come quando si spingono i blocchi.\n- Illimitato: è sempre consentito esaminare l'ambiente durante il normale controllo di Lara.\n\nLimitato corrisponde al TR1 originale, Avanzato ai TR2+ originali.",
+            "description": "Permette di gestire in quali situazioni Lara può guardarsi attorno (tasto 'Guarda').\n\n- Limitato: è consentito esaminare l'ambiente solo quando Lara è ferma e mai quando è sott'acqua, come nella versione originale di TR1.\n- Avanzato: è consentito esaminare l'ambiente durante la maggior parte delle situazioni, tranne in alcune come quando si spingono i blocchi, come nella veriosne originale di TR2+.\n- Illimitato: è sempre consentito esaminare l'ambiente durante il normale controllo di Lara.",
         },
         "gameplay.maximum_quick_save_slots": {
             "title": "Slot di salvataggio rapido",
@@ -1378,11 +1378,11 @@
         },
         "gameplay.restore_ps1_enemies": {
             "title": "Ripristina nemici PS1",
-            "description": "\\{review}Aggiunge la mummia che appare nella versione PlayStation del livello 'Città di Khamoon' di TR1, stanza 25.\nLa modifica di questa opzione richiederà il riavvio della partita.",
+            "description": "Aggiunge la mummia che appare nella versione PlayStation del livello 'Città di Khamoon' di TR1, stanza 25.\nLa modifica di questa opzione richiederà il riavvio della partita.",
         },
         "gameplay.ring_memory_mode": {
-            "title": "\\{review}Ricorda la posizione nell'inventario",
-            "description": "\\{review}Apre un anello sulla voce su cui era stato lasciato, invece che sulla prima.\n\n- Off: ogni apertura parte dalla prima voce, come nel gioco originale.\n- Anello principale: viene ricordato solo l'anello degli oggetti.\n- Tutti gli anelli: vengono ricordati l'anello degli oggetti e quello delle chiavi.\n\nLa prima voce ritorna se Lara non ha più ciò che era stato ricordato, e ogni livello riparte da lì.",
+            "title": "Ricorda posizione inventario",
+            "description": "Apre il menu dell'inventario sull'oggetto selezionato in precedenza, invece che sul primo.\n\n- Spento: apre il menu sul primo oggetto, come nel gioco originale.\n- Solo oggetti: viene salvata solo la posizione del menu degli oggetti.\n- Oggetti e chiavi: vengono salvate sia la posizione del menu degli oggetti che quella del menu delle chiavi.\n\nNei casi in cui Lara non possieda più l'oggetto selezionato nel menu oppure si inizi un nuovo livello, l'inventario tornerà al primo oggetto del menu.",
         },
         "gameplay.save_crystal_mode": {
             "title": "Modalità cristalli",
@@ -1402,7 +1402,7 @@
         },
         "gameplay.wall_glitch_mode": {
             "title": "Modalità errore muro",
-            "description": "\\{review}Sceglie quali glitch dei muri Lara può eseguire.\n\n- TR1: come nel TR1 originale, dove un salto in avanti dentro un muro teletrasporta Lara in cima ad esso.\n- TR2: come nei TR2 e TR3 originali, dove quel salto non funziona più, ma Lara può ancora teletrasportarsi colpendo il pavimento e il muro nello stesso momento in certe geometrie.\n- Corretto: nessuno dei due glitch funziona e Lara non può più attraversare il settore bloccato di una porta.",
+            "description": "Sceglie quali errori dei muri Lara può sfruttare.\n\n- TR1: saltare in avanti contro un muro teletrasporta Lara in cima ad esso, come nella versione originale di TR1.\n- TR2: l'errore del salto non è più presente, ma Lara può ancora teletrasportarsi colpendo, in certe geometrie, il pavimento e il muro nello stesso momento, come nelle versioni originali di TR2 e TR3.\n- Corretto: entrambi gli errori sono stati corretti; Lara non può più oltrepassare i settori bloccati da porte.",
         },
         "input.enable_buffering_func_keys": {
             "title": "Buffering (tasti funzione)",
@@ -1465,8 +1465,8 @@
             "description": "Aggiunge dei bordi neri attorno alla finestra del gioco.",
         },
         "rendering.enable_dithering": {
-            "title": "\\{review}Dithering",
-            "description": "\\{review}Riduce l'immagine a colori a 8 bit con un motivo di dithering ordinato, per l'aspetto delle versioni con renderizzazione software.",
+            "title": "Retinatura",
+            "description": "Riduce l'immagine a colori a 8 bit (o 256 colori) e utilizza un motivo a scacchiera per sopperire alle limitazioni della tavolozza di colori. Emula le versioni di Tomb Raider che non godevano dell'accelerazione 3D.",
         },
         "rendering.enable_trapezoid_filter": {
             "title": "Filtro trapezoidale",
@@ -1481,8 +1481,8 @@
             "description": "Attiva o disattiva la sincronizzazione verticale.",
         },
         "rendering.fmv_filter": {
-            "title": "\\{review}Filtro FMV",
-            "description": "\\{review}Passa tra un aspetto morbido e uno pixelato per gli FMV.",
+            "title": "Filtro FMV",
+            "description": "Attiva o disattiva il filtro bilineare nei filmati.",
         },
         "rendering.fps": {
             "title": "FPS",
@@ -1493,8 +1493,8 @@
             "description": "Aumenta il contrasto per fonti di luce dinamiche come razzi di segnalazione e lampi di armi da fuoco.",
         },
         "rendering.multisampling_factor": {
-            "title": "\\{review}Campionamento multiplo",
-            "description": "\\{review}Smussa i bordi di muri e oggetti prendendo più campioni di ogni pixel lungo di essi. Molto meno costoso del supercampionamento, ma lascia intatti i bordi degli sprite come vegetazione e fuoco.",
+            "title": "Multicampionamento (MSAA)",
+            "description": "Smussa i bordi di muri e oggetti campionando più volte ciascun pixel lungo di essi. Impatta meno sulle prestazioni rispetto al supercampionamento, ma lascia intatti i bordi degli sprite come vegetazione e fuoco.",
         },
         "rendering.screenshot_format": {
             "title": "Formato cattura schermo",
@@ -1505,8 +1505,8 @@
             "description": "Controlla quali assi bloccare durante la visualizzazione degli sprite sullo schermo.\n\n- Nessuno: mostra gli sprite normalmente.\n- Rotazione: blocca l'asse di rotazione – utile solo in modalità foto.\n- Rotazione e inclinazione: fa in modo che gli sprite rimangano in posizione verticale e non si inclinino verso il suolo quando li si guarda dall'alto.\n- Prospettiva: blocca gli assi di rotazione e inclinazione e, inoltre, ruota leggermente gli sprite verso il centro dello schermo.",
         },
         "rendering.supersampling_factor": {
-            "title": "\\{review}Supercampionamento",
-            "description": "\\{review}Renderizza il gioco a un multiplo della sua risoluzione e lo riduce facendone la media, smussando i bordi frastagliati. I fattori più alti richiedono alla scheda grafica molto più lavoro.",
+            "title": "Supercampionamento (SSAA)",
+            "description": "Renderizza il gioco a un multiplo della sua risoluzione e la riduce a quella desiderata, smussando i bordi frastagliati. I fattori più alti richiedono alla scheda grafica molta più potenza di calcolo.",
         },
         "rendering.texture_filter": {
             "title": "Filtro texture",
@@ -1542,7 +1542,7 @@
         },
         "ui.bar_look": {
             "title": "Aspetto barre",
-            "description": "\\{review}Sceglie la cornice e i colori con cui vengono disegnate le barre dell'interfaccia, presi da una delle versioni originali. La scelta determina anche quale gruppo di impostazioni di colore qui sotto viene applicato.",
+            "description": "Consente di scegliere la cornice e i colori con cui vengono disegnate le barre dell'interfaccia utente, prendendo spunto da quelle delle versioni originali. La scelta determina anche quale gruppo di colori, riportato di seguito, verrà applicato.",
         },
         "ui.bar_scale": {
             "title": "Dimensione barre",
@@ -1582,7 +1582,7 @@
         },
         "ui.enemy_healthbar_show_mode": {
             "title": "Modalità barra nemici",
-            "description": "\\{review}Controlla quando viene mostrata una barra della salute per il nemico preso di mira da Lara.\n\n- Sempre: mostrarla per qualsiasi bersaglio.\n- Solo per i Boss: mostrarla solo quando il bersaglio è un boss.\n- Mai: non mostrarla mai.",
+            "description": "Permette di scegliere quando mostrare la barra della salute per il nemico agganciato da Lara.\n\n- Sempre: viene mostrata con qualsiasi bersaglio.\n- Solo per i Boss: viene mostrata solo quando il bersaglio è un boss.\n- Mai: non viene mai mostrata.",
         },
         "ui.exposurebar_color": {
             "title": "Colore barra esposizione",
@@ -1642,7 +1642,7 @@
         },
         "ui.show_bars": {
             "title": "Mostra barre",
-            "description": "\\{review}Mostra le barre di gioco. Disattivandole si nascondono le informazioni sulla salute di Lara e altre risorse (per sfide).",
+            "description": "Mostra le barre di gioco. Disattivandole si nascondono le informazioni sulla salute di Lara e altre risorse (per le sfide).",
         },
         "ui.show_pickups_overlay": {
             "title": "Notifiche raccolta",
@@ -1725,8 +1725,8 @@
             "description": "Modifica la dimensione del testo dell'interfaccia utente.",
         },
         "visuals.background_brightness": {
-            "title": "\\{review}Luminosità sfondo",
-            "description": "\\{review}Modifica la luminosità delle immagini e dei motivi di sfondo.",
+            "title": "Luminosità sfondo",
+            "description": "Modifica la luminosità delle immagini e dei motivi di sfondo.",
         },
         "visuals.blood_effects": {
             "title": "Effetti sangue",
@@ -1738,7 +1738,7 @@
         },
         "visuals.camera_mode": {
             "title": "Modalità telecamera",
-            "description": "\\{review}Sceglie il comportamento della telecamera di quale gioco usare.\n\n- TR1: la telecamera di inseguimento segue i box di navigazione del livello.\n- TR2: lo stesso, con limiti di inseguimento e di visuale diversi e una diversa gestione delle telecamere fisse.\n- TR3: la telecamera di inseguimento usa la linea di vista invece dei box di navigazione.\n- TR4: come TR3, e la telecamera risponde anche quando un'azione sposta la visuale di Lara, come raccogliere un oggetto o aggirare uno spigolo appesa.",
+            "description": "Consente di scegliere quale comportamento della telecamera utilizzare.\n\n- TR1: la telecamera segue i riquadri di navigazione del livello.\n- TR2: come TR1, ma con diversi limiti nel controllo della visuale e una diversa gestione delle telecamere fisse.\n- TR3: la telecamera utilizza la linea di vista invece dei riquadri di navigazione.\n- TR4: come TR3, ma in aggiunta la telecamera reagisce quando un'azione sposta la visuale di Lara, come raccogliere un oggetto o girare un angolo mentre si è appesi su una sporgenza.",
         },
         "visuals.enable_3d_pickups": {
             "title": "Oggetti 3D",
@@ -1793,8 +1793,8 @@
             "description": "I cristalli di salvataggio saranno di color viola, più simili a quelli della versione PS1.",
         },
         "visuals.enable_ps1_rain": {
-            "title": "\\{review}Gocce di pioggia PS1",
-            "description": "\\{review}Le gocce di pioggia saranno aggiunte alla scena invece di essere fuse con essa, così appariranno chiare come su PS1.",
+            "title": "Gocce di pioggia PS1",
+            "description": "Le gocce di pioggia verranno aggiunte alla scena anziché fondersi con essa, così appariranno chiare come su PS1.",
         },
         "visuals.enable_reflections": {
             "title": "Riflessi",
@@ -1825,8 +1825,8 @@
             "description": "Corregge gli sprite originali delle piante idrofite in modo che si animino correttamente nelle aree acquatiche.",
         },
         "visuals.fix_item_rots": {
-            "title": "\\{review}Correggi posizionamento oggetti",
-            "description": "\\{review}Corregge diversi problemi presenti nei giochi originali causati da oggetti posizionati o orientati in modo errato.",
+            "title": "Correggi posizionamento oggetti",
+            "description": "Corregge diversi problemi presenti nei giochi originali causati da un posizionamento o una configurazione errati degli oggetti, tra cui rotazioni, posizioni e assegnazioni delle stanze.",
         },
         "visuals.fix_texture_issues": {
             "title": "Correggi problemi texture",
@@ -1838,11 +1838,11 @@
         },
         "visuals.fog_end": {
             "title": "Fine nebbia",
-            "description": "\\{review}Imposta la distanza nelle piastrelle in cui la nebbia oscura completamente ogni cosa. In TR2 e TR3 originali ciò avviene a 20 piastrelle. Un livello può portare un proprio valore, che viene usato al suo posto.",
+            "description": "Imposta la distanza in piastrelle in cui la nebbia oscura completamente ogni cosa. Nelle versioni originali di TR2 e TR3, ciò avviene a 20 piastrelle. Se un livello specifica un valore, esso avrà la precedenza.",
         },
         "visuals.fog_start": {
             "title": "Inizio nebbia",
-            "description": "\\{review}Imposta la distanza nelle piastrelle in cui inizia ad apparire la nebbia. In TR2 e TR3 originali inizia a 12 piastrelle. Un livello può portare un proprio valore, che viene usato al suo posto.",
+            "description": "Imposta la distanza in piastrelle oltre la quale inizia a comparire la nebbia. Nelle versioni originali di TR2 e TR3, ciò avviene a 12 piastrelle. Se un livello specifica un valore, esso avrà la precedenza.",
         },
         "visuals.fog_transparency": {
             "title": "Trasparenza nebbia",
