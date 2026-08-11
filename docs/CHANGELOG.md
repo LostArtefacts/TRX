@@ -171,6 +171,9 @@
 - Fixed the `/cutscene` and `/demo` console commands playing the one after the number they were given
 - Fixed the `/play` console command starting the playthrough over only on the gym, so the rules and how wet Lara was carried over from the last run
 
+**Recordings**
+- Fixed a recording pausing along with the game when the window loses focus, which fires the rest of it into a game that is not running
+
 **Installer and mods**
 - Changed the installer to explain when it cannot download the files it needs, and to offer to try again (#6052)
 - Fixed mesh debug spheres not rendering after switching mods (regression from 1.5)

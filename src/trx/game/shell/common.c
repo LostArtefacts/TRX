@@ -3,6 +3,7 @@
 #include <trx/core/log.h>
 #include <trx/core/memory.h>
 #include <trx/debug.h>
+#include <trx/game/replay/test_replay.h>
 #include <trx/game/shell.h>
 
 #ifdef _WIN32
@@ -177,4 +178,14 @@ void Shell_SetIsFocused(const bool is_focused)
 bool Shell_IsFocused(void)
 {
     return m_IsFocused;
+}
+
+bool Shell_ShouldPauseForFocusLoss(void)
+{
+    // A recording's events are read before anything asks this, so pausing
+    // would fire them into a game that is not running.
+    if (TestReplay_IsOpened()) {
+        return false;
+    }
+    return g_Config.gameplay.pause_on_focus_lost && !Shell_IsFocused();
 }
