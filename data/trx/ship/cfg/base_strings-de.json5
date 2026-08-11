@@ -886,7 +886,7 @@
         },
         "audio.enable_ps1_sfx": {
             "title": "\\{review}PS1 SFX-Ersetzungen",
-            "description": "\\{review}Aktiviert bestimmte Soundeffekt-Ersetzungen mit PS1-Äquivalenten.\n\n- Uzi-Feuer (nur TR1)\n- Hangeln (nur TR1)\n- Laras Barfußgeräusche (nur TR2)",
+            "description": "\\{review}Aktiviert bestimmte Soundeffekt-Ersetzungen mit PS1-Äquivalenten.\n\n- Uzi-Feuer (nur TR1)\n- Hangeln (nur TR1)\n- Laras Barfußgeräusche (nur TR2)\n- Flammenwerfer- und Feuerkopf-Explosionen (nur TR3).",
         },
         "audio.enable_underwater_anim_sfx": {
             "title": "Tauch-Animations Sounds",

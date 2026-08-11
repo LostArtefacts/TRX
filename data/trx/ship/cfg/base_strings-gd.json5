@@ -718,7 +718,7 @@
             "INPUT_ROLE_EQUIP_ROCKET_LAUNCHER": "Uidheamaich Lannsair Rocaid",
             "INPUT_ROLE_EQUIP_SHOTGUN": "Uidheamaich Gunna-sgaoil",
             "INPUT_ROLE_EQUIP_UZIS": "Uidheamaich Uzis",
-            "INPUT_ROLE_FAST_FORWARD_CHEAT": "\\{review}Air Adhart Luath (Cùm)",
+            "INPUT_ROLE_FAST_FORWARD_CHEAT": "Air Adhart Luath (Cùm)",
             "INPUT_ROLE_FLY_CHEAT": "Cleas Itealaich",
             "INPUT_ROLE_FPS": "Seall FPS",
             "INPUT_ROLE_INVENTORY": "Clàr-seilbhe",
@@ -736,7 +736,7 @@
             "INPUT_ROLE_SAVE": "Sàbhail",
             "INPUT_ROLE_SCREENSHOT": "Glacadh-sgrìn",
             "INPUT_ROLE_SLOW": "Coisich",
-            "INPUT_ROLE_SLOW_MOTION_CHEAT": "\\{review}Gluasad Slaodach (Cùm)",
+            "INPUT_ROLE_SLOW_MOTION_CHEAT": "Gluasad Slaodach (Cùm)",
             "INPUT_ROLE_SPRINT": "Ruith gu Luath",
             "INPUT_ROLE_STEP_LEFT": "Ceum air Chlì",
             "INPUT_ROLE_STEP_RIGHT": "Ceum air Dheas",
@@ -794,9 +794,9 @@
             "QUICK_GUNS_MODE_DRAW_ONLY": "Tarraing a-mhàin",
         },
         "RING_MEMORY_MODE": {
-            "RING_MEMORY_ALL": "\\{review}Gach fàinne",
-            "RING_MEMORY_MAIN": "\\{review}Prìomh fhàinne",
-            "RING_MEMORY_OFF": "\\{review}Dheth",
+            "RING_MEMORY_ALL": "Gach fàinne",
+            "RING_MEMORY_MAIN": "Prìomh fhàinne",
+            "RING_MEMORY_OFF": "Dheth",
         },
         "SAVE_CRYSTAL_MODE": {
             "SAVE_CRYSTAL_HEAL": "Slànachadh",
@@ -877,8 +877,8 @@
             "description": "Cluichidh ceòl anns a' phrìomh chlàr.",
         },
         "audio.enable_music_on_death": {
-            "title": "\\{review}Ceòl às dèidh a' bhàis",
-            "description": "\\{review}Cumaidh an t-òran làithreach a' cluich nuair a bhàsaicheas Lara.",
+            "title": "Ceòl às dèidh a' bhàis",
+            "description": "Cumaidh an t-òran làithreach a' cluich nuair a bhàsaicheas Lara.",
         },
         "audio.enable_pitched_sounds": {
             "title": "Fuaimean atharraichte",
@@ -886,7 +886,7 @@
         },
         "audio.enable_ps1_sfx": {
             "title": "Cleachd fuaimean a' PhS1",
-            "description": "Cleachd fuaimean sònraichte bhon PhS1 an àite an fheaghainn PhC.\n\n - Fuaim Uzi (TR1 a-mhàin)\n- Gluasad crochte (TR1 a-mhàin)\n- Fuaim casrùisgte Lara (TR2 a-mhàin)",
+            "description": "Cleachd fuaimean sònraichte bhon PhS1 an àite an fheaghainn PhC.\n\n - Fuaim Uzi (TR1 a-mhàin)\n- Gluasad crochte (TR1 a-mhàin)\n- Fuaim casrùisgte Lara (TR2 a-mhàin)\n- Plosaidhean an lasairneach agus nan cinn-teine (TR3 a-mhàin).",
         },
         "audio.enable_underwater_anim_sfx": {
             "title": "SFX beòthalachd fon uisge",
@@ -894,7 +894,7 @@
         },
         "audio.fix_chainblock_secret_sound": {
             "title": "Càraich fuaim bloca slabhraidh",
-            "description": "\\{review}Cuiridh seo casg air fuaim dìomhaireachd a chluich gu ceàrr nuair a thèid an iuchair òir a chleachdadh ann an Uaigh Tihocan ann an TR1.",
+            "description": "Cuiridh seo casg air fuaim dìomhaireachd a chluich gu ceàrr nuair a thèid an iuchair òir a chleachdadh ann an Uaigh Tihocan ann an TR1.",
         },
         "audio.fix_secrets_killing_music": {
             "title": "Ceòl dìomhaireachd ioma-fhilleadh",
@@ -1066,7 +1066,7 @@
         },
         "gameplay.enable_crawling": {
             "title": "Snàgail",
-            "description": "\\{review}Leigidh seo le Lara cromadh sìos agus snàgail. Tha seo ann bho TR3 a-mach; chan eil gin dhiubh san TR1 no TR2 thùsail.",
+            "description": "Leigidh seo le Lara cromadh sìos agus snàgail. Tha seo ann bho TR3 a-mach; chan eil gin dhiubh san TR1 no TR2 thùsail.",
         },
         "gameplay.enable_credits": {
             "title": "Sgrìoban creideis",
@@ -1126,7 +1126,7 @@
         },
         "gameplay.enable_jump_twists": {
             "title": "Snìomh leum",
-            "description": "\\{review}Cuiridh seo snìomh is leth-chasach TR2+ an comas — m.e. brùth rolla rè leum neo dàibheadh. Chan eil gin dhiubh san TR1 thùsail.",
+            "description": "Cuiridh seo snìomh is leth-chasach TR2+ an comas — m.e. brùth rolla rè leum neo dàibheadh. Chan eil gin dhiubh san TR1 thùsail.",
         },
         "gameplay.enable_killer_pushblocks": {
             "title": "Cleachd blocaichean putadh marbhach",
@@ -1134,7 +1134,7 @@
         },
         "gameplay.enable_lean_jumping": {
             "title": "Leum le claonadh",
-            "description": "\\{review}Leigidh Lara sleamhnachadh beagan air adhart/air ais le leum neodrach ma bhithear a' cumail iuchair stiùiridh. Tha seo ann bho TR2 a-mach; san TR1 thùsail gluaisidh i air adhart co-dhiù, ge b' e dè an iuchair, ach fada nas slaodaiche.",
+            "description": "Leigidh Lara sleamhnachadh beagan air adhart/air ais le leum neodrach ma bhithear a' cumail iuchair stiùiridh. Tha seo ann bho TR2 a-mach; san TR1 thùsail gluaisidh i air adhart co-dhiù, ge b' e dè an iuchair, ach fada nas slaodaiche.",
         },
         "gameplay.enable_ledge_jumps": {
             "title": "Leum bho oir",
@@ -1178,11 +1178,11 @@
         },
         "gameplay.enable_smooth_wall_deflect": {
             "title": "Ath-bheòthachadh bhalla rèidh",
-            "description": "\\{review}Cuidichidh Lara le tilleadh nas luaithe às dèidh buille ri balla ma thèid stiùireadh is 'air adhart' a chumail. Tha seo ann bho TR2 a-mach; ma tha e à comas, tillidh i aig astar an TR1 thùsail.",
+            "description": "Cuidichidh Lara le tilleadh nas luaithe às dèidh buille ri balla ma thèid stiùireadh is 'air adhart' a chumail. Tha seo ann bho TR2 a-mach; ma tha e à comas, tillidh i aig astar an TR1 thùsail.",
         },
         "gameplay.enable_snap_interactions": {
             "title": "Eadar-obrachaidhean snap",
-            "description": "\\{review}Leigidh seo le Lara greim a ghabhail sa bhad air targaidean eadar-obrachaidh, leithid nithean ri thogail agus suidsichean. Ma tha seo à comas, feumaidh Lara stad gu tur mus urrainn dhi eadar-obrachadh. Tha an grèim sa bhad a' freagairt ri TR1/2, agus an stad ro làimh ri TR3+.",
+            "description": "Leigidh seo le Lara greim a ghabhail sa bhad air targaidean eadar-obrachaidh, leithid nithean ri thogail agus suidsichean. Ma tha seo à comas, feumaidh Lara stad gu tur mus urrainn dhi eadar-obrachadh. Tha an grèim sa bhad a' freagairt ri TR1/2, agus an stad ro làimh ri TR3+.",
         },
         "gameplay.enable_soft_statics": {
             "title": "Bualadh mogal bog",
@@ -1194,11 +1194,11 @@
         },
         "gameplay.enable_step_roll_boost": {
             "title": "Brùthadh le rolla bho cheum",
-            "description": "\\{review}Leigidh Lara leum bhon cheum aon-bhriog ma bhriogar rolla faisg air an oir. Chan eil seo ach san TR1 thùsail; chan eil e ann an TR2+.",
+            "description": "Leigidh Lara leum bhon cheum aon-bhriog ma bhriogar rolla faisg air an oir. Chan eil seo ach san TR1 thùsail; chan eil e ann an TR2+.",
         },
         "gameplay.enable_swing_cancel": {
             "title": "Sguir siùdadh",
-            "description": "\\{review}Leigidh seo le Lara leigeil às nuair a tha i a' siùdadh, agus grèim a ghlacadh sa bhad airson gluasad luath. Tha seo ann bho TR2 a-mach; chan eil an TR1 thùsail ga cheadachadh.",
+            "description": "Leigidh seo le Lara leigeil às nuair a tha i a' siùdadh, agus grèim a ghlacadh sa bhad airson gluasad luath. Tha seo ann bho TR2 a-mach; chan eil an TR1 thùsail ga cheadachadh.",
         },
         "gameplay.enable_timer_in_inventory": {
             "title": "Gleoc sa chlàr-seilbhe",
@@ -1218,27 +1218,27 @@
         },
         "gameplay.enable_tr2_jumping": {
             "title": "Leum freagairteach",
-            "description": "\\{review}Leigidh le Lara leum aig àm sam bith nuair a tha i a' ruith. Tha seo ann bho TR2 a-mach; ma tha e à comas, leumaidh i aig puingean suidhichte na beòthalachd ruith, mar san TR1 thùsail.",
+            "description": "Leigidh le Lara leum aig àm sam bith nuair a tha i a' ruith. Tha seo ann bho TR2 a-mach; ma tha e à comas, leumaidh i aig puingean suidhichte na beòthalachd ruith, mar san TR1 thùsail.",
         },
         "gameplay.enable_tr2_swim_cancel": {
             "title": "Stad snàmh freagairteach",
-            "description": "\\{review}Leigidh Lara stad gu sgiobalta fon uisge nuair a thèid am putan snàmh a leigeil às. Tha seo ann bho TR2 a-mach; ma tha e à comas, stadaidh i mar a nì i san TR1 thùsail.",
+            "description": "Leigidh Lara stad gu sgiobalta fon uisge nuair a thèid am putan snàmh a leigeil às. Tha seo ann bho TR2 a-mach; ma tha e à comas, stadaidh i mar a nì i san TR1 thùsail.",
         },
         "gameplay.enable_tr2_swimming": {
             "title": "Snàmh rèidh",
             "description": "Cuiridh seo lùb luathaidh air tionndadh Lara fon uisge airson gluasad nas rèidh, mar ann an TR2 bho thùs.",
         },
         "gameplay.enable_underwater_auto_draw": {
-            "title": "\\{review}Tarraing airm fon uisge",
-            "description": "\\{review}Leigidh seo leis an iuchair tarraing airm arm a thaghadh as urrainn dha Lara a chleachdadh fon uisge, mar an gunna mhuirgheadh, seach gun dèan i dad nuair nach gabh an t-arm mu dheireadh a chleachdadh an sin.",
+            "title": "Tarraing airm fon uisge",
+            "description": "Leigidh seo leis an iuchair tarraing airm arm a thaghadh as urrainn dha Lara a chleachdadh fon uisge, mar an gunna mhuirgheadh, seach gun dèan i dad nuair nach gabh an t-arm mu dheireadh a chleachdadh an sin.",
         },
         "gameplay.enable_uw_roll": {
             "title": "Rolla fon uisge",
-            "description": "\\{review}Leigidh le Lara rolla a dhèanamh fon uisge. Tha seo ann bho TR2 a-mach; chan eil rolla fon uisge san TR1 thùsail.",
+            "description": "Leigidh le Lara rolla a dhèanamh fon uisge. Tha seo ann bho TR2 a-mach; chan eil rolla fon uisge san TR1 thùsail.",
         },
         "gameplay.enable_wading": {
             "title": "Coiseachd tro uisge",
-            "description": "\\{review}Leigidh le Lara coiseachd tro uisge eu-dhomhain seach a bhith air a stad aig uachdar na h-aibhne. Tha seo ann bho TR2 a-mach; chan eil coiseachd tro uisge san TR1 thùsail.",
+            "description": "Leigidh le Lara coiseachd tro uisge eu-dhomhain seach a bhith air a stad aig uachdar na h-aibhne. Tha seo ann bho TR2 a-mach; chan eil coiseachd tro uisge san TR1 thùsail.",
         },
         "gameplay.enable_walk_to_items": {
             "title": "Eadar-obrachadh beòthail",
@@ -1262,7 +1262,7 @@
         },
         "gameplay.fix_descending_glitch": {
             "title": "Càraich tuiteam air leacan bristeach",
-            "description": "\\{review}Càradh far am bi Lara a' tuiteam gu sgiobalta tro leacan briste nuair a dhèanas i ceum-taoibh neo coiseachd air ais orra. Chan eil an duilgheadas seo san TR2+ thùsail; tha e ann an TR1.",
+            "description": "Càradh far am bi Lara a' tuiteam gu sgiobalta tro leacan briste nuair a dhèanas i ceum-taoibh neo coiseachd air ais orra. Chan eil an duilgheadas seo san TR2+ thùsail; tha e ann an TR1.",
         },
         "gameplay.fix_flare_throw_priority": {
             "title": "Càraich prìomhachas tilgeadh lòchran",
@@ -1306,7 +1306,7 @@
         },
         "gameplay.fix_step_glitch": {
             "title": "Càraich glitch ceumannan",
-            "description": "\\{review}Càradh far am bi Lara uaireannan air a putadh tro bhalla ri taobh ceuman nuair a ruitheas i suas orra. Chan eil an duilgheadas seo san TR1 thùsail; tha e ann an TR2 is TR3.",
+            "description": "Càradh far am bi Lara uaireannan air a putadh tro bhalla ri taobh ceuman nuair a ruitheas i suas orra. Chan eil an duilgheadas seo san TR1 thùsail; tha e ann an TR2 is TR3.",
         },
         "gameplay.fix_underwater_crawl": {
             "title": "Càraich snàgadh fon uisge",
@@ -1322,7 +1322,7 @@
         },
         "gameplay.fix_wall_geometry": {
             "title": "Càradh geoimeatraidh bhallachan",
-            "description": "\\{review}Càraichidh seo cùisean ann an geoimeatraidh ìrean OG far am faod claonaidhean taobh a-staigh bhallachan leantainn gu àireamhachadh àirde mearachdach. Chan eil an duilgheadas seo san TR3+ thùsail; tha e ann an TR1 is TR2.",
+            "description": "Càraichidh seo cùisean ann an geoimeatraidh ìrean OG far am faod claonaidhean taobh a-staigh bhallachan leantainn gu àireamhachadh àirde mearachdach. Chan eil an duilgheadas seo san TR3+ thùsail; tha e ann an TR1 is TR2.",
         },
         "gameplay.fix_water_exit": {
             "title": "Càraich fàgail à seòmar uisge",
@@ -1354,7 +1354,7 @@
         },
         "gameplay.look_mode": {
             "title": "Modh seallaidh",
-            "description": "\\{review}Leigidh seo leat smachd a chumail air cuin as urrainn do Lara sealladh a chleachdadh.\n\n- Cuibhrichte: chan eil sealladh comasach ach nuair a tha Lara na stad, agus a-riamh fon uisge.\n- Leasaichte: tha sealladh comasach rè a' mhòr-chuid de bheòthalachd, ach chan ann rè gluasadan mar putadh bloca.\n- Neo-chuibhrichte: tha sealladh comasach aig àm sam bith fo smachd Lara àbhaisteach.\n\nTha Cuibhrichte a' freagairt ris an TR1 thùsail, agus Leasaichte ris an TR2+ thùsail.",
+            "description": "Leigidh seo leat smachd a chumail air cuin as urrainn do Lara sealladh a chleachdadh.\n\n- Cuibhrichte: chan eil sealladh comasach ach nuair a tha Lara na stad, agus a-riamh fon uisge.\n- Leasaichte: tha sealladh comasach rè a' mhòr-chuid de bheòthalachd, ach chan ann rè gluasadan mar putadh bloca.\n- Neo-chuibhrichte: tha sealladh comasach aig àm sam bith fo smachd Lara àbhaisteach.\n\nTha Cuibhrichte a' freagairt ris an TR1 thùsail, agus Leasaichte ris an TR2+ thùsail.",
         },
         "gameplay.maximum_quick_save_slots": {
             "title": "Àireamh nan slotan sàbhalaidh luath",
@@ -1378,11 +1378,11 @@
         },
         "gameplay.restore_ps1_enemies": {
             "title": "Aisig nàimhdean PS1",
-            "description": "\\{review}Cuiridh seo spaoileadan ann an City of Khamoon (PS1) ann an TR1, seòmar 25. Feumaidh ath-thòiseachadh a' gheama gu lèir gus obraicheas seo.",
+            "description": "Cuiridh seo spaoileadan ann an City of Khamoon (PS1) ann an TR1, seòmar 25. Feumaidh ath-thòiseachadh a' gheama gu lèir gus obraicheas seo.",
         },
         "gameplay.ring_memory_mode": {
-            "title": "\\{review}Cuimhnich àite na maoine",
-            "description": "\\{review}Fosglaidh fàinne air an nì air an do dh'fhàgadh i, seach air a' chiad fhear.\n\n- Dheth: tòisichidh gach fosgladh air a' chiad nì, mar a bha sa gheama thùsail.\n- Prìomh fhàinne: cha chuimhnichear ach fàinne nan nithean.\n- Gach fàinne: cuimhnichear fàinne nan nithean agus fàinne nan iuchraichean.\n\nTillidh a' chiad nì mura h-eil na chaidh a chuimhneachadh aig Lara tuilleadh, agus tòisichidh gach ìre an sin.",
+            "title": "Cuimhnich àite na maoine",
+            "description": "Fosglaidh fàinne air an nì air an do dh'fhàgadh i, seach air a' chiad fhear.\n\n- Dheth: tòisichidh gach fosgladh air a' chiad nì, mar a bha sa gheama thùsail.\n- Prìomh fhàinne: cha chuimhnichear ach fàinne nan nithean.\n- Gach fàinne: cuimhnichear fàinne nan nithean agus fàinne nan iuchraichean.\n\nTillidh a' chiad nì mura h-eil na chaidh a chuimhneachadh aig Lara tuilleadh, agus tòisichidh gach ìre an sin.",
         },
         "gameplay.save_crystal_mode": {
             "title": "Modh nan criostalan",
@@ -1402,7 +1402,7 @@
         },
         "gameplay.wall_glitch_mode": {
             "title": "Modh glitch bhalla",
-            "description": "\\{review}Taghaidh seo dè na glitchean balla as urrainn do Lara a dhèanamh.\n\n- TR1: mar a tha e san TR1 thùsail, far an cuir leum air adhart a-steach do bhalla Lara gu a mhullach.\n- TR2: mar a tha e san TR2 is TR3 thùsail, far nach obraich an leum sin tuilleadh, ach far an tèid Lara troimhe fhathast ma bhuaileas i an làr agus am balla aig an aon àm ann an cuid a gheoimeatraidh.\n- Air a chàradh: chan obraich glitch seach a chèile dhiubh, agus chan fhaod Lara a dhol tro roinn dhùinte doras tuilleadh.",
+            "description": "Taghaidh seo dè na glitchean balla as urrainn do Lara a dhèanamh.\n\n- TR1: mar a tha e san TR1 thùsail, far an cuir leum air adhart a-steach do bhalla Lara gu a mhullach.\n- TR2: mar a tha e san TR2 is TR3 thùsail, far nach obraich an leum sin tuilleadh, ach far an tèid Lara troimhe fhathast ma bhuaileas i an làr agus am balla aig an aon àm ann an cuid a gheoimeatraidh.\n- Air a chàradh: chan obraich glitch seach a chèile dhiubh, agus chan fhaod Lara a dhol tro roinn dhùinte doras tuilleadh.",
         },
         "input.enable_buffering_func_keys": {
             "title": "Bùthadh (putanan F)",
@@ -1465,8 +1465,8 @@
             "description": "Cuiridh seo iomallan dubha timcheall air uinneag a' gheama.",
         },
         "rendering.enable_dithering": {
-            "title": "\\{review}Dithering",
-            "description": "\\{review}Lùghdaichidh seo an dealbh gu dathan 8-biod le pàtran dithering òrdaichte, airson coltas nan tionndaidhean le reandaradh bathar-bog.",
+            "title": "Dithering",
+            "description": "Lùghdaichidh seo an dealbh gu dathan 8-biod le pàtran dithering òrdaichte, airson coltas nan tionndaidhean le reandaradh bathar-bog.",
         },
         "rendering.enable_trapezoid_filter": {
             "title": "Criathradh trapeasoid",
@@ -1481,8 +1481,8 @@
             "description": "Tionndaidheas sioncronachadh-inghearach air neo dheth.",
         },
         "rendering.fmv_filter": {
-            "title": "\\{review}Criathradh nam videothan",
-            "description": "\\{review}Cuiridh seo atharrachadh eadar coltas rèidh agus piogsailte air na videothan.",
+            "title": "Criathradh nam videothan",
+            "description": "Cuiridh seo atharrachadh eadar coltas rèidh agus piogsailte air na videothan.",
         },
         "rendering.fps": {
             "title": "FPS",
@@ -1493,8 +1493,8 @@
             "description": "Cuiridh seo atharrachadh air iomsgaradh solais fiùghantach, airson m.e. lasraichean neo losgadh armachd.",
         },
         "rendering.multisampling_factor": {
-            "title": "\\{review}Ioma-shamplachadh",
-            "description": "\\{review}Rèitichidh seo oirean bhallachan is nithean le bhith a' gabhail grunn shamplaichean de gach piogsail rin taobh. Tòrr nas saoire na os-shamplachadh, ach fàgaidh e oirean sprites mar dhuilleach is teine mar a bha iad.",
+            "title": "Ioma-shamplachadh",
+            "description": "Rèitichidh seo oirean bhallachan is nithean le bhith a' gabhail grunn shamplaichean de gach piogsail rin taobh. Tòrr nas saoire na os-shamplachadh, ach fàgaidh e oirean sprites mar dhuilleach is teine mar a bha iad.",
         },
         "rendering.screenshot_format": {
             "title": "Fòrmat glacadh-sgrìn",
@@ -1505,8 +1505,8 @@
             "description": "Bheir seo buaidh air na h-aisealean a tha glaiste nuair a thathar a' coimhead air sprìdean air an sgrion.\n\n- Gin sam bith: seall air na sprìdean gu àbhaisteach.\n- Rothladh: glasaich an aiseal rothlaidh – gu feumail a-mhàin ann am modh dealbh.\n- Rothladh is claonadh: bidh na sprìdean nan seasamh dìreach agus cha bhith iad nan laighe air an talamh nuair a thathar gan choimhead bho shuas.\n- Sealladh: glasaich na h-aisealean rothlaidh agus claonadh, 's a bharrachd air sin, rothlaich na sprìdean beagan a dh'ionnsaigh meadhan an sgrion.",
         },
         "rendering.supersampling_factor": {
-            "title": "\\{review}Os-shamplachadh",
-            "description": "\\{review}Nì seo an geama aig iomadach den dùmhlachd-bhreacaidh aige agus lùghdaichidh e air ais e le cuibheas, a' rèiteachadh oirean fiaclach. Iarraidh factaran nas àirde tòrr a bharrachd obrach air a' chairt-ghrafaigs.",
+            "title": "Os-shamplachadh",
+            "description": "Nì seo an geama aig iomadach den dùmhlachd-bhreacaidh aige agus lùghdaichidh e air ais e le cuibheas, a' rèiteachadh oirean fiaclach. Iarraidh factaran nas àirde tòrr a bharrachd obrach air a' chairt-ghrafaigs.",
         },
         "rendering.texture_filter": {
             "title": "Criathradh inneach",
@@ -1542,7 +1542,7 @@
         },
         "ui.bar_look": {
             "title": "Coltas nam bàraichean",
-            "description": "\\{review}Taghaidh seo am frèam agus na dathan a thèid a chleachdadh airson bàraichean na h-eadar-aghaidh, air an togail bho aon de na sgaoilidhean tùsail. Co-dhùnaidh an taghadh cuideachd dè an seata de roghainnean datha gu h-ìosal a bhios an sàs.",
+            "description": "Taghaidh seo am frèam agus na dathan a thèid a chleachdadh airson bàraichean na h-eadar-aghaidh, air an togail bho aon de na sgaoilidhean tùsail. Co-dhùnaidh an taghadh cuideachd dè an seata de roghainnean datha gu h-ìosal a bhios an sàs.",
         },
         "ui.bar_scale": {
             "title": "Meud bàr",
@@ -1582,7 +1582,7 @@
         },
         "ui.enemy_healthbar_show_mode": {
             "title": "Modh bàr-nàmhaid",
-            "description": "\\{review}Stiùirichidh seo cuin a nochdas bàr-slàinte airson an nàmhaid air a bheil Lara ag amas.\n\n- An-còmhnaidh: seall e airson amas sam bith.\n- A-mhàin ri boss: na seall e ach nuair as e boss an t-amas.\n- Na seall idir: na seall e idir.",
+            "description": "Stiùirichidh seo cuin a nochdas bàr-slàinte airson an nàmhaid air a bheil Lara ag amas.\n\n- An-còmhnaidh: seall e airson amas sam bith.\n- A-mhàin ri boss: na seall e ach nuair as e boss an t-amas.\n- Na seall idir: na seall e idir.",
         },
         "ui.exposurebar_color": {
             "title": "Dath bàr-fuachd",
@@ -1642,7 +1642,7 @@
         },
         "ui.show_bars": {
             "title": "Cleachd bàraichean",
-            "description": "\\{review}Seallaidh seo na bàraichean sa gheama. Ma chuireas tu dheth iad, thèid fiosrachadh mu shlàinte Lara agus goireasan eile fhalach (airson ruith dhùbhlanach).",
+            "description": "Seallaidh seo na bàraichean sa gheama. Ma chuireas tu dheth iad, thèid fiosrachadh mu shlàinte Lara agus goireasan eile fhalach (airson ruith dhùbhlanach).",
         },
         "ui.show_pickups_overlay": {
             "title": "Taisbeanadh thogailtean",
@@ -1738,7 +1738,7 @@
         },
         "visuals.camera_mode": {
             "title": "Modh camara",
-            "description": "\\{review}Taghaidh seo giùlan camara dè an geama a thèid a chleachdadh.\n\n- TR1: leanaidh an camara-tòrachd bogsaichean lorg-slighe na h-ìre.\n- TR2: an aon rud, le crìochan tòrachd is seallaidh eadar-dhealaichte agus dòigh eile air camarathan suidhichte a làimhseachadh.\n- TR3: cleachdaidh an camara-tòrachd loidhne-seallaidh an àite nam bogsaichean lorg-slighe.\n- TR4: mar TR3, agus freagraidh an camara cuideachd nuair a ghluaiseas gnìomh sealladh Lara, mar a bhith a' togail nì no a' dol timcheall oisean 'na crochadh.",
+            "description": "Taghaidh seo giùlan camara dè an geama a thèid a chleachdadh.\n\n- TR1: leanaidh an camara-tòrachd bogsaichean lorg-slighe na h-ìre.\n- TR2: an aon rud, le crìochan tòrachd is seallaidh eadar-dhealaichte agus dòigh eile air camarathan suidhichte a làimhseachadh.\n- TR3: cleachdaidh an camara-tòrachd loidhne-seallaidh an àite nam bogsaichean lorg-slighe.\n- TR4: mar TR3, agus freagraidh an camara cuideachd nuair a ghluaiseas gnìomh sealladh Lara, mar a bhith a' togail nì no a' dol timcheall oisean 'na crochadh.",
         },
         "visuals.enable_3d_pickups": {
             "title": "Togail 3D",
@@ -1793,8 +1793,8 @@
             "description": "Bidh na criostalan sàbhalaidh purpaidh mar a tha iad anns a' PhS1.",
         },
         "visuals.enable_ps1_rain": {
-            "title": "\\{review}Boinneagan uisge PS1",
-            "description": "\\{review}Thèid boinneagan uisge a chur ris an t-sealladh seach am measgachadh ann, agus mar sin bidh iad bàn mar a bha iad air a' PS1.",
+            "title": "Boinneagan uisge PS1",
+            "description": "Thèid boinneagan uisge a chur ris an t-sealladh seach am measgachadh ann, agus mar sin bidh iad bàn mar a bha iad air a' PS1.",
         },
         "visuals.enable_reflections": {
             "title": "Meòrachadh",
@@ -1838,11 +1838,11 @@
         },
         "visuals.fog_end": {
             "title": "Deireadh ceò",
-            "description": "\\{review}Suidhichidh seo an astar (ann an leacan) bhon chamara far a dhùnas ceò air a h-uile càil. Anns an TR2 is TR3 thùsail, tachraidh sin aig 20 leac. Faodaidh ìre luach dhi fhèin a ghiùlan, agus thèid sin a chleachdadh na àite.",
+            "description": "Suidhichidh seo an astar (ann an leacan) bhon chamara far a dhùnas ceò air a h-uile càil. Anns an TR2 is TR3 thùsail, tachraidh sin aig 20 leac. Faodaidh ìre luach dhi fhèin a ghiùlan, agus thèid sin a chleachdadh na àite.",
         },
         "visuals.fog_start": {
             "title": "Tòiseachadh ceò",
-            "description": "\\{review}Suidhichidh seo an astar (ann an leacan) bhon chamara far a thoisicheas ceò. Anns an TR2 is TR3 thùsail, tòisichidh e aig 12 leac. Faodaidh ìre luach dhi fhèin a ghiùlan, agus thèid sin a chleachdadh na àite.",
+            "description": "Suidhichidh seo an astar (ann an leacan) bhon chamara far a thoisicheas ceò. Anns an TR2 is TR3 thùsail, tòisichidh e aig 12 leac. Faodaidh ìre luach dhi fhèin a ghiùlan, agus thèid sin a chleachdadh na àite.",
         },
         "visuals.fog_transparency": {
             "title": "Follaiseachd a' cheòth",
@@ -3545,7 +3545,7 @@
             ]
         },
         "teleporter": {
-            "name": "\\{review}Cian-ghiùlanair",
+            "name": "Cian-ghiùlanair",
         },
         "text_box": {
             "name": "Frèam Eadar-aghaidh",
