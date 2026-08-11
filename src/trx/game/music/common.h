@@ -62,6 +62,12 @@ int32_t Music_GetTrackLimit(void);
 // level does not carry.
 char *Music_GetTrackPath(MUSIC_ID track);
 
+// How long a track runs, in seconds, as its file says, or a negative value
+// where nothing can answer: no backend, no file behind the track, or a
+// container that does not carry a duration. The file is read the first time a
+// track is asked about and the answer is kept.
+double Music_GetTrackDuration(MUSIC_ID track);
+
 // Stops all music streams, including looped, active, and overlay tracks.
 void Music_Stop(void);
 

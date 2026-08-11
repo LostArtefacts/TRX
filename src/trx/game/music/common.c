@@ -1,6 +1,7 @@
 #include <trx/game/music/common.h>
 
 #include <trx/av/audio.h>
+#include <trx/av/audio_decoder.h>
 #include <trx/config.h>
 #include <trx/core/log.h>
 #include <trx/core/memory.h>
@@ -20,6 +21,8 @@
 #include <trx/game/shell/paths.h>
 #include <trx/version.h>
 
+#include <string.h>
+
 typedef struct {
     int32_t audio_stream_id;
     MUSIC_ID track_id;
@@ -37,6 +40,9 @@ static MUSIC_ID m_TrackLooped = MX_INACTIVE;
 static MUSIC_ID m_TrackLastPlayed = MX_INACTIVE;
 static MUSIC_ID m_TrackLastLooped = MX_INACTIVE;
 
+// How long each track runs, in seconds, as its file says. Zero where nothing
+// has asked yet, and a negative value where the answer was that nothing knows.
+static double m_TrackDurations[MAX_MUSIC_TRACKS] = {};
 static float m_MusicVolume = 0.0f;
 static MUSIC_BACKEND *m_Backend = nullptr;
 static M_MUSIC_STREAM m_MainStream = {
@@ -343,6 +349,7 @@ static bool M_IsSpeechTrack(const MUSIC_ID track_id)
 static void M_Shutdown(void)
 {
     m_Initialised = false;
+    memset(m_TrackDurations, 0, sizeof(m_TrackDurations));
     M_StopMainStream();
     M_StopOverlayStreams();
     M_ResetStreamState();
@@ -456,6 +463,7 @@ static int32_t M_Play(
 bool Music_Init(void)
 {
     m_Initialised = true;
+    memset(m_TrackDurations, 0, sizeof(m_TrackDurations));
     if (m_Backend != nullptr) {
         m_Backend->shutdown(m_Backend);
         m_Backend = nullptr;
@@ -520,6 +528,30 @@ char *Music_GetTrackPath(const MUSIC_ID track)
         return nullptr;
     }
     return m_Backend->get_track_path(m_Backend, track);
+}
+
+double Music_GetTrackDuration(const MUSIC_ID track)
+{
+    if (track < 0 || track >= MAX_MUSIC_TRACKS) {
+        return -1.0;
+    }
+    if (m_TrackDurations[track] != 0.0) {
+        return m_TrackDurations[track];
+    }
+
+    double duration = -1.0;
+    char *const path = Music_GetTrackPath(track);
+    if (path != nullptr) {
+        AUDIO_DECODER *decoder = AudioDecoder_CreateFromPath(path, 2);
+        if (decoder != nullptr) {
+            duration = AudioDecoder_GetDuration(decoder);
+            AudioDecoder_Free(&decoder);
+        }
+        Memory_Free(path);
+    }
+
+    m_TrackDurations[track] = duration > 0.0 ? duration : -1.0;
+    return m_TrackDurations[track];
 }
 
 void Music_Stop(void)
