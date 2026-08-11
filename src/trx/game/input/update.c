@@ -16,6 +16,8 @@
 
 static int32_t m_LookFrames = 0;
 static bool m_IsLookHeld = false;
+static INPUT_STATE m_HoldOff = {};
+static INPUT_STATE m_HoldOffLinger = {};
 
 static void M_UpdateFromBackend(
     INPUT_STATE *const s, const INPUT_BACKEND_IMPL *const backend,
@@ -60,6 +62,18 @@ static void M_UpdateTargetChange(void)
     g_Input.look = m_IsLookHeld;
 }
 
+void Input_HoldOffRole(const INPUT_ROLE role)
+{
+    InputState_SetRole(&m_HoldOff, role, true);
+}
+
+void Input_HoldOffSkip(void)
+{
+    Input_HoldOffRole(INPUT_ROLE_INVENTORY);
+    Input_HoldOffRole(INPUT_ROLE_MENU_BACK);
+    Input_HoldOffRole(INPUT_ROLE_MENU_CONFIRM);
+}
+
 void Input_Update(void)
 {
     InputState_Clear(&g_Input);
@@ -83,6 +97,9 @@ void Input_Update(void)
         Input_GetBackendImpl(backend)->resolve_combos(
             g_Config.input.layout[backend], &g_Input);
     }
+
+    // What the devices say, before the game has its way with it.
+    const INPUT_STATE raw = g_Input;
 
     g_Input.camera_reset |= g_Input.look;
     g_Input.menu_up |= g_Input.forward;
@@ -117,6 +134,16 @@ void Input_Update(void)
     }
 
     M_UpdateTargetChange();
+
+    for (int32_t i = 0; i < INPUT_STATE_ANY_WORDS; i++) {
+        // Read from the device, not from g_Input: a scene suppresses the
+        // option role while it plays. The grace update covers the keyboard
+        // firing a deferred combination key once it comes up.
+        const uint64_t held = m_HoldOff.any[i] & raw.any[i];
+        g_Input.any[i] &= ~(m_HoldOff.any[i] | m_HoldOffLinger.any[i]);
+        m_HoldOffLinger.any[i] = m_HoldOff.any[i] & ~held;
+        m_HoldOff.any[i] = held;
+    }
 
     g_InputDB = Input_GetDebounced(g_Input);
 
