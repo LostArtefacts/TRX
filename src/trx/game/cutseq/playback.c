@@ -46,11 +46,18 @@ typedef enum {
 } M_PHASE;
 
 typedef struct {
+    OBJECT_ID obj_id;
+    int16_t src_node;
+} M_MESH_OVERRIDE;
+
+typedef struct {
     CUTSEQ_PACK_NODE *nodes;
     int32_t node_count;
     CUTSEQ_POSE pose_prev;
     CUTSEQ_POSE pose_curr;
     CUTSEQ_POSE pose_draw;
+    bool is_hidden;
+    M_MESH_OVERRIDE overrides[CUTSEQ_MAX_MESHES];
     ITEM dummy_item;
 } M_ACTOR;
 
@@ -213,6 +220,10 @@ static bool M_Begin(const int32_t num)
         actor->pose_prev = actor->pose_curr;
         actor->pose_draw = actor->pose_curr;
 
+        actor->is_hidden = false;
+        for (int32_t j = 0; j < CUTSEQ_MAX_MESHES; j++) {
+            actor->overrides[j].obj_id = NO_OBJECT;
+        }
         actor->dummy_item = (ITEM) {
             .object_id = actor_info->obj_id,
             .room_num = Lara_GetItem()->room_num,
@@ -469,6 +480,33 @@ void CutSeq_SetPlayed(const int32_t num, const bool played)
     }
 }
 
+int32_t CutSeq_GetActorCount(void)
+{
+    return CutSeq_IsPlaying() ? m_State.info.num_actors : 0;
+}
+
+void CutSeq_SetActorVisible(const int32_t actor, const bool visible)
+{
+    if (actor < 0 || actor >= CUTSEQ_MAX_ACTORS) {
+        return;
+    }
+    m_State.actors[actor].is_hidden = !visible;
+}
+
+void CutSeq_SetActorNodeMesh(
+    const int32_t actor, const int32_t node, const OBJECT_ID obj_id,
+    const int32_t src_node)
+{
+    if (actor < 0 || actor >= CUTSEQ_MAX_ACTORS || node < 0
+        || node >= CUTSEQ_MAX_MESHES) {
+        return;
+    }
+    m_State.actors[actor].overrides[node] = (M_MESH_OVERRIDE) {
+        .obj_id = obj_id,
+        .src_node = src_node,
+    };
+}
+
 void CutSeq_SetLaraReturn(const XYZ_32 pos, const int16_t rot)
 {
     m_State.lara_return.pos = pos;
@@ -629,7 +667,7 @@ void CutSeq_DrawActors(void)
     for (int32_t i = 1; i < info->num_actors; i++) {
         M_ACTOR *const actor = &m_State.actors[i];
         const OBJECT *const obj = M_GetActorObject(&info->actors[i]);
-        if (obj == nullptr) {
+        if (obj == nullptr || actor->is_hidden) {
             continue;
         }
         const CUTSEQ_POSE *const pose = &actor->pose_draw;
@@ -668,8 +706,19 @@ void CutSeq_DrawActors(void)
                 Matrix_TranslateRel32(bone->pos);
             }
             Matrix_Rot16(pose->rots[mesh_idx]);
-            Object_DrawMesh(
-                obj->mesh_idx + mesh_idx, CLIP_FULLY_VISIBLE, false);
+
+            const M_MESH_OVERRIDE *const override = &actor->overrides[mesh_idx];
+            const OBJECT *const src_obj = override->obj_id == NO_OBJECT
+                ? nullptr
+                : Object_TryGet(override->obj_id);
+            if (src_obj != nullptr && src_obj->loaded) {
+                Object_DrawMesh(
+                    src_obj->mesh_idx + override->src_node, CLIP_FULLY_VISIBLE,
+                    false);
+            } else {
+                Object_DrawMesh(
+                    obj->mesh_idx + mesh_idx, CLIP_FULLY_VISIBLE, false);
+            }
         }
         Matrix_Pop();
     }

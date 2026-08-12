@@ -1901,6 +1901,18 @@
         }
     },
     "objects": {
+        "actor_1_speech_head_1": {
+            "name": "Actor 1 Speech Head 1",
+        },
+        "actor_1_speech_head_2": {
+            "name": "Actor 1 Speech Head 2",
+        },
+        "actor_2_speech_head_1": {
+            "name": "Actor 2 Speech Head 1",
+        },
+        "actor_2_speech_head_2": {
+            "name": "Actor 2 Speech Head 2",
+        },
         "alarm_sound": {
             "name": "Alarm",
         },
@@ -2771,6 +2783,18 @@
         },
         "lara_skidoo": {
             "name": "Snowmobile Animation",
+        },
+        "lara_speech_head_1": {
+            "name": "Lara Speech Head 1",
+        },
+        "lara_speech_head_2": {
+            "name": "Lara Speech Head 2",
+        },
+        "lara_speech_head_3": {
+            "name": "Lara Speech Head 3",
+        },
+        "lara_speech_head_4": {
+            "name": "Lara Speech Head 4",
         },
         "lara_upv": {
             "name": "UPV Animation",
@@ -3735,6 +3759,9 @@
                 "Vole",
                 "Water Rat",
             ]
+        },
+        "von_croy": {
+            "name": "Von Croy",
         },
         "vulture": {
             "name": "Vulture",
