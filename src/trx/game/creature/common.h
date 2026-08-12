@@ -13,6 +13,17 @@ void Creature_UpdateMood(const ITEM *item, const AI_INFO *info, bool violent);
 void Creature_ApplyMood(const ITEM *item, const AI_INFO *info, bool violent);
 
 int16_t Creature_Turn(ITEM *item, int16_t max_turn);
+
+// Turns the item's own facing towards an angle, by no more than max_turn.
+// Creature_Turn steers a creature that is walking somewhere; this one turns
+// on the spot.
+void Creature_TurnTo(ITEM *item, int16_t angle, int16_t max_turn);
+
+// Eases the item towards another's position and facing, by velocity and by no
+// more than max_turn. True once it has arrived.
+bool Creature_MoveTo(
+    ITEM *item, const ITEM *target, int32_t velocity, int16_t angle,
+    int16_t max_turn);
 void Creature_Tilt(ITEM *item, int16_t angle);
 void Creature_Head(ITEM *item, int16_t required);
 void Creature_Neck(ITEM *item, int16_t required);
