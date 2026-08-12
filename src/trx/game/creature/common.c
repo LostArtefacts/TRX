@@ -1451,13 +1451,21 @@ int32_t Creature_Vault(
 
     Creature_Animate(item_num, angle, 0);
 
-    if (item->floor > old.y + STEP_L * 7 / 2) {
+    // The two shallower climbs down belong to whoever has animations for
+    // them, which is TR3's monkey and TR4's guide.
+    const bool has_short_drops = g_TRVersion >= 4
+        ? item->object_id == O_VON_CROY
+        : item->object_id == O_MONKEY;
+
+    if (g_TRVersion >= 4 && item->floor > old.y + STEP_L * 9 / 2) {
+        // Deeper than anything it can climb down. The shove below still runs,
+        // which is what keeps it on the ledge rather than dropping it.
+        vault = 0;
+    } else if (item->floor > old.y + STEP_L * 7 / 2) {
         vault = -4;
-    } else if (
-        item->floor > old.y + STEP_L * 5 / 2 && item->object_id == O_MONKEY) {
+    } else if (item->floor > old.y + STEP_L * 5 / 2 && has_short_drops) {
         vault = -3;
-    } else if (
-        item->floor > old.y + STEP_L * 3 / 2 && item->object_id == O_MONKEY) {
+    } else if (item->floor > old.y + STEP_L * 3 / 2 && has_short_drops) {
         vault = -2;
     } else if (item->pos.y > old.y - STEP_L * 3 / 2) {
         return 0;
@@ -1465,7 +1473,7 @@ int32_t Creature_Vault(
         vault = 2;
     } else if (item->pos.y > old.y - STEP_L * 7 / 2) {
         vault = 3;
-    } else {
+    } else if (g_TRVersion < 4 || item->pos.y > old.y - STEP_L * 9 / 2) {
         vault = 4;
     }
 
