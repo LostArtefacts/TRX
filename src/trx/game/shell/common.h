@@ -35,6 +35,9 @@ bool Shell_GetPrevHeadless(void);
 bool Shell_GetPrevQuiet(void);
 const SHELL_ARGS *Shell_GetArgs(void);
 
+// Stop or resume drawing the game while it keeps running its logic frames.
+void Shell_SetHeadless(bool headless);
+
 bool Shell_IsFullscreen(void);
 SHELL_SIZE Shell_GetDefaultSize(void);
 SHELL_SIZE Shell_GetWindowSize(void);

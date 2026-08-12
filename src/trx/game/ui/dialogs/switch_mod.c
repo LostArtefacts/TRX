@@ -40,7 +40,7 @@ UI_SWITCH_MOD_DIALOG_STATE *UI_SwitchModDialog_Init(void)
             s->rows, &(M_ROW) { .name = mod->name, .title = mod->title });
     }
 
-    UI_BasePassportDialog_Init(&s->req, s->rows->count);
+    UI_BasePassportDialog_Init(&s->req, s->rows->count, 0.0f);
     UI_Requester_SelectRow(&s->req, current_row);
     return s;
 }
@@ -70,7 +70,7 @@ const char *UI_SwitchModDialog_GetSelectedMod(
 
 void UI_SwitchModDialog(UI_SWITCH_MOD_DIALOG_STATE *const s)
 {
-    UI_BeginBasePassportDialog();
+    UI_BeginBasePassportDialog(&s->req);
     UI_BeginRequester(&s->req, GS("general/passport/select_mod"));
 
     for (int32_t i = 0; i < s->rows->count; i++) {

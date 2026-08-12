@@ -6,6 +6,7 @@
 #include <trx/core/subsystem.h>
 #include <trx/debug.h>
 #include <trx/game/catalog/manager.h>
+#include <trx/game/clock.h>
 #include <trx/game/game_flow.h>
 #include <trx/game/game_strings/manager.h>
 #include <trx/game/lua.h>
@@ -287,6 +288,24 @@ const SHELL_ARGS *Shell_GetArgs(void)
 {
     ASSERT(m_Session != nullptr);
     return m_Session->args;
+}
+
+void Shell_SetHeadless(const bool headless)
+{
+    ASSERT(m_Session != nullptr);
+    SHELL_ARGS *const args = (SHELL_ARGS *)m_Session->args;
+    if (args->headless == headless) {
+        return;
+    }
+
+    args->headless = headless;
+    // The clock counts frames either way; only the pacing changes here.
+    if (headless) {
+        Clock_DisableWait();
+    } else {
+        Clock_EnableWait();
+        Clock_SyncTick();
+    }
 }
 
 SDL_Window *Shell_GetWindow(void)

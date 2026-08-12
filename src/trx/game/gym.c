@@ -426,6 +426,7 @@ void Gym_TrackManager_ClearStats(const GYM_TRACK_TYPE track)
         return;
     }
     *stats = (GYM_TRACK_STATS) {};
+    Config_SectionChanged();
     Config_Update();
 }
 

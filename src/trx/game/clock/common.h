@@ -6,6 +6,9 @@
 // Disables any kind of waiting in Clock_WaitTick
 void Clock_DisableWait(void);
 
+// Restores the waiting Clock_DisableWait turned off.
+void Clock_EnableWait(void);
+
 // In headless mode, simulate a fixed FPS (seconds per frame = 1/fps)
 void Clock_EnableHeadlessFixedFPS(int32_t fps);
 

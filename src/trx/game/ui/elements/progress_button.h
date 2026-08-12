@@ -15,3 +15,7 @@ void UI_ProgressButton_Control(UI_PROGRESS_BUTTON_STATE *s);
 void UI_ProgressButton_Free(UI_PROGRESS_BUTTON_STATE *s);
 
 void UI_ProgressButton(UI_PROGRESS_BUTTON_STATE *s);
+
+// The height the button takes, so that a dialog placing one under its content
+// can leave room for it.
+float UI_ProgressButton_GetHeight(void);

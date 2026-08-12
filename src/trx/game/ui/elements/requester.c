@@ -6,6 +6,26 @@
 #include <trx/game/ui.h>
 #include <trx/version.h>
 
+static UI_WINDOW_SETTINGS M_GetWindowSettings(
+    const UI_REQUESTER_STATE *const s, const char *const title)
+{
+    const bool show_scroll_hints =
+        s->show_arrows && s->scroll.vis_items < s->scroll.max_items;
+    return (UI_WINDOW_SETTINGS) {
+        .title = title,
+        .scrollable = show_scroll_hints ? &s->scroll : nullptr,
+        .title_spacing = -1.0f,
+    };
+}
+
+static float M_GetChromeHeight(const UI_REQUESTER_STATE *const s)
+{
+    // A window's height follows whether it has a title, not what the title
+    // says, so any non-empty one measures the same.
+    const UI_WINDOW_SETTINGS settings = M_GetWindowSettings(s, "");
+    return UI_Window_GetChromeHeight(&settings);
+}
+
 void UI_Requester_Init(
     UI_REQUESTER_STATE *const s, const int32_t vis_rows, const int32_t max_rows,
     const bool is_selectable)
@@ -97,16 +117,25 @@ void UI_Requester_SelectRow(UI_REQUESTER_STATE *const s, const int32_t i)
     UI_Scrollable_SelectItem(&s->scroll, i);
 }
 
+float UI_Requester_GetHeight(
+    const UI_REQUESTER_STATE *const s, const int32_t rows)
+{
+    return M_GetChromeHeight(s) + rows * UI_TEXT_HEIGHT
+        + (rows - 1) * s->row_spacing;
+}
+
+int32_t UI_Requester_GetRowsForHeight(
+    const UI_REQUESTER_STATE *const s, const float height)
+{
+    const float rows_height = height - M_GetChromeHeight(s) + s->row_spacing;
+    const int32_t rows = rows_height / (UI_TEXT_HEIGHT + s->row_spacing);
+    return MAX(rows, 1);
+}
+
 void UI_BeginRequester(
     const UI_REQUESTER_STATE *const s, const char *const title)
 {
-    const bool show_scroll_hints =
-        s->show_arrows && s->scroll.vis_items < s->scroll.max_items;
-    UI_BeginWindow((UI_WINDOW_SETTINGS) {
-        .title = title,
-        .scrollable = show_scroll_hints ? &s->scroll : nullptr,
-        .title_spacing = -1.0f,
-    });
+    UI_BeginWindow(M_GetWindowSettings(s, title));
     if (s->reserve_space) {
         UI_BeginResize(
             -1.0f,

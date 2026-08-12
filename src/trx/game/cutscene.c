@@ -389,6 +389,7 @@ GF_COMMAND Cutscene_Control(void)
     Input_Update();
     Shell_ProcessInput();
     if (g_InputDB.menu_confirm || g_InputDB.menu_back) {
+        Input_HoldOffSkip();
         return (GF_COMMAND) { .action = GF_LEVEL_COMPLETE };
     } else if (g_InputDB.pause) {
         const GF_COMMAND gf_cmd = GF_PauseGame();

@@ -101,6 +101,12 @@ void TRX_GL_FBO_Init(
         LOG_ERROR("framebuffer is not complete!");
     }
 
+    // A framebuffer can be read from before anything has drawn into it: the
+    // frame a resize lands on is composited from the one before it.
+    const GLfloat black[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
+    glClearBufferfv(GL_COLOR, 0, black);
+    TRX_GL_CheckError();
+
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 

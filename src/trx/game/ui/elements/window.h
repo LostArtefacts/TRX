@@ -21,3 +21,8 @@ void UI_EndWindow(void);
 // The horizontal space a window spends on its own frame and padding, in the
 // units a caller sizes its content in.
 float UI_Window_GetChromeWidth(void);
+
+// The vertical space a window spends on its own frame, padding, title and
+// scroll hints. What a header or footer function draws is the caller's, and is
+// not counted here.
+float UI_Window_GetChromeHeight(const UI_WINDOW_SETTINGS *settings);

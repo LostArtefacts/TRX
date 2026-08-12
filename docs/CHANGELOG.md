@@ -46,6 +46,7 @@
 - Changed boxes of ammunition in the inventory to always show what Lara is really carrying, where finishing a level could round them down
 - Fixed Lara being able to light a free/ghost flare by selecting one from the inventory while crawling (Gameplay → Fixes → Fix free flare glitch)
 - Fixed the inventory ring being cut off at the sides when the game window is taller than it is wide (#4278)
+- Fixed the key that skips a cutscene or a flyby sequence also opening the inventory ring behind it
 - Fixed Lara receiving twice the number of flares if given via the game flow (regression from 1.9)
 - Fixed the inventory hint for using an item showing Enter rather than the key bound to Action (regression from 1.8.1)
 - Fixed Lara being able to collect plinth pickups while ducked (regression from 1.9)
@@ -112,6 +113,7 @@
 - Fixed FMVs costing frame rate at high resolutions, where every frame was resized twice on its way to the screen (#6152, #262)
 - Fixed loading and legal screens ignoring the upscaling factor and filter
 - Fixed sprite shadows tinting the ground they lie on with the water color whenever the camera is underwater (Graphic Options → Visuals → Shadows shape)
+- Fixed the picture breaking up into blocks for the length of the first fade after the game is launched, on some graphics drivers (#5506)
 
 **Music and sound**
 - Added an option to keep the music playing when Lara dies (Sound Options → Misc → Play music after death) (#4221)
@@ -129,6 +131,7 @@
 - Changed a setting a script is holding to be greyed out, where the row carried only the star saying who took it
 - Fixed settings text running off both sides of the screen in the longer languages, most visibly at 4:3 (#6000)
 - Fixed the list of settings a preset would change spilling outside its dialog, and its text now wraps (#6000)
+- Fixed the load and save game dialogs covering the rest of the screen at larger text scales, where the list now shows as many slots as there is room for (#6175)
 
 **Saves and settings**
 - Changed the save crystals option to a mode: crystals can save on the spot, be collected to save from the inventory as on PS1 TR3, heal, or be collectibles (Gameplay → General → Crystal mode) (#5939, #5940)
@@ -172,6 +175,7 @@
 - Fixed the `/play` console command starting the playthrough over only on the gym, so the rules and how wet Lara was carried over from the last run
 
 **Recordings**
+- Added `skip start` and `skip end` events to recordings, which stop the drawing while the frames keep running, so a stretch passes as fast as the machine manages
 - Fixed a recording pausing along with the game when the window loses focus, which fires the rest of it into a game that is not running
 
 **Installer and mods**
