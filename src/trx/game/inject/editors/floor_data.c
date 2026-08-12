@@ -10,6 +10,11 @@
 
 #define NULL_FD_INDEX ((uint16_t)(-1))
 
+// A room properties edit carries every property at once, so a patch that means
+// only to change a flag says this rather than name a group it does not care
+// about and take the level's own away.
+#define M_FLIP_GROUP_UNCHANGED 255
+
 static void M_TriggerTypeChange(
     const INJECTION *const injection, const SECTOR *const sector)
 {
@@ -255,6 +260,20 @@ static void M_RoomProperties(
     // clang-format on
     if (injection->version >= INJ_VERSION_8) {
         room->reverb_info = VFile_ReadU8(injection->fp);
+    }
+    if (injection->version >= INJ_VERSION_10) {
+        const uint8_t group = VFile_ReadU8(injection->fp);
+        if (group >= MAX_FLIP_MAPS && group != M_FLIP_GROUP_UNCHANGED) {
+            LOG_WARNING(
+                "room %d: flip group %d is out of range", room_num, group);
+        } else if (group != M_FLIP_GROUP_UNCHANGED) {
+            room->alternate_group = group;
+            // Both halves of a pair must name the same group, or the flip
+            // back looks for the other number and the pair stays swapped.
+            if (room->flipped_room != NO_ROOM) {
+                Room_Get(room->flipped_room)->alternate_group = group;
+            }
+        }
     }
 }
 
