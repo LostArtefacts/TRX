@@ -237,12 +237,16 @@
     },
     {
       "bulk": true,
-      "count": 808,
+      "count": 817,
       "description": "Every object TRX has a name for.",
       "examples": [
         "if item.object_id == trx.catalog.objects.WOLF then ... end"
       ],
       "names": [
+        "ACTOR_1_SPEECH_HEAD_1",
+        "ACTOR_1_SPEECH_HEAD_2",
+        "ACTOR_2_SPEECH_HEAD_1",
+        "ACTOR_2_SPEECH_HEAD_2",
         "AI_AMBUSH",
         "AI_FOLLOW",
         "AI_GUARD",
@@ -658,6 +662,10 @@
         "LARA_SKIN_SWAP_EXTRA",
         "LARA_SKIN_SWAP_GUNS",
         "LARA_SKIN_SWAP_LEGS",
+        "LARA_SPEECH_HEAD_1",
+        "LARA_SPEECH_HEAD_2",
+        "LARA_SPEECH_HEAD_3",
+        "LARA_SPEECH_HEAD_4",
         "LARA_UPV",
         "LARA_UZIS",
         "LARA_VEHICLE_ANIM",
@@ -1017,6 +1025,7 @@
         "UZI_ITEM",
         "UZI_OPTION",
         "VOLE",
+        "VON_CROY",
         "VULTURE",
         "WASP_MUTANT",
         "WASP_MUTANT_EMITTER",
@@ -3415,6 +3424,66 @@
         }
       ],
       "path": "cutscenes.play"
+    },
+    {
+      "description": "Whether an actor is drawn. A scene brings its whole cast on from its first\nframe, so an actor who is only due later is hidden until then, as the\noriginal game hides one.\n\nIt lasts as long as the cutscene, and every actor starts out visible.",
+      "examples": [
+        "trx.events.on_cutscene_start(function(num)\n  if num == 9 then\n    trx.cutscenes.set_actor_visible(3, false)\n  end\nend)"
+      ],
+      "params": [
+        {
+          "name": "actor",
+          "type": "cutscenes.ActorNum"
+        },
+        {
+          "description": "Whether the actor is drawn.",
+          "name": "visible",
+          "type": "boolean"
+        }
+      ],
+      "path": "cutscenes.set_actor_visible"
+    },
+    {
+      "description": "Draws another object's mesh in place of the one an actor's node carries.\nThis is how a talking head goes on a body: the speech-head objects hold a\nmouth in each shape, and swapping between them while a line plays is what\nthe original game animates speech with.\n\nRaises if this level does not carry the object.",
+      "examples": [
+        "trx.cutscenes.set_node_mesh(1, 21, trx.catalog.objects.actor_1_speech_head_1)"
+      ],
+      "params": [
+        {
+          "name": "actor",
+          "type": "cutscenes.ActorNum"
+        },
+        {
+          "name": "node",
+          "type": "cutscenes.NodeNum"
+        },
+        {
+          "description": "The object to take a mesh from.",
+          "name": "object",
+          "type": "catalog.objects"
+        },
+        {
+          "description": "Which of that object's meshes. Defaults to `0`.",
+          "name": "mesh_num",
+          "optional": true,
+          "type": "integer"
+        }
+      ],
+      "path": "cutscenes.set_node_mesh"
+    },
+    {
+      "description": "Takes the override back off, leaving the mesh the actor's own object gives that node.",
+      "params": [
+        {
+          "name": "actor",
+          "type": "cutscenes.ActorNum"
+        },
+        {
+          "name": "node",
+          "type": "cutscenes.NodeNum"
+        }
+      ],
+      "path": "cutscenes.clear_node_mesh"
     },
     {
       "description": "Whether a cutscene trigger naming this number has already been answered.",
@@ -6116,6 +6185,16 @@
     },
     {
       "base": 0,
+      "description": "Which of a cutscene's actors. Actor `0` is Lara, who is posed rather than\ndrawn as an actor; the cast a scene brings with it starts at `1`.",
+      "path": "cutscenes.ActorNum"
+    },
+    {
+      "base": 0,
+      "description": "Which of an actor's meshes, the root being the first.",
+      "path": "cutscenes.NodeNum"
+    },
+    {
+      "base": 0,
       "description": "A flip effect number, as a level editor numbers them. Not the id space of `trx.rooms.flip_effect`, which takes `trx.catalog.flip_effects` names.",
       "path": "events.FlipEffectNum"
     },
@@ -6265,6 +6344,12 @@
       "description": "Whether a cutscene is on screen.",
       "path": "cutscenes.is_playing",
       "type": "boolean",
+      "writable": false
+    },
+    {
+      "description": "How many actors the running cutscene has, or `0` if none is running.",
+      "path": "cutscenes.actor_count",
+      "type": "integer",
       "writable": false
     },
     {

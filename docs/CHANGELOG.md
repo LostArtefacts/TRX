@@ -19,6 +19,9 @@
 - Changed a flip to move the group of rooms the trigger names, rather than every flip room in the level
 - Fixed rooms and their contents sometimes disappearing while an in-game cutscene plays
 
+**Lua**
+- Added `trx.cutscenes.actor_count`, `trx.cutscenes.set_actor_visible()`, `trx.cutscenes.set_node_mesh()` and `trx.cutscenes.clear_node_mesh()`, for hiding an actor in the scene on screen or putting another object's mesh on one
+
 ## [1.10](https://github.com/LostArtefacts/TRX/compare/trx-1.9.3...trx-1.10) - 2026-08-12
 Showcase: https://youtu.be/DKpqz_Yum6o
 
