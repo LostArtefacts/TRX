@@ -1080,6 +1080,7 @@ INV_RING *InvRing_Open(const INVENTORY_MODE mode)
     g_InvRing_Mode = mode;
 
     if (mode == INV_TITLE_MODE) {
+        Camera_Initialise();
         LUA_FireEvent(LUA_EVENT_TITLE_START);
     }
 

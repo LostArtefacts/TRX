@@ -77,6 +77,10 @@ void Camera_SetChunky(const bool is_chunky)
 
 void Camera_Initialise(void)
 {
+    if (Lara_GetItem() == nullptr) {
+        return;
+    }
+
     m_IsInitialised = false;
     Camera_Binoculars_Reset();
     g_Camera.fov = Viewport_GetEffectiveFOV();
