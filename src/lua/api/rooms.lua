@@ -287,14 +287,49 @@ api.define("rooms.count", {
   impl = raw.count,
 })
 
+api.property("rooms.flip_group_count", {
+  type = "integer",
+  description = [[How many flip groups a level can hold. A room belongs to one of them, and a flip
+    moves that group alone.]],
+  get = raw.flip_group_count,
+})
+
+local FLIP_GROUP_PARAM = {
+  name = "group",
+  type = "integer",
+  optional = true,
+  description = [[Which flip group to act on, counted from 0. A level splits its flip pairs into
+    groups and moves one at a time; a game that names no group places every room in the first.
+    Omit this to act on every group.]],
+}
+
 api.define("rooms.flip", {
-  description = "Flips the current room map, swapping every room with its flip pair.",
+  description = [[Flips rooms, swapping each with its flip pair. With no group given, every group
+    moves.]],
+  params = { FLIP_GROUP_PARAM },
+  examples = {
+    [[trx.rooms.flip()]],
+    [[trx.rooms.flip(3)]],
+  },
   impl = raw.flip,
+})
+
+api.define("rooms.is_flipped", {
+  description = [[Whether a group of rooms is showing its flip pairs. With no group given, answers
+    for the group that moved last, which is what the world itself reads.]],
+  params = { FLIP_GROUP_PARAM },
+  returns = {
+    {
+      type = "boolean",
+      description = "Whether that group is showing its pairs.",
+    },
+  },
+  impl = raw.get_flipped,
 })
 
 api.property("rooms.flipped", {
   type = "boolean",
-  description = "Whether the room map is currently flipped.",
+  description = "Whether the group that moved last is showing its flip pairs.",
   get = raw.get_flipped,
 })
 

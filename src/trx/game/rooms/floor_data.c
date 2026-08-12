@@ -213,8 +213,7 @@ static bool M_TestSectorTrigger(
         .heavy_mask = trigger->mask,
         .camera_item = nullptr,
         .switch_off = false,
-        .flip_map = false,
-        .flip_status = Room_GetFlipStatus(),
+        .flip_group = -1,
         .flip_available = false,
         .new_effect = -1,
     };
@@ -333,12 +332,14 @@ static bool M_TestSectorTrigger(
         g_Camera.item = status.camera_item;
     }
 
-    if (status.flip_map) {
-        Room_FlipMap();
+    if (status.flip_group >= 0) {
+        Room_FlipMap(status.flip_group);
     }
 
+    // A flip and an effect on the one trigger: the effect runs only if the
+    // flip happened, or if nothing on the trigger could flip at all.
     if (status.new_effect != -1
-        && (status.flip_map || !status.flip_available)) {
+        && (status.flip_group >= 0 || !status.flip_available)) {
         if (!ItemAction_Intercept(
                 status.new_effect, trigger->timer, Item_GetIndex(item))) {
             Room_SetFlipEffect(status.new_effect);

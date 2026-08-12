@@ -18,8 +18,28 @@ ROOM *Room_FromHandle(TRX_HANDLE handle);
 int32_t Room_GetIndex(const ROOM *room);
 
 void Room_InitialiseFlipStatus(void);
-void Room_FlipMap(void);
+// Swaps the rooms of one flip group with their pairs. TR4 splits a level's
+// flip pairs into groups and moves one at a time; earlier games have only
+// group 0, which is what every room of theirs belongs to.
+void Room_FlipMap(int32_t group);
+
+// Whether the group that moved last is showing its pairs.
+//
+// The level's data is written for a world with two states rather than a world
+// of groups: there is one set of pathing zones for each, and an ambient sound
+// source says it belongs to one or the other. Neither can name a group, so the
+// engine keeps this one answer for them, and a flip anywhere in the level sets
+// it. Where a level uses several groups it is therefore not "is anything
+// flipped", and a caller that means one group should ask about that group.
 bool Room_GetFlipStatus(void);
+
+// Whether the given group is showing its pairs.
+bool Room_GetFlipGroupStatus(int32_t group);
+
+// Puts back what a savegame recorded, once its groups have been replayed. The
+// groups alone do not say which of them moved last, and that is what the zones
+// and the sound sources read.
+void Room_SetFlipStatus(bool status);
 int32_t Room_GetFlipEffect(void);
 void Room_SetFlipEffect(int32_t flip_effect);
 int32_t Room_GetFlipTimer(void);

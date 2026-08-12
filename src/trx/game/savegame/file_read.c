@@ -1002,8 +1002,26 @@ bool SG_File_LoadFlipmaps(JSON_READ_IO *const io)
 
     bool status;
     M_MUST(JSON_READ(io, "status", &status));
-    if (status) {
-        Room_FlipMap();
+
+    // "groups" introduced in TRX 1.10, when a flip stopped moving every pair
+    // in the level at once. A save from before it holds the one status, which
+    // is the first group's.
+    if (M_SHOULD(JSON_PUSH(io, "groups"))) {
+        const size_t group_count = JSON_ARRAY_LEN(io);
+        for (size_t i = 0; i < group_count && i < MAX_FLIP_MAPS; i++) {
+            bool group_status = false;
+            M_MUST(JSON_READ_A(io, i, &group_status));
+            if (group_status != Room_GetFlipGroupStatus(i)) {
+                Room_FlipMap(i);
+            }
+        }
+        M_MUST(JSON_POP(io));
+
+        // Which group moved last is not in the groups themselves, and that is
+        // what the pathing zones and the ambient sound sources read.
+        Room_SetFlipStatus(status);
+    } else if (status) {
+        Room_FlipMap(0);
     }
 
     int32_t flip_effect;

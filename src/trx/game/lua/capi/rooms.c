@@ -131,17 +131,42 @@ static int M_L_RoomsGetFlippedRoom(lua_State *const L)
     return 1;
 }
 
-// trxc.rooms.flip()
+// trxc.rooms.flip_group_count() -> integer
+static int M_L_RoomsFlipGroupCount(lua_State *const L)
+{
+    lua_pushinteger(L, MAX_FLIP_MAPS);
+    return 1;
+}
+
+// trxc.rooms.flip([group])
 static int M_L_RoomsFlip(lua_State *const L)
 {
-    Room_FlipMap();
+    if (lua_isnoneornil(L, 1)) {
+        for (int32_t group = 0; group < MAX_FLIP_MAPS; group++) {
+            Room_FlipMap(group);
+        }
+        return 0;
+    }
+    const lua_Integer group = luaL_checkinteger(L, 1);
+    if (group < 0 || group >= MAX_FLIP_MAPS) {
+        return luaL_error(L, "no such flip group");
+    }
+    Room_FlipMap((int32_t)group);
     return 0;
 }
 
-// trxc.rooms.get_flipped() -> bool
+// trxc.rooms.get_flipped([group]) -> bool
 static int M_L_RoomsGetFlipped(lua_State *const L)
 {
-    lua_pushboolean(L, Room_GetFlipStatus());
+    if (lua_isnoneornil(L, 1)) {
+        lua_pushboolean(L, Room_GetFlipStatus());
+        return 1;
+    }
+    const lua_Integer group = luaL_checkinteger(L, 1);
+    if (group < 0 || group >= MAX_FLIP_MAPS) {
+        return luaL_error(L, "no such flip group");
+    }
+    lua_pushboolean(L, Room_GetFlipGroupStatus((int32_t)group));
     return 1;
 }
 
@@ -236,6 +261,7 @@ static const luaL_Reg m_Module[] = {
     { "get_bounds", M_L_RoomsGetBounds },
     { "point_inside", M_L_RoomsPointInside },
     { "flip", M_L_RoomsFlip },
+    { "flip_group_count", M_L_RoomsFlipGroupCount },
     { "get_flipped", M_L_RoomsGetFlipped },
     { "flip_effect", M_L_RoomsFlipEffect },
     { "find_valid_pos", M_L_RoomsFindValidPos },

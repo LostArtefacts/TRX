@@ -491,7 +491,7 @@ static void M_Control(const int16_t item_num)
         p->explode_count++;
 
         if (p->explode_count == 32) {
-            Room_FlipMap();
+            Room_FlipMap(0);
         }
 
         if (p->explode_count > 64) {

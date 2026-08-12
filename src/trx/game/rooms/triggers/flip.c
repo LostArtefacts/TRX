@@ -18,11 +18,11 @@ static void M_HandleFlipMap(
         .one_shot = trigger->one_shot,
     };
     if (Room_TriggerFlipSlot(flip_slot, &flip_trigger)) {
-        if (!status->flip_status) {
-            status->flip_map = true;
+        if (!Room_GetFlipGroupStatus(flip_slot)) {
+            status->flip_group = flip_slot;
         }
-    } else if (status->flip_status) {
-        status->flip_map = true;
+    } else if (Room_GetFlipGroupStatus(flip_slot)) {
+        status->flip_group = flip_slot;
     }
 }
 
@@ -34,8 +34,8 @@ static void M_HandleFlipOn(
     const FLIP_SLOT *const slot = Room_GetFlipSlot(flip_slot);
     status->flip_available = true;
 
-    if (slot->mask == TRIGGER_MASK_ALL && !status->flip_status) {
-        status->flip_map = true;
+    if (slot->mask == TRIGGER_MASK_ALL && !Room_GetFlipGroupStatus(flip_slot)) {
+        status->flip_group = flip_slot;
     }
 }
 
@@ -47,8 +47,8 @@ static void M_HandleFlipOff(
     const FLIP_SLOT *const slot = Room_GetFlipSlot(flip_slot);
     status->flip_available = true;
 
-    if (slot->mask == TRIGGER_MASK_ALL && status->flip_status) {
-        status->flip_map = true;
+    if (slot->mask == TRIGGER_MASK_ALL && Room_GetFlipGroupStatus(flip_slot)) {
+        status->flip_group = flip_slot;
     }
 }
 

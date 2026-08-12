@@ -5196,8 +5196,38 @@
       }
     },
     {
-      "description": "Flips the current room map, swapping every room with its flip pair.",
+      "description": "Flips rooms, swapping each with its flip pair. With no group given, every group\nmoves.",
+      "examples": [
+        "trx.rooms.flip()",
+        "trx.rooms.flip(3)"
+      ],
+      "params": [
+        {
+          "description": "Which flip group to act on, counted from 0. A level splits its flip pairs into\ngroups and moves one at a time; a game that names no group places every room in the first.\nOmit this to act on every group.",
+          "name": "group",
+          "optional": true,
+          "type": "integer"
+        }
+      ],
       "path": "rooms.flip"
+    },
+    {
+      "description": "Whether a group of rooms is showing its flip pairs. With no group given, answers\nfor the group that moved last, which is what the world itself reads.",
+      "params": [
+        {
+          "description": "Which flip group to act on, counted from 0. A level splits its flip pairs into\ngroups and moves one at a time; a game that names no group places every room in the first.\nOmit this to act on every group.",
+          "name": "group",
+          "optional": true,
+          "type": "integer"
+        }
+      ],
+      "path": "rooms.is_flipped",
+      "returns": [
+        {
+          "description": "Whether that group is showing its pairs.",
+          "type": "boolean"
+        }
+      ]
     },
     {
       "description": "Sets the active flip effect, and optionally its timer.",
@@ -6392,7 +6422,13 @@
       "writable": false
     },
     {
-      "description": "Whether the room map is currently flipped.",
+      "description": "How many flip groups a level can hold. A room belongs to one of them, and a flip\nmoves that group alone.",
+      "path": "rooms.flip_group_count",
+      "type": "integer",
+      "writable": false
+    },
+    {
+      "description": "Whether the group that moved last is showing its flip pairs.",
       "path": "rooms.flipped",
       "type": "boolean",
       "writable": false

@@ -454,6 +454,12 @@ void SG_File_DumpFlipmaps(JSON_WRITE_IO *const io)
 {
     JSONW_PUSH_OBJECT(io);
     JSONW_WRITE(io, "status", Room_GetFlipStatus());
+    JSONW_PUSH_ARRAY(io);
+    for (int32_t i = 0; i < MAX_FLIP_MAPS; i++) {
+        JSONW_PUSH_VALUE(io, Room_GetFlipGroupStatus(i));
+        JSONW_POP_AND_APPEND(io);
+    }
+    JSONW_POP_AND_SET(io, "groups");
     JSONW_WRITE(io, "effect", Room_GetFlipEffect());
     JSONW_WRITE(io, "timer", Room_GetFlipTimer());
     JSONW_PUSH_ARRAY(io);

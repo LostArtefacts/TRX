@@ -103,7 +103,16 @@ end)
 
 test("module functions reach the engine", function()
   trx.rooms.flip()
-  assert(fake.calls().flip_map.count == 1, "flip() should reach Room_FlipMap")
+  assert(
+    fake.calls().flip_map.count == trx.rooms.flip_group_count,
+    "flip() should move every group"
+  )
+
+  trx.rooms.flip(3)
+  assert(
+    fake.calls().flip_map.group == 3,
+    "flip(group) passes the group along"
+  )
 
   trx.rooms.flip_effect(3, 10)
   assert(fake.calls().set_flip_effect.flip_effect == 3)

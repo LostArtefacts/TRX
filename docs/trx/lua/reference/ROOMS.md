@@ -31,7 +31,9 @@ end
 
 ### Properties
 
-- <a id="rooms.flipped" name="rooms.flipped"></a>**`trx.rooms.flipped`** (boolean). Whether the room map is currently flipped. *(read-only)*
+- <a id="rooms.flip_group_count" name="rooms.flip_group_count"></a>**`trx.rooms.flip_group_count`** (integer). How many flip groups a level can hold. A room belongs to one of them, and a flip
+  moves that group alone. *(read-only)*
+- <a id="rooms.flipped" name="rooms.flipped"></a>**`trx.rooms.flipped`** (boolean). Whether the group that moved last is showing its flip pairs. *(read-only)*
 - <a id="rooms.query" name="rooms.query"></a>**`trx.rooms.query`** ([trx.rooms.RoomQuery](#rooms.RoomQuery)). The identity query over every room in the level. Narrow it and read it. *(read-only)*
 
 ### Enums
@@ -209,8 +211,36 @@ end
 
   Returns: integer. How many rooms the loaded level holds.
 
-- <a id="rooms.flip" name="rooms.flip"></a>[lua]`trx.rooms.flip()`  
-  Flips the current room map, swapping every room with its flip pair.
+- <a id="rooms.flip" name="rooms.flip"></a>[lua]`trx.rooms.flip([group])`  
+  Flips rooms, swapping each with its flip pair. With no group given, every group
+  moves.
+
+  Parameters:
+  - <a id="rooms.flip.group" name="rooms.flip.group"></a>**`group`** (integer, optional). Which flip group to act on, counted from 0. A level splits its flip pairs into
+    groups and moves one at a time; a game that names no group places every room in the first.
+    Omit this to act on every group.
+
+  Example:
+  ```lua
+  trx.rooms.flip()
+  ```
+
+  Example:
+  ```lua
+  trx.rooms.flip(3)
+  ```
+
+- <a id="rooms.is_flipped" name="rooms.is_flipped"></a>[lua]`trx.rooms.is_flipped([group])`  
+  Whether a group of rooms is showing its flip pairs. With no group given, answers
+  for the group that moved last, which is what the world itself reads.
+
+  Parameters:
+  - <a id="rooms.is_flipped.group" name="rooms.is_flipped.group"></a>**`group`** (integer, optional). Which flip group to act on, counted from 0. A level splits its flip pairs into
+    groups and moves one at a time; a game that names no group places every room in the first.
+    Omit this to act on every group.
+
+  Returns:
+  - boolean. Whether that group is showing its pairs.
 
 - <a id="rooms.flip_effect" name="rooms.flip_effect"></a>[lua]`trx.rooms.flip_effect(effect_id, [timer])`  
   Sets the active flip effect, and optionally its timer.

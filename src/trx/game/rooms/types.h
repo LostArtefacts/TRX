@@ -39,10 +39,10 @@ typedef struct {
 typedef struct {
     ITEM *camera_item;
     bool switch_off;
-    bool flip_map;
+    // The flip group a trigger asked to move, or -1 for none.
+    int32_t flip_group;
     bool flip_available;
     int32_t new_effect;
-    bool flip_status;
     bool is_heavy;
     int32_t heavy_mask;
 } TRIGGER_STATUS;

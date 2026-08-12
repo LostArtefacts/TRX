@@ -10,7 +10,7 @@ static void M_FinishLevel(ITEM *const item)
 
 static void M_FlipMap(ITEM *const item)
 {
-    Room_FlipMap();
+    Room_FlipMap(0);
 }
 
 static void M_AssaultStart(ITEM *const item)

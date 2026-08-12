@@ -55,7 +55,7 @@ static void M_Control(const int16_t item_num)
         p->zapped = false;
 
         if (Room_GetFlipStatus()) {
-            Room_FlipMap();
+            Room_FlipMap(0);
         }
 
         Item_RemoveSimulated(item_num);
@@ -72,7 +72,7 @@ static void M_Control(const int16_t item_num)
         p->count = 35 + (Random_GetControl() * 45) / 0x8000;
         p->zapped = false;
         if (Room_GetFlipStatus()) {
-            Room_FlipMap();
+            Room_FlipMap(0);
         }
     } else {
         p->active = true;
@@ -125,7 +125,7 @@ static void M_Control(const int16_t item_num)
         }
 
         if (!Room_GetFlipStatus()) {
-            Room_FlipMap();
+            Room_FlipMap(0);
         }
     }
 

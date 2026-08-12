@@ -87,12 +87,12 @@ static void M_Flicker(ITEM *const item)
 {
     const int32_t flip_timer = Room_GetFlipTimer();
     if (flip_timer > 125) {
-        Room_FlipMap();
+        Room_FlipMap(0);
         Room_SetFlipEffect(-1);
     } else if (
         flip_timer == 90 || flip_timer == 92 || flip_timer == 105
         || flip_timer == 107) {
-        Room_FlipMap();
+        Room_FlipMap(0);
     }
     Room_IncrementFlipTimer(1);
 }

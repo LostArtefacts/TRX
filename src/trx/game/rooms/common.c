@@ -28,6 +28,7 @@ static int32_t m_RoomCount = 0;
 static ROOM *m_Rooms = nullptr;
 static HANDLE_EPOCH m_RoomEpoch;
 static bool m_FlipStatus = false;
+static bool m_FlipGroupStatus[MAX_FLIP_MAPS] = {};
 static int32_t m_FlipEffect = -1;
 static int32_t m_FlipTimer = 0;
 static FLIP_SLOT m_FlipSlots[MAX_FLIP_MAPS] = {};
@@ -46,6 +47,7 @@ static void M_Shutdown(void)
     m_FlipStatus = false;
     m_FlipEffect = -1;
     m_FlipTimer = 0;
+    memset(m_FlipGroupStatus, 0, sizeof(m_FlipGroupStatus));
     memset(m_FlipSlots, 0, sizeof(m_FlipSlots));
 
     m_OutsideRoomTable = nullptr;
@@ -444,18 +446,19 @@ void Room_InitialiseFlipStatus(void)
     m_FlipStatus = false;
     m_FlipEffect = -1;
     m_FlipTimer = 0;
+    memset(m_FlipGroupStatus, 0, sizeof(m_FlipGroupStatus));
     for (int32_t i = 0; i < MAX_FLIP_MAPS; i++) {
         m_FlipSlots[i] = (FLIP_SLOT) {};
     }
 }
 
-void Room_FlipMap(void)
+void Room_FlipMap(const int32_t group)
 {
     Walkable_Reset();
 
     for (int32_t i = 0; i < Room_GetCount(); i++) {
         ROOM *const room = Room_Get(i);
-        if (room->flipped_room < 0) {
+        if (room->flipped_room < 0 || room->alternate_group != group) {
             continue;
         }
 
@@ -478,16 +481,14 @@ void Room_FlipMap(void)
             sizeof(room->drawn_items));
 
         M_AddFlipItems(room);
+        Output_DispatchRoomFlip(room);
     }
 
-    m_FlipStatus = !m_FlipStatus;
-
-    for (int32_t i = 0; i < Room_GetCount(); i++) {
-        const ROOM *const room = Room_Get(i);
-        if (room->flip_status != RFS_NONE) {
-            Output_DispatchRoomFlip(room);
-        }
-    }
+    m_FlipGroupStatus[group] = !m_FlipGroupStatus[group];
+    // What the world reads as "the flip is on" is the group that moved last,
+    // which is how TR4 leaves it. Earlier games have the one group, so the two
+    // say the same thing there.
+    m_FlipStatus = m_FlipGroupStatus[group];
 
     Level_Finalize_LoadWalkables(Level_Context_Get());
 }
@@ -495,6 +496,16 @@ void Room_FlipMap(void)
 bool Room_GetFlipStatus(void)
 {
     return m_FlipStatus;
+}
+
+bool Room_GetFlipGroupStatus(const int32_t group)
+{
+    return m_FlipGroupStatus[group];
+}
+
+void Room_SetFlipStatus(const bool status)
+{
+    m_FlipStatus = status;
 }
 
 int32_t Room_GetFlipEffect(void)
