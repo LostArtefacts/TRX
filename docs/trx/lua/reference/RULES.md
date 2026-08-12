@@ -39,9 +39,6 @@ that wants the defaults back asks for them.
   did, rather than keeping the rotation the level gave it. This only reaches
   drops the level data places on the enemy; a drop the gameflow names always
   takes the enemy's facing.
-- <a id="rules.music.accumulate_trigger_masks" name="rules.music.accumulate_trigger_masks"></a>**`trx.rules.music.accumulate_trigger_masks`** (boolean). Whether non-ambient tracks triggered from floor data should react to trigger masks, requiring all bits to be set for the music to play. Current playing music whose mask becomes unset will stop.
-- <a id="rules.music.is_one_shot_default" name="rules.music.is_one_shot_default"></a>**`trx.rules.music.is_one_shot_default`** (boolean). Whether non-ambient tracks triggered from floor data default to being flagged as one-shot.
-- <a id="rules.music.supports_delay" name="rules.music.supports_delay"></a>**`trx.rules.music.supports_delay`** (boolean). Whether timers used for non-ambient tracks triggered from floor data should be interpreted as a delay before playing the track.
 
 ### Functions
 

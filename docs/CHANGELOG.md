@@ -197,7 +197,6 @@
 - Added `show_pickup_aid`, `rotation` and `glow_color` properties for all pickup types
 - Changed object properties to take effect as soon as they change, rather than only when the item is first set up
 - Changed outfits to support joints, up to two braids per outfit, and to allow positional offset adjustments for equipment meshes; refer to migration notes
-- Changed engine-specific music trigger behavior by defining rules settable in Lua; refer to documentation
 - Changed where an item a defeated enemy carried lands, and which way it faces, by defining rules settable in Lua; refer to documentation (#5883)
 - Changed the gameflow's `main_menu_picture` to be optional: a game that names no picture shows its title level behind the menu, and its title script says what plays there
 - Changed `O_SCION_ITEM_1` handling to use a pickup mode of `PLINTH_SCION`; refer to migration guide
