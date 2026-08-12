@@ -569,12 +569,12 @@ static void M_StageDynamicLights(
     }
 }
 
-// An item outside the pool - a cutscene actor is posed from a track rather
-// than living in a room - has no slot of its own, and the scratch it would
-// otherwise fall to is shared with every effect and static drawn that frame.
-// This state fades between frames, so sharing it makes an actor's light jump
-// with whatever else was drawn. The original engine keeps it on the item, so
-// one is handed out per item here instead.
+// An item outside the pool - a cutscene actor is posed from a track rather than
+// living in a room - has no slot of its own, and the scratch it would otherwise
+// fall to is shared with every effect and static drawn that frame. This state
+// fades between frames, so sharing it makes an actor's light jump with the
+// effects and statics drawn beside it. The original engine keeps it on the
+// item, so one is handed out per item here instead.
 static M_ITEM_LIGHT *M_GetLooseItemLight(const ITEM *const item)
 {
     for (int32_t i = 0; i < M_MAX_LOOSE_LIGHTS; i++) {

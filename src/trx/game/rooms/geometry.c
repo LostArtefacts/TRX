@@ -581,7 +581,7 @@ bool Room_IsOnWalkable(
                 obj->floor_height_func(item, pos, height);
             // If the floor height changed, try to climb the walkable stack.
             if (test_height != height) {
-                // Check if height changed aka actually on a walkable.
+                // Check if height changed, i.e. standing on a walkable.
                 height = test_height;
                 object_found = true;
             }

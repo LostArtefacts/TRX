@@ -13,7 +13,7 @@
 
 // clang-format off
 static const FIELD_DESC m_Fields[] = {
-    // what the level actually has
+    // what the level holds
     FIELD_RO(OBJECT, loaded),
     FIELD_RO(OBJECT, intelligent),
     FIELD_RO(OBJECT, mesh_count),

@@ -503,7 +503,7 @@ static void M_Init(void)
                 (CONTROLLER_BINDING) { .key_count = 0 };
         }
     }
-    // then load actually defined default bindings into slot 0
+    // then load the defined default bindings into slot 0
     for (int32_t i = 0; m_BuiltinLayout[i].role != (INPUT_ROLE)-1; i++) {
         const BUILTIN_CONTROLLER_LAYOUT *const builtin = &m_BuiltinLayout[i];
         m_Layout[INPUT_LAYOUT_DEFAULT][builtin->role].slots[0] =

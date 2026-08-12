@@ -264,9 +264,9 @@ void GF_InventoryModifier_ApplyToResumeInfo(const GF_LEVEL *const level)
         memset(resume->inv.ammo, 0, sizeof(resume->inv.ammo));
     }
 
-    // Pistols the game flow hands over come loaded, whatever else the level
-    // took away. An endless supply needs no such rounds: the count follows the
-    // gun, and Inv_State_SetCount has already written it.
+    // Pistols the game flow hands over come loaded, even where the level took
+    // the rest away. An endless supply needs no such rounds: the count follows
+    // the gun, and Inv_State_SetCount has already written it.
     if (pistols_given && !Gun_HasInfiniteAmmo(LGT_PISTOLS)) {
         Inv_State_AddAmmo(
             &resume->inv, LGT_PISTOLS, Gun_GetInitialRounds(LGT_PISTOLS));

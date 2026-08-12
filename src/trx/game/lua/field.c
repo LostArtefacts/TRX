@@ -62,9 +62,9 @@ void Field_ValidateType(const TYPE_DESC *const type)
 
     for (int32_t i = 0; i < type->field_count; i++) {
         const FIELD_DESC *const field = &type->fields[i];
-        // Only fields that actually address memory carry a backing member to
-        // check: Field_Get uses the offset when there is no getter, and
-        // Field_Set uses it when there is no setter and the field is writable.
+        // Only fields that address memory carry a backing member to check:
+        // Field_Get uses the offset when there is no getter, and Field_Set uses
+        // it when there is no setter and the field is writable.
         const bool reads_member = field->get == nullptr;
         const bool writes_member =
             field->set == nullptr && !(field->flags & FF_READONLY);

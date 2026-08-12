@@ -155,7 +155,7 @@ static void M_Layout(
         }
     }
 
-    // Now we actually lay out the children
+    // Now lay the children out
     float cx = x;
     float cy = y;
     child = node->first_child;

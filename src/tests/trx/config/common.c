@@ -68,8 +68,8 @@ static void M_RecordChange(const EVENT *const event, void *const user_data)
     m_LastPersist = ((const CONFIG_CHANGE *)event->data)->persist;
 }
 
-// A hold lives as long as whatever put it there. What lands on one is the
-// game flow's, a script's or a demo's doing, so it is never the file's to keep.
+// A hold lives as long as its owner. What lands on one is the game flow's, a
+// script's or a demo's doing, so it is never the file's to keep.
 TEST(a_write_while_held_is_not_the_players_to_save)
 {
     M_SetUp();

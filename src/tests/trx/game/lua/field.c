@@ -303,7 +303,7 @@ TEST(a_value_too_wide_for_the_member_is_rejected_even_with_a_setter)
 
 // Found while writing these tests: Field_Find returns the first match, so a
 // name declared twice silently shadows every later entry - a validating setter
-// declared after a plain FIELD would simply never run.
+// declared after a plain FIELD would never run.
 TEST(duplicate_field_names_are_detected)
 {
     CHECK_NULL(Field_FindDuplicateName(&TYPE_SAMPLE));

@@ -1,0 +1,124 @@
+#!/usr/bin/env python3
+import re
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
+from harness import LintWarning, file_check
+
+# The words this check rules out, in three kinds, so that a warning can say
+# what is wrong with the one it found: a word that stands in for a thing
+# without naming it, a word the sentence reads the same without, and a word
+# that tells the reader what to think of a thing rather than describing it.
+
+# Stands in for a thing without naming it.
+VAGUE = (
+    "whatever",
+    "whatsoever",
+    "for some reason",
+    "in some way",
+    "one way or another",
+    "and so on",
+    "and so forth",
+    "etcetera",
+    "and the like",
+    "or something",
+    "or whatever",
+    "things like that",
+    "stuff like that",
+    "somehow",
+    "more or less",
+    "for all intents and purposes",
+)
+
+# Says nothing the sentence does not say without it.
+FILLER = (
+    "simply",
+    "basically",
+    "actually",
+    "really",
+    "essentially",
+    "fundamentally",
+    "ultimately",
+    "virtually",
+    "inherently",
+    "naturally",
+)
+
+# Tells the reader what to think of the thing rather than describing it.
+VERDICT = (
+    "obviously",
+    "clearly",
+    "of course",
+    "needless to say",
+    "it goes without saying",
+    "as everyone knows",
+    "as we all know",
+    "everyone knows",
+    "self-evidently",
+    "evidently",
+    "apparently",
+    "undoubtedly",
+    "certainly",
+    "surely",
+    "no doubt",
+    "without a doubt",
+    "trivially",
+)
+
+MESSAGES = {
+    "vague": "`{word}` does not say which thing is meant. Name the thing.",
+    "filler": "`{word}` adds nothing. Write the sentence without it.",
+    "verdict": (
+        "`{word}` tells the reader what to think. State the fact and leave"
+        " the judgement out."
+    ),
+}
+
+KINDS = (("vague", VAGUE), ("filler", FILLER), ("verdict", VERDICT))
+
+
+def _pattern(words):
+    return re.compile(
+        r"\b(?:" + "|".join(w.replace(" ", r"\s+") for w in words) + r")\b",
+        re.IGNORECASE,
+    )
+
+
+PATTERNS = [(kind, _pattern(words)) for kind, words in KINDS]
+COMMENT_RE = re.compile(r"//(.*)$")
+
+
+def _fragments(path, text):
+    # A commit message is prose throughout, bar the lines git writes itself.
+    # A source file is prose only inside its comments, so a string that holds
+    # one of these words is left alone.
+    is_source = path.suffix in {".c", ".h"}
+    for number, line in enumerate(text.splitlines(), start=1):
+        if is_source:
+            match = COMMENT_RE.search(line)
+            if match is not None:
+                yield number, match.group(1)
+            continue
+        # `git commit -v` puts the diff below a scissors line, which is code
+        # rather than prose. Spotted the way tools/check_commit_msg spots it,
+        # since the dashes around it vary.
+        if ">8" in line and line[:1] == "#":
+            return
+        if not line.startswith("#"):
+            yield number, line
+
+
+def check(path, text):
+    for number, fragment in _fragments(path, text):
+        for kind, pattern in PATTERNS:
+            for match in pattern.finditer(fragment):
+                yield LintWarning(
+                    path,
+                    MESSAGES[kind].format(word=match.group(0).lower()),
+                    line=number,
+                )
+
+
+file_check(check)

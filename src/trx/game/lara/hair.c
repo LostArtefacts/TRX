@@ -599,13 +599,13 @@ static float M_RingRoll(
     return atan2f(cross, dot);
 }
 
-// Chooses the rotation of the lower pairing that lines up with the two
-// anchors' relative roll. The comparison is made in the ring's plane with the
-// upper ring's roll factored out, so the bridge's own frame drops out of the
-// choice; and the previous rotation is kept unless the winner is clearly
-// better - without that margin the idle sway flicks the ring back and forth
-// across the switching point. Only rotations are tried, never reflections, so
-// the ring's winding holds.
+// Chooses the rotation of the lower pairing that lines up with the two anchors'
+// relative roll. The comparison is made in the ring's plane with the upper
+// ring's roll factored out, so the bridge's own frame drops out of the choice;
+// and the previous rotation is kept unless the winner is better by a margin -
+// without it the idle sway flicks the ring back and forth across the switching
+// point. Only rotations are tried, never reflections, so the ring's winding
+// holds.
 static int32_t M_PickShift(
     const M_SEGMENT_SEAM *const seam, const OBJECT_MESH *const mesh,
     const XYZ_F *const targets, const float upper_roll,

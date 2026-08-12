@@ -619,8 +619,8 @@ void Item_Deactivate(const int16_t item_num)
         LOT_DisableBaddieAI(item_num);
     }
 
-    // Only when it was actually running, so an antitrigger on an idle item is
-    // not reported as a stop. on_leave_sim has already fired for it.
+    // Only when it was running, so an antitrigger on an idle item is not
+    // reported as a stop. on_leave_sim has already fired for it.
     if (was_simulated && !Game_IsSettingUpItems()) {
         LUA_FireEventInt32(LUA_EVENT_DEACTIVATE, item_num);
     }

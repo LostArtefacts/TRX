@@ -164,8 +164,8 @@ static void M_WrappedLabel(const char *const text, const float max_width)
 
 // The width the dialog's text may occupy, in the units the layout sizes in. The
 // modal's padding and the window's chrome come off what the screen allows, and
-// what the phase actually shows sets the width below that, so a narrow list of
-// changes keeps the dialog narrow rather than stretching it.
+// what the phase shows sets the width below that, so a narrow list of changes
+// keeps the dialog narrow rather than stretching it.
 static float M_GetConfirmContentWidth(UI_CONFIG_PRESETS_STATE *const s)
 {
     const float scale = UI_Scaler_GetTextScale();

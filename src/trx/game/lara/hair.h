@@ -18,7 +18,7 @@ typedef struct {
 void Lara_Hair_Initialise(void);
 // Detects the ring adjacent braid segments share and enables welding it shut at
 // draw time. A no-op unless the outfit opts into joints and the segment meshes
-// actually share a ring; call whenever the outfit changes.
+// share a ring; call whenever the outfit changes.
 void Lara_Hair_InitJoints(const LARA_SKIN_OUTFIT *outfit);
 bool Lara_Hair_IsActive(void);
 void Lara_Hair_Control(bool in_cutscene);

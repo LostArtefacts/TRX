@@ -307,9 +307,9 @@ static bool M_IsValidHangPos(ITEM *const item, COLL_INFO *const coll)
 
     // A laterally sloping ledge cannot be grabbed, matching an ordinary hang
     // grab (Lara_Col_HangTest rejects side_left2/side_right2 tilt). A side that
-    // simply drops away - e.g. the open half of an inner corner - is fine, so
-    // only the case where both ledge ends stay at grab height yet tilt across
-    // is rejected.
+    // drops away - e.g. the open half of an inner corner - is fine, so only the
+    // case where both ledge ends stay at grab height yet tilt across is
+    // rejected.
     const bool left_level =
         ABS(coll->side_front.floor - coll->side_left2.floor) < SLOPE_DIF;
     if (left_level
@@ -463,8 +463,8 @@ static int32_t M_TestHangCorner(
                     }
                 }
             } else if (ABS(front - coll->side_front.floor) <= SLOPE_DIF) {
-                // Only allow the outer turn when Lara hangs on the half
-                // of the sector that actually meets the corner.
+                // Only allow the outer turn when Lara hangs on the half of the
+                // sector that meets the corner.
                 const int32_t side_pos =
                     (dir == DIR_NORTH || dir == DIR_SOUTH ? old_pos.x
                                                           : old_pos.z)

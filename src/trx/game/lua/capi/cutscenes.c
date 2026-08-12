@@ -8,8 +8,8 @@
 #define M_NO_CUTSCENE (-1)
 #define M_NO_FRAME (-1)
 
-// A cutscene a script asks to play has to be one this game can actually play,
-// or the call would do nothing and say nothing about why.
+// A cutscene a script asks to play has to be one this game can play, or the
+// call would do nothing and say nothing about why.
 static int32_t M_CheckPlayableNum(lua_State *const L, const int32_t arg)
 {
     const lua_Integer num = luaL_checkinteger(L, arg);

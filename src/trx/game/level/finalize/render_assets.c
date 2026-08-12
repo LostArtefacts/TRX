@@ -24,9 +24,8 @@ static void M_FixTrapezoidRatios(FACE *const face, const XYZ_16 vertices[4])
     // rendered using affine interpolation of texture coordinates, causing
     // visible warping when a four-sided polygon is split internally.
     // The original approach (coded by XProger) handled only rectangular UV
-    // maps by simply scaling the edges; this updated version takes into
-    // account the actual UV trapezoid to achieve a more uniform texture
-    // projection.
+    // maps by scaling the edges; this updated version takes into account the
+    // actual UV trapezoid to achieve a more uniform texture projection.
 
     // 1) Gather the coordinate and texture information
     const OBJECT_TEXTURE *const tex =

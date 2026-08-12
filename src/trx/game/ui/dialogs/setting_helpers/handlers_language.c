@@ -59,8 +59,8 @@ static bool M_Language_CanChangeValue(
     const VECTOR *const langs = M_Language_GetLanguages();
     const int32_t idx = M_Language_FindIndex(option);
     if (idx < 0) {
-        // If the language from the user config somehow is no longer on the list
-        // (the file was deleted), let the player return to the default language
+        // If the language from the user config is no longer on the list (the
+        // file was deleted), let the player return to the default language
         return true;
     }
     if (langs->count < 2) {
@@ -81,8 +81,8 @@ static bool M_Language_RequestChangeValue(
     if (idx != -1) {
         new_lang = *(char **)Vector_Get(langs, idx + dir);
     } else {
-        // If the language from the user config somehow is no longer on the list
-        // (the file was deleted), default to the first entry, which is English
+        // If the language from the user config is no longer on the list (the
+        // file was deleted), default to the first entry, which is English
         new_lang = *(char **)Vector_Get(langs, 0);
     }
     Config_Option_SetFromString(option, new_lang, false);

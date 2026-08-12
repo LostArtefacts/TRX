@@ -7,7 +7,7 @@
 // data is stored in a special buffer. Then the engine continues to execute the
 // normal game flow and loads the specified level. Second phase occurs after
 // everything finishes loading, e.g. items, creatures, triggers etc., and is
-// what actually sets Lara's health, creatures status, triggers, inventory etc.
+// what sets Lara's health, creatures status, triggers, inventory etc.
 
 void Savegame_Init(void);
 

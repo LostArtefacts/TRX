@@ -39,8 +39,8 @@ typedef struct {
     };
     uint16_t vertices[4];
 
-    // trapezoid ratios for textured quads
-    // that cannot be really shared between vertices
+    // trapezoid ratios for textured quads that cannot be shared between
+    // vertices
     TEXTURE_ZW_F texture_zw[4];
 
     uint16_t effects;
