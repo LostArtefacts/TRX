@@ -466,6 +466,11 @@
         <property category="TRX" defaultValue="TEN.Vec3(1, 1, 1)" description="Swim range, in quarter tiles. Value range: minimum 1 on each axis." displayName="Range" internalName="range" type="Vec3" />
         <property category="TRX" defaultValue="true" description="Whether the shoal uses the surrounding room lighting." displayName="Use Room Lighting" internalName="use_room_lighting" type="Bool" />
     </moveable>
+    <!--placeholder for O_VON_CROY-->
+    <moveable id="-1">
+        <property category="TRX" defaultValue="15" description="Maximum hit points." displayName="Max Hit Points" internalName="max_hit_points" minValue="0" type="Int" />
+        <property category="TRX" defaultValue="false" description="Whether he waits for Lara and lectures her at the markers he walks to, rather than running them on his own." displayName="Guides Lara" internalName="guides_lara" type="Bool" />
+    </moveable>
     <!--placeholder for O_VULTURE-->
     <moveable id="-1">
         <property category="TRX" defaultValue="18" description="Maximum hit points." displayName="Max Hit Points" internalName="max_hit_points" minValue="0" type="Int" />

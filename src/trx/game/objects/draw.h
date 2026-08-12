@@ -15,7 +15,7 @@ void Object_DrawStaticObject(const OBJECT *obj, const ANIM_FRAME *frame);
 
 bool Object_DrawAnimatingItem(const ITEM *item);
 bool Object_DrawAnimatingItemWithSwap(
-    const ITEM *item, const OBJECT *mesh_swap);
+    const ITEM *item, const OBJECT *mesh_swap, uint32_t mesh_mask);
 
 bool Object_DrawInterpolatedObject(
     const OBJECT *obj, uint32_t mesh_mask, const int16_t *extra_rotation,
