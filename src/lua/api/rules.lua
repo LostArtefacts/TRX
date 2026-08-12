@@ -86,25 +86,6 @@ rule("carrier.inherit_facing", {
   ]],
 })
 
-rule("music.accumulate_trigger_masks", {
-  type = "boolean",
-  description = "Whether non-ambient tracks triggered from floor data should "
-    .. "react to trigger masks, requiring all bits to be set for the music to "
-    .. "play. Current playing music whose mask becomes unset will stop.",
-})
-
-rule("music.is_one_shot_default", {
-  type = "boolean",
-  description = "Whether non-ambient tracks triggered from floor data default "
-    .. "to being flagged as one-shot.",
-})
-
-rule("music.supports_delay", {
-  type = "boolean",
-  description = "Whether timers used for non-ambient tracks triggered from "
-    .. "floor data should be interpreted as a delay before playing the track.",
-})
-
 api.define("rules.list", {
   description = "Every rule there is, as dotted `group.field` keys, in no particular order. "
     .. "<!--noref: group.field-->",

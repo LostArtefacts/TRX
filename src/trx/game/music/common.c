@@ -839,11 +839,6 @@ void Music_Trigger(MUSIC_ID track_id, const MUSIC_TRIGGER *const trigger)
         return;
     }
 
-    MUSIC_TRACK_STATE *const track = &m_TrackStates[track_id];
-    if (track->is_one_shot) {
-        return;
-    }
-
     if (M_IsAmbientTrack(track_id)) {
         Music_Play_Direct(track_id, MPM_LOOP);
         return;
@@ -855,7 +850,13 @@ void Music_Trigger(MUSIC_ID track_id, const MUSIC_TRIGGER *const trigger)
         play_mode = MPM_OVERLAY;
     }
 
-    if (g_Rules.music.accumulate_trigger_masks) {
+    MUSIC_TRACK_STATE *const track = &m_TrackStates[track_id];
+
+    if (g_TRVersion == 1) {
+        if (track->is_one_shot) {
+            return;
+        }
+
         if (trigger->kind == MUSIC_TRIGGER_SWITCH) {
             track->mask ^= trigger->mask;
         } else if (trigger->kind == MUSIC_TRIGGER_ANTI) {
@@ -864,36 +865,73 @@ void Music_Trigger(MUSIC_ID track_id, const MUSIC_TRIGGER *const trigger)
             track->mask |= trigger->mask;
         }
 
-        if (track->mask != TRIGGER_MASK_ALL) {
+        if (track->mask == TRIGGER_MASK_ALL) {
+            if (trigger->one_shot) {
+                track->is_one_shot = true;
+            }
+            Music_Play_Direct(track_id, play_mode);
+        } else {
             Music_StopTrack_Direct(track_id);
+        }
+        return;
+    }
+
+    if (g_TRVersion == 2) {
+        if ((track->mask & trigger->mask) != 0) {
             return;
         }
-    } else if ((track->mask & trigger->mask) != 0) {
+
+        if (trigger->one_shot) {
+            track->mask |= trigger->mask;
+        }
+
+        if (trigger->timer == 0) {
+            Music_Play_Direct(track_id, play_mode);
+            return;
+        }
+
+        if (track_id != Music_GetDelayedTrack()) {
+            Music_Play_Direct(track_id, MPM_DELAY);
+            track->delay = LOGIC_FPS * trigger->timer;
+            return;
+        }
+
+        if (track->delay == 0) {
+            return;
+        }
+
+        track->delay--;
+        if (track->delay == 0) {
+            Music_Play_Direct(track_id, play_mode);
+        }
+
         return;
     }
 
-    if (trigger->one_shot || g_Rules.music.is_one_shot_default) {
-        track->mask |= trigger->mask;
-        track->is_one_shot = true;
-    }
+    {
+        if (!Game_IsInGym()) {
+            // TR3+ used one-shot as an extra bit together with the other five
+            // usual trigger bits. This is used to allow triggering the same
+            // track multiple times in a level, but keeping one-shot to mean per
+            // unique trigger setup.
+            uint8_t trigger_mask = trigger->mask;
+            if (trigger->one_shot) {
+                trigger_mask |= 1 << 6;
+            }
 
-    if (trigger->timer == 0 || !g_Rules.music.supports_delay) {
-        Music_Play_Direct(track_id, play_mode);
-        return;
-    }
+            uint8_t track_mask = track->mask;
+            if (track->is_one_shot) {
+                track_mask |= 1 << 6;
+            }
 
-    if (track_id != Music_GetDelayedTrack()) {
-        Music_Play_Direct(track_id, MPM_DELAY);
-        track->delay = LOGIC_FPS * trigger->timer;
-        return;
-    }
+            if ((track_mask & trigger_mask) == trigger_mask) {
+                return;
+            }
 
-    if (track->delay == 0) {
-        return;
-    }
+            track->mask |= trigger->mask;
+            track->is_one_shot |= trigger->one_shot;
+        }
 
-    track->delay--;
-    if (track->delay == 0) {
         Music_Play_Direct(track_id, play_mode);
     }
 }

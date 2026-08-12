@@ -6048,11 +6048,6 @@
       "callable": false,
       "implicit": true,
       "path": "rules.carrier"
-    },
-    {
-      "callable": false,
-      "implicit": true,
-      "path": "rules.music"
     }
   ],
   "numbers": [
@@ -6453,24 +6448,6 @@
     {
       "description": "Whether an item a defeated enemy carried turns to face the way the enemy\ndid, rather than keeping the rotation the level gave it. This only reaches\ndrops the level data places on the enemy; a drop the gameflow names always\ntakes the enemy's facing.",
       "path": "rules.carrier.inherit_facing",
-      "type": "boolean",
-      "writable": true
-    },
-    {
-      "description": "Whether non-ambient tracks triggered from floor data should react to trigger masks, requiring all bits to be set for the music to play. Current playing music whose mask becomes unset will stop.",
-      "path": "rules.music.accumulate_trigger_masks",
-      "type": "boolean",
-      "writable": true
-    },
-    {
-      "description": "Whether non-ambient tracks triggered from floor data default to being flagged as one-shot.",
-      "path": "rules.music.is_one_shot_default",
-      "type": "boolean",
-      "writable": true
-    },
-    {
-      "description": "Whether timers used for non-ambient tracks triggered from floor data should be interpreted as a delay before playing the track.",
-      "path": "rules.music.supports_delay",
       "type": "boolean",
       "writable": true
     },

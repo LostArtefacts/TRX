@@ -33,11 +33,3 @@ X_GROUP_BEGIN(carrier)
 X_RULE(bool, carrier, snap_to_sector, false)
 X_RULE(bool, carrier, inherit_facing, true)
 X_GROUP_END(carrier)
-
-// Determines how music triggered from floor data is played and the
-// interpretation of their state flags.
-X_GROUP_BEGIN(music)
-X_RULE(bool, music, accumulate_trigger_masks, false)
-X_RULE(bool, music, is_one_shot_default, false)
-X_RULE(bool, music, supports_delay, false)
-X_GROUP_END(music)
