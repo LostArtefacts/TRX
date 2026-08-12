@@ -14,10 +14,6 @@ trx.events.on_game_start(function(is_save)
   trx.lara.holsters_visible = trx.lara.has_pistol_weapon
   trx.objects.switch_type_generic_1.properties.switch_mode =
     trx.items.SwitchMode.HIDDEN_REACH
-
-  -- Von Croy races Lara through the course in the original game. TRX has no
-  -- port of that behavior yet, so his items would stand frozen along it.
-  cutscenes.hide_items(trx.catalog.objects.von_croy)
 end)
 
 trx.events.on_cutscene_trigger(function(cutscene_num)
@@ -58,11 +54,14 @@ local function von_croy_chat(ranges)
   }
 end
 
+local VON_CROY_ACTOR = 1
+
 -- Both endings play at the finish, where the racers themselves stand as level
 -- items and the scene brings its own.
 local function clear_the_finish()
   cutscenes.hide_items(trx.catalog.objects.animating_3)
   cutscenes.hide_items(trx.catalog.objects.von_croy)
+  cutscenes.dress_von_croy(VON_CROY_ACTOR)
 end
 
 cutscenes.register(LARA_WON, {
@@ -83,21 +82,23 @@ cutscenes.register(LARA_LOST, {
   chain = IRIS_CHAMBER,
 })
 
--- The Iris chamber, which ends the level. Its cast comes and goes: the statues
--- are not there until the Iris is taken, and Von Croy leaves the frame in the
--- middle of it.
-local VON_CROY_ACTOR = 1
-local FIRST_STATUE_ACTOR = 3
+-- The Iris chamber, which ends the level. Its cast comes and goes: the stone
+-- gate that slides across the way out and shuts Von Croy in is not there
+-- until the Iris is taken, and he leaves the frame in the middle of it. The
+-- rest of the cast, the bridge he crosses and the wheel Lara turns among it,
+-- stands throughout.
+local GATE_ACTORS = { 3, 4, 5, 6, 7 }
 
-local function show_statues(visible)
-  for actor = FIRST_STATUE_ACTOR, trx.cutscenes.actor_count - 1 do
+local function show_gate(visible)
+  for _, actor in ipairs(GATE_ACTORS) do
     trx.cutscenes.set_actor_visible(actor, visible)
   end
 end
 
 cutscenes.register(IRIS_CHAMBER, {
   on_start = function()
-    show_statues(false)
+    cutscenes.dress_von_croy(VON_CROY_ACTOR)
+    show_gate(false)
   end,
   frames = {
     [1300] = function()
@@ -108,7 +109,7 @@ cutscenes.register(IRIS_CHAMBER, {
     end,
     [3000] = function()
       trx.cutscenes.set_actor_visible(VON_CROY_ACTOR, false)
-      show_statues(true)
+      show_gate(true)
     end,
   },
   chat = {

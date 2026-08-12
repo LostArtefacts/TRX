@@ -43,9 +43,8 @@ local CLOSED_MOUTH_CHANCE = 0.25
 -- Takes every item of an object out of the level: invisible, spent so no
 -- trigger brings it back, and stopped. A cutscene actor has a level item
 -- standing in for it, and this is how the original engine clears one out of
--- the way. Stopping it is what keeps a creature gone: one still running asks
--- for its AI again on its next frame and is made visible along with it, which
--- puts a second of the actor on screen beside the one the scene brings.
+-- the way. A creature left running asks for its AI again on its next frame
+-- and is made visible along with it.
 function M.hide_items(object)
   for _, item in ipairs(trx.items.query:of_object(object):matches()) do
     item.is_visible = false
@@ -64,6 +63,22 @@ function M.play_on_start(num)
       trx.cutscenes.play(num, false)
     end
   end)
+end
+
+-- The nodes Von Croy wears from the swap object rather than his own.
+local VON_CROY_SWAP_NODES = { 7, 18 }
+
+-- Dresses a cutscene actor as Von Croy. A scene draws its cast from the plain
+-- meshes of the objects it names, and his are the ones the level swapped out.
+function M.dress_von_croy(actor)
+  for _, node in ipairs(VON_CROY_SWAP_NODES) do
+    trx.cutscenes.set_node_mesh(
+      actor,
+      node,
+      trx.catalog.objects.mesh_swap_1,
+      node
+    )
+  end
 end
 
 local function is_speaking(ranges, frame)

@@ -1,16 +1,13 @@
 local cutscenes = require("tr4.cutscenes")
 
 trx.events.on_game_start(function(is_save)
+  -- The level he guides Lara through: elsewhere he runs his markers alone.
+  trx.objects.von_croy.properties.guides_lara = true
   trx.objects.animating_13.properties.collidable = false
   trx.objects.animating_14.properties.collidable = false
   trx.objects.animating_15.properties.collidable = false
   trx.objects.animating_16.properties.collidable = false
   trx.lara.holsters_visible = trx.lara.has_pistol_weapon
-
-  -- Von Croy walks the level beside Lara in the original game. TRX has no
-  -- port of his guide behavior yet, so his items would stand frozen next to
-  -- the cutscene actor wearing the same face.
-  cutscenes.hide_items(trx.catalog.objects.von_croy)
 end)
 
 local BACKPACK_CUTSCENE = 5
@@ -86,6 +83,9 @@ end)
 cutscenes.play_on_start(ENTRANCE_CUTSCENE)
 
 cutscenes.register(ENTRANCE_CUTSCENE, {
+  on_start = function()
+    cutscenes.dress_von_croy(1)
+  end,
   chat = {
     { lara = true, ranges = { { 257, 345 } } },
     {
