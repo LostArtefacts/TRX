@@ -9,9 +9,8 @@ void Clock_DisableWait(void);
 // Restores the waiting Clock_DisableWait turned off.
 void Clock_EnableWait(void);
 
-// Counts time in frames: every Clock_WaitTick moves the clock on by 1/fps,
-// whatever the frame really took. Zero goes back to real time, carrying on
-// from where the frame count reached.
+// Counts time in frames: every Clock_WaitTick moves the clock on by 1/fps. Zero
+// goes back to real time, carrying on from where the frame count reached.
 void Clock_EnableFixedFPS(int32_t fps);
 
 void Clock_SyncTick(void);
