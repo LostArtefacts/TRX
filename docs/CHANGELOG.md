@@ -3,6 +3,9 @@
 **Developer console**
 - Changed the `/flip` console command to take a flip group, so `/flip 3` moves that group alone while `/flip` on its own moves them all
 
+**Weapons and ammunition**
+- Added an option to keep Lara firing the M16/MP5 from her hip while the action key is held, rather than shouldering the gun the moment she stops moving (Gameplay → Controls → M16/MP5 aiming variants) (#3861)
+
 **Level and game data**
 - Added injection support for putting a room in a flip group, which only TR4 levels carry themselves (#5336)
 

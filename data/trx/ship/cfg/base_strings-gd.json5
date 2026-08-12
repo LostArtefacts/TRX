@@ -786,6 +786,10 @@
             "LOOK_MODE_RESTRICTED": "Cuibhrichte",
             "LOOK_MODE_UNRESTRICTED": "Neo-chuibhrichte",
         },
+        "M16_AIM_MODE": {
+            "M16_AIM_MODE_ENHANCED": "\\{review}Leasaichte",
+            "M16_AIM_MODE_ORIGINAL": "\\{review}Tùsail",
+        },
         "MUSIC_LOAD_CONDITION": {
             "MUSIC_LOAD_CONDITION_ALWAYS": "An-còmhnaidh",
             "MUSIC_LOAD_CONDITION_NEVER": "A-riamh",
@@ -1361,6 +1365,10 @@
         "gameplay.look_mode": {
             "title": "Modh seallaidh",
             "description": "Leigidh seo leat smachd a chumail air cuin as urrainn do Lara sealladh a chleachdadh.\n\n- Cuibhrichte: chan eil sealladh comasach ach nuair a tha Lara na stad, agus a-riamh fon uisge.\n- Leasaichte: tha sealladh comasach rè a' mhòr-chuid de bheòthalachd, ach chan ann rè gluasadan mar putadh bloca.\n- Neo-chuibhrichte: tha sealladh comasach aig àm sam bith fo smachd Lara àbhaisteach.\n\nTha Cuibhrichte a' freagairt ris an TR1 thùsail, agus Leasaichte ris an TR2+ thùsail.",
+        },
+        "gameplay.m16_aim_mode": {
+            "title": "\\{review}Roghainnean cuimse an M16/MP5",
+            "description": "\\{review}Stiùiridh seo cuin a chuireas Lara an M16/MP5 ri a gualainn an àite a bhith a' losgadh bhon chruachann.\n\n- Tùsail: togaidh Lara an gunna ri a gualainn gach turas a stadas i.\n- Leasaichte: cumaidh Lara a' losgadh bhon chruachann fhad 's a tha am putan Gnìomh ga chumail sìos, agus cha tog i an gunna ri a gualainn ach ma thòisicheas i a' losgadh 's i na seasamh. Leis a' chàradh pongalachd air, tha losgadh bhon chruachann nas neo-phongail agus nì e nas lugha de dhochann gach urchair.",
         },
         "gameplay.maximum_quick_save_slots": {
             "title": "Àireamh nan slotan sàbhalaidh luath",

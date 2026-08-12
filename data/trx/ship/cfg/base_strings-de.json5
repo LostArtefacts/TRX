@@ -786,6 +786,10 @@
             "LOOK_MODE_RESTRICTED": "Beschränkt",
             "LOOK_MODE_UNRESTRICTED": "Unbeschränkt",
         },
+        "M16_AIM_MODE": {
+            "M16_AIM_MODE_ENHANCED": "\\{review}Erweitert",
+            "M16_AIM_MODE_ORIGINAL": "\\{review}Original",
+        },
         "MUSIC_LOAD_CONDITION": {
             "MUSIC_LOAD_CONDITION_ALWAYS": "Immer",
             "MUSIC_LOAD_CONDITION_NEVER": "Nie",
@@ -1361,6 +1365,10 @@
         "gameplay.look_mode": {
             "title": "Umsehen Modus",
             "description": "\\{review}Erlaubt einzustellen wann Lara in der Lage ist sich umzusehen.\n\n- Beschränkt: Umsehen ist nur möglich wenn Lara still steht, und nie wenn man unter Wasser ist.\n- Erweitert: Umsehen ist während der meisten Animationen möglich, ausser ein paar Ausnahmen wie das Schieben eines Blockes.\n- Unbeschränkt: Umsehen ist jederzeit während der normalen Steuerung von Lara möglich.\n\nBeschränkt entspricht dem originalen TR1, Erweitert dem originalen TR2+.",
+        },
+        "gameplay.m16_aim_mode": {
+            "title": "\\{review}M16/MP5-Zielvarianten",
+            "description": "\\{review}Steuert, wann Lara die M16/MP5 von der Schulter statt aus der Hüfte anlegt.\n\n- Original: Lara nimmt die Waffe an die Schulter, sobald sie stehen bleibt.\n- Erweitert: Lara schießt weiter aus der Hüfte, solange die Aktionstaste gehalten wird, und nimmt die Waffe nur an die Schulter, wenn sie im Stehen zu schießen beginnt. Mit aktivierter Genauigkeitskorrektur ist der Hüftschuss ungenauer und richtet pro Schuss weniger Schaden an.",
         },
         "gameplay.maximum_quick_save_slots": {
             "title": "\\{review}Anzahl der Schnellspeicherplätze",
